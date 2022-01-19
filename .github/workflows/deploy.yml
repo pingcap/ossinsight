@@ -9,13 +9,13 @@ jobs:
     name: Deploy to GitHub Pages
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v2.4.0
+      - uses: actions/setup-node@v2.5.1
         with:
           node-version: 14.x
           cache: yarn
       - name: Build website
-        working-directory: /docus
+        working-directory: /
         run: |
           yarn install --frozen-lockfile
           yarn build
