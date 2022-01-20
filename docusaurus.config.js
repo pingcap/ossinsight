@@ -6,8 +6,8 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'My Site',
-  tagline: 'Dinosaurs are cool',
+  title: 'GH Archive Live',
+  tagline: 'An overview of the OSS in 2021: trends about database and web frameworks, programming language, low code, javascript framework, CSS framework ... ',
   url: 'https://staticsiteg.github.io/',
   baseUrl: '/docus/',
   onBrokenLinks: 'throw',
@@ -15,6 +15,24 @@ const config = {
   favicon: 'img/favicon.ico',
   organizationName: 'staticsiteg', // Usually your GitHub org/user name.
   projectName: 'docus', // Usually your repo name.
+
+
+  scripts: [
+    {
+      src: 'https://giscus.app/client.js',
+      async: true,
+      "data-repo": "hooopo/gharchive",
+      "data-repo-id": "R_kgDOGYZudg",
+      "data-category": "Announcements",
+      "data-category-id": "DIC_kwDOGYZuds4CAw6F",
+      "data-mapping": "pathname",
+      "data-reactions-enabled": "1",
+      "data-emit-metadata": "0",
+      "data-theme": "preferred_color_scheme",
+      "data-lang": "zh-CN",
+      "crossorigin": "anonymous"
+    },
+  ],
 
   presets: [
     [
@@ -42,8 +60,10 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
+      image: 'img/gharchive-title-img-en.png',
+      metadata: [{name: 'twitter:card', content: 'summary'}],
       navbar: {
-        title: 'My Site',
+        title: 'GH Archive Live',
         logo: {
           alt: 'My Site Logo',
           src: 'img/logo.svg',
@@ -51,11 +71,12 @@ const config = {
         items: [
           {
             type: 'doc',
-            docId: 'intro',
+            docId: 'database/year-2021',
             position: 'left',
-            label: 'Tutorial',
+            label: 'Explore',
           },
-          {to: '/blog', label: 'Blog', position: 'left'},
+          {to: '/blog', label: 'Monthly Reports', position: 'left'},
+          {to: '/docs/how-it-works', label: 'How it works', position: 'left'},
           {
             href: 'https://github.com/facebook/docusaurus',
             label: 'GitHub',
