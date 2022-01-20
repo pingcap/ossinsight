@@ -40,6 +40,29 @@ const FeatureList = [
       </>
     ),
   },
+
+  {
+    title: 'Low-Code & No-Code Tools',
+    Svg: require('../../static/img/undraw_docusaurus_react.svg').default,
+    description: (
+      <>
+        Low-code is a software development approach that requires little to no coding in order to build applications and processes. A low-code development platform uses visual interfaces with simple logic and drag-and-drop features instead of extensive coding languages
+      </>
+    ),
+  },
+
+  {
+    title: 'Static Site Generator',
+    Svg: require('../../static/img/undraw_docusaurus_react.svg').default,
+    description: (
+      <>
+        A static site generator is a software application that creates HTML pages from templates or components and a given content source. Most static site generators, including Gatsby, accept Markdown-formatted text files as a source
+      </>
+    ),
+  },
+
+
+
 ];
 
 function Feature({Svg, title, description}) {
