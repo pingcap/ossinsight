@@ -17,23 +17,6 @@ const config = {
   projectName: 'docus', // Usually your repo name.
 
 
-  scripts: [
-    {
-      src: 'https://giscus.app/client.js',
-      async: true,
-      "data-repo": "hooopo/gharchive",
-      "data-repo-id": "R_kgDOGYZudg",
-      "data-category": "Announcements",
-      "data-category-id": "DIC_kwDOGYZuds4CAw6F",
-      "data-mapping": "pathname",
-      "data-reactions-enabled": "1",
-      "data-emit-metadata": "0",
-      "data-theme": "preferred_color_scheme",
-      "data-lang": "zh-CN",
-      "crossorigin": "anonymous"
-    },
-  ],
-
   presets: [
     [
       'classic',
