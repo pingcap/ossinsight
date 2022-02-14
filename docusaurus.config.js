@@ -8,13 +8,13 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 const config = {
   title: 'GH Archive Live',
   tagline: 'An overview of the OSS in 2021: trends about database and web frameworks, programming language, low code, javascript framework, CSS framework ... ',
-  url: 'https://staticsiteg.github.io/',
-  baseUrl: '/docus/',
+  url: 'https://pingcap-inc.github.io/',
+  baseUrl: '/gharchive.live/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
-  organizationName: 'staticsiteg', // Usually your GitHub org/user name.
-  projectName: 'docus', // Usually your repo name.
+  organizationName: 'pingcap-inc', // Usually your GitHub org/user name.
+  projectName: 'gharchive.live', // Usually your repo name.
 
 
   presets: [
@@ -25,13 +25,13 @@ const config = {
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
-          editUrl: 'https://github.com/staticsiteg/docus/edit/main/',
+          editUrl: 'https://github.com/pingcap-inc/gharchive.live/edit/main/',
         },
         blog: {
           showReadingTime: true,
           // Please change this to your repo.
           editUrl:
-            'https://github.com/staticsiteg/docus/edit/main/',
+            'https://github.com/pingcap-inc/gharchive.live/edit/main/',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
