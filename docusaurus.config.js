@@ -36,6 +36,10 @@ const config = {
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
         },
+        gtag: {
+          trackingID: 'G-SBJ4WWDNV8',
+          anonymizeIP: true,
+        },
       }),
     ],
   ],
@@ -55,7 +59,6 @@ const config = {
           {to: '/blog', label: 'Blog', position: 'left'},
           {
             type: 'doc',
-            
             docId: 'database/index',
             position: 'left',
             label: 'Ranking!',
@@ -64,54 +67,66 @@ const config = {
           {
             href: 'https://tidbcloud.com',
             label: 'TiDB Cloud',
-            position: 'right',
+            position: 'left',
           },
         ],
       },
       footer: {
-        style: 'dark',
+        style: 'light',
         links: [
           {
-            title: 'Docs',
-            items: [
-              {
-                label: 'Explore',
-                to: '/docs/database/',
-              },
-            ],
-          },
-          {
-            title: 'Community',
-            items: [
-              {
-                label: 'Stack Overflow',
-                href: 'https://stackoverflow.com/questions/tagged/docusaurus',
-              },
-              {
-                label: 'Discord',
-                href: 'https://discordapp.com/invite/docusaurus',
-              },
-              {
-                label: 'Twitter',
-                href: 'https://twitter.com/docusaurus',
-              },
-            ],
-          },
-          {
-            title: 'More',
+            title: 'GH Archive Live',
             items: [
               {
                 label: 'Blog',
                 to: '/blog',
               },
               {
-                label: 'GitHub',
+                label: 'Rankings',
+                to: '/docs/database/',
+              },
+              {
+                label: 'How it works',
+                to: '/docs/how-it-works',
+              },
+            ],
+          },
+          {
+            title: 'Powered By',
+            items: [
+              {
+                label: 'TiDB Cloud',
+                href: 'https://tidbcloud.com',
+              },
+              {
+                label: 'TiDB',
+                href: 'https://github.com/pingcap/tidb',
+              },
+              {
+                label: 'PingCAP',
+                href: 'https://pingcap.com',
+              },
+            ],
+          },
+          {
+            title: 'Built With',
+            items: [
+              {
+                label: 'GH Archive - Data Source',
+                href: 'https://stackoverflow.com/questions/tagged/docusaurus',
+              },
+              {
+                label: 'Docusaurus',
                 href: 'https://github.com/facebook/docusaurus',
+              },
+              {
+                label: 'Cube.js',
+                href: 'https://github.com/cube-js/cube.js',
               },
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
+        copyright: `Copyright © ${new Date().getFullYear()} TiDB Cloud, Inc. Built with Docusaurus.`,
       },
       prism: {
         theme: lightCodeTheme,
