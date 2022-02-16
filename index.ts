@@ -18,15 +18,16 @@ consola.wrapConsole()
 const app = new App()
 const router = new Router()
 
+app.use(async (ctx, next) => {
+  ctx.logger = logger
+  await next()
+})
+
 server(app, router)
 
 app.use(router.routes())
   .use(router.allowedMethods())
 
-app.use(async (ctx, next) => {
-  ctx.logger = logger
-  await next()
-})
 
 const port = parseInt(process.env.SERVER_PORT || '3450')
 app.listen(port, () => {
