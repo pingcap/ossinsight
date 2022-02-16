@@ -76,7 +76,7 @@ const config = {
             items: [
               {
                 label: 'Explore',
-                to: '/docs/database/year-2021',
+                to: '/docs/database/',
               },
             ],
           },
