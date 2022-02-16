@@ -21,6 +21,7 @@
     "@emotion/react": "^11.7.1",
     "@emotion/styled": "^11.6.0",
     "@mdx-js/react": "^1.6.21",
+    "@mui/icons-material": "^5.4.2",
     "@mui/lab": "^5.0.0-alpha.68",
     "@mui/material": "^5.4.1",
     "clsx": "^1.1.1",

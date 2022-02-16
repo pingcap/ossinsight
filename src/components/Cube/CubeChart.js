@@ -12,18 +12,26 @@ import Select from '@mui/material/Select';
 import Skeleton from '@mui/material/Skeleton';
 import Box from '@mui/material/Box';
 import DatePicker from '@mui/lab/DatePicker';
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import Typography from '@mui/material/Typography';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ThemeProvider from "@mui/system/ThemeProvider";
+import {createTheme} from "@mui/material";
 import {DateTime} from 'luxon'
 import {LocalizationProvider} from "@mui/lab";
 import DateAdapter from '@mui/lab/AdapterLuxon';
 import Head from '@docusaurus/Head';
+import useThemeContext from '@theme/hooks/useThemeContext';
 import CodeBlock from '@theme/CodeBlock';
 import {useDeepCompareMemo} from 'use-deep-compare'
 import {Bar} from 'react-chartjs-2';
-import {BarElement, CategoryScale, Chart, LinearScale} from 'chart.js';
+import {BarElement, CategoryScale, Chart, LinearScale, Tooltip, Legend} from 'chart.js';
 import { format } from 'sql-formatter';
 
 
-Chart.register(CategoryScale, LinearScale, BarElement)
+Chart.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend)
 
 const cubejsApi = cubejs('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NDQ4OTYyNDMsImV4cCI6MTY0NDk4MjY0M30.2XanIk0exgEmFwsHX0w_w9LWk-X4PaVfPIX235z9JsM', {
   apiUrl: 'https://community-preview-tug.tidb.io/cubejs-api/v1'
@@ -58,12 +66,12 @@ const useForm = () => {
   const [sqlErr, setSqlErr] = useState(undefined)
 
   const query = useMemo(() => {
-    const segments = [
-      `GithubEvents.from_${from.toFormat('yyyy_MM_01')}`,
-      `GithubEvents.to_${to.toFormat('yyyy_MM_01')}`
-    ]
+    const segments = []
     const dimensions = []
     const filters = []
+
+    filters.push({"member": `GithubEvents.eventMonth`, "operator": "gte", "values": [from.toFormat('yyyy-MM-01')]})
+    filters.push({"member": `GithubEvents.eventMonth`, "operator": "lte", "values": [to.toFormat('yyyy-MM-01')]})
     if (db) {
       dimensions.push(`${db}`)
       filters.push({"member": `${db}`, "operator": "set"})
@@ -107,7 +115,7 @@ const useForm = () => {
     cubejsApi.sql(query)
       .then(res => {
         const [sql, params] = res.rawQuery().sql
-        setSql(format(sql, { language: "mysql", params: params }))
+        setSql(format(sql, { language: "mysql", params: params.map(val => `'${val}'`) }))
       })
       .catch(error => {
         setSql('')
@@ -143,7 +151,7 @@ const useForm = () => {
       </FormControl>
       <DatePicker
         label='From year'
-        views={['year']}
+        views={['year', 'month']}
         minDate={minDate}
         maxDate={maxDate}
         value={from}
@@ -154,7 +162,7 @@ const useForm = () => {
       />
       <DatePicker
         label='To year'
-        views={['year']}
+        views={['year', 'month']}
         minDate={minDate}
         maxDate={maxDate}
         value={to}
@@ -171,61 +179,80 @@ const useForm = () => {
 
 export default function CubeChart() {
   const {form, query, pivotConfig, sql} = useForm()
+  const {isDarkTheme} = useThemeContext();
+  const theme = createTheme({
+    palette: {
+      mode: isDarkTheme ? 'dark' : undefined,
+    },
+  });
 
   return (
     <LocalizationProvider dateAdapter={DateAdapter}>
-      <Head>
-        <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
-        />
-      </Head>
-      <Paper elevation={1} sx={{padding: 2}}>
-        {form}
-        <Divider sx={{my: 2}} />
-        <QueryRenderer
-          loadSql={false}
-          query={query}
-          cubejsApi={cubejsApi}
-          render={(props) => {
-            return (
-              <>
-                {renderCodes(sql)}
-                <Divider sx={{my: 2}} />
-                <div style={{height: 400}}>
-                  {renderChart({...props, pivotConfig})}
-                </div>
-              </>
-            )
-          }}
-        />
-      </Paper>
+      <ThemeProvider theme={theme}>
+        <Head>
+          <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+          />
+        </Head>
+        <Paper elevation={1} sx={{padding: 2}}>
+          {form}
+          <Divider sx={{my: 2}} />
+          <QueryRenderer
+            loadSql={false}
+            query={query}
+            cubejsApi={cubejsApi}
+            render={(props) => {
+              return (
+                <>
+                  {renderCodes(sql)}
+                  <div style={{height: 400}}>
+                    {renderChart({...props, pivotConfig})}
+                  </div>
+                </>
+              )
+            }}
+          />
+        </Paper>
+      </ThemeProvider>
     </LocalizationProvider>
   )
 }
 
 const renderCodes = sql => {
+  let content = undefined
   if (!sql) {
-    return (
+    content = (
       <Box sx={{pt: 0.5}}>
         <Skeleton width="80%" />
         <Skeleton width="50%" />
         <Skeleton width="70%" />
       </Box>
     )
-  }
-  return (
-    <>
+  } else {
+    content = (
       <CodeBlock className='language-sql'>
         {sql}
       </CodeBlock>
+    )
+  }
+  return (
+    <>
+      <Accordion sx={{ mb: 2 }}>
+        <AccordionSummary disabled={!sql} expandIcon={<ExpandMoreIcon />}>
+          <Typography>SQL</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          {content}
+        </AccordionDetails>
+      </Accordion>
     </>
   )
 }
 
 const COLORS_SERIES = [
+  'rgb(37, 193, 159)',
   '#5b8ff9',
-  '#5ad8a6',
   '#5e7092',
   '#f6bd18',
   '#6f5efa',
@@ -249,55 +276,29 @@ const PALE_COLORS_SERIES = [
 ];
 const commonOptions = {
   maintainAspectRatio: false,
+  responsive: true,
   interaction: {
+    mode: 'index',
     intersect: false,
   },
   plugins: {
     legend: {
-      position: 'bottom',
+      position: 'top',
     },
   },
   scales: {
     x: {
       ticks: {
-        autoSkip: true,
-        maxRotation: 0,
-        padding: 12,
+        autoSkip: false,
+        maxRotation: 180,
+        padding: 0,
         minRotation: 0,
       },
     },
   },
 };
 
-
-const useDrilldownCallback = ({
-                                datasets,
-                                labels,
-                                onDrilldownRequested,
-                                pivotConfig,
-                              }) => {
-  return React.useCallback(
-    (elements) => {
-      if (elements.length <= 0) return;
-      const {datasetIndex, index} = elements[0];
-      const {yValues} = datasets[datasetIndex];
-      const xValues = [labels[index]];
-
-      if (typeof onDrilldownRequested === 'function') {
-        onDrilldownRequested(
-          {
-            xValues,
-            yValues,
-          },
-          pivotConfig
-        );
-      }
-    },
-    [datasets, labels, onDrilldownRequested]
-  );
-};
-
-const BarChartRenderer = ({resultSet, pivotConfig, onDrilldownRequested}) => {
+const BarChartRenderer = ({resultSet, pivotConfig}) => {
   const datasets = useDeepCompareMemo(
     () =>
       resultSet.series().map((s, index) => ({
@@ -321,19 +322,12 @@ const BarChartRenderer = ({resultSet, pivotConfig, onDrilldownRequested}) => {
       y: {...commonOptions.scales.y, stacked},
     },
   };
-  const getElementAtEvent = useDrilldownCallback({
-    datasets: data.datasets,
-    labels: data.labels,
-    onDrilldownRequested,
-    pivotConfig,
-  });
   return (
     <Bar
       height='400'
       type="bar"
       data={data}
       options={options}
-      getElementAtEvent={getElementAtEvent}
     />
   );
 };
