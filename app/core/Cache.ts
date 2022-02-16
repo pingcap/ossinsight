@@ -63,6 +63,7 @@ export default class Cache<T> {
       return result
     } catch (e) {
       _reject!(e)
+      throw e
     } finally {
       runningCaches.delete(this.path)
     }
