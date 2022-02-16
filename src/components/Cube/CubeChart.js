@@ -183,6 +183,9 @@ export default function CubeChart() {
   const theme = createTheme({
     palette: {
       mode: isDarkTheme ? 'dark' : undefined,
+      primary: {
+        main: 'rgb(37, 193, 159)'
+      }
     },
   });
 
