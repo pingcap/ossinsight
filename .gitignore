@@ -1,0 +1,5 @@
+node_modules
+queries/**/.cache
+.env
+*.js
+schemas

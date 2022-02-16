@@ -1,0 +1,35 @@
+{
+  "name": "gharchive.live-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "pm2 start 'pnpm run server:start' --name 'gharchive.live-backend'",
+    "stop": "pm2 stop 'gharchive.live-backend'",
+    "restart": "pm2 restart 'gharchive.live-backend'",
+    "remove": "pm2 delete 'gharchive.live-backend'",
+    "postinstall": "pnpm run tsc",
+    "build": "tsc",
+    "server:start": "node index.js",
+    "dev": "ts-node index.ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "consola": "^2.15.3",
+    "dotenv": "^16.0.0",
+    "koa": "^2.13.4",
+    "koa-router": "^10.1.1",
+    "luxon": "^2.3.0",
+    "mysql2": "^2.3.3",
+    "pm2": "^5.1.2"
+  },
+  "devDependencies": {
+    "@types/koa": "^2.13.4",
+    "@types/koa-router": "^7.4.4",
+    "@types/luxon": "^2.0.9",
+    "@types/node": "^17.0.18",
+    "ts-node": "^10.5.0",
+    "typescript": "^4.5.5"
+  }
+}
