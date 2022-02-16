@@ -25,8 +25,10 @@ export default class Cache<T> {
       return await runningCaches.get(this.path)!._data as never
     }
     let _resolve: (data: CachedData<T>) => void
-    this._data = new Promise<CachedData<T>>(resolve => {
+    let _reject: (err: any) => void
+    this._data = new Promise<CachedData<T>>((resolve, reject) => {
       _resolve = resolve
+      _reject = reject
     })
     runningCaches.set(this.path, this as never)
     try {
@@ -59,6 +61,8 @@ export default class Cache<T> {
       }
       _resolve!(result)
       return result
+    } catch (e) {
+      _reject!(e)
     } finally {
       runningCaches.delete(this.path)
     }
