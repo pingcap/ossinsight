@@ -63,7 +63,7 @@ const config = {
             position: 'left',
             label: 'Ranking!',
           },
-          {href: '/compare-projects', label: 'Compare Projects', position: 'left'},
+          {href: 'https://asdf.com/compare-projects', label: 'Compare Projects', position: 'left'},
           {to: '/docs/how-it-works', label: 'How it works', position: 'left'},
           {
             href: 'https://tidbcloud.com',
