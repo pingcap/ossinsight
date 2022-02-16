@@ -22,6 +22,8 @@ export default function server(app: App, router: Router) {
       ctx.response.status = 200
       ctx.response.body = res
     } catch (e) {
+
+      ctx.logger.error('request failed %s', ctx.request.originalUrl, e)
       ctx.response.status = 400
       ctx.response.body = e
     }
