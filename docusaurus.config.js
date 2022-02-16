@@ -63,6 +63,7 @@ const config = {
             position: 'left',
             label: 'Ranking!',
           },
+          {to: '/compare-projects', label: 'Compare Projects', position: 'left'},
           {to: '/docs/how-it-works', label: 'How it works', position: 'left'},
           {
             href: 'https://tidbcloud.com',
@@ -95,14 +96,6 @@ const config = {
             title: 'Powered By',
             items: [
               {
-                label: 'TiDB Cloud',
-                href: 'https://tidbcloud.com',
-              },
-              {
-                label: 'TiDB',
-                href: 'https://github.com/pingcap/tidb',
-              },
-              {
                 label: 'PingCAP',
                 href: 'https://pingcap.com',
               },
@@ -122,6 +115,31 @@ const config = {
               {
                 label: 'Cube.js',
                 href: 'https://github.com/cube-js/cube.js',
+              },
+              {
+                label: 'TiDB Cloud',
+                href: 'https://tidbcloud.com',
+              },
+              {
+                label: 'TiDB',
+                href: 'https://github.com/pingcap/tidb',
+              },
+            ],
+          },
+          {
+            title: 'More',
+            items: [
+              {
+                label: 'Changelog',
+                to: 'blog/changelog',
+              },
+              {
+                label: 'Github',
+                href: 'https://github.com/pingcap-inc/gharchive.live',
+              },
+              {
+                label: 'Twitter',
+                href: 'https://twitter.com/pingcap',
               },
             ],
           },
