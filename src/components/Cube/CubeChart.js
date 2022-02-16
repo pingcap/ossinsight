@@ -29,6 +29,7 @@ import {useDeepCompareMemo} from 'use-deep-compare'
 import {Bar} from 'react-chartjs-2';
 import {BarElement, CategoryScale, Chart, LinearScale, Tooltip, Legend} from 'chart.js';
 import { format } from 'sql-formatter';
+import qs from 'querystring'
 
 
 Chart.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend)
@@ -58,10 +59,36 @@ const useForm = () => {
 
   const random = useMemo(() => Math.random(), [])
 
-  const [type, setType] = useState(types[0].value)
-  const [db, setDb] = useState(dbs[0].value)
-  const [from, setFrom] = useState(minDate)
-  const [to, setTo] = useState(maxDate)
+  const { initialType, initialDb, initialFrom, initialTo } = useMemo(() => {
+    let initialType = types[0].value
+    let initialDb = dbs[0].value
+    let initialFrom = minDate
+    let initialTo = maxDate
+    if (typeof window !== 'undefined') {
+      const usp = new URLSearchParams(location.search)
+      const type = usp.get('type')
+      const db = usp.get('db')
+      const from = usp.get('from')
+      if (type && types.find(({ value }) => value === type)) {
+        initialType = type
+      }
+      if (db && dbs.find(({ value }) => value === db)) {
+        initialDb = db
+      }
+      if (from) {
+        const date = DateTime.fromFormat(from, 'yyyy').set({ month: 1, day: 1 })
+        if (date.year >= 2011) {
+          initialFrom = date
+        }
+      }
+    }
+    return { initialTo, initialFrom, initialType, initialDb }
+  }, [])
+
+  const [type, setType] = useState(initialType)
+  const [db, setDb] = useState(initialDb)
+  const [from, setFrom] = useState(initialFrom)
+  const [to, setTo] = useState(initialTo)
   const [sql, setSql] = useState('')
   const [sqlErr, setSqlErr] = useState(undefined)
 
@@ -85,6 +112,15 @@ const useForm = () => {
         type
       ]
     })
+
+    if (typeof window !== 'undefined') {
+      const usp = new window.URLSearchParams()
+      usp.set('type', type)
+      usp.set('db', db)
+      usp.set('from', from.toFormat('yyyy'))
+      window.history.replaceState(null, null, '?' + usp.toString())
+    }
+
     return {
       "measures": ["GithubEvents.count"],
       "timeDimensions": [],
@@ -114,8 +150,19 @@ const useForm = () => {
     setSqlErr(undefined)
     cubejsApi.sql(query)
       .then(res => {
-        const [sql, params] = res.rawQuery().sql
-        setSql(format(sql, { language: "mysql", params: params.map(val => `'${val}'`) }))
+        let [sql, params] = res.rawQuery().sql
+        let isFirst = true
+        // remove extra magic comments
+        sql = sql.replaceAll(/\/\*\s*\+\s*read_from_storage\(tiflash\[[\w,]+]\)\s*\*\//g, val => {
+          if (isFirst) {
+            isFirst = false
+            return val
+          } else {
+            return ''
+          }
+        })
+        params = params.map(val => `'${val}'`)
+        setSql(format(sql, { language: "mysql", params }))
       })
       .catch(error => {
         setSql('')
@@ -150,8 +197,8 @@ const useForm = () => {
         </Select>
       </FormControl>
       <DatePicker
-        label='From year'
-        views={['year', 'month']}
+        label='From'
+        views={['year']}
         minDate={minDate}
         maxDate={maxDate}
         value={from}
@@ -161,8 +208,9 @@ const useForm = () => {
         sx={{minWidth: '260px', maxWidth: '260px'}}
       />
       <DatePicker
-        label='To year'
-        views={['year', 'month']}
+        disabled
+        label='To'
+        views={['year']}
         minDate={minDate}
         maxDate={maxDate}
         value={to}
