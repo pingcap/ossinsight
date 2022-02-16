@@ -65,7 +65,7 @@ export const useForm = () => {
   }, [type, n, years])
 
   const form = (
-    <Stack direction='row' sx={{flexWrap: 'wrap', gap: 4}}>
+    <Stack direction='row' sx={{flexWrap: 'wrap', alignItems: 'flex-end', gap: 4}}>
       <FormControl variant="standard" sx={{minWidth: '120px', maxWidth: '120px'}}>
         <InputLabel id={`cubechart-${random}-type`}>Type</InputLabel>
         <Select
@@ -80,11 +80,11 @@ export const useForm = () => {
       </FormControl>
       <FormControl variant="standard" sx={{minWidth: '120px', maxWidth: '120px'}}>
         <TextField
+          variant="standard"
           id={`cubechart-${random}-type`}
           select
           value={n}
           onChange={e => setN(e.target.value)}
-          size='small'
           InputProps={{
             startAdornment: <InputAdornment position="start">Top</InputAdornment>
           }}
@@ -92,16 +92,16 @@ export const useForm = () => {
           {allLimits.map(n => <MenuItem key={n} value={n}>{n}</MenuItem>)}
         </TextField>
       </FormControl>
-      <FormControl variant="standard" sx={{minWidth: '240px', maxWidth: '240px'}}>
+      <FormControl variant="standard" sx={{minWidth: '220px', maxWidth: '220px'}}>
         <TextField
+          variant="standard"
           id={`cubechart-${random}-type`}
           value={years}
           onChange={e => setYears(e.target.value)}
-          size='small'
           select
           InputProps={{
             startAdornment: <InputAdornment position="start">Recent</InputAdornment>,
-            endAdornment: <InputAdornment position="start">Year(s)&nbsp;</InputAdornment>
+            endAdornment: <InputAdornment position="start" sx={{mr: 4}}>Year(s)</InputAdornment>
           }}
         >
           {allYears.map(n => <MenuItem key={n} value={n}>{n}</MenuItem>)}

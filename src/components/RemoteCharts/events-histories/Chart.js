@@ -21,7 +21,7 @@ echarts.use(
 );
 
 
-export function EventsHistoryRemoteChart({repo, event, n, years}) {
+export function EventsHistoryRemoteChart({repo, event, n, years, size = 30, clear = false}) {
   const {data, error} = useRemoteData("events-history", {repo, event, n, years})
 
   const options = useMemo(() => {
@@ -35,7 +35,12 @@ export function EventsHistoryRemoteChart({repo, event, n, years}) {
           type: 'shadow'
         }
       },
-      grid: {containLabel: true, left: 0},
+      grid: {
+        containLabel: true,
+        left: 0,
+        top: clear ? 0 : 16,
+        bottom: clear ? 0 : 16
+      },
       xAxis: {
         type: 'value',
         position: 'top'
@@ -45,7 +50,10 @@ export function EventsHistoryRemoteChart({repo, event, n, years}) {
         data: data.data.map(d => d.repo_name),
         inverse: true,
         axisLabel: {
-          rotate: 0
+          rotate: 0,
+          formatter: function (value, index) {
+            return value.split('/')[1];
+          }
         }
       },
       series: [
@@ -53,7 +61,7 @@ export function EventsHistoryRemoteChart({repo, event, n, years}) {
           name: 'Count',
           data: data.data.map(d => d.events_count),
           type: 'bar',
-          barWidth: 30,
+          barWidth: clear ? size / 2 : size,
           itemStyle: {
             color: '#ffe39f',
             borderColor: '#786837',
@@ -65,26 +73,41 @@ export function EventsHistoryRemoteChart({repo, event, n, years}) {
   }, [data, repo, event, n, years])
 
   if (data) {
-    const height = n * 50
+    const height = n * (size * (clear ? 1 : 1.5))
+    const chart = (
+      <ReactEChartsCore
+        echarts={echarts}
+        option={options}
+        notMerge={true}
+        lazyUpdate={true}
+        theme={"theme_name"}
+        style={{
+          height
+        }}
+        opts={{
+          devicePixelRatio: window?.devicePixelRatio ?? 1,
+          renderer: 'canvas',
+          height: height,
+          width: 'auto',
+          locale: 'en'
+        }}
+        onEvents={{
+          'click': params => {
+            if ('name' in params) {
+              window.open(`https://github.com/${params.name}`).then()
+            }
+          }
+        }}
+      />
+    )
+
+    if (clear) {
+      return chart
+    }
+
     return (
       <>
-        <ReactEChartsCore
-          echarts={echarts}
-          option={options}
-          notMerge={true}
-          lazyUpdate={true}
-          theme={"theme_name"}
-          style={{
-            height
-          }}
-          opts={{
-            devicePixelRatio: window?.devicePixelRatio ?? 1,
-            renderer: 'canvas',
-            height: 'auto',
-            width: 'auto',
-            locale: 'en'
-          }}
-        />
+        {chart}
         {renderCodes(data.sql)}
       </>
     )
@@ -92,7 +115,7 @@ export function EventsHistoryRemoteChart({repo, event, n, years}) {
     return <Alert severity='error'>Request failed ${error?.message ?? ''}</Alert>
   } else {
     return (
-      <Box sx={{p: 8}}>
+      <Box sx={{p: clear ? 0 : 8, height: 200}}>
         <Skeleton width="80%" />
         <Skeleton width="70%" />
         <Skeleton width="50%" />
