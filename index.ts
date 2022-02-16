@@ -2,28 +2,34 @@ import App from 'koa'
 import Router from 'koa-router';
 import server from "./app/server";
 import dotenv from 'dotenv';
-import consola from 'consola';
+import consola, {Consola} from 'consola';
+import cors from '@koa/cors';
 
 const logger = consola.withTag('app')
 
 
-const { parsed } = dotenv.config()
+const {parsed} = dotenv.config()
 
-if(parsed) {
+if (parsed) {
   logger.info('loaded env:', Object.keys(parsed).join(', '))
 }
 
 consola.wrapConsole()
 
-const app = new App()
-const router = new Router()
+export interface ContextExtends extends App.DefaultContext {
+  logger: Consola
+}
+
+const app = new App<App.DefaultState, ContextExtends>()
+const router = new Router<App.DefaultState, ContextExtends>()
 
 app.use(async (ctx, next) => {
   ctx.logger = logger
   await next()
 })
+app.use(cors({origin: '*'}))
 
-server(app, router)
+server(router)
 
 app.use(router.routes())
   .use(router.allowedMethods())

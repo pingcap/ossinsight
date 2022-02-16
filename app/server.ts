@@ -1,9 +1,10 @@
 import Router from "koa-router";
 import Query from "./core/Query";
 import {MysqlQueryExecutor} from "./core/MysqlQueryExecutor";
-import App from "koa";
+import {DefaultState} from "koa";
+import type {ContextExtends} from "../index";
 
-export default function server(app: App, router: Router) {
+export default function server(router: Router<DefaultState, ContextExtends>) {
 
   const executor = new MysqlQueryExecutor({
     host: process.env.DB_HOST,

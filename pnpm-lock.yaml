@@ -1,8 +1,10 @@
 lockfileVersion: 5.3
 
 specifiers:
+  '@koa/cors': ^3.1.0
   '@types/koa': ^2.13.4
   '@types/koa-router': ^7.4.4
+  '@types/koa__cors': ^3.1.1
   '@types/luxon': ^2.0.9
   '@types/node': ^17.0.18
   consola: ^2.15.3
@@ -15,6 +17,7 @@ specifiers:
   typescript: ^4.5.5
 
 dependencies:
+  '@koa/cors': 3.1.0
   consola: 2.15.3
   dotenv: 16.0.0
   koa: 2.13.4
@@ -25,6 +28,7 @@ dependencies:
 devDependencies:
   '@types/koa': 2.13.4
   '@types/koa-router': 7.4.4
+  '@types/koa__cors': 3.1.1
   '@types/luxon': 2.0.9
   '@types/node': 17.0.18
   ts-node: 10.5.0_f3bd4037939c2ed2942ba074291f8ef2
@@ -43,6 +47,13 @@ packages:
     dependencies:
       '@cspotcode/source-map-consumer': 0.8.0
     dev: true
+
+  /@koa/cors/3.1.0:
+    resolution: {integrity: sha512-7ulRC1da/rBa6kj6P4g2aJfnET3z8Uf3SWu60cjbtxTA5g8lxRdX/Bd2P92EagGwwAhANeNw8T8if99rJliR6Q==}
+    engines: {node: '>= 8.0.0'}
+    dependencies:
+      vary: 1.1.2
+    dev: false
 
   /@tsconfig/node10/1.0.8:
     resolution: {integrity: sha512-6XFfSQmMgq0CFLY1MslA/CPUfhIL919M1rMsa5lP2P097N2Wd1sSX0tx1u4olM16fLNhtHZpRhedZJphNJqmZg==}
@@ -144,6 +155,12 @@ packages:
       '@types/keygrip': 1.0.2
       '@types/koa-compose': 3.2.5
       '@types/node': 17.0.18
+    dev: true
+
+  /@types/koa__cors/3.1.1:
+    resolution: {integrity: sha512-O7MBkCocnLrpEvkMrYAp17arUDS+KuS5bXMG/Z4aPSbrO7vrYB6YrqcsTD3Dp2OnAL3j4WME2k/x2kOcyzwNUw==}
+    dependencies:
+      '@types/koa': 2.13.4
     dev: true
 
   /@types/luxon/2.0.9:
