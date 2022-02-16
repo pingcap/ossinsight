@@ -56,7 +56,7 @@ const config = {
           {
             type: 'doc',
             
-            docId: 'database/year-2021',
+            docId: 'database/index',
             position: 'left',
             label: 'Ranking!',
           },

@@ -1,3 +1,0 @@
----
-title: "How it works..."
----
