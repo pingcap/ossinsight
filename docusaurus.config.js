@@ -48,21 +48,22 @@ const config = {
       navbar: {
         title: 'GH Archive Live',
         logo: {
-          alt: 'My Site Logo',
+          alt: 'GH Archive Live',
           src: 'img/logo.svg',
         },
         items: [
+          {to: '/blog', label: 'Blog', position: 'left'},
           {
             type: 'doc',
+            
             docId: 'database/year-2021',
             position: 'left',
-            label: 'Explore',
+            label: 'Ranking!',
           },
-          {to: '/blog', label: 'Monthly Reports', position: 'left'},
           {to: '/docs/how-it-works', label: 'How it works', position: 'left'},
           {
-            href: 'https://github.com/facebook/docusaurus',
-            label: 'GitHub',
+            href: 'https://tidbcloud.com',
+            label: 'TiDB Cloud',
             position: 'right',
           },
         ],
