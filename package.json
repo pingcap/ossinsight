@@ -4,11 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "pm2 start 'pnpm run server:start' --name 'gharchive.live-backend'",
+    "start": "pm2 start --cwd $(pwd) 'pnpm run server:start' --name 'gharchive.live-backend'",
     "stop": "pm2 stop 'gharchive.live-backend'",
     "restart": "pm2 restart 'gharchive.live-backend'",
     "remove": "pm2 delete 'gharchive.live-backend'",
-    "postinstall": "pnpm run tsc",
+    "postinstall": "pnpm run build",
     "build": "tsc",
     "server:start": "node index.js",
     "dev": "ts-node index.ts"
