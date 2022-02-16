@@ -8,5 +8,5 @@ FROM github_events_old AS github_events
 WHERE github_events.type = 'WatchEvent'
   AND github_events.event_year >= YEAR(DATE_SUB(NOW(), INTERVAL 7 YEAR))
 GROUP BY github_events.repo_id
-ORDER BY `count` DESC
+ORDER BY events_count DESC
 LIMIT 10;
