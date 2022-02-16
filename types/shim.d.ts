@@ -1,9 +1,8 @@
-import 'koa'
 import {Consola} from "consola";
 
 declare module 'koa' {
 
-  interface Context {
+  export interface ExtendableContext {
     logger: Consola
   }
 }

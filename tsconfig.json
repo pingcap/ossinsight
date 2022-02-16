@@ -5,6 +5,7 @@
     "moduleResolution": "node",
     "strict": true,
     "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "typeRoots": ["types"]
   }
 }
