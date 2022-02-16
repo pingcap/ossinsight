@@ -1,5 +1,5 @@
 {
-  "cacheHours": 24,
+  "cacheHours": 240,
   "params": [
     {
       "name": "repo",
@@ -12,6 +12,10 @@
     {
       "name": "n",
       "replaces": "10"
+    },
+    {
+      "name": "years",
+      "replaces": "7"
     }
   ]
 }
