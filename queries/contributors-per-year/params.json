@@ -12,6 +12,14 @@
     {
       "name": "year",
       "replaces": "2021"
+    },
+    {
+      "name": "action",
+      "replaces": "closed"
+    },
+    {
+      "name": "merged",
+      "replaces": "TRUE"
     }
   ]
 }
