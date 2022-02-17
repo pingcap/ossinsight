@@ -1,5 +1,5 @@
 import {QueryExecutor} from "./Query";
-import {createPool, Pool, PoolConfig} from 'mysql'
+import {createPool, Pool, PoolOptions} from 'mysql2'
 import consola, {Consola} from "consola";
 
 export class MysqlQueryExecutor<T> implements QueryExecutor<T> {
@@ -7,7 +7,7 @@ export class MysqlQueryExecutor<T> implements QueryExecutor<T> {
   private connections: Pool
   private logger: Consola
 
-  constructor(options: PoolConfig) {
+  constructor(options: PoolOptions) {
     this.connections = createPool(options)
     this.logger = consola.withTag('mysql')
   }
