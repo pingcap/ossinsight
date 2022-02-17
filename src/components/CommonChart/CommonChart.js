@@ -6,9 +6,10 @@ import {LocalizationProvider} from "@mui/lab";
 import DateAdapter from '@mui/lab/AdapterLuxon';
 import Head from '@docusaurus/Head';
 import useThemeContext from '@theme/hooks/useThemeContext';
+import BrowserOnly from '@docusaurus/BrowserOnly';
 
 
-export default function CommonChart({chart, noSearch, ...rest}) {
+function CommonChart({chart, noSearch, ...rest}) {
   const {form, query} = chart.useForm({ noSearch })
   const {isDarkTheme} = useThemeContext();
   const theme = createTheme({
@@ -40,4 +41,8 @@ export default function CommonChart({chart, noSearch, ...rest}) {
       </ThemeProvider>
     </LocalizationProvider>
   )
+}
+
+export default function (props) {
+  return <BrowserOnly>{() => <CommonChart {...props} />}</BrowserOnly>
 }
