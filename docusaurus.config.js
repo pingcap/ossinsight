@@ -6,8 +6,8 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'GH Archive Live',
-  tagline: 'An overview of the OSS in 2021: trends about database and web frameworks, programming language, low code, javascript framework, CSS framework ... ',
+  title: 'GH Archive Live: trends about oss database, js/web framework and more',
+  tagline: 'We store GitHub events data from Feb 2011 in TiDB Cloud and update hourly, then analyze the trends of stars, pull requests, and many more metrics of repositories.',
   url: 'https://gharchive.live/',
   baseUrl: '/',
   onBrokenLinks: 'throw',
@@ -56,14 +56,15 @@ const config = {
           src: 'img/logo.svg',
         },
         items: [
-          {to: '/blog', label: 'Blog', position: 'left'},
+          {to: '/blog/about', label: 'About', position: 'left'},
           {
             type: 'doc',
             docId: 'database/index',
             position: 'left',
-            label: 'Ranking!',
+            label: 'Ranking',
           },
           {href: 'https://asdf.com/compare-projects', label: 'Compare Projects', position: 'left'},
+          {to: '/blog', label: 'Blog', position: 'left'},
           {to: '/docs/how-it-works', label: 'How it works', position: 'left'},
           {
             href: 'https://tidbcloud.com',
@@ -71,7 +72,7 @@ const config = {
             position: 'left',
           },
           {
-            href: 'https://tidbcloud.com',
+            href: 'https://github.com/pingcap-inc/gharchive.live',
             className: 'navbar-item-github',
             position: 'right',
           },

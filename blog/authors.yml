@@ -1,17 +1,11 @@
-endi:
-  name: Endilie Yacop Sucipto
-  title: Maintainer of Docusaurus
-  url: https://github.com/endiliey
-  image_url: https://github.com/endiliey.png
+sykp241095:
+  name: sykp241095
+  title: Contributor of TiDB Community
+  url: https://github.com/sykp241095
+  image_url: https://github.com/sykp241095.png
 
-yangshun:
-  name: Yangshun Tay
-  title: Front End Engineer @ Facebook
-  url: https://github.com/yangshun
-  image_url: https://github.com/yangshun.png
-
-slorber:
-  name: Sébastien Lorber
-  title: Docusaurus maintainer
-  url: https://sebastienlorber.com
-  image_url: https://github.com/slorber.png
+hooopo:
+  name: hooopo
+  title: Creator of https://ossdaily.com
+  url: https://github.com/hooopo
+  image_url: https://github.com/hooopo.png
