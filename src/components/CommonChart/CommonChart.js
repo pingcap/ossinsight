@@ -8,8 +8,8 @@ import Head from '@docusaurus/Head';
 import useThemeContext from '@theme/hooks/useThemeContext';
 
 
-export default function CommonChart({useForm, children, ...rest}) {
-  const {form, query} = useForm()
+export default function CommonChart({chart, noSearch, ...rest}) {
+  const {form, query} = chart.useForm({ noSearch })
   const {isDarkTheme} = useThemeContext();
   const theme = createTheme({
     palette: {
@@ -20,7 +20,7 @@ export default function CommonChart({useForm, children, ...rest}) {
     },
   });
 
-  const child = React.cloneElement(children, {
+  const child = React.createElement(chart.Chart, {
     ...query,
     ...rest
   })

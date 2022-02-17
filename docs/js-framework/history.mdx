@@ -3,8 +3,6 @@ title: History
 ---
 
 import {CommonChart} from "../../src/components/CommonChart";
-import {useForm, Chart} from '../../src/components/RemoteCharts/events-histories'
+import events from '../../src/components/RemoteCharts/events-histories'
 
-<CommonChart repo='js_framework_repos' useForm={useForm}>
-  <Chart />
-</CommonChart>
+<CommonChart repo='js_framework_repos' chart={events} />

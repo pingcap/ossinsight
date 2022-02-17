@@ -8,9 +8,8 @@ import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
 
 const types = [
-  {title: 'Stars', value: "WatchEvent"},
-  {title: 'Forks', value: 'ForkEvent'},
-  {title: 'PRs', value: 'PullRequestEvent'}
+  {title: 'Contributors (PRs opened)', value: 'all'},
+  {title: 'Contributors (PRs merged)', value: 'merged'},
 ]
 
 const allYears = [1, 2, 5, 10]
@@ -58,7 +57,8 @@ export const useForm = ({ noSearch }) => {
     }
 
     return {
-      event: type,
+      action: type === 'all' ? 'opened' : 'closed',
+      merged: type === 'all' ? '*' : 'true',
       n,
       years
     }
@@ -66,7 +66,7 @@ export const useForm = ({ noSearch }) => {
 
   const form = (
     <Stack direction='row' sx={{flexWrap: 'wrap', alignItems: 'flex-end', gap: 4}}>
-      <FormControl variant="standard" sx={{minWidth: '120px', maxWidth: '120px'}}>
+      <FormControl variant="standard" sx={{minWidth: '230px', maxWidth: '230px'}}>
         <InputLabel id={`cubechart-${random}-type`}>Type</InputLabel>
         <Select
           id={`cubechart-${random}-type`}
