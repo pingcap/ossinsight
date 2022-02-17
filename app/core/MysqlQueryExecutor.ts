@@ -1,5 +1,5 @@
 import {QueryExecutor} from "./Query";
-import {createPool, Pool, PoolOptions} from 'mysql2'
+import {createPool, Pool, PoolConfig} from 'mysql'
 import consola, {Consola} from "consola";
 
 export class MysqlQueryExecutor<T> implements QueryExecutor<T> {
@@ -7,19 +7,14 @@ export class MysqlQueryExecutor<T> implements QueryExecutor<T> {
   private connections: Pool
   private logger: Consola
 
-  constructor(options: PoolOptions) {
+  constructor(options: PoolConfig) {
     this.connections = createPool(options)
     this.logger = consola.withTag('mysql')
   }
 
-  async destroy() {
-    if (this.connections.destroy) {
-      this.connections.destroy()
-    }
-  }
-
   async execute(sql: string): Promise<T> {
     return new Promise((resolve, reject) => {
+
       this.connections.getConnection((err, connection) => {
         if (err) {
           reject(err)
