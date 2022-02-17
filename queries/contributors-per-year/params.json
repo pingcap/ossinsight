@@ -19,7 +19,11 @@
     },
     {
       "name": "merged",
-      "replaces": "TRUE"
+      "replaces": "AND github_events.pr_merged IS TRUE",
+      "template": {
+        "true": "AND github_events.pr_merged IS TRUE",
+        "*": ""
+      }
     }
   ]
 }

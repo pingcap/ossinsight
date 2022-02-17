@@ -8,23 +8,33 @@ export interface QueryParams {
   params: {
     name: string,
     replaces: string,
+    template?: Record<string, string>,
   }[]
 }
 
 export class BadParamsError extends Error {
   readonly msg: string
-  constructor(public readonly name: string) {
-    super('require param ' + name);
-    this.msg = 'require param ' + name
+  constructor(public readonly name: string, message: string) {
+    super(message);
+    this.msg = message
   }
 }
 
 function buildParams(template: string, params: QueryParams, values: Record<string, string>) {
-  for (let {name, replaces} of params.params) {
+  for (let {name, replaces, template: paramTemplate} of params.params) {
     if (name in values) {
-      template = template.replaceAll(replaces, String(values[name]))
+      let targetValue: string
+      if (paramTemplate) {
+        targetValue = paramTemplate[String(values[name])]
+        if (typeof targetValue === "undefined") {
+          throw new BadParamsError(name, 'bad param ' + name)
+        }
+      } else {
+        targetValue = String(values[name])
+      }
+      template = template.replaceAll(replaces, targetValue)
     } else {
-      throw new BadParamsError(name)
+      throw new BadParamsError(name, 'require param ' + name)
     }
   }
   return template
