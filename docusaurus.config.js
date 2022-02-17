@@ -70,6 +70,11 @@ const config = {
             label: 'TiDB Cloud',
             position: 'left',
           },
+          {
+            href: 'https://tidbcloud.com',
+            className: 'navbar-item-github',
+            position: 'right',
+          },
         ],
       },
       footer: {
