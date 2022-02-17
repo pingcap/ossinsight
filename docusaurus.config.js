@@ -146,6 +146,26 @@ const config = {
         ],
         copyright: `Copyright © ${new Date().getFullYear()} TiDB Cloud, Inc. Built with Docusaurus.`,
       },
+      algolia: {
+        // The application ID provided by Algolia
+        appId: 'J1NCM6ALOY',
+
+        // Public API key: it is safe to commit it
+        apiKey: '55f3ef33aeda88938a7aac1c1278e143',
+
+        indexName: 'all',
+
+        // Optional: see doc section below
+        contextualSearch: true,
+
+        // Optional: Specify domains where the navigation should occur through window.location instead on history.push. Useful when our Algolia config crawls multiple documentation sites and we want to navigate with window.location.href to them.
+        externalUrlRegex: 'gharchive\\.live|domain\\.com',
+
+        // Optional: Algolia search parameters
+        searchParameters: {},
+
+        //... other Algolia params
+      },
       prism: {
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
