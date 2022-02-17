@@ -65,7 +65,7 @@ const config = {
           },
           {href: 'https://asdf.com/compare-projects', label: 'Compare Projects', position: 'left'},
           {to: '/blog', label: 'Blog', position: 'left'},
-          {to: '/docs/more/analyze-on-your-own-tidb-cloud-in-10mins', label: 'Try it yourself', position: 'left'},
+          {to: '/docs/more/analyze-github-events-on-tidb-cloud-in-10-minutes', label: 'Try it yourself', position: 'left'},
           {to: '/docs/more/how-it-works', label: 'How it works', position: 'left'},
           {
             href: 'https://tidbcloud.com',
@@ -95,7 +95,7 @@ const config = {
               },
               {
                 label: 'Try it yourself',
-                to: '/docs/more/analyze-on-your-own-tidb-cloud-in-10mins',
+                to: '/docs/more/analyze-github-events-on-tidb-cloud-in-10-minutes',
               },
               {
                 label: 'how it works',
