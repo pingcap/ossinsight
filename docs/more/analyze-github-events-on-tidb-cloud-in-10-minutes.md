@@ -1,5 +1,5 @@
 ---
-title: Analyze Github Events on your own TiDB Cloud in 10 minutes
+title: Analyze Github Events on TiDB Cloud in 10 minutes
 ---
 
 Analyzing Github events is easy and interesting, here to show you how to analyze a sample data with TiDB Cloud in 10 minutes.
