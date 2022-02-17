@@ -1,5 +1,5 @@
 SELECT
-/*+ read_from_storage(tiflash[github_events]) */
+/*+ read_from_storage(tiflash[github_events]), MAX_EXECUTION_TIME(120000) */
     ANY_VALUE(repo_subset.name) AS repo_name,
     COUNT(DISTINCT github_events.actor_id) AS contributors_count
 FROM github_events_old AS github_events
