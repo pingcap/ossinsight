@@ -1,0 +1,21 @@
+{
+  "cacheHours": 240,
+  "params": [
+    {
+      "name": "repo",
+      "replaces": "db_repos"
+    },
+    {
+      "name": "event",
+      "replaces": "WatchEvent"
+    },
+    {
+      "name": "n",
+      "replaces": "10"
+    },
+    {
+      "name": "year",
+      "replaces": "2021"
+    }
+  ]
+}
