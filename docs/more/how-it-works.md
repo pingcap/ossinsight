@@ -3,7 +3,7 @@ title: How it works
 ---
 
 The Github Event data is obtained from [GH Archive](https://www.gharchive.org/), which provides the full github events data from 2011 to 2022, with a total volume of more than 4 billion.
-We download the json file provided by GH Archive, convert it into csv format through script, and finally load it into the TiDB cluster in parallel through [lightning](https://docs.pingcap.com/tidb/stable/tidb-lightning-overview).
+We download the json file provided by GH Archive, convert it into csv format through script, and finally load it into the TiDB cluster in parallel through [tidb-lightning](https://docs.pingcap.com/tidb/stable/tidb-lightning-overview).
 
 Prepare the CSV format for lightning:
 
@@ -26,7 +26,7 @@ Prepare the CSV format for lightning:
 
 Lightning Configuration Example:
 
-```yml
+```
 cat tidb-lightning.toml
 [mydumper.csv]
 separator = ','
@@ -67,7 +67,7 @@ nohup tidb-lightning -config ./tidb-lightning.toml > nohup.out
 
 Since the json data provided by GH Archive is unstructured, we process the github events data into structured ones:
 
-```
+```sql
 gharchive_dev> desc github_events;
 +--------------------+--------------+------+-----+---------+-------+
 | Field              | Type         | Null | Key | Default | Extra |
@@ -110,7 +110,7 @@ In addition to the full amount of github events data, we also extracted data fro
 
 All tables:
 
-```
+```sql
 gharchive_dev> show tables;
 +-----------------------------+
 | Tables_in_gharchive_dev     |
@@ -152,3 +152,4 @@ limit 10;
 | tastejs/todomvc   | 813   |
 +-------------------+-------+
 ```
+
