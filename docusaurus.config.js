@@ -65,11 +65,11 @@ const config = {
           },
           {href: 'https://asdf.com/compare-projects', label: 'Compare Projects', position: 'left'},
           {to: '/blog', label: 'Blog', position: 'left'},
-          {to: '/docs/more/analyze-github-events-on-tidb-cloud-in-10-minutes', label: 'Try it yourself', position: 'left'},
-          {to: '/docs/more/how-it-works', label: 'How it works', position: 'left'},
+          {to: '/docs/more/analyze-github-events-on-tidb-cloud-in-10-minutes', label: 'Try It Yourself', position: 'left'},
+          {to: '/docs/more/how-it-works', label: 'How It Works', position: 'left'},
           {
             href: 'https://tidbcloud.com',
-            label: 'TiDB Cloud',
+            label: '☁️  TiDB Cloud',
             position: 'left',
           },
           {
@@ -104,8 +104,12 @@ const config = {
             ],
           },
           {
-            title: 'Powered By',
+            title: 'Sponsored By',
             items: [
+              {
+                label: 'TiDB Community',
+                href: 'https://pingcap.com/community',
+              },
               {
                 label: 'PingCAP',
                 href: 'https://pingcap.com',

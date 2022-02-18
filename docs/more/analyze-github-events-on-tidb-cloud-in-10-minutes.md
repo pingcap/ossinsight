@@ -7,20 +7,25 @@ Analyzing Github events is easy and interesting, here to show you how to analyze
 In this tutorials, we will provide the full GitHub events data on 2022-01-01(about 2 million rows), with this data, you can know anything that happend on 2022-01-01, :)
 
 
-## 1. Signup TiDB Cloud to create a database (Free)
+## 1. Signup TiDB Cloud to create a cluster (Free)
 
+We need a database to store data.
+
+:::info
+a cluster is a database
+:::
 
 ### Signup
 
-First, You need a database to store data, signup a free TiDB Cloud account via this link:
+First, you can signup a free TiDB Cloud account via this link:
 
-> https://tidbcloud.com/signup
+> _**https://tidbcloud.com/signup**_
 
 ### Create cluster
 
 Once registered, you can create a free cluster with `Developer Tier`:
 
-:::tip
+:::caution
 Only Developer Tier is **free** for 1 year.
 :::
 
@@ -169,7 +174,9 @@ LIMIT 20;
 We collect all oss databases repositories (hosted on Github) from https://db-engines.com, and store them in table: `db_repos`.
 :::
 
-<details><summary>Answer</summary>
+### A: ⬇️
+
+<details><summary>Click me to show answer</summary>
 <p>
 
 Schema:

@@ -9,3 +9,9 @@ hooopo:
   title: Creator of https://ossdaily.com
   url: https://github.com/hooopo
   image_url: https://github.com/hooopo.png
+
+pingcap:
+  name: PingCAP
+  title: PingCAP provides scaling database infrastructure solutions via an open-source platform.
+  url: https://github.com/pingcap
+  image_url: https://github.com/pingcap.png
