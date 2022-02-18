@@ -118,6 +118,40 @@ ORDER BY 2 DESC
 | |danhermann         | ▇▇▇               | 283
 
 
+### OSS Database repos with the highest growth YoY
+
+```sql
+  SELECT db.name,
+         sum(event_year = 2020) AS stars2020,
+         sum(event_year = 2021) AS stars2021,
+         round(sum(event_year = 2021) / sum(event_year = 2020), 3) AS yoy
+    FROM github_events
+         JOIN db_repos as db on db.id = github_events.repo_id
+   WHERE type = 'WatchEvent' AND event_year in (2021, 2020)
+GROUP BY db.name
+  HAVING stars2020 > 0 and yoy > 1
+ORDER BY yoy DESC
+   LIMIT 20
+```
+
+```
++------------------------+-----------+-----------+-------+
+| name                   | stars2021 | stars2020 | yoy   |
++------------------------+-----------+-----------+-------+
+| questdb/questdb        | 5505      | 2006      | 2.744 |
+| apache/incubator-doris | 1713      | 760       | 2.254 |
+| trinodb/trino          | 2620      | 1227      | 2.135 |
+| apache/pinot           | 895       | 461       | 1.941 |
+| citusdata/citus        | 1114      | 627       | 1.777 |
+| clickhouse/clickhouse  | 7628      | 5139      | 1.484 |
+| crate/crate            | 422       | 300       | 1.407 |
+| cockroachdb/cockroach  | 3311      | 2425      | 1.365 |
+| apple/foundationdb     | 869       | 712       | 1.221 |
+| facebook/rocksdb       | 3190      | 3116      | 1.024 |
+| dgraph-io/dgraph       | 2814      | 2801      | 1.005 |
++------------------------+-----------+-----------+-------+
+
+```
 
 ### Top Language for OSS Databases
 
@@ -140,20 +174,4 @@ ORDER BY 3 DESC
 |![](/img/lang/c.png) | C        | ▇▇▇▇▇▇▇▇▇▇▇                         | 7605
 |![](/img/lang/rust.png) | Rust     | ▇▇▇▇▇▇                              | 4366
 
-### Chart v2
 
-
-
-### Chart v3
-
-import {CommonChart} from "../../src/components/CommonChart";
-import events from '../../src/components/RemoteCharts/events-per-year'
-import contributors from '../../src/components/RemoteCharts/contributors-per-year'
-
-<CommonChart repo='db_repos' year={2021} chart={events} noSearch />
-
-## Top 10 repos by contributors
-
-### Chart v3
-
-<CommonChart repo='db_repos' year={2021} chart={contributors} noSearch />
