@@ -104,7 +104,7 @@ const config = {
             ],
           },
           {
-            title: 'Powered By',
+            title: 'Sponsored By',
             items: [
               {
                 label: 'TiDB Community',
