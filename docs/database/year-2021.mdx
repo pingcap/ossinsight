@@ -153,6 +153,39 @@ ORDER BY yoy DESC
 
 ```
 
+### OSS Database repos with lowest YoY
+
+```sql
+  SELECT db.name,
+         sum(event_year = 2020) AS stars2020,
+         sum(event_year = 2021) AS stars2021,
+         round(sum(event_year = 2021) / sum(event_year = 2020), 3) AS yoy
+    FROM github_events
+         JOIN db_repos as db on db.id = github_events.repo_id
+   WHERE type = 'WatchEvent' AND event_year in (2021, 2020)
+GROUP BY db.name
+  HAVING stars2020 > 0 and yoy < 1
+ORDER BY yoy ASC
+   LIMIT 10
+```
+
+```
++----------------------------+-----------+-----------+-------+
+| name                       | stars2020 | stars2021 | yoy   |
++----------------------------+-----------+-----------+-------+
+| vesoft-inc/nebula          | 4634      | 1577      | 0.340 |
+| MaterializeInc/materialize | 2152      | 1227      | 0.570 |
+| apache/ignite              | 740       | 500       | 0.676 |
+| arangodb/arangodb          | 1860      | 1305      | 0.702 |
+| percona/percona-server     | 135       | 95        | 0.704 |
+| apache/druid               | 1585      | 1122      | 0.708 |
+| elastic/elasticsearch      | 7852      | 5669      | 0.722 |
+| apache/kylin               | 477       | 354       | 0.742 |
+| taosdata/TDengine          | 4058      | 3011      | 0.742 |
+| confluentinc/ksql          | 954       | 727       | 0.762 |
++----------------------------+-----------+-----------+-------+
+```
+
 ### Top Language for OSS Databases
 
 ```sql
