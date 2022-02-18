@@ -16,21 +16,47 @@ The full list of database repositories participating in statistics includes
 
 ## Top 10 repos by stars
 
-### SQL query
+### Top Developer for OSS Databases
 
 ```sql
-SELECT 
-  db_repos.name AS repo_name,
-  COUNT(*) AS num
-FROM github_events 
-JOIN db_repos ON db_repos.id = github_events.repo_id
-WHERE type = 'WatchEvent' AND event_year = 2021
-GROUP BY db_repos.name
-ORDER BY 2 desc
-LIMIT 10
+  SELECT actor_login, count(*) as pr_count
+    FROM github_events
+         JOIN db_repos db ON db.id = github_events.repo_id
+   WHERE event_year = 2021 
+         AND type = 'PullRequestEvent' 
+         AND action = 'opened' 
+         AND actor_login not like '%bot%'
+GROUP BY 1
+ORDER BY 2 DESC
+   LIMIT 20
 ```
 
-### Top Language for OSS Database
+|  |actor_login        | bar               | pr_count
+|--| ------------------ | ----------------- | --------
+|![](https://avatars.githubusercontent.com/u/40268737?s=40&v=4) |[jrodewig](https://github.com/jrodewig)           | ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ | 1586
+|![](https://avatars.githubusercontent.com/u/825729?s=40&v=4) |sangshuduo         | ▇▇▇▇▇▇▇▇          | 703
+| |jsteemann          | ▇▇▇▇▇▇▇           | 652
+| |original-brownbear | ▇▇▇▇▇▇▇           | 615
+| |alexey-milovidov   | ▇▇▇▇▇▇            | 542
+| |yuzefovich         | ▇▇▇▇▇             | 471
+| |azat               | ▇▇▇▇▇             | 455
+| |benesch            | ▇▇▇▇▇             | 422
+| |findepi            | ▇▇▇▇              | 378
+| |otan               | ▇▇▇▇              | 375
+| |benwtrent          | ▇▇▇▇              | 345
+| |DaveCTurner        | ▇▇▇               | 323
+| |danxmoran          | ▇▇▇               | 317
+| |mfussenegger       | ▇▇▇               | 309
+| |nik9000            | ▇▇▇               | 298
+| |rafiss             | ▇▇▇               | 295
+| |JimGalasyn         | ▇▇▇               | 295
+| |tbg                | ▇▇▇               | 288
+| |alesapin           | ▇▇▇               | 288
+| |danhermann         | ▇▇▇               | 283
+
+
+
+### Top Language for OSS Databases
 
 ```sql
   SELECT language, count(*)
@@ -44,7 +70,7 @@ ORDER BY 3 DESC
 
 
 |         | language | bar                                 | count(*)
--------- | -------- | ----------------------------------- | --------
+| -------- | -------- | ----------------------------------- | --------
 |![](/img/lang/java.png) | Java     | ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ | 24137
 |![](/img/lang/go.png) | Go       | ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇            | 16630
 |![](/img/lang/cpp.png) | C++      | ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇            | 16607
