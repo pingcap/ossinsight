@@ -63,7 +63,7 @@ The full list of database repositories participating in statistics includes
 +-----------+----------------------------+
 ```
 
-### Top 10 repos by stars in 2021
+## Top 10 repos by stars in 2021
 
 ```sql
   SELECT db.name as repo_name, count(*) as stars
@@ -79,7 +79,7 @@ ORDER BY 2 DESC
 <iframe  width="100%" height="350" scrolling="no"  src="https://staticsiteg.github.io/echarts/bar.html?x=[%22clickhouse/clickhouse%22,%20%22redis/redis%22,%20%22prometheus/prometheus%22,%20%22elastic/elasticsearch%22,%20%22questdb/questdb%22,%20%22etcd-io/etcd%22,%20%22pingcap/tidb%22,%20%22apache/spark%22,%20%22cockroachdb/cockroach%22,%20%22facebook/rocksdb%22]&data=[7628,%206313,%205898,%205669,%205505,%204524,%203967,%203833,%203311,%203190]&theme=vintage">
 </iframe>
 
-### Top 10 repos by PR in 2021
+## Top 10 repos by PR in 2021
 
 ```sql
   SELECT db_repos.name AS repo_name,
@@ -95,7 +95,7 @@ ORDER BY 2 DESC
 <iframe  width="100%" height="350" scrolling="no"  src="https://staticsiteg.github.io/echarts/bar.html?x=[%22elastic/elasticsearch%22,%20%22clickhouse/clickhouse%22,%20%22cockroachdb/cockroach%22,%20%22pingcap/tidb%22,%20%22apache/spark%22,%20%22taosdata/TDengine%22,%20%22apache/flink%22,%20%22MaterializeInc/materialize%22,%20%22trinodb/trino%22,%20%22arangodb/arangodb%22]&data=[10433,%209689,%207204,%204777,%203703,%203542,%203338,%202883,%202334,%201663]&theme=vintage">
 </iframe>
 
-### Top Developers for OSS Databases
+## Top Developers for OSS Databases
 
 ```sql
   SELECT actor_login, count(*) as pr_count
@@ -134,7 +134,7 @@ ORDER BY 2 DESC
 |![](https://avatars.githubusercontent.com/u/22777892?v=4&s=40) |[danhermann](https://github.com/danhermann)         | ▇▇▇               | 283
 
 
-### OSS Database repos with the highest growth YoY
+## OSS Database repos with the highest growth YoY
 
 ```sql
   SELECT db.name,
@@ -169,7 +169,7 @@ ORDER BY yoy DESC
 
 ```
 
-### OSS Database repos with lowest growth YoY
+## OSS Database repos with lowest growth YoY
 
 ```sql
   SELECT db.name,
@@ -202,7 +202,7 @@ ORDER BY yoy ASC
 +----------------------------+-----------+-----------+-------+
 ```
 
-### Top Language for OSS Databases
+## Top Language for OSS Databases
 
 ```sql
   SELECT language, count(*)
