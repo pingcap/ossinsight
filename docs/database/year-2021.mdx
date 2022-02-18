@@ -12,11 +12,74 @@ We have collected a list of well-known open source projects in the field of data
 
 The full list of database repositories participating in statistics includes
 
-<iframe src="https://chart.trytidb.com/chart/729b8abe-11e3-4ca8-bf46-d65e76c95ac0/embedded" allowTransparency="true" width="100%" height="660" scrolling="no" frameborder="0"></iframe>
+ ```
+ +-----------+----------------------------+
+| id        | name                       |
++-----------+----------------------------+
+| 507775    | elastic/elasticsearch      |
+| 60246359  | clickhouse/clickhouse      |
+| 17165658  | apache/spark               |
+| 41986369  | pingcap/tidb               |
+| 16563587  | cockroachdb/cockroach      |
+| 6838921   | prometheus/prometheus      |
+| 108110    | mongodb/mongo              |
+| 166515022 | trinodb/trino              |
+| 48833910  | tikv/tikv                  |
+| 156018    | redis/redis                |
+| 688366    | apache/lucene-solr         |
+| 160985    | apache/hbase               |
+| 5349565   | prestodb/presto            |
+| 6934395   | facebook/rocksdb           |
+| 6358188   | apache/druid               |
+| 11008207  | vitessio/vitess            |
+| 19961085  | apache/pinot               |
+| 206444    | apache/hive                |
+| 30753733  | percona/percona-server     |
+| 105944401 | yugabyte/yugabyte-db       |
+| 31006158  | apache/ignite              |
+| 99919302  | apache/incubator-doris     |
+| 50874442  | citusdata/citus            |
+| 84240850  | timescale/timescaledb      |
+| 28738447  | apache/kylin               |
+| 44781140  | greenplum-db/gpdb          |
+| 26521330  | alibaba/oceanbase          |
+| 13124802  | influxdata/influxdb        |
+| 146459443 | vesoft-inc/nebula          |
+| 28449431  | scylladb/scylla            |
+| 160990    | apache/hadoop              |
+| 206417    | apache/couchdb             |
+| 9342529   | crate/crate                |
+| 19257422  | questdb/questdb            |
+| 196353673 | taosdata/TDengine          |
+| 172104891 | MaterializeInc/materialize |
+| 402945349 | StarRocks/starrocks        |
+| 11225014  | etcd-io/etcd               |
+| 2649214   | arangodb/arangodb          |
+| 41349039  | dgraph-io/dgraph           |
+| 114187903 | apple/foundationdb         |
+| 20587599  | apache/flink               |
+| 19816070  | MariaDB/server             |
+| 69400326  | confluentinc/ksql          |
++-----------+----------------------------+
+```
 
-## Top 10 repos by stars
+### Top 10 repos by stars in 2021
 
-### Top Developer for OSS Databases
+```sql
+  SELECT db.name as repo_name, count(*) as stars
+    FROM github_events
+         JOIN db_repos db ON db.id = github_events.repo_id
+   WHERE event_year = 2021 
+         AND type = 'WatchEvent' 
+GROUP BY 1
+ORDER BY 2 DESC
+   LIMIT 10
+```
+
+<iframe  width="100%" height="350" scrolling="no"  src="https://staticsiteg.github.io/echarts/bar.html?x=[%22clickhouse/clickhouse%22,%20%22redis/redis%22,%20%22prometheus/prometheus%22,%20%22elastic/elasticsearch%22,%20%22questdb/questdb%22,%20%22etcd-io/etcd%22,%20%22pingcap/tidb%22,%20%22apache/spark%22,%20%22cockroachdb/cockroach%22,%20%22facebook/rocksdb%22]&data=[7628,%206313,%205898,%205669,%205505,%204524,%203967,%203833,%203311,%203190]&theme=dark">
+</iframe>
+
+### Top Developers for OSS Databases
 
 ```sql
   SELECT actor_login, count(*) as pr_count
@@ -79,7 +142,7 @@ ORDER BY 3 DESC
 
 ### Chart v2
 
-<iframe src="https://chart.trytidb.com/chart/c93742ce-cc36-450d-b0a1-e8430669b050/embedded" allowTransparency="true" width="100%" height="500" scrolling="no" frameborder="0" ></iframe>
+
 
 ### Chart v3
 
