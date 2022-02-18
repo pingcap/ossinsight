@@ -25,7 +25,7 @@ First, you can signup a free TiDB Cloud account via this link:
 
 Once registered, you can create a free cluster with `Developer Tier`:
 
-:::tip
+:::caution
 Only Developer Tier is **free** for 1 year.
 :::
 
