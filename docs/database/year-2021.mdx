@@ -1,5 +1,6 @@
 ---
 title: "OSS Database Analysis: 2021"
+image: /img/gharchive-title-img.png
 ---
 
 
@@ -29,9 +30,26 @@ ORDER BY 2 desc
 LIMIT 10
 ```
 
-### Chart v1
+### Top Language for OSS Database
 
-![](/img/report-demo.png)
+```sql
+  SELECT language, count(*)
+    FROM github_events
+         JOIN db_repos db ON db.id = github_events.repo_id
+   WHERE event_year = 2021 AND type = 'PullRequestEvent' AND action = 'opened'
+GROUP BY 2
+ORDER BY 3 DESC
+   LIMIT 5
+```
+
+
+|         | language | bar                                 | count(*)
+-------- | -------- | ----------------------------------- | --------
+|![](/img/lang/java.png) | Java     | ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ | 24137
+|![](/img/lang/go.png) | Go       | ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇            | 16630
+|![](/img/lang/cpp.png) | C++      | ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇            | 16607
+|![](/img/lang/c.png) | C        | ▇▇▇▇▇▇▇▇▇▇▇                         | 7605
+|![](/img/lang/rust.png) | Rust     | ▇▇▇▇▇▇                              | 4366
 
 ### Chart v2
 
