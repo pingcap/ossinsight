@@ -26,6 +26,7 @@ const config = {
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
           editUrl: 'https://github.com/pingcap-inc/gharchive.live/edit/main/',
+          routeBasePath: '_',
         },
         blog: {
           showReadingTime: true,
