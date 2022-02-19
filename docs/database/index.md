@@ -64,7 +64,7 @@ The full list of database repositories participating in statistics includes
 ```
 
 ## Stars histories of top OSS database since 2011
-<iframe  width="100%" height="350" scrolling="no"  src="https://staticsiteg.github.io/echarts/racing.html?theme=vintage">
+<iframe  width="100%" height="350" scrolling="no"  src="https://staticsiteg.github.io/echarts/racing.html?theme=dark">
 </iframe>
 
 ## Top 10 repos by stars in 2021
@@ -228,3 +228,132 @@ ORDER BY 3 DESC
 |![](/img/lang/rust.png) | Rust     | ▇▇▇▇▇▇                              | 4366
 
 
+## OSS Database ranking
+
+The previous analysis is for a single dimension. Let’s analyze the comprehensive measurement. The open source database community is comprehensively scored through the three metrics: stars, PRs and contributors. We can use the [Z-score](https://en.wikipedia.org/wiki/Standard_score) method to score the repo.
+
+```sql
+WITH stars AS (
+    SELECT /*+ read_from_storage(tiflash[github_events]) */ 
+        db.name AS repo_name, 
+        COUNT(*) AS count
+    FROM github_events
+    JOIN db_repos db ON db.id = github_events.repo_id
+    WHERE type = 'WatchEvent' and event_year = 2021
+    GROUP BY 1 
+),
+
+prs as (
+    SELECT /*+ read_from_storage(tiflash[github_events]) */ 
+      db.name AS repo_name, 
+      COUNT(*) AS count
+    FROM github_events
+    JOIN db_repos db ON db.id = github_events.repo_id
+    WHERE type = 'PullRequestEvent' and event_year = 2021 and action = 'opened'
+    GROUP BY 1 
+),
+
+contributors AS (
+    SELECT /*+ read_from_storage(tiflash[github_events]) */ 
+      db.name AS repo_name, 
+      count(distinct actor_id) AS count
+    FROM github_events
+    JOIN db_repos db ON db.id = github_events.repo_id
+    WHERE type in (
+        'IssuesEvent', 
+        'PullRequestEvent', 
+        'IssueCommentEvent', 
+        'PullRequestReviewCommentEvent', 
+        'CommitCommentEvent', 
+        'PullRequestReviewEvent') and event_year = 2021 
+    GROUP BY 1 
+),
+
+raw as (
+    SELECT 
+        name, 
+        stars.count AS star_count, 
+        prs.count AS pr_count,
+        contributors.count as user_count
+    FROM db_repos 
+    LEFT JOIN stars ON stars.repo_name = name
+    LEFT JOIN prs ON prs.repo_name = name
+    LEFT JOIN contributors ON contributors.repo_name = name
+),
+
+zz_pr as (
+    SELECT AVG(pr_count) AS mean, STDDEV(pr_count) AS sd FROM raw
+),
+
+zz_star as (
+    SELECT AVG(star_count) AS mean, STDDEV(star_count) AS sd FROM raw
+),
+
+zz_user as (
+    SELECT AVG(user_count) AS mean, STDDEV(user_count) AS sd FROM raw
+)
+
+SELECT name, 
+      ((star_count - zz_star.mean) / zz_star.sd) +
+      ((user_count - zz_user.mean) / zz_user.sd) +
+      ((pr_count - zz_pr.mean) / zz_pr.sd) AS z_score,
+      ((star_count - zz_star.mean) / zz_star.sd) AS z_score_star,
+      ((user_count - zz_user.mean) / zz_user.sd) AS z_score_user,
+      ((pr_count - zz_pr.mean) / zz_pr.sd) AS z_score_pr
+FROM raw, 
+    zz_star,
+    zz_user,
+    zz_pr
+ORDER BY 2 DESC
+```
+This is the comprehensive ranking calculated by z-score:
+```
++----------------------------+---------+--------------+--------------+------------+
+| name                       | z_score | z_score_star | z_score_user | z_score_pr |
++----------------------------+---------+--------------+--------------+------------+
+| clickhouse/clickhouse      | 10.26   |  2.99        |  3.75        |  3.52      |
+| elastic/elasticsearch      |  9.11   |  1.92        |  3.34        |  3.84      |
+| cockroachdb/cockroach      |  3.72   |  0.64        |  0.67        |  2.42      |
+| redis/redis                |  3.1    |  2.28        |  1.14        | -0.31      |
+| pingcap/tidb               |  3.04   |  1.0         |  0.7         |  1.34      |
+| prometheus/prometheus      |  2.82   |  2.05        |  1.12        | -0.35      |
+| apache/spark               |  2.43   |  0.93        |  0.64        |  0.87      |
+| apache/flink               |  1.65   |  0.46        |  0.49        |  0.7       |
+| taosdata/TDengine          |  1.65   |  0.48        |  0.38        |  0.8       |
+| influxdata/influxdb        |  1.54   |  0.25        |  1.59        | -0.3       |
+| trinodb/trino              |  1.37   |  0.26        |  0.85        |  0.26      |
+| etcd-io/etcd               |  1.24   |  1.3         |  0.5         | -0.56      |
+| questdb/questdb            |  0.81   |  1.84        | -0.49        | -0.54      |
+| facebook/rocksdb           |  0.12   |  0.58        | -0.12        | -0.34      |
+| timescale/timescaledb      | -0.17   |  0.01        |  0.37        | -0.55      |
+| prestodb/presto            | -0.44   | -0.3         |  0.21        | -0.35      |
+| tikv/tikv                  | -0.45   | -0.08        | -0.26        | -0.12      |
+| apache/incubator-doris     | -0.53   | -0.23        | -0.03        | -0.27      |
+| MaterializeInc/materialize | -0.63   | -0.49        | -0.64        |  0.5       |
+| vitessio/vitess            | -0.7    | -0.07        | -0.46        | -0.17      |
+| apache/druid               | -0.75   | -0.55        |  0.19        | -0.39      |
+| arangodb/arangodb          | -0.76   | -0.45        | -0.28        | -0.04      |
+| dgraph-io/dgraph           | -0.82   |  0.37        | -0.77        | -0.42      |
+| yugabyte/yugabyte-db       | -1.01   | -0.5         | -0.05        | -0.47      |
+| StarRocks/starrocks        | -1.03   | -0.27        | -0.63        | -0.14      |
+| apache/hadoop              | -1.08   | -0.5         | -0.3         | -0.28      |
+| confluentinc/ksql          | -1.19   | -0.77        | -0.18        | -0.24      |
+| apple/foundationdb         | -1.43   | -0.69        | -0.64        | -0.1       |
+| apache/pinot               | -1.47   | -0.67        | -0.43        | -0.37      |
+| greenplum-db/gpdb          | -1.49   | -0.82        | -0.43        | -0.23      |
+| vesoft-inc/nebula          | -1.51   | -0.3         | -0.61        | -0.59      |
+| mongodb/mongo              | -1.53   |  0.07        | -0.84        | -0.75      |
+| scylladb/scylla            | -1.58   | -0.65        | -0.47        | -0.46      |
+| apache/hive                | -1.73   | -0.84        | -0.55        | -0.34      |
+| citusdata/citus            | -1.81   | -0.56        | -0.75        | -0.5       |
+| apache/hbase               | -1.88   | -0.88        | -0.67        | -0.32      |
+| apache/ignite              | -1.94   | -0.89        | -0.71        | -0.35      |
+| crate/crate                | -2.2    | -0.93        | -0.83        | -0.44      |
+| apache/couchdb             | -2.21   | -0.92        | -0.63        | -0.66      |
+| MariaDB/server             | -2.26   | -0.89        | -0.7         | -0.67      |
+| apache/lucene-solr         | -2.29   | -0.97        | -0.74        | -0.58      |
+| apache/kylin               | -2.52   | -0.97        | -0.89        | -0.67      |
+| percona/percona-server     | -2.62   | -1.11        | -0.9         | -0.61      |
+| alibaba/oceanbase          | -2.84   | -1.08        | -0.99        | -0.77      |
++----------------------------+---------+--------------+--------------+------------+
+```
