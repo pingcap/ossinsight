@@ -63,6 +63,10 @@ The full list of database repositories participating in statistics includes
 +-----------+----------------------------+
 ```
 
+## Stars histories of top OSS database since 2011
+<iframe  width="100%" height="350" scrolling="no"  src="https://staticsiteg.github.io/echarts/racing.html?theme=vintage">
+</iframe>
+
 ## Top 10 repos by stars in 2021
 
 ```sql
