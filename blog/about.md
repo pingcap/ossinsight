@@ -15,6 +15,12 @@ authors: pingcap
 
 [Learn more about PingCAP](https://pingcap.com/about-us/)
 
+### What is TiDB Cloud?
+
+> Get a fully managed service of TiDB: an open source, cloud native, distributed, MySQL compatible database for elastic scale and real-time analytics.
+>
+> TiDB Cloud is now in Public Preview and offers a one-year free trial with the Developer Tier.
+
 ### Why we build this project?
 
 > _"We love data, so we create TiDB, we love open source, so we analyze it."_ - PingCAP
@@ -36,3 +42,6 @@ authors: pingcap
 ### How many clusters ( databases ) are used?
 
 > OOONLY one, for both OLTP and OLAP queries.
+
+
+### [Contact Us](https://pingcap.com/contact-us/)
