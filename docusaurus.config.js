@@ -6,8 +6,8 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'GH Archive Live: trends about oss database, js/web framework and more',
-  tagline: 'We store GitHub events data from Feb 2011 in TiDB Cloud and update hourly, then analyze the trends of stars, pull requests, and many more metrics of repositories.',
+  title: 'GH Archive Live',
+  tagline: 'trends about oss database, js/web framework and more',
   url: 'https://gharchive.live/',
   baseUrl: '/',
   onBrokenLinks: 'throw',

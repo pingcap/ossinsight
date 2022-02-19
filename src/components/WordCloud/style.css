@@ -1,0 +1,6 @@
+.wordcloud-element {
+    opacity: 0.7;
+}
+.wordcloud-element:hover {
+    text-decoration: none;
+}
