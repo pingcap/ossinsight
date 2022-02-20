@@ -228,6 +228,59 @@ ORDER BY 3 DESC
 |![](/img/lang/rust.png) | Rust     | ▇▇▇▇▇▇                              | 4366
 
 
+## Top companies contributing to OSS databases
+
+```sql
+  SELECT /*+ read_from_storage(tiflash[github_events]) */
+         trim(lower(replace(u.company, '@', ''))) AS company, 
+         count(distinct actor_id) AS users_count
+    FROM github_events
+         JOIN db_repos db ON db.id = github_events.repo_id
+         JOIN users u ON u.login = github_events.actor_login 
+   WHERE event_year = 2021 
+         AND github_events.type IN (
+           'IssuesEvent', 
+           'PullRequestEvent', 
+           'IssueCommentEvent', 
+           'PullRequestReviewCommentEvent', 
+           'CommitCommentEvent', 
+           'PullRequestReviewEvent'
+         )
+         AND u.company IS NOT NULL 
+         AND u.company != '' 
+         AND u.company != 'none'
+GROUP BY 1
+ORDER BY 2 DESC
+   LIMIT 20
+```
+
+```
++----------------+-------------+
+| company        | users_count |
++----------------+-------------+
+| elastic        | 207         |
+| pingcap        | 67          |
+| microsoft      | 51          |
+| alibaba        | 46          |
+| red hat        | 45          |
+| facebook       | 40          |
+| google         | 38          |
+| cloudera       | 37          |
+| databricks     | 35          |
+| linkedin       | 32          |
+| vmware         | 31          |
+| tencent        | 30          |
+| influxdata     | 29          |
+| cockroach labs | 25          |
+| scylladb       | 25          |
+| ibm            | 23          |
+| yugabyte       | 22          |
+| pivotal        | 21          |
+| confluent      | 17          |
+| shopify        | 17          |
++----------------+-------------+
+```
+
 ## OSS Database ranking
 
 The previous analysis is for a single dimension. Let’s analyze the comprehensive measurement. The open source database community is comprehensively scored through the three metrics: stars, PRs and contributors. We can use the [Z-score](https://en.wikipedia.org/wiki/Standard_score) method to score the repo.
