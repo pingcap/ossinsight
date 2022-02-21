@@ -1,5 +1,5 @@
 ---
-title: How it works
+title: ▶️  How it works
 ---
 
 The Github Event data is obtained from [GH Archive](https://www.gharchive.org/), which provides the full github events data from 2011 to 2022, with a total volume of more than 4 billion.
@@ -153,3 +153,8 @@ limit 10;
 +-------------------+-------+
 ```
 
+## Videos: Learn how did we setup this project.
+
+<video width="100%" autoplay="false"controls>
+  <source src="/video/github-demo-tidbcloud.mp4" type="video/mp4" />
+</video>
