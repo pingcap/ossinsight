@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useMemo} from "react";
 import Divider from "@mui/material/Divider";
 import ThemeProvider from "@mui/system/ThemeProvider";
 import {createTheme} from "@mui/material";
@@ -9,8 +9,7 @@ import useThemeContext from '@theme/hooks/useThemeContext';
 import BrowserOnly from '@docusaurus/BrowserOnly';
 
 
-function CommonChart({chart, noSearch, ...rest}) {
-  const {form, query} = chart.useForm({ noSearch })
+function CommonChart({chart: rawChart, noSearch, ...rest}) {
   const {isDarkTheme} = useThemeContext();
   const theme = createTheme({
     palette: {
@@ -20,6 +19,16 @@ function CommonChart({chart, noSearch, ...rest}) {
       }
     },
   });
+
+  const chart = useMemo(() => {
+    if (typeof rawChart === 'string') {
+      return require('../RemoteCharts/' + rawChart + '/index.js').default
+    } else {
+      return rawChart
+    }
+  }, [rawChart])
+
+  const {form, query} = chart.useForm({ noSearch })
 
   const child = React.createElement(chart.Chart, {
     ...query,

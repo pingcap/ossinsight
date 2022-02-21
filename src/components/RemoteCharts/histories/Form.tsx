@@ -6,23 +6,79 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
+import {Queries} from "../queries";
 
-const types = [
-  {title: 'Stars', value: "WatchEvent"},
-  {title: 'Forks', value: 'ForkEvent'},
-  {title: 'PRs', value: 'PullRequestEvent'}
+export type Type<Q extends keyof Queries = any> = {
+  title: string
+  key: string
+  value: {
+    category: Q
+    params: Partial<Queries[Q]['params']>
+    valueIndex: keyof Queries[Q]["data"]
+  }
+}
+
+
+export type Query<Q extends keyof Queries> = Queries[Q]['params'] & {
+  category: Q
+  valueIndex: keyof Queries[Q]["data"]
+  n: number
+  years: number
+}
+
+interface UseFormResult<Q extends keyof Queries> {
+  query: Query<Q>
+  form: JSX.Element
+}
+
+const types: Type[] = [
+  {
+    title: 'Stars', key: 'stars', value: {
+      category: 'events-history',
+      params: {event: "WatchEvent"},
+      valueIndex: 'events_count'
+    }
+  },
+  {
+    title: 'Forks', key: 'forks', value: {
+      category: 'events-history',
+      params: {event: "ForkEvent"},
+      valueIndex: 'events_count'
+    }
+  },
+  {
+    title: 'PRs', key: 'PRs', value: {
+      category: 'events-history',
+      params: {event: "PullRequestEvent"},
+      valueIndex: 'events_count'
+    }
+  },
+  {
+    title: 'Contributors (PRs opened)', key: 'contributors-PR-opened', value: {
+      category: 'contributors-history',
+      params: {action: 'opened', merged: '*'},
+      valueIndex: 'contributors_count'
+    }
+  },
+  {
+    title: 'Contributors (PRs merged)', key: 'contributors-PR-merged', value: {
+      category: 'contributors-history',
+      params: {action: 'closed', merged: 'true'},
+      valueIndex: 'contributors_count'
+    }
+  },
 ]
 
 const allYears = [1, 2, 5, 10]
 
 const allLimits = [10, 20, 50]
 
-export const useForm = ({ noSearch }) => {
+export const useForm = ({noSearch}) => {
 
   const random = useMemo(() => Math.random(), [])
 
   const {initialType, initialLimits, initialYears} = useMemo(() => {
-    let initialType = types[0].value
+    let initialType: Type = types[0]
     let initialYears = 1
     let initialLimits = 10
     if (!noSearch && typeof window !== 'undefined') {
@@ -30,8 +86,11 @@ export const useForm = ({ noSearch }) => {
       const type = usp.get('type')
       const years = parseInt(usp.get('years'))
       const limits = parseInt(usp.get('n'))
-      if (type && types.find(({value}) => value === type)) {
-        initialType = type
+      if (type) {
+        const found: Type | undefined = types.find(({key}) => key === type)
+        if (found) {
+          initialType = found
+        }
       }
       if (years && allYears.indexOf(years) >= 0) {
         initialYears = years
@@ -44,21 +103,23 @@ export const useForm = ({ noSearch }) => {
     return {initialType, initialYears, initialLimits}
   }, [])
 
-  const [type, setType] = useState(initialType)
+  const [type, setType] = useState<Type>(initialType)
   const [n, setN] = useState(initialLimits)
   const [years, setYears] = useState(initialYears)
 
   const query = useMemo(() => {
     if (!noSearch && typeof window !== 'undefined') {
       const usp = new window.URLSearchParams()
-      usp.set('type', type)
+      usp.set('type', type.key)
       usp.set('n', String(n))
       usp.set('years', String(years))
       window.history.replaceState(null, null, '?' + usp.toString())
     }
 
     return {
-      event: type,
+      category: type.value.category,
+      valueIndex: type.value.valueIndex,
+      ...type.value.params,
       n,
       years
     }
@@ -66,25 +127,30 @@ export const useForm = ({ noSearch }) => {
 
   const form = (
     <Stack direction='row' sx={{flexWrap: 'wrap', alignItems: 'flex-end', gap: 4}}>
-      <FormControl variant="standard" sx={{minWidth: '120px', maxWidth: '120px'}}>
-        <InputLabel id={`cubechart-${random}-type`}>Type</InputLabel>
-        <Select
-          id={`cubechart-${random}-type`}
+      <FormControl variant="standard">
+        <InputLabel id={`${random}-type`}>Type</InputLabel>
+        <Select<Type>
+          id={`${random}-type`}
           value={type}
-          onChange={e => setType(e.target.value)}
+          autoWidth
+          onChange={e => setType(types.find(({key}) => key === e.target.value) ?? types[0])}
           label="Type"
           size='small'
+          renderValue={value => value.title}
         >
-          {types.map(type => <MenuItem key={type.value} value={type.value}>{type.title}</MenuItem>)}
+          {types.map(type => (
+            <MenuItem key={type.key} value={type.key}>
+              {type.title}
+            </MenuItem>)
+          )}
         </Select>
       </FormControl>
-      <FormControl variant="standard" sx={{minWidth: '120px', maxWidth: '120px'}}>
+      <FormControl variant="standard">
         <TextField
           variant="standard"
-          id={`cubechart-${random}-type`}
           select
           value={n}
-          onChange={e => setN(e.target.value)}
+          onChange={e => setN(Number(e.target.value))}
           InputProps={{
             startAdornment: <InputAdornment position="start">Top</InputAdornment>
           }}
@@ -92,12 +158,11 @@ export const useForm = ({ noSearch }) => {
           {allLimits.map(n => <MenuItem key={n} value={n}>{n}</MenuItem>)}
         </TextField>
       </FormControl>
-      <FormControl variant="standard" sx={{minWidth: '220px', maxWidth: '220px'}}>
+      <FormControl variant="standard">
         <TextField
           variant="standard"
-          id={`cubechart-${random}-type`}
           value={years}
-          onChange={e => setYears(e.target.value)}
+          onChange={e => setYears(Number(e.target.value))}
           select
           InputProps={{
             startAdornment: <InputAdornment position="start">Recent</InputAdornment>,
