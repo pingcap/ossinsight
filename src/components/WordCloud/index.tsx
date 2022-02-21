@@ -7,20 +7,29 @@ interface WordCloudProps {
   children: JSX.Element
 }
 
+const dataUrl = 'https://community-preview-contributor.tidb.io/q/recent-events-rank'
+
 export default function WordCloud({children}: WordCloudProps) {
   const ref = useRef<HTMLDivElement>()
   const [data, setData] = useState<{ repo_name: string, events: number }[]>()
 
   useEffect(() => {
-    fetch('https://community-preview-contributor.tidb.io/q/recent-events-rank')
-      .then(data => data.json())
-      .then((res) => {
-        setData(res.data)
-      })
+    (async () => {
+      const {data} = await fetch(dataUrl).then(data => data.json())
+      if (data.length > 0) {
+        setData(data)
+      } else {
+        const {data} = await fetch(`${dataUrl}?offset=1`).then(data => data.json())
+        setData(data)
+      }
+    })()
   }, [])
 
   useLayoutEffect(() => {
     if (data && ref.current) {
+      if (data.length === 0) {
+        return
+      }
       let max = data[0].events
       const list = data.map(({repo_name, events}) => {
         return {
