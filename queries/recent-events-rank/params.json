@@ -1,4 +1,8 @@
 {
   "cacheHours": 0.166,
-  "params": []
+  "params": [{
+    "name": "offset",
+    "replaces": "10",
+    "default": "0"
+  }]
 }

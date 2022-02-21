@@ -9,6 +9,7 @@ export interface QueryParams {
     name: string,
     replaces: string,
     template?: Record<string, string>,
+    default?: string
   }[]
 }
 
@@ -21,16 +22,18 @@ export class BadParamsError extends Error {
 }
 
 function buildParams(template: string, params: QueryParams, values: Record<string, string>) {
-  for (let {name, replaces, template: paramTemplate} of params.params) {
-    if (name in values) {
+  for (let {name, replaces, template: paramTemplate, default: defaultValue} of params.params) {
+    const value = values[name] ?? defaultValue
+
+    if (typeof value !== "undefined") {
       let targetValue: string
       if (paramTemplate) {
-        targetValue = paramTemplate[String(values[name])]
+        targetValue = paramTemplate[String(value)]
         if (typeof targetValue === "undefined") {
           throw new BadParamsError(name, 'bad param ' + name)
         }
       } else {
-        targetValue = String(values[name])
+        targetValue = String(value)
       }
       template = template.replaceAll(replaces, targetValue)
     } else {
