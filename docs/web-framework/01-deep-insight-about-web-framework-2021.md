@@ -6,7 +6,7 @@ image: /img/webframework.png
 ![](/img/webframework.png)
 
 ## Stars histories of top OSS web framework since 2011
-<iframe  width="100%" height="350" scrolling="no"  src="https://staticsiteg.github.io/echarts/racing-webframework.html?theme=dark">
+<iframe  width="100%" height="350" scrolling="no"  src="/charts/webframework.html?theme=dark">
 </iframe>
 
 ## Top 10 repos by stars in 2021
@@ -22,7 +22,7 @@ ORDER BY 2 DESC
    LIMIT 10
 ```
 
-<iframe  width="100%" height="350" scrolling="no"  src="https://staticsiteg.github.io/echarts/bar.html?x=[%22gin-gonic/gin%22,%22nestjs/nest%22,%22strapi/strapi%22,%22django/django%22,%22spring-projects/spring-boot%22,%22dotnet/aspnetcore%22,%22laravel/laravel%22,%22spring-projects/spring-framework%22,%22pallets/flask%22,%22fastify/fastify%22]&data=[10977,10695,10463,8295,7471,6807,5897,5395,5174,4962]&theme=vintage">
+<iframe  width="100%" height="350" scrolling="no"  src="/charts/bar.html?x=[%22gin-gonic/gin%22,%22nestjs/nest%22,%22strapi/strapi%22,%22django/django%22,%22spring-projects/spring-boot%22,%22dotnet/aspnetcore%22,%22laravel/laravel%22,%22spring-projects/spring-framework%22,%22pallets/flask%22,%22fastify/fastify%22]&data=[10977,10695,10463,8295,7471,6807,5897,5395,5174,4962]&theme=vintage">
 </iframe>
 
 ## Top 10 repos by PR in 2021
@@ -38,7 +38,7 @@ ORDER BY 2 DESC
    LIMIT 10
 ```
 
-<iframe  width="100%" height="350" scrolling="no"  src="https://staticsiteg.github.io/echarts/bar.html?x=[%22dotnet/aspnetcore%22,%22symfony/symfony%22,%22rails/rails%22,%22nestjs/nest%22,%22strapi/strapi%22,%22django/django%22,%22cakephp/cakephp%22,%22spring-projects/spring-boot%22,%22fastify/fastify%22,%22spring-projects/spring-framework%22]&data=[3177,2438,1875,1638,1479,1285,644,470,446,382]&theme=vintage">
+<iframe  width="100%" height="350" scrolling="no"  src="/charts/bar.html?x=[%22dotnet/aspnetcore%22,%22symfony/symfony%22,%22rails/rails%22,%22nestjs/nest%22,%22strapi/strapi%22,%22django/django%22,%22cakephp/cakephp%22,%22spring-projects/spring-boot%22,%22fastify/fastify%22,%22spring-projects/spring-framework%22]&data=[3177,2438,1875,1638,1479,1285,644,470,446,382]&theme=vintage">
 </iframe>
 
 ## Top Developers for OSS web framework
