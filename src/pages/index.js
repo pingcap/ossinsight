@@ -6,7 +6,7 @@ import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import styles from './index.module.css';
 import HomepageFeatures from '../components/HomepageFeatures';
 import WordCloud from "../components/WordCloud";
-import ChangeLog from '../../CHANGELOG.md'
+import ChangeLog from './news-and-updates.md'
 
 function HomepageHeader() {
   const {siteConfig} = useDocusaurusContext();
@@ -50,7 +50,7 @@ export default function Home() {
       <main>
         <HomepageFeatures />
       </main>
-      <div style={{margin: '4em 0'}}>
+      <div style={{margin: '4em 0', padding: '0 20%'}}>
         <div className='container container-fluid'>
           <ChangeLog />
         </div>
