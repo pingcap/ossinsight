@@ -64,9 +64,9 @@ ORDER BY 2 DESC
 |![](https://avatars.githubusercontent.com/u/825729?s=40&v=4) |[sangshuduo](https://github.com/sangshuduo)          | ▇▇▇▇▇▇▇▇          | 703
 |![](https://avatars.githubusercontent.com/u/1423118?v=4&s=40) |[jsteemann](https://github.com/jsteemann)          | ▇▇▇▇▇▇▇           | 652
 |![](https://avatars.githubusercontent.com/u/6490959?v=4&s=40) |[original-brownbear](https://github.com/original-brownbear) | ▇▇▇▇▇▇▇           | 615
-| |[alexey-milovidov](https://github.com/alexey-milovidov)   | ▇▇▇▇▇▇            | 542
+|![](https://avatars.dicebear.com/api/identicon/alexey-milovidov.svg?size=40) |[alexey-milovidov](https://github.com/alexey-milovidov)   | ▇▇▇▇▇▇            | 542
 |![](https://avatars.githubusercontent.com/u/5135385?v=4&s=40) |[yuzefovich](https://github.com/yuzefovich)        | ▇▇▇▇▇             | 471
-| |[azat](https://github.com/azat)               | ▇▇▇▇▇             | 455
+|![](https://avatars.dicebear.com/api/identicon/azat.svg?size=40) |[azat](https://github.com/azat)               | ▇▇▇▇▇             | 455
 |![](https://avatars.githubusercontent.com/u/882976?v=4&s=40) |[benesch](https://github.com/benesch)            | ▇▇▇▇▇             | 422
 |![](https://avatars.githubusercontent.com/u/144328?v=4&s=40) |[findepi](https://github.com/findepi)           | ▇▇▇▇              | 378
 |![](https://avatars.githubusercontent.com/u/3646147?v=4&s=40) |[otan](https://github.com/otan)               | ▇▇▇▇              | 375
@@ -78,7 +78,7 @@ ORDER BY 2 DESC
 |![](https://avatars.githubusercontent.com/u/1320573?v=4&s=40) |[rafiss](https://github.com/rafiss)             | ▇▇▇               | 295
 |![](https://avatars.githubusercontent.com/u/12521043?v=4&s=40) |[JimGalasyn](https://github.com/JimGalasyn)         | ▇▇▇               | 295
 |![](https://avatars.githubusercontent.com/u/5076964?v=4&s=40) |[tbg](https://github.com/tbg)                | ▇▇▇               | 288
-| |alesapin           | ▇▇▇               | 288
+|![](https://avatars.dicebear.com/api/identicon/alesapin.svg?size=40) |[alesapin](https://github.com/alesapin)           | ▇▇▇               | 288
 |![](https://avatars.githubusercontent.com/u/22777892?v=4&s=40) |[danhermann](https://github.com/danhermann)         | ▇▇▇               | 283
 
 
