@@ -62,7 +62,7 @@ const config = {
             type: 'doc',
             docId: 'database/index',
             position: 'left',
-            label: 'Ranking',
+            label: 'Insight',
           },
           {href: 'https://meta.gharchive.live/public/dashboard/1f3b4bc6-503f-4d25-9936-478902d8238e', label: 'Compare Projects', position: 'left'},
           {to: '/blog', label: 'Blog', position: 'left'},
@@ -91,7 +91,7 @@ const config = {
                 to: '/blog',
               },
               {
-                label: 'Rankings',
+                label: 'Insight',
                 to: '/_/database/',
               },
               {
@@ -99,7 +99,7 @@ const config = {
                 to: '/_/more/analyze-github-events-on-tidb-cloud-in-10-minutes',
               },
               {
-                label: 'how it works',
+                label: 'How It Works',
                 to: '/_/more/how-it-works',
               },
             ],
