@@ -6,18 +6,19 @@ import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import styles from './index.module.css';
 import HomepageFeatures from '../components/HomepageFeatures';
 import WordCloud from "../components/WordCloud";
+import ChangeLog from '../../CHANGELOG.md'
 
 function HomepageHeader() {
   const {siteConfig} = useDocusaurusContext();
   return (
     <>
-    <header className={clsx('hero', styles.heroWc)}>
-      <div className={styles.wcContainer}>
-        <WordCloud>
-          <h1 className={clsx('hero__title', styles.heroWcTitle)} >{siteConfig.title}</h1>
-        </WordCloud>
-      </div>
-    </header>
+      <header className={clsx('hero', styles.heroWc)}>
+        <div className={styles.wcContainer}>
+          <WordCloud>
+            <h1 className={clsx('hero__title', styles.heroWcTitle)} >{siteConfig.title}</h1>
+          </WordCloud>
+        </div>
+      </header>
       <div className={clsx('hero hero--primary', styles.heroBanner)}>
         <div className='container'>
           <br />
@@ -49,6 +50,11 @@ export default function Home() {
       <main>
         <HomepageFeatures />
       </main>
+      <div style={{margin: '4em 0'}}>
+        <div className='container container-fluid'>
+          <ChangeLog />
+        </div>
+      </div>
     </Layout>
   );
 }
