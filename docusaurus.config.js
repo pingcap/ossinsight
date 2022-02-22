@@ -99,7 +99,7 @@ const config = {
                 to: '/_/more/analyze-github-events-on-tidb-cloud-in-10-minutes',
               },
               {
-                label: 'how it works',
+                label: 'How It Works',
                 to: '/_/more/how-it-works',
               },
             ],
