@@ -10,19 +10,19 @@ interface WordCloudProps {
 
 export default function WordCloud({children}: WordCloudProps) {
   const ref = useRef<HTMLDivElement>()
-  const { data } = useRank(500)
+  const { data } = useRank()
 
   useLayoutEffect(() => {
     if (data && ref.current) {
       if (data.length === 0) {
         return
       }
-      let max = data[0].events
-      const list = data.map(({repo_name, events}) => {
+      let max = data[0].history_events
+      const list = data.map(({repo_name, history_events}) => {
         return {
           key: repo_name,
           word: repo_name.split('/')[1],
-          weight: Math.sqrt(events / max)
+          weight: Math.sqrt(history_events / max)
         }
       })
       return start(list, { container: ref.current })

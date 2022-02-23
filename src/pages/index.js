@@ -1,7 +1,6 @@
 import React from 'react';
 import clsx from 'clsx';
 import Layout from '@theme/Layout';
-import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import styles from './index.module.css';
 import HomepageFeatures from '../components/HomepageFeatures';
@@ -16,7 +15,7 @@ function HomepageHeader() {
       <header className={clsx('hero', styles.heroWc)}>
         <div className={styles.wcContainer}>
           <WordCloud>
-            <h1 className={clsx('hero__title', styles.heroWcTitle)} >{siteConfig.title}</h1>
+            <h1 className={clsx('hero__title', styles.heroWcTitle)}>{siteConfig.title}</h1>
           </WordCloud>
         </div>
       </header>

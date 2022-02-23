@@ -5,11 +5,7 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 
 interface GithubOwner {
-  owner: {
-    avatar_url: string
-    html_url: string
-    login: string
-  }
+  owner: string
   size?: number | string
 }
 
@@ -20,16 +16,16 @@ const Owner = ({owner, size = '1em'}: GithubOwner) => {
       spacing={1}
       sx={{alignItems: 'center'}}
       component='a'
-      href={owner.html_url}
+      href={`https://github.com/${owner}`}
       target='_blank'
     >
       <Avatar
-        alt={owner.login}
-        src={owner.avatar_url}
+        alt={owner}
+        src={`https://github.com/${owner}.png`}
         sx={{width: size, height: size}}
       />
       <Typography>
-        {owner.login}
+        {owner}
       </Typography>
     </Stack>
   )
