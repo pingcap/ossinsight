@@ -31,8 +31,7 @@ const config = {
         blog: {
           showReadingTime: true,
           // Please change this to your repo.
-          editUrl:
-            'https://github.com/pingcap-inc/gharchive.live/edit/main/',
+          editUrl: 'https://github.com/pingcap-inc/gharchive.live/edit/main/',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
