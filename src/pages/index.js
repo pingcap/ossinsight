@@ -6,7 +6,7 @@ import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import styles from './index.module.css';
 import HomepageFeatures from '../components/HomepageFeatures';
 import WordCloud from "../components/WordCloud";
-import ChangeLog from './news-and-updates.md'
+import Bottom from './bottom.md'
 import TopList from "../components/TopList";
 
 function HomepageHeader() {
@@ -38,7 +38,7 @@ export default function Home() {
       <HomepageHeader />
       <div style={{margin: '4em 0', padding: '0 20%'}}>
         <div className='container container-fluid'>
-          <ChangeLog />
+          <Bottom />
         </div>
       </div>
     </Layout>
