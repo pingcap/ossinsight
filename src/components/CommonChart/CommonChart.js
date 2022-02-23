@@ -1,25 +1,13 @@
 import React, {useMemo} from "react";
 import Divider from "@mui/material/Divider";
-import ThemeProvider from "@mui/system/ThemeProvider";
-import {createTheme} from "@mui/material";
 import {LocalizationProvider} from "@mui/lab";
 import DateAdapter from '@mui/lab/AdapterLuxon';
 import Head from '@docusaurus/Head';
-import useThemeContext from '@theme/hooks/useThemeContext';
 import BrowserOnly from '@docusaurus/BrowserOnly';
+import ThemeAdaptor from "../ThemeAdaptor";
 
 
 function CommonChart({chart: rawChart, noSearch, ...rest}) {
-  const {isDarkTheme} = useThemeContext();
-  const theme = createTheme({
-    palette: {
-      mode: isDarkTheme ? 'dark' : undefined,
-      primary: {
-        main: 'rgb(37, 193, 159)'
-      }
-    },
-  });
-
   const chart = useMemo(() => {
     if (typeof rawChart === 'string') {
       return require('../RemoteCharts/' + rawChart + '/index.js').default
@@ -37,7 +25,7 @@ function CommonChart({chart: rawChart, noSearch, ...rest}) {
 
   return (
     <LocalizationProvider dateAdapter={DateAdapter}>
-      <ThemeProvider theme={theme}>
+      <ThemeAdaptor>
         <Head>
           <link
             rel="stylesheet"
@@ -47,7 +35,7 @@ function CommonChart({chart: rawChart, noSearch, ...rest}) {
         {form}
         <Divider sx={{my: 2}} />
         {child}
-      </ThemeProvider>
+      </ThemeAdaptor>
     </LocalizationProvider>
   )
 }
