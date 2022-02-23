@@ -1,6 +1,11 @@
 name: Node.js CI
 
-on: [push, pull_request, workflow_dispatch]
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -17,12 +22,22 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
       - name: Install
-        run: npm install
+        run: npm ci
       - name: Build 🏗️
         run: npm run build
-      - name: Deploy 🚀
+      - name: Deploy to gharchive.live 🚀
         uses: JamesIves/github-pages-deploy-action@releases/v3
+        if: ${{ github.event_name != 'pull_request' }}
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BRANCH: gh-pages # The branch the action should deploy to.
           FOLDER: build # The folder the action should deploy.
+      - name: Deploy to gharchive-live.surge.sh 🚀
+        uses: afc163/surge-preview@v1
+        if: ${{ github.event_name == 'pull_request' }}
+        with:
+          surge_token: ${{ secrets.SURGE_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          dist: './build'
+          teardown: true
+          build: echo 'already built'
