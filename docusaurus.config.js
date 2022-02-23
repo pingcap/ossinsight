@@ -122,15 +122,15 @@ const config = {
             items: [
               {
                 label: 'GH Archive - Data Source',
-                href: 'https://stackoverflow.com/questions/tagged/docusaurus',
+                href: 'http://www.gharchive.org/',
               },
               {
                 label: 'Docusaurus',
                 href: 'https://github.com/facebook/docusaurus',
               },
               {
-                label: 'Cube.js',
-                href: 'https://github.com/cube-js/cube.js',
+                label: 'Apache ECharts',
+                href: 'https://echarts.apache.org/',
               },
               {
                 label: 'TiDB Cloud',
