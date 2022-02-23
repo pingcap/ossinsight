@@ -12,7 +12,7 @@ const config = {
   baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
-  favicon: 'img/favicon.ico',
+  favicon: 'img/favicon.png',
   organizationName: 'pingcap-inc', // Usually your GitHub org/user name.
   projectName: 'gharchive.live', // Usually your repo name.
 
