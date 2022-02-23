@@ -1,5 +1,6 @@
 node_modules
 queries/**/.cache
+gh/**/.cache
 .env
 *.js
 schemas

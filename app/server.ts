@@ -3,6 +3,7 @@ import Query from "./core/Query";
 import {MysqlQueryExecutor} from "./core/MysqlQueryExecutor";
 import {DefaultState} from "koa";
 import type {ContextExtends} from "../index";
+import GhExecutor from "./core/GhExecutor";
 
 export default function server(router: Router<DefaultState, ContextExtends>) {
 
@@ -15,10 +16,27 @@ export default function server(router: Router<DefaultState, ContextExtends>) {
     queueLimit: 10
   })
 
+  const ghExecutor = new GhExecutor((process.env.GH_TOKENS || '').split(',').map(s => s.trim()).filter(Boolean))
+
   router.get('/q/:query', async ctx => {
     const query = new Query(ctx.params.query)
     try {
       const res = await query.run(ctx.query, executor)
+
+      ctx.response.status = 200
+      ctx.response.body = res
+    } catch (e) {
+
+      ctx.logger.error('request failed %s', ctx.request.originalUrl, e)
+      ctx.response.status = 400
+      ctx.response.body = e
+    }
+  })
+
+  router.get('/gh/repo/:owner/:repo', async ctx => {
+    const { owner, repo } = ctx.params
+    try {
+      const res = await ghExecutor.getRepo(owner, repo)
 
       ctx.response.status = 200
       ctx.response.body = res

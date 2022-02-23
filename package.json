@@ -19,11 +19,13 @@
     "@koa/cors": "^3.1.0",
     "consola": "^2.15.3",
     "dotenv": "^16.0.0",
+    "generic-pool": "^3.8.2",
     "koa": "^2.13.4",
     "koa-router": "^10.1.1",
     "luxon": "^2.3.0",
     "mysql": "^2.18.1",
-    "mysql2": "^2.3.3"
+    "mysql2": "^2.3.3",
+    "octokit": "^1.7.1"
   },
   "devDependencies": {
     "@types/koa": "^2.13.4",

@@ -2,6 +2,7 @@ import fs from 'fs/promises'
 import {constants as FS_CONSTANTS} from 'fs'
 import {DateTime} from 'luxon'
 import consola from "consola";
+import path from "path";
 
 export interface CachedData<T> {
   expiresAt: DateTime
@@ -33,6 +34,7 @@ export default class Cache<T> {
     runningCaches.set(this.path, this as never)
     try {
       try {
+        await fs.mkdir(path.dirname(this.path), { recursive: true })
         await fs.access(this.path, FS_CONSTANTS.F_OK | FS_CONSTANTS.R_OK)
         logger.info('found cache file at %s', this.path)
         const content = await fs.readFile(this.path, {encoding: 'utf-8'})
