@@ -1,6 +1,11 @@
 name: Node.js CI
 
-on: [push, pull_request, workflow_dispatch]
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -17,7 +22,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
       - name: Install
-        run: npm install
+        run: npm ci
       - name: Build 🏗️
         run: npm run build
       - name: Deploy to gharchive.live 🚀
