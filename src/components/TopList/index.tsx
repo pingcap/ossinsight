@@ -117,7 +117,11 @@ export default function TopList() {
                     </Stack>
                   </TableCell>
                   {data.map(({key}) => (
-                    <TableCell key={key} align="center">{counts[key]}</TableCell>
+                    <TableCell key={key} align="center">
+                      <Typography variant='body2' component='span' color={counts[key] === 0 ? 'text.disabled' : undefined}>
+                        {counts[key] || '--'}
+                      </Typography>
+                    </TableCell>
                   ))}
                 </TableRow>
               )
@@ -126,6 +130,7 @@ export default function TopList() {
         </Table>
       </TableContainer>
       <Dialog
+        maxWidth={960}
         open={open}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"

@@ -22,7 +22,7 @@ export default function WordCloud({children}: WordCloudProps) {
         return {
           key: repo_name,
           word: repo_name.split('/')[1],
-          weight: Math.sqrt(history_events / max)
+          weight: history_events / max
         }
       })
       return start(list, { container: ref.current })

@@ -21,6 +21,13 @@ function HomepageHeader() {
       </header>
       <div className={clsx('hero', styles.heroBanner)}>
         <div className='container'>
+          <p className={clsx('hero__subtitle')}>
+            {siteConfig.tagline}
+          </p>
+        </div>
+      </div>
+      <div className={clsx('hero', styles.heroBanner)}>
+        <div className='container'>
           <TopList />
         </div>
       </div>
@@ -34,10 +41,16 @@ export default function Home() {
     <Layout
       title={`Hello from ${siteConfig.title}`}
       description="Description will go into a meta tag in <head />">
-      <HomepageHeader />
-      <div style={{margin: '4em 0', padding: '0 20%'}}>
-        <div className='container container-fluid'>
-          <Bottom />
+      <div
+        style={{
+          '--ifm-container-width-xl': '960px'
+        }}
+      >
+        <HomepageHeader />
+        <div style={{margin: '4em 0'}}>
+          <div className='container container-fluid'>
+            <Bottom />
+          </div>
         </div>
       </div>
     </Layout>
