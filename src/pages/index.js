@@ -36,9 +36,6 @@ export default function Home() {
       title={`Hello from ${siteConfig.title}`}
       description="Description will go into a meta tag in <head />">
       <HomepageHeader />
-      <main>
-        <HomepageFeatures />
-      </main>
       <div style={{margin: '4em 0', padding: '0 20%'}}>
         <div className='container container-fluid'>
           <ChangeLog />
