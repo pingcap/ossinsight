@@ -3,7 +3,7 @@ import {createPool, Factory, Pool} from "generic-pool";
 import Cache from './Cache'
 import path from 'path'
 import {DateTime} from "luxon";
-import consola, { Consola } from "consola";
+import consola, {Consola} from "consola";
 
 const SYMBOL_TOKEN = Symbol('PERSONAL_TOKEN')
 
@@ -51,18 +51,24 @@ export default class GhExecutor {
 
   constructor(tokens: string[] = []) {
     this.octokitPool = createPool(new OctokitFactory(tokens), {
-      min: tokens.length + 1,
+      min: 0,
       max: tokens.length + 1
     })
+    this.octokitPool
+      .on('factoryCreateError', function (err) {
+        console.error('factoryCreateError', err)
+      })
+      .on('factoryDestroyError', function (err) {
+        console.error('factoryDestroyError', err)
+      })
   }
 
   getRepo (owner: string, repo: string) {
     // TODO: global config
     const GET_REPO_CACHE_MINUTES = 2
     const cache = new Cache(path.join(process.cwd(), 'gh', '.cache', owner, `${repo}.json`))
-    return cache.load(async () => {
-      const octokit = await this.octokitPool.acquire()
-      try {
+    return cache.load(() => {
+      return this.octokitPool.use(async (octokit) => {
         octokit.log.info(`request repo ${owner}/${repo}`)
         const {data} = await octokit.rest.repos.get({repo, owner})
         const {value} = Object.getOwnPropertyDescriptor(octokit, SYMBOL_TOKEN)!
@@ -71,9 +77,7 @@ export default class GhExecutor {
           data,
           with: eraseToken(value)
         }
-      } finally {
-        await this.octokitPool.release(octokit)
-      }
+      })
     })
   }
 }

@@ -64,6 +64,7 @@ export default class Cache<T> {
       _resolve!(result)
       return result
     } catch (e) {
+      this._data.catch(() => {})
       _reject!(e)
       throw e
     } finally {

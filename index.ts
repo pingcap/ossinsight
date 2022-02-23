@@ -40,3 +40,7 @@ app.listen(port, () => {
   logger.info(`start at ${port}`)
 })
 
+process.on("unhandledRejection", function(reason, p){
+  console.log("Unhandled", reason, p); // log all your errors, "unsuppressing" them.
+  throw reason; // optional, in case you want to treat these as errors
+});
