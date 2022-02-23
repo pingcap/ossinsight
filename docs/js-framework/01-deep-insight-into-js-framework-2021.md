@@ -1,20 +1,20 @@
 ---
-title: "Deep Insight About Web Framework: 2021"
-image: /img/webframework.png
+title: "Deep Insight Into Javascript Framework: 2021"
+image: /img/jsframework.png
 ---
 
-![](/img/webframework.png)
+![](/img/jsframework.png)
 
 ## Stars histories of top OSS web framework since 2011
-<iframe  width="100%" height="400" scrolling="no"  src="/charts/webframework.html?theme=dark">
+<iframe  width="100%" height="400" scrolling="no"  src="/charts/jsframework.html?theme=dark">
 </iframe>
 
 ## Top 10 repos by stars in 2021
 
 ```sql
-  SELECT  wf.name as repo_name, count(*) as stars
+  SELECT jf.name as repo_name, count(*) as stars
     FROM github_events
-         JOIN web_framework_repos wf ON wf.id = github_events.repo_id
+         JOIN js_framework_repos jf ON jf.id = github_events.repo_id
    WHERE event_year = 2021 
          AND type = 'WatchEvent' 
 GROUP BY 1
