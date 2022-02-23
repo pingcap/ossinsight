@@ -33,10 +33,11 @@ jobs:
           BRANCH: gh-pages # The branch the action should deploy to.
           FOLDER: build # The folder the action should deploy.
       - name: Deploy to gharchive-live.surge.sh 🚀
-        uses: dswistowski/surge-sh-action@v1
+        uses: afc163/surge-preview@v1
         if: ${{ github.event_name == 'pull_request' }}
         with:
-          domain: 'gharchive-live.surge.sh'
-          project: './build'
-          login: ${{ secrets.SURGE_LOGIN }}
-          token: ${{ secrets.SURGE_TOKEN }}
+          surge_token: ${{ secrets.SURGE_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          dist: './build'
+          teardown: true
+          build: echo 'already built'
