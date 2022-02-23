@@ -51,6 +51,7 @@
     "@docusaurus/module-type-aliases": "^2.0.0-beta.15",
     "@tsconfig/docusaurus": "^1.0.4",
     "@types/luxon": "^2.0.9",
+    "swr": "^1.2.2",
     "typescript": "^4.5.5"
   }
 }

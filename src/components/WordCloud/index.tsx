@@ -1,29 +1,16 @@
-import React, {useEffect, useLayoutEffect, useRef, useState} from 'react'
+import React, {useLayoutEffect, useRef} from 'react'
 import {start} from "./dist";
 import './dist/index.css'
 import './style.css'
+import {useRank} from "../../api/query";
 
 interface WordCloudProps {
   children: JSX.Element
 }
 
-const dataUrl = 'https://community-preview-contributor.tidb.io/q/recent-events-rank'
-
 export default function WordCloud({children}: WordCloudProps) {
   const ref = useRef<HTMLDivElement>()
-  const [data, setData] = useState<{ repo_name: string, events: number }[]>()
-
-  useEffect(() => {
-    (async () => {
-      const {data} = await fetch(dataUrl).then(data => data.json())
-      if (data.length > 0) {
-        setData(data)
-      } else {
-        const {data} = await fetch(`${dataUrl}?offset=1`).then(data => data.json())
-        setData(data)
-      }
-    })()
-  }, [])
+  const { data } = useRank(500)
 
   useLayoutEffect(() => {
     if (data && ref.current) {
