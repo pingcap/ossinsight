@@ -1,12 +1,4 @@
 {
-  "cacheHours": 0.166,
-  "params": [{
-    "name": "offset",
-    "replaces": "10",
-    "default": "0"
-  }, {
-    "name": "n",
-    "replaces": "500",
-    "default": "500"
-  }]
+  "cacheHours": 1,
+  "params": []
 }
