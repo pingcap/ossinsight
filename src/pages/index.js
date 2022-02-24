@@ -1,7 +1,6 @@
 import React from 'react';
 import clsx from 'clsx';
 import Layout from '@theme/Layout';
-import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import styles from './index.module.css';
 import HomepageFeatures from '../components/HomepageFeatures';
@@ -16,10 +15,17 @@ function HomepageHeader() {
       <header className={clsx('hero', styles.heroWc)}>
         <div className={styles.wcContainer}>
           <WordCloud>
-            <h1 className={clsx('hero__title', styles.heroWcTitle)} >{siteConfig.title}</h1>
+            <h1 className={clsx('hero__title', styles.heroWcTitle)}>{siteConfig.title}</h1>
           </WordCloud>
         </div>
       </header>
+      <div className={clsx('hero', styles.heroBanner)}>
+        <div className='container'>
+          <p className={clsx('hero__subtitle')}>
+            {siteConfig.tagline}
+          </p>
+        </div>
+      </div>
       <div className={clsx('hero', styles.heroBanner)}>
         <div className='container'>
           <TopList />
@@ -35,10 +41,16 @@ export default function Home() {
     <Layout
       title={`Hello from ${siteConfig.title}`}
       description="Description will go into a meta tag in <head />">
-      <HomepageHeader />
-      <div style={{margin: '4em 0', padding: '0 20%'}}>
-        <div className='container container-fluid'>
-          <Bottom />
+      <div
+        style={{
+          '--ifm-container-width-xl': '960px'
+        }}
+      >
+        <HomepageHeader />
+        <div style={{margin: '4em 0'}}>
+          <div className='container container-fluid'>
+            <Bottom />
+          </div>
         </div>
       </div>
     </Layout>

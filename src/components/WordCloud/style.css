@@ -1,6 +1,7 @@
 .wordcloud-element {
-    opacity: 0.7;
+    color: rgb(37, 193, 159, 0.3) !important;
 }
 .wordcloud-element:hover {
     text-decoration: none;
+    color: rgba(37, 193, 159, 1) !important;
 }

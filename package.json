@@ -49,6 +49,7 @@
   },
   "devDependencies": {
     "@docusaurus/module-type-aliases": "^2.0.0-beta.15",
+    "@primer/octicons-react": "^16.3.1",
     "@tsconfig/docusaurus": "^1.0.4",
     "@types/luxon": "^2.0.9",
     "swr": "^1.2.2",
