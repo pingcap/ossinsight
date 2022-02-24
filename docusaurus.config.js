@@ -7,7 +7,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'GH Archive Live',
-  tagline: 'trends about oss database, js/web framework and more a short description,a short descriptio,a short descriptio,a short description,a short description,a short description,a short description,a short description,a short description,a short description',
+  tagline: 'We collect all GitHub events from 2011 and store them in TiDB Cloud, then analyze to find interesting or fast growing open source repositories, like trends about oss database, js/web framework and more, the data is updated hourly',
   url: 'https://gharchive.live/',
   baseUrl: '/',
   onBrokenLinks: 'throw',
@@ -165,6 +165,7 @@ const config = {
         ],
         copyright: `Copyright © ${new Date().getFullYear()} TiDB Cloud, Inc. Built with Docusaurus.`,
       },
+/*
       algolia: {
         // The application ID provided by Algolia
         appId: 'F84G4I8LFA',
@@ -185,6 +186,7 @@ const config = {
 
         //... other Algolia params
       },
+*/
       prism: {
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
