@@ -7,7 +7,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'GH Archive Live',
-  tagline: 'trends about oss database, js/web framework and more',
+  tagline: 'trends about oss database, js/web framework and more a short description,a short descriptio,a short descriptio,a short description,a short description,a short description,a short description,a short description,a short description,a short description',
   url: 'https://gharchive.live/',
   baseUrl: '/',
   onBrokenLinks: 'throw',
