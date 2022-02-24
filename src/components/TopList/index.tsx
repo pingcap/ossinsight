@@ -21,6 +21,7 @@ import styles from './index.module.css'
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
+import InfoIcon from "@mui/icons-material/Info";
 import DialogTitle from "@mui/material/DialogTitle";
 import Dialog from "@mui/material/Dialog";
 import CodeBlock from "@theme/CodeBlock";
@@ -47,7 +48,7 @@ export default function TopList() {
   return (
     <ThemeAdaptor>
       <h2>
-        Top 20 active repos
+        These are the 20 most active repositories within the last hour.
         <Tooltip
           title={(
             <Typography variant='body2'>
@@ -58,7 +59,7 @@ export default function TopList() {
           )}
         >
           <IconButton>
-            <QuestionMarkIcon />
+            <InfoIcon />
           </IconButton>
         </Tooltip>
       </h2>

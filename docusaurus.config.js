@@ -7,12 +7,12 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'GH Archive Live',
-  tagline: 'trends about oss database, js/web framework and more',
+  tagline: 'trends about oss database, js/web framework and more a short description,a short descriptio,a short descriptio,a short description,a short description,a short description,a short description,a short description,a short description,a short description',
   url: 'https://gharchive.live/',
   baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
-  favicon: 'img/favicon.ico',
+  favicon: 'img/favicon.png',
   organizationName: 'pingcap-inc', // Usually your GitHub org/user name.
   projectName: 'gharchive.live', // Usually your repo name.
 
@@ -31,8 +31,7 @@ const config = {
         blog: {
           showReadingTime: true,
           // Please change this to your repo.
-          editUrl:
-            'https://github.com/pingcap-inc/gharchive.live/edit/main/',
+          editUrl: 'https://github.com/pingcap-inc/gharchive.live/edit/main/',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
@@ -123,6 +122,10 @@ const config = {
               {
                 label: 'GH Archive - Data Source',
                 href: 'http://www.gharchive.org/',
+              },
+              {
+                label: 'GHTorrent',
+                href: 'https://ghtorrent.org/',
               },
               {
                 label: 'Docusaurus',
