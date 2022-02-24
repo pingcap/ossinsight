@@ -11,54 +11,54 @@ We have collected a list of well-known open source projects in the field of data
 
 The full list of database repositories participating in statistics includes
 
- ```
- +-----------+----------------------------+
-| id        | name                       |
-+-----------+----------------------------+
-| 507775    | elastic/elasticsearch      |
-| 60246359  | clickhouse/clickhouse      |
-| 17165658  | apache/spark               |
-| 41986369  | pingcap/tidb               |
-| 16563587  | cockroachdb/cockroach      |
-| 6838921   | prometheus/prometheus      |
-| 108110    | mongodb/mongo              |
-| 166515022 | trinodb/trino              |
-| 48833910  | tikv/tikv                  |
-| 156018    | redis/redis                |
-| 688366    | apache/lucene-solr         |
-| 160985    | apache/hbase               |
-| 5349565   | prestodb/presto            |
-| 6934395   | facebook/rocksdb           |
-| 6358188   | apache/druid               |
-| 11008207  | vitessio/vitess            |
-| 19961085  | apache/pinot               |
-| 206444    | apache/hive                |
-| 30753733  | percona/percona-server     |
-| 105944401 | yugabyte/yugabyte-db       |
-| 31006158  | apache/ignite              |
-| 99919302  | apache/incubator-doris     |
-| 50874442  | citusdata/citus            |
-| 84240850  | timescale/timescaledb      |
-| 28738447  | apache/kylin               |
-| 44781140  | greenplum-db/gpdb          |
-| 26521330  | alibaba/oceanbase          |
-| 13124802  | influxdata/influxdb        |
-| 146459443 | vesoft-inc/nebula          |
-| 28449431  | scylladb/scylla            |
-| 160990    | apache/hadoop              |
-| 206417    | apache/couchdb             |
-| 9342529   | crate/crate                |
-| 19257422  | questdb/questdb            |
-| 196353673 | taosdata/TDengine          |
-| 172104891 | MaterializeInc/materialize |
-| 402945349 | StarRocks/starrocks        |
-| 11225014  | etcd-io/etcd               |
-| 2649214   | arangodb/arangodb          |
-| 41349039  | dgraph-io/dgraph           |
-| 114187903 | apple/foundationdb         |
-| 20587599  | apache/flink               |
-| 19816070  | MariaDB/server             |
-| 69400326  | confluentinc/ksql          |
-+-----------+----------------------------+
+```
++----------------------------+-------+-----------+
+| repo_name                  | stars | repo_id   |
++----------------------------+-------+-----------+
+| elastic/elasticsearch      | 65323 | 507775    |
+| redis/redis                | 58608 | 156018    |
+| prometheus/prometheus      | 43242 | 6838921   |
+| etcd-io/etcd               | 42402 | 11225014  |
+| apache/spark               | 37205 | 17165658  |
+| pingcap/tidb               | 32932 | 41986369  |
+| cockroachdb/cockroach      | 25638 | 16563587  |
+| influxdata/influxdb        | 24929 | 13124802  |
+| facebook/rocksdb           | 23527 | 6934395   |
+| clickhouse/clickhouse      | 23356 | 60246359  |
+| mongodb/mongo              | 23160 | 108110    |
+| apache/flink               | 19490 | 20587599  |
+| taosdata/TDengine          | 18813 | 196353673 |
+| dgraph-io/dgraph           | 18772 | 41349039  |
+| prestodb/presto            | 14540 | 5349565   |
+| apache/hadoop              | 14534 | 23418517  |
+| vitessio/vitess            | 14256 | 11008207  |
+| arangodb/arangodb          | 13015 | 2649214   |
+| timescale/timescaledb      | 12860 | 84240850  |
+| apache/druid               | 12560 | 6358188   |
+| tikv/tikv                  | 11252 | 48833910  |
+| apple/foundationdb         | 10895 | 114187903 |
+| vesoft-inc/nebula          | 8381  | 146459443 |
+| questdb/questdb            | 8377  | 19257422  |
+| scylladb/scylla            | 8102  | 28449431  |
+| yugabyte/yugabyte-db       | 6274  | 105944401 |
+| citusdata/citus            | 6034  | 50874442  |
+| greenplum-db/gpdb          | 5440  | 44781140  |
+| apache/couchdb             | 5307  | 206417    |
+| trinodb/trino              | 5019  | 166515022 |
+| confluentinc/ksql          | 4944  | 69400326  |
+| apache/hbase               | 4931  | 20089857  |
+| MariaDB/server             | 4663  | 19816070  |
+| apache/lucene-solr         | 4637  | 50229487  |
+| apache/hive                | 4465  | 206444    |
+| apache/ignite              | 4392  | 31006158  |
+| apache/incubator-doris     | 4250  | 99919302  |
+| apache/pinot               | 4036  | 19961085  |
+| MaterializeInc/materialize | 3647  | 172104891 |
+| crate/crate                | 3609  | 9342529   |
+| apache/kylin               | 3555  | 28738447  |
+| StarRocks/starrocks        | 2005  | 402945349 |
+| percona/percona-server     | 924   | 30753733  |
+| alibaba/oceanbase          | 284   | 217443464 |
++----------------------------+-------+-----------+
 ```
 
