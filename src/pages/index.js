@@ -23,7 +23,6 @@ function HomepageHeader() {
         <div className='container'>
           <p className={clsx('hero__subtitle')}>
             {siteConfig.tagline}
-            <a href='/blog/about'>, learn more</a>.
           </p>
         </div>
       </div>
