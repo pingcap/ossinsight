@@ -165,6 +165,7 @@ const config = {
         ],
         copyright: `Copyright © ${new Date().getFullYear()} TiDB Cloud, Inc. Built with Docusaurus.`,
       },
+/*
       algolia: {
         // The application ID provided by Algolia
         appId: 'F84G4I8LFA',
@@ -185,6 +186,7 @@ const config = {
 
         //... other Algolia params
       },
+*/
       prism: {
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
