@@ -22,7 +22,7 @@ ORDER BY 2 DESC
    LIMIT 10
 ```
 
-<iframe  width="100%" height="350" scrolling="no"  src="/charts/bar.html?x=[%22facebook/react%22,%22sveltejs/svelte%22,%22vuejs/vue%22,%22angular/angular%22,%22solidjs/solid%22,%22vuejs/core%22,%22alpinejs/alpine%22,%22preactjs/preact%22,%22jquery/jquery%22,%22hotwired/stimulus%22]&data=[22830,18573,18015,11037,8607,8322,6993,2965,2227,1355]&theme=vintage">
+<iframe  width="100%" height="350" scrolling="no"  src="/charts/bar.html?x=[%22tiangolo/fastapi%22,%22supabase/supabase%22,%22nocodb/nocodb%22,%22appwrite/appwrite%22,%22strapi/strapi%22,%22appsmithorg/appsmith%22,%22Budibase/budibase%22,%22n8n-io/n8n%22,%22hasura/graphql-engine%22,%22saleor/saleor%22]&data=[21792,20723,16498,10772,10463,9531,7994,7930,5522,5326]&theme=vintage">
 </iframe>
 
 ## Top 10 repos by PR in 2021
