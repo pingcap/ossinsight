@@ -1,6 +1,6 @@
 ---
 title: "Deep Insight About OSS Database: 2021"
-image: /img/gharchive-title-img.png
+image: img/gharchive-title-img.png
 ---
 
 

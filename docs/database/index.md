@@ -1,6 +1,6 @@
 ---
 title: "OSS Database"
-image: /img/gharchive-title-img.png
+image: img/gharchive-title-img.png
 ---
 
 ![](/img/gharchive-title-img.png)
