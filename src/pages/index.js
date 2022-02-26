@@ -39,8 +39,8 @@ export default function Home() {
   const {siteConfig} = useDocusaurusContext();
   return (
     <Layout
-      title={`Hello from ${siteConfig.title}`}
-      description="Description will go into a meta tag in <head />">
+      title={`📈 2021 OSS Analysis ${siteConfig.title}`}
+      description="💎 Comprehensive analysis of open source software trends on github, including database field, javascript framework field, web framework, lowcode development tool, etc. <head />">
       <div
         style={{
           '--ifm-container-width-xl': '960px'
