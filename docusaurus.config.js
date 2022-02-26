@@ -47,8 +47,8 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
-      image: 'img/gharchive-title-img-en.png',
-      metadata: [{name: 'twitter:card', content: 'summary'}],
+      image: 'img/gharchive-title-img.png',
+      metadata: [{name: 'twitter:card', content: 'summary_large_image'}],
       navbar: {
         title: 'GH Archive Live',
         logo: {
