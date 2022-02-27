@@ -167,3 +167,185 @@ run(_rawData);
 </script>
     </body>
 </html>
+
+
+<!DOCTYPE html>
+<html style="height: 100%">
+    <head>
+        <meta charset="utf-8">
+    </head>
+    <body style="height: 100%; margin: 0">
+      <div id="container" style="height: 100%"></div>
+
+      <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@5.2.2/dist/echarts.min.js"></script>
+      <style>
+          body {
+              background: #fff;
+          }
+          @media(prefers-color-scheme: dark) {
+              body {
+                  background: #000;
+              }
+          }
+      </style>
+      
+      <script src="theme/vintage.js"></script>
+      <script src="theme/infographic.js"></script>
+      <script src="theme/macarons.js"></script>
+      <script src="theme/roma.js"></script>
+      <script src="theme/shine.js"></script>
+      <script src="CanvasRecorder.js"></script>
+      <script type="text/javascript">
+        var theme_list = ["vintage", "infographic", "macarons", "roma", "shine", "dark"];
+
+        var url = document.location;
+        var params = new URLSearchParams(url.search);
+        var title = params.get("title");
+        var data = JSON.parse(params.get("data"));
+        var x = JSON.parse(params.get("x"));
+        var type = params.get("type") || 'bar';
+        
+        var dom = document.getElementById("container");
+        if (params.has("theme") && theme_list.indexOf(params.get("theme")) != -1 ) {
+          var myChart = echarts.init(dom, params.get("theme"));
+        } else {
+          var myChart = echarts.init(dom);
+        }
+
+        var recorder;
+        myChart.on('rendered', () => {
+          if (!recorder) {
+            try {
+              recorder = new CanvasRecorder(myChart.getDom().getElementsByTagName('CANVAS')[0]);
+              recorder.start();
+            } catch (error) {}
+          }
+        });
+
+        myChart.on('finished', () => {
+          try {
+            recorder.stop();
+          } catch (error) {}
+        });
+
+        var app = {};
+
+        var option;
+
+        _rawData = [["year","repo","stars"],[2011,"emberjs/ember.js",1337],[2011,"jashkenas/backbone",3759],[2011,"jquery/jquery",6266],[2012,"Polymer/polymer",1],[2012,"emberjs/ember.js",3030],[2012,"jashkenas/backbone",6755],[2012,"jquery/jquery",9344],[2013,"Polymer/polymer",3129],[2013,"emberjs/ember.js",7295],[2013,"facebook/react",3556],[2013,"jashkenas/backbone",12453],[2013,"jquery/jquery",20437],[2013,"vuejs/vue",9],[2014,"Polymer/polymer",8017],[2014,"angular/angular",679],[2014,"emberjs/ember.js",11037],[2014,"facebook/react",13017],[2014,"jashkenas/backbone",16836],[2014,"jquery/jquery",27736],[2014,"vuejs/vue",3177],[2015,"Polymer/polymer",14577],[2015,"angular/angular",8572],[2015,"emberjs/ember.js",14890],[2015,"facebook/react",35934],[2015,"jashkenas/backbone",21484],[2015,"jquery/jquery",34000],[2015,"preactjs/preact",158],[2015,"vuejs/vue",12387],[2016,"Polymer/polymer",18176],[2016,"angular/angular",21753],[2016,"emberjs/ember.js",17551],[2016,"facebook/react",61953],[2016,"jashkenas/backbone",24627],[2016,"jquery/jquery",41690],[2016,"preactjs/preact",6717],[2016,"sveltejs/svelte",3637],[2016,"vuejs/vue",41179],[2017,"Polymer/polymer",21081],[2017,"angular/angular",36109],[2017,"emberjs/ember.js",19438],[2017,"facebook/react",96414],[2017,"hotwired/stimulus",417],[2017,"ionic-team/stencil",1841],[2017,"jashkenas/backbone",26549],[2017,"jquery/jquery",49280],[2017,"preactjs/preact",17731],[2017,"sveltejs/svelte",6074],[2017,"vuejs/vue",89301],[2018,"Polymer/polymer",23027],[2018,"angular/angular",49927],[2018,"emberjs/ember.js",21776],[2018,"facebook/react",135188],[2018,"hotwired/stimulus",6772],[2018,"ionic-team/stencil",4539],[2018,"jashkenas/backbone",27651],[2018,"jquery/jquery",54130],[2018,"preactjs/preact",22226],[2018,"solidjs/solid",26],[2018,"sveltejs/svelte",9025],[2018,"vuejs/vue",140738],[2019,"Polymer/polymer",24232],[2019,"angular/angular",64724],[2019,"emberjs/ember.js",23266],[2019,"facebook/react",164206],[2019,"hotwired/stimulus",8063],[2019,"ionic-team/stencil",7229],[2019,"jashkenas/backbone",28441],[2019,"jquery/jquery",57889],[2019,"preactjs/preact",26683],[2019,"solidjs/solid",1459],[2019,"sveltejs/svelte",29991],[2019,"vuejs/vue",179886],[2020,"Polymer/polymer",24814],[2020,"angular/angular",81451],[2020,"emberjs/ember.js",24049],[2020,"facebook/react",189999],[2020,"hotwired/stimulus",10274],[2020,"ionic-team/stencil",9066],[2020,"jashkenas/backbone",28974],[2020,"jquery/jquery",60887],[2020,"preactjs/preact",30409],[2020,"solidjs/solid",4906],[2020,"sveltejs/svelte",43518],[2020,"vuejs/vue",208865],[2021,"Polymer/polymer",25274],[2021,"angular/angular",92488],[2021,"emberjs/ember.js",24733],[2021,"facebook/react",212829],[2021,"hotwired/stimulus",11629],[2021,"ionic-team/stencil",10344],[2021,"jashkenas/backbone",29392],[2021,"jquery/jquery",63114],[2021,"preactjs/preact",33374],[2021,"solidjs/solid",13513],[2021,"sveltejs/svelte",62091],[2021,"vuejs/vue",226880],[2022,"Polymer/polymer",25334],[2022,"angular/angular",94135],[2022,"emberjs/ember.js",24831],[2022,"facebook/react",216499],[2022,"hotwired/stimulus",11766],[2022,"ionic-team/stencil",10534],[2022,"jashkenas/backbone",29446],[2022,"jquery/jquery",63476],[2022,"preactjs/preact",33971],[2022,"solidjs/solid",14866],[2022,"sveltejs/svelte",64141],[2022,"vuejs/vue",229174]];
+            
+
+        function run(_rawData) {
+          const repos = [
+              'jquery/jquery',
+              'emberjs/ember.js',
+              'jashkenas/backbone',
+              'vuejs/vue',
+              'facebook/react',
+              'angular/angular',
+              'sveltejs/svelte',
+              'preactjs/preact',
+              'Polymer/polymer',
+              'ionic-team/stencil',
+              'hotwired/stimulus',
+              'solidjs/solid'
+          ];
+          const datasetWithFilters = [];
+          const seriesList = [];
+          echarts.util.each(repos, function (repo) {
+            var datasetId = 'dataset_' + repo;
+            datasetWithFilters.push({
+              id: datasetId,
+              fromDatasetId: 'dataset_raw',
+              transform: {
+                type: 'filter',
+                config: {
+                  and: [
+                    { dimension: 'repo', '=': repo }
+                  ]
+                }
+              }
+            });
+            seriesList.push({
+              type: 'line',
+              datasetId: datasetId,
+              showSymbol: false,
+              name: repo,
+              endLabel: {
+                show: true,
+                formatter: function (params) {
+                  return params.value[1] + ': ' + params.value[2];
+                }
+              },
+              labelLayout: {
+                moveOverlap: 'shiftY'
+              },
+              emphasis: {
+                focus: 'series'
+              },
+              encode: {
+                x: 'year',
+                y: 'stars',
+                label: ['stars'],
+                itemName: 'year',
+                tooltip: ['stars']
+              }
+            });
+          });
+          option = {
+            animationDuration: 30000,
+            dataset: [
+              {
+                id: 'dataset_raw',
+                source: _rawData
+              },
+              {
+               transform: {
+                type: 'sort',
+                config: { dimension: 'year', order: 'asc' }
+              }
+              },
+              ...datasetWithFilters
+            ],
+            title: {
+              text: '',
+              left: 'center',
+            },
+            tooltip: {
+              order: 'valueDesc',
+              trigger: 'axis'
+            },
+            toolbox: {
+              feature: {
+                 myTool2:{ 
+                    show : true,
+                    title : 'Download',
+                    icon: 'M4.7,22.9L29.3,45.5L54.7,23.4M4.6,43.6L4.6,58L53.8,58L53.8,43.6M29.2,45.1L29.2,0',
+                    onclick : function (){
+                      try {
+                        recorder.save("jsframework.webm");
+                      } catch (error) {};
+                    }
+                }
+              }
+            },
+            xAxis: {
+              type: 'category',
+              nameLocation: 'middle'
+            },
+            yAxis: {
+              name: 'stars'
+            },
+            grid: {
+              right: 140
+            },
+            series: seriesList
+          };
+          myChart.setOption(option);
+        }
+
+        run(_rawData);
+
+      </script>
+    </body>
+</html>

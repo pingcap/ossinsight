@@ -164,3 +164,185 @@ run(_rawData);
 </script>
     </body>
 </html>
+
+
+<!DOCTYPE html>
+<html style="height: 100%">
+    <head>
+        <meta charset="utf-8">
+    </head>
+    <body style="height: 100%; margin: 0">
+      <div id="container" style="height: 100%"></div>
+
+      <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@5.2.2/dist/echarts.min.js"></script>
+      <style>
+          body {
+              background: #fff;
+          }
+          @media(prefers-color-scheme: dark) {
+              body {
+                  background: #000;
+              }
+          }
+      </style>
+      
+      <script src="theme/vintage.js"></script>
+      <script src="theme/infographic.js"></script>
+      <script src="theme/macarons.js"></script>
+      <script src="theme/roma.js"></script>
+      <script src="theme/shine.js"></script>
+      <script src="CanvasRecorder.js"></script>
+      <script type="text/javascript">
+        var theme_list = ["vintage", "infographic", "macarons", "roma", "shine", "dark"];
+
+        var url = document.location;
+        var params = new URLSearchParams(url.search);
+        var title = params.get("title");
+        var data = JSON.parse(params.get("data"));
+        var x = JSON.parse(params.get("x"));
+        var type = params.get("type") || 'bar';
+        
+        var dom = document.getElementById("container");
+        if (params.has("theme") && theme_list.indexOf(params.get("theme")) != -1 ) {
+          var myChart = echarts.init(dom, params.get("theme"));
+        } else {
+          var myChart = echarts.init(dom);
+        }
+
+        var recorder;
+        myChart.on('rendered', () => {
+          if (!recorder) {
+            try {
+              recorder = new CanvasRecorder(myChart.getDom().getElementsByTagName('CANVAS')[0]);
+              recorder.start();
+            } catch (error) {}
+          }
+        });
+
+        myChart.on('finished', () => {
+          try {
+            recorder.stop();
+          } catch (error) {}
+        });
+
+        var app = {};
+
+        var option;
+
+        _rawData = [['year', 'repo', 'stars'],
+          [2011,"elastic/elasticsearch",1120],[2011,"redis/redis",1740],[2012,"redis/redis",2841],[2012,"elastic/elasticsearch",1891],[2013,"prometheus/prometheus",22],[2013,"redis/redis",5566],[2013,"elastic/elasticsearch",4313],[2013,"etcd-io/etcd",2038],[2013,"facebook/rocksdb",1639],[2014,"redis/redis",9648],[2014,"cockroachdb/cockroach",2586],[2014,"elastic/elasticsearch",8703],[2014,"etcd-io/etcd",5232],[2014,"facebook/rocksdb",3055],[2014,"prometheus/prometheus",114],[2014,"questdb/questdb",42],[2014,"apache/spark",2632],[2015,"cockroachdb/cockroach",6212],[2015,"apache/spark",7428],[2015,"elastic/elasticsearch",14063],[2015,"etcd-io/etcd",8738],[2015,"facebook/rocksdb",4846],[2015,"pingcap/tidb",3295],[2015,"prometheus/prometheus",3767],[2015,"questdb/questdb",86],[2015,"redis/redis",14876],[2016,"apache/spark",12624],[2016,"cockroachdb/cockroach",8661],[2016,"elastic/elasticsearch",21249],[2016,"etcd-io/etcd",12630],[2016,"facebook/rocksdb",7257],[2016,"pingcap/tidb",6138],[2016,"prometheus/prometheus",7800],[2016,"questdb/questdb",150],[2016,"redis/redis",20820],[2016,"clickhouse/clickhouse",1924],[2017,"redis/redis",28684],[2017,"apache/spark",17807],[2017,"clickhouse/clickhouse",3499],[2017,"cockroachdb/cockroach",12977],[2017,"elastic/elasticsearch",30963],[2017,"etcd-io/etcd",17783],[2017,"facebook/rocksdb",10087],[2017,"pingcap/tidb",12022],[2017,"prometheus/prometheus",14515],[2017,"questdb/questdb",162],[2018,"cockroachdb/cockroach",16036],[2018,"apache/spark",22742],[2018,"clickhouse/clickhouse",5898],[2018,"elastic/elasticsearch",40786],[2018,"etcd-io/etcd",23798],[2018,"facebook/rocksdb",13175],[2018,"pingcap/tidb",17495],[2018,"prometheus/prometheus",21678],[2018,"questdb/questdb",168],[2018,"redis/redis",35816],[2019,"apache/spark",28266],[2019,"cockroachdb/cockroach",18877],[2019,"elastic/elasticsearch",51032],[2019,"etcd-io/etcd",31346],[2019,"facebook/rocksdb",16780],[2019,"pingcap/tidb",23533],[2019,"prometheus/prometheus",29568],[2019,"questdb/questdb",379],[2019,"redis/redis",43862],[2019,"clickhouse/clickhouse",9557],[2020,"redis/redis",51142],[2020,"apache/spark",32845],[2020,"clickhouse/clickhouse",14696],[2020,"cockroachdb/cockroach",21302],[2020,"elastic/elasticsearch",58884],[2020,"etcd-io/etcd",37258],[2020,"facebook/rocksdb",19896],[2020,"pingcap/tidb",28393],[2020,"prometheus/prometheus",36355],[2020,"questdb/questdb",2385],[2021,"apache/spark",36678],[2021,"clickhouse/clickhouse",22324],[2021,"cockroachdb/cockroach",24613],[2021,"elastic/elasticsearch",64553],[2021,"etcd-io/etcd",41782],[2021,"facebook/rocksdb",23086],[2021,"pingcap/tidb",32360],[2021,"prometheus/prometheus",42253],[2021,"questdb/questdb",7890],[2021,"redis/redis",57455],[2022,"redis/redis",58516],[2022,"clickhouse/clickhouse",23263],[2022,"cockroachdb/cockroach",25580],[2022,"elastic/elasticsearch",65256],[2022,"etcd-io/etcd",42339],[2022,"facebook/rocksdb",23489],[2022,"pingcap/tidb",32879],[2022,"prometheus/prometheus",43158],[2022,"questdb/questdb",8350],[2022,"apache/spark",37160]];
+            
+
+
+        function run(_rawData) {
+          const repos = [
+              'redis/redis',
+              'pingcap/tidb',
+              'elastic/elasticsearch',
+              'clickhouse/clickhouse',
+              'facebook/rocksdb',
+              'prometheus/prometheus',
+              'cockroachdb/cockroach',
+              'questdb/questdb',
+              'etcd-io/etcd',
+              'apache/spark'
+          ];
+          const datasetWithFilters = [];
+          const seriesList = [];
+          echarts.util.each(repos, function (repo) {
+            var datasetId = 'dataset_' + repo;
+            datasetWithFilters.push({
+              id: datasetId,
+              fromDatasetId: 'dataset_raw',
+              transform: {
+                type: 'filter',
+                config: {
+                  and: [
+                    { dimension: 'repo', '=': repo }
+                  ]
+                }
+              }
+            });
+            seriesList.push({
+              type: 'line',
+              datasetId: datasetId,
+              showSymbol: false,
+              name: repo,
+              endLabel: {
+                show: true,
+                formatter: function (params) {
+                  return params.value[1] + ': ' + params.value[2];
+                }
+              },
+              labelLayout: {
+                moveOverlap: 'shiftY'
+              },
+              emphasis: {
+                focus: 'series'
+              },
+              encode: {
+                x: 'year',
+                y: 'stars',
+                label: ['stars'],
+                itemName: 'year',
+                tooltip: ['stars']
+              }
+            });
+          });
+          option = {
+            animationDuration: 30000,
+            dataset: [
+              {
+                id: 'dataset_raw',
+                source: _rawData
+              },
+              {
+               transform: {
+                type: 'sort',
+                config: { dimension: 'year', order: 'asc' }
+              }
+              },
+              ...datasetWithFilters
+            ],
+            title: {
+              text: '',
+              left: 'center',
+            },
+            tooltip: {
+              order: 'valueDesc',
+              trigger: 'axis'
+            },
+            toolbox: {
+              feature: {
+                 myTool2:{ 
+                    show : true,
+                    title : 'Download',
+                    icon: 'M4.7,22.9L29.3,45.5L54.7,23.4M4.6,43.6L4.6,58L53.8,58L53.8,43.6M29.2,45.1L29.2,0',
+                    onclick : function (){
+                      try {
+                        recorder.save("database.webm");
+                      } catch (error) {};
+                    }
+                }
+              }
+            },
+            xAxis: {
+              type: 'category',
+              nameLocation: 'middle'
+            },
+            yAxis: {
+              name: 'stars'
+            },
+            grid: {
+              right: 140
+            },
+            series: seriesList
+          };
+          myChart.setOption(option);
+        }
+
+        run(_rawData);
+
+      </script>
+    </body>
+</html>
