@@ -108,11 +108,11 @@ const config = {
             items: [
               {
                 label: 'TiDB Community',
-                href: 'https://pingcap.com/community',
+                href: 'https://en.pingcap.com/community',
               },
               {
                 label: 'PingCAP',
-                href: 'https://pingcap.com',
+                href: 'https://en.pingcap.com',
               },
             ],
           },
