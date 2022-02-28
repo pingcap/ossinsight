@@ -4,8 +4,8 @@ WITH
                  , DATE_FORMAT(MAX(created_at), '%Y-%m-%d %H:00:00')                   AS end
             FROM github_events_old)
 
-SELECT TRIM(LOWER(REPLACE(u.company, '@', ''))) AS company,
-       COUNT(DISTINCT actor_id)                 AS num
+SELECT u.country_code           AS country,
+       COUNT(DISTINCT actor_id) AS num
 FROM github_events_old github_events
          JOIN db_repos db ON db.id = github_events.repo_id
          JOIN users u ON u.login = github_events.actor_login
@@ -19,7 +19,9 @@ WHERE github_events.created_at >= (SELECT start FROM datetime_range)
                              'CommitCommentEvent',
                              'PullRequestReviewEvent'
     )
-  AND u.country_code IS NOT NULL
+  AND u.company IS NOT NULL
+  AND u.company != ''
+  AND u.company != 'none'
 GROUP BY 1
 ORDER BY 2 DESC
 LIMIT 20;

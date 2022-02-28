@@ -1,5 +1,4 @@
 WITH
-    # Fetch max updated event time and compute the start and end time.
     datetime_range
         AS (SELECT DATE_FORMAT(MAX(created_at) - INTERVAL 1 HOUR, '%Y-%m-%d %H:00:00') AS start
                  , DATE_FORMAT(MAX(created_at), '%Y-%m-%d %H:00:00')                   AS end
