@@ -41,10 +41,7 @@ export default function Home() {
   return (
     <Layout
       title={`📈 2021 OSS Analysis`}
-      description="💎 Comprehensive analysis of open source software trends on github, including database field, javascript framework field, web framework, lowcode development tool, etc.">
-      <Head>
-        <script type="text/javascript" src="https://platform-api.sharethis.com/js/sharethis.js#property=621c87f7c2df6e001a39a2ee&product=sticky-share-buttons" async="async"></script>
-      </Head>
+      description="💎 Comprehensive analysis of open source software trends on github, include database field, javascript framework field, web framework, lowcode development tool, etc.">
       <div
         style={{
           '--ifm-container-width-xl': '960px'
