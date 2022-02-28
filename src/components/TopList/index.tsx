@@ -48,7 +48,7 @@ export default function TopList() {
   return (
     <ThemeAdaptor>
       <h2>
-        These are the 20 most active repositories within the last hour.
+        These are the 20 most active repositories within the <u>last hour</u>.
         <Tooltip
           title={(
             <Typography variant='body2'>
