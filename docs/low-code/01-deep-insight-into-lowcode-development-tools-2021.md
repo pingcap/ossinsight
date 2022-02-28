@@ -228,7 +228,7 @@ ORDER BY 2 DESC
 +------------------+-------------+
 ```
 
-## Top countries contributing to OSS lowcode development tools
+## Top countries or regions contributing to OSS lowcode development tools
 
 ```sql
   SELECT country_code, 

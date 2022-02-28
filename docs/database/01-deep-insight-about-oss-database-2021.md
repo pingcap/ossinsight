@@ -224,7 +224,7 @@ ORDER BY 2 DESC
 +----------------+-------------+
 ```
 
-## Top countries contributing to OSS databases
+## Top countries or regions contributing to OSS databases
 
 ```sql
   SELECT country_code, 
