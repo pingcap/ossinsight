@@ -16,7 +16,13 @@ const config = {
   organizationName: 'pingcap-inc', // Usually your GitHub org/user name.
   projectName: 'gharchive.live', // Usually your repo name.
 
-
+  scripts: [
+    {
+      src: 'https://platform-api.sharethis.com/js/sharethis.js#property=621c87f7c2df6e001a39a2ee&product=sticky-share-buttons',
+      defer: true,
+      'data-domain': 'gharchive.live',
+    },
+  ],
   presets: [
     [
       'classic',
