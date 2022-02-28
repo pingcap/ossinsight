@@ -1,0 +1,24 @@
+
+
+.basicCard {
+    overflow-y: auto;
+    margin-bottom: 10px;
+}
+
+.basicCardHeader {
+    height: 36px;
+    padding: 8px 10px;
+}
+
+.basicCardTitle {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.basicCardTitle:hover {
+    color: #5dbea1 !important;
+}

@@ -1,0 +1,16 @@
+.mainWrapper {
+    background-color: #f9fafc;
+    padding: 15px;
+}
+
+.mainHeader {
+    position: sticky;
+    top: 60px;
+    padding: 15px;
+    border-bottom: 1px solid transparent;
+    z-index: 999;
+}
+
+.mainContent {
+    padding: 15px;
+}

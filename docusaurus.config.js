@@ -16,7 +16,6 @@ const config = {
   organizationName: 'pingcap-inc', // Usually your GitHub org/user name.
   projectName: 'gharchive.live', // Usually your repo name.
 
-
   presets: [
     [
       'classic',
@@ -63,7 +62,7 @@ const config = {
             position: 'left',
             label: 'Insight',
           },
-          {href: 'https://meta.gharchive.live/public/dashboard/1f3b4bc6-503f-4d25-9936-478902d8238e', label: 'Compare Projects', position: 'left'},
+          {to: '/compare', label: 'Compare Projects', position: 'left'},
           {to: '/blog', label: 'Blog', position: 'left'},
           {to: '/_/more/analyze-github-events-on-tidb-cloud-in-10-minutes', label: 'Try It Yourself', position: 'left'},
           {to: '/_/more/how-it-works', label: '▶️  How It Works', position: 'left'},

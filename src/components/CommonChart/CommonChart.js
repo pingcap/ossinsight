@@ -10,7 +10,7 @@ import ThemeAdaptor from "../ThemeAdaptor";
 function CommonChart({chart: rawChart, noSearch, ...rest}) {
   const chart = useMemo(() => {
     if (typeof rawChart === 'string') {
-      return require('../RemoteCharts/' + rawChart + '/index.js').default
+      return require('../RemoteCharts/' + rawChart + '/index.tsx').default
     } else {
       return rawChart
     }
