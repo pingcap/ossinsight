@@ -1,110 +1,91 @@
-<!--
-    THIS EXAMPLE WAS DOWNLOADED FROM https://echarts.apache.org/examples/en/editor.html?c=line-simple
--->
 <!DOCTYPE html>
 <html style="height: 100%">
-    <head>
-        <meta charset="utf-8">
-    </head>
-    <body style="height: 100%; margin: 0">
-        <div id="container" style="height: 100%"></div>
+<head>
+  <meta charset="utf-8">
+</head>
+<body style="height: 100%; margin: 0">
+  <div id="container" style="height: 100%"></div>
 
-        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@5.2.2/dist/echarts.min.js"></script>
-        <!-- Uncomment this line if you want to dataTool extension
-        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@5.2.2/dist/extension/dataTool.min.js"></script>
-        -->
-        <!-- Uncomment this line if you want to use gl extension
-        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-gl@2/dist/echarts-gl.min.js"></script>
-        -->
-        <!-- Uncomment this line if you want to echarts-stat extension
-        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-stat@latest/dist/ecStat.min.js"></script>
-        -->
-        <!-- Uncomment this line if you want to use map
-        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@5.2.2/map/js/china.js"></script>
-        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@5.2.2/map/js/world.js"></script>
-        -->
-        <!-- Uncomment these two lines if you want to use bmap extension
-        <script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=<Your Key Here>"></script>
-        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@{{version}}/dist/extension/bmap.min.js"></script>
-        -->
-        <style>
-            body {
-                background: #fff;
-            }
-            @media(prefers-color-scheme: dark) {
-                body {
-                    background: #000;
-                }
-            }
-        </style>
-        <script src="theme/vintage.js"></script>
-        <script src="theme/infographic.js"></script>
-        <script src="theme/macarons.js"></script>
-        <script src="theme/roma.js"></script>
-        <script src="theme/shine.js"></script>
-<script type="text/javascript">
-  var theme_list = ["vintage", "infographic", "macarons", "roma", "shine", "dark"];
-
-  var url = document.location;
-  var params = new URLSearchParams(url.search);
-  var title = params.get("title");
-  var data = JSON.parse(params.get("data"));
-  var x = JSON.parse(params.get("x"));
-  var type = params.get("type") || 'bar';
-  
-  var dom = document.getElementById("container");
-  if (params.has("theme") && theme_list.indexOf(params.get("theme")) != -1 ) {
-    var myChart = echarts.init(dom, params.get("theme"));
-  } else {
-    var myChart = echarts.init(dom);
-  }
-
-  var app = {};
-
-  var option;
-
-  option = {
-  tooltip: {
-    trigger: 'axis',
-    axisPointer: {
-      type: 'shadow'
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@5.2.2/dist/echarts.min.js"></script>
+  <style>
+    body {
+      background: #fff;
     }
-  },
-  grid: {
-    left: '3%',
-    right: '4%',
-    bottom: '3%',
-    containLabel: true
-  },
-  xAxis: [
-    {
-      type: 'category',
-      data: x,
-      axisTick: {
-        alignWithLabel: true
+    @media(prefers-color-scheme: dark) {
+      body {
+        background: #000;
       }
     }
-  ],
-  yAxis: [
-    {
-      type: 'value'
-    }
-  ],
-  series: [
-    {
-      name: 'Direct',
-      type: 'bar',
-      barWidth: '60%',
-      data: data
-    }
-  ]
-};
+  </style>
+  <script src="theme/vintage.js"></script>
+  <script src="theme/infographic.js"></script>
+  <script src="theme/macarons.js"></script>
+  <script src="theme/roma.js"></script>
+  <script src="theme/shine.js"></script>
+  <script type="text/javascript">
+    var theme_list = ["vintage", "infographic", "macarons", "roma", "shine", "dark"];
 
-  if (option && typeof option === 'object') {
+    var url = document.location;
+    var params = new URLSearchParams(url.search);
+    var title = params.get("title");
+    var data = JSON.parse(params.get("data"));
+    var x = JSON.parse(params.get("x"));
+    var type = params.get("type") || 'bar';
+    var label = params.get("label") || 'Stars';
+
+    var dom = document.getElementById("container");
+    if (params.has("theme") && theme_list.indexOf(params.get("theme")) != -1 ) {
+      var myChart = echarts.init(dom, params.get("theme"));
+    } else {
+      var myChart = echarts.init(dom);
+    }
+
+    var app = {};
+
+    var option;
+
+    option = {
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'shadow'
+        }
+      },
+      grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true
+      },
+      xAxis: [
+      {
+        type: 'category',
+        data: x,
+        axisTick: {
+          alignWithLabel: true
+        }
+      }
+      ],
+      yAxis: [
+      {
+        type: 'value'
+      }
+      ],
+      series: [
+      {
+        name: label,
+        type: 'bar',
+        barWidth: '60%',
+        data: data
+      }
+      ]
+    };
+
+    if (option && typeof option === 'object') {
       myChart.setOption(option);
-  }
+    }
 
-</script>
-    </body>
+  </script>
+</body>
 </html>
-    
+

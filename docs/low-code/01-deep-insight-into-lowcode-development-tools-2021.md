@@ -22,7 +22,7 @@ ORDER BY 2 DESC
    LIMIT 10
 ```
 
-<iframe  width="100%" height="350" scrolling="no"  src="/charts/bar.html?x=[%22tiangolo/fastapi%22,%22supabase/supabase%22,%22nocodb/nocodb%22,%22appwrite/appwrite%22,%22strapi/strapi%22,%22appsmithorg/appsmith%22,%22Budibase/budibase%22,%22n8n-io/n8n%22,%22hasura/graphql-engine%22,%22saleor/saleor%22]&data=[21792,20723,16498,10772,10463,9531,7994,7930,5522,5326]&theme=vintage">
+<iframe  width="100%" height="350" scrolling="no"  src="/charts/bar.html?x=[%22tiangolo/fastapi%22,%22supabase/supabase%22,%22nocodb/nocodb%22,%22appwrite/appwrite%22,%22strapi/strapi%22,%22appsmithorg/appsmith%22,%22Budibase/budibase%22,%22n8n-io/n8n%22,%22hasura/graphql-engine%22,%22saleor/saleor%22]&data=[21792,20723,16498,10772,10463,9531,7994,7930,5522,5326]&theme=vintage&label=Star">
 </iframe>
 
 ## Top 10 repos by PR in 2021
@@ -38,7 +38,7 @@ ORDER BY 2 DESC
    LIMIT 10
 ```
 
-<iframe  width="100%" height="350" scrolling="no"  src="/charts/bar.html?x=[%22appsmithorg/appsmith%22,%22directus/directus%22,%22keystonejs/keystone%22,%22strapi/strapi%22,%22saleor/saleor%22,%22cube-js/cube.js%22,%22n8n-io/n8n%22,%22supabase/supabase%22,%22TryGhost/Ghost%22,%22appwrite/appwrite%22]&data=[2799,2467,1811,1479,1443,1350,940,882,866,689]&theme=vintage">
+<iframe  width="100%" height="350" scrolling="no"  src="/charts/bar.html?x=[%22appsmithorg/appsmith%22,%22directus/directus%22,%22keystonejs/keystone%22,%22strapi/strapi%22,%22saleor/saleor%22,%22cube-js/cube.js%22,%22n8n-io/n8n%22,%22supabase/supabase%22,%22TryGhost/Ghost%22,%22appwrite/appwrite%22]&data=[2799,2467,1811,1479,1443,1350,940,882,866,689]&theme=vintage&label=PR">
 </iframe>
 
 ## Top Developers for OSS lowcode development tools
