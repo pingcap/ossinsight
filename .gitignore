@@ -4,3 +4,4 @@ gh/**/.cache
 .env
 *.js
 schemas
+.idea

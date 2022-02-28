@@ -1,0 +1,13 @@
+{
+  "cacheHours": 1,
+  "params": [
+    {
+      "name": "repoName1",
+      "replaces": "pingcap/tidb"
+    },
+    {
+      "name": "repoName2",
+      "replaces": "tikv/tikv"
+    }
+  ]
+}

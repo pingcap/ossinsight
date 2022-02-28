@@ -1,0 +1,9 @@
+{
+  "cacheHours": 1,
+  "params": [
+    {
+      "name": "repoName",
+      "replaces": "pingcap/tidb"
+    }
+  ]
+}
