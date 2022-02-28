@@ -40,9 +40,7 @@ interface BarChartProps<Q extends keyof Queries> extends Indexes<Q> {
 export function withBarChartQuery<Q extends keyof Queries, D = RemoteData<Queries[Q]['params'], Queries[Q]['data']>>
 (query: Q, indices: Indexes<Q>): React.FC<QueryComponentProps<Q, BarChartProps<Q>>> {
 
-  const {categoryIndex, valueIndex} = indices
-
-  return ({clear, size = 30, formatSql = true, children, ...params}: QueryComponentProps<Q, BarChartProps<Q>>) => {
+  return ({clear, size = 30, formatSql = true, children, categoryIndex = indices.categoryIndex, valueIndex = indices.valueIndex, ...params}: QueryComponentProps<Q, BarChartProps<Q>>) => {
     const {data, loading, error} = useRemoteData(query, params, formatSql)
 
     const chart = React.createElement(BarChart, {
