@@ -19,7 +19,9 @@ WHERE github_events.created_at >= (SELECT start FROM datetime_range)
                              'CommitCommentEvent',
                              'PullRequestReviewEvent'
     )
-  AND u.country_code IS NOT NULL
+  AND u.company IS NOT NULL
+  AND u.company != ''
+  AND u.company != 'none'
 GROUP BY 1
 ORDER BY 2 DESC
 LIMIT 20;
