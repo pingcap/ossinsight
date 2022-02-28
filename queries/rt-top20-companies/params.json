@@ -1,0 +1,9 @@
+{
+  "cacheHours": 1,
+  "params": [
+    {
+      "name": "repo",
+      "replaces": "db_repos"
+    }
+  ]
+}
