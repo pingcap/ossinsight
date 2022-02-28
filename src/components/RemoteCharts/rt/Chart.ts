@@ -1,4 +1,4 @@
-import {withBarChartQuery} from "../withQuery";
+import {withBarChartQuery, withDataGridQuery} from "../withQuery";
 import {Query} from "./Form";
 import React, {useMemo} from "react";
 import {Queries} from "../queries";
@@ -9,10 +9,13 @@ interface ChartProps<Q extends keyof Queries = any> extends Record<string, any> 
 
 export const Chart = ({ category, categoryIndex = 'repo_name', valueIndex, ...props }: ChartProps) => {
   const Chart = useMemo(() => {
-    return withBarChartQuery(category, {
-      categoryIndex,
-      valueIndex
-    })
+    return withDataGridQuery(category, [{
+      field: categoryIndex,
+      title: categoryIndex
+    }, {
+      field: valueIndex,
+      title: valueIndex
+    }])
   }, [category, categoryIndex, valueIndex])
 
   return React.createElement(Chart, props)
