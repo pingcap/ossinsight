@@ -42,8 +42,8 @@ export function withBarChartQuery<Q extends keyof Queries, D = RemoteData<Querie
 
   const {categoryIndex, valueIndex} = indices
 
-  return ({clear, size = 30, children, ...params}: QueryComponentProps<Q, BarChartProps<Q>>) => {
-    const {data, loading, error} = useRemoteData(query, params)
+  return ({clear, size = 30, formatSql = true, children, ...params}: QueryComponentProps<Q, BarChartProps<Q>>) => {
+    const {data, loading, error} = useRemoteData(query, params, formatSql)
 
     const chart = React.createElement(BarChart, {
       categoryIndex,

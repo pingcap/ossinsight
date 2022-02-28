@@ -52,7 +52,12 @@ export default function ({data, loading, clear, size, n, deps, categoryIndex, va
     }
   }, [data, ...deps, categoryIndex, valueIndex, size, clear])
 
-  const height = loading ? 400 : n * (size * (clear ? 1 : 1.5))
+  const height = useMemo(() => {
+    const height = loading ? 400 : Math.min(n, data.length) * (size * (clear ? 1 : 1.5))
+
+    return height
+  }, [size, loading, clear])
+
 
   const opts = useMemo(() => {
     return {
