@@ -13,7 +13,7 @@ interface StatisticCardProps extends BaseChartCardProps {
 
 export default function StatisticCard(props: StatisticCardProps) {
   const {queryName, params, height, shouldLoad} = props;
-  const {data: res, loading, error} = useRemoteData(queryName, params, shouldLoad);
+  const {data: res, loading, error} = useRemoteData(queryName, params, true, shouldLoad);
   const [value, setValue] = useState<any>();
   const {isDarkTheme} = useThemeContext();
 

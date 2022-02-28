@@ -25,7 +25,7 @@ export default function LineAreaBarChartCard(props: LineAreaBarChartProps) {
     seriesColumnName,
     height
   } = props;
-  const {data: res, loading, error} = useRemoteData(queryName, params, shouldLoad);
+  const {data: res, loading, error} = useRemoteData(queryName, params, true, shouldLoad);
   const {isDarkTheme} = useThemeContext();
   const [data, setData] = useState([]);
 

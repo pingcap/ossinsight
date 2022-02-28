@@ -36,7 +36,7 @@ export default function HeatMapChartCard(props: HeatMapChartCardProps) {
     valueColumnName,
     height
   } = props;
-  const {data: res, loading, error} = useRemoteData(queryName, params, shouldLoad);
+  const {data: res, loading, error} = useRemoteData(queryName, params, true, shouldLoad);
   const {isDarkTheme} = useThemeContext();
   const [data, setData] = useState([]);
   const [min, setMin] = useState(0);
@@ -128,5 +128,5 @@ export default function HeatMapChartCard(props: HeatMapChartCardProps) {
         locale: 'en'
       }}
     />
-  </BasicCard>
+  </BasicCard>;
 }

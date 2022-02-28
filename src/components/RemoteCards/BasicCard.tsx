@@ -30,7 +30,7 @@ export interface BaseCardProps {
   shouldLoad: boolean,
   noLoadReason: string,
   loading: boolean,
-  error: unknown,
+  error: any,
   height: string,
   children: any,
   query: keyof Queries,
