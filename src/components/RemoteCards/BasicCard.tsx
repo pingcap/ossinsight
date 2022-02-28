@@ -26,20 +26,21 @@ export interface BaseChartCardProps {
 }
 
 export interface BaseCardProps {
-  title: string;
-  shouldLoad: boolean,
-  noLoadReason: string,
-  loading: boolean,
-  error: any,
-  height: string,
-  children: any,
-  query: keyof Queries,
-  data: RemoteData<any, any>,
+  title?: string;
+  shouldLoad?: boolean;
+  noLoadReason?: string;
+  loading?: boolean;
+  error?: any;
+  height: string;
+  children: any;
+  query?: keyof Queries;
+  data?: RemoteData<any, any>;
+  hideTitle?: boolean;
 }
 
 export default function BasicCard({
-  loading = false, error = false, shouldLoad = false,
-  title = "title", height = "100px", noLoadReason, children, query, data
+  loading = false, error = false, shouldLoad = true, hideTitle = false,
+  title, height = "100px", noLoadReason, children, query, data
 }: BaseCardProps) {
   const theme = useTheme();
   const [showDebugModel, setShowDebugModel] = useState(false);
@@ -56,21 +57,23 @@ export default function BasicCard({
 
   return <>
     <Card className={basicStyle.basicCard}>
-      <Stack className={basicStyle.basicCardHeader} direction="row" justifyContent="space-between" alignItems="center">
-        <a
-          className={basicStyle.basicCardTitle}
-          style={{
-            color: theme.palette.text.secondary
-          }}
-          onClick={handleShowDebugModel}>
-          {title}
-        </a>
-      </Stack>
+      {
+        (title && !hideTitle) && <Stack className={basicStyle.basicCardHeader} direction="row" justifyContent="space-between" alignItems="center">
+          <a
+            className={basicStyle.basicCardTitle}
+            style={{
+              color: theme.palette.text.secondary
+            }}
+            onClick={handleShowDebugModel}>
+            {title}
+          </a>
+        </Stack>
+      }
       {
         (!shouldLoad || loading || error) ?
         <Stack direction="column" justifyContent="center" alignItems="center" style={{height: height}}>
           {
-            loading && <CircularProgress/>
+            loading && <CircularProgress size="1.5em"/>
           }
           {
             error && <Typography sx={{fontSize: 14}} color="text.secondary" gutterBottom>Failed to load data: {error?.response?.data?.msg}</Typography>

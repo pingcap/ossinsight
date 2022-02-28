@@ -58,17 +58,17 @@ export const DebugInfoModel = ({ query, data, open, onClose }: DebugInfoModelInf
 const Pair = ({ title, value }: { title: string, value: any }) => {
   return (
     <>
-      <Grid xs={3}>
+      <Grid item xs={3}>
         <div>
           <Typography align='right' variant='body1'>
             {title}
           </Typography>
         </div>
       </Grid>
-      <Grid xs={1}/>
-      <Grid xs={8}>
+      <Grid item xs={1}/>
+      <Grid item xs={8}>
         <div>
-          <Typography align='left' variant='body2'>
+          <Typography align='left' variant='body2' component="div">
             {value}
           </Typography>
         </div>

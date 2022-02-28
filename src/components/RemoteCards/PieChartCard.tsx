@@ -47,7 +47,7 @@ export default function PieChartCard(props: PieChartCardProps) {
       legend: Object.assign({
         type: 'scroll',
         orient: 'vertical',
-        right: 10,
+        right: '20px',
         top: 20,
         bottom: 20,
         x: "right",
@@ -58,12 +58,11 @@ export default function PieChartCard(props: PieChartCardProps) {
       }).map((s) => {
         return Object.assign({
           type: 'pie',
-          radius: ['60%', '100%'],
+          radius: ['50%', '90%'],
           avoidLabelOverlap: false,
           itemStyle: {
-            borderRadius: 10,
-            borderColor: '#fff',
-            borderWidth: 2
+            borderColor: isDarkTheme ? '#1e1e1f' : '#ffffff',
+            borderWidth: 4
           },
           label: {
             show: false,
@@ -95,10 +94,10 @@ export default function PieChartCard(props: PieChartCardProps) {
       xAxis: xAxis,
       yAxis: yAxis,
       grid: Object.assign({
-        left: '60px'
+        left: '160px'
       }, grid),
     }
-  }, [data])
+  }, [data, isDarkTheme])
 
   return <BasicCard {...props} loading={loading} error={error} query={queryName} data={res}>
     <ReactECharts
@@ -109,7 +108,7 @@ export default function PieChartCard(props: PieChartCardProps) {
         height: height,
         overflow: 'hidden'
       }}
-      theme={isDarkTheme ? 'dark' : 'light'}
+      theme={isDarkTheme ? 'compare-dark' : 'compare-light'}
       opts={{
         devicePixelRatio: window?.devicePixelRatio ?? 1,
         renderer: 'canvas',

@@ -34,6 +34,8 @@ export default function HeatMapChartCard(props: HeatMapChartCardProps) {
     xAxisColumnName,
     yAxisColumnName,
     valueColumnName,
+    xAxis,
+    yAxis,
     height
   } = props;
   const {data: res, loading, error} = useRemoteData(queryName, params, true, shouldLoad);
@@ -66,32 +68,53 @@ export default function HeatMapChartCard(props: HeatMapChartCardProps) {
         position: 'top'
       },
       grid: {
-        height: '70%',
-        top: '5%',
+        height: '80%',
+        top: '3%',
+        left: '5%',
         right: '3%',
         bottom: '1%'
       },
-      xAxis: {
+      xAxis: Object.assign({
         type: 'category',
         data: hours,
         splitArea: {
           show: true
-        }
-      },
-      yAxis: {
+        },
+        nameLocation: 'middle',
+        nameGap: 50,
+        nameTextStyle: {
+          fontSize: 13,
+          fontWeight: 'bold',
+          color: '#959aa9'
+        },
+        axisLabel: {
+          color: '#959aa9',
+          fontWeight: 'bold'
+        },
+      }, xAxis),
+      yAxis: Object.assign({
         type: 'category',
         data: days,
         splitArea: {
           show: true
-        }
-      },
+        },
+        nameLocation: 'middle',
+        nameGap: 50,
+        nameTextStyle: {
+          fontSize: 13,
+          fontWeight: 'bold',
+          color: '#959aa9'
+        },
+        axisLabel: {
+          color: '#959aa9',
+          fontWeight: 'bold'
+        },
+      }, yAxis),
       visualMap: {
         min: min,
         max: max,
-        calculable: true,
         orient: 'horizontal',
-        left: 'right',
-        bottom: '1%'
+        left: 'center',
       },
       series: series.map((s) => {
         return Object.assign({
@@ -109,7 +132,7 @@ export default function HeatMapChartCard(props: HeatMapChartCardProps) {
         }, s);
       })
     }
-  }, [data])
+  }, [data, isDarkTheme])
 
   return <BasicCard {...props} loading={loading} error={error} query={queryName} data={res}>
     <ReactECharts
@@ -120,7 +143,7 @@ export default function HeatMapChartCard(props: HeatMapChartCardProps) {
         height: height,
         overflow: 'hidden'
       }}
-      theme={isDarkTheme ? 'dark' : 'light'}
+      theme={isDarkTheme ? 'compare-dark' : 'compare-light'}
       opts={{
         devicePixelRatio: window?.devicePixelRatio ?? 1,
         renderer: 'canvas',

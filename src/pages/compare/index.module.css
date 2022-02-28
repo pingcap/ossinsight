@@ -4,8 +4,6 @@
 }
 
 .mainHeader {
-    position: sticky;
-    top: 60px;
     padding: 15px;
     border-bottom: 1px solid transparent;
     z-index: 999;
@@ -13,4 +11,8 @@
 
 .mainContent {
     padding: 15px;
+}
+
+.mainSection {
+    margin-bottom: 10px;
 }

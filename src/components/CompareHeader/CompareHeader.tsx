@@ -1,15 +1,15 @@
 import React from "react";
 import RepoSelector from "./RepoSelector";
-import {Stack, useTheme} from "@mui/material";
+import {Stack} from "@mui/material";
 import DateRangeSelector from "./DateRangeSelector";
 import basicStyle from "../../pages/compare/index.module.css";
+import useThemeContext from "@theme/hooks/useThemeContext";
 
 function CompareHeader(props) {
-  const theme = useTheme();
+  const { isDarkTheme } = useThemeContext();
 
   return <header className={basicStyle.mainHeader} style={{
-    backgroundColor: theme.palette.background.default,
-    borderBottomColor:  theme.palette.divider,
+    backgroundColor: isDarkTheme ? '#242526' : '#f9fbfc'
   }}>
     <Stack
       direction="row"

@@ -83,16 +83,13 @@ export default function LineAreaBarChartCard(props: LineAreaBarChartProps) {
         nameTextStyle: {
           fontSize: 13,
           fontWeight: 'bold',
-          color: '#959aa9'
         },
         axisLabel: {
-          color: '#959aa9',
           fontWeight: 'bold',
         },
         axisLine: {
           lineStyle: {
-            color: '#ccc',
-            lineStyle: 1
+            width: 2
           }
         },
         axisTick: {
@@ -115,7 +112,6 @@ export default function LineAreaBarChartCard(props: LineAreaBarChartProps) {
           interval: 5,
           lineStyle: {
             type: [5, 10],
-            color: '#f2f2f2',
           }
         }
       }, yAxis),
@@ -125,12 +121,17 @@ export default function LineAreaBarChartCard(props: LineAreaBarChartProps) {
           name: s.name,
           datasetId: `dataset_of_${s.name}`,
           // TODO: Multiple labels need to be displayed at intervals.
-          // label: {
-          //   show: true,
-          //   position: 'top',
-          //   fontWeight: 'bold',
-          //   color: '#4e5771',
-          // },
+          label: {
+            show: true,
+            position: 'top',
+            fontWeight: 'bold',
+            color: '#4e5771',
+            formatter: (params) => {
+              const { dataIndex = 0, data = [] } = params;
+              const show = (dataIndex % 3) === 0 || (dataIndex === data.length - 1);
+              return show ? data[yAxis.name] : '';
+            }
+          },
           emphasis: {
             focus: 'series'
           },
@@ -142,7 +143,7 @@ export default function LineAreaBarChartCard(props: LineAreaBarChartProps) {
         }
       })
     }
-  }, [data])
+  }, [data, isDarkTheme])
 
   return <BasicCard {...props} loading={loading} error={error} query={queryName} data={res}>
     <ReactECharts
@@ -153,7 +154,7 @@ export default function LineAreaBarChartCard(props: LineAreaBarChartProps) {
         height: height,
         overflow: 'hidden'
       }}
-      theme={isDarkTheme ? 'dark' : 'light'}
+      theme={isDarkTheme ? 'compare-dark' : 'compare-light'}
       opts={{
         devicePixelRatio: window?.devicePixelRatio ?? 1,
         renderer: 'canvas',
