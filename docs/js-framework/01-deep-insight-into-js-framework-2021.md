@@ -220,7 +220,7 @@ ORDER BY 2 DESC
 +--------------+-------------+
 ```
 
-## Top countries contributing to OSS javascript frameworks
+## Top countries or regions contributing to OSS javascript frameworks
 
 ```sql
   SELECT country_code, 
