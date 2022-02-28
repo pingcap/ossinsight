@@ -2,6 +2,7 @@ import React from 'react';
 import clsx from 'clsx';
 import Layout from '@theme/Layout';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+import Head from '@docusaurus/Head';
 import styles from './index.module.css';
 import WordCloud from "../components/WordCloud";
 import Bottom from './bottom.md'
@@ -39,7 +40,7 @@ export default function Home() {
   return (
     <Layout
       title={`📈 2021 OSS Analysis`}
-      description="💎 Comprehensive analysis of open source software trends on github, including database field, javascript framework field, web framework, lowcode development tool, etc.">
+      description="💎 Comprehensive analysis of open source software trends on github, include database field, javascript framework field, web framework, lowcode development tool, etc.">
       <div
         style={{
           '--ifm-container-width-xl': '960px'

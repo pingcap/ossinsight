@@ -61,11 +61,11 @@ In the **new** page, copy the following values into forms:
 
 Bucket URL:
 ```
-s3://gharchivetest/data/
+s3://tidbcloud-samples/gharchive/
 ```
 Role-ARN:
 ```
-arn:aws:iam::098246302477:role/tidbcloud
+arn:aws:iam::385595570414:role/import-sample-access
 ```
 Bucket Region: US West(Oregon)
 

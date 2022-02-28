@@ -16,6 +16,13 @@ const config = {
   organizationName: 'pingcap-inc', // Usually your GitHub org/user name.
   projectName: 'gharchive.live', // Usually your repo name.
 
+  scripts: [
+    {
+      src: 'https://platform-api.sharethis.com/js/sharethis.js#property=621c87f7c2df6e001a39a2ee&product=sticky-share-buttons',
+      defer: true,
+      'data-domain': 'gharchive.live',
+    },
+  ],
   presets: [
     [
       'classic',
@@ -62,7 +69,7 @@ const config = {
             position: 'left',
             label: 'Insight',
           },
-          {to: '/compare', label: 'Compare Projects', position: 'left'},
+          {href: 'https://meta.gharchive.live/public/dashboard/1f3b4bc6-503f-4d25-9936-478902d8238e', label: 'Compare Projects', position: 'left'},
           {to: '/blog', label: 'Blog', position: 'left'},
           {to: '/_/more/analyze-github-events-on-tidb-cloud-in-10-minutes', label: 'Try It Yourself', position: 'left'},
           {to: '/_/more/how-it-works', label: '▶️  How It Works', position: 'left'},
@@ -107,11 +114,11 @@ const config = {
             items: [
               {
                 label: 'TiDB Community',
-                href: 'https://pingcap.com/community',
+                href: 'https://en.pingcap.com/community',
               },
               {
                 label: 'PingCAP',
-                href: 'https://pingcap.com',
+                href: 'https://en.pingcap.com',
               },
             ],
           },

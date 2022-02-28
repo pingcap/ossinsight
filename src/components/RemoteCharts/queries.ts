@@ -39,4 +39,10 @@ export interface Queries extends Record<string, BaseQueryResult<any, any>> {
     merged: string
     year: number
   }>
+  'rt-top10-by-stars': BaseQueryResult<{ repo: string }, { repo_name: string, num: number }>
+  'rt-top10-by-prs': BaseQueryResult<{ repo: string }, { repo_name: string, num: number }>
+  'rt-top20-by-developers': BaseQueryResult<{ repo: string }, { repo_name: string, num: number }>
+  'rt-top20-by-companies': BaseQueryResult<{ repo: string }, { company: string, num: number }>
+  'rt-top5-by-language': BaseQueryResult<{ repo: string }, { language: string, num: number }>
+
 }

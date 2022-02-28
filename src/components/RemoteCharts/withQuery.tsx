@@ -10,34 +10,33 @@ import {Queries} from "./queries";
 import {useState} from "react";
 import {DebugInfoModel, renderCodes} from "./DebugInfoModel";
 
-
 type Indexes<Q extends keyof Queries> = {
   categoryIndex: keyof Queries[Q]['data']
   valueIndex: keyof Queries[Q]['data']
 }
 
-type QueryComponentProps<Q extends keyof Queries, C> = Queries[Q]["params"] & {
+type QueryComponentProps<Q extends keyof Queries> = Queries[Q]["params"] & {
+  // only for bar
   clear: boolean
   size?: number
-  children: C
-}
+  formatSql?: boolean}
 
-interface BarChartProps<Q extends keyof Queries> extends Indexes<Q> {
-  data: Queries[Q]['data'][]
-  loading: boolean
-  clear: boolean
-  size: number
-  n: number
-  deps: any[]
-}
+// interface BarChartProps<Q extends keyof Queries> extends Indexes<Q> {
+//   data: Queries[Q]['data'][]
+//   loading: boolean
+//   clear: boolean
+//   size: number
+//   n: number
+//   deps: any[]
+// }
 
 export function withBarChartQuery<Q extends keyof Queries, D = RemoteData<Queries[Q]['params'], Queries[Q]['data']>>
-(query: Q, indices: Indexes<Q>): React.FC<QueryComponentProps<Q, BarChartProps<Q>>> {
+(query: Q, indices: Indexes<Q>): React.FC<QueryComponentProps<Q>> {
 
   const {categoryIndex, valueIndex} = indices
 
-  return ({clear, size = 30, children, ...params}: QueryComponentProps<Q, BarChartProps<Q>>) => {
-    const {data, loading, error} = useRemoteData(query, params)
+  return ({clear, size = 30, formatSql = true, children, categoryIndex = indices.categoryIndex, valueIndex = indices.valueIndex, ...params}: QueryComponentProps<Q>) => {
+    const {data, loading, error} = useRemoteData(query, params, formatSql);
     const [showDebugModel, setShowDebugModel] = useState(false);
 
     const handleShowDebugModel = () => {
