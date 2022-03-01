@@ -3,11 +3,11 @@ import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import CircularProgress from '@mui/material/CircularProgress';
 import {useCallback, useEffect, useState} from "react";
-import {getGitHubClient} from "../../lib/github";
 import {getRandomColor} from "../../lib/color";
 import {Alert, debounce, Snackbar} from "@mui/material";
+import {createHttpClient} from "../../lib/request";
 
-const gc = getGitHubClient();
+const httpClient = createHttpClient();
 
 export default function RepoSelector(props) {
   const { label, defaultRepoName } = props;
@@ -24,12 +24,9 @@ export default function RepoSelector(props) {
 
     try {
       setLoading(true);
-      const { data } = await gc.rest.search.repos({
-        q: keyword,
-        per_page: 10,
-      });
-      const repoOptions = data.items.map((r) => ({
-        name: r.full_name,
+      const { data: resData } = await httpClient.get(`/gh/repos/search?keyword=${keyword}`)
+      const repoOptions = resData.data.map((r) => ({
+        name: r.fullName,
         color: getRandomColor(),
       }));
       setOptions(repoOptions);

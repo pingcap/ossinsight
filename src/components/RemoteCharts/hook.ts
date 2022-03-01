@@ -1,10 +1,9 @@
-import axios from 'axios'
 import {useEffect, useState} from "react";
 import {format} from "sql-formatter";
 import {Queries} from "./queries";
+import {createHttpClient} from "../../lib/request";
 
-const BASE = 'https://community-preview-contributor.tidb.io'
-// const BASE = 'http://localhost:3450'
+const httpClient = createHttpClient();
 
 export interface AsyncData<T> {
   data: T | undefined
@@ -38,7 +37,7 @@ export const useRemoteData = <Q extends keyof Queries, P = Queries[Q]['params'],
       setData(undefined)
       setError(undefined)
       setLoading(true)
-      axios.get(`/q/${query}`, {baseURL: BASE, params})
+      httpClient.get(`/q/${query}`, {params})
         .then(({data}) => {
           if (data.sql && formatSql) {
             data.sql = format(data.sql)
