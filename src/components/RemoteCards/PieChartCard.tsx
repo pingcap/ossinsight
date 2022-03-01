@@ -5,6 +5,7 @@ import ReactECharts from 'echarts-for-react';
 import useThemeContext from "@theme/hooks/useThemeContext";
 import BasicCard, {BaseChartCardProps} from "./BasicCard";
 import {PieSeriesOption} from "echarts";
+import BrowserOnly from "@docusaurus/BrowserOnly";
 
 export interface PieSeriesExtendOption extends PieSeriesOption {
   nameMap?: (name: string) => string;
@@ -100,21 +101,23 @@ export default function PieChartCard(props: PieChartCardProps) {
   }, [data, isDarkTheme])
 
   return <BasicCard {...props} loading={loading} error={error} query={queryName} data={res}>
-    <ReactECharts
-      option={options}
-      notMerge={true}
-      lazyUpdate={true}
-      style={{
-        height: height,
-        overflow: 'hidden'
-      }}
-      theme={isDarkTheme ? 'compare-dark' : 'compare-light'}
-      opts={{
-        devicePixelRatio: window?.devicePixelRatio ?? 1,
-        renderer: 'canvas',
-        width: 'auto',
-        locale: 'en'
-      }}
-    />
+    <BrowserOnly>
+      {() => <ReactECharts
+        option={options}
+        notMerge={true}
+        lazyUpdate={true}
+        style={{
+          height: height,
+          overflow: 'hidden'
+        }}
+        theme={isDarkTheme ? 'compare-dark' : 'compare-light'}
+        opts={{
+          devicePixelRatio: window?.devicePixelRatio ?? 1,
+          renderer: 'canvas',
+          width: 'auto',
+          locale: 'en'
+        }}
+      />}
+    </BrowserOnly>
   </BasicCard>
 }

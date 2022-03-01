@@ -5,6 +5,7 @@ import ReactECharts from 'echarts-for-react';
 import useThemeContext from "@theme/hooks/useThemeContext";
 import BasicCard, {BaseChartCardProps} from "./BasicCard";
 import {SeriesOption} from "echarts";
+import BrowserOnly from "@docusaurus/BrowserOnly";
 
 export interface LineAreaBarChartProps extends BaseChartCardProps {
   seriesColumnName: string,
@@ -120,7 +121,6 @@ export default function LineAreaBarChartCard(props: LineAreaBarChartProps) {
           type: 'line',
           name: s.name,
           datasetId: `dataset_of_${s.name}`,
-          // TODO: Multiple labels need to be displayed at intervals.
           label: {
             show: true,
             position: 'top',
@@ -146,21 +146,23 @@ export default function LineAreaBarChartCard(props: LineAreaBarChartProps) {
   }, [data, isDarkTheme])
 
   return <BasicCard {...props} loading={loading} error={error} query={queryName} data={res}>
-    <ReactECharts
-      option={options}
-      notMerge={true}
-      lazyUpdate={true}
-      style={{
-        height: height,
-        overflow: 'hidden'
-      }}
-      theme={isDarkTheme ? 'compare-dark' : 'compare-light'}
-      opts={{
-        devicePixelRatio: window?.devicePixelRatio ?? 1,
-        renderer: 'canvas',
-        width: 'auto',
-        locale: 'en'
-      }}
-    />
+    <BrowserOnly>
+      {() => <ReactECharts
+        option={options}
+        notMerge={true}
+        lazyUpdate={true}
+        style={{
+          height: height,
+          overflow: 'hidden'
+        }}
+        theme={isDarkTheme ? 'compare-dark' : 'compare-light'}
+        opts={{
+          devicePixelRatio: window?.devicePixelRatio ?? 1,
+          renderer: 'canvas',
+          width: 'auto',
+          locale: 'en'
+        }}
+      />}
+    </BrowserOnly>
   </BasicCard>;
 }
