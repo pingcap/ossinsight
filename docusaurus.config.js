@@ -169,7 +169,7 @@ const config = {
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} TiDB Cloud, Inc. Built with Docusaurus.`,
+        copyright: `Copyright © ${new Date().getFullYear()} PingCAP`,
       },
 /*
       algolia: {
