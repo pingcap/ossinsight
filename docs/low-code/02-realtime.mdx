@@ -1,0 +1,36 @@
+---
+title: Realtime - Hourly
+---
+import {CommonChart} from "../../src/components/CommonChart";
+
+
+## Top 10 repos by stars in an hour
+
+<CommonChart repo='nocode_repos' chart='rt' n={10} category='rt-top10-by-stars' categoryIndex='repo_name' valueIndex='num' formatSql={false} />
+
+
+## Top 10 repos by PR in an hour
+
+<CommonChart repo='nocode_repos' chart='rt' n={10} category='rt-top10-by-prs' categoryIndex='repo_name' valueIndex='num' formatSql={false} />
+
+
+## Top Developers for OSS Databases
+
+<CommonChart repo='nocode_repos' chart='rt' n={20} category='rt-top20-by-developers' categoryIndex='repo_name' valueIndex='num' formatSql={false} />
+
+
+
+## Top Language for OSS Databases an hour
+
+<CommonChart repo='nocode_repos' chart='rt' n={5} category='rt-top5-languages' categoryIndex='language' valueIndex='num' formatSql={false} />
+
+
+## Top companies contributing to OSS databases an hour
+
+
+<CommonChart repo='nocode_repos' chart='rt' n={20} category='rt-top20-companies' categoryIndex='company' valueIndex='num' formatSql={false} />
+
+
+## Top countries or regions contributing to OSS databases an hour
+
+<CommonChart repo='nocode_repos' chart='rt' n={20} category='rt-top20-countries' categoryIndex='country' valueIndex='num' formatSql={false} />

@@ -15,6 +15,7 @@ import BarChart from './BarChart';
 import {Queries} from "./queries";
 import {useEffect} from "react";
 import {DateTime} from 'luxon'
+import DataGrid, {Column} from "./DataGrid";
 
 
 type Indexes<Q extends keyof Queries> = {
@@ -22,28 +23,26 @@ type Indexes<Q extends keyof Queries> = {
   valueIndex: keyof Queries[Q]['data']
 }
 
-type QueryComponentProps<Q extends keyof Queries, C> = Queries[Q]["params"] & {
+type QueryComponentProps<Q extends keyof Queries> = Queries[Q]["params"] & {
+  // only for bar
   clear: boolean
   size?: number
-  children: C
-}
+  formatSql?: boolean}
 
-interface BarChartProps<Q extends keyof Queries> extends Indexes<Q> {
-  data: Queries[Q]['data'][]
-  loading: boolean
-  clear: boolean
-  size: number
-  n: number
-  deps: any[]
-}
+// interface BarChartProps<Q extends keyof Queries> extends Indexes<Q> {
+//   data: Queries[Q]['data'][]
+//   loading: boolean
+//   clear: boolean
+//   size: number
+//   n: number
+//   deps: any[]
+// }
 
 export function withBarChartQuery<Q extends keyof Queries, D = RemoteData<Queries[Q]['params'], Queries[Q]['data']>>
-(query: Q, indices: Indexes<Q>): React.FC<QueryComponentProps<Q, BarChartProps<Q>>> {
+(query: Q, indices: Indexes<Q>): React.FC<QueryComponentProps<Q>> {
 
-  const {categoryIndex, valueIndex} = indices
-
-  return ({clear, size = 30, children, ...params}: QueryComponentProps<Q, BarChartProps<Q>>) => {
-    const {data, loading, error} = useRemoteData(query, params)
+  return ({clear, size = 30, formatSql = true, children, categoryIndex = indices.categoryIndex, valueIndex = indices.valueIndex, ...params}: QueryComponentProps<Q>) => {
+    const {data, loading, error} = useRemoteData(query, params, formatSql)
 
     const chart = React.createElement(BarChart, {
       categoryIndex,
@@ -72,6 +71,28 @@ export function withBarChartQuery<Q extends keyof Queries, D = RemoteData<Querie
         </>
       )
     }
+  }
+}
+
+export function withDataGridQuery<Q extends keyof Queries, D = RemoteData<Queries[Q]['params'], Queries[Q]['data']>>(query: Q, columns: Column<Q>[]): React.FC<QueryComponentProps<Q>> {
+
+  return ({ size, clear, formatSql = true, ...params }) => {
+    const {data, loading, error} = useRemoteData(query, params, formatSql)
+
+    const chart = <DataGrid<Q> columns={columns} loading={loading} data={data?.data} />
+
+    if (error) {
+      return <Alert severity='error'>Request failed ${(error as any)?.message ?? ''}</Alert>
+    }
+    return (
+      <>
+        <div style={{ position: 'relative' }}>
+          {chart}
+          <DebugInfo data={data} query={query} />
+        </div>
+        {renderCodes(data?.sql)}
+      </>
+    )
   }
 }
 

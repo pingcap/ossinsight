@@ -22,14 +22,12 @@ export interface RemoteData<P, T> {
 }
 
 export interface BaseQueryResult<Params extends {
-  n: number
-  repo: string
 }, Data> {
   params: Params
   data: Data
 }
 
-export const useRemoteData = <Q extends keyof Queries, P = Queries[Q]['params'], T = Queries[Q]['data']>(query: Q, params: P): AsyncData<RemoteData<P, T>> => {
+export const useRemoteData = <Q extends keyof Queries, P = Queries[Q]['params'], T = Queries[Q]['data']>(query: Q, params: P, formatSql: boolean): AsyncData<RemoteData<P, T>> => {
   const [data, setData] = useState<RemoteData<P, T>>(undefined)
   const [error, setError] = useState<unknown>(undefined)
   const [loading, setLoading] = useState<boolean>(false)
@@ -40,7 +38,7 @@ export const useRemoteData = <Q extends keyof Queries, P = Queries[Q]['params'],
     setLoading(true)
     axios.get(`/q/${query}`, {baseURL: BASE, params})
       .then(({data}) => {
-        if (data.sql) {
+        if (data.sql && formatSql) {
           data.sql = format(data.sql)
         }
         setData(data)

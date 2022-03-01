@@ -37,6 +37,9 @@ export default function ({data, loading, clear, size, n, deps, categoryIndex, va
         axisLabel: {
           rotate: 0,
           formatter: function (value, index) {
+            if (value.indexOf('/') < 0) {
+              return value
+            }
             return value.split('/')[1];
           }
         }
@@ -52,7 +55,12 @@ export default function ({data, loading, clear, size, n, deps, categoryIndex, va
     }
   }, [data, ...deps, categoryIndex, valueIndex, size, clear])
 
-  const height = loading ? 400 : n * (size * (clear ? 1 : 1.5))
+  const height = useMemo(() => {
+    const height = loading ? 400 : Math.max(Math.min(n, data.length), 5) * (size * (clear ? 1 : 1.5))
+
+    return height
+  }, [size, loading, clear])
+
 
   const opts = useMemo(() => {
     return {
