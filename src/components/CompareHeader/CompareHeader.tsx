@@ -1,11 +1,20 @@
 import React from "react";
-import RepoSelector from "./RepoSelector";
+import RepoSelector, {Repo} from "./RepoSelector";
 import {Stack} from "@mui/material";
 import DateRangeSelector from "./DateRangeSelector";
 import basicStyle from "../../pages/compare/index.module.css";
 import useThemeContext from "@theme/hooks/useThemeContext";
 
-function CompareHeader(props) {
+interface CompareHeaderProps {
+  repo1: Repo | null
+  repo2: Repo | null
+  onRepo1Change: (repo: Repo | null) => void
+  onRepo2Change: (repo: Repo | null) => void
+  dateRange: [Date | null, Date | null]
+  onDateRangeChange: (range: [Date | null, Date | null]) => void
+}
+
+function CompareHeader(props: CompareHeaderProps) {
   const { isDarkTheme } = useThemeContext();
 
   return <header className={basicStyle.mainHeader} style={{
@@ -18,15 +27,9 @@ function CompareHeader(props) {
       spacing={2}
       style={{ marginBottom: '20px' }}
     >
-      <RepoSelector label="Repo Name 1" defaultRepoName="pingcap/tidb" onChange={(repo) => {
-        props.onRepo1Change(repo);
-      }}/>
-      <RepoSelector label="Repo Name 2" defaultRepoName="tikv/tikv" onChange={(repo) => {
-        props.onRepo2Change(repo);
-      }}/>
-      <DateRangeSelector onChange={((dateRange) => {
-        props.onDateRangeChange(dateRange);
-      })}/>
+      <RepoSelector label="Repo Name 1" defaultRepoName="pingcap/tidb" repo={props.repo1} onChange={props.onRepo1Change}/>
+      <RepoSelector label="Repo Name 2" defaultRepoName="tikv/tikv" repo={props.repo2} onChange={props.onRepo2Change}/>
+      <DateRangeSelector value={props.dateRange} onChange={props.onDateRangeChange}/>
     </Stack>
   </header>
 }

@@ -1,70 +1,77 @@
 import * as React from 'react';
+import {useMemo, useState} from 'react';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import CircularProgress from '@mui/material/CircularProgress';
-import {useCallback, useEffect, useState} from "react";
 import {getRandomColor} from "../../lib/color";
 import {Alert, debounce, Snackbar} from "@mui/material";
 import {createHttpClient} from "../../lib/request";
+import useSWR from "swr";
 
 const httpClient = createHttpClient();
 
-export default function RepoSelector(props) {
-  const { label, defaultRepoName } = props;
-  const [repo, setRepo] = useState<{}>();
-  const [options, setOptions] = useState([]);
-  const [errorMessage, setErrorMessage] = useState("error")
-  const [showErrorMessage, setShowErrorMessage] = useState(false)
-  const [loading, setLoading] = useState(false);
+export interface Repo extends Record<string, unknown> {
+  name: string
+  color: string
+}
 
-  const fetchRepoOptions = useCallback(debounce(async (keyword) => {
-    if (keyword === undefined || keyword.length === 0) {
-      return
-    }
+export interface RepoSelectorProps {
+  label: string
+  defaultRepoName?: string
+  repo: Repo | null
+  onChange: (repo: Repo | null) => void
+}
 
-    try {
-      setLoading(true);
-      const { data: resData } = await httpClient.get(`/gh/repos/search?keyword=${keyword}`)
-      const repoOptions = resData.data.map((r) => ({
-        name: r.fullName,
-        color: getRandomColor(),
-      }));
-      setOptions(repoOptions);
-    } catch (err) {
-      const errMsg = err?.response?.data?.message || "";
-      console.dir(err)
-      if (errMsg.indexOf('API rate limit exceeded') !== -1) {
-        setErrorMessage('Too frequent to operate, please try again after one minute.')
-        setShowErrorMessage(true)
-      } else {
-        console.error('Failed to fetch repo options, cause by: ', err);
+export default function RepoSelector({repo, label, defaultRepoName, onChange}: RepoSelectorProps) {
+  const [keyword, setKeyword] = useState<string>(defaultRepoName ?? '')
+  const [dismissError, setDismissError] = useState(false)
+
+  const debouncedSetKeyword = useMemo(() => {
+    return debounce(setKeyword, 500)
+  }, [setKeyword])
+
+  const {data: options, isValidating: loading, error} = useSWR<Repo[]>([keyword || defaultRepoName], {
+    fetcher: async (keyword) => {
+      try {
+        if (!keyword) {
+          return []
+        }
+        const {data: {data}} = await httpClient.get(`/gh/repos/search`, {params: {keyword}})
+        return data.map((r) => ({
+          name: r.fullName,
+          color: getRandomColor(),
+        }));
+      } finally {
+        setDismissError(false)
       }
-    } finally {
-      setLoading(false);
-    }
-  }, 500), []);
+    },
+    fallbackData: [],
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+  })
 
-  useEffect(() => {
-    (async () => {
-      await fetchRepoOptions(defaultRepoName);
-    })();
-  }, []);
+  const errorMessage = useMemo(() => {
+    const errMsg = error?.response?.data?.message || String(error);
+    if (errMsg.indexOf('API rate limit exceeded') !== -1) {
+      return 'Too frequent to operate, please try again after one minute.'
+    }
+    return errMsg
+  }, [error])
 
   return (<>
-    <Autocomplete
-      sx={{ width: 300 }}
+    <Autocomplete<Repo>
+      sx={{width: 300}}
       size="small"
       isOptionEqualToValue={(option, value) => option.name === value.name}
       getOptionLabel={(option) => option.name}
       options={options}
       loading={loading}
       value={repo}
-      onChange={(event, newValue) => {
-        setRepo(newValue);
-        props.onChange(newValue);
+      onChange={(event, newValue: Repo) => {
+        onChange(newValue);
       }}
       onInputChange={async (event, value, reason) => {
-        await fetchRepoOptions(value);
+        debouncedSetKeyword(value)
       }}
       renderInput={(params) => (
         <TextField
@@ -82,8 +89,8 @@ export default function RepoSelector(props) {
         />
       )}
     />
-    <Snackbar open={showErrorMessage} autoHideDuration={3000} onClose={() => { setShowErrorMessage(false); }}>
-      <Alert severity="error" sx={{width: '100%'}}>{ errorMessage }</Alert>
+    <Snackbar open={!!error && !dismissError} autoHideDuration={3000} onClose={() => setDismissError(true)}>
+      <Alert severity="error" sx={{width: '100%'}}>{errorMessage}</Alert>
     </Snackbar>
   </>);
 }

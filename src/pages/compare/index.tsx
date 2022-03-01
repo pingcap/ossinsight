@@ -26,11 +26,9 @@ import {
   registerThemeCompareLight,
 } from "../../components/RemoteCharts/theme";
 
+import {Repo} from "../../components/CompareHeader/RepoSelector";
+import useUrlSearchState, {dateRangeParam, stringParam, UseUrlSearchStateProps} from "../../hooks/url-search-state";
 
-export interface Repo {
-  name: string;
-  color: string;
-}
 
 const allProvidedRepos = (repos: Repo[]) => {
   return repos.filter((r) => {
@@ -222,12 +220,20 @@ const MainContent = (props) => {
 registerThemeCompareLight();
 registerThemeCompareDark();
 
+const repoParam = (defaultValue?): UseUrlSearchStateProps<Repo> => {
+  return {
+    defaultValue,
+    serialize: value => value ? value.name : undefined,
+    deserialize: string => string ? { name: string, color: getRandomColor() } : undefined
+  }
+}
+
 export default function RepoCompare() {
   const {siteConfig} = useDocusaurusContext();
 
-  const [repo1, setRepo1] = useState<Repo>();
-  const [repo2, setRepo2] = useState<Repo>();
-  const [dateRange, setDateRange] = useState([]);
+  const [repo1, setRepo1] = useUrlSearchState<Repo>('repo1', repoParam(null));
+  const [repo2, setRepo2] = useUrlSearchState<Repo>('repo2', repoParam(null));
+  const [dateRange, setDateRange] = useUrlSearchState<[Date | null, Date | null]>('daterange', dateRangeParam('yyyy-MM-dd', () => [null, null]));
 
   return (
     <Layout>
@@ -238,15 +244,12 @@ export default function RepoCompare() {
             <title>Project Compare | {siteConfig.title}</title>
           </Head>
           <CompareHeader
-            onRepo1Change={(newRepo1) => {
-              setRepo1(newRepo1);
-            }}
-            onRepo2Change={(newRepo2) => {
-              setRepo2(newRepo2);
-            }}
-            onDateRangeChange={(newDateRange) => {
-              setDateRange(newDateRange);
-            }}
+            repo1={repo1}
+            onRepo1Change={setRepo1}
+            repo2={repo2}
+            onRepo2Change={setRepo2}
+            dateRange={dateRange}
+            onDateRangeChange={setDateRange}
           />
           <MainContent>
             <header>

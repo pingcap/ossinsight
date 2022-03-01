@@ -4,25 +4,25 @@ import DateRangePicker from '@mui/lab/DateRangePicker';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import Box from '@mui/material/Box';
-import {useState} from "react";
-import {RangeInput} from "@mui/lab/DateRangePicker/RangeTypes";
 
 const minDate = new Date("2011-01-01");
 const maxDate = new Date();
 
-export default function DateRangeSelector(props) {
-  const [value, setValue] = useState<RangeInput<Date>>([null, null]);
+export interface DateRangeSelectorProps {
+  value: [Date | null, Date | null]
+  onChange: (range: [Date | null, Date | null]) => void
+}
 
+export default function DateRangeSelector(props: DateRangeSelectorProps) {
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
-      <DateRangePicker
+      <DateRangePicker<Date>
         startText="Start"
         endText="End"
         minDate={minDate}
         maxDate={maxDate}
-        value={value}
+        value={props.value}
         onChange={(newValue) => {
-          setValue(newValue);
           props.onChange(newValue);
         }}
         renderInput={(startProps, endProps) => (
