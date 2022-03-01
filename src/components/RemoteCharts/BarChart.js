@@ -1,8 +1,16 @@
 import React, {useMemo} from "react";
 import ReactEChartsCore from "echarts-for-react/lib/core";
+import {BarChart} from 'echarts/charts';
+import {GridComponent, TitleComponent, TooltipComponent,} from 'echarts/components';
+import {CanvasRenderer,} from 'echarts/renderers';
 import * as echarts from "echarts/core";
 import useThemeContext from '@theme/hooks/useThemeContext';
 import {registerThemeDark, registerThemeVintage} from "./theme";
+
+// Register the required components
+echarts.use(
+  [TitleComponent, TooltipComponent, GridComponent, BarChart, CanvasRenderer]
+);
 
 registerThemeVintage();
 registerThemeDark();
