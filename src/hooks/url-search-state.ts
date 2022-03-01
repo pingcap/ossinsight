@@ -7,7 +7,11 @@ export interface UseUrlSearchStateProps<T> {
   deserialize: (string: string) => T
 }
 
-export default function useUrlSearchState<T>(key: string, {
+function useUrlSearchStateSSR<T>(key: string, {defaultValue}: UseUrlSearchStateProps<T>): [T, Dispatch<SetStateAction<T>>] {
+  return useState<T>(defaultValue)
+}
+
+function useUrlSearchStateCSR<T>(key: string, {
   defaultValue,
   deserialize,
   serialize
@@ -33,6 +37,10 @@ export default function useUrlSearchState<T>(key: string, {
 
   return [value, setValue]
 }
+
+const useUrlSearchState = typeof window === 'undefined' ? useUrlSearchStateSSR : useUrlSearchStateCSR
+
+export default useUrlSearchState
 
 export function stringParam(defaultValue?): UseUrlSearchStateProps<string> {
   return {
