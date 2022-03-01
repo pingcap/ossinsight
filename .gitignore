@@ -5,3 +5,4 @@ gh/**/.cache
 *.js
 schemas
 .idea
+.DS_Store

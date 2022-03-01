@@ -9,7 +9,6 @@ const SYMBOL_TOKEN = Symbol('PERSONAL_TOKEN')
 
 function eraseToken (value: string | undefined): string {
   return value ? `****${value.substring(value.length - 8)}` : 'anonymous'
-
 }
 
 class OctokitFactory implements Factory<Octokit> {
@@ -17,7 +16,6 @@ class OctokitFactory implements Factory<Octokit> {
   private log: Consola
 
   constructor(tokens: string[]) {
-    this.tokens.add(undefined) // no token
     this.log = consola.withTag('octokit-factory')
     tokens.forEach(token => this.tokens.add(token))
     this.log.info('create with %s tokens', tokens.length)
@@ -52,7 +50,7 @@ export default class GhExecutor {
   constructor(tokens: string[] = []) {
     this.octokitPool = createPool(new OctokitFactory(tokens), {
       min: 0,
-      max: tokens.length + 1
+      max: tokens.length
     })
     this.octokitPool
       .on('factoryCreateError', function (err) {
@@ -75,6 +73,45 @@ export default class GhExecutor {
         return {
           expiresAt: DateTime.now().plus({minute: GET_REPO_CACHE_MINUTES}),
           data,
+          with: eraseToken(value)
+        }
+      })
+    })
+  }
+
+  searchRepos(keyword: any) {
+    const SEARCH_REPOS_CACHE_MINUTES = 2;
+    const cache = new Cache(path.join(process.cwd(), 'gh', '.cache', '_search', `${keyword}.json`))
+    return cache.load(() => {
+      return this.octokitPool.use(async (octokit) => {
+        octokit.log.info(`search repos by keyword ${keyword}`)
+
+        const variables = {
+          q: keyword,
+        }
+        const query = /* GraphQL */ `
+            query searchRepository($q: String!){
+                search(query: $q, first: 10, type: REPOSITORY) {
+                    codeCount
+                    nodes {
+                        ...on Repository {
+                            nameWithOwner
+                        }
+                    }
+                }
+            }
+        `
+        let formattedData: any[] = []
+
+        const data: any = await octokit.graphql(query, variables)
+        data.search.nodes.forEach((repo: any) => formattedData.push({
+          fullName: repo.nameWithOwner
+        }));
+
+        const {value} = Object.getOwnPropertyDescriptor(octokit, SYMBOL_TOKEN)!
+        return {
+          expiresAt: DateTime.now().plus({minute: SEARCH_REPOS_CACHE_MINUTES}),
+          data: formattedData,
           with: eraseToken(value)
         }
       })
