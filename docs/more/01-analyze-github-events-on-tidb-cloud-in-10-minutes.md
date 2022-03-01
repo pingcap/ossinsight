@@ -29,7 +29,7 @@ Once registered, you can create a free cluster with `Developer Tier`:
 Only Developer Tier is **free** for 1 year.
 :::
 
-![](/img/dev-tier.png)
+![](/img/try-it-yourself/dev-tier.png)
 
 
 Input the cluster name and password:
@@ -38,7 +38,7 @@ Input the cluster name and password:
 Remember your **database password** of your cluster, it will be used later.
 :::
 
-![](/img/create-cluster.png)
+![](/img/try-it-yourself/create-cluster.png)
 
 ## 2. Import data to your TiDB Cloud cluster
 
@@ -54,7 +54,7 @@ If you want to know the table schema, you can `desc gharchive_dev` after this st
 
 TiDB Cloud support importing data from UI console, like this:
 
-![](/img/how-it-works/import.png)
+![](/img/try-it-yourself/import.png)
 
 
 In the **new** page, copy the following values into forms:
@@ -73,7 +73,7 @@ Data Format: TiDB Dumpling
 
 Password: <your cluster password\>
 
-![](/img/how-it-works/fill.png)
+![](/img/try-it-yourself/fill.png)
 
 then, click `Import`, then wait for complete.
 
@@ -91,7 +91,7 @@ TiDB Cloud provide a web shell to connect database online!
 
 Just click `Connect` button --> `Web SQL Shell` tab --> `Open SQL Shell` -->  input your cluster password like this:
 
-![](/img/how-it-works/web-shell.png)
+![](/img/try-it-yourself/web-shell.png)
 
 
 ### (Optional) Set column storage replica: TiFlash
