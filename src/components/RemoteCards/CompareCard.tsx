@@ -34,19 +34,19 @@ export interface BaseCardProps {
   height: string;
   children: any;
   query?: keyof Queries;
-  data?: RemoteData<any, any>;
+  datas: [RemoteData<any, any> | undefined, RemoteData<any, any> | undefined];
   hideTitle?: boolean;
 }
 
-export default function BasicCard({
-  loading = false, error = false, shouldLoad = true, hideTitle = false,
-  title, height = "100px", noLoadReason, children, query, data
-}: BaseCardProps) {
+export default function CompareCard({
+                                    loading = false, error = false, shouldLoad = true, hideTitle = false,
+                                    title, height = "100px", noLoadReason, children, query, datas
+                                  }: BaseCardProps) {
   const theme = useTheme();
   const [showDebugModel, setShowDebugModel] = useState(false);
 
   const handleShowDebugModel = () => {
-    if (data != null) {
+    if (datas[0] && datas[1]) {
       setShowDebugModel(true);
     }
   }
@@ -71,20 +71,20 @@ export default function BasicCard({
       }
       {
         (!shouldLoad || loading || error) ?
-        <Stack direction="column" justifyContent="center" alignItems="center" style={{height: height}}>
-          {
-            loading && <CircularProgress size="1.5em"/>
-          }
-          {
-            error && <Typography sx={{fontSize: 14}} color="text.secondary" gutterBottom>Failed to load data: {error?.response?.data?.msg}</Typography>
-          }
-          {
-            !shouldLoad && <div>{noLoadReason}</div>
-          }
-        </Stack> :
-        children
+          <Stack direction="column" justifyContent="center" alignItems="center" style={{height: height}}>
+            {
+              loading && <CircularProgress size="1.5em"/>
+            }
+            {
+              error && <Typography sx={{fontSize: 14}} color="text.secondary" gutterBottom>Failed to load data: {error?.response?.data?.msg}</Typography>
+            }
+            {
+              !shouldLoad && <div>{noLoadReason}</div>
+            }
+          </Stack> :
+          children
       }
     </Card>
-    <DebugInfoModel query={query} data={data} open={showDebugModel} onClose={handleCloseDebugModel} />
+    <DebugInfoModel query={query} data={datas} open={showDebugModel} onClose={handleCloseDebugModel} />
   </>
 }

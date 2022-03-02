@@ -1,6 +1,6 @@
 import * as React from "react";
+import {useMemo} from "react";
 import {useRemoteData} from "../RemoteCharts/hook";
-import {useEffect, useMemo, useState} from "react";
 import ReactECharts from 'echarts-for-react';
 import useThemeContext from "@theme/hooks/useThemeContext";
 import BasicCard, {BaseChartCardProps} from "./BasicCard";
@@ -28,11 +28,10 @@ export default function LineAreaBarChartCard(props: LineAreaBarChartProps) {
   } = props;
   const {data: res, loading, error} = useRemoteData(queryName, params, true, shouldLoad);
   const {isDarkTheme} = useThemeContext();
-  const [data, setData] = useState([]);
 
-  useEffect(() => {
-    setData(res?.data || []);
-  }, [res]);
+  const data = useMemo(() => {
+    return res?.data ?? []
+  }, [res])
 
   const options = useMemo(() => {
     return {
@@ -73,10 +72,11 @@ export default function LineAreaBarChartCard(props: LineAreaBarChartProps) {
         })
       }, legend),
       grid: Object.assign({
-        left: '5%',
-        right: '1%',
-        top: '40px',
-        bottom: '50px'
+        top: 48,
+        bottom: 32,
+        left: 24,
+        right: 24,
+        containLabel: true
       }, grid),
       xAxis: Object.assign({
         nameGap: 30,
@@ -155,7 +155,7 @@ export default function LineAreaBarChartCard(props: LineAreaBarChartProps) {
           height: height,
           overflow: 'hidden'
         }}
-        theme={isDarkTheme ? 'compare-dark' : 'compare-light'}
+        theme={isDarkTheme ? 'dark' : 'vintage'}
         opts={{
           devicePixelRatio: window?.devicePixelRatio ?? 1,
           renderer: 'canvas',
