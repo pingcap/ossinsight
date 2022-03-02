@@ -49,6 +49,7 @@ const config = {
     ({
       image: 'img/gharchive-title-img.png',
       metadata: [{name: 'twitter:card', content: 'summary_large_image'}],
+      hideableSidebar: true,
       navbar: {
         title: 'GH Archive Live',
         logo: {
@@ -65,7 +66,7 @@ const config = {
           },
           {to: '/compare', label: 'Compare Projects', position: 'left'},
           {to: '/blog', label: 'Blog', position: 'left'},
-          {to: '/_/more/analyze-github-events-on-tidb-cloud-in-10-minutes', label: 'Try It Yourself', position: 'left'},
+          {to: '/_/more/analyze-github-events-on-tidb-cloud-in-10-minutes', label: ' ⏱️ Try It Yourself', position: 'left'},
           {to: '/_/more/how-it-works', label: '▶️  How It Works', position: 'left'},
           {
             href: 'https://tidbcloud.com',
