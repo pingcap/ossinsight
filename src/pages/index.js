@@ -4,7 +4,6 @@ import Layout from '@theme/Layout';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Head from '@docusaurus/Head';
 import styles from './index.module.css';
-import HomepageFeatures from '../components/HomepageFeatures';
 import WordCloud from "../components/WordCloud";
 import Bottom from './bottom.md'
 import TopList from "../components/TopList";

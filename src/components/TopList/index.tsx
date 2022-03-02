@@ -72,7 +72,7 @@ export default function TopList() {
                 <b>#</b>
               </TableCell>
               <TableCell>Repo</TableCell>
-              {data.map(({title, headline, tooltip, key}) => (
+              {(data || []).map(({title, headline, tooltip, key}) => (
                 <TableCell key={key} align="center">
                   <Tooltip title={(
                     <Box sx={{padding: 1}}>
