@@ -4,6 +4,7 @@ import Grid from "@mui/material/Grid";
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import useScrollTrigger from '@mui/material/useScrollTrigger';
+import {useTheme} from "@mui/material/styles";
 
 interface ElevationScrollProps {
   children: React.ReactElement
@@ -40,17 +41,19 @@ interface CompareHeaderProps {
 }
 
 function CompareHeader(props: CompareHeaderProps) {
-
+  const theme = useTheme();
+  const fullWidth = theme.breakpoints.up(1201)
   return (
     <ElevationScroll>
-      <AppBar color='inherit' position='sticky' sx={{ borderRadius: 1, my: 2, top: 'calc(var(--ifm-navbar-height) + 16px)' }} enableColorOnDark>
+      <AppBar color='inherit' position='sticky' sx={{ [fullWidth]: { borderRadius: 1 }, my: 2, top: 'var(--ifm-navbar-height)' }} enableColorOnDark>
         <Toolbar>
           <Grid container>
-            <Grid sm={12} md={6}>
+            <Grid item xs={5}>
               <RepoSelector label="Repo Name 1" defaultRepoName="pingcap/tidb" repo={props.repo1}
                             onChange={props.onRepo1Change} />
             </Grid>
-            <Grid sm={12} md={6}>
+            <Grid item xs={2} zeroMinWidth/>
+            <Grid item xs={5}>
               <RepoSelector label="Repo Name 2" defaultRepoName="tikv/tikv" repo={props.repo2}
                             onChange={props.onRepo2Change} />
             </Grid>

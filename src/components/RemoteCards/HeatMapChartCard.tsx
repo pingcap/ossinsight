@@ -121,6 +121,8 @@ export default function HeatMapChartCard(props: HeatMapChartCardProps) {
         axisLabel: {
           color: '#959aa9',
           fontWeight: 'bold',
+          rotate: isSmall ? 0 : -45,
+          fontSize: isSmall ? 8 : undefined
         },
         position: 'top',
       }, yAxis),
@@ -157,7 +159,7 @@ export default function HeatMapChartCard(props: HeatMapChartCardProps) {
         lazyUpdate={true}
         style={{
           height: 'auto',
-          aspectRatio: isSmall ? '24 / 7' : '7 / 24',
+          aspectRatio: isSmall ? '24 / 7' : '10 / 24',
           overflow: 'hidden'
         }}
         theme={isDarkTheme ? 'dark' : 'vintage'}

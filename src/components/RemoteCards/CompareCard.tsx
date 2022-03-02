@@ -56,9 +56,9 @@ export default function CompareCard({
   }
 
   return <>
-    <Card className={basicStyle.basicCard} elevation={0}>
+    <Card className={basicStyle.basicCard} elevation={0} sx={{ mt: 2 }}>
       {
-        (title && !hideTitle) && <Stack className={basicStyle.basicCardHeader} direction="row" justifyContent="space-between" alignItems="center">
+        (title && !hideTitle) && <Stack className={basicStyle.basicCardHeader} direction="row" justifyContent="center" alignItems="center">
           <a
             className={basicStyle.basicCardTitle}
             style={{

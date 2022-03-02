@@ -60,7 +60,7 @@ export default function LineAreaBarChartCard(props: LineAreaBarChartProps) {
       }, tooltip),
       legend: Object.assign({
         orient: 'horizontal',
-        left: '20px',
+        left: 'center',
         icon: 'circle',
         itemHeight: 10,
         itemWidth: 10,

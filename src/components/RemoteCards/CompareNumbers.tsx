@@ -7,7 +7,6 @@ import Typography from "@mui/material/Typography";
 import {formatNumber} from "../../lib/text";
 import CircularProgress from '@mui/material/CircularProgress'
 import Tooltip from '@mui/material/Tooltip'
-import Divider from "@mui/material/Divider";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
 
@@ -23,12 +22,12 @@ export interface CompareNumbersProps {
 export function CompareNumbersContainer({ title, children }) {
   return (
     <Card sx={{ maxWidth: 'max-content', mx: 'auto', py: 2, my: 2 }} elevation={0} >
-      <CardHeader title={title} titleTypographyProps={{ component: 'h2', variant: 'h4', align: 'center' }} />
-      <tbody>
+      <CardHeader title={title} titleTypographyProps={{component: 'h2', variant: 'h4', align: 'center'}} />
       <div className={styles.compareNumbersContainer}>
-        {children}
+        <div className={styles.compareNumbersContainerBody}>
+          {children}
+        </div>
       </div>
-      </tbody>
     </Card>
   )
 }
@@ -44,7 +43,7 @@ export default function CompareNumbers({tag: Tag = 'div', title, query, repos}: 
         component='span'
         variant="body1"
         fontFamily="Lato"
-        fontWeight={900}
+        fontWeight={800}
         // color={isDarkTheme ? '#f5f6f7' : '#4d5771'}
       >
         {repo1.isValidating
@@ -64,6 +63,7 @@ export default function CompareNumbers({tag: Tag = 'div', title, query, repos}: 
         variant="h5"
         fontFamily="Lato"
         gutterBottom
+        fontWeight={400}
         sx={{borderColor: 'gray'}}
       >
         {title}
@@ -73,7 +73,7 @@ export default function CompareNumbers({tag: Tag = 'div', title, query, repos}: 
         component='span'
         variant="body1"
         fontFamily="Lato"
-        fontWeight={900}
+        fontWeight={800}
         // color={isDarkTheme ? '#f5f6f7' : '#4d5771'}
       >
         {repo2.isValidating

@@ -60,7 +60,7 @@ export default function RepoSelector({repo, label, defaultRepoName, onChange}: R
 
   return (<>
     <Autocomplete<Repo>
-      sx={{width: 300, mx: 'auto'}}
+      sx={{maxWidth: 300, mx: 'auto'}}
       size="small"
       isOptionEqualToValue={(option, value) => option.name === value.name}
       getOptionLabel={(option) => option.name}

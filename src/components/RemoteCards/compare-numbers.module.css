@@ -3,6 +3,10 @@
     margin-bottom: 0;
 }
 
+.compareNumbersContainerBody {
+    display: table-row-group;
+}
+
 .compareNumbers {
     display: table-row;
     height: 48px;

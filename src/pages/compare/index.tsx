@@ -154,18 +154,6 @@ export default function RepoCompare() {
             onDateRangeChange={setDateRange}
           />
           <MainContent>
-            <header>
-              <Grid container spacing={2}>
-                <Grid item sm={6} xs={12}>
-                  <Typography variant="h4" fontFamily="Lato" gutterBottom component="div"
-                              align="center">{repo1?.name || 'Repo Name 1'}</Typography>
-                </Grid>
-                <Grid item sm={6} xs={12}>
-                  <Typography variant="h4" fontFamily="Lato" gutterBottom component="div"
-                              align="center">{repo2?.name || 'Repo Name 2'}</Typography>
-                </Grid>
-              </Grid>
-            </header>
             {/*  Stars  */}
             <section className={style.mainSection}>
               <Grid container spacing={1}>
@@ -263,7 +251,7 @@ export default function RepoCompare() {
             <section className={style.mainSection}>
               <Grid container spacing={1}>
                 {/*  Pull Requests - Numbers  */}
-                <Grid xs={12}>
+                <Grid item xs={12}>
                   <PullRequestNumbers title='Pull Request' repos={[repo1, repo2]} dateRange={dateRange} />
                 </Grid>
                 <Grid item xs={12}>
