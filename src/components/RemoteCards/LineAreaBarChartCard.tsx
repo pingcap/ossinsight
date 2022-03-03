@@ -6,6 +6,8 @@ import useThemeContext from "@theme/hooks/useThemeContext";
 import BasicCard, {BaseChartCardProps} from "./BasicCard";
 import {SeriesOption} from "echarts";
 import BrowserOnly from "@docusaurus/BrowserOnly";
+import {useTheme} from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 export interface LineAreaBarChartProps extends BaseChartCardProps {
   seriesColumnName: string,
@@ -26,6 +28,8 @@ export default function LineAreaBarChartCard(props: LineAreaBarChartProps) {
     seriesColumnName,
     height
   } = props;
+  const theme = useTheme();
+  const isSmall = useMediaQuery(theme.breakpoints.down('md'))
   const {data: res, loading, error} = useRemoteData(queryName, params, true, shouldLoad);
   const {isDarkTheme} = useThemeContext();
 
@@ -122,7 +126,7 @@ export default function LineAreaBarChartCard(props: LineAreaBarChartProps) {
           name: s.name,
           datasetId: `dataset_of_${s.name}`,
           label: {
-            show: true,
+            show: !isSmall,
             position: 'top',
             fontWeight: 'bold',
             color: '#4e5771',
@@ -143,7 +147,7 @@ export default function LineAreaBarChartCard(props: LineAreaBarChartProps) {
         }
       })
     }
-  }, [data, isDarkTheme])
+  }, [data, isDarkTheme, isSmall])
 
   return <BasicCard {...props} loading={loading} error={error} query={queryName} data={res}>
     <BrowserOnly>
@@ -152,7 +156,9 @@ export default function LineAreaBarChartCard(props: LineAreaBarChartProps) {
         notMerge={true}
         lazyUpdate={true}
         style={{
-          height: height,
+          width: '100%',
+          height: 'auto',
+          aspectRatio: isSmall ? '16 / 9' : '26 / 9',
           overflow: 'hidden'
         }}
         theme={isDarkTheme ? 'dark' : 'vintage'}

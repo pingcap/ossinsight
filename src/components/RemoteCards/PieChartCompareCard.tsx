@@ -79,7 +79,7 @@ export default function PieChartCompareCard(props: PieChartCardProps) {
           type: 'pie',
           name: [params1, params2][n].repoName,
           radius: ['40%', '70%'],
-          center: isSmall ? ['50%', `${30 + 45 * n}%`] : [`${50 + 40 * (n - 0.5)}%`, '55%'],
+          center: [`${50 + 40 * (n - 0.5)}%`, '55%'],
           avoidLabelOverlap: false,
           itemStyle: {
             borderColor: isDarkTheme ? '#1e1e1f' : '#ffffff',
@@ -131,14 +131,15 @@ export default function PieChartCompareCard(props: PieChartCardProps) {
         notMerge={true}
         lazyUpdate={true}
         style={{
-          height: isSmall ? `${parseInt(height) * 2.5}px` : height,
+          width: '100%',
+          height: 'auto',
+          aspectRatio: isSmall ? '16 / 9' : '26 / 9',
           overflow: 'hidden'
         }}
         theme={isDarkTheme ? 'dark' : 'vintage'}
         opts={{
           devicePixelRatio: window?.devicePixelRatio ?? 1,
           renderer: 'canvas',
-          width: 'auto',
           locale: 'en'
         }}
       />}
