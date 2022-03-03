@@ -1,12 +1,14 @@
 import * as React from "react";
+import {useMemo} from "react";
 import {useRemoteData} from "../RemoteCharts/hook";
-import {useEffect, useMemo, useState} from "react";
 import ReactECharts from 'echarts-for-react';
 import useThemeContext from "@theme/hooks/useThemeContext";
 import BasicCard, {BaseChartCardProps} from "./BasicCard";
 
 import {SeriesOption} from "echarts";
 import BrowserOnly from "@docusaurus/BrowserOnly";
+import {useTheme} from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 export interface HeatMapChartCardProps extends BaseChartCardProps {
   xAxisColumnName: string,
@@ -41,11 +43,10 @@ export default function HeatMapChartCard(props: HeatMapChartCardProps) {
   } = props;
   const {data: res, loading, error} = useRemoteData(queryName, params, true, shouldLoad);
   const {isDarkTheme} = useThemeContext();
-  const [data, setData] = useState([]);
-  const [min, setMin] = useState(0);
-  const [max, setMax] = useState(10);
+  const theme = useTheme();
+  const isSmall = useMediaQuery(theme.breakpoints.down('sm'))
 
-  useEffect(() => {
+  const {data, min, max} = useMemo(() => {
     let min = Number.MAX_VALUE;
     let max = Number.MIN_VALUE;
     const arr = res?.data.map(((item) => {
@@ -56,26 +57,36 @@ export default function HeatMapChartCard(props: HeatMapChartCardProps) {
       if (value < min) {
         min = value;
       }
-      return [item[xAxisColumnName], item[yAxisColumnName], value];
+      return isSmall ? [item[xAxisColumnName], item[yAxisColumnName], value] : [item[yAxisColumnName], item[xAxisColumnName], value];
     }))
-    setMax(max);
-    setMin(min);
-    setData(arr || []);
-  }, [res]);
+    return {
+      data: arr || [],
+      min,
+      max
+    }
+  }, [res, isSmall]);
 
   const options = useMemo(() => {
     return {
       tooltip: {
         position: 'top'
       },
-      grid: {
-        height: '80%',
-        top: '3%',
-        left: '5%',
-        right: '3%',
-        bottom: '1%'
-      },
-      xAxis: Object.assign({
+      grid: isSmall
+        ? {
+          top: '2%',
+          bottom: '2%',
+          left: '2%',
+          right: '2%',
+          containLabel: true
+        }
+        : {
+          top: '2%',
+          bottom: '2%',
+          left: '10%',
+          right: '6%',
+          containLabel: true
+        },
+      [isSmall ? 'xAxis' : 'yAxis']: Object.assign({
         type: 'category',
         data: hours,
         splitArea: {
@@ -92,8 +103,9 @@ export default function HeatMapChartCard(props: HeatMapChartCardProps) {
           color: '#959aa9',
           fontWeight: 'bold'
         },
+        inverse: !isSmall
       }, xAxis),
-      yAxis: Object.assign({
+      [isSmall ? 'yAxis' : 'xAxis']: Object.assign({
         type: 'category',
         data: days,
         splitArea: {
@@ -108,21 +120,25 @@ export default function HeatMapChartCard(props: HeatMapChartCardProps) {
         },
         axisLabel: {
           color: '#959aa9',
-          fontWeight: 'bold'
+          fontWeight: 'bold',
+          rotate: isSmall ? 0 : -45,
+          fontSize: isSmall ? 8 : undefined
         },
+        position: 'top',
       }, yAxis),
       visualMap: {
+        show: !isSmall,
         min: min,
         max: max,
-        orient: 'horizontal',
-        left: 'center',
+        orient: 'vertical',
+        top: 'center',
       },
       series: series.map((s) => {
         return Object.assign({
           type: 'heatmap',
           data: data,
           label: {
-            show: true
+            show: !isSmall
           },
           emphasis: {
             itemStyle: {
@@ -133,7 +149,7 @@ export default function HeatMapChartCard(props: HeatMapChartCardProps) {
         }, s);
       })
     }
-  }, [data, isDarkTheme])
+  }, [data, isDarkTheme, isSmall])
 
   return <BasicCard {...props} loading={loading} error={error} query={queryName} data={res}>
     <BrowserOnly>
@@ -142,10 +158,11 @@ export default function HeatMapChartCard(props: HeatMapChartCardProps) {
         notMerge={true}
         lazyUpdate={true}
         style={{
-          height: height,
+          height: 'auto',
+          aspectRatio: isSmall ? '24 / 7' : '10 / 24',
           overflow: 'hidden'
         }}
-        theme={isDarkTheme ? 'compare-dark' : 'compare-light'}
+        theme={isDarkTheme ? 'dark' : 'vintage'}
         opts={{
           devicePixelRatio: window?.devicePixelRatio ?? 1,
           renderer: 'canvas',

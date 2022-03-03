@@ -16,3 +16,9 @@
 .mainSection {
     margin-bottom: 10px;
 }
+
+.page {
+    max-width: 1200px;
+    margin: auto;
+}
+

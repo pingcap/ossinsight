@@ -1,0 +1,35 @@
+.compareNumbersContainer {
+    display: table;
+    margin-bottom: 0;
+}
+
+.compareNumbersContainerBody {
+    display: table-row-group;
+}
+
+.compareNumbers {
+    display: table-row;
+    height: 48px;
+}
+
+.repo1 {
+    display: table-cell;
+    text-align: right;
+    width: 80px;
+}
+
+.repo2 {
+    display: table-cell;
+    text-align: left;
+    width: 80px;
+}
+
+.title {
+    display: table-cell;
+    text-align: center;
+    width: 300px;
+}
+
+.divider {
+    display: table-cell;
+}

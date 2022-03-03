@@ -6,21 +6,27 @@ import useThemeContext from "@theme/hooks/useThemeContext";
 import BasicCard, {BaseChartCardProps} from "./BasicCard";
 import {PieSeriesOption} from "echarts";
 import BrowserOnly from "@docusaurus/BrowserOnly";
+import CompareCard from "./CompareCard";
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
 
 export interface PieSeriesExtendOption extends PieSeriesOption {
   nameMap?: (name: string) => string;
 }
 
-export interface PieChartCardProps extends BaseChartCardProps {
+export interface PieChartCardProps extends Omit<BaseChartCardProps, 'params'> {
+  params1: Record<string, unknown>
+  params2: Record<string, unknown>
   dimensionColumnName: string,
   metricColumnName: string,
   series: PieSeriesExtendOption[],
 }
 
-export default function PieChartCard(props: PieChartCardProps) {
+export default function PieChartCompareCard(props: PieChartCardProps) {
   const {
     queryName,
-    params = {},
+    params1,
+    params2,
     series = [],
     legend,
     tooltip,
@@ -32,12 +38,25 @@ export default function PieChartCard(props: PieChartCardProps) {
     dimensionColumnName,
     metricColumnName
   } = props;
-  const {data: res, loading, error} = useRemoteData(queryName, params, true, shouldLoad);
+  const theme = useTheme();
+  const isSmall = useMediaQuery(theme.breakpoints.down('md'))
+  const req1 = useRemoteData(queryName, params1, true, params1 && shouldLoad);
+  const req2 = useRemoteData(queryName, params2, true, params2 && shouldLoad);
   const {isDarkTheme} = useThemeContext();
 
-  const data = useMemo(() => {
-    return res?.data ?? []
-  }, [res])
+  const [data1, data2] = useMemo(() => {
+    return [
+      req1.data?.data.sort((a, b) => Math.sign(b.count - a.count)) ?? [],
+      req2.data?.data.sort((a, b) => Math.sign(b.count - a.count)) ?? []]
+  }, [req1.data, req2.data])
+
+  const loading = useMemo(() => {
+    return req1.loading || req2.loading
+  }, [req1.loading, req2.loading])
+
+  const error = useMemo(() => {
+    return req1.error || req2.error
+  }, [req1.error, req2.error])
 
   const options = useMemo(() => {
     return {
@@ -46,7 +65,7 @@ export default function PieChartCard(props: PieChartCardProps) {
       }, tooltip),
       legend: Object.assign({
         type: 'scroll',
-        orient: 'vertical',
+        orient: isSmall ? 'horizontal' : 'vertical',
         right: '20px',
         top: 20,
         bottom: 20,
@@ -55,10 +74,12 @@ export default function PieChartCard(props: PieChartCardProps) {
       }, legend),
       series: series.filter((s) => {
         return s?.name != null;
-      }).map((s) => {
-        return Object.assign({
+      }).flatMap((s) => {
+        return [data1, data2].map((data, n) => Object.assign({
           type: 'pie',
-          radius: ['50%', '90%'],
+          name: [params1, params2][n].repoName,
+          radius: ['40%', '70%'],
+          center: [`${50 + 40 * (n - 0.5)}%`, '55%'],
           avoidLabelOverlap: false,
           itemStyle: {
             borderColor: isDarkTheme ? '#1e1e1f' : '#ffffff',
@@ -89,37 +110,39 @@ export default function PieChartCard(props: PieChartCardProps) {
               name: name
             };
           })
-        }, s)
+        }, s))
       }),
       xAxis: xAxis,
       yAxis: yAxis,
       grid: Object.assign({
-        left: '160px',
+        left: 16,
         top: 16,
         bottom: 16,
+        right: 16,
         containLabel: true
       }, grid),
     }
-  }, [data, isDarkTheme])
+  }, [data1, data2, isDarkTheme, isSmall])
 
-  return <BasicCard {...props} loading={loading} error={error} query={queryName} data={res}>
+  return <CompareCard {...props} loading={loading} error={error} query={queryName} datas={[req1.data, req2.data]}>
     <BrowserOnly>
       {() => <ReactECharts
         option={options}
         notMerge={true}
         lazyUpdate={true}
         style={{
-          height: height,
+          width: '100%',
+          height: 'auto',
+          aspectRatio: isSmall ? '16 / 9' : '26 / 9',
           overflow: 'hidden'
         }}
         theme={isDarkTheme ? 'dark' : 'vintage'}
         opts={{
           devicePixelRatio: window?.devicePixelRatio ?? 1,
           renderer: 'canvas',
-          width: 'auto',
           locale: 'en'
         }}
       />}
     </BrowserOnly>
-  </BasicCard>
+  </CompareCard>
 }

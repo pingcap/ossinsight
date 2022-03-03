@@ -1,11 +1,13 @@
 import * as React from "react";
+import {useMemo} from "react";
 import {useRemoteData} from "../RemoteCharts/hook";
-import {useEffect, useMemo, useState} from "react";
 import ReactECharts from 'echarts-for-react';
 import useThemeContext from "@theme/hooks/useThemeContext";
 import BasicCard, {BaseChartCardProps} from "./BasicCard";
 import {SeriesOption} from "echarts";
 import BrowserOnly from "@docusaurus/BrowserOnly";
+import {useTheme} from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 export interface LineAreaBarChartProps extends BaseChartCardProps {
   seriesColumnName: string,
@@ -26,13 +28,14 @@ export default function LineAreaBarChartCard(props: LineAreaBarChartProps) {
     seriesColumnName,
     height
   } = props;
+  const theme = useTheme();
+  const isSmall = useMediaQuery(theme.breakpoints.down('md'))
   const {data: res, loading, error} = useRemoteData(queryName, params, true, shouldLoad);
   const {isDarkTheme} = useThemeContext();
-  const [data, setData] = useState([]);
 
-  useEffect(() => {
-    setData(res?.data || []);
-  }, [res]);
+  const data = useMemo(() => {
+    return res?.data ?? []
+  }, [res])
 
   const options = useMemo(() => {
     return {
@@ -61,7 +64,7 @@ export default function LineAreaBarChartCard(props: LineAreaBarChartProps) {
       }, tooltip),
       legend: Object.assign({
         orient: 'horizontal',
-        left: '20px',
+        left: 'center',
         icon: 'circle',
         itemHeight: 10,
         itemWidth: 10,
@@ -73,10 +76,11 @@ export default function LineAreaBarChartCard(props: LineAreaBarChartProps) {
         })
       }, legend),
       grid: Object.assign({
-        left: '5%',
-        right: '1%',
-        top: '40px',
-        bottom: '50px'
+        top: 48,
+        bottom: 32,
+        left: 24,
+        right: 24,
+        containLabel: true
       }, grid),
       xAxis: Object.assign({
         nameGap: 30,
@@ -122,7 +126,7 @@ export default function LineAreaBarChartCard(props: LineAreaBarChartProps) {
           name: s.name,
           datasetId: `dataset_of_${s.name}`,
           label: {
-            show: true,
+            show: !isSmall,
             position: 'top',
             fontWeight: 'bold',
             color: '#4e5771',
@@ -143,7 +147,7 @@ export default function LineAreaBarChartCard(props: LineAreaBarChartProps) {
         }
       })
     }
-  }, [data, isDarkTheme])
+  }, [data, isDarkTheme, isSmall])
 
   return <BasicCard {...props} loading={loading} error={error} query={queryName} data={res}>
     <BrowserOnly>
@@ -152,10 +156,12 @@ export default function LineAreaBarChartCard(props: LineAreaBarChartProps) {
         notMerge={true}
         lazyUpdate={true}
         style={{
-          height: height,
+          width: '100%',
+          height: 'auto',
+          aspectRatio: isSmall ? '16 / 9' : '26 / 9',
           overflow: 'hidden'
         }}
-        theme={isDarkTheme ? 'compare-dark' : 'compare-light'}
+        theme={isDarkTheme ? 'dark' : 'vintage'}
         opts={{
           devicePixelRatio: window?.devicePixelRatio ?? 1,
           renderer: 'canvas',

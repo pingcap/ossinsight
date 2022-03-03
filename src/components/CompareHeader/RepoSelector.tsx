@@ -60,7 +60,7 @@ export default function RepoSelector({repo, label, defaultRepoName, onChange}: R
 
   return (<>
     <Autocomplete<Repo>
-      sx={{width: 300}}
+      sx={{maxWidth: 300, mx: 'auto'}}
       size="small"
       isOptionEqualToValue={(option, value) => option.name === value.name}
       getOptionLabel={(option) => option.name}
@@ -76,6 +76,7 @@ export default function RepoSelector({repo, label, defaultRepoName, onChange}: R
       renderInput={(params) => (
         <TextField
           {...params}
+          variant="standard"
           label={label}
           InputProps={{
             ...params.InputProps,

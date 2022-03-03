@@ -13,7 +13,6 @@ import style from './index.module.css';
 
 import ThemeAdaptor from "../../components/ThemeAdaptor";
 import CompareHeader from "../../components/CompareHeader/CompareHeader";
-import StatisticCard from "../../components/RemoteCards/StatisticCard";
 import LineAreaBarChartCard from "../../components/RemoteCards/LineAreaBarChartCard";
 import HeatMapChartCard from "../../components/RemoteCards/HeatMapChartCard";
 import PieChartCard from "../../components/RemoteCards/PieChartCard";
@@ -24,10 +23,13 @@ import {areaCodeToName} from "../../lib/areacode";
 import {
   registerThemeCompareDark,
   registerThemeCompareLight,
+  registerThemeDark, registerThemeVintage,
 } from "../../components/RemoteCharts/theme";
 
 import {Repo} from "../../components/CompareHeader/RepoSelector";
-import useUrlSearchState, {dateRangeParam, stringParam, UseUrlSearchStateProps} from "../../hooks/url-search-state";
+import useUrlSearchState, {dateRangeParam, UseUrlSearchStateProps} from "../../hooks/url-search-state";
+import CompareNumbers, {CompareNumbersContainer} from "../../components/RemoteCards/CompareNumbers";
+import PieChartCompareCard from "../../components/RemoteCards/PieChartCompareCard";
 
 
 const allProvidedRepos = (repos: Repo[]) => {
@@ -48,177 +50,77 @@ const anyReposProvided = (repos: Repo[]) => {
   }).length > 0;
 };
 
-const StarNumbers = ({ repo, dateRange }) => {
-  return <Grid container spacing={1}>
-    <Grid item xs={4}>
-      <StatisticCard
-        title={'Stars total'}
-        queryName="stars-total"
-        params={{repoName: repo?.name, dateRange: dateRange}}
-        shouldLoad={allReposProvided([repo])}
-        noLoadReason="Need select repo."
-        height="12em"
-      />
-    </Grid>
-    <Grid item xs={4}>
-      <StatisticCard
-        title={'Avg stars / week'}
-        queryName="stars-average-by-week"
-        params={{repoName: repo?.name, dateRange: dateRange}}
-        shouldLoad={allReposProvided([repo])}
-        noLoadReason="Need select repo."
-        height="12em"
-      />
-    </Grid>
-    <Grid item xs={4}>
-      <StatisticCard
-        title={'Max stars / week'}
-        queryName="stars-max-by-week"
-        params={{repoName: repo?.name, dateRange: dateRange}}
-        shouldLoad={allReposProvided([repo])}
-        noLoadReason="Need select repo."
-        height="12em"
-      />
-    </Grid>
-  </Grid>;
+interface SomeNumbers {
+  title: string
+  repos: [Repo | null, Repo | null]
+  queries: { title: string, query: string }[]
 }
 
-const PullRequestNumbers = ({ repo, dateRange }) => {
-  return <Grid container spacing={1}>
-    <Grid item xs={6}>
-      <StatisticCard
-        title={'Pull requests'}
-        queryName="pull-requests-total"
-        params={{repoName: repo?.name, dateRange: dateRange}}
-        shouldLoad={allReposProvided([repo])}
-        noLoadReason="Need select repo."
-        height="12em"
-      />
-    </Grid>
-    <Grid item xs={6}>
-      <StatisticCard
-        title={'PR creators'}
-        queryName="pull-request-creators-total"
-        params={{repoName: repo?.name, dateRange: dateRange}}
-        shouldLoad={allReposProvided([repo])}
-        noLoadReason="Need select repo."
-        height="12em"
-      />
-    </Grid>
-    <Grid item xs={6}>
-      <StatisticCard
-        title={'Pull request reviews'}
-        queryName="pull-request-reviews-total"
-        params={{repoName: repo?.name, dateRange: dateRange}}
-        shouldLoad={allReposProvided([repo])}
-        noLoadReason="Need select repo."
-        height="12em"
-      />
-    </Grid>
-    <Grid item xs={6}>
-      <StatisticCard
-        title={'Pull request reviewers'}
-        queryName="pull-request-reviewers-total"
-        params={{repoName: repo?.name, dateRange: dateRange}}
-        shouldLoad={allReposProvided([repo])}
-        noLoadReason="Need select repo."
-        height="12em"
-      />
-    </Grid>
-  </Grid>;
+const SomeNumbers = ({title, repos, queries}: SomeNumbers) => {
+  return (
+    <CompareNumbersContainer title={title}>
+      {queries.map(({title, query}) => (
+        <CompareNumbers key={query} title={title} query={query} repos={repos} />
+      ))}
+    </CompareNumbersContainer>
+  )
 }
 
-const IssueNumbers = ({ repo, dateRange }) => {
-  return <Grid container spacing={1}>
-    <Grid item xs={6}>
-      <StatisticCard
-        title={'Issues'}
-        queryName="issues-total"
-        params={{repoName: repo?.name, dateRange: dateRange}}
-        shouldLoad={allReposProvided([repo])}
-        noLoadReason="Need select repo."
-        height="12em"
-      />
-    </Grid>
-    <Grid item xs={6}>
-      <StatisticCard
-        title={'Issue creators'}
-        queryName="issue-creators-total"
-        params={{repoName: repo?.name, dateRange: dateRange}}
-        shouldLoad={allReposProvided([repo])}
-        noLoadReason="Need select repo."
-        height="12em"
-      />
-    </Grid>
-    <Grid item xs={6}>
-      <StatisticCard
-        title={'Issue comments'}
-        queryName="issue-comments-total"
-        params={{repoName: repo?.name, dateRange: dateRange}}
-        shouldLoad={allReposProvided([repo])}
-        noLoadReason="Need select repo."
-        height="12em"
-      />
-    </Grid>
-    <Grid item xs={6}>
-      <StatisticCard
-        title={'Issue commenters'}
-        queryName="issue-commenters-total"
-        params={{repoName: repo?.name, dateRange: dateRange}}
-        shouldLoad={allReposProvided([repo])}
-        noLoadReason="Need select repo."
-        height="12em"
-      />
-    </Grid>
-  </Grid>;
+const STAR_NUMBERS: SomeNumbers['queries'] = [
+  {title: 'Stars total', query: "stars-total"},
+  {title: 'Avg stars / week', query: "stars-average-by-week"},
+  {title: 'Max stars / week', query: "stars-max-by-week"},
+]
+
+const StarNumbers = ({title, repos, dateRange}) => {
+  return <SomeNumbers title={title} repos={repos} queries={STAR_NUMBERS} />
+
 }
 
-const CommitNumbers = ({ repo, dateRange }) => {
-  return <Grid container spacing={1}>
-    <Grid item xs={4}>
-      <StatisticCard
-        title="Commits"
-        queryName="commits-total"
-        params={{repoName: repo?.name, dateRange: dateRange}}
-        shouldLoad={allReposProvided([repo])}
-        noLoadReason="Need select repo."
-        height="12em"
-      />
-    </Grid>
-    <Grid item xs={4}>
-      <StatisticCard
-        title="Committers"
-        queryName="committers-total"
-        params={{repoName: repo?.name, dateRange: dateRange}}
-        shouldLoad={allReposProvided([repo])}
-        noLoadReason="Need select repo."
-        height="12em"
-      />
-    </Grid>
-    <Grid item xs={4}>
-      <StatisticCard
-        title="Pushes"
-        queryName="pushes-total"
-        params={{repoName: repo?.name, dateRange: dateRange}}
-        shouldLoad={allReposProvided([repo])}
-        noLoadReason="Need select repo."
-        height="12em"
-      />
-    </Grid>
-  </Grid>;
+
+const PULL_REQUEST_NUMBERS: SomeNumbers['queries'] = [
+  {title: 'Pull requests', query: "pull-requests-total"},
+  {title: 'PR creators', query: "pull-request-creators-total"},
+  {title: 'Pull request reviews', query: "pull-request-reviews-total"},
+  {title: 'Pull request reviewers', query: "pull-request-reviewers-total"},
+]
+
+
+const PullRequestNumbers = ({title, repos, dateRange}) => {
+  return <SomeNumbers title={title} repos={repos} queries={PULL_REQUEST_NUMBERS} />
+}
+
+const ISSUE_NUMBERS: SomeNumbers['queries'] = [
+  {title: 'Issues', query: "issues-total"},
+  {title: 'Issue creators', query: 'issue-creators-total'},
+  {title: 'Issue comments', query: 'issue-comments-total'},
+  {title: 'Issue commenters', query: 'issue-commenters-total'},
+]
+
+const IssueNumbers = ({title, repos, dateRange}) => {
+  return <SomeNumbers title={title} repos={repos} queries={ISSUE_NUMBERS} />
+}
+
+
+const COMMIT_NUMBERS: SomeNumbers['queries'] = [
+  {title: 'Commits', query: "commits-total"},
+  {title: 'Committers', query: 'committers-total'},
+  {title: 'Pushes', query: 'pushes-total'},
+]
+
+const CommitNumbers = ({title, repos, dateRange}) => {
+  return <SomeNumbers title={title} repos={repos} queries={COMMIT_NUMBERS} />
 }
 
 const MainContent = (props) => {
-  const {isDarkTheme} = useThemeContext();
   return <main className={style.mainContent} style={{
-    backgroundColor: isDarkTheme ? '#18191a' : '#f9fbfc'
   }}>
     {props.children}
   </main>
 }
 
-registerThemeCompareLight();
-registerThemeCompareDark();
+registerThemeDark();
+registerThemeVintage(false);
 
 const repoParam = (defaultValue?): UseUrlSearchStateProps<Repo> => {
   return {
@@ -233,15 +135,15 @@ export default function RepoCompare() {
 
   const [repo1, setRepo1] = useUrlSearchState<Repo>('repo1', repoParam(null));
   const [repo2, setRepo2] = useUrlSearchState<Repo>('repo2', repoParam(null));
-  const [dateRange, setDateRange] = useUrlSearchState<[Date | null, Date | null]>('daterange', dateRangeParam('yyyy-MM-dd', () => [null, null]));
+  // const [dateRange, setDateRange] = useUrlSearchState<[Date | null, Date | null]>('daterange', dateRangeParam('yyyy-MM-dd', () => [null, null]));
+  const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([null, null]);
 
   return (
-    <Layout>
+    <Layout wrapperClassName={style.page} title={`Project Compare | ${siteConfig.title}`}>
       <LocalizationProvider dateAdapter={DateAdapter}>
         <ThemeAdaptor>
           <Head>
             <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,400,500,700&display=swap"/>
-            <title>Project Compare | {siteConfig.title}</title>
           </Head>
           <CompareHeader
             repo1={repo1}
@@ -252,29 +154,15 @@ export default function RepoCompare() {
             onDateRangeChange={setDateRange}
           />
           <MainContent>
-            <header>
-              <Grid container spacing={2}>
-                <Grid item sm={6} xs={12}>
-                  <Typography variant="h4" fontFamily="Lato" gutterBottom component="div">{repo1?.name || 'Repo Name 1'}</Typography>
-                </Grid>
-                <Grid item sm={6} xs={12}>
-                  <Typography variant="h4" fontFamily="Lato" gutterBottom component="div">{repo2?.name || 'Repo Name 2'}</Typography>
-                </Grid>
-              </Grid>
-            </header>
             {/*  Stars  */}
             <section className={style.mainSection}>
-              <Typography variant="h5" fontFamily="Lato" gutterBottom component="div">Stars</Typography>
               <Grid container spacing={1}>
                 {/*  Star - Number  */}
-                <Grid item md={6} sm={12}>
-                  <StarNumbers repo={repo1} dateRange={dateRange}/>
-                </Grid>
-                <Grid item md={6} sm={12}>
-                  <StarNumbers repo={repo2} dateRange={dateRange}/>
+                <Grid item xs={12}>
+                  <StarNumbers title="Stars" repos={[repo1, repo2]} dateRange={dateRange} />
                 </Grid>
                 {/*  Stars - History  */}
-                <Grid item sm={12}>
+                <Grid item xs={12}>
                   <LineAreaBarChartCard
                     title={'Stars History'}
                     queryName={"stars-history"}
@@ -307,36 +195,19 @@ export default function RepoCompare() {
                   />
                 </Grid>
                 {/*  Star - Country / Area  */}
-                <Grid item md={6} sm={12}>
-                  <PieChartCard
+                <Grid item xs={12}>
+                  <PieChartCompareCard
                     title="The country / area of stargazers"
                     queryName={"stars-map"}
-                    params={{
+                    params1={{
                       repoName: repo1?.name,
                       dateRange: dateRange
                     }}
-                    shouldLoad={allReposProvided([repo1])}
-                    noLoadReason="Need select repo."
-                    series={[
-                      {
-                        name: "country_or_area",
-                        nameMap: areaCodeToName
-                      }
-                    ]}
-                    dimensionColumnName="country_or_area"
-                    metricColumnName="count"
-                    height="400px"
-                  />
-                </Grid>
-                <Grid item md={6} sm={12}>
-                  <PieChartCard
-                    title="The country / area of stargazers"
-                    queryName={"stars-map"}
-                    params={{
+                    params2={{
                       repoName: repo2?.name,
                       dateRange: dateRange
                     }}
-                    shouldLoad={allReposProvided([repo2])}
+                    shouldLoad={allReposProvided([repo1, repo2])}
                     noLoadReason="Need select repo."
                     series={[
                       {
@@ -350,15 +221,19 @@ export default function RepoCompare() {
                   />
                 </Grid>
                 {/*  Star - Top 50 Company  */}
-                <Grid item md={6} sm={12}>
-                  <PieChartCard
+                <Grid item xs={12}>
+                  <PieChartCompareCard
                     title="Top 50 company of stargazers"
                     queryName={"stars-top-50-company"}
-                    params={{
+                    params1={{
                       repoName: repo1?.name,
                       dateRange: dateRange
                     }}
-                    shouldLoad={allReposProvided([repo1])}
+                    params2={{
+                      repoName: repo2?.name,
+                      dateRange: dateRange
+                    }}
+                    shouldLoad={allReposProvided([repo1, repo2])}
                     noLoadReason="Need select repo."
                     series={[
                       {
@@ -370,39 +245,16 @@ export default function RepoCompare() {
                     height="400px"
                   />
                 </Grid>
-                <Grid item md={6} sm={12}>
-                  <PieChartCard
-                    title="Top 50 company of stargazers"
-                    queryName={"stars-top-50-company"}
-                    params={{
-                      repoName: repo2?.name,
-                      dateRange: dateRange
-                    }}
-                    shouldLoad={allReposProvided([repo2])}
-                    noLoadReason="Need select repo."
-                    series={[
-                      {
-                        name: "company"
-                      }
-                    ]}
-                    dimensionColumnName="company_name"
-                    metricColumnName="stargazers"
-                    height="400px"/>
-                </Grid>
               </Grid>
             </section>
             {/*  Pull Requests  */}
             <section className={style.mainSection}>
-              <Typography variant="h5" fontFamily="Lato" gutterBottom component="div">Pull Request</Typography>
               <Grid container spacing={1}>
                 {/*  Pull Requests - Numbers  */}
-                <Grid item md={6} sm={12}>
-                  <PullRequestNumbers repo={repo1} dateRange={dateRange}/>
+                <Grid item xs={12}>
+                  <PullRequestNumbers title='Pull Request' repos={[repo1, repo2]} dateRange={dateRange} />
                 </Grid>
-                <Grid item md={6} sm={12}>
-                  <PullRequestNumbers repo={repo2} dateRange={dateRange}/>
-                </Grid>
-                <Grid item md={12}>
+                <Grid item xs={12}>
                   {/*  Pull Requests - History  */}
                   <LineAreaBarChartCard
                     title={'Pull Request History'}
@@ -435,8 +287,8 @@ export default function RepoCompare() {
                     height="500px"
                   />
                 </Grid>
-                <Grid item md={12}>
-                {/*  Pull Requests - Creator per Month  */}
+                <Grid item xs={12}>
+                  {/*  Pull Requests - Creator per Month  */}
                   <LineAreaBarChartCard
                     title={'Pull Request Creator per month'}
                     queryName={"pull-request-creators-per-month"}
@@ -469,36 +321,19 @@ export default function RepoCompare() {
                   />
                 </Grid>
                 {/*  Pull Requests - Country / Area  */}
-                <Grid item md={6} sm={12}>
-                  <PieChartCard
+                <Grid item xs={12}>
+                  <PieChartCompareCard
                     title="The country / area of PR creators"
                     queryName={"pull-request-creators-map"}
-                    params={{
+                    params1={{
                       repoName: repo1?.name,
                       dateRange: dateRange
                     }}
-                    shouldLoad={allReposProvided([repo1])}
-                    noLoadReason="Need select repo."
-                    series={[
-                      {
-                        name: "country_or_area",
-                        nameMap: areaCodeToName
-                      }
-                    ]}
-                    dimensionColumnName="country_or_area"
-                    metricColumnName="count"
-                    height="400px"
-                  />
-                </Grid>
-                <Grid item md={6} sm={12}>
-                  <PieChartCard
-                    title="The country / area of PR creators"
-                    queryName={"pull-request-creators-map"}
-                    params={{
+                    params2={{
                       repoName: repo2?.name,
                       dateRange: dateRange
                     }}
-                    shouldLoad={allReposProvided([repo2])}
+                    shouldLoad={allReposProvided([repo1, repo2])}
                     noLoadReason="Need select repo."
                     series={[
                       {
@@ -515,34 +350,27 @@ export default function RepoCompare() {
             </section>
             {/*  Issue  */}
             <section className={style.mainSection}>
-              <Typography variant="h5" fontFamily="Lato" gutterBottom component="div">Issue</Typography>
               <Grid container spacing={1}>
-                <Grid item md={6} sm={12}>
-                  <IssueNumbers repo={repo1} dateRange={dateRange}/>
-                </Grid>
-                <Grid item md={6} sm={12}>
-                  <IssueNumbers repo={repo2} dateRange={dateRange}/>
+                <Grid item xs={12}>
+                  <IssueNumbers title="Issue" repos={[repo1, repo2]} dateRange={dateRange} />
                 </Grid>
               </Grid>
             </section>
             {/*  Commits  */}
             <section className={style.mainSection}>
-              <Typography variant="h5" fontFamily="Lato" gutterBottom component="div">Commits</Typography>
               <Grid container spacing={1}>
-                <Grid item md={6} sm={12}>
-                  <CommitNumbers repo={repo1} dateRange={dateRange}/>
+                <Grid item xs={12}>
+                  <CommitNumbers title="Commits" repos={[repo1, repo2]} dateRange={dateRange} />
                 </Grid>
-                <Grid item md={6} sm={12}>
-                  <CommitNumbers repo={repo2} dateRange={dateRange}/>
-                </Grid>
-                <Grid item sm={12}>
+                <Grid item xs={12}>
                   <TextCard height="auto">
                     <>
                       <Typography variant="h6" gutterBottom>
                         Commits Time Distribution
                       </Typography>
                       <Typography variant="body1">
-                        Commits time distribution describes the number of push events of the repository in different periods.
+                        Commits time distribution describes the number of push events of the repository in different
+                        periods.
                       </Typography>
                       <ul>
                         <Typography variant="body1" component="li">The X-axis is 0 ~ 24 hours divided according to GMT(UTC+00:00) time zone</Typography>
@@ -571,7 +399,8 @@ export default function RepoCompare() {
                     </>
                   </TextCard>
                 </Grid>
-                <Grid item md={6} sm={12}>
+                <Grid item md={3} xs={0} sx={{height: '1px', p: '0 !important'}} zeroMinWidth/>
+                <Grid item md={3} sm={6} xs={12}>
                   <HeatMapChartCard
                     title={'Commits Time Distribution'}
                     queryName={"commits-time-distribution"}
@@ -596,7 +425,7 @@ export default function RepoCompare() {
                     height="400px"
                   />
                 </Grid>
-                <Grid item md={6} sm={12}>
+                <Grid item md={3} sm={6}  xs={12}>
                   <HeatMapChartCard
                     title={'Commits Time Distribution'}
                     queryName={"commits-time-distribution"}
