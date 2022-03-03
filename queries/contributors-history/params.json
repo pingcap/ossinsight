@@ -3,27 +3,41 @@
   "params": [
     {
       "name": "repo",
-      "replaces": "db_repos"
+      "replaces": "db_repos",
+      "enums": "repo_subset"
     },
     {
       "name": "n",
-      "replaces": "10"
+      "replaces": "10",
+      "enums": "n"
     },
     {
       "name": "years",
-      "replaces": "7"
+      "replaces": "7",
+      "enums": "years"
     },
     {
       "name": "action",
-      "replaces": "closed"
+      "replaces": "closed",
+      "enums": ["opened", "closed"]
     },
     {
       "name": "merged",
       "replaces": "AND github_events.pr_merged IS TRUE",
+      "enums": ["true", "*"],
       "template": {
         "true": "AND github_events.pr_merged IS TRUE",
         "*": ""
       }
+    }
+  ],
+  "restrictions": [
+    {
+      "fields": ["action", "merged"],
+      "enums": [
+        ["opened", "*"],
+        ["merged", "true"]
+      ]
     }
   ]
 }

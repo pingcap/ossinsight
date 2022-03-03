@@ -1,0 +1,99 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "QuerySchema",
+  "type": "object",
+  "properties": {
+    "cacheHours": {
+      "description": "Cache time in hours",
+      "type": "number"
+    },
+    "params": {
+      "description": "Query params declaration",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Params"
+      }
+    },
+    "restrictions": {
+      "description": "Special restrictions for params",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Restriction"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "cacheHours",
+    "params"
+  ],
+  "definitions": {
+    "Params": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "description": "URL Search param name for the query",
+          "type": "string"
+        },
+        "replaces": {
+          "description": "Replacing substring in the query sql template. Replacing uses `String.replaceAll`, please make sure the replacing substring is not substring of other texts",
+          "type": "string"
+        },
+        "template": {
+          "description": "Replacing templates, mapped by search value",
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "default": {
+          "description": "Default input value",
+          "type": "string"
+        },
+        "enums": {
+          "description": "Enums for prefetching and validating, default is no prefetching and validating",
+          "oneOf": [
+            {
+              "description": "Predefined query params name",
+              "type": "string"
+            },
+            {
+              "description": "The allowed values and should be prefetched",
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "replaces"
+      ]
+    },
+    "Restriction": {
+      "type": "object",
+      "properties": {
+        "fields": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "enums": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "additionalProperties": false,
+      "required": ["fields", "enums"]
+    }
+  }
+}
