@@ -8,7 +8,9 @@ import {createClient} from "redis";
 
 export default async function server(router: Router<DefaultState, ContextExtends>) {
 
-  const redisClient = createClient();
+  const redisClient = createClient({
+    url: process.env.REDIS_URL
+  });
   await redisClient.on('error', (err) => console.log('Redis Client Error', err));
   await redisClient.connect();
 

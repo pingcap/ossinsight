@@ -65,7 +65,9 @@ async function main () {
   }, 60);
 
   // Init redis client.
-  const redisClient = createClient();
+  const redisClient = createClient({
+    url: process.env.REDIS_URL
+  });
   await redisClient.on('error', (err) => console.log('Redis Client Error', err));
   await redisClient.connect();
 
