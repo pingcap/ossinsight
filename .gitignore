@@ -6,3 +6,4 @@ gh/**/.cache
 schemas
 .idea
 .DS_Store
+log

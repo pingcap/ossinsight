@@ -1,10 +1,10 @@
-import {mkdir, readFile} from 'fs/promises'
+import {readFile} from 'fs/promises'
 import path from 'path'
-import Cache, {CachedData} from "./Cache";
 import {DateTime} from "luxon";
 import type { QuerySchema } from '../../params.schema'
-
-export type QueryParams = QuerySchema
+import {MysqlQueryExecutor} from "./MysqlQueryExecutor";
+import Cache, {CachedData} from "./Cache";
+import {RedisClientType, RedisDefaultModules, RedisModules, RedisScripts} from "redis";
 
 export class BadParamsError extends Error {
   readonly msg: string
@@ -14,7 +14,7 @@ export class BadParamsError extends Error {
   }
 }
 
-function buildParams(template: string, params: QueryParams, values: Record<string, string>) {
+function buildParams(template: string, params: QuerySchema, values: Record<string, string>) {
   for (let {name, replaces, template: paramTemplate, default: defaultValue} of params.params) {
     const value = values[name] ?? defaultValue
 
@@ -42,9 +42,9 @@ export interface QueryExecutor<T> {
 
 export default class Query {
 
-  private readonly path: string
+  public readonly path: string
   template: string | undefined = undefined
-  params: QueryParams | undefined = undefined
+  queryDef: QuerySchema | undefined = undefined
   private readonly loadingPromise: Promise<boolean>
 
   constructor(public readonly name: string) {
@@ -55,7 +55,7 @@ export default class Query {
     this.loadingPromise = new Promise<boolean>(async (resolve, reject) => {
       try {
         this.template = await readFile(templateFilePath, {encoding: "utf-8"})
-        this.params = JSON.parse(await readFile(paramsFilePath, {encoding: 'utf-8'})) as QueryParams
+        this.queryDef = JSON.parse(await readFile(paramsFilePath, {encoding: 'utf-8'})) as QuerySchema
         resolve(true)
       } catch (e) {
         reject(e)
@@ -69,14 +69,18 @@ export default class Query {
 
   async buildSql(params: Record<string, any>): Promise<string> {
     await this.ready()
-    return buildParams(this.template!, this.params!, params)
+    return buildParams(this.template!, this.queryDef!, params)
   }
 
-  async run<T>(params: Record<string, any>, executor: QueryExecutor<T>): Promise<CachedData<T>> {
+  async run<T>(
+    params: Record<string, any>,
+    redisClient: RedisClientType<RedisDefaultModules & RedisModules, RedisScripts>,
+    executor: MysqlQueryExecutor<unknown>
+  ): Promise<CachedData<T>> {
     const sql = await this.buildSql(params)
-    const cachePath = path.join(this.path, '.cache')
-    await mkdir(cachePath, {recursive: true})
-    const cache = new Cache<T>(path.join(cachePath, `${this.params!.params.map(p => params[p.name]).join('_')}.json`))
+    const key = `query:${this.name}:${this.queryDef!.params.map(p => params[p.name]).join('_')}`;
+    const cacheHours = this.queryDef!.cacheHours;
+    const cache = new Cache<T>(key, cacheHours * 3600,redisClient)
     return cache.load(async () => {
       const start = DateTime.now()
       const data = await executor.execute(sql)
@@ -86,8 +90,8 @@ export default class Query {
         requestedAt: start.toISO(),
         spent: now.diff(start).as('seconds'),
         sql,
-        expiresAt: now.plus({hours: this.params!.cacheHours}),
-        data: data
+        expiresAt: now.plus({hours: cacheHours}),
+        data: data as any
       }
     })
   }

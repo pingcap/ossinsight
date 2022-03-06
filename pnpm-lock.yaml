@@ -8,6 +8,7 @@ specifiers:
   '@types/luxon': ^2.0.9
   '@types/mysql': ^2.15.21
   '@types/node': ^17.0.18
+  '@types/tiny-async-pool': ^1.0.0
   ajv-cli: ^5.0.0
   consola: ^2.15.3
   dotenv: ^16.0.0
@@ -19,6 +20,8 @@ specifiers:
   mysql: ^2.18.1
   mysql2: ^2.3.3
   octokit: ^1.7.1
+  redis: ^4.0.4
+  tiny-async-pool: ^1.2.0
   ts-node: ^10.5.0
   typescript: ^4.5.5
 
@@ -33,6 +36,8 @@ dependencies:
   mysql: 2.18.1
   mysql2: 2.3.3
   octokit: 1.7.1
+  redis: mirrors.tencent.com/redis/4.0.4
+  tiny-async-pool: 1.2.0
 
 devDependencies:
   '@types/koa': 2.13.4
@@ -41,6 +46,7 @@ devDependencies:
   '@types/luxon': 2.0.9
   '@types/mysql': 2.15.21
   '@types/node': 17.0.18
+  '@types/tiny-async-pool': 1.0.0
   ajv-cli: 5.0.0_ts-node@10.5.0
   json-schema-to-typescript: 10.1.5
   ts-node: 10.5.0_f3bd4037939c2ed2942ba074291f8ef2
@@ -78,6 +84,56 @@ packages:
     engines: {node: '>= 8.0.0'}
     dependencies:
       vary: 1.1.2
+    dev: false
+
+  /@node-redis/bloom/1.0.1_@node-redis+client@1.0.4:
+    resolution: {integrity: sha512-mXEBvEIgF4tUzdIN89LiYsbi6//EdpFA7L8M+DHCvePXg+bfHWi+ct5VI6nHUFQE5+ohm/9wmgihCH3HSkeKsw==}
+    peerDependencies:
+      '@node-redis/client': ^1.0.0
+    dependencies:
+      '@node-redis/client': 1.0.4
+    dev: false
+
+  /@node-redis/client/1.0.4:
+    resolution: {integrity: sha512-IM/NRAqg7MvNC3bIRQipXGrEarunrdgvrbAzsd3ty93LSHi/M+ybQulOERQi8a3M+P5BL8HenwXjiIoKm6ml2g==}
+    engines: {node: '>=12'}
+    dependencies:
+      cluster-key-slot: mirrors.tencent.com/cluster-key-slot/1.1.0
+      generic-pool: mirrors.tencent.com/generic-pool/3.8.2
+      redis-parser: mirrors.tencent.com/redis-parser/3.0.0
+      yallist: mirrors.tencent.com/yallist/4.0.0
+    dev: false
+
+  /@node-redis/graph/1.0.0_@node-redis+client@1.0.4:
+    resolution: {integrity: sha512-mRSo8jEGC0cf+Rm7q8mWMKKKqkn6EAnA9IA2S3JvUv/gaWW/73vil7GLNwion2ihTptAm05I9LkepzfIXUKX5g==}
+    peerDependencies:
+      '@node-redis/client': ^1.0.0
+    dependencies:
+      '@node-redis/client': 1.0.4
+    dev: false
+
+  /@node-redis/json/1.0.2_@node-redis+client@1.0.4:
+    resolution: {integrity: sha512-qVRgn8WfG46QQ08CghSbY4VhHFgaTY71WjpwRBGEuqGPfWwfRcIf3OqSpR7Q/45X+v3xd8mvYjywqh0wqJ8T+g==}
+    peerDependencies:
+      '@node-redis/client': ^1.0.0
+    dependencies:
+      '@node-redis/client': 1.0.4
+    dev: false
+
+  /@node-redis/search/1.0.3_@node-redis+client@1.0.4:
+    resolution: {integrity: sha512-rsrzkGWI84di/uYtEctS/4qLusWt0DESx/psjfB0TFpORDhe7JfC0h8ary+eHulTksumor244bXLRSqQXbFJmw==}
+    peerDependencies:
+      '@node-redis/client': ^1.0.0
+    dependencies:
+      '@node-redis/client': 1.0.4
+    dev: false
+
+  /@node-redis/time-series/1.0.2_@node-redis+client@1.0.4:
+    resolution: {integrity: sha512-HGQ8YooJ8Mx7l28tD7XjtB3ImLEjlUxG1wC1PAjxu6hPJqjPshUZxAICzDqDjtIbhDTf48WXXUcx8TQJB1XTKA==}
+    peerDependencies:
+      '@node-redis/client': ^1.0.0
+    dependencies:
+      '@node-redis/client': 1.0.4
     dev: false
 
   /@octokit/app/12.0.5:
@@ -489,6 +545,10 @@ packages:
     dependencies:
       '@types/mime': 1.3.2
       '@types/node': 17.0.18
+    dev: true
+
+  /@types/tiny-async-pool/1.0.0:
+    resolution: {integrity: sha512-d8RK1jg/piCgv5/jD8ta8uJOE10tU8MWExzL1Kf1kOjMaTuL5cW0eZ9ax001SSYa4Ecg6xzZBh/jM4GB7+5OAg==}
     dev: true
 
   /accepts/1.3.8:
@@ -1449,6 +1509,13 @@ packages:
       next-tick: 1.1.0
     dev: true
 
+  /tiny-async-pool/1.2.0:
+    resolution: {integrity: sha512-PY/OiSenYGBU3c1nTuP1HLKRkhKFDXsAibYI5GeHbHw2WVpt6OFzAPIRP94dGnS66Jhrkheim2CHAXUNI4XwMg==}
+    dependencies:
+      semver: mirrors.tencent.com/semver/5.7.1
+      yaassertion: 1.0.2
+    dev: false
+
   /toidentifier/1.0.1:
     resolution: {integrity: sha512-o5sSPKEkg/DIQNmH43V0/uerLrpzVedkUh8tGNvaeXpfpuwjKenlSox/2O/BTlZUtEe+JG7s5YhEz608PlAHRA==}
     engines: {node: '>=0.6'}
@@ -1560,6 +1627,10 @@ packages:
   /wrappy/1.0.2:
     resolution: {integrity: sha1-tSQ9jz7BqjXxNkYFvA0QNuMKtp8=}
 
+  /yaassertion/1.0.2:
+    resolution: {integrity: sha512-sBoJBg5vTr3lOpRX0yFD+tz7wv/l2UPMFthag4HGTMPrypBRKerjjS8jiEnNMjcAEtPXjbHiKE0UwRR1W1GXBg==}
+    dev: false
+
   /yallist/2.1.2:
     resolution: {integrity: sha1-HBH5IY8HYImkfdUS+TxmmaaoHVI=}
     dev: false
@@ -1577,3 +1648,59 @@ packages:
     resolution: {integrity: sha512-Ux4ygGWsu2c7isFWe8Yu1YluJmqVhxqK2cLXNQA5AcC3QfbGNpM7fu0Y8b/z16pXLnFxZYvWhd3fhBY9DLmC6Q==}
     engines: {node: '>=6'}
     dev: true
+
+  mirrors.tencent.com/cluster-key-slot/1.1.0:
+    resolution: {integrity: sha512-2Nii8p3RwAPiFwsnZvukotvow2rIHM+yQ6ZcBXGHdniadkYGZYiGmkHJIbZPIV9nfv7m/U1IPMVVcAhoWFeklw==, registry: https://mirrors.cloud.tencent.com/npm/, tarball: https://mirrors.tencent.com/npm/cluster-key-slot/-/cluster-key-slot-1.1.0.tgz}
+    name: cluster-key-slot
+    version: 1.1.0
+    engines: {node: '>=0.10.0'}
+    dev: false
+
+  mirrors.tencent.com/generic-pool/3.8.2:
+    resolution: {integrity: sha512-nGToKy6p3PAbYQ7p1UlWl6vSPwfwU6TMSWK7TTu+WUY4ZjyZQGniGGt2oNVvyNSpyZYSB43zMXVLcBm08MTMkg==, registry: https://mirrors.cloud.tencent.com/npm/, tarball: https://mirrors.tencent.com/npm/generic-pool/-/generic-pool-3.8.2.tgz}
+    name: generic-pool
+    version: 3.8.2
+    engines: {node: '>= 4'}
+    dev: false
+
+  mirrors.tencent.com/redis-errors/1.2.0:
+    resolution: {integrity: sha1-62LSrbFeTq9GEMBK/hUpOEJQq60=, registry: https://mirrors.cloud.tencent.com/npm/, tarball: https://mirrors.tencent.com/npm/redis-errors/-/redis-errors-1.2.0.tgz}
+    name: redis-errors
+    version: 1.2.0
+    engines: {node: '>=4'}
+    dev: false
+
+  mirrors.tencent.com/redis-parser/3.0.0:
+    resolution: {integrity: sha1-tm2CjNyv5rS4pCin3vTGvKwxyLQ=, registry: https://mirrors.cloud.tencent.com/npm/, tarball: https://mirrors.tencent.com/npm/redis-parser/-/redis-parser-3.0.0.tgz}
+    name: redis-parser
+    version: 3.0.0
+    engines: {node: '>=4'}
+    dependencies:
+      redis-errors: mirrors.tencent.com/redis-errors/1.2.0
+    dev: false
+
+  mirrors.tencent.com/redis/4.0.4:
+    resolution: {integrity: sha512-KaM1OAj/nGrSeybmmOWSMY0LXTGT6FVWgUZZrd2MYzXKJ+VGtqVaciGQeNMfZiQX+kDM8Ke4uttb54m2rm6V0A==, registry: https://mirrors.cloud.tencent.com/npm/, tarball: https://mirrors.tencent.com/npm/redis/-/redis-4.0.4.tgz}
+    name: redis
+    version: 4.0.4
+    dependencies:
+      '@node-redis/bloom': 1.0.1_@node-redis+client@1.0.4
+      '@node-redis/client': 1.0.4
+      '@node-redis/graph': 1.0.0_@node-redis+client@1.0.4
+      '@node-redis/json': 1.0.2_@node-redis+client@1.0.4
+      '@node-redis/search': 1.0.3_@node-redis+client@1.0.4
+      '@node-redis/time-series': 1.0.2_@node-redis+client@1.0.4
+    dev: false
+
+  mirrors.tencent.com/semver/5.7.1:
+    resolution: {integrity: sha512-sauaDf/PZdVgrLTNYHRtpXa1iRiKcaebiKQ1BJdpQlWH2lCvexQdX55snPFyK7QzpudqbCI0qXFfOasHdyNDGQ==, registry: https://mirrors.cloud.tencent.com/npm/, tarball: https://mirrors.tencent.com/npm/semver/-/semver-5.7.1.tgz}
+    name: semver
+    version: 5.7.1
+    hasBin: true
+    dev: false
+
+  mirrors.tencent.com/yallist/4.0.0:
+    resolution: {integrity: sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==, registry: https://mirrors.cloud.tencent.com/npm/, tarball: https://mirrors.tencent.com/npm/yallist/-/yallist-4.0.0.tgz}
+    name: yallist
+    version: 4.0.0
+    dev: false

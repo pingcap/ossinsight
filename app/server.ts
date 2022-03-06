@@ -4,8 +4,13 @@ import {MysqlQueryExecutor} from "./core/MysqlQueryExecutor";
 import {DefaultState} from "koa";
 import type {ContextExtends} from "../index";
 import GhExecutor from "./core/GhExecutor";
+import {createClient} from "redis";
 
-export default function server(router: Router<DefaultState, ContextExtends>) {
+export default async function server(router: Router<DefaultState, ContextExtends>) {
+
+  const redisClient = createClient();
+  await redisClient.on('error', (err) => console.log('Redis Client Error', err));
+  await redisClient.connect();
 
   const executor = new MysqlQueryExecutor({
     host: process.env.DB_HOST,
@@ -15,18 +20,16 @@ export default function server(router: Router<DefaultState, ContextExtends>) {
     password: process.env.DB_PASSWORD,
     queueLimit: 10
   })
-
-  const ghExecutor = new GhExecutor((process.env.GH_TOKENS || '').split(',').map(s => s.trim()).filter(Boolean))
+  const tokens = (process.env.GH_TOKENS || '').split(',').map(s => s.trim()).filter(Boolean);
+  const ghExecutor = new GhExecutor(tokens, redisClient)
 
   router.get('/q/:query', async ctx => {
     const query = new Query(ctx.params.query)
     try {
-      const res = await query.run(ctx.query, executor)
-
+      const res = await query.run(ctx.query, redisClient, executor)
       ctx.response.status = 200
       ctx.response.body = res
     } catch (e) {
-
       ctx.logger.error('request failed %s', ctx.request.originalUrl, e)
       ctx.response.status = 400
       ctx.response.body = e
@@ -69,4 +72,5 @@ export default function server(router: Router<DefaultState, ContextExtends>) {
       ctx.response.body = e?.response?.data ?? e?.message ?? String(e)
     }
   })
+
 }

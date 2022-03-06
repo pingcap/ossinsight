@@ -1,9 +1,9 @@
 import {Octokit} from "octokit";
 import {createPool, Factory, Pool} from "generic-pool";
 import Cache from './Cache'
-import path from 'path'
 import {DateTime} from "luxon";
 import consola, {Consola} from "consola";
+import {RedisClientType, RedisDefaultModules, RedisModules, RedisScripts} from "redis";
 
 const SYMBOL_TOKEN = Symbol('PERSONAL_TOKEN')
 
@@ -47,7 +47,10 @@ class OctokitFactory implements Factory<Octokit> {
 export default class GhExecutor {
   private octokitPool: Pool<Octokit>
 
-  constructor(tokens: string[] = []) {
+  constructor(
+    tokens: string[] = [],
+    public readonly redisClient: RedisClientType<RedisDefaultModules & RedisModules, RedisScripts>
+  ) {
     this.octokitPool = createPool(new OctokitFactory(tokens), {
       min: 0,
       max: tokens.length
@@ -64,10 +67,11 @@ export default class GhExecutor {
   getRepo (owner: string, repo: string) {
     // TODO: global config
     const GET_REPO_CACHE_MINUTES = 2
-    const cache = new Cache(path.join(process.cwd(), 'gh', '.cache', owner, `${repo}.json`))
+    const key = `gh:get_repo:${owner}_${repo}`;
+    const cache = new Cache(key, GET_REPO_CACHE_MINUTES * 60, this.redisClient)
     return cache.load(() => {
       return this.octokitPool.use(async (octokit) => {
-        octokit.log.info(`request repo ${owner}/${repo}`)
+        octokit.log.info(`get repo ${owner}/${repo}`)
         const {data} = await octokit.rest.repos.get({repo, owner})
         const {value} = Object.getOwnPropertyDescriptor(octokit, SYMBOL_TOKEN)!
         return {
@@ -81,7 +85,8 @@ export default class GhExecutor {
 
   searchRepos(keyword: any) {
     const SEARCH_REPOS_CACHE_MINUTES = 2;
-    const cache = new Cache(path.join(process.cwd(), 'gh', '.cache', '_search', `${keyword}.json`))
+    const key = `gh:search_repos:${keyword}`;
+    const cache = new Cache(key, SEARCH_REPOS_CACHE_MINUTES * 60, this.redisClient)
     return cache.load(() => {
       return this.octokitPool.use(async (octokit) => {
         octokit.log.info(`search repos by keyword ${keyword}`)

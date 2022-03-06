@@ -1,8 +1,6 @@
-import fs from 'fs/promises'
-import {constants as FS_CONSTANTS} from 'fs'
 import {DateTime} from 'luxon'
 import consola from "consola";
-import path from "path";
+import {RedisClientType, RedisDefaultModules, RedisModules, RedisScripts} from "redis";
 
 export interface CachedData<T> {
   expiresAt: DateTime
@@ -17,50 +15,60 @@ const logger = consola.withTag('cache')
 export default class Cache<T> {
   _data!: Promise<CachedData<T>>
 
-  constructor(public readonly path: string) {
+  constructor(
+    public readonly key: string,
+    public readonly expires: number,
+    public readonly redisClient: RedisClientType<RedisDefaultModules & RedisModules, RedisScripts>) {
   }
 
   async load(fallback: () => Promise<CachedData<T>>): Promise<CachedData<T>> {
-    if (runningCaches.has(this.path)) {
-      logger.info('wait for previous same cache query')
-      return await runningCaches.get(this.path)!._data as never
+    // Only running one at the same time when multiple same query with same params.
+    if (runningCaches.has(this.key)) {
+      logger.info('Wait for previous same cache query.')
+      return await runningCaches.get(this.key)!._data as never
     }
+
     let _resolve: (data: CachedData<T>) => void
     let _reject: (err: any) => void
     this._data = new Promise<CachedData<T>>((resolve, reject) => {
       _resolve = resolve
       _reject = reject
     })
-    runningCaches.set(this.path, this as never)
+    runningCaches.set(this.key, this as never)
+
     try {
+      // Try to get cached value.
       try {
-        await fs.mkdir(path.dirname(this.path), { recursive: true })
-        await fs.access(this.path, FS_CONSTANTS.F_OK | FS_CONSTANTS.R_OK)
-        logger.info('found cache file at %s', this.path)
-        const content = await fs.readFile(this.path, {encoding: 'utf-8'})
-        const {expiresAt: rawExpiresAt, ...rest} = JSON.parse(content)
-        const expiresAt = DateTime.fromISO(rawExpiresAt)
-        if (DateTime.now() < expiresAt) {
-          logger.info('hit at %s', this.path)
-          const res = {expiresAt, ...rest}
+        const cachedValue = await this.redisClient.get(this.key);
+        if (typeof cachedValue === 'string') {
+          const res = JSON.parse(cachedValue);
           _resolve!(res)
-          return res
+          return res;
         } else {
-          logger.info('expired at %s', this.path)
+          logger.info('Not hit cache of key %s', this.key)
         }
       } catch (e) {
-        logger.info('not hit at %s', this.path)
+        logger.warn(`cache <${this.key}> data is broken.`);
+        this.redisClient.del(this.key).catch(() => {
+          logger.error('Failed to delete the broken cache data of <%s>.', this.key);
+        });
       }
+
+      // Try to query data from database.
       const result = await fallback()
 
+      // Write result to cache.
       try {
-        await fs.writeFile(this.path, JSON.stringify({
+        await this.redisClient.set(this.key, JSON.stringify({
           ...result,
           expiresAt: result.expiresAt.toISO(),
-        }))
+        }), {
+          EX: this.expires,
+        });
       } catch (e) {
-        logger.info('update failed', this.path, e)
+        logger.info('update failed', this.key, e)
       }
+
       _resolve!(result)
       return result
     } catch (e) {
@@ -68,7 +76,7 @@ export default class Cache<T> {
       _reject!(e)
       throw e
     } finally {
-      runningCaches.delete(this.path)
+      runningCaches.delete(this.key)
     }
   }
 

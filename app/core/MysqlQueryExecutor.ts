@@ -14,14 +14,13 @@ export class MysqlQueryExecutor<T> implements QueryExecutor<T> {
 
   async execute(sql: string): Promise<T> {
     return new Promise((resolve, reject) => {
-
       this.connections.getConnection((err, connection) => {
         if (err) {
           reject(err)
           this.logger.error('failed to establish a connection', err)
           return
         }
-        this.logger.info('executing sql by connection<%d>\n %s', connection.threadId, sql)
+        this.logger.debug('executing sql by connection<%d>\n %s', connection.threadId, sql)
         connection.query(sql, (err, rows) => {
           if (err) {
             reject(err)
@@ -31,14 +30,7 @@ export class MysqlQueryExecutor<T> implements QueryExecutor<T> {
           connection.release()
         })
       })
-      this.connections.query(sql, (err, rows) => {
-        if (err) {
-          reject(err)
-          this.logger.error('failed to execute sql %s', sql, err)
-        } else {
-          resolve(rows as never)
-        }
-      })
     })
   }
+
 }

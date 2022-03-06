@@ -36,7 +36,7 @@
       "fields": ["action", "merged"],
       "enums": [
         ["opened", "*"],
-        ["merged", "true"]
+        ["closed", "true"]
       ]
     }
   ]
