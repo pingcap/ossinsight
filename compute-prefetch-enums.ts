@@ -156,8 +156,18 @@ async function prefetchQueries(
         params: paramCombine
       })
     }
+
+    // Notice: Queries without parameters are treated as pre-cached queries by default.
+    if (queryDef.params.length === 0) {
+      queryJobs.push({
+        queryName: queryName,
+        refreshHours: queryDef.refreshHours || -1,
+        params: {}
+      })
+    }
   }
 
+  // Notice: Prioritize query jobs that require frequent updates.
   let jobID = 1;
   queryJobs.sort((a, b) => {
     return a.refreshHours - b.refreshHours;

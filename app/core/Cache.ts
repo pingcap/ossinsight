@@ -69,7 +69,7 @@ export default class Cache<T> {
     } else {
       logger.debug(`No hit cache of ${this.key}.`);
 
-      if (this.onlyFromCache) {
+      if (this.onlyFromCache && !this.refreshCache) {
         throw new Error(`Failed to get data, query ${this.key} can only be executed in advance.`)
       }
 
