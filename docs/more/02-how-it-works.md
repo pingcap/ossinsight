@@ -155,6 +155,6 @@ ORDER BY 2 DESC
 
 ## Videos: Learn how did we setup this project.
 
-<video width="100%" autoplay="false"controls>
+<video width="100%" poster="/img/try-it-yourself/dev-tier.png" controls>
   <source src="/video/github-demo-tidbcloud.mp4" type="video/mp4" />
 </video>
