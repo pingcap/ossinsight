@@ -1,5 +1,7 @@
 {
-  "cacheHours": 1,
+  "cacheHours": -1,
+  "refreshHours": 1,
+  "onlyFromCache": true,
   "params": [
     {
       "name": "repo",

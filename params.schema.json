@@ -4,8 +4,16 @@
   "type": "object",
   "properties": {
     "cacheHours": {
-      "description": "Cache time in hours",
+      "description": "Cache time in hours, -1 indicates that the query cache will not expire",
       "type": "number"
+    },
+    "refreshHours": {
+      "description": "Refresh cache time in hours, -1 indicates not to refresh.",
+      "type": "number"
+    },
+    "onlyFromCache": {
+      "description": "Only return data from the cache",
+      "type": "boolean"
     },
     "params": {
       "description": "Query params declaration",

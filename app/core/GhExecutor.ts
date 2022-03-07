@@ -65,17 +65,16 @@ export default class GhExecutor {
   }
 
   getRepo (owner: string, repo: string) {
-    // TODO: global config
-    const GET_REPO_CACHE_MINUTES = 2
+    const GET_REPO_CACHE_HOURS = 1;
     const key = `gh:get_repo:${owner}_${repo}`;
-    const cache = new Cache(key, GET_REPO_CACHE_MINUTES * 60, this.redisClient)
+    const cache = new Cache(this.redisClient, key, GET_REPO_CACHE_HOURS, -1)
     return cache.load(() => {
       return this.octokitPool.use(async (octokit) => {
         octokit.log.info(`get repo ${owner}/${repo}`)
         const {data} = await octokit.rest.repos.get({repo, owner})
         const {value} = Object.getOwnPropertyDescriptor(octokit, SYMBOL_TOKEN)!
         return {
-          expiresAt: DateTime.now().plus({minute: GET_REPO_CACHE_MINUTES}),
+          expiresAt: DateTime.now().plus({hours: GET_REPO_CACHE_HOURS}),
           data,
           with: eraseToken(value)
         }
@@ -84,9 +83,9 @@ export default class GhExecutor {
   }
 
   searchRepos(keyword: any) {
-    const SEARCH_REPOS_CACHE_MINUTES = 60 * 24;
+    const SEARCH_REPOS_CACHE_HOURS = 24;
     const key = `gh:search_repos:${keyword}`;
-    const cache = new Cache(key, SEARCH_REPOS_CACHE_MINUTES * 60, this.redisClient)
+    const cache = new Cache(this.redisClient, key, SEARCH_REPOS_CACHE_HOURS, -1)
     return cache.load(() => {
       return this.octokitPool.use(async (octokit) => {
         octokit.log.info(`search repos by keyword ${keyword}`)
@@ -115,7 +114,7 @@ export default class GhExecutor {
 
         const {value} = Object.getOwnPropertyDescriptor(octokit, SYMBOL_TOKEN)!
         return {
-          expiresAt: DateTime.now().plus({minute: SEARCH_REPOS_CACHE_MINUTES}),
+          expiresAt: DateTime.now().plus({hours: SEARCH_REPOS_CACHE_HOURS}),
           data: formattedData,
           with: eraseToken(value)
         }

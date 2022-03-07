@@ -26,14 +26,14 @@ export default async function server(router: Router<DefaultState, ContextExtends
   const ghExecutor = new GhExecutor(tokens, redisClient)
 
   router.get('/q/:query', async ctx => {
-    const query = new Query(ctx.params.query)
+    const query = new Query(ctx.params.query, redisClient, executor)
     try {
-      const res = await query.run(ctx.query, redisClient, executor)
+      const res = await query.run(ctx.query)
       ctx.response.status = 200
       ctx.response.body = res
     } catch (e) {
       ctx.logger.error('request failed %s', ctx.request.originalUrl, e)
-      ctx.response.status = 400
+      ctx.response.status = 500
       ctx.response.body = e
     }
   })

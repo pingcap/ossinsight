@@ -1,5 +1,5 @@
 SELECT
-/*+ read_from_storage(tiflash[github_events]) */
+    /*+ read_from_storage(tiflash[github_events]) */
     ANY_VALUE(repo_subset.name) AS repo_name,
     COUNT(*)                    AS events_count
 FROM github_events AS github_events
