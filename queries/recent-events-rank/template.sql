@@ -3,14 +3,14 @@ WITH
     datetime_range
         AS (SELECT DATE_FORMAT(MAX(created_at) - INTERVAL 1 HOUR, '%Y-%m-%d %H:00:00') AS start
                  , DATE_FORMAT(MAX(created_at), '%Y-%m-%d %H:00:00')                   AS end
-            FROM github_events_old),
+            FROM github_events),
     # Fetch all WatchEvents group by repo_id
     WatchEvents
         AS (SELECT
                 /*+ read_from_storage(tiflash[github_events]) */
                 repo_id,
                 COUNT(id) count
-            FROM github_events_old github_events
+            FROM github_events github_events
             WHERE type = 'WatchEvent'
               AND created_at >= (SELECT start FROM datetime_range)
               AND created_at < (SELECT end FROM datetime_range)
@@ -23,7 +23,7 @@ WITH
                 /*+ read_from_storage(tiflash[github_events]) */
                 repo_id,
                 COUNT(id) count
-            FROM github_events_old github_events
+            FROM github_events github_events
             WHERE type = 'PullRequestEvent'
               AND created_at >= (SELECT start FROM datetime_range)
               AND created_at < (SELECT end FROM datetime_range)
@@ -36,7 +36,7 @@ WITH
                 /*+ read_from_storage(tiflash[github_events]) */
                 repo_id,
                 COUNT(id) count
-            FROM github_events_old github_events
+            FROM github_events github_events
             WHERE type = 'IssuesEvent'
               AND created_at >= (SELECT start FROM datetime_range)
               AND created_at < (SELECT end FROM datetime_range)
@@ -49,7 +49,7 @@ WITH
                 /*+ read_from_storage(tiflash[github_events]) */
                 repo_id,
                 COUNT(id) count
-            FROM github_events_old github_events
+            FROM github_events github_events
             WHERE type = 'IssueCommentEvent'
               AND created_at >= (SELECT start FROM datetime_range)
               AND created_at < (SELECT end FROM datetime_range)
@@ -62,7 +62,7 @@ WITH
                 /*+ read_from_storage(tiflash[github_events]) */
                 repo_id,
                 COUNT(id) count
-            FROM github_events_old github_events
+            FROM github_events github_events
             WHERE type = 'PullRequestReviewEvent'
               AND created_at >= (SELECT start FROM datetime_range)
               AND created_at < (SELECT end FROM datetime_range)
@@ -75,7 +75,7 @@ WITH
                 /*+ read_from_storage(tiflash[github_events]) */
                 repo_id,
                 COUNT(id) count
-            FROM github_events_old github_events
+            FROM github_events github_events
             WHERE type = 'PullRequestReviewCommentEvent'
               AND created_at >= (SELECT start FROM datetime_range)
               AND created_at < (SELECT end FROM datetime_range)
@@ -88,7 +88,7 @@ WITH
                 /*+ read_from_storage(tiflash[github_events]) */
                 repo_id,
                 COUNT(id) count
-            FROM github_events_old github_events
+            FROM github_events github_events
             WHERE type = 'CommitCommentEvent'
               AND created_at >= (SELECT start FROM datetime_range)
               AND created_at < (SELECT end FROM datetime_range)
@@ -104,7 +104,7 @@ SELECT ANY_VALUE(gh.repo_name)                         repo_name,
        IFNULL(PullRequestReviewEvents.count, 0)        pull_request_review_events,
        IFNULL(PullRequestReviewCommentEvents.count, 0) pull_request_review_comment_events,
        IFNULL(CommitCommentEvents.count, 0)            commit_comment_events
-FROM github_events_old gh
+FROM github_events gh
          /*+ read_from_storage(tiflash[github_events]) */
          LEFT JOIN WatchEvents ON gh.repo_id = WatchEvents.repo_id
          LEFT JOIN PullRequestEvents ON gh.repo_id = PullRequestEvents.repo_id

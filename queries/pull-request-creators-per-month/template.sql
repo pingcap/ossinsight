@@ -3,7 +3,7 @@ WITH tmp AS (
         event_month,
         repo_name,
         COUNT(distinct actor_id) as month_pr_count
-    FROM github_events_old
+    FROM github_events
     use index(index_github_events_on_repo_name)
     WHERE
         type = 'PullRequestEvent' and repo_name in ('pingcap/tidb', 'tikv/tikv') and action = 'opened'
