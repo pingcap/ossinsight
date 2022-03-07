@@ -84,7 +84,7 @@ export default class GhExecutor {
   }
 
   searchRepos(keyword: any) {
-    const SEARCH_REPOS_CACHE_MINUTES = 2;
+    const SEARCH_REPOS_CACHE_MINUTES = 60 * 24;
     const key = `gh:search_repos:${keyword}`;
     const cache = new Cache(key, SEARCH_REPOS_CACHE_MINUTES * 60, this.redisClient)
     return cache.load(() => {

@@ -99,7 +99,7 @@ async function prefetchQueries(
   const queryJobs: QueryJob[] = [];
 
   for (const [queryName, queryDef] of Object.entries(queries)) {
-    if(queryDef.params.find(param => !param.enums)) {
+    if(queryDef.params.find(param => !param.enums) || queryDef.params.length === 0) {
       logger.debug(`Skip prefetching query ${queryName}.`)
       continue;
     }
