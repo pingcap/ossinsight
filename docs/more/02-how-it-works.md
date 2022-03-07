@@ -130,13 +130,13 @@ gharchive_dev> show tables;
 With subdivided repo data, we can easily analyze and explore repo in a certain field through SQL JOIN, such as the ranking of Top 10 JavaScript Framework Stars in 2021:
 
 ```sql
-select js.name, count(*) as stars 
-from github_events 
-join js_framework_repos js on js.id = github_events.repo_id 
-where type = 'WatchEvent' and event_year = 2021 
-group by 1 
-order by 2 desc 
-limit 10;
+  SELECT js.name, count(*) as stars 
+    FROM github_events 
+         JOIN js_framework_repos js ON js.id = github_events.repo_id 
+   WHERE type = 'WatchEvent' and event_year = 2021 
+GROUP BY 1 
+ORDER BY 2 DESC
+   LIMIT 10;
 +-------------------+-------+
 | name              | stars |
 +-------------------+-------+

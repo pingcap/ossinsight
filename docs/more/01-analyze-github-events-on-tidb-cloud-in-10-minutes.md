@@ -145,13 +145,12 @@ SELECT count(*) FROM github_events
 ### Which repo get the most stars on the first day?
 
 ```sql
-SELECT repo_name, count(*) AS events_count
-FROM github_events
-WHERE type = 'WatchEvent' /* Yes, `WatchEvent` means star */
+  SELECT repo_name, count(*) AS events_count
+    FROM github_events
+   WHERE type = 'WatchEvent' /* Yes, `WatchEvent` means star */
 GROUP BY 1
-ORDER BY 2
-DESC
-LIMIT 20;
+ORDER BY 2 DESC
+   LIMIT 20;
 ```
 
 ### Who is the most active user that day (exclude bots)
