@@ -9,13 +9,10 @@ interface ChartProps<Q extends keyof Queries = any> extends Record<string, any> 
 
 export const Chart = ({ category, categoryIndex = 'repo_name', valueIndex, ...props }: ChartProps) => {
   const Chart = useMemo(() => {
-    return withDataGridQuery(category, [{
-      field: categoryIndex,
-      title: categoryIndex
-    }, {
-      field: valueIndex,
-      title: valueIndex
-    }])
+    return withBarChartQuery(category, {
+      categoryIndex: categoryIndex,
+      valueIndex: valueIndex
+    })
   }, [category, categoryIndex, valueIndex])
 
   return React.createElement(Chart, props)
