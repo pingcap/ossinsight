@@ -27,7 +27,7 @@ export interface BaseQueryResult<Params extends {
   data: Data
 }
 
-export const useRemoteData = <Q extends keyof Queries, P = Queries[Q]['params'], T = Queries[Q]['data']>(query: Q, params: P, formatSql: boolean, shouldLoad?: boolean): AsyncData<RemoteData<P, T>> => {
+export const useRemoteData = <Q extends keyof Queries, P = Queries[Q]['params'], T = Queries[Q]['data']>(query: Q, params: P, formatSql: boolean, shouldLoad: boolean = true): AsyncData<RemoteData<P, T>> => {
 
   const { data, isValidating: loading, error } = useSWR(shouldLoad ? [query, params] : null, {
     fetcher: (query, params) => httpClient.get(`/q/${query}`, {params})
