@@ -131,7 +131,7 @@ export default function TopList() {
         </Table>
       </TableContainer>
       <Dialog
-        maxWidth="960px"
+        maxWidth="lg"
         open={open}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"

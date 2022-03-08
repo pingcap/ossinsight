@@ -20,10 +20,13 @@ export interface RepoSelectorProps {
   defaultRepoName?: string
   repo: Repo | null
   onChange: (repo: Repo | null) => void
+  onValid: (repo: Repo | null) => string | undefined
 }
 
-export default function RepoSelector({repo, label, defaultRepoName, onChange}: RepoSelectorProps) {
+export default function RepoSelector({repo, label, defaultRepoName, onChange, onValid}: RepoSelectorProps) {
   const [keyword, setKeyword] = useState<string>(defaultRepoName ?? '')
+  const [textFieldError, setTextFieldError] = useState<boolean>(false)
+  const [helperText, setHelperText] = useState<string>('')
   const [dismissError, setDismissError] = useState(false)
 
   const debouncedSetKeyword = useMemo(() => {
@@ -68,16 +71,27 @@ export default function RepoSelector({repo, label, defaultRepoName, onChange}: R
       loading={loading}
       value={repo}
       onChange={(event, newValue: Repo) => {
-        onChange(newValue);
+        const validMessage = onValid(newValue);
+
+        if (validMessage !== undefined) {
+          setTextFieldError(true);
+          setHelperText(validMessage);
+        } else {
+          onChange(newValue);
+        }
       }}
       onInputChange={async (event, value, reason) => {
+        setHelperText(undefined);
+        setTextFieldError(false);
         debouncedSetKeyword(value)
       }}
       renderInput={(params) => (
         <TextField
           {...params}
+          error={textFieldError}
           variant="standard"
           label={label}
+          helperText={helperText}
           InputProps={{
             ...params.InputProps,
             endAdornment: (

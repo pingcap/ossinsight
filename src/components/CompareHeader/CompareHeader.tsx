@@ -36,6 +36,8 @@ interface CompareHeaderProps {
   repo2: Repo | null
   onRepo1Change: (repo: Repo | null) => void
   onRepo2Change: (repo: Repo | null) => void
+  onRepo1Valid: (repo: Repo | null) => string | undefined
+  onRepo2Valid: (repo: Repo | null) => string | undefined
   dateRange: [Date | null, Date | null]
   onDateRangeChange: (range: [Date | null, Date | null]) => void
 }
@@ -50,12 +52,12 @@ function CompareHeader(props: CompareHeaderProps) {
           <Grid container>
             <Grid item xs={5}>
               <RepoSelector label="Repo Name 1" defaultRepoName="pingcap/tidb" repo={props.repo1}
-                            onChange={props.onRepo1Change} />
+                            onChange={props.onRepo1Change} onValid={props.onRepo1Valid}/>
             </Grid>
             <Grid item xs={2} zeroMinWidth/>
             <Grid item xs={5}>
               <RepoSelector label="Repo Name 2" defaultRepoName="tikv/tikv" repo={props.repo2}
-                            onChange={props.onRepo2Change} />
+                            onChange={props.onRepo2Change} onValid={props.onRepo2Valid}/>
             </Grid>
           </Grid>
         </Toolbar>

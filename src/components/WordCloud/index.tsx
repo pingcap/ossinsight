@@ -10,7 +10,7 @@ interface WordCloudProps {
 
 export default function WordCloud({children}: WordCloudProps) {
   const ref = useRef<HTMLDivElement>()
-  const { data } = useRank()
+  const { data = [] } = useRank()
 
   useLayoutEffect(() => {
     if (data && ref.current) {

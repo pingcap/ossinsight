@@ -1,6 +1,5 @@
 import useSWR, {SWRResponse} from "swr";
-
-const BASE = 'https://community-preview-contributor.tidb.io/q'
+import {BASE_URL} from "../lib/request";
 
 export interface RepoRank {
   repo_name: string,
@@ -19,7 +18,7 @@ interface RepoRankData extends Array<RepoRank> {
 }
 
 export const useRank = (): SWRResponse<RepoRankData> => {
-  const dataUrl = `${BASE}/recent-events-rank`
+  const dataUrl = `${BASE_URL}/q/recent-events-rank`
 
   return useSWR<RepoRankData>(['key'], {
     fetcher: async () => {
