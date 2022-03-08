@@ -2,6 +2,7 @@ import {useEffect, useState} from "react";
 import {format} from "sql-formatter";
 import {Queries} from "./queries";
 import {createHttpClient} from "../../lib/request";
+import useSWR from "swr";
 
 const httpClient = createHttpClient();
 
@@ -26,28 +27,19 @@ export interface BaseQueryResult<Params extends {
   data: Data
 }
 
-export const useRemoteData = <Q extends keyof Queries, P = Queries[Q]['params'], T = Queries[Q]['data']>(query: Q, params: P, formatSql: boolean, shouldLoad?: boolean): AsyncData<RemoteData<P, T>> => {
-  const [data, setData] = useState<RemoteData<P, T>>(undefined)
-  const [error, setError] = useState<unknown>(undefined)
-  const [loading, setLoading] = useState<boolean>(false)
+export const useRemoteData = <Q extends keyof Queries, P = Queries[Q]['params'], T = Queries[Q]['data']>(query: Q, params: P, formatSql: boolean, shouldLoad: boolean = true): AsyncData<RemoteData<P, T>> => {
 
-  useEffect(() => {
-    // Notice: If shouldLoad is not set, it will also load by default.
-    if (shouldLoad !== false && query != undefined) {
-      setData(undefined)
-      setError(undefined)
-      setLoading(true)
-      httpClient.get(`/q/${query}`, {params})
-        .then(({data}) => {
-          if (data.sql && formatSql) {
-            data.sql = format(data.sql)
-          }
-          setData(data)
-        })
-        .catch(err => setError(err))
-        .finally(() => setLoading(false))
-    }
-  }, [JSON.stringify(params)])
+  const { data, isValidating: loading, error } = useSWR(shouldLoad ? [query, params] : null, {
+    fetcher: (query, params) => httpClient.get(`/q/${query}`, {params})
+      .then(({data}) => {
+        if (data.sql && formatSql) {
+          data.sql = format(data.sql)
+        }
+        return data
+      }),
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false
+  })
 
   return {data, loading, error}
 }
