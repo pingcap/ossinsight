@@ -8,7 +8,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 const config = {
   title: 'GH Archive Live',
   tagline: 'We collect all GitHub events from 2011 and store them in TiDB Cloud, then analyze to find interesting or fast growing open source repositories, like trends about oss database, js/web framework and more, the data is updated hourly',
-  url: 'https://gharchive.live',
+  url: 'https://ossinsight.io',
   baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
