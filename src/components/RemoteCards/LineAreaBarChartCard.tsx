@@ -149,7 +149,7 @@ export default function LineAreaBarChartCard(props: LineAreaBarChartProps) {
     }
   }, [data, isDarkTheme, isSmall])
 
-  return <BasicCard {...props} loading={loading} error={error} query={queryName} data={res}>
+  return <BasicCard {...props} loading={loading || (shouldLoad && !res)} error={error} query={queryName} data={res}>
     <BrowserOnly>
       {() => <ReactECharts
         option={options}
