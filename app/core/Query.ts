@@ -82,7 +82,7 @@ export default class Query {
     const sql = await this.buildSql(params)
     const key = `query:${this.name}:${this.queryDef!.params.map(p => params[p.name]).join('_')}`;
     const { cacheHours = -1, refreshHours = -1, onlyFromCache = false } = this.queryDef!;
-    const cache = new Cache<T>(this.redisClient, key, cacheHours, refreshHours, onlyFromCache, refreshCache)
+    const cache = new Cache<T>(this.redisClient, key, cacheHours, refreshHours, onlyFromCache, refreshCache);
 
     return cache.load(async () => {
       const start = DateTime.now()
