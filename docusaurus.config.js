@@ -7,7 +7,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'OSS Insight',
-  tagline: 'We collect all GitHub events from 2011 and store them in TiDB Cloud, then analyze to find interesting or fast growing open source repositories, like trends about oss database, js/web framework and more, the data is updated hourly',
+  tagline: 'What are the most popular projects on GitHub? Which open source project is the fastest growing?We collect and analyze all open source projects on GitHub released after 2011 and provide you with the most valuable analytical insights in real time. All the real-time analytics are supported by TiDB Cloud.',
   url: 'https://ossinsight.io',
   baseUrl: '/',
   onBrokenLinks: 'throw',
