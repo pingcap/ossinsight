@@ -47,7 +47,7 @@ export default function CompareNumbers({tag: Tag = 'div', title, query, repos}: 
         // color={isDarkTheme ? '#f5f6f7' : '#4d5771'}
       >
         {repo1.isValidating
-          ? <CircularProgress size="1.5em" />
+          ? <CircularProgress size="1em" />
           : (
             <Tooltip title={repo1.data[0]}>
               <span>

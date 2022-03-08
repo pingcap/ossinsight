@@ -148,8 +148,18 @@ export default function RepoCompare() {
           <CompareHeader
             repo1={repo1}
             onRepo1Change={setRepo1}
+            onRepo1Valid={(repo) => {
+              if (repo?.name !== undefined && repo?.name === repo2?.name) {
+                return 'Please select another repository to compare.'
+              }
+            }}
             repo2={repo2}
             onRepo2Change={setRepo2}
+            onRepo2Valid={(repo) => {
+              if (repo?.name !== undefined && repo?.name === repo1?.name) {
+                return 'Please select another repository to compare.'
+              }
+            }}
             dateRange={dateRange}
             onDateRangeChange={setDateRange}
           />
