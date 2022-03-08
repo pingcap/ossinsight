@@ -37,7 +37,7 @@ authors: pingcap
 
 ### How is the instantaneity of the data?
 
-> GH Archive project provides data hourly, even though TiDB Cloud can be realtime...
+> OSS Insight project provides data hourly, even though TiDB Cloud can be realtime...
 
 ### How many clusters ( databases ) are used?
 

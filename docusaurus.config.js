@@ -6,7 +6,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'GH Archive Live',
+  title: 'OSS Insight',
   tagline: 'We collect all GitHub events from 2011 and store them in TiDB Cloud, then analyze to find interesting or fast growing open source repositories, like trends about oss database, js/web framework and more, the data is updated hourly',
   url: 'https://ossinsight.io',
   baseUrl: '/',
@@ -51,9 +51,9 @@ const config = {
       metadata: [{name: 'twitter:card', content: 'summary_large_image'}],
       hideableSidebar: true,
       navbar: {
-        title: 'GH Archive Live',
+        title: 'OSS Insight',
         logo: {
-          alt: 'GH Archive Live',
+          alt: 'OSS Insight',
           src: 'img/logo.svg',
         },
         items: [
