@@ -17,6 +17,9 @@ image: /img/language.png
 
 ## Top 10 repos by stars in 2021
 
+<details>
+ <summary>Click here to expand SQL</summary>
+
 ```sql
   SELECT jf.name as repo_name, count(*) as stars
     FROM github_events
@@ -27,11 +30,15 @@ GROUP BY 1
 ORDER BY 2 DESC
    LIMIT 10
 ```
+</details>
 
 <iframe  width="100%" height="350" scrolling="no"  src="/charts/bar.html?x=[%22golang/go%22,%22rust-lang/rust%22,%22Microsoft/TypeScript%22,%22nodejs/node%22,%22PowerShell/PowerShell%22,%22JuliaLang/julia%22,%22python/cpython%22,%22JetBrains/kotlin%22,%22vlang/v%22,%22openjdk/jdk%22]&data=[14968,12258,10593,10234,8938,7594,7486,6350,6208,4875]&label=Star&theme=vintage">
 </iframe>
 
 ## Top 10 repos by PR in 2021
+
+<details>
+ <summary>Click here to expand SQL</summary>
 
 ```sql
   SELECT wf.name AS repo_name,
@@ -43,11 +50,15 @@ GROUP BY 1
 ORDER BY 2 DESC
    LIMIT 10
 ```
+</details>
 
 <iframe  width="100%" height="350" scrolling="no"  src="/charts/bar.html?x=[%22rust-lang/rust%22,%22python/cpython%22,%22apple/swift%22,%22dotnet/roslyn%22,%22openjdk/jdk%22,%22vlang/v%22,%22nodejs/node%22,%22JuliaLang/julia%22,%22nim-lang/Nim%22,%22ziglang/zig%22]&data=[6328,5393,4905,4450,4386,2658,2498,2352,1657,1371]&label=PR&theme=vintage">
 </iframe>
 
 ## Top 10 repos by contributors in 2021
+
+<details>
+ <summary>Click here to expand SQL</summary>
 
 ```sql
   SELECT wf.name AS repo_name, 
@@ -66,6 +77,7 @@ ORDER BY 2 DESC
  ORDER BY 2 DESC
     LIMIT 10
 ```
+</details>
 
 ```
 +-----------------------+-------+
@@ -86,6 +98,9 @@ ORDER BY 2 DESC
 
 ## Top Developers for OSS programming languages
 
+<details>
+ <summary>Click here to expand SQL</summary>
+
 ```sql
   SELECT actor_login, count(*) as pr_count
     FROM github_events
@@ -98,6 +113,7 @@ GROUP BY 1
 ORDER BY 2 DESC
    LIMIT 20
 ```
+</details>
 
 ```
 +-----------------+----------+
@@ -128,6 +144,9 @@ ORDER BY 2 DESC
 
 ## OSS programming language repos with the highest growth YoY
 
+<details>
+ <summary>Click here to expand SQL</summary>
+
 ```sql
   SELECT wf.name,
          sum(event_year = 2020) AS stars2020,
@@ -141,6 +160,7 @@ GROUP BY wf.name
 ORDER BY yoy DESC
    LIMIT 20
 ```
+</details>
 
 ```
 +-----------------------+-----------+-----------+-------+
@@ -161,6 +181,9 @@ ORDER BY yoy DESC
 
 ## OSS programming language repos with lowest growth YoY
 
+<details>
+ <summary>Click here to expand SQL</summary>
+
 ```sql
   SELECT wf.name,
          sum(event_year = 2020) AS stars2020,
@@ -174,6 +197,7 @@ GROUP BY wf.name
 ORDER BY yoy ASC
    LIMIT 10
 ```
+</details>
 
 ```
 +----------------------+-----------+-----------+-------+
@@ -193,6 +217,9 @@ ORDER BY yoy ASC
 ```
 
 ## Top companies  contributing to OSS programming languages
+
+<details>
+ <summary>Click here to expand SQL</summary>
 
 ```sql
   SELECT trim(lower(replace(u.company, '@', ''))) AS company, 
@@ -216,6 +243,7 @@ GROUP BY 1
 ORDER BY 2 DESC
    LIMIT 20
 ```
+</details>
 
 ```
 +------------+-------------+
@@ -246,6 +274,9 @@ ORDER BY 2 DESC
 
 ## Top countries or regions contributing to OSS programming languages
 
+<details>
+ <summary>Click here to expand SQL</summary>
+
 ```sql
   SELECT country_code, 
          count(distinct actor_id) AS users_count
@@ -266,6 +297,7 @@ GROUP BY 1
 ORDER BY 2 DESC
    LIMIT 10
 ```
+</details>
 
 ```
 +--------------+-------------+
@@ -287,6 +319,8 @@ ORDER BY 2 DESC
 ## OSS programming language ranking
 
 The previous analysis is for a single dimension. Let’s analyze the comprehensive measurement. The open source programming language community is comprehensively scored through the three metrics: stars, PRs and contributors. We can use the [Z-score](https://en.wikipedia.org/wiki/Standard_score) method to score the repo.
+<details>
+ <summary>Click here to expand SQL</summary>
 
 ```sql
 WITH stars AS (
@@ -362,6 +396,8 @@ FROM raw,
     zz_pr
 ORDER BY 2 DESC
 ```
+</details>
+
 This is the comprehensive ranking calculated by z-score:
 ```
 +-------------------------------+---------+--------------+--------------+------------+

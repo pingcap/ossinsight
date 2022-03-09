@@ -11,6 +11,9 @@ image: /img/jsframework.png
 
 ## Top 10 repos by stars in 2021
 
+<details>
+ <summary>Click here to expand SQL</summary>
+
 ```sql
   SELECT jf.name as repo_name, count(*) as stars
     FROM github_events
@@ -21,11 +24,15 @@ GROUP BY 1
 ORDER BY 2 DESC
    LIMIT 10
 ```
+</details>
 
 <iframe  width="100%" height="350" scrolling="no"  src="/charts/bar.html?x=[%22facebook/react%22,%22sveltejs/svelte%22,%22vuejs/vue%22,%22angular/angular%22,%22solidjs/solid%22,%22vuejs/core%22,%22alpinejs/alpine%22,%22preactjs/preact%22,%22jquery/jquery%22,%22hotwired/stimulus%22]&data=[22830,18573,18015,11037,8607,8322,6993,2965,2227,1355]&label=Star&theme=vintage">
 </iframe>
 
 ## Top 10 repos by PR in 2021
+
+<details>
+ <summary>Click here to expand SQL</summary>
 
 ```sql
   SELECT wf.name AS repo_name,
@@ -37,11 +44,15 @@ GROUP BY 1
 ORDER BY 2 DESC
    LIMIT 10
 ```
+</details>
 
 <iframe  width="100%" height="350" scrolling="no"  src="/charts/bar.html?x=[%22angular/angular%22,%22facebook/react%22,%22vuejs/core%22,%22sveltejs/svelte%22,%22neomjs/neo%22,%22emberjs/ember.js%22,%22preactjs/preact%22,%22alpinejs/alpine%22,%22vuejs/vue%22,%22aurelia/aurelia%22]&data=[2238,1178,878,436,380,372,290,256,164,160]&label=PR&theme=vintage">
 </iframe>
 
 ## Top Developers for OSS javascript framework
+
+<details>
+ <summary>Click here to expand SQL</summary>
 
 ```sql
   SELECT actor_login, count(*) as pr_count
@@ -55,6 +66,7 @@ GROUP BY 1
 ORDER BY 2 DESC
    LIMIT 20
 ```
+</details>
 
 ```
 +-------------------+----------+
@@ -85,6 +97,9 @@ ORDER BY 2 DESC
 
 ## OSS javascript framwork repos with the highest growth YoY
 
+<details>
+ <summary>Click here to expand SQL</summary>
+
 ```sql
   SELECT wf.name,
          sum(event_year = 2020) AS stars2020,
@@ -98,6 +113,7 @@ GROUP BY wf.name
 ORDER BY yoy DESC
    LIMIT 20
 ```
+</details>
 
 ```
 +-----------------+-----------+-----------+-------+
@@ -113,6 +129,9 @@ ORDER BY yoy DESC
 
 ## OSS javascript framwork repos with lowest growth YoY
 
+<details>
+ <summary>Click here to expand SQL</summary>
+
 ```sql
   SELECT wf.name,
          sum(event_year = 2020) AS stars2020,
@@ -126,6 +145,7 @@ GROUP BY wf.name
 ORDER BY yoy ASC
    LIMIT 10
 ```
+</details>
 
 ```
 +-----------------------+-----------+-----------+-------+
@@ -146,6 +166,9 @@ ORDER BY yoy ASC
 
 ## Top Language for OSS javascript framework
 
+<details>
+ <summary>Click here to expand SQL</summary>
+
 ```sql
   SELECT language, count(*)
     FROM github_events
@@ -155,6 +178,7 @@ GROUP BY 1
 ORDER BY 2 DESC
    LIMIT 10
 ```
+</details>
 
 
 ```
@@ -169,6 +193,9 @@ ORDER BY 2 DESC
 ```
 
 ## Top companies contributing to OSS javascript frameworks
+
+<details>
+ <summary>Click here to expand SQL</summary>
 
 ```sql
   SELECT trim(lower(replace(u.company, '@', ''))) AS company, 
@@ -192,6 +219,7 @@ GROUP BY 1
 ORDER BY 2 DESC
    LIMIT 20
 ```
+</details>
 
 ```
 +--------------+-------------+
@@ -222,6 +250,9 @@ ORDER BY 2 DESC
 
 ## Top countries or regions contributing to OSS javascript frameworks
 
+<details>
+ <summary>Click here to expand SQL</summary>
+
 ```sql
   SELECT country_code, 
          count(distinct actor_id) AS users_count
@@ -242,6 +273,7 @@ GROUP BY 1
 ORDER BY 2 DESC
    LIMIT 10
 ```
+</details>
 
 ```
 +--------------+-------------+
@@ -263,6 +295,9 @@ ORDER BY 2 DESC
 ## OSS javascript framework ranking
 
 The previous analysis is for a single dimension. Let’s analyze the comprehensive measurement. The open source javascript framework community is comprehensively scored through the three metrics: stars, PRs and contributors. We can use the [Z-score](https://en.wikipedia.org/wiki/Standard_score) method to score the repo.
+
+<details>
+ <summary>Click here to expand SQL</summary>
 
 ```sql
 WITH stars AS (
@@ -338,6 +373,8 @@ FROM raw,
     zz_pr
 ORDER BY 2 DESC
 ```
+</details>
+
 This is the comprehensive ranking calculated by z-score:
 ```
 +-----------------------+---------+--------------+--------------+------------+
