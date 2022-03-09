@@ -3,7 +3,6 @@ import React, {useState} from 'react'
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Head from '@docusaurus/Head';
 import Layout from '@theme/Layout';
-import useThemeContext from "@theme/hooks/useThemeContext";
 
 import {LocalizationProvider} from "@mui/lab";
 import DateAdapter from "@mui/lab/AdapterLuxon";
@@ -15,21 +14,17 @@ import ThemeAdaptor from "../../components/ThemeAdaptor";
 import CompareHeader from "../../components/CompareHeader/CompareHeader";
 import LineAreaBarChartCard from "../../components/RemoteCards/LineAreaBarChartCard";
 import HeatMapChartCard from "../../components/RemoteCards/HeatMapChartCard";
-import PieChartCard from "../../components/RemoteCards/PieChartCard";
 import TextCard from "../../components/RemoteCards/TextCard";
 
 import {getRandomColor} from "../../lib/color";
-import {areaCodeToName} from "../../lib/areacode";
-import {
-  registerThemeCompareDark,
-  registerThemeCompareLight,
-  registerThemeDark, registerThemeVintage,
-} from "../../components/RemoteCharts/theme";
+import {alpha2ToAlpha3, alpha3ToTitle} from "../../lib/areacode";
+import {registerThemeDark, registerThemeVintage} from "../../components/RemoteCharts/theme";
 
 import {Repo} from "../../components/CompareHeader/RepoSelector";
-import useUrlSearchState, {dateRangeParam, UseUrlSearchStateProps} from "../../hooks/url-search-state";
+import useUrlSearchState, {UseUrlSearchStateProps} from "../../hooks/url-search-state";
 import CompareNumbers, {CompareNumbersContainer} from "../../components/RemoteCards/CompareNumbers";
 import PieChartCompareCard from "../../components/RemoteCards/PieChartCompareCard";
+import WorldMapChartCompareCard from "../../components/RemoteCards/WorldMapChartCompareCard";
 
 
 const allProvidedRepos = (repos: Repo[]) => {
@@ -206,7 +201,7 @@ export default function RepoCompare() {
                 </Grid>
                 {/*  Star - Country / Area  */}
                 <Grid item xs={12}>
-                  <PieChartCompareCard
+                  <WorldMapChartCompareCard
                     title="The country / area of stargazers"
                     queryName={"stars-map"}
                     params1={{
@@ -221,8 +216,8 @@ export default function RepoCompare() {
                     noLoadReason="Need select repo."
                     series={[
                       {
-                        name: "country_or_area",
-                        nameMap: areaCodeToName
+                        nameMap: alpha2ToAlpha3,
+                        titleMap: alpha3ToTitle
                       }
                     ]}
                     dimensionColumnName="country_or_area"
@@ -332,7 +327,7 @@ export default function RepoCompare() {
                 </Grid>
                 {/*  Pull Requests - Country / Area  */}
                 <Grid item xs={12}>
-                  <PieChartCompareCard
+                  <WorldMapChartCompareCard
                     title="The country / area of PR creators"
                     queryName={"pull-request-creators-map"}
                     params1={{
@@ -347,8 +342,8 @@ export default function RepoCompare() {
                     noLoadReason="Need select repo."
                     series={[
                       {
-                        name: "country_or_area",
-                        nameMap: areaCodeToName
+                        nameMap: alpha2ToAlpha3,
+                        titleMap: alpha3ToTitle
                       }
                     ]}
                     dimensionColumnName="country_or_area"
