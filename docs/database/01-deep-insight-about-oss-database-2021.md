@@ -13,9 +13,11 @@ image: img/gharchive-title-img.png
 
 ## Top 10 repos by stars in 2021
 
+
 <details>
  <summary>Click here to expand SQL</summary>
    
+
 ```sql
 SELECT db.name as repo_name, count(*) as stars
   FROM github_events
