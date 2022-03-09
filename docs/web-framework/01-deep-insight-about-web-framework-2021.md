@@ -11,6 +11,10 @@ image: /img/webframework.png
 
 ## Top 10 repos by stars in 2021
 
+
+<details>
+ <summary>Click here to expand SQL</summary>
+
 ```sql
   SELECT  wf.name as repo_name, count(*) as stars
     FROM github_events
@@ -21,11 +25,16 @@ GROUP BY 1
 ORDER BY 2 DESC
    LIMIT 10
 ```
+</details>
 
 <iframe  width="100%" height="350" scrolling="no"  src="/charts/bar.html?x=[%22gin-gonic/gin%22,%22nestjs/nest%22,%22strapi/strapi%22,%22django/django%22,%22spring-projects/spring-boot%22,%22dotnet/aspnetcore%22,%22laravel/laravel%22,%22spring-projects/spring-framework%22,%22pallets/flask%22,%22fastify/fastify%22]&data=[10977,10695,10463,8295,7471,6807,5897,5395,5174,4962]&theme=vintage&label=Star">
 </iframe>
 
 ## Top 10 repos by PR in 2021
+
+
+<details>
+ <summary>Click here to expand SQL</summary>
 
 ```sql
   SELECT wf.name AS repo_name,
@@ -37,11 +46,16 @@ GROUP BY 1
 ORDER BY 2 DESC
    LIMIT 10
 ```
+</details>
 
 <iframe  width="100%" height="350" scrolling="no"  src="/charts/bar.html?x=[%22dotnet/aspnetcore%22,%22symfony/symfony%22,%22rails/rails%22,%22nestjs/nest%22,%22strapi/strapi%22,%22django/django%22,%22cakephp/cakephp%22,%22spring-projects/spring-boot%22,%22fastify/fastify%22,%22spring-projects/spring-framework%22]&data=[3177,2438,1875,1638,1479,1285,644,470,446,382]&theme=vintage&label=PR">
 </iframe>
 
 ## Top Developers for OSS web framework
+
+
+<details>
+ <summary>Click here to expand SQL</summary>
 
 ```sql
   SELECT actor_login, count(*) as pr_count
@@ -55,6 +69,7 @@ GROUP BY 1
 ORDER BY 2 DESC
    LIMIT 20
 ```
+</details>
 
 ```
 +----------------+----------+
@@ -85,6 +100,10 @@ ORDER BY 2 DESC
 
 ## OSS web framwork repos with the highest growth YoY
 
+
+<details>
+ <summary>Click here to expand SQL</summary>
+
 ```sql
   SELECT wf.name,
          sum(event_year = 2020) AS stars2020,
@@ -98,6 +117,7 @@ GROUP BY wf.name
 ORDER BY yoy DESC
    LIMIT 20
 ```
+</details>
 
 ```
 +----------------------+-----------+-----------+---------+
@@ -117,6 +137,10 @@ ORDER BY yoy DESC
 
 ## OSS web framwork repos with lowest growth YoY
 
+
+<details>
+ <summary>Click here to expand SQL</summary>
+
 ```sql
   SELECT wf.name,
          sum(event_year = 2020) AS stars2020,
@@ -130,6 +154,7 @@ GROUP BY wf.name
 ORDER BY yoy ASC
    LIMIT 10
 ```
+</details>
 
 ```
 +----------------------+-----------+-----------+-------+
@@ -150,6 +175,10 @@ ORDER BY yoy ASC
 
 ## Top Language for OSS web framework
 
+
+<details>
+ <summary>Click here to expand SQL</summary>
+
 ```sql
   SELECT language, count(*)
     FROM github_events
@@ -159,6 +188,7 @@ GROUP BY 1
 ORDER BY 2 DESC
    LIMIT 10
 ```
+</details>
 
 
 ```
@@ -179,6 +209,10 @@ ORDER BY 2 DESC
 ```
 
 ## Top companies contributing to OSS web frameworks
+
+
+<details>
+ <summary>Click here to expand SQL</summary>
 
 ```sql
   SELECT trim(lower(replace(u.company, '@', ''))) AS company, 
@@ -202,6 +236,7 @@ GROUP BY 1
 ORDER BY 2 DESC
    LIMIT 20
 ```
+</details>
 
 ```
 +-----------------------+-------------+
@@ -232,6 +267,10 @@ ORDER BY 2 DESC
 
 ## Top countries or regions contributing to OSS web frameworks
 
+
+<details>
+ <summary>Click here to expand SQL</summary>
+
 ```sql
   SELECT country_code, 
          count(distinct actor_id) AS users_count
@@ -252,6 +291,7 @@ GROUP BY 1
 ORDER BY 2 DESC
    LIMIT 10
 ```
+</details>
 
 ```
 +--------------+-------------+
@@ -271,6 +311,10 @@ ORDER BY 2 DESC
 ## OSS web framework ranking
 
 The previous analysis is for a single dimension. Let’s analyze the comprehensive measurement. The open source web framework community is comprehensively scored through the three metrics: stars, PRs and contributors. We can use the [Z-score](https://en.wikipedia.org/wiki/Standard_score) method to score the repo.
+
+
+<details>
+ <summary>Click here to expand SQL</summary>
 
 ```sql
 WITH stars AS (
@@ -346,6 +390,8 @@ FROM raw,
     zz_pr
 ORDER BY 2 DESC
 ```
+</details>
+
 This is the comprehensive ranking calculated by z-score:
 ```
 +----------------------------------+---------+--------------+--------------+------------+

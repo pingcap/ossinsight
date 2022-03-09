@@ -11,6 +11,10 @@ image: /img/lowcode.png
 
 ## Top 10 repos by stars in 2021
 
+
+<details>
+ <summary>Click here to expand SQL</summary>
+
 ```sql
   SELECT jf.name as repo_name, count(*) as stars
     FROM github_events
@@ -21,11 +25,16 @@ GROUP BY 1
 ORDER BY 2 DESC
    LIMIT 10
 ```
+</details>
 
 <iframe  width="100%" height="350" scrolling="no"  src="/charts/bar.html?x=[%22tiangolo/fastapi%22,%22supabase/supabase%22,%22nocodb/nocodb%22,%22appwrite/appwrite%22,%22strapi/strapi%22,%22appsmithorg/appsmith%22,%22Budibase/budibase%22,%22n8n-io/n8n%22,%22hasura/graphql-engine%22,%22saleor/saleor%22]&data=[21792,20723,16498,10772,10463,9531,7994,7930,5522,5326]&theme=vintage&label=Star">
 </iframe>
 
 ## Top 10 repos by PR in 2021
+
+
+<details>
+ <summary>Click here to expand SQL</summary>
 
 ```sql
   SELECT wf.name AS repo_name,
@@ -37,11 +46,16 @@ GROUP BY 1
 ORDER BY 2 DESC
    LIMIT 10
 ```
+</details>
 
 <iframe  width="100%" height="350" scrolling="no"  src="/charts/bar.html?x=[%22appsmithorg/appsmith%22,%22directus/directus%22,%22keystonejs/keystone%22,%22strapi/strapi%22,%22saleor/saleor%22,%22cube-js/cube.js%22,%22n8n-io/n8n%22,%22supabase/supabase%22,%22TryGhost/Ghost%22,%22appwrite/appwrite%22]&data=[2799,2467,1811,1479,1443,1350,940,882,866,689]&theme=vintage&label=PR">
 </iframe>
 
 ## Top Developers for OSS lowcode development tools
+
+
+<details>
+ <summary>Click here to expand SQL</summary>
 
 ```sql
   SELECT actor_login, count(*) as pr_count
@@ -55,6 +69,7 @@ GROUP BY 1
 ORDER BY 2 DESC
    LIMIT 20
 ```
+</details>
 
 ```
 +------------------+----------+
@@ -85,6 +100,10 @@ ORDER BY 2 DESC
 
 ## OSS lowcode development repos with the highest growth YoY
 
+
+<details>
+ <summary>Click here to expand SQL</summary>
+
 ```sql
   SELECT wf.name,
          sum(event_year = 2020) AS stars2020,
@@ -98,6 +117,7 @@ GROUP BY wf.name
 ORDER BY yoy DESC
    LIMIT 20
 ```
+</details>
 
 ```
 +----------------------+-----------+-----------+--------+
@@ -119,6 +139,10 @@ ORDER BY yoy DESC
 
 ## OSS lowcode development repos with lowest growth YoY
 
+
+<details>
+ <summary>Click here to expand SQL</summary>
+
 ```sql
   SELECT wf.name,
          sum(event_year = 2020) AS stars2020,
@@ -132,6 +156,7 @@ GROUP BY wf.name
 ORDER BY yoy ASC
    LIMIT 10
 ```
+</details>
 
 ```
 +------------------------------+-----------+-----------+-------+
@@ -151,6 +176,10 @@ ORDER BY yoy ASC
 
 ## Top Language for OSS lowcode development tools
 
+
+<details>
+ <summary>Click here to expand SQL</summary>
+
 ```sql
   SELECT language, count(*)
     FROM github_events
@@ -160,6 +189,7 @@ GROUP BY 1
 ORDER BY 2 DESC
    LIMIT 10
 ```
+</details>
 
 
 ```
@@ -177,6 +207,10 @@ ORDER BY 2 DESC
 ```
 
 ## Top companies contributing to OSS lowcode development tools
+
+
+<details>
+ <summary>Click here to expand SQL</summary>
 
 ```sql
   SELECT trim(lower(replace(u.company, '@', ''))) AS company, 
@@ -200,6 +234,8 @@ GROUP BY 1
 ORDER BY 2 DESC
    LIMIT 20
 ```
+</details>
+
 
 ```
 +------------------+-------------+
@@ -230,6 +266,10 @@ ORDER BY 2 DESC
 
 ## Top countries or regions contributing to OSS lowcode development tools
 
+
+<details>
+ <summary>Click here to expand SQL</summary>
+
 ```sql
   SELECT country_code, 
          count(distinct actor_id) AS users_count
@@ -250,6 +290,8 @@ GROUP BY 1
 ORDER BY 2 DESC
    LIMIT 10
 ```
+</details>
+
 
 ```
 +--------------+-------------+
@@ -271,6 +313,10 @@ ORDER BY 2 DESC
 ## OSS lowcode development tool ranking
 
 The previous analysis is for a single dimension. Let’s analyze the comprehensive measurement. The open source lowcode development tool community is comprehensively scored through the three metrics: stars, PRs and contributors. We can use the [Z-score](https://en.wikipedia.org/wiki/Standard_score) method to score the repo.
+
+
+<details>
+ <summary>Click here to expand SQL</summary>
 
 ```sql
 WITH stars AS (
@@ -346,6 +392,9 @@ FROM raw,
     zz_pr
 ORDER BY 2 DESC
 ```
+
+</details>
+
 This is the comprehensive ranking calculated by z-score:
 ```
 +------------------------------+---------+--------------+--------------+------------+
