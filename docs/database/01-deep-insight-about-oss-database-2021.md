@@ -13,21 +13,28 @@ image: img/gharchive-title-img.png
 
 ## Top 10 repos by stars in 2021
 
+<details>
+ <summary>Click here to expand SQL</summary>
+   
 ```sql
-  SELECT db.name as repo_name, count(*) as stars
-    FROM github_events
-         JOIN db_repos db ON db.id = github_events.repo_id
-   WHERE event_year = 2021 
-         AND type = 'WatchEvent' 
+SELECT db.name as repo_name, count(*) as stars
+  FROM github_events
+       JOIN db_repos db ON db.id = github_events.repo_id
+ WHERE event_year = 2021 
+       AND type = 'WatchEvent' 
 GROUP BY 1
 ORDER BY 2 DESC
-   LIMIT 10
+ LIMIT 10
 ```
+
+</details>
 
 <iframe  width="100%" height="350" scrolling="no"  src="/charts/bar.html?x=[%22clickhouse/clickhouse%22,%20%22redis/redis%22,%20%22prometheus/prometheus%22,%20%22elastic/elasticsearch%22,%20%22questdb/questdb%22,%20%22etcd-io/etcd%22,%20%22pingcap/tidb%22,%20%22apache/spark%22,%20%22cockroachdb/cockroach%22,%20%22facebook/rocksdb%22]&data=[7628,%206313,%205898,%205669,%205505,%204524,%203967,%203833,%203311,%203190]&theme=vintage&label=Star">
 </iframe>
 
 ## Top 10 repos by PR in 2021
+<details>
+ <summary>Click here to expand SQL</summary>
 
 ```sql
   SELECT db_repos.name AS repo_name,
@@ -39,11 +46,15 @@ GROUP BY 1
 ORDER BY 2 DESC
    LIMIT 10
 ```
+</details>
 
 <iframe  width="100%" height="350" scrolling="no"  src="/charts/bar.html?x=[%22elastic/elasticsearch%22,%20%22clickhouse/clickhouse%22,%20%22cockroachdb/cockroach%22,%20%22pingcap/tidb%22,%20%22apache/spark%22,%20%22taosdata/TDengine%22,%20%22apache/flink%22,%20%22MaterializeInc/materialize%22,%20%22trinodb/trino%22,%20%22arangodb/arangodb%22]&data=[10433,%209689,%207204,%204777,%203703,%203542,%203338,%202883,%202334,%201663]&theme=vintage&label=PR">
 </iframe>
 
 ## Top Developers for OSS Databases
+
+<details>
+ <summary>Click here to expand SQL</summary>
 
 ```sql
   SELECT actor_login, count(*) as pr_count
@@ -57,6 +68,8 @@ GROUP BY 1
 ORDER BY 2 DESC
    LIMIT 20
 ```
+
+</details>
 
 | Avatar |actor_login        | bar               | pr_count
 |-------| ------------------ | ----------------- | --------
@@ -84,6 +97,9 @@ ORDER BY 2 DESC
 
 ## OSS Database repos with the highest growth YoY
 
+<details>
+ <summary>Click here to expand SQL</summary>
+
 ```sql
   SELECT db.name,
          sum(event_year = 2020) AS stars2020,
@@ -97,6 +113,7 @@ GROUP BY db.name
 ORDER BY yoy DESC
    LIMIT 20
 ```
+</details>
 
 ```
 +------------------------+-----------+-----------+-------+
@@ -119,6 +136,9 @@ ORDER BY yoy DESC
 
 ## OSS Database repos with lowest growth YoY
 
+<details>
+ <summary>Click here to expand SQL</summary>
+
 ```sql
   SELECT db.name,
          sum(event_year = 2020) AS stars2020,
@@ -132,6 +152,7 @@ GROUP BY db.name
 ORDER BY yoy ASC
    LIMIT 10
 ```
+</details>
 
 ```
 +----------------------------+-----------+-----------+-------+
@@ -152,6 +173,10 @@ ORDER BY yoy ASC
 
 ## Top Language for OSS Databases
 
+
+<details>
+ <summary>Click here to expand SQL</summary>
+
 ```sql
   SELECT language, count(*)
     FROM github_events
@@ -161,6 +186,7 @@ GROUP BY 1
 ORDER BY 2 DESC
    LIMIT 5
 ```
+</details>
 
 
 |    Logo     | language | bar                                 | count(*)
@@ -173,6 +199,10 @@ ORDER BY 2 DESC
 
 
 ## Top companies contributing to OSS databases
+
+
+<details>
+ <summary>Click here to expand SQL</summary>
 
 ```sql
   SELECT trim(lower(replace(u.company, '@', ''))) AS company, 
@@ -196,6 +226,7 @@ GROUP BY 1
 ORDER BY 2 DESC
    LIMIT 20
 ```
+</details>
 
 ```
 +----------------+-------------+
@@ -226,6 +257,9 @@ ORDER BY 2 DESC
 
 ## Top countries or regions contributing to OSS databases
 
+<details>
+ <summary>Click here to expand SQL</summary>
+
 ```sql
   SELECT country_code, 
          count(distinct actor_id) AS users_count
@@ -246,6 +280,7 @@ GROUP BY 1
 ORDER BY 2 DESC
    LIMIT 10
 ```
+</details>
 
 ```
 +--------------+-------------+
@@ -267,6 +302,9 @@ ORDER BY 2 DESC
 ## OSS Database ranking
 
 The previous analysis is for a single dimension. Let’s analyze the comprehensive measurement. The open source database community is comprehensively scored through the three metrics: stars, PRs and contributors. We can use the [Z-score](https://en.wikipedia.org/wiki/Standard_score) method to score the repo.
+
+<details>
+ <summary>Click here to expand SQL</summary>
 
 ```sql
 WITH stars AS (
@@ -342,6 +380,9 @@ FROM raw,
     zz_pr
 ORDER BY 2 DESC
 ```
+
+</details>
+
 This is the comprehensive ranking calculated by z-score:
 ```
 +----------------------------+---------+--------------+--------------+------------+
