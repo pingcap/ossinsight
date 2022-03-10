@@ -3938,14 +3938,6 @@
     "path-type" "^4.0.0"
     "yaml" "^1.10.0"
 
-"country-data@^0.0.31":
-  "integrity" "sha1-gJZrjh0Uf6bWpYnTKTP4eTd0lW0="
-  "resolved" "https://registry.npmjs.org/country-data/-/country-data-0.0.31.tgz"
-  "version" "0.0.31"
-  dependencies:
-    "currency-symbol-map" "~2"
-    "underscore" ">1.4.4"
-
 "cross-fetch@^3.0.4":
   "integrity" "sha512-lvb1SBsI0Z7GDwmuid+mU3kWVBwTVUbe7S0H52yaaAdQOXq2YktTCZdlAcNKFzE6QtRz0snpw9bNiPeOIkkQvw=="
   "resolved" "https://registry.npmjs.org/cross-fetch/-/cross-fetch-3.1.5.tgz"
@@ -4132,11 +4124,6 @@
   "integrity" "sha512-2u44ZG2OcNUO9HDp/Jl8C07x6pU/eTR3ncV91SiK3dhG9TWvRVsCoJw14Ckx5DgWkzGA3waZWO3d7pgqpUI/XA=="
   "resolved" "https://registry.npmmirror.com/csstype/download/csstype-3.0.10.tgz?cache=0&sync_timestamp=1637224514674&other_urls=https%3A%2F%2Fregistry.npmmirror.com%2Fcsstype%2Fdownload%2Fcsstype-3.0.10.tgz"
   "version" "3.0.10"
-
-"currency-symbol-map@~2":
-  "integrity" "sha1-KzwYcv8aws5ZXYJz5Y4f/wJyrqI="
-  "resolved" "https://registry.npmjs.org/currency-symbol-map/-/currency-symbol-map-2.2.0.tgz"
-  "version" "2.2.0"
 
 "date-fns@^2.0.0", "date-fns@^2.25.0", "date-fns@^2.28.0":
   "integrity" "sha512-8d35hViGYx/QH0icHYCeLmsLmMUheMmTyV9Fcm6gvNwdw31yXXH+O85sOBJ+OLnLQMKZowvpKb6FgMIQjcpvQw=="
@@ -8527,11 +8514,6 @@
   "integrity" "sha1-ZJplaxkd/6tPIdXgU+J8oXy/9cY="
   "resolved" "https://registry.npmmirror.com/ua-parser-js/download/ua-parser-js-0.7.31.tgz"
   "version" "0.7.31"
-
-"underscore@>1.4.4":
-  "integrity" "sha512-ekY1NhRzq0B08g4bGuX4wd2jZx5GnKz6mKSqFL4nqBlfyMGiG10gDFhDTMEfYmDL6Jy0FUIZp7wiRB+0BP7J2g=="
-  "resolved" "https://registry.npmjs.org/underscore/-/underscore-1.13.2.tgz"
-  "version" "1.13.2"
 
 "unherit@^1.0.4":
   "integrity" "sha1-bJtQPytBsmIzDIDpHIYUq9qmnCI="

@@ -57,7 +57,6 @@
     "@primer/octicons-react": "^16.3.1",
     "@tsconfig/docusaurus": "^1.0.4",
     "@types/luxon": "^2.0.9",
-    "country-data": "^0.0.31",
     "react-share": "^4.4.0",
     "swr": "^1.2.2",
     "typescript": "^4.5.5"

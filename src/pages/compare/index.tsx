@@ -17,7 +17,6 @@ import HeatMapChartCard from "../../components/RemoteCards/HeatMapChartCard";
 import TextCard from "../../components/RemoteCards/TextCard";
 
 import {getRandomColor} from "../../lib/color";
-import {alpha2ToAlpha3, alpha3ToTitle} from "../../lib/areacode";
 import {registerThemeDark, registerThemeVintage} from "../../components/RemoteCharts/theme";
 
 import {Repo} from "../../components/CompareHeader/RepoSelector";
@@ -214,12 +213,7 @@ export default function RepoCompare() {
                     }}
                     shouldLoad={allReposProvided([repo1, repo2])}
                     noLoadReason="Need select repo."
-                    series={[
-                      {
-                        nameMap: alpha2ToAlpha3,
-                        titleMap: alpha3ToTitle
-                      }
-                    ]}
+                    series={[{}]}
                     dimensionColumnName="country_or_area"
                     metricColumnName="count"
                     height="400px"
@@ -340,12 +334,7 @@ export default function RepoCompare() {
                     }}
                     shouldLoad={allReposProvided([repo1, repo2])}
                     noLoadReason="Need select repo."
-                    series={[
-                      {
-                        nameMap: alpha2ToAlpha3,
-                        titleMap: alpha3ToTitle
-                      }
-                    ]}
+                    series={[{}]}
                     dimensionColumnName="country_or_area"
                     metricColumnName="count"
                     height="400px"
