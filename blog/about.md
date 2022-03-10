@@ -44,4 +44,6 @@ authors: pingcap
 > OOONLY one, for both OLTP and OLAP queries.
 
 
-### [Contact Us](https://pingcap.com/contact-us/)
+### Contact US
+
+> community@tidb.io
