@@ -24,6 +24,8 @@ import useUrlSearchState, {UseUrlSearchStateProps} from "../../hooks/url-search-
 import CompareNumbers, {CompareNumbersContainer} from "../../components/RemoteCards/CompareNumbers";
 import PieChartCompareCard from "../../components/RemoteCards/PieChartCompareCard";
 import WorldMapChartCompareCard from "../../components/RemoteCards/WorldMapChartCompareCard";
+import ShareButtons from "../../components/ShareButtons";
+import BrowserOnly from "@docusaurus/core/lib/client/exports/BrowserOnly";
 
 
 const allProvidedRepos = (repos: Repo[]) => {
@@ -139,6 +141,9 @@ export default function RepoCompare() {
           <Head>
             <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,400,500,700&display=swap"/>
           </Head>
+          <BrowserOnly>
+            {() => <ShareButtons title={`Compare Projects | OSSInsight`} style={{marginTop: 16, marginRight: 16}}/>}
+          </BrowserOnly>
           <CompareHeader
             repo1={repo1}
             onRepo1Change={setRepo1}

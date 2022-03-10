@@ -1,3 +1,6 @@
-.shareButtons > * {
-    margin-right: 8px;
+.shareButtons {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 16px;
 }
