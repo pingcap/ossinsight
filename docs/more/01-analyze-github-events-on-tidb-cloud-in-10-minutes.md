@@ -59,19 +59,19 @@ TiDB Cloud support importing data from UI console, like this:
 
 In the **new** page, copy the following values into forms:
 
-Bucket URL:
+**Bucket URL**:
 ```
 s3://tidbcloud-samples/gharchive/
 ```
-Role-ARN:
+**Role-ARN**:
 ```
 arn:aws:iam::385595570414:role/import-sample-access
 ```
-Bucket Region: US West(Oregon)
+**Bucket Region**: US West(Oregon) /* you MUST input US West(Oregon) here
 
-Data Format: TiDB Dumpling
+**Data Format**: TiDB Dumpling
 
-Password: <your cluster password\>
+**Password**: <your cluster password\>
 
 ![](/img/try-it-yourself/fill.png)
 
