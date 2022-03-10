@@ -21,7 +21,7 @@ function HomepageHeader() {
       </header>
       <div className={clsx('hero', styles.heroBanner)}>
         <div className='container'>
-          <p className={clsx('hero__subtitle')}>
+          <p className={clsx('hero__subtitle', styles.autoBr)}>
             {siteConfig.tagline}
           </p>
         </div>

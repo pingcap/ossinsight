@@ -54,3 +54,7 @@
   align-items: center;
   justify-content: center;
 }
+
+.autoBr {
+  white-space: pre-wrap;
+}
