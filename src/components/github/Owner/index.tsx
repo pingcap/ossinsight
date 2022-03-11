@@ -21,7 +21,7 @@ const Owner = ({owner, size = '1em'}: GithubOwner) => {
     >
       <Avatar
         alt={owner}
-        src={`https://github.com/${owner}.png`}
+        src={`https://github.com/${owner}.png?size=20`}
         sx={{width: size, height: size}}
       />
       <Typography>
