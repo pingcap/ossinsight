@@ -50,6 +50,11 @@ const config = {
       image: 'img/gharchive-title-img.png',
       metadata: [{name: 'twitter:card', content: 'summary_large_image'}],
       hideableSidebar: true,
+      colorMode: {
+        defaultMode: 'dark',
+        disableSwitch: false,
+        respectPrefersColorScheme: false,
+      },
       navbar: {
         title: 'OSS Insight',
         logo: {
