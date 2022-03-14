@@ -167,7 +167,7 @@ const config = {
                 href: 'https://twitter.com/pingcap',
               },
               {
-                label: 'Youtube',
+                label: 'YouTube',
                 href: 'https://www.youtube.com/pingcap',
               },
             ],
