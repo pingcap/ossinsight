@@ -7,3 +7,4 @@ schemas
 .idea
 .DS_Store
 log
+test/result/*.log
