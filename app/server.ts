@@ -20,6 +20,7 @@ export default async function server(router: Router<DefaultState, ContextExtends
     database: process.env.DB_DATABASE,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
+    connectionLimit: parseInt(process.env.CONNECTION_LIMIT || '10'),
     queueLimit: parseInt(process.env.QUEUE_LIMIT || '20'),
   })
   const tokens = (process.env.GH_TOKENS || '').split(',').map(s => s.trim()).filter(Boolean);
