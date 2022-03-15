@@ -1,16 +1,17 @@
 ---
-title: "Deep Insight Into Lowcode Development Tools: 2021"
+title: "Deep Insight Into Lowcode Development Tools  2021"
 image: /img/lowcode.png
 ---
 
 ![](/img/lowcode.png)
 
-## Stars histories of top OSS lowcode development tools since 2011
-<iframe  width="100%" height="400" scrolling="no"  src="/charts/lowcode.html?theme=dark">
-</iframe>
+In this chapter, we will share with you some of the top low-code development tools repos (LCDT repos) on GitHub in 2021 measured by different metrics including the number of stars, PRs, contributors, countries, regions and so on. 
+Note: 
+1. You can move your cursor onto any of the repository bars/lines on the chart and get the exact number. 
+2. The SQL commands below each chart are what we use on our TiDB Cloud to get the analytical results. Try those SQL commands by yourselves on TiDB Cloud with this [10-minute tutorial](https://ossinsight.io/_/more/analyze-github-events-on-tidb-cloud-in-10-minutes/).
 
-## Top 10 repos by stars in 2021
 
+## Top 10 most starred LCDT repos in 2021
 
 <details>
  <summary>Click here to expand SQL</summary>
@@ -30,7 +31,7 @@ ORDER BY 2 DESC
 <iframe  width="100%" height="350" scrolling="no"  src="/charts/bar.html?x=[%22tiangolo/fastapi%22,%22supabase/supabase%22,%22nocodb/nocodb%22,%22appwrite/appwrite%22,%22strapi/strapi%22,%22appsmithorg/appsmith%22,%22Budibase/budibase%22,%22n8n-io/n8n%22,%22hasura/graphql-engine%22,%22saleor/saleor%22]&data=[21792,20723,16498,10772,10463,9531,7994,7930,5522,5326]&theme=vintage&label=Star">
 </iframe>
 
-## Top 10 repos by PR in 2021
+## Top 10 LCDT repos with the most PRs in 2021
 
 
 <details>
@@ -51,7 +52,7 @@ ORDER BY 2 DESC
 <iframe  width="100%" height="350" scrolling="no"  src="/charts/bar.html?x=[%22appsmithorg/appsmith%22,%22directus/directus%22,%22keystonejs/keystone%22,%22strapi/strapi%22,%22saleor/saleor%22,%22cube-js/cube.js%22,%22n8n-io/n8n%22,%22supabase/supabase%22,%22TryGhost/Ghost%22,%22appwrite/appwrite%22]&data=[2799,2467,1811,1479,1443,1350,940,882,866,689]&theme=vintage&label=PR">
 </iframe>
 
-## Top Developers for OSS lowcode development tools
+## Top 20 developers contributing the most PRs to LCDT repos in 2021
 
 
 <details>
@@ -98,7 +99,7 @@ ORDER BY 2 DESC
 +------------------+----------+
 ```
 
-## OSS lowcode development repos with the highest growth YoY
+## Top 10 LCDT repos with the highest YoY growth rate in 2021
 
 
 <details>
@@ -137,7 +138,7 @@ ORDER BY yoy DESC
 
 ```
 
-## OSS lowcode development repos with lowest growth YoY
+## Top 10 LCDT repos with the lowest YoY growth rate in 2021
 
 
 <details>
@@ -174,7 +175,7 @@ ORDER BY yoy ASC
 +------------------------------+-----------+-----------+-------+
 ```
 
-## Top Language for OSS lowcode development tools
+## Top 7 most used programming languages in LCDT repos in 2021
 
 
 <details>
@@ -206,7 +207,7 @@ ORDER BY 2 DESC
 +------------+----------+
 ```
 
-## Top companies contributing to OSS lowcode development tools
+## Top 20 companies contributing the most to LCDT repos in 2021
 
 
 <details>
@@ -264,7 +265,7 @@ ORDER BY 2 DESC
 +------------------+-------------+
 ```
 
-## Top countries or regions contributing to OSS lowcode development tools
+## Top 20 countries/regions contributing the most to LCDT repos in 2021
 
 
 <details>
@@ -310,10 +311,9 @@ ORDER BY 2 DESC
 +--------------+-------------+
 ```
 
-## OSS lowcode development tool ranking
+## The rankings of LCDT repos measured by Z-score in 2021
 
-The previous analysis is for a single dimension. Let’s analyze the comprehensive measurement. The open source lowcode development tool community is comprehensively scored through the three metrics: stars, PRs and contributors. We can use the [Z-score](https://en.wikipedia.org/wiki/Standard_score) method to score the repo.
-
+The analytical results displayed above are generated based on just one single metric of these three: stars, PRs, or contributors. Now, we will use the [Z-score](https://en.wikipedia.org/wiki/Standard_score) method to rank the LCDT repos on GitHub. 
 
 <details>
  <summary>Click here to expand SQL</summary>

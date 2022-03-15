@@ -1,35 +1,39 @@
 ---
-title: Realtime - Hourly
+title: Real-time Insights
 ---
 import {CommonChart} from "../../src/components/CommonChart";
 
+In this chapter, we will share with you some of the top low-code development tools repos (LCDT repos) on GitHub in real time measured by different metrics including the number of stars, PRs, contributors, countries, regions and so on. 
+Note: 
+1. The real-time analytical results are updated hourly. 
+2. You can move your cursor onto any of the repository bars/lines on the chart and get the exact number. 
+3. The SQL commands below each chart are what we use on our TiDB Cloud to get the analytical results. Try those SQL commands by yourselves on TiDB Cloud with this [10-minute tutorial](https://ossinsight.io/_/more/analyze-github-events-on-tidb-cloud-in-10-minutes/).
 
-## Top 10 repos by stars
+## Top 10 most starred low-code development tool repos in real time  
 
 <CommonChart repo='nocode_repos' chart='barchart' n={10} category='rt-top10-by-stars' categoryIndex='repo_name' valueIndex='num' formatSql={false} />
 
 
-## Top 10 repos by PR
+## Top 10 low-code development tool repos  with the most PRs in real time 
 
 <CommonChart repo='nocode_repos' chart='barchart' n={10} category='rt-top10-by-prs' categoryIndex='repo_name' valueIndex='num' formatSql={false} />
 
-
-## Top 20 repos by developers
+## Top 20 low-code development tool repos with the most contributors in real time
 
 <CommonChart repo='nocode_repos' chart='barchart' n={20} category='rt-top20-by-developers' categoryIndex='repo_name' valueIndex='num' formatSql={false} />
 
 
-## Top Language for OSS Databases
+## Top 5 most used programming languages in low-code development tool repos in real time
 
 <CommonChart repo='nocode_repos' chart='barchart' n={5} category='rt-top5-languages' categoryIndex='language' valueIndex='num' formatSql={false} />
 
 
-## Top companies contributing to OSS databases
+## Top 20 companies contributing the most to low-code development tool repos in real time
 
 
 <CommonChart repo='nocode_repos' chart='barchart' n={20} category='rt-top20-companies' categoryIndex='company' valueIndex='num' formatSql={false} />
 
 
-## Top countries or regions contributing to OSS databases
+## Top 20 countries/regions contributing the most to low-code development tool repos in real time
 
 <CommonChart repo='nocode_repos' chart='barchart' n={20} category='rt-top20-countries' categoryIndex='country' valueIndex='num' formatSql={false} />
