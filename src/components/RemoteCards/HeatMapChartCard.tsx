@@ -1,5 +1,5 @@
 import * as React from "react";
-import {useMemo} from "react";
+import {useCallback, useMemo, useState} from "react";
 import {useRemoteData} from "../RemoteCharts/hook";
 import ReactECharts from 'echarts-for-react';
 import useThemeContext from "@theme/hooks/useThemeContext";
@@ -9,12 +9,18 @@ import {SeriesOption} from "echarts";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 import {useTheme} from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import Box from "@mui/material/Box";
+import FormControl from "@mui/material/FormControl";
+import {InputLabel, Select} from "@mui/material";
+import MenuItem from "@mui/material/MenuItem";
 
 export interface HeatMapChartCardProps extends BaseChartCardProps {
   xAxisColumnName: string,
   yAxisColumnName: string,
   valueColumnName: string,
   series: SeriesOption[],
+  onZoneChange: (e) => void
+  zone: number
 }
 
 const hours = [
@@ -39,12 +45,15 @@ export default function HeatMapChartCard(props: HeatMapChartCardProps) {
     valueColumnName,
     xAxis,
     yAxis,
-    height
+    height,
+    zone,
+    onZoneChange
   } = props;
   const {data: res, loading, error} = useRemoteData(queryName, params, true, shouldLoad);
   const {isDarkTheme} = useThemeContext();
   const theme = useTheme();
   const isSmall = useMediaQuery(theme.breakpoints.down('sm'))
+
 
   const {data, min, max} = useMemo(() => {
     let min = Number.MAX_VALUE;
@@ -57,19 +66,19 @@ export default function HeatMapChartCard(props: HeatMapChartCardProps) {
       if (value < min) {
         min = value;
       }
-      return isSmall ? [item[xAxisColumnName], item[yAxisColumnName], value] : [item[yAxisColumnName], item[xAxisColumnName], value];
+      return [(item[xAxisColumnName] + zone + 24) % 24, item[yAxisColumnName], value];
     }))
     return {
       data: arr || [],
       min,
       max
     }
-  }, [res, isSmall]);
+  }, [res, zone, isSmall]);
 
   const options = useMemo(() => {
     return {
       tooltip: {
-        position: 'top'
+        show: true
       },
       grid: isSmall
         ? {
@@ -86,7 +95,7 @@ export default function HeatMapChartCard(props: HeatMapChartCardProps) {
           right: '6%',
           containLabel: true
         },
-      [isSmall ? 'xAxis' : 'yAxis']: Object.assign({
+      xAxis: Object.assign({
         type: 'category',
         data: hours,
         splitArea: {
@@ -103,9 +112,9 @@ export default function HeatMapChartCard(props: HeatMapChartCardProps) {
           color: '#959aa9',
           fontWeight: 'bold'
         },
-        inverse: !isSmall
+        inverse: false
       }, xAxis),
-      [isSmall ? 'yAxis' : 'xAxis']: Object.assign({
+      yAxis: Object.assign({
         type: 'category',
         data: days,
         splitArea: {
@@ -138,7 +147,7 @@ export default function HeatMapChartCard(props: HeatMapChartCardProps) {
           type: 'heatmap',
           data: data,
           label: {
-            show: !isSmall
+            show: false
           },
           emphasis: {
             itemStyle: {
@@ -159,7 +168,7 @@ export default function HeatMapChartCard(props: HeatMapChartCardProps) {
         lazyUpdate={true}
         style={{
           height: 'auto',
-          aspectRatio: isSmall ? '24 / 7' : '10 / 24',
+          aspectRatio: isSmall ? '24 / 7' : '24 / 7',
           overflow: 'hidden'
         }}
         theme={isDarkTheme ? 'dark' : 'vintage'}

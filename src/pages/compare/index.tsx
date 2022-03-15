@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useCallback, useState} from 'react'
 
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Head from '@docusaurus/Head';
@@ -26,6 +26,10 @@ import PieChartCompareCard from "../../components/RemoteCards/PieChartCompareCar
 import WorldMapChartCompareCard from "../../components/RemoteCards/WorldMapChartCompareCard";
 import ShareButtons from "../../components/ShareButtons";
 import BrowserOnly from "@docusaurus/core/lib/client/exports/BrowserOnly";
+import Box from "@mui/material/Box";
+import FormControl from "@mui/material/FormControl";
+import {InputLabel, Select} from "@mui/material";
+import MenuItem from "@mui/material/MenuItem";
 
 
 const allProvidedRepos = (repos: Repo[]) => {
@@ -115,6 +119,13 @@ const MainContent = (props) => {
   </main>
 }
 
+const zones: number[] = [
+]
+
+for (let i = -12; i <= 13; i++) {
+  zones.push(i)
+}
+
 registerThemeDark();
 registerThemeVintage(false);
 
@@ -133,6 +144,11 @@ export default function RepoCompare() {
   const [repo2, setRepo2] = useUrlSearchState<Repo>('repo2', repoParam(null));
   // const [dateRange, setDateRange] = useUrlSearchState<[Date | null, Date | null]>('daterange', dateRangeParam('yyyy-MM-dd', () => [null, null]));
   const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([null, null]);
+  const [zone, setZone] = useState(0);
+
+  const onZoneChange = useCallback((e) => {
+      setZone(e.target.value)
+    }, [setZone])
 
   return (
     <Layout wrapperClassName={style.page} title={`Project Compare | ${siteConfig.title}`}>
@@ -398,8 +414,28 @@ export default function RepoCompare() {
                     </>
                   </TextCard>
                 </Grid>
-                <Grid item md={3} xs={0} sx={{height: '1px', p: '0 !important'}} zeroMinWidth/>
-                <Grid item md={3} sm={6} xs={12}>
+                <Grid xs={12}>
+                  <Box sx={{ minWidth: 120, textAlign: 'center' }}>
+                    <FormControl size='small'>
+                      <InputLabel id="zone-select-label">Timezone (UTC)</InputLabel>
+                      <Select
+                        labelId="zone-select-label"
+                        id="zone-select"
+                        value={zone}
+                        label="Timezone (UTC)"
+                        onChange={onZoneChange}
+                        sx={{ minWidth: 120 }}
+                      >
+                        {zones.map((zone) => (
+                          <MenuItem key={zone} value={zone}>
+                            {zone > 0 ? `+${zone}` : zone}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </Box>
+                </Grid>
+                <Grid item md={6} sm={6} xs={12}>
                   <HeatMapChartCard
                     title={'Commits Time Distribution'}
                     queryName={"commits-time-distribution"}
@@ -421,10 +457,12 @@ export default function RepoCompare() {
                         }
                       };
                     })}
-                    height="400px"
+                    height="700px"
+                    zone={zone}
+                    onZoneChange={onZoneChange}
                   />
                 </Grid>
-                <Grid item md={3} sm={6}  xs={12}>
+                <Grid item md={6} sm={6} xs={12}>
                   <HeatMapChartCard
                     title={'Commits Time Distribution'}
                     queryName={"commits-time-distribution"}
@@ -442,7 +480,9 @@ export default function RepoCompare() {
                         name: r.name,
                       };
                     })}
-                    height="400px"
+                    height="700px"
+                    zone={zone}
+                    onZoneChange={onZoneChange}
                   />
                 </Grid>
               </Grid>
