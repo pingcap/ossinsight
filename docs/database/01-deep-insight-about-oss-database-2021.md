@@ -1,17 +1,25 @@
 ---
-title: "Deep Insight About OSS Database: 2021"
+title: "Open Source Database Repos Landscape 2021"
 image: img/gharchive-title-img.png
 ---
 
-
 ![](/img/gharchive-title-img.png)
 
+## Open Source Database Repos Landscape 2021
 
-## Stars histories of top OSS database since 2011
+In this chapter, we will share with you some of **the top Open Source Database repos (OSDB repos) on GitHub in 2021** measured by different metrics including the number of stars, PRs, contributors, countries, regions and so on. 
+Note: 
+1. You can move your cursor onto any of the repository bars/lines on the chart and get the exact number. 
+2. The SQL commands below each chart are what we use on our TiDB Cloud to get the analytical results. Try those SQL commands by yourselves on TiDB Cloud with this [10-minute tutorial](https://ossinsight.io/_/more/analyze-github-events-on-tidb-cloud-in-10-minutes).
+
+## Star histories of top OSDB repos since 2011
+
+The number of stars is often thought of as a measure of whether a github repository is popular or not. We sort all database repositories from github by the total number of historical stars since 2011. For visualizing the results more intuitively, we show the top 10 open source databases by using an interactive line chart. 
+
 <iframe  width="100%" height="400" scrolling="no"  src="/charts/database.html?theme=dark">
 </iframe>
 
-## Top 10 repos by stars in 2021
+## Top 10 the most starred OSDB repos in 2021
 
 
 <details>
@@ -34,7 +42,7 @@ ORDER BY 2 DESC
 <iframe  width="100%" height="350" scrolling="no"  src="/charts/bar.html?x=[%22clickhouse/clickhouse%22,%20%22redis/redis%22,%20%22prometheus/prometheus%22,%20%22elastic/elasticsearch%22,%20%22questdb/questdb%22,%20%22etcd-io/etcd%22,%20%22pingcap/tidb%22,%20%22apache/spark%22,%20%22cockroachdb/cockroach%22,%20%22facebook/rocksdb%22]&data=[7628,%206313,%205898,%205669,%205505,%204524,%203967,%203833,%203311,%203190]&theme=vintage&label=Star">
 </iframe>
 
-## Top 10 repos by PR in 2021
+## Top 10 OSDB repos with the most PRs in 2021
 <details>
  <summary>Click here to expand SQL</summary>
 
@@ -53,7 +61,7 @@ ORDER BY 2 DESC
 <iframe  width="100%" height="350" scrolling="no"  src="/charts/bar.html?x=[%22elastic/elasticsearch%22,%20%22clickhouse/clickhouse%22,%20%22cockroachdb/cockroach%22,%20%22pingcap/tidb%22,%20%22apache/spark%22,%20%22taosdata/TDengine%22,%20%22apache/flink%22,%20%22MaterializeInc/materialize%22,%20%22trinodb/trino%22,%20%22arangodb/arangodb%22]&data=[10433,%209689,%207204,%204777,%203703,%203542,%203338,%202883,%202334,%201663]&theme=vintage&label=PR">
 </iframe>
 
-## Top Developers for OSS Databases
+## Top 20 contributors in OSDB repos
 
 <details>
  <summary>Click here to expand SQL</summary>
@@ -97,7 +105,7 @@ ORDER BY 2 DESC
 |![](https://avatars.githubusercontent.com/u/22777892?v=4&s=40) |[danhermann](https://github.com/danhermann)         | ▇▇▇               | 283
 
 
-## OSS Database repos with the highest growth YoY
+## Top 20 OSDB repos with the highest YoY growth rate of stars in 2021
 
 <details>
  <summary>Click here to expand SQL</summary>
@@ -136,7 +144,7 @@ ORDER BY yoy DESC
 
 ```
 
-## OSS Database repos with lowest growth YoY
+## Top 10 OSDB repos with the lowest YoY growth rate of stars in 2021
 
 <details>
  <summary>Click here to expand SQL</summary>
@@ -173,7 +181,7 @@ ORDER BY yoy ASC
 +----------------------------+-----------+-----------+-------+
 ```
 
-## Top Language for OSS Databases
+## Top 5 programming languages used in OSDB repos in 2021
 
 
 <details>
@@ -200,7 +208,7 @@ ORDER BY 2 DESC
 |![](/img/lang/rust.png) | Rust     | ▇▇▇▇▇▇                              | 4366
 
 
-## Top companies contributing to OSS databases
+## Top 20 companies contributing the most to OSDB repos in 2021
 
 
 <details>
@@ -257,7 +265,7 @@ ORDER BY 2 DESC
 +----------------+-------------+
 ```
 
-## Top countries or regions contributing to OSS databases
+## Top 10 countries/regions contributing the most to OSDB repos in 2021
 
 <details>
  <summary>Click here to expand SQL</summary>
@@ -301,9 +309,9 @@ ORDER BY 2 DESC
 +--------------+-------------+
 ```
 
-## OSS Database ranking
+## The Rankings of OSDB repos on GitHub measured by Z-score in 2021
 
-The previous analysis is for a single dimension. Let’s analyze the comprehensive measurement. The open source database community is comprehensively scored through the three metrics: stars, PRs and contributors. We can use the [Z-score](https://en.wikipedia.org/wiki/Standard_score) method to score the repo.
+The previous analysis results were only evaluated from a single dimension, now let's evaluate them from a multidimensional perspective. We can try to rank the repositories based on the [Z-score](https://en.wikipedia.org/wiki/Standard_score) standard.
 
 <details>
  <summary>Click here to expand SQL</summary>

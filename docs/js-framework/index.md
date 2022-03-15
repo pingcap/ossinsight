@@ -1,17 +1,11 @@
 ---
-title: "Javascript Framework"
+title: "JavaScript Framework Repos Landscape 2021"
 image: /img/jsframework.png
 ---
-
-
 ![](/img/jsframework.png)
 
-## Datasets
-
-We have collected a list of well-known open source repos in the field of javascript frameworks, mainly including: Vue, React, Angular, Svelte etc. If the repo you care about is not on the list, you can submit a [pull request](https://github.com/hooopo/gharchive/blob/main/meta/repos/js_framework_repos.yml) to improve it.
-
-The full list of javascript framework repositories participating in statistics includes
-
+We have aggregated and analyzed almost all well-known repositories for JavaScript frameworks on GitHub since 2011. In this chapter, we will share with you some of the valuable analytical results about those repositories. 
+Below is the full list of the JavaScript framework repositories we collected on GitHub. If the repository you care about is not on this list, you can submit a pull request [here](https://github.com/hooopo/gharchive/blob/main/meta/repos/programming_language_repos.yml). 
 ```
 +-----------------------+--------+-----------+
 | repo_name             | stars  | id        |
