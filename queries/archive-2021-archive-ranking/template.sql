@@ -1,5 +1,5 @@
 WITH stars AS (
-    SELECT /*+ read_from_storage(tiflash[github_events]) */
+    SELECT /*+ read_from_storage(tiflash[github_events]), MAX_EXECUTION_TIME(120000) */
         db.name AS repo_name,
         COUNT(*) AS count
     FROM github_events
@@ -9,7 +9,7 @@ WITH stars AS (
 ),
 
      prs as (
-         SELECT /*+ read_from_storage(tiflash[github_events]) */
+         SELECT /*+ read_from_storage(tiflash[github_events]), MAX_EXECUTION_TIME(120000) */
              db.name AS repo_name,
              COUNT(*) AS count
          FROM github_events
@@ -19,7 +19,7 @@ WITH stars AS (
      ),
 
      contributors AS (
-         SELECT /*+ read_from_storage(tiflash[github_events]) */
+         SELECT /*+ read_from_storage(tiflash[github_events]), MAX_EXECUTION_TIME(120000) */
              db.name AS repo_name,
              count(distinct actor_id) AS count
          FROM github_events
