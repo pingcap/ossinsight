@@ -58,13 +58,15 @@ WITH stars AS (
          SELECT AVG(user_count) AS mean, STDDEV(user_count) AS sd FROM raw
      )
 
-SELECT name,
-       ((star_count - zz_star.mean) / zz_star.sd) +
-       ((user_count - zz_user.mean) / zz_user.sd) +
-       ((pr_count - zz_pr.mean) / zz_pr.sd) AS z_score,
-       ((star_count - zz_star.mean) / zz_star.sd) AS z_score_star,
-       ((user_count - zz_user.mean) / zz_user.sd) AS z_score_user,
-       ((pr_count - zz_pr.mean) / zz_pr.sd) AS z_score_pr
+SELECT
+    /*+MAX_EXECUTION_TIME(120000)*/
+    name,
+    ((star_count - zz_star.mean) / zz_star.sd) +
+    ((user_count - zz_user.mean) / zz_user.sd) +
+    ((pr_count - zz_pr.mean) / zz_pr.sd)       AS z_score,
+    ((star_count - zz_star.mean) / zz_star.sd) AS z_score_star,
+    ((user_count - zz_user.mean) / zz_user.sd) AS z_score_user,
+    ((pr_count - zz_pr.mean) / zz_pr.sd)       AS z_score_pr
 FROM raw,
      zz_star,
      zz_user,
