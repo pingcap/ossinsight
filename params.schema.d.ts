@@ -50,6 +50,10 @@ export interface Params {
    * Enums for prefetching and validating, default is no prefetching and validating
    */
   enums?: string | string[];
+  /**
+   * Regular expression for validating parameter value
+   */
+  pattern?: string;
 }
 export interface Restriction {
   fields: string[];

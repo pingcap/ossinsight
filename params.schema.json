@@ -73,6 +73,10 @@
               }
             }
           ]
+        },
+        "pattern": {
+          "description": "Regular expression for validating parameter value",
+          "type": "string"
         }
       },
       "additionalProperties": false,

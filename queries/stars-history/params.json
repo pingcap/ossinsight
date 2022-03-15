@@ -3,11 +3,13 @@
   "params": [
     {
       "name": "repoName1",
-      "replaces": "pingcap/tidb"
+      "replaces": "pingcap/tidb",
+      "pattern": "[a-zA-Z0-9][a-zA-Z0-9-]{0,38}/[a-zA-Z0-9-_]{1,100}"
     },
     {
       "name": "repoName2",
-      "replaces": "tikv/tikv"
+      "replaces": "tikv/tikv",
+      "pattern": "[a-zA-Z0-9][a-zA-Z0-9-]{0,38}/[a-zA-Z0-9-_]{1,100}"
     }
   ]
 }

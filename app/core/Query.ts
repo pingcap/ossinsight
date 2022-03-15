@@ -16,11 +16,18 @@ export class BadParamsError extends Error {
   }
 }
 
-function buildParams(template: string, params: QuerySchema, values: Record<string, string>) {
-  for (let {name, replaces, template: paramTemplate, default: defaultValue} of params.params) {
+function buildParams(template: string, querySchema: QuerySchema, values: Record<string, string>) {
+  for (let {name, replaces, template: paramTemplate, default: defaultValue, pattern} of querySchema.params) {
     const value = values[name] ?? defaultValue
 
     if (typeof value !== "undefined") {
+      if (typeof pattern !== "undefined") {
+        const regexp = new RegExp(pattern);
+        if (!regexp.test(value)) {
+          throw new BadParamsError(name, 'bad param ' + name)
+        }
+      }
+
       let targetValue: string
       if (paramTemplate) {
         targetValue = paramTemplate[String(value)]
