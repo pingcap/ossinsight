@@ -48,7 +48,7 @@ export default function TopList() {
   return (
     <ThemeAdaptor>
       <h2>
-        Top 20 most dynamic repositories in <u>real time</u>.
+        Top 20 most active repositories in <u>real time</u>.
         <Tooltip
           title={(
             <Typography variant='body2'>
