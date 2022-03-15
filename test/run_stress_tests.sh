@@ -54,7 +54,7 @@ exec_single_wrk() {
   log_file=$RESULT_DIR"/$1_t$2_c$3_d${duration}_result.log"
   if [ -f "$script_file" ];then
     echo "Running script file: ${script_file}"
-    wrk -t $2 -c $3 -d $duration --script=$script_file --latency --timeout 2 "$4" >$log_file 2>&1 &
+    wrk -t $2 -c $3 -d $duration --script=$script_file --latency --timeout 5 "$4" >$log_file 2>&1 &
   else
     echo "${script_file} is not exists"
   fi
