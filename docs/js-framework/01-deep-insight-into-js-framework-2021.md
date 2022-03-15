@@ -5,7 +5,6 @@ image: /img/jsframework.png
 
 ![](/img/jsframework.png)
 
-## JavaScript Framework Repos Landscape 2021
 
 In this chapter, we will share with you some of **the top JavaScript Framework repos(JSF repos) on GitHub in 2021** measured by different metrics including the number of stars, PRs, contributors, countries, regions and so on. 
 Note: 
