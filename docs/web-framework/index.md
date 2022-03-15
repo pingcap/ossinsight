@@ -5,8 +5,6 @@ image: /img/webframework.png
 
 ![](/img/webframework.png)
 
-## Web Framework
-
 We have aggregated and analyzed almost all well-known repositories for web frameworks on GitHub since 2011. In this chapter, we will share with you some of the valuable analytical results about those repositories. 
 Below is the full list of the web framework repositories we collected on GitHub. If the repository you care about is not on this list, you can submit a pull request [here](https://github.com/hooopo/gharchive/blob/main/meta/repos/programming_language_repos.yml). 
 ```
