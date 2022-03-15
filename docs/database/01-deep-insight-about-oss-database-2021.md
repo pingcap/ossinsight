@@ -1,13 +1,13 @@
 ---
-title: "Landscape 2021"
+title: "Open Source Database Repos Landscape 2021"
 image: img/gharchive-title-img.png
 ---
 
-## Landscape 2021
+## Open Source Database Repos Landscape 2021
 
 ![](/img/gharchive-title-img.png)
 
-In this chapter, we will share with you some of the top Open Source Database(OSDB) on GitHub in 2021 measured by different metrics including the number of stars, PRs, contributors, countries, regions and so on. 
+In this chapter, we will share with you some of the **top Open Source Database(OSDB)** on GitHub in 2021 measured by different metrics including the number of stars, PRs, contributors, countries, regions and so on. 
 Note: 
 1. You can move your cursor onto any of the repository bars/lines on the chart and get the exact number. 
 2. The SQL commands below each chart are what we use on our TiDB Cloud to get the analytical results. Try those SQL commands by yourselves on TiDB Cloud with this [10-minute tutorial](https://ossinsight.io/_/more/analyze-github-events-on-tidb-cloud-in-10-minutes).
