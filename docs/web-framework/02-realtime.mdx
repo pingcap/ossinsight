@@ -1,36 +1,36 @@
 ---
-title: Realtime - Hourly
+title: Real-time Insights
 ---
 import {CommonChart} from "../../src/components/CommonChart";
 
 
-## Top 10 repos by stars
+## Top 10 most starred WF repos in real time
 
 <CommonChart repo='web_framework_repos' chart='barchart' n={10} category='rt-top10-by-stars' categoryIndex='repo_name' valueIndex='num' formatSql={false} />
 
 
-## Top 10 repos by PR
+## Top 10 WF repos with the most PRs in real time
 
 <CommonChart repo='web_framework_repos' chart='barchart' n={10} category='rt-top10-by-prs' categoryIndex='repo_name' valueIndex='num' formatSql={false} />
 
 
-## Top 20 repos by developers
+## Top 20 WF repos with the most contributors in real time
 
 <CommonChart repo='web_framework_repos' chart='barchart' n={20} category='rt-top20-by-developers' categoryIndex='repo_name' valueIndex='num' formatSql={false} />
 
 
 
-## Top Language for OSS Databases
+## Top 5 most used programming languages in WF repos in real time
 
 <CommonChart repo='web_framework_repos' chart='barchart' n={5} category='rt-top5-languages' categoryIndex='language' valueIndex='num' formatSql={false} />
 
 
-## Top companies contributing to OSS databases
+## Top 20 companies contributing the most to WF repos in real time
 
 
 <CommonChart repo='web_framework_repos' chart='barchart' n={20} category='rt-top20-companies' categoryIndex='company' valueIndex='num' formatSql={false} />
 
 
-## Top countries or regions contributing to OSS databases
+## Top 20 countries/regions contributing the most to WF repos in real time
 
 <CommonChart repo='web_framework_repos' chart='barchart' n={20} category='rt-top20-countries' categoryIndex='country' valueIndex='num' formatSql={false} />
