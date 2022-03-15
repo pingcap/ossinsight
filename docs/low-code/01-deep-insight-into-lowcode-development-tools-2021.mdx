@@ -1,0 +1,122 @@
+---
+title: "Deep Insight Into Lowcode Development Tools  2021"
+image: /img/lowcode.png
+---
+
+import {CommonChart} from "../../src/components/CommonChart";
+
+![](/img/lowcode.png)
+
+In this chapter, we will share with you some of the top low-code development tools repos (LCDT repos) on GitHub in 2021 measured by different metrics including the number of stars, PRs, contributors, countries, regions and so on. 
+Note: 
+1. You can move your cursor onto any of the repository bars/lines on the chart and get the exact number. 
+2. The SQL commands below each chart are what we use on our TiDB Cloud to get the analytical results. Try those SQL commands by yourselves on TiDB Cloud with this [10-minute tutorial](https://ossinsight.io/_/more/analyze-github-events-on-tidb-cloud-in-10-minutes/).
+
+
+## Top 10 most starred LCDT repos in 2021
+
+<CommonChart
+  chart='barchart'
+  category='archive-2021-top10-by-stars'
+  n={10}
+  formatSql={false}
+  categoryIndex='repo_name'
+  valueIndex='stars'
+  seriesName='Stars'
+  repo='nocode_repos'
+/>
+
+## Top 10 LCDT repos with the most PRs in 2021
+
+<CommonChart
+  chart='barchart'
+  category='archive-2021-top10-by-prs'
+  n={20}
+  formatSql={false}
+  categoryIndex='repo_name'
+  valueIndex='num'
+  seriesName='PRs'
+  repo='nocode_repos'
+/>
+
+## Top 20 developers contributing the most PRs to LCDT repos in 2021
+
+<CommonChart
+  chart='barchart'
+  category='archive-2021-top20-by-developers'
+  formatSql={false}
+  categoryIndex='actor_login'
+  valueIndex='pr_count'
+  categoryType='owner'
+  seriesName='PRs'
+  repo='nocode_repos'
+/>
+
+## Top 10 LCDT repos with the highest YoY growth rate in 2021
+
+<CommonChart
+  chart='yoychart'
+  category='archive-2021-top20-by-stars-yoy'
+  formatSql={false}
+  repo='nocode_repos'
+/>
+
+## Top 10 LCDT repos with the lowest YoY growth rate in 2021
+
+<CommonChart
+  chart='yoychart'
+  category='archive-2021-bottom10-by-yoy'
+  formatSql={false}
+  repo='nocode_repos'
+/>
+
+## Top 7 most used programming languages in LCDT repos in 2021
+
+<CommonChart
+  chart='barchart'
+  category='archive-2021-top5-by-languages'
+  formatSql={false}
+  categoryIndex='language'
+  valueIndex='COUNT(*)'
+  categoryType='lang'
+  seriesName='PRs'
+  repo='nocode_repos'
+/>
+
+## Top 20 companies contributing the most to LCDT repos in 2021
+
+<CommonChart
+  chart='barchart'
+  category='archive-2021-top20-by-companies'
+  formatSql={false}
+  categoryIndex='company'
+  valueIndex='users_count'
+  seriesName='Contributors'
+  categoryType={false}
+  repo='nocode_repos'
+/>
+
+## Top 20 countries/regions contributing the most to LCDT repos in 2021
+
+<CommonChart
+  chart='worldmapchart'
+  category='archive-2021-top10-by-regions'
+  formatSql={false}
+  categoryIndex='country_code'
+  valueIndex='users_count'
+  seriesName='Contributors'
+  repo='nocode_repos'
+/>
+
+## The rankings of LCDT repos measured by Z-score in 2021
+
+The analytical results displayed above are generated based on just one single metric of these three: stars, PRs, or contributors. Now, we will use the [Z-score](https://en.wikipedia.org/wiki/Standard_score) method to rank the LCDT repos on GitHub. 
+
+This is the comprehensive ranking calculated by z-score:
+
+<CommonChart
+  chart='zscorechart'
+  category='archive-2021-archive-ranking'
+  formatSql={false}
+  repo='nocode_repos'
+/>
