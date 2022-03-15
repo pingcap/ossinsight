@@ -49,7 +49,7 @@ If you want to know the table schema, you can check `desc gharchive_dev` later i
 
 ![](/img/try-it-yourself/import.png)
 
-2. Copy the commands below and paste to the blanks of **Bucket URL** and **Role-ARN** respectively on the **Data Import Task** page.
+2. Copy the values below and paste to the blanks of **Bucket URL** and **Role-ARN** respectively on the **Data Import Task** page.
 
 **Bucket URL**:
 ```
