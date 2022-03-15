@@ -1,0 +1,13 @@
+---
+title: Historical Insights
+---
+
+In this chapter, we will share with you some of the top programming language repos (PL repos) on GitHub in the past one, two, five, and ten years respectively measured by different metrics including the number of stars, Forks, PRs, contributors summiting the most PRs, and contributors merging the most PRs. 
+Note: 
+1. Click and scroll up or down to choose the right metrics, years, and rankings of PL repos you want learn about. 
+2. Move your cursor onto any of the repository bars on the chart and get the exact number. 
+3. The SQL commands below each chart are what we use on our TiDB Cloud to get the analytical results. Try those SQL commands by yourselves on TiDB Cloud with this [10-minute tutorial](https://ossinsight.io/_/more/analyze-github-events-on-tidb-cloud-in-10-minutes/).
+
+import {CommonChart} from "../../src/components/CommonChart";
+
+<CommonChart repo='programming_language_repos' chart='histories' />
