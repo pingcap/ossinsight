@@ -5,12 +5,14 @@ image: img/gharchive-title-img.png
 
 ![](/img/gharchive-title-img.png)
 
+## Open Source Database Repos Landscape 2021
+
 In this chapter, we will share with you some of **the top Open Source Database repos (OSDB repos) on GitHub in 2021** measured by different metrics including the number of stars, PRs, contributors, countries, regions and so on. 
 Note: 
 1. You can move your cursor onto any of the repository bars/lines on the chart and get the exact number. 
 2. The SQL commands below each chart are what we use on our TiDB Cloud to get the analytical results. Try those SQL commands by yourselves on TiDB Cloud with this [10-minute tutorial](https://ossinsight.io/_/more/analyze-github-events-on-tidb-cloud-in-10-minutes).
 
-## Open Source Database Repos Landscape 2021
+## Star histories of top OSDB repos since 2011
 
 The number of stars is often thought of as a measure of whether a github repository is popular or not. We sort all database repositories from github by the total number of historical stars since 2011. For visualizing the results more intuitively, we show the top 10 open source databases by using an interactive line chart. 
 
