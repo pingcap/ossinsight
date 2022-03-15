@@ -17,7 +17,7 @@ import HeatMapChartCard from "../../components/RemoteCards/HeatMapChartCard";
 import TextCard from "../../components/RemoteCards/TextCard";
 
 import {getRandomColor} from "../../lib/color";
-import {registerThemeDark, registerThemeVintage} from "../../components/RemoteCharts/theme";
+import {registerThemeDark, registerThemeVintage} from "../../components/BasicCharts";
 
 import {Repo} from "../../components/CompareHeader/RepoSelector";
 import useUrlSearchState, {UseUrlSearchStateProps} from "../../hooks/url-search-state";

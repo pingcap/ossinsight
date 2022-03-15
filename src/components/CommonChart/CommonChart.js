@@ -33,7 +33,7 @@ function CommonChart({chart: rawChart, noSearch, ...rest}) {
           />
         </Head>
         {form}
-        <Divider sx={{my: 2}} />
+        {form && <Divider sx={{my: 2}} />}
         {child}
       </ThemeAdaptor>
     </LocalizationProvider>
