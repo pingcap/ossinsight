@@ -5,8 +5,6 @@ image: img/gharchive-title-img.png
 
 ![](/img/gharchive-title-img.png)
 
-## Open Source Database Repos Landscape 2021
-
 In this chapter, we will share with you some of **the top Open Source Database repos (OSDB repos) on GitHub in 2021** measured by different metrics including the number of stars, PRs, contributors, countries, regions and so on. 
 Note: 
 1. You can move your cursor onto any of the repository bars/lines on the chart and get the exact number. 
