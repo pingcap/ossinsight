@@ -40,7 +40,7 @@ The Developer Tier is **free** for 1 year.
 Once your cluster is ready, you can start to import the sample data to your cluster. 
 
 :::Info
-We have merged the create database/table in the SQL files, so you don't need to `create any database/tables` by yourself.
+We have merged the create database/table in the SQL files, so you don't need to `create database/tables` by yourself.
 
 If you want to know the table schema, you can check `desc gharchive_dev` later in the following step. 
 :::
