@@ -82,12 +82,12 @@ async function main () {
     password: process.env.DB_PASSWORD,
     queueLimit: 10,
   });
-  const queries = await getQueries()
-  const presets = await getPresets()
 
   logger.info("Ready Go...")
   for (let i = 0; i < Number.MAX_VALUE; i++) {
     logger.info(`Compute round ${i + 1}.`)
+    const queries = await getQueries();
+    const presets = await getPresets();
     await prefetchQueries(queryExecutor, redisClient, queries, presets);
     logger.info('Next round prefetch will come at: %s', DateTime.now().plus(Duration.fromObject({ minutes: 30 })))
     await sleep(1000 * 60 * 30);    // sleep 30 minutes.
