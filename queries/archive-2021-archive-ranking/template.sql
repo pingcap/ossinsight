@@ -36,6 +36,7 @@ WITH stars AS (
 
      raw as (
          SELECT
+             /*+MAX_EXECUTION_TIME(120000)*/
              name,
              stars.count AS star_count,
              prs.count AS pr_count,
@@ -46,16 +47,28 @@ WITH stars AS (
                   LEFT JOIN contributors ON contributors.repo_name = name
      ),
 
-     zz_pr as (
-         SELECT AVG(pr_count) AS mean, STDDEV(pr_count) AS sd FROM raw
+     zz_pr AS (
+         SELECT
+             /*+MAX_EXECUTION_TIME(120000)*/
+             AVG(pr_count)    AS mean,
+             STDDEV(pr_count) AS sd
+         FROM raw
      ),
 
-     zz_star as (
-         SELECT AVG(star_count) AS mean, STDDEV(star_count) AS sd FROM raw
+     zz_star AS (
+         SELECT
+             /*+MAX_EXECUTION_TIME(120000)*/
+             AVG(star_count)    AS mean,
+             STDDEV(star_count) AS sd
+         FROM raw
      ),
 
-     zz_user as (
-         SELECT AVG(user_count) AS mean, STDDEV(user_count) AS sd FROM raw
+     zz_user AS (
+         SELECT
+             /*+MAX_EXECUTION_TIME(120000)*/
+             AVG(user_count)    AS mean,
+             STDDEV(user_count) AS sd
+         FROM raw
      )
 
 SELECT
