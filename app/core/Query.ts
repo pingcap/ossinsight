@@ -93,15 +93,22 @@ export default class Query {
 
     return cache.load(async () => {
       const start = DateTime.now()
-      const data = await this.executor.execute(sql)
-      const now = DateTime.now()
-      return {
-        params: params,
-        requestedAt: start.toISO(),
-        spent: now.diff(start).as('seconds'),
-        sql,
-        expiresAt: cacheHours === -1 ? MAX_CACHE_TIME : now.plus({hours: cacheHours}),
-        data: data as any
+      try {
+        const data = await this.executor.execute(sql)
+        const now = DateTime.now()
+        return {
+          params: params,
+          requestedAt: start.toISO(),
+          spent: now.diff(start).as('seconds'),
+          sql,
+          expiresAt: cacheHours === -1 ? MAX_CACHE_TIME : now.plus({hours: cacheHours}),
+          data: data as any
+        }
+      } catch (e) {
+        if (e) {
+          (e as any).rawSql = sql
+        }
+        throw e
       }
     })
   }

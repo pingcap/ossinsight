@@ -188,6 +188,7 @@ async function prefetchQueries(
       await query.run(params,true)
     } catch (err) {
       logger.error('[%d/%d] Failed to prefetch query %s with params: %s', id, n, queryName, JSON.stringify(params), err)
+      logger.error('[%d/%d] Failed raw url: %s', (err as any)?.rawSql?.replace(/\n/g, ' '))
     }
     const qEnd = new Date();
 
