@@ -1,5 +1,5 @@
 ---
-title: "JavaScript Framework Repos Landscape 2021"
+title: "JavaScript Framework"
 image: /img/jsframework.png
 ---
 ![](/img/jsframework.png)
