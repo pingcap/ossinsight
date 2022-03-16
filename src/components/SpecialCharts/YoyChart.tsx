@@ -37,7 +37,10 @@ export default function YoyChart({data, aspectRatio = '6 / 5', loading}: YoyChar
       },
       tooltip: {
         show: true,
-        trigger: "item",
+        trigger: "axis",
+        axisPointer: {
+          type: 'shadow'
+        }
       },
       yAxis: {
         type: "category",
