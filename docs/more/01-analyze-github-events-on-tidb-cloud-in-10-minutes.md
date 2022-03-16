@@ -30,7 +30,7 @@ Once you register an account, you can create a free cluster with TiDB Developer 
 5. Click **Submit**.
 Your TiDB Cloud cluster will be created in approximately 5 to 10 minutes.
 
-:::Note
+:::note
 The Developer Tier is **free** for 1 year.
 :::
 
@@ -39,7 +39,7 @@ The Developer Tier is **free** for 1 year.
 ### Import the data
 Once your cluster is ready, you can start to import the sample data to your cluster. 
 
-:::Info
+:::info
 We have merged the create database/table in the SQL files, so you don't need to `create database/tables` by yourself.
 
 If you want to know the table schema, you can check `desc gharchive_dev` later in the following step. 
@@ -117,7 +117,7 @@ mysql>
 
 After you finish all the steps above, you can start the analytical process. 
 
-:::Tips
+:::tip
 If you want to know the table schema, you can use `show create table tbl_name` to get that information.
 :::
 
@@ -161,7 +161,7 @@ Here is a small test for you to practice how to use TiDB Cloud to conduct analyt
 
 ### Q: Which is the most starred database repository on January 1, 2022?
 
-:::Tip
+:::tip
 We have collected all open source repositories on GitGub from https://db-engines.com, and store them in table: `db_repos`.
 :::
 
