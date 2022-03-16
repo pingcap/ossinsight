@@ -17,6 +17,8 @@ WITH
             AND created_at >= (SELECT start FROM datetime_range)
             AND created_at < (SELECT end FROM datetime_range)
             AND actor_login NOT LIKE '%bot%'
+            AND actor_login NOT IN ('github-auto-merge', 'robodoo')
+            AND repo_name NOT IN ('WolseyBankWitness/rediffusion', 'pddemo/demo', 'PlaNFT/PlaNFT-Marketplace-Comments')
         GROUP BY repo_id
         HAVING count > 0
     ),
@@ -31,6 +33,8 @@ WITH
             AND created_at >= (SELECT start FROM datetime_range)
             AND created_at < (SELECT end FROM datetime_range)
             AND actor_login NOT LIKE '%bot%'
+            AND actor_login NOT IN ('github-auto-merge', 'robodoo')
+            AND repo_name NOT IN ('WolseyBankWitness/rediffusion', 'pddemo/demo', 'PlaNFT/PlaNFT-Marketplace-Comments')
         GROUP BY repo_id
         HAVING count > 0
     ),
@@ -45,6 +49,8 @@ WITH
             AND created_at >= (SELECT start FROM datetime_range)
             AND created_at < (SELECT end FROM datetime_range)
             AND actor_login NOT LIKE '%bot%'
+            AND actor_login NOT IN ('github-auto-merge', 'robodoo')
+            AND repo_name NOT IN ('WolseyBankWitness/rediffusion', 'pddemo/demo', 'PlaNFT/PlaNFT-Marketplace-Comments')
         GROUP BY repo_id
         HAVING count > 0
     ),
@@ -59,11 +65,14 @@ WITH
             AND created_at >= (SELECT start FROM datetime_range)
             AND created_at < (SELECT end FROM datetime_range)
             AND actor_login NOT LIKE '%bot%'
+            AND actor_login NOT IN ('github-auto-merge', 'robodoo')
+            AND repo_name NOT IN ('WolseyBankWitness/rediffusion', 'pddemo/demo', 'PlaNFT/PlaNFT-Marketplace-Comments')
         GROUP BY repo_id
         HAVING count > 0
     ),
     # Fetch all PullRequestReviewEvents group by repo_id
-    PullRequestReviewEvents AS (SELECT
+    PullRequestReviewEvents AS (
+        SELECT
             /*+ read_from_storage(tiflash[github_events]) */
             repo_id,
             COUNT(id) count
@@ -72,11 +81,14 @@ WITH
             AND created_at >= (SELECT start FROM datetime_range)
             AND created_at < (SELECT end FROM datetime_range)
             AND actor_login NOT LIKE '%bot%'
+            AND actor_login NOT IN ('github-auto-merge', 'robodoo')
+            AND repo_name NOT IN ('WolseyBankWitness/rediffusion', 'pddemo/demo', 'PlaNFT/PlaNFT-Marketplace-Comments')
         GROUP BY repo_id
         HAVING count > 0
     ),
     # Fetch all PullRequestReviewCommentEvents group by repo_id
-    PullRequestReviewCommentEvents AS (SELECT
+    PullRequestReviewCommentEvents AS (
+        SELECT
             /*+ read_from_storage(tiflash[github_events]) */
             repo_id,
             COUNT(id) count
@@ -85,11 +97,14 @@ WITH
             AND created_at >= (SELECT start FROM datetime_range)
             AND created_at < (SELECT end FROM datetime_range)
             AND actor_login NOT LIKE '%bot%'
+            AND actor_login NOT IN ('github-auto-merge', 'robodoo')
+            AND repo_name NOT IN ('WolseyBankWitness/rediffusion', 'pddemo/demo', 'PlaNFT/PlaNFT-Marketplace-Comments')
         GROUP BY repo_id
         HAVING count > 0
     ),
     # Fetch all CommitCommentEvents group by repo_id
-    CommitCommentEvents AS (SELECT
+    CommitCommentEvents AS (
+        SELECT
             /*+ read_from_storage(tiflash[github_events]) */
             repo_id,
             COUNT(id) count
@@ -98,6 +113,8 @@ WITH
             AND created_at >= (SELECT start FROM datetime_range)
             AND created_at < (SELECT end FROM datetime_range)
             AND actor_login NOT LIKE '%bot%'
+            AND actor_login NOT IN ('github-auto-merge', 'robodoo')
+            AND repo_name NOT IN ('WolseyBankWitness/rediffusion', 'pddemo/demo', 'PlaNFT/PlaNFT-Marketplace-Comments')
         GROUP BY repo_id
         HAVING count > 0
     )
@@ -133,6 +150,8 @@ WHERE (
     AND created_at >= (SELECT start FROM datetime_range)
     AND created_at < (SELECT end FROM datetime_range)
     AND actor_login NOT LIKE '%bot%'
+    AND actor_login NOT IN ('github-auto-merge', 'robodoo')
+    AND repo_name NOT IN ('WolseyBankWitness/rediffusion', 'pddemo/demo', 'PlaNFT/PlaNFT-Marketplace-Comments')
 GROUP BY gh.repo_name
 ORDER BY history_events DESC
 LIMIT 20
