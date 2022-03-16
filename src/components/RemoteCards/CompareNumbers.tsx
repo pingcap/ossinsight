@@ -97,7 +97,7 @@ function useNumberQuery(query: string, repo: Repo | null): SWRResponse<[string, 
       if (!repo) {
         return Promise.resolve(['--', '--'])
       } else {
-        return httpClient.get(`/q/${query}`, {params: {repoName: repo.name}})
+        return httpClient.get(`/q/${query}`, {params: {repoId: repo.id}})
           .then(({data: {data}}) => {
             const origin = Object.values(data[0])
             return [String(origin), String(formatNumber(origin, 1) || 0)]

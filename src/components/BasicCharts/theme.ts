@@ -291,6 +291,7 @@ export function registerThemeDark() {
       }
     }
   };
+  // @ts-ignore
   theme.categoryAxis.splitLine.show = false;
   echarts.registerTheme('dark', theme);
 }

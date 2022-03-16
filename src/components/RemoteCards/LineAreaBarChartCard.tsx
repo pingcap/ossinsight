@@ -34,7 +34,10 @@ export default function LineAreaBarChartCard(props: LineAreaBarChartProps) {
   const {isDarkTheme} = useThemeContext();
 
   const data = useMemo(() => {
-    return res?.data ?? []
+    return res?.data?.map(item => {
+      item.repo_name = item.repo_name.toLowerCase()
+      return item
+    }) ?? []
   }, [res])
 
   const options = useMemo(() => {
@@ -151,8 +154,9 @@ export default function LineAreaBarChartCard(props: LineAreaBarChartProps) {
 
   return <BasicCard {...props} loading={loading || (shouldLoad && !res)} error={error} query={queryName} data={res}>
     <BrowserOnly>
-      {() => <ReactECharts
+      {() => res?.data?.length ? <ReactECharts
         option={options}
+        showLoading={!res?.data?.length}
         notMerge={true}
         lazyUpdate={true}
         style={{
@@ -168,7 +172,7 @@ export default function LineAreaBarChartCard(props: LineAreaBarChartProps) {
           width: 'auto',
           locale: 'en'
         }}
-      />}
+      /> : undefined}
     </BrowserOnly>
   </BasicCard>;
 }

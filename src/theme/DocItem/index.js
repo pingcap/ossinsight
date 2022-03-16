@@ -19,6 +19,7 @@ import styles from './styles.module.css';
 import {ThemeClassNames} from '@docusaurus/theme-common';
 import ShareButtons from "../../components/ShareButtons";
 import BrowserOnly from "@docusaurus/core/lib/client/exports/BrowserOnly";
+import ThemeAdaptor from "../../components/ThemeAdaptor";
 export default function DocItem(props) {
   const {content: DocContent} = props;
   const {metadata, frontMatter} = DocContent;
@@ -42,7 +43,7 @@ export default function DocItem(props) {
   const renderTocDesktop =
     canRenderTOC && (windowSize === 'desktop' || windowSize === 'ssr');
   return (
-    <>
+    <ThemeAdaptor>
       <Seo
         {...{
           title,
@@ -108,6 +109,6 @@ export default function DocItem(props) {
           </div>
         )}
       </div>
-    </>
+    </ThemeAdaptor>
   );
 }

@@ -20,12 +20,10 @@ import {data} from "./config";
 import styles from './index.module.css'
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
-import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
 import InfoIcon from "@mui/icons-material/Info";
 import DialogTitle from "@mui/material/DialogTitle";
 import Dialog from "@mui/material/Dialog";
-import CodeBlock from "@theme/CodeBlock";
-
+import {renderCodes} from "../BasicCharts";
 
 export default function TopList() {
   const {data: ranks, isValidating: loading} = useRank()
@@ -146,24 +144,4 @@ export default function TopList() {
       </Dialog>
     </ThemeAdaptor>
   );
-}
-
-const renderCodes = sql => {
-  let content = undefined
-  if (!sql) {
-    content = (
-      <Box sx={{pt: 0.5}}>
-        <Skeleton width="80%" />
-        <Skeleton width="50%" />
-        <Skeleton width="70%" />
-      </Box>
-    )
-  } else {
-    content = (
-      <CodeBlock className='language-sql'>
-        {sql}
-      </CodeBlock>
-    )
-  }
-  return content
 }

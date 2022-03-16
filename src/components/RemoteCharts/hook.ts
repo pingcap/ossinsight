@@ -1,8 +1,8 @@
-import {useEffect, useState} from "react";
 import {format} from "sql-formatter";
 import {Queries} from "./queries";
 import {createHttpClient} from "../../lib/request";
 import useSWR from "swr";
+import {AxiosRequestConfig} from "axios";
 
 const httpClient = createHttpClient();
 
@@ -42,4 +42,36 @@ export const useRemoteData = <Q extends keyof Queries, P = Queries[Q]['params'],
   })
 
   return {data, loading, error}
+}
+
+interface CheckReq {
+  (config: AxiosRequestConfig): boolean
+}
+
+export function registerStaticData(checkReq: CheckReq, data: any) {
+  httpClient.interceptors.request.use(config => {
+    if (!checkReq(config)) {
+      return config
+    }
+    config.adapter = async () => {
+      return {
+        data,
+        status: 200,
+        statusText: 'OK',
+        headers: {'x-registered': 'true'},
+        config
+      }
+    }
+    return config
+  })
+}
+
+export const query = (query: string, validateParams: (check: AxiosRequestConfig['params']) => boolean): CheckReq => {
+  return (config) => {
+    if (config.url !== `/q/${query}`) {
+      return false
+    } else {
+      return validateParams(config.params)
+    }
+  }
 }

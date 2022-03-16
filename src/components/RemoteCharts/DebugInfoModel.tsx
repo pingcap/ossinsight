@@ -8,8 +8,6 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import {DateTime} from "luxon";
 import Typography from "@mui/material/Typography";
-import Skeleton from "@mui/material/Skeleton";
-import CodeBlock from "@theme/CodeBlock";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 
@@ -69,7 +67,6 @@ const ManyData = ({query, data}: {query: keyof Queries, data: RemoteData<any, an
 const renderOne = (query: keyof Queries, data: RemoteData<any, any>, key: number | undefined = undefined, hidden: boolean = false) => {
   return (
     <div hidden={hidden} key={key}>
-      {renderCodes(data?.sql)}
       <Grid container alignItems='center'>
         <Pair title='Requested at' value={DateTime.fromISO(data?.requestedAt).toFormat(FMT)} />
         <Pair title='Expires at' value={DateTime.fromISO(data?.expiresAt).toFormat(FMT)} />
@@ -101,24 +98,4 @@ const Pair = ({title, value}: { title: string, value: any }) => {
       </Grid>
     </>
   )
-}
-
-export const renderCodes = sql => {
-  let content = undefined;
-  if (!sql) {
-    content = (
-      <Box sx={{pt: 0.5}}>
-        <Skeleton width="80%" />
-        <Skeleton width="50%" />
-        <Skeleton width="70%" />
-      </Box>
-    )
-  } else {
-    content = (
-      <CodeBlock className='language-sql'>
-        {sql}
-      </CodeBlock>
-    )
-  }
-  return content
 }

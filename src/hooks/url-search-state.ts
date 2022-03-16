@@ -8,14 +8,14 @@ export interface UseUrlSearchStateProps<T> {
 }
 
 function useUrlSearchStateSSR<T>(key: string, {defaultValue}: UseUrlSearchStateProps<T>): [T, Dispatch<SetStateAction<T>>] {
-  return useState<T>(defaultValue)
+  return useState<T | undefined>(defaultValue)
 }
 
 function useUrlSearchStateCSR<T>(key: string, {
   defaultValue,
   deserialize,
   serialize
-}: UseUrlSearchStateProps<T>): [T, Dispatch<SetStateAction<T>>] {
+}: UseUrlSearchStateProps<T>): [T | undefined, Dispatch<SetStateAction<T | undefined>>] {
   const initialValue = useMemo(() => {
     const usp = new URLSearchParams(location.search)
     if (usp.has(key)) {

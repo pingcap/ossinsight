@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {Dispatch, SetStateAction, useCallback, useEffect, useState} from 'react'
 
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Head from '@docusaurus/Head';
@@ -17,15 +17,21 @@ import HeatMapChartCard from "../../components/RemoteCards/HeatMapChartCard";
 import TextCard from "../../components/RemoteCards/TextCard";
 
 import {getRandomColor} from "../../lib/color";
-import {registerThemeDark, registerThemeVintage} from "../../components/RemoteCharts/theme";
+import {registerThemeDark, registerThemeVintage} from "../../components/BasicCharts";
 
 import {Repo} from "../../components/CompareHeader/RepoSelector";
-import useUrlSearchState, {UseUrlSearchStateProps} from "../../hooks/url-search-state";
+import useUrlSearchState, {stringParam, UseUrlSearchStateProps} from "../../hooks/url-search-state";
 import CompareNumbers, {CompareNumbersContainer} from "../../components/RemoteCards/CompareNumbers";
 import PieChartCompareCard from "../../components/RemoteCards/PieChartCompareCard";
 import WorldMapChartCompareCard from "../../components/RemoteCards/WorldMapChartCompareCard";
 import ShareButtons from "../../components/ShareButtons";
 import BrowserOnly from "@docusaurus/core/lib/client/exports/BrowserOnly";
+import Box from "@mui/material/Box";
+import FormControl from "@mui/material/FormControl";
+import {InputLabel, Select} from "@mui/material";
+import MenuItem from "@mui/material/MenuItem";
+import useSWR from "swr";
+import {BASE_URL} from "../../lib/request";
 
 
 const allProvidedRepos = (repos: Repo[]) => {
@@ -115,24 +121,52 @@ const MainContent = (props) => {
   </main>
 }
 
+const zones: number[] = [
+]
+
+for (let i = -12; i <= 13; i++) {
+  zones.push(i)
+}
+
 registerThemeDark();
 registerThemeVintage(false);
 
-const repoParam = (defaultValue?): UseUrlSearchStateProps<Repo> => {
-  return {
-    defaultValue,
-    serialize: value => value ? value.name : undefined,
-    deserialize: string => string ? { name: string, color: getRandomColor() } : undefined
-  }
+function useRepo (name: string | undefined, setName: Dispatch<SetStateAction<string | undefined>>): [Repo | undefined, Dispatch<Repo | undefined>] {
+  const [repo, setRepo] = useState(null)
+
+  useEffect(() => {
+    if (name) {
+      fetch(BASE_URL + `/gh/repo/${name}`)
+        .then(res => res.json())
+        .then(res => setRepo({
+          id: res.data.id,
+          name: res.data.full_name,
+          color: getRandomColor()
+        }))
+    }
+  }, [])
+
+  const setRepoHook: Dispatch<Repo | undefined> = useCallback((repo) => {
+    setName(repo?.name)
+    setRepo(repo)
+  }, [setName])
+
+  return [repo, setRepoHook]
 }
 
 export default function RepoCompare() {
   const {siteConfig} = useDocusaurusContext();
 
-  const [repo1, setRepo1] = useUrlSearchState<Repo>('repo1', repoParam(null));
-  const [repo2, setRepo2] = useUrlSearchState<Repo>('repo2', repoParam(null));
+  const [repo1, setRepo1] = useRepo(...useUrlSearchState('repo1', stringParam()))
+  const [repo2, setRepo2] = useRepo(...useUrlSearchState('repo2', stringParam()))
+
   // const [dateRange, setDateRange] = useUrlSearchState<[Date | null, Date | null]>('daterange', dateRangeParam('yyyy-MM-dd', () => [null, null]));
   const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([null, null]);
+  const [zone, setZone] = useState(0);
+
+  const onZoneChange = useCallback((e) => {
+    setZone(e.target.value)
+  }, [setZone])
 
   return (
     <Layout wrapperClassName={style.page} title={`Project Compare | ${siteConfig.title}`}>
@@ -176,8 +210,8 @@ export default function RepoCompare() {
                     title={'Stars History'}
                     queryName={"stars-history"}
                     params={{
-                      repoName1: repo1?.name,
-                      repoName2: repo2?.name,
+                      repoId1: repo1?.id,
+                      repoId2: repo2?.id,
                       dateRange: dateRange
                     }}
                     shouldLoad={allReposProvided([repo1, repo2])}
@@ -209,11 +243,11 @@ export default function RepoCompare() {
                     title="The country / area of stargazers"
                     queryName={"stars-map"}
                     params1={{
-                      repoName: repo1?.name,
+                      repoId: repo1?.id,
                       dateRange: dateRange
                     }}
                     params2={{
-                      repoName: repo2?.name,
+                      repoId: repo2?.id,
                       dateRange: dateRange
                     }}
                     shouldLoad={allReposProvided([repo1, repo2])}
@@ -230,11 +264,11 @@ export default function RepoCompare() {
                     title="Top 50 company of stargazers"
                     queryName={"stars-top-50-company"}
                     params1={{
-                      repoName: repo1?.name,
+                      repoId: repo1?.id,
                       dateRange: dateRange
                     }}
                     params2={{
-                      repoName: repo2?.name,
+                      repoId: repo2?.id,
                       dateRange: dateRange
                     }}
                     shouldLoad={allReposProvided([repo1, repo2])}
@@ -264,8 +298,8 @@ export default function RepoCompare() {
                     title={'Pull Request History'}
                     queryName={"pull-requests-history"}
                     params={{
-                      repoName1: repo1?.name,
-                      repoName2: repo2?.name,
+                      repoId1: repo1?.id,
+                      repoId2: repo2?.id,
                       dateRange: dateRange
                     }}
                     shouldLoad={allReposProvided([repo1, repo2])}
@@ -297,8 +331,8 @@ export default function RepoCompare() {
                     title={'Pull Request Creator per month'}
                     queryName={"pull-request-creators-per-month"}
                     params={{
-                      repoName1: repo1?.name,
-                      repoName2: repo2?.name,
+                      repoId1: repo1?.id,
+                      repoId2: repo2?.id,
                       dateRange: dateRange
                     }}
                     shouldLoad={allReposProvided([repo1, repo2])}
@@ -330,11 +364,11 @@ export default function RepoCompare() {
                     title="The country / area of PR creators"
                     queryName={"pull-request-creators-map"}
                     params1={{
-                      repoName: repo1?.name,
+                      repoId: repo1?.id,
                       dateRange: dateRange
                     }}
                     params2={{
-                      repoName: repo2?.name,
+                      repoId: repo2?.id,
                       dateRange: dateRange
                     }}
                     shouldLoad={allReposProvided([repo1, repo2])}
@@ -398,13 +432,33 @@ export default function RepoCompare() {
                     </>
                   </TextCard>
                 </Grid>
-                <Grid item md={3} xs={0} sx={{height: '1px', p: '0 !important'}} zeroMinWidth/>
-                <Grid item md={3} sm={6} xs={12}>
+                <Grid xs={12}>
+                  <Box sx={{ minWidth: 120, textAlign: 'center' }}>
+                    <FormControl size='small'>
+                      <InputLabel id="zone-select-label">Timezone (UTC)</InputLabel>
+                      <Select
+                        labelId="zone-select-label"
+                        id="zone-select"
+                        value={zone}
+                        label="Timezone (UTC)"
+                        onChange={onZoneChange}
+                        sx={{ minWidth: 120 }}
+                      >
+                        {zones.map((zone) => (
+                          <MenuItem key={zone} value={zone}>
+                            {zone > 0 ? `+${zone}` : zone}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </Box>
+                </Grid>
+                <Grid item md={6} sm={6} xs={12}>
                   <HeatMapChartCard
                     title={'Commits Time Distribution'}
                     queryName={"commits-time-distribution"}
                     params={{
-                      repoName: repo1?.name,
+                      repoId: repo1?.id,
                       dateRange: dateRange
                     }}
                     shouldLoad={allReposProvided([repo1])}
@@ -421,15 +475,17 @@ export default function RepoCompare() {
                         }
                       };
                     })}
-                    height="400px"
+                    height="700px"
+                    zone={zone}
+                    onZoneChange={onZoneChange}
                   />
                 </Grid>
-                <Grid item md={3} sm={6}  xs={12}>
+                <Grid item md={6} sm={6} xs={12}>
                   <HeatMapChartCard
                     title={'Commits Time Distribution'}
                     queryName={"commits-time-distribution"}
                     params={{
-                      repoName: repo2?.name,
+                      repoId: repo2?.id,
                       dateRange: dateRange
                     }}
                     shouldLoad={allReposProvided([repo2])}
@@ -442,7 +498,9 @@ export default function RepoCompare() {
                         name: r.name,
                       };
                     })}
-                    height="400px"
+                    height="700px"
+                    zone={zone}
+                    onZoneChange={onZoneChange}
                   />
                 </Grid>
               </Grid>
