@@ -1,15 +1,12 @@
 ---
-title: "OSS Database"
+title: "Open Source Database"
 image: img/gharchive-title-img.png
 ---
 
 ![](/img/gharchive-title-img.png)
 
-## Datasets
-
-We have collected a list of well-known open source projects in the field of database and big data, mainly including: TiDB, Elasticsearch, Clickhouse, Redis, etc. If the repo you care about is not on the list, you can submit a [pull request](https://github.com/hooopo/gharchive/blob/main/meta/repos/db_repos.yml) to improve it.
-
-The full list of database repositories participating in statistics includes
+We have aggregated and analyzed almost all well-known repositories for databases on GitHub since 2011. In this chapter, we will share with you some of the valuable analytical results about those repositories. 
+Below is the full list of the database repositories we collected on GitHub. If the repository you care about is not on this list, you can submit a pull request [here](https://github.com/hooopo/gharchive/blob/main/meta/repos/db_repos.yml).
 
 ```
 +----------------------------+-------+-----------+

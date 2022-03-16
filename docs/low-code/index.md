@@ -6,11 +6,9 @@ image: /img/lowcode.png
 
 ![](/img/lowcode.png)
 
-## Datasets
+We have collected and analyzed a list of well-known open source repositories regarding low-code development tools since 2011. In this chapter, we will share with you some of the valuable analytical results about those repositories. 
 
-We have collected a list of well-known open source repos in the field of lowcode development tools, mainly including: fastapi, hasura, supabase, strapi etc. If the repo you care about is not on the list, you can submit a [pull request](https://github.com/hooopo/gharchive/blob/main/meta/repos/nocode_repos.yml) to improve it.
-
-The full list of lowcode repositories participating in statistics includes
+Below is the full list of the repositories regarding low-code development tools we collected and analyzed. If the repository you care about is not on this list, you can submit a pull request [here](https://github.com/hooopo/gharchive/blob/main/meta/repos/nocode_repos.yml). 
 
 ```
 +------------------------------+-------+-----------+

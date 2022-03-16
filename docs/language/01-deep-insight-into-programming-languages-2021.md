@@ -1,21 +1,25 @@
 ---
-title: "Deep Insight Into Programming Languages: 2021"
+title: "Deep Insights into Programming Languages Repos 2021"
 image: /img/language.png
 ---
 
 ![](/img/language.png)
 
 
-## Stars histories of top OSS programming language repos since 2011
+## Programming Language Repos Landscape 2021
 
-<iframe  width="100%" height="400" scrolling="no"  src="/charts/language_repo.html?theme=dark">
-</iframe>
+In this chapter, we will share with you some of **the top programming language repos (PL repos) on GitHub in 2021** measured by different metrics including the number of stars, PRs, contributors, countries, regions and so on. 
+
+Note: 
+
+1. You can move your cursor onto any of the repository bars/lines on the chart and get the exact number. 
+2. The SQL commands below each chart are what we use on TiDB Cloud to get the analytical results. Try those SQL commands by yourselves on TiDB Cloud with this [10-minute tutorial](https://ossinsight.io/_/more/analyze-github-events-on-tidb-cloud-in-10-minutes/).
 
 ## Trends in the number of PR events in various programming languages since 2011
 <iframe  width="100%" height="400" scrolling="no"  src="/charts/language.html?theme=dark">
 </iframe>
 
-## Top 10 repos by stars in 2021
+## Top 10 most starred PL repos in 2021
 
 <details>
  <summary>Click here to expand SQL</summary>
@@ -35,7 +39,7 @@ ORDER BY 2 DESC
 <iframe  width="100%" height="350" scrolling="no"  src="/charts/bar.html?x=[%22golang/go%22,%22rust-lang/rust%22,%22Microsoft/TypeScript%22,%22nodejs/node%22,%22PowerShell/PowerShell%22,%22JuliaLang/julia%22,%22python/cpython%22,%22JetBrains/kotlin%22,%22vlang/v%22,%22openjdk/jdk%22]&data=[14968,12258,10593,10234,8938,7594,7486,6350,6208,4875]&label=Star&theme=vintage">
 </iframe>
 
-## Top 10 repos by PR in 2021
+## Top 10 PL repos with the most PRs in 2021
 
 <details>
  <summary>Click here to expand SQL</summary>
@@ -55,7 +59,7 @@ ORDER BY 2 DESC
 <iframe  width="100%" height="350" scrolling="no"  src="/charts/bar.html?x=[%22rust-lang/rust%22,%22python/cpython%22,%22apple/swift%22,%22dotnet/roslyn%22,%22openjdk/jdk%22,%22vlang/v%22,%22nodejs/node%22,%22JuliaLang/julia%22,%22nim-lang/Nim%22,%22ziglang/zig%22]&data=[6328,5393,4905,4450,4386,2658,2498,2352,1657,1371]&label=PR&theme=vintage">
 </iframe>
 
-## Top 10 repos by contributors in 2021
+## Top 10 PL repos with the most contributors in 2021
 
 <details>
  <summary>Click here to expand SQL</summary>
@@ -96,7 +100,7 @@ ORDER BY 2 DESC
 +-----------------------+-------+
 ```
 
-## Top Developers for OSS programming languages
+## Top 20 developers contributed the most PRs to PL repos in 2021
 
 <details>
  <summary>Click here to expand SQL</summary>
@@ -142,7 +146,7 @@ ORDER BY 2 DESC
 +-----------------+----------+
 ```
 
-## OSS programming language repos with the highest growth YoY
+## Top 9 PL repos with the highest YoY growth rate of stars in 2021
 
 <details>
  <summary>Click here to expand SQL</summary>
@@ -179,7 +183,7 @@ ORDER BY yoy DESC
 
 ```
 
-## OSS programming language repos with lowest growth YoY
+## Top 10 PL repos with the lowest YoY growth rate of stars in 2021
 
 <details>
  <summary>Click here to expand SQL</summary>
@@ -216,7 +220,7 @@ ORDER BY yoy ASC
 +----------------------+-----------+-----------+-------+
 ```
 
-## Top companies  contributing to OSS programming languages
+## Top 20 companies contributing the most to PL repos in 2021
 
 <details>
  <summary>Click here to expand SQL</summary>
@@ -316,9 +320,8 @@ ORDER BY 2 DESC
 +--------------+-------------+
 ```
 
-## OSS programming language ranking
-
-The previous analysis is for a single dimension. Let’s analyze the comprehensive measurement. The open source programming language community is comprehensively scored through the three metrics: stars, PRs and contributors. We can use the [Z-score](https://en.wikipedia.org/wiki/Standard_score) method to score the repo.
+## The rankings of PL repos measured by Z-score in 2021
+The analytical results displayed above are generated based on just one single metric of these three: stars, PRs, or contributors. Now, we will use the [Z-score](https://en.wikipedia.org/wiki/Standard_score) method to rank PL repos on GitHub.  
 <details>
  <summary>Click here to expand SQL</summary>
 
