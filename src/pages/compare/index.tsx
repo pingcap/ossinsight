@@ -1,5 +1,5 @@
 /// <reference types="@types/webpack-env" />
-import React, {Dispatch, SetStateAction, useCallback, useEffect, useState} from 'react'
+import React, {Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState} from 'react'
 
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Head from '@docusaurus/Head';
@@ -36,7 +36,6 @@ const allReposProvided = (repos: Repo[]) => {
 };
 
 const sectionsCtx = require.context('./sections', false, /\.tsx$/)
-const sections = sectionsCtx.keys().sort().map(key => sectionsCtx(key).default).map(Section => <Section />)
 
 const MainContent = (props) => {
   return <main className={style.mainContent} style={{}}>
@@ -98,6 +97,13 @@ export default function RepoCompare() {
       return 'Please select another repository to compare.'
     }
   }, [repo1])
+
+  const sections = useMemo(() =>{
+    return sectionsCtx.keys()
+      .sort()
+      .map(key => sectionsCtx(key).default)
+      .map(Section => <Section />)
+  }, [])
 
   return (
     <Layout wrapperClassName={style.page} title={`Project Compare | ${siteConfig.title}`}>
