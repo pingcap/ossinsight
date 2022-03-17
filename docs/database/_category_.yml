@@ -1,5 +1,6 @@
 label: Database
 position: 1
+collapsed: false
 link:
   type: doc
   id: database/index
