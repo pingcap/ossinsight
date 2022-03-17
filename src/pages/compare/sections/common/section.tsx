@@ -12,8 +12,8 @@ export default function Section({title, description, children}: SectionProps) {
   const ctx = useCompareContext()
   return (
     <section className={style.mainSection}>
-      <h2>{title}</h2>
-      <p>{description}</p>
+      <h2>{title === 'title' ? '' : title}</h2>
+      <p>{description === 'desc' ? '' : description}</p>
       {children(ctx)}
     </section>
   )
