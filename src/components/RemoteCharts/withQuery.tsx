@@ -1,15 +1,17 @@
 import * as React from "react";
-import {RemoteData, useRemoteData} from "./hook";
+import {useState} from "react";
+import {AsyncData, RemoteData, useRemoteData} from "./hook";
 import Fab from '@mui/material/Fab';
 import Alert from "@mui/material/Alert";
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 // @ts-ignore
 import CodeBlock from '@theme/CodeBlock';
-import BarChart from './BarChart';
+import {BarChart, ChartWithSql, DataGrid, DataGridColumn} from '../BasicCharts';
 import {Queries} from "./queries";
-import {useState} from "react";
-import {DebugInfoModel, renderCodes} from "./DebugInfoModel";
-import DataGrid, {Column} from "./DataGrid";
+import {DebugInfoModel} from "./DebugInfoModel";
+import {YoyChart} from "../SpecialCharts";
+import WorldMapChart from "../BasicCharts/WorldMapChart";
+import ZScoreChart from "../SpecialCharts/ZScoreChart";
 
 type Indexes<Q extends keyof Queries> = {
   categoryIndex: keyof Queries[Q]['data']
@@ -20,7 +22,9 @@ type QueryComponentProps<Q extends keyof Queries> = Queries[Q]["params"] & {
   // only for bar
   clear: boolean
   size?: number
-  formatSql?: boolean}
+  formatSql?: boolean
+  seriesName?: string
+}
 
 // interface BarChartProps<Q extends keyof Queries> extends Indexes<Q> {
 //   data: Queries[Q]['data'][]
@@ -31,82 +35,128 @@ type QueryComponentProps<Q extends keyof Queries> = Queries[Q]["params"] & {
 //   deps: any[]
 // }
 
-export function withBarChartQuery<Q extends keyof Queries, D = RemoteData<Queries[Q]['params'], Queries[Q]['data']>>
-(query: Q, indices: Indexes<Q>): React.FC<QueryComponentProps<Q>> {
-  return ({clear, size = 30, formatSql = true, children, categoryIndex = indices.categoryIndex, valueIndex = indices.valueIndex, ...params}: QueryComponentProps<Q>) => {
-    const {data, loading, error} = useRemoteData(query, params, formatSql);
-    const [showDebugModel, setShowDebugModel] = useState(false);
+function renderChart (query, chart, {error, data}: AsyncData<RemoteData<any, any>>, clear) {
+  const [showDebugModel, setShowDebugModel] = useState(false);
 
-    const handleShowDebugModel = () => {
-      setShowDebugModel(true);
-    }
-
-    const handleCloseDebugModel = () => {
-      setShowDebugModel(false);
-    }
-
-    const chart = React.createElement(BarChart, {
-      categoryIndex,
-      valueIndex,
-      size,
-      data: data?.data ?? [],
-      loading,
-      clear,
-      n: params.n,
-      deps: Object.values(params)
-    })
-    if (error) {
-      return <Alert severity='error'>Request failed ${(error as any)?.message ?? ''}</Alert>
-    } else {
-      if (clear) {
-        return chart
-      }
-
-      return (
-        <>
-          <div style={{ position: 'relative' }}>
-            {chart}
-            <Fab size='small' sx={{ position: 'absolute', zIndex: 10, right: 24, bottom: 24 }} onClick={handleShowDebugModel} disabled={!data}>
-              <HelpOutlineIcon />
-            </Fab>
-            <DebugInfoModel query={query} data={data} open={showDebugModel} onClose={handleCloseDebugModel} />
-          </div>
-          {renderCodes(data?.sql)}
-        </>
-      )
-    }
+  const handleShowDebugModel = () => {
+    setShowDebugModel(true);
   }
-}
 
-export function withDataGridQuery<Q extends keyof Queries, D = RemoteData<Queries[Q]['params'], Queries[Q]['data']>>(query: Q, columns: Column<Q>[]): React.FC<QueryComponentProps<Q>> {
-  return ({ size, clear, formatSql = true, ...params }) => {
-    const {data, loading, error} = useRemoteData(query, params, formatSql)
-    const [showDebugModel, setShowDebugModel] = useState(false);
+  const handleCloseDebugModel = () => {
+    setShowDebugModel(false);
+  }
 
-    const handleShowDebugModel = () => {
-      setShowDebugModel(true);
+  if (error) {
+    return <Alert severity='error'>Request failed ${(error as any)?.message ?? ''}</Alert>
+  } else {
+    if (clear) {
+      return chart
     }
 
-    const handleCloseDebugModel = () => {
-      setShowDebugModel(false);
-    }
-
-    const chart = <DataGrid<Q> columns={columns} loading={loading} data={data?.data} />
-
-    if (error) {
-      return <Alert severity='error'>Request failed ${(error as any)?.message ?? ''}</Alert>
-    }
     return (
-      <>
-        <div style={{ position: 'relative' }}>
+      <ChartWithSql sql={data?.sql}>
+        <div style={{position: 'relative'}}>
           {chart}
-          <Fab size='small' sx={{ position: 'absolute', zIndex: 10, right: 24, bottom: 24 }} onClick={handleShowDebugModel} disabled={!data}>
+          <Fab size='small' sx={{position: 'absolute', zIndex: 10, right: 24, bottom: 24}}
+               onClick={handleShowDebugModel} disabled={!data}>
             <HelpOutlineIcon />
           </Fab>
           <DebugInfoModel query={query} data={data} open={showDebugModel} onClose={handleCloseDebugModel} />
         </div>
-        {renderCodes(data?.sql)}
-      </>
+      </ChartWithSql>
     )
+  }
+}
+
+export function withBarChartQuery<Q extends keyof Queries, D = RemoteData<Queries[Q]['params'], Queries[Q]['data']>>
+(query: Q, indices: Indexes<Q>): React.FC<QueryComponentProps<Q>> {
+  return ({clear, size = 30, formatSql = true, children, categoryIndex = indices.categoryIndex, valueIndex = indices.valueIndex, seriesName, categoryType, ...params}: QueryComponentProps<Q>) => {
+    const remoteData = useRemoteData(query, params, formatSql);
+    const { data, loading } = remoteData
+
+    const chart = (
+      <BarChart
+        seriesName={seriesName}
+        loading={loading}
+        clear={clear}
+        data={data?.data ?? []}
+        size={size}
+        n={data?.data?.length ?? params.n}
+        deps={Object.values(params)}
+        categoryIndex={categoryIndex}
+        type={categoryType}
+        valueIndex={valueIndex}
+      />
+    )
+
+    return renderChart(query, chart, remoteData, clear)
+  }
+}
+
+export function withDataGridQuery<Q extends keyof Queries, D = RemoteData<Queries[Q]['params'], Queries[Q]['data']>>(query: Q, columns: DataGridColumn<Queries[Q]['data']>[]): React.FC<QueryComponentProps<Q>> {
+  return ({ size, clear, formatSql = true, ...params }) => {
+    const remoteData = useRemoteData(query, params, formatSql);
+    const { data, loading } = remoteData
+    const chart = <DataGrid<Queries[Q]['data']> columns={columns} loading={loading} data={data?.data} />
+
+    return renderChart(query, chart, remoteData, false)
+  }
+}
+
+
+export function withYoyChartQuery<Q extends keyof Queries, D = RemoteData<Queries[Q]['params'], Queries[Q]['data']>>
+(query: Q): React.FC<QueryComponentProps<Q>> {
+  return ({formatSql = true, children, aspectRatio, ...params}: QueryComponentProps<Q>) => {
+    const remoteData = useRemoteData(query, params, formatSql);
+    const { data, loading } = remoteData
+
+    const chart = (
+      <YoyChart
+        loading={loading}
+        data={data?.data ?? []}
+        aspectRatio={aspectRatio}
+      />
+    )
+
+    return renderChart(query, chart, remoteData, false)
+  }
+}
+
+
+export function withZScoreChartQuery<Q extends keyof Queries, D = RemoteData<Queries[Q]['params'], Queries[Q]['data']>>
+(query: Q): React.FC<QueryComponentProps<Q>> {
+  return ({formatSql = true, children, aspectRatio, ...params}: QueryComponentProps<Q>) => {
+    const remoteData = useRemoteData(query, params, formatSql);
+    const { data, loading } = remoteData
+
+    const chart = (
+      <ZScoreChart
+        loading={loading}
+        data={data?.data ?? []}
+      />
+    )
+
+    return renderChart(query, chart, remoteData, false)
+  }
+}
+
+export function withWorldMapChartQuery<Q extends keyof Queries, D = RemoteData<Queries[Q]['params'], Queries[Q]['data']>>
+(query: Q, indices: Indexes<Q>): React.FC<QueryComponentProps<Q>> {
+  const { valueIndex, categoryIndex } = indices
+  return ({formatSql = true, children, seriesName, ...params}: QueryComponentProps<Q>) => {
+    const remoteData = useRemoteData(query, params, formatSql);
+    const { data, loading } = remoteData
+
+    const chart = (
+      <WorldMapChart
+        loading={loading}
+        data={data?.data ?? []}
+        dimensionColumnName={categoryIndex}
+        metricColumnName={valueIndex}
+        seriesName={seriesName}
+      />
+    )
+
+    return renderChart(query, chart, remoteData, false)
   }
 }

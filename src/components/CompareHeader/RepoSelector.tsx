@@ -11,6 +11,7 @@ import useSWR from "swr";
 const httpClient = createHttpClient();
 
 export interface Repo extends Record<string, unknown> {
+  id: number
   name: string
   color: string
 }
@@ -41,6 +42,7 @@ export default function RepoSelector({repo, label, defaultRepoName, onChange, on
         }
         const {data: {data}} = await httpClient.get(`/gh/repos/search`, {params: {keyword}})
         return data.map((r) => ({
+          id: r.id,
           name: r.fullName,
           color: getRandomColor(),
         }));
@@ -65,9 +67,9 @@ export default function RepoSelector({repo, label, defaultRepoName, onChange, on
     <Autocomplete<Repo>
       sx={{maxWidth: 300, mx: 'auto'}}
       size="small"
-      isOptionEqualToValue={(option, value) => option.name === value.name}
+      isOptionEqualToValue={(option, value) => option.id === value.id}
       getOptionLabel={(option) => option.name}
-      options={options}
+      options={options ?? []}
       loading={loading}
       value={repo}
       onChange={(event, newValue: Repo) => {

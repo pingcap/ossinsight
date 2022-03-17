@@ -1,0 +1,128 @@
+---
+title: "Open Source Database Repos Landscape 2021"
+image: img/gharchive-title-img.png
+---
+
+import {CommonChart} from "../../src/components/CommonChart";
+
+![](/img/gharchive-title-img.png)
+
+In this chapter, we will share with you some of **the top Open Source Database repos (OSDB repos) on GitHub in 2021** measured by different metrics including the number of stars, PRs, contributors, countries, regions and so on. 
+Note: 
+1. You can move your cursor onto any of the repository bars/lines on the chart and get the exact number. 
+2. The SQL commands below each chart are what we use on our TiDB Cloud to get the analytical results. Try those SQL commands by yourselves on TiDB Cloud with this [10-minute tutorial](https://ossinsight.io/_/more/analyze-github-events-on-tidb-cloud-in-10-minutes).
+
+## Star histories of top OSDB repos since 2011
+
+The number of stars is often thought of as a measure of whether a github repository is popular or not. We sort all database repositories from github by the total number of historical stars since 2011. For visualizing the results more intuitively, we show the top 10 open source databases by using an interactive line chart. 
+
+<iframe  width="100%" height="400" scrolling="no"  src="/charts/database.html?theme=dark">
+</iframe>
+
+## Top 10 the most starred OSDB repos in 2021
+
+<CommonChart
+  chart='barchart'
+  category='archive-2021-top10-by-stars'
+  n={10}
+  formatSql={false}
+  categoryIndex='repo_name'
+  valueIndex='stars'
+  seriesName='Stars'
+  repo='db_repos'
+/>
+
+## Top 10 OSDB repos with the most PRs in 2021
+
+<CommonChart
+  chart='barchart'
+  category='archive-2021-top10-by-prs'
+  n={20}
+  formatSql={false}
+  categoryIndex='repo_name'
+  valueIndex='num'
+  seriesName='PRs'
+  repo='db_repos'
+/>
+
+## Top 20 contributors in OSDB repos
+
+<CommonChart
+  chart='barchart'
+  category='archive-2021-top20-by-developers'
+  formatSql={false}
+  categoryIndex='actor_login'
+  valueIndex='pr_count'
+  categoryType='owner'
+  seriesName='PRs'
+  repo='db_repos'
+/>
+
+## Top 20 OSDB repos with the highest YoY growth rate of stars in 2021
+
+<CommonChart
+  chart='yoychart'
+  category='archive-2021-top20-by-stars-yoy'
+  formatSql={false}
+  repo='db_repos'
+/>
+
+## Top 10 OSDB repos with the lowest YoY growth rate of stars in 2021
+
+<CommonChart
+  chart='yoychart'
+  category='archive-2021-bottom10-by-yoy'
+  formatSql={false}
+  repo='db_repos'
+/>
+
+## Top 5 programming languages used in OSDB repos in 2021
+
+<CommonChart
+  chart='barchart'
+  category='archive-2021-top5-by-languages'
+  formatSql={false}
+  categoryIndex='language'
+  valueIndex='COUNT(*)'
+  categoryType='lang'
+  seriesName='PRs'
+  repo='db_repos'
+/>
+
+## Top 20 companies contributing the most to OSDB repos in 2021
+
+<CommonChart
+  chart='barchart'
+  category='archive-2021-top20-by-companies'
+  formatSql={false}
+  categoryIndex='company'
+  valueIndex='users_count'
+  seriesName='Contributors'
+  categoryType={false}
+  repo='db_repos'
+/>
+
+## Top 10 countries/regions contributing the most to OSDB repos in 2021
+
+<CommonChart
+  chart='worldmapchart'
+  category='archive-2021-top10-by-regions'
+  formatSql={false}
+  categoryIndex='country_code'
+  valueIndex='users_count'
+  seriesName='Contributors'
+  repo='db_repos'
+/>
+
+## The Rankings of OSDB repos on GitHub measured by Z-score in 2021
+
+The previous analysis results were only evaluated from a single dimension, now let's evaluate them from a multidimensional perspective. We can try to rank the repositories based on the [Z-score](https://en.wikipedia.org/wiki/Standard_score) standard.
+
+This is the comprehensive ranking calculated by z-score:
+
+<CommonChart
+  chart='zscorechart'
+  category='archive-2021-archive-ranking'
+  formatSql={false}
+  repo='db_repos'
+/>
