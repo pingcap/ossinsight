@@ -55,11 +55,13 @@ for (let i = -12; i <= 13; i++) {
 registerThemeDark();
 registerThemeVintage(false);
 
-function useRepo (name: string | undefined, setName: Dispatch<SetStateAction<string | undefined>>): [Repo | undefined, Dispatch<Repo | undefined>] {
+function useRepo (name: string | undefined, ): [Repo | undefined, Dispatch<SetStateAction<Repo | undefined>>, boolean] {
   const [repo, setRepo] = useState(null)
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     if (name) {
+      setLoading(true)
       fetch(BASE_URL + `/gh/repo/${name}`)
         .then(res => res.json())
         .then(res => setRepo({
@@ -67,15 +69,13 @@ function useRepo (name: string | undefined, setName: Dispatch<SetStateAction<str
           name: res.data.full_name,
           color: getRandomColor()
         }))
+        .finally(() => {
+          setLoading(false)
+        })
     }
   }, [])
 
-  const setRepoHook: Dispatch<Repo | undefined> = useCallback((repo) => {
-    setName(repo?.name)
-    setRepo(repo)
-  }, [setName])
-
-  return [repo, setRepoHook]
+  return [repo, setRepo, loading]
 }
 
 const dateRange = [null, null]
@@ -83,8 +83,23 @@ const dateRange = [null, null]
 export default function RepoCompare() {
   const {siteConfig} = useDocusaurusContext();
 
-  const [repo1, setRepo1] = useRepo(...useUrlSearchState('repo1', stringParam()))
-  const [repo2, setRepo2] = useRepo(...useUrlSearchState('repo2', stringParam()))
+  const [repo1Name, setRepo1Name] = useUrlSearchState('repo1', stringParam())
+  const [repo2Name, setRepo2Name] = useUrlSearchState('repo2', stringParam())
+
+  const [repo1, setRepo1, repo1Loading] = useRepo(repo1Name)
+  const [repo2, setRepo2, repo2Loading] = useRepo(repo2Name)
+
+  useEffect(() => {
+    if (!repo1Loading) {
+      setRepo1Name(repo1?.name)
+    }
+  }, [repo1, setRepo1Name, repo1Loading])
+
+  useEffect(() => {
+    if (!repo2Loading) {
+      setRepo2Name(repo2?.name)
+    }
+  }, [repo2, setRepo2Name, repo2Loading])
 
   const onRepo1Valid = useCallback((repo) => {
     if (repo?.name !== undefined && repo?.name === repo2?.name) {
