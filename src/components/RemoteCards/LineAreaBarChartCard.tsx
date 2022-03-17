@@ -139,6 +139,8 @@ export default function LineAreaBarChartCard(props: LineAreaBarChartProps) {
               return show ? data[yAxis.name] : '';
             }
           },
+          smooth: true,
+          showSymbol: false,
           emphasis: {
             focus: 'series'
           },
