@@ -1,6 +1,6 @@
 import React from "react";
 import style from '../../index.module.css'
-import CompareContext, {useCompareContext} from "../../context";
+import CompareContext, {useCompareContext} from "../../_context";
 
 interface SectionProps {
   title: React.ReactNode

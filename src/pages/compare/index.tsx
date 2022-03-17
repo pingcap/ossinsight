@@ -20,7 +20,7 @@ import useUrlSearchState, {stringParam} from "../../hooks/url-search-state";
 import ShareButtons from "../../components/ShareButtons";
 import BrowserOnly from "@docusaurus/core/lib/client/exports/BrowserOnly";
 import {BASE_URL} from "../../lib/request";
-import CompareContext from './context'
+import CompareContext from './_context'
 
 
 const allProvidedRepos = (repos: Repo[]) => {
@@ -35,7 +35,7 @@ const allReposProvided = (repos: Repo[]) => {
   }).length === repos.length;
 };
 
-const sectionsCtx = require.context('./sections', false, /\.tsx$/)
+const sectionsCtx = require.context('./_sections', false, /\.tsx$/)
 
 const MainContent = (props) => {
   return <main className={style.mainContent} style={{}}>
