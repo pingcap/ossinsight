@@ -1,5 +1,5 @@
 ---
-title: Getting Started with TiDB Cloud in 10 Minutes
+title: Use TiDB Cloud to Analyze GitHub Events in 10 Minutes
 ---
 
 [TiDB](https://docs.pingcap.com/tidb/stable/overview) is an open source distributed NewSQL database with horizontal scalability, high availability, and strong consistency. It can also deal with mixed OLTP and OLAP workloads at the same time by leveraging its hybrid transactional and analytical (HTAP) capability. 
@@ -8,12 +8,12 @@ title: Getting Started with TiDB Cloud in 10 Minutes
 
 In this tutorial, we will provide you with a piece of sample data of all GitHub events occurring on January 1, 2022, and walk you through on how to use TiDB Cloud to analyze this data in 10 minutes.  
 
-## 1. Sign up for a TiDB Cloud account (Free)
+## Sign up for a TiDB Cloud account (Free)
 
 1. Click [here](https://tidbcloud.com/signup) to sign up for a TiDB Cloud account free of charge. 
 2. [Log in](https://tidbcloud.com/?__hstc=86493575.35e9113e934f84907657eac98c81808d.1645076526216.1646808171218.1646883397864.20&__hssc=86493575.6.1646883397864&__hsfp=2077185778) to your account.
 
-## 2. Create a TiDB Developer Tier cluster (Free)
+## Create a TiDB Developer Tier cluster (Free)
 Once you register an account, you can create a free cluster with TiDB Developer Tier. 
 
 :::info
@@ -34,7 +34,7 @@ Your TiDB Cloud cluster will be created in approximately 5 to 10 minutes.
 The Developer Tier is **free** for 1 year.
 :::
 
-## 3. Import data to your TiDB Cloud cluster
+## Import data to your TiDB Cloud cluster
 
 ### Import the data
 Once your cluster is ready, you can start to import the sample data to your cluster. 
@@ -113,7 +113,7 @@ mysql> SELECT * FROM information_schema.tiflash_replica WHERE TABLE_SCHEMA = 'gh
 mysql>
 ```
 
-## 3. Analysis!
+## Analysis!
 
 After you finish all the steps above, you can start the analytical process. 
 
@@ -156,7 +156,7 @@ ORDER BY 2 DESC
 ```
 
 
-## 4. Mini Test
+## Mini Test
 Here is a small test for you to practice how to use TiDB Cloud to conduct analytics. 
 
 ### Q: Which is the most starred database repository on January 1, 2022?
