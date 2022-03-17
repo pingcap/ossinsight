@@ -1,24 +1,25 @@
 .mainWrapper {
     background-color: #f9fafc;
-    padding: 15px;
+    padding: 16px;
 }
 
 .mainHeader {
-    padding: 15px;
+    padding: 16px;
     border-bottom: 1px solid transparent;
     z-index: 999;
 }
 
 .mainContent {
-    padding: 15px;
+    padding: 16px;
 }
 
 .mainSection {
-    margin-bottom: 10px;
+    margin-bottom: 16px;
 }
 
 .page {
     max-width: 1200px;
+    width: 100%;
     margin: auto;
 }
 

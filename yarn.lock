@@ -2852,6 +2852,11 @@
   "resolved" "https://registry.npmmirror.com/@types/unist/download/@types/unist-2.0.6.tgz"
   "version" "2.0.6"
 
+"@types/webpack-env@^1.16.3":
+  "integrity" "sha512-9gtOPPkfyNoEqCQgx4qJKkuNm/x0R2hKR7fdl7zvTJyHnIisuE/LfvXOsYWL0o3qq6uiBnKZNNNzi3l0y/X+xw=="
+  "resolved" "https://registry.npmjs.org/@types/webpack-env/-/webpack-env-1.16.3.tgz"
+  "version" "1.16.3"
+
 "@types/ws@^8.2.2":
   "integrity" "sha512-NOn5eIcgWLOo6qW8AcuLZ7G8PycXu0xTxxkS6Q18VWFxgPUSOwV0pBj2a/4viNZVu25i7RIB7GttdkAIUUXOOg=="
   "resolved" "https://registry.npmmirror.com/@types/ws/download/@types/ws-8.2.2.tgz"
