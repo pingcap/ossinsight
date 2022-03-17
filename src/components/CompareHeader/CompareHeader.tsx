@@ -38,8 +38,6 @@ interface CompareHeaderProps {
   onRepo2Change: (repo: Repo | null) => void
   onRepo1Valid: (repo: Repo | null) => string | undefined
   onRepo2Valid: (repo: Repo | null) => string | undefined
-  dateRange: [Date | null, Date | null]
-  onDateRangeChange: (range: [Date | null, Date | null]) => void
 }
 
 function CompareHeader(props: CompareHeaderProps) {

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useMemo, useState} from 'react';
+import {useCallback, useMemo, useState} from 'react';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -7,6 +7,7 @@ import {getRandomColor} from "../../lib/color";
 import {Alert, debounce, Snackbar} from "@mui/material";
 import {createHttpClient} from "../../lib/request";
 import useSWR from "swr";
+import {UseAutocompleteProps} from "@mui/base/AutocompleteUnstyled/useAutocomplete";
 
 const httpClient = createHttpClient();
 
@@ -55,6 +56,23 @@ export default function RepoSelector({repo, label, defaultRepoName, onChange, on
     revalidateOnReconnect: false,
   })
 
+  const onAutoCompleteChange = useCallback((event, newValue: Repo) => {
+    const validMessage = onValid(newValue);
+
+    if (validMessage !== undefined) {
+      setTextFieldError(true);
+      setHelperText(validMessage);
+    } else {
+      onChange(newValue);
+    }
+  }, [onValid, onChange])
+
+  const onInputChange: UseAutocompleteProps<any, any, any, any>['onInputChange'] = useCallback(async (event, value, reason) => {
+    setHelperText(undefined);
+    setTextFieldError(false);
+    debouncedSetKeyword(value)
+  }, [debouncedSetKeyword])
+
   const errorMessage = useMemo(() => {
     const errMsg = error?.response?.data?.message || String(error);
     if (errMsg.indexOf('API rate limit exceeded') !== -1) {
@@ -72,21 +90,8 @@ export default function RepoSelector({repo, label, defaultRepoName, onChange, on
       options={options ?? []}
       loading={loading}
       value={repo}
-      onChange={(event, newValue: Repo) => {
-        const validMessage = onValid(newValue);
-
-        if (validMessage !== undefined) {
-          setTextFieldError(true);
-          setHelperText(validMessage);
-        } else {
-          onChange(newValue);
-        }
-      }}
-      onInputChange={async (event, value, reason) => {
-        setHelperText(undefined);
-        setTextFieldError(false);
-        debouncedSetKeyword(value)
-      }}
+      onChange={onAutoCompleteChange}
+      onInputChange={onInputChange}
       renderInput={(params) => (
         <TextField
           {...params}
