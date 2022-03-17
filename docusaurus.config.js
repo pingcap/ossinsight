@@ -71,7 +71,7 @@ const config = {
           },
           {to: '/compare', label: 'Compare Projects', position: 'left'},
           {to: '/blog', label: 'Blog', position: 'left'},
-          {to: '/blog/analyze-github-events-on-tidb-cloud-in-10-minutes', label: ' ⏱️ Try It Yourself', position: 'left'},
+          {to: '/blog/try-it-yourself/', label: ' ⏱️ Try It Yourself', position: 'left'},
           {to: '/blog/how-it-works', label: '▶️  How It Works', position: 'left'},
           {
             href: 'https://tidbcloud.com',
@@ -101,7 +101,7 @@ const config = {
               },
               {
                 label: 'Try it yourself',
-                to: '/blog/analyze-github-events-on-tidb-cloud-in-10-minutes',
+                to: '/blog/try-it-yourself/',
               },
               {
                 label: 'How It Works',
