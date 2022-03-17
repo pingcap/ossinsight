@@ -14,7 +14,7 @@ const config = {
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.png',
   organizationName: 'pingcap-inc', // Usually your GitHub org/user name.
-  projectName: 'gharchive.live', // Usually your repo name.
+  projectName: 'ossinsight', // Usually your repo name.
   scripts: [
   ],
   presets: [
@@ -30,13 +30,13 @@ const config = {
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
-          editUrl: 'https://github.com/pingcap-inc/gharchive.live/edit/main/',
+          editUrl: 'https://github.com/pingcap-inc/ossinsight/edit/main/',
           routeBasePath: '_',
         },
         blog: {
           showReadingTime: true,
           // Please change this to your repo.
-          editUrl: 'https://github.com/pingcap-inc/gharchive.live/edit/main/',
+          editUrl: 'https://github.com/pingcap-inc/ossinsight/edit/main/',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
@@ -84,7 +84,7 @@ const config = {
             position: 'left',
           },
           {
-            href: 'https://github.com/pingcap-inc/gharchive.live',
+            href: 'https://github.com/pingcap-inc/ossinsight',
             className: 'navbar-item-github',
             position: 'right',
           },
@@ -94,7 +94,7 @@ const config = {
         style: 'light',
         links: [
           {
-            title: 'GH Archive Live',
+            title: 'OSS Insight',
             items: [
               {
                 label: 'Blog',
