@@ -13,6 +13,7 @@ import useThemeContext from "@theme/hooks/useThemeContext";
 import {useTheme} from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import {formatNumber} from "../../../../lib/text";
+import CompareNumbers, {CompareNumbersContainer} from "../../../../components/RemoteCards/CompareNumbers";
 
 echarts.use([TitleComponent, LegendComponent, RadarChart, CanvasRenderer]);
 
@@ -23,10 +24,8 @@ export interface SomeNumbersProps {
 
 const httpClient = createHttpClient();
 
-const SomeNumbers = ({repos, queries}: SomeNumbersProps) => {
+const SomeNumbersPC = ({repos, queries}: SomeNumbersProps) => {
   const {isDarkTheme} = useThemeContext();
-  const theme = useTheme();
-  const isSmall = useMediaQuery(theme.breakpoints.down('sm'))
 
   const r1 = useNumberQueries(queries.map(query => query.query), repos[0])
   const r2 = useNumberQueries(queries.map(query => query.query), repos[1])
@@ -82,7 +81,7 @@ const SomeNumbers = ({repos, queries}: SomeNumbersProps) => {
         lazyUpdate={true}
         style={{
           height: 'auto',
-          aspectRatio: isSmall ? '2 / 1' : '4 / 1',
+          aspectRatio: '4 / 1',
           overflow: 'hidden'
         }}
         theme={isDarkTheme ? 'dark' : 'vintage'}
@@ -95,6 +94,27 @@ const SomeNumbers = ({repos, queries}: SomeNumbersProps) => {
       />}
     </BrowserOnly>
   )
+}
+
+const SomeNumbersMobile = ({ repos, queries}: SomeNumbersProps) => {
+  return (
+    <CompareNumbersContainer>
+      {queries.map(({title, query}) => (
+        <CompareNumbers key={query} title={title} query={query} repos={repos} />
+      ))}
+    </CompareNumbersContainer>
+  )
+}
+
+const SomeNumbers = ({ repos, queries}: SomeNumbersProps) => {
+  const theme = useTheme();
+  const isSmall = useMediaQuery(theme.breakpoints.down('sm'))
+
+  if (isSmall) {
+    return <SomeNumbersMobile repos={repos} queries={queries} />
+  } else {
+    return <SomeNumbersPC repos={repos} queries={queries} />
+  }
 }
 
 function useNumberQueries(queries: string[], repo: Repo | null): SWRResponse<number[]> {
