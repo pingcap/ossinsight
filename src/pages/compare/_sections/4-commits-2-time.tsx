@@ -8,7 +8,6 @@ import HeatMapChartCard from "../../../components/RemoteCards/HeatMapChartCard";
 import {getRandomColor} from "../../../lib/color";
 import React, {useCallback, useState} from "react";
 import Typography from "@mui/material/Typography";
-import TextCard from "../../../components/RemoteCards/TextCard";
 
 const zones: number[] = [
 ]
@@ -26,49 +25,23 @@ export default function () {
 
   return (
     <Section
-      title='title'
+      title='Heat Map of Commits Time'
       description={(
-        <TextCard height="auto">
-          <>
-            <Typography variant="h6" gutterBottom>
-              Commits Time Distribution
-            </Typography>
-            <Typography variant="body1">
-              Commits time distribution describes the number of push events of the repository in different
-              periods.
-            </Typography>
-            <ul>
-              <Typography variant="body1" component="li">The X-axis is 0 ~ 24 hours divided according to GMT(UTC+00:00) time zone</Typography>
-              <Typography variant="body1" component="li">The Y-axis is day of week, 0 means Sunday, 1 means Monday, and so on...</Typography>
-            </ul>
-            <Typography variant="body1">
-              We use the <a href="https://en.wikipedia.org/wiki/Heat_map">heatmap</a> to indicate the frequency of the
-              code <a href="https://docs.github.com/en/developers/webhooks-and-events/events/github-event-types#pushevent">PUSH</a> event on this time node.
-              By analyzing the main distribution area of the large circle, we can roughly learn that the open-source
-              repository is mainly the developers in that area in activities.
-            </Typography>
-            <ul>
-              <Typography variant="body1" component="li">
-                If the hot spots are mainly concentrated on the Y-axis working day, then this open-source repository
-                is likely to be an open-source project whose main contribution comes from one or two companies.
-              </Typography>
-              <Typography variant="body1" component="li">
-                If the hot spots are mainly concentrated on the X-axis 2 - 14h (corresponding to 10 to 22h of GMT+8),
-                then developers of this open-source repository may be mainly in the eastern hemisphere.
-              </Typography>
-              <Typography variant="body1" component="li">
-                If the hot spots are concentrated on the X-axis 14h - 2h (+1) (corresponding to 2 to 18h of GMT-8),
-                then developers of this open-source repository may be mainly in the western hemisphere.
-              </Typography>
-            </ul>
-          </>
-        </TextCard>
+        <>
+          <Typography variant="body1">
+            The <b>Heat Maps of Commits Time</b> display the number of push events occurring at a particular point of time. The Y-axis represents seven days a week, and the X-axis represents 24 hours a day according to the Universal Time Coordinated (UTC). The lighter color in this heat map indicates that less push events occur at a particular point of time. On the contrary, the darker color indicates more push events occurring.
+          </Typography>
+          <br />
+          <Typography variant="body1">
+            You can learn from this heat map what time is the busiest for contributors, and which country or regions most contributors are located.
+          </Typography>
+        </>
       )}
     >
       {({ repo1, repo2, allProvidedRepos, allReposProvided, dateRange }) => (
         <Grid container>
           <Grid xs={12}>
-            <Box sx={{ minWidth: 120, textAlign: 'center' }}>
+            <Box sx={{ minWidth: 120 }}>
               <FormControl size='small'>
                 <InputLabel id="zone-select-label">Timezone (UTC)</InputLabel>
                 <Select
@@ -78,6 +51,7 @@ export default function () {
                   label="Timezone (UTC)"
                   onChange={onZoneChange}
                   sx={{ minWidth: 120 }}
+                  variant='standard'
                 >
                   {zones.map((zone) => (
                     <MenuItem key={zone} value={zone}>

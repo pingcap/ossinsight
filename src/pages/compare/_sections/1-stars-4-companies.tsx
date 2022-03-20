@@ -4,7 +4,10 @@ import React from "react";
 
 export default function () {
   return (
-    <Section title='title' description='desc'>
+    <Section
+      title='Top 50 company of stargazers'
+      description='The pie charts describe the major companies of stargazers for each project.'
+    >
       {({repo1, repo2, dateRange, allReposProvided}) => (
         <PieChartCompareCard
           title="Top 50 company of stargazers"

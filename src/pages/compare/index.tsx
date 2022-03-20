@@ -21,6 +21,8 @@ import ShareButtons from "../../components/ShareButtons";
 import BrowserOnly from "@docusaurus/core/lib/client/exports/BrowserOnly";
 import {BASE_URL} from "../../lib/request";
 import CompareContext from './_context'
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
 
 
 const allProvidedRepos = (repos: Repo[]) => {
@@ -139,7 +141,15 @@ export default function RepoCompare() {
             onRepo2Valid={onRepo2Valid}
           />
           <MainContent context={{repo1, repo2, dateRange, allReposProvided, allProvidedRepos}}>
-            {sections}
+            <Typography variant='h3' component='h1'>
+              Comparing OSS
+            </Typography>
+            <Typography variant='body1'>
+              Here, you can compare any two GitHub projects regarding their stars, pull requests, stargazers' locations and companies, issues, commits, and some other metrics.
+            </Typography>
+            <Box sx={{ mt: 4 }}>
+              {sections}
+            </Box>
           </MainContent>
         </ThemeAdaptor>
       </LocalizationProvider>

@@ -9,6 +9,7 @@ import CircularProgress from '@mui/material/CircularProgress'
 import Tooltip from '@mui/material/Tooltip'
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
+import Box from "@mui/material/Box";
 
 const httpClient = createHttpClient();
 
@@ -19,16 +20,15 @@ export interface CompareNumbersProps {
   repos: [Repo | null, Repo | null]
 }
 
-export function CompareNumbersContainer({ title, children }) {
+export function CompareNumbersContainer({ children }) {
   return (
-    <Card sx={{ maxWidth: 'max-content', mx: 'auto', py: 2, my: 2 }} elevation={0} >
-      <CardHeader title={title} titleTypographyProps={{component: 'h2', variant: 'h4', align: 'center'}} />
+    <Box sx={{ maxWidth: 'max-content', mx: 'auto', py: 2, my: 2 }} >
       <div className={styles.compareNumbersContainer}>
         <div className={styles.compareNumbersContainerBody}>
           {children}
         </div>
       </div>
-    </Card>
+    </Box>
   )
 }
 

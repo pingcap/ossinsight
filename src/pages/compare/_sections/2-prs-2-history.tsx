@@ -5,7 +5,10 @@ import React from "react";
 
 export default function () {
   return (
-    <Section title='title' description='desc'>
+    <Section
+      title='PR History'
+      description='This chart displays the accumulated number of PRs the two projects gained respectively each year since 2011.'
+    >
       {({ repo1, repo2, dateRange, allReposProvided, allProvidedRepos }) => (
         <LineAreaBarChartCard
           title={'Pull Request History'}

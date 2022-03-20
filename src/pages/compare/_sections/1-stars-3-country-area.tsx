@@ -4,7 +4,10 @@ import React from "react";
 
 export default function () {
   return (
-    <Section title='title' description='desc'>
+    <Section
+      title='Countries/Regions of Stargazers'
+      description='This map shows you where the stargazers of each project come from and which countries or regions like the project the best.'
+    >
       {({ repo1, repo2, dateRange, allReposProvided }) => (
         <WorldMapChartCompareCard
           title="The country / area of stargazers"
