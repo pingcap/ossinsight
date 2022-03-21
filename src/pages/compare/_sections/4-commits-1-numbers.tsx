@@ -12,7 +12,7 @@ export default function () {
   return (
     <Section
       title='Commits'
-      description='The charts below compare the two projects in regard to the total number of commits, committers, and pushes since 2011.'
+      description='The chart below compare the two projects in regard to the total number of commits, committers, and pushes since 2011.'
     >
       {({repo1, repo2}) => (
         <SomeNumbers repos={[repo1, repo2]} queries={COMMIT_NUMBERS} />

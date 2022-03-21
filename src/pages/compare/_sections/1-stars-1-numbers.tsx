@@ -12,7 +12,7 @@ export default function () {
   return (
     <Section
       title='Stars'
-      description='The charts below display the total number of stars, the average and the maximum number of stars per week gained by the two projects respectively since 2011. '
+      description='The chart below display the total number of stars, the average and the maximum number of stars per week gained by the two projects respectively since 2011. '
     >
       {({repo1, repo2}) => (
         <SomeNumbers repos={[repo1, repo2]} queries={STAR_NUMBERS} />
