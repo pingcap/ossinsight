@@ -120,6 +120,15 @@ function BlogPostItem(props) {
         <MDXProvider components={MDXComponents}>{children}</MDXProvider>
       </div>
 
+      <BrowserOnly>
+        {() => isBlogPostPage ? (
+          <>
+            <br />
+            <ShareButtons title={`${title} | OSSInsight`} hashtags={frontMatter.keywords} />
+          </>
+        ) : undefined}
+      </BrowserOnly>
+
       {(tagsExists || truncated) && (
         <footer
           className={clsx('row docusaurus-mt-lg', {

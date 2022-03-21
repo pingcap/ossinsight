@@ -90,6 +90,10 @@ export default function DocItem(props) {
                 {shouldAddTitle && <MainHeading>{title}</MainHeading>}
 
                 <DocContent />
+
+                <BrowserOnly>
+                  {() => <ShareButtons title={`${title} | OSSInsight`} hashtags={keywords} />}
+                </BrowserOnly>
               </div>
 
               <DocItemFooter {...props} />
