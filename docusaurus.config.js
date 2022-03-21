@@ -53,7 +53,7 @@ const config = {
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       image: 'img/gharchive-title-img.png',
-      metadata: [{name: 'twitter:card', content: 'summary_large_image'}],
+      metadata: [{name: 'twitter:card', content: 'summary_large_image'}, {name: 'keywords', content: 'tidb, gharchive'}],
       hideableSidebar: true,
       colorMode: {
         defaultMode: 'dark',
