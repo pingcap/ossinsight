@@ -36,7 +36,7 @@ export default function () {
           }}
           yAxis={{
             type: "value",
-            name: "total"
+            name: "month_pr_count"
           }}
           height="500px"
         />
