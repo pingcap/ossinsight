@@ -5,6 +5,7 @@ import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import useScrollTrigger from '@mui/material/useScrollTrigger';
 import {useTheme} from "@mui/material/styles";
+import Box from "@mui/material/Box";
 
 interface ElevationScrollProps {
   children: React.ReactElement
@@ -45,14 +46,18 @@ function CompareHeader(props: CompareHeaderProps) {
   const fullWidth = theme.breakpoints.up(1201)
   return (
     <ElevationScroll>
-      <AppBar color='inherit' position='sticky' sx={{ [fullWidth]: { borderRadius: 1 }, my: 2, top: 'var(--ifm-navbar-height)' }} enableColorOnDark>
+      <AppBar color='default' position='sticky' sx={{ [fullWidth]: { borderRadius: 1 }, my: 2, top: 'var(--ifm-navbar-height)' }} enableColorOnDark>
         <Toolbar>
           <Grid container>
             <Grid item xs={5}>
               <RepoSelector label="Repo Name 1" defaultRepoName="pingcap/tidb" repo={props.repo1}
                             onChange={props.onRepo1Change} onValid={props.onRepo1Valid}/>
             </Grid>
-            <Grid item xs={2} zeroMinWidth/>
+            <Grid item xs={2}>
+              <Box sx={{ borderRadius: '4px', maxWidth: 'min-content', margin: 'auto', px: 2, backgroundColor: 'text.primary', color: 'background.default' }}>
+                VS
+              </Box>
+            </Grid>
             <Grid item xs={5}>
               <RepoSelector label="Repo Name 2" defaultRepoName="tikv/tikv" repo={props.repo2}
                             onChange={props.onRepo2Change} onValid={props.onRepo2Valid}/>

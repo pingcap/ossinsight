@@ -3,20 +3,20 @@ import React from "react";
 import SomeNumbers, {SomeNumbersProps} from "./common/SomeNumbers";
 
 const PULL_REQUEST_NUMBERS: SomeNumbersProps['queries'] = [
-  {title: 'Pull requests', query: "pull-requests-total"},
-  {title: 'PR creators', query: "pull-request-creators-total"},
-  {title: 'Pull request reviews', query: "pull-request-reviews-total"},
-  {title: 'Pull request reviewers', query: "pull-request-reviewers-total"},
+  {title: 'Total PRs', query: "pull-requests-total"},
+  {title: 'Total PR creators', query: "pull-request-creators-total"},
+  {title: 'Total PR reviews', query: "pull-request-reviews-total"},
+  {title: 'Total PR reviewers', query: "pull-request-reviewers-total"},
 ]
 
 export default function () {
   return (
     <Section
-      title={'title'}
-      description={'desc'}
+      title='PRs'
+      description='The charts below compare the two projects in regard to the total number of pull requests (PRs), PR creators, PR reviews, and PR reviewers since 2011.'
     >
       {({repo1, repo2}) => (
-        <SomeNumbers title="Pull Request" repos={[repo1, repo2]} queries={PULL_REQUEST_NUMBERS} />
+        <SomeNumbers repos={[repo1, repo2]} queries={PULL_REQUEST_NUMBERS} />
       )}
     </Section>
   )

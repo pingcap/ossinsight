@@ -3,19 +3,19 @@ import React from "react";
 import SomeNumbers, {SomeNumbersProps} from "./common/SomeNumbers";
 
 const COMMIT_NUMBERS: SomeNumbersProps['queries'] = [
-  {title: 'Commits', query: "commits-total"},
-  {title: 'Committers', query: 'committers-total'},
-  {title: 'Pushes', query: 'pushes-total'},
+  {title: 'Total commits', query: "commits-total"},
+  {title: 'Total committers', query: 'committers-total'},
+  {title: 'Total pushes', query: 'pushes-total'},
 ]
 
 export default function () {
   return (
     <Section
-      title={'title'}
-      description={'desc'}
+      title='Commits'
+      description='The charts below compare the two projects in regard to the total number of commits, committers, and pushes since 2011.'
     >
       {({repo1, repo2}) => (
-        <SomeNumbers title="Commit" repos={[repo1, repo2]} queries={COMMIT_NUMBERS} />
+        <SomeNumbers repos={[repo1, repo2]} queries={COMMIT_NUMBERS} />
       )}
     </Section>
   )

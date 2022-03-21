@@ -6,6 +6,7 @@ import basicStyle from "./basic.module.css";
 import {DebugInfoModel} from "../RemoteCharts/DebugInfoModel";
 import {Queries} from "../RemoteCharts/queries";
 import {RemoteData} from "../RemoteCharts/hook";
+import Box from "@mui/material/Box";
 
 export type QueryParams = {
   [key: string]: any;
@@ -56,7 +57,7 @@ export default function CompareCard({
   }
 
   return <>
-    <Card className={basicStyle.basicCard} elevation={0} sx={{ mt: 2 }}>
+    <Box className={basicStyle.basicCard} sx={{ mt: 2 }}>
       {
         (title && !hideTitle) && <Stack className={basicStyle.basicCardHeader} direction="row" justifyContent="center" alignItems="center">
           <a
@@ -84,7 +85,7 @@ export default function CompareCard({
           </Stack> :
           children
       }
-    </Card>
+    </Box>
     <DebugInfoModel query={query} data={datas} open={showDebugModel} onClose={handleCloseDebugModel} />
   </>
 }
