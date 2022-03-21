@@ -2,13 +2,8 @@
   "cacheHours": 1,
   "params": [
     {
-      "name": "repoId1",
+      "name": "repoId",
       "replaces": "41986369",
-      "pattern": "^[1-9]\\d*$"
-    },
-    {
-      "name": "repoId2",
-      "replaces": "48833910",
       "pattern": "^[1-9]\\d*$"
     }
   ]

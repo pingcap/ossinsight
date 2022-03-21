@@ -7,7 +7,7 @@ WITH prs_with_latest_repo_name AS (
     FROM github_events
     USE INDEX(index_github_events_on_repo_id)
     WHERE
-        type = 'PullRequestEvent' and repo_id in (41986369, 48833910) and action = 'opened'
+        type = 'PullRequestEvent' and repo_id = 41986369 and action = 'opened'
 ), repo_month_group AS (
     SELECT
         event_month,

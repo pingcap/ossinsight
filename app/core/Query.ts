@@ -5,7 +5,8 @@ import type { QuerySchema } from '../../params.schema'
 import {MysqlQueryExecutor} from "./MysqlQueryExecutor";
 import Cache, {CachedData} from "./Cache";
 import {RedisClientType, RedisDefaultModules, RedisModules, RedisScripts} from "redis";
-import consola, {Consola} from "consola";
+import consola from "consola";
+import {PoolConnection} from "mysql2";
 
 const MAX_CACHE_TIME = DateTime.fromISO('2099-12-31T00:00:00')
 
@@ -17,6 +18,14 @@ export class BadParamsError extends Error {
   }
 }
 
+export class SQLExecuteError extends Error {
+  readonly sql: string
+  constructor(public readonly name: string, sql: string) {
+    super(sql);
+    this.sql = sql
+  }
+}
+
 export class QueryTemplateNotFoundError extends Error {
   readonly msg: string
   constructor(message: string) {
@@ -25,7 +34,7 @@ export class QueryTemplateNotFoundError extends Error {
   }
 }
 
-function buildParams(template: string, querySchema: QuerySchema, values: Record<string, string>) {
+export function buildParams(template: string, querySchema: QuerySchema, values: Record<string, string>) {
   for (let {name, replaces, template: paramTemplate, default: defaultValue, pattern} of querySchema.params) {
     const value = values[name] ?? defaultValue
 
@@ -97,28 +106,35 @@ export default class Query {
     return buildParams(this.template!, this.queryDef!, params)
   }
 
-  async run <T> (params: Record<string, any>, refreshCache: boolean = false): Promise<CachedData<T>> {
+  async run <T> (params: Record<string, any>, refreshCache: boolean = false, conn?: PoolConnection): Promise<CachedData<T>> {
     const sql = await this.buildSql(params)
-    const key = `query:${this.name}:${this.queryDef!.params.map(p => params[p.name]).join('_')}`;
+    const key = `query:${this.queryDef!.params.map(p => params[p.name]).join('_')}`;
     const { cacheHours = -1, refreshHours = -1, onlyFromCache = false } = this.queryDef!;
     const cache = new Cache<T>(this.redisClient, key, cacheHours, refreshHours, onlyFromCache, refreshCache);
 
     return cache.load(async () => {
-      const start = DateTime.now()
       try {
-        const data = await this.executor.execute(sql)
-        const now = DateTime.now()
+        const start = DateTime.now()
+
+        let data;
+        if (conn) {
+          data = await this.executor.executeWithConn(sql, conn)
+        } else {
+          data = await this.executor.execute(sql)
+        }
+
+        const end = DateTime.now()
         return {
           params: params,
           requestedAt: start.toISO(),
-          spent: now.diff(start).as('seconds'),
+          spent: end.diff(start).as('seconds'),
           sql,
-          expiresAt: cacheHours === -1 ? MAX_CACHE_TIME : now.plus({hours: cacheHours}),
+          expiresAt: cacheHours === -1 ? MAX_CACHE_TIME : end.plus({hours: cacheHours}),
           data: data as any
         }
       } catch (e) {
         if (e) {
-          (e as any).rawSql = sql
+          (e as any).sql = sql
         }
         throw e
       }

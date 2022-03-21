@@ -1,10 +1,39 @@
 import Router from "koa-router";
-import Query from "./core/Query";
+import Query, {SQLExecuteError} from "./core/Query";
 import {MysqlQueryExecutor} from "./core/MysqlQueryExecutor";
 import {DefaultState} from "koa";
 import type {ContextExtends} from "../index";
 import GhExecutor from "./core/GhExecutor";
 import {createClient} from "redis";
+
+const COMPARE_QUERIES = [
+  'pull-request-creators-map',
+  'stars-total',
+  'stars-map',
+  'stars-top-50-company',
+  'stars-max-by-week',
+  'stars-map',
+  'stars-average-by-week',
+  'pushes-total',
+  'pushers-total',
+  'pull-requests-total',
+  'pull-request-reviews-total',
+  'pull-request-reviewers-total',
+  'pull-request-creators-total',
+  'pull-request-creators-top-50-company',
+  'issues-total',
+  'issue-creators-total',
+  'issue-comments-total',
+  'issue-commenters-total',
+  'forkers-total',
+  'committers-total',
+  'commits-total',
+  'commit-commenters-total',
+  'commits-time-distribution',
+  'pull-requests-history',
+  'pull-request-creators-per-month',
+  'stars-history',
+];
 
 export default async function server(router: Router<DefaultState, ContextExtends>) {
 
@@ -27,8 +56,8 @@ export default async function server(router: Router<DefaultState, ContextExtends
   const ghExecutor = new GhExecutor(tokens, redisClient)
 
   router.get('/q/:query', async ctx => {
-    const query = new Query(ctx.params.query, redisClient, executor)
     try {
+      const query = new Query(ctx.params.query, redisClient, executor)
       const res = await query.run(ctx.query)
       ctx.response.status = 200
       ctx.response.body = res
@@ -36,6 +65,47 @@ export default async function server(router: Router<DefaultState, ContextExtends
       ctx.logger.error('Failed to request %s: ', ctx.request.originalUrl, e)
       ctx.response.status = 500
       ctx.response.body = e
+    }
+  })
+
+  router.get('/qc', async ctx => {
+    const conn = await executor.getConnection();
+
+    // If the queryNames parameter is provided, the query that needs to be queried is filtered.
+    let queryNames = COMPARE_QUERIES;
+    const needsQueryNames = ctx.query.queryNames;
+    if (Array.isArray(needsQueryNames)) {
+      queryNames = COMPARE_QUERIES.filter((queryName) => {
+        return needsQueryNames.find((needQueryName) => {
+          return needQueryName === queryName;
+        }) !== undefined
+      })
+    }
+
+    try {
+      const resultMap: Record<string, any> = {};
+
+      for (let queryName of queryNames) {
+        const query = new Query(queryName, redisClient, executor)
+        try {
+          resultMap[queryName] = await query.run(ctx.query)
+        } catch (err) {
+          ctx.logger.error('Failed to query for %s: ', queryName, err)
+          resultMap[queryName] = {
+            msg: `Failed to query for ${queryName}.`,
+            rawSQL: (err as SQLExecuteError).sql
+          }
+        }
+      }
+
+      ctx.response.status = 200
+      ctx.response.body = resultMap
+    } catch (e) {
+      ctx.logger.error('Failed to request %s: ', ctx.request.originalUrl, e)
+      ctx.response.status = 500
+      ctx.response.body = e
+    } finally {
+      conn.release();
     }
   })
 
