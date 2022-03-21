@@ -20,6 +20,8 @@ export default function () {
             repoId: repo2?.id,
             dateRange: dateRange
           }}
+          name1={repo1.name}
+          name2={repo2.name}
           shouldLoad={allReposProvided([repo1, repo2])}
           noLoadReason="Need select repo."
           series={[{}]}
