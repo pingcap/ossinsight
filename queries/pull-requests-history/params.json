@@ -2,14 +2,14 @@
   "cacheHours": 1,
   "params": [
     {
-      "name": "repoName1",
-      "replaces": "pingcap/tidb",
-      "pattern": "[a-zA-Z0-9][a-zA-Z0-9-]{0,38}/[a-zA-Z0-9-_]{1,100}"
+      "name": "repoId1",
+      "replaces": "41986369",
+      "pattern": "^[1-9]\\d*$"
     },
     {
-      "name": "repoName2",
-      "replaces": "tikv/tikv",
-      "pattern": "[a-zA-Z0-9][a-zA-Z0-9-]{0,38}/[a-zA-Z0-9-_]{1,100}"
+      "name": "repoId2",
+      "replaces": "48833910",
+      "pattern": "^[1-9]\\d*$"
     }
   ]
 }

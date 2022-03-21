@@ -2,6 +2,14 @@ import {DateTime} from 'luxon'
 import consola from "consola";
 import {RedisClientType, RedisDefaultModules, RedisModules, RedisScripts} from "redis";
 
+export class NeedPrefetchError extends Error {
+  readonly msg: string
+  constructor(message: string) {
+    super(message);
+    this.msg = message
+  }
+}
+
 export interface CachedData<T> {
   expiresAt: DateTime
   data: T
@@ -70,7 +78,7 @@ export default class Cache<T> {
       logger.debug(`No hit cache of ${this.key}.`);
 
       if (this.onlyFromCache && !this.refreshCache) {
-        throw new Error(`Failed to get data, query ${this.key} can only be executed in advance.`)
+        throw new NeedPrefetchError(`Failed to get data, query ${this.key} can only be executed in advance.`)
       }
 
       logger.info(`Do query for key: ${this.key}.`);

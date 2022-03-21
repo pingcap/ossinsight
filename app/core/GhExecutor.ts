@@ -99,6 +99,7 @@ export default class GhExecutor {
                     codeCount
                     nodes {
                         ...on Repository {
+                            databaseId
                             nameWithOwner
                         }
                     }
@@ -109,7 +110,8 @@ export default class GhExecutor {
 
         const data: any = await octokit.graphql(query, variables)
         data.search.nodes.forEach((repo: any) => formattedData.push({
-          fullName: repo.nameWithOwner
+          id: repo.databaseId,
+          fullName: repo.nameWithOwner,
         }));
 
         const {value} = Object.getOwnPropertyDescriptor(octokit, SYMBOL_TOKEN)!

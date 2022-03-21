@@ -5,12 +5,21 @@ import type { QuerySchema } from '../../params.schema'
 import {MysqlQueryExecutor} from "./MysqlQueryExecutor";
 import Cache, {CachedData} from "./Cache";
 import {RedisClientType, RedisDefaultModules, RedisModules, RedisScripts} from "redis";
+import consola, {Consola} from "consola";
 
 const MAX_CACHE_TIME = DateTime.fromISO('2099-12-31T00:00:00')
 
 export class BadParamsError extends Error {
   readonly msg: string
   constructor(public readonly name: string, message: string) {
+    super(message);
+    this.msg = message
+  }
+}
+
+export class QueryTemplateNotFoundError extends Error {
+  readonly msg: string
+  constructor(message: string) {
     super(message);
     this.msg = message
   }
@@ -49,6 +58,8 @@ export interface QueryExecutor<T> {
   execute (sql: string): Promise<T>
 }
 
+const logger = consola.withTag('query')
+
 export default class Query {
 
   public readonly path: string
@@ -70,8 +81,9 @@ export default class Query {
         this.template = await readFile(templateFilePath, {encoding: "utf-8"})
         this.queryDef = JSON.parse(await readFile(paramsFilePath, {encoding: 'utf-8'})) as QuerySchema
         resolve(true)
-      } catch (e) {
-        reject(e)
+      } catch (err) {
+        logger.log('Failed to load query template file: ', err)
+        reject(new QueryTemplateNotFoundError('Failed to load query template file.'))
       }
     })
   }

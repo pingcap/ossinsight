@@ -33,7 +33,7 @@ export default async function server(router: Router<DefaultState, ContextExtends
       ctx.response.status = 200
       ctx.response.body = res
     } catch (e) {
-      ctx.logger.error('request failed %s', ctx.request.originalUrl, e)
+      ctx.logger.error('Failed to request %s: ', ctx.request.originalUrl, e)
       ctx.response.status = 500
       ctx.response.body = e
     }
