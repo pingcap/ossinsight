@@ -81,7 +81,7 @@ const config = {
           {
             href: 'https://tidbcloud.com',
             label: 'TiDB Cloud',
-            position: 'left',
+            position: 'right',
           },
           {
             href: 'https://github.com/pingcap-inc/ossinsight',
