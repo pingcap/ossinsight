@@ -47,8 +47,8 @@ export default function WorldMapChartCompareCard(props: WorldMapChartCompareCard
   } = props;
   const theme = useTheme();
   const isSmall = useMediaQuery(theme.breakpoints.down('md'))
-  const req1 = useRemoteData(queryName, params1, true, params1 && shouldLoad);
-  const req2 = useRemoteData(queryName, params2, true, params2 && shouldLoad);
+  const req1 = useRemoteData(queryName, params1, true, !!params1.repoId);
+  const req2 = useRemoteData(queryName, params2, true, !!params2.repoId);
   const {isDarkTheme} = useThemeContext();
 
   const [data1, data2] = useMemo(() => {
@@ -122,12 +122,11 @@ export default function WorldMapChartCompareCard(props: WorldMapChartCompareCard
     }
   }, [data1, data2, isDarkTheme, isSmall])
 
-  return <CompareCard {...props} loading={loading} error={error} query={queryName} datas={[req1.data, req2.data]}>
+  return <CompareCard {...props} shouldLoad={!!params1.repoId || !!params2.repoId} loading={loading} error={error} query={queryName} datas={[req1.data, req2.data]}>
     <BrowserOnly>
       {() => (
         <ReactECharts
           option={options}
-          notMerge={true}
           lazyUpdate={true}
           style={{
             width: '100%',
