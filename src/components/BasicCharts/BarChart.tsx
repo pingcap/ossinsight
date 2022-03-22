@@ -64,11 +64,6 @@ export default function BarChart<T>({seriesName = 'Count', data, loading = false
                 if (value.indexOf('/') < 0) {
                   return value
                 }
-
-                if (value.length < 30) {
-                  return value
-                }
-
                 return value.split('/')[1];
               case 'owner':
               case 'lang':
