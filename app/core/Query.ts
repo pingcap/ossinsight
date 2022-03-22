@@ -108,7 +108,7 @@ export default class Query {
 
   async run <T> (params: Record<string, any>, refreshCache: boolean = false, conn?: PoolConnection): Promise<CachedData<T>> {
     const sql = await this.buildSql(params)
-    const key = `query:${this.queryDef!.params.map(p => params[p.name]).join('_')}`;
+    const key = `query:${this.name}:${this.queryDef!.params.map(p => params[p.name]).join('_')}`;
     const { cacheHours = -1, refreshHours = -1, onlyFromCache = false } = this.queryDef!;
     const cache = new Cache<T>(this.redisClient, key, cacheHours, refreshHours, onlyFromCache, refreshCache);
 
