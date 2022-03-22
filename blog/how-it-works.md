@@ -1,11 +1,13 @@
 ---
-title: ▶️  How it works
+title: ▶️  Data Preparation for Analytics
 ---
 
-The Github Event data is obtained from [GH Archive](https://www.gharchive.org/), which provides the full github events data from 2011 to 2022, with a total volume of more than 4 billion.
-We download the json file provided by GH Archive, convert it into csv format through script, and finally load it into the TiDB cluster in parallel through [tidb-lightning](https://docs.pingcap.com/tidb/stable/tidb-lightning-overview).
+All the data we use here on this website sources from [GH Archive](https://www.gharchive.org/), a non-profit project that records and archives all GitHub events data since 2011. The total data volume archived by GH Archive can be up to 4 billion rows. We download the `json file` on GH Archive and convert it into csv format via Script, and finally load it into the TiDB cluster in parallel through [tidb-lightning](https://docs.pingcap.com/tidb/stable/tidb-lightning-overview).
 
-Prepare the CSV format for lightning:
+In this post, we will explain step by step how we conduct this process. 
+
+
+1. Prepare the data in csv format for TiDB lighting. 
 
 ```
 ├── gharchive_dev.github_events.000000000000.csv
@@ -24,7 +26,7 @@ Prepare the CSV format for lightning:
 ├── gharchive_dev.github_events.000000000013.csv
 ```
 
-Lightning Configuration Example:
+2. Configure the TiDB Lightning as follows.
 
 ```
 cat tidb-lightning.toml
@@ -59,13 +61,13 @@ region-concurrency = 32
 meta-schema-name = "gharchive_meta"
 ```
 
-Load into TiDB cluster:
+3. Load the data into the TiDB cluster. 
 
 ```bash
 nohup tidb-lightning -config ./tidb-lightning.toml > nohup.out
 ```
 
-Since the json data provided by GH Archive is unstructured, we process the github events data into structured ones:
+4. Convert the unstructured `json file` provided by GH Archive into structured data. 
 
 ```sql
 gharchive_dev> desc github_events;
@@ -106,28 +108,7 @@ gharchive_dev> desc github_events;
 +--------------------+--------------+------+-----+---------+-------+
 ```
 
-In addition to the full amount of github events data, we also extracted data from popular fields for further analysis, such as database fields, front-end framework fields, programming language fields, etc. If you find any missing repo, you can submit PR [here](https://github.com/hooopo/gharchive/tree/main/meta/repos)
-
-All tables:
-
-```sql
-gharchive_dev> show tables;
-+-----------------------------+
-| Tables_in_gharchive_dev     |
-+-----------------------------+
-| cn_repos                    |
-| css_framework_repos         |
-| db_repos                    |
-| github_events               |
-| js_framework_repos          |
-| nocode_repos                |
-| programming_language_repos  |
-| static_site_generator_repos |
-| web_framework_repos         |
-+-----------------------------+
-```
-
-With subdivided repo data, we can easily analyze and explore repo in a certain field through SQL JOIN, such as the ranking of Top 10 JavaScript Framework Stars in 2021:
+5. With structured data at hand, we can start to make further analysis with TiDB Cloud. Execute SQL commands to generate analytical results. For example, you can execute SQL commands below to output the top 10 most starred JavaScript framework repos in 2021.
 
 ```sql
   SELECT js.name, count(*) as stars 
@@ -153,4 +134,23 @@ ORDER BY 2 DESC
 +-------------------+-------+
 ```
 
+We have analyzed all the GitHub projects regarding databases, JavaScripe frameworks, programming languages, web frameworks, and low-code development tools, and provided valuable insights in 2021, in real time, and custom insights. If the repository you care about is not included here, you're welcome to submit your PR [here](https://github.com/hooopo/gharchive/tree/main/meta/repos). If you want to gain more insights into other areas, you can try TiDB Cloud by yourselves with this [10 minute tutorial](https://ossinsight.io/blog/try-it-yourself/). 
 
+Below are the areas of GitHub projects we have analyzed. 
+
+```sql
+gharchive_dev> show tables;
++-----------------------------+
+| Tables_in_gharchive_dev     |
++-----------------------------+
+| cn_repos                    |
+| css_framework_repos         |
+| db_repos                    |
+| github_events               |
+| js_framework_repos          |
+| nocode_repos                |
+| programming_language_repos  |
+| static_site_generator_repos |
+| web_framework_repos         |
++-----------------------------+
+```
