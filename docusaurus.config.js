@@ -66,6 +66,7 @@ const config = {
           alt: 'OSS Insight',
           src: 'img/logo.svg',
         },
+        style: 'dark',
         items: [
           {to: '/blog/about', label: 'About', position: 'left'},
           {
