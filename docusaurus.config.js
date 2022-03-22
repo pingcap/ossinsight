@@ -13,7 +13,7 @@ const config = {
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.png',
-  organizationName: 'pingcap-inc', // Usually your GitHub org/user name.
+  organizationName: 'pingcap', // Usually your GitHub org/user name.
   projectName: 'ossinsight', // Usually your repo name.
   scripts: [
   ],
@@ -30,13 +30,13 @@ const config = {
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
-          editUrl: 'https://github.com/pingcap-inc/ossinsight/edit/main/',
+          editUrl: 'https://github.com/pingcap/ossinsight/edit/main/',
           routeBasePath: '_',
         },
         blog: {
           showReadingTime: true,
           // Please change this to your repo.
-          editUrl: 'https://github.com/pingcap-inc/ossinsight/edit/main/',
+          editUrl: 'https://github.com/pingcap/ossinsight/edit/main/',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
@@ -84,7 +84,7 @@ const config = {
             position: 'right',
           },
           {
-            href: 'https://github.com/pingcap-inc/ossinsight',
+            href: 'https://github.com/pingcap/ossinsight',
             className: 'navbar-item-github',
             position: 'right',
           },
@@ -165,7 +165,7 @@ const config = {
               },
               {
                 label: 'Github',
-                href: 'https://github.com/pingcap-inc/gharchive.live',
+                href: 'https://github.com/pingcap/ossinsight',
               },
               {
                 label: 'Twitter',
