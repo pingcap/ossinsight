@@ -74,7 +74,7 @@ const config = {
             position: 'left',
             label: 'Insight',
           },
-          {to: '/compare', label: '🔨 Compare Projects', position: 'left'},
+          {to: '/compare', label: '🔧 Compare Projects', position: 'left'},
           {to: '/blog', label: 'Blog', position: 'left'},
           {to: '/blog/try-it-yourself/', label: ' ⏱️ Try It Yourself', position: 'left'},
           {to: '/blog/how-it-works', label: '▶️  How It Works', position: 'left'},
