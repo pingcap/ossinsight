@@ -21,10 +21,10 @@ export default function () {
           shouldLoad={allReposProvided([repo1, repo2])}
           noLoadReason="Need select repo."
           seriesColumnName="repo_name"
-          series={allProvidedRepos([repo1, repo2]).map((r) => {
+          series={[repo1, repo2].map((r) => {
             return {
-              name: r.name,
-              color: r.color || getRandomColor(),
+              name: r?.name,
+              color: r?.color || getRandomColor(),
               axisLabel: {
                 formatter: '{yyyy} {MMM}'
               }
