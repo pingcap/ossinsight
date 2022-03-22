@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://ossinsight.io/blog</id>
     <title>OSS Insight Blog</title>
-    <updated>2022-03-21T08:56:33.442Z</updated>
+    <updated>2022-03-22T02:55:51.471Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://ossinsight.io/blog"/>
     <subtitle>OSS Insight Blog</subtitle>
@@ -11,7 +11,7 @@
         <title type="html"><![CDATA[About]]></title>
         <id>/about</id>
         <link href="https://ossinsight.io/blog/about"/>
-        <updated>2022-03-21T08:56:33.442Z</updated>
+        <updated>2022-03-22T02:55:51.471Z</updated>
         <summary type="html"><![CDATA[Who we are?]]></summary>
         <content type="html"><![CDATA[<h3>Who we are?</h3><blockquote><p>PingCAP started in 2015 when three seasoned infrastructure engineers were sick and tired of the way databases were managed, scaled, and maintained while working at leading Internet companies.</p><p>Seeing no good solution on the market, they decided to build one themselves — the open-source way.</p><p>With the help of a first-class team, and hundreds of contributors from around the globe, PingCAP is building an open-source distributed NewSQL Hybrid Transactional and Analytical Processing (HTAP) database. TiDB, our flagship project, is a cloud-native distributed SQL layer with MySQL compatibility, and one of the most popular open-source database projects in the world (don’t take our word for it, check it out). TiDB’s sister project, TiKV, is a cloud-native distributed Key-Value store. It is now a CNCF Graduated project.</p></blockquote><p><a href="https://pingcap.com/about-us/">Learn more about PingCAP</a></p><h3>What is TiDB Cloud?</h3><blockquote><p>Get a fully managed service of TiDB: an open source, cloud native, distributed, MySQL compatible database for elastic scale and real-time analytics.</p><p>TiDB Cloud is now in Public Preview and offers a one-year free trial with the Developer Tier.</p></blockquote><h3>Why we build this project?</h3><blockquote><p><em>&quot;We love data, so we create TiDB, we love open source, so we analyze it.&quot;</em> - PingCAP</p></blockquote><h3>Where the data comes from?</h3><blockquote><p>Open-source developers all over the world are working on millions of projects: writing code &amp; documentation, fixing &amp; submitting bugs, and so forth. GH Archive is a project to record the public GitHub timeline, archive it, and make it easily accessible for further analysis.</p></blockquote><p><a href="http://www.gharchive.org/">Learn more about GH Archive</a></p><h3>where is the data stored?</h3><blockquote><p>We use <a href="https://tidbcloud.com">TiDB Cloud</a> to store data, more than 4 billion rows.</p></blockquote><h3>How is the instantaneity of the data?</h3><blockquote><p>OSS Insight project provides data hourly, even though TiDB Cloud can be realtime...</p></blockquote><h3>How many clusters ( databases ) are used?</h3><blockquote><p>OOONLY one, for both OLTP and OLAP queries.</p></blockquote><h3>Contact US</h3><blockquote><p><a href="mailto:community@tidb.io">community@tidb.io</a></p></blockquote>]]></content>
         <author>
@@ -23,16 +23,15 @@
         <title type="html"><![CDATA[Changelog]]></title>
         <id>/changelog</id>
         <link href="https://ossinsight.io/blog/changelog"/>
-        <updated>2022-03-21T08:56:33.442Z</updated>
+        <updated>2022-03-22T02:55:51.471Z</updated>
     </entry>
     <entry>
-        <title type="html"><![CDATA[▶️  How it works]]></title>
+        <title type="html"><![CDATA[▶️  Data Preparation for Analytics]]></title>
         <id>/how-it-works</id>
         <link href="https://ossinsight.io/blog/how-it-works"/>
-        <updated>2022-03-21T08:56:33.442Z</updated>
-        <summary type="html"><![CDATA[The Github Event data is obtained from GH Archive, which provides the full github events data from 2011 to 2022, with a total volume of more than 4 billion.]]></summary>
-        <content type="html"><![CDATA[<p>The Github Event data is obtained from <a href="https://www.gharchive.org/">GH Archive</a>, which provides the full github events data from 2011 to 2022, with a total volume of more than 4 billion.
-We download the json file provided by GH Archive, convert it into csv format through script, and finally load it into the TiDB cluster in parallel through <a href="https://docs.pingcap.com/tidb/stable/tidb-lightning-overview">tidb-lightning</a>.</p><p>Prepare the CSV format for lightning:</p><pre><code>├── gharchive_dev.github_events.000000000000.csv
+        <updated>2022-03-22T02:55:51.471Z</updated>
+        <summary type="html"><![CDATA[All the data we use here on this website sources from GH Archive, a non-profit project that records and archives all GitHub events data since 2011. The total data volume archived by GH Archive can be up to 4 billion rows. We download the json file on GH Archive and convert it into csv format via Script, and finally load it into the TiDB cluster in parallel through tidb-lightning.]]></summary>
+        <content type="html"><![CDATA[<p>All the data we use here on this website sources from <a href="https://www.gharchive.org/">GH Archive</a>, a non-profit project that records and archives all GitHub events data since 2011. The total data volume archived by GH Archive can be up to 4 billion rows. We download the <code>json file</code> on GH Archive and convert it into csv format via Script, and finally load it into the TiDB cluster in parallel through <a href="https://docs.pingcap.com/tidb/stable/tidb-lightning-overview">tidb-lightning</a>.</p><p>In this post, we will explain step by step how we conduct this process. </p><ol><li>Prepare the data in csv format for TiDB lighting. </li></ol><pre><code>├── gharchive_dev.github_events.000000000000.csv
 ├── gharchive_dev.github_events.000000000001.csv
 ├── gharchive_dev.github_events.000000000002.csv
 ├── gharchive_dev.github_events.000000000003.csv
@@ -46,7 +45,7 @@ We download the json file provided by GH Archive, convert it into csv format thr
 ├── gharchive_dev.github_events.000000000011.csv
 ├── gharchive_dev.github_events.000000000012.csv
 ├── gharchive_dev.github_events.000000000013.csv
-</code></pre><p>Lightning Configuration Example:</p><pre><code>cat tidb-lightning.toml
+</code></pre><ol start="2"><li>Configure the TiDB Lightning as follows.</li></ol><pre><code>cat tidb-lightning.toml
 [mydumper.csv]
 separator = &#x27;,&#x27;
 delimiter = &#x27;&quot;&#x27;
@@ -76,8 +75,8 @@ password = &quot;******&quot;
 check-requirements = false
 region-concurrency = 32
 meta-schema-name = &quot;gharchive_meta&quot;
-</code></pre><p>Load into TiDB cluster:</p><pre><code class="language-bash">nohup tidb-lightning -config ./tidb-lightning.toml &gt; nohup.out
-</code></pre><p>Since the json data provided by GH Archive is unstructured, we process the github events data into structured ones:</p><pre><code class="language-sql">gharchive_dev&gt; desc github_events;
+</code></pre><ol start="3"><li>Load the data into the TiDB cluster. </li></ol><pre><code class="language-bash">nohup tidb-lightning -config ./tidb-lightning.toml &gt; nohup.out
+</code></pre><ol start="4"><li>Convert the unstructured <code>json file</code> provided by GH Archive into structured data. </li></ol><pre><code class="language-sql">gharchive_dev&gt; desc github_events;
 +--------------------+--------------+------+-----+---------+-------+
 | Field              | Type         | Null | Key | Default | Extra |
 +--------------------+--------------+------+-----+---------+-------+
@@ -113,21 +112,7 @@ meta-schema-name = &quot;gharchive_meta&quot;
 | push_size          | int(11)      | YES  |     | &lt;null&gt;  |       |
 | push_distinct_size | int(11)      | YES  |     | &lt;null&gt;  |       |
 +--------------------+--------------+------+-----+---------+-------+
-</code></pre><p>In addition to the full amount of github events data, we also extracted data from popular fields for further analysis, such as database fields, front-end framework fields, programming language fields, etc. If you find any missing repo, you can submit PR <a href="https://github.com/hooopo/gharchive/tree/main/meta/repos">here</a></p><p>All tables:</p><pre><code class="language-sql">gharchive_dev&gt; show tables;
-+-----------------------------+
-| Tables_in_gharchive_dev     |
-+-----------------------------+
-| cn_repos                    |
-| css_framework_repos         |
-| db_repos                    |
-| github_events               |
-| js_framework_repos          |
-| nocode_repos                |
-| programming_language_repos  |
-| static_site_generator_repos |
-| web_framework_repos         |
-+-----------------------------+
-</code></pre><p>With subdivided repo data, we can easily analyze and explore repo in a certain field through SQL JOIN, such as the ranking of Top 10 JavaScript Framework Stars in 2021:</p><pre><code class="language-sql">  SELECT js.name, count(*) as stars 
+</code></pre><ol start="5"><li>With structured data at hand, we can start to make further analysis with TiDB Cloud. Execute SQL commands to generate analytical results. For example, you can execute SQL commands below to output the top 10 most starred JavaScript framework repos in 2021.</li></ol><pre><code class="language-sql">  SELECT js.name, count(*) as stars 
     FROM github_events 
          JOIN js_framework_repos js ON js.id = github_events.repo_id 
    WHERE type = &#x27;WatchEvent&#x27; and event_year = 2021 
@@ -148,13 +133,27 @@ ORDER BY 2 DESC
 | neomjs/neo        | 826   |
 | tastejs/todomvc   | 813   |
 +-------------------+-------+
+</code></pre><p>We have analyzed all the GitHub projects regarding databases, JavaScripe frameworks, programming languages, web frameworks, and low-code development tools, and provided valuable insights in 2021, in real time, and custom insights. If the repository you care about is not included here, you&#x27;re welcome to submit your PR <a href="https://github.com/hooopo/gharchive/tree/main/meta/repos">here</a>. If you want to gain more insights into other areas, you can try TiDB Cloud by yourselves with this <a href="https://ossinsight.io/blog/try-it-yourself/">10 minute tutorial</a>. </p><p>Below are the areas of GitHub projects we have analyzed. </p><pre><code class="language-sql">gharchive_dev&gt; show tables;
++-----------------------------+
+| Tables_in_gharchive_dev     |
++-----------------------------+
+| cn_repos                    |
+| css_framework_repos         |
+| db_repos                    |
+| github_events               |
+| js_framework_repos          |
+| nocode_repos                |
+| programming_language_repos  |
+| static_site_generator_repos |
+| web_framework_repos         |
++-----------------------------+
 </code></pre>]]></content>
     </entry>
     <entry>
         <title type="html"><![CDATA[Use TiDB Cloud to Analyze GitHub Events in 10 Minutes]]></title>
         <id>/try-it-yourself</id>
         <link href="https://ossinsight.io/blog/try-it-yourself"/>
-        <updated>2022-03-21T08:56:33.442Z</updated>
+        <updated>2022-03-22T02:55:51.471Z</updated>
         <summary type="html"><![CDATA[TiDB is an open source distributed NewSQL database with horizontal scalability, high availability, and strong consistency. It can also deal with mixed OLTP and OLAP workloads at the same time by leveraging its hybrid transactional and analytical (HTAP) capability.]]></summary>
         <content type="html"><![CDATA[<p><a href="https://docs.pingcap.com/tidb/stable/overview">TiDB</a> is an open source distributed NewSQL database with horizontal scalability, high availability, and strong consistency. It can also deal with mixed OLTP and OLAP workloads at the same time by leveraging its hybrid transactional and analytical (HTAP) capability. </p><p><strong><a href="https://docs.pingcap.com/tidbcloud/public-preview">TiDB Cloud</a> is a fully-managed Database-as-a-Service (DBaaS)</strong> that brings everything great about TiDB to your cloud and lets you focus on your applications, not the complexities of your database. </p><p>In this tutorial, we will provide you with a piece of sample data of all GitHub events occurring on January 1, 2022, and walk you through on how to use TiDB Cloud to analyze this data in 10 minutes.  </p><h2>Sign up for a TiDB Cloud account (Free)</h2><ol><li>Click <a href="https://tidbcloud.com/signup">here</a> to sign up for a TiDB Cloud account free of charge. </li><li><a href="https://tidbcloud.com/?__hstc=86493575.35e9113e934f84907657eac98c81808d.1645076526216.1646808171218.1646883397864.20&amp;__hssc=86493575.6.1646883397864&amp;__hsfp=2077185778">Log in</a> to your account.</li></ol><h2>Create a TiDB Developer Tier cluster (Free)</h2><p>Once you register an account, you can create a free cluster with TiDB Developer Tier. </p><p>:::info
 A cluster is a database to store data.
@@ -219,7 +218,7 @@ ORDER BY 2 DESC
         <title type="html"><![CDATA[▶️  What is TiDB]]></title>
         <id>/what-it-tidb</id>
         <link href="https://ossinsight.io/blog/what-it-tidb"/>
-        <updated>2022-03-21T08:56:33.442Z</updated>
+        <updated>2022-03-22T02:55:51.471Z</updated>
         <summary type="html"><![CDATA[Here is a video explaining what TiDB is. You can also check TiDB documents for more information.]]></summary>
         <content type="html"><![CDATA[<p>Here is a video explaining what TiDB is. You can also check <a href="https://docs.pingcap.com/tidb/stable/overview">TiDB documents</a> for more information. </p><iframe width="560" height="315" src="https://www.youtube.com/embed/R7F7vPnaoTY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>]]></content>
     </entry>
