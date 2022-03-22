@@ -41,8 +41,6 @@ export default function LineAreaBarChartCard(props: LineAreaBarChartProps) {
     }))
   }, [originalSeries, remote1.data, remote2.data])
 
-  console.log(series)
-
   const options = useMemo(() => {
     return {
       dataset: [
