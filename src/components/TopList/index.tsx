@@ -44,7 +44,7 @@ export default function TopList() {
   }
 
   return (
-    <ThemeAdaptor>
+    <>
       <h2>
         Top 20 most active repositories in <u>real time</u>.
         <Tooltip
@@ -142,6 +142,6 @@ export default function TopList() {
           {renderCodes(ranks?.sql)}
         </Box>
       </Dialog>
-    </ThemeAdaptor>
+    </>
   );
 }

@@ -7,6 +7,7 @@ export default function () {
     <Section
       title='Countries/Regions of PR Creators'
       description='This map shows you where the PR creators come from and which countries or regions like the project the best.'
+      advanced
     >
       {({repo1, repo2, dateRange, allReposProvided}) => (
         <WorldMapChartCompareCard

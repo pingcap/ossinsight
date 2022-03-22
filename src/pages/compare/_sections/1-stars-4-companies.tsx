@@ -5,6 +5,7 @@ import React from "react";
 export default function () {
   return (
     <Section
+      advanced
       title='Top 50 company of stargazers'
       description='The pie charts describe the major companies of stargazers for each project.'
     >

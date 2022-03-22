@@ -25,6 +25,7 @@ export default function () {
 
   return (
     <Section
+      advanced
       title='Heat Map of Commits Time'
       description={(
         <>

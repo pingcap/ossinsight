@@ -25,17 +25,15 @@ function CommonChart({chart: rawChart, noSearch, ...rest}) {
 
   return (
     <LocalizationProvider dateAdapter={DateAdapter}>
-      <ThemeAdaptor>
-        <Head>
-          <link
-            rel="stylesheet"
-            href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
-          />
-        </Head>
-        {form}
-        {form && <Divider sx={{my: 2}} />}
-        {child}
-      </ThemeAdaptor>
+      <Head>
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+        />
+      </Head>
+      {form}
+      {form && <Divider sx={{my: 2}} />}
+      {child}
     </LocalizationProvider>
   )
 }

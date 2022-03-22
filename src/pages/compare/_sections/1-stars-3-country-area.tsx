@@ -5,6 +5,7 @@ import React from "react";
 export default function () {
   return (
     <Section
+      advanced
       title='Countries/Regions of Stargazers'
       description='This map shows you where the stargazers of each project come from and which countries or regions like the project the best.'
     >
