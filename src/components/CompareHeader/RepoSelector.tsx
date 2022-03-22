@@ -97,10 +97,12 @@ export default function RepoSelector({repo, label, defaultRepoName, onChange, on
           {...params}
           error={textFieldError}
           variant="standard"
-          label={label}
+          size='small'
+          placeholder={label}
           helperText={helperText}
           InputProps={{
             ...params.InputProps,
+            sx: { '::before': { display: 'none' } },
             endAdornment: (
               <React.Fragment>
                 {loading ? <CircularProgress color="inherit" size={20} /> : null}

@@ -90,9 +90,9 @@ export default function HeatMapChartCard(props: HeatMapChartCardProps) {
         }
         : {
           top: '2%',
-          bottom: '2%',
-          left: '10%',
-          right: '6%',
+          bottom: '16%',
+          left: '6%',
+          right: '2%',
           containLabel: true
         },
       xAxis: Object.assign({
@@ -130,7 +130,7 @@ export default function HeatMapChartCard(props: HeatMapChartCardProps) {
         axisLabel: {
           color: '#959aa9',
           fontWeight: 'bold',
-          rotate: isSmall ? 0 : -45,
+          rotate: isSmall ? 0 : 0,
           fontSize: isSmall ? 8 : undefined
         },
         position: 'top',
@@ -139,8 +139,9 @@ export default function HeatMapChartCard(props: HeatMapChartCardProps) {
         show: !isSmall,
         min: min,
         max: max,
-        orient: 'vertical',
-        top: 'center',
+        orient: isSmall ? undefined : 'horizontal',
+        left: 'center',
+        bottom: 0,
       },
       series: series.map((s) => {
         return Object.assign({

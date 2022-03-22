@@ -18,7 +18,7 @@ export default function LineAreaBarChartCard(props: LineAreaBarChartProps) {
   const {
     queryName,
     params = {},
-    series = [],
+    series: originalSeries = [],
     shouldLoad,
     tooltip,
     grid,
@@ -39,6 +39,13 @@ export default function LineAreaBarChartCard(props: LineAreaBarChartProps) {
       return item
     }) ?? []
   }, [res])
+
+  const series = useMemo(() => {
+    return originalSeries.map(item => {
+      item.name = String(item.name).toLowerCase()
+      return item
+    })
+  }, [originalSeries])
 
   const options = useMemo(() => {
     return {

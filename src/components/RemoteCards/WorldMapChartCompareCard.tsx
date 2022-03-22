@@ -5,7 +5,7 @@ import ReactECharts from 'echarts-for-react';
 import useThemeContext from "@theme/hooks/useThemeContext";
 import {BaseChartCardProps} from "./BasicCard";
 import * as echarts from "echarts";
-import {PieSeriesOption} from "echarts";
+import {EChartsOption, PieSeriesOption} from "echarts";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 import CompareCard from "./CompareCard";
 import useMediaQuery from '@mui/material/useMediaQuery';
@@ -17,24 +17,28 @@ if (!echarts.getMap('world')) {
   echarts.registerMap('world', map())
 }
 
-export interface PieSeriesExtendOption extends PieSeriesOption {
+export interface WorldMapChartExtendOption extends PieSeriesOption {
   nameMap?: (name: string) => string;
   titleMap?: (name: string) => string;
 }
 
-export interface PieChartCardProps extends Omit<BaseChartCardProps, 'params'> {
+export interface WorldMapChartCompareCardProps extends Omit<BaseChartCardProps, 'params'> {
   params1: Record<string, unknown>
   params2: Record<string, unknown>
+  name1: string
+  name2: string
   dimensionColumnName: string,
   metricColumnName: string,
-  series: PieSeriesExtendOption[],
+  series: WorldMapChartExtendOption[],
 }
 
-export default function WorldMapChartCompareCard(props: PieChartCardProps) {
+export default function WorldMapChartCompareCard(props: WorldMapChartCompareCardProps) {
   const {
     queryName,
     params1,
     params2,
+    name1,
+    name2,
     series = [],
     shouldLoad,
     grid,
@@ -61,14 +65,14 @@ export default function WorldMapChartCompareCard(props: PieChartCardProps) {
     return req1.error || req2.error
   }, [req1.error, req2.error])
 
-  const options = useMemo(() => {
+  const options: EChartsOption = useMemo(() => {
     const s = series[0]
 
     const realSeries = !s ? [] : [data1, data2].map((data, n) => Object.assign({}, s, {
       type: 'scatter',
       geoIndex: 0,
       coordinateSystem: 'geo',
-      name: [params1, params2][n].repoName,
+      name: [name1, name2][n],
       encode: {
         lng: 0,
         lat: 1,

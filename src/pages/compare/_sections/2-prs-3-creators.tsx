@@ -5,7 +5,10 @@ import React from "react";
 
 export default function () {
   return (
-    <Section title='title' description='desc'>
+    <Section
+      title='PR Creators per Month'
+      description='This chart displays the number of PR creators the two projects had respectively each week since 2011.'
+    >
       {({ repo1, repo2, dateRange, allProvidedRepos, allReposProvided}) => (
         <LineAreaBarChartCard
           title={'Pull Request Creator per month'}
@@ -33,7 +36,7 @@ export default function () {
           }}
           yAxis={{
             type: "value",
-            name: "total"
+            name: "month_pr_count"
           }}
           height="500px"
         />

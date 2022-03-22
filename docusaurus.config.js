@@ -13,7 +13,7 @@ const config = {
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.png',
-  organizationName: 'pingcap-inc', // Usually your GitHub org/user name.
+  organizationName: 'pingcap', // Usually your GitHub org/user name.
   projectName: 'ossinsight', // Usually your repo name.
   scripts: [
   ],
@@ -30,13 +30,13 @@ const config = {
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
-          editUrl: 'https://github.com/pingcap-inc/ossinsight/edit/main/',
+          editUrl: 'https://github.com/pingcap/ossinsight/edit/main/',
           routeBasePath: '_',
         },
         blog: {
           showReadingTime: true,
           // Please change this to your repo.
-          editUrl: 'https://github.com/pingcap-inc/ossinsight/edit/main/',
+          editUrl: 'https://github.com/pingcap/ossinsight/edit/main/',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
@@ -53,7 +53,7 @@ const config = {
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       image: 'img/gharchive-title-img.png',
-      metadata: [{name: 'twitter:card', content: 'summary_large_image'}],
+      metadata: [{name: 'twitter:card', content: 'summary_large_image'}, {name: 'keywords', content: 'tidb, gharchive'}],
       hideableSidebar: true,
       colorMode: {
         defaultMode: 'dark',
@@ -74,17 +74,17 @@ const config = {
             position: 'left',
             label: 'Insight',
           },
-          {to: '/compare', label: 'Compare Projects', position: 'left'},
+          {to: '/compare', label: '🔧 Compare Projects', position: 'left'},
           {to: '/blog', label: 'Blog', position: 'left'},
           {to: '/blog/try-it-yourself/', label: ' ⏱️ Try It Yourself', position: 'left'},
           {to: '/blog/how-it-works', label: '▶️  How It Works', position: 'left'},
           {
             href: 'https://tidbcloud.com',
             label: 'TiDB Cloud',
-            position: 'left',
+            position: 'right',
           },
           {
-            href: 'https://github.com/pingcap-inc/ossinsight',
+            href: 'https://github.com/pingcap/ossinsight',
             className: 'navbar-item-github',
             position: 'right',
           },
@@ -165,7 +165,7 @@ const config = {
               },
               {
                 label: 'Github',
-                href: 'https://github.com/pingcap-inc/gharchive.live',
+                href: 'https://github.com/pingcap/ossinsight',
               },
               {
                 label: 'Twitter',

@@ -21,6 +21,9 @@ import ShareButtons from "../../components/ShareButtons";
 import BrowserOnly from "@docusaurus/core/lib/client/exports/BrowserOnly";
 import {BASE_URL} from "../../lib/request";
 import CompareContext from './_context'
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
+import Grid from "@mui/material/Grid";
 
 
 const allProvidedRepos = (repos: Repo[]) => {
@@ -52,7 +55,7 @@ for (let i = -12; i <= 13; i++) {
   zones.push(i)
 }
 
-registerThemeDark();
+registerThemeDark(false);
 registerThemeVintage(false);
 
 function useRepo (name: string | undefined, ): [Repo | undefined, Dispatch<SetStateAction<Repo | undefined>>, boolean] {
@@ -127,19 +130,33 @@ export default function RepoCompare() {
           <Head>
             <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,400,500,700&display=swap" />
           </Head>
-          <BrowserOnly>
-            {() => <ShareButtons title={`Compare Projects | OSSInsight`} style={{marginTop: 16, marginRight: 16}} />}
-          </BrowserOnly>
-          <CompareHeader
-            repo1={repo1}
-            onRepo1Change={setRepo1}
-            onRepo1Valid={onRepo1Valid}
-            repo2={repo2}
-            onRepo2Change={setRepo2}
-            onRepo2Valid={onRepo2Valid}
-          />
           <MainContent context={{repo1, repo2, dateRange, allReposProvided, allProvidedRepos}}>
-            {sections}
+            <Typography variant='h3' component='h1'>
+              Comparing OSS
+            </Typography>
+            <Grid container>
+              <Grid item xs={12} lg={8}>
+                <Typography variant='body1'>
+                  Here, you can compare any two GitHub projects regarding their stars, pull requests, stargazers' locations and companies, issues, commits, and some other metrics.
+                </Typography>
+              </Grid>
+              <Grid item xs={12} lg={4}>
+                <BrowserOnly>
+                  {() => <ShareButtons title={`Compare Projects | OSSInsight`} style={{marginTop: 16, marginRight: 16}} />}
+                </BrowserOnly>
+              </Grid>
+            </Grid>
+            <CompareHeader
+              repo1={repo1}
+              onRepo1Change={setRepo1}
+              onRepo1Valid={onRepo1Valid}
+              repo2={repo2}
+              onRepo2Change={setRepo2}
+              onRepo2Valid={onRepo2Valid}
+            />
+            <Box sx={{ mt: 4 }}>
+              {sections}
+            </Box>
           </MainContent>
         </ThemeAdaptor>
       </LocalizationProvider>
