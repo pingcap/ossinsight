@@ -14,7 +14,7 @@ const config = {
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.png',
   organizationName: 'pingcap', // Usually your GitHub org/user name.
-  projectName: 'ossinsight', // Usually your repo name.
+  projectName: 'ossinsight',
   scripts: [
   ],
   presets: [
