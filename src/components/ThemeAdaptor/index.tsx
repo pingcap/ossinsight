@@ -9,7 +9,7 @@ const ThemeAdaptor = ({children}: PropsWithChildren<any>) => {
     palette: {
       mode: isDarkTheme ? 'dark' : undefined,
       primary: {
-        main: 'rgb(37, 193, 159)'
+        main: 'hsl(255, 68%, 45%)'
       }
     },
   });
