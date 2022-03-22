@@ -1,11 +1,9 @@
 import React from "react";
 import RepoSelector, {Repo} from "./RepoSelector";
 import Grid from "@mui/material/Grid";
-import AppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
 import useScrollTrigger from '@mui/material/useScrollTrigger';
-import {useTheme} from "@mui/material/styles";
 import Box from "@mui/material/Box";
+import useThemeContext from "@theme/hooks/useThemeContext";
 
 interface ElevationScrollProps {
   children: React.ReactElement
@@ -42,30 +40,52 @@ interface CompareHeaderProps {
 }
 
 function CompareHeader(props: CompareHeaderProps) {
-  const theme = useTheme();
-  const fullWidth = theme.breakpoints.up(1201)
+  const {isDarkTheme} = useThemeContext();
+
   return (
-    <ElevationScroll>
-      <AppBar color='default' position='sticky' sx={{ [fullWidth]: { borderRadius: 1 }, my: 2, top: 'var(--ifm-navbar-height)' }} enableColorOnDark>
-        <Toolbar>
-          <Grid container>
-            <Grid item xs={5}>
-              <RepoSelector label="Repo Name 1" defaultRepoName="pingcap/tidb" repo={props.repo1}
-                            onChange={props.onRepo1Change} onValid={props.onRepo1Valid}/>
-            </Grid>
-            <Grid item xs={2}>
-              <Box sx={{ borderRadius: '4px', maxWidth: 'min-content', margin: 'auto', px: 2, backgroundColor: 'text.primary', color: 'background.default' }}>
-                VS
-              </Box>
-            </Grid>
-            <Grid item xs={5}>
-              <RepoSelector label="Repo Name 2" defaultRepoName="tikv/tikv" repo={props.repo2}
-                            onChange={props.onRepo2Change} onValid={props.onRepo2Valid}/>
-            </Grid>
-          </Grid>
-        </Toolbar>
-      </AppBar>
-    </ElevationScroll>
+    <Box position='sticky' sx={{
+      my: 2,
+      py: 2,
+      top: 'var(--ifm-navbar-height)',
+      zIndex: 1,
+      backgroundColor: isDarkTheme ? 'var(--ifm-background-color)' : 'background.default',
+      borderBottom: '1px solid transparent',
+      borderBottomColor: 'divider'
+    }}>
+      <Grid container>
+        <Grid item xs={5}>
+          <RepoSelector
+            label="Repo Name 1"
+            defaultRepoName="pingcap/tidb"
+            repo={props.repo1}
+            onChange={props.onRepo1Change}
+            onValid={props.onRepo1Valid}
+          />
+        </Grid>
+        <Grid item xs={2}>
+          <Box sx={{
+            borderRadius: 1,
+            maxWidth: 'min-content',
+            margin: 'auto',
+            px: 2,
+            backgroundColor: 'text.primary',
+            color: 'background.default',
+            fontWeight: 'bolder'
+          }}>
+            VS.
+          </Box>
+        </Grid>
+        <Grid item xs={5}>
+          <RepoSelector
+            label="Repo Name 2"
+            defaultRepoName="tikv/tikv"
+            repo={props.repo2}
+            onChange={props.onRepo2Change}
+            onValid={props.onRepo2Valid}
+          />
+        </Grid>
+      </Grid>
+    </Box>
   )
 }
 
