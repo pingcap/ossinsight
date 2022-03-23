@@ -1,5 +1,5 @@
 import {QueryExecutor} from "./Query";
-import {createPool, Pool, PoolOptions} from 'mysql2'
+import {createPool, Pool, PoolConnection, PoolOptions} from 'mysql2'
 import consola, {Consola} from "consola";
 
 export class MysqlQueryExecutor<T> implements QueryExecutor<T> {
@@ -17,10 +17,10 @@ export class MysqlQueryExecutor<T> implements QueryExecutor<T> {
       this.connections.getConnection((err, connection) => {
         if (err) {
           reject(err)
-          this.logger.error('failed to establish a connection', err)
+          this.logger.error('Failed to establish a connection', err)
           return
         }
-        this.logger.debug('executing sql by connection<%d>\n %s', connection.threadId, sql)
+        this.logger.debug('Executing sql by connection<%d>\n %s', connection.threadId, sql)
         connection.query(sql, (err, rows) => {
           if (err) {
             reject(err)
@@ -31,6 +31,31 @@ export class MysqlQueryExecutor<T> implements QueryExecutor<T> {
         })
       })
     })
+  }
+
+  async executeWithConn(sql: string, connection: PoolConnection): Promise<T> {
+    return new Promise((resolve, reject) => {
+      this.logger.debug('Executing sql by connection<%d>\n %s', connection.threadId, sql)
+      connection.query(sql, (err, rows) => {
+        if (err) {
+          reject(err)
+        } else {
+          resolve(rows as never)
+        }
+      })
+    });
+  }
+
+  async getConnection(): Promise<PoolConnection> {
+    return new Promise((resolve, reject) => {
+      this.connections.getConnection((err, connection) => {
+        if (err) {
+          this.logger.error('Failed to establish a connection', err)
+          reject(err)
+        }
+        resolve(connection);
+      });
+    });
   }
 
 }

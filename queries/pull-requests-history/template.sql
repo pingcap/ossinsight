@@ -7,7 +7,7 @@ WITH prs_with_latest_repo_name AS (
     FROM github_events
     USE INDEX(index_github_events_on_repo_id)
     WHERE
-        type = 'PullRequestEvent' AND repo_id IN (41986369, 48833910) AND action = 'opened'
+        type = 'PullRequestEvent' AND repo_id = 41986369 AND action = 'opened'
 ), count_per_month AS (
     SELECT
         event_month,

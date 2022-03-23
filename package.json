@@ -30,6 +30,7 @@
     "generic-pool": "^3.8.2",
     "koa": "^2.13.4",
     "koa-router": "^10.1.1",
+    "koa2-ratelimit": "^1.1.0",
     "luxon": "^2.3.0",
     "mysql": "^2.18.1",
     "mysql2": "^2.3.3",

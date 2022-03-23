@@ -16,6 +16,7 @@ specifiers:
   json-schema-to-typescript: ^10.1.5
   koa: ^2.13.4
   koa-router: ^10.1.1
+  koa2-ratelimit: ^1.1.0
   luxon: ^2.3.0
   mysql: ^2.18.1
   mysql2: ^2.3.3
@@ -32,6 +33,7 @@ dependencies:
   generic-pool: 3.8.2
   koa: 2.13.4
   koa-router: 10.1.1
+  koa2-ratelimit: 1.1.0_redis@4.0.4
   luxon: 2.3.0
   mysql: 2.18.1
   mysql2: 2.3.3
@@ -1167,6 +1169,17 @@ packages:
       vary: 1.1.2
     transitivePeerDependencies:
       - supports-color
+    dev: false
+
+  /koa2-ratelimit/1.1.0_redis@4.0.4:
+    resolution: {integrity: sha512-AumRCI8YO9TMF9trVP6j68K5qzi21ajZUOCb5VuPWq9pZw+FHXam275S5P1IDAlZjs1cDFBOAAkhwTdTbVCcsg==}
+    engines: {node: '>=7.10.1'}
+    peerDependencies:
+      mongoose: '>= 5'
+      redis: '>= 4.0.0'
+      sequelize: '>=5.8.7'
+    dependencies:
+      redis: mirrors.tencent.com/redis/4.0.4
     dev: false
 
   /lodash.includes/4.3.0:
