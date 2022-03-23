@@ -27,6 +27,7 @@ jobs:
         run: npm run build
         if: ${{ github.event_name != 'pull_request' }}
         env:
+          API_BASE: ${{ secrets.API_BASE_PRODUCTION }}
           AUTH0_DOMAIN: ${{ secrets.AUTH0_DOMAIN_PRODUCTION }}
           AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID_PRODUCTION }}
           AUTH0_CALLBACK_URL: ${{ secrets.AUTH0_CALLBACK_URL_PRODUCTION }}
@@ -34,6 +35,7 @@ jobs:
         run: npm run build
         if: ${{ github.event_name == 'pull_request' }}
         env:
+          API_BASE: ${{ secrets.API_BASE_PREVIEW }}
           AUTH0_DOMAIN: ${{ secrets.AUTH0_DOMAIN_PREVIEW }}
           AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID_PREVIEW }}
           AUTH0_CALLBACK_URL: ${{ secrets.AUTH0_CALLBACK_URL_PREVIEW }}

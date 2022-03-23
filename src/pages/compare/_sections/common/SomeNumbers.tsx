@@ -1,7 +1,7 @@
 import React, {useMemo} from "react";
 import {Repo} from "../../../../components/CompareHeader/RepoSelector";
 import useSWR, {SWRResponse} from "swr";
-import {createHttpClient} from "../../../../lib/request";
+import {useHttpClient} from "../../../../lib/request";
 import * as echarts from 'echarts/core';
 import {RadarChart} from 'echarts/charts';
 import {LegendComponent, TitleComponent} from 'echarts/components';
@@ -22,9 +22,9 @@ export interface SomeNumbersProps {
   queries: { title: string, query: string }[]
 }
 
-const httpClient = createHttpClient();
 
 const SomeNumbersPC = ({repos, queries}: SomeNumbersProps) => {
+  const httpClient = useHttpClient();
   const {isDarkTheme} = useThemeContext();
 
   const r1 = useNumberQueries(queries.map(query => query.query), repos[0])
@@ -118,6 +118,7 @@ const SomeNumbers = ({ repos, queries}: SomeNumbersProps) => {
 }
 
 function useNumberQueries(queries: string[], repo: Repo | null): SWRResponse<number[]> {
+  const httpClient = useHttpClient();
   return useSWR([queries, repo], {
     fetcher: (queries, repo) => {
       if (!repo) {

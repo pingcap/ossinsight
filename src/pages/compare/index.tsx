@@ -19,7 +19,7 @@ import {Repo} from "../../components/CompareHeader/RepoSelector";
 import useUrlSearchState, {stringParam} from "../../hooks/url-search-state";
 import ShareButtons from "../../components/ShareButtons";
 import BrowserOnly from "@docusaurus/core/lib/client/exports/BrowserOnly";
-import {BASE_URL} from "../../lib/request";
+import {useHttpClient} from "../../lib/request";
 import CompareContext from './_context'
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
@@ -59,14 +59,15 @@ registerThemeDark(false);
 registerThemeVintage(false);
 
 function useRepo (name: string | undefined, ): [Repo | undefined, Dispatch<SetStateAction<Repo | undefined>>, boolean] {
+  const client = useHttpClient()
   const [repo, setRepo] = useState(null)
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     if (name) {
       setLoading(true)
-      fetch(BASE_URL + `/gh/repo/${name}`)
-        .then(res => res.json())
+      client.get(`/gh/repo/${name}`)
+        .then(({ data }) => data)
         .then(res => setRepo({
           id: res.data.id,
           name: res.data.full_name,

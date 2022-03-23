@@ -5,11 +5,9 @@ import Autocomplete from '@mui/material/Autocomplete';
 import CircularProgress from '@mui/material/CircularProgress';
 import {getRandomColor} from "../../lib/color";
 import {Alert, debounce, Snackbar} from "@mui/material";
-import {createHttpClient} from "../../lib/request";
+import {useHttpClient} from "../../lib/request";
 import useSWR from "swr";
 import {UseAutocompleteProps} from "@mui/base/AutocompleteUnstyled/useAutocomplete";
-
-const httpClient = createHttpClient();
 
 export interface Repo extends Record<string, unknown> {
   id: number
@@ -26,6 +24,7 @@ export interface RepoSelectorProps {
 }
 
 export default function RepoSelector({repo, label, defaultRepoName, onChange, onValid}: RepoSelectorProps) {
+  const httpClient = useHttpClient();
   const [keyword, setKeyword] = useState<string>(defaultRepoName ?? '')
   const [textFieldError, setTextFieldError] = useState<boolean>(false)
   const [helperText, setHelperText] = useState<string>('')

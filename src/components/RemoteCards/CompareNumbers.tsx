@@ -2,16 +2,12 @@ import React from "react";
 import {Repo} from "../CompareHeader/RepoSelector";
 import styles from './compare-numbers.module.css'
 import useSWR, {SWRResponse} from "swr";
-import {createHttpClient} from "../../lib/request";
+import {useHttpClient} from "../../lib/request";
 import Typography from "@mui/material/Typography";
 import {formatNumber} from "../../lib/text";
 import CircularProgress from '@mui/material/CircularProgress'
 import Tooltip from '@mui/material/Tooltip'
-import Card from "@mui/material/Card";
-import CardHeader from "@mui/material/CardHeader";
 import Box from "@mui/material/Box";
-
-const httpClient = createHttpClient();
 
 export interface CompareNumbersProps {
   tag?: keyof JSX.IntrinsicElements
@@ -92,6 +88,8 @@ export default function CompareNumbers({tag: Tag = 'div', title, query, repos}: 
 }
 
 function useNumberQuery(query: string, repo: Repo | null): SWRResponse<[string, string]> {
+  const httpClient = useHttpClient();
+
   return useSWR([query, repo], {
     fetcher: (query, repo) => {
       if (!repo) {

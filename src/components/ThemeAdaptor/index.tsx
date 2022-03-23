@@ -1,9 +1,10 @@
-import React, {PropsWithChildren} from "react";
+import React, {PropsWithChildren, useMemo} from "react";
 import {createTheme} from "@mui/material";
 import useThemeContext from '@theme/hooks/useThemeContext';
 import ThemeProvider from "@mui/system/ThemeProvider";
 import {Auth0Provider} from "@auth0/auth0-react";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
+import {createHttpClient, HttpClientContext} from "../../lib/request";
 
 const ThemeAdaptor = ({children}: PropsWithChildren<any>) => {
   const {isDarkTheme} = useThemeContext();
@@ -17,14 +18,18 @@ const ThemeAdaptor = ({children}: PropsWithChildren<any>) => {
   });
 
   const {
-    siteConfig: {customFields: {auth0: _auth0}},
+    siteConfig: {customFields: {auth0: _auth0, baseUrl}},
   } = useDocusaurusContext();
 
   const auth0 = _auth0 as { domain?: string, clientId?: string, callbackUrl?: string };
 
+  const clientCtx = useMemo(() => ({ client: createHttpClient(baseUrl as string) }), [baseUrl])
+
   const child = (
     <ThemeProvider theme={theme}>
-      {children}
+      <HttpClientContext.Provider value={clientCtx}>
+        {children}
+      </HttpClientContext.Provider>
     </ThemeProvider>
   )
 

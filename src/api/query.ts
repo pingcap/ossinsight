@@ -1,5 +1,5 @@
 import useSWR, {SWRResponse} from "swr";
-import {BASE_URL} from "../lib/request";
+import {useHttpClient} from "../lib/request";
 
 export interface RepoRank {
   repo_name: string,
@@ -18,11 +18,13 @@ interface RepoRankData extends Array<RepoRank> {
 }
 
 export const useRank = (): SWRResponse<RepoRankData> => {
-  const dataUrl = `${BASE_URL}/q/recent-events-rank`
+  const client = useHttpClient()
+
+  const dataUrl = `/q/recent-events-rank`
 
   return useSWR<RepoRankData>(['key'], {
     fetcher: async () => {
-      const {data, sql} = await fetch(`${dataUrl}`).then(data => data.json())
+      const {data, sql} = await client.get(`${dataUrl}`).then(({data}) => data)
       data.sql = sql
       return data
     },

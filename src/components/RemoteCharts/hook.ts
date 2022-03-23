@@ -1,10 +1,7 @@
 import {format} from "sql-formatter";
 import {Queries} from "./queries";
-import {createHttpClient} from "../../lib/request";
+import {useHttpClient} from "../../lib/request";
 import useSWR from "swr";
-import {AxiosRequestConfig} from "axios";
-
-const httpClient = createHttpClient();
 
 export interface AsyncData<T> {
   data: T | undefined
@@ -28,6 +25,7 @@ export interface BaseQueryResult<Params extends {
 }
 
 export const useRemoteData = <Q extends keyof Queries, P = Queries[Q]['params'], T = Queries[Q]['data']>(query: Q, params: P, formatSql: boolean, shouldLoad: boolean = true): AsyncData<RemoteData<P, T>> => {
+  const httpClient = useHttpClient()
 
   const { data, isValidating: loading, error } = useSWR(shouldLoad ? [query, params] : null, {
     fetcher: (query, params) => httpClient.get(`/q/${query}`, {params})
@@ -42,36 +40,4 @@ export const useRemoteData = <Q extends keyof Queries, P = Queries[Q]['params'],
   })
 
   return {data, loading, error}
-}
-
-interface CheckReq {
-  (config: AxiosRequestConfig): boolean
-}
-
-export function registerStaticData(checkReq: CheckReq, data: any) {
-  httpClient.interceptors.request.use(config => {
-    if (!checkReq(config)) {
-      return config
-    }
-    config.adapter = async () => {
-      return {
-        data,
-        status: 200,
-        statusText: 'OK',
-        headers: {'x-registered': 'true'},
-        config
-      }
-    }
-    return config
-  })
-}
-
-export const query = (query: string, validateParams: (check: AxiosRequestConfig['params']) => boolean): CheckReq => {
-  return (config) => {
-    if (config.url !== `/q/${query}`) {
-      return false
-    } else {
-      return validateParams(config.params)
-    }
-  }
 }
