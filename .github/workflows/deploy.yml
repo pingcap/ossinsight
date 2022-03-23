@@ -29,12 +29,14 @@ jobs:
         env:
           AUTH0_DOMAIN: ${{ secrets.AUTH0_DOMAIN_PRODUCTION }}
           AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID_PRODUCTION }}
+          AUTH0_CALLBACK_URL: ${{ secrets.AUTH0_CALLBACK_URL_PRODUCTION }}
       - name: Build for preview 🏗️
         run: npm run build
         if: ${{ github.event_name == 'pull_request' }}
         env:
           AUTH0_DOMAIN: ${{ secrets.AUTH0_DOMAIN_PREVIEW }}
           AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID_PREVIEW }}
+          AUTH0_CALLBACK_URL: ${{ secrets.AUTH0_CALLBACK_URL_PREVIEW }}
       - name: Deploy to gharchive.live 🚀
         uses: JamesIves/github-pages-deploy-action@releases/v3
         if: ${{ github.event_name != 'pull_request' }}

@@ -20,7 +20,7 @@ const ThemeAdaptor = ({children}: PropsWithChildren<any>) => {
     siteConfig: {customFields: {auth0: _auth0}},
   } = useDocusaurusContext();
 
-  const auth0 = _auth0 as { domain?: string, clientId?: string };
+  const auth0 = _auth0 as { domain?: string, clientId?: string, callbackUrl?: string };
 
   const child = (
     <ThemeProvider theme={theme}>
@@ -33,6 +33,7 @@ const ThemeAdaptor = ({children}: PropsWithChildren<any>) => {
       <Auth0Provider
         domain={auth0.domain}
         clientId={auth0.clientId}
+        redirectUri={auth0.callbackUrl}
       >
         {child}
       </Auth0Provider>
