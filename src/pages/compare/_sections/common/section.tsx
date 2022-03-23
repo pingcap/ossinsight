@@ -34,7 +34,7 @@ function Blur({ blur = 5 }: { blur?: number }) {
         alignItems: 'center',
         justifyContent: 'center'
       }}>
-      <Button variant='contained' size='small' sx={{ fontSize: 18, py: 1, px: 2 }} onClick={() => loginWithPopup({ display: 'popup' })}>
+      <Button variant='contained' size='small' sx={{ fontSize: 18, py: 1, px: 2 }} onClick={() => loginWithPopup({ display: 'page' })}>
         Sign in to view more insights
         <ArrowRightAltIcon fontSize='large' sx={{ ml: 0.5 }} />
       </Button>
