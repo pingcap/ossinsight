@@ -146,4 +146,8 @@ export default async function server(router: Router<DefaultState, ContextExtends
     }
   })
 
+  router.redirect('/signup', process.env.AUTH0_SIGNUP_REDIRECT, 302)
+
+  router.redirect('/auth0/callback', process.env.AUTH0_CALLBACK_REDIRECT, 302)
+
 }

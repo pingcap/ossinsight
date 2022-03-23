@@ -9,9 +9,14 @@ import Query from "./app/core/Query";
 import {createClient, RedisClientType, RedisDefaultModules, RedisModules, RedisScripts} from "redis";
 import consola, {JSONReporter} from "consola";
 import {DateTime, Duration} from "luxon";
+import { validateProcessEnv } from './app/env';
 
 // Load environments.
-dotenv.config({ path: __dirname+'/.env' });
+dotenv.config({ path: __dirname+'/.env.template', override: true });
+dotenv.config({ path: __dirname+'/.env', override: true });
+
+validateProcessEnv()
+
 const PREFETCH_CONCURRENT = process.env.PREFETCH_CONCURRENT ? parseInt(process.env.PREFETCH_CONCURRENT) : 3;
 
 const logger = consola.withTag('prefetch');

@@ -4,17 +4,18 @@ import server from "./app/server";
 import dotenv from 'dotenv';
 import consola, {Consola} from 'consola';
 import cors from '@koa/cors';
+import { validateProcessEnv } from './app/env';
 
 const RateLimit = require('koa2-ratelimit').RateLimit;
 const Stores = require('koa2-ratelimit').Stores;
 
 const logger = consola.withTag('app')
-const {parsed} = dotenv.config()
-if (parsed) {
-  logger.info('loaded env:', Object.keys(parsed).join(', '))
-}
+dotenv.config({ path: __dirname+'/.env.template', override: true });
+dotenv.config({ path: __dirname+'/.env', override: true });
 
 consola.wrapConsole()
+
+validateProcessEnv()
 
 export interface ContextExtends extends App.DefaultContext {
   logger: Consola
