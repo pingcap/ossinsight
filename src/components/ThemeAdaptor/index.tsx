@@ -18,12 +18,12 @@ const ThemeAdaptor = ({children}: PropsWithChildren<any>) => {
   });
 
   const {
-    siteConfig: {customFields: {auth0: _auth0, baseUrl}},
+    siteConfig: {customFields: {auth0: _auth0, apiBaseUrl}},
   } = useDocusaurusContext();
 
   const auth0 = _auth0 as { domain?: string, clientId?: string, callbackUrl?: string };
 
-  const clientCtx = useMemo(() => ({ client: createHttpClient(baseUrl as string) }), [baseUrl])
+  const clientCtx = useMemo(() => ({ client: createHttpClient(apiBaseUrl as string) }), [apiBaseUrl])
 
   const child = (
     <ThemeProvider theme={theme}>
