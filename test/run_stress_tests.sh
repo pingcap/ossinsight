@@ -7,7 +7,7 @@
 SCRIPT_DIR="./test/scripts"
 RESULT_DIR="./test/result"
 REPORT_DIR="./test/report/"
-BASE_URL="https://community-preview-contributor.tidb.io/q/"
+BASE_URL="https://api.ossinsight.io/q/"
 
 threads=${1-1}       # Number of threads to use.
 connections=${2-1}   # Connections to keep open.
@@ -16,7 +16,6 @@ input_file_name=$4   # The specified lua script file.
 
 # The lua script files.
 script_files=(
-  "pull-request-creators-map"
   "stars-total"
   "stars-map"
   "stars-top-50-company"
@@ -30,10 +29,13 @@ script_files=(
   "pull-request-reviewers-total"
   "pull-request-creators-total"
   "pull-request-creators-top-50-company"
+  "pull-request-creators-map"
   "issues-total"
   "issue-creators-total"
   "issue-comments-total"
   "issue-commenters-total"
+  "issue-creators-top-50-company"
+  "issue-creators-map"
   "forkers-total"
   "committers-total"
   "commits-total"

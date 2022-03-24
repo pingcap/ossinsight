@@ -5,7 +5,24 @@
 Test a single query:
 
 ```bash
-wrk -t12 -c100 --latency -d30s -s test/scripts/pull-request-creators-map.lua https://community-preview-contributor.tidb.io
+wrk -t12 -c100 --latency -d60s -s test/scripts/recent-events-rank.lua https://api.ossinsight.io
+```
+
+```
+Running 1m test @ https://api.ossinsight.io
+  16 threads and 100 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency   644.96ms  396.38ms   2.00s    73.79%
+    Req/Sec     7.43      5.44    40.00     84.20%
+  Latency Distribution
+     50%  542.78ms
+     75%  828.65ms
+     90%    1.25s 
+     99%    1.83s 
+  5453 requests in 1.00m, 65.49MB read
+  Socket errors: connect 0, read 0, write 0, timeout 440
+Requests/sec:     90.74
+Transfer/sec:      1.09MB
 ```
 
 Or:

@@ -3,27 +3,16 @@ counter = 0
 
 repos = {}
 for line in io.lines("test/testdata/most-stars-repo-in-2021.csv") do
-    local repoName = line:match("%s*(.+)")
-    repos[#repos + 1] = repoName
-end
-
-reposList = {}
-for i = 1, #repos do
-    reposList[i] = {}
-    reposList[i]["repo1"] = repos[i]
-    reposList[i]["repo2"] = repos[#repos - i]
+    local repoId = line:match("%s*(.+)")
+    repos[#repos + 1] = repoId
 end
 
 wrk.method = "GET"
-wrk.scheme = "http"
+wrk.scheme = "https"
 
 request = function()
-    current = reposList[counter % #reposList + 1]
-    path = "https://community-preview-contributor.tidb.io/q/pull-request-creators-per-month?repoName1=" .. current.repo1 .. "&repoName2=" .. current.repo2
+    current = repos[counter % #repos + 1]
+    path = "https://api.ossinsight.io/q/pull-request-creators-per-month?repoId=" .. current
     counter = counter + 1
     return wrk.format(nil, path)
-end
-
-function response(status, headers, body)
-
 end

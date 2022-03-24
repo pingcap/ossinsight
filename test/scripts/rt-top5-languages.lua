@@ -12,7 +12,7 @@ wrk.scheme = "https"
 
 request = function()
     current = repos[counter % #repos + 1]
-    path = "https://api.ossinsight.io/q/pull-request-creators-top-50-company?repoId=" .. current
+    path = "https://api.ossinsight.io/q/rt-top5-languages?repoId=" .. current
     counter = counter + 1
     return wrk.format(nil, path)
 end
