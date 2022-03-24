@@ -15,7 +15,7 @@ interface SectionProps {
 }
 
 function Blur({ blur = 5 }: { blur?: number }) {
-  const { isAuthenticated, loginWithPopup } = useAuth0()
+  const { isAuthenticated, loginWithRedirect } = useAuth0()
 
   if (isAuthenticated) {
     return <></>
@@ -34,7 +34,7 @@ function Blur({ blur = 5 }: { blur?: number }) {
         alignItems: 'center',
         justifyContent: 'center'
       }}>
-      <Button variant='contained' size='small' sx={{ fontSize: 18, py: 1, px: 2 }} onClick={() => loginWithPopup({ display: 'page' })}>
+      <Button variant='contained' size='small' sx={{ fontSize: 18, py: 1, px: 2 }} onClick={() => loginWithRedirect()}>
         Sign in to view more insights
         <ArrowRightAltIcon fontSize='large' sx={{ ml: 0.5 }} />
       </Button>
