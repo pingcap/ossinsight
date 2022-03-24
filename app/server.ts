@@ -156,7 +156,7 @@ export default async function server(router: Router<DefaultState, ContextExtends
   router.get('/auth0/callback', ctx => {
     const uri = ctx.query.redirect_uri
     if (typeof uri === 'string') {
-      ctx.redirect(path.join(process.env.AUTH0_CALLBACK_REDIRECT, uri))
+      ctx.redirect(process.env.AUTH0_CALLBACK_REDIRECT.replace(/\/$/, '') + '/' + uri.replace(/^\//, ''))
     } else {
       ctx.redirect(process.env.AUTH0_CALLBACK_REDIRECT)
     }
