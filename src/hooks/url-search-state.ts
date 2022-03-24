@@ -1,5 +1,6 @@
 import {Dispatch, SetStateAction, useEffect, useMemo, useState} from "react";
 import {DateTime} from "luxon";
+import {useHistory} from '@docusaurus/router';
 
 export interface UseUrlSearchStateProps<T> {
   defaultValue: T | (() => T)
@@ -16,24 +17,29 @@ function useUrlSearchStateCSR<T>(key: string, {
   deserialize,
   serialize
 }: UseUrlSearchStateProps<T>): [T | undefined, Dispatch<SetStateAction<T | undefined>>] {
+  const history = useHistory()
   const initialValue = useMemo(() => {
-    const usp = new URLSearchParams(location.search)
+    const usp = new URLSearchParams(history.location.search)
     if (usp.has(key)) {
       return deserialize(usp.get(key))
     } else {
       return defaultValue
     }
-  }, [])
+  }, [history.location])
   const [value, setValue] = useState<T>(initialValue)
   useEffect(() => {
     const sv = serialize(value)
+    const usp = new URLSearchParams(history.location.search)
     if (sv === undefined || sv === null) {
-      return
+      usp.delete(key)
+    } else {
+      usp.set(key, sv)
     }
-    const usp = new URLSearchParams(location.search)
-    usp.set(key, sv)
-    window.history.replaceState(null, null, '?' + usp.toString())
-  }, [value])
+    history.replace({
+      pathname: history.location.pathname,
+      search: '?' + usp.toString()
+    })
+  }, [value, history.replace])
 
   return [value, setValue]
 }
