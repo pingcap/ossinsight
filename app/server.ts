@@ -5,6 +5,7 @@ import {DefaultState} from "koa";
 import type {ContextExtends} from "../index";
 import GhExecutor from "./core/GhExecutor";
 import {createClient} from "redis";
+import path from "path";
 
 const COMPARE_QUERIES = [
   'stars-total',
@@ -152,6 +153,12 @@ export default async function server(router: Router<DefaultState, ContextExtends
 
   router.redirect('/signup', process.env.AUTH0_SIGNUP_REDIRECT, 302)
 
-  router.redirect('/auth0/callback', process.env.AUTH0_CALLBACK_REDIRECT, 302)
-
+  router.get('/auth0/callback', ctx => {
+    const uri = ctx.query.redirect_uri
+    if (typeof uri === 'string') {
+      ctx.redirect(path.join(process.env.AUTH0_CALLBACK_REDIRECT, uri))
+    } else {
+      ctx.redirect(process.env.AUTH0_CALLBACK_REDIRECT)
+    }
+  })
 }
