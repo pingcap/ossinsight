@@ -10,7 +10,7 @@ import {useLocation} from '@docusaurus/router';
 const ThemeAdaptor = ({children}: PropsWithChildren<any>) => {
   const { pathname, search } = useLocation()
   const url = useMemo(() => {
-    console.debug('[docusaurus router] current url', url)
+    console.debug('[docusaurus router] current url', pathname + search)
     return pathname + search
   }, [pathname, search])
 
