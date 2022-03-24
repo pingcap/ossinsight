@@ -1,4 +1,4 @@
-import React, {useMemo} from "react";
+import React, {useCallback, useMemo} from "react";
 import style from '../../index.module.css'
 import CompareContext, {useCompareContext} from "../../_context";
 import Typography from "@mui/material/Typography";
@@ -6,6 +6,8 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
 import { useAuth0 } from "@auth0/auth0-react";
+import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
+import {useLocation} from "@docusaurus/router";
 
 interface SectionProps {
   title: React.ReactNode
@@ -15,7 +17,20 @@ interface SectionProps {
 }
 
 function Blur({ blur = 5 }: { blur?: number }) {
+  const { pathname, search } = useLocation()
+  const url = useMemo(() => {
+    return pathname + search
+  }, [pathname, search])
+
+  const {
+    siteConfig: {customFields: {auth0}},
+  } = useDocusaurusContext();
+
   const { isAuthenticated, loginWithRedirect } = useAuth0()
+
+  const login = useCallback(async () => {
+    await loginWithRedirect({ redirectUri: `${(auth0 as any).callbackUrl}?redirect_uri=${encodeURIComponent(url)}` })
+  }, [(auth0 as any).callbackUrl, pathname, search])
 
   if (isAuthenticated) {
     return <></>
@@ -34,7 +49,7 @@ function Blur({ blur = 5 }: { blur?: number }) {
         alignItems: 'center',
         justifyContent: 'center'
       }}>
-      <Button variant='contained' size='small' sx={{ fontSize: 18, py: 1, px: 2 }} onClick={() => loginWithRedirect()}>
+      <Button variant='contained' size='small' sx={{ fontSize: 18, py: 1, px: 2 }} onClick={() => login()}>
         Sign in to view more insights
         <ArrowRightAltIcon fontSize='large' sx={{ ml: 0.5 }} />
       </Button>

@@ -5,15 +5,8 @@ import ThemeProvider from "@mui/system/ThemeProvider";
 import {Auth0Provider} from "@auth0/auth0-react";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import {createHttpClient, HttpClientContext} from "../../lib/request";
-import {useLocation} from '@docusaurus/router';
 
 const ThemeAdaptor = ({children}: PropsWithChildren<any>) => {
-  const { pathname, search } = useLocation()
-  const url = useMemo(() => {
-    console.debug('[docusaurus router] current url', pathname + search)
-    return pathname + search
-  }, [pathname, search])
-
   const {isDarkTheme} = useThemeContext();
   const theme = createTheme({
     palette: {
@@ -45,7 +38,6 @@ const ThemeAdaptor = ({children}: PropsWithChildren<any>) => {
       <Auth0Provider
         domain={auth0.domain}
         clientId={auth0.clientId}
-        redirectUri={`${auth0.callbackUrl}?redirect_uri=${encodeURIComponent(url)}`}
       >
         {child}
       </Auth0Provider>
