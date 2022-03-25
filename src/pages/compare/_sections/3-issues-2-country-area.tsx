@@ -6,7 +6,7 @@ export default function () {
   return (
     <Section
       title='Countries/Regions of Issue Openers'
-      description='This map shows you where the issue openers come from and which countries or regions like the project the best.'
+      description='This map will show you which country or region does issue creators come from. They make an issue to report the problem, or request a new feature.'
       advanced
     >
       {({repo1, repo2, dateRange, allReposProvided}) => (
