@@ -29,7 +29,7 @@ export default function () {
             }
           ]}
           dimensionColumnName="company_name"
-          metricColumnName="code_contributors"
+          metricColumnName="issue_creators"
           height="400px"
         />
       )}
