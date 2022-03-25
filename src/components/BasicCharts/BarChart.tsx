@@ -44,7 +44,7 @@ export default function BarChart<T>({seriesName = 'Count', data, loading = false
       },
       grid: {
         containLabel: true,
-        left: clear ? 0 : 8,
+        left: (clear ? 0 : 8) + (type === 'owner' ? 24 : 0),
         top: clear ? 0 : 16,
         bottom: clear ? 0 : 16
       },
@@ -61,10 +61,7 @@ export default function BarChart<T>({seriesName = 'Count', data, loading = false
           formatter: function (value, index) {
             switch (type) {
               case 'repo':
-                if (value.indexOf('/') < 0) {
-                  return value
-                }
-                return value.split('/')[1];
+                return value
               case 'owner':
               case 'lang':
                 return `${value} {${value.replace(/[+-]/g, '_')}|}`

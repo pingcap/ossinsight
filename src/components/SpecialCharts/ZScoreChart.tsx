@@ -41,6 +41,10 @@ export default function ZScoreChart({data, loading}: ZScoreChartProps) {
           show: true
         }
       }],
+      grid: {
+        containLabel: true,
+        left: 8
+      },
       series: [
         {
           name: 'z-score',
