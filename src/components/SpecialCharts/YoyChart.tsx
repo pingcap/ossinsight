@@ -64,6 +64,10 @@ export default function YoyChart({data, aspectRatio = '6 / 5', loading}: YoyChar
           show: true
         }
       }],
+      grid: {
+        containLabel: true,
+        left: 8
+      },
       series: [
         {
           name: 'stars2020',
