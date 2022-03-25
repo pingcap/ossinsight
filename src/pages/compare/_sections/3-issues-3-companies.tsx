@@ -6,7 +6,7 @@ export default function () {
   return (
     <Section
       advanced
-      title='Top 50 company of Issue Openers'
+      title='Top 50 company of Issue Creators'
       description='The pie charts describe the major companies of issue openers for each project.'
     >
       {({repo1, repo2, dateRange, allReposProvided}) => (
