@@ -6,6 +6,7 @@ import type {ContextExtends} from "../index";
 import GhExecutor from "./core/GhExecutor";
 import {createClient} from "redis";
 import path from "path";
+import {register} from "prom-client";
 
 const COMPARE_QUERIES = [
   'stars-total',
@@ -160,5 +161,13 @@ export default async function server(router: Router<DefaultState, ContextExtends
     } else {
       ctx.redirect(process.env.AUTH0_CALLBACK_REDIRECT)
     }
+  })
+
+  router.get('/metrics', async ctx => {
+    ctx.body = await register.metrics()
+  })
+
+  router.get('/metrics/:name', async ctx => {
+    ctx.body = await register.getSingleMetricAsString(ctx.params.name)
   })
 }

@@ -1,6 +1,7 @@
 import {DateTime} from 'luxon'
 import consola from "consola";
 import {RedisClientType, RedisDefaultModules, RedisModules, RedisScripts} from "redis";
+import {cacheHitCounter, measure, redisQueryTimer} from "../metrics";
 
 export class NeedPrefetchError extends Error {
   readonly msg: string
@@ -66,6 +67,7 @@ export default class Cache<T> {
 
     if (cachedData != null) {
       logger.info(`Hit cache of ${this.key}.`);
+      cacheHitCounter.inc()
 
       const cacheOutOfDate = DateTime.now().diff(DateTime.fromISO(cachedData.requestedAt), 'hours').hours >= this.refreshHours;
       if (cacheOutOfDate && this.refreshCache) {
@@ -91,14 +93,17 @@ export default class Cache<T> {
     const result = await fallback()
 
     // Write result to cache.
+
     try {
-      if (this.cachedHours === -1) {
-        await this.redisClient.set(this.key, JSON.stringify(result));
-      } else {
-        await this.redisClient.set(this.key, JSON.stringify(result), {
-          EX: this.cachedHours * 3600,
-        });
-      }
+      await measure(redisQueryTimer.labels({op: 'set'}), async () => {
+        if (this.cachedHours === -1) {
+          await this.redisClient.set(this.key, JSON.stringify(result));
+        } else {
+          await this.redisClient.set(this.key, JSON.stringify(result), {
+            EX: this.cachedHours * 3600,
+          });
+        }
+      })
     } catch (err) {
       logger.error('Failed to write cache for key %s.', this.key, err)
     }
@@ -108,7 +113,10 @@ export default class Cache<T> {
 
   private async fetchDataFromCache():Promise<CachedData<T> | null> {
     try {
-      const json = await this.redisClient.get(this.key);
+      const json = await measure(
+        redisQueryTimer.labels({op: 'get'}),
+        () => this.redisClient.get(this.key)
+      )
       if (typeof json === 'string') {
         return JSON.parse(json);
       }

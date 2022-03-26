@@ -4,6 +4,7 @@ import Cache from './Cache'
 import {DateTime} from "luxon";
 import consola, {Consola} from "consola";
 import {RedisClientType, RedisDefaultModules, RedisModules, RedisScripts} from "redis";
+import {ghQueryCounter, ghQueryTimer, measure} from "../metrics";
 
 const SYMBOL_TOKEN = Symbol('PERSONAL_TOKEN')
 
@@ -71,12 +72,22 @@ export default class GhExecutor {
     return cache.load(() => {
       return this.octokitPool.use(async (octokit) => {
         octokit.log.info(`get repo ${owner}/${repo}`)
-        const {data} = await octokit.rest.repos.get({repo, owner})
-        const {value} = Object.getOwnPropertyDescriptor(octokit, SYMBOL_TOKEN)!
-        return {
-          expiresAt: DateTime.now().plus({hours: GET_REPO_CACHE_HOURS}),
-          data,
-          with: eraseToken(value)
+        ghQueryCounter.labels({ api: 'getRepo', phase: 'start' }).inc()
+        try {
+          const {data} = await measure(
+            ghQueryTimer.labels({api: 'getRepo'}),
+            () => octokit.rest.repos.get({repo, owner})
+          )
+          const {value} = Object.getOwnPropertyDescriptor(octokit, SYMBOL_TOKEN)!
+          ghQueryCounter.labels({api: 'getRepo', phase: 'success'}).inc()
+          return {
+            expiresAt: DateTime.now().plus({hours: GET_REPO_CACHE_HOURS}),
+            data,
+            with: eraseToken(value)
+          }
+        } catch (e) {
+          ghQueryCounter.labels({ api: 'getRepo', phase: 'error' }).inc()
+          throw e
         }
       })
     })
@@ -108,17 +119,29 @@ export default class GhExecutor {
         `
         let formattedData: any[] = []
 
-        const data: any = await octokit.graphql(query, variables)
-        data.search.nodes.forEach((repo: any) => formattedData.push({
-          id: repo.databaseId,
-          fullName: repo.nameWithOwner,
-        }));
+        ghQueryCounter.labels({ api: 'searchRepos', phase: 'start' }).inc()
 
-        const {value} = Object.getOwnPropertyDescriptor(octokit, SYMBOL_TOKEN)!
-        return {
-          expiresAt: DateTime.now().plus({hours: SEARCH_REPOS_CACHE_HOURS}),
-          data: formattedData,
-          with: eraseToken(value)
+        try {
+          const data: any = await measure(
+            ghQueryTimer.labels({api: 'searchRepos'}),
+            () => octokit.graphql(query, variables)
+          )
+          ghQueryCounter.labels({api: 'searchRepos', phase: 'success'}).inc()
+
+          data.search.nodes.forEach((repo: any) => formattedData.push({
+            id: repo.databaseId,
+            fullName: repo.nameWithOwner,
+          }));
+
+          const {value} = Object.getOwnPropertyDescriptor(octokit, SYMBOL_TOKEN)!
+          return {
+            expiresAt: DateTime.now().plus({hours: SEARCH_REPOS_CACHE_HOURS}),
+            data: formattedData,
+            with: eraseToken(value)
+          }
+        } catch (e) {
+          ghQueryCounter.labels({ api: 'searchRepos', phase: 'error' }).inc()
+          throw e
         }
       })
     })

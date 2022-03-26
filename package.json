@@ -35,6 +35,7 @@
     "mysql": "^2.18.1",
     "mysql2": "^2.3.3",
     "octokit": "^1.7.1",
+    "prom-client": "^14.0.1",
     "redis": "^4.0.4",
     "tiny-async-pool": "^1.2.0"
   },

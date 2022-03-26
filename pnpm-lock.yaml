@@ -21,6 +21,7 @@ specifiers:
   mysql: ^2.18.1
   mysql2: ^2.3.3
   octokit: ^1.7.1
+  prom-client: ^14.0.1
   redis: ^4.0.4
   tiny-async-pool: ^1.2.0
   ts-node: ^10.5.0
@@ -38,6 +39,7 @@ dependencies:
   mysql: 2.18.1
   mysql2: 2.3.3
   octokit: 1.7.1
+  prom-client: 14.0.1
   redis: mirrors.tencent.com/redis/4.0.4
   tiny-async-pool: 1.2.0
 
@@ -636,6 +638,10 @@ packages:
 
   /bignumber.js/9.0.0:
     resolution: {integrity: sha512-t/OYhhJ2SD+YGBQcjY8GzzDHEk9f3nerxjtfa6tlMXfe7frs/WozhvCNoGvpM0P3bNf3Gq5ZRMlGr5f3r4/N8A==}
+    dev: false
+
+  /bintrees/1.0.1:
+    resolution: {integrity: sha1-DmVcm5wkNeqraL9AJyJtK1WjRSQ=}
     dev: false
 
   /bottleneck/2.19.5:
@@ -1426,6 +1432,13 @@ packages:
     resolution: {integrity: sha512-3ouUOpQhtgrbOa17J7+uxOTpITYWaGP7/AhoR3+A+/1e9skrzelGi/dXzEYyvbxubEF6Wn2ypscTKiKJFFn1ag==}
     dev: false
 
+  /prom-client/14.0.1:
+    resolution: {integrity: sha512-HxTArb6fkOntQHoRGvv4qd/BkorjliiuO2uSWC2KC17MUTKYttWdDoXX/vxOhQdkoECEM9BBH0pj2l8G8kev6w==}
+    engines: {node: '>=10'}
+    dependencies:
+      tdigest: 0.1.1
+    dev: false
+
   /pseudomap/1.0.2:
     resolution: {integrity: sha1-8FKijacOYYkX7wqKw0wa5aaChrM=}
     dev: false
@@ -1500,6 +1513,12 @@ packages:
     resolution: {integrity: sha512-n/ShnvDi6FHbbVfviro+WojiFzv+s8MPMHBczVePfUpDJLwoLT0ht1l4YwBCbi8pJAveEEdnkHyPyTP/mzRfwg==}
     dependencies:
       safe-buffer: 5.1.2
+    dev: false
+
+  /tdigest/0.1.1:
+    resolution: {integrity: sha1-Ljyyw56kSeVdHmzZEReszKRYgCE=}
+    dependencies:
+      bintrees: 1.0.1
     dev: false
 
   /thenify-all/1.6.0:
