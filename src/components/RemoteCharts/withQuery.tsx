@@ -12,6 +12,7 @@ import {DebugInfoModel} from "./DebugInfoModel";
 import {YoyChart} from "../SpecialCharts";
 import WorldMapChart from "../BasicCharts/WorldMapChart";
 import ZScoreChart from "../SpecialCharts/ZScoreChart";
+import DynamicStarsChart from "../SpecialCharts/DynamicStarsChart";
 
 type Indexes<Q extends keyof Queries> = {
   categoryIndex: keyof Queries[Q]['data']
@@ -154,6 +155,23 @@ export function withWorldMapChartQuery<Q extends keyof Queries, D = RemoteData<Q
         dimensionColumnName={categoryIndex}
         metricColumnName={valueIndex}
         seriesName={seriesName}
+      />
+    )
+
+    return renderChart(query, chart, remoteData, false)
+  }
+}
+
+export function withDynamicStarsChart<Q extends keyof Queries, D = RemoteData<Queries[Q]['params'], Queries[Q]['data']>>
+(query: Q) {
+  return ({formatSql = true, children, aspectRatio, ...params}: QueryComponentProps<Q>) => {
+    const remoteData = useRemoteData(query, params, formatSql);
+    const { data, loading } = remoteData
+
+    const chart = (
+      <DynamicStarsChart
+        loading={loading}
+        data={data?.data ?? []}
       />
     )
 
