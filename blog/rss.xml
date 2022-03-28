@@ -4,14 +4,14 @@
         <title>OSS Insight Blog</title>
         <link>https://ossinsight.io/blog</link>
         <description>OSS Insight Blog</description>
-        <lastBuildDate>Mon, 28 Mar 2022 07:39:05 GMT</lastBuildDate>
+        <lastBuildDate>Mon, 28 Mar 2022 08:41:36 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <item>
             <title><![CDATA[About]]></title>
             <link>https://ossinsight.io/blog/about</link>
             <guid>/about</guid>
-            <pubDate>Mon, 28 Mar 2022 07:39:05 GMT</pubDate>
+            <pubDate>Mon, 28 Mar 2022 08:41:36 GMT</pubDate>
             <description><![CDATA[Who we are?]]></description>
             <content:encoded><![CDATA[<h3>Who we are?</h3><blockquote><p>PingCAP started in 2015 when three seasoned infrastructure engineers were sick and tired of the way databases were managed, scaled, and maintained while working at leading Internet companies.</p><p>Seeing no good solution on the market, they decided to build one themselves — the open-source way.</p><p>With the help of a first-class team, and hundreds of contributors from around the globe, PingCAP is building an open-source distributed NewSQL Hybrid Transactional and Analytical Processing (HTAP) database. TiDB, our flagship project, is a cloud-native distributed SQL layer with MySQL compatibility, and one of the most popular open-source database projects in the world (don’t take our word for it, check it out). TiDB’s sister project, TiKV, is a cloud-native distributed Key-Value store. It is now a CNCF Graduated project.</p></blockquote><p><a href="https://pingcap.com/about-us/">Learn more about PingCAP</a></p><h3>What is TiDB Cloud?</h3><blockquote><p>Get a fully managed service of TiDB: an open source, cloud native, distributed, MySQL compatible database for elastic scale and real-time analytics.</p><p>TiDB Cloud is now in Public Preview and offers a one-year free trial with the Developer Tier.</p></blockquote><h3>Why we build this project?</h3><blockquote><p><em>&quot;We love data, so we create TiDB, we love open source, so we analyze it.&quot;</em> - PingCAP</p></blockquote><h3>Where the data comes from?</h3><blockquote><p>Open-source developers all over the world are working on millions of projects: writing code &amp; documentation, fixing &amp; submitting bugs, and so forth. GH Archive is a project to record the public GitHub timeline, archive it, and make it easily accessible for further analysis.</p></blockquote><p><a href="http://www.gharchive.org/">Learn more about GH Archive</a></p><h3>where is the data stored?</h3><blockquote><p>We use <a href="https://tidbcloud.com">TiDB Cloud</a> to store data, more than 4 billion rows.</p></blockquote><h3>How is the instantaneity of the data?</h3><blockquote><p>OSS Insight project provides data hourly, even though TiDB Cloud can be realtime...</p></blockquote><h3>How many clusters ( databases ) are used?</h3><blockquote><p>OOONLY one, for both OLTP and OLAP queries.</p></blockquote><h3>Contact US</h3><blockquote><p><a href="mailto:community@tidb.io">community@tidb.io</a></p></blockquote>]]></content:encoded>
         </item>
@@ -19,7 +19,7 @@
             <title><![CDATA[Changelog]]></title>
             <link>https://ossinsight.io/blog/changelog</link>
             <guid>/changelog</guid>
-            <pubDate>Mon, 28 Mar 2022 07:39:05 GMT</pubDate>
+            <pubDate>Mon, 28 Mar 2022 08:41:36 GMT</pubDate>
             <description><![CDATA[2022-03-22]]></description>
             <content:encoded><![CDATA[<h2>2022-03-22</h2><ul><li>Add &quot;Compare Projects&quot; tools</li><li>Add &quot;Try It Yourself&quot; blog</li></ul>]]></content:encoded>
         </item>
@@ -27,7 +27,7 @@
             <title><![CDATA[Data Preparation for Analytics]]></title>
             <link>https://ossinsight.io/blog/how-it-works</link>
             <guid>/how-it-works</guid>
-            <pubDate>Mon, 28 Mar 2022 07:39:05 GMT</pubDate>
+            <pubDate>Mon, 28 Mar 2022 08:41:36 GMT</pubDate>
             <description><![CDATA[All the data we use here on this website sources from GH Archive, a non-profit project that records and archives all GitHub events data since 2011. The total data volume archived by GH Archive can be up to 4 billion rows. We download the json file on GH Archive and convert it into csv format via Script, and finally load it into the TiDB cluster in parallel through TiDB-Lightning.]]></description>
             <content:encoded><![CDATA[<p>All the data we use here on this website sources from <a href="https://www.gharchive.org/">GH Archive</a>, a non-profit project that records and archives all GitHub events data since 2011. The total data volume archived by GH Archive can be up to 4 billion rows. We download the <code>json file</code> on GH Archive and convert it into csv format via Script, and finally load it into the TiDB cluster in parallel through <a href="https://docs.pingcap.com/tidb/stable/tidb-lightning-overview">TiDB-Lightning</a>.</p><p>In this post, we will explain step by step how we conduct this process. </p><ol><li>Prepare the data in csv format for TiDB Lighting. </li></ol><pre><code>├── gharchive_dev.github_events.000000000000.csv
 ├── gharchive_dev.github_events.000000000001.csv
@@ -151,7 +151,7 @@ ORDER BY 2 DESC
             <title><![CDATA[▶️  Use TiDB Cloud to Analyze GitHub Events in 10 Minutes]]></title>
             <link>https://ossinsight.io/blog/try-it-yourself</link>
             <guid>/try-it-yourself</guid>
-            <pubDate>Mon, 28 Mar 2022 07:39:05 GMT</pubDate>
+            <pubDate>Mon, 28 Mar 2022 08:41:36 GMT</pubDate>
             <description><![CDATA[TiDB is an open source distributed NewSQL database with horizontal scalability, high availability, and strong consistency. It can also deal with mixed OLTP and OLAP workloads at the same time by leveraging its hybrid transactional and analytical (HTAP) capability.]]></description>
             <content:encoded><![CDATA[<p><a href="https://docs.pingcap.com/tidb/stable/overview">TiDB</a> is an open source distributed NewSQL database with horizontal scalability, high availability, and strong consistency. It can also deal with mixed OLTP and OLAP workloads at the same time by leveraging its hybrid transactional and analytical (HTAP) capability. </p><p><strong><a href="https://docs.pingcap.com/tidbcloud/public-preview">TiDB Cloud</a> is a fully-managed Database-as-a-Service (DBaaS)</strong> that brings everything great about TiDB to your cloud and lets you focus on your applications, not the complexities of your database. </p><p>In this tutorial, we will provide you with a piece of sample data of all GitHub events occurring on January 1, 2022, and walk you through on how to use TiDB Cloud to analyze this data in 10 minutes.  </p><h2>Sign up for a TiDB Cloud account (Free)</h2><ol><li>Click <a href="https://tidbcloud.com/signup">here</a> to sign up for a TiDB Cloud account free of charge. </li><li><a href="https://tidbcloud.com/?__hstc=86493575.35e9113e934f84907657eac98c81808d.1645076526216.1646808171218.1646883397864.20&amp;__hssc=86493575.6.1646883397864&amp;__hsfp=2077185778">Log in</a> to your account.</li></ol><h2>Create a TiDB Developer Tier cluster (Free)</h2><p>Once you register an account, you can create a free cluster with TiDB Developer Tier. </p><p>:::info
 A cluster is a database to store data.
@@ -216,7 +216,7 @@ ORDER BY 2 DESC
             <title><![CDATA[▶️  What is TiDB]]></title>
             <link>https://ossinsight.io/blog/what-is-tidb</link>
             <guid>/what-is-tidb</guid>
-            <pubDate>Mon, 28 Mar 2022 07:39:05 GMT</pubDate>
+            <pubDate>Mon, 28 Mar 2022 08:41:36 GMT</pubDate>
             <description><![CDATA[Here is a video explaining what TiDB is. You can also check TiDB documents for more information.]]></description>
             <content:encoded><![CDATA[<p>Here is a video explaining what TiDB is. You can also check <a href="https://docs.pingcap.com/tidb/stable/overview">TiDB documents</a> for more information. </p><iframe width="560" height="315" src="https://www.youtube.com/embed/R7F7vPnaoTY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>]]></content:encoded>
         </item>
