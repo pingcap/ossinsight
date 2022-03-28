@@ -6,6 +6,7 @@ import consola, {Consola} from 'consola';
 import cors from '@koa/cors';
 import { validateProcessEnv } from './app/env';
 import {requestCounter, requestProcessTimer} from "./app/metrics";
+import {measureLimitedRequests} from "./app/middlewares/measureRequests";
 
 const RateLimit = require('koa2-ratelimit').RateLimit;
 const Stores = require('koa2-ratelimit').Stores;
@@ -38,24 +39,7 @@ app.use(async (ctx, next) => {
   ctx.logger = logger
   await next()
 })
-app.use(async (ctx, next) => {
-  const url = ctx.request.url
-  const stop = requestProcessTimer.startTimer({ url })
-  try {
-    requestCounter.labels({ url, phase: 'start' }).inc()
-    await next()
-    if (ctx.status < 400) {
-      requestCounter.labels({ url, phase: 'success', status: ctx.status}).inc()
-    } else {
-      requestCounter.labels({ url, phase: 'error', status: ctx.status}).inc()
-    }
-  } catch (e) {
-    requestCounter.labels({ url, phase: 'error' }).inc()
-    throw e
-  } finally {
-    stop()
-  }
-})
+app.use(measureLimitedRequests)
 app.use(cors({origin: '*'}))
 app.use(limiter)
 

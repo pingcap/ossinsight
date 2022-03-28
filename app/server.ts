@@ -7,6 +7,7 @@ import GhExecutor from "./core/GhExecutor";
 import {createClient} from "redis";
 import path from "path";
 import {register} from "prom-client";
+import {measureRequests} from "./middlewares/measureRequests";
 
 const COMPARE_QUERIES = [
   'stars-total',
@@ -62,7 +63,7 @@ export default async function server(router: Router<DefaultState, ContextExtends
   const tokens = (process.env.GH_TOKENS || '').split(',').map(s => s.trim()).filter(Boolean);
   const ghExecutor = new GhExecutor(tokens, redisClient)
 
-  router.get('/q/:query', async ctx => {
+  router.get('/q/:query', measureRequests({ urlLabel: 'path' }), async ctx => {
     try {
       const query = new Query(ctx.params.query, redisClient, executor)
       const res = await query.run(ctx.query)
@@ -75,7 +76,7 @@ export default async function server(router: Router<DefaultState, ContextExtends
     }
   })
 
-  router.get('/qc', async ctx => {
+  router.get('/qc', measureRequests({ urlLabel: 'path' }), async ctx => {
     const conn = await executor.getConnection();
 
     // If the queryNames parameter is provided, the query that needs to be queried is filtered.
@@ -116,7 +117,7 @@ export default async function server(router: Router<DefaultState, ContextExtends
     }
   })
 
-  router.get('/gh/repo/:owner/:repo', async ctx => {
+  router.get('/gh/repo/:owner/:repo', measureRequests({ urlLabel: 'route' }), async ctx => {
     const { owner, repo } = ctx.params
     try {
       const res = await ghExecutor.getRepo(owner, repo)
@@ -131,7 +132,7 @@ export default async function server(router: Router<DefaultState, ContextExtends
     }
   })
 
-  router.get('/gh/repos/search', async ctx => {
+  router.get('/gh/repos/search', measureRequests({ urlLabel: 'path' }), async ctx => {
     const { keyword } = ctx.query;
 
     try {

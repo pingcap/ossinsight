@@ -1,4 +1,4 @@
-import {collectDefaultMetrics, Counter, Histogram} from 'prom-client'
+import {collectDefaultMetrics, Counter, Histogram, Summary} from 'prom-client'
 
 export const metricsPrefix = 'ossinsight_api_';
 
@@ -32,41 +32,46 @@ export const ghQueryCounter = new Counter({
   labelNames: ['api', 'phase'] as const
 })
 
-export const requestProcessTimer = new Histogram({
+export const requestProcessTimer = new Summary({
   name: metricsPrefix + 'request_process_time',
   help: 'Request process time',
   labelNames: ['url'] as const
 })
 
-export const waitTidbConnectionTimer = new Histogram({
+export const waitTidbConnectionTimer = new Summary({
   name: metricsPrefix + 'wait_tidb_connection_time',
   help: 'Wait tidb connection time',
 })
 
-export const dataQueryTimer = new Histogram({
+export const dataQueryTimer = new Summary({
   name: metricsPrefix + 'data_query_time',
   help: 'Data query time',
 })
 
-export const tidbQueryTimer = new Histogram({
+export const tidbQueryTimer = new Summary({
   name: metricsPrefix + 'tidb_query_time',
   help: 'TiDB query time',
 })
 
-export const ghQueryTimer = new Histogram({
+export const ghQueryTimer = new Summary({
   name: metricsPrefix + 'gh_api_query_time',
   help: 'GitHub api query timer',
   labelNames: ['api']
 })
 
-export const redisQueryTimer = new Histogram({
+export const redisQueryTimer = new Summary({
   name: metricsPrefix + 'redis_query_time',
   help: 'Redis query time',
   labelNames: ['op'] as const
 })
 
-export async function measure<T> (histogram: Histogram<any> | Histogram.Internal<any>, fn: () => Promise<T>) {
-  const end = histogram.startTimer()
+export const limitedRequestCounter = new Counter({
+  name: metricsPrefix + 'limited_http_request_count',
+  help: 'Limited HTTP request count',
+})
+
+export async function measure<T>(metrics: Summary<any> | Summary.Internal<any> | Histogram<any> | Histogram.Internal<any>, fn: () => Promise<T>) {
+  const end = metrics.startTimer()
   try {
     return await fn()
   } finally {
