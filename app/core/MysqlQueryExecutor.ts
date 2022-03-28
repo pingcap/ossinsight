@@ -1,6 +1,7 @@
 import {QueryExecutor} from "./Query";
 import {createPool, Pool, PoolConnection, PoolOptions} from 'mysql2'
 import consola, {Consola} from "consola";
+import {tidbQueryTimer, waitTidbConnectionTimer} from "../metrics";
 
 export class MysqlQueryExecutor<T> implements QueryExecutor<T> {
 
@@ -13,30 +14,18 @@ export class MysqlQueryExecutor<T> implements QueryExecutor<T> {
   }
 
   async execute(sql: string): Promise<T> {
-    return new Promise((resolve, reject) => {
-      this.connections.getConnection((err, connection) => {
-        if (err) {
-          reject(err)
-          this.logger.error('Failed to establish a connection', err)
-          return
-        }
-        this.logger.debug('Executing sql by connection<%d>\n %s', connection.threadId, sql)
-        connection.query(sql, (err, rows) => {
-          if (err) {
-            reject(err)
-          } else {
-            resolve(rows as never)
-          }
-          connection.release()
-        })
-      })
+    return new Promise(async (resolve, reject) => {
+      const connection = await this.getConnection();
+      this.executeWithConn(sql, connection).then(resolve).catch(reject)
     })
   }
 
   async executeWithConn(sql: string, connection: PoolConnection): Promise<T> {
     return new Promise((resolve, reject) => {
       this.logger.debug('Executing sql by connection<%d>\n %s', connection.threadId, sql)
+      const end = tidbQueryTimer.startTimer()
       connection.query(sql, (err, rows) => {
+        end()
         if (err) {
           reject(err)
         } else {
@@ -48,7 +37,9 @@ export class MysqlQueryExecutor<T> implements QueryExecutor<T> {
 
   async getConnection(): Promise<PoolConnection> {
     return new Promise((resolve, reject) => {
+      const end = waitTidbConnectionTimer.startTimer()
       this.connections.getConnection((err, connection) => {
+        end()
         if (err) {
           this.logger.error('Failed to establish a connection', err)
           reject(err)

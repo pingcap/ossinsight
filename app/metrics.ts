@@ -17,12 +17,8 @@ export const requestCounter = new Counter({
 
 export const tidbQueryCounter = new Counter({
   name: metricsPrefix + 'tidb_query_count',
-  help: 'TiDB query count'
-})
-
-export const tidbQueryFailedCounter = new Counter({
-  name: metricsPrefix + 'tidb_query_failed_count',
-  help: 'TiDB query failed count',
+  help: 'TiDB query count',
+  labelNames: ['query', 'phase'] as const,
 })
 
 export const cacheHitCounter = new Counter({
@@ -45,6 +41,11 @@ export const requestProcessTimer = new Histogram({
 export const waitTidbConnectionTimer = new Histogram({
   name: metricsPrefix + 'wait_tidb_connection_time',
   help: 'Wait tidb connection time',
+})
+
+export const dataQueryTimer = new Histogram({
+  name: metricsPrefix + 'data_query_time',
+  help: 'Data query time',
 })
 
 export const tidbQueryTimer = new Histogram({
