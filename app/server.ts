@@ -57,6 +57,7 @@ export default async function server(router: Router<DefaultState, ContextExtends
     password: process.env.DB_PASSWORD,
     connectionLimit: parseInt(process.env.CONNECTION_LIMIT || '10'),
     queueLimit: parseInt(process.env.QUEUE_LIMIT || '20'),
+    decimalNumbers: true
   })
   const tokens = (process.env.GH_TOKENS || '').split(',').map(s => s.trim()).filter(Boolean);
   const ghExecutor = new GhExecutor(tokens, redisClient)
