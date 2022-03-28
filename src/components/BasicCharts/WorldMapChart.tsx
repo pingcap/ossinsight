@@ -62,7 +62,7 @@ export default function WorldMapChart<T>(props: WorldMapChartProps<T>) {
       series: data.map((item) => {
         const title = alpha2ToTitle(item[dimensionColumnName])
         const value = item[metricColumnName];
-        const {long, lat} = alpha2ToGeo(item[dimensionColumnName])
+        const {long, lat} = alpha2ToGeo((item[dimensionColumnName] as any as string).toUpperCase()) || {}
 
         return {
           type: "effectScatter",
