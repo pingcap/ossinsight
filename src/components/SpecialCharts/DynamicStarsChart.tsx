@@ -127,8 +127,8 @@ export default function DynamicStarsChart({data, aspectRatio = '16 / 9', loading
   return (
     <ReactECharts
       showLoading={loading}
-      notMerge={true}
-      lazyUpdate={false}
+      notMerge={false}
+      lazyUpdate
       option={option}
       style={{
         width: '100%',
