@@ -1,6 +1,19 @@
 #!/usr/local/bin/lua
 counter = 0
 
+local t_counter = 1
+local threads = {}
+
+function setup(thread)
+    thread:set("id", t_counter)
+    table.insert(threads, thread)
+    t_counter = t_counter + 1
+    -- update all known threads with the latest thread count
+    for _, t in ipairs(threads) do
+        t:set("thread_count", t_counter)
+    end
+end
+
 repos = {}
 for line in io.lines("test/testdata/most-stars-repo-in-2021.csv") do
     local repoId = line:match("%s*(.+)")
@@ -11,7 +24,9 @@ wrk.method = "GET"
 wrk.scheme = "https"
 
 request = function()
-    current = repos[counter % #repos + 1]
+    range = math.ceil(#repos / thread_count)
+    offset = (id - 1) * range
+    current = repos[(offset + counter) % #repos + 1]
     path = "https://api.ossinsight.io/q/archive-2021-top10-by-regions?repoId=" .. current
     counter = counter + 1
     return wrk.format(nil, path)

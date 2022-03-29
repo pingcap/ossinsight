@@ -14,10 +14,13 @@ export class MysqlQueryExecutor<T> implements QueryExecutor<T> {
   }
 
   async execute(sql: string): Promise<T> {
-    return new Promise(async (resolve, reject) => {
-      const connection = await this.getConnection();
-      this.executeWithConn(sql, connection).then(resolve).catch(reject)
-    })
+    const connection = await this.getConnection();
+
+    try {
+      return this.executeWithConn(sql, connection)
+    } finally {
+      connection.release()
+    }
   }
 
   async executeWithConn(sql: string, connection: PoolConnection): Promise<T> {

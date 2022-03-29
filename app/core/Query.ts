@@ -7,7 +7,7 @@ import Cache, {CachedData} from "./Cache";
 import {RedisClientType, RedisDefaultModules, RedisModules, RedisScripts} from "redis";
 import consola from "consola";
 import {PoolConnection} from "mysql2";
-import {dataQueryTimer, measure, tidbQueryCounter} from "../metrics";
+import {dataQueryTimer, measure, readConfigTimer, tidbQueryCounter} from "../metrics";
 
 const MAX_CACHE_TIME = DateTime.fromISO('2099-12-31T00:00:00')
 
@@ -88,8 +88,12 @@ export default class Query {
 
     this.loadingPromise = new Promise<boolean>(async (resolve, reject) => {
       try {
-        this.template = await readFile(templateFilePath, {encoding: "utf-8"})
-        this.queryDef = JSON.parse(await readFile(paramsFilePath, {encoding: 'utf-8'})) as QuerySchema
+        await measure(readConfigTimer.labels({ type: 'template.sql' }), async () => {
+          this.template = await readFile(templateFilePath, {encoding: "utf-8"})
+        })
+        await measure(readConfigTimer.labels({ type: 'params.json' }), async () => {
+          this.queryDef = JSON.parse(await readFile(paramsFilePath, {encoding: 'utf-8'})) as QuerySchema
+        })
         resolve(true)
       } catch (err) {
         logger.log('Failed to load query template file: ', err)

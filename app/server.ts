@@ -95,8 +95,9 @@ export default async function server(router: Router<DefaultState, ContextExtends
 
       for (let queryName of queryNames) {
         const query = new Query(queryName, redisClient, executor)
+
         try {
-          resultMap[queryName] = await query.run(ctx.query)
+          resultMap[queryName] = await query.run(ctx.query, false, conn)
         } catch (err) {
           ctx.logger.error('Failed to query for %s: ', queryName, err)
           resultMap[queryName] = {

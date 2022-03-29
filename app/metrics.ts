@@ -35,39 +35,52 @@ export const ghQueryCounter = new Counter({
 export const requestProcessTimer = new Summary({
   name: metricsPrefix + 'request_process_time',
   help: 'Request process time',
-  labelNames: ['url'] as const
+  labelNames: ['url'] as const,
+  percentiles: [0.999, 0.99, 0.95, 0.80, 0.50],
 })
 
 export const waitTidbConnectionTimer = new Summary({
   name: metricsPrefix + 'wait_tidb_connection_time',
   help: 'Wait tidb connection time',
+  percentiles: [0.999, 0.99, 0.95, 0.80, 0.50],
 })
 
 export const dataQueryTimer = new Summary({
   name: metricsPrefix + 'data_query_time',
   help: 'Data query time',
+  percentiles: [0.999, 0.99, 0.95, 0.80, 0.50],
 })
 
 export const tidbQueryTimer = new Summary({
   name: metricsPrefix + 'tidb_query_time',
   help: 'TiDB query time',
+  percentiles: [0.999, 0.99, 0.95, 0.80, 0.50],
 })
 
 export const ghQueryTimer = new Summary({
   name: metricsPrefix + 'gh_api_query_time',
   help: 'GitHub api query timer',
-  labelNames: ['api']
+  labelNames: ['api'],
+  percentiles: [0.999, 0.99, 0.95, 0.80, 0.50],
 })
 
 export const redisQueryTimer = new Summary({
   name: metricsPrefix + 'redis_query_time',
   help: 'Redis query time',
-  labelNames: ['op'] as const
+  labelNames: ['op'] as const,
+  percentiles: [0.999, 0.99, 0.95, 0.80, 0.50],
 })
 
 export const limitedRequestCounter = new Counter({
   name: metricsPrefix + 'limited_http_request_count',
   help: 'Limited HTTP request count',
+})
+
+export const readConfigTimer = new Summary({
+  name: metricsPrefix + 'read_config_time',
+  help: 'Read config timer',
+  labelNames: ['type'],
+  percentiles: [0.999, 0.99, 0.95, 0.80, 0.50],
 })
 
 export async function measure<T>(metrics: Summary<any> | Summary.Internal<any> | Histogram<any> | Histogram.Internal<any>, fn: () => Promise<T>) {
