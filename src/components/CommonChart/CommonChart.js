@@ -48,5 +48,5 @@ function CommonChart({chart: rawChart, noSearch, ...rest}) {
 }
 
 export default function (props) {
-  return <BrowserOnly>{() => <CommonChart {...props} />}</BrowserOnly>
+  return <BrowserOnly fallback={<div style={{ minHeight: 400 }}/>}>{() => <CommonChart {...props} />}</BrowserOnly>
 }
