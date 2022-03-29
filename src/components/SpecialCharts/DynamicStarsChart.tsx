@@ -34,7 +34,7 @@ export default function DynamicStarsChart({data, aspectRatio = '16 / 9', loading
   const {isDarkTheme} = useThemeContext();
 
   const repos = useMemo(() => {
-    return [...new Set(data.map(row => row.repo_name))]
+    return Array.from(new Set(data.map(row => row.repo_name)))
   }, [data])
 
 
