@@ -58,6 +58,7 @@
     "@tsconfig/docusaurus": "^1.0.4",
     "@types/luxon": "^2.0.9",
     "@types/webpack-env": "^1.16.3",
+    "react-intersection-observer": "^8.33.1",
     "react-share": "^4.4.0",
     "swr": "^1.2.2",
     "typescript": "^4.5.5"

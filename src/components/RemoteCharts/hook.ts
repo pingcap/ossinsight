@@ -3,6 +3,8 @@ import {Queries} from "./queries";
 import {createHttpClient} from "../../lib/request";
 import useSWR from "swr";
 import {AxiosRequestConfig} from "axios";
+import {useContext, useEffect, useState} from "react";
+import InViewContext from "../InViewContext";
 
 const httpClient = createHttpClient();
 
@@ -28,8 +30,16 @@ export interface BaseQueryResult<Params extends {
 }
 
 export const useRemoteData = <Q extends keyof Queries, P = Queries[Q]['params'], T = Queries[Q]['data']>(query: Q, params: P, formatSql: boolean, shouldLoad: boolean = true): AsyncData<RemoteData<P, T>> => {
+  const { inView } = useContext(InViewContext)
+  const [viewed, setViewed] = useState(inView)
 
-  const { data, isValidating: loading, error } = useSWR(shouldLoad ? [query, params] : null, {
+  useEffect(() => {
+    if (inView) {
+      setViewed(true)
+    }
+  }, [inView])
+
+  const { data, isValidating: loading, error } = useSWR(shouldLoad && viewed ? [query, params] : null, {
     fetcher: (query, params) => httpClient.get(`/q/${query}`, {params})
       .then(({data}) => {
         if (data.sql && formatSql) {

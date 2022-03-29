@@ -17,8 +17,12 @@ Note:
 
 The number of stars is often thought of as a measure of whether a github repository is popular or not. We sort all database repositories from github by the total number of historical stars since 2011. For visualizing the results more intuitively, we show the top 10 open source databases by using an interactive line chart. 
 
-<iframe  width="100%" height="400" scrolling="no"  src="/charts/database.html?theme=dark">
-</iframe>
+<CommonChart
+  chart='dynamic-stars'
+  category='archive-2021-top10-star-racing'
+  formatSql={false}
+  repo='db_repos'
+/>
 
 ## Top 10 the most starred OSDB repos in 2021
 

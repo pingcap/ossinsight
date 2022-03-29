@@ -1,6 +1,6 @@
 import useSWR, {SWRResponse} from 'swr'
 
-const dataUrl = 'https://community-preview-contributor.tidb.io/gh'
+const dataUrl = 'https://api.ossinsight.io/gh'
 
 interface RepoInfo {
   id: number
