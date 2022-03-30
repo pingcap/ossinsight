@@ -34,6 +34,9 @@ const config = {
           routeBasePath: '_',
         },
         blog: {
+          feedOptions: {
+            type: 'all',
+          },
           showReadingTime: true,
           // Please change this to your repo.
           editUrl: 'https://github.com/pingcap/ossinsight/edit/main/',
