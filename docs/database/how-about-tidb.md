@@ -1,6 +1,5 @@
 ---
 title: 🔥 How about TiDB
-draft: true
 sidebar_class_name: unlisted
 ---
 ## ❓ What is tidb
@@ -17,7 +16,7 @@ Here is a video explaining what TiDB is. You can also check [TiDB documents](htt
 - Docs: https://docs.pingcap.com
 
 
-## 🆚 Comparison
+## 👀 Comparison
 
 ### The most starred OSDB repos since 2011 (updated 1 hour ago)
 
