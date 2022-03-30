@@ -1,8 +1,6 @@
 ---
 title: 🔥 How about TiDB
-"sidebar\_class\_name": "unlisted"
 draft: true
-unlisted: true
 ---
 ## ❓ What is tidb
 
@@ -11,7 +9,6 @@ TiDB is an open source distributed HTAP database compatible with the MySQL proto
 Here is a video explaining what TiDB is. You can also check [TiDB documents](https://docs.pingcap.com/tidb/stable/overview) for more information.
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/R7F7vPnaoTY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-
 
 #### ℹ️  Learn more about TiDB
 - Source Code: https://github.com/pingcap/tidb
