@@ -1,6 +1,7 @@
 ---
 title: 🔥 How about TiDB
 draft: true
+sidebar_class_name: unlisted
 ---
 ## ❓ What is tidb
 
