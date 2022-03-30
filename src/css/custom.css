@@ -194,3 +194,11 @@ html[data-theme='dark'] .navbar-item-github:before {
   background-repeat: no-repeat;
   background-position: center;
 }
+
+
+/*
+ * Customize
+ */
+.menu__list li.unlisted {
+  display: none;
+}
