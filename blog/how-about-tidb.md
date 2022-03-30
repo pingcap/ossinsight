@@ -1,8 +1,8 @@
 ---
 title: 🔥 How about TiDB
-unlisted: true
+draft: true
 ---
-## What is tidb
+## ❓ What is tidb
 
 TiDB is an open source distributed HTAP database compatible with the MySQL protocol
 
@@ -10,14 +10,13 @@ Here is a video explaining what TiDB is. You can also check [TiDB documents](htt
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/R7F7vPnaoTY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
-
-#### Learn more about TiDB
+#### ℹ️  Learn more about TiDB
 - Source Code: https://github.com/pingcap/tidb
 - Official Website: https://en.pingcap.com
 - Docs: https://docs.pingcap.com
 
 
-## Comparison
+## 🆚 Comparison
 
 ### The most starred OSDB repos since 2011 (updated 1 hour ago)
 
