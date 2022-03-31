@@ -16,24 +16,20 @@ export interface ContributorsChartsProps {
 const blank = {}
 export default function ContributorsCharts({type}: ContributorsChartsProps) {
   const remoteData = useRemoteData('rt-osdb-contributors-by-repo-group', blank, false)
-  const {data, loading, error} = remoteData
+  const {data, loading} = remoteData
 
-  const charts = useMemo(() => {
-    return (
-      <BrowserOnly>
-        {() => (
-          <Charts
-            data={data?.data ?? []}
-            loading={loading}
-            size={16}
-            type={type}
-          />
-        )}
-      </BrowserOnly>
-    )
-  }, [data, loading])
-
-  return renderChart('rt-osdb-contributors-by-repo-group', charts, remoteData)
+  return renderChart('rt-osdb-contributors-by-repo-group', (
+    <BrowserOnly>
+      {() => (
+        <Charts
+          data={data?.data ?? []}
+          loading={loading}
+          size={24}
+          type={type}
+        />
+      )}
+    </BrowserOnly>
+  ), remoteData)
 }
 
 type Data = Queries['rt-osdb-contributors-by-repo-group']['data']
@@ -44,7 +40,7 @@ const stepLabels = [
   'Developers with no more than 100 PRs',
   'Developers with more than 100 PRs',
 ]
-type StepData = [repo: string, ...steps: { count: number, percent: number }[]]
+type StepData = [repo: string, ...steps: number[]]
 
 interface ChartsProps {
   data: Data[]
@@ -87,7 +83,7 @@ function Charts({data: rawData, type, loading, size}: ChartsProps) {
       series: steps.map((step, i) => ({
         type: 'bar',
         name: stepLabels[i],
-        data: data.map(([name, ...item]) => item[i].percent),
+        data: data.map((items) => items[i + 1]),
         stack: 'total',
         emphasis: {
           focus: 'series'
@@ -97,17 +93,17 @@ function Charts({data: rawData, type, loading, size}: ChartsProps) {
         }
       } as SeriesOption))
     }
-  }, [steps, type])
+  }, [steps, data, type])
 
   const height = useMemo(() => {
-    return loading ? 400 : Math.max(data.length, 5) * (size * 1.5)
+    return loading ? 400 : data.length * (size * 1.5)
   }, [size, loading, data])
 
   const opts: Opts = useMemo(() => {
     return {
       devicePixelRatio: window?.devicePixelRatio ?? 1,
       renderer: 'canvas',
-      height: height,
+      height,
       width: 'auto',
       locale: 'en'
     }
@@ -163,7 +159,7 @@ function useSteps(data: GroupedData, type: 'prs' | 'contributors'): StepData[] {
           }
         }
       }
-      return [name, ...groups.map(i => ({count: i, percent: i / total}))]
+      return [name, ...groups.map(i => i / total)]
     })
-  }, [data])
+  }, [data, type])
 }
