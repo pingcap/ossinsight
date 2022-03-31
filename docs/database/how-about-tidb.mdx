@@ -3,6 +3,7 @@ title: 🔥 How about TiDB
 sidebar_class_name: unlisted
 ---
 import {CommonChart} from "../../src/components/CommonChart";
+import ContributorsCharts from "../../src/components/ContributorsCharts";
 const tidbGroup = [41986369, 48833910, 53311716]
 
 ## ❓ What is tidb
@@ -254,13 +255,10 @@ The total number of contributors since 2011 about each repository
 rt-osdb-ranking-by-contributors
 ```
 
-<CommonChart
-  chart='barchart'
-  category='rt-osdb-ranking-by-contributors'
-  n={20}
-  formatSql={false}
-  categoryIndex='repo_group_name'
-  valueIndex='num'
-  seriesName='Contributors'
-  categoryType={false}
-/>
+> by PRs
+
+<ContributorsCharts type='prs'/>
+
+> by Contributors
+
+<ContributorsCharts type='contributors'/>

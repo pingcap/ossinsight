@@ -42,7 +42,7 @@ type QueryComponentProps<Q extends keyof Queries> = Queries[Q]["params"] & {
 //   deps: any[]
 // }
 
-function renderChart (query, chart, {error, data}: AsyncData<RemoteData<any, any>>, clear) {
+export function renderChart (query, chart, {error, data}: AsyncData<RemoteData<any, any>>, clear = false) {
   const [showDebugModel, setShowDebugModel] = useState(false);
 
   const handleShowDebugModel = () => {
