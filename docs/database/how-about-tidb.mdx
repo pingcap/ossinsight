@@ -59,6 +59,26 @@ stars-top-50-company
   repoId={tidbGroup}
 />
 
+### Countries/Regions of stargazers
+
+This map will show you which country or region does stargazers come from. They make an issue to report the problem, or request a new feature.
+
+```
+issue-creators-map
+```
+
+<CommonChart
+  chart='worldmapchart'
+  category='stars-map'
+  formatSql={false}
+  categoryIndex='country_or_area'
+  valueIndex='count'
+  seriesName='stargazers'
+  effect={false}
+  size={56}
+  repoId={tidbGroup}
+/>
+
 ### Issues
 Total number of issues, issue submitters, issues comments, and issue commenters since 2011.
 
@@ -116,8 +136,20 @@ rt-osdb-ranking-by-average-issue-open-to-first-responed
 This map will show you which country or region does issue creators come from. They make an issue to report the problem, or request a new feature.
 
 ```
-map chart
+issue-creators-map
 ```
+
+<CommonChart
+  chart='worldmapchart'
+  category='issue-creators-map'
+  formatSql={false}
+  categoryIndex='country_or_area'
+  valueIndex='count'
+  seriesName='Issue openers'
+  effect={false}
+  size={56}
+  repoId={tidbGroup}
+/>
 
 ### Pull Requests
 
@@ -164,8 +196,20 @@ If you want to learn company distribution about other repository, please visit: 
 This map shows you where the PR creators come from and which countries or regions like the project the best.
 
 ```
-map chart
+pull-request-creators-map
 ```
+
+<CommonChart
+  chart='worldmapchart'
+  category='pull-request-creators-map'
+  formatSql={false}
+  categoryIndex='country_or_area'
+  valueIndex='count'
+  seriesName='PR creators'
+  effect={false}
+  size={56}
+  repoId={tidbGroup}
+/>
 
 ### Heat Map of Commits Time about PRs
 

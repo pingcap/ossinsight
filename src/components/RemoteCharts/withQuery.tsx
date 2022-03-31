@@ -193,7 +193,7 @@ export function withZScoreChartQuery<Q extends keyof Queries, D = RemoteData<Que
 export function withWorldMapChartQuery<Q extends keyof Queries, D = RemoteData<Queries[Q]['params'], Queries[Q]['data']>>
 (query: Q, indices: Indexes<Q>): React.FC<QueryComponentProps<Q>> {
   const { valueIndex, categoryIndex } = indices
-  return ({formatSql = true, children, seriesName, ...params}: QueryComponentProps<Q>) => {
+  return ({formatSql = true, children, seriesName, effect, size, ...params}: QueryComponentProps<Q>) => {
     const remoteData = useRemoteData(query, params, formatSql);
     const { data, loading } = remoteData
 
@@ -204,6 +204,8 @@ export function withWorldMapChartQuery<Q extends keyof Queries, D = RemoteData<Q
         dimensionColumnName={categoryIndex}
         metricColumnName={valueIndex}
         seriesName={seriesName}
+        effect={effect}
+        size={size}
       />
     )
 
