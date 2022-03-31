@@ -11,10 +11,11 @@ import {Opts} from "echarts-for-react/lib/types";
 
 export interface ContributorsChartsProps {
   type: 'prs' | 'contributors'
+  percent?: boolean
 }
 
 const blank = {}
-export default function ContributorsCharts({type}: ContributorsChartsProps) {
+export default function ContributorsCharts({type, percent = false}: ContributorsChartsProps) {
   const remoteData = useRemoteData('rt-osdb-contributors-by-repo-group', blank, false)
   const {data, loading} = remoteData
 
@@ -26,6 +27,7 @@ export default function ContributorsCharts({type}: ContributorsChartsProps) {
           loading={loading}
           size={24}
           type={type}
+          percent={percent}
         />
       )}
     </BrowserOnly>
@@ -40,19 +42,20 @@ const stepLabels = [
   'Developers with no more than 100 PRs',
   'Developers with more than 100 PRs',
 ]
-type StepData = [repo: string, ...steps: number[]]
+type StepData = [repo: string, total: number, ...steps: number[]]
 
 interface ChartsProps {
   data: Data[]
   type: 'prs' | 'contributors'
+  percent: boolean
   loading: boolean
   size: number
 }
 
-function Charts({data: rawData, type, loading, size}: ChartsProps) {
+function Charts({data: rawData, type, percent, loading, size}: ChartsProps) {
   const {isDarkTheme} = useThemeContext();
   const ordered = useOrdered(rawData)
-  const data = useSteps(ordered, type)
+  const data = useSteps(ordered, type, percent)
 
   const option: EChartsOption = useMemo(() => {
     return {
@@ -71,9 +74,11 @@ function Charts({data: rawData, type, loading, size}: ChartsProps) {
         position: 'top',
         name: type,
         axisLabel: {
-          formatter: (value: number) => (value * 100) + '%'
+          formatter: percent
+            ? (value: number) => (value * 100) + '%'
+            : (value) => `${value} ${type}`
         },
-        max: 1
+        max: percent ? 1 : undefined
       },
       yAxis: {
         type: 'category',
@@ -83,13 +88,20 @@ function Charts({data: rawData, type, loading, size}: ChartsProps) {
       series: steps.map((step, i) => ({
         type: 'bar',
         name: stepLabels[i],
-        data: data.map((items) => items[i + 1]),
+        data: data.map((items) => items[i + 2]),
         stack: 'total',
         emphasis: {
           focus: 'series'
         },
+        label: !percent && i === steps.length - 1 ? {
+          show: true,
+          position: "right",
+          formatter: (params) => `${data[params.dataIndex][1]}`
+        } : undefined,
         tooltip: {
-          valueFormatter: (value) => ((value as number) * 100).toFixed(1) + '%'
+          valueFormatter: (value) => percent
+            ? ((value as number) * 100).toFixed(1) + '%'
+            : value
         }
       } as SeriesOption))
     }
@@ -144,7 +156,7 @@ function useOrdered(data: Data[]): GroupedData {
   }, {}), [data])
 }
 
-function useSteps(data: GroupedData, type: 'prs' | 'contributors'): StepData[] {
+function useSteps(data: GroupedData, type: 'prs' | 'contributors', percent: boolean): StepData[] {
   return useMemo(() => {
     return Object.entries(data).map(([name, obj]) => {
       const groups = steps.map(() => 0)
@@ -159,7 +171,8 @@ function useSteps(data: GroupedData, type: 'prs' | 'contributors'): StepData[] {
           }
         }
       }
-      return [name, ...groups.map(i => i / total)]
+      return [name, total, ...groups.map(i => percent ? i / total : i)] as StepData
     })
+      .sort((a, b) => (b[1] as number) - (a[1] as number))
   }, [data, type])
 }
