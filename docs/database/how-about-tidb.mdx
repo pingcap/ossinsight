@@ -2,6 +2,8 @@
 title: 🔥 How about TiDB
 sidebar_class_name: unlisted
 ---
+import {CommonChart} from "../../src/components/CommonChart";
+
 ## ❓ What is tidb
 
 TiDB is an open source distributed HTAP database compatible with the MySQL protocol
@@ -23,8 +25,19 @@ Here is a video explaining what TiDB is. You can also check [TiDB documents](htt
 The number of stars is often thought of as a measure of whether a github repository is popular or not. We sort all database repositories from github by the total number of historical stars since 2011.
 
 ```
-column chart
+rt-osdb-ranking-by-stars
 ```
+
+<CommonChart
+  chart='barchart'
+  category='rt-osdb-ranking-by-stars'
+  n={20}
+  formatSql={false}
+  categoryIndex='repo_group_name'
+  valueIndex='num'
+  seriesName='Stars'
+  categoryType={false}
+/>
 
 ### Company of stargazers
 
@@ -38,20 +51,53 @@ pie chart
 Total number of issues, issue submitters, issues comments, and issue commenters since 2011.
 
 ```
-column chart
+rt-osdb-ranking-by-issues
 ```
+
+<CommonChart
+  chart='barchart'
+  category='rt-osdb-ranking-by-issues'
+  n={20}
+  formatSql={false}
+  categoryIndex='repo_group_name'
+  valueIndex='num'
+  seriesName='Issues'
+  categoryType={false}
+/>
 
 ### Average time cost from open issue to close
 
 ```
-column chart
+rt-osdb-ranking-by-average-issue-open-to-close
 ```
+
+<CommonChart
+  chart='barchart'
+  category='rt-osdb-ranking-by-average-issue-open-to-close'
+  n={20}
+  formatSql={false}
+  categoryIndex='repo_group_name'
+  valueIndex='days'
+  seriesName='Days'
+  categoryType={false}
+/>
 
 ### Average time cost from open issue to first response
 
 ```
-column chart
+rt-osdb-ranking-by-average-issue-open-to-first-responed
 ```
+
+<CommonChart
+  chart='barchart'
+  category='rt-osdb-ranking-by-average-issue-open-to-first-responed'
+  n={20}
+  formatSql={false}
+  categoryIndex='repo_group_name'
+  valueIndex='days'
+  seriesName='Days'
+  categoryType={false}
+/>
 
 ### Countries/Regions of Issue Openers
 
@@ -66,8 +112,19 @@ map chart
 Total number of pull requests (PRs), PR creators, PR reviews, and PR reviewers since 2011.
 
 ```
-column chart
+rt-osdb-ranking-by-prs
 ```
+
+<CommonChart
+  chart='barchart'
+  category='rt-osdb-ranking-by-prs'
+  n={20}
+  formatSql={false}
+  categoryIndex='repo_group_name'
+  valueIndex='num'
+  seriesName='PRs'
+  categoryType={false}
+/>
 
 ### Company of PR Creators about TiDB
 The pie charts describe the major companies of PR creators for each project.
@@ -98,13 +155,35 @@ heatmap
 ### Average time cost from open pull request to close it
 
 ```
-column chart
+rt-osdb-ranking-by-median-pr-open-to-merge
 ```
+
+<CommonChart
+  chart='barchart'
+  category='rt-osdb-ranking-by-median-pr-open-to-merge'
+  n={20}
+  formatSql={false}
+  categoryIndex='repo_group_name'
+  valueIndex='days'
+  seriesName='Days'
+  categoryType={false}
+/>
 
 ### Contributors
 
 The total number of contributors since 2011 about each repository
 
 ```
-column chart
+rt-osdb-ranking-by-contributors
 ```
+
+<CommonChart
+  chart='barchart'
+  category='rt-osdb-ranking-by-contributors'
+  n={20}
+  formatSql={false}
+  categoryIndex='repo_group_name'
+  valueIndex='num'
+  seriesName='Contributors'
+  categoryType={false}
+/>
