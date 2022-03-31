@@ -1,4 +1,6 @@
 export {default as BarChart, BarChartLegacy} from './BarChart'
+export {default as PieChart, PieChartProps} from './PieChart'
+export {default as HeatMapChart, HeatMapChartProps} from './HeatMap'
 export {default as DataGrid, DataGridColumn} from './DataGrid'
 export {default as ChartWithSql, renderCodes} from './withSql'
 export {registerThemeVintage, registerThemeDark} from './theme'

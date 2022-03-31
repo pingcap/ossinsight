@@ -19,6 +19,8 @@ export interface WorldMapChartProps<T> {
   seriesName?: string
   dimensionColumnName: keyof T
   metricColumnName: keyof T
+  effect?: boolean
+  size?: number
 }
 
 export default function WorldMapChart<T>(props: WorldMapChartProps<T>) {
@@ -27,7 +29,9 @@ export default function WorldMapChart<T>(props: WorldMapChartProps<T>) {
     data,
     seriesName = 'Count',
     dimensionColumnName,
-    metricColumnName
+    metricColumnName,
+    effect = true,
+    size = 24
   } = props;
   const theme = useTheme();
   const isSmall = useMediaQuery(theme.breakpoints.down('md'))
@@ -65,7 +69,7 @@ export default function WorldMapChart<T>(props: WorldMapChartProps<T>) {
         const {long, lat} = alpha2ToGeo((item[dimensionColumnName] as any as string).toUpperCase()) || {}
 
         return {
-          type: "effectScatter",
+          type: effect ? "effectScatter" : 'scatter',
           geoIndex: 0,
           coordinateSystem: 'geo',
           name: title,
@@ -77,7 +81,7 @@ export default function WorldMapChart<T>(props: WorldMapChartProps<T>) {
           },
           data: [[long, lat, value, title]],
           symbolSize: function (val) {
-            return 1 + Math.sqrt(val[2] / max) * 24;
+            return 1 + Math.sqrt(val[2] / max) * size;
           },
         }
       }),
@@ -89,7 +93,7 @@ export default function WorldMapChart<T>(props: WorldMapChartProps<T>) {
         containLabel: true
       },
     }
-  }, [data, isDarkTheme, isSmall])
+  }, [data, isDarkTheme, isSmall, effect])
 
   return (
     <ReactECharts

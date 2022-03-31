@@ -1,0 +1,268 @@
+---
+title: 🔥 How about TiDB
+sidebar_class_name: unlisted
+---
+import {CommonChart} from "../../src/components/CommonChart";
+import ContributorsCharts from "../../src/components/ContributorsCharts";
+const tidbGroup = [41986369, 48833910, 53311716]
+
+## ❓ What is tidb
+
+TiDB is an open source distributed HTAP database compatible with the MySQL protocol
+
+Here is a video explaining what TiDB is. You can also check [TiDB documents](https://docs.pingcap.com/tidb/stable/overview) for more information.
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/R7F7vPnaoTY" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
+
+#### ℹ️  Learn more about TiDB
+- Source Code: https://github.com/pingcap/tidb
+- Official Website: https://en.pingcap.com
+- Docs: https://docs.pingcap.com
+
+
+## 👀 Comparison
+
+### The most starred OSDB repos since 2011 (updated 1 hour ago)
+
+The number of stars is often thought of as a measure of whether a github repository is popular or not. We sort all database repositories from github by the total number of historical stars since 2011.
+
+```
+rt-osdb-ranking-by-stars
+```
+
+<CommonChart
+  chart='barchart'
+  category='rt-osdb-ranking-by-stars'
+  n={20}
+  formatSql={false}
+  categoryIndex='repo_group_name'
+  valueIndex='num'
+  seriesName='Stars'
+  categoryType={false}
+/>
+
+### Company of stargazers
+
+The pie charts describe the major companies of stargazers for each project.
+
+```
+stars-top-50-company
+```
+
+<CommonChart
+  chart='piechart'
+  category='stars-top-50-company'
+  formatSql={false}
+  categoryIndex='company_name'
+  valueIndex='stargazers'
+  categoryType='owner'
+  seriesName='Stargazers'
+  repoId={tidbGroup}
+/>
+
+### Countries/Regions of stargazers
+
+This map will show you which country or region does stargazers come from. They make an issue to report the problem, or request a new feature.
+
+```
+issue-creators-map
+```
+
+<CommonChart
+  chart='worldmapchart'
+  category='stars-map'
+  formatSql={false}
+  categoryIndex='country_or_area'
+  valueIndex='count'
+  seriesName='stargazers'
+  effect={false}
+  size={56}
+  repoId={tidbGroup}
+/>
+
+### Issues
+Total number of issues, issue submitters, issues comments, and issue commenters since 2011.
+
+```
+rt-osdb-ranking-by-issues
+```
+
+<CommonChart
+  chart='barchart'
+  category='rt-osdb-ranking-by-issues'
+  n={20}
+  formatSql={false}
+  categoryIndex='repo_group_name'
+  valueIndex='num'
+  seriesName='Issues'
+  categoryType={false}
+/>
+
+### Average time cost from open issue to close
+
+```
+rt-osdb-ranking-by-average-issue-open-to-close
+```
+
+<CommonChart
+  chart='barchart'
+  category='rt-osdb-ranking-by-average-issue-open-to-close'
+  n={20}
+  formatSql={false}
+  categoryIndex='repo_group_name'
+  valueIndex='days'
+  seriesName='Days'
+  categoryType={false}
+/>
+
+### Average time cost from open issue to first response
+
+```
+rt-osdb-ranking-by-average-issue-open-to-first-responed
+```
+
+<CommonChart
+  chart='barchart'
+  category='rt-osdb-ranking-by-average-issue-open-to-first-responed'
+  n={20}
+  formatSql={false}
+  categoryIndex='repo_group_name'
+  valueIndex='days'
+  seriesName='Days'
+  categoryType={false}
+/>
+
+### Countries/Regions of Issue Openers
+
+This map will show you which country or region does issue creators come from. They make an issue to report the problem, or request a new feature.
+
+```
+issue-creators-map
+```
+
+<CommonChart
+  chart='worldmapchart'
+  category='issue-creators-map'
+  formatSql={false}
+  categoryIndex='country_or_area'
+  valueIndex='count'
+  seriesName='Issue openers'
+  effect={false}
+  size={56}
+  repoId={tidbGroup}
+/>
+
+### Pull Requests
+
+Total number of pull requests (PRs), PR creators, PR reviews, and PR reviewers since 2011.
+
+```
+rt-osdb-ranking-by-prs
+```
+
+<CommonChart
+  chart='barchart'
+  category='rt-osdb-ranking-by-prs'
+  n={20}
+  formatSql={false}
+  categoryIndex='repo_group_name'
+  valueIndex='num'
+  seriesName='PRs'
+  categoryType={false}
+/>
+
+### Company of PR Creators about TiDB
+The pie charts describe the major companies of PR creators for each project.
+
+```
+pull-request-creators-top-50-company
+```
+
+<CommonChart
+  chart='piechart'
+  category='pull-request-creators-top-50-company'
+  formatSql={false}
+  categoryIndex='company_name'
+  valueIndex='code_contributors'
+  categoryType='owner'
+  seriesName='Contributors'
+  repoId={tidbGroup}
+/>
+
+:::info
+If you want to learn company distribution about other repository, please visit: https://ossinsight.io/compare.
+:::
+
+### Countries/Regions of PR Creators
+This map shows you where the PR creators come from and which countries or regions like the project the best.
+
+```
+pull-request-creators-map
+```
+
+<CommonChart
+  chart='worldmapchart'
+  category='pull-request-creators-map'
+  formatSql={false}
+  categoryIndex='country_or_area'
+  valueIndex='count'
+  seriesName='PR creators'
+  effect={false}
+  size={56}
+  repoId={tidbGroup}
+/>
+
+### Heat Map of Commits Time about PRs
+
+The Heat Maps of Commits Time display the number of push events occurring at a particular point of time. The Y-axis represents seven days a week, and the X-axis represents 24 hours a day according to the Universal Time Coordinated (UTC). The lighter color in this heat map indicates that less push events occur at a particular point of time. On the contrary, the darker color indicates more push events occurring.
+
+```
+heatmap
+```
+
+<CommonChart
+  chart='heatmapchart'
+  category='commits-time-distribution'
+  xIndex='hour'
+  yIndex='dayofweek'
+  valueIndex='pushes'
+  formatSql={false}
+  repoId={tidbGroup}
+/>
+
+### Average time cost from open pull request to close it
+
+```
+rt-osdb-ranking-by-average-pr-open-to-merge
+```
+
+<CommonChart
+  chart='barchart'
+  category='rt-osdb-ranking-by-average-pr-open-to-merge'
+  n={20}
+  formatSql={false}
+  categoryIndex='repo_group_name'
+  valueIndex='days'
+  seriesName='Days'
+  categoryType={false}
+/>
+
+### Contributors
+
+The total number of contributors since 2011 about each repository
+
+```
+rt-osdb-ranking-by-contributors
+```
+
+> by PRs
+
+<ContributorsCharts type='prs' percent/>
+
+<ContributorsCharts type='prs'/>
+
+> by Contributors
+
+<ContributorsCharts type='contributors' percent/>
+
+<ContributorsCharts type='contributors'/>
