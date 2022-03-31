@@ -6,7 +6,7 @@ import Alert from "@mui/material/Alert";
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 // @ts-ignore
 import CodeBlock from '@theme/CodeBlock';
-import {BarChart, PieChart, ChartWithSql, DataGrid, DataGridColumn} from '../BasicCharts';
+import {BarChart, PieChart, ChartWithSql, DataGrid, DataGridColumn, HeatMapChart} from '../BasicCharts';
 import {Queries} from "./queries";
 import {DebugInfoModel} from "./DebugInfoModel";
 import {YoyChart} from "../SpecialCharts";
@@ -16,6 +16,12 @@ import DynamicStarsChart from "../SpecialCharts/DynamicStarsChart";
 
 type Indexes<Q extends keyof Queries> = {
   categoryIndex: keyof Queries[Q]['data']
+  valueIndex: keyof Queries[Q]['data']
+}
+
+type HeatMapIndexes<Q extends keyof Queries> = {
+  xIndex: keyof Queries[Q]['data']
+  yIndex: keyof Queries[Q]['data']
   valueIndex: keyof Queries[Q]['data']
 }
 
@@ -109,6 +115,27 @@ export function withPieChartQuery<Q extends keyof Queries, D = RemoteData<Querie
         categoryIndex={categoryIndex}
         type={categoryType}
         valueIndex={valueIndex}
+      />
+    )
+
+    return renderChart(query, chart, remoteData, false)
+  }
+}
+
+export function withHeatMapChartQuery<Q extends keyof Queries, D = RemoteData<Queries[Q]['params'], Queries[Q]['data']>>
+(query: Q, indices: HeatMapIndexes<Q>): React.FC<QueryComponentProps<Q>> {
+  return ({formatSql = true, children, xIndex = indices.xIndex, yIndex = indices.yIndex, valueIndex = indices.valueIndex, seriesName, ...params}: QueryComponentProps<Q>) => {
+    const remoteData = useRemoteData(query, params, formatSql);
+    const { data, loading } = remoteData
+
+    const chart = (
+      <HeatMapChart
+        loading={loading}
+        data={data?.data ?? []}
+        deps={Object.values(params)}
+        xAxisColumnName={xIndex}
+        yAxisColumnName={yIndex}
+        valueColumnName={valueIndex}
       />
     )
 

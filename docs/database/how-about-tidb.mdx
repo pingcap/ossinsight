@@ -175,6 +175,16 @@ The Heat Maps of Commits Time display the number of push events occurring at a p
 heatmap
 ```
 
+<CommonChart
+  chart='heatmapchart'
+  category='commits-time-distribution'
+  xIndex='hour'
+  yIndex='dayofweek'
+  valueIndex='pushes'
+  formatSql={false}
+  repoId={tidbGroup}
+/>
+
 ### Average time cost from open pull request to close it
 
 ```
