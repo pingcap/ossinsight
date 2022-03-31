@@ -3,6 +3,7 @@ title: 🔥 How about TiDB
 sidebar_class_name: unlisted
 ---
 import {CommonChart} from "../../src/components/CommonChart";
+const tidbGroup = [41986369, 48833910, 53311716]
 
 ## ❓ What is tidb
 
@@ -44,8 +45,19 @@ rt-osdb-ranking-by-stars
 The pie charts describe the major companies of stargazers for each project.
 
 ```
-pie chart
+stars-top-50-company
 ```
+
+<CommonChart
+  chart='piechart'
+  category='stars-top-50-company'
+  formatSql={false}
+  categoryIndex='company_name'
+  valueIndex='stargazers'
+  categoryType='owner'
+  seriesName='Stargazers'
+  repoId={tidbGroup}
+/>
 
 ### Issues
 Total number of issues, issue submitters, issues comments, and issue commenters since 2011.
@@ -130,8 +142,19 @@ rt-osdb-ranking-by-prs
 The pie charts describe the major companies of PR creators for each project.
 
 ```
-pie chart
+pull-request-creators-top-50-company
 ```
+
+<CommonChart
+  chart='piechart'
+  category='pull-request-creators-top-50-company'
+  formatSql={false}
+  categoryIndex='company_name'
+  valueIndex='code_contributors'
+  categoryType='owner'
+  seriesName='Contributors'
+  repoId={tidbGroup}
+/>
 
 :::info
 If you want to learn company distribution about other repository, please visit: https://ossinsight.io/compare.

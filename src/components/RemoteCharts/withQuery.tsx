@@ -6,7 +6,7 @@ import Alert from "@mui/material/Alert";
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 // @ts-ignore
 import CodeBlock from '@theme/CodeBlock';
-import {BarChart, ChartWithSql, DataGrid, DataGridColumn} from '../BasicCharts';
+import {BarChart, PieChart, ChartWithSql, DataGrid, DataGridColumn} from '../BasicCharts';
 import {Queries} from "./queries";
 import {DebugInfoModel} from "./DebugInfoModel";
 import {YoyChart} from "../SpecialCharts";
@@ -91,6 +91,28 @@ export function withBarChartQuery<Q extends keyof Queries, D = RemoteData<Querie
     )
 
     return renderChart(query, chart, remoteData, clear)
+  }
+}
+
+export function withPieChartQuery<Q extends keyof Queries, D = RemoteData<Queries[Q]['params'], Queries[Q]['data']>>
+(query: Q, indices: Indexes<Q>): React.FC<QueryComponentProps<Q>> {
+  return ({formatSql = true, children, categoryIndex = indices.categoryIndex, valueIndex = indices.valueIndex, seriesName, categoryType, ...params}: QueryComponentProps<Q>) => {
+    const remoteData = useRemoteData(query, params, formatSql);
+    const { data, loading } = remoteData
+
+    const chart = (
+      <PieChart
+        seriesName={seriesName}
+        loading={loading}
+        data={data?.data ?? []}
+        deps={Object.values(params)}
+        categoryIndex={categoryIndex}
+        type={categoryType}
+        valueIndex={valueIndex}
+      />
+    )
+
+    return renderChart(query, chart, remoteData, false)
   }
 }
 

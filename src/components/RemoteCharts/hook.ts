@@ -29,6 +29,18 @@ export interface BaseQueryResult<Params extends {
   data: Data
 }
 
+function paramsSerializer (params: any): string {
+  const usp = new URLSearchParams()
+  for (let [key, value] of Object.entries(params)) {
+    if (Array.isArray(value)) {
+      value.forEach(item => usp.append(key, item))
+    } else {
+      usp.set(key, String(value))
+    }
+  }
+  return usp.toString()
+}
+
 export const useRemoteData = <Q extends keyof Queries, P = Queries[Q]['params'], T = Queries[Q]['data']>(query: Q, params: P, formatSql: boolean, shouldLoad: boolean = true): AsyncData<RemoteData<P, T>> => {
   const { inView } = useContext(InViewContext)
   const [viewed, setViewed] = useState(inView)
@@ -40,7 +52,7 @@ export const useRemoteData = <Q extends keyof Queries, P = Queries[Q]['params'],
   }, [inView])
 
   const { data, isValidating: loading, error } = useSWR(shouldLoad && viewed ? [query, params] : null, {
-    fetcher: (query, params) => httpClient.get(`/q/${query}`, {params})
+    fetcher: (query, params) => httpClient.get(`/q/${query}`, {params, paramsSerializer })
       .then(({data}) => {
         if (data.sql && formatSql) {
           data.sql = format(data.sql)
