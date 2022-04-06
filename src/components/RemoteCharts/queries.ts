@@ -44,5 +44,5 @@ export interface Queries extends Record<string, BaseQueryResult<any, any>> {
   'rt-top20-by-developers': BaseQueryResult<{ repo: string }, { repo_name: string, num: number }>
   'rt-top20-by-companies': BaseQueryResult<{ repo: string }, { company: string, num: number }>
   'rt-top5-by-language': BaseQueryResult<{ repo: string }, { language: string, num: number }>
-
+  'rt-osdb-contributors-by-repo-group': BaseQueryResult<{}, { repo_group_name: string, contributor: string, prs: number }>
 }
