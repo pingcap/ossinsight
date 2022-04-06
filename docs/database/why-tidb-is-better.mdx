@@ -8,7 +8,7 @@ const tidbGroup = [41986369, 48833910, 53311716]
 
 ## ❓ What is tidb
 
-TiDB is an open source distributed HTAP database compatible with the MySQL protocol
+TiDB is an open source distributed Hybrid Transactional and Analytical Processing (HTAP) database compatible with the MySQL protocol.
 
 Here is a video explaining what TiDB is. You can also check [TiDB documents](https://docs.pingcap.com/tidb/stable/overview) for more information.
 
@@ -22,9 +22,15 @@ Here is a video explaining what TiDB is. You can also check [TiDB documents](htt
 
 ## 👀 Comparison
 
-### The most starred OSDB repos since 2011 (updated 1 hour ago)
+Now we can use TiDB as an example, analyze it in four aspects: stars, issues, PRs and contributors. You can also select any repo in the filter box to compare with it.
 
-The number of stars is often thought of as a measure of whether a github repository is popular or not. We sort all database repositories from github by the total number of historical stars since 2011.
+### Stars
+
+#### The most starred OSDB repos since 2011 (updated 1 hour ago)
+
+The number of stars is an important and commonly used metric to measure the popularity of a repository. We sort all database repositories from GitHub and rank them by their accumulated number of stars. 
+
+In this bar chart, we can see that TiDB ranks second in the most starred open source database repos since 2011, which is enough to show that it is very popular in the field of open source databases.
 
 ```
 rt-osdb-ranking-by-stars
@@ -41,9 +47,9 @@ rt-osdb-ranking-by-stars
   categoryType={false}
 />
 
-### Company of stargazers
+#### Stargazers from Top 50 Companies in the TiDB repo
 
-The pie charts describe the major companies of stargazers for each project.
+We can see which companies (top 50) star the TiDB repo most in this pie chart. Among them, many open source enthusiasts from Chinese Internet giants such as Tencent, Alibaba, and Bytedance expressed their appreciation for TiDB. At the same time, hundreds of developers from Google, Microsoft and Facebook also starred the TiDB repo. It can be seen that TiDB is concerned and loved around the world.
 
 ```
 stars-top-50-company
@@ -60,9 +66,11 @@ stars-top-50-company
   repoId={tidbGroup}
 />
 
-### Countries/Regions of stargazers
+#### Countries/Regions of stargazers
 
 This map will show you which country or region does stargazers come from. They make an issue to report the problem, or request a new feature.
+
+We display the geographic information by all stargazers on the map. They come from 146 countries and regions except for Antarctica. It can be seen that in addition to China (where PingCAP is headquartered), the United States and Europe have gathered the most stargazers, and there are scattered stargazers in other regions. It can also be inferred that the TiDB is popular all over the world.
 
 ```
 issue-creators-map
@@ -81,7 +89,10 @@ issue-creators-map
 />
 
 ### Issues
+
 Total number of issues, issue submitters, issues comments, and issue commenters since 2011.
+
+Judging from the total number of issues, TiDB repo has a total of 155562 issues, ranking the top 3 in all open source database repos, and 4675 more than clickhouse. We judge the activeness of an open source repository by referring to the number of issues. Generally, the higher number of issues means more developers are involved in a repository, which presents the active level of it. Therefore, the activity of the TiDB repo can be considered to be at the forefront of the open source database area.
 
 ```
 rt-osdb-ranking-by-issues
@@ -98,7 +109,9 @@ rt-osdb-ranking-by-issues
   categoryType={false}
 />
 
-### Average time cost from open issue to close
+In order to prevent the phenomenon of submitting issues maliciously(only open but not closed), we can also refer to the average opening/ closing time and initial response time of issues in open source database repos to make the evaluation.
+
+#### Average time cost from open issue to close
 
 ```
 rt-osdb-ranking-by-average-issue-open-to-close
@@ -115,7 +128,7 @@ rt-osdb-ranking-by-average-issue-open-to-close
   categoryType={false}
 />
 
-### Average time cost from open issue to first response
+#### Average time cost from open issue to first response
 
 ```
 rt-osdb-ranking-by-average-issue-open-to-first-responed
@@ -132,10 +145,11 @@ rt-osdb-ranking-by-average-issue-open-to-first-responed
   categoryType={false}
 />
 
-### Countries/Regions of Issue Openers
+#### Countries/Regions of Issue Openers
 
-This map will show you which country or region does issue creators come from. They make an issue to report the problem, or request a new feature.
+This map will show you which country or region issue creators come from. They make an issue to report the problem, or request a new feature.
 
+We can see that in addition to China, contributors from 38 countries around the world have submitted issues for the TiDB repository from this .
 ```
 issue-creators-map
 ```
@@ -156,6 +170,8 @@ issue-creators-map
 
 Total number of pull requests (PRs), PR creators, PR reviews, and PR reviewers since 2011.
 
+In addition to stars and issues, the number of PRs is an important indicator for measuring the activity of repos. The higher number of PRs, are considered as a repository more active basically. In the following bar chart, the total number of PRs of TiDB ranks No.3 in all open source database repos after elasticsearch and cockroachdb, and the gap with second place is gradually narrowing.
+
 ```
 rt-osdb-ranking-by-prs
 ```
@@ -171,8 +187,12 @@ rt-osdb-ranking-by-prs
   categoryType={false}
 />
 
-### Company of PR Creators about TiDB
+#### Company of PR Creators about TiDB
 The pie charts describe the major companies of PR creators for each project.
+
+We can also analyze the origin of PR creators about TiDB. If all PRs come from the same company, the definition of open source will be called into question. We use the pie chart below to show the Top 50 companies of contributors who submitted PRs for TiDB. 
+
+Of course, as the parent company of TiDB, PingCAP has become a gathering place for PR creators. But what is surprising is that hundreds of open source enthusiasts from different companies also contributed to TiDB, and their proportion is  more than 60%, far exceeding PingCAP itself. This also shows that TiDB is a real open source database, and the TiDB community is a typical vibrant organization.
 
 ```
 pull-request-creators-top-50-company
@@ -193,8 +213,11 @@ pull-request-creators-top-50-company
 If you want to learn company distribution about other repository, please visit: https://ossinsight.io/compare.
 :::
 
-### Countries/Regions of PR Creators
+#### Countries/Regions of PR Creators
 This map shows you where the PR creators come from and which countries or regions like the project the best.
+
+From the perspective of geographical distribution, people who contributed to TiDB can also 
+measure the repository's popularity and diversity in all open source database repos. We can see that TiDB is an active, inclusive, and international open source project in this map.
 
 ```
 pull-request-creators-map
@@ -212,9 +235,13 @@ pull-request-creators-map
   repoId={tidbGroup}
 />
 
-### Heat Map of Commits Time about PRs
+#### Heat Map of Commits Time about PRs
 
-The Heat Maps of Commits Time display the number of push events occurring at a particular point of time. The Y-axis represents seven days a week, and the X-axis represents 24 hours a day according to the Universal Time Coordinated (UTC). The lighter color in this heat map indicates that less push events occur at a particular point of time. On the contrary, the darker color indicates more push events occurring.
+We can also analyze the activity of open source repos from the commits time. The figure below shows the time heat map for PRs commits.
+
+The Heat Maps of Commits Time display the number of push events occurring at a particular point of time. The Y-axis represents 7 days a week, and the X-axis represents 24 hours a day according to the Universal Time Coordinated (UTC). The lighter color in this heat map indicates that less push events occur at a particular point of time. On the contrary, the darker color indicates more push events occurring. 
+
+From this heat map, we can see that the vast majority of PRs are committed between 2:00 - 16:00,（UTC） indicating that in addition to the vast majority of Chinese contributors, there are also contributors from different time zones who have contributed to TiDB during working hours.
 
 ```
 heatmap
@@ -230,7 +257,9 @@ heatmap
   repoId={tidbGroup}
 />
 
-### Average time cost from open pull request to close it
+#### Average time cost from open pull request to close it
+
+It is unilateral to prove that the repository is active only by the number of submitted PRs. It is also necessary to pay attention to the life cycle of a PR (from start to finish) to assist in analyzing the activity and health of open source repos. As you can see from the bar chart below, the PR life cycle length varies widely between repos. On average, hive and ignite take almost 120 days to close a PR, while TiDB, which is also on the list, only takes about 10 days.
 
 ```
 rt-osdb-ranking-by-average-pr-open-to-merge
@@ -249,7 +278,7 @@ rt-osdb-ranking-by-average-pr-open-to-merge
 
 ### Contributors
 
-The total number of contributors since 2011 about each repository
+The total number of contributors since 2011 about each repository.
 
 ```
 rt-osdb-ranking-by-contributors
@@ -257,14 +286,23 @@ rt-osdb-ranking-by-contributors
 
 > by Contributors
 
+In addition to the above three criteria for measuring the activity of an open source database repository, some interesting conclusions can be drawn from the analysis from the perspective of contributors.
+
+Usually, a non-full-time contributor will contribute no more than 100 PRs in the same repository (unless he/she is a super fan of the repository). In order to reasonable to assume whether the people participating in the open source community are real community members (not company employees). We group all contributors by the total number of PRs submitted by themselves into <= 10,<= 100,> 100. Then we can get insights of the TiDB community.
+
 #### The percentage of different types of contributors in total contributors
 *All contributors are classified according to the total number of PRs submitted by themselves into <= 10,<= 100,> 100.
 
 <ContributorsCharts type='contributors' percent/>
 
+In order to obtain a comprehensive and objective analysis result, we recommend that the total number of contributors and the proportion of contributors be compared together. Contributors who submitted less than 10 PRs in the TiDB repository accounted for 76.8% of total PRs which is 806 contributors. There are more than 300 contributors who submitted more than 10 PRs for TiDB. It can be seen that the research and development resources of TiDB are very sufficient, and the quality of the code can be trusted.
+
 <ContributorsCharts type='contributors'/>
 
 > by PRs
+
+We can also measure the health of a repository with the percentage of the total number of PRs submitted by these different types of contributors.
+7.4% of contributors created a total of 2082 PRs, 20.3% of contributors created a total of 5093 PRs, and 72.3% of contributors created 20245 PRs. This is a very healthy ratio.
 
 #### The percentage of the sum of PRs submitted by different types of contributors in total PRs
 *All contributors are classified according to the total number of PRs submitted by themselves into <= 10,<= 100,> 100.
