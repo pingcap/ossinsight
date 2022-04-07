@@ -16,6 +16,7 @@ const config = {
   organizationName: 'pingcap', // Usually your GitHub org/user name.
   projectName: 'ossinsight', // Usually your repo name.
   scripts: [
+    'https://api.ossinsight.io/qo/repos/groups/osdb?format=global_variable'
   ],
   presets: [
     [

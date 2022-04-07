@@ -4,7 +4,10 @@ sidebar_class_name: unlisted
 ---
 import {CommonChart} from "../../src/components/CommonChart";
 import ContributorsCharts from "../../src/components/ContributorsCharts";
-const tidbGroup = [41986369, 48833910, 53311716]
+import {useGroups} from "../../src/api/groups";
+import GroupSelect from "../../src/components/GroupSelect";
+const groups = osdbgroup.reduce((p, c) => { p[c.group_name] = { name: c.group_name, repoIds: c.repos.map(item => item.id)}; return p }, {})
+const tidbGroup = groups.tidb.repoIds
 
 ## ❓ What is tidb
 
@@ -51,6 +54,8 @@ rt-osdb-ranking-by-stars
 
 We can see which companies (top 50) star the TiDB repo most in this pie chart. Among them, many open source enthusiasts from Chinese Internet giants such as Tencent, Alibaba, and Bytedance expressed their appreciation for TiDB. At the same time, hundreds of developers from Google, Microsoft and Facebook also starred the TiDB repository. It can be seen that TiDB is concerned and welcomed all around the world.
 
+<GroupSelect />
+
 ```
 stars-top-50-company
 ```
@@ -64,6 +69,7 @@ stars-top-50-company
   categoryType='owner'
   seriesName='Stargazers'
   repoId={tidbGroup}
+  comparing
 />
 
 #### Countries/Regions of stargazers
@@ -86,6 +92,7 @@ issue-creators-map
   effect={false}
   size={56}
   repoId={tidbGroup}
+  comparing
 />
 
 ### Issues
@@ -164,6 +171,7 @@ issue-creators-map
   effect={false}
   size={56}
   repoId={tidbGroup}
+  comparing
 />
 
 ### Pull Requests
@@ -190,7 +198,7 @@ rt-osdb-ranking-by-prs
 #### Company of PR Creators about TiDB repository
 The pie charts describe the major companies of PR creators for each project.
 
-We can also analyze the origin of PR creators about TiDB. If all PRs come from the same company, the definition of open source will be called into question. We use the pie chart below to show the Top 50 companies of contributors who submitted PRs for TiDB. 
+We can also analyze the origin of PR creators about TiDB. If all PRs come from the same company, the definition of open source will be called into question. We use the pie chart below to show the Top 50 companies of contributors who submitted PRs for TiDB.
 
 Of course, as the parent company of TiDB, PingCAP has become a gathering place for PR creators. But what is surprising is that hundreds of open source enthusiasts from different companies also contributed to TiDB, and their proportion is  more than 60%, far exceeding PingCAP itself. This also shows that TiDB is a real open source database, and the TiDB community is a typical vibrant organization.
 
@@ -207,6 +215,7 @@ pull-request-creators-top-50-company
   categoryType='owner'
   seriesName='Contributors'
   repoId={tidbGroup}
+  comparing
 />
 
 :::info
@@ -232,13 +241,14 @@ pull-request-creators-map
   effect={false}
   size={56}
   repoId={tidbGroup}
+  comparing
 />
 
 #### Heat Map of Commits Time about PRs
 
 We can also analyze the activity of open source repos from the commits time. The figure below shows the time heat map for PRs commits.
 
-The Heat Maps of Commits Time display the number of push events occurring at a particular point of time. The Y-axis represents 7 days a week, and the X-axis represents 24 hours a day according to the Universal Time Coordinated (UTC). The lighter color in this heat map indicates that less push events occur at a particular point of time. On the contrary, the darker color indicates more push events occurring. 
+The Heat Maps of Commits Time display the number of push events occurring at a particular point of time. The Y-axis represents 7 days a week, and the X-axis represents 24 hours a day according to the Universal Time Coordinated (UTC). The lighter color in this heat map indicates that less push events occur at a particular point of time. On the contrary, the darker color indicates more push events occurring.
 
 From this heat map, we can see that the vast majority of PRs are committed between 2:00 - 16:00（UTC）indicating that in addition to the vast majority of Chinese contributors, there are also contributors from different time zones who have contributed to TiDB during working hours.
 
@@ -254,6 +264,7 @@ heatmap
   valueIndex='pushes'
   formatSql={false}
   repoId={tidbGroup}
+  comparing
 />
 
 #### Average time cost from open pull request to close it
