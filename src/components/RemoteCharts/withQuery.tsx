@@ -115,7 +115,7 @@ export function withPieChartQuery<Q extends keyof Queries, D = RemoteData<Querie
     ...params
   }: QueryComponentProps<Q>) => {
     const remoteData = useRemoteData(query, params, formatSql);
-    const compareRemoteData = useRemoteData(query, {...params, repoId: compareId}, formatSql)
+    const compareRemoteData = useRemoteData(query, {...params, repoId: compareId}, formatSql, !!compareId)
     const {data, loading} = remoteData
     const {data: compareData, loading: compareLoading} = compareRemoteData
 
@@ -151,7 +151,7 @@ export function withHeatMapChartQuery<Q extends keyof Queries, D = RemoteData<Qu
     ...params
   }: QueryComponentProps<Q>) => {
     const remoteData = useRemoteData(query, params, formatSql);
-    const compareRemoteData = useRemoteData(query, {...params, repoId: compareId}, formatSql)
+    const compareRemoteData = useRemoteData(query, {...params, repoId: compareId}, formatSql, !!compareId)
     const {data, loading} = remoteData
     const {data: compareData, loading: compareLoading} = compareRemoteData
 
@@ -251,7 +251,7 @@ export function withWorldMapChartQuery<Q extends keyof Queries, D = RemoteData<Q
     ...params
   }: QueryComponentProps<Q>) => {
     const remoteData = useRemoteData(query, params, formatSql);
-    const compareRemoteData = useRemoteData(query, {...params, repoId: compareId}, formatSql)
+    const compareRemoteData = useRemoteData(query, {...params, repoId: compareId}, formatSql, !!compareId)
 
     const {data, loading} = remoteData
     const {data: compareData, loading: compareLoading} = compareRemoteData
