@@ -26,7 +26,7 @@ function CommonChart({chart: rawChart, noSearch, comparing, ...rest}) {
 
   const comparingProps = (comparing && group) ? {
     compareName: group,
-    compareId: groups[group].repoIds
+    compareId: groups[group]?.repoIds
   } : {}
 
   const child = React.createElement(chart.Chart, {
