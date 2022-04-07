@@ -49,7 +49,7 @@ export default function Home() {
         <HomepageHeader />
         <div style={{margin: '4em 0'}}>
           <div className='container container-fluid'>
-            <Bottom />
+  //          <Bottom />
           </div>
         </div>
       </div>
