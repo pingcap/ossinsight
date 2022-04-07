@@ -13,7 +13,7 @@ export const Chart = ({ category, categoryIndex = 'country', valueIndex, ...prop
       categoryIndex: categoryIndex,
       valueIndex: valueIndex
     })
-  }, [category, categoryIndex, valueIndex])
+  }, [category, categoryIndex, valueIndex, props.compareId])
 
   return React.createElement(Chart, props)
 }

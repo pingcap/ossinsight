@@ -6,13 +6,14 @@ import Alert from "@mui/material/Alert";
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 // @ts-ignore
 import CodeBlock from '@theme/CodeBlock';
-import {BarChart, PieChart, ChartWithSql, DataGrid, DataGridColumn, HeatMapChart} from '../BasicCharts';
+import {BarChart, ChartWithSql, DataGrid, DataGridColumn, HeatMapChart, PieChart} from '../BasicCharts';
 import {Queries} from "./queries";
 import {DebugInfoModel} from "./DebugInfoModel";
 import {YoyChart} from "../SpecialCharts";
 import WorldMapChart from "../BasicCharts/WorldMapChart";
 import ZScoreChart from "../SpecialCharts/ZScoreChart";
 import DynamicStarsChart from "../SpecialCharts/DynamicStarsChart";
+import Box from "@mui/material/Box";
 
 type Indexes<Q extends keyof Queries> = {
   categoryIndex: keyof Queries[Q]['data']
@@ -102,16 +103,30 @@ export function withBarChartQuery<Q extends keyof Queries, D = RemoteData<Querie
 
 export function withPieChartQuery<Q extends keyof Queries, D = RemoteData<Queries[Q]['params'], Queries[Q]['data']>>
 (query: Q, indices: Indexes<Q>): React.FC<QueryComponentProps<Q>> {
-  return ({formatSql = true, children, categoryIndex = indices.categoryIndex, valueIndex = indices.valueIndex, seriesName, categoryType, ...params}: QueryComponentProps<Q>) => {
+  return ({
+    formatSql = true,
+    children,
+    categoryIndex = indices.categoryIndex,
+    valueIndex = indices.valueIndex,
+    seriesName,
+    categoryType,
+    compareId,
+    compareName,
+    ...params
+  }: QueryComponentProps<Q>) => {
     const remoteData = useRemoteData(query, params, formatSql);
-    const { data, loading } = remoteData
+    const compareRemoteData = useRemoteData(query, {...params, repoId: compareId}, formatSql, !!compareId)
+    const {data, loading} = remoteData
+    const {data: compareData, loading: compareLoading} = compareRemoteData
 
     const chart = (
       <PieChart
         seriesName={seriesName}
-        loading={loading}
+        compareName={compareName}
+        loading={loading || compareLoading}
         data={data?.data ?? []}
-        deps={Object.values(params)}
+        compareData={compareId ? compareData?.data ?? [] : undefined}
+        deps={Object.values(params).concat(compareId)}
         categoryIndex={categoryIndex}
         type={categoryType}
         valueIndex={valueIndex}
@@ -124,9 +139,21 @@ export function withPieChartQuery<Q extends keyof Queries, D = RemoteData<Querie
 
 export function withHeatMapChartQuery<Q extends keyof Queries, D = RemoteData<Queries[Q]['params'], Queries[Q]['data']>>
 (query: Q, indices: HeatMapIndexes<Q>): React.FC<QueryComponentProps<Q>> {
-  return ({formatSql = true, children, xIndex = indices.xIndex, yIndex = indices.yIndex, valueIndex = indices.valueIndex, seriesName, ...params}: QueryComponentProps<Q>) => {
+  return ({
+    formatSql = true,
+    children,
+    xIndex = indices.xIndex,
+    yIndex = indices.yIndex,
+    valueIndex = indices.valueIndex,
+    seriesName,
+    compareName,
+    compareId,
+    ...params
+  }: QueryComponentProps<Q>) => {
     const remoteData = useRemoteData(query, params, formatSql);
-    const { data, loading } = remoteData
+    const compareRemoteData = useRemoteData(query, {...params, repoId: compareId}, formatSql, !!compareId)
+    const {data, loading} = remoteData
+    const {data: compareData, loading: compareLoading} = compareRemoteData
 
     const chart = (
       <HeatMapChart
@@ -139,7 +166,26 @@ export function withHeatMapChartQuery<Q extends keyof Queries, D = RemoteData<Qu
       />
     )
 
-    return renderChart(query, chart, remoteData, false)
+    if (!compareId) {
+      return renderChart(query, chart, remoteData, false)
+    } else {
+      const comparingChart = (
+        <HeatMapChart
+          loading={compareLoading}
+          data={compareData?.data ?? []}
+          deps={Object.values(params)}
+          xAxisColumnName={xIndex}
+          yAxisColumnName={yIndex}
+          valueColumnName={valueIndex}
+        />
+      )
+      return renderChart(query, (
+        <Box>
+          {chart}
+          {comparingChart}
+        </Box>
+      ), remoteData)
+    }
   }
 }
 
@@ -192,15 +238,31 @@ export function withZScoreChartQuery<Q extends keyof Queries, D = RemoteData<Que
 
 export function withWorldMapChartQuery<Q extends keyof Queries, D = RemoteData<Queries[Q]['params'], Queries[Q]['data']>>
 (query: Q, indices: Indexes<Q>): React.FC<QueryComponentProps<Q>> {
-  const { valueIndex, categoryIndex } = indices
-  return ({formatSql = true, children, seriesName, effect, size, ...params}: QueryComponentProps<Q>) => {
+  const {valueIndex, categoryIndex} = indices
+  return ({
+    formatSql = true,
+    children,
+    seriesName,
+    effect,
+    size,
+    compareId,
+    name,
+    compareName,
+    ...params
+  }: QueryComponentProps<Q>) => {
     const remoteData = useRemoteData(query, params, formatSql);
-    const { data, loading } = remoteData
+    const compareRemoteData = useRemoteData(query, {...params, repoId: compareId}, formatSql, !!compareId)
+
+    const {data, loading} = remoteData
+    const {data: compareData, loading: compareLoading} = compareRemoteData
 
     const chart = (
       <WorldMapChart
-        loading={loading}
+        loading={loading || compareLoading}
         data={data?.data ?? []}
+        compareData={compareId ? compareData?.data ?? [] : undefined}
+        name={name}
+        compareName={compareName}
         dimensionColumnName={categoryIndex}
         metricColumnName={valueIndex}
         seriesName={seriesName}

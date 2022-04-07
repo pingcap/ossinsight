@@ -1,4 +1,4 @@
-import React, {useMemo} from "react";
+import React, {useContext, useMemo} from "react";
 import Divider from "@mui/material/Divider";
 import {LocalizationProvider} from "@mui/lab";
 import DateAdapter from '@mui/lab/AdapterLuxon';
@@ -7,9 +7,10 @@ import BrowserOnly from '@docusaurus/BrowserOnly';
 import ThemeAdaptor from "../ThemeAdaptor";
 import {useInView} from "react-intersection-observer";
 import InViewContext from '../InViewContext'
+import GroupSelectContext from "../GroupSelect/GroupSelectContext";
+import {groups} from "../GroupSelect/groups";
 
-
-function CommonChart({chart: rawChart, noSearch, ...rest}) {
+function CommonChart({chart: rawChart, noSearch, comparing, ...rest}) {
   const { inView, ref } = useInView({ fallbackInView: true })
   const chart = useMemo(() => {
     if (typeof rawChart === 'string') {
@@ -21,9 +22,17 @@ function CommonChart({chart: rawChart, noSearch, ...rest}) {
 
   const {form, query} = chart.useForm({ noSearch })
 
+  const { group } = useContext(GroupSelectContext)
+
+  const comparingProps = (comparing && group) ? {
+    compareName: group,
+    compareId: groups[group]?.repoIds
+  } : {}
+
   const child = React.createElement(chart.Chart, {
     ...query,
-    ...rest
+    ...rest,
+    ...comparingProps
   })
 
   return (
