@@ -20,7 +20,7 @@ declare global {
   }
 }
 
-const groups = window.osdbgroup.reduce((p, c) => { p[c.group_name] = { name: c.group_name, repoIds: c.repos.map(item => item.id)}; return p }, {})
+const groups = window?.osdbgroup.reduce((p, c) => { p[c.group_name] = { name: c.group_name, repoIds: c.repos.map(item => item.id)}; return p }, {}) ?? {}
 
 export default function GroupSelect () {
   const {isDarkTheme} = useThemeContext();

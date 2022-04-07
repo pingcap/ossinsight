@@ -9,7 +9,7 @@ import {useInView} from "react-intersection-observer";
 import InViewContext from '../InViewContext'
 import GroupSelectContext from "../GroupSelect/GroupSelectContext";
 
-const groups = window.osdbgroup.reduce((p, c) => { p[c.group_name] = { name: c.group_name, repoIds: c.repos.map(item => item.id)}; return p }, {})
+const groups = window?.osdbgroup.reduce((p, c) => { p[c.group_name] = { name: c.group_name, repoIds: c.repos.map(item => item.id)}; return p }, {}) ?? {}
 
 function CommonChart({chart: rawChart, noSearch, comparing, ...rest}) {
   const { inView, ref } = useInView({ fallbackInView: true })
