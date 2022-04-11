@@ -75,7 +75,7 @@ const config = {
           {to: '/blog/about', label: 'About', position: 'left'},
           {
             type: 'doc',
-            docId: 'database/index',
+            docId: 'database/realtime',
             position: 'left',
             label: 'Insight',
           },
@@ -107,7 +107,7 @@ const config = {
               },
               {
                 label: 'Insight',
-                to: '/_/database/',
+                to: '/_/database/realtime',
               },
               {
                 label: 'Try it yourself',
