@@ -8,6 +8,7 @@ import {createClient} from "redis";
 import path from "path";
 import {register} from "prom-client";
 import {measureRequests} from "./middlewares/measureRequests";
+import RepoGroupService from "./services/RepoGroupService";
 
 const COMPARE_QUERIES = [
   'stars-total',
@@ -61,7 +62,9 @@ export default async function server(router: Router<DefaultState, ContextExtends
     decimalNumbers: true
   })
   const tokens = (process.env.GH_TOKENS || '').split(',').map(s => s.trim()).filter(Boolean);
-  const ghExecutor = new GhExecutor(tokens, redisClient)
+  const ghExecutor = new GhExecutor(tokens, redisClient);
+
+  const repoGroupService = new RepoGroupService(executor);
 
   router.get('/q/:query', measureRequests({ urlLabel: 'path' }), async ctx => {
     try {
@@ -73,6 +76,25 @@ export default async function server(router: Router<DefaultState, ContextExtends
       ctx.logger.error('Failed to request %s: ', ctx.request.originalUrl, e)
       ctx.response.status = 500
       ctx.response.body = e
+    }
+  })
+
+  // qo means query options.
+  router.get('/qo/repos/groups/osdb', measureRequests({ urlLabel: 'path' }), async ctx => {
+    try {
+      const res = await repoGroupService.getRepoGroups();
+
+      ctx.response.status = 200
+      if (ctx.query.format === 'global_variable') {
+        ctx.type = 'text/javascript'
+        ctx.response.body = `var osdbgroup = (${JSON.stringify(res)});`
+      } else {
+        ctx.response.body = res
+      }
+    } catch (e: any) {
+      ctx.logger.error('request failed %s', ctx.request.originalUrl, e)
+      ctx.response.status = e?.response?.status ?? e?.status ?? 500
+      ctx.response.body = e?.response?.data ?? e?.message ?? String(e)
     }
   })
 

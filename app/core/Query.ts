@@ -35,33 +35,50 @@ export class QueryTemplateNotFoundError extends Error {
   }
 }
 
-export function buildParams(template: string, querySchema: QuerySchema, values: Record<string, string>) {
-  for (let {name, replaces, template: paramTemplate, default: defaultValue, pattern} of querySchema.params) {
+export function buildParams(template: string, querySchema: QuerySchema, values: Record<string, any>) {
+  for (let {name, replaces, template: paramTemplate, default: defaultValue, isArray, pattern} of querySchema.params) {
     const value = values[name] ?? defaultValue
 
-    if (typeof value !== "undefined") {
-      if (typeof pattern !== "undefined") {
-        const regexp = new RegExp(pattern);
-        if (!regexp.test(value)) {
-          throw new BadParamsError(name, 'bad param ' + name)
-        }
-      }
+    if (isArray) {
+      const arrValues = [];
 
-      let targetValue: string
-      if (paramTemplate) {
-        targetValue = paramTemplate[String(value)]
-        if (typeof targetValue === "undefined") {
-          throw new BadParamsError(name, 'bad param ' + name)
+      if (Array.isArray(value)) {
+        for (let v of value) {
+          const targetValue = verifyParam(name, v, pattern, paramTemplate);
+          arrValues.push(targetValue)
         }
       } else {
-        targetValue = String(value)
+        const targetValue = verifyParam(name, value, pattern, paramTemplate);
+        arrValues.push(targetValue)
       }
+
+      template = template.replaceAll(replaces, arrValues.join(', '))
+
+    } else if (typeof value === "number" || typeof value === "string") {
+      const targetValue = verifyParam(name, value, pattern, paramTemplate);
       template = template.replaceAll(replaces, targetValue)
     } else {
       throw new BadParamsError(name, 'require param ' + name)
     }
   }
   return template
+}
+
+function verifyParam(name: string, value: any, pattern?: string, paramTemplate?: Record<string, string>) {
+  const strValue = String(value);
+
+  if (typeof pattern !== "undefined") {
+    const regexp = new RegExp(pattern);
+    if (!regexp.test(strValue)) {
+      throw new BadParamsError(name, 'bad param ' + name)
+    }
+  }
+
+  const targetValue = paramTemplate ? paramTemplate[strValue] : strValue;
+  if (typeof targetValue === "undefined") {
+    throw new BadParamsError(name, 'bad param ' + name)
+  }
+  return targetValue;
 }
 
 export interface QueryExecutor<T> {

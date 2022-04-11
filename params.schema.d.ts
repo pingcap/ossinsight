@@ -33,6 +33,10 @@ export interface Params {
    */
   name: string;
   /**
+   * Determine if the parameter is an array
+   */
+  isArray?: boolean;
+  /**
    * Replacing substring in the query sql template. Replacing uses `String.replaceAll`, please make sure the replacing substring is not substring of other texts
    */
   replaces: string;

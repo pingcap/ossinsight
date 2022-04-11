@@ -43,6 +43,10 @@
           "description": "URL Search param name for the query",
           "type": "string"
         },
+        "isArray": {
+          "description": "Determine if the parameter is an array",
+          "type": "boolean"
+        },
         "replaces": {
           "description": "Replacing substring in the query sql template. Replacing uses `String.replaceAll`, please make sure the replacing substring is not substring of other texts",
           "type": "string"
