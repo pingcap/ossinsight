@@ -25,7 +25,7 @@ Now we can use TiDB as an example, analyze it in four aspects: stars, issues, PR
 
 #### The most starred OSDB repos since 2011 (updated 1 hour ago)
 
-The number of stars is an important and commonly used metric to measure the popularity of a repository. We sort all database repositories from GitHub and rank them by their accumulated number of stars. 
+The number of stars is an important and commonly used metric to measure the popularity of a repository. We sort all database repositories from GitHub and rank them by their accumulated number of stars.
 
 In this bar chart, we can see that TiDB ranks second in the most starred open source database repos since 2011, which is enough to show that it is very popular in the field of open source databases.
 
@@ -96,11 +96,11 @@ Judging from the total number of issues, TiDB repository has a total of 155562 i
 
 In order to prevent the phenomenon of submitting issues maliciously(only open but not closed), we can also refer to the average opening/closing time and initial response time of issues in open source database repos to make the evaluation.
 
-#### Average time cost from open issue to close
+#### Median time cost from open issue to close
 
 <CommonChart
   chart='barchart'
-  category='rt-osdb-ranking-by-average-issue-open-to-close'
+  category='rt-osdb-ranking-by-median-issue-open-to-close'
   n={20}
   formatSql={false}
   categoryIndex='repo_group_name'
@@ -109,11 +109,11 @@ In order to prevent the phenomenon of submitting issues maliciously(only open bu
   categoryType={false}
 />
 
-#### Average time cost from open issue to first response
+#### Median time cost from open issue to first response
 
 <CommonChart
   chart='barchart'
-  category='rt-osdb-ranking-by-average-issue-open-to-first-responed'
+  category='rt-osdb-ranking-by-median-issue-open-to-first-respond'
   n={20}
   formatSql={false}
   categoryIndex='repo_group_name'
@@ -218,13 +218,13 @@ From this heat map, we can see that the vast majority of PRs are committed betwe
   comparing
 />
 
-#### Average time cost from open pull request to close it
+#### Median time cost from open pull request to close it
 
 It is unilateral to prove that the repository is active only by the number of submitted PRs. It is also necessary to pay attention to the life cycle of a PR (from open to close) to assist in analyzing the activity and health of open source repos. As you can see from the bar chart below, the PR life cycle length varies widely between repos. On average, hive and ignite take almost 120 days to close a PR, while TiDB, which is also on the list, only takes about 10 days.
 
 <CommonChart
   chart='barchart'
-  category='rt-osdb-ranking-by-average-pr-open-to-merge'
+  category='rt-osdb-ranking-by-median-pr-open-to-merge'
   n={20}
   formatSql={false}
   categoryIndex='repo_group_name'
