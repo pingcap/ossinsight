@@ -41,6 +41,7 @@ const config = {
           showReadingTime: true,
           // Please change this to your repo.
           editUrl: 'https://github.com/pingcap/ossinsight/edit/main/',
+          blogSidebarCount: 0,
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
@@ -185,28 +186,6 @@ const config = {
         ],
         copyright: `Copyright © ${new Date().getFullYear()} PingCAP`,
       },
-/*
-      algolia: {
-        // The application ID provided by Algolia
-        appId: 'F84G4I8LFA',
-
-        // Public API key: it is safe to commit it
-        apiKey: '9e24eb92057c441e0b2f685109cc488e',
-
-        indexName: 'production',
-
-        // Optional: see doc section below
-        contextualSearch: true,
-
-        // Optional: Specify domains where the navigation should occur through window.location instead on history.push. Useful when our Algolia config crawls multiple documentation sites and we want to navigate with window.location.href to them.
-        externalUrlRegex: 'gharchive\\.live|localhost:3000',
-
-        // Optional: Algolia search parameters
-        searchParameters: {},
-
-        //... other Algolia params
-      },
-*/
       prism: {
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
