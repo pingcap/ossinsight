@@ -65,6 +65,14 @@ const config = {
         disableSwitch: false,
         respectPrefersColorScheme: false,
       },
+      announcementBar: {
+        id: 'announcement-20220414',
+        content:
+          'TiDB 6.0 is released, go to read the <a target="_blank" rel="noopener noreferrer" href="https://docs.pingcap.com/tidb/v6.0/release-6.0.0-dmr">release notes</a> 🎉🎉🎉',
+        backgroundColor: '#fafbfc',
+        textColor: '#091E42',
+        isCloseable: true,
+      },
       navbar: {
         title: 'OSS Insight',
         logo: {
@@ -87,6 +95,11 @@ const config = {
           {
             href: 'https://en.pingcap.com/tidb-cloud/',
             label: 'TiDB Cloud',
+            position: 'left',
+          },
+          {
+            href: 'https://tidbcloud.com',
+            label: 'Sign In',
             position: 'right',
           },
           {
@@ -166,10 +179,6 @@ const config = {
             title: 'More',
             items: [
               {
-                label: 'Changelog',
-                to: 'blog/changelog',
-              },
-              {
                 label: 'Github',
                 href: 'https://github.com/pingcap/ossinsight',
               },
@@ -180,6 +189,10 @@ const config = {
               {
                 label: 'YouTube',
                 href: 'https://www.youtube.com/pingcap',
+              },
+              {
+                label: 'RSS',
+                to: '/blog/rss.xml',
               },
             ],
           },
