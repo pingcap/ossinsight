@@ -34,6 +34,7 @@
   --site-color-tooltip-background: #353738;
   --site-color-svgIcon-favorite: #e9669e;
   --site-color-checkbox-checked-bg: hsl(167deg 56% 73% / 25%);
+  --custom-primary: #24b47e;
 }
 
 html[data-theme='dark'] {
@@ -201,4 +202,33 @@ html[data-theme='dark'] .navbar-item-github:before {
  */
 .menu__list li.unlisted {
   display: none;
+}
+
+.row.is-multiline .col {
+  margin-top: var(--ifm-spacing-horizontal) !important;
+  margin-bottom: var(--ifm-spacing-horizontal) !important;
+}
+
+@media screen and (max-width: 996px) {
+  .row .col {
+    padding-top: var(--ifm-col-spacing-vertical);
+    padding-bottom: var(--ifm-col-spacing-vertical);
+  }
+}
+a.card {
+  text-decoration: none !important;
+  color: var(--ifm-color-content);
+  box-shadow: none;
+  border: 1px solid #333;
+  display: flex;
+  /* background-color: var(--ifm-background-color); */
+}
+a.card .card__body {
+  flex: 1;
+  flex-grow: 1;
+}
+a.card:hover {
+  transition: all 1s ease;
+  border: 1px solid var(--custom-primary);
+  box-shadow: var(--custom-shadow-xl), 0 0 0 1px var(--custom-primary) !important;
 }
