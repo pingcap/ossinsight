@@ -32,7 +32,7 @@ const config = {
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
           editUrl: 'https://github.com/pingcap/ossinsight/edit/main/',
-          routeBasePath: '_',
+          routeBasePath: '/',
         },
         blog: {
           feedOptions: {
@@ -107,7 +107,7 @@ const config = {
               },
               {
                 label: 'Insight',
-                to: '/_/database/realtime',
+                to: '/database/realtime',
               },
               {
                 label: 'Try it yourself',
