@@ -121,7 +121,7 @@ After you finish all the steps above, you can start the analytical process.
 If you want to know the table schema, you can use `show create table tbl_name` to get that information.
 :::
 
-Because you have imported the sample data of all GitHub events occurred on January 1, 2022, you can start to make any queries based on that data by using SQL commands. 
+Because you have imported the sample data of all GitHub events occurred on the first hour of 2022 (from 2022-01-01 00:00:00 to 2022-01-01 00:59:59), you can start to make any queries based on that data by using SQL commands. 
 
 ### How many events occurred in total?
 Execute the following SQL statement to query the total number of events. 
@@ -142,8 +142,16 @@ ORDER BY 2 DESC
    LIMIT 20;
 ```
 
-### Who is the most active contributor except the robot accounts?
-Execute the following statements to query the most active contributor. 
+
+## Mini Test
+Here is a small test for you to practice how to use TiDB Cloud to conduct analytics. 
+
+### Q: Who is the most active contributor except the robot accounts on the first hour of 2022?
+
+### Click for the answer. ⬇️
+
+<details><summary>Click me to show answer</summary>
+<p>
 
 ```sql
   SELECT actor_login, 
@@ -153,46 +161,6 @@ Execute the following statements to query the most active contributor.
 GROUP BY 1
 ORDER BY 2 DESC 
    LIMIT 20
-```
-
-
-## Mini Test
-Here is a small test for you to practice how to use TiDB Cloud to conduct analytics. 
-
-### Q: Which is the most starred database repository on January 1, 2022?
-
-:::tip
-We have collected all open source repositories on GitGub from https://db-engines.com, and store them in table: `db_repos`.
-:::
-
-### Click for the answer. ⬇️
-
-<details><summary>Click me to show answer</summary>
-<p>
-
-Schema:
-```sql
-mysql> desc db_repos;
-+-------+--------------+------+------+---------+-------+
-| Field | Type         | Null | Key  | Default | Extra |
-+-------+--------------+------+------+---------+-------+
-| id    | varchar(255) | NO   | PRI  | NULL    |       |
-| name  | varchar(255) | YES  |      | NULL    |       |
-+-------+--------------+------+------+---------+-------+
-2 rows in set (0.34 sec)
-
-mysql>
-```
-
-SQL:
-```sql
-  SELECT repo_name, count(*) AS events_count
-    FROM github_events
-         JOIN db_repos ON db_repos.id = github_events.repo_id
-   WHERE type = 'WatchEvent'
-GROUP BY 1
-ORDER BY 2 DESC
-   LIMIT 20;
 ```
 
 </p>

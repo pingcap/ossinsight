@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import clsx from 'clsx';
 import Layout from '@theme/Layout';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
@@ -10,11 +10,13 @@ import TopList from "../components/TopList";
 
 function HomepageHeader() {
   const {siteConfig} = useDocusaurusContext();
+  const [period, setPeriod] = useState('last_hour')
+
   return (
     <>
       <header className={clsx('hero', styles.heroWc)}>
         <div className={styles.wcContainer}>
-          <WordCloud>
+          <WordCloud period='last_hour'>
             <h1 className={clsx('hero__title', styles.heroWcTitle)}>{siteConfig.title}</h1>
           </WordCloud>
         </div>
@@ -28,7 +30,7 @@ function HomepageHeader() {
       </div>
       <div className={clsx('hero', styles.heroBanner)}>
         <div className='container'>
-          <TopList />
+          <TopList period={period} onPeriodChange={setPeriod} />
         </div>
       </div>
     </>

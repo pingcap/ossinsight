@@ -5,12 +5,13 @@ import './style.css'
 import {useRank} from "../../api/query";
 
 interface WordCloudProps {
+  period: string
   children: JSX.Element
 }
 
-export default function WordCloud({children}: WordCloudProps) {
+export default function WordCloud({children, period}: WordCloudProps) {
   const ref = useRef<HTMLDivElement>()
-  const { data = [] } = useRank()
+  const { data = [] } = useRank(period)
 
   useLayoutEffect(() => {
     if (data && ref.current) {

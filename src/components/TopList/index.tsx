@@ -1,4 +1,5 @@
 import * as React from "react";
+import {useCallback} from "react";
 import {useRank} from "../../api/query";
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -24,110 +25,33 @@ import InfoIcon from "@mui/icons-material/Info";
 import DialogTitle from "@mui/material/DialogTitle";
 import Dialog from "@mui/material/Dialog";
 import {renderCodes} from "../BasicCharts";
+import Select, {SelectChangeEvent} from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import {groups} from "../GroupSelect/groups";
 
-export default function TopList() {
-  const {data: ranks, isValidating: loading} = useRank()
+interface TopListProps {
+  period: string
+  onPeriodChange: (period: string) => void
+}
+
+const periods: { name: string, value: string }[] = [
+  { name: 'last hour', value: 'last_hour' },
+  { name: 'last day', value: 'last_day' },
+  { name: 'last week', value: 'last_week' },
+  { name: 'last month', value: 'last_month' }
+]
+
+export default function TopList({period, onPeriodChange}: TopListProps) {
+  const {data: ranks, isValidating: loading} = useRank(period)
   const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-
-  if (loading) {
-    return (
-      <Box>
-        <Skeleton animation="wave" />
-        <Skeleton animation="wave" />
-        <Skeleton animation="wave" />
-        <Skeleton animation="wave" />
-        <Skeleton animation="wave" />
-      </Box>
-    )
-  }
+  const handleOpen = useCallback(() => setOpen(true), [setOpen]);
+  const handleClose = useCallback(() => setOpen(false), [setOpen]);
+  const handlePeriodChange = useCallback((event: SelectChangeEvent) => onPeriodChange(event.target.value), [onPeriodChange])
 
   return (
     <ThemeAdaptor>
-      <h2>
-        Top 20 most active repositories in <u>real time</u>.
-        <Tooltip
-          title={(
-            <Typography variant='body2'>
-              Query was filtered due to massive bots' commits.
-              <br />
-              <Button disabled={loading} onClick={handleOpen}>SHOW SQL</Button>
-            </Typography>
-          )}
-        >
-          <IconButton>
-            <InfoIcon />
-          </IconButton>
-        </Tooltip>
-      </h2>
-      <TableContainer component={Paper}>
-        <Table sx={{minWidth: 650, marginBottom: 0}} aria-label="simple table" size='small'
-               className={styles.clearTable}>
-          <TableHead>
-            <TableRow>
-              <TableCell align="center">
-                <b>#</b>
-              </TableCell>
-              <TableCell>Repo</TableCell>
-              {(data || []).map(({title, headline, tooltip, key}) => (
-                <TableCell key={key} align="center">
-                  <Tooltip title={(
-                    <Box sx={{padding: 1}}>
-                      <Link
-                        variant='subtitle1'
-                        href={headline.url}
-                        target='_blank'
-                      >
-                        {headline.content}
-                      </Link>
-                      <Divider sx={{my: 1}} />
-                      <Typography variant='body2' component='p'>
-                        {tooltip}
-                      </Typography>
-                    </Box>
-                  )}>
-                    <span>
-                      {title}
-                    </span>
-                  </Tooltip>
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {ranks.map(({repo_name, ...counts}, i) => {
-              const [owner, repo] = repo_name.split('/')
-
-              return (
-                <TableRow
-                  key={repo_name}
-                >
-                  <TableCell component="th" scope="row" align='center'>
-                    {i + 1}
-                  </TableCell>
-                  <TableCell component="th" scope="row">
-                    <Stack direction="row" spacing={1} sx={{alignItems: 'center'}}>
-                      <Owner owner={owner} />
-                      <span>/</span>
-                      <Typography component='a' href={`https://github.com/${repo_name}`} target='_blank'>
-                        {repo}
-                      </Typography>
-                    </Stack>
-                  </TableCell>
-                  {data.map(({key}) => (
-                    <TableCell key={key} align="center">
-                      <Typography variant='body2' component='span' color={counts[key] === 0 ? 'text.disabled' : undefined}>
-                        {counts[key] || '--'}
-                      </Typography>
-                    </TableCell>
-                  ))}
-                </TableRow>
-              )
-            })}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      {renderTopListHeader(period, handlePeriodChange, loading, handleOpen)}
+      {renderTopListBody(ranks, loading)}
       <Dialog
         maxWidth="lg"
         open={open}
@@ -144,4 +68,149 @@ export default function TopList() {
       </Dialog>
     </ThemeAdaptor>
   );
+}
+
+function renderTopListHeader (period: string, handlePeriodChange: (period: SelectChangeEvent)=>void, loading: boolean, handleOpen: () => void) {
+  return (
+    <h2>
+      Top 20 most active repositories in
+      &nbsp;
+      <Select<string>
+        autoWidth
+        value={period}
+        variant='standard'
+        onChange={handlePeriodChange}
+        placeholder='Select...'
+        sx={{ font: 'inherit', color: 'inherit', lineHeight: 'inherit' }}
+      >
+        {periods.map(({name, value}) => (
+          <MenuItem key={value} value={value}>{name}</MenuItem>
+        ))}
+      </Select>
+      .
+      <Tooltip
+        title={(
+          <Typography variant='body2'>
+            Query was filtered due to massive bots' commits.
+            <br />
+            <Button disabled={loading} onClick={handleOpen}>SHOW SQL</Button>
+          </Typography>
+        )}
+      >
+        <IconButton>
+          <InfoIcon />
+        </IconButton>
+      </Tooltip>
+    </h2>
+  )
+}
+
+function renderTopListBody (ranks: ReturnType<typeof useRank>['data'], loading: boolean) {
+  const head = (
+    <TableHead>
+      <TableRow>
+        <TableCell align="center">
+          <b>#</b>
+        </TableCell>
+        <TableCell>Repo</TableCell>
+        {(data || []).map(({title, headline, tooltip, key}) => (
+          <TableCell key={key} align="center">
+            <Tooltip title={(
+              <Box sx={{padding: 1}}>
+                <Link
+                  variant='subtitle1'
+                  href={headline.url}
+                  target='_blank'
+                >
+                  {headline.content}
+                </Link>
+                <Divider sx={{my: 1}} />
+                <Typography variant='body2' component='p'>
+                  {tooltip}
+                </Typography>
+              </Box>
+            )}>
+                    <span>
+                      {title}
+                    </span>
+            </Tooltip>
+          </TableCell>
+        ))}
+      </TableRow>
+    </TableHead>
+  )
+
+  const body = (
+    <TableBody>
+      {ranks?.map(({repo_name, ...counts}, i) => {
+        const [owner, repo] = repo_name.split('/')
+
+        return (
+          <TableRow
+            key={repo_name}
+          >
+            <TableCell component="th" scope="row" align='center'>
+              {i + 1}
+            </TableCell>
+            <TableCell component="th" scope="row">
+              <Stack direction="row" spacing={1} sx={{alignItems: 'center'}}>
+                <Owner owner={owner} />
+                <span>/</span>
+                <Typography component='a' href={`https://github.com/${repo_name}`} target='_blank'>
+                  {repo}
+                </Typography>
+              </Stack>
+            </TableCell>
+            {data.map(({key}) => (
+              <TableCell key={key} align="center">
+                <Typography variant='body2' component='span' color={counts[key] === 0 ? 'text.disabled' : undefined}>
+                  {counts[key] || '--'}
+                </Typography>
+              </TableCell>
+            ))}
+          </TableRow>
+        )
+      })}
+    </TableBody>
+  )
+
+  const loader = (
+    <TableBody>
+      <TableRow>
+        <TableCell colSpan={data.length + 2}>
+          <Skeleton animation="wave" />
+        </TableCell>
+      </TableRow>
+      <TableRow>
+        <TableCell colSpan={data.length + 2}>
+          <Skeleton animation="wave" />
+        </TableCell>
+      </TableRow>
+      <TableRow>
+        <TableCell colSpan={data.length + 2}>
+          <Skeleton animation="wave" />
+        </TableCell>
+      </TableRow>
+      <TableRow>
+        <TableCell colSpan={data.length + 2}>
+          <Skeleton animation="wave" />
+        </TableCell>
+      </TableRow>
+      <TableRow>
+        <TableCell colSpan={data.length + 2}>
+          <Skeleton animation="wave" />
+        </TableCell>
+      </TableRow>
+    </TableBody>
+  )
+
+  return (
+    <TableContainer component={Paper}>
+      <Table sx={{minWidth: 650, marginBottom: 0}} aria-label="simple table" size='small'
+             className={styles.clearTable}>
+        {head}
+        {loading ? loader : body }
+      </Table>
+    </TableContainer>
+  )
 }

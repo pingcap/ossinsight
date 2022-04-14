@@ -1,7 +1,8 @@
-import React, {PropsWithChildren} from "react";
+import React, {PropsWithChildren, useState} from "react";
 import {createTheme} from "@mui/material";
 import useThemeContext from '@theme/hooks/useThemeContext';
 import ThemeProvider from "@mui/system/ThemeProvider";
+import GroupSelectContext from "../GroupSelect/GroupSelectContext";
 
 const ThemeAdaptor = ({children}: PropsWithChildren<any>) => {
   const {isDarkTheme} = useThemeContext();
@@ -14,7 +15,13 @@ const ThemeAdaptor = ({children}: PropsWithChildren<any>) => {
     },
   });
 
-  return <ThemeProvider theme={theme}>{children}</ThemeProvider>
+  const [group, setGroup] = useState<string>(undefined)
+
+  return (
+    <GroupSelectContext.Provider value={{ group, setGroup }}>
+      <ThemeProvider theme={theme}>{children}</ThemeProvider>
+    </GroupSelectContext.Provider>
+  )
 }
 
 ThemeAdaptor.displayName = 'MuiThemeAdaptor'

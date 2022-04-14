@@ -17,12 +17,12 @@ interface RepoRankData extends Array<RepoRank> {
   sql: string
 }
 
-export const useRank = (): SWRResponse<RepoRankData> => {
+export const useRank = (period = 'last_hour'): SWRResponse<RepoRankData> => {
   const dataUrl = `${BASE_URL}/q/recent-events-rank`
 
-  return useSWR<RepoRankData>(['key'], {
-    fetcher: async () => {
-      const {data, sql} = await fetch(`${dataUrl}`).then(data => data.json())
+  return useSWR<RepoRankData>([period], {
+    fetcher: async (period) => {
+      const {data, sql} = await fetch(`${dataUrl}?period=${period}`).then(data => data.json())
       data.sql = sql
       return data
     },

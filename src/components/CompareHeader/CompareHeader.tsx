@@ -47,7 +47,7 @@ function CompareHeader(props: CompareHeaderProps) {
       my: 2,
       py: 2,
       top: 'var(--ifm-navbar-height)',
-      zIndex: 1,
+      zIndex: 11,
       backgroundColor: isDarkTheme ? 'var(--ifm-background-color)' : 'background.default',
       borderBottom: '1px solid transparent',
       borderBottomColor: 'divider'
