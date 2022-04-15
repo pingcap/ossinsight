@@ -4,19 +4,14 @@ import {GridComponent, TitleComponent, TooltipComponent} from "echarts/component
 import {LinesChart as ELineChart} from "echarts/charts";
 import {CanvasRenderer} from "echarts/renderers";
 import {LabelLayout} from "echarts/features"
-import {registerThemeDark, registerThemeVintage} from "../BasicCharts";
 import {DatasetOption} from "echarts/types/dist/shared";
 import {EChartsOption, SeriesOption} from "echarts";
-import ReactECharts from "echarts-for-react";
-import useThemeContext from "@theme/hooks/useThemeContext";
+import ECharts from "../ECharts";
 
 // Register the required components
 echarts.use(
   [TitleComponent, TooltipComponent, GridComponent, ELineChart, LabelLayout, CanvasRenderer]
 );
-
-registerThemeVintage();
-registerThemeDark();
 
 type RawData = {
   event_year: number
@@ -27,22 +22,19 @@ type RawData = {
 interface DynamicStarsChartProps {
   data: RawData[]
   loading: boolean
-  aspectRatio?: string
+  aspectRatio?: number
 }
 
-export default function DynamicStarsChart({data, aspectRatio = '16 / 9', loading}: DynamicStarsChartProps) {
-  const {isDarkTheme} = useThemeContext();
-
+export default function DynamicStarsChart({data, aspectRatio = 16 / 9, loading}: DynamicStarsChartProps) {
   const repos = useMemo(() => {
     return Array.from(new Set(data.map(row => row.repo_name)))
   }, [data])
-
 
   const datasets: DatasetOption[] = useMemo(() => {
     const datasets: DatasetOption[] = [{
       id: 'raw',
       source: ([['event_year', 'repo_name', 'stars']] as any)
-        .concat(data.map(({ event_year, repo_name, stars }) => ([ event_year, repo_name, parseInt(stars) ])))
+        .concat(data.map(({event_year, repo_name, stars}) => ([event_year, repo_name, parseInt(stars)])))
     }, {
       transform: {
         type: 'sort',
@@ -125,23 +117,12 @@ export default function DynamicStarsChart({data, aspectRatio = '16 / 9', loading
   }, [datasets, series])
 
   return (
-    <ReactECharts
+    <ECharts
       showLoading={loading}
-      notMerge={false}
-      lazyUpdate
       option={option}
-      style={{
-        width: '100%',
-        height: 'auto',
-        aspectRatio,
-        overflow: 'hidden'
-      }}
-      theme={isDarkTheme ? 'dark' : 'vintage'}
-      opts={{
-        devicePixelRatio: window?.devicePixelRatio ?? 1,
-        renderer: 'canvas',
-        locale: 'en'
-      }}
+      aspectRatio={aspectRatio}
+      lazyUpdate
+      notMerge={false}
     />
   )
 }

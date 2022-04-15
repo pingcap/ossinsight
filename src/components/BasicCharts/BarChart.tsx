@@ -1,22 +1,17 @@
 import React, {useMemo} from "react";
-import ReactEChartsCore from "echarts-for-react/lib/core";
 import {BarChart as EBarChart} from 'echarts/charts';
 import {GridComponent, TitleComponent, TooltipComponent,} from 'echarts/components';
 import {CanvasRenderer,} from 'echarts/renderers';
 import * as echarts from "echarts/core";
-import useThemeContext from '@theme/hooks/useThemeContext';
-import {registerThemeDark, registerThemeVintage} from "./theme";
 import {Opts} from "echarts-for-react/lib/types";
 import {EChartsOption} from "echarts";
 import {TextCommonOption} from "echarts/types/src/util/types";
+import ECharts from "../ECharts";
 
 // Register the required components
 echarts.use(
   [TitleComponent, TooltipComponent, GridComponent, EBarChart, CanvasRenderer]
 );
-
-registerThemeVintage();
-registerThemeDark();
 
 interface BarChartProps<T> {
   seriesName?: string
@@ -109,21 +104,10 @@ export default function BarChart<T>({seriesName = 'Count', data, loading = false
   }, [data, ...deps, categoryIndex, valueIndex, size, clear])
 
   const height = useMemo(() => {
-    const height = loading ? 400 : Math.max(Math.min(n, data.length), 5) * (size * (clear ? 1 : 1.5))
+    const result = loading ? 400 : Math.max(Math.min(n, data.length), 5) * (size * (clear ? 1 : 1.5))
 
-    return height
+    return result
   }, [size, loading, clear])
-
-
-  const opts: Opts = useMemo(() => {
-    return {
-      devicePixelRatio: window?.devicePixelRatio ?? 1,
-      renderer: 'canvas',
-      height: height,
-      width: 'auto',
-      locale: 'en'
-    }
-  }, [height])
 
   const onEvents = useMemo(() => {
     return {
@@ -137,23 +121,18 @@ export default function BarChart<T>({seriesName = 'Count', data, loading = false
     }
   }, [])
 
-  const {isDarkTheme} = useThemeContext();
-
   return (
-    <ReactEChartsCore
+    <ECharts
+      height={height}
       showLoading={loading}
-      echarts={echarts}
       option={options}
-      notMerge={true}
+      echarts={echarts}
+      notMerge={false}
       lazyUpdate={true}
-      theme={isDarkTheme ? 'dark' : 'vintage'}
       style={{
-        height,
         marginBottom: 16,
         borderRadius: 'var(--ifm-global-radius)',
-        overflow: 'hidden'
       }}
-      opts={opts}
       onEvents={onEvents}
     />
   )

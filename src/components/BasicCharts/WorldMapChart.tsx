@@ -1,13 +1,13 @@
 import * as React from "react";
 import {useMemo} from "react";
-import ReactECharts from 'echarts-for-react';
 import useThemeContext from "@theme/hooks/useThemeContext";
 import * as echarts from "echarts";
-import {EChartsOption, EffectScatterSeriesOption, ScatterSeriesOption, SeriesOption} from "echarts";
+import {EChartsOption, EffectScatterSeriesOption, ScatterSeriesOption} from "echarts";
 import useMediaQuery from '@mui/material/useMediaQuery';
 import {useTheme} from '@mui/material/styles';
 import map from '@geo-maps/countries-land-10km';
 import {alpha2ToGeo, alpha2ToTitle} from "../../lib/areacode";
+import ECharts from "../ECharts";
 
 if (!echarts.getMap('world')) {
   echarts.registerMap('world', map())
@@ -76,8 +76,6 @@ export default function WorldMapChart<T>(props: WorldMapChartProps<T>) {
   const basicOption = useMapOption(!!compareData)
   const isSmall = useMediaQuery(theme.breakpoints.down('md'))
 
-  const {isDarkTheme} = useThemeContext();
-
   const options: EChartsOption = useMemo(() => {
     const max = Math.max(data[0]?.[metricColumnName] as unknown as number ?? 0, compareData?.[0]?.[metricColumnName] as unknown as number ?? 0)
 
@@ -134,26 +132,15 @@ export default function WorldMapChart<T>(props: WorldMapChartProps<T>) {
       ...basicOption,
       series,
     }
-  }, [basicOption, data, compareData, name, compareName, isDarkTheme, isSmall, effect])
+  }, [basicOption, data, compareData, name, compareName, isSmall, effect])
 
   return (
-    <ReactECharts
+    <ECharts
+      aspectRatio={16 / 9}
       showLoading={loading}
       option={options}
-      notMerge={true}
+      notMerge={false}
       lazyUpdate={true}
-      style={{
-        width: '100%',
-        height: 'auto',
-        aspectRatio: '16 / 9',
-        overflow: 'hidden'
-      }}
-      theme={isDarkTheme ? 'dark' : 'vintage'}
-      opts={{
-        devicePixelRatio: window?.devicePixelRatio ?? 1,
-        renderer: 'canvas',
-        locale: 'en'
-      }}
     />
   )
 }
