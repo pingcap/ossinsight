@@ -1,6 +1,8 @@
 name: Node.js CI
 
 on:
+  push:
+    branches: [main]
   pull_request:
     branches: [main]
   workflow_dispatch:
@@ -25,7 +27,7 @@ jobs:
         run: npm run build
       - name: Deploy to ossinsight.io 🚀
         uses: JamesIves/github-pages-deploy-action@releases/v3
-        if: ${{ github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true }}
+        if: ${{ github.event_name != 'pull_request' }}
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BRANCH: gh-pages # The branch the action should deploy to.
