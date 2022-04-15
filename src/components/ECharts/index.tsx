@@ -39,7 +39,7 @@ const ECharts = React.forwardRef<EChartsReact, EChartsProps>(({aspectRatio, heig
 
   const echartsOpts: Opts = useMemo(() => {
     return Object.assign({
-      devicePixelRatio: window?.devicePixelRatio ?? 1,
+      devicePixelRatio: typeof window === "undefined" ? 1 : window.devicePixelRatio,
       renderer: 'canvas',
       height,
       locale: 'en'
