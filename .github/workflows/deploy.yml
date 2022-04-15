@@ -39,10 +39,3 @@ jobs:
           dist: './build'
           teardown: true
           build: echo 'already built'
-      - name: Install SSH Key
-        uses: shimataro/ssh-key-action@v2
-        with:
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          known_hosts: 'just-a-placeholder-so-we-dont-get-errors'
-      - name: Deploy with rsync
-        run: rsync -e "ssh -o StrictHostKeyChecking=no" -avz ./build/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/ubuntu/ossinsight/ossinsight.io/
