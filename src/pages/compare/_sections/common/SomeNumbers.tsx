@@ -7,13 +7,12 @@ import {RadarChart} from 'echarts/charts';
 import {LegendComponent, TitleComponent} from 'echarts/components';
 import {CanvasRenderer} from 'echarts/renderers';
 import {EChartsOption} from "echarts";
-import ReactECharts from "echarts-for-react";
 import BrowserOnly from "@docusaurus/BrowserOnly";
-import useThemeContext from "@theme/hooks/useThemeContext";
 import {useTheme} from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import {formatNumber} from "../../../../lib/text";
 import CompareNumbers, {CompareNumbersContainer} from "../../../../components/RemoteCards/CompareNumbers";
+import ECharts from "../../../../components/ECharts";
 
 echarts.use([TitleComponent, LegendComponent, RadarChart, CanvasRenderer]);
 
@@ -25,8 +24,6 @@ export interface SomeNumbersProps {
 const httpClient = createHttpClient();
 
 const SomeNumbersPC = ({repos, queries}: SomeNumbersProps) => {
-  const {isDarkTheme} = useThemeContext();
-
   const r1 = useNumberQueries(queries.map(query => query.query), repos[0])
   const r2 = useNumberQueries(queries.map(query => query.query), repos[1])
 
@@ -74,25 +71,12 @@ const SomeNumbersPC = ({repos, queries}: SomeNumbersProps) => {
   }, [r1.data, r2.data])
 
   return (
-    <BrowserOnly>
-      {() => <ReactECharts
-        option={option}
-        notMerge={false}
-        lazyUpdate={true}
-        style={{
-          height: 'auto',
-          aspectRatio: '4 / 1',
-          overflow: 'hidden'
-        }}
-        theme={isDarkTheme ? 'dark' : 'vintage'}
-        opts={{
-          devicePixelRatio: window?.devicePixelRatio ?? 1,
-          renderer: 'canvas',
-          width: 'auto',
-          locale: 'en'
-        }}
-      />}
-    </BrowserOnly>
+    <ECharts
+      aspectRatio={4}
+      option={option}
+      notMerge={false}
+      lazyUpdate={true}
+    />
   )
 }
 

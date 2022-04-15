@@ -1,17 +1,15 @@
 import * as React from "react";
 import {useMemo} from "react";
 import {useRemoteData} from "../RemoteCharts/hook";
-import ReactECharts from 'echarts-for-react';
-import useThemeContext from "@theme/hooks/useThemeContext";
 import {BaseChartCardProps} from "./BasicCard";
 import * as echarts from "echarts";
 import {EChartsOption, PieSeriesOption} from "echarts";
-import BrowserOnly from "@docusaurus/BrowserOnly";
 import CompareCard from "./CompareCard";
 import useMediaQuery from '@mui/material/useMediaQuery';
 import {useTheme} from '@mui/material/styles';
 import map from '@geo-maps/countries-land-10km';
 import {alpha2ToGeo, alpha2ToTitle} from "../../lib/areacode";
+import ECharts from "../ECharts";
 
 if (!echarts.getMap('world')) {
   echarts.registerMap('world', map())
@@ -49,7 +47,6 @@ export default function WorldMapChartCompareCard(props: WorldMapChartCompareCard
   const isSmall = useMediaQuery(theme.breakpoints.down('md'))
   const req1 = useRemoteData(queryName, params1, true, !!params1.repoId);
   const req2 = useRemoteData(queryName, params2, true, !!params2.repoId);
-  const {isDarkTheme} = useThemeContext();
 
   const [data1, data2] = useMemo(() => {
     return [
@@ -120,28 +117,14 @@ export default function WorldMapChartCompareCard(props: WorldMapChartCompareCard
         containLabel: true
       }, grid),
     }
-  }, [data1, data2, isDarkTheme, isSmall])
+  }, [data1, data2, isSmall])
 
   return <CompareCard {...props} shouldLoad={!!params1.repoId || !!params2.repoId} loading={loading} error={error} query={queryName} datas={[req1.data, req2.data]}>
-    <BrowserOnly>
-      {() => (
-        <ReactECharts
-          option={options}
-          lazyUpdate={true}
-          style={{
-            width: '100%',
-            height: 'auto',
-            aspectRatio: '16 / 9',
-            overflow: 'hidden'
-          }}
-          theme={isDarkTheme ? 'dark' : 'vintage'}
-          opts={{
-            devicePixelRatio: window?.devicePixelRatio ?? 1,
-            renderer: 'canvas',
-            locale: 'en'
-          }}
-        />
-      )}
-    </BrowserOnly>
+    <ECharts
+      aspectRatio={16 / 9}
+      option={options}
+      notMerge={false}
+      lazyUpdate={true}
+    />
   </CompareCard>
 }

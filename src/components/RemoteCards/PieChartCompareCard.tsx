@@ -1,14 +1,13 @@
 import * as React from "react";
 import {useMemo} from "react";
 import {useRemoteData} from "../RemoteCharts/hook";
-import ReactECharts from 'echarts-for-react';
 import useThemeContext from "@theme/hooks/useThemeContext";
-import BasicCard, {BaseChartCardProps} from "./BasicCard";
+import {BaseChartCardProps} from "./BasicCard";
 import {PieSeriesOption} from "echarts";
-import BrowserOnly from "@docusaurus/BrowserOnly";
 import CompareCard from "./CompareCard";
 import useMediaQuery from '@mui/material/useMediaQuery';
-import { useTheme } from '@mui/material/styles';
+import {useTheme} from '@mui/material/styles';
+import ECharts from "../ECharts";
 
 export interface PieSeriesExtendOption extends PieSeriesOption {
   nameMap?: (name: string) => string;
@@ -124,24 +123,13 @@ export default function PieChartCompareCard(props: PieChartCardProps) {
     }
   }, [data1, data2, isDarkTheme, isSmall])
 
-  return <CompareCard {...props} shouldLoad={!!params1.repoId || !!params2.repoId} loading={loading} error={error} query={queryName} datas={[req1.data, req2.data]}>
-    <BrowserOnly>
-      {() => <ReactECharts
-        option={options}
-        lazyUpdate={true}
-        style={{
-          width: '100%',
-          height: 'auto',
-          aspectRatio: isSmall ? '16 / 9' : '26 / 9',
-          overflow: 'hidden'
-        }}
-        theme={isDarkTheme ? 'dark' : 'vintage'}
-        opts={{
-          devicePixelRatio: window?.devicePixelRatio ?? 1,
-          renderer: 'canvas',
-          locale: 'en'
-        }}
-      />}
-    </BrowserOnly>
+  return <CompareCard {...props} shouldLoad={!!params1.repoId || !!params2.repoId} loading={loading} error={error}
+                      query={queryName} datas={[req1.data, req2.data]}>
+    <ECharts
+      aspectRatio={isSmall ? (16 / 9) : (26 / 9)}
+      option={options}
+      notMerge={false}
+      lazyUpdate={true}
+    />
   </CompareCard>
 }

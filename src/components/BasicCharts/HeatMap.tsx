@@ -1,14 +1,13 @@
-import useThemeContext from "@theme/hooks/useThemeContext";
 import * as React from "react";
 import {useCallback, useMemo, useState} from "react";
 import BrowserOnly from "@docusaurus/BrowserOnly";
-import ReactECharts from "echarts-for-react";
 import {useTheme} from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Box from "@mui/material/Box";
 import FormControl from "@mui/material/FormControl";
 import {InputLabel, Select} from "@mui/material";
 import MenuItem from "@mui/material/MenuItem";
+import ECharts from "../ECharts";
 
 const zones: number[] = [
 ]
@@ -45,7 +44,6 @@ export default function HeatMapChart<T>({
   valueColumnName,
   deps,
 }: HeatMapChartProps<T>) {
-  const {isDarkTheme} = useThemeContext();
   const theme = useTheme();
   const isSmall = useMediaQuery(theme.breakpoints.down('sm'))
   const [zone, setZone] = useState(0)
@@ -156,7 +154,7 @@ export default function HeatMapChart<T>({
         }
       }
     }
-  }, [data, isDarkTheme, isSmall, ...deps])
+  }, [data, isSmall, ...deps])
 
   return (
     <BrowserOnly>
@@ -182,23 +180,12 @@ export default function HeatMapChart<T>({
               </Select>
             </FormControl>
           </Box>
-          <ReactECharts
+          <ECharts
+            aspectRatio={24 / 10}
             showLoading={loading}
             option={options}
             notMerge={false}
             lazyUpdate={true}
-            style={{
-              height: 'auto',
-              aspectRatio: '24 / 10',
-              overflow: 'hidden'
-            }}
-            theme={isDarkTheme ? 'dark' : 'vintage'}
-            opts={{
-              devicePixelRatio: window?.devicePixelRatio ?? 1,
-              renderer: 'canvas',
-              width: 'auto',
-              locale: 'en'
-            }}
           />
         </Box>
       )}

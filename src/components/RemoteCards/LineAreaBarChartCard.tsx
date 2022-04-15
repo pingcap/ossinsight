@@ -1,13 +1,12 @@
 import * as React from "react";
 import {useMemo} from "react";
 import {useRemoteData} from "../RemoteCharts/hook";
-import ReactECharts from 'echarts-for-react';
 import useThemeContext from "@theme/hooks/useThemeContext";
 import BasicCard, {BaseChartCardProps} from "./BasicCard";
 import {SeriesOption} from "echarts";
-import BrowserOnly from "@docusaurus/BrowserOnly";
 import {useTheme} from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import ECharts from "../ECharts";
 
 export interface LineAreaBarChartProps extends BaseChartCardProps {
   seriesColumnName: string,
@@ -145,26 +144,12 @@ export default function LineAreaBarChartCard(props: LineAreaBarChartProps) {
 
   return <BasicCard {...props} shouldLoad={repoId1 || repoId2} loading={false} error={remote1.error ?? remote2.error}
                     query={queryName}>
-    <BrowserOnly>
-      {() => <ReactECharts
-        option={options}
-        showLoading={remote1.loading || remote2.loading}
-        notMerge={true}
-        lazyUpdate={true}
-        style={{
-          width: '100%',
-          height: 'auto',
-          aspectRatio: isSmall ? '16 / 9' : '26 / 9',
-          overflow: 'hidden'
-        }}
-        theme={isDarkTheme ? 'dark' : 'vintage'}
-        opts={{
-          devicePixelRatio: window?.devicePixelRatio ?? 1,
-          renderer: 'canvas',
-          width: 'auto',
-          locale: 'en'
-        }}
-      />}
-    </BrowserOnly>
+    <ECharts
+      aspectRatio={isSmall ? (16 / 9) : (26 / 9)}
+      showLoading={remote1.loading || remote2.loading}
+      option={options}
+      notMerge={false}
+      lazyUpdate={true}
+    />
   </BasicCard>;
 }

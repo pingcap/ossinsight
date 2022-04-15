@@ -25,14 +25,14 @@ jobs:
         run: npm ci
       - name: Build 🏗️
         run: npm run build
-      - name: Deploy to gharchive.live 🚀
+      - name: Deploy to ossinsight.io 🚀
         uses: JamesIves/github-pages-deploy-action@releases/v3
         if: ${{ github.event_name != 'pull_request' }}
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BRANCH: gh-pages # The branch the action should deploy to.
           FOLDER: build # The folder the action should deploy.
-      - name: Deploy to gharchive-live.surge.sh 🚀
+      - name: Deploy to ossinsight.surge.sh 🚀
         uses: afc163/surge-preview@v1
         if: ${{ github.event_name == 'pull_request' }}
         with:
@@ -40,4 +40,15 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           dist: './build'
           teardown: true
-          build: echo 'already built'
+          build: echo 'Deployed to surge'
+          
+      - name: Deploy to Hong Kong server 🚀
+        uses: burnett01/rsync-deployments@5.2
+        with:
+          switches: -avzr --delete
+          path: ./build/
+          remote_path: /home/ubuntu/ossinsight/ossinsight.io/
+          remote_host: ${{ secrets.SSH_HOST }}
+#          remote_port: ${{ secrets.SSH_PORT }}
+          remote_user: ubuntu
+          remote_key: ${{ secrets.SSH_PRIVATE_KEY }}

@@ -4,10 +4,8 @@ import {renderChart} from "../RemoteCharts/withQuery";
 import BrowserOnly from "@docusaurus/core/lib/client/exports/BrowserOnly";
 import {Queries} from "../RemoteCharts/queries";
 import {EChartsOption, SeriesOption} from "echarts";
-import ReactEChartsCore from "echarts-for-react/lib/core";
 import * as echarts from "echarts/core";
-import useThemeContext from "@theme/hooks/useThemeContext";
-import {Opts} from "echarts-for-react/lib/types";
+import ECharts from "../ECharts";
 
 export interface ContributorsChartsProps {
   type: 'prs' | 'contributors'
@@ -53,7 +51,6 @@ interface ChartsProps {
 }
 
 function Charts({data: rawData, type, percent, loading, size}: ChartsProps) {
-  const {isDarkTheme} = useThemeContext();
   const ordered = useOrdered(rawData)
   const data = useSteps(ordered, type, percent)
 
@@ -111,31 +108,18 @@ function Charts({data: rawData, type, percent, loading, size}: ChartsProps) {
     return loading ? 400 : data.length * (size * 1.5)
   }, [size, loading, data])
 
-  const opts: Opts = useMemo(() => {
-    return {
-      devicePixelRatio: window?.devicePixelRatio ?? 1,
-      renderer: 'canvas',
-      height,
-      width: 'auto',
-      locale: 'en'
-    }
-  }, [height])
-
   return (
-    <ReactEChartsCore
-      showLoading={loading}
-      echarts={echarts}
+    <ECharts
       option={option}
+      showLoading={loading}
+      height={height}
+      echarts={echarts}
       notMerge={false}
       lazyUpdate={true}
-      theme={isDarkTheme ? 'dark' : 'vintage'}
       style={{
-        height,
         marginBottom: 16,
         borderRadius: 'var(--ifm-global-radius)',
-        overflow: 'hidden'
       }}
-      opts={opts}
     />
   )
 }

@@ -13,7 +13,6 @@ import ThemeAdaptor from "../../components/ThemeAdaptor";
 import CompareHeader from "../../components/CompareHeader/CompareHeader";
 
 import {getRandomColor} from "../../lib/color";
-import {registerThemeDark, registerThemeVintage} from "../../components/BasicCharts";
 
 import {Repo} from "../../components/CompareHeader/RepoSelector";
 import useUrlSearchState, {stringParam} from "../../hooks/url-search-state";
@@ -54,9 +53,6 @@ const zones: number[] = [
 for (let i = -12; i <= 13; i++) {
   zones.push(i)
 }
-
-registerThemeDark(false);
-registerThemeVintage(false);
 
 function useRepo (name: string | undefined, ): [Repo | undefined, Dispatch<SetStateAction<Repo | undefined>>, boolean] {
   const [repo, setRepo] = useState(null)
