@@ -18,12 +18,12 @@ export default function WordCloud({children, period}: WordCloudProps) {
       if (data.length === 0) {
         return
       }
-      let max = data[0].history_events
-      const list = data.map(({repo_name, history_events}) => {
+//       let max = data[0].history_events
+      const list = data.map(({repo_name, history_events}, key) => {
         return {
           key: repo_name,
           word: repo_name.split('/')[1],
-          weight: history_events / max
+          weight: (data.length-key)/data.length,
         }
       })
       return start(list, { container: ref.current })
