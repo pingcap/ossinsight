@@ -32,7 +32,7 @@ jobs:
           FOLDER: build # The folder the action should deploy.
       - name: Deploy to ossinsight.surge.sh 🚀
         uses: afc163/surge-preview@v1
-        if: ${{ github.event_name == 'pull_request' && github.event.action == 'open' }}
+        if: ${{ github.event_name == 'pull_request' }}
         with:
           surge_token: ${{ secrets.SURGE_TOKEN }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
