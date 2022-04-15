@@ -1,18 +1,12 @@
 import * as React from "react";
-import {useCallback, useMemo, useState} from "react";
+import {useMemo} from "react";
 import {useRemoteData} from "../RemoteCharts/hook";
-import ReactECharts from 'echarts-for-react';
-import useThemeContext from "@theme/hooks/useThemeContext";
 import BasicCard, {BaseChartCardProps} from "./BasicCard";
 
 import {SeriesOption} from "echarts";
-import BrowserOnly from "@docusaurus/BrowserOnly";
 import {useTheme} from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import Box from "@mui/material/Box";
-import FormControl from "@mui/material/FormControl";
-import {InputLabel, Select} from "@mui/material";
-import MenuItem from "@mui/material/MenuItem";
+import ECharts from "../ECharts";
 
 export interface HeatMapChartCardProps extends BaseChartCardProps {
   xAxisColumnName: string,
@@ -50,7 +44,6 @@ export default function HeatMapChartCard(props: HeatMapChartCardProps) {
     onZoneChange
   } = props;
   const {data: res, loading, error} = useRemoteData(queryName, params, true, shouldLoad);
-  const {isDarkTheme} = useThemeContext();
   const theme = useTheme();
   const isSmall = useMediaQuery(theme.breakpoints.down('sm'))
 
@@ -159,27 +152,14 @@ export default function HeatMapChartCard(props: HeatMapChartCardProps) {
         }, s);
       })
     }
-  }, [data, isDarkTheme, isSmall])
+  }, [data, isSmall])
 
   return <BasicCard {...props} loading={loading} error={error} query={queryName} data={res}>
-    <BrowserOnly>
-      {() => <ReactECharts
-        option={options}
-        notMerge={true}
-        lazyUpdate={true}
-        style={{
-          height: 'auto',
-          aspectRatio: isSmall ? '24 / 7' : '24 / 7',
-          overflow: 'hidden'
-        }}
-        theme={isDarkTheme ? 'dark' : 'vintage'}
-        opts={{
-          devicePixelRatio: window?.devicePixelRatio ?? 1,
-          renderer: 'canvas',
-          width: 'auto',
-          locale: 'en'
-        }}
-      />}
-    </BrowserOnly>
+    <ECharts
+      aspectRatio={24 / 7}
+      option={options}
+      notMerge={false}
+      lazyUpdate={true}
+    />
   </BasicCard>;
 }

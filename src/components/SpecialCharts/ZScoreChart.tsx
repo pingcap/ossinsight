@@ -1,7 +1,6 @@
-import useThemeContext from "@theme/hooks/useThemeContext";
 import {EChartsOption} from "echarts";
 import React, {useMemo} from "react";
-import ReactECharts from "echarts-for-react";
+import ECharts from "../ECharts";
 
 interface ZScoreChartProps {
   data: {
@@ -16,8 +15,6 @@ interface ZScoreChartProps {
 
 
 export default function ZScoreChart({data, loading}: ZScoreChartProps) {
-  const {isDarkTheme} = useThemeContext();
-
   const option: EChartsOption = useMemo(() => {
     return {
       legend: {
@@ -83,22 +80,12 @@ export default function ZScoreChart({data, loading}: ZScoreChartProps) {
   }, [data])
 
   return (
-    <ReactECharts
+    <ECharts
       showLoading={loading}
-      notMerge={true}
-      lazyUpdate={true}
       option={option}
-      style={{
-        width: '100%',
-        height: data.length * 30,
-        overflow: 'hidden'
-      }}
-      theme={isDarkTheme ? 'dark' : 'vintage'}
-      opts={{
-        devicePixelRatio: window?.devicePixelRatio ?? 1,
-        renderer: 'canvas',
-        locale: 'en'
-      }}
+      height={data.length * 30}
+      lazyUpdate
+      notMerge={false}
     />
   )
 }

@@ -1,20 +1,15 @@
 import React, {useMemo} from "react";
-import ReactECharts from "echarts-for-react";
-import useThemeContext from "@theme/hooks/useThemeContext";
 import {EChartsOption} from "echarts";
-import {registerThemeDark, registerThemeVintage} from "../BasicCharts";
 import * as echarts from "echarts/core";
 import {GridComponent, TitleComponent, TooltipComponent} from "echarts/components";
 import {BarChart as EBarChart} from "echarts/charts";
 import {CanvasRenderer} from "echarts/renderers";
+import ECharts from "../ECharts";
 
 // Register the required components
 echarts.use(
   [TitleComponent, TooltipComponent, GridComponent, EBarChart, CanvasRenderer]
 );
-
-registerThemeVintage();
-registerThemeDark();
 
 interface YoyChartProps {
   data: {
@@ -23,13 +18,11 @@ interface YoyChartProps {
     stars2021: number
     yoy: number
   }[]
-  aspectRatio?: string
+  aspectRatio?: number
   loading?: boolean
 }
 
-export default function YoyChart({data, aspectRatio = '6 / 5', loading}: YoyChartProps) {
-  const {isDarkTheme} = useThemeContext();
-
+export default function YoyChart({data, aspectRatio = 6 / 5, loading}: YoyChartProps) {
   const option: EChartsOption = useMemo(() => {
     return {
       legend: {
@@ -94,23 +87,12 @@ export default function YoyChart({data, aspectRatio = '6 / 5', loading}: YoyChar
   }, [data])
 
   return (
-    <ReactECharts
+    <ECharts
       showLoading={loading}
-      notMerge={true}
-      lazyUpdate={true}
       option={option}
-      style={{
-        width: '100%',
-        height: 'auto',
-        aspectRatio,
-        overflow: 'hidden'
-      }}
-      theme={isDarkTheme ? 'dark' : 'vintage'}
-      opts={{
-        devicePixelRatio: window?.devicePixelRatio ?? 1,
-        renderer: 'canvas',
-        locale: 'en'
-      }}
+      aspectRatio={aspectRatio}
+      lazyUpdate
+      notMerge={false}
     />
   )
 }

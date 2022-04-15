@@ -5,10 +5,9 @@ import {CanvasRenderer} from "echarts/renderers";
 import useThemeContext from "@theme/hooks/useThemeContext";
 import * as React from "react";
 import {useMemo} from "react";
-import BrowserOnly from "@docusaurus/BrowserOnly";
-import ReactECharts from "echarts-for-react";
 import {TextCommonOption} from "echarts/types/src/util/types";
-import {EChartsOption, PieSeriesOption, SeriesOption} from "echarts";
+import {EChartsOption, PieSeriesOption} from "echarts";
+import ECharts from "../ECharts";
 
 echarts.use(
   [TitleComponent, TooltipComponent, GridComponent, EPieChart, CanvasRenderer]
@@ -134,24 +133,12 @@ export default function PieChart<T>({
   }, [series])
 
   return (
-    <BrowserOnly>
-      {() => <ReactECharts
-        option={options}
-        lazyUpdate={true}
-        showLoading={loading}
-        style={{
-          width: '100%',
-          height: 'auto',
-          aspectRatio: '16 / 9',
-          overflow: 'hidden'
-        }}
-        theme={isDarkTheme ? 'dark' : 'vintage'}
-        opts={{
-          devicePixelRatio: window?.devicePixelRatio ?? 1,
-          renderer: 'canvas',
-          locale: 'en'
-        }}
-      />}
-    </BrowserOnly>
+    <ECharts
+      aspectRatio={16 / 9}
+      showLoading={loading}
+      option={options}
+      notMerge={false}
+      lazyUpdate={true}
+    />
   )
 }
