@@ -10,7 +10,7 @@
             "url": "https://ossinsight.io/blog/about",
             "title": "About",
             "summary": "Who we are?",
-            "date_modified": "2022-04-15T16:29:54.198Z",
+            "date_modified": "2022-04-15T17:01:23.534Z",
             "author": {
                 "name": "PingCAP",
                 "url": "https://github.com/pingcap"
@@ -22,7 +22,7 @@
             "url": "https://ossinsight.io/blog/changelog",
             "title": "Changelog",
             "summary": "2022-03-22",
-            "date_modified": "2022-04-15T16:29:54.198Z"
+            "date_modified": "2022-04-15T17:01:23.534Z"
         },
         {
             "id": "/how-it-works",
@@ -30,7 +30,7 @@
             "url": "https://ossinsight.io/blog/how-it-works",
             "title": "Data Preparation for Analytics",
             "summary": "All the data we use here on this website sources from GH Archive, a non-profit project that records and archives all GitHub events data since 2011. The total data volume archived by GH Archive can be up to 4 billion rows. We download the json file on GH Archive and convert it into csv format via Script, and finally load it into the TiDB cluster in parallel through TiDB-Lightning.",
-            "date_modified": "2022-04-15T16:29:54.198Z"
+            "date_modified": "2022-04-15T17:01:23.534Z"
         },
         {
             "id": "/try-it-yourself",
@@ -38,14 +38,14 @@
             "url": "https://ossinsight.io/blog/try-it-yourself",
             "title": "▶️  Use TiDB Cloud to Analyze GitHub Events in 10 Minutes",
             "summary": "TiDB is an open source distributed NewSQL database with horizontal scalability, high availability, and strong consistency. It can also deal with mixed OLTP and OLAP workloads at the same time by leveraging its hybrid transactional and analytical (HTAP) capability.",
-            "date_modified": "2022-04-15T16:29:54.198Z"
+            "date_modified": "2022-04-15T17:01:23.534Z"
         },
         {
             "id": "/try-your-own-dataset",
             "url": "https://ossinsight.io/blog/try-your-own-dataset",
             "title": "Try Your Own Dataset",
             "summary": "🔥 Use TiDB Cloud to Analyze GitHub Events in 10 Minutes",
-            "date_modified": "2022-04-15T16:29:54.198Z"
+            "date_modified": "2022-04-15T17:01:23.534Z"
         }
     ]
 }
