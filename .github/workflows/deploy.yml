@@ -1,8 +1,6 @@
 name: Node.js CI
 
 on:
-  push:
-    branches: [main]
   pull_request:
     branches: [main]
   workflow_dispatch:
@@ -25,14 +23,14 @@ jobs:
         run: npm ci
       - name: Build 🏗️
         run: npm run build
-      - name: Deploy to gharchive.live 🚀
+      - name: Deploy to ossinsight.io 🚀
         uses: JamesIves/github-pages-deploy-action@releases/v3
-        if: ${{ github.event_name != 'pull_request' }}
+        if: ${{ github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true }}
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BRANCH: gh-pages # The branch the action should deploy to.
           FOLDER: build # The folder the action should deploy.
-      - name: Deploy to gharchive-live.surge.sh 🚀
+      - name: Deploy to ossinsight.surge.sh 🚀
         uses: afc163/surge-preview@v1
         if: ${{ github.event_name == 'pull_request' }}
         with:
