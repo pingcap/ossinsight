@@ -34,17 +34,17 @@ export default function Home() {
           >
             <Cards sx={{ mt: 2 }}>
               <StandardCard
-                title='📈 Star History of Top Repos Since 2011'
+                title='📈 OSS Database Repos Landscape 2021'
                 description='/* Display the popularity trend of various types of GitHub repos since 2011. */'
                 image={<Image src={require('./images/chart-1.png').default} style={{ borderRadius: 6 }} />}
               />
               <StandardCard
-                title='🔥 The Most Active Repos Ranked by Z-score'
+                title='🔥 Real-time Insights'
                 description='/* Track the most active GitHub repos by the Z-score of stars, PRs, and contributors. */'
                 image={<Image src={require('./images/chart-2.png').default} style={{ borderRadius: 6 }} />}
               />
               <StandardCard
-                title='❤️ The Most Active Companies Contributing to Repos'
+                title='❤️ Custom Insights'
                 description='/* Learn which companies are contributing the most to various types of GitHub repos. */'
                 image={<Image src={require('./images/chart-3.png').default} style={{ borderRadius: 6 }} />}
               />
