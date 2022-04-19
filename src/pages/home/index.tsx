@@ -35,17 +35,17 @@ export default function Home() {
             <Cards sx={{ mt: 2 }}>
               <StandardCard
                 title='📈 OSS Database Repos Landscape 2021'
-                description='/* Display the popularity trend of various types of GitHub repos since 2011. */'
+                description='/* Deep insights into oss databases in 2011. */'
                 image={<Image src={require('./images/chart-1.png').default} style={{ borderRadius: 6 }} />}
               />
               <StandardCard
                 title='🔥 Real-time Insights'
-                description='/* Track the most active GitHub repos by the Z-score of stars, PRs, and contributors. */'
+                description='/* Analyze open source software in realtime, up to last hour. */'
                 image={<Image src={require('./images/chart-2.png').default} style={{ borderRadius: 6 }} />}
               />
               <StandardCard
                 title='❤️ Custom Insights'
-                description='/* Learn which companies are contributing the most to various types of GitHub repos. */'
+                description='/* Analyze by customize your own date range. */'
                 image={<Image src={require('./images/chart-3.png').default} style={{ borderRadius: 6 }} />}
               />
             </Cards>
