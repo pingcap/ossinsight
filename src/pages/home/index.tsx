@@ -30,12 +30,12 @@ export default function Home() {
           <Section
             title='Deep insights into open source software'
             subtitle='Discover deep analytical insights of various types including their rankings and popularity trends using multiple metrics such as stars, PRs, and contributors.'
-            buttonText='Dig deeper via more metrics'
+            buttonText='🔍 Find more'
           >
             <Cards sx={{ mt: 2 }}>
               <StandardCard
                 title='📈 OSS Database Repos Landscape 2021'
-                description='/* Deep insights into oss databases in 2011. */'
+                description='/* Deep insights into OSS Databases in 2011. */'
                 image={<Image src={require('./images/chart-1.png').default} style={{ borderRadius: 6 }} />}
               />
               <StandardCard
@@ -51,25 +51,25 @@ export default function Home() {
             </Cards>
           </Section>
           <Section
-            title='Compare any 2 GitHub repositories'
-            subtitle='Compare any two repositories using multiple metrics such as stars, pull requests, commits...'
-            buttonText='Dig deeper via more metrics'
+            title='Compare any two GitHub repositories'
+            subtitle='Compare any one/two repositories using multiple metrics such as stars, pull requests, commits and our special metrics blow.'
+            buttonText='🔍 Find more'
             backgroundImage={require('./images/map-bg.png').default}
           >
             <Cards sx={{ mt: 2 }}>
               <StandardCard
-                title='Total Count or Trend'
-                description='/* Discover how the two repos differ in star(popularity), issue(user), pull request(contribution). */'
+                title='Company Distribution'
+                description='/* Stargazers from the Top 50 companies in different repositories. */'
                 image={<Image src={require('./images/chart-4.png').default} style={{ borderRadius: 6 }} />}
               />
               <StandardCard
-                title='Company Distribution'
-                description='/* Learn how the two repos differ in coding vitality as measured by the time contributors making their commits. */'
+                title='Commits Time Heat Map'
+                description='/* Time zones of contributors submit code for repositories. */'
                 image={<Image src={require('./images/chart-5.png').default} style={{ borderRadius: 6 }} />}
               />
               <StandardCard
                 title='Geographical Distribution'
-                description='/* Identify how the two repos differ in the geographic distribution of their contributors. */'
+                description='/* Locations of contributors in world-wide countries/regions. */'
                 image={<Image src={require('./images/chart-6.png').default} style={{ borderRadius: 6 }} />}
               />
             </Cards>
@@ -78,26 +78,28 @@ export default function Home() {
             <TopList period={period} onPeriodChange={setPeriod} />
           </Section>
           <Section
-            title={['Wonder how OSS Insight works ?', <br />,'Read our blog and try it yourself !']}
+            title='Wonder how OSS Insight works ?'
+            subtitle='Read our blog and try it yourself !'
           >
+          </Section>
             <Cards sx={{ mt: 2 }}>
               <StandardCard
                 title='Data Preparation for Analytics'
-                description='March 22, 2022 · 5 min read'
+                description='Tutorial · 5 min read'
                 codeStyleDescription={false}
-                readMore='https://www.baidu.com'
+                readMore='https://ossinsight.io/blog/how-it-works'
               />
               <StandardCard
                 title='What is TiDB Cloud'
-                description='March 22, 2022 · 5 min read'
+                description='Documentation · 5 min read'
                 codeStyleDescription={false}
-                readMore='https://www.baidu.com'
+                readMore='https://docs.pingcap.com/tidbcloud/'
               />
               <StandardCard
                 title='Use TiDB Cloud to Analyze GitHub Events in 10 Minutes'
-                description='March 22, 2022 · 5 min read'
+                description='Tutorial · 5 min read'
                 codeStyleDescription={false}
-                readMore='https://www.baidu.com'
+                readMore='https://ossinsight.io/blog/try-it-yourself/'
               />
             </Cards>
           </Section>
