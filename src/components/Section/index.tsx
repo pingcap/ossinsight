@@ -1,6 +1,6 @@
 import React, {PropsWithChildren} from "react";
 import Button, {ButtonProps} from "@mui/material/Button";
-import styles from "../../pages/home/index.module.css";
+import styles from "./styles.module.css";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 
 export interface SectionProps {
