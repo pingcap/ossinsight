@@ -28,7 +28,7 @@ export default function Home() {
         >
           <HomepageHeader />
           <Section
-            title='Deeply understand any open source software with visual insights'
+            title='Deep insights into open source software'
             subtitle='Discover deep analytical insights of various types including their rankings and popularity trends using multiple metrics such as stars, PRs, and contributors.'
             buttonText='Dig deeper via more metrics'
           >
@@ -51,7 +51,7 @@ export default function Home() {
             </Cards>
           </Section>
           <Section
-            title='Analyze and compare any GitHub repos with our powerful insight tool'
+            title='Compare any GitHub repositories'
             subtitle='Understand any GitHub repos and compare any two using multiple metrics such as stars, PRs, and time of commits.'
             buttonText='Dig deeper via more metrics'
             backgroundImage={require('./images/map-bg.png').default}
