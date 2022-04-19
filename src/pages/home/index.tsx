@@ -81,7 +81,6 @@ export default function Home() {
             title='Wonder how OSS Insight works ?'
             subtitle='Read our blog and try it yourself !'
           >
-          </Section>
             <Cards sx={{ mt: 2 }}>
               <StandardCard
                 title='Data Preparation for Analytics'
