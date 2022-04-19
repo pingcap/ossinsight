@@ -51,24 +51,24 @@ export default function Home() {
             </Cards>
           </Section>
           <Section
-            title='Compare any GitHub repositories'
-            subtitle='Understand any GitHub repos and compare any two using multiple metrics such as stars, PRs, and time of commits.'
+            title='Compare any 2 GitHub repositories'
+            subtitle='Compare any two repositories using multiple metrics such as stars, pull requests, commits...'
             buttonText='Dig deeper via more metrics'
             backgroundImage={require('./images/map-bg.png').default}
           >
             <Cards sx={{ mt: 2 }}>
               <StandardCard
-                title='Stars Numbers'
-                description='/* Discover how the two repos differ in popularity as measured by their number of stars. */'
+                title='Total Count or Trend'
+                description='/* Discover how the two repos differ in star(popularity), issue(user), pull request(contribution). */'
                 image={<Image src={require('./images/chart-4.png').default} style={{ borderRadius: 6 }} />}
               />
               <StandardCard
-                title='Commits Time Heat Map'
+                title='Company Distribution'
                 description='/* Learn how the two repos differ in coding vitality as measured by the time contributors making their commits. */'
                 image={<Image src={require('./images/chart-5.png').default} style={{ borderRadius: 6 }} />}
               />
               <StandardCard
-                title='Geographical Distribution '
+                title='Geographical Distribution'
                 description='/* Identify how the two repos differ in the geographic distribution of their contributors. */'
                 image={<Image src={require('./images/chart-6.png').default} style={{ borderRadius: 6 }} />}
               />
