@@ -51,6 +51,10 @@ export default function TopList({period, onPeriodChange}: TopListProps) {
   return (
     <ThemeAdaptor>
       {renderTopListHeader(period, handlePeriodChange, loading, handleOpen)}
+      <Typography component='p' variant='body1' sx={{ color: 'text.secondary', mb: 2 }} align='center'>
+        All the real-time analytics are supported by
+        <img alt="TiDB Cloud" src='img/tidb_cloud.png' width={108} height={24} style={{ verticalAlign: 'text-bottom', marginLeft: 8 }} />
+      </Typography>
       {renderTopListBody(ranks, loading)}
       <Dialog
         maxWidth="lg"
@@ -72,7 +76,7 @@ export default function TopList({period, onPeriodChange}: TopListProps) {
 
 function renderTopListHeader (period: string, handlePeriodChange: (period: SelectChangeEvent)=>void, loading: boolean, handleOpen: () => void) {
   return (
-    <h2>
+    <Typography component='h2' variant='h2' sx={{ mb: 2, fontSize: 40 }} align='center'>
       Top 20 most active repositories in
       &nbsp;
       <Select<string>
@@ -101,7 +105,7 @@ function renderTopListHeader (period: string, handlePeriodChange: (period: Selec
           <InfoIcon />
         </IconButton>
       </Tooltip>
-    </h2>
+    </Typography>
   )
 }
 

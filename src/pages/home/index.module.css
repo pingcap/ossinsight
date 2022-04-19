@@ -1,0 +1,99 @@
+/**
+ * CSS files with the .module.css suffix will be treated as CSS modules
+ * and scoped locally.
+ */
+
+.heroWc {
+  padding: 0;
+}
+
+.heroWcTitle {
+  display: block;
+  padding: 0 8px !important;
+}
+
+.wcContainer {
+  width: 100vw;
+  height: 250px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, Cantarell, "Noto Sans", sans-serif, "system-ui", "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-size: 64px;
+  font-weight: 400;
+  line-height: 8rem;
+}
+
+.heroBanner {
+  padding: 1rem 0;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+@media screen and (max-width: 966px) {
+  .heroBanner {
+    padding: 2rem;
+  }
+  .wcContainer {
+    font-size: 5rem;
+    line-height: 5rem;
+  }
+}
+
+@media screen and (max-width: 756px) {
+  .wcContainer {
+    font-size: 3rem;
+    line-height: 3rem;
+  }
+}
+
+.buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.autoBr {
+  white-space: pre-wrap;
+}
+
+.autoBr img {
+  vertical-align: text-bottom;
+  margin-left: 8px;
+}
+
+.section {
+  padding: 32px 16px;
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.sectionTitle {
+  max-width: 915px;
+  font-size: 40px;
+  font-weight: bold;
+  color: var(--ifm-hero-text-color);
+}
+
+.sectionSubtitle {
+  max-width: 915px;
+  font-size: 20px;
+  color: var(--ifm-hero-text-color);
+}
+
+.cardTitle {
+  margin-bottom: 16px;
+}
+
+.cardImage {
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.cardBody {
+  margin: 8px 0 0;
+  line-height: 1.25;
+}
