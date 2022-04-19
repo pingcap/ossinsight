@@ -7,7 +7,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'Open Source Software Insight',
-  tagline: ' Explore deep insights from 4,300,000,000 GitHub events',
+  tagline: ' Explore deep insights from 4,500,000,000+ GitHub Events',
   url: 'https://ossinsight.io',
   baseUrl: '/',
   onBrokenLinks: 'throw',
