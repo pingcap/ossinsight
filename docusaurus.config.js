@@ -90,7 +90,7 @@ const config = {
           },
           {to: '/compare', label: 'Compare Projects', position: 'left'},
           {to: '/blog/try-it-yourself/', label: '🔧 Try It Yourself', position: 'left'},
-          {to: '/blog/how-it-works', label: '▶️  How It Works', position: 'left'},
+          {to: '/blog/how-it-works', label: 'How It Works', position: 'left'},
           {
             href: 'https://en.pingcap.com/tidb-cloud/',
             label: 'TiDB Cloud',
