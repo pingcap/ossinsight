@@ -11,7 +11,6 @@ export interface SectionProps {
   button?: ButtonProps<'a'>
 }
 
-
 export default function Section({title, subtitle, button, buttonText, backgroundImage, children}: PropsWithChildren<SectionProps>) {
   return (
     <section className={styles.section} style={backgroundImage && { backgroundImage: `url("${backgroundImage}")`}}>

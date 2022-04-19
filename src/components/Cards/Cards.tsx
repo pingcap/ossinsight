@@ -10,7 +10,7 @@ function withDefaultSizes (children: ReactNode, sizes: GridSizeProps): ReactNode
   if (children instanceof Array) {
     return children.map(node => withDefaultSizes(node, sizes))
   } else if (React.isValidElement(children)) {
-    return cloneElement(children, Object.assign({}, sizes, children.props))
+    return cloneElement(children, Object.assign({}, children.props, sizes))
   } else {
     return children
   }
