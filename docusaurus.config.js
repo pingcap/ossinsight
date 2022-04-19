@@ -62,7 +62,7 @@ const config = {
       hideableSidebar: true,
       colorMode: {
         defaultMode: 'dark',
-        disableSwitch: false,
+        disableSwitch: true,
         respectPrefersColorScheme: false,
       },
 //       announcementBar: {
