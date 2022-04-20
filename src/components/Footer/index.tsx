@@ -3,11 +3,19 @@ import {Cards, StandardCard} from "../Cards";
 import Section from "../Section";
 import React from "react";
 
-export default function Footer () {
+export default function Footer() {
   return (
     <>
       <Section
-        title={['Wonder how OSS Insight works ?', <br />, 'Read our blog and try it yourself !']}
+        title='Wonder how OSS Insight works ?'
+        subtitle={(
+          <>
+            Read our blog and 👏
+            &nbsp;
+            <a href='https://www.baidu.com'>try it yourself</a>
+            !
+          </>
+        )}
       >
         <Cards sx={{mt: 2}} xs={12} sm={6} md={4}>
           <StandardCard
