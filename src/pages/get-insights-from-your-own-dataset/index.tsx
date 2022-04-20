@@ -7,6 +7,7 @@ import {Cards, StandardCard} from "../../components/Cards";
 import Button from "@mui/material/Button";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import Image from "../../components/Image";
+import Footer from "../../components/Footer";
 
 const title = '👏Get insights from your own dataset! '
 
@@ -117,31 +118,6 @@ export default function Page() {
           </Button>
         </div>
       </Section>
-      <Section>
-        <Typography variant='h2' align='center'>Need help❓</Typography>
-        <Typography variant='subtitle1' component='p' sx={{ color: 'text.secondary', my: 2 }} align='center'>我们有详细的技术博客描述如何使用相关工具分析海量数据，或许对你分析自己的业务数据有所帮助</Typography>
-        <Cards sx={{mt: 2}} xs={12} sm={6} md={4}>
-          <StandardCard
-            title='Data Preparation for Analytics'
-            description='March 22, 2022 · 5 min read'
-            codeStyleDescription={false}
-            readMore='https://www.baidu.com'
-          />
-          <StandardCard
-            title='What is TiDB Cloud'
-            description='March 22, 2022 · 5 min read'
-            codeStyleDescription={false}
-            readMore='https://www.baidu.com'
-          />
-          <StandardCard
-            title='Use TiDB Cloud to Analyze GitHub Events in 10 Minutes'
-            description='March 22, 2022 · 5 min read'
-            codeStyleDescription={false}
-            readMore='https://www.baidu.com'
-          />
-        </Cards>
-      </Section>
     </CustomPage>
   )
-
 }

@@ -39,6 +39,7 @@ function HomepageHeader() {
 export default function Home() {
   return (
     <CustomPage
+      footer={false}
       title={`📈 2021 OSS Analysis`}
       description="💎 Comprehensive analysis of open source software trends on github, include database field, javascript framework field, web framework, lowcode development tool, etc."
     >
