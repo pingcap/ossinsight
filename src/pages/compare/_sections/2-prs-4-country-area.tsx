@@ -5,7 +5,7 @@ import WorldMapChartCompareCard from "../../../components/RemoteCards/WorldMapCh
 export default function () {
   return (
     <Section
-      title='PR Creators' Geographical Distribution'
+      title="PR Creators' Geographical Distribution"
       description='This map shows which countriy or region the PR creators of each project come from.'
     >
       {({repo1, repo2, dateRange, allReposProvided}) => (
