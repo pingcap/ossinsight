@@ -25,7 +25,7 @@ export default function () {
 
   return (
     <Section
-      title='Heat Map of Contribution Time'
+      title='Heat Map of Commits Time'
       description={(
         <>
           <Typography variant="body1">
@@ -64,7 +64,7 @@ export default function () {
           </Grid>
           <Grid item md={6} sm={6} xs={12}>
             <HeatMapChartCard
-              title={'Contribution Time Distribution'}
+              title={'Commits Time Distribution'}
               queryName={"commits-time-distribution"}
               params={{
                 repoId: repo1?.id,
