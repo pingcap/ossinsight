@@ -126,7 +126,7 @@ Because you have imported the sample data of all GitHub events occurred on the f
 Execute the following SQL statement to query the total number of events. 
 
 ```sql
-SELECT count(*) FROM github_events
+SELECT count(*) FROM github_events;
 ```
 
 ### Which repository gets the most stars?
