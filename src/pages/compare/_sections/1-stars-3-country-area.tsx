@@ -5,7 +5,7 @@ import React from "react";
 export default function () {
   return (
     <Section
-      title='Stargazers' Geographical Distribution'
+      title="Stargazers' Geographical Distribution"
       description='This map displays which country or region the stargazers of each project come from.'
     >
       {({ repo1, repo2, dateRange, allReposProvided }) => (
