@@ -64,26 +64,6 @@
   margin-left: 8px;
 }
 
-.section {
-  padding: 32px 16px;
-  background-position: center center;
-  background-size: cover;
-  background-repeat: no-repeat;
-}
-
-.sectionTitle {
-  max-width: 915px;
-  font-size: 40px;
-  font-weight: bold;
-  color: var(--ifm-hero-text-color);
-}
-
-.sectionSubtitle {
-  max-width: 915px;
-  font-size: 20px;
-  color: var(--ifm-hero-text-color);
-}
-
 .cardTitle {
   margin-bottom: 16px;
 }

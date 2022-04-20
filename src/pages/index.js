@@ -1,12 +1,11 @@
 import React, {useState} from 'react';
 import clsx from 'clsx';
-import Layout from '@theme/Layout';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
-import Head from '@docusaurus/Head';
 import styles from './index.module.css';
 import WordCloud from "../components/WordCloud";
 import Bottom from './bottom.md'
 import TopList from "../components/TopList";
+import CustomPage from "../theme/CustomPage";
 
 function HomepageHeader() {
   const {siteConfig} = useDocusaurusContext();
@@ -38,23 +37,18 @@ function HomepageHeader() {
 }
 
 export default function Home() {
-  const {siteConfig} = useDocusaurusContext();
   return (
-    <Layout
+    <CustomPage
+      footer={false}
       title={`📈 2021 OSS Analysis`}
-      description="💎 Comprehensive analysis of open source software trends on github, include database field, javascript framework field, web framework, lowcode development tool, etc.">
-      <div
-        style={{
-          '--ifm-container-width-xl': '960px'
-        }}
-      >
-        <HomepageHeader />
-        <div style={{margin: '4em 0'}}>
-          <div className='container container-fluid'>
-            <Bottom />
-          </div>
+      description="💎 Comprehensive analysis of open source software trends on github, include database field, javascript framework field, web framework, lowcode development tool, etc."
+    >
+      <HomepageHeader />
+      <div style={{margin: '4em 0'}}>
+        <div className='container container-fluid'>
+          <Bottom />
         </div>
       </div>
-    </Layout>
+    </CustomPage>
   );
 }
