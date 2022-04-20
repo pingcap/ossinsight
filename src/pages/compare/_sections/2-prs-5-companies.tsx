@@ -6,7 +6,7 @@ export default function () {
   return (
     <Section
       advanced
-      title='PR Creators' Employment Distribution'
+      title="PR Creators' Employment Distribution"
       description='The pie charts describe which company the PR creators of each project come from.'
     >
       {({repo1, repo2, dateRange, allReposProvided}) => (
