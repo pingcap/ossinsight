@@ -90,7 +90,6 @@ Here, you can try the following SQL commands on TiDB Cloud to experience its rea
 ```sql
 use gharchive_dev;
 ALTER TABLE github_events SET TIFLASH REPLICA 1;
-ALTER TABLE db_repos SET TIFLASH REPLICA 1;
 ```
 
 2. Setting a TiFlash replica will take you some time, so you can use the following SQL statements to check if the procedure is done or not. 
@@ -127,7 +126,7 @@ Because you have imported the sample data of all GitHub events occurred on the f
 Execute the following SQL statement to query the total number of events. 
 
 ```sql
-SELECT count(*) FROM github_events
+SELECT count(*) FROM github_events;
 ```
 
 ### Which repository gets the most stars?
