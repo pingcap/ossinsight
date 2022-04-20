@@ -7,11 +7,11 @@ export default function () {
   return (
     <Section
       title='PR Creators per Month'
-      description='This chart displays the number of PR creators the two projects had respectively each week since 2011.'
+      description='This chart displays the number of PR creators the two projects had respectively each week.'
     >
       {({ repo1, repo2, dateRange, allProvidedRepos, allReposProvided}) => (
         <LineAreaBarChartCard
-          title={'Pull Request Creator per month'}
+          title={'PR Creator per Month'}
           queryName={"pull-request-creators-per-month"}
           params={{
             repoId1: repo1?.id,

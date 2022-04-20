@@ -5,13 +5,13 @@ import WorldMapChartCompareCard from "../../../components/RemoteCards/WorldMapCh
 export default function () {
   return (
     <Section
-      title='Countries/Regions of Issue Openers'
-      description='This map will show you which country or region does issue creators come from. They make an issue to report the problem, or request a new feature.'
+      title="Issue Openers' Geographical Distribution"
+      description='This map shows which country or region the issue creators of each project come from.'
       advanced
     >
       {({repo1, repo2, dateRange, allReposProvided}) => (
         <WorldMapChartCompareCard
-          title="The country / area of issue openers"
+          title="Geographical Distribution"
           queryName={"issue-creators-map"}
           params1={{
             repoId: repo1?.id,

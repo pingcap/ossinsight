@@ -6,12 +6,12 @@ export default function () {
   return (
     <Section
       advanced
-      title='Top 50 company of Issue Creators'
-      description='The pie charts describe the major companies of issue openers for each project.'
+      title="Issue Creators' Employment Distribution"
+      description='The pie charts show which company the issue openers of each project come from.'
     >
       {({repo1, repo2, dateRange, allReposProvided}) => (
         <PieChartCompareCard
-          title="top 50 company of issue openers"
+          title="Employment Distribution"
           queryName={"issue-creators-top-50-company"}
           params1={{
             repoId: repo1?.id,
