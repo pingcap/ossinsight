@@ -10,7 +10,7 @@ export default function () {
     >
       {({repo1, repo2, dateRange, allReposProvided}) => (
         <PieChartCompareCard
-          title="Employment Distribution"
+          title="Stargazers' Employment Distribution"
           queryName={"stars-top-50-company"}
           params1={{
             repoId: repo1?.id,
