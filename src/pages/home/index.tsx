@@ -28,16 +28,19 @@ export default function Home() {
             title='📈 OSS Database Repos Landscape 2021'
             description='/* Deep insights into oss databases in 2011. */'
             image={<Image src={require('./images/chart-1.png').default} style={{borderRadius: 6}} />}
+            link='https://www.baidu.com/'
           />
           <StandardCard
             title='🔥 Real-time Insights'
             description='/* Analyze open source software in realtime, up to last hour. */'
             image={<Image src={require('./images/chart-2.png').default} style={{borderRadius: 6}} />}
+            link='https://www.baidu.com/'
           />
           <StandardCard
             title='❤️ Custom Insights'
             description='/* Analyze by customize your own date range. */'
             image={<Image src={require('./images/chart-3.png').default} style={{borderRadius: 6}} />}
+            link='https://www.baidu.com/'
           />
         </Cards>
       </Section>
@@ -52,16 +55,19 @@ export default function Home() {
             title='Total Count or Trend'
             description='/* Discover how the two repos differ in star(popularity), issue(user), pull request(contribution). */'
             image={<Image src={require('./images/chart-4.png').default} style={{borderRadius: 6}} />}
+            link='https://www.baidu.com/'
           />
           <StandardCard
             title='Company Distribution'
             description='/* Learn how the two repos differ in coding vitality as measured by the time contributors making their commits. */'
             image={<Image src={require('./images/chart-5.png').default} style={{borderRadius: 6}} />}
+            link='https://www.baidu.com/'
           />
           <StandardCard
             title='Geographical Distribution'
             description='/* Identify how the two repos differ in the geographic distribution of their contributors. */'
             image={<Image src={require('./images/chart-6.png').default} style={{borderRadius: 6}} />}
+            link='https://www.baidu.com/'
           />
         </Cards>
       </Section>

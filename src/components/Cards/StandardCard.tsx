@@ -2,10 +2,11 @@ import Grid, {GridProps} from "@mui/material/Grid";
 import Card, {CardProps} from "@mui/material/Card";
 import Typography from "@mui/material/Typography";
 import AspectRatio from "react-aspect-ratio";
-import React from "react";
+import React, {useCallback, useState} from "react";
 import Button from "@mui/material/Button";
 import Chip from "@mui/material/Chip";
 import Box from "@mui/material/Box";
+import ButtonBase from '@mui/material/ButtonBase';
 
 export interface StandardCardProps extends Omit<GridProps<any, any>, 'item' | 'container'> {
   title: React.ReactNode
@@ -18,6 +19,61 @@ export interface StandardCardProps extends Omit<GridProps<any, any>, 'item' | 'c
   elevation?: number
   cardSx?: CardProps['sx']
   tags?: string[]
+  link?: string
+}
+
+function withClickable(children: React.ReactNode, {
+  link,
+  cardSx,
+  elevation: propsElevation
+}: Pick<StandardCardProps, 'link' | 'cardSx' | 'elevation'>) {
+  const [elevation, setElevation] = useState(propsElevation ?? 3)
+
+  const onMouseEnter = useCallback(() => {
+    setElevation((propsElevation ?? 3) * 2)
+  }, [])
+
+  const onMouseLeave = useCallback(() => {
+    setElevation(propsElevation ?? 3)
+  }, [])
+
+  if (link) {
+    return (
+      <Card
+        sx={{userSelect: 'none', ...cardSx}}
+        elevation={elevation}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+        onMouseDown={onMouseLeave}
+      >
+        <ButtonBase
+          component='a'
+          href={link}
+          target='_blank'
+          sx={{
+            textAlign: 'left',
+            p: 2,
+            display: 'block',
+            '&:hover': {
+              textDecoration: 'none',
+              color: 'unset',
+              elevation: 4
+            },
+          }}>
+          {children}
+        </ButtonBase>
+      </Card>
+    )
+  } else {
+    return (
+      <Card
+        sx={{userSelect: 'none', p: 2, ...cardSx}}
+        elevation={elevation ?? 3}
+      >
+        {children}
+      </Card>
+    )
+  }
 }
 
 export default function StandardCard({
@@ -31,52 +87,57 @@ export default function StandardCard({
   elevation,
   cardSx,
   tags,
+  link,
   ...props
 }: StandardCardProps) {
+  const children = (
+    <>
+      <Typography
+        variant='h3'
+        sx={{mb: 1, fontWeight: 'bold', minHeight: 50}}>
+        {title}
+      </Typography>
+      {image
+        ? (
+          <AspectRatio ratio={aspectRatio}>
+            {image}
+          </AspectRatio>
+        ) : undefined}
+      {tags
+        ? (
+          <Box sx={{my: 2}}>
+            {tags.map((tag, i) => <Chip size='small' label={tag} key={i} sx={{mr: 2}} />)}
+          </Box>
+        ) : undefined}
+      {description
+        ? (
+          <Typography
+            variant='body1'
+            sx={{
+              mt: 1,
+              color: 'text.secondary',
+              minHeight: 72,
+              ...(codeStyleDescription ? {
+                fontFamily: 'var(--ifm-font-family-monospace)',
+                fontSize: 14,
+                fontStyle: 'italic'
+              } : {})
+            }}>
+            {description}
+          </Typography>
+        ) : undefined}
+      {readMore
+        ? (
+          <Button size='small' variant='text' component='a' href={readMore} target='_blank'>
+            {buttonText}
+          </Button>
+        ) : undefined}
+    </>
+  )
+
   return (
     <Grid item {...props}>
-      <Card sx={{p: 2, ...cardSx}} elevation={elevation ?? 3}>
-        <Typography
-          variant='h3'
-          sx={{mb: 1, fontWeight: 'bold', fontFamily: 'Poppins', minHeight: 50}}>
-          {title}
-        </Typography>
-        {image
-          ? (
-            <AspectRatio ratio={aspectRatio}>
-              {image}
-            </AspectRatio>
-          ) : undefined}
-        {tags
-          ? (
-            <Box sx={{ my: 2 }}>
-              {tags.map((tag, i) => <Chip size='small' label={tag} key={i} sx={{ mr: 2 }} />)}
-            </Box>
-          ) : undefined}
-        {description
-          ? (
-            <Typography
-              variant='body1'
-              sx={{
-                mt: 1,
-                color: 'text.secondary',
-                minHeight: 72,
-                ...(codeStyleDescription ? {
-                  fontFamily: 'var(--ifm-font-family-monospace)',
-                  fontSize: 14,
-                  fontStyle: 'italic'
-                } : {})
-              }}>
-              {description}
-            </Typography>
-          ) : undefined}
-        {readMore
-          ? (
-            <Button size='small' variant='text' component='a' href={readMore} target='_blank'>
-              {buttonText}
-            </Button>
-          ) : undefined}
-      </Card>
+      {withClickable(children, {link, elevation, cardSx})}
     </Grid>
   )
 }
