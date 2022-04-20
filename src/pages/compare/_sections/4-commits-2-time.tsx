@@ -91,7 +91,7 @@ export default function () {
           </Grid>
           <Grid item md={6} sm={6} xs={12}>
             <HeatMapChartCard
-              title={'Contribution Time Distribution'}
+              title={'Commits Time Distribution'}
               queryName={"commits-time-distribution"}
               params={{
                 repoId: repo2?.id,
