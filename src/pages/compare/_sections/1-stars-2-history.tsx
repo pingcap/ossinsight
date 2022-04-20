@@ -7,7 +7,7 @@ export default function () {
   return (
     <Section
       title='Star History'
-      description='This chart displays the accumulated number of stars the two projects gained respectively each year since 2011.'
+      description='This chart displays the accumulated number of stars the two projects gained respectively each year.'
     >
       {({repo1, repo2, dateRange, allReposProvided, allProvidedRepos}) => (
         <LineAreaBarChartCard

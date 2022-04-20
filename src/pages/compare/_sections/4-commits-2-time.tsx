@@ -25,15 +25,15 @@ export default function () {
 
   return (
     <Section
-      title='Heat Map of Commits Time'
+      title='Heat Map of Contribution Time'
       description={(
         <>
           <Typography variant="body1">
-            The <b>Heat Maps of Commits Time</b> display the number of push events occurring at a particular point of time. The Y-axis represents seven days a week, and the X-axis represents 24 hours a day according to the Universal Time Coordinated (UTC). The lighter color in this heat map indicates that less push events occur at a particular point of time. On the contrary, the darker color indicates more push events occurring.
+            The <b>Heat Maps</b> below describe the number of push events that occur at a particular point of time (UTC). For each day and hour, the colored boxes indicate the number of push events. The lighter the color, the fewer push events; the darker the color, the more push events. 
           </Typography>
           <br />
           <Typography variant="body1">
-            You can learn from this heat map what time is the busiest for contributors, and which country or regions most contributors are located.
+            You can learn from this heat map what time is the busiest for contributors, and which country or region distributes the most contributors.
           </Typography>
         </>
       )}
@@ -64,7 +64,7 @@ export default function () {
           </Grid>
           <Grid item md={6} sm={6} xs={12}>
             <HeatMapChartCard
-              title={'Commits Time Distribution'}
+              title={'Contribution Time Distribution'}
               queryName={"commits-time-distribution"}
               params={{
                 repoId: repo1?.id,
@@ -91,7 +91,7 @@ export default function () {
           </Grid>
           <Grid item md={6} sm={6} xs={12}>
             <HeatMapChartCard
-              title={'Commits Time Distribution'}
+              title={'Contribution Time Distribution'}
               queryName={"commits-time-distribution"}
               params={{
                 repoId: repo2?.id,
