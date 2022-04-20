@@ -4,7 +4,7 @@
   "type": "object",
   "properties": {
     "cacheHours": {
-      "description": "Cache time in hours, -1 indicates that the query cache will not expire",
+      "description": "Cache time in hours, -1 indicates that the query cache will not expire.",
       "type": "number"
     },
     "refreshHours": {
@@ -12,18 +12,18 @@
       "type": "number"
     },
     "onlyFromCache": {
-      "description": "Only return data from the cache",
+      "description": "Only return data from the cache.",
       "type": "boolean"
     },
     "params": {
-      "description": "Query params declaration",
+      "description": "Query params declaration.",
       "type": "array",
       "items": {
         "$ref": "#/definitions/Params"
       }
     },
     "restrictions": {
-      "description": "Special restrictions for params",
+      "description": "Special restrictions for params.",
       "type": "array",
       "items": {
         "$ref": "#/definitions/Restriction"
@@ -40,15 +40,26 @@
       "type": "object",
       "properties": {
         "name": {
-          "description": "URL Search param name for the query",
+          "description": "URL Search param name for the query.",
           "type": "string"
         },
-        "isArray": {
-          "description": "Determine if the parameter is an array",
-          "type": "boolean"
+        "type": {
+          "description": "Define the parameter type.",
+          "type": "string",
+          "enum": ["array", "date-range"]
+        },
+        "column": {
+          "description": "Define the parameter corresponding column name.",
+          "type": "string"
+        },
+        "dateRangeTo": {
+          "description": "Set in date-range should use that moment as `to` time.",
+          "type": "string",
+          "enum": ["now", "last-valid-datetime"],
+          "default": "last-valid-datetime"
         },
         "replaces": {
-          "description": "Replacing substring in the query sql template. Replacing uses `String.replaceAll`, please make sure the replacing substring is not substring of other texts",
+          "description": "Define substring in the query sql template. Replacing uses `String.replaceAll`, please make sure the replacing substring is not substring of other texts.",
           "type": "string"
         },
         "template": {
@@ -59,18 +70,18 @@
           }
         },
         "default": {
-          "description": "Default input value",
+          "description": "Default input value.",
           "type": "string"
         },
         "enums": {
-          "description": "Enums for prefetching and validating, default is no prefetching and validating",
+          "description": "Enums for prefetching and validating, default is no prefetching and validating.",
           "oneOf": [
             {
-              "description": "Predefined query params name",
+              "description": "Predefined query params name.",
               "type": "string"
             },
             {
-              "description": "The allowed values and should be prefetched",
+              "description": "The allowed values and should be prefetched.",
               "type": "array",
               "items": {
                 "type": "string"
@@ -79,7 +90,7 @@
           ]
         },
         "pattern": {
-          "description": "Regular expression for validating parameter value",
+          "description": "Regular expression for validating parameter value.",
           "type": "string"
         }
       },

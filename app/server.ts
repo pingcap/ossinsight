@@ -9,6 +9,7 @@ import path from "path";
 import {register} from "prom-client";
 import {measureRequests} from "./middlewares/measureRequests";
 import RepoGroupService from "./services/RepoGroupService";
+import GHEventService from "./services/GHEventService";
 
 const COMPARE_QUERIES = [
   'stars-total',
@@ -65,10 +66,11 @@ export default async function server(router: Router<DefaultState, ContextExtends
   const ghExecutor = new GhExecutor(tokens, redisClient);
 
   const repoGroupService = new RepoGroupService(executor);
+  const ghEventService = new GHEventService(executor);
 
   router.get('/q/:query', measureRequests({ urlLabel: 'path' }), async ctx => {
     try {
-      const query = new Query(ctx.params.query, redisClient, executor)
+      const query = new Query(ctx.params.query, redisClient, executor, ghEventService)
       const res = await query.run(ctx.query)
       ctx.response.status = 200
       ctx.response.body = res
@@ -116,7 +118,7 @@ export default async function server(router: Router<DefaultState, ContextExtends
       const resultMap: Record<string, any> = {};
 
       for (let queryName of queryNames) {
-        const query = new Query(queryName, redisClient, executor)
+        const query = new Query(queryName, redisClient, executor, ghEventService)
 
         try {
           resultMap[queryName] = await query.run(ctx.query, false, conn)

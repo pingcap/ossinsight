@@ -1,6 +1,6 @@
 import {readFile} from 'fs/promises'
 import path from 'path'
-import {DateTime} from "luxon";
+import {DateTime, Duration} from "luxon";
 import type { QuerySchema } from '../../params.schema'
 import {MysqlQueryExecutor} from "./MysqlQueryExecutor";
 import Cache, {CachedData} from "./Cache";
@@ -8,8 +8,26 @@ import {RedisClientType, RedisDefaultModules, RedisModules, RedisScripts} from "
 import consola from "consola";
 import {PoolConnection} from "mysql2";
 import {dataQueryTimer, measure, readConfigTimer, tidbQueryCounter} from "../metrics";
+import GHEventService from "../services/GHEventService";
 
 const MAX_CACHE_TIME = DateTime.fromISO('2099-12-31T00:00:00')
+
+export enum ParamType {
+  ARRAY = 'array',
+  DATE_RANGE = 'date-range'
+}
+
+export enum ParamDateRange {
+  LAST_HOUR = 'last_hour',
+  LAST_DAY = 'last_day',
+  LAST_WEEK = 'last_week',
+  LAST_MONTH = 'last_month',
+}
+
+export enum ParamDateRangeTo {
+  NOW = 'now',
+  LAST_VALID_DATETIME = 'last_valid_datetime',
+}
 
 export class BadParamsError extends Error {
   readonly msg: string
@@ -35,49 +53,84 @@ export class QueryTemplateNotFoundError extends Error {
   }
 }
 
-export function buildParams(template: string, querySchema: QuerySchema, values: Record<string, any>) {
-  for (let {name, replaces, template: paramTemplate, default: defaultValue, isArray, pattern} of querySchema.params) {
-    const value = values[name] ?? defaultValue
+export async function buildParams(template: string, querySchema: QuerySchema, values: Record<string, any>, ghEventService: GHEventService) {
+  for (const param of querySchema.params) {
+    const {
+      name, replaces, template: paramTemplate, dateRangeTo = ParamDateRangeTo.LAST_VALID_DATETIME,
+      default: defaultValue, type, column, pattern
+    } = param;
+    const value = values[name] ?? defaultValue;
 
-    if (isArray) {
-      const arrValues = [];
-
-      if (Array.isArray(value)) {
-        for (let v of value) {
-          const targetValue = verifyParam(name, v, pattern, paramTemplate);
-          arrValues.push(targetValue)
-        }
-      } else {
-        const targetValue = verifyParam(name, value, pattern, paramTemplate);
-        arrValues.push(targetValue)
-      }
-
-      template = template.replaceAll(replaces, arrValues.join(', '))
-
-    } else if (typeof value === "number" || typeof value === "string") {
-      const targetValue = verifyParam(name, value, pattern, paramTemplate);
-      template = template.replaceAll(replaces, targetValue)
-    } else {
-      throw new BadParamsError(name, 'require param ' + name)
+    let targetValue = "";
+    switch (type) {
+      case ParamType.ARRAY:
+        targetValue = handleArrayValue(name, value, column, pattern, paramTemplate)
+        break;
+      case ParamType.DATE_RANGE:
+        targetValue = await handleDateRangeValue(name, value, ghEventService, dateRangeTo, column, pattern, paramTemplate)
+        break;
+      default:
+        targetValue = verifyParam(name, value, pattern, paramTemplate);
     }
+    template = template.replaceAll(replaces, targetValue);
   }
   return template
 }
 
-function verifyParam(name: string, value: any, pattern?: string, paramTemplate?: Record<string, string>) {
-  const strValue = String(value);
+function handleArrayValue(name: string, value: any, column?: string, pattern?: string, paramTemplate?: Record<string, string>) {
+  const arrValues = [];
 
-  if (typeof pattern !== "undefined") {
+  if (Array.isArray(value)) {
+    for (let v of value) {
+      const targetValue = verifyParam(name, v, pattern, paramTemplate);
+      arrValues.push(targetValue);
+    }
+  } else {
+    const targetValue = verifyParam(name, value, pattern, paramTemplate);
+    arrValues.push(targetValue);
+  }
+
+  return arrValues.join(', ');
+}
+
+async function handleDateRangeValue(
+  name: string, value: any, ghEventService: GHEventService, dateRangeTo?: string, column?: string,
+  pattern?: string, paramTemplate?: Record<string, string>
+) {
+  const verifiedValue = verifyParam(name, value, pattern, paramTemplate);
+
+  let to = DateTime.now();
+  if (dateRangeTo === ParamDateRangeTo.LAST_VALID_DATETIME) {
+    to = DateTime.fromFormat(await ghEventService.getMaxEventTime(), "yyyy-MM-dd HH:mm:ss");
+  }
+
+  let from = to;
+  if (verifiedValue === ParamDateRange.LAST_HOUR) {
+    from = to.minus(Duration.fromObject({ 'hours': 1 }))
+  } else if (verifiedValue === ParamDateRange.LAST_DAY) {
+    from = to.minus(Duration.fromObject({ 'days': 1 }))
+  } else if (verifiedValue === ParamDateRange.LAST_WEEK) {
+    from = to.minus(Duration.fromObject({ 'weeks': 1 }))
+  } else if (verifiedValue === ParamDateRange.LAST_MONTH) {
+    from = to.minus(Duration.fromObject({ 'months': 1 }))
+  }
+
+  return `${column} >= '${from.toSQL()}' AND ${column} <= '${to.toSQL()}'`
+}
+
+function verifyParam(name: string, value: any, pattern?: string, paramTemplate?: Record<string, string>) {
+  if (pattern) {
     const regexp = new RegExp(pattern);
-    if (!regexp.test(strValue)) {
+    if (!regexp.test(String(value))) {
       throw new BadParamsError(name, 'bad param ' + name)
     }
   }
 
-  const targetValue = paramTemplate ? paramTemplate[strValue] : strValue;
-  if (typeof targetValue === "undefined") {
-    throw new BadParamsError(name, 'bad param ' + name)
+  const targetValue = paramTemplate ? paramTemplate[String(value)] : value;
+  if (targetValue === undefined || targetValue === null) {
+    throw new BadParamsError(name, 'require param ' + name)
   }
+
   return targetValue;
 }
 
@@ -98,6 +151,7 @@ export default class Query {
     public readonly name: string,
     public readonly redisClient: RedisClientType<RedisDefaultModules & RedisModules, RedisScripts>,
     public readonly executor: MysqlQueryExecutor<unknown>,
+    public readonly ghEventService: GHEventService
   ) {
     this.path = path.join(process.cwd(), 'queries', name)
     const templateFilePath = path.join(this.path, 'template.sql')
@@ -125,7 +179,7 @@ export default class Query {
 
   async buildSql(params: Record<string, any>): Promise<string> {
     await this.ready()
-    return buildParams(this.template!, this.queryDef!, params)
+    return await buildParams(this.template!, this.queryDef!, params, this.ghEventService)
   }
 
   async run <T> (params: Record<string, any>, refreshCache: boolean = false, conn?: PoolConnection): Promise<CachedData<T>> {

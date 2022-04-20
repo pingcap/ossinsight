@@ -4,7 +4,7 @@
     {
       "name": "repoId",
       "replaces": "41986369",
-      "isArray": true,
+      "type": "array",
       "pattern": "^[1-9]\\d*$"
     }
   ]

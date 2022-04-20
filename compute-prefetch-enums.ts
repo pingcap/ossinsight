@@ -10,6 +10,7 @@ import {createClient, RedisClientType, RedisDefaultModules, RedisModules, RedisS
 import consola, {JSONReporter} from "consola";
 import {DateTime, Duration} from "luxon";
 import { validateProcessEnv } from './app/env';
+import GHEventService from "./app/services/GHEventService";
 
 // Load environments.
 dotenv.config({ path: __dirname+'/.env.template', override: true });
@@ -89,12 +90,14 @@ async function main () {
     decimalNumbers: true
   });
 
+  const ghEventService = new GHEventService(queryExecutor);
+
   logger.info("Ready Go...")
   for (let i = 0; i < Number.MAX_VALUE; i++) {
     logger.info(`Compute round ${i + 1}.`)
     const queries = await getQueries();
     const presets = await getPresets();
-    await prefetchQueries(queryExecutor, redisClient, queries, presets);
+    await prefetchQueries(queryExecutor, redisClient, ghEventService, queries, presets);
     logger.info('Next round prefetch will come at: %s', DateTime.now().plus(Duration.fromObject({ minutes: 30 })))
     await sleep(1000 * 60 * 30);    // sleep 30 minutes.
   }
@@ -103,6 +106,7 @@ async function main () {
 async function prefetchQueries(
   queryExecutor: MysqlQueryExecutor<unknown>,
   redisClient: RedisClientType<RedisDefaultModules & RedisModules, RedisScripts>,
+  ghEventService: GHEventService,
   queries: Record<string, QuerySchema>,
   presets: Record<string, string[]>
 ) {
@@ -189,7 +193,7 @@ async function prefetchQueries(
     const qStart = new Date();
     // Do query with the rest parameter combines.
     logger.info("[%d/%d] Prefetch query %s with params: %s", id, n, queryName, JSON.stringify(params));
-    const query = new Query(queryName, redisClient, queryExecutor)
+    const query = new Query(queryName, redisClient, queryExecutor, ghEventService)
     try {
       await query.run(params,true)
     } catch (err) {

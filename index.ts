@@ -5,7 +5,6 @@ import dotenv from 'dotenv';
 import consola, {Consola} from 'consola';
 import cors from '@koa/cors';
 import { validateProcessEnv } from './app/env';
-import {requestCounter, requestProcessTimer} from "./app/metrics";
 import {measureLimitedRequests} from "./app/middlewares/measureRequests";
 
 const RateLimit = require('koa2-ratelimit').RateLimit;

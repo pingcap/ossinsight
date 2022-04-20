@@ -7,7 +7,7 @@
 
 export interface QuerySchema {
   /**
-   * Cache time in hours, -1 indicates that the query cache will not expire
+   * Cache time in hours, -1 indicates that the query cache will not expire.
    */
   cacheHours: number;
   /**
@@ -15,29 +15,37 @@ export interface QuerySchema {
    */
   refreshHours?: number;
   /**
-   * Only return data from the cache
+   * Only return data from the cache.
    */
   onlyFromCache?: boolean;
   /**
-   * Query params declaration
+   * Query params declaration.
    */
   params: Params[];
   /**
-   * Special restrictions for params
+   * Special restrictions for params.
    */
   restrictions?: Restriction[];
 }
 export interface Params {
   /**
-   * URL Search param name for the query
+   * URL Search param name for the query.
    */
   name: string;
   /**
-   * Determine if the parameter is an array
+   * Define the parameter type.
    */
-  isArray?: boolean;
+  type?: "array" | "date-range";
   /**
-   * Replacing substring in the query sql template. Replacing uses `String.replaceAll`, please make sure the replacing substring is not substring of other texts
+   * Define the parameter corresponding column name.
+   */
+  column?: string;
+  /**
+   * Set in date-range should use that moment as `to` time.
+   */
+  dateRangeTo?: "now" | "last-valid-datetime";
+  /**
+   * Define substring in the query sql template. Replacing uses `String.replaceAll`, please make sure the replacing substring is not substring of other texts.
    */
   replaces: string;
   /**
@@ -47,15 +55,15 @@ export interface Params {
     [k: string]: string;
   };
   /**
-   * Default input value
+   * Default input value.
    */
   default?: string;
   /**
-   * Enums for prefetching and validating, default is no prefetching and validating
+   * Enums for prefetching and validating, default is no prefetching and validating.
    */
   enums?: string | string[];
   /**
-   * Regular expression for validating parameter value
+   * Regular expression for validating parameter value.
    */
   pattern?: string;
 }

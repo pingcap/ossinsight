@@ -18,6 +18,7 @@ with issue_with_merged_at as (
     where
         type = 'PullRequestEvent'
         and action = 'opened'
+        and actor_login not like '%bot%'
 )
 select
     iwo.repo_group_name,

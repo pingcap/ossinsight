@@ -6,8 +6,8 @@ with issue_with_merged_at as (
         github_events ge
         join osdb_repos db on ge.repo_id = db.id
     where
-            type = 'PullRequestEvent'
-      and action = 'closed'
+        type = 'PullRequestEvent'
+        and action = 'closed'
 ), issue_with_opened_at as (
     select
         /*+ read_from_storage(tiflash[ge]) */
@@ -16,8 +16,9 @@ with issue_with_merged_at as (
         github_events ge
         join osdb_repos db on ge.repo_id = db.id
     where
-            type = 'PullRequestEvent'
-      and action = 'opened'
+        type = 'PullRequestEvent'
+        and action = 'opened'
+        and actor_login not like '%bot%'
 ), tdiff as (
     select
         iwo.repo_group_name,
@@ -34,5 +35,5 @@ select
 from
     tdiff
 where
-        r = (cnt DIV 2)
+    r = (cnt DIV 2)
 order by 2 asc
