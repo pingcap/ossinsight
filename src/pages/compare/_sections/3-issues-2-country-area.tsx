@@ -5,7 +5,7 @@ import WorldMapChartCompareCard from "../../../components/RemoteCards/WorldMapCh
 export default function () {
   return (
     <Section
-      title='Issue Openers' Geographical Distribution'
+      title="Issue Openers' Geographical Distribution"
       description='This map shows which country or region the issue creators of each project come from.'
       advanced
     >
