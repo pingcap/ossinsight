@@ -68,6 +68,7 @@ export default function Page() {
             codeStyleDescription={false}
             image={<Image src={require('./images/image-1.png').default} />}
             buttonText='details'
+            buttonLink='https://www.baidu.com/'
             readMore='https://www.baidu.com/'
             tags={['tag1', 'tag2']}
             elevation={0}
@@ -79,6 +80,7 @@ export default function Page() {
             codeStyleDescription={false}
             image={<Image src={require('./images/image-1.png').default} />}
             buttonText='details'
+            buttonLink='https://www.baidu.com/'
             readMore='https://www.baidu.com/'
             tags={['tag1', 'tag2']}
             elevation={0}
@@ -90,6 +92,7 @@ export default function Page() {
             codeStyleDescription={false}
             image={<Image src={require('./images/image-1.png').default} />}
             buttonText='details'
+            buttonLink='https://www.baidu.com/'
             readMore='https://www.baidu.com/'
             tags={['tag1', 'tag2']}
             elevation={0}
@@ -101,6 +104,7 @@ export default function Page() {
             codeStyleDescription={false}
             image={<Image src={require('./images/image-1.png').default} />}
             buttonText='details'
+            buttonLink='https://www.baidu.com/'
             readMore='https://www.baidu.com/'
             tags={['tag1', 'tag2']}
             elevation={0}

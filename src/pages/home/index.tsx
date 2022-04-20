@@ -22,6 +22,7 @@ export default function Home() {
         title='Deep insights into open source software'
         subtitle='Discover deep analytical insights of various types including their rankings and popularity trends using multiple metrics such as stars, PRs, and contributors.'
         buttonText='Dig deeper via more metrics'
+        buttonLink='https://www.baidu.com/'
       >
         <Cards sx={{mt: 2}} xs={12} sm={6} md={4}>
           <StandardCard
@@ -48,6 +49,7 @@ export default function Home() {
         title='Compare any 2 GitHub repositories'
         subtitle='Compare any two repositories using multiple metrics such as stars, pull requests, commits...'
         buttonText='Dig deeper via more metrics'
+        buttonLink='https://www.baidu.com/'
         backgroundImage={require('./images/map-bg.png').default}
       >
         <Cards sx={{mt: 2}} xs={12} sm={6} md={4}>

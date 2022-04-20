@@ -8,10 +8,10 @@ export interface SectionProps {
   subtitle?: React.ReactNode
   backgroundImage?: string
   buttonText?: React.ReactNode
-  button?: ButtonProps<'a'>
+  buttonLink?: string
 }
 
-export default function Section({title, subtitle, button, buttonText, backgroundImage, children}: PropsWithChildren<SectionProps>) {
+export default function Section({title, subtitle, buttonLink, buttonText, backgroundImage, children}: PropsWithChildren<SectionProps>) {
   return (
     <section className={styles.section} style={backgroundImage && { backgroundImage: `url("${backgroundImage}")`}}>
       <div className='container'>
@@ -20,15 +20,18 @@ export default function Section({title, subtitle, button, buttonText, background
           : undefined
         }
         {subtitle
-          ? <p className={styles.sectionSubtitle}>{subtitle}</p>
+          ? <p className={styles.sectionSubtitle}>
+            {subtitle}
+            {buttonText
+              ? (
+                <a href={buttonLink}>
+                  <ArrowRightIcon sx={{ verticalAlign: 'text-bottom' }} />
+                  &nbsp;
+                  {buttonText}
+                </a>
+              ) : undefined}
+        </p>
           : undefined}
-        {buttonText
-          ? (
-            <Button component='a' startIcon={<ArrowRightIcon />} variant='contained' {...(button || {})}
-                    sx={{':hover': {color: '#ffffff'}}}>
-              {buttonText}
-            </Button>
-          ) : undefined}
         <div>
           {children}
         </div>
