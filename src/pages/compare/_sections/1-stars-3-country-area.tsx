@@ -10,7 +10,7 @@ export default function () {
     >
       {({ repo1, repo2, dateRange, allReposProvided }) => (
         <WorldMapChartCompareCard
-          title="Geographical Distribution"
+          title="Stargazers' Geographical Distribution"
           queryName={"stars-map"}
           params1={{
             repoId: repo1?.id,
