@@ -25,7 +25,7 @@ Once you register an account, you can create a free cluster with TiDB Developer 
 ![](/img/try-it-yourself/dev-tier.png)
 
 2. On the **Create a Cluster** page, set up your cluster name and root password.
-3. Note that the cloud provider is AWS by default, and then select the region which is close to you to create the cluster.
+3. Note that the cloud provider is AWS by default, and then select the `US-West-2 (Oregon)` region to create the cluster.
 4. The cluster tier is S1.dev by default.
 5. Click **Submit**.
 Your TiDB Cloud cluster will be created in approximately 5 to 10 minutes.
