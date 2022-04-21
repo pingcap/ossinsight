@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html style="height: 100%">
+    <head>
+        <meta charset="utf-8">
+    </head>
+    <body style="height: 100%; margin: 0">
+      <div id="container" style="height: 100%"></div>
+
+      <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@5.2.2/dist/echarts.min.js"></script>
+      <style>
+          body {
+              background: #fff;
+          }
+          @media(prefers-color-scheme: dark) {
+              body {
+                  background: #000;
+              }
+          }
+      </style>
+      
+      <script src="theme/vintage.js"></script>
+      <script src="theme/infographic.js"></script>
+      <script src="theme/macarons.js"></script>
+      <script src="theme/roma.js"></script>
+      <script src="theme/shine.js"></script>
+      <script src="CanvasRecorder.js"></script>
+      <script type="text/javascript">
+        var theme_list = ["vintage", "infographic", "macarons", "roma", "shine", "dark"];
+
+        var url = document.location;
+        var params = new URLSearchParams(url.search);
+        var title = params.get("title");
+        var data = JSON.parse(params.get("data"));
+        var x = JSON.parse(params.get("x"));
+        var type = params.get("type") || 'bar';
+        
+        var dom = document.getElementById("container");
+        if (params.has("theme") && theme_list.indexOf(params.get("theme")) != -1 ) {
+          var myChart = echarts.init(dom, params.get("theme"));
+        } else {
+          var myChart = echarts.init(dom);
+        }
+
+        var app = {};
+
+        var option;
+
+        _rawData = [["event_month","repo_name","count"],["2013-07-01","vitessio/vitess",2640],["2013-08-01","vitessio/vitess",3169],["2013-10-01","vitessio/vitess",3324],["2014-02-01","vitessio/vitess",3328],["2014-04-01","vitessio/vitess",4844],["2014-05-01","vitessio/vitess",5281],["2014-06-01","vitessio/vitess",10344],["2014-07-01","vitessio/vitess",10418],["2014-08-01","vitessio/vitess",10650],["2014-09-01","vitessio/vitess",10678],["2014-10-01","MariaDB/server",0],["2014-10-01","vitessio/vitess",21338],["2014-11-01","vitessio/vitess",30653],["2014-12-01","MariaDB/server",8],["2014-12-01","vitessio/vitess",71531],["2015-01-01","vitessio/vitess",92768],["2015-02-01","percona/percona-server",15983],["2015-02-01","vitessio/vitess",109733],["2015-03-01","MariaDB/server",10],["2015-03-01","percona/percona-server",16666],["2015-03-01","vitessio/vitess",125729],["2015-04-01","MariaDB/server",75],["2015-04-01","percona/percona-server",22145],["2015-04-01","vitessio/vitess",145995],["2015-05-01","MariaDB/server",39669],["2015-05-01","percona/percona-server",27822],["2015-05-01","vitessio/vitess",174970],["2015-06-01","percona/percona-server",37865],["2015-06-01","vitessio/vitess",210974],["2015-07-01","MariaDB/server",39815],["2015-07-01","percona/percona-server",39807],["2015-07-01","vitessio/vitess",261069],["2015-08-01","MariaDB/server",39859],["2015-08-01","percona/percona-server",44451],["2015-08-01","vitessio/vitess",316226],["2015-09-01","MariaDB/server",42232],["2015-09-01","percona/percona-server",615947],["2015-09-01","pingcap/tidb",201249],["2015-09-01","vitessio/vitess",393647],["2015-10-01","MariaDB/server",42352],["2015-10-01","percona/percona-server",625385],["2015-10-01","pingcap/tidb",234813],["2015-10-01","vitessio/vitess",455653],["2015-11-01","MariaDB/server",42368],["2015-11-01","percona/percona-server",642730],["2015-11-01","pingcap/tidb",278488],["2015-11-01","vitessio/vitess",506313],["2015-12-01","MariaDB/server",46449],["2015-12-01","percona/percona-server",685547],["2015-12-01","pingcap/tidb",299965],["2015-12-01","vitessio/vitess",520038],["2016-01-01","MariaDB/server",46466],["2016-01-01","percona/percona-server",713988],["2016-01-01","pingcap/tidb",332798],["2016-01-01","vitessio/vitess",538598],["2016-02-01","MariaDB/server",46558],["2016-02-01","percona/percona-server",717820],["2016-02-01","pingcap/tidb",374410],["2016-02-01","vitessio/vitess",555655],["2016-03-01","MariaDB/server",47266],["2016-03-01","percona/percona-server",739785],["2016-03-01","pingcap/tidb",436517],["2016-03-01","vitessio/vitess",607617],["2016-04-01","MariaDB/server",47354],["2016-04-01","percona/percona-server",741912],["2016-04-01","pingcap/tidb",548240],["2016-04-01","vitessio/vitess",643848],["2016-05-01","MariaDB/server",60024],["2016-05-01","percona/percona-server",771628],["2016-05-01","pingcap/tidb",581720],["2016-05-01","vitessio/vitess",692170],["2016-06-01","MariaDB/server",60269],["2016-06-01","percona/percona-server",797909],["2016-06-01","pingcap/tidb",601677],["2016-06-01","vitessio/vitess",719188],["2016-07-01","MariaDB/server",60319],["2016-07-01","percona/percona-server",806139],["2016-07-01","pingcap/tidb",693792],["2016-07-01","vitessio/vitess",738282],["2016-08-01","MariaDB/server",60422],["2016-08-01","percona/percona-server",840461],["2016-08-01","pingcap/tidb",763653],["2016-08-01","vitessio/vitess",770017],["2016-09-01","MariaDB/server",71477],["2016-09-01","percona/percona-server",864534],["2016-09-01","pingcap/tidb",806099],["2016-09-01","vitessio/vitess",805255],["2016-10-01","MariaDB/server",75179],["2016-10-01","percona/percona-server",926179],["2016-10-01","pingcap/tidb",849905],["2016-10-01","vitessio/vitess",827369],["2016-11-01","MariaDB/server",79262],["2016-11-01","percona/percona-server",948130],["2016-11-01","pingcap/tidb",879710],["2016-11-01","vitessio/vitess",877033],["2016-12-01","MariaDB/server",79518],["2016-12-01","percona/percona-server",952289],["2016-12-01","pingcap/tidb",915138],["2016-12-01","vitessio/vitess",915307],["2017-01-01","MariaDB/server",79649],["2017-01-01","percona/percona-server",1200377],["2017-01-01","pingcap/tidb",942776],["2017-01-01","vitessio/vitess",974695],["2017-02-01","MariaDB/server",82006],["2017-02-01","percona/percona-server",1316518],["2017-02-01","pingcap/tidb",955911],["2017-02-01","vitessio/vitess",1014153],["2017-03-01","MariaDB/server",85386],["2017-03-01","percona/percona-server",1345205],["2017-03-01","pingcap/tidb",997419],["2017-03-01","vitessio/vitess",1063554],["2017-04-01","MariaDB/server",85891],["2017-04-01","percona/percona-server",1373181],["2017-04-01","pingcap/tidb",1065735],["2017-04-01","vitessio/vitess",1074549],["2017-05-01","MariaDB/server",86487],["2017-05-01","percona/percona-server",1424337],["2017-05-01","pingcap/tidb",1119070],["2017-05-01","vitessio/vitess",1132900],["2017-06-01","MariaDB/server",86662],["2017-06-01","percona/percona-server",1427304],["2017-06-01","pingcap/tidb",1197389],["2017-06-01","vitessio/vitess",1150985],["2017-07-01","MariaDB/server",87310],["2017-07-01","percona/percona-server",1516335],["2017-07-01","pingcap/tidb",1241026],["2017-07-01","vitessio/vitess",1170922],["2017-08-01","MariaDB/server",87497],["2017-08-01","percona/percona-server",1550246],["2017-08-01","pingcap/tidb",1306159],["2017-08-01","vitessio/vitess",1208592],["2017-09-01","MariaDB/server",87942],["2017-09-01","percona/percona-server",1590827],["2017-09-01","pingcap/tidb",1368623],["2017-09-01","vitessio/vitess",1280444],["2017-10-01","MariaDB/server",88697],["2017-10-01","percona/percona-server",1598234],["2017-10-01","pingcap/tidb",1419048],["2017-10-01","vitessio/vitess",1308481],["2017-11-01","MariaDB/server",88872],["2017-11-01","percona/percona-server",1649504],["2017-11-01","pingcap/tidb",1510035],["2017-11-01","vitessio/vitess",1328177],["2017-12-01","MariaDB/server",89884],["2017-12-01","percona/percona-server",1679313],["2017-12-01","pingcap/tidb",1539209],["2017-12-01","vitessio/vitess",1424426],["2018-01-01","MariaDB/server",90954],["2018-01-01","percona/percona-server",1705136],["2018-01-01","pingcap/tidb",1631388],["2018-01-01","vitessio/vitess",1460999],["2018-02-01","MariaDB/server",92030],["2018-02-01","percona/percona-server",1740784],["2018-02-01","pingcap/tidb",1647656],["2018-02-01","vitessio/vitess",1496044],["2018-03-01","MariaDB/server",92752],["2018-03-01","percona/percona-server",2140378],["2018-03-01","pingcap/tidb",1668968],["2018-03-01","vitessio/vitess",1566860],["2018-04-01","MariaDB/server",94725],["2018-04-01","percona/percona-server",2147666],["2018-04-01","pingcap/tidb",1714898],["2018-04-01","vitessio/vitess",1613097],["2018-05-01","MariaDB/server",100714],["2018-05-01","percona/percona-server",2206871],["2018-05-01","pingcap/tidb",1958596],["2018-05-01","vitessio/vitess",1636111],["2018-06-01","MariaDB/server",101182],["2018-06-01","percona/percona-server",2215343],["2018-06-01","pingcap/tidb",2004299],["2018-06-01","vitessio/vitess",1672434],["2018-07-01","MariaDB/server",101317],["2018-07-01","percona/percona-server",2219340],["2018-07-01","pingcap/tidb",2044759],["2018-07-01","vitessio/vitess",1715059],["2018-08-01","MariaDB/server",102017],["2018-08-01","percona/percona-server",2246039],["2018-08-01","pingcap/tidb",2097098],["2018-08-01","vitessio/vitess",1728116],["2018-09-01","MariaDB/server",102518],["2018-09-01","percona/percona-server",2259020],["2018-09-01","pingcap/tidb",2182166],["2018-09-01","vitessio/vitess",1757684],["2018-10-01","MariaDB/server",103514],["2018-10-01","percona/percona-server",2846842],["2018-10-01","pingcap/tidb",2281410],["2018-10-01","vitessio/vitess",1771922],["2018-11-01","MariaDB/server",104434],["2018-11-01","percona/percona-server",2930649],["2018-11-01","pingcap/tidb",3323124],["2018-11-01","vitessio/vitess",1791254],["2018-12-01","MariaDB/server",153402],["2018-12-01","percona/percona-server",3000694],["2018-12-01","pingcap/tidb",3356507],["2018-12-01","vitessio/vitess",1804266],["2019-01-01","MariaDB/server",169050],["2019-01-01","percona/percona-server",3018901],["2019-01-01","pingcap/tidb",4698886],["2019-01-01","vitessio/vitess",1826529],["2019-02-01","MariaDB/server",172733],["2019-02-01","percona/percona-server",3848698],["2019-02-01","pingcap/tidb",4720565],["2019-02-01","vitessio/vitess",1879657],["2019-03-01","MariaDB/server",174991],["2019-03-01","percona/percona-server",3860099],["2019-03-01","pingcap/tidb",4740823],["2019-03-01","vitessio/vitess",1914607],["2019-04-01","MariaDB/server",178753],["2019-04-01","percona/percona-server",3954848],["2019-04-01","pingcap/tidb",4775414],["2019-04-01","vitessio/vitess",1936486],["2019-05-01","MariaDB/server",179451],["2019-05-01","percona/percona-server",3977754],["2019-05-01","pingcap/tidb",4797559],["2019-05-01","vitessio/vitess",1943028],["2019-06-01","MariaDB/server",183819],["2019-06-01","percona/percona-server",4534601],["2019-06-01","pingcap/tidb",4830238],["2019-06-01","vitessio/vitess",1951830],["2019-07-01","MariaDB/server",189123],["2019-07-01","percona/percona-server",4547722],["2019-07-01","pingcap/tidb",4869142],["2019-07-01","vitessio/vitess",1962416],["2019-08-01","MariaDB/server",192538],["2019-08-01","percona/percona-server",4578716],["2019-08-01","pingcap/tidb",4902521],["2019-08-01","vitessio/vitess",2013283],["2019-09-01","MariaDB/server",199557],["2019-09-01","percona/percona-server",4582349],["2019-09-01","pingcap/tidb",4959054],["2019-09-01","vitessio/vitess",2023749],["2019-10-01","MariaDB/server",200690],["2019-10-01","percona/percona-server",5184727],["2019-10-01","pingcap/tidb",5015453],["2019-10-01","vitessio/vitess",2063136],["2019-11-01","MariaDB/server",204302],["2019-11-01","percona/percona-server",5502896],["2019-11-01","pingcap/tidb",5075605],["2019-11-01","vitessio/vitess",2079686],["2019-12-01","MariaDB/server",205098],["2019-12-01","percona/percona-server",7353052],["2019-12-01","pingcap/tidb",5352233],["2019-12-01","vitessio/vitess",2106347],["2020-01-01","MariaDB/server",205410],["2020-01-01","percona/percona-server",7362845],["2020-01-01","pingcap/tidb",5464521],["2020-01-01","vitessio/vitess",2149735],["2020-02-01","MariaDB/server",206746],["2020-02-01","percona/percona-server",7370389],["2020-02-01","pingcap/tidb",5563176],["2020-02-01","vitessio/vitess",2178139],["2020-03-01","MariaDB/server",208576],["2020-03-01","percona/percona-server",7411685],["2020-03-01","pingcap/tidb",5636497],["2020-03-01","vitessio/vitess",2320201],["2020-04-01","MariaDB/server",213889],["2020-04-01","percona/percona-server",7432580],["2020-04-01","pingcap/tidb",5699916],["2020-04-01","vitessio/vitess",2400257],["2020-05-01","MariaDB/server",214664],["2020-05-01","percona/percona-server",7638731],["2020-05-01","pingcap/tidb",5726351],["2020-05-01","vitessio/vitess",2436724],["2020-06-01","MariaDB/server",215928],["2020-06-01","percona/percona-server",7654017],["2020-06-01","pingcap/tidb",5882072],["2020-06-01","vitessio/vitess",2501571],["2020-07-01","MariaDB/server",217382],["2020-07-01","percona/percona-server",8086796],["2020-07-01","pingcap/tidb",6034419],["2020-07-01","vitessio/vitess",2548557],["2020-08-01","MariaDB/server",217704],["2020-08-01","percona/percona-server",9741871],["2020-08-01","pingcap/tidb",6074349],["2020-08-01","vitessio/vitess",2574796],["2020-09-01","MariaDB/server",217753],["2020-09-01","percona/percona-server",9755903],["2020-09-01","pingcap/tidb",6221827],["2020-09-01","vitessio/vitess",2612452],["2020-10-01","MariaDB/server",217904],["2020-10-01","percona/percona-server",9775689],["2020-10-01","pingcap/tidb",6406891],["2020-10-01","vitessio/vitess",2670042],["2020-11-01","MariaDB/server",217932],["2020-11-01","percona/percona-server",9815267],["2020-11-01","pingcap/tidb",6449676],["2020-11-01","vitessio/vitess",2724173],["2020-12-01","MariaDB/server",219182],["2020-12-01","percona/percona-server",10314506],["2020-12-01","pingcap/tidb",6492864],["2020-12-01","vitessio/vitess",2837643],["2021-01-01","MariaDB/server",219603],["2021-01-01","percona/percona-server",10335266],["2021-01-01","pingcap/tidb",6525650],["2021-01-01","vitessio/vitess",2923540],["2021-02-01","MariaDB/server",219786],["2021-02-01","percona/percona-server",10388503],["2021-02-01","pingcap/tidb",6672533],["2021-02-01","vitessio/vitess",3179207],["2021-03-01","MariaDB/server",222948],["2021-03-01","percona/percona-server",10390364],["2021-03-01","pingcap/tidb",6724500],["2021-03-01","vitessio/vitess",3464068],["2021-04-01","MariaDB/server",225639],["2021-04-01","percona/percona-server",13460009],["2021-04-01","pingcap/tidb",6768362],["2021-04-01","vitessio/vitess",3522716],["2021-05-01","MariaDB/server",225728],["2021-05-01","percona/percona-server",13552191],["2021-05-01","pingcap/tidb",6808281],["2021-05-01","vitessio/vitess",3818184],["2021-06-01","MariaDB/server",225887],["2021-06-01","percona/percona-server",13558302],["2021-06-01","pingcap/tidb",6898214],["2021-06-01","vitessio/vitess",3936278],["2021-07-01","MariaDB/server",228430],["2021-07-01","percona/percona-server",13571024],["2021-07-01","pingcap/tidb",6942282],["2021-07-01","vitessio/vitess",4136821],["2021-08-01","MariaDB/server",228630],["2021-08-01","percona/percona-server",13594007],["2021-08-01","pingcap/tidb",7122987],["2021-08-01","vitessio/vitess",4245984],["2021-09-01","MariaDB/server",229851],["2021-09-01","percona/percona-server",13597538],["2021-09-01","pingcap/tidb",7186789],["2021-09-01","vitessio/vitess",4404977],["2021-10-01","MariaDB/server",229901],["2021-10-01","percona/percona-server",13597546],["2021-10-01","pingcap/tidb",7191221],["2021-10-01","vitessio/vitess",4432379],["2021-11-01","MariaDB/server",230227],["2021-11-01","percona/percona-server",13612861],["2021-11-01","pingcap/tidb",7309428],["2021-11-01","vitessio/vitess",4602857],["2021-12-01","MariaDB/server",231753],["2021-12-01","percona/percona-server",13621700],["2021-12-01","pingcap/tidb",7509650],["2021-12-01","vitessio/vitess",4720509],["2022-01-01","MariaDB/server",235375],["2022-01-01","percona/percona-server",13646660],["2022-01-01","pingcap/tidb",7624875],["2022-01-01","vitessio/vitess",4840510],["2022-02-01","MariaDB/server",235552],["2022-02-01","percona/percona-server",13647532],["2022-02-01","pingcap/tidb",7701783],["2022-02-01","vitessio/vitess",5021809],["2022-03-01","MariaDB/server",236642],["2022-03-01","percona/percona-server",13673971],["2022-03-01","pingcap/tidb",7925088],["2022-03-01","vitessio/vitess",5170559],["2022-04-01","MariaDB/server",241245],["2022-04-01","percona/percona-server",13698028],["2022-04-01","pingcap/tidb",7993445],["2022-04-01","vitessio/vitess",5279495]];
+            
+
+
+        function run(_rawData) {
+          const repos = [
+              'vitessio/vitess',
+              'pingcap/tidb',
+              'MariaDB/server',
+              'percona/percona-server'
+          ];
+          const datasetWithFilters = [];
+          const seriesList = [];
+          echarts.util.each(repos, function (repo) {
+            var datasetId = 'dataset_' + repo;
+            datasetWithFilters.push({
+              id: datasetId,
+              fromDatasetId: 'dataset_raw',
+              transform: {
+                type: 'filter',
+                config: {
+                  and: [
+                    { dimension: 'repo_name', '=': repo }
+                  ]
+                }
+              }
+            });
+            seriesList.push({
+              type: 'line',
+              datasetId: datasetId,
+              showSymbol: false,
+              name: repo,
+              endLabel: {
+                show: true,
+                formatter: function (params) {
+                  return params.value[1] + ': ' + params.value[2];
+                }
+              },
+              labelLayout: {
+                moveOverlap: 'shiftY'
+              },
+              emphasis: {
+                focus: 'series'
+              },
+              encode: {
+                x: 'event_month',
+                y: 'count',
+                label: ['count'],
+                itemName: 'event_month',
+                tooltip: ['count']
+              }
+            });
+          });
+          option = {
+            dataset: [
+              {
+                id: 'dataset_raw',
+                source: _rawData
+              },
+              {
+               transform: {
+                type: 'sort',
+                config: { dimension: 'event_month', order: 'asc' }
+              }
+              },
+              ...datasetWithFilters
+            ],
+            title: {
+              text: '',
+              left: 'center',
+            },
+            tooltip: {
+              order: 'valueDesc',
+              trigger: 'axis'
+            },
+            xAxis: {
+              type: 'category',
+              nameLocation: 'middle'
+            },
+            yAxis: {
+              name: 'count'
+            },
+            grid: {
+              right: 140
+            },
+            series: seriesList
+          };
+          myChart.setOption(option);
+        }
+
+        run(_rawData);
+
+      </script>
+    </body>
+</html>
