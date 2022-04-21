@@ -10,7 +10,7 @@
             "url": "https://ossinsight.io/blog/about",
             "title": "About US",
             "summary": "Who we are",
-            "date_modified": "2022-04-21T09:42:19.362Z",
+            "date_modified": "2022-04-21T09:57:29.082Z",
             "author": {
                 "name": "PingCAP",
                 "url": "https://github.com/pingcap"
@@ -22,7 +22,15 @@
             "url": "https://ossinsight.io/blog/changelog",
             "title": "Changelog",
             "summary": "2022-03-22",
-            "date_modified": "2022-04-21T09:42:19.362Z"
+            "date_modified": "2022-04-21T09:57:29.082Z"
+        },
+        {
+            "id": "/different-between-mysql-compatible-databases",
+            "content_html": "<h2>Contribution: Pull Request + Issue + Comment</h2><iframe width=\"90%\" height=\"400\" src=\"/charts/tidb-vs-mysql-compatible-databases-contribution.html?theme=vintage\"></iframe><h2>Code: Additions + Deletions</h2><iframe width=\"90%\" height=\"400\" src=\"/charts/tidb-vs-mysql-compatible-databases-code.html?theme=vintage\"></iframe><h2>Pull Requests Count Trend</h2><iframe width=\"90%\" height=\"400\" src=\"/charts/tidb-vs-mysql-compatible-databases-pull-request.html?theme=vintage\"></iframe>",
+            "url": "https://ossinsight.io/blog/different-between-mysql-compatible-databases",
+            "title": "Difference Between MySQL Compatible Databaases...",
+            "summary": "Contribution: Pull Request + Issue + Comment",
+            "date_modified": "2022-04-21T09:57:29.082Z"
         },
         {
             "id": "/how-it-works",
@@ -30,7 +38,7 @@
             "url": "https://ossinsight.io/blog/how-it-works",
             "title": "Data Preparation for Analytics",
             "summary": "All the data we use here on this website sources from GH Archive, a non-profit project that records and archives all GitHub events data since 2011. The total data volume archived by GH Archive can be up to 4 billion rows. We download the json file on GH Archive and convert it into csv format via Script, and finally load it into the TiDB cluster in parallel through TiDB-Lightning.",
-            "date_modified": "2022-04-21T09:42:19.362Z"
+            "date_modified": "2022-04-21T09:57:29.082Z"
         },
         {
             "id": "/try-it-yourself",
@@ -38,7 +46,7 @@
             "url": "https://ossinsight.io/blog/try-it-yourself",
             "title": "▶️  Use TiDB Cloud to Analyze GitHub Events in 10 Minutes",
             "summary": "TiDB is an open source distributed NewSQL database with horizontal scalability, high availability, and strong consistency. It can also deal with mixed OLTP and OLAP workloads at the same time by leveraging its hybrid transactional and analytical (HTAP) capability.",
-            "date_modified": "2022-04-21T09:42:19.362Z"
+            "date_modified": "2022-04-21T09:57:29.082Z"
         }
     ]
 }
