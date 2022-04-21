@@ -5,12 +5,13 @@ import Footer from "../../components/Footer";
 
 export interface CustomPageProps extends LayoutProps {
   footer?: boolean
+  dark?: boolean
 }
 
-export default function CustomPage({children, footer = true, ...props}: PropsWithChildren<CustomPageProps>) {
+export default function CustomPage({children, footer = true, dark, ...props}: PropsWithChildren<CustomPageProps>) {
   return (
     <Layout {...props}>
-      <ThemeAdaptor>
+      <ThemeAdaptor dark={dark}>
         <div
           style={{
             '--ifm-container-width-xl': '1200px'

@@ -20,6 +20,7 @@ export interface StandardCardProps extends Omit<GridProps<any, any>, 'item' | 'c
   cardSx?: CardProps['sx']
   tags?: string[]
   link?: string
+  top?: React.ReactNode
 }
 
 function withClickable(children: React.ReactNode, {
@@ -52,7 +53,7 @@ function withClickable(children: React.ReactNode, {
           target='_blank'
           sx={{
             textAlign: 'left',
-            p: 2,
+            p: 4,
             display: 'block',
             '&:hover': {
               textDecoration: 'none',
@@ -67,7 +68,7 @@ function withClickable(children: React.ReactNode, {
   } else {
     return (
       <Card
-        sx={{userSelect: 'none', p: 2, ...cardSx}}
+        sx={{userSelect: 'none', p: 4, ...cardSx}}
         elevation={elevation ?? 3}
       >
         {children}
@@ -88,6 +89,7 @@ export default function StandardCard({
   cardSx,
   tags,
   link,
+  top,
   ...props
 }: StandardCardProps) {
   const children = (
@@ -137,6 +139,7 @@ export default function StandardCard({
 
   return (
     <Grid item {...props}>
+      {top}
       {withClickable(children, {link, elevation, cardSx})}
     </Grid>
   )

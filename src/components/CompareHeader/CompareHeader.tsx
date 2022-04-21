@@ -2,8 +2,9 @@ import React from "react";
 import RepoSelector, {Repo} from "./RepoSelector";
 import Grid from "@mui/material/Grid";
 import useScrollTrigger from '@mui/material/useScrollTrigger';
-import Box from "@mui/material/Box";
+import Box, {BoxProps} from "@mui/material/Box";
 import useThemeContext from "@theme/hooks/useThemeContext";
+import {combineSx} from "../../utils/mui";
 
 interface ElevationScrollProps {
   children: React.ReactElement
@@ -30,7 +31,7 @@ interface ElevateAppBarProps {
   children: React.ReactElement
 }
 
-interface CompareHeaderProps {
+interface CompareHeaderProps extends BoxProps {
   repo1: Repo | null
   repo2: Repo | null
   onRepo1Change: (repo: Repo | null) => void
@@ -39,27 +40,40 @@ interface CompareHeaderProps {
   onRepo2Valid: (repo: Repo | null) => string | undefined
 }
 
-function CompareHeader(props: CompareHeaderProps) {
+function CompareHeader({
+  repo1,
+  repo2,
+  onRepo1Change,
+  onRepo2Change,
+  onRepo1Valid,
+  onRepo2Valid,
+  sx,
+  ...props
+}: CompareHeaderProps) {
   const {isDarkTheme} = useThemeContext();
 
   return (
-    <Box position='sticky' sx={{
-      my: 2,
-      py: 2,
-      top: 'var(--ifm-navbar-height)',
-      zIndex: 11,
-      backgroundColor: isDarkTheme ? 'var(--ifm-background-color)' : 'background.default',
-      borderBottom: '1px solid transparent',
-      borderBottomColor: 'divider'
-    }}>
+    <Box
+      position='sticky'
+      sx={combineSx({
+        my: 2,
+        py: 2,
+        top: 'var(--ifm-navbar-height)',
+        zIndex: 11,
+        backgroundColor: isDarkTheme ? 'var(--ifm-background-color)' : 'background.default',
+        borderBottom: '1px solid transparent',
+        borderBottomColor: 'divider'
+      }, sx)}
+      {...props}
+    >
       <Grid container>
         <Grid item xs={5}>
           <RepoSelector
             label="Repo Name 1"
             defaultRepoName="pingcap/tidb"
-            repo={props.repo1}
-            onChange={props.onRepo1Change}
-            onValid={props.onRepo1Valid}
+            repo={repo1}
+            onChange={onRepo1Change}
+            onValid={onRepo1Valid}
           />
         </Grid>
         <Grid item xs={2}>
@@ -79,9 +93,9 @@ function CompareHeader(props: CompareHeaderProps) {
           <RepoSelector
             label="Repo Name 2"
             defaultRepoName="tikv/tikv"
-            repo={props.repo2}
-            onChange={props.onRepo2Change}
-            onValid={props.onRepo2Valid}
+            repo={repo2}
+            onChange={onRepo2Change}
+            onValid={onRepo2Valid}
           />
         </Grid>
       </Grid>
