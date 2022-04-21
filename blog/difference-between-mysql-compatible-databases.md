@@ -7,10 +7,10 @@ title: Difference Between MySQL Compatible Databaases ...
 
 > Contributors open pull requests, issues and comment in pr body & issue body
 
-<iframe width="90%" height="400" src="/charts/tidb-vs-mysql-compatible-databases-contribution.html?theme=vintage"></iframe>
+<iframe width="90%" height="400" src="/charts/tidb-vs-mysql-compatible-databases-contributor.html?theme=vintage"></iframe>
 
 ## Contributions
-> Total Number of Pull Request + Issue + Comment
+> Total Number of Pull Request + Issue + Comment + Review
 
 <iframe width="90%" height="400" src="/charts/tidb-vs-mysql-compatible-databases-contribution.html?theme=vintage"></iframe>
 
