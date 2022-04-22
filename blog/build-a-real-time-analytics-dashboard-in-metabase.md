@@ -1,4 +1,4 @@
-# Build a Real-time Analytics Dashboard in Metabase
+# Build a Real-time Analytics Dashboard in Logistics Industry with Metabase
 
 **#Real-time analytics**   **#Proliferate data**
 **#Logistics industry**
