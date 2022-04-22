@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useMemo, useState} from 'react';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import WordCloud from "../../components/WordCloud";
 import TopList from "../../components/TopList";
@@ -20,6 +20,8 @@ import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import {useRemoteData} from "../../components/RemoteCharts/hook";
 import Skeleton from "@mui/material/Skeleton";
+import {Repo} from "../../components/CompareHeader/RepoSelector";
+import Link from "@docusaurus/Link";
 
 const Item = styled(Box)(({theme}) => ({
   padding: theme.spacing(4),
@@ -40,20 +42,28 @@ const formatHugeNumber = (x: number) => {
 export default function Home() {
   const {siteConfig} = useDocusaurusContext();
   const [period, setPeriod] = useState('last_hour')
-  const [repo1, setRepo1] = useState(undefined)
-  const [repo2, setRepo2] = useState(undefined)
-  const onRepo1Valid = useCallback((repo) => {
+  const [repo1, setRepo1] = useState<Repo>(undefined)
+  const [repo2, setRepo2] = useState<Repo>(undefined)
+  const onRepo1Valid = useCallback((repo: Repo) => {
     if (repo?.name !== undefined && repo?.name === repo2?.name) {
       return 'Please select another repository to compare.'
     }
   }, [repo2])
-
-  const onRepo2Valid = useCallback((repo) => {
+  const onRepo2Valid = useCallback((repo: Repo) => {
     if (repo?.name !== undefined && repo?.name === repo1?.name) {
       return 'Please select another repository to compare.'
     }
   }, [repo1])
-
+  const compare = useMemo(() => {
+    const usp = new URLSearchParams()
+    if (repo1) {
+      usp.set('repo1', repo1.name)
+    }
+    if (repo2) {
+      usp.set('repo2', repo2.name)
+    }
+    return `/compare?${usp.toString()}`
+  }, [repo1, repo2])
   const {data: totalEventsData} = useRemoteData('events-total', {}, false)
 
   return (
@@ -165,7 +175,7 @@ export default function Home() {
                 onRepo2Valid={onRepo2Valid}
                 sx={{backgroundColor: 'transparent', flex: 1, borderBottom: 'none'}}
               />
-              <Button variant='contained'>
+              <Button component={Link} variant='contained' to={compare}>
                 go!
               </Button>
             </Box>
