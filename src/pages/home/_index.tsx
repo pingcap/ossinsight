@@ -199,7 +199,7 @@ export default function Home() {
                 sx={{backgroundColor: 'transparent', flex: 1, borderBottom: 'none'}}
                 position='static'
               />
-              <Button component={Link} variant='contained' to={compare}>
+              <Button component={Link} variant='contained' href={compare}>
                 go!
               </Button>
             </Box>
