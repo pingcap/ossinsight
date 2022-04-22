@@ -53,9 +53,9 @@ export default function Footer() {
       <Section darker>
         <div className="text--center">
           <h3>
-            Follow us
+            Follow us&nbsp;
             <a href="https://twitter.com/PingCAP">@PingCAP</a>
-            and join the conversation using the hashtags
+            &nbsp;and join the conversation using the hashtags
             <br />
             <a href="https://twitter.com/hashtag/OSS_Insight" target='_blank'>
               #OSS_Insight
