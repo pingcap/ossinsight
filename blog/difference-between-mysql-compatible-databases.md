@@ -18,7 +18,7 @@ title: Difference Between MySQL Compatible Databaases ...
 ## Code
 > lines of modified code: additions + deletions
 
-<iframe width="90%" height="400" src="/charts/tidb-vs-mysql-compatible-databases-code.html?theme=vintage"></iframe>
+<iframe width="90%" height="400" src="/charts/tidb-vs-mysql-compatible-databases-code.html?theme=vintage&v=2"></iframe>
 
 
 ### The top 10 pull request code additions+deletions of `percona/percona-server`
