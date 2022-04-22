@@ -90,7 +90,7 @@ const config = {
             label: 'Insight',
           },
           {to: '/compare', label: 'Compare Projects', position: 'left'},
-          {to: '/blog/try-it-yourself/', label: '🔧 Try It Yourself', position: 'left'},
+          {to: '/try-your-own-dataset/', label: '🔧 Try Your Own Dataset', position: 'left'},
           {to: '/blog/how-it-works', label: 'How It Works', position: 'left'},
           {
             href: 'https://tidbcloud.com',
