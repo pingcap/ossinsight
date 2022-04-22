@@ -197,6 +197,7 @@ export default function Home() {
                 onRepo1Valid={onRepo1Valid}
                 onRepo2Valid={onRepo2Valid}
                 sx={{backgroundColor: 'transparent', flex: 1, borderBottom: 'none'}}
+                position='static'
               />
               <Button component={Link} variant='contained' to={compare}>
                 go!
