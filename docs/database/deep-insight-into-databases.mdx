@@ -1,0 +1,316 @@
+---
+title: "Deep Insight into Databases"
+sidebar_class_name: unlisted
+image: img/gharchive-title-img.png
+---
+
+import {CommonChart} from "../../src/components/CommonChart";
+import ContributorsCharts from "../../src/components/ContributorsCharts";
+import GroupSelect from "../../src/components/GroupSelect";
+const tidbGroup = [41986369, 48833910, 53311716]
+
+
+In this chapter, we will share with you some of **the top Open Source Database repos (OSDB repos) on GitHub in 2021** measured by different metrics including the number of stars, PRs, contributors, countries, regions and so on.
+
+Note:
+1. You can move your cursor onto any of the repository bars/lines on the chart and get the exact number.
+2. The SQL commands above each chart are what we use on our TiDB Cloud to get the analytical results. Try those SQL commands by yourselves on TiDB Cloud with this [10-minute tutorial](/blog/try-it-yourself/).
+
+
+## Popularity
+
+
+### Star history of top OSDB repos since 2011
+
+The number of stars is often thought of as a measure of whether a github repository is popular or not. We sort all database repositories from github by the total number of historical stars since 2011. For visualizing the results more intuitively, we show the top 10 open source databases by using an interactive line chart.
+
+<CommonChart
+  chart='dynamic-stars'
+  category='archive-2021-top10-star-racing'
+  formatSql={false}
+  repo='db_repos'
+/>
+
+### Top 10 OSDB repos with the lowest YoY growth rate of stars in 2021
+
+<CommonChart
+  chart='yoychart'
+  category='archive-2021-bottom10-by-yoy'
+  formatSql={false}
+  repo='db_repos'
+/>
+
+### Top 20 OSDB repos with the highest YoY growth rate of stars in 2021
+
+<CommonChart
+  chart='yoychart'
+  category='archive-2021-top20-by-stars-yoy'
+  formatSql={false}
+  repo='db_repos'
+/>
+
+### Top 10 the most starred OSDB repos in 2021
+
+<CommonChart
+  chart='barchart'
+  category='archive-2021-top10-by-stars'
+  n={10}
+  formatSql={false}
+  categoryIndex='repo_name'
+  valueIndex='stars'
+  seriesName='Stars'
+  repo='db_repos'
+/>
+
+## Who love databases
+
+### Countries/Regions of stargazers
+
+This map will show you which country or region does stargazers come from. They make an issue to report the problem, or request a new feature.
+
+We display the geographic information by all stargazers on the map. They come from 146 countries and regions except for Antarctica. It can be seen that in addition to China (where PingCAP is headquartered), the United States and Europe have gathered the most stargazers, and there are scattered stargazers in other regions. It can also be inferred that TiDB is popular all over the world.
+
+<CommonChart
+  chart='worldmapchart'
+  category='stars-map'
+  formatSql={false}
+  categoryIndex='country_or_area'
+  valueIndex='count'
+  seriesName='stargazers'
+  effect={false}
+  size={56}
+  repoId={tidbGroup}
+  comparing
+/>
+
+### Stargazers from Top 50 Companies in the TiDB repo
+
+We can see which companies (top 50) star the TiDB repo most in this pie chart. Among them, many open source enthusiasts from Chinese Internet giants such as Tencent, Alibaba, and Bytedance expressed their appreciation for TiDB. At the same time, hundreds of developers from Google, Microsoft and Facebook also starred the TiDB repository. It can be seen that TiDB is concerned and welcomed all around the world.
+<GroupSelect />
+
+<CommonChart
+  chart='piechart'
+  category='stars-top-50-company'
+  formatSql={false}
+  categoryIndex='company_name'
+  valueIndex='stargazers'
+  categoryType='owner'
+  seriesName='Stargazers'
+  repoId={tidbGroup}
+  comparing
+/>
+
+## Contributors
+
+### Top 10 countries/regions contributing the most to OSDB repos in 2021
+
+<CommonChart
+  chart='worldmapchart'
+  category='archive-2021-top10-by-regions'
+  formatSql={false}
+  categoryIndex='country_code'
+  valueIndex='users_count'
+  seriesName='Contributors'
+  repo='db_repos'
+/>
+
+### Top 20 companies contributing the most to OSDB repos in 2021
+
+<CommonChart
+  chart='barchart'
+  category='archive-2021-top20-by-companies'
+  formatSql={false}
+  categoryIndex='company'
+  valueIndex='users_count'
+  seriesName='Contributors'
+  categoryType={false}
+  repo='db_repos'
+/>
+
+### Top 20 contributors in OSDB repos
+
+<CommonChart
+  chart='barchart'
+  category='archive-2021-top20-by-developers'
+  formatSql={false}
+  categoryIndex='actor_login'
+  valueIndex='pr_count'
+  categoryType='owner'
+  seriesName='PRs'
+  repo='db_repos'
+/>
+
+### Heat Map of Commits Time about PRs
+
+We can also analyze the activity of open source repos from the commits time. The figure below shows the time heat map for PRs commits.
+
+The Heat Maps of Commits Time display the number of push events occurring at a particular point of time. The Y-axis represents 7 days a week, and the X-axis represents 24 hours a day according to the Universal Time Coordinated (UTC). The lighter color in this heat map indicates that less push events occur at a particular point of time. On the contrary, the darker color indicates more push events occurring.
+
+From this heat map, we can see that the vast majority of PRs are committed between 2:00 - 16:00（UTC）indicating that in addition to the vast majority of Chinese contributors, there are also contributors from different time zones who have contributed to TiDB during working hours.
+
+<CommonChart
+  chart='heatmapchart'
+  category='commits-time-distribution'
+  xIndex='hour'
+  yIndex='dayofweek'
+  valueIndex='pushes'
+  formatSql={false}
+  repoId={tidbGroup}
+  comparing
+/>
+
+## Repositories Analysis
+
+### Commits Trend
+
+TBD
+
+### Last 10 years pr's trend
+
+TBD
+
+### Top 10 OSDB repos with the most PRs in 2021
+
+<CommonChart
+  chart='barchart'
+  category='archive-2021-top10-by-prs'
+  n={20}
+  formatSql={false}
+  categoryIndex='repo_name'
+  valueIndex='num'
+  seriesName='PRs'
+  repo='db_repos'
+/>
+
+
+## User's Feedback (Issues)
+
+### Issues
+
+Total number of issues, issue submitters, issues comments, and issue commenters since 2011.
+
+Judging from the total number of issues, TiDB repository has a total of 155562 issues(2022-04-06), ranking the top 3 in all open source database repos. We judge the activeness of an open source repository by referring to the number of issues as well. Generally, the higher number of issues means more contributors are involved in a repository, which can presents the active level of it. Therefore, the activity of the TiDB repository can be considered to be at the forefront of the open source database area.
+
+<CommonChart
+  chart='barchart'
+  category='rt-osdb-ranking-by-issues'
+  n={20}
+  formatSql={false}
+  categoryIndex='repo_group_name'
+  valueIndex='num'
+  seriesName='Issues'
+  categoryType={false}
+/>
+
+In order to prevent the phenomenon of submitting issues maliciously(only open but not closed), we can also refer to the average opening/closing time and initial response time of issues in open source database repos to make the evaluation.
+
+### Median time cost from open issue to first response
+
+<CommonChart
+  chart='barchart'
+  category='rt-osdb-ranking-by-median-issue-open-to-first-respond'
+  n={20}
+  formatSql={false}
+  categoryIndex='repo_group_name'
+  valueIndex='days'
+  seriesName='Days'
+  categoryType={false}
+/>
+
+### Median time cost from open issue to close
+
+<CommonChart
+  chart='barchart'
+  category='rt-osdb-ranking-by-median-issue-open-to-close'
+  n={20}
+  formatSql={false}
+  categoryIndex='repo_group_name'
+  valueIndex='days'
+  seriesName='Days'
+  categoryType={false}
+/>
+
+#### Countries/Regions of Issue Openers
+
+This map will show you which country or region issue creators come from. They make an issue to report the problem, or request a new feature.
+
+We can see that in addition to China, contributors from 38 countries around the world have submitted issues for the TiDB repository from this map.
+
+<CommonChart
+  chart='worldmapchart'
+  category='issue-creators-map'
+  formatSql={false}
+  categoryIndex='country_or_area'
+  valueIndex='count'
+  seriesName='Issue openers'
+  effect={false}
+  size={56}
+  repoId={tidbGroup}
+  comparing
+/>
+
+## Community Robustness
+
+### Contriburors trend since 2011
+
+TBD
+
+### 贡献者总量和贡献深度分布
+
+The total number of contributors since 2011 about each repository.
+
+> by Contributors
+
+In addition to the above three criteria for measuring the activity of an open source database repository, some interesting conclusions can be drawn from the analysis from the perspective of contributors.
+
+Usually, a non-full-time contributor will contribute no more than 100 PRs in the same repository (unless he/she is a super fan of the repository). In order to reasonable to assume whether the people participating in the open source community are real community members (not company employees). We group all contributors by the total number of PRs submitted by themselves into <= 10,<= 100,> 100. Then we can get insights of the TiDB community.
+
+In order to obtain a comprehensive and objective analysis result, we recommend that the total number of contributors and the proportion of contributors be compared together. Contributors who submitted less than 10 PRs in the TiDB repository accounted for 76.8% of total PRs which is 806 contributors. There are more than 300 contributors who submitted more than 10 PRs for TiDB. It can be seen that the research and development resources of TiDB are very sufficient, and the quality of the code can be trusted.
+
+#### The percentage of different types of contributors in total contributors
+*All contributors are classified according to the total number of PRs submitted by themselves into <= 10,<= 100,> 100.
+
+<ContributorsCharts type='contributors'/>
+
+
+### 代码集中度：PR 主要由哪类贡献者产出
+
+> by PRs
+
+We can also measure the health of a repository with the percentage of the total number of PRs submitted by these different types of contributors.
+7.4% of contributors created a total of 2082 PRs, 20.3% of contributors created a total of 5093 PRs, and 72.3% of contributors created 20245 PRs. This is a very healthy ratio.
+
+#### The percentage of the sum of PRs submitted by different types of contributors in total PRs
+*All contributors are classified according to the total number of PRs submitted by themselves into <= 10,<= 100,> 100.
+
+<ContributorsCharts type='prs'/>
+
+### 代码审查速度：Median time cost from open pull request to close it
+
+It is unilateral to prove that the repository is active only by the number of submitted PRs. It is also necessary to pay attention to the life cycle of a PR (from open to close) to assist in analyzing the activity and health of open source repos. As you can see from the bar chart below, the PR life cycle length varies widely between repos. On average, hive and ignite take almost 120 days to close a PR, while TiDB, which is also on the list, only takes about 10 days.
+
+<CommonChart
+  chart='barchart'
+  category='rt-osdb-ranking-by-median-pr-open-to-merge'
+  n={20}
+  formatSql={false}
+  categoryIndex='repo_group_name'
+  valueIndex='days'
+  seriesName='Days'
+  categoryType={false}
+/>
+
+## Programming Language Analysis
+
+### Top 5 programming languages used in OSDB repos in 2021
+
+<CommonChart
+  chart='barchart'
+  category='archive-2021-top5-by-languages'
+  formatSql={false}
+  categoryIndex='language'
+  valueIndex='COUNT(*)'
+  categoryType='lang'
+  seriesName='PRs'
+  repo='db_repos'
+/>
