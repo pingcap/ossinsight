@@ -104,6 +104,5 @@ The result will now appear on the dashboard.
 <br>
 <div style="background:#2c2c2c; color:#FEC260">
 
-[Try your own dataset!](/try-your-own-dataset/)
 
 </div> 
