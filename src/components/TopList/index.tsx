@@ -51,10 +51,6 @@ export default function TopList({period, onPeriodChange}: TopListProps) {
   return (
     <ThemeAdaptor>
       {renderTopListHeader(period, handlePeriodChange, loading, handleOpen)}
-      <Typography component='p' variant='body1' sx={{ color: 'text.secondary', mb: 2 }} align='center'>
-        All the real-time analytics are supported by
-        <img alt="TiDB Cloud" src='img/tidb_cloud.png' width={108} height={24} style={{ verticalAlign: 'text-bottom', marginLeft: 8 }} />
-      </Typography>
       {renderTopListBody(ranks, loading)}
       <Dialog
         maxWidth="lg"
@@ -92,7 +88,6 @@ function renderTopListHeader (period: string, handlePeriodChange: (period: Selec
           <MenuItem key={value} value={value}>{name}</MenuItem>
         ))}
       </Select>
-      .
       <Tooltip
         title={(
           <Typography variant='body2'>
