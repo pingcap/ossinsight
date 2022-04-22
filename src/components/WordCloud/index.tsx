@@ -1,15 +1,15 @@
-import React, {useLayoutEffect, useRef} from 'react'
+import React, {HTMLAttributes, useLayoutEffect, useRef} from 'react'
 import {start} from "./dist";
 import './dist/index.css'
 import './style.css'
 import {useRank} from "../../api/query";
 
-interface WordCloudProps {
+interface WordCloudProps extends HTMLAttributes<HTMLDivElement> {
   period: string
   children: JSX.Element
 }
 
-export default function WordCloud({children, period}: WordCloudProps) {
+export default function WordCloud({children, period, ...props}: WordCloudProps) {
   const ref = useRef<HTMLDivElement>()
   const { data = [] } = useRank(period)
 
@@ -31,7 +31,7 @@ export default function WordCloud({children, period}: WordCloudProps) {
   }, [data])
 
   return (
-    <div ref={ref} className='wordcloud-container'>
+    <div ref={ref} className='wordcloud-container' {...props}>
       {children}
     </div>
   )
