@@ -26,6 +26,7 @@ const config = {
         pages: {
           exclude: [
             '**/_*/**',
+            '**/_*'
           ]
         },
         docs: {
