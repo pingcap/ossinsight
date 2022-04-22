@@ -10,7 +10,7 @@
             "url": "https://ossinsight.io/blog/about",
             "title": "About US",
             "summary": "Who we are",
-            "date_modified": "2022-04-22T02:51:36.668Z",
+            "date_modified": "2022-04-22T03:59:25.581Z",
             "author": {
                 "name": "PingCAP",
                 "url": "https://github.com/pingcap"
@@ -22,15 +22,15 @@
             "url": "https://ossinsight.io/blog/changelog",
             "title": "Changelog",
             "summary": "2022-03-22",
-            "date_modified": "2022-04-22T02:51:36.668Z"
+            "date_modified": "2022-04-22T03:59:25.581Z"
         },
         {
             "id": "/difference-between-mysql-compatible-databases",
-            "content_html": "<h2>Contributors</h2><blockquote><p>Contributors open pull requests, issues and comment in pr body &amp; issue body</p></blockquote><iframe width=\"90%\" height=\"400\" src=\"/charts/tidb-vs-mysql-compatible-databases-contributor.html?theme=vintage\"></iframe><h2>Contributions</h2><blockquote><p>Total Number of Pull Request + Issue + Comment + Review</p></blockquote><iframe width=\"90%\" height=\"400\" src=\"/charts/tidb-vs-mysql-compatible-databases-contribution.html?theme=vintage\"></iframe><h2>Code</h2><blockquote><p>lines of modified code: additions + deletions</p></blockquote><iframe width=\"90%\" height=\"400\" src=\"/charts/tidb-vs-mysql-compatible-databases-code.html?theme=vintage&amp;v=2\"></iframe><h3>The top 10 pull request code additions+deletions of <code>percona/percona-server</code></h3><pre><code class=\"language-sql\">gharchive_dev&gt; select (additions+deletions) as lines_modified, concat(&#x27;https://github.com/percona/percona-server/pull/&#x27;, number) from github_ev\n            -&gt; ents where repo_name = &#x27;percona/percona-server&#x27; order by lines_modified desc limit 10;\n+----------------+-------------------------------------------------------------------+\n| lines_modified | concat(&#x27;https://github.com/percona/percona-server/pull/&#x27;, number) |\n+----------------+-------------------------------------------------------------------+\n| 1847591        | https://github.com/percona/percona-server/pull/3474               |\n| 1847131        | https://github.com/percona/percona-server/pull/3474               |\n| 1611523        | https://github.com/percona/percona-server/pull/3978               |\n| 1611239        | https://github.com/percona/percona-server/pull/3978               |\n| 1526190        | https://github.com/percona/percona-server/pull/4204               |\n| 1525900        | https://github.com/percona/percona-server/pull/4235               |\n| 1525495        | https://github.com/percona/percona-server/pull/4235               |\n| 1436855        | https://github.com/percona/percona-server/pull/4204               |\n| 919569         | https://github.com/percona/percona-server/pull/4407               |\n| 831538         | https://github.com/percona/percona-server/pull/3604               |\n+----------------+-------------------------------------------------------------------+\n10 rows in set\nTime: 0.168s\ngharchive_dev&gt;\n</code></pre><h2>Pull Requests</h2><blockquote><p>Pull requests trend</p></blockquote><iframe width=\"90%\" height=\"400\" src=\"/charts/tidb-vs-mysql-compatible-databases-pull-request.html?theme=vintage\"></iframe>",
+            "content_html": "<h2>Contributors</h2><blockquote><p>Contributors open pull requests, issues and comment in pr body &amp; issue body</p></blockquote><iframe width=\"100%\" height=\"400\" src=\"/charts/tidb-vs-mysql-compatible-databases-contributor.html?theme=vintage&amp;v=3\"></iframe><h2>Contributions</h2><blockquote><p>Total Number of Pull Request + Issue + Comment + Review</p></blockquote><iframe width=\"100%\" height=\"400\" src=\"/charts/tidb-vs-mysql-compatible-databases-contribution.html?theme=vintage&amp;v=3\"></iframe><h2>Code</h2><blockquote><p>lines of modified code: additions + deletions</p></blockquote><iframe width=\"100%\" height=\"400\" src=\"/charts/tidb-vs-mysql-compatible-databases-code.html?theme=vintage&amp;v=3\"></iframe><h3>The top 10 pull request code additions+deletions of <code>percona/percona-server</code></h3><pre><code class=\"language-sql\">gharchive_dev&gt; select (additions+deletions) as lines_modified, concat(&#x27;https://github.com/percona/percona-server/pull/&#x27;, number) from github_ev\n            -&gt; ents where repo_name = &#x27;percona/percona-server&#x27; order by lines_modified desc limit 10;\n+----------------+-------------------------------------------------------------------+\n| lines_modified | concat(&#x27;https://github.com/percona/percona-server/pull/&#x27;, number) |\n+----------------+-------------------------------------------------------------------+\n| 1847591        | https://github.com/percona/percona-server/pull/3474               |\n| 1847131        | https://github.com/percona/percona-server/pull/3474               |\n| 1611523        | https://github.com/percona/percona-server/pull/3978               |\n| 1611239        | https://github.com/percona/percona-server/pull/3978               |\n| 1526190        | https://github.com/percona/percona-server/pull/4204               |\n| 1525900        | https://github.com/percona/percona-server/pull/4235               |\n| 1525495        | https://github.com/percona/percona-server/pull/4235               |\n| 1436855        | https://github.com/percona/percona-server/pull/4204               |\n| 919569         | https://github.com/percona/percona-server/pull/4407               |\n| 831538         | https://github.com/percona/percona-server/pull/3604               |\n+----------------+-------------------------------------------------------------------+\n10 rows in set\nTime: 0.168s\ngharchive_dev&gt;\n</code></pre><h2>Pull Requests</h2><blockquote><p>Pull requests trend</p></blockquote><iframe width=\"100%\" height=\"400\" src=\"/charts/tidb-vs-mysql-compatible-databases-pull-request.html?theme=vintage&amp;v=3\"></iframe>",
             "url": "https://ossinsight.io/blog/difference-between-mysql-compatible-databases",
             "title": "Difference Between MySQL Compatible Databaases ...",
             "summary": "Contributors",
-            "date_modified": "2022-04-22T02:51:36.668Z"
+            "date_modified": "2022-04-22T03:59:25.581Z"
         },
         {
             "id": "/how-it-works",
@@ -38,7 +38,7 @@
             "url": "https://ossinsight.io/blog/how-it-works",
             "title": "Data Preparation for Analytics",
             "summary": "All the data we use here on this website sources from GH Archive, a non-profit project that records and archives all GitHub events data since 2011. The total data volume archived by GH Archive can be up to 4 billion rows. We download the json file on GH Archive and convert it into csv format via Script, and finally load it into the TiDB cluster in parallel through TiDB-Lightning.",
-            "date_modified": "2022-04-22T02:51:36.668Z"
+            "date_modified": "2022-04-22T03:59:25.581Z"
         },
         {
             "id": "/try-it-yourself",
@@ -46,7 +46,7 @@
             "url": "https://ossinsight.io/blog/try-it-yourself",
             "title": "▶️  Use TiDB Cloud to Analyze GitHub Events in 10 Minutes",
             "summary": "TiDB is an open source distributed NewSQL database with horizontal scalability, high availability, and strong consistency. It can also deal with mixed OLTP and OLAP workloads at the same time by leveraging its hybrid transactional and analytical (HTAP) capability.",
-            "date_modified": "2022-04-22T02:51:36.668Z"
+            "date_modified": "2022-04-22T03:59:25.581Z"
         }
     ]
 }
