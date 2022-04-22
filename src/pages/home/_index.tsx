@@ -18,6 +18,8 @@ import AspectRatio from "react-aspect-ratio";
 import CompareHeader from "../../components/CompareHeader/CompareHeader";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
+import {useRemoteData} from "../../components/RemoteCharts/hook";
+import Skeleton from "@mui/material/Skeleton";
 
 const Item = styled(Box)(({theme}) => ({
   padding: theme.spacing(4),
@@ -52,6 +54,8 @@ export default function Home() {
     }
   }, [repo1])
 
+  const {data: totalEventsData} = useRemoteData('events-total', {}, false)
+
   return (
     <CustomPage
       title={siteConfig.title}
@@ -70,7 +74,7 @@ export default function Home() {
             >
               Get insights from
               <Span sx={{color: '#E30C34', mx: 0.5}}>
-                {formatHugeNumber(4300000000)}
+                {totalEventsData ? (formatHugeNumber(totalEventsData.data[0].cnt)) : <Skeleton sx={{display: 'inline-block', minWidth: '150px'}}/>}
               </Span>
               GitHub Events
             </Typography>
