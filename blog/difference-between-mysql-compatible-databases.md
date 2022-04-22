@@ -7,18 +7,18 @@ title: Difference Between MySQL Compatible Databaases ...
 
 > Contributors open pull requests, issues and comment in pr body & issue body
 
-<iframe width="90%" height="400" src="/charts/tidb-vs-mysql-compatible-databases-contributor.html?theme=vintage"></iframe>
+<iframe width="100%" height="400" src="/charts/tidb-vs-mysql-compatible-databases-contributor.html?theme=vintage&v=3"></iframe>
 
 ## Contributions
 > Total Number of Pull Request + Issue + Comment + Review
 
-<iframe width="90%" height="400" src="/charts/tidb-vs-mysql-compatible-databases-contribution.html?theme=vintage"></iframe>
+<iframe width="100%" height="400" src="/charts/tidb-vs-mysql-compatible-databases-contribution.html?theme=vintage&v=3"></iframe>
 
 
 ## Code
 > lines of modified code: additions + deletions
 
-<iframe width="90%" height="400" src="/charts/tidb-vs-mysql-compatible-databases-code.html?theme=vintage&v=2"></iframe>
+<iframe width="100%" height="400" src="/charts/tidb-vs-mysql-compatible-databases-code.html?theme=vintage&v=3"></iframe>
 
 
 ### The top 10 pull request code additions+deletions of `percona/percona-server`
@@ -49,4 +49,4 @@ gharchive_dev>
 ## Pull Requests
 > Pull requests trend
 
-<iframe width="90%" height="400" src="/charts/tidb-vs-mysql-compatible-databases-pull-request.html?theme=vintage"></iframe>
+<iframe width="100%" height="400" src="/charts/tidb-vs-mysql-compatible-databases-pull-request.html?theme=vintage&v=3"></iframe>
