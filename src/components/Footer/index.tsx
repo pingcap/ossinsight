@@ -4,6 +4,7 @@ import React from "react";
 import Section from "../../pages/home/_components/Section";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import Link from "@docusaurus/Link";
 
 const icon = (src) => {
   return (
@@ -45,7 +46,7 @@ export default function Footer() {
         </Cards>
         <Box textAlign='center' sx={{fontSize: 24, mt: 6}}>
           Now, how about
-          <Button sx={{fontSize: 24, fontWeight: 'bold'}}>
+          <Button sx={{fontSize: 24, fontWeight: 'bold'}} component={Link} href='/try-your-own-dataset'>
             Try your own dataset !
           </Button>
         </Box>
