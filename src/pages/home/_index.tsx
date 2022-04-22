@@ -7,11 +7,8 @@ import CustomPage from "../../theme/CustomPage";
 import Stack from "@mui/material/Stack";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
-import {styled, recomposeColor} from '@mui/material/styles';
-import Typography, {TypographyProps} from "@mui/material/Typography";
+import {styled} from '@mui/material/styles';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
-import Chip from "@mui/material/Chip";
-import {alpha, decomposeColor} from "@mui/material";
 import Tag from "./_components/Tag";
 import Image from "../../components/Image";
 import AspectRatio from "react-aspect-ratio";
@@ -22,17 +19,23 @@ import {useRemoteData} from "../../components/RemoteCharts/hook";
 import Skeleton from "@mui/material/Skeleton";
 import {Repo} from "../../components/CompareHeader/RepoSelector";
 import Link from "@docusaurus/Link";
-import useMediaQuery from "@mui/material/useMediaQuery";
+import {H1, H2, Span, Headline, Subtitle, Body, fontSizes, H2Plus} from './_components/typography'
 
 const Item = styled(Box)(({theme}) => ({
   padding: theme.spacing(4),
   flex: 1,
   [theme.breakpoints.down('md')]: {
-    width: '100%'
+    width: '100%',
+    padding: theme.spacing(1)
   }
 }))
 
-const Span = (props: TypographyProps) => <Typography {...props} component='span' display='inline' variant='inherit' />
+const AlignRightItem = styled(Item)(({theme}) => ({
+  textAlign: 'right',
+  [theme.breakpoints.down('md')]: {
+    textAlign: 'left'
+  }
+}))
 
 const Logo = styled('img')(({theme}) => ({
   verticalAlign: 'text-bottom',
@@ -86,39 +89,31 @@ export default function Home() {
           divider={<Divider orientation="vertical" flexItem />}
           direction={stackDirection}
         >
-          <Item sx={theme => ({
-            textAlign: 'right',
-            [theme.breakpoints.down('md')]: {
-              textAlign: 'left'
-            }
-          })}>
-            <Typography
-              sx={{color: '#C4C4C4'}}
-              fontSize={24}
-            >
+          <AlignRightItem>
+            <Headline>
               Get insights from
               <Span sx={{color: '#E30C34', mx: 0.5}}>
                 {totalEventsData ? (formatHugeNumber(totalEventsData.data[0].cnt)) :
                   <Skeleton sx={{display: 'inline-block', minWidth: '150px'}} />}
               </Span>
               GitHub Events
-            </Typography>
-            <Typography variant='h1' sx={{fontSize: 80}}>
+            </Headline>
+            <H1>
               Open Source Software
               <br />
               <Span sx={{color: '#FFE895'}}>
                 <VisibilityOutlinedIcon fontSize='inherit' sx={{verticalAlign: 'text-bottom'}} />
                 &nbsp;Insight
               </Span>
-            </Typography>
-            <Typography variant='body2' sx={{fontSize: 20, color: '#C4C4C4', mt: 14}}>
+            </H1>
+            <Body>
               Powered by
               <a href="https://en.pingcap.com/tidb-cloud/" target="_blank">
                 <Logo src='/img/tidb_cloud.png' width={108} height={24} alt='TiDB Cloud' />
               </a>
-            </Typography>
-          </Item>
-          <Item sx={{flex: 0.618, fontSize: 80}}>
+            </Body>
+          </AlignRightItem>
+          <Item sx={[{flex: 0.618}, fontSizes.h1]}>
             <WordCloud period='last_hour' style={{minHeight: 200}}>
               <span></span>
             </WordCloud>
@@ -128,18 +123,18 @@ export default function Home() {
       <Section darker>
         <Stack direction={stackDirection} alignItems='center'>
           <Item>
-            <Typography variant='h1' style={{fontSize: 48}}>
+            <H2>
               Historical / real-time
               <br />
-              <Span sx={{color: '#FFE895', fontSize: 64}}>
+              <H2Plus sx={{color: '#FFE895'}}>
                 Insight
-              </Span>
-            </Typography>
-            <Typography variant='subtitle1' component='p' sx={{fontSize: 24, mt: 7}}>
+              </H2Plus>
+            </H2>
+            <Subtitle>
               Explore the <b>Popularity & Activity trends</b>
               <br />
               in a technical field：
-            </Typography>
+            </Subtitle>
             <Box sx={{display: 'flex', flexWrap: 'wrap', gap: 2, mt: 3}}>
               <Tag color='#E63E6D' to='/database'>
                 Database
@@ -168,20 +163,20 @@ export default function Home() {
       <Section>
         <Stack direction={stackDirection} alignItems='center'>
           <Item>
-            <Typography variant='h1' style={{fontSize: 48}}>
+            <H2>
               Visually & Comprehensive
               <br />
-              <Span sx={{color: '#FFE895', fontSize: 64}}>
+              <H2Plus sx={{color: '#FFE895'}}>
                 Compare
-              </Span>
-            </Typography>
-            <Typography variant='subtitle1' component='p' sx={{fontSize: 24, mt: 7}}>
+              </H2Plus>
+            </H2>
+            <Subtitle>
               Track <b>the code activity & community metrics</b>.
               <br />
               Find out who is participating,
               <br />
               and in which <b>regions</b> or <b>companies</b> are they located.
-            </Typography>
+            </Subtitle>
             <Box sx={theme => ({
               mt: 3,
               display: 'flex',
