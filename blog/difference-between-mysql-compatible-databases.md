@@ -16,12 +16,12 @@ title: Difference Between MySQL Compatible Databaases ...
 
 
 ## Code
-> code (additions + deletions) < 10000
+> lines of modified code: additions + deletions
 
 <iframe width="90%" height="400" src="/charts/tidb-vs-mysql-compatible-databases-code.html?theme=vintage"></iframe>
 
 
-### The top 10 added+deleted of `percona/percona-server`
+### The top 10 pull request code additions+deletions of `percona/percona-server`
 
 ```sql
 gharchive_dev> select (additions+deletions) as lines_modified, concat('https://github.com/percona/percona-server/pull/', number) from github_ev
