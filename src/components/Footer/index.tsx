@@ -37,7 +37,7 @@ export default function Footer() {
             top={icon(require('./icon-2.png').default)}
           />
           <StandardCard
-            title='Use TiDB Cloud to Analyze GitHub Events in 10 Minutes'
+            title='Use TiDB Cloud to Analyze GitHub Events in 5 Minutes'
             description='Tutorial · 10 min read'
             codeStyleDescription={false}
             readMore='/blog/try-it-yourself'
