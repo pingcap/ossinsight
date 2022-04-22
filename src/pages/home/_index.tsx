@@ -55,6 +55,9 @@ export default function Home() {
     }
   }, [repo1])
   const compare = useMemo(() => {
+    if (typeof window === 'undefined') {
+      return '/compare'
+    }
     const usp = new URLSearchParams()
     if (repo1) {
       usp.set('repo1', repo1.name)
