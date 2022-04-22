@@ -21,36 +21,36 @@ export default function Page() {
         <Card sx={{px: 8, py: 4}}>
           <Cards xs={12} md={6} sx={{my: 4}} spacing={4}>
             <StandardCard
-              title='Step 1   Sign up (Free) '
+              title='Step 1: Sign up (Free) '
               description='Sign up / Log in a TiDB Cloud account to start your journey'
               codeStyleDescription={false}
               elevation={0}
               cardSx={{backgroundColor: 'action.hover'}}
-              link='https://www.baidu.com'
+              link='https://ossinsight.io/blog/try-it-yourself/#sign-up-for-a-tidb-cloud-account-free'
             />
             <StandardCard
-              title='Step 2   Create cluster (Free)'
+              title='Step 2: Create cluster (Free)'
               description='You can create a free cluster with TiDB Developer Tier'
               codeStyleDescription={false}
               elevation={0}
               cardSx={{backgroundColor: 'action.hover'}}
-              link='https://www.baidu.com'
+              link='https://ossinsight.io/blog/try-it-yourself/#create-a-tidb-developer-tier-cluster-free'
             />
             <StandardCard
-              title='Step 3   Import data'
+              title='Step 3: Import data'
               description='You can import the sample data to your TiDB Cloud cluster'
               codeStyleDescription={false}
               elevation={0}
               cardSx={{backgroundColor: 'action.hover'}}
-              link='https://www.baidu.com'
+              link='https://ossinsight.io/blog/try-it-yourself/#import-data-to-your-tidb-cloud-cluster'
             />
             <StandardCard
-              title='Step 4   Analysis !'
+              title='Step 4: Analysis !'
               description='Enjoy your analysis after finish all the steps above'
               codeStyleDescription={false}
               elevation={0}
               cardSx={{backgroundColor: 'action.hover'}}
-              link='https://www.baidu.com'
+              link='https://ossinsight.io/blog/try-it-yourself/#analysis'
             />
           </Cards>
           <Button component='a' startIcon={<ArrowRightIcon />} variant='contained' sx={{':hover': {color: '#ffffff'}}}>
@@ -60,18 +60,18 @@ export default function Page() {
       </Section>
       <Section
         title='You can do more than Github insight 🤔'
-        subtitle='可用于实时分析、海量数据、高并发、低延迟等场景'
+        subtitle='For real-time analytics / massive volumes of data / high concurrency / low latency scenarios'
       >
         <Cards xs={12} md={6} sx={{my: 4}}>
           <StandardCard
-            title='Build your dashboards in Metabase'
-            description='Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor'
+            title='Build your dashboards in Logistics Industry with Metabase'
+            description='In this tutorial, you will build a prototype for PingExpress_DemoCorp’s real-time analytics dashboard that runs on a TiDB Cloud Proof-of-Concept (PoC) cluster.'
             codeStyleDescription={false}
             image={<Image src={require('./image-1.png').default} />}
             buttonText='details'
-            buttonLink='https://www.baidu.com/'
-            readMore='https://www.baidu.com/'
-            tags={['tag1', 'tag2']}
+            buttonLink='https://en.pingcap.com/blog/build-a-real-time-analytics-application-with-tidb-cloud/'
+            readMore='https://en.pingcap.com/customers/'
+            tags={['Real-time analytics', 'Proliferate data'}
             elevation={0}
             cardSx={{backgroundColor: 'action.hover'}}
           />
