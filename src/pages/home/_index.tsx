@@ -114,19 +114,19 @@ export default function Home() {
               in a technical field：
             </Typography>
             <Box sx={{display: 'flex', flexWrap: 'wrap', gap: 2, mt: 3}}>
-              <Tag color='#E63E6D'>
+              <Tag color='#E63E6D' to='/database'>
                 Database
               </Tag>
-              <Tag color='#E30C34'>
+              <Tag color='#E30C34' to='/js-framework'>
                 JavaScript Framework
               </Tag>
-              <Tag color='#FEC260'>
+              <Tag color='#FEC260' to='/web-framework'>
                 Web Framework
               </Tag>
-              <Tag color='#F15A24'>
+              <Tag color='#F15A24' to='/language'>
                 Programming Languages
               </Tag>
-              <Tag color='#F87C00'>
+              <Tag color='#F87C00' to='/low-code'>
                 Lowcode Development Tools
               </Tag>
             </Box>
