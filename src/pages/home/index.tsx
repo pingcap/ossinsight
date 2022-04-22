@@ -72,7 +72,7 @@ export default function Home() {
               <Span sx={{color: '#E30C34', mx: 0.5}}>
                 {formatHugeNumber(4300000000)}
               </Span>
-              GitHub events
+              GitHub Events
             </Typography>
             <Typography variant='h1' sx={{fontSize: 80}}>
               Open Source Software
