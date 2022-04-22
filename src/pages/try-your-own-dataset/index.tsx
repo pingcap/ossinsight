@@ -71,7 +71,7 @@ export default function Page() {
             buttonText='details'
             buttonLink='https://en.pingcap.com/blog/build-a-real-time-analytics-application-with-tidb-cloud/'
             readMore='https://en.pingcap.com/customers/'
-            tags={['Real-time analytics', 'Proliferate data'}
+            tags={['Real-time analytics', 'Proliferate data']}
             elevation={0}
             cardSx={{backgroundColor: 'action.hover'}}
           />
