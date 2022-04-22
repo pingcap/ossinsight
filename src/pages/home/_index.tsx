@@ -101,7 +101,9 @@ export default function Home() {
             </Typography>
             <Typography variant='body2' sx={{fontSize: 20, color: '#C4C4C4', mt: 14}}>
               Powered by
-              <Logo src='/img/tidb_cloud.png' width={108} height={24} alt='TiDB Cloud' />
+              <a href="https://en.pingcap.com/tidb-cloud/" target="_blank">
+                <Logo src='/img/tidb_cloud.png' width={108} height={24} alt='TiDB Cloud' />
+              </a>
             </Typography>
           </Item>
           <Item sx={{flex: 0.618}} style={{fontSize: 80}}>
