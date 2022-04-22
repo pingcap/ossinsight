@@ -1,5 +1,5 @@
 ---
-title: Difference Between MySQL Compatible Databaases ...
+title: Difference Between MySQL Compatible Databases ...
 ---
 
 
