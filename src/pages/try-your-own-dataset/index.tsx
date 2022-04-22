@@ -5,6 +5,7 @@ import Section from "../../components/Section";
 import Card from "@mui/material/Card";
 import {Cards, StandardCard} from "../../components/Cards";
 import Button from "@mui/material/Button";
+import Link from "@docusaurus/Link";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import Image from "../../components/Image";
 import Footer from "../../components/Footer";
@@ -53,7 +54,7 @@ export default function Page() {
               link='https://ossinsight.io/blog/try-it-yourself/#analysis'
             />
           </Cards>
-          <Button component='a' startIcon={<ArrowRightIcon />} variant='contained' sx={{':hover': {color: '#ffffff'}}}>
+          <Button component='a' startIcon={<ArrowRightIcon />} variant='contained' sx={{':hover': {color: '#ffffff'}}} href="/blog/try-it-yourself/">
             Tutorial
           </Button>
         </Card>
@@ -77,7 +78,7 @@ export default function Page() {
           />
         </Cards>
         <div style={{textAlign: 'center'}}>
-          <Button component='a' startIcon={<ArrowRightIcon />} variant='contained' sx={{':hover': {color: '#ffffff'}}}>
+          <Button component='a' startIcon={<ArrowRightIcon />} variant='contained' sx={{':hover': {color: '#ffffff'}}} href="https://en.pingcap.com/blog/">
             explore other cases
           </Button>
         </div>
