@@ -7,6 +7,7 @@ import Button from "@mui/material/Button";
 import Chip from "@mui/material/Chip";
 import Box from "@mui/material/Box";
 import ButtonBase from '@mui/material/ButtonBase';
+import Link from "@docusaurus/Link";
 
 export interface StandardCardProps extends Omit<GridProps<any, any>, 'item' | 'container'> {
   title: React.ReactNode
@@ -20,6 +21,7 @@ export interface StandardCardProps extends Omit<GridProps<any, any>, 'item' | 'c
   cardSx?: CardProps['sx']
   tags?: string[]
   link?: string
+  top?: React.ReactNode
 }
 
 function withClickable(children: React.ReactNode, {
@@ -52,7 +54,7 @@ function withClickable(children: React.ReactNode, {
           target='_blank'
           sx={{
             textAlign: 'left',
-            p: 2,
+            p: 4,
             display: 'block',
             '&:hover': {
               textDecoration: 'none',
@@ -67,7 +69,7 @@ function withClickable(children: React.ReactNode, {
   } else {
     return (
       <Card
-        sx={{userSelect: 'none', p: 2, ...cardSx}}
+        sx={{userSelect: 'none', p: 4, ...cardSx}}
         elevation={elevation ?? 3}
       >
         {children}
@@ -88,6 +90,7 @@ export default function StandardCard({
   cardSx,
   tags,
   link,
+  top,
   ...props
 }: StandardCardProps) {
   const children = (
@@ -128,7 +131,7 @@ export default function StandardCard({
         ) : undefined}
       {readMore
         ? (
-          <Button size='small' variant='text' component='a' href={readMore} target='_blank'>
+          <Button size='small' variant='text' component={Link} to={readMore}>
             {buttonText}
           </Button>
         ) : undefined}
@@ -137,6 +140,7 @@ export default function StandardCard({
 
   return (
     <Grid item {...props}>
+      {top}
       {withClickable(children, {link, elevation, cardSx})}
     </Grid>
   )

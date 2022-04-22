@@ -31,7 +31,7 @@ export default function Cards({xs, sm, md, lg, xl, children, ...props}: PropsWit
   }, [xs, sm, md, lg, xl])
 
   return (
-    <Grid container spacing={2} {...props}>
+    <Grid container spacing={8} {...props}>
       {withDefaultSizes(children, sizeProps)}
     </Grid>
   )

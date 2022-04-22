@@ -1,7 +1,7 @@
 .wordcloud-element {
-    color: rgb(37, 193, 159, 0.3) !important;
+    color: #E9EAEE30 !important;
 }
 .wordcloud-element:hover {
     text-decoration: none;
-    color: rgba(37, 193, 159, 1) !important;
+    color: #E9EAEE !important;
 }

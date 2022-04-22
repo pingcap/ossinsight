@@ -51,11 +51,9 @@ You should have the following software and packages installed:
 
 Note: It is recommended to use pip3 to install packages, such as SQLAlchemy. We also suggest NOT to use the Mac application version for Metabase. It is gradually being phased out. You may use the jar version instead.
 
-<div style="background:#2c2c2c; color:#FEC260">
-
+:::info
 ** We recomand you Start with [TiDB Cloud Documentation](https://docs.pingcap.com/tidbcloud/) and finish this [10-minute tutorial](https://ossinsight.io/blog/try-it-yourself/) first.**
-
-</div>
+:::
 
 ## 1. Create a dashboard.
 
@@ -101,9 +99,6 @@ The result will now appear on the dashboard.
 2. Number of new packages per day (line chart):
 `SELECT DATE(start_time), count(*) `
 
-<br>
-<div style="background:#2c2c2c; color:#FEC260">
-
+:::info
 [Try your own dataset!](/try-your-own-dataset/)
-
-</div> 
+:::
