@@ -61,7 +61,7 @@ export default function Page() {
       <Section
         title='You can do more than Github insight 🤔'
         subtitle='For real-time analytical, highly concurrent, and low-latency scenarios with massive data.'
-      
+      >
         <Cards xs={12} md={6} sx={{my: 4}}>
           <StandardCard
             title='Build your dashboards in Logistics Industry with Metabase'
