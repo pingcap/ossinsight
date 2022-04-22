@@ -16,20 +16,18 @@ export default function Page() {
     <CustomPage title={title}>
       <Section>
         <Typography variant='h1' sx={{mb: 8}}>{title}</Typography>
-        <Typography variant='body1' sx={{mb: 1}}>
-          How about start with our tutorial below
-        </Typography>
         <Card sx={{px: 8, py: 4}}>
           <Typography variant='h3' component='h2'>
             ▶️ Use TiDB Cloud to Analyze GitHub Events in 10 Minutes
           </Typography>
-          <Cards xs={12} md={6} sx={{my: 4}}>
+          <Cards xs={12} md={6} sx={{my: 4}} spacing={4}>
             <StandardCard
               title='Step 1   Sign up (Free) '
               description='Sign up / Log in a TiDB Cloud account to start your journey'
               codeStyleDescription={false}
               elevation={0}
               cardSx={{backgroundColor: 'action.hover'}}
+              link='https://www.baidu.com'
             />
             <StandardCard
               title='Step 2   Create cluster (Free)'
@@ -37,6 +35,7 @@ export default function Page() {
               codeStyleDescription={false}
               elevation={0}
               cardSx={{backgroundColor: 'action.hover'}}
+              link='https://www.baidu.com'
             />
             <StandardCard
               title='Step 3   Import data'
@@ -44,6 +43,7 @@ export default function Page() {
               codeStyleDescription={false}
               elevation={0}
               cardSx={{backgroundColor: 'action.hover'}}
+              link='https://www.baidu.com'
             />
             <StandardCard
               title='Step 4   Analysis !'
@@ -51,6 +51,7 @@ export default function Page() {
               codeStyleDescription={false}
               elevation={0}
               cardSx={{backgroundColor: 'action.hover'}}
+              link='https://www.baidu.com'
             />
           </Cards>
           <Button component='a' startIcon={<ArrowRightIcon />} variant='contained' sx={{':hover': {color: '#ffffff'}}}>

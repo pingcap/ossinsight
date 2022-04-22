@@ -17,6 +17,7 @@ import Image from "../../components/Image";
 import AspectRatio from "react-aspect-ratio";
 import CompareHeader from "../../components/CompareHeader/CompareHeader";
 import Button from "@mui/material/Button";
+import Container from "@mui/material/Container";
 
 const Item = styled(Box)(({theme}) => ({
   padding: theme.spacing(4),
@@ -29,6 +30,10 @@ const Logo = styled('img')(({theme}) => ({
   verticalAlign: 'text-bottom',
   marginLeft: theme.spacing(1),
 }))
+
+const formatHugeNumber = (x: number) => {
+  return x.toLocaleString("en")
+}
 
 export default function Home() {
   const {siteConfig} = useDocusaurusContext();
@@ -65,11 +70,9 @@ export default function Home() {
             >
               Get insights from
               <Span sx={{color: '#E30C34', mx: 0.5}}>
-                {4300000000} GitHub events
+                {formatHugeNumber(4300000000)}
               </Span>
-              <Span sx={{color: '#FFE895', mx: 0.5}}>
-                {`{ update：${1} min ago }`}
-              </Span>
+              GitHub events
             </Typography>
             <Typography variant='h1' sx={{fontSize: 80}}>
               Open Source Software
@@ -156,7 +159,7 @@ export default function Home() {
                 onRepo2Change={setRepo2}
                 onRepo1Valid={onRepo1Valid}
                 onRepo2Valid={onRepo2Valid}
-                sx={{ backgroundColor: 'transparent', flex: 1, borderBottom: 'none' }}
+                sx={{backgroundColor: 'transparent', flex: 1, borderBottom: 'none'}}
               />
               <Button variant='contained'>
                 go!
@@ -171,7 +174,9 @@ export default function Home() {
         </Stack>
       </Section>
       <Section darker>
-        <TopList period={period} onPeriodChange={setPeriod} />
+        <Container maxWidth='lg'>
+          <TopList period={period} onPeriodChange={setPeriod} />
+        </Container>
       </Section>
     </CustomPage>
   );
