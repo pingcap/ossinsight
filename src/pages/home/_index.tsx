@@ -22,10 +22,14 @@ import {useRemoteData} from "../../components/RemoteCharts/hook";
 import Skeleton from "@mui/material/Skeleton";
 import {Repo} from "../../components/CompareHeader/RepoSelector";
 import Link from "@docusaurus/Link";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 const Item = styled(Box)(({theme}) => ({
   padding: theme.spacing(4),
-  flex: 1
+  flex: 1,
+  [theme.breakpoints.down('md')]: {
+    width: '100%'
+  }
 }))
 
 const Span = (props: TypographyProps) => <Typography {...props} component='span' display='inline' variant='inherit' />
@@ -38,6 +42,8 @@ const Logo = styled('img')(({theme}) => ({
 const formatHugeNumber = (x: number) => {
   return x.toLocaleString("en")
 }
+
+const stackDirection = {xs: 'column', md: 'row'} as const
 
 export default function Home() {
   const {siteConfig} = useDocusaurusContext();
@@ -78,16 +84,22 @@ export default function Home() {
       <Section>
         <Stack
           divider={<Divider orientation="vertical" flexItem />}
-          direction='row'
+          direction={stackDirection}
         >
-          <Item sx={{textAlign: 'right'}}>
+          <Item sx={theme => ({
+            textAlign: 'right',
+            [theme.breakpoints.down('md')]: {
+              textAlign: 'left'
+            }
+          })}>
             <Typography
               sx={{color: '#C4C4C4'}}
               fontSize={24}
             >
               Get insights from
               <Span sx={{color: '#E30C34', mx: 0.5}}>
-                {totalEventsData ? (formatHugeNumber(totalEventsData.data[0].cnt)) : <Skeleton sx={{display: 'inline-block', minWidth: '150px'}}/>}
+                {totalEventsData ? (formatHugeNumber(totalEventsData.data[0].cnt)) :
+                  <Skeleton sx={{display: 'inline-block', minWidth: '150px'}} />}
               </Span>
               GitHub Events
             </Typography>
@@ -106,15 +118,15 @@ export default function Home() {
               </a>
             </Typography>
           </Item>
-          <Item sx={{flex: 0.618}} style={{fontSize: 80}}>
-            <WordCloud period='last_hour'>
+          <Item sx={{flex: 0.618, fontSize: 80}}>
+            <WordCloud period='last_hour' style={{minHeight: 200}}>
               <span></span>
             </WordCloud>
           </Item>
         </Stack>
       </Section>
       <Section darker>
-        <Stack direction='row' alignItems='center'>
+        <Stack direction={stackDirection} alignItems='center'>
           <Item>
             <Typography variant='h1' style={{fontSize: 48}}>
               Historical / real-time
@@ -154,7 +166,7 @@ export default function Home() {
         </Stack>
       </Section>
       <Section>
-        <Stack direction='row' alignItems='center'>
+        <Stack direction={stackDirection} alignItems='center'>
           <Item>
             <Typography variant='h1' style={{fontSize: 48}}>
               Visually & Comprehensive
@@ -170,7 +182,18 @@ export default function Home() {
               <br />
               and in which <b>regions</b> or <b>companies</b> are they located.
             </Typography>
-            <Box sx={{mt: 3, display: 'flex', alignItems: 'center', gap: 2}}>
+            <Box sx={theme => ({
+              mt: 3,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 2,
+              [theme.breakpoints.down('md')]: {
+                flexDirection: 'column',
+                '> *': {
+                  width: '100%'
+                }
+              }
+            })}>
               <CompareHeader
                 repo1={repo1}
                 repo2={repo2}
