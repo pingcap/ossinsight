@@ -14,7 +14,7 @@ const title = '👏 Try Your Own Dataset ! '
 export default function Page() {
   return (
     <CustomPage title={title}>
-      <Typography variant='h1' sx={{mb: 5, mt: 5}} align='center'>{title}</Typography>
+      <Typography variant='h1' sx={{mb: 4, mt: 6}} align='center'>{title}</Typography>
       <Section
         title='Use TiDB Cloud to Analyze GitHub Events in 5 Minutes'
       >
