@@ -9,12 +9,12 @@ import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import Image from "../../components/Image";
 import Footer from "../../components/Footer";
 
-const title = '👏Get insights from your own dataset! '
+const title = '👏 Get insights from your own dataset ! '
 
 export default function Page() {
   return (
     <CustomPage title={title}>
-      <Typography variant='h1' sx={{mb: 8}}>{title}</Typography>
+      <Typography variant='h2' sx={{mb: 8}}>{title}</Typography>
       <Section
         title='Use TiDB Cloud to Analyze GitHub Events in 10 Minutes'
       >
@@ -60,8 +60,8 @@ export default function Page() {
       </Section>
       <Section
         title='You can do more than Github insight 🤔'
-        subtitle='For real-time analytics / massive volumes of data / high concurrency / low latency scenarios'
-      >
+        subtitle='For real-time analytical, highly concurrent, and low-latency scenarios with massive data.'
+      
         <Cards xs={12} md={6} sx={{my: 4}}>
           <StandardCard
             title='Build your dashboards in Logistics Industry with Metabase'
@@ -70,7 +70,7 @@ export default function Page() {
             image={<Image src={require('./image-1.png').default} />}
             buttonText='details'
             link='https://en.pingcap.com/blog/build-a-real-time-analytics-application-with-tidb-cloud/'
-            readMore='https://en.pingcap.com/customers/'
+            readMore='https://en.pingcap.com/blog/build-a-real-time-analytics-application-with-tidb-cloud/'
             tags={['Real-time analytics', 'Proliferate data']}
             elevation={0}
             cardSx={{backgroundColor: 'action.hover'}}
