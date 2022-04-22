@@ -4,15 +4,14 @@ import useThemeContext from '@theme/hooks/useThemeContext';
 import ThemeProvider from "@mui/system/ThemeProvider";
 import GroupSelectContext from "../GroupSelect/GroupSelectContext";
 
-const ThemeAdaptor = ({children}: PropsWithChildren<any>) => {
+const ThemeAdaptor = ({children, dark}: PropsWithChildren<{ dark?: boolean }>) => {
   const {isDarkTheme} = useThemeContext();
   const theme = createTheme({
     palette: {
-      mode: isDarkTheme ? 'dark' : undefined,
+      mode: (dark ?? isDarkTheme) ? 'dark' : undefined,
       primary: {
-        main: 'rgb(37, 193, 159)',
-        contrastText: '#ffffff',
-        dark: 'rgb(49,217,179)',
+        main: '#FFE895',
+        contrastText: '#1C1E21',
       }
     },
     typography: {
