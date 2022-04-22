@@ -98,7 +98,3 @@ The result will now appear on the dashboard.
 
 2. Number of new packages per day (line chart):
 `SELECT DATE(start_time), count(*) `
-
-:::info
-[Try your own dataset!](/try-your-own-dataset/)
-:::
