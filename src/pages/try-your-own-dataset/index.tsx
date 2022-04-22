@@ -67,43 +67,7 @@ export default function Page() {
             title='Build your dashboards in Metabase'
             description='Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor'
             codeStyleDescription={false}
-            image={<Image src={require('./images/image-1.png').default} />}
-            buttonText='details'
-            buttonLink='https://www.baidu.com/'
-            readMore='https://www.baidu.com/'
-            tags={['tag1', 'tag2']}
-            elevation={0}
-            cardSx={{backgroundColor: 'action.hover'}}
-          />
-          <StandardCard
-            title='Build your dashboards in Metabase'
-            description='Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor'
-            codeStyleDescription={false}
-            image={<Image src={require('./images/image-1.png').default} />}
-            buttonText='details'
-            buttonLink='https://www.baidu.com/'
-            readMore='https://www.baidu.com/'
-            tags={['tag1', 'tag2']}
-            elevation={0}
-            cardSx={{backgroundColor: 'action.hover'}}
-          />
-          <StandardCard
-            title='Build your dashboards in Metabase'
-            description='Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor'
-            codeStyleDescription={false}
-            image={<Image src={require('./images/image-1.png').default} />}
-            buttonText='details'
-            buttonLink='https://www.baidu.com/'
-            readMore='https://www.baidu.com/'
-            tags={['tag1', 'tag2']}
-            elevation={0}
-            cardSx={{backgroundColor: 'action.hover'}}
-          />
-          <StandardCard
-            title='Build your dashboards in Metabase'
-            description='Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor'
-            codeStyleDescription={false}
-            image={<Image src={require('./images/image-1.png').default} />}
+            image={<Image src={require('./image-1.png').default} />}
             buttonText='details'
             buttonLink='https://www.baidu.com/'
             readMore='https://www.baidu.com/'
