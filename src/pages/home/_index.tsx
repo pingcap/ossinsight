@@ -96,7 +96,7 @@ export default function Home() {
               <br />
               <Span sx={{color: '#FFE895'}}>
                 <VisibilityOutlinedIcon fontSize='inherit' sx={{verticalAlign: 'text-bottom'}} />
-                Insight
+                &nbsp;Insight
               </Span>
             </Typography>
             <Typography variant='body2' sx={{fontSize: 20, color: '#C4C4C4', mt: 14}}>
