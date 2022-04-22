@@ -7,6 +7,7 @@ import Button from "@mui/material/Button";
 import Chip from "@mui/material/Chip";
 import Box from "@mui/material/Box";
 import ButtonBase from '@mui/material/ButtonBase';
+import Link from "@docusaurus/Link";
 
 export interface StandardCardProps extends Omit<GridProps<any, any>, 'item' | 'container'> {
   title: React.ReactNode
@@ -130,7 +131,7 @@ export default function StandardCard({
         ) : undefined}
       {readMore
         ? (
-          <Button size='small' variant='text' component='a' href={readMore} target='_blank'>
+          <Button size='small' variant='text' component={Link} to={readMore}>
             {buttonText}
           </Button>
         ) : undefined}

@@ -25,21 +25,21 @@ export default function Footer() {
             title='Data Preparation for Analytics'
             description='March 22, 2022 · 5 min read'
             codeStyleDescription={false}
-            readMore='https://www.baidu.com'
+            readMore='/blog/how-it-works'
             top={icon(require('./icon-1.png').default)}
           />
           <StandardCard
             title='What is TiDB Cloud'
             description='March 22, 2022 · 5 min read'
             codeStyleDescription={false}
-            readMore='https://www.baidu.com'
+            readMore='https://docs.pingcap.com/tidbcloud'
             top={icon(require('./icon-2.png').default)}
           />
           <StandardCard
             title='Use TiDB Cloud to Analyze GitHub Events in 10 Minutes'
             description='March 22, 2022 · 5 min read'
             codeStyleDescription={false}
-            readMore='https://www.baidu.com'
+            readMore='/blog/try-it-yourself'
             top={icon(require('./icon-3.png').default)}
           />
         </Cards>
