@@ -111,20 +111,24 @@ const config = {
             title: 'OSS Insight',
             items: [
               {
-                label: 'Blog',
-                to: '/blog',
-              },
-              {
                 label: 'Insight',
                 to: '/database/realtime',
               },
               {
-                label: 'Try it yourself',
-                to: '/blog/try-it-yourself/',
+                label: 'Compare Projects',
+                to: '/compare/',
+              },
+              {
+                label: 'Try Your Own Dataset',
+                to: '/try-your-own-dataset/',
               },
               {
                 label: 'How It Works',
                 to: '/blog/how-it-works',
+              },
+              {
+                label: 'About',
+                to: '/about',
               },
             ],
           },
