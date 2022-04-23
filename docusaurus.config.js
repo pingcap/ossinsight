@@ -82,7 +82,6 @@ const config = {
         },
         style: 'dark',
         items: [
-          {to: '/blog/about', label: 'About', position: 'left'},
           {
             type: 'doc',
             docId: 'database/realtime',
@@ -92,6 +91,7 @@ const config = {
           {to: '/compare', label: 'Compare Projects', position: 'left'},
           {to: '/try-your-own-dataset/', label: '🔧 Try Your Own Dataset', position: 'left'},
           {to: '/blog/how-it-works', label: 'How It Works', position: 'left'},
+          {to: '/about', label: 'About', position: 'left'},
           {
             href: 'https://tidbcloud.com',
             label: 'Sign In',
