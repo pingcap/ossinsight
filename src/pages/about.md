@@ -1,10 +1,4 @@
----
-title: About US
-authors: pingcap
----
-
-
-### Who we are
+## PingCAP
 
 PingCAP started in 2015 when three seasoned infrastructure engineers were sick and tired of the way databases were managed, scaled, and maintained while working at leading Internet companies.
 
@@ -14,3 +8,6 @@ With the help of a first-class team, and hundreds of contributors from around th
 
 [Learn more about PingCAP](https://pingcap.com/about-us/)
 
+## Contact
+
+ossinsight@pingcap.com
