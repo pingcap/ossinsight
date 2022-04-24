@@ -19,7 +19,7 @@ export default function TryItYourself({show = true, campaign, fixed = false}: Tr
 
   const link = useAdsLink('/blog/try-it-yourself', 'utm_campaign', campaign)
 
-  const responsiveSx: SxProps = useMemo(() => {
+  const _sx: SxProps = useMemo(() => {
     if (fixed) {
       return [
         {
@@ -53,11 +53,11 @@ export default function TryItYourself({show = true, campaign, fixed = false}: Tr
   }, [fixed])
 
   const sx = useMemo(() => {
-    return combineSx(responsiveSx, {
+    return combineSx(_sx, {
       backgroundColor: '#2c2c2c',
       p: 2
     })
-  }, [responsiveSx])
+  }, [_sx])
 
   if (!display) {
     return <></>
