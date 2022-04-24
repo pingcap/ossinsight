@@ -25,8 +25,8 @@ export default function Page() {
         <Card sx={{px: 8, py: 4}}>
           <Cards xs={12} md={6} sx={{my: 4}} spacing={4}>
             <StandardCard
-              title='Step 1: Sign up (Free) '
-              description='Sign up / Log in a TiDB Cloud account to start your journey'
+              title='Step 1: Sign up TiDB Cloud (Free) '
+              description='Sign up a TiDB Cloud account for free, no need to add credit card'
               codeStyleDescription={false}
               elevation={0}
               cardSx={{backgroundColor: 'action.hover'}}
@@ -34,7 +34,7 @@ export default function Page() {
             />
             <StandardCard
               title='Step 2: Create cluster (Free)'
-              description='You can create a free cluster with TiDB Developer Tier'
+              description='Create cluster with TiDB Cloud Dev Tier, it is free for one year ⏰ !'
               codeStyleDescription={false}
               elevation={0}
               cardSx={{backgroundColor: 'action.hover'}}
@@ -42,15 +42,15 @@ export default function Page() {
             />
             <StandardCard
               title='Step 3: Import data'
-              description='You can import the sample data to your TiDB Cloud cluster'
+              description='Import the sample data to your TiDB Cloud cluster, this dataset records what happend in the first hour of 2022'
               codeStyleDescription={false}
               elevation={0}
               cardSx={{backgroundColor: 'action.hover'}}
               link='https://ossinsight.io/blog/try-it-yourself/#import-data-to-your-tidb-cloud-cluster'
             />
             <StandardCard
-              title='Step 4: Analysis !'
-              description='Enjoy your analysis after finish all the steps above'
+              title='Step 4: Analyze with SQL !'
+              description='Use the sample SQL to see what happened in the first hour of 2022'
               codeStyleDescription={false}
               elevation={0}
               cardSx={{backgroundColor: 'action.hover'}}
