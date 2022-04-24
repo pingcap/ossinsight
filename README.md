@@ -19,7 +19,7 @@
 OSS Insight analyze billions of GitHub events and get insights from them, also provide a compare tool which can compare any two open source software hosted on GitHub deeply.
 </p>
 
-## Insights
+## 👁️ Insights
 * [Deep Insight Into Open Source Databases](https://ossinsight.io/database/deep-insight-into-open-source-databases)
 * [JavaScript Framework Repos Landscape 2021](https://ossinsight.io/js-framework/deep-insight-into-js-framework-2021)
 * [Web Framework Repos Landscape 2021](https://ossinsight.io/web-framework/deep-insight-about-web-framework-2021)
@@ -28,7 +28,7 @@ OSS Insight analyze billions of GitHub events and get insights from them, also p
 
 If you want to analyze more, please [contact us](https://ossinsight.io/about/#contact)
 
-## Compare Projects
+## 🔨 Compare Projects
 
 Examples:
 * [Compare Vue and React](https://ossinsight.io/compare?repo1=vuejs%2Fvue&repo2=facebook%2Freact)
