@@ -78,7 +78,7 @@ export default function Page() {
           />
         </Cards>
         <div style={{textAlign: 'center'}}>
-          <Button component='a' startIcon={<ArrowRightIcon />} variant='contained' sx={{':hover': {color: '#ffffff'}}} href="https://en.pingcap.com/blog/">
+          <Button component='a' startIcon={<ArrowRightIcon />} variant='contained' sx={{':hover': {color: '#ffffff'}}} href="https://en.pingcap.com/customers/">
             explore other cases
           </Button>
         </div>
