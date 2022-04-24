@@ -23,7 +23,7 @@ OSS Insight analyze billions of GitHub events and get insights from them, also p
 
 Prepare the environment by:
 
-```
+```bash
 cd ossinsight/;
 yarn;
 yarn start;
