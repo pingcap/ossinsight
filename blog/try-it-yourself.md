@@ -6,7 +6,7 @@ title: ▶️  Use TiDB Cloud to Analyze GitHub Events in 10 Minutes
 
 **[TiDB Cloud](https://docs.pingcap.com/tidbcloud/public-preview) is a fully-managed Database-as-a-Service (DBaaS)** that brings everything great about TiDB to your cloud and lets you focus on your applications, not the complexities of your database. 
 
-In this tutorial, we will provide you with a piece of sample data of all GitHub events occurring on January 1, 2022, and walk you through on how to use TiDB Cloud to analyze this data in 10 minutes.  
+In this tutorial, we will provide you with a piece of sample data of all GitHub events occurring on January 1, 2022, and walk you through on how to use TiDB Cloud to analyze this data in 5 minutes.  
 
 ## Sign up for a TiDB Cloud account (Free)
 
