@@ -80,8 +80,22 @@ export default function Page() {
             cardSx={{backgroundColor: 'action.hover'}}
           />
         </Cards>
+        <Cards xs={12} md={6} sx={{my: 4}}>
+          <StandardCard
+            title='Build a Real-time Dashboard for Promotions in Automobile Industry'
+            description='In this case, the dashboard is refresh QPS needs to be very real-time. Using analytic databases exclusively is too costly for the business. Using lighter analysis tools and finding techniques that can be maintained quickly become important solutions for this typical scenario.'
+            codeStyleDescription={false}
+            image={<Image src={require('./image-2.png').default} />}
+            buttonText='details'
+            link='https://en.pingcap.com/case-study/reduce-real-time-query-latency-from-0-5s-to-0-01s-with-scale-out-htap-database/?utm_source=ossinsight'
+            readMore='https://en.pingcap.com/case-study/reduce-real-time-query-latency-from-0-5s-to-0-01s-with-scale-out-htap-database/?utm_source=ossinsight'
+            tags={['High availability','No sharding','Real-time analytics','Scalability','HTAP'}
+            elevation={0}
+            cardSx={{backgroundColor: 'action.hover'}}
+          />
+        </Cards>
         <div style={{textAlign: 'center'}}>
-          <Button component='a' startIcon={<ArrowRightIcon />} variant='contained' sx={{':hover': {color: '#ffffff'}}} href="https://en.pingcap.com/customers/">
+          <Button component='a' startIcon={<ArrowRightIcon />} variant='contained' sx={{':hover': {color: '#ffffff'}}} href="https://en.pingcap.com/customers/?utm_source=ossinsight">
             explore other cases
           </Button>
         </div>
