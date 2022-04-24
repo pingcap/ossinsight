@@ -91,6 +91,18 @@ export default function Page() {
             elevation={0}
             cardSx={{backgroundColor: 'action.hover'}}
           />
+          <StandardCard
+            title='Support the cross-platform real-time advertising system in Gaming Industry'
+            description='GaeaAD conducts a real-time analysis based on the data of the advertisements on different advertising channels and the amount of players brought by the corresponding channels, with the purpose of displaying and optimizing the conversion effects of advertising within minutes.'
+            codeStyleDescription={false}
+            image={<Image src={require('./image-3.png').default} />}
+            buttonText='details'
+            link='https://en.pingcap.com/case-study/comparison-between-mysql-and-tidb-with-tens-of-millions-of-data-per-day/?utm_source=ossinsight'
+            readMore='https://en.pingcap.com/case-study/comparison-between-mysql-and-tidb-with-tens-of-millions-of-data-per-day/?utm_source=ossinsight'
+            tags={['MySQL','Scalability']}
+            elevation={0}
+            cardSx={{backgroundColor: 'action.hover'}}
+          />
         </Cards>
         <div style={{textAlign: 'center'}}>
           <Button component='a' startIcon={<ArrowRightIcon />} variant='contained' sx={{':hover': {color: '#ffffff'}}} href="https://en.pingcap.com/customers/?utm_source=ossinsight">
