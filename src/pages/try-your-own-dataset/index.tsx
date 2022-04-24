@@ -17,7 +17,7 @@ export default function Page() {
   return (
     <CustomPage title={title}>
       <Container maxWidth='xl'>
-        <Typography variant='h1' sx={{mb: 4, mt: 6}} align='center'>{title}</Typography>
+        <Typography variant='h1' sx={{mb: 2, mt: 8}} align='center'>{title}</Typography>
       </Container>
       <Section
         title='Use TiDB Cloud to Analyze GitHub Events in 5 Minutes'
