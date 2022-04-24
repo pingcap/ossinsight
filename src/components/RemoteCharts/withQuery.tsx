@@ -65,7 +65,7 @@ export function renderChart (query, chart, {error, data}: AsyncData<RemoteData<a
       <ChartWithSql sql={data?.sql}>
         <div style={{position: 'relative'}}>
           {chart}
-          <Fab size='small' sx={{position: 'absolute', zIndex: 10, right: 24, bottom: 24, zIndex: 2}}
+          <Fab size='small' sx={{position: 'absolute', right: 24, bottom: 24, zIndex: 'var(--ifm-z-index-fixed-mui)'}}
                onClick={handleShowDebugModel} disabled={!data}>
             <HelpOutlineIcon />
           </Fab>

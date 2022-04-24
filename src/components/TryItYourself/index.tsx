@@ -26,7 +26,7 @@ export default function TryItYourself({show = true, campaign, fixed = false}: Tr
           p: 2,
           right: 2,
           bottom: 8,
-          zIndex: 3
+          zIndex: 'var(--ifm-z-index-fixed-mui)'
         },
         responsiveSx(
           theme => ({
