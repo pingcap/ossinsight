@@ -30,9 +30,12 @@ OSS Insight analyze billions of GitHub events and get insights from them, also p
 
 Examples:
 * [Compare Vue and React](https://ossinsight.io/compare?repo1=vuejs%2Fvue&repo2=facebook%2Freact)
-* [Compare gohugoio/hugo and facebook/docusaurus](https://ossinsight.io/compare?repo1=gohugoio%2Fhugo&repo2=facebook%2Fdocusaurus)
-* [Compare Cockroach and TiDB](https://ossinsight.io/compare?repo1=pingcap%2Ftidb&repo2=cockroachdb%2Fcockroach)
-* [Compare pytorch/pytorch and tensorflow/tensorflow](https://ossinsight.io/compare?repo1=pytorch%2Fpytorch&repo2=tensorflow%2Ftensorflow)
+* [Compare Hugo and Docusaurus](https://ossinsight.io/compare?repo1=gohugoio%2Fhugo&repo2=facebook%2Fdocusaurus)
+* [Compare CockroachDB and TiDB](https://ossinsight.io/compare?repo1=pingcap%2Ftidb&repo2=cockroachdb%2Fcockroach)
+* [Compare PyTorch and TensorFlow](https://ossinsight.io/compare?repo1=pytorch%2Fpytorch&repo2=tensorflow%2Ftensorflow)
+* [Compare Django and Flask](https://ossinsight.io/compare?repo1=django%2Fdjango&repo2=pallets%2Fflask)
+* [Compare Visual Studio Code and Atom](https://ossinsight.io/compare?repo1=microsoft%2Fvscode&repo2=atom%2Fatom)
+* [Compare Go and Rust](https://ossinsight.io/compare?repo1=golang%2Fgo&repo2=rust-lang%2Frust)
 
 ## Development
 
