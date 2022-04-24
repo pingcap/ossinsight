@@ -39,6 +39,7 @@ Examples:
 * [Compare Go and Rust](https://ossinsight.io/compare?repo1=golang%2Fgo&repo2=rust-lang%2Frust)
 * [Compare Spark and Flink](https://ossinsight.io/compare?repo1=apache%2Fspark&repo2=apache%2Fflink)
 * [Compare Ant Design and Material-UI](https://ossinsight.io/compare?repo1=ant-design%2Fant-design&repo2=mui%2Fmaterial-ui)
+* [Compare Chaos Mesh and Chaosblade](https://ossinsight.io/compare?repo1=chaos-mesh%2Fchaos-mesh&repo2=chaosblade-io%2Fchaosblade)
 
 ## Development
 
