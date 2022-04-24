@@ -37,6 +37,8 @@ Examples:
 * [Compare Django and Flask](https://ossinsight.io/compare?repo1=django%2Fdjango&repo2=pallets%2Fflask)
 * [Compare Visual Studio Code and Atom](https://ossinsight.io/compare?repo1=microsoft%2Fvscode&repo2=atom%2Fatom)
 * [Compare Go and Rust](https://ossinsight.io/compare?repo1=golang%2Fgo&repo2=rust-lang%2Frust)
+* [Compare Spark and Flink](https://ossinsight.io/compare?repo1=apache%2Fspark&repo2=apache%2Fflink)
+* [Compare Ant Design and Material-UI](https://ossinsight.io/compare?repo1=ant-design%2Fant-design&repo2=mui%2Fmaterial-ui)
 
 ## Development
 
