@@ -21,7 +21,7 @@ OSS Insight analyze billions of GitHub events and get insights from them, also p
 
 # Development
 
-Prepare the environment:
+Prepare the environment by:
 
 ```
 cd ossinsight/;
@@ -29,4 +29,8 @@ yarn;
 yarn start;
 ```
 
-then visit: http://localhost:3000
+then visit:
+
+```
+http://localhost:3000
+```
