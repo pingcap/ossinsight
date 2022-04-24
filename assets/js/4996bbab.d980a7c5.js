@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkdocus=self.webpackChunkdocus||[]).push([[730],{58588:function(a){a.exports=JSON.parse('{"allTagsPath":"/blog/tags","slug":"/blog/tags/real-time-analytics","name":"Real-time analytics","count":1,"permalink":"/blog/tags/real-time-analytics"}')}}]);
