@@ -93,8 +93,8 @@ const config = {
           {to: '/blog/how-it-works', label: 'How It Works', position: 'left'},
           {to: '/about', label: 'About', position: 'left'},
           {
-            href: 'https://tidbcloud.com',
-            label: 'Sign In',
+            href: 'https://en.pingcap.com/tidb-cloud/',
+            label: 'TiDB Cloud',
             position: 'right',
           },
           {
