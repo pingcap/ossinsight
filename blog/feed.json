@@ -10,7 +10,7 @@
             "url": "https://ossinsight.io/blog/build-a-real-time-analytics-dashboard-in-metabase",
             "title": "Build a Real-time Analytics Dashboard in Logistics Industry with Metabase",
             "summary": "#Real-time analytics",
-            "date_modified": "2022-04-24T10:31:52.453Z"
+            "date_modified": "2022-04-24T10:34:42.374Z"
         },
         {
             "id": "/changelog",
@@ -18,7 +18,7 @@
             "url": "https://ossinsight.io/blog/changelog",
             "title": "Changelog",
             "summary": "2022-03-22",
-            "date_modified": "2022-04-24T10:31:52.453Z"
+            "date_modified": "2022-04-24T10:34:42.374Z"
         },
         {
             "id": "/difference-between-mysql-compatible-databases",
@@ -26,7 +26,7 @@
             "url": "https://ossinsight.io/blog/difference-between-mysql-compatible-databases",
             "title": "Difference Between MySQL Compatible Databases ...",
             "summary": "Contributors",
-            "date_modified": "2022-04-24T10:31:52.453Z"
+            "date_modified": "2022-04-24T10:34:42.374Z"
         },
         {
             "id": "/how-it-works",
@@ -34,7 +34,7 @@
             "url": "https://ossinsight.io/blog/how-it-works",
             "title": "Data Preparation for Analytics",
             "summary": "All the data we use here on this website sources from GH Archive, a non-profit project that records and archives all GitHub events data since 2011. The total data volume archived by GH Archive can be up to 4 billion rows. We download the json file on GH Archive and convert it into csv format via Script, and finally load it into the TiDB cluster in parallel through TiDB-Lightning.",
-            "date_modified": "2022-04-24T10:31:52.453Z"
+            "date_modified": "2022-04-24T10:34:42.374Z"
         },
         {
             "id": "/try-it-yourself",
@@ -42,7 +42,7 @@
             "url": "https://ossinsight.io/blog/try-it-yourself",
             "title": "▶️  Use TiDB Cloud to Analyze GitHub Events in 5 Minutes",
             "summary": "TiDB is an open source distributed NewSQL database with horizontal scalability, high availability, and strong consistency. It can also deal with mixed OLTP and OLAP workloads at the same time by leveraging its hybrid transactional and analytical (HTAP) capability.",
-            "date_modified": "2022-04-24T10:31:52.453Z"
+            "date_modified": "2022-04-24T10:34:42.374Z"
         }
     ]
 }
