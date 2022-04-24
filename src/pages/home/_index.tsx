@@ -136,7 +136,7 @@ export default function Home() {
               in a technical field：
             </Subtitle>
             <Box sx={{display: 'flex', flexWrap: 'wrap', gap: 2, mt: 3}}>
-              <Tag color='#E63E6D' to='/database'>
+              <Tag color='#E63E6D' to='/database/deep-insight-into-open-source-databases'>
                 Database
               </Tag>
               <Tag color='#E30C34' to='/js-framework'>
