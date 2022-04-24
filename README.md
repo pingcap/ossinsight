@@ -63,9 +63,14 @@ then visit: http://localhost:3000
 
 <div align="center">
   <a href="https://en.pingcap.com">
-    <img src="/static/img/pingcap-white-300x79.png" height=30 />
+    <img src="/static/img/pingcap-white-300x79.png" height=50 />
   </a>
+  &nbsp;
+  &nbsp;
+  x
+  &nbsp;
+  &nbsp;
   <a href="https://en.pingcap.com/community">
-    <img src="/static/img/logo.svg" height=30 />
+    <img src="/static/img/logo.svg" height=50 />
   </a>
 </div>
