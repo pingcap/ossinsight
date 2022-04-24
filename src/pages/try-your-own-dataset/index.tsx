@@ -70,8 +70,8 @@ export default function Page() {
             codeStyleDescription={false}
             image={<Image src={require('./image-1.png').default} />}
             buttonText='details'
-            link='https://en.pingcap.com/blog/build-a-real-time-analytics-application-with-tidb-cloud/'
-            readMore='https://en.pingcap.com/blog/build-a-real-time-analytics-application-with-tidb-cloud/'
+            link='https://ossinsight.io/blog/build-a-real-time-analytics-dashboard-in-metabase/'
+            readMore='https://ossinsight.io/blog/build-a-real-time-analytics-dashboard-in-metabase/'
             tags={['Real-time analytics', 'Proliferate data']}
             elevation={0}
             cardSx={{backgroundColor: 'action.hover'}}
