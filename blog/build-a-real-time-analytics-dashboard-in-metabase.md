@@ -1,7 +1,16 @@
-# Build a Real-time Analytics Dashboard in Logistics Industry with Metabase
+---
+title: "Build a Real-time Analytics Dashboard in Logistics Industry with Metabase"
+tags:
+  - Real-time analytics
+  - Proliferate data
+  - Logistics industry
+---
 
-**#Real-time analytics**   **#Proliferate data**
-**#Logistics industry**
+`#Real-time analytics`
+&nbsp;
+`#Proliferate data`
+&nbsp;
+`#Logistics industry`
 
 In this tutorial, you will build a prototype for PingExpress_DemoCorp’s real-time analytics dashboard that runs on a TiDB Cloud Proof-of-Concept (PoC) cluster.
 
