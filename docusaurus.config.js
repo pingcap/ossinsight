@@ -189,10 +189,6 @@ const config = {
                 label: 'YouTube',
                 href: 'https://www.youtube.com/pingcap',
               },
-              {
-                label: 'RSS',
-                to: '/blog/rss.xml',
-              },
             ],
           },
         ],
