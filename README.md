@@ -1,4 +1,4 @@
-# OSS Insight
+<h1 align="center">Open Source Software Insight!</h1>
 
 <a href="https://ossinsight.io">
   <img src="/static/img/screenshots/home.png"
@@ -17,17 +17,16 @@
 
 <p align="center">
 OSS Insight analyze billions of GitHub events and get insights from them, also provide a compare tool which can compare any two open source software hosted on GitHub deeply.
-
-<br />
-
 </p>
 
-# Contribute
+# Development
 
-### Local Development
+Prepare the environment:
 
 ```
 cd ossinsight/;
 yarn;
 yarn start;
 ```
+
+then visit: http://localhost:3000
