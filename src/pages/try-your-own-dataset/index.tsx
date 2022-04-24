@@ -81,13 +81,13 @@ export default function Page() {
           />
           <StandardCard
             title='Build a Real-time Dashboard for Promotions in Automobile Industry'
-            description='In this case, the dashboard is refresh QPS needs to be very real-time. Using analytic databases exclusively is too costly for the business. Using lighter analysis tools and finding techniques that can be maintained quickly become important solutions for this typical scenario.'
+            description='In this case, using lighter analysis tools and finding techniques that can be maintained quickly become important solutions for this typical scenario.'
             codeStyleDescription={false}
             image={<Image src={require('./image-2.png').default} />}
             buttonText='details'
             link='https://en.pingcap.com/case-study/reduce-real-time-query-latency-from-0-5s-to-0-01s-with-scale-out-htap-database/?utm_source=ossinsight'
             readMore='https://en.pingcap.com/case-study/reduce-real-time-query-latency-from-0-5s-to-0-01s-with-scale-out-htap-database/?utm_source=ossinsight'
-            tags={['High availability','No sharding','Real-time analytics','Scalability','HTAP']}
+            tags={['High availability','No sharding','Real-time analytics','Scalability']}
             elevation={0}
             cardSx={{backgroundColor: 'action.hover'}}
           />
