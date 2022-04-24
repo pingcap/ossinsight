@@ -11,7 +11,7 @@
   •
   <a href="https://ossinsight.io/try-your-own-dataset">Try Your Own Dataset</a>
   •
-  <a href="https://ossinsight.io/about/#contact">Contacts</a>
+  <a href="https://twitter.com/PingCAP">Twitter</a>
 </h3>
 
 
