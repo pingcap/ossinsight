@@ -131,7 +131,7 @@ export default function Home() {
               </H2Plus>
             </H2>
             <Subtitle>
-              Explore the <b>Popularity & Activity trends</b>
+              Explore the <b>Popularity & Activity</b> trends
               <br />
               in a technical field：
             </Subtitle>
@@ -171,11 +171,11 @@ export default function Home() {
               </H2Plus>
             </H2>
             <Subtitle>
-              Track <b>the code activity & community metrics</b>.
+              Track the code <b>activity & community metrics</b>.
               <br />
               Find out who is participating,
               <br />
-              and in which <b>regions</b> or <b>companies</b> are they located.
+              and in which regions or companies are they located.
             </Subtitle>
             <Box sx={theme => ({
               mt: 3,
