@@ -45,7 +45,7 @@ export default function Footer() {
           />
         </Cards>
         <Box textAlign='center' sx={{fontSize: 24, mt: 6}}>
-          Now, how about
+          Now, how about&nbsp;
           <Button sx={{fontSize: 24, fontWeight: 'bold'}} component={Link} href='/try-your-own-dataset'>
             Try your own dataset !
           </Button>
