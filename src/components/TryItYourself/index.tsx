@@ -7,6 +7,7 @@ import {Close} from "@mui/icons-material";
 import {responsiveSx} from "../../pages/home/_components/responsive";
 import {SxProps} from "@mui/system";
 import {combineSx} from "../../utils/mui";
+import ButtonBase from "@mui/material/ButtonBase";
 
 export interface TryItYourselfProps {
   show?: boolean
@@ -17,7 +18,7 @@ export interface TryItYourselfProps {
 export default function TryItYourself({show = true, campaign, fixed = false}: TryItYourselfProps) {
   const [display, setDisplay] = useState(show)
 
-  const link = useAdsLink('/blog/try-it-yourself', 'utm_campaign', campaign)
+  const link = useAdsLink('/try-your-own-dataset', 'utm_campaign', campaign)
 
   const _sx: SxProps = useMemo(() => {
     if (fixed) {
@@ -45,19 +46,12 @@ export default function TryItYourself({show = true, campaign, fixed = false}: Tr
       ]
     } else {
       return {
-        position: 'relative',
+        position: 'static',
         mb: 3,
         width: 'calc(100% - 1px)'
       }
     }
   }, [fixed])
-
-  const sx = useMemo(() => {
-    return combineSx(_sx, {
-      backgroundColor: '#2c2c2c',
-      p: 2
-    })
-  }, [_sx])
 
   if (!display) {
     return <></>
@@ -65,18 +59,38 @@ export default function TryItYourself({show = true, campaign, fixed = false}: Tr
 
   return (
     <Paper
-      sx={sx}
+      sx={_sx}
     >
-      <Typography variant='body2' sx={{pr: 2}}>
-        💡 <a href={link} target='_blank'><b>Try</b></a> Your Own Dataset!
-      </Typography>
-      <IconButton
-        size='small'
-        sx={{position: 'absolute', right: 8, top: 8}}
-        onClick={() => setDisplay(false)}
+      <ButtonBase
+        sx={{
+          position: 'relative',
+          display: 'block',
+          ':hover': {
+            textDecoration: 'none',
+            color: 'unset'
+          },
+          p: 2,
+          backgroundColor: '#2c2c2c',
+        }}
+        href={link}
+        component='a'
+        target='_blank'
       >
-        <Close sx={{fontSize: 16}}/>
-      </IconButton>
+        <Typography variant='body2' sx={{pr: 2}}>
+          💡 <b style={{color: 'var(--ifm-color-primary)'}}>Try</b> Your Own Dataset!
+        </Typography>
+        <IconButton
+          size='small'
+          sx={{position: 'absolute', right: 8, top: 8}}
+          onClick={(event) => {
+            setDisplay(false)
+            event.stopPropagation()
+            event.preventDefault()
+          }}
+        >
+          <Close sx={{fontSize: 16}} />
+        </IconButton>
+      </ButtonBase>
     </Paper>
   )
 }
