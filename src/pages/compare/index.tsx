@@ -23,6 +23,7 @@ import CompareContext from './_context'
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
+import TryItYourself from "../../components/TryItYourself";
 
 
 const allProvidedRepos = (repos: Repo[]) => {
@@ -154,6 +155,7 @@ export default function RepoCompare() {
               {sections}
             </Box>
           </MainContent>
+          <TryItYourself campaign='compare' show fixed/>
         </ThemeAdaptor>
       </LocalizationProvider>
     </Layout>
