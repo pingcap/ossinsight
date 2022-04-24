@@ -1,5 +1,5 @@
 ---
-title: "Programming Languages Repos Landscape 2021"
+title: "Programming Languages Repos Landscape"
 image: /img/language.png
 try_it_yourself:
   campaign: insight_Language
@@ -7,17 +7,16 @@ try_it_yourself:
 
 import {CommonChart} from "../../src/components/CommonChart";
 
-![](/img/language.png)
 
-In this chapter, we will share with you some of **the top programming language repos (PL repos) on GitHub in 2021** measured by different metrics including the number of stars, PRs, contributors, countries, regions and so on. 
+On this page, we will share with you many deep insights into programming language repositories(repos), such as popularity, contributors, coding vitality, community feedback and so on. 
 
-Note: 
+We’ll also share the SQL commands that generate all these analytical results above each chart, so you can use them on your own on TiDB Cloud following this [5-minute tutorial](/blog/try-it-yourself/). 
 
-1. You can move your cursor onto any of the repository bars/lines on the chart and get the exact number. 
-2. The SQL commands above each chart are what we use on TiDB Cloud to get the analytical results. Try those SQL commands by yourselves on TiDB Cloud with this [10-minute tutorial](/blog/try-it-yourself/).
+## Popularity
 
+### The popularity trend in the past ten years
 
-## Star history of top PL repos since 2011
+The chart below displays the accumulated number of stars programming language repositories gained respectively each year and their star growth trend during the past ten years.
 
 <CommonChart
   chart='dynamic-stars'
@@ -26,7 +25,31 @@ Note:
   repo='programming_language_repos'
 />
 
-## Top 10 most starred PL repos in 2021
+### Which programming language repositories experienced a popularity boom in 2021?
+
+The chart below displays top 10 programming language repositories with the highest year-on-year growth rate of stars in 2021 alone.
+
+<CommonChart
+  chart='yoychart'
+  category='archive-2021-top20-by-stars-yoy'
+  formatSql={false}
+  repo='programming_language_repos'
+/>
+
+### Which programming language repositories barely gained influence in 2021?
+
+The chart below displays top 10 programming language repositories with the lowest year-on-year growth rate of stars in 2021 alone. 
+
+<CommonChart
+  chart='yoychart'
+  category='archive-2021-bottom10-by-yoy'
+  formatSql={false}
+  repo='programming_language_repos'
+/>
+
+### Which programming language repositories were the new favorites in 2021?
+
+The chart below displays the top programming language repositories that gained the most stars in 2021. 
 
 <CommonChart
   chart='barchart'
@@ -39,97 +62,37 @@ Note:
   repo='programming_language_repos'
 />
 
-## Top 10 PL repos with the most PRs in 2021
+### Which countries & regions favor programming language repositories the most? 
+
+The map below describes the geographical distribution of language repo stargazers. The larger and darker the color spots on this map, the more language repo stargazers are distributed.
+
+Coming soon
+
+### Which companies like programming language repositories the most?
+
+The pie chart below describes which company those language repo stargazers work for and how many stargazers those companies employ.
+
+Coming soon
+
+## Contributors 
+
+### Which countries & regions led the contributions to programming language repositories in 2021? 
+
+The map below shows the geographic distribution of developers who pushed commits, resolved issues, or submitted pull requests to programming language repositories in 2021. The larger and darker the color spots on this map, the more language repo contributors were distributed. 
 
 <CommonChart
-  chart='barchart'
-  category='archive-2021-top10-by-prs'
-  n={20}
+  chart='worldmapchart'
+  category='archive-2021-top10-by-regions'
   formatSql={false}
-  categoryIndex='repo_name'
-  valueIndex='num'
-  seriesName='PRs'
+  categoryIndex='country_code'
+  valueIndex='users_count'
+  seriesName='Contributors'
   repo='programming_language_repos'
 />
 
-## Top 10 PL repos with the most contributors in 2021
+### Which companies led the contributions to programming language repositories in 2021?
 
-<CommonChart
-  chart='barchart'
-  category='archive-2021-top20-by-developers'
-  formatSql={false}
-  categoryIndex='actor_login'
-  valueIndex='pr_count'
-  categoryType='owner'
-  seriesName='PRs'
-  repo='programming_language_repos'
-/>
-
-## Top 20 developers contributed the most PRs to PL repos in 2021
-
-<details>
- <summary>Click here to expand SQL</summary>
-
-```sql
-  SELECT actor_login, count(*) as pr_count
-    FROM github_events
-         JOIN programming_language_repos wf ON wf.id = github_events.repo_id
-   WHERE event_year = 2021 
-         AND type = 'PullRequestEvent' 
-         AND action = 'opened' 
-         AND actor_login not like '%bot%'
-GROUP BY 1
-ORDER BY 2 DESC
-   LIMIT 20
-```
-</details>
-
-```
-+-----------------+----------+
-| actor_login     | pr_count |
-+-----------------+----------+
-| miss-islington  | 1586     |
-| yuyi98          | 564      |
-| timotheecour    | 418      |
-| Trott           | 399      |
-| CyrusNajmabadi  | 384      |
-| pancakevirus    | 366      |
-| xflywind        | 365      |
-| DougGregor      | 357      |
-| GuillaumeGomez  | 324      |
-| WalterBright    | 316      |
-| slavapestov     | 294      |
-| MarcusDenker    | 283      |
-| astares         | 267      |
-| ibuclaw         | 265      |
-| Youssef1313     | 256      |
-| pablogsal       | 252      |
-| JohnTitor       | 252      |
-| straight-shoota | 243      |
-| vstinner        | 243      |
-| erlend-aasland  | 229      |
-+-----------------+----------+
-```
-
-## Top 9 PL repos with the highest YoY growth rate of stars in 2021
-
-<CommonChart
-  chart='yoychart'
-  category='archive-2021-top20-by-stars-yoy'
-  formatSql={false}
-  repo='programming_language_repos'
-/>
-
-## Top 10 PL repos with the lowest YoY growth rate of stars in 2021
-
-<CommonChart
-  chart='yoychart'
-  category='archive-2021-bottom10-by-yoy'
-  formatSql={false}
-  repo='programming_language_repos'
-/>
-
-## Top 20 companies contributing the most to PL repos in 2021
+The chart below shows the employment distribution of developers who pushed commits, resolved issues, or submitted pull requests to programming language repositories in 2021.
 
 <CommonChart
   chart='barchart'
@@ -142,27 +105,108 @@ ORDER BY 2 DESC
   repo='programming_language_repos'
 />
 
-## Top countries or regions contributing to OSS programming languages
+### Who were the leading individual contributors in 2021?
+
+The chart below lists 20 most active individual contributors to programming language repositories in 2021 based on how many pull requests they opened. 
 
 <CommonChart
-  chart='worldmapchart'
-  category='archive-2021-top10-by-regions'
+  chart='barchart'
+  category='archive-2021-top20-by-developers'
   formatSql={false}
-  categoryIndex='country_code'
-  valueIndex='users_count'
-  seriesName='Contributors'
+  categoryIndex='actor_login'
+  valueIndex='pr_count'
+  categoryType='owner'
+  seriesName='PRs'
   repo='programming_language_repos'
 />
 
-## The rankings of PL repos measured by Z-score in 2021
+### When did developers contribute?
 
-The analytical results displayed above are generated based on just one single metric of these three: stars, PRs, or contributors. Now, we will use the [Z-score](https://en.wikipedia.org/wiki/Standard_score) method to rank PL repos on GitHub.
+The heat map below describes the number of push events that occur at a particular point of time (UTC). For each day and hour, the colored boxes indicate the number of push events. The lighter the color, the fewer push events; the darker the color, the more push events. You can learn from this heat map what time is the busiest for contributors, and roughly conclude which country or region distributes the most contributors.
 
-This is the comprehensive ranking calculated by z-score:
+Coming soon
+
+## Coding vitality 
+
+### Contribution trend in the past ten years
+
+The chart below displays the accumulated number of commits pushed by contributors to programming language repositories each year, and their growth trend during the past ten years.
+
+Coming soon
+
+### Which programming language repositories vibrantly maintains and updates itself in the past ten years?
+
+The chart below displays top 10 programming language repositories that received the most pull requests in the past ten years. 
+
+Coming soon
+
+### Which programming language repositories vibrantly maintained and updated itself in 2021?
+
+The chart below displays top 10 programming language repositories that received the most pull requests in 2021 alone.
 
 <CommonChart
-  chart='zscorechart'
-  category='archive-2021-archive-ranking'
+  chart='barchart'
+  category='archive-2021-top10-by-prs'
+  n={20}
   formatSql={false}
+  categoryIndex='repo_name'
+  valueIndex='num'
+  seriesName='PRs'
   repo='programming_language_repos'
 />
+
+
+## Community feedback 
+
+### Feedback trend in the past ten years
+
+The chart below displays the accumulated number of issues received by leading programming language repositories respectively each year and their growth trend during the past ten years. 
+
+Coming soon
+
+
+### Which programming language repositories gave the fastest first response in 2021?
+
+The bar chart below shows the median time each language repo needs to make its first response to an issue.
+
+Coming soon
+
+#### Which programming language repositories were the most efficient in feedback resolution in 2021?
+
+The bar chart below shows the median time each programming language repositories needs to close an issue.
+
+Coming soon
+
+
+### Who gave the feedback in 2021?
+
+The map below shows the geographical distribution of developers who submitted issues to programming language repositories. The larger and darker the color spots on this map, the more issue openers were distributed. 
+
+
+## Community Robustness
+
+### Contributor growth trend in the past ten years
+
+The chart below shows the accumulated number of contributors leading programming language repositories attracted respectively each year and their growth trend during the past ten years. 
+
+Coming soon
+
+### Which programming language repositories have the most heavy contributors? 
+
+The chart below displays the number of heavy contributors (who submitted more than 100 pull requests), medium contributors (who submitted more than 10 but less than 100 pull requests), and light contributors (who submitted less than 10 pull requests) of leading programming language repositories. The chart also ranks these programming language repositories based on their number of heavy contributors. 
+
+Coming soon
+
+
+### Which programming language repositories are heavily contributed?
+
+The chart below displays the number of pull requests submitted by heavy contributors, medium contributors, and light contributors. The chart also ranks these programming language repositories based on the number of pull requests submitted by heavy contributors. 
+
+Coming soon
+
+
+### How fast did programming language repositories approve their code changes?
+
+The chart below shows the median time each language repo needs from submitting to merging a pull request.
+
+Coming soon

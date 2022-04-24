@@ -1,5 +1,5 @@
 ---
-title: "Web Framework Repos Landscape 2021"
+title: "Web Framework Landscape"
 image: /img/webframework.png
 try_it_yourself:
   campaign: insight_Web
@@ -7,17 +7,16 @@ try_it_yourself:
 
 import {CommonChart} from "../../src/components/CommonChart";
 
-![](/img/webframework.png)
 
-In this chapter, we will share with you some of the **top Web Framework repos (WF repos) on GitHub in 2021** measured by different metrics including the number of stars, PRs, contributors, countries, regions and so on. 
+On this page, we will share with you many deep insights into web frameworks, such as popularity, contributors, coding vitality, community feedback and so on. 
 
-Note: 
-1. You can move your cursor onto any of the repository bars/lines on the chart and get the exact number. 
-2. The SQL commands above each chart are what we use on our TiDB Cloud to get the analytical results. Try those SQL commands by yourselves on TiDB Cloud with [this 10-minute tutorial](/blog/try-it-yourself/).
+We’ll also share the SQL commands that generate all these analytical results above each chart, so you can use them on your own on TiDB Cloud following this [5-minute tutorial](/blog/try-it-yourself/). 
 
-## Star history of top Web Framework repos since 2011
+## Popularity
 
-The number of stars is often thought of as a measure of whether a github repository is popular or not. We sort all web framework repositories from github by the total number of historical stars since 2011. For visualizing the results more intuitively, we show the top 10 open source databases by using an interactive line chart. 
+### The popularity trend in the past ten years
+
+The chart below displays the accumulated number of stars web frameworks gained respectively each year and their star growth trend during the past ten years.
 
 <CommonChart
   chart='dynamic-stars'
@@ -26,7 +25,31 @@ The number of stars is often thought of as a measure of whether a github reposit
   repo='web_framework_repos'
 />
 
-## Top 10 most starred Web Framework repos in 2021
+### Which web frameworks experienced a popularity boom in 2021?
+
+The chart below displays top 10 web frameworks with the highest year-on-year growth rate of stars in 2021 alone.
+
+<CommonChart
+  chart='yoychart'
+  category='archive-2021-top20-by-stars-yoy'
+  formatSql={false}
+  repo='web_framework_repos'
+/>
+
+### Which web frameworks barely gained influence in 2021?
+
+The chart below displays top 10 web frameworks with the lowest year-on-year growth rate of stars in 2021 alone. 
+
+<CommonChart
+  chart='yoychart'
+  category='archive-2021-bottom10-by-yoy'
+  formatSql={false}
+  repo='web_framework_repos'
+/>
+
+### Which web frameworks were the new favorites in 2021?
+
+The chart below displays the top web frameworks that gained the most stars in 2021. 
 
 <CommonChart
   chart='barchart'
@@ -39,64 +62,36 @@ The number of stars is often thought of as a measure of whether a github reposit
   repo='web_framework_repos'
 />
 
-## Top 10 Web Framework repos with the most PRs in 2021
+### Which countries & regions favor web frameworks the most? 
+
+The map below describes the geographical distribution of web framework stargazers. The larger and darker the color spots on this map, the more web framework stargazers are distributed.
+
+Coming soon
+
+### Which companies like web frameworks the most?
+
+The pie chart below describes which company those web framework stargazers work for and how many stargazers those companies employ.
+
+
+## Contributors 
+
+### Which countries & regions led the contributions to web frameworks in 2021? 
+
+The map below shows the geographic distribution of developers who pushed commits, resolved issues, or submitted pull requests to web frameworks in 2021. The larger and darker the color spots on this map, the more web framework contributors were distributed. 
 
 <CommonChart
-  chart='barchart'
-  category='archive-2021-top10-by-prs'
-  n={20}
+  chart='worldmapchart'
+  category='archive-2021-top10-by-regions'
   formatSql={false}
-  categoryIndex='repo_name'
-  valueIndex='num'
-  seriesName='PRs'
+  categoryIndex='country_code'
+  valueIndex='users_count'
+  seriesName='Contributors'
   repo='web_framework_repos'
 />
 
-## Top 20 developers contributed the most PRs to Web Framework repos in 2021
+### Which companies led the contributions to web frameworks in 2021?
 
-<CommonChart
-  chart='barchart'
-  category='archive-2021-top20-by-developers'
-  formatSql={false}
-  categoryIndex='actor_login'
-  valueIndex='pr_count'
-  categoryType='owner'
-  seriesName='PRs'
-  repo='web_framework_repos'
-/>
-
-## Top 20 Web Framework repos with the highest YoY growth rate of stars in 2021
-
-<CommonChart
-  chart='yoychart'
-  category='archive-2021-top20-by-stars-yoy'
-  formatSql={false}
-  repo='web_framework_repos'
-/>
-
-## Top 10 Web Framework repos with the lowest YoY growth rate of stars in 2021
-
-<CommonChart
-  chart='yoychart'
-  category='archive-2021-bottom10-by-yoy'
-  formatSql={false}
-  repo='web_framework_repos'
-/>
-
-## Top 10 most used programming languages in Web Framework repos in 2021
-
-<CommonChart
-  chart='barchart'
-  category='archive-2021-top5-by-languages'
-  formatSql={false}
-  categoryIndex='language'
-  valueIndex='COUNT(*)'
-  categoryType='lang'
-  seriesName='PRs'
-  repo='web_framework_repos'
-/>
-
-## Top 20 companies contributing the most to Web Framework repos in 2021
+The chart below shows the employment distribution of developers who pushed commits, resolved issues, or submitted pull requests to web frameworks in 2021.
 
 <CommonChart
   chart='barchart'
@@ -109,27 +104,140 @@ The number of stars is often thought of as a measure of whether a github reposit
   repo='web_framework_repos'
 />
 
-## Top 10 countries/regions contributing the most to Web Framework repos in 2021
+### Who were the leading individual contributors in 2021?
+
+The chart below lists 20 most active individual contributors to web frameworks in 2021 based on how many pull requests they opened. 
 
 <CommonChart
-  chart='worldmapchart'
-  category='archive-2021-top10-by-regions'
+  chart='barchart'
+  category='archive-2021-top20-by-developers'
   formatSql={false}
-  categoryIndex='country_code'
-  valueIndex='users_count'
-  seriesName='Contributors'
+  categoryIndex='actor_login'
+  valueIndex='pr_count'
+  categoryType='owner'
+  seriesName='PRs'
   repo='web_framework_repos'
 />
 
-## The Rankings of Web Framework repos measured by Z-score in 2021
+### When did developers contribute?
 
-The analytical results displayed above are generated based on just one single metric of these three: stars, PRs, or contributors. Now, we will use the [Z-score](https://en.wikipedia.org/wiki/Standard_score) method to rank the WF repos on GitHub.  
+The heat map below describes the number of push events that occur at a particular point of time (UTC). For each day and hour, the colored boxes indicate the number of push events. The lighter the color, the fewer push events; the darker the color, the more push events. You can learn from this heat map what time is the busiest for contributors, and roughly conclude which country or region distributes the most contributors.
 
-This is the comprehensive ranking calculated by z-score:
+Coming soon
+
+## Coding vitality 
+
+### Contribution trend in the past ten years
+
+The chart below displays the accumulated number of commits pushed by contributors to web frameworks each year, and their growth trend during the past ten years.
+
+
+Coming soon
+
+### Which web frameworks vibrantly maintains and updates itself in the past ten years?
+
+The chart below displays top 10 web frameworks that received the most pull requests in the past ten years. 
+
+Coming soon
+
+### Which web frameworks vibrantly maintained and updated itself in 2021?
+
+The chart below displays top 10 web frameworks that received the most pull requests in 2021 alone.
 
 <CommonChart
-  chart='zscorechart'
-  category='archive-2021-archive-ranking'
+  chart='barchart'
+  category='archive-2021-top10-by-prs'
+  n={20}
   formatSql={false}
+  categoryIndex='repo_name'
+  valueIndex='num'
+  seriesName='PRs'
   repo='web_framework_repos'
 />
+
+
+## Community feedback 
+
+### Feedback trend in the past ten years
+
+The chart below displays the accumulated number of issues received by leading web frameworks respectively each year and their growth trend during the past ten years. 
+
+Coming soon
+
+
+### Which web frameworks gave the fastest first response in 2021?
+
+The bar chart below shows the median time each web framework needs to make its first response to an issue.
+
+Coming soon
+
+#### Which web frameworks were the most efficient in feedback resolution in 2021?
+
+The bar chart below shows the median time each web frameworks needs to close an issue.
+
+Coming soon
+
+
+### Who gave the feedback in 2021?
+
+The map below shows the geographical distribution of developers who submitted issues to web frameworks. The larger and darker the color spots on this map, the more issue openers were distributed. 
+
+
+## Community Robustness
+
+### Contributor growth trend in the past ten years
+
+The chart below shows the accumulated number of contributors leading web frameworks attracted respectively each year and their growth trend during the past ten years. 
+
+Coming soon
+
+### Which web frameworks have the most heavy contributors? 
+
+The chart below displays the number of heavy contributors (who submitted more than 100 pull requests), medium contributors (who submitted more than 10 but less than 100 pull requests), and light contributors (who submitted less than 10 pull requests) of leading web frameworks. The chart also ranks these web frameworks based on their number of heavy contributors. 
+
+Coming soon
+
+
+### Which web frameworks are heavily contributed?
+
+The chart below displays the number of pull requests submitted by heavy contributors, medium contributors, and light contributors. The chart also ranks these web frameworks based on the number of pull requests submitted by heavy contributors. 
+
+Coming soon
+
+
+### How fast did web frameworks approve their code changes?
+
+The chart below shows the median time each web framework needs from submitting to merging a pull request.
+
+Coming soon
+
+
+## Programming languages
+
+### Which languages were most favored in the past ten years?
+
+The chart below shows the top programming languages used in web frameworks in the past ten years and how many web frameworks used them each year.
+
+Coming soon
+
+### Which languages were most favored in 2021?
+
+The chart below shows the top programming languages used in pull requests submitted to web frameworks in 2021. 
+
+<CommonChart
+  chart='barchart'
+  category='archive-2021-top5-by-languages'
+  formatSql={false}
+  categoryIndex='language'
+  valueIndex='COUNT(*)'
+  categoryType='lang'
+  seriesName='PRs'
+  repo='web_framework_repos'
+/>
+
+
+
+
+
+
+
