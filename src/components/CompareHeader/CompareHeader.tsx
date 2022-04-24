@@ -59,7 +59,7 @@ function CompareHeader({
         my: 2,
         py: 2,
         top: 'var(--ifm-navbar-height)',
-        zIndex: 11,
+        zIndex: 'var(--ifm-z-index-fixed-mui)',
         backgroundColor: isDarkTheme ? 'var(--ifm-background-color)' : 'background.default',
         borderBottom: '1px solid transparent',
         borderBottomColor: 'divider'

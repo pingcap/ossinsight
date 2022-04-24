@@ -9,13 +9,16 @@ import Link from "@docusaurus/Link";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import Image from "../../components/Image";
 import Footer from "../../components/Footer";
+import Container from "@mui/material/Container";
 
 const title = '👏 Try Your Own Dataset ! '
 
 export default function Page() {
   return (
     <CustomPage title={title}>
-      <Typography variant='h1' sx={{mb: 4, mt: 6}} align='center'>{title}</Typography>
+      <Container maxWidth='xl'>
+        <Typography variant='h1' sx={{mb: 4, mt: 6}} align='center'>{title}</Typography>
+      </Container>
       <Section
         title='Use TiDB Cloud to Analyze GitHub Events in 5 Minutes'
       >

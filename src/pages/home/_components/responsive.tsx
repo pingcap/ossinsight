@@ -14,11 +14,20 @@ export function responsive<K extends keyof AllSystemCSSProperties> (key: K, sm: 
   })
 }
 
-export function responsiveSx (sm: SystemStyleObject<Theme>, md: SystemStyleObject<Theme>, all: SystemStyleObject<Theme>): (theme: Theme) => SystemStyleObject<Theme> {
+type SubSx<T = Theme> = SystemStyleObject<T> | ((theme: T) => SystemStyleObject<T>)
+
+function apply(theme: Theme, subSx: SubSx) {
+  if (typeof subSx === 'function') {
+    return subSx(theme)
+  } else {
+    return subSx
+  }
+}
+
+export function responsiveSx (sm: SubSx, md: SubSx, all: SubSx): (theme: Theme) => SystemStyleObject<Theme> {
   return (theme: Theme) => ({
-    ...all,
-    mt: 3,
-    [theme.breakpoints.down('md')]: sm,
-    [theme.breakpoints.down('lg')]: md
+    ...apply(theme, all),
+    [theme.breakpoints.down('md')]: apply(theme, sm),
+    [theme.breakpoints.down('lg')]: apply(theme, sm)
   })
 }

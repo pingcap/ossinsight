@@ -36,9 +36,14 @@
   --site-color-svgIcon-favorite: #e9669e;
   --site-color-checkbox-checked-bg: hsl(167deg 56% 73% / 25%);
   --custom-primary: #24b47e;
-  --ifm-h1-font-size: 64px;
-  --ifm-h2-font-size: 40px;
+  --ifm-h1-font-size: 48px;
+  --ifm-h2-font-size: 36px;
   --ifm-h3-font-size: 20px;
+
+  --ifm-z-index-dropdown: 10;
+  --ifm-z-index-fixed-mui: 11;
+  --ifm-z-index-fixed: 12;
+  --ifm-z-index-overlay: 14;
 }
 
 html[data-theme='dark'] {

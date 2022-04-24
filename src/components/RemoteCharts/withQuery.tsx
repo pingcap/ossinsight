@@ -3,8 +3,7 @@ import {useState} from "react";
 import {AsyncData, RemoteData, useRemoteData} from "./hook";
 import Fab from '@mui/material/Fab';
 import Alert from "@mui/material/Alert";
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
-// @ts-ignore
+import ShareIcon from '@mui/icons-material/Share';// @ts-ignore
 import CodeBlock from '@theme/CodeBlock';
 import {BarChart, ChartWithSql, DataGrid, DataGridColumn, HeatMapChart, PieChart} from '../BasicCharts';
 import {Queries} from "./queries";
@@ -65,9 +64,9 @@ export function renderChart (query, chart, {error, data}: AsyncData<RemoteData<a
       <ChartWithSql sql={data?.sql}>
         <div style={{position: 'relative'}}>
           {chart}
-          <Fab size='small' sx={{position: 'absolute', zIndex: 10, right: 24, bottom: 24, zIndex: 2}}
+          <Fab size='small' sx={{position: 'absolute', right: 24, bottom: 24, zIndex: 'var(--ifm-z-index-fixed-mui)'}}
                onClick={handleShowDebugModel} disabled={!data}>
-            <HelpOutlineIcon />
+            <ShareIcon />
           </Fab>
           <DebugInfoModel query={query} data={data} open={showDebugModel} onClose={handleCloseDebugModel} />
         </div>

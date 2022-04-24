@@ -28,6 +28,9 @@ export default function Footer() {
             codeStyleDescription={false}
             readMore='/blog/how-it-works'
             top={icon(require('./icon-1.png').default)}
+            cardSx={{
+              backgroundColor: '#2c2c2c'
+            }}
           />
           <StandardCard
             title='What is TiDB Cloud'
@@ -35,6 +38,9 @@ export default function Footer() {
             codeStyleDescription={false}
             readMore='https://docs.pingcap.com/tidbcloud'
             top={icon(require('./icon-2.png').default)}
+            cardSx={{
+              backgroundColor: '#2c2c2c'
+            }}
           />
           <StandardCard
             title='Use TiDB Cloud to Analyze GitHub Events in 5 Minutes'
@@ -42,6 +48,9 @@ export default function Footer() {
             codeStyleDescription={false}
             readMore='/blog/try-it-yourself'
             top={icon(require('./icon-3.png').default)}
+            cardSx={{
+              backgroundColor: '#2c2c2c'
+            }}
           />
         </Cards>
         <Box textAlign='center' sx={{fontSize: 24, mt: 6}}>
@@ -55,7 +64,7 @@ export default function Footer() {
         <div className="text--center">
           <h3>
             Follow us&nbsp;
-            <a href="https://twitter.com/PingCAP">@PingCAP</a>
+            <a href="https://twitter.com/OSSInsight">@OSSInsight</a>
             &nbsp;and join the conversation using the hashtags
             <br />
             <a href="https://twitter.com/hashtag/OSS_Insight" target='_blank'>
