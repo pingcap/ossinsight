@@ -84,7 +84,7 @@ const config = {
         items: [
           {
             type: 'doc',
-            docId: 'database/realtime',
+            docId: 'database/deep-insight-into-open-source-databases',
             position: 'left',
             label: 'Insight',
           },
