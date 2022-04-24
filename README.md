@@ -2,6 +2,18 @@
   <img src="/static/img/screenshots/home.png"
 </a>
 
+<h3 align="center">
+  <b><a href="https://ossinsight.io/database/deep-insight-into-open-source-databases">Insights</a></b>
+  •
+  <a href="https://ossinsight.io/compare/">Compare Projects</a>
+  •
+  <a href="https://ossinsight.io/try-your-own-dataset">Try Your Own Dataset</a>
+  •
+  <a href="https://ossinsight.io/about/#contact">Contacts</a>
+  </h3>
+
+
+
 # Website
 
 This website is built using [Docusaurus 2](https://docusaurus.io/), a modern static website generator.
