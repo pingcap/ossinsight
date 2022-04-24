@@ -26,6 +26,8 @@ OSS Insight analyze billions of GitHub events and get insights from them, also p
 * [Programming Languages Repos Landscape 2021](https://ossinsight.io/language/deep-insight-into-programming-languages-2021)
 * [Low-code Development Tool Repos Landscape 2021](https://ossinsight.io/low-code/deep-insight-into-lowcode-development-tools-2021)
 
+If you want to analyze more, please [contact us](https://ossinsight.io/about/#contact)
+
 ## Compare Projects
 
 Examples:
