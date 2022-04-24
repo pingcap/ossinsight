@@ -58,3 +58,14 @@ yarn start;
 ```
 
 then visit: http://localhost:3000
+
+## Sponsors
+
+<div align="center">
+  <a href="https://en.pingcap.com">
+    <img src="/static/img/pingcap-white-300x79.png" />
+  </a>
+  <a href="https://en.pingcap.com/community">
+    <img src="/static/img/logo.svg" />
+  </a>
+</div>
