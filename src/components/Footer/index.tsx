@@ -64,7 +64,7 @@ export default function Footer() {
         <div className="text--center">
           <h3>
             Follow us&nbsp;
-            <a href="https://twitter.com/PingCAP">@PingCAP</a>
+            <a href="https://twitter.com/OSSInsight">@OSSInsight</a>
             &nbsp;and join the conversation using the hashtags
             <br />
             <a href="https://twitter.com/hashtag/OSS_Insight" target='_blank'>
