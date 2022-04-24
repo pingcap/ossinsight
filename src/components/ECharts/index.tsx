@@ -1,4 +1,4 @@
-import React, {CSSProperties, useMemo} from "react";
+import React, {CSSProperties, Ref, RefCallback, useCallback, useContext, useMemo} from "react";
 import {EChartsReactProps} from "echarts-for-react/src/types";
 import EChartsReact from "echarts-for-react";
 import useThemeContext from "@theme/hooks/useThemeContext";
@@ -7,6 +7,7 @@ import 'react-aspect-ratio/aspect-ratio.css'
 import BrowserOnly from "@docusaurus/BrowserOnly";
 import {registerThemeDark, registerThemeVintage} from "../BasicCharts/theme";
 import {Opts} from "echarts-for-react/lib/types";
+import EChartsContext from './context'
 
 interface SizeProps {
   aspectRatio?: number
@@ -46,6 +47,21 @@ const ECharts = React.forwardRef<EChartsReact, EChartsProps>(({aspectRatio, heig
     }, opts)
   }, [opts, realHeight])
 
+  const { echartsRef } = useContext(EChartsContext)
+
+  const combinedRef: RefCallback<EChartsReact> = useCallback((instance) => {
+    if (echartsRef) {
+      echartsRef.current = instance
+    }
+    if (ref) {
+      if (typeof ref === 'function') {
+        ref(instance)
+      } else {
+        ref.current = instance
+      }
+    }
+  }, [ref, echartsRef])
+
   const fallback = useMemo(() => <EChartsPlaceholder aspectRatio={aspectRatio} height={realHeight} />, [aspectRatio, realHeight])
 
   return (
@@ -58,7 +74,7 @@ const ECharts = React.forwardRef<EChartsReact, EChartsProps>(({aspectRatio, heig
             {...props}
             opts={echartsOpts}
             style={echartsStyle}
-            ref={ref}
+            ref={combinedRef}
             theme={isDarkTheme ? 'dark' : 'vintage'}
           />
         )
@@ -90,3 +106,4 @@ const EChartsPlaceholder = ({ height, aspectRatio }: SizeProps) => {
 }
 
 export default ECharts
+export {default as EChartsContext, EChartsContextProps} from './context'

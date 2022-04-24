@@ -1,7 +1,7 @@
 import {Queries} from "./queries";
 import {RemoteData} from "./hook";
 import * as React from "react";
-import {useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import Box from "@mui/material/Box";
@@ -10,8 +10,11 @@ import {DateTime} from "luxon";
 import Typography from "@mui/material/Typography";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-
-const FMT = 'yyyy-MM-dd HH:mm:ss'
+import {EChartsContext} from "../ECharts";
+import AspectRatio from "react-aspect-ratio";
+import Image from "../Image";
+import Stack from "@mui/material/Stack";
+import {FacebookIcon, LinkedinIcon, RedditIcon, TelegramIcon, TwitterIcon} from "react-share";
 
 export interface DebugInfoModelInfoProps {
   query: keyof Queries,
@@ -21,11 +24,23 @@ export interface DebugInfoModelInfoProps {
 }
 
 export const DebugInfoModel = ({ query, data, open, onClose }: DebugInfoModelInfoProps) => {
+  const { echartsRef } = useContext(EChartsContext)
+  const [imgData, setImgData] = useState<string>()
+
   useEffect(() => {
     if (!data) {
       onClose();
     }
   }, [data])
+
+  useEffect(() => {
+    if (open) {
+      const canvas = echartsRef?.current?.ele?.getElementsByTagName('canvas')?.[0]
+      if (canvas) {
+        setImgData(canvas.toDataURL('image/jpeg'))
+      }
+    }
+  }, [open])
 
   return (
     <>
@@ -38,43 +53,26 @@ export const DebugInfoModel = ({ query, data, open, onClose }: DebugInfoModelInf
         aria-describedby="modal-modal-description"
       >
         <DialogTitle>
-          [For Debug] SQL Execution info
+          [WIP] Share chart
         </DialogTitle>
-        <Box sx={{p: 4}}>
-          {(Array.isArray(data))
-            ? <ManyData data={data} query={query}/>
-            : renderOne(query, data)}
-        </Box>
+        <Stack sx={{p: 4}} direction={['column', 'column', 'row']}>
+          <Box sx={{ borderRadius: 1, overflow: 'hidden', flex: 1 }}>
+            <AspectRatio ratio={16 / 9}>
+              <Image src={imgData} style={{ backgroundPosition: 'top left' }} />
+            </AspectRatio>
+          </Box>
+          <Box sx={{ flex: 1, p: 4 }}>
+            <Stack direction='row' gap={2}>
+              <TwitterIcon round size={32} />
+              <FacebookIcon round size={32} />
+              <LinkedinIcon round size={32} />
+              <RedditIcon round size={32} />
+              <TelegramIcon round size={32} />
+            </Stack>
+          </Box>
+        </Stack>
       </Dialog>
     </>
-  )
-}
-
-const ManyData = ({query, data}: {query: keyof Queries, data: RemoteData<any, any>[]}) => {
-  const [index,setIndex] = useState(0)
-  return (
-    <>
-      <Tabs value={index} onChange={(e, n) => setIndex(n)}>
-        {data.map((_, n) => <Tab label={`Request ${n + 1}`} />)}
-      </Tabs>
-      {data.map((data, n) => (
-        renderOne(query, data, n, index !== n)
-      ))}
-    </>
-  )
-}
-
-const renderOne = (query: keyof Queries, data: RemoteData<any, any>, key: number | undefined = undefined, hidden: boolean = false) => {
-  return (
-    <div hidden={hidden} key={key}>
-      <Grid container alignItems='center'>
-        <Pair title='Requested at' value={DateTime.fromISO(data?.requestedAt).toFormat(FMT)} />
-        <Pair title='Expires at' value={DateTime.fromISO(data?.expiresAt).toFormat(FMT)} />
-        <Pair title='Spent' value={`${data?.spent} seconds`} />
-        <Pair title='Query' value={query} />
-        <Pair title='Params' value={<pre>{JSON.stringify(data?.params, undefined, 2)}</pre>} />
-      </Grid>
-    </div>
   )
 }
 
