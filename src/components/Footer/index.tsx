@@ -36,7 +36,7 @@ export default function Footer() {
             title='What is TiDB Cloud'
             description='Documentation · 10 min read'
             codeStyleDescription={false}
-            readMore='https://docs.pingcap.com/tidbcloud'
+            readMore='https://docs.pingcap.com/tidbcloud?utm_source=ossinsight'
             top={icon(require('./icon-2.png').default)}
             cardSx={{
               backgroundColor: '#2c2c2c'

@@ -17,7 +17,7 @@ export default function Page() {
   return (
     <CustomPage title={title}>
       <Container maxWidth='xl'>
-        <Typography variant='h1' sx={{mb: 4, mt: 6}} align='center'>{title}</Typography>
+        <Typography variant='h1' sx={{mb: 2, mt: 8}} align='center'>{title}</Typography>
       </Container>
       <Section
         title='Use TiDB Cloud to Analyze GitHub Events in 5 Minutes'
@@ -25,8 +25,8 @@ export default function Page() {
         <Card sx={{px: 8, py: 4}}>
           <Cards xs={12} md={6} sx={{my: 4}} spacing={4}>
             <StandardCard
-              title='Step 1: Sign up (Free) '
-              description='Sign up / Log in a TiDB Cloud account to start your journey'
+              title='Step 1: Sign up TiDB Cloud (Free) '
+              description='Sign up a TiDB Cloud account for free, no need to add credit card'
               codeStyleDescription={false}
               elevation={0}
               cardSx={{backgroundColor: 'action.hover'}}
@@ -34,7 +34,7 @@ export default function Page() {
             />
             <StandardCard
               title='Step 2: Create cluster (Free)'
-              description='You can create a free cluster with TiDB Developer Tier'
+              description='Create cluster with TiDB Cloud Dev Tier, it is free for one year ⏰ !'
               codeStyleDescription={false}
               elevation={0}
               cardSx={{backgroundColor: 'action.hover'}}
@@ -42,15 +42,15 @@ export default function Page() {
             />
             <StandardCard
               title='Step 3: Import data'
-              description='You can import the sample data to your TiDB Cloud cluster'
+              description='Import the sample data to your TiDB Cloud cluster, this dataset records what happend in the first hour of 2022'
               codeStyleDescription={false}
               elevation={0}
               cardSx={{backgroundColor: 'action.hover'}}
               link='https://ossinsight.io/blog/try-it-yourself/#import-data-to-your-tidb-cloud-cluster'
             />
             <StandardCard
-              title='Step 4: Analysis !'
-              description='Enjoy your analysis after finish all the steps above'
+              title='Step 4: Analyze with SQL !'
+              description='Use the sample SQL to see what happened in the first hour of 2022'
               codeStyleDescription={false}
               elevation={0}
               cardSx={{backgroundColor: 'action.hover'}}
@@ -73,8 +73,8 @@ export default function Page() {
             codeStyleDescription={false}
             image={<Image src={require('./image-1.png').default} />}
             buttonText='details'
-            link='https://ossinsight.io/blog/build-a-real-time-analytics-dashboard-in-metabase/'
-            readMore='https://ossinsight.io/blog/build-a-real-time-analytics-dashboard-in-metabase/'
+            link='https://en.pingcap.com/blog/build-a-real-time-analytics-application-with-tidb-cloud/?utm_source=ossinsight'
+            readMore='https://en.pingcap.com/blog/build-a-real-time-analytics-application-with-tidb-cloud/?utm_source=ossinsight'
             tags={['Real-time analytics', 'Proliferate data']}
             elevation={0}
             cardSx={{backgroundColor: 'action.hover'}}

@@ -42,7 +42,7 @@ PingExpress_DemoCorp chose **option B**.
 
 This is because adding another column storage for analysis workload makes the system more complicated. At the same time, data has to be synchronized from the row store to the column store via painful ETL processes over night. This means that choosing option A still does not enable PingExpress_DemoCorp to do real-time analytics.
 
-**On the other hand, switching to [TiDB Cloud](https://en.pingcap.com/tidb-cloud/)   as the backend database is very attractive to PingExpress_DemoCorp：**
+**On the other hand, switching to [TiDB Cloud](https://en.pingcap.com/tidb-cloud/?utm_source=ossinsight)   as the backend database is very attractive to PingExpress_DemoCorp：**
 
 In this tutorial, you will build a prototype for PingExpress_DemoCorp’s real-time analytics dashboard that runs on a 
 TiDB Cloud Proof-of-Concept (PoC) cluster.
@@ -61,7 +61,7 @@ You should have the following software and packages installed:
 Note: It is recommended to use pip3 to install packages, such as SQLAlchemy. We also suggest NOT to use the Mac application version for Metabase. It is gradually being phased out. You may use the jar version instead.
 
 :::info
-** We recomand you Start with [TiDB Cloud Documentation](https://docs.pingcap.com/tidbcloud/) and finish this [10-minute tutorial](https://ossinsight.io/blog/try-it-yourself/) first.**
+** We recomand you Start with [TiDB Cloud Documentation](https://docs.pingcap.com/tidbcloud/?utm_source=ossinsight) and finish this [10-minute tutorial](https://ossinsight.io/blog/try-it-yourself/) first.**
 :::
 
 ## 1. Create a dashboard.

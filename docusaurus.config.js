@@ -84,16 +84,16 @@ const config = {
         items: [
           {
             type: 'doc',
-            docId: 'database/realtime',
+            docId: 'database/deep-insight-into-open-source-databases',
             position: 'left',
             label: 'Insight',
           },
           {to: '/compare', label: 'Compare Projects', position: 'left'},
-          {to: '/try-your-own-dataset/', label: '🔧 Try Your Own Dataset', position: 'left'},
-          {to: '/blog/how-it-works', label: 'How It Works', position: 'left'},
-          {to: '/about', label: 'About', position: 'left'},
+          {to: '/try-your-own-dataset/', label: '🔧 Try Your Own Dataset', position: 'right'},
+          {to: '/blog/how-it-works', label: 'How It Works', position: 'right'},
+          {to: '/about', label: 'About', position: 'right'},
           {
-            href: 'https://en.pingcap.com/tidb-cloud/',
+            href: 'https://en.pingcap.com/tidb-cloud/?utm_source=ossinsight',
             label: 'TiDB Cloud',
             position: 'right',
           },
@@ -112,7 +112,7 @@ const config = {
             items: [
               {
                 label: 'Insight',
-                to: '/database/realtime',
+                to: '/database/deep-insight-into-open-source-databases/',
               },
               {
                 label: 'Compare Projects',
@@ -137,11 +137,11 @@ const config = {
             items: [
               {
                 label: 'TiDB Community',
-                href: 'https://en.pingcap.com/community',
+                href: 'https://en.pingcap.com/community?utm_source=ossinsight',
               },
               {
                 label: 'PingCAP',
-                href: 'https://en.pingcap.com',
+                href: 'https://en.pingcap.com?utm_source=ossinsight',
               },
             ],
           },
@@ -166,7 +166,7 @@ const config = {
               },
               {
                 label: 'TiDB Cloud',
-                href: 'https://tidbcloud.com',
+                href: 'https://tidbcloud.com/?utm_source=ossinsight',
               },
               {
                 label: 'TiDB',
