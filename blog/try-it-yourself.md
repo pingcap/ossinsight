@@ -1,12 +1,12 @@
 ---
-title: ▶️  Use TiDB Cloud to Analyze GitHub Events in 10 Minutes
+title: ▶️  Use TiDB Cloud to Analyze GitHub Events in 5 Minutes
 ---
 
 [TiDB](https://docs.pingcap.com/tidb/stable/overview?utm_source=ossinsight) is an open source distributed NewSQL database with horizontal scalability, high availability, and strong consistency. It can also deal with mixed OLTP and OLAP workloads at the same time by leveraging its hybrid transactional and analytical (HTAP) capability. 
 
 **[TiDB Cloud](https://docs.pingcap.com/tidbcloud/public-preview?utm_source=ossinsight) is a fully-managed Database-as-a-Service (DBaaS)** that brings everything great about TiDB to your cloud and lets you focus on your applications, not the complexities of your database. 
 
-In this tutorial, we will provide you with a piece of sample data of all GitHub events occurring on January 1, 2022, and walk you through on how to use TiDB Cloud to analyze this data in 10 minutes.  
+In this tutorial, we will provide you with a piece of sample data of all GitHub events occurring on January 1, 2022, and walk you through on how to use TiDB Cloud to analyze this data in 5 minutes.  
 
 ## Sign up for a TiDB Cloud account (Free)
 
