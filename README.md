@@ -14,21 +14,20 @@
   <a href="https://twitter.com/PingCAP">Twitter</a>
 </h3>
 
-
 <p align="center">
 OSS Insight analyze billions of GitHub events and get insights from them, also provide a compare tool which can compare any two open source software hosted on GitHub deeply.
 </p>
 
-## Insights
+## Insights 👁️
 * [Deep Insight Into Open Source Databases](https://ossinsight.io/database/deep-insight-into-open-source-databases)
 * [JavaScript Framework Repos Landscape 2021](https://ossinsight.io/js-framework/deep-insight-into-js-framework-2021)
 * [Web Framework Repos Landscape 2021](https://ossinsight.io/web-framework/deep-insight-about-web-framework-2021)
 * [Programming Languages Repos Landscape 2021](https://ossinsight.io/language/deep-insight-into-programming-languages-2021)
 * [Low-code Development Tool Repos Landscape 2021](https://ossinsight.io/low-code/deep-insight-into-lowcode-development-tools-2021)
 
-If you want to analyze more, please [contact us](https://ossinsight.io/about/#contact)
+If you want to analyze more, please [contact us](https://ossinsight.io/about/#contact) ✉️
 
-## Compare Projects
+## Compare Projects 🔨
 
 Examples:
 * [Compare Vue and React](https://ossinsight.io/compare?repo1=vuejs%2Fvue&repo2=facebook%2Freact)
@@ -38,6 +37,8 @@ Examples:
 * [Compare Django and Flask](https://ossinsight.io/compare?repo1=django%2Fdjango&repo2=pallets%2Fflask)
 * [Compare Visual Studio Code and Atom](https://ossinsight.io/compare?repo1=microsoft%2Fvscode&repo2=atom%2Fatom)
 * [Compare Go and Rust](https://ossinsight.io/compare?repo1=golang%2Fgo&repo2=rust-lang%2Frust)
+* [Compare Spark and Flink](https://ossinsight.io/compare?repo1=apache%2Fspark&repo2=apache%2Fflink)
+* [Compare Ant Design and Material-UI](https://ossinsight.io/compare?repo1=ant-design%2Fant-design&repo2=mui%2Fmaterial-ui)
 
 ## Development
 
@@ -58,3 +59,23 @@ yarn start;
 ```
 
 then visit: http://localhost:3000
+
+## Sponsors
+
+<div align="center">
+  <a href="https://en.pingcap.com">
+    <img src="/static/img/pingcap-white-300x79.png" height=50 />
+  </a>
+  &nbsp;
+  &nbsp;
+  &nbsp;
+  <a href="https://en.pingcap.com/community">
+    <img src="/static/img/logo.svg" height=50 />
+  </a>
+  &nbsp;
+  &nbsp;
+  &nbsp;
+  <a href="https://en.pingcap.com/tidb-cloud">
+    <img src="/static/img/tidb_cloud.png" height=50 />
+  </a>
+</div>
