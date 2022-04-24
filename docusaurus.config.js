@@ -86,7 +86,7 @@ const config = {
             type: 'doc',
             docId: 'database/deep-insight-into-open-source-databases',
             position: 'left',
-            label: 'Insight',
+            label: 'Insights',
           },
           {to: '/compare', label: 'Compare Projects', position: 'left'},
           {to: '/try-your-own-dataset/?utm_content=header', label: '🔧 Try Your Own Dataset', position: 'right'},
