@@ -1,3 +1,5 @@
+# OSS Insight
+
 <a href="https://ossinsight.io">
   <img src="/static/img/screenshots/home.png"
 </a>
@@ -10,48 +12,22 @@
   <a href="https://ossinsight.io/try-your-own-dataset">Try Your Own Dataset</a>
   •
   <a href="https://ossinsight.io/about/#contact">Contacts</a>
-  </h3>
+</h3>
 
 
+<p align="center">
+OSS Insight analyze billions of GitHub events and get insights from them, also provide a compare tool which can compare any two open source software hosted on GitHub deeply.
 
-# Website
+<br />
 
-This website is built using [Docusaurus 2](https://docusaurus.io/), a modern static website generator.
+</p>
 
-### Installation
-
-```
-$ npm i
-```
+# Contribute
 
 ### Local Development
 
 ```
-$ npm start
+cd ossinsight/;
+yarn;
+yarn start;
 ```
-
-This command starts a local development server and opens up a browser window. Most changes are reflected live without having to restart the server.
-
-### Build
-
-```
-$ npm build
-```
-
-This command generates static content into the `build` directory and can be served using any static contents hosting service.
-
-### Deployment
-
-Using SSH:
-
-```
-$ USE_SSH=true npm run deploy
-```
-
-Not using SSH:
-
-```
-$ GIT_USER=<Your GitHub username> npm run deploy
-```
-
-If you are using GitHub pages for hosting, this command is a convenient way to build the website and push to the `gh-pages` branch.
