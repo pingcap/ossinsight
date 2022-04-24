@@ -178,7 +178,7 @@ const config = {
             title: 'More',
             items: [
               {
-                label: 'Github',
+                label: 'GitHub',
                 href: 'https://github.com/pingcap/ossinsight',
               },
               {
