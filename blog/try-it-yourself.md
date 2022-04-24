@@ -2,16 +2,16 @@
 title: ▶️  Use TiDB Cloud to Analyze GitHub Events in 10 Minutes
 ---
 
-[TiDB](https://docs.pingcap.com/tidb/stable/overview) is an open source distributed NewSQL database with horizontal scalability, high availability, and strong consistency. It can also deal with mixed OLTP and OLAP workloads at the same time by leveraging its hybrid transactional and analytical (HTAP) capability. 
+[TiDB](https://docs.pingcap.com/tidb/stable/overview?utm_source=ossinsight) is an open source distributed NewSQL database with horizontal scalability, high availability, and strong consistency. It can also deal with mixed OLTP and OLAP workloads at the same time by leveraging its hybrid transactional and analytical (HTAP) capability. 
 
-**[TiDB Cloud](https://docs.pingcap.com/tidbcloud/public-preview) is a fully-managed Database-as-a-Service (DBaaS)** that brings everything great about TiDB to your cloud and lets you focus on your applications, not the complexities of your database. 
+**[TiDB Cloud](https://docs.pingcap.com/tidbcloud/public-preview?utm_source=ossinsight) is a fully-managed Database-as-a-Service (DBaaS)** that brings everything great about TiDB to your cloud and lets you focus on your applications, not the complexities of your database. 
 
 In this tutorial, we will provide you with a piece of sample data of all GitHub events occurring on January 1, 2022, and walk you through on how to use TiDB Cloud to analyze this data in 10 minutes.  
 
 ## Sign up for a TiDB Cloud account (Free)
 
-1. Click [here](https://tidbcloud.com/signup) to sign up for a TiDB Cloud account free of charge. 
-2. [Log in](https://tidbcloud.com/?__hstc=86493575.35e9113e934f84907657eac98c81808d.1645076526216.1646808171218.1646883397864.20&__hssc=86493575.6.1646883397864&__hsfp=2077185778) to your account.
+1. Click [here](https://tidbcloud.com/signup?utm_source=ossinsight) to sign up for a TiDB Cloud account free of charge. 
+2. [Log in](https://tidbcloud.com/?utm_source=ossinsight) to your account.
 
 ## Create a TiDB Developer Tier cluster (Free)
 Once you register an account, you can create a free cluster with TiDB Developer Tier. 
@@ -81,7 +81,7 @@ TiDB Cloud provides a web shell to connect the database online.
 
 ### Set column storage replica: TiFlash (Optional) 
 
-[TiFlash](https://docs.pingcap.com/tidb/stable/tiflash-overview) is the key component that makes TiDB / TiDB Cloud an HTAP database and capable of dealing with OLTP and OLAP workloads at the same time. 
+[TiFlash](https://docs.pingcap.com/tidb/stable/tiflash-overview?utm_source=ossinsight) is the key component that makes TiDB / TiDB Cloud an HTAP database and capable of dealing with OLTP and OLAP workloads at the same time. 
 
 Here, you can try the following SQL commands on TiDB Cloud to experience its real-time analytics with ease.
 

@@ -6,7 +6,7 @@ Seeing no good solution on the market, they decided to build one themselves — 
 
 With the help of a first-class team, and hundreds of contributors from around the globe, PingCAP is building an open-source distributed NewSQL Hybrid Transactional and Analytical Processing (HTAP) database. TiDB, our flagship project, is a cloud-native distributed SQL layer with MySQL compatibility, and one of the most popular open-source database projects in the world (don’t take our word for it, check it out). TiDB’s sister project, TiKV, is a cloud-native distributed Key-Value store. It is now a CNCF Graduated project.
 
-[Learn more about PingCAP](https://pingcap.com/about-us/)
+[Learn more about PingCAP](https://pingcap.com/about-us/?utm_source=ossinsight)
 
 ## Contact
 
