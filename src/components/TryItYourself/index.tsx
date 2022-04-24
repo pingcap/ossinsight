@@ -77,7 +77,7 @@ export default function TryItYourself({show = true, campaign, fixed = false}: Tr
         target='_blank'
       >
         <Typography variant='body2' sx={{pr: 2}}>
-          💡 <b style={{color: 'var(--ifm-color-primary)'}}>Try</b> Your Own Dataset!
+          💡 <b style={{color: 'var(--ifm-color-primary)'}}>Try</b> Your Own Dataset
         </Typography>
         <IconButton
           size='small'
