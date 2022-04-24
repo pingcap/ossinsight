@@ -70,7 +70,7 @@ function CompareHeader({
         <Grid item xs={5}>
           <RepoSelector
             label="Repo Name 1"
-            defaultRepoName="pingcap/tidb"
+            defaultRepoName="recommend-repo-list-1-keyword"
             repo={repo1}
             onChange={onRepo1Change}
             onValid={onRepo1Valid}
@@ -92,7 +92,7 @@ function CompareHeader({
         <Grid item xs={5}>
           <RepoSelector
             label="Repo Name 2"
-            defaultRepoName="tikv/tikv"
+            defaultRepoName="recommend-repo-list-2-keyword"
             repo={repo2}
             onChange={onRepo2Change}
             onValid={onRepo2Valid}
