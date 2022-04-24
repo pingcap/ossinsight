@@ -21,16 +21,23 @@ OSS Insight analyze billions of GitHub events and get insights from them, also p
 
 # Development
 
-Prepare the environment by:
+clone the code by:
+```bash
+git clone https://github.com/pingcap/ossinsight.git
+```
 
+install npm packages
 ```bash
 cd ossinsight/;
 yarn;
+```
+
+start the server:
+```bash
 yarn start;
 ```
 
 then visit:
-
 ```
 http://localhost:3000
 ```
