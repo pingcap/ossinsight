@@ -67,10 +67,14 @@ then visit: http://localhost:3000
   </a>
   &nbsp;
   &nbsp;
-  x
-  &nbsp;
   &nbsp;
   <a href="https://en.pingcap.com/community">
     <img src="/static/img/logo.svg" height=50 />
+  </a>
+  &nbsp;
+  &nbsp;
+  &nbsp;
+  <a href="https://en.pingcap.com/tidb-cloud">
+    <img src="/static/img/tidb_cloud.png" height=50 />
   </a>
 </div>
