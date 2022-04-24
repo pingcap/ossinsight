@@ -1,5 +1,9 @@
 <h1 align="center">Open Source Software Insight!</h1>
 
+<a href="https://ossinsight.io">
+  <img src="/static/img/screenshots/home.png"
+</a>
+
 <h3 align="center">
   <b><a href="https://ossinsight.io/database/deep-insight-into-open-source-databases">Insights</a></b>
   •
@@ -13,10 +17,6 @@
 <p align="center">
 OSS Insight analyze billions of GitHub events and get insights from them, also provide a compare tool which can compare any two open source software hosted on GitHub deeply.
 </p>
-
-<a href="https://ossinsight.io">
-  <img src="/static/img/screenshots/home.png"
-</a>
 
 ## Insights 👁️
 * [Deep Insight Into Open Source Databases](https://ossinsight.io/database/deep-insight-into-open-source-databases)
