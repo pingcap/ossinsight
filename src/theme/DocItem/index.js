@@ -20,6 +20,7 @@ import {ThemeClassNames} from '@docusaurus/theme-common';
 import ShareButtons from "../../components/ShareButtons";
 import BrowserOnly from "@docusaurus/core/lib/client/exports/BrowserOnly";
 import ThemeAdaptor from "../../components/ThemeAdaptor";
+import TryItYourself from "../../components/TryItYourself";
 export default function DocItem(props) {
   const {content: DocContent} = props;
   const {metadata, frontMatter} = DocContent;
@@ -30,6 +31,10 @@ export default function DocItem(props) {
     hide_table_of_contents: hideTableOfContents,
     toc_min_heading_level: tocMinHeadingLevel,
     toc_max_heading_level: tocMaxHeadingLevel,
+    try_it_yourself: {
+      show: try_it_yourself_show = true,
+      campaign: try_it_yourself_campaign
+    } = {}
   } = frontMatter;
   const {description, title} = metadata; // We only add a title if:
   // - user asks to hide it with frontmatter
@@ -109,9 +114,14 @@ export default function DocItem(props) {
               minHeadingLevel={tocMinHeadingLevel}
               maxHeadingLevel={tocMaxHeadingLevel}
               className={ThemeClassNames.docs.docTocDesktop}
+              tryItYourselfCampaign={try_it_yourself_campaign}
+              tryItYourselfShow={try_it_yourself_show ?? true}
             />
           </div>
-        )}
+          )}
+        {!renderTocDesktop ? (
+          <TryItYourself campaign={try_it_yourself_campaign} show={try_it_yourself_show} fixed/>
+        ) : undefined}
       </div>
     </ThemeAdaptor>
   );
