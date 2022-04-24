@@ -6,6 +6,7 @@ import IconButton from "@mui/material/IconButton";
 import {Close} from "@mui/icons-material";
 import {responsiveSx} from "../../pages/home/_components/responsive";
 import {SxProps} from "@mui/system";
+import {combineSx} from "../../utils/mui";
 
 export interface TryItYourselfProps {
   show?: boolean
@@ -18,12 +19,11 @@ export default function TryItYourself({show = true, campaign, fixed = false}: Tr
 
   const link = useAdsLink('/blog/try-it-yourself', 'utm_campaign', campaign)
 
-  const sx: SxProps = useMemo(() => {
+  const responsiveSx: SxProps = useMemo(() => {
     if (fixed) {
       return [
         {
           position: 'fixed',
-          p: 2,
           right: 2,
           bottom: 8,
           zIndex: 'var(--ifm-z-index-fixed-mui)'
@@ -46,12 +46,18 @@ export default function TryItYourself({show = true, campaign, fixed = false}: Tr
     } else {
       return {
         position: 'relative',
-        p: 2,
-        my: 2,
+        mb: 3,
         width: 'calc(100% - 1px)'
       }
     }
   }, [fixed])
+
+  const sx = useMemo(() => {
+    return combineSx(responsiveSx, {
+      backgroundColor: '#2c2c2c',
+      p: 2
+    })
+  }, [responsiveSx])
 
   if (!display) {
     return <></>
@@ -62,7 +68,7 @@ export default function TryItYourself({show = true, campaign, fixed = false}: Tr
       sx={sx}
     >
       <Typography variant='body2' sx={{pr: 2}}>
-        👏 <a href={link} target='_blank'>Try</a> Your Own Dataset!
+        💡 <a href={link} target='_blank'><b>Try</b></a> Your Own Dataset!
       </Typography>
       <IconButton
         size='small'
