@@ -96,7 +96,7 @@ export default function YoyChart({data, aspectRatio = 6 / 5, loading}: YoyChartP
         }
       ]
     }
-  }, [data, axis])
+  }, [data])
 
   return (
     <ECharts
