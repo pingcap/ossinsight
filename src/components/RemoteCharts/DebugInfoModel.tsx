@@ -26,44 +26,95 @@ export interface DebugInfoModelInfoProps {
   onClose: () => any
 }
 
+function getNearestTitle(canvas: HTMLElement): HTMLHeadingElement | undefined {
+  let el = canvas.parentElement;
+  while (el) {
+    if (el.dataset.commonChart) {
+      break;
+    }
+    el = el.parentElement;
+  }
+  if (el) {
+    el = el.previousElementSibling as HTMLElement;
+    while (el) {
+      if (/^H[1-6]$/.test(el.tagName)) {
+        return el as HTMLHeadingElement;
+      }
+      el = el.previousElementSibling as HTMLElement
+    }
+  }
+  return undefined
+}
+
+function getFirstParagraph(heading: HTMLHeadingElement): HTMLParagraphElement | undefined {
+  let el = heading.nextElementSibling
+  while (el) {
+    if (/^P$/.test(el.tagName)) {
+      return el as HTMLParagraphElement
+    }
+    el = el.nextElementSibling
+  }
+  return undefined
+}
+
+function getMetadata (canvas: HTMLCanvasElement | undefined): {hash?: string, title?: string, description?: string} {
+  if (typeof window === 'undefined') {
+    return {};
+  }
+  if (canvas) {
+    const heading = getNearestTitle(canvas)
+    if (heading) {
+      const paragraph = getFirstParagraph(heading)
+      return {
+        hash: heading.id,
+        title: heading.textContent.trim(),
+        description: paragraph?.textContent.trim(),
+      }
+    }
+  }
+  return {}
+}
+
 function getTitle(): string {
   if (typeof window === 'undefined') {
     return '';
   }
-  return document.head.getElementsByTagName('head').item(0)?.textContent.trim() ?? '';
+  return document.head.getElementsByTagName('title').item(0)?.textContent.trim() ?? '';
 }
 
 function getDescription(): string {
   if (typeof window === 'undefined') {
     return '';
   }
-  return document.head.querySelector('meta[name=description]')?.textContent.trim() ?? '';
+  return (document.head.querySelector('meta[name=description]') as HTMLMetaElement)?.content.trim() ?? '';
 }
 
 function getKeyword(): string[] {
   if (typeof window === 'undefined') {
     return [];
   }
-  return document.head.querySelector('meta[name=keyword]')?.textContent.split(',') ?? [];
+  return (document.head.querySelector('meta[name=keyword]') as HTMLMetaElement)?.content.split(',') ?? [];
 }
 
-function buildUrl (hash: string | undefined) {
-  const url = window.location.href.replaceAll(window.location.origin, '')
+function buildUrl(hash: string | undefined) {
+  const url = window.location.href.replaceAll(window.location.origin, '');
   if (hash) {
-    return `${url.split('#')[0]}#${hash}`
+    return `${url.split('#')[0]}#${hash}`;
   } else {
-    return url.split('#')[0]
+    return url.split('#')[0];
   }
 }
 
 function useShare(shareInfo: CommonChartShareInfo | undefined, echartsRef: MutableRefObject<EChartsReact> | undefined) {
   const canvas = echartsRef?.current?.ele?.getElementsByTagName('canvas')?.[0];
 
-  const title = shareInfo?.title ?? getTitle();
-  const description = shareInfo?.description ?? getDescription();
+  const metaData = getMetadata(canvas)
+
+  const title = shareInfo?.title ?? metaData.title ?? getTitle();
+  const description = shareInfo?.description ?? metaData.description ?? getDescription();
   const keyword = shareInfo?.keywords ?? getKeyword();
-  const hash = shareInfo?.hash
-  const message = shareInfo?.message
+  const hash = shareInfo?.hash ?? metaData.hash;
+  const message = shareInfo?.message;
 
   const [sharing, setSharing] = useState(false);
   const [shareId, setShareId] = useState<string>();
@@ -83,13 +134,13 @@ function useShare(shareInfo: CommonChartShareInfo | undefined, echartsRef: Mutab
       const blob = await new Promise<Blob>((resolve, reject) => {
         canvas.toBlob(blob => {
           if (blob) {
-            resolve(blob)
+            resolve(blob);
           } else {
-            reject(new Error('failed to get image'))
+            reject(new Error('failed to get image'));
           }
-        }, 'image/png')
-      })
-      await fetch(signedUrl, { method: 'PUT', body: blob, headers: {'content-type': 'image/png'}})
+        }, 'image/png');
+      });
+      await fetch(signedUrl, {method: 'PUT', body: blob, headers: {'content-type': 'image/png'}});
       setShareId(serverShareId);
     } finally {
       setSharing(false);
@@ -135,11 +186,11 @@ export const DebugInfoModel = ({query, data, open, onClose}: DebugInfoModelInfoP
         </DialogTitle>
         <Box sx={{margin: 'auto', maxWidth: '504px', px: 2, width: '100%'}}>
           <TwitterCard title={title} description={description} imgData={imgData} />
-          <Box sx={{my:2}}>
+          <Box sx={{my: 2}}>
             {shareId
               ? (
                 <>
-                  <ShareButtons shareUrl={`https://api.ossinsight.io/share/${shareId}`} title={message}
+                  <ShareButtons shareUrl={`https://api.ossinsight.io/share/${shareId}`} title={message || title}
                                 hashtags={keyword} />
                   <br />
                   <Input value={`https://api.ossinsight.io/share/${shareId}`} disabled size="small" />

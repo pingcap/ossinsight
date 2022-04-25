@@ -45,7 +45,7 @@ function CommonChart({chart: rawChart, noSearch, comparing, shareInfo, ...rest})
             href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
           />
         </Head>
-        <div ref={ref}>
+        <div ref={ref} data-common-chart={true}>
           <InViewContext.Provider value={{ inView }}>
             {form}
             {form && <Divider sx={{my: 2}} />}
