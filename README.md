@@ -65,18 +65,18 @@ then visit: http://localhost:3000
 
 <div align="center">
   <a href="https://en.pingcap.com">
-    <img src="/static/img/pingcap-white-300x79.png" height=50 />
+    <img src="/static/img/pingcap_logo.svg" height=50 />
   </a>
   &nbsp;
   &nbsp;
   &nbsp;
   <a href="https://en.pingcap.com/community">
-    <img src="/static/img/logo.svg" height=50 />
+    <img src="/static/img/tidb_logo.svg" height=50 />
   </a>
   &nbsp;
   &nbsp;
   &nbsp;
   <a href="https://en.pingcap.com/tidb-cloud">
-    <img src="/static/img/tidb_cloud.png" height=50 />
+    <img src="/static/img/tidb_cloud_logo.svg" height=50 />
   </a>
 </div>
