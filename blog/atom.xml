@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://ossinsight.io/blog</id>
     <title>Open Source Software Insight Blog</title>
-    <updated>2022-04-25T10:45:10.145Z</updated>
+    <updated>2022-04-25T14:41:39.318Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://ossinsight.io/blog"/>
     <subtitle>Open Source Software Insight Blog</subtitle>
@@ -11,7 +11,7 @@
         <title type="html"><![CDATA[Build a Real-time Analytics Dashboard in Logistics Industry with Metabase]]></title>
         <id>/build-a-real-time-analytics-dashboard-in-metabase</id>
         <link href="https://ossinsight.io/blog/build-a-real-time-analytics-dashboard-in-metabase"/>
-        <updated>2022-04-25T10:45:10.145Z</updated>
+        <updated>2022-04-25T14:41:39.318Z</updated>
         <summary type="html"><![CDATA[#Real-time analytics]]></summary>
         <content type="html"><![CDATA[<p><code>#Real-time analytics</code>
 <!-- --> <!-- -->
@@ -33,7 +33,7 @@ The result will now appear on the dashboard.</li><li>Click <strong>Save</strong>
         <title type="html"><![CDATA[Changelog]]></title>
         <id>/changelog</id>
         <link href="https://ossinsight.io/blog/changelog"/>
-        <updated>2022-04-25T10:45:10.145Z</updated>
+        <updated>2022-04-25T14:41:39.318Z</updated>
         <summary type="html"><![CDATA[2022-03-22]]></summary>
         <content type="html"><![CDATA[<h2>2022-03-22</h2><ul><li>Add &quot;Compare Projects&quot; tools</li><li>Add &quot;Try It Yourself&quot; blog</li></ul>]]></content>
     </entry>
@@ -41,7 +41,7 @@ The result will now appear on the dashboard.</li><li>Click <strong>Save</strong>
         <title type="html"><![CDATA[Difference Between MySQL Compatible Databases ...]]></title>
         <id>/difference-between-mysql-compatible-databases</id>
         <link href="https://ossinsight.io/blog/difference-between-mysql-compatible-databases"/>
-        <updated>2022-04-25T10:45:10.145Z</updated>
+        <updated>2022-04-25T14:41:39.318Z</updated>
         <summary type="html"><![CDATA[Contributors]]></summary>
         <content type="html"><![CDATA[<h2>Contributors</h2><blockquote><p>Contributors open pull requests, issues and comment in pr body &amp; issue body</p></blockquote><iframe width="100%" height="400" src="/charts/tidb-vs-mysql-compatible-databases-contributor.html?theme=vintage&amp;v=3"></iframe><h2>Contributions</h2><blockquote><p>Total Number of Pull Request + Issue + Comment + Review</p></blockquote><iframe width="100%" height="400" src="/charts/tidb-vs-mysql-compatible-databases-contribution.html?theme=vintage&amp;v=3"></iframe><h2>Code</h2><blockquote><p>lines of modified code: additions + deletions</p></blockquote><iframe width="100%" height="400" src="/charts/tidb-vs-mysql-compatible-databases-code.html?theme=vintage&amp;v=3"></iframe><h3>The top 10 pull request code additions+deletions of <code>percona/percona-server</code></h3><pre><code class="language-sql">gharchive_dev&gt; select (additions+deletions) as lines_modified, concat(&#x27;https://github.com/percona/percona-server/pull/&#x27;, number) from github_ev
             -&gt; ents where repo_name = &#x27;percona/percona-server&#x27; order by lines_modified desc limit 10;
@@ -68,7 +68,7 @@ gharchive_dev&gt;
         <title type="html"><![CDATA[Data Preparation for Analytics]]></title>
         <id>/how-it-works</id>
         <link href="https://ossinsight.io/blog/how-it-works"/>
-        <updated>2022-04-25T10:45:10.145Z</updated>
+        <updated>2022-04-25T14:41:39.318Z</updated>
         <summary type="html"><![CDATA[All the data we use here on this website sources from GH Archive, a non-profit project that records and archives all GitHub events data since 2011. The total data volume archived by GH Archive can be up to 4 billion rows. We download the json file on GH Archive and convert it into csv format via Script, and finally load it into the TiDB cluster in parallel through TiDB-Lightning.]]></summary>
         <content type="html"><![CDATA[<p>All the data we use here on this website sources from <a href="https://www.gharchive.org/">GH Archive</a>, a non-profit project that records and archives all GitHub events data since 2011. The total data volume archived by GH Archive can be up to 4 billion rows. We download the <code>json file</code> on GH Archive and convert it into csv format via Script, and finally load it into the TiDB cluster in parallel through <a href="https://docs.pingcap.com/tidb/stable/tidb-lightning-overview">TiDB-Lightning</a>.</p><p>In this post, we will explain step by step how we conduct this process. </p><ol><li>Prepare the data in csv format for TiDB Lighting. </li></ol><pre><code>├── gharchive_dev.github_events.000000000000.csv
 ├── gharchive_dev.github_events.000000000001.csv
@@ -192,7 +192,7 @@ ORDER BY 2 DESC
         <title type="html"><![CDATA[▶️  Use TiDB Cloud to Analyze GitHub Events in 5 Minutes]]></title>
         <id>/try-it-yourself</id>
         <link href="https://ossinsight.io/blog/try-it-yourself"/>
-        <updated>2022-04-25T10:45:10.145Z</updated>
+        <updated>2022-04-25T14:41:39.318Z</updated>
         <summary type="html"><![CDATA[TiDB is an open source distributed NewSQL database with horizontal scalability, high availability, and strong consistency. It can also deal with mixed OLTP and OLAP workloads at the same time by leveraging its hybrid transactional and analytical (HTAP) capability.]]></summary>
         <content type="html"><![CDATA[<p><a href="https://docs.pingcap.com/tidb/stable/overview?utm_source=ossinsight">TiDB</a> is an open source distributed NewSQL database with horizontal scalability, high availability, and strong consistency. It can also deal with mixed OLTP and OLAP workloads at the same time by leveraging its hybrid transactional and analytical (HTAP) capability. </p><p><strong><a href="https://docs.pingcap.com/tidbcloud/public-preview?utm_source=ossinsight">TiDB Cloud</a> is a fully-managed Database-as-a-Service (DBaaS)</strong> that brings everything great about TiDB to your cloud and lets you focus on your applications, not the complexities of your database. </p><p>In this tutorial, we will provide you with a piece of sample data of all GitHub events occurring on January 1, 2022, and walk you through on how to use TiDB Cloud to analyze this data in 5 minutes.  </p><h2>Sign up for a TiDB Cloud account (Free)</h2><ol><li>Click <a href="https://tidbcloud.com/signup?utm_source=ossinsight">here</a> to sign up for a TiDB Cloud account free of charge. </li><li><a href="https://tidbcloud.com/?utm_source=ossinsight">Log in</a> to your account.</li></ol><h2>Create a TiDB Developer Tier cluster (Free)</h2><p>Once you register an account, you can create a free cluster with TiDB Developer Tier. </p><p>:::info
 A cluster is a database to store data.
