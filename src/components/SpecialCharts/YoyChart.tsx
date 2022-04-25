@@ -23,36 +23,6 @@ interface YoyChartProps {
 }
 
 export default function YoyChart({data, aspectRatio = 6 / 5, loading}: YoyChartProps) {
-  const axis = useMemo(() => {
-    // https://blog.csdn.net/qq_32862143/article/details/112969310
-    const max1 = Math.max(...data.map(data => data.yoy))
-    const min1 = Math.min(...data.map(data => data.yoy))
-    const max2 = Math.max(...data.map(data => data.stars2020), ...data.map(data => data.stars2021))
-    const min2 = Math.min(...data.map(data => data.stars2020), ...data.map(data => data.stars2021))
-
-    const ratio = (max1 - min1) / (max2 - min2);
-    let x1Min, x1Max, x2Min, x2Max: number
-
-    if (max1 < max2 * ratio) {
-      x1Max = max2 * ratio;
-      x2Max = max2;
-    } else {
-      x1Max = max1;
-      x2Max = max1 / ratio;
-    }
-    if (min1 < min2 * ratio) {
-      x1Min = min1;
-      x2Min = min1 / ratio;
-    } else {
-      x1Min = min2 * ratio;
-      x2Min = min2;
-    }
-
-    return {max1, max2, min1, min2, x1Min, x2Min, x1Max, x2Max}
-  }, [data])
-
-
-
   const option: EChartsOption = useMemo(() => {
     return {
       legend: {
