@@ -44,7 +44,7 @@ export default function Footer() {
           />
           <StandardCard
             title='Use TiDB Cloud to Analyze GitHub Events in 5 Minutes'
-            description='Tutorial · 10 min read'
+            description='Tutorial · 5 min read'
             codeStyleDescription={false}
             readMore='/blog/try-it-yourself'
             top={icon(require('./icon-3.png').default)}
@@ -55,7 +55,7 @@ export default function Footer() {
         </Cards>
         <Box textAlign='center' sx={{fontSize: 24, mt: 6}}>
           Now, how about&nbsp;
-          <Button sx={{fontSize: 24, fontWeight: 'bold'}} component={Link} href='/try-your-own-dataset?utm_content=wonder_cta'>
+          <Button sx={{fontSize: 24, fontWeight: 'bold'}} style={{ verticalAlign: 'baseline' }} component={Link} href='/try-your-own-dataset?utm_content=wonder_cta'>
             Try your own dataset !
           </Button>
         </Box>

@@ -128,7 +128,7 @@ export default function RepoCompare() {
             <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,400,500,700&display=swap" />
           </Head>
           <MainContent context={{repo1, repo2, dateRange, allReposProvided, allProvidedRepos}}>
-            <Typography variant='h1' component='h1'>
+            <Typography variant='h1' component='h1' style={{ marginTop: '24px' }}>
               Comparing Projects
             </Typography>
             <Grid container>
