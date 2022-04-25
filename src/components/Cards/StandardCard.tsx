@@ -2,7 +2,7 @@ import Grid, {GridProps} from "@mui/material/Grid";
 import Card, {CardProps} from "@mui/material/Card";
 import Typography from "@mui/material/Typography";
 import AspectRatio from "react-aspect-ratio";
-import React, {useCallback, useState} from "react";
+import React, {HTMLAttributeAnchorTarget, useCallback, useState} from 'react';
 import Button from "@mui/material/Button";
 import Chip from "@mui/material/Chip";
 import Box from "@mui/material/Box";
@@ -49,9 +49,8 @@ function withClickable(children: React.ReactNode, {
         onMouseDown={onMouseLeave}
       >
         <ButtonBase
-          component='a'
-          href={link}
-          target='_blank'
+          component={Link}
+          to={link}
           sx={{
             textAlign: 'left',
             p: 4,

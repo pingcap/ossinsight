@@ -30,7 +30,7 @@ export default function Page() {
               codeStyleDescription={false}
               elevation={0}
               cardSx={{backgroundColor: 'action.hover'}}
-              link='https://ossinsight.io/blog/try-it-yourself/#sign-up-for-a-tidb-cloud-account-free'
+              link='/blog/try-it-yourself/#sign-up-for-a-tidb-cloud-account-free'
             />
             <StandardCard
               title='Step 2: Create cluster (Free)'
@@ -38,7 +38,7 @@ export default function Page() {
               codeStyleDescription={false}
               elevation={0}
               cardSx={{backgroundColor: 'action.hover'}}
-              link='https://ossinsight.io/blog/try-it-yourself/#create-a-tidb-developer-tier-cluster-free'
+              link='/blog/try-it-yourself/#create-a-tidb-developer-tier-cluster-free'
             />
             <StandardCard
               title='Step 3: Import data'
@@ -46,7 +46,7 @@ export default function Page() {
               codeStyleDescription={false}
               elevation={0}
               cardSx={{backgroundColor: 'action.hover'}}
-              link='https://ossinsight.io/blog/try-it-yourself/#import-data-to-your-tidb-cloud-cluster'
+              link='/blog/try-it-yourself/#import-data-to-your-tidb-cloud-cluster'
             />
             <StandardCard
               title='Step 4: Analyze with SQL !'
@@ -54,7 +54,7 @@ export default function Page() {
               codeStyleDescription={false}
               elevation={0}
               cardSx={{backgroundColor: 'action.hover'}}
-              link='https://ossinsight.io/blog/try-it-yourself/#analysis'
+              link='/blog/try-it-yourself/#analysis'
             />
           </Cards>
           <Button component='a' startIcon={<ArrowRightIcon />} variant='contained' sx={{':hover': {color: '#ffffff'}}} href="/blog/try-it-yourself/">
