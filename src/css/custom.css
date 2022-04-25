@@ -42,8 +42,8 @@
 
   --ifm-z-index-dropdown: 10;
   --ifm-z-index-fixed-mui: 11;
-  --ifm-z-index-fixed: 12;
-  --ifm-z-index-overlay: 14;
+  --ifm-z-index-fixed: 14;
+  --ifm-z-index-overlay: 16;
 }
 
 html[data-theme='dark'] {

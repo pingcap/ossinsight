@@ -2,7 +2,7 @@ import {createContext} from "react";
 
 export interface GroupSelectContextProps {
   group: string | undefined
-  setGroup: ((value: string) => void) | undefined
+  setGroup: ((value: string | undefined) => void) | undefined
 }
 
 

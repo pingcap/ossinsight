@@ -9,8 +9,9 @@ import {useInView} from "react-intersection-observer";
 import InViewContext from '../InViewContext'
 import GroupSelectContext from "../GroupSelect/GroupSelectContext";
 import {groups} from "../GroupSelect/groups";
+import CommonChartContext from './context'
 
-function CommonChart({chart: rawChart, noSearch, comparing, ...rest}) {
+function CommonChart({chart: rawChart, noSearch, comparing, shareInfo, ...rest}) {
   const { inView, ref } = useInView({ fallbackInView: true })
   const chart = useMemo(() => {
     if (typeof rawChart === 'string') {
@@ -48,7 +49,9 @@ function CommonChart({chart: rawChart, noSearch, comparing, ...rest}) {
           <InViewContext.Provider value={{ inView }}>
             {form}
             {form && <Divider sx={{my: 2}} />}
-            {child}
+            <CommonChartContext.Provider value={{shareInfo}}>
+              {child}
+            </CommonChartContext.Provider>
           </InViewContext.Provider>
         </div>
       </ThemeAdaptor>

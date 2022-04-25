@@ -34,7 +34,7 @@ export default function GroupSelect () {
       my: 2,
       py: 2,
       top: 'var(--ifm-navbar-height)',
-      zIndex: 'var(--ifm-z-index-fixed-mui)',
+      zIndex: 'calc(var(--ifm-z-index-fixed-mui) + 1)',
       backgroundColor: isDarkTheme ? 'var(--ifm-background-color)' : 'background.default',
       borderBottom: '1px solid transparent',
       borderBottomColor: 'divider',
@@ -51,7 +51,7 @@ export default function GroupSelect () {
       >
         <MenuItem key='none' value={undefined}>None</MenuItem>
         {Object.keys(groups).map(name => (
-          <MenuItem key={name} value={name}>{name}</MenuItem>
+          <MenuItem key={name} value={name} disabled={name === 'tidb'}>{name}</MenuItem>
         ))}
       </Select>
     </Box>
