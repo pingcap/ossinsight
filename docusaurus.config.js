@@ -88,8 +88,8 @@ const config = {
             position: 'left',
             label: 'Insights',
           },
-          {to: '/compare', label: 'Compare Projects', position: 'left'},
-          {to: '/try-your-own-dataset/?utm_content=header', label: '🔧 Try Your Own Dataset', position: 'right'},
+          {to: '/compare', label: '🔧 Compare Projects', position: 'left'},
+          {to: '/try-your-own-dataset/?utm_content=header', label: 'Try Your Own Dataset', position: 'right'},
           {to: '/blog/how-it-works', label: 'How It Works', position: 'right'},
           {to: '/about', label: 'About', position: 'right'},
           {
