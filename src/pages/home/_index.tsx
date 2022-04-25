@@ -113,7 +113,7 @@ export default function Home() {
               </a>
             </Body>
           </AlignRightItem>
-          <Item sx={[{flex: 0.618}, fontSizes.h1]}>
+          <Item sx={[{flex: 0.618, paddingBottom: "10%"}, fontSizes.h1]}>
             <WordCloud period='last_hour' style={{minHeight: 200}}>
               <span></span>
             </WordCloud>
