@@ -57,7 +57,7 @@ export const ShareDialog = ({open, onClose}: ShareDialogProps) => {
         fullWidth={true}
         onClose={onClose}
       >
-        <Box sx={{margin: 'auto', maxWidth: '504px', px: 2, width: '100%'}}>
+        <Box sx={{margin: 'auto', maxWidth: '504px', px: 2, pt: 2, width: '100%'}}>
           <TwitterCard title={title} description={description} imgData={imgData} />
           <Box sx={{my: 2}}>
             {shareId
