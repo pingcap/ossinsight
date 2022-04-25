@@ -63,6 +63,7 @@ function useShare(shareInfo: CommonChartShareInfo | undefined, echartsRef: Mutab
   const description = shareInfo?.description ?? getDescription();
   const keyword = shareInfo?.keywords ?? getKeyword();
   const hash = shareInfo?.hash
+  const message = shareInfo?.message
 
   const [sharing, setSharing] = useState(false);
   const [shareId, setShareId] = useState<string>();
@@ -79,22 +80,30 @@ function useShare(shareInfo: CommonChartShareInfo | undefined, echartsRef: Mutab
         keyword,
         path: buildUrl(hash),
       });
-      const imgData = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height);
-      await axios.put(signedUrl, imgData, {headers: {'content-type': 'image/png'}});
-      setShareId(shareId);
+      const blob = await new Promise<Blob>((resolve, reject) => {
+        canvas.toBlob(blob => {
+          if (blob) {
+            resolve(blob)
+          } else {
+            reject(new Error('failed to get image'))
+          }
+        }, 'image/png')
+      })
+      await fetch(signedUrl, { method: 'PUT', body: blob, headers: {'content-type': 'image/png'}})
+      setShareId(serverShareId);
     } finally {
       setSharing(false);
     }
   }, [title, description, keyword, shareId, canvas]);
 
-  return {share, shareId, sharing, title, hash, description, keyword};
+  return {share, shareId, sharing, title, hash, description, message, keyword};
 }
 
 export const DebugInfoModel = ({query, data, open, onClose}: DebugInfoModelInfoProps) => {
   const {echartsRef} = useContext(EChartsContext);
   const {shareInfo} = useContext(CommonChartContext);
   const [imgData, setImgData] = useState<string>();
-  const {share, sharing, shareId, title, description, keyword} = useShare(shareInfo, echartsRef);
+  const {share, sharing, shareId, title, description, message, keyword} = useShare(shareInfo, echartsRef);
 
   useEffect(() => {
     if (!data) {
@@ -130,7 +139,7 @@ export const DebugInfoModel = ({query, data, open, onClose}: DebugInfoModelInfoP
             {shareId
               ? (
                 <>
-                  <ShareButtons shareUrl={`https://api.ossinsight.io/share/${shareId}`} title={description}
+                  <ShareButtons shareUrl={`https://api.ossinsight.io/share/${shareId}`} title={message}
                                 hashtags={keyword} />
                   <br />
                   <Input value={`https://api.ossinsight.io/share/${shareId}`} disabled size="small" />

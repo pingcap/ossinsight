@@ -9,6 +9,7 @@ export interface CommonChartShareInfo {
   description?: string
   keywords?: string[]
   hash?: string
+  message?: string
 }
 
 export default createContext<CommonChartProps>({
