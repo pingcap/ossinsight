@@ -3,7 +3,6 @@ import React, {useState} from "react";
 import {Card, CircularProgress, Stack, useTheme} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import basicStyle from "./basic.module.css";
-import {DebugInfoModel} from "../RemoteCharts/DebugInfoModel";
 import {Queries} from "../RemoteCharts/queries";
 import {RemoteData} from "../RemoteCharts/hook";
 import Box from "@mui/material/Box";
@@ -44,30 +43,19 @@ export default function BasicCard({
   title, height = "100px", noLoadReason, children, query, data
 }: BaseCardProps) {
   const theme = useTheme();
-  const [showDebugModel, setShowDebugModel] = useState(false);
-
-  const handleShowDebugModel = () => {
-    if (data != null) {
-      setShowDebugModel(true);
-    }
-  }
-
-  const handleCloseDebugModel = () => {
-    setShowDebugModel(false);
-  }
 
   return <>
     <Box className={basicStyle.basicCard} sx={{ mt: 2 }}>
       {
         (title && !hideTitle) && <Stack className={basicStyle.basicCardHeader} direction="row" justifyContent="center" alignItems="center">
-          <a
+          <span
             className={basicStyle.basicCardTitle}
             style={{
               color: theme.palette.text.secondary
             }}
-            onClick={handleShowDebugModel}>
+          >
             {title}
-          </a>
+          </span>
         </Stack>
       }
       {
@@ -86,6 +74,5 @@ export default function BasicCard({
         children
       }
     </Box>
-    <DebugInfoModel query={query} data={data} open={showDebugModel} onClose={handleCloseDebugModel} />
   </>
 }

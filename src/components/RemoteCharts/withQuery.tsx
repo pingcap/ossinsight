@@ -7,7 +7,6 @@ import ShareIcon from '@mui/icons-material/Share';// @ts-ignore
 import CodeBlock from '@theme/CodeBlock';
 import {BarChart, ChartWithSql, DataGrid, DataGridColumn, HeatMapChart, PieChart} from '../BasicCharts';
 import {Queries} from "./queries";
-import {DebugInfoModel} from "./DebugInfoModel";
 import {YoyChart} from "../SpecialCharts";
 import WorldMapChart from "../BasicCharts/WorldMapChart";
 import ZScoreChart from "../SpecialCharts/ZScoreChart";
@@ -15,6 +14,7 @@ import DynamicStarsChart from "../SpecialCharts/DynamicStarsChart";
 import Box from "@mui/material/Box";
 import {EChartsContext} from "../ECharts";
 import EChartsReact from "echarts-for-react";
+import ShareDialog from '../ShareDialog';
 
 type Indexes<Q extends keyof Queries> = {
   categoryIndex: keyof Queries[Q]['data']
@@ -72,7 +72,7 @@ export function renderChart (query, chart, {error, data}: AsyncData<RemoteData<a
                  onClick={handleShowDebugModel} disabled={!data}>
               <ShareIcon />
             </Fab>
-            <DebugInfoModel query={query} data={data} open={showDebugModel} onClose={handleCloseDebugModel} />
+            <ShareDialog open={showDebugModel} onClose={handleCloseDebugModel} />
           </EChartsContext.Provider>
         </div>
       </ChartWithSql>

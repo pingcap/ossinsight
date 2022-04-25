@@ -117,7 +117,7 @@ export default function RepoCompare() {
     return sectionsCtx.keys()
       .sort()
       .map(key => sectionsCtx(key).default)
-      .map(Section => <Section />)
+      .map((Section, i) => <Section key={i} />)
   }, [])
 
   return (

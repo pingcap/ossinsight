@@ -237,3 +237,6 @@ a.card:hover {
   border: 1px solid var(--custom-primary);
   box-shadow: var(--custom-shadow-xl), 0 0 0 1px var(--custom-primary) !important;
 }
+.grecaptcha-badge {
+  visibility: hidden;
+}
