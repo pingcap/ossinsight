@@ -178,18 +178,18 @@ export default class Query {
   }
 
   async buildSql(params: Record<string, any>): Promise<string> {
-    await this.ready()
-    return await buildParams(this.template!, this.queryDef!, params, this.ghEventService)
+    return buildParams(this.template!, this.queryDef!, params, this.ghEventService)
   }
 
   async run <T> (params: Record<string, any>, refreshCache: boolean = false, conn?: PoolConnection): Promise<CachedData<T>> {
-    const sql = await this.buildSql(params)
+    await this.ready();
     const key = `query:${this.name}:${this.queryDef!.params.map(p => params[p.name]).join('_')}`;
     const { cacheHours = -1, refreshHours = -1, onlyFromCache = false } = this.queryDef!;
     const cache = new Cache<T>(this.redisClient, key, cacheHours, refreshHours, onlyFromCache, refreshCache);
 
     return cache.load(async () => {
       return await measure(dataQueryTimer, async () => {
+        const sql = await this.buildSql(params);
         try {
           const start = DateTime.now()
           tidbQueryCounter.labels({ query: this.name, phase: 'start' }).inc()

@@ -8,6 +8,44 @@ import {ghQueryCounter, ghQueryTimer, measure} from "../metrics";
 
 const SYMBOL_TOKEN = Symbol('PERSONAL_TOKEN')
 
+const RECOMMEND_REPO_LIST_1_KEYWORD = 'recommend-repo-list-1-keyword'
+const RECOMMEND_REPO_LIST_1: any[] = [
+  { id: 41986369, fullName: 'pingcap/tidb' },
+  { id: 201455508, fullName: 'pingcap/tiflow' },
+  { id: 63995402, fullName: 'pingcap/docs' },
+  { id: 16563587, fullName: 'cockroachdb/cockroach' },
+  { id: 60246359, fullName: 'ClickHouse/ClickHouse' },
+  { id: 108110, fullName: 'mongodb/mongo' },
+  { id: 11730342, fullName: 'vuejs/vue' },
+  { id: 10270250, fullName: 'facebook/react' },
+  { id: 24195339, fullName: 'angular/angular' },
+  { id: 1863329, fullName: 'laravel/laravel' },
+  { id: 4164482, fullName: 'django/django' },
+  { id: 27193779, fullName: 'nodejs/node' },
+  { id: 6296790, fullName: 'spring-projects/spring-boot' },
+  { id: 45717250, fullName: 'tensorflow/tensorflow' },
+  { id: 65600975, fullName: 'pytorch/pytorch' }
+]
+
+const RECOMMEND_REPO_LIST_2_KEYWORD = 'recommend-repo-list-2-keyword'
+const RECOMMEND_REPO_LIST_2: any[] = [
+  { id: 48833910, fullName: 'tikv/tikv' },
+  { id: 53311716, fullName: 'tikv/pd' },
+  { id: 206213815, fullName: 'chaos-mesh/chaos-mesh' },
+  { id: 16563587, fullName: 'cockroachdb/cockroach' },
+  { id: 60246359, fullName: 'ClickHouse/ClickHouse' },
+  { id: 108110, fullName: 'mongodb/mongo' },
+  { id: 11730342, fullName: 'vuejs/vue' },
+  { id: 10270250, fullName: 'facebook/react' },
+  { id: 24195339, fullName: 'angular/angular' },
+  { id: 1863329, fullName: 'laravel/laravel' },
+  { id: 4164482, fullName: 'django/django' },
+  { id: 27193779, fullName: 'nodejs/node' },
+  { id: 6296790, fullName: 'spring-projects/spring-boot' },
+  { id: 45717250, fullName: 'tensorflow/tensorflow' },
+  { id: 65600975, fullName: 'pytorch/pytorch' }
+]
+
 function eraseToken (value: string | undefined): string {
   return value ? `****${value.substring(value.length - 8)}` : 'anonymous'
 }
@@ -100,6 +138,19 @@ export default class GhExecutor {
     return cache.load(() => {
       return this.octokitPool.use(async (octokit) => {
         octokit.log.info(`search repos by keyword ${keyword}`)
+
+        // Recommend list.
+        if (keyword === RECOMMEND_REPO_LIST_1_KEYWORD) {
+          return Promise.resolve({
+            expiresAt: DateTime.now().plus({hours: SEARCH_REPOS_CACHE_HOURS}),
+            data: RECOMMEND_REPO_LIST_1
+          })
+        } else if (keyword === RECOMMEND_REPO_LIST_2_KEYWORD) {
+          return Promise.resolve({
+            expiresAt: DateTime.now().plus({hours: SEARCH_REPOS_CACHE_HOURS}),
+            data: RECOMMEND_REPO_LIST_2
+          })
+        }
 
         const variables = {
           q: keyword,

@@ -17,8 +17,8 @@ with issue_with_first_responed_at as (
         github_events ge
         join osdb_repos db on ge.repo_id = db.id
     where
-            type = 'IssuesEvent'
-      and action = 'opened'
+        type = 'IssuesEvent'
+        and action = 'opened'
 )
 select
     iwo.repo_group_name,
