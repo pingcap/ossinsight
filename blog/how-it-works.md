@@ -69,7 +69,7 @@ nohup tidb-lightning -config ./tidb-lightning.toml > nohup.out
 
 4. Convert the unstructured `json file` provided by GH Archive into structured data. 
 
-```sql
+```
 gharchive_dev> desc github_events;
 +--------------------+--------------+------+-----+---------+-------+
 | Field              | Type         | Null | Key | Default | Extra |
@@ -110,7 +110,7 @@ gharchive_dev> desc github_events;
 
 5. With structured data at hand, we can start to make further analysis with TiDB Cloud. Execute SQL commands to generate analytical results. For example, you can execute SQL commands below to output the top 10 most starred JavaScript framework repos in 2021.
 
-```sql
+```
   SELECT js.name, count(*) as stars 
     FROM github_events 
          JOIN js_framework_repos js ON js.id = github_events.repo_id 
@@ -134,11 +134,11 @@ ORDER BY 2 DESC
 +-------------------+-------+
 ```
 
-We have analyzed all the GitHub projects regarding databases, JavaScripe frameworks, programming languages, web frameworks, and low-code development tools, and provided valuable insights in 2021, in real time, and custom insights. If the repository you care about is not included here, you're welcome to submit your PR [here](https://github.com/hooopo/gharchive/tree/main/meta/repos). If you want to gain more insights into other areas, you can try TiDB Cloud by yourselves with this [10 minute tutorial](https://ossinsight.io/blog/try-it-yourself/). 
+We have analyzed all the GitHub projects regarding databases, JavaScripe frameworks, programming languages, web frameworks, and low-code development tools, and provided valuable insights in 2021, in real time, and custom insights. If the repository you care about is not included here, you're welcome to submit your PR [here](https://github.com/hooopo/gharchive/tree/main/meta/repos). If you want to gain more insights into other areas, you can try TiDB Cloud by yourselves with this [5-minute tutorial](https://ossinsight.io/blog/try-it-yourself/). 
 
 Below are the areas of GitHub projects we have analyzed. 
 
-```sql
+```
 gharchive_dev> show tables;
 +-----------------------------+
 | Tables_in_gharchive_dev     |
