@@ -41,7 +41,12 @@ function paramsSerializer (params: any): string {
   return usp.toString()
 }
 
-export const useRemoteData = <Q extends keyof Queries, P = Queries[Q]['params'], T = Queries[Q]['data']>(query: Q, params: P, formatSql: boolean, shouldLoad: boolean = true): AsyncData<RemoteData<P, T>> => {
+interface UseRemoteData {
+  <Q extends keyof Queries, P = Queries[Q]['params'], T = Queries[Q]['data']>(query: Q, params: P, formatSql: boolean, shouldLoad?: boolean): AsyncData<RemoteData<P, T>>
+  <P, T>(query: string, params: P, formatSql: boolean, shouldLoad?: boolean): AsyncData<RemoteData<P, T>>
+}
+
+export const useRemoteData: UseRemoteData = (query: string, params: any, formatSql: boolean, shouldLoad: boolean = true): AsyncData<RemoteData<any, any>> => {
   const { inView } = useContext(InViewContext)
   const [viewed, setViewed] = useState(inView)
 

@@ -15,7 +15,7 @@ interface SizeProps {
   echartsStyle?: CSSProperties
 }
 
-interface EChartsProps extends EChartsReactProps, SizeProps {
+export interface EChartsProps extends EChartsReactProps, SizeProps {
 }
 
 registerThemeVintage()
