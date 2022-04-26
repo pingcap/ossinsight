@@ -91,15 +91,24 @@ const config = {
           },
           {to: '/compare', label: '🔧 Compare Projects', position: 'left'},
           {to: '/try-your-own-dataset/?utm_content=header', label: '🔥 Try Your Own Dataset', position: 'right'},
-          {to: '/blog/how-it-works', label: 'How It Works', position: 'right'},
-          {to: '/about', label: 'About', position: 'right'},
           {
             href: 'https://en.pingcap.com/tidb-cloud/?utm_source=ossinsight',
             label: 'TiDB Cloud',
             position: 'right',
           },
           {
-            href: 'https://github.com/pingcap/ossinsight',
+            type: 'dropdown',
+            label: 'More',
+            position: 'right',
+            items: [
+              {to: '/about', label: 'About'},
+              {to: '/blog/how-it-works', label: 'How It Works'},
+              {href: 'https://twitter.com/PingCAP', label: 'Twitter'},
+              {href: 'https://youtube.com/PingCAP', label: 'YouTube'},
+            ],
+          },
+          {
+            href: 'https://github.com/pingcap',
             className: 'navbar-item-github',
             position: 'right',
           },
