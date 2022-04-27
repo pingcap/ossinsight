@@ -29,6 +29,9 @@ const days = [
 ];
 
 function prepareData(data: TimeHeatData[]): TimeHeatData[] {
+  if (data.length === 0) {
+    return []
+  }
   const newData = [...data];
   const boolMap = Array(24 * 7).fill(false, 0, 24 * 7);
   for (const item of data) {
@@ -45,7 +48,7 @@ function prepareData(data: TimeHeatData[]): TimeHeatData[] {
       }
     }
   }
-  return data
+  return newData
 }
 
 export const TimeHeatChart = withChart<TimeHeatData>(({title: propsTitle, data}) => ({
@@ -94,7 +97,7 @@ export const TimeHeatChart = withChart<TimeHeatData>(({title: propsTitle, data})
   },
   visualMap: {
     min: 0,
-    max: data.data?.data.reduce((prev, current) => Math.max(prev, current.pushes), 0),
+    max: data.data?.data.reduce((prev, current) => Math.max(prev, current.pushes), 0) ?? 1,
     orient: 'horizontal',
     left: 'center',
     bottom: 0,

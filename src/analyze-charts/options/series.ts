@@ -1,8 +1,8 @@
 import {
   BarSeriesOption,
-  BoxplotSeriesOption,
+  BoxplotSeriesOption, EffectScatterSeriesOption,
   HeatmapSeriesOption,
-  LineSeriesOption,
+  LineSeriesOption, ScatterSeriesOption,
   TreemapSeriesOption,
 } from 'echarts';
 import {ORIGINAL_DATASET_ID} from './dataset';
@@ -60,7 +60,7 @@ export function treemap(data: TreemapSeriesOption['data']): TreemapSeriesOption 
     type: 'treemap',
     data,
     breadcrumb: {
-      show: false
+      show: false,
     },
     label: {
       show: true,
@@ -69,8 +69,8 @@ export function treemap(data: TreemapSeriesOption['data']): TreemapSeriesOption 
     roam: false,
     nodeClick: 'link',
     width: '80%',
-    height: '80%'
-  }
+    height: '80%',
+  };
 }
 
 export function heatmap(x: OptionEncodeValue, y: OptionEncodeValue, value: OptionEncodeValue, option: HeatmapSeriesOption = {}): HeatmapSeriesOption {
@@ -79,8 +79,8 @@ export function heatmap(x: OptionEncodeValue, y: OptionEncodeValue, value: Optio
     emphasis: {
       itemStyle: {
         shadowBlur: 10,
-        shadowColor: 'rgba(0, 0, 0, 0.5)'
-      }
+        shadowColor: 'rgba(0, 0, 0, 0.5)',
+      },
     },
     ...option,
     type: 'heatmap',
@@ -90,5 +90,33 @@ export function heatmap(x: OptionEncodeValue, y: OptionEncodeValue, value: Optio
       value,
       ...(option.encode || {}),
     },
-  }
+  };
+}
+
+export function scatters(idPrefix: string, topN: number, max: number, option: ScatterSeriesOption & EffectScatterSeriesOption = {}): (ScatterSeriesOption | EffectScatterSeriesOption)[] {
+  const commonOptions: ScatterSeriesOption & EffectScatterSeriesOption = {
+    coordinateSystem: 'geo',
+    encode: {
+      lng: 1,
+      lat: 2,
+      value: 3,
+      tooltip: [0, 3],
+    },
+    symbolSize: (val) => {
+      return 1 + Math.sqrt(val[3] / max) * 64;
+    },
+    ...option
+  };
+  return [
+    {
+      type: 'effectScatter',
+      datasetId: `${idPrefix}_top_${topN}`,
+      ...commonOptions,
+    },
+    {
+      type: 'scatter',
+      datasetId: `${idPrefix}_rest`,
+      ...commonOptions,
+    },
+  ];
 }

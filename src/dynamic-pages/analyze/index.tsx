@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useCallback, useMemo, useState} from 'react';
 import {Switch, Route, useRouteMatch} from '@docusaurus/router';
 import CustomPage from '../../theme/CustomPage';
 import {useRepo} from '../../api/gh';
@@ -12,16 +12,27 @@ import { IssueChart } from '../../analyze-charts/issue';
 import {PushesAndCommitsChart} from '../../analyze-charts/push-and-commits';
 import {CompaniesChart} from '../../analyze-charts/companies';
 import {TimeHeatChart} from '../../analyze-charts/heatmap';
+import Box from '@mui/material/Box';
+import Tab from '@mui/material/Tab';
+import Tabs from '@mui/material/Tabs';
+import {WorldMapChart} from '../../analyze-charts/worldmap';
 
 interface AnalyzePageParams {
   owner: string;
   repo: string;
 }
 
+//
+
 export default function AnalyzePage() {
   let {params: {owner, repo: repoName}} = useRouteMatch<AnalyzePageParams>();
 
   const {data: repo} = useRepo(`${owner}/${repoName}`);
+
+  const [mapType, setMapType] = useState('stars-map')
+  const handleChangeMapType = useCallback((event:  React.SyntheticEvent, value: string) => {
+    setMapType(value)
+  }, [])
 
   return (
     <CustomPage>
@@ -58,6 +69,17 @@ export default function AnalyzePage() {
           <Analyze query='commits-time-distribution'>
             <h2>Push heatmap</h2>
             <TimeHeatChart />
+          </Analyze>
+          <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+            <Tabs value={mapType} onChange={handleChangeMapType} aria-label="basic tabs example">
+              <Tab label="Stars" value='stars-map' />
+              <Tab label="Issue creators" value='issue-creators-map' />
+              <Tab label="Pull requests" value='pull-request-creators-map' />
+            </Tabs>
+          </Box>
+          <Analyze query={mapType}>
+            <h2>World Map: {mapType}</h2>
+            <WorldMapChart />
           </Analyze>
         </Container>
       </AnalyzeContext.Provider>
