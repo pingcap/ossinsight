@@ -58,4 +58,3 @@ Below is the full list of the database repositories we collected on GitHub. If t
 | alibaba/oceanbase          | 284   | 217443464 |
 +----------------------------+-------+-----------+
 ```
-
