@@ -31,6 +31,7 @@ export function line(x: OptionEncodeValue, y: OptionEncodeValue, option: LineSer
   return {
     name: String(y),
     datasetId: ORIGINAL_DATASET_ID,
+    showSymbol: false,
     ...option,
     type: 'line',
     encode: {

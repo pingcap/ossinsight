@@ -26,11 +26,15 @@ export function useAnalyzeChartContext<T>(): AnalyzeChartContextProps<T> {
 }
 
 export interface AnalyzeContextProps {
+  repoName: string
+  comparingRepoName?: string
   repoId?: number
   comparingRepoId?: number
 }
 
 export const AnalyzeContext = createContext<AnalyzeContextProps>({
+  repoName: '',
+  comparingRepoName: undefined,
   repoId: undefined,
   comparingRepoId: undefined,
 })

@@ -5,9 +5,13 @@ import {DimensionDefinitionLoose, OptionSourceData} from 'echarts/types/src/util
 export const ORIGINAL_DATASET_ID = 'original';
 
 export function originalDataset<T>(data: AsyncData<RemoteData<unknown, T>>, transform?: (item: T[]) => any): DatasetOption {
+  return remoteDataset(ORIGINAL_DATASET_ID, data, transform)
+}
+
+export function remoteDataset<T>(id: string, data: AsyncData<RemoteData<unknown, T>>, transform?: (item: T[]) => any): DatasetOption {
   const sourceData = data?.data?.data ?? []
   return {
-    id: ORIGINAL_DATASET_ID,
+    id,
     source: transform ? transform(sourceData) : sourceData,
   };
 }

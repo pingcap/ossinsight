@@ -15,6 +15,7 @@ export function axisTooltip(type: 'line' | 'shadow' | 'cross' | 'none', option: 
 
 export function itemTooltip(option: EChartsOption['tooltip'] = {}): EChartsOption['tooltip'] {
   return {
+    renderMode: 'html',
     ...option,
     show: true,
     trigger: 'item',

@@ -16,71 +16,145 @@ import Box from '@mui/material/Box';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import {WorldMapChart} from '../../analyze-charts/worldmap';
+import Summary, {SummaryProps} from '../../analyze-charts/summary';
+import {GitCommitIcon, StarIcon, IssueOpenedIcon, RepoForkedIcon, PeopleIcon, CodeIcon, LinkExternalIcon} from '@primer/octicons-react'
+import Grid from '@mui/material/Grid';
+import {LineChart} from '../../analyze-charts/line';
+import Section from './Section';
+import {H1, H2, H3} from './typography'
 
 interface AnalyzePageParams {
   owner: string;
   repo: string;
 }
 
-//
+const commonAspectRatio = 24 / 9
 
 export default function AnalyzePage() {
   let {params: {owner, repo: repoName}} = useRouteMatch<AnalyzePageParams>();
 
-  const {data: repo} = useRepo(`${owner}/${repoName}`);
+  const name = `${owner}/${repoName}`
+  const {data: repo} = useRepo(name);
 
   const [mapType, setMapType] = useState('stars-map')
   const handleChangeMapType = useCallback((event:  React.SyntheticEvent, value: string) => {
     setMapType(value)
   }, [])
 
+  const summaries: SummaryProps['items'] = useMemo(() => {
+    return [{
+      icon: <StarIcon/>,
+      title: 'Stars',
+      query: 'stars-total',
+      field: '*'
+    },{
+      icon: <GitCommitIcon/>,
+      title: 'Commits',
+      query: 'commits-total',
+      field: '*'
+    },{
+      icon: <IssueOpenedIcon/>,
+      title: 'Issues',
+      query: 'issues-total',
+      field: '*'
+    },{
+      icon: <RepoForkedIcon/>,
+      title: 'Forks',
+      data: repo?.forks,
+    },{
+      icon: <PeopleIcon/>,
+      title: 'Contributors',
+      query: 'committers-total',
+      field: '*'
+    },{
+      icon: <CodeIcon/>,
+      title: 'Language',
+      data: repo?.language,
+    }]
+  }, [])
+
   return (
     <CustomPage>
-      <AnalyzeContext.Provider value={{repoId: repo?.id}}>
-        <Container maxWidth='md'>
-          <Analyze query='analyze-loc-per-month'>
-            <h2>Lines of changes</h2>
-            <LocChart />
-          </Analyze>
-          <Analyze query='analyze-pull-requests-size-per-month'>
-            <h2>PR</h2>
-            <PrChart />
-          </Analyze>
-          <Analyze query='analyze-pull-request-open-to-merged'>
-            <h2>PR Duration</h2>
-            <DurationChart />
-          </Analyze>
-          <Analyze query='analyze-issue-open-to-first-responded'>
-            <h2>Issue first response duration</h2>
-            <DurationChart />
-          </Analyze>
-          <Analyze query='analyze-issue-opened-and-closed'>
-            <h2>Issues</h2>
-            <IssueChart />
-          </Analyze>
-          <Analyze query='analyze-pushes-and-commits-per-month'>
-            <h2>Push and commits</h2>
-            <PushesAndCommitsChart />
-          </Analyze>
-          <Analyze query='analyze-issue-creators-company'>
-            <h2>Issue creators top 50 companies</h2>
-            <CompaniesChart />
-          </Analyze>
-          <Analyze query='commits-time-distribution'>
-            <h2>Push heatmap</h2>
-            <TimeHeatChart />
-          </Analyze>
-          <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-            <Tabs value={mapType} onChange={handleChangeMapType} aria-label="basic tabs example">
-              <Tab label="Stars" value='stars-map' />
-              <Tab label="Issue creators" value='issue-creators-map' />
-              <Tab label="Pull requests" value='pull-request-creators-map' />
-            </Tabs>
-          </Box>
-          <Analyze query={mapType}>
-            <h2>World Map: {mapType}</h2>
-            <WorldMapChart />
-          </Analyze>
+      <AnalyzeContext.Provider value={{repoId: repo?.id, repoName: name}}>
+        <Container maxWidth='lg'>
+          <Section>
+            <H1>
+              <a href={`https://github.com/${name}`} target='_blank'>
+                {name}
+                &nbsp;
+                <LinkExternalIcon size={28} />
+              </a>
+            </H1>
+            <Grid container>
+              <Grid item xs={6}>
+                <Summary items={summaries} />
+              </Grid>
+              <Grid item xs={6}>
+                <Analyze query='stars-history'>
+                  <LineChart spec={{valueIndex: 'total'}}/>
+                </Analyze>
+              </Grid>
+            </Grid>
+          </Section>
+          <Section>
+            <H2>Commits</H2>
+            <Analyze query='analyze-pushes-and-commits-per-month'>
+              <H3>Commit Trend with <del>Release Info</del></H3>
+              <PushesAndCommitsChart aspectRatio={commonAspectRatio} />
+            </Analyze>
+            <Analyze query='analyze-loc-per-month'>
+              <H3>Lines of code changed</H3>
+              <LocChart aspectRatio={commonAspectRatio} />
+            </Analyze>
+            <Analyze query='commits-time-distribution'>
+              <H3>Commits Time Distribution</H3>
+              <TimeHeatChart />
+            </Analyze>
+          </Section>
+          <Section>
+            <H2>Pull Requests</H2>
+            <Analyze query='analyze-pull-requests-size-per-month'>
+              <H3>PR History</H3>
+              <PrChart aspectRatio={commonAspectRatio} />
+            </Analyze>
+            <Analyze query='analyze-pull-request-open-to-merged'>
+              <H3>PR 合并速度</H3>
+              <DurationChart aspectRatio={commonAspectRatio} />
+            </Analyze>
+          </Section>
+          <Section>
+            <H2>Issues</H2>
+            <Analyze query='analyze-issue-open-to-first-responded'>
+              <H3>Issue 处理速度</H3>
+              <DurationChart aspectRatio={commonAspectRatio} />
+            </Analyze>
+            <Analyze query='analyze-issue-opened-and-closed'>
+              <H3>Issues 处理比例</H3>
+              <IssueChart aspectRatio={commonAspectRatio} />
+            </Analyze>
+          </Section>
+          <Section>
+            <H2>People</H2>
+            <Analyze query={mapType}>
+              <H3>Geographical Distribution</H3>
+              <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                <Tabs value={mapType} onChange={handleChangeMapType} aria-label="basic tabs example">
+                  <Tab label="Stars" value='stars-map' />
+                  <Tab label="Issue creators" value='issue-creators-map' />
+                  <Tab label="Pull requests" value='pull-request-creators-map' />
+                </Tabs>
+              </Box>
+              <Grid container>
+                <Grid item xs={9}>
+                  <WorldMapChart />
+                </Grid>
+              </Grid>
+            </Analyze>
+            <Analyze query='analyze-issue-creators-company'>
+              <H3>Companies</H3>
+              <CompaniesChart />
+            </Analyze>
+          </Section>
         </Container>
       </AnalyzeContext.Provider>
     </CustomPage>

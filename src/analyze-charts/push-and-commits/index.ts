@@ -30,8 +30,8 @@ export const PushesAndCommitsChart = withChart<PushesAndCommitsData>(({title: pr
     valueAxis<'y'>('total')
   ],
   series: [
-    bar('event_month', 'pushes', {yAxisId: 'total', emphasis: {focus: 'series'}, stack: 'base'}),
-    bar('event_month', 'commits', {yAxisId: 'total', emphasis: {focus: 'series'}, stack: 'base'}),
+    bar('event_month', 'pushes', {yAxisId: 'total', emphasis: {focus: 'series'}}),
+    bar('event_month', 'commits', {yAxisId: 'total', emphasis: {focus: 'series'}}),
   ],
   tooltip: axisTooltip('line'),
 }), {
