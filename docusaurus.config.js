@@ -28,7 +28,7 @@ const config = {
           {
             path: '/analyze/:owner/:repo',
             exact: true,
-            component: path.resolve(__dirname, 'src/dynamic-pages/analyze')
+            component: '@site/src/dynamic-pages/analyze'
           }
         ]
       }
