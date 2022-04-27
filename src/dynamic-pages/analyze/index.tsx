@@ -46,7 +46,7 @@ export default function AnalyzePage() {
             <h2>Push and commits</h2>
             <PushesAndCommitsChart />
           </Analyze>
-          <Analyze query='issue-creators-top-50-company'>
+          <Analyze query='analyze-issue-creators-company'>
             <h2>Issue creators top 50 companies</h2>
             <CompaniesChart />
           </Analyze>
