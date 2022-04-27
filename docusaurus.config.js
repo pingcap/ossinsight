@@ -165,7 +165,7 @@ const config = {
             title: 'Built With',
             items: [
               {
-                label: 'GH Archive - Data Source',
+                label: 'GH Archive',
                 href: 'http://www.gharchive.org/',
               },
               {
@@ -208,7 +208,7 @@ const config = {
           alt: 'OSS Insight Logo',
           src: '/img/pingcap-white-300x79.png',
         },
-        copyright: `Copyright © ${new Date().getFullYear()} <a href="https://en.pingcap.com" target="_blank">PingCAP</a>`,
+        copyright: `Copyright &copy; ${new Date().getFullYear()} <a href="https://en.pingcap.com" target="_blank">PingCAP</a>. All Rights Reserved | <a href="https://en.pingcap.com/privacy-policy/" target="_blank">Privacy</a> | Built with Docusaurus`,
       },
       prism: {
         theme: lightCodeTheme,
