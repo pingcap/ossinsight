@@ -107,7 +107,6 @@ const config = {
               {to: '/blog', label: 'Blogs'},
               {to: '/blog/how-it-works', label: 'How It Works'},
               {href: 'https://twitter.com/PingCAP', label: 'Twitter'},
-              {href: 'https://youtube.com/PingCAP', label: 'YouTube'},
             ],
           },
           {
