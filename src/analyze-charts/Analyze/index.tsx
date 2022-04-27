@@ -9,13 +9,14 @@ interface AnalyzeChildrenOptions {
 
 export interface AnalyzeProps {
   query: string;
+  params?: object
   children: React.ReactNode | ((options: AnalyzeChildrenOptions) => React.ReactNode);
 }
 
-export default function Analyze({query, children}: AnalyzeProps) {
+export default function Analyze({query, params, children}: AnalyzeProps) {
   const {repoId, comparingRepoId} = useAnalyzeContext();
-  const repoData = useRemoteData(query, {repoId}, false, !!repoId);
-  const compareRepoData = useRemoteData(query, {repoId: comparingRepoId}, false, !!comparingRepoId);
+  const repoData = useRemoteData(query, {repoId, ...(params||{})}, false, !!repoId);
+  const compareRepoData = useRemoteData(query, {repoId: comparingRepoId, ...(params||{})}, false, !!comparingRepoId);
   const [title, setTitle] = useState<string>();
   const [hash, setHash] = useState<string>();
   const [description, setDescription] = useState<string>();

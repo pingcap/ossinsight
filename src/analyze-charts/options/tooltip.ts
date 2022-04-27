@@ -10,3 +10,10 @@ export function axisTooltip(type: 'line' | 'shadow' | 'cross' | 'none'): ECharts
     },
   };
 }
+
+export function itemTooltip(): EChartsOption['tooltip'] {
+  return {
+    show: true,
+    trigger: 'item',
+  }
+}

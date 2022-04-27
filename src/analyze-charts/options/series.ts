@@ -1,4 +1,4 @@
-import {BarSeriesOption, BoxplotSeriesOption, LineSeriesOption} from 'echarts';
+import {BarSeriesOption, BoxplotSeriesOption, LineSeriesOption, TreemapSeriesOption} from 'echarts';
 import {ORIGINAL_DATASET_ID} from './dataset';
 import {DimensionLoose, OptionEncodeValue} from 'echarts/types/src/util/types';
 
@@ -47,4 +47,22 @@ export function boxplot(x: OptionEncodeValue, y: [DimensionLoose, DimensionLoose
       ...(option.encode || {}),
     },
   };
+}
+
+export function treemap(data: TreemapSeriesOption['data']): TreemapSeriesOption {
+  return {
+    type: 'treemap',
+    data,
+    breadcrumb: {
+      show: false
+    },
+    label: {
+      show: true,
+      padding: 1,
+    },
+    roam: false,
+    nodeClick: 'link',
+    width: '80%',
+    height: '80%'
+  }
 }

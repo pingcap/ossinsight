@@ -10,6 +10,7 @@ import Analyze from '../../analyze-charts/Analyze';
 import Container from '@mui/material/Container';
 import { IssueChart } from '../../analyze-charts/issue';
 import {PushesAndCommitsChart} from '../../analyze-charts/push-and-commits';
+import {CompaniesChart} from '../../analyze-charts/companies';
 
 interface AnalyzePageParams {
   owner: string;
@@ -45,7 +46,10 @@ export default function AnalyzePage() {
             <h2>Push and commits</h2>
             <PushesAndCommitsChart />
           </Analyze>
-
+          <Analyze query='issue-creators-top-50-company'>
+            <h2>Issue creators top 50 companies</h2>
+            <CompaniesChart />
+          </Analyze>
         </Container>
       </AnalyzeContext.Provider>
     </CustomPage>
