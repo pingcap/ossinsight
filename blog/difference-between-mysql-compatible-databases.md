@@ -1,5 +1,7 @@
 ---
 title: Difference Between MySQL Compatible Databases ...
+date: 2022-04-08
+authors: [hooopo]
 ---
 
 
@@ -8,6 +10,8 @@ title: Difference Between MySQL Compatible Databases ...
 > Contributors open pull requests, issues and comment in pr body & issue body
 
 <iframe width="100%" height="400" src="/charts/tidb-vs-mysql-compatible-databases-contributor.html?theme=vintage&v=3"></iframe>
+
+<!--truncate-->
 
 ## Contributions
 > Total Number of Pull Request + Issue + Comment + Review

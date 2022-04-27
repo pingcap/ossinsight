@@ -37,13 +37,15 @@ const config = {
           routeBasePath: '/',
         },
         blog: {
-          feedOptions: {
-            type: 'all',
-          },
+          blogSidebarTitle: 'All posts',
+          blogSidebarCount: 'ALL',
           showReadingTime: true,
           // Please change this to your repo.
           editUrl: 'https://github.com/pingcap/ossinsight/edit/main/',
-          blogSidebarCount: 0,
+          feedOptions: {
+            type: 'rss',
+            copyright: `Copyright © ${new Date().getFullYear()} PingCAP`,
+          },
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
@@ -102,6 +104,7 @@ const config = {
             position: 'right',
             items: [
               {to: '/about', label: 'About'},
+              {to: '/blog', label: 'Blogs'},
               {to: '/blog/how-it-works', label: 'How It Works'},
               {href: 'https://twitter.com/PingCAP', label: 'Twitter'},
               {href: 'https://youtube.com/PingCAP', label: 'YouTube'},
@@ -139,6 +142,10 @@ const config = {
               {
                 label: 'About',
                 to: '/about',
+              },
+              {
+                label: 'Blogs',
+                to: '/blog',
               },
             ],
           },
