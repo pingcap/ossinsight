@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkdocus=self.webpackChunkdocus||[]).push([[9190],{46588:function(a){a.exports=JSON.parse('{"allTagsPath":"/blog/tags","slug":"/blog/tags/proliferate-data","name":"Proliferate data","count":1,"permalink":"/blog/tags/proliferate-data"}')}}]);

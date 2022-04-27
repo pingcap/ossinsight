@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkdocus=self.webpackChunkdocus||[]).push([[1486],{12978:function(s){s.exports=JSON.parse('{"allTagsPath":"/blog/tags","slug":"/blog/tags/logistics-industry","name":"Logistics industry","count":1,"permalink":"/blog/tags/logistics-industry"}')}}]);
