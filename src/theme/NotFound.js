@@ -4,26 +4,22 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import Layout from '@theme/Layout';
 import Translate, {translate} from '@docusaurus/Translate';
 import {useHistory} from "@docusaurus/router";
 
 function NotFound() {
   const history = useHistory()
+  const [display, setDisplay] = useState(false)
 
   useEffect(() => {
-
-    // Incase browser doesn't support window.location.origin
-    function getOrigin() {
-      if (window.location.origin) return window.location.origin;
-      return window.location.protocol + "//" + window.location.hostname +
-        (window.location.port ? ':' + window.location.port : '');
-    }
-
     const {pathname,search,hash} = window.location;
     // Only support redirect analyze/repo/name for now
+    // TODO: see https://www.npmjs.com/package/path-to-regexp
+    //       use plugin data to auto generate regexp list.
     if (!/^\/analyze\/[^\/?#]+\/[^\/?#]+\/?[?#]/.test(pathname)) {
+      setDisplay(display)
       return
     }
     history.replace({pathname,search,hash})
@@ -31,11 +27,11 @@ function NotFound() {
 
   return (
     <Layout
-      title={translate({
+      title={display ? translate({
         id: 'theme.NotFound.title',
         message: 'Page Not Found',
-      })}>
-      <main className="container margin-vert--xl">
+      }) : 'Redirecting...'}>
+      <main className="container margin-vert--xl" style={{display: display ? 'block' : 'hidden'}}>
         <div className="row">
           <div className="col col--6 col--offset-3">
             <h1 className="hero__title">
