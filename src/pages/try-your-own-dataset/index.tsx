@@ -68,20 +68,20 @@ export default function Page() {
       >
         <Cards xs={12} md={6} sx={{my: 4}}>
           <StandardCard
-            title='Build your dashboards in Logistics Industry with Metabase'
-            description='In this tutorial, you will build a prototype for PingExpress_DemoCorp’s real-time analytics dashboard that runs on a TiDB Cloud Proof-of-Concept (PoC) cluster.'
+            title='Full Life Cycle Package Tracking in Real-time'
+            description='Logistic companies care about real-time data. Besides building a package tracking system to record where exactly each package is, you still need insights like whether the resources (warehouse, vehicles, courier, etc) are deployed wisely; whether the packages reach the hands of customers in time; how many packages delivered during the peak hours of Black Friday.'
             codeStyleDescription={false}
             image={<Image src={require('./image-1.png').default} />}
             buttonText='details'
-            link='https://en.pingcap.com/blog/build-a-real-time-analytics-application-with-tidb-cloud/?utm_source=ossinsight'
-            readMore='https://en.pingcap.com/blog/build-a-real-time-analytics-application-with-tidb-cloud/?utm_source=ossinsight'
-            tags={['Real-time analytics', 'Proliferate data']}
+            link='https://en.pingcap.com/case-study/real-time-insights-reduce-per-order-costs-by-25-percent/?utm_source=ossinsight'
+            readMore='https://en.pingcap.com/case-study/real-time-insights-reduce-per-order-costs-by-25-percent/?utm_source=ossinsight'
+            tags={['Logistic delivery', 'Multi-dimensional analytics']}
             elevation={0}
             cardSx={{backgroundColor: 'action.hover'}}
           />
           <StandardCard
-            title='Build a Real-time Dashboard for Promotions in Automobile Industry'
-            description='In this case, using lighter analysis tools and finding techniques that can be maintained quickly become important solutions for this typical scenario.'
+            title='Use Real-time Dashboards in Big Sales Promotion'
+            description='During special shopping seasons, merchants often hold promotions. In this case, the refresh interval of the dashboard needs to be very real-time. Dedicated use of analytics databases is too cumbersome and yet costly for the business. A lightweight analytics platform that can be maintained easily will be a suitable solution for this typical scenario.'
             codeStyleDescription={false}
             image={<Image src={require('./image-2.png').default} />}
             buttonText='details'
@@ -92,14 +92,26 @@ export default function Page() {
             cardSx={{backgroundColor: 'action.hover'}}
           />
           <StandardCard
-            title='Support the cross-platform real-time advertising system in Gaming Industry'
-            description='GaeaAD conducts a real-time analysis based on the data of the advertisements on different advertising channels and the amount of players brought by the corresponding channels, with the purpose of displaying and optimizing the conversion effects of advertising within minutes.'
+            title='A Database Solution for Building a Data-heavy Community Forum Application'
+            description='The Autohome community forum is one of the oldest applications, with 100 million+ daily visits and 1 billion+ daily interface calls. As data size rapidly grew, SQL Server became  database bottleneck. Sharding didn’t meet our app requirements, and scaling database capacity affected apps. It looked for a new database solution.'
             codeStyleDescription={false}
             image={<Image src={require('./image-3.png').default} />}
             buttonText='details'
-            link='https://en.pingcap.com/case-study/comparison-between-mysql-and-tidb-with-tens-of-millions-of-data-per-day/?utm_source=ossinsight'
-            readMore='https://en.pingcap.com/case-study/comparison-between-mysql-and-tidb-with-tens-of-millions-of-data-per-day/?utm_source=ossinsight'
-            tags={['MySQL','Scalability']}
+            link='https://en.pingcap.com/case-study/reduce-real-time-query-latency-from-0-5s-to-0-01s-with-scale-out-htap-database/?utm_source=ossinsight?utm_source=ossinsight'
+            readMore='https://en.pingcap.com/case-study/reduce-real-time-query-latency-from-0-5s-to-0-01s-with-scale-out-htap-database/?utm_source=ossinsight?utm_source=ossinsight'
+            tags={['High Availability','Scalability','HTAP','Real-time Analytics']}
+            elevation={0}
+            cardSx={{backgroundColor: 'action.hover'}}
+          />
+           <StandardCard
+            title='Maintain Millisecond Query Response Times in the Massive Data Volume of Social Media Platforms'
+            description='About 1.3 trillion rows of data were stored in ZHIHU Moneta application. With approximately 100 billion rows of data accruing each month and growing, this number will reach 3 trillion in two years. ZHIHU faced severe challenges in scaling our backend system while maintaining good user experience.'
+            codeStyleDescription={false}
+            image={<Image src={require('./image-4.png').default} />}
+            buttonText='details'
+            link='https://en.pingcap.com/case-study/lesson-learned-from-queries-over-1-3-trillion-rows-of-data-within-milliseconds-of-response-time-at-zhihu/?utm_source=ossinsight?utm_source=ossinsight'
+            readMore='https://en.pingcap.com/case-study/lesson-learned-from-queries-over-1-3-trillion-rows-of-data-within-milliseconds-of-response-time-at-zhihu/?utm_source=ossinsight?utm_source=ossinsight'
+            tags={['Real-time Analytics','Millisecond precision','High throughput']}
             elevation={0}
             cardSx={{backgroundColor: 'action.hover'}}
           />
