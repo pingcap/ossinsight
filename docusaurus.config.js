@@ -204,7 +204,11 @@ const config = {
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} PingCAP`,
+        logo: {
+          alt: 'OSS Insight Logo',
+          src: '/img/pingcap-white-300x79.png',
+        },
+        copyright: `Copyright © ${new Date().getFullYear()} <a href="https://en.pingcap.com" target="_blank">PingCAP</a>`,
       },
       prism: {
         theme: lightCodeTheme,
