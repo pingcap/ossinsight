@@ -19,10 +19,9 @@ export type IssueData = {
 }
 
 
-function lineStackArea(x: OptionEncodeValue, y: OptionEncodeValue, stack: string, yAxis: string) {
+function lineArea(x: OptionEncodeValue, y: OptionEncodeValue, yAxis: string) {
   return line(x, y, {
     showSymbol: false,
-    stack: stack,
     emphasis: {focus: 'series'},
     areaStyle: {},
     yAxisId: yAxis
@@ -40,8 +39,8 @@ export const IssueChart = withChart<IssueData>(({title: propsTitle, data}) => ({
     valueAxis<'y'>('total')
   ],
   series: [
-    lineStackArea('event_month', 'opened', 'total', 'diff'),
-    lineStackArea('event_month', 'closed', 'total', 'diff'),
+    lineArea('event_month', 'opened', 'diff'),
+    lineArea('event_month', 'closed', 'diff'),
     line('event_month', 'opened_total', {showSymbol: false, yAxisId: 'total', emphasis: {focus: 'self'}}),
     line('event_month', 'closed_total', {showSymbol: false, yAxisId: 'total', emphasis: {focus: 'self'}}),
   ],
