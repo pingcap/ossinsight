@@ -7,8 +7,10 @@
 import React, {useEffect} from 'react';
 import Layout from '@theme/Layout';
 import Translate, {translate} from '@docusaurus/Translate';
+import {useHistory} from "@docusaurus/router";
 
 function NotFound() {
+  const history = useHistory()
 
   useEffect(() => {
 
@@ -19,22 +21,12 @@ function NotFound() {
         (window.location.port ? ':' + window.location.port : '');
     }
 
-    const pathname = encodeURIComponent(window.location.pathname.split('/').join('%2F'));
+    const {pathname,search,hash} = window.location;
     // Only support redirect analyze/repo/name for now
     if (!/^\/analyze\/[^\/?#]+\/[^\/?#]+\/?[?#]/.test(pathname)) {
       return
     }
-    const query = encodeURIComponent(window.location.search.slice(1));
-    const hash = encodeURIComponent(window.location.hash.slice(1));
-    const origin = getOrigin();
-
-    const redirectTo = origin + '/redirect?' +
-      'redirect=true' +
-      '&pathname=' + pathname +
-      '&query=' + query +
-      '&hash=' + hash;
-
-    window.location.replace(redirectTo)
+    history.replace({pathname,search,hash})
   }, [])
 
   return (
