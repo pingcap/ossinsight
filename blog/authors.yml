@@ -1,17 +1,23 @@
 sykp241095:
   name: sykp241095
   title: Contributor of TiDB Community
-  url: https://github.com/sykp241095
+  url: https://twitter.com/sykp241095
   image_url: https://github.com/sykp241095.png
 
 hooopo:
   name: hooopo
   title: Creator of https://ossdaily.com
-  url: https://github.com/hooopo
+  url: https://twitter.com/hooopo
   image_url: https://github.com/hooopo.png
 
 pingcap:
   name: PingCAP
   title: PingCAP provides scaling database infrastructure solutions via an open-source platform.
-  url: https://github.com/pingcap
+  url: https://twitter.com/PingCAP
   image_url: https://github.com/pingcap.png
+
+fendy:
+  name: Fendy Feng
+  title: Tech Writter of PingCAP
+  url: https://github.com/septemberfd
+  image_url: https://github.com/septemberfd.png
