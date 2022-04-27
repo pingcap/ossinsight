@@ -201,10 +201,6 @@ const config = {
                 label: 'Twitter',
                 href: 'https://twitter.com/pingcap',
               },
-              {
-                label: 'YouTube',
-                href: 'https://www.youtube.com/pingcap',
-              },
             ],
           },
         ],
