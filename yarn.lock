@@ -6670,6 +6670,11 @@
     "json-parse-even-better-errors" "^2.3.0"
     "lines-and-columns" "^1.1.6"
 
+"parse-ms@^2.1.0":
+  "integrity" "sha512-kHt7kzLoS9VBZfUsiKjv43mr91ea+U05EyKkEtqp7vNbHxmaVuEqN7XxeEVnGrMtYOAxGrDElSi96K7EgO1zCA=="
+  "resolved" "https://registry.npmjs.org/parse-ms/-/parse-ms-2.1.0.tgz"
+  "version" "2.1.0"
+
 "parse-numeric-range@^1.3.0":
   "integrity" "sha1-fGO2EZDWHk1ToRl/DIPEe7Zw/6M="
   "resolved" "https://registry.nlark.com/parse-numeric-range/download/parse-numeric-range-1.3.0.tgz"
@@ -7099,6 +7104,13 @@
   dependencies:
     "lodash" "^4.17.20"
     "renderkid" "^3.0.0"
+
+"pretty-ms@^7.0.1":
+  "integrity" "sha512-973driJZvxiGOQ5ONsFhOF/DtzPMOMtgC11kCpUrPGMTgqp2q/1gwzCquocrN33is0VZ5GFHXZYMM9l6h67v2Q=="
+  "resolved" "https://registry.npmjs.org/pretty-ms/-/pretty-ms-7.0.1.tgz"
+  "version" "7.0.1"
+  dependencies:
+    "parse-ms" "^2.1.0"
 
 "pretty-time@^1.1.0":
   "integrity" "sha1-/7dCmvq7hTXDRqNOQYc63z103Q4="

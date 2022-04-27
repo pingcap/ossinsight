@@ -5,7 +5,7 @@ import {useRepo} from '../../api/gh';
 import {AnalyzeContext} from '../../analyze-charts/context';
 import {LocChart} from '../../analyze-charts/loc';
 import {PrChart} from '../../analyze-charts/pr';
-import {PrDurationChart} from '../../analyze-charts/pr-duration';
+import {DurationChart} from '../../analyze-charts/common-duration';
 import Analyze from '../../analyze-charts/Analyze';
 import Container from '@mui/material/Container';
 import { IssueChart } from '../../analyze-charts/issue';
@@ -36,7 +36,11 @@ export default function AnalyzePage() {
           </Analyze>
           <Analyze query='analyze-pull-request-open-to-merged'>
             <h2>PR Duration</h2>
-            <PrDurationChart />
+            <DurationChart />
+          </Analyze>
+          <Analyze query='analyze-issue-open-to-first-responded'>
+            <h2>Issue first response duration</h2>
+            <DurationChart />
           </Analyze>
           <Analyze query='analyze-issue-opened-and-closed'>
             <h2>Issues</h2>

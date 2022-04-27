@@ -1,11 +1,13 @@
-import {TooltipOption} from 'echarts/types/dist/shared';
+import {AxisPointerOption, TooltipOption} from 'echarts/types/dist/shared';
 import {EChartsOption} from 'echarts';
 
-export function axisTooltip(type: 'line' | 'shadow' | 'cross' | 'none'): EChartsOption['tooltip'] {
+export function axisTooltip(type: 'line' | 'shadow' | 'cross' | 'none', option: Exclude<EChartsOption['tooltip'], any[]> = {}): EChartsOption['tooltip'] {
   return {
+    ...option,
     show: true,
     trigger: 'axis',
     axisPointer: {
+      ...(option.axisPointer||{}),
       type,
     },
   };

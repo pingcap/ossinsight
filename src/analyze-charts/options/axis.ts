@@ -11,6 +11,14 @@ export function valueAxis<T extends 'x' | 'y'>(id?: OptionId, option: AxisOption
   } as AxisOption<T>;
 }
 
+export function logAxis<T extends 'x' | 'y'>(id?: OptionId, option: AxisOption<T> = {}): AxisOption<T> {
+  return {
+    ...option,
+    id,
+    type: 'log',
+  }
+}
+
 export function timeAxis<T extends 'x' | 'y'>(id?: OptionId, option: AxisOption<T> = {}): AxisOption<T> {
   return {
     ...option,
