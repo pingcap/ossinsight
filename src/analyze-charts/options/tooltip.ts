@@ -13,8 +13,9 @@ export function axisTooltip(type: 'line' | 'shadow' | 'cross' | 'none', option: 
   };
 }
 
-export function itemTooltip(): EChartsOption['tooltip'] {
+export function itemTooltip(option: EChartsOption['tooltip'] = {}): EChartsOption['tooltip'] {
   return {
+    ...option,
     show: true,
     trigger: 'item',
   }

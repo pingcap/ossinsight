@@ -11,6 +11,7 @@ import Container from '@mui/material/Container';
 import { IssueChart } from '../../analyze-charts/issue';
 import {PushesAndCommitsChart} from '../../analyze-charts/push-and-commits';
 import {CompaniesChart} from '../../analyze-charts/companies';
+import {TimeHeatChart} from '../../analyze-charts/heatmap';
 
 interface AnalyzePageParams {
   owner: string;
@@ -53,6 +54,10 @@ export default function AnalyzePage() {
           <Analyze query='analyze-issue-creators-company'>
             <h2>Issue creators top 50 companies</h2>
             <CompaniesChart />
+          </Analyze>
+          <Analyze query='commits-time-distribution'>
+            <h2>Push heatmap</h2>
+            <TimeHeatChart />
           </Analyze>
         </Container>
       </AnalyzeContext.Provider>

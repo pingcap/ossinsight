@@ -1,4 +1,10 @@
-import {BarSeriesOption, BoxplotSeriesOption, LineSeriesOption, TreemapSeriesOption} from 'echarts';
+import {
+  BarSeriesOption,
+  BoxplotSeriesOption,
+  HeatmapSeriesOption,
+  LineSeriesOption,
+  TreemapSeriesOption,
+} from 'echarts';
 import {ORIGINAL_DATASET_ID} from './dataset';
 import {DimensionLoose, OptionEncodeValue} from 'echarts/types/src/util/types';
 
@@ -64,5 +70,25 @@ export function treemap(data: TreemapSeriesOption['data']): TreemapSeriesOption 
     nodeClick: 'link',
     width: '80%',
     height: '80%'
+  }
+}
+
+export function heatmap(x: OptionEncodeValue, y: OptionEncodeValue, value: OptionEncodeValue, option: HeatmapSeriesOption = {}): HeatmapSeriesOption {
+  return {
+    datasetId: ORIGINAL_DATASET_ID,
+    emphasis: {
+      itemStyle: {
+        shadowBlur: 10,
+        shadowColor: 'rgba(0, 0, 0, 0.5)'
+      }
+    },
+    ...option,
+    type: 'heatmap',
+    encode: {
+      x,
+      y,
+      value,
+      ...(option.encode || {}),
+    },
   }
 }
