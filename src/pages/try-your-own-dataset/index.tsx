@@ -75,6 +75,7 @@ export default function Page() {
             buttonText='details'
             link='https://en.pingcap.com/case-study/real-time-insights-reduce-per-order-costs-by-25-percent/?utm_source=ossinsight'
             readMore='https://en.pingcap.com/case-study/real-time-insights-reduce-per-order-costs-by-25-percent/?utm_source=ossinsight'
+            buttonVariant='contained'
             tags={['Logistic delivery', 'Multi-dimensional analytics']}
             elevation={0}
             cardSx={{backgroundColor: 'action.hover'}}
@@ -87,6 +88,7 @@ export default function Page() {
             buttonText='details'
             link='https://en.pingcap.com/case-study/reduce-real-time-query-latency-from-0-5s-to-0-01s-with-scale-out-htap-database/?utm_source=ossinsight'
             readMore='https://en.pingcap.com/case-study/reduce-real-time-query-latency-from-0-5s-to-0-01s-with-scale-out-htap-database/?utm_source=ossinsight'
+            buttonVariant='contained'
             tags={['High availability','No sharding','Real-time analytics','Scalability']}
             elevation={0}
             cardSx={{backgroundColor: 'action.hover'}}
@@ -99,6 +101,7 @@ export default function Page() {
             buttonText='details'
             link='https://en.pingcap.com/case-study/reduce-real-time-query-latency-from-0-5s-to-0-01s-with-scale-out-htap-database/?utm_source=ossinsight?utm_source=ossinsight'
             readMore='https://en.pingcap.com/case-study/reduce-real-time-query-latency-from-0-5s-to-0-01s-with-scale-out-htap-database/?utm_source=ossinsight?utm_source=ossinsight'
+            buttonVariant='contained'
             tags={['High Availability','Scalability','HTAP','Real-time Analytics']}
             elevation={0}
             cardSx={{backgroundColor: 'action.hover'}}
@@ -109,6 +112,7 @@ export default function Page() {
             codeStyleDescription={false}
             image={<Image src={require('./image-4.png').default} />}
             buttonText='details'
+            buttonVariant='contained'
             link='https://en.pingcap.com/case-study/lesson-learned-from-queries-over-1-3-trillion-rows-of-data-within-milliseconds-of-response-time-at-zhihu/?utm_source=ossinsight?utm_source=ossinsight'
             readMore='https://en.pingcap.com/case-study/lesson-learned-from-queries-over-1-3-trillion-rows-of-data-within-milliseconds-of-response-time-at-zhihu/?utm_source=ossinsight?utm_source=ossinsight'
             tags={['Real-time Analytics','Millisecond precision','High throughput']}
