@@ -128,7 +128,7 @@ const config = {
             ],
           },
           {
-            href: 'https://github.com/pingcap',
+            href: 'https://github.com/pingcap/ossinsight',
             className: 'navbar-item-github',
             position: 'right',
           },
