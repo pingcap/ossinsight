@@ -23,7 +23,7 @@ export default function Footer() {
         </Typography>
         <Cards sx={{mt: 2}} xs={12} sm={6} md={4}>
           <StandardCard
-            title='Why We Choose TiDB to Support OSS Insight'
+            title='Data Preparation for Analytics'
             description='Blog · 5 min read'
             codeStyleDescription={false}
             readMore='/blog/how-it-works'
