@@ -98,7 +98,8 @@ export default function AnalyzePage() {
               </Grid>
               <Grid item xs={6}>
                 <Analyze query='stars-history'>
-                  <LineChart spec={{valueIndex: 'total'}}/>
+                  <H2 analyzeTitle display='none'>Stars History</H2>
+                  <LineChart spec={{valueIndex: 'total', name: 'Stars'}}/>
                 </Analyze>
               </Grid>
             </Grid>
