@@ -25,13 +25,13 @@ function transformCompanyData(data: CompanyData[], valueIndex: string): D3Hierar
     id: item.company_name,
     depth: 1,
     value: item[valueIndex],
-    index: index + 1,
+    index: index,
     parentId: 'root'
   })).concat([{
     id: 'root',
     depth: 0,
     value: 0,
-    index: 0,
+    index: -1,
     parentId: ''
   }]);
 }
