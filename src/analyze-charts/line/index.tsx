@@ -10,7 +10,6 @@ export const LineChart = withChart<LineData<any>, { valueIndex: string }>(({data
   xAxis: timeAxis<'x'>(),
   yAxis: valueAxis<'y'>(),
   tooltip: axisTooltip('line'),
-  legend: legend(),
   dataset: [
     originalDataset(data),
   ],

@@ -82,7 +82,7 @@ export default function AnalyzePage() {
   return (
     <CustomPage>
       <AnalyzeContext.Provider value={{repoId: repo?.id, repoName: name}}>
-        <Container maxWidth='lg'>
+        <Container maxWidth='xl'>
           <Section>
             <H1>
               <a href={`https://github.com/${name}`} target='_blank'>
