@@ -27,6 +27,7 @@ export default function Footer() {
             description='Blog · 5 min read'
             codeStyleDescription={false}
             readMore='/blog/how-it-works'
+            buttonVariant='outlined'
             top={icon(require('./icon-1.png').default)}
             cardSx={{
               backgroundColor: '#2c2c2c'
@@ -37,6 +38,7 @@ export default function Footer() {
             description='Documentation · 10 min read'
             codeStyleDescription={false}
             readMore='https://docs.pingcap.com/tidbcloud?utm_source=ossinsight'
+            buttonVariant='outlined'
             top={icon(require('./icon-2.png').default)}
             cardSx={{
               backgroundColor: '#2c2c2c'
@@ -47,6 +49,7 @@ export default function Footer() {
             description='Tutorial · 5 min read'
             codeStyleDescription={false}
             readMore='/blog/try-it-yourself'
+            buttonVariant='outlined'
             top={icon(require('./icon-3.png').default)}
             cardSx={{
               backgroundColor: '#2c2c2c'
