@@ -41,6 +41,11 @@ export default function AnalyzePage() {
     setMapType(value)
   }, [])
 
+  const [companyType, setCompanyType] = useState('analyze-stars-company')
+  const handleChangeCompanyType = useCallback((event:  React.SyntheticEvent, value: string) => {
+    setCompanyType(value)
+  }, [])
+
   const summaries: SummaryProps['items'] = useMemo(() => {
     return [{
       icon: <StarIcon/>,
@@ -138,7 +143,7 @@ export default function AnalyzePage() {
             <Analyze query={mapType}>
               <H3>Geographical Distribution</H3>
               <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                <Tabs value={mapType} onChange={handleChangeMapType} aria-label="basic tabs example">
+                <Tabs value={mapType} onChange={handleChangeMapType}>
                   <Tab label="Stars" value='stars-map' />
                   <Tab label="Issue creators" value='issue-creators-map' />
                   <Tab label="Pull requests" value='pull-request-creators-map' />
@@ -150,11 +155,18 @@ export default function AnalyzePage() {
                 </Grid>
               </Grid>
             </Analyze>
-            <Analyze query='analyze-issue-creators-company'>
+            <Analyze query={companyType}>
               <H3>Companies</H3>
+              <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                <Tabs value={companyType} onChange={handleChangeCompanyType}>
+                  <Tab label="Stargazers" value='analyze-stars-company' />
+                  <Tab label="Issue Creators" value='issue-creators-top-50-company' />
+                  <Tab label="Pull Requests Creators" value='pull-request-creators-top-50-company' />
+                </Tabs>
+              </Box>
               <Grid container>
                 <Grid item xs={9}>
-                  <CompaniesChart />
+                  <CompaniesChart spec={{valueIndex: companyValueIndices[companyType]}} />
                 </Grid>
               </Grid>
             </Analyze>
@@ -163,4 +175,10 @@ export default function AnalyzePage() {
       </AnalyzeContext.Provider>
     </CustomPage>
   );
+}
+
+const companyValueIndices = {
+  'analyze-stars-company': 'stargazers',
+  'issue-creators-top-50-company': 'issue_creators',
+  'pull-request-creators-top-50-company': 'code_contributors'
 }

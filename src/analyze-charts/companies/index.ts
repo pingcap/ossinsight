@@ -5,11 +5,10 @@ import {d3Hierarchy, D3HierarchyItem} from '../options/custom/d3-hierarchy';
 // lines of code
 export type CompanyData = {
   company_name: string
-  issue_creators: number
 }
 
-export const CompaniesChart = withChart<CompanyData>(({title: propsTitle, data}) => {
-  const d3Data = transformCompanyData(data.data?.data ?? [])
+export const CompaniesChart = withChart<CompanyData, {valueIndex: string}>(({title: propsTitle, data}, chartProps) => {
+  const d3Data = transformCompanyData(data.data?.data ?? [], chartProps.valueIndex)
   const option = d3Hierarchy(d3Data, 1)
   return {
     title: title(propsTitle),
@@ -21,11 +20,11 @@ export const CompaniesChart = withChart<CompanyData>(({title: propsTitle, data})
   aspectRatio: 16 / 9,
 });
 
-function transformCompanyData(data: CompanyData[]): D3HierarchyItem[] {
+function transformCompanyData(data: CompanyData[], valueIndex: string): D3HierarchyItem[] {
   return data.flatMap((item, index) => ({
     id: item.company_name,
     depth: 1,
-    value: item.issue_creators,
+    value: item[valueIndex],
     index: index + 1,
     parentId: 'root'
   })).concat([{

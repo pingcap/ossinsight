@@ -46,7 +46,7 @@ export function d3Hierarchy(seriesData: D3HierarchyItem[], maxDepth: number): D3
     context.nodes = {}
     d3
       .pack()
-      .size([api.getWidth() - 8, api.getHeight() - 8])
+      .size([api.getWidth() - 32, api.getHeight() - 32])
       .padding(8)(displayRoot);
     displayRoot.descendants().forEach(function (node, index) {
       context.nodes[node.id] = node;
@@ -87,7 +87,7 @@ export function d3Hierarchy(seriesData: D3HierarchyItem[], maxDepth: number): D3
       focus: focus,
       shape: {
         cx: node.x,
-        cy: node.y,
+        cy: node.y + 16,
         r: node.r,
       },
       transition: ['shape'],
