@@ -35,7 +35,8 @@ export function registerThemeDark(bg = true) {
       splitLine: {
         lineStyle: {
           type: 'dashed',
-          color: '#aaa'
+          color: '#2c2c2c',
+          width: 0.5
         }
       },
       splitArea: {

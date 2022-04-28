@@ -19,6 +19,7 @@ export const DurationChart = withChart<PrDurationData>(({title: propsTitle, data
   dataset: originalDataset(data),
   xAxis: timeAxis<'x'>(),
   yAxis: logAxis<'y'>(undefined, {
+    name: 'Duration',
     axisLabel: {formatter: fmtHours},
     axisPointer: {
       label: {
@@ -28,7 +29,13 @@ export const DurationChart = withChart<PrDurationData>(({title: propsTitle, data
   }),
   dataZoom: dataZoom(),
   title: title(propsTitle),
-  series: boxplot('event_month', ['p0', 'p25', 'p50', 'p75', 'p100'], {name: 'boxplot', itemStyle: { color: alpha('#dd6b66', .3)}}),
+  series: boxplot('event_month', ['p0', 'p25', 'p50', 'p75', 'p100'], {
+    itemStyle: {
+      color: alpha('#dd6b66', .3),
+      borderWidth: 1,
+    },
+    boxWidth: ['40%', '40%']
+  }),
   tooltip: axisTooltip('cross', {
     renderMode: 'html',
     formatter: params => {

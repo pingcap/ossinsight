@@ -20,21 +20,31 @@ export const PrChart = withChart<PrData>(({title: propsTitle, data}) => ({
   title: title(propsTitle),
   legend: legend(),
   yAxis: [
-    valueAxis<'y'>('size', {position: 'left'}),
-    valueAxis<'y'>('total', {position: 'right'}),
+    valueAxis<'y'>('size', {position: 'left', name: 'New / PRs'}),
+    valueAxis<'y'>('total', {position: 'right', name: 'Total / PRs'}),
   ],
   series: [
     ...['xs', 's', 'm', 'l', 'xl', 'xxl'].map(size => bar('event_month', size, {
       stack: 'stack',
       yAxisId: 'size',
       emphasis: {focus: 'series'},
+      tooltip: {
+        valueFormatter: fmt,
+      },
     })),
-    line('event_month', 'total', {showSymbol: false, yAxisId: 'total', emphasis: {focus: 'self'}}),
+    line('event_month', 'total', {
+      showSymbol: false,
+      yAxisId: 'total',
+      emphasis: {focus: 'self'},
+      tooltip: {valueFormatter: fmt},
+    }),
   ],
   tooltip: axisTooltip('cross'),
 }), {
   aspectRatio: 16 / 9,
 });
+
+const fmt = val => `${val} PRs`;
 
 function transformLocData(data: PrData[]) {
   let total = 0;

@@ -15,13 +15,10 @@ export const PushesAndCommitsChart = withChart<PushesAndCommitsData>(({title: pr
   dataZoom: dataZoom(),
   title: title(propsTitle),
   legend: legend(),
-  yAxis: [
-    valueAxis<'y'>('diff'),
-    valueAxis<'y'>('total'),
-  ],
+  yAxis: valueAxis<'y'>(undefined, {name: 'Count'}),
   series: [
-    bar('event_month', 'pushes', {yAxisId: 'total', emphasis: {focus: 'series'}}),
-    bar('event_month', 'commits', {yAxisId: 'total', emphasis: {focus: 'series'}}),
+    bar('event_month', 'pushes', {emphasis: {focus: 'series'}}),
+    bar('event_month', 'commits', {emphasis: {focus: 'series'}}),
   ],
   tooltip: axisTooltip('line'),
 }), {

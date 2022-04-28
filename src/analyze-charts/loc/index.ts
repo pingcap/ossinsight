@@ -51,7 +51,7 @@ export const LocChart = withChart<LocData>(({title: propsTitle, data}) => {
         </div>
         <div>
           ${total.marker}
-          <b>Total: ${total.value.total}</b>
+          <b>Total: ${total.value.total} lines</b>
         </div>
       `;
       },
