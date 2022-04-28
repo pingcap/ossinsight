@@ -26,3 +26,8 @@ export const H3 = ({analyzeTitle = true, ...props}: TypographyProps & AnalyzeTit
   const ref = useAnalyzeTitleRef(analyzeTitle)
   return <Typography {...props} variant="h3" marginBottom={4} marginTop={8} ref={ref} />;
 };
+
+export const H4 = ({analyzeTitle, ...props}: TypographyProps & AnalyzeTitle) => {
+  const ref = useAnalyzeTitleRef(analyzeTitle)
+  return <Typography {...props} variant="h4" ref={ref} />;
+};

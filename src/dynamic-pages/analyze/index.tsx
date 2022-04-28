@@ -21,7 +21,7 @@ import {GitCommitIcon, StarIcon, IssueOpenedIcon, RepoForkedIcon, PeopleIcon, Co
 import Grid from '@mui/material/Grid';
 import {LineChart} from '../../analyze-charts/line';
 import Section from './Section';
-import {H1, H2, H3} from './typography'
+import {H1, H2, H3, H4} from './typography'
 import List from '../../analyze-charts/list/List';
 
 interface AnalyzePageParams {
@@ -145,9 +145,9 @@ export default function AnalyzePage() {
               <H3>Geographical Distribution</H3>
               <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs value={mapType} onChange={handleChangeMapType}>
-                  <Tab label="Stars" value='stars-map' />
-                  <Tab label="Issue creators" value='issue-creators-map' />
-                  <Tab label="Pull requests" value='pull-request-creators-map' />
+                  <Tab label={<H4>Stargazers</H4>} value='stars-map' />
+                  <Tab label={<H4>Issue Creators</H4>} value='issue-creators-map' />
+                  <Tab label={<H4>Pull Requests Creators</H4>} value='pull-request-creators-map' />
                 </Tabs>
               </Box>
               <Grid container>
@@ -160,12 +160,12 @@ export default function AnalyzePage() {
               </Grid>
             </Analyze>
             <Analyze query={companyType}>
-              <H3>Companies</H3>
+              <H3 analyzeTitle={false}>Companies</H3>
               <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs value={companyType} onChange={handleChangeCompanyType}>
-                  <Tab label="Stargazers" value='analyze-stars-company' />
-                  <Tab label="Issue Creators" value='issue-creators-top-50-company' />
-                  <Tab label="Pull Requests Creators" value='pull-request-creators-top-50-company' />
+                  <Tab label={<H4>Stargazers</H4>} value='analyze-stars-company' />
+                  <Tab label={<H4>Issue Creators</H4>} value='issue-creators-top-50-company' />
+                  <Tab label={<H4>Pull Requests Creators</H4>} value='pull-request-creators-top-50-company' />
                 </Tabs>
               </Box>
               <Grid container>
