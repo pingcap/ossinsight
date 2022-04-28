@@ -7,11 +7,11 @@ export default function () {
   return (
     <Section
       title='PR History'
-      description='This chart displays the accumulated number of PRs the two projects gained respectively each year since 2011.'
+      description='This chart displays the accumulated number of PRs the two projects gained respectively each year.'
     >
       {({ repo1, repo2, dateRange, allReposProvided, allProvidedRepos }) => (
         <LineAreaBarChartCard
-          title={'Pull Request History'}
+          title={'PR History'}
           queryName={"pull-requests-history"}
           params={{
             repoId1: repo1?.id,

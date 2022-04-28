@@ -1,17 +1,21 @@
 ---
-title: ▶️  Use TiDB Cloud to Analyze GitHub Events in 10 Minutes
+title:  Use TiDB Cloud to Analyze GitHub Events in 5 Minutes
+date: 2022-04-01
+authors: [fendy, hooopo]
 ---
 
-[TiDB](https://docs.pingcap.com/tidb/stable/overview) is an open source distributed NewSQL database with horizontal scalability, high availability, and strong consistency. It can also deal with mixed OLTP and OLAP workloads at the same time by leveraging its hybrid transactional and analytical (HTAP) capability. 
+[TiDB](https://docs.pingcap.com/tidb/stable/overview?utm_source=ossinsight) is an open source distributed NewSQL database with horizontal scalability, high availability, and strong consistency. It can also deal with mixed OLTP and OLAP workloads at the same time by leveraging its hybrid transactional and analytical (HTAP) capability. 
 
-**[TiDB Cloud](https://docs.pingcap.com/tidbcloud/public-preview) is a fully-managed Database-as-a-Service (DBaaS)** that brings everything great about TiDB to your cloud and lets you focus on your applications, not the complexities of your database. 
+**[TiDB Cloud](https://docs.pingcap.com/tidbcloud/public-preview?utm_source=ossinsight) is a fully-managed Database-as-a-Service (DBaaS)** that brings everything great about TiDB to your cloud and lets you focus on your applications, not the complexities of your database. 
 
-In this tutorial, we will provide you with a piece of sample data of all GitHub events occurring on January 1, 2022, and walk you through on how to use TiDB Cloud to analyze this data in 10 minutes.  
+In this tutorial, we will provide you with a piece of sample data of all GitHub events occurring on January 1, 2022, and walk you through on how to use TiDB Cloud to analyze this data in 5 minutes.  
 
 ## Sign up for a TiDB Cloud account (Free)
 
-1. Click [here](https://tidbcloud.com/signup) to sign up for a TiDB Cloud account free of charge. 
-2. [Log in](https://tidbcloud.com/?__hstc=86493575.35e9113e934f84907657eac98c81808d.1645076526216.1646808171218.1646883397864.20&__hssc=86493575.6.1646883397864&__hsfp=2077185778) to your account.
+1. Click [here](https://tidbcloud.com/signup?utm_source=ossinsight) to sign up for a TiDB Cloud account free of charge. 
+2. [Log in](https://tidbcloud.com/?utm_source=ossinsight) to your account.
+
+<!--truncate-->
 
 ## Create a TiDB Developer Tier cluster (Free)
 Once you register an account, you can create a free cluster with TiDB Developer Tier. 
@@ -25,7 +29,7 @@ Once you register an account, you can create a free cluster with TiDB Developer 
 ![](/img/try-it-yourself/dev-tier.png)
 
 2. On the **Create a Cluster** page, set up your cluster name and root password.
-3. Note that the cloud provider is AWS by default, and then select the region which is close to you to create the cluster.
+3. Note that the cloud provider is AWS by default, and then select the `US-West-2 (Oregon)` region to create the cluster.
 4. The cluster tier is S1.dev by default.
 5. Click **Submit**.
 Your TiDB Cloud cluster will be created in approximately 5 to 10 minutes.
@@ -81,7 +85,7 @@ TiDB Cloud provides a web shell to connect the database online.
 
 ### Set column storage replica: TiFlash (Optional) 
 
-[TiFlash](https://docs.pingcap.com/tidb/stable/tiflash-overview) is the key component that makes TiDB / TiDB Cloud an HTAP database and capable of dealing with OLTP and OLAP workloads at the same time. 
+[TiFlash](https://docs.pingcap.com/tidb/stable/tiflash-overview?utm_source=ossinsight) is the key component that makes TiDB / TiDB Cloud an HTAP database and capable of dealing with OLTP and OLAP workloads at the same time. 
 
 Here, you can try the following SQL commands on TiDB Cloud to experience its real-time analytics with ease.
 
@@ -90,7 +94,6 @@ Here, you can try the following SQL commands on TiDB Cloud to experience its rea
 ```sql
 use gharchive_dev;
 ALTER TABLE github_events SET TIFLASH REPLICA 1;
-ALTER TABLE db_repos SET TIFLASH REPLICA 1;
 ```
 
 2. Setting a TiFlash replica will take you some time, so you can use the following SQL statements to check if the procedure is done or not. 
@@ -127,7 +130,7 @@ Because you have imported the sample data of all GitHub events occurred on the f
 Execute the following SQL statement to query the total number of events. 
 
 ```sql
-SELECT count(*) FROM github_events
+SELECT count(*) FROM github_events;
 ```
 
 ### Which repository gets the most stars?

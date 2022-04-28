@@ -23,6 +23,7 @@ import CompareContext from './_context'
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
+import TryItYourself from "../../components/TryItYourself";
 
 
 const allProvidedRepos = (repos: Repo[]) => {
@@ -116,7 +117,7 @@ export default function RepoCompare() {
     return sectionsCtx.keys()
       .sort()
       .map(key => sectionsCtx(key).default)
-      .map(Section => <Section />)
+      .map((Section, i) => <Section key={i} />)
   }, [])
 
   return (
@@ -127,8 +128,8 @@ export default function RepoCompare() {
             <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,400,500,700&display=swap" />
           </Head>
           <MainContent context={{repo1, repo2, dateRange, allReposProvided, allProvidedRepos}}>
-            <Typography variant='h3' component='h1'>
-              Comparing OSS
+            <Typography variant='h1' component='h1' style={{ marginTop: '24px' }}>
+              Comparing Projects
             </Typography>
             <Grid container>
               <Grid item xs={12} lg={8}>
@@ -154,6 +155,7 @@ export default function RepoCompare() {
               {sections}
             </Box>
           </MainContent>
+          <TryItYourself campaign='compare' show fixed/>
         </ThemeAdaptor>
       </LocalizationProvider>
     </Layout>

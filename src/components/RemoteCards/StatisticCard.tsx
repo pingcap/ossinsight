@@ -7,7 +7,6 @@ import basicStyle from './basic.module.css';
 import BasicCard, {BaseChartCardProps} from "./BasicCard";
 import {formatNumber} from '../../lib/text';
 import useThemeContext from "@theme/hooks/useThemeContext";
-import {DebugInfoModel} from "../RemoteCharts/DebugInfoModel";
 
 interface StatisticCardProps extends BaseChartCardProps {
 }
@@ -18,17 +17,6 @@ export default function StatisticCard(props: StatisticCardProps) {
   const [value, setValue] = useState<any>();
   const {isDarkTheme} = useThemeContext();
   const theme = useTheme();
-  const [showDebugModel, setShowDebugModel] = useState(false);
-
-  const handleShowDebugModel = () => {
-    if (res != null) {
-      setShowDebugModel(true);
-    }
-  }
-
-  const handleCloseDebugModel = () => {
-    setShowDebugModel(false);
-  }
 
   useEffect(() => {
     const firstRow = res?.data[0]
@@ -56,17 +44,16 @@ export default function StatisticCard(props: StatisticCardProps) {
               {value ? formatNumber(value, 2) : 0}
             </Typography>
           </Tooltip>
-          <a
+          <span
             className={basicStyle.basicCardTitle}
             style={{
               color: theme.palette.text.secondary
             }}
-            onClick={handleShowDebugModel}>
+          >
             {title}
-          </a>
+          </span>
         </Stack>
       </CardContent>
     </BasicCard>
-    <DebugInfoModel query={queryName} data={res} open={showDebugModel} onClose={handleCloseDebugModel} />
   </>;
 }

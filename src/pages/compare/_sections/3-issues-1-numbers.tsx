@@ -13,7 +13,7 @@ export default function () {
   return (
     <Section
       title='Issues'
-      description='The chart below compare the two projects in regard to the total number of issues, issue submitters, issues comments, and issue commenters since 2011.'
+      description='The chart below displays the total number of issues, issue submitters, issues comments, and issue commenters gained by each project respectively.'
     >
       {({repo1, repo2}) => (
         <SomeNumbers repos={[repo1, repo2]} queries={ISSUE_NUMBERS} />

@@ -72,7 +72,7 @@ export default function TopList({period, onPeriodChange}: TopListProps) {
 
 function renderTopListHeader (period: string, handlePeriodChange: (period: SelectChangeEvent)=>void, loading: boolean, handleOpen: () => void) {
   return (
-    <h2>
+    <Typography component='h2' variant='h2' sx={{ mb: 2, fontSize: 36 }} align='center'>
       Top 20 most active repositories in
       &nbsp;
       <Select<string>
@@ -81,13 +81,13 @@ function renderTopListHeader (period: string, handlePeriodChange: (period: Selec
         variant='standard'
         onChange={handlePeriodChange}
         placeholder='Select...'
-        sx={{ font: 'inherit', color: 'inherit', lineHeight: 'inherit' }}
+        sx={{ font: 'inherit', color: 'primary.main', lineHeight: 'inherit' }}
+        disableUnderline
       >
         {periods.map(({name, value}) => (
           <MenuItem key={value} value={value}>{name}</MenuItem>
         ))}
       </Select>
-      .
       <Tooltip
         title={(
           <Typography variant='body2'>
@@ -101,7 +101,7 @@ function renderTopListHeader (period: string, handlePeriodChange: (period: Selec
           <InfoIcon />
         </IconButton>
       </Tooltip>
-    </h2>
+    </Typography>
   )
 }
 

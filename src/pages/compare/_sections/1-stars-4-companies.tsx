@@ -5,12 +5,12 @@ import React from "react";
 export default function () {
   return (
     <Section
-      title='Top 50 company of stargazers'
-      description='The pie charts describe the major companies of stargazers for each project.'
+      title="Stargazers' Employment Distribution"
+      description='The pie charts describe which company stargazers of each project come from.'
     >
       {({repo1, repo2, dateRange, allReposProvided}) => (
         <PieChartCompareCard
-          title="Top 50 company of stargazers"
+          title="Stargazers' Employment Distribution"
           queryName={"stars-top-50-company"}
           params1={{
             repoId: repo1?.id,

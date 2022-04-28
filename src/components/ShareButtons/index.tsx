@@ -12,13 +12,15 @@ import styles from './index.module.css'
 const size = 32
 
 interface ShareButtonsProps {
+  disabled?: boolean
+  shareUrl?: string
   title: string
   hashtags?: string[]
   style?: CSSProperties
 }
 
-const ShareButtons = ({ title, hashtags, style }: ShareButtonsProps) => {
-  const url = window.location.href
+const ShareButtons = ({ shareUrl, disabled = false, title, hashtags, style }: ShareButtonsProps) => {
+  const url = shareUrl ?? window.location.href
 
   return (
     <div className={styles.shareButtons} style={style}>

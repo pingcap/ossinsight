@@ -1,4 +1,4 @@
-import React, {CSSProperties, useMemo} from "react";
+import React, {CSSProperties, Ref, RefCallback, useCallback, useContext, useMemo} from "react";
 import {EChartsReactProps} from "echarts-for-react/src/types";
 import EChartsReact from "echarts-for-react";
 import useThemeContext from "@theme/hooks/useThemeContext";
@@ -7,6 +7,7 @@ import 'react-aspect-ratio/aspect-ratio.css'
 import BrowserOnly from "@docusaurus/BrowserOnly";
 import {registerThemeDark, registerThemeVintage} from "../BasicCharts/theme";
 import {Opts} from "echarts-for-react/lib/types";
+import EChartsContext from './context'
 
 interface SizeProps {
   aspectRatio?: number
@@ -21,32 +22,47 @@ registerThemeVintage()
 registerThemeDark()
 
 const ECharts = React.forwardRef<EChartsReact, EChartsProps>(({aspectRatio, height, style, opts, echartsStyle: echartsStyleProp, ...props}, ref) => {
+  const realHeight = useMemo(() => {
+    if (aspectRatio) {
+      return '100%'
+    } else {
+      return height || 400
+    }
+  }, [aspectRatio, height])
+
   const echartsStyle = useMemo(() => {
     const result: CSSProperties = Object.assign({}, echartsStyleProp)
-    if (aspectRatio) {
-      result.height = '100%'
-    } else {
-      result.height = 400
-      Object.assign(result, style)
-    }
-    if (height) {
-      result.height = height
-    }
+    result.height = realHeight
     result.width = '100%'
     result.overflow = 'hidden'
     return result
-  }, [style, aspectRatio, height])
+  }, [style, aspectRatio, realHeight])
 
   const echartsOpts: Opts = useMemo(() => {
     return Object.assign({
       devicePixelRatio: typeof window === "undefined" ? 1 : window.devicePixelRatio,
       renderer: 'canvas',
-      height,
+      height: 'auto',
       locale: 'en'
     }, opts)
-  }, [opts, height])
+  }, [opts, realHeight])
 
-  const fallback = useMemo(() => <EChartsPlaceholder aspectRatio={aspectRatio} height={height} />, [aspectRatio, height])
+  const { echartsRef } = useContext(EChartsContext)
+
+  const combinedRef: RefCallback<EChartsReact> = useCallback((instance) => {
+    if (echartsRef) {
+      echartsRef.current = instance
+    }
+    if (ref) {
+      if (typeof ref === 'function') {
+        ref(instance)
+      } else {
+        ref.current = instance
+      }
+    }
+  }, [ref, echartsRef])
+
+  const fallback = useMemo(() => <EChartsPlaceholder aspectRatio={aspectRatio} height={realHeight} />, [aspectRatio, realHeight])
 
   return (
     <BrowserOnly fallback={fallback}>
@@ -58,7 +74,7 @@ const ECharts = React.forwardRef<EChartsReact, EChartsProps>(({aspectRatio, heig
             {...props}
             opts={echartsOpts}
             style={echartsStyle}
-            ref={ref}
+            ref={combinedRef}
             theme={isDarkTheme ? 'dark' : 'vintage'}
           />
         )
@@ -90,3 +106,4 @@ const EChartsPlaceholder = ({ height, aspectRatio }: SizeProps) => {
 }
 
 export default ECharts
+export {default as EChartsContext, EChartsContextProps} from './context'

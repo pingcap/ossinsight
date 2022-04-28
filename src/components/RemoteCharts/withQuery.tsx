@@ -1,19 +1,20 @@
 import * as React from "react";
-import {useState} from "react";
+import {useRef, useState} from "react";
 import {AsyncData, RemoteData, useRemoteData} from "./hook";
 import Fab from '@mui/material/Fab';
 import Alert from "@mui/material/Alert";
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
-// @ts-ignore
+import ShareIcon from '@mui/icons-material/Share';// @ts-ignore
 import CodeBlock from '@theme/CodeBlock';
 import {BarChart, ChartWithSql, DataGrid, DataGridColumn, HeatMapChart, PieChart} from '../BasicCharts';
 import {Queries} from "./queries";
-import {DebugInfoModel} from "./DebugInfoModel";
 import {YoyChart} from "../SpecialCharts";
 import WorldMapChart from "../BasicCharts/WorldMapChart";
 import ZScoreChart from "../SpecialCharts/ZScoreChart";
 import DynamicStarsChart from "../SpecialCharts/DynamicStarsChart";
 import Box from "@mui/material/Box";
+import {EChartsContext} from "../ECharts";
+import EChartsReact from "echarts-for-react";
+import ShareDialog from '../ShareDialog';
 
 type Indexes<Q extends keyof Queries> = {
   categoryIndex: keyof Queries[Q]['data']
@@ -45,6 +46,7 @@ type QueryComponentProps<Q extends keyof Queries> = Queries[Q]["params"] & {
 
 export function renderChart (query, chart, {error, data}: AsyncData<RemoteData<any, any>>, clear = false) {
   const [showDebugModel, setShowDebugModel] = useState(false);
+  const echartsRef = useRef<EChartsReact>()
 
   const handleShowDebugModel = () => {
     setShowDebugModel(true);
@@ -64,12 +66,14 @@ export function renderChart (query, chart, {error, data}: AsyncData<RemoteData<a
     return (
       <ChartWithSql sql={data?.sql}>
         <div style={{position: 'relative'}}>
-          {chart}
-          <Fab size='small' sx={{position: 'absolute', zIndex: 10, right: 24, bottom: 24, zIndex: 2}}
-               onClick={handleShowDebugModel} disabled={!data}>
-            <HelpOutlineIcon />
-          </Fab>
-          <DebugInfoModel query={query} data={data} open={showDebugModel} onClose={handleCloseDebugModel} />
+          <EChartsContext.Provider value={{ echartsRef }}>
+            {chart}
+            <Fab size='small' sx={{position: 'absolute', right: 24, bottom: 24, zIndex: 'var(--ifm-z-index-fixed-mui)'}}
+                 onClick={handleShowDebugModel} disabled={!data}>
+              <ShareIcon />
+            </Fab>
+            <ShareDialog open={showDebugModel} onClose={handleCloseDebugModel} />
+          </EChartsContext.Provider>
         </div>
       </ChartWithSql>
     )

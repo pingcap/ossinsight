@@ -43,16 +43,28 @@ export default function YoyChart({data, aspectRatio = 6 / 5, loading}: YoyChartP
       xAxis: [{
         id: 0,
         name: 'stars',
-        min: 0,
-        max: Math.max(...data.map(data => data.stars2020), ...data.map(data => data.stars2021)),
+        max: value => {
+          const { max, min } = value;
+          return Math.max(Math.abs(max), Math.abs(min)) * 1.2
+        } ,
+        min: value => {
+          const { max, min } = value;
+          return -Math.max(Math.abs(max), Math.abs(min)) * 1.2
+        },
         axisLabel: {
           show: true
         }
       }, {
         id: 1,
         name: 'yoy',
-        min: 0,
-        max: Math.ceil(Math.max(...data.map(data => data.yoy))),
+        max: value => {
+          const { max, min } = value;
+          return Math.max(Math.abs(max), Math.abs(min)) * 1.2
+        } ,
+        min: value => {
+          const { max, min } = value;
+          return -Math.max(Math.abs(max), Math.abs(min)) * 1.2
+        },
         axisLabel: {
           show: true
         }

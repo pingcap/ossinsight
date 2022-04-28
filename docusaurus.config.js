@@ -6,8 +6,8 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'OSS Insight',
-  tagline: 'What are the most popular projects on GitHub?\nWhich open source project is the fastest growing?\nWe collect and analyze all open source projects on GitHub released after 2011\n and provide you with the most valuable analytical insights in real time.\nAll the real-time analytics are supported by TiDB Cloud.',
+  title: 'Open Source Software Insight',
+  tagline: ' Explore deep insights from 4,500,000,000+ GitHub Events',
   url: 'https://ossinsight.io',
   baseUrl: '/',
   onBrokenLinks: 'throw',
@@ -16,7 +16,8 @@ const config = {
   organizationName: 'pingcap', // Usually your GitHub org/user name.
   projectName: 'ossinsight', // Usually your repo name.
   scripts: [
-    'https://api.ossinsight.io/qo/repos/groups/osdb?format=global_variable'
+    'https://api.ossinsight.io/qo/repos/groups/osdb?format=global_variable',
+    'https://www.google.com/recaptcha/api.js?render=6LcBQpkfAAAAAFmuSRkRlJxVtmqR34nNawFgKohC'
   ],
   presets: [
     [
@@ -26,6 +27,7 @@ const config = {
         pages: {
           exclude: [
             '**/_*/**',
+            '**/_*'
           ]
         },
         docs: {
@@ -35,13 +37,15 @@ const config = {
           routeBasePath: '/',
         },
         blog: {
-          feedOptions: {
-            type: 'all',
-          },
+          blogSidebarTitle: 'All posts',
+          blogSidebarCount: 'ALL',
           showReadingTime: true,
           // Please change this to your repo.
           editUrl: 'https://github.com/pingcap/ossinsight/edit/main/',
-          blogSidebarCount: 0,
+          feedOptions: {
+            type: 'rss',
+            copyright: `Copyright © ${new Date().getFullYear()} PingCAP`,
+          },
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
@@ -58,11 +62,14 @@ const config = {
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       image: 'img/gharchive-title-img.png',
-      metadata: [{name: 'twitter:card', content: 'summary_large_image'}, {name: 'keywords', content: 'tidb, gharchive'}],
+      metadata: [
+        {name: 'twitter:card', content: 'summary_large_image'},
+        {name: 'keywords', content: 'tidb,mysql,github event,oss,compare oss'}
+      ],
       hideableSidebar: true,
       colorMode: {
         defaultMode: 'dark',
-        disableSwitch: false,
+        disableSwitch: true,
         respectPrefersColorScheme: false,
       },
 //       announcementBar: {
@@ -81,29 +88,32 @@ const config = {
         },
         style: 'dark',
         items: [
-          {to: '/blog/about', label: 'About', position: 'left'},
           {
             type: 'doc',
-            docId: 'database/realtime',
+            docId: 'database/deep-insight-into-open-source-databases',
             position: 'left',
-            label: 'Insight',
+            label: 'Insights',
           },
-          {to: '/compare', label: 'Compare Projects', position: 'left'},
-          {to: '/blog', label: 'Blog', position: 'left'},
-          {to: '/blog/try-it-yourself/', label: '🔧 Try It Yourself', position: 'left'},
-          {to: '/blog/how-it-works', label: '▶️  How It Works', position: 'left'},
+          {to: '/compare', label: '🔧 Compare Projects', position: 'left'},
+          {to: '/try-your-own-dataset/?utm_content=header', label: '🔥 Try Your Own Dataset', position: 'right'},
           {
-            href: 'https://en.pingcap.com/tidb-cloud/',
+            href: 'https://en.pingcap.com/tidb-cloud/?utm_source=ossinsight',
             label: 'TiDB Cloud',
-            position: 'left',
-          },
-          {
-            href: 'https://tidbcloud.com',
-            label: 'Sign In',
             position: 'right',
           },
           {
-            href: 'https://github.com/pingcap/ossinsight',
+            type: 'dropdown',
+            label: 'More',
+            position: 'right',
+            items: [
+              {to: '/about', label: 'About'},
+              {to: '/blog', label: 'Blogs'},
+              {to: '/blog/how-it-works', label: 'How It Works'},
+              {href: 'https://twitter.com/PingCAP', label: 'Twitter'},
+            ],
+          },
+          {
+            href: 'https://github.com/pingcap',
             className: 'navbar-item-github',
             position: 'right',
           },
@@ -116,20 +126,28 @@ const config = {
             title: 'OSS Insight',
             items: [
               {
-                label: 'Blog',
-                to: '/blog',
-              },
-              {
                 label: 'Insight',
-                to: '/database/realtime',
+                to: '/database/deep-insight-into-open-source-databases/',
               },
               {
-                label: 'Try it yourself',
-                to: '/blog/try-it-yourself/',
+                label: 'Compare Projects',
+                to: '/compare/',
+              },
+              {
+                label: 'Try Your Own Dataset',
+                to: '/try-your-own-dataset/?utm_content=footer',
               },
               {
                 label: 'How It Works',
                 to: '/blog/how-it-works',
+              },
+              {
+                label: 'About',
+                to: '/about',
+              },
+              {
+                label: 'Blogs',
+                to: '/blog',
               },
             ],
           },
@@ -138,11 +156,11 @@ const config = {
             items: [
               {
                 label: 'TiDB Community',
-                href: 'https://en.pingcap.com/community',
+                href: 'https://en.pingcap.com/community?utm_source=ossinsight',
               },
               {
                 label: 'PingCAP',
-                href: 'https://en.pingcap.com',
+                href: 'https://en.pingcap.com?utm_source=ossinsight',
               },
             ],
           },
@@ -150,7 +168,7 @@ const config = {
             title: 'Built With',
             items: [
               {
-                label: 'GH Archive - Data Source',
+                label: 'GH Archive',
                 href: 'http://www.gharchive.org/',
               },
               {
@@ -167,7 +185,7 @@ const config = {
               },
               {
                 label: 'TiDB Cloud',
-                href: 'https://tidbcloud.com',
+                href: 'https://tidbcloud.com/?utm_source=ossinsight',
               },
               {
                 label: 'TiDB',
@@ -179,25 +197,21 @@ const config = {
             title: 'More',
             items: [
               {
-                label: 'Github',
+                label: 'GitHub',
                 href: 'https://github.com/pingcap/ossinsight',
               },
               {
                 label: 'Twitter',
                 href: 'https://twitter.com/pingcap',
               },
-              {
-                label: 'YouTube',
-                href: 'https://www.youtube.com/pingcap',
-              },
-              {
-                label: 'RSS',
-                to: '/blog/rss.xml',
-              },
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} PingCAP`,
+        logo: {
+          alt: 'OSS Insight Logo',
+          src: '/img/pingcap-white-300x79.png',
+        },
+        copyright: `Copyright &copy; ${new Date().getFullYear()} <a href="https://en.pingcap.com" target="_blank">PingCAP</a>. All Rights Reserved | <a href="https://en.pingcap.com/privacy-policy/" target="_blank">Privacy</a>`,
       },
       prism: {
         theme: lightCodeTheme,
