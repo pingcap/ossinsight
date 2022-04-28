@@ -22,6 +22,7 @@ import Grid from '@mui/material/Grid';
 import {LineChart} from '../../analyze-charts/line';
 import Section from './Section';
 import {H1, H2, H3} from './typography'
+import List from '../../analyze-charts/list/List';
 
 interface AnalyzePageParams {
   owner: string;
@@ -153,6 +154,9 @@ export default function AnalyzePage() {
                 <Grid item xs={9}>
                   <WorldMapChart />
                 </Grid>
+                <Grid item xs={3}>
+                  <List title='Geo-Locations' n={5} valueIndex='count' nameIndex='country_or_area' percentIndex='proportion' />
+                </Grid>
               </Grid>
             </Analyze>
             <Analyze query={companyType}>
@@ -167,6 +171,9 @@ export default function AnalyzePage() {
               <Grid container>
                 <Grid item xs={9}>
                   <CompaniesChart spec={{valueIndex: companyValueIndices[companyType]}} />
+                </Grid>
+                <Grid item xs={3}>
+                  <List title='Companies' n={5} valueIndex={companyValueIndices[companyType]} nameIndex='company_name' percentIndex='proportion' />
                 </Grid>
               </Grid>
             </Analyze>
