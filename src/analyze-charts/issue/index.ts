@@ -1,15 +1,6 @@
-import {EChartsOption} from 'echarts';
-import {
-  axisTooltip,
-  bar,
-  line,
-  originalDataset,
-  timeAxis,
-  valueAxis,
-  title, dataZoom,
-} from '../options';
+import {axisTooltip, dataZoom, legend, line, originalDataset, timeAxis, title, valueAxis} from '../options';
 import {withChart} from '../chart';
-import {OptionEncodeValue, OptionId} from 'echarts/types/src/util/types';
+import {OptionEncodeValue} from 'echarts/types/src/util/types';
 
 // lines of code
 export type IssueData = {
@@ -24,7 +15,7 @@ function lineArea(x: OptionEncodeValue, y: OptionEncodeValue, yAxis: string) {
     showSymbol: false,
     emphasis: {focus: 'series'},
     areaStyle: {},
-    yAxisId: yAxis
+    yAxisId: yAxis,
   });
 }
 
@@ -33,10 +24,10 @@ export const IssueChart = withChart<IssueData>(({title: propsTitle, data}) => ({
   xAxis: timeAxis<'x'>(undefined),
   dataZoom: dataZoom(),
   title: title(propsTitle),
-  legend: {show: true},
+  legend: legend(),
   yAxis: [
     valueAxis<'y'>('diff'),
-    valueAxis<'y'>('total')
+    valueAxis<'y'>('total'),
   ],
   series: [
     lineArea('event_month', 'opened', 'diff'),
@@ -44,7 +35,7 @@ export const IssueChart = withChart<IssueData>(({title: propsTitle, data}) => ({
     line('event_month', 'opened_total', {showSymbol: false, yAxisId: 'total', emphasis: {focus: 'self'}}),
     line('event_month', 'closed_total', {showSymbol: false, yAxisId: 'total', emphasis: {focus: 'self'}}),
   ],
-  tooltip: axisTooltip('line'),
+  tooltip: axisTooltip('cross'),
 }), {
   aspectRatio: 16 / 9,
 });

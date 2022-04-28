@@ -1,15 +1,28 @@
-import React, {forwardRef} from 'react';
+import React, {forwardRef, RefCallback} from 'react';
 import {TypographyProps} from '@mui/material/Typography';
 import {Typography} from '@mui/material';
+import {useAnalyzeChartContext, useAnalyzeContext} from '../../analyze-charts/context';
 
-export const H1 = forwardRef<HTMLHeadingElement, TypographyProps>((props: TypographyProps, ref) => {
-  return <Typography {...props} variant="h1" color='primary.main' marginBottom={4} marginTop={8} ref={ref} />;
-});
+interface AnalyzeTitle {
+  analyzeTitle?: boolean;
+}
 
-export const H2 = forwardRef<HTMLHeadingElement, TypographyProps>((props: TypographyProps, ref) => {
-  return <Typography {...props} variant="h2" color='primary.main' marginBottom={4} marginTop={8} ref={ref} />;
-});
+function useAnalyzeTitleRef(analyzeTitle: boolean | undefined): RefCallback<HTMLHeadingElement> | undefined {
+  const {headingRef} = useAnalyzeChartContext();
+  return analyzeTitle ? headingRef : undefined
+}
 
-export const H3 = forwardRef<HTMLHeadingElement, TypographyProps>((props: TypographyProps, ref) => {
+export const H1 = ({analyzeTitle, ...props}: TypographyProps & AnalyzeTitle) => {
+  const ref = useAnalyzeTitleRef(analyzeTitle)
+  return <Typography {...props} variant="h1" color="primary.main" marginBottom={4} marginTop={8} ref={ref} />;
+};
+
+export const H2 = ({analyzeTitle, ...props}: TypographyProps & AnalyzeTitle) => {
+  const ref = useAnalyzeTitleRef(analyzeTitle)
+  return <Typography {...props} variant="h2" color="primary.main" marginBottom={4} marginTop={8} ref={ref} />;
+};
+
+export const H3 = ({analyzeTitle = true, ...props}: TypographyProps & AnalyzeTitle) => {
+  const ref = useAnalyzeTitleRef(analyzeTitle)
   return <Typography {...props} variant="h3" marginBottom={4} marginTop={8} ref={ref} />;
-});
+};

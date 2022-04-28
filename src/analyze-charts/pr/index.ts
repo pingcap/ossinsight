@@ -1,13 +1,4 @@
-import {EChartsOption} from 'echarts';
-import {
-  axisTooltip,
-  bar,
-  line,
-  originalDataset,
-  timeAxis,
-  valueAxis,
-  title, dataZoom,
-} from '../options';
+import {axisTooltip, bar, dataZoom, legend, line, originalDataset, timeAxis, title, valueAxis} from '../options';
 import {withChart} from '../chart';
 
 // lines of code
@@ -27,16 +18,20 @@ export const PrChart = withChart<PrData>(({title: propsTitle, data}) => ({
   xAxis: timeAxis<'x'>(undefined),
   dataZoom: dataZoom(),
   title: title(propsTitle),
-  legend: {show: true},
+  legend: legend(),
   yAxis: [
     valueAxis<'y'>('size', {position: 'left'}),
-    valueAxis<'y'>('total', {position: 'right'})
+    valueAxis<'y'>('total', {position: 'right'}),
   ],
   series: [
-    ...['xs', 's', 'm', 'l', 'xl', 'xxl'].map(size => bar('event_month', size, {stack: 'stack', yAxisId: 'size', emphasis: {focus: 'series'}})),
+    ...['xs', 's', 'm', 'l', 'xl', 'xxl'].map(size => bar('event_month', size, {
+      stack: 'stack',
+      yAxisId: 'size',
+      emphasis: {focus: 'series'},
+    })),
     line('event_month', 'total', {showSymbol: false, yAxisId: 'total', emphasis: {focus: 'self'}}),
   ],
-  tooltip: axisTooltip('line'),
+  tooltip: axisTooltip('cross'),
 }), {
   aspectRatio: 16 / 9,
 });

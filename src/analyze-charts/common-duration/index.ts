@@ -1,15 +1,7 @@
-import {EChartsOption} from 'echarts';
-import {
-  axisTooltip,
-  bar,
-  line,
-  originalDataset,
-  timeAxis,
-  valueAxis,
-  title, dataZoom, boxplot, logAxis,
-} from '../options';
+import {axisTooltip, boxplot, dataZoom, formatMonth, logAxis, originalDataset, timeAxis, title} from '../options';
 import {withChart} from '../chart';
 import prettyMs from 'pretty-ms';
+import {alpha} from '@mui/material';
 
 // lines of code
 export type PrDurationData = {
@@ -27,18 +19,24 @@ export const DurationChart = withChart<PrDurationData>(({title: propsTitle, data
   dataset: originalDataset(data),
   xAxis: timeAxis<'x'>(),
   yAxis: logAxis<'y'>(undefined, {
-    // max: ({min, max}) => (min + max / 2).toFixed(0)
     axisLabel: {formatter: fmtHours},
+    axisPointer: {
+      label: {
+        formatter: ({value}) => fmtHours(Number(value)),
+      },
+    },
   }),
   dataZoom: dataZoom(),
   title: title(propsTitle),
-  legend: {show: true},
-  series: boxplot('event_month', ['p0', 'p25', 'p50', 'p75', 'p100'], {name: 'boxplot'}),
-  tooltip: axisTooltip('shadow', {
+  series: boxplot('event_month', ['p0', 'p25', 'p50', 'p75', 'p100'], {name: 'boxplot', itemStyle: { color: alpha('#dd6b66', .3)}}),
+  tooltip: axisTooltip('cross', {
     renderMode: 'html',
     formatter: params => {
-      const {value} = params[0]
+      const {value, marker} = params[0];
       return `
+        ${marker}
+        <span>${formatMonth(value.event_month)}</span>
+        <br/>
         <b>min</b>: ${fmtHours(value.p0)}
         <br/>
         <b>p25</b>: ${fmtHours(value.p25)}
@@ -48,8 +46,8 @@ export const DurationChart = withChart<PrDurationData>(({title: propsTitle, data
         <b>p75</b>: ${fmtHours(value.p75)}
         <br/>
         <b>max</b>: ${fmtHours(value.p100)}
-      `
-    }
+      `;
+    },
   }),
 }), {
   aspectRatio: 16 / 9,

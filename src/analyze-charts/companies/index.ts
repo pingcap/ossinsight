@@ -1,4 +1,4 @@
-import {itemTooltip, title, treemap} from '../options';
+import {itemTooltip, legend, title, treemap} from '../options';
 import {withChart} from '../chart';
 
 // lines of code
@@ -9,11 +9,11 @@ export type CompanyData = {
 
 export const CompaniesChart = withChart<CompanyData>(({title: propsTitle, data}) => ({
   title: title(propsTitle),
-  legend: {show: true},
+  legend: legend(),
   series: [
     treemap(transformCompanyData(data.data?.data ?? [])),
   ],
-  tooltip: itemTooltip()
+  tooltip: itemTooltip(),
 }), {
   aspectRatio: 16 / 9,
 });
@@ -22,5 +22,5 @@ function transformCompanyData(data: CompanyData[]): ReturnType<typeof treemap>['
   return data.flatMap(item => ({
     name: item.company_name,
     value: item.issue_creators,
-  }))
+  }));
 }

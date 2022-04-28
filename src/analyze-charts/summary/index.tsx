@@ -1,1 +1,1 @@
-export { default, SummaryProps } from './Summary'
+export {default, SummaryProps} from './Summary';

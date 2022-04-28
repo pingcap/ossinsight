@@ -4,6 +4,6 @@ export function dataZoom(option: EChartsOption['dataZoom'] = undefined): ECharts
   return {
     show: true,
     realtime: true,
-    ...option
+    ...option,
   };
 }

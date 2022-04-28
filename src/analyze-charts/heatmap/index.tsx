@@ -1,13 +1,4 @@
-import {EChartsOption} from 'echarts';
-import {
-  axisTooltip,
-  bar,
-  line,
-  originalDataset,
-  timeAxis,
-  valueAxis,
-  title, dataZoom, heatmap, itemTooltip,
-} from '../options';
+import {categoryAxis, heatmap, itemTooltip, legend, originalDataset, title, visualMap} from '../options';
 import {withChart} from '../chart';
 
 // lines of code
@@ -30,12 +21,12 @@ const days = [
 
 function prepareData(data: TimeHeatData[]): TimeHeatData[] {
   if (data.length === 0) {
-    return []
+    return [];
   }
   const newData = [...data];
   const boolMap = Array(24 * 7).fill(false, 0, 24 * 7);
   for (const item of data) {
-    boolMap[item.dayofweek + item.hour * 7] = true
+    boolMap[item.dayofweek + item.hour * 7] = true;
   }
   for (const hour in hours) {
     for (const day in days) {
@@ -43,65 +34,21 @@ function prepareData(data: TimeHeatData[]): TimeHeatData[] {
         newData.push({
           dayofweek: parseInt(day),
           hour: parseInt(hour),
-          pushes: 0
-        })
+          pushes: 0,
+        });
       }
     }
   }
-  return newData
+  return newData;
 }
 
 export const TimeHeatChart = withChart<TimeHeatData>(({title: propsTitle, data}) => ({
   dataset: originalDataset(data, prepareData),
   title: title(propsTitle),
-  legend: {show: true},
-  xAxis: {
-    type: 'category',
-    data: hours,
-    splitArea: {
-      show: true,
-    },
-    nameLocation: 'middle',
-    nameGap: 50,
-    nameTextStyle: {
-      fontSize: 13,
-      fontWeight: 'bold',
-      color: '#959aa9',
-    },
-    axisLabel: {
-      color: '#959aa9',
-      fontWeight: 'bold',
-    },
-    inverse: false,
-  },
-  yAxis: {
-    type: 'category',
-    data: days,
-    splitArea: {
-      show: true,
-    },
-    nameLocation: 'middle',
-    nameGap: 50,
-    nameTextStyle: {
-      fontSize: 13,
-      fontWeight: 'bold',
-      color: '#959aa9',
-    },
-    axisLabel: {
-      color: '#959aa9',
-      fontWeight: 'bold',
-      rotate: 0,
-      fontSize: undefined,
-    },
-    position: 'top',
-  },
-  visualMap: {
-    min: 0,
-    max: data.data?.data.reduce((prev, current) => Math.max(prev, current.pushes), 0) ?? 1,
-    orient: 'horizontal',
-    left: 'center',
-    bottom: 0,
-  },
+  legend: legend(),
+  xAxis: categoryAxis<'x'>(undefined, {data: hours, position: 'top'}),
+  yAxis: categoryAxis<'y'>(undefined, {data: days, inverse: true}),
+  visualMap: visualMap(0, data.data?.data.reduce((prev, current) => Math.max(prev, current.pushes), 0) ?? 1),
   series: [
     heatmap('hour', 'dayofweek', 'pushes'),
   ],

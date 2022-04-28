@@ -4220,7 +4220,7 @@
 
 "deepmerge@^4.2.2":
   "integrity" "sha512-FJ3UgI4gIl+PHZm53knsuSFpE+nESMr7M4v9QcgB7S63Kj/6WqMiFQJpBBYz1Pt+66bZpP3Q7Lye0Oo9MPKEdg=="
-  "resolved" "https://registry.npmmirror.com/deepmerge/download/deepmerge-4.2.2.tgz"
+  "resolved" "https://registry.npmjs.org/deepmerge/-/deepmerge-4.2.2.tgz"
   "version" "4.2.2"
 
 "default-gateway@^6.0.3":
@@ -5397,6 +5397,11 @@
     "eventemitter3" "^4.0.0"
     "follow-redirects" "^1.0.0"
     "requires-port" "^1.0.0"
+
+"human-format@^1.0.0":
+  "integrity" "sha512-ZfSxF/LHVDb5Un52AguYkZArbiuMbJQwpOpZ0MBuj3pYDmLt7pkCEws9L8xKbgnaKrfMgGd6qc+PHBbKO97AaA=="
+  "resolved" "https://registry.npmjs.org/human-format/-/human-format-1.0.0.tgz"
+  "version" "1.0.0"
 
 "human-signals@^2.1.0":
   "integrity" "sha1-3JH8ukLk0G5Kuu0zs+ejwC9RTqA="

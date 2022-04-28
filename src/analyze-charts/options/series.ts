@@ -1,12 +1,15 @@
 import {
   BarSeriesOption,
-  BoxplotSeriesOption, EffectScatterSeriesOption,
+  BoxplotSeriesOption,
+  EffectScatterSeriesOption,
   HeatmapSeriesOption,
-  LineSeriesOption, ScatterSeriesOption,
+  LineSeriesOption,
+  ScatterSeriesOption,
   TreemapSeriesOption,
 } from 'echarts';
 import {ORIGINAL_DATASET_ID} from './dataset';
 import {DimensionLoose, OptionEncodeValue} from 'echarts/types/src/util/types';
+import {alpha, darken} from '@mui/material';
 
 interface CartesianSeriesEncodeOption {
   x: OptionEncodeValue;
@@ -44,15 +47,15 @@ export function line(x: OptionEncodeValue, y: OptionEncodeValue, option: LineSer
 
 export function boxplot(x: OptionEncodeValue, y: [DimensionLoose, DimensionLoose, DimensionLoose, DimensionLoose, DimensionLoose], option: BoxplotSeriesOption = {}): BoxplotSeriesOption {
   return {
-    type: 'boxplot',
     datasetId: ORIGINAL_DATASET_ID,
     ...option,
+    type: 'boxplot',
     encode: {
       x,
       y,
       tooltip: y,
       ...(option.encode || {}),
-    },
+    }
   };
 }
 
@@ -106,7 +109,7 @@ export function scatters(idPrefix: string, topN: number, max: number, option: Sc
     symbolSize: (val) => {
       return 1 + Math.sqrt(val[3] / max) * 64;
     },
-    ...option
+    ...option,
   };
   return [
     {

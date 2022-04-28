@@ -1,7 +1,7 @@
 import React from 'react';
 import {useAnalyzeContext} from '../context';
 import Grid from '@mui/material/Grid';
-import {SummaryItemProps, SummaryItem, StaticSummaryItem} from './SummaryItem';
+import {StaticSummaryItem, SummaryItem} from './SummaryItem';
 import {HeaderGrid, HeadText} from './styled';
 import Skeleton from '@mui/material/Skeleton';
 import Analyze from '../Analyze';
@@ -54,15 +54,16 @@ export default function Summary({items}: SummaryProps) {
       </Grid>
       {items.map((item, i) => {
         if ('query' in item) {
-          const {query, ...props} = item
+          const {query, ...props} = item;
           return (
             <Analyze query={query}>
               <SummaryItem container flexWrap="nowrap" gap={1} {...props} sizes={sizes} key={query} />
             </Analyze>
-          )
+          );
         } else {
-          const {data, comparingData, ...props } = item
-          return <StaticSummaryItem container flexWrap="nowrap" gap={1} data={data} comparingData={comparingData} {...props} sizes={sizes} key={i}/>
+          const {data, comparingData, ...props} = item;
+          return <StaticSummaryItem container flexWrap="nowrap" gap={1} data={data}
+                                    comparingData={comparingData} {...props} sizes={sizes} key={i} />;
         }
       })}
     </Stack>

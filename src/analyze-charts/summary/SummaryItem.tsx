@@ -1,6 +1,6 @@
 import React from 'react';
 import Grid, {GridProps} from '@mui/material/Grid';
-import {HeaderGrid, DataGrid, HeadText, BodyText} from './styled';
+import {BodyText, DataGrid, HeaderGrid, HeadText} from './styled';
 import {useAnalyzeChartContext, useAnalyzeContext} from '../context';
 import Stack from '@mui/material/Stack';
 import {AsyncData, RemoteData} from '../../components/RemoteCharts/hook';
@@ -24,12 +24,12 @@ export interface StaticSummaryItemProps extends Omit<GridProps, 'title'> {
 }
 
 function getData<K extends string>(data: AsyncData<RemoteData<unknown, Record<K, number>>>, key: K): number | undefined {
-  const item = data.data?.data[0]
+  const item = data.data?.data[0];
   if (!item) {
-    return undefined
+    return undefined;
   }
   if (key === '*') {
-    return Object.values(item)[0] as any
+    return Object.values(item)[0] as any;
   } else {
     return item[key];
   }
@@ -50,7 +50,7 @@ export function SummaryItem<F extends string>({title, icon, sizes, field, ...gri
       <DataGrid item xs={sizes[1]}>
         <Stack direction="row" alignItems="center" justifyContent="flex-start" spacing={1}>
           <BodyText>
-            {getData(data, field) ?? <CircularProgress sx={{verticalAlign: -2}} size={24}/>}
+            {getData(data, field) ?? <CircularProgress sx={{verticalAlign: -2}} size={24} />}
           </BodyText>
         </Stack>
       </DataGrid>
@@ -66,7 +66,7 @@ export function SummaryItem<F extends string>({title, icon, sizes, field, ...gri
   );
 }
 
-export function StaticSummaryItem ({title, icon, sizes, data, comparingData, ...gridProps}: StaticSummaryItemProps) {
+export function StaticSummaryItem({title, icon, sizes, data, comparingData, ...gridProps}: StaticSummaryItemProps) {
   const {comparingRepoId} = useAnalyzeContext();
 
   return (
@@ -80,7 +80,7 @@ export function StaticSummaryItem ({title, icon, sizes, data, comparingData, ...
       <DataGrid item xs={sizes[1]}>
         <Stack direction="row" alignItems="center" justifyContent="flex-start" spacing={1}>
           <BodyText>
-            {data ?? <CircularProgress sx={{verticalAlign: -2}} size={24}/>}
+            {data ?? <CircularProgress sx={{verticalAlign: -2}} size={24} />}
           </BodyText>
         </Stack>
       </DataGrid>

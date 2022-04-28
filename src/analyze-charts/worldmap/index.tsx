@@ -1,15 +1,6 @@
-import {EChartsOption} from 'echarts';
-import {
-  axisTooltip,
-  bar,
-  line,
-  originalDataset,
-  timeAxis,
-  valueAxis,
-  title, dataZoom, worldMapGeo, itemTooltip, scatters,
-} from '../options';
-import {withChart} from '../chart';
 import * as echarts from 'echarts';
+import {itemTooltip, scatters, title, worldMapGeo} from '../options';
+import {withChart} from '../chart';
 import map from '@geo-maps/countries-land-10km';
 import {alpha2ToGeo, alpha2ToTitle} from '../../lib/areacode';
 import {DatasetOption} from 'echarts/types/dist/shared';
