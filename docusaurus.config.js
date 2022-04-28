@@ -3,6 +3,7 @@
 
 const lightCodeTheme = require('prism-react-renderer/themes/github');
 const darkCodeTheme = require('prism-react-renderer/themes/dracula');
+const path = require('path')
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -18,6 +19,20 @@ const config = {
   scripts: [
     'https://api.ossinsight.io/qo/repos/groups/osdb?format=global_variable',
     'https://www.google.com/recaptcha/api.js?render=6LcBQpkfAAAAAFmuSRkRlJxVtmqR34nNawFgKohC'
+  ],
+  plugins: [
+    [
+      path.resolve(__dirname, 'plugins/dynamic-route'),
+      {
+        routes: [
+          {
+            path: '/analyze/:owner/:repo',
+            exact: true,
+            component: '@site/src/dynamic-pages/analyze'
+          }
+        ]
+      }
+    ]
   ],
   presets: [
     [

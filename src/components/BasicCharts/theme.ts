@@ -1,4 +1,5 @@
 import * as echarts from "echarts/core";
+import {EChartsOption} from 'echarts';
 
 export function registerThemeVintage (bg = true) {
   const colorPalette = ['#d87c7c', '#919e8b', '#d7ab82', '#6e7074', '#61a0a8', '#efa18d', '#787464', '#cc7e63', '#724e58', '#4b565b'];
@@ -13,6 +14,7 @@ export function registerThemeVintage (bg = true) {
 
 export function registerThemeDark(bg = true) {
   const contrastColor = '#eee';
+  const boxColor = '#2c2c2c'
   const axisCommon = function () {
     return {
       axisLine: {
@@ -33,13 +35,23 @@ export function registerThemeDark(bg = true) {
       splitLine: {
         lineStyle: {
           type: 'dashed',
-          color: '#aaa'
+          color: '#2c2c2c',
+          width: 0.5
         }
       },
       splitArea: {
         areaStyle: {
           color: contrastColor
         }
+      },
+      axisPointer: {
+        label: {
+          backgroundColor: boxColor
+        }
+      },
+      nameTextStyle: {
+        fontStyle: 'italic',
+        color: 'gray'
       }
     };
   };
@@ -49,6 +61,15 @@ export function registerThemeDark(bg = true) {
     color: colorPalette,
     backgroundColor: 'rgba(24, 25, 26)',
     tooltip: {
+      backgroundColor: boxColor,
+      textStyle: {
+        color: contrastColor
+      },
+      borderWidth: 0,
+      shadowBlur: 8,
+      shadowColor: 'rgba(0, 0, 0, 0.618)',
+      shadowOffsetX: 0,
+      shadowOffsetY: 0,
       axisPointer: {
         lineStyle: {
           color: contrastColor
@@ -57,6 +78,13 @@ export function registerThemeDark(bg = true) {
           color: contrastColor
         }
       }
+    },
+    grid: {
+      top: '64',
+      bottom: '48',
+      left: '8',
+      right: '8',
+      containLabel: true
     },
     legend: {
       textStyle: {
@@ -132,6 +160,12 @@ export function registerThemeDark(bg = true) {
           borderColor: '#FD1050',
           borderColor0: '#0CF49B'
         }
+      }
+    },
+
+    visualMap: {
+      textStyle: {
+        color: contrastColor
       }
     }
   };

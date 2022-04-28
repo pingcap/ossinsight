@@ -8,6 +8,7 @@ import BrowserOnly from "@docusaurus/BrowserOnly";
 import {registerThemeDark, registerThemeVintage} from "../BasicCharts/theme";
 import {Opts} from "echarts-for-react/lib/types";
 import EChartsContext from './context'
+import InViewContext from '../InViewContext';
 
 interface SizeProps {
   aspectRatio?: number
@@ -15,7 +16,7 @@ interface SizeProps {
   echartsStyle?: CSSProperties
 }
 
-interface EChartsProps extends EChartsReactProps, SizeProps {
+export interface EChartsProps extends EChartsReactProps, SizeProps {
 }
 
 registerThemeVintage()
@@ -30,20 +31,24 @@ const ECharts = React.forwardRef<EChartsReact, EChartsProps>(({aspectRatio, heig
     }
   }, [aspectRatio, height])
 
+  const {inView} = useContext(InViewContext)
+
   const echartsStyle = useMemo(() => {
     const result: CSSProperties = Object.assign({}, echartsStyleProp)
     result.height = realHeight
     result.width = '100%'
     result.overflow = 'hidden'
+    result.transition = 'opacity .2s ease'
+    result.opacity = inView ? 1 : 0
     return result
-  }, [style, aspectRatio, realHeight])
+  }, [style, aspectRatio, realHeight, inView])
 
   const echartsOpts: Opts = useMemo(() => {
     return Object.assign({
       devicePixelRatio: typeof window === "undefined" ? 1 : window.devicePixelRatio,
       renderer: 'canvas',
       height: 'auto',
-      locale: 'en'
+      locale: 'en',
     }, opts)
   }, [opts, realHeight])
 
