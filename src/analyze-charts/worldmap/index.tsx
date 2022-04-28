@@ -45,11 +45,11 @@ function datasets(idPrefix: string, topN: number, data: LocationData[]): Dataset
 export const WorldMapChart = withChart<LocationData>(({title: propsTitle, data}) => {
     const max = (data.data?.data ?? []).reduce((prev, current) => Math.max(prev, current.count), 1);
     return {
-      dataset: datasets('data', 0, data.data?.data ?? []),
+      dataset: datasets('data', 1, data.data?.data ?? []),
       title: title(propsTitle),
       geo: worldMapGeo(),
       series: [
-        ...scatters('data', 0, max, {
+        ...scatters('data', 1, max, {
           color: '#dd6b66',
         }),
       ],

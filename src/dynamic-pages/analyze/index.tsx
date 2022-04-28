@@ -152,7 +152,11 @@ export default function AnalyzePage() {
             </Analyze>
             <Analyze query='analyze-issue-creators-company'>
               <H3>Companies</H3>
-              <CompaniesChart />
+              <Grid container>
+                <Grid item xs={9}>
+                  <CompaniesChart />
+                </Grid>
+              </Grid>
             </Analyze>
           </Section>
         </Container>
