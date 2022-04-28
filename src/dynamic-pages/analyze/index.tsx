@@ -23,6 +23,7 @@ import {LineChart} from '../../analyze-charts/line';
 import Section from './Section';
 import {H1, H2, H3, H4} from './typography'
 import List from '../../analyze-charts/list/List';
+import {alpha2ToTitle} from '../../lib/areacode';
 
 interface AnalyzePageParams {
   owner: string;
@@ -155,7 +156,7 @@ export default function AnalyzePage() {
                   <WorldMapChart />
                 </Grid>
                 <Grid item xs={3}>
-                  <List title='Geo-Locations' n={5} valueIndex='count' nameIndex='country_or_area' percentIndex='proportion' />
+                  <List title='Geo-Locations' n={10} valueIndex='count' nameIndex='country_or_area' percentIndex='percentage' transformName={alpha2ToTitle} />
                 </Grid>
               </Grid>
             </Analyze>
@@ -173,7 +174,7 @@ export default function AnalyzePage() {
                   <CompaniesChart spec={{valueIndex: companyValueIndices[companyType]}} />
                 </Grid>
                 <Grid item xs={3}>
-                  <List title='Companies' n={5} valueIndex={companyValueIndices[companyType]} nameIndex='company_name' percentIndex='proportion' />
+                  <List title='Companies' n={10} valueIndex={companyValueIndices[companyType]} nameIndex='company_name' percentIndex='proportion' />
                 </Grid>
               </Grid>
             </Analyze>
