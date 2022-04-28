@@ -77,7 +77,7 @@ export default function AnalyzePage() {
       title: 'Language',
       data: repo?.language,
     }]
-  }, [])
+  }, [repo])
 
   return (
     <CustomPage>
@@ -164,8 +164,8 @@ export default function AnalyzePage() {
               <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs value={companyType} onChange={handleChangeCompanyType}>
                   <Tab label={<H4>Stargazers</H4>} value='analyze-stars-company' />
-                  <Tab label={<H4>Issue Creators</H4>} value='issue-creators-top-50-company' />
-                  <Tab label={<H4>Pull Requests Creators</H4>} value='pull-request-creators-top-50-company' />
+                  <Tab label={<H4>Issue Creators</H4>} value='analyze-issue-creators-company' />
+                  <Tab label={<H4>Pull Requests Creators</H4>} value='analyze-pull-request-creators-company' />
                 </Tabs>
               </Box>
               <Grid container>
@@ -186,6 +186,6 @@ export default function AnalyzePage() {
 
 const companyValueIndices = {
   'analyze-stars-company': 'stargazers',
-  'issue-creators-top-50-company': 'issue_creators',
-  'pull-request-creators-top-50-company': 'code_contributors'
+  'analyze-issue-creators-company': 'issue_creators',
+  'analyze-pull-request-creators-company': 'code_contributors'
 }

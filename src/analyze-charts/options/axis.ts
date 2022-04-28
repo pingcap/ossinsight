@@ -73,6 +73,7 @@ export function timeAxis<T extends 'x' | 'y'>(id?: OptionId, option: AxisOption<
           return formatMonth(value)
         }
       }
-    }
+    },
+    min: new Date(2011, 0, 1, 0, 0, 0, 0)
   });
 }

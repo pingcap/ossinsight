@@ -9,6 +9,7 @@ import {
   timeAxis,
   title,
   valueAxis,
+  utils, dataset,
 } from '../options';
 import {withChart} from '../chart';
 
@@ -20,22 +21,29 @@ export type LocData = {
   changes: number
 }
 
-export const LocChart = withChart<LocData>(({title: propsTitle, data}) => ({
-  dataset: originalDataset(data, transformLocData),
-  xAxis: timeAxis<'x'>(undefined),
-  dataZoom: dataZoom(),
-  title: title(propsTitle),
-  legend: legend(),
-  yAxis: valueAxis<'y'>(),
-  series: [
-    bar('event_month', 'additions', {stack: 'stack', color: '#57ab5a'}),
-    bar('event_month', 'deletions', {stack: 'stack', color: '#e5534b'}),
-    line('event_month', 'total', {showSymbol: false, color: '#cc6b2c'}),
-  ],
-  tooltip: axisTooltip('cross', {
-    formatter: params => {
-      const [add, del, total] = params
-      return `
+export const LocChart = withChart<LocData>(({title: propsTitle, data}) => {
+  const transformedData = transformLocData(data.data?.data ?? [])
+  const adjusted = utils.adjustAxis(transformedData, [['additions', 'deletions'], ['total']])
+
+  return {
+    dataset: dataset(undefined, transformedData),
+    dataZoom: dataZoom(),
+    title: title(propsTitle),
+    legend: legend({ selectedMode: false }),
+    xAxis: timeAxis<'x'>(undefined),
+    yAxis: [
+      valueAxis<'y'>('diff', {...adjusted[0], position: 'left', axisLabel: {showMaxLabel: false, showMinLabel: false}, name: 'Diff / lines'}),
+      valueAxis<'y'>('total', {...adjusted[1], position: 'right', axisLabel: {showMaxLabel: false, showMinLabel: false}, name: 'Total / lines'}),
+    ],
+    series: [
+      bar('event_month', 'additions', {stack: 'stack', color: '#57ab5a', yAxisId: 'diff'}),
+      bar('event_month', 'deletions', {stack: 'stack', color: '#e5534b', yAxisId: 'diff'}),
+      line('event_month', 'total', {showSymbol: false, color: '#cc6b2c', yAxisId: 'total'}),
+    ],
+    tooltip: axisTooltip('cross', {
+      formatter: params => {
+        const [add, del, total] = params;
+        return `
         <div>${formatMonth(add.value.event_month)}</div>
         <div>
           <b style="color: ${add.color}; font-weight: 800">+${add.value.additions}</b>
@@ -45,10 +53,11 @@ export const LocChart = withChart<LocData>(({title: propsTitle, data}) => ({
           ${total.marker}
           <b>Total: ${total.value.total}</b>
         </div>
-      `
-    }
-  }),
-}), {
+      `;
+      },
+    }),
+  };
+}, {
   aspectRatio: 16 / 9,
 });
 

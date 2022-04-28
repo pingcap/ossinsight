@@ -47,6 +47,10 @@ export function registerThemeDark(bg = true) {
         label: {
           backgroundColor: boxColor
         }
+      },
+      nameTextStyle: {
+        fontStyle: 'italic',
+        color: 'gray'
       }
     };
   };
@@ -73,6 +77,13 @@ export function registerThemeDark(bg = true) {
           color: contrastColor
         }
       }
+    },
+    grid: {
+      top: '64',
+      bottom: '48',
+      left: '8',
+      right: '8',
+      containLabel: true
     },
     legend: {
       textStyle: {

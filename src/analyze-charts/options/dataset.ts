@@ -16,7 +16,7 @@ export function remoteDataset<T>(id: string, data: AsyncData<RemoteData<unknown,
   };
 }
 
-export function dataset(id: string, source: OptionSourceData, dimensions: DimensionDefinitionLoose[] | undefined = undefined): DatasetOption {
+export function dataset(id: string = ORIGINAL_DATASET_ID, source: OptionSourceData, dimensions: DimensionDefinitionLoose[] | undefined = undefined): DatasetOption {
   return {
     id,
     source,
