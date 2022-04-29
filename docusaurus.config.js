@@ -81,7 +81,7 @@ const config = {
         {name: 'twitter:card', content: 'summary_large_image'},
         {name: 'keywords', content: 'tidb,mysql,github event,oss,compare oss'}
       ],
-      hideableSidebar: true,
+//       hideableSidebar: true,
       colorMode: {
         defaultMode: 'dark',
         disableSwitch: true,
