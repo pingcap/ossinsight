@@ -1,4 +1,13 @@
-import {categoryAxis, heatmap, itemTooltip, legend, originalDataset, title, visualMap} from '../options';
+import {
+  categoryAxis,
+  heatmap,
+  itemTooltip,
+  leftRightLayoutGrid,
+  legend,
+  standardDataset,
+  title,
+  utils, visualMap,
+} from '../options';
 import {withChart} from '../chart';
 
 // lines of code
@@ -43,15 +52,21 @@ function prepareData(data: TimeHeatData[]): TimeHeatData[] {
 }
 
 export const TimeHeatChart = withChart<TimeHeatData>(({title: propsTitle, data}) => ({
-  dataset: originalDataset(data, prepareData),
+  dataset: standardDataset(prepareData),
   title: title(propsTitle),
   legend: legend(),
-  xAxis: categoryAxis<'x'>(undefined, {data: hours, position: 'top'}),
-  yAxis: categoryAxis<'y'>(undefined, {data: days, inverse: true}),
-  visualMap: visualMap(0, data.data?.data.reduce((prev, current) => Math.max(prev, current.pushes), 0) ?? 1),
-  series: [
-    heatmap('hour', 'dayofweek', 'pushes'),
-  ],
+  grid: leftRightLayoutGrid(),
+  xAxis: utils.template(({id}) => categoryAxis<'x'>(id, {gridId: id, data: hours, position: 'top'})),
+  yAxis: utils.template(({id}) => categoryAxis<'y'>(id, {gridId: id, data: days, inverse: true})),
+  visualMap: utils.aggregate<TimeHeatData>(all => {
+    const max = all.map(data => data.data?.data.reduce((prev, current) => Math.max(prev, current.pushes), 0) ?? 1).reduce((p, c) => Math.max(p, c), 0)
+    return visualMap(0, max)
+  }),
+  series: utils.template(({datasetId, id}) => heatmap('hour', 'dayofweek', 'pushes', {
+    datasetId,
+    xAxisId: id,
+    yAxisId: id,
+  })),
   tooltip: itemTooltip({
     renderMode: 'html',
     formatter: (params) => {

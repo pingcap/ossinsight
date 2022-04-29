@@ -47,3 +47,15 @@ export function simple<T>(single: T, comparing: T) {
     return single;
   }
 }
+
+export function aggregate<P, T = any> (fp: (all: AsyncData<RemoteData<unknown, P>>[]) => T): T {
+  const {data, compareData} = dangerousGetCtx<P>()
+  const res: AsyncData<RemoteData<unknown, P>>[] = []
+  if (data) {
+    res.push(data)
+  }
+  if (compareData) {
+    res.push(compareData)
+  }
+  return fp(res)
+}

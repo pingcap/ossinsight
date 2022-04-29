@@ -181,7 +181,11 @@ function AnalyzePage() {
               <P2>
                 The Heat Maps below describe the number of commit events that occur at a particular point of time (UTC+0).
               </P2>
-              <TimeHeatChart />
+              <Grid container>
+                <Grid item xs={12} md={vs ? 12 : 6}>
+                  <TimeHeatChart aspectRatio={vs ? (24 / 7) : (24 / 14)}/>
+                </Grid>
+              </Grid>
             </Analyze>
           </Section>
           <Section>
