@@ -16,9 +16,9 @@ export function comparingDataset<T>(data: AsyncData<RemoteData<unknown, T>>, tra
 
 export function standardDataset<T>(transform?: (item: T[]) => any) {
   return template(({
-    id,
+    datasetId,
     data,
-  }) => [remoteDataset(id === 'vs' ? COMPARING_DATASET_ID : ORIGINAL_DATASET_ID, data, transform)]);
+  }) => [remoteDataset(datasetId, data, transform)]);
 }
 
 export function remoteDataset<T>(id: string, data: AsyncData<RemoteData<unknown, T>>, transform?: (item: T[]) => any): DatasetOption {
