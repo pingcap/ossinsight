@@ -134,7 +134,7 @@ export default function AnalyzePage() {
           repo1DisableClearable
         />
 
-        <Container maxWidth='xl'>
+        <Container maxWidth='lg'>
           <Section>
             <H1>
               <a href={`https://github.com/${name}`} target='_blank'>

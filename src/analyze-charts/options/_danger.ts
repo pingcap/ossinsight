@@ -1,6 +1,6 @@
 import {AnalyzeChartContextProps, AnalyzeContextProps} from '../context';
 
-type Ctx<T> = AnalyzeContextProps & AnalyzeChartContextProps<T>
+type Ctx<T> = AnalyzeContextProps & AnalyzeChartContextProps<T> & {context: Record<string, any>}
 
 let dangerousCtx: Ctx<unknown> | undefined = undefined;
 

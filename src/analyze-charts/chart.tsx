@@ -9,7 +9,7 @@ export function withChart<T = unknown, P = {}>(useOption: (props: AnalyzeContext
     const context = useAnalyzeContext();
     const chartContext = useAnalyzeChartContext<T>();
 
-    const ctx = {...context, ...chartContext};
+    const ctx = {...context, ...chartContext, context: {}};
 
     dangerousSetCtx(ctx);
     const option = useOption(ctx, props.spec);

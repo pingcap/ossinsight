@@ -1,15 +1,16 @@
 import {
   axisTooltip,
   bar,
+  dataset,
   dataZoom,
   formatMonth,
   legend,
   line,
-  originalDataset,
   timeAxis,
   title,
+  topBottomLayoutGrid,
+  utils,
   valueAxis,
-  utils, dataset,
 } from '../options';
 import {withChart} from '../chart';
 
@@ -21,25 +22,58 @@ export type LocData = {
   changes: number
 }
 
-export const LocChart = withChart<LocData>(({title: propsTitle, data}) => {
-  const transformedData = transformLocData(data.data?.data ?? [])
-  const adjusted = utils.adjustAxis(transformedData, [['additions', 'deletions'], ['total']])
+export const LocChart = withChart<LocData>(({title: propsTitle}) => {
 
   return {
-    dataset: dataset(undefined, transformedData),
+    dataset: utils.template<LocData>(({id, datasetId, data, context}) => {
+      const transformedData = transformLocData(data.data?.data ?? []);
+      context[`adjust-${id}`] = utils.adjustAxis(transformedData, [['additions', 'deletions'], ['total']]);
+      return dataset(datasetId, transformedData);
+    }),
     dataZoom: dataZoom(),
     title: title(propsTitle),
-    legend: legend({ selectedMode: false }),
-    xAxis: timeAxis<'x'>(undefined),
-    yAxis: [
-      valueAxis<'y'>('diff', {...adjusted[0], position: 'left', axisLabel: {showMaxLabel: false, showMinLabel: false}, name: 'Diff / lines'}),
-      valueAxis<'y'>('total', {...adjusted[1], position: 'right', axisLabel: {showMaxLabel: false, showMinLabel: false}, name: 'Total / lines'}),
-    ],
-    series: [
-      bar('event_month', 'additions', {stack: 'stack', color: '#57ab5a', yAxisId: 'diff'}),
-      bar('event_month', 'deletions', {stack: 'stack', color: '#e5534b', yAxisId: 'diff'}),
-      line('event_month', 'total', {showSymbol: false, color: '#cc6b2c', yAxisId: 'total'}),
-    ],
+    grid: topBottomLayoutGrid(),
+    legend: legend({selectedMode: false}),
+    xAxis: utils.template(({id}) => timeAxis<'x'>(id, {gridId: id})),
+    yAxis: utils.template(({id, context}) => [
+      valueAxis<'y'>(`${id}-diff`, {
+        gridId: id,
+        ...context[`adjust-${id}`][0],
+        position: 'left',
+        axisLabel: {showMaxLabel: false, showMinLabel: false},
+        name: 'Diff / lines',
+      }),
+      valueAxis<'y'>(`${id}-total`, {
+        gridId: id,
+        ...context[`adjust-${id}`][1],
+        position: 'right',
+        axisLabel: {showMaxLabel: false, showMinLabel: false},
+        name: 'Total / lines',
+      }),
+    ]),
+    series: utils.template(({id, datasetId}) => [
+      bar('event_month', 'additions', {
+        datasetId: datasetId,
+        stack: `stack-${id}`,
+        color: '#57ab5a',
+        xAxisId: id,
+        yAxisId: `${id}-diff`,
+      }),
+      bar('event_month', 'deletions', {
+        datasetId: datasetId,
+        stack: `stack-${id}`,
+        color: '#e5534b',
+        xAxisId: id,
+        yAxisId: `${id}-diff`,
+      }),
+      line('event_month', 'total', {
+        datasetId: datasetId,
+        showSymbol: false,
+        color: '#cc6b2c',
+        xAxisId: id,
+        yAxisId: `${id}-total`,
+      }),
+    ]),
     tooltip: axisTooltip('cross', {
       formatter: params => {
         const [add, del, total] = params;

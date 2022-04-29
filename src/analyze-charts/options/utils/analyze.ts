@@ -11,10 +11,12 @@ interface AnalyzeTemplateParams<T> {
   repoInfo: RepoInfo | undefined;
   data: AsyncData<RemoteData<unknown, T>>;
   name: string;
+  // be careful to use this
+  context: Record<string, any>
 }
 
-export function template<T, P = unknown>(fp: (params: AnalyzeTemplateParams<P>) => (T | T[])): T[] {
-  const {repoName, comparingRepoName, repoInfo, comparingRepoInfo, data, compareData} = dangerousGetCtx<P>();
+export function template<P, T = any>(fp: (params: AnalyzeTemplateParams<P>) => (T | T[])): T[] {
+  const {repoName, comparingRepoName, repoInfo, comparingRepoInfo, data, compareData, context} = dangerousGetCtx<P>();
   let res: T[] = [];
   res = res.concat(fp({
     id: 'main',
@@ -22,6 +24,7 @@ export function template<T, P = unknown>(fp: (params: AnalyzeTemplateParams<P>) 
     repoInfo,
     data,
     name: repoName,
+    context,
   }));
   if (comparingRepoName) {
     res = res.concat(fp({
@@ -30,6 +33,7 @@ export function template<T, P = unknown>(fp: (params: AnalyzeTemplateParams<P>) 
       repoInfo: comparingRepoInfo,
       data: compareData,
       name: comparingRepoName,
+      context,
     }));
   }
   return res;
