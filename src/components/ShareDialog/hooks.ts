@@ -107,7 +107,6 @@ export function useShare(shareInfo: CommonChartShareInfo | undefined, echartsRef
         grecaptcha.ready(() => {
           grecaptcha.execute('6LcBQpkfAAAAAFmuSRkRlJxVtmqR34nNawFgKohC', {action: 'submit'})
             .then(token => {
-              console.log(token);
               resolve(token);
             });
         });

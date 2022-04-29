@@ -23,10 +23,11 @@ export default function Footer() {
         </Typography>
         <Cards sx={{mt: 2}} xs={12} sm={6} md={4}>
           <StandardCard
-            title='Why We Choose TiDB to Support OSS Insight'
+            title='Data Preparation for Analytics'
             description='Blog · 5 min read'
             codeStyleDescription={false}
             readMore='/blog/how-it-works'
+            buttonVariant='outlined'
             top={icon(require('./icon-1.png').default)}
             cardSx={{
               backgroundColor: '#2c2c2c'
@@ -37,6 +38,7 @@ export default function Footer() {
             description='Documentation · 10 min read'
             codeStyleDescription={false}
             readMore='https://docs.pingcap.com/tidbcloud?utm_source=ossinsight'
+            buttonVariant='outlined'
             top={icon(require('./icon-2.png').default)}
             cardSx={{
               backgroundColor: '#2c2c2c'
@@ -44,9 +46,10 @@ export default function Footer() {
           />
           <StandardCard
             title='Use TiDB Cloud to Analyze GitHub Events in 5 Minutes'
-            description='Tutorial · 10 min read'
+            description='Tutorial · 5 min read'
             codeStyleDescription={false}
             readMore='/blog/try-it-yourself'
+            buttonVariant='outlined'
             top={icon(require('./icon-3.png').default)}
             cardSx={{
               backgroundColor: '#2c2c2c'
@@ -55,7 +58,7 @@ export default function Footer() {
         </Cards>
         <Box textAlign='center' sx={{fontSize: 24, mt: 6}}>
           Now, how about&nbsp;
-          <Button sx={{fontSize: 24, fontWeight: 'bold'}} component={Link} href='/try-your-own-dataset?utm_content=wonder_cta'>
+          <Button sx={{fontSize: 24, fontWeight: 'bold'}} style={{ verticalAlign: 'baseline' }} component={Link} href='/try-your-own-dataset?utm_content=wonder_cta'>
             Try your own dataset !
           </Button>
         </Box>

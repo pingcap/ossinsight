@@ -3,6 +3,7 @@
 
 const lightCodeTheme = require('prism-react-renderer/themes/github');
 const darkCodeTheme = require('prism-react-renderer/themes/dracula');
+const path = require('path')
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -18,6 +19,20 @@ const config = {
   scripts: [
     'https://api.ossinsight.io/qo/repos/groups/osdb?format=global_variable',
     'https://www.google.com/recaptcha/api.js?render=6LcBQpkfAAAAAFmuSRkRlJxVtmqR34nNawFgKohC'
+  ],
+  plugins: [
+    [
+      path.resolve(__dirname, 'plugins/dynamic-route'),
+      {
+        routes: [
+          {
+            path: '/analyze/:owner/:repo',
+            exact: true,
+            component: '@site/src/dynamic-pages/analyze'
+          }
+        ]
+      }
+    ]
   ],
   presets: [
     [
@@ -62,7 +77,10 @@ const config = {
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       image: 'img/gharchive-title-img.png',
-      metadata: [{name: 'twitter:card', content: 'summary_large_image'}, {name: 'keywords', content: 'tidb, gharchive'}],
+      metadata: [
+        {name: 'twitter:card', content: 'summary_large_image'},
+        {name: 'keywords', content: 'tidb,mysql,github event,oss,compare oss'}
+      ],
       hideableSidebar: true,
       colorMode: {
         defaultMode: 'dark',
@@ -110,7 +128,7 @@ const config = {
             ],
           },
           {
-            href: 'https://github.com/pingcap',
+            href: 'https://github.com/pingcap/ossinsight',
             className: 'navbar-item-github',
             position: 'right',
           },
@@ -165,7 +183,7 @@ const config = {
             title: 'Built With',
             items: [
               {
-                label: 'GH Archive - Data Source',
+                label: 'GH Archive',
                 href: 'http://www.gharchive.org/',
               },
               {
@@ -208,7 +226,7 @@ const config = {
           alt: 'OSS Insight Logo',
           src: '/img/pingcap-white-300x79.png',
         },
-        copyright: `Copyright © ${new Date().getFullYear()} <a href="https://en.pingcap.com" target="_blank">PingCAP</a>`,
+        copyright: `Copyright &copy; ${new Date().getFullYear()} <a href="https://en.pingcap.com" target="_blank">PingCAP</a>. All Rights Reserved | <a href="https://en.pingcap.com/privacy-policy/" target="_blank">Privacy</a>`,
       },
       prism: {
         theme: lightCodeTheme,

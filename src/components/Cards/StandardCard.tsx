@@ -3,7 +3,7 @@ import Card, {CardProps} from "@mui/material/Card";
 import Typography from "@mui/material/Typography";
 import AspectRatio from "react-aspect-ratio";
 import React, {HTMLAttributeAnchorTarget, useCallback, useState} from 'react';
-import Button from "@mui/material/Button";
+import Button, {ButtonProps} from '@mui/material/Button';
 import Chip from "@mui/material/Chip";
 import Box from "@mui/material/Box";
 import ButtonBase from '@mui/material/ButtonBase';
@@ -16,6 +16,7 @@ export interface StandardCardProps extends Omit<GridProps<any, any>, 'item' | 'c
   image?: React.ReactElement
   aspectRatio?: number
   buttonText?: string
+  buttonVariant?: ButtonProps['variant']
   readMore?: string
   elevation?: number
   cardSx?: CardProps['sx']
@@ -84,6 +85,7 @@ export default function StandardCard({
   description,
   readMore,
   buttonText = 'read more',
+  buttonVariant,
   codeStyleDescription = true,
   elevation,
   cardSx,
@@ -130,7 +132,7 @@ export default function StandardCard({
         ) : undefined}
       {readMore
         ? (
-          <Button size='small' variant='text' component={Link} to={readMore}>
+          <Button size='small' variant={buttonVariant ?? 'text'} component={Link} to={readMore}>
             {buttonText}
           </Button>
         ) : undefined}
