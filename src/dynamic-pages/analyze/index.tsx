@@ -109,25 +109,25 @@ export default function AnalyzePage() {
             <Analyze query='analyze-pushes-and-commits-per-month'>
               <H3>Commits & Pushes History</H3>
               <P2>
-                * A commit is an individual change to a file (or set of files).
+                A commit is an individual change to a file (or set of files).
                 <br />
-                * A Push may include several Commits.
+                A Push may include several Commits.
               </P2>
               <PushesAndCommitsChart aspectRatio={commonAspectRatio} />
             </Analyze>
             <Analyze query='analyze-loc-per-month'>
               <H3>Lines of code changed</H3>
               <P2>
-                * The bars mean the additions or deletions of code.
+                The bars mean the additions or deletions of code.
                 <br />
-                * The line chart means the total lines of code (additions + deletions).
+                The line chart means the total lines of code (additions + deletions).
               </P2>
               <LocChart aspectRatio={commonAspectRatio} />
             </Analyze>
             <Analyze query='commits-time-distribution'>
               <H3>Commits Time Distribution</H3>
               <P2>
-                * The Heat Maps below describe the number of commit events that occur at a particular point of time (UTC+0).
+                The Heat Maps below describe the number of commit events that occur at a particular point of time (UTC+0).
               </P2>
               <TimeHeatChart />
             </Analyze>
@@ -137,9 +137,11 @@ export default function AnalyzePage() {
             <Analyze query='analyze-pull-requests-size-per-month'>
               <H3>Pull Request History</H3>
               <P2>
-                * The bars mean the additions or deletions of code.
-                <br />
-                * The line chart means the total lines of code (additions + deletions).
+                xs, s, m, l, xl, xxl means the size of Pull Request. Learn more about 
+                &nbsp;
+                <a href='https://github.com/kubernetes/kubernetes/labels?q=size' target='_blank'>
+                  PR size
+                </a>
               </P2>
               <PrChart aspectRatio={commonAspectRatio} />
             </Analyze>
