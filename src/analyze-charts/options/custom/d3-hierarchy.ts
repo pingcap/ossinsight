@@ -5,7 +5,6 @@ import {
   CustomSeriesRenderItemParams,
   CustomSeriesRenderItemReturn,
 } from 'echarts/types/dist/echarts';
-import {dataset} from '../dataset';
 import {darken} from '@mui/material';
 
 export interface D3HierarchyItem {
@@ -13,24 +12,18 @@ export interface D3HierarchyItem {
   value: number;
   depth: number;
   index: number;
-  parentId: string
+  parentId: string;
+  color?: string
 }
 
-export interface D3Hierarchy {
-  series: CustomSeriesOption;
-  visualMap: EChartsOption['visualMap'];
-  hoverLayerThreshold: number;
-}
-
-
-export function d3Hierarchy(seriesData: D3HierarchyItem[], maxDepth: number): D3Hierarchy {
+export function d3Hierarchy(seriesData: D3HierarchyItem[], maxDepth: number): CustomSeriesOption {
   let displayRoot = stratify();
 
   function stratify() {
     return d3
       .stratify<D3HierarchyItem>()
       .parentId(function (d) {
-        return d.parentId
+        return d.parentId;
       })(seriesData)
       .sum(function (d) {
         return d.value || 0;
@@ -43,7 +36,7 @@ export function d3Hierarchy(seriesData: D3HierarchyItem[], maxDepth: number): D3
   function overallLayout(params: CustomSeriesRenderItemParams, api: CustomSeriesRenderItemAPI) {
     const context = params.context;
 
-    context.nodes = {}
+    context.nodes = {};
     d3
       .pack()
       .size([api.getWidth() - 32, api.getHeight() - 32])
@@ -73,14 +66,11 @@ export function d3Hierarchy(seriesData: D3HierarchyItem[], maxDepth: number): D3
       }),
     );
     const nodeName = isLeaf
-      ? nodePath
-        .slice(nodePath.lastIndexOf('.') + 1)
-        .split(/(?=[A-Z][^A-Z])/g)
-        .join('\n')
+      ? nodePath.split(/^\d-/)[1]
       : '';
     const z2 = (api.value('depth') as number) * 2;
     if (node.id === 'root') {
-      return undefined
+      return undefined;
     }
     return {
       type: 'circle',
@@ -113,7 +103,7 @@ export function d3Hierarchy(seriesData: D3HierarchyItem[], maxDepth: number): D3
         position: 'inside',
       },
       style: {
-        fill: api.visual('color'),
+        fill: node.data.color ?? api.visual('color'),
       },
       emphasis: {
         style: {
@@ -129,27 +119,13 @@ export function d3Hierarchy(seriesData: D3HierarchyItem[], maxDepth: number): D3
   }
 
   return {
-    series: {
-      type: 'custom',
-      renderItem: renderItem,
-      progressive: 0,
-      coordinateSystem: 'none',
-      encode: {
-        tooltip: 'value',
-        itemName: 'id',
-      },
+    type: 'custom',
+    renderItem: renderItem,
+    progressive: 0,
+    coordinateSystem: 'none',
+    encode: {
+      tooltip: 'value',
+      itemName: 'id',
     },
-    hoverLayerThreshold: Infinity,
-    visualMap: [
-      {
-        show: false,
-        min: 0,
-        max: maxDepth,
-        dimension: 'depth' as unknown as number,
-        inRange: {
-          color: [darken('#dd6b66', .3), darken('#dd6b66', .3)],
-        },
-      },
-    ],
   };
 }
