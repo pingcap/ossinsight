@@ -111,7 +111,7 @@ function AnalyzePage() {
       {title: 'Total issues', query: "issues-total", field: '*'},
       {title: 'Total issue creators', query: 'issue-creators-total', field: '*'},
       {title: 'Total issue comments', query: 'issue-comments-total', field: '*'},
-      {title: 'Total issue commenters', query: 'issue-commenters-total', field: '8'},
+      {title: 'Total issue commenters', query: 'issue-commenters-total', field: '*'},
     ]
   }, [])
 
