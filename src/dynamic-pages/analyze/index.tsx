@@ -38,6 +38,7 @@ import {AsyncData} from '../../components/RemoteCharts/hook';
 import CompareHeader from '../../components/CompareHeader/CompareHeader';
 import {SWRResponse} from 'swr';
 import BrowserOnly from '@docusaurus/core/lib/client/exports/BrowserOnly';
+import useUrlSearchState, {stringParam} from '../../hooks/url-search-state';
 
 interface AnalyzePageParams {
   owner: string;
@@ -49,7 +50,7 @@ function AnalyzePage() {
   const location = useLocation()
 
   const {data: main, name} = useMainRepo();
-  const {data: vs, name: comparingRepoName} = useVsRepo()
+  const {data: vs, name: comparingRepoName, setName: setComparingRepoName} = useVsRepo()
 
   const onRepoChange = useCallback((repo: Repo) => {
     history.push({
@@ -59,14 +60,8 @@ function AnalyzePage() {
   }, [history, location])
 
   const onComparingRepoChange = useCallback((repo: Repo | undefined) => {
-    if (repo) {
-      history.push({
-        search: `?vs=${encodeURIComponent(repo.name)}`
-      })
-    } else {
-      history.push({search: ''})
-    }
-  }, [location])
+    setComparingRepoName(repo?.name)
+  }, [])
 
   const allValid = useCallback(() => undefined, [])
 
@@ -309,12 +304,8 @@ function useMainRepo (): AsyncData<InfoPack> & {name: string} {
   }
 }
 
-function useVsRepo (): AsyncData<InfoPack> & {name: string} {
-  const location = useLocation()
-  const vs = useMemo(() => {
-    const usp = new URLSearchParams(location.search)
-    return usp.get('vs')
-  }, [location.search])
+function useVsRepo (): AsyncData<InfoPack> & {name: string, setName: (val: string|undefined) => void} {
+  const [vs, setVs] = useUrlSearchState('vs', stringParam())
 
   const {data: repo, isValidating, error} = useRepo(vs)
   return {
@@ -322,5 +313,6 @@ function useVsRepo (): AsyncData<InfoPack> & {name: string} {
     loading: isValidating,
     error,
     name: vs,
+    setName: setVs
   }
 }

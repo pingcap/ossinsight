@@ -15,7 +15,7 @@ function useUrlSearchStateCSR<T>(key: string, {
   defaultValue,
   deserialize,
   serialize
-}: UseUrlSearchStateProps<T>): [T | undefined, Dispatch<SetStateAction<T | undefined>>] {
+}: UseUrlSearchStateProps<T>, push: boolean = false): [T | undefined, Dispatch<SetStateAction<T | undefined>>] {
   const initialValue = useMemo(() => {
     const usp = new URLSearchParams(location.search)
     if (usp.has(key)) {
@@ -27,12 +27,21 @@ function useUrlSearchStateCSR<T>(key: string, {
   const [value, setValue] = useState<T>(initialValue)
   useEffect(() => {
     const sv = serialize(value)
-    if (sv === undefined || sv === null) {
-      return
-    }
     const usp = new URLSearchParams(location.search)
-    usp.set(key, sv)
-    window.history.replaceState(null, null, '?' + usp.toString())
+    if (sv === undefined || sv === null) {
+      usp.delete(key)
+    } else {
+      usp.set(key, sv)
+    }
+    const uspStr = usp.toString()
+    const search = uspStr ? `?${uspStr}` : ''
+    const hash = location.hash ? `#${location.hash}` : ''
+    const url = location.pathname + search + hash
+    if (push) {
+      window.history.pushState(null, null, url)
+    } else {
+      window.history.replaceState(null, null, url)
+    }
   }, [value])
 
   return [value, setValue]

@@ -26,8 +26,8 @@ export default function List({n, valueIndex, nameIndex, percentIndex, title, tra
   const group = comparingRepoName ? [compareData, data] : [data];
   return (
     <Stack direction="column" spacing={1} my={2}>
-      <HeaderItem flex={1} p={2}>
-        <BodyText sx={{fontSize: 16, lineHeight: 1}}>Top {n} {title}</BodyText>
+      <HeaderItem flex={1} px={2} py={1}>
+        <BodyText sx={{fontSize: 14, lineHeight: 1}}>Top {n} {title}</BodyText>
       </HeaderItem>
       <Grid container spacing={0.5}>
         {base.map((_, i) => group.map((data, _, all) => (
