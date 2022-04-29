@@ -9,6 +9,7 @@ import {darken} from '@mui/material';
 
 export interface D3HierarchyItem {
   id: string;
+  name: string;
   value: number;
   depth: number;
   index: number;
@@ -125,7 +126,8 @@ export function d3Hierarchy(seriesData: D3HierarchyItem[], maxDepth: number): Cu
     coordinateSystem: 'none',
     encode: {
       tooltip: 'value',
-      itemName: 'id',
+      itemName: 'name',
+      value: 'value'
     },
   };
 }

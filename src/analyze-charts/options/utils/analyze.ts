@@ -15,7 +15,7 @@ interface AnalyzeTemplateParams<T> {
   context: Record<string, any>
 }
 
-export function template<P, T = any>(fp: (params: AnalyzeTemplateParams<P>) => (T | T[])): T[] {
+export function template<P, T = any>(fp: (params: AnalyzeTemplateParams<P>, i: number) => (T | T[])): T[] {
   const {repoName, comparingRepoName, repoInfo, comparingRepoInfo, data, compareData, context} = dangerousGetCtx<P>();
   let res: T[] = [];
   res = res.concat(fp({
@@ -25,7 +25,7 @@ export function template<P, T = any>(fp: (params: AnalyzeTemplateParams<P>) => (
     data,
     name: repoName,
     context,
-  }));
+  }, 0));
   if (comparingRepoName) {
     res = res.concat(fp({
       id: 'vs',
@@ -34,7 +34,7 @@ export function template<P, T = any>(fp: (params: AnalyzeTemplateParams<P>) => (
       data: compareData,
       name: comparingRepoName,
       context,
-    }));
+    }, 1));
   }
   return res;
 }
