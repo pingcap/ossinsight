@@ -9,7 +9,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import {RepoInfo} from '../../api/gh';
 
 export interface SummaryItemProps<F extends string> extends Omit<GridProps, 'title'> {
-  icon: React.ReactNode;
+  icon?: React.ReactNode;
   title: React.ReactNode;
   field: F;
   sizes: readonly [number, number];
@@ -17,7 +17,7 @@ export interface SummaryItemProps<F extends string> extends Omit<GridProps, 'tit
 
 
 export interface StaticSummaryItemProps extends Omit<GridProps, 'title'> {
-  icon: React.ReactNode;
+  icon?: React.ReactNode;
   title: React.ReactNode;
   data?: (repoInfo: RepoInfo) => any;
   comparingData?: any;

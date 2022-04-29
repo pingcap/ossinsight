@@ -9,7 +9,7 @@ import Stack from '@mui/material/Stack';
 import {RepoInfo} from '../../api/gh';
 
 export type ItemBase = {
-  icon: React.ReactNode
+  icon?: React.ReactNode
   title: React.ReactNode
 }
 

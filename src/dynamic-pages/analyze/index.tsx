@@ -1,6 +1,5 @@
 import React, {useCallback, useMemo, useState} from 'react';
 import {useHistory, useLocation, useRouteMatch} from '@docusaurus/router';
-import {Location} from 'history';
 import CustomPage from '../../theme/CustomPage';
 import {RepoInfo, useRepo} from '../../api/gh';
 import {AnalyzeContext} from '../../analyze-charts/context';
@@ -30,13 +29,12 @@ import {
 import Grid from '@mui/material/Grid';
 import {LineChart} from '../../analyze-charts/line';
 import Section from './Section';
-import {H1, H2, H3, H4, P1, P2} from './typography';
+import {H1, H2, H3, H4, P2} from './typography';
 import List from '../../analyze-charts/list/List';
 import {alpha2ToTitle} from '../../lib/areacode';
 import {Repo} from '../../components/CompareHeader/RepoSelector';
 import {AsyncData} from '../../components/RemoteCharts/hook';
 import CompareHeader from '../../components/CompareHeader/CompareHeader';
-import {SWRResponse} from 'swr';
 import BrowserOnly from '@docusaurus/core/lib/client/exports/BrowserOnly';
 import useUrlSearchState, {stringParam} from '../../hooks/url-search-state';
 
@@ -106,6 +104,24 @@ function AnalyzePage() {
       title: 'Language',
       data: repoInfo => repoInfo.forks,
     }]
+  }, [])
+
+  const issuesSummaries: SummaryProps['items'] = useMemo(() => {
+    return [
+      {title: 'Total issues', query: "issues-total", field: '*'},
+      {title: 'Total issue creators', query: 'issue-creators-total', field: '*'},
+      {title: 'Total issue comments', query: 'issue-comments-total', field: '*'},
+      {title: 'Total issue commenters', query: 'issue-commenters-total', field: '8'},
+    ]
+  }, [])
+
+  const prSummaries: SummaryProps['items'] = useMemo(() => {
+    return [
+      {title: 'Total PRs', query: "pull-requests-total", field: '*'},
+      {title: 'Total PR creators', query: "pull-request-creators-total", field: '*'},
+      {title: 'Total PR reviews', query: "pull-request-reviews-total", field: '*'},
+      {title: 'Total PR reviewers', query: "pull-request-reviewers-total", field: '*'},
+    ]
   }, [])
 
   const commonAspectRatio = vs ? 16 / 9 : 20 / 9
@@ -185,6 +201,11 @@ function AnalyzePage() {
           </Section>
           <Section>
             <H2>Pull Requests</H2>
+            <Grid container spacing={2} alignItems='center'>
+              <Grid item xs={12} md={vs ? 8 : 6}>
+                <Summary items={prSummaries} />
+              </Grid>
+            </Grid>
             <Analyze query='analyze-pull-requests-size-per-month'>
               <H3>Pull Request History</H3>
               <P2>
@@ -208,6 +229,11 @@ function AnalyzePage() {
           </Section>
           <Section>
             <H2>Issues</H2>
+            <Grid container spacing={2} alignItems='center'>
+              <Grid item xs={12} md={vs ? 8 : 6}>
+                <Summary items={issuesSummaries} />
+              </Grid>
+            </Grid>
             <Analyze query='analyze-issue-open-to-first-responded'>
             <H3>Issue Time Cost</H3>
               <P2>
