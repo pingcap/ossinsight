@@ -1,5 +1,5 @@
 import * as echarts from 'echarts';
-import {itemTooltip, scatters, title, worldMapGeo} from '../options';
+import {itemTooltip, legend, scatters, title, utils, worldMapGeo} from '../options';
 import {withChart} from '../chart';
 import map from '@geo-maps/countries-land-10km';
 import {alpha2ToGeo, alpha2ToTitle} from '../../lib/areacode';
@@ -42,17 +42,18 @@ function datasets(idPrefix: string, topN: number, data: LocationData[]): Dataset
   ];
 }
 
-export const WorldMapChart = withChart<LocationData>(({title: propsTitle, data}) => {
-    const max = (data.data?.data ?? []).reduce((prev, current) => Math.max(prev, current.count), 1);
+export const WorldMapChart = withChart<LocationData>(({title: propsTitle}) => {
+    const max = utils.aggregate<LocationData>(all => all.map(data => (data.data?.data ?? []).reduce((prev, current) => Math.max(prev, current.count), 1)).reduce((p, c) => Math.max(p, c), 0));
     return {
-      dataset: datasets('data', 1, data.data?.data ?? []),
+      dataset: utils.template<LocationData>(({datasetId, data}) => datasets(datasetId, 1, data.data?.data ?? [])),
+      legend: legend(),
       title: title(propsTitle),
       geo: worldMapGeo(),
-      series: [
-        ...scatters('data', 1, max, {
-          color: '#dd6b66',
+      series: utils.template(({datasetId, id, name}) => [
+        ...scatters(datasetId, 1, max, {
+          name,
         }),
-      ],
+      ]),
       tooltip: itemTooltip(),
     };
   },

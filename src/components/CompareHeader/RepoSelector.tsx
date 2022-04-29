@@ -23,9 +23,10 @@ export interface RepoSelectorProps {
   repo: Repo | null
   onChange: (repo: Repo | null) => void
   onValid: (repo: Repo | null) => string | undefined
+  disableClearable?: boolean
 }
 
-export default function RepoSelector({repo, label, defaultRepoName, onChange, onValid}: RepoSelectorProps) {
+export default function RepoSelector({repo, label, defaultRepoName, onChange, onValid, disableClearable}: RepoSelectorProps) {
   const [keyword, setKeyword] = useState<string>(defaultRepoName ?? '')
   const [textFieldError, setTextFieldError] = useState<boolean>(false)
   const [helperText, setHelperText] = useState<string>('')
@@ -35,7 +36,7 @@ export default function RepoSelector({repo, label, defaultRepoName, onChange, on
     return debounce(setKeyword, 500)
   }, [setKeyword])
 
-  const {data: options, isValidating: loading, error} = useSWR<Repo[]>([keyword || defaultRepoName], {
+  const {data: options, isValidating: loading, error} = useSWR<Repo[]>([keyword || defaultRepoName, 'search'], {
     fetcher: async (keyword) => {
       try {
         if (!keyword) {
@@ -85,13 +86,14 @@ export default function RepoSelector({repo, label, defaultRepoName, onChange, on
     <Autocomplete<Repo>
       sx={{maxWidth: 300, mx: 'auto'}}
       size="small"
-      isOptionEqualToValue={(option, value) => option.id === value.id}
+      isOptionEqualToValue={(option, value) => option?.id === value?.id}
       getOptionLabel={(option) => option.name}
       options={options ?? []}
       loading={loading}
-      value={repo}
+      value={repo ?? null}
       onChange={onAutoCompleteChange}
       onInputChange={onInputChange}
+      disableClearable={disableClearable as any}
       renderInput={(params) => (
         <TextField
           {...params}

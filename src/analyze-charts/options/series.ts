@@ -19,9 +19,9 @@ interface CartesianSeriesEncodeOption {
 export function bar(x: OptionEncodeValue, y: OptionEncodeValue, option: BarSeriesOption = {}): BarSeriesOption {
   return {
     name: String(y),
+    datasetId: ORIGINAL_DATASET_ID,
     ...option,
     type: 'bar',
-    datasetId: ORIGINAL_DATASET_ID,
     encode: {
       x,
       y,

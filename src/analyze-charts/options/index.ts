@@ -7,4 +7,5 @@ export * from './datazoom';
 export * from './geo';
 export * from './legend';
 export * from './visual-map';
-export * as utils from './utils'
+export * from './grid';
+export * as utils from './utils';

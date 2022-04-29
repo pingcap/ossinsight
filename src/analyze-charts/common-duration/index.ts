@@ -1,4 +1,15 @@
-import {axisTooltip, boxplot, dataZoom, formatMonth, logAxis, originalDataset, timeAxis, title} from '../options';
+import {
+  axisTooltip,
+  boxplot,
+  dataZoom,
+  formatMonth,
+  logAxis,
+  originalDataset,
+  standardDataset,
+  timeAxis,
+  title, topBottomLayoutGrid,
+  utils,
+} from '../options';
 import {withChart} from '../chart';
 import prettyMs from 'pretty-ms';
 import {alpha} from '@mui/material';
@@ -16,26 +27,31 @@ export type PrDurationData = {
 const fmtHours = (hours: number) => prettyMs(hours * 60 * 60 * 1000, {unitCount: 1});
 
 export const DurationChart = withChart<PrDurationData>(({title: propsTitle, data}) => ({
-  dataset: originalDataset(data),
-  xAxis: timeAxis<'x'>(),
-  yAxis: logAxis<'y'>(undefined, {
+  dataset: standardDataset(),
+  grid: topBottomLayoutGrid(),
+  xAxis: utils.template(({id}) => timeAxis<'x'>(id, {gridId: id})),
+  yAxis: utils.template(({id}) => logAxis<'y'>(id, {
     name: 'Duration',
+    gridId: id,
     axisLabel: {formatter: fmtHours},
     axisPointer: {
       label: {
         formatter: ({value}) => fmtHours(Number(value)),
       },
     },
-  }),
+  })),
   dataZoom: dataZoom(),
   title: title(propsTitle),
-  series: boxplot('event_month', ['p0', 'p25', 'p50', 'p75', 'p100'], {
+  series: utils.template(({id, datasetId}) => boxplot('event_month', ['p0', 'p25', 'p50', 'p75', 'p100'], {
+    datasetId,
+    xAxisId: id,
+    yAxisId: id,
     itemStyle: {
       color: alpha('#dd6b66', .3),
       borderWidth: 1,
     },
     boxWidth: ['40%', '40%']
-  }),
+  })),
   tooltip: axisTooltip('cross', {
     renderMode: 'html',
     formatter: params => {
