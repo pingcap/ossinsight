@@ -144,7 +144,7 @@ function AnalyzePage() {
                 <LinkExternalIcon size={28} />
               </a>
             </H1>
-            <Grid container spacing={2}>
+            <Grid container spacing={2} alignItems='center'>
               <Grid item xs={12} md={vs ? 8 : 6}>
                 <Summary items={summaries} />
               </Grid>

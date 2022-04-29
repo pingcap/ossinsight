@@ -28,7 +28,7 @@ export interface SummaryProps {
 }
 
 const singleSize = [4, 6] as const;
-const compareSize = [4, 5] as const;
+const compareSize = [4, 3] as const;
 
 export default function Summary({items}: SummaryProps) {
   const {comparingRepoId, repoName, comparingRepoName} = useAnalyzeContext();
@@ -38,17 +38,17 @@ export default function Summary({items}: SummaryProps) {
   return (
     <Stack gap={1}>
       <Grid container gap={1} wrap="nowrap">
-        <HeaderGrid item xs={sizes[0]}>
+        <HeaderGrid item xs={4} md={sizes[0]}>
           &nbsp;
         </HeaderGrid>
-        <HeaderGrid item xs={sizes[1]}>
+        <HeaderGrid item xs={4} md={sizes[1]} sx={{textAlign: 'right'}}>
           <HeadText>
             {repoName}
           </HeadText>
         </HeaderGrid>
         {comparingRepoId
           ? (
-            <HeaderGrid item xs={sizes[1]}>
+            <HeaderGrid item xs={4} md={sizes[1]} sx={{textAlign: 'right'}}>
               <HeadText>
                 {comparingRepoName ?? <Skeleton variant="text" />}
               </HeadText>
