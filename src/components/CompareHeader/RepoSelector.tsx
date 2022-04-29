@@ -36,7 +36,7 @@ export default function RepoSelector({repo, label, defaultRepoName, onChange, on
     return debounce(setKeyword, 500)
   }, [setKeyword])
 
-  const {data: options, isValidating: loading, error} = useSWR<Repo[]>([keyword || defaultRepoName], {
+  const {data: options, isValidating: loading, error} = useSWR<Repo[]>([keyword || defaultRepoName, 'search'], {
     fetcher: async (keyword) => {
       try {
         if (!keyword) {
@@ -90,7 +90,7 @@ export default function RepoSelector({repo, label, defaultRepoName, onChange, on
       getOptionLabel={(option) => option.name}
       options={options ?? []}
       loading={loading}
-      value={repo}
+      value={repo ?? null}
       onChange={onAutoCompleteChange}
       onInputChange={onInputChange}
       disableClearable={disableClearable as any}

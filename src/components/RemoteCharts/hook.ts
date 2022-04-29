@@ -56,7 +56,7 @@ export const useRemoteData: UseRemoteData = (query: string, params: any, formatS
     }
   }, [inView])
 
-  const { data, isValidating: loading, error } = useSWR(shouldLoad && viewed ? [query, params] : null, {
+  const { data, isValidating: loading, error } = useSWR(shouldLoad && viewed ? [query, params, 'q'] : null, {
     fetcher: (query, params) => httpClient.get(`/q/${query}`, {params, paramsSerializer })
       .then(({data}) => {
         if (data.sql && formatSql) {
