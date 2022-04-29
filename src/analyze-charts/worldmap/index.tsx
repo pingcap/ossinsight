@@ -43,7 +43,6 @@ function datasets(idPrefix: string, topN: number, data: LocationData[]): Dataset
 }
 
 export const WorldMapChart = withChart<LocationData>(({title: propsTitle}) => {
-    utils.debugPrintOption();
     const max = utils.aggregate<LocationData>(all => all.map(data => (data.data?.data ?? []).reduce((prev, current) => Math.max(prev, current.count), 1)).reduce((p, c) => Math.max(p, c), 0));
     return {
       dataset: utils.template<LocationData>(({datasetId, data}) => datasets(datasetId, 1, data.data?.data ?? [])),
