@@ -11,7 +11,7 @@ from (
      where repo_id IN (48833910, 156018) and github_events.type = 'WatchEvent'
      group by 1, 2
 ) sub
-where length(company_name) != 0 and company_name not in ('-', 'none', 'no', 'home', 'n/a', 'null')
+where length(company_name) != 0 and company_name not in ('-', 'none', 'no', 'home', 'n/a', 'null', 'unknown')
 group by 1
 having COUNT(distinct repo_id) > 1
 order by SUM(stargazers) desc

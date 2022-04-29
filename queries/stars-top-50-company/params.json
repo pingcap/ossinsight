@@ -6,6 +6,12 @@
       "replaces": "41986369",
       "type": "array",
       "pattern": "^[1-9]\\d*$"
+    },
+    {
+      "name": "limit",
+      "replaces": "50",
+      "pattern": "^(\\d|[1-9]\\d|[1-9]\\d\\d|1000)$",
+      "default": 50
     }
   ]
 }

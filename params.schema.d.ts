@@ -57,7 +57,7 @@ export interface Params {
   /**
    * Default input value.
    */
-  default?: string;
+  default?: number | string;
   /**
    * Enums for prefetching and validating, default is no prefetching and validating.
    */

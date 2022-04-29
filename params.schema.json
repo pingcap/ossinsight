@@ -71,7 +71,7 @@
         },
         "default": {
           "description": "Default input value.",
-          "type": "string"
+          "type": ["number", "string"]
         },
         "enums": {
           "description": "Enums for prefetching and validating, default is no prefetching and validating.",
