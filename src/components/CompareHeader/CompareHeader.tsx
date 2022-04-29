@@ -36,8 +36,9 @@ interface CompareHeaderProps extends BoxProps {
   repo2: Repo | null
   onRepo1Change: (repo: Repo | null) => void
   onRepo2Change: (repo: Repo | null) => void
-  onRepo1Valid: (repo: Repo | null) => string | undefined
-  onRepo2Valid: (repo: Repo | null) => string | undefined
+  onRepo1Valid: (repo: Repo | null) => (string | undefined)
+  onRepo2Valid: (repo: Repo | null) => (string | undefined)
+  repo1DisableClearable?: boolean
 }
 
 function CompareHeader({
@@ -47,6 +48,7 @@ function CompareHeader({
   onRepo2Change,
   onRepo1Valid,
   onRepo2Valid,
+  repo1DisableClearable,
   sx,
   ...props
 }: CompareHeaderProps) {
@@ -74,6 +76,7 @@ function CompareHeader({
             repo={repo1}
             onChange={onRepo1Change}
             onValid={onRepo1Valid}
+            disableClearable={repo1DisableClearable}
           />
         </Grid>
         <Grid item xs={2}>

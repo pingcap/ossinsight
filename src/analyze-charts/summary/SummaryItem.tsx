@@ -6,6 +6,7 @@ import Stack from '@mui/material/Stack';
 import {AsyncData, RemoteData} from '../../components/RemoteCharts/hook';
 import Skeleton from '@mui/material/Skeleton';
 import CircularProgress from '@mui/material/CircularProgress';
+import {RepoInfo} from '../../api/gh';
 
 export interface SummaryItemProps<F extends string> extends Omit<GridProps, 'title'> {
   icon: React.ReactNode;
@@ -18,7 +19,7 @@ export interface SummaryItemProps<F extends string> extends Omit<GridProps, 'tit
 export interface StaticSummaryItemProps extends Omit<GridProps, 'title'> {
   icon: React.ReactNode;
   title: React.ReactNode;
-  data?: any;
+  data?: (repoInfo: RepoInfo) => any;
   comparingData?: any;
   sizes: readonly [number, number];
 }
@@ -67,7 +68,7 @@ export function SummaryItem<F extends string>({title, icon, sizes, field, ...gri
 }
 
 export function StaticSummaryItem({title, icon, sizes, data, comparingData, ...gridProps}: StaticSummaryItemProps) {
-  const {comparingRepoId} = useAnalyzeContext();
+  const {comparingRepoId, repoInfo, comparingRepoInfo} = useAnalyzeContext();
 
   return (
     <Grid {...gridProps}>
@@ -80,7 +81,7 @@ export function StaticSummaryItem({title, icon, sizes, data, comparingData, ...g
       <DataGrid item xs={sizes[1]}>
         <Stack direction="row" alignItems="center" justifyContent="flex-start" spacing={1}>
           <BodyText>
-            {data ?? <CircularProgress sx={{verticalAlign: -2}} size={24} />}
+            {repoInfo ? data(repoInfo) : <CircularProgress sx={{verticalAlign: -2}} size={24} />}
           </BodyText>
         </Stack>
       </DataGrid>
@@ -88,7 +89,7 @@ export function StaticSummaryItem({title, icon, sizes, data, comparingData, ...g
         ? (
           <DataGrid item xs={sizes[1]}>
             <BodyText>
-              {data ?? <Skeleton variant="text" />}
+              {comparingRepoInfo ? data(comparingRepoInfo) : <Skeleton variant="text" />}
             </BodyText>
           </DataGrid>
         ) : undefined}

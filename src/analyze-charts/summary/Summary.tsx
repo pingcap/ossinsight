@@ -6,6 +6,7 @@ import {HeaderGrid, HeadText} from './styled';
 import Skeleton from '@mui/material/Skeleton';
 import Analyze from '../Analyze';
 import Stack from '@mui/material/Stack';
+import {RepoInfo} from '../../api/gh';
 
 export type ItemBase = {
   icon: React.ReactNode
@@ -18,7 +19,7 @@ export type QueryItem = ItemBase & {
 }
 
 export type StaticItem = ItemBase & {
-  data?: any
+  data?: (repoInfo: RepoInfo) => any
   comparingData?: any
 }
 
@@ -48,7 +49,9 @@ export default function Summary({items}: SummaryProps) {
         {comparingRepoId
           ? (
             <HeaderGrid item xs={sizes[1]}>
-              {comparingRepoName ?? <Skeleton variant="text" />}
+              <HeadText>
+                {comparingRepoName ?? <Skeleton variant="text" />}
+              </HeadText>
             </HeaderGrid>)
           : undefined}
       </Grid>
