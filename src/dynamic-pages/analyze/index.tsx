@@ -92,9 +92,6 @@ export default function AnalyzePage() {
                 <LinkExternalIcon size={28} />
               </a>
             </H1>
-            <P1>
-              This is description of summary
-            </P1>
             <Grid container>
               <Grid item xs={6}>
                 <Summary items={summaries} />
@@ -109,44 +106,68 @@ export default function AnalyzePage() {
           </Section>
           <Section>
             <H2>Commits</H2>
-            <P1>
-              This is description of Commits section
-            </P1>
             <Analyze query='analyze-pushes-and-commits-per-month'>
-              <H3>Commit Trend with <del>Release Info</del></H3>
+              <H3>Commits & Pushes History</H3>
               <P2>
-                This is description of a certain chart
+                A commit is an individual change to a file (or set of files).
+                <br />
+                A Push may include several Commits.
               </P2>
               <PushesAndCommitsChart aspectRatio={commonAspectRatio} />
             </Analyze>
             <Analyze query='analyze-loc-per-month'>
               <H3>Lines of code changed</H3>
+              <P2>
+                The bars mean the additions or deletions of code.
+                <br />
+                The line chart means the total lines of code (additions + deletions).
+              </P2>
               <LocChart aspectRatio={commonAspectRatio} />
             </Analyze>
             <Analyze query='commits-time-distribution'>
               <H3>Commits Time Distribution</H3>
+              <P2>
+                The Heat Maps below describe the number of commit events that occur at a particular point of time (UTC+0).
+              </P2>
               <TimeHeatChart />
             </Analyze>
           </Section>
           <Section>
             <H2>Pull Requests</H2>
             <Analyze query='analyze-pull-requests-size-per-month'>
-              <H3>PR History</H3>
+              <H3>Pull Request History</H3>
+              <P2>
+                xs, s, m, l, xl, xxl means the size of Pull Request. Learn more about 
+                &nbsp;
+                <a href='https://github.com/kubernetes/kubernetes/labels?q=size' target='_blank'>
+                  PR size
+                </a>
+              </P2>
               <PrChart aspectRatio={commonAspectRatio} />
             </Analyze>
             <Analyze query='analyze-pull-request-open-to-merged'>
-              <H3>PR 合并速度</H3>
+              <H3>Pull Request Time Cost</H3>
+              <P2>
+              p25: 25% Pull Requests are closed within X hour/day. 
+                <br />
+              e.g. p25: 1h means 25% Pull Requests are closed within 1 hour.
+              </P2>
               <DurationChart aspectRatio={commonAspectRatio} />
             </Analyze>
           </Section>
           <Section>
             <H2>Issues</H2>
             <Analyze query='analyze-issue-open-to-first-responded'>
-              <H3>Issue 处理速度</H3>
+            <H3>Issue Time Cost</H3>
+              <P2>
+              p25: 25% Issues are closed within X hour/day. 
+                <br />
+              e.g. p25: 1h means 25% Issues are closed within 1 hour.
+              </P2>
               <DurationChart aspectRatio={commonAspectRatio} />
             </Analyze>
             <Analyze query='analyze-issue-opened-and-closed'>
-              <H3>Issues 处理比例</H3>
+              <H3>Issue History</H3>
               <IssueChart aspectRatio={commonAspectRatio} />
             </Analyze>
           </Section>
