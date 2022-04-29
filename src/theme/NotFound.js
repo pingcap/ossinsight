@@ -19,7 +19,7 @@ function NotFound() {
     // TODO: see https://www.npmjs.com/package/path-to-regexp
     //       use plugin data to auto generate regexp list.
     if (!/^\/analyze\/[^\/?#]+\/[^\/?#]+\/?[?#]/.test(pathname)) {
-      setDisplay(display)
+      setDisplay(true)
       return
     }
     history.replace({pathname,search,hash})
