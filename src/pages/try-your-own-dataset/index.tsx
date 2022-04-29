@@ -75,7 +75,7 @@ export default function Page() {
             buttonText='details'
             link='https://en.pingcap.com/case-study/real-time-insights-reduce-per-order-costs-by-25-percent/?utm_source=ossinsight'
             readMore='https://en.pingcap.com/case-study/real-time-insights-reduce-per-order-costs-by-25-percent/?utm_source=ossinsight'
-            buttonVariant='contained'
+            buttonVariant='contained' 
             tags={['Logistic delivery', 'Multi-dimensional analytics']}
             elevation={0}
             cardSx={{backgroundColor: 'action.hover'}}
