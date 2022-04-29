@@ -21,7 +21,7 @@ import {GitCommitIcon, StarIcon, IssueOpenedIcon, RepoForkedIcon, PeopleIcon, Co
 import Grid from '@mui/material/Grid';
 import {LineChart} from '../../analyze-charts/line';
 import Section from './Section';
-import {H1, H2, H3, H4} from './typography'
+import {H1, H2, H3, H4, P1, P2} from './typography'
 import List from '../../analyze-charts/list/List';
 import {alpha2ToTitle} from '../../lib/areacode';
 
@@ -92,6 +92,9 @@ export default function AnalyzePage() {
                 <LinkExternalIcon size={28} />
               </a>
             </H1>
+            <P1>
+              This is description of summary
+            </P1>
             <Grid container>
               <Grid item xs={6}>
                 <Summary items={summaries} />
@@ -106,8 +109,14 @@ export default function AnalyzePage() {
           </Section>
           <Section>
             <H2>Commits</H2>
+            <P1>
+              This is description of Commits section
+            </P1>
             <Analyze query='analyze-pushes-and-commits-per-month'>
               <H3>Commit Trend with <del>Release Info</del></H3>
+              <P2>
+                This is description of a certain chart
+              </P2>
               <PushesAndCommitsChart aspectRatio={commonAspectRatio} />
             </Analyze>
             <Analyze query='analyze-loc-per-month'>
