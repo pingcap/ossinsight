@@ -37,13 +37,14 @@ import {Repo} from '../../components/CompareHeader/RepoSelector';
 import {AsyncData} from '../../components/RemoteCharts/hook';
 import CompareHeader from '../../components/CompareHeader/CompareHeader';
 import {SWRResponse} from 'swr';
+import BrowserOnly from '@docusaurus/core/lib/client/exports/BrowserOnly';
 
 interface AnalyzePageParams {
   owner: string;
   repo: string;
 }
 
-export default function AnalyzePage() {
+function AnalyzePage() {
   const history = useHistory()
   const location = useLocation()
 
@@ -188,7 +189,7 @@ export default function AnalyzePage() {
             <Analyze query='analyze-pull-requests-size-per-month'>
               <H3>Pull Request History</H3>
               <P2>
-                xs, s, m, l, xl, xxl means the size of Pull Request. Learn more about 
+                xs, s, m, l, xl, xxl means the size of Pull Request. Learn more about
                 &nbsp;
                 <a href='https://github.com/kubernetes/kubernetes/labels?q=size' target='_blank'>
                   PR size
@@ -199,7 +200,7 @@ export default function AnalyzePage() {
             <Analyze query='analyze-pull-request-open-to-merged'>
               <H3>Pull Request Time Cost</H3>
               <P2>
-              p25: 25% Pull Requests are closed within X hour/day. 
+              p25: 25% Pull Requests are closed within X hour/day.
                 <br />
               e.g. p25: 1h means 25% Pull Requests are closed within 1 hour.
               </P2>
@@ -211,7 +212,7 @@ export default function AnalyzePage() {
             <Analyze query='analyze-issue-open-to-first-responded'>
             <H3>Issue Time Cost</H3>
               <P2>
-              p25: 25% Issues are closed within X hour/day. 
+              p25: 25% Issues are closed within X hour/day.
                 <br />
               e.g. p25: 1h means 25% Issues are closed within 1 hour.
               </P2>
@@ -266,6 +267,8 @@ export default function AnalyzePage() {
     </CustomPage>
   );
 }
+
+export default () => <BrowserOnly>{() => <AnalyzePage />}</BrowserOnly>
 
 const companyValueIndices = {
   'analyze-stars-company': 'stargazers',
