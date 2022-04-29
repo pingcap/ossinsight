@@ -59,3 +59,8 @@ export function aggregate<P, T = any> (fp: (all: AsyncData<RemoteData<unknown, P
   }
   return fp(res)
 }
+
+export function debugPrintOption () {
+  const {context} = dangerousGetCtx()
+  context.DEBUG_PRINT_OPTION = true
+}

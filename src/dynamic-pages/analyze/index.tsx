@@ -230,7 +230,7 @@ function AnalyzePage() {
           <Section>
             <H2>People</H2>
             <Analyze query={mapType}>
-              <H3>Geographical Distribution</H3>
+              <H3 analyzeTitle={false}>Geographical Distribution</H3>
               <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs value={mapType} onChange={handleChangeMapType}>
                   <Tab label={<H4>Stargazers</H4>} value='stars-map' />
@@ -238,11 +238,11 @@ function AnalyzePage() {
                   <Tab label={<H4>Pull Requests Creators</H4>} value='pull-request-creators-map' />
                 </Tabs>
               </Box>
-              <Grid container>
-                <Grid item xs={9}>
+              <Grid container alignItems='center'>
+                <Grid item xs={12} md={vs ? 8 : 9}>
                   <WorldMapChart />
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={12} md={vs ? 4 : 3}>
                   <List title='Geo-Locations' n={10} valueIndex='count' nameIndex='country_or_area' percentIndex='percentage' transformName={alpha2ToTitle} />
                 </Grid>
               </Grid>
@@ -256,11 +256,11 @@ function AnalyzePage() {
                   <Tab label={<H4>Pull Requests Creators</H4>} value='analyze-pull-request-creators-company' />
                 </Tabs>
               </Box>
-              <Grid container>
-                <Grid item xs={9}>
+              <Grid container alignItems='center'>
+                <Grid item xs={12} md={vs ? 8 : 9}>
                   <CompaniesChart spec={{valueIndex: companyValueIndices[companyType]}} />
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={12} md={vs ? 4 : 3}>
                   <List title='Companies' n={10} valueIndex={companyValueIndices[companyType]} nameIndex='company_name' percentIndex='proportion' />
                 </Grid>
               </Grid>

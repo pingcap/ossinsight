@@ -20,6 +20,9 @@ export const HeadText = styled('span')(({theme}) => ({
   fontColor: 'rgba(196,196,196)',
   textAlign: 'left',
   lineHeight: theme.spacing(6),
+  overflow: 'hidden',
+  whiteSpace: 'nowrap',
+  textOverflow: 'ellipsis'
 }));
 
 export const BodyText = styled('span')(({theme}) => ({

@@ -9,10 +9,13 @@ export function withChart<T = unknown, P = {}>(useOption: (props: AnalyzeContext
     const context = useAnalyzeContext();
     const chartContext = useAnalyzeChartContext<T>();
 
-    const ctx = {...context, ...chartContext, context: {}};
+    const ctx = {...context, ...chartContext, context: {} as Record<string, any>};
 
     dangerousSetCtx(ctx);
     const option = useOption(ctx, props.spec);
+    if (ctx.context.DEBUG_PRINT_OPTION) {
+      console.debug(option)
+    }
     dangerousSetCtx(undefined);
 
     return (
