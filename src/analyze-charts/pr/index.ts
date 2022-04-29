@@ -1,4 +1,16 @@
-import {axisTooltip, bar, dataZoom, legend, line, originalDataset, timeAxis, title, valueAxis} from '../options';
+import {
+  axisTooltip,
+  bar,
+  dataZoom,
+  legend,
+  line,
+  originalDataset,
+  standardDataset,
+  timeAxis,
+  title, topBottomLayoutGrid,
+  utils,
+  valueAxis,
+} from '../options';
 import {withChart} from '../chart';
 
 // lines of code
@@ -14,19 +26,22 @@ export type PrData = {
 }
 
 export const PrChart = withChart<PrData>(({title: propsTitle, data}) => ({
-  dataset: originalDataset(data, transformLocData),
-  xAxis: timeAxis<'x'>(undefined),
+  dataset: standardDataset(transformLocData),
   dataZoom: dataZoom(),
   title: title(propsTitle),
   legend: legend(),
-  yAxis: [
-    valueAxis<'y'>('size', {position: 'left', name: 'New / PRs'}),
-    valueAxis<'y'>('total', {position: 'right', name: 'Total / PRs'}),
-  ],
-  series: [
+  grid: topBottomLayoutGrid(),
+  xAxis: utils.template(({id}) => timeAxis<'x'>(id, {gridId: id}) ),
+  yAxis: utils.template(({id}) => [
+    valueAxis<'y'>(`${id}-size`, {gridId: id, position: 'left', name: 'New / PRs'}),
+    valueAxis<'y'>(`${id}-total`, {gridId: id, position: 'right', name: 'Total / PRs'}),
+  ]),
+  series: utils.template(({id, datasetId}) =>  [
     ...['xs', 's', 'm', 'l', 'xl', 'xxl'].map(size => bar('event_month', size, {
-      stack: 'stack',
-      yAxisId: 'size',
+      datasetId,
+      stack: `${id}-stack`,
+      xAxisId: id,
+      yAxisId: `${id}-size`,
       emphasis: {focus: 'series'},
       tooltip: {
         valueFormatter: fmt,
@@ -34,11 +49,13 @@ export const PrChart = withChart<PrData>(({title: propsTitle, data}) => ({
     })),
     line('event_month', 'total', {
       showSymbol: false,
-      yAxisId: 'total',
+      datasetId,
+      xAxisId: id,
+      yAxisId: `${id}-total`,
       emphasis: {focus: 'self'},
       tooltip: {valueFormatter: fmt},
     }),
-  ],
+  ]),
   tooltip: axisTooltip('cross'),
 }), {
   aspectRatio: 16 / 9,
