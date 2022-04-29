@@ -1,6 +1,7 @@
 import {createContext, MutableRefObject, RefCallback, useContext} from 'react';
 import {AsyncData, RemoteData} from '../components/RemoteCharts/hook';
 import EChartsReact from 'echarts-for-react';
+import {RepoInfo} from '../api/gh';
 
 export interface AnalyzeChartContextProps<T = unknown> {
   title?: string;
@@ -34,6 +35,8 @@ export interface AnalyzeContextProps {
   comparingRepoName?: string;
   repoId?: number;
   comparingRepoId?: number;
+  repoInfo?: RepoInfo;
+  comparingRepoInfo?: RepoInfo;
 }
 
 export const AnalyzeContext = createContext<AnalyzeContextProps>({
@@ -41,6 +44,8 @@ export const AnalyzeContext = createContext<AnalyzeContextProps>({
   comparingRepoName: undefined,
   repoId: undefined,
   comparingRepoId: undefined,
+  repoInfo: undefined,
+  comparingRepoInfo: undefined,
 });
 
 export function useAnalyzeContext() {
