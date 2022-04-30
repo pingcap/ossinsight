@@ -39,6 +39,7 @@ import BrowserOnly from '@docusaurus/core/lib/client/exports/BrowserOnly';
 import useUrlSearchState, {stringParam} from '../../hooks/url-search-state';
 import { color } from 'echarts';
 import { VerticalAlignCenter } from '@mui/icons-material';
+import { red } from '@mui/material/colors';
 
 interface AnalyzePageParams {
   owner: string;
@@ -78,31 +79,31 @@ function AnalyzePage() {
 
   const summaries: SummaryProps['items'] = useMemo(() => {
     return [{
-      icon: <StarIcon/>,
+      icon: <StarIcon fill='#FAC858'/>,
       title: 'Stars',
       query: 'stars-total',
       field: '*'
     },{
-      icon: <GitCommitIcon/>,
+      icon: <GitCommitIcon fill='#D54562'/>,
       title: 'Commits',
       query: 'commits-total',
       field: '*'
     },{
-      icon: <IssueOpenedIcon/>,
+      icon: <IssueOpenedIcon fill='#FDE494'/>,
       title: 'Issues',
       query: 'issues-total',
       field: '*'
     },{
-      icon: <RepoForkedIcon/>,
+      icon: <RepoForkedIcon fill='#E30C34'/>,
       title: 'Forks',
       data: repoInfo => repoInfo.forks,
     },{
-      icon: <PeopleIcon/>,
+      icon: <PeopleIcon fill='#F77C00'/>,
       title: 'Contributors',
       query: 'committers-total',
       field: '*'
     },{
-      icon: <CodeIcon/>,
+      icon: <CodeIcon fill='#309CF2'/>,
       title: 'Language',
       data: repoInfo => repoInfo.forks,
     }]
