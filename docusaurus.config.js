@@ -109,7 +109,7 @@ const config = {
             position: 'left',
             label: 'Insights',
           },
-          {to: '/compare', label: '🔧 Compare Projects', position: 'left'},
+          {to: '/compare', label: '🔧 Compare', position: 'left'},
           {to: '/try-your-own-dataset/?utm_content=header', label: '🔥 Try Your Own Dataset', position: 'right'},
           {
             href: 'https://en.pingcap.com/tidb-cloud/?utm_source=ossinsight',
@@ -124,7 +124,7 @@ const config = {
               {to: '/about', label: 'About'},
               {to: '/blog', label: 'Blogs'},
               {to: '/blog/how-it-works', label: 'How It Works'},
-              {href: 'https://twitter.com/PingCAP', label: 'Twitter'},
+              {href: 'https://twitter.com/OSSInsight', label: 'Twitter'},
             ],
           },
           {
@@ -145,7 +145,7 @@ const config = {
                 to: '/database/deep-insight-into-open-source-databases/',
               },
               {
-                label: 'Compare Projects',
+                label: 'Compare',
                 to: '/compare/',
               },
               {
@@ -217,7 +217,7 @@ const config = {
               },
               {
                 label: 'Twitter',
-                href: 'https://twitter.com/pingcap',
+                href: 'https://twitter.com/OSSInsight',
               },
             ],
           },

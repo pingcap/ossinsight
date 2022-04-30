@@ -7,11 +7,11 @@
 <h3 align="center">
   <b><a href="https://ossinsight.io/database/deep-insight-into-open-source-databases">Insights</a></b>
   •
-  <a href="https://ossinsight.io/compare/">Compare Projects</a>
+  <a href="https://ossinsight.io/compare/">Compare</a>
   •
   <a href="https://ossinsight.io/try-your-own-dataset">Try Your Own Dataset</a>
   •
-  <a href="https://twitter.com/PingCAP">Twitter</a>
+  <a href="https://twitter.com/OSSInsight">Twitter</a>
 </h3>
 
 <p align="center">
