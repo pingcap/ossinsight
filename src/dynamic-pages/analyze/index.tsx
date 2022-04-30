@@ -151,7 +151,7 @@ function AnalyzePage() {
 
         <Container maxWidth='lg'>
           <Section>
-            <H1>
+            <H1 sx={{ mt: 6}}>
               <a href={`https://github.com/${name}`} target='_blank'>
                 {name}
                 &nbsp;
@@ -173,7 +173,7 @@ function AnalyzePage() {
           <Section>
             <H2>Commits</H2>
             <Analyze query='analyze-pushes-and-commits-per-month'>
-              <H3>Commits & Pushes History</H3>
+              <H3 sx={{ mt: 6 }}>Commits & Pushes History</H3>
               <P2 style={{color:'#7c7c7c'}}>
               The trend of the total number of commits/pushes per month in a repository since it was created.
                 <br />
@@ -182,9 +182,7 @@ function AnalyzePage() {
               <PushesAndCommitsChart aspectRatio={commonAspectRatio} />
             </Analyze>
             <Analyze query='analyze-loc-per-month'>
-            <br />
-            <br />
-              <H3>Lines of code changed</H3>
+              <H3 sx={{ mt: 6 }}>Lines of code changed</H3>
               <P2 style={{color:'#7c7c7c'}}>
                 The bars show the additions or deletions of code monthly.
                 <br />
@@ -193,9 +191,7 @@ function AnalyzePage() {
               <LocChart aspectRatio={commonAspectRatio} />
             </Analyze>
             <Analyze query='commits-time-distribution'>
-            <br />
-            <br />
-              <H3>Commits Time Distribution</H3>
+              <H3 sx={{ mt: 6 }}>Commits Time Distribution</H3>
               <P2 style={{color:'#7c7c7c'}}>
                 The Heat Maps below describe the number of commit events that occur at a particular point of time (UTC+0).
               </P2>
@@ -214,9 +210,7 @@ function AnalyzePage() {
               </Grid>
             </Grid>
             <Analyze query='analyze-pull-requests-size-per-month'>
-            <br />
-            <br />
-              <H3>Pull Request History</H3>
+              <H3 sx={{ mt: 6 }}>Pull Request History</H3>
               <P2 style={{color:'#7c7c7c'}}>
                We divide the size of Pull Request into six intervals, from xs to xxl（based on the changes of code lines）. Learn more about
                 &nbsp;
@@ -227,9 +221,7 @@ function AnalyzePage() {
               <PrChart aspectRatio={commonAspectRatio} />
             </Analyze>
             <Analyze query='analyze-pull-request-open-to-merged'>
-            <br />
-            <br />
-              <H3>Pull Request Time Cost</H3>
+              <H3 sx={{ mt: 6 }}>Pull Request Time Cost</H3>
               <P2 style={{color:'#7c7c7c'}}>
               The time of a Pull Request from submitting to merging. 
               <br />
@@ -248,9 +240,7 @@ function AnalyzePage() {
               </Grid>
             </Grid>
             <Analyze query='analyze-issue-open-to-first-responded'>
-            <br />
-            <br />
-            <H3>Issue Time Cost</H3>
+            <H3 sx={{ mt: 6 }}>Issue Time Cost</H3>
               <P2 style={{color:'#7c7c7c'}}>
               The time of an issue from open to close. 
               <br />
@@ -261,16 +251,14 @@ function AnalyzePage() {
               <DurationChart aspectRatio={commonAspectRatio} />
             </Analyze>
             <Analyze query='analyze-issue-opened-and-closed'>
-            <br />
-            <br />
-              <H3>Issue History</H3>
+              <H3 sx={{ mt: 6 }}>Issue History</H3>
               <IssueChart aspectRatio={commonAspectRatio} />
             </Analyze>
           </Section>
           <Section>
             <H2>People</H2>
             <Analyze query={mapType}>
-              <H3 analyzeTitle={false}>Geographical Distribution</H3>
+              <H3 analyzeTitle={false} sx={{ mt: 6 }}>Geographical Distribution</H3>
               <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs value={mapType} onChange={handleChangeMapType}>
                   <Tab label={<H4>Stargazers</H4>} value='stars-map' />
@@ -288,9 +276,7 @@ function AnalyzePage() {
               </Grid>
             </Analyze>
             <Analyze query={companyType}>
-            <br />
-            <br />
-              <H3 analyzeTitle={false}>Companies</H3>
+              <H3 analyzeTitle={false} sx={{ mt: 6 }}>Companies</H3>
               <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs value={companyType} onChange={handleChangeCompanyType}>
                   <Tab label={<H4>Stargazers</H4>} value='analyze-stars-company' />
