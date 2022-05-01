@@ -76,9 +76,11 @@ export default function StatusBar(props) {
   return <Box component='div' className={styles.statusBar} sx={{ display: { xs: 'none', sm: 'flex' } }}>
     <span className={styles.statusBarTitle}>
       <span>There were </span>
-      {
-         formatNumber(getEventAllType(res?.data)?.cnt, 2) || 0
-      }
+      <span className={styles.statusBarItemIncrease}>
+        {
+          formatNumber(getEventAllType(res?.data)?.cnt, 2) || 0
+        }
+      </span>
       {
         isLargeScreen ?
         <span> events imported during last hour: </span>:
