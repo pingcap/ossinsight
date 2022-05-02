@@ -24,6 +24,7 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import TryItYourself from "../../components/TryItYourself";
+import StatusBar from '../../components/StatusBar';
 
 
 const allProvidedRepos = (repos: Repo[]) => {
@@ -121,43 +122,46 @@ export default function RepoCompare() {
   }, [])
 
   return (
-    <Layout wrapperClassName={style.page} title={`Project Compare | ${siteConfig.title}`}>
-      <LocalizationProvider dateAdapter={DateAdapter}>
-        <ThemeAdaptor>
-          <Head>
-            <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,400,500,700&display=swap" />
-          </Head>
-          <MainContent context={{repo1, repo2, dateRange, allReposProvided, allProvidedRepos}}>
-            <Typography variant='h1' component='h1' style={{ marginTop: '24px' }}>
-              Comparing Projects
-            </Typography>
-            <Grid container>
-              <Grid item xs={12} lg={8}>
-                <Typography variant='body1'>
-                  Here, you can compare any two GitHub projects regarding their stars, pull requests, stargazers' locations and companies, issues, commits, and some other metrics.
-                </Typography>
+    <>
+      <Layout wrapperClassName={style.page} title={`Project Compare | ${siteConfig.title}`}>
+        <LocalizationProvider dateAdapter={DateAdapter}>
+          <ThemeAdaptor>
+            <Head>
+              <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,400,500,700&display=swap" />
+            </Head>
+            <MainContent context={{repo1, repo2, dateRange, allReposProvided, allProvidedRepos}}>
+              <Typography variant='h1' component='h1' style={{ marginTop: '24px' }}>
+                Comparing Projects
+              </Typography>
+              <Grid container>
+                <Grid item xs={12} lg={8}>
+                  <Typography variant='body1'>
+                    Here, you can compare any two GitHub projects regarding their stars, pull requests, stargazers' locations and companies, issues, commits, and some other metrics.
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} lg={4}>
+                  <BrowserOnly>
+                    {() => <ShareButtons title={`Compare Projects | OSSInsight`} style={{marginTop: 16, marginRight: 16}} />}
+                  </BrowserOnly>
+                </Grid>
               </Grid>
-              <Grid item xs={12} lg={4}>
-                <BrowserOnly>
-                  {() => <ShareButtons title={`Compare Projects | OSSInsight`} style={{marginTop: 16, marginRight: 16}} />}
-                </BrowserOnly>
-              </Grid>
-            </Grid>
-            <CompareHeader
-              repo1={repo1}
-              onRepo1Change={setRepo1}
-              onRepo1Valid={onRepo1Valid}
-              repo2={repo2}
-              onRepo2Change={setRepo2}
-              onRepo2Valid={onRepo2Valid}
-            />
-            <Box sx={{ mt: 4 }}>
-              {sections}
-            </Box>
-          </MainContent>
-          <TryItYourself campaign='compare' show fixed/>
-        </ThemeAdaptor>
-      </LocalizationProvider>
-    </Layout>
+              <CompareHeader
+                repo1={repo1}
+                onRepo1Change={setRepo1}
+                onRepo1Valid={onRepo1Valid}
+                repo2={repo2}
+                onRepo2Change={setRepo2}
+                onRepo2Valid={onRepo2Valid}
+              />
+              <Box sx={{ mt: 4 }}>
+                {sections}
+              </Box>
+            </MainContent>
+            <TryItYourself campaign='compare' show fixed/>
+          </ThemeAdaptor>
+        </LocalizationProvider>
+      </Layout>
+      <StatusBar/>
+    </>
   );
 }

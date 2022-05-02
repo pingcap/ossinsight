@@ -1,0 +1,45 @@
+.superIcon {
+    vertical-align: super !important;
+}
+
+.statusBar {
+    position: fixed;
+    bottom: 0;
+    background-color: #333333;
+    font-size: 12px;
+    white-space: nowrap;
+    padding: 0 12px;
+    z-index: 999;
+    color: #7c95a5;
+    font-family: Menlo, Monaco, 'Courier New', monospace;
+    user-select: none;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.statusBarTitle {
+    margin-right: 5px;
+    line-height: 22px;
+}
+
+.statusBarItem {
+    display: inline-block;
+    padding: 2px 4px 0;
+}
+
+.statusBarItem:hover {
+    background-color: #363738;
+}
+
+.statusBarTitle {
+    color: #dcdcaa;
+}
+
+.statusBarItemEventType {
+    color: #8ac3e3
+}
+
+.statusBarItemIncrease {
+    color: #b5cea8
+}
