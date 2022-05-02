@@ -174,7 +174,7 @@ function AnalyzePage() {
             <H2>Commits</H2>
             <Analyze query='analyze-pushes-and-commits-per-month'>
               <H3 sx={{ mt: 6 }}>Commits & Pushes History</H3>
-              <P2 style={{color:'#7c7c7c'}}>
+              <P2>
               The trend of the total number of commits/pushes per month in a repository since it was created.
                 <br />
               * Note: A push action can include multiple commit actions.
@@ -183,7 +183,7 @@ function AnalyzePage() {
             </Analyze>
             <Analyze query='analyze-loc-per-month'>
               <H3 sx={{ mt: 6 }}>Lines of code changed</H3>
-              <P2 style={{color:'#7c7c7c'}}>
+              <P2>
                 The bars show the additions or deletions of code monthly.
                 <br />
                 The line chart demonstrate the total lines of code (additions + deletions).
@@ -192,7 +192,7 @@ function AnalyzePage() {
             </Analyze>
             <Analyze query='commits-time-distribution'>
               <H3 sx={{ mt: 6 }}>Commits Time Distribution</H3>
-              <P2 style={{color:'#7c7c7c'}}>
+              <P2>
                 The Heat Maps below describe the number of commit events that occur at a particular point of time (UTC+0).
               </P2>
               <Grid container>
@@ -211,7 +211,7 @@ function AnalyzePage() {
             </Grid>
             <Analyze query='analyze-pull-requests-size-per-month'>
               <H3 sx={{ mt: 6 }}>Pull Request History</H3>
-              <P2 style={{color:'#7c7c7c'}}>
+              <P2>
                We divide the size of Pull Request into six intervals, from xs to xxl（based on the changes of code lines）. Learn more about
                 &nbsp;
                 <a href='https://github.com/kubernetes/kubernetes/labels?q=size' target='_blank'>
@@ -222,7 +222,7 @@ function AnalyzePage() {
             </Analyze>
             <Analyze query='analyze-pull-request-open-to-merged'>
               <H3 sx={{ mt: 6 }}>Pull Request Time Cost</H3>
-              <P2 style={{color:'#7c7c7c'}}>
+              <P2>
               The time of a Pull Request from submitting to merging. 
               <br />
               p25/p75: 25%/75% Pull Requests are closed within X minute/hour/day.
@@ -241,7 +241,7 @@ function AnalyzePage() {
             </Grid>
             <Analyze query='analyze-issue-open-to-first-responded'>
             <H3 sx={{ mt: 6 }}>Issue Time Cost</H3>
-              <P2 style={{color:'#7c7c7c'}}>
+              <P2>
               The time of an issue from open to close. 
               <br />
               p25/p75: 25%/75% issues are closed within X minute/hour/day.
