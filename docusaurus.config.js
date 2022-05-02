@@ -7,8 +7,8 @@ const path = require('path')
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'Open Source Software Insight',
-  tagline: ' Explore deep insights from 4,500,000,000+ GitHub Events',
+  title: 'Open Source Software Analysis and Comparing Tools',
+  tagline: ' Deep Insights into Billions of GitHub events',
   url: 'https://ossinsight.io',
   baseUrl: '/',
   onBrokenLinks: 'throw',
@@ -79,7 +79,7 @@ const config = {
       image: 'img/gharchive-title-img.png',
       metadata: [
         {name: 'twitter:card', content: 'summary_large_image'},
-        {name: 'keywords', content: 'tidb,mysql,github event,oss,compare oss'}
+        {name: 'keywords', content: 'tidb, mysql, github events, oss, compare oss, oss analysis, pingcap'}
       ],
 //       hideableSidebar: true,
       colorMode: {
