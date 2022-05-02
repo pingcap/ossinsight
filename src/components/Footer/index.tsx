@@ -26,6 +26,7 @@ export default function Footer() {
             title='Data Preparation for Analytics'
             description='Blog · 5 min read'
             codeStyleDescription={false}
+            link='/blog/how-it-works'
             readMore='/blog/how-it-works'
             buttonVariant='outlined'
             top={icon(require('./icon-1.png').default)}
@@ -37,6 +38,7 @@ export default function Footer() {
             title='What is TiDB Cloud'
             description='Documentation · 10 min read'
             codeStyleDescription={false}
+            link='https://docs.pingcap.com/tidbcloud?utm_source=ossinsight'
             readMore='https://docs.pingcap.com/tidbcloud?utm_source=ossinsight'
             buttonVariant='outlined'
             top={icon(require('./icon-2.png').default)}
@@ -48,6 +50,7 @@ export default function Footer() {
             title='Use TiDB Cloud to Analyze GitHub Events in 5 Minutes'
             description='Tutorial · 5 min read'
             codeStyleDescription={false}
+            link='/blog/try-it-yourself'
             readMore='/blog/try-it-yourself'
             buttonVariant='outlined'
             top={icon(require('./icon-3.png').default)}
@@ -58,7 +61,7 @@ export default function Footer() {
         </Cards>
         <Box textAlign='center' sx={{fontSize: 24, mt: 6}}>
           Now, how about&nbsp;
-          <Button sx={{fontSize: 24, fontWeight: 'bold'}} style={{ verticalAlign: 'baseline' }} component={Link} href='/try-your-own-dataset?utm_content=wonder_cta'>
+          <Button sx={{fontSize: 24, fontWeight: 'bold', verticalAlign: 'baseline' }} component={Link} href='/try-your-own-dataset?utm_content=wonder_cta'>
             Try your own dataset !
           </Button>
         </Box>

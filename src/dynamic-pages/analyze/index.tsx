@@ -37,6 +37,9 @@ import {AsyncData} from '../../components/RemoteCharts/hook';
 import CompareHeader from '../../components/CompareHeader/CompareHeader';
 import BrowserOnly from '@docusaurus/core/lib/client/exports/BrowserOnly';
 import useUrlSearchState, {stringParam} from '../../hooks/url-search-state';
+import { color } from 'echarts';
+import { VerticalAlignCenter } from '@mui/icons-material';
+import { red } from '@mui/material/colors';
 
 interface AnalyzePageParams {
   owner: string;
@@ -76,31 +79,31 @@ function AnalyzePage() {
 
   const summaries: SummaryProps['items'] = useMemo(() => {
     return [{
-      icon: <StarIcon/>,
+      icon: <StarIcon fill='#FAC858'/>,
       title: 'Stars',
       query: 'stars-total',
       field: '*'
     },{
-      icon: <GitCommitIcon/>,
+      icon: <GitCommitIcon fill='#D54562'/>,
       title: 'Commits',
       query: 'commits-total',
       field: '*'
     },{
-      icon: <IssueOpenedIcon/>,
+      icon: <IssueOpenedIcon fill='#FDE494'/>,
       title: 'Issues',
       query: 'issues-total',
       field: '*'
     },{
-      icon: <RepoForkedIcon/>,
+      icon: <RepoForkedIcon fill='#E30C34'/>,
       title: 'Forks',
       data: repoInfo => repoInfo.forks,
     },{
-      icon: <PeopleIcon/>,
+      icon: <PeopleIcon fill='#F77C00'/>,
       title: 'Contributors',
       query: 'committers-total',
       field: '*'
     },{
-      icon: <CodeIcon/>,
+      icon: <CodeIcon fill='#309CF2'/>,
       title: 'Language',
       data: repoInfo => repoInfo.forks,
     }]
@@ -148,11 +151,11 @@ function AnalyzePage() {
 
         <Container maxWidth='lg'>
           <Section>
-            <H1>
+            <H1 sx={{ mt: 6}}>
               <a href={`https://github.com/${name}`} target='_blank'>
                 {name}
                 &nbsp;
-                <LinkExternalIcon size={28} />
+                <LinkExternalIcon size={28} verticalAlign='middle'/>
               </a>
             </H1>
             <Grid container spacing={2} alignItems='center'>
@@ -170,25 +173,25 @@ function AnalyzePage() {
           <Section>
             <H2>Commits</H2>
             <Analyze query='analyze-pushes-and-commits-per-month'>
-              <H3>Commits & Pushes History</H3>
+              <H3 sx={{ mt: 6 }}>Commits & Pushes History</H3>
               <P2>
-                A commit is an individual change to a file (or set of files).
+              The trend of the total number of commits/pushes per month in a repository since it was created.
                 <br />
-                A Push may include several Commits.
+              * Note: A push action can include multiple commit actions.
               </P2>
               <PushesAndCommitsChart aspectRatio={commonAspectRatio} />
             </Analyze>
             <Analyze query='analyze-loc-per-month'>
-              <H3>Lines of code changed</H3>
+              <H3 sx={{ mt: 6 }}>Lines of code changed</H3>
               <P2>
-                The bars mean the additions or deletions of code.
+                The bars show the additions or deletions of code monthly.
                 <br />
-                The line chart means the total lines of code (additions + deletions).
+                The line chart demonstrate the total lines of code (additions + deletions).
               </P2>
               <LocChart aspectRatio={commonAspectRatio} />
             </Analyze>
             <Analyze query='commits-time-distribution'>
-              <H3>Commits Time Distribution</H3>
+              <H3 sx={{ mt: 6 }}>Commits Time Distribution</H3>
               <P2>
                 The Heat Maps below describe the number of commit events that occur at a particular point of time (UTC+0).
               </P2>
@@ -207,21 +210,23 @@ function AnalyzePage() {
               </Grid>
             </Grid>
             <Analyze query='analyze-pull-requests-size-per-month'>
-              <H3>Pull Request History</H3>
+              <H3 sx={{ mt: 6 }}>Pull Request History</H3>
               <P2>
-                xs, s, m, l, xl, xxl means the size of Pull Request. Learn more about
+               We divide the size of Pull Request into six intervals, from xs to xxl（based on the changes of code lines）. Learn more about
                 &nbsp;
                 <a href='https://github.com/kubernetes/kubernetes/labels?q=size' target='_blank'>
                   PR size
-                </a>
+                </a>.
               </P2>
               <PrChart aspectRatio={commonAspectRatio} />
             </Analyze>
             <Analyze query='analyze-pull-request-open-to-merged'>
-              <H3>Pull Request Time Cost</H3>
+              <H3 sx={{ mt: 6 }}>Pull Request Time Cost</H3>
               <P2>
-              p25: 25% Pull Requests are closed within X hour/day.
-                <br />
+              The time of a Pull Request from submitting to merging. 
+              <br />
+              p25/p75: 25%/75% Pull Requests are closed within X minute/hour/day.
+              <br />
               e.g. p25: 1h means 25% Pull Requests are closed within 1 hour.
               </P2>
               <DurationChart aspectRatio={commonAspectRatio} />
@@ -235,23 +240,25 @@ function AnalyzePage() {
               </Grid>
             </Grid>
             <Analyze query='analyze-issue-open-to-first-responded'>
-            <H3>Issue Time Cost</H3>
+            <H3 sx={{ mt: 6 }}>Issue Time Cost</H3>
               <P2>
-              p25: 25% Issues are closed within X hour/day.
-                <br />
-              e.g. p25: 1h means 25% Issues are closed within 1 hour.
+              The time of an issue from open to close. 
+              <br />
+              p25/p75: 25%/75% issues are closed within X minute/hour/day.
+              <br />
+              e.g. p25: 1h means 25% issues are closed within 1 hour.
               </P2>
               <DurationChart aspectRatio={commonAspectRatio} />
             </Analyze>
             <Analyze query='analyze-issue-opened-and-closed'>
-              <H3>Issue History</H3>
+              <H3 sx={{ mt: 6 }}>Issue History</H3>
               <IssueChart aspectRatio={commonAspectRatio} />
             </Analyze>
           </Section>
           <Section>
             <H2>People</H2>
             <Analyze query={mapType}>
-              <H3 analyzeTitle={false}>Geographical Distribution</H3>
+              <H3 analyzeTitle={false} sx={{ mt: 6 }}>Geographical Distribution</H3>
               <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs value={mapType} onChange={handleChangeMapType}>
                   <Tab label={<H4>Stargazers</H4>} value='stars-map' />
@@ -269,7 +276,7 @@ function AnalyzePage() {
               </Grid>
             </Analyze>
             <Analyze query={companyType}>
-              <H3 analyzeTitle={false}>Companies</H3>
+              <H3 analyzeTitle={false} sx={{ mt: 6 }}>Companies</H3>
               <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs value={companyType} onChange={handleChangeCompanyType}>
                   <Tab label={<H4>Stargazers</H4>} value='analyze-stars-company' />

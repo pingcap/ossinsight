@@ -63,7 +63,7 @@ export default function Page() {
         </Card>
       </Section>
       <Section
-        title='You can do more than GitHub insight 🤔'
+        title='See more of XYZ insight 🤔'
         subtitle='For real-time analytical, highly concurrent, and low-latency scenarios with massive data.'
       >
         <Cards xs={12} md={6} sx={{my: 4}}>
