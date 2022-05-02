@@ -49,5 +49,5 @@ export const P1 = ({analyzeDescription = true, ...props}: TypographyProps & Anal
 
 export const P2 = ({analyzeDescription = true, ...props}: TypographyProps & AnalyzeDescription) => {
   const ref = useAnalyzeDescriptionRef(analyzeDescription)
-  return <Typography {...props} variant="body1" ref={ref} marginBottom={2} marginTop={0} fontSize={16} />;
+  return <Typography {...props} variant="body1" ref={ref} marginBottom={2} marginTop={0} fontSize={16} color={'#7c7c7c'}/>;
 }

@@ -164,7 +164,7 @@ export default function Home() {
         <Stack direction={stackDirection} alignItems='center'>
           <Item>
             <H2>
-              Visually & Comprehensive
+              Visual & Comprehensive
               <br />
               <H2Plus sx={{color: '#FFE895'}}>
                 Compare
