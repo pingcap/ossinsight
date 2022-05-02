@@ -5,7 +5,7 @@
 .statusBar {
     position: fixed;
     bottom: 0;
-    background-color: #1e1e1e;
+    background-color: #333333;
     font-size: 12px;
     white-space: nowrap;
     padding: 0 12px;
