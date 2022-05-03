@@ -66,17 +66,10 @@ export default function Home() {
     }
   }, [repo1])
   const compare = useMemo(() => {
-    if (typeof window === 'undefined') {
-      return '/compare'
+    if (!repo1 || !repo2) {
+      return undefined
     }
-    const usp = new URLSearchParams()
-    if (repo1) {
-      usp.set('repo1', repo1.name)
-    }
-    if (repo2) {
-      usp.set('repo2', repo2.name)
-    }
-    return `/compare?${usp.toString()}`
+    return `/analyze/${repo1.name}?vs=${encodeURIComponent(repo2.name)}`
   }, [repo1, repo2])
   const {data: totalEventsData} = useRemoteData('events-total', {}, false)
 
@@ -209,7 +202,7 @@ export default function Home() {
                 sx={{backgroundColor: 'transparent', flex: 1, borderBottom: 'none'}}
                 position='static'
               />
-              <Button component={Link} variant='contained' href={compare}>
+              <Button component={Link} variant='contained' href={compare} disabled={!repo1 || !repo2}>
                 go!
               </Button>
             </Box>
