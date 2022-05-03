@@ -12,7 +12,7 @@ authors: [Fendy Feng]
 
 Do you wonder how different projects have performed and developed over time? Which project is worthy of more attention? **[OSSInsight.io](https://ossinsight.io/)** can answer your questions via the [Compare Projects](https://ossinsight.io/compare/?utm_source=dogfood_article) page.
 
-Let’s take the [Kubernetes repository](http://Kubernetes)  (K8s) and Docker’s [Moby repository](https://github.com/moby/moby) as examples and compare them in regard to popularity and coding vitality. 
+Let’s take the [Kubernetes repository](https://github.com/kubernetes/kubernetes)  (K8s) and Docker’s [Moby repository](https://github.com/moby/moby) as examples and compare them in regard to popularity and coding vitality. 
 
 
 ### **Popularity**
