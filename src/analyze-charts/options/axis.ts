@@ -65,7 +65,7 @@ export const formatMonth = (value: number | string | Date) => {
 
 const now = new Date()
 
-export function timeAxis<T extends 'x' | 'y'>(id?: OptionId, option: AxisOption<T, TimeAxisBaseOption> = {}): AxisOption<T> {
+export function timeAxis<T extends 'x' | 'y'>(id?: OptionId, option: AxisOption<T, TimeAxisBaseOption> = {}, fromRecent: boolean = false): AxisOption<T> {
   return merge<AxisOption<T>>(option, {
     id,
     type: 'time',
@@ -76,7 +76,7 @@ export function timeAxis<T extends 'x' | 'y'>(id?: OptionId, option: AxisOption<
         }
       }
     },
-    min: new Date(2011, 0, 1, 0, 0, 0, 0),
+    min: fromRecent ? undefined : new Date(2011, 0, 1, 0, 0, 0, 0),
     max: new Date(now.getFullYear(), now.getMonth(), 1, 0, 0, 0, 0)
   });
 }

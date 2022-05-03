@@ -165,7 +165,7 @@ function AnalyzePage() {
               <Grid item xs={12} md={vs ? 4 : 6}>
                 <Analyze query='stars-history'>
                   <H2 analyzeTitle display='none'>Stars History</H2>
-                  <LineChart spec={{valueIndex: 'total', name: 'Stars'}}/>
+                  <LineChart spec={{valueIndex: 'total', name: 'Stars', fromRecent: true}}/>
                 </Analyze>
               </Grid>
             </Grid>
