@@ -30,16 +30,16 @@ If you want to analyze more, please [contact us](https://ossinsight.io/about/#co
 ## Compare Projects 🔨
 
 Examples:
-* [Compare Vue and React](https://ossinsight.io/compare?repo1=vuejs%2Fvue&repo2=facebook%2Freact)
-* [Compare Hugo and Docusaurus](https://ossinsight.io/compare?repo1=gohugoio%2Fhugo&repo2=facebook%2Fdocusaurus)
-* [Compare CockroachDB and TiDB](https://ossinsight.io/compare?repo1=pingcap%2Ftidb&repo2=cockroachdb%2Fcockroach)
-* [Compare PyTorch and TensorFlow](https://ossinsight.io/compare?repo1=pytorch%2Fpytorch&repo2=tensorflow%2Ftensorflow)
-* [Compare Django and Flask](https://ossinsight.io/compare?repo1=django%2Fdjango&repo2=pallets%2Fflask)
-* [Compare Visual Studio Code and Atom](https://ossinsight.io/compare?repo1=microsoft%2Fvscode&repo2=atom%2Fatom)
-* [Compare Go and Rust](https://ossinsight.io/compare?repo1=golang%2Fgo&repo2=rust-lang%2Frust)
-* [Compare Spark and Flink](https://ossinsight.io/compare?repo1=apache%2Fspark&repo2=apache%2Fflink)
-* [Compare Ant Design and Material-UI](https://ossinsight.io/compare?repo1=ant-design%2Fant-design&repo2=mui%2Fmaterial-ui)
-* [Compare Chaos Mesh and Chaosblade](https://ossinsight.io/compare?repo1=chaos-mesh%2Fchaos-mesh&repo2=chaosblade-io%2Fchaosblade)
+* [Compare Vue and React](https://ossinsight.io/analyze/vuejs/vue?vs=facebook/react)
+* [Compare Hugo and Docusaurus](https://ossinsight.io/analyze/gohugoio/hugo?vs=facebook/docusaurus)
+* [Compare CockroachDB and TiDB](https://ossinsight.io/analyze/pingcap/tidb?vs=cockroachdb/cockroach)
+* [Compare PyTorch and TensorFlow](https://ossinsight.io/analyze/pytorch/pytorch?vs=tensorflow/tensorflow)
+* [Compare Django and Flask](https://ossinsight.io/analyze/django/django?vs=pallets/flask)
+* [Compare Visual Studio Code and Atom](https://ossinsight.io/analyze/microsoft/vscode?vs=atom/atom)
+* [Compare Go and Rust](https://ossinsight.io/analyze/golang/go?vs=rust-lang/rust)
+* [Compare Spark and Flink](https://ossinsight.io/analyze/apache/spark?vs=apache/flink)
+* [Compare Ant Design and Material-UI](https://ossinsight.io/analyze/ant-design/ant-design?vs=mui/material-ui)
+* [Compare Chaos Mesh and Chaosblade](https://ossinsight.io/analyze/chaos-mesh/chaos-mesh?vs=chaosblade-io/chaosblade)
 
 ## Development
 
