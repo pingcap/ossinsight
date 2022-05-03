@@ -262,9 +262,9 @@ function AnalyzePage() {
               <H3 analyzeTitle={false} sx={{ mt: 6 }}>Geographical Distribution</H3>
               <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs value={mapType} onChange={handleChangeMapType}>
-                  <Tab label={<H4>Stargazers</H4>} value='stars-map' />
-                  <Tab label={<H4>Issue Creators</H4>} value='issue-creators-map' />
-                  <Tab label={<H4>Pull Requests Creators</H4>} value='pull-request-creators-map' />
+                  <Tab sx={{ textTransform: 'unset' }} label={<H4>Stargazers</H4>} value='stars-map' />
+                  <Tab sx={{ textTransform: 'unset' }} label={<H4>Issue Creators</H4>} value='issue-creators-map' />
+                  <Tab sx={{ textTransform: 'unset' }} label={<H4>Pull Requests Creators</H4>} value='pull-request-creators-map' />
                 </Tabs>
               </Box>
               <Grid container alignItems='center'>
@@ -280,9 +280,9 @@ function AnalyzePage() {
               <H3 analyzeTitle={false} sx={{ mt: 6 }}>Companies</H3>
               <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs value={companyType} onChange={handleChangeCompanyType}>
-                  <Tab label={<H4>Stargazers</H4>} value='analyze-stars-company' />
-                  <Tab label={<H4>Issue Creators</H4>} value='analyze-issue-creators-company' />
-                  <Tab label={<H4>Pull Requests Creators</H4>} value='analyze-pull-request-creators-company' />
+                  <Tab sx={{ textTransform: 'unset' }} label={<H4>Stargazers</H4>} value='analyze-stars-company' />
+                  <Tab sx={{ textTransform: 'unset' }} label={<H4>Issue Creators</H4>} value='analyze-issue-creators-company' />
+                  <Tab sx={{ textTransform: 'unset' }} label={<H4>Pull Requests Creators</H4>} value='analyze-pull-request-creators-company' />
                 </Tabs>
               </Box>
               <Grid container alignItems='center'>
