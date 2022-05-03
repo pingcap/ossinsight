@@ -277,7 +277,7 @@ function AnalyzePage() {
                 </Grid>
               </Grid>
             </Analyze>
-            <Analyze query={companyType}>
+            <Analyze query={companyType} params={{limit: comparingRepoName ? 25 : 50}}>
               <H3 analyzeTitle={false} sx={{ mt: 6 }}>Companies</H3>
               <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs value={companyType} onChange={handleChangeCompanyType}>

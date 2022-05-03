@@ -35,21 +35,28 @@ export default function List({n, valueIndex, nameIndex, percentIndex, title, tra
             <DataItem flex={1}>
               <Stack direction="row" px={comparingRepoName ? 1 : 2} py={comparingRepoName ? 0.5 : 1} alignItems="center" justifyContent="space-between">
                 <HeadText sx={{fontSize: 12, lineHeight: 1}}>
-                  {data.data?.data[i][nameIndex] ? transformName(data.data.data[i][nameIndex]) : undefined}
+                  {i < data.data?.data.length
+                    ? data.data?.data[i][nameIndex]
+                      ? transformName(data.data.data[i][nameIndex])
+                      : undefined
+                    : '--'}
                 </HeadText>
                 <span>
-                  {valueIndex
+                  {valueIndex && i < data.data?.data.length
                     ? (
                       <BodyText sx={{fontSize: 12, lineHeight: 1}}>
                         {data.data?.data[i][valueIndex]}
                       </BodyText>
                     ) : undefined}
                   &nbsp;
-                  <Typography
-                    variant="caption"
-                    component="span"
-                    color="text.secondary"
-                  >{`${(data.data?.data[i][percentIndex] * 100 || 0).toFixed(1)}%`}</Typography>
+                  {i < data.data?.data.length
+                    ? (
+                      <Typography
+                        variant="caption"
+                        component="span"
+                        color="text.secondary"
+                      >{`${(data.data?.data[i][percentIndex] * 100 || 0).toFixed(1)}%`}</Typography>
+                    ) : undefined}
                 </span>
               </Stack>
             </DataItem>
