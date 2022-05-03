@@ -8,6 +8,8 @@ import React, {useEffect, useState} from 'react';
 import Layout from '@theme/Layout';
 import Translate, {translate} from '@docusaurus/Translate';
 import {useHistory} from "@docusaurus/router";
+import CircularProgress from "@mui/material/CircularProgress";
+import Typography from "@mui/material/Typography";
 
 function NotFound() {
   const history = useHistory()
@@ -41,7 +43,11 @@ function renderRedirect () {
     <main className="container margin-vert--xl">
       <div className="row">
         <div className="col col--6 col--offset-3">
-          <h1>Redirecting...</h1>
+          <Typography variant='body1' fontSize={24}>
+            Redirecting...
+            &nbsp;
+            <CircularProgress size={24} />
+          </Typography>
         </div>
       </div>
     </main>
