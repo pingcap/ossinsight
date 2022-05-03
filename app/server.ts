@@ -5,9 +5,9 @@ import {DefaultState} from "koa";
 import type {ContextExtends} from "../index";
 import GhExecutor from "./core/GhExecutor";
 import {createClient} from "redis";
-import path from "path";
 import {register} from "prom-client";
 import {measureRequests} from "./middlewares/measureRequests";
+import {createRateLimiter} from "./middlewares/rate-limit";
 import RepoGroupService from "./services/RepoGroupService";
 import GHEventService from "./services/GHEventService";
 
@@ -46,12 +46,14 @@ const COMPARE_QUERIES = [
 
 export default async function server(router: Router<DefaultState, ContextExtends>) {
 
+  // Init Redis Client.
   const redisClient = createClient({
     url: process.env.REDIS_URL
   });
   await redisClient.on('error', (err) => console.log('Redis Client Error', err));
   await redisClient.connect();
 
+  // Init MySQL Executor. 
   const executor = new MysqlQueryExecutor({
     host: process.env.DB_HOST,
     port: parseInt(process.env.DB_PORT || '3306'),
@@ -62,9 +64,12 @@ export default async function server(router: Router<DefaultState, ContextExtends
     queueLimit: parseInt(process.env.QUEUE_LIMIT || '20'),
     decimalNumbers: true
   })
+
+  // Init GitHub Executor.
   const tokens = (process.env.GH_TOKENS || '').split(',').map(s => s.trim()).filter(Boolean);
   const ghExecutor = new GhExecutor(tokens, redisClient);
 
+  // Init Services.
   const repoGroupService = new RepoGroupService(executor);
   const ghEventService = new GHEventService(executor);
 
@@ -142,7 +147,8 @@ export default async function server(router: Router<DefaultState, ContextExtends
     }
   })
 
-  router.get('/gh/repo/:owner/:repo', measureRequests({ urlLabel: 'route' }), async ctx => {
+  const getRepoRateLimiter = createRateLimiter('get-repo');
+  router.get('/gh/repo/:owner/:repo', getRepoRateLimiter, measureRequests({ urlLabel: 'route' }), async ctx => {
     const { owner, repo } = ctx.params
     try {
       const res = await ghExecutor.getRepo(owner, repo)
@@ -157,7 +163,8 @@ export default async function server(router: Router<DefaultState, ContextExtends
     }
   })
 
-  router.get('/gh/repos/search', measureRequests({ urlLabel: 'path' }), async ctx => {
+  const searchRepoRateLimiter = createRateLimiter('search-repo');
+  router.get('/gh/repos/search', searchRepoRateLimiter, measureRequests({ urlLabel: 'path' }), async ctx => {
     const { keyword } = ctx.query;
 
     try {

@@ -7,17 +7,26 @@ with datetime_range as (
     order by end_import_at desc
     limit 1
 )
-select
-    type, count(*) as cnt
-from github_events ge
-where
-    created_at > (select t_from from datetime_range)
-    and created_at < (select t_to from datetime_range)
-group by type
-union
-select
-    'All' as type, count(*) as cnt
-from github_events ge
-where
-    created_at > (select t_from from datetime_range)
-    and created_at < (select t_to from datetime_range)
+select *
+from (
+    (
+        select
+            type, count(*) as cnt
+        from github_events ge
+        where
+            created_at > (select t_from from datetime_range)
+            and created_at < (select t_to from datetime_range)
+        group by 1
+        order by 2 desc
+    )
+    union
+    (
+        select
+            'All' as type, count(*) as cnt
+        from github_events ge
+        where
+            created_at > (select t_from from datetime_range)
+            and created_at < (select t_to from datetime_range)
+    )
+) sub
+order by cnt desc
