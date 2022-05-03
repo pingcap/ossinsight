@@ -122,7 +122,6 @@ export default function Page() {
         </Cards>
         <div style={{textAlign: 'center'}}>
           <Button component='a' startIcon={<ArrowRightIcon />} variant='contained' sx={{':hover': {color: '#ffffff'}}} href="https://en.pingcap.com/customers/?utm_source=ossinsight" target="_blank">
-           More cases
           </Button>
         </div>
       </Section>
