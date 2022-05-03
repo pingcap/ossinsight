@@ -18,7 +18,7 @@
 OSS Insight analyze billions of GitHub events and get insights from them, also provide a compare tool which can compare any two open source software hosted on GitHub deeply.
 </p>
 
-## Insights 👁️
+## Preanalysis 👁️
 * [Deep Insight Into Open Source Databases](https://ossinsight.io/database/deep-insight-into-open-source-databases)
 * [JavaScript Framework Repos Landscape 2021](https://ossinsight.io/js-framework/deep-insight-into-js-framework-2021)
 * [Web Framework Repos Landscape 2021](https://ossinsight.io/web-framework/deep-insight-about-web-framework-2021)
@@ -26,8 +26,29 @@ OSS Insight analyze billions of GitHub events and get insights from them, also p
 * [Low-code Development Tool Repos Landscape 2021](https://ossinsight.io/low-code/deep-insight-into-lowcode-development-tools-2021)
 
 If you want to analyze more, please [contact us](https://ossinsight.io/about/#contact) ✉️
+  
+## Single Repo Analysis
+  
+* Basic:
+  * star, fork, issues, commits, pull requests, contributors, programming languages, lines of code modified
+  * Historical Trends of these metrics
+  * Time Cost of issues, pull requests
+* Advanced:
+  * Geographical Distribution of stargazers, issue creators, pull requests creators
+  * Company Distribution of stargazers, issue creators, pull requests creators
+  
+Examples:
+* [React](https://ossinsight.io/analyze/facebook/react)
+* [TiDB](https://ossinsight.io/analyze/pingcap/tidb)
+* [Django](https://ossinsight.io/analyze/django/django)
+* [Go Lang](https://ossinsight.io/analyze/golang/go)
+* [Ant Design](https://ossinsight.io/analyze/ant-design/ant-design)
+* [Material-UI](https://ossinsight.io/analyze/mui/material-ui)
+* [Chaos Mesh](https://ossinsight.io/analyze/chaos-mesh/chaos-mesh)
 
 ## Compare Projects 🔨
+  
+Compare Repo metioned above in [Single Repo Analysis](#single-repo-analysis)
 
 Examples:
 * [Compare Vue and React](https://ossinsight.io/analyze/vuejs/vue?vs=facebook/react)
