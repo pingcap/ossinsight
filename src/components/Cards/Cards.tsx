@@ -3,14 +3,14 @@ import Grid, {GridProps} from "@mui/material/Grid";
 
 type GridSizeProps = Pick<GridProps, 'xs' | 'sm' | 'md' | 'lg' | 'xl'>
 
-function withDefaultSizes (children: ReactNode, sizes: GridSizeProps): ReactNode {
+function withDefaultSizes (children: ReactNode, sizes: GridSizeProps, key?: string | number): ReactNode {
   if (Object.keys(sizes).length === 0) {
     return children
   }
   if (children instanceof Array) {
-    return children.map(node => withDefaultSizes(node, sizes))
+    return children.map((node, i) => withDefaultSizes(node, sizes, i))
   } else if (React.isValidElement(children)) {
-    return cloneElement(children, Object.assign({}, children.props, sizes))
+    return cloneElement(children, Object.assign({}, children.props, sizes, {key: children.key ?? key}))
   } else {
     return children
   }
