@@ -27,6 +27,7 @@ The line chart below shows the accumulated number of stars of K8s and Moby each 
 
 <center>The star history of K8s and Moby</center>
 
+
 **The geographical distribution of stargazers**
 
 The map below shows the stargazers’ geographical distribution of Moby and K8s. As you can see, their stargazers are scattered around the world with the majority coming from the US, Europe, and China.
@@ -86,18 +87,12 @@ Popularity and coding vitality are just two dimensions to compare repositories. 
 
 [OSSInsight.io](https://ossinsight.io/) does more than explore or compare repositories. **It gives you [historical, real-time, and custom open source insights](https://ossinsight.io/database/deep-insight-into-open-source-databases).** In this section, we’ll share some key insights in open source databases and programming languages. If you want to gain insights in other areas, you can go to the [Insight](https://ossinsight.io/_/database/?utm_source=dogfood_article) page. 
 
+**Note**: If you want to get those analytical results by yourself, you can execute the SQL commands above each chart on TiDB Cloud with ease following this [5-minute tutorial](https://ossinsight.io/blog/try-it-yourself/?utm_source=dogfood_article). 
+
 
 ### **Rust: the most active language**
 
 Rust was first released in 2012 and has been among the leading languages for 10 years. It has the most active language repository with a total of 103,047 PRs at the time of writing. 
-
-
-![](/blog/media/pr-number-of-pl-repos.png)
-
-
-<center>PR numbers of the leading programming languages</center>
-
-Note: To get this analytical result, you just need to execute the SQL commands below on TiDB Cloud with ease following this [5-minute tutorial](https://ossinsight.io/blog/try-it-yourself/?utm_source=dogfood_article).
 
 <details><summary>Click here to show SQL commands</summary>
 <p>
@@ -119,26 +114,14 @@ LIMIT 10
 </p>
 </details>
 
+![](/blog/media/pr-number-of-pl-repos.png)
+
+
+<center>PR numbers of the leading programming languages</center>
 
 ### **Go: the new favorite and the fastest growing language**
 
 According to **[OSSInsight.io](https://ossinsight.io/)**, 10 programming languages dominate the open source community. Go is the most popular with 108,317 stars, followed by Node and TypeScript. Go is also the fastest growing language in popularity with the steepest upward trend.
-
-
-![](/blog/media/star-growth-trends-of-leading-programming-languages.png)
-
-<center>The star growth trends of leading programming languages</center>
-
-
-### **Microsoft and Google: the top two language contributors **
-
-As world-renowned high-tech companies, Microsoft and Google take the lead in open source language contributions with a total of 1,443 and 947 contributors respectively at the time of writing. 
-
-
-![](/blog/media/companies-who-contribute-the-most-to-programing-languages.png)
-
-
-<center>Companies who contribute the most to programing languages</center>
 
 <details><summary>Click here to show SQL commands</summary>
 <p>
@@ -185,12 +168,101 @@ SELECT event_year, repo_name, stars FROM tmp1
 </p>
 </details>
 
+![](/blog/media/star-growth-trends-of-leading-programming-languages.png)
+
+<center>The star growth trends of leading programming languages</center>
+
+
+### **Microsoft and Google: the top two language contributors**
+
+As world-renowned high-tech companies, Microsoft and Google take the lead in open source language contributions with a total of 1,443 and 947 contributors respectively at the time of writing. 
+
+<details><summary>Click here to show SQL commands</summary>
+<p>
+
+```sql
+SELECT
+    /*+ read_from_storage(tiflash[github_events]), MAX_EXECUTION_TIME(120000) */
+    TRIM(LOWER(REPLACE(u.company, '@', ''))) AS company,
+    COUNT(DISTINCT actor_id)                 AS num
+FROM
+    github_events github_events
+    JOIN programming_language_repos db ON db.id = github_events.repo_id
+    JOIN users u ON u.login = github_events.actor_login
+WHERE
+    github_events.type IN (
+        'IssuesEvent', 'PullRequestEvent','IssueCommentEvent',
+        'PullRequestReviewCommentEvent', 'CommitCommentEvent',
+        'PullRequestReviewEvent'
+    )
+    AND u.company IS NOT NULL
+    AND u.company != ''
+    AND u.company != 'none'
+GROUP BY 1
+ORDER BY 2 DESC
+LIMIT 20;
+```
+
+</p>
+</details>
+
+![](/blog/media/companies-who-contribute-the-most-to-programing-languages.png)
+
+<center>Companies who contribute the most to programing languages</center>
+
+
 ### **Elasticsearch draws the most attention **
 
 Elasticsearch was one of the first open source databases. It is the most liked database with 64,554 stars, followed by Redis and Prometheus. From 2011 to 2016, Elasticseasrch and Redis shared the top spot until Elasticsearch broke away in 2017.
 
+<details><summary>Click here to show SQL commands</summary>
+<p>
 
-![](/blog/media/star-growth-trend-of -leading-databases.png)
+```sql
+WITH repo_stars AS (
+    SELECT
+        /*+ read_from_storage(tiflash[github_events]) */
+        repo_id,
+        ANY_VALUE(repos.name) AS repo_name,
+        COUNT(distinct actor_login) AS stars
+    FROM github_events
+         JOIN db_repos repos ON repos.id = github_events.repo_id
+    WHERE type = 'WatchEvent'
+    GROUP BY 1
+), top_10_repos AS (
+    SELECT
+        repo_id, repo_name, stars
+    FROM repo_stars rs
+    ORDER BY stars DESC
+    LIMIT 10
+), tmp AS (
+    SELECT
+        /*+ read_from_storage(tiflash[github_events]) */
+        event_year,
+        tr.repo_name AS repo_name,
+        COUNT(*) AS year_stars
+    FROM github_events
+         JOIN top_10_repos tr ON tr.repo_id = github_events.repo_id
+    WHERE type = 'WatchEvent' AND event_year <= 2021
+    GROUP BY 2, 1
+    ORDER BY 1 ASC, 2
+), tmp1 AS (
+    SELECT
+        event_year,
+        repo_name,
+        SUM(year_stars) OVER(partition by repo_name order by event_year ASC) as stars
+    FROM tmp
+    ORDER BY event_year ASC, repo_name
+)
+SELECT event_year, repo_name, stars FROM tmp1
+```
+
+</p>
+</details>
+
+
+![](/blog/media/star-growth-trend-of-leading-databases.png)
+
 
 <center>The star growth trend of leading databases</center>
 
@@ -198,6 +270,30 @@ Elasticsearch was one of the first open source databases. It is the most liked d
 ### **China: the No.1 open source database fan**
 
 China has the most followers of open source databases with 11,171 stargazers of database repositories, followed by the US and Europe. 
+
+<details><summary>Click here to show SQL commands</summary>
+<p>
+
+```sql
+select upper(u.country_code) as country_or_area, count(*) as count, count(*) / max(s.total) as percentage
+from github_events
+use index(index_github_events_on_repo_id)
+left join users u ON github_events.actor_login = u.login
+join (
+    -- Get the number of people has the country code.
+    select count(*) as total
+    from github_events
+    use index(index_github_events_on_repo_id)
+    left join users u ON github_events.actor_login = u.login
+    where repo_id in (41986369, 48833910, 53311716) and github_events.type = 'WatchEvent' and u.country_code is not null
+) s
+where repo_id in (41986369, 48833910, 53311716) and github_events.type = 'WatchEvent' and u.country_code is not null
+group by 1
+order by 2 desc;
+```
+
+</p>
+</details>
 
 ![](/blog/media/geographical-distribution-database-stargazers.png)
 
@@ -209,9 +305,29 @@ China has the most followers of open source databases with 11,171 stargazers of 
 
 Issues submitted by developers are important feedback from the community. CockroachDB has continually received issues during the past ten years and has ranked No.1 among all open source databases in the total number of issue submissions. 
 
+<details><summary>Click here to show SQL commands</summary>
+<p>
+
+```sql
+SELECT
+    /*+ read_from_storage(tiflash[github_events]) */
+    db.group_name  AS repo_group_name,
+    COUNT(distinct pr_or_issue_id) AS num
+FROM
+    github_events github_events
+    JOIN osdb_repos db ON db.id = github_events.repo_id
+WHERE type = 'IssuesEvent'
+GROUP BY 1
+ORDER BY 2 DESC
+```
+
+</p>
+</details>
+
 ![](/blog/media/issues-received-by-leading-open-source-databases.png)
 
 <center>The number of issues received by leading open source databases</center>
+
 
 **[OSSInsight.io](https://ossinsight.io/)** also allows you to create your own custom insights into any GitHub repository created after 2011. You’re welcome to visit the [Insight page](https://ossinsight.io/compare/?utm_source=dogfood_article) to explore more. 
 
