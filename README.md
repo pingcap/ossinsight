@@ -43,7 +43,6 @@ Examples:
 * [Django](https://ossinsight.io/analyze/django/django)
 * [Go Lang](https://ossinsight.io/analyze/golang/go)
 * [Ant Design](https://ossinsight.io/analyze/ant-design/ant-design)
-* [Material-UI](https://ossinsight.io/analyze/mui/material-ui)
 * [Chaos Mesh](https://ossinsight.io/analyze/chaos-mesh/chaos-mesh)
 
 ## Feature 3: Compare Projects 🔨
