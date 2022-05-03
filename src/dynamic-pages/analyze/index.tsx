@@ -32,6 +32,7 @@ import { RepoInfo, useRepo } from '../../api/gh';
 import CompareHeader from '../../components/CompareHeader/CompareHeader';
 import { Repo } from '../../components/CompareHeader/RepoSelector';
 import { AsyncData } from '../../components/RemoteCharts/hook';
+import TryItYourself from '../../components/TryItYourself';
 import useUrlSearchState, { stringParam } from '../../hooks/url-search-state';
 import { alpha2ToTitle } from '../../lib/areacode';
 import CustomPage from '../../theme/CustomPage';
@@ -295,6 +296,7 @@ function AnalyzePage() {
               </Grid>
             </Analyze>
           </Section>
+          <TryItYourself campaign='compare' show fixed/>
         </Container>
       </AnalyzeContext.Provider>
     </CustomPage>
