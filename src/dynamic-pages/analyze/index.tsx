@@ -272,7 +272,7 @@ function AnalyzePage() {
                   <WorldMapChart />
                 </Grid>
                 <Grid item xs={12} md={vs ? 4 : 3}>
-                  <List title='Geo-Locations' n={10} valueIndex='count' nameIndex='country_or_area' percentIndex='percentage' transformName={alpha2ToTitle} />
+                  <List title='Geo-Locations' n={10} /* valueIndex='count' */ nameIndex='country_or_area' percentIndex='percentage' transformName={alpha2ToTitle} />
                 </Grid>
               </Grid>
             </Analyze>
@@ -290,7 +290,7 @@ function AnalyzePage() {
                   <CompaniesChart spec={{valueIndex: companyValueIndices[companyType]}} />
                 </Grid>
                 <Grid item xs={12} md={vs ? 4 : 3}>
-                  <List title='Companies' n={10} valueIndex={companyValueIndices[companyType]} nameIndex='company_name' percentIndex='proportion' />
+                  <List title='Companies' n={10} /* valueIndex={companyValueIndices[companyType]} */ nameIndex='company_name' percentIndex='proportion' />
                 </Grid>
               </Grid>
             </Analyze>

@@ -8,7 +8,7 @@ import Grid from '@mui/material/Grid';
 
 interface ListProps {
   n: number;
-  valueIndex: string;
+  valueIndex?: string;
   nameIndex: string;
   percentIndex: string;
   title: string;
@@ -38,9 +38,12 @@ export default function List({n, valueIndex, nameIndex, percentIndex, title, tra
                   {data.data?.data[i][nameIndex] ? transformName(data.data.data[i][nameIndex]) : undefined}
                 </HeadText>
                 <span>
-                  <BodyText sx={{fontSize: 12, lineHeight: 1}}>
-                    {data.data?.data[i][valueIndex]}
-                  </BodyText>
+                  {valueIndex
+                    ? (
+                      <BodyText sx={{fontSize: 12, lineHeight: 1}}>
+                        {data.data?.data[i][valueIndex]}
+                      </BodyText>
+                    ) : undefined}
                   &nbsp;
                   <Typography
                     variant="caption"
