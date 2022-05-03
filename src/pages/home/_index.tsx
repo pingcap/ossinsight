@@ -1,3 +1,4 @@
+import { useHistory } from '@docusaurus/router';
 import React, {useCallback, useMemo, useState} from 'react';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import WordCloud from "../../components/WordCloud";
@@ -17,9 +18,10 @@ import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import {useRemoteData} from "../../components/RemoteCharts/hook";
 import Skeleton from "@mui/material/Skeleton";
-import {Repo} from "../../components/CompareHeader/RepoSelector";
+import RepoSelector, {Repo} from "../../components/CompareHeader/RepoSelector";
 import Link from "@docusaurus/Link";
 import {H1, H2, Span, Headline, Subtitle, Body, fontSizes, H2Plus} from './_components/typography'
+import AnalyzeSelector from '../../components/AnalyzeSelector';
 
 const Item = styled(Box)(({theme}) => ({
   padding: theme.spacing(4),
@@ -106,6 +108,14 @@ export default function Home() {
                 &nbsp;Insight
               </Span>
             </H1>
+            <Box
+              mt={4}
+              display='flex'
+              justifyContent='flex-end'
+              sx={{ '> *': { flex: 1, maxWidth: 450, mx: 'unset' } }}
+            >
+              <AnalyzeSelector align='right' />
+            </Box>
             <Body>
               Powered by
               <a href="https://en.pingcap.com/tidb-cloud/?utm_source=ossinsight" target="_blank">

@@ -24,9 +24,10 @@ export interface RepoSelectorProps {
   onChange: (repo: Repo | null) => void
   onValid: (repo: Repo | null) => string | undefined
   disableClearable?: boolean
+  align?: 'left' | 'right'
 }
 
-export default function RepoSelector({repo, label, defaultRepoName, onChange, onValid, disableClearable}: RepoSelectorProps) {
+export default function RepoSelector({repo, label, defaultRepoName, onChange, onValid, disableClearable, align = 'left'}: RepoSelectorProps) {
   const [keyword, setKeyword] = useState<string>(defaultRepoName ?? '')
   const [textFieldError, setTextFieldError] = useState<boolean>(false)
   const [helperText, setHelperText] = useState<string>('')
@@ -104,7 +105,11 @@ export default function RepoSelector({repo, label, defaultRepoName, onChange, on
           helperText={helperText}
           InputProps={{
             ...params.InputProps,
-            sx: { '::before': { display: 'none' } },
+            sx: {
+              '.MuiInput-input': {
+                textAlign: align,
+              }
+            },
             endAdornment: (
               <React.Fragment>
                 {loading ? <CircularProgress color="inherit" size={20} /> : null}
