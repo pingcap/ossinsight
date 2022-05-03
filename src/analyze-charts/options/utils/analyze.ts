@@ -60,6 +60,12 @@ export function aggregate<P, T = any> (fp: (all: AsyncData<RemoteData<unknown, P
   return fp(res)
 }
 
+export function min<P, K extends keyof P> (key: K): P[K] {
+  return aggregate(all => {
+    return all.flatMap(data => data.data?.data?.map(item => item[key]) ?? [])[0] as P[K]
+  })
+}
+
 export function debugPrintOption () {
   const {context} = dangerousGetCtx()
   context.DEBUG_PRINT_OPTION = true
