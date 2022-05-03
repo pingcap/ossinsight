@@ -1,22 +1,10 @@
-import React, {useCallback, useMemo, useState} from 'react';
-import {useHistory, useLocation, useRouteMatch} from '@docusaurus/router';
-import CustomPage from '../../theme/CustomPage';
-import {RepoInfo, useRepo} from '../../api/gh';
-import {AnalyzeContext} from '../../analyze-charts/context';
-import {LocChart} from '../../analyze-charts/loc';
-import {PrChart} from '../../analyze-charts/pr';
-import {DurationChart} from '../../analyze-charts/common-duration';
-import Analyze from '../../analyze-charts/Analyze';
-import Container from '@mui/material/Container';
-import {IssueChart} from '../../analyze-charts/issue';
-import {PushesAndCommitsChart} from '../../analyze-charts/push-and-commits';
-import {CompaniesChart} from '../../analyze-charts/companies';
-import {TimeHeatChart} from '../../analyze-charts/heatmap';
+import BrowserOnly from '@docusaurus/core/lib/client/exports/BrowserOnly';
+import { useHistory, useLocation, useRouteMatch } from '@docusaurus/router';
 import Box from '@mui/material/Box';
+import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
-import {WorldMapChart} from '../../analyze-charts/worldmap';
-import Summary, {SummaryProps} from '../../analyze-charts/summary';
 import {
   CodeIcon,
   GitCommitIcon,
@@ -26,20 +14,29 @@ import {
   RepoForkedIcon,
   StarIcon,
 } from '@primer/octicons-react';
-import Grid from '@mui/material/Grid';
-import {LineChart} from '../../analyze-charts/line';
-import Section from './Section';
-import {H1, H2, H3, H4, P2} from './typography';
+import React, { useCallback, useMemo, useState } from 'react';
+import Analyze from '../../analyze-charts/Analyze';
+import { DurationChart } from '../../analyze-charts/common-duration';
+import { CompaniesChart } from '../../analyze-charts/companies';
+import { AnalyzeContext } from '../../analyze-charts/context';
+import { TimeHeatChart } from '../../analyze-charts/heatmap';
+import { IssueChart } from '../../analyze-charts/issue';
+import { LineChart } from '../../analyze-charts/line';
 import List from '../../analyze-charts/list/List';
-import {alpha2ToTitle} from '../../lib/areacode';
-import {Repo} from '../../components/CompareHeader/RepoSelector';
-import {AsyncData} from '../../components/RemoteCharts/hook';
+import { LocChart } from '../../analyze-charts/loc';
+import { PrChart } from '../../analyze-charts/pr';
+import { PushesAndCommitsChart } from '../../analyze-charts/push-and-commits';
+import Summary, { SummaryProps } from '../../analyze-charts/summary';
+import { WorldMapChart } from '../../analyze-charts/worldmap';
+import { RepoInfo, useRepo } from '../../api/gh';
 import CompareHeader from '../../components/CompareHeader/CompareHeader';
-import BrowserOnly from '@docusaurus/core/lib/client/exports/BrowserOnly';
-import useUrlSearchState, {stringParam} from '../../hooks/url-search-state';
-import { color } from 'echarts';
-import { VerticalAlignCenter } from '@mui/icons-material';
-import { red } from '@mui/material/colors';
+import { Repo } from '../../components/CompareHeader/RepoSelector';
+import { AsyncData } from '../../components/RemoteCharts/hook';
+import useUrlSearchState, { stringParam } from '../../hooks/url-search-state';
+import { alpha2ToTitle } from '../../lib/areacode';
+import CustomPage from '../../theme/CustomPage';
+import Section from './Section';
+import { H1, H2, H3, H4, P2 } from './typography';
 
 interface AnalyzePageParams {
   owner: string;
@@ -151,13 +148,17 @@ function AnalyzePage() {
 
         <Container maxWidth='lg'>
           <Section>
-            <H1 sx={{ mt: 6}}>
-              <a href={`https://github.com/${name}`} target='_blank'>
-                {name}
-                &nbsp;
-                <LinkExternalIcon size={28} verticalAlign='middle'/>
-              </a>
-            </H1>
+            {
+              comparingRepoName ? undefined : (
+                <H1 sx={{ mt: 6 }}>
+                  <a href={`https://github.com/${name}`} target="_blank">
+                    {name}
+                    &nbsp;
+                    <LinkExternalIcon size={28} verticalAlign="middle" />
+                  </a>
+                </H1>
+              )
+            }
             <Grid container spacing={2} alignItems='center'>
               <Grid item xs={12} md={vs ? 8 : 6}>
                 <Summary items={summaries} />
