@@ -7,7 +7,7 @@ authors: [fendy]
 
 4.6 billion is literally an astronomical figure. The richest star map of our galaxy, brought by Gaia space observatory, includes just under 2 billion stars. What does a view of 4.6 billion GitHub events really look like? What secrets and values can be discovered in such an enormous amount of data? 
 
-Here you go: [OSSInsight.io](https://ossinsight.io/)**can help you find the answer**. It’s a useful insight tool that can give you the most updated open source intelligence, and help you deeply understand any single GitHub project or quickly compare any two projects by digging deep into 4.6 billion GitHub events in real time. Here are some ways you can play with it.
+Here you go: [OSSInsight.io](https://ossinsight.io/)** can help you find the answer**. It’s a useful insight tool that can give you the most updated open source intelligence, and help you deeply understand any single GitHub project or quickly compare any two projects by digging deep into 4.6 billion GitHub events in real time. Here are some ways you can play with it.
 
 ## Compare any two GitHub projects
 
@@ -80,11 +80,12 @@ The following heat map shows developers’ contribution time for K8s (left) and 
 <center><em>Heat map of developers’ contribution time of K8s (left) and Moby (right)</em></center>
 
 <br />
-**Taken together,** these metrics show that while both K8s and Moby are popular across industries world-wide, K8s has more vibrant coding activities than Moby. K8s is continuously gaining popularity and coding vitality while Moby is falling in both over time.
+
+**Taken together**, these metrics show that while both K8s and Moby are popular across industries world-wide, K8s has more vibrant coding activities than Moby. K8s is continuously gaining popularity and coding vitality while Moby is falling in both over time.
 
 Popularity and coding vitality are just two dimensions to compare repositories. If you want to discover more insights or compare other projects you are interested in, feel free to visit the [Compare](https://ossinsight.io/analyze/pingcap/tidb) page and explore it for yourself.  
 
-Of course, you can use this same page to **deeply explore any single GitHub projects** and gain the most up-to-date insights about them. The key metrics and the corresponding changes are presented in a panoramic view. More in-depth analytics such as code changes by PR size groups and PR lines are also available. Explore it for yourself and you’d be surprised. Have fun. 
+Of course, you can use this same page to **deeply explore any single GitHub project** and gain the most up-to-date insights about them. The key metrics and the corresponding changes are presented in a panoramic view. More in-depth analytics such as code changes by PR size groups and PR lines are also available. Explore it for yourself and you’d be surprised. Have fun. 
 
 ![](./media/panoramic-view-of-key-github-metrics.png)
 
@@ -105,7 +106,7 @@ Of course, you can use this same page to **deeply explore any single GitHub proj
 
 ## Key open source insights
 
-[OSSInsight.io](https://ossinsight.io/) does more than explore or compare repositories. **It gives you [historical, real-time, and custom open source insights](https://ossinsight.io/database/deep-insight-into-open-source-databases).** In this section, we’ll share some key insights in open source databases and programming languages. If you want to gain insights in other areas, you can explore the [Insight](https://ossinsight.io/database/deep-insight-into-open-source-databases/)  page for yourself. 
+[OSSInsight.io](https://ossinsight.io/) does more than explore or compare repositories. **It gives you [historical, real-time, and custom open source insights](https://ossinsight.io/database/deep-insight-into-open-source-databases).** In this section, we’ll share some key insights in open source databases and programming languages. If you want to gain insights in other areas, you can explore the [Insights](https://ossinsight.io/database/deep-insight-into-open-source-databases/)  page for yourself. 
 
 **Note**: If you want to get those analytical results by yourself, you can execute the SQL commands above each chart on TiDB Cloud with ease following this [5-minute tutorial](https://ossinsight.io/blog/try-it-yourself/). 
 
@@ -139,7 +140,7 @@ LIMIT 10
 
 <center><em>PR numbers of the leading programming languages</em></center>
 
-### **Go: the new favorite and the fastest growing language**
+### **Go: the new favorite and the fastest growing programming language**
 
 According to **[OSSInsight.io](https://ossinsight.io/)**, 10 programming languages dominate the open source community. Go is the most popular with 108,317 stars, followed by Node and TypeScript. Go is also the fastest growing language in popularity.
 
@@ -290,7 +291,7 @@ SELECT event_year, repo_name, stars FROM tmp1
 
 ### **China: the number one fan of open source databases**
 
-China has the most followers of open source databases with 11,171 stargazers of database repositories, followed by the US and Europe. 
+China has the most open source database followers with 11,171 stargazers of database repositories, followed by the US and Europe. 
 
 <details><summary>Click here to show SQL commands</summary>
 <p>
@@ -352,7 +353,7 @@ ORDER BY 2 DESC
 <br />
 
 
-**[OSSInsight.io](https://ossinsight.io/)** also allows you to create your own custom insights into any GitHub repository created after 2011. You’re welcome to visit the [Insight page](https://ossinsight.io/database/deep-insight-into-open-source-databases) to explore more. 
+**[OSSInsight.io](https://ossinsight.io/)** also allows you to create your own custom insights into any GitHub repository created after 2011. You’re welcome to visit the [Insights page](https://ossinsight.io/database/deep-insight-into-open-source-databases) to explore more. 
 
 
 ## Run your own analytics with TiDB Cloud
@@ -361,4 +362,4 @@ All the analytics on **[OSSInsight.io](https://ossinsight.io/)** are powered by 
 
 ## Contact us 
 
-Do you find **[OSSInsight.io](https://ossinsight.io/)** useful and fun to work with? Do you have any questions or feedback to share with us? Feel free to contact us through [community@tidb.io](mailto:community@tidb.io) and follow us on [Twitter](https://twitter.com/OSSInsight/) to get the latest information. You’re also welcome to share this insight tool with your friends. 
+Do you find **[OSSInsight.io](https://ossinsight.io/)** useful and fun to work with? Do you have any question or feedback to share with us? Feel free to contact us through [community@tidb.io](mailto:community@tidb.io) and follow us on [Twitter](https://twitter.com/OSSInsight/) to get the latest information. You’re also welcome to share this insight tool with your friends. 
