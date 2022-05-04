@@ -1,18 +1,19 @@
 ---
 title: Explore Deep in 4.6 Billion GitHub Events
 date: 2022-05-03
+image: "./media/banner-ossinsight-explore-deep.jpg"
 authors: [fendy]
 ---
 
 4.6 billion is literally an astronomical figure. The richest star map of our galaxy, brought by Gaia space observatory, includes just under 2 billion stars. What does a view of 4.6 billion GitHub events really look like? What secrets and values can be discovered in such an enormous amount of data? 
 
-**Here you go: [OSSInsight.io](https://ossinsight.io/) **can help you find the answer**.** It’s a useful insight tool that can give you the most updated open source intelligence, and help you deeply understand any single GitHub project or quickly compare any two projects by digging deep into 4.6 billions GitHub events in real time.  
+Here you go: [OSSInsight.io](https://ossinsight.io/)**can help you find the answer**. It’s a useful insight tool that can give you the most updated open source intelligence, and help you deeply understand any single GitHub project or quickly compare any two projects by digging deep into 4.6 billion GitHub events in real time. Here are some ways you can play with it.
 
 ## Compare any two GitHub projects
 
-Do you wonder how different projects have performed and developed over time? Which project is worthy of more attention? **[OSSInsight.io](https://ossinsight.io/)** can answer your questions via the [Compare Projects](https://ossinsight.io/compare/) page.
+Do you wonder how different projects have performed and developed over time? Which project is worthy of more attention? **[OSSInsight.io](https://ossinsight.io/)** can answer your questions via the [Compare Projects](https://ossinsight.io/analyze/pingcap/tidb) page.
 
-Let’s take the [Kubernetes repository](https://github.com/kubernetes/kubernetes)  (K8s) and Docker’s [Moby repository](https://github.com/moby/moby) as examples and compare them in regard to popularity and coding vitality. 
+Let’s take the [Kubernetes repository](https://github.com/kubernetes/kubernetes)  (K8s) and Docker’s [Moby repository](https://github.com/moby/moby) as examples and compare them in terms of popularity and coding vitality. 
 
 
 ### **Popularity**
@@ -39,7 +40,7 @@ The map below shows the stargazers’ geographical distribution of Moby and K8s.
 
 #### **Employment distribution of stargazers**
 
-The chart below shows the stargazers’ employment of K8s (red) and Moby (dark blue). Both of their stargazers work in a wide range of industries, and most come from leading dotcom companies such as Google, Tencent, and Microsoft. The difference is that the top two companies of K8s’ stargazers are  Google and Microsoft from the US, while Moby’s top two followers are Tencent and Alibaba from China. 
+The chart below shows the stargazers’ employment of K8s (red) and Moby (dark blue). Both of their stargazers work in a wide range of industries, and most come from leading dotcom companies such as Google, Tencent, and Microsoft. The difference is that the top two companies of K8s’ stargazers are  Google and Microsoft from the US, while Moby’s top two followers are Tencent and Alibaba from China.  
 
 ![](./media/employment-distribution-of-stargazers.png)
 
@@ -50,7 +51,7 @@ The chart below shows the stargazers’ employment of K8s (red) and Moby (dark b
 
 ### **Coding vitality**
 
-To compare the coding vitality of two GitHub projects, we use many metrics including the growth trend of pull requests (PRs), the monthly number of PRs, commits and pushes, and the heat map of developers’ contribution time. 
+To compare the coding vitality of two GitHub projects, we use many metrics including the growth trend of pull requests (PRs), the monthly number of PRs, commits and pushes, and the heat map of developers’ contribution time.  
 
 #### **Number of commits and pushes**
 
@@ -62,7 +63,7 @@ The bar chart below shows the number of commits and pushes submitted to K8s (top
 
 #### **Number of PRs**
 
-The charts below show the monthly and accumulated number of PRs of the two repositories. As you can see, K8s has received stable and consistent PR contributions ever since its inception and its accumulated number of PRs has also grown steadily. Moby had vibrant PR submissions before late 2017, but started to lose afterwards. Its accumulated number of PRs reached a plateau in 2017, which has remained the case ever since. 
+The charts below show the monthly and accumulated number of PRs of the two repositories. As you can see, K8s has received stable and consistent PR contributions ever since its inception and its accumulated number of PRs has also grown steadily. Moby had vibrant PR submissions before late 2017, but started to drop afterwards. Its accumulated number of PRs reached a plateau in 2017, which has remained the case ever since. 
 
 ![](./media/monthly-and-accumulated-pr-number.png)
 
@@ -79,21 +80,39 @@ The following heat map shows developers’ contribution time for K8s (left) and 
 <center><em>Heat map of developers’ contribution time of K8s (left) and Moby (right)</em></center>
 
 <br />
-**Taken together,** these metrics show that while both K8s and Moby are popular across the world and industries, K8s has more vibrant coding activities than Moby. K8s is still gaining popularity and coding vitality; however, Moby is falling in both over time.
+**Taken together,** these metrics show that while both K8s and Moby are popular across industries world-wide, K8s has more vibrant coding activities than Moby. K8s is continuously gaining popularity and coding vitality while Moby is falling in both over time.
 
-Popularity and coding vitality are just two dimensions to compare repositories. If you want to discover more insights or compare other projects you are interested in, feel free to visit the [Compare](https://ossinsight.io/compare/) page and explore it for yourself.  Of course, you can also use this  page to **deeply explore any single GitHub projects** and gain the most up-to-date insights about them.
+Popularity and coding vitality are just two dimensions to compare repositories. If you want to discover more insights or compare other projects you are interested in, feel free to visit the [Compare](https://ossinsight.io/analyze/pingcap/tidb) page and explore it for yourself.  
+
+Of course, you can use this same page to **deeply explore any single GitHub projects** and gain the most up-to-date insights about them. The key metrics and the corresponding changes are presented in a panoramic view. More in-depth analytics such as code changes by PR size groups and PR lines are also available. Explore it for yourself and you’d be surprised. Have fun. 
+
+![](./media/panoramic-view-of-key-github-metrics.png)
+
+<center><em>Panoramic view of key GitHub metrics (K8s as an example)</em></center>
+
+<br />
+
+![](./media/total-pr-number-each-month-and-pr-groups.png)
+
+<center><em>  Total PR number each month/PR groups (K8s as an example)</em></center>
+
+<br />
+
+![](./media/number-of-lines-of-code-change-each-month.png)
+
+<center><em>The number of lines of code change each month (K8s as an example)</em></center>
 
 
 ## Key open source insights
 
-[OSSInsight.io](https://ossinsight.io/) does more than explore or compare repositories. **It gives you [historical, real-time, and custom open source insights](https://ossinsight.io/database/deep-insight-into-open-source-databases).** In this section, we’ll share some key insights in open source databases and programming languages. If you want to gain insights in other areas, you can go to the [Insight](https://ossinsight.io/_/database/?utm_source=dogfood_article) page. 
+[OSSInsight.io](https://ossinsight.io/) does more than explore or compare repositories. **It gives you [historical, real-time, and custom open source insights](https://ossinsight.io/database/deep-insight-into-open-source-databases).** In this section, we’ll share some key insights in open source databases and programming languages. If you want to gain insights in other areas, you can explore the [Insight](https://ossinsight.io/database/deep-insight-into-open-source-databases/)  page for yourself. 
 
 **Note**: If you want to get those analytical results by yourself, you can execute the SQL commands above each chart on TiDB Cloud with ease following this [5-minute tutorial](https://ossinsight.io/blog/try-it-yourself/). 
 
 
-### **Rust: the most active language**
+### **Rust: the most active programming language**
 
-Rust was first released in 2012 and has been among the leading languages for 10 years. It has the most active language repository with a total of 103,047 PRs at the time of writing. 
+Rust was first released in 2012 and has been among the leading programming languages for 10 years. It has the most active repository with a total of 103,047 PRs at the time of writing. 
 
 <details><summary>Click here to show SQL commands</summary>
 <p>
@@ -122,7 +141,7 @@ LIMIT 10
 
 ### **Go: the new favorite and the fastest growing language**
 
-According to **[OSSInsight.io](https://ossinsight.io/)**, 10 programming languages dominate the open source community. Go is the most popular with 108,317 stars, followed by Node and TypeScript. Go is also the fastest growing language in popularity with the steepest upward trend.
+According to **[OSSInsight.io](https://ossinsight.io/)**, 10 programming languages dominate the open source community. Go is the most popular with 108,317 stars, followed by Node and TypeScript. Go is also the fastest growing language in popularity.
 
 <details><summary>Click here to show SQL commands</summary>
 <p>
@@ -174,7 +193,7 @@ SELECT event_year, repo_name, stars FROM tmp1
 <center><em>The star growth trends of leading programming languages</em></center>
 
 
-### **Microsoft and Google: the top two language contributors**
+### **Microsoft and Google: the top two programing languages contributors**
 
 As world-renowned high-tech companies, Microsoft and Google take the lead in open source language contributions with a total of 1,443 and 947 contributors respectively at the time of writing. 
 
@@ -213,7 +232,7 @@ LIMIT 20;
 <center><em>Companies who contribute the most to programing languages</em></center>
 
 
-### **Elasticsearch draws the most attention **
+### **Elasticsearch draws the most attention**
 
 Elasticsearch was one of the first open source databases. It is the most liked database with 64,554 stars, followed by Redis and Prometheus. From 2011 to 2016, Elasticseasrch and Redis shared the top spot until Elasticsearch broke away in 2017.
 
@@ -269,7 +288,7 @@ SELECT event_year, repo_name, stars FROM tmp1
 <center><em>The star growth trend of leading databases</em></center>
 
 
-### **China: the No.1 open source database fan**
+### **China: the number one fan of open source databases**
 
 China has the most followers of open source databases with 11,171 stargazers of database repositories, followed by the US and Europe. 
 
@@ -332,7 +351,9 @@ ORDER BY 2 DESC
 <center><em>The number of issues received by leading open source databases</em></center>
 <br />
 
-**[OSSInsight.io](https://ossinsight.io/)** also allows you to create your own custom insights into any GitHub repository created after 2011. You’re welcome to visit the [Insight page](https://ossinsight.io/compare/) to explore more. 
+
+**[OSSInsight.io](https://ossinsight.io/)** also allows you to create your own custom insights into any GitHub repository created after 2011. You’re welcome to visit the [Insight page](https://ossinsight.io/database/deep-insight-into-open-source-databases) to explore more. 
+
 
 ## Run your own analytics with TiDB Cloud
 
@@ -340,4 +361,4 @@ All the analytics on **[OSSInsight.io](https://ossinsight.io/)** are powered by 
 
 ## Contact us 
 
-Do you find **[OSSInsight.io](https://ossinsight.io/)** useful and interesting? Do you have any questions or feedback to share with us? Feel free to contact us through [community@tidb.io](mailto:community@tidb.io) and follow us on [Twitter](https://twitter.com/OSSInsight/) to get the latest information. You’re also welcome to share this insight tool with your friends. 
+Do you find **[OSSInsight.io](https://ossinsight.io/)** useful and fun to work with? Do you have any questions or feedback to share with us? Feel free to contact us through [community@tidb.io](mailto:community@tidb.io) and follow us on [Twitter](https://twitter.com/OSSInsight/) to get the latest information. You’re also welcome to share this insight tool with your friends. 
