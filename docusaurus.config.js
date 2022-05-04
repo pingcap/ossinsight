@@ -117,7 +117,7 @@ const config = {
             position: 'left',
             label: 'Insights',
           },
-          {to: '/try-your-own-dataset/?utm_content=header', label: '👏 Try Your Own Dataset', position: 'right'},
+          {to: '/try-your-own-dataset/?utm_content=header', label: '⛏️ Try Your Own Dataset', position: 'right'},
           {
             href: 'https://en.pingcap.com/tidb-cloud/?utm_source=ossinsight',
             label: 'TiDB Cloud',
