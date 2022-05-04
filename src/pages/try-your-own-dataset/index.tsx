@@ -21,9 +21,8 @@ export default function Page() {
       <Container maxWidth='xl'>
         <Typography variant='h1' sx={{mb: 2, mt: 8}} align='center'>{title}</Typography>
       </Container>
-      <Section
-        title='Use TiDB Cloud to Analyze GitHub Events in 10 Minutes'
-      >
+      <Typography variant='h2' sx={{mb: 2, mt: 8}} align='center'>Use TiDB Cloud to Analyze GitHub Events in 10 Minutes</Typography>
+      <Section>
         <Grid container spacing={4}>
           <Grid item xs={12} lg={8}>
             <Card sx={{px: 8, py: 4}}>
@@ -86,11 +85,12 @@ export default function Page() {
           </Grid>
         </Grid>
       </Section>
-      <Section
-        title='See more of XYZ insight 🤔'
-        subtitle='For real-time analytical, highly concurrent, and low-latency scenarios with massive data.'
-      >
-        <Cards xs={12} md={6} sx={{my: 4}}>
+      <Typography variant='h2' sx={{mb: 2, mt: 8}} align='center'>See more of XYZ insight 🤔</Typography>
+      <Typography variant='subtitle1' align='center'>
+        For real-time analytical, highly concurrent, and low-latency scenarios with massive data.
+      </Typography>
+      <Section>
+        <Cards xs={12} md={6} sx={{mb: 4}}>
           <StandardCard
             title='Logistics Insight for Building a Real-time Parcel Tracking System'
             description='It is very important for logistics companies in getting insights to build a real-time parcel tracking system. Here you can find how these valuable insights were obtained.'
