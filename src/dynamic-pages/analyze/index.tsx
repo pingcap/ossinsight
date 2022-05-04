@@ -3,18 +3,20 @@ import { useHistory, useLocation, useRouteMatch } from '@docusaurus/router';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
-import Tab from '@mui/material/Tab';
+import Tab, { TabProps } from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import {
   CodeIcon,
   GitCommitIcon,
   IssueOpenedIcon,
+  GitMergeIcon,
   LinkExternalIcon,
   PeopleIcon,
+  PersonIcon,
   RepoForkedIcon,
   StarIcon,
 } from '@primer/octicons-react';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { PropsWithChildren, useCallback, useMemo, useState } from 'react';
 import Analyze from '../../analyze-charts/Analyze';
 import { DurationChart } from '../../analyze-charts/common-duration';
 import { CompaniesChart } from '../../analyze-charts/companies';
@@ -39,6 +41,7 @@ import { alpha2ToTitle } from '../../lib/areacode';
 import CustomPage from '../../theme/CustomPage';
 import Section from './Section';
 import { H1, H2, H3, H4, P2 } from './typography';
+import styles from './styles.module.css'
 
 interface AnalyzePageParams {
   owner: string;
@@ -179,9 +182,9 @@ function AnalyzePage() {
             <Analyze query='analyze-pushes-and-commits-per-month'>
               <H3 sx={{ mt: 6 }}>Commits & Pushes History</H3>
               <P2>
-              The trend of the total number of commits/pushes per month in a repository since it was created.
+                The trend of the total number of commits/pushes per month in a repository since it was created.
                 <br />
-              * Note: A push action can include multiple commit actions.
+                * Note: A push action can include multiple commit actions.
               </P2>
               <PushesAndCommitsChart aspectRatio={commonAspectRatio} />
             </Analyze>
@@ -216,7 +219,7 @@ function AnalyzePage() {
             <Analyze query='analyze-pull-requests-size-per-month'>
               <H3 sx={{ mt: 6 }}>Pull Request History</H3>
               <P2>
-               We divide the size of Pull Request into six intervals, from xs to xxl（based on the changes of code lines）. Learn more about
+                We divide the size of Pull Request into six intervals, from xs to xxl（based on the changes of code lines）. Learn more about
                 &nbsp;
                 <a href='https://github.com/kubernetes/kubernetes/labels?q=size' target='_blank'>
                   PR size
@@ -227,11 +230,11 @@ function AnalyzePage() {
             <Analyze query='analyze-pull-request-open-to-merged'>
               <H3 sx={{ mt: 6 }}>Pull Request Time Cost</H3>
               <P2>
-              The time of a Pull Request from submitting to merging. 
-              <br />
-              p25/p75: 25%/75% Pull Requests are closed within X minute/hour/day.
-              <br />
-              e.g. p25: 1h means 25% Pull Requests are closed within 1 hour.
+                The time of a Pull Request from submitting to merging.
+                <br />
+                p25/p75: 25%/75% Pull Requests are closed within X minute/hour/day.
+                <br />
+                e.g. p25: 1h means 25% Pull Requests are closed within 1 hour.
               </P2>
               <DurationChart aspectRatio={commonAspectRatio} />
             </Analyze>
@@ -244,13 +247,13 @@ function AnalyzePage() {
               </Grid>
             </Grid>
             <Analyze query='analyze-issue-open-to-first-responded'>
-            <H3 sx={{ mt: 6 }}>Issue Time Cost</H3>
+              <H3 sx={{ mt: 6 }}>Issue Time Cost</H3>
               <P2>
-              The time of an issue from open to close. 
-              <br />
-              p25/p75: 25%/75% issues are closed within X minute/hour/day.
-              <br />
-              e.g. p25: 1h means 25% issues are closed within 1 hour.
+                The time of an issue from open to close.
+                <br />
+                p25/p75: 25%/75% issues are closed within X minute/hour/day.
+                <br />
+                e.g. p25: 1h means 25% issues are closed within 1 hour.
               </P2>
               <DurationChart aspectRatio={commonAspectRatio} />
             </Analyze>
@@ -265,9 +268,9 @@ function AnalyzePage() {
               <H3 analyzeTitle={false} sx={{ mt: 6 }}>Geographical Distribution</H3>
               <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs value={mapType} onChange={handleChangeMapType}>
-                  <Tab sx={{ textTransform: 'unset' }} label={<H4>Stargazers</H4>} value='stars-map' />
-                  <Tab sx={{ textTransform: 'unset' }} label={<H4>Issue Creators</H4>} value='issue-creators-map' />
-                  <Tab sx={{ textTransform: 'unset' }} label={<H4>Pull Requests Creators</H4>} value='pull-request-creators-map' />
+                  <IconTab value='stars-map' icon={<StarIcon size={24} />}>Stargazers</IconTab>
+                  <IconTab value='issue-creators-map' icon={<IssueCreatorIcon size={24} />}>Issue Creators</IconTab>
+                  <IconTab value='pull-request-creators-map' icon={<PrCreatorIcon size={24} />}>Pull Requests Creators</IconTab>
                 </Tabs>
               </Box>
               <Grid container alignItems='center'>
@@ -283,9 +286,9 @@ function AnalyzePage() {
               <H3 analyzeTitle={false} sx={{ mt: 6 }}>Companies</H3>
               <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs value={companyType} onChange={handleChangeCompanyType}>
-                  <Tab sx={{ textTransform: 'unset' }} label={<H4>Stargazers</H4>} value='analyze-stars-company' />
-                  <Tab sx={{ textTransform: 'unset' }} label={<H4>Issue Creators</H4>} value='analyze-issue-creators-company' />
-                  <Tab sx={{ textTransform: 'unset' }} label={<H4>Pull Requests Creators</H4>} value='analyze-pull-request-creators-company' />
+                  <IconTab value='analyze-stars-company' icon={<StarIcon />}>Stargazers</IconTab>
+                  <IconTab value='analyze-issue-creators-company' icon={<IssueCreatorIcon size={24} />}>Issue Creators</IconTab>
+                  <IconTab value='analyze-pull-request-creators-company' icon={<PrCreatorIcon size={24} />}>Pull Requests Creators</IconTab>
                 </Tabs>
               </Box>
               <Grid container alignItems='center'>
@@ -306,6 +309,36 @@ function AnalyzePage() {
 }
 
 export default () => <BrowserOnly>{() => <AnalyzePage />}</BrowserOnly>
+
+const IconTab = ({children, icon, ...props}: PropsWithChildren<{ value: string, icon?: string | React.ReactElement }>) => {
+  return (
+    <Tab
+      {...props}
+      sx={{ textTransform: 'unset' }}
+      label={(
+        <H4>
+          {icon}
+          &nbsp;
+          {children}
+        </H4>
+      )}
+    />
+  )
+}
+
+const IssueCreatorIcon = ({ size }: { size: number }) => (
+  <Box display='inline-block' position='relative'>
+    <PersonIcon size={size} />
+    <IssueOpenedIcon size={size / 3} className={styles.subIcon} />
+  </Box>
+)
+
+const PrCreatorIcon = ({ size }: { size: number }) => (
+  <Box display='inline-block' position='relative'>
+    <PersonIcon size={size} />
+    <GitMergeIcon size={size / 3} className={styles.subIcon} />
+  </Box>
+)
 
 const companyValueIndices = {
   'analyze-stars-company': 'stargazers',
