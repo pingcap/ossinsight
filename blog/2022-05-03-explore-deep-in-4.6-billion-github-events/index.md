@@ -45,6 +45,7 @@ The chart below shows the stargazers’ employment of K8s (red) and Moby (dark b
 
 <center>The employment distribution of K8s and Moby stargazers</center>
 
+<!--truncate-->
 
 ### **Coding vitality**
 
