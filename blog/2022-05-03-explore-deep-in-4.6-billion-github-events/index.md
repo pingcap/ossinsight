@@ -25,7 +25,7 @@ The line chart below shows the accumulated number of stars of K8s and Moby each 
 
 ![](./media/the-star-history.png)
 
-<center><em>The star history of K8s and Moby</center></em>
+<center><em>The star history of K8s and Moby</em></center>
 
 
 #### **Geographical distribution of stargazers**
