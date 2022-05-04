@@ -79,6 +79,6 @@ export function timeAxis<T extends 'x' | 'y'>(id?: OptionId, option: AxisOption<
     },
     // TODO: prevent compute multi-times
     min: fromRecent ? fromRecent === true ? undefined : utils.min(fromRecent as any) : new Date(2011, 0, 1, 0, 0, 0, 0),
-    max: new Date(now.getFullYear(), now.getMonth(), 1, 0, 0, 0, 0)
+    max: new Date(now.getFullYear(), now.getMonth(), 1, 0, 0, 0, 0),
   });
 }
