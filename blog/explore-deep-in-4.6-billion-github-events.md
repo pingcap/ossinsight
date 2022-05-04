@@ -108,7 +108,7 @@ Of course, you can use this same page to **deeply explore any single GitHub proj
 
 [OSSInsight.io](https://ossinsight.io/) does more than explore or compare repositories. **It gives you [historical, real-time, and custom open source insights](https://ossinsight.io/database/deep-insight-into-open-source-databases).** In this section, we’ll share some key insights in open source databases and programming languages. If you want to gain insights in other areas, you can explore the [Insights](https://ossinsight.io/database/deep-insight-into-open-source-databases/)  page for yourself. 
 
-**Note**: If you want to get those analytical results by yourself, you can execute the SQL commands above each chart on TiDB Cloud with ease following this [5-minute tutorial](https://ossinsight.io/blog/try-it-yourself/). 
+**Note**: If you want to get those analytical results by yourself, you can execute the SQL commands above each chart on TiDB Cloud with ease following this [10-minute tutorial](https://ossinsight.io/blog/try-it-yourself/). 
 
 
 ### **Rust: the most active programming language**
@@ -307,9 +307,9 @@ join (
     from github_events
     use index(index_github_events_on_repo_id)
     left join users u ON github_events.actor_login = u.login
-    where repo_id in (41986369, 48833910, 53311716) and github_events.type = 'WatchEvent' and u.country_code is not null
+    where repo_id in (507775, 60246359, 17165658, 41986369, 16563587, 6838921, 108110, 166515022, 48833910, 156018, 50229487, 20089857, 5349565, 6934395, 6358188, 11008207, 19961085, 206444, 30753733, 105944401, 31006158, 99919302, 50874442, 84240850, 28738447, 44781140, 372536760, 13124802, 146459443, 28449431, 23418517, 206417, 9342529, 19257422, 196353673, 172104891, 402945349, 11225014, 2649214, 41349039, 114187903, 20587599, 19816070, 69400326, 927442, 24494032) and github_events.type = 'WatchEvent' and u.country_code is not null
 ) s
-where repo_id in (41986369, 48833910, 53311716) and github_events.type = 'WatchEvent' and u.country_code is not null
+where repo_id in (507775, 60246359, 17165658, 41986369, 16563587, 6838921, 108110, 166515022, 48833910, 156018, 50229487, 20089857, 5349565, 6934395, 6358188, 11008207, 19961085, 206444, 30753733, 105944401, 31006158, 99919302, 50874442, 84240850, 28738447, 44781140, 372536760, 13124802, 146459443, 28449431, 23418517, 206417, 9342529, 19257422, 196353673, 172104891, 402945349, 11225014, 2649214, 41349039, 114187903, 20587599, 19816070, 69400326, 927442, 24494032) and github_events.type = 'WatchEvent' and u.country_code is not null
 group by 1
 order by 2 desc;
 ```
@@ -328,7 +328,7 @@ order by 2 desc;
 
 ## Run your own analytics with TiDB Cloud
 
-All the analytics on **[OSSInsight.io](https://ossinsight.io/)** are powered by [TiDB Cloud](https://en.pingcap.com/tidb-cloud/), a fully-managed database as a service. If you want to run your own analytics and get your own insights, sign up for a TiDB Cloud account and try it for yourself with this [5-minute tutorial](https://ossinsight.io/blog/try-it-yourself/).
+All the analytics on **[OSSInsight.io](https://ossinsight.io/)** are powered by [TiDB Cloud](https://en.pingcap.com/tidb-cloud/), a fully-managed database as a service. If you want to run your own analytics and get your own insights, sign up for a TiDB Cloud account and try it for yourself with this [10-minute tutorial](https://ossinsight.io/blog/try-it-yourself/).
 
 ## Contact us 
 
