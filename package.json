@@ -70,6 +70,7 @@
     "react-intersection-observer": "^8.33.1",
     "react-share": "^4.4.0",
     "swr": "^1.2.2",
-    "typescript": "^4.5.5"
+    "typescript": "^4.5.5",
+    "xss": "^1.0.11"
   }
 }
