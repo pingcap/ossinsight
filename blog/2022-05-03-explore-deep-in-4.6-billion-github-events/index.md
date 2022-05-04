@@ -19,7 +19,7 @@ Let’s take the [Kubernetes repository](https://github.com/kubernetes/kubernete
 
 To compare the popularity of two repositories, we use multiple metrics including the number of stars, the growth trend of stars over time, and stargazers’ geographic and employment distribution. 
 
-**The number of stars**
+#### **Number of stars**
 
 The line chart below shows the accumulated number of stars of K8s and Moby each year. According to the chart, Moby was ahead of K8s until late 2019. The star growth of Moby slowed after 2017 while K8s has kept a steady growth pace. 
 
@@ -28,7 +28,7 @@ The line chart below shows the accumulated number of stars of K8s and Moby each 
 <center><em>The star history of K8s and Moby</center></em>
 
 
-#### **The geographical distribution of stargazers**
+#### **Geographical distribution of stargazers**
 
 The map below shows the stargazers’ geographical distribution of Moby and K8s. As you can see, their stargazers are scattered around the world with the majority coming from the US, Europe, and China.
 
@@ -37,7 +37,7 @@ The map below shows the stargazers’ geographical distribution of Moby and K8s.
 
 <center><em>The geographical distribution of K8s and Moby stargazers</em></center>
 
-#### **The employment distribution of stargazers**
+#### **Employment distribution of stargazers**
 
 The chart below shows the stargazers’ employment of K8s (red) and Moby (dark blue). Both of their stargazers work in a wide range of industries, and most come from leading dotcom companies such as Google, Tencent, and Microsoft. The difference is that the top two companies of K8s’ stargazers are  Google and Microsoft from the US, while Moby’s top two followers are Tencent and Alibaba from China. 
 
@@ -52,7 +52,7 @@ The chart below shows the stargazers’ employment of K8s (red) and Moby (dark b
 
 To compare the coding vitality of two GitHub projects, we use many metrics including the growth trend of pull requests (PRs), the monthly number of PRs, commits and pushes, and the heat map of developers’ contribution time. 
 
-**The number of commits and pushes**
+#### **Number of commits and pushes**
 
 The bar chart below shows the number of commits and pushes submitted to K8s (top) and Moby (bottom) each month after their inception. Generally speaking, K8s has more pushes and commits than Moby, and their number grew stably until 2020 followed by a slowdown afterwards. Moby’s monthly pushes and commits had a minor growth between 2015 and 2017, and then barely increased after 2018.
 
@@ -60,7 +60,7 @@ The bar chart below shows the number of commits and pushes submitted to K8s (top
 
 <center><em>The monthly pushes and commits of K8s (top) and Moby (bottom)</em></center>
 
-#### **The number of PRs**
+#### **Number of PRs**
 
 The charts below show the monthly and accumulated number of PRs of the two repositories. As you can see, K8s has received stable and consistent PR contributions ever since its inception and its accumulated number of PRs has also grown steadily. Moby had vibrant PR submissions before late 2017, but started to lose afterwards. Its accumulated number of PRs reached a plateau in 2017, which has remained the case ever since. 
 
