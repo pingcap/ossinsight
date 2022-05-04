@@ -158,7 +158,7 @@ export default function Home() {
           </Item>
           <Item>
             <AspectRatio ratio={1472 / 1390}>
-              <Image src={require('./images/demo-1.png').default} style={{width: '100%', height: '100%'}} />
+              <Image src={require('./images/insight.png').default} style={{width: '100%', height: '100%'}} />
             </AspectRatio>
           </Item>
         </Stack>
@@ -209,7 +209,7 @@ export default function Home() {
           </Item>
           <Item>
             <AspectRatio ratio={1284 / 1273}>
-              <Image src={require('./images/demo-2.png').default} style={{width: '100%', height: '100%'}} />
+              <Image src={require('./images/analyze.png').default} style={{width: '100%', height: '100%'}} />
             </AspectRatio>
           </Item>
         </Stack>
