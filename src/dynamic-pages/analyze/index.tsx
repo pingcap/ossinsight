@@ -169,7 +169,7 @@ function AnalyzePage() {
               )
             }
             <P2>
-              * Due to the removing stars GitHub event is invisible, here we say is the approximate number.
+              Note: The number of stars we got here is an approximate value because developers' behavior of removing GitHub stars cannot be tracked.
             </P2>
             <Grid container spacing={2} alignItems='center'>
               <Grid item xs={12} md={vs ? 8 : 6}>
