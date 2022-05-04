@@ -48,8 +48,8 @@ export function simple<T>(single: T, comparing: T) {
   }
 }
 
-export function aggregate<P, T = any> (fp: (all: AsyncData<RemoteData<unknown, P>>[]) => T): T {
-  const {data, compareData} = dangerousGetCtx<P>()
+export function aggregate<P, T = any> (fp: (all: AsyncData<RemoteData<unknown, P>>[], name: string[]) => T): T {
+  const {data, repoName, compareData, comparingRepoName} = dangerousGetCtx<P>()
   const res: AsyncData<RemoteData<unknown, P>>[] = []
   if (data) {
     res.push(data)
@@ -57,7 +57,13 @@ export function aggregate<P, T = any> (fp: (all: AsyncData<RemoteData<unknown, P
   if (compareData) {
     res.push(compareData)
   }
-  return fp(res)
+  return fp(res, [repoName, comparingRepoName])
+}
+
+export function min<P, K extends keyof P> (key: K): P[K] {
+  return aggregate(all => {
+    return all.flatMap(data => data.data?.data?.map(item => item[key]) ?? [])[0] as P[K]
+  })
 }
 
 export function debugPrintOption () {

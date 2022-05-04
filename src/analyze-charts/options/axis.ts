@@ -9,6 +9,7 @@ import {
   ValueAxisBaseOption,
 } from 'echarts/types/src/coord/axisCommonTypes';
 import format from 'human-format';
+import { utils } from '.';
 
 type AxisOption<T extends 'x' | 'y', Base extends AxisBaseOption = AxisBaseOption> =
   (T extends 'x' ? XAXisOption : YAXisOption)
@@ -65,7 +66,7 @@ export const formatMonth = (value: number | string | Date) => {
 
 const now = new Date()
 
-export function timeAxis<T extends 'x' | 'y'>(id?: OptionId, option: AxisOption<T, TimeAxisBaseOption> = {}): AxisOption<T> {
+export function timeAxis<T extends 'x' | 'y'>(id?: OptionId, option: AxisOption<T, TimeAxisBaseOption> = {}, fromRecent: string | boolean | undefined = 'event_month'): AxisOption<T> {
   return merge<AxisOption<T>>(option, {
     id,
     type: 'time',
@@ -76,7 +77,8 @@ export function timeAxis<T extends 'x' | 'y'>(id?: OptionId, option: AxisOption<
         }
       }
     },
-    min: new Date(2011, 0, 1, 0, 0, 0, 0),
-    max: new Date(now.getFullYear(), now.getMonth(), 1, 0, 0, 0, 0)
+    // TODO: prevent compute multi-times
+    min: fromRecent ? fromRecent === true ? undefined : utils.min(fromRecent as any) : new Date(2011, 0, 1, 0, 0, 0, 0),
+    max: new Date(now.getFullYear(), now.getMonth(), 1, 0, 0, 0, 0),
   });
 }

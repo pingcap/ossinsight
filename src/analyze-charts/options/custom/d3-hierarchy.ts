@@ -1,11 +1,10 @@
 import * as d3 from 'd3-hierarchy';
-import {CustomSeriesOption, EChartsOption} from 'echarts';
+import {CustomSeriesOption} from 'echarts';
 import {
   CustomSeriesRenderItemAPI,
   CustomSeriesRenderItemParams,
   CustomSeriesRenderItemReturn,
 } from 'echarts/types/dist/echarts';
-import {darken} from '@mui/material';
 
 export interface D3HierarchyItem {
   id: string;

@@ -23,13 +23,15 @@ export interface StandardCardProps extends Omit<GridProps<any, any>, 'item' | 'c
   tags?: string[]
   link?: string
   top?: React.ReactNode
+  size?: 'small'
 }
 
 function withClickable(children: React.ReactNode, {
   link,
   cardSx,
-  elevation: propsElevation
-}: Pick<StandardCardProps, 'link' | 'cardSx' | 'elevation'>) {
+  elevation: propsElevation,
+  size
+}: Pick<StandardCardProps, 'link' | 'cardSx' | 'elevation' | 'size'>) {
   const [elevation, setElevation] = useState(propsElevation ?? 3)
 
   const onMouseEnter = useCallback(() => {
@@ -54,7 +56,7 @@ function withClickable(children: React.ReactNode, {
           to={link}
           sx={{
             textAlign: 'left',
-            p: 4,
+            p: size === 'small' ? 2 : 4,
             display: 'block',
             '&:hover': {
               textDecoration: 'none',
@@ -69,7 +71,11 @@ function withClickable(children: React.ReactNode, {
   } else {
     return (
       <Card
-        sx={{userSelect: 'none', p: 4, ...cardSx}}
+        sx={{
+          userSelect: 'none',
+          p: size === 'small' ? 2 : 4,
+          ...cardSx,
+        }}
         elevation={elevation ?? 3}
       >
         {children}
@@ -92,13 +98,19 @@ export default function StandardCard({
   tags,
   link,
   top,
+  size,
   ...props
 }: StandardCardProps) {
   const children = (
     <>
       <Typography
         variant='h3'
-        sx={{mb: 1, fontWeight: 'bold', minHeight: 50}}>
+        sx={{
+          mb: 1,
+          fontWeight: 'bold',
+          minHeight: 50,
+          fontSize: size === 'small' ? 18 : undefined
+        }}>
         {title}
       </Typography>
       {image
@@ -121,11 +133,7 @@ export default function StandardCard({
               mt: 1,
               color: 'text.secondary',
               minHeight: 72,
-              ...(codeStyleDescription ? {
-                fontFamily: 'var(--ifm-font-family-monospace)',
-                fontSize: 14,
-                fontStyle: 'italic'
-              } : {})
+              fontSize: size === 'small' ? 14 : undefined
             }}>
             {description}
           </Typography>
@@ -142,7 +150,7 @@ export default function StandardCard({
   return (
     <Grid item {...props}>
       {top}
-      {withClickable(children, {link, elevation, cardSx})}
+      {withClickable(children, {link, elevation, cardSx, size})}
     </Grid>
   )
 }

@@ -66,7 +66,7 @@ const config = {
           // Please change this to your repo.
           editUrl: 'https://github.com/pingcap/ossinsight/edit/main/',
           feedOptions: {
-            type: 'rss',
+            type: ['rss'],
             copyright: `Copyright © ${new Date().getFullYear()} PingCAP`,
           },
         },

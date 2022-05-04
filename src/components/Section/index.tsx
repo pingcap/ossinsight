@@ -1,3 +1,4 @@
+import Container from '@mui/material/Container';
 import React, {PropsWithChildren} from "react";
 import Button, {ButtonProps} from "@mui/material/Button";
 import styles from "./styles.module.css";
@@ -14,7 +15,7 @@ export interface SectionProps {
 export default function Section({title, subtitle, buttonLink, buttonText, backgroundImage, children}: PropsWithChildren<SectionProps>) {
   return (
     <section className={styles.section} style={backgroundImage && { backgroundImage: `url("${backgroundImage}")`}}>
-      <div className='container'>
+      <Container maxWidth='xl'>
         {title
           ? <h2 className={styles.sectionTitle}>{title}</h2>
           : undefined
@@ -35,7 +36,7 @@ export default function Section({title, subtitle, buttonLink, buttonText, backgr
         <div>
           {children}
         </div>
-      </div>
+      </Container>
     </section>
   )
 }

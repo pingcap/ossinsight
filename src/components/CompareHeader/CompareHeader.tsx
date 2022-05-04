@@ -6,31 +6,6 @@ import Box, {BoxProps} from "@mui/material/Box";
 import useThemeContext from "@theme/hooks/useThemeContext";
 import {combineSx} from "../../utils/mui";
 
-interface ElevationScrollProps {
-  children: React.ReactElement
-  target?: Node | Window
-}
-
-function ElevationScroll(props: ElevationScrollProps) {
-  const {children, target} = props;
-  // Note that you normally won't need to set the window ref as useScrollTrigger
-  // will default to window.
-  // This is only being set here because the demo is in an iframe.
-  const trigger = useScrollTrigger({
-    disableHysteresis: true,
-    threshold: 0,
-    target
-  });
-
-  return React.cloneElement(children, {
-    elevation: trigger ? 1 : 0,
-  });
-}
-
-interface ElevateAppBarProps {
-  children: React.ReactElement
-}
-
 interface CompareHeaderProps extends BoxProps {
   repo1: Repo | null
   repo2: Repo | null
@@ -69,7 +44,7 @@ function CompareHeader({
       {...props}
     >
       <Grid container>
-        <Grid item xs={5}>
+        <Grid item xs={5.5} display='flex' justifyContent='flex-end' px={1}>
           <RepoSelector
             label="Repo Name 1"
             defaultRepoName="recommend-repo-list-1-keyword"
@@ -79,12 +54,11 @@ function CompareHeader({
             disableClearable={repo1DisableClearable}
           />
         </Grid>
-        <Grid item xs={2}>
+        <Grid item xs={1} display='flex' justifyContent='center' alignItems='center'>
           <Box sx={{
             borderRadius: 1,
             maxWidth: 'min-content',
-            margin: 'auto',
-            px: 2,
+            px: 1,
             backgroundColor: 'text.primary',
             color: 'background.default',
             fontWeight: 'bolder'
@@ -92,7 +66,7 @@ function CompareHeader({
             VS.
           </Box>
         </Grid>
-        <Grid item xs={5}>
+        <Grid item xs={5.5} display='flex' justifyContent='flex-start' px={1}>
           <RepoSelector
             label="Repo Name 2"
             defaultRepoName="recommend-repo-list-2-keyword"
