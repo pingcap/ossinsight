@@ -23,11 +23,11 @@ export type PushesAndCommitsData = {
 export const PushesAndCommitsChart = withChart<PushesAndCommitsData>(({
   title: propsTitle, data, compareData, repoName, comparingRepoName,
 }) => ({
+  grid: topBottomLayoutGrid(),
   dataset: standardDataset(),
   dataZoom: dataZoom(),
   title: title(propsTitle),
   legend: legend(),
-  grid: topBottomLayoutGrid(),
   xAxis: utils.template(({id}) => timeAxis<'x'>(id, {gridId: id})),
   yAxis: utils.template(({id}) => valueAxis<'y'>(id, {name: 'Count', gridId: id})),
   series: utils.template(({id, datasetId}) => [

@@ -8,6 +8,8 @@ import React, {useEffect, useState} from 'react';
 import Layout from '@theme/Layout';
 import Translate, {translate} from '@docusaurus/Translate';
 import {useHistory} from "@docusaurus/router";
+import CircularProgress from "@mui/material/CircularProgress";
+import Typography from "@mui/material/Typography";
 
 function NotFound() {
   const history = useHistory()
@@ -18,11 +20,14 @@ function NotFound() {
     // Only support redirect analyze/repo/name for now
     // TODO: see https://www.npmjs.com/package/path-to-regexp
     //       use plugin data to auto generate regexp list.
-    if (!/^\/analyze\/[^\/?#]+\/[^\/?#]+\/?[?#]/.test(pathname)) {
-      setDisplay(true)
+    if (/^\/analyze\/[^\/?#]+\/[^\/?#]+\/?$/.test(pathname)) {
+      history.replace({pathname,search,hash})
+      return
+    } else if (/^\/analyze\/?$/.test(pathname)) {
+      history.replace({pathname: '/analyze/pingcap/tidb',search,hash})
       return
     }
-    history.replace({pathname,search,hash})
+    setDisplay(true)
   }, [])
 
   return (
@@ -30,7 +35,7 @@ function NotFound() {
       title={display ? translate({
         id: 'theme.NotFound.title',
         message: 'Page Not Found',
-      }) : 'Redirecting...'}>
+      }) : 'Loading...'}>
       {display ? renderNotFound() : renderRedirect()}
     </Layout>
   );
@@ -41,7 +46,11 @@ function renderRedirect () {
     <main className="container margin-vert--xl">
       <div className="row">
         <div className="col col--6 col--offset-3">
-          <h1>Redirecting...</h1>
+          <Typography variant='body1' fontSize={24}>
+            Loading...
+            &nbsp;
+            <CircularProgress display='inline-block' size={24} />
+          </Typography>
         </div>
       </div>
     </main>

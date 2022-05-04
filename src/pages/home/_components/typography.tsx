@@ -11,7 +11,7 @@ export const fontSizes = {
   body: responsive('fontSize', 12, 16, 20)
 }
 
-export const H1 = (props: TypographyProps) => (
+export const H1 = (props: TypographyProps<'h2'>) => (
   <Typography
     {...props}
     variant='h1'
@@ -19,7 +19,7 @@ export const H1 = (props: TypographyProps) => (
   />
 )
 
-export const H2 = (props: TypographyProps) => (
+export const H2 = (props: TypographyProps<'h2'>) => (
   <Typography
     {...props}
     variant='h2'
@@ -27,16 +27,16 @@ export const H2 = (props: TypographyProps) => (
   />
 )
 
-export const Span = (props: TypographyProps) => (
+export const Span = (props: TypographyProps<'span'>) => (
   <Typography {...props} component='span' display='inline' variant='inherit' />
 )
 
-export const H2Plus = (props: TypographyProps) => (
+export const H2Plus = (props: TypographyProps<'span'>) => (
   <Typography {...props} component='span' display='inline' variant='inherit'
               sx={combineSx(props.sx, fontSizes.h2plus)} />
 )
 
-export const Headline = (props: TypographyProps) => (
+export const Headline = (props: TypographyProps<'p'>) => (
   <Typography
     {...props}
     component='p'
@@ -48,7 +48,7 @@ export const Headline = (props: TypographyProps) => (
   />
 )
 
-export const Subtitle = (props: TypographyProps) => (
+export const Subtitle = (props: TypographyProps<'p'>) => (
   <Typography
     {...props}
     component='p'
@@ -65,7 +65,7 @@ export const Body = (props: TypographyProps) => (
     {...props}
     variant='body2'
     sx={[
-      {color: '#C4C4C4', mt: 14},
+      {color: '#C4C4C4', mt: 8},
       responsive('mt', 2, 4, 14),
       fontSizes.body
     ]}

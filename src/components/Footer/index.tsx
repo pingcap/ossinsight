@@ -26,7 +26,6 @@ export default function Footer() {
             title='Data Preparation for Analytics'
             description='Blog · 5 min read'
             codeStyleDescription={false}
-            link='/blog/how-it-works'
             readMore='/blog/how-it-works'
             buttonVariant='outlined'
             top={icon(require('./icon-1.png').default)}
@@ -38,7 +37,6 @@ export default function Footer() {
             title='Why We Choose TiDB to Support OSS Insight'
             description='Blog · 5 min read'
             codeStyleDescription={false}
-            link='/blog/why-we-choose-tidb-to-support-oss-insight'
             readMore='/blog/why-we-choose-tidb-to-support-oss-insight'
             buttonVariant='outlined'
             top={icon(require('./icon-2.png').default)}
@@ -50,7 +48,6 @@ export default function Footer() {
             title='Use TiDB Cloud to Analyze GitHub Events in 5 Minutes'
             description='Tutorial · 5 min read'
             codeStyleDescription={false}
-            link='/blog/try-it-yourself'
             readMore='/blog/try-it-yourself'
             buttonVariant='outlined'
             top={icon(require('./icon-3.png').default)}

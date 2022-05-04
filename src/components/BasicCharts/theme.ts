@@ -13,7 +13,7 @@ export function registerThemeVintage (bg = true) {
 }
 
 export function registerThemeDark(bg = true) {
-  const contrastColor = '#eee';
+  const contrastColor = '#E9EAEE';
   const boxColor = '#2c2c2c'
   const axisCommon = function () {
     return {
@@ -95,8 +95,12 @@ export function registerThemeDark(bg = true) {
       color: contrastColor
     },
     title: {
+      left: 'center',
+      top: 8,
       textStyle: {
-        color: contrastColor
+        color: contrastColor,
+        fontSize: 14,
+        align: 'center'
       }
     },
     toolbox: {

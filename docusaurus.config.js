@@ -66,7 +66,7 @@ const config = {
           // Please change this to your repo.
           editUrl: 'https://github.com/pingcap/ossinsight/edit/main/',
           feedOptions: {
-            type: 'rss',
+            type: ['rss'],
             copyright: `Copyright © ${new Date().getFullYear()} PingCAP`,
           },
         },
@@ -117,7 +117,6 @@ const config = {
             position: 'left',
             label: 'Insights',
           },
-          {to: '/compare', label: '🔧 Compare', position: 'left'},
           {to: '/try-your-own-dataset/?utm_content=header', label: '👏 Try Your Own Dataset', position: 'right'},
           {
             href: 'https://en.pingcap.com/tidb-cloud/?utm_source=ossinsight',
