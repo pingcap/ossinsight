@@ -323,36 +323,6 @@ order by 2 desc;
 <center><em>The geographical distribution of open source database stargazers</em></center>
 
 
-### **CockroachDB gets the most feedback from the community of open source databases**
-
-Issues submitted by developers are important feedback from the community. CockroachDB has continually received issues during the past ten years and has ranked No.1 among all open source databases in the total number of issue submissions. 
-
-<details><summary>Click here to show SQL commands</summary>
-<p>
-
-```sql
-SELECT
-    /*+ read_from_storage(tiflash[github_events]) */
-    db.group_name  AS repo_group_name,
-    COUNT(distinct pr_or_issue_id) AS num
-FROM
-    github_events github_events
-    JOIN osdb_repos db ON db.id = github_events.repo_id
-WHERE type = 'IssuesEvent'
-GROUP BY 1
-ORDER BY 2 DESC
-```
-
-</p>
-</details>
-
-![](./media/issues-received-by-leading-open-source-databases.png)
-
-
-<center><em>The number of issues received by leading open source databases</em></center>
-<br />
-
-
 **[OSSInsight.io](https://ossinsight.io/)** also allows you to create your own custom insights into any GitHub repository created after 2011. You’re welcome to visit the [Insights page](https://ossinsight.io/database/deep-insight-into-open-source-databases) to explore more. 
 
 
