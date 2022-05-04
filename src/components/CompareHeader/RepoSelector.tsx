@@ -88,7 +88,7 @@ export default function RepoSelector({repo, size, label, defaultRepoName, onChan
           InputProps={{
             ...params.InputProps,
             sx: theme => ({
-              backgroundColor: contrast ? '#E9EAEE' : '#2c2c2c',
+              backgroundColor: contrast ? '#E9EAEE' : '#3c3c3c',
               color: contrast ? theme.palette.getContrastText('#E9EAEE') : undefined,
               pr: `${theme.spacing(4)} !important`,
               '.MuiAutocomplete-input': {
