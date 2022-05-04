@@ -63,9 +63,12 @@ export default function RepoSelector({repo, size, label, defaultRepoName, onChan
       sx={theme => ({
         maxWidth: size === 'large' ? 450 : 300,
         flex: 1,
-        '.MuiAutocomplete-popupIndicator': {
+        '.MuiAutocomplete-popupIndicator, .MuiAutocomplete-clearIndicator': {
           color: contrast ? theme.palette.getContrastText('#E9EAEE') : undefined,
           verticalAlign: 'text-bottom',
+        },
+        '.MuiAutocomplete-clearIndicator': {
+          visibility: 'visible !important',
         }
       })}
       size={size === 'large' ? 'medium' : 'small'}
@@ -90,7 +93,7 @@ export default function RepoSelector({repo, size, label, defaultRepoName, onChan
             sx: theme => ({
               backgroundColor: contrast ? '#E9EAEE' : '#3c3c3c',
               color: contrast ? theme.palette.getContrastText('#E9EAEE') : undefined,
-              pr: `${theme.spacing(4)} !important`,
+              pr: `${theme.spacing(8)} !important`,
               '.MuiAutocomplete-input': {
                 textAlign: align,
               },
