@@ -30,7 +30,7 @@ export default function RepoSelector({repo, label, defaultRepoName, onChange, on
   const [helperText, setHelperText] = useState<string>('')
   const [dismissError, setDismissError] = useState(false)
 
-  const { data: options, loading, error } = useSearchRepo(keyword)
+  const { data: options, loading, error } = useSearchRepo(keyword || defaultRepoName)
 
   const onAutoCompleteChange = useCallback((event, newValue: Repo) => {
     const validMessage = onValid(newValue);
