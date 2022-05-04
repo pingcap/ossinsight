@@ -328,7 +328,7 @@ order by 2 desc;
 
 ## Run your own analytics with TiDB Cloud
 
-All the analytics on **[OSSInsight.io](https://ossinsight.io/)** are powered by [TiDB Cloud](https://en.pingcap.com/tidb-cloud/), a fully-managed database as a service. If you want to run your own analytics and get your own insights, sign up for a TiDB Cloud account and try it for yourself with this [10-minute tutorial](https://ossinsight.io/blog/try-it-yourself/).
+All the analytics on **[OSSInsight.io](https://ossinsight.io/)** are powered by [TiDB Cloud](https://en.pingcap.com/tidb-cloud/), a fully-managed database as a service. If you want to run your own analytics and get your own insights, [sign up for a TiDB Cloud account](https://tidbcloud.com/signup?utm_source=ossinsight) and try it for yourself with this [10-minute tutorial](https://ossinsight.io/blog/try-it-yourself/).
 
 ## Contact us 
 
