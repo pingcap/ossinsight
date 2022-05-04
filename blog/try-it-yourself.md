@@ -29,10 +29,10 @@ Once you register an account, you can create a free cluster with TiDB Developer 
 ![](/img/try-it-yourself/dev-tier.png)
 
 2. On the **Create a Cluster** page, set up your cluster name and root password.
-3. Note that the cloud provider is AWS by default, and then select the `US-West-2 (Oregon)` region to create the cluster.
+3. Note that the cloud provider is AWS by default, and then **MUST** select the `US-West-2 (Oregon)` region to create the cluster.
 4. The cluster tier is S1.dev by default.
 5. Click **Submit**.
-Your TiDB Cloud cluster will be created in approximately 5 to 10 minutes.
+Your TiDB Cloud cluster will be created in approximately 1 to 3 minutes.
 
 :::note
 The Developer Tier is **free** for 1 year.
@@ -49,11 +49,12 @@ We have merged the create database/table in the SQL files, so you don't need to 
 If you want to know the table schema, you can check `desc gharchive_dev` later in the following step. 
 :::
 
-1. Click the **Import** button on the **Active Clusters** page and then go to the **Data Import Task** page. 
+1. Click your cluster name in **Active Cluster** page to get into the detail page of your cluster.
+2. Click the **Import** button on the **Active Clusters** page and then go to the **Data Import Task** page. 
 
 ![](/img/try-it-yourself/import.png)
 
-2. Copy the values below and paste to the blanks of **Bucket URL** and **Role-ARN** respectively on the **Data Import Task** page.
+3. Copy the values below and paste to the blanks of **Bucket URL** and **Role-ARN** respectively on the **Data Import Task** page.
 
 **Bucket URL**:
 ```
@@ -64,26 +65,27 @@ s3://tidbcloud-samples/gharchive/
 arn:aws:iam::385595570414:role/import-sample-access
 ```
 
-3. Choose **US West (Oregon)** for your **Bucket region**;
-4. Tick **TiDB Dumpling** for the **Data Format**. 
-5. Input your cluster password in the blank of Password on the **Target Database** section. 
+4. Choose **US West (Oregon)** for your **Bucket region**;
+5. Tick **TiDB Dumpling** for the **Data Format**. 
+6. Input your cluster password in the blank of **Password** on the **Target Database** section. 
 
 ![](/img/try-it-yourself/fill.png)
 
-6. After you fill in all the blanks on the **Data Import Task** page, click the **Import** button at the bottom of this page and wait for a few moments for the system to complete data importing. 
+7. After you fill in all the blanks on the **Data Import Task** page, click the **Import** button at the bottom of this page and wait for a few moments for the system to complete data importing. 
 
 
 ### Use the web shell to check if data is ready
 TiDB Cloud provides a web shell to connect the database online. 
 1. Click the **Exit** button after you successfully import the data into your cluster. 
-2. Then, click the **Connect** button and the **Connect to TiDB** panel pops out. 
-3. Choose **Web SQL Shell** --> **Open SQL Shell**. 
-4. Then input your cluster password as shown in the image below.
+2. Click your cluster name in **Active Cluster** page to get into the detail page of your cluster.
+3. Then, click the **Connect** button and the **Connect to TiDB** panel pops out. 
+4. Choose **Web SQL Shell** --> **Open SQL Shell**. 
+5. Then input your cluster password as shown in the image below.
 
 ![](/img/try-it-yourself/web-shell.png)
 
 
-### Set column storage replica: TiFlash (Optional) 
+### Set column storage replica: TiFlash (Optional but coult make SQL faster!) 
 
 [TiFlash](https://docs.pingcap.com/tidb/stable/tiflash-overview?utm_source=ossinsight) is the key component that makes TiDB / TiDB Cloud an HTAP database and capable of dealing with OLTP and OLAP workloads at the same time. 
 
