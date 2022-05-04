@@ -178,7 +178,7 @@ function AnalyzePage() {
               <Grid item xs={12} md={vs ? 4 : 6}>
                 <Analyze query='stars-history'>
                   <H2 id='stars-history' analyzeTitle display='none'>Stars History</H2>
-                  <P2 display='none'>Stars history</P2>
+                  <P2 display='none'>The growth trend and the specific number of stars since the repository was established.</P2>
                   <LineChart spec={{valueIndex: 'total', name: 'Stars', fromRecent: true}}/>
                 </Analyze>
               </Grid>
@@ -266,6 +266,9 @@ function AnalyzePage() {
             </Analyze>
             <Analyze query='analyze-issue-opened-and-closed'>
               <H3 id='issue-history' sx={{ mt: 6 }}>Issue History</H3>
+              <P2>
+                Monthly opened/closed issues and the historical totals.
+              </P2>
               <IssueChart aspectRatio={commonAspectRatio} />
             </Analyze>
           </Section>
@@ -273,7 +276,7 @@ function AnalyzePage() {
             <H2>People</H2>
             <Analyze query={mapType}>
               <H3 sx={{ mt: 6 }}>Geographical Distribution</H3>
-              <P2>Geographical distribution of GitHub event authors.</P2>
+              <P2>Stargazers,Issue creators and Pull Request creators’ geographical distribution around the world (analyzed with the public github infomation).</P2>
               <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs value={mapType} onChange={handleChangeMapType}>
                   <IconTab id='geo-distribution-stargazers' value='stars-map' icon={<StarIcon size={24} />}><span style={{ display: 'none' }}>Geographical Distribution of </span>Stargazers</IconTab>
@@ -292,7 +295,7 @@ function AnalyzePage() {
             </Analyze>
             <Analyze query={companyType} params={{limit: comparingRepoName ? 25 : 50}}>
               <H3 sx={{ mt: 6 }}>Companies</H3>
-              <P2>Authors' companies of github events.</P2>
+              <P2>Company information about Stargazers, Issue creators, and Pull Request creators(analyzed with the public github infomation).</P2>
               <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs value={companyType} onChange={handleChangeCompanyType}>
                   <IconTab id='companies-stargazers' value='analyze-stars-company' icon={<StarIcon />}>Stargazers<span style={{ display: 'none' }}>' Companies</span></IconTab>
