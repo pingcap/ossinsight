@@ -1,5 +1,5 @@
 ---
-title:  Use TiDB Cloud to Analyze GitHub Events in 5 Minutes
+title:  Use TiDB Cloud to Analyze GitHub Events in 10 Minutes
 date: 2022-04-01
 authors: [fendy, hooopo]
 ---
@@ -8,7 +8,7 @@ authors: [fendy, hooopo]
 
 **[TiDB Cloud](https://docs.pingcap.com/tidbcloud/public-preview?utm_source=ossinsight) is a fully-managed Database-as-a-Service (DBaaS)** that brings everything great about TiDB to your cloud and lets you focus on your applications, not the complexities of your database. 
 
-In this tutorial, we will provide you with a piece of sample data of all GitHub events occurring on January 1, 2022, and walk you through on how to use TiDB Cloud to analyze this data in 5 minutes.  
+In this tutorial, we will provide you with a piece of sample data of all GitHub events occurring on January 1, 2022, and walk you through on how to use TiDB Cloud to analyze this data in 10 minutes.  
 
 ## Sign up for a TiDB Cloud account (Free)
 
@@ -181,7 +181,7 @@ ORDER BY 2 DESC
 :::info
 ### 🌟 Details in how OSS Insight works
 
-Find the reason [Why We Choose TiDB to Support OSS Insight](https://ossinsight.io/blog/why-we-choose-tidb-to-support-oss-insight).
+Find the reason [Why We Choose TiDB to Support OSS Insight](/blog/why-we-choose-tidb-to-support-oss-insight).
 
-You can find how we deal with massive github data in [Data Preparation for Analytics](https://ossinsight.io/blog/how-it-works) as well!
+You can find how we deal with massive github data in [Data Preparation for Analytics](/blog/how-it-works) as well!
 :::

@@ -108,7 +108,7 @@ Of course, you can use this same page to **deeply explore any single GitHub proj
 
 [OSSInsight.io](https://ossinsight.io/) does more than explore or compare repositories. **It gives you [historical, real-time, and custom open source insights](https://ossinsight.io/database/deep-insight-into-open-source-databases).** In this section, we’ll share some key insights in open source databases and programming languages. If you want to gain insights in other areas, you can explore the [Insights](https://ossinsight.io/database/deep-insight-into-open-source-databases/)  page for yourself. 
 
-**Note**: If you want to get those analytical results by yourself, you can execute the SQL commands above each chart on TiDB Cloud with ease following this [5-minute tutorial](https://ossinsight.io/blog/try-it-yourself/). 
+**Note**: If you want to get those analytical results by yourself, you can execute the SQL commands above each chart on TiDB Cloud with ease following this [10-minute tutorial](https://ossinsight.io/blog/try-it-yourself/). 
 
 
 ### **Rust: the most active programming language**
@@ -307,9 +307,9 @@ join (
     from github_events
     use index(index_github_events_on_repo_id)
     left join users u ON github_events.actor_login = u.login
-    where repo_id in (41986369, 48833910, 53311716) and github_events.type = 'WatchEvent' and u.country_code is not null
+    where repo_id in (507775, 60246359, 17165658, 41986369, 16563587, 6838921, 108110, 166515022, 48833910, 156018, 50229487, 20089857, 5349565, 6934395, 6358188, 11008207, 19961085, 206444, 30753733, 105944401, 31006158, 99919302, 50874442, 84240850, 28738447, 44781140, 372536760, 13124802, 146459443, 28449431, 23418517, 206417, 9342529, 19257422, 196353673, 172104891, 402945349, 11225014, 2649214, 41349039, 114187903, 20587599, 19816070, 69400326, 927442, 24494032) and github_events.type = 'WatchEvent' and u.country_code is not null
 ) s
-where repo_id in (41986369, 48833910, 53311716) and github_events.type = 'WatchEvent' and u.country_code is not null
+where repo_id in (507775, 60246359, 17165658, 41986369, 16563587, 6838921, 108110, 166515022, 48833910, 156018, 50229487, 20089857, 5349565, 6934395, 6358188, 11008207, 19961085, 206444, 30753733, 105944401, 31006158, 99919302, 50874442, 84240850, 28738447, 44781140, 372536760, 13124802, 146459443, 28449431, 23418517, 206417, 9342529, 19257422, 196353673, 172104891, 402945349, 11225014, 2649214, 41349039, 114187903, 20587599, 19816070, 69400326, 927442, 24494032) and github_events.type = 'WatchEvent' and u.country_code is not null
 group by 1
 order by 2 desc;
 ```
@@ -323,43 +323,14 @@ order by 2 desc;
 <center><em>The geographical distribution of open source database stargazers</em></center>
 
 
-### **CockroachDB gets the most feedback from the community of open source databases**
-
-Issues submitted by developers are important feedback from the community. CockroachDB has continually received issues during the past ten years and has ranked No.1 among all open source databases in the total number of issue submissions. 
-
-<details><summary>Click here to show SQL commands</summary>
-<p>
-
-```sql
-SELECT
-    /*+ read_from_storage(tiflash[github_events]) */
-    db.group_name  AS repo_group_name,
-    COUNT(distinct pr_or_issue_id) AS num
-FROM
-    github_events github_events
-    JOIN osdb_repos db ON db.id = github_events.repo_id
-WHERE type = 'IssuesEvent'
-GROUP BY 1
-ORDER BY 2 DESC
-```
-
-</p>
-</details>
-
-![](./media/issues-received-by-leading-open-source-databases.png)
-
-
-<center><em>The number of issues received by leading open source databases</em></center>
-<br />
-
-
 **[OSSInsight.io](https://ossinsight.io/)** also allows you to create your own custom insights into any GitHub repository created after 2011. You’re welcome to visit the [Insights page](https://ossinsight.io/database/deep-insight-into-open-source-databases) to explore more. 
 
 
 ## Run your own analytics with TiDB Cloud
 
-All the analytics on **[OSSInsight.io](https://ossinsight.io/)** are powered by [TiDB Cloud](https://en.pingcap.com/tidb-cloud/), a fully-managed database as a service. If you want to run your own analytics and get your own insights, sign up for a TiDB Cloud account and try it for yourself with this [5-minute tutorial](https://ossinsight.io/blog/try-it-yourself/).
+All the analytics on **[OSSInsight.io](https://ossinsight.io/)** are powered by [TiDB Cloud](https://en.pingcap.com/tidb-cloud/), a fully-managed database as a service. If you want to run your own analytics and get your own insights, sign up for a TiDB Cloud account and try it for yourself with this [10-minute tutorial](https://ossinsight.io/blog/try-it-yourself/).
 
 ## Contact us 
 
-Do you find **[OSSInsight.io](https://ossinsight.io/)** useful and fun to work with? Do you have any question or feedback to share with us? Feel free to contact us through [community@tidb.io](mailto:community@tidb.io) and follow us on [Twitter](https://twitter.com/OSSInsight/) to get the latest information. You’re also welcome to share this insight tool with your friends. 
+Do you find **[OSSInsight.io](https://ossinsight.io/)** useful and fun to work with? Do you have any question or feedback to share with us? Feel free to [file an issue](https://github.com/pingcap/ossinsight/issues/new) on GitHub or follow us on [Twitter](https://twitter.com/OSSInsight/) to get the latest information. You’re also welcome to share this insight tool with your friends. 
+

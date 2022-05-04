@@ -2,6 +2,7 @@ import { dataset, itemTooltip, legend, title, utils } from '../options';
 import {withChart} from '../chart';
 import {d3Hierarchy, D3HierarchyItem} from '../options/custom/d3-hierarchy';
 import { template } from '../options/utils';
+import xss from 'xss';
 
 // lines of code
 export type CompanyData = {
@@ -61,7 +62,7 @@ function transformCompanyData(data: CompanyData[], valueIndex: string): D3Hierar
   return data.flatMap((item, index) => ({
     id: '',
     group: '',
-    name: item.company_name,
+    name: xss(item.company_name),
     depth: 1,
     value: item[valueIndex],
     index: 0,

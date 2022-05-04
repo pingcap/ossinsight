@@ -169,7 +169,7 @@ function AnalyzePage() {
               )
             }
             <P2>
-              * Due to the removing stars GitHub event is invisible, here we say is the approximate number.
+              Note: The number of stars we got here is an approximate value because developers' behavior of removing GitHub stars cannot be tracked.
             </P2>
             <Grid container spacing={2} alignItems='center'>
               <Grid item xs={12} md={vs ? 8 : 6}>
@@ -178,7 +178,7 @@ function AnalyzePage() {
               <Grid item xs={12} md={vs ? 4 : 6}>
                 <Analyze query='stars-history'>
                   <H2 id='stars-history' analyzeTitle display='none'>Stars History</H2>
-                  <P2 display='none'>Stars history</P2>
+                  <P2 display='none'>The growth trend and the specific number of stars since the repository was established.</P2>
                   <LineChart spec={{valueIndex: 'total', name: 'Stars', fromRecent: true}}/>
                 </Analyze>
               </Grid>
@@ -266,18 +266,22 @@ function AnalyzePage() {
             </Analyze>
             <Analyze query='analyze-issue-opened-and-closed'>
               <H3 id='issue-history' sx={{ mt: 6 }}>Issue History</H3>
+              <P2>
+                Monthly opened/closed issues and the historical totals.
+              </P2>
               <IssueChart aspectRatio={commonAspectRatio} />
             </Analyze>
           </Section>
           <Section>
             <H2>People</H2>
             <Analyze query={mapType}>
-              <H3 analyzeTitle={false} sx={{ mt: 6 }}>Geographical Distribution</H3>
+              <H3 sx={{ mt: 6 }}>Geographical Distribution</H3>
+              <P2>Stargazers,Issue creators and Pull Request creators’ geographical distribution around the world (analyzed with the public github infomation).</P2>
               <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs value={mapType} onChange={handleChangeMapType}>
-                  <IconTab id='geo-distribution-stargazers' value='stars-map' icon={<StarIcon size={24} />}>Stargazers</IconTab>
-                  <IconTab id='geo-distribution-issue-creators' value='issue-creators-map' icon={<IssueCreatorIcon size={24} />}>Issue Creators</IconTab>
-                  <IconTab id='geo-distribution-pr-creators' value='pull-request-creators-map' icon={<PrCreatorIcon size={24} />}>Pull Requests Creators</IconTab>
+                  <IconTab id='geo-distribution-stargazers' value='stars-map' icon={<StarIcon size={24} />}><span style={{ display: 'none' }}>Geographical Distribution of </span>Stargazers</IconTab>
+                  <IconTab id='geo-distribution-issue-creators' value='issue-creators-map' icon={<IssueCreatorIcon size={24} />}><span style={{ display: 'none' }}>Geographical Distribution of </span>Issue Creators</IconTab>
+                  <IconTab id='geo-distribution-pr-creators' value='pull-request-creators-map' icon={<PrCreatorIcon size={24} />}><span style={{ display: 'none' }}>Geographical Distribution of </span>Pull Requests Creators</IconTab>
                 </Tabs>
               </Box>
               <Grid container alignItems='center'>
@@ -290,12 +294,13 @@ function AnalyzePage() {
               </Grid>
             </Analyze>
             <Analyze query={companyType} params={{limit: comparingRepoName ? 25 : 50}}>
-              <H3 analyzeTitle={false} sx={{ mt: 6 }}>Companies</H3>
+              <H3 sx={{ mt: 6 }}>Companies</H3>
+              <P2>Company information about Stargazers, Issue creators, and Pull Request creators(analyzed with the public github infomation).</P2>
               <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs value={companyType} onChange={handleChangeCompanyType}>
-                  <IconTab id='companies-stargazers' value='analyze-stars-company' icon={<StarIcon />}>Stargazers</IconTab>
-                  <IconTab id='companies-issue-creators' value='analyze-issue-creators-company' icon={<IssueCreatorIcon size={24} />}>Issue Creators</IconTab>
-                  <IconTab id='companies-pr-creators' value='analyze-pull-request-creators-company' icon={<PrCreatorIcon size={24} />}>Pull Requests Creators</IconTab>
+                  <IconTab id='companies-stargazers' value='analyze-stars-company' icon={<StarIcon />}>Stargazers<span style={{ display: 'none' }}>' Companies</span></IconTab>
+                  <IconTab id='companies-issue-creators' value='analyze-issue-creators-company' icon={<IssueCreatorIcon size={24} />}>Issue Creators<span style={{ display: 'none' }}>' Companies</span></IconTab>
+                  <IconTab id='companies-pr-creators' value='analyze-pull-request-creators-company' icon={<PrCreatorIcon size={24} />}>Pull Requests Creators<span style={{ display: 'none' }}>' Companies</span></IconTab>
                 </Tabs>
               </Box>
               <Grid container alignItems='center'>
@@ -317,13 +322,13 @@ function AnalyzePage() {
 
 export default () => <BrowserOnly>{() => <AnalyzePage />}</BrowserOnly>
 
-const IconTab = ({children, id, icon, ...props}: PropsWithChildren<{ id: string, value: string, icon?: string | React.ReactElement }>) => {
+const IconTab = ({children, id, icon, ...props}: PropsWithChildren<{ id: string, value: string, icon?: React.ReactNode }>) => {
   return (
     <Tab
       {...props}
       sx={{ textTransform: 'unset' }}
       label={(
-        <H4 id={id}>
+        <H4 id={id} analyzeTitle>
           {icon}
           &nbsp;
           {children}
