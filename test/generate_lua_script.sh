@@ -1,6 +1,7 @@
-single_template_file="pull-request-creators-map.lua"
-#two_template_file="stars-history.lua"
+# Siangle Repo.
 scripts_dir="test/scripts/"
+
+single_template_file="pull-request-creators-map.lua"
 single_repo_queries=(
   "stars-total"
   "stars-map"
@@ -8,6 +9,7 @@ single_repo_queries=(
   "stars-max-by-week"
   "stars-map"
   "stars-average-by-week"
+  "stars-history"
   "pushes-total"
   "pushers-total"
   "pull-requests-total"
@@ -29,13 +31,41 @@ single_repo_queries=(
   "commit-commenters-total"
   "commits-time-distribution"
 
-  "recent-events-rank"
-  "contributors-history"
-  "contributors-hourly"
-  "contributors-per-year"
-  "events-history"
-  "events-hourly"
-  "events-per-year"
+  "analyze-issue-creators-company"
+  "analyze-issue-open-to-closed"
+  "analyze-issue-open-to-first-responded"
+  "analyze-issue-opened-and-closed"
+  "analyze-loc-per-month"
+  "analyze-pull-request-creators-company"
+  "analyze-pull-request-open-to-merged"
+  "analyze-pull-requests-size-per-month"
+  "analyze-pushes-and-commits-per-month"
+  "analyze-release-history"
+  "analyze-release-per-month"
+  "analyze-stars-company"
+)
+
+for query_name in "${single_repo_queries[@]}"
+do
+  echo "Generating target lua script file: ${query_name}"
+  target_script_file=$scripts_dir$query_name".lua"
+  cp $scripts_dir$single_template_file "$target_script_file"
+  sed -i '' "s/pull-request-creators-map/${query_name}/g" "$target_script_file" > /dev/null
+done
+
+# Insight Repo.
+insight_template_file="archive-2021-bottom10-by-yoy.lua"
+insight_repo_queries=(
+  # "events-last-imported"
+  # "events-total"
+  # "recent-events-rank"
+  # "events-history"
+  # "events-hourly"
+  # "events-per-year"
+  # "contributors-history"
+  # "contributors-hourly"
+  # "contributors-per-year"
+
   "rt-top5-languages"
   "rt-top10-by-prs"
   "rt-top10-by-stars"
@@ -44,7 +74,7 @@ single_repo_queries=(
   "rt-top20-companies"
   "rt-top20-countries"
   "rt-top20-developers"
-  "archive-2021-bottom10-by-yoy"
+
   "archive-2021-top5-by-languages"
   "archive-2021-top10-by-prs"
   "archive-2021-top10-by-regions"
@@ -54,17 +84,22 @@ single_repo_queries=(
   "archive-2021-top20-by-developers"
   "archive-2021-top20-by-stars-yoy"
 )
-#two_repos_queries=(
-#
-#)
 
-for query_name in "${single_repo_queries[@]}"
+
+for query_name in "${insight_repo_queries[@]}"
 do
   echo "Generating target lua script file: ${query_name}"
   target_script_file=$scripts_dir$query_name".lua"
-  cp $scripts_dir$single_template_file "$target_script_file"
-  sed -i '' "s/pull-request-creators-map/${query_name}/g" "$target_script_file" > /dev/null
+  cp $scripts_dir$insight_template_file "$target_script_file"
+  sed -i '' "s/archive-2021-bottom10-by-yoy/${query_name}/g" "$target_script_file" > /dev/null
 done
+
+
+# Two Repos.
+#two_template_file="stars-history.lua"
+#two_repos_queries=(
+#
+#)
 
 #
 #for query_name in "${two_repos_queries[@]}"

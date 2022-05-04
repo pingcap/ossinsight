@@ -1,29 +1,33 @@
 #!/usr/local/bin/lua
 counter = 0
 
-repos = {}
-for line in io.lines("test/testdata/most-stars-repo-in-2021.csv") do
-    local repoName = line:match("%s*(.+)")
-    repos[#repos + 1] = repoName
+local t_counter = 1
+local threads = {}
+
+function setup(thread)
+    thread:set("id", t_counter)
+    table.insert(threads, thread)
+    t_counter = t_counter + 1
+    -- update all known threads with the latest thread count
+    for _, t in ipairs(threads) do
+        t:set("thread_count", t_counter)
+    end
 end
 
-reposList = {}
-for i = 1, #repos do
-    reposList[i] = {}
-    reposList[i]["repo1"] = repos[i]
-    reposList[i]["repo2"] = repos[#repos - i]
+repos = {}
+for line in io.lines("test/testdata/most-stars-repo-in-2021.csv") do
+    local repoId = line:match("%s*(.+)")
+    repos[#repos + 1] = repoId
 end
 
 wrk.method = "GET"
-wrk.scheme = "http"
+wrk.scheme = "https"
 
 request = function()
-    current = reposList[counter % #reposList + 1]
-    path = "https://community-preview-contributor.tidb.io/q/stars-history?repoName1=" .. current.repo1 .. "&repoName2=" .. current.repo2
+    range = math.ceil(#repos / thread_count)
+    offset = (id - 1) * range
+    current = repos[(offset + counter) % #repos + 1]
+    path = "https://api.ossinsight.io/q/stars-history?repoId=" .. current
     counter = counter + 1
     return wrk.format(nil, path)
-end
-
-function response(status, headers, body)
-
 end

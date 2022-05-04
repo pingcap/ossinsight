@@ -1,15 +1,15 @@
 with pushes_group_by_month as (
-    select event_month, count(*) as pushes
+    select event_month, ifnull(count(*), 0) as pushes
     from github_events
     use index(index_github_events_on_repo_id)
-    where repo_id = 41986369 and type = 'PushEvent'
+    where repo_id = 6296790 and type = 'PushEvent'
     group by event_month
     order by event_month
 ), commits_group_by_month as (
-    select event_month, sum(push_distinct_size) as commits
+    select event_month, sum(coalesce(push_distinct_size, push_size, 0)) as commits
     from github_events
     use index(index_github_events_on_repo_id)
-    where repo_id = 41986369 and type = 'PushEvent'
+    where repo_id = 6296790 and type = 'PushEvent'
     group by event_month
     order by event_month
 )

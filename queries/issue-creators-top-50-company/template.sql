@@ -11,4 +11,4 @@ from (
 ) sub
 where length(company_name) != 0 and company_name not in ('-', 'none', 'no', 'home', 'n/a', 'null', 'unknown')
 order by issue_creators desc
-limit 50;
+limit 9999999999;

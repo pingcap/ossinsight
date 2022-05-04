@@ -18,6 +18,7 @@
     "server:prefetch": "node compute-prefetch-enums.js",
     "dev": "tsc && ts-node index.ts",
     "prefetch": "tsc && ts-node compute-prefetch-enums.js",
+    "generate-company-name-sql": "tsc && ts-node generate-company-name-sql.js",
     "gen:schema-ts": "json2ts params.schema.json params.schema.d.ts",
     "validate:params": "ajv -s params.schema.json -d \"queries/*/params.json\""
   },
@@ -37,7 +38,8 @@
     "octokit": "^1.7.1",
     "prom-client": "^14.0.1",
     "redis": "^4.0.4",
-    "tiny-async-pool": "^1.2.0"
+    "tiny-async-pool": "^1.2.0",
+    "yaml": "^2.0.1"
   },
   "devDependencies": {
     "@types/koa": "^2.13.4",

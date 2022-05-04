@@ -16,6 +16,20 @@ input_file_name=$4   # The specified lua script file.
 
 # The lua script files.
 script_files=(
+  # "analyze-issue-creators-company"
+  # "analyze-issue-open-to-closed"
+  # "analyze-issue-open-to-first-responded"
+  # "analyze-issue-opened-and-closed"
+  # "analyze-loc-per-month"
+  # "analyze-pull-request-creators-company"
+  # "analyze-pull-request-open-to-merged"
+  # "analyze-pull-requests-size-per-month"
+  # "analyze-pushes-and-commits-per-month"
+  # "analyze-release-history"
+  # "analyze-release-per-month"
+  # "analyze-stars-company"
+  # "events-last-imported"
+
   "stars-total"
   "stars-map"
   "stars-top-50-company"

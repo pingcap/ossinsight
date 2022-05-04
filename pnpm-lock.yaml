@@ -1,4 +1,4 @@
-lockfileVersion: 5.3
+lockfileVersion: 5.4
 
 specifiers:
   '@koa/cors': ^3.1.0
@@ -26,6 +26,7 @@ specifiers:
   tiny-async-pool: ^1.2.0
   ts-node: ^10.5.0
   typescript: ^4.5.5
+  yaml: ^2.0.1
 
 dependencies:
   '@koa/cors': 3.1.0
@@ -42,6 +43,7 @@ dependencies:
   prom-client: 14.0.1
   redis: mirrors.tencent.com/redis/4.0.4
   tiny-async-pool: 1.2.0
+  yaml: mirrors.tencent.com/yaml/2.0.1
 
 devDependencies:
   '@types/koa': 2.13.4
@@ -53,7 +55,7 @@ devDependencies:
   '@types/tiny-async-pool': 1.0.0
   ajv-cli: 5.0.0_ts-node@10.5.0
   json-schema-to-typescript: 10.1.5
-  ts-node: 10.5.0_f3bd4037939c2ed2942ba074291f8ef2
+  ts-node: 10.5.0_6o6uan4ttqxnffblub2csh4o6i
   typescript: 4.5.5
 
 packages:
@@ -598,7 +600,7 @@ packages:
       json-schema-migrate: 2.0.0
       json5: 2.2.0
       minimist: 1.2.5
-      ts-node: 10.5.0_f3bd4037939c2ed2942ba074291f8ef2
+      ts-node: 10.5.0_6o6uan4ttqxnffblub2csh4o6i
     dev: true
 
   /ajv/8.10.0:
@@ -1557,7 +1559,7 @@ packages:
     resolution: {integrity: sha1-gYT9NH2snNwYWZLzpmIuFLnZq2o=}
     dev: false
 
-  /ts-node/10.5.0_f3bd4037939c2ed2942ba074291f8ef2:
+  /ts-node/10.5.0_6o6uan4ttqxnffblub2csh4o6i:
     resolution: {integrity: sha512-6kEJKwVxAJ35W4akuiysfKwKmjkbYxwQMTBaAxo9KKAx/Yd26mPUyhGz3ji+EsJoAgrLqVsYHNuuYwQe22lbtw==}
     hasBin: true
     peerDependencies:
@@ -1735,4 +1737,11 @@ packages:
     resolution: {integrity: sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==, registry: https://mirrors.cloud.tencent.com/npm/, tarball: https://mirrors.tencent.com/npm/yallist/-/yallist-4.0.0.tgz}
     name: yallist
     version: 4.0.0
+    dev: false
+
+  mirrors.tencent.com/yaml/2.0.1:
+    resolution: {integrity: sha512-1NpAYQ3wjzIlMs0mgdBmYzLkFgWBIWrzYVDYfrixhoFNNgJ444/jT2kUT2sicRbJES3oQYRZugjB6Ro8SjKeFg==, registry: https://mirrors.cloud.tencent.com/npm/, tarball: https://mirrors.tencent.com/npm/yaml/-/yaml-2.0.1.tgz}
+    name: yaml
+    version: 2.0.1
+    engines: {node: '>= 14'}
     dev: false

@@ -9,8 +9,8 @@
     },
     {
       "name": "limit",
-      "replaces": "50",
-      "pattern": "^(\\d|[1-9]\\d|[1-9]\\d\\d|1000)$",
+      "replaces": "9999999999",
+      "pattern": "^(10|20|25|50)$",
       "default": 50
     }
   ]

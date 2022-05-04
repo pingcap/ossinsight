@@ -41,6 +41,8 @@ const globalRateLimiter = createRateLimiter('global', {
       return true;
     } else if (apiPath.startsWith('/signup')) {
       return true;
+    } else if (apiPath.startsWith('/q/events-total')) {
+      return true;
     }
 
     return false;
