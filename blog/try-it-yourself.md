@@ -174,3 +174,12 @@ ORDER BY 2 DESC
 <video width="100%" poster="/img/try-it-yourself/dev-tier.png" controls>
   <source src="/video/github-demo-tidbcloud.mp4" type="video/mp4" />
 </video>
+
+
+:::info
+### 🌟 Details in how OSS Insight works
+
+Find the reason [Why We Choose TiDB to Support OSS Insight](https://ossinsight.io/blog/why-we-choose-tidb-support-oss-insight).
+
+You can find how we deal with massive github data in [Data Preparation for Analytics](https://ossinsight.io/blog/how-it-works) as well!
+:::
