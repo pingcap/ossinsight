@@ -102,7 +102,7 @@ function AnalyzePage() {
     },{
       icon: <PeopleIcon fill='#F77C00'/>,
       title: 'PR Creators',
-      query: 'pull-request-creators-total ',
+      query: 'pull-request-creators-total',
       field: '*'
     },{
       icon: <CodeIcon fill='#309CF2'/>,
