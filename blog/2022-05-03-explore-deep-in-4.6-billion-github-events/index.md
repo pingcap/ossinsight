@@ -1,7 +1,7 @@
 ---
 title: Explore Deep in 4.6 Billion GitHub Events
 date: 2022-05-03
-image:/media/banner-ossinsight-explore-deep.jpg
+image: "./media/banner-ossinsight-explore-deep.jpg"
 authors: [fendy]
 ---
 
