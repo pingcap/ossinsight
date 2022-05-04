@@ -30,9 +30,9 @@ export const LocChart = withChart<LocData>(({title: propsTitle}) => {
       context[`adjust-${id}`] = utils.adjustAxis(transformedData, [['additions', 'deletions'], ['total']]);
       return dataset(datasetId, transformedData);
     }),
+    grid: topBottomLayoutGrid(),
     dataZoom: dataZoom(),
     title: title(propsTitle),
-    grid: topBottomLayoutGrid(),
     legend: legend({selectedMode: false}),
     xAxis: utils.template(({id}) => timeAxis<'x'>(id, {gridId: id})),
     yAxis: utils.template(({id, context}) => [

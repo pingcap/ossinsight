@@ -34,10 +34,10 @@ function lineArea(x: OptionEncodeValue, y: OptionEncodeValue, yAxis: string, opt
 
 export const IssueChart = withChart<IssueData>(({title: propsTitle, data}) => ({
   dataset: standardDataset(aggregate),
+  grid: topBottomLayoutGrid(),
   dataZoom: dataZoom(),
   title: title(propsTitle),
   legend: legend(),
-  grid: topBottomLayoutGrid(),
   xAxis: utils.template(({id}) => timeAxis<'x'>(id, {gridId: id})),
   yAxis: utils.template(({id}) => [
     valueAxis<'y'>(`${id}-diff`, {gridId: id, name: 'New / Issues'}),
