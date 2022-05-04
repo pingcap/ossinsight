@@ -19,12 +19,13 @@ export interface RepoSelectorProps {
   onValid?: (repo: Repo | null) => string | undefined
   disableClearable?: boolean
   align?: 'left' | 'right'
+  size?: 'large'
   contrast?: boolean
 }
 
 const noValidation = () => undefined
 
-export default function RepoSelector({repo, label, defaultRepoName, onChange, onValid = noValidation, disableClearable, align = 'left', contrast}: RepoSelectorProps) {
+export default function RepoSelector({repo, size, label, defaultRepoName, onChange, onValid = noValidation, disableClearable, align = 'left', contrast}: RepoSelectorProps) {
   const [keyword, setKeyword] = useState<string>(defaultRepoName ?? '')
   const [textFieldError, setTextFieldError] = useState<boolean>(false)
   const [helperText, setHelperText] = useState<string>('')
@@ -60,13 +61,14 @@ export default function RepoSelector({repo, label, defaultRepoName, onChange, on
   return (<>
     <Autocomplete<Repo>
       sx={theme => ({
-        maxWidth: 300,
+        maxWidth: size === 'large' ? 450 : 300,
         flex: 1,
         '.MuiAutocomplete-popupIndicator': {
           color: contrast ? theme.palette.getContrastText('#E9EAEE') : undefined,
+          verticalAlign: 'text-bottom',
         }
       })}
-      size="small"
+      size={size === 'large' ? 'medium' : 'small'}
       isOptionEqualToValue={(option, value) => option?.id === value?.id}
       getOptionLabel={(option) => option.name}
       options={options ?? []}
@@ -80,7 +82,7 @@ export default function RepoSelector({repo, label, defaultRepoName, onChange, on
           {...params}
           error={textFieldError}
           variant="outlined"
-          size='small'
+          size={size === 'large' ? 'medium' : 'small'}
           placeholder={label}
           helperText={helperText}
           InputProps={{
@@ -94,7 +96,8 @@ export default function RepoSelector({repo, label, defaultRepoName, onChange, on
               },
               '.MuiOutlinedInput-notchedOutline': {
                 border: 'none',
-              }
+              },
+              fontSize: size === 'large' ? 24 : undefined
             }),
             endAdornment: (
               <React.Fragment>

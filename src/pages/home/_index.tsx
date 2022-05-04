@@ -79,7 +79,7 @@ export default function Home() {
       description={siteConfig.tagline}
       dark
     >
-      <Section>
+      <Section pt={4}>
         <Stack
           divider={<Divider orientation="vertical" flexItem />}
           direction={stackDirection}
@@ -107,7 +107,7 @@ export default function Home() {
               justifyContent='flex-end'
               sx={{ '> *': { flex: 1, maxWidth: 450, mx: 'unset' } }}
             >
-              <AnalyzeSelector align='right' contrast />
+              <AnalyzeSelector align='right' size='large' contrast />
             </Box>
             <Body>
               Powered by
