@@ -35,7 +35,7 @@ function NotFound() {
       title={display ? translate({
         id: 'theme.NotFound.title',
         message: 'Page Not Found',
-      }) : 'Redirecting...'}>
+      }) : 'Loading...'}>
       {display ? renderNotFound() : renderRedirect()}
     </Layout>
   );
@@ -47,9 +47,9 @@ function renderRedirect () {
       <div className="row">
         <div className="col col--6 col--offset-3">
           <Typography variant='body1' fontSize={24}>
-            Redirecting...
+            Loading...
             &nbsp;
-            <CircularProgress size={24} />
+            <CircularProgress display='inline-block' size={24} />
           </Typography>
         </div>
       </div>
