@@ -1,5 +1,5 @@
 ---
-title: Why We Choose TiDB Support OSS Insight
+title: Why We Choose TiDB to Support OSS Insight
 date: 2022-05-04
 ---
 
