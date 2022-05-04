@@ -24,7 +24,7 @@ export default function List({n, valueIndex, nameIndex, percentIndex, title, tra
 
   const base = useMemo(() => arr(n), [n]);
 
-  const group = comparingRepoName ? [compareData, data] : [data];
+  const group = comparingRepoName ? [data, compareData] : [data];
   return (
     <Stack direction="column" spacing={1} my={2}>
       <HeaderItem flex={1} px={2} py={1}>
