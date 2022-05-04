@@ -23,13 +23,19 @@ export const ShareDialog = ({open, onClose}: ShareDialogProps) => {
   const [imgData, setImgData] = useState<string>();
   const {share, sharing, shareId, title, description, message, keyword} = useShare(shareInfo, echartsRef);
   const [copied, setCopied] = useState(false);
+  const [error, setError] = useState<unknown | undefined>(undefined)
 
   useEffect(() => {
     if (open) {
-      share();
+      share().then(() => setError(undefined)).catch(setError);
       const canvas = echartsRef?.current?.ele?.getElementsByTagName('canvas')?.[0];
       if (canvas) {
+        let eci = echartsRef?.current?.getEchartsInstance();
+        const { toolbox } = eci.getOption()
+        // hide toolbox
+        eci.setOption({ toolbox: { show: false } })
         setImgData(canvas.toDataURL('image/jpeg'));
+        eci.setOption({ toolbox })
       }
     }
   }, [open]);
@@ -66,9 +72,9 @@ export const ShareDialog = ({open, onClose}: ShareDialogProps) => {
                   <ShareUrl url={fullUrl} onCopy={() => setCopied(true)} />
                   <ShareButtons shareUrl={fullUrl} title={message || title} hashtags={keyword} />
                 </>
-              ) : (
-                <Skeleton />
-              )}
+              ) : error
+                ? <Alert severity='error'>Request failed ${(error as any)?.message ?? ''}</Alert>
+                : (<Skeleton />)}
             <Box sx={{my: 2}}>
               <small>This site is protected by reCAPTCHA and the Google
                 <a href="https://policies.google.com/privacy">Privacy Policy</a> and
