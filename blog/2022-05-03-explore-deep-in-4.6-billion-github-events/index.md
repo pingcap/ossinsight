@@ -23,7 +23,7 @@ To compare the popularity of two repositories, we use multiple metrics including
 
 The line chart below shows the accumulated number of stars of K8s and Moby each year. According to the chart, Moby was ahead of K8s until late 2019. The star growth of Moby slowed after 2017 while K8s has kept a steady growth pace. 
 
-![](/blog/media/the-star-history.png)
+![](./media/the-star-history.png)
 
 <center>The star history of K8s and Moby</center>
 
@@ -32,7 +32,7 @@ The line chart below shows the accumulated number of stars of K8s and Moby each 
 
 The map below shows the stargazers’ geographical distribution of Moby and K8s. As you can see, their stargazers are scattered around the world with the majority coming from the US, Europe, and China.
 
-![](/blog/media/geographicla-distribution-of-stargazers.png)
+![](./media/geographicla-distribution-of-stargazers.png)
 
 <center>The geographical distribution of K8s and Moby stargazers</center>
 
@@ -40,7 +40,7 @@ The map below shows the stargazers’ geographical distribution of Moby and K8s.
 
 The chart below shows the stargazers’ employment of K8s (red) and Moby (dark blue). Both of their stargazers work in a wide range of industries, and most come from leading dotcom companies such as Google, Tencent, and Microsoft. The difference is that the top two companies of K8s’ stargazers are  Google and Microsoft from the US, while Moby’s top two followers are Tencent and Alibaba from China. 
 
-![](/blog/media/employment-distribution-of-stargazers.png)
+![](./media/employment-distribution-of-stargazers.png)
 
 
 <center>The employment distribution of K8s and Moby stargazers</center>
@@ -54,7 +54,7 @@ To compare the coding vitality of two GitHub projects, we use many metrics inclu
 
 The bar chart below shows the number of commits and pushes submitted to K8s (top) and Moby (bottom) each month after their inception. Generally speaking, K8s has more pushes and commits than Moby, and their number grew stably until 2020 followed by a slowdown afterwards. Moby’s monthly pushes and commits had a minor growth between 2015 and 2017, and then barely increased after 2018.
 
-![](/blog/media/monthly-pushes-and-commits.png)
+![](./media/monthly-pushes-and-commits.png)
 
 
 <center>The monthly pushes and commits of K8s (top) and Moby (bottom)</center>
@@ -63,7 +63,7 @@ The bar chart below shows the number of commits and pushes submitted to K8s (top
 
 The charts below show the monthly and accumulated number of PRs of the two repositories. As you can see, K8s has received stable and consistent PR contributions ever since its inception and its accumulated number of PRs has also grown steadily. Moby had vibrant PR submissions before late 2017, but started to lose afterwards. Its accumulated number of PRs reached a plateau in 2017, which has remained the case ever since. 
 
-![](/blog/media/monthly-and-accumulated-pr-number.png)
+![](./media/monthly-and-accumulated-pr-number.png)
 
 
 <center>The monthly and accumulated PR number of K8s (top) and Moby (bottom)</center>
@@ -72,7 +72,7 @@ The charts below show the monthly and accumulated number of PRs of the two repos
 
 The following heat map shows developers’ contribution time for K8s (left) and Moby (right). Each square represents one hour in a day. The darker the color, the more contributions occur during that time. K8s has many more dark parts than Moby, and K8s’ contributions occur almost 24 hours a day, 7 days a week. K8s definitely has more dynamic coding activities than Moby. 
 
-![](/blog/media/heat-map.png)
+![](./media/heat-map.png)
 
 
 
@@ -114,7 +114,7 @@ LIMIT 10
 </p>
 </details>
 
-![](/blog/media/pr-number-of-pl-repos.png)
+![](./media/pr-number-of-pl-repos.png)
 
 
 <center>PR numbers of the leading programming languages</center>
@@ -168,7 +168,7 @@ SELECT event_year, repo_name, stars FROM tmp1
 </p>
 </details>
 
-![](/blog/media/star-growth-trends-of-leading-programming-languages.png)
+![](./media/star-growth-trends-of-leading-programming-languages.png)
 
 <center>The star growth trends of leading programming languages</center>
 
@@ -206,7 +206,7 @@ LIMIT 20;
 </p>
 </details>
 
-![](/blog/media/companies-who-contribute-the-most-to-programing-languages.png)
+![](./media/companies-who-contribute-the-most-to-programing-languages.png)
 
 <center>Companies who contribute the most to programing languages</center>
 
@@ -261,7 +261,7 @@ SELECT event_year, repo_name, stars FROM tmp1
 </details>
 
 
-![](/blog/media/star-growth-trend-of-leading-databases.png)
+![](./media/star-growth-trend-of-leading-databases.png)
 
 
 <center>The star growth trend of leading databases</center>
@@ -295,7 +295,7 @@ order by 2 desc;
 </p>
 </details>
 
-![](/blog/media/geographical-distribution-database-stargazers.png)
+![](./media/geographical-distribution-database-stargazers.png)
 
 
 <center>The geographical distribution of open source database stargazers</center>
@@ -324,7 +324,7 @@ ORDER BY 2 DESC
 </p>
 </details>
 
-![](/blog/media/issues-received-by-leading-open-source-databases.png)
+![](./media/issues-received-by-leading-open-source-databases.png)
 
 <center>The number of issues received by leading open source databases</center>
 
