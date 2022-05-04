@@ -7,11 +7,13 @@ import StatusBar from '../../components/StatusBar';
 export interface CustomPageProps extends LayoutProps {
   footer?: boolean
   dark?: boolean
+  header?: JSX.Element
 }
 
-export default function CustomPage({children, footer = true, dark, ...props}: PropsWithChildren<CustomPageProps>) {
+export default function CustomPage({children, header, footer = true, dark, ...props}: PropsWithChildren<CustomPageProps>) {
   return (
-    <Layout {...props}>
+    <Layout {...props} header={header}>
+      <div hidden style={{ height: 72 }} />
       <div
         style={{
           '--ifm-container-width-xl': '1200px'

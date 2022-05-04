@@ -35,7 +35,7 @@ function useUrlSearchStateCSR<T>(key: string, {
     }
     const uspStr = usp.toString()
     const search = uspStr ? `?${uspStr}` : ''
-    const hash = location.hash ? `#${location.hash}` : ''
+    const hash = location.hash ? `${location.hash}` : ''
     const url = location.pathname + search + hash
     if (push) {
       window.history.pushState(null, null, url)

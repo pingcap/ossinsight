@@ -16,7 +16,7 @@ import {
   RepoForkedIcon,
   StarIcon,
 } from '@primer/octicons-react';
-import React, { PropsWithChildren, useCallback, useMemo, useState } from 'react';
+import React, { PropsWithChildren, useCallback, useLayoutEffect, useMemo, useState } from 'react';
 import Analyze from '../../analyze-charts/Analyze';
 import { DurationChart } from '../../analyze-charts/common-duration';
 import { CompaniesChart } from '../../analyze-charts/companies';
@@ -53,6 +53,13 @@ function AnalyzePage() {
 
   const {data: main, name} = useMainRepo();
   const {data: vs, name: comparingRepoName, setName: setComparingRepoName} = useVsRepo()
+
+  useLayoutEffect(() => {
+    const id = location.hash.replace(/^#/, '')
+    document.getElementById(id)?.scrollIntoView({
+      block: 'center'
+    })
+  }, [])
 
   const onRepoChange = useCallback((repo: Repo) => {
     history.push({
@@ -131,15 +138,8 @@ function AnalyzePage() {
   const commonAspectRatio = vs ? 16 / 9 : 20 / 9
 
   return (
-    <CustomPage>
-      <AnalyzeContext.Provider value={{
-        repoId: main?.repo.id,
-        comparingRepoId: vs?.repo.id,
-        repoName: name,
-        comparingRepoName,
-        repoInfo: main?.repoInfo,
-        comparingRepoInfo: vs?.repoInfo,
-      }}>
+    <CustomPage
+      header={(
         <CompareHeader
           repo1={main?.repo}
           repo2={vs?.repo}
@@ -149,7 +149,16 @@ function AnalyzePage() {
           onRepo2Valid={allValid}
           repo1DisableClearable
         />
-
+      )}
+    >
+      <AnalyzeContext.Provider value={{
+        repoId: main?.repo.id,
+        comparingRepoId: vs?.repo.id,
+        repoName: name,
+        comparingRepoName,
+        repoInfo: main?.repoInfo,
+        comparingRepoInfo: vs?.repoInfo,
+      }}>
         <Container maxWidth='lg'>
           <Section>
             {
@@ -169,7 +178,8 @@ function AnalyzePage() {
               </Grid>
               <Grid item xs={12} md={vs ? 4 : 6}>
                 <Analyze query='stars-history'>
-                  <H2 analyzeTitle display='none'>Stars History</H2>
+                  <H2 id='stars-history' analyzeTitle display='none'>Stars History</H2>
+                  <P2 display='none'>Stars history</P2>
                   <LineChart spec={{valueIndex: 'total', name: 'Stars', fromRecent: true}}/>
                 </Analyze>
               </Grid>
@@ -178,7 +188,7 @@ function AnalyzePage() {
           <Section>
             <H2>Commits</H2>
             <Analyze query='analyze-pushes-and-commits-per-month'>
-              <H3 sx={{ mt: 6 }}>Commits & Pushes History</H3>
+              <H3 id='commits-and-pushes-history' sx={{ mt: 6 }}>Commits & Pushes History</H3>
               <P2>
                 The trend of the total number of commits/pushes per month in a repository since it was created.
                 <br />
@@ -187,7 +197,7 @@ function AnalyzePage() {
               <PushesAndCommitsChart aspectRatio={commonAspectRatio} />
             </Analyze>
             <Analyze query='analyze-loc-per-month'>
-              <H3 sx={{ mt: 6 }}>Lines of code changed</H3>
+              <H3 id='lines-of-code-changed' sx={{ mt: 6 }}>Lines of code changed</H3>
               <P2>
                 The bars show the additions or deletions of code monthly.
                 <br />
@@ -196,7 +206,7 @@ function AnalyzePage() {
               <LocChart aspectRatio={commonAspectRatio} />
             </Analyze>
             <Analyze query='commits-time-distribution'>
-              <H3 sx={{ mt: 6 }}>Commits Time Distribution</H3>
+              <H3 id='commits-time-distribution' sx={{ mt: 6 }}>Commits Time Distribution</H3>
               <P2>
                 The Heat Maps below describe the number of commit events that occur at a particular point of time (UTC+0).
               </P2>
@@ -215,7 +225,7 @@ function AnalyzePage() {
               </Grid>
             </Grid>
             <Analyze query='analyze-pull-requests-size-per-month'>
-              <H3 sx={{ mt: 6 }}>Pull Request History</H3>
+              <H3 id='pr-history' sx={{ mt: 6 }}>Pull Request History</H3>
               <P2>
                 We divide the size of Pull Request into six intervals, from xs to xxl（based on the changes of code lines）. Learn more about
                 &nbsp;
@@ -226,7 +236,7 @@ function AnalyzePage() {
               <PrChart aspectRatio={commonAspectRatio} />
             </Analyze>
             <Analyze query='analyze-pull-request-open-to-merged'>
-              <H3 sx={{ mt: 6 }}>Pull Request Time Cost</H3>
+              <H3 id='pr-time-cost' sx={{ mt: 6 }}>Pull Request Time Cost</H3>
               <P2>
                 The time of a Pull Request from submitting to merging.
                 <br />
@@ -245,7 +255,7 @@ function AnalyzePage() {
               </Grid>
             </Grid>
             <Analyze query='analyze-issue-open-to-first-responded'>
-              <H3 sx={{ mt: 6 }}>Issue Time Cost</H3>
+              <H3 id='issue-time-cost' sx={{ mt: 6 }}>Issue Time Cost</H3>
               <P2>
                 The time of an issue from open to close.
                 <br />
@@ -256,7 +266,7 @@ function AnalyzePage() {
               <DurationChart aspectRatio={commonAspectRatio} />
             </Analyze>
             <Analyze query='analyze-issue-opened-and-closed'>
-              <H3 sx={{ mt: 6 }}>Issue History</H3>
+              <H3 id='issue-history' sx={{ mt: 6 }}>Issue History</H3>
               <IssueChart aspectRatio={commonAspectRatio} />
             </Analyze>
           </Section>
@@ -266,9 +276,9 @@ function AnalyzePage() {
               <H3 analyzeTitle={false} sx={{ mt: 6 }}>Geographical Distribution</H3>
               <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs value={mapType} onChange={handleChangeMapType}>
-                  <IconTab value='stars-map' icon={<StarIcon size={24} />}>Stargazers</IconTab>
-                  <IconTab value='issue-creators-map' icon={<IssueCreatorIcon size={24} />}>Issue Creators</IconTab>
-                  <IconTab value='pull-request-creators-map' icon={<PrCreatorIcon size={24} />}>Pull Requests Creators</IconTab>
+                  <IconTab id='geo-distribution-stargazers' value='stars-map' icon={<StarIcon size={24} />}>Stargazers</IconTab>
+                  <IconTab id='geo-distribution-issue-creators' value='issue-creators-map' icon={<IssueCreatorIcon size={24} />}>Issue Creators</IconTab>
+                  <IconTab id='geo-distribution-pr-creators' value='pull-request-creators-map' icon={<PrCreatorIcon size={24} />}>Pull Requests Creators</IconTab>
                 </Tabs>
               </Box>
               <Grid container alignItems='center'>
@@ -284,9 +294,9 @@ function AnalyzePage() {
               <H3 analyzeTitle={false} sx={{ mt: 6 }}>Companies</H3>
               <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs value={companyType} onChange={handleChangeCompanyType}>
-                  <IconTab value='analyze-stars-company' icon={<StarIcon />}>Stargazers</IconTab>
-                  <IconTab value='analyze-issue-creators-company' icon={<IssueCreatorIcon size={24} />}>Issue Creators</IconTab>
-                  <IconTab value='analyze-pull-request-creators-company' icon={<PrCreatorIcon size={24} />}>Pull Requests Creators</IconTab>
+                  <IconTab id='companies-stargazers' value='analyze-stars-company' icon={<StarIcon />}>Stargazers</IconTab>
+                  <IconTab id='companies-issue-creators' value='analyze-issue-creators-company' icon={<IssueCreatorIcon size={24} />}>Issue Creators</IconTab>
+                  <IconTab id='companies-pr-creators' value='analyze-pull-request-creators-company' icon={<PrCreatorIcon size={24} />}>Pull Requests Creators</IconTab>
                 </Tabs>
               </Box>
               <Grid container alignItems='center'>
@@ -308,13 +318,13 @@ function AnalyzePage() {
 
 export default () => <BrowserOnly>{() => <AnalyzePage />}</BrowserOnly>
 
-const IconTab = ({children, icon, ...props}: PropsWithChildren<{ value: string, icon?: string | React.ReactElement }>) => {
+const IconTab = ({children, id, icon, ...props}: PropsWithChildren<{ id: string, value: string, icon?: string | React.ReactElement }>) => {
   return (
     <Tab
       {...props}
       sx={{ textTransform: 'unset' }}
       label={(
-        <H4>
+        <H4 id={id}>
           {icon}
           &nbsp;
           {children}
