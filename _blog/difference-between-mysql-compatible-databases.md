@@ -1,5 +1,5 @@
 ---
-title: Difference Between MySQL Compatible Databases ...
+title: Difference Between MySQL Compatible Databases
 date: 2022-04-08
 authors: [hooopo]
 ---
