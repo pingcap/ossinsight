@@ -35,11 +35,11 @@ export default function Footer() {
             }}
           />
           <StandardCard
-            title='What is TiDB Cloud'
+            title='Why We Choose TiDB to Support OSS Insight'
             description='Documentation · 10 min read'
             codeStyleDescription={false}
-            link='https://docs.pingcap.com/tidbcloud?utm_source=ossinsight'
-            readMore='https://docs.pingcap.com/tidbcloud?utm_source=ossinsight'
+            link='/blog/why-we-choose-tidb-support-oss-insight?utm_source=ossinsight'
+            readMore='/blog/why-we-choose-tidb-support-oss-insight?utm_source=ossinsight'
             buttonVariant='outlined'
             top={icon(require('./icon-2.png').default)}
             cardSx={{

@@ -32,7 +32,15 @@ const config = {
           }
         ]
       }
-    ]
+    ],
+    [
+      '@docusaurus/plugin-content-blog',
+      {
+        id: '_blog',
+        routeBasePath: '_blog',
+        path: './_blog',
+      },
+    ],
   ],
   presets: [
     [
@@ -110,7 +118,7 @@ const config = {
             label: 'Insights',
           },
           {to: '/compare', label: '🔧 Compare', position: 'left'},
-          {to: '/try-your-own-dataset/?utm_content=header', label: '🔥 Try Your Own Dataset', position: 'right'},
+          {to: '/try-your-own-dataset/?utm_content=header', label: '👏 Try Your Own Dataset', position: 'right'},
           {
             href: 'https://en.pingcap.com/tidb-cloud/?utm_source=ossinsight',
             label: 'TiDB Cloud',
