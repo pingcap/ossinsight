@@ -158,7 +158,7 @@ function AnalyzePage() {
           <Section>
             {
               comparingRepoName ? undefined : (
-                <H1 sx={{ mt: 6 }}>
+                <H1 sx={{ mt: 2 }}>
                   <img width="48" height="48" src={`https://github.com/${name.split('/')[0]}.png`} alt={name} style={{ marginRight: 8, verticalAlign: 'text-bottom' }} />
                   <a href={`https://github.com/${name}`} target="_blank">
                     {name}
@@ -168,6 +168,9 @@ function AnalyzePage() {
                 </H1>
               )
             }
+            <P2>
+              * Due to the removing stars GitHub event is invisible, here we say is the approximate number.
+            </P2>
             <Grid container spacing={2} alignItems='center'>
               <Grid item xs={12} md={vs ? 8 : 6}>
                 <Summary items={summaries} />
