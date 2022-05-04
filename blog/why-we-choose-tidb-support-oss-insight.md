@@ -1,5 +1,5 @@
 ---
-title:  Why We Choose TiDB Support OSS Insight
+title: Why We Choose TiDB Support OSS Insight
 date: 2022-05-04
 ---
 
@@ -37,7 +37,7 @@ In fact, in addition to interesting projects like OSS Insight, TiDB has a wide r
 Unleashing the value of real-time data has become more and more important, and hope [TiDB](https://docs.pingcap.com/tidb/stable/overview?utm_source=ossinsight) can lend you a helping hand.
 
 :::info
-### 🌟 Get a quick look at how OSS Insight works
+### 🌟 Details in how OSS Insight works
 
 Go to read [Use TiDB Cloud to Analyze GitHub Events in 5 Minutes](https://ossinsight.io/blog/try-it-yourself) and use the [Developer Tier](https://tidbcloud.com/signup?utm_source=ossinsight) **free** for 1 year.
 
