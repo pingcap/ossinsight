@@ -137,7 +137,7 @@ ORDER BY 2 DESC
 +-------------------+-------+
 ```
 
-We have analyzed all the GitHub projects regarding databases, JavaScripe frameworks, programming languages, web frameworks, and low-code development tools, and provided valuable insights in 2021, in real time, and custom insights. If the repository you care about is not included here, you're welcome to submit your PR [here](https://github.com/hooopo/gharchive/tree/main/meta/repos). If you want to gain more insights into other areas, you can try TiDB Cloud by yourselves with this [5-minute tutorial](/blog/try-it-yourself/). 
+We have analyzed all the GitHub projects regarding databases, JavaScripe frameworks, programming languages, web frameworks, and low-code development tools, and provided valuable insights in 2021, in real time, and custom insights. If the repository you care about is not included here, you're welcome to submit your PR [here](https://github.com/hooopo/gharchive/tree/main/meta/repos). If you want to gain more insights into other areas, you can try TiDB Cloud by yourselves with this [10-minute tutorial](/blog/try-it-yourself/). 
 
 Below are the areas of GitHub projects we have analyzed. 
 
@@ -161,7 +161,7 @@ gharchive_dev> show tables;
 :::info
 ### 🌟 Details in how OSS Insight works
 
-Go to read [Use TiDB Cloud to Analyze GitHub Events in 5 Minutes](/blog/try-it-yourself) and use the [Developer Tier](https://tidbcloud.com/signup?utm_source=ossinsight) **free** for 1 year.
+Go to read [Use TiDB Cloud to Analyze GitHub Events in 10 Minutes](/blog/try-it-yourself) and use the [Developer Tier](https://tidbcloud.com/signup?utm_source=ossinsight) **free** for 1 year.
 
 You can find the reason [Why We Choose TiDB to Support OSS Insight](/blog/why-we-choose-tidb-to-support-oss-insight) as well!
 :::
