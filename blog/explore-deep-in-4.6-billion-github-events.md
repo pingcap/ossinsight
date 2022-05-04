@@ -362,4 +362,5 @@ All the analytics on **[OSSInsight.io](https://ossinsight.io/)** are powered by 
 
 ## Contact us 
 
-Do you find **[OSSInsight.io](https://ossinsight.io/)** useful and fun to work with? Do you have any question or feedback to share with us? Feel free to contact us through [community@tidb.io](mailto:community@tidb.io) and follow us on [Twitter](https://twitter.com/OSSInsight/) to get the latest information. You’re also welcome to share this insight tool with your friends. 
+Do you find **[OSSInsight.io](https://ossinsight.io/)** useful and fun to work with? Do you have any question or feedback to share with us? Feel free to [file an issue](https://github.com/pingcap/ossinsight/issues/new) on GitHub or follow us on [Twitter](https://twitter.com/OSSInsight/) to get the latest information. You’re also welcome to share this insight tool with your friends. 
+
