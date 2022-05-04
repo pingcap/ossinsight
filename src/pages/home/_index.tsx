@@ -1,3 +1,4 @@
+import { useHistory } from '@docusaurus/router';
 import React, {useCallback, useMemo, useState} from 'react';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import WordCloud from "../../components/WordCloud";
@@ -17,9 +18,10 @@ import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import {useRemoteData} from "../../components/RemoteCharts/hook";
 import Skeleton from "@mui/material/Skeleton";
-import {Repo} from "../../components/CompareHeader/RepoSelector";
+import RepoSelector, {Repo} from "../../components/CompareHeader/RepoSelector";
 import Link from "@docusaurus/Link";
 import {H1, H2, Span, Headline, Subtitle, Body, fontSizes, H2Plus} from './_components/typography'
+import AnalyzeSelector from '../../components/AnalyzeSelector';
 
 const Item = styled(Box)(({theme}) => ({
   padding: theme.spacing(4),
@@ -64,17 +66,10 @@ export default function Home() {
     }
   }, [repo1])
   const compare = useMemo(() => {
-    if (typeof window === 'undefined') {
-      return '/compare'
+    if (!repo1 || !repo2) {
+      return undefined
     }
-    const usp = new URLSearchParams()
-    if (repo1) {
-      usp.set('repo1', repo1.name)
-    }
-    if (repo2) {
-      usp.set('repo2', repo2.name)
-    }
-    return `/compare?${usp.toString()}`
+    return `/analyze/${repo1.name}?vs=${encodeURIComponent(repo2.name)}`
   }, [repo1, repo2])
   const {data: totalEventsData} = useRemoteData('events-total', {}, false)
 
@@ -106,6 +101,14 @@ export default function Home() {
                 &nbsp;Insight
               </Span>
             </H1>
+            <Box
+              mt={4}
+              display='flex'
+              justifyContent='flex-end'
+              sx={{ '> *': { flex: 1, maxWidth: 450, mx: 'unset' } }}
+            >
+              <AnalyzeSelector align='right' contrast />
+            </Box>
             <Body>
               Powered by
               <a href="https://en.pingcap.com/tidb-cloud/?utm_source=ossinsight" target="_blank">
@@ -199,7 +202,7 @@ export default function Home() {
                 sx={{backgroundColor: 'transparent', flex: 1, borderBottom: 'none'}}
                 position='static'
               />
-              <Button component={Link} variant='contained' href={compare}>
+              <Button component={Link} variant='contained' href={compare} disabled={!repo1 || !repo2}>
                 go!
               </Button>
             </Box>

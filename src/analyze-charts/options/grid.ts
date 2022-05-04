@@ -1,5 +1,6 @@
 import {OptionId} from 'echarts/types/src/util/types';
 import {GridOption} from 'echarts/types/dist/shared';
+import { dangerousGetCtx } from './_danger';
 import {simple} from './utils';
 
 export function grid(id: OptionId, option: GridOption = {}): GridOption {
@@ -10,6 +11,9 @@ export function grid(id: OptionId, option: GridOption = {}): GridOption {
 }
 
 export function topBottomLayoutGrid() {
+  const {context} = dangerousGetCtx()
+  context.layout = 'top-bottom'
+
   return simple(
     [
       grid('main'),
@@ -22,6 +26,9 @@ export function topBottomLayoutGrid() {
 }
 
 export function leftRightLayoutGrid() {
+  const {context} = dangerousGetCtx()
+  context.layout = 'left-right'
+
   return simple(
     [
       grid('main'),

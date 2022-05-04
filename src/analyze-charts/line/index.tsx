@@ -15,14 +15,14 @@ type LineData<T extends string> = Record<T, number> & {
   event_month: string
 }
 
-export const LineChart = withChart<LineData<any>, { valueIndex: string, name: string }>(({
+export const LineChart = withChart<LineData<any>, { valueIndex: string, name: string, fromRecent?: boolean }>(({
   title: propsTitle,
   data,
   compareData,
   repoName,
   comparingRepoName,
-}, {valueIndex, name}) => ({
-  xAxis: timeAxis<'x'>(),
+}, {valueIndex, name, fromRecent = false}) => ({
+  xAxis: timeAxis<'x'>(undefined, undefined, fromRecent),
   yAxis: valueAxis<'y'>(undefined, {name}),
   title: title(propsTitle),
   tooltip: axisTooltip('line'),

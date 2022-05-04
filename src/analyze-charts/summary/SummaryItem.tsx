@@ -59,7 +59,7 @@ export function SummaryItem<F extends string>({title, icon, sizes, field, ...gri
         ? (
           <DataGrid item xs={4} md={sizes[1]}>
             <BodyText>
-              {getData(compareData, field) ?? <Skeleton variant="text" />}
+              {getData(compareData, field) ?? <CircularProgress sx={{verticalAlign: -2}} size={24} />}
             </BodyText>
           </DataGrid>
         ) : undefined}
