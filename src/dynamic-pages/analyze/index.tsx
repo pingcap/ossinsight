@@ -272,7 +272,7 @@ function AnalyzePage() {
               </Box>
               <Grid container alignItems='center'>
                 <Grid item xs={12} md={vs ? 8 : 9}>
-                  <WorldMapChart />
+                  <WorldMapChart aspectRatio={3 / 2} />
                 </Grid>
                 <Grid item xs={12} md={vs ? 4 : 3}>
                   <List title='Geo-Locations' n={10} /* valueIndex='count' */ nameIndex='country_or_area' percentIndex='percentage' transformName={alpha2ToTitle} />
@@ -290,7 +290,7 @@ function AnalyzePage() {
               </Box>
               <Grid container alignItems='center'>
                 <Grid item xs={12} md={vs ? 8 : 9}>
-                  <CompaniesChart spec={{valueIndex: companyValueIndices[companyType]}} />
+                  <CompaniesChart spec={{valueIndex: companyValueIndices[companyType]}} aspectRatio={3 / 2} />
                 </Grid>
                 <Grid item xs={12} md={vs ? 4 : 3}>
                   <List title='Companies' n={10} /* valueIndex={companyValueIndices[companyType]} */ nameIndex='company_name' percentIndex='proportion' />
