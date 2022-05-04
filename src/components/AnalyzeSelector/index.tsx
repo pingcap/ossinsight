@@ -21,6 +21,7 @@ export default function AnalyzeSelector ({placeholder = 'Choose any repo you are
 
   return (
     <RepoSelector
+      defaultRepoName='recommend-repo-list-1-keyword'
       label={placeholder}
       repo={undefined}
       onChange={onAnalyzeRepoChanged}
