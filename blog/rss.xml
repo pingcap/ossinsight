@@ -4,10 +4,146 @@
         <title>Open Source Software Analysis and Comparing Tools Blog</title>
         <link>https://ossinsight.io/blog</link>
         <description>Open Source Software Analysis and Comparing Tools Blog</description>
-        <lastBuildDate>Fri, 08 Apr 2022 00:00:00 GMT</lastBuildDate>
+        <lastBuildDate>Tue, 03 May 2022 00:00:00 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <copyright>Copyright © 2022 PingCAP</copyright>
+        <item>
+            <title><![CDATA[Explore Deep in 4.6 Billion GitHub Events]]></title>
+            <link>https://ossinsight.io/blog/2022/05/03/explore-deep-in-4.6-billion-github-events</link>
+            <guid>/2022/05/03/explore-deep-in-4.6-billion-github-events</guid>
+            <pubDate>Tue, 03 May 2022 00:00:00 GMT</pubDate>
+            <description><![CDATA[4.6 billion is literally an astronomical figure. The richest star map of our galaxy, brought by Gaia space observatory, includes just under 2 billion stars. What does a view of 4.6 billion GitHub events really look like? What secrets and values can be discovered in such an enormous amount of data?]]></description>
+            <content:encoded><![CDATA[<p>4.6 billion is literally an astronomical figure. The richest star map of our galaxy, brought by Gaia space observatory, includes just under 2 billion stars. What does a view of 4.6 billion GitHub events really look like? What secrets and values can be discovered in such an enormous amount of data? </p><p><strong>Here you go with <a href="https://ossinsight.io/">OSSInsight.io</a> </strong>that can help you find the answer<strong>.</strong> It’s a useful insight tool that can give you the most updated open source intelligence, and help you deeply understand any single GitHub project or quickly compare any two projects by digging deep into 4.6 billions GitHub events in real time.  </p><h2>Compare any two GitHub projects</h2><p>Do you wonder how different projects have performed and developed over time? Which project is worthy of more attention? <strong><a href="https://ossinsight.io/">OSSInsight.io</a></strong> can answer your questions via the <a href="https://ossinsight.io/compare/?utm_source=dogfood_article">Compare Projects</a> page.</p><p>Let’s take the <a href="https://github.com/kubernetes/kubernetes">Kubernetes repository</a>  (K8s) and Docker’s <a href="https://github.com/moby/moby">Moby repository</a> as examples and compare them in regard to popularity and coding vitality. </p><h3><strong>Popularity</strong></h3><p>To compare the popularity of two repositories, we use multiple metrics including the number of stars, the growth trend of stars over time, and stargazers’ geographic and employment distribution. </p><p><strong>The number of stars</strong></p><p>The line chart below shows the accumulated number of stars of K8s and Moby each year. According to the chart, Moby was ahead of K8s until late 2019. The star growth of Moby slowed after 2017 while K8s has kept a steady growth pace. </p><p><img src="./media/the-star-history.png"/></p><center>The star history of K8s and Moby</center><p><strong>The geographical distribution of stargazers</strong></p><p>The map below shows the stargazers’ geographical distribution of Moby and K8s. As you can see, their stargazers are scattered around the world with the majority coming from the US, Europe, and China.</p><p><img src="./media/geographicla-distribution-of-stargazers.png"/></p><center>The geographical distribution of K8s and Moby stargazers</center><p><strong>The employment distribution of stargazers</strong></p><p>The chart below shows the stargazers’ employment of K8s (red) and Moby (dark blue). Both of their stargazers work in a wide range of industries, and most come from leading dotcom companies such as Google, Tencent, and Microsoft. The difference is that the top two companies of K8s’ stargazers are  Google and Microsoft from the US, while Moby’s top two followers are Tencent and Alibaba from China. </p><p><img src="./media/employment-distribution-of-stargazers.png"/></p><center>The employment distribution of K8s and Moby stargazers</center><h3><strong>Coding vitality</strong></h3><p>To compare the coding vitality of two GitHub projects, we use many metrics including the growth trend of pull requests (PRs), the monthly number of PRs, commits and pushes, and the heat map of developers’ contribution time. </p><p><strong>The number of commits and pushes</strong></p><p>The bar chart below shows the number of commits and pushes submitted to K8s (top) and Moby (bottom) each month after their inception. Generally speaking, K8s has more pushes and commits than Moby, and their number grew stably until 2020 followed by a slowdown afterwards. Moby’s monthly pushes and commits had a minor growth between 2015 and 2017, and then barely increased after 2018.</p><p><img src="./media/monthly-pushes-and-commits.png"/></p><center>The monthly pushes and commits of K8s (top) and Moby (bottom)</center><p><strong>The number of PRs</strong></p><p>The charts below show the monthly and accumulated number of PRs of the two repositories. As you can see, K8s has received stable and consistent PR contributions ever since its inception and its accumulated number of PRs has also grown steadily. Moby had vibrant PR submissions before late 2017, but started to lose afterwards. Its accumulated number of PRs reached a plateau in 2017, which has remained the case ever since. </p><p><img src="./media/monthly-and-accumulated-pr-number.png"/></p><center>The monthly and accumulated PR number of K8s (top) and Moby (bottom)</center><p><strong>Developers’ contribution time</strong></p><p>The following heat map shows developers’ contribution time for K8s (left) and Moby (right). Each square represents one hour in a day. The darker the color, the more contributions occur during that time. K8s has many more dark parts than Moby, and K8s’ contributions occur almost 24 hours a day, 7 days a week. K8s definitely has more dynamic coding activities than Moby. </p><p><img src="./media/heat-map.png"/></p><center>Heat map of developers’ contribution time of K8s (left) and Moby (right)</center><p><strong>Taken together,</strong> these metrics show that while both K8s and Moby are popular across the world and industries, K8s has more vibrant coding activities than Moby. K8s is still gaining popularity and coding vitality; however, Moby is falling in both over time.</p><p>Popularity and coding vitality are just two dimensions to compare repositories. If you want to discover more insights or compare other projects you are interested in, feel free to visit the <a href="https://ossinsight.io/compare/?utm_source=dogfood_article">Compare</a> page and explore it for yourself.  Of course, you can also use this  page to <strong>deeply explore any single GitHub projects</strong> and gain the most up-to-date insights about them.</p><h2>Key open source insights</h2><p><a href="https://ossinsight.io/">OSSInsight.io</a> does more than explore or compare repositories. <strong>It gives you <a href="https://ossinsight.io/database/deep-insight-into-open-source-databases">historical, real-time, and custom open source insights</a>.</strong> In this section, we’ll share some key insights in open source databases and programming languages. If you want to gain insights in other areas, you can go to the <a href="https://ossinsight.io/_/database/?utm_source=dogfood_article">Insight</a> page. </p><p><strong>Note</strong>: If you want to get those analytical results by yourself, you can execute the SQL commands above each chart on TiDB Cloud with ease following this <a href="https://ossinsight.io/blog/try-it-yourself/?utm_source=dogfood_article">5-minute tutorial</a>. </p><h3><strong>Rust: the most active language</strong></h3><p>Rust was first released in 2012 and has been among the leading languages for 10 years. It has the most active language repository with a total of 103,047 PRs at the time of writing. </p><details><summary>Click here to show SQL commands</summary><p><pre><code class="language-sql">SELECT
+    /*+ read_from_storage(tiflash[github_events]), MAX_EXECUTION_TIME(120000) */
+    programming_language_repos.name AS repo_name,
+    COUNT(*)      AS num
+FROM github_events
+         JOIN programming_language_repos ON programming_language_repos.id = github_events.repo_id
+WHERE type = &#x27;PullRequestEvent&#x27;
+  AND action = &#x27;opened&#x27;
+GROUP BY 1
+ORDER BY 2 DESC
+LIMIT 10
+</code></pre></p></details><p><img src="./media/pr-number-of-pl-repos.png"/></p><center>PR numbers of the leading programming languages</center><h3><strong>Go: the new favorite and the fastest growing language</strong></h3><p>According to <strong><a href="https://ossinsight.io/">OSSInsight.io</a></strong>, 10 programming languages dominate the open source community. Go is the most popular with 108,317 stars, followed by Node and TypeScript. Go is also the fastest growing language in popularity with the steepest upward trend.</p><details><summary>Click here to show SQL commands</summary><p><pre><code class="language-sql">WITH repo_stars AS (
+    SELECT
+        /*+ read_from_storage(tiflash[github_events]) */
+        repo_id,
+        ANY_VALUE(repos.name) AS repo_name,
+        COUNT(distinct actor_login) AS stars
+    FROM github_events
+         JOIN programming_language_repos repos ON repos.id = github_events.repo_id
+    WHERE type = &#x27;WatchEvent&#x27;
+    GROUP BY 1
+), top_10_repos AS (
+    SELECT
+        repo_id, repo_name, stars
+    FROM repo_stars rs
+    ORDER BY stars DESC
+    LIMIT 10
+), tmp AS (
+    SELECT
+        /*+ read_from_storage(tiflash[github_events]) */
+        event_year,
+        tr.repo_name AS repo_name,
+        COUNT(*) AS year_stars
+    FROM github_events
+         JOIN top_10_repos tr ON tr.repo_id = github_events.repo_id
+    WHERE type = &#x27;WatchEvent&#x27; AND event_year &lt;= 2021
+    GROUP BY 2, 1
+    ORDER BY 1 ASC, 2
+), tmp1 AS (
+    SELECT
+        event_year,
+        repo_name,
+        SUM(year_stars) OVER(partition by repo_name order by event_year ASC) as stars
+    FROM tmp
+    ORDER BY event_year ASC, repo_name
+)
+SELECT event_year, repo_name, stars FROM tmp1
+</code></pre></p></details><p><img src="./media/star-growth-trends-of-leading-programming-languages.png"/></p><center>The star growth trends of leading programming languages</center><h3><strong>Microsoft and Google: the top two language contributors</strong></h3><p>As world-renowned high-tech companies, Microsoft and Google take the lead in open source language contributions with a total of 1,443 and 947 contributors respectively at the time of writing. </p><details><summary>Click here to show SQL commands</summary><p><pre><code class="language-sql">SELECT
+    /*+ read_from_storage(tiflash[github_events]), MAX_EXECUTION_TIME(120000) */
+    TRIM(LOWER(REPLACE(u.company, &#x27;@&#x27;, &#x27;&#x27;))) AS company,
+    COUNT(DISTINCT actor_id)                 AS num
+FROM
+    github_events github_events
+    JOIN programming_language_repos db ON db.id = github_events.repo_id
+    JOIN users u ON u.login = github_events.actor_login
+WHERE
+    github_events.type IN (
+        &#x27;IssuesEvent&#x27;, &#x27;PullRequestEvent&#x27;,&#x27;IssueCommentEvent&#x27;,
+        &#x27;PullRequestReviewCommentEvent&#x27;, &#x27;CommitCommentEvent&#x27;,
+        &#x27;PullRequestReviewEvent&#x27;
+    )
+    AND u.company IS NOT NULL
+    AND u.company != &#x27;&#x27;
+    AND u.company != &#x27;none&#x27;
+GROUP BY 1
+ORDER BY 2 DESC
+LIMIT 20;
+</code></pre></p></details><p><img src="./media/companies-who-contribute-the-most-to-programing-languages.png"/></p><center>Companies who contribute the most to programing languages</center><h3><strong>Elasticsearch draws the most attention </strong></h3><p>Elasticsearch was one of the first open source databases. It is the most liked database with 64,554 stars, followed by Redis and Prometheus. From 2011 to 2016, Elasticseasrch and Redis shared the top spot until Elasticsearch broke away in 2017.</p><details><summary>Click here to show SQL commands</summary><p><pre><code class="language-sql">WITH repo_stars AS (
+    SELECT
+        /*+ read_from_storage(tiflash[github_events]) */
+        repo_id,
+        ANY_VALUE(repos.name) AS repo_name,
+        COUNT(distinct actor_login) AS stars
+    FROM github_events
+         JOIN db_repos repos ON repos.id = github_events.repo_id
+    WHERE type = &#x27;WatchEvent&#x27;
+    GROUP BY 1
+), top_10_repos AS (
+    SELECT
+        repo_id, repo_name, stars
+    FROM repo_stars rs
+    ORDER BY stars DESC
+    LIMIT 10
+), tmp AS (
+    SELECT
+        /*+ read_from_storage(tiflash[github_events]) */
+        event_year,
+        tr.repo_name AS repo_name,
+        COUNT(*) AS year_stars
+    FROM github_events
+         JOIN top_10_repos tr ON tr.repo_id = github_events.repo_id
+    WHERE type = &#x27;WatchEvent&#x27; AND event_year &lt;= 2021
+    GROUP BY 2, 1
+    ORDER BY 1 ASC, 2
+), tmp1 AS (
+    SELECT
+        event_year,
+        repo_name,
+        SUM(year_stars) OVER(partition by repo_name order by event_year ASC) as stars
+    FROM tmp
+    ORDER BY event_year ASC, repo_name
+)
+SELECT event_year, repo_name, stars FROM tmp1
+</code></pre></p></details><p><img src="./media/star-growth-trend-of-leading-databases.png"/></p><center>The star growth trend of leading databases</center><h3><strong>China: the No.1 open source database fan</strong></h3><p>China has the most followers of open source databases with 11,171 stargazers of database repositories, followed by the US and Europe. </p><details><summary>Click here to show SQL commands</summary><p><pre><code class="language-sql">select upper(u.country_code) as country_or_area, count(*) as count, count(*) / max(s.total) as percentage
+from github_events
+use index(index_github_events_on_repo_id)
+left join users u ON github_events.actor_login = u.login
+join (
+    -- Get the number of people has the country code.
+    select count(*) as total
+    from github_events
+    use index(index_github_events_on_repo_id)
+    left join users u ON github_events.actor_login = u.login
+    where repo_id in (41986369, 48833910, 53311716) and github_events.type = &#x27;WatchEvent&#x27; and u.country_code is not null
+) s
+where repo_id in (41986369, 48833910, 53311716) and github_events.type = &#x27;WatchEvent&#x27; and u.country_code is not null
+group by 1
+order by 2 desc;
+</code></pre></p></details><p><img src="./media/geographical-distribution-database-stargazers.png"/></p><center>The geographical distribution of open source database stargazers</center><h3><strong>CockroachDB gets the most feedback from the community of open source databases</strong></h3><p>Issues submitted by developers are important feedback from the community. CockroachDB has continually received issues during the past ten years and has ranked No.1 among all open source databases in the total number of issue submissions. </p><details><summary>Click here to show SQL commands</summary><p><pre><code class="language-sql">SELECT
+    /*+ read_from_storage(tiflash[github_events]) */
+    db.group_name  AS repo_group_name,
+    COUNT(distinct pr_or_issue_id) AS num
+FROM
+    github_events github_events
+    JOIN osdb_repos db ON db.id = github_events.repo_id
+WHERE type = &#x27;IssuesEvent&#x27;
+GROUP BY 1
+ORDER BY 2 DESC
+</code></pre></p></details><p><img src="./media/issues-received-by-leading-open-source-databases.png"/></p><center>The number of issues received by leading open source databases</center><p><strong><a href="https://ossinsight.io/">OSSInsight.io</a></strong> also allows you to create your own custom insights into any GitHub repository created after 2011. You’re welcome to visit the <a href="https://ossinsight.io/compare/?utm_source=dogfood_article">Insight page</a> to explore more. </p><h2>Run your own analytics with TiDB Cloud</h2><p>All the analytics on <strong><a href="https://ossinsight.io/">OSSInsight.io</a></strong> are powered by <a href="https://en.pingcap.com/tidb-cloud/?utm_source=ossinsight">TiDB Cloud</a>, a fully-managed database as a service. If you want to run your own analytics and get your own insights, sign up for a TiDB Cloud account and try it for yourself with this <a href="https://ossinsight.io/blog/try-it-yourself/?utm_source=dogfood_article">5-minute tutorial</a>.</p><h2>Contact us</h2><p>Do you find <strong><a href="https://ossinsight.io/">OSSInsight.io</a></strong> useful and interesting? Do you have any questions or feedback to share with us? Feel free to contact us through <a href="mailto:community@tidb.io">community@tidb.io</a> and follow us on <a href="https://twitter.com/OSSInsight/?utm_source=dogfood_article">Twitter</a> to get the latest information. You’re also welcome to share this insight tool with your friends.</p>]]></content:encoded>
+        </item>
         <item>
             <title><![CDATA[Difference Between MySQL Compatible Databases ...]]></title>
             <link>https://ossinsight.io/blog/difference-between-mysql-compatible-databases</link>
