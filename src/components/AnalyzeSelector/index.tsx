@@ -5,9 +5,10 @@ import RepoSelector, { Repo } from '../CompareHeader/RepoSelector';
 export interface AnalyzeSelectorProps {
   placeholder?: string
   align?: 'left' | 'right'
+  contrast?: boolean
 }
 
-export default function AnalyzeSelector ({placeholder = 'Choose any repo you are interested in...', align}: AnalyzeSelectorProps) {
+export default function AnalyzeSelector ({placeholder = 'Choose any repo you are interested in...', align, contrast}: AnalyzeSelectorProps) {
   const history = useHistory()
   const onAnalyzeRepoChanged = useCallback((repo: Repo | undefined) => {
     if (repo) {
@@ -25,6 +26,7 @@ export default function AnalyzeSelector ({placeholder = 'Choose any repo you are
       onChange={onAnalyzeRepoChanged}
       onValid={onAnalyzeRepoValid}
       align={align}
+      contrast={contrast}
     />
   )
 }
