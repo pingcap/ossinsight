@@ -40,6 +40,14 @@ export default function List({n, valueIndex, nameIndex, percentIndex, title, tra
                 textOverflow: 'ellipsis',
               }}>
                 <BodyText>
+                  <span style={{
+                    display: 'inline-block',
+                    marginRight: '4px',
+                    borderRadius:'10px',
+                    width:'10px',
+                    height:'10px',
+                    backgroundColor: ['#dd6b66', '#759aa0'][i],
+                  }}/>
                   {[repoName, comparingRepoName][i]}
                 </BodyText>
               </Box>
