@@ -39,7 +39,7 @@ For more cases, please see [here](https://en.pingcap.com/customers/?utm_source=o
 :::info
 ### 🌟 Details in how OSS Insight works
 
-Go to read [Use TiDB Cloud to Analyze GitHub Events in 5 Minutes](https://ossinsight.io/blog/try-it-yourself) and use the [Developer Tier](https://tidbcloud.com/signup?utm_source=ossinsight) **free** for 1 year.
+Go to read [Use TiDB Cloud to Analyze GitHub Events in 5 Minutes](/blog/try-it-yourself) and use the [Developer Tier](https://tidbcloud.com/signup?utm_source=ossinsight) **free** for 1 year.
 
-You can find how we deal with massive github data in [Data Preparation for Analytics](https://ossinsight.io/blog/how-it-works) as well!
+You can find how we deal with massive github data in [Data Preparation for Analytics](/blog/how-it-works) as well!
 :::
