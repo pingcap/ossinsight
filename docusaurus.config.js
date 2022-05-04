@@ -152,14 +152,6 @@ const config = {
                 to: '/database/deep-insight-into-open-source-databases/',
               },
               {
-                label: 'Analyze Single Repo',
-                to: '/analyze',
-              },
-              {
-                label: 'Compare Any Two Repos',
-                to: '/analyze/vuejs/vue?vs=facebook%2Freact',
-              },
-              {
                 label: 'Try Your Own Dataset',
                 to: '/try-your-own-dataset/?utm_content=footer',
               },
