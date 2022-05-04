@@ -98,13 +98,13 @@ function AnalyzePage() {
       data: repoInfo => repoInfo.forks,
     },{
       icon: <PeopleIcon fill='#F77C00'/>,
-      title: 'Contributors',
-      query: 'committers-total',
+      title: 'PR Creators',
+      query: 'pull-request-creators-total ',
       field: '*'
     },{
       icon: <CodeIcon fill='#309CF2'/>,
       title: 'Language',
-      data: repoInfo => repoInfo.forks,
+      data: repoInfo => repoInfo.language,
     }]
   }, [])
 
