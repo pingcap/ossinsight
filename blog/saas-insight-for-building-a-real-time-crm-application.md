@@ -1,5 +1,5 @@
 ---
-title: Real-time insights on large volume of email data for SaaS CRM
+title: SaaS Insight for Building a Real-time CRM Application
 date: 2022-05-01
 authors: [ilovesoup]
 ---
