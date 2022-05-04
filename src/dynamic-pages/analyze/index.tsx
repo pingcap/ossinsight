@@ -148,6 +148,8 @@ function AnalyzePage() {
           onRepo1Valid={allValid}
           onRepo2Valid={allValid}
           repo1DisableClearable
+          repo1Placeholder='Select to analyze'
+          repo2Placeholder='Add to compare'
         />
       )}
     >
