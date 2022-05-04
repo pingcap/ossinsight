@@ -4,14 +4,14 @@
         <title>Open Source Software Analysis and Comparing Tools Blog</title>
         <link>https://ossinsight.io/_blog</link>
         <description>Open Source Software Analysis and Comparing Tools Blog</description>
-        <lastBuildDate>Wed, 04 May 2022 11:13:17 GMT</lastBuildDate>
+        <lastBuildDate>Wed, 04 May 2022 12:01:38 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <item>
             <title><![CDATA[Open Source Database Repos Landscape 2021]]></title>
             <link>https://ossinsight.io/_blog/deep-insight-about-oss-database-2021</link>
             <guid>/deep-insight-about-oss-database-2021</guid>
-            <pubDate>Wed, 04 May 2022 11:13:17 GMT</pubDate>
+            <pubDate>Wed, 04 May 2022 12:01:38 GMT</pubDate>
             <description><![CDATA[In this chapter, we will share with you some of the top Open Source Database repos (OSDB repos) on GitHub in 2021 measured by different metrics including the number of stars, PRs, contributors, countries, regions and so on.]]></description>
             <content:encoded><![CDATA[<p><img src="/img/gharchive-title-img.png"/></p><p>In this chapter, we will share with you some of <strong>the top Open Source Database repos (OSDB repos) on GitHub in 2021</strong> measured by different metrics including the number of stars, PRs, contributors, countries, regions and so on. </p><p>Note: </p><ol><li>You can move your cursor onto any of the repository bars/lines on the chart and get the exact number. </li><li>The SQL commands above each chart are what we use on our TiDB Cloud to get the analytical results. Try those SQL commands by yourselves on TiDB Cloud with this <a href="/blog/try-it-yourself/">10-minute tutorial</a>.</li></ol><h2>Star history of top OSDB repos since 2011</h2><p>The number of stars is often thought of as a measure of whether a github repository is popular or not. We sort all database repositories from github by the total number of historical stars since 2011. For visualizing the results more intuitively, we show the top 10 open source databases by using an interactive line chart. </p><div chart="dynamic-stars" category="archive-2021-top10-star-racing" repo="db_repos"></div><h2>Top 10 the most starred OSDB repos in 2021</h2><div chart="barchart" category="archive-2021-top10-by-stars" n="10" categoryIndex="repo_name" valueIndex="stars" seriesName="Stars" repo="db_repos"></div><h2>Top 10 OSDB repos with the most PRs in 2021</h2><div chart="barchart" category="archive-2021-top10-by-prs" n="20" categoryIndex="repo_name" valueIndex="num" seriesName="PRs" repo="db_repos"></div><h2>Top 20 contributors in OSDB repos</h2><div chart="barchart" category="archive-2021-top20-by-developers" categoryIndex="actor_login" valueIndex="pr_count" categoryType="owner" seriesName="PRs" repo="db_repos"></div><h2>Top 20 OSDB repos with the highest YoY growth rate of stars in 2021</h2><div chart="yoychart" category="archive-2021-top20-by-stars-yoy" repo="db_repos"></div><h2>Top 10 OSDB repos with the lowest YoY growth rate of stars in 2021</h2><div chart="yoychart" category="archive-2021-bottom10-by-yoy" repo="db_repos"></div><h2>Top 5 programming languages used in OSDB repos in 2021</h2><div chart="barchart" category="archive-2021-top5-by-languages" categoryIndex="language" valueIndex="COUNT(*)" categoryType="lang" seriesName="PRs" repo="db_repos"></div><h2>Top 20 companies contributing the most to OSDB repos in 2021</h2><div chart="barchart" category="archive-2021-top20-by-companies" categoryIndex="company" valueIndex="users_count" seriesName="Contributors" repo="db_repos"></div><h2>Top 10 countries/regions contributing the most to OSDB repos in 2021</h2><div chart="worldmapchart" category="archive-2021-top10-by-regions" categoryIndex="country_code" valueIndex="users_count" seriesName="Contributors" repo="db_repos"></div><h2>The Rankings of OSDB repos on GitHub measured by Z-score in 2021</h2><p>The previous analysis results were only evaluated from a single dimension, now let&#x27;s evaluate them from a multidimensional perspective. We can try to rank the repositories based on the <a href="https://en.wikipedia.org/wiki/Standard_score">Z-score</a> standard.</p><p>This is the comprehensive ranking calculated by z-score:</p><div chart="zscorechart" category="archive-2021-archive-ranking" repo="db_repos"></div>]]></content:encoded>
         </item>
@@ -19,7 +19,7 @@
             <title><![CDATA[Why TiDB is Better]]></title>
             <link>https://ossinsight.io/_blog/why-tidb-is-better</link>
             <guid>/why-tidb-is-better</guid>
-            <pubDate>Wed, 04 May 2022 11:13:17 GMT</pubDate>
+            <pubDate>Wed, 04 May 2022 12:01:38 GMT</pubDate>
             <description><![CDATA[const tidbGroup = [41986369, 48833910, 53311716]]]></description>
         </item>
         <item>
