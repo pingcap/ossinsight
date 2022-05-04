@@ -11,7 +11,7 @@ For developers, it means realtime insights on topics like the latest and hottest
 
 ![](/img/try-it-yourself/top5-languages.png)
 
-Fortunately, the [GH Archive](https://www.gharchive.org/) provide you the basic data to answer these questions. All you need is a database supporting these query. So simple!
+Fortunately, the [GH Archive](https://www.gharchive.org/) provides you the basic data to answer these questions. All you need is a database supporting these query. So simple!
 
 In fact, if you think about it carefully, you might find that not easy: you want the system to provide summary statistics of a large amount of data, such as the hottest language ranking in the figure above, as well as a large number of concurrent accesses to individual accounts. You might need two systems: one of them focuses on high-concurrency detailed data services, while the other requires insight reports based on a large amount of data. Regardless of Github insights, you might encounter similar problems in your daily work. For example, if you are building a operational gaming data service system, you might face the customer inquery request: "I just looted the sword of infinity, but I can't find it in my backpack now!" You need to quickly locate the loot data of that unlucky player from large volume of records to get a clue of the situation. Did he accidentally destroyed the sword? Is it ninjaed? Does the bored player simply want a chat with GMs? At the mean time, the operation team is also urging: "For the recently launched class Night Lord, please give me the latest damage statistics immediately. I suspect that the Dark Hammer skill is too imba and need a nerf immediately."
 
