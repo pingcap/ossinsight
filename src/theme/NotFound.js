@@ -16,7 +16,9 @@ function NotFound() {
   const [display, setDisplay] = useState(false)
 
   useEffect(() => {
-    const {pathname,search,hash} = window.location;
+    let {pathname,search,hash} = window.location;
+    search = search?.replace(/^\?/, '')
+    hash = hash?.replace(/^#/, '')
     // Only support redirect analyze/repo/name for now
     // TODO: see https://www.npmjs.com/package/path-to-regexp
     //       use plugin data to auto generate regexp list.

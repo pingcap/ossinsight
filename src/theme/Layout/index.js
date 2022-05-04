@@ -20,7 +20,7 @@ import './styles.css';
 import ThemeAdaptor from "../../components/ThemeAdaptor";
 
 function Layout(props) {
-  const {children, noFooter, wrapperClassName, pageClassName} = props;
+  const {children, noFooter, wrapperClassName, pageClassName, header} = props;
   useKeyboardNavigation();
   return (
     <LayoutProviders>
@@ -32,6 +32,8 @@ function Layout(props) {
         <AnnouncementBar />
 
         <Navbar />
+
+        {header}
 
         <div
           className={clsx(

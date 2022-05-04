@@ -34,8 +34,20 @@ export default function List({n, valueIndex, nameIndex, percentIndex, title, tra
         {comparingRepoName
           ? (group.map((_, i, all) => (
             <Grid item xs={12 / all.length}>
-              <Box flex={1} px={1}>
+              <Box flex={1} px={1} sx={{
+                overflow: 'hidden',
+                whiteSpace: 'nowrap',
+                textOverflow: 'ellipsis',
+              }}>
                 <BodyText>
+                  <span style={{
+                    display: 'inline-block',
+                    marginRight: '4px',
+                    borderRadius:'10px',
+                    width:'10px',
+                    height:'10px',
+                    backgroundColor: ['#dd6b66', '#759aa0'][i],
+                  }}/>
                   {[repoName, comparingRepoName][i]}
                 </BodyText>
               </Box>

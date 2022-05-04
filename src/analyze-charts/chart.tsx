@@ -1,5 +1,3 @@
-import ShareIcon from '@mui/icons-material/Share';
-import Fab from '@mui/material/Fab';
 import EChartsReact from 'echarts-for-react';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import CommonChartContext, { CommonChartShareInfo } from '../components/CommonChart/context';
@@ -31,12 +29,12 @@ export function withChart<T = unknown, P = {}>(useOption: (props: AnalyzeContext
 
     const shareInfo: CommonChartShareInfo = {
       title: chartContext.title,
-      description: chartContext.description,
+      description: chartContext.description ?? '',
       keywords: [],
       hash: chartContext.hash,
       message: context.comparingRepoName
-        ? `I'm comparing ${context.repoName} vs ${context.comparingRepoName} at OSSInsight.io`
-        : `I'm analyzing ${context.repoName} at OSSInsight.io`,
+        ? `Comparing ${context.repoName} with ${context.comparingRepoName} | ${chartContext.title} | OSSInsight.io`
+        : `Analyzing ${context.repoName} | ${chartContext.title} | OSSInsight.io`,
     }
 
     const ctx = {...context, ...chartContext, context: {} as Record<string, any>};
@@ -47,6 +45,16 @@ export function withChart<T = unknown, P = {}>(useOption: (props: AnalyzeContext
       console.debug(option)
     }
     dangerousSetCtx(undefined);
+
+    option.toolbox = {
+      feature: {
+        myShareChart: {
+          show: !shareBtnDisabled,
+          icon: 'path://M736,608a127.776,127.776,0,0,0-115.232,73.28l-204.896-117.056a30.848,30.848,0,0,0-9.696-3.2A127.68,127.68,0,0,0,416,512c0-6.656-0.992-13.088-1.984-19.456,0.608-0.32,1.28-0.416,1.856-0.768l219.616-125.472A127.328,127.328,0,0,0,736,416c70.592,0,128-57.408,128-128s-57.408-128-128-128-128,57.408-128,128c0,6.72,0.992,13.152,1.984,19.616-0.608,0.288-1.28,0.256-1.856,0.608l-219.616,125.472A127.328,127.328,0,0,0,288,384c-70.592,0-128,57.408-128,128s57.408,128,128,128a126.912,126.912,0,0,0,84.544-32.64,31.232,31.232,0,0,0,11.584,12.416l224,128c0.352,0.224,0.736,0.256,1.12,0.448C615.488,812.992,669.6,864,736,864c70.592,0,128-57.408,128-128s-57.408-128-128-128',
+          onclick: handleShowDebugModel
+        }
+      }
+    }
 
     return (
       <div style={{ position: 'relative' }}>
@@ -60,22 +68,6 @@ export function withChart<T = unknown, P = {}>(useOption: (props: AnalyzeContext
               lazyUpdate
               ref={echartsRef}
             />
-            <Fab
-              size='small'
-              sx={{
-                position: 'absolute',
-                right: 24,
-                top: 24,
-                zIndex: 'var(--ifm-z-index-fixed-mui)',
-                opacity: 0.2,
-                ':hover': {
-                  opacity: 1
-                }
-              }}
-              onClick={handleShowDebugModel} disabled={shareBtnDisabled}
-            >
-              <ShareIcon />
-            </Fab>
             <ShareDialog open={showDebugModel} onClose={handleCloseDebugModel} />
           </EChartsContext.Provider>
         </CommonChartContext.Provider>

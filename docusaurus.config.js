@@ -152,10 +152,6 @@ const config = {
                 to: '/database/deep-insight-into-open-source-databases/',
               },
               {
-                label: 'Compare',
-                to: '/compare/',
-              },
-              {
                 label: 'Try Your Own Dataset',
                 to: '/try-your-own-dataset/?utm_content=footer',
               },
