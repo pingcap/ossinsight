@@ -1,6 +1,6 @@
 ---
 title: Why We Choose TiDB to Support OSS Insight
-date: 2022-05-04
+date: 2022-05-02
 authors: [ilovesoup]
 ---
 
