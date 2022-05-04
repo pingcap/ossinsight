@@ -81,7 +81,7 @@ export default function Page() {
             cardSx={{backgroundColor: 'action.hover'}}
           />
           <StandardCard
-            title='Real-time insights on large volume of email data for SaaS CRM'
+            title='SaaS Insight for Building a Real-time CRM Application'
             description='SaaS systems are naturally hybrid-workload systems. Here is a useful case illustrate how to choose database solution for SaaS application( e.g. CRM ) through insights.'
             codeStyleDescription={false}
             image={<Image src={require('./image-2.png').default} />}
