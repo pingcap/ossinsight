@@ -157,3 +157,11 @@ gharchive_dev> show tables;
 | web_framework_repos         |
 +-----------------------------+
 ```
+
+:::info
+### 🌟 Details in how OSS Insight works
+
+Go to read [Use TiDB Cloud to Analyze GitHub Events in 5 Minutes](https://ossinsight.io/blog/try-it-yourself) and use the [Developer Tier](https://tidbcloud.com/signup?utm_source=ossinsight) **free** for 1 year.
+
+You can find the reason [Why We Choose TiDB to Support OSS Insight](https://ossinsight.io/blog/why-we-choose-tidb-support-oss-insight) as well!
+:::
