@@ -22,7 +22,7 @@ export default function Page() {
         <Typography variant='h1' sx={{mb: 2, mt: 8}} align='center'>{title}</Typography>
       </Container>
       <Section
-        title='Use TiDB Cloud to Analyze GitHub Events in 5 Minutes'
+        title='Use TiDB Cloud to Analyze GitHub Events in 10 Minutes'
       >
         <Grid container spacing={4}>
           <Grid item xs={12} lg={8}>
