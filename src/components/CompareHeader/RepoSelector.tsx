@@ -61,7 +61,7 @@ export default function RepoSelector({repo, size, label, defaultRepoName, onChan
   return (<>
     <Autocomplete<Repo>
       sx={theme => ({
-        maxWidth: size === 'large' ? 450 : 300,
+        maxWidth: size === 'large' ? 540 : 300,
         flex: 1,
         '.MuiAutocomplete-popupIndicator, .MuiAutocomplete-clearIndicator': {
           color: contrast ? theme.palette.getContrastText('#E9EAEE') : undefined,
@@ -100,7 +100,8 @@ export default function RepoSelector({repo, size, label, defaultRepoName, onChan
               '.MuiOutlinedInput-notchedOutline': {
                 border: 'none',
               },
-              fontSize: size === 'large' ? 24 : undefined
+              fontSize: size === 'large' ? 24 : undefined,
+              py: size === 'large' ? '4px !important' : undefined,
             }),
             endAdornment: (
               <React.Fragment>

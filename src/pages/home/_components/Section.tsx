@@ -6,6 +6,7 @@ import {responsive} from './responsive'
 export interface SectionProps{
   darker?: boolean
   pt?: number
+  id?: string
 }
 
 const dark = {

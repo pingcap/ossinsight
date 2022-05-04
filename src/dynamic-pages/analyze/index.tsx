@@ -54,13 +54,6 @@ function AnalyzePage() {
   const {data: main, name} = useMainRepo();
   const {data: vs, name: comparingRepoName, setName: setComparingRepoName} = useVsRepo()
 
-  useLayoutEffect(() => {
-    const id = location.hash.replace(/^#/, '')
-    document.getElementById(id)?.scrollIntoView({
-      block: 'center'
-    })
-  }, [])
-
   const onRepoChange = useCallback((repo: Repo) => {
     history.push({
       pathname: `/analyze/${repo.name}`,
