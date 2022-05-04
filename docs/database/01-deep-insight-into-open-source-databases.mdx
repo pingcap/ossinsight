@@ -8,9 +8,7 @@ try_it_yourself:
 
 import {CommonChart} from "../../src/components/CommonChart";
 import ContributorsCharts from "../../src/components/ContributorsCharts";
-import GroupSelect from "../../src/components/GroupSelect";
-const tidbGroup = [41986369, 48833910, 53311716]
-
+const osdbGroup = [507775, 60246359, 17165658, 41986369, 16563587, 6838921, 108110, 166515022, 48833910, 156018, 50229487, 20089857, 5349565, 6934395, 6358188, 11008207, 19961085, 206444, 30753733, 105944401, 31006158, 99919302, 50874442, 84240850, 28738447, 44781140, 372536760, 13124802, 146459443, 28449431, 23418517, 206417, 9342529, 19257422, 196353673, 172104891, 402945349, 11225014, 2649214, 41349039, 114187903, 20587599, 19816070, 69400326, 927442, 24494032]
 
 On this page, we will share with you many deep insights into open source databases, such as the database popularity, database contributors, coding vitality, community feedback and so on. 
 
@@ -83,15 +81,12 @@ The map below describes the geographical distribution of database stargazers. Th
   seriesName='stargazers'
   effect={false}
   size={56}
-  repoId={tidbGroup}
-  comparing
+  repoId={osdbGroup}
 />
 
 ### Which companies like databases the most?
 
 The pie chart below describes which company those database stargazers work for and how many stargazers those companies employ.
-
-<GroupSelect />
 
 <CommonChart
   chart='piechart'
@@ -101,8 +96,7 @@ The pie chart below describes which company those database stargazers work for a
   valueIndex='stargazers'
   categoryType='owner'
   seriesName='Stargazers'
-  repoId={tidbGroup}
-  comparing
+  repoId={osdbGroup}
 />
 
 ## Database contributors 
@@ -166,8 +160,7 @@ The heat map below describes the number of push events that occur at a particula
   yIndex='dayofweek'
   valueIndex='pushes'
   formatSql={false}
-  repoId={tidbGroup}
-  comparing
+  repoId={osdbGroup}
 />
 
 ## Database coding vitality 
@@ -265,8 +258,7 @@ The map below shows the geographical distribution of developers who submitted is
   seriesName='Issue openers'
   effect={false}
   size={56}
-  repoId={tidbGroup}
-  comparing
+  repoId={osdbGroup}
 />
 
 ## Community Robustness
