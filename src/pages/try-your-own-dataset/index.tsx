@@ -1,3 +1,4 @@
+import Grid from '@mui/material/Grid';
 import React from "react";
 import CustomPage from "../../theme/CustomPage";
 import Typography from "@mui/material/Typography";
@@ -10,6 +11,7 @@ import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import Image from "../../components/Image";
 import Footer from "../../components/Footer";
 import Container from "@mui/material/Container";
+import IconSet from './icon-set.svg';
 
 const title = '👏 Try Your Own Dataset ! '
 
@@ -22,45 +24,67 @@ export default function Page() {
       <Section
         title='Use TiDB Cloud to Analyze GitHub Events in 5 Minutes'
       >
-        <Card sx={{px: 8, py: 4}}>
-          <Cards xs={12} md={6} sx={{my: 4}} spacing={4}>
-            <StandardCard
-              title='Step 1: Sign up TiDB Cloud (Free) '
-              description='Sign up a TiDB Cloud account for free, no need to add credit card'
-              codeStyleDescription={false}
-              elevation={0}
-              cardSx={{backgroundColor: 'action.hover'}}
-              link='/blog/try-it-yourself/#sign-up-for-a-tidb-cloud-account-free'
-            />
-            <StandardCard
-              title='Step 2: Create cluster (Free)'
-              description='Create cluster with TiDB Cloud Dev Tier, it is free for one year ⏰ !'
-              codeStyleDescription={false}
-              elevation={0}
-              cardSx={{backgroundColor: 'action.hover'}}
-              link='/blog/try-it-yourself/#create-a-tidb-developer-tier-cluster-free'
-            />
-            <StandardCard
-              title='Step 3: Import data'
-              description='Import the sample data to your TiDB Cloud cluster, this dataset records what happend in the first hour of 2022'
-              codeStyleDescription={false}
-              elevation={0}
-              cardSx={{backgroundColor: 'action.hover'}}
-              link='/blog/try-it-yourself/#import-data-to-your-tidb-cloud-cluster'
-            />
-            <StandardCard
-              title='Step 4: Analyze with SQL !'
-              description='Use the sample SQL to see what happened in the first hour of 2022'
-              codeStyleDescription={false}
-              elevation={0}
-              cardSx={{backgroundColor: 'action.hover'}}
-              link='/blog/try-it-yourself/#analysis'
-            />
-          </Cards>
-          <Button component='a' startIcon={<ArrowRightIcon />} variant='contained' sx={{':hover': {color: '#ffffff'}}} href="/blog/try-it-yourself/">
-            Tutorial
-          </Button>
-        </Card>
+        <Grid container spacing={4}>
+          <Grid item xs={12} lg={8}>
+            <Card sx={{px: 8, py: 4}}>
+              <Cards xs={12} md={6} spacing={4}>
+                <StandardCard
+                  title='Step 1: Sign up TiDB Cloud (Free) '
+                  description='Sign up a TiDB Cloud account for free, no need to add credit card'
+                  codeStyleDescription={false}
+                  elevation={0}
+                  cardSx={{backgroundColor: 'action.hover'}}
+                  link='/blog/try-it-yourself/#sign-up-for-a-tidb-cloud-account-free'
+                  size='small'
+                />
+                <StandardCard
+                  title='Step 2: Create cluster (Free)'
+                  description='Create cluster with TiDB Cloud Dev Tier, it is free for one year ⏰ !'
+                  codeStyleDescription={false}
+                  elevation={0}
+                  cardSx={{backgroundColor: 'action.hover'}}
+                  link='/blog/try-it-yourself/#create-a-tidb-developer-tier-cluster-free'
+                  size='small'
+                />
+                <StandardCard
+                  title='Step 3: Import data'
+                  description='Import the sample data to your TiDB Cloud cluster, this dataset records what happend in the first hour of 2022'
+                  codeStyleDescription={false}
+                  elevation={0}
+                  cardSx={{backgroundColor: 'action.hover'}}
+                  link='/blog/try-it-yourself/#import-data-to-your-tidb-cloud-cluster'
+                  size='small'
+                />
+                <StandardCard
+                  title='Step 4: Analyze with SQL !'
+                  description='Use the sample SQL to see what happened in the first hour of 2022'
+                  codeStyleDescription={false}
+                  elevation={0}
+                  cardSx={{backgroundColor: 'action.hover'}}
+                  link='/blog/try-it-yourself/#analysis'
+                  size='small'
+                />
+              </Cards>
+              <Button component='a' startIcon={<ArrowRightIcon />} variant='contained' sx={{mt: 4, ':hover': {color: '#ffffff'}}} href="/blog/try-it-yourself/">
+                Tutorial
+              </Button>
+            </Card>
+          </Grid>
+          <Grid item xs={12} lg={4}>
+            <Card sx={[
+              {px: 4, py: 4, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'},
+              theme => ({ [theme.breakpoints.up('lg')]: { height: '100%' } })
+            ]}>
+              <IconSet />
+              <Typography variant='h3' sx={{fontWeight: 'bold', my: 4}}>
+                How we build this powerful insight tool?
+              </Typography>
+              <Button variant='outlined' component={Link} to='/blog/why-we-choose-tidb-to-support-oss-insight/'>
+                Get for answers
+              </Button>
+            </Card>
+          </Grid>
+        </Grid>
       </Section>
       <Section
         title='See more of XYZ insight 🤔'
