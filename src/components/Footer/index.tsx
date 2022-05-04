@@ -35,9 +35,9 @@ export default function Footer() {
           />
           <StandardCard
             title='Why We Choose TiDB to Support OSS Insight'
-            description='Documentation · 10 min read'
+            description='Blog · 5 min read'
             codeStyleDescription={false}
-            readMore='/blog/why-we-choose-tidb-support-oss-insight?utm_source=ossinsight'
+            readMore='/blog/why-we-choose-tidb-to-support-oss-insight'
             buttonVariant='outlined'
             top={icon(require('./icon-2.png').default)}
             cardSx={{
