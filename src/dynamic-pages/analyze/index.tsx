@@ -159,6 +159,7 @@ function AnalyzePage() {
             {
               comparingRepoName ? undefined : (
                 <H1 sx={{ mt: 6 }}>
+                  <img width="48" height="48" src={`https://github.com/${name.split('/')[0]}.png`} alt={name} style={{ marginRight: 8, verticalAlign: 'text-bottom' }} />
                   <a href={`https://github.com/${name}`} target="_blank">
                     {name}
                     &nbsp;
