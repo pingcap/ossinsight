@@ -77,8 +77,14 @@ export const ShareDialog = ({open, onClose}: ShareDialogProps) => {
                 : (<Skeleton />)}
             <Box sx={{my: 2}}>
               <small>This site is protected by reCAPTCHA and the Google
-                <a href="https://policies.google.com/privacy">Privacy Policy</a> and
-                <a href="https://policies.google.com/terms">Terms of Service</a> apply.
+                &nbsp;
+                <a href="https://policies.google.com/privacy">Privacy Policy</a>
+                &nbsp;
+                and
+                &nbsp;
+                <a href="https://policies.google.com/terms">Terms of Service</a>
+                &nbsp;
+                apply.
               </small>
             </Box>
           </Box>
