@@ -8,7 +8,7 @@ export interface AnalyzeSelectorProps {
   contrast?: boolean
 }
 
-export default function AnalyzeSelector ({placeholder = 'Choose any repo you are interested in...', align, contrast}: AnalyzeSelectorProps) {
+export default function AnalyzeSelector ({placeholder = 'Quick insights on any repo', align, contrast}: AnalyzeSelectorProps) {
   const history = useHistory()
   const onAnalyzeRepoChanged = useCallback((repo: Repo | undefined) => {
     if (repo) {
