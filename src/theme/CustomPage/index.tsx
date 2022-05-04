@@ -1,8 +1,13 @@
 import React, {PropsWithChildren} from 'react'
 import Layout, {Props as LayoutProps} from '@theme/Layout';
-import ThemeAdaptor from "../../components/ThemeAdaptor";
 import Footer from "../../components/Footer";
 import StatusBar from '../../components/StatusBar';
+
+declare module '@theme/Layout' {
+  interface Props {
+    header?: JSX.Element
+  }
+}
 
 export interface CustomPageProps extends LayoutProps {
   footer?: boolean
