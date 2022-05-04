@@ -31,12 +31,12 @@ export function withChart<T = unknown, P = {}>(useOption: (props: AnalyzeContext
 
     const shareInfo: CommonChartShareInfo = {
       title: chartContext.title,
-      description: chartContext.description,
+      description: chartContext.description ?? '',
       keywords: [],
       hash: chartContext.hash,
       message: context.comparingRepoName
-        ? `I'm comparing ${context.repoName} vs ${context.comparingRepoName} at OSSInsight.io`
-        : `I'm analyzing ${context.repoName} at OSSInsight.io`,
+        ? `Comparing ${context.repoName} with ${context.comparingRepoName} | ${chartContext.title} | OSSInsight.io`
+        : `Analyzing ${context.repoName} | ${chartContext.title} | OSSInsight.io`,
     }
 
     const ctx = {...context, ...chartContext, context: {} as Record<string, any>};

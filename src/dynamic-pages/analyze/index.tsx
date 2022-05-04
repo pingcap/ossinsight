@@ -34,7 +34,6 @@ import { RepoInfo, useRepo } from '../../api/gh';
 import CompareHeader from '../../components/CompareHeader/CompareHeader';
 import { Repo } from '../../components/CompareHeader/RepoSelector';
 import { AsyncData } from '../../components/RemoteCharts/hook';
-import ShareButtons from '../../components/ShareButtons';
 import TryItYourself from '../../components/TryItYourself';
 import useUrlSearchState, { stringParam } from '../../hooks/url-search-state';
 import { alpha2ToTitle } from '../../lib/areacode';
@@ -164,7 +163,6 @@ function AnalyzePage() {
                 </H1>
               )
             }
-            <ShareButtons title='OSSInsight analyze' />
             <Grid container spacing={2} alignItems='center'>
               <Grid item xs={12} md={vs ? 8 : 6}>
                 <Summary items={summaries} />
