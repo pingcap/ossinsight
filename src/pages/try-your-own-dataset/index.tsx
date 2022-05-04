@@ -13,7 +13,7 @@ import Footer from "../../components/Footer";
 import Container from "@mui/material/Container";
 import IconSet from './icon-set.svg';
 
-const title = '👏 Try Your Own Dataset ! '
+const title = '⛏️ Try Your Own Dataset ! '
 
 export default function Page() {
   return (
