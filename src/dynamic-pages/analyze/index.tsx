@@ -272,12 +272,13 @@ function AnalyzePage() {
           <Section>
             <H2>People</H2>
             <Analyze query={mapType}>
-              <H3 analyzeTitle={false} sx={{ mt: 6 }}>Geographical Distribution</H3>
+              <H3 sx={{ mt: 6 }}>Geographical Distribution</H3>
+              <P2>Geographical distribution of GitHub event authors.</P2>
               <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs value={mapType} onChange={handleChangeMapType}>
-                  <IconTab id='geo-distribution-stargazers' value='stars-map' icon={<StarIcon size={24} />}>Stargazers</IconTab>
-                  <IconTab id='geo-distribution-issue-creators' value='issue-creators-map' icon={<IssueCreatorIcon size={24} />}>Issue Creators</IconTab>
-                  <IconTab id='geo-distribution-pr-creators' value='pull-request-creators-map' icon={<PrCreatorIcon size={24} />}>Pull Requests Creators</IconTab>
+                  <IconTab id='geo-distribution-stargazers' value='stars-map' icon={<StarIcon size={24} />}><span style={{ display: 'none' }}>Geographical Distribution of </span>Stargazers</IconTab>
+                  <IconTab id='geo-distribution-issue-creators' value='issue-creators-map' icon={<IssueCreatorIcon size={24} />}><span style={{ display: 'none' }}>Geographical Distribution of </span>Issue Creators</IconTab>
+                  <IconTab id='geo-distribution-pr-creators' value='pull-request-creators-map' icon={<PrCreatorIcon size={24} />}><span style={{ display: 'none' }}>Geographical Distribution of </span>Pull Requests Creators</IconTab>
                 </Tabs>
               </Box>
               <Grid container alignItems='center'>
@@ -290,12 +291,13 @@ function AnalyzePage() {
               </Grid>
             </Analyze>
             <Analyze query={companyType} params={{limit: comparingRepoName ? 25 : 50}}>
-              <H3 analyzeTitle={false} sx={{ mt: 6 }}>Companies</H3>
+              <H3 sx={{ mt: 6 }}>Companies</H3>
+              <P2>Authors' companies of github events.</P2>
               <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs value={companyType} onChange={handleChangeCompanyType}>
-                  <IconTab id='companies-stargazers' value='analyze-stars-company' icon={<StarIcon />}>Stargazers</IconTab>
-                  <IconTab id='companies-issue-creators' value='analyze-issue-creators-company' icon={<IssueCreatorIcon size={24} />}>Issue Creators</IconTab>
-                  <IconTab id='companies-pr-creators' value='analyze-pull-request-creators-company' icon={<PrCreatorIcon size={24} />}>Pull Requests Creators</IconTab>
+                  <IconTab id='companies-stargazers' value='analyze-stars-company' icon={<StarIcon />}>Stargazers<span style={{ display: 'none' }}>' Companies</span></IconTab>
+                  <IconTab id='companies-issue-creators' value='analyze-issue-creators-company' icon={<IssueCreatorIcon size={24} />}>Issue Creators<span style={{ display: 'none' }}>' Companies</span></IconTab>
+                  <IconTab id='companies-pr-creators' value='analyze-pull-request-creators-company' icon={<PrCreatorIcon size={24} />}>Pull Requests Creators<span style={{ display: 'none' }}>' Companies</span></IconTab>
                 </Tabs>
               </Box>
               <Grid container alignItems='center'>
@@ -317,13 +319,13 @@ function AnalyzePage() {
 
 export default () => <BrowserOnly>{() => <AnalyzePage />}</BrowserOnly>
 
-const IconTab = ({children, id, icon, ...props}: PropsWithChildren<{ id: string, value: string, icon?: string | React.ReactElement }>) => {
+const IconTab = ({children, id, icon, ...props}: PropsWithChildren<{ id: string, value: string, icon?: React.ReactNode }>) => {
   return (
     <Tab
       {...props}
       sx={{ textTransform: 'unset' }}
       label={(
-        <H4 id={id}>
+        <H4 id={id} analyzeTitle>
           {icon}
           &nbsp;
           {children}
