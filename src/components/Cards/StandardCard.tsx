@@ -140,7 +140,7 @@ export default function StandardCard({
         ) : undefined}
       {readMore
         ? (
-          <Button size='small' variant={buttonVariant ?? 'text'} component={Link} to={readMore}>
+          <Button component={Link} to={readMore} size='small' variant={buttonVariant ?? 'text'} mt={2}>
             {buttonText}
           </Button>
         ) : undefined}

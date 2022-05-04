@@ -6,9 +6,10 @@ export interface AnalyzeSelectorProps {
   placeholder?: string
   align?: 'left' | 'right'
   contrast?: boolean
+  size?: 'large'
 }
 
-export default function AnalyzeSelector ({placeholder = 'Choose any repo you are interested in...', align, contrast}: AnalyzeSelectorProps) {
+export default function AnalyzeSelector ({placeholder = 'Quick insights on any repo', align, size, contrast}: AnalyzeSelectorProps) {
   const history = useHistory()
   const onAnalyzeRepoChanged = useCallback((repo: Repo | undefined) => {
     if (repo) {
@@ -27,6 +28,7 @@ export default function AnalyzeSelector ({placeholder = 'Choose any repo you are
       onChange={onAnalyzeRepoChanged}
       onValid={onAnalyzeRepoValid}
       align={align}
+      size={size}
       contrast={contrast}
     />
   )

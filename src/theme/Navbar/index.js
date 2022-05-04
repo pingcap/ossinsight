@@ -258,7 +258,7 @@ function Navbar() {
             <NavbarItem {...item} key={i} />
           ))}
           <Box display={showAnalyzeInput ? 'flex' : 'none'} justifyContent='flex-start' alignItems='center' width='100%' minWidth='50px' maxWidth='300px' ml={1} flexShrink={10000} sx={{ '& > *': { width: '100%', maxWidth: 300, mx: 'unset', flex: 1 }}}>
-            <AnalyzeSelector placeholder='Choose any repo...' align='left' />
+            <AnalyzeSelector align='left' />
           </Box>
         </div>
         <div className="navbar__items navbar__items--right">
