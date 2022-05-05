@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkdocus=self.webpackChunkdocus||[]).push([[4577],{19993:function(e,n,u){u.r(n),u.d(n,{default:function(){return r}});var t=u(67294),c=u(76775);function r(){return t.createElement(c.l_,{to:"/analyze"})}}}]);
