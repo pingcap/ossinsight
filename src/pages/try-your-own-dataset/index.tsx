@@ -110,8 +110,8 @@ export default function Page() {
             codeStyleDescription={false}
             image={<Image src={require('./image-2.png').default} />}
             buttonText='get insights'
-            link='/blog/real-time-insights-on-large-volume-of-email-data-for-saas-crm'
-            readMore='/blog/real-time-insights-on-large-volume-of-email-data-for-saas-crm'
+            link='/blog/saas-insight-for-building-a-real-time-crm-application'
+            readMore='/blog/saas-insight-for-building-a-real-time-crm-application'
             buttonVariant='contained'
             tags={['High availability','No sharding','Real-time analytics','Scalability']}
             elevation={0}
