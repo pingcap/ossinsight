@@ -169,7 +169,7 @@ function AnalyzePage() {
               )
             }
             <P2>
-              Note: The number of stars we got here is an approximate value because developers' behavior of removing GitHub stars cannot be tracked.
+              Note: The number of stars we got here is an approximate value because the source GitHub data we use here from GH Archive does not include developers' unstarring behavior.
             </P2>
             <Grid container spacing={2} alignItems='center'>
               <Grid item xs={12} md={vs ? 8 : 6}>
