@@ -10,10 +10,15 @@ import {
 } from 'echarts/types/src/coord/axisCommonTypes';
 import format from 'human-format';
 import { utils } from '.';
+import { dangerousGetCtx } from './_danger';
 
 type AxisOption<T extends 'x' | 'y', Base extends AxisBaseOption = AxisBaseOption> =
   (T extends 'x' ? XAXisOption : YAXisOption)
   & Base
+
+function filterEnum<T>(value: string | undefined, enums: T[]): T | undefined {
+  return enums.indexOf(value as any) !== -1 ? value : undefined as any
+}
 
 export function valueAxis<T extends 'x' | 'y'>(id?: OptionId, option: AxisOption<T, ValueAxisBaseOption> = {}): AxisOption<T> {
   return merge<AxisOption<T>>(option, {
@@ -27,6 +32,9 @@ export function valueAxis<T extends 'x' | 'y'>(id?: OptionId, option: AxisOption
         precision: 0
       },
     },
+    nameTextStyle: {
+      align: filterEnum(option.position || 'left', ['left', 'right'])
+    }
   });
 }
 
@@ -34,6 +42,9 @@ export function categoryAxis<T extends 'x' | 'y'>(id?: OptionId, option: AxisOpt
   return merge<AxisOption<T>>(option, {
     id,
     type: 'category',
+    nameTextStyle: {
+      align: filterEnum(option.position || 'left', ['left', 'right'])
+    }
   });
 }
 
@@ -41,6 +52,9 @@ export function logAxis<T extends 'x' | 'y'>(id?: OptionId, option: AxisOption<T
   return merge<AxisOption<T>>(option, {
     id,
     type: 'log',
+    nameTextStyle: {
+      align: filterEnum(option.position || 'left', ['left', 'right'])
+    }
   });
 }
 
