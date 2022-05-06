@@ -7,7 +7,7 @@
 <h3 align="center">
   <b><a href="https://ossinsight.io/database/deep-insight-into-open-source-databases">Insights</a></b>
   •
-  <a href="https://ossinsight.io/compare/">Compare</a>
+  <a href="https://ossinsight.io/analyze/pingcap/tidb">Analyze</a>
   •
   <a href="https://ossinsight.io/try-your-own-dataset">Try Your Own Dataset</a>
   •
