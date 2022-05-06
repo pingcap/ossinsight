@@ -16,11 +16,11 @@ import {
   RepoForkedIcon,
   StarIcon,
 } from '@primer/octicons-react';
-import React, { PropsWithChildren, useCallback, useLayoutEffect, useMemo, useState } from 'react';
+import React, { PropsWithChildren, useCallback, useContext, useLayoutEffect, useMemo, useState } from 'react';
 import Analyze from '../../analyze-charts/Analyze';
 import { DurationChart } from '../../analyze-charts/common-duration';
 import { CompaniesChart } from '../../analyze-charts/companies';
-import { AnalyzeContext } from '../../analyze-charts/context';
+import { AnalyzeChartContext, AnalyzeContext } from '../../analyze-charts/context';
 import { TimeHeatChart } from '../../analyze-charts/heatmap';
 import { IssueChart } from '../../analyze-charts/issue';
 import { LineChart } from '../../analyze-charts/line';
@@ -323,12 +323,16 @@ function AnalyzePage() {
 export default () => <BrowserOnly>{() => <AnalyzePage />}</BrowserOnly>
 
 const IconTab = ({children, id, icon, ...props}: PropsWithChildren<{ id: string, value: string, icon?: React.ReactNode }>) => {
+  const { headingRef } = useContext(AnalyzeChartContext)
+  const handleClick = useCallback((event: React.MouseEvent<HTMLHeadingElement>) => {
+    headingRef(event.currentTarget)
+  }, [])
   return (
     <Tab
       {...props}
       sx={{ textTransform: 'unset' }}
       label={(
-        <H4 id={id} analyzeTitle>
+        <H4 id={id} analyzeTitle onClick={handleClick}>
           {icon}
           &nbsp;
           {children}
