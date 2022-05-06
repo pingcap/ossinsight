@@ -60,10 +60,18 @@ export function aggregate<P, T = any> (fp: (all: AsyncData<RemoteData<unknown, P
   return fp(res, [repoName, comparingRepoName])
 }
 
-export function min<P, K extends keyof P> (key: K): P[K] {
-  return aggregate(all => {
-    return all.flatMap(data => data.data?.data?.map(item => item[key]) ?? [])[0] as P[K]
+export function min<P, K extends keyof P> (key: K): P[K] | undefined {
+  const dates = aggregate<P>(all => {
+    return all.flatMap(data => data.data?.data?.[0]?.[key] ?? [])
   })
+
+  if (dates.length >= 2) {
+    return dates[0] < dates[1] ? dates[0] : dates[1]
+  } else if (dates.length === 1) {
+    return dates[0]
+  } else {
+    return undefined
+  }
 }
 
 export function debugPrintOption () {
