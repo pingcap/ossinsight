@@ -1,3 +1,4 @@
+import { AsyncData, RemoteData } from '../../components/RemoteCharts/hook';
 import {
   axisTooltip,
   boxplot,
@@ -26,11 +27,19 @@ export type PrDurationData = {
 
 const fmtHours = (hours: number) => prettyMs(hours * 60 * 60 * 1000, {unitCount: 1});
 
+function getMax (data: AsyncData<RemoteData<unknown, PrDurationData>>): number | undefined {
+  return data.data?.data.reduce((prev, current) => Math.max(prev, current.p100), 0)
+}
+
+function getMin (data: AsyncData<RemoteData<unknown, PrDurationData>>): number | undefined {
+  return data.data?.data.reduce((prev, current) => Math.min(prev, current.p0 || prev), Number.MAX_SAFE_INTEGER)
+}
+
 export const DurationChart = withChart<PrDurationData>(({title: propsTitle, data}) => ({
   dataset: standardDataset(),
   grid: topBottomLayoutGrid(),
   xAxis: utils.template(({id}) => timeAxis<'x'>(id, {gridId: id})),
-  yAxis: utils.template(({id}) => logAxis<'y'>(id, {
+  yAxis: utils.template<PrDurationData>(({id, data}) => logAxis<'y'>(id, {
     name: 'Duration',
     gridId: id,
     axisLabel: {formatter: fmtHours},
@@ -39,6 +48,8 @@ export const DurationChart = withChart<PrDurationData>(({title: propsTitle, data
         formatter: ({value}) => fmtHours(Number(value)),
       },
     },
+    max: Math.pow(10, Math.ceil(Math.log10(getMax(data)))),
+    min: Math.pow(10, Math.floor(Math.log10(getMin(data))))
   })),
   dataZoom: dataZoom(),
   title: title(propsTitle),
