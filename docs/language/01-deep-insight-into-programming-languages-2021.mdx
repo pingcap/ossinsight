@@ -50,7 +50,7 @@ Note:
   repo='programming_language_repos'
 />
 
-## Top 10 PL repos with the most contributors in 2021
+## Top 20 developers contributed the most PRs to PL repos in 2021
 
 <CommonChart
   chart='barchart'
@@ -62,52 +62,6 @@ Note:
   seriesName='PRs'
   repo='programming_language_repos'
 />
-
-## Top 20 developers contributed the most PRs to PL repos in 2021
-
-<details>
- <summary>Click here to expand SQL</summary>
-
-```sql
-  SELECT actor_login, count(*) as pr_count
-    FROM github_events
-         JOIN programming_language_repos wf ON wf.id = github_events.repo_id
-   WHERE event_year = 2021 
-         AND type = 'PullRequestEvent' 
-         AND action = 'opened' 
-         AND actor_login not like '%bot%'
-GROUP BY 1
-ORDER BY 2 DESC
-   LIMIT 20
-```
-</details>
-
-```
-+-----------------+----------+
-| actor_login     | pr_count |
-+-----------------+----------+
-| miss-islington  | 1586     |
-| yuyi98          | 564      |
-| timotheecour    | 418      |
-| Trott           | 399      |
-| CyrusNajmabadi  | 384      |
-| pancakevirus    | 366      |
-| xflywind        | 365      |
-| DougGregor      | 357      |
-| GuillaumeGomez  | 324      |
-| WalterBright    | 316      |
-| slavapestov     | 294      |
-| MarcusDenker    | 283      |
-| astares         | 267      |
-| ibuclaw         | 265      |
-| Youssef1313     | 256      |
-| pablogsal       | 252      |
-| JohnTitor       | 252      |
-| straight-shoota | 243      |
-| vstinner        | 243      |
-| erlend-aasland  | 229      |
-+-----------------+----------+
-```
 
 ## Top 9 PL repos with the highest YoY growth rate of stars in 2021
 
