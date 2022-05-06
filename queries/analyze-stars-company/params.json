@@ -9,7 +9,7 @@
     },
     {
       "name": "limit",
-      "replaces": "50",
+      "replaces": "9999999999",
       "pattern": "^(\\d|[1-9]\\d|[1-9]\\d\\d|1\\d\\d\\d|2000)$",
       "default": 50
     }
