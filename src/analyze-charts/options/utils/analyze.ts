@@ -62,7 +62,7 @@ export function aggregate<P, T = any> (fp: (all: AsyncData<RemoteData<unknown, P
 
 export function min<P, K extends keyof P> (key: K): P[K] | undefined {
   const dates = aggregate<P>(all => {
-    return all.flatMap(data => data.data?.data?.[0][key] ?? [])
+    return all.flatMap(data => data.data?.data?.[0]?.[key] ?? [])
   })
 
   if (dates.length >= 2) {
