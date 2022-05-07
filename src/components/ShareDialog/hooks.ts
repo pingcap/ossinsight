@@ -74,12 +74,16 @@ function getKeyword(): string[] {
 }
 
 function buildUrl(hash: string | undefined) {
-  const url = window.location.href.replaceAll(window.location.origin, '');
-  if (hash) {
-    return `${url.split('#')[0]}#${hash}`;
-  } else {
-    return url.split('#')[0];
+  const pathname = window.location.pathname
+  const query = window.location.search
+  let url = pathname
+  if (query) {
+    url += query
   }
+  if (hash) {
+    url += '#' + hash
+  }
+  return url
 }
 
 export function useShare(shareInfo: CommonChartShareInfo | undefined, echartsRef: MutableRefObject<EChartsReact> | undefined) {
