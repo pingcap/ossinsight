@@ -239,9 +239,9 @@ function AnalyzePage() {
               <P2>
                 The time of a Pull Request from submitting to merging.
                 <br />
-                p25/p75: 25%/75% Pull Requests are closed within X minute/hour/day.
+                p25/p75: 25%/75% Pull Requests are merged within X minute/hour/day.
                 <br />
-                e.g. p25: 1h means 25% Pull Requests are closed within 1 hour.
+                e.g. p25: 1h means 25% Pull Requests are merged within 1 hour.
               </P2>
               <DurationChart aspectRatio={commonAspectRatio} />
             </Analyze>
@@ -256,11 +256,11 @@ function AnalyzePage() {
             <Analyze query='analyze-issue-open-to-first-responded'>
               <H3 id='issue-time-cost' sx={{ mt: 6 }}>Issue Time Cost</H3>
               <P2>
-                The time of an issue from open to close.
+                The time of an issue from open to first-responded.
                 <br />
-                p25/p75: 25%/75% issues are closed within X minute/hour/day.
+                p25/p75: 25%/75% issues are responded within X minute/hour/day.
                 <br />
-                e.g. p25: 1h means 25% issues are closed within 1 hour.
+                e.g. p25: 1h means 25% issues are responded within 1 hour.
               </P2>
               <DurationChart aspectRatio={commonAspectRatio} />
             </Analyze>
