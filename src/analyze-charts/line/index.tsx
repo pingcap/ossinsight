@@ -3,7 +3,7 @@ import {withChart} from '../chart';
 import {
   axisTooltip,
   COMPARING_DATASET_ID,
-  comparingDataset,
+  comparingDataset, legend,
   line,
   originalDataset,
   timeAxis,
@@ -26,6 +26,14 @@ export const LineChart = withChart<LineData<any>, { valueIndex: string, name: st
   yAxis: valueAxis<'y'>(undefined, {name}),
   title: title(propsTitle),
   tooltip: axisTooltip('line'),
+  legend: legend({
+    top: 32,
+    right: 0,
+    left: undefined
+  }),
+  grid: {
+    bottom: 8
+  },
   dataset: [
     originalDataset(data),
     comparingDataset(compareData),

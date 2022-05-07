@@ -9,6 +9,7 @@ import {EChartsOption} from 'echarts';
 import ECharts, { EChartsContext, EChartsProps } from '../components/ECharts';
 import { DangerousCtx, dangerousSetCtx } from './options/_danger';
 import useDimensions from 'react-cool-dimensions';
+import { debounce } from '@mui/material';
 
 export function withChart<T = unknown, P = {}>(useOption: (props: DangerousCtx<T>, chartProps?: P) => EChartsOption, defaultProps: Partial<Omit<EChartsProps, 'option'>> = {}) {
   return (props: Omit<EChartsProps, 'option'> & { spec?: P }) => {
@@ -17,7 +18,10 @@ export function withChart<T = unknown, P = {}>(useOption: (props: DangerousCtx<T
 
     const theme = useTheme()
     const isSmall = useMediaQuery(theme.breakpoints.down('md'))
-    const { width: width, height: height, observe } = useDimensions()
+    const { width: width, height: height, observe } = useDimensions({
+      breakpoints: theme.breakpoints.values,
+      updateOnBreakpointChange: true,
+    })
 
     const [showDebugModel, setShowDebugModel] = useState(false);
     const echartsRef = useRef<EChartsReact>()

@@ -175,15 +175,15 @@ function AnalyzePage() {
             <P2>
               Note: The number of stars we got here is an approximate value because the source GitHub data we use here from GH Archive does not include developers' unstarring behavior.
             </P2>
-            <Grid container spacing={2} alignItems='center'>
-              <Grid item xs={12} md={vs ? 8 : 6}>
+            <Grid container spacing={0} alignItems='center'>
+              <Grid item xs={12} md={vs ? 7 : 6}>
                 <Summary items={summaries} />
               </Grid>
-              <Grid item xs={12} md={vs ? 4 : 6}>
+              <Grid item xs={12} md={vs ? 5 : 6}>
                 <Analyze query='stars-history'>
                   <H2 id='stars-history' analyzeTitle display='none'>Stars History</H2>
                   <P2 display='none'>The growth trend and the specific number of stars since the repository was established.</P2>
-                  <LineChart spec={{valueIndex: 'total', name: 'Stars', fromRecent: true}}/>
+                  <LineChart spec={{valueIndex: 'total', name: 'Stars', fromRecent: true}} aspectRatio={isSmall ? 16 / 9 : 4 / 3}/>
                 </Analyze>
               </Grid>
             </Grid>
