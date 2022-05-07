@@ -77,7 +77,8 @@ export function registerThemeDark(bg = true) {
         crossStyle: {
           color: contrastColor
         }
-      }
+      },
+      renderMode: 'html'
     },
     grid: {
       containLabel: true
