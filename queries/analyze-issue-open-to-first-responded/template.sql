@@ -29,7 +29,7 @@ with issue_with_first_responed_at as (
         (UNIX_TIMESTAMP(iwfr.first_responed_at) - UNIX_TIMESTAMP(iwo.opened_at)) as diff
     from
         issue_with_opened_at iwo
-        join issue_with_first_responed_at iwfr on iwo.pr_or_issue_id = iwfr.pr_or_issue_id
+        join issue_with_first_responed_at iwfr on iwo.pr_or_issue_id = iwfr.pr_or_issue_id and iwfr.first_responed_at > iwo.opened_at
 ), tdiff_with_rank as (
     select
         tdiff.event_month,

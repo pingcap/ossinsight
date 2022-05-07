@@ -27,7 +27,7 @@ with issue_with_closed_at as (
         (UNIX_TIMESTAMP(iwc.closed_at) - UNIX_TIMESTAMP(iwo.opened_at)) as diff
     from
         issue_with_opened_at iwo
-        join issue_with_closed_at iwc on iwo.pr_or_issue_id = iwc.pr_or_issue_id
+        join issue_with_closed_at iwc on iwo.pr_or_issue_id = iwc.pr_or_issue_id and iwc.closed_at > iwo.opened_at
 ), tdiff_with_rank as (
     select
         tdiff.event_month,
