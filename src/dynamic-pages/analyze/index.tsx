@@ -3,8 +3,10 @@ import { useHistory, useLocation, useRouteMatch } from '@docusaurus/router';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
+import { useTheme } from '@mui/material/styles';
 import Tab, { TabProps } from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import {
   CodeIcon,
   GitCommitIcon,
@@ -128,7 +130,9 @@ function AnalyzePage() {
     ]
   }, [])
 
-  const commonAspectRatio = vs ? 16 / 9 : 20 / 9
+  const theme = useTheme()
+  const isSmall = useMediaQuery(theme.breakpoints.down('md'))
+  const commonAspectRatio = isSmall ? vs ? 4 / 3 : 4 / 3 : vs ? 16 / 9 : 20 / 9
 
   return (
     <CustomPage
@@ -211,7 +215,7 @@ function AnalyzePage() {
               </P2>
               <Grid container>
                 <Grid item xs={12} md={vs ? 12 : 6}>
-                  <TimeHeatChart aspectRatio={vs ? (24 / 7) : (24 / 14)}/>
+                  <TimeHeatChart aspectRatio={isSmall ? vs ? (4 / 3) : (5 / 3) : vs ? (24 / 7) : (24 / 14)}/>
                 </Grid>
               </Grid>
             </Analyze>

@@ -11,6 +11,7 @@ import {
 import format from 'human-format';
 import { utils } from '.';
 import { dangerousGetCtx } from './_danger';
+import { isSmall } from './sizes';
 
 type AxisOption<T extends 'x' | 'y', Base extends AxisBaseOption = AxisBaseOption> =
   (T extends 'x' ? XAXisOption : YAXisOption)
@@ -21,18 +22,22 @@ function filterEnum<T>(value: string | undefined, enums: T[]): T | undefined {
 }
 
 export function valueAxis<T extends 'x' | 'y'>(id?: OptionId, option: AxisOption<T, ValueAxisBaseOption> = {}): AxisOption<T> {
+  const small = isSmall()
   return merge<AxisOption<T>>(option, {
     id,
     type: 'value',
     axisLabel: {
       formatter: value => format(value),
+      margin: 8,
     },
+    splitNumber: small ? 3 : undefined as any,
     axisPointer: {
       label: {
         precision: 0
       },
     },
     nameTextStyle: {
+      opacity: small ? 0 : 1,
       align: filterEnum(option.position || 'left', ['left', 'right'])
     }
   });
@@ -49,11 +54,17 @@ export function categoryAxis<T extends 'x' | 'y'>(id?: OptionId, option: AxisOpt
 }
 
 export function logAxis<T extends 'x' | 'y'>(id?: OptionId, option: AxisOption<T, LogAxisBaseOption> = {}): AxisOption<T> {
+  const small = isSmall()
   return merge<AxisOption<T>>(option, {
     id,
     type: 'log',
     nameTextStyle: {
-      align: filterEnum(option.position || 'left', ['left', 'right'])
+      opacity: small ? 0 : 1,
+      align: filterEnum(option.position || 'left', ['left', 'right']),
+    },
+    splitNumber: small ? 3 : undefined as any,
+    axisLabel: {
+      margin: 8,
     }
   });
 }

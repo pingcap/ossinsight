@@ -32,7 +32,7 @@ function getMax (data: AsyncData<RemoteData<unknown, PrDurationData>>): number |
 }
 
 function getMin (data: AsyncData<RemoteData<unknown, PrDurationData>>): number | undefined {
-  return data.data?.data.reduce((prev, current) => Math.min(prev, current.p0 || prev), Number.MAX_SAFE_INTEGER)
+  return data.data?.data.reduce((prev, current) => Math.min(prev, current.p0 > 0 ? current.p0 : prev), Number.MAX_SAFE_INTEGER)
 }
 
 export const DurationChart = withChart<PrDurationData>(({title: propsTitle, data}) => ({

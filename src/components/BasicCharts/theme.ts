@@ -80,10 +80,6 @@ export function registerThemeDark(bg = true) {
       }
     },
     grid: {
-      top: '64',
-      bottom: '48',
-      left: '8',
-      right: '8',
       containLabel: true
     },
     legend: {
