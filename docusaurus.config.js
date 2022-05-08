@@ -201,8 +201,8 @@ const config = {
                 href: 'https://tidbcloud.com/?utm_source=ossinsight',
               },
               {
-                label: 'TiDB',
-                href: 'https://github.com/pingcap/tidb',
+                label: 'React',
+                href: 'https://github.com/facebook/react',
               },
             ],
           },
