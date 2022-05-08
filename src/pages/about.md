@@ -1,9 +1,4 @@
----
-title: Hello, Open Source Software Insight
-date: 2022-05-05
-image: https://twitter.com/OSSInsight/photo
-authors: [OSSInsight]
----
+# About US
 
 ## Hello, Open Source Software Insight ! 👁️
 
