@@ -58,7 +58,7 @@ We recommend you try our **Geographical Distribution** and **Companies** section
 
 If you need other detailed cases to start your journey, you can refer to our blog to find out how we built this website and processed such a huge dataset. Of course, we also encourage you to [play around](https://ossinsight.io/try-your-own-dataset) with your own dataset and build cool projects. If you have a good idea, please share it with us via [Twitter](https://twitter.com/OSSInsight).
 
-### Contributions Welcome!
+## Contributions Welcome!
 
 If you liked our project or you are a developer who is interested in contributing with us, please feel free to raise a PR [here](https://github.com/pingcap/ossinsight).
 
