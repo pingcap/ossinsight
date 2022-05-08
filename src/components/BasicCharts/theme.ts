@@ -77,13 +77,10 @@ export function registerThemeDark(bg = true) {
         crossStyle: {
           color: contrastColor
         }
-      }
+      },
+      renderMode: 'html'
     },
     grid: {
-      top: '64',
-      bottom: '48',
-      left: '8',
-      right: '8',
       containLabel: true
     },
     legend: {
