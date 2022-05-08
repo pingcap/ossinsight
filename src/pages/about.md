@@ -23,7 +23,7 @@ We provide analysis results from [six specific technical areas](https://ossinsig
 
 :::note
 
-📌 Due to the limitation of raw dataset from Github, we currently provide real-time insights in one hour. But we are happy to share with you that minute-level insights are already on the way!
+📌 Due to the limitation of raw dataset from Github, we currently provide real-time insights in one hour. But we are happy to share with you that **minute-level insights** are already on the way!
 
 :::
 
@@ -41,7 +41,7 @@ You can simply enter/select any repository at the [search bar](https://ossinsigh
 
 If you want to compare your own repository with others, just enter/select another repository's name in the selector which fixed on the top of analyze page. Then you will instantly get a comparative insight result, which can become a unique comparative analysis report after a simple processing. 
 
-We recommend you try our **Geographical Distribution** and **Companies** sections on the [analysis page](https://ossinsight.io/analyze/pingcap/tidb). Here, we process personal public information from Github and display it with visual charts. You can see which companies are contributing to the projects you follow, and you can also see how popular it is worldwide. It's also one of the most popular when it comes to project testing.
+We recommend you try our **Geographical Distribution** and **Companies** sections on the [analysis page](https://ossinsight.io/analyze/pingcap/tidb). Here, we process personal public information from Github and display it with visual charts. You can see which companies are contributing to the projects most, and you can also see how popular it is worldwide.
 
 ![user list](/img/user_list.png)
 
@@ -61,7 +61,8 @@ We recommend you try our **Geographical Distribution** and **Companies** section
 *\* Geographical Distribution and Companies sections on the analysis page*
 
 If you need other detailed cases to start your journey, you can refer to our blog to find out how we built this website and processed such a huge dataset. Of course, we also encourage you to [play around](https://ossinsight.io/try-your-own-dataset) with your own dataset and build cool projects. If you have a good idea, please share it with us via [Twitter](https://twitter.com/OSSInsight).
-Contributions Welcome!
+
+### Contributions Welcome!
 
 If you liked our project or you are a developer who is interested in contributing with us, please feel free to raise a PR [here](https://github.com/pingcap/ossinsight).
 
