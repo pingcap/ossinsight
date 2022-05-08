@@ -5,7 +5,7 @@ OSS Insight -> Open Source Software Insight
 
 Recently, we launched OSS Insight - our powerful and interesting insight tool built with [Docusaurus](https://github.com/facebook/docusaurus), [Apache ECharts](https://echarts.apache.org/), [GH Archive](https://www.gharchive.org/), [GHTorrent](https://ghtorrent.org/) and [TiDB](https://github.com/pingcap/tidb). 
 
-![homepage](/img/homepage.png)
+![homepage](/img/screenshots/homepage.png)
 
 As a group of people working in the open source community, we often work with Github data. We focus on the health of open source projects and all the new things happening in the open source world. Therefore, we decided to establish this site by using **4.6 billion GitHub event data** in order to gain useful insights through a/pair/group of open source projects in multi-dimensional. We hope to make the open source ecosystem better with you.
 
@@ -23,7 +23,7 @@ We provide analysis results from [six specific technical areas](https://ossinsig
 
 :::
 
-![homepage insight](/img/homepage_insight.png)
+![homepage insight](/img/screenshots/homepage_insight.png)
 
 ## Powerful Custom Analysis Tool
 
@@ -31,7 +31,7 @@ A visual, comprehensive tool can be very helpful when analyzing the repositories
 
 You can simply enter/select any repository at the [search bar](https://ossinsight.io/) and it will lead you to the detailed analysis page as well as experience it at the navigation bar wherever you are on the subpar. In addition to the overview, we will also analyze the repositories from the four dimensions of Commits, Pull Requests, Issues, and People. Here you can see many dynamic and interesting charts, showing the performance of the repository. Of course, we are not just providing static chart images, thanks to [Apache ECharts](https://echarts.apache.org/), our charts are interactive and update in real-time. 
 
-![analyze selector](/img/analyze_selector.png)
+![analyze selector](/img/screenshots/analyze_selector.png)
 
 *\* Analyze any 1/2 repositories with selectors*
 
@@ -39,17 +39,17 @@ If you want to compare your own repository with others, just enter/select anothe
 
 We recommend you try our **Geographical Distribution** and **Companies** sections on the [analysis page](https://ossinsight.io/analyze/pingcap/tidb). Here, we process personal public information from Github and display it with visual charts. You can see which companies are contributing to the projects most, and you can also see how popular it is worldwide.
 
-![user list](/img/user_list.png)
+![user list](/img/screenshots/user_list.png)
 
 *\* Personal public information from Github*
 
 <table>
     <tr style={{ border:"none" }}>
         <td style={{ border:"none" }}>
-            <img src="/img/geo_locations.png" alt="Geographical Distribution"/>
+            <img src="/img/screenshots/geo_locations.png" alt="Geographical Distribution"/>
         </td>
         <td style={{ border:"none" }}>
-            <img src="/img/companies.png" alt="Companies"/>
+            <img src="/img/screenshots/companies.png" alt="Companies"/>
         </td>
     </tr>
 </table>

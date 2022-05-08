@@ -218,7 +218,7 @@ html[data-theme='dark'] .navbar-item-github:before {
   display: flex;
   align-items: center;
   justify-items: center;
-  background-image: url("/img/tidb-cloud.png");
+  background-image: url("/img/tidb-cloud-with-tidb-cloud.png");
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;
