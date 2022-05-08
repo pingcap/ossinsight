@@ -119,11 +119,6 @@ const config = {
           },
           {to: '/try-your-own-dataset/?utm_content=header', label: '🔥 Try Your Own Dataset', position: 'right'},
           {
-            href: 'https://en.pingcap.com/tidb-cloud/?utm_source=ossinsight',
-            label: 'TiDB Cloud',
-            position: 'right',
-          },
-          {
             type: 'dropdown',
             label: 'More',
             position: 'right',
@@ -133,6 +128,11 @@ const config = {
               {to: '/blog/how-it-works', label: 'How It Works'},
               {href: 'https://twitter.com/OSSInsight', label: 'Twitter'},
             ],
+          },
+          {
+            href: 'https://tidbcloud.com/signup',
+            className: 'navbar-item-tidb-cloud',
+            position: 'right',
           },
           {
             href: 'https://github.com/pingcap/ossinsight',
