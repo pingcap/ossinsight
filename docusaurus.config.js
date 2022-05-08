@@ -141,6 +141,10 @@ const config = {
             title: 'OSS Insight',
             items: [
               {
+                label: 'About',
+                to: '/about',
+              },
+              {
                 label: 'Insight',
                 to: '/database/deep-insight-into-open-source-databases/',
               },
@@ -157,8 +161,8 @@ const config = {
                 to: '/blog',
               },
               {
-                label: 'About',
-                to: '/about',
+                label: 'RSS',
+                to: '/blog/rss.xml',
               },
             ],
           },
@@ -214,6 +218,10 @@ const config = {
               {
                 label: 'Twitter',
                 href: 'https://twitter.com/OSSInsight',
+              },
+              {
+                label: 'Email',
+                href: 'mailto:ossinsight@pingcap.com',
               },
             ],
           },
