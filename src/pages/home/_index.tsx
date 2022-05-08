@@ -112,7 +112,7 @@ export default function Home() {
             <Body>
               Powered by
               <a href="https://en.pingcap.com/tidb-cloud/?utm_source=ossinsight" target="_blank">
-                <Logo src='/img/tidb-logo.png' height={28} alt='TiDB' />
+                <Logo src='/img/tidb-logo-with-tidb.png' height={28} alt='TiDB' />
               </a>
             </Body>
           </AlignRightItem>
