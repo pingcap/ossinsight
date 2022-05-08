@@ -118,20 +118,15 @@ const config = {
             label: 'Insights',
           },
           {to: '/try-your-own-dataset/?utm_content=header', label: '🔥 Try Your Own Dataset', position: 'right'},
-          {
-            type: 'dropdown',
-            label: 'More',
-            position: 'right',
-            items: [
-              {to: '/about', label: 'About'},
-              {to: '/blog', label: 'Blogs'},
-              {to: '/blog/how-it-works', label: 'How It Works'},
-              {href: 'https://twitter.com/OSSInsight', label: 'Twitter'},
-            ],
-          },
+          {to: '/blog', label: 'Blogs', position: 'right'},
           {
             href: 'https://tidbcloud.com/signup',
             className: 'navbar-item-tidb-cloud',
+            position: 'right',
+          },
+          {
+            href: 'https://twitter.com/OSSInsight',
+            className: 'navbar-item-twitter',
             position: 'right',
           },
           {
