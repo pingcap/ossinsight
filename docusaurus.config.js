@@ -160,10 +160,6 @@ const config = {
                 label: 'Blogs',
                 to: '/blog',
               },
-              {
-                label: 'RSS',
-                to: '/blog/rss.xml',
-              },
             ],
           },
           {
