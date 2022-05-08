@@ -1,6 +1,7 @@
-# About US
+<h1 align="center"> About OSS Insight</h1>
 
-## Hello, Open Source Software Insight ! 👁️
+OSS Insight -> Open Source Software Insight
+
 
 Recently, we launched OSS Insight - our powerful and interesting insight tool built with [Docusaurus](https://github.com/facebook/docusaurus), [Apache ECharts](https://echarts.apache.org/), [GH Archive](https://www.gharchive.org/), [GHTorrent](https://ghtorrent.org/) and [TiDB](https://github.com/pingcap/tidb). 
 
