@@ -5,7 +5,9 @@ import {
   LinkedinIcon,
   LinkedinShareButton, 
   TelegramIcon,
-  TelegramShareButton
+  TelegramShareButton,
+  RedditIcon,
+  RedditShareButton
 } from "react-share";
 import styles from './index.module.css'
 
@@ -33,6 +35,9 @@ const ShareButtons = ({ shareUrl, disabled = false, title, hashtags, style }: Sh
       <TelegramShareButton url={url} title={title}>
         <TelegramIcon round size={size} />
       </TelegramShareButton>
+      <RedditShareButton url={url} title={title}>
+        <RedditIcon round size={size} />
+      </RedditShareButton>
     </div>
   )
 }
