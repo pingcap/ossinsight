@@ -14,8 +14,8 @@ const config = {
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.png',
-  organizationName: 'pingcap', // Usually your GitHub org/user name.
-  projectName: 'ossinsight', // Usually your repo name.
+  organizationName: 'pingcap',
+  projectName: 'ossinsight',
   scripts: [
     'https://api.ossinsight.io/qo/repos/groups/osdb?format=global_variable',
     'https://www.google.com/recaptcha/api.js?render=6LcBQpkfAAAAAFmuSRkRlJxVtmqR34nNawFgKohC'
@@ -55,7 +55,6 @@ const config = {
         },
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
-          // Please change this to your repo.
           editUrl: 'https://github.com/pingcap/ossinsight/edit/main/',
           routeBasePath: '/',
         },
@@ -63,7 +62,6 @@ const config = {
           blogSidebarTitle: 'All posts',
           blogSidebarCount: 'ALL',
           showReadingTime: true,
-          // Please change this to your repo.
           editUrl: 'https://github.com/pingcap/ossinsight/edit/main/',
           feedOptions: {
             type: ['rss'],
@@ -155,12 +153,12 @@ const config = {
                 to: '/blog/how-it-works',
               },
               {
-                label: 'About',
-                to: '/about',
-              },
-              {
                 label: 'Blogs',
                 to: '/blog',
+              },
+              {
+                label: 'About',
+                to: '/about',
               },
             ],
           },
