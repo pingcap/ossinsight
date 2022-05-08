@@ -6,6 +6,8 @@ authors: [ilovesoup]
 
 Many times we hope that our data access becomes more real-time. It has diffrrent meanings for various industries. For logistics, it means that resource allocation can be carried out with a faster frequency. For e-commerce, it means quicker adjustment on promotion strategies based on sales information. It leads to faster risk management and more timely stop losses in finance as well.
 
+<!--truncate-->
+
 ![](./scenerios.png)
 
 For developers, it means realtime insights on topics like the latest and hottest projects in the community, the organizations that contribute the most, the programming languages that are used the most, etc. In case of you want to know more personal information, such as what projects are your friends contributing recently, who contributed the [TiDB](https://github.com/pingcap/tidb/?utm_source=ossinsight)'s most recent PR, etc. Moreover, you want all these in real time.
