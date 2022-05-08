@@ -1,9 +1,9 @@
 ---
 title: "Open Source Database"
-image: img/gharchive-title-img.png
+image: img/ossinsight-title-img.png
 ---
 
-![](/img/gharchive-title-img.png)
+![](/img/ossinsight-title-img.png)
 
 We have aggregated and analyzed almost all well-known repositories for databases on GitHub since 2011. In this chapter, we will share with you some of the valuable analytical results about those repositories. 
 Below is the full list of the database repositories we collected on GitHub. If the repository you care about is not on this list, you can submit a pull request [here](https://github.com/hooopo/gharchive/blob/main/meta/repos/db_repos.yml).

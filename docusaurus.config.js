@@ -14,8 +14,8 @@ const config = {
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.png',
-  organizationName: 'pingcap', // Usually your GitHub org/user name.
-  projectName: 'ossinsight', // Usually your repo name.
+  organizationName: 'pingcap',
+  projectName: 'ossinsight',
   scripts: [
     'https://api.ossinsight.io/qo/repos/groups/osdb?format=global_variable',
     'https://www.google.com/recaptcha/api.js?render=6LcBQpkfAAAAAFmuSRkRlJxVtmqR34nNawFgKohC'
@@ -55,7 +55,6 @@ const config = {
         },
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
-          // Please change this to your repo.
           editUrl: 'https://github.com/pingcap/ossinsight/edit/main/',
           routeBasePath: '/',
         },
@@ -63,7 +62,6 @@ const config = {
           blogSidebarTitle: 'All posts',
           blogSidebarCount: 'ALL',
           showReadingTime: true,
-          // Please change this to your repo.
           editUrl: 'https://github.com/pingcap/ossinsight/edit/main/',
           feedOptions: {
             type: ['rss'],
@@ -107,7 +105,7 @@ const config = {
         title: 'OSS Insight',
         logo: {
           alt: 'OSS Insight',
-          src: 'img/logo.svg',
+          src: 'img/tidb-logo-white.svg',
         },
         style: 'dark',
         items: [
@@ -118,20 +116,15 @@ const config = {
             label: 'Insights',
           },
           {to: '/try-your-own-dataset/?utm_content=header', label: '🔥 Try Your Own Dataset', position: 'right'},
-          {
-            type: 'dropdown',
-            label: 'More',
-            position: 'right',
-            items: [
-              {to: '/about', label: 'About'},
-              {to: '/blog', label: 'Blogs'},
-              {to: '/blog/how-it-works', label: 'How It Works'},
-              {href: 'https://twitter.com/OSSInsight', label: 'Twitter'},
-            ],
-          },
+          {to: '/blog', label: 'Blogs', position: 'right'},
           {
             href: 'https://tidbcloud.com/signup',
             className: 'navbar-item-tidb-cloud',
+            position: 'right',
+          },
+          {
+            href: 'https://twitter.com/OSSInsight',
+            className: 'navbar-item-twitter',
             position: 'right',
           },
           {
@@ -148,6 +141,10 @@ const config = {
             title: 'OSS Insight',
             items: [
               {
+                label: 'About',
+                to: '/about',
+              },
+              {
                 label: 'Insight',
                 to: '/database/deep-insight-into-open-source-databases/',
               },
@@ -160,12 +157,12 @@ const config = {
                 to: '/blog/how-it-works',
               },
               {
-                label: 'About',
-                to: '/about',
-              },
-              {
                 label: 'Blogs',
                 to: '/blog',
+              },
+              {
+                label: 'RSS',
+                to: '/blog/rss.xml',
               },
             ],
           },
@@ -206,13 +203,13 @@ const config = {
                 href: 'https://tidbcloud.com/?utm_source=ossinsight',
               },
               {
-                label: 'TiDB',
-                href: 'https://github.com/pingcap/tidb',
+                label: 'React',
+                href: 'https://github.com/facebook/react',
               },
             ],
           },
           {
-            title: 'More',
+            title: 'Contacts',
             items: [
               {
                 label: 'GitHub',
@@ -221,6 +218,10 @@ const config = {
               {
                 label: 'Twitter',
                 href: 'https://twitter.com/OSSInsight',
+              },
+              {
+                label: 'Email',
+                href: 'mailto:ossinsight@pingcap.com',
               },
             ],
           },

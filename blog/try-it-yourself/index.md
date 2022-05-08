@@ -26,7 +26,7 @@ Once you register an account, you can create a free cluster with TiDB Developer 
 
 1. Click **Get Started for Free** and start to create a free cluster. 
 
-![](/img/try-it-yourself/dev-tier.png)
+![](./dev-tier.png)
 
 2. On the **Create a Cluster** page, set up your cluster name and root password.
 3. Note that the cloud provider is AWS by default, and then **MUST** select the `US-West-2 (Oregon)` region to create the cluster.
@@ -52,7 +52,7 @@ If you want to know the table schema, you can check `desc gharchive_dev` later i
 1. Click your cluster name in **Active Cluster** page to get into the detail page of your cluster.
 2. Click the **Import** button on the **Active Clusters** page and then go to the **Data Import Task** page. 
 
-![](/img/try-it-yourself/import.png)
+![](./import.png)
 
 3. Copy the values below and paste to the blanks of **Bucket URL** and **Role-ARN** respectively on the **Data Import Task** page.
 
@@ -69,7 +69,7 @@ arn:aws:iam::385595570414:role/import-sample-access
 5. Tick **TiDB Dumpling** for the **Data Format**. 
 6. Input your cluster password in the blank of **Password** on the **Target Database** section. 
 
-![](/img/try-it-yourself/fill.png)
+![](./fill.png)
 
 7. After you fill in all the blanks on the **Data Import Task** page, click the **Import** button at the bottom of this page and wait for a few moments for the system to complete data importing. 
 
@@ -82,7 +82,7 @@ TiDB Cloud provides a web shell to connect the database online.
 4. Choose **Web SQL Shell** --> **Open SQL Shell**. 
 5. Then input your cluster password as shown in the image below.
 
-![](/img/try-it-yourself/web-shell.png)
+![](./web-shell.png)
 
 
 ### Set column storage replica: TiFlash (Optional but coult make SQL faster!) 
@@ -173,8 +173,8 @@ ORDER BY 2 DESC
 
 ## Watch the video below for detailed information
 
-<video width="100%" poster="/img/try-it-yourself/dev-tier.png" controls>
-  <source src="/video/github-demo-tidbcloud.mp4" type="video/mp4" />
+<video width="100%" poster="./dev-tier.png" controls>
+  <source src="./github-demo-tidbcloud.mp4" type="video/mp4" />
 </video>
 
 
