@@ -17,12 +17,13 @@ interface SizeProps {
 }
 
 export interface EChartsProps extends EChartsReactProps, SizeProps {
+  observe?: (element?: HTMLElement | null) => void;
 }
 
 registerThemeVintage()
 registerThemeDark()
 
-const ECharts = React.forwardRef<EChartsReact, EChartsProps>(({aspectRatio, height, style, opts, echartsStyle: echartsStyleProp, ...props}, ref) => {
+const ECharts = React.forwardRef<EChartsReact, EChartsProps>(({aspectRatio, height, style, opts, echartsStyle: echartsStyleProp, observe, ...props}, ref) => {
   const realHeight = useMemo(() => {
     if (aspectRatio) {
       return '100%'
@@ -65,7 +66,8 @@ const ECharts = React.forwardRef<EChartsReact, EChartsProps>(({aspectRatio, heig
         ref.current = instance
       }
     }
-  }, [ref, echartsRef])
+    observe?.(instance?.ele ?? null)
+  }, [ref, echartsRef, observe])
 
   const fallback = useMemo(() => <EChartsPlaceholder aspectRatio={aspectRatio} height={realHeight} />, [aspectRatio, realHeight])
 

@@ -3362,6 +3362,11 @@
   "resolved" "https://registry.npm.taobao.org/base16/download/base16-1.0.0.tgz"
   "version" "1.0.0"
 
+"batch-processor@1.0.0":
+  "integrity" "sha1-dclcMrdI4IUNEMKxaPa9vpiRrOg="
+  "resolved" "https://registry.npmjs.org/batch-processor/-/batch-processor-1.0.0.tgz"
+  "version" "1.0.0"
+
 "batch@0.6.1":
   "integrity" "sha512-x+VAiMRL6UPkx+kudNvxTl6hB2XNNCG2r+7wixVfIYwu/2HKRXimwQyaumLjMveWvT2Hkd/cAJw+QBMfJ/EKVw=="
   "resolved" "https://registry.npmmirror.com/batch/download/batch-0.6.1.tgz"
@@ -4504,6 +4509,13 @@
   "resolved" "https://registry.npmmirror.com/electron-to-chromium/download/electron-to-chromium-1.4.48.tgz"
   "version" "1.4.48"
 
+"element-resize-detector@^1.2.2":
+  "integrity" "sha512-Fl5Ftk6WwXE0wqCgNoseKWndjzZlDCwuPTcoVZfCP9R3EHQF8qUtr3YUPNETegRBOKqQKPW3n4kiIWngGi8tKg=="
+  "resolved" "https://registry.npmjs.org/element-resize-detector/-/element-resize-detector-1.2.4.tgz"
+  "version" "1.2.4"
+  dependencies:
+    "batch-processor" "1.0.0"
+
 "emoji-regex@^8.0.0":
   "integrity" "sha1-6Bj9ac5cz8tARZT4QpY79TFkzDc="
   "resolved" "https://registry.npmmirror.com/emoji-regex/download/emoji-regex-8.0.0.tgz"
@@ -5522,6 +5534,13 @@
   "integrity" "sha1-Zlq4vE2iendKQFhOgS4+D6RbGh4="
   "resolved" "https://registry.npm.taobao.org/interpret/download/interpret-1.4.0.tgz"
   "version" "1.4.0"
+
+"invariant@^2.2.4":
+  "integrity" "sha512-phJfQVBuaJM5raOpJjSfkiD6BpbCE4Ns//LaXl6wGYtUBY83nWS6Rf9tXm2e8VaK60JEjYldbPif/A2B1C2gNA=="
+  "resolved" "https://registry.npmjs.org/invariant/-/invariant-2.2.4.tgz"
+  "version" "2.2.4"
+  dependencies:
+    "loose-envify" "^1.0.0"
 
 "ip@^1.1.0":
   "integrity" "sha1-vd7XARQpCCjAoDnnLvJfWq7ENUo="
@@ -7315,6 +7334,11 @@
     "lodash.flow" "^3.3.0"
     "pure-color" "^1.2.0"
 
+"react-cool-dimensions@^2.0.7":
+  "integrity" "sha512-z1VwkAAJ5d8QybDRuYIXTE41RxGr5GYsv1bQhbOBE8cMfoZQZpcF0odL64vdgrQVzat2jayedj1GoYi80FWcbA=="
+  "resolved" "https://registry.npmjs.org/react-cool-dimensions/-/react-cool-dimensions-2.0.7.tgz"
+  "version" "2.0.7"
+
 "react-copy-to-clipboard@^5.1.0":
   "integrity" "sha512-k61RsNgAayIJNoy9yDsYzDe/yAZAzEbEgcz3DZMhF686LEyukcE1hzurxe85JandPUG+yTfGVFzuEw3xt8WP/A=="
   "resolved" "https://registry.npmjs.org/react-copy-to-clipboard/-/react-copy-to-clipboard-5.1.0.tgz"
@@ -7521,6 +7545,16 @@
   "resolved" "https://registry.nlark.com/react-side-effect/download/react-side-effect-2.1.1.tgz"
   "version" "2.1.1"
 
+"react-sizeme@^3.0.2":
+  "integrity" "sha512-xOIAOqqSSmKlKFJLO3inBQBdymzDuXx4iuwkNcJmC96jeiOg5ojByvL+g3MW9LPEsojLbC6pf68zOfobK8IPlw=="
+  "resolved" "https://registry.npmjs.org/react-sizeme/-/react-sizeme-3.0.2.tgz"
+  "version" "3.0.2"
+  dependencies:
+    "element-resize-detector" "^1.2.2"
+    "invariant" "^2.2.4"
+    "shallowequal" "^1.1.0"
+    "throttle-debounce" "^3.0.1"
+
 "react-textarea-autosize@^8.3.2":
   "integrity" "sha1-9wkTlFNp2kU/1VTBaPa6rNH6BNg="
   "resolved" "https://registry.nlark.com/react-textarea-autosize/download/react-textarea-autosize-8.3.3.tgz?cache=0&sync_timestamp=1622628310688&other_urls=https%3A%2F%2Fregistry.nlark.com%2Freact-textarea-autosize%2Fdownload%2Freact-textarea-autosize-8.3.3.tgz"
@@ -7540,7 +7574,7 @@
     "loose-envify" "^1.4.0"
     "prop-types" "^15.6.2"
 
-"react@*", "react@^0.14.0 || ^15.0.0 || ^16.0.0 || ^17.0.0", "react@^0.14.7 || ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0", "react@^15.0.0 || ^16.0.0 || ^17.0.0|| ^18.0.0", "react@^15.0.0 || >=16.0.0", "react@^15.0.2 || ^16.0.0 || ^17.0.0", "react@^15.3.0 || 16 || 17 || 18", "react@^16.11.0 || ^17.0.0 || ^18.0.0", "react@^16.13.1", "react@^16.13.1 || ^17.0.0", "react@^16.3.0 || ^17", "react@^16.3.0 || ^17.0.0", "react@^16.8.0 || ^17.0.0", "react@^16.8.4 || ^17.0.0", "react@^17.0.0", "react@^17.0.0 || ^16.3.0 || ^15.5.4", "react@^17.0.1", "react@^17.0.2", "react@>= 16.8.0 < 18.0.0", "react@>=0.14.9", "react@>=15", "react@>=16.3.0", "react@>=16.6.0", "react@>=16.8", "react@>=16.8.0", "react@17.0.2":
+"react@*", "react@^0.14.0 || ^15.0.0 || ^16.0.0 || ^17.0.0", "react@^0.14.7 || ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0", "react@^15.0.0 || ^16.0.0 || ^17.0.0|| ^18.0.0", "react@^15.0.0 || >=16.0.0", "react@^15.0.2 || ^16.0.0 || ^17.0.0", "react@^15.3.0 || 16 || 17 || 18", "react@^16.11.0 || ^17.0.0 || ^18.0.0", "react@^16.13.1", "react@^16.13.1 || ^17.0.0", "react@^16.3.0 || ^17", "react@^16.3.0 || ^17.0.0", "react@^16.8.0 || ^17.0.0", "react@^16.8.4 || ^17.0.0", "react@^17.0.0", "react@^17.0.0 || ^16.3.0 || ^15.5.4", "react@^17.0.1", "react@^17.0.2", "react@>= 16.8.0", "react@>= 16.8.0 < 18.0.0", "react@>=0.14.9", "react@>=15", "react@>=16.3.0", "react@>=16.6.0", "react@>=16.8", "react@>=16.8.0", "react@17.0.2":
   "integrity" "sha512-gnhPt75i/dq/z3/6q/0asP78D0u592D5L1pd7M8P+dck6Fu/jJeL6iVVK23fptSUZj8Vjf++7wXA8UNclGQcbA=="
   "resolved" "https://registry.npmmirror.com/react/download/react-17.0.2.tgz"
   "version" "17.0.2"
@@ -8120,6 +8154,11 @@
   dependencies:
     "kind-of" "^6.0.2"
 
+"shallowequal@^1.1.0":
+  "integrity" "sha512-y0m1JoUZSlPAjXVtPPW70aZWfIL/dSP7AFkRnniLCrK/8MDKog3TySTBmckD+RObVxH0v4Tox67+F14PdED2oQ=="
+  "resolved" "https://registry.npmjs.org/shallowequal/-/shallowequal-1.1.0.tgz"
+  "version" "1.1.0"
+
 "shebang-command@^2.0.0":
   "integrity" "sha1-zNCvT4g1+9wmW4JGGq8MNmY/NOo="
   "resolved" "https://registry.npm.taobao.org/shebang-command/download/shebang-command-2.0.0.tgz"
@@ -8486,6 +8525,11 @@
   "integrity" "sha1-f17oI66AUgfACvLfSoTsP8+lcLQ="
   "resolved" "https://registry.npm.taobao.org/text-table/download/text-table-0.2.0.tgz"
   "version" "0.2.0"
+
+"throttle-debounce@^3.0.1":
+  "integrity" "sha512-dTEWWNu6JmeVXY0ZYoPuH5cRIwc0MeGbJwah9KUNYSJwommQpCzTySTpEe8Gs1J23aeWEuAobe4Ag7EHVt/LOg=="
+  "resolved" "https://registry.npmjs.org/throttle-debounce/-/throttle-debounce-3.0.1.tgz"
+  "version" "3.0.1"
 
 "thunky@^1.0.2":
   "integrity" "sha1-Wrr3FKlAXbBQRzK7zNLO3Z75U30="

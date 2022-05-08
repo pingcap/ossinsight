@@ -1,32 +1,45 @@
 import { EChartsOption } from 'echarts';
 import { TitleOption } from 'echarts/types/dist/shared';
 import { dangerousGetCtx } from './_danger';
-import { simple, template } from './utils';
+import { template } from './utils';
 
 export function title(text: string | undefined, options: EChartsOption['title'] = {}): EChartsOption['title'] {
-  const { context } = dangerousGetCtx();
-  if (!context.layout) {
+  const { context, isSmall, comparingRepoName } = dangerousGetCtx();
+  if (isSmall) {
+    return undefined;
+  }
+  if (!context.layout || !comparingRepoName) {
     return text ? [{
       ...options,
       text,
-    }] : []
+    }] : [];
   }
-  return simple(
-    text ? [{
-      ...options,
-      text,
-    }] : [],
-    template(({ name }, i) => ({
+  const { layout, layoutTop, layoutSubGridHeight, layoutGap } = context;
+  if (layout === 'top-bottom') {
+    return template(({ name }, i) => ({
       text: name,
       textStyle: {
         fontWeight: 'normal',
         color: 'gray',
       },
-      left: context.layout === 'top-bottom' ? 'center' : `${25 + i * 50}%`,
-      top: context.layout === 'top-bottom' ? (i === 0 ? '5.5%' : undefined) : '2%',
-      bottom: context.layout === 'top-bottom' ? (i === 1 ? '50.5%' : undefined) : undefined
+      left: 'center',
+      top: layoutTop + (layoutSubGridHeight + layoutGap) * i - 24,
+    } as TitleOption)).concat(text ? [{
+      ...options,
+      text,
+    }] : []);
+  } else {
+    return template(({ name }, i) => ({
+      text: name,
+      textStyle: {
+        fontWeight: 'normal',
+        color: 'gray',
+      },
+      left: `${25 + i * 50}%`,
+      top: 8,
     } as TitleOption)).concat(text ? {
       ...options,
       text,
-    } : []));
+    } : []);
+  }
 }

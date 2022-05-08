@@ -71,7 +71,7 @@ export default function YoyChart({data, aspectRatio = 6 / 5, loading}: YoyChartP
       }],
       grid: {
         containLabel: true,
-        left: 8
+        left: 0
       },
       series: [
         {

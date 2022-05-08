@@ -1,16 +1,21 @@
 import {AnalyzeChartContextProps, AnalyzeContextProps} from '../context';
 
-type Ctx<T> = AnalyzeContextProps & AnalyzeChartContextProps<T> & {context: Record<string, any>}
+export interface DangerousCtx<T> extends AnalyzeContextProps, AnalyzeChartContextProps<T>{
+  width: number
+  height: number
+  isSmall: boolean
+  context: Record<string, any>
+}
 
-let dangerousCtx: Ctx<unknown> | undefined = undefined;
+let dangerousCtx: DangerousCtx<unknown> | undefined = undefined;
 
-export function dangerousSetCtx<T>(ctx: Ctx<T> | undefined) {
+export function dangerousSetCtx<T>(ctx: DangerousCtx<T> | undefined) {
   dangerousCtx = ctx;
 }
 
-export function dangerousGetCtx<T>(): Ctx<T> | undefined {
+export function dangerousGetCtx<T>(): DangerousCtx<T> | undefined {
   if (!dangerousCtx) {
     throw new Error('out of analyze chart context!');
   }
-  return dangerousCtx as Ctx<T>;
+  return dangerousCtx as DangerousCtx<T>;
 }

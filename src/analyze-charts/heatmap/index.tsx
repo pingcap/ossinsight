@@ -5,10 +5,11 @@ import {
   leftRightLayoutGrid,
   legend,
   standardDataset,
-  title,
+  title, topBottomLayoutGrid,
   utils, visualMap,
 } from '../options';
 import {withChart} from '../chart';
+import { isSmall } from '../options/sizes';
 
 // lines of code
 export type TimeHeatData = {
@@ -51,11 +52,11 @@ function prepareData(data: TimeHeatData[]): TimeHeatData[] {
   return newData;
 }
 
-export const TimeHeatChart = withChart<TimeHeatData>(({title: propsTitle, data}) => ({
+export const TimeHeatChart = withChart<TimeHeatData>(({title: propsTitle, data, isSmall}) => ({
   dataset: standardDataset(prepareData),
   title: title(propsTitle),
   legend: legend(),
-  grid: leftRightLayoutGrid(),
+  grid: isSmall ? topBottomLayoutGrid() : leftRightLayoutGrid(),
   xAxis: utils.template(({id}) => categoryAxis<'x'>(id, {gridId: id, data: hours, position: 'top'})),
   yAxis: utils.template(({id}) => categoryAxis<'y'>(id, {gridId: id, data: days, inverse: true})),
   visualMap: utils.aggregate<TimeHeatData>(all => {

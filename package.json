@@ -66,9 +66,11 @@
     "deepmerge": "^4.2.2",
     "human-format": "^1.0.0",
     "pretty-ms": "^7.0.1",
+    "react-cool-dimensions": "^2.0.7",
     "react-copy-to-clipboard": "^5.1.0",
     "react-intersection-observer": "^8.33.1",
     "react-share": "^4.4.0",
+    "react-sizeme": "^3.0.2",
     "swr": "^1.2.2",
     "typescript": "^4.5.5",
     "xss": "^1.0.11"

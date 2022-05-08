@@ -1,3 +1,5 @@
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import EChartsReact from 'echarts-for-react';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import CommonChartContext, { CommonChartShareInfo } from '../components/CommonChart/context';
@@ -5,12 +7,21 @@ import ShareDialog from '../components/ShareDialog';
 import {AnalyzeChartContextProps, AnalyzeContextProps, useAnalyzeChartContext, useAnalyzeContext} from './context';
 import {EChartsOption} from 'echarts';
 import ECharts, { EChartsContext, EChartsProps } from '../components/ECharts';
-import {dangerousSetCtx} from './options/_danger';
+import { DangerousCtx, dangerousSetCtx } from './options/_danger';
+import useDimensions from 'react-cool-dimensions';
+import { debounce } from '@mui/material';
 
-export function withChart<T = unknown, P = {}>(useOption: (props: AnalyzeContextProps & AnalyzeChartContextProps<T>, chartProps?: P) => EChartsOption, defaultProps: Partial<Omit<EChartsProps, 'option'>> = {}) {
+export function withChart<T = unknown, P = {}>(useOption: (props: DangerousCtx<T>, chartProps?: P) => EChartsOption, defaultProps: Partial<Omit<EChartsProps, 'option'>> = {}) {
   return (props: Omit<EChartsProps, 'option'> & { spec?: P }) => {
     const context = useAnalyzeContext();
     const chartContext = useAnalyzeChartContext<T>();
+
+    const theme = useTheme()
+    const isSmall = useMediaQuery(theme.breakpoints.down('md'))
+    const { width: width, height: height, observe } = useDimensions({
+      breakpoints: theme.breakpoints.values,
+      updateOnBreakpointChange: true,
+    })
 
     const [showDebugModel, setShowDebugModel] = useState(false);
     const echartsRef = useRef<EChartsReact>()
@@ -37,7 +48,7 @@ export function withChart<T = unknown, P = {}>(useOption: (props: AnalyzeContext
         : `Analyzing ${context.repoName} | ${chartContext.title} | OSSInsight`,
     }
 
-    const ctx = {...context, ...chartContext, context: {} as Record<string, any>};
+    const ctx = {...context, ...chartContext, context: {} as Record<string, any>, width: width || 640, height: height || 480, isSmall};
 
     dangerousSetCtx(ctx);
     const option = useOption(ctx, props.spec);
@@ -47,6 +58,7 @@ export function withChart<T = unknown, P = {}>(useOption: (props: AnalyzeContext
     dangerousSetCtx(undefined);
 
     option.toolbox = {
+      padding: isSmall ? 0 : 8,
       feature: {
         myShareChart: {
           show: !shareBtnDisabled,
@@ -62,6 +74,7 @@ export function withChart<T = unknown, P = {}>(useOption: (props: AnalyzeContext
           <EChartsContext.Provider value={{echartsRef}}>
             <ECharts
               option={option}
+              observe={observe}
               {...defaultProps}
               {...props}
               notMerge

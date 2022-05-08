@@ -21,11 +21,18 @@ export default function Page() {
       <Container maxWidth='xl'>
         <Typography variant='h1' sx={{mb: 2, mt: 8}} align='center'>{title}</Typography>
       </Container>
-      <Typography variant='h2' sx={{mb: 2, mt: 8}} align='center'>Use TiDB Cloud to Analyze GitHub Events in 10 Minutes</Typography>
+      <Typography variant='h2' sx={{mb: 2, mt: 8, mx: 2}} align='center'>Use TiDB Cloud to Analyze GitHub Events in 10 Minutes</Typography>
       <Section>
         <Grid container spacing={4}>
           <Grid item xs={12} lg={8}>
-            <Card sx={{px: 8, py: 4}}>
+            <Card
+              sx={(theme) => ({
+                px: 8, py: 4,
+                [theme.breakpoints.down('md')]: {
+                  p: 2
+                }
+              })}
+            >
               <Cards xs={12} md={6} spacing={4}>
                 <StandardCard
                   title='Step 1: Sign up TiDB Cloud (Free) '
