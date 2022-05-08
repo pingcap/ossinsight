@@ -54,6 +54,7 @@ const config = {
           ]
         },
         docs: {
+          path: 'insights',
           sidebarPath: require.resolve('./sidebars.js'),
           editUrl: 'https://github.com/pingcap/ossinsight/edit/main/',
           routeBasePath: '/',
