@@ -107,7 +107,7 @@ const config = {
         title: 'OSS Insight',
         logo: {
           alt: 'OSS Insight',
-          src: 'img/logo.svg',
+          src: 'img/tidb-logo-white.svg',
         },
         style: 'dark',
         items: [
@@ -207,7 +207,7 @@ const config = {
             ],
           },
           {
-            title: 'More',
+            title: 'Contacts',
             items: [
               {
                 label: 'GitHub',
