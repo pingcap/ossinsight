@@ -156,7 +156,6 @@ Here is a small test for you to practice how to use TiDB Cloud to conduct analyt
 ### Click for the answer. ⬇️
 
 <details><summary>Click me to show answer</summary>
-<p>
 
 ```sql
   SELECT actor_login, 
@@ -168,13 +167,12 @@ ORDER BY 2 DESC
    LIMIT 20
 ```
 
-</p>
 </details>
 
 ## Watch the video below for detailed information
 
-<video width="100%" poster="./dev-tier.png" controls>
-  <source src="./github-demo-tidbcloud.mp4" type="video/mp4" />
+<video width="100%" poster={require('/blog/try-it-yourself/dev-tier.png').default} controls>
+  <source src={require('/blog/try-it-yourself/github-demo-tidbcloud.mp4').default} type="video/mp4" />
 </video>
 
 
