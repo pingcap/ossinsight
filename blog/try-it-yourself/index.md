@@ -173,8 +173,8 @@ ORDER BY 2 DESC
 
 ## Watch the video below for detailed information
 
-<video width="100%" poster="./dev-tier.png" controls>
-  <source src="./github-demo-tidbcloud.mp4" type="video/mp4" />
+<video width="100%" poster={require('/blog/try-it-yourself/dev-tier.png').default} controls>
+  <source src={require('/blog/try-it-yourself/github-demo-tidbcloud.mp4').default} type="video/mp4" />
 </video>
 
 
