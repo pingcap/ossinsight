@@ -202,9 +202,9 @@ function AnalyzePage() {
             <Analyze query='analyze-loc-per-month'>
               <H3 id='lines-of-code-changed' sx={{ mt: 6 }}>Lines of code changed</H3>
               <P2>
-                The bars show the additions or deletions of code monthly.
+                The bars show the additions or deletions of code in Pull Requests monthly.
                 <br />
-                The line chart demonstrate the total lines of code (additions + deletions).
+                The line chart demonstrate the total lines of code in Pull Requests (additions + deletions).
               </P2>
               <LocChart aspectRatio={commonAspectRatio} />
             </Analyze>
@@ -260,7 +260,7 @@ function AnalyzePage() {
             <Analyze query='analyze-issue-open-to-first-responded'>
               <H3 id='issue-time-cost' sx={{ mt: 6 }}>Issue Time Cost</H3>
               <P2>
-                The time of an issue from open to first-responded.
+                The time of an issue from open to first-responded(exclude bots). 
                 <br />
                 p25/p75: 25%/75% issues are responded within X minute/hour/day.
                 <br />
