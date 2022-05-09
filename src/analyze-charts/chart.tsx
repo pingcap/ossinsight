@@ -1,7 +1,7 @@
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import EChartsReact from 'echarts-for-react';
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import CommonChartContext, { CommonChartShareInfo } from '../components/CommonChart/context';
 import ShareDialog from '../components/ShareDialog';
 import {AnalyzeChartContextProps, AnalyzeContextProps, useAnalyzeChartContext, useAnalyzeContext} from './context';
@@ -18,10 +18,23 @@ export function withChart<T = unknown, P = {}>(useOption: (props: DangerousCtx<T
 
     const theme = useTheme()
     const isSmall = useMediaQuery(theme.breakpoints.down('md'))
-    const { width: width, height: height, observe } = useDimensions({
-      breakpoints: theme.breakpoints.values,
-      updateOnBreakpointChange: true,
+    const [width, setWidth] = useState(640)
+    const [height, setHeight] = useState(480)
+    const { observe, unobserve } = useDimensions({
+      onResize: useMemo(
+        () =>
+          debounce(({ width, height }) => {
+            // Triggered once per every 500 milliseconds
+            setWidth(width)
+            setHeight(height)
+          }, 500),
+        [setWidth, setHeight]
+      ),
     })
+
+    useEffect(() => {
+      return unobserve
+    }, [])
 
     const [showDebugModel, setShowDebugModel] = useState(false);
     const echartsRef = useRef<EChartsReact>()
