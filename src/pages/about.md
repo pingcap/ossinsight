@@ -7,11 +7,11 @@ Recently, we launched OSS Insight - our powerful and interesting insight tool bu
 
 ![homepage](/img/screenshots/homepage.png)
 
-As a group of people working in the open source community, we often work with Github data. We focus on the health of open source projects and all the new things happening in the open source world. Therefore, we decided to establish this site by using **4.6 billion GitHub event data** in order to gain useful insights through a/pair/group of open source projects in multi-dimensional. We hope to make the open source ecosystem better with you.
+As a group of people working in the open source community, we often work with GitHub data. We focus on the health of open source projects and all the new things happening in the open source world. Therefore, we decided to establish this site by using **4.6 billion GitHub event data** in order to gain useful insights through a/pair/group of open source projects in multi-dimensional. We hope to make the open source ecosystem better with you.
 
-We're honored to have brought this project to the attention of everyone after its release, some interesting responses and shares have started to circulate (see our [Twitter](https://twitter.com/OSSInsight) for details), and we're excited to see more people use this powerful tool to discover insights. If it can also help you deal with problems(such as dealing with dataset as large as 4.6 billion data from Github), that would be a bonus!
+We're honored to have brought this project to the attention of everyone after its release, some interesting responses and shares have started to circulate (see our [Twitter](https://twitter.com/OSSInsight) for details), and we're excited to see more people use this powerful tool to discover insights. If it can also help you deal with problems(such as dealing with dataset as large as 4.6 billion data from GitHub), that would be a bonus!
 
-In this project, we mainly provide two major functions, one is the analysis results of specific fields, and the other one is a custom analysis tool for Github repositories.
+In this project, we mainly provide two major functions, one is the analysis results of specific fields, and the other one is a custom analysis tool for GitHub repositories.
 
 ## Analysis in Specific Technical Areas
 
@@ -19,7 +19,7 @@ We provide analysis results from [six specific technical areas](https://ossinsig
 
 :::note
 
-📌 Due to the limitation of raw dataset from Github, we currently provide real-time insights in one hour. But we are happy to share with you that **minute-level insights** are already on the way!
+📌 Due to the limitation of raw dataset from GitHub, we currently provide real-time insights in one hour. But we are happy to share with you that **minute-level insights** are already on the way!
 
 :::
 
@@ -37,11 +37,11 @@ You can simply enter/select any repository at the [search bar](https://ossinsigh
 
 If you want to compare your own repository with others, just enter/select another repository's name in the selector which fixed on the top of analyze page. Then you will instantly get a comparative insight result, which can become a unique comparative analysis report after a simple processing. 
 
-We recommend you try our **Geographical Distribution** and **Companies** sections on the [analysis page](https://ossinsight.io/analyze/pingcap/tidb). Here, we process personal public information from Github and display it with visual charts. You can see which companies are contributing to the projects most, and you can also see how popular it is worldwide.
+We recommend you try our **Geographical Distribution** and **Companies** sections on the [analysis page](https://ossinsight.io/analyze/pingcap/tidb). Here, we process personal public information from GitHub and display it with visual charts. You can see which companies are contributing to the projects most, and you can also see how popular it is worldwide.
 
 ![user list](/img/screenshots/user_list.png)
 
-*\* Personal public information from Github*
+*\* Personal public information from GitHub*
 
 <table>
     <tr style={{ border:"none" }}>
