@@ -119,7 +119,7 @@ const config = {
           {to: '/try-your-own-dataset/?utm_content=header', label: '🔥 Try Your Own Dataset', position: 'right'},
           {to: '/blog', label: 'Blogs', position: 'right'},
           {
-            href: 'https://tidbcloud.com/signup',
+            href: 'https://tidbcloud.com/signup/?utm_source=ossinsight&utm_medium=referral',
             className: 'navbar-item-tidb-cloud',
             position: 'right',
           },
@@ -168,11 +168,11 @@ const config = {
             items: [
               {
                 label: 'TiDB Community',
-                href: 'https://en.pingcap.com/community?utm_source=ossinsight',
+                href: 'https://en.pingcap.com/community?utm_source=ossinsight&utm_medium=referral',
               },
               {
                 label: 'PingCAP',
-                href: 'https://en.pingcap.com?utm_source=ossinsight',
+                href: 'https://en.pingcap.com?utm_source=ossinsight&utm_medium=referral',
               },
             ],
           },
@@ -197,7 +197,7 @@ const config = {
               },
               {
                 label: 'TiDB Cloud',
-                href: 'https://tidbcloud.com/?utm_source=ossinsight',
+                href: 'https://tidbcloud.com/?utm_source=ossinsight&utm_medium=referral',
               },
               {
                 label: 'React',
