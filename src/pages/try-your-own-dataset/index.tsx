@@ -104,8 +104,8 @@ export default function Page() {
             codeStyleDescription={false}
             image={<Image src={require('./image-1.png').default} />}
             buttonText='get insights'
-            link='https://en.pingcap.com/blog/build-a-real-time-analytics-application-with-tidb-cloud/?utm_source=ossinsight'
-            readMore='https://en.pingcap.com/blog/build-a-real-time-analytics-application-with-tidb-cloud/?utm_source=ossinsight'
+            link='https://en.pingcap.com/blog/build-a-real-time-analytics-application-with-tidb-cloud/?utm_source=ossinsight&utm_medium=referral'
+            readMore='https://en.pingcap.com/blog/build-a-real-time-analytics-application-with-tidb-cloud/?utm_source=ossinsight&utm_medium=referral'
             buttonVariant='contained' 
             tags={['Logistic delivery', 'Multi-dimensional analytics']}
             elevation={0}
@@ -126,7 +126,7 @@ export default function Page() {
           />
         </Cards>
         <div style={{textAlign: 'center'}}>
-          <Button component='a' startIcon={<ArrowRightIcon />} variant='contained' sx={{':hover': {color: '#ffffff'}}} href="https://en.pingcap.com/customers/?utm_source=ossinsight" target="_blank">
+          <Button component='a' startIcon={<ArrowRightIcon />} variant='contained' sx={{':hover': {color: '#ffffff'}}} href="https://en.pingcap.com/customers/?utm_source=ossinsight&utm_medium=referral" target="_blank">
             More Cases
           </Button>
         </div>

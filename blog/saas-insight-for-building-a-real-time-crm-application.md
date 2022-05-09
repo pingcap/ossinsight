@@ -22,24 +22,24 @@ Regarding databases, there are some options you might consider:
 
 ## How to get real-time insights
 
-[TiDB](https://docs.pingcap.com/tidb/stable/overview?utm_source=ossinsight) is a distributed database with user experience of traditional databases. It looks like a super large MySQL without the limitations of NoSQL and sharding cluster solutions. With TiDB, you can simply have the base information, indices and metadata being updated in a concurrent manner with the help of cross-node transaction ability. 
+[TiDB](https://docs.pingcap.com/tidb/stable/overview?utm_source=ossinsight&utm_medium=referral) is a distributed database with user experience of traditional databases. It looks like a super large MySQL without the limitations of NoSQL and sharding cluster solutions. With TiDB, you can simply have the base information, indices and metadata being updated in a concurrent manner with the help of cross-node transaction ability. 
 
 To build such a system, you just need following steps:
 
 1. **Create schemas** according to your access pattern with indices on user name, organization, job title etc.
 2. **Use streaming system** to gather and extract meta information from your base data
 3. **Insert into TiDB via ordinary MySQL client driver like JDBC.** You might want to gather data in small batches of hundreds of rows to speed up ingestion. In a single transaction, updates on base data, indices and meta information are guaranteed to be consistent.
-4. Optionally, **deploy a couple of [TiFlash](https://docs.pingcap.com/tidb/stable/tiflash-overview?utm_source=ossinsight) nodes** to speed up large scale reporting queries.
+4. Optionally, **deploy a couple of [TiFlash](https://docs.pingcap.com/tidb/stable/tiflash-overview?utm_source=ossinsight&utm_medium=referral) nodes** to speed up large scale reporting queries.
 5. **Access the data** just like in MySQL and you are all done. SQL features for analytics like aggregations, multi-joins or window functions are all supported with great performance.
 
-For more cases, please see [here](https://en.pingcap.com/customers/?utm_source=ossinsight).
+For more cases, please see [here](https://en.pingcap.com/customers/?utm_source=ossinsight&utm_medium=referral).
 
 
 
 :::info
 ### 🌟 Details in how OSS Insight works
 
-Go to read [Use TiDB Cloud to Analyze GitHub Events in 10 Minutes](/blog/try-it-yourself) and use the [Developer Tier](https://tidbcloud.com/signup?utm_source=ossinsight) **free** for 1 year.
+Go to read [Use TiDB Cloud to Analyze GitHub Events in 10 Minutes](/blog/try-it-yourself) and use the [Developer Tier](https://tidbcloud.com/signup?utm_source=ossinsight&utm_medium=referral) **free** for 1 year.
 
 You can find how we deal with massive github data in [Data Preparation for Analytics](/blog/how-it-works) as well!
 :::
