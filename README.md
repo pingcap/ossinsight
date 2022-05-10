@@ -31,11 +31,11 @@ If you want to analyze more, please [contact us](https://ossinsight.io/about/#co
   
 * Basic:
   * star, fork, issues, commits, pull requests, contributors, programming languages, lines of code modified
-  * Historical Trends of these metrics
-  * Time Cost of issues, pull requests
+  * Historical trends of these metrics
+  * Time cost of issues, pull requests
 * Advanced:
-  * Geographical Distribution of stargazers, issue creators, pull requests creators
-  * Company Distribution of stargazers, issue creators, pull requests creators
+  * Geographical distribution of stargazers, issue creators, pull requests creators
+  * Company distribution of stargazers, issue creators, pull requests creators
   
 Examples:
 * [React](https://ossinsight.io/analyze/facebook/react)
