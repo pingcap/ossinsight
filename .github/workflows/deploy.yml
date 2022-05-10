@@ -10,10 +10,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    
-    permissions:
-      pull-requests: write 
-
+    permissions: write-all
     strategy:
       matrix:
         node-version: [16.x]
