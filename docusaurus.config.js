@@ -61,6 +61,10 @@ const config = {
             // Redirect from /docs/team/X to /community/X and /docs/support/X to /community/X
             return [
               existingPath.replace('/insights/database', '/database'),
+              existingPath.replace('/insights/js-framework', '/js-framework'),
+              existingPath.replace('/insights/web-framework', '/web-framework'),
+              existingPath.replace('/insights/language', '/language'),
+              existingPath.replace('/insights/low-code', '/low-code'),
             ];
           }
           return undefined; // Return a falsy value: no redirect created
