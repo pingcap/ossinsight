@@ -45,7 +45,7 @@ const config = {
       '@docusaurus/plugin-client-redirects',
       {
         redirects: [
-          {from: '/database', to: '/insights/database'},
+          {from: '/database/', to: '/insights/database/'},
         ],
       },
     ],
