@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@docusaurus/core": "2.0.0-beta.14",
+    "@docusaurus/plugin-client-redirects": "^2.0.0-beta.14",
     "@docusaurus/plugin-google-gtag": "^2.0.0-beta.15",
     "@docusaurus/preset-classic": "2.0.0-beta.14",
     "@docusaurus/theme-search-algolia": "^2.0.0-beta.15",

@@ -41,6 +41,30 @@ const config = {
         path: './_blog',
       },
     ],
+    [
+      '@docusaurus/plugin-client-redirects',
+      {
+        redirects: [
+          {
+            to: '/docs/newDoc',
+            from: '/docs/oldDoc',
+          },
+          {
+            to: '/docs/newDoc2',
+            from: ['/docs/oldDocFrom2019', '/docs/legacyDocFrom2016'],
+          },
+        ],
+        createRedirects(existingPath) {
+          if (existingPath.includes('/insights/database')) {
+            // Redirect from /docs/team/X to /community/X and /docs/support/X to /community/X
+            return [
+              existingPath.replace('/insights/database', '/database'),
+            ];
+          }
+          return undefined; // Return a falsy value: no redirect created
+        },
+      },
+    ],
   ],
   presets: [
     [
