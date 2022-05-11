@@ -83,7 +83,7 @@ const config = {
           path: 'insights',
           sidebarPath: require.resolve('./sidebars.js'),
           editUrl: 'https://github.com/pingcap/ossinsight/edit/main/',
-          routeBasePath: '/',
+          routeBasePath: '/insights',
         },
         blog: {
           blogSidebarTitle: 'All posts',
