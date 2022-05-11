@@ -44,6 +44,7 @@ const config = {
     [
       '@docusaurus/plugin-client-redirects',
       {
+/*
         redirects: [
           {
             to: '/docs/newDoc',
@@ -54,6 +55,7 @@ const config = {
             from: ['/docs/oldDocFrom2019', '/docs/legacyDocFrom2016'],
           },
         ],
+*/
         createRedirects(existingPath) {
           if (existingPath.includes('/insights/database')) {
             // Redirect from /docs/team/X to /community/X and /docs/support/X to /community/X
