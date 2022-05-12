@@ -43,6 +43,7 @@ import CustomPage from '../../theme/CustomPage';
 import Section from './Section';
 import { H1, H2, H3, H4, P2 } from './typography';
 import styles from './styles.module.css'
+import Helmet from 'react-helmet';
 
 interface AnalyzePageParams {
   owner: string;
@@ -150,6 +151,13 @@ function AnalyzePage() {
         />
       )}
     >
+      <Helmet>
+        <title>
+          {comparingRepoName
+            ? `${name} vs ${comparingRepoName} | OSSInsight`
+            : `Analyze ${name} | OSSInsight`}
+        </title>
+      </Helmet>
       <AnalyzeContext.Provider value={{
         repoId: main?.repo.id,
         comparingRepoId: vs?.repo.id,
