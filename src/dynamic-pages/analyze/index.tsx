@@ -1,4 +1,5 @@
-import BrowserOnly from '@docusaurus/core/lib/client/exports/BrowserOnly';
+import BrowserOnly from '@docusaurus/BrowserOnly';
+import Head from '@docusaurus/Head';
 import { useHistory, useLocation, useRouteMatch } from '@docusaurus/router';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
@@ -43,7 +44,6 @@ import CustomPage from '../../theme/CustomPage';
 import Section from './Section';
 import { H1, H2, H3, H4, P2 } from './typography';
 import styles from './styles.module.css'
-import Helmet from 'react-helmet';
 
 interface AnalyzePageParams {
   owner: string;
@@ -151,13 +151,13 @@ function AnalyzePage() {
         />
       )}
     >
-      <Helmet>
+      <Head>
         <title>
           {comparingRepoName
             ? `${name} vs ${comparingRepoName} | OSSInsight`
             : `Analyze ${name} | OSSInsight`}
         </title>
-      </Helmet>
+      </Head>
       <AnalyzeContext.Provider value={{
         repoId: main?.repo.id,
         comparingRepoId: vs?.repo.id,
