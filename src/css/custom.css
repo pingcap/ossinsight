@@ -123,6 +123,7 @@ html[data-theme='dark'] .DocSearch {
   );
 }
 
+/*
 div[class^='announcementBar_'] {
   --site-announcement-bar-stripe-color1: hsl(
     var(--site-primary-hue-saturation),
@@ -141,6 +142,7 @@ div[class^='announcementBar_'] {
   );
   font-weight: bold;
 }
+*/
 
 .red %3E a {
   color: red;
