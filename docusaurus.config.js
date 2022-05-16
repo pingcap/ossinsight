@@ -94,14 +94,14 @@ const config = {
         disableSwitch: true,
         respectPrefersColorScheme: false,
       },
-//       announcementBar: {
-//         id: 'announcement-20220414',
-//         content:
-//           'TiDB 6.0 is released, go to read the <a target="_blank" rel="noopener noreferrer" href="https://docs.pingcap.com/tidb/v6.0/release-6.0.0-dmr">release notes</a> 🎉🎉🎉',
-//         backgroundColor: '#fafbfc',
-//         textColor: '#091E42',
-//         isCloseable: false,
-//       },
+      announcementBar: {
+        id: 'announcement-20220516',
+        content:
+          '📢 📢 📢  Latest Blog: <a target="_blank" href="/blog/explore-deep-in-4.6-billion-github-events">Explore Deep in 4.6 Billion GitHub Events</a>, 2022/05/03',
+        backgroundColor: '#333',
+        textColor: '#fbe99f',
+        isCloseable: false,
+      },
       navbar: {
         title: 'OSS Insight',
         logo: {
