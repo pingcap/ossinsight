@@ -1,10 +1,11 @@
 import { useEventCallback } from '@mui/material';
 import Tabs from '@mui/material/Tabs';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import IconTab from '../components/IconTab';
-import dimensions from '../dimensions';
+import _dimensions from '../dimensions';
 
-export function useDimensionTabs() {
+export function useDimensionTabs(assurePrefix = false) {
+  const dimensions = useMemo(() => _dimensions.filter(d => assurePrefix ? !!d.prefix : true), [assurePrefix])
   const [dimension, setDimension] = useState(dimensions[0]);
 
   const handleChangeDimension = useEventCallback((e, dimensionKey: string) => {

@@ -14,6 +14,19 @@ export type CollectionHistoryRankData = {
   rank: number
 }
 
+export type CollectionMonthRankData = {
+  current_month: string
+  last_month: string
+  repo_name: string
+  current_month_total: number
+  last_month_total: number
+  total_mom: number
+  current_month_rank: number
+  last_month_rank: number
+  rank_mom: number
+  total: number
+}
+
 
 export function useCollectionHistory(collectionId: number, dimension: string) {
   return useRemoteData<any, CollectionHistoryData>(`collection-${dimension}-history`, { collectionId }, false);
@@ -21,4 +34,8 @@ export function useCollectionHistory(collectionId: number, dimension: string) {
 
 export function useCollectionHistoryRank(collectionId: number, dimension: string) {
   return useRemoteData<any, CollectionHistoryRankData>(`collection-${dimension}-history-rank`, { collectionId }, false);
+}
+
+export function useCollectionMonthRank(collectionId: number, dimension: string) {
+  return useRemoteData<any, CollectionMonthRankData>(`collection-${dimension}-month-rank`, { collectionId }, false);
 }

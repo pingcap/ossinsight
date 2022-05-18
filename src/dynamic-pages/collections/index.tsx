@@ -9,6 +9,7 @@ import { useCollection } from './hooks/useCollection';
 import HistorySection from './sections/history';
 import HistoryRankSection from './sections/history-rank';
 import HistorySortSection from './sections/history-sort';
+import MonthRankSection from './sections/month-rank';
 
 interface CollectionsPageParams {
   slug: string;
@@ -23,6 +24,7 @@ function CollectionsPage() {
     return (
       <CustomPage>
         <CollectionsContext.Provider value={{ collection }}>
+          <MonthRankSection />
           <HistorySection />
           <HistorySortSection />
           <HistoryRankSection />
