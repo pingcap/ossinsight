@@ -10,7 +10,7 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import CollectionsContext from '../context';
 import { useCollectionMonthRank } from '../hooks/data';
 import { useDimensionTabs } from '../hooks/useTabs';
@@ -65,6 +65,12 @@ export default function MonthRankSection() {
 
   const { dimension, tabs } = useDimensionTabs(true);
   const asyncData = useCollectionMonthRank(collection.id, dimension.key);
+
+  useEffect(() => {
+    if (asyncData.data) {
+      asyncData.data.data.sort((a, b) => a.current_month_rank - b.current_month_rank)
+    }
+  }, [asyncData.data])
 
   return (
     <Container>
