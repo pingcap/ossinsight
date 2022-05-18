@@ -1244,6 +1244,11 @@
   dependencies:
     "@date-io/core" "^2.13.1"
 
+"@djagger/echartsx@^0.0.8":
+  "integrity" "sha512-KLHOKlsepjhgFycRxepUMXZiX6NYo+dABrXR8atP5FagkOgtqcPbR8KLboYrK/Tjoy+GykO4k+H8ANgMau60fA=="
+  "resolved" "https://registry.npmjs.org/@djagger/echartsx/-/echartsx-0.0.8.tgz"
+  "version" "0.0.8"
+
 "@docsearch/css@3.0.0-alpha.42":
   "integrity" "sha512-AGwI2AXUacYhVOHmYnsXoYDJKO6Ued2W+QO80GERbMLhC7GH5tfvtW5REs/s7jSdcU3vzFoxT8iPDBCh/PkrlQ=="
   "resolved" "https://registry.npmmirror.com/@docsearch/css/download/@docsearch/css-3.0.0-alpha.42.tgz"
@@ -4505,13 +4510,13 @@
     "claygl" "^1.2.1"
     "zrender" "^5.1.1"
 
-"echarts@^3.0.0 || ^4.0.0 || ^5.0.0", "echarts@^5.1.2", "echarts@^5.3.0":
-  "integrity" "sha512-zENufmwFE6WjM+24tW3xQq4ICqQtI0CGj4bDVDNd3BK3LtaA/5wBp+64ykIyKy3QElz0cieKqSYP4FX9Lv9MwQ=="
-  "resolved" "https://registry.npmjs.org/echarts/-/echarts-5.3.0.tgz"
-  "version" "5.3.0"
+"echarts@^3.0.0 || ^4.0.0 || ^5.0.0", "echarts@^5.1.2", "echarts@^5.3.2":
+  "integrity" "sha512-LWCt7ohOKdJqyiBJ0OGBmE9szLdfA9sGcsMEi+GGoc6+Xo75C+BkcT/6NNGRHAWtnQl2fNow05AQjznpap28TQ=="
+  "resolved" "https://registry.npmjs.org/echarts/-/echarts-5.3.2.tgz"
+  "version" "5.3.2"
   dependencies:
     "tslib" "2.3.0"
-    "zrender" "5.3.0"
+    "zrender" "5.3.1"
 
 "ee-first@1.1.1":
   "integrity" "sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0="
@@ -6692,8 +6697,8 @@
     "semver" "^6.2.0"
 
 "param-case@^3.0.4":
-  "integrity" "sha1-fRf+SqEr3jTUp32RrPtiGcqtAcU="
-  "resolved" "https://registry.nlark.com/param-case/download/param-case-3.0.4.tgz"
+  "integrity" "sha512-RXlj7zCYokReqWpOPH9oYivUzLYZ5vAPIfEmCTNViosC78F8F0H9y7T7gG2M39ymgutxF5gcFEsyZQSph9Bp3A=="
+  "resolved" "https://registry.npmjs.org/param-case/-/param-case-3.0.4.tgz"
   "version" "3.0.4"
   dependencies:
     "dot-case" "^3.0.4"
@@ -8617,7 +8622,7 @@
   "resolved" "https://registry.nlark.com/trough/download/trough-1.0.5.tgz?cache=0&sync_timestamp=1625400622069&other_urls=https%3A%2F%2Fregistry.nlark.com%2Ftrough%2Fdownload%2Ftrough-1.0.5.tgz"
   "version" "1.0.5"
 
-"tslib@^2.0.3", "tslib@^2.1.0", "tslib@^2.2.0", "tslib@^2.3.1":
+"tslib@*", "tslib@^2.0.3", "tslib@^2.1.0", "tslib@^2.2.0", "tslib@^2.3.1":
   "integrity" "sha512-77EbyPPpMz+FRFRuAFlWMtmgUWGe9UOG2Z25NqCwiIjRhOf5iKGuzSe5P2w1laq+FkRy4p+PCuVkJSGkzTEKVw=="
   "resolved" "https://registry.npmmirror.com/tslib/download/tslib-2.3.1.tgz"
   "version" "2.3.1"
@@ -9212,10 +9217,10 @@
   "resolved" "https://registry.nlark.com/yocto-queue/download/yocto-queue-0.1.0.tgz?cache=0&sync_timestamp=1628813299341&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fyocto-queue%2Fdownload%2Fyocto-queue-0.1.0.tgz"
   "version" "0.1.0"
 
-"zrender@^5.1.1", "zrender@5.3.0":
-  "integrity" "sha512-Ln2QB5uqI1ftNYMtCRxd+XDq6MOttLgam2tmhKAVA+j0ko47UT+VNlDvKTkqe4K2sJhBvB0EhYNLebqlCTjatQ=="
-  "resolved" "https://registry.npmjs.org/zrender/-/zrender-5.3.0.tgz"
-  "version" "5.3.0"
+"zrender@^5.1.1", "zrender@5.3.1":
+  "integrity" "sha512-7olqIjy0gWfznKr6vgfnGBk7y4UtdMvdwFmK92vVQsQeDPyzkHW1OlrLEKg6GHz1W5ePf0FeN1q2vkl/HFqhXw=="
+  "resolved" "https://registry.npmjs.org/zrender/-/zrender-5.3.1.tgz"
+  "version" "5.3.1"
   dependencies:
     "tslib" "2.3.0"
 

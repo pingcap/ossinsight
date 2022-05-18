@@ -41,6 +41,11 @@ const config = {
             params: getPresets('.preset-analyze')
               .map(name => name.split('/'))
               .map(([owner, repo]) => ({ owner, repo }))
+          },
+          {
+            path: '/collections/:slug',
+            exact: true,
+            component: '@site/src/dynamic-pages/collections'
           }
         ]
       }
