@@ -25,14 +25,14 @@ const formatTime = (name: string): string => df.format(new Date(name));
 const formatNumber = (v: number) => v.toFixed(1).replace(/[.,]0$/, "")
 
 const Diff = ({ val, suffix }: { val: number, suffix?: string }) => {
-  if (val > 0) {
+  if (val < 0) {
     return (
       <span className='diff' style={{ color: '#52FF52' }}>
         <ArrowUpwardIcon fontSize='inherit' sx={{ verticalAlign: 'text-bottom' }} />
-        {formatNumber(val)}{suffix}
+        {formatNumber(-val)}{suffix}
       </span>
     );
-  } else if (val < 0) {
+  } else if (val > 0) {
     return (
       <span className='diff' style={{ color: '#E30C34' }}>
         <ArrowDownwardIcon fontSize='inherit' sx={{ verticalAlign: 'text-bottom' }} />
