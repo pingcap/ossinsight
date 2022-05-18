@@ -92,7 +92,7 @@ export default function MonthRankSection() {
                       <Diff val={item.rank_mom} />
                     </NumberCell>
                     <NumberCell>
-                      {item.last_month_rank]}
+                      {item.last_month_rank}
                     </NumberCell>
                     <TableCell>
                       <Avatar src={`https://github.com/${item.repo_name.split('/')[0]}.png`} sx={{ display: 'inline-block', verticalAlign: 'text-bottom', width: 20, height: 20 }} />
