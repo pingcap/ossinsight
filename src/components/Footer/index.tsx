@@ -70,12 +70,12 @@ export default function Footer() {
             <a href="https://twitter.com/OSSInsight">@OSSInsight</a>
             &nbsp;and join the conversation using the hashtags
             <br />
-            <a href="https://twitter.com/hashtag/OSS_Insight" target='_blank'>
-              #OSS_Insight
+            <a href="https://twitter.com/hashtag/OSSInsight" target='_blank'>
+              #OSSInsight
             </a>
             &nbsp;
-            <a href="https://twitter.com/hashtag/TiDB_Cloud" target='_blank'>
-              #TiDB_Cloud
+            <a href="https://twitter.com/hashtag/TiDBCloud" target='_blank'>
+              #TiDBCloud
             </a>
           </h3>
         </div>
