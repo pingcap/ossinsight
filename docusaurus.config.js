@@ -30,6 +30,7 @@ const config = {
   ],
   clientModules: [require.resolve("./myClientModule.ts")],
   plugins: [
+    path.resolve(__dirname, 'plugins/prefetch'),
     [
       path.resolve(__dirname, 'plugins/dynamic-route'),
       {
