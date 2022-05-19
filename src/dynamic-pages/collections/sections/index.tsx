@@ -14,8 +14,8 @@ export default function Sections ({ collection }: { collection: Collection}) {
   return (
     <>
       <H1>{collection?.name ?? 'Loading'}</H1>
-      <P1><b>{collection?.name ?? 'Loading'}</b> is a collection of popular Repos in this fields.</P1>
-      <P1>Enjoy the insights of many metrics in many styles... 👇</P1>
+      <P1>This page analyzes a collection of popular repos in `<b>{collection?.name ?? 'Loading'}</b>` fields.</P1>
+      <P1>Enjoy there insights on many metrics in many styles... 👇</P1>
       <Grid container justifyContent='space-between'>
         <Link source={require('./videos/history-rank.mp4').default} title={['Annual', 'Rankings']} hash='history-rank' color='transparent linear-gradient(180deg, #FF628E 0%, #18191A 100%) 0% 0% no-repeat padding-box'/>
         <Link source={require('./videos/month-rank.mp4').default} title={['Monthly', 'Rankings']} hash='month-rank' color='transparent linear-gradient(180deg, #DF5CFF 0%, #18191A 100%) 0% 0% no-repeat padding-box'/>
