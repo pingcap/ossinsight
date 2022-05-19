@@ -51,7 +51,7 @@ const Diff = ({ val, suffix, reverse = false }: { val: number, suffix?: string, 
       </span>
     );
   } else {
-    return <span className="diff" style={{ color: 'gray' }}>--</span>;
+    return <span className="diff" style={{ color: 'gray' }}></span>;
   }
 };
 
@@ -82,8 +82,8 @@ export default withInViewContainer(function MonthRankSection() {
 
   return (
     <section>
-      <H2>Month Rank</H2>
-      <P1>month rank description</P1>
+      <H2>Monthly Ranking</H2>
+      <P1>Simple monthly ranking by number of stars, pull requests or issues earned this month</P1>
       {tabs}
       <br />
       {withRemote(
