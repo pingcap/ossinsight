@@ -3,7 +3,7 @@ import { Container } from '@mui/material';
 import Box from '@mui/material/Box';
 import Skeleton from '@mui/material/Skeleton';
 import { use } from 'echarts/core';
-import { CanvasRenderer } from 'echarts/renderers';
+import { CanvasRenderer, SVGRenderer } from 'echarts/renderers';
 import React, { useContext } from 'react';
 import { withInViewContainer } from '../../../components/InViewContainer';
 import CollectionsContext from '../context';
@@ -18,6 +18,7 @@ const df = new Intl.DateTimeFormat(['en-US'], {
   year: 'numeric',
 });
 const formatTime = (name: string): string => df.format(new Date(name));
+use(SVGRenderer)
 
 export default withInViewContainer(function HistorySortSection() {
   const { collection } = useContext(CollectionsContext);
@@ -34,7 +35,7 @@ export default withInViewContainer(function HistorySortSection() {
         data => (
           <SortingBarChart
             theme="dark"
-            renderer="canvas"
+            renderer="svg"
             data={data.data}
             height={480}
             formatTime={formatTime}
