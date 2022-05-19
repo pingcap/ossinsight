@@ -6,10 +6,13 @@ const DynamicRoutePlugin = function (context, options) {
       const { routes } = options
       const { addRoute } = actions
 
-      routes.forEach(routeOption => {
-        const {params, ...route} = routeOption
+      await Promise.all(routes.map(async routeOption => {
+        let {params, ...route} = routeOption
 
         if (params) {
+          if (typeof params === 'function') {
+            params = await params()
+          }
           params.forEach(param => {
             let { path, ...rest } = route
             Object.entries(param).forEach(([k, v]) => {
@@ -19,7 +22,7 @@ const DynamicRoutePlugin = function (context, options) {
           })
         }
         addRoute(route)
-      })
+      }))
     }
   }
 }

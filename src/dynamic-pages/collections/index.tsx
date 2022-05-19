@@ -34,7 +34,7 @@ function CollectionsPage() {
   }, [hiddenSidebar]);
 
   return (
-    <CustomPage>
+    <CustomPage title={collection.name}>
       <CollectionsContext.Provider value={{ collection }}>
         <div className={styles.collectionsPage}>
           <BackToTopButton />
@@ -101,7 +101,7 @@ function CollectionsPage() {
                     [styles.collectionsItemWrapperEnhanced]: hiddenSidebarContainer,
                   },
                 )}>
-                <Sections />
+                <Sections collection={collection} />
               </div>
             </main>
           </div>

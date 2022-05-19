@@ -46,7 +46,12 @@ const config = {
           {
             path: '/collections/:slug',
             exact: true,
-            component: '@site/src/dynamic-pages/collections'
+            component: '@site/src/dynamic-pages/collections',
+            params: () => import('node-fetch').then(({ default: fetch}) => fetch('https://api.ossinsight.io/collections'))
+              .then(res => res.json())
+              .then(({data}) => data.map(({name}) => ({
+                slug: require('param-case').paramCase(name)
+              })))
           }
         ]
       }
