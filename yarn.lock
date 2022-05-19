@@ -1171,6 +1171,13 @@
   dependencies:
     "regenerator-runtime" "^0.13.4"
 
+"@babel/runtime@7.15.3":
+  "integrity" "sha512-OvwMLqNXkCXSz1kSm58sEsNuhqOx/fKpnUnKnFB5v8uDda5bLNEHNgKPvhDN6IU0LDcnHQ90LlJ0Q6jnyBSIBA=="
+  "resolved" "https://registry.npmjs.org/@babel/runtime/-/runtime-7.15.3.tgz"
+  "version" "7.15.3"
+  dependencies:
+    "regenerator-runtime" "^0.13.4"
+
 "@babel/template@^7.12.7", "@babel/template@^7.16.7":
   "integrity" "sha512-I8j/x8kHUrbYRTUxXrrMbfCa7jxkE7tZre39x3kjr9hvI82cK1FfqLygotcWN5kdPGWcLdWMHpSBavse5tWw3w=="
   "resolved" "https://registry.npmmirror.com/@babel/template/download/@babel/template-7.16.7.tgz"
@@ -2573,6 +2580,13 @@
   "version" "1.1.2"
   dependencies:
     "defer-to-connect" "^1.0.1"
+
+"@tidb-community/tracking-script@^0.1.0":
+  "integrity" "sha512-kSd6JH9C6rjsp6IjADC4OrVMAC3NaMvUc7r+gXTZ+Jh3PZqy9XJm3ww+v08okNu15UJJzSWS9/FNYzhEMwxg6g=="
+  "resolved" "https://registry.npmjs.org/@tidb-community/tracking-script/-/tracking-script-0.1.0.tgz"
+  "version" "0.1.0"
+  dependencies:
+    "@babel/runtime" "7.15.3"
 
 "@trysound/sax@0.2.0":
   "integrity" "sha1-zMqrdYr1Z2Hre/N69vA/Mm3XmK0="
