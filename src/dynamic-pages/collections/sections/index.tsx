@@ -21,9 +21,9 @@ export default function Sections ({ collection }: { collection: Collection}) {
         <Link source={require('./videos/history-sort.mp4').default} title={['Annual', 'Trending / Sort']} hash='history-sort' color='transparent linear-gradient(180deg, #628DFF 0%, #18191A 100%) 0% 0% no-repeat padding-box'/>
       </Grid>
       <MonthRankSection />
-      <HistorySection />
       <HistorySortSection />
       <HistoryRankSection />
+      <HistorySection />
     </>
   )
 }
