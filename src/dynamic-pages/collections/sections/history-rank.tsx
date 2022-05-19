@@ -27,8 +27,8 @@ export default withInViewContainer(function HistoryRankSection() {
 
   return (
     <section>
-      <H2 id='history-rank'>Month Rank</H2>
-      <P1>month rank description</P1>
+      <H2 id='history-rank'>Historical Ranking</H2>
+      <P1>Rankings of each year</P1>
       {tabs}
       <br />
       {withRemote(
