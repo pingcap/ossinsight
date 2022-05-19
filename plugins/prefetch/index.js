@@ -1,14 +1,13 @@
+const fs = require('fs/promises')
 
 module.exports = function (context, options) {
   return {
     name: 'plugin-prefetch',
     async contentLoaded({actions}) {
-      const {default: fetch} = await import('node-fetch')
-      const res = await fetch('https://api.ossinsight.io/collections')
-      const data = await res.json()
+      const data = await fs.readFile('.prefetch/collections.json', { encoding: 'utf-8' })
       const {setGlobalData} = actions;
       setGlobalData({
-        collections: data
+        collections: JSON.parse(data)
       })
     },
   };

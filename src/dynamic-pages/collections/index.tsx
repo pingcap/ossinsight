@@ -34,7 +34,7 @@ function CollectionsPage() {
   }, [hiddenSidebar]);
 
   return (
-    <CustomPage title={collection.name}>
+    <CustomPage title={collection?.name}>
       <CollectionsContext.Provider value={{ collection }}>
         <div className={styles.collectionsPage}>
           <BackToTopButton />

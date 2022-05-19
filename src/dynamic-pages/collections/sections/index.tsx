@@ -9,7 +9,7 @@ import { H1, P1 } from './typograpy';
 export default function Sections ({ collection }: { collection: Collection}) {
   return (
     <>
-      <H1>{collection.name}</H1>
+      <H1>{collection?.name ?? 'Loading'}</H1>
       <P1>Collection description</P1>
       <MonthRankSection />
       <HistorySection />

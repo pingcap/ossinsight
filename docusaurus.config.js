@@ -13,6 +13,10 @@ const getPresets = (fn) => {
     .filter(s => s)
 }
 
+const getPrefetched = fn => {
+  return JSON.parse(fs.readFileSync(fn, { encoding: 'utf-8'}))
+}
+
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'Open Source Software Analysis and Comparing Tools',
@@ -47,11 +51,9 @@ const config = {
             path: '/collections/:slug',
             exact: true,
             component: '@site/src/dynamic-pages/collections',
-            params: () => import('node-fetch').then(({ default: fetch}) => fetch('https://api.ossinsight.io/collections'))
-              .then(res => res.json())
-              .then(({data}) => data.map(({name}) => ({
-                slug: require('param-case').paramCase(name)
-              })))
+            params: getPrefetched('.prefetch/collections.json').data.map(({name}) => ({
+              slug: require('param-case').paramCase(name)
+            }))
           }
         ]
       }

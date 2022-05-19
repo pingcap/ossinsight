@@ -24,3 +24,6 @@ yarn-error.log*
 
 # IDE
 .idea
+
+# Prefetch
+.prefetch
