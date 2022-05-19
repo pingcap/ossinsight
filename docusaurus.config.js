@@ -4,6 +4,14 @@
 const lightCodeTheme = require('prism-react-renderer/themes/github');
 const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 const path = require('path')
+const fs = require('fs')
+
+const getPresets = (fn) => {
+  return fs.readFileSync(fn, { encoding: 'utf-8' })
+    .split('\n')
+    .map(line => line.trim())
+    .filter(s => s)
+}
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -29,7 +37,10 @@ const config = {
           {
             path: '/analyze/:owner/:repo',
             exact: true,
-            component: '@site/src/dynamic-pages/analyze'
+            component: '@site/src/dynamic-pages/analyze',
+            params: getPresets('.preset-analyze')
+              .map(name => name.split('/'))
+              .map(([owner, repo]) => ({ owner, repo }))
           }
         ]
       }
