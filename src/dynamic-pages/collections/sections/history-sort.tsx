@@ -28,8 +28,8 @@ export default withInViewContainer(function HistorySortSection() {
 
   return (
     <section>
-      <H2 id='month-rank'>Month Rank</H2>
-      <P1>month rank description</P1>
+      <H2 id='month-rank'>Racing in History!</H2>
+      <P1>Show the racing status from since 2011</P1>
       {tabs}
       <br />
       {withRemote(
