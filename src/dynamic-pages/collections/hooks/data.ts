@@ -28,14 +28,14 @@ export type CollectionMonthRankData = {
 }
 
 
-export function useCollectionHistory(collectionId: number, dimension: string) {
-  return useRemoteData<any, CollectionHistoryData>(`collection-${dimension}-history`, { collectionId }, false);
+export function useCollectionHistory(collectionId: number | undefined, dimension: string) {
+  return useRemoteData<any, CollectionHistoryData>(`collection-${dimension}-history`, { collectionId }, false, collectionId !== undefined);
 }
 
-export function useCollectionHistoryRank(collectionId: number, dimension: string) {
-  return useRemoteData<any, CollectionHistoryRankData>(`collection-${dimension}-history-rank`, { collectionId }, false);
+export function useCollectionHistoryRank(collectionId: number | undefined, dimension: string) {
+  return useRemoteData<any, CollectionHistoryRankData>(`collection-${dimension}-history-rank`, { collectionId }, false, collectionId !== undefined);
 }
 
-export function useCollectionMonthRank(collectionId: number, dimension: string) {
-  return useRemoteData<any, CollectionMonthRankData>(`collection-${dimension}-month-rank`, { collectionId }, false);
+export function useCollectionMonthRank(collectionId: number | undefined, dimension: string) {
+  return useRemoteData<any, CollectionMonthRankData>(`collection-${dimension}-month-rank`, { collectionId }, false, collectionId !== undefined);
 }

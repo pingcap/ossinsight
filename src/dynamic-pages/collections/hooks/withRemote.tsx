@@ -6,7 +6,7 @@ import React, { useMemo } from 'react';
 import { ReactNode } from 'react';
 import { AsyncData, RemoteData } from '../../../components/RemoteCharts/hook';
 
-export function withRemote<T>({ data, loading, error }: AsyncData<RemoteData<any, T>>, render: (data: RemoteData<any, T>) => ReactNode) {
+export function withRemote<T>({ data, loading, error }: AsyncData<RemoteData<any, T>>, render: (data: RemoteData<any, T>) => ReactNode, fallback?: () => ReactNode) {
   const errorMessage = useMemo(() => {
     if (!error) {
       return undefined
@@ -24,6 +24,8 @@ export function withRemote<T>({ data, loading, error }: AsyncData<RemoteData<any
     )
   } else if (data) {
     return render(data)
+  } else if (fallback) {
+    return fallback()
   } else {
     return (
       <Box>
