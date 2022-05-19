@@ -28,8 +28,8 @@ export default withInViewContainer(function HistorySortSection() {
 
   return (
     <section>
-      <H2 id='month-rank'>Racing in History!</H2>
-      <P1>Show the racing status from since 2011</P1>
+      <H2 id='month-rank'>Bar Chart Race Style</H2>
+      <P1>Bar Chart Race is a great and highly visual way to display data changing over time in the form of an animated bar chart.</P1>
       {tabs}
       <br />
       {withRemote(
