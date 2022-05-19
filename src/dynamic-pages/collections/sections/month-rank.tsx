@@ -24,19 +24,23 @@ const formatTime = (name: string): string => df.format(new Date(name));
 
 const formatNumber = (v: number) => v.toFixed(1).replace(/[.,]0$/, "")
 
-const Diff = ({ val, suffix }: { val: number, suffix?: string }) => {
-  if (val < 0) {
+const up = <ArrowUpwardIcon fontSize='inherit' sx={{ verticalAlign: 'text-bottom' }} />
+const down = <ArrowDownwardIcon fontSize='inherit' sx={{ verticalAlign: 'text-bottom' }} />
+const red = '#E30C34'
+const green = '#52FF52'
+const Diff = ({ val, suffix, reverse = false }: { val: number, suffix?: string, reverse?: boolean }) => {
+  if (val > 0) {
     return (
-      <span className='diff' style={{ color: '#52FF52' }}>
-        <ArrowUpwardIcon fontSize='inherit' sx={{ verticalAlign: 'text-bottom' }} />
-        {formatNumber(-val)}{suffix}
+      <span className='diff' style={{ color: reverse ? red : green }}>
+        {reverse ? down : up}
+        {formatNumber(val)}{suffix}
       </span>
     );
-  } else if (val > 0) {
+  } else if (val < 0) {
     return (
-      <span className='diff' style={{ color: '#E30C34' }}>
-        <ArrowDownwardIcon fontSize='inherit' sx={{ verticalAlign: 'text-bottom' }} />
-        {formatNumber(val)}{suffix}
+      <span className='diff' style={{ color: reverse ? green : red }}>
+        {reverse ? up : down}
+        {formatNumber(-val)}{suffix}
       </span>
     );
   } else {
@@ -66,12 +70,6 @@ export default function MonthRankSection() {
   const { dimension, tabs } = useDimensionTabs(true);
   const asyncData = useCollectionMonthRank(collection.id, dimension.key);
 
-  useEffect(() => {
-    if (asyncData.data) {
-      asyncData.data.data.sort((a, b) => a.current_month_rank - b.current_month_rank)
-    }
-  }, [asyncData.data])
-
   return (
     <Container>
       {tabs}
@@ -95,7 +93,7 @@ export default function MonthRankSection() {
                   <TableRow key={item.repo_name}>
                     <NumberCell>
                       {item.current_month_rank}
-                      <Diff val={item.rank_mom} />
+                      <Diff val={item.rank_mom} reverse />
                     </NumberCell>
                     <NumberCell>
                       {item.last_month_rank}
