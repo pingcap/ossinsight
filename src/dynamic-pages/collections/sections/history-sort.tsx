@@ -28,7 +28,7 @@ export default withInViewContainer(function HistorySortSection() {
 
   return (
     <section>
-      <H2>Month Rank</H2>
+      <H2 id='month-rank'>Month Rank</H2>
       <P1>month rank description</P1>
       {tabs}
       <br />

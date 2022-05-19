@@ -82,7 +82,7 @@ export default withInViewContainer(function MonthRankSection() {
 
   return (
     <section>
-      <H2>Monthly Ranking</H2>
+      <H2 id='month-rank'>Monthly Ranking</H2>
       <P1>Simple monthly ranking by number of stars, pull requests or issues earned this month</P1>
       {tabs}
       <br />

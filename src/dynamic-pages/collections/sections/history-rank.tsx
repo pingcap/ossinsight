@@ -27,7 +27,7 @@ export default withInViewContainer(function HistoryRankSection() {
 
   return (
     <section>
-      <H2>Month Rank</H2>
+      <H2 id='history-rank'>Month Rank</H2>
       <P1>month rank description</P1>
       {tabs}
       <br />
