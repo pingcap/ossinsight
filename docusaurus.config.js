@@ -136,13 +136,18 @@ const config = {
         style: 'dark',
         items: [
           {
-            type: 'doc',
-            docId: 'database/deep-insight-into-open-source-databases',
+            to: '/collections/open-source-database',
             position: 'left',
-            label: 'Insights',
+            label: 'Collections',
           },
           {to: '/try-your-own-dataset/?utm_content=header', label: '🔥 Try Your Own Dataset', position: 'right'},
           {to: '/blog', label: 'Blogs', position: 'right'},
+          {
+            type: 'doc',
+            docId: 'database/deep-insight-into-open-source-databases',
+            position: 'right',
+            label: 'Insights',
+          },
           {
             href: 'https://tidbcloud.com/signup/?utm_source=ossinsight&utm_medium=referral',
             className: 'navbar-item-tidb-cloud',
