@@ -1,4 +1,4 @@
-import { LineChart, Title, Toolbox } from '@djagger/echartsx';
+import { Legend, LineChart, Title, Toolbox } from '@djagger/echartsx';
 import Box from '@mui/material/Box';
 import Skeleton from '@mui/material/Skeleton';
 import { use } from 'echarts/core';
@@ -26,28 +26,35 @@ export default withInViewContainer(function HistorySection() {
   const { dimension, tabs } = useDimensionTabs();
   const asyncData = useCollectionHistory(collection?.id, dimension.key);
 
-  const top10Data: typeof asyncData = useMemo(() => {
+  const top10Names = useMemo(() => {
     if (!asyncData.data) {
-      return asyncData
+      return []
     }
     const maxTime = asyncData.data.data.reduce((set, item) => {
       return set < item.event_month ? item.event_month : set
     }, '')
-    const top10Names = asyncData.data.data
+    return asyncData.data.data
       .filter(item => item.event_month === maxTime)
       .sort((a, b) =>b.total - a.total)
       .slice(0, 10)
       .map(item => item.repo_name)
+  }, [asyncData.data])
+
+  const top10Data: typeof asyncData = useMemo(() => {
+    if (!asyncData.data) {
+      return asyncData
+    }
+    const top10NamesSet = top10Names
       .reduce((set, item) => set.add(item), new Set<string>())
     return {
       data: {
         ...asyncData.data,
-        data: asyncData.data.data.filter(item => top10Names.has(item.repo_name)),
+        data: asyncData.data.data.filter(item => top10NamesSet.has(item.repo_name)),
       },
       loading: asyncData.loading,
       error: asyncData.error,
     }
-  }, [asyncData.data, asyncData.error, asyncData.loading])
+  }, [asyncData.data, asyncData.error, asyncData.loading, top10Names])
 
   return (
     <section>
@@ -66,9 +73,10 @@ export default withInViewContainer(function HistorySection() {
             fields={{ name: 'repo_name', time: 'event_month', value: 'total' }}
             formatTime={formatTime}
           >
-            <Title id='title' text={`Top 10 ${collection.name} ${dimension.title} historical trending`}/>
+            <Title id='title' top={0} text={`Top 10 ${collection.name} - ${dimension.title}`}/>
             <Watermark left='10%' top='10%' />
             <Toolbox feature={{ saveAsImage: { title: '' } }}/>
+            <Legend top='center' left='10%' orient='vertical' type='scroll' data={top10Names}/>
           </LineChart>
         ),
         () => (

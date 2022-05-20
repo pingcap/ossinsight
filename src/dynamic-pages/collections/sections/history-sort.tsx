@@ -29,7 +29,7 @@ export default withInViewContainer(function HistorySortSection() {
 
   return (
     <section>
-      <H2 id='history-sort'>Bar Chart Race!</H2>
+      <H2 id='bar-chart-race'>Bar Chart Race!</H2>
       <P1>Bar Chart Race is a great and highly visual way to display data changing over time in the form of an animated bar chart.</P1>
       {tabs}
       <br />
@@ -46,7 +46,7 @@ export default withInViewContainer(function HistorySortSection() {
             interval={400}
             max={15}
           >
-            <Title id='title' text={`${collection.name} ${dimension.title} count race`}/>
+            <Title id='title' text={`${collection.name} - ${dimension.title}`}/>
             <Watermark right='5%' bottom='10%' />
           </SortingBarChart>
         ),

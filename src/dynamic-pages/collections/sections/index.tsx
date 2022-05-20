@@ -17,9 +17,9 @@ export default function Sections ({ collection }: { collection: Collection}) {
       <P1>This page analyzes a collection of popular repos in `<b>{collection?.name ?? 'Loading'}</b>` fields.</P1>
       <P1>Enjoy there insights on many metrics in many styles... 👇</P1>
       <Grid container justifyContent='space-between'>
-        <Link source={require('./videos/month-rank.mp4').default} title={['Monthly', 'Rankings']} hash='month-rank' color='transparent linear-gradient(180deg, #DF5CFF 0%, #18191A 100%) 0% 0% no-repeat padding-box'/>
-        <Link source={require('./videos/history-sort.mp4').default} title={['Annual', 'Trending']} hash='history-sort' color='transparent linear-gradient(180deg, #628DFF 0%, #18191A 100%) 0% 0% no-repeat padding-box'/>
-        <Link source={require('./videos/history-rank.mp4').default} title={['Annual', 'Rankings']} hash='history-rank' color='transparent linear-gradient(180deg, #FF628E 0%, #18191A 100%) 0% 0% no-repeat padding-box'/>
+        <Link source={require('./videos/month-rank.mp4').default} title={['Monthly', 'Rankings']} hash='monthly-rankings' color='transparent linear-gradient(180deg, #DF5CFF 0%, #18191A 100%) 0% 0% no-repeat padding-box'/>
+        <Link source={require('./videos/history-sort.mp4').default} title={['Bar Chart', 'Race']} hash='bar-chart-race' color='transparent linear-gradient(180deg, #628DFF 0%, #18191A 100%) 0% 0% no-repeat padding-box'/>
+        <Link source={require('./videos/history-rank.mp4').default} title={['Historical', 'Rankings']} hash='historical-rankings' color='transparent linear-gradient(180deg, #FF628E 0%, #18191A 100%) 0% 0% no-repeat padding-box'/>
       </Grid>
       <MonthRankSection />
       <HistorySortSection />

@@ -23,7 +23,7 @@ export default withInViewContainer(function HistoryRankSection() {
 
   return (
     <section>
-      <H2 id='history-rank'>Historical Ranking</H2>
+      <H2 id='historical-rankings'>Historical Ranking</H2>
       <P1>Rankings of each year</P1>
       {tabs}
       <br />
@@ -38,7 +38,7 @@ export default withInViewContainer(function HistoryRankSection() {
 
             fields={{ name: 'repo_name', time: 'event_year', value: 'total', rank: 'rank' }}
           >
-            <Title id='title' text={`${collection.name} ${dimension.title} historical ranking`}/>
+            <Title id='title' text={`${collection.name} - ${dimension.title}`}/>
             <Watermark left='5%' bottom='5%' />
             <Toolbox feature={{ saveAsImage: { title: '' } }}/>
           </RankChart>
