@@ -72,7 +72,7 @@ const config = {
         redirects: [
           {
             from: '/database/deep-insight-into-open-source-databases',
-            to: '/blog/insights/deep-insight-into-open-source-databases-2021',
+            to: '/blog/insights/deep-insight-into-open-source-databases',
           },
           {
             from: '/js-framework/deep-insight-into-js-framework',
