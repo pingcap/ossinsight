@@ -112,8 +112,10 @@ const config = {
           routeBasePath: '/',
         },
         blog: {
-          blogSidebarTitle: 'All posts',
+          blogTitle: 'OSS Insight Blogs',
+          blogSidebarTitle: 'All Blog Posts',
           blogSidebarCount: 'ALL',
+          postsPerPage: 10,
           showReadingTime: true,
           editUrl: 'https://github.com/pingcap/ossinsight/edit/main/',
           feedOptions: {
