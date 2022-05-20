@@ -2,6 +2,7 @@
 title:  Use TiDB Cloud to Analyze GitHub Events in 10 Minutes
 date: 2022-04-01
 authors: [fendy, hooopo]
+tags: [tidbcloud]
 ---
 
 [TiDB](https://docs.pingcap.com/tidb/stable/overview?utm_source=ossinsight&utm_medium=referral) is an open source distributed NewSQL database with horizontal scalability, high availability, and strong consistency. It can also deal with mixed OLTP and OLAP workloads at the same time by leveraging its hybrid transactional and analytical (HTAP) capability. 

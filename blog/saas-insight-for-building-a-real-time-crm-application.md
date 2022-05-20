@@ -2,6 +2,7 @@
 title: SaaS Insight for Building a Real-time CRM Application
 date: 2022-05-01
 authors: [ilovesoup]
+tags: [tidb]
 ---
 
 > Providing insights on large volume of email data might not be as easy as we thought. While data coming in real-time, indices and metadata are to be built consistently. To make things worse, the data volume is beyond traditional single node databases' reach.

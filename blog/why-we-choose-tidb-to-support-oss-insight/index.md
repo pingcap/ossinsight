@@ -2,6 +2,7 @@
 title: Why We Choose TiDB to Support OSS Insight
 date: 2022-05-02
 authors: [ilovesoup]
+tags: [tidbcloud]
 ---
 
 Many times we hope that our data access becomes more real-time. It has diffrrent meanings for various industries. For logistics, it means that resource allocation can be carried out with a faster frequency. For e-commerce, it means quicker adjustment on promotion strategies based on sales information. It leads to faster risk management and more timely stop losses in finance as well.
