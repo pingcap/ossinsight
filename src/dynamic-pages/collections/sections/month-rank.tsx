@@ -62,7 +62,8 @@ const NumberCell = styled(TableCell)(() => ({
   fontWeight: 'bold',
   '&> .diff': {
     fontSize: 16,
-    verticalAlign: 'text-bottom',
+    display: 'inline-flex',
+    alignItems: 'center',
     marginLeft: 4,
     '&> .diff-number': {
       fontSize: 14,

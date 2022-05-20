@@ -18,7 +18,7 @@ export default function Sections ({ collection }: { collection: Collection}) {
       <P1>Enjoy there insights on many metrics in many styles... 👇</P1>
       <Grid container justifyContent='space-between'>
         <Link source={require('./videos/month-rank.mp4').default} title={['Monthly', 'Rankings']} hash='month-rank' color='transparent linear-gradient(180deg, #DF5CFF 0%, #18191A 100%) 0% 0% no-repeat padding-box'/>
-        <Link source={require('./videos/history-sort.mp4').default} title={['Annual', 'Trending / Sort']} hash='history-sort' color='transparent linear-gradient(180deg, #628DFF 0%, #18191A 100%) 0% 0% no-repeat padding-box'/>
+        <Link source={require('./videos/history-sort.mp4').default} title={['Annual', 'Trending']} hash='history-sort' color='transparent linear-gradient(180deg, #628DFF 0%, #18191A 100%) 0% 0% no-repeat padding-box'/>
         <Link source={require('./videos/history-rank.mp4').default} title={['Annual', 'Rankings']} hash='history-rank' color='transparent linear-gradient(180deg, #FF628E 0%, #18191A 100%) 0% 0% no-repeat padding-box'/>
       </Grid>
       <MonthRankSection />
@@ -41,7 +41,7 @@ const Link = ({ title, source, hash, color }: { title: string[], source: string,
   }, [])
 
   return (
-    <Grid item xs={12} md={4} mt={2} mr={2} component='a' pl={2} pr={1} href={'#' + hash} height={102} maxWidth='283px !important' display='flex' sx={{background: color}} borderRadius='6px' justifyContent='space-between' alignItems='center'>
+    <Grid item xs={12} md={4} mt={2} mr={2} component='a' pl={2} pr={1} href={'#' + hash} height={102} maxWidth='243px !important' display='flex' sx={{background: color}} borderRadius='6px' justifyContent='space-between' alignItems='center'>
       <Box flex={1} fontSize={16} fontWeight='bold' color='white'>
         <Box>
           {title.map(line => <Box key={line} display='block'>{line}</Box>)}

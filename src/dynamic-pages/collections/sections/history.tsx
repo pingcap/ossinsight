@@ -1,4 +1,4 @@
-import { LineChart, Title } from '@djagger/echartsx';
+import { LineChart, Title, Toolbox } from '@djagger/echartsx';
 import Box from '@mui/material/Box';
 import Skeleton from '@mui/material/Skeleton';
 import { use } from 'echarts/core';
@@ -68,6 +68,7 @@ export default withInViewContainer(function HistorySection() {
           >
             <Title id='title' text={`Top 10 ${collection.name} ${dimension.title} historical trending`}/>
             <Watermark left='10%' top='10%' />
+            <Toolbox feature={{ saveAsImage: { title: '' } }}/>
           </LineChart>
         ),
         () => (

@@ -3,7 +3,7 @@ import { TypographyProps } from '@mui/material/Typography';
 import React from 'react';
 
 export const H1 = ({...props}: TypographyProps) => {
-  return <Typography {...props} variant="h1" color="primary.main" marginBottom={4} marginTop={8} />;
+  return <Typography {...props} variant="h1" color="primary.main" marginBottom={4} marginTop={4} />;
 };
 
 export const H2 = ({...props}: TypographyProps) => {

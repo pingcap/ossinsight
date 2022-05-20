@@ -1,4 +1,4 @@
-import { RankChart, Title } from '@djagger/echartsx';
+import { RankChart, Title, Toolbox } from '@djagger/echartsx';
 import Box from '@mui/material/Box';
 import Skeleton from '@mui/material/Skeleton';
 import { use } from 'echarts/core';
@@ -40,6 +40,7 @@ export default withInViewContainer(function HistoryRankSection() {
           >
             <Title id='title' text={`${collection.name} ${dimension.title} historical ranking`}/>
             <Watermark left='5%' bottom='5%' />
+            <Toolbox feature={{ saveAsImage: { title: '' } }}/>
           </RankChart>
         ),
         () => (
