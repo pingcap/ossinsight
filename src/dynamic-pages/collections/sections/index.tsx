@@ -41,7 +41,7 @@ const Link = ({ title, source, hash, color }: { title: string[], source: string,
   }, [])
 
   return (
-    <Grid item xs={12} md={4} mt={2} component='a' pl={2} pr={1} href={'#' + hash} height={102} maxWidth='283px !important' display='flex' sx={{background: color}} borderRadius='6px' justifyContent='space-between' alignItems='center'>
+    <Grid item xs={12} md={4} mt={2} mr={2} component='a' pl={2} pr={1} href={'#' + hash} height={102} maxWidth='283px !important' display='flex' sx={{background: color}} borderRadius='6px' justifyContent='space-between' alignItems='center'>
       <Box flex={1} fontSize={16} fontWeight='bold' color='white'>
         <Box>
           {title.map(line => <Box key={line} display='block'>{line}</Box>)}
@@ -53,7 +53,6 @@ const Link = ({ title, source, hash, color }: { title: string[], source: string,
           <video ref={ref} src={source} width="100%" height="100%" autoPlay loop muted />
         </AspectRatio>
       </div>
-
     </Grid>
   )
 }

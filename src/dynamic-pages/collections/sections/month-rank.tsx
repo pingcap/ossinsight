@@ -8,7 +8,7 @@ import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
+import TableCell, { TableCellProps } from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
@@ -68,9 +68,10 @@ const NumberCell = styled(TableCell)(() => ({
       fontSize: 14,
     },
   },
+  whiteSpace: 'nowrap',
 }));
 
-const HeaderCell = styled(TableCell)(() => ({
+const HeaderCell = styled(NumberCell)(() => ({
   fontSize: 20,
   fontWeight: 'bold',
 }));
@@ -100,7 +101,7 @@ export default withInViewContainer(function MonthRankSection() {
                     <HeaderCell>{formatTime(data.data[0].last_month)}</HeaderCell>
                     <HeaderCell>Repository</HeaderCell>
                     <HeaderCell>{dimension.title}</HeaderCell>
-                    <HeaderCell sx={{ color: 'gray' }}>Total</HeaderCell>
+                    <HeaderCell sx={{color: 'gray'}} align='right'>Total</HeaderCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -114,17 +115,19 @@ export default withInViewContainer(function MonthRankSection() {
                         {item.last_month_rank}
                       </NumberCell>
                       <TableCell>
-                        <Avatar src={`https://github.com/${item.repo_name.split('/')[0]}.png`}
-                                sx={{ display: 'inline-block', verticalAlign: 'text-bottom', width: 20, height: 20 }} />
-                        <Link to={`/analyze/${item.repo_name}`} style={{ fontSize: 16, marginLeft: 8 }}>
-                          {item.repo_name}
-                        </Link>
+                        <Stack direction='row' spacing={1} alignItems='center'>
+                          <Avatar src={`https://github.com/${item.repo_name.split('/')[0]}.png`}
+                                  sx={{ width: 20, height: 20 }} />
+                          <Link to={`/analyze/${item.repo_name}`} style={{ fontSize: 16, marginLeft: 8, whiteSpace: 'nowrap' }}>
+                            {item.repo_name}
+                          </Link>
+                        </Stack>
                       </TableCell>
                       <NumberCell>
                         {item.current_month_total}
                         <Diff val={item.total_mom} suffix="%" />
                       </NumberCell>
-                      <NumberCell sx={{ color: 'gray', fontWeight: 'normal' }}>
+                      <NumberCell sx={{ color: 'gray', fontWeight: 'normal' }} align='right'>
                         {format(item.total)}
                       </NumberCell>
                     </TableRow>
@@ -140,7 +143,7 @@ export default withInViewContainer(function MonthRankSection() {
                     <HeaderCell><Skeleton variant="text" sx={{ display: 'inline-block' }} width={64} /></HeaderCell>
                     <HeaderCell>Repository</HeaderCell>
                     <HeaderCell>{dimension.title}</HeaderCell>
-                    <HeaderCell sx={{ color: 'gray' }}>Total</HeaderCell>
+                    <HeaderCell sx={{ color: 'gray' }} align='right'>Total</HeaderCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -163,7 +166,7 @@ export default withInViewContainer(function MonthRankSection() {
                         <Skeleton variant="text" sx={{ display: 'inline-block' }} width={32} />
                         <Diff val={0} suffix="%" />
                       </NumberCell>
-                      <NumberCell sx={{ color: 'gray' }}>
+                      <NumberCell sx={{ color: 'gray' }} align='right'>
                         <Skeleton variant="text" sx={{ display: 'inline-block' }} width={32} />
                       </NumberCell>
                     </TableRow>
