@@ -11,14 +11,9 @@ import { CollectionHistoryRankData, useCollectionHistoryRank } from '../hooks/da
 import { useDimensionTabs } from '../hooks/useTabs';
 import { withRemote } from '../hooks/withRemote';
 import { H2, P1 } from './typograpy';
+import { countNames } from './utils';
 
 use(CanvasRenderer);
-
-function countNames(data: CollectionHistoryRankData[]): number {
-  const set = new Set();
-  data.forEach(item => set.add(item.repo_name));
-  return set.size;
-}
 
 export default withInViewContainer(function HistoryRankSection() {
   const { collection } = useContext(CollectionsContext);
@@ -39,7 +34,7 @@ export default withInViewContainer(function HistoryRankSection() {
             theme="dark"
             renderer="canvas"
             data={data.data}
-            height={countNames(data.data) * 48 + 128}
+            height={countNames(data.data) * 36 + 128}
 
             fields={{ name: 'repo_name', time: 'event_year', value: 'total', rank: 'rank' }}
           >

@@ -32,7 +32,12 @@ export default function Sections ({ collection }: { collection: Collection}) {
 const Link = ({ title, source, hash, color }: { title: string[], source: string, hash: string, color: string }) => {
   const ref = useRef<HTMLVideoElement>()
   useLayoutEffect(() => {
-    ref.current?.play()
+    const video = ref.current
+    if (video) {
+      video.onload = function () {
+        video.play().catch()
+      }
+    }
   }, [])
 
   return (

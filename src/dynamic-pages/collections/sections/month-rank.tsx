@@ -99,7 +99,7 @@ export default withInViewContainer(function MonthRankSection() {
                     <HeaderCell>{formatTime(data.data[0].current_month)}</HeaderCell>
                     <HeaderCell>{formatTime(data.data[0].last_month)}</HeaderCell>
                     <HeaderCell>Repository</HeaderCell>
-                    <HeaderCell>Star Earned</HeaderCell>
+                    <HeaderCell>{dimension.title}</HeaderCell>
                     <HeaderCell sx={{ color: 'gray' }}>Total</HeaderCell>
                   </TableRow>
                 </TableHead>
@@ -124,7 +124,7 @@ export default withInViewContainer(function MonthRankSection() {
                         {item.current_month_total}
                         <Diff val={item.total_mom} suffix="%" />
                       </NumberCell>
-                      <NumberCell sx={{ color: 'gray' }}>
+                      <NumberCell sx={{ color: 'gray', fontWeight: 'normal' }}>
                         {format(item.total)}
                       </NumberCell>
                     </TableRow>
@@ -139,13 +139,13 @@ export default withInViewContainer(function MonthRankSection() {
                     <HeaderCell><Skeleton variant="text" sx={{ display: 'inline-block' }} width={64} /></HeaderCell>
                     <HeaderCell><Skeleton variant="text" sx={{ display: 'inline-block' }} width={64} /></HeaderCell>
                     <HeaderCell>Repository</HeaderCell>
-                    <HeaderCell>Star Earned</HeaderCell>
+                    <HeaderCell>{dimension.title}</HeaderCell>
                     <HeaderCell sx={{ color: 'gray' }}>Total</HeaderCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {Array(10).fill(0).map(item => (
-                    <TableRow key={item.repo_name}>
+                  {Array(10).fill(0).map((item, i) => (
+                    <TableRow key={i}>
                       <NumberCell>
                         <Skeleton variant="text" sx={{ display: 'inline-block' }} width={32} />
                         <Diff val={0} reverse />

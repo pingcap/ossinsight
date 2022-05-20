@@ -40,10 +40,11 @@ export default withInViewContainer(function HistorySortSection() {
             theme="dark"
             renderer="canvas"
             data={data.data}
-            height={480}
+            height={15 * 36 + 128}
             formatTime={formatTime}
             fields={{ name: 'repo_name', time: 'event_month', value: 'total' }}
             interval={400}
+            max={15}
           >
             <Title id='title' text={`${collection.name} ${dimension.title} count race`}/>
             <Watermark right='5%' bottom='10%' />
