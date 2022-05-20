@@ -72,23 +72,23 @@ const config = {
         redirects: [
           {
             from: '/database/deep-insight-into-open-source-databases',
-            to: '/blog/insights/deep-insight-into-open-source-databases',
+            to: '/blog/deep-insight-into-open-source-databases',
           },
           {
-            from: '/js-framework/deep-insight-into-js-framework',
-            to: '/blog/insights/deep-insight-into-js-framework-2021',
+            from: '/js-framework/deep-insight-into-js-framework-2021',
+            to: '/blog/deep-insight-into-js-framework-2021',
           },
           {
-            from: '/language/deep-insight-into-programming-languages',
-            to: '/blog/insights/deep-insight-into-programming-languages-2021',
+            from: '/language/deep-insight-into-programming-languages-2021',
+            to: '/blog/deep-insight-into-programming-languages-2021',
           },
           {
-            from: '/low-code/deep-insight-into-lowcode-development-tools',
-            to: '/blog/insights/deep-insight-into-lowcode-development-tools-2021',
+            from: '/low-code/deep-insight-into-lowcode-development-tools-2021',
+            to: '/blog/deep-insight-into-lowcode-development-tools-2021',
           },
           {
-            from: '/web-framework/deep-insight-about-web-framework',
-            to: '/blog/insights/deep-insight-about-web-framework-2021',
+            from: '/web-framework/deep-insight-about-web-framework-2021',
+            to: '/blog/deep-insight-into-web-framework-2021',
           },
         ]
       }
