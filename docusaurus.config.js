@@ -139,6 +139,7 @@ const config = {
             to: '/collections/open-source-database',
             position: 'left',
             label: 'Collections',
+            activeBasePath: '/collections'
           },
           {to: '/try-your-own-dataset/?utm_content=header', label: '🔥 Try Your Own Dataset', position: 'right'},
           {to: '/blog', label: 'Blogs', position: 'right'},
