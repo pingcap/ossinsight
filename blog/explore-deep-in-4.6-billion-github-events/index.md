@@ -3,6 +3,7 @@ title: Explore Deep in 4.6 Billion GitHub Events
 date: 2022-05-03
 image: "./banner-ossinsight-explore-deep.jpg"
 authors: [fendy]
+tags: [tidbcloud]
 ---
 
 4.6 billion is literally an astronomical figure. The richest star map of our galaxy, brought by Gaia space observatory, includes just under 2 billion stars. What does a view of 4.6 billion GitHub events really look like? What secrets and values can be discovered in such an enormous amount of data? 
