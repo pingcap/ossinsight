@@ -4,6 +4,7 @@ import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import Avatar from '@mui/material/Avatar';
 import Paper from '@mui/material/Paper';
 import Skeleton from '@mui/material/Skeleton';
+import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -11,6 +12,7 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
+import format from 'human-format';
 import React, { useContext } from 'react';
 import { withInViewContainer } from '../../../components/InViewContainer';
 import CollectionsContext from '../context';
@@ -82,94 +84,96 @@ export default withInViewContainer(function MonthRankSection() {
 
   return (
     <section>
-      <H2 id='month-rank'>Ranking!</H2>
+      <H2 id="month-rank">Ranking!</H2>
       <P1>Simple monthly ranking by number of stars, pull requests or issues earned this month</P1>
       {tabs}
       <br />
-      {withRemote(
-        asyncData,
-        data => (
-          <TableContainer component={Paper}>
-            <Table className="clearTable">
-              <TableHead>
-                <TableRow>
-                  <HeaderCell>{formatTime(data.data[0].current_month)}</HeaderCell>
-                  <HeaderCell>{formatTime(data.data[0].last_month)}</HeaderCell>
-                  <HeaderCell>Repository</HeaderCell>
-                  <HeaderCell>Star Earned</HeaderCell>
-                  <HeaderCell sx={{ color: 'gray' }}>Total</HeaderCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {data.data.map(item => (
-                  <TableRow key={item.repo_name}>
-                    <NumberCell>
-                      {item.current_month_rank}
-                      <Diff val={item.rank_mom} reverse />
-                    </NumberCell>
-                    <NumberCell>
-                      {item.last_month_rank}
-                    </NumberCell>
-                    <TableCell>
-                      <Avatar src={`https://github.com/${item.repo_name.split('/')[0]}.png`}
-                              sx={{ display: 'inline-block', verticalAlign: 'text-bottom', width: 20, height: 20 }} />
-                      <Link to={`/analyze/${item.repo_name}`} style={{ fontSize: 16, marginLeft: 8 }}>
-                        {item.repo_name}
-                      </Link>
-                    </TableCell>
-                    <NumberCell>
-                      {item.current_month_total}
-                      <Diff val={item.total_mom} suffix="%" />
-                    </NumberCell>
-                    <NumberCell sx={{ color: 'gray' }}>
-                      {item.total}
-                    </NumberCell>
+      <TableContainer component={Paper}>
+        <Table className="clearTable" size="small">
+          {withRemote(
+            asyncData,
+            data => (
+              <>
+                <TableHead>
+                  <TableRow>
+                    <HeaderCell>{formatTime(data.data[0].current_month)}</HeaderCell>
+                    <HeaderCell>{formatTime(data.data[0].last_month)}</HeaderCell>
+                    <HeaderCell>Repository</HeaderCell>
+                    <HeaderCell>Star Earned</HeaderCell>
+                    <HeaderCell sx={{ color: 'gray' }}>Total</HeaderCell>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        ),
-        () => (
-          <TableContainer component={Paper}>
-            <Table className="clearTable">
-              <TableHead>
-                <TableRow>
-                  <HeaderCell><Skeleton variant="text" /></HeaderCell>
-                  <HeaderCell><Skeleton variant="text" /></HeaderCell>
-                  <HeaderCell>Repository</HeaderCell>
-                  <HeaderCell>Star Earned</HeaderCell>
-                  <HeaderCell sx={{ color: 'gray' }}>Total</HeaderCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {Array(10).fill(0).map(item => (
-                  <TableRow key={item.repo_name}>
-                    <NumberCell>
-                      <Skeleton variant="text" />
-                      <Diff val={0} reverse />
-                    </NumberCell>
-                    <NumberCell>
-                      <Skeleton variant="text" />
-                    </NumberCell>
-                    <TableCell>
-                      <Skeleton variant="circular" sx={{ display: 'inline-block' }} width={16} height={16} />
-                      <Skeleton variant="text" sx={{ ml: 1, display: 'inline-block' }} />
-                    </TableCell>
-                    <NumberCell>
-                      <Skeleton variant="text" />
-                      <Diff val={0} suffix="%" />
-                    </NumberCell>
-                    <NumberCell sx={{ color: 'gray' }}>
-                      <Skeleton variant="text" />
-                    </NumberCell>
+                </TableHead>
+                <TableBody>
+                  {data.data.map(item => (
+                    <TableRow key={item.repo_name}>
+                      <NumberCell>
+                        {item.current_month_rank}
+                        <Diff val={item.rank_mom} reverse />
+                      </NumberCell>
+                      <NumberCell>
+                        {item.last_month_rank}
+                      </NumberCell>
+                      <TableCell>
+                        <Avatar src={`https://github.com/${item.repo_name.split('/')[0]}.png`}
+                                sx={{ display: 'inline-block', verticalAlign: 'text-bottom', width: 20, height: 20 }} />
+                        <Link to={`/analyze/${item.repo_name}`} style={{ fontSize: 16, marginLeft: 8 }}>
+                          {item.repo_name}
+                        </Link>
+                      </TableCell>
+                      <NumberCell>
+                        {item.current_month_total}
+                        <Diff val={item.total_mom} suffix="%" />
+                      </NumberCell>
+                      <NumberCell sx={{ color: 'gray' }}>
+                        {format(item.total)}
+                      </NumberCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </>
+            ),
+            () => (
+              <>
+                <TableHead>
+                  <TableRow>
+                    <HeaderCell><Skeleton variant="text" sx={{ display: 'inline-block' }} width={64} /></HeaderCell>
+                    <HeaderCell><Skeleton variant="text" sx={{ display: 'inline-block' }} width={64} /></HeaderCell>
+                    <HeaderCell>Repository</HeaderCell>
+                    <HeaderCell>Star Earned</HeaderCell>
+                    <HeaderCell sx={{ color: 'gray' }}>Total</HeaderCell>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        ),
-      )}
+                </TableHead>
+                <TableBody>
+                  {Array(10).fill(0).map(item => (
+                    <TableRow key={item.repo_name}>
+                      <NumberCell>
+                        <Skeleton variant="text" sx={{ display: 'inline-block' }} width={32} />
+                        <Diff val={0} reverse />
+                      </NumberCell>
+                      <NumberCell>
+                        <Skeleton variant="text" sx={{ display: 'inline-block' }} width={32} />
+                      </NumberCell>
+                      <TableCell>
+                        <Stack direction='row' spacing={1} alignItems='center'>
+                          <Skeleton variant="circular" sx={{ display: 'inline-block' }} width={26} height={26} />
+                          <Skeleton variant="text" sx={{ display: 'inline-block', flex: 1 }} height={26} />
+                        </Stack>
+                      </TableCell>
+                      <NumberCell>
+                        <Skeleton variant="text" sx={{ display: 'inline-block' }} width={32} />
+                        <Diff val={0} suffix="%" />
+                      </NumberCell>
+                      <NumberCell sx={{ color: 'gray' }}>
+                        <Skeleton variant="text" sx={{ display: 'inline-block' }} width={32} />
+                      </NumberCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </>
+            ),
+          )}
+        </Table>
+      </TableContainer>
     </section>
   );
 });

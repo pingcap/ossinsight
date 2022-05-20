@@ -5,6 +5,7 @@ import { use } from 'echarts/core';
 import { CanvasRenderer } from 'echarts/renderers';
 import React, { useContext } from 'react';
 import { withInViewContainer } from '../../../components/InViewContainer';
+import Watermark from '../components/Watermark';
 import CollectionsContext from '../context';
 import { CollectionHistoryRankData, useCollectionHistoryRank } from '../hooks/data';
 import { useDimensionTabs } from '../hooks/useTabs';
@@ -42,7 +43,8 @@ export default withInViewContainer(function HistoryRankSection() {
 
             fields={{ name: 'repo_name', time: 'event_year', value: 'total', rank: 'rank' }}
           >
-            <Title text="Title" />
+            <Title id='title' text={`${collection.name} ${dimension.title} historical ranking`}/>
+            <Watermark left='5%' bottom='5%' />
           </RankChart>
         ),
         () => (

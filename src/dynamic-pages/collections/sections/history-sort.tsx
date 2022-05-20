@@ -1,10 +1,11 @@
-import { SortingBarChart } from '@djagger/echartsx';
+import { SortingBarChart, Title } from '@djagger/echartsx';
 import Box from '@mui/material/Box';
 import Skeleton from '@mui/material/Skeleton';
 import { use } from 'echarts/core';
 import { CanvasRenderer, SVGRenderer } from 'echarts/renderers';
 import React, { useContext } from 'react';
 import { withInViewContainer } from '../../../components/InViewContainer';
+import Watermark from '../components/Watermark';
 import CollectionsContext from '../context';
 import { useCollectionHistory } from '../hooks/data';
 import { useDimensionTabs } from '../hooks/useTabs';
@@ -28,7 +29,7 @@ export default withInViewContainer(function HistorySortSection() {
 
   return (
     <section>
-      <H2 id='month-rank'>Bar Chart Race!</H2>
+      <H2 id='history-sort'>Bar Chart Race!</H2>
       <P1>Bar Chart Race is a great and highly visual way to display data changing over time in the form of an animated bar chart.</P1>
       {tabs}
       <br />
@@ -43,7 +44,10 @@ export default withInViewContainer(function HistorySortSection() {
             formatTime={formatTime}
             fields={{ name: 'repo_name', time: 'event_month', value: 'total' }}
             interval={400}
-          />
+          >
+            <Title id='title' text={`${collection.name} ${dimension.title} count race`}/>
+            <Watermark right='5%' bottom='10%' />
+          </SortingBarChart>
         ),
         () => (
           <Box height={480}>

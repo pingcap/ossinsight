@@ -1,10 +1,11 @@
-import { LineChart } from '@djagger/echartsx';
+import { LineChart, Title } from '@djagger/echartsx';
 import Box from '@mui/material/Box';
 import Skeleton from '@mui/material/Skeleton';
 import { use } from 'echarts/core';
 import { CanvasRenderer } from 'echarts/renderers';
 import React, { useContext } from 'react';
 import { withInViewContainer } from '../../../components/InViewContainer';
+import Watermark from '../components/Watermark';
 import CollectionsContext from '../context';
 import { useCollectionHistory } from '../hooks/data';
 import { useDimensionTabs } from '../hooks/useTabs';
@@ -41,7 +42,10 @@ export default withInViewContainer(function HistorySection() {
             height={480}
             fields={{ name: 'repo_name', time: 'event_month', value: 'total' }}
             formatTime={formatTime}
-          />
+          >
+            <Title id='title' text={`${collection.name} ${dimension.title} historical trending`}/>
+            <Watermark left='10%' top='10%' />
+          </LineChart>
         ),
         () => (
           <Box height={480}>
