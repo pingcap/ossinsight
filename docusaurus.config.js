@@ -75,19 +75,19 @@ const config = {
             to: '/blog/deep-insight-into-open-source-databases',
           },
           {
-            from: '/js-framework/deep-insight-into-js-framework',
+            from: '/js-framework/deep-insight-into-js-framework-2021',
             to: '/blog/deep-insight-into-js-framework-2021',
           },
           {
-            from: '/language/deep-insight-into-programming-languages',
+            from: '/language/deep-insight-into-programming-languages-2021',
             to: '/blog/deep-insight-into-programming-languages-2021',
           },
           {
-            from: '/low-code/deep-insight-into-lowcode-development-tools',
+            from: '/low-code/deep-insight-into-lowcode-development-tools-2021',
             to: '/blog/deep-insight-into-lowcode-development-tools-2021',
           },
           {
-            from: '/web-framework/deep-insight-about-web-framework',
+            from: '/web-framework/deep-insight-about-web-framework-2021',
             to: '/blog/deep-insight-into-web-framework-2021',
           },
         ]
