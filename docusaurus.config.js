@@ -13,6 +13,10 @@ const getPresets = (fn) => {
     .filter(s => s)
 }
 
+const getPrefetched = fn => {
+  return JSON.parse(fs.readFileSync(fn, { encoding: 'utf-8'}))
+}
+
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'Open Source Software Analysis and Comparing Tools',
@@ -30,6 +34,7 @@ const config = {
   ],
   clientModules: [require.resolve("./myClientModule.ts")],
   plugins: [
+    path.resolve(__dirname, 'plugins/prefetch'),
     [
       path.resolve(__dirname, 'plugins/dynamic-route'),
       {
@@ -41,6 +46,14 @@ const config = {
             params: getPresets('.preset-analyze')
               .map(name => name.split('/'))
               .map(([owner, repo]) => ({ owner, repo }))
+          },
+          {
+            path: '/collections/:slug',
+            exact: true,
+            component: '@site/src/dynamic-pages/collections',
+            params: getPrefetched('.prefetch/collections.json').data.map(({name}) => ({
+              slug: require('param-case').paramCase(name)
+            }))
           }
         ]
       }
@@ -53,6 +66,33 @@ const config = {
         path: './_blog',
       },
     ],
+    [
+      '@docusaurus/plugin-client-redirects',
+      {
+        redirects: [
+          {
+            from: '/database/deep-insight-into-open-source-databases',
+            to: '/blog/insights/deep-insight-into-open-source-databases',
+          },
+          {
+            from: '/js-framework/deep-insight-into-js-framework',
+            to: '/blog/insights/deep-insight-into-js-framework-2021',
+          },
+          {
+            from: '/language/deep-insight-into-programming-languages',
+            to: '/blog/insights/deep-insight-into-programming-languages-2021',
+          },
+          {
+            from: '/low-code/deep-insight-into-lowcode-development-tools',
+            to: '/blog/insights/deep-insight-into-lowcode-development-tools-2021',
+          },
+          {
+            from: '/web-framework/deep-insight-about-web-framework',
+            to: '/blog/insights/deep-insight-about-web-framework-2021',
+          },
+        ]
+      }
+    ]
   ],
   presets: [
     [
@@ -123,10 +163,10 @@ const config = {
         style: 'dark',
         items: [
           {
-            type: 'doc',
-            docId: 'database/deep-insight-into-open-source-databases',
+            to: '/collections/open-source-database',
             position: 'left',
-            label: 'Insights',
+            label: 'Collections',
+            activeBasePath: '/collections'
           },
           {to: '/try-your-own-dataset/?utm_content=header', label: '🔥 Try Your Own Dataset', position: 'right'},
           {to: '/blog', label: 'Blogs', position: 'right'},
