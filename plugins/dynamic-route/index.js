@@ -6,7 +6,20 @@ const DynamicRoutePlugin = function (context, options) {
       const { routes } = options
       const { addRoute } = actions
 
-      routes.map(route => addRoute(route))
+      routes.forEach(routeOption => {
+        const {params, ...route} = routeOption
+
+        if (params) {
+          params.forEach(param => {
+            let { path, ...rest } = route
+            Object.entries(param).forEach(([k, v]) => {
+              path = path.replace(':' + k, String(v))
+            })
+            addRoute({ path, ...rest })
+          })
+        }
+        addRoute(route)
+      })
     }
   }
 }

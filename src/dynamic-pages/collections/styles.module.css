@@ -1,0 +1,85 @@
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+:root {
+    --collections-sidebar-width: 300px;
+    --collections-sidebar-hidden-width: 30px;
+}
+
+:global(.collectionss-wrapper) {
+    display: flex;
+}
+
+.collectionsPage,
+.collectionsMainContainer {
+    display: flex;
+    width: 100%;
+}
+
+.collectionsSidebarContainer {
+    display: none;
+}
+
+@media (min-width: 997px) {
+    .collectionsMainContainer {
+        flex-grow: 1;
+        max-width: calc(100% - var(--collections-sidebar-width));
+    }
+
+    .collectionsMainContainerEnhanced {
+        max-width: calc(100% - var(--collections-sidebar-hidden-width));
+    }
+
+    .collectionsSidebarContainer {
+        display: block;
+        width: var(--collections-sidebar-width);
+        margin-top: calc(-1 * var(--ifm-navbar-height));
+        border-right: 1px solid var(--ifm-toc-border-color);
+        will-change: width;
+        transition: width var(--ifm-transition-fast) ease;
+        clip-path: inset(0);
+    }
+
+    .collectionsSidebarContainerHidden {
+        width: var(--collections-sidebar-hidden-width);
+        cursor: pointer;
+    }
+
+    .collapsedCollectionsSidebar {
+        position: sticky;
+        top: 0;
+        height: 100%;
+        max-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color var(--ifm-transition-fast) ease;
+    }
+
+    .collapsedCollectionsSidebar:hover,
+    .collapsedCollectionsSidebar:focus {
+        background-color: var(--ifm-color-emphasis-200);
+    }
+
+    .expandSidebarButtonIcon {
+        transform: rotate(0);
+    }
+    html[dir='rtl'] .expandSidebarButtonIcon {
+        transform: rotate(180deg);
+    }
+
+    html[data-theme='dark'] .collapsedCollectionsSidebar:hover,
+    html[data-theme='dark'] .collapsedCollectionsSidebar:focus {
+        background-color: var(--collapse-button-bg-color-dark);
+    }
+
+    .collectionsItemWrapperEnhanced {
+        max-width: calc(
+            var(--ifm-container-width) + var(--collections-sidebar-width)
+        ) !important;
+    }
+}

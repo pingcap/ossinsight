@@ -1,4 +1,5 @@
-import BrowserOnly from '@docusaurus/core/lib/client/exports/BrowserOnly';
+import BrowserOnly from '@docusaurus/BrowserOnly';
+import Head from '@docusaurus/Head';
 import { useHistory, useLocation, useRouteMatch } from '@docusaurus/router';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
@@ -150,6 +151,13 @@ function AnalyzePage() {
         />
       )}
     >
+      <Head>
+        <title>
+          {comparingRepoName
+            ? `${name} vs ${comparingRepoName} | OSSInsight`
+            : `Analyze ${name} | OSSInsight`}
+        </title>
+      </Head>
       <AnalyzeContext.Provider value={{
         repoId: main?.repo.id,
         comparingRepoId: vs?.repo.id,

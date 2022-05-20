@@ -4,6 +4,18 @@
 const lightCodeTheme = require('prism-react-renderer/themes/github');
 const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 const path = require('path')
+const fs = require('fs')
+
+const getPresets = (fn) => {
+  return fs.readFileSync(fn, { encoding: 'utf-8' })
+    .split('\n')
+    .map(line => line.trim())
+    .filter(s => s)
+}
+
+const getPrefetched = fn => {
+  return JSON.parse(fs.readFileSync(fn, { encoding: 'utf-8'}))
+}
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -20,7 +32,9 @@ const config = {
     'https://api.ossinsight.io/qo/repos/groups/osdb?format=global_variable',
     'https://www.google.com/recaptcha/api.js?render=6LcBQpkfAAAAAFmuSRkRlJxVtmqR34nNawFgKohC'
   ],
+  clientModules: [require.resolve("./myClientModule.ts")],
   plugins: [
+    path.resolve(__dirname, 'plugins/prefetch'),
     [
       path.resolve(__dirname, 'plugins/dynamic-route'),
       {
@@ -28,7 +42,18 @@ const config = {
           {
             path: '/analyze/:owner/:repo',
             exact: true,
-            component: '@site/src/dynamic-pages/analyze'
+            component: '@site/src/dynamic-pages/analyze',
+            params: getPresets('.preset-analyze')
+              .map(name => name.split('/'))
+              .map(([owner, repo]) => ({ owner, repo }))
+          },
+          {
+            path: '/collections/:slug',
+            exact: true,
+            component: '@site/src/dynamic-pages/collections',
+            params: getPrefetched('.prefetch/collections.json').data.map(({name}) => ({
+              slug: require('param-case').paramCase(name)
+            }))
           }
         ]
       }
@@ -41,6 +66,33 @@ const config = {
         path: './_blog',
       },
     ],
+    [
+      '@docusaurus/plugin-client-redirects',
+      {
+        redirects: [
+          {
+            from: '/database/deep-insight-into-open-source-databases',
+            to: '/blog/deep-insight-into-open-source-databases',
+          },
+          {
+            from: '/js-framework/deep-insight-into-js-framework-2021',
+            to: '/blog/deep-insight-into-js-framework-2021',
+          },
+          {
+            from: '/language/deep-insight-into-programming-languages-2021',
+            to: '/blog/deep-insight-into-programming-languages-2021',
+          },
+          {
+            from: '/low-code/deep-insight-into-lowcode-development-tools-2021',
+            to: '/blog/deep-insight-into-lowcode-development-tools-2021',
+          },
+          {
+            from: '/web-framework/deep-insight-about-web-framework-2021',
+            to: '/blog/deep-insight-into-web-framework-2021',
+          },
+        ]
+      }
+    ]
   ],
   presets: [
     [
@@ -94,14 +146,14 @@ const config = {
         disableSwitch: true,
         respectPrefersColorScheme: false,
       },
-//       announcementBar: {
-//         id: 'announcement-20220414',
-//         content:
-//           'TiDB 6.0 is released, go to read the <a target="_blank" rel="noopener noreferrer" href="https://docs.pingcap.com/tidb/v6.0/release-6.0.0-dmr">release notes</a> 🎉🎉🎉',
-//         backgroundColor: '#fafbfc',
-//         textColor: '#091E42',
-//         isCloseable: false,
-//       },
+      announcementBar: {
+        id: 'announcement-20220516',
+        content:
+          '📢 📢 📢  Latest Blog: <a target="_blank" href="/blog/explore-deep-in-4.6-billion-github-events">Explore Deep in 4.6 Billion GitHub Events</a>, 2022/05/03',
+        backgroundColor: '#333',
+        textColor: '#fbe99f',
+        isCloseable: false,
+      },
       navbar: {
         title: 'OSS Insight',
         logo: {
@@ -111,10 +163,10 @@ const config = {
         style: 'dark',
         items: [
           {
-            type: 'doc',
-            docId: 'database/deep-insight-into-open-source-databases',
+            to: '/collections/open-source-database',
             position: 'left',
-            label: 'Insights',
+            label: 'Collections',
+            activeBasePath: '/collections'
           },
           {to: '/try-your-own-dataset/?utm_content=header', label: '🔥 Try Your Own Dataset', position: 'right'},
           {to: '/blog', label: 'Blogs', position: 'right'},

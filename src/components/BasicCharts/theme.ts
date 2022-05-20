@@ -29,7 +29,7 @@ export function registerThemeDark(bg = true) {
       },
       axisLabel: {
         textStyle: {
-          color: contrastColor
+          color: '#ccc'
         }
       },
       splitLine: {

@@ -1,22 +1,3 @@
 .superIcon {
     vertical-align: super !important;
 }
-
-.clearTable th, .clearTable td {
-    border-top: unset;
-    border-left: unset;
-    border-right: unset;
-}
-
-.clearTable tr {
-    border-top: unset;
-    background-color: unset;
-}
-
-.clearTable thead tr {
-    border-bottom: unset;
-}
-
-.clearTable tr:nth-child(2n) {
-    background-color: unset;
-}

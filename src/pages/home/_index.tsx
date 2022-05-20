@@ -75,8 +75,8 @@ export default function Home() {
 
   return (
     <CustomPage
-      title={siteConfig.title}
-      description={siteConfig.tagline}
+      title={"OSS Insight"}
+      description={"A useful insight tool for analyzing massive events data from GitHub. Try to get unique insights by searching or comparing in Open Source Software World."}
       dark
     >
       <Section pt={4}>
