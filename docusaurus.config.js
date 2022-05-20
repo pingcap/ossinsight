@@ -170,8 +170,8 @@ const config = {
             label: 'Collections',
             activeBasePath: '/collections'
           },
+          {to: '/blog', label: 'Blogs', position: 'left'},
           {to: '/try-your-own-dataset/?utm_content=header', label: '🔥 Try Your Own Dataset', position: 'right'},
-          {to: '/blog', label: 'Blogs', position: 'right'},
           {
             href: 'https://tidbcloud.com/signup/?utm_source=ossinsight&utm_medium=referral',
             className: 'navbar-item-tidb-cloud',
