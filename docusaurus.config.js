@@ -66,6 +66,33 @@ const config = {
         path: './_blog',
       },
     ],
+    [
+      '@docusaurus/plugin-client-redirects',
+      {
+        redirects: [
+          {
+            from: '/database/deep-insight-into-open-source-databases',
+            to: '/blog/insights/deep-insight-into-open-source-databases-2021',
+          },
+          {
+            from: '/js-framework/deep-insight-into-js-framework',
+            to: '/blog/insights/deep-insight-into-js-framework-2021',
+          },
+          {
+            from: '/language/deep-insight-into-programming-languages',
+            to: '/blog/insights/deep-insight-into-programming-languages-2021',
+          },
+          {
+            from: '/low-code/deep-insight-into-lowcode-development-tools',
+            to: '/blog/insights/deep-insight-into-lowcode-development-tools-2021',
+          },
+          {
+            from: '/web-framework/deep-insight-about-web-framework',
+            to: '/blog/insights/deep-insight-about-web-framework-2021',
+          },
+        ]
+      }
+    ]
   ],
   presets: [
     [
@@ -143,12 +170,6 @@ const config = {
           },
           {to: '/try-your-own-dataset/?utm_content=header', label: '🔥 Try Your Own Dataset', position: 'right'},
           {to: '/blog', label: 'Blogs', position: 'right'},
-          {
-            type: 'doc',
-            docId: 'database/deep-insight-into-open-source-databases',
-            position: 'right',
-            label: 'Insights',
-          },
           {
             href: 'https://tidbcloud.com/signup/?utm_source=ossinsight&utm_medium=referral',
             className: 'navbar-item-tidb-cloud',
