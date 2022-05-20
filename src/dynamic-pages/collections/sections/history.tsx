@@ -13,6 +13,12 @@ import { H2, P1 } from './typograpy';
 
 use(CanvasRenderer);
 
+const df = new Intl.DateTimeFormat(['en-US'], {
+  month: 'short',
+  year: 'numeric',
+});
+const formatTime = (name: string): string => df.format(new Date(name));
+
 export default withInViewContainer(function HistorySection() {
   const { collection } = useContext(CollectionsContext);
 
@@ -34,6 +40,7 @@ export default withInViewContainer(function HistorySection() {
             data={data.data}
             height={480}
             fields={{ name: 'repo_name', time: 'event_month', value: 'total' }}
+            formatTime={formatTime}
           />
         ),
         () => (

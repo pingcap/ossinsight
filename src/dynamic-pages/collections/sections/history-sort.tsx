@@ -37,7 +37,7 @@ export default withInViewContainer(function HistorySortSection() {
         data => (
           <SortingBarChart
             theme="dark"
-            renderer="svg"
+            renderer="canvas"
             data={data.data}
             height={480}
             formatTime={formatTime}
