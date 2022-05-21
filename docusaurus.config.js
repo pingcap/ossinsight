@@ -234,6 +234,10 @@ const config = {
             title: 'Built With',
             items: [
               {
+                label: 'GitHub API',
+                href: 'https://docs.github.com/en/rest',
+              },
+              {
                 label: 'GH Archive',
                 href: 'http://www.gharchive.org/',
               },
