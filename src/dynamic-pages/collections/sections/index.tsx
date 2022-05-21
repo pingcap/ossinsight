@@ -22,7 +22,7 @@ export default function Sections ({ collection }: { collection: Collection}) {
         <Link source={require('./videos/history-rank.mp4').default} title={['Historical', 'Rankings']} hash='historical-rankings' color='transparent linear-gradient(180deg, #FF628E 0%, #18191A 100%) 0% 0% no-repeat padding-box'/>
       </Grid>
       <MonthRankSection />
-      <HistorySortSection />
+      {/* <HistorySortSection /> */}
       <HistoryRankSection />
       <HistorySection />
     </>
