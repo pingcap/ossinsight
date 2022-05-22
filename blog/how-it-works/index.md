@@ -161,10 +161,6 @@ gharchive_dev> show tables;
 +-----------------------------+
 ```
 
-## Arch
-
-![](./how-it-works.jpg)
-
 :::info
 ### 🌟 Details in how OSS Insight works
 
