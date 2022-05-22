@@ -35,7 +35,7 @@ OSS Insight analyze billions of GitHub events and get insights from them, also p
 
 If you want to analyze more, please [contact us](https://ossinsight.io/about/#contact) ✉️
   
-## Feature 2: Single Repo Analysis
+## Feature 2: Analyze Single Repo
   
 * Basic:
   * star, fork, issues, commits, pull requests, contributors, programming languages, lines of code modified
