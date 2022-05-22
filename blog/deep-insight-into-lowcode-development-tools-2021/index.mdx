@@ -1,32 +1,30 @@
 ---
-title: "Deep Insights into JavaScript Frameworks"
-image: img/docs/jsframework.png
+title: "Deep Insights into Low-code Development Tools"
+image: ./lowcode.png
 authors: [Jagger]
 tags: [insight]
 ---
 
-import {CommonChart} from "../src/components/CommonChart";
+import {CommonChart} from "../../src/components/CommonChart";
 
-In this chapter, we will share with you some of **the top JavaScript Framework repos(JSF repos) on GitHub in 2021** measured by different metrics including the number of stars, PRs, contributors, countries, regions and so on. 
+In this chapter, we will share with you some of the **top low-code development tools repos (LCDT repos)** on GitHub in 2021 measured by different metrics including the number of stars, PRs, contributors, countries, regions and so on. 
+
+<!--truncate-->
 
 Note: 
 1. You can move your cursor onto any of the repository bars/lines on the chart and get the exact number. 
 2. The SQL commands above each chart are what we use on our TiDB Cloud to get the analytical results. Try those SQL commands by yourselves on TiDB Cloud with this [10-minute tutorial](/blog/try-it-yourself/).
 
-## Star history of top JavaScript Framework repos since 2011
-
-The number of stars is often thought of as a measure of whether a github repository is popular or not. We sort all JavaScript framework repositories from github by the total number of historical stars since 2011. For visualizing the results more intuitively, we show the top 10 open source databases by using an interactive line chart. 
+## Star history of top LCDT repos since 2011
 
 <CommonChart
   chart='dynamic-stars'
   category='archive-2021-top10-star-racing'
   formatSql={false}
-  repo='js_framework_repos'
+  repo='nocode_repos'
 />
 
-<!--truncate-->
-
-## Top 10 most starred JSF repos in 2021
+## Top 10 most starred LCDT repos in 2021
 
 <CommonChart
   chart='barchart'
@@ -36,10 +34,10 @@ The number of stars is often thought of as a measure of whether a github reposit
   categoryIndex='repo_name'
   valueIndex='stars'
   seriesName='Stars'
-  repo='js_framework_repos'
+  repo='nocode_repos'
 />
 
-## Top 10 JSF repos with the most PRs in 2021
+## Top 10 LCDT repos with the most PRs in 2021
 
 <CommonChart
   chart='barchart'
@@ -49,10 +47,10 @@ The number of stars is often thought of as a measure of whether a github reposit
   categoryIndex='repo_name'
   valueIndex='num'
   seriesName='PRs'
-  repo='js_framework_repos'
+  repo='nocode_repos'
 />
 
-## Top 20 developers contributing the most PRs to JSF repos in 2021
+## Top 20 developers contributing the most PRs to LCDT repos in 2021
 
 <CommonChart
   chart='barchart'
@@ -62,28 +60,28 @@ The number of stars is often thought of as a measure of whether a github reposit
   valueIndex='pr_count'
   categoryType='owner'
   seriesName='PRs'
-  repo='js_framework_repos'
+  repo='nocode_repos'
 />
 
-## Top 10 JSF repos with the highest YoY growth rate of stars in 2021
+## Top 10 LCDT repos with the highest YoY growth rate in 2021
 
 <CommonChart
   chart='yoychart'
   category='archive-2021-top20-by-stars-yoy'
   formatSql={false}
-  repo='js_framework_repos'
+  repo='nocode_repos'
 />
 
-## Top 10 JSF repos with the lowest YoY growth rate of stars in 2021
+## Top 10 LCDT repos with the lowest YoY growth rate in 2021
 
 <CommonChart
   chart='yoychart'
   category='archive-2021-bottom10-by-yoy'
   formatSql={false}
-  repo='js_framework_repos'
+  repo='nocode_repos'
 />
 
-## Top 10 most used programming languages in JSF repos in 2021
+## Top 7 most used programming languages in LCDT repos in 2021
 
 <CommonChart
   chart='barchart'
@@ -93,10 +91,10 @@ The number of stars is often thought of as a measure of whether a github reposit
   valueIndex='COUNT(*)'
   categoryType='lang'
   seriesName='PRs'
-  repo='js_framework_repos'
+  repo='nocode_repos'
 />
 
-## Top 20 companies contributing the most to JSF repos in 2021
+## Top 20 companies contributing the most to LCDT repos in 2021
 
 <CommonChart
   chart='barchart'
@@ -106,10 +104,10 @@ The number of stars is often thought of as a measure of whether a github reposit
   valueIndex='users_count'
   seriesName='Contributors'
   categoryType={false}
-  repo='js_framework_repos'
+  repo='nocode_repos'
 />
 
-## Top 10 countries/regions contributing the most to JSF repos in 2021
+## Top 20 countries/regions contributing the most to LCDT repos in 2021
 
 <CommonChart
   chart='worldmapchart'
@@ -118,12 +116,12 @@ The number of stars is often thought of as a measure of whether a github reposit
   categoryIndex='country_code'
   valueIndex='users_count'
   seriesName='Contributors'
-  repo='js_framework_repos'
+  repo='nocode_repos'
 />
 
-## The Rankings of JSF repos measured by Z-score in 2021
+## The rankings of LCDT repos measured by Z-score in 2021
 
-The analytical results displayed above are generated based on just one single metric of these three: stars, PRs, or contributors. Now, we will use the [Z-score](https://en.wikipedia.org/wiki/Standard_score) method to rank the JSF repos on GitHub.
+The analytical results displayed above are generated based on just one single metric of these three: stars, PRs, or contributors. Now, we will use the [Z-score](https://en.wikipedia.org/wiki/Standard_score) method to rank the LCDT repos on GitHub. 
 
 This is the comprehensive ranking calculated by z-score:
 
@@ -131,5 +129,5 @@ This is the comprehensive ranking calculated by z-score:
   chart='zscorechart'
   category='archive-2021-archive-ranking'
   formatSql={false}
-  repo='js_framework_repos'
+  repo='nocode_repos'
 />
