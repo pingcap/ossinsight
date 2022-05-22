@@ -5,9 +5,11 @@ authors: [hooopo]
 tags: [tidbcloud]
 ---
 
+## Data
+
 All the data we use here on this website sources from [GH Archive](https://www.gharchive.org/), a non-profit project that records and archives all GitHub events data since 2011. The total data volume archived by GH Archive can be up to 4 billion rows. We download the `json file` on GH Archive and convert it into csv format via Script, and finally load it into the TiDB cluster in parallel through [TiDB-Lightning](https://docs.pingcap.com/tidb/stable/tidb-lightning-overview).
 
-In this post, we will explain step by step how we conduct this process. 
+In this section, we will explain step by step how we conduct this process. 
 
 1. Prepare the data in csv format for TiDB Lighting. 
 
@@ -158,6 +160,10 @@ gharchive_dev> show tables;
 | web_framework_repos         |
 +-----------------------------+
 ```
+
+## Arch
+
+![](./how-it-works.jpg)
 
 :::info
 ### 🌟 Details in how OSS Insight works
