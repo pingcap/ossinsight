@@ -1,10 +1,6 @@
 ---
 title: "Lowcode Development Tools"
-image: /img/docs/lowcode.png
 ---
-
-
-![](/img/docs/lowcode.png)
 
 We have collected and analyzed a list of well-known open source repositories regarding low-code development tools since 2011. In this chapter, we will share with you some of the valuable analytical results about those repositories. 
 

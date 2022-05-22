@@ -17,7 +17,7 @@
 </h3>
 
 <p align="center">
-OSS Insight analyze billions of GitHub events and get insights from them, also provide a compare tool which can compare any two open source software hosted on GitHub deeply.
+OSS Insight analyze billions of GitHub events and get insights from them, also provide a set of tool which can analyze a single repo, compare any two open source software hosted on GitHub.
 </p>
 
 ## Feature 1: Preanalysis of some famouse fields of technology 👁️
