@@ -28,13 +28,13 @@ OSS Insight analyze billions of GitHub events and get insights from them, also p
 * [Web Framework Repos Landscape 2021](https://ossinsight.io/blog/deep-insight-into-web-framework-2021)
 * [Programming Languages Repos Landscape 2021](https://ossinsight.io/blog/deep-insight-into-programming-languages-2021)
 * [Low-code Development Tool Repos Landscape 2021](https://ossinsight.io/blog/deep-insight-into-lowcode-development-tools-2021)
-* [...More](https://ossinsight.io/blog)
+* ... [more](https://ossinsight.io/blog)
 
 ### GitHub Collections Analysis
 * [Collection: Static Site Generator](https://ossinsight.io/collections/static-site-generator)
 * [Collection: Google Analytics Alternative](https://ossinsight.io/collections/google-analytics-alternative)
 * [Collection: CSS Framework](https://ossinsight.io/collections/css-framework)
-* [...More](https://ossinsight.io/collections/open-source-database)
+* ... [more](https://ossinsight.io/collections/open-source-database)
 
 If you want to analyze more, please [contact us](https://ossinsight.io/about/#contact) ✉️
   
