@@ -84,9 +84,10 @@ yarn;
 
 # start the server:
 yarn start;
-```
 
-then visit: http://localhost:3000
+# then visit
+open http://localhost:3000
+```
 
 ## Sponsors
 
