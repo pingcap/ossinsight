@@ -5,11 +5,13 @@
 </a>
 
 <h3 align="center">
-  <b><a href="https://ossinsight.io/database/deep-insight-into-open-source-databases">Insights</a></b>
+  <b><a href="https://ossinsight.io/collections/open-source-database">Insights</a></b>
   •
   <a href="https://ossinsight.io/analyze/pingcap/tidb">Analyze</a>
   •
   <a href="https://ossinsight.io/try-your-own-dataset">Try Your Own Dataset</a>
+  •
+  <a href="https://ossinsight.io/blog">Blogs</a>
   •
   <a href="https://twitter.com/OSSInsight">Twitter</a>
 </h3>
@@ -19,15 +21,24 @@ OSS Insight analyze billions of GitHub events and get insights from them, also p
 </p>
 
 ## Feature 1: Preanalysis of some famouse fields of technology 👁️
-* [Deep Insight Into Open Source Databases](https://ossinsight.io/database/deep-insight-into-open-source-databases)
-* [JavaScript Framework Repos Landscape 2021](https://ossinsight.io/js-framework/deep-insight-into-js-framework-2021)
-* [Web Framework Repos Landscape 2021](https://ossinsight.io/web-framework/deep-insight-about-web-framework-2021)
-* [Programming Languages Repos Landscape 2021](https://ossinsight.io/language/deep-insight-into-programming-languages-2021)
-* [Low-code Development Tool Repos Landscape 2021](https://ossinsight.io/low-code/deep-insight-into-lowcode-development-tools-2021)
+
+### Deep Insight
+* [Deep Insight Into Open Source Databases](https://ossinsight.io/blog/deep-insight-into-open-source-databases)
+* [JavaScript Framework Repos Landscape 2021](https://ossinsight.io/blog/deep-insight-into-js-framework-2021)
+* [Web Framework Repos Landscape 2021](https://ossinsight.io/blog/deep-insight-into-web-framework-2021)
+* [Programming Languages Repos Landscape 2021](https://ossinsight.io/blog/deep-insight-into-programming-languages-2021)
+* [Low-code Development Tool Repos Landscape 2021](https://ossinsight.io/blog/deep-insight-into-lowcode-development-tools-2021)
+* [More](https://ossinsight.io/blog) ...
+
+### GitHub Collections Analysis
+* [Collection: Static Site Generator](https://ossinsight.io/collections/static-site-generator)
+* [Collection: Google Analytics Alternative](https://ossinsight.io/collections/google-analytics-alternative)
+* [Collection: CSS Framework](https://ossinsight.io/collections/css-framework)
+* [More](https://ossinsight.io/collections/open-source-database) ...
 
 If you want to analyze more, please [contact us](https://ossinsight.io/about/#contact) ✉️
   
-## Feature 2: Single Repo Analysis
+## Feature 2: Analyze Single Repo
   
 * Basic:
   * star, fork, issues, commits, pull requests, contributors, programming languages, lines of code modified
@@ -63,40 +74,37 @@ Examples:
 
 ## Development
 
-clone the code by:
 ```bash
+# clone the code by:
 git clone https://github.com/pingcap/ossinsight.git
-```
 
-install npm packages
-```bash
+# install npm packages
 cd ossinsight/;
 yarn;
-```
 
-start the server:
-```bash
+# start the server:
 yarn start;
-```
 
-then visit: http://localhost:3000
+# then visit
+open http://localhost:3000
+```
 
 ## Sponsors
 
 <div align="center">
   <a href="https://en.pingcap.com">
-    <img src="/static/img/pingcap_logo.svg" height=50 />
+    <img src="/static/img/pingcap-white-300x79.png" height=50 />
   </a>
   &nbsp;
   &nbsp;
   &nbsp;
   <a href="https://en.pingcap.com/community">
-    <img src="/static/img/tidb_logo.svg" height=50 />
+    <img src="/static/img/tidb-logo-with-tidb.png" height=50 />
   </a>
   &nbsp;
   &nbsp;
   &nbsp;
   <a href="https://en.pingcap.com/tidb-cloud">
-    <img src="/static/img/tidb_cloud_logo.svg" height=50 />
+    <img src="/static/img/tidb-cloud-with-tidb-cloud.png" height=50 />
   </a>
 </div>
