@@ -2,6 +2,7 @@ import Link from '@docusaurus/Link';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import Avatar from '@mui/material/Avatar';
+import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Skeleton from '@mui/material/Skeleton';
 import Stack from '@mui/material/Stack';
@@ -19,7 +20,7 @@ import CollectionsContext from '../context';
 import { useCollectionMonthRank } from '../hooks/data';
 import { useDimensionTabs } from '../hooks/useTabs';
 import { withRemote } from '../hooks/withRemote';
-import { H2, P1 } from './typograpy';
+import { H2, H3, P1 } from './typograpy';
 
 const df = new Intl.DateTimeFormat(['en-US'], {
   month: 'short',
@@ -90,8 +91,11 @@ export default withInViewContainer(function MonthRankSection() {
       <P1>Simple monthly ranking by number of stars, pull requests or issues earned this month</P1>
       {tabs}
       <br />
-      <TableContainer component={Paper}>
-        <Table className="clearTable" size="small">
+      <H3 fontSize={14} align='center'>
+        Monthly Ranking - {dimension.title}
+      </H3>
+      <TableContainer component={Paper} sx={{ maxHeight: 'max(60vh, 640px)' }}>
+        <Table className="clearTable" size="small" stickyHeader>
           {withRemote(
             asyncData,
             data => (
