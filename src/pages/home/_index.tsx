@@ -127,7 +127,7 @@ export default function Home() {
         <Stack direction={stackDirection} alignItems='center'>
           <Item>
             <H2>
-              Historical / real-time
+              Monthly Ranking / Trends
               <br />
               <H2Plus sx={{color: '#FFE895'}}>
                 Insight
@@ -139,19 +139,19 @@ export default function Home() {
               in a technical field：
             </Subtitle>
             <Box sx={{display: 'flex', flexWrap: 'wrap', gap: 2, mt: 3}}>
-              <Tag color='#E63E6D' to='/database/deep-insight-into-open-source-databases'>
-                Database
+              <Tag color='#E63E6D' to='/collections/open-source-database'>
+                Open Source Database
               </Tag>
-              <Tag color='#E30C34' to='/js-framework'>
+              <Tag color='#E30C34' to='/collections/javascript-framework'>
                 JavaScript Framework
               </Tag>
-              <Tag color='#FEC260' to='/web-framework'>
+              <Tag color='#FEC260' to='/collections/web-framework'>
                 Web Framework
               </Tag>
-              <Tag color='#F15A24' to='/language'>
-                Programming Languages
+              <Tag color='#F15A24' to='/collections/static-site-generator'>
+                Static Site Generator
               </Tag>
-              <Tag color='#F87C00' to='/low-code'>
+              <Tag color='#F87C00' to='/collections/low-code-development-tool'>
                 Lowcode Development Tools
               </Tag>
             </Box>
