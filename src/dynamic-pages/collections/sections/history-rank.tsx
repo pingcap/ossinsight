@@ -39,7 +39,7 @@ export default withInViewContainer(function HistoryRankSection() {
             fields={{ name: 'repo_name', time: 'event_year', value: 'total', rank: 'rank' }}
           >
             <Title id='title' text={`${collection.name} - ${dimension.title}`}/>
-            <Watermark left='5%' bottom='5%' />
+            <Watermark left='5%' bottom='15%' />
             <Toolbox feature={{ saveAsImage: { title: '' } }}/>
           </RankChart>
         ),

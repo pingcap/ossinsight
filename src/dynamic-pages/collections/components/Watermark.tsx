@@ -11,7 +11,7 @@ export interface WatermarkProps {
 export default function Watermark({ ...props }: WatermarkProps) {
   return (
     <Once dependencies={[props.bottom, props.left, props.right, props.top]}>
-      <Title id='watermark' {...props} text="https://ossinsight.io" textStyle={{ color: '#2c2c2c', fontSize: 16, fontWeight: 'bolder' }} />
+      <Title id='watermark' {...props} text="ossinsight.io" textStyle={{ color: '#4c4c4c', fontSize: 32, fontWeight: 'bolder' }} />
     </Once>
   );
 }
