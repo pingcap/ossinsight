@@ -54,6 +54,14 @@ const config = {
             params: getPrefetched('.prefetch/collections.json').data.map(({name}) => ({
               slug: require('param-case').paramCase(name)
             }))
+          },
+          {
+            path: '/collections/:slug/trends',
+            exact: true,
+            component: '@site/src/dynamic-pages/collections/dynamic-trends',
+            params: getPrefetched('.prefetch/collections.json').data.map(({name}) => ({
+              slug: require('param-case').paramCase(name)
+            }))
           }
         ]
       }

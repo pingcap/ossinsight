@@ -1,12 +1,24 @@
 import { PropSidebar } from '@docusaurus/plugin-content-docs';
+import { useMemo } from 'react';
 import { useCollections } from './useCollection';
 
 export function useCollectionsSidebar(): PropSidebar {
   const collections = useCollections();
 
-  return collections.map(collection => ({
-    type: 'link',
-    href: `/collections/${collection.slug}`,
+  return useMemo(() => collections.map(collection => ({
+    type: 'category',
     label: collection.name,
-  }));
+    href: `/collections/${collection.slug}`,
+    collapsed: true,
+    collapsible: true,
+    items: [{
+      type: 'link',
+      href: `/collections/${collection.slug}`,
+      label: 'Monthly Ranking'
+    }, {
+      type: 'link',
+      href: `/collections/${collection.slug}/trends/`,
+      label: 'Dynamic Trends'
+    }]
+  })), [collections]);
 }
