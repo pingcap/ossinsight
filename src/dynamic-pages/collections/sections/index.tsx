@@ -23,7 +23,7 @@ export default function Sections ({ collection }: { collection: Collection}) {
       </Grid>
       <MonthRankSection />
       <HistorySortSection />
-      {/* <HistoryRankSection /> */}
+      <HistoryRankSection />
       <HistorySection />
     </>
   )
