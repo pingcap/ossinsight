@@ -83,7 +83,7 @@ export const DebugDialog = ({ sql, query, params, open, onClose }: DebugDialogPr
         <Container>
           <Tabs value={type} onChange={handleTabChange}>
             <Tab value={null} label="SQL" />
-            <Tab value="trace" label="TRACE" />
+            {/*<Tab value="trace" label="TRACE" />*/}
             <Tab value="explain" label="EXPLAIN" />
           </Tabs>
           <br />

@@ -2,14 +2,13 @@ import Link from '@docusaurus/Link';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import Avatar from '@mui/material/Avatar';
-import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Skeleton from '@mui/material/Skeleton';
 import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
-import TableCell, { TableCellProps } from '@mui/material/TableCell';
+import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
@@ -91,22 +90,22 @@ export default withInViewContainer(function MonthRankSection() {
       <P1>Simple monthly ranking by number of stars, pull requests or issues earned this month</P1>
       {tabs}
       <br />
-      <H3 fontSize={14} align='center'>
-        Monthly Ranking - {dimension.title}
-      </H3>
-      <TableContainer component={Paper} sx={{ maxHeight: 'max(60vh, 640px)' }}>
-        <Table className="clearTable" size="small" stickyHeader>
-          {withRemote(
-            asyncData,
-            data => (
-              <>
+      {withRemote(
+        asyncData,
+        data => (
+          <>
+            <H3 fontSize={14} align="center">
+              Monthly Ranking - {dimension.title}
+            </H3>
+            <TableContainer component={Paper} sx={{ maxHeight: 'max(60vh, 640px)' }}>
+              <Table className="clearTable" size="small" stickyHeader>
                 <TableHead>
                   <TableRow>
                     <HeaderCell>{formatTime(data.data[0].current_month)}</HeaderCell>
                     <HeaderCell>{formatTime(data.data[0].last_month)}</HeaderCell>
                     <HeaderCell>Repository</HeaderCell>
                     <HeaderCell>{dimension.title}</HeaderCell>
-                    <HeaderCell sx={{color: 'gray'}} align='right'>Total</HeaderCell>
+                    <HeaderCell sx={{ color: 'gray' }} align="right">Total</HeaderCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -120,10 +119,11 @@ export default withInViewContainer(function MonthRankSection() {
                         {item.last_month_rank}
                       </NumberCell>
                       <TableCell>
-                        <Stack direction='row' spacing={1} alignItems='center'>
+                        <Stack direction="row" spacing={1} alignItems="center">
                           <Avatar src={`https://github.com/${item.repo_name.split('/')[0]}.png`}
                                   sx={{ width: 20, height: 20 }} />
-                          <Link to={`/analyze/${item.repo_name}`} style={{ fontSize: 16, marginLeft: 8, whiteSpace: 'nowrap' }}>
+                          <Link to={`/analyze/${item.repo_name}`}
+                                style={{ fontSize: 16, marginLeft: 8, whiteSpace: 'nowrap' }}>
                             {item.repo_name}
                           </Link>
                         </Stack>
@@ -132,23 +132,30 @@ export default withInViewContainer(function MonthRankSection() {
                         {item.current_month_total}
                         <Diff val={item.total_mom} suffix="%" />
                       </NumberCell>
-                      <NumberCell sx={{ color: 'gray', fontWeight: 'normal' }} align='right'>
+                      <NumberCell sx={{ color: 'gray', fontWeight: 'normal' }} align="right">
                         {format(item.total)}
                       </NumberCell>
                     </TableRow>
                   ))}
                 </TableBody>
-              </>
-            ),
-            () => (
-              <>
+              </Table>
+            </TableContainer>
+          </>
+        ),
+        () => (
+          <>
+            <H3 fontSize={14} align="center">
+              Monthly Ranking - {dimension.title}
+            </H3>
+            <TableContainer component={Paper} sx={{ maxHeight: 'max(60vh, 640px)' }}>
+              <Table className="clearTable" size="small" stickyHeader>
                 <TableHead>
                   <TableRow>
                     <HeaderCell><Skeleton variant="text" sx={{ display: 'inline-block' }} width={64} /></HeaderCell>
                     <HeaderCell><Skeleton variant="text" sx={{ display: 'inline-block' }} width={64} /></HeaderCell>
                     <HeaderCell>Repository</HeaderCell>
                     <HeaderCell>{dimension.title}</HeaderCell>
-                    <HeaderCell sx={{ color: 'gray' }} align='right'>Total</HeaderCell>
+                    <HeaderCell sx={{ color: 'gray' }} align="right">Total</HeaderCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -162,7 +169,7 @@ export default withInViewContainer(function MonthRankSection() {
                         <Skeleton variant="text" sx={{ display: 'inline-block' }} width={32} />
                       </NumberCell>
                       <TableCell>
-                        <Stack direction='row' spacing={1} alignItems='center'>
+                        <Stack direction="row" spacing={1} alignItems="center">
                           <Skeleton variant="circular" sx={{ display: 'inline-block' }} width={26} height={26} />
                           <Skeleton variant="text" sx={{ display: 'inline-block', flex: 1 }} height={26} />
                         </Stack>
@@ -171,17 +178,17 @@ export default withInViewContainer(function MonthRankSection() {
                         <Skeleton variant="text" sx={{ display: 'inline-block' }} width={32} />
                         <Diff val={0} suffix="%" />
                       </NumberCell>
-                      <NumberCell sx={{ color: 'gray' }} align='right'>
+                      <NumberCell sx={{ color: 'gray' }} align="right">
                         <Skeleton variant="text" sx={{ display: 'inline-block' }} width={32} />
                       </NumberCell>
                     </TableRow>
                   ))}
                 </TableBody>
-              </>
-            ),
-          )}
-        </Table>
-      </TableContainer>
+              </Table>
+            </TableContainer>
+          </>
+        ),
+      )}
     </section>
   );
 });

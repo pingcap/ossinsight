@@ -15,6 +15,7 @@ export interface AsyncData<T> {
 }
 
 export interface RemoteData<P, T> {
+  query: string
   params: P
   data: T[]
   requestedAt: string
@@ -66,6 +67,7 @@ export const useRemoteData: UseRemoteData = (query: string, params: any, formatS
         if (data.sql && formatSql) {
           data.sql = format(data.sql)
         }
+        data.query = query
         return data
       }),
     revalidateOnFocus: false,
