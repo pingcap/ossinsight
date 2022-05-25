@@ -21,6 +21,10 @@ export interface RemoteData<P, T> {
   expiresAt: string
   spent: number
   sql: string
+  fields: {
+    name: string & keyof T
+    columnType: number
+  }[]
 }
 
 export interface BaseQueryResult<Params extends {

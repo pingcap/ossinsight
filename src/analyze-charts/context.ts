@@ -4,6 +4,7 @@ import EChartsReact from 'echarts-for-react';
 import {RepoInfo} from '../api/gh';
 
 export interface AnalyzeChartContextProps<T = unknown> {
+  query: string;
   title?: string;
   description?: string;
   hash?: string; // url hash
@@ -17,6 +18,7 @@ export interface AnalyzeChartContextProps<T = unknown> {
 const DEFAULT_DATA = {data: undefined, loading: false, error: undefined};
 
 export const AnalyzeChartContext = createContext<AnalyzeChartContextProps>({
+  query: '',
   title: undefined,
   hash: undefined,
   description: undefined,

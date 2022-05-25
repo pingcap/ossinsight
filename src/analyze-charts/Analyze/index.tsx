@@ -31,6 +31,7 @@ export default function Analyze({query, params, children}: AnalyzeProps) {
   }, []);
 
   const contextValue: AnalyzeChartContextProps = {
+    query,
     data: repoData,
     compareData: compareRepoData,
     title,
