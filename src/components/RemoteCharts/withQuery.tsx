@@ -1,9 +1,12 @@
+import Button from '@mui/material/Button';
 import * as React from "react";
 import {useRef, useState} from "react";
+import DebugDialog from '../DebugDialog/DebugDialog';
 import {AsyncData, RemoteData, useRemoteData} from "./hook";
 import Fab from '@mui/material/Fab';
 import Alert from "@mui/material/Alert";
-import ShareIcon from '@mui/icons-material/Share';// @ts-ignore
+import ShareIcon from '@mui/icons-material/Share';
+import CodeIcon from '@mui/icons-material/Code';
 import CodeBlock from '@theme/CodeBlock';
 import {BarChart, ChartWithSql, DataGrid, DataGridColumn, HeatMapChart, PieChart} from '../BasicCharts';
 import {Queries} from "./queries";
@@ -46,6 +49,7 @@ type QueryComponentProps<Q extends keyof Queries> = Queries[Q]["params"] & {
 
 export function renderChart (query, chart, {error, data}: AsyncData<RemoteData<any, any>>, clear = false) {
   const [showDebugModel, setShowDebugModel] = useState(false);
+  const [showShareModel, setShowShareModel] = useState(false);
   const echartsRef = useRef<EChartsReact>()
 
   const handleShowDebugModel = () => {
@@ -54,6 +58,14 @@ export function renderChart (query, chart, {error, data}: AsyncData<RemoteData<a
 
   const handleCloseDebugModel = () => {
     setShowDebugModel(false);
+  }
+
+  const handleShowShareModel = () => {
+    setShowShareModel(true);
+  }
+
+  const handleCloseShareModel = () => {
+    setShowShareModel(false);
   }
 
   if (error) {
@@ -66,13 +78,17 @@ export function renderChart (query, chart, {error, data}: AsyncData<RemoteData<a
     return (
       <ChartWithSql sql={data?.sql}>
         <div style={{position: 'relative'}}>
+          <Box display='flex' justifyContent='flex-end'>
+            <Button size='small' onClick={handleShowDebugModel} endIcon={<CodeIcon />}>REQUEST INFO</Button>
+          </Box>
           <EChartsContext.Provider value={{ echartsRef }}>
             {chart}
             <Fab size='small' sx={{position: 'absolute', right: 24, bottom: 24, zIndex: 'var(--ifm-z-index-fixed-mui)'}}
-                 onClick={handleShowDebugModel} disabled={!data}>
+                 onClick={handleShowShareModel} disabled={!data}>
               <ShareIcon />
             </Fab>
-            <ShareDialog open={showDebugModel} onClose={handleCloseDebugModel} />
+            <ShareDialog open={showShareModel} onClose={handleCloseShareModel} />
+            <DebugDialog sql={data?.sql} query={query} params={data?.params} open={showDebugModel} onClose={handleCloseDebugModel} />
           </EChartsContext.Provider>
         </div>
       </ChartWithSql>

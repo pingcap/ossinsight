@@ -15,12 +15,17 @@ export interface AsyncData<T> {
 }
 
 export interface RemoteData<P, T> {
+  query: string
   params: P
   data: T[]
   requestedAt: string
   expiresAt: string
   spent: number
   sql: string
+  fields: {
+    name: string & keyof T
+    columnType: number
+  }[]
 }
 
 export interface BaseQueryResult<Params extends {
@@ -62,6 +67,7 @@ export const useRemoteData: UseRemoteData = (query: string, params: any, formatS
         if (data.sql && formatSql) {
           data.sql = format(data.sql)
         }
+        data.query = query
         return data
       }),
     revalidateOnFocus: false,

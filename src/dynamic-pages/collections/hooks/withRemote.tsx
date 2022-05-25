@@ -1,12 +1,26 @@
+import CodeIcon from '@mui/icons-material/Code';
+import { LoadingButton } from '@mui/lab';
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import Skeleton from '@mui/material/Skeleton';
 import { AxiosError } from 'axios';
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { ReactNode } from 'react';
+import DebugDialog from '../../../components/DebugDialog/DebugDialog';
 import { AsyncData, RemoteData } from '../../../components/RemoteCharts/hook';
 
 export function withRemote<T>({ data, loading, error }: AsyncData<RemoteData<any, T>>, render: (data: RemoteData<any, T>) => ReactNode, fallback?: () => ReactNode) {
+  const [showDebugModel, setShowDebugModel] = useState(false);
+
+  const handleShowDebugModel = useCallback(() => {
+    setShowDebugModel(true);
+  }, [])
+
+  const handleCloseDebugModel = useCallback(() => {
+    setShowDebugModel(false);
+  }, [])
+
   const errorMessage = useMemo(() => {
     if (!error) {
       return undefined
@@ -23,9 +37,24 @@ export function withRemote<T>({ data, loading, error }: AsyncData<RemoteData<any
       <Alert severity='error'>{errorMessage}</Alert>
     )
   } else if (data) {
-    return render(data)
+    return (
+      <>
+        <Box display='flex' justifyContent='flex-end'>
+          <Button size='small' onClick={handleShowDebugModel} endIcon={<CodeIcon />}>REQUEST INFO</Button>
+        </Box>
+        {render(data)}
+        <DebugDialog sql={data.sql} query={data.query} params={data.params} open={showDebugModel} onClose={handleCloseDebugModel} />
+      </>
+    )
   } else if (fallback) {
-    return fallback()
+    return (
+      <>
+        <Box display='flex' justifyContent='flex-end'>
+          <LoadingButton loading size='small' endIcon={<CodeIcon />}>REQUEST INFO</LoadingButton>
+        </Box>
+        {fallback()}
+      </>
+    )
   } else {
     return (
       <Box>
