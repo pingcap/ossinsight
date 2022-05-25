@@ -2,19 +2,19 @@ import {readFile} from 'fs/promises'
 import path from 'path'
 import {DateTime, Duration} from "luxon";
 import type { QuerySchema } from '../../params.schema'
-import {MysqlQueryExecutor} from "./MysqlQueryExecutor";
-import Cache, {CachedData} from "./Cache";
+import {MysqlQueryExecutor, Result} from "./MysqlQueryExecutor";
+import Cache, {CachedData, MAX_CACHE_TIME} from "./Cache";
 import {RedisClientType, RedisDefaultModules, RedisModules, RedisScripts} from "redis";
 import consola from "consola";
 import {PoolConnection} from "mysql2";
 import {dataQueryTimer, measure, readConfigTimer, tidbQueryCounter} from "../metrics";
 import GHEventService from "../services/GHEventService";
-
-const MAX_CACHE_TIME = DateTime.fromISO('2099-12-31T00:00:00')
+import CollectionService from '../services/CollectionService';
 
 export enum ParamType {
   ARRAY = 'array',
-  DATE_RANGE = 'date-range'
+  DATE_RANGE = 'date-range',
+  COLLECTION = 'collection'
 }
 
 export enum ParamDateRange {
@@ -53,7 +53,10 @@ export class QueryTemplateNotFoundError extends Error {
   }
 }
 
-export async function buildParams(template: string, querySchema: QuerySchema, values: Record<string, any>, ghEventService: GHEventService) {
+export async function buildParams(
+  template: string, querySchema: QuerySchema, values: Record<string, any>,
+  ghEventService: GHEventService, collectionService: CollectionService
+) {
   for (const param of querySchema.params) {
     const {
       name, replaces, template: paramTemplate, dateRangeTo = ParamDateRangeTo.LAST_VALID_DATETIME,
@@ -68,6 +71,9 @@ export async function buildParams(template: string, querySchema: QuerySchema, va
         break;
       case ParamType.DATE_RANGE:
         targetValue = await handleDateRangeValue(name, value, ghEventService, dateRangeTo, column, pattern, paramTemplate)
+        break;
+      case ParamType.COLLECTION:
+        targetValue = await handleCollectionValue(name, value, collectionService, column, pattern, paramTemplate)
         break;
       default:
         targetValue = verifyParam(name, value, pattern, paramTemplate);
@@ -118,6 +124,26 @@ async function handleDateRangeValue(
   return `${column} >= '${from.toSQL()}' AND ${column} <= '${to.toSQL()}'`
 }
 
+async function handleCollectionValue(
+  name: string, collectionId: number, collectionService: CollectionService, column?: string, pattern?: string, 
+  paramTemplate?: Record<string, string>,
+): Promise<string> {
+  const arrValues = [];
+
+  const res = await collectionService.getCollectionRepos(collectionId)
+  
+  if (Array.isArray(res.data) && res.data.length > 0) {
+    for (let item of res.data) {
+      const targetValue = verifyParam(name, item.repo_id, pattern, paramTemplate);
+      arrValues.push(targetValue);
+    }
+  } else {
+    throw new BadParamsError(name, `can not get repo for collection ${collectionId}`)
+  }
+
+  return arrValues.join(', ');
+}
+
 function verifyParam(name: string, value: any, pattern?: string, paramTemplate?: Record<string, string>) {
   if (pattern) {
     const regexp = new RegExp(pattern);
@@ -134,10 +160,6 @@ function verifyParam(name: string, value: any, pattern?: string, paramTemplate?:
   return targetValue;
 }
 
-export interface QueryExecutor<T> {
-  execute (sql: string): Promise<T>
-}
-
 const logger = consola.withTag('query')
 
 export default class Query {
@@ -150,8 +172,9 @@ export default class Query {
   constructor(
     public readonly name: string,
     public readonly redisClient: RedisClientType<RedisDefaultModules & RedisModules, RedisScripts>,
-    public readonly executor: MysqlQueryExecutor<unknown>,
-    public readonly ghEventService: GHEventService
+    public readonly executor: MysqlQueryExecutor,
+    public readonly ghEventService: GHEventService,
+    public readonly collectionService: CollectionService
   ) {
     this.path = path.join(process.cwd(), 'queries', name)
     const templateFilePath = path.join(this.path, 'template.sql')
@@ -178,7 +201,7 @@ export default class Query {
   }
 
   async buildSql(params: Record<string, any>): Promise<string> {
-    return buildParams(this.template!, this.queryDef!, params, this.ghEventService)
+    return buildParams(this.template!, this.queryDef!, params, this.ghEventService, this.collectionService)
   }
 
   async run <T> (params: Record<string, any>, refreshCache: boolean = false, conn?: PoolConnection): Promise<CachedData<T>> {
@@ -194,11 +217,11 @@ export default class Query {
           const start = DateTime.now()
           tidbQueryCounter.labels({ query: this.name, phase: 'start' }).inc()
 
-          let data;
+          let res: Result;
           if (conn) {
-            data = await this.executor.executeWithConn(sql, conn)
+            res = await this.executor.executeWithConn(sql, conn)
           } else {
-            data = await this.executor.execute(sql)
+            res = await this.executor.execute(sql)
           }
 
           const end = DateTime.now()
@@ -210,7 +233,8 @@ export default class Query {
             spent: end.diff(start).as('seconds'),
             sql,
             expiresAt: cacheHours === -1 ? MAX_CACHE_TIME : end.plus({hours: cacheHours}),
-            data: data as any
+            fields: res.fields,
+            data: res.rows as any
           }
         } catch (e) {
           tidbQueryCounter.labels({ query: this.name, phase: 'error' }).inc()

@@ -3,6 +3,8 @@ import consola from "consola";
 import {RedisClientType, RedisDefaultModules, RedisModules, RedisScripts} from "redis";
 import {cacheHitCounter, measure, redisQueryTimer} from "../metrics";
 
+export const MAX_CACHE_TIME = DateTime.fromISO('2099-12-31T00:00:00')
+
 export class NeedPrefetchError extends Error {
   readonly msg: string
   constructor(message: string) {
@@ -12,9 +14,9 @@ export class NeedPrefetchError extends Error {
 }
 
 export interface CachedData<T> {
-  expiresAt: DateTime
-  data: T
-  [key: string]: any
+  expiresAt: DateTime;
+  data: T;
+  [key: string]: any;
 }
 
 const runningCaches = new Map<string, Cache<unknown>>()

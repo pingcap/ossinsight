@@ -8,7 +8,7 @@ import {createClient} from "redis";
 import {register} from "prom-client";
 import {measureRequests} from "./middlewares/measureRequests";
 import {createRateLimiter} from "./middlewares/rate-limit";
-import RepoGroupService from "./services/RepoGroupService";
+import CollectionService from "./services/CollectionService";
 import GHEventService from "./services/GHEventService";
 
 const COMPARE_QUERIES = [
@@ -70,13 +70,38 @@ export default async function server(router: Router<DefaultState, ContextExtends
   const ghExecutor = new GhExecutor(tokens, redisClient);
 
   // Init Services.
-  const repoGroupService = new RepoGroupService(executor);
+  const collectionService = new CollectionService(executor, redisClient);
   const ghEventService = new GHEventService(executor);
 
   router.get('/q/:query', measureRequests({ urlLabel: 'path' }), async ctx => {
     try {
-      const query = new Query(ctx.params.query, redisClient, executor, ghEventService)
+      const query = new Query(ctx.params.query, redisClient, executor, ghEventService, collectionService)
       const res = await query.run(ctx.query)
+      ctx.response.status = 200
+      ctx.response.body = res
+    } catch (e) {
+      ctx.logger.error('Failed to request %s: ', ctx.request.originalUrl, e)
+      ctx.response.status = 500
+      ctx.response.body = e
+    }
+  })
+
+  router.get('/collections', measureRequests({ urlLabel: 'path' }), async ctx => {
+    try {
+      const res = await collectionService.getCollections();
+      ctx.response.status = 200
+      ctx.response.body = res
+    } catch (e) {
+      ctx.logger.error('Failed to request %s: ', ctx.request.originalUrl, e)
+      ctx.response.status = 500
+      ctx.response.body = e
+    }
+  })
+
+  router.get('/collections/:collectionId', measureRequests({ urlLabel: 'path' }), async ctx => {
+    const { collectionId } = ctx.params
+    try {
+      const res = await collectionService.getCollectionRepos(parseInt(collectionId));
       ctx.response.status = 200
       ctx.response.body = res
     } catch (e) {
@@ -89,7 +114,7 @@ export default async function server(router: Router<DefaultState, ContextExtends
   // qo means query options.
   router.get('/qo/repos/groups/osdb', measureRequests({ urlLabel: 'path' }), async ctx => {
     try {
-      const res = await repoGroupService.getRepoGroups();
+      const res = await collectionService.getOSDBRepoGroups();
 
       ctx.response.status = 200
       if (ctx.query.format === 'global_variable') {
@@ -123,7 +148,7 @@ export default async function server(router: Router<DefaultState, ContextExtends
       const resultMap: Record<string, any> = {};
 
       for (let queryName of queryNames) {
-        const query = new Query(queryName, redisClient, executor, ghEventService)
+        const query = new Query(queryName, redisClient, executor, ghEventService, collectionService)
 
         try {
           resultMap[queryName] = await query.run(ctx.query, false, conn)

@@ -1,9 +1,22 @@
-import {QueryExecutor} from "./Query";
-import {createPool, Pool, PoolConnection, PoolOptions} from 'mysql2'
+import {createPool, FieldPacket, OkPacket, Pool, PoolConnection, PoolOptions, ResultSetHeader, RowDataPacket} from 'mysql2'
 import consola, {Consola} from "consola";
 import {tidbQueryTimer, waitTidbConnectionTimer} from "../metrics";
 
-export class MysqlQueryExecutor<T> implements QueryExecutor<T> {
+export interface Result {
+  fields: FieldMeta[];
+  rows: RowDataPacket[] | RowDataPacket[][] | OkPacket | OkPacket[] | ResultSetHeader;
+}
+
+export interface FieldMeta {
+    name: string;
+    columnType: number;
+}
+
+export interface QueryExecutor {
+  execute (sql: string): Promise<Result>
+}
+
+export class MysqlQueryExecutor implements QueryExecutor {
 
   private connections: Pool
   private logger: Consola
@@ -13,7 +26,7 @@ export class MysqlQueryExecutor<T> implements QueryExecutor<T> {
     this.logger = consola.withTag('mysql')
   }
 
-  async execute(sql: string): Promise<T> {
+  async execute(sql: string): Promise<Result> {
     const connection = await this.getConnection();
 
     try {
@@ -23,16 +36,28 @@ export class MysqlQueryExecutor<T> implements QueryExecutor<T> {
     }
   }
 
-  async executeWithConn(sql: string, connection: PoolConnection): Promise<T> {
+  async executeWithConn(sql: string, connection: PoolConnection): Promise<Result> {
     return new Promise((resolve, reject) => {
       this.logger.debug('Executing sql by connection<%d>\n %s', connection.threadId, sql)
       const end = tidbQueryTimer.startTimer()
-      connection.query(sql, (err, rows) => {
+      connection.query(sql, (err, rows, fields) => {
         end()
+
+        // FIXME: the type of `fields` in the callback function's definition is wrong.
+        const fieldDefs: FieldMeta[] = fields.map((field: any) => {
+          return {
+            name: field.name,
+            columnType: field.columnType
+          }
+        });
+
         if (err) {
           reject(err)
         } else {
-          resolve(rows as never)
+          resolve({
+            fields: fieldDefs,
+            rows: rows,
+          })
         }
       })
     });

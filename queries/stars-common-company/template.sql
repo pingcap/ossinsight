@@ -4,7 +4,7 @@ from (
      select
          trim(replace(replace(replace(replace(replace(replace(replace(replace(lower(u.company), ',', ''), '-', ''), '@', ''), 'www.', ''), 'inc', ''), '.com', ''), '.cn', ''), '.', '')) as company_name,
          repo_id,
-         count(distinct actor_id) as stargazers
+         count(distinct actor_login) as stargazers
      from github_events
      use index(index_github_events_on_repo_id)
      left join users u ON github_events.actor_login = u.login
