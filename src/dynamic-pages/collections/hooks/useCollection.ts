@@ -8,6 +8,7 @@ export type Collection = {
   id: number
   name: string
   slug: string
+  public: 0 | 1
 }
 
 export function useCollections(): Collection[] {

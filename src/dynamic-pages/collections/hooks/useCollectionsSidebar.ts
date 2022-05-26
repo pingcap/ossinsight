@@ -5,7 +5,7 @@ import { useCollections } from './useCollection';
 export function useCollectionsSidebar(): PropSidebar {
   const collections = useCollections();
 
-  return useMemo(() => collections.map(collection => ({
+  return useMemo(() => collections.filter(collection => collection.public !== 0).map(collection => ({
     type: 'category',
     label: collection.name,
     href: `/collections/${collection.slug}`,
