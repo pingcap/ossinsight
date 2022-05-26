@@ -10,7 +10,7 @@ import {
   RepoForkedIcon,
   StarIcon,
 } from '@primer/octicons-react';
-import React, { useMemo } from 'react';
+import React, { ForwardedRef, forwardRef, useMemo } from 'react';
 import Analyze from '../../../analyze-charts/Analyze';
 import { useAnalyzeContext } from '../../../analyze-charts/context';
 import { LineChart } from '../../../analyze-charts/line';
@@ -18,7 +18,7 @@ import Summary, { SummaryProps } from '../../../analyze-charts/summary';
 import Section from '../Section';
 import { H1, H2, P2 } from '../typography';
 
-export function OverviewSection () {
+export const OverviewSection = forwardRef(function ({}, ref: ForwardedRef<HTMLElement>) {
   const theme = useTheme()
   const isSmall = useMediaQuery(theme.breakpoints.down('md'))
   const { comparingRepoName, repoName: name, comparingRepoId: vs } = useAnalyzeContext()
@@ -56,7 +56,7 @@ export function OverviewSection () {
   }, [])
 
   return (
-    <Section id='overview'>
+    <Section id='overview' ref={ref}>
       {
         comparingRepoName ? undefined : (
           <H1 sx={{ mt: 2 }}>
@@ -86,4 +86,4 @@ export function OverviewSection () {
       </Grid>
     </Section>
   )
-}
+})

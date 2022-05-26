@@ -217,9 +217,10 @@ export function SecondRepoSelector ({placeholder, repo, defaultRepoName, onChang
       disableClearable={disableClearable as any}
       forcePopupIcon={false}
       sx={{
-        border: '2px dashed rgba(255,255,255,0.5)',
+        border: repo ? 'none' : '2px dashed rgba(255,255,255,0.5)',
+        py: repo ? '2px' : undefined,
+        boxSizing: 'border-box',
         borderRadius: '6px',
-        px: 1,
         '.MuiAutocomplete-endAdornment': {
           height: '100%',
           '> button': {
@@ -231,7 +232,7 @@ export function SecondRepoSelector ({placeholder, repo, defaultRepoName, onChang
       }}
       renderInput={(params) => (
         <Stack direction='row' alignItems='center'>
-          {repo ? undefined : <AddIcon sx={{ color: 'rgba(255,255,255,0.5)' }} />}
+          {repo ? undefined : <AddIcon sx={{ color: 'rgba(255,255,255,0.5)', ml: 1 }} />}
           <SearchContainer>
             <SearchLabel sx={{ paddingRight: disableClearable ? '38px' : '30px'}}>{params.inputProps.value || placeholder}</SearchLabel>
             <InputBase
@@ -253,9 +254,10 @@ export function SecondRepoSelector ({placeholder, repo, defaultRepoName, onChang
                 p: 0,
                 lineHeight: 40,
                 'input': {
-                  lineHeight: 32,
-                  height: 32,
-                  py: '4px'
+                  lineHeight: 40,
+                  height: 40,
+                  py: '4px',
+                  boxSizing: 'border-box'
                 }
               }}
             />

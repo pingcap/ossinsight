@@ -1,7 +1,7 @@
 import Grid from '@mui/material/Grid';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import React from "react";
+import React, { ForwardedRef, forwardRef } from 'react';
 import Analyze from '../../../analyze-charts/Analyze';
 import { useAnalyzeContext } from '../../../analyze-charts/context';
 import { TimeHeatChart } from '../../../analyze-charts/heatmap';
@@ -10,14 +10,14 @@ import { PushesAndCommitsChart } from '../../../analyze-charts/push-and-commits'
 import Section from '../Section';
 import { H2, H3, P2 } from '../typography';
 
-export function CommitsSection () {
+export const CommitsSection = forwardRef(function ({}, ref: ForwardedRef<HTMLElement>) {
   const theme = useTheme()
   const isSmall = useMediaQuery(theme.breakpoints.down('md'))
   const { comparingRepoId: vs } = useAnalyzeContext()
   const commonAspectRatio = isSmall ? vs ? 4 / 3 : 4 / 3 : vs ? 16 / 9 : 20 / 9
 
   return (
-    <Section id='commits'>
+    <Section id='commits' ref={ref}>
       <H2>Commits</H2>
       <Analyze query='analyze-pushes-and-commits-per-month'>
         <H3 id='commits-and-pushes-history' sx={{ mt: 6 }}>Commits & Pushes History</H3>
@@ -50,4 +50,4 @@ export function CommitsSection () {
       </Analyze>
     </Section>
   )
-}
+})

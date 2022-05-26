@@ -17,11 +17,20 @@ import { OverviewSection } from './sections/Overview';
 import { PeopleSection } from './sections/People';
 import { PullRequestsSection } from './sections/PullRequests';
 import { Side } from './Side';
+import { Scrollspy } from '@makotot/ghostui';
 
 interface AnalyzePageParams {
   owner: string;
   repo: string;
 }
+
+const sections = [
+  'overview',
+  'commits',
+  'pull-requests',
+  'issues',
+  'people'
+]
 
 function AnalyzePage() {
   const history = useHistory();
@@ -29,6 +38,8 @@ function AnalyzePage() {
 
   const { data: main, name } = useMainRepo();
   const { data: vs, name: comparingRepoName, setName: setComparingRepoName } = useVsRepo();
+
+  const sectionRefs = sections.map(section => useRef<HTMLElement>(null))
 
   const onRepoChange = useCallback((repo: Repo) => {
     history.push({
@@ -43,54 +54,54 @@ function AnalyzePage() {
 
   const allValid = useCallback(() => undefined, []);
 
-
-  const lastAnchor = useRef('overvier');
-  const [anchor, setAnchor] = useState<string>('overview');
-
   return (
-    <CustomPage
-      sideWidth="110px"
-      Side={() => <Side value={anchor} setValue={setAnchor} />}
-      header={(
-        <NewCompareHeader
+    <Scrollspy sectionRefs={sectionRefs} offset={-140}>
+      {({ currentElementIndexInViewport }) => (
+        <CustomPage
           sideWidth="110px"
-          repo1={main?.repo}
-          repo2={vs?.repo}
-          onRepo1Change={onRepoChange}
-          onRepo2Change={onComparingRepoChange}
-          onRepo1Valid={allValid}
-          onRepo2Valid={allValid}
-          repo1DisableClearable
-          repo1Placeholder="Select to analyze"
-          repo2Placeholder="Add to compare"
-        />
+          Side={() => <Side value={sections[currentElementIndexInViewport]} />}
+          header={(
+            <NewCompareHeader
+              sideWidth="110px"
+              repo1={main?.repo}
+              repo2={vs?.repo}
+              onRepo1Change={onRepoChange}
+              onRepo2Change={onComparingRepoChange}
+              onRepo1Valid={allValid}
+              onRepo2Valid={allValid}
+              repo1DisableClearable
+              repo1Placeholder="Select to analyze"
+              repo2Placeholder="Add to compare"
+            />
+          )}
+        >
+          <Head>
+            <title>
+              {comparingRepoName
+                ? `${name} vs ${comparingRepoName} | OSSInsight`
+                : `Analyze ${name} | OSSInsight`}
+            </title>
+          </Head>
+          <AnalyzeContext.Provider value={{
+            repoId: main?.repo.id,
+            comparingRepoId: vs?.repo.id,
+            repoName: name,
+            comparingRepoName,
+            repoInfo: main?.repoInfo,
+            comparingRepoInfo: vs?.repoInfo,
+          }}>
+            <Container maxWidth="lg">
+              <OverviewSection ref={sectionRefs[0]} />
+              <CommitsSection ref={sectionRefs[1]} />
+              <PullRequestsSection ref={sectionRefs[2]} />
+              <IssuesSection ref={sectionRefs[3]} />
+              <PeopleSection ref={sectionRefs[4]} />
+              <TryItYourself campaign="compare" show fixed />
+            </Container>
+          </AnalyzeContext.Provider>
+        </CustomPage>
       )}
-    >
-      <Head>
-        <title>
-          {comparingRepoName
-            ? `${name} vs ${comparingRepoName} | OSSInsight`
-            : `Analyze ${name} | OSSInsight`}
-        </title>
-      </Head>
-      <AnalyzeContext.Provider value={{
-        repoId: main?.repo.id,
-        comparingRepoId: vs?.repo.id,
-        repoName: name,
-        comparingRepoName,
-        repoInfo: main?.repoInfo,
-        comparingRepoInfo: vs?.repoInfo,
-      }}>
-        <Container maxWidth="lg">
-          <OverviewSection />
-          <CommitsSection />
-          <PullRequestsSection />
-          <IssuesSection />
-          <PeopleSection />
-          <TryItYourself campaign="compare" show fixed />
-        </Container>
-      </AnalyzeContext.Provider>
-    </CustomPage>
+    </Scrollspy>
   );
 }
 

@@ -1,7 +1,7 @@
 import Grid from '@mui/material/Grid';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import React, { useMemo } from 'react';
+import React, { ForwardedRef, forwardRef, useMemo } from 'react';
 import Analyze from '../../../analyze-charts/Analyze';
 import { DurationChart } from '../../../analyze-charts/common-duration';
 import { useAnalyzeContext } from '../../../analyze-charts/context';
@@ -10,7 +10,7 @@ import Summary, { SummaryProps } from '../../../analyze-charts/summary';
 import Section from '../Section';
 import { H2, H3, P2 } from '../typography';
 
-export function IssuesSection () {
+export const IssuesSection = forwardRef(function ({}, ref: ForwardedRef<HTMLElement>) {
   const theme = useTheme()
   const isSmall = useMediaQuery(theme.breakpoints.down('md'))
   const { comparingRepoId: vs } = useAnalyzeContext()
@@ -26,7 +26,7 @@ export function IssuesSection () {
   }, [])
 
   return (
-    <Section id='issues'>
+    <Section id='issues' ref={ref}>
       <H2>Issues</H2>
       <Grid container spacing={2} alignItems='center'>
         <Grid item xs={12} md={vs ? 8 : 6}>
@@ -53,4 +53,4 @@ export function IssuesSection () {
       </Analyze>
     </Section>
   )
-}
+})

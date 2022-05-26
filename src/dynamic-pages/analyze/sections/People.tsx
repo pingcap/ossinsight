@@ -5,7 +5,7 @@ import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { GitMergeIcon, IssueOpenedIcon, PersonIcon, StarIcon } from '@primer/octicons-react';
-import React, { PropsWithChildren, useCallback, useContext, useState } from 'react';
+import React, { ForwardedRef, forwardRef, PropsWithChildren, useCallback, useContext, useState } from 'react';
 import Analyze from '../../../analyze-charts/Analyze';
 import { CompaniesChart } from '../../../analyze-charts/companies';
 import { AnalyzeChartContext, useAnalyzeContext } from '../../../analyze-charts/context';
@@ -16,7 +16,7 @@ import Section from '../Section';
 import styles from '../styles.module.css';
 import { H2, H3, H4, P2 } from '../typography';
 
-export function PeopleSection () {
+export const PeopleSection = forwardRef(function ({}, ref: ForwardedRef<HTMLElement>) {
   const theme = useTheme()
   const { comparingRepoId: vs, comparingRepoName } = useAnalyzeContext()
 
@@ -33,7 +33,7 @@ export function PeopleSection () {
 
 
   return (
-    <Section id='people'>
+    <Section id='people' ref={ref}>
       <H2>People</H2>
       <Analyze query={mapType}>
         <H3 sx={{ mt: 6 }}>Geographical Distribution</H3>
@@ -75,7 +75,7 @@ export function PeopleSection () {
       </Analyze>
     </Section>
   )
-}
+})
 
 const IconTab = ({children, id, icon, ...props}: PropsWithChildren<{ id: string, value: string, icon?: React.ReactNode }>) => {
   const { headingRef } = useContext(AnalyzeChartContext)
