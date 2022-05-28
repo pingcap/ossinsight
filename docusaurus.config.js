@@ -168,7 +168,7 @@ const config = {
         title: 'OSS Insight',
         logo: {
           alt: 'OSS Insight',
-          src: 'img/tidb_logo_header.svg',
+          src: 'img/tidb-logo.svg',
         },
         style: 'dark',
         items: [
