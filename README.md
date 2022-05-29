@@ -5,11 +5,13 @@
 </a>
 
 <h3 align="center">
-  <b><a href="https://ossinsight.io/collections/open-source-database">Insights</a></b>
+  <b><a href="https://ossinsight.io/collections/open-source-database">Ranking!</a></b>
   •
-  <a href="https://ossinsight.io/analyze/pingcap/tidb">Analyze</a>
+  <b><a href="https://ossinsight.io/collections/open-source-database/trends/">Trends</a></b>
   •
-  <a href="https://ossinsight.io/try-your-own-dataset">Try Your Own Dataset</a>
+  <a href="https://ossinsight.io/analyze/pingcap/tidb">Analyze Single Repo</a>
+  •
+  <a href="https://ossinsight.io/analyze/vuejs/vue?vs=facebook%2Freact">Compare Repos</a>
   •
   <a href="https://ossinsight.io/blog">Blogs</a>
   •
