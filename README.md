@@ -5,7 +5,7 @@
 </a>
 
 <h3 align="center">
-  <b><a href="https://ossinsight.io/collections/open-source-database">Rankins!</a></b>
+  <b><a href="https://ossinsight.io/collections/open-source-database">Ranking!</a></b>
   •
   <b><a href="https://ossinsight.io/collections/open-source-database/trends/">Trends</a></b>
   •
