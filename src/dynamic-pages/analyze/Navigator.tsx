@@ -11,11 +11,11 @@ import React from 'react';
 const SideContainer = styled('div')({
   width: '100%',
   height: 'calc(100vh - var(--ifm-navbar-height) - 22px)',
-  backgroundColor: '#2C2C2C',
+  backgroundColor: '#242526',
 });
 
 const ColorBox = styled(Box)({
-  backgroundColor: '#3C3C3C',
+  backgroundColor: '#222222',
   height: '76px',
 });
 
