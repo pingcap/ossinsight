@@ -156,7 +156,7 @@ const SearchLabel = styled('span')({
   whiteSpace: 'nowrap',
   visibility: 'hidden',
   height: 40,
-  lineHeight: 40,
+  lineHeight: '40px',
   maxWidth: 300,
 })
 
@@ -195,7 +195,13 @@ export function FirstRepoSelector ({repo, defaultRepoName, onChange, onValid = n
                 minWidth: 60,
                 top: 0,
                 p: 0,
-                lineHeight: 40,
+                lineHeight: '36px',
+                'input': {
+                  lineHeight: '36px',
+                  height: 40,
+                  py: '4px',
+                  boxSizing: 'border-box'
+                }
               }}
             />
           </SearchContainer>
@@ -262,9 +268,9 @@ export function SecondRepoSelector ({placeholder, repo, defaultRepoName, onChang
                 minWidth: 60,
                 top: 0,
                 p: 0,
-                lineHeight: 36,
+                lineHeight: '36px',
                 'input': {
-                  lineHeight: 36,
+                  lineHeight: '36px',
                   height: 36,
                   py: '4px',
                   boxSizing: 'border-box'
