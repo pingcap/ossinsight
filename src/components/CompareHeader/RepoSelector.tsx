@@ -88,6 +88,9 @@ export default function RepoSelector({repo, size, label, defaultRepoName, onChan
         },
         '.MuiAutocomplete-popupIndicator': {
           transform: 'none !important',
+        },
+        '.MuiAutocomplete-endAdornment': {
+          top: 'unset',
         }
       })}
       size={size === 'large' ? 'medium' : 'small'}
