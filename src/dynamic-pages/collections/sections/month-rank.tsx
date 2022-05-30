@@ -19,7 +19,7 @@ import CollectionsContext from '../context';
 import { useCollectionMonthRank } from '../hooks/data';
 import { useDimensionTabs } from '../hooks/useTabs';
 import { withRemote } from '../hooks/withRemote';
-import { H2, H3, P1 } from './typograpy';
+import { H2, H3, P1, P2 } from './typograpy';
 
 const df = new Intl.DateTimeFormat(['en-US'], {
   month: 'short',
@@ -87,7 +87,7 @@ export default withInViewContainer(function MonthRankSection() {
   return (
     <section>
       <H2 id="monthly-rankings">Ranking!</H2>
-      <P1>Simple monthly ranking by number of stars, pull requests or issues earned this month</P1>
+      <P2>Ranked all repositories with the month-on-month growth amount.</P2>
       {tabs}
       <br />
       {withRemote(

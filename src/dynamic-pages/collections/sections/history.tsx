@@ -10,7 +10,7 @@ import CollectionsContext from '../context';
 import { useCollectionHistory } from '../hooks/data';
 import { useDimensionTabs } from '../hooks/useTabs';
 import { withRemote } from '../hooks/withRemote';
-import { H2, P1 } from './typograpy';
+import { H2, P2 } from './typograpy';
 
 use(CanvasRenderer);
 
@@ -28,24 +28,24 @@ export default withInViewContainer(function HistorySection() {
 
   const top10Names = useMemo(() => {
     if (!asyncData.data) {
-      return []
+      return [];
     }
     const maxTime = asyncData.data.data.reduce((set, item) => {
-      return set < item.event_month ? item.event_month : set
-    }, '')
+      return set < item.event_month ? item.event_month : set;
+    }, '');
     return asyncData.data.data
       .filter(item => item.event_month === maxTime)
-      .sort((a, b) =>b.total - a.total)
+      .sort((a, b) => b.total - a.total)
       .slice(0, 10)
-      .map(item => item.repo_name)
-  }, [asyncData.data])
+      .map(item => item.repo_name);
+  }, [asyncData.data]);
 
   const top10Data: typeof asyncData = useMemo(() => {
     if (!asyncData.data) {
-      return asyncData
+      return asyncData;
     }
     const top10NamesSet = top10Names
-      .reduce((set, item) => set.add(item), new Set<string>())
+      .reduce((set, item) => set.add(item), new Set<string>());
     return {
       data: {
         ...asyncData.data,
@@ -53,13 +53,13 @@ export default withInViewContainer(function HistorySection() {
       },
       loading: asyncData.loading,
       error: asyncData.error,
-    }
-  }, [asyncData.data, asyncData.error, asyncData.loading, top10Names])
+    };
+  }, [asyncData.data, asyncData.error, asyncData.loading, top10Names]);
 
   return (
     <section>
-      <H2>Historical Trending</H2>
-      <P1>Historical trending since 2011.</P1>
+      <H2>Top 10 rankings</H2>
+      <P2>\* A line chart displays the top 10 repositories with total amount and ranking changes in four metrics（Star, Pull Request, Pull Request Creators, Issue） since 2011.</P2>
       {tabs}
       <br />
       {withRemote(
@@ -73,10 +73,10 @@ export default withInViewContainer(function HistorySection() {
             fields={{ name: 'repo_name', time: 'event_month', value: 'total' }}
             formatTime={formatTime}
           >
-            <Title id='title' top={0} text={`Top 10 ${collection.name} - ${dimension.title}`}/>
-            <Watermark left='10%' top='10%' />
-            <Toolbox feature={{ saveAsImage: { title: '' } }}/>
-            <Legend top='center' left='10%' orient='vertical' type='scroll' data={top10Names}/>
+            <Title id="title" top={0} text={`Top 10 ${collection.name} - ${dimension.title}`} />
+            <Watermark left="10%" top="10%" />
+            <Toolbox feature={{ saveAsImage: { title: '' } }} />
+            <Legend top="center" left="10%" orient="vertical" type="scroll" data={top10Names} />
           </LineChart>
         ),
         () => (
