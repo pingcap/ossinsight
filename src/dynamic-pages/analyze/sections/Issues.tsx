@@ -34,7 +34,7 @@ export const IssuesSection = forwardRef(function ({}, ref: ForwardedRef<HTMLElem
         </Grid>
       </Grid>
       <Analyze query='analyze-issue-open-to-first-responded'>
-        <H3 id='issue-time-cost' sx={{ mt: 6 }}>Issue Time Cost</H3>
+        <H3 id='issue-first-responded-time' sx={{ mt: 6 }}>Issue First Responded Time</H3>
         <P2>
           The time of an issue from open to first-responded(exclude bots).
           <br />
