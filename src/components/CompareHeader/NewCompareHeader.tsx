@@ -39,7 +39,7 @@ function NewCompareHeader({
       position="sticky"
       sx={combineSx({
         my: 0,
-        py: 2,
+        py: 1,
         top: 'var(--ifm-navbar-height)',
         zIndex: 'var(--ifm-z-index-fixed-mui)',
         backgroundColor: '#222222',

@@ -15,7 +15,7 @@ const SideContainer = styled('div')({
 });
 
 const ColorBox = styled(Box)({
-  backgroundColor: '#222222',
+  backgroundColor: '#242526',
   height: '76px',
 });
 
