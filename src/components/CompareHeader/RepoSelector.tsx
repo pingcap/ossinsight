@@ -11,7 +11,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import {Alert, Snackbar} from "@mui/material";
 import {UseAutocompleteProps} from "@mui/base/AutocompleteUnstyled/useAutocomplete";
 import { useSearchRepo, Repo } from './useSearchRepo';
-import SearchIcon from '@mui/icons-material/Search'
+import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/Add'
 import './style.css'
 
@@ -85,6 +85,9 @@ export default function RepoSelector({repo, size, label, defaultRepoName, onChan
         },
         '.MuiAutocomplete-clearIndicator': {
           visibility: 'visible !important',
+        },
+        '.MuiAutocomplete-popupIndicator': {
+          transform: 'none !important',
         }
       })}
       size={size === 'large' ? 'medium' : 'small'}
@@ -96,6 +99,7 @@ export default function RepoSelector({repo, size, label, defaultRepoName, onChan
       onChange={onAutoCompleteChange}
       onInputChange={onInputChange}
       disableClearable={disableClearable as any}
+      popupIcon={<SearchIcon />}
       renderInput={(params) => (
         <TextField
           {...params}
