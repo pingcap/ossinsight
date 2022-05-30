@@ -1,41 +1,68 @@
+import Box from '@mui/material/Box';
+import Layout, { Props as LayoutProps } from '@theme/Layout';
 import React, { PropsWithChildren, useLayoutEffect } from 'react';
-import Layout, {Props as LayoutProps} from '@theme/Layout';
-import Footer from "../../components/Footer";
+import Footer from '../../components/Footer';
 import StatusBar from '../../components/StatusBar';
 
 declare module '@theme/Layout' {
   interface Props {
-    header?: JSX.Element
+    header?: JSX.Element;
+    side?: JSX.Element;
+    sideWidth?: string
   }
 }
 
 export interface CustomPageProps extends LayoutProps {
-  footer?: boolean
-  dark?: boolean
-  header?: JSX.Element
+  footer?: boolean;
+  dark?: boolean;
+  header?: JSX.Element;
+  sideWidth?: string;
+  Side?: () => JSX.Element;
 }
 
-export default function CustomPage({children, header, footer = true, dark, ...props}: PropsWithChildren<CustomPageProps>) {
+export default function CustomPage({
+  children,
+  header,
+  footer = true,
+  dark,
+  sideWidth,
+  Side,
+  ...props
+}: PropsWithChildren<CustomPageProps>) {
 
   useLayoutEffect(() => {
-    const id = location.hash.replace(/^#/, '')
+    const id = location.hash.replace(/^#/, '');
     document.getElementById(id)?.scrollIntoView({
-      block: 'center'
-    })
-  }, [])
+      block: 'center',
+    });
+  }, []);
 
   return (
-    <Layout {...props} header={header}>
+    <Layout
+      {...props}
+      header={header}
+      sideWidth={sideWidth}
+      side={(sideWidth && Side)
+        ? (
+          <Box component="aside" width={sideWidth} position="sticky" top="calc(var(--ifm-navbar-height) + 76px)" height={0} zIndex={0}>
+            <Box marginTop='-76px' height='calc(100vh - var(--ifm-navbar-height))'>
+              <Side />
+            </Box>
+          </Box>
+        ) : undefined}
+    >
       <div hidden style={{ height: 72 }} />
-      <div
-        style={{
-          '--ifm-container-width-xl': '1200px'
-      }}
-      >
-        {children}
-        {footer ? <Footer /> : undefined}
+      <div style={{ paddingLeft: sideWidth, paddingRight: sideWidth }}>
+        <main
+          style={{
+            '--ifm-container-width-xl': '1200px',
+          }}
+        >
+          {children}
+          {footer ? <Footer /> : undefined}
+        </main>
       </div>
-      <StatusBar/>
+      <StatusBar />
     </Layout>
-  )
+  );
 }

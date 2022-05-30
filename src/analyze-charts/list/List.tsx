@@ -33,7 +33,7 @@ export default function List({n, valueIndex, nameIndex, percentIndex, title, tra
       <Grid container spacing={0.5}>
         {comparingRepoName
           ? (group.map((_, i, all) => (
-            <Grid item xs={12 / all.length}>
+            <Grid item xs={12 / all.length} key={i}>
               <Box flex={1} px={1} sx={{
                 overflow: 'hidden',
                 whiteSpace: 'nowrap',
@@ -54,7 +54,7 @@ export default function List({n, valueIndex, nameIndex, percentIndex, title, tra
             </Grid>),
           )) : undefined}
         {base.map((_, i) => group.map((data, index, all) => (
-          <Grid item xs={12 / all.length}>
+          <Grid item xs={12 / all.length} key={i}>
             <DataItem flex={1}>
               <Stack direction="row" px={comparingRepoName ? 1 : 2} py={comparingRepoName ? 0.5 : 1} alignItems="center" justifyContent="space-between">
                 <HeadText sx={{fontSize: 12, lineHeight: 1}}>

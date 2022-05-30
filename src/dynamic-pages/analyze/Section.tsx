@@ -1,18 +1,37 @@
-import React, {PropsWithChildren} from 'react';
 import Box from '@mui/material/Box';
-import {useInView} from 'react-intersection-observer';
+import { styled } from '@mui/material/styles';
+import React, { ForwardedRef, forwardRef, PropsWithChildren } from 'react';
+import { useInView } from 'react-intersection-observer';
 import InViewContext from '../../components/InViewContext';
 
-export default function Section({children}: PropsWithChildren<{}>) {
-  const { inView, ref } = useInView({ fallbackInView: true })
-
-
+function Section({
+  children,
+  id,
+}: PropsWithChildren<{ id?: string }>, forwardedRef: ForwardedRef<HTMLElement>) {
+  const { inView, ref } = useInView({ fallbackInView: true });
 
   return (
-    <Box component="section" sx={{py: 4}} ref={ref}>
-      <InViewContext.Provider value={{inView}}>
-        {children}
-      </InViewContext.Provider>
+    <Box
+      component="section"
+      sx={{ py: 4 }}
+      ref={forwardedRef}
+      position="relative"
+    >
+      {id && <Anchor id={id} />}
+      <div ref={ref}>
+        <InViewContext.Provider value={{ inView }}>
+          {children}
+        </InViewContext.Provider>
+      </div>
     </Box>
   );
 }
+
+export default forwardRef(Section);
+
+const Anchor = styled('div')({
+  display: 'block',
+  position: 'relative',
+  top: '-100px',
+  width: 1,
+});

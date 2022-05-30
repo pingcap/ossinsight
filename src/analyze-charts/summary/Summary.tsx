@@ -59,14 +59,14 @@ export default function Summary({items}: SummaryProps) {
         if ('query' in item) {
           const {query, ...props} = item;
           return (
-            <Analyze query={query}>
+            <Analyze query={query} key={i}>
               <SummaryItem container flexWrap="nowrap" gap={1} {...props} sizes={sizes} key={query} />
             </Analyze>
           );
         } else {
           const {data, comparingData, ...props} = item;
-          return <StaticSummaryItem container flexWrap="nowrap" gap={1} data={data}
-                                    comparingData={comparingData} {...props} sizes={sizes} key={i} />;
+          return <StaticSummaryItem key={i} container flexWrap="nowrap" gap={1} data={data}
+                                    comparingData={comparingData} {...props} sizes={sizes} />;
         }
       })}
     </Stack>

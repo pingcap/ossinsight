@@ -1,23 +1,32 @@
+import Stack from '@mui/material/Stack';
+import { styled } from '@mui/material/styles';
 import { AxiosError } from 'axios';
 import * as React from 'react';
 import {useCallback, useMemo, useState} from 'react';
 import TextField from '@mui/material/TextField';
+import InputBase from '@mui/material/InputBase';
+import InputAdornment from '@mui/material/InputAdornment';
 import Autocomplete from '@mui/material/Autocomplete';
 import CircularProgress from '@mui/material/CircularProgress';
 import {Alert, Snackbar} from "@mui/material";
 import {UseAutocompleteProps} from "@mui/base/AutocompleteUnstyled/useAutocomplete";
 import { useSearchRepo, Repo } from './useSearchRepo';
+import SearchIcon from '@mui/icons-material/Search'
+import AddIcon from '@mui/icons-material/Add'
+import './style.css'
 
 export { Repo } from './useSearchRepo'
 
-
-export interface RepoSelectorProps {
-  label: string
+export interface BaseRepoSelectorProps {
   defaultRepoName?: string
   repo: Repo | null
   onChange?: (repo: Repo | null) => void
   onValid?: (repo: Repo | null) => string | undefined
   disableClearable?: boolean
+}
+
+export interface RepoSelectorProps extends BaseRepoSelectorProps {
+  label: string
   align?: 'left' | 'right'
   size?: 'large'
   contrast?: boolean
@@ -25,7 +34,7 @@ export interface RepoSelectorProps {
 
 const noValidation = () => undefined
 
-export default function RepoSelector({repo, size, label, defaultRepoName, onChange, onValid = noValidation, disableClearable, align = 'left', contrast}: RepoSelectorProps) {
+function useRepoSelector ({ defaultRepoName, onChange, onValid = noValidation }: Pick<BaseRepoSelectorProps, 'defaultRepoName' | 'onChange' | 'onValid'>) {
   const [keyword, setKeyword] = useState<string>(defaultRepoName ?? '')
   const [textFieldError, setTextFieldError] = useState<boolean>(false)
   const [helperText, setHelperText] = useState<string>('')
@@ -58,6 +67,13 @@ export default function RepoSelector({repo, size, label, defaultRepoName, onChan
     return errMsg
   }, [error])
 
+  return { textFieldError, helperText, dismissError, setDismissError, options, loading, onAutoCompleteChange, onInputChange, errorMessage, error }
+
+}
+
+export default function RepoSelector({repo, size, label, defaultRepoName, onChange, onValid = noValidation, disableClearable, align = 'left', contrast}: RepoSelectorProps) {
+  const { textFieldError, helperText, dismissError, setDismissError, options, loading, onAutoCompleteChange, onInputChange, errorMessage, error } = useRepoSelector({ defaultRepoName, onChange, onValid })
+
   return (<>
     <Autocomplete<Repo>
       sx={theme => ({
@@ -73,7 +89,7 @@ export default function RepoSelector({repo, size, label, defaultRepoName, onChan
       })}
       size={size === 'large' ? 'medium' : 'small'}
       isOptionEqualToValue={(option, value) => option?.id === value?.id}
-      getOptionLabel={(option) => option.name}
+      getOptionLabel={(option: Repo) => option.name}
       options={options ?? []}
       loading={loading}
       value={repo ?? null}
@@ -111,6 +127,146 @@ export default function RepoSelector({repo, size, label, defaultRepoName, onChan
             ),
           }}
         />
+      )}
+    />
+    <Snackbar open={!!error && !dismissError} autoHideDuration={3000} onClose={() => setDismissError(true)}>
+      <Alert severity="error" sx={{width: '100%'}}>{errorMessage}</Alert>
+    </Snackbar>
+  </>);
+}
+
+const SearchContainer = styled('div')({
+  position: 'relative',
+  minWidth: 60,
+  fontSize: 20,
+  height: 40,
+  padding: '0 8px'
+})
+
+const SearchLabel = styled('span')({
+  display: 'block',
+  overflow: 'visible',
+  whiteSpace: 'nowrap',
+  visibility: 'hidden',
+  height: 40,
+  lineHeight: 40,
+  maxWidth: 300,
+})
+
+export function FirstRepoSelector ({repo, defaultRepoName, onChange, onValid = noValidation, disableClearable}: BaseRepoSelectorProps) {
+  const { textFieldError, dismissError, setDismissError, options, loading, onAutoCompleteChange, onInputChange, errorMessage, error } = useRepoSelector({ defaultRepoName, onChange, onValid })
+
+  return (<>
+    <Autocomplete<Repo>
+      isOptionEqualToValue={(option, value) => option?.id === value?.id}
+      getOptionLabel={(option: Repo) => option.name}
+      options={options ?? []}
+      loading={loading}
+      value={repo ?? null}
+      onChange={onAutoCompleteChange}
+      onInputChange={onInputChange}
+      disableClearable={disableClearable as any}
+      forcePopupIcon={false}
+      renderInput={(params) => (
+        <Stack direction='row' alignItems='center'>
+          <SearchIcon />
+          <SearchContainer>
+            <SearchLabel>{params.inputProps.value}</SearchLabel>
+            <InputBase
+              id={params.id}
+              disabled={params.disabled}
+              fullWidth={params.fullWidth}
+              inputProps={params.inputProps}
+              {...params.InputProps}
+              inputMode='search'
+              error={textFieldError}
+              sx={{
+                fontSize: 'inherit',
+                position: 'absolute',
+                left: 8,
+                width: '100%',
+                minWidth: 60,
+                top: 0,
+                p: 0,
+                lineHeight: 40,
+              }}
+            />
+          </SearchContainer>
+        </Stack>
+
+      )}
+    />
+    <Snackbar open={!!error && !dismissError} autoHideDuration={3000} onClose={() => setDismissError(true)}>
+      <Alert severity="error" sx={{width: '100%'}}>{errorMessage}</Alert>
+    </Snackbar>
+  </>);
+}
+
+export function SecondRepoSelector ({placeholder, repo, defaultRepoName, onChange, onValid = noValidation, disableClearable}: BaseRepoSelectorProps & { placeholder: string }) {
+  const { textFieldError, dismissError, setDismissError, options, loading, onAutoCompleteChange, onInputChange, errorMessage, error } = useRepoSelector({ defaultRepoName, onChange, onValid })
+
+  return (<>
+    <Autocomplete<Repo>
+      isOptionEqualToValue={(option, value) => option?.id === value?.id}
+      getOptionLabel={(option: Repo) => option.name}
+      options={options ?? []}
+      loading={loading}
+      value={repo ?? null}
+      onChange={onAutoCompleteChange}
+      onInputChange={onInputChange}
+      disableClearable={disableClearable as any}
+      forcePopupIcon={false}
+      sx={{
+        border: repo ? 'none' : '2px dashed rgba(255,255,255,0.5)',
+        py: repo ? '2px' : undefined,
+        boxSizing: 'border-box',
+        borderRadius: '6px',
+        '.MuiAutocomplete-endAdornment': {
+          height: '100%',
+          '> button': {
+            position: 'absolute',
+            top: 2,
+            right: 8,
+          }
+        },
+        '.MuiAutocomplete-clearIndicator': {
+          visibility: 'visible',
+        }
+      }}
+      renderInput={(params) => (
+        <Stack direction='row' alignItems='center'>
+          {repo ? undefined : <AddIcon sx={{ color: 'rgba(255,255,255,0.5)', ml: 1, fontWeight: 'bold' }} />}
+          <SearchContainer sx={{ height: '36px' }}>
+            <SearchLabel sx={{ paddingRight: repo ? '38px' : undefined }}>{params.inputProps.value || placeholder}</SearchLabel>
+            <InputBase
+              id={params.id}
+              disabled={params.disabled}
+              fullWidth={params.fullWidth}
+              inputProps={params.inputProps}
+              placeholder={placeholder}
+              {...params.InputProps}
+              inputMode='search'
+              error={textFieldError}
+              sx={{
+                fontSize: '18px',
+                position: 'absolute',
+                left: 8,
+                width: 'calc(100%)',
+                minWidth: 60,
+                top: 0,
+                p: 0,
+                lineHeight: 36,
+                'input': {
+                  lineHeight: 36,
+                  height: 36,
+                  py: '4px',
+                  boxSizing: 'border-box'
+                }
+              }}
+            />
+          </SearchContainer>
+        </Stack>
+
       )}
     />
     <Snackbar open={!!error && !dismissError} autoHideDuration={3000} onClose={() => setDismissError(true)}>

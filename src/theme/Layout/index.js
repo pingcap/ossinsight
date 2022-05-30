@@ -20,7 +20,7 @@ import './styles.css';
 import ThemeAdaptor from "../../components/ThemeAdaptor";
 
 function Layout(props) {
-  const {children, noFooter, wrapperClassName, pageClassName, header} = props;
+  const {children, noFooter, wrapperClassName, pageClassName, header, side, sideWidth} = props;
   useKeyboardNavigation();
   return (
     <LayoutProviders>
@@ -34,6 +34,7 @@ function Layout(props) {
         <Navbar />
 
         {header}
+        {side}
 
         <div
           className={clsx(
@@ -44,7 +45,11 @@ function Layout(props) {
           <ErrorBoundary fallback={ErrorPageContent}>{children}</ErrorBoundary>
         </div>
 
-        {!noFooter && <Footer />}
+        {!noFooter && (
+          <div style={{ zIndex: 1 }}>
+            <Footer />
+          </div>
+        )}
       </ThemeAdaptor>
     </LayoutProviders>
   );
