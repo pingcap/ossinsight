@@ -157,12 +157,12 @@ const config = {
         respectPrefersColorScheme: false,
       },
       announcementBar: {
-        id: 'announcement-20220516',
+        id: 'announcement-20220528',
         content:
           '📢 📢 📢  Latest Blog: <a target="_blank" href="/blog/explore-deep-in-4.6-billion-github-events">Explore Deep in 4.6 Billion GitHub Events</a>, 2022/05/03',
-        backgroundColor: '#333',
-        textColor: '#fbe99f',
-        isCloseable: false,
+        backgroundColor: '#fbe99f',
+        textColor: 'deepgrey',
+        isCloseable: true,
       },
       navbar: {
         title: 'OSS Insight',

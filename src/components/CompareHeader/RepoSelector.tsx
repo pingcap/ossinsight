@@ -145,7 +145,7 @@ export default function RepoSelector({repo, size, label, defaultRepoName, onChan
 const SearchContainer = styled('div')({
   position: 'relative',
   minWidth: 60,
-  fontSize: 20,
+  fontSize: 18,
   height: 40,
   padding: '0 8px'
 })
@@ -230,7 +230,7 @@ export function SecondRepoSelector ({placeholder, repo, defaultRepoName, onChang
       disableClearable={disableClearable as any}
       forcePopupIcon={false}
       sx={{
-        border: repo ? 'none' : '2px dashed rgba(255,255,255,0.5)',
+        border: repo ? 'none' : '1px dashed rgba(255,255,255,0.5)',
         py: repo ? '2px' : undefined,
         boxSizing: 'border-box',
         borderRadius: '6px',
