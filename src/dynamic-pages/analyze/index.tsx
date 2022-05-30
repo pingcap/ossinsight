@@ -1,7 +1,9 @@
 import BrowserOnly from '@docusaurus/BrowserOnly';
 import Head from '@docusaurus/Head';
 import { useHistory, useLocation, useRouteMatch } from '@docusaurus/router';
+import { useMediaQuery } from '@mui/material';
 import Container from '@mui/material/Container';
+import { Theme } from '@mui/material/styles';
 import React, { useCallback, useRef, useState } from 'react';
 import { AnalyzeContext } from '../../analyze-charts/context';
 import { RepoInfo, useRepo } from '../../api/gh';
@@ -16,7 +18,7 @@ import { IssuesSection } from './sections/Issues';
 import { OverviewSection } from './sections/Overview';
 import { PeopleSection } from './sections/People';
 import { PullRequestsSection } from './sections/PullRequests';
-import { Side } from './Side';
+import { Navigator } from './Navigator';
 import { Scrollspy } from '@makotot/ghostui';
 
 interface AnalyzePageParams {
@@ -54,15 +56,19 @@ function AnalyzePage() {
 
   const allValid = useCallback(() => undefined, []);
 
+  // Out of mui theme context, so we need to use magic number here
+  const isSmall = useMediaQuery<Theme>('(max-width:600px)')
+  const sideWidth = isSmall ? undefined : '90px'
+
   return (
     <Scrollspy sectionRefs={sectionRefs} offset={-140}>
       {({ currentElementIndexInViewport }) => (
         <CustomPage
-          sideWidth="110px"
-          Side={() => <Side value={sections[currentElementIndexInViewport]} />}
+          sideWidth={sideWidth}
+          Side={() => !isSmall ? <Navigator type='side' value={sections[currentElementIndexInViewport]} /> : undefined}
           header={(
             <NewCompareHeader
-              sideWidth="110px"
+              sideWidth={sideWidth}
               repo1={main?.repo}
               repo2={vs?.repo}
               onRepo1Change={onRepoChange}
@@ -99,6 +105,7 @@ function AnalyzePage() {
               <TryItYourself campaign="compare" show fixed />
             </Container>
           </AnalyzeContext.Provider>
+          {isSmall ? <Navigator value={sections[currentElementIndexInViewport]} type='bottom' /> : undefined}
         </CustomPage>
       )}
     </Scrollspy>

@@ -228,6 +228,9 @@ export function SecondRepoSelector ({placeholder, repo, defaultRepoName, onChang
             top: 2,
             right: 8,
           }
+        },
+        '.MuiAutocomplete-clearIndicator': {
+          visibility: 'visible',
         }
       }}
       renderInput={(params) => (

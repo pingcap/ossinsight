@@ -42,7 +42,7 @@ function NewCompareHeader({
         py: 2,
         top: 'var(--ifm-navbar-height)',
         zIndex: 'var(--ifm-z-index-fixed-mui)',
-        backgroundColor: 'rgba(112, 112, 112, 10%)',
+        backgroundColor: '#3C3C3C',
         ml: sideWidth,
         pl: 4,
         width: `calc(100% - ${sideWidth})`
