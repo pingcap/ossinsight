@@ -235,9 +235,9 @@ export function SecondRepoSelector ({placeholder, repo, defaultRepoName, onChang
       }}
       renderInput={(params) => (
         <Stack direction='row' alignItems='center'>
-          {repo ? undefined : <AddIcon sx={{ color: 'rgba(255,255,255,0.5)', ml: 1 }} />}
-          <SearchContainer>
-            <SearchLabel sx={{ paddingRight: disableClearable ? '38px' : '30px'}}>{params.inputProps.value || placeholder}</SearchLabel>
+          {repo ? undefined : <AddIcon sx={{ color: 'rgba(255,255,255,0.5)', ml: 1, fontWeight: 'bold' }} />}
+          <SearchContainer sx={{ height: '36px' }}>
+            <SearchLabel sx={{ paddingRight: repo ? '38px' : undefined }}>{params.inputProps.value || placeholder}</SearchLabel>
             <InputBase
               id={params.id}
               disabled={params.disabled}
@@ -248,17 +248,17 @@ export function SecondRepoSelector ({placeholder, repo, defaultRepoName, onChang
               inputMode='search'
               error={textFieldError}
               sx={{
-                fontSize: 'inherit',
+                fontSize: '18px',
                 position: 'absolute',
                 left: 8,
                 width: 'calc(100%)',
                 minWidth: 60,
                 top: 0,
                 p: 0,
-                lineHeight: 40,
+                lineHeight: 36,
                 'input': {
-                  lineHeight: 40,
-                  height: 40,
+                  lineHeight: 36,
+                  height: 36,
                   py: '4px',
                   boxSizing: 'border-box'
                 }
