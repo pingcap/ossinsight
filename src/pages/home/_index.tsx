@@ -107,7 +107,7 @@ export default function Home() {
               justifyContent='flex-end'
               sx={{ '> *': { flex: 1, maxWidth: 450, mx: 'unset' } }}
             >
-              <AnalyzeSelector align='right' size='large' contrast />
+              <AnalyzeSelector align='left' size='large' contrast />
             </Box>
             <Body>
               Powered by

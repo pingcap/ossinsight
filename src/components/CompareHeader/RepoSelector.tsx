@@ -11,7 +11,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import {Alert, Snackbar} from "@mui/material";
 import {UseAutocompleteProps} from "@mui/base/AutocompleteUnstyled/useAutocomplete";
 import { useSearchRepo, Repo } from './useSearchRepo';
-import SearchIcon from '@mui/icons-material/Search'
+import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/Add'
 import './style.css'
 
@@ -85,6 +85,12 @@ export default function RepoSelector({repo, size, label, defaultRepoName, onChan
         },
         '.MuiAutocomplete-clearIndicator': {
           visibility: 'visible !important',
+        },
+        '.MuiAutocomplete-popupIndicator': {
+          transform: 'none !important',
+        },
+        '.MuiAutocomplete-endAdornment': {
+          top: 'unset',
         }
       })}
       size={size === 'large' ? 'medium' : 'small'}
@@ -96,6 +102,7 @@ export default function RepoSelector({repo, size, label, defaultRepoName, onChan
       onChange={onAutoCompleteChange}
       onInputChange={onInputChange}
       disableClearable={disableClearable as any}
+      popupIcon={<SearchIcon />}
       renderInput={(params) => (
         <TextField
           {...params}
@@ -149,7 +156,7 @@ const SearchLabel = styled('span')({
   whiteSpace: 'nowrap',
   visibility: 'hidden',
   height: 40,
-  lineHeight: 40,
+  lineHeight: '40px',
   maxWidth: 300,
 })
 
@@ -188,7 +195,13 @@ export function FirstRepoSelector ({repo, defaultRepoName, onChange, onValid = n
                 minWidth: 60,
                 top: 0,
                 p: 0,
-                lineHeight: 40,
+                lineHeight: '36px',
+                'input': {
+                  lineHeight: '36px',
+                  height: 40,
+                  py: '4px',
+                  boxSizing: 'border-box'
+                }
               }}
             />
           </SearchContainer>
@@ -255,9 +268,9 @@ export function SecondRepoSelector ({placeholder, repo, defaultRepoName, onChang
                 minWidth: 60,
                 top: 0,
                 p: 0,
-                lineHeight: 36,
+                lineHeight: '36px',
                 'input': {
-                  lineHeight: 36,
+                  lineHeight: '36px',
                   height: 36,
                   py: '4px',
                   boxSizing: 'border-box'
