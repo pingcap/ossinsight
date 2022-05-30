@@ -16,7 +16,7 @@ export interface TryItYourselfProps {
 }
 
 export default function TryItYourself({show = true, campaign, fixed = false}: TryItYourselfProps) {
-  const [display, setDisplay] = useState(show)
+  const [display, setDisplay] = useState(false)
 
   const link = useAdsLink('/try-your-own-dataset', 'utm_campaign', campaign)
 

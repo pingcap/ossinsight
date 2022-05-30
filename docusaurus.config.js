@@ -179,7 +179,6 @@ const config = {
             activeBasePath: '/collections'
           },
           {to: '/blog', label: 'Blogs', position: 'left'},
-          {to: '/try-your-own-dataset/?utm_content=header', label: '🔥 Try Your Own Dataset', position: 'right'},
           {
             href: 'https://tidbcloud.com/signup/?utm_source=ossinsight&utm_medium=referral',
             className: 'navbar-item-tidb-cloud',
@@ -188,11 +187,6 @@ const config = {
           {
             href: 'https://twitter.com/OSSInsight',
             className: 'navbar-item-twitter',
-            position: 'right',
-          },
-          {
-            href: 'https://github.com/pingcap/ossinsight',
-            className: 'navbar-item-github',
             position: 'right',
           },
         ],
