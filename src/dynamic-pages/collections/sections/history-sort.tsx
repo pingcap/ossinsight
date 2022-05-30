@@ -45,6 +45,7 @@ export default withInViewContainer(function HistorySortSection() {
             fields={{ name: 'repo_name', time: 'event_month', value: 'total' }}
             interval={400}
             max={15}
+            filename={collection.slug}
           >
             <Title id='title' text={`${collection.name} - ${dimension.title}`}/>
             <Watermark right='5%' bottom='10%' />
