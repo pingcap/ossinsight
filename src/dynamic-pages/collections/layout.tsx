@@ -110,7 +110,7 @@ function CollectionsPageLayout({ title: propTitle, description, keywords, childr
                   },
                 )}>
                 <H1>{title}</H1>
-                <Sections collection={collection}>
+                <Sections collection={collection} description={description}>
                   {children}
                 </Sections>
               </div>

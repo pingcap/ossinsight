@@ -6,9 +6,12 @@ import AspectRatio from 'react-aspect-ratio';
 import { Collection } from '../hooks/useCollection';
 import { H1, P1 } from './typograpy';
 
-export default function Sections ({ collection, children }: PropsWithChildren<{ collection: Collection}>) {
+export default function Sections ({ collection, description, children }: PropsWithChildren<{ description: string, collection: Collection}>) {
   return (
     <>
+      <P1>
+        {description}
+      </P1>
       <P1>
         This page analyzes a collection of popular repos in `<b>{collection?.name ?? 'Loading'}</b>` fields.
         <br/>
