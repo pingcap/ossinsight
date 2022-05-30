@@ -9,11 +9,13 @@ import HistorySortSection from './sections/history-sort';
 
 registerThemeDark();
 
-const getTitle = (collection?: Collection) => collection ? collection.name + ' Trends' : '';
+const getTitle = (collection?: Collection) => collection?.name ? `${collection.name} - Dynamic Trends` : 'Loading - Dynamic Trends';
+const description = 'Dynamic charts describe the trends of GitHub repositories in a collection with four metrics（Star, Pull Request, Pull Request Creators, Issue）.'
+const keywords = 'github,ossinsight,ranking,trends,animated bar chart,pipeline chart,line chart'.split(',')
 
 function CollectionsTrendsPage() {
   return (
-    <CollectionsPageLayout title={getTitle}>
+    <CollectionsPageLayout title={getTitle} description={description} keywords={keywords}>
       <HistorySortSection />
       <HistoryRankSection />
       <HistorySection />

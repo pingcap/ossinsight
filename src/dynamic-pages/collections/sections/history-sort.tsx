@@ -10,7 +10,7 @@ import CollectionsContext from '../context';
 import { useCollectionHistory } from '../hooks/data';
 import { useDimensionTabs } from '../hooks/useTabs';
 import { withRemote } from '../hooks/withRemote';
-import { H2, P1 } from './typograpy';
+import { H2, P2 } from './typograpy';
 
 use(CanvasRenderer);
 
@@ -29,8 +29,8 @@ export default withInViewContainer(function HistorySortSection() {
 
   return (
     <section>
-      <H2 id='bar-chart-race'>Bar Chart Race!</H2>
-      <P1>Bar Chart Race is a great and highly visual way to display data changing over time in the form of an animated bar chart.</P1>
+      <H2 id="bar-chart-race">Bar Chart Race!</H2>
+      <P2>\* An animated bar chart visualizes the annual total growth in four metrics（Star, Pull Request, Pull Request Creators, Issue） for each repository since 2011.</P2>
       {tabs}
       <br />
       {withRemote(
@@ -47,8 +47,8 @@ export default withInViewContainer(function HistorySortSection() {
             max={15}
             filename={collection.slug}
           >
-            <Title id='title' text={`${collection.name} - ${dimension.title}`}/>
-            <Watermark right='5%' bottom='10%' />
+            <Title id="title" text={`${collection.name} - ${dimension.title}`} />
+            <Watermark right="5%" bottom="10%" />
           </SortingBarChart>
         ),
         () => (

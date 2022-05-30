@@ -6,13 +6,12 @@ import AspectRatio from 'react-aspect-ratio';
 import { Collection } from '../hooks/useCollection';
 import { H1, P1 } from './typograpy';
 
-export default function Sections ({ collection, children }: PropsWithChildren<{ collection: Collection}>) {
+export default function Sections ({ collection, description, children }: PropsWithChildren<{ description: string, collection: Collection}>) {
   return (
     <>
-      <H1>{collection?.name ?? 'Loading'}</H1>
-      <P1>This page analyzes a collection of popular repos in `<b>{collection?.name ?? 'Loading'}</b>` fields.</P1>
+      <P1>{description}</P1>
       <P1>Enjoy there insights on many metrics in many styles... 👇</P1>
-      <Grid container justifyContent='space-between'>
+      <Grid container justifyContent='space-between' mb={6}>
         <Link source={require('./videos/month-rank.mp4').default} title={['Monthly', 'Rankings']} target={`/collections/${collection?.slug}`} color='transparent linear-gradient(180deg, #DF5CFF 0%, #18191A 100%) 0% 0% no-repeat padding-box'/>
         <Link source={require('./videos/history-sort.mp4').default} title={['Bar Chart', 'Race']} target={`/collections/${collection?.slug}/trends#bar-chart-race`} color='transparent linear-gradient(180deg, #628DFF 0%, #18191A 100%) 0% 0% no-repeat padding-box'/>
         <Link source={require('./videos/history-rank.mp4').default} title={['Historical', 'Rankings']} target={`/collections/${collection?.slug}/trends#historical-rankings`} color='transparent linear-gradient(180deg, #FF628E 0%, #18191A 100%) 0% 0% no-repeat padding-box'/>

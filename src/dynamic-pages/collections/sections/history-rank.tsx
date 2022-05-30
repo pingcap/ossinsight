@@ -7,10 +7,10 @@ import React, { useContext } from 'react';
 import { withInViewContainer } from '../../../components/InViewContainer';
 import Watermark from '../components/Watermark';
 import CollectionsContext from '../context';
-import { CollectionHistoryRankData, useCollectionHistoryRank } from '../hooks/data';
+import { useCollectionHistoryRank } from '../hooks/data';
 import { useDimensionTabs } from '../hooks/useTabs';
 import { withRemote } from '../hooks/withRemote';
-import { H2, P1 } from './typograpy';
+import { H2, P2 } from './typograpy';
 import { countNames } from './utils';
 
 use(CanvasRenderer);
@@ -23,8 +23,8 @@ export default withInViewContainer(function HistoryRankSection() {
 
   return (
     <section>
-      <H2 id='historical-rankings'>Historical Ranking</H2>
-      <P1>Rankings of each year</P1>
+      <H2 id="historical-rankings">Historical Ranking</H2>
+      <P2>\* A pipeline chart displays annual ranking changes in four metrics（Star, Pull Request, Pull Request Creators, Issue） for each repository since 2011.</P2>
       {tabs}
       <br />
       {withRemote(
@@ -38,9 +38,9 @@ export default withInViewContainer(function HistoryRankSection() {
 
             fields={{ name: 'repo_name', time: 'event_year', value: 'total', rank: 'rank' }}
           >
-            <Title id='title' text={`${collection.name} - ${dimension.title}`}/>
-            <Watermark left='5%' bottom='15%' />
-            <Toolbox feature={{ saveAsImage: { title: '' } }}/>
+            <Title id="title" text={`${collection.name} - ${dimension.title}`} />
+            <Watermark left="5%" bottom="15%" />
+            <Toolbox feature={{ saveAsImage: { title: '' } }} />
           </RankChart>
         ),
         () => (

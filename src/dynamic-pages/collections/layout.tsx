@@ -4,13 +4,14 @@ import BackToTopButton from '@theme/BackToTopButton';
 import DocSidebar from '@theme/DocSidebar';
 import IconArrow from '@theme/IconArrow';
 import clsx from 'clsx';
-import React, { PropsWithChildren, useCallback, useState } from 'react';
+import React, { PropsWithChildren, useCallback, useMemo, useState } from 'react';
 import { registerThemeDark } from '../../components/BasicCharts';
 import CustomPage from '../../theme/CustomPage';
 import CollectionsContext from './context';
 import { Collection, useCollection } from './hooks/useCollection';
 import { useCollectionsSidebar } from './hooks/useCollectionsSidebar';
 import Sections from './sections';
+import { H1 } from './sections/typograpy';
 import styles from './styles.module.css';
 
 interface CollectionsPageParams {
@@ -19,9 +20,11 @@ interface CollectionsPageParams {
 
 export interface CollectionsPageLayoutProps {
   title: (collection?: Collection) => string
+  description: string
+  keywords: string[]
 }
 
-function CollectionsPageLayout({ title, children }: PropsWithChildren<CollectionsPageLayoutProps>) {
+function CollectionsPageLayout({ title: propTitle, description, keywords, children }: PropsWithChildren<CollectionsPageLayoutProps>) {
   let { params: { slug } } = useRouteMatch<CollectionsPageParams>();
   const { pathname } = useLocation()
   const collection = useCollection(slug);
@@ -36,8 +39,10 @@ function CollectionsPageLayout({ title, children }: PropsWithChildren<Collection
     setHiddenSidebarContainer((value) => !value);
   }, [hiddenSidebar]);
 
+  const title = useMemo(() => propTitle(collection), [propTitle, collection])
+
   return (
-    <CustomPage title={title(collection)}>
+    <CustomPage title={title} description={description} keywords={keywords}>
       <CollectionsContext.Provider value={{ collection }}>
         <div className={styles.collectionsPage}>
           <BackToTopButton />
@@ -104,7 +109,8 @@ function CollectionsPageLayout({ title, children }: PropsWithChildren<Collection
                     [styles.collectionsItemWrapperEnhanced]: hiddenSidebarContainer,
                   },
                 )}>
-                <Sections collection={collection}>
+                <H1>{title}</H1>
+                <Sections collection={collection} description={description}>
                   {children}
                 </Sections>
               </div>
