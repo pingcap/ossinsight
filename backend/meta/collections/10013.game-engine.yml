@@ -18,6 +18,8 @@ items:
   - 4ian/GDevelop
   - CRYTEK/CRYENGINE
   - urho3d/Urho3D
+  - bevyengine/bevy
+  - o3de/o3de
   - benoit-dumas/OpenRTS
   - photonstorm/phaser
   - melonjs/melonJS
