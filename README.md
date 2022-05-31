@@ -53,10 +53,12 @@ Here is a file template provides guidance on the information you need to include
 
 * Content
 
-```bash
+```yml
 id: <collection_id>
 name: <collection_name>
-items: <repo_name_list>
+items:
+  - <repo_name_1>
+  - <repo_name_2>
 ```
 
 Looks forward to your PRs！
