@@ -144,6 +144,10 @@ div[class^='announcementBar_'] {
 }
 */
 
+div[class^='announcementBar_'] .clean-btn {
+  color: white;
+}
+
 .red %3E a {
   color: red;
 }
@@ -172,11 +176,13 @@ html[data-theme='dark'] img[src$='#gh-light-mode-only'] {
   content: 'site-custom-css-unique-rule';
 }
 
+/*
 @media screen and (max-width: 580px) {
   .navbar__items .navbar-item-github {
     display: none !important;
   }
 }
+*/
 
 
 /*
@@ -190,6 +196,7 @@ html[data-theme='dark'] img[src$='#gh-light-mode-only'] {
   visibility: hidden;
 }
 
+/*
 .navbar-item-github:hover {
   opacity: 0.6;
 }
@@ -212,6 +219,7 @@ html[data-theme='dark'] .navbar-item-github:before {
   background-repeat: no-repeat;
   background-position: center;
 }
+*/
 
 .navbar-item-tidb-cloud:before {
   content: '';
