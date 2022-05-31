@@ -77,6 +77,43 @@ export const useRemoteData: UseRemoteData = (query: string, params: any, formatS
   return {data, loading, error}
 }
 
+export const useRealtimeRemoteData: UseRemoteData = (query: string, params: any, formatSql, shouldLoad = true): AsyncData<RemoteData<any, any>> => {
+  const { inView } = useContext(InViewContext)
+  const [viewed, setViewed] = useState(inView)
+
+  useEffect(() => {
+    if (inView) {
+      setViewed(true)
+    }
+  }, [inView])
+
+  const { data, isValidating: loading, error, mutate } = useSWR(shouldLoad && viewed ? [query, params, 'q'] : null, {
+    fetcher: (query, params) => httpClient.get(`/q/${query}`, {params, paramsSerializer })
+      .then(({data}) => {
+        if (data.sql && formatSql) {
+          data.sql = format(data.sql)
+        }
+        data.query = query
+        return data
+      }),
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+  })
+
+  useEffect(() => {
+    if (shouldLoad && viewed) {
+      const h = setInterval(() => {
+        mutate()
+      }, 5000)
+      return () => {
+        clearInterval(h)
+      }
+    }
+  }, [shouldLoad, viewed])
+
+  return {data, loading, error}
+}
+
 interface CheckReq {
   (config: AxiosRequestConfig): boolean
 }

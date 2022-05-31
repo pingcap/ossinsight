@@ -77,3 +77,15 @@
   margin: 8px 0 0;
   line-height: 1.25;
 }
+
+.cnt {
+  vertical-align: text-bottom;
+  display: inline-block;
+  width: unset !important;
+  min-width: 161px;
+}
+
+.cnt > div {
+  height: 28px !important;
+  line-height: 28px !important;
+}
