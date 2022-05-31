@@ -49,17 +49,17 @@ const Counts = () => {
 }
 
 const Span = styled('span')({
-  fontSize: '12px',
+  fontSize: '10px',
   color: '#7d7d7d',
-  lineHeight: 1.25,
+  lineHeight: 1,
 });
 
 const Divider = styled('span')({
-  width: 2,
-  maxWidth: 2,
-  minWidth: 2,
+  width: 0.5,
+  maxWidth: 0.5,
+  minWidth: 0.5,
   height: 20,
-  backgroundColor: '#FFE895',
+  backgroundColor: '#555',
   marginLeft: 8,
   marginRight: 8,
 });
