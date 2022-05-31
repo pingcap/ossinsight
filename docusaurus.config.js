@@ -163,7 +163,7 @@ const config = {
         respectPrefersColorScheme: false,
       },
       announcementBar: {
-        id: 'announcement-20220528',
+        id: 'announcement-20220531',
         content:
           '📢 Latest: <a target="_blank" href="/blog/explore-deep-in-4.6-billion-github-events">Explore Deep in 4.6 Billion GitHub Events</a>',
         backgroundColor: '#343536',
