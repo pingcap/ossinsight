@@ -155,7 +155,7 @@ const toTs = date => {
   return date
 }
 
-export const useTotalEvents = () => {
+export const useTotalEvents = (run: boolean) => {
   const {eventsTotal} = usePluginData<{eventsTotal: RemoteData<any, { cnt: number, latest_timestamp: number }>}>('plugin-prefetch');
 
   const [total, setTotal] = useState(eventsTotal?.data[0].cnt)
@@ -164,6 +164,10 @@ export const useTotalEvents = () => {
   const cancelRef = useRef<() => void>()
 
   useEffect(() => {
+    if (!run) {
+      return
+    }
+
     const reloadTotal = async () => {
       try {
         const { data: { data: [{ cnt, latest_timestamp }] } } = await httpClient.get('/q/events-total')
@@ -198,7 +202,7 @@ export const useTotalEvents = () => {
       clearInterval(hTotal)
       clearInterval(hAdded)
     }
-  }, [])
+  }, [run])
 
   return total + added
 }

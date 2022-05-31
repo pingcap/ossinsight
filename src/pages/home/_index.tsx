@@ -10,6 +10,7 @@ import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
 import React, { useCallback, useMemo, useState } from 'react';
 import AspectRatio from 'react-aspect-ratio';
+import { useInView } from 'react-intersection-observer';
 import NumberCounter from 'react-smooth-number-counter';
 import AnalyzeSelector from '../../components/AnalyzeSelector';
 import CompareHeader from '../../components/CompareHeader/CompareHeader';
@@ -51,6 +52,23 @@ const formatHugeNumber = (x: number) => {
 
 const stackDirection = {xs: 'column', md: 'row'} as const
 
+const TotalNumber = () => {
+  const { inView, ref } = useInView()
+  const total = useTotalEvents(inView)
+
+  return (
+    <span ref={ref}>
+      <Span sx={{color: '#E30C34', mx: 0.5}}>
+        <NumberCounter
+          className={styles.cnt}
+          value={total}
+          transition={500}
+        />
+      </Span>
+    </span>
+  )
+}
+
 export default function Home() {
   const {siteConfig} = useDocusaurusContext();
   const [period, setPeriod] = useState('last_hour')
@@ -73,8 +91,6 @@ export default function Home() {
     return `/analyze/${repo1.name}?vs=${encodeURIComponent(repo2.name)}`
   }, [repo1, repo2])
 
-  const total = useTotalEvents()
-
   return (
     <CustomPage
       title={"OSS Insight"}
@@ -89,13 +105,7 @@ export default function Home() {
           <AlignRightItem>
             <Headline>
               Get insights from
-              <Span sx={{color: '#E30C34', mx: 0.5}}>
-                <NumberCounter
-                  className={styles.cnt}
-                  value={total}
-                  transition={500}
-                />
-              </Span>
+              <TotalNumber />
               GitHub Events
             </Headline>
             <H1>
