@@ -4,11 +4,14 @@ module.exports = function (context, options) {
   return {
     name: 'plugin-prefetch',
     async contentLoaded({actions}) {
-      const data = await fs.readFile('.prefetch/collections.json', { encoding: 'utf-8' })
-      const {setGlobalData} = actions;
-      setGlobalData({
-        collections: JSON.parse(data)
-      })
+      for (const [key, value] of Object.entries(options)) {
+        if (key === 'id') continue;
+        const data = await fs.readFile(value, {encoding: 'utf-8'})
+        const {setGlobalData} = actions;
+        setGlobalData({
+          [key]: JSON.parse(data)
+        })
+      }
     },
   };
 };

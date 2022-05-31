@@ -1,4 +1,6 @@
+import { usePluginData } from '@docusaurus/useGlobalData';
 import {format} from "sql-formatter";
+import { Collection } from '../../dynamic-pages/collections/hooks/useCollection';
 import {Queries} from "./queries";
 import {createHttpClient} from "../../lib/request";
 import useSWR from "swr";
@@ -153,18 +155,20 @@ const toTs = date => {
   return date
 }
 
-export const useTotalEvents = (defaultTotal: number = 0, defaultAdded: number = 0, defaultLatestCreatedAt = 0) => {
-  const [total, setTotal] = useState(defaultTotal)
-  const [added, setAdded] = useState(defaultAdded)
-  const lastTs = useRef(defaultLatestCreatedAt)
+export const useTotalEvents = () => {
+  const {eventsTotal} = usePluginData<{eventsTotal: RemoteData<any, { cnt: number, latest_timestamp: number }>}>('plugin-prefetch');
+
+  const [total, setTotal] = useState(eventsTotal?.data[0].cnt)
+  const [added, setAdded] = useState(0)
+  const lastTs = useRef(eventsTotal?.data[0].latest_timestamp)
   const cancelRef = useRef<() => void>()
 
   useEffect(() => {
     const reloadTotal = async () => {
       try {
-        const { data: { data: [{ cnt, latest_created_at }] } } = await httpClient.get('/q/events-total')
+        const { data: { data: [{ cnt, latest_timestamp }] } } = await httpClient.get('/q/events-total')
         cancelRef.current?.()
-        lastTs.current = toTs(latest_created_at)
+        lastTs.current = latest_timestamp
         setTotal(cnt)
         setAdded(0)
       } catch {}
