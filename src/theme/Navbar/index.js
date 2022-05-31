@@ -263,9 +263,7 @@ function Navbar() {
           </Box>
         </div>
         <div className="navbar__items navbar__items--right">
-          <Box>
-            <RealtimeSummary />
-          </Box>
+          <RealtimeSummary />
           {rightItems.map((item, i) => (
             <NavbarItem {...item} key={i} />
           ))}

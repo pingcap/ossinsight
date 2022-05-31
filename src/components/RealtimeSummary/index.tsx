@@ -1,4 +1,5 @@
 import { Axis, BarSeries, Dataset, EChartsx, Grid, Once } from '@djagger/echartsx';
+import { useLocation } from '@docusaurus/router';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
@@ -70,6 +71,12 @@ const Numbers = styled(Span)({
 
 export const RealtimeSummary = () => {
   const isSmall = useMediaQuery('(max-width: 600px)')
+  const { pathname } = useLocation()
+
+  if (pathname === '/') {
+    return <></>
+  }
+
   if (isSmall) {
     return <></>
   }
