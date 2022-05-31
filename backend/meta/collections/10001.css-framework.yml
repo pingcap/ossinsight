@@ -1,0 +1,11 @@
+id: 10001
+name: CSS Framework
+items:
+  - twbs/bootstrap
+  - foundation/foundation-sites
+  - jgthms/bulma
+  - uikit/uikit
+  - semantic-org/semantic-ui
+  - Dogfalo/materialize
+  - pure-css/pure
+  - tailwindlabs/tailwindcss

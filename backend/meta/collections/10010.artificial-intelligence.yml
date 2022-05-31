@@ -1,0 +1,33 @@
+id: 10010
+name: Artificial Intelligence
+items:
+  - tensorflow/tensorflow
+  - huggingface/transformers
+  - opencv/opencv
+  - pytorch/pytorch
+  - keras-team/keras
+  - scikit-learn/scikit-learn
+  - ageitgey/face_recognition
+  - BVLC/caffe
+  - google-research/bert
+  - openai/gym
+  - facebookresearch/fastText
+  - fastai/fastai
+  - ApolloAuto/apollo
+  - apache/incubator-mxnet
+  - open-mmlab/mmdetection
+  - PaddlePaddle/Paddle
+  - magenta/magenta
+  - microsoft/CNTK
+  - jina-ai/jina
+  - Tencent/ncnn
+  - eclipse/deeplearning4j
+  - mlflow/mlflow
+  - kaldi-asr/kaldi
+  - microsoft/nni
+  - milvus-io/milvus
+  - Theano/Theano
+  - tensorlayer/TensorLayer
+  - alibaba/MNN
+  - Angel-ML/angel
+  - XiaoMi/mace

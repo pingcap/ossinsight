@@ -1,0 +1,24 @@
+id: 10003
+name: Low Code Development Tool
+items:
+  - appsmithorg/appsmith
+  - hasura/graphql-engine
+  - supabase/supabase
+  - cube-js/cube.js
+  - artf/grapesjs
+  - nocodb/nocodb
+  - nocobase/nocobase
+  - n8n-io/n8n
+  - ToolJet/ToolJet
+  - graphile/postgraphile
+  - strapi/strapi
+  - directus/directus
+  - saleor/saleor
+  - appwrite/appwrite
+  - rowyio/rowy
+  - keystonejs/keystone
+  - webiny/webiny-js
+  - parse-community/parse-server
+  - Budibase/budibase
+  - lightdash/lightdash
+  - lowdefy/lowdefy
