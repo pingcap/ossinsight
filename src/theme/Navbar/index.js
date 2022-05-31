@@ -27,7 +27,8 @@ import IconClose from '@theme/IconClose';
 import styles from './styles.module.css';
 import AnalyzeSelector from "../../components/AnalyzeSelector";
 import Box from "@mui/material/Box";
-import {useLocation} from "@docusaurus/router"; // retrocompatible with v1
+import {useLocation} from "@docusaurus/router";
+import {RealtimeSummary} from "../../components/RealtimeSummary"; // retrocompatible with v1
 
 const DefaultNavItemPosition = 'right';
 
@@ -262,6 +263,7 @@ function Navbar() {
           </Box>
         </div>
         <div className="navbar__items navbar__items--right">
+          <RealtimeSummary />
           {rightItems.map((item, i) => (
             <NavbarItem {...item} key={i} />
           ))}
