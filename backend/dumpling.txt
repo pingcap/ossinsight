@@ -1,0 +1,1 @@
+/home/ubuntu/.tiup/components/dumpling/v5.2.2/dumpling -B gharchive_dev -u root -P 4000 --host host_name -p xxx --filetype csv  -o /tmp/gha

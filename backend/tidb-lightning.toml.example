@@ -1,0 +1,38 @@
+[mydumper.csv]
+# 字段分隔符，必须为 ASCII 字符。
+separator = ','
+# 引用定界符，可以为 ASCII 字符或空字符。
+delimiter = '"'
+# CSV 文件是否包含表头。
+# 如果为 true，首行将会被跳过。
+header = true
+# CSV 是否包含 NULL。
+# 如果为 true，CSV 文件的任何列都不能解析为 NULL。
+not-null = false
+# 如果 `not-null` 为 false（即 CSV 可以包含 NULL），
+# 为以下值的字段将会被解析为 NULL。
+null = '\N'
+# 是否解析字段内的反斜线转义符。
+backslash-escape = true
+# 是否移除以分隔符结束的行。
+trim-last-separator = false
+
+[tikv-importer]
+# use the TiDB-backend.
+backend = "tidb"
+on-duplicate = "replace"
+
+
+[mydumper]
+
+data-source-dir = "/tmp/gharchives"
+strict-format = false
+no-schema = true
+
+
+[tidb]
+# Configuration of any TiDB server from the cluster.
+host = "tidb-cloud-host"
+port = 4000
+user = "root"
+password = "xxxxxx"
