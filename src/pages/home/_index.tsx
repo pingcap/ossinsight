@@ -1,27 +1,29 @@
-import { useHistory } from '@docusaurus/router';
-import React, {useCallback, useMemo, useState} from 'react';
+import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
-import WordCloud from "../../components/WordCloud";
-import TopList from "../../components/TopList";
-import Section from './_components/Section';
-import CustomPage from "../../theme/CustomPage";
-import Stack from "@mui/material/Stack";
-import Box from "@mui/material/Box";
-import Divider from "@mui/material/Divider";
-import {styled} from '@mui/material/styles';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
-import Tag from "./_components/Tag";
-import Image from "../../components/Image";
-import AspectRatio from "react-aspect-ratio";
-import CompareHeader from "../../components/CompareHeader/CompareHeader";
-import Button from "@mui/material/Button";
-import Container from "@mui/material/Container";
-import {useRemoteData} from "../../components/RemoteCharts/hook";
-import Skeleton from "@mui/material/Skeleton";
-import RepoSelector, {Repo} from "../../components/CompareHeader/RepoSelector";
-import Link from "@docusaurus/Link";
-import {H1, H2, Span, Headline, Subtitle, Body, fontSizes, H2Plus} from './_components/typography'
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Container from '@mui/material/Container';
+import Divider from '@mui/material/Divider';
+import Skeleton from '@mui/material/Skeleton';
+import Stack from '@mui/material/Stack';
+import { styled } from '@mui/material/styles';
+import React, { useCallback, useMemo, useState } from 'react';
+import AspectRatio from 'react-aspect-ratio';
+import { useInView } from 'react-intersection-observer';
+import NumberCounter from 'react-smooth-number-counter';
 import AnalyzeSelector from '../../components/AnalyzeSelector';
+import CompareHeader from '../../components/CompareHeader/CompareHeader';
+import { Repo } from '../../components/CompareHeader/RepoSelector';
+import Image from '../../components/Image';
+import { useRealtimeRemoteData, useRemoteData, useTotalEvents } from '../../components/RemoteCharts/hook';
+import TopList from '../../components/TopList';
+import WordCloud from '../../components/WordCloud';
+import CustomPage from '../../theme/CustomPage';
+import Section from './_components/Section';
+import Tag from './_components/Tag';
+import { Body, fontSizes, H1, H2, H2Plus, Headline, Span, Subtitle } from './_components/typography';
+import styles from './index.module.css'
 
 const Item = styled(Box)(({theme}) => ({
   padding: theme.spacing(4),
@@ -50,6 +52,23 @@ const formatHugeNumber = (x: number) => {
 
 const stackDirection = {xs: 'column', md: 'row'} as const
 
+const TotalNumber = () => {
+  const { inView, ref } = useInView()
+  const total = useTotalEvents(inView)
+
+  return (
+    <span ref={ref}>
+      <Span sx={{color: '#E30C34', mx: 0.5}}>
+        <NumberCounter
+          className={styles.cnt}
+          value={total}
+          transition={500}
+        />
+      </Span>
+    </span>
+  )
+}
+
 export default function Home() {
   const {siteConfig} = useDocusaurusContext();
   const [period, setPeriod] = useState('last_hour')
@@ -71,7 +90,6 @@ export default function Home() {
     }
     return `/analyze/${repo1.name}?vs=${encodeURIComponent(repo2.name)}`
   }, [repo1, repo2])
-  const {data: totalEventsData} = useRemoteData('events-total', {}, false)
 
   return (
     <CustomPage
@@ -87,10 +105,7 @@ export default function Home() {
           <AlignRightItem>
             <Headline>
               Get insights from
-              <Span sx={{color: '#E30C34', mx: 0.5}}>
-                {totalEventsData ? (formatHugeNumber(totalEventsData.data[0].cnt)) :
-                  <Skeleton sx={{display: 'inline-block', minWidth: '150px'}} />}
-              </Span>
+              <TotalNumber />
               GitHub Events
             </Headline>
             <H1>

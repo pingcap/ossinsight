@@ -1,9 +1,11 @@
+import { usePluginData } from '@docusaurus/useGlobalData';
 import {format} from "sql-formatter";
+import { Collection } from '../../dynamic-pages/collections/hooks/useCollection';
 import {Queries} from "./queries";
 import {createHttpClient} from "../../lib/request";
 import useSWR from "swr";
-import {AxiosRequestConfig} from "axios";
-import {useContext, useEffect, useState} from "react";
+import Axios, { AxiosRequestConfig, CancelToken } from 'axios';
+import { useContext, useEffect, useRef, useState } from 'react';
 import InViewContext from "../InViewContext";
 
 const httpClient = createHttpClient();
@@ -77,6 +79,43 @@ export const useRemoteData: UseRemoteData = (query: string, params: any, formatS
   return {data, loading, error}
 }
 
+export const useRealtimeRemoteData: UseRemoteData = (query: string, params: any, formatSql, shouldLoad = true): AsyncData<RemoteData<any, any>> => {
+  const { inView } = useContext(InViewContext)
+  const [viewed, setViewed] = useState(inView)
+
+  useEffect(() => {
+    if (inView) {
+      setViewed(true)
+    }
+  }, [inView])
+
+  const { data, isValidating: loading, error, mutate } = useSWR(shouldLoad && viewed ? [query, params, 'q'] : null, {
+    fetcher: (query, params) => httpClient.get(`/q/${query}`, {params, paramsSerializer })
+      .then(({data}) => {
+        if (data.sql && formatSql) {
+          data.sql = format(data.sql)
+        }
+        data.query = query
+        return data
+      }),
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+  })
+
+  useEffect(() => {
+    if (shouldLoad && viewed) {
+      const h = setInterval(() => {
+        mutate()
+      }, 5000)
+      return () => {
+        clearInterval(h)
+      }
+    }
+  }, [shouldLoad, viewed])
+
+  return {data, loading, error}
+}
+
 interface CheckReq {
   (config: AxiosRequestConfig): boolean
 }
@@ -107,4 +146,63 @@ export const query = (query: string, validateParams: (check: AxiosRequestConfig[
       return validateParams(config.params)
     }
   }
+}
+
+const toTs = date => {
+  if (typeof date !== 'number') {
+    return Math.round((new Date(date)).getTime() / 1000)
+  }
+  return date
+}
+
+export const useTotalEvents = (run: boolean) => {
+  const {eventsTotal} = usePluginData<{eventsTotal: RemoteData<any, { cnt: number, latest_timestamp: number }>}>('plugin-prefetch');
+
+  const [total, setTotal] = useState(eventsTotal?.data[0].cnt)
+  const [added, setAdded] = useState(0)
+  const lastTs = useRef(eventsTotal?.data[0].latest_timestamp)
+  const cancelRef = useRef<() => void>()
+
+  useEffect(() => {
+    if (!run) {
+      return
+    }
+
+    const reloadTotal = async () => {
+      try {
+        const { data: { data: [{ cnt, latest_timestamp }] } } = await httpClient.get('/q/events-total')
+        cancelRef.current?.()
+        lastTs.current = latest_timestamp
+        setTotal(cnt)
+        setAdded(0)
+      } catch {}
+    }
+
+    const reloadAdded = async () => {
+      try {
+        if (lastTs.current) {
+          const { data: { data: [{ cnt, latest_created_at }] } } = await httpClient.get('/q/events-increment', { params: { ts: lastTs.current }, cancelToken: new Axios.CancelToken(cancel => cancelRef.current = cancel) })
+          setAdded(cnt)
+        }
+      } catch {}
+    }
+
+    const hTotal = setInterval(() => {
+      reloadTotal().then()
+    }, 60000)
+
+    const hAdded = setInterval(() => {
+      reloadAdded().then()
+    }, 1000)
+
+    reloadTotal().then()
+    reloadAdded().then()
+
+    return () => {
+      clearInterval(hTotal)
+      clearInterval(hAdded)
+    }
+  }, [run])
+
+  return total + added
 }
