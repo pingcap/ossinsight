@@ -20,6 +20,8 @@ items:
   - urho3d/Urho3D
   - bevyengine/bevy
   - o3de/o3de
+  - love2d/love
+  - turanszkij/WickedEngine
   - benoit-dumas/OpenRTS
   - photonstorm/phaser
   - melonjs/melonJS
