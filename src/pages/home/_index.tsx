@@ -15,7 +15,7 @@ import AnalyzeSelector from '../../components/AnalyzeSelector';
 import CompareHeader from '../../components/CompareHeader/CompareHeader';
 import { Repo } from '../../components/CompareHeader/RepoSelector';
 import Image from '../../components/Image';
-import { useRealtimeRemoteData, useRemoteData } from '../../components/RemoteCharts/hook';
+import { useRealtimeRemoteData, useRemoteData, useTotalEvents } from '../../components/RemoteCharts/hook';
 import TopList from '../../components/TopList';
 import WordCloud from '../../components/WordCloud';
 import CustomPage from '../../theme/CustomPage';
@@ -72,7 +72,8 @@ export default function Home() {
     }
     return `/analyze/${repo1.name}?vs=${encodeURIComponent(repo2.name)}`
   }, [repo1, repo2])
-  const {data: totalEventsData} = useRealtimeRemoteData('events-total', {}, false)
+
+  const total = useTotalEvents()
 
   return (
     <CustomPage
@@ -89,15 +90,11 @@ export default function Home() {
             <Headline>
               Get insights from
               <Span sx={{color: '#E30C34', mx: 0.5}}>
-                {totalEventsData
-                  ? (
-                    <NumberCounter
-                      className={styles.cnt}
-                      value={totalEventsData.data[0].cnt}
-                      transition={600}
-                    />
-                  ) : (<Skeleton sx={{display: 'inline-block', minWidth: '150px'}} />)
-                }
+                <NumberCounter
+                  className={styles.cnt}
+                  value={total}
+                  transition={500}
+                />
               </Span>
               GitHub Events
             </Headline>

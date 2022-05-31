@@ -2,8 +2,8 @@ import {format} from "sql-formatter";
 import {Queries} from "./queries";
 import {createHttpClient} from "../../lib/request";
 import useSWR from "swr";
-import {AxiosRequestConfig} from "axios";
-import {useContext, useEffect, useState} from "react";
+import Axios, { AxiosRequestConfig, CancelToken } from 'axios';
+import { useContext, useEffect, useRef, useState } from 'react';
 import InViewContext from "../InViewContext";
 
 const httpClient = createHttpClient();
@@ -144,4 +144,57 @@ export const query = (query: string, validateParams: (check: AxiosRequestConfig[
       return validateParams(config.params)
     }
   }
+}
+
+const toTs = date => {
+  if (typeof date !== 'number') {
+    return Math.round((new Date(date)).getTime() / 1000)
+  }
+  return date
+}
+
+export const useTotalEvents = (defaultTotal: number = 0, defaultAdded: number = 0, defaultLatestCreatedAt = 0) => {
+  const [total, setTotal] = useState(defaultTotal)
+  const [added, setAdded] = useState(defaultAdded)
+  const lastTs = useRef(defaultLatestCreatedAt)
+  const cancelRef = useRef<() => void>()
+
+  useEffect(() => {
+    const reloadTotal = async () => {
+      try {
+        const { data: { data: [{ cnt, latest_created_at }] } } = await httpClient.get('/q/events-total')
+        cancelRef.current?.()
+        lastTs.current = toTs(latest_created_at)
+        setTotal(cnt)
+        setAdded(0)
+      } catch {}
+    }
+
+    const reloadAdded = async () => {
+      try {
+        if (lastTs.current) {
+          const { data: { data: [{ cnt, latest_created_at }] } } = await httpClient.get('/q/events-increment', { params: { ts: lastTs.current }, cancelToken: new Axios.CancelToken(cancel => cancelRef.current = cancel) })
+          setAdded(cnt)
+        }
+      } catch {}
+    }
+
+    const hTotal = setInterval(() => {
+      reloadTotal().then()
+    }, 60000)
+
+    const hAdded = setInterval(() => {
+      reloadAdded().then()
+    }, 1000)
+
+    reloadTotal().then()
+    reloadAdded().then()
+
+    return () => {
+      clearInterval(hTotal)
+      clearInterval(hAdded)
+    }
+  }, [])
+
+  return total + added
 }
