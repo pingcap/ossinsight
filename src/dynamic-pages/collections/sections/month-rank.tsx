@@ -58,7 +58,7 @@ const Diff = ({ val, suffix, reverse = false }: { val: number, suffix?: string, 
 };
 
 const TableCell = styled(MuiTableCell)(() => ({
-  borderBottom: "1px solid #333"
+  borderBottom: "1px solid #222"
 }))
 
 const NumberCell = styled(TableCell)(() => ({
@@ -137,7 +137,7 @@ export default withInViewContainer(function MonthRankSection() {
                         <Diff val={item.total_mom} suffix="%" />
                       </NumberCell>
                       <NumberCell sx={{ color: 'gray', fontWeight: 'normal' }} align="right">
-                        {format(item.total)}
+                        {format(item.total, {separator: ''})}
                       </NumberCell>
                     </TableRow>
                   ))}
