@@ -156,7 +156,7 @@ const config = {
         {name: 'twitter:card', content: 'summary_large_image'},
         {name: 'keywords', content: 'tidb, mysql, github events, oss, compare oss, oss analysis, pingcap'}
       ],
-//       hideableSidebar: true,
+      hideableSidebar: true,
       colorMode: {
         defaultMode: 'dark',
         disableSwitch: true,
