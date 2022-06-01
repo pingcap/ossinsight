@@ -90,3 +90,5 @@
   name: postgres/postgres
 - id: '24494032'
   name: mysql/mysql-server
+- id: '130688011'
+  name: meilisearch/meilisearch
