@@ -97,7 +97,7 @@ export default withInViewContainer(function MonthRankSection() {
             <H3 fontSize={14} align="center">
               Monthly Ranking - {dimension.title}
             </H3>
-            <TableContainer component={Paper} sx={{ maxHeight: 'max(60vh, 640px)' }}>
+            <TableContainer>
               <Table className="clearTable" size="small" stickyHeader>
                 <TableHead>
                   <TableRow>
@@ -147,7 +147,7 @@ export default withInViewContainer(function MonthRankSection() {
             <H3 fontSize={14} align="center">
               Monthly Ranking - {dimension.title}
             </H3>
-            <TableContainer component={Paper} sx={{ maxHeight: 'max(60vh, 640px)' }}>
+            <TableContainer>
               <Table className="clearTable" size="small" stickyHeader>
                 <TableHead>
                   <TableRow>
