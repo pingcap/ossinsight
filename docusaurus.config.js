@@ -165,7 +165,7 @@ const config = {
       announcementBar: {
         id: 'announcement-20220531',
         content:
-          '📢 Latest: <a target="_blank" href="/blog/explore-deep-in-4.6-billion-github-events">Explore Deep in 4.6 Billion GitHub Events</a>',
+          '📢 2022-05-03: <a target="_blank" href="/blog/explore-deep-in-4.6-billion-github-events">Explore Deep in 4.6 Billion GitHub Events</a>',
         backgroundColor: '#343536',
         textColor: 'lightgrey',
         isCloseable: true,
