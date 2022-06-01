@@ -6,7 +6,7 @@ items:
   - valeriansaliou/sonic
   - typesense/typesense
   - nextapps-de/flexsearch
-  - apache/lucene-solr
   - RediSearch/RediSearch
   - searx/searx
   - quickwit-oss/tantivy
+  - quickwit-oss/quickwit
