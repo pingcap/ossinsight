@@ -8,7 +8,7 @@ import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
+import MuiTableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
@@ -57,6 +57,10 @@ const Diff = ({ val, suffix, reverse = false }: { val: number, suffix?: string, 
   }
 };
 
+const TableCell = styled(MuiTableCell)(() => ({
+  borderBottom: "1px solid #222"
+}))
+
 const NumberCell = styled(TableCell)(() => ({
   fontSize: 18,
   fontWeight: 'bold',
@@ -97,7 +101,7 @@ export default withInViewContainer(function MonthRankSection() {
             <H3 fontSize={14} align="center">
               Monthly Ranking - {dimension.title}
             </H3>
-            <TableContainer component={Paper} sx={{ maxHeight: 'max(60vh, 640px)' }}>
+            <TableContainer>
               <Table className="clearTable" size="small" stickyHeader>
                 <TableHead>
                   <TableRow>
@@ -133,7 +137,7 @@ export default withInViewContainer(function MonthRankSection() {
                         <Diff val={item.total_mom} suffix="%" />
                       </NumberCell>
                       <NumberCell sx={{ color: 'gray', fontWeight: 'normal' }} align="right">
-                        {format(item.total)}
+                        {format(item.total, {separator: ''})}
                       </NumberCell>
                     </TableRow>
                   ))}
@@ -147,7 +151,7 @@ export default withInViewContainer(function MonthRankSection() {
             <H3 fontSize={14} align="center">
               Monthly Ranking - {dimension.title}
             </H3>
-            <TableContainer component={Paper} sx={{ maxHeight: 'max(60vh, 640px)' }}>
+            <TableContainer>
               <Table className="clearTable" size="small" stickyHeader>
                 <TableHead>
                   <TableRow>

@@ -2,7 +2,6 @@ import Box from '@mui/material/Box';
 import Layout, { Props as LayoutProps } from '@theme/Layout';
 import React, { PropsWithChildren, useLayoutEffect } from 'react';
 import Footer from '../../components/Footer';
-import StatusBar from '../../components/StatusBar';
 
 declare module '@theme/Layout' {
   interface Props {
@@ -62,7 +61,6 @@ export default function CustomPage({
           {footer ? <Footer /> : undefined}
         </main>
       </div>
-      <StatusBar />
     </Layout>
   );
 }

@@ -95,18 +95,18 @@ open http://localhost:3000
 
 <div align="center">
   <a href="https://en.pingcap.com">
-    <img src="/static/img/pingcap_logo.png" height=50 />
+    <img src="/static/img/pingcap-logo-w.png" height=50 />
   </a>
   &nbsp;
   &nbsp;
   &nbsp;
   <a href="https://en.pingcap.com/community">
-    <img src="/static/img/tidb_logo.png" height=50 />
+    <img src="/static/img/tidb-logo-w.png" height=50 />
   </a>
   &nbsp;
   &nbsp;
   &nbsp;
   <a href="https://en.pingcap.com/tidb-cloud">
-    <img src="/static/img/tidb_cloud_logo.png" height=50 />
+    <img src="/static/img/tidb-cloud-logo-w.png" height=50 />
   </a>
 </div>
