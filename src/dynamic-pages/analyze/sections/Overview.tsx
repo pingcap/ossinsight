@@ -1,3 +1,5 @@
+import { Tooltip, IconButton} from '@mui/material';
+import InfoOutlined from '@mui/icons-material/InfoOutlined';
 import Grid from '@mui/material/Grid';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
@@ -26,7 +28,13 @@ export const OverviewSection = forwardRef(function ({}, ref: ForwardedRef<HTMLEl
   const summaries: SummaryProps['items'] = useMemo(() => {
     return [{
       icon: <StarIcon fill='#FAC858'/>,
-      title: 'Stars',
+      title: <>Stars
+        <Tooltip title="We only display the total number of stars and ignore developers' unstarring or restarring behaviors." sx={{marginBottom:"2px",color: 'text.secondary',}}>
+          <IconButton size="small">
+            <InfoOutlined fontSize='small' />
+          </IconButton>
+        </Tooltip>
+      </>,
       query: 'stars-total',
       field: '*'
     },{
@@ -69,9 +77,6 @@ export const OverviewSection = forwardRef(function ({}, ref: ForwardedRef<HTMLEl
           </H1>
         )
       }
-      <P2>
-        Note: The number of stars we got here is an approximate value because the source GitHub data we use here from GH Archive does not include developers' unstarring behavior.
-      </P2>
       <Grid container spacing={0} alignItems='center'>
         <Grid item xs={12} md={vs ? 7 : 6}>
           <Summary items={summaries} />
