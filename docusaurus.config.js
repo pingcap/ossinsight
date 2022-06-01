@@ -173,7 +173,7 @@ const config = {
       navbar: {
         title: 'OSS Insight',
         logo: {
-          alt: 'OSS Insight',
+          alt: 'OSS Insight Logo',
           src: 'img/tidb-logo.svg',
         },
         style: 'dark',
