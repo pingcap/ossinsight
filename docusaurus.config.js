@@ -291,7 +291,7 @@ const config = {
         ],
         logo: {
           alt: 'OSS Insight Logo',
-          src: '/img/pingcap-white-300x79.png',
+          src: '/img/pingcap-o-300x79.png',
         },
         copyright: `Copyright &copy; ${new Date().getFullYear()} <a href="https://en.pingcap.com" target="_blank">PingCAP</a>. All Rights Reserved | <a href="https://en.pingcap.com/privacy-policy/" target="_blank">Privacy</a>`,
       },
