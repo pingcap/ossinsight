@@ -25,7 +25,6 @@ import {
   DocsVersionProvider,
 } from '@docusaurus/theme-common';
 import Head from '@docusaurus/Head';
-import StatusBar from '../../components/StatusBar';
 
 function DocPageContent({
   currentDocRoute,
@@ -164,7 +163,6 @@ function DocPage(props) {
           </DocPageContent>
         </DocsSidebarProvider>
       </DocsVersionProvider>
-      <StatusBar/>
     </>
   );
 }

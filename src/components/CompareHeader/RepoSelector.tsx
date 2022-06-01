@@ -8,7 +8,7 @@ import InputBase from '@mui/material/InputBase';
 import InputAdornment from '@mui/material/InputAdornment';
 import Autocomplete from '@mui/material/Autocomplete';
 import CircularProgress from '@mui/material/CircularProgress';
-import {Alert, Snackbar} from "@mui/material";
+import { Alert, Popper, Snackbar } from '@mui/material';
 import {UseAutocompleteProps} from "@mui/base/AutocompleteUnstyled/useAutocomplete";
 import { useSearchRepo, Repo } from './useSearchRepo';
 import SearchIcon from '@mui/icons-material/Search';
@@ -33,6 +33,8 @@ export interface RepoSelectorProps extends BaseRepoSelectorProps {
 }
 
 const noValidation = () => undefined
+
+const CustomPopper = props => <Popper {...props} placement='bottom-start' />
 
 function useRepoSelector ({ defaultRepoName, onChange, onValid = noValidation }: Pick<BaseRepoSelectorProps, 'defaultRepoName' | 'onChange' | 'onValid'>) {
   const [keyword, setKeyword] = useState<string>(defaultRepoName ?? '')
@@ -103,6 +105,7 @@ export default function RepoSelector({repo, size, label, defaultRepoName, onChan
       onInputChange={onInputChange}
       disableClearable={disableClearable as any}
       popupIcon={<SearchIcon />}
+      PopperComponent={CustomPopper}
       renderInput={(params) => (
         <TextField
           {...params}

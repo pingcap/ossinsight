@@ -156,7 +156,7 @@ const config = {
         {name: 'twitter:card', content: 'summary_large_image'},
         {name: 'keywords', content: 'tidb, mysql, github events, oss, compare oss, oss analysis, pingcap'}
       ],
-//       hideableSidebar: true,
+      hideableSidebar: true,
       colorMode: {
         defaultMode: 'dark',
         disableSwitch: true,
@@ -165,7 +165,7 @@ const config = {
       announcementBar: {
         id: 'announcement-20220531',
         content:
-          '📢 Latest: <a target="_blank" href="/blog/explore-deep-in-4.6-billion-github-events">Explore Deep in 4.6 Billion GitHub Events</a>',
+          '📢 2022-05-03: <a target="_blank" href="/blog/explore-deep-in-4.6-billion-github-events">Explore Deep in 4.6 Billion GitHub Events</a>',
         backgroundColor: '#343536',
         textColor: 'lightgrey',
         isCloseable: true,
@@ -173,7 +173,7 @@ const config = {
       navbar: {
         title: 'OSS Insight',
         logo: {
-          alt: 'OSS Insight',
+          alt: 'OSS Insight Logo',
           src: 'img/tidb-logo.svg',
         },
         style: 'dark',
@@ -291,7 +291,7 @@ const config = {
         ],
         logo: {
           alt: 'OSS Insight Logo',
-          src: '/img/pingcap-white-300x79.png',
+          src: '/img/pingcap-o-300x79.png',
         },
         copyright: `Copyright &copy; ${new Date().getFullYear()} <a href="https://en.pingcap.com" target="_blank">PingCAP</a>. All Rights Reserved | <a href="https://en.pingcap.com/privacy-policy/" target="_blank">Privacy</a>`,
       },
