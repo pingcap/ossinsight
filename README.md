@@ -39,7 +39,30 @@ OSS Insight analyze billions of GitHub events and get insights from them, also p
 * [More](https://ossinsight.io/collections/open-source-database) ...
 
 If you want to analyze more, please [contact us](https://ossinsight.io/about/#contact) ✉️
-  
+
+### How to add collections
+👏 We welcome your contributions here! You can add a collection on our website by submitting PRs. Please create a `.yml` file under [the collections file path]( https://github.com/pingcap/ossinsight/tree/main/backend/meta/collections).
+
+Here is a file template provides guidance on the information you need to include.
+
+* File Name
+
+`<collection_id>.<collection_name>.yml`, For example: `10013.game-engine.yml`
+
+  💡 Tips: Please use `100XX` as your collection's id，and it should be `+1` after the latest submit in [here]( https://github.com/pingcap/ossinsight/tree/main/backend/meta/collections). 
+
+* Content
+
+```yml
+id: <collection_id>
+name: <collection_name>
+items:
+  - <repo_name_1>
+  - <repo_name_2>
+```
+
+Looks forward to your PRs！
+
 ## Feature 2: Analyze Single Repo
   
 * Basic:
