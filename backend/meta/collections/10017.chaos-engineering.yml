@@ -1,7 +1,6 @@
 id: 10017
 name: Chaos Engineering
 items:
-  - dastergon/awesome-chaos-engineering
   - chaosblade-io/chaosblade
   - litmuschaos/litmus
   - linki/chaoskube
