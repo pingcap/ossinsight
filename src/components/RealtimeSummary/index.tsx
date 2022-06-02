@@ -20,11 +20,11 @@ const Chart = () => {
   return (
     <EChartsx init={{ width: 100, height: 32, renderer: 'canvas' }}>
       <Once>
-        <Grid containLabel={false} top={0} bottom={8} left={0} right={0} />
+        <Grid containLabel={true} top={0} bottom={8} left={0} right={0} />
         <Axis.Category.X axisLine={{ show: false }} axisTick={{ show: false }} axisLabel={{ show: false }}
                      splitLine={{ show: false }} />
-        <Axis.Value.Y axisLine={{ show: false }} axisTick={{ show: false }} axisLabel={{ show: false }}
-                      splitLine={{ show: false }} />
+        <Axis.Value.Y axisLine={{ show: false }} axisTick={{ show: false }} axisLabel={{ show: true, align: 'right', fontSize: 4, showMinLabel: true, hideOverlap: true}}
+                      splitLine={{ show: false }} position={'right'}  interval={100} />
         <BarSeries datasetId='original' silent color="#FFE895" encode={{ x: 'latest_timestamp', y: 'cnt' }} barMaxWidth={4} />
       </Once>
       <Dataset id='original' source={data} />
