@@ -226,18 +226,18 @@ const config = {
                 label: 'Blogs',
                 to: '/blog',
               },
+              {
+                label: 'GitHub',
+                href: 'https://github.com/pingcap/ossinsight',
+              },
             ],
           },
           {
             title: 'Sponsored By',
             items: [
               {
-                label: 'TiDB Community',
-                href: 'https://en.pingcap.com/community?utm_source=ossinsight&utm_medium=referral',
-              },
-              {
-                label: 'PingCAP',
-                href: 'https://en.pingcap.com?utm_source=ossinsight&utm_medium=referral',
+                label: 'TiDB Cloud',
+                href: 'https://en.pingcap.com/tidb-cloud?utm_source=ossinsight&utm_medium=referral',
               },
             ],
           },
@@ -265,10 +265,6 @@ const config = {
                 href: 'https://echarts.apache.org/',
               },
               {
-                label: 'TiDB Cloud',
-                href: 'https://tidbcloud.com/?utm_source=ossinsight&utm_medium=referral',
-              },
-              {
                 label: 'React',
                 href: 'https://github.com/facebook/react',
               },
@@ -278,16 +274,15 @@ const config = {
             title: 'Contacts',
             items: [
               {
-                label: 'GitHub',
-                href: 'https://github.com/pingcap/ossinsight',
-              },
-              {
                 label: 'Twitter',
                 href: 'https://twitter.com/OSSInsight',
               },
               {
                 label: 'Email',
                 href: 'mailto:ossinsight@pingcap.com',
+              },
+              {
+                html: '<br /><br /><b>Location</b><p style="font-size:1em;color:grey"><br />California, USA<br />1250 Borregas Ave, Office 131<br />Sunnyvale, CA 94089<br />+1 650 382 9973</p>',
               },
             ],
           },
