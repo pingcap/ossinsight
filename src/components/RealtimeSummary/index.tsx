@@ -65,8 +65,10 @@ const Divider = styled('span')({
 });
 
 const Numbers = styled(Span)({
-  fontSize: '18px',
+  height: 20,
+  fontSize: 20,
   color: 'white',
+  lineHeight: 1,
 });
 
 export const RealtimeSummary = () => {
