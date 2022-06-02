@@ -119,12 +119,15 @@ const config = {
             '**/_*'
           ]
         },
+        docs: false,
+        /*
         docs: {
-          path: 'insights',
+          path: 'workshop',
           sidebarPath: require.resolve('./sidebars.js'),
           editUrl: 'https://github.com/pingcap/ossinsight/edit/main/',
-          routeBasePath: '/',
+          routeBasePath: '/workshop',
         },
+        */
         blog: {
           blogTitle: 'OSS Insight Blogs',
           blogSidebarTitle: 'All Blog Posts',
