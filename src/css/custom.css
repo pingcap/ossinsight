@@ -191,7 +191,7 @@ html[data-theme='dark'] img[src$='#gh-light-mode-only'] {
   display: flex;
   align-items: center;
   justify-items: center;
-  background-image: url("/img/tidb-cloud-with-tidb-cloud.png");
+  background-image: url("/img/tidb-cloud-logo-o.png");
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;
