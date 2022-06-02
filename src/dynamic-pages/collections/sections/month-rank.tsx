@@ -90,7 +90,7 @@ export default withInViewContainer(function MonthRankSection() {
 
   return (
     <section>
-      <H2 id="monthly-rankings">Ranking!</H2>
+      {/* <H2 id="monthly-rankings">Ranking!</H2> */}
       <P2>Ranked all repositories with the month-on-month growth amount.</P2>
       {tabs}
       <br />
