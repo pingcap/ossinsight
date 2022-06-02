@@ -27,6 +27,21 @@ export const DebugDialog = ({ sql, query, params, open, onClose }: DebugDialogPr
     setType(type);
   });
 
+  const explainKeywordDict = {
+    'cop' : 'distributed',
+    'batchCop' : 'distributed',
+    'tikv' : 'row',
+    'tiflash' : 'column',
+  }
+
+  const replaceAllKeyword = (str: string) => {
+    for (const key in explainKeywordDict) {
+      str = str.replace(new RegExp(key, 'g'), explainKeywordDict[key]);
+    }
+    return str;
+  }
+
+
   const renderChild = () => {
     if (type) {
       if (error) {
@@ -55,7 +70,7 @@ export const DebugDialog = ({ sql, query, params, open, onClose }: DebugDialogPr
             {data.data.map((item, i) => (
               <Box key={i} display='table-row'>
                 {data.fields.map(field => (
-                  <Box key={field.name} display='table-cell' whiteSpace='nowrap'>{item[field.name]}</Box>
+                  <Box key={replaceAllKeyword(field.name)} display='table-cell' whiteSpace='nowrap'>{replaceAllKeyword(item[field.name])}</Box>
                 ))}
               </Box>
             ))}
