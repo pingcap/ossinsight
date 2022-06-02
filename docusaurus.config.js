@@ -293,8 +293,10 @@ const config = {
           },
         ],
         logo: {
-          alt: 'OSS Insight Logo',
-          src: '/img/pingcap-o-300x79.png',
+          alt: 'TiDB Cloud Logo',
+          src: '/img/tidb-cloud-logo-o.png',
+          href: 'https://en.pingcap.com/tidb-cloud/?utm_source=ossinsight&utm_medium=referral',
+          width: 200,
         },
         copyright: `Copyright &copy; ${new Date().getFullYear()} <a href="https://en.pingcap.com" target="_blank">PingCAP</a>. All Rights Reserved | <a href="https://en.pingcap.com/privacy-policy/" target="_blank">Privacy</a>`,
       },
