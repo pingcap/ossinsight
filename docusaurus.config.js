@@ -119,12 +119,15 @@ const config = {
             '**/_*'
           ]
         },
+        docs: false,
+        /*
         docs: {
-          path: 'insights',
+          path: 'workshop',
           sidebarPath: require.resolve('./sidebars.js'),
           editUrl: 'https://github.com/pingcap/ossinsight/edit/main/',
-          routeBasePath: '/',
+          routeBasePath: '/workshop',
         },
+        */
         blog: {
           blogTitle: 'OSS Insight Blogs',
           blogSidebarTitle: 'All Blog Posts',
@@ -165,7 +168,7 @@ const config = {
       announcementBar: {
         id: 'announcement-20220531',
         content:
-          '📢 2022-05-03: <a target="_blank" href="/blog/explore-deep-in-4.6-billion-github-events">Explore Deep in 4.6 Billion GitHub Events</a>',
+          '📢 05-03: <a target="_blank" href="/blog/explore-deep-in-4.6-billion-github-events">Explore Deep in 4.6 Billion GitHub Events</a>',
         backgroundColor: '#343536',
         textColor: 'lightgrey',
         isCloseable: true,
@@ -229,12 +232,8 @@ const config = {
             title: 'Sponsored By',
             items: [
               {
-                label: 'TiDB Community',
-                href: 'https://en.pingcap.com/community?utm_source=ossinsight&utm_medium=referral',
-              },
-              {
-                label: 'PingCAP',
-                href: 'https://en.pingcap.com?utm_source=ossinsight&utm_medium=referral',
+                label: 'TiDB Cloud',
+                href: 'https://en.pingcap.com/tidb-cloud?utm_source=ossinsight&utm_medium=referral',
               },
             ],
           },
@@ -262,10 +261,6 @@ const config = {
                 href: 'https://echarts.apache.org/',
               },
               {
-                label: 'TiDB Cloud',
-                href: 'https://tidbcloud.com/?utm_source=ossinsight&utm_medium=referral',
-              },
-              {
                 label: 'React',
                 href: 'https://github.com/facebook/react',
               },
@@ -275,10 +270,6 @@ const config = {
             title: 'Contacts',
             items: [
               {
-                label: 'GitHub',
-                href: 'https://github.com/pingcap/ossinsight',
-              },
-              {
                 label: 'Twitter',
                 href: 'https://twitter.com/OSSInsight',
               },
@@ -286,12 +277,23 @@ const config = {
                 label: 'Email',
                 href: 'mailto:ossinsight@pingcap.com',
               },
+              {
+                label: 'GitHub',
+                href: 'https://github.com/pingcap/ossinsight',
+              },
+/*
+              {
+                html: '<br /><br /><b>Location</b><p style="font-size:1em;color:grey"><br />California, USA<br />1250 Borregas Ave, Office 131<br />Sunnyvale, CA 94089<br />+1 650 382 9973</p>',
+              },
+*/
             ],
           },
         ],
         logo: {
-          alt: 'OSS Insight Logo',
-          src: '/img/pingcap-o-300x79.png',
+          alt: 'TiDB Cloud Logo',
+          src: '/img/tidb-cloud-logo-o.png',
+          href: 'https://en.pingcap.com/tidb-cloud/?utm_source=ossinsight&utm_medium=referral',
+          width: 200,
         },
         copyright: `Copyright &copy; ${new Date().getFullYear()} <a href="https://en.pingcap.com" target="_blank">PingCAP</a>. All Rights Reserved | <a href="https://en.pingcap.com/privacy-policy/" target="_blank">Privacy</a>`,
       },
