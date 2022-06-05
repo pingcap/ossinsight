@@ -7,3 +7,4 @@ items:
   - VictoriaMetrics/VictoriaMetrics
   - taosdata/TDengine
   - crate/crate
+  - prometheus/prometheus
