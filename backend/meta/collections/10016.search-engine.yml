@@ -10,3 +10,4 @@ items:
   - searx/searx
   - quickwit-oss/tantivy
   - quickwit-oss/quickwit
+  - crate/crate
