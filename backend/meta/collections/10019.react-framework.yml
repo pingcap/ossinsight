@@ -1,0 +1,10 @@
+id: 10019
+name: React Framework
+items:
+  - vercel/next.js
+  - alephjs/aleph.js
+  - gatsbyjs/gatsby
+  - marmelab/react-admin
+  - remix-run/remix
+  - blitz-js/blitz
+  - pankod/refine
