@@ -11,19 +11,32 @@ As a group of people working in the open source community, we often work with Gi
 
 We're honored to have brought this project to the attention of everyone after its release, some interesting responses and shares have started to circulate (see our [Twitter](https://twitter.com/OSSInsight) for details), and we're excited to see more people use this powerful tool to discover insights. If it can also help you deal with problems(such as dealing with dataset as large as 4.6 billion data from GitHub), that would be a bonus!
 
-In this project, we mainly provide two major functions, one is the analysis results of specific fields, and the other one is a custom analysis tool for GitHub repositories.
+In this project, we mainly provide two major functions, one is **the monthly rankings/historical trends** for GitHub collections and the other one is **a custom analysis tool** for Github repositories.
 
-## Analysis in Specific Technical Areas
+## Monthly Rankings/Historical Trends for GitHub Collections
 
-We provide analysis results from [six specific technical areas](https://ossinsight.io/database/deep-insight-into-open-source-databases/) that are popular in open source software. You can explore the trends in different tech-fields and find which repositories are the most popular, which repositories have the most Pull Requests/Issues, etc. And more importantly, we also offer you [real-time insights](https://ossinsight.io/database/realtime/) for your reference.
+You can view the monthly ranking and historical trends of a repository by clicking the **[Collections](https://ossinsight.io/collections/open-source-database)** button on the navigation bar. We calculate the monthly incremental data of the repository by using the raw data from [GitHub Collections](https://github.com/collections). The rankings(include stars, pull requests, and issues ranking) is considered with the monthly increment for each repository.
 
 :::note
 
-📌 Due to the limitation of raw dataset from GitHub, we currently provide real-time insights in one hour. But we are happy to share with you that **minute-level insights** are already on the way!
+### 📌 How to add collections
+We welcome your contributions here! You can add a collection on our website by **[submitting PRs here](https://github.com/pingcap/ossinsight)**. 
 
 :::
 
-![homepage insight](/img/screenshots/homepage_insight.png)
+We always keep working on how to make our OSS Insight more interesting and useful, so we chose some cool dynamic charts to display powerful insights. 
+
+The **bar chart race** can simulate the historical growth situation of repositories, not only the growth process for total amount, but also the ranking relationship between different repositories. For example, in the [open source database - stars](https://ossinsight.io/collections/open-source-database/trends/) shown here, we can see that the stars for [pingcap/tidb](https://github.com/pingcap/ossinsight) growth very rapidly, and the ranking has been reached to the second place very fast after it was created, and it continues to move forward.
+
+![Bar Chart Race](/img/screenshots/bar-chart-race.png)
+
+If you just wondering the annual ranking changes of a repository, we recommend you use the **pipeline chart** to gain insights with the concise and clear annual ranking results.
+
+![Pipeline Chart](/img/screenshots/pipeline-chart.png)
+
+We also used a **line chart** to show the Historical Trending of Top 10 repositories in a collection. You can see more granular ranking trends month to month here.
+
+![line Chart](/img/screenshots/line-chart.png)
 
 ## Powerful Custom Analysis Tool
 
