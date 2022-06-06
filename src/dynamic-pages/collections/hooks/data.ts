@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
-import { useRemoteData } from '../../../components/RemoteCharts/hook';
+import { useEffect, useMemo } from 'react';
+import { AsyncData, RemoteData, useRemoteData } from '../../../components/RemoteCharts/hook';
 
 
 export type CollectionHistoryData = {
@@ -28,13 +28,18 @@ export type CollectionMonthRankData = {
   total: number
 }
 
+const SYMBOL_TRANSFORMED = Symbol('transformed-data')
 
-export function useCollectionHistory(collectionId: number | undefined, dimension: string) {
-  const result = useRemoteData<any, CollectionHistoryData>(`collection-${dimension}-history`, { collectionId }, false, collectionId !== undefined);
+export function useCollectionHistory(collectionId: number | undefined, dimension: string): AsyncData<RemoteData<any, CollectionHistoryData>> {
+  const { data, loading, error } = useRemoteData<any, CollectionHistoryData>(`collection-${dimension}-history`, { collectionId }, false, collectionId !== undefined);
 
-  useEffect(() => {
+  return useMemo(() => {
     // fill previous value if some data missed
     function fix(data: CollectionHistoryData[]): CollectionHistoryData[] {
+      // SWR may reuse the original data
+      if (data[SYMBOL_TRANSFORMED]) {
+        return data[SYMBOL_TRANSFORMED]
+      }
       if (data.length === 0) {
         return []
       }
@@ -88,15 +93,21 @@ export function useCollectionHistory(collectionId: number | undefined, dimension
           month += 1
         }
       }
+      Object.defineProperty(data, SYMBOL_TRANSFORMED, {
+        value: result,
+        writable: false,
+        configurable: false,
+        enumerable: false,
+      })
       return result
     }
 
-    if (result.data) {
-      result.data.data = fix(result.data.data)
+    if (data) {
+      data.data = fix(data.data)
     }
-  }, [result.data])
 
-  return result
+    return { data, loading, error }
+  }, [data])
 }
 
 export function useCollectionHistoryRank(collectionId: number | undefined, dimension: string) {
