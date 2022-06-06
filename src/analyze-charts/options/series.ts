@@ -105,6 +105,7 @@ export function scatters(idPrefix: string, topN: number, max: number, option: Sc
       lat: 2,
       value: 3,
       tooltip: [0, 3],
+      itemId: 0,
     },
     symbolSize: (val) => {
       return 1 + Math.sqrt(val[3] / max) * 64;
