@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useRemoteData } from '../../../components/RemoteCharts/hook';
 
 
@@ -29,7 +30,73 @@ export type CollectionMonthRankData = {
 
 
 export function useCollectionHistory(collectionId: number | undefined, dimension: string) {
-  return useRemoteData<any, CollectionHistoryData>(`collection-${dimension}-history`, { collectionId }, false, collectionId !== undefined);
+  const result = useRemoteData<any, CollectionHistoryData>(`collection-${dimension}-history`, { collectionId }, false, collectionId !== undefined);
+
+  useEffect(() => {
+    // fill previous value if some data missed
+    function fix(data: CollectionHistoryData[]): CollectionHistoryData[] {
+      if (data.length === 0) {
+        return []
+      }
+      const result: CollectionHistoryData[] = []
+      const min = data[0].event_month
+      // MARK: should we use current instead of data max?
+      const max = data[data.length - 1].event_month
+      let [year, month] = min.split('-').map(Number)
+      const [maxYear, maxMonth] = max.split('-').map(Number)
+      let i = 0
+
+      const latestValues: Record<string, number> = {}
+
+      while (year < maxYear || (year === maxYear && month <= maxMonth)) {
+        // mock server returned time format
+        const ts = new Date(`${year}-${String(month).padStart(2, '0')}-01`)
+        const current = new Date(ts.getTime() - 8 * 60 * 60 * 1000).toISOString()
+
+        // stores name was not provided in current month
+        const nameSet = new Set<string>(Object.keys(latestValues))
+
+        // fill current data
+        while (i < data.length) {
+          const { repo_name, total, event_month } = data[i];
+          if (event_month === current) {
+            latestValues[repo_name] = total
+            nameSet.delete(repo_name)
+            result.push(data[i])
+            i++
+          } else {
+            break
+          }
+        }
+
+        // fill missing data
+        if (nameSet.size > 0) {
+          nameSet.forEach(name => {
+            result.push({
+              event_month: current,
+              repo_name: name,
+              total: latestValues[name]
+            })
+          })
+        }
+
+        // move current
+        if (month === 12) {
+          year += 1
+          month = 1
+        } else {
+          month += 1
+        }
+      }
+      return result
+    }
+
+    if (result.data) {
+      result.data.data = fix(result.data.data)
+    }
+  }, [result.data])
+
+  return result
 }
 
 export function useCollectionHistoryRank(collectionId: number | undefined, dimension: string) {
