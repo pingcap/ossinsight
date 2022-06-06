@@ -1,0 +1,26 @@
+id: 2
+name: Open Source Database
+items:
+  - elastic/elasticsearch
+  - pingcap/tidb
+  - cockroachdb/cockroach
+  - clickhouse/clickhouse
+  - mongodb/mongo
+  - vitessio/vitess
+  - apache/druid
+  - tikv/tikv
+  - apple/foundationdb
+  - yugabyte/yugabyte-db
+  - citusdata/citus
+  - greenplum-db/gpdb
+  - trinodb/trino
+  - apache/hbase
+  - MariaDB/server
+  - apache/hive
+  - apache/ignite
+  - apache/incubator-doris
+  - apache/kylin
+  - StarRocks/starrocks
+  - percona/percona-server
+  - oceanbase/oceanbase
+  - datafuselabs/databend
