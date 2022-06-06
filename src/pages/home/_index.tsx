@@ -142,14 +142,14 @@ export default function Home() {
         <Stack direction={stackDirection} alignItems='center'>
           <Item>
             <H2>
-              Monthly Ranking / Trends
+             Popular GitHub Collections
               <br />
               <H2Plus sx={{color: '#FFE895'}}>
-                Insight
+               Rankings / Trends
               </H2Plus>
             </H2>
             <Subtitle>
-              Explore the <b>Popularity & Activity</b> trends
+              Explore the <b>Monthly & Historical</b> rankings and trends
               <br />
               in a technical field：
             </Subtitle>
@@ -172,8 +172,10 @@ export default function Home() {
             </Box>
           </Item>
           <Item>
-            <AspectRatio ratio={1472 / 1390}>
-              <Image src={require('./images/insight.png').default} style={{width: '100%', height: '100%'}} />
+            <AspectRatio ratio={1440 / 900}>
+            <video width="100%" autoPlay loop muted >
+            <source src="https://user-images.githubusercontent.com/55385323/172203356-26cc0579-e2ea-4058-bf12-d8d2e1b09f67.mp4" type="video/mp4" />
+            </video>
             </AspectRatio>
           </Item>
         </Stack>
