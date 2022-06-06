@@ -142,10 +142,10 @@ export default function Home() {
         <Stack direction={stackDirection} alignItems='center'>
           <Item>
             <H2>
-             Popular GitHub Collections
+            Ranked & Dynamic
               <br />
               <H2Plus sx={{color: '#FFE895'}}>
-               Rankings / Trends
+               Collections
               </H2Plus>
             </H2>
             <Subtitle>
