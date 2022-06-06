@@ -33,7 +33,7 @@ const Chart = () => {
 };
 
 const Counts = () => {
-  const total = useTotalEvents(true);
+  const total = useTotalEvents(true, 5000);
 
   return (
     <Stack direction="row" alignItems="center" divider={<Divider />}>

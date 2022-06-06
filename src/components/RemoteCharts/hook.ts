@@ -155,7 +155,7 @@ const toTs = date => {
   return date
 }
 
-export const useTotalEvents = (run: boolean) => {
+export const useTotalEvents = (run: boolean, interval = 1000) => {
   const {eventsTotal} = usePluginData<{eventsTotal: RemoteData<any, { cnt: number, latest_timestamp: number }>}>('plugin-prefetch');
 
   const [total, setTotal] = useState(eventsTotal?.data[0].cnt)
@@ -193,7 +193,7 @@ export const useTotalEvents = (run: boolean) => {
 
     const hAdded = setInterval(() => {
       reloadAdded().then()
-    }, 1000)
+    }, interval)
 
     reloadTotal().then()
     reloadAdded().then()
