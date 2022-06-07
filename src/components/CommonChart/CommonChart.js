@@ -10,8 +10,10 @@ import InViewContext from '../InViewContext'
 import GroupSelectContext from "../GroupSelect/GroupSelectContext";
 import {groups} from "../GroupSelect/groups";
 import CommonChartContext from './context'
+import useVisibility from "../../hooks/visibility";
 
 function CommonChart({chart: rawChart, noSearch, comparing, shareInfo, ...rest}) {
+  const visible = useVisibility()
   const { inView, ref } = useInView({ fallbackInView: true })
   const chart = useMemo(() => {
     if (typeof rawChart === 'string') {
@@ -46,7 +48,7 @@ function CommonChart({chart: rawChart, noSearch, comparing, shareInfo, ...rest})
           />
         </Head>
         <div ref={ref} data-common-chart={true}>
-          <InViewContext.Provider value={{ inView }}>
+          <InViewContext.Provider value={{ inView: visible && inView }}>
             {form}
             {form && <Divider sx={{my: 2}} />}
             <CommonChartContext.Provider value={{shareInfo}}>

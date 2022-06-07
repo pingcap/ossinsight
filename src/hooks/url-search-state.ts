@@ -7,6 +7,8 @@ export interface UseUrlSearchStateProps<T> {
   deserialize: (string: string) => T
 }
 
+export type UseUrlSearchStateHook = <T> (key: string, props: UseUrlSearchStateProps<T>) => [T, Dispatch<SetStateAction<T>>];
+
 function useUrlSearchStateSSR<T>(key: string, {defaultValue}: UseUrlSearchStateProps<T>): [T, Dispatch<SetStateAction<T>>] {
   return useState<T | undefined>(defaultValue)
 }
@@ -47,7 +49,7 @@ function useUrlSearchStateCSR<T>(key: string, {
   return [value, setValue]
 }
 
-const useUrlSearchState = typeof window === 'undefined' ? useUrlSearchStateSSR : useUrlSearchStateCSR
+const useUrlSearchState: UseUrlSearchStateHook = typeof window === 'undefined' ? useUrlSearchStateSSR : useUrlSearchStateCSR
 
 export default useUrlSearchState
 

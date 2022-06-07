@@ -1,7 +1,7 @@
 import { useRealtimeRemoteData } from '../RemoteCharts/hook';
 
-export function useData() {
-  const { data } = useRealtimeRemoteData<{}, { cnt: number, latest_timestamp: string}>('events-increment-intervals', {}, false, true);
+export function useRealtimeEvents(run: boolean) {
+  const { data } = useRealtimeRemoteData<{}, { cnt: number, latest_timestamp: string}>('events-increment-intervals', {}, false, run);
 
   return data?.data ?? []
 }

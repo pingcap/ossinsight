@@ -3,37 +3,41 @@ import { useLocation } from '@docusaurus/router';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
+import Tooltip from '@mui/material/Tooltip';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { use } from 'echarts/core';
 import { CanvasRenderer } from 'echarts/renderers';
 import React from 'react';
 import NumberCounter from 'react-smooth-number-counter';
+import useVisibility from '../../hooks/visibility';
 import { useTotalEvents } from '../RemoteCharts/hook';
-import { useData } from './hooks';
+import { useRealtimeEvents } from './hooks';
 
 
 use(CanvasRenderer);
 
-const Chart = () => {
-  const data = useData()
+const Chart = ({ visible }: { visible: boolean }) => {
+  const data = useRealtimeEvents(visible)
 
   return (
-    <EChartsx init={{ width: 100, height: 32, renderer: 'canvas' }}>
-      <Once>
-        <Grid containLabel={true} top={0} bottom={8} left={0} right={0} />
-        <Axis.Category.X axisLine={{ show: false }} axisTick={{ show: false }} axisLabel={{ show: false }}
-                     splitLine={{ show: false }} />
-        <Axis.Value.Y axisLine={{ show: false }} axisTick={{ show: false }} axisLabel={{ show: true, align: 'right', fontSize: 4, showMinLabel: true, hideOverlap: true}}
-                      splitLine={{ show: false }} position={'right'} interval={100} />
-        <BarSeries datasetId='original' silent color="#FFE895" encode={{ x: 'latest_timestamp', y: 'cnt' }} barMaxWidth={4} />
-      </Once>
-      <Dataset id='original' source={data} />
-    </EChartsx>
+    <Box width="100px" maxWidth="100px" minWidth="100px" marginLeft="8px">
+      <EChartsx init={{ width: 100, height: 32, renderer: 'canvas' }}>
+        <Once>
+          <Grid containLabel={true} top={0} bottom={8} left={0} right={0} />
+          <Axis.Category.X axisLine={{ show: false }} axisTick={{ show: false }} axisLabel={{ show: false }}
+                       splitLine={{ show: false }} />
+          <Axis.Value.Y axisLine={{ show: false }} axisTick={{ show: false }} axisLabel={{ show: true, align: 'right', fontSize: 4, showMinLabel: true, hideOverlap: true}}
+                        splitLine={{ show: false }} position={'right'} interval={100} />
+          <BarSeries datasetId='original' silent color="#FFE895" encode={{ x: 'latest_timestamp', y: 'cnt' }} barMaxWidth={4} />
+        </Once>
+        <Dataset id='original' source={data} />
+      </EChartsx>
+    </Box>
   );
 };
 
-const Counts = () => {
-  const total = useTotalEvents(true, 5000);
+const Counts = ({ visible }: { visible: boolean }) => {
+  const total = useTotalEvents(visible, 5000);
 
   return (
     <Stack direction="row" alignItems="center" divider={<Divider />}>
@@ -71,7 +75,16 @@ const Numbers = styled(Span)({
   lineHeight: 1.1,
 });
 
+const TooltipTitle = () => (
+  <div>
+    ⌛️ GitHub events data importing in <b>Realtime</b>.
+    <br/>
+    📊 Each bar = Data importing in per 5 seconds.
+  </div>
+)
+
 export const RealtimeSummary = () => {
+  const visible = useVisibility()
   const isSmall = useMediaQuery('(max-width: 600px)')
   const { pathname } = useLocation()
 
@@ -84,11 +97,14 @@ export const RealtimeSummary = () => {
   }
 
   return (
-    <Stack direction="row" alignItems="center">
-      <Counts />
-      <Box width="100px" maxWidth="100px" minWidth="100px" marginLeft="8px">
-        <Chart />
-      </Box>
-    </Stack>
+    <Tooltip
+      title={<TooltipTitle />}
+      arrow
+    >
+      <Stack direction="row" alignItems="center">
+        <Counts visible={visible} />
+        <Chart visible={visible} />
+      </Stack>
+    </Tooltip>
   );
 };

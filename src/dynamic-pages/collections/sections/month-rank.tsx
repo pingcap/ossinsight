@@ -85,7 +85,7 @@ const HeaderCell = styled(NumberCell)(() => ({
 export default withInViewContainer(function MonthRankSection() {
   const { collection } = useContext(CollectionsContext);
 
-  const { dimension, tabs } = useDimensionTabs(true);
+  const { dimension, tabs } = useDimensionTabs('monthly-rankings', true);
   const asyncData = useCollectionMonthRank(collection?.id, dimension.key);
 
   return (

@@ -3,11 +3,13 @@ import { styled } from '@mui/material/styles';
 import React, { ForwardedRef, forwardRef, PropsWithChildren } from 'react';
 import { useInView } from 'react-intersection-observer';
 import InViewContext from '../../components/InViewContext';
+import useVisibility from '../../hooks/visibility';
 
 function Section({
   children,
   id,
 }: PropsWithChildren<{ id?: string }>, forwardedRef: ForwardedRef<HTMLElement>) {
+  const visible = useVisibility()
   const { inView, ref } = useInView({ fallbackInView: true });
 
   return (
@@ -19,7 +21,7 @@ function Section({
     >
       {id && <Anchor id={id} />}
       <div ref={ref}>
-        <InViewContext.Provider value={{ inView }}>
+        <InViewContext.Provider value={{ inView: visible && inView }}>
           {children}
         </InViewContext.Provider>
       </div>

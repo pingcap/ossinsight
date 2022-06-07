@@ -1,4 +1,4 @@
-import React, {CSSProperties, Ref, RefCallback, useCallback, useContext, useMemo} from "react";
+import React, { CSSProperties, ForwardedRef, Ref, RefCallback, useCallback, useContext, useMemo } from 'react';
 import {EChartsReactProps} from "echarts-for-react/src/types";
 import EChartsReact from "echarts-for-react";
 import useThemeContext from "@theme/hooks/useThemeContext";
@@ -23,7 +23,7 @@ export interface EChartsProps extends EChartsReactProps, SizeProps {
 registerThemeVintage()
 registerThemeDark()
 
-const ECharts = React.forwardRef<EChartsReact, EChartsProps>(({aspectRatio, height, style, opts, echartsStyle: echartsStyleProp, observe, ...props}, ref) => {
+const ECharts = React.forwardRef<EChartsReact, EChartsProps>(({aspectRatio, height, style, opts, echartsStyle: echartsStyleProp, observe, ...props}, ref: ForwardedRef<EChartsReact>) => {
   const realHeight = useMemo(() => {
     if (aspectRatio) {
       return '100%'

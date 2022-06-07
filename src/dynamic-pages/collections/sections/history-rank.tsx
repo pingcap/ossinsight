@@ -18,7 +18,7 @@ use(CanvasRenderer);
 export default withInViewContainer(function HistoryRankSection() {
   const { collection } = useContext(CollectionsContext);
 
-  const { dimension, tabs } = useDimensionTabs();
+  const { dimension, tabs } = useDimensionTabs('historical-rankings');
   const asyncData = useCollectionHistoryRank(collection?.id, dimension.key);
 
   return (
