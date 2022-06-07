@@ -178,10 +178,13 @@ export const useTotalEvents = (run: boolean, interval = 1000) => {
       } catch {}
     }
 
-    const reloadAdded = async () => {
+    const reloadAdded = async (first: boolean) => {
       try {
         if (lastTs.current) {
-          const { data: { data: [{ cnt, latest_created_at }] } } = await httpClient.get('/q/events-increment', { params: { ts: lastTs.current }, cancelToken: new Axios.CancelToken(cancel => cancelRef.current = cancel) })
+          const { data: { data: [{ cnt, latest_created_at }] } } = await httpClient.get('/q/events-increment', {
+            params: { ts: lastTs.current },
+            cancelToken: first ? undefined : new Axios.CancelToken(cancel => cancelRef.current = cancel)
+          })
           setAdded(cnt)
         }
       } catch {}
@@ -192,11 +195,11 @@ export const useTotalEvents = (run: boolean, interval = 1000) => {
     }, 60000)
 
     const hAdded = setInterval(() => {
-      reloadAdded().then()
+      reloadAdded(false).then()
     }, interval)
 
     reloadTotal().then()
-    reloadAdded().then()
+    reloadAdded(true).then()
 
     return () => {
       clearInterval(hTotal)

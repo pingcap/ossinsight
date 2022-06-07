@@ -9,14 +9,15 @@ import { use } from 'echarts/core';
 import { CanvasRenderer } from 'echarts/renderers';
 import React from 'react';
 import NumberCounter from 'react-smooth-number-counter';
+import useVisibility from '../../hooks/visibility';
 import { useTotalEvents } from '../RemoteCharts/hook';
 import { useRealtimeEvents } from './hooks';
 
 
 use(CanvasRenderer);
 
-const Chart = () => {
-  const data = useRealtimeEvents()
+const Chart = ({ visible }: { visible: boolean }) => {
+  const data = useRealtimeEvents(visible)
 
   return (
     <Box width="100px" maxWidth="100px" minWidth="100px" marginLeft="8px">
@@ -35,8 +36,8 @@ const Chart = () => {
   );
 };
 
-const Counts = () => {
-  const total = useTotalEvents(true, 5000);
+const Counts = ({ visible }: { visible: boolean }) => {
+  const total = useTotalEvents(visible, 5000);
 
   return (
     <Stack direction="row" alignItems="center" divider={<Divider />}>
@@ -83,6 +84,7 @@ const TooltipTitle = () => (
 )
 
 export const RealtimeSummary = () => {
+  const visible = useVisibility()
   const isSmall = useMediaQuery('(max-width: 600px)')
   const { pathname } = useLocation()
 
@@ -100,8 +102,8 @@ export const RealtimeSummary = () => {
       arrow
     >
       <Stack direction="row" alignItems="center">
-        <Counts />
-        <Chart />
+        <Counts visible={visible} />
+        <Chart visible={visible} />
       </Stack>
     </Tooltip>
   );
