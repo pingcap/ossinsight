@@ -174,7 +174,7 @@ export default function Home() {
           <Item>
             <AspectRatio ratio={1440 / 1280} style={{ width: '100%' }}>
             <video width="100%" height="100%" autoPlay loop muted >
-            <source src={require('./images/video/bar_chart_race.mp4').default} type="video/mp4"/>
+            <source src={require('./images/video/bar-chart-race.mp4').default} type="video/mp4"/>
             </video>
             </AspectRatio>
           </Item>
