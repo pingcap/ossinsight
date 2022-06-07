@@ -24,7 +24,7 @@ use(SVGRenderer);
 export default withInViewContainer(function HistorySortSection() {
   const { collection } = useContext(CollectionsContext);
 
-  const { dimension, tabs } = useDimensionTabs();
+  const { dimension, tabs } = useDimensionTabs('bar-chart-race');
   const asyncData = useCollectionHistory(collection?.id, dimension.key);
 
   return (

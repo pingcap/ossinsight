@@ -23,7 +23,7 @@ const formatTime = (name: string): string => df.format(new Date(name));
 export default withInViewContainer(function HistorySection() {
   const { collection } = useContext(CollectionsContext);
 
-  const { dimension, tabs } = useDimensionTabs();
+  const { dimension, tabs } = useDimensionTabs('historical-trending');
   const asyncData = useCollectionHistory(collection?.id, dimension.key);
 
   const top10Names = useMemo(() => {
