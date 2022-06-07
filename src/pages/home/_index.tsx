@@ -142,14 +142,14 @@ export default function Home() {
         <Stack direction={stackDirection} alignItems='center'>
           <Item>
             <H2>
-              Monthly Ranking / Trends
+            Ranked & Dynamic
               <br />
               <H2Plus sx={{color: '#FFE895'}}>
-                Insight
+               Collections
               </H2Plus>
             </H2>
             <Subtitle>
-              Explore the <b>Popularity & Activity</b> trends
+              Explore the <b>Monthly & Historical</b> rankings and trends
               <br />
               in a technical field：
             </Subtitle>
@@ -172,8 +172,10 @@ export default function Home() {
             </Box>
           </Item>
           <Item>
-            <AspectRatio ratio={1472 / 1390}>
-              <Image src={require('./images/insight.png').default} style={{width: '100%', height: '100%'}} />
+            <AspectRatio ratio={1440 / 1280} style={{ width: '100%' }}>
+            <video width="100%" height="100%" autoPlay loop muted >
+            <source src={require('./images/video/bar-chart-race.mp4').default} type="video/mp4"/>
+            </video>
             </AspectRatio>
           </Item>
         </Stack>
