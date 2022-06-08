@@ -98,7 +98,7 @@ export default function Home() {
   return (
     <CustomPage
       title={"OSS Insight"}
-      description={"A useful insight tool for analyzing massive events data from GitHub. Try to get unique insights by searching or comparing in Open Source Software World."}
+      description={"The comprehensive Open Source Software insight tool by analyzing massive events from GitHub, powered by TiDB, the best insight building database of data agility."}
       dark
     >
       <Section pt={4}>
