@@ -1,0 +1,15 @@
+id: 10025
+name: Distributed File Storage
+items:
+  - ceph/ceph
+  - gluster/glusterfs
+  - s3fs-fuse/s3fs-fuse
+  - juicedata/juicefs
+  - kahing/goofys
+  - littlefs-project/littlefs
+  - sjqzhang/go-fastdfs
+  - cubeFS/cubefs
+  - moosefs/moosefs
+  - Alluxio/alluxio
+  - minio/minio
+  - storj/storj
