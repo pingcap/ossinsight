@@ -1,3 +1,4 @@
+import useMediaQuery from '@mui/material/useMediaQuery';
 import React, { forwardRef } from 'react';
 import List, { ListProps } from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -21,27 +22,32 @@ export interface CoolListInstance<T> {
 
 const CoolListContainer = styled(List)({
   position: 'relative',
+  padding: 0,
 })
 
 const CoolListItem = styled(ListItem)({
   position: 'absolute',
   width: '100%',
   transition: 'all .5s ease',
+  opacity: 0.4,
   '&.item-enter': {
     opacity: 0,
     transform: 'translate3d(-10%, 0, 0) scale(0.85)'
   },
   '&.item-enter-active': {
-    opacity: 1,
+    opacity: 0.4,
     transform: 'none',
   },
   '&.item-exit': {
-    opacity: 1,
+    opacity: 0.4,
     transform: 'none',
   },
   '&.item-exit-active': {
     opacity: 0,
     transform: 'translate3d(-10%, 0, 0) scale(0.85)'
+  },
+  '&:hover': {
+    opacity: 1,
   }
 })
 
@@ -72,7 +78,7 @@ function CoolList<T> ({ maxLength, itemHeight, getKey, children, ...props }: Coo
   }, [])
 
   return (
-    <TransitionGroup component={CoolListContainer} {...props}>
+    <TransitionGroup component={CoolListContainer} {...props} sx={{ height: itemHeight * maxLength }}>
       {list.map((item, index) => (
         <CSSTransition key={getKey(item)} timeout={500} classNames='item'>
           <CoolListItem sx={{ top: index * itemHeight, height: itemHeight }}>

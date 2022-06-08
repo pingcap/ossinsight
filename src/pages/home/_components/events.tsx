@@ -72,7 +72,7 @@ export default function Events({ show }: { show: boolean }) {
   }, [show]);
 
   return (
-    <CoolList ref={ref} maxLength={10} itemHeight={30} getKey={getKey} onMouseEnter={stop} onMouseLeave={start}>
+    <CoolList ref={ref} maxLength={10} itemHeight={24} getKey={getKey} onMouseEnter={stop} onMouseLeave={start}>
       {renderEvent}
     </CoolList>
   );
@@ -80,7 +80,7 @@ export default function Events({ show }: { show: boolean }) {
 
 const EventText = styled('span')({
   fontSize: 12,
-  lineHeight: '15px',
+  lineHeight: '12px',
   whiteSpace: 'nowrap',
   overflow: 'hidden',
   textOverflow: 'ellipsis',
