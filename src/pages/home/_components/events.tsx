@@ -15,10 +15,8 @@ import {
   StarFillIcon, TagIcon,
 } from '@primer/octicons-react';
 import React, { useCallback, useEffect, useRef } from 'react';
-import { useInView } from 'react-intersection-observer';
 import { CoolList, CoolListInstance } from '../../../components/CoolList';
 import { useRealtimeRemoteData } from '../../../components/RemoteCharts/hook';
-import useVisibility from '../../../hooks/visibility';
 
 type Event = {
   id: number
