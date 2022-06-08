@@ -21,6 +21,8 @@ import TopList from '../../components/TopList';
 import WordCloud from '../../components/WordCloud';
 import useVisibility from '../../hooks/visibility';
 import CustomPage from '../../theme/CustomPage';
+import Events from './_components/events';
+import { Realtime } from './_components/realtime';
 import Section from './_components/Section';
 import Tag from './_components/Tag';
 import { Body, fontSizes, H1, H2, H2Plus, Headline, Span, Subtitle } from './_components/typography';
@@ -134,9 +136,7 @@ export default function Home() {
             </Body>
           </AlignRightItem>
           <Item sx={[{flex: 0.618, paddingBottom: "10%"}, fontSizes.h1]}>
-            <WordCloud period='last_hour' style={{minHeight: 200}}>
-              <span></span>
-            </WordCloud>
+            <Realtime />
           </Item>
         </Stack>
       </Section>
