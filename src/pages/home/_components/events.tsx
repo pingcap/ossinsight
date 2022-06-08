@@ -53,7 +53,6 @@ export default function Events({ show }: { show: boolean }) {
         events[i].id = `${events[i].id}-${Date.now()}` as any; // prevent duplicated id
         ref.current?.add(events[i]);
         dataRef.current[1]++;
-        console.log(events[i]);
       }
     }, 500);
   }, []);
