@@ -42,7 +42,7 @@ We also used a **line chart** to show the Historical Trending of Top 10 reposito
 
 A visual, comprehensive tool can be very helpful when analyzing the repositories you are interested in.
 
-You can simply enter/select any repository at the [search bar](https://ossinsight.io/) and it will lead you to the detailed analysis page as well as experience it at the navigation bar wherever you are on the subpar. In addition to the overview, we will also analyze the repositories from the four dimensions of Commits, Pull Requests, Issues, and People. Here you can see many dynamic and interesting charts, showing the performance of the repository. Of course, we are not just providing static chart images, thanks to [Apache ECharts](https://echarts.apache.org/), our charts are interactive and update in real-time. 
+You can simply enter/select any repository at the [search bar](https://ossinsight.io/) and it will lead you to the detailed analysis page as well as experience it at the navigation bar wherever you are on the subpar. In addition to the overview, we will also analyze the repositories from the four dimensions of Commits, Pull Requests, Issues, and People. Here you can see many dynamic and interesting charts, showing the performance of the repository. Of course, we are not just providing static chart images, thanks to [Apache ECharts](https://echarts.apache.org/), our charts are interactive and update in **real-time**. 
 
 ![analyze selector](/img/screenshots/analyze_selector.png)
 
