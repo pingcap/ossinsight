@@ -26,3 +26,5 @@ items:
   - datafuselabs/databend
   - taosdata/TDengine
   - risinglightdb/risinglight
+  - ApsaraDB/galaxysql
+  - ApsaraDB/galaxyengine
