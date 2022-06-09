@@ -25,3 +25,4 @@ items:
   - oceanbase/oceanbase
   - datafuselabs/databend
   - taosdata/TDengine
+  - risinglightdb/risinglight
