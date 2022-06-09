@@ -24,3 +24,4 @@ items:
   - percona/percona-server
   - oceanbase/oceanbase
   - datafuselabs/databend
+  - taosdata/TDengine
