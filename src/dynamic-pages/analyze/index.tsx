@@ -28,10 +28,10 @@ interface AnalyzePageParams {
 
 const sections = [
   'overview',
+  'people',
   'commits',
   'pull-requests',
   'issues',
-  'people'
 ]
 
 function AnalyzePage() {
@@ -98,10 +98,10 @@ function AnalyzePage() {
           }}>
             <Container maxWidth="lg">
               <OverviewSection ref={sectionRefs[0]} />
-              <CommitsSection ref={sectionRefs[1]} />
-              <PullRequestsSection ref={sectionRefs[2]} />
-              <IssuesSection ref={sectionRefs[3]} />
-              <PeopleSection ref={sectionRefs[4]} />
+              <PeopleSection ref={sectionRefs[1]} />
+              <CommitsSection ref={sectionRefs[2]} />
+              <PullRequestsSection ref={sectionRefs[3]} />
+              <IssuesSection ref={sectionRefs[4]} />
               <TryItYourself campaign="compare" show fixed />
             </Container>
           </AnalyzeContext.Provider>

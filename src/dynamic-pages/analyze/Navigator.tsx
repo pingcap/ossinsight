@@ -62,10 +62,10 @@ export function Navigator({ value, type }: NavigatorProps) {
 
 const tabs: { id: string, label: string, icon: JSX.Element }[] = [
   { id: 'overview', label: 'Overview', icon: <HomeRoundedIcon /> },
+  { id: 'people', label: 'People', icon: <PersonIcon /> },
   { id: 'commits', label: 'Commits', icon: <GitCommitIcon /> },
   { id: 'pull-requests', label: 'Pull Requests', icon: <GitPullRequestIcon /> },
   { id: 'issues', label: 'Issues', icon: <IssueClosedIcon /> },
-  { id: 'people', label: 'People', icon: <PersonIcon /> },
 ];
 
 const renderTabs = () => {
