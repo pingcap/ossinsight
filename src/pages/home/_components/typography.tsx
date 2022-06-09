@@ -4,7 +4,7 @@ import {combineSx} from "../../../utils/mui";
 import {responsive} from "./responsive";
 
 export const fontSizes = {
-  h1: responsive('fontSize', 36, 48, 80),
+  h1: responsive('fontSize', 36, 48, 72),
   h2: responsive('fontSize', 24, 36, 48),
   h2plus: responsive('fontSize', 28, 48, 64),
   subtitle: responsive('fontSize', 14, 18, 24),
