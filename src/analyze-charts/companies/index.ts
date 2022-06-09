@@ -32,6 +32,17 @@ export const CompaniesChart = withChart<CompanyData, { valueIndex: string }>(({
       index: -1,
       parentId: '',
     }]);
+    // TEMP FIX: https://github.com/pingcap/ossinsight/issues/237
+    if (res.length < 51) {
+      res.push(...(new Array(51 - res.length).fill(0).map((_, i) => ({
+        id: `ph-${i}`,
+        name :'',
+        depth: 1,
+        value: 0,
+        index: -1,
+        parentId: 'root'
+      }))))
+    }
     const series = d3Hierarchy(res, 1);
     return {
       dataset: dataset(undefined, res),
