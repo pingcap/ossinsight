@@ -29,7 +29,7 @@ export default class Cache<T> {
   constructor(
     private readonly redisClient: RedisClientType<RedisDefaultModules & RedisModules, RedisScripts>,
     private readonly key: string,
-    private readonly cachedHours: number,
+    private readonly cacheHours: number,
     private readonly refreshHours: number,
     private readonly onlyFromCache: boolean = false,
     private readonly refreshCache: boolean = false,
@@ -98,11 +98,11 @@ export default class Cache<T> {
 
     try {
       await measure(redisQueryTimer.labels({op: 'set'}), async () => {
-        if (this.cachedHours === -1) {
+        if (this.cacheHours === -1) {
           await this.redisClient.set(this.key, JSON.stringify(result));
         } else {
           await this.redisClient.set(this.key, JSON.stringify(result), {
-            EX: this.cachedHours * 3600,
+            EX: Math.round(this.cacheHours * 3600),
           });
         }
       })

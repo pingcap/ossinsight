@@ -1,24 +1,41 @@
-WITH pr_with_latest_repo_name AS (
+WITH pr_opened AS (
     SELECT
         event_year,
-        actor_id,
-        FIRST_VALUE(repo_name) OVER (PARTITION BY repo_id ORDER BY created_at DESC) AS repo_name,
-        ROW_NUMBER() OVER(PARTITION BY actor_id) AS row_num
+        actor_login,
+        repo_id,
+        repo_name,
+        pr_or_issue_id,
+        created_at
     FROM github_events
     USE INDEX(index_github_events_on_repo_id)
     WHERE
         type = 'PullRequestEvent'
         AND state = 'open'
         AND repo_id IN (41986369, 16563587, 105944401)
-        -- Exclude Bots
-        AND actor_login NOT LIKE '%bot%'
-        AND actor_login NOT IN (SELECT login FROM blacklist_users)
+), pr_merged AS (
+    SELECT
+        pr_or_issue_id
+    FROM github_events
+    USE INDEX(index_github_events_on_repo_id)
+    WHERE
+        type = 'PullRequestEvent'
+        AND state = 'closed'
+        AND pr_merged = true
+        AND repo_id IN (41986369, 16563587, 105944401)
+), pr_creators_with_latest_repo_name AS (
+    SELECT
+        event_year,
+        actor_login,
+        FIRST_VALUE(repo_name) OVER (PARTITION BY repo_id ORDER BY created_at DESC) AS repo_name,
+        ROW_NUMBER() OVER(PARTITION BY actor_login) AS row_num
+    FROM pr_opened po
+    JOIN pr_merged pm ON po.pr_or_issue_id = pm.pr_or_issue_id
 ), acc AS (
     SELECT
         event_year,
         repo_name,
-        COUNT(actor_id) OVER(PARTITION BY repo_name ORDER BY event_year ASC) AS total
-    FROM pr_with_latest_repo_name
+        COUNT(actor_login) OVER(PARTITION BY repo_name ORDER BY event_year ASC) AS total
+    FROM pr_creators_with_latest_repo_name
     WHERE row_num = 1
     ORDER BY 1
 ), acc_dist AS (

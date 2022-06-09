@@ -86,6 +86,19 @@ export default async function server(router: Router<DefaultState, ContextExtends
     }
   })
 
+  router.get('/q/explain/:query', measureRequests({ urlLabel: 'path' }), async ctx => {
+    try {
+      const query = new Query(ctx.params.query, redisClient, executor, ghEventService, collectionService)
+      const res = await query.explain(ctx.query)
+      ctx.response.status = 200
+      ctx.response.body = res
+    } catch (e) {
+      ctx.logger.error('Failed to request %s: ', ctx.request.originalUrl, e)
+      ctx.response.status = 500
+      ctx.response.body = e
+    }
+  })
+
   router.get('/collections', measureRequests({ urlLabel: 'path' }), async ctx => {
     try {
       const res = await collectionService.getCollections();

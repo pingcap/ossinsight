@@ -100,8 +100,8 @@ async function main () {
     const queries = await getQueries();
     const presets = await getPresets();
     await prefetchQueries(queryExecutor, redisClient, ghEventService, collectionService, queries, presets);
-    logger.info('Next round prefetch will come at: %s', DateTime.now().plus(Duration.fromObject({ minutes: 30 })))
-    await sleep(1000 * 60 * 30);    // sleep 30 minutes.
+    logger.info('Next round prefetch will come at: %s', DateTime.now().plus(Duration.fromObject({ minutes: 1 })))
+    await sleep(1000 * 60 * 1);    // sleep 30 minutes.
   }
 }
 

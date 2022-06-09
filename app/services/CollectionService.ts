@@ -76,7 +76,7 @@ export default class CollectionService {
 
     return cache.load(async () => {
       return await measure(dataQueryTimer, async () => {
-        const sql = "select id, name from collections;";
+        const sql = "select id, name, public from collections;";
 
         try {
           const start = DateTime.now()

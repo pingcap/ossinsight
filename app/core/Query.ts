@@ -213,6 +213,7 @@ export default class Query {
     return cache.load(async () => {
       return await measure(dataQueryTimer, async () => {
         const sql = await this.buildSql(params);
+
         try {
           const start = DateTime.now()
           tidbQueryCounter.labels({ query: this.name, phase: 'start' }).inc()
@@ -234,12 +235,102 @@ export default class Query {
             sql,
             expiresAt: cacheHours === -1 ? MAX_CACHE_TIME : end.plus({hours: cacheHours}),
             fields: res.fields,
-            data: res.rows as any
+            data: res.rows as any,
           }
         } catch (e) {
           tidbQueryCounter.labels({ query: this.name, phase: 'error' }).inc()
           if (e) {
             (e as any).sql = sql
+          }
+          throw e
+        }
+      })
+    })
+  }
+
+  async explain <T> (params: Record<string, any>, refreshCache: boolean = false, conn?: PoolConnection): Promise<CachedData<T>> {
+    await this.ready();
+    const key = `explain-query:${this.name}:${this.queryDef!.params.map(p => params[p.name]).join('_')}`;
+    const { cacheHours = -1, refreshHours = -1 } = this.queryDef!;
+    const cache = new Cache<T>(this.redisClient, key, cacheHours, refreshHours, false, refreshCache);
+
+    return cache.load(async () => {
+      return await measure(dataQueryTimer, async () => {
+        const sql = await this.buildSql(params);
+        const explainSQL = `EXPLAIN ${sql}`;
+
+        try {
+          const start = DateTime.now()
+          tidbQueryCounter.labels({ query: this.name, phase: 'start' }).inc()
+
+          let explainRes: Result;
+          if (conn) {
+            explainRes = await this.executor.executeWithConn(explainSQL, conn)
+          } else {
+            explainRes = await this.executor.execute(explainSQL)
+          }
+
+          const end = DateTime.now()
+          tidbQueryCounter.labels({ query: this.name, phase: 'success' }).inc()
+
+          return {
+            params: params,
+            requestedAt: start.toISO(),
+            spent: end.diff(start).as('seconds'),
+            sql: explainSQL,
+            expiresAt: cacheHours === -1 ? MAX_CACHE_TIME : end.plus({hours: cacheHours}),
+            fields: explainRes.fields,
+            data: explainRes.rows as any,
+          }
+        } catch (e) {
+          tidbQueryCounter.labels({ query: this.name, phase: 'error' }).inc()
+          if (e) {
+            (e as any).sql = explainSQL
+          }
+          throw e
+        }
+      })
+    })
+  }
+
+  async trace <T> (params: Record<string, any>, refreshCache: boolean = false, conn?: PoolConnection): Promise<CachedData<T>> {
+    await this.ready();
+    const key = `trace-query:${this.name}:${this.queryDef!.params.map(p => params[p.name]).join('_')}`;
+    const { cacheHours = -1, refreshHours = -1 } = this.queryDef!;
+    const cache = new Cache<T>(this.redisClient, key, cacheHours, refreshHours, false, refreshCache);
+
+    return cache.load(async () => {
+      return await measure(dataQueryTimer, async () => {
+        const sql = await this.buildSql(params);
+        const traceSQL = `TRACE FORMAT='row' ${sql}`;
+
+        try {
+          const start = DateTime.now()
+          tidbQueryCounter.labels({ query: this.name, phase: 'start' }).inc()
+
+          let traceRes: Result;
+          if (conn) {
+            traceRes = await this.executor.executeWithConn(traceSQL, conn)
+          } else {
+            traceRes = await this.executor.execute(traceSQL)
+          }
+
+          const end = DateTime.now()
+          tidbQueryCounter.labels({ query: this.name, phase: 'success' }).inc()
+
+          return {
+            params: params,
+            requestedAt: start.toISO(),
+            spent: end.diff(start).as('seconds'),
+            sql: traceSQL,
+            expiresAt: cacheHours === -1 ? MAX_CACHE_TIME : end.plus({hours: cacheHours}),
+            fields: traceRes.fields,
+            data: traceRes.rows as any,
+          }
+        } catch (e) {
+          tidbQueryCounter.labels({ query: this.name, phase: 'error' }).inc()
+          if (e) {
+            (e as any).sql = traceSQL
           }
           throw e
         }
