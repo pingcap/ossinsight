@@ -58,6 +58,7 @@ export const LocChart = withChart<LocData>(({title: propsTitle}) => {
         color: '#57ab5a',
         xAxisId: id,
         yAxisId: `${id}-diff`,
+        barMaxWidth: 8,
       }),
       bar('event_month', 'deletions', {
         datasetId: datasetId,
@@ -65,6 +66,7 @@ export const LocChart = withChart<LocData>(({title: propsTitle}) => {
         color: '#e5534b',
         xAxisId: id,
         yAxisId: `${id}-diff`,
+        barMaxWidth: 8,
       }),
       line('event_month', 'total', {
         datasetId: datasetId,

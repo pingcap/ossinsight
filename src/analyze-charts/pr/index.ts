@@ -46,6 +46,7 @@ export const PrChart = withChart<PrData>(({title: propsTitle, data}) => ({
       tooltip: {
         valueFormatter: fmt,
       },
+      barMaxWidth: 8,
     })),
     line('event_month', 'total', {
       showSymbol: false,
