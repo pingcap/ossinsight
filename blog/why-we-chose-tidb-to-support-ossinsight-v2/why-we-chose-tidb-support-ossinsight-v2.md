@@ -1,7 +1,6 @@
 ---
 title: Why We Chose TiDB to Support OSSinsight (II)
 date: 2022-06-10
-image: "./banner-ossinsight-explore-deep.jpg"
 authors: [Wink Yao, fendy]
 tags: [tidb]
 ---
