@@ -1,5 +1,5 @@
 ---
-title: Why We Chose TiDB to Support OSSinsight (II)
+title: Why We Chose TiDB to Power OSSinsight (II)
 date: 2022-06-10
 authors: [Wink Yao, fendy]
 tags: [tidb]
