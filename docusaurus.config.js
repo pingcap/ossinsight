@@ -189,7 +189,7 @@ const config = {
           },
           {to: '/blog', label: 'Blogs', position: 'left'},
           {
-            href: 'https://tidbcloud.com/signup/?utm_source=ossinsight&utm_medium=referral',
+            href: 'https://tidbcloud.com/free-trial?utm_source=ossinsight&utm_medium=referral',
             className: 'navbar-item-tidb-cloud',
             position: 'right',
           },
