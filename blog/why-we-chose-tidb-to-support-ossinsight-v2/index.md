@@ -15,6 +15,8 @@ In fact, GitHub also provides insights into each repository, but they have limit
 
 <center><em>React repository’s insight page on GitHub</em></center>
 
+<!--truncate-->
+
 <br />
 
 We needed more informative, powerful, and trending open source insights. So, I decided to take up this challenge, and we made it. 
