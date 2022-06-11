@@ -1,7 +1,7 @@
 ---
 title: Why We Chose TiDB to Power OSSinsight (II)
 date: 2022-06-10
-authors: [Wink Yao, fendy]
+authors: [winkyao, fendy]
 tags: [tidb]
 ---
 
