@@ -42,6 +42,17 @@ const config = {
       }
     ],
     [
+      "content-docs",
+      /** @type {import('@docusaurus/plugin-content-docs').Options} */
+      ({
+        id: "workshop",
+        path: "workshop",
+        routeBasePath: "/workshop",
+        editUrl: "https://github.com/pingcap/ossinsight/tree/main",
+        sidebarPath: require.resolve("./sidebars.js"),
+      }),
+    ],
+    [
       path.resolve(__dirname, 'plugins/dynamic-route'),
       {
         routes: [
@@ -120,14 +131,6 @@ const config = {
           ]
         },
         docs: false,
-        /*
-        docs: {
-          path: 'workshop',
-          sidebarPath: require.resolve('./sidebars.js'),
-          editUrl: 'https://github.com/pingcap/ossinsight/edit/main/',
-          routeBasePath: '/workshop',
-        },
-        */
         blog: {
           blogTitle: 'OSS Insight Blogs',
           blogSidebarTitle: 'All Blog Posts',
@@ -188,6 +191,7 @@ const config = {
             activeBasePath: '/collections'
           },
           {to: '/blog', label: 'Blogs', position: 'left'},
+          {to: '/workshop', label: 'Workshop', position: 'left'},
           {
             href: 'https://tidbcloud.com/free-trial?utm_source=ossinsight&utm_medium=referral',
             className: 'navbar-item-tidb-cloud',
