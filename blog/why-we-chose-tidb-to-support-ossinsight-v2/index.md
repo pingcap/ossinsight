@@ -47,7 +47,7 @@ After decompressing all the data we got from GHArchive, we found there were more
 
 <br/>
 
-![](./github-events.png)
+![The data volume of GitHub events occurred after 2011](./github-events.png)
 
 <center><em>The data volume of GitHub events occurred after 2011</em></center>
 
@@ -69,7 +69,7 @@ But don’t get me wrong. I am not saying that standalone databases can’t hand
 
 <br/>
 
-![](./standalone-database-handle-large-data.jpg)
+![How a standalone database could handle large data volumes](./standalone-database-handle-large-data.jpg)
 
 <center><em>How a standalone database could handle large data volumes</em></center>
 
@@ -83,7 +83,7 @@ What if we use [ClickHouse](https://play.clickhouse.com/play?user=play) on the r
 
 <br/>
 
-![](./clickhouse-scan-large-data.png)
+![ClickHouse scanned over 4.6 billion rows of data in almost two seconds](./clickhouse-scan-large-data.png)
 
 <center><em>ClickHouse scanned over 4.6 billion rows of data in almost two seconds</em></center>
 
@@ -102,7 +102,7 @@ Before I go into details, let’s see how long TiDB took to execute the same SQL
 
 <br/>
 
-![](./tidb-scan-large-data.png)
+![TiDB scanned 4.6 billion rows of data in 4.5 ms](./tidb-scan-large-data.png)
 
 <center><em>TiDB scanned 4.6 billion rows of data in 4.5 ms</em></center>
 
@@ -123,7 +123,7 @@ Let's use OSS Insight to analyze which open source database has the most issue c
 
 To get the result, we only execute one SQL statement shown below: 
 
-```
+```sql
 SELECT
    /*+ read_from_storage(tiflash[github_events]) */
    db.group_name  AS repo_group_name,
@@ -170,7 +170,7 @@ In the figure below, notice the parts in red boxes. The data in the table `db`, 
 
 <br/>
 
-![](./tidb-execution-plan.png)
+![TiDB execution plan](./tidb-execution-plan.png)
 
 <center><em>TiDB execution plan</em></center>
 
@@ -209,7 +209,7 @@ Then, we just need to draw the results into [a more visualized chart](https://os
 
 <br/>
 
-![](./top-database-by-issue-creators.png)
+![Top open source databases with the most issue creators](./top-database-by-issue-creators.png)
 
 <center><em>Top open source databases with the most issue creators</em></center>
 
@@ -227,7 +227,7 @@ TiDB’s rowstore index helped us overcome these challenges.
 
 Take [facebook/react](https://github.com/facebook/react/pulse) as an example. Let’s analyze its code changes since its inception. To get the result, we used the following SQL statement: 
 
- ``` 
+ ``` sql
 select
    event_month,
    sum(additions) as additions,
@@ -253,7 +253,7 @@ The figure below is [the result](https://ossinsight.io/analyze/facebook/react/) 
 
 <br/>
 
-![](./react-code-changes.png)
+![Code changes of facebook/react repository](./react-code-changes.png)
 
 <center><em>Code changes of facebook/react repository</em></center>
 
@@ -272,7 +272,7 @@ The following figure shows the TiDB Dashboard. You can see that there has been a
 
 <br/>
 
-![](./tidb-dashboard-1.png)
+![TiDB Dashboard Overview](./tidb-dashboard-1.png)
 
 <center><em>TiDB Dashboard</em></center>
 
@@ -284,7 +284,7 @@ TiDB can make this easier. When we find the execution of SQL statements is slowe
 
 <br/>
 
-![](./tidb-dashboard-2.png)
+![TiDB Dashboard Top SQL](./tidb-dashboard-2.png)
 
 <center><em>TiDB Dashboard</em></center>
 
@@ -294,7 +294,7 @@ TiDB’s Key Visualizer is also my favorite.
 
 <br/>
 
-![](./tidb-key-visualizer.png)
+![TiDB Dashboard Key Visualizer](./tidb-key-visualizer.png)
 
 <center><em>TiDB’s Key Visualizer</em></center>
 
