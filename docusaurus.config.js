@@ -191,7 +191,7 @@ const config = {
             activeBasePath: '/collections'
           },
           {to: '/blog', label: 'Blogs', position: 'left'},
-          /* {to: '/workshop', label: 'Workshop', position: 'left'}, */
+          {to: '/workshop', label: 'Workshop', position: 'left'},
           {
             href: 'https://tidbcloud.com/free-trial?utm_source=ossinsight&utm_medium=referral',
             className: 'navbar-item-tidb-cloud',
