@@ -1,4 +1,4 @@
-name: Node.js CI
+name: Surge PR Preview
 
 on: pull_request_target
 
