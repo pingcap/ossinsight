@@ -33,7 +33,7 @@ curl -X POST 'https://api.twitter.com/2/tweets/search/stream/rules' \
 }'
 ```
 
-## Step 2: ETL to TiDB
+## Step 2: Load Data to TiDB
 
 (We won't implement this, you can try it :-)
 

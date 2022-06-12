@@ -23,7 +23,7 @@ The API considers the following "events":
 * editing a post
 * creating a user
 
-## Step 2: ETL to TiDB
+## Step 2: Load Data to TiDB
 
 (We won't implement this, you can try it :-)
 

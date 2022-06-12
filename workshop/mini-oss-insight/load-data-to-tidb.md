@@ -1,5 +1,5 @@
 ---
-title: 'Step 2: ETL to TiDB'
+title: 'Step 2: Load Data  to TiDB'
 sidebar_position: 2
 ---
 
@@ -22,12 +22,12 @@ It's quite easy to build a mini OSS Insight, there is no need to use an industri
 
 ```bash
 for y in {2011..2022}; do
-    ./etl --mysql mysql://user@pass:host:port/db --year $y
+    ./etl.rb --mysql mysql://user@pass:host:port/db --year $y
 done
 ```
 
 ## 3. Subscribe to GitHub events api and insert real time events to TiDB
 
 ```bash
-./etl --mysql mysql://user@pass:host:port/db --listen --token github-personal-token1,token2,token3
+./etl.rb --mysql mysql://user@pass:host:port/db --listen --token github-personal-token1,token2,token3
 ```
