@@ -4,7 +4,7 @@ sidebar_label: Twitter Insight
 sidebar_position: 4
 ---
 
-Twitter is the leading social media in the world, the tweets analysis must be very very interesting:
+[Twitter](http://twitter.com/) is the leading social media in the world, the tweets analysis must be very very interesting:
 * Who is mentioned the most
 * What is the trends
 * A specific user's tweets?
@@ -16,7 +16,7 @@ Twitter is the leading social media in the world, the tweets analysis must be ve
 After Google, here is a topic about how to retrive archive tweets data:  https://developer.twitter.com/en/docs/tutorials/getting-historical-tweets-using-the-full-archive-search-endpoint
 
 
-### Realtime Data
+### Realtime Tweets
 
 Here is a topic about `Listen for important events`: https://developer.twitter.com/en/docs/tutorials/listen-for-important-events
 

@@ -3,7 +3,7 @@ title: 'Workshop: Stack Overflow Insight'
 sidebar_position: 3
 sidebar_label: Stack Overflow Insight
 ---
-Stack Overflow is a widely used website by developers.
+[Stack Overflow](https://stackoverflow.com/) helps people find the answers they need, when they need them. We're best known for our public Q&A platform that over 100 million people visit every month to ask questions, learn, and share technical knowledge.
 
 ## Step 1: Find Data Source
 
