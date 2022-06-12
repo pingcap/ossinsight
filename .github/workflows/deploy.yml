@@ -1,16 +1,13 @@
-name: Node.js CI
+name: Deploy
 
 on:
   push:
     branches: [main]
-  pull_request:
-    branches: [main]
   workflow_dispatch:
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
-    permissions: write-all
     strategy:
       matrix:
         node-version: [16.x]
@@ -28,21 +25,10 @@ jobs:
         run: npm run build
       - name: Deploy to ossinsight.io 🚀
         uses: JamesIves/github-pages-deploy-action@releases/v3
-        if: ${{ github.event_name != 'pull_request' }}
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BRANCH: gh-pages # The branch the action should deploy to.
           FOLDER: build # The folder the action should deploy.
-      - name: Deploy to ossinsight.surge.sh 🚀
-        uses: afc163/surge-preview@v1
-        if: ${{ github.event_name == 'pull_request' }}
-        with:
-          surge_token: ${{ secrets.SURGE_TOKEN }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          dist: './build'
-          teardown: true
-          build: echo 'Deployed to surge'
-          
       - name: Deploy to Hong Kong server 🚀
         uses: burnett01/rsync-deployments@5.2
         with:
