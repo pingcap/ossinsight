@@ -14,7 +14,7 @@ The workshop here is telling the answer.
 ## Easy to build
 
 For TiDB (MySQL compatible), it is **SUPER EASY** to handle both:
-1. a primary rdbms to <u>handle high concurrency</u> and <u>real-time insert/update</u>
+1. a primary rdbms to <u>serve requests high concurrency</u> and <u>real-time insert/update</u>
 2. analytical scenario to <u>provide insights</u>
 
 (Even the data size is 100TBi+)
