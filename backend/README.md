@@ -154,4 +154,4 @@ location     | varchar     | [null]         |     |         |
 ### Realtime Fetch Github Event
 
 * bundle exec rails runner 'Realtime.new(ENV["GITHUB_TOKEN"].split(","), 500).run'
-* bundle exec rails runner 'Realtime.clean!' # every 1 hour
+* bundle exec rails runner 'Realtime.clean!' # every 5 minutes
