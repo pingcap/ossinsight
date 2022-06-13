@@ -21,6 +21,6 @@ class Realtime
   end
 
   def self.clean!
-    EventLog.where("created_at <= ?", 1.hour.ago).delete_all
+    EventLog.where("created_at <= ?", 5.minutes.ago).delete_all
   end
 end
