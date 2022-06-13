@@ -16,7 +16,7 @@ tiup playground -T mini-ossinsight
 
 It's quite easy to build a mini OSS Insight, there is no need to use an industrial ETL tool, so we prepare a simple ETL script with Ruby.
 
-⬇️  Download [etl.rb](.)
+⬇️  Download [etl.rb](.) [TODO]
 
 ## 2. Load Historical GitHub events to TiDB
 
