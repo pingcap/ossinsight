@@ -13,3 +13,4 @@ items:
   - Alluxio/alluxio
   - minio/minio
   - storj/storj
+  - chrislusf/seaweedfs

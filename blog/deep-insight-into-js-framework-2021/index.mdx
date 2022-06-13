@@ -14,6 +14,7 @@ Note:
 1. You can move your cursor onto any of the repository bars/lines on the chart and get the exact number. 
 2. The SQL commands above each chart are what we use on our TiDB Cloud to get the analytical results. Try those SQL commands by yourselves on TiDB Cloud with this [10-minute tutorial](/blog/try-it-yourself/).
 
+
 ## Star history of top JavaScript Framework repos since 2011
 
 The number of stars is often thought of as a measure of whether a github repository is popular or not. We sort all JavaScript framework repositories from github by the total number of historical stars since 2011. For visualizing the results more intuitively, we show the top 10 open source databases by using an interactive line chart. 
@@ -52,6 +53,23 @@ The number of stars is often thought of as a measure of whether a github reposit
   seriesName='PRs'
   repo='js_framework_repos'
 />
+
+
+## Which javascript framework have the widest feedback sources?
+
+The chart below displays the number of issue creators of leading javascript framework each year and their growth trend during the past ten years.
+
+<CommonChart
+  chart='barchart'
+  category='rt-jsf-ranking-by-issue-creators'
+  n={20}
+  formatSql={false}
+  categoryIndex='repo_name'
+  valueIndex='num'
+  seriesName='Issue Creators'
+  categoryType={false}
+/>
+
 
 ## Top 20 developers contributing the most PRs to JSF repos in 2021
 

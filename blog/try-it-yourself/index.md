@@ -13,7 +13,7 @@ In this tutorial, we will provide you with a piece of sample data of all GitHub 
 
 ## Sign up for a TiDB Cloud account (Free)
 
-1. Click [here](https://tidbcloud.com/signup?utm_source=ossinsight&utm_medium=referral) to sign up for a TiDB Cloud account free of charge. 
+1. Click [here](https://tidbcloud.com/free-trial?utm_source=ossinsight&utm_medium=referral) to sign up for a TiDB Cloud account free of charge. 
 2. [Log in](https://tidbcloud.com/?utm_source=ossinsight&utm_medium=referral) to your account.
 
 <!--truncate-->
