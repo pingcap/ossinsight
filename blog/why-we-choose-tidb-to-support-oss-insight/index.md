@@ -45,7 +45,7 @@ Unleashing the value of real-time data has become more and more important, and h
 :::info
 ### 🌟 Details in how OSS Insight works
 
-Go to read [Use TiDB Cloud to Analyze GitHub Events in 10 Minutes](/blog/try-it-yourself) and use the [Developer Tier](https://tidbcloud.com/signup?utm_source=ossinsight&utm_medium=referral) **free** for 1 year.
+Go to read [Use TiDB Cloud to Analyze GitHub Events in 10 Minutes](/blog/try-it-yourself) and use the [Developer Tier](https://tidbcloud.com/free-trial?utm_source=ossinsight&utm_medium=referral) **free** for 1 year.
 
 You can find how we deal with massive github data in [Data Preparation for Analytics](/blog/how-it-works) as well!
 :::
