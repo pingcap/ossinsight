@@ -1,6 +1,6 @@
 <h1 align="center"> About OSS Insight</h1>
 
-OSS Insight is short for open source software Insights, and is a powerful insight tool that can help you analyze in depth any single GitHub repository, compare any two repositories using the same metrics, and provide comprehensive, valuable, and trending open source insights. 
+OSS Insight, short for open source software insights, is a powerful insight tool that can help you analyze in depth any single GitHub repository, compare any two repositories using the same metrics, and provide comprehensive, valuable, and trending open source insights. 
 
 OSS Insight is powered by [TiDB](https://github.com/pingcap/tidb), an open source, highly scalable distributed database with hybrid transactional and analytical processing (HTAP) capabilities. The source GitHub data used here in OSS Insight comes from [GH Archive](https://www.gharchive.org/), [GHTorrent](https://ghtorrent.org/), and  [GitHub event API](https://docs.github.com/en/rest/activity/events). We also use [Docusaurus](https://github.com/facebook/docusaurus) to build the OSS Insight website, and [Apache ECharts](https://echarts.apache.org/), to make complicated datasets into visualized charts. 
 
