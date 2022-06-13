@@ -1,10 +1,11 @@
 import BrowserOnly from '@docusaurus/BrowserOnly';
 import Head from '@docusaurus/Head';
 import { useHistory, useLocation, useRouteMatch } from '@docusaurus/router';
+import { Scrollspy } from '@makotot/ghostui';
 import { useMediaQuery } from '@mui/material';
 import Container from '@mui/material/Container';
 import { Theme } from '@mui/material/styles';
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useRef } from 'react';
 import { AnalyzeContext } from '../../analyze-charts/context';
 import { RepoInfo, useRepo } from '../../api/gh';
 import NewCompareHeader from '../../components/CompareHeader/NewCompareHeader';
@@ -13,13 +14,13 @@ import { AsyncData } from '../../components/RemoteCharts/hook';
 import TryItYourself from '../../components/Ads/TryItYourself';
 import useUrlSearchState, { stringParam } from '../../hooks/url-search-state';
 import CustomPage from '../../theme/CustomPage';
-import { CommitsSection } from './sections/Commits';
-import { IssuesSection } from './sections/Issues';
-import { OverviewSection } from './sections/Overview';
-import { PeopleSection } from './sections/People';
-import { PullRequestsSection } from './sections/PullRequests';
 import { Navigator } from './Navigator';
-import { Scrollspy } from '@makotot/ghostui';
+import { OverviewSection } from './sections/0-Overview';
+import { PeopleSection } from './sections/1-People';
+import { CommitsSection } from './sections/2-Commits';
+import { PullRequestsSection } from './sections/3-PullRequests';
+import { IssuesSection } from './sections/4-Issues';
+import { Contributors } from './sections/5-Contributors';
 
 interface AnalyzePageParams {
   owner: string;
@@ -102,6 +103,7 @@ function AnalyzePage() {
               <CommitsSection ref={sectionRefs[2]} />
               <PullRequestsSection ref={sectionRefs[3]} />
               <IssuesSection ref={sectionRefs[4]} />
+              <Contributors />
               <TryItYourself campaign="compare" show fixed />
             </Container>
           </AnalyzeContext.Provider>
