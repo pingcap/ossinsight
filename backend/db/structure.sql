@@ -34,6 +34,30 @@ CREATE TABLE `blacklist_users` (
   `login` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `cache`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `cache` (
+  `cache_key` varchar(512) NOT NULL,
+  `cache_value` json NOT NULL,
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `expires` int(11) DEFAULT '-1' COMMENT 'cache will expire after n seconds',
+  PRIMARY KEY (`cache_key`) /*T![clustered_index] NONCLUSTERED */
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `cached_table_cache`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `cached_table_cache` (
+  `cache_key` varchar(512) NOT NULL,
+  `cache_value` json NOT NULL,
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `expires` int(11) DEFAULT '-1' COMMENT 'cache will expire after n seconds',
+  PRIMARY KEY (`cache_key`) /*T![clustered_index] NONCLUSTERED */
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin /* CACHED ON */;
+/*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `cn_orgs`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -64,7 +88,7 @@ CREATE TABLE `collection_items` (
   `repo_id` bigint(20) NOT NULL,
   PRIMARY KEY (`id`) /*T![clustered_index] CLUSTERED */,
   KEY `index_collection_items_on_collection_id` (`collection_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin AUTO_INCREMENT=60001;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin AUTO_INCREMENT=90001;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `collections`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -75,7 +99,7 @@ CREATE TABLE `collections` (
   `public` tinyint(1) DEFAULT '1',
   PRIMARY KEY (`id`) /*T![clustered_index] CLUSTERED */,
   UNIQUE KEY `index_collections_on_name` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin AUTO_INCREMENT=60001;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin AUTO_INCREMENT=90001;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `css_framework_repos`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -103,7 +127,7 @@ CREATE TABLE `event_logs` (
   `created_at` datetime NOT NULL,
   PRIMARY KEY (`id`) /*T![clustered_index] CLUSTERED */,
   KEY `index_event_logs_on_created_at` (`created_at`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin AUTO_INCREMENT=22008342393;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin AUTO_INCREMENT=22302733897;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `gh`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -424,7 +448,8 @@ CREATE TABLE `users` (
   `city` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `location` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`) /*T![clustered_index] CLUSTERED */,
-  KEY `index_login_on_users` (`login`)
+  KEY `index_login_on_users` (`login`),
+  KEY `idx_company_name` (`company_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=68024323;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `web_framework_repos`;
@@ -462,6 +487,7 @@ INSERT INTO `schema_migrations` (version) VALUES
 ('20220512044547'),
 ('20220512044558'),
 ('20220526073719'),
-('20220526174823');
+('20220526174823'),
+('20220613101057');
 
 
