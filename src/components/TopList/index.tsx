@@ -96,6 +96,7 @@ function renderTopListHeader (period: string, handlePeriodChange: (period: Selec
             <Button disabled={loading} onClick={handleOpen}>SHOW SQL</Button>
           </Typography>
         )}
+        disableFocusListener
       >
         <IconButton>
           <InfoIcon />
