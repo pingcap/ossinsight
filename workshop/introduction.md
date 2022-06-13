@@ -27,7 +27,7 @@ And we only need 3 steps to setup a demo:
 
 ## Join Workshops:
 
-* [mini OSS Insight](./mini-oss-insight)
-* [Stack Overflow Insight](./stack-overflow-insight)
-* [Twitter Insight](./twitter-insight)
-* [Cryptocurrency Insight](./cryptocurrency-insight)
+* [mini OSS Insight](/workshop/mini-oss-insight)
+* [Stack Overflow Insight](/workshop/stack-overflow-insight)
+* [Twitter Insight](/workshop/twitter-insight)
+* [Cryptocurrency Insight](/workshop/cryptocurrency-insight)
