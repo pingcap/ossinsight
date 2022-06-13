@@ -1,86 +1,94 @@
 <h1 align="center"> About OSS Insight</h1>
 
-OSS Insight -> Open Source Software Insight
+OSS Insight, short for open source software insights, is a powerful insight tool that can help you analyze in depth any single GitHub repository, compare any two repositories using the same metrics, and provide comprehensive, valuable, and trending open source insights. 
 
+OSS Insight is powered by [TiDB](https://github.com/pingcap/tidb), an open source, highly scalable distributed database with hybrid transactional and analytical processing (HTAP) capabilities. The source GitHub data used here in OSS Insight comes from [GH Archive](https://www.gharchive.org/), [GHTorrent](https://ghtorrent.org/), and  [GitHub event API](https://docs.github.com/en/rest/activity/events). We also use [Docusaurus](https://github.com/facebook/docusaurus) to build the OSS Insight website, and [Apache ECharts](https://echarts.apache.org/), to make complicated datasets into visualized charts. 
 
-Recently, we launched OSS Insight - our powerful and interesting insight tool built with [Docusaurus](https://github.com/facebook/docusaurus), [Apache ECharts](https://echarts.apache.org/), [GH Archive](https://www.gharchive.org/), [GHTorrent](https://ghtorrent.org/) and [TiDB](https://github.com/pingcap/tidb). 
+## What we can do
+We provide **monthly rankings and historical growth trends** by metrics such as the number of stars, pull requests, pull requests creators, and commits for many GitHub collections such as open source databases, static site generators, and JavaScript Frameworks.
 
-![homepage](/img/screenshots/homepage.png)
-
-As a group of people working in the open source community, we often work with GitHub data. We focus on the health of open source projects and all the new things happening in the open source world. Therefore, we decided to establish this site by using **4.6 billion GitHub event data** in order to gain useful insights through a/pair/group of open source projects in multi-dimensional. We hope to make the open source ecosystem better with you.
-
-We're honored to have brought this project to the attention of everyone after its release, some interesting responses and shares have started to circulate (see our [Twitter](https://twitter.com/OSSInsight) for details), and we're excited to see more people use this powerful tool to discover insights. If it can also help you deal with problems(such as dealing with dataset as large as 4.6 billion data from GitHub), that would be a bonus!
-
-In this project, we mainly provide two major functions, one is **the monthly rankings/historical trends** for GitHub collections and the other one is **a custom analysis tool** for Github repositories.
-
-## Monthly Rankings/Historical Trends for GitHub Collections
-
-You can view the monthly ranking and historical trends of a repository by clicking the **[Collections](https://ossinsight.io/collections/open-source-database)** button on the navigation bar. We calculate the monthly incremental data of the repository by using the raw data from [GitHub Collections](https://github.com/collections). The rankings(include stars, pull requests, and issues ranking) is considered with the monthly increment for each repository.
+You can see [Collections](https://ossinsight.io/collections/open-source-database)for more information. 
 
 :::note
 
-### 📌 How to add collections
-We welcome your contributions here! You can add a collection on our website by **[submitting PRs here](https://github.com/pingcap/ossinsight)**. 
+### 📌 How to add new collections
+Welcome to contribute to us! You can add new collections by **[submitting PRs here](https://github.com/pingcap/ossinsight)**. 
 
 :::
 
-We always keep working on how to make our OSS Insight more interesting and useful, so we chose some cool dynamic charts to display powerful insights. 
+Let’s take the collection [Open Source Databases](https://ossinsight.io/collections/open-source-database) for example and walk you through the major functionalities of OSS Insight. 
 
-The **bar chart race** can simulate the historical growth situation of repositories, not only the growth process for total amount, but also the ranking relationship between different repositories. For example, in the [open source database - stars](https://ossinsight.io/collections/open-source-database/trends/) shown here, we can see that the stars for [pingcap/tidb](https://github.com/pingcap/ossinsight) growth very rapidly, and the ranking has been reached to the second place very fast after it was created, and it continues to move forward.
+### Monthly rankings
 
-![Bar Chart Race](/img/screenshots/bar-chart-race.png)
+We rank the top 27 open source databases on GitHub on a monthly basis according to their number of stars, pull requests, and issues respectively. We also display their rankings change compared to last month under different metrics. 
 
-If you just wondering the annual ranking changes of a repository, we recommend you use the **pipeline chart** to gain insights with the concise and clear annual ranking results.
+![The monthly ranking of open source databases in May-I](/img/screenshots/monthly-rankings-of-opensource-databases-in-may-1.png)
+![The monthly ranking of open source databases in May-II](/img/screenshots/monthly-rankings-of-opensource-databases-in-may-2.png)
 
-![Pipeline Chart](/img/screenshots/pipeline-chart.png)
+<center><em>The monthly ranking of open source databases in May</em></center>
 
-We also used a **line chart** to show the Historical Trending of Top 10 repositories in a collection. You can see more granular ranking trends month to month here.
+<br />
+<br />
 
-![line Chart](/img/screenshots/line-chart.png)
+### Dynamic growth trend 
+We also analyze, rank, and display the dynamic growth trend of open source databases by metrics including the number of stars, pull requests, pull requests creators, and issues. 
 
-## Powerful Custom Analysis Tool
+We display the analytical results in three dimensions: **Bar Chart Race, Historical Rankings Change, and Growth Trend of Top 10 Repos**.
 
-A visual, comprehensive tool can be very helpful when analyzing the repositories you are interested in.
+#### Bar Chart Race
+The **Bar Chart Race** is a visilized and animated demonstration of both the growth trend and rankings change of different open source databases in their number of stars, pull requests, pull request creators, and issues respectively since 2011. 
 
-You can simply enter/select any repository at the [search bar](https://ossinsight.io/) and it will lead you to the detailed analysis page as well as experience it at the navigation bar wherever you are on the subpar. In addition to the overview, we will also analyze the repositories from the four dimensions of Commits, Pull Requests, Issues, and People. Here you can see many dynamic and interesting charts, showing the performance of the repository. Of course, we are not just providing static chart images, thanks to [Apache ECharts](https://echarts.apache.org/), our charts are interactive and update in **real-time**. 
+![The bar chart race by Stars](/img/screenshots/bar-chart-race.png)
 
-![analyze selector](/img/screenshots/analyze_selector.png)
+<center><em>The bar chart race by Stars</em></center>
 
-*\* Analyze any 1/2 repositories with selectors*
+<br />
+<br />
 
-If you want to compare your own repository with others, just enter/select another repository's name in the selector which fixed on the top of analyze page. Then you will instantly get a comparative insight result, which can become a unique comparative analysis report after a simple processing. 
+#### Historical Ranking Change 
+As the subtitle indicates, the **Historical Ranking Change** part shows the **annual change of the ranking places** of top 27 open source databases by metrics including the number of stars, pull requests, pull request creators, and issues respectively since 2011. 
 
-We recommend you try our **Geographical Distribution** and **Companies** sections on the [analysis page](https://ossinsight.io/analyze/pingcap/tidb). Here, we process personal public information from GitHub and display it with visual charts. You can see which companies are contributing to the projects most, and you can also see how popular it is worldwide.
+![The rankings change of top open source databases by stars since 2011](/img/screenshots/pipeline-chart.png)
 
-![user list](/img/screenshots/user_list.png)
+<center><em>The rankings change of top open source databases by stars since 2011</em></center>
 
-*\* Personal public information from GitHub*
+<br />
+<br />
 
-<table>
-    <tr style={{ border:"none" }}>
-        <td style={{ border:"none" }}>
-            <img src="/img/screenshots/geo_locations.png" alt="Geographical Distribution"/>
-        </td>
-        <td style={{ border:"none" }}>
-            <img src="/img/screenshots/companies.png" alt="Companies"/>
-        </td>
-    </tr>
-</table>
+#### Growth Trend of Top 10 Repos
+We also use a line chart to show the **monthly growth trend** of top 10 repositories among the collection of open source databases by metrics including the number of stars, pull requests, pull request creators, and issues. 
 
-*\* Geographical Distribution and Companies sections on the analysis page*
+![Top 10 open source databases by stars](/img/screenshots/line-chart.png)
 
-If you need other detailed cases to start your journey, you can refer to our blog to find out how we built this website and processed such a huge dataset. Of course, we also encourage you to [play around](https://ossinsight.io/try-your-own-dataset) with your own dataset and build cool projects. If you have a good idea, please share it with us via [Twitter](https://twitter.com/OSSInsight).
+<center><em>Top 10 open source databases by stars</em></center>
 
-## Contributions Welcome!
+<br />
+<br />
 
-If you liked our project or you are a developer who is interested in contributing with us, please feel free to raise a PR [here](https://github.com/pingcap/ossinsight).
+### Analyze any single repository 
+OSS Insight allows you to explore in depth any single repository in real time. By entering any repository or selecting from the option lists at the [search box](https://ossinsight.io/), you can get an in-depth and comprehensive analysis of this repository, including an overview of its number of stars, commits, issues, and a few other metrics. 
 
-Feel free to reach out to us on our [Twitter](https://twitter.com/OSSInsight) for any queries.
+![An overview of the TiDB repository](/img/screenshots/overview-of-tidb-repo.png)
 
-:::info
+<center><em>An overview of the TiDB repository</em></center>
 
-### Contact us via email
+<br />
 
-ossinsight@pingcap.com
+In addition to an overview of a repository, we also provide another four analytical dimensions: **People, Commits, Pull Requests, and Issues**. By analyzing a repository using the four metrics, you can get a full picture of a repository and draw your own conclusions on many aspects including its popularity among various developers and industries, coding vitality, and coding efficiency. 
 
-:::
+### Compare any two repositories
+If you want to compare two repositories, you can enter the two repositories or select from the option lists at the two [search boxes](https://ossinsight.io/) respectively. Then, you will get a comparative analytical result of the two repositories, including their repository overview, and in-depth analysis about their pull requests, issues, commits, contributors, stargazers and other metrics.  
+
+![Compare TiDB with any other repository by entering its name at the search box](/img/screenshots/analyze_selector.png)
+
+<center><em>Compare TiDB with any other repository by entering its name at the search box</em></center>
+
+<br />
+<br />
+
+## Welcome to contribute to us! 
+If you like our project or are interested in making contributions to us, feel free to [submit your PRs](https://github.com/pingcap/ossinsight) to our GitHub repository. You can also try to analyze your own datasets by using TiDB Cloud with [this 10-minute tutorial](https://ossinsight.io/blog/try-it-yourself/). 
+
+## Contact us! 
+You can also follow us on [Twitter](https://twitter.com/OSSInsight) for the latest information. 
+If you have wonderful ideas to share with us, or want to cooperate with us, you can share your ideas via our [Twitter](https://twitter.com/OSSInsight) or email us at [ossinsight@pingcap.com](mailto:ossinsight@pingcap.com). 
