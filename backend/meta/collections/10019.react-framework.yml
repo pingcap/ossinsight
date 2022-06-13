@@ -6,5 +6,6 @@ items:
   - gatsbyjs/gatsby
   - marmelab/react-admin
   - remix-run/remix
+  - remix-run/react-router
   - blitz-js/blitz
   - pankod/refine
