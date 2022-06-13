@@ -79,4 +79,4 @@ If you like our project or are interested in making contributions to us, feel fr
 
 ## Contact us! 
 You can also follow us on [Twitter](https://twitter.com/OSSInsight) for the latest information. 
-If you have wonderful ideas to share with us, or want to cooperate with us, you can share your ideas via our [Twitter](https://twitter.com/OSSInsight) or email us at [ossinsight@pingcap.com](ossinsight@pingcap.com.). 
+If you have wonderful ideas to share with us, or want to cooperate with us, you can share your ideas via our [Twitter](https://twitter.com/OSSInsight) or email us at [ossinsight@pingcap.com](mailto:ossinsight@pingcap.com). 
