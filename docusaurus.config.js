@@ -191,7 +191,18 @@ const config = {
             activeBasePath: '/collections'
           },
           {to: '/blog', label: 'Blogs', position: 'left'},
-          {to: '/workshop', label: 'Workshop', position: 'left'},
+          {
+            type: 'dropdown',
+            label: 'Workshop',
+            position: 'left',
+            items: [
+              {label: 'Introduction', href: '/workshop'},
+              {label: 'Workshop: mini OSS Insight', href: '/workshop/mini-oss-insight'},
+              {label: 'Workshop: Stack Overflow Insight', href: '/workshop/stack-overflow-insight'},
+              {label: 'Workshop: Twitter Insight', href: '/workshop/twitter-insight'},
+              {label: 'Workshop: Cryptocurrency Insight', href: '/workshop/cryptocurrency-insight'},
+            ]
+          },
           {
             href: 'https://tidbcloud.com/free-trial?utm_source=ossinsight&utm_medium=referral',
             className: 'navbar-item-tidb-cloud',
