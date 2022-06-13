@@ -15,8 +15,8 @@ The workshop here is telling the answer.
 ## Simple Architecture & Few Steps
 
 For TiDB (MySQL compatible), it is **SUPER EASY** to handle both:
-* act as a **primary** rdbms to <u>serve requests in high concurrency</u> and <u>insert/update in realtime</u> (transactional row-storage)
-* provide analytical ability to <u>get insights</u> (analytical column-storage)
+* act as a **primary** rdbms to <u>serve requests in high concurrency</u> and <u>insert/update in realtime</u> (transactional row-oriented)
+* provide analytical ability to <u>get insights</u> (analytical column-oriented)
 
 (Even the data size is 100TBi+)
 
