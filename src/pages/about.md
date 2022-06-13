@@ -7,7 +7,7 @@ OSS Insight is powered by [TiDB](https://github.com/pingcap/tidb), an open sourc
 ## What we can do
 We provide **monthly rankings and historical growth trends** by metrics such as the number of stars, pull requests, pull requests creators, and commits for many GitHub collections such as open source databases, static site generators, and JavaScript Frameworks.
 
-You can see [Collections] (https://ossinsight.io/collections/open-source-database)for more information. 
+You can see [Collections](https://ossinsight.io/collections/open-source-database)for more information. 
 
 :::note
 
@@ -27,6 +27,8 @@ We rank the top 27 open source databases on GitHub on a monthly basis according 
 
 <center><em>The monthly ranking of open source databases in May</em></center>
 
+<br />
+<br />
 
 ### Dynamic growth trend 
 We also analyze, rank, and display the dynamic growth trend of open source databases by metrics including the number of stars, pull requests, pull requests creators, and issues. 
@@ -40,6 +42,8 @@ The **Bar Chart Race** is a visilized and animated demonstration of both the gro
 
 <center><em>The bar chart race by Stars</em></center>
 
+<br />
+<br />
 
 #### Historical Ranking Change 
 As the subtitle indicates, the **Historical Ranking Change** part shows the **annual change of the ranking places** of top 27 open source databases by metrics including the number of stars, pull requests, pull request creators, and issues respectively since 2011. 
@@ -48,12 +52,18 @@ As the subtitle indicates, the **Historical Ranking Change** part shows the **an
 
 <center><em>The rankings change of top open source databases by stars since 2011</em></center>
 
+<br />
+<br />
+
 #### Growth Trend of Top 10 Repos
 We also use a line chart to show the **monthly growth trend** of top 10 repositories among the collection of open source databases by metrics including the number of stars, pull requests, pull request creators, and issues. 
 
 ![Top 10 open source databases by stars](/img/screenshots/line-chart.png)
 
 <center><em>Top 10 open source databases by stars</em></center>
+
+<br />
+<br />
 
 ### Analyze any single repository 
 OSS Insight allows you to explore in depth any single repository in real time. By entering any repository or selecting from the option lists at the [search box](https://ossinsight.io/), you can get an in-depth and comprehensive analysis of this repository, including an overview of its number of stars, commits, issues, and a few other metrics. 
@@ -62,8 +72,7 @@ OSS Insight allows you to explore in depth any single repository in real time. B
 
 <center><em>An overview of the TiDB repository</em></center>
 
-<br/>
-
+<br />
 
 In addition to an overview of a repository, we also provide another four analytical dimensions: **People, Commits, Pull Requests, and Issues**. By analyzing a repository using the four metrics, you can get a full picture of a repository and draw your own conclusions on many aspects including its popularity among various developers and industries, coding vitality, and coding efficiency. 
 
@@ -73,6 +82,9 @@ If you want to compare two repositories, you can enter the two repositories or s
 ![Compare TiDB with any other repository by entering its name at the search box](/img/screenshots/analyze_selector.png)
 
 <center><em>Compare TiDB with any other repository by entering its name at the search box</em></center>
+
+<br />
+<br />
 
 ## Welcome to contribute to us! 
 If you like our project or are interested in making contributions to us, feel free to [submit your PRs](https://github.com/pingcap/ossinsight) to our GitHub repository. You can also try to analyze your own datasets by using TiDB Cloud with [this 10-minute tutorial](https://ossinsight.io/blog/try-it-yourself/). 
