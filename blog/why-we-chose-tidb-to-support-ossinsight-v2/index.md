@@ -43,7 +43,7 @@ Combining the data from the GHArchive and the GitHub event API, we can gain stre
 
 ## Large data volume: over 4.6 billion rows of data 
 
-After decompressing all the data we got from GHArchive, we found there were more than 4.6 billion rows of GitHub events. We also noticed that about 100,000 rows were generated and updated each hour. That’s a lot of data! 
+After decompressing all the data we got from GHArchive, we found there were more than 4.6 billion rows of GitHub events. We also noticed that about 300,000 rows were generated and updated each hour. That’s a lot of data! 
 
 <br/>
 
