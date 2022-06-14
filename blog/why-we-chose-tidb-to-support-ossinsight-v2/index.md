@@ -19,7 +19,7 @@ In fact, GitHub also provides insights into each repository, but they have limit
 
 <br />
 
-We needed more informative, powerful, and trending open source insights. So, I decided to take up this challenge, and we made it. 
+We need more informative, powerful, and trending open source insights. So, I decided to take up this challenge, and we made it. 
 
 ## What did we expect
 
@@ -75,15 +75,15 @@ But don’t get me wrong. I am not saying that standalone databases can’t hand
 
 <br/>
 
-To analyze any single repository, this architecture seems feasible, right? But, what if we want insights into individual contributors, say, the total number of their pull requests, stars, and issues? For example, if we run this SQL statement `select count(*) from github_events where actor_login = 'siddontang';`, is the architecture above agile enough? 
+To analyze any single repository, this architecture seems feasible, right? But, what if we want insights into individual contributors, say, the total number of their pull requests, stars, and issues? For example, if we run this SQL statement `select count(*) from github_events where actor_login = 'kennytm';`, is the architecture above agile enough? 
 
 The answer is no. If we split the data by the repository id, the database clusters on the left side of the architecture cannot quickly respond to the above query. 
 
-What if we use [ClickHouse](https://play.clickhouse.com/play?user=play) on the right side of the above architecture to run the same SQL statement `select count(*) from github_events where actor_login = 'siddontang';` ? We get the following result:
+What if we use [ClickHouse](https://play.clickhouse.com/play?user=play) on the right side of the above architecture to run the same SQL statement `select count(*) from github_events where actor_login = 'kennytm';` ? We get the following result:
 
 <br/>
 
-![ClickHouse scanned over 4.6 billion rows of data in almost two seconds](./clickhouse-scan-large-data.png)
+![ClickHouse scanned over 4.6 billion rows of data in almost two seconds](./clickhouse-scanned-kennytm.png)
 
 <center><em>ClickHouse scanned over 4.6 billion rows of data in almost two seconds</em></center>
 
@@ -95,16 +95,16 @@ ClickHouse took 1.9 seconds to scan all the 4.6 billion rows of data. Of course,
 
 After we ruled out standalone databases, we turned to TiDB, a highly scalable distributed database with Hybrid Transactional/Analytical Processing (HTAP) capability. 
 
-Before I go into details, let’s see how long TiDB took to execute the same SQL command: `select count(*) from github_events where actor_login = 'siddontang';`.
+Before I go into details, let’s see how long TiDB took to execute the same SQL command: `select count(*) from github_events where actor_login = 'kennytm';`.
 
-**The answer is 4.5 ms. That’s more than 400 times faster than ClickHouse.** This is because TiDB supports index, and it only needed to scan 29,252 rows instead of 4.6 billion rows of events. 
+**The answer is 4.8 ms. That’s almost 400 times faster than ClickHouse.** This is because TiDB supports the index, and it only needed to scan 29,639 rows instead of 4.6 billion rows of events. 
 
 
 <br/>
 
-![TiDB scanned 4.6 billion rows of data in 4.5 ms](./tidb-scan-large-data.png)
+![TiDB scanned 4.6 billion rows of data in 4.8 ms](./tidb-scanned-kennytm.png)
 
-<center><em>TiDB scanned 4.6 billion rows of data in 4.5 ms</em></center>
+<center><em>TiDB scanned 4.6 billion rows of data in 4.8 ms</em></center>
 
 <br/>
 
@@ -117,60 +117,62 @@ After we selected the database, we started to build our insight tool, which we e
 
 To show you how TiDB has helped us generate insights, let's take a look at a few examples in development. 
 
-### Analyze all open source databases 
+### Analyze GitHub collection: JavaScript Frameworks 
 
-Let's use OSS Insight to analyze which open source database has the most issue creators. This is an analytical query that includes aggregation and ranking. 
+OSS Insight can help you analyze in depth popular GitHub collections by many metrics including the number of stars, issues, and contributors. For example, let’s use OSS Insight to explore which JavaScript Framework has the most issue creators. This is an analytical query that includes aggregation and ranking. 
 
 To get the result, we only execute one SQL statement shown below: 
 
-```sql
+
+```
 SELECT
-   /*+ read_from_storage(tiflash[github_events]) */
-   db.group_name  AS repo_group_name,
+   /*+ read_from_storage(tiflash[ge]) */
+   ci.repo_name  AS repo_name,
    COUNT(distinct actor_login) AS num
 FROM
-   github_events github_events
-   JOIN osdb_repos db ON db.id = github_events.repo_id
+   github_events ge
+   JOIN collection_items ci ON ge.repo_id = ci.repo_id
+   JOIN collections c ON ci.collection_id = c.id
 WHERE
    type = 'IssuesEvent'
-   and action = 'opened'
+   AND action = 'opened'
+   AND c.id = 10005
    -- Exclude Bots
    and actor_login not like '%bot%'
    and actor_login not in (select login from blacklist_users)
 GROUP BY 1
 ORDER BY 2 DESC
+;
 ```
 
-The `osdb_repos` table shown in the above SQL statement stores the data of all open source database repositories and has 23 rows.
+The `collections` and `collection_items`tables shown in the above SQL statement store the data of all GitHub repository collections in various areas. Each table has 30 rows.
 
 ```
 
-mysql> select * from osdb_repos;
-
-+-----------+-------------------------+---------------+
-| id        | name                    | group_name    |
-+-----------+-------------------------+---------------+
-| 507775    | elastic/elasticsearch   | elasticsearch |
-| 41986369  | pingcap/tidb            | tidb          |
-| 16563587  | cockroachdb/cockroach   | cockroachdb   |
-| 60246359  | clickhouse/clickhouse   | clickhouse    |
-| 108110    | mongodb/mongo           | mongodb       |
-| 11008207  | vitessio/vitess         | vitess        |
-| 6358188   | apache/druid            | druid         |
+mysql> select * from collection_items where collection_id = 10005;
++-----+---------------+-----------------------+-----------+
+| id  | collection_id | repo_name             | repo_id   |
++-----+---------------+-----------------------+-----------+
+| 127 | 10005         | marko-js/marko        | 15720445  |
+| 129 | 10005         | angular/angular       | 24195339  |
+| 131 | 10005         | emberjs/ember.js      | 1801829   |
+| 135 | 10005         | vuejs/vue             | 11730342  |
+| 136 | 10005         | vuejs/core            | 137078487 |
+| 138 | 10005         | facebook/react        | 10270250  |
+| 142 | 10005         | jashkenas/backbone    | 952189    |
+| 143 | 10005         | dojo/dojo             | 10160528  |
 ...
-23 rows in set (0.05 sec)
+30 rows in set (0.05 sec)
 
 ```
 
-To get the order of issue creators, we need to associate the repository id in `osdb_repos` with the real, 4.6-billion-row `github_events` table. It doesn’t look anything special, does it?
-
-Next, let's take a look at the execution plan.TiDB is compatible with MySQL syntax, so its execution plan structure looks very similar to that of MySQL.
-
-In the figure below, notice the parts in red boxes. The data in the table `db`, the alias of `osdb_repos` table, is read through `distributed[row]`, which means this data is processed by TiDB’s row storage engine—TiKV;  and the data in the table `github_events` is read through `distributed[column]`, which means this data is processed by TiDB’s columnar storage engine—TiFlash. TiDB uses both row and columnar storage engines to execute the same SQL statement. 
+To get the order of issue creators, we need to associate the repository ID in `collection_items` with the real, 4.6-billion-row `github_events` table. It doesn’t look anything special, does it?
+Next, let's take a look at the execution plan. TiDB is compatible with MySQL syntax, so its execution plan structure looks very similar to that of MySQL.
+In the figure below, notice the parts in red boxes. The data in the table `collection_items` is read through `distributed[row]`, which means this data is processed by TiDB’s row storage engine—TiKV;  and the data in the table `github_events` is read through `distributed[column]`, which means this data is processed by TiDB’s columnar storage engine—TiFlash. TiDB uses both row and columnar storage engines to execute the same SQL statement. 
 
 <br/>
 
-![TiDB execution plan](./tidb-execution-plan.png)
+![TiDB execution plan](./tidb-execution-plan-2.png)
 
 <center><em>TiDB execution plan</em></center>
 
@@ -181,37 +183,33 @@ This is so convenient for OSS Insight because it doesn’t have to split the que
 The results returned by TiDB are as follows: 
 
 ```
-
-+-----------------+------+
-| repo_group_name | num  |
-+-----------------+------+
-| elasticsearch   | 8218 |
-| clickhouse      | 3269 |
-| tidb            | 1628 |
-| cockroachdb     | 1355 |
-| druid           | 1234 |
-| trino           | 878  |
-| yugabytedb      | 696  |
-| doris           | 616  |
-| gpdb            | 609  |
-| vitess          | 457  |
-| citus           | 279  |
-| foundationdb    | 249  |
-| starrocks       | 229  |
-| oceanbase       | 153  |
-+-----------------+------+
-14 rows in set
++-----------------------+-------+
+| repo_name             | num   |
++-----------------------+-------+
+| angular/angular       | 11597 |
+| facebook/react        | 7653  |
+| vuejs/vue             | 6033  |
+| angular/angular.js    | 5624  |
+| emberjs/ember.js      | 2489  |
+| sveltejs/svelte       | 1978  |
+| vuejs/core            | 1792  |
+| Polymer/polymer       | 1785  |
+| jquery/jquery         | 1587  |
+| jashkenas/backbone    | 1463  |
+| ionic-team/stencil    | 1101  |
+...
+30 rows in set
 Time: 7.809s
 
 ``` 
 
-Then, we just need to draw the results into [a more visualized chart](https://ossinsight.io/blog/deep-insight-into-open-source-databases/#which-databases-have-the-widest-feedback-sources) as shown below. 
+Then, we just need to draw the results into [a more visualized chart](https://ossinsight.io/blog/deep-insight-into-js-framework-2021/#which-javascript-framework-have-the-widest-feedback-sources) as shown below. 
 
 <br/>
 
-![Top open source databases with the most issue creators](./top-database-by-issue-creators.png)
+![Top JavaScript Frameworks with the most issue creators](./javascript-framework-rankings.png)
 
-<center><em>Top open source databases with the most issue creators</em></center>
+<center><em>Top JavaScript Frameworks with the most issue creators</em></center>
 
 
 ### Analyze a single repository 
