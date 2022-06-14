@@ -1,4 +1,4 @@
-export function getContentGroup ({ pathname, search }: Location) {
+export function getContentGroup ({ pathname, search }) {
   // collections
   if (/\/collections\//.test(pathname)) {
     if (/\/trends/.test(pathname)) {

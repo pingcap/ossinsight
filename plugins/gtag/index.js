@@ -6,19 +6,11 @@
  */
 
 import {Joi} from '@docusaurus/utils-validation';
-import type {
-  LoadContext,
-  Plugin,
-  OptionValidationContext,
-  ThemeConfig,
-  ThemeConfigValidationContext,
-} from '@docusaurus/types';
-import type {PluginOptions, Options} from './options';
 
 export default function pluginGoogleGtag(
-  context: LoadContext,
-  options: PluginOptions,
-): Plugin {
+  context,
+  options,
+){
   const {anonymizeIP, trackingID} = options;
   const isProd = process.env.NODE_ENV === 'production';
 
@@ -79,7 +71,7 @@ export default function pluginGoogleGtag(
   };
 }
 
-const pluginOptionsSchema = Joi.object<PluginOptions>({
+const pluginOptionsSchema = Joi.object({
   trackingID: Joi.string().required(),
   anonymizeIP: Joi.boolean().default(false),
 });
@@ -87,13 +79,13 @@ const pluginOptionsSchema = Joi.object<PluginOptions>({
 export function validateOptions({
   validate,
   options,
-}: OptionValidationContext<Options, PluginOptions>): PluginOptions {
+}) {
   return validate(pluginOptionsSchema, options);
 }
 
 export function validateThemeConfig({
   themeConfig,
-}: ThemeConfigValidationContext<ThemeConfig>): ThemeConfig {
+}) {
   if ('gtag' in themeConfig) {
     throw new Error(
       'The "gtag" field in themeConfig should now be specified as option for plugin-google-gtag. More information at https://github.com/facebook/docusaurus/pull/5832.',
@@ -101,5 +93,3 @@ export function validateThemeConfig({
   }
   return themeConfig;
 }
-
-export type {PluginOptions, Options};

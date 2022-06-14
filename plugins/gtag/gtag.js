@@ -7,13 +7,10 @@
 
 import globalData from '@generated/globalData';
 import { getContentGroup } from './content-group';
-import type {PluginOptions} from './options';
-import type {ClientModule} from '@docusaurus/types';
 
-const {trackingID} = globalData['docusaurus-plugin-google-gtag']!
-  .default as PluginOptions;
+const {trackingID} = globalData['docusaurus-plugin-google-gtag'].default;
 
-const clientModule: ClientModule = {
+const clientModule = {
   onRouteDidUpdate({location, previousLocation}) {
     if (previousLocation && location.pathname !== previousLocation.pathname) {
       // Normally, the document title is updated in the next tick due to how
