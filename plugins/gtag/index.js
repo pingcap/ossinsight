@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+const path = require('path')
 const {Joi} = require('@docusaurus/utils-validation');
 
 module.exports = function pluginGoogleGtag(
@@ -22,7 +23,7 @@ module.exports = function pluginGoogleGtag(
     },
 
     getClientModules() {
-      return isProd ? ['./gtag'] : [];
+      return isProd ? [path.resolve(__dirname, 'gtag.js')] : [];
     },
 
     injectHtmlTags() {
