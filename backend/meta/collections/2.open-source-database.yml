@@ -29,3 +29,4 @@ items:
   - ApsaraDB/galaxysql
   - ApsaraDB/galaxyengine
   - singularity-data/risingwave
+  - prestodb/presto
