@@ -35,6 +35,13 @@ const config = {
   clientModules: [require.resolve("./myClientModule.ts")],
   plugins: [
     [
+      path.resolve(__dirname, 'plugins/gtag'),
+      {
+        trackingID: 'GTM-WBZS43V',
+        anonymizeIP: true,
+      }
+    ],
+    [
       path.resolve(__dirname, 'plugins/prefetch'),
       {
         collections: '.prefetch/collections.json',
@@ -142,11 +149,7 @@ const config = {
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
-        },
-        gtag: {
-          trackingID: 'GTM-WBZS43V',
-          anonymizeIP: true,
-        },
+        }
       }),
     ],
   ],

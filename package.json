@@ -56,7 +56,6 @@
   "devDependencies": {
     "@djagger/echartsx": "^0.0.18",
     "@docusaurus/module-type-aliases": "^2.0.0-beta.14",
-    "@docusaurus/plugin-google-gtag": "^2.0.0-beta.21",
     "@geo-maps/countries-land-10km": "^0.6.0",
     "@makotot/ghostui": "^2.0.0",
     "@mui/x-data-grid": "^5.5.1",
