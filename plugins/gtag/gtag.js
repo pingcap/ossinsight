@@ -20,18 +20,21 @@ const clientModule = {
       // See: https://github.com/facebook/docusaurus/issues/7420
       setTimeout(() => {
         const contentGroup = getContentGroup(location)
+        // Set content group if exists
+        if (contentGroup) {
+          window.gtag('set', 'content_group', contentGroup)
+        }
+
         // Always refer to the variable on window in case it gets overridden
         // elsewhere.
         window.gtag('config', trackingID, {
           page_path: location.pathname,
           page_title: document.title,
-          content_group: contentGroup,
         });
         window.gtag('event', 'page_view', {
           page_title: document.title,
           page_location: window.location.href,
           page_path: location.pathname,
-          content_group: contentGroup,
         });
       });
     }
