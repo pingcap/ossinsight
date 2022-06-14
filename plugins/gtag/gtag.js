@@ -37,4 +37,4 @@ const clientModule = {
   },
 };
 
-export default clientModule;
+module.exports = clientModule;

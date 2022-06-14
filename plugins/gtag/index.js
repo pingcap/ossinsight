@@ -7,7 +7,7 @@
 
 const {Joi} = require('@docusaurus/utils-validation');
 
-export default function pluginGoogleGtag(
+module.exports = function pluginGoogleGtag(
   context,
   options,
 ){
@@ -76,14 +76,14 @@ const pluginOptionsSchema = Joi.object({
   anonymizeIP: Joi.boolean().default(false),
 });
 
-export function validateOptions({
+module.exports.validateOptions = function validateOptions({
   validate,
   options,
 }) {
   return validate(pluginOptionsSchema, options);
 }
 
-export function validateThemeConfig({
+module.exports.validateThemeConfig = function validateThemeConfig({
   themeConfig,
 }) {
   if ('gtag' in themeConfig) {
