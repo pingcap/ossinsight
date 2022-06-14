@@ -56,3 +56,4 @@ items:
   - slimphp/Slim
   - bcit-ci/CodeIgniter
   - beego/beego
+  - lucacasonato/fresh
