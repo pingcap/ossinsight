@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import globalData from '@generated/globalData';
-import { getContentGroup } from './content-group';
+const globalData = require('@generated/globalData');
+const { getContentGroup } = require('./content-group');
 
 const {trackingID} = globalData['docusaurus-plugin-google-gtag'].default;
 

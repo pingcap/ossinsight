@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Joi} from '@docusaurus/utils-validation';
+const {Joi} = require('@docusaurus/utils-validation');
 
 export default function pluginGoogleGtag(
   context,
