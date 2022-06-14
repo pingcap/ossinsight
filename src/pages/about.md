@@ -86,8 +86,8 @@ If you want to compare two repositories, you can enter the two repositories or s
 <br />
 <br />
 
-## Welcome to contribute to us! 
-If you like our project or are interested in making contributions to us, feel free to [submit your PRs](https://github.com/pingcap/ossinsight) to our GitHub repository. You can also try to analyze your own datasets by using TiDB Cloud with [this 10-minute tutorial](https://ossinsight.io/blog/try-it-yourself/). 
+## Welcome to join this project! 
+If you like our project or are interested to join us, feel free to [submit your PRs](https://github.com/pingcap/ossinsight) to our GitHub repository. You can also try to analyze your own datasets by using TiDB Cloud with [this 10-minute tutorial](https://ossinsight.io/blog/try-it-yourself/). 
 
 ## Contact us! 
 You can also follow us on [Twitter](https://twitter.com/OSSInsight) for the latest information. 
