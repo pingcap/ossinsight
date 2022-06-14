@@ -31,6 +31,7 @@ const clientModule = {
           page_title: document.title,
           page_location: window.location.href,
           page_path: location.pathname,
+          content_group: contentGroup,
         });
       });
     }
