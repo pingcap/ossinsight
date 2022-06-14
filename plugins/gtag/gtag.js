@@ -11,7 +11,7 @@ const { getContentGroup } = require('./content-group');
 const {trackingID} = globalData['docusaurus-plugin-google-gtag'].default;
 
 const clientModule = {
-  onRouteDidUpdate({location, previousLocation}) {
+  onRouteUpdate({location, previousLocation}) {
     if (previousLocation && location.pathname !== previousLocation.pathname) {
       // Normally, the document title is updated in the next tick due to how
       // `react-helmet-async` updates it. We want to send the current document's
