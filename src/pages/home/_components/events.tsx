@@ -69,7 +69,7 @@ export default function Events({ show }: { show: boolean }) {
   }, [show]);
 
   return (
-    <CoolList ref={ref} maxLength={10} itemHeight={24} getKey={getKey} onMouseEnter={stop} onMouseLeave={start}>
+    <CoolList ref={ref} maxLength={7} itemHeight={24} getKey={getKey} onMouseEnter={stop} onMouseLeave={start}>
       {renderEvent}
     </CoolList>
   );

@@ -65,8 +65,8 @@ export const Body = (props: TypographyProps) => (
     {...props}
     variant='body2'
     sx={[
-      {color: '#C4C4C4', mt: 8},
-      responsive('mt', 2, 4, 14),
+      {color: '#C4C4C4'},
+      responsive('mt', 2, 4, 6),
       fontSizes.body
     ]}
   />
