@@ -8,7 +8,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { use } from 'echarts/core';
 import { CanvasRenderer } from 'echarts/renderers';
 import React from 'react';
-import NumberCounter from 'react-smooth-number-counter';
+import AnimatedNumber from "react-awesome-animated-number";
 import useVisibility from '../../hooks/visibility';
 import { useTotalEvents } from '../RemoteCharts/hook';
 import { useRealtimeEvents } from './hooks';
@@ -46,7 +46,7 @@ const Counts = ({ visible }: { visible: boolean }) => {
         <Span>Events</Span>
       </Stack>
       <Numbers>
-        <NumberCounter value={total ?? 0} transition={500} />
+        <AnimatedNumber value={total ?? 0} hasComma duration={200} size={18} />
       </Numbers>
     </Stack>
   )

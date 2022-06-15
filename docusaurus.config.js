@@ -148,7 +148,10 @@ const config = {
           },
         },
         theme: {
-          customCss: require.resolve('./src/css/custom.css'),
+          customCss: [
+            require.resolve('./src/css/custom.css'),
+            require.resolve('react-awesome-animated-number/dist/index.css'),
+          ],
         }
       }),
     ],
