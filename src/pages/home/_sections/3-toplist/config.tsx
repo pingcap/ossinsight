@@ -1,4 +1,4 @@
-import {RepoRank} from "../../api/query";
+import {RepoRank} from "../../../../api/query";
 import {
   CodeReviewIcon,
   CommentIcon,

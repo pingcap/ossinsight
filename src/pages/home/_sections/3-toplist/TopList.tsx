@@ -1,33 +1,31 @@
-import * as React from "react";
-import {useCallback} from "react";
-import {useRank} from "../../api/query";
+import InfoIcon from '@mui/icons-material/Info';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import Divider from '@mui/material/Divider';
+import IconButton from '@mui/material/IconButton';
+import Link from '@mui/material/Link';
+import MenuItem from '@mui/material/MenuItem';
+import Paper from '@mui/material/Paper';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import Skeleton from '@mui/material/Skeleton';
+import Stack from '@mui/material/Stack';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import Box from "@mui/material/Box";
-import Paper from "@mui/material/Paper";
-import Divider from "@mui/material/Divider";
-import Link from '@mui/material/Link';
-import Stack from "@mui/material/Stack";
-import Typography from "@mui/material/Typography";
 import Tooltip from '@mui/material/Tooltip';
-import Skeleton from "@mui/material/Skeleton";
-import {Owner} from "../github";
-import ThemeAdaptor from "../ThemeAdaptor";
-import {data} from "./config";
-import styles from './index.module.css'
-import Button from "@mui/material/Button";
-import IconButton from "@mui/material/IconButton";
-import InfoIcon from "@mui/icons-material/Info";
-import DialogTitle from "@mui/material/DialogTitle";
-import Dialog from "@mui/material/Dialog";
-import {renderCodes} from "../BasicCharts";
-import Select, {SelectChangeEvent} from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
-import {groups} from "../GroupSelect/groups";
+import Typography from '@mui/material/Typography';
+import { useCallback } from 'react';
+import * as React from 'react';
+import { useRank } from '../../../../api/query';
+import { renderCodes } from '../../../../components/BasicCharts';
+import { Owner } from '../../../../components/github';
+import { data } from './config';
+import styles from './index.module.css';
 
 interface TopListProps {
   period: string
@@ -49,7 +47,7 @@ export default function TopList({period, onPeriodChange}: TopListProps) {
   const handlePeriodChange = useCallback((event: SelectChangeEvent) => onPeriodChange(event.target.value), [onPeriodChange])
 
   return (
-    <ThemeAdaptor>
+    <>
       {renderTopListHeader(period, handlePeriodChange, loading, handleOpen)}
       {renderTopListBody(ranks, loading)}
       <Dialog
@@ -66,7 +64,7 @@ export default function TopList({period, onPeriodChange}: TopListProps) {
           {renderCodes(ranks?.sql)}
         </Box>
       </Dialog>
-    </ThemeAdaptor>
+    </>
   );
 }
 

@@ -14,7 +14,7 @@ export function responsive<K extends keyof AllSystemCSSProperties> (key: K, sm: 
   })
 }
 
-type SubSx<T = Theme> = SystemStyleObject<T> | ((theme: T) => SystemStyleObject<T>)
+type SubSx<T extends Theme = Theme> = SystemStyleObject<T> | ((theme: T) => SystemStyleObject<T>)
 
 function apply(theme: Theme, subSx: SubSx) {
   if (typeof subSx === 'function') {
