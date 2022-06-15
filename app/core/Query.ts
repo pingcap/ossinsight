@@ -2,14 +2,15 @@ import {readFile} from 'fs/promises'
 import path from 'path'
 import {DateTime, Duration} from "luxon";
 import type { QuerySchema } from '../../params.schema'
-import {MysqlQueryExecutor, Result} from "./MysqlQueryExecutor";
-import Cache, {CachedData, MAX_CACHE_TIME} from "./Cache";
-import {RedisClientType, RedisDefaultModules, RedisModules, RedisScripts} from "redis";
+import {TiDBQueryExecutor, Result} from "./TiDBQueryExecutor";
+import Cache, {CachedData} from "./cache/Cache";
 import consola from "consola";
 import {PoolConnection} from "mysql2";
 import {dataQueryTimer, measure, readConfigTimer, tidbQueryCounter} from "../metrics";
 import GHEventService from "../services/GHEventService";
 import CollectionService from '../services/CollectionService';
+import CacheBuilder, { CacheProviderTypes } from './cache/CacheBuilder';
+import { QueryTemplateNotFoundError } from './QueryFactory';
 
 export enum ParamType {
   ARRAY = 'array',
@@ -42,14 +43,6 @@ export class SQLExecuteError extends Error {
   constructor(public readonly name: string, sql: string) {
     super(sql);
     this.sql = sql
-  }
-}
-
-export class QueryTemplateNotFoundError extends Error {
-  readonly msg: string
-  constructor(message: string) {
-    super(message);
-    this.msg = message
   }
 }
 
@@ -171,8 +164,8 @@ export default class Query {
 
   constructor(
     public readonly name: string,
-    public readonly redisClient: RedisClientType<RedisDefaultModules & RedisModules, RedisScripts>,
-    public readonly executor: MysqlQueryExecutor,
+    public readonly cacheBuilder: CacheBuilder,
+    public readonly executor: TiDBQueryExecutor,
     public readonly ghEventService: GHEventService,
     public readonly collectionService: CollectionService
   ) {
@@ -199,16 +192,21 @@ export default class Query {
   ready(): Promise<boolean> {
     return this.loadingPromise
   }
-
   async buildSql(params: Record<string, any>): Promise<string> {
     return buildParams(this.template!, this.queryDef!, params, this.ghEventService, this.collectionService)
   }
 
-  async run <T> (params: Record<string, any>, refreshCache: boolean = false, conn?: PoolConnection): Promise<CachedData<T>> {
+  async run <T> (
+    params: Record<string, any>, refreshCache: boolean = false, conn?: PoolConnection
+  ): Promise<CachedData<T>> {
     await this.ready();
-    const key = `query:${this.name}:${this.queryDef!.params.map(p => params[p.name]).join('_')}`;
-    const { cacheHours = -1, refreshHours = -1, onlyFromCache = false } = this.queryDef!;
-    const cache = new Cache<T>(this.redisClient, key, cacheHours, refreshHours, onlyFromCache, refreshCache);
+
+    const { cacheHours = -1, refreshHours = -1, onlyFromCache = false, cacheProvider } = this.queryDef!;
+    const queryName = this.queryDef!.name || this.name;
+    const cacheKey = this.getQueryKey('query', queryName, this.queryDef!, params);
+    const cache = this.cacheBuilder.build(
+      cacheProvider, cacheKey, cacheHours, refreshHours, onlyFromCache, refreshCache
+    );
 
     return cache.load(async () => {
       return await measure(dataQueryTimer, async () => {
@@ -220,7 +218,7 @@ export default class Query {
 
           let res: Result;
           if (conn) {
-            res = await this.executor.executeWithConn(sql, conn)
+            res = await this.executor.executeWithConn(conn, sql)
           } else {
             res = await this.executor.execute(sql)
           }
@@ -230,10 +228,10 @@ export default class Query {
 
           return {
             params: params,
-            requestedAt: start.toISO(),
+            requestedAt: start,
+            finishedAt: end,
             spent: end.diff(start).as('seconds'),
             sql,
-            expiresAt: cacheHours === -1 ? MAX_CACHE_TIME : end.plus({hours: cacheHours}),
             fields: res.fields,
             data: res.rows as any,
           }
@@ -250,9 +248,13 @@ export default class Query {
 
   async explain <T> (params: Record<string, any>, refreshCache: boolean = false, conn?: PoolConnection): Promise<CachedData<T>> {
     await this.ready();
-    const key = `explain-query:${this.name}:${this.queryDef!.params.map(p => params[p.name]).join('_')}`;
-    const { cacheHours = -1, refreshHours = -1 } = this.queryDef!;
-    const cache = new Cache<T>(this.redisClient, key, cacheHours, refreshHours, false, refreshCache);
+
+    const { cacheHours = -1, refreshHours = -1, cacheProvider } = this.queryDef!;
+    const queryName = this.queryDef!.name || this.name;
+    const cacheKey = this.getQueryKey('explain-query', queryName, this.queryDef!, params);
+    const cache = this.cacheBuilder.build(
+      cacheProvider, cacheKey, cacheHours, refreshHours, false, refreshCache
+    );
 
     return cache.load(async () => {
       return await measure(dataQueryTimer, async () => {
@@ -265,7 +267,7 @@ export default class Query {
 
           let explainRes: Result;
           if (conn) {
-            explainRes = await this.executor.executeWithConn(explainSQL, conn)
+            explainRes = await this.executor.executeWithConn(conn, explainSQL)
           } else {
             explainRes = await this.executor.execute(explainSQL)
           }
@@ -275,10 +277,10 @@ export default class Query {
 
           return {
             params: params,
-            requestedAt: start.toISO(),
+            requestedAt: start,
+            finishedAt: end,
             spent: end.diff(start).as('seconds'),
             sql: explainSQL,
-            expiresAt: cacheHours === -1 ? MAX_CACHE_TIME : end.plus({hours: cacheHours}),
             fields: explainRes.fields,
             data: explainRes.rows as any,
           }
@@ -295,9 +297,13 @@ export default class Query {
 
   async trace <T> (params: Record<string, any>, refreshCache: boolean = false, conn?: PoolConnection): Promise<CachedData<T>> {
     await this.ready();
-    const key = `trace-query:${this.name}:${this.queryDef!.params.map(p => params[p.name]).join('_')}`;
-    const { cacheHours = -1, refreshHours = -1 } = this.queryDef!;
-    const cache = new Cache<T>(this.redisClient, key, cacheHours, refreshHours, false, refreshCache);
+
+    const { cacheHours = -1, refreshHours = -1, onlyFromCache = false, cacheProvider } = this.queryDef!;
+    const queryName = this.queryDef!.name || this.name;
+    const cacheKey = this.getQueryKey('trace-query', queryName, this.queryDef!, params);
+    const cache = this.cacheBuilder.build(
+      cacheProvider, cacheKey, cacheHours, refreshHours, onlyFromCache, refreshCache
+    );
 
     return cache.load(async () => {
       return await measure(dataQueryTimer, async () => {
@@ -310,7 +316,7 @@ export default class Query {
 
           let traceRes: Result;
           if (conn) {
-            traceRes = await this.executor.executeWithConn(traceSQL, conn)
+            traceRes = await this.executor.executeWithConn(conn, traceSQL)
           } else {
             traceRes = await this.executor.execute(traceSQL)
           }
@@ -320,10 +326,10 @@ export default class Query {
 
           return {
             params: params,
-            requestedAt: start.toISO(),
+            requestedAt: start,
+            finishedAt: end,
             spent: end.diff(start).as('seconds'),
             sql: traceSQL,
-            expiresAt: cacheHours === -1 ? MAX_CACHE_TIME : end.plus({hours: cacheHours}),
             fields: traceRes.fields,
             data: traceRes.rows as any,
           }
@@ -336,5 +342,9 @@ export default class Query {
         }
       })
     })
+  }
+
+  private getQueryKey(prefix: string, queryName: string, queryDef: QuerySchema, params: Record<string, any>): string {
+    return `${prefix}:${queryName}:${queryDef!.params.map(p => params[p.name]).join('_')}`;
   }
 }

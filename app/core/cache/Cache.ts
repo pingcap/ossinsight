@@ -1,11 +1,11 @@
 import {DateTime} from 'luxon'
 import consola from "consola";
-import {RedisClientType, RedisDefaultModules, RedisModules, RedisScripts} from "redis";
-import {cacheHitCounter, measure, redisQueryTimer} from "../metrics";
+import {cacheHitCounter, measure, redisQueryTimer} from "../../metrics";
+import { CacheProvider } from './CacheProvider';
 
 export const MAX_CACHE_TIME = DateTime.fromISO('2099-12-31T00:00:00')
 
-export class NeedPrefetchError extends Error {
+export class NeedPreFetchError extends Error {
   readonly msg: string
   constructor(message: string) {
     super(message);
@@ -14,7 +14,7 @@ export class NeedPrefetchError extends Error {
 }
 
 export interface CachedData<T> {
-  expiresAt: DateTime;
+  finishedAt: DateTime;
   data: T;
   [key: string]: any;
 }
@@ -27,13 +27,13 @@ export default class Cache<T> {
   _data!: Promise<CachedData<T>>
 
   constructor(
-    private readonly redisClient: RedisClientType<RedisDefaultModules & RedisModules, RedisScripts>,
+    private readonly cacheProvider: CacheProvider,
     private readonly key: string,
     private readonly cacheHours: number,
     private readonly refreshHours: number,
     private readonly onlyFromCache: boolean = false,
     private readonly refreshCache: boolean = false,
-    ) {
+  ) {
   }
 
   async load(fallback: () => Promise<CachedData<T>>): Promise<CachedData<T>> {
@@ -82,11 +82,10 @@ export default class Cache<T> {
       logger.debug(`No hit cache of ${this.key}.`);
 
       if (this.onlyFromCache && !this.refreshCache) {
-        throw new NeedPrefetchError(`Failed to get data, query ${this.key} can only be executed in advance.`)
+        throw new NeedPreFetchError(`Failed to get data, query ${this.key} can only be executed in advance.`)
       }
 
       logger.info(`Do query for key: ${this.key}.`);
-
       return await this.fetchDataFromDB(fallback);
     }
   }
@@ -99,9 +98,11 @@ export default class Cache<T> {
     try {
       await measure(redisQueryTimer.labels({op: 'set'}), async () => {
         if (this.cacheHours === -1) {
-          await this.redisClient.set(this.key, JSON.stringify(result));
+          result.expiresAt = MAX_CACHE_TIME;
+          await this.cacheProvider.set(this.key, JSON.stringify(result));
         } else {
-          await this.redisClient.set(this.key, JSON.stringify(result), {
+          result.expiresAt = result.finishedAt.plus({ hours: this.cacheHours })
+          await this.cacheProvider.set(this.key, JSON.stringify(result), {
             EX: Math.round(this.cacheHours * 3600),
           });
         }
@@ -117,10 +118,13 @@ export default class Cache<T> {
     try {
       const json = await measure(
         redisQueryTimer.labels({op: 'get'}),
-        () => this.redisClient.get(this.key)
-      )
+        () => this.cacheProvider.get(this.key)
+      ) as any;
+
       if (typeof json === 'string') {
         return JSON.parse(json);
+      } else if (typeof json === 'object' && json !== null) {
+        return json;
       }
     } catch (err) {
       logger.error('Cache <%s> data is broken.', this.key, err);

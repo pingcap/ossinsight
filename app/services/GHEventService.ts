@@ -1,8 +1,8 @@
-import {MysqlQueryExecutor} from "../core/MysqlQueryExecutor";
+import {TiDBQueryExecutor} from "../core/TiDBQueryExecutor";
 
 export default class GHEventService {
 
-  constructor(readonly executor: MysqlQueryExecutor) {
+  constructor(readonly executor: TiDBQueryExecutor) {
   }
 
   async getMaxEventTime():Promise<string> {

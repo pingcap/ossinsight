@@ -2,17 +2,22 @@ import App, { Context } from 'koa'
 import Router from 'koa-router';
 import server from "./app/server";
 import dotenv from 'dotenv';
-import consola, {Consola} from 'consola';
+import consola, {Consola, FancyReporter} from 'consola';
 import cors from '@koa/cors';
 import { validateProcessEnv } from './app/env';
 import {measureLimitedRequests} from "./app/middlewares/measureRequests";
 import { createRateLimiter } from './app/middlewares/rate-limit';
 
-const logger = consola.withTag('app')
+consola.setReporters([
+  new FancyReporter({
+    dateFormat: 'YYYY:MM:DD HH:mm:ss'
+  }),
+]);
+consola.wrapConsole();
+const logger = consola.withTag('app');
+
 dotenv.config({ path: __dirname+'/.env.template', override: true });
 dotenv.config({ path: __dirname+'/.env', override: true });
-
-consola.wrapConsole()
 
 validateProcessEnv()
 

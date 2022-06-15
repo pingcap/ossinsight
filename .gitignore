@@ -1,10 +1,20 @@
+# Dependancies
 node_modules
-queries/**/.cache
-gh/**/.cache
-.env
+
+# Build Result
 *.js
-schemas
+
+# Enviorment Variable
+.env
+
+# IDE Config
+.vscode
 .idea
-.DS_Store
+
+# Logs
 log
 test/result/*.log
+.pnpm-debug.log
+
+# Fox Mac OS
+.DS_Store

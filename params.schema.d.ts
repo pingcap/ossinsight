@@ -7,6 +7,14 @@
 
 export interface QuerySchema {
   /**
+   * Query name, default is generated base on the file path.
+   */
+  name?: string;
+  /**
+   * Specify how to implement caching, NORMAL_TABLE are used by default.
+   */
+  cacheProvider?: "NORMAL_TABLE" | "CACHED_TABLE" | "REDIS";
+  /**
    * Cache time in hours, -1 indicates that the query cache will not expire.
    */
   cacheHours: number;

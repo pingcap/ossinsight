@@ -1,10 +1,12 @@
 import {Octokit} from "octokit";
 import {createPool, Factory, Pool} from "generic-pool";
-import Cache from './Cache'
 import {DateTime} from "luxon";
 import consola, {Consola} from "consola";
-import {RedisClientType, RedisDefaultModules, RedisModules, RedisScripts} from "redis";
 import {ghQueryCounter, ghQueryTimer, measure} from "../metrics";
+import CacheBuilder, { CacheProviderTypes } from "./cache/CacheBuilder";
+
+const GET_REPO_CACHE_HOURS = 1;
+const SEARCH_REPOS_CACHE_HOURS = 24;
 
 const SYMBOL_TOKEN = Symbol('PERSONAL_TOKEN')
 
@@ -72,7 +74,7 @@ export default class GhExecutor {
 
   constructor(
     tokens: string[] = [],
-    public readonly redisClient: RedisClientType<RedisDefaultModules & RedisModules, RedisScripts>
+    public readonly cacheBuilder: CacheBuilder
   ) {
     this.octokitPool = createPool(new OctokitFactory(tokens), {
       min: 0,
@@ -88,23 +90,30 @@ export default class GhExecutor {
   }
 
   getRepo (owner: string, repo: string) {
-    const GET_REPO_CACHE_HOURS = 1;
-    const key = `gh:get_repo:${owner}_${repo}`;
-    const cache = new Cache(this.redisClient, key, GET_REPO_CACHE_HOURS, -1)
+    const cacheKey = `gh:get_repo:${owner}_${repo}`;
+    const cache = this.cacheBuilder.build(
+      CacheProviderTypes.CACHED_TABLE, cacheKey, GET_REPO_CACHE_HOURS, GET_REPO_CACHE_HOURS
+    );
+
     return cache.load(() => {
       return this.octokitPool.use(async (octokit) => {
         octokit.log.info(`get repo ${owner}/${repo}`)
-        ghQueryCounter.labels({ api: 'getRepo', phase: 'start' }).inc()
+        ghQueryCounter.labels({ api: 'getRepo', phase: 'start' }).inc();
+
         try {
+          const start = DateTime.now();
           const {data} = await measure(
             ghQueryTimer.labels({api: 'getRepo'}),
             () => octokit.rest.repos.get({repo, owner})
           )
+          const end = DateTime.now();
           const {value} = Object.getOwnPropertyDescriptor(octokit, SYMBOL_TOKEN)!
-          ghQueryCounter.labels({api: 'getRepo', phase: 'success'}).inc()
+          ghQueryCounter.labels({api: 'getRepo', phase: 'success'}).inc();
+
           return {
-            expiresAt: DateTime.now().plus({hours: GET_REPO_CACHE_HOURS}),
-            data,
+            requestedAt: start,
+            finishedAt: end,
+            data: data,
             with: eraseToken(value)
           }
         } catch (e) {
@@ -116,22 +125,27 @@ export default class GhExecutor {
   }
 
   searchRepos(keyword: any) {
-    const SEARCH_REPOS_CACHE_HOURS = 24;
-    const key = `gh:search_repos:${keyword}`;
-    const cache = new Cache(this.redisClient, key, SEARCH_REPOS_CACHE_HOURS, -1)
+    const cacheKey = `gh:search_repos:${keyword}`;
+    const cache = this.cacheBuilder.build(
+      CacheProviderTypes.CACHED_TABLE, cacheKey, SEARCH_REPOS_CACHE_HOURS, SEARCH_REPOS_CACHE_HOURS
+    );
+
     return cache.load(() => {
       return this.octokitPool.use(async (octokit) => {
         octokit.log.info(`search repos by keyword ${keyword}`)
+        const start = DateTime.now();
 
         // Recommend list.
         if (keyword === RECOMMEND_REPO_LIST_1_KEYWORD) {
           return Promise.resolve({
-            expiresAt: DateTime.now().plus({hours: SEARCH_REPOS_CACHE_HOURS}),
+            requestedAt: start,
+            finishedAt: DateTime.now(),
             data: RECOMMEND_REPO_LIST_1
           })
         } else if (keyword === RECOMMEND_REPO_LIST_2_KEYWORD) {
           return Promise.resolve({
-            expiresAt: DateTime.now().plus({hours: SEARCH_REPOS_CACHE_HOURS}),
+            requestedAt: start,
+            finishedAt: DateTime.now(),
             data: RECOMMEND_REPO_LIST_2
           })
         }
@@ -168,9 +182,10 @@ export default class GhExecutor {
             fullName: repo.nameWithOwner,
           }));
 
-          const {value} = Object.getOwnPropertyDescriptor(octokit, SYMBOL_TOKEN)!
+          const {value} = Object.getOwnPropertyDescriptor(octokit, SYMBOL_TOKEN)!;
           return {
-            expiresAt: DateTime.now().plus({hours: SEARCH_REPOS_CACHE_HOURS}),
+            requestedAt: start,
+            finishedAt: DateTime.now(),
             data: formattedData,
             with: eraseToken(value)
           }

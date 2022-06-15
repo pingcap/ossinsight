@@ -4,14 +4,15 @@ import * as fsp from 'fs/promises'
 import * as dotenv from "dotenv";
 import asyncPool from "tiny-async-pool";
 import type {Params, QuerySchema} from './params.schema'
-import {MysqlQueryExecutor} from "./app/core/MysqlQueryExecutor";
+import {TiDBQueryExecutor} from "./app/core/TiDBQueryExecutor";
 import Query from "./app/core/Query";
-import {createClient, RedisClientType, RedisDefaultModules, RedisModules, RedisScripts} from "redis";
+import {createClient} from "redis";
 import consola, {JSONReporter} from "consola";
 import {DateTime, Duration} from "luxon";
 import { validateProcessEnv } from './app/env';
 import GHEventService from "./app/services/GHEventService";
 import CollectionService from './app/services/CollectionService';
+import CacheBuilder from './app/core/cache/CacheBuilder';
 
 // Load environments.
 dotenv.config({ path: __dirname+'/.env.template', override: true });
@@ -81,7 +82,7 @@ async function main () {
   await redisClient.connect();
 
   // Init mysql client.
-  const queryExecutor = new MysqlQueryExecutor({
+  const queryExecutor = new TiDBQueryExecutor({
     host: process.env.DB_HOST,
     port: parseInt(process.env.DB_PORT || '3306'),
     database: process.env.DB_DATABASE,
@@ -91,23 +92,27 @@ async function main () {
     decimalNumbers: true
   });
 
+  // Init Cache Builder.
+  const cacheBuilder = new CacheBuilder(redisClient, queryExecutor);
+
+  // Init Services.
   const ghEventService = new GHEventService(queryExecutor);
-  const collectionService = new CollectionService(queryExecutor, redisClient);
+  const collectionService = new CollectionService(queryExecutor, cacheBuilder);
 
   logger.info("Ready Go...")
   for (let i = 0; i < Number.MAX_VALUE; i++) {
     logger.info(`Compute round ${i + 1}.`)
     const queries = await getQueries();
     const presets = await getPresets();
-    await prefetchQueries(queryExecutor, redisClient, ghEventService, collectionService, queries, presets);
+    await prefetchQueries(queryExecutor, cacheBuilder, ghEventService, collectionService, queries, presets);
     logger.info('Next round prefetch will come at: %s', DateTime.now().plus(Duration.fromObject({ minutes: 1 })))
     await sleep(1000 * 60 * 1);    // sleep 30 minutes.
   }
 }
 
 async function prefetchQueries(
-  queryExecutor: MysqlQueryExecutor,
-  redisClient: RedisClientType<RedisDefaultModules & RedisModules, RedisScripts>,
+  queryExecutor: TiDBQueryExecutor,
+  cacheBuilder: CacheBuilder,
   ghEventService: GHEventService,
   collectionService: CollectionService,
   queries: Record<string, QuerySchema>,
@@ -195,8 +200,8 @@ async function prefetchQueries(
   await asyncPool(PREFETCH_CONCURRENT, queryJobs, async ({ id, queryName, params }) => {
     const qStart = new Date();
     // Do query with the rest parameter combines.
-    logger.info("[%d/%d] Prefetch query %s with params: %s", id, n, queryName, JSON.stringify(params));
-    const query = new Query(queryName, redisClient, queryExecutor, ghEventService, collectionService)
+    logger.info("[%d/%d] PreFetch query %s with params: %s", id, n, queryName, JSON.stringify(params));
+    const query = new Query(queryName, cacheBuilder, queryExecutor, ghEventService, collectionService)
     try {
       await query.run(params,true)
     } catch (err) {

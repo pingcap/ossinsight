@@ -16,7 +16,7 @@ export interface QueryExecutor {
   execute (sql: string): Promise<Result>
 }
 
-export class MysqlQueryExecutor implements QueryExecutor {
+export class TiDBQueryExecutor implements QueryExecutor {
 
   private connections: Pool
   private logger: Consola
@@ -28,15 +28,15 @@ export class MysqlQueryExecutor implements QueryExecutor {
 
   async execute(sql: string): Promise<Result> {
     const connection = await this.getConnection();
-
+    
     try {
-      return this.executeWithConn(sql, connection)
+      return this.executeWithConn(connection, sql);
     } finally {
-      connection.release()
+      connection.release();
     }
   }
 
-  async executeWithConn(sql: string, connection: PoolConnection): Promise<Result> {
+  async executeWithConn(connection: PoolConnection, sql: string): Promise<Result> {
     return new Promise((resolve, reject) => {
       this.logger.debug('Executing sql by connection<%d>\n %s', connection.threadId, sql)
       const end = tidbQueryTimer.startTimer()
@@ -44,7 +44,44 @@ export class MysqlQueryExecutor implements QueryExecutor {
         end()
 
         // FIXME: the type of `fields` in the callback function's definition is wrong.
-        const fieldDefs: FieldMeta[] = fields.map((field: any) => {
+        const fieldDefs: FieldMeta[] = (fields || []).map((field: any) => {
+          return {
+            name: field.name,
+            columnType: field.columnType
+          }
+        });
+
+        if (err) {
+          reject(err)
+        } else {
+          resolve({
+            fields: fieldDefs,
+            rows: rows,
+          })
+        }
+      })
+    });
+  }
+
+  async prepare(sql: string, args: any[]): Promise<Result> {
+    const connection = await this.getConnection();
+    
+    try {
+      return this.prepareWithConn(connection, sql, args);
+    } finally {
+      connection.release();
+    }
+  }
+
+  async prepareWithConn(connection: PoolConnection, sql: string, args: any[]): Promise<Result> {
+    return new Promise((resolve, reject) => {
+      this.logger.debug('Executing prepared sql by connection<%d>\n %s', connection.threadId, sql)
+      const end = tidbQueryTimer.startTimer()
+      connection.query(sql, args, (err, rows, fields) => {
+        end()
+
+        // FIXME: the type of `fields` in the callback function's definition is wrong.
+        const fieldDefs: FieldMeta[] = (fields || []).map((field: any) => {
           return {
             name: field.name,
             columnType: field.columnType

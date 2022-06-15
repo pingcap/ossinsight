@@ -3,6 +3,14 @@
   "title": "QuerySchema",
   "type": "object",
   "properties": {
+    "name": {
+      "description": "Query name, default is generated base on the file path.",
+      "type": "string"
+    },
+    "cacheProvider": {
+      "description": "Specify how to implement caching, NORMAL_TABLE are used by default.",
+      "enum": ["NORMAL_TABLE", "CACHED_TABLE", "REDIS"]
+    },
     "cacheHours": {
       "description": "Cache time in hours, -1 indicates that the query cache will not expire.",
       "type": "number"

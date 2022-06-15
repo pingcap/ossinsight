@@ -1,6 +1,6 @@
 import Router from "koa-router";
 import Query, {SQLExecuteError} from "./core/Query";
-import {MysqlQueryExecutor} from "./core/MysqlQueryExecutor";
+import {TiDBQueryExecutor} from "./core/TiDBQueryExecutor";
 import {DefaultState} from "koa";
 import type {ContextExtends} from "../index";
 import GhExecutor from "./core/GhExecutor";
@@ -10,6 +10,7 @@ import {measureRequests} from "./middlewares/measureRequests";
 import {createRateLimiter} from "./middlewares/rate-limit";
 import CollectionService from "./services/CollectionService";
 import GHEventService from "./services/GHEventService";
+import CacheBuilder from "./core/cache/CacheBuilder";
 
 const COMPARE_QUERIES = [
   'stars-total',
@@ -54,7 +55,7 @@ export default async function server(router: Router<DefaultState, ContextExtends
   await redisClient.connect();
 
   // Init MySQL Executor. 
-  const executor = new MysqlQueryExecutor({
+  const queryExecutor = new TiDBQueryExecutor({
     host: process.env.DB_HOST,
     port: parseInt(process.env.DB_PORT || '3306'),
     database: process.env.DB_DATABASE,
@@ -65,17 +66,20 @@ export default async function server(router: Router<DefaultState, ContextExtends
     decimalNumbers: true
   })
 
+  // Init Cache Builder;
+  const cacheBuilder = new CacheBuilder(redisClient, queryExecutor);
+
   // Init GitHub Executor.
   const tokens = (process.env.GH_TOKENS || '').split(',').map(s => s.trim()).filter(Boolean);
-  const ghExecutor = new GhExecutor(tokens, redisClient);
+  const ghExecutor = new GhExecutor(tokens, cacheBuilder);
 
   // Init Services.
-  const collectionService = new CollectionService(executor, redisClient);
-  const ghEventService = new GHEventService(executor);
+  const collectionService = new CollectionService(queryExecutor, cacheBuilder);
+  const ghEventService = new GHEventService(queryExecutor);
 
   router.get('/q/:query', measureRequests({ urlLabel: 'path' }), async ctx => {
     try {
-      const query = new Query(ctx.params.query, redisClient, executor, ghEventService, collectionService)
+      const query = new Query(ctx.params.query, cacheBuilder, queryExecutor, ghEventService, collectionService)
       const res = await query.run(ctx.query)
       ctx.response.status = 200
       ctx.response.body = res
@@ -88,7 +92,7 @@ export default async function server(router: Router<DefaultState, ContextExtends
 
   router.get('/q/explain/:query', measureRequests({ urlLabel: 'path' }), async ctx => {
     try {
-      const query = new Query(ctx.params.query, redisClient, executor, ghEventService, collectionService)
+      const query = new Query(ctx.params.query, cacheBuilder, queryExecutor, ghEventService, collectionService)
       const res = await query.explain(ctx.query)
       ctx.response.status = 200
       ctx.response.body = res
@@ -144,7 +148,7 @@ export default async function server(router: Router<DefaultState, ContextExtends
   })
 
   router.get('/qc', measureRequests({ urlLabel: 'path' }), async ctx => {
-    const conn = await executor.getConnection();
+    const conn = await queryExecutor.getConnection();
 
     // If the queryNames parameter is provided, the query that needs to be queried is filtered.
     let queryNames = COMPARE_QUERIES;
@@ -161,7 +165,7 @@ export default async function server(router: Router<DefaultState, ContextExtends
       const resultMap: Record<string, any> = {};
 
       for (let queryName of queryNames) {
-        const query = new Query(queryName, redisClient, executor, ghEventService, collectionService)
+        const query = new Query(queryName, cacheBuilder, queryExecutor, ghEventService, collectionService)
 
         try {
           resultMap[queryName] = await query.run(ctx.query, false, conn)

@@ -1,8 +1,8 @@
-import { RedisClientType, RedisDefaultModules, RedisModules, RedisScripts } from "redis";
-import {MysqlQueryExecutor} from "../core/MysqlQueryExecutor";
-import Cache, {CachedData, MAX_CACHE_TIME} from "../core/Cache";
+import {TiDBQueryExecutor} from "../core/TiDBQueryExecutor";
+import Cache, {CachedData} from "../core/cache/Cache";
 import { dataQueryTimer, measure, tidbQueryCounter } from "../metrics";
 import { DateTime } from "luxon";
+import CacheBuilder, { CacheProviderTypes } from "../core/cache/CacheBuilder";
 
 interface Repo {
   id: any;
@@ -34,8 +34,8 @@ export class BadParamsError extends Error {
 export default class CollectionService {
 
   constructor(
-    readonly executor: MysqlQueryExecutor,
-    public readonly redisClient: RedisClientType<RedisDefaultModules & RedisModules, RedisScripts>,
+    readonly executor: TiDBQueryExecutor,
+    public readonly cacheBuilder: CacheBuilder,
   ) {
   }
 
@@ -70,9 +70,10 @@ export default class CollectionService {
   }
 
   async getCollections(): Promise<CachedData<Collection[]>> {
-    const cacheKey = "collection:list";
-    const cacheHours = 1;
-    const cache = new Cache<Collection[]>(this.redisClient, cacheKey, cacheHours, cacheHours, false, true);
+    const cacheKey = 'collection:list';
+    const cache = this.cacheBuilder.build(
+      CacheProviderTypes.CACHED_TABLE, cacheKey, 1, 0.1, false, true
+    );
 
     return cache.load(async () => {
       return await measure(dataQueryTimer, async () => {
@@ -89,10 +90,10 @@ export default class CollectionService {
 
           return {
             params: {},
-            requestedAt: start.toISO(),
+            requestedAt: start,
+            finishedAt: end,
             spent: end.diff(start).as('seconds'),
             sql,
-            expiresAt: end.plus({hours: cacheHours}),
             fields: fields,
             data: rows as any
           }
@@ -109,8 +110,9 @@ export default class CollectionService {
 
   async getCollectionRepos(collectionId: number): Promise<CachedData<CollectionItem[]>> {
     const cacheKey = `collection:items:${collectionId}`;
-    const cacheHours = 1;
-    const cache = new Cache<CollectionItem[]>(this.redisClient, cacheKey, cacheHours, cacheHours, false, true);
+    const cache = this.cacheBuilder.build(
+      CacheProviderTypes.CACHED_TABLE, cacheKey, 1, 0.1, false, true
+    );
 
     const collectionKey = collectionId.toString()
     if (!/^[1-9]\d*$/.test(collectionKey)) {
@@ -136,10 +138,10 @@ export default class CollectionService {
 
           return {
             params: {},
-            requestedAt: start.toISO(),
+            requestedAt: start,
+            finishedAt: end,
             spent: end.diff(start).as('seconds'),
             sql,
-            expiresAt: end.plus({hours: cacheHours}),
             fields: fields,
             data: rows as any
           }
