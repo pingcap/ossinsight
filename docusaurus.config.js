@@ -136,7 +136,7 @@ const config = {
         },
         */
         blog: {
-          blogTitle: 'OSS Insight Blogs',
+          blogTitle: 'OSS Insight Blog',
           blogSidebarTitle: 'All Blog Posts',
           blogSidebarCount: 'ALL',
           postsPerPage: 10,
@@ -193,7 +193,7 @@ const config = {
             label: 'Collections',
             activeBasePath: '/collections'
           },
-          {to: '/blog', label: 'Blogs', position: 'left'},
+          {to: '/blog', label: 'Blog', position: 'left'},
           {
             href: 'https://tidbcloud.com/free-trial?utm_source=ossinsight&utm_medium=referral',
             className: 'navbar-item-tidb-cloud',
@@ -229,7 +229,7 @@ const config = {
                 to: '/blog/how-it-works',
               },
               {
-                label: 'Blogs',
+                label: 'Blog',
                 to: '/blog',
               },
             ],
