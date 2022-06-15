@@ -5,28 +5,24 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import Divider from '@mui/material/Divider';
-import Skeleton from '@mui/material/Skeleton';
 import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
 import React, { useCallback, useMemo, useState } from 'react';
 import AspectRatio from 'react-aspect-ratio';
 import { useInView } from 'react-intersection-observer';
-import NumberCounter from 'react-smooth-number-counter';
+import AnimatedNumber from "react-awesome-animated-number";
 import AnalyzeSelector from '../../components/AnalyzeSelector';
 import CompareHeader from '../../components/CompareHeader/CompareHeader';
 import { Repo } from '../../components/CompareHeader/RepoSelector';
 import Image from '../../components/Image';
-import { useRealtimeRemoteData, useRemoteData, useTotalEvents } from '../../components/RemoteCharts/hook';
+import { useTotalEvents } from '../../components/RemoteCharts/hook';
 import TopList from '../../components/TopList';
-import WordCloud from '../../components/WordCloud';
 import useVisibility from '../../hooks/visibility';
 import CustomPage from '../../theme/CustomPage';
-import Events from './_components/events';
 import { Realtime } from './_components/realtime';
 import Section from './_components/Section';
 import Tag from './_components/Tag';
 import { Body, fontSizes, H1, H2, H2Plus, Headline, Span, Subtitle } from './_components/typography';
-import styles from './index.module.css'
 
 const Item = styled(Box)(({theme}) => ({
   padding: theme.spacing(4),
@@ -62,12 +58,8 @@ const TotalNumber = () => {
 
   return (
     <span ref={ref}>
-      <Span sx={{color: '#E30C34', mx: 0.5}}>
-        <NumberCounter
-          className={styles.cnt}
-          value={total}
-          transition={500}
-        />
+      <Span sx={{color: '#E30C34', mx: 0.5 }}>
+        <AnimatedNumber value={total} hasComma duration={200} size={28} />
       </Span>
     </span>
   )
