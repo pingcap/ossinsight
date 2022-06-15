@@ -19,6 +19,7 @@ import { useTotalEvents } from '../../components/RemoteCharts/hook';
 import TopList from '../../components/TopList';
 import useVisibility from '../../hooks/visibility';
 import CustomPage from '../../theme/CustomPage';
+import AnalyzeSelectorComponent from './_components/AnalyzeSelectorComponent';
 import { Realtime } from './_components/realtime';
 import Section from './_components/Section';
 import Tag from './_components/Tag';
@@ -51,17 +52,21 @@ const formatHugeNumber = (x: number) => {
 
 const stackDirection = {xs: 'column', md: 'row'} as const
 
+const StyledAnimatedNumber = styled(AnimatedNumber)({
+  color: '#E30C34',
+  marginLeft: 4,
+  marginRight: 4,
+})
+
 const TotalNumber = () => {
   const visible = useVisibility()
   const { inView, ref } = useInView()
   const total = useTotalEvents(inView && visible)
 
   return (
-    <span ref={ref}>
-      <Span sx={{color: '#E30C34', mx: 0.5 }}>
-        <AnimatedNumber value={total} hasComma duration={200} size={28} />
-      </Span>
-    </span>
+    <div style={{ display: 'inline' }} ref={ref}>
+      <StyledAnimatedNumber value={total} hasComma duration={200} size={24} />
+    </div>
   )
 }
 
@@ -112,14 +117,7 @@ export default function Home() {
                 &nbsp;Insight
               </Span>
             </H1>
-            <Box
-              mt={4}
-              display='flex'
-              justifyContent='flex-end'
-              sx={{ '> *': { flex: 1, maxWidth: 450, mx: 'unset' } }}
-            >
-              <AnalyzeSelector align='left' size='large' contrast />
-            </Box>
+            <AnalyzeSelectorComponent />
             <Body>
               Powered by
               <a href="https://en.pingcap.com/tidb-cloud/?utm_source=ossinsight&utm_medium=referral" target="_blank">

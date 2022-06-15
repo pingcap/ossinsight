@@ -39,7 +39,7 @@ export const H2Plus = (props: TypographyProps<'span'>) => (
 export const Headline = (props: TypographyProps<'p'>) => (
   <Typography
     {...props}
-    component='p'
+    component='div'
     variant='subtitle2'
     sx={[
       {color: '#C4C4C4'},
