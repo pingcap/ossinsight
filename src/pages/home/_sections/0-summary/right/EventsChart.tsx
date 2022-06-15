@@ -3,7 +3,7 @@ import Box from '@mui/material/Box';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import React from 'react';
-import { useRealtimeEvents } from '../../../components/RealtimeSummary/hooks';
+import { useRealtimeEvents } from '../../../../../components/RealtimeSummary/hooks';
 
 export const EventsChart = ({show}: { show: boolean }) => {
   const data = useRealtimeEvents(show)
@@ -26,3 +26,5 @@ export const EventsChart = ({show}: { show: boolean }) => {
     </Box>
   );
 }
+
+export default EventsChart

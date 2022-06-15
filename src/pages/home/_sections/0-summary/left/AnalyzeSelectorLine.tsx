@@ -1,8 +1,8 @@
 import Box from '@mui/material/Box';
 import React from 'react';
-import AnalyzeSelector from '../../../components/AnalyzeSelector';
+import AnalyzeSelector from '../../../../../components/AnalyzeSelector';
 
-export default function AnalyzeSelectorComponent () {
+const AnalyzeSelectorLine = () => {
   return (
     <Box
       mt={4}
@@ -14,3 +14,5 @@ export default function AnalyzeSelectorComponent () {
     </Box>
   )
 }
+
+export default AnalyzeSelectorLine
