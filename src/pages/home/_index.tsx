@@ -26,7 +26,8 @@ import Tag from './_components/Tag';
 import { Body, fontSizes, H1, H2, H2Plus, Headline, Span, Subtitle } from './_components/typography';
 
 const Item = styled(Box)(({theme}) => ({
-  padding: theme.spacing(4),
+  paddingLeft: theme.spacing(4),
+  paddingRight: theme.spacing(4),
   flex: 1,
   [theme.breakpoints.down('md')]: {
     width: '100%',
