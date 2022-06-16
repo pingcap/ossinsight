@@ -4,7 +4,6 @@ import {LocalizationProvider} from "@mui/lab";
 import DateAdapter from '@mui/lab/AdapterLuxon';
 import Head from '@docusaurus/Head';
 import BrowserOnly from '@docusaurus/BrowserOnly';
-import ThemeAdaptor from "../ThemeAdaptor";
 import {useInView} from "react-intersection-observer";
 import InViewContext from '../InViewContext'
 import GroupSelectContext from "../GroupSelect/GroupSelectContext";
@@ -40,23 +39,21 @@ function CommonChart({chart: rawChart, noSearch, comparing, shareInfo, ...rest})
 
   return (
     <LocalizationProvider dateAdapter={DateAdapter}>
-      <ThemeAdaptor>
-        <Head>
-          <link
-            rel="stylesheet"
-            href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
-          />
-        </Head>
-        <div ref={ref} data-common-chart={true}>
-          <InViewContext.Provider value={{ inView: visible && inView }}>
-            {form}
-            {form && <Divider sx={{my: 2}} />}
-            <CommonChartContext.Provider value={{shareInfo}}>
-              {child}
-            </CommonChartContext.Provider>
-          </InViewContext.Provider>
-        </div>
-      </ThemeAdaptor>
+      <Head>
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+        />
+      </Head>
+      <div ref={ref} data-common-chart={true}>
+        <InViewContext.Provider value={{ inView: visible && inView }}>
+          {form}
+          {form && <Divider sx={{my: 2}} />}
+          <CommonChartContext.Provider value={{shareInfo}}>
+            {child}
+          </CommonChartContext.Provider>
+        </InViewContext.Provider>
+      </div>
     </LocalizationProvider>
   )
 }
