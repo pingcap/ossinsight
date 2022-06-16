@@ -19,7 +19,7 @@ export default function Section ({darker = false, pt, children}: PropsWithChildr
     <Box
       component='section'
       sx={[
-        responsive('py', 2, 4, 8),
+        responsive('py', 2, 4, 6),
         {
           backgroundColor: darker ? dark.darker : dark.default,
           pt

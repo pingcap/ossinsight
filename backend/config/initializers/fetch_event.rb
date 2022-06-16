@@ -19,7 +19,7 @@ class FetchEvent
         resp = URI.open(url, 
           open_timeout: 600, 
           read_timeout: 600,
-          'user-agent' => 'gharchive.org',
+          'user-agent' => 'ossinsight.io',
           'Authorization' => 'token ' + token
         )
       end
@@ -37,12 +37,12 @@ class FetchEvent
       new_events = json.map do |event|
         parse_event(event)
       end
-      # TODO remove dup events
+
       new_event_ids = new_events.map { |e| e['id'].to_i }
       exist_event_ids = EventLog.where(id: new_event_ids).pluck(:id)
       real_events = new_events.reject{ |e| exist_event_ids.include?(e['id'].to_i) }
       
-      real_events.each_slice(100) do |es|
+      real_events.each_slice(33) do |es|
         EventLog.insert_all(es.map{|e| {id: e['id'], created_at: Time.now}})
         GithubEvent.insert_all(es)
       end

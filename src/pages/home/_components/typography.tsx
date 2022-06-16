@@ -4,7 +4,7 @@ import {combineSx} from "../../../utils/mui";
 import {responsive} from "./responsive";
 
 export const fontSizes = {
-  h1: responsive('fontSize', 36, 48, 72),
+  h1: responsive('fontSize', 36, 48, 64),
   h2: responsive('fontSize', 24, 36, 48),
   h2plus: responsive('fontSize', 28, 48, 64),
   subtitle: responsive('fontSize', 14, 18, 24),
@@ -39,7 +39,7 @@ export const H2Plus = (props: TypographyProps<'span'>) => (
 export const Headline = (props: TypographyProps<'p'>) => (
   <Typography
     {...props}
-    component='p'
+    component='div'
     variant='subtitle2'
     sx={[
       {color: '#C4C4C4'},
@@ -65,8 +65,8 @@ export const Body = (props: TypographyProps) => (
     {...props}
     variant='body2'
     sx={[
-      {color: '#C4C4C4', mt: 8},
-      responsive('mt', 2, 4, 14),
+      {color: '#C4C4C4'},
+      responsive('mt', 2, 4, 6),
       fontSizes.body
     ]}
   />
