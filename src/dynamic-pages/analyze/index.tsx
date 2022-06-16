@@ -126,7 +126,6 @@ function toRepo(repo: RepoInfo | undefined): InfoPack | undefined {
     repo: {
       id: repo.id,
       name: repo.full_name,
-      color: '',
     },
   } : undefined;
 }

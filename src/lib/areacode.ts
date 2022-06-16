@@ -1,7 +1,7 @@
 import geo from './geo.json'
 import code from './code.json'
 
-const geoMap = geo.reduce((p, { code, long, lat }) => {
+const geoMap: Record<string, { long: number, lat: number }> = geo.reduce((p, { code, long, lat }) => {
   p[code] = { long, lat }
   return p
 }, {})

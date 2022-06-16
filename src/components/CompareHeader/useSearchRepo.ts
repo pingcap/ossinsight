@@ -1,7 +1,6 @@
 import { debounce } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
 import useSWR from 'swr';
-import { getRandomColor } from '../../lib/color';
 import { createHttpClient } from '../../lib/request';
 import { AsyncData } from '../RemoteCharts/hook';
 
@@ -10,7 +9,6 @@ const httpClient = createHttpClient();
 export interface Repo extends Record<string, unknown> {
   id: number
   name: string
-  color: string
 }
 
 function useDebounced<T>(value: T, wait?: number) {
@@ -40,7 +38,6 @@ export function useSearchRepo(keyword: string): AsyncData<Repo[]> {
       return data.map((r) => ({
         id: r.id,
         name: r.fullName,
-        color: getRandomColor(),
       }));
     },
     fallbackData: [],
