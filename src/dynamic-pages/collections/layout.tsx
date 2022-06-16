@@ -1,5 +1,9 @@
+import Link from "@docusaurus/Link";
 import { useRouteMatch, useLocation } from '@docusaurus/router';
 import { translate } from '@docusaurus/Translate';
+import { Add } from '@mui/icons-material';
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
 import BackToTopButton from '@theme/BackToTopButton';
 import DocSidebar from '@theme/DocSidebar';
 import IconArrow from '@theme/IconArrow';
@@ -70,6 +74,7 @@ function CollectionsPageLayout({ title: propTitle, description, keywords, childr
                   path={pathname}
                   onCollapse={toggleSidebar}
                   isHidden={hiddenSidebar}
+                  Footer={SidebarFooter}
                 />
 
                 {hiddenSidebar && (
@@ -120,6 +125,19 @@ function CollectionsPageLayout({ title: propTitle, description, keywords, childr
       </CollectionsContext.Provider>
     </CustomPage>
   );
+}
+
+const SidebarFooter = () => {
+  return (
+    <Link to='https://github.com/pingcap/ossinsight#how-to-add-collections'>
+      <Stack direction='row' width='100%' height='100%' alignItems='center' justifyContent='center' spacing={1}>
+        <Add />
+        <Typography variant='body2' component='span' fontSize='inherit'>
+          Add a Collection
+        </Typography>
+      </Stack>
+    </Link>
+  )
 }
 
 export default CollectionsPageLayout;
