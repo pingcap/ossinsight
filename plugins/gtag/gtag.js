@@ -6,6 +6,7 @@
  */
 
 const globalData = require('@generated/globalData');
+import { logPageView } from "@tidb-community/tracking-script";
 const { getContentGroup } = require('./content-group');
 
 const {trackingID} = globalData['docusaurus-plugin-google-gtag'].default;
@@ -36,6 +37,7 @@ const clientModule = {
           page_location: window.location.href,
           page_path: location.pathname,
         });
+        logPageView();
       });
     }
   },
