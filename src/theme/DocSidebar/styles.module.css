@@ -22,6 +22,21 @@
     transition: opacity 50ms ease;
   }
 
+  .sidebarWithFooter {
+    padding-bottom: 32px;
+  }
+
+  .sidebarFooter {
+    height: 32px;
+    line-height: 32px;
+    position: absolute;
+    bottom: 40px;
+    left: 0;
+    width: calc(100% - 16px);
+    background-color: var(--ifm-background-color);
+    z-index: 0;
+  }
+
   .sidebarWithHideableNavbar {
     padding-top: 0;
   }

@@ -58,7 +58,7 @@ function HideableSidebarButton({onClick}) {
   );
 }
 
-function DocSidebarDesktop({path, sidebar, onCollapse, isHidden}) {
+function DocSidebarDesktop({path, sidebar, onCollapse, isHidden, Footer}) {
   const showAnnouncementBar = useShowAnnouncementBar();
   const {
     navbar: {hideOnScroll},
@@ -75,8 +75,10 @@ function DocSidebarDesktop({path, sidebar, onCollapse, isHidden}) {
         className={clsx('menu thin-scrollbar', styles.menu, {
           [styles.menuWithAnnouncementBar]: showAnnouncementBar,
         })}>
-        <ul className={clsx(ThemeClassNames.docs.docSidebarMenu, 'menu__list')}>
+        <ul className={clsx(ThemeClassNames.docs.docSidebarMenu, 'menu__list', Footer ? styles.sidebarWithFooter : undefined)}>
           <DocSidebarItems items={sidebar} activePath={path} level={1} />
+
+          {Footer && <li className={styles.sidebarFooter}><Footer /></li>}
         </ul>
       </nav>
       {hideableSidebar && <HideableSidebarButton onClick={onCollapse} />}
@@ -84,7 +86,7 @@ function DocSidebarDesktop({path, sidebar, onCollapse, isHidden}) {
   );
 } // eslint-disable-next-line react/function-component-definition
 
-const DocSidebarMobileSecondaryMenu = ({toggleSidebar, sidebar, path}) => (
+const DocSidebarMobileSecondaryMenu = ({toggleSidebar, sidebar, path, Footer}) => (
   <ul className={clsx(ThemeClassNames.docs.docSidebarMenu, 'menu__list')}>
     <DocSidebarItems
       items={sidebar}
@@ -101,6 +103,8 @@ const DocSidebarMobileSecondaryMenu = ({toggleSidebar, sidebar, path}) => (
       }}
       level={1}
     />
+
+    {Footer && <li><Footer /></li>}
   </ul>
 );
 
