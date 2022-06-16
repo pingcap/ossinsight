@@ -6,7 +6,7 @@
  */
 
 const globalData = require('@generated/globalData');
-import { logPageView } from "@tidb-community/tracking-script";
+const { logPageView } = require("@tidb-community/tracking-script");
 const { getContentGroup } = require('./content-group');
 
 const {trackingID} = globalData['docusaurus-plugin-google-gtag'].default;
