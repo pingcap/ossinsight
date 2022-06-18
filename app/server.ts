@@ -80,7 +80,7 @@ export default async function server(router: Router<DefaultState, ContextExtends
   router.get('/q/:query', measureRequests({ urlLabel: 'path' }), async ctx => {
     try {
       const query = new Query(ctx.params.query, cacheBuilder, queryExecutor, ghEventService, collectionService)
-      const res = await query.run(ctx.query)
+      const res = await query.run(ctx.query, false, null, ctx.request.ip)
       ctx.response.status = 200
       ctx.response.body = res
     } catch (e) {

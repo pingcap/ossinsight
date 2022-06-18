@@ -36,10 +36,10 @@ export default class Cache<T> {
   ) {
   }
 
-  async load(fallback: () => Promise<CachedData<T>>): Promise<CachedData<T>> {
+  async load(fallback: () => Promise<CachedData<T>>, ip: string = 'N/A'): Promise<CachedData<T>> {
     // Only running one at the same time when multiple same query with same params.
     if (runningCaches.has(this.key)) {
-      logger.info('Wait for previous same cache query.')
+      logger.info(`Wait for previous same cache query <${this.key}>, ip: ${ip}.`, )
       return await runningCaches.get(this.key)!._data as never
     }
 

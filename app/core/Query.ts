@@ -197,7 +197,7 @@ export default class Query {
   }
 
   async run <T> (
-    params: Record<string, any>, refreshCache: boolean = false, conn?: PoolConnection
+    params: Record<string, any>, refreshCache: boolean = false, conn?: PoolConnection | null, ip?: string
   ): Promise<CachedData<T>> {
     await this.ready();
 
@@ -243,7 +243,7 @@ export default class Query {
           throw e
         }
       })
-    })
+    }, ip)
   }
 
   async explain <T> (params: Record<string, any>, refreshCache: boolean = false, conn?: PoolConnection): Promise<CachedData<T>> {
