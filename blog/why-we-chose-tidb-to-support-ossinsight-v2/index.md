@@ -5,7 +5,7 @@ authors: [winkyao, fendy]
 tags: [tidb]
 ---
 
-In early January 2022, Max, our CEO, a big fan of open-source, asked if my team could build a small tool to help us understand all the open-source projects on GitHub? In fact, GitHub continuously publishes the public events in its open-source world through the open API (Thank you and well done! Github). We can certainly learn a lot from the data!  
+In early January 2022, Max, our CEO, a big fan of open-source, asked if my team could build a small tool to help us understand all the open-source projects on GitHub; and that if everything worked well, we should open the API to help open source developers to build better insights. In fact, GitHub continuously publishes the public events in its open-source world through the open API (Thank you and well done! Github). We can certainly learn a lot from the data! 
 
 I was excited that it would be a very interesting project, until Max said: “You only got one week.” Well, the boss is the boss, and although time was tight, I decided to take up this challenge. 
 
@@ -23,7 +23,7 @@ By combining the data from the GH Archive and the GitHub event API, we can gain 
 
 <br/>
 
-![The real-time update of GitHub events](./real-time-updates.png)
+![The real-time update of GitHub events](./github-events-updates.gif)
 
 <center><em>The real-time update of GitHub events</em></center>
 
@@ -95,11 +95,11 @@ To save time, we used [Docusaurus](https://github.com/facebook/docusaurus), an o
 
 We chose TiDB as the database to support our website and it perfectly supports SQL, so our back-end engineers could write SQL commands to handle complex and flexible analytical queries with ease and efficiency. Then, our front-end engineers just needed to display those SQL execution results in the form of good-looking charts. 
 
-Finally, we made it. We prototyped it in just one week, named it [OSS Insight](https://ossinsight.io/), short for open source software insights, continued to fine-tune it, and [officially released it on May 3, 2022](https://ossinsight.io/blog/explore-deep-in-4.6-billion-github-events/). 
+Finally, we made it. We prototyped it in just one week, named it [OSS Insight](https://ossinsight.io/), short for open source software insights, continued to fine-tune it, and [officially released it on May 3](https://ossinsight.io/blog/explore-deep-in-4.6-billion-github-events/). 
 
-## A few examples of analytical queries 
+## How we deal with analytical queries with SQL
 
-Let's take a look at a few analytical queries and show you how we deal with them. 
+Let's use one example to show you how we deal with complex analytical queries. 
 
 ### Analyze a GitHub collection: JavaScript frameworks
 
@@ -193,53 +193,28 @@ Then, we just need to draw [the result](https://ossinsight.io/blog/deep-insight-
 
 <center><em>JavaScript frameworks with the most issue creators</em></center>
 
-### Analyze a single repository 
-
-Analyzing a single project in depth is one of OSS Insight’s basic features. 
-Take [facebook/react](https://ossinsight.io/analyze/facebook/react) as an example. Let’s analyze its code changes since its inception. We can use the following SQL statement: 
-
-``` sql
-select
-   event_month,
-   sum(additions) as additions,
-   sum(deletions) as deletions,
-   sum(additions) - sum(deletions) as net_additions,
-   sum(additions) + sum(deletions) as changes
-from github_events
-use index(index_github_events_on_repo_id)
-where
-   repo_id = 10270250
-   and type = 'PullRequestEvent'
-   and action = 'closed'
-   and pr_merged = true
-group by event_month
-order by event_month
-;
-
-```
-
-This statement includes a `use index` command: `use index(index_github_events_on_repo_id)`. This is TiDB’s rowstore index, which TiKV will read and process. TiDB runs this statement in 0.13 s. 
-
-
-The figure below is [the visualized result](https://ossinsight.io/analyze/facebook/react/):
-
 <br/>
 
-![Code changes of facebook/react repository](./react-code-changes.png)
-
-<center><em>Code changes of facebook/react repository</em></center>
-
-<br/>
 
 Note: You can click the `REQUEST INFO` on the upper right side of each chart to get the SQL command for each result. 
 
 ## Feedback: People love it!
 
-After we released OSS Insight on May 3, we have received a lot of appauses on social media, via emails and private messages, from many developers, engineers, researchers, and people who are passionate about the open source community in various companies and industries. 
+After we released OSS Insight on May 3, we have received loud applause on social media, via emails and private messages, from many developers, engineers, researchers, and people who are passionate about the open source community in various companies and industries. 
 
-I am more than excited and grateful that so many people find OSS Insight interesting, helpful, and valuable. I am also proud that my team made such a wonderful project in such a short time. 
+I am more than excited and grateful that so many people find OSS Insight interesting, helpful, and valuable. I am also proud that my team made such a wonderful project in such a short time.
 
-[image to be updated]
+
+<br/>
+
+![Applause given by developers and organizations on Twitter-1](./twitter-1.png)
+
+![Applause given by developers and organizations on Twitter-1](./twitter-2.png)
+
+<center><em>Applause given by developers and organizations on Twitter</em></center>
+
+<br/>
+
 
 ## Lessons learnt 
 
@@ -247,14 +222,15 @@ Looking back at the process that we built this project, we have learnt many mind
 
 **First, Quick doesn’t mean dirty, as long as we make the right choices.** To build an insight tool in just one week is tricky, but thanks to those wonderful, ready-made, and open source projects such as TiDB, Docusaurus, and Echarts, we made it happen with efficiency and without compromising the quality. 
 
-**Second, it’s crucial to select the right database, especially one that supports SQL.** TiDB is a distributed SQL database with great scalability and can handle both the transactional and real-time analytical workloads. With its help, we can process billions of rows of data with ease and use SQL commands to execute complicated real-time queries. Further, using TiDB means we can leverage its resources to go to market faster and get feedback promptly. 
+**Second, it’s crucial to select the right database, especially one that supports SQL.** TiDB is a distributed SQL database with great scalability and can handle both the transactional and real-time analytical workloads. With its help, we can process billions of rows of data with ease, and use SQL commands to execute complicated real-time queries. Further, using TiDB means we can leverage its resources to go to market faster and get feedback promptly. 
+
+If you like our project or are interested in joining us, you’re welcome to **[submitting PRs here](https://github.com/pingcap/ossinsight)** to our GitHub repository. You can also follow us on [Twitter](https://twitter.com/OSSInsight) for the latest information. 
+
 
 :::note
 
-### 📌 Contribute
-If you like our project or are interested in joining us, you’re welcome to **[submitting PRs here](https://github.com/pingcap/ossinsight)** to our GitHub repository. You can also follow us on [Twitter](https://twitter.com/OSSInsight) for the latest information. 
+### 📌 Join our workshop
 
-### Join our workshop
 If you want to get your own insights, you can [join our workshop](https://share.hsforms.com/1E-qtGQWrTVmctP8kBT34gw2npzm) and try using TiDB to support your own datasets. 
 
 :::
