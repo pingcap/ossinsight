@@ -7,7 +7,7 @@ const EventLine = () => {
     <Headline>
       Get insights from
       <TotalNumber />
-      GitHub Events
+      GitHub events
     </Headline>
   )
 }
