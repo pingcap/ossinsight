@@ -90,8 +90,8 @@ export default withInViewContainer(function MonthRankSection() {
 
   return (
     <section>
-      {/* <H2 id="monthly-rankings">Ranking!</H2> */}
-      <P2>Ranked all repositories with the month-on-month growth amount.</P2>
+      <H2 id="monthly-rankings">MoM Ranking</H2>
+      <P2>Table chart describes the MoM ranking of repos with three metrics（Star, Pull Request, Issue）.</P2>
       {tabs}
       <br />
       {withRemote(

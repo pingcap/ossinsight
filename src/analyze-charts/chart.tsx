@@ -97,7 +97,7 @@ export function withChart<T = unknown, P = {}>(useOption: (props: DangerousCtx<T
     return (
       <div style={{ position: 'relative' }}>
         <Box display='flex' justifyContent='flex-end'>
-          <Button size='small' onClick={handleShowDebugModel} endIcon={<CodeIcon />}>REQUEST INFO</Button>
+          <Button size='small' onClick={handleShowDebugModel} endIcon={<CodeIcon />}>SHOW SQL</Button>
         </Box>
         <CommonChartContext.Provider value={{shareInfo}}>
           <EChartsContext.Provider value={{echartsRef}}>

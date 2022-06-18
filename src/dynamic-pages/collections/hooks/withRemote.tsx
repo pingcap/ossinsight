@@ -40,7 +40,7 @@ export function withRemote<T>({ data, loading, error }: AsyncData<RemoteData<any
     return (
       <>
         <Box display='flex' justifyContent='flex-end'>
-          <Button size='small' onClick={handleShowDebugModel} endIcon={<CodeIcon />}>REQUEST INFO</Button>
+          <Button size='small' onClick={handleShowDebugModel} endIcon={<CodeIcon />}>SHOW SQL</Button>
         </Box>
         {render(data)}
         <DebugDialog sql={data.sql} query={data.query} params={data.params} open={showDebugModel} onClose={handleCloseDebugModel} />
@@ -50,7 +50,7 @@ export function withRemote<T>({ data, loading, error }: AsyncData<RemoteData<any
     return (
       <>
         <Box display='flex' justifyContent='flex-end'>
-          <LoadingButton loading size='small' endIcon={<CodeIcon />}>REQUEST INFO</LoadingButton>
+          <LoadingButton loading size='small' endIcon={<CodeIcon />}>SHOW SQL</LoadingButton>
         </Box>
         {fallback()}
       </>

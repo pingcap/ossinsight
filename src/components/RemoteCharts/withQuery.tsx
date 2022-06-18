@@ -79,7 +79,7 @@ export function renderChart (query, chart, {error, data}: AsyncData<RemoteData<a
       <ChartWithSql sql={data?.sql}>
         <div style={{position: 'relative'}}>
           <Box display='flex' justifyContent='flex-end'>
-            <Button size='small' onClick={handleShowDebugModel} endIcon={<CodeIcon />}>REQUEST INFO</Button>
+            <Button size='small' onClick={handleShowDebugModel} endIcon={<CodeIcon />}>SHOW SQL</Button>
           </Box>
           <EChartsContext.Provider value={{ echartsRef }}>
             {chart}
