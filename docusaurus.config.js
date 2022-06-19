@@ -210,16 +210,28 @@ const config = {
             ]
           },
           {
-            href: 'https://tidbcloud.com/free-trial?utm_source=ossinsight&utm_medium=referral',
-            className: 'navbar-item-tidb-cloud',
-            position: 'right',
-          },
-          {
             href: 'https://twitter.com/OSSInsight',
             className: 'navbar-item-twitter',
             position: 'right',
           },
-        ],
+          {
+            type: 'dropdown',
+            label: 'Admin',
+            position: 'right',
+            items: [
+              {label: 'Database Cluster Info', href: '#'},
+              {label: 'Database QPS', href: '#'},
+              {label: 'Database Latency', href: '#'},
+              {label: 'Database CPU Utilization', href: '#'},
+              {label: 'Database Memory Utilization', href: '#'},
+              {label: 'Database IO Utilization', href: '#'},
+              {label: 'Database Slow Query', href: '#'},
+              {label: 'Database Top SQL', href: '#'},
+              {label: 'Database Hotspot/Heatmap', href: '#'},
+              {label: 'Database Diagnostic', href: '#'},
+            ]
+          },
+        ].filter(Boolean),
       },
       footer: {
         style: 'light',
