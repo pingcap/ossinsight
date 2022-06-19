@@ -57,9 +57,9 @@ export default function Footer() {
           />
         </Cards>
         <Box textAlign='center' sx={{fontSize: 24, mt: 6}}>
-          Now,&nbsp;
-          <Button sx={{fontSize: 24, fontWeight: 'bold', verticalAlign: 'baseline' }} component={Link} href='/try-your-own-dataset?utm_content=wonder_cta'>
-            Try your own dataset !
+        Want to try your own IDEAInsight in a day?&nbsp;<br />
+          <Button sx={{fontSize: 24, fontWeight: 'bold', verticalAlign: 'baseline', textDecoration: 'underline'}} component={Link} href='https://share.hsforms.com/1E-qtGQWrTVmctP8kBT34gw2npzm'>
+            Join Workshop !
           </Button>
         </Box>
       </Section>

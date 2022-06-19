@@ -57,9 +57,9 @@ export default function TopList({period, onPeriodChange}: TopListProps) {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <DialogTitle>
-          [For Debug] SQL Execution info
-        </DialogTitle>
+        {/* <DialogTitle>
+          TODO
+        </DialogTitle> */}
         <Box sx={{p: 4}}>
           {renderCodes(ranks?.sql)}
         </Box>
