@@ -10,7 +10,5 @@ declare namespace NodeJS {
     SERVER_PORT: string
     GH_TOKENS: string
     PREFETCH_CONCURRENT: string
-    AUTH0_SIGNUP_REDIRECT: string
-    AUTH0_CALLBACK_REDIRECT: string
   }
 }
