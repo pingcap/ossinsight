@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkdocus=self.webpackChunkdocus||[]).push([[2887],{85143:function(s){s.exports=JSON.parse('{"allTagsPath":"/blog/tags","slug":"/blog/tags/tidbcloud","name":"tidbcloud","count":4,"permalink":"/blog/tags/tidbcloud"}')}}]);
