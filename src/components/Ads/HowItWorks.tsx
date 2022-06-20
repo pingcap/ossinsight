@@ -21,7 +21,7 @@ const useInitialDisplay = () => {
   const { search } = useLocation()
 
   return useMemo(() => {
-    return _display && (/utm_medium=paid_ads/.test(search))
+    return _display && (/utm_medium=promotion/.test(search))
   }, [])
 }
 
