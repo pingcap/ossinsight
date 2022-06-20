@@ -1,11 +1,11 @@
 ---
 title: Build a Better Github Insight Tool in a Week? A True Story
-date: 2022-06-10
+date: 2022-06-20
 authors: [winkyao, fendy]
 tags: [tidb]
 ---
 
-In early January 2022, Max, our CEO, a big fan of open-source, asked if my team could build a small tool to help us understand all the open-source projects on GitHub; and, that if everything worked well, we should open the API to help open source developers to build better insights. In fact, GitHub continuously publishes the public events in its open-source world through the open API. (Thank you and well done! Github). We can certainly learn a lot from the data!  
+In early January 2022, [Max](https://twitter.com/ngaut1), our CEO, a big fan of open-source, asked if my team could build a small tool to help us understand all the open-source projects on GitHub; and, that if everything worked well, we should open the API to help open source developers to build better insights. In fact, GitHub continuously publishes the public events in its open-source world through the open API. (Thank you and well done! Github). We can certainly learn a lot from the data!  
 
 I was excited about this project until Max said: “You’ve only got one week.” Well, the boss is the boss! Although time was tight and we were faced with multiple head-aching problems, I decided to take up this challenge. 
 
@@ -21,56 +21,56 @@ But there's another problem: hourly data is good, but not good enough. We wanted
 By combining the data from the GH Archive and the GitHub event API, we can gain streaming, real-time event updates.
 
 
-<br/>
+<br />
 
 ![GitHub event updates](./github-events-updates.gif)
 
 <center><em>GitHub event updates</em></center>
 
-<br/>
+<br />
 
 
 ## Headache 2: the data is huge!
 
 After we decompressed all the data from GH Archive, we found there were more than 4.6 billion rows of GitHub events. That’s a lot of data!  We also noticed that about 300,000 rows were generated and updated each hour.
 
-<br/>
+<br />
 
 ![The data volume of GitHub events occurred after 2011](./github-events.png)
 
 <center><em>The data volume of GitHub events occurred after 2011</em></center>
 
-<br/>
+<br />
 
 The database solution would be tricky here. Our goal is to build an application that provides real-time data insights based on a continuously growing dataset. So, scalability is a must. NoSQL databases can provide good scalability, but what follows is how to handle complex analytical queries. Unfortunately, NoSQL databases are not good at that. 
 
-<br/>
+<br />
 
 <center>
-  <img width="50%" src={require('@site/blog/why-we-chose-tidb-to-support-ossinsight-v2/scalability-SQL.jpg').default} alt='Scalability vs SQL' />
+  <img width="50%" src={require('@site/blog/why-we-choose-tidb-to-support-oss-insight/scalability-SQL.jpg').default} alt='Scalability vs SQL' />
 </center>
 
-<br/>
+<br />
 
 Another option is to use an OLAP database such as ClickHouse. ClickHouse can handle the analytical workload very well, but it is not designed for serving online traffic. If we chose it, we would need another database for the online traffic. 
 
-<br/>
+<br />
 
 <center>
-  <img width="50%" src={require('@site/blog/why-we-chose-tidb-to-support-ossinsight-v2/olap-onlineserving.jpg').default} alt='OLAP vs Online Serving' />
+  <img width="50%" src={require('@site/blog/why-we-choose-tidb-to-support-oss-insight/olap-onlineserving.jpg').default} alt='OLAP vs Online Serving' />
 </center>
 
-<br/>
+<br />
 
 What about sharding the database and then building an extract, transform, load (ETL) pipeline to synchronize the new events to a data warehouse? This sounds workable.
 
-<br/>
+<br />
 
 ![How a sharded database solution can handle the GitHub data](./sharded-architecture.png)
 
 <center><em>How a sharded database solution can handle the GitHub data</em></center>
 
-<br/>
+<br />
 
 According to our product manager's (PM’s) plan, we needed to do some repo-specific or user-specific analysis. Although the total data volume was huge, the number of events was not too large for a single project or user. This meant using the secondary indexes in RDBMS would be a good idea. But, if we decided to use the above architecture, we had to be careful in selecting the database sharding key. For example, if we use `user_id` as the sharding key, then queries based on `repo_id` will be very tricky. 
 
@@ -87,13 +87,13 @@ The choice is obvious now, and don't forget PingCAP is a database company! TiDB 
 
 Wow! It seems we got a winner! 
 
-<br/>
+<br />
 
 ![TiDB use the secondary index to process 4.6 billion rows of events in 4.9 ms](./tidb-scanned-kennytm.png)
 
 <center><em>TiDB use the secondary index to process 4.6 billion rows of events in 4.9 ms</em></center>
 
-<br/>
+<br />
 
 
 **To choose a database to support an application like OSS Insight, we think TiDB is a great choice.** Plus, its simplified technology stack means a faster go-to-market and faster delivery of my boss' assignment. 
@@ -166,13 +166,13 @@ Next, let's look at the execution plan. TiDB is compatible with MySQL syntax, so
 
 In the figure below, notice the parts in red boxes. The data in the table `collection_items` is read through `distributed[row]`, which means this data is processed by TiDB’s row storage engine, TiKV. The data in the table `github_events` is read through `distributed[column]`, which means this data is processed by TiDB’s columnar storage engine, TiFlash. TiDB uses both row and columnar storage engines to execute the same SQL statement. This is so convenient for OSS Insight because it doesn’t have to split the query into two statements. 
 
-<br/>
+<br />
 
 ![TiDB execution plan](./tidb-execution-plan-2.png)
 
 <center><em>TiDB execution plan</em></center>
 
-<br/>
+<br />
 
 
 TiDB returns the following result: 
@@ -200,13 +200,13 @@ Time: 7.809s
 
 Then, we just need to draw [the result](https://ossinsight.io/blog/deep-insight-into-js-framework-2021/#which-javascript-framework-have-the-widest-feedback-sources) with Apache Echarts into a more visualized chart as shown below. 
 
-<br/>
+<br />
 
 ![JavaScript frameworks with the most issue creators](./javascript-framework-rankings.png)
 
 <center><em>JavaScript frameworks with the most issue creators</em></center>
 
-<br/>
+<br />
 
 
 Note: You can click the `REQUEST INFO` on the upper right side of each chart to get the SQL command for each result. 
@@ -217,7 +217,7 @@ After we released OSS Insight on May 3, we have received loud applause on social
 
 I am more than excited and grateful that so many people find OSS Insight interesting, helpful, and valuable. I am also proud that my team made such a wonderful product in such a short time. 
 
-<br/>
+<br />
 
 ![Applause given by developers and organizations on Twitter-1](./twitter-1.png)
 
@@ -225,7 +225,7 @@ I am more than excited and grateful that so many people find OSS Insight interes
 
 <center><em>Applause given by developers and organizations on Twitter</em></center>
 
-<br/>
+<br />
 
 
 ## Lessons learned 
