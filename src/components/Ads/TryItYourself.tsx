@@ -1,6 +1,6 @@
 import React, {useMemo, useState} from "react";
 import Paper from "@mui/material/Paper";
-import {useAdsLink} from "../Ads";
+import {useAdsLink} from "./index";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import {Close} from "@mui/icons-material";

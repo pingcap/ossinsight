@@ -8,7 +8,7 @@ import React from 'react';
 import clsx from 'clsx';
 import TOCItems from '@theme/TOCItems';
 import styles from './styles.module.css';
-import TryItYourself from "../../components/TryItYourself"; // Using a custom className
+import TryItYourself from "../../components/Ads/TryItYourself"; // Using a custom className
 // This prevents TOC highlighting to highlight TOCInline/TOCCollapsible by mistake
 
 const LINK_CLASS_NAME = 'table-of-contents__link toc-highlight';
