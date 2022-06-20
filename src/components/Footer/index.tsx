@@ -37,7 +37,7 @@ export default function Footer() {
             title='Why We Choose TiDB to Support OSS Insight'
             description='Blog · 10 min read'
             codeStyleDescription={false}
-            readMore='/blog/why-we-choose-tidb-to-support-oss-insight'
+            readMore='/blog/why-we-choose-tidb-to-support-ossinsight'
             buttonVariant='outlined'
             top={icon(require('./icon-2.png').default)}
             cardSx={{
