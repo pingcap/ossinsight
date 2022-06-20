@@ -201,11 +201,13 @@ const config = {
             href: 'https://tidbcloud.com/free-trial?utm_source=ossinsight&utm_medium=referral',
             className: 'navbar-item-tidb-cloud',
             position: 'right',
+            alt: 'TiDB Cloud Logo (Header)',
           },
           {
             href: 'https://twitter.com/OSSInsight',
             className: 'navbar-item-twitter',
             position: 'right',
+            alt: 'Twitter Logo (Header)',
           },
         ],
       },
