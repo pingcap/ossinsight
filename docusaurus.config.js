@@ -172,9 +172,9 @@ const config = {
         respectPrefersColorScheme: false,
       },
       announcementBar: {
-        id: 'announcement-20220531',
+        id: 'announcement-20220610',
         content:
-          '📢 05-03: <a target="_blank" href="/blog/explore-deep-in-4.6-billion-github-events">Explore Deep in 4.6 Billion GitHub Events</a>',
+          '📢 06-10: <a target="_blank" href="/blog/why-we-chose-tidb-to-support-ossinsight-v2/">Why We Chose TiDB to Power OSSinsight</a>',
         backgroundColor: '#343536',
         textColor: 'lightgrey',
         isCloseable: true,
