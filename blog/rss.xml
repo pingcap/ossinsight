@@ -307,7 +307,7 @@ ORDER BY 2 DESC
 GROUP BY 1
 ORDER BY 2 DESC 
    LIMIT 20
-</code></pre></details><p>:::info</p><h3>🌟 Details in how OSS Insight works</h3><p>Find the reason <a href="/blog/why-we-choose-tidb-to-support-ossinsight">Why We Choose TiDB to Support OSS Insight</a>.</p><p>You can find how we deal with massive github data in <a href="/blog/how-it-works">Data Preparation for Analytics</a> as well!
+</code></pre></details><p>:::info</p><h3>🌟 Details in how OSS Insight works</h3><p>Find the reason <a href="/blog/why-we-choose-tidb-to-support-ossinsight">How we implement OSS Insight ?</a>.</p><p>You can find how we deal with massive github data in <a href="/blog/how-it-works">Data Preparation for Analytics</a> as well!
 :::</p>]]></content:encoded>
         </item>
         <item>
@@ -432,7 +432,7 @@ ORDER BY 2 DESC
 | static_site_generator_repos |
 | web_framework_repos         |
 +-----------------------------+
-</code></pre><p>:::info</p><h3>🌟 Details in how OSS Insight works</h3><p>Go to read <a href="/blog/try-it-yourself">Use TiDB Cloud to Analyze GitHub Events in 10 Minutes</a> and use the <a href="https://tidbcloud.com/free-trial?utm_source=ossinsight&amp;utm_medium=referral">Developer Tier</a> <strong>free</strong> for 1 year.</p><p>You can find the reason <a href="/blog/why-we-choose-tidb-to-support-ossinsight">Why We Choose TiDB to Support OSS Insight</a> as well!
+</code></pre><p>:::info</p><h3>🌟 Details in how OSS Insight works</h3><p>Go to read <a href="/blog/try-it-yourself">Use TiDB Cloud to Analyze GitHub Events in 10 Minutes</a> and use the <a href="https://tidbcloud.com/free-trial?utm_source=ossinsight&amp;utm_medium=referral">Developer Tier</a> <strong>free</strong> for 1 year.</p><p>You can find the reason <a href="/blog/why-we-choose-tidb-to-support-ossinsight">How we implement OSS Insight ?</a> as well!
 :::</p>]]></content:encoded>
         </item>
     </channel>
