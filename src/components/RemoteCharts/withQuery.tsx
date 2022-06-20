@@ -14,6 +14,7 @@ import {YoyChart} from "../SpecialCharts";
 import WorldMapChart from "../BasicCharts/WorldMapChart";
 import ZScoreChart from "../SpecialCharts/ZScoreChart";
 import DynamicStarsChart from "../SpecialCharts/DynamicStarsChart";
+import DynamicLineChart from "../SpecialCharts/DynamicLineChart";
 import Box from "@mui/material/Box";
 import {EChartsContext} from "../ECharts";
 import EChartsReact from "echarts-for-react";
@@ -305,6 +306,27 @@ export function withDynamicStarsChart<Q extends keyof Queries, D = RemoteData<Qu
       <DynamicStarsChart
         loading={loading}
         data={data?.data ?? []}
+      />
+    )
+
+    return renderChart(query, chart, remoteData, false)
+  }
+}
+
+export function withDynamicLineChart<Q extends keyof Queries, D = RemoteData<Queries[Q]['params'], Queries[Q]['data']>>
+(query: Q) {
+  return ({formatSql = true, aspectRatio, seriesIndex, xIndex, yIndex, ...params}: QueryComponentProps<Q>) => {
+    const remoteData = useRemoteData(query, params, formatSql);
+    const { data, loading } = remoteData
+
+    const chart = (
+      <DynamicLineChart
+        loading={loading}
+        data={data?.data ?? []}
+        aspectRatio={aspectRatio}
+        seriesIndex={seriesIndex}
+        xIndex={xIndex}
+        yIndex={yIndex}
       />
     )
 
