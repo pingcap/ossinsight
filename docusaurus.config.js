@@ -172,7 +172,7 @@ const config = {
         respectPrefersColorScheme: false,
       },
       announcementBar: {
-        id: 'announcement-20220610',
+        id: 'announcement-20220620',
         content:
           '📢 06-20: <a target="_blank" href="/blog/why-we-choose-tidb-to-support-ossinsight/">Build a Better Github Insight Tool in a Week? A True Story</a>',
         backgroundColor: '#343536',
