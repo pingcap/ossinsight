@@ -49,7 +49,6 @@ function CollectionsPageLayout({ title: propTitle, description, keywords, childr
     <CustomPage title={title} description={description} keywords={keywords}>
       <CollectionsContext.Provider value={{ collection }}>
         <div className={styles.collectionsPage}>
-          <BackToTopButton />
 
           <div className={styles.collectionsMainContainer}>
             {sidebar && (
