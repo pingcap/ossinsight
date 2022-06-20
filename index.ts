@@ -5,7 +5,6 @@ import dotenv from 'dotenv';
 import consola, {Consola, FancyReporter} from 'consola';
 import cors from '@koa/cors';
 import { validateProcessEnv } from './app/env';
-import {measureLimitedRequests} from "./app/middlewares/measureRequests";
 
 consola.setReporters([
   new FancyReporter({

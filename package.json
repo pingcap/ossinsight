@@ -22,8 +22,8 @@
     "server:prefetch": "node compute-prefetch-enums.js",
     "server:gc": "node cache-gc.js",
     "dev": "tsc && ts-node index.ts",
-    "prefetch": "tsc && ts-node compute-prefetch-enums.js",
-    "generate-company-name-sql": "tsc && ts-node generate-company-name-sql.js",
+    "prefetch": "tsc && ts-node compute-prefetch-enums.ts",
+    "generate-company-name-sql": "tsc && ts-node generate-company-name-sql.ts",
     "gen:schema-ts": "json2ts params.schema.json params.schema.d.ts",
     "validate:params": "ajv -s params.schema.json -d \"queries/*/params.json\""
   },
