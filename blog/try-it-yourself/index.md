@@ -180,7 +180,7 @@ ORDER BY 2 DESC
 :::info
 ### 🌟 Details in how OSS Insight works
 
-Find the reason [Why We Choose TiDB to Support OSS Insight](/blog/why-we-choose-tidb-to-support-oss-insight).
+Find the reason [Why We Choose TiDB to Support OSS Insight](/blog/why-we-choose-tidb-to-support-ossinsight).
 
 You can find how we deal with massive github data in [Data Preparation for Analytics](/blog/how-it-works) as well!
 :::

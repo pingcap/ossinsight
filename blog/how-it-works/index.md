@@ -166,5 +166,5 @@ gharchive_dev> show tables;
 
 Go to read [Use TiDB Cloud to Analyze GitHub Events in 10 Minutes](/blog/try-it-yourself) and use the [Developer Tier](https://tidbcloud.com/free-trial?utm_source=ossinsight&utm_medium=referral) **free** for 1 year.
 
-You can find the reason [Why We Choose TiDB to Support OSS Insight](/blog/why-we-choose-tidb-to-support-oss-insight) as well!
+You can find the reason [Why We Choose TiDB to Support OSS Insight](/blog/why-we-choose-tidb-to-support-ossinsight) as well!
 :::
