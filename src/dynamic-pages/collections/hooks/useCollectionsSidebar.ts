@@ -14,7 +14,7 @@ export function useCollectionsSidebar(): PropSidebar {
     items: [{
       type: 'link',
       href: `/collections/${collection.slug}`,
-      label: 'Popularity Ranking'
+      label: 'Ranking'
     }, {
       type: 'link',
       href: `/collections/${collection.slug}/trends/`,
