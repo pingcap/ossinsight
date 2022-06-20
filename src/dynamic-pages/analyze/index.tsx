@@ -10,7 +10,7 @@ import { RepoInfo, useRepo } from '../../api/gh';
 import NewCompareHeader from '../../components/CompareHeader/NewCompareHeader';
 import { Repo } from '../../components/CompareHeader/RepoSelector';
 import { AsyncData } from '../../components/RemoteCharts/hook';
-import TryItYourself from '../../components/TryItYourself';
+import TryItYourself from '../../components/Ads/TryItYourself';
 import useUrlSearchState, { stringParam } from '../../hooks/url-search-state';
 import CustomPage from '../../theme/CustomPage';
 import { CommitsSection } from './sections/Commits';

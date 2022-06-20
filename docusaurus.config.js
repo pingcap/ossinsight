@@ -149,6 +149,9 @@ const config = {
         },
         theme: {
           customCss: [
+            require.resolve('animate.css/source/_vars.css'),
+            require.resolve('animate.css/source/_base.css'),
+            require.resolve('animate.css/source/bouncing_entrances/bounceInRight.css'),
             require.resolve('./src/css/custom.css'),
             require.resolve('react-awesome-animated-number/dist/index.css'),
           ],

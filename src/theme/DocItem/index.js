@@ -19,7 +19,7 @@ import styles from './styles.module.css';
 import {ThemeClassNames} from '@docusaurus/theme-common';
 import ShareButtons from "../../components/ShareButtons";
 import BrowserOnly from "@docusaurus/core/lib/client/exports/BrowserOnly";
-import TryItYourself from "../../components/TryItYourself";
+import TryItYourself from "../../components/Ads/TryItYourself";
 export default function DocItem(props) {
   const {content: DocContent} = props;
   const {metadata, frontMatter} = DocContent;

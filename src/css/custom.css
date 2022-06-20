@@ -46,6 +46,11 @@
   --ifm-z-index-overlay: 16;
 }
 
+/* animate.css overwrite*/
+:root {
+  --animate-duration: 1.5s;
+}
+
 html[data-theme='dark'] {
   --site-color-feedback-background: #f0f8ff;
   --site-color-favorite-background: #1d1e1e;
