@@ -18,6 +18,7 @@ import {ThemeClassNames} from '@docusaurus/theme-common';
 import ErrorPageContent from '@theme/ErrorPageContent';
 import './styles.css';
 import ThemeAdaptor from "../../components/ThemeAdaptor";
+import HowItWorks from "../../components/Ads/HowItWorks";
 
 function Layout(props) {
   const {children, noFooter, wrapperClassName, pageClassName, header, side, sideWidth} = props;
@@ -50,6 +51,8 @@ function Layout(props) {
             <Footer />
           </div>
         )}
+
+        <HowItWorks />
       </ThemeAdaptor>
     </LayoutProviders>
   );
