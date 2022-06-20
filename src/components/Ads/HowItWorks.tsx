@@ -13,20 +13,20 @@ import { responsiveSx } from '../../pages/home/_components/responsive';
 export interface HowItWorksProps {
 }
 
-const url = 'https://share.hsforms.com/1E-qtGQWrTVmctP8kBT34gw2npzm';
-
-let _display = true
-
-const useInitialDisplay = () => {
-  const { search } = useLocation()
-
-  return useMemo(() => {
-    return _display && (/utm_medium=promotion/.test(search))
-  }, [])
+function getInitialDisplay () {
+  if (typeof window === 'undefined') {
+    return false
+  } else {
+    return /utm_medium=promotion/.test(window.location.search)
+  }
 }
 
+const url = 'https://share.hsforms.com/1E-qtGQWrTVmctP8kBT34gw2npzm';
+
+let _display = getInitialDisplay();
+
 export default function HowItWorks({}: HowItWorksProps) {
-  const [display, setDisplay] = useState(useInitialDisplay());
+  const [display, setDisplay] = useState(_display);
 
   const _sx: SxProps = useMemo(() => {
     return [
