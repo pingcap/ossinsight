@@ -1,10 +1,8 @@
 import * as dotenv from "dotenv";
 import {TiDBQueryExecutor} from "./app/core/TiDBQueryExecutor";
-import {createClient} from "redis";
 import consola, {FancyReporter} from "consola";
 import {DateTime, Duration} from "luxon";
 import { validateProcessEnv } from './app/env';
-import CacheBuilder from './app/core/cache/CacheBuilder';
 
 // Load environments.
 dotenv.config({ path: __dirname+'/.env.template', override: true });
@@ -20,13 +18,6 @@ async function main () {
   logger.addReporter(new FancyReporter({
     dateFormat: 'YYYY:MM:DD HH:mm:ss'
   }));
-
-  // Init redis client.
-  const redisClient = createClient({
-    url: process.env.REDIS_URL
-  });
-  await redisClient.on('error', (err) => console.log('Redis Client Error', err));
-  await redisClient.connect();
 
   // Init TiDB client.
   const queryExecutor = new TiDBQueryExecutor({

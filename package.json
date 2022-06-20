@@ -28,7 +28,7 @@
     "validate:params": "ajv -s params.schema.json -d \"queries/*/params.json\""
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "@koa/cors": "^3.1.0",
     "consola": "^2.15.3",
@@ -36,13 +36,11 @@
     "generic-pool": "^3.8.2",
     "koa": "^2.13.4",
     "koa-router": "^10.1.1",
-    "koa2-ratelimit": "^1.1.0",
     "luxon": "^2.3.0",
     "mysql": "^2.18.1",
     "mysql2": "^2.3.3",
     "octokit": "^1.7.1",
     "prom-client": "^14.0.1",
-    "redis": "^4.0.4",
     "tiny-async-pool": "^1.2.0",
     "yaml": "^2.0.1"
   },

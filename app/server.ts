@@ -4,10 +4,8 @@ import {TiDBQueryExecutor} from "./core/TiDBQueryExecutor";
 import {DefaultState} from "koa";
 import type {ContextExtends} from "../index";
 import GhExecutor from "./core/GhExecutor";
-import {createClient} from "redis";
 import {register} from "prom-client";
 import {measureRequests} from "./middlewares/measureRequests";
-import {createRateLimiter} from "./middlewares/rate-limit";
 import CollectionService from "./services/CollectionService";
 import GHEventService from "./services/GHEventService";
 import CacheBuilder from "./core/cache/CacheBuilder";
@@ -46,14 +44,6 @@ const COMPARE_QUERIES = [
 ];
 
 export default async function server(router: Router<DefaultState, ContextExtends>) {
-
-  // Init Redis Client.
-  const redisClient = createClient({
-    url: process.env.REDIS_URL
-  });
-  await redisClient.on('error', (err) => console.log('Redis Client Error', err));
-  await redisClient.connect();
-
   // Init MySQL Executor. 
   const queryExecutor = new TiDBQueryExecutor({
     host: process.env.DB_HOST,
@@ -67,7 +57,7 @@ export default async function server(router: Router<DefaultState, ContextExtends
   })
 
   // Init Cache Builder;
-  const cacheBuilder = new CacheBuilder(redisClient, queryExecutor);
+  const cacheBuilder = new CacheBuilder(queryExecutor);
 
   // Init GitHub Executor.
   const tokens = (process.env.GH_TOKENS || '').split(',').map(s => s.trim()).filter(Boolean);
@@ -189,8 +179,8 @@ export default async function server(router: Router<DefaultState, ContextExtends
     }
   })
 
-  const getRepoRateLimiter = createRateLimiter('get-repo');
-  router.get('/gh/repo/:owner/:repo', getRepoRateLimiter, measureRequests({ urlLabel: 'route' }), async ctx => {
+
+  router.get('/gh/repo/:owner/:repo', measureRequests({ urlLabel: 'route' }), async ctx => {
     const { owner, repo } = ctx.params
     try {
       const res = await ghExecutor.getRepo(owner, repo)
@@ -205,8 +195,7 @@ export default async function server(router: Router<DefaultState, ContextExtends
     }
   })
 
-  const searchRepoRateLimiter = createRateLimiter('search-repo');
-  router.get('/gh/repos/search', searchRepoRateLimiter, measureRequests({ urlLabel: 'path' }), async ctx => {
+  router.get('/gh/repos/search', measureRequests({ urlLabel: 'path' }), async ctx => {
     const { keyword } = ctx.query;
 
     try {

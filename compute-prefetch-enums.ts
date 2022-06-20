@@ -6,7 +6,6 @@ import asyncPool from "tiny-async-pool";
 import type {Params, QuerySchema} from './params.schema'
 import {TiDBQueryExecutor} from "./app/core/TiDBQueryExecutor";
 import Query from "./app/core/Query";
-import {createClient} from "redis";
 import consola, {JSONReporter} from "consola";
 import {DateTime, Duration} from "luxon";
 import { validateProcessEnv } from './app/env';
@@ -74,13 +73,6 @@ async function main () {
     }
   }, 60);
 
-  // Init redis client.
-  const redisClient = createClient({
-    url: process.env.REDIS_URL
-  });
-  await redisClient.on('error', (err) => console.log('Redis Client Error', err));
-  await redisClient.connect();
-
   // Init mysql client.
   const queryExecutor = new TiDBQueryExecutor({
     host: process.env.DB_HOST,
@@ -93,7 +85,7 @@ async function main () {
   });
 
   // Init Cache Builder.
-  const cacheBuilder = new CacheBuilder(redisClient, queryExecutor);
+  const cacheBuilder = new CacheBuilder(queryExecutor);
 
   // Init Services.
   const ghEventService = new GHEventService(queryExecutor);

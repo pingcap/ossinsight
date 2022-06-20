@@ -13,7 +13,7 @@ export interface QuerySchema {
   /**
    * Specify how to implement caching, NORMAL_TABLE are used by default.
    */
-  cacheProvider?: "NORMAL_TABLE" | "CACHED_TABLE" | "REDIS";
+  cacheProvider?: "NORMAL_TABLE" | "CACHED_TABLE";
   /**
    * Cache time in hours, -1 indicates that the query cache will not expire.
    */

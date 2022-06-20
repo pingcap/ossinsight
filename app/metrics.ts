@@ -64,9 +64,9 @@ export const ghQueryTimer = new Summary({
   percentiles: [0.999, 0.99, 0.95, 0.80, 0.50],
 })
 
-export const redisQueryTimer = new Summary({
-  name: metricsPrefix + 'redis_query_time',
-  help: 'Redis query time',
+export const cacheQueryTimer = new Summary({
+  name: metricsPrefix + 'cache_query_time',
+  help: 'Cache query time',
   labelNames: ['op'] as const,
   percentiles: [0.999, 0.99, 0.95, 0.80, 0.50],
 })

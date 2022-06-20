@@ -9,10 +9,7 @@ declare namespace NodeJS {
     QUEUE_LIMIT: string
     SERVER_PORT: string
     GH_TOKENS: string
-    REDIS_URL: string
     PREFETCH_CONCURRENT: string
-    RATE_LIMIT_INTERVAL: string
-    RATE_LIMIT_MAX_REQUEST: string
     AUTH0_SIGNUP_REDIRECT: string
     AUTH0_CALLBACK_REDIRECT: string
   }

@@ -1,6 +1,6 @@
 import {DateTime} from 'luxon'
 import consola from "consola";
-import {cacheHitCounter, measure, redisQueryTimer} from "../../metrics";
+import {cacheHitCounter, measure, cacheQueryTimer} from "../../metrics";
 import { CacheProvider } from './CacheProvider';
 
 export const MAX_CACHE_TIME = DateTime.fromISO('2099-12-31T00:00:00')
@@ -96,7 +96,7 @@ export default class Cache<T> {
     // Write result to cache.
 
     try {
-      await measure(redisQueryTimer.labels({op: 'set'}), async () => {
+      await measure(cacheQueryTimer.labels({op: 'set'}), async () => {
         if (this.cacheHours === -1) {
           result.expiresAt = MAX_CACHE_TIME;
           await this.cacheProvider.set(this.key, JSON.stringify(result));
@@ -117,7 +117,7 @@ export default class Cache<T> {
   private async fetchDataFromCache():Promise<CachedData<T> | null> {
     try {
       const json = await measure(
-        redisQueryTimer.labels({op: 'get'}),
+        cacheQueryTimer.labels({op: 'get'}),
         () => this.cacheProvider.get(this.key)
       ) as any;
 

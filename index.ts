@@ -6,7 +6,6 @@ import consola, {Consola, FancyReporter} from 'consola';
 import cors from '@koa/cors';
 import { validateProcessEnv } from './app/env';
 import {measureLimitedRequests} from "./app/middlewares/measureRequests";
-import { createRateLimiter } from './app/middlewares/rate-limit';
 
 consola.setReporters([
   new FancyReporter({
@@ -34,27 +33,6 @@ app.use(async (ctx, next) => {
   ctx.logger = logger
   await next()
 })
-
-// Init global Rate Limit.
-const globalRateLimiter = createRateLimiter('global', {
-  skip: (ctx: Context) => {
-    const apiPath = ctx.URL.pathname || '';
-
-    if (apiPath.startsWith('/metrics')) {
-      return true;
-    } else if (apiPath.startsWith('/auth0/callback')) {
-      return true;
-    } else if (apiPath.startsWith('/signup')) {
-      return true;
-    } else if (apiPath.startsWith('/q/events-total')) {
-      return true;
-    }
-
-    return false;
-  }
-});
-app.use(measureLimitedRequests)
-app.use(globalRateLimiter)
 
 // Enable CORS.
 app.use(cors({origin: '*'}))
