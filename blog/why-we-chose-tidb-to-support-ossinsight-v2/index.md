@@ -44,11 +44,19 @@ After we decompressed all the data from GH Archive, we found there were more tha
 
 The database solution would be tricky here. Our goal is to build an application that provides real-time data insights based on a continuously growing dataset. So, scalability is a must. NoSQL databases can provide good scalability, but what follows is how to handle complex analytical queries. Unfortunately, NoSQL databases are not good at that. 
 
-[image to be updated]
+<br/>
+
+![Scalability vs SQL](./scalability-SQL.jpg)
+
+<br/>
 
 Another option is to use an OLAP database such as ClickHouse. ClickHouse can handle the analytical workload very well, but it is not designed for serving online traffic. If we chose it, we would need another database for the online traffic. 
 
-[image to be updated]
+<br/>
+
+![OLAP vs Online Serving](./olap-onlineserving.jpg)
+
+<br/>
 
 What about sharding the database and then building an extract, transform, load (ETL) pipeline to synchronize the new events to a data warehouse? This sounds workable.
 
