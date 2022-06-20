@@ -1,3 +1,4 @@
+import { useLocation } from '@docusaurus/router';
 import { Close } from '@mui/icons-material';
 import ConstructionIcon from '@mui/icons-material/Construction';
 import { useEventCallback } from '@mui/material';
@@ -16,8 +17,16 @@ const url = 'https://share.hsforms.com/1E-qtGQWrTVmctP8kBT34gw2npzm';
 
 let _display = true
 
+const useInitialDisplay = () => {
+  const { search } = useLocation()
+
+  return useMemo(() => {
+    return _display && (/utm_medium=paid_ads/.test(search))
+  }, [])
+}
+
 export default function HowItWorks({}: HowItWorksProps) {
-  const [display, setDisplay] = useState(_display);
+  const [display, setDisplay] = useState(useInitialDisplay());
 
   const _sx: SxProps = useMemo(() => {
     return [
