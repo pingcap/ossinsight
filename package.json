@@ -1,7 +1,7 @@
 {
   "name": "ossinsight-api",
   "version": "1.0.0",
-  "description": "",
+  "description": "The API server for OSSInsight.",
   "main": "index.js",
   "scripts": {
     "start": "pm2 start --cwd $(pwd) 'pnpm run server:start' --name 'ossinsight-api'",
