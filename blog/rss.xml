@@ -4,10 +4,17 @@
         <title>Open Source Software Analysis and Comparing Tools Blog</title>
         <link>https://ossinsight.io/blog</link>
         <description>Open Source Software Analysis and Comparing Tools Blog</description>
-        <lastBuildDate>Tue, 03 May 2022 00:00:00 GMT</lastBuildDate>
+        <lastBuildDate>Fri, 10 Jun 2022 00:00:00 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <copyright>Copyright © 2022 PingCAP</copyright>
+        <item>
+            <title><![CDATA[Build a Better Github Insight Tool in a Week? A True Story]]></title>
+            <link>https://ossinsight.io/blog/why-we-chose-tidb-to-support-ossinsight-v2</link>
+            <guid>/why-we-chose-tidb-to-support-ossinsight-v2</guid>
+            <pubDate>Fri, 10 Jun 2022 00:00:00 GMT</pubDate>
+            <description><![CDATA[In early January 2022, Max, our CEO, a big fan of open-source, asked if my team could build a small tool to help us understand all the open-source projects on GitHub; and, that if everything worked well, we should open the API to help open source developers to build better insights. In fact, GitHub continuously publishes the public events in its open-source world through the open API. (Thank you and well done! Github). We can certainly learn a lot from the data!]]></description>
+        </item>
         <item>
             <title><![CDATA[Deep Insights into JavaScript Frameworks]]></title>
             <link>https://ossinsight.io/blog/deep-insight-into-js-framework-2021</link>
