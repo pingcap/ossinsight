@@ -64,6 +64,7 @@ export default function HowItWorks({}: HowItWorksProps) {
   return (
     <Paper
       sx={_sx}
+      className="bounceInRight animated"
     >
       <ButtonBase
         sx={{
@@ -81,8 +82,8 @@ export default function HowItWorks({}: HowItWorksProps) {
         target="_blank"
       >
         <Typography variant="body2" sx={{ pr: 2 }}>
-          Wonder how OSSInsight works？
-          <ConstructionIcon fontSize='inherit' />
+          Wonder how OSSInsight works？Join workshop
+          <ConstructionIcon fontSize='inherit' sx={{ verticalAlign: 'text-bottom' }} />
         </Typography>
         <IconButton
           size="small"
