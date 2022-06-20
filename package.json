@@ -66,6 +66,7 @@
     "@types/luxon": "^2.0.9",
     "@types/react-copy-to-clipboard": "^5.0.2",
     "@types/webpack-env": "^1.16.3",
+    "animate.css": "^4.1.1",
     "d3-hierarchy": "^3.1.2",
     "deepmerge": "^4.2.2",
     "echarts": "^5.3.2",

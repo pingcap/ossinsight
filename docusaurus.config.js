@@ -25,7 +25,7 @@ const config = {
   baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
-  favicon: 'img/favicon.png',
+  favicon: 'img/cloud-o.png',
   organizationName: 'pingcap',
   projectName: 'ossinsight',
   scripts: [
@@ -152,6 +152,9 @@ const config = {
         },
         theme: {
           customCss: [
+            require.resolve('animate.css/source/_vars.css'),
+            require.resolve('animate.css/source/_base.css'),
+            require.resolve('animate.css/source/bouncing_entrances/bounceInRight.css'),
             require.resolve('./src/css/custom.css'),
             require.resolve('react-awesome-animated-number/dist/index.css'),
           ],
@@ -175,9 +178,9 @@ const config = {
         respectPrefersColorScheme: false,
       },
       announcementBar: {
-        id: 'announcement-20220531',
+        id: 'announcement-20220620',
         content:
-          '📢 05-03: <a target="_blank" href="/blog/explore-deep-in-4.6-billion-github-events">Explore Deep in 4.6 Billion GitHub Events</a>',
+          '📢 06-20: <a target="_blank" href="/blog/why-we-choose-tidb-to-support-ossinsight/">Build a Better Github Insight Tool in a Week? A True Story</a>',
         backgroundColor: '#343536',
         textColor: 'lightgrey',
         isCloseable: true,
@@ -213,6 +216,7 @@ const config = {
             href: 'https://twitter.com/OSSInsight',
             className: 'navbar-item-twitter',
             position: 'right',
+            alt: 'Twitter Logo (Header)',
           },
           {
             type: 'dropdown',

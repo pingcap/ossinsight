@@ -85,7 +85,7 @@ export default function Page() {
               <Typography variant='h3' sx={{fontWeight: 'bold', my: 4}}>
                 How we build this powerful insight tool?
               </Typography>
-              <Button variant='outlined' component={Link} to='/blog/why-we-choose-tidb-to-support-oss-insight/'>
+              <Button variant='outlined' component={Link} to='/blog/why-we-choose-tidb-to-support-ossinsight/'>
                 Get for answers
               </Button>
             </Card>
