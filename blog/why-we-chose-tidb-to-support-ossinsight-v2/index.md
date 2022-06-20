@@ -10,7 +10,7 @@ In early January 2022, Max, our CEO, a big fan of open-source, asked if my team 
 I was excited about this project until Max said: “You’ve only got one week.” Well, the boss is the boss! Although time was tight and we were faced with multiple head-aching problems, I decided to take up this challenge. 
 
 
-Headache 1: we need both historical and real-time data.
+## Headache 1: we need both historical and real-time data.
 
 After some quick research, we found [GHArchive](https://www.gharchive.org/), an open-source project that collects and archives all GitHub data from 2011 and updates it hourly. By the way, a lot of open-source analytical tools such as CNCF's [Devstats](https://github.com/cncf/devstats) rely on GH Archive, too. 
 
@@ -23,9 +23,9 @@ By combining the data from the GH Archive and the GitHub event API, we can gain 
 
 <br/>
 
-![GitHub event updates per 5 seconds](./github-events-updates.gif)
+![GitHub event updates](./github-events-updates.gif)
 
-<center><em>GitHub event updates per 5 seconds</em></center>
+<center><em>GitHub event updates</em></center>
 
 <br/>
 
@@ -224,7 +224,7 @@ Looking back at the process we used to build this website, we have learned many 
 
 **Second, it’s crucial to select the right database—especially one that supports SQL.** TiDB is a distributed SQL database with great scalability that can handle both transactional and real-time analytical workloads. With its help, we can process billions of rows of data with ease, and use SQL commands to execute complicated real-time queries. Further, using TiDB means we can leverage its resources to go to market faster and get feedback promptly.  
 
-If you like our project or are interested in joining us, you’re welcome to **[submitting PRs here](https://github.com/pingcap/ossinsight)** to our GitHub repository. You can also follow us on [Twitter](https://twitter.com/OSSInsight) for the latest information. 
+If you like our project or are interested in joining us, you’re welcome to **[submit your PRs]((https://github.com/pingcap/ossinsight)** to our GitHub repository. You can also follow us on [Twitter](https://twitter.com/OSSInsight) for the latest information. 
 
 
 :::note
