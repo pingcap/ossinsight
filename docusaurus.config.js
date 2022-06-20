@@ -25,7 +25,7 @@ const config = {
   baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
-  favicon: 'img/favicon.png',
+  favicon: 'img/cloud-o.png',
   organizationName: 'pingcap',
   projectName: 'ossinsight',
   scripts: [
