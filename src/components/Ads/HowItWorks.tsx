@@ -2,7 +2,7 @@ import { useLocation } from '@docusaurus/router';
 import { Close } from '@mui/icons-material';
 import ConstructionIcon from '@mui/icons-material/Construction';
 import { useEventCallback } from '@mui/material';
-import ButtonBase from '@mui/material/ButtonBase';
+import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
@@ -35,6 +35,9 @@ export default function HowItWorks({}: HowItWorksProps) {
         right: 2,
         zIndex: 'var(--ifm-z-index-fixed-mui)',
         bottom: `calc(4.3em + 16px)`,
+        py: 2,
+        px: 4,
+        pl: 2,
       },
       responsiveSx(
         {
@@ -66,33 +69,28 @@ export default function HowItWorks({}: HowItWorksProps) {
       sx={_sx}
       className="bounceInRight animated"
     >
-      <ButtonBase
-        sx={{
-          position: 'relative',
-          display: 'block',
-          ':hover': {
-            textDecoration: 'none',
-            color: 'unset',
-          },
-          p: 2,
-          backgroundColor: '#2c2c2c',
-        }}
+      <Typography variant="body2" sx={{ pr: 2 }}>
+        Wonder how OSSInsight works?
+      </Typography>
+      <Button
         href={url}
         component="a"
         target="_blank"
+        sx={{ mt: 1 }}
       >
         <Typography variant="body2" sx={{ pr: 2 }}>
-          Wonder how OSSInsight works？Join workshop
+          {'>>>'} Join workshop
+          &nbsp;
           <ConstructionIcon fontSize='inherit' sx={{ verticalAlign: 'text-bottom' }} />
         </Typography>
-        <IconButton
-          size="small"
-          sx={{ position: 'absolute', right: 8, top: 8 }}
-          onClick={handleClickClose}
-        >
-          <Close sx={{ fontSize: 16 }} />
-        </IconButton>
-      </ButtonBase>
+      </Button>
+      <IconButton
+        size="small"
+        sx={{ position: 'absolute', right: 8, top: 8 }}
+        onClick={handleClickClose}
+      >
+        <Close sx={{ fontSize: 16 }} />
+      </IconButton>
     </Paper>
   );
 }
