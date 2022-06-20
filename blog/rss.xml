@@ -16,6 +16,81 @@
             <description><![CDATA[In early January 2022, Max, our CEO, a big fan of open-source, asked if my team could build a small tool to help us understand all the open-source projects on GitHub; and, that if everything worked well, we should open the API to help open source developers to build better insights. In fact, GitHub continuously publishes the public events in its open-source world through the open API. (Thank you and well done! Github). We can certainly learn a lot from the data!]]></description>
         </item>
         <item>
+            <title><![CDATA[Love, Code, and Robot — Explore robots in the world of code]]></title>
+            <link>https://ossinsight.io/blog/say-thanks-to-github-robots</link>
+            <guid>/say-thanks-to-github-robots</guid>
+            <pubDate>Thu, 12 May 2022 00:00:00 GMT</pubDate>
+            <description><![CDATA[When it comes to GitHub, we often see fake GitHub users who are always enthusiastic and active, giving timely feedback to project maintainers and contributors, and helping developers with tasks that can be automated. Yes, the next thing I want to discuss is something about GitHub bots.]]></description>
+            <content:encoded><![CDATA[<p>When it comes to GitHub, we often see fake GitHub users who are always enthusiastic and active, giving timely feedback to project maintainers and contributors, and helping developers with tasks that can be automated. Yes, the next thing I want to discuss is something about GitHub bots.</p><h2>Overview</h2><p>In the <a href="https://ossinsight.io/">OSSInsight</a> project, we have developed a number of metrics to provide insight into open source projects. When developing some open source project metrics, we always consider excluding bot-generated actions or events from the metric calculation. </p><p>However, We can&#x27;t ignore the contribution of robots in the domain of open source, and it&#x27;s important to shift our thinking to look at what bots are doing on GitHub.</p><p>GitHub bots help developers do a lot of work:</p><ul><li>Issue triage and management. (For example: <code>stale[bot]</code>、<code>todo[bot]</code>)</li><li>Code review, security audit and quality inspection (For example, <code>snyk-bot</code>).</li><li>Format checking like ensuring license agreement signing, or make sure  commit messages semantic. (For example: <code>CLAassistant</code>)</li><li>Integration with third-party systems, including Jira, Slack, Jenkins and so on.</li><li>As an agent to help contributor perform some operations needed permission on the repository. (For example: <code>k8s-ci-bot</code>、<code>ti-chi-bot</code>)</li></ul><h2>History trends</h2><p>Looking at the historical data, we see that the number of GitHub bots grows significantly faster after 2019 (on average, 20,000 new bots are created each year)</p><div chart="dynamic-line" query="bot-total-history" xIndex="event_year" yIndex="bots_total"></div><p>I looked into what happened during the year and found that GitHub invested a lot in its software development infrastructure (including bots) during the year.</p><ul><li><p>In May 23, 2019, GitHub announced acquired Dependabot (Aka, <code>dependabot[bot]</code>).</p></li><li><p>In June 17th, 2019, <a href="https://github.blog/2019-06-17-github-acquires-pull-panda/">GitHub announced acquired Pull Panda</a>.</p></li><li><p>In September 18th, 2019, <a href="https://github.blog/2019-09-18-github-welcomes-semmle/">GitHub announced acquired Semmle</a> (Aka, the team builded <code>lgtm-com[bot]</code>).</p></li></ul><p>At this year, we, humans beings, were amazed to discover that bots could find problems, submit PRs, wait CI test code, complete merges and comment on PRs on their own without any human involvement. </p><p><a href="https://github.com/buildo/react-components/pull/1367"><img src="./bot_automatically_completes_a_pull_request.png" alt="Bot automatically completes a pull request"/></a></p><p>For now, rough statistics found that there are more than 95,620 bots on GitHub, the number doesn&#x27;t seem like so much, but wait...</p><details><summary>Click here to show computational process</summary><p>Before that, we had collected 4.7 billion github events stored in our database. Now we can count the number of bots on GitHub by executing a simple SQL statement:</p><pre><code class="language-sql">SELECT COUNT(DISTINCT actor_login) AS &#x27;Bots&#x27;
+FROM github_events ge
+WHERE actor_login REGEXP &#x27;^(bot-.+|.+bot|.+\\[bot\\]|.+-bot-.+|robot-.+|.+-ci-.+|.+-ci|.+-testing|.+clabot.+|.+-gerrit|k8s-.+|.+-machine|.+-automation|github-.+|.+-github|.+-service|.+-builds|codecov-.+|.+teamcity.+|jenkins-.+|.+-jira-.+)$&#x27;;
+</code></pre><p>In this SQL statement, we use a regular expression to determine which <code>actor_login</code> is the robot login. For example, the well known star robot <code>dependabot[bot]</code>, whose github login ends with <code>[bot]</code>, we can find more bots among a large number of events based on this method.</p><pre><code>+-------+
+| Bots  |
++-------+
+| 95620 |
++-------+
+1 row in set
+Time: 16.921s
+</code></pre></details><p><strong>👀 These 95 thousand bot accounts generated 603 million events, these events account for 12.82% of all public events on GitHub.</strong></p><details><summary>Click here to show computational process</summary><ol><li>Count the total number of public events triggered by GitHub bot</li></ol><pre><code class="language-sql">SELECT COUNT(*) AS &#x27;Bot&#x27;&#x27;s events&#x27;
+FROM github_events ge
+WHERE actor_login REGEXP &#x27;^(bot-.+|.+bot|.+\\[bot\\]|.+-bot-.+|robot-.+|.+-ci-.+|.+-ci|.+-testing|.+clabot.+|.+-gerrit|k8s-.+|.+-machine|.+-automation|github-.+|.+-github|.+-service|.+-builds|codecov-.+|.+teamcity.+|jenkins-.+|.+-jira-.+)$&#x27;;
+</code></pre><pre><code>+--------------+
+| Bot&#x27;s events |
++--------------+
+| 603554237    |
++--------------+
+1 row in set
+Time: 13.087s
+</code></pre><ol start="2"><li>Count the total number of all public events on GitHub</li></ol><pre><code class="language-sql">SELECT COUNT(*) AS &#x27;All public events&#x27; FROM github_events ge;
+</code></pre><pre><code>+-------------------+
+| All public events |
++-------------------+
+| 4705191048        |
++-------------------+
+1 row in set
+Time: 4.322s
+</code></pre><ol start="3"><li>Calculate the proportion of the former in the latter</li></ol><pre><code class="language-sql">SELECT CONCAT(TRUNCATE(603554237 / 4705191048 * 100, 2), &#x27;%&#x27;) AS &#x27;Proportion of Events&#x27;;
+</code></pre><pre><code>+----------------------+
+| Proportion of Events |
++----------------------+
+| 12.82%               |
++----------------------+
+1 row in set
+Time: 0.047s
+</code></pre></details><p>And these GitHub robots have served over 18 million open source repositories.</p><details><summary>Click here to show computational process</summary><pre><code class="language-sql">SELECT COUNT(DISTINCT repo_id) AS &#x27;Repositories&#x27;
+FROM github_events ge
+WHERE actor_login REGEXP &#x27;^(bot-.+|.+bot|.+\\[bot\\]|.+-bot-.+|robot-.+|.+-ci-.+|.+-ci|.+-testing|.+clabot.+|.+-gerrit|k8s-.+|.+-machine|.+-automation|github-.+|.+-github|.+-service|.+-builds|codecov-.+|.+teamcity.+|jenkins-.+|.+-jira-.+)$&#x27;;
+</code></pre><pre><code>+--------------+
+| Repositories |
++--------------+
+| 18415262     |
++--------------+
+1 row in set
+Time: 27.060s
+</code></pre></details><h2>Cases study</h2><h3>Dependabot<!-- -->[<!-- -->bot<!-- -->]</h3><p><code>dependabot[bot]</code> is a hard-working bot responsible for helping open source projects keep their dependencies up to date.</p><p>By analyzing depentenbot&#x27;s Push commit time, we found that he likes to start his busy week at 8:00 on Mondays (at GMT timezone).</p><div chart="heatmapchart" category="bot-dependabot-commits-time-distribution" xIndex="hour" yIndex="dayofweek" valueIndex="pushes"></div><p>It is commendable that, after a series of log4j security vulnerabilities came to light, it helped many Java-language repositories to update the dependency to a secure version timely.</p><h3>Stale Bots</h3><p>Stale Bot is a controversial class of robots, they are responsible for reminding maintainers to continue promoting long-term stale issue.</p><table><tr><th>Bad practice</th><th>Best practices</th></tr><tr><td><p>The user from Gatsby:</p><blockquote><p>I used to open GitHub issues to Gatsby to report bugs. Almost nothing was ever fixed and every few weeks I had to manually clickety-click to keep the issues alive because of the stale bot. Guess what I do now? I don&#x27;t report bugs to Gatsby, and I recommend against using Gatsby in newer projects.</p></blockquote></td><td><p>The user from NixOS:</p><blockquote><p>IMO NixOS has the right stalebot settings <sub><a href="https://github.com/NixOS/rfcs/pull/51">0</a></sub>. It was discussed thouroughly in the RFC, as to choose the right information text and other actions by the bot. For example, the bot will only mark the issue/PR as stale and will never close the issue or lock it. Issues are only ever closed by humans.
+The information text they came up with is quite a bit longer than the ansible one <sub><a href="https://github.com/NixOS/nixpkgs/pull/92254">1</a></sub>. I think this is a very important point when adding such a bot, otherwise the user will be left helpless.</p></blockquote><blockquote></blockquote><blockquote></blockquote></td></tr></table><p>To verify the above statement, we run the following query through the SQL statement:</p><pre><code class="language-sql">SELECT actor_login, COUNT(DISTINCT pr_or_issue_id) AS cnt
+FROM github_events ge
+WHERE
+    repo_name = &#x27;gatsbyjs/gatsby&#x27;
+    AND type = &#x27;IssuesEvent&#x27;
+    AND action = &#x27;closed&#x27;
+    AND (actor_login LIKE &#x27;%[bot]&#x27; OR actor_login LIKE &#x27;%bot&#x27;)
+GROUP BY actor_login
+ORDER BY cnt DESC;
+</code></pre><p>We know from the following query that many Issues in the <code>gatsbyjs/gatsby</code> repository have been closed by the stale bots.</p><pre><code>+---------------------+------+
+| actor_login         | cnt  |
++---------------------+------+
+| gatsbot[bot]        | 1389 |
+| github-actions[bot] | 777  |
+| gatsbybot           | 265  |
+| stale[bot]          | 50   |
+| renovate[bot]       | 1    |
++---------------------+------+
+5 rows in set
+Time: 0.100s
+</code></pre><p>I think it is necessary to distinguish between what should be done by robots and what must be done with human involvement.</p><h3>Weird bots</h3><p>There are some weird bots on GitHub that don&#x27;t help people work and learn on GitHub, but rather act as data movers.</p><div chart="barchart" category="bot-weird-bots-ranking" categoryIndex="actor_login" valueIndex="contributions" categoryType="owner" seriesName="Contributions"></div><ul><li><p>Some of them will use GitHub as a free place to archive their data, for example, <code>speedtracker-bot</code>, <code>newstools</code>.</p></li><li><p>Some of them will periodically upload a timestamp to the code repository as a commit, for example, <code>keihin00174</code>.</p></li><li><p>Some are even crazier and you can&#x27;t even access their profile pages because the number of events generated is so large that GitHub&#x27;s database can&#x27;t process them quickly, for example, <code>mhutchinson-witness</code>, <code>direwolf-github</code>.</p><p>  <img src="too_long_time_to_load_profile.png" alt="Too long time to load bot profile"/></p></li></ul><h2>Ranks</h2><p>We ranked the robots according to their contribution.</p><div chart="barchart" category="bot-contribution-ranking" categoryIndex="actor_login" valueIndex="contributions" categoryType="owner" seriesName="Contributions"></div><h2>Feature</h2><h2>Recommended reading</h2><ul><li><a href="https://blog.benwinding.com/github-stale-bots/">Github Stale Bots: A False Economy</a></li><li><a href="https://github.blog/2019-07-25-one-million-dependabot-pull-requests-merged/">One million Dependabot pull requests merged</a></li><li><a href="https://github.blog/changelog/2022-03-23-pull-panda-is-shutting-down/">Pull Panda is shutting down</a></li><li><a href="https://livablesoftware.com/best-bots-software-development/">Best bots to improve your software development process</a></li></ul>]]></content:encoded>
+        </item>
+        <item>
             <title><![CDATA[Deep Insights into JavaScript Frameworks]]></title>
             <link>https://ossinsight.io/blog/deep-insight-into-js-framework-2021</link>
             <guid>/deep-insight-into-js-framework-2021</guid>
