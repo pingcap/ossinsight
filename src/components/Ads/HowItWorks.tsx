@@ -32,24 +32,13 @@ export default function HowItWorks({}: HowItWorksProps) {
     return [
       {
         position: 'fixed',
-        right: 2,
         zIndex: 'var(--ifm-z-index-fixed-mui)',
-        bottom: `calc(4.3em + 16px)`,
-        py: 2,
-        px: 4,
-        pl: 2,
-      },
-      responsiveSx(
-        {
-          right: '1.3em',
-        },
-        {
-          right: '1.3em',
-        },
-        {
-          right: '32px',
-        },
-      ),
+        bottom: 16,
+        right: 16,
+        py: 1,
+        px: 2,
+        pl: 1,
+      }
     ];
   }, []);
 
@@ -69,16 +58,16 @@ export default function HowItWorks({}: HowItWorksProps) {
       sx={_sx}
       className="bounceInRight animated"
     >
-      <Typography variant="body2" sx={{ pr: 2 }}>
+      <Typography variant="body2" sx={{ pr: 1.5, fontSize: 14 }}>
         Wonder how OSSInsight works?
       </Typography>
       <Button
         href={url}
         component="a"
         target="_blank"
-        sx={{ mt: 1 }}
+        sx={{ mt: 0.5 }}
       >
-        <Typography variant="body2" sx={{ pr: 2 }}>
+        <Typography variant="body2" sx={{ pr: 1.5, fontSize: 14 }}>
           {'>>>'} Join workshop
           &nbsp;
           <ConstructionIcon fontSize='inherit' sx={{ verticalAlign: 'text-bottom' }} />
@@ -86,7 +75,7 @@ export default function HowItWorks({}: HowItWorksProps) {
       </Button>
       <IconButton
         size="small"
-        sx={{ position: 'absolute', right: 8, top: 8 }}
+        sx={{ position: 'absolute', right: 4, top: 4 }}
         onClick={handleClickClose}
       >
         <Close sx={{ fontSize: 16 }} />
