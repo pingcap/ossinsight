@@ -9,7 +9,7 @@
         <generator>https://github.com/jpmonette/feed</generator>
         <copyright>Copyright © 2022 PingCAP</copyright>
         <item>
-            <title><![CDATA[Build a Better Github Insight Tool in a Week? A True Story]]></title>
+            <title><![CDATA[Build a Better GitHub Insight Tool in a Week? A True Story]]></title>
             <link>https://ossinsight.io/blog/why-we-choose-tidb-to-support-ossinsight</link>
             <guid>/why-we-choose-tidb-to-support-ossinsight</guid>
             <pubDate>Mon, 20 Jun 2022 00:00:00 GMT</pubDate>
