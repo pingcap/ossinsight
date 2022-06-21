@@ -8,6 +8,7 @@ export default function Home() {
       title={'OSS Insight'}
       description={'The comprehensive Open Source Software insight tool by analyzing massive events from GitHub, powered by TiDB, the best insight building database of data agility.'}
       dark
+      image="/img/screenshots/homepage.png"
     >
       <SummarySection />
       <CollectionsSection />
