@@ -1,8 +1,11 @@
 import React from 'react';
+import { registerThemeDark } from '../../components/BasicCharts';
 import { Collection } from './hooks/useCollection';
 import CollectionsPageLayout from './layout';
 import MonthRankSection from './sections/month-rank';
 import HistoryRankSection from './sections/history-rank';
+
+registerThemeDark();
 
 const getTitle = (collection?: Collection) => collection?.name ? `${collection.name} - Ranking` : 'Loading - Ranking';
 const description = 'Monthly ranking of repos in this collection by stars, pull requests, issues. Historical Ranking by Popularity.'
