@@ -2,19 +2,16 @@ id: 10030
 name: Web3
 items:
   - ethereum/go-ethereum
-  - pubkey/rxdb
-  - amark / gun
-  - ccxt / ccxt
-  - OpenZeppelin / openzeppelin-contracts
-  - ethereum / solidity
-  - trufflesuite / truffle
-  - lbryio / lbry-sdk
-  - monero-project / monero
-  - paritytech / substrate
-  - paritytech / polkadot
-  - polkadot-js / apps
-  - ChainSafe / web3.js
-  - scaffold-eth / scaffold-eth
-  - openethereum / parity-ethereum
-  - ethers-io / ethers.js
-  - trufflesuite / ganache-ui
+  - OpenZeppelin/openzeppelin-contracts
+  - ethereum/solidity
+  - trufflesuite/truffle
+  - lbryio/lbry-sdk
+  - monero-project/monero
+  - paritytech/substrate
+  - paritytech/polkadot
+  - polkadot-js/apps
+  - ChainSafe/web3.js
+  - scaffold-eth/scaffold-eth
+  - openethereum/parity-ethereum
+  - ethers-io/ethers.js
+  - trufflesuite/ganache-ui
