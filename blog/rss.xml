@@ -306,7 +306,7 @@ ORDER BY 2 DESC
    WHERE actor_login NOT LIKE &#x27;%bot%&#x27;
 GROUP BY 1
 ORDER BY 2 DESC 
-   LIMIT 20
+   LIMIT 20;
 </code></pre></details><p>:::info</p><h3>🌟 Details in how OSS Insight works</h3><p>Find the reason <a href="/blog/why-we-choose-tidb-to-support-ossinsight">How we implement OSS Insight ?</a>.</p><p>You can find how we deal with massive github data in <a href="/blog/how-it-works">Data Preparation for Analytics</a> as well!
 :::</p>]]></content:encoded>
         </item>
