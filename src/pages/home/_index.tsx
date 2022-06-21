@@ -5,7 +5,6 @@ import { CollectionsSection, CompareSection, SummarySection, TopListSection } fr
 export default function Home() {
   return (
     <CustomPage
-      title={'OSS Insight'}
       description={'The comprehensive Open Source Software insight tool by analyzing massive events from GitHub, powered by TiDB, the best insight building database of data agility.'}
       dark
       image="/img/screenshots/homepage.png"

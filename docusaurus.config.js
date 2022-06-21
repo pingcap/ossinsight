@@ -19,7 +19,7 @@ const getPrefetched = fn => {
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'Open Source Software Analysis and Comparing Tools',
+  title: 'OSS Insight',
   tagline: ' Deep Insights into Billions of GitHub events',
   url: 'https://ossinsight.io',
   baseUrl: '/',
