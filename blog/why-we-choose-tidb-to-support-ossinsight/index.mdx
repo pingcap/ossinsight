@@ -69,15 +69,17 @@ What about sharding the database and then building an extract, transform, load (
 
 <br />
 
-![How a sharded database solution can handle the GitHub data](./sharded-architecture.png)
+![How a RDBMS handles the GitHub data](./sharded-architecture.png)
 
-<center><em>How a sharded database solution can handle the GitHub data</em></center>
+<center><em>How a RDBMS handles the GitHub data</em></center>
 
 <br />
 
 According to our product manager's (PM’s) plan, we needed to do some repo-specific or user-specific analysis. Although the total data volume was huge, the number of events was not too large for a single project or user. This meant using the secondary indexes in RDBMS would be a good idea. But, if we decided to use the above architecture, we had to be careful in selecting the database sharding key. For example, if we use `user_id` as the sharding key, then queries based on `repo_id` will be very tricky. 
 
-Also, we're not experts on Kafka and data warehouses, mastering and building such an infrastructure in just one week was a very difficult task for us.
+Another requirement from the PM was that our insight tool should provide OpenAPI, which meant we would have unpredictable concurrent traffic from the outside world. 
+
+Since we're not experts on Kafka and data warehouses, mastering and building such an infrastructure in just one week was a very difficult task for us.
 
 The choice is obvious now, and don't forget PingCAP is a database company! TiDB seems a perfect fit for this, and it's a good chance to eat our own dog food. So, why not using TiDB! :) 
  
