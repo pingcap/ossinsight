@@ -165,7 +165,7 @@ Here is a small test for you to practice how to use TiDB Cloud to conduct analyt
    WHERE actor_login NOT LIKE '%bot%'
 GROUP BY 1
 ORDER BY 2 DESC 
-   LIMIT 20
+   LIMIT 20;
 ```
 
 </details>
