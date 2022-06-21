@@ -17,7 +17,10 @@ function getInitialDisplay () {
   if (typeof window === 'undefined') {
     return false
   } else {
-    return /utm_medium=promotion/.test(window.location.search) || /\/s/.test(window.location.pathname)
+    return [
+      /utm_medium=promotion/.test(window.location.search),
+      /\/(o|d)/.test(window.location.pathname),
+    ].map(Boolean).includes(true)
   }
 }
 
