@@ -32,7 +32,7 @@ const config = {
     'https://api.ossinsight.io/qo/repos/groups/osdb?format=global_variable',
     'https://www.google.com/recaptcha/api.js?render=6LcBQpkfAAAAAFmuSRkRlJxVtmqR34nNawFgKohC'
   ],
-  clientModules: [],
+  clientModules: [path.resolve(__dirname, './src/client/linkedin.js')],
   plugins: [
     [
       path.resolve(__dirname, 'plugins/gtag'),
