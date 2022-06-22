@@ -35,6 +35,7 @@ RUN gem install bundler -v 2.2.3
 WORKDIR /app
 
 COPY Gemfile Gemfile.lock ./
+COPY start.sh ./
 
 RUN bundle config build.nokogiri --use-system-libraries
 
