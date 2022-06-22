@@ -236,6 +236,7 @@ export const Contributors = forwardRef(function ({}, ref: ForwardedRef<HTMLEleme
   const toggleType = (
     <ToggleButtonGroup
       size='small'
+      color='primary'
       value={type}
       exclusive
       onChange={handleChangeType}
