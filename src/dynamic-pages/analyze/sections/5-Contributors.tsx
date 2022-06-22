@@ -260,7 +260,7 @@ export const Contributors = forwardRef(function ({}, ref: ForwardedRef<HTMLEleme
   return (
     <Section id="contributors" ref={ref}>
       <H2>Contributors</H2>
-      <P2>Contribution status in multiple dimensions</P2>
+      <P2>Contribution status in multiple dimensions LAST MONTH</P2>
 
       <Stack direction='row' justifyContent='space-between' flexWrap='wrap' gap={2}>
         {selectDescriptor}
