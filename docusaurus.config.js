@@ -19,7 +19,7 @@ const getPrefetched = fn => {
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'Open Source Software Analysis and Comparing Tools',
+  title: 'OSS Insight',
   tagline: ' Deep Insights into Billions of GitHub events',
   url: 'https://ossinsight.io',
   baseUrl: '/',
@@ -32,7 +32,7 @@ const config = {
     'https://api.ossinsight.io/qo/repos/groups/osdb?format=global_variable',
     'https://www.google.com/recaptcha/api.js?render=6LcBQpkfAAAAAFmuSRkRlJxVtmqR34nNawFgKohC'
   ],
-  clientModules: [],
+  clientModules: [path.resolve(__dirname, './src/client/linkedin.js')],
   plugins: [
     [
       path.resolve(__dirname, 'plugins/gtag'),
@@ -166,7 +166,7 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
-      image: 'img/share.png',
+      image: 'img/screenshots/homepage.png',
       metadata: [
         {name: 'twitter:card', content: 'summary_large_image'},
         {name: 'keywords', content: 'tidb, mysql, github events, oss, compare oss, oss analysis, pingcap'}
