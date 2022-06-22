@@ -64,7 +64,7 @@ type Descriptor<K extends keyof TypeMap> = {
 const descriptors: Descriptor<any>[] = [
   {
     key: 'analyze-people-activities-contribution-rank',
-    title: 'Activities',
+    title: 'All Activities',
     render: renderBasic,
   },
   {
@@ -94,12 +94,12 @@ const descriptors: Descriptor<any>[] = [
   },
   {
     key: 'analyze-people-code-contribution-rank',
-    title: 'Code',
+    title: 'Push and Commits',
     render: renderBasic,
   },
   {
     key: 'analyze-people-issue-contribution-rank',
-    title: 'Issue',
+    title: 'Issue Open',
     render: renderBasic,
   },
   // {
