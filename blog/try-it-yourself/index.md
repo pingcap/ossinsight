@@ -3,6 +3,9 @@ title:  Use TiDB Cloud to Analyze GitHub Events in 10 Minutes
 date: 2022-04-01
 authors: [fendy, hooopo]
 tags: [tidbcloud]
+image: ./import.png
+description: In this tutorial, we will provide you with a piece of sample data of all GitHub events occurring on January 1, 2022, and walk you through on how to use TiDB Cloud to analyze this data in 10 minutes. 
+keywords: [tutorial, TiDB Developer Tier, Import massive data, column storage replica, tidb, top ranking, github, database, github archive, gitHub metrics]
 ---
 
 [TiDB](https://docs.pingcap.com/tidb/stable/overview?utm_source=ossinsight&utm_medium=referral) is an open source distributed NewSQL database with horizontal scalability, high availability, and strong consistency. It can also deal with mixed OLTP and OLAP workloads at the same time by leveraging its hybrid transactional and analytical (HTAP) capability. 
