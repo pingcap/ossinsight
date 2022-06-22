@@ -11,6 +11,7 @@ aws_server.sh
 /dumping/
 /dumping*
 tidb-lightning.toml
+db/structure.sql
 
 # Ignore all logfiles and tempfiles.
 /cache
