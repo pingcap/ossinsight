@@ -1,3 +1,4 @@
+import CodeIcon from '@mui/icons-material/Code';
 import {
   FormControlLabel,
   FormControl,
@@ -9,6 +10,7 @@ import {
 } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import List from '@mui/material/List';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
@@ -18,10 +20,11 @@ import { SelectChangeEvent } from '@mui/material/Select/SelectInput';
 import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
 import Badge from '@mui/material/Badge';
-import React, { ForwardedRef, forwardRef, useState } from 'react';
+import React, { ForwardedRef, forwardRef, useCallback, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useAnalyzeContext } from '../../../analyze-charts/context';
-import { useRemoteData } from '../../../components/RemoteCharts/hook';
+import DebugDialog from '../../../components/DebugDialog/DebugDialog';
+import { RemoteData, useRemoteData } from '../../../components/RemoteCharts/hook';
 import useVisibility from '../../../hooks/visibility';
 import Section from '../Section';
 import { H2, P2 } from '../typography';
@@ -144,13 +147,13 @@ function renderCodes(item: Result & ChangedCodes, first: Result & ChangedCodes):
   return <></>;
 }
 
-function useData<K extends keyof TypeMap>(repoId: number, key: string, excludeBots: boolean, show: boolean): TypeMap[K][] {
+function useData<K extends keyof TypeMap>(repoId: number, key: string, excludeBots: boolean, show: boolean): [TypeMap[K][], RemoteData<any, TypeMap[K]>] {
   const { data } = useRemoteData<Param, TypeMap[K]>(key, {
     repoId,
     excludeBots,
   }, false, show);
 
-  return data?.data ?? [];
+  return [data?.data ?? [], data];
 }
 
 const BarContainer = styled(List)({
@@ -196,7 +199,17 @@ export const Contributors = forwardRef(function ({}, ref: ForwardedRef<HTMLEleme
   const [descriptor, setDescriptor] = useState<Descriptor<any>>(descriptors[0]);
   const [type, setType] = useState('count');
   const [excludeBots, setExcludeBots] = useState(true);
-  const list = useData(repoId, descriptor.key, excludeBots, visible && inView);
+  const [list, data] = useData(repoId, descriptor.key, excludeBots, visible && inView);
+
+  const [showDebugModel, setShowDebugModel] = useState(false);
+
+  const handleShowDebugModel = useEventCallback(() => {
+    setShowDebugModel(true);
+  })
+
+  const handleCloseDebugModel = useEventCallback(() => {
+    setShowDebugModel(false);
+  })
 
   const handleChangeDescriptor = useEventCallback((event: SelectChangeEvent<Descriptor<any>>) => {
     setDescriptor(descriptors.find(descriptor => descriptor.key === event.target.value));
@@ -256,7 +269,10 @@ export const Contributors = forwardRef(function ({}, ref: ForwardedRef<HTMLEleme
         <Spacer />
         {switchExcludeBots}
         {toggleType}
+        <Button size='small' onClick={handleShowDebugModel} endIcon={<CodeIcon />} sx={{ ml: 2 }}>SHOW SQL</Button>
       </Stack>
+
+      {data ? <DebugDialog sql={data.sql} query={data.query} params={data.params} open={showDebugModel} onClose={handleCloseDebugModel} /> : undefined}
 
       <BarContainer ref={inViewRef}>
         {list.map((item, index, all) => descriptor.render(item, all[0], { percentage: type === 'percentage'}))}
