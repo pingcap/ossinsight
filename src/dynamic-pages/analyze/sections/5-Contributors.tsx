@@ -212,7 +212,7 @@ export const Contributors = forwardRef(function ({}, ref: ForwardedRef<HTMLEleme
 
   const selectDescriptor = (
     <FormControl variant="standard">
-      <InputLabel id='select-descriptor-label'>Dimension</InputLabel>
+      <InputLabel id='select-descriptor-label'>Metrics</InputLabel>
       <Select<Descriptor<any>>
         labelId='select-descriptor-label'
         id='select-descriptor'
