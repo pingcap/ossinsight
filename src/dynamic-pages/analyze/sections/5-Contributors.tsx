@@ -71,6 +71,26 @@ const descriptors: Descriptor<any>[] = [
     render: renderBasic,
   },
   {
+    key: 'analyze-people-code-contribution-rank',
+    title: 'Push and Commits',
+    render: renderBasic,
+  },
+  {
+    key: 'analyze-people-issue-contribution-rank',
+    title: 'Issue Open',
+    render: renderBasic,
+  },
+  {
+    key: 'analyze-people-issue-comment-contribution-rank',
+    title: 'Issue Comment',
+    render: renderBasic,
+  },
+  {
+    key: 'analyze-people-issue-close-contribution-rank',
+    title: 'Issue Close',
+    render: renderBasic,
+  },
+  {
     key: 'analyze-people-code-review-comments-contribution-rank',
     title: 'Code Review Comments',
     render: renderBasic,
@@ -83,26 +103,6 @@ const descriptors: Descriptor<any>[] = [
   {
     key: 'analyze-people-code-review-submits-contribution-rank',
     title: 'Code Review Submits',
-    render: renderBasic,
-  },
-  {
-    key: 'analyze-people-issue-close-contribution-rank',
-    title: 'Issue Close',
-    render: renderBasic,
-  },
-  {
-    key: 'analyze-people-issue-comment-contribution-rank',
-    title: 'Issue Comment',
-    render: renderBasic,
-  },
-  {
-    key: 'analyze-people-code-contribution-rank',
-    title: 'Push and Commits',
-    render: renderBasic,
-  },
-  {
-    key: 'analyze-people-issue-contribution-rank',
-    title: 'Issue Open',
     render: renderBasic,
   },
   // {
