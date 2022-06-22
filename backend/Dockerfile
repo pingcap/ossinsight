@@ -34,14 +34,15 @@ RUN gem install bundler -v 2.2.3
 
 WORKDIR /app
 
-COPY Gemfile Gemfile.lock ./
+COPY backend/Gemfile backend/Gemfile.lock ./
+COPY backend/start.sh ./
 
 RUN bundle config build.nokogiri --use-system-libraries
 
 RUN bundle check || bundle install 
 
-COPY package.json yarn.lock ./
+COPY backend/package.json backend/yarn.lock ./
 
 RUN yarn install --check-files
 
-COPY . ./ 
+COPY backend ./ 
