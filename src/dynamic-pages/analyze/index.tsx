@@ -33,6 +33,7 @@ const sections = [
   'commits',
   'pull-requests',
   'issues',
+  'contributors',
 ]
 
 function AnalyzePage() {
@@ -59,14 +60,14 @@ function AnalyzePage() {
 
   // Out of mui theme context, so we need to use magic number here
   const isSmall = useMediaQuery<Theme>('(max-width:600px)')
-  const sideWidth = isSmall ? undefined : '90px'
+  const sideWidth = isSmall ? undefined : '130px'
 
   return (
     <Scrollspy sectionRefs={sectionRefs} offset={-140}>
       {({ currentElementIndexInViewport }) => (
         <CustomPage
           sideWidth={sideWidth}
-          Side={() => !isSmall ? <Navigator type='side' value={sections[currentElementIndexInViewport]} /> : undefined}
+          Side={() => !isSmall ? <Navigator comparing={!!comparingRepoName} type='side' value={sections[currentElementIndexInViewport]} /> : undefined}
           header={(
             <NewCompareHeader
               sideWidth={sideWidth}
@@ -103,11 +104,11 @@ function AnalyzePage() {
               <CommitsSection ref={sectionRefs[2]} />
               <PullRequestsSection ref={sectionRefs[3]} />
               <IssuesSection ref={sectionRefs[4]} />
-              <Contributors />
+              {!comparingRepoName ? <Contributors ref={sectionRefs[5]} /> : undefined}
               <TryItYourself campaign="compare" show fixed />
             </Container>
           </AnalyzeContext.Provider>
-          {isSmall ? <Navigator value={sections[currentElementIndexInViewport]} type='bottom' /> : undefined}
+          {isSmall ? <Navigator comparing={!!comparingRepoName} value={sections[currentElementIndexInViewport]} type='bottom' /> : undefined}
         </CustomPage>
       )}
     </Scrollspy>
