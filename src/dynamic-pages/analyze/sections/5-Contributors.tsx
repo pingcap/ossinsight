@@ -243,7 +243,7 @@ export const Contributors = forwardRef(function ({}, ref: ForwardedRef<HTMLEleme
   )
 
   const switchExcludeBots = (
-    <FormControlLabel sx={{ mr: 2 }} control={<Switch value={excludeBots} onChange={handleChangeExcludeBots} />} label="Exclude Bots" />
+    <FormControlLabel sx={{ mr: 2 }} control={<Switch checked={excludeBots} onChange={handleChangeExcludeBots} />} label="Exclude Bots" />
   )
 
   const toggleType = (
