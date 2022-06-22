@@ -1,12 +1,12 @@
-import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
+import AnalyticsIcon from '@mui/icons-material/Analytics';
+import AutoGraphIcon from '@mui/icons-material/AutoGraph';
 import { BottomNavigation, BottomNavigationAction, useEventCallback } from '@mui/material';
 import Box from '@mui/material/Box';
-import Divider from '@mui/material/Divider';
 import Paper from '@mui/material/Paper';
+import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
-import { GitCommitIcon, GitPullRequestIcon, IssueClosedIcon, PersonIcon } from '@primer/octicons-react';
 import React from 'react';
 
 const SideContainer = styled('div')({
@@ -21,9 +21,9 @@ const ColorBox = styled(Box)({
 });
 
 export interface NavigatorProps {
-  value: string
-  type: 'side' | 'bottom'
-  comparing: boolean
+  value: string;
+  type: 'side' | 'bottom';
+  comparing: boolean;
 }
 
 export function Navigator({ value, type, comparing }: NavigatorProps) {
@@ -43,30 +43,31 @@ export function Navigator({ value, type, comparing }: NavigatorProps) {
                 },
               }}
               variant="scrollable"
-              scrollButtons='auto'
+              scrollButtons="auto"
         >
-          {renderTabs(comparing ? 5 : undefined)}
+          {renderTabs(comparing ? 6 : undefined)}
         </Tabs>
       </SideContainer>
     );
   } else {
     return (
       <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0 }} elevation={3}>
-        <BottomNavigation showLabels value={value ?? 'overview'} >
-          {renderBottomNavigationActions(comparing ? 5 : undefined)}
+        <BottomNavigation showLabels value={value ?? 'overview'}>
+          {renderBottomNavigationActions(comparing ? 6 : undefined)}
         </BottomNavigation>
       </Paper>
-    )
+    );
   }
 }
 
 const tabs: { id: string, label: string, icon?: JSX.Element }[] = [
+  { id: 'divider-0', label: 'Analytics', icon: <AnalyticsIcon fontSize='inherit' sx={{ mr: 0.5 }} /> },
   { id: 'overview', label: 'Overview' },
   { id: 'people', label: 'People' },
   { id: 'commits', label: 'Commits' },
   { id: 'pull-requests', label: 'Pull Requests' },
   { id: 'issues', label: 'Issues' },
-  { id: 'divider-1', label: 'Monthly' },
+  { id: 'divider-1', label: 'Monthly Stats', icon: <AutoGraphIcon fontSize='inherit' sx={{ mr: 0.5 }} /> },
   { id: 'contributors', label: 'Contributors' },
 ];
 
@@ -74,10 +75,13 @@ const renderTabs = (n?: number) => {
   return tabs.slice(0, n).map(tab => {
     if (tab.id.startsWith('divider-')) {
       return (
-        <Divider orientation='horizontal' sx={{ fontSize: 12 }}>
-          {tab.label}
-        </Divider>
-      )
+        <Stack sx={{ fontSize: 14, pl: 2, color: 'primary.main' }} direction="row" alignItems='center'>
+          {tab.icon}
+          <span>
+            {tab.label}
+          </span>
+        </Stack>
+      );
     } else {
       return (
         <Tab
@@ -91,21 +95,21 @@ const renderTabs = (n?: number) => {
           })}
           sx={{
             py: 0.5,
-            pl: 4,
+            pl: 4.125,
             height: 28,
             minHeight: 28,
             alignItems: 'flex-start',
           }}
         />
-      )
+      );
     }
-  })
-}
+  });
+};
 
 const renderBottomNavigationActions = (n?: number) => {
   return tabs.slice(0, n).map(tab => {
     if (tab.id.startsWith('divider-')) {
-      return <></>
+      return <></>;
     } else {
       return (
         <BottomNavigationAction
@@ -118,7 +122,7 @@ const renderBottomNavigationActions = (n?: number) => {
             document.getElementById(tab.id)?.scrollIntoView();
           })}
         />
-      )
+      );
     }
-  })
-}
+  });
+};

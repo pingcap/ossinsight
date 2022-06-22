@@ -60,7 +60,7 @@ function AnalyzePage() {
 
   // Out of mui theme context, so we need to use magic number here
   const isSmall = useMediaQuery<Theme>('(max-width:600px)')
-  const sideWidth = isSmall ? undefined : '130px'
+  const sideWidth = isSmall ? undefined : '160px'
 
   return (
     <Scrollspy sectionRefs={sectionRefs} offset={-140}>
