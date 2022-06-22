@@ -105,10 +105,10 @@ git clone https://github.com/pingcap/ossinsight.git
 
 # install npm packages
 cd ossinsight/;
-yarn;
+npm install;
 
 # start the server:
-yarn start;
+npm run start;
 
 # then visit
 open http://localhost:3000
