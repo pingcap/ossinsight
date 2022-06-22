@@ -1,10 +1,10 @@
 version: '3.9'
 
 services:
-  base: &base
+  data:
     build:
-      context: .
-      dockerfile: ./backend/Dockerfile
+      context: ./backend
+      dockerfile: ./Dockerfile
       args:
         BUNDLE_WITHOUT: ''
         EXECJS_RUNTIME: 'Node'
