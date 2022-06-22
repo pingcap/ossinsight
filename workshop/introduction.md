@@ -3,31 +3,38 @@ sidebar_position: 0
 title: Workshop Introduction 🔧
 sidebar_label: Introduction
 slug: /
+hide_title: true
 ---
 
-## Help Build XYZ Insight
+## Introduction
 
-Maybe you want to build a XYZ Insight tool/website from another data source rather than GitHub, but bother with and get lost in the large amount of tools: MySQL -> Sharding Middlewares -> ETL Tools -> OLAP Database or Spark/Hadoop  way...,
+If you want to build **Another Insight** tool with another data source except GitHub, then you're in the right place: the workshop will tell you it's not too hard to get insights from big data, expecially **big data with realtime insert/update**. Use a HTAP database here is suitable. because it is **SUPER EASY** to handle both:
+* act as a **primary** rdbms to _serve requests in high concurrency_ and _insert/update in realtime_
+* provide analytical ability to _get insights_
 
-The workshop here is telling the answer.
+There is a ten-minute post to explain [why we choose tidb to support ossinsight](/blog/why-we-choose-tidb-to-support-ossinsight). but for saving time we put a picture below which shows the architecture difference between "before" and "after" we use TiDB:
+<center>
+  <img width="70%" src={require('@site/blog/why-we-choose-tidb-to-support-ossinsight/how-different-db-handle-github-data.jpg').default} alt='Simplified architecture after we use TiDB' />
+</center>
+<center><i>before and after we use TiDB</i></center>
 
+<br />
 
-## Simple Architecture & Few Steps
+Usually, with enough abstration, there will be 3 steps to setup such an insight system:
 
-For TiDB (MySQL compatible), it is **SUPER EASY** to handle both:
-* act as a **primary** rdbms to <u>serve requests in high concurrency</u> and <u>insert/update in realtime</u> (transactional row-oriented)
-* provide analytical ability to <u>get insights</u> (analytical column-oriented)
-
-(Even the data size is 100TBi+)
-
-And we only need 3 steps to setup a demo:
-1. Find Data Srouce
-2. Load Data to TiDB or TiDB Cloud
+1. Find its Data Srouce
+2. Load Data to TiDB
 3. Get Insights with SQL
 
-## Join Workshops:
+(You can use MySQL instead of TiDB in step 2, but you should will meet with performance issues soon...)
 
-* [mini OSS Insight](/workshop/mini-oss-insight)
-* [Stack Overflow Insight](/workshop/stack-overflow-insight)
-* [Twitter Insight](/workshop/twitter-insight)
-* [Cryptocurrency Insight](/workshop/cryptocurrency-insight)
+<br />
+
+OK, for saving time, join the bellow workshops asap, each one will follow the above 3 steps!  🏃🏃🏃
+
+## Join Workshops
+
+* [mini OSS Insight](/workshop/mini-ossinsight)
+* [Stack Overflow Insight](/workshop/stackoverflow-insight) _WON'T DO_
+* [Twitter Insight](/workshop/twitter-insight) _WON'T DO_
+* [Cryptocurrency Insight](/workshop/cryptocurrency-insight) _WON'T DO_
