@@ -1,4 +1,12 @@
-import { FormControlLabel, ListItem, ListItemAvatar, ListItemText, Switch, useEventCallback } from '@mui/material';
+import {
+  FormControlLabel,
+  FormControl,
+  ListItem,
+  ListItemAvatar,
+  Switch,
+  useEventCallback,
+  InputLabel,
+} from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import List from '@mui/material/List';
@@ -16,7 +24,7 @@ import { useAnalyzeContext } from '../../../analyze-charts/context';
 import { useRemoteData } from '../../../components/RemoteCharts/hook';
 import useVisibility from '../../../hooks/visibility';
 import Section from '../Section';
-import { H2 } from '../typography';
+import { H2, P2 } from '../typography';
 
 type ChangedEvents = { last_month_events: number, last_2nd_month_events: number, changes: number }
 
@@ -203,17 +211,22 @@ export const Contributors = forwardRef(function ({}, ref: ForwardedRef<HTMLEleme
   })
 
   const selectDescriptor = (
-    <Select<Descriptor<any>>
-      size='small'
-      value={descriptor}
-      onChange={handleChangeDescriptor}
-      native={false}
-      renderValue={descriptor => descriptor.title}
-    >
-      {descriptors.map(descriptor => (
-        <MenuItem key={descriptor.key} value={descriptor.key}>{descriptor.title}</MenuItem>
-      ))}
-    </Select>
+    <FormControl variant="standard">
+      <InputLabel id='select-descriptor-label'>Dimension</InputLabel>
+      <Select<Descriptor<any>>
+        labelId='select-descriptor-label'
+        id='select-descriptor'
+        size='small'
+        value={descriptor}
+        onChange={handleChangeDescriptor}
+        native={false}
+        renderValue={descriptor => descriptor.title}
+      >
+        {descriptors.map(descriptor => (
+          <MenuItem key={descriptor.key} value={descriptor.key}>{descriptor.title}</MenuItem>
+        ))}
+      </Select>
+    </FormControl>
   )
 
   const switchExcludeBots = (
@@ -235,6 +248,7 @@ export const Contributors = forwardRef(function ({}, ref: ForwardedRef<HTMLEleme
   return (
     <Section id="contributors" ref={ref}>
       <H2>Contributors</H2>
+      <P2>Contribution status in multiple dimensions</P2>
 
       <Stack direction='row' justifyContent='space-between'>
         {selectDescriptor}
