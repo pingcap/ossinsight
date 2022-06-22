@@ -1,5 +1,6 @@
-import { FormControlLabel, ListItem, ListItemAvatar, Switch, useEventCallback } from '@mui/material';
+import { FormControlLabel, ListItem, ListItemAvatar, ListItemText, Switch, useEventCallback } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
+import Box from '@mui/material/Box';
 import List from '@mui/material/List';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
@@ -116,6 +117,9 @@ function renderBasic(item: Result & ChangedEvents & { is_new_contributor?: 0 | 1
           {avatar}
         </a>
       </ListItemAvatar>
+      <Box sx={{ fontSize: 12, maxWidth: 64, minWidth: 64, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', mr: 1 }}>
+        {item.actor_login}
+      </Box>
       <Bar sx={{ width: `${item.last_month_events / first.last_month_events * 100}%` }} />
       {percentage
         ? (
