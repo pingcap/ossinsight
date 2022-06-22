@@ -243,7 +243,7 @@ export const Contributors = forwardRef(function ({}, ref: ForwardedRef<HTMLEleme
   )
 
   const switchExcludeBots = (
-    <FormControlLabel sx={{ mr: 2 }} control={<Switch checked={excludeBots} onChange={handleChangeExcludeBots} />} label="Exclude Bots" />
+    <FormControlLabel control={<Switch checked={excludeBots} onChange={handleChangeExcludeBots} />} label="Exclude Bots" />
   )
 
   const toggleType = (
@@ -264,12 +264,12 @@ export const Contributors = forwardRef(function ({}, ref: ForwardedRef<HTMLEleme
       <H2>Contributors</H2>
       <P2>Contribution status in multiple dimensions</P2>
 
-      <Stack direction='row' justifyContent='space-between'>
+      <Stack direction='row' justifyContent='space-between' flexWrap='wrap' gap={2}>
         {selectDescriptor}
         <Spacer />
         {switchExcludeBots}
         {toggleType}
-        <Button size='small' onClick={handleShowDebugModel} endIcon={<CodeIcon />} sx={{ ml: 2 }}>SHOW SQL</Button>
+        <Button size='small' onClick={handleShowDebugModel} endIcon={<CodeIcon />}>SHOW SQL</Button>
       </Stack>
 
       {data ? <DebugDialog sql={data.sql} query={data.query} params={data.params} open={showDebugModel} onClose={handleCloseDebugModel} /> : undefined}
