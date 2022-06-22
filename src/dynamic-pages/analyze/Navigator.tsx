@@ -7,11 +7,11 @@ import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
-import React from 'react';
+import React, { useMemo } from 'react';
 
 const SideContainer = styled('div')({
   width: '100%',
-  height: 'calc(100vh - var(--ifm-navbar-height) - 22px)',
+  height: 'calc(100vh - var(--ifm-navbar-height))',
   backgroundColor: '#242526',
 });
 
@@ -27,6 +27,10 @@ export interface NavigatorProps {
 }
 
 export function Navigator({ value, type, comparing }: NavigatorProps) {
+  const idx = useMemo(() => {
+    return tabs.findIndex(el => el.id === value)
+  }, [value])
+
   if (type === 'side') {
     return (
       <SideContainer>
@@ -37,15 +41,20 @@ export function Navigator({ value, type, comparing }: NavigatorProps) {
                   gap: '16px',
                 },
                 '.MuiTab-root': {
-                  fontSize: 12,
+                  fontSize: 14,
                   textDecoration: 'none',
                   textTransform: 'none',
+                  py: 0.5,
+                  pl: 4.5,
+                  height: 28,
+                  minHeight: 28,
+                  alignItems: 'flex-start',
                 },
               }}
               variant="scrollable"
               scrollButtons="auto"
         >
-          {renderTabs(comparing ? 6 : undefined)}
+          {renderTabs(comparing ? 6 : undefined, idx)}
         </Tabs>
       </SideContainer>
     );
@@ -71,11 +80,15 @@ const tabs: { id: string, label: string, icon?: JSX.Element }[] = [
   { id: 'contributors', label: 'Contributors' },
 ];
 
-const renderTabs = (n?: number) => {
-  return tabs.slice(0, n).map(tab => {
+const matched = (n: number, i: number) => {
+  return i > n && i - n <= 5
+}
+
+const renderTabs = (n: number | undefined, index: number) => {
+  return tabs.slice(0, n).map((tab, i) => {
     if (tab.id.startsWith('divider-')) {
       return (
-        <Stack sx={{ fontSize: 14, pl: 2, color: 'primary.main' }} direction="row" alignItems='center'>
+        <Stack sx={{ fontSize: 16, fontWeight: 'bold', pl: 2, color: matched(i, index) ? 'primary.main' : undefined }} direction="row" alignItems='center'>
           {tab.icon}
           <span>
             {tab.label}
@@ -93,13 +106,6 @@ const renderTabs = (n?: number) => {
           onClick={useEventCallback(() => {
             document.getElementById(tab.id)?.scrollIntoView();
           })}
-          sx={{
-            py: 0.5,
-            pl: 4.125,
-            height: 28,
-            minHeight: 28,
-            alignItems: 'flex-start',
-          }}
         />
       );
     }
