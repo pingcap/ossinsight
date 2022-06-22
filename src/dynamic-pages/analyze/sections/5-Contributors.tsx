@@ -195,7 +195,7 @@ export const Contributors = forwardRef(function ({}, ref: ForwardedRef<HTMLEleme
   const { repoId } = useAnalyzeContext();
   const [descriptor, setDescriptor] = useState<Descriptor<any>>(descriptors[0]);
   const [type, setType] = useState('count');
-  const [excludeBots, setExcludeBots] = useState(false)
+  const [excludeBots, setExcludeBots] = useState(true);
   const list = useData(repoId, descriptor.key, excludeBots, visible && inView);
 
   const handleChangeDescriptor = useEventCallback((event: SelectChangeEvent<Descriptor<any>>) => {
