@@ -3,9 +3,6 @@ title: Data Preparation for Analytics
 date: 2022-03-01
 authors: [hooopo]
 tags: [tidbcloud]
-image: ./banner-ossinsight-explore-deep.jpg
-description: Here you can find the answer of what does a view of 4.6 billion Github events really look like and what secrets and values can be discovered in such an enormous amount of data. 
-keywords: [Popularity repositories, distribution of stargazer, tidb, top rankings, github, database, github archive, gitHub metrics]
 ---
 
 ## Data
