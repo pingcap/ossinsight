@@ -1,0 +1,44 @@
+version: '3.9'
+
+services:
+  data:
+    build:
+      context: ./backend
+      dockerfile: ./Dockerfile
+      args:
+        BUNDLE_WITHOUT: ''
+        EXECJS_RUNTIME: 'Node'
+        RAILS_ENV: 'development'
+        RAILS_SERVE_STATIC_FILES: 'false'
+    tty: true
+    stdin_open: true
+    depends_on: 
+      - tidb
+    image: hooopo/ossinsight-data
+
+    command: ["./start.sh"]
+    environment:
+      - NODE_ENV=development
+      - RAILS_ENV=development
+      - DATABASE_URL=tidb://root:@tidb:4000/gharchive_dev
+      - GITHUB_TOKEN=
+    env_file: backend/.env.local
+
+  tidb:
+    image: hooopo/tidb-cluster:v6.1.0
+    ports: 
+      - "4000:4000"
+      - "3000:3000"
+      - "9000:9000"
+      - "2379:2379"
+
+
+networks:
+  default:
+
+volumes:
+  tidb:
+  packs:
+  node_modules:
+  cache:
+  bundle:
