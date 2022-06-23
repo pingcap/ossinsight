@@ -177,9 +177,9 @@ const config = {
       announcementBar: {
         id: 'announcement-20220620',
         content:
-          '📢 06-20: <a target="_blank" href="/blog/why-we-choose-tidb-to-support-ossinsight/">Build a Better Github Insight Tool in a Week? A True Story</a>',
-        backgroundColor: '#343536',
-        textColor: 'lightgrey',
+        '💡 <a target="_blank" href="/blog/why-we-choose-tidb-to-support-ossinsight/" style="font-weight:bold">New Post: How we built a better GitHub insight tool in a week ?</a>',
+        backgroundColor: '#6F6290',
+        textColor: '#ffffff', 
         isCloseable: true,
       },
       navbar: {
