@@ -205,11 +205,11 @@ const config = {
             label: 'Workshop',
             position: 'left',
             items: [
-              {label: '👋 Welcome', href: '/workshop'},
-              {label: '🛠️ Workshop: mini OSS Insight', href: '/workshop/mini-ossinsight/introduction'},
-              {label: '🛠️ Workshop: Stack Overflow Insight', href: '/workshop/stackoverflow-insight'},
-              {label: '🛠️ Workshop: Twitter Insight', href: '/workshop/twitter-insight'},
-              {label: '🛠️ Workshop: Cryptocurrency Insight', href: '/workshop/cryptocurrency-insight'},
+              {label: 'Welcome', href: '/workshop'},
+              {label: 'Workshop: mini OSS Insight', href: '/workshop/mini-ossinsight/introduction'},
+              {label: 'Workshop: Stack Overflow Insight', href: '/workshop/stackoverflow-insight'},
+              {label: 'Workshop: Twitter Insight', href: '/workshop/twitter-insight'},
+              {label: 'Workshop: Cryptocurrency Insight', href: '/workshop/cryptocurrency-insight'},
               {label: '☎️  Offline Workshop', href: 'https://share.hsforms.com/1E-qtGQWrTVmctP8kBT34gw2npzm'},
             ]
           },
