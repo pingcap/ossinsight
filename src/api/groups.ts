@@ -1,6 +1,6 @@
 import useSWR, {SWRResponse} from "swr";
 
-const dataUrl = 'https://api.ossinsight.io/qo'
+const dataUrl = process.env.API_BASE + '/qo'
 
 export interface Group {
   group_name: string

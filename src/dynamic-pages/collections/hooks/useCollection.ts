@@ -14,7 +14,7 @@ export type Collection = {
 export function useCollections(): Collection[] {
   const {collections} = usePluginData<{collections: RemoteData<any, Collection>}>('plugin-prefetch');
 
-  const { data } = useSWR<RemoteData<any, Collection>>('https://api.ossinsight.io/collections', {
+  const { data } = useSWR<RemoteData<any, Collection>>(process.env.API_BASE + '/collections', {
     fetcher: url => fetch(url).then(res => res.json()),
     fallbackData: collections,
   });

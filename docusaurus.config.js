@@ -5,6 +5,10 @@ const lightCodeTheme = require('prism-react-renderer/themes/github');
 const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 const path = require('path')
 const fs = require('fs')
+require('dotenv').config()
+
+const HOST = process.env.HOST
+const API_BASE = process.env.API_BASE
 
 const getPresets = (fn) => {
   return fs.readFileSync(fn, { encoding: 'utf-8' })
@@ -21,7 +25,7 @@ const getPrefetched = fn => {
 const config = {
   title: 'OSS Insight',
   tagline: ' Deep Insights into Billions of GitHub events',
-  url: 'https://ossinsight.io',
+  url: HOST,
   baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
@@ -29,11 +33,18 @@ const config = {
   organizationName: 'pingcap',
   projectName: 'ossinsight',
   scripts: [
-    'https://api.ossinsight.io/qo/repos/groups/osdb?format=global_variable',
+    API_BASE + '/qo/repos/groups/osdb?format=global_variable',
     'https://www.google.com/recaptcha/api.js?render=6LcBQpkfAAAAAFmuSRkRlJxVtmqR34nNawFgKohC'
   ],
   clientModules: [path.resolve(__dirname, './src/client/linkedin.js')],
   plugins: [
+    [
+      path.resolve(__dirname, 'plugins/define'),
+      {
+        'process.env.HOST': JSON.stringify(HOST),
+        'process.env.API_BASE': JSON.stringify(API_BASE),
+      }
+    ],
     [
       path.resolve(__dirname, 'plugins/gtag'),
       {
