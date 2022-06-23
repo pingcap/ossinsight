@@ -5,6 +5,7 @@ import { Scrollspy } from '@makotot/ghostui';
 import { useMediaQuery } from '@mui/material';
 import Container from '@mui/material/Container';
 import { Theme } from '@mui/material/styles';
+import Error from '@theme/Error';
 import React, { useCallback, useRef } from 'react';
 import { AnalyzeContext } from '../../analyze-charts/context';
 import { RepoInfo, useRepo } from '../../api/gh';
@@ -21,6 +22,7 @@ import { CommitsSection } from './sections/2-Commits';
 import { PullRequestsSection } from './sections/3-PullRequests';
 import { IssuesSection } from './sections/4-Issues';
 import { Contributors } from './sections/5-Contributors';
+import {Redirect} from '@docusaurus/router';
 
 interface AnalyzePageParams {
   owner: string;
@@ -40,7 +42,7 @@ function AnalyzePage() {
   const history = useHistory();
   const location = useLocation();
 
-  const { data: main, name } = useMainRepo();
+  const { data: main, name, error } = useMainRepo();
   const { data: vs, name: comparingRepoName, setName: setComparingRepoName } = useVsRepo();
 
   const sectionRefs = sections.map(section => useRef<HTMLElement>(null))
@@ -61,6 +63,10 @@ function AnalyzePage() {
   // Out of mui theme context, so we need to use magic number here
   const isSmall = useMediaQuery<Theme>('(max-width:600px)')
   const sideWidth = isSmall ? undefined : '160px'
+
+  if (!main && error) {
+    return <Redirect to='/404' />
+  }
 
   return (
     <Scrollspy sectionRefs={sectionRefs} offset={-140}>
