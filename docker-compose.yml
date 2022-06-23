@@ -36,6 +36,8 @@ services:
     image: hooopo/ossinsight-api
     ports: 
       - "3450:3450"
+    depends_on: 
+      - tidb
     environment:
       - DB_HOST=tidb
       - DB_PORT=4000
@@ -47,6 +49,23 @@ services:
       - SERVER_PORT=3450
       - GH_TOKENS=''
       - PREFETCH_CONCURRENT=3
+
+  fe:
+    image: hooopo/ossinsight-fe
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      args:
+        NODE_ENV: 'development'
+    ports: 
+      - "8080:8080"
+    depends_on: 
+      - tidb
+      - api
+    environment:
+      - NODE_ENV=development
+      - APP_HOST=http://localhost:3450
+      - APP_API_BASE=http://localhost:3450
 
 networks:
   default:
