@@ -21,7 +21,7 @@ services:
       - NODE_ENV=development
       - RAILS_ENV=development
       - DATABASE_URL=tidb://root:@tidb:4000/gharchive_dev
-      - GITHUB_TOKEN=
+      - GITHUB_TOKEN=${GITHUB_TOKEN:?err}
     env_file: backend/.env.local
 
   tidb:
