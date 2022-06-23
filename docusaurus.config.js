@@ -206,8 +206,8 @@ const config = {
             position: 'left',
             items: [
               {label: 'Introduction', href: '/workshop'},
-              {label: 'Workshop: mini OSS Insight', href: '/workshop/mini-oss-insight'},
-              {label: 'Workshop: Stack Overflow Insight', href: '/workshop/stack-overflow-insight'},
+              {label: 'Workshop: mini OSS Insight', href: '/workshop/mini-ossinsight'},
+              {label: 'Workshop: Stack Overflow Insight', href: '/workshop/stackoverflow-insight'},
               {label: 'Workshop: Twitter Insight', href: '/workshop/twitter-insight'},
               {label: 'Workshop: Cryptocurrency Insight', href: '/workshop/cryptocurrency-insight'},
             ]
