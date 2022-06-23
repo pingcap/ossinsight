@@ -1,9 +1,0 @@
-{
-  "extends": "@tsconfig/docusaurus/tsconfig.json",
-  "compilerOptions": {
-    "target": "esnext",
-    "moduleResolution": "node",
-    "lib": ["dom","esnext"],
-    "resolveJsonModule": true
-  }
-}
