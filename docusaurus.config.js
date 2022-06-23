@@ -136,7 +136,7 @@ const config = {
         },
         */
         blog: {
-          blogTitle: 'OSS Insight Blog',
+          blogTitle: 'Blog',
           blogSidebarTitle: 'All Blog Posts',
           blogSidebarCount: 'ALL',
           postsPerPage: 10,
@@ -166,7 +166,7 @@ const config = {
       image: 'img/screenshots/homepage.png',
       metadata: [
         {name: 'twitter:card', content: 'summary_large_image'},
-        {name: 'keywords', content: 'tidb, mysql, github events, oss, compare oss, oss analysis, pingcap'}
+        {name: 'keywords', content: 'tidb, mysql, github events, github archive, github metrics, oss, compare oss, oss analysis, pingcap, insight tool, data visualization, rank, trend'}
       ],
       hideableSidebar: true,
       colorMode: {
