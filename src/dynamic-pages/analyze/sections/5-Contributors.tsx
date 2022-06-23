@@ -260,7 +260,11 @@ export const Contributors = forwardRef(function ({}, ref: ForwardedRef<HTMLEleme
   return (
     <Section id="contributors" ref={ref}>
       <H2>Contributors</H2>
-      <P2>Contribution status in multiple dimensions LAST MONTH</P2>
+      <P2>Check the activity of contributors in the repository here, including push and commit events, issue open/close/comment events, code review comments/PRs/submits. 
+      <br />
+      ✨ Tips: You can view the ranking of specific event in the filter box with two dimensions: the total number of events and the proportion of events that account for all the same events in the repository.
+      <br />
+      </P2>
 
       <Stack direction='row' justifyContent='space-between' flexWrap='wrap' gap={2}>
         {selectDescriptor}
