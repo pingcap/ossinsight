@@ -1,6 +1,6 @@
 import useSWR, {SWRResponse} from 'swr'
 
-const dataUrl = 'https://api.ossinsight.io/gh'
+const dataUrl = process.env.API_BASE + '/gh'
 
 export interface RepoInfo {
   id: number

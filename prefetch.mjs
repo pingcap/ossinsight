@@ -1,5 +1,8 @@
 import fetch from 'node-fetch'
 import fs from 'node:fs'
+import dotenv from 'dotenv'
+
+dotenv.config()
 
 fs.mkdirSync('.prefetch', {recursive: true})
 
@@ -10,7 +13,7 @@ async function prefetch (fn, load) {
 }
 
 await Promise.all([
-  prefetch('.prefetch/collections.json', fetch('https://api.ossinsight.io/collections')),
-  prefetch('.prefetch/events-total.json', fetch('https://api.ossinsight.io/q/events-total')),
+  prefetch('.prefetch/collections.json', fetch(process.env.API_BASE + '/collections')),
+  prefetch('.prefetch/events-total.json', fetch(process.env.API_BASE + '/q/events-total')),
 ])
 
