@@ -37,10 +37,9 @@ export const H3 = ({analyzeTitle = true, ...props}: TypographyProps & AnalyzeTit
   return <Typography {...props} variant="h3" marginBottom={2} marginTop={4} ref={ref} />;
 };
 
-export const H4 = ({analyzeTitle, ...props}: TypographyProps & AnalyzeTitle) => {
-  const ref = useAnalyzeTitleRef(analyzeTitle)
+export const H4 = forwardRef<HTMLHeadingElement, TypographyProps & AnalyzeTitle>(({analyzeTitle, ...props}: TypographyProps & AnalyzeTitle, ref) => {
   return <Typography {...props} variant="h4" ref={ref} />;
-};
+});
 
 export const P1 = ({analyzeDescription = true, ...props}: TypographyProps & AnalyzeDescription) => {
   const ref = useAnalyzeDescriptionRef(analyzeDescription)

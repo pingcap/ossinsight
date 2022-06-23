@@ -3,9 +3,16 @@ import Grid from '@mui/material/Grid';
 import { useTheme } from '@mui/material/styles';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
-import useMediaQuery from '@mui/material/useMediaQuery';
 import { GitMergeIcon, IssueOpenedIcon, PersonIcon, StarIcon } from '@primer/octicons-react';
-import React, { ForwardedRef, forwardRef, PropsWithChildren, useCallback, useContext, useState } from 'react';
+import React, {
+  ForwardedRef,
+  forwardRef,
+  PropsWithChildren,
+  useCallback,
+  useContext,
+  useEffect, useRef,
+  useState,
+} from 'react';
 import Analyze from '../../../analyze-charts/Analyze';
 import { CompaniesChart } from '../../../analyze-charts/companies';
 import { AnalyzeChartContext, useAnalyzeContext } from '../../../analyze-charts/context';
@@ -40,7 +47,7 @@ export const PeopleSection = forwardRef(function ({}, ref: ForwardedRef<HTMLElem
         <P2>Stargazers,Issue creators and Pull Request creators’ geographical distribution around the world (analyzed with the public github infomation).</P2>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <Tabs value={mapType} onChange={handleChangeMapType} variant='scrollable' scrollButtons='auto' allowScrollButtonsMobile>
-            <IconTab id='geo-distribution-stargazers' value='stars-map' icon={<StarIcon size={24} />}><span style={{ display: 'none' }}>Geographical Distribution of </span>Stargazers</IconTab>
+            <IconTab defaultTab id='geo-distribution-stargazers' value='stars-map' icon={<StarIcon size={24} />}><span style={{ display: 'none' }}>Geographical Distribution of </span>Stargazers</IconTab>
             <IconTab id='geo-distribution-issue-creators' value='issue-creators-map' icon={<IssueCreatorIcon size={24} />}><span style={{ display: 'none' }}>Geographical Distribution of </span>Issue Creators</IconTab>
             <IconTab id='geo-distribution-pr-creators' value='pull-request-creators-map' icon={<PrCreatorIcon size={24} />}><span style={{ display: 'none' }}>Geographical Distribution of </span>Pull Requests Creators</IconTab>
           </Tabs>
@@ -59,7 +66,7 @@ export const PeopleSection = forwardRef(function ({}, ref: ForwardedRef<HTMLElem
         <P2>Company information about Stargazers, Issue creators, and Pull Request creators(analyzed with the public github infomation).</P2>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <Tabs value={companyType} onChange={handleChangeCompanyType} variant='scrollable' scrollButtons='auto' allowScrollButtonsMobile>
-            <IconTab id='companies-stargazers' value='analyze-stars-company' icon={<StarIcon />}>Stargazers<span style={{ display: 'none' }}>' Companies</span></IconTab>
+            <IconTab defaultTab id='companies-stargazers' value='analyze-stars-company' icon={<StarIcon />}>Stargazers<span style={{ display: 'none' }}>' Companies</span></IconTab>
             <IconTab id='companies-issue-creators' value='analyze-issue-creators-company' icon={<IssueCreatorIcon size={24} />}>Issue Creators<span style={{ display: 'none' }}>' Companies</span></IconTab>
             <IconTab id='companies-pr-creators' value='analyze-pull-request-creators-company' icon={<PrCreatorIcon size={24} />}>Pull Requests Creators<span style={{ display: 'none' }}>' Companies</span></IconTab>
           </Tabs>
@@ -77,17 +84,27 @@ export const PeopleSection = forwardRef(function ({}, ref: ForwardedRef<HTMLElem
   )
 })
 
-const IconTab = ({children, id, icon, ...props}: PropsWithChildren<{ id: string, value: string, icon?: React.ReactNode }>) => {
+const IconTab = ({children, id, icon, defaultTab, ...props}: PropsWithChildren<{ id: string, value: string, icon?: React.ReactNode, defaultTab?: boolean }>) => {
   const { headingRef } = useContext(AnalyzeChartContext)
   const handleClick = useCallback((event: React.MouseEvent<HTMLHeadingElement>) => {
     headingRef(event.currentTarget)
   }, [])
+  const ref = useRef<HTMLHeadingElement>()
+
+  useEffect(() => {
+    if (defaultTab) {
+      if (ref.current) {
+        headingRef(ref.current)
+      }
+    }
+  }, [])
+
   return (
     <Tab
       {...props}
       sx={{ textTransform: 'unset' }}
       label={(
-        <H4 id={id} analyzeTitle onClick={handleClick}>
+        <H4 id={id} ref={ref} onClick={handleClick}>
           {icon}
           &nbsp;
           {children}
