@@ -3,7 +3,7 @@ title: 'Step 2: Load Data  to TiDB'
 sidebar_position: 2
 ---
 
-## 1. Prepare
+## 1. Prepare Environment
 
 #### a. Install TiDB
 It's easy to setup a TiDB Cluster in your laptop (Mac or Linux) with the official cli tools: tiup.
@@ -30,7 +30,7 @@ It's quite easy to build a mini OSS Insight, there is no need to use an industri
 After [creating a personal access token](/workshop/mini-ossinsight/find-data-source#creating-a-personal-access-token), then put it in TODO
 
 
-## 2. Load Historical GitHub events to TiDB
+## 2. Load historical GitHub events to TiDB
 
 ```bash
 ...
@@ -46,7 +46,7 @@ After [creating a personal access token](/workshop/mini-ossinsight/find-data-sou
 Feel free to run this command, because it is idempotent.
 :::
 
-## 3. Fetch realtime events and insert to TiDB
+## 3. Listen to /events and insert realtime events to TiDB
 
 
 #### a. Config ETL Script
