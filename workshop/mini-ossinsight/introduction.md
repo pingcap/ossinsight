@@ -16,7 +16,7 @@ There are several methods to start this workshop:
 ## Step by Step
 
 :::info
-Only with this method, you could set up a real OSS Insight with the whole 4.7B data, but there is no need to load the whole data just for testing. Anyway, it's up to you.
+Only with this method, you could set up a real OSS Insight with the whole 4.7 billion events data, but there is no need to load the whole data while testing. Anyway, it's up to you.
 :::
 
 * [Step 1: Find Data Source (3min)](/workshop/mini-ossinsight/step-by-step/find-data-source)
