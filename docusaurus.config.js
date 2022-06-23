@@ -210,7 +210,7 @@ const config = {
               {label: 'Workshop: Stack Overflow Insight', href: '/workshop/stackoverflow-insight'},
               {label: 'Workshop: Twitter Insight', href: '/workshop/twitter-insight'},
               {label: 'Workshop: Cryptocurrency Insight', href: '/workshop/cryptocurrency-insight'},
-              {label: '☎️  Offline Workshop', href: 'https://share.hsforms.com/1E-qtGQWrTVmctP8kBT34gw2npzm'},
+              {label: '☎️  Join Offline Workshop', href: 'https://share.hsforms.com/1E-qtGQWrTVmctP8kBT34gw2npzm'},
             ]
           },
           {
