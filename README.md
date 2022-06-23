@@ -114,6 +114,22 @@ npm run start;
 open http://localhost:3000
 ```
 
+## docker-compose for dev
+
+```
+git clone https://github.com/pingcap/ossinsight.git
+
+cd ossinsight
+
+GITHUB_TOKEN=xxx docker-compose up
+```
+
+build ossinsight local:
+
+```
+docker-compose build
+```
+
 ## Sponsors
 
 <div align="center">
