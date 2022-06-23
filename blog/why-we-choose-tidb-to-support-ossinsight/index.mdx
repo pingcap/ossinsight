@@ -134,7 +134,7 @@ Let's use one example to show you how we deal with complex analytical queries.
 [OSS Insight](https://ossinsight.io/) can analyze popular GitHub collections by many metrics including the number of stars, issues, and contributors. Let’s identify which JavaScript framework has the most issue creators. 
 This is an analytical query that includes aggregation and ranking. To get the result, we only need to execute one SQL statement: 
 
-```
+```sql
 SELECT
    /*+ read_from_storage(tiflash[ge]) */
    ci.repo_name  AS repo_name,
