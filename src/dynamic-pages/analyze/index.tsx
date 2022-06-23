@@ -1,10 +1,11 @@
 import BrowserOnly from '@docusaurus/BrowserOnly';
 import Head from '@docusaurus/Head';
 import { useHistory, useLocation, useRouteMatch } from '@docusaurus/router';
+import { Scrollspy } from '@makotot/ghostui';
 import { useMediaQuery } from '@mui/material';
 import Container from '@mui/material/Container';
 import { Theme } from '@mui/material/styles';
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useRef } from 'react';
 import { AnalyzeContext } from '../../analyze-charts/context';
 import { RepoInfo, useRepo } from '../../api/gh';
 import NewCompareHeader from '../../components/CompareHeader/NewCompareHeader';
@@ -13,13 +14,13 @@ import { AsyncData } from '../../components/RemoteCharts/hook';
 import TryItYourself from '../../components/Ads/TryItYourself';
 import useUrlSearchState, { stringParam } from '../../hooks/url-search-state';
 import CustomPage from '../../theme/CustomPage';
-import { CommitsSection } from './sections/Commits';
-import { IssuesSection } from './sections/Issues';
-import { OverviewSection } from './sections/Overview';
-import { PeopleSection } from './sections/People';
-import { PullRequestsSection } from './sections/PullRequests';
 import { Navigator } from './Navigator';
-import { Scrollspy } from '@makotot/ghostui';
+import { OverviewSection } from './sections/0-Overview';
+import { PeopleSection } from './sections/1-People';
+import { CommitsSection } from './sections/2-Commits';
+import { PullRequestsSection } from './sections/3-PullRequests';
+import { IssuesSection } from './sections/4-Issues';
+import { Contributors } from './sections/5-Contributors';
 
 interface AnalyzePageParams {
   owner: string;
@@ -32,6 +33,7 @@ const sections = [
   'commits',
   'pull-requests',
   'issues',
+  'contributors',
 ]
 
 function AnalyzePage() {
@@ -58,14 +60,14 @@ function AnalyzePage() {
 
   // Out of mui theme context, so we need to use magic number here
   const isSmall = useMediaQuery<Theme>('(max-width:600px)')
-  const sideWidth = isSmall ? undefined : '90px'
+  const sideWidth = isSmall ? undefined : '160px'
 
   return (
     <Scrollspy sectionRefs={sectionRefs} offset={-140}>
       {({ currentElementIndexInViewport }) => (
         <CustomPage
           sideWidth={sideWidth}
-          Side={() => !isSmall ? <Navigator type='side' value={sections[currentElementIndexInViewport]} /> : undefined}
+          Side={() => !isSmall ? <Navigator comparing={!!comparingRepoName} type='side' value={sections[currentElementIndexInViewport]} /> : undefined}
           header={(
             <NewCompareHeader
               sideWidth={sideWidth}
@@ -102,10 +104,11 @@ function AnalyzePage() {
               <CommitsSection ref={sectionRefs[2]} />
               <PullRequestsSection ref={sectionRefs[3]} />
               <IssuesSection ref={sectionRefs[4]} />
+              {!comparingRepoName ? <Contributors ref={sectionRefs[5]} /> : undefined}
               <TryItYourself campaign="compare" show fixed />
             </Container>
           </AnalyzeContext.Provider>
-          {isSmall ? <Navigator value={sections[currentElementIndexInViewport]} type='bottom' /> : undefined}
+          {isSmall ? <Navigator comparing={!!comparingRepoName} value={sections[currentElementIndexInViewport]} type='bottom' /> : undefined}
         </CustomPage>
       )}
     </Scrollspy>
