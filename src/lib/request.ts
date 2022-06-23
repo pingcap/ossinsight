@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const BASE_URL = 'https://api.ossinsight.io'
+export const BASE_URL = process.env.API_BASE
 
 export function createHttpClient() {
   return  axios.create({
