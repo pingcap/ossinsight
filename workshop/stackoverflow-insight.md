@@ -25,8 +25,8 @@ The API considers the following "events":
 
 ## Step 2: Load Data to TiDB
 
-(We won't implement this, you can try it :-)
+_Not ready,  you can try it._
 
 ## Step 3: Get Insights with SQL
 
-(We won't implement this, you can try it :-)
+_Not ready,  you can try it._

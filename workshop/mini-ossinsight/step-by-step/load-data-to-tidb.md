@@ -27,7 +27,7 @@ mysql xxx << path/to/schema.sql
 
 It's quite easy to build a mini OSS Insight, there is no need to use an industrial ETL product, so we prepare a simple ETL script with Ruby.
 
-After [creating a personal access token](/workshop/mini-ossinsight/find-data-source#creating-a-personal-access-token), then config it in TODO
+After [creating a personal access token](/workshop/mini-ossinsight/step-by-step/find-data-source#creating-a-personal-access-token), then config it in TODO
 
 
 ## 2. Load historical GitHub events to TiDB

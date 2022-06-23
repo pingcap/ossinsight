@@ -202,11 +202,11 @@ const config = {
           {to: '/blog', label: 'Blog', position: 'left'},
           {
             type: 'dropdown',
-            label: 'Workshop',
+            label: '🛠️ Workshop',
             position: 'left',
             items: [
-              {label: 'Introduction', href: '/workshop'},
-              {label: 'Workshop: mini OSS Insight', href: '/workshop/mini-ossinsight'},
+              {label: 'Welcome', href: '/workshop'},
+              {label: 'Workshop: mini OSS Insight', href: '/workshop/mini-ossinsight/introduction'},
               {label: 'Workshop: Stack Overflow Insight', href: '/workshop/stackoverflow-insight'},
               {label: 'Workshop: Twitter Insight', href: '/workshop/twitter-insight'},
               {label: 'Workshop: Cryptocurrency Insight', href: '/workshop/cryptocurrency-insight'},
@@ -319,7 +319,7 @@ const config = {
                 href: 'https://github.com/pingcap/ossinsight',
               },
               {
-                html: '<br /><b>Location</b><p style="color:grey">California, USA<br />1250 Borregas Ave, Office 131<br />Sunnyvale, CA 94089<br />+1 650 382 9973</p>',
+                html: '<br /><b>Location</b><p style="color:grey">California, USA<br />1250 Borregas Ave, Office 131<br />Sunnyvale, CA 94089<br />☎️  +1 650 382 9973</p>',
               },
             ],
           },
