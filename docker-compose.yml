@@ -38,6 +38,7 @@ services:
       - "3450:3450"
     depends_on: 
       - tidb
+      - data
     environment:
       - DB_HOST=tidb
       - DB_PORT=4000
@@ -47,7 +48,7 @@ services:
       - CONNECTION_LIMIT=10
       - QUEUE_LIMIT=20
       - SERVER_PORT=3450
-      - GH_TOKENS=''
+      - GH_TOKENS='fake'
       - PREFETCH_CONCURRENT=3
 
   fe:
@@ -61,6 +62,7 @@ services:
       - "8080:8080"
     depends_on: 
       - tidb
+      - data
       - api
     environment:
       - NODE_ENV=development
