@@ -32,6 +32,21 @@ services:
       - "9000:9000"
       - "2379:2379"
 
+  api:
+    image: hooopo/ossinsight-api
+    ports: 
+      - "3450:3450"
+    environment:
+      - DB_HOST=tidb
+      - DB_PORT=4000
+      - DB_USER=root
+      - DB_DATABASE=gharchive_dev
+      - DB_PASSWORD=''
+      - CONNECTION_LIMIT=10
+      - QUEUE_LIMIT=20
+      - SERVER_PORT=3450
+      - GH_TOKENS=''
+      - PREFETCH_CONCURRENT=3
 
 networks:
   default:
