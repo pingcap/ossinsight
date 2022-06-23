@@ -1,12 +1,11 @@
-import React, {useMemo} from "react";
-import {BarChart as EBarChart} from 'echarts/charts';
-import {GridComponent, TitleComponent, TooltipComponent,} from 'echarts/components';
-import {CanvasRenderer,} from 'echarts/renderers';
-import * as echarts from "echarts/core";
-import {Opts} from "echarts-for-react/lib/types";
-import {EChartsOption} from "echarts";
-import {TextCommonOption} from "echarts/types/src/util/types";
-import ECharts from "../ECharts";
+import { EChartsOption } from 'echarts';
+import { BarChart as EBarChart } from 'echarts/charts';
+import { GridComponent, TitleComponent, TooltipComponent } from 'echarts/components';
+import * as echarts from 'echarts/core';
+import { CanvasRenderer } from 'echarts/renderers';
+import { TextCommonOption } from 'echarts/types/src/util/types';
+import React, { useMemo } from 'react';
+import ECharts from '../ECharts';
 
 // Register the required components
 echarts.use(
@@ -25,6 +24,14 @@ interface BarChartProps<T> {
   valueIndex: keyof T
   type?: 'repo' | 'owner' | 'lang' | false // for click
   rich?: Record<string, TextCommonOption>
+}
+
+const getGithubAvatar = (src: string) => {
+  if (/\[bot]/.test(src)) {
+    return 'https://github.com/github.png';
+  } else {
+    return `https://github.com/${src}.png`
+  }
 }
 
 export default function BarChart<T>({seriesName = 'Count', data, loading = false, clear = false, size, n, deps = [], categoryIndex, valueIndex, type = 'repo'}: BarChartProps<T>) {
@@ -59,7 +66,7 @@ export default function BarChart<T>({seriesName = 'Count', data, loading = false
                 return value
               case 'owner':
               case 'lang':
-                return `${value} {${value.replace(/[+-]/g, '_')}|}`
+                return `${value} {${value.replace(/[+-\[\]]/g, '_')}|}`
               default:
                 return value
             }
@@ -68,9 +75,9 @@ export default function BarChart<T>({seriesName = 'Count', data, loading = false
             switch (type) {
               case "owner":
                 return data.reduce((p, c) => {
-                  p[String(c[categoryIndex]).replace('-', '_')] = {
+                  p[String(c[categoryIndex]).replace(/[-\[\]]/g, '_')] = {
                     backgroundColor: {
-                      image: `https://github.com/${c[categoryIndex]}.png`
+                      image: getGithubAvatar(`${c[categoryIndex]}`)
                     },
                     width: 24,
                     height: 24
