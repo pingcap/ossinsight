@@ -24,11 +24,28 @@ GitHub provides 20+ event types, which range from new commits and fork events, t
 
 ## 2. Realtime GitHub events
 
+According to GitHub API Docs, the realtime /events api looks like this:
 
-Usage:
 ```bash
 curl \
   -H "Accept: application/vnd.github.v3+json" \ 
   -H "Authorization: token <TOKEN>" \
   https://api.github.com/events
 ```
+
+### Creating a personal access token
+
+`<TOKEN>` means `personal access token`, it can be used in api requests or `git clone/push` instead of password & [2FA](https://docs.github.com/en/authentication/securing-your-account-with-two-factor-authentication-2fa/about-two-factor-authentication) code, learn how to generate one by reading: [Creating a personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token).
+
+<center>
+  <img width="70%" src={require('../img/new-personal-access-token.png').default} alt='New personal access token' />
+</center>
+<center><i>New personal access token</i></center>
+
+<br />
+
+:::caution
+There is no need to grant any privileges to this token, that means, leave all checkbox UNCHECKED in the `Select scopes` section.
+
+In addition, zero privileges means safe enough.
+:::

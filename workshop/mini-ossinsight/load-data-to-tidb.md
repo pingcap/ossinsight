@@ -3,30 +3,56 @@ title: 'Step 2: Load Data  to TiDB'
 sidebar_position: 2
 ---
 
-## 0. Setup TiDB
+## 1. Prepare
+
+#### a. Install TiDB
+It's easy to setup a TiDB Cluster in your laptop (Mac or Linux) with the official cli tools: tiup.
 
 ```bash
-# Install Tidb Package Manager
+# Install tiup (tiup is inspired by rustup -:)
 curl --proto '=https' --tlsv1.2 -sSf https://tiup-mirrors.pingcap.com/install.sh | sh
 # Install & Start TiDB Server
 tiup playground -T mini-ossinsight
 ```
 
-## 1. Download the ETL Script
+#### b. Inittial database schema
 
-It's quite easy to build a mini OSS Insight, there is no need to use an industrial ETL tool, so we prepare a simple ETL script with Ruby.
+TODO @hooopo
 
-⬇️  Download [etl.rb](.) [TODO]
+```bash
+mysql xxx << path/to/schema.sql
+```
+
+#### c. Initial etl script
+
+It's quite easy to build a mini OSS Insight, there is no need to use an industrial ETL product, so we prepare a simple ETL script with Ruby.
+
+After [creating a personal access token](/workshop/mini-ossinsight/find-data-source#creating-a-personal-access-token), then put it in TODO
+
 
 ## 2. Load Historical GitHub events to TiDB
 
 ```bash
-for y in {2011..2022}; do
-    ./etl.rb --mysql mysql://user@pass:host:port/db --year $y
-done
+...
+./etl.rb --mysql mysql://user@pass:host:port/db --day 2015-01-01-15
+./etl.rb --mysql mysql://user@pass:host:port/db --day 2015-01-01-16
+...
+...
+./etl.rb --mysql mysql://user@pass:host:port/db --day 2022-06-01-01
+...
 ```
 
-## 3. Subscribe to GitHub events api and insert real time events to TiDB
+:::info
+Feel free to run this command, because it is idempotent.
+:::
+
+## 3. Fetch realtime events and insert to TiDB
+
+
+#### a. Config ETL Script
+First of all, [creating a personal access token](/workshop/mini-ossinsight/find-data-source#creating-a-personal-access-token), 
+
+#### b. Start the crawler daemon
 
 ```bash
 ./etl.rb --mysql mysql://user@pass:host:port/db --listen --token github-personal-token1,token2,token3

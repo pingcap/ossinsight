@@ -27,6 +27,6 @@ The API considers the following "events":
 
 (We won't implement this, you can try it :-)
 
-## Step 3: Get Insights
+## Step 3: Get Insights with SQL
 
 (We won't implement this, you can try it :-)
