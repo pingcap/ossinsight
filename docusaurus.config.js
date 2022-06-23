@@ -5,10 +5,9 @@ const lightCodeTheme = require('prism-react-renderer/themes/github');
 const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 const path = require('path')
 const fs = require('fs')
-require('dotenv').config()
 
-const HOST = process.env.HOST
-const API_BASE = process.env.API_BASE
+const HOST = process.env.APP_HOST || 'https://ossinsight.io'
+const API_BASE = process.env.APP_API_BASE || 'https://api.ossinsight.io'
 
 const getPresets = (fn) => {
   return fs.readFileSync(fn, { encoding: 'utf-8' })
