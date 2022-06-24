@@ -58,7 +58,7 @@ function Link({
     targetLink = applyTrailingSlash(targetLink, { trailingSlash, baseUrl });
   }
   const preloaded = useRef(false);
-  const LinkComponent: typeof NavLink | typeof RRLink = (isNavLink ? NavLink : RRLink);
+  const LinkComponent: any = (isNavLink ? NavLink : RRLink);
   const IOSupported = ExecutionEnvironment.canUseIntersectionObserver;
   const ioRef = useRef<IntersectionObserver>();
   const handleIntersection = (el, cb) => {
@@ -83,14 +83,14 @@ function Link({
       // If IO supported and element reference found, setup Observer functionality.
       handleIntersection(ref, () => {
         if (targetLink != null) {
-          window.docusaurus.prefetch(targetLink);
+          (window as any).docusaurus.prefetch(targetLink);
         }
       });
     }
   };
   const onMouseEnter = () => {
     if (!preloaded.current && targetLink != null) {
-      window.docusaurus.preload(targetLink);
+      (window as any).docusaurus.preload(targetLink);
       preloaded.current = true;
     }
   };
@@ -98,7 +98,7 @@ function Link({
     // If IO is not supported. We prefetch by default (only once).
     if (!IOSupported && isInternal) {
       if (targetLink != null) {
-        window.docusaurus.prefetch(targetLink);
+        (window as any).docusaurus.prefetch(targetLink);
       }
     }
     // When unmounting, stop intersection observer from watching.
