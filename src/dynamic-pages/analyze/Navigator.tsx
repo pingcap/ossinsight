@@ -88,12 +88,19 @@ const renderTabs = (n: number | undefined, index: number) => {
   return tabs.slice(0, n).map((tab, i) => {
     if (tab.id.startsWith('divider-')) {
       return (
-        <Stack sx={{ fontSize: 16, fontWeight: 'bold', pl: 2, color: matched(i, index) ? 'primary.main' : undefined }} direction="row" alignItems='center'>
-          {tab.icon}
-          <span>
-            {tab.label}
-          </span>
-        </Stack>
+        <Tab
+          key={tab.id}
+          label={(
+            <Stack sx={{ fontSize: 16, fontWeight: 'bold', pl: 2, color: matched(i, index) ? 'primary.main' : undefined }} direction="row" alignItems='center'>
+              {tab.icon}
+              <span>
+                {tab.label}
+              </span>
+            </Stack>
+          )}
+          disabled
+          sx={{ padding: '0 !important' }}
+        />
       );
     } else {
       return (

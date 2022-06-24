@@ -228,7 +228,7 @@ export const Contributors = forwardRef(function ({}, ref: ForwardedRef<HTMLEleme
       <Select<Descriptor<any>>
         id='select-descriptor'
         size='small'
-        value={descriptor}
+        value={descriptor.key}
         onChange={handleChangeDescriptor}
         native={false}
         renderValue={descriptor => descriptor.title}
