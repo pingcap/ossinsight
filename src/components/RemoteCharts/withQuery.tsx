@@ -48,7 +48,7 @@ type QueryComponentProps<Q extends keyof Queries> = Queries[Q]["params"] & {
 //   deps: any[]
 // }
 
-export function renderChart (query, chart, {error, data}: AsyncData<RemoteData<any, any>>, clear = false) {
+export function renderChart (query, chart, {error, data}: AsyncData<RemoteData<any, any>>, clear = false, sharable = true) {
   const [showDebugModel, setShowDebugModel] = useState(false);
   const [showShareModel, setShowShareModel] = useState(false);
   const echartsRef = useRef<EChartsReact>()
@@ -84,11 +84,15 @@ export function renderChart (query, chart, {error, data}: AsyncData<RemoteData<a
           </Box>
           <EChartsContext.Provider value={{ echartsRef }}>
             {chart}
-            <Fab size='small' sx={{position: 'absolute', right: 24, bottom: 24, zIndex: 'var(--ifm-z-index-fixed-mui)'}}
-                 onClick={handleShowShareModel} disabled={!data}>
-              <ShareIcon />
-            </Fab>
-            <ShareDialog open={showShareModel} onClose={handleCloseShareModel} />
+            {sharable ? (
+              <>
+                <Fab size='small' sx={{position: 'absolute', right: 24, bottom: 24, zIndex: 'var(--ifm-z-index-fixed-mui)'}}
+                     onClick={handleShowShareModel} disabled={!data}>
+                  <ShareIcon />
+                </Fab>
+                <ShareDialog open={showShareModel} onClose={handleCloseShareModel} />
+              </>
+            ) : false}
             <DebugDialog sql={data?.sql} query={query} params={data?.params} open={showDebugModel} onClose={handleCloseDebugModel} />
           </EChartsContext.Provider>
         </div>
@@ -118,7 +122,7 @@ export function withBarChartQuery<Q extends keyof Queries, D = RemoteData<Querie
       />
     )
 
-    return renderChart(query, chart, remoteData, clear)
+    return renderChart(query, chart, remoteData, clear, categoryType !== 'owner')
   }
 }
 

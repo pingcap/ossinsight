@@ -4,7 +4,7 @@ import React from "react";
 import Section from "../../pages/home/_components/Section";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import Link from "@docusaurus/Link";
+import Link from "../Link";
 
 const icon = (src) => {
   return (

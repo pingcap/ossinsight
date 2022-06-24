@@ -1,0 +1,18 @@
+{
+  "cacheHours": -1,
+  "refreshHours": 0.25,
+  "onlyFromCache": true,
+  "params": [
+    {
+      "name": "period",
+      "type": "date-range",
+      "column": "created_at",
+      "pattern": "^last_(hour|day|week|month)$",
+      "replaces": "created_at >= '2022-04-04 02:59:59' AND created_at < '2022-04-11 02:59:59'",
+      "default": "last_hour",
+      "enums": [
+        "last_hour", "last_day", "last_week", "last_month"
+      ]
+    }
+  ]
+}

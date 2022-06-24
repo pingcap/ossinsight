@@ -1,0 +1,140 @@
+company_names:
+  - unique_name: 'PingCAP'
+    alias_names:
+      - 'pingcap'
+  - unique_name: 'Google'
+    alias_names:
+      - 'google'
+  - unique_name: 'BiliBili'
+    alias_names:
+      - 'bilibili'
+  - unique_name: 'Alibaba'
+    alias_names:
+      - 'alibaba'
+      - '阿里巴巴'
+  - unique_name: 'Tencent'
+    alias_names:
+      - 'tencent'
+  - unique_name: 'ByteDance'
+    alias_names:
+      - 'bytedance'
+  - unique_name: 'Aliyun'
+    alias_names:
+      - 'aliyun'
+  - unique_name: 'AliPay'
+    alias_names:
+      - 'alipay'
+  - unique_name: 'DiDi'
+    alias_names:
+      - 'didi'
+  - unique_name: 'JD'
+    alias_names:
+      - 'jd'
+  - unique_name: 'Netease'
+    alias_names:
+      - 'netease'
+  - unique_name: 'Baidu'
+    alias_names:
+      - 'baidu'
+      - '百度'
+  - unique_name: 'Huawei'
+    alias_names:
+      - 'huawei'
+  - unique_name: 'Microsoft'
+    alias_names:
+      - 'microsoft'
+  - unique_name: 'ThoughtWorks'
+    alias_names:
+      - 'thoughtworks'
+  - unique_name: 'Facebook'
+    alias_names:
+      - 'facebook'
+  - unique_name: 'Meituan'
+    alias_names:
+      - 'meituan'
+  - unique_name: 'Eleme'
+    alias_names:
+      - 'eleme'
+  - unique_name: 'Red Hat'
+    alias_names:
+      - 'red hat'
+  - unique_name: 'Red Hat'
+    alias_names:
+      - 'red hat'
+      - 'redhat'
+  - unique_name: 'SAP'
+    alias_names:
+      - 'sap'
+      - 'sap se'
+  - unique_name: 'Amazon'
+    alias_names:
+      - 'amazon'
+  - unique_name: 'Amazon Web Services'
+    alias_names:
+      - 'amazon web services'
+      - 'aws'
+  - unique_name: 'Shopify'
+    alias_names:
+      - 'shopify'
+  - unique_name: 'GitHub'
+    alias_names:
+      - 'gitHub'
+  - unique_name: 'Yandex'
+    alias_names:
+      - 'yandex'
+  - unique_name: 'MongoDB'
+    alias_names:
+      - 'mongodb'
+  - unique_name: 'VMware'
+    alias_names:
+      - 'vmware'
+  - unique_name: 'iQiYi'
+    alias_names:
+      - 'iqiyi'
+  - unique_name: 'Uber'
+    alias_names:
+      - 'uber'
+  - unique_name: 'Autodesk'
+    alias_names:
+      - 'autodesk'
+  - unique_name: 'eBay'
+    alias_names:
+      - 'ebay'
+  - unique_name: 'Elastic'
+    alias_names:
+      - 'elastic'
+  - unique_name: 'Cisco'
+    alias_names:
+      - 'cisco'
+  - unique_name: 'Atlassian'
+    alias_names:
+      - 'atlassian'
+  - unique_name: 'Intel'
+    alias_names:
+      - 'intel'
+  - unique_name: 'IBM'
+    alias_names:
+      - 'ibm'
+      - 'ibm india pvt'
+  - unique_name: 'Accenture'
+    alias_names:
+      - 'accenture'
+  - unique_name: 'Oracle'
+    alias_names:
+      - 'oracle'
+  - unique_name: 'Oracle'
+    alias_names:
+      - 'oracle'
+  - unique_name: 'Esri'
+    alias_names:
+      - 'esri'
+  - unique_name: 'Capgemini'
+    alias_names:
+      - 'capgemini'
+  - unique_name: 'Capgemini'
+    alias_names:
+      - 'capgemini'
+  - unique_name: 'Apple'
+    alias_names:
+      - 'apple'
+

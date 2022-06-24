@@ -1,1 +1,2 @@
-export { default, ShareDialogProps } from './ShareDialog'
+export { default } from './ShareDialog';
+export type { ShareDialogProps } from './ShareDialog';

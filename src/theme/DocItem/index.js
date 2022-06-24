@@ -83,7 +83,7 @@ export default function DocItem(props) {
                 className={clsx(ThemeClassNames.docs.docMarkdown, 'markdown')}>
 
                 <BrowserOnly>
-                  {() => <ShareButtons title={`${title} | OSSInsight`} hashtags={keywords} />}
+                  {() => <ShareButtons title={`${title} | OSSInsight`} />}
                 </BrowserOnly>
 
                 {/*
@@ -96,7 +96,7 @@ export default function DocItem(props) {
                 <DocContent />
 
                 <BrowserOnly>
-                  {() => <ShareButtons title={`${title} | OSSInsight`} hashtags={keywords} />}
+                  {() => <ShareButtons title={`${title} | OSSInsight`} />}
                 </BrowserOnly>
               </div>
 

@@ -20,7 +20,11 @@ export interface RepoInfo {
 export const useRepo = (repoName): SWRResponse<RepoInfo> => {
   return useSWR<RepoInfo>(repoName ? [repoName] : undefined, {
     fetcher: async repoName => {
-      const {data} = await fetch(`${dataUrl}/repo/${repoName}`).then(res => res.json())
+      const resp = await fetch(`${dataUrl}/repo/${repoName}`)
+      if (!resp.ok) {
+        throw new Error(resp.statusText)
+      }
+      const {data} = await resp.json()
       return data
     },
     revalidateOnFocus: false,

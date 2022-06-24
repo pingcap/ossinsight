@@ -15,7 +15,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/Add'
 import './style.css'
 
-export { Repo } from './useSearchRepo'
+export type { Repo } from './useSearchRepo'
 
 export interface BaseRepoSelectorProps {
   defaultRepoName?: string

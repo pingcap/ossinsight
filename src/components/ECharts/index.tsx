@@ -113,4 +113,5 @@ const EChartsPlaceholder = ({ height, aspectRatio }: SizeProps) => {
 }
 
 export default ECharts
-export {default as EChartsContext, EChartsContextProps} from './context'
+export { default as EChartsContext } from './context';
+export type { EChartsContextProps } from './context';

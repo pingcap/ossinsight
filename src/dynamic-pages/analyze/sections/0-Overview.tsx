@@ -1,5 +1,6 @@
 import { Tooltip, IconButton} from '@mui/material';
 import InfoOutlined from '@mui/icons-material/InfoOutlined';
+import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
@@ -68,7 +69,9 @@ export const OverviewSection = forwardRef(function ({}, ref: ForwardedRef<HTMLEl
       {
         comparingRepoName ? undefined : (
           <H1 sx={{ mt: 2 }}>
-            <img width="48" height="48" src={`https://github.com/${name.split('/')[0]}.png`} alt={name} style={{ marginRight: 8, verticalAlign: 'text-bottom' }} />
+            <Box component='span' display='inline-flex' bgcolor='white' borderRadius='4px' padding='2px' alignItems='center' justifyContent='center' sx={{ verticalAlign: 'text-bottom'}} mr={1}>
+              <img width="48" height="48" src={`https://github.com/${name.split('/')[0]}.png`} alt={name} />
+            </Box>
             <a href={`https://github.com/${name}`} target="_blank">
               {name}
               &nbsp;

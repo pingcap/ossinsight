@@ -70,7 +70,7 @@ function BlogPostItem(props) {
     return (
       <header>
         <BrowserOnly>
-          {() => isBlogPostPage ? <ShareButtons title={`${title} | OSSInsight`} hashtags={frontMatter.keywords} /> : undefined}
+          {() => isBlogPostPage ? <ShareButtons title={`${title} | OSSInsight`} /> : undefined}
         </BrowserOnly>
 
         <TitleHeading className={styles.blogPostTitle} itemProp="headline">
@@ -124,7 +124,7 @@ function BlogPostItem(props) {
         {() => isBlogPostPage ? (
           <>
             <br />
-            <ShareButtons title={`${title} | OSSInsight`} hashtags={frontMatter.keywords} />
+            <ShareButtons title={`${title} | OSSInsight`} />
           </>
         ) : undefined}
       </BrowserOnly>
