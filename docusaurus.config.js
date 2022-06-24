@@ -232,7 +232,7 @@ const config = {
           },
           {
             type: 'dropdown',
-            label: 'Admin',
+            label: '⚙️ ',
             position: 'right',
             items: [
               {label: 'Database Cluster Info', href: '#'},
