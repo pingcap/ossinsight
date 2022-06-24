@@ -4,6 +4,7 @@
     "target": "esnext",
     "moduleResolution": "node",
     "lib": ["dom","esnext"],
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "isolatedModules": true
   }
 }
