@@ -1,6 +1,14 @@
 version: '3.9'
 
 services:
+  tidb:
+    image: hooopo/tidb-cluster:v6.1.0
+    ports: 
+      - "4000:4000"
+      
+      - "9000:9000"
+      - "2379:2379"
+
   data:
     build:
       context: ./backend
@@ -24,14 +32,7 @@ services:
       - GITHUB_TOKEN=${GITHUB_TOKEN:?err}
     env_file: backend/.env.local
 
-  tidb:
-    image: hooopo/tidb-cluster:v6.1.0
-    ports: 
-      - "4000:4000"
-      - "3003:3000"
-      - "9000:9000"
-      - "2379:2379"
-
+  
   api:
     image: hooopo/ossinsight-api
     ports: 
