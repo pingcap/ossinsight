@@ -32,8 +32,12 @@ services:
       - GITHUB_TOKEN=${GITHUB_TOKEN:?err}
     env_file: backend/.env.local
 
-  
   api:
+    build:
+      context: ./api
+      dockerfile: ./Dockerfile
+      args:
+        NODE_ENV: 'development'
     image: hooopo/ossinsight-api
     ports: 
       - "3450:3450"
