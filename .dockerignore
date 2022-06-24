@@ -1,4 +1,7 @@
 .github
+.git
+.env
+.gitignore
 .idea
 .vscode
 node_modules/

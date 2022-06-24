@@ -10,6 +10,7 @@ export function validateProcessEnv () {
     .filter(tokens => tokens.length == 2)
 
   for (const definedEnv of definedEnvs.map(tokens => tokens[0])) {
+
     console.log(`${definedEnv} = ${eraseCredential(definedEnv, process.env[definedEnv])}`)
   }
 

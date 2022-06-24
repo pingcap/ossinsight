@@ -14,8 +14,8 @@ consola.setReporters([
 consola.wrapConsole();
 const logger = consola.withTag('app');
 
-dotenv.config({ path: __dirname+'/.env.template', override: true });
-dotenv.config({ path: __dirname+'/.env', override: true });
+dotenv.config({ path: __dirname + '/.env.template' });
+dotenv.config({ path: __dirname + '/.env', override: true });
 
 validateProcessEnv()
 

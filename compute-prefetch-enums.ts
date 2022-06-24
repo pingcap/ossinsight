@@ -14,7 +14,7 @@ import CollectionService from './app/services/CollectionService';
 import CacheBuilder from './app/core/cache/CacheBuilder';
 
 // Load environments.
-dotenv.config({ path: __dirname+'/.env.template', override: true });
+dotenv.config({ path: __dirname+'/.env.template' });
 dotenv.config({ path: __dirname+'/.env', override: true });
 
 validateProcessEnv()
