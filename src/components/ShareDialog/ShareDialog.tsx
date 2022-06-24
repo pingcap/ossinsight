@@ -70,7 +70,7 @@ export const ShareDialog = ({open, onClose}: ShareDialogProps) => {
               ? (
                 <>
                   <ShareUrl url={fullUrl} onCopy={() => setCopied(true)} />
-                  <ShareButtons shareUrl={fullUrl} title={message || title} hashtags={keyword} />
+                  <ShareButtons shareUrl={fullUrl} title={message || title} />
                 </>
               ) : error
                 ? <Alert severity='error'>Request failed ${(error as any)?.message ?? ''}</Alert>
