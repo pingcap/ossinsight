@@ -1,0 +1,33 @@
+{
+  "cacheHours": -1,
+  "refreshHours": 240,
+  "onlyFromCache": true,
+  "params": [
+    {
+      "name": "repo",
+      "replaces": "db_repos",
+      "enums": "repo_subset"
+    },
+    {
+      "name": "n",
+      "replaces": "10",
+      "enums": "n"
+    },
+    {
+      "name": "year",
+      "replaces": "2021"
+    },
+    {
+      "name": "action",
+      "replaces": "closed"
+    },
+    {
+      "name": "merged",
+      "replaces": "AND github_events.pr_merged IS TRUE",
+      "template": {
+        "true": "AND github_events.pr_merged IS TRUE",
+        "*": ""
+      }
+    }
+  ]
+}
