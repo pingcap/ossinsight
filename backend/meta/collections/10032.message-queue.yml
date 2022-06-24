@@ -1,0 +1,17 @@
+id: 10032
+name: Message Queue
+items:
+  - apache/pulsar
+  - apache/Kafka
+  - rabbitmq/rabbitmq-server
+  - apache/activemq
+  - apache/rocketmq
+  - nsqio/nsq
+  - celery/celery
+  - contribsys/faktory
+  - nats-io/nats-server
+  - distribworks/dkron
+  - mperham/sidekiq
+  - emqx/emqx
+  - zeromq/libzmq
+  - vernemq/vernemq
