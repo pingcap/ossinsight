@@ -12,8 +12,8 @@
     "serve": "docusaurus serve",
     "write-translations": "docusaurus write-translations",
     "write-heading-ids": "docusaurus write-heading-ids",
-    "prestart": "node prefetch.mjs",
-    "postinstall": "node prefetch.mjs && node _dirty_mutate.mjs"
+    "prefetch": "node prefetch.mjs",
+    "postinstall": "node _dirty_mutate.mjs"
   },
   "dependencies": {
     "@docusaurus/core": "2.0.0-beta.14",
