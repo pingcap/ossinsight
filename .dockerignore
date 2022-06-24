@@ -17,3 +17,11 @@ yarn-error.log
 coverage/
 .env.local
 .env
+
+api/.git
+api/node_modules
+
+backend/.git
+backend/node_modules
+backend/.env.local
+backend/.env
