@@ -49,7 +49,7 @@ services:
       - DB_PORT=4000
       - DB_USER=root
       - DB_DATABASE=gharchive_dev
-      - DB_PASSWORD=''
+      - DB_PASSWORD=
       - CONNECTION_LIMIT=10
       - QUEUE_LIMIT=20
       - SERVER_PORT=3450
