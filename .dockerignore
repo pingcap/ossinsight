@@ -18,10 +18,6 @@ coverage/
 .env.local
 .env
 
-api/.git
-api/node_modules
+api/
 
-backend/.git
-backend/node_modules
-backend/.env.local
-backend/.env
+backend/

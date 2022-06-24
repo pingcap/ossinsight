@@ -28,7 +28,7 @@ services:
     image: hooopo/tidb-cluster:v6.1.0
     ports: 
       - "4000:4000"
-      - "3000:3000"
+      - "3003:3000"
       - "9000:9000"
       - "2379:2379"
 
@@ -59,7 +59,7 @@ services:
       args:
         NODE_ENV: 'development'
     ports: 
-      - "8080:8080"
+      - "3000:3000"
     depends_on: 
       - tidb
       - data
