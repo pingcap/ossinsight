@@ -1,4 +1,4 @@
-import Link from '@docusaurus/Link';
+import Link from '../../../../../components/Link';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import React, { useCallback, useMemo, useState } from 'react';

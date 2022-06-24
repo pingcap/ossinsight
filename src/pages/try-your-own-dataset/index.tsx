@@ -6,7 +6,7 @@ import Section from "../../components/Section";
 import Card from "@mui/material/Card";
 import {Cards, StandardCard} from "../../components/Cards";
 import Button from "@mui/material/Button";
-import Link from "@docusaurus/Link";
+import Link from "../../components/Link";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import Image from "../../components/Image";
 import Footer from "../../components/Footer";

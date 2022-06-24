@@ -7,7 +7,7 @@ import Button, {ButtonProps} from '@mui/material/Button';
 import Chip from "@mui/material/Chip";
 import Box from "@mui/material/Box";
 import ButtonBase from '@mui/material/ButtonBase';
-import Link from "@docusaurus/Link";
+import Link from "../Link";
 
 export interface StandardCardProps extends Omit<GridProps<any, any>, 'item' | 'container'> {
   title: React.ReactNode
