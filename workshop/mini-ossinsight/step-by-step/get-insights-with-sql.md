@@ -7,7 +7,7 @@ Now, the data is ready, let's try to analyze these data with SQL!
 
 ## 1. Prepare SQL
 
-We won't talk too much about how to get USEFUL insights from such a big data as we are also students in open source software field. All SQLs in this project can be found on page, just click the `SHOW SQL` button on top-right of each charts to get the coresponding SQL.
+We won't talk too much about how to get USEFUL insights from such a big data as we are also students in open source software field. All SQLs in this project can be found on page, just click the `SHOW SQL` button on top-right of each charts to get the corresponding SQL.
 
 ## 2. Make Data More Beautiful
 

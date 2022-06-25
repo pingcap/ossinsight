@@ -25,10 +25,9 @@ mysql xxx << path/to/schema.sql
 
 ### c. !!! Set Column-Oriented Storage Replica
 
-This step is important enough that it adds column-oriented engine to TiDB - We call it [TiFlash](https://docs.pingcap.com/tidb/dev/tiflash-overview).
+This step is important enough that it adds column-oriented-storage ability to TiDB - We call it [TiFlash](https://docs.pingcap.com/tidb/dev/tiflash-overview). The `tiup playground` installed 1 TiFlash node by default, what we need to do is just make data is `STORED` in these replica node too.
 
-
-1. It's easy to set TiFlash replica, different with other software, TiDB use SQL to take effect such changes:
+1. It's easy to set TiFlash replica, different with other software, TiDB use SQL to take such changes into effect:
 
 ```sql
 use gharchive_dev;
@@ -59,9 +58,9 @@ mysql>
 
 ### d. Initial etl script
 
-It's quite easy to build a mini OSS Insight, there is no need to use an industrial ETL product, so we prepare a simple ETL script with Ruby.
+After [creating a personal access token](/workshop/mini-ossinsight/step-by-step/find-data-source#creating-a-personal-access-token), config it in etl script:
 
-After [creating a personal access token](/workshop/mini-ossinsight/step-by-step/find-data-source#creating-a-personal-access-token), then config it in TODO
+TODO @hooopo
 
 
 ## 2. Load historical GitHub events to TiDB
