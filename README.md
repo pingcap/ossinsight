@@ -99,6 +99,8 @@ Examples:
 
 ## Development
 
+### Manually 
+
 ```bash
 # clone the code by:
 git clone https://github.com/pingcap/ossinsight.git
@@ -114,7 +116,7 @@ npm run start;
 open http://localhost:3000
 ```
 
-## docker-compose for dev
+### Docker Compose
 
 ```
 git clone https://github.com/pingcap/ossinsight.git
