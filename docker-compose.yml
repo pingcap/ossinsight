@@ -3,6 +3,7 @@ version: '3.9'
 services:
   tidb:
     image: hooopo/tidb-cluster:v6.1.0
+    restart: always
     ports: 
       - "4000:4000"
       - "3003:3000"
@@ -32,6 +33,7 @@ services:
       tidb:
         condition: service_healthy
     image: hooopo/ossinsight-data
+    restart: always
 
     command: ["./start.sh"]
     environment:
@@ -48,6 +50,7 @@ services:
       args:
         NODE_ENV: 'development'
     image: hooopo/ossinsight-api
+    restart: always
     ports: 
       - "3450:3450"
     depends_on: 
@@ -69,6 +72,7 @@ services:
 
   fe:
     image: hooopo/ossinsight-fe
+    restart: always
     build:
       context: .
       dockerfile: ./Dockerfile
