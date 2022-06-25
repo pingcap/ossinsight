@@ -205,13 +205,12 @@ const config = {
             label: 'Workshop',
             position: 'left',
             items: [
-              {label: 'Welcome', href: '/workshop'},
-              {label: 'Workshop: mini OSS Insight', href: '/workshop/mini-ossinsight/introduction'},
-              {label: 'Workshop: Twitter Insight', href: '/workshop/twitter-insight'},
-              {label: 'Workshop: Stack Overflow Insight', href: '/workshop/stackoverflow-insight'},
-              {label: 'Workshop: Cryptocurrency Insight', href: '/workshop/cryptocurrency-insight'},
-              {label: 'Workshop: Cryptocurrency Insight', href: '/workshop/cryptocurrency-insight'},
-              {label: '🗓️ Join Offline Workshop', href: 'https://share.hsforms.com/1E-qtGQWrTVmctP8kBT34gw2npzm'},
+              {label: 'Welcome', to: '/workshop'},
+              {label: 'Workshop: mini OSS Insight', to: '/workshop/mini-ossinsight/introduction'},
+              {label: 'Workshop: Twitter Insight', to: '/workshop/twitter-insight'},
+              {label: 'Workshop: Stack Overflow Insight', to: '/workshop/stackoverflow-insight'},
+              {label: 'Workshop: Cryptocurrency Insight', to: '/workshop/cryptocurrency-insight'},
+              {label: '🗓️  Join Offline Workshop', to: '/workshop/offline'},
             ]
           },
           {
@@ -219,10 +218,10 @@ const config = {
             label: 'More',
             position: 'left',
             items: [
-              {label: 'About OSS Insight', href: '/about'},
-              {label: 'About TiDB Cloud - Sponsor', href: 'https://en.pingcap.com/tidb-cloud?utm_source=ossinsight&utm_medium=referral'},
+              {label: 'About OSS Insight', to: '/about'},
+              {label: 'About TiDB Cloud', to: 'https://en.pingcap.com/tidb-cloud?utm_source=ossinsight&utm_medium=referral'},
               {label: 'How OSS Insight Works', to: '/blog/why-we-choose-tidb-to-support-ossinsight'},
-              {label: 'Report Issue', href: 'https://github.com/pingcap/ossinsight/issues'},
+              {label: 'Report Issue', to: 'https://github.com/pingcap/ossinsight/issues'},
             ]
           },
           {
@@ -238,8 +237,7 @@ const config = {
             items: [
               {label: 'Database Overview', to: 'http://localhost:2379/dashboard/#/overview'},
               {label: '└─ Cluster Topology', to: 'http://localhost:2379/dashboard/#/cluster_info/store_topology'},
-              {label: '└─ Cluster Host: CPU, Memory', to: 'http://localhost:2379/dashboard/#/cluster_info/host'},
-              {label: '└─ Cluster Disk: Capacity, Usage', to: 'http://localhost:2379/dashboard/#/cluster_info/disk'},
+              {label: '└─ Host Info: CPU, Memory, Disk', to: 'http://localhost:2379/dashboard/#/cluster_info/instance'},
               {label: '└─ SQL Statements', to: 'http://localhost:2379/dashboard/#/statement'},
               {label: 'Database Diagnostic', to: 'http://localhost:2379/dashboard/#/system_report'},
               {label: '└─ SQLs Cause High Load', to: 'http://localhost:2379/dashboard/#/topsql'},

@@ -14,7 +14,7 @@ So if there is a tool which can analyze tweets trend, it will be very very inter
 
 ## Step 1: Find Data Source
 
-Twitter API enables programmatic access to Twitter in unique and advanced ways. Tap into core elements of Twitter like: Tweets, Direct Messages, Spaces, Lists, users, and more.
+[Twitter API](https://developer.twitter.com/en/docs/twitter-api) enables programmatic access to Twitter in unique and advanced ways. Tap into core elements of Twitter like: Tweets, Direct Messages, Spaces, Lists, users, and more.
 
 ### Historical Twitter Data
 
