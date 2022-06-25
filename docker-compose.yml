@@ -67,7 +67,7 @@ services:
       - CONNECTION_LIMIT=10
       - QUEUE_LIMIT=20
       - SERVER_PORT=3450
-      - GH_TOKENS='fake'
+      - GH_TOKENS=${GITHUB_TOKEN:?err}
       - PREFETCH_CONCURRENT=3
 
   fe:
