@@ -218,7 +218,7 @@ const config = {
             label: 'More',
             position: 'left',
             items: [
-              {label: 'About', href: '/about'},
+              {label: 'About OSS Insight', href: '/about'},
               {label: 'About TiDB Cloud - Sponsor', href: 'https://en.pingcap.com/tidb-cloud?utm_source=ossinsight&utm_medium=referral'},
               {label: 'How OSS Insight Works', to: '/blog/why-we-choose-tidb-to-support-ossinsight'},
               {label: 'Report Issue', href: 'https://github.com/pingcap/ossinsight/issues'},
