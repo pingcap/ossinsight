@@ -3,7 +3,6 @@
 set -x
 
 bundle install
-sleep 20
 bundle exec rails db:create
 bundle exec rails db:migrate
 bundle exec rake gh:load_collection

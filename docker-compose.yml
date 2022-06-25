@@ -8,6 +8,11 @@ services:
       - "3003:3000"
       - "9000:9000"
       - "2379:2379"
+    healthcheck:
+      test: [ 'CMD', 'mysqladmin', 'ping', '-u', 'root', '-h', '127.0.0.1', '--password=""', '--port', '4000' ]
+      interval: 5s
+      timeout: 10s
+      retries: 20
 
   data:
     build:
@@ -21,7 +26,8 @@ services:
     tty: true
     stdin_open: true
     depends_on: 
-      - tidb
+      tidb:
+        condition: service_healthy
     image: hooopo/ossinsight-data
 
     command: ["./start.sh"]
@@ -42,8 +48,10 @@ services:
     ports: 
       - "3450:3450"
     depends_on: 
-      - tidb
-      - data
+      tidb:
+        condition: service_healthy
+      data:
+        condition: service_started
     environment:
       - DB_HOST=tidb
       - DB_PORT=4000
@@ -66,9 +74,8 @@ services:
     ports: 
       - "3000:3000"
     depends_on: 
-      - tidb
-      - data
-      - api
+      tidb:
+        condition: service_healthy
     environment:
       - NODE_ENV=development
       - APP_HOST=http://localhost:3450
