@@ -230,7 +230,7 @@ const config = {
             position: 'right',
             alt: 'Twitter Logo (Header)',
           },
-          {
+          process.env.NODE_ENV == 'development' && {
             type: 'dropdown',
             label: '⚙️ ',
             position: 'right',
