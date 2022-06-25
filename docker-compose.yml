@@ -13,6 +13,9 @@ services:
       interval: 5s
       timeout: 10s
       retries: 20
+    volumes:
+      - tidb:/root/.tiup/data
+    command: ['tiup', 'playground', 'v6.1.0', '--tag', 'ossinsight', '--db.host', '0.0.0.0', '--tiflash', '1', '--db.config', '/root/.tiup/config.toml']
 
   data:
     build:
