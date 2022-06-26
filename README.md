@@ -132,6 +132,12 @@ build ossinsight local:
 docker-compose build
 ```
 
+pull latest image:
+
+```
+docker-compose pull
+``
+
 ## Sponsors
 
 <div align="center">
