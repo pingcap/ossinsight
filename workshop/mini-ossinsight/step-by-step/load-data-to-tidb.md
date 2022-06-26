@@ -15,6 +15,25 @@ curl --proto '=https' --tlsv1.2 -sSf https://tiup-mirrors.pingcap.com/install.sh
 tiup playground -T mini-ossinsight
 ```
 
+Expected output:
+```
+Playground Bootstrapping...
+Start pd instance:v6.1.0
+Start tikv instance:v6.1.0
+Start tidb instance:v6.1.0
+Waiting for tidb instances ready
+127.0.0.1:4000 ... Done
+Start tiflash instance:v6.1.0
+Waiting for tiflash instances ready
+127.0.0.1:3930 ... Done
+CLUSTER START SUCCESSFULLY, Enjoy it ^-^
+To connect TiDB: mysql --comments --host 127.0.0.1 --port 4000 -u root -p (no password)
+To view the dashboard: http://127.0.0.1:2379/dashboard
+PD client endpoints: [127.0.0.1:2379]
+To view the Prometheus: http://127.0.0.1:9090
+To view the Grafana: http://127.0.0.1:3000
+```
+
 ### b. Inittial database schema
 
 TODO @hooopo
@@ -65,16 +84,16 @@ TODO @hooopo
 
 ## 2. Load historical GitHub events to TiDB
 
+### a. Load Sample Data
+
 TODO @hooopo
 
+### b. Load all GitHub historical events data (optional)
+
+We won't recommend to load all GitHub historical events data to your laptop, but if you are trying a production-level TiDB / TiDB Cloud cluster, you can do it hour by hour with the following method: 
+
 ```bash
-...
-./etl.rb --mysql mysql://user@pass:host:port/db --day 2015-01-01-15
-./etl.rb --mysql mysql://user@pass:host:port/db --day 2015-01-01-16
-...
-...
-./etl.rb --mysql mysql://user@pass:host:port/db --day 2022-06-01-01
-...
+./etl.rb --mysql mysql://user:pass@host:port/db --day YYYY-MM-DD-HH
 ```
 
 :::info
@@ -96,6 +115,6 @@ Start the crawler daemon by:
 Following the above steps, the data should be ready, but we still have to check if it is ACTUALLY ready. Count rows the sql below, and try it again 10s later, make sure the results are different:
 
 ```sql
-SELECT count(*) FROM github_events WHERE event_type = 'WatchEvent';
+SELECT count(*) FROM github_events;
 ```
 
