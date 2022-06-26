@@ -113,9 +113,15 @@ Start the crawler daemon by:
 
 ## 4. Test
 
-Following the above steps, the data should be ready, but we still have to check if it is ACTUALLY ready. Count rows the sql below, and try it again 10s later, make sure the results are different:
+Connect to TiDB by:
+```bash
+# no password
+mysql --comments --host 127.0.0.1 --port 4000 -u root -p
+```
+
+Execute the following SQL to check if it is ACTUALLY ready:
 
 ```sql
 SELECT count(*) FROM github_events;
 ```
-
+and try it again 10s later, make sure the results are different.
