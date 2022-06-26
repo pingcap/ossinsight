@@ -220,7 +220,7 @@ const config = {
             items: [
               {label: 'About OSS Insight', to: '/about'},
               {label: 'About TiDB Cloud', to: 'https://en.pingcap.com/tidb-cloud?utm_source=ossinsight&utm_medium=referral'},
-              {label: 'How OSS Insight Works', to: '/blog/why-we-choose-tidb-to-support-ossinsight'},
+              {label: 'How we implement OSS Insight?', to: '/blog/why-we-choose-tidb-to-support-ossinsight'},
               {label: 'Report Issue', to: 'https://github.com/pingcap/ossinsight/issues'},
             ]
           },
@@ -255,24 +255,24 @@ const config = {
             title: 'OSS Insight',
             items: [
               {
-                label: 'About',
-                to: '/about',
-              },
-              {
-                label: 'Insight',
-                to: '/database/deep-insight-into-open-source-databases/',
-              },
-              {
-                label: 'Try Your Own Dataset',
-                to: '/try-your-own-dataset/?utm_content=footer',
-              },
-              {
-                label: 'How It Works',
-                to: '/blog/how-it-works',
+                label: 'Collections',
+                to: '/collections/open-source-database',
               },
               {
                 label: 'Blog',
                 to: '/blog',
+              },
+              {
+                label: 'Workshop',
+                to: '/workshop',
+              },
+              {
+                label: 'How we implement OSS Insight?',
+                to: '/blog/why-we-choose-tidb-to-support-ossinsight',
+              },
+              {
+                label: 'About',
+                to: '/about',
               },
             ],
           },

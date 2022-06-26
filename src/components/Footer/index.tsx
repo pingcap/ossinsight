@@ -23,23 +23,12 @@ export default function Footer() {
         </Typography>
         <Cards sx={{mt: 2}} xs={12} sm={6} md={4}>
           <StandardCard
-            title='Data Preparation for Analytics'
-            description='Blog · 5 min read'
-            codeStyleDescription={false}
-            readMore='/blog/how-it-works'
-            buttonVariant='outlined'
-            top={icon(require('./icon-1.png').default)}
-            cardSx={{
-              backgroundColor: '#2c2c2c'
-            }}
-          />
-          <StandardCard
             title='How we implement OSS Insight ?'
             description='Blog · 10 min read'
             codeStyleDescription={false}
             readMore='/blog/why-we-choose-tidb-to-support-ossinsight'
             buttonVariant='outlined'
-            top={icon(require('./icon-2.png').default)}
+            top={icon(require('./icon-1.png').default)}
             cardSx={{
               backgroundColor: '#2c2c2c'
             }}
@@ -49,6 +38,17 @@ export default function Footer() {
             description='Tutorial · 10 min read'
             codeStyleDescription={false}
             readMore='/blog/try-it-yourself'
+            buttonVariant='outlined'
+            top={icon(require('./icon-2.png').default)}
+            cardSx={{
+              backgroundColor: '#2c2c2c'
+            }}
+          />
+          <StandardCard
+            title='Join Workshop to Setup a mini OSS Insight'
+            description='Tutorial: 25 min'
+            codeStyleDescription={false}
+            readMore='/workshop/mini-ossinsight/introduction'
             buttonVariant='outlined'
             top={icon(require('./icon-3.png').default)}
             cardSx={{
