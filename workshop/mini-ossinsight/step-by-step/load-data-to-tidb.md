@@ -90,14 +90,15 @@ TODO @hooopo
 
 ### b. Load all GitHub historical events data (optional)
 
-We won't recommend to load all GitHub historical events data to your laptop, but if you are trying a production-level TiDB / TiDB Cloud cluster, you can do it hour by hour with the following method: 
+We won't recommend to load all GitHub historical events data to your laptop, but if you are trying a production-level TiDB / TiDB Cloud cluster, you can do it with the following method hour by hour:
 
 ```bash
 ./etl.rb --mysql mysql://user:pass@host:port/db --day YYYY-MM-DD-HH
 ```
 
 :::info
-Feel free to run a same command again, because it is an idempotent cmd, double execution won't insert duplicate data.
+* Feel free to run a same command again, because it is an idempotent cmd, double execution won't insert duplicate data;
+* Remember the first event start from 2011-02-12 00:00:00, so the hour hour is 2011-02-12-01.
 :::
 
 ## 3. Listen to /events and insert realtime events to TiDB
