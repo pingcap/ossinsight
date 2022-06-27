@@ -59,7 +59,7 @@ services:
       args:
         NODE_ENV: 'development'
     ports: 
-      - "3000:3000"
+      - "3001:3000"
     environment:
       - NODE_ENV=development
       - APP_HOST=http://localhost:3450
