@@ -17,7 +17,9 @@ const getPresets = (fn) => {
 }
 
 const getPrefetched = fn => {
-  return JSON.parse(fs.readFileSync(fn, { encoding: 'utf-8'}))
+  try {
+    return JSON.parse(fs.readFileSync(fn, {encoding: 'utf-8'}))
+  } catch (e) {}
 }
 
 /** @type {import('@docusaurus/types').Config} */
@@ -74,7 +76,7 @@ const config = {
             path: '/collections/:slug',
             exact: true,
             component: '@site/src/dynamic-pages/collections',
-            params: getPrefetched('.prefetch/collections.json').data.map(({name}) => ({
+            params: getPrefetched('.prefetch/collections.json')?.data.map(({name}) => ({
               slug: require('param-case').paramCase(name)
             }))
           },
@@ -82,7 +84,7 @@ const config = {
             path: '/collections/:slug/trends',
             exact: true,
             component: '@site/src/dynamic-pages/collections/dynamic-trends',
-            params: getPrefetched('.prefetch/collections.json').data.map(({name}) => ({
+            params: getPrefetched('.prefetch/collections.json')?.data.map(({name}) => ({
               slug: require('param-case').paramCase(name)
             }))
           }
