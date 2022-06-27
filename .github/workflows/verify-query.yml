@@ -5,6 +5,11 @@ on:
     paths:
       - 'api/**'
 
+defaults:
+  run:
+    shell: bash
+    working-directory: api
+
 jobs:
   validate:
     runs-on: ubuntu-latest
@@ -25,10 +30,8 @@ jobs:
           cache: 'pnpm'
           cache-dependency-path: 'api/pnpm-lock.yaml'
 
-      - name: Install Dependency
-        run: |
-          cd api
-          pnpm i --frozen-lockfile --strict-peer-dependencies
+      - name: Install Dependencies
+        run: pnpm i --frozen-lockfile --strict-peer-dependencies
 
       - name: Verify Query Definition JSON
         run: |
@@ -36,6 +39,4 @@ jobs:
           pnpm run validate:params
 
       - name: Build Project
-        run: |
-          cd api
-          pnpm run build
+        run: pnpm run build
