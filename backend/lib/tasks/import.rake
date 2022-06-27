@@ -24,6 +24,14 @@ namespace :gh do
     ActiveRecord::Base.connection.execute("ALTER TABLE users SET TIFLASH REPLICA 1")
   end
 
+  task :load_sample => :environment do 
+    `cd /app/tmp && wget https://cdn.hackershare.cn/sample1m.sql.zip && unzip sample1m.sql.zip`
+    uri = URI.parse(ENV['DATABASE_URL'])
+    cmd = "mysql -u #{uri.user} --port=#{uri.port} --password=#{uri.password} -h #{uri.host} #{uri.path.sub('/', '')} < /app/tmp/sample-100w.sql "
+    puts cmd
+    system(cmd)
+  end
+
   task :load_collection => :environment do 
     Dir.glob(Rails.root.join "meta/collections/*.yml") do |file|
       yml = YAML.load_file(file)
