@@ -1,6 +1,10 @@
 name: Surge PR Preview
 
-on: pull_request_target
+on:
+  pull_request_target:
+    paths-ignore:
+      - 'api/**'
+      - 'backend/**'
 
 jobs:
   preview:
