@@ -46,13 +46,14 @@ GITHUB_TOKEN=(your github personal token)
 then initial data loader script environment with:
 ```bash
 # brew install openssl ruby@2.7;
-cd ossinsight/backend;
+cd ossinsight/backend/;
 bundle install;
 ```
 
 ### c. Inittial database schema
 
 ```bash
+# pwd: ossinsight/backend/;
 # Create database
 bundle exec rails db:create
 
@@ -97,11 +98,16 @@ mysql>
 ## 2. Load sample historical GitHub events to TiDB
 
 ```bash
+# pwd: ossinsight/backend/;
 # Load collections
 bundle exec rake gh:load_collection
 # Load 5 million events data
-TODO @hooopo
+wget https://github.com/pingcap/ossinsight/releases/download/sample/sample1m.sql.zip;
+unzip sample1m.sql;
+mysql --comments --host 127.0.0.1 --port 4000 -u root -p gharchive_dev < sample3m.sql
 ```
+
+The importing task would cost about 10mins.
 
 
 ## 3. Listen to /events and insert realtime events to TiDB
@@ -109,7 +115,7 @@ TODO @hooopo
 Start the crawler daemon by:
 
 ```bash
-cd backend/;
+# pwd: ossinsight/backend/;
 bundle exec rails runner 'Realtime.new(ENV["GITHUB_TOKEN"].to_s.split(","), 100).run';
 ```
 
