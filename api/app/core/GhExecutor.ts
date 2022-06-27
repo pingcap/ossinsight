@@ -4,6 +4,7 @@ import {DateTime} from "luxon";
 import consola, {Consola} from "consola";
 import {ghQueryCounter, ghQueryTimer, measure} from "../metrics";
 import CacheBuilder, { CacheProviderTypes } from "./cache/CacheBuilder";
+import {CachedData} from "./cache/Cache";
 
 const GET_REPO_CACHE_HOURS = 1;
 const SEARCH_REPOS_CACHE_HOURS = 24;
@@ -31,6 +32,16 @@ const RECOMMEND_REPO_LIST_2: any[] = [
   { id: 8514, fullName: 'rails/rails' },
   { id: 16563587, fullName: 'cockroachdb/cockroach' },
 ]
+
+export interface UserSearchItem {
+  id: number;
+  login: string;
+}
+
+export interface RepoSearchItem {
+  id: number;
+  fullName: string;
+}
 
 function eraseToken (value: string | undefined): string {
   return value ? `****${value.substring(value.length - 8)}` : 'anonymous'
@@ -124,7 +135,7 @@ export default class GhExecutor {
     })
   }
 
-  searchRepos(keyword: any) {
+  searchRepos(keyword: string):Promise<CachedData<RepoSearchItem>> {
     const cacheKey = `gh:search_repos:${keyword}`;
     const cache = this.cacheBuilder.build(
       CacheProviderTypes.CACHED_TABLE, cacheKey, SEARCH_REPOS_CACHE_HOURS, SEARCH_REPOS_CACHE_HOURS
@@ -153,6 +164,10 @@ export default class GhExecutor {
         const variables = {
           q: keyword,
         }
+
+        // Reference:
+        // - https://docs.github.com/en/graphql/reference/queries#searchresultitemconnection
+        // - https://docs.github.com/en/graphql/reference/objects#repository
         const query = /* GraphQL */ `
             query searchRepository($q: String!){
                 search(query: $q, first: 10, type: REPOSITORY) {
@@ -191,6 +206,68 @@ export default class GhExecutor {
           }
         } catch (e) {
           ghQueryCounter.labels({ api: 'searchRepos', phase: 'error' }).inc()
+          throw e
+        }
+      })
+    })
+  }
+
+  searchUsers(keyword: string):Promise<CachedData<UserSearchItem>> {
+    const cacheKey = `gh:search_users:${keyword}`;
+    const cache = this.cacheBuilder.build(
+        CacheProviderTypes.CACHED_TABLE, cacheKey, SEARCH_REPOS_CACHE_HOURS, SEARCH_REPOS_CACHE_HOURS
+    );
+
+    return cache.load(() => {
+      return this.octokitPool.use(async (octokit) => {
+        octokit.log.info(`search users by keyword ${keyword}`)
+        const start = DateTime.now();
+
+        const variables = {
+          q: keyword,
+        }
+
+        // Reference:
+        // - https://docs.github.com/en/graphql/reference/queries#searchresultitemconnection
+        // - https://docs.github.com/en/graphql/reference/objects#user
+        const query = /* GraphQL */ `
+          query searchUsers($q: String!){
+            search(query: $q, first: 10, type: USER) {
+              codeCount
+              nodes {
+                ...on User {
+                  databaseId
+                  login
+                }
+              }
+            }
+          }
+        `
+        let formattedData: any[] = []
+
+        ghQueryCounter.labels({ api: 'searchUsers', phase: 'start' }).inc()
+
+        try {
+          const data: any = await measure(
+              ghQueryTimer.labels({api: 'searchUsers'}),
+              () => octokit.graphql(query, variables)
+          )
+          ghQueryCounter.labels({api: 'searchUsers', phase: 'success'}).inc()
+
+          data.search.nodes.forEach((repo: any) => formattedData.push({
+            id: repo.databaseId,
+            login: repo.login,
+          }));
+
+          const {value} = Object.getOwnPropertyDescriptor(octokit, SYMBOL_TOKEN)!;
+          return {
+            requestedAt: start,
+            finishedAt: DateTime.now(),
+            data: formattedData,
+            with: eraseToken(value)
+          }
+        } catch (e) {
+          ghQueryCounter.labels({ api: 'searchUsers', phase: 'error' }).inc()
           throw e
         }
       })
