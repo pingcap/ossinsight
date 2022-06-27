@@ -198,7 +198,7 @@ const config = {
           },
           {to: '/blog', label: 'Blog', position: 'left'},
           {
-            href: 'https://tidbcloud.com/free-trial?utm_source=ossinsight&utm_medium=referral',
+            href: 'https://en.pingcap.com/tidb-cloud/?utm_source=ossinsight&utm_medium=referral',
             className: 'navbar-item-tidb-cloud',
             position: 'right',
             alt: 'TiDB Cloud Logo (Header)',
