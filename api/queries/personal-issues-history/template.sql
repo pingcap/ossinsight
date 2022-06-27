@@ -20,7 +20,7 @@ WITH issues AS (
         FROM issue_comments
     ) sub
 )
-SELECT m.event_month, i.cnt AS issues, ic.cnt AS issues_comments
+SELECT m.event_month, IFNULL(i.cnt, 0) AS issues, IFNULL(ic.cnt, 0) AS issue_comments
 FROM event_months m
 LEFT JOIN issues i ON m.event_month = i.event_month
 LEFT JOIN issue_comments ic ON m.event_month = ic.event_month

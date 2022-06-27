@@ -11,6 +11,6 @@ WITH reviews AS (
     GROUP BY event_month
     ORDER BY event_month
 )
-SELECT r.event_month, r.cnt AS reviews, rc.cnt AS review_comments
+SELECT r.event_month, IFNULL(r.cnt, 0) AS reviews, IFNULL(rc.cnt, 0) AS review_comments
 FROM reviews r
 JOIN review_comments rc ON r.event_month = rc.event_month
