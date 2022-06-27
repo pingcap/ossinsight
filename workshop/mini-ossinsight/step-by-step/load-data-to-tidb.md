@@ -6,10 +6,11 @@ sidebar_position: 2
 ## 1. Prepare Environment
 
 ### a. Install TiDB
+
 It's easy to setup a TiDB Cluster in your laptop (Mac or Linux) with the official cli tools: tiup.
 
 ```bash
-# Install tiup (tiup is inspired by rustup -:)
+# Install tiup ("tiup" is inspired by rustup -:)
 curl --proto '=https' --tlsv1.2 -sSf https://tiup-mirrors.pingcap.com/install.sh | sh
 # Install & Start TiDB Server
 tiup playground -T mini-ossinsight
@@ -34,19 +35,18 @@ To view the Prometheus: http://127.0.0.1:9090
 To view the Grafana: http://127.0.0.1:3000
 ```
 
-### b. Config
+### b. Config data loader script
 
-[Create a personal access token](/workshop/mini-ossinsight/step-by-step/find-data-source#creating-a-personal-access-token), then edit `backend/.env.local`:
+[Create a personal access token](/workshop/mini-ossinsight/step-by-step/find-data-source#creating-a-personal-access-token), then edit `ossinsight/backend/.env.local`(if there is no such file, `/usr/bin/touch` one):
 ```
 DATABASE_URL=tidb://root@127.0.0.1:4000/gharchive_dev
 GITHUB_TOKEN=(your github personal token)
 ```
 
-then run:
-
+then initial data loader script environment with:
 ```bash
 # brew install openssl ruby@2.7;
-cd backend;
+cd ossinsight/backend;
 bundle install;
 ```
 
@@ -54,10 +54,9 @@ bundle install;
 
 ```bash
 # Create database
-cd backend;
 bundle exec rails db:create
 
-# Create tables & index
+# Create tables, index
 bundle exec rails db:migrate
 ```
 
@@ -127,7 +126,7 @@ Execute the following SQL to check if it is ACTUALLY ready:
 ```sql
 SELECT count(*) FROM gharchive_dev.github_events;
 ```
-and try it again a few seconds later, make sure the results are different.
+Try it again after a few seconds, make sure the results are different.
 
 ```
 mysql> SELECT count(*) FROM gharchive_dev.github_events;
