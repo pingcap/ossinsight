@@ -1,6 +1,9 @@
-name: Verify
+name: Verify Query Definition File
 
-on: pull_request_target
+on:
+  pull_request_target:
+    paths:
+      - '/api/**'
 
 jobs:
   validate:
@@ -22,7 +25,9 @@ jobs:
           cache: 'pnpm'
 
       - name: Install Dependency
-        run: pnpm i --frozen-lockfile --strict-peer-dependencies
+        run: |
+          cd api
+          pnpm i --frozen-lockfile --strict-peer-dependencies
 
       - name: Verify Query Definition JSON
         run: |
@@ -30,4 +35,6 @@ jobs:
           pnpm run validate:params
 
       - name: Build Project
-        run: pnpm run build
+        run: |
+          cd api
+          pnpm run build
