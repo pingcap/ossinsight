@@ -151,7 +151,7 @@ function useData<K extends keyof TypeMap>(repoId: number, key: string, excludeBo
   const { data } = useRemoteData<Param, TypeMap[K]>(key, {
     repoId,
     excludeBots,
-  }, false, show);
+  }, false, repoId && show);
 
   return [data?.data ?? [], data];
 }
@@ -231,7 +231,6 @@ export const Contributors = forwardRef(function ({}, ref: ForwardedRef<HTMLEleme
         value={descriptor.key}
         onChange={handleChangeDescriptor}
         native={false}
-        renderValue={descriptor => descriptor.title}
       >
         {descriptors.map(descriptor => (
           <MenuItem key={descriptor.key} value={descriptor.key}>{descriptor.title}</MenuItem>
