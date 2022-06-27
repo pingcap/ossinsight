@@ -245,14 +245,14 @@ export default class GhExecutor {
         `
         let formattedData: any[] = []
 
-        ghQueryCounter.labels({ api: 'searchRepos', phase: 'start' }).inc()
+        ghQueryCounter.labels({ api: 'searchUsers', phase: 'start' }).inc()
 
         try {
           const data: any = await measure(
-              ghQueryTimer.labels({api: 'searchRepos'}),
+              ghQueryTimer.labels({api: 'searchUsers'}),
               () => octokit.graphql(query, variables)
           )
-          ghQueryCounter.labels({api: 'searchRepos', phase: 'success'}).inc()
+          ghQueryCounter.labels({api: 'searchUsers', phase: 'success'}).inc()
 
           data.search.nodes.forEach((repo: any) => formattedData.push({
             id: repo.databaseId,
@@ -267,7 +267,7 @@ export default class GhExecutor {
             with: eraseToken(value)
           }
         } catch (e) {
-          ghQueryCounter.labels({ api: 'searchRepos', phase: 'error' }).inc()
+          ghQueryCounter.labels({ api: 'searchUsers', phase: 'error' }).inc()
           throw e
         }
       })
