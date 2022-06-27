@@ -3,7 +3,7 @@ name: Verify Query Definition File
 on:
   pull_request_target:
     paths:
-      - '/api/**'
+      - 'api/**'
 
 jobs:
   validate:
