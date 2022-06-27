@@ -151,7 +151,7 @@ function useData<K extends keyof TypeMap>(repoId: number, key: string, excludeBo
   const { data } = useRemoteData<Param, TypeMap[K]>(key, {
     repoId,
     excludeBots,
-  }, false, show);
+  }, false, repoId && show);
 
   return [data?.data ?? [], data];
 }
