@@ -231,7 +231,6 @@ export const Contributors = forwardRef(function ({}, ref: ForwardedRef<HTMLEleme
         value={descriptor.key}
         onChange={handleChangeDescriptor}
         native={false}
-        renderValue={descriptor => descriptor.title}
       >
         {descriptors.map(descriptor => (
           <MenuItem key={descriptor.key} value={descriptor.key}>{descriptor.title}</MenuItem>
