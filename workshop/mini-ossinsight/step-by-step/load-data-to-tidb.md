@@ -34,15 +34,34 @@ To view the Prometheus: http://127.0.0.1:9090
 To view the Grafana: http://127.0.0.1:3000
 ```
 
-### b. Inittial database schema
+### b. Config
 
-TODO @hooopo
-
-```bash
-mysql xxx << path/to/schema.sql
+[Create a personal access token](/workshop/mini-ossinsight/step-by-step/find-data-source#creating-a-personal-access-token), then edit `backend/.env.local`:
+```
+DATABASE_URL=tidb://root@127.0.0.1:4000/gharchive_dev
+GITHUB_TOKEN=(your github personal token)
 ```
 
-### c. !!! Set Column-Oriented Storage Replica
+then run:
+
+```bash
+# brew install openssl ruby@2.7;
+cd backend;
+bundle install;
+```
+
+### c. Inittial database schema
+
+```bash
+# Create database
+cd backend;
+bundle exec rails db:create
+
+# Create tables & index
+bundle exec rails db:migrate
+```
+
+### d. !!! Set Column-Oriented Storage Replica
 
 This step is important enough that it adds column-oriented-storage ability to TiDB - We call it [TiFlash](https://docs.pingcap.com/tidb/dev/tiflash-overview). The `tiup playground` installed 1 TiFlash node by default, what we need to do is just make data is `STORED` in these replica node too.
 
@@ -75,40 +94,24 @@ mysql>
 
 3. Repeat c.1 and c.2 on other tables.
 
-### d. Initial etl script
 
-After [creating a personal access token](/workshop/mini-ossinsight/step-by-step/find-data-source#creating-a-personal-access-token), config it in etl script:
-
-TODO @hooopo
-
-
-## 2. Load historical GitHub events to TiDB
-
-### a. Load Sample Data
-
-TODO @hooopo
-
-### b. Load all GitHub historical events data (optional)
-
-We won't recommend to load all GitHub historical events data to your laptop, but if you are trying a production-level TiDB / TiDB Cloud cluster, you can do it with the following method hour by hour:
+## 2. Load sample historical GitHub events to TiDB
 
 ```bash
-./etl.rb --mysql mysql://user:pass@host:port/db --day YYYY-MM-DD-HH
+# Load collections
+bundle exec rake gh:load_collection
+# Load 5 million events data
+TODO @hooopo
 ```
 
-:::info
-* Feel free to run a same command again, because it is an idempotent cmd, double execution won't insert duplicate data;
-* Remember the first event start from 2011-02-12 00:00:00, so the hour hour is 2011-02-12-01.
-:::
 
 ## 3. Listen to /events and insert realtime events to TiDB
-
-TODO @hooopo
 
 Start the crawler daemon by:
 
 ```bash
-./etl.rb --mysql mysql://user@pass:host:port/db --listen --token github-personal-token1,token2,token3
+cd backend/;
+bundle exec rails runner 'Realtime.new(ENV["GITHUB_TOKEN"].to_s.split(","), 100).run';
 ```
 
 ## 4. Test
@@ -122,6 +125,26 @@ mysql --comments --host 127.0.0.1 --port 4000 -u root -p
 Execute the following SQL to check if it is ACTUALLY ready:
 
 ```sql
-SELECT count(*) FROM github_events;
+SELECT count(*) FROM gharchive_dev.github_events;
 ```
-and try it again 10s later, make sure the results are different.
+and try it again a few seconds later, make sure the results are different.
+
+```
+mysql> SELECT count(*) FROM gharchive_dev.github_events;
++----------+
+| count(*) |
++----------+
+|     5808 |
++----------+
+1 row in set (0.00 sec)
+
+mysql> SELECT count(*) FROM gharchive_dev.github_events;
++----------+
+| count(*) |
++----------+
+|     5872 |
++----------+
+1 row in set (0.01 sec)
+
+mysql>
+```
