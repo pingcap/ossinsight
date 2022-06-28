@@ -48,6 +48,7 @@ services:
       - SERVER_PORT=3450
       - GH_TOKENS=${GITHUB_TOKEN:?err}
       - PREFETCH_CONCURRENT=3
+      - ENABLE_CACHE=0
 
   api-prefetch:
     build:
@@ -74,6 +75,7 @@ services:
       - SERVER_PORT=3450
       - GH_TOKENS=${GITHUB_TOKEN:?err}
       - PREFETCH_CONCURRENT=3
+      - ENABLE_CACHE=0
 
   fe:
     image: hooopo/ossinsight-fe
