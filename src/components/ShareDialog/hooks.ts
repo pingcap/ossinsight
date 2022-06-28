@@ -2,6 +2,8 @@ import {CommonChartShareInfo} from '../CommonChart/context';
 import {MutableRefObject, useCallback, useState} from 'react';
 import EChartsReact from 'echarts-for-react';
 import axios from 'axios';
+import { core } from '../../api';
+
 
 function getNearestTitle(canvas: HTMLElement): HTMLHeadingElement | undefined {
   let el = canvas.parentElement;
@@ -116,7 +118,7 @@ export function useShare(shareInfo: CommonChartShareInfo | undefined, echartsRef
         });
       });
 
-      const {data: {shareId: serverShareId, signedUrl}} = await axios.post('https://api.ossinsight.io/share', {
+      const {data: {shareId: serverShareId, signedUrl}} = await axios.post('/share', {
         title,
         description,
         keyword,
@@ -135,7 +137,7 @@ export function useShare(shareInfo: CommonChartShareInfo | undefined, echartsRef
           }
         }, 'image/png');
       });
-      await fetch(signedUrl, {method: 'PUT', body: blob, headers: {'content-type': 'image/png'}});
+      await core.client.put(signedUrl, blob, { headers: {'content-type': 'image/png'} })
       setShareId(serverShareId);
     } finally {
       setSharing(false);

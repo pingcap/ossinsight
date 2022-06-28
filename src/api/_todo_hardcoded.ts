@@ -1,4 +1,15 @@
-import {query, registerStaticData} from "./hook";
+import { AxiosRequestConfig } from 'axios';
+import { registerStaticData} from "./core";
+
+export const query = (query: string, validateParams: (check: AxiosRequestConfig['params']) => boolean) => {
+  return (config) => {
+    if (config.url !== `/q/${query}`) {
+      return false
+    } else {
+      return validateParams(config.params)
+    }
+  }
+}
 
 registerStaticData(query('archive-2021-archive-ranking', params => params?.repo === 'db_repos'), {
   expiresAt: "2099-12-31T00:00:00.000+08:00",

@@ -1,14 +1,10 @@
 import { usePluginData } from '@docusaurus/useGlobalData';
-import {format} from "sql-formatter";
-import { Collection } from '../../dynamic-pages/collections/hooks/useCollection';
 import {Queries} from "./queries";
-import {createHttpClient} from "../../lib/request";
 import useSWR from "swr";
-import Axios, { AxiosRequestConfig, CancelToken } from 'axios';
+import Axios from 'axios';
 import { useContext, useEffect, useRef, useState } from 'react';
 import InViewContext from "../InViewContext";
-
-const httpClient = createHttpClient();
+import { core } from '../../api';
 
 export interface AsyncData<T> {
   data: T | undefined
@@ -36,18 +32,6 @@ export interface BaseQueryResult<Params extends {
   data: Data
 }
 
-function paramsSerializer (params: any): string {
-  const usp = new URLSearchParams()
-  for (let [key, value] of Object.entries(params)) {
-    if (Array.isArray(value)) {
-      value.forEach(item => usp.append(key, item))
-    } else {
-      usp.set(key, String(value))
-    }
-  }
-  return usp.toString()
-}
-
 interface UseRemoteData {
   <Q extends keyof Queries, P = Queries[Q]['params'], T = Queries[Q]['data']>(query: Q, params: P, formatSql: boolean, shouldLoad?: boolean): AsyncData<RemoteData<P, T>>
   <P, T>(query: string, params: P, formatSql: boolean, shouldLoad?: boolean): AsyncData<RemoteData<P, T>>
@@ -64,14 +48,7 @@ export const useRemoteData: UseRemoteData = (query: string, params: any, formatS
   }, [inView])
 
   const { data, isValidating: loading, error } = useSWR(shouldLoad && viewed ? [query, params, 'q'] : null, {
-    fetcher: (query, params) => httpClient.get(`/q/${query}`, {params, paramsSerializer })
-      .then(({data}) => {
-        if (data.sql && formatSql) {
-          data.sql = format(data.sql)
-        }
-        data.query = query
-        return data
-      }),
+    fetcher: core.query,
     revalidateOnFocus: false,
     revalidateOnReconnect: false
   })
@@ -90,14 +67,7 @@ export const useRealtimeRemoteData: UseRemoteData = (query: string, params: any,
   }, [inView])
 
   const { data, isValidating: loading, error, mutate } = useSWR(shouldLoad && viewed ? [query, params, 'q'] : null, {
-    fetcher: (query, params) => httpClient.get(`/q/${query}`, {params, paramsSerializer })
-      .then(({data}) => {
-        if (data.sql && formatSql) {
-          data.sql = format(data.sql)
-        }
-        data.query = query
-        return data
-      }),
+    fetcher: core.query,
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
   })
@@ -116,45 +86,6 @@ export const useRealtimeRemoteData: UseRemoteData = (query: string, params: any,
   return {data, loading, error}
 }
 
-interface CheckReq {
-  (config: AxiosRequestConfig): boolean
-}
-
-export function registerStaticData(checkReq: CheckReq, data: any) {
-  httpClient.interceptors.request.use(config => {
-    if (!checkReq(config)) {
-      return config
-    }
-    config.adapter = async () => {
-      return {
-        data,
-        status: 200,
-        statusText: 'OK',
-        headers: {'x-registered': 'true'},
-        config
-      }
-    }
-    return config
-  })
-}
-
-export const query = (query: string, validateParams: (check: AxiosRequestConfig['params']) => boolean): CheckReq => {
-  return (config) => {
-    if (config.url !== `/q/${query}`) {
-      return false
-    } else {
-      return validateParams(config.params)
-    }
-  }
-}
-
-const toTs = date => {
-  if (typeof date !== 'number') {
-    return Math.round((new Date(date)).getTime() / 1000)
-  }
-  return date
-}
-
 export const useTotalEvents = (run: boolean, interval = 1000) => {
   const {eventsTotal} = usePluginData<{eventsTotal: RemoteData<any, { cnt: number, latest_timestamp: number }>}>('plugin-prefetch');
 
@@ -170,7 +101,7 @@ export const useTotalEvents = (run: boolean, interval = 1000) => {
 
     const reloadTotal = async () => {
       try {
-        const { data: { data: [{ cnt, latest_timestamp }] } } = await httpClient.get('/q/events-total')
+        const { data: [{ cnt, latest_timestamp }] } = await core.query('events-total')
         cancelRef.current?.()
         lastTs.current = latest_timestamp
         setTotal(cnt)
@@ -181,8 +112,7 @@ export const useTotalEvents = (run: boolean, interval = 1000) => {
     const reloadAdded = async (first: boolean) => {
       try {
         if (lastTs.current) {
-          const { data: { data: [{ cnt, latest_created_at }] } } = await httpClient.get('/q/events-increment', {
-            params: { ts: lastTs.current },
+          const { data: [{ cnt, latest_created_at }] } = await core.query('events-increment', { ts: lastTs.current }, {
             cancelToken: first ? undefined : new Axios.CancelToken(cancel => cancelRef.current = cancel)
           })
           setAdded(cnt)

@@ -1,6 +1,5 @@
 import useSWR, {SWRResponse} from 'swr'
-
-const dataUrl = 'https://api.ossinsight.io/gh'
+import { getRepo } from './core';
 
 export interface RepoInfo {
   id: number
@@ -19,14 +18,7 @@ export interface RepoInfo {
 
 export const useRepo = (repoName): SWRResponse<RepoInfo> => {
   return useSWR<RepoInfo>(repoName ? [repoName] : undefined, {
-    fetcher: async repoName => {
-      const resp = await fetch(`${dataUrl}/repo/${repoName}`)
-      if (!resp.ok) {
-        throw new Error(resp.statusText)
-      }
-      const {data} = await resp.json()
-      return data
-    },
+    fetcher: getRepo,
     revalidateOnFocus: false,
     revalidateOnReconnect: false
   })
