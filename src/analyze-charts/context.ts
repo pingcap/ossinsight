@@ -1,7 +1,7 @@
 import {createContext, MutableRefObject, RefCallback, useContext} from 'react';
 import {AsyncData, RemoteData} from '../components/RemoteCharts/hook';
 import EChartsReact from 'echarts-for-react';
-import {RepoInfo} from '../api/gh';
+import type { RepoInfo } from '@ossinsight/api';
 
 export interface AnalyzeChartContextProps<T = unknown> {
   query: string;

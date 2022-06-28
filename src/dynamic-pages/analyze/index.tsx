@@ -8,7 +8,8 @@ import { Theme } from '@mui/material/styles';
 import Error from '@theme/Error';
 import React, { useCallback, useRef } from 'react';
 import { AnalyzeContext } from '../../analyze-charts/context';
-import { RepoInfo, useRepo } from '../../api/gh';
+import { useRepo } from '../../api';
+import type { RepoInfo } from '@ossinsight/api'
 import NewCompareHeader from '../../components/CompareHeader/NewCompareHeader';
 import { Repo } from '../../components/CompareHeader/RepoSelector';
 import { AsyncData } from '../../components/RemoteCharts/hook';

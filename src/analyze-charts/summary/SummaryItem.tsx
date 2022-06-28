@@ -6,7 +6,7 @@ import Stack from '@mui/material/Stack';
 import {AsyncData, RemoteData} from '../../components/RemoteCharts/hook';
 import Skeleton from '@mui/material/Skeleton';
 import CircularProgress from '@mui/material/CircularProgress';
-import {RepoInfo} from '../../api/gh';
+import type {RepoInfo} from '@ossinsight/api';
 
 export interface SummaryItemProps<F extends string> extends Omit<GridProps, 'title'> {
   icon?: React.ReactNode;

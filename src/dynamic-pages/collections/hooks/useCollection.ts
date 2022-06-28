@@ -4,13 +4,7 @@ import { useMemo } from 'react';
 import useSWR from 'swr';
 import { core } from '../../../api';
 import { RemoteData } from '../../../components/RemoteCharts/hook';
-
-export type Collection = {
-  id: number
-  name: string
-  slug: string
-  public: 0 | 1
-}
+import { Collection } from '@ossinsight/api'
 
 export function useCollections(): Collection[] {
   const {collections} = usePluginData<{collections: RemoteData<any, Collection>}>('plugin-prefetch');

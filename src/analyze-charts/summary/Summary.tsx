@@ -6,7 +6,7 @@ import {HeaderGrid, HeadText} from './styled';
 import Skeleton from '@mui/material/Skeleton';
 import Analyze from '../Analyze';
 import Stack from '@mui/material/Stack';
-import {RepoInfo} from '../../api/gh';
+import type {RepoInfo} from '@ossinsight/api';
 
 export type ItemBase = {
   icon?: React.ReactNode
