@@ -38,10 +38,14 @@ To view the Grafana: http://127.0.0.1:3000
 
 ### b. Config data loader script
 
+Clone repo:
+```bash
+git clone https://github.com/pingcap/ossinsight.git;
+```
+
 Open another terminal tab, edit `ossinsight/backend/.env.local`
 
 (Learn how to [create a personal access token](/workshop/mini-ossinsight/step-by-step/find-data-source#creating-a-personal-access-token))
-
 ```
 DATABASE_URL=tidb://root@127.0.0.1:4000/gharchive_dev
 GITHUB_TOKEN=(your github personal access token)
