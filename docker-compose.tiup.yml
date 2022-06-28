@@ -69,27 +69,6 @@ services:
       - prefetch:/app/.prefetch
       - docusaurus:/app/.docusaurus
 
-  prefetch:
-    image: hooopo/ossinsight-fe
-    build:
-      context: .
-      dockerfile: ./Dockerfile
-      args:
-        NODE_ENV: 'development'
-    depends_on: 
-      api:
-        condition: service_started
-    environment:
-      - NODE_ENV=development
-      - APP_HOST=http://api:3450
-      - APP_API_BASE=http://api:3450
-    volumes:
-      - ./:/app:delegated
-      - node_modules:/app/node_modules
-      - prefetch:/app/.prefetch
-      - docusaurus:/app/.docusaurus
-    command: ["npm", "run", "prefetch"]
-
   sample:
     build:
       context: ./backend
