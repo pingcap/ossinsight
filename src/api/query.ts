@@ -19,8 +19,8 @@ interface RepoRankData extends Array<RepoRank> {
 
 export const useRank = (period = 'last_hour'): SWRResponse<RepoRankData> => {
   return useSWR<RepoRankData>(['recent-events-rank', period], {
-    fetcher: async (period) => {
-      const data = await query<RepoRank>('recent-events-rank', { period });
+    fetcher: async (q, period) => {
+      const data = await query<RepoRank>(q, { period });
       let res: RepoRankData = data.data as RepoRankData;
       res.sql = data.sql;
       return res;
