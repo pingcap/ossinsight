@@ -1,6 +1,7 @@
 import Box from '@mui/material/Box';
 import React from 'react';
 import AnalyzeSelector from '../../../../../components/AnalyzeSelector';
+import GeneralSearch from '../../../../../components/GeneralSearch';
 
 const AnalyzeSelectorLine = () => {
   return (
@@ -10,7 +11,7 @@ const AnalyzeSelectorLine = () => {
       justifyContent='flex-end'
       sx={{ '> *': { flex: 1, maxWidth: 450, mx: 'unset' } }}
     >
-      <AnalyzeSelector align='left' size='large' contrast />
+      <GeneralSearch align='left' size='large' contrast />
     </Box>
   )
 }

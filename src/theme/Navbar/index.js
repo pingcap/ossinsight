@@ -28,7 +28,8 @@ import styles from './styles.module.css';
 import AnalyzeSelector from "../../components/AnalyzeSelector";
 import Box from "@mui/material/Box";
 import {useLocation} from "@docusaurus/router";
-import {RealtimeSummary} from "../../components/RealtimeSummary"; // retrocompatible with v1
+import {RealtimeSummary} from "../../components/RealtimeSummary";
+import GeneralSearch from "../../components/GeneralSearch"; // retrocompatible with v1
 
 const DefaultNavItemPosition = 'right';
 
@@ -259,7 +260,7 @@ function Navbar() {
             <NavbarItem {...item} key={i} />
           ))}
           <Box display={showAnalyzeInput ? 'flex' : 'none'} justifyContent='flex-start' alignItems='center' width='100%' minWidth='50px' maxWidth='300px' ml={1} flexShrink={10000} sx={{ '& > *': { width: '100%', maxWidth: 300, mx: 'unset', flex: 1 }}}>
-            <AnalyzeSelector align='left' />
+            <GeneralSearch />
           </Box>
         </div>
         <div className="navbar__items navbar__items--right">
