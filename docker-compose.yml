@@ -50,33 +50,6 @@ services:
       - PREFETCH_CONCURRENT=3
       - ENABLE_CACHE=0
 
-  api-prefetch:
-    build:
-      context: ./api
-      dockerfile: ./Dockerfile
-      args:
-        NODE_ENV: 'development'
-    image: hooopo/ossinsight-api
-    restart: always
-    command: ["npm", "run", "prefetch"]
-    depends_on: 
-      data:
-        condition: service_started
-      sample:
-        condition: service_completed_successfully
-    environment:
-      - DB_HOST=host.docker.internal
-      - DB_PORT=4000
-      - DB_USER=root
-      - DB_DATABASE=gharchive_dev
-      - DB_PASSWORD=
-      - CONNECTION_LIMIT=10
-      - QUEUE_LIMIT=20
-      - SERVER_PORT=3450
-      - GH_TOKENS=${GITHUB_TOKEN:?err}
-      - PREFETCH_CONCURRENT=3
-      - ENABLE_CACHE=0
-
   fe:
     image: hooopo/ossinsight-fe
     restart: always
