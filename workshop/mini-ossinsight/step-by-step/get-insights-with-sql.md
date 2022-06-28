@@ -5,9 +5,9 @@ sidebar_position: 3
 
 Now, the data is ready, let's try to analyze these data with SQL!
 
-## 1. Prepare SQL
+## 1. Get Insights With Raw SQL
 
-We won't talk too much about how to get USEFUL insights from such a big data as we are also students in open source software field. All SQLs in this project can be found on page, just click the `SHOW SQL` button on top-right of each charts to get the corresponding SQL.
+We won't talk too much about how to get USEFUL insights from such a big data as we are also students in open source software field. All SQLs in this project can be found on page, just click the `SHOW SQL` button on top-right of each chart to get the corresponding SQL.
 
 ## 2. Make Data More Beautiful
 
@@ -39,9 +39,10 @@ PREFETCH_CONCURRENT=3
 
 then run:
 ```bash
-cd api;
-npm install;
-npm run start;
+cd ossinsight/api/;
+npm install -g pnpm;
+pnpm install;
+pnpm run dev;
 ```
 
 #### Start Web UI

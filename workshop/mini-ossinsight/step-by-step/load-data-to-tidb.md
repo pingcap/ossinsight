@@ -13,7 +13,7 @@ It's easy to setup a TiDB Cluster in your laptop (Mac or Linux) with the officia
 # Install tiup ("tiup" is inspired by rustup -:)
 curl --proto '=https' --tlsv1.2 -sSf https://tiup-mirrors.pingcap.com/install.sh | sh
 # Install & Start TiDB Server
-tiup playground -T mini-ossinsight
+tiup playground -T ossinsight
 ```
 
 Expected output:
