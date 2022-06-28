@@ -1,22 +1,8 @@
 version: '3.9'
 
-services:
-  tidb:
-    image: hooopo/tidb-cluster:v6.1.0
-    restart: always
-    ports: 
-      - "4000:4000"
-      - "9000:9000"
-      - "2379:2379"
-    healthcheck:
-      test: [ 'CMD', 'mysqladmin', 'ping', '-u', 'root', '-h', '127.0.0.1', '--password=""', '--port', '4000' ]
-      interval: 5s
-      timeout: 10s
-      retries: 20
-    volumes:
-      - tidb:/root/.tiup/data
-    command: ['tiup', 'playground', 'v6.1.0', '--tag', 'ossinsight', '--without-monitor', '--db.host', '0.0.0.0', '--tiflash', '1', '--db.config', '/root/.tiup/config.toml']
+# tiup playground v6.1.0 -T oss --without-monitor --db.host 0.0.0.0 --tiflash 1
 
+services:
   data:
     build:
       context: ./backend
@@ -28,9 +14,6 @@ services:
         RAILS_SERVE_STATIC_FILES: 'false'
     tty: true
     stdin_open: true
-    depends_on: 
-      tidb:
-        condition: service_healthy
     image: hooopo/ossinsight-data
     restart: always
 
@@ -38,7 +21,7 @@ services:
     environment:
       - NODE_ENV=development
       - RAILS_ENV=development
-      - DATABASE_URL=tidb://root:@tidb:4000/gharchive_dev
+      - DATABASE_URL=tidb://root:@host.docker.internal:4000/gharchive_dev
       - GITHUB_TOKEN=${GITHUB_TOKEN:?err}
 
   api:
@@ -52,12 +35,10 @@ services:
     ports: 
       - "3450:3450"
     depends_on: 
-      tidb:
-        condition: service_healthy
       data:
         condition: service_started
     environment:
-      - DB_HOST=tidb
+      - DB_HOST=host.docker.internal
       - DB_PORT=4000
       - DB_USER=root
       - DB_DATABASE=gharchive_dev
@@ -79,12 +60,12 @@ services:
     restart: always
     command: ["npm", "run", "prefetch"]
     depends_on: 
-      tidb:
-        condition: service_healthy
       data:
         condition: service_started
+      sample:
+        condition: service_completed_successfully
     environment:
-      - DB_HOST=tidb
+      - DB_HOST=host.docker.internal
       - DB_PORT=4000
       - DB_USER=root
       - DB_DATABASE=gharchive_dev
@@ -106,9 +87,6 @@ services:
         NODE_ENV: 'development'
     ports: 
       - "3000:3000"
-    depends_on: 
-      tidb:
-        condition: service_healthy
     environment:
       - NODE_ENV=development
       - APP_HOST=http://localhost:3450
@@ -119,11 +97,33 @@ services:
       - prefetch:/app/.prefetch
       - docusaurus:/app/.docusaurus
 
+  sample:
+    build:
+      context: ./backend
+      dockerfile: ./Dockerfile
+      args:
+        BUNDLE_WITHOUT: ''
+        EXECJS_RUNTIME: 'Node'
+        RAILS_ENV: 'development'
+        RAILS_SERVE_STATIC_FILES: 'false'
+    tty: true
+    stdin_open: true
+    image: hooopo/ossinsight-data
+    depends_on: 
+      data:
+        condition: service_started
+
+    command: ["bundle", "exec", "rake", "gh:load_sample"]
+    environment:
+      - NODE_ENV=development
+      - RAILS_ENV=development
+      - DATABASE_URL=tidb://root:@host.docker.internal:4000/gharchive_dev
+      - GITHUB_TOKEN=${GITHUB_TOKEN:?err}
+
 networks:
   default:
 
 volumes:
-  tidb:
   packs:
   node_modules:
   cache:
