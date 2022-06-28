@@ -25,7 +25,7 @@ const df = new Intl.DateTimeFormat(['en-US'], {
   month: 'short',
   year: 'numeric',
 });
-const formatTime = (name: string): string => df.format(new Date(name));
+const formatTime = (name: string | undefined): string => name ? df.format(new Date(name)) : '--';
 
 const formatNumber = (v: number) => v.toFixed(1).replace(/[.,]0$/, '');
 
