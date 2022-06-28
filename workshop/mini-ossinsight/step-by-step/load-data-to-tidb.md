@@ -38,15 +38,19 @@ To view the Grafana: http://127.0.0.1:3000
 
 ### b. Config data loader script
 
-[Create a personal access token](/workshop/mini-ossinsight/step-by-step/find-data-source#creating-a-personal-access-token), then edit `ossinsight/backend/.env.local`(if there is no such file, `/usr/bin/touch` one):
+Open another terminal tab, edit `ossinsight/backend/.env.local`
+
+(Learn how to [create a personal access token](/workshop/mini-ossinsight/step-by-step/find-data-source#creating-a-personal-access-token))
+
 ```
 DATABASE_URL=tidb://root@127.0.0.1:4000/gharchive_dev
-GITHUB_TOKEN=(your github personal token)
+GITHUB_TOKEN=(your github personal access token)
 ```
 
 then initial data loader script environment with:
 ```bash
-# brew install openssl ruby@2.7;
+# Homebrew: https://brew.sh/
+# brew install openssl ruby@2.7 mysql-client;
 cd ossinsight/backend/;
 bundle install;
 ```
@@ -71,10 +75,10 @@ cd ossinsight/backend/;
 # Load collections
 bundle exec rake gh:load_collection
 
-# Load 1 million events data
+# Load sample events data
 wget https://github.com/pingcap/ossinsight/releases/download/sample/sample1m.sql.zip;
-unzip sample1m.sql;
-mysql --comments --host 127.0.0.1 --port 4000 -u root -p gharchive_dev < sample1m.sql
+unzip sample1m.sql.zip;
+mysql --host 127.0.0.1 --port 4000 -u root -p gharchive_dev < sample1m.sql
 ```
 
 The importing task would cost about 5 minutes.
@@ -103,23 +107,3 @@ Execute the following SQL to check if it is ACTUALLY ready:
 SELECT count(*) FROM gharchive_dev.github_events;
 ```
 Try it again after a few seconds, make sure the results are different.
-
-```
-mysql> SELECT count(*) FROM gharchive_dev.github_events;
-+----------+
-| count(*) |
-+----------+
-|  1005808 |
-+----------+
-1 row in set (0.00 sec)
-
-mysql> SELECT count(*) FROM gharchive_dev.github_events;
-+----------+
-| count(*) |
-+----------+
-|  1005872 |
-+----------+
-1 row in set (0.01 sec)
-
-mysql>
-```

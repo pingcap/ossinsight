@@ -2,6 +2,8 @@
 title: 'Step 3: Get Insights with SQL'
 sidebar_position: 3
 ---
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 
 Now, the data is ready, let's try to analyze these data with SQL!
 
@@ -9,7 +11,10 @@ Now, the data is ready, let's try to analyze these data with SQL!
 
 ### a. Can't Wait!
 
-Let's test this dataset with a SQL: look at GitHub bots' growth:
+The below SQL is chosed from [blog - Love, Code, and Robot](/blog/say-thanks-to-github-robots/), it explains how robots grow on GitHub:
+
+<Tabs>
+  <TabItem value="sql" label="SQL">
 
 ```sql
 WITH bots_with_first_seen AS (
@@ -32,30 +37,25 @@ SELECT ANY_VALUE(cnt) AS bots_total, event_year
 FROM acc
 GROUP BY event_year
 ORDER BY event_year;
-```
 
-the result is:
-```sql
 +------------+------------+
 | bots_total | event_year |
 +------------+------------+
 |         20 |       2011 |
 |         32 |       2012 |
 |         57 |       2013 |
-|         85 |       2014 |
-|        119 |       2015 |
-|        157 |       2016 |
-|        193 |       2017 |
-|        219 |       2018 |
-|        241 |       2019 |
-|        266 |       2020 |
-|        287 |       2021 |
+......
 |        295 |       2022 |
 +------------+------------+
 12 rows in set (3.41 sec)
 ```
+  </TabItem>
+  <TabItem value="explain" label="Explain">
+TODO
+  </TabItem>
+</Tabs>
 
-it works, but could it be faster?Of course.
+it works, but could it be faster? of course.
 
 ### b. !!! Set Column-Oriented Storage Replica
 
@@ -88,30 +88,51 @@ mysql> SELECT * FROM information_schema.tiflash_replica WHERE TABLE_SCHEMA = 'gh
 mysql>
 ```
 
-Now try to execute the former robot sql (begin with: `WITH bots_with_first_seen`  again, this is the result:
+Now try to execute the former robot sql(start with: `WITH bots_with_first_seen`) again, result:
+
+<Tabs>
+  <TabItem value="sql" label="SQL">
+
 ```sql
+WITH bots_with_first_seen AS (
+    SELECT
+        actor_login, MIN(event_year) AS first_seen_at
+    FROM github_events ge
+    WHERE
+        actor_login REGEXP '^(bot-.+|.+bot|.+\\[bot\\]|.+-bot-.+|robot-.+|.+-ci-.+|.+-ci|.+-testing|.+clabot.+|.+-gerrit|k8s-.+|.+-machine|.+-automation|github-.+|.+-github|.+-service|.+-builds|codecov-.+|.+teamcity.+|jenkins-.+|.+-jira-.+)$'
+    GROUP BY actor_login
+    ORDER BY first_seen_at
+),  acc AS (
+    SELECT
+        COUNT(actor_login) OVER (ORDER BY first_seen_at) AS cnt,
+        first_seen_at AS event_year
+    FROM
+        bots_with_first_seen AS bwfs
+    ORDER BY event_year
+)
+SELECT ANY_VALUE(cnt) AS bots_total, event_year
+FROM acc
+GROUP BY event_year
+ORDER BY event_year;
+
 +------------+------------+
 | bots_total | event_year |
 +------------+------------+
 |         20 |       2011 |
 |         32 |       2012 |
 |         57 |       2013 |
-|         85 |       2014 |
-|        119 |       2015 |
-|        157 |       2016 |
-|        193 |       2017 |
-|        219 |       2018 |
-|        241 |       2019 |
-|        266 |       2020 |
-|        287 |       2021 |
+......
 |        295 |       2022 |
 +------------+------------+
 12 rows in set (0.05 sec)
 ```
+  </TabItem>
+  <TabItem value="explain" label="Explain">
+TODO
+  </TabItem>
+</Tabs>
 
-**IT IS SUPER FASTER**!
-
-We provide a all-in-one script to run `SET TIFLASH REPLICA` on all tables:
+`3.41s` VS `0.05s`, **IT IS SUPER FASTER**! We provide a all-in-one script to run `SET TIFLASH REPLICA` on all tables:
 ```bash
 cd ossinsight/backend/;
 bundle exec rake gh:set_tiflash_replica
@@ -144,18 +165,10 @@ SERVER_PORT=3450
 # comma separated tokens
 GH_TOKENS='(your github personal access token)'
 PREFETCH_CONCURRENT=3
+ENABLE_CACHE=0
 ```
 
-### b. Start Prefetch Service
-
-Open another terminal tab, then:
-
-```bash
-cd ossinsight/api/;
-npm run prefetch;
-```
-
-### c. Start API
+### b. Start API Server
 
 Open another terminal tab, then:
 
@@ -166,7 +179,7 @@ pnpm install;
 pnpm run dev;
 ```
 
-### d. Start Web UI
+### c. Start Web UI
 
 Open another terminal tab, then:
 
@@ -174,4 +187,11 @@ Open another terminal tab, then:
 cd ossinsight/;
 npm install;
 APP_HOST=http://localhost:3450 APP_API_BASE=http://localhost:3450 npm run start;
+```
+
+
+### d. Well done!
+
+```bash
+open http://127.0.0.1:3000;
 ```
