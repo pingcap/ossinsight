@@ -12,7 +12,8 @@ It's easy to setup a TiDB Cluster in your laptop (Mac or Linux) with the officia
 ```bash
 # Install tiup ("tiup" is inspired by rustup -:)
 curl --proto '=https' --tlsv1.2 -sSf https://tiup-mirrors.pingcap.com/install.sh | sh
-# Install & Start TiDB Server
+# Install & Start TiDB Server.
+# Note: Grafana's port:3000 will confliect with Docusaurus:3000`, so run tiup with `--without-monitor` option
 tiup playground --without-monitor -T ossinsight
 ```
 
@@ -61,39 +62,6 @@ bundle exec rails db:create
 bundle exec rails db:migrate
 ```
 
-### d. !!! Set Column-Oriented Storage Replica
-
-This step is important enough that it adds column-oriented-storage ability to TiDB - We call it [TiFlash](https://docs.pingcap.com/tidb/dev/tiflash-overview). The `tiup playground` installed 1 TiFlash node by default, what we need to do is just make data is `STORED` in these replica node too.
-
-I. It's easy to set TiFlash replica, different with other software, TiDB use SQL to take such changes into effect:
-
-```sql
-use gharchive_dev;
-ALTER TABLE github_events SET TIFLASH REPLICA 1;
-```
-
-II. Setting a TiFlash replica will take you some time, so you can use the following SQL statements to check if the procedure is done or not.
-
-```sql
-SELECT * FROM information_schema.tiflash_replica WHERE TABLE_SCHEMA = 'gharchive_dev' and TABLE_NAME = 'github_events';
-```
-
-If the results you get are the same as follows, then it means the procedure is done.
-
-```sql
-mysql> SELECT * FROM information_schema.tiflash_replica WHERE TABLE_SCHEMA = 'gharchive_dev' and TABLE_NAME = 'github_events';
-+---------------+---------------+----------+---------------+-----------------+-----------+----------+
-| TABLE_SCHEMA  | TABLE_NAME    | TABLE_ID | REPLICA_COUNT | LOCATION_LABELS | AVAILABLE | PROGRESS |
-+---------------+---------------+----------+---------------+-----------------+-----------+----------+
-| gharchive_dev | github_events |       68 |             1 |                 |         1 |        1 |
-+---------------+---------------+----------+---------------+-----------------+-----------+----------+
-1 row in set (0.27 sec)
-
-mysql>
-```
-
-III. Repeat c.I and c.II on other tables.
-
 
 ## 2. Load sample historical GitHub events to TiDB
 
@@ -109,12 +77,12 @@ unzip sample1m.sql;
 mysql --comments --host 127.0.0.1 --port 4000 -u root -p gharchive_dev < sample1m.sql
 ```
 
-The importing task would cost about 10mins.
+The importing task would cost about 5 minutes.
 
 
 ## 3. Listen to /events and insert realtime events to TiDB
 
-Start the crawler daemon by:
+Open another terminal tab, start the crawler daemon by:
 
 ```bash
 cd ossinsight/backend/;
@@ -141,7 +109,7 @@ mysql> SELECT count(*) FROM gharchive_dev.github_events;
 +----------+
 | count(*) |
 +----------+
-|     5808 |
+|  1005808 |
 +----------+
 1 row in set (0.00 sec)
 
@@ -149,7 +117,7 @@ mysql> SELECT count(*) FROM gharchive_dev.github_events;
 +----------+
 | count(*) |
 +----------+
-|     5872 |
+|  1005872 |
 +----------+
 1 row in set (0.01 sec)
 
