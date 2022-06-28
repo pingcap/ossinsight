@@ -17,6 +17,8 @@ yarn-error.log
 coverage/
 .env.local
 .env
+.docusaurus
+.prefetch
 
 api/
 
