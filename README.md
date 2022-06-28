@@ -118,12 +118,28 @@ open http://localhost:3000
 
 ### Docker Compose
 
+install tiup
+
+```
+curl --proto '=https' --tlsv1.2 -sSf https://tiup-mirrors.pingcap.com/install.sh | sh
+```
+
+start tiup
+
+```
+tiup playground v6.1.0 -T oss --without-monitor --db.host 0.0.0.0 --tiflash 1
+```
+
+download ossinsight repo:
+
 ```
 git clone https://github.com/pingcap/ossinsight.git
 
 cd ossinsight
 
-GITHUB_TOKEN=xxx docker-compose up
+# you need to create github token via this url: https://github.com/settings/tokens/new
+
+GITHUB_TOKEN=xxx docker-compose up 
 ```
 
 build ossinsight local:
