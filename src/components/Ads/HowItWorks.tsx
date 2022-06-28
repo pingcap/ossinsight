@@ -7,7 +7,7 @@ import IconButton from '@mui/material/IconButton';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import { SxProps } from '@mui/system';
-import React, { MouseEventHandler, useMemo, useState } from 'react';
+import React, { MouseEventHandler, useEffect, useMemo, useState } from 'react';
 import { responsiveSx } from '../../pages/home/_components/responsive';
 
 export interface HowItWorksProps {
@@ -27,9 +27,18 @@ function getInitialDisplay () {
 const url = 'https://share.hsforms.com/1E-qtGQWrTVmctP8kBT34gw2npzm';
 
 let _display = getInitialDisplay();
+const delay = 80000
 
 export default function HowItWorks({}: HowItWorksProps) {
-  const [display, setDisplay] = useState(_display);
+  const [display, setDisplay] = useState(false);
+
+  useEffect(() => {
+    if (_display) {
+      setTimeout(() => {
+        setDisplay(true)
+      }, delay)
+    }
+  }, [])
 
   const _sx: SxProps = useMemo(() => {
     return [
