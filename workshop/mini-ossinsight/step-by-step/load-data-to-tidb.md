@@ -76,6 +76,8 @@ cd ossinsight/backend/;
 bundle exec rake gh:load_collection
 
 # Load sample events data
+# if you want to get different size of data please visit: 
+# https://github.com/pingcap/ossinsight/releases/tag/sample
 wget https://github.com/pingcap/ossinsight/releases/download/sample/sample1m.sql.zip;
 unzip sample1m.sql.zip;
 mysql --host 127.0.0.1 --port 4000 -u root -p gharchive_dev < sample1m.sql
