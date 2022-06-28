@@ -70,29 +70,6 @@ services:
       - prefetch:/app/.prefetch
       - docusaurus:/app/.docusaurus
 
-  sample:
-    build:
-      context: ./backend
-      dockerfile: ./Dockerfile
-      args:
-        BUNDLE_WITHOUT: ''
-        EXECJS_RUNTIME: 'Node'
-        RAILS_ENV: 'development'
-        RAILS_SERVE_STATIC_FILES: 'false'
-    tty: true
-    stdin_open: true
-    image: hooopo/ossinsight-data
-    depends_on: 
-      data:
-        condition: service_started
-
-    command: ["bundle", "exec", "rake", "gh:load_sample"]
-    environment:
-      - NODE_ENV=development
-      - RAILS_ENV=development
-      - DATABASE_URL=tidb://root:@host.docker.internal:4000/gharchive_dev
-      - GITHUB_TOKEN=${GITHUB_TOKEN:?err}
-
 networks:
   default:
 

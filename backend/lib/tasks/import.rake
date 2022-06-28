@@ -25,6 +25,7 @@ namespace :gh do
   end
 
   task :load_sample => :environment do 
+    # TODO use small sample dataset
     `cd /app/tmp && wget https://cdn.hackershare.cn/sample1m.sql.zip && unzip sample1m.sql.zip`
     uri = URI.parse(ENV['DATABASE_URL'])
     cmd = "mysql -u #{uri.user} --port=#{uri.port} --password=#{uri.password} -h #{uri.host} #{uri.path.sub('/', '')} < /app/tmp/sample-100w.sql "
