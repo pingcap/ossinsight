@@ -105,8 +105,8 @@ export default withInViewContainer(function MonthRankSection() {
               <Table className="clearTable" size="small" stickyHeader>
                 <TableHead>
                   <TableRow>
-                    <HeaderCell>{formatTime(data.data[0].current_month)}</HeaderCell>
-                    <HeaderCell>{formatTime(data.data[0].last_month)}</HeaderCell>
+                    <HeaderCell>{formatTime(data.data[0]?.current_month)}</HeaderCell>
+                    <HeaderCell>{formatTime(data.data[0]?.last_month)}</HeaderCell>
                     <HeaderCell>Repository</HeaderCell>
                     <HeaderCell>{dimension.title}</HeaderCell>
                     <HeaderCell sx={{ color: 'gray' }} align="right">Total</HeaderCell>
