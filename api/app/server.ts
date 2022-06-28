@@ -205,12 +205,32 @@ export default async function server(router: Router<DefaultState, ContextExtends
         return
       }
 
-      const res = await ghExecutor.searchRepos(keyword)
+      const res = await ghExecutor.searchRepos(String(keyword))
 
       ctx.response.status = 200
       ctx.response.body = res
     } catch (e: any) {
+      ctx.logger.error('request failed %s', ctx.request.originalUrl, e)
+      ctx.response.status = e?.response?.status ?? e?.status ?? 500
+      ctx.response.body = e?.response?.data ?? e?.message ?? String(e)
+    }
+  })
 
+  router.get('/gh/users/search', measureRequests({ urlLabel: 'path' }), async ctx => {
+    const { keyword } = ctx.query;
+
+    try {
+      if (keyword == null || keyword.length === 0) {
+        ctx.response.status = 400;
+        ctx.response.body = "keyword can not be empty.";
+        return
+      }
+
+      const res = await ghExecutor.searchUsers(String(keyword))
+
+      ctx.response.status = 200
+      ctx.response.body = res
+    } catch (e: any) {
       ctx.logger.error('request failed %s', ctx.request.originalUrl, e)
       ctx.response.status = e?.response?.status ?? e?.status ?? 500
       ctx.response.body = e?.response?.data ?? e?.message ?? String(e)

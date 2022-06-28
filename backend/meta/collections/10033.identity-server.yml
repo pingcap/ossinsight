@@ -1,0 +1,11 @@
+id: 10033
+name: Identity Server
+items:
+  - supertokens/supertokens-core
+  - ory/kratos
+  - keycloak/keycloak
+  - privacyidea/privacyidea
+  - apereo/cas
+  - casdoor/casdoor
+  - IdentityServer/IdentityServer4
+  - nextauthjs/next-auth

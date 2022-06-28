@@ -1,6 +1,14 @@
-name: Verify
+name: Verify Query Definition File
 
-on: pull_request_target
+on:
+  pull_request_target:
+    paths:
+      - 'api/**'
+
+defaults:
+  run:
+    shell: bash
+    working-directory: api
 
 jobs:
   validate:
@@ -20,8 +28,9 @@ jobs:
         with:
           node-version: v16.14.0
           cache: 'pnpm'
+          cache-dependency-path: 'api/pnpm-lock.yaml'
 
-      - name: Install Dependency
+      - name: Install Dependencies
         run: pnpm i --frozen-lockfile --strict-peer-dependencies
 
       - name: Verify Query Definition JSON
