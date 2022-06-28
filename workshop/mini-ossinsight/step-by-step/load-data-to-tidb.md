@@ -13,7 +13,7 @@ It's easy to setup a TiDB Cluster in your laptop (Mac or Linux) with the officia
 # Install tiup ("tiup" is inspired by rustup -:)
 curl --proto '=https' --tlsv1.2 -sSf https://tiup-mirrors.pingcap.com/install.sh | sh
 # Install & Start TiDB Server
-tiup playground -T ossinsight
+tiup playground --without-monitor -T ossinsight
 ```
 
 Expected output:
@@ -53,8 +53,8 @@ bundle install;
 ### c. Inittial database schema
 
 ```bash
-# pwd: ossinsight/backend/;
 # Create database
+cd ossinsight/backend/;
 bundle exec rails db:create
 
 # Create tables, index
@@ -65,14 +65,14 @@ bundle exec rails db:migrate
 
 This step is important enough that it adds column-oriented-storage ability to TiDB - We call it [TiFlash](https://docs.pingcap.com/tidb/dev/tiflash-overview). The `tiup playground` installed 1 TiFlash node by default, what we need to do is just make data is `STORED` in these replica node too.
 
-1. It's easy to set TiFlash replica, different with other software, TiDB use SQL to take such changes into effect:
+I. It's easy to set TiFlash replica, different with other software, TiDB use SQL to take such changes into effect:
 
 ```sql
 use gharchive_dev;
 ALTER TABLE github_events SET TIFLASH REPLICA 1;
 ```
 
-2. Setting a TiFlash replica will take you some time, so you can use the following SQL statements to check if the procedure is done or not.
+II. Setting a TiFlash replica will take you some time, so you can use the following SQL statements to check if the procedure is done or not.
 
 ```sql
 SELECT * FROM information_schema.tiflash_replica WHERE TABLE_SCHEMA = 'gharchive_dev' and TABLE_NAME = 'github_events';
@@ -92,19 +92,21 @@ mysql> SELECT * FROM information_schema.tiflash_replica WHERE TABLE_SCHEMA = 'gh
 mysql>
 ```
 
-3. Repeat c.1 and c.2 on other tables.
+III. Repeat c.I and c.II on other tables.
 
 
 ## 2. Load sample historical GitHub events to TiDB
 
 ```bash
-# pwd: ossinsight/backend/;
+cd ossinsight/backend/;
+
 # Load collections
 bundle exec rake gh:load_collection
-# Load 5 million events data
+
+# Load 1 million events data
 wget https://github.com/pingcap/ossinsight/releases/download/sample/sample1m.sql.zip;
 unzip sample1m.sql;
-mysql --comments --host 127.0.0.1 --port 4000 -u root -p gharchive_dev < sample3m.sql
+mysql --comments --host 127.0.0.1 --port 4000 -u root -p gharchive_dev < sample1m.sql
 ```
 
 The importing task would cost about 10mins.
@@ -115,7 +117,7 @@ The importing task would cost about 10mins.
 Start the crawler daemon by:
 
 ```bash
-# pwd: ossinsight/backend/;
+cd ossinsight/backend/;
 bundle exec rails runner 'Realtime.new(ENV["GITHUB_TOKEN"].to_s.split(","), 100).run';
 ```
 
