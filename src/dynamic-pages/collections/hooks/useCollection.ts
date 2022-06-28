@@ -2,6 +2,7 @@ import { usePluginData } from '@docusaurus/useGlobalData';
 import { paramCase } from 'param-case';
 import { useMemo } from 'react';
 import useSWR from 'swr';
+import { core } from '../../../api';
 import { RemoteData } from '../../../components/RemoteCharts/hook';
 
 export type Collection = {
@@ -14,8 +15,8 @@ export type Collection = {
 export function useCollections(): Collection[] {
   const {collections} = usePluginData<{collections: RemoteData<any, Collection>}>('plugin-prefetch');
 
-  const { data } = useSWR<RemoteData<any, Collection>>('https://api.ossinsight.io/collections', {
-    fetcher: url => fetch(url).then(res => res.json()),
+  const { data } = useSWR<RemoteData<any, Collection>>('static/collections', {
+    fetcher: core.getCollections,
     fallbackData: collections,
   });
 

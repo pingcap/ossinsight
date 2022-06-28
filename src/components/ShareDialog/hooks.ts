@@ -1,4 +1,3 @@
-import { createHttpClient } from '../../lib/request';
 import {CommonChartShareInfo} from '../CommonChart/context';
 import {MutableRefObject, useCallback, useState} from 'react';
 import EChartsReact from 'echarts-for-react';

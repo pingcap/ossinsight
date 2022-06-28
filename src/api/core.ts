@@ -1,7 +1,15 @@
-import { AxiosRequestConfig } from 'axios';
+import axios, { AxiosRequestConfig } from 'axios';
 import { RemoteData } from '../components/RemoteCharts/hook';
-import { createHttpClient } from '../lib/request';
+import { Collection } from '../dynamic-pages/collections/hooks/useCollection';
 import { RepoInfo } from './gh';
+
+export const BASE_URL = 'https://api.ossinsight.io'
+
+export function createHttpClient() {
+  return  axios.create({
+    baseURL: BASE_URL
+  });
+}
 
 export const client = createHttpClient();
 
@@ -18,6 +26,10 @@ export async function getRepo(name: string): Promise<RepoInfo> {
 
 export async function searchRepo(keyword: string): Promise<{ id: number, fullName: string }[]> {
   return client.get(`/gh/repos/search`, { params: { keyword } }).then(({ data }) => data);
+}
+
+export async function getCollections(): Promise<RemoteData<{}, Collection>> {
+  return client.get(`/collections`)
 }
 
 client.defaults.paramsSerializer = function paramsSerializer(params: any): string {

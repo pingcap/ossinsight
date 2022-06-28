@@ -2,10 +2,7 @@ import { debounce } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
 import useSWR from 'swr';
 import { core } from '../../api';
-import { createHttpClient } from '../../lib/request';
 import { AsyncData } from '../RemoteCharts/hook';
-
-const client = createHttpClient();
 
 export interface Repo extends Record<string, unknown> {
   id: number
