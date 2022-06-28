@@ -1,10 +1,11 @@
 import { debounce } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
 import useSWR from 'swr';
+import { core } from '../../api';
 import { createHttpClient } from '../../lib/request';
 import { AsyncData } from '../RemoteCharts/hook';
 
-const httpClient = createHttpClient();
+const client = createHttpClient();
 
 export interface Repo extends Record<string, unknown> {
   id: number
@@ -34,8 +35,8 @@ export function useSearchRepo(keyword: string): AsyncData<Repo[]> {
     error,
   } = useSWR<Repo[]>(searchKey ? [searchKey, 'search'] : undefined, {
     fetcher: async (keyword) => {
-      const { data: { data } } = await httpClient.get(`/gh/repos/search`, { params: { keyword } });
-      return data.map((r) => ({
+      const list = await core.searchRepo(keyword);
+      return list.map((r) => ({
         id: r.id,
         name: r.fullName,
       }));

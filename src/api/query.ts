@@ -1,5 +1,5 @@
-import useSWR, {SWRResponse} from "swr";
-import {BASE_URL} from "../lib/request";
+import useSWR, { SWRResponse } from 'swr';
+import { query } from './core';
 
 export interface RepoRank {
   repo_name: string,
@@ -14,19 +14,18 @@ export interface RepoRank {
 }
 
 interface RepoRankData extends Array<RepoRank> {
-  sql: string
+  sql: string;
 }
 
 export const useRank = (period = 'last_hour'): SWRResponse<RepoRankData> => {
-  const dataUrl = `${BASE_URL}/q/recent-events-rank`
-
-  return useSWR<RepoRankData>([period], {
+  return useSWR<RepoRankData>(['recent-events-rank', period], {
     fetcher: async (period) => {
-      const {data, sql} = await fetch(`${dataUrl}?period=${period}`).then(data => data.json())
-      data.sql = sql
-      return data
+      const data = await query<RepoRank>('recent-events-rank', { period });
+      let res: RepoRankData = data.data as RepoRankData;
+      res.sql = data.sql;
+      return res;
     },
     revalidateOnFocus: false,
-    revalidateOnReconnect: false
-  })
-}
+    revalidateOnReconnect: false,
+  });
+};
