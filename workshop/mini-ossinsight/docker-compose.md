@@ -11,8 +11,7 @@ It's easy to setup a TiDB Cluster in your laptop (Mac or Linux) with the officia
 # Install tiup
 curl --proto '=https' --tlsv1.2 -sSf https://tiup-mirrors.pingcap.com/install.sh | sh
 # Install & Start TiDB Server.
-# Note: Grafana's port:3000 will confliect with Docusaurus:3000`, so run tiup with `--without-monitor` option
-tiup playground --without-monitor -T ossinsight
+tiup playground -T ossinsight
 ```
 
 Expected output:
@@ -21,6 +20,8 @@ CLUSTER START SUCCESSFULLY, Enjoy it ^-^
 To connect TiDB: mysql --comments --host 127.0.0.1 --port 4000 -u root -p (no password)
 To view the dashboard: http://127.0.0.1:2379/dashboard
 PD client endpoints: [127.0.0.1:2379]
+To view the Prometheus: http://127.0.0.1:9090
+To view the Grafana: http://127.0.0.1:3000
 ```
 
 ## 1. Install Docker Compose
@@ -57,4 +58,4 @@ mysql --host 127.0.0.1 --port 4000 -u root -p gharchive_dev < sample5m.sql
 
 ## 3. Well Done!
 
-Visit: http://127.0.0.1:3000/;
+Visit: http://127.0.0.1:3001/;
