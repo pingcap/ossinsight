@@ -6,6 +6,9 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 const path = require('path')
 const fs = require('fs')
 
+const HOST = process.env.APP_HOST || 'https://ossinsight.io'
+const API_BASE = process.env.APP_API_BASE || 'https://api.ossinsight.io'
+
 const getPresets = (fn) => {
   return fs.readFileSync(fn, { encoding: 'utf-8' })
     .split('\n')
@@ -14,14 +17,16 @@ const getPresets = (fn) => {
 }
 
 const getPrefetched = fn => {
-  return JSON.parse(fs.readFileSync(fn, { encoding: 'utf-8'}))
+  try {
+    return JSON.parse(fs.readFileSync(fn, {encoding: 'utf-8'}))
+  } catch (e) {}
 }
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'OSS Insight',
   tagline: ' Deep Insights into Billions of GitHub events',
-  url: 'https://ossinsight.io',
+  url: HOST,
   baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
@@ -29,11 +34,17 @@ const config = {
   organizationName: 'pingcap',
   projectName: 'ossinsight',
   scripts: [
-    'https://api.ossinsight.io/qo/repos/groups/osdb?format=global_variable',
+    API_BASE + '/qo/repos/groups/osdb?format=global_variable',
     'https://www.google.com/recaptcha/api.js?render=6LcBQpkfAAAAAFmuSRkRlJxVtmqR34nNawFgKohC'
   ],
   clientModules: [path.resolve(__dirname, './src/client/linkedin.js')],
   plugins: [
+    [
+      path.resolve(__dirname, 'plugins/define'),
+      {
+        'process.env.APP_API_BASE': JSON.stringify(API_BASE),
+      }
+    ],
     [
       path.resolve(__dirname, 'plugins/gtag'),
       {
@@ -64,7 +75,7 @@ const config = {
             path: '/collections/:slug',
             exact: true,
             component: '@site/src/dynamic-pages/collections',
-            params: getPrefetched('.prefetch/collections.json').data.map(({name}) => ({
+            params: getPrefetched('.prefetch/collections.json')?.data.map(({name}) => ({
               slug: require('param-case').paramCase(name)
             }))
           },
@@ -72,7 +83,7 @@ const config = {
             path: '/collections/:slug/trends',
             exact: true,
             component: '@site/src/dynamic-pages/collections/dynamic-trends',
-            params: getPrefetched('.prefetch/collections.json').data.map(({name}) => ({
+            params: getPrefetched('.prefetch/collections.json')?.data.map(({name}) => ({
               slug: require('param-case').paramCase(name)
             }))
           }

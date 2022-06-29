@@ -8,6 +8,31 @@ require 'yaml'
 require_relative '../importer'
 
 namespace :gh do 
+  task :set_tiflash_replica => :environment do 
+    ActiveRecord::Base.connection.execute("ALTER TABLE github_events SET TIFLASH REPLICA 1")
+    ActiveRecord::Base.connection.execute("ALTER TABLE db_repos SET TIFLASH REPLICA 1")
+    ActiveRecord::Base.connection.execute("ALTER TABLE collections SET TIFLASH REPLICA 1")
+    ActiveRecord::Base.connection.execute("ALTER TABLE collection_items SET TIFLASH REPLICA 1")
+    ActiveRecord::Base.connection.execute("ALTER TABLE web_framework_repos SET TIFLASH REPLICA 1")
+    ActiveRecord::Base.connection.execute("ALTER TABLE nocode_repos SET TIFLASH REPLICA 1")
+    ActiveRecord::Base.connection.execute("ALTER TABLE static_site_generator_repos SET TIFLASH REPLICA 1")
+    ActiveRecord::Base.connection.execute("ALTER TABLE web_framework_repos SET TIFLASH REPLICA 1")
+    ActiveRecord::Base.connection.execute("ALTER TABLE cn_repos SET TIFLASH REPLICA 1")
+    ActiveRecord::Base.connection.execute("ALTER TABLE cn_orgs SET TIFLASH REPLICA 1")
+    ActiveRecord::Base.connection.execute("ALTER TABLE js_framework_repos SET TIFLASH REPLICA 1")
+    ActiveRecord::Base.connection.execute("ALTER TABLE css_framework_repos SET TIFLASH REPLICA 1")
+    ActiveRecord::Base.connection.execute("ALTER TABLE users SET TIFLASH REPLICA 1")
+  end
+
+  task :load_sample => :environment do 
+    # TODO use small sample dataset
+    `cd /app/tmp && wget https://cdn.hackershare.cn/sample1m.sql.zip && unzip sample1m.sql.zip`
+    uri = URI.parse(ENV['DATABASE_URL'])
+    cmd = "mysql -u #{uri.user} --port=#{uri.port} --password=#{uri.password} -h #{uri.host} #{uri.path.sub('/', '')} < /app/tmp/sample-100w.sql "
+    puts cmd
+    system(cmd)
+  end
+
   task :load_collection => :environment do 
     Dir.glob(Rails.root.join "meta/collections/*.yml") do |file|
       yml = YAML.load_file(file)

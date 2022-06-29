@@ -4,6 +4,7 @@ class Realtime
   attr_reader :tokens, :per_page, :tokens_count
 
   def initialize(tokens, per_page)
+    raise "You need to create github token here: https://github.com/settings/tokens, and set GITHUB_TOKEN env." if tokens.blank?
     @tokens = tokens
     @per_page = per_page
     @tokens_count = @tokens.size
