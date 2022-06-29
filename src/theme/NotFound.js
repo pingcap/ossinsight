@@ -22,12 +22,15 @@ function NotFound() {
     // Only support redirect analyze/repo/name for now
     // TODO: see https://www.npmjs.com/package/path-to-regexp
     //       use plugin data to auto generate regexp list.
-    if (/^\/analyze\/[^\/?#]+\/[^\/?#]+\/?$/.test(pathname)) {
-      history.replace({pathname,search,hash})
-      return
-    } else if (/^\/analyze\/?$/.test(pathname)) {
-      history.replace({pathname: '/analyze/pingcap/tidb',search,hash})
-      return
+    const [first, ...rest] = pathname.split('/')
+    if (first === 'analyze') {
+      if (rest.length >= 1 && rest.length <= 2) {
+        history.replace({pathname, search, hash})
+        return
+      } else if (rest.length === 0) {
+        history.replace({pathname: '/analyze/pingcap/tidb', search, hash})
+        return
+      }
     }
     setDisplay(true)
   }, [])
