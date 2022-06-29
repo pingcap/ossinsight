@@ -2,6 +2,7 @@ import React from 'react';
 import GeneralSearch from '../../components/GeneralSearch';
 import CustomPage from '../../theme/CustomPage';
 import OverviewSection from "./sections/0-Overview";
+import BehaviourSection from "./sections/1-Behaviour";
 import { AnalyzeUserContextProps, AnalyzeUserContextProvider } from "./charts/context";
 import { useRouteMatch } from "@docusaurus/router";
 import { useUser } from "../../api";
@@ -18,7 +19,8 @@ const Page = () => {
     <CustomPage>
       <AnalyzeUserContextProvider value={{ login, userId }}>
         <Container maxWidth="lg">
-          <OverviewSection/>
+          <OverviewSection />
+          <BehaviourSection />
         </Container>
       </AnalyzeUserContextProvider>
     </CustomPage>

@@ -85,7 +85,6 @@ const renderUser = (props: React.HTMLAttributes<HTMLLIElement>, option: Option) 
 };
 
 const renderRepo = (props: React.HTMLAttributes<HTMLLIElement>, option: Option) => {
-  console.log(option);
   return (
     <ListItem {...props}>
       <ListItemAvatar>

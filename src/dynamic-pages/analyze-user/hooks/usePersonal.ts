@@ -1,7 +1,7 @@
 import { AsyncData, RemoteData, useRemoteData } from '../../../components/RemoteCharts/hook';
 
 type RequestMap = {
-  'personal-contribution-time-distribution': { day_of_week: number, hour: number, cnt: number, type: string }
+  'personal-contribution-time-distribution': { dayofweek: number, hour: number, cnt: number, type: string }
   'personal-contribution-trends': { contribution_type: ContributionType, event_month: string, cnt: number }
   'personal-contributions-for-repos': { repo_id: number, repo_name: string, type: string, cnt: number }
   'personal-issues-history': { event_month: string, issues: number, issues_comments: number }
@@ -50,4 +50,4 @@ export function usePersonalOverview(userId: number | undefined, run: boolean): A
   }
 }
 
-export type Personal<T extends keyof RequestMap> = AsyncData<RemoteData<PersonalDataParams, RequestMap[T]>>
+export type Personal<T extends keyof RequestMap> = RequestMap[T]
