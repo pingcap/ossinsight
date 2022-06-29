@@ -9,7 +9,7 @@ We provide **monthly rankings and historical growth trends** by metrics such as 
 
 You can see [Collections](https://ossinsight.io/collections/open-source-database)for more information. 
 
-:::note
+:::info
 
 ### 📌 How to add new collections
 Welcome to contribute to us! You can add new collections by **[submitting PRs here](https://github.com/pingcap/ossinsight)**. 

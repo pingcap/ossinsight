@@ -1,0 +1,54 @@
+---
+sidebar_position: 0
+title: Overview
+sidebar_label: Overview
+---
+
+If you want to build **Another Insight** tool with another data source rather than GitHub, then you're in the right place. This workshop will tell you it's not too hard to get insights from big data, expecially **big data with realtime insert/update**.
+
+## What you will learn
+
+### 1. Methodology to setup an insight system
+
+Usually, with enough abstration, there will be 3 steps to setup an insight system like OSS Insight:
+
+1. Find its Data Srouce (both historical data and new realtime data)
+2. Load Data to TiDB (or any other HTAP database)
+3. Get Insights with SQL
+
+### 2. Knowledge about HTAP database
+
+Use HTAP database here is suitable. HTAP stands for [Hybrid Transactional and Analytical Processing](https://docs.pingcap.com/tidb/dev/explore-htap), it is **SUPER EASY** to handle both:
+* acting as a **primary** rdbms to _<u>serve requests in high concurrency</u>_ and _<u>insert/update in realtime</u>_
+* providing _<u>analytical ability to get insights</u>_
+
+There is a 10-minute post to explain [why we choose tidb to support ossinsight](/blog/why-we-choose-tidb-to-support-ossinsight). but for saving time we put a picture below which shows the architecture difference between "before" and "after" we use TiDB:
+<center>
+  <img width="70%" src={require('@site/blog/why-we-choose-tidb-to-support-ossinsight/how-different-db-handle-github-data.jpg').default} alt='Simplified architecture after we use TiDB' />
+</center>
+<center><i>before and after we use TiDB</i></center>
+
+That means, we would never need to learn  traditional `big data` skills such as: MySQL+sharding technologies -> industrail etl tools -> olap databases->MySQL(write back), and then setup/manage these infrastructures, but just get a `T+1` analysis result finally, 
+
+<br />
+
+:::info
+You can load data to MySQL instead of TiDB, but you should will meet with performance issues soon...
+:::
+
+<br />
+
+Well, for saving time, join the bellow workshops asap, each one will follow the above 3 steps!  🏃🏃🏃
+
+## Join Online Workshops
+
+We have implemented the `mini OSS Insights` workshop, and found the posibility of the other 3 workshops, you can try them by yourself with their historical and realtime api (a bit of a challenge, but not too hard :-).
+
+* [mini OSS Insight](/workshop/mini-ossinsight/introduction)
+* [Twitter Insight](/workshop/twitter-insight) _Not ready_
+* [Stack Overflow Insight](/workshop/stackoverflow-insight) _Not ready_
+* [Cryptocurrency Insight](/workshop/cryptocurrency-insight) _Not ready_
+
+## Join Offline Workshop
+
+[Learn More &#187;](/workshop/offline)

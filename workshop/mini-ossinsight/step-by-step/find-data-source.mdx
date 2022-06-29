@@ -1,0 +1,60 @@
+---
+title: 'Step 1: Find Data Source'
+sidebar_position: 1
+---
+
+GitHub was launched in April 2008, and the /events api was published in Feb 2011, so there is a big amount of both historical and realtime data.
+
+:::info GitHub API Docs
+Link: https://docs.github.com/en/rest/activity/events
+:::note
+
+## 1. Historical GitHub events
+
+We can't fetch the historical data from GitHub /events api, but fortunately, they were archived by [GH Archive](https://gharchive.org).
+
+GitHub provides 20+ event types, which range from new commits and fork events, to opening new tickets, commenting, and adding members to a project. These events are aggregated into hourly archives, which you can access with any HTTP client:
+
+| Query | Command |
+| ---- | ---- |
+| Activity for 1/1/2015 @ 3PM UTC |	`wget https://data.gharchive.org/2015-01-01-15.json.gz` |
+| Activity for 1/1/2015 | `wget https://data.gharchive.org/2015-01-01-{0..23}.json.gz` |
+| Activity for all of January 2015 | `wget https://data.gharchive.org/2015-01-{01..31}-{0..23}.json.gz` |
+
+
+## 2. Realtime GitHub events
+
+According to [GitHub Events API Docs](https://docs.github.com/en/rest/activity/events), the realtime /events api looks like this:
+
+```bash
+curl \
+  -H "Accept: application/vnd.github.v3+json" \ 
+  -H "Authorization: token <TOKEN>" \
+  https://api.github.com/events
+```
+
+`<TOKEN>` means `personal access token`, it can be used in api requests or `git clone/push` instead of password & [2FA](https://docs.github.com/en/authentication/securing-your-account-with-two-factor-authentication-2fa/about-two-factor-authentication) code.
+
+### Creating a personal access token
+
+You can learn how to generate one by reading: [Creating a personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token). Or just click [this link](https://github.com/settings/tokens) to generate your personal access token quickly, before that you **MUST SHOULD** know:
+
+**Note**: _Save token to somewhere because you will never see it after closing the tab._  
+**Note**: _Save token to somewhere because you will never see it after closing the tab._  
+**Note**: _Save token to somewhere because you will never see it after closing the tab._  
+
+<br />
+
+<center>
+  <img width="70%" src={require('../../img/new-personal-access-token.png').default} alt='New personal access token' />
+</center>
+<center><i>New personal access token</i></center>
+
+<br />
+
+:::caution
+There is no need to grant any privilege to this token, that means, leave all checkbox UNCHECKED in the `Select scopes` section.
+
+In addition, zero privilege is safe enough.
+:::
+

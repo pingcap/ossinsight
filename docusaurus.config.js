@@ -60,6 +60,17 @@ const config = {
       }
     ],
     [
+      "content-docs",
+      /** @type {import('@docusaurus/plugin-content-docs').Options} */
+      ({
+        id: "workshop",
+        path: "workshop",
+        routeBasePath: "/workshop",
+        editUrl: "https://github.com/pingcap/ossinsight/tree/main",
+        sidebarPath: require.resolve("./sidebars.js"),
+      }),
+    ],
+    [
       path.resolve(__dirname, 'plugins/dynamic-route'),
       {
         routes: [
@@ -138,14 +149,6 @@ const config = {
           ]
         },
         docs: false,
-        /*
-        docs: {
-          path: 'workshop',
-          sidebarPath: require.resolve('./sidebars.js'),
-          editUrl: 'https://github.com/pingcap/ossinsight/edit/main/',
-          routeBasePath: '/workshop',
-        },
-        */
         blog: {
           blogTitle: 'Blog',
           blogSidebarTitle: 'All Blog Posts',
@@ -209,10 +212,28 @@ const config = {
           },
           {to: '/blog', label: 'Blog', position: 'left'},
           {
-            href: 'https://en.pingcap.com/tidb-cloud/?utm_source=ossinsight&utm_medium=referral',
-            className: 'navbar-item-tidb-cloud',
-            position: 'right',
-            alt: 'TiDB Cloud Logo (Header)',
+            type: 'dropdown',
+            label: 'Workshop',
+            position: 'left',
+            items: [
+              {label: 'Overview', to: '/workshop/overview'},
+              {label: 'Workshop: mini OSS Insight', to: '/workshop/mini-ossinsight/introduction'},
+              {label: 'Workshop: Twitter Insight', to: '/workshop/twitter-insight'},
+              {label: 'Workshop: Stack Overflow Insight', to: '/workshop/stackoverflow-insight'},
+              {label: 'Workshop: Cryptocurrency Insight', to: '/workshop/cryptocurrency-insight'},
+              {label: '🗓️ Join Offline Workshop', to: '/workshop/offline'},
+            ]
+          },
+          {
+            type: 'dropdown',
+            label: 'More',
+            position: 'left',
+            items: [
+              {label: 'About OSS Insight', to: '/about'},
+              {label: 'About TiDB Cloud', to: 'https://en.pingcap.com/tidb-cloud?utm_source=ossinsight&utm_medium=referral'},
+              {label: 'How we implement OSS Insight?', to: '/blog/why-we-choose-tidb-to-support-ossinsight'},
+              {label: 'Report Issue', to: 'https://github.com/pingcap/ossinsight/issues'},
+            ]
           },
           {
             href: 'https://twitter.com/OSSInsight',
@@ -220,7 +241,23 @@ const config = {
             position: 'right',
             alt: 'Twitter Logo (Header)',
           },
-        ],
+          process.env.NODE_ENV == 'development' && {
+            type: 'dropdown',
+            label: '⚙️ ',
+            position: 'right',
+            items: [
+              {label: 'Database Overview', to: 'http://localhost:2379/dashboard/#/overview'},
+              {label: '└─ Cluster Topology', to: 'http://localhost:2379/dashboard/#/cluster_info/store_topology'},
+              {label: '└─ Host Info: CPU, Memory, Disk', to: 'http://localhost:2379/dashboard/#/cluster_info/instance'},
+              {label: 'Database Diagnostic', to: 'http://localhost:2379/dashboard/#/system_report'},
+              {label: '└─ All SQL Statements', to: 'http://localhost:2379/dashboard/#/statement'},
+              {label: '└─ SQLs Cause High Load', to: 'http://localhost:2379/dashboard/#/topsql'},
+              {label: '└─ Slow Queries', to: 'http://localhost:2379/dashboard/#/topsql'},
+              {label: '└─ Traffic Hotspots', to: 'http://localhost:2379/dashboard/#/keyviz'},
+              {label: 'Database Logs', to: 'http://localhost:2379/dashboard/#/search_logs'},
+            ]
+          },
+        ].filter(Boolean),
       },
       footer: {
         style: 'light',
@@ -229,24 +266,24 @@ const config = {
             title: 'OSS Insight',
             items: [
               {
-                label: 'About',
-                to: '/about',
-              },
-              {
-                label: 'Insight',
-                to: '/database/deep-insight-into-open-source-databases/',
-              },
-              {
-                label: 'Try Your Own Dataset',
-                to: '/try-your-own-dataset/?utm_content=footer',
-              },
-              {
-                label: 'How It Works',
-                to: '/blog/how-it-works',
+                label: 'Collections',
+                to: '/collections/open-source-database',
               },
               {
                 label: 'Blog',
                 to: '/blog',
+              },
+              {
+                label: 'Workshop',
+                to: '/workshop/overview',
+              },
+              {
+                label: 'How we implement OSS Insight?',
+                to: '/blog/why-we-choose-tidb-to-support-ossinsight',
+              },
+              {
+                label: 'About',
+                to: '/about',
               },
             ],
           },
@@ -304,7 +341,7 @@ const config = {
                 href: 'https://github.com/pingcap/ossinsight',
               },
               {
-                html: '<br /><b>Location</b><p style="color:grey">California, USA<br />1250 Borregas Ave, Office 131<br />Sunnyvale, CA 94089<br />+1 650 382 9973</p>',
+                html: '<br /><b>Location</b><p style="color:grey">California, USA<br />1250 Borregas Ave, Office 131<br />Sunnyvale, CA 94089<br />☎️  +1 650 382 9973</p>',
               },
             ],
           },
