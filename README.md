@@ -152,7 +152,7 @@ pull latest image:
 
 ```
 docker-compose pull
-``
+```
 
 ## Sponsors
 
