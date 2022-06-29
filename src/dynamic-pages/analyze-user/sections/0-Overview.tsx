@@ -38,7 +38,7 @@ const Overview = () => {
   return (
     <>
       <Banner login={login}/>
-      <Stack direction={['column', 'column', 'row']} alignItems='center' sx={{ mt: 4 }}>
+      <Stack direction={['column', 'column', 'row']} alignItems='center' sx={{ mt: 4 }} gap={4}>
         <Box flex={1}>
           <Typography variant="h2">Overview</Typography>
           <Typography variant="body2" sx={{ mt: 1 }}>
@@ -47,7 +47,7 @@ const Overview = () => {
           <OverviewTable userId={userId} login={login} show={inView}/>
           <Languages login={login} userId={userId} show={inView}/>
         </Box>
-        <Box flex={1} ml={4}>
+        <Box flex={1} width='100%'>
           <ContributorTrends login={login} userId={userId} show={inView}/>
         </Box>
       </Stack>
