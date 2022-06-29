@@ -1,4 +1,4 @@
-import { AsyncData, useRemoteData } from '../../components/RemoteCharts/hook';
+import { AsyncData, RemoteData, useRemoteData } from '../../../components/RemoteCharts/hook';
 
 type RequestMap = {
   'personal-contribution-time-distribution': { day_of_week: number, hour: number, cnt: number, type: string }
@@ -17,13 +17,15 @@ type RequestMap = {
 
 type ContributionType = 'issues' | 'issue_comments' | 'pull_requests' | 'reviews' | 'review_comments' | 'pushes'
 
+export const contributionTypes: ContributionType[] = ['issues', 'issue_comments', 'pull_requests', 'reviews', 'review_comments', 'pushes']
+
 type PersonalDataParams = { userId: number }
 
-export function usePersonalData<K extends keyof RequestMap>(key: string, userId: number | undefined, run: boolean) {
+export function usePersonalData<K extends keyof RequestMap>(key: K, userId: number | undefined, run: boolean) {
   return useRemoteData<PersonalDataParams, RequestMap[K]>(key, { userId }, false, !!userId && run)
 }
 
-type PersonalOverview = {
+export type PersonalOverview = {
   user_id: number
   latest_login: string
   user_logins: string
@@ -42,8 +44,10 @@ export function usePersonalOverview(userId: number | undefined, run: boolean): A
   const { data, loading, error } = useRemoteData<PersonalDataParams, PersonalOverview>('personal-overview', { userId }, false, !!userId && run)
 
   return {
-    data: data?.[0],
+    data: data?.data[0],
     loading,
     error,
   }
 }
+
+export type Personal<T extends keyof RequestMap> = AsyncData<RemoteData<PersonalDataParams, RequestMap[T]>>

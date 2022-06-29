@@ -21,7 +21,7 @@ declare module '@ossinsight/api' {
   }
 
   export interface UserInfo {
-    id: string
+    id: number
     login: string
   }
 

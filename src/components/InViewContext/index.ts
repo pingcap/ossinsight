@@ -4,6 +4,8 @@ interface InViewContextProps {
     inView: boolean;
 }
 
-export default createContext<InViewContextProps>({
+const InViewContext = createContext<InViewContextProps>({
   inView: true,
 });
+
+export default InViewContext
