@@ -3,7 +3,7 @@ import Grid, {GridProps} from '@mui/material/Grid';
 import {BodyText, DataGrid, HeaderGrid, HeadText} from './styled';
 import {useAnalyzeChartContext, useAnalyzeContext} from '../context';
 import Stack from '@mui/material/Stack';
-import {AsyncData, RemoteData} from '../../components/RemoteCharts/hook';
+import {AsyncData, RemoteData} from '../../../../components/RemoteCharts/hook';
 import Skeleton from '@mui/material/Skeleton';
 import CircularProgress from '@mui/material/CircularProgress';
 import type {RepoInfo} from '@ossinsight/api';

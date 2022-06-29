@@ -7,7 +7,7 @@ import Container from '@mui/material/Container';
 import { Theme } from '@mui/material/styles';
 import Error from '@theme/Error';
 import React, { useCallback, useRef } from 'react';
-import { AnalyzeContext } from '../../analyze-charts/context';
+import { AnalyzeContext } from './charts/context';
 import { useRepo } from '../../api';
 import type { RepoInfo } from '@ossinsight/api'
 import NewCompareHeader from '../../components/CompareHeader/NewCompareHeader';

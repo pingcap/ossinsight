@@ -9,7 +9,7 @@ import {
   ValueAxisBaseOption,
 } from 'echarts/types/src/coord/axisCommonTypes';
 import format from 'human-format';
-import { utils } from '.';
+import { utils } from './index';
 import { dangerousGetCtx } from './_danger';
 import { isSmall } from './sizes';
 

@@ -2,7 +2,7 @@ import * as echarts from 'echarts';
 import {itemTooltip, legend, scatters, title, utils, worldMapGeo} from '../options';
 import {withChart} from '../chart';
 import map from '@geo-maps/countries-land-10km';
-import {alpha2ToGeo, alpha2ToTitle} from '../../lib/areacode';
+import {alpha2ToGeo, alpha2ToTitle} from '../../../../lib/areacode';
 import {DatasetOption} from 'echarts/types/dist/shared';
 
 if (!echarts.getMap('world')) {

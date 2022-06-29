@@ -1,4 +1,4 @@
-import { AsyncData, RemoteData } from '../../components/RemoteCharts/hook';
+import { AsyncData, RemoteData } from '../../../../components/RemoteCharts/hook';
 import {
   axisTooltip,
   boxplot,

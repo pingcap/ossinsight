@@ -13,11 +13,11 @@ import React, {
   useEffect, useRef,
   useState,
 } from 'react';
-import Analyze from '../../../analyze-charts/Analyze';
-import { CompaniesChart } from '../../../analyze-charts/companies';
-import { AnalyzeChartContext, useAnalyzeContext } from '../../../analyze-charts/context';
-import List from '../../../analyze-charts/list/List';
-import { WorldMapChart } from '../../../analyze-charts/worldmap';
+import Analyze from '../charts/Analyze';
+import { CompaniesChart } from '../charts/companies';
+import { AnalyzeChartContext, useAnalyzeContext } from '../charts/context';
+import List from '../charts/list/List';
+import { WorldMapChart } from '../charts/worldmap';
 import { alpha2ToTitle } from '../../../lib/areacode';
 import Section from '../Section';
 import styles from '../styles.module.css';

@@ -1,4 +1,4 @@
-import {AsyncData, RemoteData} from '../../../components/RemoteCharts/hook';
+import {AsyncData, RemoteData} from '../../../../../components/RemoteCharts/hook';
 import {KeyOfType, range} from './data';
 
 export function adjustAxis<T extends Record<string, any>>(data: T[], keys: KeyOfType<T, number>[][]): { min?: number, max?: number }[] {

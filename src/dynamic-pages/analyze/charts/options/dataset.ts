@@ -1,5 +1,5 @@
 import {DatasetOption} from 'echarts/types/dist/shared';
-import {AsyncData, RemoteData} from '../../components/RemoteCharts/hook';
+import {AsyncData, RemoteData} from '../../../../components/RemoteCharts/hook';
 import {DimensionDefinitionLoose, OptionSourceData} from 'echarts/types/src/util/types';
 import {template} from './utils';
 

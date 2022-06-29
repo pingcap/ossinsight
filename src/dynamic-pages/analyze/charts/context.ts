@@ -1,5 +1,5 @@
 import {createContext, MutableRefObject, RefCallback, useContext} from 'react';
-import {AsyncData, RemoteData} from '../components/RemoteCharts/hook';
+import {AsyncData, RemoteData} from '../../../components/RemoteCharts/hook';
 import EChartsReact from 'echarts-for-react';
 import type { RepoInfo } from '@ossinsight/api';
 

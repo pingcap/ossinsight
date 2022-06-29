@@ -1,5 +1,5 @@
 import type { RepoInfo } from '@ossinsight/api';
-import {AsyncData, RemoteData} from '../../../components/RemoteCharts/hook';
+import {AsyncData, RemoteData} from '../../../../../components/RemoteCharts/hook';
 import {dangerousGetCtx} from '../_danger';
 import {COMPARING_DATASET_ID, ORIGINAL_DATASET_ID} from '../dataset';
 

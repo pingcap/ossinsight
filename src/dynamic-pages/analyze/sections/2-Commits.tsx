@@ -2,11 +2,11 @@ import Grid from '@mui/material/Grid';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import React, { ForwardedRef, forwardRef } from 'react';
-import Analyze from '../../../analyze-charts/Analyze';
-import { useAnalyzeContext } from '../../../analyze-charts/context';
-import { TimeHeatChart } from '../../../analyze-charts/heatmap';
-import { LocChart } from '../../../analyze-charts/loc';
-import { PushesAndCommitsChart } from '../../../analyze-charts/push-and-commits';
+import Analyze from '../charts/Analyze';
+import { useAnalyzeContext } from '../charts/context';
+import { TimeHeatChart } from '../charts/heatmap';
+import { LocChart } from '../charts/loc';
+import { PushesAndCommitsChart } from '../charts/push-and-commits';
 import Section from '../Section';
 import { H2, H3, P2 } from '../typography';
 

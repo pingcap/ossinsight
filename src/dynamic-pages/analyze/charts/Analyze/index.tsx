@@ -1,6 +1,6 @@
 import React, {RefCallback, useCallback, useState} from 'react';
 import {AnalyzeChartContext, AnalyzeChartContextProps, useAnalyzeContext} from '../context';
-import {useRemoteData} from '../../components/RemoteCharts/hook';
+import {useRemoteData} from '../../../../components/RemoteCharts/hook';
 
 export interface AnalyzeProps {
   query: string;
