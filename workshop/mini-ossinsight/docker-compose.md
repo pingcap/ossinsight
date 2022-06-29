@@ -5,7 +5,23 @@ sidebar_position: 3
 
 ## 0. Install TiDB
 
-Please follow [this section](/workshop/mini-ossinsight/step-by-step/load-data-to-tidb#a-install-tidb) to install TiDB.
+It's easy to setup a TiDB Cluster in your laptop (Mac or Linux) with the official cli tools: [tiup](https://tiup.io/)(inspired by rustup)
+
+```bash
+# Install tiup
+curl --proto '=https' --tlsv1.2 -sSf https://tiup-mirrors.pingcap.com/install.sh | sh
+# Install & Start TiDB Server.
+# Note: Grafana's port:3000 will confliect with Docusaurus:3000`, so run tiup with `--without-monitor` option
+tiup playground --without-monitor -T ossinsight
+```
+
+Expected output:
+```bash
+CLUSTER START SUCCESSFULLY, Enjoy it ^-^
+To connect TiDB: mysql --comments --host 127.0.0.1 --port 4000 -u root -p (no password)
+To view the dashboard: http://127.0.0.1:2379/dashboard
+PD client endpoints: [127.0.0.1:2379]
+```
 
 ## 1. Install Docker Compose
 
@@ -34,9 +50,9 @@ then open another terminal tab to load sample events data:
 ```bash
 # if you want to get different size of data please visit: 
 # https://github.com/pingcap/ossinsight/releases/tag/sample
-wget https://github.com/pingcap/ossinsight/releases/download/sample/sample1m.sql.zip;
-unzip sample1m.sql.zip;
-mysql --host 127.0.0.1 --port 4000 -u root -p gharchive_dev < sample1m.sql
+wget https://github.com/pingcap/ossinsight/releases/download/sample/sample5m.sql.zip;
+unzip sample5m.sql.zip;
+mysql --host 127.0.0.1 --port 4000 -u root -p gharchive_dev < sample5m.sql
 ```
 
 ## 3. Well Done!
