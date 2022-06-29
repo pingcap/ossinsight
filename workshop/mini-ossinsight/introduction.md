@@ -26,5 +26,5 @@ It will cost about 30 minutes on reading docs & loading data, you can also [join
 
 ## Other Methods
 
-* [Docker Compose - Working in Process](/workshop/mini-ossinsight/docker-compose)
+* [Docker Compose](/workshop/mini-ossinsight/docker-compose)
 * Gitpod - Not ready
