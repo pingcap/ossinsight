@@ -3,6 +3,10 @@ title: 'Docker Compose'
 sidebar_position: 3
 ---
 
+There are 2 reasons that we should't start TiDB inside container:
+1. Performance loss on disk/network/cpu;
+2. Posibility of changing database from TiDB to other like MySQL for comparison.
+
 ## 0. Install TiDB
 
 It's easy to setup a TiDB Cluster in your laptop (Mac or Linux) with the official cli tools: [tiup](https://tiup.io/)(inspired by rustup)
