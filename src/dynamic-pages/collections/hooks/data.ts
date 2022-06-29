@@ -44,7 +44,7 @@ export function useCollectionHistory(collectionId: number | undefined, dimension
         return []
       }
       const result: CollectionHistoryData[] = []
-      const min = data[0].event_month
+      const min = data[0]?.event_month ?? '2011-01-01'
       // MARK: should we use current instead of data max?
       const max = data[data.length - 1].event_month
       let [year, month] = min.split('-').map(Number)

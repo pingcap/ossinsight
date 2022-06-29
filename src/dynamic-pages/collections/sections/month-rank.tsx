@@ -25,7 +25,7 @@ const df = new Intl.DateTimeFormat(['en-US'], {
   month: 'short',
   year: 'numeric',
 });
-const formatTime = (name: string): string => df.format(new Date(name));
+const formatTime = (name: string | undefined): string => name ? df.format(new Date(name)) : '--';
 
 const formatNumber = (v: number) => v.toFixed(1).replace(/[.,]0$/, '');
 
@@ -105,8 +105,8 @@ export default withInViewContainer(function MonthRankSection() {
               <Table className="clearTable" size="small" stickyHeader>
                 <TableHead>
                   <TableRow>
-                    <HeaderCell>{formatTime(data.data[0].current_month)}</HeaderCell>
-                    <HeaderCell>{formatTime(data.data[0].last_month)}</HeaderCell>
+                    <HeaderCell>{formatTime(data.data[0]?.current_month)}</HeaderCell>
+                    <HeaderCell>{formatTime(data.data[0]?.last_month)}</HeaderCell>
                     <HeaderCell>Repository</HeaderCell>
                     <HeaderCell>{dimension.title}</HeaderCell>
                     <HeaderCell sx={{ color: 'gray' }} align="right">Total</HeaderCell>

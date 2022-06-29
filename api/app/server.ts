@@ -56,8 +56,9 @@ export default async function server(router: Router<DefaultState, ContextExtends
     decimalNumbers: true
   })
 
-  // Init Cache Builder;
-  const cacheBuilder = new CacheBuilder(queryExecutor);
+  // Init Cache Builder; 
+  const enableCache = process.env.ENABLE_CACHE === '1' ? true : false;
+  const cacheBuilder = new CacheBuilder(queryExecutor, enableCache);
 
   // Init GitHub Executor.
   const tokens = (process.env.GH_TOKENS || '').split(',').map(s => s.trim()).filter(Boolean);

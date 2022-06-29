@@ -85,7 +85,7 @@ async function main () {
   });
 
   // Init Cache Builder.
-  const cacheBuilder = new CacheBuilder(queryExecutor);
+  const cacheBuilder = new CacheBuilder(queryExecutor, true);
 
   // Init Services.
   const ghEventService = new GHEventService(queryExecutor);

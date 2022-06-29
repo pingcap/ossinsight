@@ -3,7 +3,7 @@ import { RemoteData } from '../components/RemoteCharts/hook';
 import { Collection } from '../dynamic-pages/collections/hooks/useCollection';
 import { RepoInfo } from './gh';
 
-export const BASE_URL = 'https://api.ossinsight.io'
+export const BASE_URL = process.env.APP_API_BASE || 'https://api.ossinsight.io'
 
 export function createHttpClient() {
   return  axios.create({

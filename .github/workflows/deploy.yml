@@ -21,6 +21,8 @@ jobs:
           cache: 'npm'
       - name: Install
         run: npm ci
+      - name: Prefetch
+        run: npm run prefetch
       - name: Build 🏗️
         run: npm run build
       - name: Deploy to ossinsight.io 🚀
