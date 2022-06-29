@@ -7,10 +7,10 @@ sidebar_position: 2
 
 ### a. Install TiDB
 
-It's easy to setup a TiDB Cluster in your laptop (Mac or Linux) with the official cli tools: tiup.
+It's easy to setup a TiDB Cluster in your laptop (Mac or Linux) with the official cli tools: [tiup](https://tiup.io/)(inspired by rustup)
 
 ```bash
-# Install tiup ("tiup" is inspired by rustup -:)
+# Install tiup
 curl --proto '=https' --tlsv1.2 -sSf https://tiup-mirrors.pingcap.com/install.sh | sh
 # Install & Start TiDB Server.
 # Note: Grafana's port:3000 will confliect with Docusaurus:3000`, so run tiup with `--without-monitor` option
@@ -18,34 +18,21 @@ tiup playground --without-monitor -T ossinsight
 ```
 
 Expected output:
-```
-Playground Bootstrapping...
-Start pd instance:v6.1.0
-Start tikv instance:v6.1.0
-Start tidb instance:v6.1.0
-Waiting for tidb instances ready
-127.0.0.1:4000 ... Done
-Start tiflash instance:v6.1.0
-Waiting for tiflash instances ready
-127.0.0.1:3930 ... Done
+```bash
 CLUSTER START SUCCESSFULLY, Enjoy it ^-^
 To connect TiDB: mysql --comments --host 127.0.0.1 --port 4000 -u root -p (no password)
 To view the dashboard: http://127.0.0.1:2379/dashboard
 PD client endpoints: [127.0.0.1:2379]
-To view the Prometheus: http://127.0.0.1:9090
-To view the Grafana: http://127.0.0.1:3000
 ```
 
 ### b. Config data loader script
 
-Clone repo:
+Clone OSS Insight repo:
 ```bash
 git clone https://github.com/pingcap/ossinsight.git;
 ```
 
-Open another terminal tab, edit `ossinsight/backend/.env.local`
-
-(Learn how to [create a personal access token](/workshop/mini-ossinsight/step-by-step/find-data-source#creating-a-personal-access-token))
+edit `ossinsight/backend/.env.local`, fill in `database uri` and `GitHub personal access token`(Learn how to [create a personal access token](/workshop/mini-ossinsight/step-by-step/find-data-source#creating-a-personal-access-token))
 ```
 DATABASE_URL=tidb://root@127.0.0.1:4000/gharchive_dev
 GITHUB_TOKEN=(your github personal access token)
@@ -62,8 +49,9 @@ bundle install;
 ### c. Inittial database schema
 
 ```bash
-# Create database
 cd ossinsight/backend/;
+
+# Create database
 bundle exec rails db:create
 
 # Create tables, index
@@ -76,18 +64,21 @@ bundle exec rails db:migrate
 ```bash
 cd ossinsight/backend/;
 
-# Load collections
-bundle exec rake gh:load_collection
+# Load seed data, e.g: collections, collection_items
+bundle exec rake db:seed
 
 # Load sample events data
-# if you want to get different size of data please visit: 
-# https://github.com/pingcap/ossinsight/releases/tag/sample
 wget https://github.com/pingcap/ossinsight/releases/download/sample/sample1m.sql.zip;
 unzip sample1m.sql.zip;
 mysql --host 127.0.0.1 --port 4000 -u root -p gharchive_dev < sample1m.sql
 ```
 
 The importing task would cost about 5 minutes.
+
+:::note
+if you want to get different size of data please visit: 
+https://github.com/pingcap/ossinsight/releases/tag/sample
+:::
 
 
 ## 3. Listen to /events and insert realtime events to TiDB
