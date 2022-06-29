@@ -49,12 +49,18 @@ docker-compose up;
 
 then open another terminal tab to load sample events data:
 ```bash
-# if you want to get different size of data please visit: 
-# https://github.com/pingcap/ossinsight/releases/tag/sample
+# Load about 5 million sample events data
 wget https://github.com/pingcap/ossinsight/releases/download/sample/sample5m.sql.zip;
 unzip sample5m.sql.zip;
 mysql --host 127.0.0.1 --port 4000 -u root -p gharchive_dev < sample5m.sql
 ```
+
+The importing task would cost about 10 minutes.
+
+:::note
+if you want to get different size of data please visit: 
+https://github.com/pingcap/ossinsight/releases/tag/sample
+:::
 
 ## 3. Well Done!
 

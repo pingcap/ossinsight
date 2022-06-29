@@ -68,13 +68,13 @@ cd ossinsight/backend/;
 # Load seed data, e.g: collections, collection_items
 bundle exec rake db:seed
 
-# Load sample events data
-wget https://github.com/pingcap/ossinsight/releases/download/sample/sample1m.sql.zip;
-unzip sample1m.sql.zip;
-mysql --host 127.0.0.1 --port 4000 -u root -p gharchive_dev < sample1m.sql
+# Load about 5 million sample events data
+wget https://github.com/pingcap/ossinsight/releases/download/sample/sample5m.sql.zip;
+unzip sample5m.sql.zip;
+mysql --host 127.0.0.1 --port 4000 -u root -p gharchive_dev < sample5m.sql
 ```
 
-The importing task would cost about 5 minutes.
+The importing task would cost about 10 minutes.
 
 :::note
 if you want to get different size of data please visit: 
