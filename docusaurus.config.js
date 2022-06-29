@@ -42,8 +42,7 @@ const config = {
     [
       path.resolve(__dirname, 'plugins/define'),
       {
-        'process.env.HOST': JSON.stringify(HOST),
-        'process.env.API_BASE': JSON.stringify(API_BASE),
+        'process.env.APP_API_BASE': JSON.stringify(API_BASE),
       }
     ],
     [
