@@ -9,3 +9,6 @@ items:
   - remix-run/react-router
   - blitz-js/blitz
   - pankod/refine
+  - Shopify/hydrogen
+  - redwoodjs/redwood
+  - facebook/docusaurus
