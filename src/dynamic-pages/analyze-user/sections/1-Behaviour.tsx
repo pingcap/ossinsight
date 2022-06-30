@@ -2,13 +2,17 @@ import React, { ForwardedRef, forwardRef, useContext, useMemo, useState } from "
 import Section from "../../../components/Section";
 import { useAnalyzeUserContext } from "../charts/context";
 import InViewContext from "../../../components/InViewContext";
-import { Personal, usePersonalData } from "../hooks/usePersonal";
+import { contributionTypes, Personal, usePersonalData } from "../hooks/usePersonal";
 import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
 import { InputLabel, Select, useEventCallback } from "@mui/material";
 import MenuItem from "@mui/material/MenuItem";
 import { SelectChangeEvent } from "@mui/material/Select";
 import FormControl from "@mui/material/FormControl";
+import TimeDistribution from "../charts/time-distribution";
+import { Axis, BarSeries, Dataset, EChartsx, Grid, Legend, Once, Title, Tooltip } from "@djagger/echartsx";
+import Typography from "@mui/material/Typography";
+import Link from "@docusaurus/Link";
 
 
 export default forwardRef(function BehaviourSection({}, ref: ForwardedRef<HTMLElement>) {
@@ -26,6 +30,10 @@ const Behaviour = () => {
 
   return (
     <>
+      <Typography variant="h2">Behaviour</Typography>
+      <Typography variant="body2" sx={{ mt: 1 }}>
+        Contribution stats in multiple dimensions.
+      </Typography>
       <AllContributions userId={userId} show={inView}/>
       <ContributionTime userId={userId} show={inView}/>
     </>
@@ -36,13 +44,43 @@ const Behaviour = () => {
 const AllContributions = ({ userId, show }: ModuleProps) => {
   const { data } = usePersonalData('personal-contributions-for-repos', userId, show);
 
+  const repos = useMemo(() => {
+    const map = (data?.data ?? []).reduce((map, cv) => {
+      return map.set(cv.repo_name, (map.get(cv.repo_name) ?? 0) + cv.cnt)
+    }, new Map<string, number>())
+
+    return [...map.entries()].sort((a, b) => b[1] - a[1]).map(entry => entry[0]).slice(0, 20)
+  }, [data])
+
+  if (!data) {
+    return <></>
+  }
+
   return (
-    <></>
+    <EChartsx init={{ height: 800, renderer: 'canvas' }} theme='dark'>
+      <Once>
+        <Title text='Type of total contributions' left='center'/>
+        <Legend type='scroll' orient='horizontal' top={24} />
+        <Grid left={0} right={0} bottom={0} containLabel />
+        <Tooltip trigger='axis' axisPointer={{ type: 'shadow' }}/>
+        <Axis.Value.X />
+        <Axis.Category.Y data={repos} inverse />
+        {eventTypes.map(event => (
+          <BarSeries datasetId={event} encode={{ x: 'cnt', y: 'repo_name', tooltip: ['type', 'cnt'] }} emphasis={{ focus: 'series' }} name={event} stack='0' />
+        ))}
+        {eventTypes.map(event => (
+          <Dataset key={event} id={event} fromDatasetId='original' transform={{ type: 'filter', config: { value: event, dimension: 'type' } }} />
+        ))}
+      </Once>
+      <Dataset id='original' source={data?.data ?? []} />
+    </EChartsx>
   );
 };
 
 const eventTypes = ['IssueCommentEvent', 'IssuesEvent', 'PullRequestEvent', 'PullRequestReviewCommentEvent', 'PushEvent', 'PullRequestReviewEvent'];
 const timezones = [];
+
+const formatZone = (zone: number) => `UTC ${zone < 0 ? zone : `+${zone}`}`;
 
 for (let i = -11; i <= 14; i++) {
   timezones.push(i);
@@ -66,8 +104,8 @@ const ContributionTime = ({ userId, show }: ModuleProps) => {
   }, [data, type]);
 
   return (
-    <Box>
-      <Box mb={2}>
+    <Box mt={4} mx='auto'  width='max-content'>
+      <Box mb={2} width='max-content'>
         <FormControl variant="standard" size="small" sx={{ minWidth: 120 }}>
           <InputLabel id="event-type-selector-label">Event Type</InputLabel>
           <Select id="event-type-selector-label" value={type} onChange={handleEventChange}>
@@ -85,111 +123,10 @@ const ContributionTime = ({ userId, show }: ModuleProps) => {
           </Select>
         </FormControl>
       </Box>
-      <TimeGrid size={14} gap={4} offset={zone} data={filteredData}
+      <TimeDistribution size={14} gap={4} offset={zone} data={filteredData}
                 title={`Contribution time distribution for ${type} (${formatZone(zone)})`}/>
     </Box>
   );
-};
-
-const formatZone = (zone: number) => `UTC ${zone < 0 ? zone : `+${zone}`}`;
-
-interface TimeGridProps {
-  title: string;
-  size: number;
-  gap: number;
-  offset: number;
-  data: Personal<'personal-contribution-time-distribution'>[];
-}
-
-const times = Array(24).fill(0).map((_, i) => i);
-const days = Array(7).fill(0).map((_, i) => i);
-
-const TimeGrid = ({ title, size, gap, offset, data }: TimeGridProps) => {
-  const max = useMemo(() => {
-    return data.reduce((max, cur) => Math.max(max, cur.cnt), 0);
-  }, [data]);
-
-  const paddingTop = 20;
-
-  const width = useMemo(() => {
-    return size * 24 + gap * 23;
-  }, [size, gap]);
-
-  const height = useMemo(() => {
-    return size * 7 + gap * 6 + 40 /* for legends */;
-  }, [size, gap]);
-
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" width={width} height={height + paddingTop}
-         viewBox={`0 -${paddingTop} ${width} ${height}`} display="block">
-      <g id="title">
-        <text textAnchor="middle" x="50%" y={8 - paddingTop} fontSize={14} fill="#dadada" fontWeight="bold">
-          {title}
-        </text>
-      </g>
-      <g id="chart">
-        {times.map(time => days.map(day =>
-          <rect
-            key={`${time}-${day}`}
-            x={time * (size + gap)}
-            y={day * (size + gap)}
-            width={size}
-            height={size}
-            rx={3}
-            ry={3}
-            fill={getColor(0, 0)}
-          />,
-        ))}
-        {data.map(({ dayofweek: day, cnt, hour: time, type }) => (
-          <rect
-            key={`${time}-${day}`}
-            x={((24 + time + offset) % 24) * (size + gap)}
-            y={day * (size + gap)}
-            width={size}
-            height={size}
-            rx={3}
-            ry={3}
-            fill={getColor(cnt, max)}
-          />
-        ))}
-      </g>
-      <g id="legend">
-        <text fontSize={12} fill="#dadada" x="0" y={height - 29} alignmentBaseline="text-before-edge">less</text>
-        {contributeDistributionColors.map((color, i) => (
-          <rect
-            key={color}
-            fill={color}
-            x={35 + i * (size + 4)}
-            y={height - 28}
-            width={size}
-            height={size}
-            rx={3}
-            ry={3}
-          />
-        ))}
-        <text fontSize={12} fill="#dadada" x="150" y={height - 29} alignmentBaseline="text-before-edge">more</text>
-      </g>
-    </svg>
-  );
-};
-
-const contributeDistributionColors = ['#2C2C2C', '#00480D', '#017420', '#34A352', '#6CDE8C', '#B5FFC9'];
-
-const getColor = (num: number, max: number) => {
-  const d = num / max;
-  if (num === 0) {
-    return contributeDistributionColors[0];
-  } else if (d < 1 / 5) {
-    return contributeDistributionColors[1];
-  } else if (d < 2 / 5) {
-    return contributeDistributionColors[2];
-  } else if (d < 3 / 5) {
-    return contributeDistributionColors[3];
-  } else if (d < 4 / 5) {
-    return contributeDistributionColors[4];
-  } else {
-    return contributeDistributionColors[5];
-  }
 };
 
 type ModuleProps = {
