@@ -11,14 +11,9 @@ import { useCollectionHistory } from '../hooks/data';
 import { useDimensionTabs } from '../hooks/useTabs';
 import { withRemote } from '../hooks/withRemote';
 import { H2, P2 } from './typograpy';
+import { formatTime } from "./utils";
 
 use(CanvasRenderer);
-
-const df = new Intl.DateTimeFormat(['en-US'], {
-  month: 'short',
-  year: 'numeric',
-});
-const formatTime = (name: string | undefined): string => name ? df.format(new Date(name)) : '2011-01-01';
 
 export default withInViewContainer(function HistorySection() {
   const { collection } = useContext(CollectionsContext);

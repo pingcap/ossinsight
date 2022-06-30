@@ -20,12 +20,7 @@ import { useCollectionMonthRank } from '../hooks/data';
 import { useDimensionTabs } from '../hooks/useTabs';
 import { withRemote } from '../hooks/withRemote';
 import { H2, H3, P1, P2 } from './typograpy';
-
-const df = new Intl.DateTimeFormat(['en-US'], {
-  month: 'short',
-  year: 'numeric',
-});
-const formatTime = (name: string | undefined): string => name ? df.format(new Date(name)) : '--';
+import { formatTime } from "./utils";
 
 const formatNumber = (v: number) => v.toFixed(1).replace(/[.,]0$/, '');
 
