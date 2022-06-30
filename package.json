@@ -55,7 +55,7 @@
     ]
   },
   "devDependencies": {
-    "@djagger/echartsx": "^0.0.18",
+    "@djagger/echartsx": "^0.0.19",
     "@docusaurus/module-type-aliases": "2.0.0-beta.14",
     "@geo-maps/countries-land-10km": "^0.6.0",
     "@makotot/ghostui": "^2.0.0",
