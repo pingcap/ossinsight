@@ -4,6 +4,7 @@ import CustomPage from '../../theme/CustomPage';
 import OverviewSection from "./sections/0-Overview";
 import BehaviourSection from "./sections/1-Behaviour";
 import StarSection from "./sections/2-Star";
+import CodeSection from "./sections/3-Code";
 import { AnalyzeUserContextProps, AnalyzeUserContextProvider } from "./charts/context";
 import { useRouteMatch } from "@docusaurus/router";
 import { useUser } from "../../api";
@@ -23,6 +24,7 @@ const Page = () => {
           <OverviewSection />
           <BehaviourSection />
           <StarSection />
+          <CodeSection />
         </Container>
       </AnalyzeUserContextProvider>
     </CustomPage>

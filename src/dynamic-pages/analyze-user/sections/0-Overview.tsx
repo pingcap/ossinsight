@@ -167,10 +167,6 @@ const Languages = ({ userId, show }: ModuleProps) => {
 const ContributorTrends = ({ userId, show }: ModuleProps) => {
   const { data } = usePersonalData('personal-contribution-trends', userId, show)
 
-  if (!data) {
-    return <></>
-  }
-
   return (
     <EChartsx init={{ height: 400, renderer: 'canvas' }} theme='dark'>
       <Once>
@@ -183,10 +179,10 @@ const ContributorTrends = ({ userId, show }: ModuleProps) => {
         {contributionTypes.map(ct => (
           <LineSeries key={ct} name={ct} datasetId={ct} encode={{ x: 'event_month', y: 'cnt' }} symbolSize={0} />
         ))}
-        {contributionTypes.map(ct => (
-          <Dataset key={ct} id={ct} fromDatasetId='original' transform={{ type: 'filter', config: { value: ct, dimension: 'contribution_type' } }} />
-        ))}
       </Once>
+      {data ? contributionTypes.map(ct => (
+        <Dataset key={ct} id={ct} fromDatasetId='original' transform={{ type: 'filter', config: { value: ct, dimension: 'contribution_type' } }} />
+      )) : undefined}
       <Dataset id='original' source={data?.data ?? []} />
     </EChartsx>
   )

@@ -7,7 +7,7 @@ import Box from "@mui/material/Box";
 import { Axis, BarSeries, Dataset, EChartsx, Grid, Legend, LineSeries, Once, Title, Tooltip } from "@djagger/echartsx";
 import Typography from "@mui/material/Typography";
 
-export default forwardRef(function BehaviourSection({}, ref: ForwardedRef<HTMLElement>) {
+export default forwardRef(function StarSection({}, ref: ForwardedRef<HTMLElement>) {
   return (
     <Section ref={ref}>
       <Star />
