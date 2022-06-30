@@ -35,7 +35,7 @@ const RECOMMEND_REPO_LIST_2: RepoSearchItem[] = [
 
 // Select from GitHub stars:
 // https://stars.github.com/profiles/?contributionType=OPEN_SOURCE_PROJECT
-const RECOMMEND_USER_LIST_KEYWORD = 'recommend-user-list-1-keyword';
+const RECOMMEND_USER_LIST_KEYWORD = 'recommend-user-list-keyword';
 const RECOMMEND_USER_LIST: UserSearchItem[] = [
   { id: 8255800, login: '521xueweihan'},
   { id: 960133, login: 'ahmadawais'},
@@ -132,13 +132,17 @@ function eraseToken (value: string | undefined): string {
 function randomSelectFromList(list: Array<any>, n: number) {
   if (!Array.isArray(list)) return [];
 
-  const result = [];
-  for (let i = 0; i < n; i++) {
-    const index =  Math.ceil(Math.random() * list.length);
-    result.push(list[index])
+  if (list.length < n) {
+    return list;
   }
 
-  return result;
+  const result = new Set();
+  while (result.size < n) {
+    const index =  Math.floor(Math.random() * list.length);
+    result.add(list[index])
+  }
+
+  return Array.from(result);
 }
 
 class OctokitFactory implements Factory<Octokit> {
