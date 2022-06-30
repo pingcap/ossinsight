@@ -18,7 +18,7 @@ const df = new Intl.DateTimeFormat(['en-US'], {
   month: 'short',
   year: 'numeric',
 });
-const formatTime = (name: string): string => df.format(new Date(name));
+const formatTime = (name: string | undefined): string => name ? df.format(new Date(name)) : '2011-01-01';
 
 export default withInViewContainer(function HistorySection() {
   const { collection } = useContext(CollectionsContext);
