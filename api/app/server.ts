@@ -218,7 +218,7 @@ export default async function server(router: Router<DefaultState, ContextExtends
   })
 
   router.get('/gh/users/search', measureRequests({ urlLabel: 'path' }), async ctx => {
-    const { keyword } = ctx.query;
+    const { keyword, type } = ctx.query as any;
 
     try {
       if (keyword == null || keyword.length === 0) {
@@ -227,7 +227,7 @@ export default async function server(router: Router<DefaultState, ContextExtends
         return
       }
 
-      const res = await ghExecutor.searchUsers(String(keyword))
+      const res = await ghExecutor.searchUsers(String(keyword), type)
 
       ctx.response.status = 200
       ctx.response.body = res
