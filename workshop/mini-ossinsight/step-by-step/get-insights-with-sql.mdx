@@ -11,6 +11,45 @@ Now, the data is ready, let's try to analyze these data with SQL!
 
 ### a. Can't Wait!
 
+#### i. Example 1
+Look at user azure-sdk's details:
+
+<Tabs>
+  <TabItem value="sql" label="SQL">
+
+```sql
+SELECT
+    type, count(*)
+FROM github_events
+WHERE
+    actor_login = 'azure-sdk'
+GROUP BY type;
+```
+
+  </TabItem>
+  <TabItem value="explain" label="Explain">
+
+```
++------------------------------------+---------+-----------+----------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| id                                 | estRows | task      | access object                                                              | operator info                                                                                                                                                    |
++------------------------------------+---------+-----------+----------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Projection_5                       | 1.00    | root      |                                                                            | gharchive_dev.github_events.type, Column#33                                                                                                                      |
+| └─HashAgg_22                       | 1.00    | root      |                                                                            | group by:gharchive_dev.github_events.type, funcs:count(Column#37)->Column#33, funcs:firstrow(gharchive_dev.github_events.type)->gharchive_dev.github_events.type |
+|   └─IndexLookUp_23                 | 1.00    | root      |                                                                            |                                                                                                                                                                  |
+|     ├─IndexRangeScan_20(Build)     | 4.88    | cop[tikv] | table:github_events, index:index_github_events_on_actor_login(actor_login) | range:["azure-sdk","azure-sdk"], keep order:false                                                                                                                |
+|     └─HashAgg_7(Probe)             | 1.00    | cop[tikv] |                                                                            | group by:gharchive_dev.github_events.type, funcs:count(1)->Column#37                                                                                             |
+|       └─TableRowIDScan_21          | 4.88    | cop[tikv] | table:github_events                                                        | keep order:false                                                                                                                                                 |
++------------------------------------+---------+-----------+----------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+```
+
+  </TabItem>
+</Tabs>
+
+:::info
+GitHub User azure-sdk's profile: https://github.com/azure-sdk.
+:::
+
+#### ii. Example 2
 The below SQL is chosed from [blog - Love, Code, and Robot](/blog/say-thanks-to-github-robots/), it explains how robots grow on GitHub:
 
 <Tabs>
