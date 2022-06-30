@@ -3,6 +3,7 @@ import GeneralSearch from '../../components/GeneralSearch';
 import CustomPage from '../../theme/CustomPage';
 import OverviewSection from "./sections/0-Overview";
 import BehaviourSection from "./sections/1-Behaviour";
+import StarSection from "./sections/2-Star";
 import { AnalyzeUserContextProps, AnalyzeUserContextProvider } from "./charts/context";
 import { useRouteMatch } from "@docusaurus/router";
 import { useUser } from "../../api";
@@ -21,6 +22,7 @@ const Page = () => {
         <Container maxWidth="lg">
           <OverviewSection />
           <BehaviourSection />
+          <StarSection />
         </Container>
       </AnalyzeUserContextProvider>
     </CustomPage>

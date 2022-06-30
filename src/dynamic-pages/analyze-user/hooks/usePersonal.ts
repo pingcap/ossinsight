@@ -12,7 +12,7 @@ type RequestMap = {
   'personal-pull-reuqest-code-changes-history': { event_month: number, additions: number, deletions: number, changes: number }
   'personal-pull-reuqest-reviews-history': { event_month: string, reviews: number, review_comments: number }
   'personal-pushes-and-commits': { event_month: string, pushes: number, commits: number }
-  'personal-star-history': { star_month: string, language: string, cnt: string, percentage: number }
+  'personal-star-history': { star_month: string, language: string, cnt: number, percentage: number }
 }
 
 type ContributionType = 'issues' | 'issue_comments' | 'pull_requests' | 'reviews' | 'review_comments' | 'pushes'
