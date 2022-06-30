@@ -49,7 +49,7 @@ const AllContributions = ({ userId, show }: ModuleProps) => {
       return map.set(cv.repo_name, (map.get(cv.repo_name) ?? 0) + cv.cnt)
     }, new Map<string, number>())
 
-    return [...map.entries()].sort((a, b) => b[1] - a[1]).map(entry => entry[0]).slice(0, 20)
+    return Array.from(map.entries()).sort((a, b) => b[1] - a[1]).map(entry => entry[0]).slice(0, 20)
   }, [data])
 
   if (!data) {
