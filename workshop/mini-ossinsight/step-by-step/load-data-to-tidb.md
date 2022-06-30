@@ -44,6 +44,7 @@ then initial data loader script environment with:
 # Homebrew: https://brew.sh/
 # brew install openssl ruby@2.7 mysql-client;
 cd ossinsight/backend/;
+bundle update --bundler;
 bundle install;
 ```
 
