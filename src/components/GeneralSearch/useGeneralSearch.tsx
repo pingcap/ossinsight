@@ -10,12 +10,17 @@ export function useGeneralSearch<T extends SearchType>(type: T, keyword: string)
 
   const searchKey = useDebounced(keyword, 500);
 
-  const { data, isValidating, error } = useSWR(searchKey ? [searchKey, `search:${type}`] : type === 'repo' ? ['recommend-repo-list-1-keyword', 'search:repo'] : undefined, {
+  const { data, isValidating, error } = useSWR(
+    searchKey
+      ? [searchKey, `search:${type}`]
+      : type === 'repo'
+        ? ['recommend-repo-list-1-keyword', 'search:repo']
+        : ['recommend-user-list-keyword', 'search:user'], {
     fetcher: (keyword: string): Promise<SearchRepoInfo[] | UserInfo[]> => {
       if (type === 'repo') {
         return searchRepo(keyword);
       } else {
-        return searchUser(keyword);
+        return searchUser(keyword, 'user');
       }
     },
     revalidateOnMount: false,

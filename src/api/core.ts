@@ -1,4 +1,4 @@
-import type { Collection, RepoInfo, SearchRepoInfo, UserInfo } from '@ossinsight/api';
+import type { Collection, RepoInfo, SearchRepoInfo, UserInfo, UserType } from '@ossinsight/api';
 import { AxiosRequestConfig } from 'axios';
 import { RemoteData } from '../components/RemoteCharts/hook';
 import { client } from './client';
@@ -18,8 +18,8 @@ export async function searchRepo(keyword: string): Promise<SearchRepoInfo[]> {
   return client.get(`/gh/repos/search`, { params: { keyword } }).then(({ data }) => data);
 }
 
-export async function searchUser(keyword: string): Promise<UserInfo[]> {
-  return client.get(`/gh/users/search`, { params: { keyword } }).then(({ data }) => data);
+export async function searchUser(keyword: string, type: UserType = 'user'): Promise<UserInfo[]> {
+  return client.get(`/gh/users/search`, { params: { keyword, type } }).then(({ data }) => data);
 }
 
 export async function getCollections(): Promise<RemoteData<{}, Collection>> {

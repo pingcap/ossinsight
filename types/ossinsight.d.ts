@@ -31,4 +31,6 @@ declare module '@ossinsight/api' {
     slug: string
     public: 0 | 1
   }
+
+  export type UserType = 'user' | 'org'
 }
