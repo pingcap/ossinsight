@@ -99,60 +99,8 @@ Examples:
 
 ## Development
 
-### Manually 
-
-```bash
-# clone the code by:
-git clone https://github.com/pingcap/ossinsight.git
-
-# install npm packages
-cd ossinsight/;
-npm install;
-
-# start the server:
-npm run start;
-
-# then visit
-open http://localhost:3000
-```
-
-### Docker Compose
-
-install tiup
-
-```
-curl --proto '=https' --tlsv1.2 -sSf https://tiup-mirrors.pingcap.com/install.sh | sh
-```
-
-start tiup
-
-```
-tiup playground v6.1.0 -T oss --without-monitor --db.host 0.0.0.0 --tiflash 1
-```
-
-download ossinsight repo:
-
-```
-git clone https://github.com/pingcap/ossinsight.git
-
-cd ossinsight
-
-# you need to create github token via this url: https://github.com/settings/tokens/new
-
-GITHUB_TOKEN=xxx docker-compose up 
-```
-
-build ossinsight local:
-
-```
-docker-compose build
-```
-
-pull latest image:
-
-```
-docker-compose pull
-```
+* [Step by Step](https://ossinsight.io/workshop/mini-ossinsight/step-by-step/find-data-source)
+* [Docker Compose](https://ossinsight.io/workshop/mini-ossinsight/docker-compose)
 
 ## Sponsors
 
