@@ -48,7 +48,7 @@ bundle update --bundler;
 bundle install;
 ```
 
-### c. Inittial database schema
+### c. Initial database schema
 
 ```bash
 cd ossinsight/backend/;
