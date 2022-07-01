@@ -221,6 +221,7 @@ const config = {
               {label: 'Workshop: Twitter Insight', to: '/workshop/twitter-insight'},
               {label: 'Workshop: Stack Overflow Insight', to: '/workshop/stackoverflow-insight'},
               {label: 'Workshop: Cryptocurrency Insight', to: '/workshop/cryptocurrency-insight'},
+              {label: 'Workshop: NFT Insight', to: '/workshop/nft-insight'},
               {label: '🗓️ Join Offline Workshop', to: '/workshop/offline'},
             ]
           },
