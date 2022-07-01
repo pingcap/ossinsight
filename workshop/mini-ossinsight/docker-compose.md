@@ -68,4 +68,4 @@ https://github.com/pingcap/ossinsight/releases/tag/sample
 
 ## 3. Well Done!
 
-Visit http://localhost:3001;
+Visit [http://localhost:3001](http://localhost:3001);

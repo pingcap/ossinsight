@@ -15,11 +15,11 @@ We can't fetch the historical data from GitHub /events api, but fortunately, the
 
 GitHub provides 20+ event types, which range from new commits and fork events, to opening new tickets, commenting, and adding members to a project. These events are aggregated into hourly archives, which you can access with any HTTP client:
 
-| Query | Command |
+| Query | Downloadable Files |
 | ---- | ---- |
-| Activity for 1/1/2015 @ 3PM UTC |	`wget https://data.gharchive.org/2015-01-01-15.json.gz` |
-| Activity for 1/1/2015 | `wget https://data.gharchive.org/2015-01-01-{0..23}.json.gz` |
-| Activity for all of January 2015 | `wget https://data.gharchive.org/2015-01-{01..31}-{0..23}.json.gz` |
+| Activity for 1/1/2015 @ 3PM UTC |	`https://data.gharchive.org/2015-01-01-15.json.gz` |
+| Activity for 1/1/2015 | `https://data.gharchive.org/2015-01-01-{0..23}.json.gz` |
+| Activity for all of January 2015 | `https://data.gharchive.org/2015-01-{01..31}-{0..23}.json.gz` |
 
 
 ## 2. Realtime GitHub events
@@ -28,7 +28,7 @@ According to [GitHub Events API Docs](https://docs.github.com/en/rest/activity/e
 
 ```bash
 curl \
-  -H "Accept: application/vnd.github.v3+json" \ 
+  -H "Accept: application/vnd.github.v3+json" \
   -H "Authorization: token <TOKEN>" \
   https://api.github.com/events
 ```
