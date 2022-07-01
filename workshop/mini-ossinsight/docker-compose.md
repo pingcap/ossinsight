@@ -28,6 +28,26 @@ To view the Prometheus: http://127.0.0.1:9090
 To view the Grafana: http://127.0.0.1:3000
 ```
 
+:::note
+If you want to use another MySQL compatible database, please change settings in `ossinsight/docker-compose.yml`:
+
+```
+...
+services:
+  data:
+    environment:
+      - DATABASE_URL=tidb://root:@host.docker.internal:4000/gharchive_dev
+...
+  api:
+    environment:
+      - DB_HOST=host.docker.internal
+      - DB_PORT=4000
+      - DB_USER=root
+      - DB_DATABASE=gharchive_dev
+      - DB_PASSWORD=
+...
+:::
+
 ## 1. Install Docker Compose
 
 :::note
