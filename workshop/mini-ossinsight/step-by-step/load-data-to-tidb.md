@@ -42,7 +42,7 @@ GITHUB_TOKEN=(your github personal access token)
 then initial data loader script environment with:
 ```bash
 # Homebrew: https://brew.sh/
-brew install openssl ruby@2.7 mysql-client;
+brew install openssl ruby@2.7 mysql;
 cd ossinsight/backend/;
 bundle update --bundler;
 bundle install;
