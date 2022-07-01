@@ -1,5 +1,5 @@
 import React, { ForwardedRef, forwardRef, ReactNode, useContext } from "react";
-import Section from "../../../components/Section";
+import Section, { SectionHeading } from "../../../components/Section";
 import { useAnalyzeUserContext } from "../charts/context";
 import {
   contributionTypes,
@@ -40,10 +40,14 @@ const Overview = () => {
       <Banner login={login}/>
       <Stack direction={['column', 'column', 'row']} alignItems='center' sx={{ mt: 4 }} gap={4}>
         <Box flex={1}>
-          <Typography variant="h2">Overview</Typography>
-          <Typography variant="body2" sx={{ mt: 1 }}>
-            Know how we calculate contributions <Link>here</Link>!
-          </Typography>
+          <SectionHeading
+            title='Overview'
+            description={(
+              <>
+                Know how we calculate contributions <Link>here</Link>!
+              </>
+            )}
+          />
           <OverviewTable userId={userId} login={login} show={inView}/>
           <Languages login={login} userId={userId} show={inView}/>
         </Box>

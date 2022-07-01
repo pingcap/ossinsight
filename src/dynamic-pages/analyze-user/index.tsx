@@ -5,6 +5,8 @@ import OverviewSection from "./sections/0-Overview";
 import BehaviourSection from "./sections/1-Behaviour";
 import StarSection from "./sections/2-Star";
 import CodeSection from "./sections/3-Code";
+import CodeReviewSection from "./sections/4-CodeReview";
+import IssueSection from "./sections/5-Issue";
 import { AnalyzeUserContextProps, AnalyzeUserContextProvider } from "./charts/context";
 import { useRouteMatch } from "@docusaurus/router";
 import { useUser } from "../../api";
@@ -25,6 +27,8 @@ const Page = () => {
           <BehaviourSection />
           <StarSection />
           <CodeSection />
+          <CodeReviewSection />
+          <IssueSection />
         </Container>
       </AnalyzeUserContextProvider>
     </CustomPage>

@@ -4,7 +4,7 @@ type RequestMap = {
   'personal-contribution-time-distribution': { dayofweek: number, hour: number, cnt: number, type: string }
   'personal-contribution-trends': { contribution_type: ContributionType, event_month: string, cnt: number }
   'personal-contributions-for-repos': { repo_id: number, repo_name: string, type: string, cnt: number }
-  'personal-issues-history': { event_month: string, issues: number, issues_comments: number }
+  'personal-issues-history': { event_month: string, issues: number, issue_comments: number }
   'personal-languages': { language: string, prs: number, percentage: number }
   // 'personal-overview': never
   'personal-pull-request-action-history': { event_month: string, opened_prs: number, merged_prs: number }

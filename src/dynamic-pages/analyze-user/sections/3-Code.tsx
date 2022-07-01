@@ -1,5 +1,5 @@
 import React, { ForwardedRef, forwardRef, useContext, useMemo } from "react";
-import Section from "../../../components/Section";
+import Section, { SectionHeading } from "../../../components/Section";
 import InViewContext from "../../../components/InViewContext";
 import { useAnalyzeUserContext } from "../charts/context";
 import { usePersonalData } from "../hooks/usePersonal";
@@ -20,6 +20,10 @@ const Code = () => {
 
   return (
     <>
+      <SectionHeading
+        title="Code"
+        description="Code stats in multiple dimensions."
+      />
       <CodeSubmitHistory userId={userId} show={inView}/>
       <PullRequestHistory userId={userId} show={inView}/>
       <PullRequestSize userId={userId} show={inView}/>

@@ -1,18 +1,15 @@
 import React, { ForwardedRef, forwardRef, useContext, useMemo, useState } from "react";
-import Section from "../../../components/Section";
+import Section, { SectionHeading } from "../../../components/Section";
 import { useAnalyzeUserContext } from "../charts/context";
 import InViewContext from "../../../components/InViewContext";
-import { contributionTypes, Personal, usePersonalData } from "../hooks/usePersonal";
+import { usePersonalData } from "../hooks/usePersonal";
 import Box from "@mui/material/Box";
-import { styled } from "@mui/material/styles";
 import { InputLabel, Select, useEventCallback } from "@mui/material";
 import MenuItem from "@mui/material/MenuItem";
 import { SelectChangeEvent } from "@mui/material/Select";
 import FormControl from "@mui/material/FormControl";
 import TimeDistribution from "../charts/time-distribution";
 import { Axis, BarSeries, Dataset, EChartsx, Grid, Legend, Once, Title, Tooltip } from "@djagger/echartsx";
-import Typography from "@mui/material/Typography";
-import Link from "@docusaurus/Link";
 
 
 export default forwardRef(function BehaviourSection({}, ref: ForwardedRef<HTMLElement>) {
@@ -30,10 +27,10 @@ const Behaviour = () => {
 
   return (
     <>
-      <Typography variant="h2">Behaviour</Typography>
-      <Typography variant="body2" sx={{ mt: 1 }}>
-        Contribution stats in multiple dimensions.
-      </Typography>
+      <SectionHeading
+        title="Behaviour"
+        description="Contribution stats in multiple dimensions."
+      />
       <AllContributions userId={userId} show={inView}/>
       <ContributionTime userId={userId} show={inView}/>
     </>
@@ -46,33 +43,35 @@ const AllContributions = ({ userId, show }: ModuleProps) => {
 
   const repos = useMemo(() => {
     const map = (data?.data ?? []).reduce((map, cv) => {
-      return map.set(cv.repo_name, (map.get(cv.repo_name) ?? 0) + cv.cnt)
-    }, new Map<string, number>())
+      return map.set(cv.repo_name, (map.get(cv.repo_name) ?? 0) + cv.cnt);
+    }, new Map<string, number>());
 
-    return Array.from(map.entries()).sort((a, b) => b[1] - a[1]).map(entry => entry[0]).slice(0, 20)
-  }, [data])
+    return Array.from(map.entries()).sort((a, b) => b[1] - a[1]).map(entry => entry[0]).slice(0, 20);
+  }, [data]);
 
   if (!data) {
-    return <></>
+    return <></>;
   }
 
   return (
-    <EChartsx init={{ height: 800, renderer: 'canvas' }} theme='dark'>
+    <EChartsx init={{ height: 800, renderer: 'canvas' }} theme="dark">
       <Once>
-        <Title text='Type of total contributions' left='center'/>
-        <Legend type='scroll' orient='horizontal' top={24} />
-        <Grid left={0} right={0} bottom={0} containLabel />
-        <Tooltip trigger='axis' axisPointer={{ type: 'shadow' }}/>
-        <Axis.Value.X />
-        <Axis.Category.Y data={repos} inverse />
+        <Title text="Type of total contributions" left="center"/>
+        <Legend type="scroll" orient="horizontal" top={24}/>
+        <Grid left={0} right={0} bottom={0} containLabel/>
+        <Tooltip trigger="axis" axisPointer={{ type: 'shadow' }}/>
+        <Axis.Value.X/>
+        <Axis.Category.Y data={repos} inverse/>
         {eventTypes.map(event => (
-          <BarSeries datasetId={event} encode={{ x: 'cnt', y: 'repo_name', tooltip: ['type', 'cnt'] }} emphasis={{ focus: 'series' }} name={event} stack='0' />
+          <BarSeries datasetId={event} encode={{ x: 'cnt', y: 'repo_name', tooltip: ['type', 'cnt'] }}
+                     emphasis={{ focus: 'series' }} name={event} stack="0"/>
         ))}
         {eventTypes.map(event => (
-          <Dataset key={event} id={event} fromDatasetId='original' transform={{ type: 'filter', config: { value: event, dimension: 'type' } }} />
+          <Dataset key={event} id={event} fromDatasetId="original"
+                   transform={{ type: 'filter', config: { value: event, dimension: 'type' } }}/>
         ))}
       </Once>
-      <Dataset id='original' source={data?.data ?? []} />
+      <Dataset id="original" source={data?.data ?? []}/>
     </EChartsx>
   );
 };
@@ -104,8 +103,8 @@ const ContributionTime = ({ userId, show }: ModuleProps) => {
   }, [data, type]);
 
   return (
-    <Box mt={4} mx='auto'  width='max-content'>
-      <Box mb={2} width='max-content'>
+    <Box mt={4} mx="auto" width="max-content">
+      <Box mb={2} width="max-content">
         <FormControl variant="standard" size="small" sx={{ minWidth: 120 }}>
           <InputLabel id="event-type-selector-label">Event Type</InputLabel>
           <Select id="event-type-selector-label" value={type} onChange={handleEventChange}>
@@ -124,7 +123,7 @@ const ContributionTime = ({ userId, show }: ModuleProps) => {
         </FormControl>
       </Box>
       <TimeDistribution size={14} gap={4} offset={zone} data={filteredData}
-                title={`Contribution time distribution for ${type} (${formatZone(zone)})`}/>
+                        title={`Contribution time distribution for ${type} (${formatZone(zone)})`}/>
     </Box>
   );
 };
