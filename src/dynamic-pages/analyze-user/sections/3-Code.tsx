@@ -98,7 +98,7 @@ const PullRequestSize = ({ userId, show }: ModuleProps) => {
 };
 
 const LineOfCodes = ({ userId, show }: ModuleProps) => {
-  const { data } = usePersonalData('personal-pull-reuqest-code-changes-history', userId, show);
+  const { data } = usePersonalData('personal-pull-request-code-changes-history', userId, show);
 
   const mappedData = useMemo(() => {
     return data?.data.map(({ additions, deletions, event_month, changes }) => ({

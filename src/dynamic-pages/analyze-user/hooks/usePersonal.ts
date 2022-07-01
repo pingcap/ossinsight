@@ -9,8 +9,8 @@ type RequestMap = {
   // 'personal-overview': never
   'personal-pull-request-action-history': { event_month: string, opened_prs: number, merged_prs: number }
   'personal-pull-request-size-history': { event_month: string, xs: number, s: number, m: number, l: number, xl: number, xxl: number, all_size: number }
-  'personal-pull-reuqest-code-changes-history': { event_month: number, additions: number, deletions: number, changes: number }
-  'personal-pull-reuqest-reviews-history': { event_month: string, reviews: number, review_comments: number }
+  'personal-pull-request-code-changes-history': { event_month: number, additions: number, deletions: number, changes: number }
+  'personal-pull-request-reviews-history': { event_month: string, reviews: number, review_comments: number }
   'personal-pushes-and-commits': { event_month: string, pushes: number, commits: number }
   'personal-star-history': { star_month: string, language: string, cnt: number, percentage: number }
 }
