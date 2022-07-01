@@ -69,7 +69,7 @@ cd ossinsight/backend/;
 # Load seed data, e.g: collections, collection_items
 bundle exec rake db:seed
 
-# Load about 5 million sample events data
+# Load about 3.9 million sample events data
 wget https://github.com/pingcap/ossinsight/releases/download/sample/sample5m.sql.zip;
 unzip sample5m.sql.zip;
 mysql --host 127.0.0.1 --port 4000 -u root -p gharchive_dev < sample5m.sql
