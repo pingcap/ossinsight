@@ -1,7 +1,7 @@
 ---
 title: 'Workshop: NFT Insight'
-sidebar_label: NFT Insight
-sidebar_position: 6
+sidebar_label: 'NFT Insight ✔️ '
+sidebar_position: 3
 ---
 
 NFT stands for non-fungible token. Some contrast examples include bitcoin and banknotes. There are huge amounts of NFTs on the Ethereum blockchain. 
