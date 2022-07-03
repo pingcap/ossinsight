@@ -1,7 +1,7 @@
 ---
 title: 'Workshop: Stack Overflow Insight'
 sidebar_label: Stack Overflow Insight
-sidebar_position: 4
+sidebar_position: 5
 ---
 [Stack Overflow](https://stackoverflow.com/) helps people find the answers they need, when they need them. We're best known for our public Q&A platform that over 100 million people visit every month to ask questions, learn, and share technical knowledge.
 

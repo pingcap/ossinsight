@@ -1,7 +1,7 @@
 ---
 title: 'Workshop: Cryptocurrency Insight'
 sidebar_label: Cryptocurrency Insight
-sidebar_position: 5
+sidebar_position: 6
 ---
 
 [CoinMarketCap](https://coinmarketcap.com/) is the world's most-referenced price-tracking website for cryptoassets in the rapidly growing cryptocurrency space. Its mission is to make crypto discoverable and efficient globally by empowering retail users with unbiased, high quality and accurate information for drawing their own informed conclusions.

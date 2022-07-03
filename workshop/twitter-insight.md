@@ -1,7 +1,7 @@
 ---
 title: 'Workshop: Twitter Insight'
 sidebar_label: Twitter Insight
-sidebar_position: 3
+sidebar_position: 4
 ---
 
 [Twitter](http://twitter.com/) is the leading social media in the world, it shows what’s happening and what people are talking about right now.
