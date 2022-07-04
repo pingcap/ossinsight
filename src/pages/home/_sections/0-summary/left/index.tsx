@@ -1,6 +1,6 @@
 import React from 'react';
 import { AlignRightItem } from '../../../_components/StackItem';
-import AnalyzeSelectorLine from './AnalyzeSelectorLine';
+import GeneralSearchLine from './GeneralSearchLine';
 import EventLine from './EventLine';
 import FooterLine from './FooterLine';
 import TitleLine from './TitleLine';
@@ -10,7 +10,7 @@ const Left = () => {
     <AlignRightItem>
       <EventLine />
       <TitleLine />
-      <AnalyzeSelectorLine />
+      <GeneralSearchLine />
       <FooterLine />
     </AlignRightItem>
   );

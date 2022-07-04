@@ -122,7 +122,7 @@ const ContributionTime = ({ userId, show }: ModuleProps) => {
           </Select>
         </FormControl>
       </Box>
-      <TimeDistribution size={14} gap={4} offset={zone} data={filteredData}
+      <TimeDistribution size={18} gap={4} offset={zone} data={filteredData}
                         title={`Contribution time distribution for ${type} (${formatZone(zone)})`}/>
     </Box>
   );
