@@ -24,7 +24,7 @@ const CodeReview = () => {
     <>
       <SectionHeading
         title="Code Review"
-        description="Code Review stats in multiple dimensions."
+        description="The history about the number of code review times and comments in pull requests since 2011."
       />
       <CodeReviewHistory show={inView} userId={userId} />
     </>

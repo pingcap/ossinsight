@@ -12,7 +12,7 @@ import ChartWrapper from "../charts/ChartWrapper";
 export default forwardRef(function StarSection({}, ref: ForwardedRef<HTMLElement>) {
   return (
     <Section ref={ref}>
-      <Star/>
+      <Star />
     </Section>
   );
 });
@@ -25,9 +25,9 @@ const Star = () => {
     <Box>
       <SectionHeading
         title="Star"
-        description="Star stats in multiple dimensions."
+        description="The total number of starred repositories and ignore developers' unstarring or restarring behavior since 2011."
       />
-      <StarChart userId={userId} show={inView}/>
+      <StarChart userId={userId} show={inView} />
     </Box>
   );
 };
@@ -44,15 +44,15 @@ const StarChart = ({ userId, show }: ModuleProps) => {
   }, [data]);
 
   return (
-    <ChartWrapper title='Star History'>
+    <ChartWrapper title="Star History">
       <EChartsx init={{ height: 400, renderer: 'canvas' }} theme="dark">
         <Once>
           <Common />
-          <Axis.Time.X min='2011-01-01' />
-          <Axis.Value.Y/>
-          <BarSeries encode={{ x: 'star_month', y: 'cnt' }} color={chartColors}/>
+          <Axis.Time.X min="2011-01-01" />
+          <Axis.Value.Y />
+          <BarSeries encode={{ x: 'star_month', y: 'cnt' }} color={chartColors} />
         </Once>
-        <Dataset id="original" source={mappedData}/>
+        <Dataset id="original" source={mappedData} />
       </EChartsx>
     </ChartWrapper>
   );
@@ -69,22 +69,22 @@ const StarWithLanguages = ({ userId, show }: ModuleProps) => {
   return (
     <EChartsx init={{ height: 400, renderer: 'canvas' }} theme="dark">
       <Once>
-        <Title text="Contribution Trends" left="center"/>
-        <Legend type="scroll" orient="horizontal" top={24}/>
-        <Grid left={0} right={0} bottom={0} containLabel/>
-        <Tooltip trigger="axis" axisPointer={{ type: 'line' }}/>
-        <Axis.Time.X/>
-        <Axis.Value.Y/>
+        <Title text="Contribution Trends" left="center" />
+        <Legend type="scroll" orient="horizontal" top={24} />
+        <Grid left={0} right={0} bottom={0} containLabel />
+        <Tooltip trigger="axis" axisPointer={{ type: 'line' }} />
+        <Axis.Time.X />
+        <Axis.Value.Y />
       </Once>
       {languages.map(lang => (
         <>
           <BarSeries key={`${lang}-searies`} name={lang} datasetId={lang} encode={{ x: 'star_month', y: 'cnt' }}
-                     stack="0"/>
+                     stack="0" />
           <Dataset key={lang} id={lang} fromDatasetId="original"
-                   transform={{ type: 'filter', config: { value: lang, dimension: 'language' }, print: true }}/>
+                   transform={{ type: 'filter', config: { value: lang, dimension: 'language' }, print: true }} />
         </>
       ))}
-      <Dataset id="original" source={data?.data ?? []}/>
+      <Dataset id="original" source={data?.data ?? []} />
     </EChartsx>
   );
 };

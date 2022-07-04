@@ -24,7 +24,7 @@ const Issue = () => {
     <>
       <SectionHeading
         title="Issue"
-        description="Issue stats in multiple dimensions."
+        description="The history about the total number of issues and issue comments since 2011."
       />
       <IssueHistory show={inView} userId={userId} />
     </>

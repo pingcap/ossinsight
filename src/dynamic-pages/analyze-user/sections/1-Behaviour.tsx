@@ -32,7 +32,7 @@ const Behaviour = () => {
     <>
       <SectionHeading
         title="Behaviour"
-        description="Contribution stats in multiple dimensions."
+        description="You can see the total contributions in different repositories since 2011, as well as check the status of different contribution categories type by type."
       />
       <AllContributions userId={userId} show={inView} />
       <ContributionTime userId={userId} show={inView} />

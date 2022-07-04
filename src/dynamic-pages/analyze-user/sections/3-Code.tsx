@@ -24,7 +24,7 @@ const Code = () => {
     <>
       <SectionHeading
         title="Code"
-        description="Code stats in multiple dimensions."
+        description="All contributions measured with code related events since 2011.  For example, the history of code submits which includes the pushes and commits, the pull request history which includes merged / un-merged pull requests, the size of pull requests and the code line changes in pull requests."
       />
       <CodeSubmitHistory userId={userId} show={inView} />
       <PullRequestHistory userId={userId} show={inView} />
