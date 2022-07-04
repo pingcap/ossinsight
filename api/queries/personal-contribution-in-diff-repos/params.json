@@ -1,0 +1,22 @@
+{
+  "cacheHours": 1,
+  "params": [
+    {
+      "name": "userId",
+      "replaces": "5086433",
+      "pattern": "^[1-9]\\d*$"
+    },
+    {
+      "name": "activity_type",
+      "replaces": "type = 'PullRequestEvent'",
+      "enums": ["all", "pull_requests", "push", "reviews", "issues"],
+      "template": {
+        "pull_requests": "type = 'PullRequestEvent' AND action ='opened'",
+        "push": "type = 'PushEvent'",
+        "reviews": "type = 'PullRequestReviewEvent'",
+        "issues": "type = 'IssuesEvent'",
+        "all": ""
+      }
+    }
+  ]
+}
