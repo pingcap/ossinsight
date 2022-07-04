@@ -222,11 +222,6 @@ function Navbar() {
   const items = useNavbarItems();
   const hasSearchNavbarItem = items.some((item) => item.type === 'search');
   const {leftItems, rightItems} = splitNavItemsByPosition(items);
-  const location = useLocation()
-
-  const showAnalyzeInput = useMemo(() => {
-    return !/^\/analyze\/[^/]+\/.+/.test(location.pathname)
-  }, [location.pathname])
 
   return (
     <nav
@@ -259,7 +254,7 @@ function Navbar() {
           {leftItems.map((item, i) => (
             <NavbarItem {...item} key={i} />
           ))}
-          <Box display={showAnalyzeInput ? 'flex' : 'none'} justifyContent='flex-start' alignItems='center' width='100%' minWidth='50px' maxWidth='300px' ml={1} flexShrink={10000} sx={{ '& > *': { width: '100%', maxWidth: 300, mx: 'unset', flex: 1 }}}>
+          <Box display='flex' justifyContent='flex-start' alignItems='center' width='100%' minWidth='50px' maxWidth='300px' ml={1} flexShrink={10000} sx={{ '& > *': { width: '100%', maxWidth: 300, mx: 'unset', flex: 1 }}}>
             <GeneralSearch />
           </Box>
         </div>
