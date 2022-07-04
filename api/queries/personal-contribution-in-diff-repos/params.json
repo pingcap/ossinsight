@@ -8,7 +8,7 @@
     },
     {
       "name": "activity_type",
-      "replaces": "type = 'PullRequestEvent'",
+      "replaces": "type = 'PullRequestEvent' AND action ='opened'",
       "enums": ["all", "pull_requests", "commits", "reviews", "issues"],
       "template": {
         "pull_requests": "type = 'PullRequestEvent' AND action ='opened'",
