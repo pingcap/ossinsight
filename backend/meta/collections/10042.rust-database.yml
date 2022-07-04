@@ -1,0 +1,12 @@
+id: 10042
+name: Rust Database
+items:
+  - tikv/tikv
+  - meilisearch/meilisearch
+  - spacejam/sled
+  - MaterializeInc/materialize
+  - datafuselabs/databend
+  - erikgrinaker/toydb
+  - singularity-data/risingwave
+  - indradb/indradb
+  - CeresDB/ceresdb
