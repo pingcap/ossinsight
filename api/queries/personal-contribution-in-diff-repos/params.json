@@ -9,12 +9,12 @@
     {
       "name": "activity_type",
       "replaces": "type = 'PullRequestEvent'",
-      "enums": ["all", "pull_requests", "push", "reviews", "issues"],
+      "enums": ["all", "pull_requests", "commits", "reviews", "issues"],
       "template": {
         "pull_requests": "type = 'PullRequestEvent' AND action ='opened'",
-        "push": "type = 'PushEvent'",
-        "reviews": "type = 'PullRequestReviewEvent'",
-        "issues": "type = 'IssuesEvent'",
+        "commits": "type = 'PushEvent'",
+        "reviews": "type = 'PullRequestReviewEvent' AND action ='created'",
+        "issues": "type = 'IssuesEvent' AND action ='opened'",
         "all": ""
       }
     }
