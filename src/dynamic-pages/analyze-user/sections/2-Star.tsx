@@ -7,6 +7,7 @@ import Box from "@mui/material/Box";
 import { Axis, BarSeries, Dataset, EChartsx, Grid, Legend, Once, Title, Tooltip } from "@djagger/echartsx";
 import { Common } from "../charts/Common";
 import { chartColors } from "../colors";
+import ChartWrapper from "../charts/ChartWrapper";
 
 export default forwardRef(function StarSection({}, ref: ForwardedRef<HTMLElement>) {
   return (
@@ -43,16 +44,17 @@ const StarChart = ({ userId, show }: ModuleProps) => {
   }, [data]);
 
   return (
-    <EChartsx init={{ height: 400, renderer: 'canvas' }} theme="dark">
-      <Once>
-        <Title text="Star History" left="center"/>
-        <Common />
-        <Axis.Time.X min='2011-01-01' />
-        <Axis.Value.Y/>
-        <BarSeries encode={{ x: 'star_month', y: 'cnt' }} color={chartColors}/>
-      </Once>
-      <Dataset id="original" source={mappedData}/>
-    </EChartsx>
+    <ChartWrapper title='Star History'>
+      <EChartsx init={{ height: 400, renderer: 'canvas' }} theme="dark">
+        <Once>
+          <Common />
+          <Axis.Time.X min='2011-01-01' />
+          <Axis.Value.Y/>
+          <BarSeries encode={{ x: 'star_month', y: 'cnt' }} color={chartColors}/>
+        </Once>
+        <Dataset id="original" source={mappedData}/>
+      </EChartsx>
+    </ChartWrapper>
   );
 };
 

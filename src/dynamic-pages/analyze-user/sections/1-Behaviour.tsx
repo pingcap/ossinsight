@@ -9,15 +9,16 @@ import MenuItem from "@mui/material/MenuItem";
 import { SelectChangeEvent } from "@mui/material/Select";
 import FormControl from "@mui/material/FormControl";
 import TimeDistribution from "../charts/time-distribution";
-import { Axis, BarSeries, Dataset, EChartsx, Grid, Legend, Once, Title, Tooltip } from "@djagger/echartsx";
+import { Axis, BarSeries, Dataset, EChartsx, Once } from "@djagger/echartsx";
 import { Common } from "../charts/Common";
 import { chartColors } from "../colors";
+import ChartWrapper from "../charts/ChartWrapper";
 
 
 export default forwardRef(function BehaviourSection({}, ref: ForwardedRef<HTMLElement>) {
   return (
     <Section ref={ref}>
-      <Behaviour/>
+      <Behaviour />
     </Section>
   );
 });
@@ -33,8 +34,8 @@ const Behaviour = () => {
         title="Behaviour"
         description="Contribution stats in multiple dimensions."
       />
-      <AllContributions userId={userId} show={inView}/>
-      <ContributionTime userId={userId} show={inView}/>
+      <AllContributions userId={userId} show={inView} />
+      <ContributionTime userId={userId} show={inView} />
     </>
   );
 };
@@ -56,23 +57,25 @@ const AllContributions = ({ userId, show }: ModuleProps) => {
   }
 
   return (
-    <EChartsx init={{ height: 800, renderer: 'canvas' }} theme="dark">
-      <Once>
-        <Title text="Type of total contributions" left="center"/>
-        <Common hideZoom />
-        <Axis.Value.X />
-        <Axis.Category.Y data={repos} inverse/>
-        {eventTypes.map((event, i) => (
-          <BarSeries datasetId={event} encode={{ x: 'cnt', y: 'repo_name', tooltip: ['type', 'cnt'] }}
-                     emphasis={{ focus: 'series' }} name={event} stack="0" color={chartColors[i % chartColors.length]}/>
-        ))}
-        {eventTypes.map(event => (
-          <Dataset key={event} id={event} fromDatasetId="original"
-                   transform={{ type: 'filter', config: { value: event, dimension: 'type' } }}/>
-        ))}
-      </Once>
-      <Dataset id="original" source={data?.data ?? []}/>
-    </EChartsx>
+    <ChartWrapper title="Type of total contributions">
+      <EChartsx init={{ height: 800, renderer: 'canvas' }} theme="dark">
+        <Once>
+          <Common hideZoom />
+          <Axis.Value.X />
+          <Axis.Category.Y data={repos} inverse />
+          {eventTypes.map((event, i) => (
+            <BarSeries datasetId={event} encode={{ x: 'cnt', y: 'repo_name', tooltip: ['type', 'cnt'] }}
+                       emphasis={{ focus: 'series' }} name={event} stack="0"
+                       color={chartColors[i % chartColors.length]} />
+          ))}
+          {eventTypes.map(event => (
+            <Dataset key={event} id={event} fromDatasetId="original"
+                     transform={{ type: 'filter', config: { value: event, dimension: 'type' } }} />
+          ))}
+        </Once>
+        <Dataset id="original" source={data?.data ?? []} />
+      </EChartsx>
+    </ChartWrapper>
   );
 };
 
@@ -102,29 +105,34 @@ const ContributionTime = ({ userId, show }: ModuleProps) => {
     return (data?.data ?? []).filter(item => item.type === type);
   }, [data, type]);
 
+  const title = useMemo(() => {
+    return `Contribution time distribution for ${type} (${formatZone(zone)})`;
+  }, [type, zone]);
+
   return (
-    <Box mt={4} mx="auto" width="max-content">
-      <Box mb={2} width="max-content">
-        <FormControl variant="standard" size="small" sx={{ minWidth: 120 }}>
-          <InputLabel id="event-type-selector-label">Event Type</InputLabel>
-          <Select id="event-type-selector-label" value={type} onChange={handleEventChange}>
-            {eventTypes.map(event => (
-              <MenuItem key={event} value={event}>{event}</MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        <FormControl variant="standard" size="small" sx={{ minWidth: 80, ml: 2 }}>
-          <InputLabel id="time-zone-selector-label">Time Zone</InputLabel>
-          <Select<number> labelId="time-zone-selector-label" value={zone} onChange={handleZoneChange}>
-            {timezones.map(zone => (
-              <MenuItem key={zone} value={zone}>{formatZone(zone)}</MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+    <ChartWrapper title={title}>
+      <Box mt={4} mx="auto" width="max-content">
+        <Box mb={2} width="max-content">
+          <FormControl variant="standard" size="small" sx={{ minWidth: 120 }}>
+            <InputLabel id="event-type-selector-label">Event Type</InputLabel>
+            <Select id="event-type-selector-label" value={type} onChange={handleEventChange}>
+              {eventTypes.map(event => (
+                <MenuItem key={event} value={event}>{event}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <FormControl variant="standard" size="small" sx={{ minWidth: 80, ml: 2 }}>
+            <InputLabel id="time-zone-selector-label">Time Zone</InputLabel>
+            <Select<number> labelId="time-zone-selector-label" value={zone} onChange={handleZoneChange}>
+              {timezones.map(zone => (
+                <MenuItem key={zone} value={zone}>{formatZone(zone)}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Box>
+        <TimeDistribution size={18} gap={4} offset={zone} data={filteredData} title={title} />
       </Box>
-      <TimeDistribution size={18} gap={4} offset={zone} data={filteredData}
-                        title={`Contribution time distribution for ${type} (${formatZone(zone)})`}/>
-    </Box>
+    </ChartWrapper>
   );
 };
 
