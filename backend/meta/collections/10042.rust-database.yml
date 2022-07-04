@@ -12,3 +12,6 @@ items:
   - CeresDB/ceresdb
   - skytable/skytable
   - PumpkinDB/PumpkinDB
+  - valeriansaliou/sonic
+  - neondatabase/neon
+  - cswinter/LocustDB
