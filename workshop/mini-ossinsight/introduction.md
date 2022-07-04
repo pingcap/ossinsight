@@ -8,7 +8,7 @@ By join this workshop, you can setup a mini OSS Insight with:
 
 1. Tens of millions of GitHub events that is randomly picked from the 4.7 billion events;
 2. Realtime Github event inserted;
-3. The same interface as https://ossinsiht.io
+3. The same interface as [OSS Insight](https://ossinsight.io/)
 
 There are several methods to start this workshop:
 
