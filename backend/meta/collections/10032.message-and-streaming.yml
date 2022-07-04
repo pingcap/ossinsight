@@ -1,5 +1,5 @@
 id: 10032
-name: Message Queue
+name: Message and Streaming
 items:
   - apache/pulsar
   - apache/Kafka
@@ -8,10 +8,9 @@ items:
   - apache/rocketmq
   - nsqio/nsq
   - celery/celery
-  - contribsys/faktory
+  - redpanda-data/redpanda
   - nats-io/nats-server
   - distribworks/dkron
-  - mperham/sidekiq
   - emqx/emqx
   - zeromq/libzmq
   - vernemq/vernemq
