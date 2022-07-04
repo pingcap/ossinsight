@@ -206,16 +206,19 @@ const Languages = ({ userId, show }: ModuleProps) => {
         </Tooltip>
       </Typography>
       <Bar sx={{ mt: 2 }}>
-        {data.data.map((lang, i) => (
+        {data.data.slice(0, 4).map((lang, i) => (
           <Tick key={lang.language}
                 sx={{ width: lang.percentage, backgroundColor: languageColors[i % languageColors.length] }}
           />
         ))}
       </Bar>
       <Stack sx={{ mt: 2 }} flexWrap="wrap" rowGap={2} columnGap={4} flexDirection="row">
-        {data.data.map((lang, i) => (
+        {data.data.slice(0, 4).map((lang, i) => (
           <DotText color={languageColors[i % languageColors.length]} label={lang.language} percent={lang.percentage} />
         ))}
+        {data.data.length > 4
+          ? <DotText color='#3c3c3c' label='Others' percent={data.data.slice(4).reduce((total, last) => total + last.percentage, 0)}/>
+          : undefined}
       </Stack>
     </Box>
   );
@@ -307,6 +310,7 @@ const Bar = styled('ol')({
   margin: 0,
   padding: 0,
   listStyle: 'none',
+  background: '#3c3c3c',
 });
 
 const Tick = styled('li')({
@@ -318,9 +322,9 @@ const DotText = ({ color, label, percent }: { color: string, label: string, perc
   return (
     <Stack alignItems="center" flexDirection="row">
       <Box component="span" display="block" bgcolor={color} width={6} height={6} borderRadius={3} mr={1} />
-      <Typography component="span" variant="body2">{label}</Typography>
+      <Typography component="span" variant="body2" color="#F9F9F9" fontWeight='bold'>{label}</Typography>
       &nbsp;
-      <Typography component="span" variant="body2" color="#3c3c3c">({(percent * 100).toPrecision(2)}%)</Typography>
+      <Typography component="span" variant="body2" color="#C4C4C4">{(percent * 100).toPrecision(2)}%</Typography>
     </Stack>
   );
 };
