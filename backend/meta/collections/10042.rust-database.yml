@@ -10,3 +10,4 @@ items:
   - singularity-data/risingwave
   - indradb/indradb
   - CeresDB/ceresdb
+  - skytable/skytable
