@@ -30,3 +30,4 @@ items:
   - ApsaraDB/galaxyengine
   - singularity-data/risingwave
   - prestodb/presto
+  - FerretDB/FerretDB

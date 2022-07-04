@@ -29,3 +29,4 @@ items:
   - dgraph-io/dgraph
   - cockroachdb/cockroach
   - uber/aresdb
+  - FerretDB/FerretDB
