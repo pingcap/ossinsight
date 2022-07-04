@@ -3,13 +3,13 @@ import { Grid, Legend, Tooltip, withBaseOption } from "@djagger/echartsx";
 
 const DataZoom = withBaseOption('dataZoom', {}, 'DataZoom')
 
-export const Common = () => {
+export const Common = ({ hideZoom = false }: { hideZoom?: boolean }) => {
   return (
     <>
       <Legend type="scroll" orient="horizontal" top={24}/>
-      <Grid left={8} right={8} bottom={48} containLabel/>
+      <Grid left={8} right={8} bottom={!hideZoom ? 48 : 8} containLabel/>
       <Tooltip trigger="axis" axisPointer={{ type: 'shadow' }} />
-      <DataZoom />
+      {!hideZoom ? <DataZoom /> : undefined}
     </>
   )
 }

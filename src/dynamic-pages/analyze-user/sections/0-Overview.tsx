@@ -28,6 +28,7 @@ import Skeleton from "@mui/material/Skeleton";
 import { Axis, Dataset, EChartsx, Grid, Legend, LineSeries, Once, Title, Tooltip } from "@djagger/echartsx";
 import colors from '../colors.module.css'
 import { languageColors, chartColors } from '../colors'
+import { Common } from "../charts/Common";
 
 export default forwardRef(function OverviewSection({}, ref: ForwardedRef<HTMLElement>) {
   return (
@@ -181,10 +182,8 @@ const ContributorTrends = ({ userId, show }: ModuleProps) => {
     <EChartsx init={{ height: 400, renderer: 'canvas' }} theme='dark'>
       <Once>
         <Title text='Contribution Trends' left='center'/>
-        <Legend type='scroll' orient='horizontal' top={24} />
-        <Grid left={0} right={0} bottom={0} containLabel />
-        <Tooltip trigger='axis' axisPointer={{ type: 'line' }}/>
-        <Axis.Time.X />
+        <Common hideZoom />
+        <Axis.Time.X min='2011-01-01' />
         <Axis.Value.Y />
         {contributionTypes.map((ct, i) => (
           <LineSeries key={ct} name={ct} color={chartColors[i % chartColors.length]} datasetId={ct} encode={{ x: 'event_month', y: 'cnt' }} symbolSize={0} lineStyle={{width: 1}} areaStyle={{ opacity: 0.15 }} />

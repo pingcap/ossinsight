@@ -59,8 +59,8 @@ const AllContributions = ({ userId, show }: ModuleProps) => {
     <EChartsx init={{ height: 800, renderer: 'canvas' }} theme="dark">
       <Once>
         <Title text="Type of total contributions" left="center"/>
-        <Common />
-        <Axis.Value.X/>
+        <Common hideZoom />
+        <Axis.Value.X />
         <Axis.Category.Y data={repos} inverse/>
         {eventTypes.map((event, i) => (
           <BarSeries datasetId={event} encode={{ x: 'cnt', y: 'repo_name', tooltip: ['type', 'cnt'] }}
