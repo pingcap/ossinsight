@@ -5,6 +5,8 @@ import { useAnalyzeUserContext } from "../charts/context";
 import { usePersonalData } from "../hooks/usePersonal";
 import Box from "@mui/material/Box";
 import { Axis, BarSeries, Dataset, EChartsx, Grid, Legend, LineSeries, Once, Title, Tooltip } from "@djagger/echartsx";
+import { Common } from "../charts/Common";
+import { green, lightGreen, purple, redColors } from "../colors";
 
 export default forwardRef(function CodeSection({}, ref: ForwardedRef<HTMLElement>) {
   return (
@@ -40,13 +42,11 @@ const CodeSubmitHistory = ({ userId, show }: ModuleProps) => {
       <EChartsx init={{ height: 400, renderer: 'canvas' }} theme="dark">
         <Once>
           <Title text="Code Submit History" left="center"/>
-          <Legend type="scroll" orient="horizontal" top={24}/>
-          <Grid left={0} right={0} bottom={0} containLabel/>
-          <Tooltip trigger="axis" axisPointer={{ type: 'line' }}/>
-          <Axis.Time.X/>
+          <Common />
+          <Axis.Time.X min='2011-01-01' />
           <Axis.Value.Y/>
-          <BarSeries encode={{ x: 'event_month', y: 'pushes' }} name="push"/>
-          <BarSeries encode={{ x: 'event_month', y: 'commits' }} name="commit"/>
+          <BarSeries encode={{ x: 'event_month', y: 'pushes' }} name="push" color={green} />
+          <BarSeries encode={{ x: 'event_month', y: 'commits' }} name="commit" color={lightGreen} />
         </Once>
         <Dataset source={data?.data ?? []}/>
       </EChartsx>
@@ -62,13 +62,11 @@ const PullRequestHistory = ({ userId, show }: ModuleProps) => {
       <EChartsx init={{ height: 400, renderer: 'canvas' }} theme="dark">
         <Once>
           <Title text="Pull Request History" left="center"/>
-          <Legend type="scroll" orient="horizontal" top={24}/>
-          <Grid left={0} right={0} bottom={0} containLabel/>
-          <Tooltip trigger="axis" axisPointer={{ type: 'line' }}/>
-          <Axis.Time.X/>
+          <Common />
+          <Axis.Time.X min='2011-01-01' />
           <Axis.Value.Y/>
-          <LineSeries datasetId="source" encode={{ x: 'event_month', y: 'opened_prs' }} name="Opened PRs"/>
-          <LineSeries datasetId="source" encode={{ x: 'event_month', y: 'merged_prs' }} name="Merged PRs"/>
+          <LineSeries datasetId="source" encode={{ x: 'event_month', y: 'opened_prs' }} name="Opened PRs" color={green} areaStyle={{ opacity: 0.15 }} symbolSize={0} lineStyle={{ width: 1 }} />
+          <LineSeries datasetId="source" encode={{ x: 'event_month', y: 'merged_prs' }} name="Merged PRs" color={purple} areaStyle={{ opacity: 0.15 }} symbolSize={0} lineStyle={{ width: 1 }} />
         </Once>
         <Dataset id="original" source={data?.data ?? []}/>
         {data ? <Dataset id="source" fromDatasetId="original"
@@ -86,13 +84,11 @@ const PullRequestSize = ({ userId, show }: ModuleProps) => {
       <EChartsx init={{ height: 400, renderer: 'canvas' }} theme="dark">
         <Once>
           <Title text="Pull Request Size" left="center"/>
-          <Legend type="scroll" orient="horizontal" top={24}/>
-          <Grid left={0} right={0} bottom={0} containLabel/>
-          <Tooltip trigger="axis" axisPointer={{ type: 'line' }}/>
-          <Axis.Time.X/>
+          <Common />
+          <Axis.Time.X min='2011-01-01' />
           <Axis.Value.Y/>
-          {['xs', 's', 'm', 'l', 'xl', 'xxl'].map(size => (
-            <BarSeries id={size} key={size} encode={{ x: 'event_month', y: size }} name={size} stack="total"/>
+          {['xs', 's', 'm', 'l', 'xl', 'xxl'].reverse().map((size, i) => (
+            <BarSeries id={size} key={size} encode={{ x: 'event_month', y: size }} name={size} stack="total" color={redColors.slice(0, 6).reverse()[i]}/>
           ))}
         </Once>
         <Dataset source={data?.data ?? []}/>
@@ -118,10 +114,8 @@ const LineOfCodes = ({ userId, show }: ModuleProps) => {
       <EChartsx init={{ height: 400, renderer: 'canvas' }} theme="dark">
         <Once>
           <Title text="Pull Request History" left="center"/>
-          <Legend type="scroll" orient="horizontal" top={24}/>
-          <Grid left={0} right={0} bottom={0} containLabel/>
-          <Tooltip trigger="axis" axisPointer={{ type: 'line' }}/>
-          <Axis.Time.X/>
+          <Common />
+          <Axis.Time.X min='2011-01-01' />
           <Axis.Value.Y id="code"/>
 
           <LineSeries color="#57ab5a" id="add" yAxisId="code" encode={{ x: 'event_month', y: 'additions' }}

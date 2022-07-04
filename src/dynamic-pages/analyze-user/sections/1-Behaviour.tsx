@@ -10,6 +10,8 @@ import { SelectChangeEvent } from "@mui/material/Select";
 import FormControl from "@mui/material/FormControl";
 import TimeDistribution from "../charts/time-distribution";
 import { Axis, BarSeries, Dataset, EChartsx, Grid, Legend, Once, Title, Tooltip } from "@djagger/echartsx";
+import { Common } from "../charts/Common";
+import { chartColors } from "../colors";
 
 
 export default forwardRef(function BehaviourSection({}, ref: ForwardedRef<HTMLElement>) {
@@ -57,14 +59,12 @@ const AllContributions = ({ userId, show }: ModuleProps) => {
     <EChartsx init={{ height: 800, renderer: 'canvas' }} theme="dark">
       <Once>
         <Title text="Type of total contributions" left="center"/>
-        <Legend type="scroll" orient="horizontal" top={24}/>
-        <Grid left={0} right={0} bottom={0} containLabel/>
-        <Tooltip trigger="axis" axisPointer={{ type: 'shadow' }}/>
+        <Common />
         <Axis.Value.X/>
         <Axis.Category.Y data={repos} inverse/>
-        {eventTypes.map(event => (
+        {eventTypes.map((event, i) => (
           <BarSeries datasetId={event} encode={{ x: 'cnt', y: 'repo_name', tooltip: ['type', 'cnt'] }}
-                     emphasis={{ focus: 'series' }} name={event} stack="0"/>
+                     emphasis={{ focus: 'series' }} name={event} stack="0" color={chartColors[i % chartColors.length]}/>
         ))}
         {eventTypes.map(event => (
           <Dataset key={event} id={event} fromDatasetId="original"

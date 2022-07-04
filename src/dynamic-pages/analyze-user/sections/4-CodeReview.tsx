@@ -5,6 +5,8 @@ import Box from "@mui/material/Box";
 import { Axis, BarSeries, Dataset, EChartsx, Grid, Legend, Once, Title, Tooltip } from "@djagger/echartsx";
 import InViewContext from "../../../components/InViewContext";
 import { useAnalyzeUserContext } from "../charts/context";
+import { Common } from "../charts/Common";
+import { orange, primary } from "../colors";
 
 export default forwardRef(function CodeReviewSection({}, ref: ForwardedRef<HTMLElement>) {
   return (
@@ -37,13 +39,11 @@ const CodeReviewHistory = ({ userId, show }: ModuleProps) => {
       <EChartsx init={{ height: 400, renderer: 'canvas' }} theme="dark">
         <Once>
           <Title text="Code Review History" left="center"/>
-          <Legend type="scroll" orient="horizontal" top={24}/>
-          <Grid left={0} right={0} bottom={0} containLabel/>
-          <Tooltip trigger="axis" axisPointer={{ type: 'line' }}/>
-          <Axis.Time.X/>
+          <Common />
+          <Axis.Time.X min='2011-01-01' />
           <Axis.Value.Y/>
-          <BarSeries encode={{ x: 'event_month', y: 'reviews' }} name="review"/>
-          <BarSeries encode={{ x: 'event_month', y: 'review_comments' }} name="review comments"/>
+          <BarSeries encode={{ x: 'event_month', y: 'reviews' }} name="review" color={orange}/>
+          <BarSeries encode={{ x: 'event_month', y: 'review_comments' }} name="review comments" color={primary}/>
         </Once>
         <Dataset source={data?.data ?? []}/>
       </EChartsx>

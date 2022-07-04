@@ -5,6 +5,8 @@ import { usePersonalData } from "../hooks/usePersonal";
 import { useAnalyzeUserContext } from "../charts/context";
 import Box from "@mui/material/Box";
 import { Axis, BarSeries, Dataset, EChartsx, Grid, Legend, Once, Title, Tooltip } from "@djagger/echartsx";
+import { Common } from "../charts/Common";
+import { chartColors } from "../colors";
 
 export default forwardRef(function StarSection({}, ref: ForwardedRef<HTMLElement>) {
   return (
@@ -44,12 +46,10 @@ const StarChart = ({ userId, show }: ModuleProps) => {
     <EChartsx init={{ height: 400, renderer: 'canvas' }} theme="dark">
       <Once>
         <Title text="Star History" left="center"/>
-        <Legend type="scroll" orient="horizontal" top={24}/>
-        <Grid left={0} right={0} bottom={0} containLabel/>
-        <Tooltip trigger="axis" axisPointer={{ type: 'line' }}/>
-        <Axis.Time.X/>
+        <Common />
+        <Axis.Time.X min='2011-01-01' />
         <Axis.Value.Y/>
-        <BarSeries encode={{ x: 'star_month', y: 'cnt' }}/>
+        <BarSeries encode={{ x: 'star_month', y: 'cnt' }} color={chartColors}/>
       </Once>
       <Dataset id="original" source={mappedData}/>
     </EChartsx>

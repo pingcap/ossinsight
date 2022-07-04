@@ -13,15 +13,21 @@ import Stack from "@mui/material/Stack";
 import Avatar from "@mui/material/Avatar";
 import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
-import { MarkGithubIcon } from "@primer/octicons-react";
+import {
+  StarIcon,
+  MarkGithubIcon,
+  CommitIcon,
+  IssueOpenedIcon,
+  GitPullRequestIcon,
+  CodeReviewIcon,
+} from "@primer/octicons-react";
 import Link from "@docusaurus/Link";
 import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Skeleton from "@mui/material/Skeleton";
 import { Axis, Dataset, EChartsx, Grid, Legend, LineSeries, Once, Title, Tooltip } from "@djagger/echartsx";
-
-const languageColors = ['#faa275', '#ff8c61', '#ce6a85', '#985277', '#5c374c'];
-
+import colors from '../colors.module.css'
+import { languageColors, chartColors } from '../colors'
 
 export default forwardRef(function OverviewSection({}, ref: ForwardedRef<HTMLElement>) {
   return (
@@ -100,26 +106,26 @@ const OverviewTable = ({ userId, show }: ModuleProps) => {
       <tbody>
       <Tr>
         <Pair data={data} name="star_repos">
-          Starred Repos
+          <StarIcon className={colors.orange} /> Starred Repos
         </Pair>
         <Pair data={data} name="star_earned">
-          Starred Earned
+          <StarIcon className={colors.orange} /> Starred Earned
         </Pair>
       </Tr>
       <Tr>
         <Pair data={data} name="contribute_repos">
-          Contributed to
+          <CommitIcon className={colors.purple} /> Contributed to
         </Pair>
         <Pair data={data} name="issues">
-          Issues
+          <IssueOpenedIcon className={colors.primary} /> Issues
         </Pair>
       </Tr>
       <Tr>
         <Pair data={data} name="pull_requests">
-          Starred Repos
+          <GitPullRequestIcon className={colors.red} /> Pull Requests
         </Pair>
         <Pair data={data} name="code_reviews">
-          Starred Earned
+          <CodeReviewIcon className={colors.blue} /> Code Reviews
         </Pair>
       </Tr>
       <Tr>
@@ -132,7 +138,7 @@ const OverviewTable = ({ userId, show }: ModuleProps) => {
             <Deletion>-{data.code_deletions}</Deletion>
           </>
         )}>
-          Code Changes
+          <GitPullRequestIcon className={colors.red} /> Code Changes
         </Pair>
       </Tr>
       </tbody>
@@ -180,8 +186,8 @@ const ContributorTrends = ({ userId, show }: ModuleProps) => {
         <Tooltip trigger='axis' axisPointer={{ type: 'line' }}/>
         <Axis.Time.X />
         <Axis.Value.Y />
-        {contributionTypes.map(ct => (
-          <LineSeries key={ct} name={ct} datasetId={ct} encode={{ x: 'event_month', y: 'cnt' }} symbolSize={0} />
+        {contributionTypes.map((ct, i) => (
+          <LineSeries key={ct} name={ct} color={chartColors[i % chartColors.length]} datasetId={ct} encode={{ x: 'event_month', y: 'cnt' }} symbolSize={0} lineStyle={{width: 1}} areaStyle={{ opacity: 0.15 }} />
         ))}
       </Once>
       {data ? contributionTypes.map(ct => (
@@ -218,9 +224,11 @@ const Pair = ({ children, name, data, renderValue = value => value, dataColSpan 
   const value = data?.[name];
   return (
     <>
-      <Td>{children}</Td>
+      <Td sx={{ color: '#C4C4C4' }}>{children}</Td>
       <Td colSpan={dataColSpan}>
-        {!data ? <Skeleton width={24} sx={{ display: 'inline-block' }}/> : renderValue(value, data)}
+        <b>
+          {!data ? <Skeleton width={24} sx={{ display: 'inline-block' }}/> : renderValue(value, data)}
+        </b>
       </Td>
     </>
   );

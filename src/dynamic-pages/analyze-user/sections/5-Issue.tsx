@@ -5,6 +5,8 @@ import Box from "@mui/material/Box";
 import { Axis, BarSeries, Dataset, EChartsx, Grid, Legend, Once, Title, Tooltip } from "@djagger/echartsx";
 import InViewContext from "../../../components/InViewContext";
 import { useAnalyzeUserContext } from "../charts/context";
+import { Common } from "../charts/Common";
+import { blue, lightBlue } from "../colors";
 
 export default forwardRef(function IssueSection({}, ref: ForwardedRef<HTMLElement>) {
   return (
@@ -37,13 +39,11 @@ const IssueHistory = ({ userId, show }: ModuleProps) => {
       <EChartsx init={{ height: 400, renderer: 'canvas' }} theme="dark">
         <Once>
           <Title text="Issue History" left="center"/>
-          <Legend type="scroll" orient="horizontal" top={24}/>
-          <Grid left={0} right={0} bottom={0} containLabel/>
-          <Tooltip trigger="axis" axisPointer={{ type: 'line' }}/>
-          <Axis.Time.X/>
+          <Common />
+          <Axis.Time.X min='2011-01-01' />
           <Axis.Value.Y/>
-          <BarSeries encode={{ x: 'event_month', y: 'issues' }} name="issue"/>
-          <BarSeries encode={{ x: 'event_month', y: 'issue_comments' }} name="issue comments"/>
+          <BarSeries encode={{ x: 'event_month', y: 'issues' }} name="issue" color={blue} />
+          <BarSeries encode={{ x: 'event_month', y: 'issue_comments' }} name="issue comments" color={lightBlue} />
         </Once>
         <Dataset source={data?.data ?? []}/>
       </EChartsx>
