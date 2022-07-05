@@ -1,4 +1,5 @@
 import { AsyncData, RemoteData, useRemoteData } from '../../../components/RemoteCharts/hook';
+import { useMemo } from "react";
 
 type RequestMap = {
   'personal-contribution-time-distribution': { dayofweek: number, hour: number, cnt: number, type: string }
@@ -17,12 +18,12 @@ type RequestMap = {
 
 type ContributionType = 'issues' | 'issue_comments' | 'pull_requests' | 'reviews' | 'review_comments' | 'pushes'
 
-export const contributionTypes: ContributionType[] = ['issues', 'issue_comments', 'pull_requests', 'reviews', 'review_comments', 'pushes']
+export const contributionTypes: ContributionType[] = ['issues', 'issue_comments', 'pull_requests', 'reviews', 'review_comments', 'pushes'];
 
 type PersonalDataParams = { userId: number }
 
 export function usePersonalData<K extends keyof RequestMap>(key: K, userId: number | undefined, run: boolean) {
-  return useRemoteData<PersonalDataParams, RequestMap[K]>(key, { userId }, false, !!userId && run)
+  return useRemoteData<PersonalDataParams, RequestMap[K]>(key, { userId }, false, !!userId && run);
 }
 
 export type PersonalOverview = {
@@ -41,13 +42,51 @@ export type PersonalOverview = {
 }
 
 export function usePersonalOverview(userId: number | undefined, run: boolean): AsyncData<PersonalOverview> {
-  const { data, loading, error } = useRemoteData<PersonalDataParams, PersonalOverview>('personal-overview', { userId }, false, !!userId && run)
+  const {
+    data,
+    loading,
+    error,
+  } = useRemoteData<PersonalDataParams, PersonalOverview>('personal-overview', { userId }, false, !!userId && run);
 
   return {
     data: data?.data[0],
     loading,
     error,
-  }
+  };
+}
+
+export type ContributionActivityType = 'all' | 'commits' | 'pull_requests' | 'reviews' | 'issues'
+export type ContributionActivityRange = 'last_7_days' | 'last_72_hours' | 'last_30_days'
+export const contributionActivityTypes: ContributionActivityType[] = ['all' , 'commits' , 'pull_requests', 'reviews', 'issues']
+export const contributionActivityRanges: ContributionActivityRange[] = ['last_7_days', 'last_72_hours', 'last_30_days']
+export type ContributionActivity = { cnt: number, event_period: string, repo_id: number, repo_name: string }
+
+export function usePersonalContributionActivities(userId: number | undefined, type: ContributionActivityType, period: ContributionActivityRange, run: boolean): AsyncData<RemoteData<any, ContributionActivity>> {
+  return useRemoteData<any, ContributionActivity>('personal-contribution-in-diff-repos', {
+    userId,
+    activity_type: type,
+    period,
+  }, false, !!userId && run);
+}
+
+export function useRange(range: ContributionActivityRange): [Date, Date] {
+  return useMemo(() => {
+    const date = new Date();
+    date.setMinutes(0, 0, 0)
+    let diff: number
+    switch (range) {
+      case "last_72_hours":
+        diff = 72 * 60 * 60 * 1000
+        break
+      case "last_7_days":
+        diff = 7 * 24 * 60 * 60 * 1000
+        break
+      case "last_30_days":
+        diff = 30 * 24 * 60 * 60 * 1000
+        break
+    }
+    return [new Date(date.getTime() - diff), date]
+  }, [range]);
 }
 
 export type Personal<T extends keyof RequestMap> = RequestMap[T]
