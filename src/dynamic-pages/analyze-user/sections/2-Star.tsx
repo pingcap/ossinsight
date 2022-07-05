@@ -11,7 +11,7 @@ import ChartWrapper from "../charts/ChartWrapper";
 
 export default forwardRef(function StarSection({}, ref: ForwardedRef<HTMLElement>) {
   return (
-    <Section ref={ref}>
+    <Section id='star' ref={ref}>
       <Star />
     </Section>
   );

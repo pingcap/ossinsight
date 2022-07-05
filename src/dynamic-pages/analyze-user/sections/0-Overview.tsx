@@ -27,7 +27,7 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
 export default forwardRef(function OverviewSection({}, ref: ForwardedRef<HTMLElement>) {
   return (
-    <Section ref={ref}>
+    <Section id='overview' ref={ref}>
       <Overview />
     </Section>
   );

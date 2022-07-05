@@ -10,7 +10,7 @@ import ChartWrapper from "../charts/ChartWrapper";
 
 export default forwardRef(function CodeReviewSection({}, ref: ForwardedRef<HTMLElement>) {
   return (
-    <Section ref={ref}>
+    <Section id='code-review' ref={ref}>
       <CodeReview />
     </Section>
   );

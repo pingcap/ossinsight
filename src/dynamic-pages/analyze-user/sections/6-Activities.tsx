@@ -9,7 +9,7 @@ import {
   usePersonalData,
   useRange,
 } from "../hooks/usePersonal";
-import { Axis, Dataset, EChartsx, Grid, Legend, Once, Tooltip, withBaseOption } from "@djagger/echartsx";
+import { Axis, Dataset, EChartsx, Grid, Legend, Once, Title, Tooltip, withBaseOption } from "@djagger/echartsx";
 import { Common } from "../charts/Common";
 import { useDimension } from "../hooks/useDimension";
 import { ScatterSeriesOption } from "echarts/charts";
@@ -20,10 +20,16 @@ import { InputLabel, Select, useEventCallback } from "@mui/material";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import { SelectChangeEvent } from "@mui/material/Select";
+import { SectionHeading } from "../../../components/Section";
+import ChartWrapper from "../charts/ChartWrapper";
 
 export default forwardRef(function ActivitiesSection({}, ref: ForwardedRef<HTMLElement>) {
   return (
-    <Section ref={ref}>
+    <Section id='activities' ref={ref}>
+      <SectionHeading
+        title="Activities in different repositories"
+        description={<>All personal activities happened on <b>all public repositories</b> in GitHub since 2011. You can check each specific activity type by type with a timeline.</>}
+      />
       <Activities />
     </Section>
   );
@@ -62,8 +68,12 @@ const ActivityChart = ({ userId, show }: ModuleProps) => {
     setPeriod(e.target.value as ContributionActivityRange)
   })
 
+  const title = useMemo(() => {
+    return `All ${type === 'all' ? 'events' : type} in ${period}`
+  }, [type, period])
+
   return (
-    <Box>
+    <ChartWrapper title={title}>
       <Box mb={2}>
         <FormControl variant="standard" size="small" sx={{ minWidth: 120 }}>
           <InputLabel id="event-type-selector-label">Contribution type</InputLabel>
@@ -93,7 +103,7 @@ const ActivityChart = ({ userId, show }: ModuleProps) => {
         <Scatter encode={{ x: 'event_period', y: 'repo_name', value: 'cnt' }} symbolSize={(val) => Math.min(val.cnt * 5, 60)} tooltip={{ formatter: tooltipFormatter }} color={primary} />
         <Dataset source={data?.data ?? []}/>
       </EChartsx>
-    </Box>
+    </ChartWrapper>
   );
 };
 

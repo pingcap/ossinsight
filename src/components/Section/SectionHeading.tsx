@@ -10,7 +10,7 @@ const SectionHeading = ({ title, description }: SectionHeadingProps) => {
   return (
     <>
       <Typography variant="h2">{title}</Typography>
-      <Typography variant="body2" sx={{ mt: 1 }}>{description}</Typography>
+      <Typography variant="body2" sx={{ mt: 1, mb: 4 }}>{description}</Typography>
     </>
   )
 }

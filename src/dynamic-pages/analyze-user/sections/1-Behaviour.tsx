@@ -17,7 +17,7 @@ import ChartWrapper from "../charts/ChartWrapper";
 
 export default forwardRef(function BehaviourSection({}, ref: ForwardedRef<HTMLElement>) {
   return (
-    <Section ref={ref}>
+    <Section id='behaviour' ref={ref}>
       <Behaviour />
     </Section>
   );
