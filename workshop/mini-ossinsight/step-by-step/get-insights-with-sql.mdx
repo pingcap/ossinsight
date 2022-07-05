@@ -12,7 +12,7 @@ Now, the data is ready, let's try to analyze these data with SQL!
 ### a. Can't Wait!
 
 #### i. Example 1
-Look at [azure-sdk](https://github.com/azure-sdk)'s details:
+Look at [ti-chi-bot](https://github.com/ti-chi-bot)'s details:
 
 <Tabs>
   <TabItem value="sql" label="SQL">
@@ -22,8 +22,21 @@ SELECT
     type, count(*)
 FROM github_events
 WHERE
-    actor_login = 'azure-sdk'
+    actor_login = 'ti-chi-bot'
 GROUP BY type;
+
+...
+
++-------------------+----------+
+| type              | count(*) |
++-------------------+----------+
+| PullRequestEvent  |     6184 |
+| IssueCommentEvent |    53920 |
++-------------------+----------+
+2 rows in set (0.18 sec)
+
+mysql>
+
 ```
 
   </TabItem>
@@ -46,7 +59,7 @@ GROUP BY type;
 </Tabs>
 
 :::info
-azure-sdk's profile: https://github.com/azure-sdk.
+azure-sdk's profile: https://github.com/ti-chi-bot.
 :::
 
 #### ii. Example 2
@@ -83,19 +96,19 @@ ORDER BY event_year;
 | bots_total | event_year |
 +------------+------------+
 |          4 |       2011 |
-|          6 |       2012 |
-|         12 |       2013 |
-|         20 |       2014 |
-|         30 |       2015 |
-|         50 |       2016 |
-|         57 |       2017 |
-|         68 |       2018 |
-|         88 |       2019 |
-|        105 |       2020 |
-|        117 |       2021 |
-|        149 |       2022 |
+|          8 |       2012 |
+|         22 |       2013 |
+|         50 |       2014 |
+|         71 |       2015 |
+|        132 |       2016 |
+|        172 |       2017 |
+|        243 |       2018 |
+|        342 |       2019 |
+|        450 |       2020 |
+|        561 |       2021 |
+|        622 |       2022 |
 +------------+------------+
-12 rows in set (3.89 sec)
+12 rows in set (28.39 sec)
 
 mysql>
 ```
@@ -195,19 +208,19 @@ ORDER BY event_year;
 | bots_total | event_year |
 +------------+------------+
 |          4 |       2011 |
-|          6 |       2012 |
-|         12 |       2013 |
-|         20 |       2014 |
-|         30 |       2015 |
-|         50 |       2016 |
-|         57 |       2017 |
-|         68 |       2018 |
-|         88 |       2019 |
-|        105 |       2020 |
-|        117 |       2021 |
-|        332 |       2022 |
+|          8 |       2012 |
+|         22 |       2013 |
+|         50 |       2014 |
+|         71 |       2015 |
+|        132 |       2016 |
+|        172 |       2017 |
+|        243 |       2018 |
+|        342 |       2019 |
+|        450 |       2020 |
+|        561 |       2021 |
+|        622 |       2022 |
 +------------+------------+
-12 rows in set (0.06 sec)
+12 rows in set (0.26 sec)
 
 mysql>
 ```
@@ -247,7 +260,7 @@ mysql>
   </TabItem>
 </Tabs>
 
-`3.89s` VS `0.06s`, **IT IS SUPER FASTER**! We provide a all-in-one script to run `SET TIFLASH REPLICA` on all tables:
+`28.39 sec` VS `0.26 sec`, **IT IS SUPER FASTER**! We provide a all-in-one script to run `SET TIFLASH REPLICA` on all tables:
 ```bash
 cd ossinsight/backend/;
 bundle exec rake gh:set_tiflash_replica
