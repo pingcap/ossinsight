@@ -8,14 +8,24 @@
     },
     {
       "name": "activity_type",
-      "replaces": "type = 'PullRequestEvent' AND action ='opened'",
+      "replaces": "AND type = 'PullRequestEvent' AND action ='opened'",
       "enums": ["all", "pull_requests", "commits", "reviews", "issues"],
       "template": {
-        "pull_requests": "type = 'PullRequestEvent' AND action ='opened'",
-        "commits": "type = 'PushEvent'",
-        "reviews": "type = 'PullRequestReviewEvent' AND action ='created'",
-        "issues": "type = 'IssuesEvent' AND action ='opened'",
+        "pull_requests": "AND type = 'PullRequestEvent' AND action ='opened'",
+        "commits": "AND type = 'PushEvent'",
+        "reviews": "AND type = 'PullRequestReviewEvent' AND action ='created'",
+        "issues": "AND type = 'IssuesEvent' AND action ='opened'",
         "all": ""
+      }
+    },
+    {
+      "name": "period",
+      "replaces": "AND (created_at BETWEEN DATE_SUB(NOW(), INTERVAL 7 DAY) AND NOW())",
+      "enums": ["last_72_hours", "last_7_days", "last_30_days"],
+      "template": {
+        "last_72_hours": "AND (created_at BETWEEN DATE_SUB(NOW(), INTERVAL 72 HOUR) AND NOW())",
+        "last_7_days": "AND (created_at BETWEEN DATE_SUB(NOW(), INTERVAL 7 DAY) AND NOW())",
+        "last_30_days": "AND (created_at BETWEEN DATE_SUB(NOW(), INTERVAL 30 DAY) AND NOW())"
       }
     }
   ]
