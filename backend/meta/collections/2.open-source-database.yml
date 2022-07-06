@@ -31,3 +31,4 @@ items:
   - singularity-data/risingwave
   - prestodb/presto
   - FerretDB/FerretDB
+  - CeresDB/ceresdb
