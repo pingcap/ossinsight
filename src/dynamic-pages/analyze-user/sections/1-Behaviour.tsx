@@ -79,7 +79,7 @@ const AllContributions = ({ userId, show }: ModuleProps) => {
   );
 };
 
-const eventTypes = ['IssueCommentEvent', 'IssuesEvent', 'PullRequestEvent', 'PullRequestReviewCommentEvent', 'PushEvent', 'PullRequestReviewEvent'];
+const eventTypes = ['pushes', 'issues', 'issue_comments', 'pull_requests', 'reviews', 'review_comments'];
 const timezones = [];
 
 const formatZone = (zone: number) => `UTC ${zone < 0 ? zone : `+${zone}`}`;
@@ -114,7 +114,7 @@ const ContributionTime = ({ userId, show }: ModuleProps) => {
       <Box mt={4} mx="auto" width="max-content">
         <Box mb={2} width="max-content">
           <FormControl variant="standard" size="small" sx={{ minWidth: 120 }}>
-            <InputLabel id="event-type-selector-label">Event Type</InputLabel>
+            <InputLabel id="event-type-selector-label">Contribution Type</InputLabel>
             <Select id="event-type-selector-label" value={type} onChange={handleEventChange}>
               {eventTypes.map(event => (
                 <MenuItem key={event} value={event}>{event}</MenuItem>
