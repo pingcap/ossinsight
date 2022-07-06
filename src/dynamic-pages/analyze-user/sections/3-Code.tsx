@@ -113,7 +113,7 @@ const LineOfCodes = ({ userId, show }: ModuleProps) => {
   }, [data]);
 
   return (
-    <ChartWrapper title="Pull Request History">
+    <ChartWrapper title="Lines of changes in PRs">
       <EChartsx init={{ height: 400, renderer: 'canvas' }} theme="dark">
         <Once>
           <Common />
