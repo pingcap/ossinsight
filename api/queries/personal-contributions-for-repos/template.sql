@@ -7,12 +7,26 @@ WITH contributions AS (
     FROM github_events ge
     WHERE
         actor_id = 5086433
-        AND type IN ('PushEvent', 'PullRequestEvent', 'PullRequestReviewEvent', 'PullRequestReviewCommentEvent', 'IssuesEvent', 'IssueCommentEvent')
+        AND (
+            (type = 'PullRequestEvent' AND action = 'opened') OR
+            (type = 'IssuesEvent' AND action = 'opened') OR
+            (type = 'IssueCommentEvent' AND action = 'created') OR
+            (type = 'PullRequestReviewEvent' AND action = 'created') OR
+            (type = 'PullRequestReviewCommentEvent' AND action = 'created') OR
+            (type = 'PushEvent')
+        )
 )
 SELECT
     repo_id,
     repo_name,
-    type,
+    CASE type
+        WHEN 'IssuesEvent' THEN 'issues'
+        WHEN 'IssueCommentEvent' THEN 'issue_comments'
+        WHEN 'PullRequestEvent' THEN 'pull_requests'
+        WHEN 'PullRequestReviewEvent' THEN 'reviews'
+        WHEN 'PullRequestReviewCommentEvent' THEN 'review_comments'
+        WHEN 'PushEvent' THEN 'pushes'
+    END AS type,
     COUNT(DISTINCT id) AS cnt 
 FROM contributions c
 GROUP BY repo_id, type

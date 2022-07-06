@@ -9,7 +9,7 @@ SELECT
         WHEN 'PullRequestReviewEvent' THEN 'reviews'
         WHEN 'PullRequestReviewCommentEvent' THEN 'review_comments'
         WHEN 'PushEvent' THEN 'pushes'
-    END AS type,
+    END AS type
 FROM github_events ge
 WHERE
     actor_id = 5086433
