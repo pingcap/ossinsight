@@ -93,8 +93,8 @@ export function useRange(range: ContributionActivityRange): [Date, Date] {
       case "last_7_days":
         diff = 7 * 24 * 60 * 60 * 1000
         break
-      case "last_30_days":
-        diff = 30 * 24 * 60 * 60 * 1000
+      case "last_28_days":
+        diff = 28 * 24 * 60 * 60 * 1000
         break
     }
     return [new Date(date.getTime() - diff), date]
