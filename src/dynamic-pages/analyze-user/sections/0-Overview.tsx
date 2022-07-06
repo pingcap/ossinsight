@@ -46,7 +46,7 @@ const Overview = () => {
             title="Overview"
             description={(
               <>
-                Know how we calculate contributions <Link>here</Link>!
+                All results are calculated only by developer's <b>public activities</b> showed on GitHub. See details in <Link href='https://gharchive.org' target='_blank'>gharchive</Link>!
               </>
             )}
           />

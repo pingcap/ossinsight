@@ -18,7 +18,7 @@ type RequestMap = {
 
 type ContributionType = 'issues' | 'issue_comments' | 'pull_requests' | 'reviews' | 'review_comments' | 'pushes'
 
-export const contributionTypes: ContributionType[] = ['issues', 'issue_comments', 'pull_requests', 'reviews', 'review_comments', 'pushes'];
+export const contributionTypes: ContributionType[] = ['issues', 'pull_requests', 'reviews', 'pushes', 'review_comments', 'issue_comments'];
 
 type PersonalDataParams = { userId: number }
 
