@@ -16,7 +16,7 @@ const GeneralSearchLine = () => {
         <GeneralSearch align='left' size='large' contrast />
       </Box>
       <Typography variant='body2' mt={1} color='#7c7c7c'>
-        Lookup any repository or developer on GitHub
+        Quick insight on repository or developer from GitHub
         <br />
         to see status and rankings.
       </Typography>

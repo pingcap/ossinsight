@@ -44,7 +44,7 @@ const useTabs = () => {
     return (
       <Tabs value={type} onChange={handleTypeChange}>
         <Tab label="Repo" value="repo" />
-        <Tab label="User" value="user" />
+        <Tab label="Developer" value="user" />
       </Tabs>
     );
   }, [type]);
