@@ -50,7 +50,7 @@ const Scatter = withBaseOption<ScatterSeriesOption>('series', { type: 'scatter' 
 
 const ActivityChart = ({ userId, show }: ModuleProps) => {
   const [type, setType] = useState<ContributionActivityType>('all')
-  const [period, setPeriod] = useState<ContributionActivityRange>('last_72_hours')
+  const [period, setPeriod] = useState<ContributionActivityRange>('last_28_days')
 
   const { data } = usePersonalContributionActivities(userId, type, period, show)
   const repoNames = useDimension(data?.data ?? [], 'repo_name')

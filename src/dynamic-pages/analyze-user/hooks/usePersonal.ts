@@ -56,7 +56,8 @@ export function usePersonalOverview(userId: number | undefined, run: boolean): A
 }
 
 export type ContributionActivityType = 'all' | 'commits' | 'pull_requests' | 'reviews' | 'issues'
-export type ContributionActivityRange = 'last_7_days' | 'last_72_hours' | 'last_30_days'
+export type ContributionActivityPeriod = 'hour' | 'day' | 'month'
+export type ContributionActivityRange = 'last_7_days' | 'last_72_hours' | 'last_28_days'
 export const contributionActivityTypes: { key: ContributionActivityType, label: string }[] = [
   { key: 'all', label: 'All Contributions' } ,
   { key: 'commits', label: 'Commits' } ,
@@ -67,15 +68,16 @@ export const contributionActivityTypes: { key: ContributionActivityType, label: 
 export const contributionActivityRanges: { key: ContributionActivityRange, label: string }[] = [
   { key: 'last_72_hours', label: 'Last 3 days' },
   { key: 'last_7_days', label: 'Last Week' },
-  { key: 'last_30_days', label: 'Last Month' },
+  { key: 'last_28_days', label: 'Last Month' },
 ]
 export type ContributionActivity = { cnt: number, event_period: string, repo_id: number, repo_name: string }
 
-export function usePersonalContributionActivities(userId: number | undefined, type: ContributionActivityType, period: ContributionActivityRange, run: boolean): AsyncData<RemoteData<any, ContributionActivity>> {
+export function usePersonalContributionActivities(userId: number | undefined, type: ContributionActivityType, timeRange: ContributionActivityRange, run: boolean): AsyncData<RemoteData<any, ContributionActivity>> {
   return useRemoteData<any, ContributionActivity>('personal-contribution-in-diff-repos', {
     userId,
     activity_type: type,
-    period,
+    time_range: timeRange,
+    period: timeRange === 'last_28_days' ? 'day' : 'hour',
   }, false, !!userId && run);
 }
 
