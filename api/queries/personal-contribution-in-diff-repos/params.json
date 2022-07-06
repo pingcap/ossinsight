@@ -17,7 +17,8 @@
         "review_comments": "AND type = 'PullRequestReviewCommentEvent' AND action ='created'",
         "issues": "AND type = 'IssuesEvent' AND action ='opened'",
         "issue_comments": "AND type = 'IssueCommentEvent' AND action ='created'",
-        "all": "AND type IN ('IssuesEvent', 'IssueCommentEvent', 'PullRequestEvent', 'PullRequestReviewEvent', 'PullRequestReviewCommentEvent', 'PushEvent')"
+        "pushes": "AND type = 'PushEvent'",
+        "all": "AND ((type = 'PullRequestEvent' AND action = 'opened') OR (type = 'IssuesEvent' AND action = 'opened') OR (type = 'IssueCommentEvent' AND action = 'created') OR (type = 'PullRequestReviewEvent' AND action = 'created') OR (type = 'PullRequestReviewCommentEvent' AND action = 'created') OR (type = 'PushEvent'))"
       }
     },
     {
