@@ -59,7 +59,7 @@ const AllContributions = ({ userId, show }: ModuleProps) => {
   return (
     <ChartWrapper title="Type of total contributions">
       <EChartsx init={{ height: 800, renderer: 'canvas' }} theme="dark">
-        <Once>
+        <Once dependencies={[repos]}>
           <Common hideZoom />
           <Axis.Value.X />
           <Axis.Category.Y data={repos} inverse />
