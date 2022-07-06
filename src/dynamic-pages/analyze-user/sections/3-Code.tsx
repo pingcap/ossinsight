@@ -44,8 +44,8 @@ const CodeSubmitHistory = ({ userId, show }: ModuleProps) => {
           <Common />
           <Axis.Time.X min="2011-01-01" />
           <Axis.Value.Y />
-          <BarSeries encode={{ x: 'event_month', y: 'pushes' }} name="push" color={green} />
-          <BarSeries encode={{ x: 'event_month', y: 'commits' }} name="commit" color={lightGreen} />
+          <BarSeries encode={{ x: 'event_month', y: 'pushes' }} name="push" color={green} barMaxWidth={10} />
+          <BarSeries encode={{ x: 'event_month', y: 'commits' }} name="commit" color={lightGreen} barMaxWidth={10} />
         </Once>
         <Dataset source={data?.data ?? []} />
       </EChartsx>

@@ -41,8 +41,8 @@ const CodeReviewHistory = ({ userId, show }: ModuleProps) => {
           <Common />
           <Axis.Time.X min="2011-01-01" />
           <Axis.Value.Y />
-          <BarSeries encode={{ x: 'event_month', y: 'reviews' }} name="review" color={orange} />
-          <BarSeries encode={{ x: 'event_month', y: 'review_comments' }} name="review comments" color={primary} />
+          <BarSeries encode={{ x: 'event_month', y: 'reviews' }} name="review" color={orange} barMaxWidth={10} />
+          <BarSeries encode={{ x: 'event_month', y: 'review_comments' }} name="review comments" color={primary} barMaxWidth={10} />
         </Once>
         <Dataset source={data?.data ?? []} />
       </EChartsx>

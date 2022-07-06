@@ -64,8 +64,8 @@ const AllContributions = ({ userId, show }: ModuleProps) => {
           <Axis.Value.X />
           <Axis.Category.Y data={repos} inverse />
           {eventTypes.map((event, i) => (
-            <BarSeries datasetId={event} encode={{ x: 'cnt', y: 'repo_name', tooltip: ['type', 'cnt'] }}
-                       emphasis={{ focus: 'series' }} name={event} stack="0"
+            <BarSeries key={event} datasetId={event} encode={{ x: 'cnt', y: 'repo_name', tooltip: ['type', 'cnt'] }}
+                       emphasis={{ focus: 'series' }} name={event} stack="0" barMaxWidth={10}
                        color={chartColors[i % chartColors.length]} />
           ))}
           {eventTypes.map(event => (

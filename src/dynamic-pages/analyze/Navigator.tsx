@@ -122,7 +122,7 @@ const renderTabs = (n: number | undefined, index: number) => {
 const renderBottomNavigationActions = (n?: number) => {
   return tabs.slice(0, n).map(tab => {
     if (tab.id.startsWith('divider-')) {
-      return <></>;
+      return undefined;
     } else {
       return (
         <BottomNavigationAction

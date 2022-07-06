@@ -214,7 +214,7 @@ const Languages = ({ userId, show }: ModuleProps) => {
       </Bar>
       <Stack sx={{ mt: 2 }} flexWrap="wrap" rowGap={2} columnGap={4} flexDirection="row">
         {data.data.slice(0, 4).map((lang, i) => (
-          <DotText color={languageColors[i % languageColors.length]} label={lang.language} percent={lang.percentage} />
+          <DotText key={lang.language} color={languageColors[i % languageColors.length]} label={lang.language} percent={lang.percentage} />
         ))}
         {data.data.length > 4
           ? <DotText color='#3c3c3c' label='Others' percent={data.data.slice(4).reduce((total, last) => total + last.percentage, 0)}/>

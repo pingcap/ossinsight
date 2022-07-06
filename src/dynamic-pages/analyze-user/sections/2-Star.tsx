@@ -50,7 +50,7 @@ const StarChart = ({ userId, show }: ModuleProps) => {
           <Common />
           <Axis.Time.X min="2011-01-01" />
           <Axis.Value.Y />
-          <BarSeries encode={{ x: 'star_month', y: 'cnt' }} color={chartColors} />
+          <BarSeries encode={{ x: 'star_month', y: 'cnt' }} color={chartColors} barMaxWidth={10} />
         </Once>
         <Dataset id="original" source={mappedData} />
       </EChartsx>
@@ -79,7 +79,7 @@ const StarWithLanguages = ({ userId, show }: ModuleProps) => {
       {languages.map(lang => (
         <>
           <BarSeries key={`${lang}-searies`} name={lang} datasetId={lang} encode={{ x: 'star_month', y: 'cnt' }}
-                     stack="0" />
+                     stack="0" barMaxWidth={10} />
           <Dataset key={lang} id={lang} fromDatasetId="original"
                    transform={{ type: 'filter', config: { value: lang, dimension: 'language' }, print: true }} />
         </>
