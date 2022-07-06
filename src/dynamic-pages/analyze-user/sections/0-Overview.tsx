@@ -137,7 +137,7 @@ const OverviewTable = ({ userId, show }: ModuleProps) => {
         />
         <OverviewItem
           field="star_earned"
-          name="Starred Earned"
+          name="Star Earned"
           icon={<StarIcon className={colors.orange} />}
           tooltip="We calculate the total number of stars earned in public repositories owned by the individual developer(without developers' unstarring or restarring behaviors)."
         />
