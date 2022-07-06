@@ -55,15 +55,17 @@ export function usePersonalOverview(userId: number | undefined, run: boolean): A
   };
 }
 
-export type ContributionActivityType = 'all' | 'commits' | 'pull_requests' | 'reviews' | 'issues'
+export type ContributionActivityType = 'all' | ContributionType
 export type ContributionActivityPeriod = 'hour' | 'day' | 'month'
 export type ContributionActivityRange = 'last_7_days' | 'last_72_hours' | 'last_28_days'
 export const contributionActivityTypes: { key: ContributionActivityType, label: string }[] = [
   { key: 'all', label: 'All Contributions' } ,
-  { key: 'commits', label: 'Commits' } ,
+  { key: 'pushes', label: 'Pushes' } ,
   { key: 'pull_requests', label: 'Pull Requests' },
   { key: 'reviews', label: 'Reviews' },
+  { key: 'review_comments', label: 'Review Comments' },
   { key: 'issues', label: 'Issues' },
+  { key: 'issue_comments', label: 'Issue Comments' },
 ]
 export const contributionActivityRanges: { key: ContributionActivityRange, label: string }[] = [
   { key: 'last_72_hours', label: 'Last 3 days' },
