@@ -100,7 +100,7 @@ const renderRepo = (props: React.HTMLAttributes<HTMLLIElement>, option: Option) 
 const GeneralSearch = ({ contrast, align = 'left', size }: GeneralSearchProps) => {
   const [keyword, setKeyword] = useState('');
   const [type, tabs] = useTabs();
-  const [option, setOption] = useState<Option>();
+  const [option, setOption] = useState<Option>(null);
   const [open, setOpen] = useState(false)
   const history = useHistory()
 
