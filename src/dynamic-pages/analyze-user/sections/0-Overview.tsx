@@ -11,7 +11,7 @@ import {
   CommitIcon,
   GitPullRequestIcon,
   IssueOpenedIcon,
-  MarkGithubIcon,
+  MarkGithubIcon, RepoIcon,
   StarIcon,
 } from "@primer/octicons-react";
 import Link from "@docusaurus/Link";
@@ -146,7 +146,7 @@ const OverviewTable = ({ userId, show }: ModuleProps) => {
         <OverviewItem
           field="contribute_repos"
           name="Contributed to"
-          icon={<CommitIcon className={colors.purple} />}
+          icon={<RepoIcon className={colors.purple} />}
         />
         <OverviewItem
           field="issues"
