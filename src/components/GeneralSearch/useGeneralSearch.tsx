@@ -23,7 +23,7 @@ export function useGeneralSearch<T extends SearchType>(type: T, keyword: string)
         return searchUser(keyword, 'user');
       }
     },
-    revalidateOnMount: false,
+    revalidateOnMount: true,
     revalidateOnReconnect: false,
     shouldRetryOnError: false
   });

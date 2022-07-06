@@ -101,6 +101,7 @@ const GeneralSearch = ({ contrast, align = 'left', size }: GeneralSearchProps) =
   const [keyword, setKeyword] = useState('');
   const [type, tabs] = useTabs();
   const [option, setOption] = useState<Option>();
+  const [open, setOpen] = useState(false)
   const history = useHistory()
 
   const { data: list, error, loading } = useGeneralSearch(type, keyword);
@@ -121,9 +122,30 @@ const GeneralSearch = ({ contrast, align = 'left', size }: GeneralSearchProps) =
     setKeyword(value);
   });
 
+  const handleOpen = useEventCallback(() => {
+    setOpen(true)
+  })
+
+  const handleClose = useEventCallback(() => {
+    setOpen(false)
+  })
+
+  const placeholder = useMemo(() => {
+    if (!open) {
+      return `Search a Repo, Developer`
+    } else if (type === 'user') {
+      return `Enter a Developer ID`
+    } else {
+      return `Enter a Repo ID`
+    }
+  }, [open, type])
+
   return (
     <Autocomplete<Option, false, undefined, false>
       size={size === 'large' ? 'medium' : 'small'}
+      open={open}
+      onOpen={handleOpen}
+      onClose={handleClose}
       loading={loading}
       options={list}
       isOptionEqualToValue={isOptionEqual}
@@ -140,7 +162,7 @@ const GeneralSearch = ({ contrast, align = 'left', size }: GeneralSearchProps) =
         <TextField
           {...params}
           variant='outlined'
-          placeholder='Enter a [Repo], [Developer]'
+          placeholder={placeholder}
           sx={theme => ({
             backgroundColor: contrast ? '#E9EAEE' : '#3c3c3c',
             color: contrast ? theme.palette.getContrastText('#E9EAEE') : undefined,
