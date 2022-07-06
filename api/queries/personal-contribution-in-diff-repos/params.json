@@ -9,10 +9,9 @@
     {
       "name": "activity_type",
       "replaces": "AND type = 'PullRequestEvent' AND action ='opened'",
-      "enums": ["all", "pull_requests", "commits", "reviews", "issues"],
+      "enums": ["all", "pull_requests", "reviews", "review_comments", "issues",  "issue_comments", "pushes"],
       "template": {
         "pull_requests": "AND type = 'PullRequestEvent' AND action ='opened'",
-        "commits": "AND type = 'PushEvent'",
         "reviews": "AND type = 'PullRequestReviewEvent' AND action ='created'",
         "review_comments": "AND type = 'PullRequestReviewCommentEvent' AND action ='created'",
         "issues": "AND type = 'IssuesEvent' AND action ='opened'",
