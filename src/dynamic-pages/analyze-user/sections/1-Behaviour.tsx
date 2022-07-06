@@ -90,7 +90,7 @@ for (let i = -11; i <= 14; i++) {
 
 const ContributionTime = ({ userId, show }: ModuleProps) => {
   const { data } = usePersonalData('personal-contribution-time-distribution', userId, show);
-  const [type, setType] = useState('PushEvent');
+  const [type, setType] = useState('pushes');
   const [zone, setZone] = useState(0);
 
   const handleEventChange = useEventCallback((e: SelectChangeEvent) => {
