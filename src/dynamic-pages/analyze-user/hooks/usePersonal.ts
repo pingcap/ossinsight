@@ -57,8 +57,18 @@ export function usePersonalOverview(userId: number | undefined, run: boolean): A
 
 export type ContributionActivityType = 'all' | 'commits' | 'pull_requests' | 'reviews' | 'issues'
 export type ContributionActivityRange = 'last_7_days' | 'last_72_hours' | 'last_30_days'
-export const contributionActivityTypes: ContributionActivityType[] = ['all' , 'commits' , 'pull_requests', 'reviews', 'issues']
-export const contributionActivityRanges: ContributionActivityRange[] = ['last_7_days', 'last_72_hours', 'last_30_days']
+export const contributionActivityTypes: { key: ContributionActivityType, label: string }[] = [
+  { key: 'all', label: 'All Contributions' } ,
+  { key: 'commits', label: 'Commits' } ,
+  { key: 'pull_requests', label: 'Pull Requests' },
+  { key: 'reviews', label: 'Reviews' },
+  { key: 'issues', label: 'Issues' },
+]
+export const contributionActivityRanges: { key: ContributionActivityRange, label: string }[] = [
+  { key: 'last_72_hours', label: 'Last 3 days' },
+  { key: 'last_7_days', label: 'Last Week' },
+  { key: 'last_30_days', label: 'Last Month' },
+]
 export type ContributionActivity = { cnt: number, event_period: string, repo_id: number, repo_name: string }
 
 export function usePersonalContributionActivities(userId: number | undefined, type: ContributionActivityType, period: ContributionActivityRange, run: boolean): AsyncData<RemoteData<any, ContributionActivity>> {

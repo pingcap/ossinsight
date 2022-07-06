@@ -50,16 +50,19 @@ const Scatter = withBaseOption<ScatterSeriesOption>('series', { type: 'scatter' 
 
 const ActivityChart = ({ userId, show }: ModuleProps) => {
   const [type, setType] = useState<ContributionActivityType>('all')
-  const [period, setPeriod] = useState<ContributionActivityRange>('last_30_days')
+  const [period, setPeriod] = useState<ContributionActivityRange>('last_72_hours')
 
   const { data } = usePersonalContributionActivities(userId, type, period, show)
   const repoNames = useDimension(data?.data ?? [], 'repo_name')
 
   const [min, max] = useRange(period)
 
+  const typeString = useMemo(() => contributionActivityTypes.find(({ key }) => type === key)?.label, [type])
+  const periodString = useMemo(() => contributionActivityRanges.find(({ key }) => period === key)?.label, [period])
+
   const tooltipFormatter: TooltipFormatterCallback<any> = useCallback(({ value }) => {
-    return `${value.event_period} ${value.cnt} ${type === 'all' ? 'events' : type} on ${value.repo_name}`
-  }, [type])
+    return `${value.event_period} ${value.cnt} ${typeString} on ${value.repo_name}`
+  }, [typeString])
 
   const handleTypeChange = useEventCallback((e: SelectChangeEvent<ContributionActivityType>) => {
     setType(e.target.value as ContributionActivityType)
@@ -69,8 +72,8 @@ const ActivityChart = ({ userId, show }: ModuleProps) => {
   })
 
   const title = useMemo(() => {
-    return `All ${type === 'all' ? 'events' : type} in ${period}`
-  }, [type, period])
+    return `${typeString} in ${periodString}`
+  }, [typeString, periodString])
 
   return (
     <ChartWrapper title={title}>
@@ -78,16 +81,16 @@ const ActivityChart = ({ userId, show }: ModuleProps) => {
         <FormControl variant="standard" size="small" sx={{ minWidth: 120 }}>
           <InputLabel id="event-type-selector-label">Contribution type</InputLabel>
           <Select id="event-type-selector-label" value={type} onChange={handleTypeChange}>
-            {contributionActivityTypes.map(event => (
-              <MenuItem key={event} value={event}>{event}</MenuItem>
+            {contributionActivityTypes.map(({ key, label }) => (
+              <MenuItem key={key} value={key}>{label}</MenuItem>
             ))}
           </Select>
         </FormControl>
         <FormControl variant="standard" size="small" sx={{ minWidth: 120, ml: 2 }}>
           <InputLabel id="event-type-selector-label">Period</InputLabel>
           <Select id="event-type-selector-label" value={period} onChange={handlePeriodChange}>
-            {contributionActivityRanges.map(event => (
-              <MenuItem key={event} value={event}>{event}</MenuItem>
+            {contributionActivityRanges.map(({ key, label }) => (
+              <MenuItem key={key} value={key}>{label}</MenuItem>
             ))}
           </Select>
         </FormControl>
@@ -99,6 +102,7 @@ const ActivityChart = ({ userId, show }: ModuleProps) => {
           <Tooltip trigger="item" />
           <Axis.Category.Y axisTick={{ show: false }} axisLine={{ show: false }} />
         </Once>
+        <Title text={title} left="center"/>
         <Axis.Time.X min={min} max={max} />
         <Scatter encode={{ x: 'event_period', y: 'repo_name', value: 'cnt' }} symbolSize={(val) => Math.min(val.cnt * 5, 60)} tooltip={{ formatter: tooltipFormatter }} color={primary} />
         <Dataset source={data?.data ?? []}/>
