@@ -8,3 +8,4 @@ items:
   - taosdata/TDengine
   - crate/crate
   - prometheus/prometheus
+  - CeresDB/ceresdb
