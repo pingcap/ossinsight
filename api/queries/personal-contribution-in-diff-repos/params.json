@@ -14,7 +14,9 @@
         "pull_requests": "AND type = 'PullRequestEvent' AND action ='opened'",
         "commits": "AND type = 'PushEvent'",
         "reviews": "AND type = 'PullRequestReviewEvent' AND action ='created'",
+        "review_comments": "AND type = 'PullRequestReviewCommentEvent' AND action ='created'",
         "issues": "AND type = 'IssuesEvent' AND action ='opened'",
+        "issue_comments": "AND type = 'IssueCommentEvent' AND action ='created'",
         "all": "AND type IN ('IssuesEvent', 'IssueCommentEvent', 'PullRequestEvent', 'PullRequestReviewEvent', 'PullRequestReviewCommentEvent', 'PushEvent')"
       }
     },
