@@ -2,7 +2,7 @@ import Grid from '@mui/material/Grid';
 import React from "react";
 import CustomPage from "../../theme/CustomPage";
 import Typography from "@mui/material/Typography";
-import Section from "../../components/Section";
+import Section from "./_components/Section";
 import Card from "@mui/material/Card";
 import {Cards, StandardCard} from "../../components/Cards";
 import Button from "@mui/material/Button";

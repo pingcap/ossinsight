@@ -5,6 +5,7 @@
     "moduleResolution": "node",
     "lib": ["dom","esnext"],
     "resolveJsonModule": true,
-    "isolatedModules": true
+    "isolatedModules": true,
+    "types": ["./types/ossinsight"]
   }
 }

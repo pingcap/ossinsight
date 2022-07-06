@@ -22,7 +22,7 @@ import { styled } from '@mui/material/styles';
 import Badge from '@mui/material/Badge';
 import React, { ForwardedRef, forwardRef, useCallback, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { useAnalyzeContext } from '../../../analyze-charts/context';
+import { useAnalyzeContext } from '../charts/context';
 import DebugDialog from '../../../components/DebugDialog/DebugDialog';
 import { RemoteData, useRemoteData } from '../../../components/RemoteCharts/hook';
 import useVisibility from '../../../hooks/visibility';

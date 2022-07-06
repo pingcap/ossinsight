@@ -56,7 +56,6 @@ export default function DynamicLineChart(props: DynamicLineChartProps) {
       source = ([[xIndex, yIndex, seriesIndex]] as any).concat(data.map((item) => {
         return [item[xIndex], parseInt(item[yIndex]), item[seriesIndex]]
       }));
-      console.log(source);
     }
 
     const datasets: DatasetOption[] = [{

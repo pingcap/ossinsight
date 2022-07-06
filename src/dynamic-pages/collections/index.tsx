@@ -1,6 +1,6 @@
 import React from 'react';
 import { registerThemeDark } from '../../components/BasicCharts';
-import { Collection } from './hooks/useCollection';
+import type { Collection } from '@ossinsight/api';
 import CollectionsPageLayout from './layout';
 import MonthRankSection from './sections/month-rank';
 import HistoryRankSection from './sections/history-rank';

@@ -13,6 +13,8 @@ module.exports.getContentGroup = function getContentGroup ({ pathname, search })
       } else {
         return 'analyze'
       }
+    } else if (/\/analyze\/[^/]+/.test(pathname)) {
+      return 'analyze-user'
     }
   } else if (/\/blog\//.test(pathname)) {
     return 'blog'

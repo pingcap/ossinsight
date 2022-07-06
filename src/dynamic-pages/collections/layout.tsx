@@ -12,7 +12,8 @@ import React, { PropsWithChildren, useCallback, useMemo, useState } from 'react'
 import { registerThemeDark } from '../../components/BasicCharts';
 import CustomPage from '../../theme/CustomPage';
 import CollectionsContext from './context';
-import { Collection, useCollection } from './hooks/useCollection';
+import type { Collection } from '@ossinsight/api';
+import { useCollection } from './hooks/useCollection';
 import { useCollectionsSidebar } from './hooks/useCollectionsSidebar';
 import Sections from './sections';
 import { H1 } from './sections/typograpy';

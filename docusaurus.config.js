@@ -83,6 +83,11 @@ const config = {
               .map(([owner, repo]) => ({ owner, repo }))
           },
           {
+            path: '/analyze/:login',
+            exact: true,
+            component: '@site/src/dynamic-pages/analyze-user',
+          },
+          {
             path: '/collections/:slug',
             exact: true,
             component: '@site/src/dynamic-pages/collections',

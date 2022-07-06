@@ -39,18 +39,18 @@ interface UseRemoteData {
 
 export const useRemoteData: UseRemoteData = (query: string, params: any, formatSql: boolean, shouldLoad: boolean = true): AsyncData<RemoteData<any, any>> => {
   const { inView } = useContext(InViewContext)
-  const [viewed, setViewed] = useState(inView)
+  const [firstViewed, setFirstViewed] = useState(false)
 
   useEffect(() => {
-    if (inView) {
-      setViewed(true)
+    if (inView && shouldLoad) {
+      setFirstViewed(true)
     }
-  }, [inView])
+  }, [inView, shouldLoad])
 
-  const { data, isValidating: loading, error } = useSWR(shouldLoad && viewed ? [query, params, 'q'] : null, {
+  const { data, isValidating: loading, error } = useSWR(firstViewed ? [query, params, 'q'] : null, {
     fetcher: core.query,
     revalidateOnFocus: false,
-    revalidateOnReconnect: false
+    revalidateOnReconnect: false,
   })
 
   return {data, loading, error}
