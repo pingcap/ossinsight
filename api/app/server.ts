@@ -9,6 +9,7 @@ import {measureRequests} from "./middlewares/measureRequests";
 import CollectionService from "./services/CollectionService";
 import GHEventService from "./services/GHEventService";
 import CacheBuilder from "./core/cache/CacheBuilder";
+import UserService from "./services/UserService";
 
 const COMPARE_QUERIES = [
   'stars-total',
@@ -66,11 +67,12 @@ export default async function server(router: Router<DefaultState, ContextExtends
 
   // Init Services.
   const collectionService = new CollectionService(queryExecutor, cacheBuilder);
+  const userService = new UserService(queryExecutor, cacheBuilder);
   const ghEventService = new GHEventService(queryExecutor);
 
   router.get('/q/:query', measureRequests({ urlLabel: 'path' }), async ctx => {
     try {
-      const query = new Query(ctx.params.query, cacheBuilder, queryExecutor, ghEventService, collectionService)
+      const query = new Query(ctx.params.query, cacheBuilder, queryExecutor, ghEventService, collectionService, userService)
       const res = await query.run(ctx.query, false, null, ctx.request.ip)
       ctx.response.status = 200
       ctx.response.body = res
@@ -83,7 +85,7 @@ export default async function server(router: Router<DefaultState, ContextExtends
 
   router.get('/q/explain/:query', measureRequests({ urlLabel: 'path' }), async ctx => {
     try {
-      const query = new Query(ctx.params.query, cacheBuilder, queryExecutor, ghEventService, collectionService)
+      const query = new Query(ctx.params.query, cacheBuilder, queryExecutor, ghEventService, collectionService, userService)
       const res = await query.explain(ctx.query)
       ctx.response.status = 200
       ctx.response.body = res
@@ -156,7 +158,7 @@ export default async function server(router: Router<DefaultState, ContextExtends
       const resultMap: Record<string, any> = {};
 
       for (let queryName of queryNames) {
-        const query = new Query(queryName, cacheBuilder, queryExecutor, ghEventService, collectionService)
+        const query = new Query(queryName, cacheBuilder, queryExecutor, ghEventService, collectionService, userService)
 
         try {
           resultMap[queryName] = await query.run(ctx.query, false, conn)

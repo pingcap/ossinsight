@@ -12,6 +12,7 @@ import { validateProcessEnv } from './app/env';
 import GHEventService from "./app/services/GHEventService";
 import CollectionService from './app/services/CollectionService';
 import CacheBuilder from './app/core/cache/CacheBuilder';
+import UserService from './app/services/UserService';
 
 // Load environments.
 dotenv.config({ path: __dirname+'/.env.template' });
@@ -90,13 +91,14 @@ async function main () {
   // Init Services.
   const ghEventService = new GHEventService(queryExecutor);
   const collectionService = new CollectionService(queryExecutor, cacheBuilder);
+  const userService = new UserService(queryExecutor, cacheBuilder);
 
   logger.info("Ready Go...")
   for (let i = 0; i < Number.MAX_VALUE; i++) {
     logger.info(`Compute round ${i + 1}.`)
     const queries = await getQueries();
     const presets = await getPresets();
-    await prefetchQueries(queryExecutor, cacheBuilder, ghEventService, collectionService, queries, presets);
+    await prefetchQueries(queryExecutor, cacheBuilder, ghEventService, collectionService, userService, queries, presets);
     logger.info('Next round prefetch will come at: %s', DateTime.now().plus(Duration.fromObject({ minutes: 1 })))
     await sleep(1000 * 60 * 1);    // sleep 30 minutes.
   }
@@ -107,6 +109,7 @@ async function prefetchQueries(
   cacheBuilder: CacheBuilder,
   ghEventService: GHEventService,
   collectionService: CollectionService,
+  userService: UserService,
   queries: Record<string, QuerySchema>,
   presets: Record<string, string[]>
 ) {
@@ -193,7 +196,7 @@ async function prefetchQueries(
     const qStart = new Date();
     // Do query with the rest parameter combines.
     logger.info("[%d/%d] PreFetch query %s with params: %s", id, n, queryName, JSON.stringify(params));
-    const query = new Query(queryName, cacheBuilder, queryExecutor, ghEventService, collectionService)
+    const query = new Query(queryName, cacheBuilder, queryExecutor, ghEventService, collectionService, userService)
     try {
       await query.run(params,true)
     } catch (err) {

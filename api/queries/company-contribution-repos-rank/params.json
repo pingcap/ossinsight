@@ -1,0 +1,11 @@
+{
+  "cacheHours": 1,
+  "params": [
+    {
+      "name": "companyName",
+      "type": "employees",
+      "replaces": "'Mini256'",
+      "pattern": "^\\S*$"
+    }
+  ]
+}
