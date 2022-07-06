@@ -97,9 +97,9 @@ const ActivityChart = ({ userId, show }: ModuleProps) => {
           <Legend type="scroll" orient="horizontal" top={32}/>
           <Grid top={64} left={8} right={8} bottom={8} containLabel/>
           <Tooltip trigger="item" />
-          <Axis.Time.X min={min} max={max} />
           <Axis.Category.Y axisTick={{ show: false }} axisLine={{ show: false }} />
         </Once>
+        <Axis.Time.X min={min} max={max} />
         <Scatter encode={{ x: 'event_period', y: 'repo_name', value: 'cnt' }} symbolSize={(val) => Math.min(val.cnt * 5, 60)} tooltip={{ formatter: tooltipFormatter }} color={primary} />
         <Dataset source={data?.data ?? []}/>
       </EChartsx>
