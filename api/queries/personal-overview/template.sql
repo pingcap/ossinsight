@@ -1,5 +1,5 @@
 WITH logins AS (
-    SELECT DISTINCT actor_id, actor_login
+    SELECT DISTINCT actor_login
     FROM github_events ge
     WHERE actor_id = 5086433
 ), latest_login AS (
@@ -11,7 +11,7 @@ WITH logins AS (
 ), repos AS (
     SELECT DISTINCT repo_id, repo_name
     FROM github_events ge
-    WHERE ge.actor_id = 5086433 AND repo_name LIKE CONCAT(actor_login, '%')
+    WHERE ge.actor_id = 5086433 AND repo_name LIKE CONCAT(actor_login, '%') AND repo_id IS NOT NULL
 ), star_repos AS (
     SELECT COUNT(DISTINCT repo_id) AS cnt
     FROM github_events ge

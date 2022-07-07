@@ -1,5 +1,5 @@
 import { createContext } from 'react';
-import { Collection } from './hooks/useCollection';
+import type { Collection } from '@ossinsight/api';
 
 export interface CollectionsContextValues {
   collection?: Collection;

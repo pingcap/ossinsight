@@ -2,11 +2,11 @@ import Grid from '@mui/material/Grid';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import React, { ForwardedRef, forwardRef, useMemo } from 'react';
-import Analyze from '../../../analyze-charts/Analyze';
-import { DurationChart } from '../../../analyze-charts/common-duration';
-import { useAnalyzeContext } from '../../../analyze-charts/context';
-import { IssueChart } from '../../../analyze-charts/issue';
-import Summary, { SummaryProps } from '../../../analyze-charts/summary';
+import Analyze from '../charts/Analyze';
+import { DurationChart } from '../charts/common-duration';
+import { useAnalyzeContext } from '../charts/context';
+import { IssueChart } from '../charts/issue';
+import Summary, { SummaryProps } from '../charts/summary';
 import Section from '../Section';
 import { H2, H3, P2 } from '../typography';
 

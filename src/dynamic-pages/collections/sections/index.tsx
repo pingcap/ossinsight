@@ -3,7 +3,7 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import React, { PropsWithChildren, useLayoutEffect, useRef } from 'react';
 import AspectRatio from 'react-aspect-ratio';
-import { Collection } from '../hooks/useCollection';
+import type { Collection } from '@ossinsight/api';
 import { H1, P1 } from './typograpy';
 
 export default function Sections ({ collection, description, children }: PropsWithChildren<{ description: string, collection: Collection}>) {

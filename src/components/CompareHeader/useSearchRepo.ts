@@ -9,7 +9,7 @@ export interface Repo extends Record<string, unknown> {
   name: string
 }
 
-function useDebounced<T>(value: T, wait?: number) {
+export function useDebounced<T>(value: T, wait?: number) {
   const [debouncedValue, setDebouncedValue] = useState(value);
 
   const wrappedSetDebouncedValue = useCallback(debounce(setDebouncedValue, wait), [wait]);
@@ -30,7 +30,7 @@ export function useSearchRepo(keyword: string): AsyncData<Repo[]> {
     data,
     isValidating: loading,
     error,
-  } = useSWR<Repo[]>(searchKey ? [searchKey, 'search'] : undefined, {
+  } = useSWR<Repo[]>(searchKey ? [searchKey, 'search:repo:old'] : undefined, {
     fetcher: async (keyword) => {
       const list = await core.searchRepo(keyword);
       return list.map((r) => ({

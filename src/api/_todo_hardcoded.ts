@@ -1,5 +1,5 @@
 import { AxiosRequestConfig } from 'axios';
-import { registerStaticData} from "./core";
+import { registerStaticData } from "./client";
 
 export const query = (query: string, validateParams: (check: AxiosRequestConfig['params']) => boolean) => {
   return (config) => {

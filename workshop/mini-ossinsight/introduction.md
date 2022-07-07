@@ -17,9 +17,9 @@ There are several methods to start this workshop:
 
 It will cost about 1 hour on reading docs & loading data, you can also [join offline workshop](/workshop/offline) when meet with problems.
 
-* [Step 1: Find Data Source (15 min)](/workshop/mini-ossinsight/step-by-step/find-data-source)
-* [Step 2: Load Data to TiDB (25 min)](/workshop/mini-ossinsight/step-by-step/load-data-to-tidb)
-* [Step 3: Get Insights with SQL (20 min)](/workshop/mini-ossinsight/step-by-step/get-insights-with-sql)
+* [Step 1: Find Data Source (5 min)](/workshop/mini-ossinsight/step-by-step/find-data-source)
+* [Step 2: Load Data to TiDB (30 min)](/workshop/mini-ossinsight/step-by-step/load-data-to-tidb)
+* [Step 3: Get Insights with SQL (25 min)](/workshop/mini-ossinsight/step-by-step/get-insights-with-sql)
 
 
 ## Other Methods

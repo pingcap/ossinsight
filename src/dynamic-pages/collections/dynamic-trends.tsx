@@ -1,7 +1,7 @@
 import { useRouteMatch } from '@docusaurus/router';
 import React from 'react';
 import { registerThemeDark } from '../../components/BasicCharts';
-import { Collection, useCollection } from './hooks/useCollection';
+import type { Collection } from '@ossinsight/api';
 import CollectionsPageLayout from './layout';
 import HistorySection from './sections/history';
 import HistorySortSection from './sections/history-sort';

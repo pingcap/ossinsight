@@ -14,10 +14,10 @@ import {
   StarIcon,
 } from '@primer/octicons-react';
 import React, { ForwardedRef, forwardRef, useMemo } from 'react';
-import Analyze from '../../../analyze-charts/Analyze';
-import { useAnalyzeContext } from '../../../analyze-charts/context';
-import { LineChart } from '../../../analyze-charts/line';
-import Summary, { SummaryProps } from '../../../analyze-charts/summary';
+import Analyze from '../charts/Analyze';
+import { useAnalyzeContext } from '../charts/context';
+import { LineChart } from '../charts/line';
+import Summary, { SummaryProps } from '../charts/summary';
 import Section from '../Section';
 import { H1, H2, P2 } from '../typography';
 

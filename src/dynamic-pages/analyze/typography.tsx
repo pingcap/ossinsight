@@ -1,7 +1,7 @@
 import React, {forwardRef, RefCallback} from 'react';
 import {TypographyProps} from '@mui/material/Typography';
 import {Typography} from '@mui/material';
-import {useAnalyzeChartContext, useAnalyzeContext} from '../../analyze-charts/context';
+import {useAnalyzeChartContext, useAnalyzeContext} from './charts/context';
 
 interface AnalyzeTitle {
   analyzeTitle?: boolean;
