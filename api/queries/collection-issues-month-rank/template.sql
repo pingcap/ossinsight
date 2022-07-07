@@ -27,7 +27,7 @@ WITH issues AS (
     WHERE row_num = 1
     GROUP BY repo_name
     ORDER BY repo_name
-), issues_current_month AS (
+), issues_last_month AS (
     SELECT
         event_month,
         repo_name,
@@ -35,7 +35,7 @@ WITH issues AS (
         ROW_NUMBER() OVER(PARTITION BY event_month ORDER BY total DESC) AS `rank`
     FROM issues_group_by_month sgn
     WHERE event_month = DATE_FORMAT(date_sub(now(), interval DAYOFMONTH(now()) day), '%Y-%m-01')
-), issues_last_month AS (
+), issues_last_2nd_month AS (
     SELECT
         event_month,
         repo_name,
@@ -49,14 +49,14 @@ SELECT
     DATE_FORMAT(date_sub(now(), interval DAYOFMONTH(now()) day), '%Y-%m') AS current_month,
     DATE_FORMAT(date_sub(date_sub(now(), interval DAYOFMONTH(now()) day), interval 1 month), '%Y-%m') AS last_month,
     -- Issues
-    icm.total AS current_month_total,
-    icm.`rank` AS current_month_rank,
-    ilm.total AS last_month_total,
-    ilm.`rank` AS last_month_rank,
-    ((icm.total - ilm.total) / ilm.total) * 100 AS total_mom,
-    (icm.`rank` - ilm.`rank`) AS rank_mom,
+    ilm.total AS current_month_total,
+    ilm.`rank` AS current_month_rank,
+    IFNULL(il2m.total, 0) AS last_month_total,
+    il2m.`rank` AS last_month_rank,
+    ((ilm.total - il2m.total) / il2m.total) * 100 AS total_mom,
+    (ilm.`rank` - il2m.`rank`) AS rank_mom,
     igr.total AS total
 FROM issues_group_by_repo igr
-JOIN issues_current_month icm ON igr.repo_name = icm.repo_name
-JOIN issues_last_month ilm ON icm.repo_name = ilm.repo_name
+JOIN issues_last_month ilm ON igr.repo_name = ilm.repo_name
+LEFT JOIN issues_last_2nd_month il2m ON ilm.repo_name = il2m.repo_name
 ORDER BY current_month_rank;

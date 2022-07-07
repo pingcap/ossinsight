@@ -27,7 +27,7 @@ WITH prs AS (
     WHERE row_num = 1
     GROUP BY repo_name
     ORDER BY repo_name
-), prs_current_month AS (
+), prs_last_month AS (
     SELECT
         event_month,
         repo_name,
@@ -35,7 +35,7 @@ WITH prs AS (
         ROW_NUMBER() OVER(PARTITION BY event_month ORDER BY total DESC) AS `rank`
     FROM prs_group_by_month sgn
     WHERE event_month = DATE_FORMAT(date_sub(now(), interval DAYOFMONTH(now()) day), '%Y-%m-01')
-), prs_last_month AS (
+), prs_last_2nd_month AS (
     SELECT
         event_month,
         repo_name,
@@ -49,14 +49,14 @@ SELECT
     DATE_FORMAT(date_sub(now(), interval DAYOFMONTH(now()) day), '%Y-%m') AS current_month,
     DATE_FORMAT(date_sub(date_sub(now(), interval DAYOFMONTH(now()) day), interval 1 month), '%Y-%m') AS last_month,
     -- PRs
-    pcm.total AS current_month_total,
-    pcm.`rank` AS current_month_rank,
-    plm.total AS last_month_total,
-    plm.`rank` AS last_month_rank,
-    ((pcm.total - plm.total) / plm.total) * 100 AS total_mom,
-    (pcm.`rank` - plm.`rank`) AS rank_mom,
+    plm.total AS current_month_total,
+    plm.`rank` AS current_month_rank,
+    IFNULL(pl2m.total, 0) AS last_month_total,
+    pl2m.`rank` AS last_month_rank,
+    ((plm.total - pl2m.total) / pl2m.total) * 100 AS total_mom,
+    (plm.`rank` - pl2m.`rank`) AS rank_mom,
     pgr.total AS total
 FROM prs_group_by_repo pgr
-JOIN prs_current_month pcm ON pgr.repo_name = pcm.repo_name
-JOIN prs_last_month plm ON pcm.repo_name = plm.repo_name
+JOIN prs_last_month plm ON pgr.repo_name = plm.repo_name
+LEFT JOIN prs_last_2nd_month pl2m ON plm.repo_name = pl2m.repo_name
 ORDER BY current_month_rank;
