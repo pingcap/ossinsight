@@ -27,7 +27,7 @@ export default forwardRef(function ActivitiesSection({}, ref: ForwardedRef<HTMLE
   return (
     <Section id='activities' ref={ref}>
       <SectionHeading
-        title="Contribution Activities in different repositories"
+        title="Contribution Activities"
         description={<>All personal activities happened on <b>all public repositories</b> in GitHub since 2011. You can check each specific activity type by type with a timeline.</>}
       />
       <Activities />

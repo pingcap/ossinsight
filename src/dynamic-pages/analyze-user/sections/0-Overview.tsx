@@ -168,7 +168,7 @@ const OverviewTable = ({ userId, show }: ModuleProps) => {
       </Tr>
       <Tr>
         <OverviewItem
-          name="Code Changes"
+          name="PR Code Changes"
           icon={<GitPullRequestIcon className={colors.red} />}
           tooltip="Here is the code line changes in pull requests."
           dataColSpan={2}
