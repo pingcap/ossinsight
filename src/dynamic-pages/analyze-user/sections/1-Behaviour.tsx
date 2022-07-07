@@ -13,6 +13,7 @@ import { Axis, BarSeries, Dataset, EChartsx, Once } from "@djagger/echartsx";
 import { Common } from "../charts/Common";
 import { chartColors } from "../colors";
 import ChartWrapper from "../charts/ChartWrapper";
+import { useDimension } from "../hooks/useDimension";
 
 
 export default forwardRef(function BehaviourSection({}, ref: ForwardedRef<HTMLElement>) {
@@ -44,6 +45,8 @@ const Behaviour = () => {
 const AllContributions = ({ userId, show }: ModuleProps) => {
   const { data } = usePersonalData('personal-contributions-for-repos', userId, show);
 
+  const validEventTypes = useDimension(data?.data ?? [], 'type')
+
   const repos = useMemo(() => {
     const map = (data?.data ?? []).reduce((map, cv) => {
       return map.set(cv.repo_name, (map.get(cv.repo_name) ?? 0) + cv.cnt);
@@ -68,7 +71,7 @@ const AllContributions = ({ userId, show }: ModuleProps) => {
                        emphasis={{ focus: 'series' }} name={event} stack="0" barMaxWidth={10}
                        color={chartColors[i % chartColors.length]} />
           ))}
-          {eventTypes.map(event => (
+          {validEventTypes.map(event => (
             <Dataset key={event} id={event} fromDatasetId="original"
                      transform={{ type: 'filter', config: { value: event, dimension: 'type' } }} />
           ))}
