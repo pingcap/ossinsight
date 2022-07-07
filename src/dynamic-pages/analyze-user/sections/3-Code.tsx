@@ -69,7 +69,7 @@ const PullRequestHistory = ({ userId, show }: ModuleProps) => {
                       areaStyle={{ opacity: 0.15 }} symbolSize={0} lineStyle={{ width: 1 }} />
         </Once>
         <Dataset id="original" source={data?.data ?? []} />
-        {data ? <Dataset id="source" fromDatasetId="original"
+        {data?.data.length ? <Dataset id="source" fromDatasetId="original"
                          transform={{
                            type: 'sort',
                            config: { dimension: 'event_month', order: 'asc' },

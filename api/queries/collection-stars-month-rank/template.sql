@@ -25,7 +25,7 @@ WITH stars AS (
     FROM stars
     GROUP BY repo_name
     ORDER BY repo_name
-), stars_current_month AS (
+), stars_last_month AS (
     SELECT
         event_month,
         repo_name,
@@ -33,7 +33,7 @@ WITH stars AS (
         ROW_NUMBER() OVER(PARTITION BY event_month ORDER BY total DESC) AS `rank`
     FROM stars_group_by_month sgn
     WHERE event_month = DATE_FORMAT(date_sub(now(), interval DAYOFMONTH(now()) day), '%Y-%m-01')
-), stars_last_month AS (
+), stars_last_2nd_month AS (
     SELECT
         event_month,
         repo_name,
@@ -43,18 +43,18 @@ WITH stars AS (
     WHERE event_month = DATE_FORMAT(date_sub(date_sub(now(), interval DAYOFMONTH(now()) day), interval 1 month), '%Y-%m-01')
 )
 SELECT
-    scm.repo_name,
+    slm.repo_name,
     DATE_FORMAT(date_sub(now(), interval DAYOFMONTH(now()) day), '%Y-%m') AS current_month,
     DATE_FORMAT(date_sub(date_sub(now(), interval DAYOFMONTH(now()) day), interval 1 month), '%Y-%m') AS last_month,
     -- Stars
-    scm.total AS current_month_total,
-    scm.`rank` AS current_month_rank,
-    slm.total AS last_month_total,
-    slm.`rank` AS last_month_rank,
-    ((scm.total - slm.total) / slm.total) * 100 AS total_mom,
-    (scm.`rank` - slm.`rank`) AS rank_mom,
+    slm.total AS current_month_total,
+    slm.`rank` AS current_month_rank,
+    IFNULL(sl2m.total, 0) AS last_month_total,
+    sl2m.`rank` AS last_month_rank,
+    ((slm.total - sl2m.total) / sl2m.total) * 100 AS total_mom,
+    (slm.`rank` - sl2m.`rank`) AS rank_mom,
     sgr.total AS total
 FROM stars_group_by_repo sgr 
-JOIN stars_current_month scm ON sgr.repo_name = scm.repo_name
-JOIN stars_last_month slm ON scm.repo_name = slm.repo_name
+JOIN stars_last_month slm ON sgr.repo_name = slm.repo_name
+LEFT JOIN stars_last_2nd_month sl2m ON slm.repo_name = sl2m.repo_name
 ORDER BY current_month_rank;

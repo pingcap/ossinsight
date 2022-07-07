@@ -39,14 +39,18 @@ WITH logins AS (
     SELECT COUNT(DISTINCT pr_or_issue_id) AS cnt
     FROM github_events ge
     WHERE actor_id = 5086433 AND type = 'PullRequestReviewEvent' AND action = 'created'
+), pull_request_ids AS (
+    SELECT DISTINCT pr_or_issue_id
+    FROM github_events ge
+    WHERE actor_id = 5086433 AND type = 'PullRequestEvent' AND action = 'opened'
 ), code_additions AS (
     SELECT SUM(additions) AS cnt
     FROM github_events ge
-    WHERE actor_id = 5086433 AND type = 'PullRequestEvent' AND action = 'closed' AND pr_merged = true
+    WHERE type = 'PullRequestEvent' AND action = 'closed' AND pr_merged = true AND pr_or_issue_id IN (SELECT pr_or_issue_id FROM pull_request_ids)
 ), code_deletions AS (
     SELECT SUM(deletions) AS cnt
     FROM github_events ge
-    WHERE actor_id = 5086433 AND type = 'PullRequestEvent' AND action = 'closed' AND pr_merged = true
+    WHERE type = 'PullRequestEvent' AND action = 'closed' AND pr_merged = true AND pr_or_issue_id IN (SELECT pr_or_issue_id FROM pull_request_ids)
 )
 SELECT
     5086433 AS user_id,

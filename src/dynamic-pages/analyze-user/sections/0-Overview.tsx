@@ -24,6 +24,7 @@ import { chartColors, languageColors } from '../colors';
 import { Common } from "../charts/Common";
 import Tooltip from "@mui/material/Tooltip";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import { useDimension } from "../hooks/useDimension";
 
 export default forwardRef(function OverviewSection({}, ref: ForwardedRef<HTMLElement>) {
   return (
@@ -168,7 +169,7 @@ const OverviewTable = ({ userId, show }: ModuleProps) => {
       </Tr>
       <Tr>
         <OverviewItem
-          name="Code Changes"
+          name="PR Code Changes"
           icon={<GitPullRequestIcon className={colors.red} />}
           tooltip="Here is the code line changes in pull requests."
           dataColSpan={2}
@@ -226,6 +227,7 @@ const Languages = ({ userId, show }: ModuleProps) => {
 
 const ContributorTrends = ({ userId, show }: ModuleProps) => {
   const { data } = usePersonalData('personal-contribution-trends', userId, show);
+  const validContributionTypes = useDimension(data?.data ?? [], 'contribution_type')
 
   return (
     <EChartsx init={{ height: 400, renderer: 'canvas' }} theme="dark">
@@ -240,10 +242,10 @@ const ContributorTrends = ({ userId, show }: ModuleProps) => {
                       areaStyle={{ opacity: 0.15 }} />
         ))}
       </Once>
-      {data ? contributionTypes.map(ct => (
+      {validContributionTypes.map(ct => (
         <Dataset key={ct} id={ct} fromDatasetId="original"
                  transform={{ type: 'filter', config: { value: ct, dimension: 'contribution_type' } }} />
-      )) : undefined}
+      ))}
       <Dataset id="original" source={data?.data ?? []} />
     </EChartsx>
   );
@@ -295,11 +297,11 @@ const Td = styled('td')({
 });
 
 const Addition = styled('span')({
-  color: '#e5534b',
+  color: '#57ab5a',
 });
 
 const Deletion = styled('span')({
-  color: '#57ab5a',
+  color: '#e5534b',
 });
 
 const Bar = styled('ol')({
