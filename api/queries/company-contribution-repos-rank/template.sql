@@ -68,9 +68,10 @@ SELECT
     SUM(CASE contribute_type WHEN 'pull_requests' THEN cnt ELSE 0 END) AS pull_requests,
     SUM(CASE contribute_type WHEN 'reviews' THEN cnt ELSE 0 END) AS reviews,
     SUM(CASE contribute_type WHEN 'review_comments' THEN cnt ELSE 0 END) AS review_comments,
-    SUM(CASE contribute_type WHEN 'issue' THEN cnt ELSE 0 END) AS issues,
+    SUM(CASE contribute_type WHEN 'issues' THEN cnt ELSE 0 END) AS issues,
     SUM(CASE contribute_type WHEN 'issue_comments' THEN cnt ELSE 0 END) AS issue_comments
 FROM
     contributions
 GROUP BY repo_id
-ORDER BY contributions DESC;
+ORDER BY contributions DESC
+LIMIT 200000, 100000;

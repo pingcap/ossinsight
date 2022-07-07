@@ -32,14 +32,14 @@ export default class UserService {
     );
 
     const companyKey = companyName.toString()
-    if (!/^.*$/.test(companyKey)) {
+    if (!/^[^"%_]+$/.test(companyKey)) {
       throw new BadParamsError('company name', 'bad param: ' + companyKey)
     }
 
     return cache.load(async () => {
       return await measure(dataQueryTimer, async () => {
         const sql = `
-          SELECT login, company FROM users WHERE lower(company) like concat('%', lower('${companyKey}'), '%')
+          SELECT login, company FROM users WHERE LOWER(company) LIKE CONCAT('%', LOWER('${companyKey}'), '%')
         `;
 
         try {
