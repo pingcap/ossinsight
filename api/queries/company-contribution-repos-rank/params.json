@@ -4,8 +4,8 @@
     {
       "name": "companyName",
       "type": "employees",
-      "replaces": "'Mini256'",
-      "pattern": "^\\S*$"
+      "replaces": "'Mini256', 'hooopo', 'sykp241095', '634750802', 'ChenlingLu'",
+      "pattern": "^.*$"
     }
   ]
 }
