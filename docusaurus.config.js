@@ -223,10 +223,10 @@ const config = {
             items: [
               {label: 'Overview', to: '/workshop/overview'},
               {label: 'Workshop: mini OSS Insight', to: '/workshop/mini-ossinsight/introduction'},
+              {label: 'Workshop: NFT Insight', to: '/workshop/nft-insight'},
               {label: 'Workshop: Twitter Insight', to: '/workshop/twitter-insight'},
               {label: 'Workshop: Stack Overflow Insight', to: '/workshop/stackoverflow-insight'},
               {label: 'Workshop: Cryptocurrency Insight', to: '/workshop/cryptocurrency-insight'},
-              {label: 'Workshop: NFT Insight', to: '/workshop/nft-insight'},
               {label: '🗓️ Join Offline Workshop', to: '/workshop/offline'},
             ]
           },
