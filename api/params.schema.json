@@ -54,7 +54,7 @@
         "type": {
           "description": "Define the parameter type.",
           "type": "string",
-          "enum": ["array", "date-range", "collection"]
+          "enum": ["array", "date-range", "collection", "employees"]
         },
         "column": {
           "description": "Define the parameter corresponding column name.",

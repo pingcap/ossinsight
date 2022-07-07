@@ -11,11 +11,13 @@ import GHEventService from "../services/GHEventService";
 import CollectionService from '../services/CollectionService';
 import CacheBuilder, { CacheProviderTypes } from './cache/CacheBuilder';
 import { QueryTemplateNotFoundError } from './QueryFactory';
+import UserService from '../services/UserService';
 
 export enum ParamType {
   ARRAY = 'array',
   DATE_RANGE = 'date-range',
-  COLLECTION = 'collection'
+  COLLECTION = 'collection',
+  EMPLOYEES = 'employees'
 }
 
 export enum ParamDateRange {
@@ -48,7 +50,7 @@ export class SQLExecuteError extends Error {
 
 export async function buildParams(
   template: string, querySchema: QuerySchema, values: Record<string, any>,
-  ghEventService: GHEventService, collectionService: CollectionService
+  ghEventService: GHEventService, collectionService: CollectionService, userService: UserService
 ) {
   for (const param of querySchema.params) {
     const {
@@ -68,6 +70,9 @@ export async function buildParams(
       case ParamType.COLLECTION:
         targetValue = await handleCollectionValue(name, value, collectionService, column, pattern, paramTemplate)
         break;
+        case ParamType.EMPLOYEES:
+          targetValue = await handleEmployeeValue(name, value, userService, column, pattern, paramTemplate)
+          break;
       default:
         targetValue = verifyParam(name, value, pattern, paramTemplate);
     }
@@ -137,6 +142,25 @@ async function handleCollectionValue(
   return arrValues.join(', ');
 }
 
+async function handleEmployeeValue(
+  name: string, companyName: string, userService: UserService, column?: string, pattern?: string, 
+  paramTemplate?: Record<string, string>,
+): Promise<string> {
+  const arrValues = [];
+  const res = await userService.getCompanyEmployees(companyName)
+  
+  if (Array.isArray(res.data) && res.data.length > 0) {
+    for (let item of res.data) {
+      const targetValue = verifyParam(name, item.login, pattern, paramTemplate);
+      arrValues.push(targetValue);
+    }
+  } else {
+    throw new BadParamsError(name, `can not get employees for company ${companyName}`)
+  }
+
+  return arrValues.map((val) => `'${val}'`).join(', ');
+}
+
 function verifyParam(name: string, value: any, pattern?: string, paramTemplate?: Record<string, string>) {
   if (pattern) {
     const regexp = new RegExp(pattern);
@@ -167,7 +191,8 @@ export default class Query {
     public readonly cacheBuilder: CacheBuilder,
     public readonly executor: TiDBQueryExecutor,
     public readonly ghEventService: GHEventService,
-    public readonly collectionService: CollectionService
+    public readonly collectionService: CollectionService,
+    public readonly userService: UserService
   ) {
     this.path = path.join(process.cwd(), 'queries', name)
     const templateFilePath = path.join(this.path, 'template.sql')
@@ -193,7 +218,7 @@ export default class Query {
     return this.loadingPromise
   }
   async buildSql(params: Record<string, any>): Promise<string> {
-    return buildParams(this.template!, this.queryDef!, params, this.ghEventService, this.collectionService)
+    return buildParams(this.template!, this.queryDef!, params, this.ghEventService, this.collectionService, this.userService)
   }
 
   async run <T> (

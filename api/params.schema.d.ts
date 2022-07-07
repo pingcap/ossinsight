@@ -43,7 +43,7 @@ export interface Params {
   /**
    * Define the parameter type.
    */
-  type?: "array" | "date-range" | "collection";
+  type?: "array" | "date-range" | "collection" | "employees";
   /**
    * Define the parameter corresponding column name.
    */
