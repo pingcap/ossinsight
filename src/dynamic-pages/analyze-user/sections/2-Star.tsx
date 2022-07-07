@@ -8,6 +8,7 @@ import { Axis, BarSeries, Dataset, EChartsx, Grid, Legend, Once, Title, Tooltip 
 import { Common } from "../charts/Common";
 import { chartColors } from "../colors";
 import ChartWrapper from "../charts/ChartWrapper";
+import { useDimension } from "../hooks/useDimension";
 
 export default forwardRef(function StarSection({}, ref: ForwardedRef<HTMLElement>) {
   return (
@@ -62,9 +63,7 @@ const StarChart = ({ userId, show }: ModuleProps) => {
 const StarWithLanguages = ({ userId, show }: ModuleProps) => {
   const { data } = usePersonalData('personal-star-history', userId, show);
 
-  const languages = useMemo(() => {
-    return Array.from((data?.data ?? []).reduce((set, item) => set.add(item.language), new Set<string>()));
-  }, [data]);
+  const languages = useDimension(data?.data ?? [], 'language')
 
   return (
     <EChartsx init={{ height: 400, renderer: 'canvas' }} theme="dark">
