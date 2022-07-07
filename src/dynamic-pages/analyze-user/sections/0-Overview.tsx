@@ -169,7 +169,7 @@ const OverviewTable = ({ userId, show }: ModuleProps) => {
       </Tr>
       <Tr>
         <OverviewItem
-          name="Code Changes"
+          name="PR Code Changes"
           icon={<GitPullRequestIcon className={colors.red} />}
           tooltip="Here is the code line changes in pull requests."
           dataColSpan={2}
@@ -297,11 +297,11 @@ const Td = styled('td')({
 });
 
 const Addition = styled('span')({
-  color: '#e5534b',
+  color: '#57ab5a',
 });
 
 const Deletion = styled('span')({
-  color: '#57ab5a',
+  color: '#e5534b',
 });
 
 const Bar = styled('ol')({
