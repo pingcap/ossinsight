@@ -89,7 +89,7 @@ const PullRequestSize = ({ userId, show }: ModuleProps) => {
           <Common />
           <Axis.Time.X min="2011-01-01" />
           <Axis.Value.Y />
-          {['xs', 's', 'm', 'l', 'xl', 'xxl'].reverse().map((size, i) => (
+          {['xs (0-9 lines)', 's (10-29 lines)', 'm (30-99 lines)', 'l (100-499 lines)', 'xl (500-999 lines)', 'xxl (1000+ lines)'].reverse().map((size, i) => (
             <BarSeries id={size} key={size} encode={{ x: 'event_month', y: size }} name={size} stack="total"
                        color={redColors.slice(0, 6).reverse()[i]} />
           ))}
