@@ -1,5 +1,5 @@
 {
-  "cacheHours": 1,
+  "cacheHours": 240,
   "params": [
     {
       "name": "companyName",
