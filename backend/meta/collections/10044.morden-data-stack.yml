@@ -1,0 +1,47 @@
+id: 10044
+name: Morden Data Stack
+items:
+  # Data Storage
+  - elastic/elasticsearch
+  - pingcap/tidb
+  - clickhouse/clickhouse
+  - apache/druid
+  - citusdata/citus
+  - greenplum-db/gpdb
+  - trinodb/trino
+  - apache/incubator-doris
+  - StarRocks/starrocks
+  - prestodb/presto
+  - postgres/postgres
+  - duckdb/duckdb
+  
+  # Data visualization
+  - metabase/metabase
+  - apache/superset
+  - getredash/redash
+
+  # Data Streaming
+  - apache/pulsar
+  - apache/Kafka
+  - apache/flink
+
+  # Data transformation and modeling
+  - dbt-labs/dbt-core
+
+  # Data integration
+  - airbytehq/airbyte
+  - meltano/meltano
+  - rudderlabs/rudder-server
+  - jitsucom/jitsu
+  - snowplow/snowplow
+  
+  # Data orchestration
+  - apache/airflow
+  
+  # Data analysis
+  - pandas-dev/pandas
+  - scikit-learn/scikit-learn
+  - jupyter/notebook
+  - apache/spark
+
+  
