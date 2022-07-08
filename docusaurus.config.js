@@ -221,13 +221,12 @@ const config = {
             label: 'Workshop',
             position: 'left',
             items: [
-              {label: 'Overview', to: '/workshop/overview'},
-              {label: 'Workshop: mini OSS Insight', to: '/workshop/mini-ossinsight/introduction'},
-              {label: 'Workshop: NFT Insight', to: '/workshop/nft-insight'},
-              {label: 'Workshop: Twitter Insight', to: '/workshop/twitter-insight'},
-              {label: 'Workshop: Stack Overflow Insight', to: '/workshop/stackoverflow-insight'},
-              {label: 'Workshop: Cryptocurrency Insight', to: '/workshop/cryptocurrency-insight'},
-              {label: '🗓️ Join Offline Workshop', to: '/workshop/offline'},
+              {label: '🗓️ Join Workshop!', to: '/workshop/overview'},
+              {label: '└─ GitHub Insight(mini OSS Insight)', to: '/workshop/mini-ossinsight/introduction'},
+              {label: '└─ NFT Insight', to: '/workshop/nft-insight'},
+              {label: '└─ Twitter Insight - not ready', to: '/workshop/twitter-insight'},
+              {label: '└─ Stack Overflow Insight - not ready', to: '/workshop/stackoverflow-insight'},
+              {label: '└─ Cryptocurrency Insight - not ready', to: '/workshop/cryptocurrency-insight'},
             ]
           },
           {
