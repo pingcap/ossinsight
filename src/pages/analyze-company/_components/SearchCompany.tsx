@@ -55,7 +55,7 @@ const SearchCompany = ({ value, onChange }: SearchCompanyProps) => {
                 <Search htmlColor='#333' />
               </InputAdornment>
             ),
-            placeholder: 'Search by companies',
+            placeholder: 'Search by company name',
             sx: {
               color: '#333',
               "::placeholder": {

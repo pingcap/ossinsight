@@ -34,7 +34,7 @@ const isOptionEqual = (a: Option, b: Option) => {
 const getOptionLabel = (option: Option) => (option as SearchRepoInfo).fullName || (option as UserInfo).login;
 
 const useTabs = () => {
-  const [type, setType] = useState<SearchType>('repo');
+  const [type, setType] = useState<SearchType>('user');
 
   const handleTypeChange = useEventCallback((_: any, type: SearchType) => {
     setType(type);
@@ -43,8 +43,8 @@ const useTabs = () => {
   const tabs = useMemo(() => {
     return (
       <Tabs value={type} onChange={handleTypeChange}>
-        <Tab label="Repo" value="repo" />
         <Tab label="Developer" value="user" />
+        <Tab label="Repo" value="repo" />
       </Tabs>
     );
   }, [type]);
@@ -132,7 +132,7 @@ const GeneralSearch = ({ contrast, align = 'left', size }: GeneralSearchProps) =
 
   const placeholder = useMemo(() => {
     if (!open) {
-      return `Search a Repo, Developer`
+      return `Search a Developer, Repo`
     } else if (type === 'user') {
       return `Enter a Developer ID`
     } else {
@@ -165,6 +165,7 @@ const GeneralSearch = ({ contrast, align = 'left', size }: GeneralSearchProps) =
           placeholder={placeholder}
           sx={theme => ({
             backgroundColor: contrast ? '#E9EAEE' : '#3c3c3c',
+            borderRadius: 2,
             color: contrast ? theme.palette.getContrastText('#E9EAEE') : undefined,
             '.MuiAutocomplete-input': {
               textAlign: align,
