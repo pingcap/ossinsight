@@ -1,8 +1,7 @@
 id: 10044
-name: Morden Data Stack
+name: Modern Data Stack
 items:
   # Data Storage
-  - elastic/elasticsearch
   - pingcap/tidb
   - clickhouse/clickhouse
   - apache/druid
