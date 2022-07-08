@@ -43,14 +43,26 @@ const SearchCompany = ({ value, onChange }: SearchCompanyProps) => {
       renderInput={({ InputProps, ...params }) => (
         <TextField
           {...params}
+          sx={{
+            backgroundColor: 'white',
+            borderRadius: 2
+          }}
           onChange={handleInputChange}
           InputProps={{
             ...InputProps,
             startAdornment: (
               <InputAdornment position="start">
-                <Search />
+                <Search htmlColor='#333' />
               </InputAdornment>
-            )
+            ),
+            placeholder: 'Search by companies',
+            sx: {
+              color: '#333',
+              "::placeholder": {
+                color: '#dfdfdf'
+              },
+              borderRadius: 2
+            }
         }}
         />
       )}

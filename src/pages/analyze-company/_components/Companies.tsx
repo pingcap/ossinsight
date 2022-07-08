@@ -1,18 +1,24 @@
 import React from "react";
-import { CompanyContributionData, useCompanyContributions } from "./hooks";
+import { CompanyContributionData, CompanyInfo, useCompanyContributions } from "./hooks";
 import Table from "@mui/material/Table";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import TableBody from "@mui/material/TableBody";
+import Skeleton from "@mui/material/Skeleton";
 
 
 interface CompaniesProps {
-  name: string
+  company: CompanyInfo
 }
 
-const Companies = ({ name }: CompaniesProps) => {
-  const { data, loading } = useCompanyContributions(name)
+const Companies = ({ company }: CompaniesProps) => {
+  const { data, loading } = useCompanyContributions(company?.name)
+
+  if (!company) {
+    return <></>
+  }
+
   return (
     <>
       <DataTable data={data?.data ?? []} loading={loading} />
@@ -46,15 +52,28 @@ const DataTable = ({ data, loading }: { data: CompanyContributionData[], loading
       </TableRow>
       </TableHead>
       <TableBody>
-      {data.map((item, i) => (
-        <TableRow>
-          <TableCell variant='head'>#{i + 1}</TableCell>
-          {DIMENSIONS.map(d => <TableCell key={d.key}>{item[d.key]}</TableCell>)}
-        </TableRow>
-      ))}
+      {loading ? renderLoading() : renderData(data)}
       </TableBody>
     </Table>
   )
+}
+
+const renderData = (data: CompanyContributionData[]) => {
+  return data.map((item, i) => (
+    <TableRow>
+      <TableCell variant='head'>#{i + 1}</TableCell>
+      {DIMENSIONS.map(d => <TableCell key={d.key}>{item[d.key]}</TableCell>)}
+    </TableRow>
+  ))
+}
+
+const renderLoading = () => {
+  return [0, 1, 2, 3, 4, 5].map((item, i) => (
+    <TableRow>
+      <TableCell variant='head'><Skeleton sx={{ display: 'inline-block' }} /></TableCell>
+      {DIMENSIONS.map(d => <TableCell key={d.key}><Skeleton sx={{ display: 'inline-block', width: '100%' }} /></TableCell>)}
+    </TableRow>
+  ))
 }
 
 export default Companies
