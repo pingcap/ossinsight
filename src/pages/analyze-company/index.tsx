@@ -14,7 +14,7 @@ const Page = () => {
       <Container maxWidth="lg" sx={{ py: 8 }}>
         <Typography variant='h1' align='center'>🌟 Company Analytics</Typography>
         <Typography variant='body1' align='center' mt={2} mb={6}>
-          Check the contribution behaviour of developers in different repositories within the same company name includes pushes, pull requests, pull request reviews, pull request review comments, issues and issue comments.
+          Check the contribution behaviour of developers in different repositories within the same company includes pushes, pull requests, pull request reviews, pull request review comments, issues and issue comments.
         </Typography>
         <SearchCompany value={company} onChange={setCompany} />
         <Typography variant='body2' align='center' mt={2} mb={6}>
