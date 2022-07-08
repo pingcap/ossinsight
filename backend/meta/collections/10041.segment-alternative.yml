@@ -5,3 +5,5 @@ items:
   - jitsucom/jitsu
   - snowplow/snowplow
   - grouparoo/grouparoo
+  - airbytehq/airbyte
+  - meltano/meltano
