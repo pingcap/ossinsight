@@ -29,29 +29,36 @@ const Companies = ({ company }: CompaniesProps) => {
 type Dimension = {
   key: keyof CompanyContributionData
   title: string
+  align?: 'right'
 }
 
 const DIMENSIONS: Dimension[] = [
   { key: 'contributions', title: 'Total Contributions' },
   { key: 'repo_name', title: 'Repository' },
-  { key: 'pushes', title: 'Pushes' },
-  { key: 'pull_requests', title: 'PRs' },
-  { key: 'reviews', title: 'PR Reviews' },
-  { key: 'review_comments', title: 'PR Review Comments' },
-  { key: 'issues', title: 'Issues' },
-  { key: 'issue_comments', title: 'Issue Comments' },
+  { key: 'pushes', title: 'Pushes', align: 'right' },
+  { key: 'pull_requests', title: 'PRs', align: 'right' },
+  { key: 'reviews', title: 'PR Reviews', align: 'right' },
+  { key: 'review_comments', title: 'PR Review Comments', align: 'right' },
+  { key: 'issues', title: 'Issues', align: 'right' },
+  { key: 'issue_comments', title: 'Issue Comments', align: 'right' },
 ]
 
 const DataTable = ({ data, loading }: { data: CompanyContributionData[], loading: boolean }) => {
   return (
-    <Table>
+    <Table className='clearTable'>
       <TableHead>
       <TableRow>
         <TableCell variant='head'>Rank</TableCell>
-        {DIMENSIONS.map(d => <TableCell key={d.key}>{d.title}</TableCell>)}
+        {DIMENSIONS.map(d => <TableCell key={d.key} align={d.align}>{d.title}</TableCell>)}
       </TableRow>
       </TableHead>
-      <TableBody>
+      <TableBody
+        sx={theme => ({
+          '.MuiTableRow-root:nth-of-type(odd)': {
+            backgroundColor: theme.palette.action.hover,
+          }
+        })}
+      >
       {loading ? renderLoading() : renderData(data)}
       </TableBody>
     </Table>
@@ -61,8 +68,8 @@ const DataTable = ({ data, loading }: { data: CompanyContributionData[], loading
 const renderData = (data: CompanyContributionData[]) => {
   return data.map((item, i) => (
     <TableRow>
-      <TableCell variant='head'>#{i + 1}</TableCell>
-      {DIMENSIONS.map(d => <TableCell key={d.key}>{item[d.key]}</TableCell>)}
+      <TableCell component='th'>#{i + 1}</TableCell>
+      {DIMENSIONS.map(d => <TableCell key={d.key} align={d.align}>{item[d.key]}</TableCell>)}
     </TableRow>
   ))
 }
@@ -70,8 +77,8 @@ const renderData = (data: CompanyContributionData[]) => {
 const renderLoading = () => {
   return [0, 1, 2, 3, 4, 5].map((item, i) => (
     <TableRow>
-      <TableCell variant='head'><Skeleton sx={{ display: 'inline-block' }} /></TableCell>
-      {DIMENSIONS.map(d => <TableCell key={d.key}><Skeleton sx={{ display: 'inline-block', width: '100%' }} /></TableCell>)}
+      <TableCell component='th'><Skeleton sx={{ display: 'inline-block' }} /></TableCell>
+      {DIMENSIONS.map(d => <TableCell key={d.key} align={d.align}><Skeleton sx={{ display: 'inline-block', width: '100%' }} /></TableCell>)}
     </TableRow>
   ))
 }

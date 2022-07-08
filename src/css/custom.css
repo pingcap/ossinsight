@@ -220,6 +220,10 @@ html[data-theme='dark'] img[src$='#gh-light-mode-only'] {
   border-right: unset;
 }
 
+.clearTable th {
+  font-weight: 700;
+}
+
 .clearTable tr {
   border-top: unset;
   background-color: unset;
