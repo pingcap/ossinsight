@@ -222,7 +222,7 @@ const config = {
             position: 'left',
             items: [
               {label: '🗓️ Join Workshop!', to: '/workshop/overview'},
-              {label: '└─ GitHub Insight(mini OSS Insight)', to: '/workshop/mini-ossinsight/introduction'},
+              {label: '└─ mini OSS Insight', to: '/workshop/mini-ossinsight/introduction'},
               {label: '└─ NFT Insight', to: '/workshop/nft-insight'},
               {label: '└─ Twitter Insight - not ready', to: '/workshop/twitter-insight'},
               {label: '└─ Stack Overflow Insight - not ready', to: '/workshop/stackoverflow-insight'},
