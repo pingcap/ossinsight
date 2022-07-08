@@ -12,13 +12,13 @@ const Page = () => {
   return (
     <CustomPage>
       <Container maxWidth="lg" sx={{ py: 8 }}>
-        <Typography variant='h1' align='center'>🌟 Company Analytics</Typography>
+        <Typography variant='h1' align='center'>🧪 Company Analytics [Beta] </Typography>
         <Typography variant='body1' align='center' mt={2} mb={6}>
-          Check the contribution behaviour of developers in different repositories within the same company includes pushes, pull requests, pull request reviews, pull request review comments, issues and issue comments.
+          Contribution analytics of developers within the same company
         </Typography>
         <SearchCompany value={company} onChange={setCompany} />
         <Typography variant='body2' align='center' mt={2} mb={6}>
-          Hints: Only the statistics of the members who have the data of [company name] was recorded and the result may including all events in both previous/current company name.
+          Hints: Only the statistics of the members who have the data of [company name] was recorded and the result may include all events in both previous/current company name. Contributions include pushes, pull requests, pull request reviews, pull request review comments, issues and issue comments.
         </Typography>
         <Companies company={company} />
       </Container>
