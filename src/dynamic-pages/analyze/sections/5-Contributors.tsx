@@ -20,7 +20,7 @@ import { SelectChangeEvent } from '@mui/material/Select/SelectInput';
 import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
 import Badge from '@mui/material/Badge';
-import React, { ForwardedRef, forwardRef, useCallback, useState } from 'react';
+import React, { ForwardedRef, forwardRef, useCallback, useMemo, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useAnalyzeContext } from '../charts/context';
 import DebugDialog from '../../../components/DebugDialog/DebugDialog';
@@ -28,6 +28,7 @@ import { RemoteData, useRemoteData } from '../../../components/RemoteCharts/hook
 import useVisibility from '../../../hooks/visibility';
 import Section from '../Section';
 import { H2, P2 } from '../typography';
+import { DateTime } from "luxon";
 
 type ChangedEvents = { last_month_events: number, last_2nd_month_events: number, changes: number }
 
@@ -191,6 +192,13 @@ const Spacer = styled('div')({
   flex: 100,
 })
 
+const useLastMonth = () => {
+  return useMemo(() => {
+    let dt = DateTime.now().minus({ month: 1 })
+    return dt.toFormat('yyyy/MM')
+  }, [])
+}
+
 export const Contributors = forwardRef(function ({}, ref: ForwardedRef<HTMLElement>) {
   const visible = useVisibility();
   const { ref: inViewRef, inView } = useInView();
@@ -223,6 +231,8 @@ export const Contributors = forwardRef(function ({}, ref: ForwardedRef<HTMLEleme
     setExcludeBots(value)
   })
 
+  const lastMonth = useLastMonth()
+
   const selectDescriptor = (
     <FormControl variant="standard">
       <Select<Descriptor<any>>
@@ -251,15 +261,19 @@ export const Contributors = forwardRef(function ({}, ref: ForwardedRef<HTMLEleme
       exclusive
       onChange={handleChangeType}
     >
-      <ToggleButton value='count'>Count</ToggleButton>
-      <ToggleButton value='percentage'>Percentage</ToggleButton>
+      <ToggleButton value='count'># Total Events</ToggleButton>
+      <ToggleButton value='percentage'>% Percentage</ToggleButton>
     </ToggleButtonGroup>
   )
 
   return (
     <Section id="contributors" ref={ref}>
-      <H2>Contributors</H2>
-      <P2>Contribution status in multiple dimensions LAST MONTH</P2>
+      <H2>Contributor Rankings - {lastMonth}</H2>
+      <P2>Check the activity of contributors in the repository 【 LAST MONTH 】 here, including push and commit events, issue open/close/comment events, code review comments/PRs/submits. 
+      <br />
+      ✨ Tips: You can view the ranking of specific event in the filter box with two dimensions: the total number of events and the proportion of events that account for all the same events in the repository.
+      <br />
+      </P2>
 
       <Stack direction='row' justifyContent='space-between' flexWrap='wrap' gap={2}>
         {selectDescriptor}
