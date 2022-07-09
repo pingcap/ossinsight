@@ -25,3 +25,4 @@ items:
   - AppFlowy-IO/AppFlowy
   - go-chi/chi
   - amplication/amplication
+  - pocketbase/pocketbase
