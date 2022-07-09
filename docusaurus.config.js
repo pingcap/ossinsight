@@ -231,6 +231,14 @@ const config = {
           },
           {
             type: 'dropdown',
+            label: 'Labs',
+            position: 'left',
+            items: [
+              {label: '🏛️  Company Analytics [Beta]', to: '/analyze-company'},
+            ]
+          },
+          {
+            type: 'dropdown',
             label: 'More',
             position: 'left',
             items: [
