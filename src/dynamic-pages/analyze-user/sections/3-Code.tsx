@@ -8,6 +8,22 @@ import { Common } from "../charts/Common";
 import { green, lightGreen, purple, redColors } from "../colors";
 import ChartWrapper from "../charts/ChartWrapper";
 
+type PrSize = {
+  name: string
+  description: string
+}
+
+//'xs (0-9 lines)', 's (10-29 lines)', 'm (30-99 lines)', 'l (100-499 lines)', 'xl (500-999 lines)', 'xxl (1000+ lines)'
+const sizes: PrSize[] = [
+  { name: 'xs', description: '0-9 lines' },
+  { name: 's', description: '10-29 lines' },
+  { name: 'm', description: '30-99 lines' },
+  { name: 'l', description: '100-499 lines' },
+  { name: 'xl', description: '500-999 lines' },
+  { name: 'xxl', description: '1000+ lines' },
+
+]
+
 export default forwardRef(function CodeSection({}, ref: ForwardedRef<HTMLElement>) {
   return (
     <Section id='code' ref={ref}>
@@ -89,8 +105,8 @@ const PullRequestSize = ({ userId, show }: ModuleProps) => {
           <Common />
           <Axis.Time.X min="2011-01-01" />
           <Axis.Value.Y />
-          {['xs', 's', 'm', 'l', 'xl', 'xxl'].reverse().map((size, i) => (
-            <BarSeries id={size} key={size} encode={{ x: 'event_month', y: size }} name={size} stack="total"
+          {sizes.reverse().map((size, i) => (
+            <BarSeries id={size.name} key={size.name} encode={{ x: 'event_month', y: size.name }} name={`${size.name} (${size.description})`} stack="total"
                        color={redColors.slice(0, 6).reverse()[i]} />
           ))}
         </Once>
