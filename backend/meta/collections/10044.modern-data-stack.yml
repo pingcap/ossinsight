@@ -13,34 +13,46 @@ items:
   - prestodb/presto
   - postgres/postgres
   - duckdb/duckdb
+  - datafuselabs/databend
+  - apache/spark
   
-  # Data visualization
+  # Data analytics
   - metabase/metabase
   - apache/superset
   - getredash/redash
+  - pinterest/querybook
+  - jupyter/notebook
+  - PostHog/posthog
+  - plausible/analytics
 
   # Data Streaming
   - apache/pulsar
   - apache/Kafka
   - apache/flink
+  - apache/beam
 
-  # Data transformation and modeling
+  # Data transformation
   - dbt-labs/dbt-core
+
+  # Data catalog
+  - amundsen-io/amundsen
+  - datahub-project/datahub
 
   # Data integration
   - airbytehq/airbyte
-  - meltano/meltano
   - rudderlabs/rudder-server
   - jitsucom/jitsu
   - snowplow/snowplow
+  - apache/nifi
   
   # Data orchestration
   - apache/airflow
+  - prefecthq/prefect
+  - dagster-io/dagster
+  - meltano/meltano
   
-  # Data analysis
-  - pandas-dev/pandas
-  - scikit-learn/scikit-learn
-  - jupyter/notebook
-  - apache/spark
+  # Data testing
+  - great-expectations/great_expectations
+  - datafold/data-diff
 
   
