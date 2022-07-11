@@ -34,11 +34,11 @@ const TimeDistribution = ({ title, size, gap, offset, data }: TimeDistributionPr
   }, [size, gap]);
 
   return (
-    <Box sx={{ overflow: 'scroll', maxWidth: 'calc(100vw - 32px)' }}>
+    <Box sx={{ overflow: 'auto', maxWidth: 'calc(100vw - 32px)' }}>
       <svg xmlns="http://www.w3.org/2000/svg" width={width} height={height + paddingTop}
            viewBox={`${-paddingLeft} -${paddingTop} ${width + paddingLeft} ${height + paddingTop}`} display="block">
         <g id="title">
-          <text textAnchor="middle" x="50%" y={8 - paddingTop} fontSize={14} fill="#dadada" fontWeight="bold">
+          <text textAnchor="middle" x={width / 2 - paddingLeft / 2} y={8 - paddingTop} fontSize={14} fill="#dadada" fontWeight="bold">
             {title}
           </text>
         </g>
