@@ -14,7 +14,7 @@ import { Navigator } from "./Navigator";
 import { Scrollspy } from '@makotot/ghostui';
 import { useMediaQuery } from "@mui/material";
 import { Theme } from "@mui/material/styles";
-import { useRouteMatch } from "@docusaurus/router";
+import { Redirect, useRouteMatch } from "@docusaurus/router";
 import { useUser } from "../../api";
 
 registerThemeDark();
@@ -31,16 +31,20 @@ const sections = [
 
 const Page = () => {
 
-  const { login, userId } = useAnalyzingUser();
+  const { login, userId, loading } = useAnalyzingUser();
   const sectionRefs = sections.map(section => useRef<HTMLElement>(null));
   const isSmall = useMediaQuery<Theme>('(max-width:600px)');
   const sideWidth = isSmall ? undefined : '160px'
+
+  if (!loading && typeof userId === 'undefined') {
+    return <Redirect to='/404' />
+  }
 
   return (
     <Scrollspy sectionRefs={sectionRefs} offset={-140}>
       {({ currentElementIndexInViewport }) => (
         <CustomPage Side={() => isSmall ? undefined : <Navigator value={sections[currentElementIndexInViewport]} type="side" />} sideWidth={sideWidth}>
-          <AnalyzeUserContextProvider value={{ login, userId }}>
+          <AnalyzeUserContextProvider value={{ login, userId, loading }}>
             <Container maxWidth="lg">
               <OverviewSection ref={sectionRefs[0]} />
               <BehaviourSection ref={sectionRefs[1]} />
@@ -65,11 +69,12 @@ interface AnalyzeUserPageParams {
 function useAnalyzingUser(): AnalyzeUserContextProps {
   let { params: { login } } = useRouteMatch<AnalyzeUserPageParams>();
 
-  const { data } = useUser(login);
+  const { data, isValidating } = useUser(login);
 
   return {
     login,
     userId: data?.id,
+    loading: isValidating,
   };
 }
 

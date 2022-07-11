@@ -16,6 +16,7 @@ export interface AnalyzeUserChartContextProps<T = unknown> {
 export interface AnalyzeUserContextProps {
   login: string;
   userId?: number;
+  loading: boolean;
 }
 
 const DEFAULT_DATA = { data: undefined, loading: false, error: undefined };
@@ -27,6 +28,7 @@ const AnalyzeUserChartContext = createContext<AnalyzeUserChartContextProps>({
 
 const AnalyzeUserContext = createContext<AnalyzeUserContextProps>({
   login: '',
+  loading: true,
 });
 
 export const AnalyzeUserChartContextProvider = AnalyzeUserChartContext.Provider;
