@@ -9,8 +9,8 @@
     },
     {
       "name": "timeRange",
-      "pattern": "^last_1_year|last_3_years$",
       "replaces": "created_at BETWEEN DATE_SUB(NOW(), INTERVAL 3 YEAR) AND NOW()",
+      "enums": ["last_1_year", "last_3_years"],
       "default": "last_1_year",
       "template": {
         "last_1_year": "created_at BETWEEN DATE_SUB(NOW(), INTERVAL 1 YEAR) AND NOW()",
