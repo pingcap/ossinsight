@@ -17,6 +17,7 @@ export interface AnalyzeUserContextProps {
   login: string;
   userId?: number;
   loading: boolean;
+  error?: unknown;
 }
 
 const DEFAULT_DATA = { data: undefined, loading: false, error: undefined };

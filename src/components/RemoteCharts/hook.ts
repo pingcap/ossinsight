@@ -47,7 +47,7 @@ export const useRemoteData: UseRemoteData = (query: string, params: any, formatS
     }
   }, [inView, shouldLoad])
 
-  const { data, isValidating: loading, error } = useSWR(firstViewed ? [query, params, 'q'] : null, {
+  const { data, isValidating: loading, error } = useSWR((firstViewed && shouldLoad) ? [query, params, 'q'] : null, {
     fetcher: core.query,
     revalidateOnFocus: false,
     revalidateOnReconnect: false,

@@ -31,12 +31,12 @@ const sections = [
 
 const Page = () => {
 
-  const { login, userId, loading } = useAnalyzingUser();
+  const { login, userId, loading, error } = useAnalyzingUser();
   const sectionRefs = sections.map(section => useRef<HTMLElement>(null));
   const isSmall = useMediaQuery<Theme>('(max-width:600px)');
   const sideWidth = isSmall ? undefined : '160px'
 
-  if (!loading && typeof userId === 'undefined') {
+  if (error) {
     return <Redirect to='/404' />
   }
 
@@ -69,12 +69,13 @@ interface AnalyzeUserPageParams {
 function useAnalyzingUser(): AnalyzeUserContextProps {
   let { params: { login } } = useRouteMatch<AnalyzeUserPageParams>();
 
-  const { data, isValidating } = useUser(login);
+  const { data, isValidating, error } = useUser(login);
 
   return {
     login,
     userId: data?.id,
     loading: isValidating,
+    error,
   };
 }
 
