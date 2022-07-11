@@ -7,6 +7,8 @@ import { Item } from '../../../_components/StackItem';
 import { fontSizes } from '../../../_components/typography';
 import Events from './Events';
 import EventsChart from './EventsChart';
+import Button from "@mui/material/Button";
+import Link from '@mui/material/Link';
 
 
 const Subtitle = styled('p')({
@@ -40,6 +42,9 @@ const Right = () => {
       <InViewContainer>
         {show => <Events show={show} />}
       </InViewContainer>
+      <Button sx={{fontSize: 12, fontWeight: 'regular', verticalAlign: 'baseline', textDecoration: 'underline', color:'#7c7c7c'}} component={Link} href='/blog/why-we-choose-tidb-to-support-ossinsight'>
+            🤖️ How we display this real-time effect?
+          </Button>
     </Item>
   )
 }
