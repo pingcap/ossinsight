@@ -22,7 +22,6 @@
 #  pr_merged              :boolean
 #  pr_merged_at           :datetime
 #  pr_or_issue_created_at :datetime
-#  pr_or_issue_title      :string(255)
 #  pr_review_comments     :integer
 #  push_distinct_size     :integer
 #  push_size              :integer

@@ -89,13 +89,6 @@ CREATE TEMP TABLE archive AS SELECT
     END 
   as pr_or_issue_created_at,
 
-  CASE 
-      WHEN json_value(payload, '$.issue.title') is not null THEN json_value(payload, '$.issue.title')
-      WHEN json_value(payload, '$.pull_request.title') is not null THEN json_value(payload, '$.pull_request.title')
-      ELSE null
-    END 
-  as pr_or_issue_title,
-
   FORMAT_DATE('%Y-%m-%d', created_at) as event_day,
   FORMAT_DATE('%Y-%m-01', created_at) as event_month,
   EXTRACT(year FROM created_at) as event_year

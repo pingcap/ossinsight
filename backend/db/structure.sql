@@ -166,7 +166,6 @@ CREATE TABLE `github_events` (
   `event_year` int(11) DEFAULT NULL,
   `push_size` int(11) DEFAULT NULL,
   `push_distinct_size` int(11) DEFAULT NULL,
-  `pr_or_issue_title` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `creator_user_login` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `creator_user_id` bigint(20) DEFAULT NULL,
   `pr_or_issue_created_at` datetime DEFAULT NULL,
