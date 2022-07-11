@@ -52,7 +52,7 @@ const StarChart = ({ userId, show }: ModuleProps) => {
       <EChartsx init={{ height: 400, renderer: 'canvas' }} theme="dark" ref={chart}>
         <Once>
           <Common />
-          <Axis.Time.X />
+          <Axis.Time.X min="2011-01-01" />
           <Axis.Value.Y />
           <BarSeries encode={{ x: 'star_month', y: 'cnt' }} color={chartColors} barMaxWidth={10} />
         </Once>

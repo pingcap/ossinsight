@@ -42,7 +42,7 @@ const IssueHistory = ({ userId, show }: ModuleProps) => {
       <EChartsx init={{ height: 400, renderer: 'canvas' }} theme="dark" ref={chart}>
         <Once>
           <Common />
-          <Axis.Time.X />
+          <Axis.Time.X min="2011-01-01" />
           <Axis.Value.Y />
           <BarSeries encode={{ x: 'event_month', y: 'issues' }} name="issue" color={blue} barMaxWidth={10} />
           <BarSeries encode={{ x: 'event_month', y: 'issue_comments' }} name="issue comments" color={lightBlue} barMaxWidth={10} />

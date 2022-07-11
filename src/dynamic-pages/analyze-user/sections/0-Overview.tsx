@@ -234,7 +234,7 @@ const ContributorTrends = ({ userId, show }: ModuleProps) => {
       <Once>
         <Title text="Contribution Trends" left="center" />
         <Common hideZoom />
-        <Axis.Time.X />
+        <Axis.Time.X min="2011-01-01" />
         <Axis.Value.Y />
         {contributionTypes.map((ct, i) => (
           <LineSeries key={ct} name={ct} color={chartColors[i % chartColors.length]} datasetId={ct}
