@@ -58,7 +58,7 @@ const CodeSubmitHistory = ({ userId, show }: ModuleProps) => {
       <EChartsx init={{ height: 400, renderer: 'canvas' }} theme="dark">
         <Once>
           <Common />
-          <Axis.Time.X min="2011-01-01" />
+          <Axis.Time.X />
           <Axis.Value.Y />
           <BarSeries encode={{ x: 'event_month', y: 'pushes' }} name="push" color={green} barMaxWidth={10} />
           <BarSeries encode={{ x: 'event_month', y: 'commits' }} name="commit" color={lightGreen} barMaxWidth={10} />
@@ -77,7 +77,7 @@ const PullRequestHistory = ({ userId, show }: ModuleProps) => {
       <EChartsx init={{ height: 400, renderer: 'canvas' }} theme="dark">
         <Once>
           <Common />
-          <Axis.Time.X min="2011-01-01" />
+          <Axis.Time.X />
           <Axis.Value.Y />
           <LineSeries datasetId="source" encode={{ x: 'event_month', y: 'opened_prs' }} name="Opened PRs" color={green}
                       areaStyle={{ opacity: 0.15 }} symbolSize={0} lineStyle={{ width: 1 }} />
@@ -103,7 +103,7 @@ const PullRequestSize = ({ userId, show }: ModuleProps) => {
       <EChartsx init={{ height: 400, renderer: 'canvas' }} theme="dark">
         <Once>
           <Common />
-          <Axis.Time.X min="2011-01-01" />
+          <Axis.Time.X />
           <Axis.Value.Y />
           {sizes.reverse().map((size, i) => (
             <BarSeries id={size.name} key={size.name} encode={{ x: 'event_month', y: size.name }} name={`${size.name} (${size.description})`} stack="total"
@@ -133,7 +133,7 @@ const LineOfCodes = ({ userId, show }: ModuleProps) => {
       <EChartsx init={{ height: 400, renderer: 'canvas' }} theme="dark">
         <Once>
           <Common />
-          <Axis.Time.X min="2011-01-01" />
+          <Axis.Time.X />
           <Axis.Value.Y id="code" />
 
           <LineSeries color="#57ab5a" id="add" yAxisId="code" encode={{ x: 'event_month', y: 'additions' }}
