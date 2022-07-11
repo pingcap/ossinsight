@@ -63,12 +63,12 @@ const AllContributions = ({ userId, show }: ModuleProps) => {
   }
 
   return (
-    <ChartWrapper title="Type of total contributions" chart={chart}>
+    <ChartWrapper title="Type of total contributions" chart={chart} repo>
       <EChartsx init={{ height: 800, renderer: 'canvas' }} theme="dark" ref={chart}>
         <Once dependencies={[repos]}>
           <Common hideZoom />
           <Axis.Value.X />
-          <Axis.Category.Y data={repos} inverse />
+          <Axis.Category.Y data={repos} inverse triggerEvent />
           {eventTypes.map((event, i) => (
             <BarSeries key={event} datasetId={event} encode={{ x: 'cnt', y: 'repo_name', tooltip: ['cnt'] }}
                        emphasis={{ focus: 'series' }} name={event} stack="0" barMaxWidth={10}

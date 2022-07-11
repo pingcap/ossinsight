@@ -79,7 +79,7 @@ const ActivityChart = ({ userId, show }: ModuleProps) => {
   const chart = useRef<EChartsType | undefined>()
 
   return (
-    <ChartWrapper title={title} chart={chart}>
+    <ChartWrapper title={title} chart={chart} repo>
       <Box mb={2}>
         <FormControl variant="standard" size="small" sx={{ minWidth: 120 }}>
           <InputLabel id="event-type-selector-label">Contribution type</InputLabel>
@@ -103,7 +103,7 @@ const ActivityChart = ({ userId, show }: ModuleProps) => {
           <Legend type="scroll" orient="horizontal" top={32}/>
           <Grid top={64} left={8} right={8} bottom={8} containLabel/>
           <Tooltip trigger="item" />
-          <Axis.Category.Y axisTick={{ show: false }} axisLine={{ show: false }} />
+          <Axis.Category.Y axisTick={{ show: false }} axisLine={{ show: false }} triggerEvent />
         </Once>
         <Title text={title} left="center"/>
         <Axis.Time.X min={min} max={max} />
