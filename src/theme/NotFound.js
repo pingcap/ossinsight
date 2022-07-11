@@ -10,6 +10,8 @@ import Translate, {translate} from '@docusaurus/Translate';
 import {useHistory} from "@docusaurus/router";
 import CircularProgress from "@mui/material/CircularProgress";
 import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import Link from '@mui/material/Link';
 
 function NotFound() {
   const history = useHistory()
@@ -71,24 +73,32 @@ function renderNotFound () {
             <Translate
               id="theme.NotFound.title"
               description="The title of the 404 page">
-              Page Not Found
+              Oooooops! You have found a magical place ⛰️.
             </Translate>
           </h1>
           <p>
             <Translate
               id="theme.NotFound.p1"
               description="The first paragraph of the 404 page">
-              We could not find what you were looking for.
+              We can not lead you to this URL.
             </Translate>
           </p>
           <p>
             <Translate
               id="theme.NotFound.p2"
               description="The 2nd paragraph of the 404 page">
-              Please contact the owner of the site that linked you to the
-              original URL and let them know their link is broken.
+              How about going to analyze a developer / repository ? And I guess you will find something interesting in Collections as well !
             </Translate>
           </p>
+          <Button sx={{fontSize: 16, fontWeight: 'bold', verticalAlign: 'baseline', textDecoration: 'underline', marginTop:6}} component={Link} href='/'>
+            🧑‍💻 get insights with developers
+          </Button>
+          <Button sx={{fontSize: 16, fontWeight: 'bold', verticalAlign: 'baseline', textDecoration: 'underline', marginTop:2}} component={Link} href='/'>
+            🔍  get insights with repositories
+          </Button>
+          <Button sx={{fontSize: 16, fontWeight: 'bold', verticalAlign: 'baseline', textDecoration: 'underline', marginTop:2}} component={Link} href='/collections/open-source-database'>
+            🔥 get insights with collections
+          </Button>
         </div>
       </div>
     </main>
