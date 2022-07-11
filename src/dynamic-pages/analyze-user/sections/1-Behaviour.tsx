@@ -1,4 +1,4 @@
-import React, { ForwardedRef, forwardRef, useContext, useMemo, useState } from "react";
+import React, { ForwardedRef, forwardRef, useContext, useMemo, useRef, useState } from "react";
 import Section, { SectionHeading } from "../../../components/Section";
 import { useAnalyzeUserContext } from "../charts/context";
 import InViewContext from "../../../components/InViewContext";
@@ -14,6 +14,7 @@ import { Common } from "../charts/Common";
 import { chartColors } from "../colors";
 import ChartWrapper from "../charts/ChartWrapper";
 import { useDimension } from "../hooks/useDimension";
+import { EChartsType } from "echarts/core";
 
 
 export default forwardRef(function BehaviourSection({}, ref: ForwardedRef<HTMLElement>) {
@@ -55,13 +56,15 @@ const AllContributions = ({ userId, show }: ModuleProps) => {
     return Array.from(map.entries()).sort((a, b) => b[1] - a[1]).map(entry => entry[0]).slice(0, 20);
   }, [data]);
 
+  const chart = useRef<EChartsType | undefined>()
+
   if (!data) {
     return <></>;
   }
 
   return (
-    <ChartWrapper title="Type of total contributions">
-      <EChartsx init={{ height: 800, renderer: 'canvas' }} theme="dark">
+    <ChartWrapper title="Type of total contributions" chart={chart}>
+      <EChartsx init={{ height: 800, renderer: 'canvas' }} theme="dark" ref={chart}>
         <Once dependencies={[repos]}>
           <Common hideZoom />
           <Axis.Value.X />

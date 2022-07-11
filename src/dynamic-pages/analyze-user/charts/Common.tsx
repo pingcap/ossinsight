@@ -1,8 +1,9 @@
 import React, { useContext } from "react";
 import { Grid, Legend, Title, Tooltip, withBaseOption } from "@djagger/echartsx";
 import { ChartWrapperContext } from "./ChartWrapper";
+import { DataZoomComponentOption } from "echarts";
 
-const DataZoom = withBaseOption('dataZoom', {}, 'DataZoom')
+const DataZoom = withBaseOption<DataZoomComponentOption>('dataZoom', {}, 'DataZoom')
 
 export const Common = ({ hideZoom = false }: { hideZoom?: boolean }) => {
   const { title } = useContext(ChartWrapperContext)
