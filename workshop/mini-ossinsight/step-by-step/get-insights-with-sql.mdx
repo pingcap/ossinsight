@@ -12,7 +12,7 @@ Now, the data is ready, let's try to analyze these data with SQL!
 ### a. Can't Wait!
 
 #### i. Example 1
-Look at [ti-chi-bot](https://github.com/ti-chi-bot)'s details:
+Look at `ti-chi-bot`'s details, it is a robot:
 
 <Tabs>
   <TabItem value="sql" label="SQL">
@@ -24,19 +24,6 @@ FROM github_events
 WHERE
     actor_login = 'ti-chi-bot'
 GROUP BY type;
-
-...
-
-+-------------------+----------+
-| type              | count(*) |
-+-------------------+----------+
-| PullRequestEvent  |     6184 |
-| IssueCommentEvent |    53920 |
-+-------------------+----------+
-2 rows in set (0.18 sec)
-
-mysql>
-
 ```
 
   </TabItem>
@@ -47,19 +34,20 @@ mysql>
 | id                                 | estRows | task      | access object                                                              | operator info                                                                                                                                                    |
 +------------------------------------+---------+-----------+----------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | Projection_5                       | 1.00    | root      |                                                                            | gharchive_dev.github_events.type, Column#33                                                                                                                      |
-| └─HashAgg_22                       | 1.00    | root      |                                                                            | group by:gharchive_dev.github_events.type, funcs:count(Column#37)->Column#33, funcs:firstrow(gharchive_dev.github_events.type)->gharchive_dev.github_events.type |
-|   └─IndexLookUp_23                 | 1.00    | root      |                                                                            |                                                                                                                                                                  |
-|     ├─IndexRangeScan_20(Build)     | 4.88    | cop[tikv] | table:github_events, index:index_github_events_on_actor_login(actor_login) | range:["azure-sdk","azure-sdk"], keep order:false                                                                                                                |
+| └─HashAgg_17                       | 1.00    | root      |                                                                            | group by:gharchive_dev.github_events.type, funcs:count(Column#37)->Column#33, funcs:firstrow(gharchive_dev.github_events.type)->gharchive_dev.github_events.type |
+|   └─IndexLookUp_18                 | 1.00    | root      |                                                                            |                                                                                                                                                                  |
+|     ├─IndexRangeScan_15(Build)     | 8938.94 | cop[tikv] | table:github_events, index:index_github_events_on_actor_login(actor_login) | range:["ti-chi-bot","ti-chi-bot"], keep order:false                                                                                                              |
 |     └─HashAgg_7(Probe)             | 1.00    | cop[tikv] |                                                                            | group by:gharchive_dev.github_events.type, funcs:count(1)->Column#37                                                                                             |
-|       └─TableRowIDScan_21          | 4.88    | cop[tikv] | table:github_events                                                        | keep order:false                                                                                                                                                 |
+|       └─TableRowIDScan_16          | 8938.94 | cop[tikv] | table:github_events                                                        | keep order:false                                                                                                                                                 |
 +------------------------------------+---------+-----------+----------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 ```
 
   </TabItem>
 </Tabs>
 
-:::info
-azure-sdk's profile: https://github.com/ti-chi-bot.
+:::info Test
+* [ti-chi-bot](https://github.com/ti-chi-bot)'s GitHub profile
+* [azure-sdk](https://github.com/azure-sdk)'s GitHub profile
 :::
 
 #### ii. Example 2
