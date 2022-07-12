@@ -9,8 +9,8 @@
     },
     {
       "name": "timeRange",
-      "enum": ["last_3_years", "last_1_year"],
       "replaces": "created_at BETWEEN DATE_SUB(NOW(), INTERVAL 3 YEAR) AND NOW()",
+      "enums": ["last_1_year", "last_3_years"],
       "default": "last_1_year",
       "template": {
         "last_1_year": "created_at BETWEEN DATE_SUB(NOW(), INTERVAL 1 YEAR) AND NOW()",
@@ -19,7 +19,7 @@
     },
     {
       "name": "size",
-      "enum": ["10", "20", "50", "100"],
+      "pattern": "^10|20|50|100$",
       "replaces": "100000",
       "default": "20"
     },
