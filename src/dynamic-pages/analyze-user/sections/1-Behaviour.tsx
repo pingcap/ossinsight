@@ -1,4 +1,4 @@
-import React, { ForwardedRef, forwardRef, useContext, useMemo, useState } from "react";
+import React, { ForwardedRef, forwardRef, useContext, useMemo, useRef, useState } from "react";
 import Section, { SectionHeading } from "../../../components/Section";
 import { useAnalyzeUserContext } from "../charts/context";
 import InViewContext from "../../../components/InViewContext";
@@ -14,6 +14,7 @@ import { Common } from "../charts/Common";
 import { chartColors } from "../colors";
 import ChartWrapper from "../charts/ChartWrapper";
 import { useDimension } from "../hooks/useDimension";
+import { EChartsType } from "echarts/core";
 
 
 export default forwardRef(function BehaviourSection({}, ref: ForwardedRef<HTMLElement>) {
@@ -52,20 +53,22 @@ const AllContributions = ({ userId, show }: ModuleProps) => {
       return map.set(cv.repo_name, (map.get(cv.repo_name) ?? 0) + cv.cnt);
     }, new Map<string, number>());
 
-    return Array.from(map.entries()).sort((a, b) => b[1] - a[1]).map(entry => entry[0]).slice(0, 20);
+    return Array.from(map.entries()).sort((a, b) => b[1] - a[1]).map(entry => entry[0]);
   }, [data]);
+
+  const chart = useRef<EChartsType | undefined>()
 
   if (!data) {
     return <></>;
   }
 
   return (
-    <ChartWrapper title="Type of total contributions">
-      <EChartsx init={{ height: 800, renderer: 'canvas' }} theme="dark">
+    <ChartWrapper title="Type of total contributions" chart={chart} repo remoteData={data}>
+      <EChartsx init={{ height: 400, renderer: 'canvas' }} theme="dark" ref={chart}>
         <Once dependencies={[repos]}>
-          <Common hideZoom />
-          <Axis.Value.X />
-          <Axis.Category.Y data={repos} inverse />
+          <Common hideZoom scrollY={10} />
+          <Axis.Value.X minInterval={1} />
+          <Axis.Category.Y data={repos} inverse triggerEvent />
           {eventTypes.map((event, i) => (
             <BarSeries key={event} datasetId={event} encode={{ x: 'cnt', y: 'repo_name', tooltip: ['cnt'] }}
                        emphasis={{ focus: 'series' }} name={event} stack="0" barMaxWidth={10}
@@ -113,7 +116,7 @@ const ContributionTime = ({ userId, show }: ModuleProps) => {
   }, [type, zone]);
 
   return (
-    <ChartWrapper title={title}>
+    <ChartWrapper title={title} remoteData={data}>
       <Box mt={4} mx="auto" width="max-content">
         <Box mb={2} width="max-content">
           <FormControl variant="standard" size="small" sx={{ minWidth: 120 }}>

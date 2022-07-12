@@ -1,4 +1,4 @@
-import React, { ForwardedRef, forwardRef, ReactNode, useContext, useMemo } from "react";
+import React, { ForwardedRef, forwardRef, ReactNode, useContext, useMemo, useRef } from "react";
 import Section, { SectionHeading } from "../../../components/Section";
 import { useAnalyzeUserContext } from "../charts/context";
 import { contributionTypes, PersonalOverview, usePersonalData, usePersonalOverview } from "../hooks/usePersonal";
@@ -25,6 +25,8 @@ import { Common } from "../charts/Common";
 import Tooltip from "@mui/material/Tooltip";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { useDimension } from "../hooks/useDimension";
+import ChartWrapper from "../charts/ChartWrapper";
+import { EChartsType } from "echarts/core";
 
 export default forwardRef(function OverviewSection({}, ref: ForwardedRef<HTMLElement>) {
   return (
@@ -228,26 +230,29 @@ const Languages = ({ userId, show }: ModuleProps) => {
 const ContributorTrends = ({ userId, show }: ModuleProps) => {
   const { data } = usePersonalData('personal-contribution-trends', userId, show);
   const validContributionTypes = useDimension(data?.data ?? [], 'contribution_type')
+  const chart = useRef<EChartsType>()
 
   return (
-    <EChartsx init={{ height: 400, renderer: 'canvas' }} theme="dark">
-      <Once>
-        <Title text="Contribution Trends" left="center" />
-        <Common hideZoom />
-        <Axis.Time.X min="2011-01-01" />
-        <Axis.Value.Y />
-        {contributionTypes.map((ct, i) => (
-          <LineSeries key={ct} name={ct} color={chartColors[i % chartColors.length]} datasetId={ct}
-                      encode={{ x: 'event_month', y: 'cnt' }} symbolSize={0} lineStyle={{ width: 1 }}
-                      areaStyle={{ opacity: 0.15 }} />
+    <ChartWrapper title='Contribution Trends' remoteData={data} chart={chart}>
+      <EChartsx init={{ height: 400, renderer: 'canvas' }} theme="dark" ref={chart}>
+        <Once>
+          <Title text="Contribution Trends" left="center" />
+          <Common hideZoom />
+          <Axis.Time.X />
+          <Axis.Value.Y />
+          {contributionTypes.map((ct, i) => (
+            <LineSeries key={ct} name={ct} color={chartColors[i % chartColors.length]} datasetId={ct}
+                        encode={{ x: 'event_month', y: 'cnt' }} symbolSize={0} lineStyle={{ width: 1 }}
+                        areaStyle={{ opacity: 0.15 }} />
+          ))}
+        </Once>
+        {validContributionTypes.map(ct => (
+          <Dataset key={ct} id={ct} fromDatasetId="original"
+                   transform={{ type: 'filter', config: { value: ct, dimension: 'contribution_type' } }} />
         ))}
-      </Once>
-      {validContributionTypes.map(ct => (
-        <Dataset key={ct} id={ct} fromDatasetId="original"
-                 transform={{ type: 'filter', config: { value: ct, dimension: 'contribution_type' } }} />
-      ))}
-      <Dataset id="original" source={data?.data ?? []} />
-    </EChartsx>
+        <Dataset id="original" source={data?.data ?? []} />
+      </EChartsx>
+    </ChartWrapper>
   );
 };
 

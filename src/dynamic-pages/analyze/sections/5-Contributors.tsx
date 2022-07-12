@@ -29,6 +29,7 @@ import useVisibility from '../../../hooks/visibility';
 import Section from '../Section';
 import { H2, P2 } from '../typography';
 import { DateTime } from "luxon";
+import Tooltip from "@mui/material/Tooltip";
 
 type ChangedEvents = { last_month_events: number, last_2nd_month_events: number, changes: number }
 
@@ -62,7 +63,7 @@ type TypeMap = {
 type Descriptor<K extends keyof TypeMap> = {
   key: K
   title: string
-  render: (item: TypeMap[K], first: TypeMap[K], options: { percentage: boolean }) => JSX.Element
+  render: (item: TypeMap[K], first: TypeMap[K], options: { percentage: boolean, lastMonth: string }) => JSX.Element
 }
 
 const descriptors: Descriptor<any>[] = [
@@ -113,7 +114,7 @@ const descriptors: Descriptor<any>[] = [
   // },
 ];
 
-function renderBasic(item: Result & ChangedEvents & { is_new_contributor?: 0 | 1 }, first: Result & ChangedEvents, { percentage }: { percentage: boolean }): JSX.Element {
+function renderBasic(item: Result & ChangedEvents & { is_new_contributor?: 0 | 1 }, first: Result & ChangedEvents, { percentage, lastMonth }: { percentage: boolean, lastMonth: string }): JSX.Element {
   let avatar = <Avatar src={`https://github.com/${item.actor_login}.png`} />;
   if (item.is_new_contributor) {
     avatar = (
@@ -123,23 +124,45 @@ function renderBasic(item: Result & ChangedEvents & { is_new_contributor?: 0 | 1
     );
   }
   return (
-    <Line key={item.actor_login}>
-      <ListItemAvatar>
-        <a href={`https://github.com/${item.actor_login}`} target="_blank" rel="noopener">
-          {avatar}
-        </a>
-      </ListItemAvatar>
-      <Box sx={{ fontSize: 12, maxWidth: 64, minWidth: 64, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', mr: 1 }}>
-        {item.actor_login}
-      </Box>
-      <Bar sx={{ width: `${item.last_month_events / first.last_month_events * 100}%` }} />
-      {percentage
-        ? (
-          <Number>{(item.proportion * 100).toPrecision(2)}%</Number>
-        ) : (
-          <Number>{item.last_month_events} ({item.changes >= 0 ? `+${item.changes}` : item.changes})</Number>
-        )}
-    </Line>
+    <Tooltip
+      componentsProps={{
+        tooltip: {
+          sx: {
+            backgroundColor: '#3c3c3c',
+          }
+        }
+      }}
+      title={(
+        <Box>
+          <Box>
+            {lastMonth}
+          </Box>
+          <Box>
+            <b>Total {item.last_month_events} events</b>
+          </Box>
+          <Box color={item.changes > 0 ? '#57ab5a' : '#e5534b'}>{item.changes >= 0 ? `+${item.changes}` : item.changes} events since last month</Box>
+        </Box>
+      )}
+      followCursor
+    >
+      <Line key={item.actor_login}>
+        <ListItemAvatar>
+          <a href={`https://github.com/${item.actor_login}`} target="_blank" rel="noopener">
+            {avatar}
+          </a>
+        </ListItemAvatar>
+        <Box sx={{ fontSize: 12, maxWidth: 64, minWidth: 64, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', mr: 1 }}>
+          {item.actor_login}
+        </Box>
+        <Bar sx={{ width: `${item.last_month_events / first.last_month_events * 100}%` }} />
+        {percentage
+          ? (
+            <Number>{(item.proportion * 100).toPrecision(2)}%</Number>
+          ) : (
+            <Number>{item.last_month_events} ({item.changes >= 0 ? `+${item.changes}` : item.changes})</Number>
+          )}
+      </Line>
+    </Tooltip>
   );
 }
 
@@ -286,7 +309,7 @@ export const Contributors = forwardRef(function ({}, ref: ForwardedRef<HTMLEleme
       {data ? <DebugDialog sql={data.sql} query={data.query} params={data.params} open={showDebugModel} onClose={handleCloseDebugModel} /> : undefined}
 
       <BarContainer ref={inViewRef}>
-        {list.map((item, index, all) => descriptor.render(item, all[0], { percentage: type === 'percentage'}))}
+        {list.map((item, index, all) => descriptor.render(item, all[0], { percentage: type === 'percentage', lastMonth }))}
       </BarContainer>
     </Section>
   );

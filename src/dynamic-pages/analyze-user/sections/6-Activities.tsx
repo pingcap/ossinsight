@@ -1,4 +1,4 @@
-import React, { ForwardedRef, forwardRef, useCallback, useContext, useMemo, useState } from "react";
+import React, { ForwardedRef, forwardRef, useCallback, useContext, useMemo, useRef, useState } from "react";
 import Section from "../../../components/Section/Section";
 import InViewContext from "../../../components/InViewContext";
 import { useAnalyzeUserContext } from "../charts/context";
@@ -22,6 +22,7 @@ import FormControl from "@mui/material/FormControl";
 import { SelectChangeEvent } from "@mui/material/Select";
 import { SectionHeading } from "../../../components/Section";
 import ChartWrapper from "../charts/ChartWrapper";
+import { EChartsType } from "echarts/core";
 
 export default forwardRef(function ActivitiesSection({}, ref: ForwardedRef<HTMLElement>) {
   return (
@@ -75,8 +76,10 @@ const ActivityChart = ({ userId, show }: ModuleProps) => {
     return `${typeString} in ${periodString}`
   }, [typeString, periodString])
 
+  const chart = useRef<EChartsType | undefined>()
+
   return (
-    <ChartWrapper title={title}>
+    <ChartWrapper title={title} chart={chart} repo remoteData={data}>
       <Box mb={2}>
         <FormControl variant="standard" size="small" sx={{ minWidth: 120 }}>
           <InputLabel id="event-type-selector-label">Contribution type</InputLabel>
@@ -95,12 +98,12 @@ const ActivityChart = ({ userId, show }: ModuleProps) => {
           </Select>
         </FormControl>
       </Box>
-      <EChartsx init={{ height: 240 + 30 * repoNames.length, renderer: 'canvas' }} theme="dark">
+      <EChartsx init={{ height: 240 + 30 * repoNames.length, renderer: 'canvas' }} theme="dark" ref={chart}>
         <Once>
           <Legend type="scroll" orient="horizontal" top={32}/>
           <Grid top={64} left={8} right={8} bottom={8} containLabel/>
           <Tooltip trigger="item" />
-          <Axis.Category.Y axisTick={{ show: false }} axisLine={{ show: false }} />
+          <Axis.Category.Y axisTick={{ show: false }} axisLine={{ show: false }} triggerEvent />
         </Once>
         <Title text={title} left="center"/>
         <Axis.Time.X min={min} max={max} />

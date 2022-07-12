@@ -1,4 +1,4 @@
-import React, { ForwardedRef, forwardRef, useContext } from "react";
+import React, { ForwardedRef, forwardRef, useContext, useRef } from "react";
 import Section, { SectionHeading } from "../../../components/Section";
 import { usePersonalData } from "../hooks/usePersonal";
 import { Axis, BarSeries, Dataset, EChartsx, Once } from "@djagger/echartsx";
@@ -7,6 +7,7 @@ import { useAnalyzeUserContext } from "../charts/context";
 import { Common } from "../charts/Common";
 import { blue, lightBlue } from "../colors";
 import ChartWrapper from "../charts/ChartWrapper";
+import { EChartsType } from "echarts/core";
 
 export default forwardRef(function IssueSection({}, ref: ForwardedRef<HTMLElement>) {
   return (
@@ -34,9 +35,11 @@ const Issue = () => {
 const IssueHistory = ({ userId, show }: ModuleProps) => {
   const { data } = usePersonalData('personal-issues-history', userId, show);
 
+  const chart = useRef<EChartsType | undefined>()
+
   return (
-    <ChartWrapper title="Issue History">
-      <EChartsx init={{ height: 400, renderer: 'canvas' }} theme="dark">
+    <ChartWrapper title="Issue History" chart={chart} remoteData={data}>
+      <EChartsx init={{ height: 400, renderer: 'canvas' }} theme="dark" ref={chart}>
         <Once>
           <Common />
           <Axis.Time.X min="2011-01-01" />

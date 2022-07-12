@@ -1,4 +1,4 @@
-import React, { ForwardedRef, forwardRef, useContext, useMemo } from "react";
+import React, { ForwardedRef, forwardRef, useContext, useMemo, useRef } from "react";
 import Section, { SectionHeading } from "../../../components/Section";
 import InViewContext from "../../../components/InViewContext";
 import { usePersonalData } from "../hooks/usePersonal";
@@ -9,6 +9,7 @@ import { Common } from "../charts/Common";
 import { chartColors } from "../colors";
 import ChartWrapper from "../charts/ChartWrapper";
 import { useDimension } from "../hooks/useDimension";
+import { EChartsType } from "echarts/core";
 
 export default forwardRef(function StarSection({}, ref: ForwardedRef<HTMLElement>) {
   return (
@@ -44,9 +45,11 @@ const StarChart = ({ userId, show }: ModuleProps) => {
     return Array.from(map.entries()).map(([star_month, cnt]) => ({ star_month, cnt }));
   }, [data]);
 
+  const chart = useRef<EChartsType | undefined>()
+
   return (
-    <ChartWrapper title="Star History">
-      <EChartsx init={{ height: 400, renderer: 'canvas' }} theme="dark">
+    <ChartWrapper title="Star History" chart={chart} remoteData={data}>
+      <EChartsx init={{ height: 400, renderer: 'canvas' }} theme="dark" ref={chart}>
         <Once>
           <Common />
           <Axis.Time.X min="2011-01-01" />
