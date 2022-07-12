@@ -7,7 +7,7 @@ export default function TitleLine () {
       Visual & Comprehensive
       <br />
       <H2Plus sx={{color: '#FFE895'}}>
-        Compare
+      Repository Analytics 
       </H2Plus>
     </H2>
   )

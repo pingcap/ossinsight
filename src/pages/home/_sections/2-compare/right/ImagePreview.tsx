@@ -4,8 +4,8 @@ import Image from '../../../../../components/Image';
 
 export default function ImagePreview () {
   return (
-    <AspectRatio ratio={1284 / 1273}>
-      <Image src={require('./analyze.png').default} style={{width: '100%', height: '100%'}} />
+    <AspectRatio ratio={1292 / 1073}>
+      <Image src={require('./homepage-repository.png').default} style={{width: '100%', height: '100%'}} />
     </AspectRatio>
   )
 }
