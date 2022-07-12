@@ -9,17 +9,10 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { ReactNode } from 'react';
 import DebugDialog from '../../../components/DebugDialog/DebugDialog';
 import { AsyncData, RemoteData } from '../../../components/RemoteCharts/hook';
+import { useDebugDialog } from "../../../components/DebugDialog";
 
 export function withRemote<T>({ data, loading, error }: AsyncData<RemoteData<any, T>>, render: (data: RemoteData<any, T>) => ReactNode, fallback?: () => ReactNode) {
-  const [showDebugModel, setShowDebugModel] = useState(false);
-
-  const handleShowDebugModel = useCallback(() => {
-    setShowDebugModel(true);
-  }, [])
-
-  const handleCloseDebugModel = useCallback(() => {
-    setShowDebugModel(false);
-  }, [])
+  const { dialog: debugDialog, button: debugButton } = useDebugDialog(data)
 
   const errorMessage = useMemo(() => {
     if (!error) {
@@ -40,10 +33,10 @@ export function withRemote<T>({ data, loading, error }: AsyncData<RemoteData<any
     return (
       <>
         <Box display='flex' justifyContent='flex-end'>
-          <Button size='small' onClick={handleShowDebugModel} endIcon={<CodeIcon />}>SHOW SQL</Button>
+          {debugButton}
         </Box>
         {render(data)}
-        <DebugDialog sql={data.sql} query={data.query} params={data.params} open={showDebugModel} onClose={handleCloseDebugModel} />
+        {debugDialog}
       </>
     )
   } else if (fallback) {

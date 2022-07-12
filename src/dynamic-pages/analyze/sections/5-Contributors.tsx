@@ -1,4 +1,3 @@
-import CodeIcon from '@mui/icons-material/Code';
 import {
   FormControlLabel,
   FormControl,
@@ -6,11 +5,9 @@ import {
   ListItemAvatar,
   Switch,
   useEventCallback,
-  InputLabel,
 } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import List from '@mui/material/List';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
@@ -23,13 +20,13 @@ import Badge from '@mui/material/Badge';
 import React, { ForwardedRef, forwardRef, useCallback, useMemo, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useAnalyzeContext } from '../charts/context';
-import DebugDialog from '../../../components/DebugDialog/DebugDialog';
 import { RemoteData, useRemoteData } from '../../../components/RemoteCharts/hook';
 import useVisibility from '../../../hooks/visibility';
 import Section from '../Section';
 import { H2, P2 } from '../typography';
 import { DateTime } from "luxon";
 import Tooltip from "@mui/material/Tooltip";
+import { useDebugDialog } from "../../../components/DebugDialog";
 
 type ChangedEvents = { last_month_events: number, last_2nd_month_events: number, changes: number }
 
@@ -232,15 +229,7 @@ export const Contributors = forwardRef(function ({}, ref: ForwardedRef<HTMLEleme
   const [excludeBots, setExcludeBots] = useState(true);
   const [list, data] = useData(repoId, descriptor.key, excludeBots, visible && inView);
 
-  const [showDebugModel, setShowDebugModel] = useState(false);
-
-  const handleShowDebugModel = useEventCallback(() => {
-    setShowDebugModel(true);
-  })
-
-  const handleCloseDebugModel = useEventCallback(() => {
-    setShowDebugModel(false);
-  })
+  const { dialog: debugDialog, button: debugButton } = useDebugDialog(data)
 
   const handleChangeDescriptor = useEventCallback((event: SelectChangeEvent<Descriptor<any>>) => {
     setDescriptor(descriptors.find(descriptor => descriptor.key === event.target.value));
@@ -292,10 +281,10 @@ export const Contributors = forwardRef(function ({}, ref: ForwardedRef<HTMLEleme
   return (
     <Section id="contributors" ref={ref}>
       <H2>Contributor Rankings - {lastMonth}</H2>
-      <P2>Check the activity of contributors in the repository 【 LAST MONTH 】 here, including push and commit events, issue open/close/comment events, code review comments/PRs/submits. 
-      <br />
-      ✨ Tips: You can view the ranking of specific event in the filter box with two dimensions: the total number of events and the proportion of events that account for all the same events in the repository.
-      <br />
+      <P2>Check the activity of contributors in the repository 【 LAST MONTH 】 here, including push and commit events, issue open/close/comment events, code review comments/PRs/submits.
+        <br />
+        ✨ Tips: You can view the ranking of specific event in the filter box with two dimensions: the total number of events and the proportion of events that account for all the same events in the repository.
+        <br />
       </P2>
 
       <Stack direction='row' justifyContent='space-between' flexWrap='wrap' gap={2}>
@@ -303,10 +292,10 @@ export const Contributors = forwardRef(function ({}, ref: ForwardedRef<HTMLEleme
         <Spacer />
         {switchExcludeBots}
         {toggleType}
-        <Button size='small' onClick={handleShowDebugModel} endIcon={<CodeIcon />}>SHOW SQL</Button>
+        {debugButton}
       </Stack>
 
-      {data ? <DebugDialog sql={data.sql} query={data.query} params={data.params} open={showDebugModel} onClose={handleCloseDebugModel} /> : undefined}
+      {debugDialog}
 
       <BarContainer ref={inViewRef}>
         {list.map((item, index, all) => descriptor.render(item, all[0], { percentage: type === 'percentage', lastMonth }))}
