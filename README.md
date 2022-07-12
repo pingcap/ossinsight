@@ -35,9 +35,9 @@ OSS Insight analyze billions of GitHub events and get insights from them, also p
 * [More](https://ossinsight.io/blog) ...
 
 ### GitHub Collections Analysis
-* [Collection: Static Site Generator](https://ossinsight.io/collections/static-site-generator)
-* [Collection: Google Analytics Alternative](https://ossinsight.io/collections/google-analytics-alternative)
-* [Collection: CSS Framework](https://ossinsight.io/collections/css-framework)
+* [Collection: Web Framework](https://ossinsight.io/collections/web-framework)
+* [Collection: Artificial Intelligence](https://ossinsight.io/collections/artificial-intelligence)
+* [Collection: Web3](https://ossinsight.io/collections/web3)
 * [More](https://ossinsight.io/collections/open-source-database) ...
 
 If you want to analyze more, please [contact us](https://ossinsight.io/about/#contact) ✉️
@@ -71,8 +71,8 @@ Looks forward to your PRs！
   * star, behaviour, most used lLanguages, contribution trends
   * code（commits/pull requests/pull request size/code line changes）, code reviews, issues
 * Advanced:
-  * Contribution time distribution for all kind of contribution activities.
-  * Monthly stats about contribution activities in all public repositories.
+  * contribution time distribution for all kind of contribution activities
+  * monthly stats about contribution activities in all public repositories
   
 Examples:
 * [Ovilia](https://ossinsight.io/analyze/Ovilia)
