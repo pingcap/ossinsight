@@ -125,6 +125,13 @@ function renderBasic(item: Result & ChangedEvents & { is_new_contributor?: 0 | 1
   }
   return (
     <Tooltip
+      componentsProps={{
+        tooltip: {
+          sx: {
+            backgroundColor: '#3c3c3c',
+          }
+        }
+      }}
       title={(
         <Box>
           <Box>
