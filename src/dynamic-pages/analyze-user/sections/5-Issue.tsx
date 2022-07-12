@@ -38,7 +38,7 @@ const IssueHistory = ({ userId, show }: ModuleProps) => {
   const chart = useRef<EChartsType | undefined>()
 
   return (
-    <ChartWrapper title="Issue History" chart={chart}>
+    <ChartWrapper title="Issue History" chart={chart} remoteData={data}>
       <EChartsx init={{ height: 400, renderer: 'canvas' }} theme="dark" ref={chart}>
         <Once>
           <Common />

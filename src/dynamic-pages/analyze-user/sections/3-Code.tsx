@@ -57,7 +57,7 @@ const CodeSubmitHistory = ({ userId, show }: ModuleProps) => {
   const chart = useRef<EChartsType | undefined>()
 
   return (
-    <ChartWrapper title="Code Submit History" chart={chart}>
+    <ChartWrapper title="Code Submit History" chart={chart} remoteData={data}>
       <EChartsx init={{ height: 400, renderer: 'canvas' }} theme="dark" ref={chart}>
         <Once>
           <Common />
@@ -78,7 +78,7 @@ const PullRequestHistory = ({ userId, show }: ModuleProps) => {
   const chart = useRef<EChartsType | undefined>()
 
   return (
-    <ChartWrapper title="Pull Request History" chart={chart}>
+    <ChartWrapper title="Pull Request History" chart={chart} remoteData={data}>
       <EChartsx init={{ height: 400, renderer: 'canvas' }} theme="dark" ref={chart}>
         <Once>
           <Common />
@@ -106,7 +106,7 @@ const PullRequestSize = ({ userId, show }: ModuleProps) => {
   const chart = useRef<EChartsType | undefined>()
 
   return (
-    <ChartWrapper title="Pull Request Size" chart={chart}>
+    <ChartWrapper title="Pull Request Size" chart={chart} remoteData={data}>
       <EChartsx init={{ height: 400, renderer: 'canvas' }} theme="dark" ref={chart}>
         <Once>
           <Common />
@@ -138,7 +138,7 @@ const LineOfCodes = ({ userId, show }: ModuleProps) => {
   const chart = useRef<EChartsType | undefined>()
 
   return (
-    <ChartWrapper title="Lines of changes in PRs" chart={chart}>
+    <ChartWrapper title="Lines of changes in PRs" chart={chart} remoteData={data}>
       <EChartsx init={{ height: 400, renderer: 'canvas' }} theme="dark" ref={chart}>
         <Once>
           <Common />

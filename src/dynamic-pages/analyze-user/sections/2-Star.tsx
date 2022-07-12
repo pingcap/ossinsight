@@ -48,7 +48,7 @@ const StarChart = ({ userId, show }: ModuleProps) => {
   const chart = useRef<EChartsType | undefined>()
 
   return (
-    <ChartWrapper title="Star History" chart={chart}>
+    <ChartWrapper title="Star History" chart={chart} remoteData={data}>
       <EChartsx init={{ height: 400, renderer: 'canvas' }} theme="dark" ref={chart}>
         <Once>
           <Common />

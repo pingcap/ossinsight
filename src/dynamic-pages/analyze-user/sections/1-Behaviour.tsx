@@ -63,7 +63,7 @@ const AllContributions = ({ userId, show }: ModuleProps) => {
   }
 
   return (
-    <ChartWrapper title="Type of total contributions" chart={chart} repo>
+    <ChartWrapper title="Type of total contributions" chart={chart} repo remoteData={data}>
       <EChartsx init={{ height: 400, renderer: 'canvas' }} theme="dark" ref={chart}>
         <Once dependencies={[repos]}>
           <Common hideZoom scrollY={10} />
@@ -116,7 +116,7 @@ const ContributionTime = ({ userId, show }: ModuleProps) => {
   }, [type, zone]);
 
   return (
-    <ChartWrapper title={title}>
+    <ChartWrapper title={title} remoteData={data}>
       <Box mt={4} mx="auto" width="max-content">
         <Box mb={2} width="max-content">
           <FormControl variant="standard" size="small" sx={{ minWidth: 120 }}>

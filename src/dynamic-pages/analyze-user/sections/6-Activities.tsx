@@ -79,7 +79,7 @@ const ActivityChart = ({ userId, show }: ModuleProps) => {
   const chart = useRef<EChartsType | undefined>()
 
   return (
-    <ChartWrapper title={title} chart={chart} repo>
+    <ChartWrapper title={title} chart={chart} repo remoteData={data}>
       <Box mb={2}>
         <FormControl variant="standard" size="small" sx={{ minWidth: 120 }}>
           <InputLabel id="event-type-selector-label">Contribution type</InputLabel>

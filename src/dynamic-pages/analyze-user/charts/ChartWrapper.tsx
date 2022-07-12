@@ -3,6 +3,8 @@ import Box from "@mui/material/Box";
 import { EChartsType } from "echarts/core";
 import { useAnalyzeUserContext } from "./context";
 import { useHistory } from "@docusaurus/router";
+import { RemoteData } from "../../../components/RemoteCharts/hook";
+import { useDebugDialog } from "../../../components/DebugDialog";
 
 export interface ChartWrapperProps {
   title?: string
@@ -11,6 +13,7 @@ export interface ChartWrapperProps {
   children: ReactNode
   chart?: RefObject<EChartsType>
   repo?: boolean
+  remoteData?: RemoteData<any, any>
 }
 
 export interface ChartWrapperContextProps {
@@ -19,9 +22,11 @@ export interface ChartWrapperContextProps {
   href?: string
 }
 
-function ChartWrapper ({ title, description, href, chart, repo, children }: ChartWrapperProps) {
+function ChartWrapper ({ title, description, href, chart, repo, remoteData, children }: ChartWrapperProps) {
   const { userId } = useAnalyzeUserContext()
   const history = useHistory()
+
+  const { dialog, button } = useDebugDialog(remoteData)
 
   useEffect(() => {
     chart?.current?.dispatchAction({
@@ -58,7 +63,11 @@ function ChartWrapper ({ title, description, href, chart, repo, children }: Char
   return (
     <Box sx={{ mb: 4 }}>
       <ChartWrapperContext.Provider value={{title, description, href}}>
+        <Box display='flex' justifyContent='flex-end'>
+          {button}
+        </Box>
         {children}
+        {dialog}
       </ChartWrapperContext.Provider>
     </Box>
   )
