@@ -4,7 +4,7 @@ import SubtitleLine from './SubtitleLine';
 import Tags from './Tags';
 import TitleLine from './TitleLine';
 import Button from "@mui/material/Button";
-import Link from '@mui/material/Link';
+import Link from "../../../../../components/Link";
 
 export default function Left() {
   return (
@@ -13,8 +13,8 @@ export default function Left() {
       <SubtitleLine />
       <Tags />
       <Button sx={{fontSize: 16, fontWeight: 'bold', verticalAlign: 'baseline', textDecoration: 'underline', marginTop:6}} component={Link} href='/collections/open-source-database'>
-            🔍 Find more popular collections
-          </Button>
+        🔍 Find more popular collections
+      </Button>
     </Item>
   );
 }
