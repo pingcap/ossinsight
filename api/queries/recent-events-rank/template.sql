@@ -138,7 +138,7 @@ WHERE
     AND actor_login NOT IN (SELECT login FROM blacklist_users)
     AND repo_name NOT IN (SELECT name FROM blacklist_repos)
     AND type IN ('WatchEvent', 'PullRequestEvent', 'IssuesEvent', 'IssueCommentEvent', 'PullRequestReviewCommentEvent', 'CommitCommentEvent')
-GROUP BY gh.repo_name
+GROUP BY gh.repo_id
 ORDER BY history_events DESC
 LIMIT 20
 ;
