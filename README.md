@@ -5,13 +5,15 @@
 </a>
 
 <h3 align="center">
-  <b><a href="https://ossinsight.io/collections/open-source-database">Ranking!</a></b>
+  <b><a href="https://ossinsight.io/collections/open-source-database">Rankings</a></b>
   •
-  <b><a href="https://ossinsight.io/collections/open-source-database/trends/">Trends</a></b>
+  <b><a href="https://ossinsight.io/analyze/Ovilia">Developer Analytics</a></b>
   •
-  <a href="https://ossinsight.io/analyze/pingcap/tidb">Analyze Single Repo</a>
+  <a href="https://ossinsight.io/analyze/pingcap/tidb">Repository Analytics</a>
   •
-  <a href="https://ossinsight.io/analyze/vuejs/vue?vs=facebook%2Freact">Compare Repos</a>
+  <a href="https://ossinsight.io/collections/open-source-database">Collections</a>
+  •
+  <a href="https://ossinsight.io/workshop/overview">Workshop</a>
   •
   <a href="https://ossinsight.io/blog">Blogs</a>
   •
@@ -19,10 +21,10 @@
 </h3>
 
 <p align="center">
-OSS Insight analyze billions of GitHub events and get insights from them, also provide a set of tool which can analyze a single repo, compare any two open source software hosted on GitHub.
+OSS Insight analyze billions of GitHub events and get insights from them, also provide a set of tool which can analyze a single repository/developer, compare any two open source software hosted on GitHub.
 </p>
 
-## Feature 1: Preanalysis of some famouse fields of technology 👁️
+## Feature 1: Preanalysis of some famous fields of technology 👁️
 
 ### Deep Insight
 * [Deep Insight Into Open Source Databases](https://ossinsight.io/blog/deep-insight-into-open-source-databases)
@@ -33,9 +35,9 @@ OSS Insight analyze billions of GitHub events and get insights from them, also p
 * [More](https://ossinsight.io/blog) ...
 
 ### GitHub Collections Analysis
-* [Collection: Static Site Generator](https://ossinsight.io/collections/static-site-generator)
-* [Collection: Google Analytics Alternative](https://ossinsight.io/collections/google-analytics-alternative)
-* [Collection: CSS Framework](https://ossinsight.io/collections/css-framework)
+* [Collection: Web Framework](https://ossinsight.io/collections/web-framework)
+* [Collection: Artificial Intelligence](https://ossinsight.io/collections/artificial-intelligence)
+* [Collection: Web3](https://ossinsight.io/collections/web3)
 * [More](https://ossinsight.io/collections/open-source-database) ...
 
 If you want to analyze more, please [contact us](https://ossinsight.io/about/#contact) ✉️
@@ -63,7 +65,23 @@ items:
 
 Looks forward to your PRs！
 
-## Feature 2: Analyze Single Repo
+## Feature 2: Developer Analytics
+  
+* Basic:
+  * star, behaviour, most used lLanguages, contribution trends
+  * code（commits/pull requests/pull request size/code line changes）, code reviews, issues
+* Advanced:
+  * contribution time distribution for all kind of contribution activities
+  * monthly stats about contribution activities in all public repositories
+  
+Examples:
+* [Ovilia](https://ossinsight.io/analyze/Ovilia)
+* [midudev](https://ossinsight.io/analyze/midudev)
+* [samswag](https://ossinsight.io/analyze/samswag)
+* [mheap](https://ossinsight.io/analyze/mheap)
+* [levxyca](https://ossinsight.io/analyze/levxyca)
+
+## Feature 3: Repository Analytics
   
 * Basic:
   * star, fork, issues, commits, pull requests, contributors, programming languages, lines of code modified
@@ -81,9 +99,9 @@ Examples:
 * [Ant Design](https://ossinsight.io/analyze/ant-design/ant-design)
 * [Chaos Mesh](https://ossinsight.io/analyze/chaos-mesh/chaos-mesh)
 
-## Feature 3: Compare Projects 🔨
+## Feature 4: Compare Projects 🔨
   
-Compare repo metrics metioned above in **Single Repo Analysis**
+Compare repo metrics mentioned above in **Repository Analytics**
 
 Examples:
 * [Compare Vue and React](https://ossinsight.io/analyze/vuejs/vue?vs=facebook/react)
