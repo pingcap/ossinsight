@@ -27,7 +27,7 @@ export const data: Data[] = [
       content: 'Events',
       url: 'https://docs.github.com/en/developers/webhooks-and-events/events/github-event-types'
     },
-    tooltip: 'All events in recent 1 hour',
+    tooltip: 'Total events in last hour/day/week/month',
     key: 'history_events'
   },
   {
