@@ -50,6 +50,7 @@ items:
   - prefecthq/prefect
   - dagster-io/dagster
   - meltano/meltano
+  - kestra-io/kestra
   
   # Data testing
   - great-expectations/great_expectations
