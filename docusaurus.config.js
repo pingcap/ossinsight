@@ -202,10 +202,9 @@ const config = {
         isCloseable: true,
       },
       navbar: {
-        title: 'OSS Insight',
         logo: {
           alt: 'OSS Insight Logo',
-          src: 'img/cloud-o.png',
+          src: 'img/ossinsight-logo.svg',
         },
         style: 'dark',
         items: [
