@@ -1,3 +1,8 @@
+---
+title: About
+description: We are a powerful insight tool that can help you analyze any GitHub repository/developer. And you can get insights with the monthly and historical rankings as well.
+---
+
 <h1 align="center"> About OSS Insight</h1>
 
 OSS Insight, short for open source software insights, is a powerful insight tool that can help you analyze in depth any single GitHub repository, compare any two repositories using the same metrics, and provide comprehensive, valuable, and trending open source insights. 
