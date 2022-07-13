@@ -85,7 +85,7 @@ const AllContributions = ({ userId, show }: ModuleProps) => {
   );
 };
 
-const eventTypes = ['pushes', 'issues', 'issue_comments', 'pull_requests', 'reviews', 'review_comments'];
+const eventTypes = ['all', 'pushes', 'issues', 'issue_comments', 'pull_requests', 'reviews', 'review_comments'];
 const timezones = [];
 
 const formatZone = (zone: number) => `UTC ${zone < 0 ? zone : `+${zone}`}`;
@@ -96,7 +96,7 @@ for (let i = -11; i <= 14; i++) {
 
 const ContributionTime = ({ userId, show }: ModuleProps) => {
   const { data } = usePersonalData('personal-contribution-time-distribution', userId, show);
-  const [type, setType] = useState('pushes');
+  const [type, setType] = useState('all');
   const [zone, setZone] = useState(0);
 
   const handleEventChange = useEventCallback((e: SelectChangeEvent) => {
