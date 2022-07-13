@@ -1,5 +1,7 @@
 ---
 title: SaaS Insight for Building a Real-time CRM Application
+description: This article describes how to building a real-time CRM application in a better way. Includes the potential database solutions.
+image: ./thumbnail.png
 date: 2022-05-01
 authors: [ilovesoup]
 tags: [tidb]
