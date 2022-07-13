@@ -19,6 +19,7 @@ import Box from "@mui/material/Box";
 import {EChartsContext} from "../ECharts";
 import EChartsReact from "echarts-for-react";
 import ShareDialog from '../ShareDialog';
+import { useDebugDialog } from "../DebugDialog";
 
 type Indexes<Q extends keyof Queries> = {
   categoryIndex: keyof Queries[Q]['data']
@@ -49,17 +50,9 @@ type QueryComponentProps<Q extends keyof Queries> = Queries[Q]["params"] & {
 // }
 
 export function renderChart (query, chart, {error, data}: AsyncData<RemoteData<any, any>>, clear = false, sharable = true) {
-  const [showDebugModel, setShowDebugModel] = useState(false);
+  const { dialog: debugDialog, button: debugButton } = useDebugDialog(data)
   const [showShareModel, setShowShareModel] = useState(false);
   const echartsRef = useRef<EChartsReact>()
-
-  const handleShowDebugModel = () => {
-    setShowDebugModel(true);
-  }
-
-  const handleCloseDebugModel = () => {
-    setShowDebugModel(false);
-  }
 
   const handleShowShareModel = () => {
     setShowShareModel(true);
@@ -80,7 +73,7 @@ export function renderChart (query, chart, {error, data}: AsyncData<RemoteData<a
       <ChartWithSql sql={data?.sql}>
         <div style={{position: 'relative'}}>
           <Box display='flex' justifyContent='flex-end'>
-            <Button size='small' onClick={handleShowDebugModel} endIcon={<CodeIcon />}>SHOW SQL</Button>
+            {debugButton}
           </Box>
           <EChartsContext.Provider value={{ echartsRef }}>
             {chart}
@@ -93,7 +86,8 @@ export function renderChart (query, chart, {error, data}: AsyncData<RemoteData<a
                 <ShareDialog open={showShareModel} onClose={handleCloseShareModel} />
               </>
             ) : false}
-            <DebugDialog sql={data?.sql} query={query} params={data?.params} open={showDebugModel} onClose={handleCloseDebugModel} />
+
+            {debugDialog}
           </EChartsContext.Provider>
         </div>
       </ChartWithSql>

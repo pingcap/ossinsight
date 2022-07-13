@@ -14,6 +14,7 @@ import ECharts, { EChartsContext, EChartsProps } from '../../../components/EChar
 import { DangerousCtx, dangerousSetCtx } from './options/_danger';
 import useDimensions from 'react-cool-dimensions';
 import { debounce } from '@mui/material';
+import { useDebugDialog } from "../../../components/DebugDialog";
 
 export function withChart<T = unknown, P = {}>(useOption: (props: DangerousCtx<T>, chartProps?: P) => EChartsOption, defaultProps: Partial<Omit<EChartsProps, 'option'>> = {}) {
   return (props: Omit<EChartsProps, 'option'> & { spec?: P }) => {
@@ -40,17 +41,9 @@ export function withChart<T = unknown, P = {}>(useOption: (props: DangerousCtx<T
       return unobserve
     }, [])
 
-    const [showDebugModel, setShowDebugModel] = useState(false);
+    const { dialog: debugDialog, button: debugButton } = useDebugDialog(chartContext.data.data)
     const [showShareModel, setShowShareModel] = useState(false);
     const echartsRef = useRef<EChartsReact>()
-
-    const handleShowDebugModel = useCallback(() => {
-      setShowDebugModel(true);
-    }, [])
-
-    const handleCloseDebugModel = useCallback(() => {
-      setShowDebugModel(false);
-    }, [])
 
     const handleShowShareModel = useCallback(() => {
       setShowShareModel(true);
@@ -97,7 +90,7 @@ export function withChart<T = unknown, P = {}>(useOption: (props: DangerousCtx<T
     return (
       <div style={{ position: 'relative' }}>
         <Box display='flex' justifyContent='flex-end'>
-          <Button size='small' onClick={handleShowDebugModel} endIcon={<CodeIcon />}>SHOW SQL</Button>
+          {debugButton}
         </Box>
         <CommonChartContext.Provider value={{shareInfo}}>
           <EChartsContext.Provider value={{echartsRef}}>
@@ -110,7 +103,7 @@ export function withChart<T = unknown, P = {}>(useOption: (props: DangerousCtx<T
               lazyUpdate
               ref={echartsRef}
             />
-            <DebugDialog query={chartContext.query} sql={chartContext.data.data?.sql} params={chartContext.data.data?.params} open={showDebugModel} onClose={handleCloseDebugModel} />
+            {debugDialog}
             <ShareDialog open={showShareModel} onClose={handleCloseShareModel} />
           </EChartsContext.Provider>
         </CommonChartContext.Provider>
