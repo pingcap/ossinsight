@@ -47,7 +47,7 @@ function CollectionsPageLayout({ title: propTitle, description, keywords, childr
   const title = useMemo(() => propTitle(collection), [propTitle, collection])
 
   return (
-    <CustomPage title={title} description={description} keywords={keywords}>
+    <CustomPage title={title} description={description} keywords={keywords} image={require('./thumbnail.png').default}>
       <CollectionsContext.Provider value={{ collection }}>
         <div className={styles.collectionsPage}>
 
