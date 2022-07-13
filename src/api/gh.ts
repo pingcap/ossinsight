@@ -14,7 +14,11 @@ export const useUser = (login: string | undefined): SWRResponse<UserInfo> => {
   return useSWR<UserInfo>(login ? [login, 'gh:user']: undefined, {
     fetcher: async () => {
       const { data } = await query<UserInfo>('get-user-by-login', { login })
-      return data[0]
+      if (data.length === 1) {
+        return data[0]
+      } else {
+        throw new Error(`${data.length} user found.`)
+      }
     },
     revalidateOnFocus: false,
     revalidateOnReconnect: false
