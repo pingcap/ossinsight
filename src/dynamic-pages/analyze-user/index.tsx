@@ -36,7 +36,7 @@ const Page = () => {
   const isSmall = useMediaQuery<Theme>('(max-width:600px)');
   const sideWidth = isSmall ? undefined : '160px'
 
-  if (error && typeof userId === 'undefined') {
+  if (error) {
     return <Redirect to='/404' />
   }
 
