@@ -1,5 +1,7 @@
 ---
 title: Data Preparation for Analytics
+description: In this section, we will explain step by step how we process the massive data archived by GH Archive which up to 4.7 billion rows.
+image: ./thumbnail.png
 date: 2022-03-01
 authors: [hooopo]
 tags: [tidbcloud]
