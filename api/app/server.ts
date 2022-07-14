@@ -73,7 +73,7 @@ export default async function server(router: Router<DefaultState, ContextExtends
   router.get('/q/:query', measureRequests({ urlLabel: 'path' }), async ctx => {
     try {
       const query = new Query(ctx.params.query, cacheBuilder, queryExecutor, ghEventService, collectionService, userService)
-      const res = await query.run(ctx.query, false, null, ctx.request.ip)
+      const res = await query.run(ctx.query, false, null, ctx.request.ip, true)
       ctx.response.status = 200
       ctx.response.body = res
     } catch (e) {
@@ -139,49 +139,6 @@ export default async function server(router: Router<DefaultState, ContextExtends
       ctx.response.body = e?.response?.data ?? e?.message ?? String(e)
     }
   })
-
-  router.get('/qc', measureRequests({ urlLabel: 'path' }), async ctx => {
-    const conn = await queryExecutor.getConnection();
-
-    // If the queryNames parameter is provided, the query that needs to be queried is filtered.
-    let queryNames = COMPARE_QUERIES;
-    const needsQueryNames = ctx.query.queryNames;
-    if (Array.isArray(needsQueryNames)) {
-      queryNames = COMPARE_QUERIES.filter((queryName) => {
-        return needsQueryNames.find((needQueryName) => {
-          return needQueryName === queryName;
-        }) !== undefined
-      })
-    }
-
-    try {
-      const resultMap: Record<string, any> = {};
-
-      for (let queryName of queryNames) {
-        const query = new Query(queryName, cacheBuilder, queryExecutor, ghEventService, collectionService, userService)
-
-        try {
-          resultMap[queryName] = await query.run(ctx.query, false, conn)
-        } catch (err) {
-          ctx.logger.error('Failed to query for %s: ', queryName, err)
-          resultMap[queryName] = {
-            msg: `Failed to query for ${queryName}.`,
-            rawSQL: (err as SQLExecuteError).sql
-          }
-        }
-      }
-
-      ctx.response.status = 200
-      ctx.response.body = resultMap
-    } catch (e) {
-      ctx.logger.error('Failed to request %s: ', ctx.request.originalUrl, e)
-      ctx.response.status = 500
-      ctx.response.body = e
-    } finally {
-      conn.release();
-    }
-  })
-
 
   router.get('/gh/repo/:owner/:repo', measureRequests({ urlLabel: 'route' }), async ctx => {
     const { owner, repo } = ctx.params
