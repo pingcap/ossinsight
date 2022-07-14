@@ -156,6 +156,7 @@ const config = {
         docs: false,
         blog: {
           blogTitle: 'Blog',
+          blogDescription: 'Helping dev teams adopt OSS technologies and practices. Written by software engineers and community analysts.',
           blogSidebarTitle: 'All Blog Posts',
           blogSidebarCount: 'ALL',
           postsPerPage: 10,

@@ -39,10 +39,10 @@ function NotFound() {
 
   return (
     <Layout
-      title={display ? translate({
-        id: 'theme.NotFound.title',
-        message: 'Page Not Found',
-      }) : 'Loading...'}>
+      title={display ? undefined : 'Loading...'}
+      description='The comprehensive Open Source Software insight tool by analyzing massive events from GitHub, powered by TiDB, the best insight building database of data agility.'
+      image='/img/screenshots/homepage.png'
+    >
       {display ? renderNotFound() : renderRedirect()}
     </Layout>
   );
