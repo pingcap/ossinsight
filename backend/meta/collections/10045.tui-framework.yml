@@ -17,3 +17,6 @@ items:
   - p-ranav/indicators
   - s0md3v/huepy
   - tqdm/tqdm
+  - rivo/tview
+  - mum4k/termdash
+  - piotrmurach/tty
