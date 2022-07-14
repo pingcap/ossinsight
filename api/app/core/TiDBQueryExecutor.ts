@@ -1,4 +1,4 @@
-import {createPool, FieldPacket, OkPacket, Pool, PoolConnection, PoolOptions, ResultSetHeader, RowDataPacket} from 'mysql2'
+import {createPool, FieldPacket, OkPacket, Pool, PoolConnection, PoolOptions, QueryOptions, ResultSetHeader, RowDataPacket} from 'mysql2'
 import consola, {Consola} from "consola";
 import {tidbQueryTimer, waitTidbConnectionTimer} from "../metrics";
 
@@ -26,21 +26,35 @@ export class TiDBQueryExecutor implements QueryExecutor {
     this.logger = consola.withTag('mysql')
   }
 
-  async execute(sql: string): Promise<Result> {
+  async execute(sql: string, limit: boolean = false): Promise<Result> {
     const connection = await this.getConnection();
     
     try {
-      return this.executeWithConn(connection, sql);
+      return this.executeWithConn(connection, sql, limit);
     } finally {
       connection.release();
     }
   }
 
-  async executeWithConn(connection: PoolConnection, sql: string): Promise<Result> {
+  async executeWithConn(connection: PoolConnection, sql: string, limit: boolean = false): Promise<Result> {
     return new Promise((resolve, reject) => {
-      this.logger.debug('Executing sql by connection<%d>\n %s', connection.threadId, sql)
+      this.logger.debug('Executing sql by connection<%d>\n %s', connection.threadId, sql);
+
+      let queryOption: QueryOptions = {
+        sql: sql
+      };
+
+      if (limit) {
+        connection.query('SET SESSION tidb_mem_quota_query = 1 << 30;', (err, rows, fields) => {
+          if (err) {
+            this.logger.warn('Failed to enable query limit: tidb_mem_quota_query = 1 << 30.', err);
+          }
+        });
+        queryOption.timeout = 120000;
+      }
+
       const end = tidbQueryTimer.startTimer()
-      connection.query(sql, (err, rows, fields) => {
+      connection.query(queryOption, (err, rows, fields) => {
         end()
 
         // FIXME: the type of `fields` in the callback function's definition is wrong.

@@ -3,7 +3,7 @@ import path from 'path'
 import {DateTime, Duration} from "luxon";
 import type { QuerySchema } from '../../params.schema'
 import {TiDBQueryExecutor, Result} from "./TiDBQueryExecutor";
-import Cache, {CachedData} from "./cache/Cache";
+import {CachedData} from "./cache/Cache";
 import consola from "consola";
 import {PoolConnection} from "mysql2";
 import {dataQueryTimer, measure, readConfigTimer, tidbQueryCounter} from "../metrics";
@@ -217,12 +217,13 @@ export default class Query {
   ready(): Promise<boolean> {
     return this.loadingPromise
   }
+
   async buildSql(params: Record<string, any>): Promise<string> {
     return buildParams(this.template!, this.queryDef!, params, this.ghEventService, this.collectionService, this.userService)
   }
 
   async run <T> (
-    params: Record<string, any>, refreshCache: boolean = false, conn?: PoolConnection | null, ip?: string
+    params: Record<string, any>, refreshCache: boolean = false, conn?: PoolConnection | null, ip?: string, limit = false
   ): Promise<CachedData<T>> {
     await this.ready();
 
@@ -243,9 +244,9 @@ export default class Query {
 
           let res: Result;
           if (conn) {
-            res = await this.executor.executeWithConn(conn, sql)
+            res = await this.executor.executeWithConn(conn, sql, limit)
           } else {
-            res = await this.executor.execute(sql)
+            res = await this.executor.execute(sql, limit)
           }
 
           const end = DateTime.now()
