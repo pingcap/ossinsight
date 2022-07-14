@@ -100,12 +100,12 @@ class FetchEvent
     pr_changed_files = event.dig("payload", "pull_request", "changed_files")
     pr_review_comments = event.dig("payload", "pull_request", "review_comments")
 
-    create_user_login = event.dig("payload", "comment", "user", "login") ||
+    creator_user_login = event.dig("payload", "comment", "user", "login") ||
       event.dig("payload", "review", "user", "login") ||
       event.dig("payload", "issue", "user", "login") ||
       event.dig("payload", "pull_request", "user", "login")
 
-    create_user_id = event.dig("payload", "comment", "user", "id") ||
+    creator_user_id = event.dig("payload", "comment", "user", "id") ||
       event.dig("payload", "review", "user", "id") ||
       event.dig("payload", "issue", "user", "id") ||
       event.dig("payload", "pull_request", "user", "id")
@@ -150,8 +150,8 @@ class FetchEvent
       "type" => event["type"],
       "created_at" => event["created_at"],
       "pr_or_issue_created_at" => pr_or_issue_created_at,
-      "create_user_id" => create_user_id,
-      "create_user_login" => create_user_id
+      "creator_user_id" => creator_user_id,
+      "creator_user_login" => creator_user_login
     }
   end
 end

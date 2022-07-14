@@ -112,7 +112,7 @@ class Importer
         event.dig("payload", "issue", "user", "login") ||
         event.dig("payload", "pull_request", "user", "login")
 
-      create_user_id = event.dig("payload", "comment", "user", "id") ||
+      creator_user_id = event.dig("payload", "comment", "user", "id") ||
         event.dig("payload", "review", "user", "id") ||
         event.dig("payload", "issue", "user", "id") ||
         event.dig("payload", "pull_request", "user", "id")
@@ -157,8 +157,8 @@ class Importer
         "type" => event["type"],
         "created_at" => event["created_at"],
         "pr_or_issue_created_at" => pr_or_issue_created_at,
-        "create_user_id" => create_user_id,
-        "create_user_login" => create_user_id
+        "creator_user_id" => creator_user_id,
+        "creator_user_login" => creator_user_login
       }
     end
   end
