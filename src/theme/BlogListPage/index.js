@@ -16,14 +16,14 @@ function BlogListPage(props) {
   const {
     siteConfig: {title: siteTitle},
   } = useDocusaurusContext();
-  const {blogDescription, blogTitle, blogImage, permalink} = metadata;
+  const {blogDescription, blogTitle, permalink} = metadata;
   const isBlogOnlyMode = permalink === '/';
   const title = isBlogOnlyMode ? siteTitle : blogTitle;
   return (
     <BlogLayout
       title={title}
       description={blogDescription}
-      image={blogImage}
+      image='img/blog-thumbnail.png'
       wrapperClassName={ThemeClassNames.wrapper.blogPages}
       pageClassName={ThemeClassNames.page.blogListPage}
       searchMetadata={{

@@ -157,7 +157,6 @@ const config = {
         blog: {
           blogTitle: 'Blog',
           blogDescription: 'Helping dev teams adopt OSS technologies and practices. Written by software engineers and community analysts.',
-          blogImage: 'img/blogs-thumbnail.png',
           blogSidebarTitle: 'All Blog Posts',
           blogSidebarCount: 'ALL',
           postsPerPage: 10,
