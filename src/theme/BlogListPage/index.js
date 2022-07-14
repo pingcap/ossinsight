@@ -23,7 +23,7 @@ function BlogListPage(props) {
     <BlogLayout
       title={title}
       description={blogDescription}
-      image='img/blog-thumbnail.png'
+      image='img/blogs-thumbnail.png'
       wrapperClassName={ThemeClassNames.wrapper.blogPages}
       pageClassName={ThemeClassNames.page.blogListPage}
       searchMetadata={{
