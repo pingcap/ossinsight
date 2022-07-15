@@ -1,13 +1,7 @@
-import Button from '@mui/material/Button';
 import * as React from "react";
-import {useRef, useState} from "react";
-import DebugDialog from '../DebugDialog/DebugDialog';
+import {useRef} from "react";
 import {AsyncData, RemoteData, useRemoteData} from "./hook";
-import Fab from '@mui/material/Fab';
 import Alert from "@mui/material/Alert";
-import ShareIcon from '@mui/icons-material/Share';
-import CodeIcon from '@mui/icons-material/Code';
-import CodeBlock from '@theme/CodeBlock';
 import {BarChart, ChartWithSql, DataGrid, DataGridColumn, HeatMapChart, PieChart} from '../BasicCharts';
 import {Queries} from "./queries";
 import {YoyChart} from "../SpecialCharts";
@@ -18,7 +12,6 @@ import DynamicLineChart from "../SpecialCharts/DynamicLineChart";
 import Box from "@mui/material/Box";
 import {EChartsContext} from "../ECharts";
 import EChartsReact from "echarts-for-react";
-import ShareDialog from '../ShareDialog';
 import { useDebugDialog } from "../DebugDialog";
 
 type Indexes<Q extends keyof Queries> = {
@@ -51,16 +44,7 @@ type QueryComponentProps<Q extends keyof Queries> = Queries[Q]["params"] & {
 
 export function renderChart (query, chart, {error, data}: AsyncData<RemoteData<any, any>>, clear = false, sharable = true) {
   const { dialog: debugDialog, button: debugButton } = useDebugDialog(data)
-  const [showShareModel, setShowShareModel] = useState(false);
   const echartsRef = useRef<EChartsReact>()
-
-  const handleShowShareModel = () => {
-    setShowShareModel(true);
-  }
-
-  const handleCloseShareModel = () => {
-    setShowShareModel(false);
-  }
 
   if (error) {
     return <Alert severity='error'>Request failed ${(error as any)?.message ?? ''}</Alert>
@@ -77,16 +61,6 @@ export function renderChart (query, chart, {error, data}: AsyncData<RemoteData<a
           </Box>
           <EChartsContext.Provider value={{ echartsRef }}>
             {chart}
-            {sharable ? (
-              <>
-                <Fab size='small' sx={{position: 'absolute', right: 24, bottom: 24, zIndex: 'var(--ifm-z-index-fixed-mui)'}}
-                     onClick={handleShowShareModel} disabled={!data}>
-                  <ShareIcon />
-                </Fab>
-                <ShareDialog open={showShareModel} onClose={handleCloseShareModel} />
-              </>
-            ) : false}
-
             {debugDialog}
           </EChartsContext.Provider>
         </div>
