@@ -11,14 +11,18 @@ const StyledAnimatedNumber = styled(AnimatedNumber)({
   marginRight: 4,
 })
 
-const TotalNumber = () => {
+export interface TotalNumberProps {
+  fontSize?: number
+}
+
+const TotalNumber = ({ fontSize = 24 }: TotalNumberProps) => {
   const visible = useVisibility()
   const { inView, ref } = useInView()
   const total = useTotalEvents(inView && visible)
 
   return (
     <div style={{ display: 'inline' }} ref={ref}>
-      <StyledAnimatedNumber value={total} hasComma duration={200} size={24} />
+      <StyledAnimatedNumber value={total} hasComma duration={200} size={fontSize} />
     </div>
   )
 }

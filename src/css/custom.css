@@ -236,3 +236,17 @@ html[data-theme='dark'] img[src$='#gh-light-mode-only'] {
 .clearTable tr:nth-child(2n) {
   background-color: unset;
 }
+
+.navbar__logo {
+  height: 44px;
+  margin-right: 0;
+}
+
+.navbar__brand {
+  margin-right: 0;
+}
+
+.navbar__toggle {
+  margin-right: 0;
+  margin-left: 8px;
+}

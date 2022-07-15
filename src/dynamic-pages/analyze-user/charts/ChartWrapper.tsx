@@ -1,4 +1,4 @@
-import React, { createContext, ReactNode, RefObject, useEffect } from "react";
+import React, { createContext, ReactNode, RefObject, useEffect, useLayoutEffect } from "react";
 import Box from "@mui/material/Box";
 import { EChartsType } from "echarts/core";
 import { useAnalyzeUserContext } from "./context";
@@ -29,6 +29,8 @@ function ChartWrapper ({ title, description, href, chart, repo, remoteData, chil
   const { dialog, button } = useDebugDialog(remoteData)
 
   useEffect(() => {
+    chart?.current?.resize({ width: 'auto' })
+
     chart?.current?.dispatchAction({
       type: 'dataZoom',
       start: 0,
