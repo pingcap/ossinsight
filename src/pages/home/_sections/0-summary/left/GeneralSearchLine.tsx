@@ -3,6 +3,7 @@ import React from 'react';
 import AnalyzeSelector from '../../../../../components/AnalyzeSelector';
 import GeneralSearch from '../../../../../components/GeneralSearch';
 import Typography from "@mui/material/Typography";
+import { aligns } from "../../../_components/typography";
 
 const GeneralSearchLine = () => {
   return (
@@ -15,7 +16,7 @@ const GeneralSearchLine = () => {
       >
         <GeneralSearch align='left' size='large' contrast />
       </Box>
-      <Typography variant='body2' mt={1} color='#7c7c7c'>
+      <Typography variant='body2' mt={1} color='#7c7c7c' sx={aligns.heading}>
         Quick insight on repository or developer from GitHub
         <br />
         to see status and rankings.
