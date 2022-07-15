@@ -12,7 +12,9 @@ export function worldMapGeo(): EChartsOption['geo'] {
       unproject: (point) => [point[0] * 180 / Math.PI, 2 * 180 / Math.PI * Math.atan(Math.exp(point[1])) - 90],
     },
     itemStyle: {
-      color: '#ccc'
+      color: '#ccc',
+      borderWidth: 1,
+      borderColor: "#ccc",
     }
   };
 }
