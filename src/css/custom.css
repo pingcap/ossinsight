@@ -242,6 +242,10 @@ html[data-theme='dark'] img[src$='#gh-light-mode-only'] {
   margin-right: 0;
 }
 
+.navbar__brand {
+  margin-right: 0;
+}
+
 .navbar__toggle {
   margin-right: 0;
   margin-left: 8px;
