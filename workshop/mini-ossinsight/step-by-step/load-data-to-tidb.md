@@ -30,7 +30,7 @@ To view the Grafana: http://127.0.0.1:3000
 
 Clone OSS Insight repo:
 ```bash
-git clone https://github.com/pingcap/ossinsight.git;
+git clone --depth=1 https://github.com/pingcap/ossinsight.git
 ```
 
 edit `ossinsight/backend/.env.local`, fill in `database uri` and `GitHub personal access token`(Learn how to [create a personal access token](/workshop/mini-ossinsight/step-by-step/find-data-source#creating-a-personal-access-token))
