@@ -65,7 +65,7 @@ docker-compose --version
 
 [Create GitHub personal access token](/workshop/mini-ossinsight/step-by-step/find-data-source#creating-a-personal-access-token) first, then clone repo:
 ```bash
-git clone https://github.com/pingcap/ossinsight.git;
+git clone --depth=1 https://github.com/pingcap/ossinsight.git;
 cd ossinsight/;
 export GITHUB_TOKEN=(personal access token);
 docker-compose pull;
