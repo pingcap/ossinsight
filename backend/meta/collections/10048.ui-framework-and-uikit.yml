@@ -1,0 +1,33 @@
+id: 10048
+name: UI Framework and UIkit
+items:
+  - twbs/bootstrap
+  - foundation/foundation-sites
+  - jgthms/bulma
+  - uikit/uikit
+  - semantic-org/semantic-ui
+  - Dogfalo/materialize
+  - pure-css/pure
+  - tailwindlabs/tailwindcss
+  - elastic/eui
+  - ant-design/ant-design
+  - mui/material-ui
+  - ElemeFE/element
+  - milligram/milligram
+  - nostalgic-css/NES.css
+  - thomaspark/bootswatch
+  - saadeghi/daisyui
+  - wenzhixin/bootstrap-table
+  - kognise/water.css
+  - olton/Metro-UI-CSS
+  - primer/css
+  - carbon-design-system/carbon
+  - muicss/mui
+  - tachyons-css/tachyons
+  - vuetifyjs/vuetify
+  - themesberg/flowbite
+  - mdbootstrap/Tailwind-Elements
+  - ben-rogerson/twin.macro
+  - react-bootstrap/react-bootstrap
+  - layui/layui
+  - vueComponent/ant-design-vue
