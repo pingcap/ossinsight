@@ -1,27 +1,4 @@
 class Partition < ActiveRecord::Migration[6.1]
-  #   PARTITION BY LIST COLUMNS(type) (
-  #   PARTITION push_event VALUES IN ('PushEvent'),
-  #   PARTITION create_event VALUES IN ('CreateEvent'),
-  #   PARTITION pull_request_event VALUES IN ('PullRequestEvent'),
-  #   PARTITION watch_event VALUES IN ('WatchEvent'),
-  #   PARTITION issue_comment_event VALUES IN ('IssueCommentEvent'),
-  #   PARTITION issues_event VALUES IN ('IssuesEvent'),
-  #   PARTITION delete_event VALUES IN ('DeleteEvent'),
-  #   PARTITION fork_event VALUES IN ('ForkEvent'),
-  #   PARTITION pull_request_review_comment_event VALUES IN ('PullRequestReviewCommentEvent'),
-  #   PARTITION pull_request_review_event VALUES IN ('PullRequestReviewEvent'),
-  #   PARTITION gollum_event VALUES IN ('GollumEvent'),
-  #   PARTITION release_event VALUES IN ('ReleaseEvent'),
-  #   PARTITION member_event VALUES IN ('MemberEvent'),
-  #   PARTITION commit_comment_event VALUES IN ('CommitCommentEvent'),
-  #   PARTITION public_event VALUES IN ('PublicEvent'),
-  #   PARTITION gist_event VALUES IN ('GistEvent'),
-  #   PARTITION follow_event VALUES IN ('FollowEvent'),
-  #   PARTITION event VALUES IN ('Event'),
-  #   PARTITION download_event VALUES IN ('DownloadEvent'),
-  #   PARTITION team_add_event VALUES IN ('TeamAddEvent'),
-  #   PARTITION fork_apply_event VALUES IN ('ForkApplyEvent')
-  # );
   def change
     create_sql = <<~SQL
       CREATE TABLE `github_events` (
@@ -81,6 +58,29 @@ class Partition < ActiveRecord::Migration[6.1]
         KEY `index_github_events_on_repo_name` (`repo_name`),
         KEY `index_github_events_on_type` (`type`)
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+      PARTITION BY LIST COLUMNS(type) (
+        PARTITION push_event VALUES IN ('PushEvent'),
+        PARTITION create_event VALUES IN ('CreateEvent'),
+        PARTITION pull_request_event VALUES IN ('PullRequestEvent'),
+        PARTITION watch_event VALUES IN ('WatchEvent'),
+        PARTITION issue_comment_event VALUES IN ('IssueCommentEvent'),
+        PARTITION issues_event VALUES IN ('IssuesEvent'),
+        PARTITION delete_event VALUES IN ('DeleteEvent'),
+        PARTITION fork_event VALUES IN ('ForkEvent'),
+        PARTITION pull_request_review_comment_event VALUES IN ('PullRequestReviewCommentEvent'),
+        PARTITION pull_request_review_event VALUES IN ('PullRequestReviewEvent'),
+        PARTITION gollum_event VALUES IN ('GollumEvent'),
+        PARTITION release_event VALUES IN ('ReleaseEvent'),
+        PARTITION member_event VALUES IN ('MemberEvent'),
+        PARTITION commit_comment_event VALUES IN ('CommitCommentEvent'),
+        PARTITION public_event VALUES IN ('PublicEvent'),
+        PARTITION gist_event VALUES IN ('GistEvent'),
+        PARTITION follow_event VALUES IN ('FollowEvent'),
+        PARTITION event VALUES IN ('Event'),
+        PARTITION download_event VALUES IN ('DownloadEvent'),
+        PARTITION team_add_event VALUES IN ('TeamAddEvent'),
+        PARTITION fork_apply_event VALUES IN ('ForkApplyEvent')
+      );
     SQL
     execute(create_sql)
   end

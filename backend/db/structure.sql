@@ -166,6 +166,9 @@ CREATE TABLE `github_events` (
   `event_year` int(11) DEFAULT NULL,
   `push_size` int(11) DEFAULT NULL,
   `push_distinct_size` int(11) DEFAULT NULL,
+  `creator_user_login` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `creator_user_id` bigint(20) DEFAULT NULL,
+  `pr_or_issue_created_at` datetime DEFAULT NULL,
   KEY `index_github_events_on_id` (`id`),
   KEY `index_github_events_on_action` (`action`),
   KEY `index_github_events_on_actor_id` (`actor_id`),
@@ -190,7 +193,29 @@ CREATE TABLE `github_events` (
   KEY `index_github_events_on_repo_id` (`repo_id`),
   KEY `index_github_events_on_repo_name` (`repo_name`),
   KEY `index_github_events_on_type` (`type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+PARTITION BY LIST COLUMNS(`type`)
+(PARTITION `push_event` VALUES IN ("PushEvent"),
+ PARTITION `create_event` VALUES IN ("CreateEvent"),
+ PARTITION `pull_request_event` VALUES IN ("PullRequestEvent"),
+ PARTITION `watch_event` VALUES IN ("WatchEvent"),
+ PARTITION `issue_comment_event` VALUES IN ("IssueCommentEvent"),
+ PARTITION `issues_event` VALUES IN ("IssuesEvent"),
+ PARTITION `delete_event` VALUES IN ("DeleteEvent"),
+ PARTITION `fork_event` VALUES IN ("ForkEvent"),
+ PARTITION `pull_request_review_comment_event` VALUES IN ("PullRequestReviewCommentEvent"),
+ PARTITION `pull_request_review_event` VALUES IN ("PullRequestReviewEvent"),
+ PARTITION `gollum_event` VALUES IN ("GollumEvent"),
+ PARTITION `release_event` VALUES IN ("ReleaseEvent"),
+ PARTITION `member_event` VALUES IN ("MemberEvent"),
+ PARTITION `commit_comment_event` VALUES IN ("CommitCommentEvent"),
+ PARTITION `public_event` VALUES IN ("PublicEvent"),
+ PARTITION `gist_event` VALUES IN ("GistEvent"),
+ PARTITION `follow_event` VALUES IN ("FollowEvent"),
+ PARTITION `event` VALUES IN ("Event"),
+ PARTITION `download_event` VALUES IN ("DownloadEvent"),
+ PARTITION `team_add_event` VALUES IN ("TeamAddEvent"),
+ PARTITION `fork_apply_event` VALUES IN ("ForkApplyEvent"));
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `import_logs`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -323,6 +348,7 @@ INSERT INTO `schema_migrations` (version) VALUES
 ('20220526174823'),
 ('20220613101057'),
 ('20220627072814'),
-('20220627081844');
+('20220627081844'),
+('20220711094940');
 
 

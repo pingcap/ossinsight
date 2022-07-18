@@ -100,6 +100,19 @@ class FetchEvent
     pr_changed_files = event.dig("payload", "pull_request", "changed_files")
     pr_review_comments = event.dig("payload", "pull_request", "review_comments")
 
+    creator_user_login = event.dig("payload", "comment", "user", "login") ||
+      event.dig("payload", "review", "user", "login") ||
+      event.dig("payload", "issue", "user", "login") ||
+      event.dig("payload", "pull_request", "user", "login")
+
+    creator_user_id = event.dig("payload", "comment", "user", "id") ||
+      event.dig("payload", "review", "user", "id") ||
+      event.dig("payload", "issue", "user", "id") ||
+      event.dig("payload", "pull_request", "user", "id")
+
+    pr_or_issue_created_at = event.dig("payload", "issue", "created_at") ||
+      event.dig("payload", "pull_request", "created_at")
+
 
     date = event["created_at"].match(/((\d{4})-\d{2})-\d{2}/)
     event_day = date[0]
@@ -135,7 +148,10 @@ class FetchEvent
       'push_distinct_size' => push_distinct_size,
       "id" => event["id"],
       "type" => event["type"],
-      "created_at" => event["created_at"]
+      "created_at" => event["created_at"],
+      "pr_or_issue_created_at" => pr_or_issue_created_at,
+      "creator_user_id" => creator_user_id,
+      "creator_user_login" => creator_user_login
     }
   end
 end

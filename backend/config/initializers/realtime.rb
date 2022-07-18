@@ -16,6 +16,7 @@ class Realtime
       begin
         FetchEvent.new(per_page, token).run
       rescue
+        ActiveRecord::Base.connection.reconnect!
         puts $!
       end
     end

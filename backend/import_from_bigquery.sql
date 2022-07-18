@@ -64,6 +64,30 @@ CREATE TEMP TABLE archive AS SELECT
       ELSE null
     END 
   as author_association,
+  CASE 
+      WHEN json_value(payload, '$.comment.user.login') is not null THEN json_value(payload, '$.comment.user.login')
+      WHEN json_value(payload, '$.review.user.login') is not null THEN json_value(payload, '$.review.user.login')
+      WHEN json_value(payload, '$.issue.user.login') is not null THEN json_value(payload, '$.issue.user.login')
+      WHEN json_value(payload, '$.pull_request.user.login') is not null THEN json_value(payload, '$.pull_request.user.login')
+      ELSE null
+    END 
+  as creator_user_login,
+
+  CASE 
+      WHEN json_value(payload, '$.comment.user.id') is not null THEN json_value(payload, '$.comment.user.id')
+      WHEN json_value(payload, '$.review.user.id') is not null THEN json_value(payload, '$.review.user.id')
+      WHEN json_value(payload, '$.issue.user.id') is not null THEN json_value(payload, '$.issue.user.id')
+      WHEN json_value(payload, '$.pull_request.user.id') is not null THEN json_value(payload, '$.pull_request.user.id')
+      ELSE null
+    END 
+  as creator_user_id,
+
+  CASE 
+      WHEN json_value(payload, '$.issue.created_at') is not null THEN json_value(payload, '$.issue.created_at')
+      WHEN json_value(payload, '$.pull_request.created_at') is not null THEN json_value(payload, '$.pull_request.created_at')
+      ELSE null
+    END 
+  as pr_or_issue_created_at,
 
   FORMAT_DATE('%Y-%m-%d', created_at) as event_day,
   FORMAT_DATE('%Y-%m-01', created_at) as event_month,

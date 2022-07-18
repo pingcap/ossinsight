@@ -2,37 +2,40 @@
 #
 # Table name: github_events
 #
-#  id                 :bigint
-#  action             :string(255)
-#  actor_location     :string(255)
-#  actor_login        :string(255)
-#  additions          :bigint
-#  author_association :string(255)
-#  closed_at          :datetime
-#  comments           :integer
-#  deletions          :bigint
-#  event_day          :date
-#  event_month        :date
-#  event_year         :integer
-#  language           :string(255)
-#  number             :integer
-#  org_login          :string(255)
-#  pr_changed_files   :integer
-#  pr_merged          :boolean
-#  pr_merged_at       :datetime
-#  pr_review_comments :integer
-#  push_distinct_size :integer
-#  push_size          :integer
-#  repo_name          :string(255)
-#  state              :string(255)
-#  type               :string(255)
-#  created_at         :datetime
-#  actor_id           :bigint
-#  comment_id         :bigint
-#  commit_id          :string(255)
-#  org_id             :bigint
-#  pr_or_issue_id     :bigint
-#  repo_id            :bigint
+#  id                     :bigint
+#  action                 :string(255)
+#  actor_location         :string(255)
+#  actor_login            :string(255)
+#  additions              :bigint
+#  author_association     :string(255)
+#  closed_at              :datetime
+#  comments               :integer
+#  creator_user_login     :string(255)
+#  deletions              :bigint
+#  event_day              :date
+#  event_month            :date
+#  event_year             :integer
+#  language               :string(255)
+#  number                 :integer
+#  org_login              :string(255)
+#  pr_changed_files       :integer
+#  pr_merged              :boolean
+#  pr_merged_at           :datetime
+#  pr_or_issue_created_at :datetime
+#  pr_review_comments     :integer
+#  push_distinct_size     :integer
+#  push_size              :integer
+#  repo_name              :string(255)
+#  state                  :string(255)
+#  type                   :string(255)
+#  created_at             :datetime
+#  actor_id               :bigint
+#  comment_id             :bigint
+#  commit_id              :string(255)
+#  creator_user_id        :bigint
+#  org_id                 :bigint
+#  pr_or_issue_id         :bigint
+#  repo_id                :bigint
 #
 # Indexes
 #
