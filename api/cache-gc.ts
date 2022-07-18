@@ -27,7 +27,8 @@ async function main () {
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     queueLimit: 10,
-    decimalNumbers: true
+    decimalNumbers: true,
+    timezone: 'Z'
   });
 
   logger.info("Ready Go...")
