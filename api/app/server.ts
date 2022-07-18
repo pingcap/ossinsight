@@ -54,7 +54,8 @@ export default async function server(router: Router<DefaultState, ContextExtends
     password: process.env.DB_PASSWORD,
     connectionLimit: parseInt(process.env.CONNECTION_LIMIT || '10'),
     queueLimit: parseInt(process.env.QUEUE_LIMIT || '20'),
-    decimalNumbers: true
+    decimalNumbers: true,
+    timezone: 'Z'
   })
 
   // Init Cache Builder; 
