@@ -5,6 +5,7 @@ import Axios from 'axios';
 import { useContext, useEffect, useRef, useState } from 'react';
 import InViewContext from "../InViewContext";
 import { core } from '../../api';
+import { clearPromiseInterval, setPromiseInterval } from "../../lib/promise-interval";
 
 export interface AsyncData<T> {
   data: T | undefined
@@ -74,11 +75,11 @@ export const useRealtimeRemoteData: UseRemoteData = (query: string, params: any,
 
   useEffect(() => {
     if (shouldLoad && viewed) {
-      const h = setInterval(() => {
-        mutate()
+      const h = setPromiseInterval(async () => {
+        await mutate()
       }, 5000)
       return () => {
-        clearInterval(h)
+        clearPromiseInterval(h)
       }
     }
   }, [shouldLoad, viewed])
@@ -120,20 +121,20 @@ export const useTotalEvents = (run: boolean, interval = 1000) => {
       } catch {}
     }
 
-    const hTotal = setInterval(() => {
-      reloadTotal().then()
+    const hTotal = setPromiseInterval(async () => {
+      await reloadTotal()
     }, 60000)
 
-    const hAdded = setInterval(() => {
-      reloadAdded(false).then()
+    const hAdded = setPromiseInterval(async () => {
+      await reloadAdded(false)
     }, interval)
 
     reloadTotal().then()
     reloadAdded(true).then()
 
     return () => {
-      clearInterval(hTotal)
-      clearInterval(hAdded)
+      clearPromiseInterval(hTotal)
+      clearPromiseInterval(hAdded)
     }
   }, [run])
 
