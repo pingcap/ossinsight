@@ -9,3 +9,4 @@ items:
   - casdoor/casdoor
   - IdentityServer/IdentityServer4
   - nextauthjs/next-auth
+  - logto-io/logto
