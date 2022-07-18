@@ -1,4 +1,3 @@
-import { usePluginData } from '@docusaurus/useGlobalData';
 import {Queries} from "./queries";
 import useSWR from "swr";
 import Axios from 'axios';
@@ -88,11 +87,9 @@ export const useRealtimeRemoteData: UseRemoteData = (query: string, params: any,
 }
 
 export const useTotalEvents = (run: boolean, interval = 1000) => {
-  const {eventsTotal} = usePluginData<{eventsTotal: RemoteData<any, { cnt: number, latest_timestamp: number }>}>('plugin-prefetch');
-
-  const [total, setTotal] = useState(eventsTotal?.data[0].cnt)
+  const [total, setTotal] = useState(0)
   const [added, setAdded] = useState(0)
-  const lastTs = useRef(eventsTotal?.data[0].latest_timestamp)
+  const lastTs = useRef(0)
   const cancelRef = useRef<() => void>()
 
   useEffect(() => {
@@ -129,8 +126,7 @@ export const useTotalEvents = (run: boolean, interval = 1000) => {
       await reloadAdded(false)
     }, interval)
 
-    reloadTotal().then()
-    reloadAdded(true).then()
+    reloadTotal().then(() => reloadAdded(true))
 
     return () => {
       clearPromiseInterval(hTotal)

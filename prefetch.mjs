@@ -13,6 +13,5 @@ async function prefetch (fn, load) {
 
 await Promise.all([
   prefetch('.prefetch/collections.json', fetch(API_BASE + '/collections')),
-  prefetch('.prefetch/events-total.json', fetch(API_BASE + '/q/events-total')),
 ])
 
