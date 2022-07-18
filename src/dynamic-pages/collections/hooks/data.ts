@@ -56,7 +56,7 @@ export function useCollectionHistory(collectionId: number | undefined, dimension
       while (year < maxYear || (year === maxYear && month <= maxMonth)) {
         // mock server returned time format
         const ts = new Date(`${year}-${String(month).padStart(2, '0')}-01`)
-        const current = new Date(ts.getTime() - 8 * 60 * 60 * 1000).toISOString()
+        const current = new Date(ts.getTime()).toISOString()
 
         // stores name was not provided in current month
         const nameSet = new Set<string>(Object.keys(latestValues))
