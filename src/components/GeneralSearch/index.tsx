@@ -1,6 +1,14 @@
 import { useHistory } from '@docusaurus/router';
 import SearchIcon from '@mui/icons-material/Search';
-import { ListItem, ListItemAvatar, ListItemText, PopperProps, useEventCallback } from '@mui/material';
+import {
+  ListItem,
+  ListItemAvatar,
+  ListItemIcon,
+  ListItemProps,
+  ListItemText,
+  PopperProps,
+  useEventCallback,
+} from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
@@ -30,9 +38,8 @@ import { SearchType, useGeneralSearch } from './useGeneralSearch';
 import isHotkey from "is-hotkey";
 import KeyboardUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import KeyboardLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
-import KeyboardRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
+import { AutocompleteHighlightChangeReason } from "@mui/base/AutocompleteUnstyled/useAutocomplete";
 
 export interface GeneralSearchProps {
   contrast?: boolean;
@@ -90,14 +97,17 @@ const CustomPopper = ({ children, ...props }: PopperProps) => <Popper {...props}
 </Popper>;
 
 const PopperContainer = styled(Stack)(({ theme }) => ({
-  minWidth: 280,
-  maxHeight: '80vh !important',
   [theme.breakpoints.up('sm')]: {
     minWidth: 420,
+    maxHeight: '340px !important',
   },
+  [theme.breakpoints.up('md')]: {
+    minWidth: 280,
+    maxHeight: '340px !important',
+  }
 }));
 
-const renderUser = (props: React.HTMLAttributes<HTMLLIElement>, option: Option) => {
+const renderUser = (props: React.HTMLAttributes<HTMLLIElement>, option: Option, highlight: boolean) => {
   return (
     <ListItem {...props}>
       <ListItemAvatar>
@@ -106,11 +116,17 @@ const renderUser = (props: React.HTMLAttributes<HTMLLIElement>, option: Option) 
       <ListItemText>
         {(option as UserInfo).login}
       </ListItemText>
+      {highlight
+        ? (
+          <ListItemIcon>
+            <TipIcon reverse textContent icon={<><KeyboardReturnIcon fontSize='inherit'/> Enter</>} />
+          </ListItemIcon>
+        ) : undefined}
     </ListItem>
   );
 };
 
-const renderRepo = (props: React.HTMLAttributes<HTMLLIElement>, option: Option) => {
+const renderRepo = (props: ListItemProps, option: Option, highlight: boolean) => {
   return (
     <ListItem {...props}>
       <ListItemAvatar>
@@ -119,6 +135,12 @@ const renderRepo = (props: React.HTMLAttributes<HTMLLIElement>, option: Option) 
       <ListItemText>
         {(option as SearchRepoInfo).fullName}
       </ListItemText>
+      {highlight
+        ? (
+          <ListItemIcon>
+            <TipIcon reverse textContent icon={<><KeyboardReturnIcon fontSize='inherit'/> Enter</>} />
+          </ListItemIcon>
+        ) : undefined}
     </ListItem>
   );
 };
@@ -128,9 +150,9 @@ const GeneralSearch = ({ contrast, align = 'left', size, global = false }: Gener
   const [type, tabs, next] = useTabs();
   const [option, setOption] = useState<Option>(null);
   const [open, setOpen] = useState(false)
+  const [highlight, setHighlight] = useState<Option>(null)
   const history = useHistory()
   const inputRef = useRef<HTMLInputElement>(null)
-
   const { data: list, error, loading } = useGeneralSearch(type, keyword);
 
   const handleOptionChange = useCallback((_: any, option: Option) => {
@@ -194,6 +216,16 @@ const GeneralSearch = ({ contrast, align = 'left', size, global = false }: Gener
     }
   }, [global])
 
+  const handleHighlightChange = useEventCallback((event: React.SyntheticEvent, option: Option | null, reason: AutocompleteHighlightChangeReason,) => {
+    setTimeout(() => {
+      if (reason === 'keyboard') {
+        setHighlight(option)
+      } else {
+        setHighlight(null)
+      }
+    }, 0)
+  })
+
   return (
     <Autocomplete<Option, false, undefined, false>
       size={size === 'large' ? 'medium' : 'small'}
@@ -207,12 +239,17 @@ const GeneralSearch = ({ contrast, align = 'left', size, global = false }: Gener
       value={option}
       onChange={handleOptionChange}
       onInputChange={handleInputChange}
-      sx={{
+      onHighlightChange={handleHighlightChange}
+      sx={useMemo(() => ({
         maxWidth: size === 'large' ? 540 : 300,
         flex: 1,
-      }}
-      renderOption={type === 'repo' ? renderRepo : renderUser}
-      renderInput={({ InputProps, ...params }) => (
+      }), [size])}
+      renderOption={useCallback((props, option) => (
+        type === 'repo'
+          ? renderRepo(props, option, highlight === option)
+          : renderUser(props, option, highlight === option)
+      ), [type, highlight])}
+      renderInput={useCallback(({ InputProps, ...params }) => (
         <TextField
           {...params}
           variant='outlined'
@@ -250,7 +287,7 @@ const GeneralSearch = ({ contrast, align = 'left', size, global = false }: Gener
             ) : (global && !open) ? <TipIcon icon='/' reverse display={[false, true]} />: undefined,
         }}
         />
-      )}
+      ), [open, global, contrast, align, size])}
       noOptionsText={(
         <PopperContainer>
           {tabs}
@@ -271,23 +308,23 @@ const GeneralSearch = ({ contrast, align = 'left', size, global = false }: Gener
           </Box>
         </PopperContainer>
       )}
-      ListboxComponent={forwardRef<HTMLElement, React.HTMLAttributes<HTMLElement>>(({ children, ...props }, ref) => (
-        <PopperContainer ref={ref} {...props} sx={{ paddingBottom: '32px !important' }}>
+      ListboxComponent={useCallback(forwardRef<HTMLElement, React.HTMLAttributes<HTMLElement>>(({ children, ...props }, ref) => (
+        <PopperContainer ref={ref} {...props}>
           {tabs}
-          <List>
+          <List sx={{ maxHeight: 276, overflowY: 'auto' }}>
             {children}
           </List>
-          <Box position='absolute' bottom={0} width='100%' left={0} height={32} p={0.5} bgcolor='#121212' display={['none', 'block']}>
+          <Box height={32} p={0.5} bgcolor='#121212' display={['none', 'block']}>
             <Stack direction='row'>
               <TipGroup text='To Navigate'>
                 <Stack direction='row'>
-                  <TipIcon icon='TAB' />
+                  <TipIcon textContent icon='TAB' />
                   <TipIcon icon={<KeyboardUpIcon fontSize='inherit'/>} />
                   <TipIcon icon={<KeyboardDownIcon fontSize='inherit'/>} />
                 </Stack>
               </TipGroup>
               <TipGroup text='To Cancel'>
-                <TipIcon icon='ESC' />
+                <TipIcon textContent icon='ESC' />
               </TipGroup>
               <TipGroup text='To Enter'>
                 <TipIcon icon={<KeyboardReturnIcon fontSize='inherit'/>} />
@@ -295,7 +332,7 @@ const GeneralSearch = ({ contrast, align = 'left', size, global = false }: Gener
             </Stack>
           </Box>
         </PopperContainer>
-      ))}
+      )), [tabs])}
       PopperComponent={CustomPopper}
     />
   );
@@ -310,8 +347,19 @@ const TipGroup = ({ children, text }: { text: string, children: JSX.Element }) =
   </Stack>
 )
 
-const TipIcon = ({ icon, reverse = false, display }: { icon: ReactNode, reverse?: boolean, display?: boolean[] }) => (
-  <Box bgcolor={reverse ? '#8c8c8c' : '#3c3c3c'} borderRadius={1} fontSize={typeof icon === 'string' ? 12 : 16} minWidth={24} height={24} mr={0.5} px={typeof icon === 'string' ? 1 : 0} display={display ? display.map(b => b ? 'flex' : 'none') : 'flex'} alignItems='center' justifyContent='center'>
+const TipIcon = ({ icon, textContent = false, reverse = false, display }: { icon: ReactNode, textContent?: boolean, reverse?: boolean, display?: boolean[] }) => (
+  <Box
+    bgcolor={reverse ? '#8c8c8c' : '#3c3c3c'}
+    borderRadius={1}
+    fontSize={textContent ? 12 : 16}
+    minWidth={24}
+    height={24}
+    mr={0.5}
+    px={textContent ? 1 : 0}
+    display={display ? display.map(b => b ? 'flex' : 'none') : 'flex'}
+    alignItems='center'
+    justifyContent='center'
+  >
     {icon}
   </Box>
 )
