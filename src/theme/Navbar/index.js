@@ -244,7 +244,7 @@ function Navbar() {
             <NavbarItem {...item} key={i} />
           ))}
           <Box display='flex' justifyContent='flex-start' alignItems='center' width='100%' minWidth='50px' maxWidth='300px' ml={1} flexShrink={10000} sx={{ '& > *': { width: '100%', maxWidth: 300, mx: 'unset', flex: 1 }}}>
-            <GeneralSearch />
+            <GeneralSearch global />
           </Box>
         </div>
         <div className="navbar__items navbar__items--right">
