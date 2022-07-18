@@ -107,7 +107,7 @@ class Importer
       pr_changed_files = event.dig("payload", "pull_request", "changed_files")
       pr_review_comments = event.dig("payload", "pull_request", "review_comments")
 
-      create_user_login = event.dig("payload", "comment", "user", "login") ||
+      creator_user_login = event.dig("payload", "comment", "user", "login") ||
         event.dig("payload", "review", "user", "login") ||
         event.dig("payload", "issue", "user", "login") ||
         event.dig("payload", "pull_request", "user", "login")
