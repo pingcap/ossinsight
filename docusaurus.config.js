@@ -228,6 +228,7 @@ const config = {
               {label: '└─ Cryptocurrency Insight - not ready', to: '/workshop/cryptocurrency-insight'},
             ]
           },
+          /*
           {
             type: 'dropdown',
             label: 'Labs',
@@ -236,6 +237,7 @@ const config = {
               {label: '🏛️  Company Analytics [Beta]', to: '/analyze-company'},
             ]
           },
+          */
           {
             type: 'dropdown',
             label: 'More',
