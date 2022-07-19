@@ -6,7 +6,6 @@ WITH prs_with_latest_repo_name AS (
         additions,
         deletions
     FROM github_events
-    USE INDEX(index_github_events_on_repo_id)
     WHERE
         type = 'PullRequestEvent' AND repo_id = 41986369 AND action = 'opened'
 ), prs as (

@@ -1,5 +1,4 @@
 SELECT
-    /*+ read_from_storage(tiflash[github_events]), MAX_EXECUTION_TIME(120000) */
     language,
     COUNT(*)
 FROM github_events

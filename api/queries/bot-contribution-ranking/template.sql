@@ -1,5 +1,4 @@
 SELECT 
-    /*+ read_from_storage(tiflash[ge]), MAX_EXECUTION_TIME(120000) */
     actor_id, ANY_VALUE(actor_login) AS actor_login, COUNT(*) AS contributions
 FROM github_events ge
 WHERE

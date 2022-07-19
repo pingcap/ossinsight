@@ -3,7 +3,6 @@ with issue_closed as (
         event_month, count(distinct pr_or_issue_id) as closed
     from
         github_events ge
-    use index(index_github_events_on_repo_id)
     where
         type = 'IssuesEvent'
         and action = 'closed'
@@ -14,7 +13,6 @@ with issue_closed as (
         event_month, count(distinct pr_or_issue_id) as opened
     from
         github_events ge
-    use index(index_github_events_on_repo_id)
     where
         type = 'IssuesEvent'
         and action = 'opened'

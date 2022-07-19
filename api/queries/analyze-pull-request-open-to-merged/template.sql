@@ -3,7 +3,6 @@ with pr_with_merged_at as (
         pr_or_issue_id, event_month, created_at as merged_at
     from
         github_events ge
-    use index(index_github_events_on_repo_id)
     where
         type = 'PullRequestEvent'
         -- Considering that some repositoies accept the code of the contributor by closing the PR and push commit directly,
@@ -16,7 +15,6 @@ with pr_with_merged_at as (
         pr_or_issue_id, created_at as opened_at
     from
         github_events ge
-    use index(index_github_events_on_repo_id)
     where
         type = 'PullRequestEvent'
         and action = 'opened'

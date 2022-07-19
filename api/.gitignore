@@ -13,6 +13,7 @@ node_modules
 
 # Logs
 log
+*.log
 test/result/*.log
 .pnpm-debug.log
 

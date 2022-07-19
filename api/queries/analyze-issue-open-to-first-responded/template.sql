@@ -15,7 +15,6 @@ with issue_with_first_responed_at as (
         pr_or_issue_id, created_at as opened_at
     from
         github_events ge
-    use index(index_github_events_on_repo_id)
     where
         type = 'IssuesEvent'
         and action = 'opened'

@@ -1,5 +1,4 @@
 SELECT
-    /*+ read_from_storage(tiflash[github_events]), MAX_EXECUTION_TIME(120000) */
     db.name,
     SUM(event_year = 2020)                                    AS stars2020,
     SUM(event_year = 2021)                                    AS stars2021,
