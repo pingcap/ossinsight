@@ -7,7 +7,6 @@ WITH pr_opened AS (
         pr_or_issue_id,
         created_at
     FROM github_events
-    USE INDEX(index_github_events_on_repo_id)
     WHERE
         type = 'PullRequestEvent'
         AND state = 'open'
@@ -16,7 +15,6 @@ WITH pr_opened AS (
     SELECT
         pr_or_issue_id
     FROM github_events
-    USE INDEX(index_github_events_on_repo_id)
     WHERE
         type = 'PullRequestEvent'
         AND state = 'closed'

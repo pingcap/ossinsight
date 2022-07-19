@@ -1,5 +1,4 @@
 SELECT
-    /*+ read_from_storage(tiflash[github_events]), MAX_EXECUTION_TIME(120000) */
     db.name  AS repo_name,
     COUNT(DISTINCT actor_login) AS stars
 FROM github_events

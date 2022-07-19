@@ -2,7 +2,6 @@ WITH
     # Fetch all WatchEvents group by repo_id
     WatchEvents AS (
         SELECT
-            /*+ read_from_storage(tiflash[github_events]) */
             repo_id,
             COUNT(id) count
         FROM github_events github_events
@@ -17,7 +16,6 @@ WITH
     # Fetch all PullRequestEvents group by repo_id
     PullRequestEvents AS (
         SELECT
-            /*+ read_from_storage(tiflash[github_events]) */
             repo_id,
             COUNT(id) count
         FROM github_events github_events
@@ -32,7 +30,7 @@ WITH
     # Fetch all IssuesEvents group by repo_id
     IssuesEvents AS (
         SELECT
-            /*+ read_from_storage(tiflash[github_events]) */
+
             repo_id,
             COUNT(id) count
         FROM github_events github_events
@@ -47,7 +45,6 @@ WITH
     # Fetch all IssueCommentEvents group by repo_id
     IssueCommentEvents AS (
         SELECT
-            /*+ read_from_storage(tiflash[github_events]) */
             repo_id,
             COUNT(id) count
         FROM github_events github_events
@@ -62,7 +59,6 @@ WITH
     # Fetch all PullRequestReviewEvents group by repo_id
     PullRequestReviewEvents AS (
         SELECT
-            /*+ read_from_storage(tiflash[github_events]) */
             repo_id,
             COUNT(id) count
         FROM github_events github_events
@@ -77,7 +73,6 @@ WITH
     # Fetch all PullRequestReviewCommentEvents group by repo_id
     PullRequestReviewCommentEvents AS (
         SELECT
-            /*+ read_from_storage(tiflash[github_events]) */
             repo_id,
             COUNT(id) count
         FROM github_events github_events
@@ -92,7 +87,6 @@ WITH
     # Fetch all CommitCommentEvents group by repo_id
     CommitCommentEvents AS (
         SELECT
-            /*+ read_from_storage(tiflash[github_events]) */
             repo_id,
             COUNT(id) count
         FROM github_events github_events
@@ -105,7 +99,6 @@ WITH
         HAVING count > 0
     )
 SELECT
-    /*+ read_from_storage(tiflash[gh]) */
     ANY_VALUE(gh.repo_name)                         repo_name,
     count(*)																				history_events,
     IFNULL(WatchEvents.count, 0)                    watch_events,

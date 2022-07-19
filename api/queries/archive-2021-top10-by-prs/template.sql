@@ -1,5 +1,4 @@
 SELECT
-    /*+ read_from_storage(tiflash[github_events]), MAX_EXECUTION_TIME(120000) */
     db_repos.name AS repo_name,
     COUNT(*)      AS num
 FROM github_events

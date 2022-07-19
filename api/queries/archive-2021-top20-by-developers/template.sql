@@ -1,5 +1,4 @@
 SELECT
-    /*+ read_from_storage(tiflash[github_events]), MAX_EXECUTION_TIME(120000) */
     actor_login,
     COUNT(*) AS pr_count
 FROM github_events
@@ -11,3 +10,4 @@ WHERE event_year = 2021
 GROUP BY 1
 ORDER BY 2 DESC
 LIMIT 20
+;

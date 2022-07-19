@@ -1,6 +1,5 @@
 WITH repo_stars AS (
     SELECT
-        /*+ read_from_storage(tiflash[github_events]) */
         repo_id,
         ANY_VALUE(repos.name) AS repo_name,
         COUNT(distinct actor_login) AS stars
@@ -16,7 +15,6 @@ WITH repo_stars AS (
     LIMIT 10
 ), tmp AS (
     SELECT
-        /*+ read_from_storage(tiflash[github_events]) */
         event_year,
         tr.repo_name AS repo_name,
         COUNT(*) AS year_stars
