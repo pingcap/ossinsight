@@ -287,7 +287,7 @@ const GeneralSearch = ({ contrast, align = 'left', size, global = false }: Gener
             ) : (global && !open) ? <TipIcon icon='/' reverse display={[false, true]} />: undefined,
         }}
         />
-      ), [open, global, contrast, align, size])}
+      ), [open, global, contrast, align, size, loading])}
       noOptionsText={(
         <PopperContainer>
           {tabs}
