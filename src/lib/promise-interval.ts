@@ -20,7 +20,7 @@ export function setPromiseInterval(handler: () => Promise<void>, interval: numbe
     })
   }
 
-  run()
+  handle.timeout = setTimeout(run, interval)
 
   return handle
 }
