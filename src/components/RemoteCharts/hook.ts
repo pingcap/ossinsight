@@ -1,5 +1,5 @@
 import {Queries} from "./queries";
-import useSWR from "swr";
+import useSWR, { unstable_serialize } from "swr";
 import Axios from 'axios';
 import { useContext, useEffect, useRef, useState } from 'react';
 import InViewContext from "../InViewContext";
@@ -40,6 +40,12 @@ interface UseRemoteData {
 export const useRemoteData: UseRemoteData = (query: string, params: any, formatSql: boolean, shouldLoad: boolean = true): AsyncData<RemoteData<any, any>> => {
   const { inView } = useContext(InViewContext)
   const [firstViewed, setFirstViewed] = useState(false)
+
+  useEffect(() => {
+    if (!inView) {
+      setFirstViewed(false)
+    }
+  }, [inView, query, unstable_serialize(params)])
 
   useEffect(() => {
     if (inView && shouldLoad) {
