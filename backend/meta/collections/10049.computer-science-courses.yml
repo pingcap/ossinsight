@@ -1,5 +1,5 @@
 id: 10049
-name: Github Based Computer Science Courses
+name: Computer Science Courses
 items:
   - rcore-os/rCore
   - rust-lang/rustlings
