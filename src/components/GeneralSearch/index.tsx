@@ -177,6 +177,7 @@ const GeneralSearch = ({ contrast, align = 'left', size, global = false }: Gener
 
   const handleClose = useEventCallback(() => {
     setOpen(false)
+    setKeyword('')
   })
 
   const placeholder = useMemo(() => {
@@ -238,6 +239,7 @@ const GeneralSearch = ({ contrast, align = 'left', size, global = false }: Gener
       getOptionLabel={getOptionLabel}
       value={option}
       onChange={handleOptionChange}
+      inputValue={keyword}
       onInputChange={handleInputChange}
       onHighlightChange={handleHighlightChange}
       sx={useMemo(() => ({
