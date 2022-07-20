@@ -18,5 +18,7 @@ module.exports.getContentGroup = function getContentGroup ({ pathname, search })
     }
   } else if (/\/blog\//.test(pathname)) {
     return 'blog'
+  } else if (/\/workshop\//.test(pathname)) {
+    return 'workshop'
   }
 }
