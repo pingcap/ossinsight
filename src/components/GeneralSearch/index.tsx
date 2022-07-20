@@ -109,9 +109,9 @@ const PopperContainer = styled(Stack)(({ theme }) => ({
 
 const renderUser = (props: React.HTMLAttributes<HTMLLIElement>, option: Option, highlight: boolean) => {
   return (
-    <ListItem {...props}>
-      <ListItemAvatar>
-        <Avatar src={`https://github.com/${(option as UserInfo).login}.png`} />
+    <ListItem dense {...props}>
+      <ListItemAvatar sx={{ minWidth: 32 }}>
+        <Avatar src={`https://github.com/${(option as UserInfo).login}.png`} sx={{ width: 24, height: 24 }} />
       </ListItemAvatar>
       <ListItemText>
         {(option as UserInfo).login}
@@ -128,9 +128,9 @@ const renderUser = (props: React.HTMLAttributes<HTMLLIElement>, option: Option, 
 
 const renderRepo = (props: ListItemProps, option: Option, highlight: boolean) => {
   return (
-    <ListItem {...props}>
-      <ListItemAvatar>
-        <Avatar src={`https://github.com/${(option as SearchRepoInfo).fullName.split('/')[0]}.png`} />
+    <ListItem dense {...props}>
+      <ListItemAvatar sx={{ minWidth: 32 }}>
+        <Avatar src={`https://github.com/${(option as SearchRepoInfo).fullName.split('/')[0]}.png`} sx={{ width: 24, height: 24 }} />
       </ListItemAvatar>
       <ListItemText>
         {(option as SearchRepoInfo).fullName}
@@ -310,7 +310,7 @@ const GeneralSearch = ({ contrast, align = 'left', size, global = false }: Gener
       ListboxComponent={useCallback(forwardRef<HTMLElement, React.HTMLAttributes<HTMLElement>>(({ children, ...props }, ref) => (
         <PopperContainer ref={ref} {...props}>
           {tabs}
-          <List>
+          <List dense disablePadding>
             {children}
           </List>
           <Box height={32} p={0.5} bgcolor='#121212' display={['none', 'block']}>
