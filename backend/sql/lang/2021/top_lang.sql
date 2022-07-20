@@ -1,4 +1,4 @@
-select /*+ read_from_storage(tiflash[github_events]) */ 
+select
   language, 
   count(*)
 from github_events

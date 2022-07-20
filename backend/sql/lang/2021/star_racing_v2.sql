@@ -1,5 +1,5 @@
 WITH tmp AS (
-  SELECT /*+ read_from_storage(tiflash[github_events]) */ 
+  SELECT
     event_year,
     language AS repo_name,
     COUNT(*) AS year_stars
