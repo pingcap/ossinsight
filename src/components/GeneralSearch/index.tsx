@@ -157,6 +157,7 @@ const GeneralSearch = ({ contrast, align = 'left', size, global = false }: Gener
 
   const handleOptionChange = useCallback((_: any, option: Option) => {
     setOption(option);
+    setKeyword('');
     switch (type) {
       case 'repo':
         history.push(`/analyze/${(option as SearchRepoInfo).fullName}`)
