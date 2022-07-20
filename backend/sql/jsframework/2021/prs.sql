@@ -1,4 +1,4 @@
-  SELECT /*+ read_from_storage(tiflash[github_events]) */ 
+  SELECT
          wf.name AS repo_name,
          COUNT(*) AS num
     FROM github_events 

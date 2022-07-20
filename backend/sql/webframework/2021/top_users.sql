@@ -1,4 +1,4 @@
-select /*+ read_from_storage(tiflash[github_events]) */ 
+select
   actor_login, 
   count(*) as pr_count
 from github_events

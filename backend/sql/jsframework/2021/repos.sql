@@ -1,4 +1,4 @@
-  SELECT /*+ read_from_storage(tiflash[github_events]) */
+  SELECT
          jf.name as repo_name, 
          count(*) as stars, 
          any_value(jf.id) as repo_id

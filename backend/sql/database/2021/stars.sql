@@ -1,4 +1,4 @@
-SELECT /*+ read_from_storage(tiflash[github_events]) */
+SELECT
   db_repos.name AS repo_name,
   COUNT(*) AS stars
 FROM github_events 
