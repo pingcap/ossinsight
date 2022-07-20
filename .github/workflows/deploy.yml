@@ -31,13 +31,3 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BRANCH: gh-pages # The branch the action should deploy to.
           FOLDER: build # The folder the action should deploy.
-      - name: Deploy to Hong Kong server 🚀
-        uses: burnett01/rsync-deployments@5.2
-        with:
-          switches: -avzr --delete
-          path: ./build/
-          remote_path: /home/ubuntu/ossinsight/ossinsight.io/
-          remote_host: ${{ secrets.SSH_HOST }}
-#          remote_port: ${{ secrets.SSH_PORT }}
-          remote_user: ubuntu
-          remote_key: ${{ secrets.SSH_PRIVATE_KEY }}
