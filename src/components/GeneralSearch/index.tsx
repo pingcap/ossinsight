@@ -284,10 +284,10 @@ const GeneralSearch = ({ contrast, align = 'left', size, global = false }: Gener
               <InputAdornment position="end">
                 <CircularProgress size='16px' sx={{ mr: 1 }} color={contrast ? 'info' : 'primary'} />
               </InputAdornment>
-            ) : (global && !open) ? <TipIcon icon='/' reverse display={[false, true]} />: undefined,
+            ) : (global && !open && !option) ? <TipIcon icon='/' reverse display={[false, true]} />: undefined,
         }}
         />
-      ), [open, global, contrast, align, size, loading])}
+      ), [open, global, contrast, align, size, loading, option])}
       noOptionsText={(
         <PopperContainer>
           {tabs}
