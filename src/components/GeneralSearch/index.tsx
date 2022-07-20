@@ -99,11 +99,11 @@ const CustomPopper = ({ children, ...props }: PopperProps) => <Popper {...props}
 const PopperContainer = styled(Stack)(({ theme }) => ({
   [theme.breakpoints.up('sm')]: {
     minWidth: 420,
-    maxHeight: '340px !important',
+    maxHeight: '80vh !important',
   },
   [theme.breakpoints.up('md')]: {
     minWidth: 280,
-    maxHeight: '340px !important',
+    maxHeight: '80vh !important',
   }
 }));
 
@@ -309,7 +309,7 @@ const GeneralSearch = ({ contrast, align = 'left', size, global = false }: Gener
       ListboxComponent={useCallback(forwardRef<HTMLElement, React.HTMLAttributes<HTMLElement>>(({ children, ...props }, ref) => (
         <PopperContainer ref={ref} {...props}>
           {tabs}
-          <List sx={{ maxHeight: 276, overflowY: 'auto' }}>
+          <List>
             {children}
           </List>
           <Box height={32} p={0.5} bgcolor='#121212' display={['none', 'block']}>
