@@ -123,7 +123,6 @@ Rust was first released in 2012 and has been among the leading programming langu
 
 ```sql
 SELECT
-    /*+ read_from_storage(tiflash[github_events]), MAX_EXECUTION_TIME(120000) */
     programming_language_repos.name AS repo_name,
     COUNT(*)      AS num
 FROM github_events
@@ -153,7 +152,6 @@ According to **[OSSInsight.io](https://ossinsight.io/)**, 10 programming languag
 ```sql
 WITH repo_stars AS (
     SELECT
-        /*+ read_from_storage(tiflash[github_events]) */
         repo_id,
         ANY_VALUE(repos.name) AS repo_name,
         COUNT(distinct actor_login) AS stars
@@ -169,7 +167,6 @@ WITH repo_stars AS (
     LIMIT 10
 ), tmp AS (
     SELECT
-        /*+ read_from_storage(tiflash[github_events]) */
         event_year,
         tr.repo_name AS repo_name,
         COUNT(*) AS year_stars
@@ -206,7 +203,6 @@ As world-renowned high-tech companies, Microsoft and Google take the lead in ope
 
 ```sql
 SELECT
-    /*+ read_from_storage(tiflash[github_events]), MAX_EXECUTION_TIME(120000) */
     TRIM(LOWER(REPLACE(u.company, '@', ''))) AS company,
     COUNT(DISTINCT actor_id)                 AS num
 FROM
@@ -246,7 +242,6 @@ Elasticsearch was one of the first open source databases. It is the most liked d
 ```sql
 WITH repo_stars AS (
     SELECT
-        /*+ read_from_storage(tiflash[github_events]) */
         repo_id,
         ANY_VALUE(repos.name) AS repo_name,
         COUNT(distinct actor_login) AS stars
@@ -262,7 +257,6 @@ WITH repo_stars AS (
     LIMIT 10
 ), tmp AS (
     SELECT
-        /*+ read_from_storage(tiflash[github_events]) */
         event_year,
         tr.repo_name AS repo_name,
         COUNT(*) AS year_stars

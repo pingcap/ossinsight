@@ -136,7 +136,6 @@ This is an analytical query that includes aggregation and ranking. To get the re
 
 ```sql
 SELECT
-   /*+ read_from_storage(tiflash[ge]) */
    ci.repo_name  AS repo_name,
    COUNT(distinct actor_login) AS num
 FROM
