@@ -219,11 +219,7 @@ const GeneralSearch = ({ contrast, align = 'left', size, global = false }: Gener
 
   const handleHighlightChange = useEventCallback((event: React.SyntheticEvent, option: Option | null, reason: AutocompleteHighlightChangeReason,) => {
     setTimeout(() => {
-      if (reason === 'keyboard') {
-        setHighlight(option)
-      } else {
-        setHighlight(null)
-      }
+      setHighlight(option)
     }, 0)
   })
 
