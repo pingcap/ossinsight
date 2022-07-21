@@ -46,6 +46,7 @@ const config = {
       path.resolve(__dirname, 'plugins/define'),
       {
         'process.env.APP_API_BASE': JSON.stringify(API_BASE),
+        'process.env.SENTRY_DSN': process.env.SENTRY_DSN ? JSON.stringify(process.env.SENTRY_DSN) : undefined,
       }
     ],
     [
