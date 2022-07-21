@@ -239,7 +239,7 @@ html[data-theme='dark'] img[src$='#gh-light-mode-only'] {
 
 .navbar__logo {
   height: 44px;
-  margin-right: 0;
+  margin-right: 16px;
 }
 
 .navbar__brand {
