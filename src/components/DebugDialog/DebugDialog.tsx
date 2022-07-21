@@ -18,6 +18,22 @@ export interface DebugDialogProps {
   onClose: () => any
 }
 
+const explainKeywordDict = {
+  'cop' : 'distributed',
+  'batchCop' : 'distributed',
+  'tikv' : 'row',
+  'tiflash' : 'column',
+}
+
+const replaceAllKeyword = (str: string | undefined) => {
+  if (!str) {
+    return str
+  }
+  for (let [key, value] of Object.entries(explainKeywordDict)) {
+    str = str.replace(new RegExp(key, 'g'), value);
+  }
+  return str;
+}
 
 export const DebugDialog = ({ sql, query, params, open, onClose }: DebugDialogProps) => {
   const [type, setType] = useState<'explain' | 'trace'>(null);
@@ -26,21 +42,6 @@ export const DebugDialog = ({ sql, query, params, open, onClose }: DebugDialogPr
   const handleTabChange = useEventCallback((e: any, type: 'explain' | 'trace') => {
     setType(type);
   });
-
-  const explainKeywordDict = {
-    'cop' : 'distributed',
-    'batchCop' : 'distributed',
-    'tikv' : 'row',
-    'tiflash' : 'column',
-  }
-
-  const replaceAllKeyword = (str: string) => {
-    for (const key in explainKeywordDict) {
-      str = str.replace(new RegExp(key, 'g'), explainKeywordDict[key]);
-    }
-    return str;
-  }
-
 
   const renderChild = () => {
     if (type) {

@@ -124,6 +124,7 @@ export default function CodeBlock({
                 message: 'Copy code to clipboard',
                 description: 'The ARIA label for copy code blocks button',
               })}
+              disabled={!content}
               className={clsx(styles.copyButton, 'clean-btn')}
               onClick={handleCopyCode}>
               {showCopied ? (
