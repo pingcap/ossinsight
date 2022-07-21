@@ -1,0 +1,39 @@
+{
+  "cacheHours": -1,
+  "refreshHours": 0.25,
+  "onlyFromCache": true,
+  "params": [
+    {
+      "name": "period",
+      "type": "date-range",
+      "column": "created_at",
+      "pattern": "^last_(hour|day|week|month)$",
+      "replaces": "ge.created_at >= '2022-04-04 02:59:59' AND ge.created_at < '2022-05-04 02:59:59'",
+      "default": "last_hour",
+      "enums": [
+        "last_hour", "last_day", "last_week", "last_month"
+      ]
+    },
+    {
+      "name": "language",
+      "replaces": "AND sub.language = 'Java'",
+      "default": "All",
+      "enums": [
+        "All", "Unknown", "Java", "Python", "Go", "Rust", "JavaScript", "TypeScript", "C#", "C", "C++"
+      ],
+      "template": {
+        "All": "",
+        "Unknown": "AND sub.language IS NULL",
+        "Java": "AND sub.language = 'Java'",
+        "Python": "AND sub.language 'Python'",
+        "Go": "AND sub.language = 'Go'",
+        "Rust": "AND sub.language 'Rust'",
+        "JavaScript": "AND sub.language = 'JavaScript'",
+        "TypeScript": "AND sub.language 'TypeScript'",
+        "C#": "AND sub.language = 'C#'",
+        "C": "AND sub.language = 'C'",
+        "C++": "AND sub.language = 'C++'"
+      }
+    }
+  ]
+}
