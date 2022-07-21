@@ -6,6 +6,9 @@
     "strict": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "typeRoots": ["types"]
+    "typeRoots": ["types"],
+    "types": [
+      "node"
+    ],
   }
 }
