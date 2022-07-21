@@ -39,8 +39,6 @@ const ECharts = React.forwardRef<EChartsReact, EChartsProps>(({aspectRatio, heig
     result.height = realHeight
     result.width = '100%'
     result.overflow = 'hidden'
-    result.transition = 'opacity .2s ease'
-    result.opacity = inView ? 1 : 0
     return result
   }, [style, aspectRatio, realHeight, inView])
 

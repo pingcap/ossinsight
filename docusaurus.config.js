@@ -37,12 +37,16 @@ const config = {
     API_BASE + '/qo/repos/groups/osdb?format=global_variable',
     'https://www.google.com/recaptcha/api.js?render=6LcBQpkfAAAAAFmuSRkRlJxVtmqR34nNawFgKohC'
   ],
-  clientModules: [path.resolve(__dirname, './src/client/linkedin.js')],
+  clientModules: [
+    path.resolve(__dirname, './src/client/linkedin.js'),
+    path.resolve(__dirname, './src/client/sentry.ts'),
+  ],
   plugins: [
     [
       path.resolve(__dirname, 'plugins/define'),
       {
         'process.env.APP_API_BASE': JSON.stringify(API_BASE),
+        'process.env.SENTRY_DSN': process.env.SENTRY_DSN ? JSON.stringify(process.env.SENTRY_DSN) : undefined,
       }
     ],
     [

@@ -25,6 +25,8 @@ jobs:
         run: npm run prefetch
       - name: Build 🏗️
         run: npm run build
+        env:
+          SENTRY_DSN: https://ea6017f8ee534468b308a2a6c949895a@o226447.ingest.sentry.io/6588620
       - name: Deploy to ossinsight.io 🚀
         uses: JamesIves/github-pages-deploy-action@releases/v3
         with:
