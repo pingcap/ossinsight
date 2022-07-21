@@ -3,97 +3,123 @@ title: About
 description: We are a powerful insight tool that can help you analyze any GitHub repository/developer. And you can get insights with the monthly and historical rankings as well.
 ---
 
-<h1 align="center"> About OSS Insight</h1>
+<h1 align="center"> About OSS Insight 👁️</h1>
 
-OSS Insight, short for open source software insights, is a powerful insight tool that can help you analyze in depth any single GitHub repository, compare any two repositories using the same metrics, and provide comprehensive, valuable, and trending open source insights. 
+<h3 align="center">
+  <b><a href="https://ossinsight.io/collections/open-source-database">Rankings</a></b>
+  •
+  <b><a href="https://ossinsight.io/analyze/Ovilia">Developer Analytics</a></b>
+  •
+  <a href="https://ossinsight.io/analyze/pingcap/tidb">Repository Analytics</a>
+  •
+  <a href="https://ossinsight.io/collections/open-source-database">Collections</a>
+  •
+  <a href="https://ossinsight.io/workshop/overview">Workshop</a>
+  •
+  <a href="https://ossinsight.io/blog">Blogs</a>
+  •
+  <a href="https://twitter.com/OSSInsight">Twitter</a>
+</h3>
 
-OSS Insight is powered by [TiDB](https://github.com/pingcap/tidb), an open source, highly scalable distributed database with hybrid transactional and analytical processing (HTAP) capabilities. The source GitHub data used here in OSS Insight comes from [GH Archive](https://www.gharchive.org/), [GHTorrent](https://ghtorrent.org/), and  [GitHub event API](https://docs.github.com/en/rest/activity/events). We also use [Docusaurus](https://github.com/facebook/docusaurus) to build the OSS Insight website, and [Apache ECharts](https://echarts.apache.org/), to make complicated datasets into visualized charts. 
+We are a powerful insight tool that can help you analyze in depth any single GitHub repository/developers, compare any two repositories using the same metrics, and provide comprehensive, valuable, and trending open source insights.
 
-## What we can do
-We provide **monthly rankings and historical growth trends** by metrics such as the number of stars, pull requests, pull requests creators, and commits for many GitHub collections such as open source databases, static site generators, and JavaScript Frameworks.
+<br />
 
-You can see [Collections](https://ossinsight.io/collections/open-source-database)for more information. 
+## Feature 1: Visible & Unique Developer Analytics
 
-:::info
+Insights about **developer productivity**, **work cadence**, and **collaboration** from developer’s contribution behaviour.
 
-### 📌 How to add new collections
-Welcome to contribute to us! You can add new collections by **[submitting PRs here](https://github.com/pingcap/ossinsight)**. 
+* Basic:
+  * star, behaviour, most used lLanguages, contribution trends
+  * code（commits/pull requests/pull request size/code line changes）, code reviews, issues
 
-:::
 
-Let’s take the collection [Open Source Databases](https://ossinsight.io/collections/open-source-database) for example and walk you through the major functionalities of OSS Insight. 
+* Advanced:
+  * contribution time distribution for all kind of contribution activities
+  * monthly stats about contribution activities in all public repositories
 
-### Monthly rankings
 
-We rank the top 27 open source databases on GitHub on a monthly basis according to their number of stars, pull requests, and issues respectively. We also display their rankings change compared to last month under different metrics. 
+<div align="center">
+    <img src="/img/screenshots/homepage-developer.png" alt="Visible & Unique Developer Analytics" height="500" />
+</div>
 
-![The monthly ranking of open source databases in May-I](/img/screenshots/monthly-rankings-of-opensource-databases-in-may-1.png)
-![The monthly ranking of open source databases in May-II](/img/screenshots/monthly-rankings-of-opensource-databases-in-may-2.png)
-
-<center><em>The monthly ranking of open source databases in May</em></center>
+Examples:
+* [Ovilia](https://ossinsight.io/analyze/Ovilia)
+* [midudev](https://ossinsight.io/analyze/midudev)
+* [samswag](https://ossinsight.io/analyze/samswag)
+* [mheap](https://ossinsight.io/analyze/mheap)
+* [levxyca](https://ossinsight.io/analyze/levxyca)
+* [🧑‍💻 Search by other developers](https://ossinsight.io) 
 
 <br />
 <br />
 
-### Dynamic growth trend 
-We also analyze, rank, and display the dynamic growth trend of open source databases by metrics including the number of stars, pull requests, pull requests creators, and issues. 
+## Feature 2: Visual & Comprehensive Repository Analytics
 
-We display the analytical results in three dimensions: **Bar Chart Race, Historical Rankings Change, and Growth Trend of Top 10 Repos**.
+Insights about the **code update frequency & degree of popularity** from repository’s status.
 
-#### Bar Chart Race
-The **Bar Chart Race** is a visilized and animated demonstration of both the growth trend and rankings change of different open source databases in their number of stars, pull requests, pull request creators, and issues respectively since 2011. 
+* Basic:
+  * star, fork, issues, commits, pull requests, contributors, programming languages, lines of code modified
+  * Historical Trends of these metrics 
+  * Time Cost of issues, pull requests
 
-![The bar chart race by Stars](/img/screenshots/bar-chart-race.png)
 
-<center><em>The bar chart race by Stars</em></center>
+* Advanced:
+  * Geographical Distribution of stargazers, issue creators, pull requests creators
+  * Company Distribution of stargazers, issue creators, pull requests creators
+
+<br />
+
+<div align="center">
+    <img src="/img/screenshots/homepage-repository.png" alt="Visual & Comprehensive Repository Analytics" height="500" />
+</div>
+
+Examples:
+* [React](https://ossinsight.io/analyze/facebook/react)
+* [TiDB](https://ossinsight.io/analyze/pingcap/tidb)
+* [Django](https://ossinsight.io/analyze/django/django)
+* [Go Lang](https://ossinsight.io/analyze/golang/go)
+* [Ant Design](https://ossinsight.io/analyze/ant-design/ant-design)
+* [Chaos Mesh](https://ossinsight.io/analyze/chaos-mesh/chaos-mesh)
+* [🔍 Search by more interesting repos](https://ossinsight.io)
+
+You can also **compare any two repositories** using the same metrics mentioned above in Repository Analytics.
+
+Examples:
+* [Compare Vue and React](https://ossinsight.io/analyze/vuejs/vue?vs=facebook/react)
+* [Compare Hugo and Docusaurus](https://ossinsight.io/analyze/gohugoio/hugo?vs=facebook/docusaurus)
+* [Compare CockroachDB and TiDB](https://ossinsight.io/analyze/pingcap/tidb?vs=cockroachdb/cockroach)
+* [Compare PyTorch and TensorFlow](https://ossinsight.io/analyze/pytorch/pytorch?vs=tensorflow/tensorflow)
+* [Compare Django and Flask](https://ossinsight.io/analyze/django/django?vs=pallets/flask)
+* [Compare Visual Studio Code and Atom](https://ossinsight.io/analyze/microsoft/vscode?vs=atom/atom)
+* [Compare Go and Rust](https://ossinsight.io/analyze/golang/go?vs=rust-lang/rust)
+* [Compare Spark and Flink](https://ossinsight.io/analyze/apache/spark?vs=apache/flink)
+* [Compare Ant Design and Material-UI](https://ossinsight.io/analyze/ant-design/ant-design?vs=mui/material-ui)
+* [Compare Chaos Mesh and Chaosblade](https://ossinsight.io/analyze/chaos-mesh/chaos-mesh?vs=chaosblade-io/chaosblade)
 
 <br />
 <br />
 
-#### Historical Ranking Change 
-As the subtitle indicates, the **Historical Ranking Change** part shows the **annual change of the ranking places** of top 27 open source databases by metrics including the number of stars, pull requests, pull request creators, and issues respectively since 2011. 
+## Feature 3: Ranked & Dynamic Collections
 
-![The rankings change of top open source databases by stars since 2011](/img/screenshots/pipeline-chart.png)
+Insights about **developer productivity**, **work cadence**, and **collaboration** from developer’s contribution behaviour.
 
-<center><em>The rankings change of top open source databases by stars since 2011</em></center>
+<div align="center">
+    <img src="/img/screenshots/homepage-collection.png" alt="Ranked & Dynamic Collections" height="500" />
+</div>
 
-<br />
-<br />
+Examples:
+* [Collection: Web Framework](https://ossinsight.io/collections/web-framework)
+* [Collection: Artificial Intelligence](https://ossinsight.io/collections/artificial-intelligence)
+* [Collection: Web3](https://ossinsight.io/collections/web3)
+* [🔥 Find more popular collections](https://ossinsight.io/collections/open-source-database) 
 
-#### Growth Trend of Top 10 Repos
-We also use a line chart to show the **monthly growth trend** of top 10 repositories among the collection of open source databases by metrics including the number of stars, pull requests, pull request creators, and issues. 
+If you want to analyze more, please [contact us](https://ossinsight.io/about/#contact) ✉️ or [+ add a collection](https://github.com/pingcap/ossinsight#how-to-add-collections) here.
 
-![Top 10 open source databases by stars](/img/screenshots/line-chart.png)
+## Sponsors
 
-<center><em>Top 10 open source databases by stars</em></center>
-
-<br />
-<br />
-
-### Analyze any single repository 
-OSS Insight allows you to explore in depth any single repository in real time. By entering any repository or selecting from the option lists at the [search box](https://ossinsight.io/), you can get an in-depth and comprehensive analysis of this repository, including an overview of its number of stars, commits, issues, and a few other metrics. 
-
-![An overview of the TiDB repository](/img/screenshots/overview-of-tidb-repo.png)
-
-<center><em>An overview of the TiDB repository</em></center>
-
-<br />
-
-In addition to an overview of a repository, we also provide another four analytical dimensions: **People, Commits, Pull Requests, and Issues**. By analyzing a repository using the four metrics, you can get a full picture of a repository and draw your own conclusions on many aspects including its popularity among various developers and industries, coding vitality, and coding efficiency. 
-
-### Compare any two repositories
-If you want to compare two repositories, you can enter the two repositories or select from the option lists at the two [search boxes](https://ossinsight.io/) respectively. Then, you will get a comparative analytical result of the two repositories, including their repository overview, and in-depth analysis about their pull requests, issues, commits, contributors, stargazers and other metrics.  
-
-![Compare TiDB with any other repository by entering its name at the search box](/img/screenshots/analyze_selector.png)
-
-<center><em>Compare TiDB with any other repository by entering its name at the search box</em></center>
-
-<br />
-<br />
-
-## Welcome to join this project! 
-If you like our project or are interested to join us, feel free to [submit your PRs](https://github.com/pingcap/ossinsight) to our GitHub repository. You can also try to analyze your own datasets by using TiDB Cloud with [this 10-minute tutorial](https://ossinsight.io/blog/try-it-yourself/). 
-
-## Contact us! 
-You can also follow us on [Twitter](https://twitter.com/OSSInsight) for the latest information. 
-If you have wonderful ideas to share with us, or want to cooperate with us, you can share your ideas via our [Twitter](https://twitter.com/OSSInsight) or email us at [ossinsight@pingcap.com](mailto:ossinsight@pingcap.com). 
+<div align="center">
+  <a href="https://en.pingcap.com/tidb-cloud/?utm_source=ossinsight&utm_medium=referral">
+    <img src="/img/tidb-cloud-logo-w.png" alt="tidb cloud logo" height="50" />
+  </a>
+</div>
