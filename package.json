@@ -61,6 +61,8 @@
     "@makotot/ghostui": "^2.0.0",
     "@mui/x-data-grid": "^5.5.1",
     "@primer/octicons-react": "^16.3.1",
+    "@sentry/react": "^7.7.0",
+    "@sentry/tracing": "^7.7.0",
     "@tsconfig/docusaurus": "^1.0.4",
     "@types/d3-hierarchy": "^3.0.2",
     "@types/grecaptcha": "^3.0.4",

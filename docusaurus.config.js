@@ -37,7 +37,10 @@ const config = {
     API_BASE + '/qo/repos/groups/osdb?format=global_variable',
     'https://www.google.com/recaptcha/api.js?render=6LcBQpkfAAAAAFmuSRkRlJxVtmqR34nNawFgKohC'
   ],
-  clientModules: [path.resolve(__dirname, './src/client/linkedin.js')],
+  clientModules: [
+    path.resolve(__dirname, './src/client/linkedin.js'),
+    path.resolve(__dirname, './src/client/sentry.ts'),
+  ],
   plugins: [
     [
       path.resolve(__dirname, 'plugins/define'),
