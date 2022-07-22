@@ -46,14 +46,6 @@ export const useRemoteData: UseRemoteData = (query: string, params: any, formatS
 
   const serializedParams = unstable_serialize([query, params])
 
-  useEffect(() => {
-    cancelRef.current?.()
-    cancelRef.current = undefined
-    setData(undefined)
-    setError(undefined)
-    setLoading(false)
-  }, [serializedParams])
-
   const reload = useCallback(async () => {
     try {
       setLoading(true)
@@ -69,10 +61,18 @@ export const useRemoteData: UseRemoteData = (query: string, params: any, formatS
   }, [serializedParams])
 
   useEffect(() => {
+    cancelRef.current?.()
+    cancelRef.current = undefined
+    setData(undefined)
+    setError(undefined)
+    setLoading(false)
+  }, [serializedParams])
+
+  useEffect(() => {
     if (inView && shouldLoad && !data && !loading) {
       reload()
     }
-  }, [shouldLoad, inView])
+  }, [shouldLoad, inView, reload, data, loading])
 
   return {data, loading, error, reload}
 }
