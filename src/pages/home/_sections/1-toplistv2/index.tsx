@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React  from 'react';
 import Section from '../../_components/Section';
 import Container from '@mui/material/Container';
 import { TopListV2 } from "./TopListV2";
