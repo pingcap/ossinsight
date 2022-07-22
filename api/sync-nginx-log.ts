@@ -21,7 +21,7 @@ const DEFAULT_FLUSH_INTERVAL = 10;
 //                     '"$request" $status $body_bytes_sent '
 //                     '"$http_referer" "$http_user_agent"';
 // Regexp test: https://regex101.com/r/SXSJkC/1
-const ACCESS_LOG_PATTERN = /(?<remote_addr>((2[0-4]\d|25[0-5]|[01]?\d\d?)\.){3}(2[0-4]\d|25[0-5]|[01]?\d\d?)*)\s*-\s*(?<remote_user>.+)\s*-\s*\[(?<time_local>.+)\]\s*"(?<request_method>(GET|POST|PUT|DELETE))\s(?<request_url>.+)\s(?<request_protocol>\S+)\"\s(?<status_code>\d+)\s(?<bytes>\d+)\s\"(?<host>.+)\"\s\"(?<refer>.+)"/g;
+const ACCESS_LOG_PATTERN = /(?<remote_addr>((2[0-4]\d|25[0-5]|[01]?\d\d?)\.){3}(2[0-4]\d|25[0-5]|[01]?\d\d?)*)\s*-\s*(?<remote_user>.+)\s*-\s*\[(?<time_local>.+)\]\s*"(?<request_method>(GET|POST|PUT|DELETE))\s(?<request_path>.+)\s(?<request_protocol>\S+)\"\s(?<status_code>\d+)\s(?<bytes>\d+)\s\"(?<host>.+)\"\s\"(?<refer>.+)"/g;
 
 // Do not count the access records of the following paths, 
 // because these requests may be frequent.
@@ -31,6 +31,8 @@ const IGNORE_PATH = new Set([
     '/q/events-increment-list',
     '/q/events-increment-intervals',
 ]);
+
+const ONLY_HOST = 'https://ossinsight.io/'
 
 // Load environments.
 dotenv.config({ path: __dirname+'/.env.template' });
@@ -147,7 +149,11 @@ function extractAccessLog(str: string) {
         // Local time format: https://en.wikipedia.org/wiki/Common_Log_Format
         // luxon date format token: https://moment.github.io/luxon/#/parsing?id=table-of-tokens
         const requestedAt = DateTime.fromFormat(groups['time_local'], 'dd/MMM/yyyy:HH:mm:ss ZZZ').toJSDate();
-        const url = new URL(path.join(groups['host'],  groups['request_url']));
+        const host = groups['host'];
+        if (host != ONLY_HOST) {
+            return null;
+        }
+        const url = new URL(path.join(host,  groups['request_path']));
         const accessLog:AccessLog = {
             remoteAddr: groups['remote_addr'],
             statusCode: groups['status_code'],
