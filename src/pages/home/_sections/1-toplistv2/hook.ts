@@ -60,7 +60,10 @@ export function useLanguages() {
 }
 
 export function usePeriods() {
-  return useSelectParam(periodOptions, periodOptions[0]);
+  return useSelectParam(periodOptions, periodOptions[0], '', { variant: 'standard' }, {
+    disableUnderline: true,
+    sx: { font: 'inherit', color: 'primary.main', lineHeight: 'inherit' },
+  });
 }
 
 function snakeToCamel(n) {
