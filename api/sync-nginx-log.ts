@@ -7,11 +7,13 @@ import { Tail } from 'tail';
 import { URL } from 'url';
 import { validateProcessEnv } from './app/env';
 
+// The batch insert size.
 const DEFAULT_BATCH_SIZE = 100;
-const DEFAULT_FLUSH_INTERVAL = 10;      // 10 second.
 
-const logFilepath = process.env.NGINX_ACCESS_LOG;
-const logger = consola.withTag('nginx-log-sync');
+// The flush interval which control how often do it perform a batch insert 
+// if the batch quantity is not reached.
+// Default: 10 second.
+const DEFAULT_FLUSH_INTERVAL = 10;
 
 // The default access log format of nginx.
 // Reference: http://nginx.org/en/docs/http/ngx_http_log_module.html
@@ -19,7 +21,25 @@ const logger = consola.withTag('nginx-log-sync');
 //                     '"$request" $status $body_bytes_sent '
 //                     '"$http_referer" "$http_user_agent"';
 // Regexp test: https://regex101.com/r/SXSJkC/1
-const logRegex = /(?<remote_addr>((2[0-4]\d|25[0-5]|[01]?\d\d?)\.){3}(2[0-4]\d|25[0-5]|[01]?\d\d?)*)\s*-\s*(?<remote_user>.+)\s*-\s*\[(?<time_local>.+)\]\s*"(?<request_method>(GET|POST|PUT|DELETE))\s(?<request_url>.+)\s(?<request_protocol>\S+)\"\s(?<status_code>\d+)\s(?<bytes>\d+)\s\"(?<host>.+)\"\s\"(?<refer>.+)"/g;
+const ACCESS_LOG_PATTERN = /(?<remote_addr>((2[0-4]\d|25[0-5]|[01]?\d\d?)\.){3}(2[0-4]\d|25[0-5]|[01]?\d\d?)*)\s*-\s*(?<remote_user>.+)\s*-\s*\[(?<time_local>.+)\]\s*"(?<request_method>(GET|POST|PUT|DELETE))\s(?<request_url>.+)\s(?<request_protocol>\S+)\"\s(?<status_code>\d+)\s(?<bytes>\d+)\s\"(?<host>.+)\"\s\"(?<refer>.+)"/g;
+
+// Do not count the access records of the following paths, 
+// because these requests may be frequent.
+const IGNORE_PATH = new Set([
+    '/q/events-total',
+    '/q/events-increment',
+    '/q/events-increment-list',
+    '/q/events-increment-intervals',
+]);
+
+// Load environments.
+dotenv.config({ path: __dirname+'/.env.template' });
+dotenv.config({ path: __dirname+'/.env', override: true });
+
+validateProcessEnv();
+
+// Init logger.
+const logger = consola.withTag('nginx-log-sync');
 
 interface AccessLog {
     id?: string;
@@ -78,13 +98,9 @@ class BatchLoader {
     }
 }
 
-// Load environments.
-dotenv.config({ path: __dirname+'/.env.template' });
-dotenv.config({ path: __dirname+'/.env', override: true });
-
-validateProcessEnv()
-
 async function main () {
+    // Check if nginx access log existed.
+    const logFilepath = process.env.NGINX_ACCESS_LOG;
     if (logFilepath === undefined) {
         logger.error('please provide nginx access log filepath.');
         return;
@@ -106,11 +122,15 @@ async function main () {
     const sql = 'INSERT IGNORE INTO access_logs(remote_addr, status_code, request_path, request_params, requested_at) VALUES ?';
     const loader = new BatchLoader(conn, sql);
     const tail = new Tail(logFilepath);
-    tail.on("line", function(data: string) {
-        const log = extractAccessLog(data);
-        if (log !== null) {
-            logger.info(log);
-            loader.insert([log.remoteAddr, log.statusCode, log.requestPath, log.requestParams, log.requestedAt]);
+    tail.on("line", function(line: string) {
+        try {
+            const log = extractAccessLog(line);
+            if (log !== null && !IGNORE_PATH.has(log.requestPath)) {
+                logger.debug(log);
+                loader.insert([log.remoteAddr, log.statusCode, log.requestPath, log.requestParams, log.requestedAt]);
+            }
+        } catch(err) {
+            logger.error(`Failed to process log line: ${line}`, err);
         }
     });
     
@@ -120,7 +140,7 @@ async function main () {
 }
 
 function extractAccessLog(str: string) {
-    const matches = logRegex.exec(str);
+    const matches = ACCESS_LOG_PATTERN.exec(str);
 
     if (Array.isArray(matches) && matches.groups !== undefined) {
         const groups = matches.groups;
