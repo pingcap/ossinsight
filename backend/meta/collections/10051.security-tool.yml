@@ -1,0 +1,28 @@
+id: 10051
+name: Security Tool
+items:
+  - prowler-cloud/prowler
+  - aquasecurity/trivy
+  - CISOfy/lynis
+  - future-architect/vuls
+  - aquasecurity/tfsec
+  - quay/clair
+  - anchore/syft
+  - infobyte/faraday
+  - zricethezav/gitleaks
+  - armosec/kubescape
+  - aquasecurity/starboard
+  - aquasecurity/kube-bench
+  - anshumanbh/git-all-secrets
+  - aquasecurity/kube-hunter
+  - bridgecrewio/checkov
+  - Lissy93/personal-security-checklist
+  - smicallef/spiderfoot
+  - secdev/scapy
+  - RustScan/RustScan
+  - presidentbeef/brakeman
+  - securego/gosec
+  - urbanadventurer/WhatWeb
+  - tenable/terrascan
+  - lunasec-io/lunasec
+  - openclarity/kubeclarity
