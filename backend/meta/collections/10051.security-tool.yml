@@ -26,3 +26,4 @@ items:
   - tenable/terrascan
   - lunasec-io/lunasec
   - openclarity/kubeclarity
+  - anchore/grype
