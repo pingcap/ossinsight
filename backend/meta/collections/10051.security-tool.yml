@@ -10,3 +10,19 @@ items:
   - anchore/syft
   - infobyte/faraday
   - zricethezav/gitleaks
+  - armosec/kubescape
+  - aquasecurity/starboard
+  - aquasecurity/kube-bench
+  - anshumanbh/git-all-secrets
+  - aquasecurity/kube-hunter
+  - bridgecrewio/checkov
+  - Lissy93/personal-security-checklist
+  - smicallef/spiderfoot
+  - secdev/scapy
+  - RustScan/RustScan
+  - presidentbeef/brakeman
+  - securego/gosec
+  - urbanadventurer/WhatWeb
+  - tenable/terrascan
+  - lunasec-io/lunasec
+  - openclarity/kubeclarity
