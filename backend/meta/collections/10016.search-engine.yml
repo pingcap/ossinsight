@@ -11,3 +11,4 @@ items:
   - quickwit-oss/tantivy
   - quickwit-oss/quickwit
   - crate/crate
+  - zinclabs/zinc
