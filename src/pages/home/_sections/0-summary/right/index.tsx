@@ -43,7 +43,7 @@ const Right = () => {
         {show => <Events show={show} />}
       </InViewContainer>
       <Button sx={{fontSize: 12, fontWeight: 'regular', verticalAlign: 'baseline', textDecoration: 'underline', color:'#7c7c7c'}} component={Link} href='/blog/why-we-choose-tidb-to-support-ossinsight'>
-            🤖️ How we display this real-time effect?
+            🤖️ How we make this real-time effect?
           </Button>
     </Item>
   )
