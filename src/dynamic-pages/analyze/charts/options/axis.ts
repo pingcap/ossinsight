@@ -12,6 +12,7 @@ import format from 'human-format';
 import { utils } from './index';
 import { dangerousGetCtx } from './_danger';
 import { isSmall } from './sizes';
+import { DateTime } from "luxon";
 
 type AxisOption<T extends 'x' | 'y', Base extends AxisBaseOption = AxisBaseOption> =
   (T extends 'x' ? XAXisOption : YAXisOption)
@@ -92,7 +93,7 @@ export const formatMonth = (value: number | string | Date) => {
 const now = new Date()
 
 export function timeAxis<T extends 'x' | 'y'>(id?: OptionId, option: AxisOption<T, TimeAxisBaseOption> = {}, fromRecent: string | boolean | undefined = 'event_month'): AxisOption<T> {
-  return merge<AxisOption<T>>(option, {
+  return merge<AxisOption<T, TimeAxisBaseOption>>(option, {
     id,
     type: 'time',
     axisPointer: {
@@ -103,7 +104,8 @@ export function timeAxis<T extends 'x' | 'y'>(id?: OptionId, option: AxisOption<
       }
     },
     // TODO: prevent compute multi-times
-    min: fromRecent ? fromRecent === true ? undefined : utils.min(fromRecent as any) : new Date(2011, 0, 1, 0, 0, 0, 0),
-    max: new Date(now.getFullYear(), now.getMonth(), 1, 0, 0, 0, 0),
+    min: fromRecent ? fromRecent === true ? undefined : DateTime.fromISO(utils.min<any, any>(fromRecent)).minus({ month: 1 }).toJSDate() : new Date(2011, 0, 1, 0, 0, 0, 0),
+    max: DateTime.fromJSDate(new Date(now.getFullYear(), now.getMonth(), 1, 0, 0, 0, 0)).plus({ month: 1 }).toJSDate(),
+    minInterval: 3600 * 24 * 1000 * 28,
   });
 }

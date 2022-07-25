@@ -22,7 +22,7 @@ export const LineChart = withChart<LineData<any>, { valueIndex: string, name: st
   repoName,
   comparingRepoName,
 }, {valueIndex, name, fromRecent = false}) => ({
-  xAxis: timeAxis<'x'>(undefined, undefined, fromRecent),
+  xAxis: timeAxis<'x'>(undefined, undefined, !fromRecent ? 'event_month' : fromRecent),
   yAxis: valueAxis<'y'>(undefined, {name}),
   title: title(propsTitle),
   tooltip: axisTooltip('line'),
@@ -39,7 +39,7 @@ export const LineChart = withChart<LineData<any>, { valueIndex: string, name: st
     comparingDataset(compareData),
   ],
   series: [
-    line('event_month', valueIndex, {name: repoName}),
-    line('event_month', valueIndex, {datasetId: COMPARING_DATASET_ID, name: comparingRepoName}),
+    line('event_month', valueIndex, {name: repoName, showSymbol: data.data?.data.length <= 1}),
+    line('event_month', valueIndex, {datasetId: COMPARING_DATASET_ID, name: comparingRepoName, showSymbol: compareData.data?.data.length <= 1}),
   ],
 }));
