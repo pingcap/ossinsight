@@ -1,6 +1,7 @@
 import axios, { AxiosRequestConfig } from 'axios';
+import { createSimpleCache, patchCacheInterceptors } from "./axios/cache";
 
-export const BASE_URL = process.env.APP_API_BASE || 'https://api.ossinsight.io'
+export const BASE_URL = process.env.APP_API_BASE || 'https://api.ossinsight.io';
 
 export const client = axios.create({
   baseURL: BASE_URL,
@@ -16,6 +17,8 @@ export const client = axios.create({
     return usp.toString();
   },
 });
+
+patchCacheInterceptors(client, createSimpleCache());
 
 client.interceptors.response.use(response => {
   return response.data;

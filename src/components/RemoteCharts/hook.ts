@@ -88,7 +88,7 @@ export const useRealtimeRemoteData: UseRemoteData = (query: string, params: any,
   }, [inView])
 
   const { data, isValidating: loading, error, mutate } = useSWR(shouldLoad && viewed ? [query, params, 'q'] : null, {
-    fetcher: core.query,
+    fetcher: core.queryWithoutCache,
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
   })
@@ -120,7 +120,7 @@ export const useTotalEvents = (run: boolean, interval = 1000) => {
 
     const reloadTotal = async () => {
       try {
-        const { data: [{ cnt, latest_timestamp }] } = await core.query('events-total')
+        const { data: [{ cnt, latest_timestamp }] } = await core.queryWithoutCache('events-total')
         cancelRef.current?.()
         lastTs.current = latest_timestamp
         setTotal(cnt)
@@ -131,7 +131,7 @@ export const useTotalEvents = (run: boolean, interval = 1000) => {
     const reloadAdded = async (first: boolean) => {
       try {
         if (lastTs.current) {
-          const { data: [{ cnt, latest_created_at }] } = await core.query('events-increment', { ts: lastTs.current }, {
+          const { data: [{ cnt, latest_created_at }] } = await core.queryWithoutCache('events-increment', { ts: lastTs.current }, {
             cancelToken: first ? undefined : new Axios.CancelToken(cancel => cancelRef.current = cancel)
           })
           setAdded(cnt)
