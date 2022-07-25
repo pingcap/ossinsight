@@ -69,10 +69,10 @@ export const useRemoteData: UseRemoteData = (query: string, params: any, formatS
   }, [serializedParams])
 
   useEffect(() => {
-    if (inView && shouldLoad && !data && !loading) {
+    if (inView && shouldLoad && !data && !loading && !error) {
       reload()
     }
-  }, [shouldLoad, inView, reload, data, loading])
+  }, [shouldLoad, inView, reload, data, loading && !error])
 
   return {data, loading, error, reload}
 }
