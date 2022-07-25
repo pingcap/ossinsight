@@ -11,6 +11,7 @@ interface UserScrollableResult {
   ref: RefCallback<HTMLElement | null>;
   scrollable: Scrollable;
   scroll: (offset: number) => void;
+  recompute: () => void;
 }
 
 export function useScrollable({ direction = 'x' }: UserScrollableProps): UserScrollableResult {
@@ -21,50 +22,55 @@ export function useScrollable({ direction = 'x' }: UserScrollableProps): UserScr
     setElement(element);
   });
 
-  useEffect(() => {
+  const recompute = useCallback(() => {
     if (!element) {
-      return
+      setScrollable(false);
+      return;
     }
-    const handleScroll = () => {
-      let size: number, scrollableSize: number, scrollOffset: number
-      if (direction === 'x') {
-        size = element.getBoundingClientRect().width
-        scrollableSize = element.scrollWidth
-        scrollOffset = element.scrollLeft
-      } else {
-        size = element.getBoundingClientRect().height
-        scrollableSize = element.scrollHeight
-        scrollOffset = element.scrollTop
-      }
-      if (scrollableSize === size) {
-        setScrollable(false)
-      } else if (scrollOffset === 0) {
-        setScrollable('forward')
-      } else if (scrollOffset + size === scrollableSize) {
-        setScrollable('backward')
-      } else {
-        setScrollable(true)
-      }
+    let size: number, scrollableSize: number, scrollOffset: number;
+    if (direction === 'x') {
+      size = element.getBoundingClientRect().width;
+      scrollableSize = element.scrollWidth;
+      scrollOffset = element.scrollLeft;
+    } else {
+      size = element.getBoundingClientRect().height;
+      scrollableSize = element.scrollHeight;
+      scrollOffset = element.scrollTop;
     }
-
-    element.addEventListener('scroll', handleScroll)
-    window.addEventListener('resize', handleScroll)
-
-    handleScroll()
-
-    return () => {
-      element.removeEventListener('scroll', handleScroll)
-      window.removeEventListener('resize', handleScroll)
+    if (scrollableSize === size) {
+      setScrollable(false);
+    } else if (scrollOffset === 0) {
+      setScrollable('forward');
+    } else if (scrollOffset + size === scrollableSize) {
+      setScrollable('backward');
+    } else {
+      setScrollable(true);
     }
   }, [element, direction]);
 
+  useEffect(() => {
+    if (!element) {
+      return;
+    }
+
+    element.addEventListener('scroll', recompute);
+    window.addEventListener('resize', recompute);
+
+    recompute();
+
+    return () => {
+      element.removeEventListener('scroll', recompute);
+      window.removeEventListener('resize', recompute);
+    };
+  }, [element, direction, recompute]);
+
   const scroll = useCallback((offset: number = 100) => {
-    const { width, height } = element.getBoundingClientRect()
+    const { width, height } = element.getBoundingClientRect();
     element.scrollBy({
       [direction === 'x' ? 'left' : 'top']: offset * (direction === 'x' ? width : height),
       behavior: 'smooth',
-    })
-  }, [element])
+    });
+  }, [element]);
 
-  return { ref, scroll, scrollable };
+  return { ref, scroll, scrollable, recompute };
 }

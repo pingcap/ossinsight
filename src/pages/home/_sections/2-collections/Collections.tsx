@@ -1,4 +1,4 @@
-import React, { PropsWithChildren } from "react";
+import React, { PropsWithChildren, useEffect, useRef } from "react";
 import { RecentHotCollectionData, useRecentHotCollections } from "./hook";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -14,9 +14,10 @@ import Skeleton from "@mui/material/Skeleton";
 
 export default function Collections() {
   const { data } = useRecentHotCollections();
+  const version = useRef(0)
 
   return (
-    <CollectionsContainer>
+    <CollectionsContainer version={++version.current}>
       {data?.data.map(collection => (
         <Collection key={collection.id} {...collection} />
       ))}
@@ -35,8 +36,12 @@ const Loading = () => {
   );
 };
 
-const CollectionsContainer = ({ children }: PropsWithChildren<{}>) => {
-  const { ref, scrollable, scroll } = useScrollable({ direction: 'x' });
+const CollectionsContainer = ({ version, children }: PropsWithChildren<{ version: number }>) => {
+  const { ref, scrollable, scroll, recompute } = useScrollable({ direction: 'x' });
+
+  useEffect(() => {
+    recompute()
+  }, [version])
 
   return (
     <Box position="relative">
@@ -56,11 +61,8 @@ const ScrollIndicator = ({ type, onClick, show }: ScrollIndicatorProps) => {
       sx={{
         transition: 'opacity .2s ease',
         cursor: 'pointer',
-        opacity: show ? 0.6 : 0,
+        opacity: show ? 1 : 0,
         pointerEvents: show ? undefined : 'none',
-        '&:hover': {
-          opacity: show ? 1 : 0,
-        },
       }}
       position="absolute"
       display="flex"
