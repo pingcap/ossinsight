@@ -144,7 +144,7 @@ function renderBasic(item: Result & ChangedEvents & { is_new_contributor?: 0 | 1
     >
       <Line key={item.actor_login}>
         <ListItemAvatar>
-          <a href={`https://github.com/${item.actor_login}`} target="_blank" rel="noopener">
+          <a href={`/analyze/${item.actor_login}`} target="_blank" rel="noopener">
             {avatar}
           </a>
         </ListItemAvatar>
