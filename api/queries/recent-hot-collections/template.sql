@@ -8,8 +8,8 @@ WITH collectionsOrderByVisits AS (
         AND requested_at > DATE_SUB(NOW(), INTERVAL 1 MONTH)
 	GROUP BY 1
 	ORDER BY 2 DESC
-	LIMIT 5
-), top5collections AS (
+	LIMIT 10
+), top10collections AS (
 	SELECT c.id, c.name, cv.visits
 	FROM collectionsOrderByVisits cv
 	JOIN collections c ON cv.collection_id = c.id
@@ -28,6 +28,6 @@ FROM (
 		(ci.last_2nd_month_rank - ci.last_month_rank) AS rank_changes,
 		COUNT(*) OVER (PARTITION BY ci.collection_id) AS repos
 	FROM collection_items ci
-	JOIN top5collections tc ON ci.collection_id = tc.id
+	JOIN top10collections tc ON ci.collection_id = tc.id
 ) sub
 WHERE `rank` <= 3;
