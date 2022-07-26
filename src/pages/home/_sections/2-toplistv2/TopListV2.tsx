@@ -17,16 +17,30 @@ import type { History } from 'history';
 import { paramCase } from "param-case";
 import Box from "@mui/material/Box";
 import { useDebugDialog } from "../../../../components/DebugDialog";
+import TableContainer from "@mui/material/TableContainer";
+import Divider from "@mui/material/Divider";
 
-export function TopListV2({ period }: { period: Period }) {
+export function TopListV2() {
+  const { select: periodSelect, value: period } = usePeriods();
   const { select: languageSelect, value: language } = useLanguages();
-  const { data, loading, error } = useTopList(language.key, period);
+  const { data, loading, error } = useTopList(language, period.key);
   const { dialog: debugDialog, button: debugButton } = useDebugDialog(data)
 
   return (
     <Box>
-      <Stack direction='row' justifyContent='space-between'>
-        {languageSelect}
+      <Stack direction='row' justifyContent='space-between' alignItems='center' flexWrap='wrap'>
+        <Stack direction='row' flexWrap='wrap' alignItems='center' divider={<Divider orientation='vertical' flexItem sx={{ mr: 1 }} />}>
+          <Stack direction='row' flexWrap='wrap' alignItems='center'>
+            TimeRange:
+            &nbsp;
+            {periodSelect}
+          </Stack>
+          <Stack direction='row' flexWrap='wrap' alignItems='center'>
+            Language:
+            &nbsp;
+            {languageSelect}
+          </Stack>
+        </Stack>
         {debugButton}
       </Stack>
       <DataTable data={data?.data} loading={loading} />
@@ -40,28 +54,30 @@ const DataTable = ({ data, loading }: { data: ProcessedTopListData[], loading: b
   const history = useHistory()
 
   return (
-    <Table className="clearTable">
-      <TableHead>
-        <TableRow>
-          <TableCell variant="head">Rank</TableCell>
-          <TableCell variant="head">Repository</TableCell>
-          <TableCell variant="head">Stars</TableCell>
-          <TableCell variant="head">Pushes</TableCell>
-          <TableCell variant="head">Pull Requests</TableCell>
-          <TableCell variant="head">All Events</TableCell>
-          <TableCell variant="head">Top Contributors</TableCell>
-        </TableRow>
-      </TableHead>
-      <TableBody
-        sx={theme => ({
-          '.MuiTableRow-root:nth-of-type(odd)': {
-            backgroundColor: theme.palette.action.hover,
-          },
-        })}
-      >
-        {data ? renderData(data, history) : renderLoading()}
-      </TableBody>
-    </Table>
+    <TableContainer>
+      <Table className="clearTable">
+        <TableHead>
+          <TableRow>
+            <TableCell variant="head">Rank</TableCell>
+            <TableCell variant="head">Repository</TableCell>
+            <TableCell variant="head">Stars</TableCell>
+            <TableCell variant="head">Pushes</TableCell>
+            <TableCell variant="head">Pull Requests</TableCell>
+            <TableCell variant="head">All Events</TableCell>
+            <TableCell variant="head">Top Contributors</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody
+          sx={theme => ({
+            '.MuiTableRow-root:nth-of-type(odd)': {
+              backgroundColor: theme.palette.action.hover,
+            },
+          })}
+        >
+          {data ? renderData(data, history) : renderLoading()}
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
 };
 

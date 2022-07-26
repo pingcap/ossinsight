@@ -1,7 +1,8 @@
 import { params } from '../../../../../api/queries/recent-events-rank-v2/params.json';
 import { AsyncData, RemoteData, useRemoteData } from "../../../../components/RemoteCharts/hook";
-import { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { useSelectParam } from "../../../../components/params";
+import TileSelect from "../../../../components/TileSelect";
 
 export type Language = string
 export type Period = string
@@ -56,13 +57,22 @@ export function useTopList(language: Language, period: Period): AsyncData<Remote
 }
 
 export function useLanguages() {
-  return useSelectParam(languageOptions, languageOptions[0], 'Language', { sx: { minWidth: 120 } });
+  const [value, setValue] = useState<string>(languageOptions[0].key);
+  const options = useMemo(() => {
+    return languageOptions.map(({ key, title }) => ({ key: key, label: title }));
+  }, [languageOptions]);
+
+  const select = (
+    <TileSelect value={value} onSelect={setValue} options={options} />
+  );
+
+  return { select, value };
 }
 
 export function usePeriods() {
   return useSelectParam(periodOptions, periodOptions[0], '', { variant: 'standard' }, {
     disableUnderline: true,
-    sx: { font: 'inherit', color: 'primary.main', lineHeight: 'inherit' },
+    sx: { font: 'inherit', color: 'primary.main', lineHeight: 'inherit', '.MuiSelect-select': { pb: 0 } },
   });
 }
 

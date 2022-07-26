@@ -90,7 +90,7 @@ function LoadingCollection() {
       <Skeleton width={160} sx={{mt: 2}} />
       <Skeleton width={120} sx={{my: 2}} />
       {[0, 1, 2].map(i => (
-        <Stack direction="row">
+        <Stack key={i} direction="row">
           <Skeleton width={48} />
           <Skeleton width={36} height={36} variant="circular" sx={{ mx: 1 }} />
           <Skeleton width={120} />
