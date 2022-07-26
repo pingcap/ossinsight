@@ -25,7 +25,7 @@ export default withInViewContainer(function HistorySortSection() {
   return (
     <section>
       <H2 id="bar-chart-race">Bar Chart Race</H2>
-      <P2>An animated bar chart visualizes the annual total growth in four metrics（Star, Pull Request, Pull Request Creators, Issue） for each repository since 2011.</P2>
+      <P2>An animated bar chart visualizes the annual total growth in four metrics (Star, Pull Request, Pull Request Creators, Issue) for each repository since 2011.</P2>
       {tabs}
       <br />
       {withRemote(

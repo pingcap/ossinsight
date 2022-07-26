@@ -54,7 +54,7 @@ export default withInViewContainer(function HistorySection() {
   return (
     <section>
       <H2>Historical Trending of Top 10</H2>
-      <P2>A line chart displays the top 10 repositories with total amount and ranking changes in four metrics（Star, Pull Request, Pull Request Creators, Issue） since 2011.</P2>
+      <P2>A line chart displays the top 10 repositories with total amount and ranking changes in four metrics (Star, Pull Request, Pull Request Creators, Issue) since 2011.</P2>
       {tabs}
       <br />
       {withRemote(

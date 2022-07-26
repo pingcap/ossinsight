@@ -36,7 +36,7 @@ export const PullRequestsSection = forwardRef(function ({}, ref: ForwardedRef<HT
       <Analyze query='analyze-pull-requests-size-per-month'>
         <H3 id='pr-history' sx={{ mt: 6 }}>Pull Request History</H3>
         <P2>
-          We divide the size of Pull Request into six intervals, from xs to xxl（based on the changes of code lines）. Learn more about
+          We divide the size of Pull Request into six intervals, from xs to xxl (based on the changes of code lines). Learn more about
           &nbsp;
           <a href='https://github.com/kubernetes/kubernetes/labels?q=size' target='_blank'>
             PR size

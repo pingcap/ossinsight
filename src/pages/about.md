@@ -31,7 +31,7 @@ Insights about **developer productivity**, **work cadence**, and **collaboration
 
 * Basic:
   * star, behaviour, most used lLanguages, contribution trends
-  * code（commits/pull requests/pull request size/code line changes）, code reviews, issues
+  * code (commits/pull requests/pull request size/code line changes), code reviews, issues
 
 
 * Advanced:
