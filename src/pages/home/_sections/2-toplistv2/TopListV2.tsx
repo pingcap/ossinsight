@@ -1,4 +1,4 @@
-import type { Period, ProcessedTopListData } from './hook';
+import type { ProcessedTopListData } from './hook';
 import { useLanguages, usePeriods, useTopList } from "./hook";
 import Table from "@mui/material/Table";
 import TableHead from "@mui/material/TableHead";
@@ -10,7 +10,6 @@ import React from "react";
 import Link from "@docusaurus/Link";
 import Avatar from "@mui/material/Avatar";
 import Stack from "@mui/material/Stack";
-import { Tag } from "@mui/icons-material";
 import { Chip } from "@mui/material";
 import { useHistory } from '@docusaurus/router';
 import type { History } from 'history';
@@ -24,23 +23,20 @@ export function TopListV2() {
   const { select: periodSelect, value: period } = usePeriods();
   const { select: languageSelect, value: language } = useLanguages();
   const { data, loading, error } = useTopList(language, period.key);
-  const { dialog: debugDialog, button: debugButton } = useDebugDialog(data)
+  const { dialog: debugDialog, button: debugButton } = useDebugDialog(data);
 
   return (
     <Box>
-      <Stack direction='row' justifyContent='space-between' alignItems='center' flexWrap='wrap'>
-        <Stack direction='row' flexWrap='wrap' alignItems='center' divider={<Divider orientation='vertical' flexItem sx={{ mr: 1 }} />}>
-          <Stack direction='row' flexWrap='wrap' alignItems='center'>
-            TimeRange:
-            &nbsp;
-            {periodSelect}
-          </Stack>
-          <Stack direction='row' flexWrap='wrap' alignItems='center'>
-            Language:
-            &nbsp;
-            {languageSelect}
-          </Stack>
-        </Stack>
+      <Stack direction="row" justifyContent="start" alignItems="center" flexWrap="wrap">
+        <span>
+          TimeRange:&nbsp;
+        </span>
+        {periodSelect}
+        <Divider orientation="vertical" flexItem sx={{ mr: 1 }} />
+        <span>
+          Language:&nbsp;
+        </span>
+        {languageSelect}
         {debugButton}
       </Stack>
       <DataTable data={data?.data} loading={loading} />
@@ -51,7 +47,7 @@ export function TopListV2() {
 
 
 const DataTable = ({ data, loading }: { data: ProcessedTopListData[], loading: boolean }) => {
-  const history = useHistory()
+  const history = useHistory();
 
   return (
     <TableContainer>
@@ -114,9 +110,10 @@ const renderLoading = () => {
 
 const renderCollections = (names: string[] | undefined | null, history: History) => {
   return (
-    <Stack direction="row" gap={1} display='inline-flex' ml={1}>
+    <Stack direction="row" gap={1} display="inline-flex" ml={1}>
       {names?.map(collection => (
-        <Chip key={collection} size='small' label={collection} onClick={() => history.push(`/collections/${paramCase(collection)}`)} />
+        <Chip key={collection} size="small" label={collection}
+              onClick={() => history.push(`/collections/${paramCase(collection)}`)} />
       ))}
     </Stack>
   );
