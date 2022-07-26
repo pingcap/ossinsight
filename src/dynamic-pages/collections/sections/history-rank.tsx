@@ -24,7 +24,7 @@ export default withInViewContainer(function HistoryRankSection() {
   return (
     <section>
       <H2 id="historical-rankings">Historical Ranking</H2>
-      <P2>A pipeline chart displays annual ranking changes in four metrics（Star, Pull Request, Pull Request Creators, Issue） for each repository since 2011.</P2>
+      <P2>A pipeline chart displays annual ranking changes in four metrics (Star, Pull Request, Pull Request Creators, Issue) for each repository since 2011.</P2>
       {tabs}
       <br />
       {withRemote(

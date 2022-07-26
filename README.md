@@ -69,7 +69,7 @@ Looks forward to your PRs！
   
 * Basic:
   * star, behaviour, most used lLanguages, contribution trends
-  * code（commits/pull requests/pull request size/code line changes）, code reviews, issues
+  * code (commits/pull requests/pull request size/code line changes), code reviews, issues
 * Advanced:
   * contribution time distribution for all kind of contribution activities
   * monthly stats about contribution activities in all public repositories
