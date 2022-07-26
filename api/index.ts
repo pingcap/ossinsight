@@ -1,4 +1,4 @@
-import App, { Context } from 'koa'
+import App from 'koa'
 import Router from 'koa-router';
 import server from "./app/server";
 import dotenv from 'dotenv';

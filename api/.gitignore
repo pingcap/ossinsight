@@ -2,7 +2,8 @@
 node_modules
 
 # Build Result
-*.js
+app/**/*.js
+/dist
 
 # Enviorment Variable
 .env

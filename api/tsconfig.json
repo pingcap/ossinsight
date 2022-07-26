@@ -8,7 +8,10 @@
     "forceConsistentCasingInFileNames": true,
     "typeRoots": ["types"],
     "types": [
-      "node"
+      "node",
+      "jest"
     ],
-  }
+    "outDir": "./dist"
+  },
+  "exclude": ["**/dist", "**/node_modules"],
 }

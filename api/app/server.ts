@@ -1,5 +1,5 @@
 import Router from "koa-router";
-import Query, {SQLExecuteError} from "./core/Query";
+import Query from "./core/Query";
 import {TiDBQueryExecutor} from "./core/TiDBQueryExecutor";
 import {DefaultState} from "koa";
 import type {ContextExtends} from "../index";
@@ -10,39 +10,6 @@ import CollectionService from "./services/CollectionService";
 import GHEventService from "./services/GHEventService";
 import CacheBuilder from "./core/cache/CacheBuilder";
 import UserService from "./services/UserService";
-
-const COMPARE_QUERIES = [
-  'stars-total',
-  'stars-map',
-  'stars-top-50-company',
-  'stars-max-by-week',
-  'stars-map',
-  'stars-average-by-week',
-  'stars-common-company',
-  'stars-common-stargazer-total',
-  'pushes-total',
-  'pushers-total',
-  'pull-requests-total',
-  'pull-request-reviews-total',
-  'pull-request-reviewers-total',
-  'pull-request-creators-total',
-  'pull-request-creators-map',
-  'pull-request-creators-top-50-company',
-  'issues-total',
-  'issue-creators-total',
-  'issue-comments-total',
-  'issue-commenters-total',
-  'issue-creators-map',
-  'issue-creators-top-50-company',
-  'forkers-total',
-  'committers-total',
-  'commits-total',
-  'commit-commenters-total',
-  'commits-time-distribution',
-  'pull-requests-history',
-  'pull-request-creators-per-month',
-  'stars-history',
-];
 
 export default async function server(router: Router<DefaultState, ContextExtends>) {
   // Init MySQL Executor. 
