@@ -22,7 +22,7 @@
     "sync-nginx-log:remove": "pm2 delete 'ossinsight-api-sync-nginx-logs'",
     "postinstall": "pnpm run build",
     "build": "tsc && pnpm run build:copy",
-    "build:copy": "find . -name .env -exec cp {} ./dist \\; && cp .env.template ./dist/.env.template && cp -r ./queries ./dist/queries",
+    "build:copy": "find . -maxdepth 1 -name .env -exec cp {} ./dist \\; && cp .env.template ./dist/.env.template && cp -r ./queries ./dist/queries",
     "server:start": "node ./dist/index.js",
     "server:prefetch": "node ./dist/compute-prefetch-enums.js",
     "server:gc": "node ./dist/cache-gc.js",
