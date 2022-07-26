@@ -8,8 +8,8 @@ WITH collectionsOrderByVisits AS (
         AND requested_at > DATE_SUB(NOW(), INTERVAL 1 MONTH)
 	GROUP BY 1
 	ORDER BY 2 DESC
-	LIMIT 5
-), top5collections AS (
+	LIMIT 10
+), top10collections AS (
 	SELECT c.id, c.name, cv.visits
 	FROM collectionsOrderByVisits cv
 	JOIN collections c ON cv.collection_id = c.id

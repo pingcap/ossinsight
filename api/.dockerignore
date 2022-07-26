@@ -5,5 +5,8 @@
 .idea
 .vscode
 node_modules/
-**/*.js
+tests/
+dist/
+dist/.env
+log/
 README.md
