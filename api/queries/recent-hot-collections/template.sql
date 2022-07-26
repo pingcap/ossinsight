@@ -28,6 +28,6 @@ FROM (
 		(ci.last_2nd_month_rank - ci.last_month_rank) AS rank_changes,
 		COUNT(*) OVER (PARTITION BY ci.collection_id) AS repos
 	FROM collection_items ci
-	JOIN top5collections tc ON ci.collection_id = tc.id
+	JOIN top10collections tc ON ci.collection_id = tc.id
 ) sub
 WHERE `rank` <= 3;
