@@ -31,7 +31,6 @@
     "dev:prefetch": "tsc && ts-node compute-prefetch-enums.ts",
     "dev:generate-company-name-sql": "tsc && ts-node generate-company-name-sql.ts",
     "dev:sync-nginx-log": "tsc && ts-node sync-nginx-log.ts",
-    "dev:sync-users-data": "tsc && ts-node sync-users-data.ts",
     "gen:schema-ts": "json2ts params.schema.json params.schema.d.ts",
     "validate:params": "ajv -s params.schema.json -d \"queries/*/params.json\""
   },
