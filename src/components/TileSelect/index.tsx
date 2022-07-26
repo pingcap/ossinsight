@@ -78,7 +78,6 @@ export default function TileSelect({ options, value, onSelect }: TileSelectProps
   }, [recompute]);
 
   const handleSelect = useCallback((event: SelectChangeEvent) => {
-    console.log(event.target.value);
     onSelect(event.target.value);
   }, [onSelect]);
 
