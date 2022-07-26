@@ -9,7 +9,6 @@
     "typeRoots": ["types"],
     "types": [
       "node",
-      "jest"
     ],
     "outDir": "./dist"
   },
