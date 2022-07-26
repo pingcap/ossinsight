@@ -10,5 +10,7 @@
     "types": [
       "node"
     ],
-  }
+    "outDir": "./dist"
+  },
+  "exclude": ["**/dist", "**/node_modules"],
 }
