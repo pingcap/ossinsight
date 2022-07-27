@@ -13,6 +13,7 @@ import GHEventService from "./app/services/GHEventService";
 import CollectionService from './app/services/CollectionService';
 import CacheBuilder from './app/core/cache/CacheBuilder';
 import UserService from './app/services/UserService';
+import { resolveHours } from "./utils/paramDefs";
 
 // Load environments.
 dotenv.config({ path: __dirname+'/.env.template' });
@@ -166,7 +167,7 @@ async function prefetchQueries(
     for (let paramCombine of paramCombines) {
       queryJobs.push({
         queryName: queryName,
-        refreshHours: queryDef.refreshHours || -1,
+        refreshHours: resolveHours(paramCombine, queryDef.refreshHours),
         params: paramCombine
       })
     }
@@ -175,7 +176,7 @@ async function prefetchQueries(
     if (queryDef.params.length === 0) {
       queryJobs.push({
         queryName: queryName,
-        refreshHours: queryDef.refreshHours || -1,
+        refreshHours: resolveHours({}, queryDef.refreshHours),
         params: {}
       })
     }

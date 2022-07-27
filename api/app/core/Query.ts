@@ -12,6 +12,7 @@ import CollectionService from '../services/CollectionService';
 import CacheBuilder, { CacheProviderTypes } from './cache/CacheBuilder';
 import { QueryTemplateNotFoundError } from './QueryFactory';
 import UserService from '../services/UserService';
+import { resolveHours } from "../../utils/paramDefs";
 
 export enum ParamType {
   ARRAY = 'array',
@@ -231,7 +232,7 @@ export default class Query {
     const queryName = this.queryDef!.name || this.name;
     const cacheKey = this.getQueryKey('query', queryName, this.queryDef!, params);
     const cache = this.cacheBuilder.build(
-      cacheProvider, cacheKey, cacheHours, refreshHours, onlyFromCache, refreshCache
+      cacheProvider, cacheKey, cacheHours, resolveHours(params, refreshHours), onlyFromCache, refreshCache
     );
 
     return cache.load(async () => {
@@ -279,7 +280,7 @@ export default class Query {
     const queryName = this.queryDef!.name || this.name;
     const cacheKey = this.getQueryKey('explain-query', queryName, this.queryDef!, params);
     const cache = this.cacheBuilder.build(
-      cacheProvider, cacheKey, cacheHours, refreshHours, false, refreshCache
+      cacheProvider, cacheKey, cacheHours, resolveHours(params, refreshHours), false, refreshCache
     );
 
     return cache.load(async () => {
@@ -328,7 +329,7 @@ export default class Query {
     const queryName = this.queryDef!.name || this.name;
     const cacheKey = this.getQueryKey('trace-query', queryName, this.queryDef!, params);
     const cache = this.cacheBuilder.build(
-      cacheProvider, cacheKey, cacheHours, refreshHours, onlyFromCache, refreshCache
+      cacheProvider, cacheKey, cacheHours, resolveHours(params, refreshHours), onlyFromCache, refreshCache
     );
 
     return cache.load(async () => {

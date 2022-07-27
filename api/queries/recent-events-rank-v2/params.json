@@ -1,6 +1,14 @@
 {
   "cacheHours": -1,
-  "refreshHours": 24,
+  "refreshHours": {
+    "param": "period",
+    "on": {
+      "last_hour": 0.25,
+      "last_day": 24,
+      "last_week": 24,
+      "last_month": 24
+    }
+  },
   "onlyFromCache": true,
   "params": [
     {
