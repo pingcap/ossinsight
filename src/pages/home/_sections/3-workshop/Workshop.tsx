@@ -40,7 +40,7 @@ export default function Workshop() {
             <br />
             please join our offline workshop, you may get help there.
           </Typography>
-          <Button variant="contained" color="primary" component={Link} href="/">
+          <Button variant="contained" color="primary" component={Link} href="https://share.hsforms.com/1E-qtGQWrTVmctP8kBT34gw2npzm">
             🗓️ Join Offline Workshop
           </Button>
         </Stack>
