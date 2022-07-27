@@ -34,7 +34,6 @@ const config = {
   organizationName: 'pingcap',
   projectName: 'ossinsight',
   scripts: [
-    API_BASE + '/qo/repos/groups/osdb?format=global_variable',
     'https://www.google.com/recaptcha/api.js?render=6LcBQpkfAAAAAFmuSRkRlJxVtmqR34nNawFgKohC'
   ],
   clientModules: [
