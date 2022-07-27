@@ -1,7 +1,7 @@
 <h1 align="center">Open Source Software Insight!</h1>
 
 <a href="https://ossinsight.io">
-  <img src="/static/img/screenshots/homepage.gif"
+  <img src="/static/img/screenshots/homepage-2.gif"
 </a>
 
 <h3 align="center">
