@@ -3,6 +3,7 @@ import { AsyncData, RemoteData, useRemoteData } from "../../../../components/Rem
 import React, { useMemo, useState } from "react";
 import { useSelectParam } from "../../../../components/params";
 import TileSelect from "../../../../components/TileSelect";
+import { paramCase } from "param-case";
 
 export type Language = string
 export type Period = string
@@ -77,7 +78,7 @@ export function usePeriods() {
 }
 
 function snakeToCamel(n) {
-  return n
-  .replace(/(?<=(^|_))[a-z]/g, c => c.toUpperCase())
-  .replace(/_/g, ' ');
+  return paramCase(n)
+  .replace(/^\w/g, a => a.toUpperCase())
+  .replace(/-/g, ' ');
 }
