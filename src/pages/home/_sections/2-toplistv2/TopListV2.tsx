@@ -18,6 +18,7 @@ import Box from "@mui/material/Box";
 import { useDebugDialog } from "../../../../components/DebugDialog";
 import TableContainer from "@mui/material/TableContainer";
 import Divider from "@mui/material/Divider";
+import Typography from "@mui/material/Typography";
 
 export function TopListV2() {
   const { select: periodSelect, value: period } = usePeriods();
@@ -40,6 +41,11 @@ export function TopListV2() {
         {debugButton}
       </Stack>
       <DataTable data={data?.data} loading={loading} />
+      <Typography variant='body2'>
+        <Link href='/'>
+          🤖️ How we display this ranking ?
+        </Link>
+      </Typography>
       {debugDialog}
     </Box>
   );
