@@ -102,7 +102,7 @@ async function main () {
     const presets = await getPresets();
     await prefetchQueries(queryExecutor, cacheBuilder, ghEventService, collectionService, userService, queries, presets);
     logger.info('Next round prefetch will come at: %s', DateTime.now().plus(Duration.fromObject({ minutes: 1 })))
-    await sleep(1000 * 60 * 1);    // sleep 30 minutes.
+    await sleep(1000 * 60 * 1);    // sleep 1 minutes.
   }
 }
 
