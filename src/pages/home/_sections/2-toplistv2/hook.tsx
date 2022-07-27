@@ -70,7 +70,7 @@ export function useLanguages() {
 }
 
 export function usePeriods() {
-  return useSelectParam(periodOptions, periodOptions[0], '', { variant: 'standard' }, {
+  return useSelectParam(periodOptions, periodOptions[1], '', { variant: 'standard' }, {
     disableUnderline: true,
     sx: { font: 'inherit', color: 'primary.main', lineHeight: 'inherit', '.MuiSelect-select': { pb: 0 } },
   });
