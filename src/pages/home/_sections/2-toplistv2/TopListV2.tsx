@@ -29,9 +29,9 @@ export function TopListV2() {
   return (
     <Box>
       <Stack direction="row" justifyContent="start" alignItems="center" flexWrap="wrap">
-        <span>
+        {/* <span>
           TimeRange:&nbsp;
-        </span>
+        </span> */}
         {periodSelect}
         <Divider orientation="vertical" flexItem sx={{ mr: 1 }} />
         <span>
