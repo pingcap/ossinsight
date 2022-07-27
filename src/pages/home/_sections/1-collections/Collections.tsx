@@ -63,6 +63,7 @@ const ScrollIndicator = ({ type, onClick, show }: ScrollIndicatorProps) => {
         cursor: 'pointer',
         opacity: show ? 1 : 0,
         pointerEvents: show ? undefined : 'none',
+        zIndex: 1,
       }}
       position="absolute"
       display="flex"
