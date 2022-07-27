@@ -1,17 +1,14 @@
-import Stack from '@mui/material/Stack';
-import React from 'react';
+import React from 'react'
 import Section from '../../_components/Section';
-import { stackDirection } from '../../_components/StackItem';
-import Left from './left';
-import Right from './right';
+import Collections from "./Collections";
+import { H2, Body } from "../../_components/typography";
 
 export function CollectionsSection () {
   return (
-    <Section darker>
-      <Stack direction={stackDirection} alignItems="center">
-        <Left />
-        <Right />
-      </Stack>
+    <Section darker maxWidth={false}>
+      <H2 sx={{ fontSize: 24 }}>📖 Hot Collections</H2>
+      <Body sx={{ mb: 4, mt: 2, fontSize: 14 }}>Insights about the monthly & historical rankings and trends in technical fields with curated repository lists.</Body>
+      <Collections />
     </Section>
-  );
+  )
 }

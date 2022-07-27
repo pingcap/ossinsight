@@ -67,7 +67,7 @@ const DataTable = ({ data, loading }: { data: CompanyContributionData[], loading
 
 const renderData = (data: CompanyContributionData[]) => {
   return data.map((item, i) => (
-    <TableRow>
+    <TableRow key={item.repo_id}>
       <TableCell component='th'>#{i + 1}</TableCell>
       {DIMENSIONS.map(d => <TableCell key={d.key} align={d.align}>{item[d.key]}</TableCell>)}
     </TableRow>
@@ -76,7 +76,7 @@ const renderData = (data: CompanyContributionData[]) => {
 
 const renderLoading = () => {
   return [0, 1, 2, 3, 4, 5].map((item, i) => (
-    <TableRow>
+    <TableRow key={item}>
       <TableCell component='th'><Skeleton sx={{ display: 'inline-block' }} /></TableCell>
       {DIMENSIONS.map(d => <TableCell key={d.key} align={d.align}><Skeleton sx={{ display: 'inline-block', width: '100%' }} /></TableCell>)}
     </TableRow>

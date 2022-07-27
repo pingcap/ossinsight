@@ -2,11 +2,13 @@ import React, {PropsWithChildren} from "react";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import {responsive} from './responsive'
+import { Breakpoint } from "@mui/system";
 
 export interface SectionProps{
   darker?: boolean
   pt?: number
   id?: string
+  maxWidth?: Breakpoint | false
 }
 
 const dark = {
@@ -14,7 +16,7 @@ const dark = {
   darker: '#1C1E21',
 }
 
-export default function Section ({darker = false, pt, children}: PropsWithChildren<SectionProps>) {
+export default function Section ({darker = false, pt, maxWidth = 'xl', children}: PropsWithChildren<SectionProps>) {
   return (
     <Box
       component='section'
@@ -26,7 +28,7 @@ export default function Section ({darker = false, pt, children}: PropsWithChildr
         },
       ]}
     >
-      <Container maxWidth='xl' sx={{ padding: 1 }}>
+      <Container maxWidth={maxWidth} sx={{ padding: 1 }}>
         {children}
       </Container>
     </Box>

@@ -19,7 +19,7 @@ export const H1 = (props: TypographyProps<'h2'>) => (
   <Typography
     {...props}
     variant='h1'
-    sx={[fontSizes.h1, aligns.heading]}
+    sx={combineSx(fontSizes.h1, aligns.heading, props.sx)}
   />
 )
 
@@ -27,7 +27,7 @@ export const H2 = (props: TypographyProps<'h2'>) => (
   <Typography
     {...props}
     variant='h2'
-    sx={[fontSizes.h2, aligns.heading]}
+    sx={combineSx(fontSizes.h2, aligns.heading, props.sx)}
   />
 )
 

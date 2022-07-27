@@ -21,36 +21,8 @@ import { useDimensionTabs } from '../hooks/useTabs';
 import { withRemote } from '../hooks/withRemote';
 import { H2, H3, P1, P2 } from './typograpy';
 import { formatTime } from "./utils";
+import Diff from "../../../components/Diff";
 
-const formatNumber = (v: number) => v.toFixed(1).replace(/[.,]0$/, '');
-
-const up = <ArrowUpwardIcon fontSize="inherit" sx={{ verticalAlign: 'text-bottom' }} />;
-const down = <ArrowDownwardIcon fontSize="inherit" sx={{ verticalAlign: 'text-bottom' }} />;
-const red = '#E30C34';
-const green = '#52FF52';
-const Diff = ({ val, suffix, reverse = false }: { val: number, suffix?: string, reverse?: boolean }) => {
-  if (val > 0) {
-    return (
-      <span className="diff" style={{ color: reverse ? red : green }}>
-        {reverse ? down : up}
-        <span className="diff-number">
-          {formatNumber(val)}{suffix}
-        </span>
-      </span>
-    );
-  } else if (val < 0) {
-    return (
-      <span className="diff" style={{ color: reverse ? green : red }}>
-        {reverse ? up : down}
-        <span className="diff-number">
-          {formatNumber(-val)}{suffix}
-        </span>
-      </span>
-    );
-  } else {
-    return <span className="diff" style={{ color: 'gray' }}></span>;
-  }
-};
 
 const TableCell = styled(MuiTableCell)(() => ({
   borderBottom: "1px solid #222"
@@ -64,9 +36,6 @@ const NumberCell = styled(TableCell)(() => ({
     display: 'inline-flex',
     alignItems: 'center',
     marginLeft: 4,
-    '&> .diff-number': {
-      fontSize: 14,
-    },
   },
   whiteSpace: 'nowrap',
 }));
