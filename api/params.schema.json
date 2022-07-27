@@ -17,7 +17,14 @@
     },
     "refreshHours": {
       "description": "Refresh cache time in hours, -1 indicates not to refresh.",
-      "type": "number"
+      "oneOf": [
+        {
+          "type": "number"
+        },
+        {
+          "$ref": "#/definitions/ConditionalHours"
+        }
+      ]
     },
     "onlyFromCache": {
       "description": "Only return data from the cache.",
@@ -129,6 +136,24 @@
       },
       "additionalProperties": false,
       "required": ["fields", "enums"]
+    },
+    "ConditionalHours": {
+      "type": "object",
+      "properties": {
+        "param": {
+          "type": "string"
+        },
+        "on": {
+          "type": "object",
+          "patternProperties": {
+            ".*": {
+              "type": "number"
+            }
+          }
+        }
+      },
+      "required": ["param", "on"],
+      "additionalProperties": false
     }
   }
 }
