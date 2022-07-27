@@ -30,7 +30,7 @@ const config = {
   baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
-  favicon: 'img/cloud-o.png',
+  favicon: 'img/favicon-1.png',
   organizationName: 'pingcap',
   projectName: 'ossinsight',
   scripts: [
@@ -208,7 +208,7 @@ const config = {
       navbar: {
         logo: {
           alt: 'OSS Insight Logo',
-          src: 'img/ossinsight-logo.png',
+          src: 'img/logo.png',
         },
         style: 'dark',
         items: [
