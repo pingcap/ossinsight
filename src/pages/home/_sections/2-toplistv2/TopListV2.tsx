@@ -42,7 +42,7 @@ export function TopListV2() {
       </Stack>
       <DataTable data={data?.data} loading={loading} />
       <Typography variant='body2'>
-        <Link href='/blog/why-we-choose-tidb-to-support-ossinsight'>
+        <Link href='/blog/why-we-choose-tidb-to-support-ossinsight' target='_blank'>
           🤖️ How we display this ranking ?
         </Link>
       </Typography>
@@ -88,7 +88,7 @@ const renderData = (data: ProcessedTopListData[], history: History) => {
     <TableRow key={item.repo_id}>
       <TableCell component="th">#{i + 1}</TableCell>
       <TableCell>
-        <Link href={`/analyze/${item.repo_name}`}>{item.repo_name}</Link>
+        <Link href={`/analyze/${item.repo_name}`} target='_blank'>{item.repo_name}</Link>
         {renderCollections(item.collection_names, history)}
       </TableCell>
       <TableCell>{item.stars}</TableCell>
@@ -129,7 +129,7 @@ const renderContributors = (names: string[] | undefined | null) => {
   return (
     <Stack direction="row" gap={1}>
       {names?.map(login => (
-        <Link key={login} href={`/analyze/${login}`}>
+        <Link key={login} href={`/analyze/${login}`} target='_blank'>
           <Avatar sx={{ width: 22, height: 22 }} src={`https://github.com/${login}.png`} />
         </Link>
       ))}

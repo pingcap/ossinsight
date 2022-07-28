@@ -114,7 +114,7 @@ function Collection({ name, repos, collectionRepos }: RecentHotCollectionData) {
             <Diff val={repo.rank_changes} />
           </Box>
           <Box>
-            <Link href={`/analyze/${repo.repo_name}`}>
+            <Link href={`/analyze/${repo.repo_name}`} target='_blank'>
               <Stack direction="row" alignItems="center">
                 <Avatar src={`https://github.com/${repo.repo_name.split('/')[0]}.png`} />
                 <Box component="span" whiteSpace="nowrap" ml={1}>
@@ -127,7 +127,7 @@ function Collection({ name, repos, collectionRepos }: RecentHotCollectionData) {
       ))}
 
       <Box mt={2} fontSize={14}>
-        <Link href={`/collections/${paramCase(name)}`}>
+        <Link href={`/collections/${paramCase(name)}`} target='_blank'>
           &gt; See All
         </Link>
       </Box>

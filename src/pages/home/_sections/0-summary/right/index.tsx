@@ -9,6 +9,7 @@ import Events from './Events';
 import EventsChart from './EventsChart';
 import Button from "@mui/material/Button";
 import Link from '@mui/material/Link';
+import Box from "@mui/material/Box";
 
 
 const Subtitle = styled('p')({
@@ -42,9 +43,11 @@ const Right = () => {
       <InViewContainer>
         {show => <Events show={show} />}
       </InViewContainer>
-      <Button sx={{fontSize: 12, fontWeight: 'regular', verticalAlign: 'baseline', textDecoration: 'underline', color:'#7c7c7c'}} component={Link} href='/blog/why-we-choose-tidb-to-support-ossinsight'>
-            🤖️ How we make this real-time effect?
-          </Button>
+      <Box fontSize={12} mt={3}>
+        <Button sx={{fontSize: 12, fontWeight: 'regular', verticalAlign: 'baseline', textDecoration: 'underline', color:'#7c7c7c'}} component={Link} href='/blog/why-we-choose-tidb-to-support-ossinsight'>
+          🤖️ How we make this real-time effect?
+        </Button>
+      </Box>
     </Item>
   )
 }

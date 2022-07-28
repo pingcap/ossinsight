@@ -79,30 +79,48 @@ export const useRemoteData: UseRemoteData = (query: string, params: any, formatS
 
 export const useRealtimeRemoteData: UseRemoteData = (query: string, params: any, formatSql, shouldLoad = true): AsyncData<RemoteData<any, any>> => {
   const { inView } = useContext(InViewContext)
-  const [viewed, setViewed] = useState(inView)
 
-  useEffect(() => {
-    if (inView) {
-      setViewed(true)
+  const [data, setData] = useState(undefined)
+  const [error, setError] = useState(undefined)
+  const [loading, setLoading] = useState(false)
+  const cancelRef = useRef<Canceler>()
+
+  const serializedParams = unstable_serialize([query, params])
+
+  const reload = useCallback(async () => {
+    try {
+      setLoading(true)
+      setError(undefined)
+      setData(await core.query(query, params, {
+        cancelToken:  new Axios.CancelToken(cancel => cancelRef.current = cancel),
+        disableCache: true,
+      }))
+    } catch (e) {
+      setError(e)
+    } finally {
+      setLoading(false)
     }
-  }, [inView])
-
-  const { data, isValidating: loading, error, mutate } = useSWR(shouldLoad && viewed ? [query, params, 'q'] : null, {
-    fetcher: core.queryWithoutCache,
-    revalidateOnFocus: false,
-    revalidateOnReconnect: false,
-  })
+  }, [serializedParams])
 
   useEffect(() => {
-    if (shouldLoad && viewed) {
+    cancelRef.current?.()
+    cancelRef.current = undefined
+    setData(undefined)
+    setError(undefined)
+    setLoading(false)
+  }, [serializedParams])
+
+  useEffect(() => {
+    if (shouldLoad && inView) {
+      reload()
       const h = setPromiseInterval(async () => {
-        await mutate()
+        await reload()
       }, 5000)
       return () => {
         clearPromiseInterval(h)
       }
     }
-  }, [shouldLoad, viewed])
+  }, [shouldLoad, inView, reload])
 
   return {data, loading, error}
 }
