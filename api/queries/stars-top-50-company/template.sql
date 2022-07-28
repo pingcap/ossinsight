@@ -1,6 +1,7 @@
 select *
 from (
     select
+        /*+ READ_FROM_STORAGE(TIKV[u]) */
         trim(replace(replace(replace(replace(replace(replace(replace(replace(lower(u.company), ',', ''), '-', ''), '@', ''), '.', ''), 'ltd', ''), 'inc', ''), 'com', ''), 'www', '')) as company_name,
         count(distinct actor_login) as stargazers
     from github_events

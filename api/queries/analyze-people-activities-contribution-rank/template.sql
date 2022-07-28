@@ -4,7 +4,7 @@ WITH activity_contribution_last_month AS (
     WHERE
         repo_id = 41986369
         AND event_month = DATE_FORMAT(DATE_SUB(NOW(), INTERVAL DAYOFMONTH(NOW()) DAY), '%Y-%m-01')
-        AND actor_login NOT LIKE '%bot' AND actor_login NOT LIKE '%[bot]' AND actor_login NOT IN (SELECT login FROM blacklist_users)
+        AND actor_login NOT LIKE '%bot' AND actor_login NOT LIKE '%[bot]' AND actor_login NOT IN (SELECT /*+ READ_FROM_STORAGE(TIKV[bu]) */ login FROM blacklist_users bu)
         AND type IN (
             'IssuesEvent', 'IssueCommentEvent', 'PullRequestEvent', 'PullRequestReviewEvent', 'PullRequestReviewCommentEvent', 
             'CommitCommentEvent', 'CreateEvent', 'DeleteEvent', 'PushEvent'
@@ -16,7 +16,7 @@ WITH activity_contribution_last_month AS (
     WHERE
         repo_id = 41986369
         AND event_month = DATE_FORMAT(DATE_SUB(DATE_SUB(NOW(), INTERVAL DAYOFMONTH(NOW()) DAY), INTERVAL 1 MONTH), '%Y-%m-01')
-        AND actor_login NOT LIKE '%bot' AND actor_login NOT LIKE '%[bot]' AND actor_login NOT IN (SELECT login FROM blacklist_users)
+        AND actor_login NOT LIKE '%bot' AND actor_login NOT LIKE '%[bot]' AND actor_login NOT IN (SELECT /*+ READ_FROM_STORAGE(TIKV[bu]) */ login FROM blacklist_users bu)
         AND type IN (
             'IssuesEvent', 'IssueCommentEvent', 'PullRequestEvent', 'PullRequestReviewEvent', 'PullRequestReviewCommentEvent', 
             'CommitCommentEvent', 'CreateEvent', 'DeleteEvent', 'PushEvent'

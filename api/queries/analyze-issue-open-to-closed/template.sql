@@ -17,7 +17,7 @@ with issue_with_closed_at as (
         and action = 'opened'
         -- Exclude Bots
         and actor_login not like '%bot%'
-        and actor_login not in (select login from blacklist_users)
+        and actor_login not in (select /*+ READ_FROM_STORAGE(TIKV[bu]) */ login from blacklist_users bu)
         and repo_id = 41986369
 ), tdiff as (
     select

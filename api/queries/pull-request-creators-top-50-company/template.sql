@@ -1,8 +1,9 @@
 select *
 from (
      select
-         trim(replace(replace(replace(replace(replace(replace(replace(replace(lower(u.company), ',', ''), '-', ''), '@', ''), 'www.', ''), 'inc', ''), '.com', ''), '.cn', ''), '.', '')) as company_name,
-         count(distinct github_events.actor_id) as code_contributors
+        /*+ READ_FROM_STORAGE(TIKV[u]) */
+        trim(replace(replace(replace(replace(replace(replace(replace(replace(lower(u.company), ',', ''), '-', ''), '@', ''), 'www.', ''), 'inc', ''), '.com', ''), '.cn', ''), '.', '')) as company_name,
+        count(distinct github_events.actor_id) as code_contributors
      from github_events
      left join users u ON github_events.actor_login = u.login
      where repo_id in (41986369) and github_events.type = 'PullRequestEvent' and action = 'opened'

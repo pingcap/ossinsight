@@ -10,7 +10,7 @@ WITH top20repos AS (
         FROM github_events ge2
         WHERE
             ge2.type = 'PullRequestEvent'
-            AND ge2.created_at >= DATE_SUB(NOW(), INTERVAL 1 WEEK)
+            AND ge2.created_at >= DATE_SUB(NOW(), INTERVAL 2 WEEK)
             AND ge2.created_at < NOW()
         GROUP BY ge2.repo_id
     ) sub ON ge.repo_id = sub.repo_id

@@ -9,7 +9,7 @@ WITH issues_with_latest_repo_name AS (
         type = 'IssuesEvent' AND repo_id IN (41986369, 16563587, 105944401)
         -- Exclude Bots
         AND actor_login NOT LIKE '%bot%'
-        AND actor_login NOT IN (SELECT login FROM blacklist_users)
+        AND actor_login NOT IN (SELECT /*+ READ_FROM_STORAGE(TIKV[bu]) */ login FROM blacklist_users bu)
 ), acc AS (
     SELECT
         event_month,
