@@ -18,7 +18,7 @@ WITH pr_with_author AS (
         repo_id = 41986369
         AND type = 'PullRequestEvent' AND pr_merged = true
         AND event_month = DATE_FORMAT(DATE_SUB(NOW(), INTERVAL DAYOFMONTH(NOW()) DAY), '%Y-%m-01')
-        AND pwa.actor_login NOT LIKE '%bot' AND pwa.actor_login NOT LIKE '%[bot]' AND pwa.actor_login NOT IN (SELECT login FROM blacklist_users)
+        AND pwa.actor_login NOT LIKE '%bot' AND pwa.actor_login NOT LIKE '%[bot]' AND pwa.actor_login NOT IN (SELECT /*+ READ_FROM_STORAGE(TIKV[bu]) */ login FROM blacklist_users bu)
     GROUP BY pwa.actor_id
 ), code_change_contribution_last_2nd_month AS (
     SELECT
@@ -33,7 +33,7 @@ WITH pr_with_author AS (
         repo_id = 41986369
         AND type = 'PullRequestEvent' AND pr_merged = true
         AND event_month = DATE_FORMAT(DATE_SUB(DATE_SUB(NOW(), INTERVAL DAYOFMONTH(NOW()) DAY), INTERVAL 1 MONTH), '%Y-%m-01')
-        AND pwa.actor_login NOT LIKE '%bot' AND pwa.actor_login NOT LIKE '%[bot]' AND pwa.actor_login NOT IN (SELECT login FROM blacklist_users)
+        AND pwa.actor_login NOT LIKE '%bot' AND pwa.actor_login NOT LIKE '%[bot]' AND pwa.actor_login NOT IN (SELECT /*+ READ_FROM_STORAGE(TIKV[bu]) */ login FROM blacklist_users bu)
     GROUP BY pwa.actor_id
 )
 SELECT

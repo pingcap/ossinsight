@@ -1,6 +1,7 @@
 select *
 from (
      select
+         /*+ READ_FROM_STORAGE(TIKV[u]) */
          trim(replace(replace(replace(replace(replace(replace(replace(replace(lower(u.company), ',', ''), '-', ''), '@', ''), 'www.', ''), 'inc', ''), '.com', ''), '.cn', ''), '.', '')) as company_name,
          count(distinct github_events.actor_id) as issue_creators
      from github_events

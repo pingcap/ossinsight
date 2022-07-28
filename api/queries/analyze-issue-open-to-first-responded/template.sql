@@ -7,7 +7,7 @@ with issue_with_first_responed_at as (
         ((type = 'IssueCommentEvent' and action = 'created') or (type = 'IssuesEvent' and action = 'closed'))
         -- Exclude Bots
         and actor_login not like '%bot%'
-        and actor_login not in (select login from blacklist_users)
+        and actor_login not in (select  /*+ READ_FROM_STORAGE(TIKV[bu]) */ login from blacklist_users bu)
         and repo_id = 41986369
     group by 1
 ), issue_with_opened_at as (
@@ -20,7 +20,7 @@ with issue_with_first_responed_at as (
         and action = 'opened'
         -- Exclude Bots
         and actor_login not like '%bot%'
-        and actor_login not in (select login from blacklist_users)
+        and actor_login not in (select /*+ READ_FROM_STORAGE(TIKV[bu]) */  login from blacklist_users bu)
         and repo_id = 41986369
 ), tdiff as (
     select

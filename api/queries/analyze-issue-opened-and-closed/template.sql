@@ -19,7 +19,7 @@ with issue_closed as (
         and repo_id = 41986369
         -- Exclude Bots
         and actor_login not like '%bot%'
-        and actor_login not in (select login from blacklist_users)
+        and actor_login not in (select  /*+ READ_FROM_STORAGE(TIKV[bu]) */ login from blacklist_users bu)
     group by 1
 )
 select

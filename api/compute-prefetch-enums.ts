@@ -101,8 +101,8 @@ async function main () {
     const queries = await getQueries();
     const presets = await getPresets();
     await prefetchQueries(queryExecutor, cacheBuilder, ghEventService, collectionService, userService, queries, presets);
-    logger.info('Next round prefetch will come at: %s', DateTime.now().plus(Duration.fromObject({ minutes: 5 })))
-    await sleep(1000 * 60 * 5);    // sleep 5 minutes.
+    logger.info('Next round prefetch will come at: %s', DateTime.now().plus(Duration.fromObject({ minutes: 2 })))
+    await sleep(1000 * 60 * 2);    // sleep 2 minutes.
   }
 }
 
@@ -212,7 +212,7 @@ async function prefetchQueries(
     logger.success("[%d/%d] Finish prefetch %s, start at: %s, end at: %s, cost: %d s", id, n, queryName, qStart, qEnd, qCostTime);
   });
   const end = new Date();
-  const cost = end.getTime() - start.getTime();
+  const cost = (end.getTime() - start.getTime()) / 1000;
   logger.success("Finished all prefetch query jobs, start at: %s, end at: %s, cost: %d s.", start, end, cost);
 }
 

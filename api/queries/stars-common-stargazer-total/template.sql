@@ -2,6 +2,7 @@ select
     count(distinct actor_login)
 from (
     select
+        /*+ READ_FROM_STORAGE(TIKV[u]) */
         actor_login,
         count(distinct repo_id) repos
     from github_events
