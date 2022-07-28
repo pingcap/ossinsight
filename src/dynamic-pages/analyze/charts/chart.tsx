@@ -9,7 +9,7 @@ import {EChartsOption} from 'echarts';
 import ECharts, { EChartsContext, EChartsProps } from '../../../components/ECharts';
 import { DangerousCtx, dangerousSetCtx } from './options/_danger';
 import useDimensions from 'react-cool-dimensions';
-import { debounce } from '@mui/material';
+import { debounce, useEventCallback } from '@mui/material';
 import { useDebugDialog } from "../../../components/DebugDialog";
 
 export function withChart<T = unknown, P = {}>(useOption: (props: DangerousCtx<T>, chartProps?: P) => EChartsOption, defaultProps: Partial<Omit<EChartsProps, 'option'>> = {}) {
@@ -33,8 +33,20 @@ export function withChart<T = unknown, P = {}>(useOption: (props: DangerousCtx<T
       ),
     })
 
+    const { observe: observeContainer, unobserve: unObserveContainer } = useDimensions({
+      onResize: useEventCallback(() => {
+        echartsRef.current?.getEchartsInstance()?.resize({
+          width: undefined,
+          height: undefined,
+        })
+      })
+    })
+
     useEffect(() => {
-      return unobserve
+      return () => {
+        unobserve()
+        unObserveContainer()
+      }
     }, [])
 
     const { dialog: debugDialog, button: debugButton } = useDebugDialog(chartContext.data.data)
@@ -60,7 +72,7 @@ export function withChart<T = unknown, P = {}>(useOption: (props: DangerousCtx<T
     dangerousSetCtx(undefined);
 
     return (
-      <div style={{ position: 'relative' }}>
+      <div style={{ position: 'relative' }} ref={observeContainer}>
         <Box display='flex' justifyContent='flex-end'>
           {debugButton}
         </Box>
