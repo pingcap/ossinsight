@@ -21,11 +21,11 @@ export default function Workshop() {
       <Card>
         <List>
           {links.map(({ title, href }) => (
-            <ListItem direction="row" justifyContent="space-between" alignItems="center">
+            <ListItem key={href} direction="row" justifyContent="space-between" alignItems="center">
               <Typography variant="body1">
                 {title}
               </Typography>
-              <DLink href={href}>
+              <DLink href={href} target='_blank' >
                 &gt;&nbsp;Join
               </DLink>
             </ListItem>
@@ -40,7 +40,7 @@ export default function Workshop() {
             <br />
             please join our offline workshop, you may get help there.
           </Typography>
-          <Button variant="contained" color="primary" component={Link} href="https://share.hsforms.com/1E-qtGQWrTVmctP8kBT34gw2npzm">
+          <Button variant="contained" color="primary" component={Link} href="https://share.hsforms.com/1E-qtGQWrTVmctP8kBT34gw2npzm" target='_link'>
             🗓️ Join Offline Workshop
           </Button>
         </Stack>
