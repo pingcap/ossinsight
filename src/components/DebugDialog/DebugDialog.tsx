@@ -71,7 +71,7 @@ export const DebugDialog = ({ sql, query, params, open, onClose }: DebugDialogPr
             {data.data.map((item, i) => (
               <Box key={i} display='table-row'>
                 {data.fields.map(field => (
-                  <Box key={replaceAllKeyword(field.name)} display='table-cell' whiteSpace='nowrap'>{replaceAllKeyword(item[field.name])}</Box>
+                  <Box key={replaceAllKeyword(field.name)} display='table-cell' whiteSpace='pre'>{replaceAllKeyword(item[field.name])}</Box>
                 ))}
               </Box>
             ))}
