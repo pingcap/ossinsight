@@ -39,9 +39,9 @@ export function useScrollable({ direction = 'x' }: UserScrollableProps): UserScr
     }
     if (scrollableSize === size) {
       setScrollable(false);
-    } else if (scrollOffset === 0) {
+    } else if (scrollOffset < 1) {
       setScrollable('forward');
-    } else if (scrollOffset + size === scrollableSize) {
+    } else if (Math.abs(scrollOffset + size - scrollableSize) < 1) {
       setScrollable('backward');
     } else {
       setScrollable(true);
