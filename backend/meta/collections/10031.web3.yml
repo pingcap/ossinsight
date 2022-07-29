@@ -33,3 +33,7 @@ items:
   - compound-finance/compound-protocol
   - aave/lens-protocol
   - ProjectOpenSea/opensea-js
+  - aptos-labs/aptos-core
+  - MystenLabs/sui
+  - starcoinorg/starcoin
+  - move-language/move
