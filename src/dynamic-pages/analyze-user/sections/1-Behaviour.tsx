@@ -44,7 +44,7 @@ const Behaviour = () => {
 
 
 const AllContributions = ({ userId, show }: ModuleProps) => {
-  const { data } = usePersonalData('personal-contributions-for-repos', userId, show);
+  const { data, loading } = usePersonalData('personal-contributions-for-repos', userId, show);
 
   const validEventTypes = useDimension(data?.data ?? [], 'type')
 
@@ -63,7 +63,7 @@ const AllContributions = ({ userId, show }: ModuleProps) => {
   }
 
   return (
-    <ChartWrapper title="Type of total contributions" chart={chart} repo remoteData={data}>
+    <ChartWrapper title="Type of total contributions" chart={chart} repo remoteData={data} loading={loading}>
       <EChartsx init={{ height: 400, renderer: 'canvas' }} theme="dark" ref={chart}>
         <Once dependencies={[repos]}>
           <Common hideZoom scrollY={10} />

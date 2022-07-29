@@ -53,7 +53,7 @@ const ActivityChart = ({ userId, show }: ModuleProps) => {
   const [type, setType] = useState<ContributionActivityType>('all')
   const [period, setPeriod] = useState<ContributionActivityRange>('last_28_days')
 
-  const { data } = usePersonalContributionActivities(userId, type, period, show)
+  const { data, loading } = usePersonalContributionActivities(userId, type, period, show)
   const repoNames = useDimension(data?.data ?? [], 'repo_name')
 
   const [min, max] = useRange(period)
@@ -79,7 +79,7 @@ const ActivityChart = ({ userId, show }: ModuleProps) => {
   const chart = useRef<EChartsType | undefined>()
 
   return (
-    <ChartWrapper title={title} chart={chart} repo remoteData={data}>
+    <ChartWrapper title={title} chart={chart} repo remoteData={data} loading={loading}>
       <Box mb={2}>
         <FormControl variant="standard" size="small" sx={{ minWidth: 120 }}>
           <InputLabel id="event-type-selector-label">Contribution type</InputLabel>

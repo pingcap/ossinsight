@@ -228,12 +228,12 @@ const Languages = ({ userId, show }: ModuleProps) => {
 };
 
 const ContributorTrends = ({ userId, show }: ModuleProps) => {
-  const { data } = usePersonalData('personal-contribution-trends', userId, show);
+  const { data, loading } = usePersonalData('personal-contribution-trends', userId, show);
   const validContributionTypes = useDimension(data?.data ?? [], 'contribution_type')
   const chart = useRef<EChartsType>()
 
   return (
-    <ChartWrapper title='Contribution Trends' remoteData={data} chart={chart}>
+    <ChartWrapper title='Contribution Trends' remoteData={data} loading={loading} chart={chart}>
       <EChartsx init={{ height: 400, renderer: 'canvas' }} theme="dark" ref={chart}>
         <Once>
           <Title text="Contribution Trends" left="center" />

@@ -33,12 +33,12 @@ const CodeReview = () => {
 };
 
 const CodeReviewHistory = ({ userId, show }: ModuleProps) => {
-  const { data } = usePersonalData('personal-pull-request-reviews-history', userId, show);
+  const { data, loading } = usePersonalData('personal-pull-request-reviews-history', userId, show);
 
   const chart = useRef<EChartsType | undefined>()
 
   return (
-    <ChartWrapper title="Code Review History" chart={chart} remoteData={data}>
+    <ChartWrapper title="Code Review History" chart={chart} remoteData={data} loading={loading}>
       <EChartsx init={{ height: 400, renderer: 'canvas' }} theme="dark" ref={chart}>
         <Once>
           <Common />
