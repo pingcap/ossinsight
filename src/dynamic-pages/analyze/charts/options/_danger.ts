@@ -10,7 +10,7 @@ export interface DangerousCtx<T> extends AnalyzeContextProps, AnalyzeChartContex
 let dangerousCtx: DangerousCtx<unknown> | undefined = undefined;
 
 export function dangerousSetCtx<T>(ctx: DangerousCtx<T> | undefined) {
-  dangerousCtx = ctx;
+  dangerousCtx = ctx as any;
 }
 
 export function dangerousGetCtx<T>(): DangerousCtx<T> | undefined {
