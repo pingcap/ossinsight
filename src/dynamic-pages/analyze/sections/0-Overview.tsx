@@ -20,11 +20,19 @@ import { LineChart } from '../charts/line';
 import Summary, { SummaryProps } from '../charts/summary';
 import Section from '../Section';
 import { H1, H2, P2 } from '../typography';
+import { useRemoteData } from "../../../components/RemoteCharts/hook";
+import { Collection } from "@ossinsight/api";
+import Chip from "@mui/material/Chip";
+import Link from "../../../components/Link";
+import { paramCase } from "param-case";
+import { useHistory } from '@docusaurus/router';
 
 export const OverviewSection = forwardRef(function ({}, ref: ForwardedRef<HTMLElement>) {
   const theme = useTheme()
   const isSmall = useMediaQuery(theme.breakpoints.down('md'))
-  const { comparingRepoName, repoName: name, comparingRepoId: vs } = useAnalyzeContext()
+  const { repoId, comparingRepoName, repoName: name, comparingRepoId: vs } = useAnalyzeContext()
+  const history = useHistory()
+  const { data: collectionData } = useRemoteData<any, Pick<Collection, 'id' | 'name'>>('get-repo-collections', { repoId }, false, !!repoId && !vs)
 
   const summaries: SummaryProps['items'] = useMemo(() => {
     return [{
@@ -68,16 +76,23 @@ export const OverviewSection = forwardRef(function ({}, ref: ForwardedRef<HTMLEl
     <Section id='overview' ref={ref}>
       {
         comparingRepoName ? undefined : (
-          <H1 sx={{ mt: 2 }}>
-            <Box component='span' display='inline-flex' bgcolor='white' borderRadius='4px' padding='2px' alignItems='center' justifyContent='center' sx={{ verticalAlign: 'text-bottom'}} mr={1}>
-              <img width="48" height="48" src={`https://github.com/${name.split('/')[0]}.png`} alt={name} />
+          <>
+            <H1 sx={{ mt: 2 }}>
+              <Box component='span' display='inline-flex' bgcolor='white' borderRadius='4px' padding='2px' alignItems='center' justifyContent='center' sx={{ verticalAlign: 'text-bottom'}} mr={1}>
+                <img width="48" height="48" src={`https://github.com/${name.split('/')[0]}.png`} alt={name} />
+              </Box>
+              <a href={`https://github.com/${name}`} target="_blank">
+                {name}
+                &nbsp;
+                <LinkExternalIcon size={28} verticalAlign="middle" />
+              </a>
+            </H1>
+            <Box>
+              {collectionData?.data?.map(collection => (
+                <Chip size='small' sx={{ mr: 2 }} key={collection.id} label={collection.name} onClick={() => window.open(`/collections/${paramCase(collection.name)}`, '_blank')} />
+              ))}
             </Box>
-            <a href={`https://github.com/${name}`} target="_blank">
-              {name}
-              &nbsp;
-              <LinkExternalIcon size={28} verticalAlign="middle" />
-            </a>
-          </H1>
+          </>
         )
       }
       <Grid container spacing={0} alignItems='center'>
