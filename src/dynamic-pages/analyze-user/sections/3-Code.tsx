@@ -52,12 +52,12 @@ const Code = () => {
 };
 
 const CodeSubmitHistory = ({ userId, show }: ModuleProps) => {
-  const { data } = usePersonalData('personal-pushes-and-commits', userId, show);
+  const { data, loading } = usePersonalData('personal-pushes-and-commits', userId, show);
 
   const chart = useRef<EChartsType | undefined>()
 
   return (
-    <ChartWrapper title="Code Submit History" chart={chart} remoteData={data}>
+    <ChartWrapper title="Code Submit History" chart={chart} remoteData={data} loading={loading}>
       <EChartsx init={{ height: 400, renderer: 'canvas' }} theme="dark" ref={chart}>
         <Once>
           <Common />
@@ -73,12 +73,12 @@ const CodeSubmitHistory = ({ userId, show }: ModuleProps) => {
 };
 
 const PullRequestHistory = ({ userId, show }: ModuleProps) => {
-  const { data } = usePersonalData('personal-pull-request-action-history', userId, show);
+  const { data, loading } = usePersonalData('personal-pull-request-action-history', userId, show);
 
   const chart = useRef<EChartsType | undefined>()
 
   return (
-    <ChartWrapper title="Pull Request History" chart={chart} remoteData={data}>
+    <ChartWrapper title="Pull Request History" chart={chart} remoteData={data} loading={loading}>
       <EChartsx init={{ height: 400, renderer: 'canvas' }} theme="dark" ref={chart}>
         <Once>
           <Common />
@@ -101,12 +101,12 @@ const PullRequestHistory = ({ userId, show }: ModuleProps) => {
 };
 
 const PullRequestSize = ({ userId, show }: ModuleProps) => {
-  const { data } = usePersonalData('personal-pull-request-size-history', userId, show);
+  const { data, loading } = usePersonalData('personal-pull-request-size-history', userId, show);
 
   const chart = useRef<EChartsType | undefined>()
 
   return (
-    <ChartWrapper title="Pull Request Size" chart={chart} remoteData={data}>
+    <ChartWrapper title="Pull Request Size" chart={chart} remoteData={data} loading={loading}>
       <EChartsx init={{ height: 400, renderer: 'canvas' }} theme="dark" ref={chart}>
         <Once>
           <Common />
@@ -124,7 +124,7 @@ const PullRequestSize = ({ userId, show }: ModuleProps) => {
 };
 
 const LineOfCodes = ({ userId, show }: ModuleProps) => {
-  const { data } = usePersonalData('personal-pull-request-code-changes-history', userId, show);
+  const { data, loading } = usePersonalData('personal-pull-request-code-changes-history', userId, show);
 
   const mappedData = useMemo(() => {
     return data?.data.map(({ additions, deletions, event_month, changes }) => ({
@@ -138,7 +138,7 @@ const LineOfCodes = ({ userId, show }: ModuleProps) => {
   const chart = useRef<EChartsType | undefined>()
 
   return (
-    <ChartWrapper title="Lines of changes in PRs" chart={chart} remoteData={data}>
+    <ChartWrapper title="Lines of changes in PRs" chart={chart} remoteData={data} loading={loading}>
       <EChartsx init={{ height: 400, renderer: 'canvas' }} theme="dark" ref={chart}>
         <Once>
           <Common />

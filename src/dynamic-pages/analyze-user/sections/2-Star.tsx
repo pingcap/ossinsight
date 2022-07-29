@@ -35,7 +35,7 @@ const Star = () => {
 };
 
 const StarChart = ({ userId, show }: ModuleProps) => {
-  const { data } = usePersonalData('personal-star-history', userId, show);
+  const { data, loading } = usePersonalData('personal-star-history', userId, show);
 
   const mappedData = useMemo(() => {
     const map = (data?.data ?? []).reduce((dateMap, cv) => {
@@ -48,7 +48,7 @@ const StarChart = ({ userId, show }: ModuleProps) => {
   const chart = useRef<EChartsType | undefined>()
 
   return (
-    <ChartWrapper title="Star History" chart={chart} remoteData={data}>
+    <ChartWrapper title="Star History" chart={chart} remoteData={data} loading={loading}>
       <EChartsx init={{ height: 400, renderer: 'canvas' }} theme="dark" ref={chart}>
         <Once>
           <Common />

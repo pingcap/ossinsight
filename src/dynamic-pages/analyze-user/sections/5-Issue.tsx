@@ -33,12 +33,12 @@ const Issue = () => {
 };
 
 const IssueHistory = ({ userId, show }: ModuleProps) => {
-  const { data } = usePersonalData('personal-issues-history', userId, show);
+  const { data, loading } = usePersonalData('personal-issues-history', userId, show);
 
   const chart = useRef<EChartsType | undefined>()
 
   return (
-    <ChartWrapper title="Issue History" chart={chart} remoteData={data}>
+    <ChartWrapper title="Issue History" chart={chart} remoteData={data} loading={loading}>
       <EChartsx init={{ height: 400, renderer: 'canvas' }} theme="dark" ref={chart}>
         <Once>
           <Common />

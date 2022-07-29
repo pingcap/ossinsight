@@ -79,6 +79,12 @@ export function withChart<T = unknown, P = {}>(useOption: (props: DangerousCtx<T
         <CommonChartContext.Provider value={{shareInfo}}>
           <EChartsContext.Provider value={{echartsRef}}>
             <ECharts
+              showLoading={ctx.data.loading || ctx.compareData.loading}
+              loadingOption={{
+                color: 'rgb(255, 232, 149)',
+                textColor: 'rgb(255, 232, 149)',
+                maskColor: 'rgba(0, 0, 0, 0.3)',
+              }}
               option={option}
               observe={observe}
               {...defaultProps}

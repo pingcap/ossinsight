@@ -14,6 +14,7 @@ export interface ChartWrapperProps {
   chart?: RefObject<EChartsType>
   repo?: boolean
   remoteData?: RemoteData<any, any>
+  loading?: boolean
 }
 
 export interface ChartWrapperContextProps {
@@ -22,11 +23,23 @@ export interface ChartWrapperContextProps {
   href?: string
 }
 
-function ChartWrapper ({ title, description, href, chart, repo, remoteData, children }: ChartWrapperProps) {
+function ChartWrapper ({ title, description, href, chart, repo, remoteData, loading = false, children }: ChartWrapperProps) {
   const { userId } = useAnalyzeUserContext()
   const history = useHistory()
 
   const { dialog, button } = useDebugDialog(remoteData)
+
+  useEffect(() => {
+    if (loading) {
+      chart?.current?.showLoading('default', {
+        color: 'rgb(255, 232, 149)',
+        textColor: 'rgb(255, 232, 149)',
+        maskColor: 'rgba(0, 0, 0, 0.3)',
+      })
+    } else {
+      chart?.current?.hideLoading()
+    }
+  }, [loading])
 
   useEffect(() => {
     chart?.current?.resize({ width: 'auto' })
