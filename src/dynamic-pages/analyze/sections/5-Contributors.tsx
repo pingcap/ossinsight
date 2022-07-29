@@ -27,6 +27,7 @@ import { H2, P2 } from '../typography';
 import { DateTime } from "luxon";
 import Tooltip from "@mui/material/Tooltip";
 import { useDebugDialog } from "../../../components/DebugDialog";
+import CircularProgress from "@mui/material/CircularProgress";
 
 type ChangedEvents = { last_month_events: number, last_2nd_month_events: number, changes: number }
 
@@ -168,13 +169,13 @@ function renderCodes(item: Result & ChangedCodes, first: Result & ChangedCodes):
   return <></>;
 }
 
-function useData<K extends keyof TypeMap>(repoId: number, key: string, excludeBots: boolean, show: boolean): [TypeMap[K][], RemoteData<any, TypeMap[K]>] {
-  const { data } = useRemoteData<Param, TypeMap[K]>(key, {
+function useData<K extends keyof TypeMap>(repoId: number, key: string, excludeBots: boolean, show: boolean): [TypeMap[K][], RemoteData<any, TypeMap[K]>, boolean] {
+  const { data, loading } = useRemoteData<Param, TypeMap[K]>(key, {
     repoId,
     excludeBots,
   }, false, !!repoId && show);
 
-  return [data?.data ?? [], data];
+  return [data?.data ?? [], data, loading];
 }
 
 const BarContainer = styled(List)({
@@ -227,7 +228,7 @@ export const Contributors = forwardRef(function ({}, ref: ForwardedRef<HTMLEleme
   const [descriptor, setDescriptor] = useState<Descriptor<any>>(descriptors[0]);
   const [type, setType] = useState('count');
   const [excludeBots, setExcludeBots] = useState(true);
-  const [list, data] = useData(repoId, descriptor.key, excludeBots, visible && inView);
+  const [list, data, loading] = useData(repoId, descriptor.key, excludeBots, visible && inView);
 
   const { dialog: debugDialog, button: debugButton } = useDebugDialog(data)
 
@@ -297,9 +298,16 @@ export const Contributors = forwardRef(function ({}, ref: ForwardedRef<HTMLEleme
 
       {debugDialog}
 
-      <BarContainer ref={inViewRef}>
-        {list.map((item, index, all) => descriptor.render(item, all[0], { percentage: type === 'percentage', lastMonth }))}
-      </BarContainer>
+      <Box position='relative'>
+        {loading && (
+          <Box display='flex' position='absolute' left={0} top={0} width='100%' height='100%' zIndex={1} alignItems='center' justifyContent='center'>
+            <CircularProgress />
+          </Box>
+        )}
+        <BarContainer ref={inViewRef}>
+          {list.map((item, index, all) => descriptor.render(item, all[0], { percentage: type === 'percentage', lastMonth }))}
+        </BarContainer>
+      </Box>
     </Section>
   );
 });
