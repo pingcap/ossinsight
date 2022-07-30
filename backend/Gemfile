@@ -68,3 +68,5 @@ gem "annotate", "~> 3.1"
 gem "csv", "~> 3.2"
 
 gem "mdtable", "~> 0.0.2"
+
+gem "twitter", "~> 7.0"
