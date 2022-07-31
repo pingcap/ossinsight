@@ -2,19 +2,15 @@ id: 10053
 name: Infrastructure as Code
 items:
   - ansible/ansible
-  - hashicorp/packer
   - pulumi/pulumi
   - hashicorp/terraform
   - saltstack/salt
   - aws/aws-cdk
   - GoogleCloudPlatform/terraformer
-  - infracost/infracost
   - itamae-kitchen/itamae
   - someengineering/resoto
   - aelsabbahy/goss
-  - octodns/octodns
   - aws/copilot-cli
-  - StackExchange/dnscontrol
   - puppetlabs/puppet
   - chef/chef
   - hashicorp/vagrant
