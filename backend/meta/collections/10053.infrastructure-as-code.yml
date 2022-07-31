@@ -17,3 +17,4 @@ items:
   - StackExchange/dnscontrol
   - puppetlabs/puppet
   - chef/chef
+  - hashicorp/vagrant
