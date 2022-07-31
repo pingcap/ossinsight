@@ -15,3 +15,5 @@ items:
   - octodns/octodns
   - aws/copilot-cli
   - StackExchange/dnscontrol
+  - puppetlabs/puppet
+  - chef/chef
