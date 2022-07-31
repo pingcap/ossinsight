@@ -19,26 +19,64 @@ class TweetRepo
   end
 
   def tweet!
+    # TODO add image
     client.update(text)
   end
 
   def list_twitter_logins(n = 5)
     get_contributors.map do |github_login|
       info = user_info(github_login)
-      info['twitter_username']
+      info['twitter_username'] || github_login
     end.compact
   end
 
   def text
-    "Hello, https://github.com/#{repo}, contributes -> #{list_twitter_logins.join(", ")}"
+    info = repo_info 
+
+    language = info["language"]
+    stars_count = info["stargazers_count"].to_i
+    stars_count_pretty = stars_for_human(stars_count)
+    stars_incr = stars_incr_count_last_7_days
+
+    <<~TEXT
+    Congrats to #{repo} https://github.com/#{repo}, which has grown by #{stars_incr} stars in the last 7 days and has reached #{stars_count_pretty} stars. 
+    Thanks to the contributors: #{list_twitter_logins.map{|x| '@' + x }.join(", ")}
+    #OpenSource #{language}
+    TEXT
   end
 
   def image 
+    # TODO
+  end
+
+  def stars_incr_count_last_7_days
+    sql = <<~SQL
+    select count(*) as count
+    from github_events
+    where repo_login = '#{repo}' and created_at >= '#{7.days.ago.to_s(:db)}' and type = 'WatchEvent'
+    SQL
+    ActiveReocrd::Base.connection.select_one(sql)["count"]
+  end
+
+  # 3210 to 3.2K
+  def stars_for_human(stars_count)
+    ActionView::Helpers.number_to_human(stars_count, :format => '%n%u', :units => { :thousand => 'K' })
   end
 
   def user_info(github_login)
     token = github_tokens[rand(github_token_size)]
     url = "https://api.github.com/users/#{github_login}"
+    get_json(url, token)
+  end
+
+  def repo_info
+    token = github_tokens[rand(github_token_size)]
+    url = "https://api.github.com/repos/#{repo}"
+    get_json(url, token)
+  end
+
+  def get_json(url, github_token)
+    token = github_token
     resp = nil
     raw_json = begin
       Retryable.retryable(tries: 5, on: [Timeout::Error, Net::OpenTimeout, OpenURI::HTTPError]) do
@@ -54,11 +92,12 @@ class TweetRepo
     else
       resp&.read
     end
-    if raw_json
-      json = Yajl::Parser.parse(raw_json)
+    json = if raw_json
+      Yajl::Parser.parse(raw_json)
     else
       {}
     end
+    json
   end
 
   def get_contributors(n = 10)
