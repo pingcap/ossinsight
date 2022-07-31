@@ -4,6 +4,7 @@ require 'open-uri'
 require 'yajl'
 
 class TweetRepo
+  include ActionView::Helpers
   attr_reader :client, :repo, :github_tokens, :github_token_size
 
   def initialize(repo)
@@ -38,11 +39,14 @@ class TweetRepo
     stars_count_pretty = stars_for_human(stars_count)
     stars_incr = stars_incr_count_last_7_days
 
-    <<~TEXT
-    Congrats to #{repo} https://github.com/#{repo}, which has grown by #{stars_incr} stars in the last 7 days and has reached #{stars_count_pretty} stars. 
-    Thanks to the contributors: #{list_twitter_logins.map{|x| '@' + x }.join(", ")}
-    #OpenSource #{language}
+    t = <<~TEXT
+    Congrats to https://github.com/#{repo}, which has grown by #{stars_incr} stars in the last 7 days and has reached #{stars_count_pretty} stars. 
+    Thanks to the contributors: #{list_twitter_logins.map{|x| '@' + x }.join(" ")}
+    ##{language}
     TEXT
+    puts t 
+    puts t.size
+    t
   end
 
   def image 
@@ -53,14 +57,14 @@ class TweetRepo
     sql = <<~SQL
     select count(*) as count
     from github_events
-    where repo_login = '#{repo}' and created_at >= '#{7.days.ago.to_s(:db)}' and type = 'WatchEvent'
+    where repo_name = '#{repo}' and created_at >= '#{7.days.ago.to_s(:db)}' and type = 'WatchEvent'
     SQL
-    ActiveReocrd::Base.connection.select_one(sql)["count"]
+    ActiveRecord::Base.connection.select_one(sql)["count"]
   end
 
   # 3210 to 3.2K
   def stars_for_human(stars_count)
-    ActionView::Helpers.number_to_human(stars_count, :format => '%n%u', :units => { :thousand => 'K' })
+    number_to_human(stars_count, :format => '%n%u', :units => { :thousand => 'K' })
   end
 
   def user_info(github_login)
