@@ -48,7 +48,7 @@ function ChartWrapper ({ title, description, href, chart, repo, remoteData, load
             opacity: (loading || remoteData?.data.length) ? 0 : undefined,
             fontSize: 16,
             fontWeight: 'bold',
-            text: "No event yet",
+            text: "No relevant data yet",
             fill: '#7c7c7c'
           }
         }]
