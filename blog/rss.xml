@@ -4,10 +4,17 @@
         <title>OSS Insight Blog</title>
         <link>https://ossinsight.io/blog</link>
         <description>OSS Insight Blog</description>
-        <lastBuildDate>Mon, 20 Jun 2022 00:00:00 GMT</lastBuildDate>
+        <lastBuildDate>Mon, 01 Aug 2022 00:00:00 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <copyright>Copyright © 2022 PingCAP</copyright>
+        <item>
+            <title><![CDATA[GitHub Data Is Booming! Why?]]></title>
+            <link>https://ossinsight.io/blog/github-data-is-booming</link>
+            <guid>/github-data-is-booming</guid>
+            <pubDate>Mon, 01 Aug 2022 00:00:00 GMT</pubDate>
+            <description><![CDATA[This post dives deeply into GitHub event trending, why GitHub events are surging, and whether GitHub's architecture can handle the increasing load.]]></description>
+        </item>
         <item>
             <title><![CDATA[Build a Better GitHub Insight Tool in a Week? A True Story]]></title>
             <link>https://ossinsight.io/blog/why-we-choose-tidb-to-support-ossinsight</link>
