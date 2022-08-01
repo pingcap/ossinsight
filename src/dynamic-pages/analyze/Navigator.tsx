@@ -110,9 +110,9 @@ const renderTabs = (n: number | undefined, index: number) => {
           value={tab.id}
           icon={tab.icon}
           disableRipple
-          onClick={useEventCallback(() => {
+          onClick={() => {
             document.getElementById(tab.id)?.scrollIntoView();
-          })}
+          }}
         />
       );
     }
@@ -131,9 +131,9 @@ const renderBottomNavigationActions = (n?: number) => {
           value={tab.id}
           icon={tab.icon}
           disableRipple
-          onClick={useEventCallback(() => {
+          onClick={() => {
             document.getElementById(tab.id)?.scrollIntoView();
-          })}
+          }}
         />
       );
     }

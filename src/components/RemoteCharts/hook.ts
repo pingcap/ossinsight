@@ -43,20 +43,35 @@ export const useRemoteData: UseRemoteData = (query: string, params: any, formatS
   const [error, setError] = useState(undefined)
   const [loading, setLoading] = useState(false)
   const cancelRef = useRef<Canceler>()
+  const mounted = useRef(false)
 
   const serializedParams = unstable_serialize([query, params])
 
+  useEffect(() => {
+    mounted.current = true
+    return () => {
+      mounted.current = false
+    }
+  }, [])
+
   const reload = useCallback(async () => {
     try {
+      if (!mounted.current) {
+        return
+      }
       setLoading(true)
       setError(undefined)
       setData(await core.query(query, params, {
         cancelToken:  new Axios.CancelToken(cancel => cancelRef.current = cancel)
       }))
     } catch (e) {
-      setError(e)
+      if (mounted.current) {
+        setError(e)
+      }
     } finally {
-      setLoading(false)
+      if (mounted.current) {
+        setLoading(false)
+      }
     }
   }, [serializedParams])
 
@@ -66,6 +81,9 @@ export const useRemoteData: UseRemoteData = (query: string, params: any, formatS
     setData(undefined)
     setError(undefined)
     setLoading(false)
+    return () => {
+      cancelRef.current?.()
+    }
   }, [serializedParams])
 
   useEffect(() => {
@@ -84,11 +102,22 @@ export const useRealtimeRemoteData: UseRemoteData = (query: string, params: any,
   const [error, setError] = useState(undefined)
   const [loading, setLoading] = useState(false)
   const cancelRef = useRef<Canceler>()
+  const mounted = useRef(false)
 
   const serializedParams = unstable_serialize([query, params])
 
+  useEffect(() => {
+    mounted.current = true
+    return () => {
+      mounted.current = false
+    }
+  }, [])
+
   const reload = useCallback(async () => {
     try {
+      if (!mounted.current) {
+        return
+      }
       setLoading(true)
       setError(undefined)
       setData(await core.query(query, params, {
@@ -96,9 +125,13 @@ export const useRealtimeRemoteData: UseRemoteData = (query: string, params: any,
         disableCache: true,
       }))
     } catch (e) {
-      setError(e)
+      if (mounted.current) {
+        setError(e)
+      }
     } finally {
-      setLoading(false)
+      if (mounted.current) {
+        setLoading(false)
+      }
     }
   }, [serializedParams])
 
@@ -108,6 +141,9 @@ export const useRealtimeRemoteData: UseRemoteData = (query: string, params: any,
     setData(undefined)
     setError(undefined)
     setLoading(false)
+    return () => {
+      cancelRef.current?.()
+    }
   }, [serializedParams])
 
   useEffect(() => {
@@ -130,6 +166,14 @@ export const useTotalEvents = (run: boolean, interval = 1000) => {
   const [added, setAdded] = useState(0)
   const lastTs = useRef(0)
   const cancelRef = useRef<() => void>()
+  const mounted = useRef(false)
+
+  useEffect(() => {
+    mounted.current = true
+    return () => {
+      mounted.current = false
+    }
+  }, [])
 
   useEffect(() => {
     if (!run) {
@@ -139,10 +183,16 @@ export const useTotalEvents = (run: boolean, interval = 1000) => {
     const reloadTotal = async () => {
       try {
         const { data: [{ cnt, latest_timestamp }] } = await core.queryWithoutCache('events-total')
+        if (!mounted.current) {
+          return
+        }
         cancelRef.current?.()
         lastTs.current = latest_timestamp
         setTotal(cnt)
         setAdded(0)
+        return () => {
+          cancelRef.current?.()
+        }
       } catch {}
     }
 
@@ -152,6 +202,9 @@ export const useTotalEvents = (run: boolean, interval = 1000) => {
           const { data: [{ cnt, latest_created_at }] } = await core.queryWithoutCache('events-increment', { ts: lastTs.current }, {
             cancelToken: first ? undefined : new Axios.CancelToken(cancel => cancelRef.current = cancel)
           })
+          if (!mounted.current) {
+            return
+          }
           setAdded(cnt)
         }
       } catch {}
