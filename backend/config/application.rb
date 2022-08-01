@@ -20,5 +20,6 @@ module Gharchive
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
     config.active_record.schema_format = :sql
+    config.autoload_paths << config.root.join('lib')
   end
 end

@@ -155,3 +155,7 @@ location     | varchar     | [null]         |     |         |
 
 * bundle exec rails runner 'Realtime.new(ENV["GITHUB_TOKEN"].split(","), 500).run'
 * bundle exec rails runner 'Realtime.clean!' # every 5 minutes
+
+### Automatic Tweet for trending repo
+
+* bundle exec rails runner 'TrendingRepoGenerator.new(1).generate' # every 1 hour
