@@ -78,7 +78,7 @@ export function withChart<T = unknown, P = {}>(useOption: (props: DangerousCtx<T
         style: {
           fontSize: 16,
           fontWeight: 'bold',
-          text: "No event yet",
+          text: "No relevant data yet",
           fill: '#7c7c7c'
         }
       }
