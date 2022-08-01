@@ -38,6 +38,21 @@ function ChartWrapper ({ title, description, href, chart, repo, remoteData, load
       })
     } else {
       chart?.current?.hideLoading()
+      chart?.current?.setOption({
+        graphic: [{
+          id: 'no-data',
+          type: 'text',
+          left: 'center',
+          top: 'middle',
+          style: {
+            opacity: (loading || remoteData?.data.length) ? 0 : undefined,
+            fontSize: 16,
+            fontWeight: 'bold',
+            text: "No relevant data yet",
+            fill: '#7c7c7c'
+          }
+        }]
+      })
     }
   }, [loading])
 
