@@ -1,4 +1,4 @@
-import { Tooltip, IconButton} from '@mui/material';
+import { IconButton, Tooltip } from '@mui/material';
 import InfoOutlined from '@mui/icons-material/InfoOutlined';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
@@ -84,13 +84,19 @@ export const OverviewSection = forwardRef(function ({}, ref: ForwardedRef<HTMLEl
                 <LinkExternalIcon size={28} verticalAlign="middle" />
               </a>
             </H1>
-            <Box mb={1}>
-              In Collection:
-              &nbsp;
-              {collectionData?.data?.map(collection => (
-                <Chip color='primary' variant='outlined' size='small' sx={{ mr: 1 }} key={collection.id} label={collection.name} onClick={() => window.open(`/collections/${paramCase(collection.name)}`, '_blank')} />
-              ))}
-            </Box>
+            {collectionData?.data
+              ? (
+                <Box mb={1}>
+                  In Collection:
+                  &nbsp;
+                  {collectionData.data.map(collection => (
+                    <Chip color="primary" variant="outlined" size="small" sx={{ mr: 1 }} key={collection.id}
+                          label={collection.name}
+                          onClick={() => window.open(`/collections/${paramCase(collection.name)}`, '_blank')} />
+                  ))}
+                </Box>
+              ) : undefined
+            }
           </>
         )
       }
