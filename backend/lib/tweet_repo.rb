@@ -44,7 +44,7 @@ class TweetRepo
 
     t = <<~TEXT
     Congrats to https://github.com/#{repo}, which has grown by #{stars_incr} stars in the last 7 days and has reached #{stars_count_pretty} stars. 
-    Thanks to the contributors: #{list_twitter_logins.map{|x| '' + x }.join(" ")}
+    Thanks to the contributors: #{list_twitter_logins.map{|x| '@' + x }.join(" ")}
     https://ossinsight.io/analyze/#{repo}
     ##{language}
     TEXT
