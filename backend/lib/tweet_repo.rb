@@ -25,10 +25,13 @@ class TweetRepo
   end
 
   def list_twitter_logins(n = 5)
-    get_contributors.map do |github_login|
+    logins = []
+    get_contributors.each do |github_login|
+      break if logins.size >= n
       info = user_info(github_login)
-      info['twitter_username'] || github_login
-    end.compact
+      logins << info['twitter_username'] if info['twitter_username'].present?
+    end
+    logins
   end
 
   def text
@@ -42,6 +45,7 @@ class TweetRepo
     t = <<~TEXT
     Congrats to https://github.com/#{repo}, which has grown by #{stars_incr} stars in the last 7 days and has reached #{stars_count_pretty} stars. 
     Thanks to the contributors: #{list_twitter_logins.map{|x| '@' + x }.join(" ")}
+    https://ossinsight.io/analyze/#{repo}
     ##{language}
     TEXT
     puts t 
@@ -104,7 +108,7 @@ class TweetRepo
     json
   end
 
-  def get_contributors(n = 10)
+  def get_contributors(n = 20)
     sql = <<~SQL
       select creator_user_login as login, count(*) as count 
       from github_events 
