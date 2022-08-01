@@ -1,0 +1,16 @@
+id: 10053
+name: Infrastructure as Code
+items:
+  - ansible/ansible
+  - pulumi/pulumi
+  - hashicorp/terraform
+  - saltstack/salt
+  - aws/aws-cdk
+  - GoogleCloudPlatform/terraformer
+  - itamae-kitchen/itamae
+  - someengineering/resoto
+  - aelsabbahy/goss
+  - aws/copilot-cli
+  - puppetlabs/puppet
+  - chef/chef
+  - hashicorp/vagrant
