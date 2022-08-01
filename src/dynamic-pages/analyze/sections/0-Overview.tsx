@@ -23,15 +23,12 @@ import { H1, H2, P2 } from '../typography';
 import { useRemoteData } from "../../../components/RemoteCharts/hook";
 import { Collection } from "@ossinsight/api";
 import Chip from "@mui/material/Chip";
-import Link from "../../../components/Link";
 import { paramCase } from "param-case";
-import { useHistory } from '@docusaurus/router';
 
 export const OverviewSection = forwardRef(function ({}, ref: ForwardedRef<HTMLElement>) {
   const theme = useTheme()
   const isSmall = useMediaQuery(theme.breakpoints.down('md'))
   const { repoId, comparingRepoName, repoName: name, comparingRepoId: vs } = useAnalyzeContext()
-  const history = useHistory()
   const { data: collectionData } = useRemoteData<any, Pick<Collection, 'id' | 'name'>>('get-repo-collections', { repoId }, false, !!repoId && !vs)
 
   const summaries: SummaryProps['items'] = useMemo(() => {
@@ -87,9 +84,11 @@ export const OverviewSection = forwardRef(function ({}, ref: ForwardedRef<HTMLEl
                 <LinkExternalIcon size={28} verticalAlign="middle" />
               </a>
             </H1>
-            <Box>
+            <Box mb={1}>
+              In Collection:
+              &nbsp;
               {collectionData?.data?.map(collection => (
-                <Chip size='small' sx={{ mr: 2 }} key={collection.id} label={collection.name} onClick={() => window.open(`/collections/${paramCase(collection.name)}`, '_blank')} />
+                <Chip color='primary' variant='outlined' size='small' sx={{ mr: 1 }} key={collection.id} label={collection.name} onClick={() => window.open(`/collections/${paramCase(collection.name)}`, '_blank')} />
               ))}
             </Box>
           </>
