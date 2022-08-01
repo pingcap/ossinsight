@@ -8,6 +8,8 @@ description: This post dives deeply into GitHub event trending, why GitHub event
 keywords: [github]
 ---
 
+import：import useBaseUrl from '@docusaurus/useBaseUrl';
+
 The [OSS Insight](https://ossinsight.io/) website displays the data changes of GitHub events in real time. GitHub events are activities triggered by user actions on GitHub, for example, commenting and forking a repository. **In nearly seven weeks, GitHub events increased by about 150 million, from 4.7 billion to 4.85 billion.** GitHub's data is booming!
 
 This post dives deeply into GitHub event trending, why GitHub events are surging, and whether GitHub's architecture can handle the increasing load.
@@ -95,7 +97,7 @@ According to this prediction, GitHub events will exceed 10 billion in February 2
 <br />
 
 <center>
-  <img width="50%" src={require('./gitub-events-exceed-10-billion.jpg').default} alt='GitHub events will exceed 10 billion in 2025' />
+    <img src={useBaseUrl('/gitub-events-exceed-10-billion.jpg')} width="30%" />
 </center>
 
 <center><em>GitHub events will exceed 10 billion in 2025</em></center>
