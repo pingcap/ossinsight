@@ -14,6 +14,8 @@ import { QueryTemplateNotFoundError } from './QueryFactory';
 import UserService from '../services/UserService';
 import { resolveHours } from "../../utils/paramDefs";
 
+const EXPLAIN_QUERY_CACHE_HOUR = 0.01;
+
 export enum ParamType {
   ARRAY = 'array',
   DATE_RANGE = 'date-range',
@@ -276,11 +278,11 @@ export default class Query {
   async explain <T> (params: Record<string, any>, refreshCache: boolean = false, conn?: PoolConnection): Promise<CachedData<T>> {
     await this.ready();
 
-    const { cacheHours = -1, refreshHours = -1, cacheProvider } = this.queryDef!;
+    const { cacheProvider } = this.queryDef!;
     const queryName = this.queryDef!.name || this.name;
     const cacheKey = this.getQueryKey('explain-query', queryName, this.queryDef!, params);
     const cache = this.cacheBuilder.build(
-      cacheProvider, cacheKey, cacheHours, resolveHours(params, refreshHours), false, refreshCache
+      cacheProvider, cacheKey, EXPLAIN_QUERY_CACHE_HOUR, EXPLAIN_QUERY_CACHE_HOUR, false, refreshCache
     );
 
     return cache.load(async () => {
