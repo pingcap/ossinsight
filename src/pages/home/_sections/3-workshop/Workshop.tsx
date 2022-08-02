@@ -10,9 +10,9 @@ import Box from "@mui/material/Box";
 
 const links: { title: string, href: string }[] = [
   { title: 'mini OSS Insight', href: '/workshop/mini-ossinsight/introduction' },
+  { title: 'NFT Insight', href: '/workshop/nft-insight' },
   { title: 'Twitter Insight', href: '/workshop/twitter-insight' },
   { title: 'Stack Overflow Insight', href: '/workshop/stackoverflow-insight' },
-  { title: 'Cryptocurrency Insight', href: '/workshop/cryptocurrency-insight' },
 ];
 
 export default function Workshop() {
