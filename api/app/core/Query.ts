@@ -276,7 +276,7 @@ export default class Query {
   async explain <T> (params: Record<string, any>, refreshCache: boolean = false, conn?: PoolConnection): Promise<CachedData<T>> {
     await this.ready();
 
-    const { cacheHours = -1, refreshHours = -1, cacheProvider } = this.queryDef!;
+    const { cacheHours = 0.01, refreshHours = 0.01, cacheProvider } = this.queryDef!;
     const queryName = this.queryDef!.name || this.name;
     const cacheKey = this.getQueryKey('explain-query', queryName, this.queryDef!, params);
     const cache = this.cacheBuilder.build(
