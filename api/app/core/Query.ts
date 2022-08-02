@@ -14,7 +14,7 @@ import { QueryTemplateNotFoundError } from './QueryFactory';
 import UserService from '../services/UserService';
 import { resolveHours } from "../../utils/paramDefs";
 
-const EXPLAIN_QUERY_CACHE = 0.01;
+const EXPLAIN_QUERY_CACHE_HOUR = 0.01;
 
 export enum ParamType {
   ARRAY = 'array',
