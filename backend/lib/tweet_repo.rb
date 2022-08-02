@@ -41,16 +41,23 @@ class TweetRepo
     stars_count = info["stargazers_count"].to_i
     stars_count_pretty = stars_for_human(stars_count)
     stars_incr = stars_incr_count_last_7_days
+    logins = list_twitter_logins
 
-    t = <<~TEXT
+    txt = <<~TXT
     Congrats to https://github.com/#{repo}, which has grown by #{stars_incr} stars in the last 7 days and has reached #{stars_count_pretty} stars. 
-    Thanks to the contributors: #{list_twitter_logins.map{|x| '@' + x }.join(" ")}
-    https://ossinsight.io/analyze/#{repo}
-    ##{language}
-    TEXT
-    puts t 
-    puts t.size
-    t
+    TXT
+
+    contributors_txt = <<~TXT
+    Thanks to the contributors: #{logins.map{|x| '@' + x }.join(" ")}
+    TXT
+
+    txt << "\n" + contributors_txt if logins.present? 
+    txt << "\n" + "https://ossinsight.io/analyze/#{repo}"
+    txt << "\n" + "##{language}" if language.present? 
+
+    puts txt
+    puts txt.size
+    txt
   end
 
   def image 
