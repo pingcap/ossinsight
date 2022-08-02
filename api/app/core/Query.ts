@@ -282,7 +282,7 @@ export default class Query {
     const queryName = this.queryDef!.name || this.name;
     const cacheKey = this.getQueryKey('explain-query', queryName, this.queryDef!, params);
     const cache = this.cacheBuilder.build(
-      cacheProvider, cacheKey, EXPLAIN_QUERY_CACHE, EXPLAIN_QUERY_CACHE, false, refreshCache
+      cacheProvider, cacheKey, EXPLAIN_QUERY_CACHE_HOUR, EXPLAIN_QUERY_CACHE_HOUR, false, refreshCache
     );
 
     return cache.load(async () => {
