@@ -1,9 +1,9 @@
 WITH pr_with_latest_repo_name AS (
     SELECT
         event_year,
-        pr_or_issue_id,
+        number,
         FIRST_VALUE(repo_name) OVER (PARTITION BY repo_id ORDER BY created_at DESC) AS repo_name,
-        ROW_NUMBER() OVER(PARTITION BY pr_or_issue_id) AS row_num
+        ROW_NUMBER() OVER(PARTITION BY number) AS row_num
     FROM github_events
     WHERE
         type = 'PullRequestEvent'
@@ -16,7 +16,7 @@ WITH pr_with_latest_repo_name AS (
     SELECT
         event_year,
         repo_name,
-        COUNT(pr_or_issue_id) OVER(PARTITION BY repo_name ORDER BY event_year ASC) AS total
+        COUNT(number) OVER(PARTITION BY repo_name ORDER BY event_year ASC) AS total
     FROM pr_with_latest_repo_name
     WHERE row_num = 1
     ORDER BY 1

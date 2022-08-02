@@ -1,6 +1,6 @@
 with pr_with_merged_at as (
     select
-        pr_or_issue_id, event_month, created_at as merged_at
+        number, event_month, created_at as merged_at
     from
         github_events ge
     where
@@ -12,7 +12,7 @@ with pr_with_merged_at as (
         and repo_id = 41986369
 ), pr_with_opened_at as (
     select
-        pr_or_issue_id, created_at as opened_at
+        number, created_at as opened_at
     from
         github_events ge
     where
@@ -28,7 +28,7 @@ with pr_with_merged_at as (
         (UNIX_TIMESTAMP(pwm.merged_at) - UNIX_TIMESTAMP(pwo.opened_at)) as diff
     from
         pr_with_opened_at pwo
-        join pr_with_merged_at pwm on pwo.pr_or_issue_id = pwm.pr_or_issue_id and pwm.merged_at > pwo.opened_at
+        join pr_with_merged_at pwm on pwo.number = pwm.number and pwm.merged_at > pwo.opened_at
 ), tdiff_with_rank as (
     select
         tdiff.event_month,

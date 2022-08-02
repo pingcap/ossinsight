@@ -1,6 +1,6 @@
 with issue_with_closed_at as (
     select
-        pr_or_issue_id, event_month, created_at as closed_at
+        number, event_month, created_at as closed_at
     from
         github_events ge
     where
@@ -9,7 +9,7 @@ with issue_with_closed_at as (
         and repo_id = 41986369
 ), issue_with_opened_at as (
     select
-        pr_or_issue_id, created_at as opened_at
+        number, created_at as opened_at
     from
         github_events ge
     where
@@ -25,7 +25,7 @@ with issue_with_closed_at as (
         (UNIX_TIMESTAMP(iwc.closed_at) - UNIX_TIMESTAMP(iwo.opened_at)) as diff
     from
         issue_with_opened_at iwo
-        join issue_with_closed_at iwc on iwo.pr_or_issue_id = iwc.pr_or_issue_id and iwc.closed_at > iwo.opened_at
+        join issue_with_closed_at iwc on iwo.number = iwc.number and iwc.closed_at > iwo.opened_at
 ), tdiff_with_rank as (
     select
         tdiff.event_month,

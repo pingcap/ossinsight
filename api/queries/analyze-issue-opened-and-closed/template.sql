@@ -1,6 +1,6 @@
 with issue_closed as (
     select
-        event_month, count(distinct pr_or_issue_id) as closed
+        event_month, count(distinct number) as closed
     from
         github_events ge
     where
@@ -10,7 +10,7 @@ with issue_closed as (
     group by 1
 ), issue_opened as (
     select
-        event_month, count(distinct pr_or_issue_id) as opened
+        event_month, count(distinct number) as opened
     from
         github_events ge
     where
