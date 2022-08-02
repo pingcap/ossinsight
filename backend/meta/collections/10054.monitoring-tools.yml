@@ -1,0 +1,15 @@
+id: 10054
+name: Monitoring Tools
+items:
+  - NagiosEnterprises/nagioscore
+  - munin-monitoring/munin
+  - prometheus/prometheus
+  - grafana/grafana
+  - zabbix/zabbix
+  - riemann/riemann
+  - Icinga/icinga2
+  - Cacti/cacti
+  - librenms/librenms
+  - netdata/netdata
+  - ccfos/nightingale
+  - tribe29/checkmk
