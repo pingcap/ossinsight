@@ -1,5 +1,5 @@
 id: 10054
-name: Monitoring Tools
+name: Monitoring Tool
 items:
   - NagiosEnterprises/nagioscore
   - munin-monitoring/munin
