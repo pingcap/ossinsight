@@ -4,7 +4,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import EChartsReact from 'echarts-for-react';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import CommonChartContext, { CommonChartShareInfo } from '../../../components/CommonChart/context';
-import {useAnalyzeChartContext, useAnalyzeContext} from './context';
+import { AnalyzeChartContextProps, isNoData, useAnalyzeChartContext, useAnalyzeContext } from './context';
 import {EChartsOption} from 'echarts';
 import ECharts, { EChartsContext, EChartsProps } from '../../../components/ECharts';
 import { DangerousCtx, dangerousSetCtx } from './options/_danger';
@@ -68,6 +68,20 @@ export function withChart<T = unknown, P = {}>(useOption: (props: DangerousCtx<T
     const option = useOption(ctx, props.spec);
     if (ctx.context.DEBUG_PRINT_OPTION) {
       console.debug(option)
+    }
+    // show no data
+    if (isNoData(ctx as AnalyzeChartContextProps)) {
+      option.graphic = {
+        type: 'text',
+        left: 'center',
+        top: 'middle',
+        style: {
+          fontSize: 16,
+          fontWeight: 'bold',
+          text: "No relevant data yet",
+          fill: '#7c7c7c'
+        }
+      }
     }
     dangerousSetCtx(undefined);
 

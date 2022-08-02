@@ -1,5 +1,5 @@
-import {createContext, MutableRefObject, RefCallback, useContext} from 'react';
-import {AsyncData, RemoteData} from '../../../components/RemoteCharts/hook';
+import { createContext, MutableRefObject, RefCallback, useContext } from 'react';
+import { AsyncData, RemoteData } from '../../../components/RemoteCharts/hook';
 import EChartsReact from 'echarts-for-react';
 import type { RepoInfo } from '@ossinsight/api';
 
@@ -15,7 +15,7 @@ export interface AnalyzeChartContextProps<T = unknown> {
   descriptionRef?: RefCallback<HTMLParagraphElement>;
 }
 
-const DEFAULT_DATA = {data: undefined, loading: false, error: undefined};
+const DEFAULT_DATA = { data: undefined, loading: false, error: undefined };
 
 export const AnalyzeChartContext = createContext<AnalyzeChartContextProps>({
   query: '',
@@ -52,4 +52,11 @@ export const AnalyzeContext = createContext<AnalyzeContextProps>({
 
 export function useAnalyzeContext() {
   return useContext(AnalyzeContext);
+}
+
+export function isNoData(ctx: AnalyzeChartContextProps) {
+  if (ctx.data.loading || ctx.compareData.loading) {
+    return false;
+  }
+  return !(!!ctx.data.data?.data.length || !!ctx.compareData.data?.data.length);
 }
