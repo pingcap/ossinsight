@@ -38,6 +38,11 @@ class TweetRepo
     info = repo_info 
 
     language = info["language"]
+    language = "cpp" if language == 'C++'
+    language = "csharp" if language == 'C#'
+    language = "golang" if language == 'Go'
+    language = "rustlang" if language == 'Rust'
+    
     stars_count = info["stargazers_count"].to_i
     stars_count_pretty = stars_for_human(stars_count)
     stars_incr = stars_incr_count_last_7_days
