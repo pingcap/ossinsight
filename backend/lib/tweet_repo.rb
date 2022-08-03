@@ -42,7 +42,7 @@ class TweetRepo
     language = "csharp" if language == 'C#'
     language = "golang" if language == 'Go'
     language = "rustlang" if language == 'Rust'
-    
+
     stars_count = info["stargazers_count"].to_i
     stars_count_pretty = stars_for_human(stars_count)
     stars_incr = stars_incr_count_last_7_days
@@ -120,12 +120,13 @@ class TweetRepo
     json
   end
 
-  def get_contributors(n = 20)
+  def get_contributors(n = 30)
     sql = <<~SQL
       select creator_user_login as login, count(*) as count 
       from github_events 
       where type = 'PullRequestEvent' 
             and repo_name = '#{repo}' 
+            and pr_merged = 1
             and not creator_user_login like '%bot%'
       group by 1 
       order by 2 desc   
