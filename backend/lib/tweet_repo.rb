@@ -21,6 +21,7 @@ class TweetRepo
 
   def tweet!
     # TODO add image
+    return if repo_info["description"].to_s.scan(/\p{Han}+/).join.size >= 10
     client.update(text)
   end
 
@@ -92,7 +93,7 @@ class TweetRepo
   def repo_info
     token = github_tokens[rand(github_token_size)]
     url = "https://api.github.com/repos/#{repo}"
-    get_json(url, token)
+    @repo_info ||= get_json(url, token)
   end
 
   def get_json(url, github_token)
