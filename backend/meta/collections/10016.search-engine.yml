@@ -12,3 +12,4 @@ items:
   - quickwit-oss/quickwit
   - crate/crate
   - zinclabs/zinc
+  - manticoresoftware/manticoresearch
