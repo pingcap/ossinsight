@@ -13,4 +13,3 @@ items:
   - aws/copilot-cli
   - puppetlabs/puppet
   - chef/chef
-  - hashicorp/vagrant
