@@ -1,2 +1,6 @@
-select count(distinct number) from github_events
-where repo_id = 41986369 and type = 'IssuesEvent' and action = 'opened';
+SELECT
+    IFNULL(COUNT(DISTINCT number), 0) AS issues
+FROM github_events
+WHERE
+    repo_id = 41986369
+    AND type = 'IssuesEvent';

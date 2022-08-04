@@ -1,3 +1,6 @@
-select count(distinct actor_id)
-from github_events
-where repo_id = 41986369 and type = 'ForkEvent';
+SELECT
+    IFNULL(COUNT(DISTINCT actor_login), 0) AS forkers
+FROM github_events
+WHERE
+    type = 'ForkEvent'
+    AND repo_id = 41986369;
