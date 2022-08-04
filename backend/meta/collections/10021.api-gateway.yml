@@ -10,3 +10,4 @@ items:
   - TykTechnologies/tyk
   - api-umbrella
   - apache/apisix
+  - apache/shenyu
