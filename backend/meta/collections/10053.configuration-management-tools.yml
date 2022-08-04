@@ -1,5 +1,5 @@
 id: 10053
-name: Infrastructure as Code
+name: Configuration Management Tools
 items:
   - ansible/ansible
   - pulumi/pulumi
