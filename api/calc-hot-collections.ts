@@ -92,7 +92,7 @@ schedule.scheduleJob(cron, async () => {
                         last_2nd_month_rank =  ${item.last_month_rank}
                     WHERE
                         collection_id = ${collectionId}
-                        AND repo_name = '${item.repo_name}'
+                        AND repo_id = '${item.repo_id}'
                 `;
                 conn.execute(sql);
             }
