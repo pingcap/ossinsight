@@ -22,7 +22,7 @@
     "server:prefetch": "node ./dist/compute-prefetch-enums.js",
     "server:gc": "node ./dist/cache-gc.js",
     "server:sync-nginx-log": "node ./dist/sync-nginx-log.js",
-    "start:calc-hot-collections": "node ./dist/calc-hot-collections.js",
+    "server:calc-hot-collections": "node ./dist/calc-hot-collections.js",
     "dev": "tsc && ts-node index.ts",
     "dev:prefetch": "tsc && ts-node compute-prefetch-enums.ts",
     "dev:generate-company-name-sql": "tsc && ts-node generate-company-name-sql.ts",
