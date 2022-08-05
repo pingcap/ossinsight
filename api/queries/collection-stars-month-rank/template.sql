@@ -1,59 +1,63 @@
-WITH stars AS (
+WITH stars_group_by_repo AS (
     SELECT
-        event_month,
-        actor_login,
-        FIRST_VALUE(repo_name) OVER (PARTITION BY repo_id ORDER BY created_at DESC) AS repo_name,
-        ROW_NUMBER() OVER(PARTITION BY repo_id, actor_login) AS row_num
+        repo_id,
+        COUNT(DISTINCT actor_login) AS stars
     FROM github_events
     WHERE
         type = 'WatchEvent'
         AND repo_id IN (41986369, 16563587, 105944401)
+    GROUP BY repo_id
+), m AS (
+    SELECT
+        DATE_FORMAT(DATE_SUB(NOW(), INTERVAL DAYOFMONTH(NOW()) DAY), '%Y-%m-01') AS `month`
+    UNION
+    SELECT
+        DATE_FORMAT(DATE_SUB(DATE_SUB(NOW(), INTERVAL DAYOFMONTH(NOW()) DAY), INTERVAL 1 MONTH), '%Y-%m-01') AS `month`
 ), stars_group_by_month AS (
     SELECT
-        event_month,
-        repo_name,
-        count(DISTINCT actor_login) AS total
-    FROM stars
-    WHERE row_num = 1
-    GROUP BY event_month, repo_name
-    ORDER BY repo_name, event_month
-), stars_group_by_repo AS (
-    SELECT
-        repo_name,
-        count(DISTINCT actor_login) AS total
-    FROM stars
-    GROUP BY repo_name
-    ORDER BY repo_name
+            event_month,
+            repo_id,
+            ANY_VALUE(repo_name) AS repo_name,
+            COUNT(DISTINCT actor_login) AS stars
+        FROM github_events
+        WHERE
+            type = 'WatchEvent'
+            AND repo_id IN (41986369, 16563587, 105944401)
+            AND event_month IN (SELECT `month` FROM m)
+        GROUP BY repo_id, event_month
 ), stars_last_month AS (
     SELECT
-        event_month,
+        repo_id,
         repo_name,
-        total,
-        ROW_NUMBER() OVER(PARTITION BY event_month ORDER BY total DESC) AS `rank`
-    FROM stars_group_by_month sgn
-    WHERE event_month = DATE_FORMAT(date_sub(now(), interval DAYOFMONTH(now()) day), '%Y-%m-01')
+        stars,
+        ROW_NUMBER() OVER(ORDER BY stars DESC) AS `rank`
+    FROM stars_group_by_month
+    WHERE
+        event_month = DATE_FORMAT(DATE_SUB(NOW(), INTERVAL DAYOFMONTH(NOW()) DAY), '%Y-%m-01')
 ), stars_last_2nd_month AS (
     SELECT
-        event_month,
+        repo_id,
         repo_name,
-        total,
-        ROW_NUMBER() OVER(PARTITION BY event_month ORDER BY total DESC) AS `rank`
-    FROM stars_group_by_month sgn
-    WHERE event_month = DATE_FORMAT(date_sub(date_sub(now(), interval DAYOFMONTH(now()) day), interval 1 month), '%Y-%m-01')
+        stars,
+        ROW_NUMBER() OVER(ORDER BY stars DESC) AS `rank`
+    FROM stars_group_by_month
+    WHERE
+        event_month = DATE_FORMAT(DATE_SUB(DATE_SUB(NOW(), INTERVAL DAYOFMONTH(NOW()) DAY), INTERVAL 1 MONTH), '%Y-%m-01')
 )
 SELECT
+    sgr.repo_id,
     slm.repo_name,
-    DATE_FORMAT(date_sub(now(), interval DAYOFMONTH(now()) day), '%Y-%m') AS current_month,
-    DATE_FORMAT(date_sub(date_sub(now(), interval DAYOFMONTH(now()) day), interval 1 month), '%Y-%m') AS last_month,
+    DATE_FORMAT(DATE_SUB(NOW(), INTERVAL DAYOFMONTH(NOW()) DAY), '%Y-%m') AS current_month,
+    DATE_FORMAT(DATE_SUB(DATE_SUB(NOW(), INTERVAL DAYOFMONTH(NOW()) DAY), INTERVAL 1 MONTH), '%Y-%m') AS last_month,
     -- Stars
-    slm.total AS current_month_total,
+    slm.stars AS current_month_total,
     slm.`rank` AS current_month_rank,
-    IFNULL(sl2m.total, 0) AS last_month_total,
+    IFNULL(sl2m.stars, 0) AS last_month_total,
     sl2m.`rank` AS last_month_rank,
-    ((slm.total - sl2m.total) / sl2m.total) * 100 AS total_mom,
+    ((slm.stars - sl2m.stars) / sl2m.stars) * 100 AS total_mom,
     (slm.`rank` - sl2m.`rank`) AS rank_mom,
-    sgr.total AS total
+    sgr.stars AS total
 FROM stars_group_by_repo sgr 
-JOIN stars_last_month slm ON sgr.repo_name = slm.repo_name
-LEFT JOIN stars_last_2nd_month sl2m ON slm.repo_name = sl2m.repo_name
+JOIN stars_last_month slm ON sgr.repo_id = slm.repo_id
+LEFT JOIN stars_last_2nd_month sl2m ON slm.repo_id = sl2m.repo_id
 ORDER BY current_month_rank;

@@ -1,3 +1,6 @@
-select count(distinct actor_id)
-from github_events
-where repo_id = 41986369 and type = 'IssueCommentEvent';
+SELECT
+    IFNULL(COUNT(DISTINCT actor_login), 0) AS commenters
+FROM github_events
+WHERE
+    type = 'IssueCommentEvent'
+    AND repo_id = 41986369;

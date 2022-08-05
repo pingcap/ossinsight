@@ -1,3 +1,6 @@
-select count(distinct id)
-from github_events
-where repo_id = 41986369 and type = 'PullRequestReviewCommentEvent';
+SELECT
+    IFNULL(COUNT(*), 0) AS pull_request_reviews
+FROM github_events
+WHERE
+    type = 'PullRequestReviewEvent'
+    AND repo_id = 41986369;
