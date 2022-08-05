@@ -1,23 +1,23 @@
-WITH pr_with_latest_repo_name AS (
-    SELECT
-        event_year,
-        number,
-        FIRST_VALUE(repo_name) OVER (PARTITION BY repo_id ORDER BY created_at DESC) AS repo_name,
-        ROW_NUMBER() OVER(PARTITION BY number) AS row_num
-    FROM github_events
-    WHERE
-        type = 'PullRequestEvent'
-        AND state = 'open'
-        AND repo_id IN (41986369, 16563587, 105944401)
-        -- Exclude Bots
-        AND actor_login NOT LIKE '%bot%'
-        AND actor_login NOT IN (SELECT /*+ READ_FROM_STORAGE(TIKV[bu]) */ login FROM blacklist_users bu)
-), acc AS (
+WITH acc AS (
     SELECT
         event_year,
         repo_name,
         COUNT(number) OVER(PARTITION BY repo_name ORDER BY event_year ASC) AS total
-    FROM pr_with_latest_repo_name
+    FROM (
+        SELECT
+            event_year,
+            number,
+            FIRST_VALUE(repo_name) OVER (PARTITION BY repo_id ORDER BY created_at DESC) AS repo_name,
+            ROW_NUMBER() OVER(PARTITION BY number) AS row_num
+        FROM github_events
+        WHERE
+            type = 'PullRequestEvent'
+            AND state = 'open'
+            AND repo_id IN (41986369, 16563587, 105944401)
+            -- Exclude Bots
+            AND actor_login NOT LIKE '%bot%'
+            AND actor_login NOT IN (SELECT /*+ READ_FROM_STORAGE(TIKV[bu]) */ login FROM blacklist_users bu)
+    ) pr_with_latest_repo_name
     WHERE row_num = 1
     ORDER BY 1
 ), acc_dist AS (
