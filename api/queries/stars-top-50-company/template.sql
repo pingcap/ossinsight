@@ -1,17 +1,14 @@
-SELECT company_name, stargazers
-FROM (
-    SELECT
-        TRIM(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(LOWER(u.company), ',', ''), '-', ''), '@', ''), '.', ''), 'ltd', ''), 'inc', ''), 'com', ''), 'www', '')) as company_name,
-        COUNT(distinct actor_login) as stargazers
-    FROM github_events
-    LEFT JOIN users u ON github_events.actor_login = u.login
-    WHERE
-        repo_id IN (41986369)
-        AND github_events.type = 'WatchEvent'
-    GROUP BY company_name
+select *
+from (
+    select
+        /*+ READ_FROM_STORAGE(TIKV[u]) */
+        trim(replace(replace(replace(replace(replace(replace(replace(replace(lower(u.company), ',', ''), '-', ''), '@', ''), '.', ''), 'ltd', ''), 'inc', ''), 'com', ''), 'www', '')) as company_name,
+        count(distinct actor_login) as stargazers
+    from github_events
+    left join users u ON github_events.actor_login = u.login
+    where repo_id in (41986369) and github_events.type = 'WatchEvent'
+    group by 1
  ) sub
-WHERE
-    LENGTH(company_name) != 0
-    AND company_name NOT IN ('-', '--- click here ---', 'none', 'no', 'home', 'n/a', 'unknown', 'null')
-ORDER BY stargazers DESC
-LIMIT 9999999999;
+where length(company_name) != 0 and company_name not in ('-', '--- click here ---', 'none', 'no', 'home', 'n/a', 'unknown', 'null')
+order by stargazers desc
+limit 9999999999;

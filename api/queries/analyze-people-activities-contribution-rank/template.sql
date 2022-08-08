@@ -7,11 +7,9 @@ WITH activity_contribution_last_month AS (
         AND actor_login NOT LIKE '%bot' AND actor_login NOT LIKE '%[bot]' AND actor_login NOT IN (SELECT /*+ READ_FROM_STORAGE(TIKV[bu]) */ login FROM blacklist_users bu)
         AND type IN (
             'IssuesEvent', 'IssueCommentEvent', 'PullRequestEvent', 'PullRequestReviewEvent', 'PullRequestReviewCommentEvent', 
-            'CommitCommentEvent', 'PushEvent'
+            'CommitCommentEvent', 'CreateEvent', 'DeleteEvent', 'PushEvent'
         )
     GROUP BY actor_id
-    ORDER BY events DESC
-    LIMIT 50
 ), activity_contribution_last_2nd_month AS (
     SELECT actor_id, ANY_VALUE(actor_login) AS actor_login, COUNT(*) AS events
     FROM github_events ge
@@ -21,7 +19,7 @@ WITH activity_contribution_last_month AS (
         AND actor_login NOT LIKE '%bot' AND actor_login NOT LIKE '%[bot]' AND actor_login NOT IN (SELECT /*+ READ_FROM_STORAGE(TIKV[bu]) */ login FROM blacklist_users bu)
         AND type IN (
             'IssuesEvent', 'IssueCommentEvent', 'PullRequestEvent', 'PullRequestReviewEvent', 'PullRequestReviewCommentEvent', 
-            'CommitCommentEvent', 'PushEvent'
+            'CommitCommentEvent', 'CreateEvent', 'DeleteEvent', 'PushEvent'
         )
     GROUP BY actor_id
 )
