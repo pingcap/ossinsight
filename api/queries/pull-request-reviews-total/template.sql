@@ -1,5 +1,5 @@
 SELECT
-    IFNULL(COUNT(1), 0) AS pull_request_reviews
+    IFNULL(COUNT(*), 0) AS pull_request_reviews
 FROM github_events
 WHERE
     type = 'PullRequestReviewEvent'
