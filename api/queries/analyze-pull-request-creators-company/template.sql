@@ -1,21 +1,25 @@
-with pr_creator_companies as (
-    select
-        /*+ READ_FROM_STORAGE(TIKV[u]) */
-        trim(replace(replace(replace(replace(replace(replace(replace(replace(lower(u.company), ',', ''), '-', ''), '@', ''), 'www.', ''), 'inc', ''), '.com', ''), '.cn', ''), '.', '')) as company_name,
-        count(distinct github_events.actor_id) as code_contributors
-    from github_events
-    left join users u ON github_events.actor_login = u.login
-    where repo_id in (41986369) and github_events.type = 'PullRequestEvent' and action = 'opened'
-    group by 1
+WITH pr_creator_companies AS (
+    SELECT
+        TRIM(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(LOWER(u.company), ',', ''), '-', ''), '@', ''), 'www.', ''), 'inc', ''), '.com', ''), '.cn', ''), '.', '')) AS company_name,
+        COUNT(DISTINCT ge.actor_id) AS code_contributors
+    FROM github_events ge
+    LEFT JOIN users u ON ge.actor_login = u.login
+    WHERE
+        ge.repo_id in (41986369)
+        AND ge.type = 'PullRequestEvent'
+        AND ge.action = 'opened'
+    GROUP BY 1
 )
-select
-    *,
+SELECT
+    company_name,
+    code_contributors,
     code_contributors / (
-        select count(*)
-        from pr_creator_companies
-        where length(company_name) != 0 and company_name not in ('-', 'none', 'no', 'home', 'n/a', 'null', 'unknown')
-    ) as proportion
-from pr_creator_companies sub
-where length(company_name) != 0 and company_name not in ('-', 'none', 'no', 'home', 'n/a', 'null', 'unknown')
-order by code_contributors desc
-limit 9999999999;
+        SELECT COUNT(*)
+        FROM pr_creator_companies
+    ) AS proportion
+FROM pr_creator_companies sub
+WHERE
+    length(company_name) != 0
+    AND company_name NOT IN ('-', 'none', 'no', 'home', 'n/a', 'null', 'unknown')
+ORDER BY code_contributors DESC
+LIMIT 9999999999;
