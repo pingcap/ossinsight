@@ -1,21 +1,25 @@
-with issue_creator_companies as (
-     select
-        /*+ READ_FROM_STORAGE(TIKV[u]) */
-        trim(replace(replace(replace(replace(replace(replace(replace(replace(lower(u.company), ',', ''), '-', ''), '@', ''), 'www.', ''), 'inc', ''), '.com', ''), '.cn', ''), '.', '')) as company_name,
-        count(distinct github_events.actor_id) as issue_creators
-     from github_events
-     left join users u ON github_events.actor_login = u.login
-     where repo_id in (41986369) and github_events.type = 'IssuesEvent' and action = 'opened'
-     group by 1
+WITH issue_creator_companies AS (
+    SELECT
+        TRIM(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(LOWER(u.company), ',', ''), '-', ''), '@', ''), 'www.', ''), 'inc', ''), '.com', ''), '.cn', ''), '.', '')) AS company_name,
+        COUNT(DISTINCT ge.actor_id) AS issue_creators
+    FROM github_events ge
+    LEFT JOIN users u ON ge.actor_login = u.login
+    WHERE
+        ge.repo_id in (41986369)
+        AND ge.type = 'IssuesEvent'
+        AND ge.action = 'opened'
+    GROUP BY 1
 )
-select
-    *,
+SELECT
+    company_name,
+    issue_creators,
     issue_creators / (
-        select count(*)
-        from issue_creator_companies
-        where length(company_name) != 0 and company_name not in ('-', 'none', 'no', 'home', 'n/a', 'null', 'unknown')
-    ) as proportion
-from issue_creator_companies sub
-where length(company_name) != 0 and company_name not in ('-', 'none', 'no', 'home', 'n/a', 'null', 'unknown')
-order by issue_creators desc
-limit 9999999999;
+        SELECT COUNT(*)
+        FROM issue_creator_companies
+    ) AS proportion
+FROM issue_creator_companies sub
+WHERE
+    length(company_name) != 0
+    AND company_name NOT IN ('-', 'none', 'no', 'home', 'n/a', 'null', 'unknown')
+ORDER BY issue_creators DESC
+LIMIT 9999999999;

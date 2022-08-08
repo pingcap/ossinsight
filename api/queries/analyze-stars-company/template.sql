@@ -1,21 +1,24 @@
-with star_companies as (
-    select
-        /*+ READ_FROM_STORAGE(TIKV[u]) */
-        trim(replace(replace(replace(replace(replace(replace(replace(replace(u.company, ',', ''), '-', ''), '@', ''), '.', ''), 'ltd', ''), 'inc', ''), 'com', ''), 'www', '')) as company_name,
-        count(distinct actor_login) as stargazers
-    from github_events
-    left join users u ON github_events.actor_login = u.login
-    where repo_id in (41986369) and github_events.type = 'WatchEvent'
-    group by 1
+WITH star_companies AS (
+    SELECT
+        TRIM(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(LOWER(u.company), ',', ''), '-', ''), '@', ''), 'www.', ''), 'inc', ''), '.com', ''), '.cn', ''), '.', '')) AS company_name,
+        COUNT(DISTINCT ge.actor_login) AS stargazers
+    FROM github_events ge
+    LEFT JOIN users u ON ge.actor_login = u.login
+    WHERE
+        ge.repo_id in (41986369)
+        AND ge.type = 'WatchEvent'
+    GROUP BY 1
 )
-select
-    *,
+SELECT
+    company_name,
+    stargazers,
     stargazers / (
-        select count(*)
-        from star_companies
-        where length(company_name) != 0 and company_name not in ('-', 'none', 'no', 'home', 'n/a', 'null', 'unknown')
-    ) as proportion
-from star_companies sub
-where length(company_name) != 0 and company_name not in ('-', 'none', 'no', 'home', 'n/a', 'null', 'unknown')
-order by stargazers desc
-limit 9999999999;
+        SELECT COUNT(*)
+        FROM star_companies
+    ) AS proportion
+FROM star_companies sub
+WHERE
+    length(company_name) != 0
+    AND company_name NOT IN ('-', 'none', 'no', 'home', 'n/a', 'null', 'unknown')
+ORDER BY stargazers DESC
+LIMIT 9999999999;
