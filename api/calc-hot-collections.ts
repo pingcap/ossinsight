@@ -79,21 +79,24 @@ schedule.scheduleJob(cron, async () => {
         const query = new Query(COLLECTIONS_RANKING_QUERY, cacheBuilder, queryExecutor, ghEventService, collectionService, userService)
         const { data: collection_items } = await query.run({
             collectionId: collectionId
-        }, false, null, undefined, true);
+        }, true, null, undefined, true);
         
         if (Array.isArray(collection_items)) {
             logger.info(`Found ${collection_items.length} repos in the collection <${name}> ...`);
             for (const item of collection_items) {
-                const sql = `
-                    UPDATE
-                        collection_items
-                    SET
-                        last_month_rank = ${item.current_month_rank},
-                        last_2nd_month_rank =  ${item.last_month_rank}
-                    WHERE
-                        collection_id = ${collectionId}
-                        AND repo_id = '${item.repo_id}'
-                `;
+                let sql;
+                if (item.repo_id === undefined) {
+                    // Fallback to use repo_name when repo_id is not existed.
+                    sql = ` UPDATE collection_items
+                    SET last_month_rank = ${item.current_month_rank}, last_2nd_month_rank =  ${item.last_month_rank}
+                    WHERE collection_id = ${collectionId} AND repo_name = '${item.repo_name}'
+                    `;
+                } else {
+                    sql = `UPDATE collection_items
+                    SET last_month_rank = ${item.current_month_rank}, last_2nd_month_rank =  ${item.last_month_rank}
+                    WHERE collection_id = ${collectionId} AND repo_id = '${item.repo_id}'
+                    `;
+                }
                 conn.execute(sql);
             }
             logger.info(`Updated the month rank for collection <${name}>.`)

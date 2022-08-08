@@ -1,5 +1,6 @@
 {
-  "cacheHours": 1,
+  "cacheHours": 24,
+  "refreshHours": 12,
   "params": [
     {
       "name": "collectionId",
