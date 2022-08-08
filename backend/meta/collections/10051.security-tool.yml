@@ -27,3 +27,4 @@ items:
   - lunasec-io/lunasec
   - openclarity/kubeclarity
   - anchore/grype
+  - jumpserver/jumpserver
