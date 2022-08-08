@@ -1,14 +1,18 @@
-select *
-from (
-     select
-         /*+ READ_FROM_STORAGE(TIKV[u]) */
-         trim(replace(replace(replace(replace(replace(replace(replace(replace(lower(u.company), ',', ''), '-', ''), '@', ''), 'www.', ''), 'inc', ''), '.com', ''), '.cn', ''), '.', '')) as company_name,
-         count(distinct github_events.actor_id) as issue_creators
-     from github_events
-     left join users u ON github_events.actor_login = u.login
-     where repo_id in (41986369) and github_events.type = 'IssuesEvent' and action = 'opened'
-     group by 1
-) sub
-where length(company_name) != 0 and company_name not in ('-', 'none', 'no', 'home', 'n/a', 'null', 'unknown')
-order by issue_creators desc
-limit 9999999999;
+SELECT company_name, issue_creators
+FROM (
+    SELECT
+        TRIM(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(LOWER(u.company), ',', ''), '-', ''), '@', ''), '.', ''), 'ltd', ''), 'inc', ''), 'com', ''), 'www', '')) as company_name,
+        COUNT(distinct actor_login) as issue_creators
+    FROM github_events
+    LEFT JOIN users u ON github_events.actor_login = u.login
+    WHERE
+        repo_id IN (41986369)
+        AND github_events.type = 'IssuesEvent'
+        AND action = 'opened'
+    GROUP BY company_name
+ ) sub
+WHERE
+    LENGTH(company_name) != 0
+    AND company_name NOT IN ('-', '--- click here ---', 'none', 'no', 'home', 'n/a', 'unknown', 'null')
+ORDER BY issue_creators DESC
+LIMIT 9999999999;
