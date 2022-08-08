@@ -8,3 +8,4 @@ items:
   - apache/jmeter
   - teamcapybara/capybara
   - grafana/k6
+  - metersphere/metersphere
