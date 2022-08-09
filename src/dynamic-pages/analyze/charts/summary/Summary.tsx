@@ -14,7 +14,6 @@ export type ItemBase = {
 }
 
 export type QueryItem = ItemBase & {
-  query: string
   field: any;
 }
 
@@ -24,13 +23,14 @@ export type StaticItem = ItemBase & {
 }
 
 export interface SummaryProps {
+  query: string
   items: (QueryItem | StaticItem)[];
 }
 
 const singleSize = [4, 6] as const;
 const compareSize = [4, 3] as const;
 
-export default function Summary({items}: SummaryProps) {
+export default function Summary({items, query}: SummaryProps) {
   const {comparingRepoId, repoName, comparingRepoName} = useAnalyzeContext();
 
   const sizes = comparingRepoId ? compareSize : singleSize;
@@ -55,20 +55,19 @@ export default function Summary({items}: SummaryProps) {
             </HeaderGrid>)
           : undefined}
       </Grid>
-      {items.map((item, i) => {
-        if ('query' in item) {
-          const {query, ...props} = item;
-          return (
-            <Analyze query={query} key={i}>
-              <SummaryItem container flexWrap="nowrap" gap={1} {...props} sizes={sizes} key={query} />
-            </Analyze>
-          );
-        } else {
-          const {data, comparingData, ...props} = item;
-          return <StaticSummaryItem key={i} container flexWrap="nowrap" gap={1} data={data}
-                                    comparingData={comparingData} {...props} sizes={sizes} />;
-        }
-      })}
+      <Analyze query={query}>
+        {items.map((item, i) => {
+          if ('field' in item) {
+            return (
+              <SummaryItem container flexWrap="nowrap" gap={1} {...item} sizes={sizes} key={item.field} />
+            );
+          } else {
+            const {data, comparingData, ...props} = item;
+            return <StaticSummaryItem key={i} container flexWrap="nowrap" gap={1} data={data}
+                                      comparingData={comparingData} {...props} sizes={sizes} />;
+          }
+        })}
+      </Analyze>
     </Stack>
   );
 }

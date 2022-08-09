@@ -41,18 +41,15 @@ export const OverviewSection = forwardRef(function ({}, ref: ForwardedRef<HTMLEl
           </IconButton>
         </Tooltip>
       </>,
-      query: 'stars-total',
-      field: '*'
+      field: 'stars'
     },{
       icon: <GitCommitIcon fill='#D54562'/>,
       title: 'Commits',
-      query: 'commits-total',
-      field: '*'
+      field: 'commits'
     },{
       icon: <IssueOpenedIcon fill='#FDE494'/>,
       title: 'Issues',
-      query: 'issues-total',
-      field: '*'
+      field: 'issues'
     },{
       icon: <RepoForkedIcon fill='#E30C34'/>,
       title: 'Forks',
@@ -60,8 +57,7 @@ export const OverviewSection = forwardRef(function ({}, ref: ForwardedRef<HTMLEl
     },{
       icon: <PeopleIcon fill='#F77C00'/>,
       title: 'PR Creators',
-      query: 'pull-request-creators-total',
-      field: '*'
+      field: 'pull_request_creators'
     },{
       icon: <CodeIcon fill='#309CF2'/>,
       title: 'Language',
@@ -102,7 +98,7 @@ export const OverviewSection = forwardRef(function ({}, ref: ForwardedRef<HTMLEl
       }
       <Grid container spacing={0} alignItems='center'>
         <Grid item xs={12} md={vs ? 7 : 6}>
-          <Summary items={summaries} />
+          <Summary items={summaries} query='analyze-repo-overview' />
         </Grid>
         <Grid item xs={12} md={vs ? 5 : 6}>
           <Analyze query='stars-history'>
