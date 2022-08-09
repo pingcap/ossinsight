@@ -39,5 +39,5 @@ SELECT
     (SELECT total FROM commits) AS commits,
     (SELECT total FROM issues) AS issues,
     (SELECT total FROM forkers) AS forkers,
-    (SELECT total FROM pr_creators) AS pull_request_creators
+    (SELECT total FROM pull_request_creators) AS pull_request_creators
 ;
