@@ -11,3 +11,4 @@ items:
   - cayleygraph/cayley
   - dgraph-io/dgraph
   - terminusdb/terminusdb
+  - memgraph/memgraph
