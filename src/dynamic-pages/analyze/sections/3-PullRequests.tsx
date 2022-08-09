@@ -18,10 +18,10 @@ export const PullRequestsSection = forwardRef(function ({}, ref: ForwardedRef<HT
 
   const prSummaries: SummaryProps['items'] = useMemo(() => {
     return [
-      {title: 'Total PRs', query: "pull-requests-total", field: '*'},
-      {title: 'Total PR creators', query: "pull-request-creators-total", field: '*'},
-      {title: 'Total PR reviews', query: "pull-request-reviews-total", field: '*'},
-      {title: 'Total PR reviewers', query: "pull-request-reviewers-total", field: '*'},
+      {title: 'Total PRs', field: 'pull_requests'},
+      {title: 'Total PR creators',field: 'pull_request_creators'},
+      {title: 'Total PR reviews', field: 'pull_request_reviews'},
+      {title: 'Total PR reviewers', field: 'pull_request_reviewers'},
     ]
   }, [])
 
@@ -30,7 +30,7 @@ export const PullRequestsSection = forwardRef(function ({}, ref: ForwardedRef<HT
       <H2>Pull Requests</H2>
       <Grid container spacing={2} alignItems='center'>
         <Grid item xs={12} md={vs ? 8 : 6}>
-          <Summary items={prSummaries} />
+          <Summary items={prSummaries} query='analyze-repo-pr-overview' />
         </Grid>
       </Grid>
       <Analyze query='analyze-pull-requests-size-per-month'>

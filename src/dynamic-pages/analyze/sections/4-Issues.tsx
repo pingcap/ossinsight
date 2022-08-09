@@ -18,10 +18,10 @@ export const IssuesSection = forwardRef(function ({}, ref: ForwardedRef<HTMLElem
 
   const issuesSummaries: SummaryProps['items'] = useMemo(() => {
     return [
-      {title: 'Total issues', query: "issues-total", field: '*'},
-      {title: 'Total issue creators', query: 'issue-creators-total', field: '*'},
-      {title: 'Total issue comments', query: 'issue-comments-total', field: '*'},
-      {title: 'Total issue commenters', query: 'issue-commenters-total', field: '*'},
+      {title: 'Total issues', field: 'issues'},
+      {title: 'Total issue creators', field: 'issue_creators'},
+      {title: 'Total issue comments', field: 'issue_comments'},
+      {title: 'Total issue commenters', field: 'issue_commenters'},
     ]
   }, [])
 
@@ -30,7 +30,7 @@ export const IssuesSection = forwardRef(function ({}, ref: ForwardedRef<HTMLElem
       <H2>Issues</H2>
       <Grid container spacing={2} alignItems='center'>
         <Grid item xs={12} md={vs ? 8 : 6}>
-          <Summary items={issuesSummaries} />
+          <Summary items={issuesSummaries} query='analyze-repo-issue-overview' />
         </Grid>
       </Grid>
       <Analyze query='analyze-issue-open-to-first-responded'>
