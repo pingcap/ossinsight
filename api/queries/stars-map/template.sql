@@ -5,7 +5,7 @@ WITH group_by_area AS (
     FROM github_events
     LEFT JOIN users_refined u ON github_events.actor_login = u.login
     WHERE
-        repo_id IN (10270250)
+        repo_id IN (41986369)
         AND github_events.type = 'WatchEvent'
         AND u.country_code IS NOT NULL
     GROUP BY country_or_area
