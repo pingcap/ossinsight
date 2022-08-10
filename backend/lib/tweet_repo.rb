@@ -43,6 +43,7 @@ class TweetRepo
     language = "csharp" if language == 'C#'
     language = "golang" if language == 'Go'
     language = "rustlang" if language == 'Rust'
+    language = "python" if language == 'Jupyter Notebook'
 
     stars_count = info["stargazers_count"].to_i
     stars_count_pretty = stars_for_human(stars_count)
