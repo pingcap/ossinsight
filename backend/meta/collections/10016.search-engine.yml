@@ -13,3 +13,4 @@ items:
   - crate/crate
   - zinclabs/zinc
   - manticoresoftware/manticoresearch
+  - semi-technologies/weaviate
