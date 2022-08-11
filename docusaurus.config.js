@@ -246,10 +246,11 @@ const config = {
             label: 'More',
             position: 'left',
             items: [
-              {label: 'About OSS Insight', to: '/about'},
-              {label: 'About TiDB Cloud', to: 'https://en.pingcap.com/tidb-cloud?utm_source=ossinsight&utm_medium=referral'},
-              {label: 'How we implement OSS Insight?', to: '/blog/why-we-choose-tidb-to-support-ossinsight'},
-              {label: 'Report Issue', to: 'https://github.com/pingcap/ossinsight/issues'},
+              {label: 'ℹ️  About OSS Insight', to: '/about'},
+              {label: 'ℹ️  About TiDB Cloud', to: 'https://en.pingcap.com/tidb-cloud?utm_source=ossinsight&utm_medium=referral'},
+              {label: '❓ How we implement OSS Insight?', to: '/blog/why-we-choose-tidb-to-support-ossinsight'},
+              {label: '⬇️  Download Center', to: 'https://drive.google.com/drive/u/1/folders/1guSQTS5rZIkooATlb78jsBr53bJMKyy8'},
+              {label: '🐞 Report Issue', to: 'https://github.com/pingcap/ossinsight/issues'},
             ]
           },
           {
