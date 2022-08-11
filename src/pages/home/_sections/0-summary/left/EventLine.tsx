@@ -11,7 +11,7 @@ const EventLine = () => {
 
   return (
     <Headline>
-      Get insights from
+      SELECT insights FROM
       <TotalNumber fontSize={isSmall ? 14 : isMedium ? 18 : 24} />
       GitHub events
     </Headline>
