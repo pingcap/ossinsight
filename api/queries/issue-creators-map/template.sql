@@ -1,7 +1,7 @@
 WITH group_by_area AS (
     SELECT
         UPPER(u.country_code) AS country_or_area,
-        COUNT(1) as cnt
+        COUNT(DISTINCT actor_login) as cnt
     FROM github_events
     LEFT JOIN users_refined u ON github_events.actor_login = u.login
     WHERE
