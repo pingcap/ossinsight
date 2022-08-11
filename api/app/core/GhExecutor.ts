@@ -1,15 +1,13 @@
 import {Octokit} from "octokit";
-import {createPool, Factory, Pool} from "generic-pool";
+import {createPool, Pool} from "generic-pool";
 import {DateTime} from "luxon";
-import consola, {Consola} from "consola";
 import {ghQueryCounter, ghQueryTimer, measure} from "../metrics";
 import CacheBuilder, { CacheProviderTypes } from "./cache/CacheBuilder";
 import {CachedData} from "./cache/Cache";
+import { OctokitFactory, SYMBOL_TOKEN } from "./OctokitFactory";
 
 const GET_REPO_CACHE_HOURS = 1;
 const SEARCH_REPOS_CACHE_HOURS = 24;
-
-const SYMBOL_TOKEN = Symbol('PERSONAL_TOKEN')
 
 const RECOMMEND_REPO_LIST_1_KEYWORD = 'recommend-repo-list-1-keyword';
 const RECOMMEND_REPO_LIST_1: RepoSearchItem[] = [
@@ -125,10 +123,6 @@ export interface UserSearchParam {
   type?: UserType;
 }
 
-function eraseToken (value: string | undefined): string {
-  return value ? `****${value.substring(value.length - 8)}` : 'anonymous'
-}
-
 function randomSelectFromList(list: Array<any>, n: number) {
   if (!Array.isArray(list)) return [];
 
@@ -143,39 +137,6 @@ function randomSelectFromList(list: Array<any>, n: number) {
   }
 
   return Array.from(result);
-}
-
-class OctokitFactory implements Factory<Octokit> {
-  private tokens: Set<string | undefined> = new Set()
-  private log: Consola
-
-  constructor(tokens: string[]) {
-    this.log = consola.withTag('octokit-factory')
-    tokens.forEach(token => this.tokens.add(token))
-    this.log.info('create with %s tokens', tokens.length)
-  }
-
-  async create(): Promise<Octokit> {
-    if (this.tokens.size > 0) {
-      const {value} = this.tokens.keys().next()
-      const erasedToken = eraseToken(value)
-      const log = consola.withTag(`octokit:${erasedToken}`)
-      this.tokens.delete(value)
-      const octokit = new Octokit({auth: value, log })
-      Object.defineProperty(octokit, SYMBOL_TOKEN, {value, writable: false, enumerable: false, configurable: false})
-      this.log.info('create client with token %s', erasedToken)
-      return octokit
-    } else {
-      return Promise.reject('Out of personal tokens')
-    }
-  }
-
-  async destroy(client: Octokit): Promise<void> {
-    const { value } = Object.getOwnPropertyDescriptor(client, SYMBOL_TOKEN)!
-    this.tokens.add(value)
-    const erasedToken = eraseToken(value)
-    this.log.info('release client with token %s', erasedToken)
-  }
 }
 
 export default class GhExecutor {
@@ -388,3 +349,7 @@ export default class GhExecutor {
     })
   }
 }
+function eraseToken(value: any): any {
+  throw new Error("Function not implemented.");
+}
+

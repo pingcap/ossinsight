@@ -5,15 +5,8 @@ import { Connection, createConnection } from 'mysql2';
 import path from 'path';
 import { Tail } from 'tail';
 import { URL } from 'url';
+import { BatchLoader } from './app/core/BatchLoader';
 import { validateProcessEnv } from './app/env';
-
-// The batch insert size.
-const DEFAULT_BATCH_SIZE = 100;
-
-// The flush interval which control how often do it perform a batch insert 
-// if the batch quantity is not reached.
-// Default: 10 second.
-const DEFAULT_FLUSH_INTERVAL = 10;
 
 // The default access log format of nginx.
 // Reference: http://nginx.org/en/docs/http/ngx_http_log_module.html
@@ -50,54 +43,6 @@ interface AccessLog {
     requestPath: string;
     requestParams: string;      // Store as JSON column.
     requestedAt: Date;
-}
-
-class BatchLoader {
-    private conn: Connection;
-    private buf: any[];
-    private timer: NodeJS.Timer;
-
-    constructor(
-        conn: Connection,
-        readonly sql: string,
-        readonly batchSize: number = DEFAULT_BATCH_SIZE,
-        readonly flushInterval: number = DEFAULT_FLUSH_INTERVAL
-    ) {
-        this.conn = conn;
-        this.buf = [];
-        this.timer = setInterval(async () => {
-            if (this.buf.length !== 0) {
-                logger.debug(`Loader flush after ${flushInterval} seconds interval.`);
-                await this.flush();
-            }
-        }, flushInterval * 1000); 
-    }
-
-    async insert(values: any[]) {
-        this.buf.push(values);
-
-        if (this.buf.length >= this.batchSize) {
-            await this.flush();
-        }
-    }
-
-    flush() {
-        return new Promise((resolve, reject) => {
-            if (this.buf.length > 0) {
-                this.conn.query(this.sql, [this.buf], (err, res) => {
-                    this.buf = [];
-
-                    if (err !== null) {
-                        logger.error(err);
-                        reject(err);
-                    } else {
-                        resolve(res);
-                    }
-                });
-            }
-            resolve(null);
-        });
-    }
 }
 
 async function main () {
