@@ -7,7 +7,7 @@ WITH former_contributors AS (
             (type = 'PullRequestEvent' AND action = 'closed' AND pr_merged = true) OR type = 'PushEvent'
         )
         AND event_month < DATE_FORMAT(DATE_SUB(NOW(), INTERVAL DAYOFMONTH(NOW()) DAY), '%Y-%m-01')
-        AND actor_login NOT LIKE '%bot' AND actor_login NOT LIKE '%[bot]' AND actor_login NOT IN (SELECT /*+ READ_FROM_STORAGE(TIKV[bu]) */ login FROM blacklist_users bu)
+        AND actor_login NOT LIKE '%bot' AND actor_login NOT LIKE '%[bot]' AND actor_login NOT IN (SELECT login FROM blacklist_users bu)
 ), code_contribution_last_month AS (
     SELECT actor_id, ANY_VALUE(actor_login) AS actor_login, COUNT(*) AS events
     FROM github_events ge
@@ -17,7 +17,7 @@ WITH former_contributors AS (
             (type = 'PullRequestEvent' AND action = 'closed' AND pr_merged = true) OR type = 'PushEvent'
         )
         AND event_month = DATE_FORMAT(DATE_SUB(NOW(), INTERVAL DAYOFMONTH(NOW()) DAY), '%Y-%m-01')
-        AND actor_login NOT LIKE '%bot' AND actor_login NOT LIKE '%[bot]' AND actor_login NOT IN (SELECT /*+ READ_FROM_STORAGE(TIKV[bu]) */ login FROM blacklist_users bu)
+        AND actor_login NOT LIKE '%bot' AND actor_login NOT LIKE '%[bot]' AND actor_login NOT IN (SELECT login FROM blacklist_users bu)
     GROUP BY actor_id
     ORDER BY events DESC
 ), code_contribution_last_2nd_month AS (
@@ -29,7 +29,7 @@ WITH former_contributors AS (
             (type = 'PullRequestEvent' AND action = 'closed' AND pr_merged = true) OR type = 'PushEvent'
         )
         AND event_month = DATE_FORMAT(DATE_SUB(DATE_SUB(NOW(), INTERVAL DAYOFMONTH(NOW()) DAY), INTERVAL 1 MONTH), '%Y-%m-01')
-        AND actor_login NOT LIKE '%bot' AND actor_login NOT LIKE '%[bot]' AND actor_login NOT IN (SELECT /*+ READ_FROM_STORAGE(TIKV[bu]) */ login FROM blacklist_users bu)
+        AND actor_login NOT LIKE '%bot' AND actor_login NOT LIKE '%[bot]' AND actor_login NOT IN (SELECT login FROM blacklist_users bu)
     GROUP BY actor_id
     ORDER BY events DESC
 )
