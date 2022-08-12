@@ -15,7 +15,6 @@ FROM (
         type = 'PullRequestEvent'
         AND repo_id = 41986369
         AND action = 'opened'
-        AND (event_month BETWEEN DATE_FORMAT(DATE_SUB(CURRENT_DATE(), INTERVAL 1 YEAR), '%Y-%m-01') AND DATE_FORMAT(CURRENT_DATE(), '%Y-%m-01'))
 ) sub
 WHERE row_num = 1
 ORDER BY event_month
