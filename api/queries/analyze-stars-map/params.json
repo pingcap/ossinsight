@@ -1,0 +1,23 @@
+{
+  "cacheHours": 1,
+  "params": [
+    {
+      "name": "repoId",
+      "replaces": "41986369",
+      "pattern": "^[1-9]\\d*$"
+    },
+    {
+      "name": "period",
+      "replaces": "AND ge.created_at > DATE_SUB(CURRENT_DATE(), INTERVAL 28 DAY) AND (event_month BETWEEN DATE_FORMAT(DATE_SUB(CURRENT_DATE(), INTERVAL 28 DAY), '%Y-%m-01') AND DATE_FORMAT(CURRENT_DATE(), '%Y-%m-01'))",
+      "enums": [
+        "last_28_days",
+        "all_times"
+      ],
+      "default": "all_times",
+      "template": {
+        "last_28_days": "AND ge.created_at > DATE_SUB(CURRENT_DATE(), INTERVAL 28 DAY) AND (event_month BETWEEN DATE_FORMAT(DATE_SUB(CURRENT_DATE(), INTERVAL 28 DAY), '%Y-%m-01') AND DATE_FORMAT(CURRENT_DATE(), '%Y-%m-01'))",
+        "all_times": ""
+      }
+    }
+  ]
+}

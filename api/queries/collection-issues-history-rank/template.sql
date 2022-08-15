@@ -16,7 +16,7 @@ WITH acc AS (
             AND repo_id IN (41986369, 16563587, 105944401)
             -- Exclude Bots
             AND actor_login NOT LIKE '%bot%'
-            AND actor_login NOT IN (SELECT /*+ READ_FROM_STORAGE(TIKV[bu]) */ login FROM blacklist_users bu)
+            AND actor_login NOT IN (SELECT login FROM blacklist_users bu)
     ) pr_with_latest_repo_name
     WHERE row_num = 1
     ORDER BY 1
