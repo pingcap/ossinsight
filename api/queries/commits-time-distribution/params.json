@@ -6,6 +6,21 @@
       "replaces": "41986369",
       "type": "array",
       "pattern": "^[1-9]\\d*$"
+    },
+    {
+      "name": "period",
+      "replaces": "AND (event_month BETWEEN DATE_FORMAT(DATE_SUB(CURRENT_DATE(), INTERVAL 1 YEAR), '%Y-%m-01') AND DATE_FORMAT(CURRENT_DATE(), '%Y-%m-01'))",
+      "enums": [
+        "last_1_year",
+        "last_3_year",
+        "all_times"
+      ],
+      "default": "last_1_year",
+      "template": {
+        "last_1_year": "AND (event_month BETWEEN DATE_FORMAT(DATE_SUB(CURRENT_DATE(), INTERVAL 1 YEAR), '%Y-%m-01') AND DATE_FORMAT(CURRENT_DATE(), '%Y-%m-01'))",
+        "last_3_year": "AND (event_month BETWEEN DATE_FORMAT(DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR), '%Y-%m-01') AND DATE_FORMAT(CURRENT_DATE(), '%Y-%m-01'))",
+        "all_times": ""
+      }
     }
   ]
 }
