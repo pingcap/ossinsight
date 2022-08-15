@@ -1,6 +1,7 @@
 import consola from 'consola';
 import * as dotenv from "dotenv";
 import { createPool, Pool } from 'generic-pool';
+import { DateTime } from 'luxon';
 import { createConnection, Connection } from 'mysql2';
 import { Octokit } from 'octokit';
 import asyncPool from 'tiny-async-pool';
@@ -26,10 +27,6 @@ enum GitHubUserType {
     USR = 'USR'
 }
 
-interface GitHubRepo {
-    
-}
-
 interface GitHubUser {
     id: number;
     login: string;
@@ -49,6 +46,7 @@ interface GitHubUser {
     createdAt: Date;
     updatedAt: Date;
     deleted?: boolean;
+    refreshedAt: Date;
 }
 
 interface RepoWithStar {
@@ -96,6 +94,7 @@ async function main() {
     const geoLocator = new Locator(locationCache);
 
     // Init Users Loader.
+    // TODO: Support update GitHub user data on dup. 
     const insertUserSQL = `INSERT IGNORE INTO github_users(
         id, login, type, is_bot, company, company_formatted, address_formatted, country_code, state, city, 
         longitude, latitude, followers, followings, created_at, updated_at
@@ -114,6 +113,7 @@ async function main() {
     const syncJobs:SyncUserLog[] = [];
 
     if (process.env.SYNC_USER_FROM_REPO_STARS === '1') {
+        const start = DateTime.now();
         const repos = await getReposOrderByStars(conn);
         for (const repo of repos) {
             if (repo.repoName === undefined) continue;
@@ -123,10 +123,12 @@ async function main() {
                 repoName: repo.repoName
             });
         }
-        logger.info(`Generated ${repos.length} sync-users jobs according to the repo stars.`);
+        const cost = DateTime.now().diff(start).seconds;
+        logger.info(`Generated ${repos.length} sync-users jobs according to the repo stars, cost time: ${cost} s.`);
     }
 
     if (process.env.SYNC_USER_FROM_USER_SEARCH === '1') {
+        const start = DateTime.now();
         const keywords = await getUserSearchKeywords(conn);
         for (const keyword of keywords) {
             if (keyword.prefix === undefined) continue;
@@ -135,7 +137,8 @@ async function main() {
                 keyword: keyword.prefix
             });
         }
-        logger.info(`Generated ${keywords.length} sync-users jobs according to the user search keywords.`);
+        const cost = DateTime.now().diff(start).seconds;
+        logger.info(`Generated ${keywords.length} sync-users jobs according to the user search keywords, cost time: ${cost} s.`);
     }
 
     // Execute sync users job in concurrently.
@@ -366,7 +369,7 @@ function extractOwnerAndRepo(fullName: string) {
 
 // Get GitHub users from user searching.
 
-const MAX_PREFIX_LENGTH = 2;
+const MAX_PREFIX_LENGTH = parseInt(process.env.MAX_PREFIX_LENGTH || '5');
 
 async function getUserSearchKeywords(conn: Connection):Promise<KeywordWithCnt[]> {
     const maxBatchSize = 2000;
