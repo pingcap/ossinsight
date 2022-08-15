@@ -16,6 +16,7 @@ export interface SyncUserLog {
     userId?: number;
     userLogin?: string;
     keyword?: string;
+    lastCursor?: string;
     startedAt?: Date;
     finishedAt?: Date;
 }
@@ -42,51 +43,45 @@ export class SyncUserRecorder {
 
     async findOne(job: SyncUserLog):Promise<SyncUserLog | undefined> {
         return new Promise((resolve, reject) => {
+            let where = '';
             switch(job.syncMode) {
                 case SyncUserMode.SYNC_FROM_REPO_STARS:
-                    if (job.repoId === undefined) {
-                        reject('must provide repoId')
+                    if (job.repoId === undefined && job.repoName === undefined) {
+                        reject('must provide repoId or repoName')
                     }
+                    where = `WHERE sync_mode = ${SyncUserMode.SYNC_FROM_REPO_STARS} AND (repo_id = ${job.repoId} OR repo_name = '${job.repoName}')`;
                     break;
                 case SyncUserMode.SYNC_FROM_USER_SEARCH:
                     if (job.keyword === undefined) {
                         reject('must provide keyword')
                     }
+                    where = `WHERE sync_mode = ${SyncUserMode.SYNC_FROM_USER_SEARCH} AND keyword = '${job.keyword}'`;
                     break;
                 case SyncUserMode.SYNC_FROM_REPO_FOLLOWERS:
-                    if (job.userId === undefined) {
-                        reject('must provide userId')
+                    if (job.userId === undefined && job.userLogin === undefined) {
+                        reject('must provide userId or userLogin')
                     }
+                    where = `WHERE sync_mode = ${SyncUserMode.SYNC_FROM_REPO_FOLLOWERS} AND (user_id = ${job.userId} OR user_login = '${job.userLogin}')`;
                     break;
                 default:
                     resolve(undefined);
                     return;
             }
 
-            const q = this.dbClient.query(`
+            this.dbClient.query(`
                 SELECT
                     id, sync_mode AS syncMode,
                     repo_id AS repo_id, repo_name AS repoName,
                     user_id AS userId, user_login AS userLogin, 
                     keyword,
+                    last_cursor AS lastCursor,
                     started_at AS startedAt, finished_at AS finishedAt
                 FROM
                     sync_user_logs
-                WHERE
-                    sync_mode = ?
-                    AND (
-                        (sync_mode = ? AND repo_id = ?) OR
-                        (sync_mode = ? AND keyword = ?) OR
-                        (sync_mode = ? AND user_id = ?)
-                    )
+                ${where}
                 ORDER BY started_at DESC
                 LIMIT 1
-            `, [
-                job.syncMode,
-                SyncUserMode.SYNC_FROM_REPO_STARS, (job.repoId || 0), 
-                SyncUserMode.SYNC_FROM_USER_SEARCH, (job.keyword || ''),
-                SyncUserMode.SYNC_FROM_REPO_FOLLOWERS, (job.userLogin || '')
-            ], (err, rows: any[]) => {
+            `, (err, rows: any[]) => {
                 if (err) {
                     reject(new Error(`[${err.errno}] ${err.code} ${err.message}`, { cause: err }));
                 } else {
@@ -121,6 +116,22 @@ export class SyncUserRecorder {
                     // Reference: https://github.com/mysqljs/mysql#getting-the-id-of-an-inserted-row
                     job.id = res.insertId;
                     resolve(job);
+                }
+            });
+        });
+    }
+
+    async updateLastCursor(jobId: number, lastCursor: string):Promise<boolean> {
+        return new Promise((resolve, reject) => {
+            this.dbClient.execute(`
+                UPDATE sync_user_logs SET last_cursor = ? WHERE id = ?;
+            `,
+            [lastCursor, jobId],
+            (err, res: any) => {
+                if (err) {
+                    reject(new Error(`[${err.errno}] ${err.code} ${err.message}`, { cause: err }));
+                } else {
+                    resolve(true);
                 }
             });
         });

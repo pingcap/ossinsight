@@ -26,10 +26,6 @@ enum GitHubUserType {
     USR = 'USR'
 }
 
-interface GetRepoStargazersResult {
-    repo: GitHubRepo;
-}
-
 interface GitHubRepo {
     
 }
@@ -61,6 +57,11 @@ interface RepoWithStar {
     stars: number;
 }
 
+interface KeywordWithCnt {
+    prefix: string;
+    cnt: number;
+}
+
 async function main() {
     // Init TiDB client.
     const conn = createConnection({
@@ -75,7 +76,11 @@ async function main() {
     });
 
     // Init Octokit Pool.
-    const tokens = (process.env.GH_TOKENS || '').split(',').map(s => s.trim()).filter(Boolean);
+    const tokens = (process.env.SYNC_USER_GH_TOKENS || '').split(',').map(s => s.trim()).filter(Boolean);
+    if (tokens.length === 0) {
+        logger.error('Must provide `SYNC_USER_GH_TOKENS`.');
+        process.exit();
+    }
     const octokitPool = createPool(new OctokitFactory(tokens), {
         min: 0,
         max: tokens.length
@@ -101,15 +106,36 @@ async function main() {
     const syncUserRecorder = new SyncUserRecorder();
 
     // Prepare sync users jobs.
-    const syncJobs:SyncUserLog[] = []
-    const repos = await getReposOrderByStars(conn);
-    for (const repo of repos) {
-        if (repo.repoName === undefined) continue;
-        syncJobs.push({
-            syncMode: SyncUserMode.SYNC_FROM_REPO_STARS,
-            repoId: repo.repoId,
-            repoName: repo.repoName
-        });
+    const syncModes = ([process.env.SYNC_USER_FROM_REPO_STARS, process.env.SYNC_USER_FROM_USER_SEARCH]).filter((m) => m === '1');
+    if (syncModes.length === 0) {
+        logger.error('Must provide use at least one sync mode for syncing users.');
+        process.exit();
+    }
+    const syncJobs:SyncUserLog[] = [];
+
+    if (process.env.SYNC_USER_FROM_REPO_STARS === '1') {
+        const repos = await getReposOrderByStars(conn);
+        for (const repo of repos) {
+            if (repo.repoName === undefined) continue;
+            syncJobs.push({
+                syncMode: SyncUserMode.SYNC_FROM_REPO_STARS,
+                repoId: repo.repoId,
+                repoName: repo.repoName
+            });
+        }
+        logger.info(`Generated ${repos.length} sync-users jobs according to the repo stars.`);
+    }
+
+    if (process.env.SYNC_USER_FROM_USER_SEARCH === '1') {
+        const keywords = await getUserSearchKeywords(conn);
+        for (const keyword of keywords) {
+            if (keyword.prefix === undefined) continue;
+            syncJobs.push({
+                syncMode: SyncUserMode.SYNC_FROM_USER_SEARCH,
+                keyword: keyword.prefix
+            });
+        }
+        logger.info(`Generated ${keywords.length} sync-users jobs according to the user search keywords.`);
     }
 
     // Execute sync users job in concurrently.
@@ -118,27 +144,34 @@ async function main() {
         if (jobData.syncMode === undefined) return;
 
         try {
-            const existedJob = await syncUserRecorder.findOne(jobData);
-            if (existedJob !== undefined && existedJob?.finishedAt !== null) {
-                logger.info(`Skipping finished sync users job: ${JSON.stringify(jobData)}.`);
-                return;
-            }
-            const job = await syncUserRecorder.create(jobData);
-            if (job.syncMode === SyncUserMode.SYNC_FROM_REPO_STARS) {
-                if (job.repoName === undefined) return;
-                await importUsersFromRepo(octokitPool, geoLocator, userLoader, job.repoName);
+            let job = await syncUserRecorder.findOne(jobData);
+            if (job === undefined) {
+                job = await syncUserRecorder.create(jobData);
             }
 
+            // TODO: support focus sync users although this job has already finished.
+            if (job.finishedAt !== undefined) {
+                logger.info(`Skipping finished sync users job: ${JSON.stringify(jobData)}.`);
+            }
+            logger.info(`Running sync users job ${job.id}: `, job);
+
             // TODO: support more sync user mode.
+            if (job.syncMode === SyncUserMode.SYNC_FROM_REPO_STARS) {
+                if (job.repoName === undefined) return;
+                await syncUsersFromRepoStars(octokitPool, geoLocator, userLoader, syncUserRecorder, job);
+            } else if (job.syncMode === SyncUserMode.SYNC_FROM_USER_SEARCH) {
+                if (job.keyword === undefined) return;
+                await syncUsersFromUserSearch(octokitPool, geoLocator, userLoader, syncUserRecorder, job);
+            }
 
             await syncUserRecorder.finish(job);
         } catch(err) {
-            logger.error(`Failed to execute sync-users job ${JSON.stringify(jobData)}:`, err);
+            logger.error(`Failed to execute sync users job ${JSON.stringify(jobData)}:`, err);
         }
     });
-
-    process.exit();
 }
+
+// Get GitHub users from repo stars.
 
 async function getReposOrderByStars(conn: Connection):Promise<RepoWithStar[]> {
     return new Promise((resolve, reject) => {
@@ -147,7 +180,8 @@ async function getReposOrderByStars(conn: Connection):Promise<RepoWithStar[]> {
         // `finishedAt IS NULL` means that the sync task for the specified repo has not been finished.
         const sql = `
         SELECT
-            ge.repo_id AS repoId, ANY_VALUE(ge.repo_name) AS repoName, approx_count_distinct(actor_login) AS stars
+            ge.repo_id AS repoId, ANY_VALUE(ge.repo_name) AS repoName,
+            approx_count_distinct(actor_login) AS stars
         FROM github_events ge
         LEFT JOIN sync_user_logs l ON ge.repo_id = l.repo_id
         WHERE
@@ -165,24 +199,25 @@ async function getReposOrderByStars(conn: Connection):Promise<RepoWithStar[]> {
             if (err != null) {
                 reject(err);
             } else {
-                logger.info(`Got top ${batchSize} repos order by stars.`);
                 resolve(res as RepoWithStar[]);
             }
         });
     });
 }
 
-async function importUsersFromRepo(
-    octokitPool: Pool<Octokit>, geoLocator: Locator, userLoader: BatchLoader, fullName: string
-) {
-    const { owner, repo } = extractOwnerAndRepo(fullName);
-    const res = await getRepoStargazers(octokitPool, geoLocator, userLoader, owner, repo);
-}
+async function syncUsersFromRepoStars(
+    octokitPool: Pool<Octokit>, geoLocator: Locator, userLoader: BatchLoader, syncUserRecorder: SyncUserRecorder, 
+    job: SyncUserLog
+): Promise<null> {
+    let { repoName, lastCursor = null } = job;
+    if (repoName === undefined) {
+        throw new Error('Must provide repo full name.');
+    }
+    if (process.env.IGNORE_LAST_CURSOR === '1') {
+        lastCursor = null
+    }
+    const { owner, repo } = extractOwnerAndRepo(repoName);
 
-async function getRepoStargazers(
-    octokitPool: Pool<Octokit>, geoLocator: Locator, userLoader: BatchLoader, 
-    owner: string, repo: string
-): Promise<GetRepoStargazersResult> {
     return new Promise((resolve, reject) => {
         octokitPool.use(async (octokit) => {
             let stargazerTotal = 0;
@@ -191,12 +226,12 @@ async function getRepoStargazers(
             let remaining = 0;
             let page = 0;
 
-            logger.info(`Fetching stargazers for repo: ${owner}/${repo} ...`);
+            logger.info(`Fetching stargazers for repo: ${owner}/${repo}, last cursor: ${lastCursor} ...`);
 
             const variables = {
                 owner: owner,
                 repo: repo,
-                cursor: null
+                cursor: lastCursor
             };
             const query = /* GraphQL */ `
             query($owner: String!, $repo: String!, $cursor: String) { 
@@ -290,11 +325,18 @@ async function getRepoStargazers(
                     });
                 }
                 loadGitHubUsers(geoLocator, userLoader, githubUsers).then((res) => {
-                    logger.info(`Async load ${res} GitHub users.`);
+                    logger.info(`Async load ${res} GitHub users from the stars of repo ${owner}/${repo}.`);
                 });
 
                 // Switch to next page.
                 const pageInfo = stargazers?.pageInfo;
+
+                if (job.id === undefined) {
+                    logger.warn('Did not provide job ID, last cursor can be stored to the database.');
+                } else {
+                    syncUserRecorder.updateLastCursor(job.id, pageInfo.endCursor);
+                }
+
                 if (pageInfo?.hasNextPage === true) {
                     variables.cursor = pageInfo.endCursor;
                 } else {
@@ -304,12 +346,253 @@ async function getRepoStargazers(
 
             logger.info(`Fetched ${stargazerFetch}/${stargazerTotal} stargazers for repo: ${owner}/${repo} cost: ${totalCost} remaining: ${remaining}.`);
             // TODO: return the last cursor for next time query.
-            resolve({
-                repo: githubRepo
-            });
+            resolve(null);
         });
     });
 }
+
+function extractOwnerAndRepo(fullName: string) {
+    const parts = fullName.split("/");
+
+    if (parts.length !== 2) {
+        throw new Error(`Got a wrong repo name: ${fullName}`);
+    }
+    
+    return {
+        owner: parts[0],
+        repo: parts[1]
+    }
+}
+
+// Get GitHub users from user searching.
+
+const MAX_PREFIX_LENGTH = 2;
+
+async function getUserSearchKeywords(conn: Connection):Promise<KeywordWithCnt[]> {
+    const maxBatchSize = 2000;
+    const initPrefixLen = 2;
+    const initKeywords = await getUserSearchKeywordWithLen(conn, initPrefixLen, 0, maxBatchSize);
+    logger.info(`Traveling the prefix tree with ${initKeywords.length} init prefixes ...`);
+
+    let result:KeywordWithCnt[] = [];
+    for (const keyword of initKeywords) {
+        const arr = await getUserSearchKeywordWithPrefixByPage(conn, keyword);
+        result = result.concat(arr);
+    }
+
+    result.sort((a, b) => {
+        return b.cnt - a.cnt;
+    });
+
+    return result;
+}
+
+async function getUserSearchKeywordWithLen(conn: Connection, length: number, offset: number, size: number):Promise<KeywordWithCnt[]> {
+    return new Promise((resolve, reject) => {
+        conn.query(`
+            SELECT
+                SUBSTRING(login, 1, ?) AS prefix,
+                COUNT(*) AS cnt
+            FROM users u
+            GROUP BY prefix
+            ORDER BY cnt DESC
+            LIMIT ?, ?
+        `, [length, offset, size], (err, rows) => {
+            if (err != null) {
+                reject(err);
+            } else {
+                resolve(rows as KeywordWithCnt[]);
+            }
+        });
+    });
+}
+
+async function getUserSearchKeywordWithPrefixByPage(conn: Connection, root: KeywordWithCnt):Promise<KeywordWithCnt[]> {
+    const maxSearchSize = 1000;
+    const maxPageSize = 2000;
+    let result:KeywordWithCnt[] = [];
+    let offset = 0;
+
+    logger.info(`Traveling the prefix tree started with prefix: '${root.prefix}' cnt: ${root.cnt} ...`);
+
+    if (root.prefix.length + 1 >= MAX_PREFIX_LENGTH) {
+        result.push(root);
+        return result;
+    }
+
+    while (true) {
+        const keywords = await getUserSearchKeywordWithPrefix(conn, root.prefix, offset, maxPageSize);
+        if (keywords.length === 0) {
+            break;
+        }
+
+        for (let keyword of keywords) {
+            if (keyword.cnt > maxSearchSize) {
+                // Travel the branch.
+                const branchResult = await getUserSearchKeywordWithPrefixByPage(conn, keyword);
+                result = result.concat(branchResult);
+            } else {
+                // Push the leaf.
+                result.push(keyword);
+            }
+        }
+
+        offset += maxPageSize;
+    }
+    return result;
+}
+
+async function getUserSearchKeywordWithPrefix(conn: Connection, prefix: string, offset: number, size: number):Promise<KeywordWithCnt[]> {
+    return new Promise((resolve, reject) => {
+        conn.query(`
+            SELECT
+                SUBSTRING(login, 1, LENGTH(?) + 1) AS prefix,
+                COUNT(*) AS cnt
+            FROM users u
+            WHERE
+                login LIKE CONCAT(?, '%')
+                AND LENGTH(?) + 1 <= ?
+            GROUP BY prefix
+            ORDER BY cnt DESC
+            LIMIT ?, ?
+        `, [prefix, prefix, prefix, MAX_PREFIX_LENGTH, offset, size], (err, rows) => {
+            if (err != null) {
+                reject(err);
+            } else {
+                resolve(rows as KeywordWithCnt[]);
+            }
+        });
+    });
+}
+
+async function syncUsersFromUserSearch(
+    octokitPool: Pool<Octokit>, geoLocator: Locator, userLoader: BatchLoader, syncUserRecorder: SyncUserRecorder, 
+    job: SyncUserLog
+): Promise<any> {
+    const { keyword } = job;
+    const lastCursor = null;        // Ignore the last cursor.
+
+    if (keyword === undefined) {
+        throw new Error('Must provide the keyword for user searching.');
+    }
+
+    return new Promise((resolve, reject) => {
+        octokitPool.use(async (octokit) => {
+            let userTotal = 0;
+            let userFetch = 0;
+            let totalCost = 0;
+            let remaining = 0;
+            let page = 0;
+
+            logger.info(`Fetching search user result for keyword: ${keyword} ...`);
+
+            const variables = {
+                keyword: keyword,
+                cursor: lastCursor
+            };
+            const query = /* GraphQL */ `
+            query($keyword: String!, $cursor: String) { 
+                search(type: USER query: $keyword first: 100 after: $cursor) {
+                    userCount
+                    nodes {
+                        ... on Organization {
+                            databaseId
+                            __typename
+                            login
+                            name
+                            location
+                            createdAt
+                            updatedAt
+                        }
+                        ... on User {
+                            databaseId
+                            __typename
+                            login
+                            name
+                            company
+                            location
+                            followers {
+                                totalCount
+                            }
+                            following {
+                                totalCount
+                            }
+                            createdAt
+                            updatedAt
+                        }
+                    }
+                    pageInfo {
+                        hasNextPage
+                        endCursor
+                    }
+                }
+                rateLimit {
+                    limit
+                    cost
+                    remaining
+                    resetAt
+                }
+            }
+            `;
+
+            while(true) {
+                const { search, rateLimit } = await octokit.graphql(query, variables) as any;
+
+                remaining = rateLimit?.remaining;
+                totalCost += rateLimit?.cost;
+                userTotal = search?.userCount;
+                userFetch = search?.nodes.length;
+                page++;
+
+                logger.info(`Fetch ${search?.nodes.length} user result for keyword: ${keyword}, page: ${page}`);
+
+                // Load GitHub users.
+                const githubUsers:GitHubUser[] = [];
+                for (const user of search?.nodes) {
+                    let userType = GitHubUserType.USR;
+                    if (user.__typename === 'Organization') {
+                        userType = GitHubUserType.ORG;
+                    }
+
+                    githubUsers.push({
+                        id: user.databaseId,
+                        login: user.login,
+                        type: userType,
+                        company: user?.company,
+                        address: user.location,
+                        followers: user?.followers?.totalCount,
+                        following: user?.following?.totalCount,
+                        createdAt: user.createdAt,
+                        updatedAt: user.updatedAt
+                    });
+                }
+                loadGitHubUsers(geoLocator, userLoader, githubUsers).then((nUsers) => {
+                    logger.info(`Async load ${nUsers} GitHub users from the user search for keyword ${keyword}.`);
+                });
+
+                // Switch to next page.
+                const pageInfo = search?.pageInfo;
+
+                if (job.id === undefined) {
+                    logger.warn('Did not provide job ID, last cursor can be stored to the database.');
+                } else {
+                    syncUserRecorder.updateLastCursor(job.id, pageInfo.endCursor);
+                }
+
+                if (pageInfo?.hasNextPage === true) {
+                    variables.cursor = pageInfo.endCursor;
+                } else {
+                    break;
+                }
+            }
+
+            logger.info(`Fetched ${userFetch}/${userTotal} users for keyword: ${keyword} cost: ${totalCost} remaining: ${remaining}.`);
+            resolve(true);
+        });
+    });
+}
+
+// Load GitHub users.
 
 async function loadGitHubUsers(geoLocator: Locator, userLoader: BatchLoader, users: GitHubUser[]): Promise<number> {
     for (const user of users) {
@@ -334,7 +617,7 @@ async function loadGitHubUser(geoLocator: Locator, userLoader: BatchLoader, user
     let longitude = null;
     let latitude = null;
 
-    if (address !== undefined) {
+    if (address !== undefined && process.env.FORMAT_ADDRESS === '1') {
         const location = await geoLocator.geocode(address);
         countryCode = location?.countryCode;
         state = location?.state;
@@ -350,27 +633,14 @@ async function loadGitHubUser(geoLocator: Locator, userLoader: BatchLoader, user
     ]);
 }
 
-function extractOwnerAndRepo(fullName: string) {
-    const parts = fullName.split("/");
-
-    if (parts.length !== 2) {
-        throw new Error(`Got a wrong repo name: ${fullName}`);
-    }
-    
-    return {
-        owner: parts[0],
-        repo: parts[1]
-    }
-}
-
 function trimCompanyName(companyName: string | undefined | null):(string | undefined) {
     if (companyName === undefined || companyName === null) return undefined;
     return companyName.trim()
 }
 
-function trimAddress(companyName?: string | undefined | null):(string | undefined) {
-    if (companyName === undefined || companyName === null) return undefined;
-    return companyName.trim()
+function trimAddress(addressName?: string | undefined | null):(string | undefined) {
+    if (addressName === undefined || addressName === null) return undefined;
+    return addressName.trim()
 }
 
 main();
