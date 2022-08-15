@@ -1,0 +1,12 @@
+{
+  "cacheHours": 24,
+  "refreshHours": 12,
+  "params": [
+    {
+      "name": "collectionId",
+      "type": "collection",
+      "replaces": "41986369, 16563587, 105944401",
+      "pattern": "^[1-9]\\d*$"
+    }
+  ]
+}
