@@ -46,7 +46,7 @@ interface GitHubUser {
     createdAt: Date;
     updatedAt: Date;
     deleted?: boolean;
-    refreshedAt: Date;
+    refreshedAt?: Date;
 }
 
 interface RepoWithStar {
@@ -239,28 +239,6 @@ async function syncUsersFromRepoStars(
             const query = /* GraphQL */ `
             query($owner: String!, $repo: String!, $cursor: String) { 
                 repository(owner: $owner, name: $repo) {
-                    databaseId
-                    name
-                    owner {
-                        login
-                    }
-                    nameWithOwner
-                    licenseInfo {
-                        key
-                        name
-                    }
-                    primaryLanguage {
-                        name
-                        color
-                    }
-                    isInOrganization
-                    isFork
-                    isArchived
-                    hasIssuesEnabled
-                    stargazerCount
-                    forkCount
-                    createdAt
-                    updatedAt
                     stargazers(first: 100, after: $cursor, orderBy: {field: STARRED_AT, direction: ASC}) {
                         edges {
                             node {
@@ -294,7 +272,6 @@ async function syncUsersFromRepoStars(
                 }
             }
             `;
-            let githubRepo:GitHubRepo;
 
             while(true) {
                 const { repository, rateLimit } = await octokit.graphql(query, variables) as any;
@@ -307,9 +284,6 @@ async function syncUsersFromRepoStars(
                 page++;
 
                 logger.info(`Fetch ${stargazers?.edges.length} stargazers for repo: ${owner}/${repo} page: ${page}`);
-                githubRepo = {
-                    ...repository
-                }
 
                 // Load GitHub users.
                 const githubUsers:GitHubUser[] = [];
