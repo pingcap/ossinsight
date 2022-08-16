@@ -4,7 +4,7 @@ import {DateTime} from "luxon";
 import {ghQueryCounter, ghQueryTimer, measure} from "../metrics";
 import CacheBuilder, { CacheProviderTypes } from "./cache/CacheBuilder";
 import {CachedData} from "./cache/Cache";
-import { OctokitFactory, SYMBOL_TOKEN } from "./OctokitFactory";
+import { eraseToken, OctokitFactory, SYMBOL_TOKEN } from "./OctokitFactory";
 
 const GET_REPO_CACHE_HOURS = 1;
 const SEARCH_REPOS_CACHE_HOURS = 24;
@@ -348,8 +348,5 @@ export default class GhExecutor {
       })
     })
   }
-}
-function eraseToken(value: any): any {
-  throw new Error("Function not implemented.");
 }
 
