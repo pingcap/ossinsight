@@ -10,24 +10,18 @@ import CollectionService from "./services/CollectionService";
 import GHEventService from "./services/GHEventService";
 import CacheBuilder from "./core/cache/CacheBuilder";
 import UserService from "./services/UserService";
+import { getConnectionOptions } from "../utils/db";
 
 export default async function server(router: Router<DefaultState, ContextExtends>) {
   // Init MySQL Executor. 
-  const queryExecutor = new TiDBQueryExecutor({
-    host: process.env.DB_HOST,
-    port: parseInt(process.env.DB_PORT || '3306'),
-    database: process.env.DB_DATABASE,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
+  const queryExecutor = new TiDBQueryExecutor(getConnectionOptions({
     connectionLimit: parseInt(process.env.CONNECTION_LIMIT || '10'),
-    queueLimit: parseInt(process.env.QUEUE_LIMIT || '20'),
-    decimalNumbers: true,
-    timezone: 'Z'
-  })
+    queueLimit: parseInt(process.env.QUEUE_LIMIT || '20')
+  }))
 
   // Init Cache Builder; 
   const enableCache = process.env.ENABLE_CACHE === '1' ? true : false;
-  const cacheBuilder = new CacheBuilder(queryExecutor, enableCache);
+  const cacheBuilder = new CacheBuilder(enableCache);
 
   // Init GitHub Executor.
   const tokens = (process.env.GH_TOKENS || '').split(',').map(s => s.trim()).filter(Boolean);

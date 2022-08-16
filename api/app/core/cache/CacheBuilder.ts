@@ -1,3 +1,5 @@
+import { Connection, createConnection } from "mysql2";
+import { getConnectionOptions } from "../../../utils/db";
 import { TiDBQueryExecutor } from "../TiDBQueryExecutor";
 import Cache from './Cache'
 import CachedTableCacheProvider from "./CachedTableCacheProvider";
@@ -16,26 +18,26 @@ class NoneCacheProvider implements CacheProvider {
     get(key: string) {
         return undefined;
     }
-
 }
 
 export default class CacheBuilder {
 
-    private normalCacheProvider: CacheProvider;
+    private normalCacheProvider?: CacheProvider;
 
-    private cachedTableCacheProvider: CacheProvider;
+    private cachedTableCacheProvider?: CacheProvider;
 
     private noneCacheProvider: CacheProvider = new NoneCacheProvider();
 
     private enableCache = true;
 
-    constructor(
-        queryExecutor: TiDBQueryExecutor,
-        enableCache: boolean
-    ) {
-        this.normalCacheProvider = new NormalTableCacheProvider(queryExecutor);
-        this.cachedTableCacheProvider = new CachedTableCacheProvider(queryExecutor);
+    constructor(enableCache: boolean) {
         this.enableCache = enableCache;
+        if (enableCache) {
+            const normalCacheConn = createConnection(getConnectionOptions());
+            this.normalCacheProvider = new NormalTableCacheProvider(normalCacheConn);
+            const cachedTableCacheConn = createConnection(getConnectionOptions());
+            this.cachedTableCacheProvider = new CachedTableCacheProvider(cachedTableCacheConn);
+        }
     }
 
     build(
@@ -48,8 +50,14 @@ export default class CacheBuilder {
 
         switch(cacheProvider) {
             case CacheProviderTypes.NORMAL_TABLE:
+                if (this.normalCacheProvider === undefined) {
+                    throw new Error('Normal cache provider has not initialed.');
+                }
                 return new Cache<any>(this.normalCacheProvider, key, cacheHours, refreshHours, onlyFromCache, refreshCache);
             case CacheProviderTypes.CACHED_TABLE:
+                if (this.cachedTableCacheProvider === undefined) {
+                    throw new Error('Cached table cache provider has not initialed.');
+                }
                 return new Cache<any>(this.cachedTableCacheProvider, key, cacheHours, refreshHours, onlyFromCache, refreshCache);
             default:
                 throw new Error(`Invalid cache provider type ${cacheProvider}.`);

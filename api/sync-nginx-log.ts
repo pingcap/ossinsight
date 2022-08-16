@@ -7,6 +7,7 @@ import { Tail } from 'tail';
 import { URL } from 'url';
 import { BatchLoader } from './app/core/BatchLoader';
 import { validateProcessEnv } from './app/env';
+import { getConnectionOptions } from './utils/db';
 
 // The default access log format of nginx.
 // Reference: http://nginx.org/en/docs/http/ngx_http_log_module.html
@@ -54,16 +55,7 @@ async function main () {
     }
 
     // Init TiDB client.
-    const conn = createConnection({
-        host: process.env.DB_HOST,
-        port: parseInt(process.env.DB_PORT || '4000'),
-        database: process.env.DB_DATABASE,
-        user: process.env.DB_USER,
-        password: process.env.DB_PASSWORD,
-        queueLimit: 10,
-        decimalNumbers: true,
-        timezone: 'Z'
-    });
+    const conn = createConnection(getConnectionOptions());
 
     // Start read access log as stream.
     const sql = 'INSERT IGNORE INTO access_logs(remote_addr, status_code, request_path, request_params, requested_at) VALUES ?';

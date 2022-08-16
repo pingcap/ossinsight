@@ -1,12 +1,11 @@
 import * as path from 'path'
-import * as fs from 'fs'
 import * as fsp from 'fs/promises'
 import * as dotenv from "dotenv";
 import asyncPool from "tiny-async-pool";
 import type {Params, QuerySchema} from './params.schema'
 import {TiDBQueryExecutor} from "./app/core/TiDBQueryExecutor";
 import Query from "./app/core/Query";
-import consola, {JSONReporter} from "consola";
+import consola from "consola";
 import {DateTime, Duration} from "luxon";
 import { validateProcessEnv } from './app/env';
 import GHEventService from "./app/services/GHEventService";
@@ -14,6 +13,9 @@ import CollectionService from './app/services/CollectionService';
 import CacheBuilder from './app/core/cache/CacheBuilder';
 import UserService from './app/services/UserService';
 import { resolveHours } from "./utils/paramDefs";
+import { getConnectionOptions } from './utils/db';
+import sleep from './utils/sleep';
+import { arrayDeepEquals } from './utils/array';
 
 // Load environments.
 dotenv.config({ path: __dirname+'/.env.template' });
@@ -49,46 +51,11 @@ async function getPresets(): Promise<Record<string, string[]>> {
 }
 
 async function main () {
-  // Init logger.
-  const today = new Date();
-  let logFilename = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}.log`
-  await fsp.mkdir(path.join(__dirname, "log"), { recursive: true })
-  const writeStream = fs.createWriteStream(path.join(__dirname, "log", logFilename), {
-    flags: 'a'
-  });
-  let logFileReporter = new JSONReporter({ stream: writeStream });
-  logger.addReporter(logFileReporter);
-
-  // Log files sorted by day.
-  // Check every 60 seconds if a new log file needs to be created to store log information.
-  setInterval(() => {
-    const today = new Date();
-    const newFilename = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}.log`
-    if (logFilename !== newFilename) {
-      logFilename = newFilename;
-      const writeStream = fs.createWriteStream(path.join(__dirname, "log", logFilename), {
-        flags: 'a'
-      });
-      logger.removeReporter(logFileReporter);
-      logFileReporter = new JSONReporter({ stream: writeStream });
-      logger.addReporter(logFileReporter);
-    }
-  }, 60);
-
   // Init mysql client.
-  const queryExecutor = new TiDBQueryExecutor({
-    host: process.env.DB_HOST,
-    port: parseInt(process.env.DB_PORT || '3306'),
-    database: process.env.DB_DATABASE,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    queueLimit: 10,
-    decimalNumbers: true,
-    timezone: 'Z'
-  });
+  const queryExecutor = new TiDBQueryExecutor(getConnectionOptions());
 
   // Init Cache Builder.
-  const cacheBuilder = new CacheBuilder(queryExecutor, true);
+  const cacheBuilder = new CacheBuilder(true);
 
   // Init Services.
   const ghEventService = new GHEventService(queryExecutor);
@@ -216,21 +183,4 @@ async function prefetchQueries(
   logger.success("Finished all prefetch query jobs, start at: %s, end at: %s, cost: %d s.", start, end, cost);
 }
 
-function arrayDeepEquals(values: any[], compareValues: any[]) {
-  if (!(Array.isArray(values) && Array.isArray(compareValues))) return false;
-  if (values.length != compareValues.length) return false;
-  for (const i in values) {
-    if (values[i] != compareValues[i]) {
-      return false;
-    }
-  }
-  return true;
-}
-
-function sleep(ms: number) {
-  return new Promise((resolve) => {
-    setTimeout(resolve, ms);
-  });
-}
-
-main().then()
+main()
