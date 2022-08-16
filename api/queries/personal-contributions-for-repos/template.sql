@@ -13,8 +13,9 @@ WITH contributions AS (
             (type = 'IssueCommentEvent' AND action = 'created') OR
             (type = 'PullRequestReviewEvent' AND action = 'created') OR
             (type = 'PullRequestReviewCommentEvent' AND action = 'created') OR
-            (type = 'PushEvent')
+            (type = 'PushEvent' AND action IS NULL)
         )
+        AND (event_month BETWEEN DATE_FORMAT(DATE_SUB(CURRENT_DATE(), INTERVAL 1 YEAR), '%Y-%m-01') AND DATE_FORMAT(CURRENT_DATE(), '%Y-%m-01'))
 )
 SELECT
     repo_id,
@@ -27,7 +28,7 @@ SELECT
         WHEN 'PullRequestReviewCommentEvent' THEN 'review_comments'
         WHEN 'PushEvent' THEN 'pushes'
     END AS type,
-    COUNT(DISTINCT id) AS cnt 
+    COUNT(id) AS cnt 
 FROM contributions c
 GROUP BY repo_id, type
 ORDER BY repo_id, type 

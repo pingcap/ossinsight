@@ -20,8 +20,9 @@ WITH contributions_group_by_type AS (
             (type = 'IssueCommentEvent' AND action = 'created') OR
             (type = 'PullRequestReviewEvent' AND action = 'created') OR
             (type = 'PullRequestReviewCommentEvent' AND action = 'created') OR
-            (type = 'PushEvent')
+            (type = 'PushEvent' AND action IS NULL)
         )
+        AND (event_month BETWEEN DATE_FORMAT(DATE_SUB(CURRENT_DATE(), INTERVAL 1 YEAR), '%Y-%m-01') AND DATE_FORMAT(CURRENT_DATE(), '%Y-%m-01'))
     GROUP BY dayofweek, hour, type
     ORDER BY dayofweek, hour, type
 ), contributions_group_by_all AS (
