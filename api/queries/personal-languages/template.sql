@@ -1,13 +1,19 @@
 WITH prs_with_language AS (
-    SELECT COUNT(DISTINCT pr_or_issue_id) cnt
+    SELECT
+        language, COUNT(DISTINCT pr_or_issue_id) AS cnt
     FROM github_events ge
-    WHERE type = 'PullRequestEvent' AND actor_id = 5086433 AND language IS NOT NULL
-) 
+    WHERE
+        type = 'PullRequestEvent'
+        AND actor_id = 5086433
+        AND action = 'opened'
+        AND language IS NOT NULL
+    GROUP BY language
+), s AS (
+    SELECT SUM(cnt) AS total FROM prs_with_language
+)
 SELECT
     language,
-    COUNT(DISTINCT pr_or_issue_id) AS prs,
-    COUNT(DISTINCT pr_or_issue_id) / (SELECT cnt FROM prs_with_language) percentage
-FROM github_events ge
-WHERE type = 'PullRequestEvent' AND actor_id = 5086433 AND language IS NOT NULL
-GROUP BY language
+    cnt AS prs,
+    cnt / s.total AS percentage
+FROM prs_with_language, s
 ORDER BY prs DESC

@@ -8,16 +8,16 @@
     },
     {
       "name": "activity_type",
-      "replaces": "AND type = 'PullRequestEvent' AND action ='opened'",
+      "replaces": "AND ((type = 'PullRequestEvent' AND action = 'opened') OR (type = 'IssuesEvent' AND action = 'opened') OR (type = 'IssueCommentEvent' AND action = 'created') OR (type = 'PullRequestReviewEvent' AND action = 'created') OR (type = 'PullRequestReviewCommentEvent' AND action = 'created') OR (type = 'PushEvent' AND action IS NULL))",
       "enums": ["all", "pull_requests", "reviews", "review_comments", "issues",  "issue_comments", "pushes"],
       "template": {
-        "pull_requests": "AND type = 'PullRequestEvent' AND action ='opened'",
-        "reviews": "AND type = 'PullRequestReviewEvent' AND action ='created'",
-        "review_comments": "AND type = 'PullRequestReviewCommentEvent' AND action ='created'",
-        "issues": "AND type = 'IssuesEvent' AND action ='opened'",
-        "issue_comments": "AND type = 'IssueCommentEvent' AND action ='created'",
-        "pushes": "AND type = 'PushEvent'",
-        "all": "AND ((type = 'PullRequestEvent' AND action = 'opened') OR (type = 'IssuesEvent' AND action = 'opened') OR (type = 'IssueCommentEvent' AND action = 'created') OR (type = 'PullRequestReviewEvent' AND action = 'created') OR (type = 'PullRequestReviewCommentEvent' AND action = 'created') OR (type = 'PushEvent'))"
+        "pull_requests": "AND type = 'PullRequestEvent' AND action = 'opened'",
+        "reviews": "AND type = 'PullRequestReviewEvent' AND action = 'created'",
+        "review_comments": "AND type = 'PullRequestReviewCommentEvent' AND action = 'created'",
+        "issues": "AND type = 'IssuesEvent' AND action = 'opened'",
+        "issue_comments": "AND type = 'IssueCommentEvent' AND action = 'created'",
+        "pushes": "AND type = 'PushEvent' AND action IS NULL",
+        "all": "AND ((type = 'PullRequestEvent' AND action = 'opened') OR (type = 'IssuesEvent' AND action = 'opened') OR (type = 'IssueCommentEvent' AND action = 'created') OR (type = 'PullRequestReviewEvent' AND action = 'created') OR (type = 'PullRequestReviewCommentEvent' AND action = 'created') OR (type = 'PushEvent' AND action IS NULL))"
       }
     },
     {
@@ -32,12 +32,12 @@
     },
     {
       "name": "time_range",
-      "replaces": "AND (created_at BETWEEN DATE_SUB(NOW(), INTERVAL 7 DAY) AND NOW())",
+      "replaces": "AND (created_at BETWEEN DATE_SUB(NOW(), INTERVAL 28 DAY) AND NOW()) AND (event_month BETWEEN DATE_FORMAT(DATE_SUB(CURRENT_DATE(), INTERVAL 28 DAY), '%Y-%m-01') AND DATE_FORMAT(CURRENT_DATE(), '%Y-%m-01'))",
       "enums": ["last_72_hours", "last_7_days", "last_28_days"],
       "template": {
-        "last_72_hours": "AND (created_at BETWEEN DATE_SUB(NOW(), INTERVAL 72 HOUR) AND NOW())",
-        "last_7_days": "AND (created_at BETWEEN DATE_SUB(NOW(), INTERVAL 7 DAY) AND NOW())",
-        "last_28_days": "AND (created_at BETWEEN DATE_SUB(NOW(), INTERVAL 28 DAY) AND NOW())"
+        "last_72_hours": "AND (created_at BETWEEN DATE_SUB(NOW(), INTERVAL 72 HOUR) AND NOW()) AND (event_month BETWEEN DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 72 HOUR), '%Y-%m-01') AND DATE_FORMAT(NOW(), '%Y-%m-01'))",
+        "last_7_days": "AND (created_at BETWEEN DATE_SUB(NOW(), INTERVAL 7 DAY) AND NOW()) AND (event_month BETWEEN DATE_FORMAT(DATE_SUB(CURRENT_DATE(), INTERVAL 7 DAY), '%Y-%m-01') AND DATE_FORMAT(CURRENT_DATE(), '%Y-%m-01'))",
+        "last_28_days": "AND (created_at BETWEEN DATE_SUB(NOW(), INTERVAL 28 DAY) AND NOW()) AND (event_month BETWEEN DATE_FORMAT(DATE_SUB(CURRENT_DATE(), INTERVAL 28 DAY), '%Y-%m-01') AND DATE_FORMAT(CURRENT_DATE(), '%Y-%m-01'))"
       }
     }
   ]
