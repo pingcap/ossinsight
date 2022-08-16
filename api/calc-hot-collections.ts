@@ -7,9 +7,10 @@ import CacheBuilder from "./app/core/cache/CacheBuilder";
 import CollectionService from "./app/services/CollectionService";
 import GHEventService from "./app/services/GHEventService";
 import UserService from "./app/services/UserService";
-import { createConnection } from "mysql2";
 import schedule from 'node-schedule';
 import sleep from "./utils/sleep";
+import { getConnectionOptions } from "./utils/db";
+import { createConnection } from "mysql2";
 
 const COLLECTIONS_RANKING_QUERY = 'collection-stars-month-rank';
 
@@ -38,33 +39,16 @@ const interval = parseInt(process.env.CALC_HOT_COLLECTIONS_INTERVAL || '30');
 // so it is best not to set the interval of cron expressions too close.
 schedule.scheduleJob(cron, async () => {
     // Init TiDB client.
-    const conn = createConnection({
-        host: process.env.DB_HOST,
-        port: parseInt(process.env.DB_PORT || '4000'),
-        database: process.env.DB_DATABASE,
-        user: process.env.DB_USER,
-        password: process.env.DB_PASSWORD,
-        queueLimit: 10,
-        decimalNumbers: true,
-        timezone: 'Z'
-    });
+    const conn = createConnection(getConnectionOptions());
 
     // Init TiDB Query Executor.
-    const queryExecutor = new TiDBQueryExecutor({
-        host: process.env.DB_HOST,
-        port: parseInt(process.env.DB_PORT || '3306'),
-        database: process.env.DB_DATABASE,
-        user: process.env.DB_USER,
-        password: process.env.DB_PASSWORD,
-        connectionLimit: 1,
-        queueLimit: 10,
-        decimalNumbers: true,
-        timezone: 'Z'
-    });
+    const queryExecutor = new TiDBQueryExecutor(getConnectionOptions({
+        connectionLimit: 1
+    }));
 
     // Init Cache Builder; 
     const enableCache = process.env.ENABLE_CACHE === '1' ? true : false;
-    const cacheBuilder = new CacheBuilder(queryExecutor, enableCache);
+    const cacheBuilder = new CacheBuilder(enableCache);
 
     // Init Services.
     const collectionService = new CollectionService(queryExecutor, cacheBuilder);
