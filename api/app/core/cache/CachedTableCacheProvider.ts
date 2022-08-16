@@ -1,5 +1,5 @@
 import consola from "consola";
-import { TiDBQueryExecutor } from "../TiDBQueryExecutor";
+import { Connection } from "mysql2";
 import { CacheOption, CacheProvider } from "./CacheProvider";
 
 const logger = consola.withTag('cached-table-cache')
@@ -7,10 +7,8 @@ const logger = consola.withTag('cached-table-cache')
 export default class CachedTableCacheProvider implements CacheProvider {
 
     constructor(
-        private readonly tidbClient: TiDBQueryExecutor
-    ) {
-
-    }
+        private readonly conn: Connection
+    ) {}
     
     async set(key: string, value: string, options?: CacheOption): Promise<void> {
         const EX = options?.EX || -1;
@@ -18,7 +16,15 @@ export default class CachedTableCacheProvider implements CacheProvider {
         VALUES (?, ?, ?)
         ON DUPLICATE KEY UPDATE cache_value = VALUES(cache_value), expires = VALUES(expires);`;
 
-        await this.tidbClient.prepare(sql, [key, value, EX]);
+        return new Promise((resolve, reject) => {
+            this.conn.query(sql, [key, value, EX], (err, rows) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve();
+                }
+            });
+        });
     }
 
     async get(key: string): Promise<any> {
@@ -26,12 +32,19 @@ export default class CachedTableCacheProvider implements CacheProvider {
         FROM cached_table_cache
         WHERE cache_key = ? AND ((expires = -1) OR (DATE_ADD(updated_at, INTERVAL expires SECOND) >= CURRENT_TIME))
         LIMIT 1;`;
-        const result = await this.tidbClient.prepare(sql, [key]);
-        const rows = result.rows as any[];
-        if (!Array.isArray(rows) || rows.length === 0) {
-            return null;
-        } else {
-            return rows[0]?.cache_value;
-        }
+
+        return new Promise((resolve, reject) => {
+            this.conn.query(sql, [key], (err, rows: any) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    if (Array.isArray(rows) && rows.length >= 1) {
+                        resolve(rows[0]?.cache_value);
+                    } else {
+                        resolve(null);
+                    }
+                }
+            });
+        });
     }
 }

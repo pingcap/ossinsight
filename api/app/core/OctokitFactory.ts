@@ -4,7 +4,7 @@ import { Octokit } from "octokit"
 
 export const SYMBOL_TOKEN = Symbol('PERSONAL_TOKEN')
 
-function eraseToken (value: string | undefined): string {
+export function eraseToken (value: string | undefined): string {
     return value ? `****${value.substring(value.length - 8)}` : 'anonymous';
 }
 

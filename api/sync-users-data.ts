@@ -10,6 +10,7 @@ import { OctokitFactory } from './app/core/OctokitFactory';
 import { validateProcessEnv } from './app/env';
 import { Locator, LocationCache } from './app/locator/Locator';
 import { SyncUserLog, SyncUserMode, SyncUserRecorder } from './app/sync-user/recorder';
+import { getConnectionOptions } from './utils/db';
 
 // Load environments.
 dotenv.config({ path: __dirname+'/.env.template' });
@@ -62,16 +63,7 @@ interface KeywordWithCnt {
 
 async function main() {
     // Init TiDB client.
-    const conn = createConnection({
-        host: process.env.DB_HOST,
-        port: parseInt(process.env.DB_PORT || '4000'),
-        database: process.env.DB_DATABASE,
-        user: process.env.DB_USER,
-        password: process.env.DB_PASSWORD,
-        queueLimit: 10,
-        decimalNumbers: true,
-        timezone: 'Z'
-    });
+    const conn = createConnection(getConnectionOptions());
 
     // Init Octokit Pool.
     const tokens = (process.env.SYNC_USER_GH_TOKENS || '').split(',').map(s => s.trim()).filter(Boolean);
@@ -343,11 +335,11 @@ function extractOwnerAndRepo(fullName: string) {
 
 // Get GitHub users from user searching.
 
-const MAX_PREFIX_LENGTH = parseInt(process.env.MAX_PREFIX_LENGTH || '5');
+const MAX_PREFIX_LENGTH = parseInt(process.env.MAX_PREFIX_LENGTH || '8');
 
 async function getUserSearchKeywords(conn: Connection):Promise<KeywordWithCnt[]> {
-    const maxBatchSize = 2000;
-    const initPrefixLen = 2;
+    const maxBatchSize = 20000;
+    const initPrefixLen = parseInt(process.env.MIN_PREFIX_LENGTH || '5');
     const initKeywords = await getUserSearchKeywordWithLen(conn, initPrefixLen, 0, maxBatchSize);
     logger.info(`Traveling the prefix tree with ${initKeywords.length} init prefixes ...`);
 
