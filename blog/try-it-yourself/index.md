@@ -173,13 +173,6 @@ ORDER BY 2 DESC
 
 </details>
 
-<!-- ## Watch the video below for detailed information
-
-<video width="100%" poster={require('/blog/try-it-yourself/dev-tier.png').default} controls>
-  <source src={require('/blog/try-it-yourself/github-demo-tidbcloud.mp4').default} type="video/mp4" />
-</video> -->
-
-
 :::info
 ### 🌟 Details in how OSS Insight works
 
