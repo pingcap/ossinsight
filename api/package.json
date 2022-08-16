@@ -33,7 +33,7 @@
 
     "postinstall": "pnpm run build",
     "build": "tsc && pnpm run build:copy",
-    "build:copy": "find . -maxdepth 1 -name .env -exec cp {} ./dist \\; && cp .env.template ./dist/.env.template && cp -r ./queries ./dist/queries",
+    "build:copy": "find . -maxdepth 1 -name .env -exec cp {} ./dist \\; && cp .env.template ./dist/.env.template && cp -r ./queries ./dist/queries"
   },
   "author": "",
   "license": "MIT",
