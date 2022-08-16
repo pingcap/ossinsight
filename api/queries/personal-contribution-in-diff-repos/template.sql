@@ -2,7 +2,7 @@ SELECT
     repo_id,
     ANY_VALUE(repo_name) AS repo_name,
     COUNT(id) AS cnt,
-    DATE_FORMAT(created_at, '%Y-%m-%d 00:00:00') AS event_period
+    DATE_FORMAT(created_at, '%Y-%m-%d %k:00:00') AS event_period
 FROM github_events ge
 WHERE
     actor_id = 5086433
