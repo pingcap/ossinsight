@@ -1,5 +1,6 @@
 import consola, { Consola } from "consola";
 import { Connection, createConnection } from "mysql2";
+import { getConnectionOptions } from "../utils/db";
 
 
 export enum SyncUserMode {
@@ -30,15 +31,7 @@ export class SyncUserRecorder {
         this.logger = consola.withTag('sync-user-recorder');
 
         // Init TiDB client.
-        this.dbClient = createConnection({
-            host: process.env.DB_HOST,
-            port: parseInt(process.env.DB_PORT || '4000'),
-            database: process.env.DB_DATABASE,
-            user: process.env.DB_USER,
-            password: process.env.DB_PASSWORD,
-            decimalNumbers: true,
-            timezone: 'Z'
-        });
+        this.dbClient = createConnection(getConnectionOptions());
     }
 
     async findOne(job: SyncUserLog):Promise<SyncUserLog | undefined> {

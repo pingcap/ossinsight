@@ -279,11 +279,7 @@ cp .env.template .env;
 then edit `.env`:
 ```
 # For database connection
-DB_HOST=127.0.0.1
-DB_PORT=4000
-DB_USER=root
-DB_DATABASE=gharchive_dev
-DB_PASSWORD=''
+DATABASE_URL=mysql://root:@127.0.0.1:4000/gharchive_dev
 CONNECTION_LIMIT=10
 QUEUE_LIMIT=20
 SERVER_PORT=3450
@@ -315,11 +311,11 @@ Open another terminal tab, then:
 
 ```bash
 cd ossinsight/;
-npm install;
-APP_HOST=http://localhost:3450 APP_API_BASE=http://localhost:3450 npm run start -- --port 3001;
+npm ci;
+APP_HOST=http://localhost:3450 APP_API_BASE=http://localhost:3450 npm run start -- --port 30000;
 ```
 
 
 ### d. Well done!
 
-Visit [http://localhost:3001](http://localhost:3001);
+Visit [http://localhost:30000](http://localhost:30000);

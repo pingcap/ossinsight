@@ -6,6 +6,7 @@ import LRUCache from 'lru-cache';
 import pinyin from 'pinyin';
 import { Connection, createConnection } from "mysql2";
 import { NominatimProvider } from './provider/nominatim';
+import { getConnectionOptions } from '../utils/db';
 
 const ADDRESS_MIN_LENGTH = 5;
 const ADDRESS_MAX_LENGTH = 50;
@@ -167,16 +168,7 @@ export class LocationCache {
         this.logger = consola.withTag('locator-cache');
 
         // Init TiDB client.
-        this.dbClient = createConnection({
-            host: process.env.DB_HOST,
-            port: parseInt(process.env.DB_PORT || '4000'),
-            database: process.env.DB_DATABASE,
-            user: process.env.DB_USER,
-            password: process.env.DB_PASSWORD,
-            queueLimit: 10,
-            decimalNumbers: true,
-            timezone: 'Z'
-        });
+        this.dbClient = createConnection(getConnectionOptions());
 
         // Init Cache.
         this.memoryCache = new LRUCache<string, any>({
