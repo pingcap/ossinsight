@@ -6,14 +6,14 @@
   "scripts": {
     "test": "jest",
     
-    "start": "pm2 start --cwd $(pwd) 'pnpm run server:start' --name 'ossinsight-api'",
+    "start": "pm2 start --cwd $(pwd) 'pnpm run server' --name 'ossinsight-api'",
     "start:prefetch": "pm2 start --cwd $(pwd) 'pnpm run server:prefetch' --name 'ossinsight-api-prefetch'",
     "start:cache-gc": "pm2 start --cwd $(pwd) 'pnpm run server:cache-gc' --name 'ossinsight-api-cache-gc'",
     "start:sync-nginx-log": "pm2 start --cwd $(pwd) 'pnpm run server:sync-nginx-log' --name 'ossinsight-api-sync-nginx-logs'",
     "start:calc-hot-collections": "pm2 start --cwd $(pwd) 'pnpm run server:calc-hot-collections' --name 'ossinsight-api-calc-hot-collections'",
     "start:sync-users-data": "pm2 start --cwd $(pwd) 'pnpm run server:sync-users-data' --name 'ossinsight-sync-users-data'",
   
-    "server:start": "node ./dist/index.js",
+    "server": "node ./dist/index.js",
     "server:prefetch": "node ./dist/compute-prefetch-enums.js",
     "server:cache-gc": "node ./dist/cache-gc.js",
     "server:sync-nginx-log": "node ./dist/sync-nginx-log.js",

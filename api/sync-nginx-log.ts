@@ -1,13 +1,12 @@
 import consola from 'consola';
 import * as dotenv from "dotenv";
 import { DateTime } from 'luxon';
-import { Connection, createConnection } from 'mysql2';
+import { createConnection } from 'mysql2';
 import path from 'path';
 import { Tail } from 'tail';
 import { URL } from 'url';
 import { BatchLoader } from './app/core/BatchLoader';
-import { validateProcessEnv } from './app/env';
-import { getConnectionOptions } from './utils/db';
+import { getConnectionOptions } from './app/utils/db';
 
 // The default access log format of nginx.
 // Reference: http://nginx.org/en/docs/http/ngx_http_log_module.html
@@ -31,8 +30,6 @@ const ONLY_HOST = 'https://ossinsight.io/'
 // Load environments.
 dotenv.config({ path: __dirname+'/.env.template' });
 dotenv.config({ path: __dirname+'/.env', override: true });
-
-validateProcessEnv();
 
 // Init logger.
 const logger = consola.withTag('nginx-log-sync');

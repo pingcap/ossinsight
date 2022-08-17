@@ -1,31 +1,24 @@
 import * as dotenv from "dotenv";
 import {TiDBQueryExecutor} from "./app/core/TiDBQueryExecutor";
-import consola, {FancyReporter} from "consola";
-import { validateProcessEnv } from './app/env';
+import consola from "consola";
 import Query from "./app/core/Query";
 import CacheBuilder from "./app/core/cache/CacheBuilder";
 import CollectionService from "./app/services/CollectionService";
 import GHEventService from "./app/services/GHEventService";
 import UserService from "./app/services/UserService";
 import schedule from 'node-schedule';
-import sleep from "./utils/sleep";
-import { getConnectionOptions } from "./utils/db";
+import sleep from "./app/utils/sleep";
+import { getConnectionOptions } from "./app/utils/db";
 import { createConnection } from "mysql2";
 
 const COLLECTIONS_RANKING_QUERY = 'collection-stars-month-rank';
 
 // Init logger.
 const logger = consola.withTag('calc-hot-collections');
-logger.removeReporter();
-logger.addReporter(new FancyReporter({
-  dateFormat: 'YYYY:MM:DD HH:mm:ss'
-}));
 
 // Load environments.
-dotenv.config({ path: __dirname+'/.env.template', override: true });
+dotenv.config({ path: __dirname+'/.env.template' });
 dotenv.config({ path: __dirname+'/.env', override: true });
-
-validateProcessEnv()
 
 const cron = process.env.CALC_HOT_COLLECTIONS_CRON;
 if (cron === undefined || cron === '') {
@@ -37,6 +30,7 @@ const interval = parseInt(process.env.CALC_HOT_COLLECTIONS_INTERVAL || '30');
 
 // Notice: node-schedule does not support concurrency control, 
 // so it is best not to set the interval of cron expressions too close.
+logger.info(`Execute calc hot collections job according cron expression: ${cron}`);
 schedule.scheduleJob(cron, async () => {
     // Init TiDB client.
     const conn = createConnection(getConnectionOptions());

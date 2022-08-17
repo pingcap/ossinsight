@@ -1,4 +1,4 @@
-import type { ConditionalHours } from "../params.schema";
+import type { ConditionalHours } from "../../params.schema";
 
 export function resolveHours(params: any, hours: number | ConditionalHours | undefined): number {
   if (typeof hours === "number") {

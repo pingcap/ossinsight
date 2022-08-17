@@ -7,24 +7,22 @@ import {TiDBQueryExecutor} from "./app/core/TiDBQueryExecutor";
 import Query from "./app/core/Query";
 import consola from "consola";
 import {DateTime, Duration} from "luxon";
-import { validateProcessEnv } from './app/env';
 import GHEventService from "./app/services/GHEventService";
 import CollectionService from './app/services/CollectionService';
 import CacheBuilder from './app/core/cache/CacheBuilder';
 import UserService from './app/services/UserService';
-import { resolveHours } from "./utils/paramDefs";
-import { getConnectionOptions } from './utils/db';
-import sleep from './utils/sleep';
-import { arrayDeepEquals } from './utils/array';
+import { resolveHours } from "./app/utils/paramDefs";
+import { getConnectionOptions } from './app/utils/db';
+import sleep from './app/utils/sleep';
+import { arrayDeepEquals } from './app/utils/array';
 
 // Load environments.
 dotenv.config({ path: __dirname+'/.env.template' });
 dotenv.config({ path: __dirname+'/.env', override: true });
 
-validateProcessEnv()
-
 const PREFETCH_CONCURRENT = process.env.PREFETCH_CONCURRENT ? parseInt(process.env.PREFETCH_CONCURRENT) : 3;
 
+// Init logger.
 const logger = consola.withTag('prefetch');
 
 interface QueryJob {

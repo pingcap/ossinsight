@@ -21,7 +21,7 @@ services:
     environment:
       - NODE_ENV=development
       - RAILS_ENV=development
-      - DATABASE_URL=tidb://root:@host.docker.internal:4000/gharchive_dev
+      - DATABASE_URL=${DATABASE_URL:-tidb://root:@host.docker.internal:4000/gharchive_dev}
       - GITHUB_TOKEN=${GITHUB_TOKEN:?err}
 
   api:
@@ -38,16 +38,12 @@ services:
       data:
         condition: service_started
     environment:
-      - DB_HOST=host.docker.internal
-      - DB_PORT=4000
-      - DB_USER=root
-      - DB_DATABASE=gharchive_dev
-      - DB_PASSWORD=
+      - DATABASE_URL=${DATABASE_URL:-tidb://root:@host.docker.internal:4000/gharchive_dev}
       - CONNECTION_LIMIT=10
       - QUEUE_LIMIT=20
       - SERVER_PORT=3450
       - GH_TOKENS=${GITHUB_TOKEN:?err}
-      - PREFETCH_CONCURRENT=3
+      - PREFETCH_CONCURRENT=1
       - ENABLE_CACHE=0
 
   fe:
@@ -59,7 +55,7 @@ services:
       args:
         NODE_ENV: 'development'
     ports: 
-      - "3001:3000"
+      - "30000:30000"
     environment:
       - NODE_ENV=development
       - APP_HOST=http://localhost:3450
