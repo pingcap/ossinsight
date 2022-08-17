@@ -6,6 +6,7 @@ SELECT
         WHERE
             type = 'WatchEvent'
             AND repo_id = 41986369
+            AND action = 'started'
     ) AS stars,
     (
         SELECT
@@ -30,5 +31,6 @@ SELECT
         WHERE
             type = 'PullRequestEvent'
             AND repo_id = 41986369
+            AND action = 'opened'
     ) AS pull_request_creators
 ;

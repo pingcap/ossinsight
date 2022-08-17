@@ -14,6 +14,7 @@ SELECT
         WHERE
             type = 'IssuesEvent'
             AND repo_id = 41986369
+            AND action = 'opened'
     ) AS issue_creators,
     (
         SELECT
@@ -22,6 +23,7 @@ SELECT
         WHERE
             type = 'IssueCommentEvent'
             AND repo_id = 41986369
+            AND action = 'created'
     ) AS issue_comments,
     (
         SELECT
@@ -30,5 +32,6 @@ SELECT
         WHERE
             type = 'IssueCommentEvent'
             AND repo_id = 41986369
+            AND action = 'created'
     ) AS issue_commenters
 ;

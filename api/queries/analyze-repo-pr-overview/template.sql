@@ -14,6 +14,7 @@ SELECT
         WHERE
             type = 'PullRequestEvent'
             AND repo_id = 41986369
+            AND action = 'opened'
     ) AS pull_request_creators,
     (
         SELECT
@@ -22,6 +23,7 @@ SELECT
         WHERE
             type = 'PullRequestReviewEvent'
             AND repo_id = 41986369
+            AND action = 'created'
     ) AS pull_request_reviews,
     (
         SELECT
@@ -30,5 +32,6 @@ SELECT
         WHERE
             type = 'PullRequestReviewEvent'
             AND repo_id = 41986369
+            AND action = 'created'
     ) AS pull_request_reviewers
 ;
