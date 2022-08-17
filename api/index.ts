@@ -4,7 +4,6 @@ import server from "./app/server";
 import dotenv from 'dotenv';
 import consola, {Consola, FancyReporter} from 'consola';
 import cors from '@koa/cors';
-import { validateProcessEnv } from './app/env';
 
 consola.setReporters([
   new FancyReporter({
@@ -16,8 +15,6 @@ const logger = consola.withTag('app');
 
 dotenv.config({ path: __dirname + '/.env.template' });
 dotenv.config({ path: __dirname + '/.env', override: true });
-
-validateProcessEnv()
 
 export interface ContextExtends extends App.DefaultContext {
   logger: Consola

@@ -12,7 +12,7 @@ import CollectionService from '../services/CollectionService';
 import CacheBuilder, { CacheProviderTypes } from './cache/CacheBuilder';
 import { QueryTemplateNotFoundError } from './QueryFactory';
 import UserService from '../services/UserService';
-import { resolveHours } from "../../utils/paramDefs";
+import { resolveHours } from "../utils/paramDefs";
 
 const EXPLAIN_QUERY_CACHE_HOUR = 0.01;
 

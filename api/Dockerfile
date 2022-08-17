@@ -7,11 +7,11 @@ WORKDIR /usr/src/app
 
 COPY . ./
 
-RUN pnpm install
+RUN pnpm i --frozen-lockfile
 
 # Runtime stage.
 FROM node:16-alpine AS runtime
 WORKDIR /usr/src/app
 COPY --from=builder /usr/src/app ./
 EXPOSE 3450
-CMD ["npm", "run", "server:start"]
+CMD ["npm", "run", "server"]

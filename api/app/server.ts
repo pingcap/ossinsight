@@ -10,7 +10,7 @@ import CollectionService from "./services/CollectionService";
 import GHEventService from "./services/GHEventService";
 import CacheBuilder from "./core/cache/CacheBuilder";
 import UserService from "./services/UserService";
-import { getConnectionOptions } from "../utils/db";
+import { getConnectionOptions } from "./utils/db";
 
 export default async function server(router: Router<DefaultState, ContextExtends>) {
   // Init MySQL Executor. 

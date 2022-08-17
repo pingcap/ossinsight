@@ -1,33 +1,27 @@
 import * as dotenv from "dotenv";
 import consola, {FancyReporter} from "consola";
-import { validateProcessEnv } from './app/env';
-import { getConnectionOptions } from "./utils/db";
+import { getConnectionOptions } from "./app/utils/db";
 import schedule from 'node-schedule';
 import { Connection, createConnection } from "mysql2";
+
+const DEFAULT_STEPS = 10;
+const NORMAL_TABLE_NAME = 'cache';
+const CACHED_TABLE_NAME = 'cached_table_cache';
 
 // Load environments.
 dotenv.config({ path: __dirname+'/.env.template', override: true });
 dotenv.config({ path: __dirname+'/.env', override: true });
 
-validateProcessEnv();
-
-const CACHE_GC_CRON = process.env.CACHE_GC_CRON || '0 */1 * * * *';
-const DEFAULT_STEPS = 10;
-const NORMAL_TABLE_NAME = 'cache';
-const CACHED_TABLE_NAME = 'cached_table_cache';
+const cron = process.env.CACHE_GC_CRON || '0 */1 * * * *';
 
 // Init logger.
 const logger = consola.withTag('cache-gc');
-logger.removeReporter();
-logger.addReporter(new FancyReporter({
-  dateFormat: 'YYYY:MM:DD HH:mm:ss'
-}));
 
 // Init TiDB client.
 const conn = createConnection(getConnectionOptions());
-logger.info(`Execute cache GC job according cron expression: ${CACHE_GC_CRON}`);
 
-schedule.scheduleJob(CACHE_GC_CRON, async () => {
+logger.info(`Execute cache GC job according cron expression: ${cron}`);
+schedule.scheduleJob(cron, async () => {
   logger.info(`Clearing expired cache for table <${NORMAL_TABLE_NAME}> ...`);
   while (true) {
     const affectedRows = await clearCache(conn, NORMAL_TABLE_NAME, DEFAULT_STEPS);

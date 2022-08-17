@@ -7,16 +7,13 @@ import { Octokit } from 'octokit';
 import asyncPool from 'tiny-async-pool';
 import { BatchLoader } from './app/core/BatchLoader';
 import { OctokitFactory } from './app/core/OctokitFactory';
-import { validateProcessEnv } from './app/env';
 import { Locator, LocationCache } from './app/locator/Locator';
 import { SyncUserLog, SyncUserMode, SyncUserRecorder } from './app/sync-user/recorder';
-import { getConnectionOptions } from './utils/db';
+import { getConnectionOptions } from './app/utils/db';
 
 // Load environments.
 dotenv.config({ path: __dirname+'/.env.template' });
 dotenv.config({ path: __dirname+'/.env', override: true });
-
-validateProcessEnv();
 
 // Init logger.
 const logger = consola.withTag('sync-users-data');

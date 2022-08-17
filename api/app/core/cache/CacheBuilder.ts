@@ -1,6 +1,5 @@
-import { Connection, createConnection } from "mysql2";
-import { getConnectionOptions } from "../../../utils/db";
-import { TiDBQueryExecutor } from "../TiDBQueryExecutor";
+import { createConnection } from "mysql2";
+import { getConnectionOptions } from "../../utils/db";
 import Cache from './Cache'
 import CachedTableCacheProvider from "./CachedTableCacheProvider";
 import { CacheOption, CacheProvider } from "./CacheProvider";
