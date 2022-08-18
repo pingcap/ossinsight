@@ -1,6 +1,6 @@
 WITH prs_with_language AS (
     SELECT
-        language, COUNT(DISTINCT pr_or_issue_id) AS cnt
+        language, COUNT(1) AS cnt
     FROM github_events ge
     WHERE
         type = 'PullRequestEvent'

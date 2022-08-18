@@ -8,7 +8,7 @@ SELECT
         WHEN 'PushEvent' THEN 'pushes'
     END AS contribution_type,
     event_month,
-    COUNT(DISTINCT id) AS cnt 
+    COUNT(1) AS cnt 
 FROM github_events ge
 WHERE
     actor_id = 5086433 AND
