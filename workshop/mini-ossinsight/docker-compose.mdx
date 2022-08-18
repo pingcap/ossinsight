@@ -4,6 +4,9 @@ sidebar_label: 'Docker Compose'
 sidebar_position: 3
 ---
 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
 There are 2 reasons that we should't start TiDB inside container:
 
 1. Performance loss on disk/network/cpu;
@@ -76,24 +79,42 @@ docker-compose pull;
 docker-compose up;
 ```
 
-:::note
+:::info
 Learn how to [create a personal access token](/workshop/mini-ossinsight/step-by-step/find-data-source#creating-a-personal-access-token)
 :::
 
-:::note
+:::info
 If you want to use another MySQL compatible database, please set the your database URL to `DATABASE_URL` environment variable before starting docker compose deployment in the `ossinsight/docker-compose.yml` file.
 
 ```
-export DATABASE_URL=(your database URL);
+export DATABASE_URL=<your database URL>;
 ```
 :::
 
 ### c. Load sample historical GitHub events to TiDB
 
-then open another terminal tab to load sample events data:
+Then open another terminal tab to download sample events data:
+
+<Tabs>
+<TabItem value="github" label="GitHub" default>
 
 ```bash
 wget https://github.com/pingcap/ossinsight/releases/download/sample-data/smaple-oss-database.zip;
+```
+
+</TabItem>
+<TabItem value="ghproxy" label="GHProxy">
+
+```bash
+wget https://ghproxy.com/https://github.com/pingcap/ossinsight/releases/download/sample-data/smaple-oss-database.zip;
+```
+
+</TabItem>
+</Tabs>
+
+Import the data from sql file to TiDB:
+
+```bash
 unzip smaple-oss-database.zip
 cd dataset-xxs
 mysql --host 127.0.0.1 --port 4000 -u root -p gharchive_dev < gharchive_dev.github_events.000000000.sql
