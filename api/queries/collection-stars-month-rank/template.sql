@@ -1,30 +1,28 @@
 WITH stars_group_by_repo AS (
     SELECT
         repo_id,
-        COUNT(DISTINCT actor_login) AS stars
+        COUNT(actor_login) AS stars
     FROM github_events
     WHERE
         type = 'WatchEvent'
         AND repo_id IN (41986369, 16563587, 105944401)
     GROUP BY repo_id
-), m AS (
-    SELECT
-        DATE_FORMAT(DATE_SUB(NOW(), INTERVAL DAYOFMONTH(NOW()) DAY), '%Y-%m-01') AS `month`
-    UNION
-    SELECT
-        DATE_FORMAT(DATE_SUB(DATE_SUB(NOW(), INTERVAL DAYOFMONTH(NOW()) DAY), INTERVAL 1 MONTH), '%Y-%m-01') AS `month`
 ), stars_group_by_month AS (
     SELECT
-            event_month,
-            repo_id,
-            ANY_VALUE(repo_name) AS repo_name,
-            COUNT(DISTINCT actor_login) AS stars
-        FROM github_events
-        WHERE
-            type = 'WatchEvent'
-            AND repo_id IN (41986369, 16563587, 105944401)
-            AND event_month IN (SELECT `month` FROM m)
-        GROUP BY repo_id, event_month
+        event_month,
+        repo_id,
+        ANY_VALUE(repo_name) AS repo_name,
+        COUNT(actor_login) AS stars
+    FROM github_events
+    WHERE
+        type = 'WatchEvent'
+        AND action = 'started'
+        AND repo_id IN (41986369, 16563587, 105944401)
+        AND event_month IN (
+            DATE_FORMAT(DATE_SUB(NOW(), INTERVAL DAYOFMONTH(NOW()) DAY), '%Y-%m-01'),
+            DATE_FORMAT(DATE_SUB(DATE_SUB(NOW(), INTERVAL DAYOFMONTH(NOW()) DAY), INTERVAL 1 MONTH), '%Y-%m-01')
+        )
+    GROUP BY repo_id, event_month
 ), stars_last_month AS (
     SELECT
         repo_id,
