@@ -12,6 +12,7 @@ Now, the data is ready, let's try to analyze these data with SQL!
 ### a. Can't Wait!
 
 #### i. Example 1
+
 Look at `ti-chi-bot`'s details, it is a robot:
 
 <Tabs>
@@ -19,7 +20,7 @@ Look at `ti-chi-bot`'s details, it is a robot:
 
 ```sql
 SELECT
-    type, count(*)
+    type, COUNT(*) AS events
 FROM github_events
 WHERE
     actor_login = 'ti-chi-bot'
@@ -48,11 +49,10 @@ GROUP BY type;
 :::info Test
 * [ti-chi-bot](https://github.com/ti-chi-bot)
 * [azure-sdk](https://github.com/azure-sdk)
-* [direwolf-github](https://github.com/direwolf-github)
-* [mhutchinson-witness](https://github.com/mhutchinson-witness)
 :::
 
 #### ii. Example 2
+
 The below SQL is picked from [blog - Love, Code, and Robot](/blog/say-thanks-to-github-robots#history-trends), it explains how robots grow on GitHub:
 
 <Tabs>
@@ -268,15 +268,17 @@ We won't talk too much about how to get USEFUL insights from such a big data as 
 
 ## 2. Make Data More Beautiful
 
-### a. Config
+### a. Config the API Server
 
 Create config file:
+
 ```bash
 cd ossinsight/api/;
 cp .env.template .env;
 ```
 
-then edit `.env`:
+Then edit `.env` file:
+
 ```
 # For database connection
 DATABASE_URL=mysql://root:@127.0.0.1:4000/gharchive_dev
@@ -286,7 +288,7 @@ SERVER_PORT=3450
 ENABLE_CACHE=0
 # comma separated tokens
 GH_TOKENS='(your github personal access token)'
-PREFETCH_CONCURRENT=3
+PREFETCH_CONCURRENT=1
 ```
 
 :::note
@@ -314,7 +316,6 @@ cd ossinsight/;
 npm ci;
 APP_HOST=http://localhost:3450 APP_API_BASE=http://localhost:3450 npm run start -- --port 30000;
 ```
-
 
 ### d. Well done!
 
