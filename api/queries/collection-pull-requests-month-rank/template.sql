@@ -7,12 +7,6 @@ WITH prs_group_by_repo AS (
         type = 'PullRequestEvent'
         AND repo_id IN (41986369, 16563587, 105944401)
     GROUP BY repo_id
-), m AS (
-    SELECT
-        DATE_FORMAT(DATE_SUB(NOW(), INTERVAL DAYOFMONTH(NOW()) DAY), '%Y-%m-01') AS `month`
-    UNION
-    SELECT
-        DATE_FORMAT(DATE_SUB(DATE_SUB(NOW(), INTERVAL DAYOFMONTH(NOW()) DAY), INTERVAL 1 MONTH), '%Y-%m-01') AS `month`
 ), prs_group_by_month AS (
     SELECT
         event_month,
@@ -24,7 +18,10 @@ WITH prs_group_by_repo AS (
         type = 'PullRequestEvent'
         AND action = 'opened'
         AND repo_id IN (41986369, 16563587, 105944401)
-        AND event_month IN (SELECT `month` FROM m)
+        AND event_month IN (
+            DATE_FORMAT(DATE_SUB(NOW(), INTERVAL DAYOFMONTH(NOW()) DAY), '%Y-%m-01'),
+            DATE_FORMAT(DATE_SUB(DATE_SUB(NOW(), INTERVAL DAYOFMONTH(NOW()) DAY), INTERVAL 1 MONTH), '%Y-%m-01')
+        )
     GROUP BY event_month, repo_id
 ), prs_last_month AS (
     SELECT

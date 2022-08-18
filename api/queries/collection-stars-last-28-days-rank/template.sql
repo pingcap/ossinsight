@@ -1,7 +1,7 @@
 WITH stars_group_by_repo AS (
     SELECT
         repo_id,
-        COUNT(DISTINCT actor_login) AS stars
+        COUNT(actor_login) AS stars
     FROM github_events
     WHERE
         type = 'WatchEvent'
