@@ -51,6 +51,7 @@ items:
   - dagster-io/dagster
   - meltano/meltano
   - kestra-io/kestra
+  - apache/dolphinscheduler
   
   # Data testing
   - great-expectations/great_expectations
