@@ -1,5 +1,5 @@
 # Build stage.
-FROM node:16-alpine AS builder
+FROM node:18-alpine AS builder
 
 RUN npm install pnpm -g
 
@@ -10,7 +10,7 @@ COPY . ./
 RUN pnpm i --frozen-lockfile
 
 # Runtime stage.
-FROM node:16-alpine AS runtime
+FROM node:18-alpine AS runtime
 WORKDIR /usr/src/app
 COPY --from=builder /usr/src/app ./
 EXPOSE 3450
