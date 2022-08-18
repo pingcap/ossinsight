@@ -23,6 +23,7 @@ services:
       - RAILS_ENV=development
       - DATABASE_URL=${DATABASE_URL:-tidb://root:@host.docker.internal:4000/gharchive_dev}
       - GITHUB_TOKEN=${GITHUB_TOKEN:?err}
+      - SKIP_REPLICA=1
 
   api:
     build:
