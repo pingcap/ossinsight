@@ -1,0 +1,165 @@
+---
+title: 'Step 2: Load Data  to TiDB'
+sidebar_position: 2
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+## 1. Install TiDB
+
+It's easy to setup a TiDB Cluster in your laptop (Mac or Linux) with the official cli tools: [tiup](https://tiup.io/)(inspired by rustup)
+
+```bash
+# Install tiup, you'd better use bash.
+curl --proto '=https' --tlsv1.2 -sSf https://tiup-mirrors.pingcap.com/install.sh | sh
+# Install & Start TiDB Server.
+tiup playground -T ossinsight
+```
+
+Expected output:
+
+```bash
+CLUSTER START SUCCESSFULLY, Enjoy it ^-^
+To connect TiDB: mysql --comments --host 127.0.0.1 --port 4000 -u root -p (no password)
+To view the dashboard: http://127.0.0.1:2379/dashboard
+PD client endpoints: [127.0.0.1:2379]
+To view the Prometheus: http://127.0.0.1:9090
+To view the Grafana: http://127.0.0.1:3000
+```
+
+## 2. Start data loading script
+
+### a. Clone the OSS Insight repo to local
+
+<Tabs>
+<TabItem value="github" label="GitHub" default>
+
+```bash
+git clone --depth=1 https://github.com/pingcap/ossinsight.git;
+cd ossinsight;
+```
+
+</TabItem>
+<TabItem value="ghproxy" label="GHProxy">
+
+```bash
+git clone --depth=1 https://ghproxy.com/https://github.com/pingcap/ossinsight.git;
+cd ossinsight;
+```
+
+</TabItem>
+</Tabs>
+
+### b. Config the data loader
+
+Enter to the `/backend` folder which stored our data loader script written by Ruby.
+
+```
+cd backend;
+```
+
+Edit the `.env.local` in the `/backend` folder, fill in the `Database URL` and `GitHub personal access token` (Learn how to [create a personal access token](/workshop/mini-ossinsight/step-by-step/find-data-source#creating-a-personal-access-token))
+
+```
+DATABASE_URL=tidb://root@127.0.0.1:4000/gharchive_dev
+GITHUB_TOKEN=(your github personal access token)
+```
+
+### c. Install dependencies
+
+<Tabs>
+<TabItem value="macos" label="MacOS" default>
+
+```bash
+# Homebrew: https://brew.sh/
+brew install openssl ruby@2.7 mysql;
+bundle update --bundler;
+bundle install;
+```
+
+</TabItem>
+<TabItem value="linux" label="Linux">
+
+TODO
+
+</TabItem>
+</Tabs>
+
+### c. Initial database schema
+
+```bash
+# Create database
+bundle exec rails db:create
+
+# Create tables, index
+bundle exec rails db:migrate
+
+# Load seed data, e.g: collections, collection_items
+bundle exec rake db:seed
+```
+
+## 3. Load sample historical GitHub events to TiDB
+
+```bash
+# Load about 0.8 million sample events data
+# 
+wget https://github.com/pingcap/ossinsight/releases/download/sample-data/smaple-oss-database.zip;
+unzip smaple-oss-database.zip
+cd dataset-xxs
+mysql --host 127.0.0.1 --port 4000 -u root -p gharchive_dev < gharchive_dev.github_events.000000000.sql
+```
+
+The importing task would cost about 10 minutes.
+
+:::note
+If you want to get different size of data please visit: 
+https://github.com/pingcap/ossinsight/releases/tag/sample-data
+:::
+
+
+## 4. Listen to /events and insert realtime events to TiDB
+
+Open another terminal tab, start the crawler daemon by:
+
+```bash
+bundle exec rails runner 'Realtime.new(ENV["GITHUB_TOKEN"].to_s.split(","), 100).run';
+```
+
+## 5. Test
+
+Connect to TiDB by:
+
+<Tabs>
+<TabItem value="mysql-client" label="MySQL Client" default>
+
+```bash
+# no password
+mysql --comments --host 127.0.0.1 --port 4000 -u root -t gharchive_dev -p
+```
+
+Execute the following SQL to check if it is ACTUALLY ready:
+
+```sql
+SELECT count(*) FROM gharchive_dev.github_events;
+```
+
+Try it again after a few seconds, make sure the results are different.
+
+</TabItem>
+<TabItem value="mycli" label="MyCLI">
+
+```bash
+# no password
+mycli --host 127.0.0.1 --port 4000 -u root -t gharchive_dev
+```
+
+Execute the following SQL to check if it is ACTUALLY ready:
+
+```sql
+WATCH SELECT count(*) FROM gharchive_dev.github_events;
+```
+
+</TabItem>
+</Tabs>
+
