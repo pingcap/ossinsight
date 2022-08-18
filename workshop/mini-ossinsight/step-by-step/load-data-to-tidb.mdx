@@ -66,7 +66,7 @@ DATABASE_URL=tidb://root@127.0.0.1:4000/gharchive_dev
 GITHUB_TOKEN=(your github personal access token)
 ```
 
-### c. Install dependencies
+### c. Install data loader dependencies
 
 <Tabs>
 <TabItem value="macos" label="MacOS" default>
@@ -86,6 +86,19 @@ TODO
 </TabItem>
 </Tabs>
 
+:::note
+
+Tips: If the network access is slow, you can try to add a gem image mirror source.
+
+```bash
+# Add mirror source for gem.
+gem sources -a https://mirrors.tuna.tsinghua.edu.cn/rubygems/
+# Check if the mirror be config.
+gem sources -l
+```
+
+:::
+
 ### c. Initial database schema
 
 ```bash
@@ -101,9 +114,9 @@ bundle exec rake db:seed
 
 ## 3. Load sample historical GitHub events to TiDB
 
+Download and import the sample events data which contains several active OSS database repos, about 0.8 million.
+
 ```bash
-# Load about 0.8 million sample events data
-# 
 wget https://github.com/pingcap/ossinsight/releases/download/sample-data/smaple-oss-database.zip;
 unzip smaple-oss-database.zip
 cd dataset-xxs
