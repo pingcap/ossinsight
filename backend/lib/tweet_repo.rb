@@ -51,7 +51,7 @@ class TweetRepo
     logins = list_twitter_logins
 
     txt = <<~TXT
-    Congrats to https://github.com/#{repo}, which has grown by #{stars_incr} stars in the last 7 days and has reached #{stars_count_pretty} stars. 
+    Congrats to https://github.com/#{repo}, which has grown by #{[stars_incr, stars_count].min} stars in the last 7 days and has reached #{stars_count_pretty} stars. 
     TXT
 
     contributors_txt = <<~TXT
@@ -60,7 +60,7 @@ class TweetRepo
 
     txt << "\n" + contributors_txt if logins.present? 
     txt << "\n" + "https://ossinsight.io/analyze/#{repo}"
-    txt << "\n" + "##{language} #OpenSource #100DaysOfCode" if language.present? 
+    txt << "\n" + "##{language}" if language.present? 
 
     puts txt
     puts txt.size

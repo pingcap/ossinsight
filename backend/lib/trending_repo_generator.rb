@@ -11,7 +11,7 @@ class TrendingRepoGenerator
       where type = 'WatchEvent' and created_at >= '#{7.days.ago.to_s(:db)}'
             and repo_name not in (select repo_name from trending_repos where repo_name is not null)
       group by 1
-      having count(distinct actor_login) >= 200
+      having count(distinct actor_login) >= 100
       order by 2 desc
       limit #{limit}
     SQL
