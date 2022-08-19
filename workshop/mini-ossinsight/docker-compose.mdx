@@ -83,12 +83,8 @@ docker-compose up;
 Learn how to [create a personal access token](/workshop/mini-ossinsight/step-by-step/find-data-source#creating-a-personal-access-token)
 :::
 
-:::info
-If you want to use another MySQL compatible database, please set the your database URL to `DATABASE_URL` environment variable before starting docker compose deployment in the `ossinsight/docker-compose.yml` file.
-
-```
-export DATABASE_URL=<your database URL>;
-```
+:::note
+The program in docker compose will connect to the database URL `tidb://root:@host.docker.internal:4000/gharchive_dev` by default, which can be modified through `DATABASE_URL` variable.
 :::
 
 ### c. Load sample historical GitHub events to TiDB
