@@ -9,3 +9,11 @@ items:
   - teamcapybara/capybara
   - grafana/k6
   - metersphere/metersphere
+  - testcontainers/testcontainers-java
+  - mockito/mockito
+  - karatelabs/karate
+  - rest-assured/rest-assured
+  - cypress-io/cypress
+  - wix/Detox
+  - DevExpress/testcafe
+  - AirtestProject/Airtest
