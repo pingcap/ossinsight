@@ -116,7 +116,9 @@ function Collection({ name, repos, collectionRepos }: RecentHotCollectionData) {
           <Box>
             <Link href={`/analyze/${repo.repo_name}`} target='_blank'>
               <Stack direction="row" alignItems="center">
+              <Box component='span' display='inline-flex' bgcolor='lightgrey' borderRadius='24px' padding='0px' alignItems='center' justifyContent='center' sx={{ verticalAlign: 'text-bottom'}} mr={1}>
                 <Avatar src={`https://github.com/${repo.repo_name.split('/')[0]}.png`} />
+                </Box>
                 <Box component="span" whiteSpace="nowrap" ml={1}>
                   {repo.repo_name}
                 </Box>
