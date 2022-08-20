@@ -1,14 +1,14 @@
 with issue_with_first_responed_at as (
     select
-        number, min(event_month) as event_month, min(created_at) as first_responed_at
+        number, min(date_format(created_at, '%Y-%m-01')) as event_month, min(created_at) as first_responed_at
     from
         github_events ge
     where
-        ((type = 'IssueCommentEvent' and action = 'created') or (type = 'IssuesEvent' and action = 'closed'))
+        repo_id = 41986369
+        and ((type = 'IssueCommentEvent' and action = 'created') or (type = 'IssuesEvent' and action = 'closed'))
         -- Exclude Bots
-        and actor_login not like '%bot%'
-        and actor_login not in (select login from blacklist_users bu)
-        and repo_id = 41986369
+        -- and actor_login not like '%bot%'
+        -- and actor_login not in (select login from blacklist_users bu)
     group by 1
 ), issue_with_opened_at as (
     select
@@ -16,12 +16,12 @@ with issue_with_first_responed_at as (
     from
         github_events ge
     where
-        type = 'IssuesEvent'
+        repo_id = 41986369
+        and type = 'IssuesEvent'
         and action = 'opened'
         -- Exclude Bots
-        and actor_login not like '%bot%'
-        and actor_login not in (select login from blacklist_users bu)
-        and repo_id = 41986369
+        -- and actor_login not like '%bot%'
+        -- and actor_login not in (select login from blacklist_users bu)
 ), tdiff as (
     select
         event_month,
