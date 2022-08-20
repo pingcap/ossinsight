@@ -1,23 +1,23 @@
 with issue_closed as (
     select
-        event_month, count(number) as closed
+        date_format(created_at, '%Y-%m-01') as event_month, count(number) as closed
     from
         github_events ge
     where
         type = 'IssuesEvent'
         and action = 'closed'
         and repo_id = 41986369
-    group by event_month
+    group by 1
 ), issue_opened as (
     select
-        event_month, count(number) as opened
+        date_format(created_at, '%Y-%m-01') as event_month, count(number) as opened
     from
         github_events ge
     where
         type = 'IssuesEvent'
         and action = 'opened'
         and repo_id = 41986369
-    group by event_month
+    group by 1
 )
 select
     io.event_month, opened, coalesce(closed, 0) as closed
