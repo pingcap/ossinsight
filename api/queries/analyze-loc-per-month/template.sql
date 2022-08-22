@@ -1,5 +1,5 @@
 select
-    event_month,
+    date_format(created_at, '%Y-%m-01') as event_month,
     sum(additions) as additions,
     sum(deletions) as deletions,
     sum(additions) - sum(deletions) as net_additions,
@@ -10,6 +10,6 @@ where
     and type = 'PullRequestEvent'
     and action = 'closed'
     and pr_merged = true
-group by event_month
-order by event_month
+group by 1
+order by 1
 ;
