@@ -12,3 +12,4 @@ items:
   - open-telemetry/opentelemetry-collector
   - timescale/promscale
   - graphite-project/graphite-web
+  - uptrace/uptrace
