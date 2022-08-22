@@ -12,3 +12,5 @@ items:
   - dgraph-io/dgraph
   - terminusdb/terminusdb
   - memgraph/memgraph
+  - bitnine-oss/agensgraph
+  - indradb/indradb
