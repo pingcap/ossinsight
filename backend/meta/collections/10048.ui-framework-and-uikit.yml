@@ -31,3 +31,4 @@ items:
   - react-bootstrap/react-bootstrap
   - layui/layui
   - vueComponent/ant-design-vue
+  - radix-ui/primitives
