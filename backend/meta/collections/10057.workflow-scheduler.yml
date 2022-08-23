@@ -1,0 +1,8 @@
+id: 10057
+name: Workflow Scheduler
+items:
+  - apache/dolphinscheduler
+  - apache/airflow
+  - azkaban/azkaban
+  - apache/oozie
+  - xuxueli/xxl-job
