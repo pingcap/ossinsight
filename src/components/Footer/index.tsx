@@ -59,7 +59,7 @@ export default function Footer() {
         <Box textAlign='center' sx={{fontSize: 24, mt: 6}}>
         Want to create your own IDEAInsight in a day?&nbsp;<br />
           <Button sx={{fontSize: 24, fontWeight: 'bold', verticalAlign: 'baseline', textDecoration: 'underline'}} component={Link} href='https://share.hsforms.com/1E-qtGQWrTVmctP8kBT34gw2npzm'>
-            Join a Workshop!
+            Join a workshop!
           </Button>
         </Box>
       </Section>
