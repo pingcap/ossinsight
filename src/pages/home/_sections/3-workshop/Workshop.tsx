@@ -39,7 +39,7 @@ export default function Workshop() {
             If you want a further talk about OSS Insight, please join an offline workshop and get help there.
           </Typography>
           <Button variant="contained" color="primary" component={Link} href="https://share.hsforms.com/1E-qtGQWrTVmctP8kBT34gw2npzm" target='_link'>
-            🗓️ Join an Offline Workshop
+            🗓️ Join an offline workshop
           </Button>
         </Stack>
       </Card>
