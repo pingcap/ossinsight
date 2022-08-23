@@ -1,6 +1,7 @@
 import * as dotenv from "dotenv";
-import consola, {FancyReporter} from "consola";
-import { getConnectionOptions } from "./app/utils/db";
+import * as path from 'path'
+import consola from "consola";
+import { getConnectionOptions } from "../../app/utils/db";
 import schedule from 'node-schedule';
 import { Connection, createConnection } from "mysql2";
 
@@ -9,8 +10,8 @@ const NORMAL_TABLE_NAME = 'cache';
 const CACHED_TABLE_NAME = 'cached_table_cache';
 
 // Load environments.
-dotenv.config({ path: __dirname+'/.env.template', override: true });
-dotenv.config({ path: __dirname+'/.env', override: true });
+dotenv.config({ path: path.resolve(__dirname, '../../.env.template') });
+dotenv.config({ path: path.resolve(__dirname, '../../.env'), override: true });
 
 const cron = process.env.CACHE_GC_CRON || '0 */1 * * * *';
 

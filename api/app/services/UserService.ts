@@ -28,7 +28,7 @@ export default class UserService {
   async getCompanyEmployees(companyName: string): Promise<CachedData<UserItem[]>> {
     const cacheKey = `company:employees:${companyName}`;
     const cache = this.cacheBuilder.build(
-      CacheProviderTypes.CACHED_TABLE, cacheKey, 1, 0.1, false, true
+      CacheProviderTypes.CACHED_TABLE, cacheKey, 1, false, true
     );
 
     const companyKey = companyName.toString()

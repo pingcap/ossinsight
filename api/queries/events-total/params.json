@@ -1,7 +1,8 @@
 {
   "cacheProvider": "NORMAL_TABLE",
   "cacheHours": -1,
-  "refreshHours": 0.01,
+  "refreshCron": "0 * * * * *",
+  "refreshQueue": "REALTIME",
   "onlyFromCache": true,
   "params": []
 }

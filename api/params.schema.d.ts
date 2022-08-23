@@ -19,6 +19,14 @@ export interface QuerySchema {
    */
   cacheHours: number;
   /**
+   * Specify which queue is used to execute prefetch job. The default is MAIN.
+   */
+  refreshQueue?: string;
+  /**
+   * The CRON expressions that control when the refresh cache task is executed.
+   */
+  refreshCron?: string | ConditionalRefreshCrons;
+  /**
    * Refresh cache time in hours, -1 indicates not to refresh.
    */
   refreshHours?: number | ConditionalHours;
@@ -34,6 +42,16 @@ export interface QuerySchema {
    * Special restrictions for params.
    */
   restrictions?: Restriction[];
+}
+export interface ConditionalRefreshCrons {
+  param: string;
+  on: {
+    /**
+     * This interface was referenced by `undefined`'s JSON-Schema definition
+     * via the `patternProperty` ".*".
+     */
+    [k: string]: string;
+  };
 }
 export interface ConditionalHours {
   param: string;

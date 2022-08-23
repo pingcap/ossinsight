@@ -1,6 +1,6 @@
 {
   "cacheHours": -1,
-  "refreshHours": 240,
+  "refreshCron": "@monthly",
   "onlyFromCache": true,
   "params": [
     {

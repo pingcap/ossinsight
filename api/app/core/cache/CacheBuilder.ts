@@ -40,11 +40,11 @@ export default class CacheBuilder {
     }
 
     build(
-        cacheProvider: string = CacheProviderTypes.CACHED_TABLE, key: string, cacheHours: number, refreshHours: number, 
+        cacheProvider: string = CacheProviderTypes.CACHED_TABLE, key: string, cacheHours: number,
         onlyFromCache?: boolean, refreshCache?: boolean
     ): Cache<any> {
         if (!this.enableCache) {
-            return new Cache<any>(this.noneCacheProvider, key, -1, -1, false, false);
+            return new Cache<any>(this.noneCacheProvider, key, -1, false, false);
         }
 
         switch(cacheProvider) {
@@ -52,12 +52,12 @@ export default class CacheBuilder {
                 if (this.normalCacheProvider === undefined) {
                     throw new Error('Normal cache provider has not initialed.');
                 }
-                return new Cache<any>(this.normalCacheProvider, key, cacheHours, refreshHours, onlyFromCache, refreshCache);
+                return new Cache<any>(this.normalCacheProvider, key, cacheHours, onlyFromCache, refreshCache);
             case CacheProviderTypes.CACHED_TABLE:
                 if (this.cachedTableCacheProvider === undefined) {
                     throw new Error('Cached table cache provider has not initialed.');
                 }
-                return new Cache<any>(this.cachedTableCacheProvider, key, cacheHours, refreshHours, onlyFromCache, refreshCache);
+                return new Cache<any>(this.cachedTableCacheProvider, key, cacheHours, onlyFromCache, refreshCache);
             default:
                 throw new Error(`Invalid cache provider type ${cacheProvider}.`);
         }

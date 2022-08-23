@@ -5,32 +5,27 @@
   "main": "./dist/index.js",
   "scripts": {
     "test": "jest",
-    
     "start": "pm2 start --cwd $(pwd) 'pnpm run server' --name 'ossinsight-api'",
     "start:prefetch": "pm2 start --cwd $(pwd) 'pnpm run server:prefetch' --name 'ossinsight-api-prefetch'",
     "start:cache-gc": "pm2 start --cwd $(pwd) 'pnpm run server:cache-gc' --name 'ossinsight-api-cache-gc'",
     "start:sync-nginx-log": "pm2 start --cwd $(pwd) 'pnpm run server:sync-nginx-log' --name 'ossinsight-api-sync-nginx-logs'",
     "start:calc-hot-collections": "pm2 start --cwd $(pwd) 'pnpm run server:calc-hot-collections' --name 'ossinsight-api-calc-hot-collections'",
-    "start:sync-users-data": "pm2 start --cwd $(pwd) 'pnpm run server:sync-users-data' --name 'ossinsight-sync-users-data'",
-  
+    "start:sync-users-data": "pm2 start --cwd $(pwd) 'pnpm run server:sync-users' --name 'ossinsight-sync-users'",
     "server": "node ./dist/index.js",
-    "server:prefetch": "node ./dist/compute-prefetch-enums.js",
-    "server:cache-gc": "node ./dist/cache-gc.js",
-    "server:sync-nginx-log": "node ./dist/sync-nginx-log.js",
-    "server:calc-hot-collections": "node ./dist/calc-hot-collections.js",
-    "server:sync-users-data": "node ./dist/sync-users-data.js",
-
+    "server:prefetch": "node ./dist/scripts/prefetch/index.js",
+    "server:cache-gc": "node ./dist/scripts/cache-gc/index.js",
+    "server:sync-nginx-log": "node ./dist/scripts/sync-nginx-log/index.js",
+    "server:calc-hot-collections": "node ./dist/scripts/calc-hot-collections/index.js",
+    "server:sync-users": "node ./dist/scripts/sync-users/index.js",
     "dev": "ts-node index.ts",
-    "dev:prefetch": "ts-node compute-prefetch-enums.ts",
-    "dev:cache-gc": "ts-node cache-gc.ts",
-    "dev:generate-company-name-sql": "ts-node generate-company-name-sql.ts",
-    "dev:sync-nginx-log": "ts-node sync-nginx-log.ts",
-    "dev:calc-hot-collections": "ts-node calc-hot-collections.ts",
-    "dev:sync-users-data": "ts-node sync-users-data.ts",
-
+    "dev:prefetch": "ts-node scripts/prefetch/index.ts",
+    "dev:cache-gc": "ts-node scripts/cache-gc/index.ts",
+    "dev:sync-nginx-log": "ts-node scripts/sync-nginx-log/index.ts",
+    "dev:calc-hot-collections": "ts-node scripts/calc-hot-collections/index.ts",
+    "dev:sync-users": "ts-node scripts/sync-users/index.ts",
+    "dev:sync-repos": "ts-node scripts/sync-repos/index.ts",
     "gen:schema-ts": "json2ts params.schema.json params.schema.d.ts",
     "validate:params": "ajv -s params.schema.json -d \"queries/*/params.json\"",
-
     "postinstall": "pnpm run build",
     "build": "tsc && pnpm run build:copy",
     "build:copy": "find . -maxdepth 1 -name .env -exec cp {} ./dist \\; && cp .env.template ./dist/.env.template && cp -r ./queries ./dist/queries"
@@ -40,8 +35,10 @@
   "dependencies": {
     "@goparrot/geocoder": "^4.4.0",
     "@koa/cors": "^3.1.0",
+    "async": "^3.2.4",
     "axios": "^0.27.2",
     "consola": "^2.15.3",
+    "cron-parser": "^4.6.0",
     "dotenv": "^16.0.0",
     "generic-pool": "^3.8.2",
     "koa": "^2.13.4",
@@ -52,6 +49,7 @@
     "mysql2": "^2.3.3",
     "node-schedule": "^2.1.0",
     "octokit": "^1.7.1",
+    "p-queue": "^7.3.0",
     "pinyin": "3.0.0-alpha.5",
     "prom-client": "^14.0.1",
     "reflect-metadata": "^0.1.13",
@@ -60,6 +58,7 @@
     "yaml": "^2.0.1"
   },
   "devDependencies": {
+    "@types/async": "^3.2.15",
     "@types/jest": "^28.1.6",
     "@types/koa": "^2.13.4",
     "@types/koa-router": "^7.4.4",

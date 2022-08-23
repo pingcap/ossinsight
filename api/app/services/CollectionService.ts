@@ -72,7 +72,7 @@ export default class CollectionService {
   async getCollections(): Promise<CachedData<Collection[]>> {
     const cacheKey = 'collection:list';
     const cache = this.cacheBuilder.build(
-      CacheProviderTypes.CACHED_TABLE, cacheKey, 1, 0.1, false, true
+      CacheProviderTypes.CACHED_TABLE, cacheKey, 1, false, true
     );
 
     return cache.load(async () => {
@@ -111,7 +111,7 @@ export default class CollectionService {
   async getCollectionRepos(collectionId: number): Promise<CachedData<CollectionItem[]>> {
     const cacheKey = `collection:items:${collectionId}`;
     const cache = this.cacheBuilder.build(
-      CacheProviderTypes.CACHED_TABLE, cacheKey, 1, 0.1, false, true
+      CacheProviderTypes.CACHED_TABLE, cacheKey, 1, false, true
     );
 
     const collectionKey = collectionId.toString()

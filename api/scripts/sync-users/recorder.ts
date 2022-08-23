@@ -1,7 +1,6 @@
 import consola, { Consola } from "consola";
 import { Connection, createConnection } from "mysql2";
-import { getConnectionOptions } from "../utils/db";
-
+import { getConnectionOptions } from "../../app/utils/db";
 
 export enum SyncUserMode {
     SYNC_FROM_REPO_STARS = 1,

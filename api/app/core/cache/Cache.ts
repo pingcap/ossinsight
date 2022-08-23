@@ -30,7 +30,6 @@ export default class Cache<T> {
     private readonly cacheProvider: CacheProvider,
     private readonly key: string,
     private readonly cacheHours: number,
-    private readonly refreshHours: number,
     private readonly onlyFromCache: boolean = false,
     private readonly refreshCache: boolean = false,
   ) {
@@ -71,8 +70,7 @@ export default class Cache<T> {
       logger.info(`Hit cache of ${this.key}.`);
       cacheHitCounter.inc()
 
-      const cacheOutOfDate = DateTime.now().diff(DateTime.fromISO(cachedData.requestedAt), 'hours').hours >= this.refreshHours;
-      if (cacheOutOfDate && this.refreshCache) {
+      if (this.refreshCache) {
         logger.info(`Initiative refresh for key: ${this.key}.`);
         return await this.fetchDataFromDB(fallback);
       }
