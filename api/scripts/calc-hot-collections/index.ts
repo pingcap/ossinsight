@@ -1,14 +1,15 @@
 import * as dotenv from "dotenv";
-import {TiDBQueryExecutor} from "./app/core/TiDBQueryExecutor";
+import * as path from 'path'
+import {TiDBQueryExecutor} from "../../app/core/TiDBQueryExecutor";
 import consola from "consola";
-import Query from "./app/core/Query";
-import CacheBuilder from "./app/core/cache/CacheBuilder";
-import CollectionService from "./app/services/CollectionService";
-import GHEventService from "./app/services/GHEventService";
-import UserService from "./app/services/UserService";
+import Query from "../../app/core/Query";
+import CacheBuilder from "../../app/core/cache/CacheBuilder";
+import CollectionService from "../../app/services/CollectionService";
+import GHEventService from "../../app/services/GHEventService";
+import UserService from "../../app/services/UserService";
 import schedule from 'node-schedule';
-import sleep from "./app/utils/sleep";
-import { getConnectionOptions } from "./app/utils/db";
+import sleep from "../../app/utils/sleep";
+import { getConnectionOptions } from "../../app/utils/db";
 import { createConnection } from "mysql2";
 
 const COLLECTIONS_RANKING_QUERY = 'collection-stars-month-rank';
@@ -17,8 +18,8 @@ const COLLECTIONS_RANKING_QUERY = 'collection-stars-month-rank';
 const logger = consola.withTag('calc-hot-collections');
 
 // Load environments.
-dotenv.config({ path: __dirname+'/.env.template' });
-dotenv.config({ path: __dirname+'/.env', override: true });
+dotenv.config({ path: path.resolve(__dirname, '../../.env.template') });
+dotenv.config({ path: path.resolve(__dirname, '../../.env'), override: true });
 
 const cron = process.env.CALC_HOT_COLLECTIONS_CRON;
 if (cron === undefined || cron === '') {

@@ -162,7 +162,7 @@ export default class GhExecutor {
   getRepo (owner: string, repo: string) {
     const cacheKey = `gh:get_repo:${owner}_${repo}`;
     const cache = this.cacheBuilder.build(
-      CacheProviderTypes.CACHED_TABLE, cacheKey, GET_REPO_CACHE_HOURS, GET_REPO_CACHE_HOURS
+      CacheProviderTypes.CACHED_TABLE, cacheKey, GET_REPO_CACHE_HOURS
     );
 
     return cache.load(() => {
@@ -197,7 +197,7 @@ export default class GhExecutor {
   searchRepos(keyword: string):Promise<CachedData<RepoSearchItem>> {
     const cacheKey = `gh:search_repos:${keyword}`;
     const cache = this.cacheBuilder.build(
-      CacheProviderTypes.CACHED_TABLE, cacheKey, SEARCH_REPOS_CACHE_HOURS, SEARCH_REPOS_CACHE_HOURS
+      CacheProviderTypes.CACHED_TABLE, cacheKey, SEARCH_REPOS_CACHE_HOURS
     );
 
     return cache.load(() => {
@@ -274,7 +274,7 @@ export default class GhExecutor {
   searchUsers(keyword: string, type?: UserType):Promise<CachedData<UserSearchItem>> {
     const cacheKey = `gh:search_users:${keyword}`;
     const cache = this.cacheBuilder.build(
-        CacheProviderTypes.CACHED_TABLE, cacheKey, SEARCH_REPOS_CACHE_HOURS, SEARCH_REPOS_CACHE_HOURS
+        CacheProviderTypes.CACHED_TABLE, cacheKey, SEARCH_REPOS_CACHE_HOURS
     );
 
     return cache.load(() => {

@@ -1,19 +1,20 @@
 import consola from 'consola';
 import * as dotenv from "dotenv";
+import path from 'path';
 import { createPool, Pool } from 'generic-pool';
 import { DateTime } from 'luxon';
 import { createConnection, Connection } from 'mysql2';
 import { Octokit } from 'octokit';
 import asyncPool from 'tiny-async-pool';
-import { BatchLoader } from './app/core/BatchLoader';
-import { OctokitFactory } from './app/core/OctokitFactory';
-import { Locator, LocationCache } from './app/locator/Locator';
-import { SyncUserLog, SyncUserMode, SyncUserRecorder } from './app/sync-user/recorder';
-import { getConnectionOptions } from './app/utils/db';
+import { BatchLoader } from '../../app/core/BatchLoader';
+import { OctokitFactory } from '../../app/core/OctokitFactory';
+import { Locator, LocationCache } from '../../app/locator/Locator';
+import { SyncUserLog, SyncUserMode, SyncUserRecorder } from './recorder';
+import { getConnectionOptions } from '../../app/utils/db';
 
 // Load environments.
-dotenv.config({ path: __dirname+'/.env.template' });
-dotenv.config({ path: __dirname+'/.env', override: true });
+dotenv.config({ path: path.resolve(__dirname, '../../.env.template') });
+dotenv.config({ path: path.resolve(__dirname, '../../.env'), override: true });
 
 // Init logger.
 const logger = consola.withTag('sync-users-data');
@@ -333,17 +334,36 @@ function extractOwnerAndRepo(fullName: string) {
 // Get GitHub users from user searching.
 
 const MAX_PREFIX_LENGTH = parseInt(process.env.MAX_PREFIX_LENGTH || '8');
+const MAX_SEARCH_SIZE = 1000;
+const initPrefixLen = parseInt(process.env.MIN_PREFIX_LENGTH || '5');
 
 async function getUserSearchKeywords(conn: Connection):Promise<KeywordWithCnt[]> {
-    const maxBatchSize = 20000;
-    const initPrefixLen = parseInt(process.env.MIN_PREFIX_LENGTH || '5');
-    const initKeywords = await getUserSearchKeywordWithLen(conn, initPrefixLen, 0, maxBatchSize);
-    logger.info(`Traveling the prefix tree with ${initKeywords.length} init prefixes ...`);
-
+    let pageSize = 20000;
+    let page = 1;
+    let offset = 0;
+    
     let result:KeywordWithCnt[] = [];
-    for (const keyword of initKeywords) {
-        const arr = await getUserSearchKeywordWithPrefixByPage(conn, keyword);
-        result = result.concat(arr);
+    while (true) {
+        const keywords = await getUserSearchKeywordWithLen(conn, initPrefixLen, offset, pageSize);
+        logger.info(`Traveling the prefix tree with init prefixes, page ${page}`);
+
+        if (keywords.length === 0) {
+            break;
+        }
+
+        for (const keyword of keywords) {
+            if (keyword.cnt < MAX_SEARCH_SIZE * 0.75) {
+                logger.info(`Prefix ${keyword.prefix} has no enough sub-prefix need to travel, only ${keyword.cnt}, so skipped.`);
+                result.push(keyword);
+                continue;
+            }
+
+            const arr = await getUserSearchKeywordWithPrefixByPage(conn, keyword);
+            result = result.concat(arr);
+        }
+
+        page++;
+        offset = offset + pageSize;
     }
 
     result.sort((a, b) => {
@@ -374,17 +394,16 @@ async function getUserSearchKeywordWithLen(conn: Connection, length: number, off
 }
 
 async function getUserSearchKeywordWithPrefixByPage(conn: Connection, root: KeywordWithCnt):Promise<KeywordWithCnt[]> {
-    const maxSearchSize = 1000;
     const maxPageSize = 2000;
     let result:KeywordWithCnt[] = [];
     let offset = 0;
-
-    logger.info(`Traveling the prefix tree started with prefix: '${root.prefix}' cnt: ${root.cnt} ...`);
 
     if (root.prefix.length + 1 >= MAX_PREFIX_LENGTH) {
         result.push(root);
         return result;
     }
+
+    logger.info(`Traveling the prefix tree started with prefix: '${root.prefix}' cnt: ${root.cnt} ...`);
 
     while (true) {
         const keywords = await getUserSearchKeywordWithPrefix(conn, root.prefix, offset, maxPageSize);
@@ -393,7 +412,7 @@ async function getUserSearchKeywordWithPrefixByPage(conn: Connection, root: Keyw
         }
 
         for (let keyword of keywords) {
-            if (keyword.cnt > maxSearchSize) {
+            if (keyword.cnt > MAX_SEARCH_SIZE) {
                 // Travel the branch.
                 const branchResult = await getUserSearchKeywordWithPrefixByPage(conn, keyword);
                 result = result.concat(branchResult);
@@ -453,7 +472,7 @@ async function syncUsersFromUserSearch(
             logger.info(`Fetching search user result for keyword: ${keyword} ...`);
 
             const variables = {
-                keyword: keyword,
+                keyword: `in:login ${keyword}`,
                 cursor: lastCursor
             };
             const query = /* GraphQL */ `

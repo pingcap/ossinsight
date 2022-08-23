@@ -1,12 +1,12 @@
 {
   "cacheHours": -1,
-  "refreshHours": {
+  "refreshCron": {
     "param": "period",
     "on": {
-      "last_hour": 1,
-      "last_day": 24,
-      "last_week": 24,
-      "last_month": 24
+      "last_hour": "@hourly",
+      "last_day": "@daily",
+      "last_week": "@weekly",
+      "last_month": "@monthly"
     }
   },
   "onlyFromCache": true,

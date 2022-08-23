@@ -9,10 +9,9 @@ import {PoolConnection} from "mysql2";
 import {dataQueryTimer, measure, readConfigTimer, tidbQueryCounter} from "../metrics";
 import GHEventService from "../services/GHEventService";
 import CollectionService from '../services/CollectionService';
-import CacheBuilder, { CacheProviderTypes } from './cache/CacheBuilder';
+import CacheBuilder from './cache/CacheBuilder';
 import { QueryTemplateNotFoundError } from './QueryFactory';
 import UserService from '../services/UserService';
-import { resolveHours } from "../utils/paramDefs";
 
 const EXPLAIN_QUERY_CACHE_HOUR = 0.01;
 
@@ -230,11 +229,11 @@ export default class Query {
   ): Promise<CachedData<T>> {
     await this.ready();
 
-    const { cacheHours = -1, refreshHours = -1, onlyFromCache = false, cacheProvider } = this.queryDef!;
+    const { cacheHours = -1, onlyFromCache = false, cacheProvider } = this.queryDef!;
     const queryName = this.queryDef!.name || this.name;
     const cacheKey = this.getQueryKey('query', queryName, this.queryDef!, params);
     const cache = this.cacheBuilder.build(
-      cacheProvider, cacheKey, cacheHours, resolveHours(params, refreshHours), onlyFromCache, refreshCache
+      cacheProvider, cacheKey, cacheHours, onlyFromCache, refreshCache
     );
 
     return cache.load(async () => {
@@ -282,7 +281,7 @@ export default class Query {
     const queryName = this.queryDef!.name || this.name;
     const cacheKey = this.getQueryKey('explain-query', queryName, this.queryDef!, params);
     const cache = this.cacheBuilder.build(
-      cacheProvider, cacheKey, EXPLAIN_QUERY_CACHE_HOUR, EXPLAIN_QUERY_CACHE_HOUR, false, refreshCache
+      cacheProvider, cacheKey, EXPLAIN_QUERY_CACHE_HOUR, false, refreshCache
     );
 
     return cache.load(async () => {
@@ -317,55 +316,6 @@ export default class Query {
           tidbQueryCounter.labels({ query: this.name, phase: 'error' }).inc()
           if (e) {
             (e as any).sql = explainSQL
-          }
-          throw e
-        }
-      })
-    })
-  }
-
-  async trace <T> (params: Record<string, any>, refreshCache: boolean = false, conn?: PoolConnection): Promise<CachedData<T>> {
-    await this.ready();
-
-    const { cacheHours = -1, refreshHours = -1, onlyFromCache = false, cacheProvider } = this.queryDef!;
-    const queryName = this.queryDef!.name || this.name;
-    const cacheKey = this.getQueryKey('trace-query', queryName, this.queryDef!, params);
-    const cache = this.cacheBuilder.build(
-      cacheProvider, cacheKey, cacheHours, resolveHours(params, refreshHours), onlyFromCache, refreshCache
-    );
-
-    return cache.load(async () => {
-      return await measure(dataQueryTimer, async () => {
-        const sql = await this.buildSql(params);
-        const traceSQL = `TRACE FORMAT='row' ${sql}`;
-
-        try {
-          const start = DateTime.now()
-          tidbQueryCounter.labels({ query: this.name, phase: 'start' }).inc()
-
-          let traceRes: Result;
-          if (conn) {
-            traceRes = await this.executor.executeWithConn(conn, traceSQL)
-          } else {
-            traceRes = await this.executor.execute(traceSQL)
-          }
-
-          const end = DateTime.now()
-          tidbQueryCounter.labels({ query: this.name, phase: 'success' }).inc()
-
-          return {
-            params: params,
-            requestedAt: start,
-            finishedAt: end,
-            spent: end.diff(start).as('seconds'),
-            sql: traceSQL,
-            fields: traceRes.fields,
-            data: traceRes.rows as any,
-          }
-        } catch (e) {
-          tidbQueryCounter.labels({ query: this.name, phase: 'error' }).inc()
-          if (e) {
-            (e as any).sql = traceSQL
           }
           throw e
         }

@@ -5,8 +5,8 @@ import { createConnection } from 'mysql2';
 import path from 'path';
 import { Tail } from 'tail';
 import { URL } from 'url';
-import { BatchLoader } from './app/core/BatchLoader';
-import { getConnectionOptions } from './app/utils/db';
+import { BatchLoader } from '../../app/core/BatchLoader';
+import { getConnectionOptions } from '../../app/utils/db';
 
 // The default access log format of nginx.
 // Reference: http://nginx.org/en/docs/http/ngx_http_log_module.html
@@ -28,8 +28,8 @@ const IGNORE_PATH = new Set([
 const ONLY_HOST = 'https://ossinsight.io/'
 
 // Load environments.
-dotenv.config({ path: __dirname+'/.env.template' });
-dotenv.config({ path: __dirname+'/.env', override: true });
+dotenv.config({ path: path.resolve(__dirname, '../../.env.template') });
+dotenv.config({ path: path.resolve(__dirname, '../../.env'), override: true });
 
 // Init logger.
 const logger = consola.withTag('nginx-log-sync');

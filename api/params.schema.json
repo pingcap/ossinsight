@@ -15,6 +15,21 @@
       "description": "Cache time in hours, -1 indicates that the query cache will not expire.",
       "type": "number"
     },
+    "refreshQueue": {
+      "description": "Specify which queue is used to execute prefetch job. The default is MAIN.",
+      "type": "string"
+    },
+    "refreshCron": {
+      "description": "The CRON expressions that control when the refresh cache task is executed.",
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "#/definitions/ConditionalRefreshCrons"
+        }
+      ]
+    },
     "refreshHours": {
       "description": "Refresh cache time in hours, -1 indicates not to refresh.",
       "oneOf": [
@@ -148,6 +163,24 @@
           "patternProperties": {
             ".*": {
               "type": "number"
+            }
+          }
+        }
+      },
+      "required": ["param", "on"],
+      "additionalProperties": false
+    },
+    "ConditionalRefreshCrons": {
+      "type": "object",
+      "properties": {
+        "param": {
+          "type": "string"
+        },
+        "on": {
+          "type": "object",
+          "patternProperties": {
+            ".*": {
+              "type": "string"
             }
           }
         }
