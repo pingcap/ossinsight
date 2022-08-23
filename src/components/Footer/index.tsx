@@ -34,7 +34,7 @@ export default function Footer() {
             }}
           />
           <StandardCard
-            title='Use TiDB Cloud to analyze GitHub events in 10 Minutes'
+            title='Use TiDB Cloud to analyze GitHub events in 10 minutes'
             description='Tutorial: 10 min read'
             codeStyleDescription={false}
             readMore='/blog/try-it-yourself'
