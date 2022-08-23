@@ -105,7 +105,7 @@ function Collection({ name, repos, collectionRepos }: RecentHotCollectionData) {
   return (
     <Box border="2px dashed #3c3c3c" p={2} borderRadius={1} sx={{ '&:not(:first-child)': { ml: 2 } }}>
       <Typography variant="body1" fontSize={16}>{name}</Typography>
-      <Typography variant="body2" color="#7C7C7C" mt={2} mb={2}>{repos} Repositories</Typography>
+      <Typography variant="body2" color="#7C7C7C" mt={2} mb={2}>{repos} repositories</Typography>
 
       {collectionRepos.map(repo => (
         <Stack key={repo.repo_id} direction="row" mt={1} alignItems="center">

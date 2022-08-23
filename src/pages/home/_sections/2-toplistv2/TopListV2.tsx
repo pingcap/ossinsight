@@ -43,7 +43,7 @@ export function TopListV2() {
       <DataTable data={data?.data} loading={loading} />
       <Typography variant='body2'>
         <Link href='/blog/why-we-choose-tidb-to-support-ossinsight' target='_blank'>
-          🤖️ How we display this ranking ?
+          🤖️ How do we display these rankings?
         </Link>
       </Typography>
       {debugDialog}
