@@ -33,9 +33,6 @@ jobs:
       - name: Install Dependencies
         run: pnpm i --frozen-lockfile --strict-peer-dependencies
 
-      - name: Build
-        run: pnpm run build
-
       - name: Verify Query Definition JSON
         run: |
           pnpm run gen:schema-ts
