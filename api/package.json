@@ -27,7 +27,6 @@
     "dev:explain-all": "ts-node scripts/explain-all/index.ts",
     "gen:schema-ts": "json2ts params.schema.json params.schema.d.ts",
     "validate:params": "ajv -s params.schema.json -d \"queries/*/params.json\"",
-    "postinstall": "pnpm run build",
     "build": "tsc && pnpm run build:copy",
     "build:copy": "find . -maxdepth 1 -name .env -exec cp {} ./dist \\; && cp .env.template ./dist/.env.template && cp -r ./queries ./dist/queries"
   },
