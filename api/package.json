@@ -24,6 +24,7 @@
     "dev:calc-hot-collections": "ts-node scripts/calc-hot-collections/index.ts",
     "dev:sync-users": "ts-node scripts/sync-users/index.ts",
     "dev:sync-repos": "ts-node scripts/sync-repos/index.ts",
+    "dev:explain-all": "ts-node scripts/explain-all/index.ts",
     "gen:schema-ts": "json2ts params.schema.json params.schema.d.ts",
     "validate:params": "ajv -s params.schema.json -d \"queries/*/params.json\"",
     "postinstall": "pnpm run build",
@@ -53,6 +54,7 @@
     "pinyin": "3.0.0-alpha.5",
     "prom-client": "^14.0.1",
     "reflect-metadata": "^0.1.13",
+    "table": "^6.8.0",
     "tail": "^2.2.4",
     "tiny-async-pool": "^1.2.0",
     "yaml": "^2.0.1"

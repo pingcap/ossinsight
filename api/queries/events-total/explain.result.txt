@@ -1,0 +1,10 @@
++----------------------------+---------------+--------------+---------------------+-----------------------------------------------------------------------------------------+
+| id                         | estRows       | task         | access object       | operator info                                                                           |
++----------------------------+---------------+--------------+---------------------+-----------------------------------------------------------------------------------------+
+| Projection_4               | 1.00          | root         |                     | Column#36, Column#37, unix_timestamp(Column#37)->Column#38                              |
+| └─HashAgg_29               | 1.00          | root         |                     | funcs:count(Column#60)->Column#36, funcs:max(Column#61)->Column#37                      |
+|   └─TableReader_31         | 1.00          | root         | partition:all       | data:ExchangeSender_30                                                                  |
+|     └─ExchangeSender_30    | 1.00          | mpp[tiflash] |                     | ExchangeType: PassThrough                                                               |
+|       └─HashAgg_8          | 1.00          | mpp[tiflash] |                     | funcs:count(1)->Column#60, funcs:max(gharchive_dev.github_events.created_at)->Column#61 |
+|         └─TableFullScan_28 | 4928742742.00 | mpp[tiflash] | table:github_events | keep order:false, PartitionTableScan:true                                               |
++----------------------------+---------------+--------------+---------------------+-----------------------------------------------------------------------------------------+

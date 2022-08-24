@@ -1,0 +1,11 @@
++--------------------------------+---------+-----------+----------------------------------------------------------------------------+----------------------------------------------------------+
+| id                             | estRows | task      | access object                                                              | operator info                                            |
++--------------------------------+---------+-----------+----------------------------------------------------------------------------+----------------------------------------------------------+
+| Projection_7                   | 1.00    | root      |                                                                            | gharchive_dev.github_events.actor_id, Mini256->Column#36 |
+| └─Limit_9                      | 1.00    | root      |                                                                            | offset:0, count:1                                        |
+|   └─IndexLookUp_27             | 1.00    | root      | partition:all                                                              |                                                          |
+|     ├─IndexRangeScan_20(Build) | 1.03    | cop[tikv] | table:github_events, index:index_github_events_on_actor_login(actor_login) | range:["Mini256","Mini256"], keep order:false            |
+|     └─Limit_26(Probe)          | 1.00    | cop[tikv] |                                                                            | offset:0, count:1                                        |
+|       └─Selection_22           | 1.00    | cop[tikv] |                                                                            | not(isnull(gharchive_dev.github_events.actor_id))        |
+|         └─TableRowIDScan_21    | 1.03    | cop[tikv] | table:github_events                                                        | keep order:false                                         |
++--------------------------------+---------+-----------+----------------------------------------------------------------------------+----------------------------------------------------------+

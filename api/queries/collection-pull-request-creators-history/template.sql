@@ -9,7 +9,7 @@ WITH pr_opened AS (
     FROM github_events
     WHERE
         type = 'PullRequestEvent'
-        AND state = 'open'
+        AND action = 'opened'
         AND repo_id IN (41986369, 16563587, 105944401)
 ), pr_merged AS (
     SELECT
@@ -17,7 +17,7 @@ WITH pr_opened AS (
     FROM github_events
     WHERE
         type = 'PullRequestEvent'
-        AND state = 'closed'
+        AND action = 'closed'
         AND pr_merged = true
         AND repo_id IN (41986369, 16563587, 105944401)
 ), pr_creators_with_latest_repo_name AS (

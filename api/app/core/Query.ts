@@ -327,3 +327,7 @@ export default class Query {
     return `${prefix}:${queryName}:${queryDef!.params.map(p => params[p.name]).join('_')}`;
   }
 }
+
+export function needPrefetch(queryDef: QuerySchema) {
+  return queryDef.refreshCron !== undefined;
+}
