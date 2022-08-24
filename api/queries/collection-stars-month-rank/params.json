@@ -1,6 +1,6 @@
 {
   "cacheHours": -1,
-  "refreshCron": "@collection-monthly",
+  "refreshCron": "@collection-daily",
   "refreshQueue": "CONCURRENT",
   "params": [
     {
