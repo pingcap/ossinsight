@@ -13,3 +13,4 @@ items:
   - netdata/netdata
   - ccfos/nightingale
   - tribe29/checkmk
+  - OpenNMS/opennms
