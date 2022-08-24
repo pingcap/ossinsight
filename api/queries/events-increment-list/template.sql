@@ -1,4 +1,5 @@
-SELECT * FROM github_events 
+SELECT id, type, action, actor_id, actor_login, repo_id, repo_name, number, pr_merged, created_at
+FROM github_events 
 WHERE
     created_at BETWEEN (
         UTC_TIMESTAMP - INTERVAL 6 MINUTE - INTERVAL UNIX_TIMESTAMP(UTC_TIMESTAMP - INTERVAL 6 MINUTE) % 5 SECOND
