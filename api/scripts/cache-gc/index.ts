@@ -1,7 +1,7 @@
 import * as dotenv from "dotenv";
 import * as path from 'path'
 import consola from "consola";
-import { getConnectionOptions } from "../../app/utils/db";
+import { getConnectionOptions, handleDisconnect } from "../../app/utils/db";
 import schedule from 'node-schedule';
 import { Connection, createConnection } from "mysql2";
 
@@ -20,6 +20,7 @@ const logger = consola.withTag('cache-gc');
 
 // Init TiDB client.
 const conn = createConnection(getConnectionOptions());
+handleDisconnect(conn);
 
 logger.info(`Execute cache GC job according cron expression: ${cron}`);
 schedule.scheduleJob(cron, async () => {

@@ -9,7 +9,7 @@ import GHEventService from "../../app/services/GHEventService";
 import UserService from "../../app/services/UserService";
 import schedule from 'node-schedule';
 import sleep from "../../app/utils/sleep";
-import { getConnectionOptions } from "../../app/utils/db";
+import { getConnectionOptions, handleDisconnect } from "../../app/utils/db";
 import { createConnection } from "mysql2";
 
 const COLLECTIONS_RANKING_QUERY = 'collection-stars-month-rank';
@@ -35,6 +35,7 @@ logger.info(`Execute calc hot collections job according cron expression: ${cron}
 schedule.scheduleJob(cron, async () => {
     // Init TiDB client.
     const conn = createConnection(getConnectionOptions());
+    handleDisconnect(conn);
 
     // Init TiDB Query Executor.
     const queryExecutor = new TiDBQueryExecutor(getConnectionOptions({
