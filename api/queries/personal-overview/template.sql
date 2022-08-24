@@ -1,7 +1,11 @@
 WITH repos AS (
-    SELECT DISTINCT repo_id, repo_name
+    SELECT DISTINCT repo_id
     FROM github_events ge
-    WHERE ge.actor_id = 5086433 AND repo_name LIKE CONCAT(actor_login, '%') AND repo_id IS NOT NULL
+    WHERE
+        ge.actor_id = 5086433
+        AND type = 'CreateEvent'
+        AND repo_name LIKE CONCAT(actor_login, '%')
+        AND repo_id IS NOT NULL
 ), star_repos AS (
     SELECT COUNT(DISTINCT repo_id) AS cnt
     FROM github_events ge
