@@ -19,12 +19,12 @@ export default function Footer() {
     <>
       <Section>
         <Typography variant='h2' sx={{fontSize:40}} align='center'>
-          Wonder how OSS Insight works ?
+          Wonder how OSS Insight works?
         </Typography>
         <Cards sx={{mt: 2}} xs={12} sm={6} md={4}>
           <StandardCard
-            title='How we implement OSS Insight ?'
-            description='Blog · 10 min read'
+            title='How do we implement OSS Insight ?'
+            description='Blog: 10 min read'
             codeStyleDescription={false}
             readMore='/blog/why-we-choose-tidb-to-support-ossinsight'
             buttonVariant='outlined'
@@ -34,8 +34,8 @@ export default function Footer() {
             }}
           />
           <StandardCard
-            title='Use TiDB Cloud to Analyze GitHub Events in 10 Minutes'
-            description='Tutorial · 10 min read'
+            title='Use TiDB Cloud to analyze GitHub events in 10 minutes'
+            description='Tutorial: 10 min read'
             codeStyleDescription={false}
             readMore='/blog/try-it-yourself'
             buttonVariant='outlined'
@@ -45,7 +45,7 @@ export default function Footer() {
             }}
           />
           <StandardCard
-            title='Join Workshop to Setup a mini OSS Insight'
+            title='Join a workshop to setup a mini OSS Insight'
             description='Tutorial: 25 min'
             codeStyleDescription={false}
             readMore='/workshop/overview'
@@ -57,16 +57,16 @@ export default function Footer() {
           />
         </Cards>
         <Box textAlign='center' sx={{fontSize: 24, mt: 6}}>
-        Want to try your own IDEAInsight in a day?&nbsp;<br />
+        Want to create your own IDEAInsight in a day?&nbsp;<br />
           <Button sx={{fontSize: 24, fontWeight: 'bold', verticalAlign: 'baseline', textDecoration: 'underline'}} component={Link} href='https://share.hsforms.com/1E-qtGQWrTVmctP8kBT34gw2npzm'>
-            Join Workshop !
+            Join a workshop!
           </Button>
         </Box>
       </Section>
       <Section darker>
         <div className="text--center">
           <h3>
-            Follow us&nbsp;
+            Follow us at&nbsp;
             <a href="https://twitter.com/OSSInsight">@OSSInsight</a>
             &nbsp;and join the conversation using the hashtags
             <br />

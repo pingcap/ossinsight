@@ -183,7 +183,7 @@ const GeneralSearch = ({ contrast, align = 'left', size, global = false }: Gener
 
   const placeholder = useMemo(() => {
     if (!open) {
-      return `Search a Developer, Repo`
+      return `Search a developer or repo`
     } else if (type === 'user') {
       return `Enter a Developer ID`
     } else {
