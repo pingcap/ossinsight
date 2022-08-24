@@ -6,6 +6,7 @@ WITH issues_group_by_repo AS (
     WHERE
         type = 'IssuesEvent'
         AND repo_id IN (41986369, 16563587, 105944401)
+        AND action = 'opened'
     GROUP BY repo_id
 ), issues_group_by_period AS (
     SELECT

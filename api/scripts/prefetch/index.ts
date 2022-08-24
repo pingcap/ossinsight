@@ -1,8 +1,6 @@
 import * as path from 'path'
-import * as fsp from 'fs/promises'
 import * as dotenv from "dotenv";
 import schedule from 'node-schedule';
-import async from 'async';
 import consola from "consola";
 import cronParser from 'cron-parser';
 import type {Params, QuerySchema, Restriction} from '../../params.schema'
@@ -15,6 +13,8 @@ import { resolveCrons } from "../../app/utils/paramDefs";
 import { getConnectionOptions } from '../../app/utils/db';
 import { arrayDeepEquals } from '../../app/utils/array';
 import { DEFAULT_QUEUE_NAME, JobScheduler, QueryJob } from './JobScheduler';
+import { needPrefetch } from '../../app/core/Query';
+import { loadQueries, loadPresets } from '../../app/core/QueryFactory';
 
 // Load environments.
 dotenv.config({ path: path.resolve(__dirname, '../../.env.template') });
@@ -22,24 +22,6 @@ dotenv.config({ path: path.resolve(__dirname, '../../.env'), override: true });
 
 // Init logger.
 const logger = consola.withTag('prefetch');
-
-async function loadQueries(): Promise<Record<string, QuerySchema>> {
-  const base = path.join(process.cwd(), 'queries')
-  const paths = await fsp.readdir(base)
-  const res: Record<string, QuerySchema> = {}
-  for (let p of paths) {
-    res[p] = JSON.parse(await fsp.readFile(path.join(base, p, "params.json"), {encoding: "utf-8"}))
-  }
-  return res
-}
-
-async function loadPresets(): Promise<Record<string, any[]>> {
-  return JSON.parse(await fsp.readFile(path.join(process.cwd(), 'params-preset.json'), { encoding: "utf-8" }))
-}
-
-function needPrefetch(queryDef: QuerySchema) {
-  return queryDef.refreshCron !== undefined;
-}
 
 // Generate a prefetch query job with passed parameters according to the query definition.
 function getQueryJobs(queryName: string, queryDef: QuerySchema, presets: Record<string, string[]>): QueryJob[] {
@@ -157,7 +139,7 @@ async function main () {
         // TODO: support once prefetch.
         continue;
       } else if (refreshCron === '@hourly') {
-        refreshCron = `0 19 */1 * * *`;
+        refreshCron = `0 0 */1 * * *`;
       } else if (refreshCron === '@daily') {
         refreshCron = `0 0 0 */1 * *`;
       } else if (refreshCron === '@weekly') {
