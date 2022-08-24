@@ -139,15 +139,20 @@ async function main () {
         // TODO: support once prefetch.
         continue;
       } else if (refreshCron === '@hourly') {
-        refreshCron = `0 0 */1 * * *`;
+        const minute = Math.floor(Math.random() * 60);
+        refreshCron = `0 ${minute} */1 * * *`;
       } else if (refreshCron === '@daily') {
         refreshCron = `0 0 0 */1 * *`;
+      } else if (refreshCron === '@collection-daily') {
+        refreshCron = `0 0 7 * * *`;
       } else if (refreshCron === '@weekly') {
-        refreshCron = `0 0 0 * * 1`;
+        refreshCron = `0 0 8 * * 1`;
       } else if (refreshCron === '@monthly') {
-        refreshCron = `0 0 0 1 * *`;
+        refreshCron = `0 0 8 1 * *`;
+      } else if (refreshCron === '@collection-monthly') {
+        refreshCron = `0 0 7 1 * *`;
       } else if (refreshCron === '@yearly') {
-        refreshCron = `0 0 0 1 1 *`;
+        refreshCron = `0 0 6 1 1 *`;
       } else {
         // Check if cron expression is valid.
         const errors = cronParser.parseString(refreshCron).errors;
@@ -158,7 +163,10 @@ async function main () {
       }
 
       // Enqueue.
-      schedule.scheduleJob(refreshCron, async () => {
+      schedule.scheduleJob({
+        rule: refreshCron,
+        tz: 'UTC'
+      }, async () => {
         jobScheduler.scheduleJob(queryJob);
       });
     }
