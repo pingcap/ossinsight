@@ -9,16 +9,16 @@
     },
     {
       "name": "period",
-      "replaces": "AND (event_month BETWEEN DATE_FORMAT(DATE_SUB(CURRENT_DATE(), INTERVAL 1 YEAR), '%Y-%m-01') AND DATE_FORMAT(CURRENT_DATE(), '%Y-%m-01'))",
+      "replaces": "AND (created_at BETWEEN DATE_SUB(CURRENT_DATE(), INTERVAL 1 YEAR) AND CURRENT_DATE())",
       "enums": [
         "last_1_year",
         "last_3_year",
         "all_times"
       ],
-      "default": "last_1_year",
+      "default": "all_times",
       "template": {
-        "last_1_year": "AND (event_month BETWEEN DATE_FORMAT(DATE_SUB(CURRENT_DATE(), INTERVAL 1 YEAR), '%Y-%m-01') AND DATE_FORMAT(CURRENT_DATE(), '%Y-%m-01'))",
-        "last_3_year": "AND (event_month BETWEEN DATE_FORMAT(DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR), '%Y-%m-01') AND DATE_FORMAT(CURRENT_DATE(), '%Y-%m-01'))",
+        "last_1_year": "AND (created_at BETWEEN DATE_SUB(CURRENT_DATE(), INTERVAL 1 YEAR) AND CURRENT_DATE())",
+        "last_3_year": "AND (created_at BETWEEN DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR) AND CURRENT_DATE())",
         "all_times": ""
       }
     }
