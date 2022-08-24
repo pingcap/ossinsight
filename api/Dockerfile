@@ -9,6 +9,10 @@ COPY . ./
 
 RUN pnpm i --frozen-lockfile
 
+RUN pnpm run build
+
+RUN pnpm prune --production
+
 # Runtime stage.
 FROM node:18-alpine AS runtime
 WORKDIR /usr/src/app
