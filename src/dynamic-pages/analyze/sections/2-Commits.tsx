@@ -9,11 +9,24 @@ import { LocChart } from '../charts/loc';
 import { PushesAndCommitsChart } from '../charts/push-and-commits';
 import Section from '../Section';
 import { H2, H3, P2 } from '../typography';
+import { useSelectParam } from "../../../components/params";
+
+const OPTIONS = [{
+  key: 'last_1_year',
+  title: 'Last 1 year',
+}, {
+  key: 'last_3_year',
+  title: 'Last 3 years',
+}, {
+  key: 'all_times',
+  title: 'All times',
+}]
 
 export const CommitsSection = forwardRef(function ({}, ref: ForwardedRef<HTMLElement>) {
   const theme = useTheme()
   const isSmall = useMediaQuery(theme.breakpoints.down('md'))
   const { comparingRepoId: vs } = useAnalyzeContext()
+  const { select, value } = useSelectParam(OPTIONS, OPTIONS[0], 'Period')
   const commonAspectRatio = isSmall ? vs ? 4 / 3 : 4 / 3 : vs ? 16 / 9 : 20 / 9
 
   return (
@@ -37,11 +50,12 @@ export const CommitsSection = forwardRef(function ({}, ref: ForwardedRef<HTMLEle
         </P2>
         <LocChart aspectRatio={commonAspectRatio} />
       </Analyze>
-      <Analyze query='commits-time-distribution'>
+      <Analyze query='commits-time-distribution' params={{ period: value.key }}>
         <H3 id='commits-time-distribution' sx={{ mt: 6 }}>Commits Time Distribution</H3>
         <P2>
           The Heat Maps below describe the number of commit events that occur at a particular point of time (UTC+0).
         </P2>
+        {select}
         <Grid container>
           <Grid item xs={12} md={vs ? 12 : 6}>
             <TimeHeatChart aspectRatio={isSmall ? vs ? (4 / 3) : (5 / 3) : vs ? (24 / 7) : (24 / 14)}/>
