@@ -101,7 +101,7 @@ export const OverviewSection = forwardRef(function ({}, ref: ForwardedRef<HTMLEl
           <Summary items={summaries} query='analyze-repo-overview' />
         </Grid>
         <Grid item xs={12} md={vs ? 5 : 6}>
-          <Analyze query='stars-history'>
+          <Analyze query='analyze-stars-history'>
             <H2 id='stars-history' analyzeTitle display='none'>Stars History</H2>
             <P2 display='none'>The growth trend and the specific number of stars since the repository was established.</P2>
             <LineChart spec={{valueIndex: 'total', name: 'Stars'}} aspectRatio={isSmall ? 16 / 9 : 4 / 3}/>
