@@ -80,7 +80,7 @@ export const OverviewSection = forwardRef(function ({}, ref: ForwardedRef<HTMLEl
                 <LinkExternalIcon size={28} verticalAlign="middle" />
               </a>
             </H1>
-            {collectionData?.data
+            {collectionData?.data && collectionData.data.length > 0
               ? (
                 <Box mb={1}>
                   In Collection:
