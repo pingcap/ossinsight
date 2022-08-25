@@ -24,7 +24,6 @@ WITH RECURSIVE seq(idx) AS (
             WHERE
                 type = 'PushEvent'
                 AND repo_id = 20580498
-                AND (event_month BETWEEN DATE_FORMAT(DATE_SUB(CURRENT_DATE(), INTERVAL 56 DAY), '%Y-%m-01') AND DATE_FORMAT(CURRENT_DATE(), '%Y-%m-01'))
                 AND created_at > DATE_SUB(CURRENT_DATE(), INTERVAL 56 DAY)
             GROUP BY day
             ORDER BY day
