@@ -48,6 +48,7 @@ type Result = { actor_id: number, actor_login: string, proportion: number, row_n
 
 type TypeMap = {
   'analyze-people-activities-contribution-rank': Result & ChangedEvents
+  'analyze-people-code-pr-contribution-rank': Result & ChangedEvents
   'analyze-people-code-changes-contribution-rank': Result & ChangedCodes
   'analyze-people-code-contribution-rank': Result & ChangedEvents & { is_new_contributor: 0 | 1 }
   'analyze-people-code-review-comments-contribution-rank': Result & ChangedEvents
@@ -73,6 +74,11 @@ const descriptors: Descriptor<any>[] = [
   {
     key: 'analyze-people-code-contribution-rank',
     title: 'Push and Commits',
+    render: renderBasic,
+  },
+  {
+    key: 'analyze-people-code-pr-contribution-rank',
+    title: 'PR Contribution',
     render: renderBasic,
   },
   {
