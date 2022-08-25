@@ -1,7 +1,7 @@
 SELECT
     DAYOFWEEK(created_at) - 1 AS dayofweek,
     HOUR(created_at) AS hour,
-    SUM(push_distinct_size) AS pushes
+    COUNT(1) AS pushes
 FROM github_events
 WHERE
     repo_id = 41986369
