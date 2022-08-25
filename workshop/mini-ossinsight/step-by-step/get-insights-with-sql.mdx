@@ -7,7 +7,7 @@ import TabItem from '@theme/TabItem';
 
 Now, the data is ready, let's try to analyze these data with SQL!
 
-## 1. Get Insights With Raw SQL!
+## 1. Get Insights with Raw SQL!
 
 ### a. Can't Wait!
 
@@ -52,6 +52,65 @@ GROUP BY type;
 :::
 
 #### ii. Example 2
+
+In addition to using aggregation functions for simple statistics, sometimes we need to conduct more complex data analysis, such as calculating percentage points, moving average, cumulative total, etc.
+
+:::tip Question
+If you need to analyze the star growth trend of the specified repository (Fox example: `pingcap/tidb`) according to the existing data, can you use one SQL to complete it.
+:::
+
+At this time, if we only use aggregation functions, our data analysis SQL will become complex, or we need to complete it through additional program processing.
+
+TiDB provides [common table expression](https://docs.pingcap.com/tidb/dev/dev-guide-use-common-table-expression) and [window function](https://docs.pingcap.com/tidb/dev/window-functions) features to help us greatly simplify SQL queries.
+
+<Tabs>
+  <TabItem value="sql" label="SQL">
+
+```sql
+SELECT
+  event_month, stars
+FROM (
+  SELECT
+    event_month,
+    COUNT(1) OVER (ORDER BY event_month) AS stars,
+    ROW_NUMBER() OVER (PARTITION BY event_month) AS row_num
+  FROM
+    github_events
+  WHERE
+    type = 'WatchEvent'
+    AND repo_id = 41986369
+  ORDER BY event_month
+) sub
+WHERE row_num = 1
+;
+```
+
+  </TabItem>
+  <TabItem value="explain" label="Explain">
+
+```
++-----------------------------------+----------+-----------+--------------------------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------+
+| id                                | estRows  | task      | access object                                                                                          | operator info                                                                                                                |
++-----------------------------------+----------+-----------+--------------------------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------+
+| Projection_13                     | 22324.11 | root      |                                                                                                        | gharchive_dev.github_events.event_month, Column#39                                                                           |
+| └─Selection_40                    | 22324.11 | root      |                                                                                                        | eq(Column#38, 1)                                                                                                             |
+|   └─Window_42                     | 27905.14 | root      |                                                                                                        | count(1)->Column#39 over(order by gharchive_dev.github_events.event_month range between unbounded preceding and current row) |
+|     └─Window_19                   | 27905.14 | root      |                                                                                                        | row_number()->Column#38 over(partition by gharchive_dev.github_events.event_month rows between current row and current row)  |
+|       └─Sort_30                   | 28140.28 | root      |                                                                                                        | gharchive_dev.github_events.event_month                                                                                      |
+|         └─IndexReader_27          | 28140.28 | root      | partition:watch_event                                                                                  | index:IndexRangeScan_26                                                                                                      |
+|           └─IndexRangeScan_26     | 28140.28 | cop[tikv] | table:github_events, index:index_github_events_on_repo_id_type_event_month(repo_id, type, event_month) | range:[41986369 "WatchEvent",41986369 "WatchEvent"], keep order:false                                                        |
++-----------------------------------+----------+-----------+--------------------------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------+
+```
+
+  </TabItem>
+</Tabs>
+
+Reading more:
+
+- [Window Function Concepts and Syntax](https://dev.mysql.com/doc/refman/8.0/en/window-functions-usage.html)
+- [How to Calculate Cumulative Sum-Running Total in MySQL](https://popsql.com/learn-sql/mysql/how-to-calculate-cumulative-sum-running-total-in-mysql)
+
+#### iii. Example 3
 
 The below SQL is picked from [blog - Love, Code, and Robot](/blog/say-thanks-to-github-robots#history-trends), it explains how robots grow on GitHub:
 
