@@ -10,8 +10,9 @@ import { PushesAndCommitsChart } from '../charts/push-and-commits';
 import Section from '../Section';
 import { H2, H3, P2 } from '../typography';
 import { useSelectParam } from "../../../components/params";
+import Stack from "@mui/material/Stack";
 
-const OPTIONS = [{
+const PERIOD_OPTIONS = [{
   key: 'last_1_year',
   title: 'Last 1 year',
 }, {
@@ -22,11 +23,24 @@ const OPTIONS = [{
   title: 'All times',
 }]
 
+const ZONE_OPTIONS: { key: number, title: string }[] = []
+
+for (let i = -12; i <= 13; i++) {
+  ZONE_OPTIONS.push({
+    key: i,
+    title: i > 0 ? `+${i}` : i === 0 ? '0' : `${i}`,
+  })
+}
+
+// https://stackoverflow.com/questions/6939685/get-client-time-zone-from-browser
+const DEFAULT_ZONE = 12 - ((new Date()).getTimezoneOffset() / 60);
+
 export const CommitsSection = forwardRef(function ({}, ref: ForwardedRef<HTMLElement>) {
   const theme = useTheme()
   const isSmall = useMediaQuery(theme.breakpoints.down('md'))
   const { comparingRepoId: vs } = useAnalyzeContext()
-  const { select, value } = useSelectParam(OPTIONS, OPTIONS[0], 'Period')
+  const { select: periodSelect, value: period } = useSelectParam(PERIOD_OPTIONS, PERIOD_OPTIONS[0], 'Period')
+  const { select: zoneSelect, value: zone } = useSelectParam(ZONE_OPTIONS, ZONE_OPTIONS[DEFAULT_ZONE], 'Zone')
   const commonAspectRatio = isSmall ? vs ? 4 / 3 : 4 / 3 : vs ? 16 / 9 : 20 / 9
 
   return (
@@ -50,15 +64,18 @@ export const CommitsSection = forwardRef(function ({}, ref: ForwardedRef<HTMLEle
         </P2>
         <LocChart aspectRatio={commonAspectRatio} />
       </Analyze>
-      <Analyze query='commits-time-distribution' params={{ period: value.key }}>
+      <Analyze query='commits-time-distribution' params={{ period: period.key }}>
         <H3 id='commits-time-distribution' sx={{ mt: 6 }}>Commits Time Distribution</H3>
         <P2>
           The Heat Maps below describe the number of commit events that occur at a particular point of time (UTC+0).
         </P2>
-        {select}
+        <Stack direction='row' spacing={1}>
+          {periodSelect}
+          {zoneSelect}
+        </Stack>
         <Grid container>
           <Grid item xs={12} md={vs ? 12 : 6}>
-            <TimeHeatChart aspectRatio={isSmall ? vs ? (4 / 3) : (5 / 3) : vs ? (24 / 7) : (24 / 14)}/>
+            <TimeHeatChart aspectRatio={isSmall ? vs ? (4 / 3) : (5 / 3) : vs ? (24 / 7) : (24 / 14)} spec={{ zone: zone.key }}/>
           </Grid>
         </Grid>
       </Analyze>

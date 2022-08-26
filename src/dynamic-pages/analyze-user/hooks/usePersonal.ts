@@ -22,8 +22,8 @@ export const contributionTypes: ContributionType[] = ['issues', 'pull_requests',
 
 type PersonalDataParams = { userId: number }
 
-export function usePersonalData<K extends keyof RequestMap>(key: K, userId: number | undefined, run: boolean) {
-  return useRemoteData<PersonalDataParams, RequestMap[K]>(key, { userId }, false, !!userId && run);
+export function usePersonalData<K extends keyof RequestMap>(key: K, userId: number | undefined, run: boolean, params: any = {}) {
+  return useRemoteData<PersonalDataParams, RequestMap[K]>(key, { userId, ...params }, false, !!userId && run);
 }
 
 export type PersonalOverview = {
