@@ -108,13 +108,13 @@ const PopperContainer = styled(Stack)(({ theme }) => ({
 }));
 
 const AvatarContainer = styled('div')({
-  width: 26,
-  height: 26,
+  width: 24,
+  height: 24,
   background: 'lightgrey',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  borderRadius: 13,
+  borderRadius: 12,
 })
 
 const renderUser = (props: React.HTMLAttributes<HTMLLIElement>, option: Option, highlight: boolean) => {
