@@ -110,7 +110,7 @@ const PopperContainer = styled(Stack)(({ theme }) => ({
 const AvatarContainer = styled('div')({
   width: 26,
   height: 26,
-  background: 'white',
+  background: 'lightgrey',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
