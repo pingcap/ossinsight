@@ -15,6 +15,7 @@ import { chartColors } from "../colors";
 import ChartWrapper from "../charts/ChartWrapper";
 import { useDimension } from "../hooks/useDimension";
 import { EChartsType } from "echarts/core";
+import { paramCase } from "param-case";
 
 
 export default forwardRef(function BehaviourSection({}, ref: ForwardedRef<HTMLElement>) {
@@ -85,8 +86,15 @@ const AllContributions = ({ userId, show }: ModuleProps) => {
   );
 };
 
+function toCamel(n) {
+  return paramCase(n)
+    .replace(/^\w/g, a => a.toUpperCase())
+    .replace(/-/g, ' ');
+}
+
 const eventTypes = ['all', 'pushes', 'issues', 'issue_comments', 'pull_requests', 'reviews', 'review_comments'];
 const timezones = [];
+const periods = ['last_1_year', 'last_3_year', 'all_times'];
 
 const formatZone = (zone: number) => `UTC ${zone < 0 ? zone : `+${zone}`}`;
 
@@ -95,7 +103,8 @@ for (let i = -11; i <= 14; i++) {
 }
 
 const ContributionTime = ({ userId, show }: ModuleProps) => {
-  const { data } = usePersonalData('personal-contribution-time-distribution', userId, show);
+  const [period, setPeriod] = useState('last_1_year');
+  const { data } = usePersonalData('personal-contribution-time-distribution', userId, show, { period });
   const [type, setType] = useState('all');
   const [zone, setZone] = useState(0);
 
@@ -106,6 +115,10 @@ const ContributionTime = ({ userId, show }: ModuleProps) => {
   const handleZoneChange = useEventCallback((e: SelectChangeEvent<number>) => {
     setZone(Number(e.target.value));
   });
+
+  const handlePeriodChange = useEventCallback((e: SelectChangeEvent) => {
+    setPeriod(e.target.value);
+  })
 
   const filteredData = useMemo(() => {
     return (data?.data ?? []).filter(item => item.type === type);
@@ -119,11 +132,19 @@ const ContributionTime = ({ userId, show }: ModuleProps) => {
     <ChartWrapper title={title} remoteData={data}>
       <Box mt={4} mx="auto" width="max-content">
         <Box mb={2} width="max-content">
-          <FormControl variant="standard" size="small" sx={{ minWidth: 120 }}>
+          <FormControl variant="standard" size="small" sx={{ minWidth: 80 }}>
+            <InputLabel id="period-selector-label">Period</InputLabel>
+            <Select labelId="period-selector-label" value={period} onChange={handlePeriodChange}>
+              {periods.map(period => (
+                <MenuItem key={period} value={period}>{toCamel(period)}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <FormControl variant="standard" size="small" sx={{ minWidth: 120, ml: 2 }}>
             <InputLabel id="event-type-selector-label">Contribution Type</InputLabel>
             <Select id="event-type-selector-label" value={type} onChange={handleEventChange}>
               {eventTypes.map(event => (
-                <MenuItem key={event} value={event}>{event}</MenuItem>
+                <MenuItem key={event} value={event}>{toCamel(event)}</MenuItem>
               ))}
             </Select>
           </FormControl>
