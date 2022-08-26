@@ -30,14 +30,14 @@ jobs:
         with:
           context: .
           push: true
-          tags: hooopo/ossinsight-fe:latest
+          tags: hooopo/ossinsight-fe:workshop
       - 
         name: Build and Push Data to dockerhub
         uses: docker/build-push-action@v3
         with:
           context: "{{defaultContext}}:backend"
           push: true
-          tags: hooopo/ossinsight-data:latest
+          tags: hooopo/ossinsight-data:workshop
 
       - 
         name: Build and Push API to dockerhub
@@ -45,4 +45,4 @@ jobs:
         with:
           context: "{{defaultContext}}:api"
           push: true
-          tags: hooopo/ossinsight-api:latest
+          tags: hooopo/ossinsight-api:workshop
