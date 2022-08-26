@@ -107,11 +107,23 @@ const PopperContainer = styled(Stack)(({ theme }) => ({
   }
 }));
 
+const AvatarContainer = styled('div')({
+  width: 26,
+  height: 26,
+  background: 'lightgrey',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  borderRadius: 13,
+})
+
 const renderUser = (props: React.HTMLAttributes<HTMLLIElement>, option: Option, highlight: boolean) => {
   return (
     <ListItem dense {...props}>
       <ListItemAvatar sx={{ minWidth: 32 }}>
-        <Avatar src={`https://github.com/${(option as UserInfo).login}.png`} sx={{ width: 24, height: 24 }} />
+        <AvatarContainer>
+          <Avatar src={`https://github.com/${(option as UserInfo).login}.png`} sx={{ width: 24, height: 24 }} />
+        </AvatarContainer>
       </ListItemAvatar>
       <ListItemText>
         {(option as UserInfo).login}
@@ -130,7 +142,9 @@ const renderRepo = (props: ListItemProps, option: Option, highlight: boolean) =>
   return (
     <ListItem dense {...props}>
       <ListItemAvatar sx={{ minWidth: 32 }}>
-        <Avatar src={`https://github.com/${(option as SearchRepoInfo).fullName.split('/')[0]}.png`} sx={{ width: 24, height: 24 }} />
+        <AvatarContainer>
+          <Avatar src={`https://github.com/${(option as SearchRepoInfo).fullName.split('/')[0]}.png`} sx={{ width: 24, height: 24 }} />
+        </AvatarContainer>
       </ListItemAvatar>
       <ListItemText>
         {(option as SearchRepoInfo).fullName}
