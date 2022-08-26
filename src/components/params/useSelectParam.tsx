@@ -5,19 +5,19 @@ import { FormControl, InputLabel, unstable_useId, useEventCallback } from "@mui/
 import { SelectInputProps } from "@mui/material/Select/SelectInput";
 import { FormControlProps } from "@mui/material/FormControl/FormControl";
 
-export type SelectParamOption = {
-  key: string
+export type SelectParamOption<K extends string | number = string> = {
+  key: K
   title: string
 }
 
 const renderSelectParamOption = (option?: SelectParamOption) => option?.title;
 
-export function useSelectParam(options: SelectParamOption[], defaultValue: SelectParamOption | null = null, label: string = '', props: FormControlProps = {}, selectProps: SelectProps = {}) {
-  const [value, setValue] = useState<SelectParamOption>(defaultValue);
+export function useSelectParam<K extends string | number = string>(options: SelectParamOption<K>[], defaultValue: SelectParamOption<K> | null = null, label: string = '', props: FormControlProps = {}, selectProps: SelectProps = {}) {
+  const [value, setValue] = useState<SelectParamOption<K>>(defaultValue);
   const id = unstable_useId();
 
-  const handleValueChange: SelectInputProps<SelectParamOption>['onChange'] = useEventCallback((event) => {
-    setValue(event.target.value as SelectParamOption);
+  const handleValueChange: SelectInputProps<SelectParamOption<K>>['onChange'] = useEventCallback((event) => {
+    setValue(event.target.value as SelectParamOption<K>);
   });
 
   const select = useMemo(() => (
