@@ -8,7 +8,7 @@
     },
     {
       "name": "period",
-      "replaces": "AND (event_month BETWEEN DATE_FORMAT(DATE_SUB(CURRENT_DATE(), INTERVAL 1 YEAR), '%Y-%m-01') AND DATE_FORMAT(CURRENT_DATE(), '%Y-%m-01'))",
+      "replaces": "AND (created_at BETWEEN DATE_SUB(NOW(), INTERVAL 1 YEAR) AND NOW())",
       "enums": [
         "last_1_year",
         "last_3_year",
@@ -16,8 +16,8 @@
       ],
       "default": "all_times",
       "template": {
-        "last_1_year": "AND (event_month BETWEEN DATE_FORMAT(DATE_SUB(CURRENT_DATE(), INTERVAL 1 YEAR), '%Y-%m-01') AND DATE_FORMAT(CURRENT_DATE(), '%Y-%m-01'))",
-        "last_3_year": "AND (event_month BETWEEN DATE_FORMAT(DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR), '%Y-%m-01') AND DATE_FORMAT(CURRENT_DATE(), '%Y-%m-01'))",
+        "last_1_year": "AND (created_at BETWEEN DATE_SUB(NOW(), INTERVAL 1 YEAR) AND NOW())",
+        "last_3_year": "AND (created_at BETWEEN DATE_SUB(NOW(), INTERVAL 3 YEAR) AND NOW())",
         "all_times": ""
       }
     }
