@@ -1,12 +1,15 @@
 WITH top20repos AS (
     SELECT
+        /*+ read_from_storage(tiflash[ge]) */
         ge.repo_id AS repo_id,
         ANY_VALUE(repo_name) AS repo_name,
         ANY_VALUE(sub.language) AS language,
         IFNULL(COUNT(DISTINCT ge.actor_id), 0) AS stars
     FROM github_events ge
     LEFT JOIN (
-        SELECT ge2.repo_id, MIN(ge2.language) AS language
+        SELECT
+            /*+ read_from_storage(tiflash[ge2]) */
+            ge2.repo_id, MIN(ge2.language) AS language
         FROM github_events ge2
         WHERE
             ge2.type = 'PullRequestEvent'
@@ -36,6 +39,7 @@ WITH top20repos AS (
             ROW_NUMBER() OVER (PARTITION BY repo_id ORDER BY cnt DESC) AS num
         FROM (
             SELECT
+                /*+ read_from_storage(tiflash[ge]) */
                 ge.repo_id AS repo_id,
                 ge.actor_login AS actor_login,
                 IFNULL(COUNT(*), 0) AS cnt
@@ -58,7 +62,8 @@ WITH top20repos AS (
     WHERE num <= 5
     GROUP BY repo_id
 ), repo_with_collections AS (
-    SELECT tr.repo_id, GROUP_CONCAT(DISTINCT c.name) AS collection_names
+    SELECT
+        tr.repo_id, GROUP_CONCAT(DISTINCT c.name) AS collection_names
     FROM top20repos tr
     JOIN collection_items ci ON ci.repo_name = tr.repo_name
     JOIN collections c ON ci.collection_id = c.id
