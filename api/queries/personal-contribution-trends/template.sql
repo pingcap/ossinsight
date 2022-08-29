@@ -7,7 +7,7 @@ SELECT
         WHEN 'PullRequestReviewCommentEvent' THEN 'review_comments'
         WHEN 'PushEvent' THEN 'pushes'
     END AS contribution_type,
-    event_month,
+    DATE_FORMAT(created_at, '%Y-%m-01') AS event_month,
     COUNT(1) AS cnt 
 FROM github_events ge
 WHERE
@@ -20,6 +20,6 @@ WHERE
         (type = 'PullRequestReviewCommentEvent' AND action = 'created') OR
         (type = 'PushEvent' AND action IS NULL)
     )
-GROUP BY type, event_month
-ORDER BY event_month
+GROUP BY type, 2
+ORDER BY 2
 ;
