@@ -7,47 +7,47 @@ sidebar_label: Overview
 ---
 import Button from "@mui/material/Button";
 
-If you want to build **Another Insight** tool with another data source rather than GitHub, then you're in the right place. This workshop will tell you it's not too hard to get insights from big data, expecially **big data with realtime insert/update**.
+If you want to build **Another Insight** tool that analyzes data from a source rather than GitHub, then you're in the right place. This workshop will teach you that it's not too hard to get insights from big data expecially **big data with real-time inserts and updates**.
 
 ## What you will learn
 
 ### 1. Methodology to setup an insight system
 
-Usually, with enough abstration, there will be 3 steps to setup an insight system like OSS Insight:
+Usually, with enough abstraction, there will be 3 steps to setup an insight system like OSS Insight:
 
-1. Find its Data Source (both historical data and new realtime data)
-2. Load Data to TiDB (or any other HTAP database)
-3. Get Insights with SQL
+1. Find the data source (both historical and real-time data).
+2. Load data to TiDB (or any other HTAP database).
+3. Get insights with SQL.
 
 ### 2. Knowledge about HTAP database
 
-Use HTAP database here is suitable. HTAP stands for [Hybrid Transactional and Analytical Processing](https://docs.pingcap.com/tidb/dev/explore-htap), it is **SUPER EASY** to handle both:
-* acting as a **primary** rdbms to _<u>serve requests in high concurrency</u>_ and _<u>insert/update in realtime</u>_
-* providing _<u>analytical ability to get insights</u>_
+It’s best to run your insight tool on a [Hybrid Transactional and Analytical Processing(HTAP)](https://docs.pingcap.com/tidb/dev/explore-htap) database. It is **SUPER EASY** to handle both:
+* Acting as a **primary** RDBMS to _<u>serve requests in high concurrency</u>_ and _<u>insert/update in realtime</u>_
+* Provide _<u>analytical ability to get insights</u>_
 
-There is a 10-minute post to explain [why we choose tidb to support ossinsight](/blog/why-we-choose-tidb-to-support-ossinsight). but for saving time we put a picture below which shows the architecture difference between "before" and "after" we use TiDB:
+We have a 10-minute blog post that explains [why we choose TiDB to support OSSInsight](/blog/why-we-choose-tidb-to-support-ossinsight). But to save you some time, the following diagram shows the architectural differences "before" and "after" we use TiDB:
 <center>
   <img width="70%" src={require('@site/blog/why-we-choose-tidb-to-support-ossinsight/how-different-db-handle-github-data.png').default} alt='Simplified architecture after we use TiDB' />
 </center>
-<center><i>before and after we use TiDB</i></center>
+<center><i>Before and after we use TiDB</i></center>
 
-That means, we would never need to learn  traditional `big data` skills such as: MySQL+sharding technologies -> industrail etl tools -> olap databases->MySQL(write back), and then setup/manage these infrastructures, but just get a `T+1` analysis result finally, 
+Using this architecture means that we don’t need to learn  traditional `big data` skills such as: MySQL+sharding technologies -> industrial etl tools -> olap databases->MySQL(write back), and then setup/manage these infrastructures, but just get a `T+1` analysis result finally.
 
 <br />
 
 :::info
-You can load data to MySQL instead of TiDB, but you should will meet with performance issues soon...
+You can load data to MySQL instead of TiDB; however, you will have performance issues.
 :::
 
 <br />
 
-Well, for saving time, join the bellow workshops asap, each one will follow the above 3 steps!  🏃🏃🏃
+Ready to learn more? Click the link below and join a workshop. Each one will follow the 3 steps above!  🏃🏃🏃
 
-## Join Workshop!
+## Join a Workshop!
 
-We have implemented the `mini OSS Insights` workshop, and found the posibility of the other 3 workshops, you can try them by yourself with their historical and realtime api (a bit of a challenge, but not too hard :-).
+We have implemented the `mini OSS Insights` workshop and are thinking about creating three other workshops. You can try them by yourself with their historical and real-time API (a bit of a challenge, but not too hard :-).
 
-* [mini OSS Insight](/workshop/mini-ossinsight/introduction)
+* [Mini OSS Insight](/workshop/mini-ossinsight/introduction)
 * [NFT Insight](/workshop/nft-insight)
 * [Twitter Insight](/workshop/twitter-insight) _Not ready_
 * [Stack Overflow Insight](/workshop/stackoverflow-insight) _Not ready_
