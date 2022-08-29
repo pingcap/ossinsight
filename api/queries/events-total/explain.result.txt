@@ -6,5 +6,5 @@
 |   └─TableReader_40         | 1.00          | root         | partition:all       | data:ExchangeSender_39                                                                  |
 |     └─ExchangeSender_39    | 1.00          | mpp[tiflash] |                     | ExchangeType: PassThrough                                                               |
 |       └─HashAgg_8          | 1.00          | mpp[tiflash] |                     | funcs:count(1)->Column#94, funcs:max(gharchive_dev.github_events.created_at)->Column#95 |
-|         └─TableFullScan_37 | 4944819286.00 | mpp[tiflash] | table:github_events | keep order:false, PartitionTableScan:true                                               |
+|         └─TableFullScan_37 | 4945099302.00 | mpp[tiflash] | table:github_events | keep order:false, PartitionTableScan:true                                               |
 +----------------------------+---------------+--------------+---------------------+-----------------------------------------------------------------------------------------+
