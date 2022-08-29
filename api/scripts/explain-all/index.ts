@@ -39,7 +39,7 @@ const TABLE_CONFIG = {
         joinJoin: `+`
       }
 }
-const INDEX_REGEXP = /(?=index:).+\(.+\)/g;
+const INDEX_REGEXP = /(?=index:)([^(]+)/g;
 const TABLE_NAMES = ['github_events'];
 
 async function main() {
@@ -72,7 +72,9 @@ async function main() {
             // Record index usage.
             let m;
             if ((m = INDEX_REGEXP.exec(row[3])) !== null) {
-                const key = m[0];
+                const key = m[1].replace(/^index:/, '');
+                console.log(key);
+                
                 if (key !== undefined) {
                     stats[key] = (stats[key] || 0) + 1
                 }
