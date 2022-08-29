@@ -34,7 +34,7 @@ export default function Footer() {
             }}
           />
           <StandardCard
-            title='Use TiDB Cloud to analyze GitHub events in 10 minutes'
+            title='Use TiDB Cloud to Analyze GitHub Events in 10 Minutes'
             description='Tutorial: 10 min read'
             codeStyleDescription={false}
             readMore='/blog/try-it-yourself'
@@ -45,7 +45,7 @@ export default function Footer() {
             }}
           />
           <StandardCard
-            title='Join a workshop to setup a mini OSS Insight'
+            title='Join a Workshop to Setup a Mini OSS Insight'
             description='Tutorial: 25 min'
             codeStyleDescription={false}
             readMore='/workshop/overview'

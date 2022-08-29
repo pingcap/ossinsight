@@ -21,7 +21,7 @@
 </h3>
 
 <p align="center">
-OSS Insight analyze billions of GitHub events and get insights from them, also provide a set of tool which can analyze a single repository/developer, compare any two open source software hosted on GitHub.
+OSS Insight analyzes billions of GitHub events and gets insights from them. It also provides a set of tools which can analyze a single repository or developer and compare any two open source software repositories hosted on GitHub.
 </p>
 
 ## Feature 1: Preanalysis of some famous fields of technology 👁️
@@ -63,16 +63,16 @@ items:
   - <repo_name_2>
 ```
 
-Looks forward to your PRs！
+We look forward to your PRs！
 
 ## Feature 2: Developer Analytics
   
 * Basic:
-  * star, behaviour, most used lLanguages, contribution trends
-  * code (commits/pull requests/pull request size/code line changes), code reviews, issues
+  * Stars, behavior, most used languages，and contribution trends
+  * Code (commits，pull requests，pull request size and code line changes), code reviews, and issues
 * Advanced:
-  * contribution time distribution for all kind of contribution activities
-  * monthly stats about contribution activities in all public repositories
+  * Contribution time distribution for all kind of contribution activities
+  * Monthly stats about contribution activities in all public repositories
   
 Examples:
 * [Ovilia](https://ossinsight.io/analyze/Ovilia)
@@ -84,12 +84,12 @@ Examples:
 ## Feature 3: Repository Analytics
   
 * Basic:
-  * star, fork, issues, commits, pull requests, contributors, programming languages, lines of code modified
-  * Historical Trends of these metrics
-  * Time Cost of issues, pull requests
+  * Stars, forks, issues, commits, pull requests, contributors, programming languages, and lines of code modified
+  * Historical trends of these metrics
+  * Time cost of issues, pull requests
 * Advanced:
-  * Geographical Distribution of stargazers, issue creators, pull requests creators
-  * Company Distribution of stargazers, issue creators, pull requests creators
+  * Geographical distribution of stargazers, issue creators, and pull request creators
+  * Company distribution of stargazers, issue creators, and pull request creators
   
 Examples:
 * [React](https://ossinsight.io/analyze/facebook/react)
@@ -101,7 +101,7 @@ Examples:
 
 ## Feature 4: Compare Projects 🔨
   
-Compare repo metrics mentioned above in **Repository Analytics**
+Compare two projects using the repo metrics mentioned in **Repository Analytics**
 
 Examples:
 * [Compare Vue and React](https://ossinsight.io/analyze/vuejs/vue?vs=facebook/react)

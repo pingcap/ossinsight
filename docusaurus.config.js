@@ -223,8 +223,8 @@ const config = {
             label: 'Workshop',
             position: 'left',
             items: [
-              {label: '🗓️ Join Workshop!', to: '/workshop/overview'},
-              {label: '└─ mini OSS Insight', to: '/workshop/mini-ossinsight/introduction'},
+              {label: '🗓️ Join Workshops!', to: '/workshop/overview'},
+              {label: '└─ Mini OSS Insight', to: '/workshop/mini-ossinsight/introduction'},
               {label: '└─ NFT Insight', to: '/workshop/nft-insight'},
               {label: '└─ Twitter Insight - not ready', to: '/workshop/twitter-insight'},
               {label: '└─ Stack Overflow Insight - not ready', to: '/workshop/stackoverflow-insight'},
@@ -248,8 +248,8 @@ const config = {
             items: [
               {label: 'ℹ️  About OSS Insight', to: '/about'},
               {label: 'ℹ️  About TiDB Cloud', to: 'https://en.pingcap.com/tidb-cloud?utm_source=ossinsight&utm_medium=referral'},
-              {label: '❓ How we implement OSS Insight?', to: '/blog/why-we-choose-tidb-to-support-ossinsight'},
-              {label: '🐞 Report Issue', to: 'https://github.com/pingcap/ossinsight/issues'},
+              {label: '❓ How do we implement OSS Insight?', to: '/blog/why-we-choose-tidb-to-support-ossinsight'},
+              {label: '🐞 Report an Issue', to: 'https://github.com/pingcap/ossinsight/issues'},
             ]
           },
           {
@@ -305,7 +305,7 @@ const config = {
             ],
           },
           {
-            title: 'Sponsored by',
+            title: 'Sponsored By',
             items: [
               {
                 label: 'TiDB Cloud',
@@ -314,7 +314,7 @@ const config = {
             ],
           },
           {
-            title: 'Built with',
+            title: 'Built With',
             items: [
               {
                 label: 'GitHub REST API',
