@@ -1,4 +1,4 @@
-WITH repos AS (
+WITH repo_ids AS (
     SELECT DISTINCT repo_id
     FROM github_events ge
     WHERE
@@ -6,16 +6,18 @@ WITH repos AS (
         AND type = 'CreateEvent'
         AND repo_name LIKE CONCAT(actor_login, '%')
         AND repo_id IS NOT NULL
+), repos AS (
+    SELECT 5086433 AS user_id, COUNT(repo_id) AS cnt FROM repo_ids
 ), star_repos AS (
-    SELECT COUNT(DISTINCT repo_id) AS cnt
+    SELECT 5086433 AS user_id, COUNT(DISTINCT repo_id) AS cnt
     FROM github_events ge
     WHERE actor_id = 5086433 AND type = 'WatchEvent'
 ), star_earned AS (
-    SELECT COUNT(1) AS cnt
+    SELECT 5086433 AS user_id, COUNT(1) AS cnt
     FROM github_events ge
-    WHERE repo_id IN (SELECT repo_id FROM repos) AND type = 'WatchEvent'
+    WHERE repo_id IN (SELECT repo_id FROM repo_ids) AND type = 'WatchEvent'
 ), contribute_repos AS (
-    SELECT COUNT(DISTINCT repo_id) AS cnt
+    SELECT 5086433 AS user_id, COUNT(DISTINCT repo_id) AS cnt
     FROM github_events ge
     WHERE
         actor_id = 5086433
@@ -25,7 +27,7 @@ WITH repos AS (
             (type = 'PullRequestReviewEvent' AND action = 'created') OR
             (type = 'PushEvent' AND action IS NULL)
         )
-        AND repo_id NOT IN (SELECT repo_id FROM repos)
+        AND repo_id NOT IN (SELECT repo_id FROM repo_ids)
 ), issues AS (
     SELECT 5086433 AS user_id, COUNT(1) AS cnt
     FROM github_events ge
@@ -35,22 +37,34 @@ WITH repos AS (
     FROM github_events ge
     WHERE actor_id = 5086433 AND type = 'PullRequestEvent' AND action = 'opened'
 ), code_reviews AS (
-    SELECT COUNT(1) AS cnt
+    SELECT 5086433 AS user_id, COUNT(1) AS cnt
     FROM github_events ge
     WHERE actor_id = 5086433 AND type = 'PullRequestReviewEvent' AND action = 'created'
 ), code_changes AS (
-    SELECT SUM(additions) AS additions, SUM(deletions) AS deletions
+    SELECT 5086433 AS user_id, SUM(additions) AS additions, SUM(deletions) AS deletions
     FROM github_events ge
     WHERE type = 'PullRequestEvent' AND action = 'closed' AND pr_merged = true AND creator_user_id = 5086433
 )
 SELECT
-    5086433 AS user_id,
-    (SELECT COUNT(DISTINCT repo_id) FROM repos) AS repos,
-    (SELECT cnt FROM star_repos) AS star_repos,
-    (SELECT cnt FROM star_earned) AS star_earned,
-    (SELECT cnt FROM contribute_repos) AS contribute_repos,
-    (SELECT cnt FROM issues) AS issues,
-    (SELECT cnt FROM pull_requests) AS pull_requests,
-    (SELECT cnt FROM code_reviews) AS code_reviews,
-    (SELECT additions FROM code_changes) AS code_additions,
-    (SELECT deletions FROM code_changes) AS code_deletions
+    sub.user_id,
+    IFNULL(r.cnt, 0) AS repos,
+    IFNULL(sr.cnt, 0) AS star_repos,
+    IFNULL(se.cnt, 0) AS star_earned,
+    IFNULL(cr.cnt, 0) AS contribute_repos,
+    IFNULL(i.cnt, 0) AS issues,
+    IFNULL(pr.cnt, 0) AS pull_requests,
+    IFNULL(re.cnt, 0) AS code_reviews,
+    IFNULL(cc.additions, 0) AS code_additions,
+    IFNULL(cc.deletions, 0) AS code_deletions
+FROM (
+    SELECT 5086433 AS user_id
+) sub
+LEFT JOIN repos r ON sub.user_id = r.user_id
+LEFT JOIN star_repos sr ON sub.user_id = sr.user_id
+LEFT JOIN star_earned se ON sub.user_id = se.user_id
+LEFT JOIN contribute_repos cr ON sub.user_id = cr.user_id
+LEFT JOIN issues i ON sub.user_id = i.user_id
+LEFT JOIN pull_requests pr ON sub.user_id = pr.user_id
+LEFT JOIN code_reviews re ON sub.user_id = re.user_id
+LEFT JOIN code_changes cc ON sub.user_id = cc.user_id
+;
