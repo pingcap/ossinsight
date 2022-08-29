@@ -1,5 +1,5 @@
 import consola from "consola";
-import { Connection, Pool } from "mysql2";
+import { Connection } from "mysql2";
 import { CacheOption, CacheProvider } from "./CacheProvider";
 
 const logger = consola.withTag('normal-table-cache')
@@ -7,7 +7,7 @@ const logger = consola.withTag('normal-table-cache')
 export default class NormalTableCacheProvider implements CacheProvider {
 
     constructor(
-        private readonly connPool: Pool
+        private readonly conn: Connection
     ) {}
 
     async set(key: string, value: string, options?: CacheOption): Promise<void> {
@@ -17,19 +17,12 @@ export default class NormalTableCacheProvider implements CacheProvider {
         ON DUPLICATE KEY UPDATE cache_value = VALUES(cache_value), expires = VALUES(expires);`;
 
         return new Promise((resolve, reject) => {
-            this.connPool.getConnection((err, conn) => {
+            this.conn.query(sql, [key, value, EX], (err, rows) => {
                 if (err) {
                     reject(err);
-                    return;
+                } else {
+                    resolve();
                 }
-
-                conn.query(sql, [key, value, EX], (err, rows) => {
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve();
-                    }
-                });
             });
         });
     }
@@ -41,25 +34,17 @@ export default class NormalTableCacheProvider implements CacheProvider {
         LIMIT 1;`;
 
         return new Promise((resolve, reject) => {
-            this.connPool.getConnection((err, conn) => {
+            this.conn.query(sql, [key], (err, rows: any) => {
                 if (err) {
                     reject(err);
-                    return;
-                }
-                
-                conn.query(sql, [key], (err, rows: any) => {
-                    if (err) {
-                        reject(err);
-                        return;
-                    }
-                    
+                } else {
                     if (Array.isArray(rows) && rows.length >= 1) {
                         logger.debug(`Hit cache with key ${key}.`);
                         resolve(rows[0]?.cache_value);
                     } else {
                         resolve(null);
                     }
-                });
+                }
             });
         });
     }
