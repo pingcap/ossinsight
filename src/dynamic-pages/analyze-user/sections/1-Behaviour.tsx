@@ -70,7 +70,7 @@ const AllContributions = ({ userId, show }: ModuleProps) => {
           <Common hideZoom scrollY={10} />
           <Axis.Value.X minInterval={1} />
           <Axis.Category.Y data={repos} inverse triggerEvent />
-          {eventTypes.map((event, i) => (
+          {eventTypesWithoutAll.map((event, i) => (
             <BarSeries key={event} datasetId={event} encode={{ x: 'cnt', y: 'repo_name', tooltip: ['cnt'] }}
                        emphasis={{ focus: 'series' }} name={event} stack="0" barMaxWidth={10}
                        color={chartColors[i % chartColors.length]} />
@@ -91,7 +91,7 @@ function toCamel(n) {
     .replace(/^\w/g, a => a.toUpperCase())
     .replace(/-/g, ' ');
 }
-
+const eventTypesWithoutAll = ['pushes', 'issues', 'issue_comments', 'pull_requests', 'reviews', 'review_comments'];
 const eventTypes = ['all', 'pushes', 'issues', 'issue_comments', 'pull_requests', 'reviews', 'review_comments'];
 const timezones = [];
 const periods = ['last_1_year', 'last_3_year', 'all_times'];
