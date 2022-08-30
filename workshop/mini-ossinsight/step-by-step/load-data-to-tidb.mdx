@@ -133,18 +133,12 @@ Learn how to [create a personal access token](/workshop/mini-ossinsight/step-by-
 <Tabs>
 <TabItem value="cloud" label="TiDB Cloud" default>
 
-With TiDB Cloud, you can load this data in web console. Because the Developer Tier uses `Shared Ram` and provides 1GB of disk, so we only provide *240k* rows of data for importing.
+Download and import the sample events data which contains several active OSS database repos, about 240k rows.
 
-1. Click `Import` button in cluster detail page
-2. Input the config:
-  * **Data Source Type**: AWS S3
-  * **Bucket URL**: s3://developer.pingcap.com/ossinsight/sample/three-repos/
-  * **Data Format**: TiDB Dumpling
-  * **Role-ARN**: arn:aws:iam::494090988690:role/s3-tidb-cloud-developer-access
-  * **Username**: (your database username)
-  * **Password**: (your database password)
-3. Click `Import` button to start importing
-4. The task will be finished after 1~2 minutes, then click `Exit`
+```bash
+wget https://github.com/pingcap/ossinsight/releases/download/sample-data/gharchive_dev.github_events.000000000.sql;
+mysql --host (your cloud tidb host, e.g: gateway01.us-west-2.prod.aws.tidbcloud.com) --port 4000 -u (your username, e.g.: 39jzyT3RT1DWrAr.root) -p gharchive_dev < gharchive_dev.github_events.000000000.sql
+```
 
 </TabItem>
 <TabItem value="local" label="Local TiDB">
