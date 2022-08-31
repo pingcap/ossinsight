@@ -12,7 +12,11 @@ export function WorkshopSection () {
       <Stack direction={['column', 'column', 'row']}>
         <Box flex={1.5}>
           <H2 sx={{ fontSize: 24, mb: 2 }}>🗓️ Workshops</H2>
-          <Body sx={{ mb: 4, mt: 2, fontSize: 14 }}>Build another Insight tool with another data source rather than GitHub, then you’re in the right place.</Body>
+          <Body sx={{ mb: 4, mt: 2, fontSize: 14 }}>Would you like to gain insights about platforms other than GitHub? You’re in the right place. Our workshops will teach you how to build an insight for other kinds of source data, like NFTs, Twitter, or Stack Overflow.
+          <br />
+          <br />
+           Please note: we are still creating some of these workshops. 
+</Body>
           <Workshop />
         </Box>
         <Box flex={1} p={4}>

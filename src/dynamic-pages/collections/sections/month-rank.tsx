@@ -54,8 +54,8 @@ export default withInViewContainer(function MonthRankSection() {
 
   return (
     <section>
-      <H2 id="monthly-rankings">Month-on-Month Ranking</H2>
-      <P2>Table chart describes the Month-on-Month ranking of repos with three metrics (Star, Pull Request, Issue).</P2>
+      <H2 id="monthly-rankings">Month-to-month Ranking</H2>
+      <P2>The following table ranks repositories using three metrics: stars, pull requests, and issues. The table compares the most recent two months of data and indicates whether repositories are moving up or down the rankings.</P2>
       {tabs}
       <br />
       {withRemote(

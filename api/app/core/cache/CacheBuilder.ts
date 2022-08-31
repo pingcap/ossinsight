@@ -1,5 +1,5 @@
 import { createConnection } from "mysql2";
-import { getConnectionOptions } from "../../utils/db";
+import { getConnectionOptions, handleDisconnect } from "../../utils/db";
 import Cache from './Cache'
 import CachedTableCacheProvider from "./CachedTableCacheProvider";
 import { CacheOption, CacheProvider } from "./CacheProvider";
@@ -33,8 +33,11 @@ export default class CacheBuilder {
         this.enableCache = enableCache;
         if (enableCache) {
             const normalCacheConn = createConnection(getConnectionOptions());
+            handleDisconnect(normalCacheConn);
             this.normalCacheProvider = new NormalTableCacheProvider(normalCacheConn);
+
             const cachedTableCacheConn = createConnection(getConnectionOptions());
+            handleDisconnect(normalCacheConn);
             this.cachedTableCacheProvider = new CachedTableCacheProvider(cachedTableCacheConn);
         }
     }
@@ -64,3 +67,4 @@ export default class CacheBuilder {
     }
 
 }
+

@@ -22,9 +22,9 @@ const GeneralSearchLine = () => {
         <GeneralSearch align='left' size={isSmall ? undefined : 'large'} contrast />
       </Box>
       <Typography variant='body2' mt={1} color='#7c7c7c' sx={aligns.heading}>
-        Quick insight on repository or developer from GitHub
-        <br />
-        to see status and rankings.
+      Display the status and rankings for GitHub 
+      <br />
+      repositories and developers and use this data to gain quick insights.
       </Typography>
     </>
   )

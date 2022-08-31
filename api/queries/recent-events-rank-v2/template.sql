@@ -1,12 +1,15 @@
 WITH top20repos AS (
     SELECT
+        /*+ read_from_storage(tiflash[ge]) */
         ge.repo_id AS repo_id,
         ANY_VALUE(repo_name) AS repo_name,
         ANY_VALUE(sub.language) AS language,
         IFNULL(COUNT(DISTINCT ge.actor_id), 0) AS stars
     FROM github_events ge
     LEFT JOIN (
-        SELECT ge2.repo_id, MIN(ge2.language) AS language
+        SELECT
+            /*+ read_from_storage(tiflash[ge2]) */
+            ge2.repo_id, MIN(ge2.language) AS language
         FROM github_events ge2
         WHERE
             ge2.type = 'PullRequestEvent'
@@ -16,6 +19,7 @@ WITH top20repos AS (
     ) sub ON ge.repo_id = sub.repo_id
     WHERE
         ge.type = 'WatchEvent'
+        AND ge.action = 'started'
         AND (ge.created_at BETWEEN '2022-04-04 02:59:59' AND '2022-05-04 02:59:59')
         AND ge.actor_login NOT LIKE '%bot%'
         AND ge.actor_login NOT IN (SELECT bu.login FROM blacklist_users bu)
@@ -35,12 +39,18 @@ WITH top20repos AS (
             ROW_NUMBER() OVER (PARTITION BY repo_id ORDER BY cnt DESC) AS num
         FROM (
             SELECT
+                /*+ read_from_storage(tiflash[ge]) */
                 ge.repo_id AS repo_id,
                 ge.actor_login AS actor_login,
                 IFNULL(COUNT(*), 0) AS cnt
             FROM github_events ge
             WHERE
-                type IN ('PullRequestEvent', 'IssuesEvent', 'PullRequestReviewEvent', 'PushEvent')
+                (
+                    (type = 'PullRequestEvent' AND action = 'opened') OR
+                    (type = 'IssuesEvent' AND action = 'opened') OR
+                    (type = 'PullRequestReviewEvent' AND action = 'created') OR
+                    (type = 'PushEvent' AND action IS NULL)
+                )
                 AND (ge.created_at BETWEEN '2022-04-04 02:59:59' AND '2022-05-04 02:59:59')
                 AND ge.repo_id IN (SELECT tr.repo_id FROM top20repos tr)
                 AND ge.actor_login NOT IN (SELECT bu.login FROM blacklist_users bu)
@@ -52,7 +62,8 @@ WITH top20repos AS (
     WHERE num <= 5
     GROUP BY repo_id
 ), repo_with_collections AS (
-    SELECT tr.repo_id, GROUP_CONCAT(DISTINCT c.name) AS collection_names
+    SELECT
+        tr.repo_id, GROUP_CONCAT(DISTINCT c.name) AS collection_names
     FROM top20repos tr
     JOIN collection_items ci ON ci.repo_name = tr.repo_name
     JOIN collections c ON ci.collection_id = c.id
@@ -61,7 +72,7 @@ WITH top20repos AS (
 ), events AS (
     SELECT
         ge.repo_id AS repo_id,
-        COUNT(*) AS cnt
+        COUNT(1) AS cnt
     FROM github_events ge
     WHERE
         ge.created_at BETWEEN '2022-04-04 02:59:59' AND '2022-05-04 02:59:59'
@@ -72,10 +83,11 @@ WITH top20repos AS (
 ), pushes AS (
     SELECT
         ge.repo_id AS repo_id,
-        COUNT(*) AS cnt
+        COUNT(1) AS cnt
     FROM github_events ge
     WHERE
         ge.type = 'PushEvent'
+        AND ge.action IS NULL
         AND (ge.created_at BETWEEN '2022-04-04 02:59:59' AND '2022-05-04 02:59:59')
         AND ge.actor_login NOT LIKE '%bot%'
         AND ge.repo_id IN (SELECT tr.repo_id FROM top20repos tr)
@@ -84,10 +96,11 @@ WITH top20repos AS (
 ), pull_requests AS (
     SELECT
         ge.repo_id AS repo_id,
-        COUNT(DISTINCT ge.pr_or_issue_id) AS cnt
+        COUNT(1) AS cnt
     FROM github_events ge
     WHERE
-        ge.type = 'PullRequestEvent' AND ge.action = 'opened'
+        ge.type = 'PullRequestEvent'
+        AND ge.action = 'opened'
         AND (ge.created_at BETWEEN '2022-04-04 02:59:59' AND '2022-05-04 02:59:59')
         AND ge.actor_login NOT LIKE '%bot%'
         AND ge.repo_id IN (SELECT tr.repo_id FROM top20repos tr)

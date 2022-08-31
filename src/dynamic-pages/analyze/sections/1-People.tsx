@@ -10,7 +10,7 @@ import React, {
   PropsWithChildren,
   useCallback,
   useContext,
-  useEffect, useRef,
+  useEffect, useMemo, useRef,
   useState,
 } from 'react';
 import Analyze from '../charts/Analyze';
@@ -28,10 +28,18 @@ export const PeopleSection = forwardRef(function ({}, ref: ForwardedRef<HTMLElem
   const { comparingRepoId: vs, comparingRepoName } = useAnalyzeContext()
 
   // hooks for sections
-  const [mapType, setMapType] = useState('stars-map')
+  const [mapType, setMapType] = useState('analyze-stars-map')
   const handleChangeMapType = useCallback((event:  React.SyntheticEvent, value: string) => {
     setMapType(value)
   }, [])
+
+  const params = useMemo(() => {
+    if (mapType === 'analyze-stars-map') {
+      return { period: 'all_times' }
+    } else {
+      return undefined
+    }
+  }, [mapType])
 
   const [companyType, setCompanyType] = useState('analyze-stars-company')
   const handleChangeCompanyType = useCallback((event:  React.SyntheticEvent, value: string) => {
@@ -42,12 +50,12 @@ export const PeopleSection = forwardRef(function ({}, ref: ForwardedRef<HTMLElem
   return (
     <Section id='people' ref={ref}>
       <H2>People</H2>
-      <Analyze query={mapType}>
+      <Analyze query={mapType} params={params}>
         <H3 sx={{ mt: 6 }}>Geographical Distribution</H3>
         <P2>Stargazers,Issue creators and Pull Request creators’ geographical distribution around the world (analyzed with the public github infomation).</P2>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <Tabs value={mapType} onChange={handleChangeMapType} variant='scrollable' scrollButtons='auto' allowScrollButtonsMobile>
-            <IconTab defaultTab id='geo-distribution-stargazers' value='stars-map' icon={<StarIcon size={24} />}><span style={{ display: 'none' }}>Geographical Distribution of </span>Stargazers</IconTab>
+            <IconTab defaultTab id='geo-distribution-stargazers' value='analyze-stars-map' icon={<StarIcon size={24} />}><span style={{ display: 'none' }}>Geographical Distribution of </span>Stargazers</IconTab>
             <IconTab id='geo-distribution-issue-creators' value='issue-creators-map' icon={<IssueCreatorIcon size={24} />}><span style={{ display: 'none' }}>Geographical Distribution of </span>Issue Creators</IconTab>
             <IconTab id='geo-distribution-pr-creators' value='pull-request-creators-map' icon={<PrCreatorIcon size={24} />}><span style={{ display: 'none' }}>Geographical Distribution of </span>Pull Requests Creators</IconTab>
           </Tabs>

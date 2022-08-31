@@ -9,7 +9,7 @@ import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 
 const links: { title: string, href: string }[] = [
-  { title: 'mini OSS Insight', href: '/workshop/mini-ossinsight/introduction' },
+  { title: 'Mini OSS Insight', href: '/workshop/mini-ossinsight/introduction' },
   { title: 'NFT Insight', href: '/workshop/nft-insight' },
   { title: 'Twitter Insight', href: '/workshop/twitter-insight' },
   { title: 'Stack Overflow Insight', href: '/workshop/stackoverflow-insight' },
@@ -36,12 +36,10 @@ export default function Workshop() {
       <Card>
         <Stack justifyContent="space-between" alignItems="start" minHeight={140}>
           <Typography variant="body1">
-            If you want a further talk about OSS Insight,
-            <br />
-            please join our offline workshop, you may get help there.
+            If you want a further talk about OSS Insight, please join an offline workshop and get help there.
           </Typography>
           <Button variant="contained" color="primary" component={Link} href="https://share.hsforms.com/1E-qtGQWrTVmctP8kBT34gw2npzm" target='_link'>
-            🗓️ Join Offline Workshop
+            🗓️ Join an offline workshop
           </Button>
         </Stack>
       </Card>

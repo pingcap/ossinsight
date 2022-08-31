@@ -248,8 +248,8 @@ const config = {
             items: [
               {label: 'ℹ️  About OSS Insight', to: '/about'},
               {label: 'ℹ️  About TiDB Cloud', to: 'https://en.pingcap.com/tidb-cloud?utm_source=ossinsight&utm_medium=referral'},
-              {label: '❓ How we implement OSS Insight?', to: '/blog/why-we-choose-tidb-to-support-ossinsight'},
-              {label: '🐞 Report Issue', to: 'https://github.com/pingcap/ossinsight/issues'},
+              {label: '❓ How do we implement OSS Insight?', to: '/blog/why-we-choose-tidb-to-support-ossinsight'},
+              {label: '🐞 Report an Issue', to: 'https://github.com/pingcap/ossinsight/issues'},
             ]
           },
           {
@@ -295,7 +295,7 @@ const config = {
                 to: '/workshop/overview',
               },
               {
-                label: 'How we implement OSS Insight?',
+                label: 'How do we implement OSS Insight?',
                 to: '/blog/why-we-choose-tidb-to-support-ossinsight',
               },
               {
@@ -317,7 +317,7 @@ const config = {
             title: 'Built With',
             items: [
               {
-                label: 'GitHub API',
+                label: 'GitHub REST API',
                 href: 'https://docs.github.com/en/rest',
               },
               {
@@ -358,7 +358,7 @@ const config = {
                 href: 'https://github.com/pingcap/ossinsight',
               },
               {
-                html: '<br /><b>Location</b><p style="color:grey">California, USA<br />1250 Borregas Ave, Office 131<br />Sunnyvale, CA 94089<br />☎️  +1 650 382 9973</p>',
+                html: '<br /><b>Location</b><p style="color:grey">PingCAP<br />1250 Borregas Ave, Office 131<br />Sunnyvale, CA 94089<br />USA<br />☎️  +1 650 382 9973</p>',
               },
             ],
           },

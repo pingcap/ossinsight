@@ -5,11 +5,12 @@ import {
   leftRightLayoutGrid,
   legend,
   standardDataset,
-  title, topBottomLayoutGrid,
-  utils, visualMap,
+  title,
+  topBottomLayoutGrid,
+  utils,
+  visualMap,
 } from '../options';
-import {withChart} from '../chart';
-import { isSmall } from '../options/sizes';
+import { withChart } from '../chart';
 
 // lines of code
 export type TimeHeatData = {
@@ -29,41 +30,51 @@ const days = [
   'Sun', 'Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat',
 ];
 
-function prepareData(data: TimeHeatData[]): TimeHeatData[] {
+const applyZone = (hour: number | string, zone: number): number => {
+  return (Number(hour) + zone + 24) % 24
+}
+
+const prepareData = (zone: number) => (data: TimeHeatData[]): TimeHeatData[] => {
   if (data.length === 0) {
     return [];
   }
   const newData = [...data];
   const boolMap = Array(24 * 7).fill(false, 0, 24 * 7);
-  for (const item of data) {
+  for (let i = 0; i < newData.length; i++) {
+    const item = newData[i] = { ...newData[i] };
+    item.hour = applyZone(item.hour, zone);
     boolMap[item.dayofweek + item.hour * 7] = true;
   }
   for (const hour in hours) {
     for (const day in days) {
-      if (!boolMap[parseInt(day) + parseInt(hour) * 7]) {
+      if (!boolMap[parseInt(day) + applyZone(parseInt(hour), zone) * 7]) {
         newData.push({
           dayofweek: parseInt(day),
-          hour: parseInt(hour),
+          hour: applyZone(parseInt(hour), zone),
           pushes: 0,
         });
       }
     }
   }
   return newData;
-}
+};
 
-export const TimeHeatChart = withChart<TimeHeatData>(({title: propsTitle, data, isSmall}) => ({
-  dataset: standardDataset(prepareData),
+export const TimeHeatChart = withChart<TimeHeatData, { zone: number }>(({
+                                                                          title: propsTitle,
+                                                                          data,
+                                                                          isSmall,
+                                                                        }, { zone }) => ({
+  dataset: standardDataset(prepareData(zone)),
   title: title(propsTitle),
   legend: legend(),
   grid: isSmall ? topBottomLayoutGrid() : leftRightLayoutGrid(),
-  xAxis: utils.template(({id}) => categoryAxis<'x'>(id, {gridId: id, data: hours, position: 'top'})),
-  yAxis: utils.template(({id}) => categoryAxis<'y'>(id, {gridId: id, data: days, inverse: true})),
+  xAxis: utils.template(({ id }) => categoryAxis<'x'>(id, { gridId: id, data: hours, position: 'top' })),
+  yAxis: utils.template(({ id }) => categoryAxis<'y'>(id, { gridId: id, data: days, inverse: true })),
   visualMap: utils.aggregate<TimeHeatData>(all => {
-    const max = all.map(data => data.data?.data.reduce((prev, current) => Math.max(prev, current.pushes), 0) ?? 1).reduce((p, c) => Math.max(p, c), 0)
-    return visualMap(0, max)
+    const max = all.map(data => data.data?.data.reduce((prev, current) => Math.max(prev, current.pushes), 0) ?? 1).reduce((p, c) => Math.max(p, c), 0);
+    return visualMap(0, max);
   }),
-  series: utils.template(({datasetId, id}) => heatmap('hour', 'dayofweek', 'pushes', {
+  series: utils.template(({ datasetId, id }) => heatmap('hour', 'dayofweek', 'pushes', {
     datasetId,
     xAxisId: id,
     yAxisId: id,

@@ -28,7 +28,8 @@ RUN apk add --update --no-cache \
       tzdata \
       mysql-client \
       mysql-dev  \
-      yarn 
+      yarn \
+      && rm -rf /var/cache/apk/*
 
 RUN gem install bundler -v 2.2.3
 
@@ -39,10 +40,7 @@ COPY start.sh ./
 
 RUN bundle config build.nokogiri --use-system-libraries
 
-RUN bundle check || bundle install 
+RUN bundle check || bundle install --no-cache && rm -rf /usr/local/bundle/cache
 
-COPY package.json yarn.lock ./
-
-RUN yarn install --check-files
 
 COPY . ./ 

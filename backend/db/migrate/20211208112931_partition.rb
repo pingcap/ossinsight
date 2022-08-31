@@ -1,7 +1,7 @@
 class Partition < ActiveRecord::Migration[6.1]
   def change
     create_sql = <<~SQL
-      CREATE TABLE `github_events` (
+      CREATE TABLE if not exists `github_events` (
         `id` bigint(20) DEFAULT NULL,
         `type` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
         `created_at` datetime DEFAULT NULL,

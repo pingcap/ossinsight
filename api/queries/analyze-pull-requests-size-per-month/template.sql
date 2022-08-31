@@ -10,11 +10,18 @@ FROM (
         SUM(CASE WHEN (additions + deletions) >= 1000 THEN 1 ELSE 0 END) OVER (PARTITION BY event_month) AS xxl,
         COUNT(*) OVER (PARTITION BY event_month) AS all_size,
         ROW_NUMBER() OVER (PARTITION BY event_month) AS row_num
-    FROM github_events
-    WHERE
-        type = 'PullRequestEvent'
-        AND repo_id = 41986369
-        AND action = 'opened'
+    FROM (
+        SELECT
+            DATE_FORMAT(created_at, '%Y-%m-01') as event_month,
+            additions,
+            deletions
+        FROM
+            github_events
+        WHERE
+            type = 'PullRequestEvent'
+            AND repo_id = 41986369
+            AND action = 'opened'
+    ) sub
 ) sub
 WHERE row_num = 1
 ORDER BY event_month
