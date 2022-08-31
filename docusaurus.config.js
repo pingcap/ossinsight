@@ -258,7 +258,7 @@ const config = {
             position: 'right',
             alt: 'Twitter Logo (Header)',
           },
-          process.env.NODE_ENV == 'development' && {
+          process.env.DATABASE_URL && process.env.DATABASE_URL.indexOf('docker.internal') != -1 && {
             type: 'dropdown',
             label: '⚙️ ',
             position: 'right',
