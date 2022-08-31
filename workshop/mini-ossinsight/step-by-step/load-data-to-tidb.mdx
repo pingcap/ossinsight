@@ -31,12 +31,12 @@ There are several values we can get from the connection string that will be used
 * **username**: the value after -u option, in this case, it's `39jzyT3RT1DWrAr.root` 
 * **password**: the password you just inputted while creating database 
 * **host**: the value after -h option, in this case, it's `gateway01.us-west-2.prod.aws.tidbcloud.com`
-* **port**: 4000, by default, tidb cloud use the 4000 port instead of 3306
+* **port**: `4000`, by default, TiDB Cloud uses `4000` instead of `3306`
 
 </TabItem>
 <TabItem value="local" label="Local TiDB">
 
-It's easy to setup a TiDB cluster in your laptop (Mac or Linux) with the official cli tools: [tiup](https://tiup.io/)(inspired by `rustup`)
+It's easy to setup a TiDB cluster in your laptop (Mac or Linux) with the official cli tools: [tiup](https://tiup.io/)
 
 ```bash
 # Install tiup, you'd better use bash.
@@ -104,7 +104,8 @@ Configure the necessary environment variables and start the mini OSSInsight thro
 
 ```bash
 export GITHUB_TOKEN=<your personal access token>;
-export DATABASE_URL=tidb://<your database username>:<your database password>@<your database host>:4000/gharchive_dev;
+# e.g. DATABASE_URL=tidb://39jzyT3RT1DWrAr.root:xxxxxxxxx@gateway01.us-west-2.prod.aws.tidbcloud.com:4000/gharchive_dev
+export DATABASE_URL=tidb://<your tidb username>:<your tidb password>@<your tidb host>:4000/gharchive_dev;
 docker-compose pull;
 docker-compose up;
 ```
@@ -137,7 +138,8 @@ Download and import the sample events data which contains several active OSS dat
 
 ```bash
 wget https://github.com/pingcap/ossinsight/releases/download/sample-data/gharchive_dev.github_events.000000000.sql;
-mysql --host (your cloud tidb host, e.g: gateway01.us-west-2.prod.aws.tidbcloud.com) --port 4000 -u (your username, e.g.: 39jzyT3RT1DWrAr.root) -p gharchive_dev < gharchive_dev.github_events.000000000.sql
+# e.g.  mysql -u 39jzyT3RT1DWrAr.root -h gateway01.us-west-2.prod.aws.tidbcloud.com -P 4000 -p gharchive_dev < gharchive_dev.github_events.000000000.sql
+mysql --host <your tidb host> --port 4000 -u <your tidb username> -p gharchive_dev < gharchive_dev.github_events.000000000.sql
 ```
 
 </TabItem>
@@ -169,9 +171,9 @@ Connect to TiDB by:
 <Tabs>
 <TabItem value="cloud" label="TiDB Cloud" default>
 
-On top-right of the cluster detail page, click `Connect` and get you connection command like below:
+On top-right of the TiDB Cloud cluster detail page, click `Connect` button and get you connection command in bottom like below:
 ```bash
-mysql --connect-timeout 15 -u '(your database username)' -h gateway01.us-west-2.prod.aws.tidbcloud.com -P 4000 -D test -p
+mysql --connect-timeout 15 -u '<your tidb username>' -h gateway01.us-west-2.prod.aws.tidbcloud.com -P 4000 -D test -p
 ```
 
 </TabItem>

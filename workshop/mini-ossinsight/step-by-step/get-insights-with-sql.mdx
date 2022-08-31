@@ -63,7 +63,6 @@ GROUP BY type;
 
 :::info Test
 * [ti-chi-bot](https://github.com/ti-chi-bot)
-* [azure-sdk](https://github.com/azure-sdk)
 :::
 
 #### ii. Example 2
@@ -172,7 +171,7 @@ Remember there are only 240k rows stored in your Developer Tier database.
 |         73 |       2021 |
 |         82 |       2022 |
 +------------+------------+
-8 rows in set (1.76 sec)
+8 rows in set (1.99 sec)
 
 mysql>
 ```
@@ -245,7 +244,6 @@ Now try to execute the former robot sql(start with: `WITH bots_with_first_seen`)
   <TabItem value="sql" label="SQL">
 
 ```sql
-USE gharchive_dev;
 WITH bots_with_first_seen AS (
     SELECT
         actor_login, MIN(event_year) AS first_seen_at
@@ -266,28 +264,6 @@ SELECT ANY_VALUE(cnt) AS bots_total, event_year
 FROM acc
 GROUP BY event_year
 ORDER BY event_year;
-
-...
-
-+------------+------------+
-| bots_total | event_year |
-+------------+------------+
-|          4 |       2011 |
-|          8 |       2012 |
-|         22 |       2013 |
-|         50 |       2014 |
-|         71 |       2015 |
-|        132 |       2016 |
-|        172 |       2017 |
-|        243 |       2018 |
-|        342 |       2019 |
-|        450 |       2020 |
-|        561 |       2021 |
-|        622 |       2022 |
-+------------+------------+
-12 rows in set (0.26 sec)
-
-mysql>
 ```
   </TabItem>
   <TabItem value="cloud" label="Explain - TiDB Cloud">
@@ -355,32 +331,15 @@ mysql>
   </TabItem>
 </Tabs>
 
-<Tabs>
-  <TabItem value="cloud" label="TiDB Cloud">
-
 <br />
-<center><h3>`1.99 sec` VS `0.19 sec`, IT IS FASTER !</h3></center>
+<center><h3>It is SUPER faster!</h3></center>
 <br />
-
-  </TabItem>
-  <TabItem value="local" label="Local TiDB">
-
-<br />
-<center><h3>`2.39 sec` VS `0.26 sec`, IT IS FASTER !</h3></center>
-<br />
-
-  </TabItem>
-</Tabs>
-
-We provide a all-in-one script to run `SET TIFLASH REPLICA` on all tables:
-```bash
-cd ossinsight/backend/;
-bundle exec rake gh:set_tiflash_replica
-```
 
 We won't talk too much about how to get USEFUL insights from such a big data as we are also students in open source software field. All SQLs in this project can be found on page, just click the `SHOW SQL` button on top-right of each chart to get the corresponding SQL.
 
 
 ## 2. Well done!
 
-Visit [http://localhost:30000](http://localhost:30000);
+Visit [http://localhost:30000](http://localhost:30000) to check the mini OSS Insight site.
+
+If you have any question, please contact ossinsight@pingcap.com.
