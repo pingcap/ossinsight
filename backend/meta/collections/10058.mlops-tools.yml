@@ -1,0 +1,21 @@
+id: 10058
+name: MLOps Tools
+items:
+  - mlflow/mlflow
+  - iterative/dvc
+  - pachyderm/pachyderm
+  - optuna/optuna
+  - kubeflow/kubeflow
+  - bentoml/BentoML
+  - jina-ai/jina
+  - microsoft/nni
+  - heartexlabs/label-studio
+  - Netflix/metaflow
+  - dagster-io/dagster
+  - wandb/wandb
+  - feast-dev/feast
+  - allegroai/clearml
+  - polyaxon/polyaxon
+  - SeldonIO/seldon-core
+  - great-expectations/great_expectations
+  - kedro-org/kedro
