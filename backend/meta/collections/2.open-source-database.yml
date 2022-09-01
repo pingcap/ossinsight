@@ -34,3 +34,5 @@ items:
   - CeresDB/ceresdb
   - postgres/postgres
   - duckdb/duckdb
+  - redis/redis
+  - apache/incubator-kvrocks
