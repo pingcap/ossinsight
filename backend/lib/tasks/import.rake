@@ -39,6 +39,10 @@ namespace :gh do
     Dir.glob(Rails.root.join "meta/collections/*.yml") do |file|
       yml = YAML.load_file(file)
       collection = Collection.where(id: yml['id']).first
+      if ENV['ID'].present? && (ENV['ID'] != yml['id'].to_s)
+        puts "skip collectionid #{yml['id']}" 
+        next
+      end
       if collection && ENV['FORCE'].blank?
         puts "skip collection id #{yml['id']}"
         next
@@ -51,7 +55,7 @@ namespace :gh do
 
       collection.collection_items.where(repo_name: remove_names).each {|x| x.destroy }
       add_names.each do |name|
-        repo_id = GithubEvent.where(repo_name: name).first&.repo_id
+        repo_id = GithubEvent.where(repo_name: name).order('repo_id').last&.repo_id
         next unless repo_id
         collection.collection_items.create(repo_name: name, repo_id: repo_id)
       end
