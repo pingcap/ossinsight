@@ -31,9 +31,7 @@ export default function CustomPage({
 
   useLayoutEffect(() => {
     const id = location.hash.replace(/^#/, '');
-    document.getElementById(id)?.scrollIntoView({
-      block: 'center',
-    });
+    document.getElementById(id)?.scrollIntoView();
   }, []);
 
   return (

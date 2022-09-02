@@ -16,10 +16,11 @@ const dark = {
   darker: '#1C1E21',
 }
 
-export default function Section ({darker = false, pt, maxWidth = 'xl', children}: PropsWithChildren<SectionProps>) {
+export default function Section ({id, darker = false, pt, maxWidth = 'xl', children}: PropsWithChildren<SectionProps>) {
   return (
     <Box
       component='section'
+      id={id}
       sx={[
         responsive('py', 2, 4, 6),
         {
