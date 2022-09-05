@@ -6,3 +6,4 @@ items:
   - azkaban/azkaban
   - apache/oozie
   - xuxueli/xxl-job
+  - kestra-io/kestra
