@@ -118,7 +118,6 @@ Examples:
 ## Development
 
 * [Step by Step](https://ossinsight.io/workshop/mini-ossinsight/step-by-step/find-data-source)
-* [Docker Compose](https://ossinsight.io/workshop/mini-ossinsight/docker-compose)
 
 ## Sponsors
 
