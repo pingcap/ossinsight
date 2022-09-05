@@ -57,3 +57,4 @@ items:
   - bcit-ci/CodeIgniter
   - beego/beego
   - lucacasonato/fresh
+  - honojs/hono
