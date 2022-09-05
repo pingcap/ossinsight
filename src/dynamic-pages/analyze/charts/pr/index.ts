@@ -25,12 +25,12 @@ export type PrData = {
   xxl: number
 }
 
-export const PrChart = withChart<PrData>(({title: propsTitle, data}) => ({
+export const PrChart = withChart<PrData>(({title: propsTitle, isSmall, data}) => ({
   dataset: standardDataset(transformLocData),
   grid: topBottomLayoutGrid(),
   dataZoom: dataZoom(),
   title: title(propsTitle),
-  legend: legend(),
+  legend: legend({ top: isSmall ? 0 : 32, left: 'center' }),
   xAxis: utils.template(({id}) => timeAxis<'x'>(id, {gridId: id}) ),
   yAxis: utils.template(({id}) => [
     valueAxis<'y'>(`${id}-size`, {gridId: id, position: 'left', name: 'New / PRs'}),

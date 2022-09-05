@@ -18,10 +18,10 @@ export const PullRequestsSection = forwardRef(function ({}, ref: ForwardedRef<HT
 
   const prSummaries: SummaryProps['items'] = useMemo(() => {
     return [
-      {title: 'Total PRs', field: 'pull_requests'},
-      {title: 'Total PR creators',field: 'pull_request_creators'},
-      {title: 'Total PR reviews', field: 'pull_request_reviews'},
-      {title: 'Total PR reviewers', field: 'pull_request_reviewers'},
+      {title: 'Total PRs', alt: 'Total PRs', field: 'pull_requests'},
+      {title: 'Total PR creators', alt: 'Total PR creators', field: 'pull_request_creators'},
+      {title: 'Total PR reviews', alt: 'Total PR reviews', field: 'pull_request_reviews'},
+      {title: 'Total PR reviewers', alt: 'Total PR reviewers', field: 'pull_request_reviewers'},
     ]
   }, [])
 

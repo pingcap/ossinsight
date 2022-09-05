@@ -3,6 +3,7 @@ import Grid, {GridProps} from '@mui/material/Grid';
 import {BodyText, DataGrid, HeaderGrid, HeadText} from './styled';
 import {useAnalyzeChartContext, useAnalyzeContext} from '../context';
 import Stack from '@mui/material/Stack';
+import Tooltip from '@mui/material/Tooltip';
 import {AsyncData, RemoteData} from '../../../../components/RemoteCharts/hook';
 import Skeleton from '@mui/material/Skeleton';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -11,6 +12,7 @@ import type {RepoInfo} from '@ossinsight/api';
 export interface SummaryItemProps<F extends string> extends Omit<GridProps, 'title'> {
   icon?: React.ReactNode;
   title: React.ReactNode;
+  alt: string;
   field: F;
   sizes: readonly [number, number];
 }
@@ -45,7 +47,9 @@ export function SummaryItem<F extends string>({title, icon, sizes, field, ...gri
       <HeaderGrid item xs={4} md={sizes[0]}>
         <Stack direction="row" alignItems="center" justifyContent="flex-start" spacing={1}>
           {icon}
-          <HeadText>{title}</HeadText>
+          <Tooltip title={title} arrow disableHoverListener enterTouchDelay={0}>
+            <HeadText>{title}</HeadText>
+          </Tooltip>
         </Stack>
       </HeaderGrid>
       <DataGrid item xs={4} md={sizes[1]}>

@@ -18,10 +18,10 @@ export const IssuesSection = forwardRef(function ({}, ref: ForwardedRef<HTMLElem
 
   const issuesSummaries: SummaryProps['items'] = useMemo(() => {
     return [
-      {title: 'Total issues', field: 'issues'},
-      {title: 'Total issue creators', field: 'issue_creators'},
-      {title: 'Total issue comments', field: 'issue_comments'},
-      {title: 'Total issue commenters', field: 'issue_commenters'},
+      {title: 'Total issues', alt: 'Total issues', field: 'issues'},
+      {title: 'Total issue creators', alt: 'Total issue creators', field: 'issue_creators'},
+      {title: 'Total issue comments', alt: 'Total issue comments', field: 'issue_comments'},
+      {title: 'Total issue commenters', alt: 'Total issue commenters', field: 'issue_commenters'},
     ]
   }, [])
 

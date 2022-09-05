@@ -11,6 +11,7 @@ import type {RepoInfo} from '@ossinsight/api';
 export type ItemBase = {
   icon?: React.ReactNode
   title: React.ReactNode
+  alt: string
 }
 
 export type QueryItem = ItemBase & {
