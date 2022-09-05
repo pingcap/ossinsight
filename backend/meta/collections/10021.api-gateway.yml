@@ -11,3 +11,4 @@ items:
   - api-umbrella
   - apache/apisix
   - apache/shenyu
+  - gravitee-io/gravitee-api-management
