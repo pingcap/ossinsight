@@ -47,7 +47,7 @@ export function SummaryItem<F extends string>({title, icon, sizes, field, ...gri
       <HeaderGrid item xs={4} md={sizes[0]}>
         <Stack direction="row" alignItems="center" justifyContent="flex-start" spacing={1}>
           {icon}
-          <Tooltip title={title} arrow disableHoverListener>
+          <Tooltip title={title} arrow disableHoverListener enterTouchDelay={0}>
             <HeadText>{title}</HeadText>
           </Tooltip>
         </Stack>
