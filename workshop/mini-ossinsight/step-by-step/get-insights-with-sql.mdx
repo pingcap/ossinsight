@@ -28,7 +28,22 @@ GROUP BY type;
 ```
 
   </TabItem>
-  <TabItem value="explain" label="Explain">
+  <TabItem value="cloud" label="Explain SQL - TiDB Cloud">
+
+```
++--------------------------------+---------+-----------+----------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| id                             | estRows | task      | access object                                                              | operator info                                                                                                                                                    |
++--------------------------------+---------+-----------+----------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Projection_5                   | 1.00    | root      |                                                                            | gharchive_dev.github_events.type, Column#36                                                                                                                      |
+| └─HashAgg_24                   | 1.00    | root      |                                                                            | group by:gharchive_dev.github_events.type, funcs:count(Column#44)->Column#36, funcs:firstrow(gharchive_dev.github_events.type)->gharchive_dev.github_events.type |
+|   └─IndexLookUp_25             | 1.00    | root      | partition:all                                                              |                                                                                                                                                                  |
+|     ├─IndexRangeScan_22(Build) | 7550.14 | cop[tikv] | table:github_events, index:index_github_events_on_actor_login(actor_login) | range:["ti-chi-bot","ti-chi-bot"], keep order:false                                                                                                              |
+|     └─HashAgg_7(Probe)         | 1.00    | cop[tikv] |                                                                            | group by:gharchive_dev.github_events.type, funcs:count(1)->Column#44                                                                                             |
+|       └─TableRowIDScan_23      | 7550.14 | cop[tikv] | table:github_events                                                        | keep order:false                                                                                                                                                 |
++--------------------------------+---------+-----------+----------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+```
+  </TabItem>
+  <TabItem value="local" label="Explain SQL - Local TiDB">
 
 ```
 +------------------------------------+---------+-----------+----------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -48,7 +63,6 @@ GROUP BY type;
 
 :::info Test
 * [ti-chi-bot](https://github.com/ti-chi-bot)
-* [azure-sdk](https://github.com/azure-sdk)
 :::
 
 #### ii. Example 2
@@ -118,7 +132,7 @@ The below SQL is picked from [blog - Love, Code, and Robot](/blog/say-thanks-to-
   <TabItem value="sql" label="SQL">
 
 ```sql
-mysql> WITH bots_with_first_seen AS (
+WITH bots_with_first_seen AS (
     SELECT
         actor_login, MIN(event_year) AS first_seen_at
     FROM github_events ge
@@ -138,32 +152,36 @@ SELECT ANY_VALUE(cnt) AS bots_total, event_year
 FROM acc
 GROUP BY event_year
 ORDER BY event_year;
-
-...
-
-+------------+------------+
-| bots_total | event_year |
-+------------+------------+
-|          4 |       2011 |
-|          8 |       2012 |
-|         22 |       2013 |
-|         50 |       2014 |
-|         71 |       2015 |
-|        132 |       2016 |
-|        172 |       2017 |
-|        243 |       2018 |
-|        342 |       2019 |
-|        450 |       2020 |
-|        561 |       2021 |
-|        622 |       2022 |
-+------------+------------+
-12 rows in set (28.39 sec)
-
-mysql>
 ```
 
   </TabItem>
-  <TabItem value="explain" label="Explain">
+  <TabItem value="cloud" label="Explain SQL - TiDB Cloud">
+
+```
++------------------------------+-----------+-----------+---------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| id                           | estRows   | task      | access object | operator info                                                                                                                                                                                                                                                          |
++------------------------------+-----------+-----------+---------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Sort_45                      | 39130.77  | root      |               | Column#44                                                                                                                                                                                                                                                              |
+| └─Projection_47              | 39130.77  | root      |               | any_value(Column#43)->Column#45, Column#44                                                                                                                                                                                                                             |
+|   └─HashAgg_48               | 39130.77  | root      |               | group by:Column#44, funcs:firstrow(Column#43)->Column#43, funcs:firstrow(Column#44)->Column#44                                                                                                                                                                         |
+|     └─CTEFullScan_49         | 39130.77  | root      | CTE:acc       | data:CTE_1                                                                                                                                                                                                                                                             |
+| CTE_1                        | 39130.77  | root      |               | Non-Recursive CTE                                                                                                                                                                                                                                                      |
+| └─Selection_35(Seed Part)    | 39130.77  | root      |               | 1                                                                                                                                                                                                                                                                      |
+|   └─Projection_36            | 48913.46  | root      |               | Column#40, Column#38                                                                                                                                                                                                                                                   |
+|     └─Window_42              | 48913.46  | root      |               | count(gharchive_dev.github_events.actor_login)->Column#40 over(order by Column#38 range between unbounded preceding and current row)                                                                                                                                   |
+|       └─Sort_44              | 48913.46  | root      |               | Column#38                                                                                                                                                                                                                                                              |
+|         └─CTEFullScan_43     | 48913.46  | root      | CTE:bwfs      | data:CTE_0                                                                                                                                                                                                                                                             |
+| CTE_0                        | 48913.46  | root      |               | Non-Recursive CTE                                                                                                                                                                                                                                                      |
+| └─Sort_18(Seed Part)         | 48913.46  | root      |               | Column#36                                                                                                                                                                                                                                                              |
+|   └─Projection_20            | 48913.46  | root      |               | gharchive_dev.github_events.actor_login, Column#36                                                                                                                                                                                                                     |
+|     └─HashAgg_21             | 48913.46  | root      |               | group by:gharchive_dev.github_events.actor_login, funcs:min(gharchive_dev.github_events.event_year)->Column#36, funcs:firstrow(gharchive_dev.github_events.actor_login)->gharchive_dev.github_events.actor_login                                                       |
+|       └─Selection_28         | 191671.20 | root      |               | regexp(gharchive_dev.github_events.actor_login, "^(bot-.+|.+bot|.+\[bot\]|.+-bot-.+|robot-.+|.+-ci-.+|.+-ci|.+-testing|.+clabot.+|.+-gerrit|k8s-.+|.+-machine|.+-automation|github-.+|.+-github|.+-service|.+-builds|codecov-.+|.+teamcity.+|jenkins-.+|.+-jira-.+)$") |
+|         └─TableReader_27     | 239589.00 | root      | partition:all | data:TableFullScan_26                                                                                                                                                                                                                                                  |
+|           └─TableFullScan_26 | 239589.00 | cop[tikv] | table:ge      | keep order:false                                                                                                                                                                                                                                                       |
++------------------------------+-----------+-----------+---------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+```
+  </TabItem>
+  <TabItem value="local" label="Explain SQL - Local TiDB">
 
 ```sql
 +----------------------------------+------------+-----------+---------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -192,6 +210,59 @@ mysql>
   </TabItem>
 </Tabs>
 
+results:
+
+<Tabs>
+  <TabItem value="cloud" label="Result - TiDB Cloud" default>
+
+Remember there are only 240k rows stored in your Developer Tier database.
+
+```
++------------+------------+
+| bots_total | event_year |
++------------+------------+
+|          3 |       2015 |
+|         10 |       2016 |
+|         14 |       2017 |
+|         21 |       2018 |
+|         40 |       2019 |
+|         54 |       2020 |
+|         73 |       2021 |
+|         82 |       2022 |
++------------+------------+
+8 rows in set (1.99 sec)
+
+mysql>
+```
+  </TabItem>
+  <TabItem value="local" label="Result - Local TiDB">
+
+There are millions of rows stored in your local TiDB running on laptop/servers. 
+
+```
++------------+------------+
+| bots_total | event_year |
++------------+------------+
+|          4 |       2011 |
+|          8 |       2012 |
+|         22 |       2013 |
+|         50 |       2014 |
+|         71 |       2015 |
+|        132 |       2016 |
+|        172 |       2017 |
+|        243 |       2018 |
+|        342 |       2019 |
+|        450 |       2020 |
+|        561 |       2021 |
+|        622 |       2022 |
++------------+------------+
+12 rows in set (2.39 sec)
+
+mysql>
+```
+  </TabItem>
+</Tabs>
+
 <br />
 <br />
 <center><h3>"It works, but could it be faster?", "Of course!"</h3></center>
@@ -204,8 +275,7 @@ This step is important enough that it adds column-oriented-storage ability to Ti
 i. It's easy to set TiFlash replica, different from other software, TiDB uses SQL to take such changes into effect:
 
 ```sql
-use gharchive_dev;
-ALTER TABLE github_events SET TIFLASH REPLICA 1;
+ALTER TABLE gharchive_dev.github_events SET TIFLASH REPLICA 1;
 ```
 
 ii. Setting a TiFlash replica will take you some time, so you can use the following SQL statements to check if the procedure is done or not.
@@ -233,7 +303,7 @@ Now try to execute the former robot sql(start with: `WITH bots_with_first_seen`)
   <TabItem value="sql" label="SQL">
 
 ```sql
-mysql> WITH bots_with_first_seen AS (
+WITH bots_with_first_seen AS (
     SELECT
         actor_login, MIN(event_year) AS first_seen_at
     FROM github_events ge
@@ -253,32 +323,40 @@ SELECT ANY_VALUE(cnt) AS bots_total, event_year
 FROM acc
 GROUP BY event_year
 ORDER BY event_year;
-
-...
-
-+------------+------------+
-| bots_total | event_year |
-+------------+------------+
-|          4 |       2011 |
-|          8 |       2012 |
-|         22 |       2013 |
-|         50 |       2014 |
-|         71 |       2015 |
-|        132 |       2016 |
-|        172 |       2017 |
-|        243 |       2018 |
-|        342 |       2019 |
-|        450 |       2020 |
-|        561 |       2021 |
-|        622 |       2022 |
-+------------+------------+
-12 rows in set (0.26 sec)
-
-mysql>
 ```
-
   </TabItem>
-  <TabItem value="explain" label="Explain">
+  <TabItem value="cloud" label="Explain - TiDB Cloud">
+
+```
++----------------------------------------+-----------+--------------+---------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| id                                     | estRows   | task         | access object | operator info                                                                                                                                                                                                                                                          |
++----------------------------------------+-----------+--------------+---------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Sort_71                                | 39130.77  | root         |               | Column#44                                                                                                                                                                                                                                                              |
+| └─Projection_73                        | 39130.77  | root         |               | any_value(Column#43)->Column#45, Column#44                                                                                                                                                                                                                             |
+|   └─HashAgg_74                         | 39130.77  | root         |               | group by:Column#44, funcs:firstrow(Column#43)->Column#43, funcs:firstrow(Column#44)->Column#44                                                                                                                                                                         |
+|     └─CTEFullScan_75                   | 39130.77  | root         | CTE:acc       | data:CTE_1                                                                                                                                                                                                                                                             |
+| CTE_1                                  | 39130.77  | root         |               | Non-Recursive CTE                                                                                                                                                                                                                                                      |
+| └─Selection_61(Seed Part)              | 39130.77  | root         |               | 1                                                                                                                                                                                                                                                                      |
+|   └─Projection_62                      | 48913.46  | root         |               | Column#40, Column#38                                                                                                                                                                                                                                                   |
+|     └─Window_68                        | 48913.46  | root         |               | count(gharchive_dev.github_events.actor_login)->Column#40 over(order by Column#38 range between unbounded preceding and current row)                                                                                                                                   |
+|       └─Sort_70                        | 48913.46  | root         |               | Column#38                                                                                                                                                                                                                                                              |
+|         └─CTEFullScan_69               | 48913.46  | root         | CTE:bwfs      | data:CTE_0                                                                                                                                                                                                                                                             |
+| CTE_0                                  | 48913.46  | root         |               | Non-Recursive CTE                                                                                                                                                                                                                                                      |
+| └─Sort_18(Seed Part)                   | 48913.46  | root         |               | Column#36                                                                                                                                                                                                                                                              |
+|   └─Projection_20                      | 48913.46  | root         |               | gharchive_dev.github_events.actor_login, Column#36                                                                                                                                                                                                                     |
+|     └─TableReader_54                   | 48913.46  | root         | partition:all | data:ExchangeSender_53                                                                                                                                                                                                                                                 |
+|       └─ExchangeSender_53              | 48913.46  | mpp[tiflash] |               | ExchangeType: PassThrough                                                                                                                                                                                                                                              |
+|         └─Projection_49                | 48913.46  | mpp[tiflash] |               | Column#36, gharchive_dev.github_events.actor_login                                                                                                                                                                                                                     |
+|           └─HashAgg_50                 | 48913.46  | mpp[tiflash] |               | group by:gharchive_dev.github_events.actor_login, funcs:min(Column#49)->Column#36, funcs:firstrow(gharchive_dev.github_events.actor_login)->gharchive_dev.github_events.actor_login                                                                                    |
+|             └─ExchangeReceiver_52      | 48913.46  | mpp[tiflash] |               |                                                                                                                                                                                                                                                                        |
+|               └─ExchangeSender_51      | 48913.46  | mpp[tiflash] |               | ExchangeType: HashPartition, Hash Cols: [name: gharchive_dev.github_events.actor_login, collate: utf8mb4_unicode_ci]                                                                                                                                                   |
+|                 └─HashAgg_25           | 48913.46  | mpp[tiflash] |               | group by:gharchive_dev.github_events.actor_login, funcs:min(gharchive_dev.github_events.event_year)->Column#49                                                                                                                                                         |
+|                   └─Selection_48       | 191671.20 | mpp[tiflash] |               | regexp(gharchive_dev.github_events.actor_login, "^(bot-.+|.+bot|.+\[bot\]|.+-bot-.+|robot-.+|.+-ci-.+|.+-ci|.+-testing|.+clabot.+|.+-gerrit|k8s-.+|.+-machine|.+-automation|github-.+|.+-github|.+-service|.+-builds|codecov-.+|.+teamcity.+|jenkins-.+|.+-jira-.+)$") |
+|                     └─TableFullScan_47 | 239589.00 | mpp[tiflash] | table:ge      | keep order:false, PartitionTableScan:true                                                                                                                                                                                                                              |
++----------------------------------------+-----------+--------------+---------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+```
+  </TabItem>
+  <TabItem value="local" label="Explain - Local TiDB">
 
 ```
 +--------------------------------------------+------------+--------------+---------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -313,69 +391,14 @@ mysql>
 </Tabs>
 
 <br />
-<center><h3>`28.39 sec` VS `0.26 sec`, IT IS SUPER FASTER !</h3></center>
+<center><h3>It is SUPER faster!</h3></center>
 <br />
-
-We provide a all-in-one script to run `SET TIFLASH REPLICA` on all tables:
-```bash
-cd ossinsight/backend/;
-bundle exec rake gh:set_tiflash_replica
-```
 
 We won't talk too much about how to get USEFUL insights from such a big data as we are also students in open source software field. All SQLs in this project can be found on page, just click the `SHOW SQL` button on top-right of each chart to get the corresponding SQL.
 
 
-## 2. Make Data More Beautiful
+## 2. Well done!
 
-### a. Config the API Server
+Visit [http://localhost:30000](http://localhost:30000) to check the mini OSS Insight site.
 
-Create config file:
-
-```bash
-cd ossinsight/api/;
-cp .env.template .env;
-```
-
-Then edit `.env` file:
-
-```
-# For database connection
-DATABASE_URL=mysql://root:@127.0.0.1:4000/gharchive_dev
-CONNECTION_LIMIT=10
-QUEUE_LIMIT=20
-SERVER_PORT=3450
-ENABLE_CACHE=0
-# comma separated tokens
-GH_TOKENS='(your github personal access token)'
-PREFETCH_CONCURRENT=1
-```
-
-:::note
-Make sure `ENABLE_CACHE` is set to 0, we won't enable cache in dev mode.
-:::
-
-### b. Start API Server
-
-Open another terminal tab, then:
-
-```bash
-# Learn how to install npm: https://docs.npmjs.com/downloading-and-installing-node-js-and-npm
-cd ossinsight/api/;
-npm install -g pnpm;
-pnpm i --frozen-lockfile
-pnpm run dev;
-```
-
-### c. Start Web UI
-
-Open another terminal tab, then:
-
-```bash
-cd ossinsight/;
-npm ci;
-APP_HOST=http://localhost:3450 APP_API_BASE=http://localhost:3450 npm run start -- --port 30000;
-```
-
-### d. Well done!
-
-Visit [http://localhost:30000](http://localhost:30000);
+If you have any question, please contact ossinsight@pingcap.com.

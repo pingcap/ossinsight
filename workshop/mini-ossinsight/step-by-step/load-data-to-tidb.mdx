@@ -6,9 +6,37 @@ sidebar_position: 2
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-## 1. Install TiDB
+## 1. Setup TiDB
 
-It's easy to setup a TiDB Cluster in your laptop (Mac or Linux) with the official cli tools: [tiup](https://tiup.io/)(inspired by rustup)
+:::info
+You can use either TiDB Cloud or your local tidb cluster(on laptop or servers),
+by default, we use TiDB Cloud in this workshop.
+
+* With the TiDB Cloud mode, because the Developer Tier uses Shared Ram and provides only 1GB of disk, so we only provide 240k rows of data for importing.
+* But for the Local TiDB, we provide a dataset with 0.8 million of rows.
+:::
+
+<Tabs>
+<TabItem value="cloud" label="TiDB Cloud" default>
+
+First, [sign up](https://tidbcloud.com/?utm_source=ossinsight&utm_medium=referral) TiDB Cloud, then create a `Developer Tier` database which is free for 1 year.
+
+On top-right of the cluster detail page you created, click `Connect` button, you will see the connection string like below:
+```bash
+mysql --connect-timeout 15 -u '39jzyT3RT1DWrAr.root' -h gateway01.us-west-2.prod.aws.tidbcloud.com -P 4000 -D test -p
+```
+
+There are several values we can get from the connection string that will be used later:
+
+* **username**: the value after -u option, in this case, it's `39jzyT3RT1DWrAr.root` 
+* **password**: the password you just inputted while creating database 
+* **host**: the value after -h option, in this case, it's `gateway01.us-west-2.prod.aws.tidbcloud.com`
+* **port**: `4000`, by default, TiDB Cloud uses `4000` instead of `3306`
+
+</TabItem>
+<TabItem value="local" label="Local TiDB">
+
+It's easy to setup a TiDB cluster in your laptop (Mac or Linux) with the official cli tools: [tiup](https://tiup.io/)
 
 ```bash
 # Install tiup, you'd better use bash.
@@ -27,10 +55,25 @@ PD client endpoints: [127.0.0.1:2379]
 To view the Prometheus: http://127.0.0.1:9090
 To view the Grafana: http://127.0.0.1:3000
 ```
+</TabItem>
+</Tabs>
 
-## 2. Start data loading script
 
-### a. Clone the OSS Insight repo to local
+## 2. Load realtime events to TiDB
+
+### a. Install Docker Compose
+
+:::note
+We suppose you have knowledge about Docker / Container / Docker Compose.
+:::
+
+If you haven't installed Docker Compose, please install it with this [doc](https://docs.docker.com/compose/install/), then verfiy it with:
+
+```bash
+docker-compose --version
+```
+
+### b. Clone the OSS Insight repo to local
 
 <Tabs>
 <TabItem value="github" label="GitHub" default>
@@ -39,7 +82,6 @@ To view the Grafana: http://127.0.0.1:3000
 git clone --depth=1 https://github.com/pingcap/ossinsight.git;
 cd ossinsight;
 ```
-
 </TabItem>
 <TabItem value="ghproxy" label="GHProxy">
 
@@ -51,68 +93,57 @@ cd ossinsight;
 </TabItem>
 </Tabs>
 
-### b. Config the data loader
 
-Enter to the `/backend` folder which stored our data loader script written by Ruby.
+### c. Start up the mini OSSInsight program
 
-```
-cd backend;
-```
+Configure the necessary environment variables and start the mini OSSInsight through docker compose.
 
-Edit the `.env.local` in the `/backend` folder, fill in the `Database URL` and `GitHub personal access token` (Learn how to [create a personal access token](/workshop/mini-ossinsight/step-by-step/find-data-source#creating-a-personal-access-token))
-
-```
-DATABASE_URL=tidb://root@127.0.0.1:4000/gharchive_dev
-GITHUB_TOKEN=(your github personal access token)
-```
-
-### c. Install data loader dependencies
 
 <Tabs>
-<TabItem value="macos" label="MacOS" default>
+<TabItem value="cloud" label="TiDB Cloud" default>
 
 ```bash
-# Homebrew: https://brew.sh/
-brew install openssl ruby@2.7 mysql;
-bundle update --bundler;
-bundle install;
+export GITHUB_TOKEN=<your personal access token>;
+# e.g. DATABASE_URL=tidb://39jzyT3RT1DWrAr.root:xxxxxxxxx@gateway01.us-west-2.prod.aws.tidbcloud.com:4000/gharchive_dev
+export DATABASE_URL=tidb://<your tidb username>:<your tidb password>@<your tidb host>:4000/gharchive_dev;
+docker-compose pull;
+docker-compose up;
+```
+</TabItem>
+<TabItem value="local" label="Local TiDB">
+
+```bash
+export GITHUB_TOKEN=<your personal access token>;
+docker-compose pull;
+docker-compose up;
 ```
 
-</TabItem>
-<TabItem value="linux" label="Linux">
-
-TODO
-
+:::note
+The program in docker compose will connect to the database URL `tidb://root:@host.docker.internal:4000/gharchive_dev` by default, which can be modified through `DATABASE_URL` variable.
+:::
 </TabItem>
 </Tabs>
 
-:::note
-
-Tips: If the network access is slow, you can try to add a gem image mirror source.
-
-```bash
-# Add mirror source for gem.
-gem sources -a https://mirrors.tuna.tsinghua.edu.cn/rubygems/
-# Check if the mirror be config.
-gem sources -l
-```
-
+:::info
+Learn how to [create a personal access token](/workshop/mini-ossinsight/step-by-step/find-data-source#creating-a-personal-access-token)
 :::
 
-### c. Initial database schema
-
-```bash
-# Create database
-bundle exec rails db:create
-
-# Create tables, index
-bundle exec rails db:migrate
-
-# Load seed data, e.g: collections, collection_items
-bundle exec rake db:seed
-```
 
 ## 3. Load sample historical GitHub events to TiDB
+
+<Tabs>
+<TabItem value="cloud" label="TiDB Cloud" default>
+
+Download and import the sample events data which contains several active OSS database repos, about 240k rows.
+
+```bash
+wget https://github.com/pingcap/ossinsight/releases/download/sample-data/gharchive_dev.github_events.000000000.sql;
+# e.g.  mysql -u 39jzyT3RT1DWrAr.root -h gateway01.us-west-2.prod.aws.tidbcloud.com -P 4000 -p gharchive_dev < gharchive_dev.github_events.000000000.sql
+mysql --host <your tidb host> --port 4000 -u <your tidb username> -p gharchive_dev < gharchive_dev.github_events.000000000.sql
+```
+
+</TabItem>
+<TabItem value="local" label="Local TiDB">
 
 Download and import the sample events data which contains several active OSS database repos, about 0.8 million.
 
@@ -129,27 +160,31 @@ The importing task would cost about 10 minutes.
 If you want to get different size of data please visit: 
 https://github.com/pingcap/ossinsight/releases/tag/sample-data
 :::
+</TabItem>
+</Tabs>
 
 
-## 4. Listen to /events and insert realtime events to TiDB
-
-Open another terminal tab, start the crawler daemon by:
-
-```bash
-bundle exec rails runner 'Realtime.new(ENV["GITHUB_TOKEN"].to_s.split(","), 100).run';
-```
-
-## 5. Test
+## 4. Test
 
 Connect to TiDB by:
 
 <Tabs>
-<TabItem value="mysql-client" label="MySQL Client" default>
+<TabItem value="cloud" label="TiDB Cloud" default>
+
+On top-right of the TiDB Cloud cluster detail page, click `Connect` button and get you connection command in bottom like below:
+```bash
+mysql --connect-timeout 15 -u '<your tidb username>' -h gateway01.us-west-2.prod.aws.tidbcloud.com -P 4000 -D test -p
+```
+
+</TabItem>
+<TabItem value="local" label="Local TiDB">
 
 ```bash
 # no password
 mysql --comments --host 127.0.0.1 --port 4000 -u root -t gharchive_dev -p
 ```
+</TabItem>
+</Tabs>
 
 Execute the following SQL to check if it is ACTUALLY ready:
 
@@ -158,21 +193,3 @@ SELECT count(*) FROM gharchive_dev.github_events;
 ```
 
 Try it again after a few seconds, make sure the results are different.
-
-</TabItem>
-<TabItem value="mycli" label="MyCLI">
-
-```bash
-# no password
-mycli --host 127.0.0.1 --port 4000 -u root -t gharchive_dev
-```
-
-Execute the following SQL to check if it is ACTUALLY ready:
-
-```sql
-WATCH SELECT count(*) FROM gharchive_dev.github_events;
-```
-
-</TabItem>
-</Tabs>
-
