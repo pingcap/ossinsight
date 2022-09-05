@@ -33,7 +33,7 @@ for (let i = -12; i <= 13; i++) {
 }
 
 // https://stackoverflow.com/questions/6939685/get-client-time-zone-from-browser
-const DEFAULT_ZONE = 12 - ((new Date()).getTimezoneOffset() / 60);
+const DEFAULT_ZONE = Math.max(Math.min(Math.round(12 - ((new Date()).getTimezoneOffset() / 60)), ZONE_OPTIONS.length - 1), 0);
 
 export const CommitsSection = forwardRef(function ({}, ref: ForwardedRef<HTMLElement>) {
   const theme = useTheme()
