@@ -1,4 +1,4 @@
-;id: 10051
+id: 10051
 name: Security Tool
 items:
   - prowler-cloud/prowler
