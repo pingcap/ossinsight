@@ -23,8 +23,8 @@
     "dev:sync-nginx-log": "ts-node scripts/sync-nginx-log/index.ts",
     "dev:calc-hot-collections": "ts-node scripts/calc-hot-collections/index.ts",
     "dev:sync-users": "ts-node scripts/sync-users/index.ts",
-    "dev:sync-repos": "ts-node scripts/sync-repos/index.ts",
     "dev:explain-all": "ts-node scripts/explain-all/index.ts",
+    "dev:sync-repos": "NODE_OPTIONS='--max-old-space-size=4098' ts-node scripts/sync-repos/index.ts",
     "gen:schema-ts": "json2ts params.schema.json params.schema.d.ts",
     "validate:params": "ajv -s params.schema.json -d \"queries/*/params.json\"",
     "build": "tsc && pnpm run build:copy",
@@ -35,6 +35,8 @@
   "dependencies": {
     "@goparrot/geocoder": "^4.4.0",
     "@koa/cors": "^3.1.0",
+    "@octokit/core": "^4.0.5",
+    "@octokit/plugin-throttling": "^4.3.0",
     "async": "^3.2.4",
     "axios": "^0.27.2",
     "consola": "^2.15.3",
