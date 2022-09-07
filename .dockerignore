@@ -8,6 +8,17 @@ yarn-error.log
 .docusaurus
 .prefetch
 
-api/
+api/.github
+api/.git
+api/.env
+api/.gitignore
+api/.idea
+api/.vscode
+api/node_modules/
+api/tests/
+api/dist/
+api/dist/.env
+api/log/
+api/README.md
 
 backend/

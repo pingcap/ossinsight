@@ -13,6 +13,8 @@ RUN npm ci
 
 # Bundle app source
 COPY . .
+ENV APP_API_BASE=http://host.docker.internal:3450
+RUN npm run build
 
 EXPOSE 30000
-CMD [ "npm", "run", "start-silence"]
+CMD [ "npm", "run", "serve", "--", "--port", "30000"]
