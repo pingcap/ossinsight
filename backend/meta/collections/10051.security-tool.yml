@@ -30,3 +30,17 @@ items:
   - jumpserver/jumpserver
   - projectdiscovery/nuclei
   - zaproxy/zaproxy
+  - anantshri/svn-extractor
+  - adrecon/adrecon
+  - adrecon/AzureADRecon
+  - s4n7h0/Halcyon-IDE
+  - datasploit/datasploit
+  - nmap/nmap
+  - wazuh/wazuh
+  - rapid7/metasploit-framework
+  - deepfence/ThreatMapper
+  - desaster/kippo
+  - aboul3la/Sublist3r
+  - gamelinux/passivedns
+  - lanmaster53/recon-ng
+
