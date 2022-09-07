@@ -36,7 +36,11 @@ app.use(router.routes()).use(router.allowedMethods());
 
 // Init Socket.io
 const httpServer = createServer(app.callback());
-const io = new SocketServer(httpServer);
+const io = new SocketServer(httpServer, {
+  cors: {
+    origin: "*",
+  },
+});
 
 // Socket connection
 io.on("connection", (socket) => {
