@@ -10,4 +10,4 @@ FROM
     github_events ge
 WHERE
     type = 'PullRequestEvent'
-    AND created_at > DATE_SUB(NOW(), INTERVAL 1 HOUR)
+    AND created_at > DATE_SUB(NOW(), INTERVAL 24 HOUR)
