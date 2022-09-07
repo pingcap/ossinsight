@@ -294,3 +294,81 @@ export const useTotalEvents = (run: boolean, interval = 1000) => {
 
   return total + added
 }
+
+export const useTotalEventsWs = (run: boolean, interval = 1000) => {
+  const [total, setTotal] = useState(0);
+  const [added, setAdded] = useState(0);
+  const lastTs = useRef(0);
+  const cancelRef = useRef<() => void>();
+  const mounted = useRef(false);
+
+  const reloadTotal = async () => {
+    try {
+      const {
+        data: [{ cnt, latest_timestamp }],
+      } = await core.queryWithoutCache("events-total");
+      if (!mounted.current) {
+        return;
+      }
+      cancelRef.current?.();
+      lastTs.current = latest_timestamp;
+      setTotal(cnt);
+      setAdded(0);
+      return () => {
+        cancelRef.current?.();
+      };
+    } catch {}
+  };
+
+  useEffect(() => {
+    mounted.current = true;
+    return () => {
+      mounted.current = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!run) {
+      return;
+    }
+
+    socket.on("connect", () => {
+      console.log(`socket connect`);
+    });
+
+    socket.on("disconnect", () => {
+      console.log(`socket disconnect`);
+    });
+
+    socket.on(`events-increment`, (wsData) => {
+      if (process.env.NODE_ENV === "development") {
+        console.log("socket", `events-increment?ts=${lastTs.current}`, wsData);
+      }
+      const {
+        data: [{ cnt, latest_created_at }],
+      } = wsData;
+      setAdded(cnt);
+    });
+
+    const hTotal = setPromiseInterval(async () => {
+      await reloadTotal();
+    }, 60000);
+
+    const hAdded = setPromiseInterval(async () => {
+      lastTs.current &&
+        socket.emit("query", `events-increment?ts=${lastTs.current}`);
+    }, interval);
+
+    reloadTotal();
+
+    return () => {
+      clearPromiseInterval(hTotal);
+      clearPromiseInterval(hAdded);
+      socket.off("connect");
+      socket.off("disconnect");
+      socket.off(`events-increment`);
+    };
+  }, [run]);
+
+  return total + added;
+};

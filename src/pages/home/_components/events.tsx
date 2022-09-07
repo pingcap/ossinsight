@@ -16,7 +16,10 @@ import {
 } from '@primer/octicons-react';
 import React, { useCallback, useEffect, useRef } from 'react';
 import { CoolList, CoolListInstance } from '../../../components/CoolList';
-import { useRealtimeRemoteData } from '../../../components/RemoteCharts/hook';
+import {
+  useRealtimeRemoteData,
+  useRealtimeRemoteDataWs,
+} from "../../../components/RemoteCharts/hook";
 
 type Event = {
   id: number
@@ -37,7 +40,13 @@ export default function Events({ show }: { show: boolean }) {
   const intervalHandler = useRef<ReturnType<typeof setInterval>>();
 
   const dataRef = useRef<[Event[], number]>([[], 0]);
-  const data = useRealtimeRemoteData<{}, Event>('events-increment-list', {}, false, show);
+  // const data = useRealtimeRemoteData<{}, Event>('events-increment-list', {}, false, show);
+  const data = useRealtimeRemoteDataWs<{}, Event>(
+    "events-increment-list",
+    {},
+    false,
+    show
+  );
 
   useEffect(() => {
     if (data.data) {
@@ -69,7 +78,14 @@ export default function Events({ show }: { show: boolean }) {
   }, [show]);
 
   return (
-    <CoolList ref={ref} maxLength={7} itemHeight={24} getKey={getKey} onMouseEnter={stop} onMouseLeave={start}>
+    <CoolList
+      ref={ref}
+      maxLength={7}
+      itemHeight={24}
+      getKey={getKey}
+      onMouseEnter={stop}
+      onMouseLeave={start}
+    >
       {renderEvent}
     </CoolList>
   );

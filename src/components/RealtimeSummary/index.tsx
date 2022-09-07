@@ -10,7 +10,7 @@ import { CanvasRenderer } from 'echarts/renderers';
 import React from 'react';
 import AnimatedNumber from "react-awesome-animated-number";
 import useVisibility from '../../hooks/visibility';
-import { useTotalEvents } from '../RemoteCharts/hook';
+import { useTotalEvents, useTotalEventsWs } from "../RemoteCharts/hook";
 import { useRealtimeEvents } from './hooks';
 
 
@@ -37,7 +37,8 @@ const Chart = ({ visible }: { visible: boolean }) => {
 };
 
 const Counts = ({ visible }: { visible: boolean }) => {
-  const total = useTotalEvents(visible, 5000);
+  // const total = useTotalEvents(visible, 5000);
+  const total = useTotalEventsWs(visible, 5000);
 
   return (
     <Stack direction="row" alignItems="center" divider={<Divider />}>
