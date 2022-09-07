@@ -143,7 +143,7 @@ const config = {
         ]
       }
     ],
-    'docusaurus-plugin-hubspot',
+    // 'docusaurus-plugin-hubspot',
   ],
   presets: [
     [
@@ -377,9 +377,9 @@ const config = {
         darkTheme: darkCodeTheme,
         autoCollapseSidebarCategories: true,
       },
-      hubspot: {
-        accountId: '4466002',
-      },
+      // hubspot: {
+      //   accountId: '4466002',
+      // },
     }),
 };
 
