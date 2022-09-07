@@ -16,6 +16,7 @@ dotenv.config({ path: path.resolve(__dirname, '../../.env'), override: true });
 
 // Init logger.
 const logger = consola.withTag('sync-repos');
+const DEFAULT_SYNC_STEP = 10;   // 10 minutes.
 
 export interface GitHubRepo {
     repoId: number;
@@ -66,7 +67,7 @@ async function main() {
     // Sync repos.
 
     // Generate sync jobs.
-    let from: DateTime, to: DateTime;
+    let from: DateTime, to: DateTime, step: number;
     if (process.env.SYNC_HISTORY_REPOS_FROM === undefined) {
         from = DateTime.utc(2011, 2, 12);
     } else {
@@ -77,6 +78,12 @@ async function main() {
         to = DateTime.utc();
     } else {
         to = DateTime.fromSQL(process.env.SYNC_HISTORY_REPOS_TO).toUTC()
+    }
+
+    if (process.env.SYNC_HISTORY_REPOS_STEP === undefined) {
+        step = DEFAULT_SYNC_STEP;
+    } else {
+        step = Number(process.env.SYNC_HISTORY_REPOS_STEP)
     }
 
     // Split sync jobs.
@@ -95,7 +102,7 @@ async function main() {
     const concurrent = tokens.length;
     logger.info(`Handling ${timeRanges.length} subtasks with ${concurrent} concurrent.`);
     await asyncPool(concurrent, timeRanges, async ({ tFrom, tTo }) => {
-        await extractReposFromRepoSearch(workerPool, tFrom, tTo);
+        await extractReposFromRepoSearch(workerPool, tFrom, tTo, step);
         logger.success(`Finished loading repos from ${tFrom.toISO()} to ${tTo.toISO()}.`);
     });
 }

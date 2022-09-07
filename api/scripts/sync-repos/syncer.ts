@@ -10,17 +10,16 @@ import { JobWorker } from './worker';
 // Init logger.
 const logger = consola.withTag('sync-repos-extract');
 
-const STEP_MINUTE = 5;
 const FROM_OFFSET = 10;
 
 export async function extractReposFromRepoSearch(
-    workerPool: Pool<JobWorker>, from: DateTime, to: DateTime
+    workerPool: Pool<JobWorker>, from: DateTime, to: DateTime, step: number
 ): Promise<any> {
     return new Promise((resolve, reject) => {
         workerPool.use(async (worker) => {
             const { octokit, repoLoader, repoLangLoader, repoTopicLoader } = worker; 
             let right = DateTime.fromJSDate(to.toJSDate());
-            let left = right.minus({ minutes: STEP_MINUTE });
+            let left = right.minus({ minutes: step });
 
             while(true) {
                 if (left.diff(from, 'seconds').seconds < FROM_OFFSET) {
@@ -30,10 +29,10 @@ export async function extractReposFromRepoSearch(
                 const firstRepoPushedAt = await extractRepos(octokit, repoLoader, repoLangLoader, repoTopicLoader, left, right);
                 if (firstRepoPushedAt) {
                     right = firstRepoPushedAt
-                    left = right.minus({ minutes: STEP_MINUTE });
+                    left = right.minus({ minutes: step });
                 } else {
                     right = left;
-                    left = right.minus({ minutes: STEP_MINUTE });
+                    left = right.minus({ minutes: step });
                 }
             }
 
@@ -55,9 +54,10 @@ export async function extractRepos(
     const fromISO = from.toISO();
     const toISO = to.toISO();
     logger.info(`Fetching search repo result for time range from ${fromISO} to ${toISO}...`);
-
+    const queryVariable = process.env.SYNC_REPOS_GQL_QUERY;
+    logger.info(`sort:updated-desc ${queryVariable || ''} pushed:${fromISO}..${toISO}`)
     const variables = {
-        keyword: `sort:updated-desc pushed:${fromISO}..${toISO}`,
+        keyword: `sort:updated-desc ${queryVariable || ''} pushed:${fromISO}..${toISO}`,
         cursor: null
     };
 
@@ -186,13 +186,13 @@ export async function extractRepos(
                 firstPushedAt = pushedAt;
             }
 
-            if (Array.isArray(repo?.languages?.edges)) {
+            if (Array.isArray(repo?.languages?.edges) && process.env.SKIP_SYNC_REPO_LANGUAGES !== '1') {
                 for (const { node, size } of repo?.languages?.edges) {
                     repoLanguageLoader.insert([repo.databaseId, node.name, size]);
                 }
             }
 
-            if (Array.isArray(repo?.repositoryTopics?.nodes)) {
+            if (Array.isArray(repo?.repositoryTopics?.nodes) && process.env.SKIP_SYNC_REPO_TOPICS !== '1') {
                 for (const { topic } of repo?.repositoryTopics?.nodes) {
                     repoTopicLoader.insert([repo.databaseId, topic.name]);
                 }
