@@ -1,5 +1,6 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { createSimpleCache, patchCacheInterceptors } from "./axios/cache";
+import io from "socket.io-client";
 
 export const BASE_URL = process.env.APP_API_BASE || 'https://api.ossinsight.io';
 
@@ -46,3 +47,4 @@ export function registerStaticData(checkReq: CheckReq, data: any) {
   });
 }
 
+export const socket = io(BASE_URL);

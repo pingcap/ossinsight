@@ -43,6 +43,7 @@
     "react": "^17.0.1",
     "react-aspect-ratio": "^1.1.2",
     "react-dom": "^17.0.1",
+    "socket.io-client": "^4.5.2",
     "sql-formatter": "^4.0.2",
     "use-deep-compare": "^1.1.0"
   },
