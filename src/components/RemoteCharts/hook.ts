@@ -5,6 +5,7 @@ import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'r
 import InViewContext from "../InViewContext";
 import { core } from '../../api';
 import { clearPromiseInterval, setPromiseInterval } from "../../lib/promise-interval";
+import { socket } from "../../api/client";
 
 export interface AsyncData<T> {
   data: T | undefined
@@ -157,6 +158,71 @@ export const useRealtimeRemoteData: UseRemoteData = (query: string, params: any,
       }
     }
   }, [shouldLoad, inView, reload])
+
+  return {data, loading, error}
+}
+
+export const useRealtimeRemoteDataWs: UseRemoteData = (query: string, params: any, formatSql, shouldLoad = true): AsyncData<RemoteData<any, any>> => {
+  const { inView } = useContext(InViewContext)
+
+  const [data, setData] = useState(undefined)
+  const [error, setError] = useState(undefined)
+  const [loading, setLoading] = useState(false)
+  const mounted = useRef(false)
+
+  const serializedParams = unstable_serialize([query, params])
+
+  useEffect(() => {
+    mounted.current = true
+    return () => {
+      mounted.current = false
+    }
+  }, [])
+
+  const reload = useCallback(async () => {
+    try {
+      if (!mounted.current) {
+        return
+      }
+      setError(undefined)
+      socket.emit('query', `${query}`)
+    } catch (e) {
+      if (mounted.current) {
+        setError(e)
+      }
+    } finally {
+    }
+  }, [serializedParams])
+
+  useEffect(() => {
+    if (shouldLoad && inView) {
+      reload()
+      const h = setPromiseInterval(async () => {
+        await reload()
+      }, 5000)
+      socket.on("connect", () => {
+        console.log(`socket connect`);
+      });
+
+      socket.on("disconnect", () => {
+        console.log(`socket disconnect`);
+      });
+
+      socket.on(query, (wsData) => {
+        if (process.env.NODE_ENV === 'development') { 
+          console.log('socket', query, wsData);
+        }
+        setData(wsData)
+      });
+
+      return () => {
+        socket.off("connect");
+        socket.off("disconnect");
+        socket.off(query);
+        clearPromiseInterval(h)
+      };
+    }
+  }, [shouldLoad, inView, reload]);
 
   return {data, loading, error}
 }
