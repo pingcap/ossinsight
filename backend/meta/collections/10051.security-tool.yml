@@ -29,3 +29,4 @@ items:
   - anchore/grype
   - jumpserver/jumpserver
   - projectdiscovery/nuclei
+  - zaproxy/zaproxy
