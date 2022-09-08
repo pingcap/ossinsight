@@ -162,70 +162,66 @@ export const useRealtimeRemoteData: UseRemoteData = (query: string, params: any,
   return {data, loading, error}
 }
 
-export const useRealtimeRemoteDataWs: UseRemoteData = (query: string, params: any, formatSql, shouldLoad = true): AsyncData<RemoteData<any, any>> => {
-  const { inView } = useContext(InViewContext)
+export const useRealtimeRemoteDataWs: UseRemoteData = (
+  query: string,
+  params: any,
+  formatSql,
+  shouldLoad = true
+): AsyncData<RemoteData<any, any>> => {
+  const { inView } = useContext(InViewContext);
 
-  const [data, setData] = useState(undefined)
-  const [error, setError] = useState(undefined)
-  const [loading, setLoading] = useState(false)
-  const mounted = useRef(false)
+  const [data, setData] = useState(undefined);
+  const [error, setError] = useState(undefined);
+  const [loading, setLoading] = useState(false);
+  const mounted = useRef(false);
 
-  const serializedParams = unstable_serialize([query, params])
+  const serializedParams = unstable_serialize([query, params]);
 
   useEffect(() => {
-    mounted.current = true
+    mounted.current = true;
     return () => {
-      mounted.current = false
-    }
-  }, [])
+      mounted.current = false;
+    };
+  }, []);
 
   const reload = useCallback(async () => {
     try {
       if (!mounted.current) {
-        return
+        return;
       }
-      setError(undefined)
-      socket.emit('query', `${query}`)
+      setError(undefined);
+      socket.emit("query", `${query}`);
     } catch (e) {
       if (mounted.current) {
-        setError(e)
+        setError(e);
       }
     } finally {
     }
-  }, [serializedParams])
+  }, [serializedParams]);
 
   useEffect(() => {
     if (shouldLoad && inView) {
-      reload()
+      reload();
       const h = setPromiseInterval(async () => {
-        await reload()
-      }, 5000)
-      socket.on("connect", () => {
-        console.log(`socket connect`);
-      });
-
-      socket.on("disconnect", () => {
-        console.log(`socket disconnect`);
-      });
+        await reload();
+      }, 5000);
 
       socket.on(query, (wsData) => {
-        if (process.env.NODE_ENV === 'development') { 
-          console.log('socket', query, wsData);
+        if (process.env.NODE_ENV === "development") {
+          console.log("socket", query, wsData);
         }
-        setData(wsData)
+        setData(wsData);
       });
 
       return () => {
-        socket.off("connect");
-        socket.off("disconnect");
         socket.off(query);
-        clearPromiseInterval(h)
+        clearPromiseInterval(h);
       };
     }
   }, [shouldLoad, inView, reload]);
 
-  return {data, loading, error}
-}
+  return { data, loading, error };
+};
 
 export const useTotalEvents = (run: boolean, interval = 1000) => {
   const [total, setTotal] = useState(0)
@@ -332,14 +328,6 @@ export const useTotalEventsWs = (run: boolean, interval = 1000) => {
       return;
     }
 
-    socket.on("connect", () => {
-      console.log(`socket connect`);
-    });
-
-    socket.on("disconnect", () => {
-      console.log(`socket disconnect`);
-    });
-
     socket.on(`events-increment`, (wsData) => {
       if (process.env.NODE_ENV === "development") {
         console.log("socket", `events-increment?ts=${lastTs.current}`, wsData);
@@ -364,8 +352,6 @@ export const useTotalEventsWs = (run: boolean, interval = 1000) => {
     return () => {
       clearPromiseInterval(hTotal);
       clearPromiseInterval(hAdded);
-      socket.off("connect");
-      socket.off("disconnect");
       socket.off(`events-increment`);
     };
   }, [run]);

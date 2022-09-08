@@ -48,3 +48,11 @@ export function registerStaticData(checkReq: CheckReq, data: any) {
 }
 
 export const socket = io(BASE_URL);
+
+socket.on("connect", () => {
+  console.log(`socket connect`);
+});
+
+socket.on("disconnect", () => {
+  console.log(`socket disconnect`);
+});
