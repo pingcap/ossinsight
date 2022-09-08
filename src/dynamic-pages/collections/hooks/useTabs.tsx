@@ -3,6 +3,7 @@ import Tabs from '@mui/material/Tabs';
 import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import Stack from '@mui/material/Stack';
+import Box from '@mui/material/Box';
 import React, { useMemo, useState } from 'react';
 import useUrlSearchState, { stringParam } from '../../../hooks/url-search-state';
 import IconTab from '../components/IconTab';
@@ -34,6 +35,7 @@ export function useDimensionTabs(searchKey: string, assurePrefix = false) {
       direction={{ xs: "column", sm: "row", md: "column", lg: "row" }}
       justifyContent="space-between"
       gap="1rem"
+      flexWrap="wrap"
     >
       <Tabs
         value={dimension.key}
@@ -53,20 +55,31 @@ export function useDimensionTabs(searchKey: string, assurePrefix = false) {
         ))}
       </Tabs>
       {searchKey === "monthly-rankings" && (
-        <ButtonGroup variant="outlined" aria-label="display type" size="small">
-          {collectionDisplayType.map((colType) => {
-            return (
-              <Button
-                key={colType.type}
-                sx={{ textTransform: "none" }}
-                onClick={handleChangeDateType(colType.type)}
-                variant={colType.type === dateType ? "contained" : "outlined"}
-              >
-                {colType.label}
-              </Button>
-            );
-          })}
-        </ButtonGroup>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
+          <ButtonGroup
+            variant="outlined"
+            aria-label="display type"
+            size="small"
+          >
+            {collectionDisplayType.map((colType) => {
+              return (
+                <Button
+                  key={colType.type}
+                  sx={{ textTransform: "none" }}
+                  onClick={handleChangeDateType(colType.type)}
+                  variant={colType.type === dateType ? "contained" : "outlined"}
+                >
+                  {colType.label}
+                </Button>
+              );
+            })}
+          </ButtonGroup>
+        </Box>
       )}
     </Stack>
   );
