@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react';
 import { AsyncData, RemoteData, useRemoteData } from '../../../components/RemoteCharts/hook';
-
+import { CollectionDateTypeEnum } from "../dimensions";
 
 export type CollectionHistoryData = {
   repo_name: string
@@ -27,6 +27,18 @@ export type CollectionMonthRankData = {
   rank_mom: number
   total: number
 }
+
+export type CollectionLastMonthRankData = {
+  last_2nd_period_rank: number;
+  last_2nd_period_total: number;
+  last_period_rank: number;
+  last_period_total: number;
+  rank_pop: number;
+  repo_id: number;
+  repo_name: string;
+  total: number;
+  total_pop: number;
+};
 
 const SYMBOL_TRANSFORMED = Symbol('transformed-data')
 
@@ -114,6 +126,18 @@ export function useCollectionHistoryRank(collectionId: number | undefined, dimen
   return useRemoteData<any, CollectionHistoryRankData>(`collection-${dimension}-history-rank`, { collectionId }, false, collectionId !== undefined);
 }
 
-export function useCollectionMonthRank(collectionId: number | undefined, dimension: string) {
-  return useRemoteData<any, CollectionMonthRankData>(`collection-${dimension}-month-rank`, { collectionId }, false, collectionId !== undefined);
+export function useCollectionMonthRank(
+  collectionId: number | undefined,
+  dimension: string,
+  type?: CollectionDateTypeEnum
+) {
+  return useRemoteData<
+    any,
+    CollectionMonthRankData & CollectionLastMonthRankData
+  >(
+    `collection-${dimension}-${type || "month"}-rank`,
+    { collectionId },
+    false,
+    collectionId !== undefined
+  );
 }
