@@ -54,12 +54,12 @@ export default withInViewContainer(function MonthRankSection() {
 
   return (
     <section>
-      <H2 id="monthly-rankings">Month-to-month Ranking</H2>
+      <H2 id="monthly-rankings">Last 28 Days / Month-to-month Ranking</H2>
       <P2>
         The following table ranks repositories using three metrics: stars, pull
-        requests, and issues. The table compares the most recent two months of
-        data and indicates whether repositories are moving up or down the
-        rankings.
+        requests, and issues. The table compares last 28 days or the most recent
+        two months of data and indicates whether repositories are moving up or
+        down the rankings.
       </P2>
       {tabs}
       <br />
