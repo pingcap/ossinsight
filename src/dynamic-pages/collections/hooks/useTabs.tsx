@@ -62,7 +62,7 @@ export function useDimensionTabs(searchKey: string, assurePrefix = false) {
                 onClick={handleChangeDateType(colType.type)}
                 variant={colType.type === dateType ? "contained" : "outlined"}
               >
-                {colType.title}
+                {colType.label}
               </Button>
             );
           })}

@@ -22,7 +22,7 @@ import { withRemote } from '../hooks/withRemote';
 import { H2, H3, P1, P2 } from './typograpy';
 import { formatTime } from "./utils";
 import Diff from "../../../components/Diff";
-import { CollectionDateTypeEnum } from "../dimensions";
+import { CollectionDateTypeEnum, collectionDisplayType } from "../dimensions";
 
 const TableCell = styled(MuiTableCell)(() => ({
   borderBottom: "1px solid #222"
@@ -68,7 +68,10 @@ export default withInViewContainer(function MonthRankSection() {
         (data) => (
           <>
             <H3 fontSize={14} align="center">
-              Monthly Ranking - {dimension.title}
+              {`${
+                collectionDisplayType.find((i) => i.type === dateType)
+                  .tableTitle
+              } Ranking - ${dimension.title}`}
             </H3>
             <TableContainer>
               <Table className="clearTable" size="small" stickyHeader>

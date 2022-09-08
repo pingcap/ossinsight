@@ -33,6 +33,6 @@ export enum CollectionDateTypeEnum {
 }
 
 export const collectionDisplayType = [
-  { type: CollectionDateTypeEnum.Last28Days, title: "Last 28 Days" },
-  { type: CollectionDateTypeEnum.Month, title: "Month on Month" },
+  { type: CollectionDateTypeEnum.Last28Days, tableTitle: "Last 28 days", label: "Last 28 Days" },
+  { type: CollectionDateTypeEnum.Month, tableTitle: "Monthly", label: "Month on Month" },
 ];
