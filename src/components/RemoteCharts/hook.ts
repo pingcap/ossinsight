@@ -206,19 +206,23 @@ export const useRealtimeRemoteDataWs: UseRemoteData = (
         await reload();
       }, 5000);
 
-      socket.on(query, (wsData) => {
-        if (process.env.NODE_ENV === "development") {
-          console.log("socket", query, wsData);
-        }
-        setData(wsData);
-      });
-
       return () => {
-        socket.off(query);
         clearPromiseInterval(h);
       };
     }
   }, [shouldLoad, inView, reload]);
+
+  useEffect(() => {
+    socket.on(query, (wsData) => {
+      if (process.env.NODE_ENV === "development") {
+        console.log("socket", query, wsData);
+      }
+      setData(wsData);
+    });
+    return () => {
+      socket.off(query);
+    };
+  });
 
   return { data, loading, error };
 };
