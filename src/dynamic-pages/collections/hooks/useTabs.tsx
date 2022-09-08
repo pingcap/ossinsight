@@ -30,7 +30,11 @@ export function useDimensionTabs(searchKey: string, assurePrefix = false) {
   };
 
   const tabs = (
-    <Stack direction="row" justifyContent={{ xl: "space-between" }}>
+    <Stack
+      direction={{ xs: "column", sm: "row", md: "column", lg: "row" }}
+      justifyContent="space-between"
+      gap="1rem"
+    >
       <Tabs
         value={dimension.key}
         onChange={handleChangeDimension}
