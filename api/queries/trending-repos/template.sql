@@ -31,7 +31,7 @@ WITH stars AS (
       ge.repo_id AS repo_id,
       COUNT(1) AS total,
       COUNT(DISTINCT actor_id) AS actors,
-      -- Calculate the score of each star according to the time of the fork, the closer to the 
+      -- Calculate the score of each fork according to the time of the fork, the closer to the 
       -- current time, the higher the score got, the score range is between 1-4. Then sum the
       -- scores of all forks to get the total score obtained from the forks for the repository.
       SUM(
@@ -78,7 +78,7 @@ WITH stars AS (
         AND forks > 5
         -- Filter rule: The repository must have pushed new code within the last three months.
         AND pushed_at > DATE_SUB(NOW(), INTERVAL 3 MONTH)
-        -- Filter rule: Exclude some malicious new repository.
+        -- Filter rule: Exclude some malicious new repositories.
         AND created_at < DATE_SUB(NOW(), INTERVAL 1 DAY)
         -- Filter rule: There should be no uncivilized words in the name of the repository.
         AND LOWER(repo_name) NOT LIKE '%fuck%'
