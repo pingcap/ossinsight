@@ -1,9 +1,17 @@
 import { useEventCallback } from '@mui/material';
 import Tabs from '@mui/material/Tabs';
+import Button from '@mui/material/Button';
+import ButtonGroup from '@mui/material/ButtonGroup';
+import Stack from '@mui/material/Stack';
+import Box from '@mui/material/Box';
 import React, { useMemo, useState } from 'react';
 import useUrlSearchState, { stringParam } from '../../../hooks/url-search-state';
 import IconTab from '../components/IconTab';
-import _dimensions, { Dimension } from '../dimensions';
+import _dimensions, {
+  Dimension,
+  collectionDisplayType,
+  CollectionDateTypeEnum,
+} from "../dimensions";
 
 export function useDimensionTabs(searchKey: string, assurePrefix = false) {
   const dimensions = useMemo(() => _dimensions.filter(d => assurePrefix ? !!d.prefix : true), [assurePrefix])
@@ -12,24 +20,73 @@ export function useDimensionTabs(searchKey: string, assurePrefix = false) {
     serialize: d => d.search,
     deserialize: k => dimensions.find(dimension => dimension.search === k) ?? dimensions[0],
   })
+  const [dateType, setDateType] = useState(CollectionDateTypeEnum.Last28Days);
 
   const handleChangeDimension = useEventCallback((e, dimensionKey: string) => {
     setDimension(dimensions.find(dimension => dimension.key === dimensionKey));
   });
 
+  const handleChangeDateType = (targetType: CollectionDateTypeEnum) => () => {
+    setDateType(targetType);
+  };
+
   const tabs = (
-    <Tabs value={dimension.key} onChange={handleChangeDimension} variant="scrollable" scrollButtons="auto"
-          allowScrollButtonsMobile>
-      {dimensions.map(dimension => (
-        <IconTab key={dimension.key} value={dimension.key} icon={dimension.icon}>
-          {dimension.title}
-        </IconTab>
-      ))}
-    </Tabs>
+    <Stack
+      direction={{ xs: "column", sm: "row", md: "column", lg: "row" }}
+      justifyContent="space-between"
+      gap="1rem"
+      flexWrap="wrap"
+    >
+      <Tabs
+        value={dimension.key}
+        onChange={handleChangeDimension}
+        variant="scrollable"
+        scrollButtons="auto"
+        allowScrollButtonsMobile
+      >
+        {dimensions.map((dimension) => (
+          <IconTab
+            key={dimension.key}
+            value={dimension.key}
+            icon={dimension.icon}
+          >
+            {dimension.title}
+          </IconTab>
+        ))}
+      </Tabs>
+      {searchKey === "monthly-rankings" && (
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
+          <ButtonGroup
+            variant="outlined"
+            aria-label="display type"
+            size="small"
+          >
+            {collectionDisplayType.map((colType) => {
+              return (
+                <Button
+                  key={colType.type}
+                  sx={{ textTransform: "none" }}
+                  onClick={handleChangeDateType(colType.type)}
+                  variant={colType.type === dateType ? "contained" : "outlined"}
+                >
+                  {colType.label}
+                </Button>
+              );
+            })}
+          </ButtonGroup>
+        </Box>
+      )}
+    </Stack>
   );
 
   return {
     dimension,
     tabs,
+    dateType,
   };
 }

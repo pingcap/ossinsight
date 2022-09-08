@@ -26,3 +26,13 @@ const dimensions: Dimension[] = [
 ]
 
 export default dimensions
+
+export enum CollectionDateTypeEnum {
+  Last28Days = "last-28-days",
+  Month = "month",
+}
+
+export const collectionDisplayType = [
+  { type: CollectionDateTypeEnum.Last28Days, tableTitle: "Last 28 days", label: "Last 28 Days" },
+  { type: CollectionDateTypeEnum.Month, tableTitle: "Monthly", label: "Month on Month" },
+];
