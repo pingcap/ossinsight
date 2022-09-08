@@ -14,6 +14,8 @@ const FooterLine = () => {
       <a href="https://en.pingcap.com/tidb-cloud/?utm_source=ossinsight&utm_medium=referral" target="_blank">
         <Logo src='/img/tidb-cloud-logo-o.png' height={20} alt='TiDB' />
       </a>
+       &nbsp;
+       · arm
     </Body>
   )
 }
