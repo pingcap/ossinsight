@@ -1,6 +1,6 @@
 import { params } from '../../../../../api/queries/trending-repos/params.json';
 import { AsyncData, RemoteData, useRemoteData } from "../../../../components/RemoteCharts/hook";
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { useSelectParam } from "../../../../components/params";
 import TileSelect, { TileSelectOption } from "../../../../components/TileSelect";
 import { paramCase } from "param-case";
@@ -120,4 +120,27 @@ function snakeToCamel(n) {
   return paramCase(n)
     .replace(/^\w/g, a => a.toUpperCase())
     .replace(/-/g, ' ');
+}
+
+export function usePagination(data: RemoteData<any, ProcessedTopListData> | undefined) {
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(20);
+
+  const handleChangePage = useCallback((event: unknown, newPage: number) => {
+    setPage(newPage);
+  }, [setPage]);
+
+  const handleChangeRowsPerPage = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  }, [setPage, setRowsPerPage]);
+
+  const list = useMemo(() => {
+    if (!data) {
+      return undefined;
+    }
+    return data.data.slice(page * rowsPerPage, (page + 1) * rowsPerPage);
+  }, [data, page, rowsPerPage]);
+
+  return { page, rowsPerPage, handleChangePage, handleChangeRowsPerPage, list };
 }

@@ -1,16 +1,16 @@
 import type { ProcessedTopListData } from './hook';
-import { useLanguages, useOrderBy, usePeriods, useTopList } from "./hook";
+import { useLanguages, useOrderBy, usePagination, usePeriods, useTopList } from "./hook";
 import Table from "@mui/material/Table";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import TableBody from "@mui/material/TableBody";
 import Skeleton from "@mui/material/Skeleton";
-import React from "react";
+import React, { useState } from "react";
 import Link from "@docusaurus/Link";
 import Avatar from "@mui/material/Avatar";
 import Stack from "@mui/material/Stack";
-import { Chip } from "@mui/material";
+import { Chip, TablePagination } from "@mui/material";
 import { useHistory } from '@docusaurus/router';
 import type { History } from 'history';
 import { paramCase } from "param-case";
@@ -32,6 +32,8 @@ export function TopListV2() {
   const { data, loading, error } = useTopList(language, period.key, 'total_score');
   const { dialog: debugDialog, button: debugButton } = useDebugDialog(data);
 
+  const { page, rowsPerPage, list, handleChangePage, handleChangeRowsPerPage } = usePagination(data)
+
   return (
     <Box>
       <Stack direction="row" justifyContent="start" alignItems="center" flexWrap="wrap">
@@ -45,7 +47,28 @@ export function TopListV2() {
         {/*{orderBySelect}*/}
         {debugButton}
       </Stack>
-      <DataTable data={data?.data} loading={loading} />
+      <TablePagination
+        sx={{
+          '.MuiTablePagination-spacer': {
+            display: 'none',
+          },
+          '.MuiToolbar-root': {
+            'padding': 0,
+            '& > p': {
+              margin: '0 !important',
+            }
+          }
+        }}
+        size='small'
+        rowsPerPageOptions={[5, 20, 50, 100]}
+        component="div"
+        count={data?.data.length ?? 0}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
+      <DataTable data={list} loading={loading} rowsPerPage={rowsPerPage} page={page} />
       <Typography variant="body2">
         <Link href="/blog/why-we-choose-tidb-to-support-ossinsight" target="_blank">
           🤖️ How do we display these rankings?
@@ -57,7 +80,7 @@ export function TopListV2() {
 }
 
 
-const DataTable = ({ data, loading }: { data: ProcessedTopListData[], loading: boolean }) => {
+const DataTable = ({ data, loading, page, rowsPerPage }: { data: ProcessedTopListData[], loading: boolean,  page: number, rowsPerPage: number }) => {
   const history = useHistory();
 
   return (
@@ -81,7 +104,7 @@ const DataTable = ({ data, loading }: { data: ProcessedTopListData[], loading: b
             },
           })}
         >
-          {data ? renderData(data, history) : renderLoading()}
+          {data ? renderData(data, page * rowsPerPage, history) : renderLoading()}
         </TableBody>
       </Table>
     </TableContainer>
@@ -120,10 +143,10 @@ const Dot = styled('span')({
   verticalAlign: 'middle',
 });
 
-const renderData = (data: ProcessedTopListData[], history: History) => {
+const renderData = (data: ProcessedTopListData[], offset: number, history: History) => {
   return data.map((item, i) => (
     <TableRow key={item.repo_id}>
-      <TableCell component="th">#{i + 1}</TableCell>
+      <TableCell component="th">#{i + 1 + offset}</TableCell>
       <TableCell>
         <RepoName>
           <Link href={`/analyze/${item.repo_name}`} target="_blank">{item.repo_name}</Link>
