@@ -157,9 +157,7 @@ const renderData = (data: ProcessedTopListData[], offset: number, history: Histo
         </RepoDescription>
         {item.language && (
           <RepoMeta>
-            {LANGUAGE_COLORS[item.language?.toLowerCase()] && (
-              <Dot sx={{ backgroundColor: LANGUAGE_COLORS[item.language?.toLowerCase()] }} />
-            )}
+            <Dot sx={{ backgroundColor: LANGUAGE_COLORS[item.language?.toLowerCase()] ?? '#d1d1d1' }} />
             {item.language}
           </RepoMeta>
         )}
