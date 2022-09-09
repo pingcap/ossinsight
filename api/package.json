@@ -28,7 +28,7 @@
     "gen:schema-ts": "json2ts params.schema.json params.schema.d.ts",
     "validate:params": "ajv -s params.schema.json -d \"queries/*/params.json\"",
     "build": "tsc && pnpm run build:copy",
-    "build:copy": "mkdir -p ./dist && cat .distfiles | xargs -I {} cp -r {} ./dist/{}"
+    "build:copy": "mkdir -p ./dist && cat .distfiles | xargs -I {} cp -r {} ./dist/{} 2>/dev/null || :"
   },
   "author": "",
   "license": "MIT",
