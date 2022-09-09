@@ -40,7 +40,7 @@ export function TopListV2() {
         {periodSelect}
         <Box mx={0.5} />
         <span>
-          Language:&nbsp;
+          Language&nbsp;:&nbsp;&nbsp;&nbsp;
         </span>
         {languageSelect}
         {/*<Divider orientation="vertical" flexItem sx={{ ml: 0.5, mr: 1, bgcolor: 'rgba(255,255,255,.4)', width: 2 }} />*/}
@@ -100,7 +100,7 @@ const DataTable = ({ data, loading, page, rowsPerPage }: { data: ProcessedTopLis
         <TableBody
           sx={theme => ({
             '.MuiTableRow-root:nth-of-type(odd)': {
-              backgroundColor: theme.palette.action.hover,
+              // backgroundColor: theme.palette.action.hover,
             },
           })}
         >
@@ -118,14 +118,14 @@ const RepoName = styled('span')({
 
 const RepoDescription = styled('p')({
   fontSize: 14,
-  color: '#7d7d7d',
+  color: '#adadad',
   margin: 0,
   marginTop: 8,
   maxWidth: 600,
 });
 
 const RepoMeta = styled('div')({
-  fontSize: 12,
+  fontSize: 14,
   color: '#7d7d7d',
   margin: 0,
   marginTop: 8,
