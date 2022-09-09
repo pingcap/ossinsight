@@ -91,7 +91,7 @@ export const useRemoteData: UseRemoteData = (query: string, params: any, formatS
     if (inView && shouldLoad && !data && !loading && !error) {
       reload()
     }
-  }, [shouldLoad, inView, reload, data, loading && !error])
+  }, [shouldLoad, inView, reload, data, !loading && !error])
 
   return {data, loading, error, reload}
 }
