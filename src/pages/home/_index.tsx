@@ -10,8 +10,8 @@ export default function Home() {
       image="/img/screenshots/homepage.png"
     >
       <SummarySection />
-      <CollectionsSection />
       <TopListV2Section />
+      <CollectionsSection />
       <WorkshopSection />
     </CustomPage>
   );
