@@ -1,6 +1,6 @@
 import { params } from '../../../../../api/queries/trending-repos/params.json';
 import { AsyncData, RemoteData, useRemoteData } from "../../../../components/RemoteCharts/hook";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { DependencyList, useCallback, useEffect, useMemo, useState } from "react";
 import { useSelectParam } from "../../../../components/params";
 import TileSelect, { TileSelectOption } from "../../../../components/TileSelect";
 import { paramCase } from "param-case";
@@ -122,9 +122,13 @@ function snakeToCamel(n) {
     .replace(/-/g, ' ');
 }
 
-export function usePagination(data: RemoteData<any, ProcessedTopListData> | undefined) {
+export function usePagination(data: RemoteData<any, ProcessedTopListData> | undefined, deps: DependencyList) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(20);
+
+  useEffect(() => {
+    setPage(0);
+  }, deps);
 
   const handleChangePage = useCallback((event: unknown, newPage: number) => {
     setPage(newPage);

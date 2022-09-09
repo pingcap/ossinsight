@@ -32,7 +32,7 @@ export function TopListV2() {
   const { data, loading, error } = useTopList(language, period.key, 'total_score');
   const { dialog: debugDialog, button: debugButton } = useDebugDialog(data);
 
-  const { page, rowsPerPage, list, handleChangePage, handleChangeRowsPerPage } = usePagination(data)
+  const { page, rowsPerPage, list, handleChangePage, handleChangeRowsPerPage } = usePagination(data, [period.key, language])
 
   return (
     <Box>
