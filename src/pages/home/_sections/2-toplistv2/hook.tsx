@@ -13,7 +13,7 @@ export const periods: Period[] = params.find(param => param.name === 'period').e
 export const languages: Language[] = Object.keys(params.find(param => param.name === 'language').template);
 
 const periodOptions = periods.map(period => ({ key: period, title: snakeToCamel(period) }));
-const languageOptions = languages.map(language => ({ key: language, title: language }));
+const languageOptions = languages.map(language => ({ key: language, label: language }));
 const orderOptions: TileSelectOption[] = [
   {
     key: 'total_score',
@@ -90,10 +90,13 @@ export function useTopList(language: Language, period: Period, orderBy: keyof To
 }
 
 export function useLanguages() {
-  return useSelectParam(languageOptions, languageOptions[0], '', { variant: 'standard' }, {
-    disableUnderline: true,
-    sx: { font: 'inherit', color: 'primary.main', lineHeight: 'inherit', '.MuiSelect-select': { pb: 0 } },
-  });
+  const [value, setValue] = useState<Language>(languageOptions[0].key);
+
+  const select = (
+    <TileSelect value={value} onSelect={setValue} options={languageOptions} />
+  );
+
+  return { select, value };
 }
 
 export function usePeriods() {

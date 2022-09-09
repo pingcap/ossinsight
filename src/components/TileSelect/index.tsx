@@ -151,8 +151,8 @@ export default function TileSelect({ options, value, onSelect }: TileSelectProps
             value={selectValue}
             onChange={handleSelect}
             sx={{
-              minWidth: 80,
-              maxWidth: 80,
+              minWidth: 120,
+              maxWidth: 120,
               fontSize: 14,
               ml: length > 0 ? 2 : 0,
               '.MuiSelect-select': {
