@@ -218,7 +218,7 @@ const config = {
             label: 'Collections',
             activeBasePath: '/collections'
           },
-          {to: 'https://live.ossinsight.io', label: 'Live', position: 'left'},
+          {to: 'https://live.ossinsight.io', label: '💓 Live', position: 'left'},
           {to: '/blog', label: 'Blog', position: 'left'},
           {
             type: 'dropdown',
