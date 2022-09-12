@@ -30,3 +30,4 @@ items:
   - cockroachdb/cockroach
   - uber/aresdb
   - FerretDB/FerretDB
+  - polarsignals/frostdb
