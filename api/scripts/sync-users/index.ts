@@ -11,6 +11,7 @@ import { OctokitFactory } from '../../app/core/OctokitFactory';
 import { Locator, LocationCache } from '../../app/locator/Locator';
 import { SyncUserLog, SyncUserMode, SyncUserRecorder } from './recorder';
 import { getConnectionOptions } from '../../app/utils/db';
+import { extractOwnerAndRepo } from '../../app/utils/github';
 
 // Load environments.
 dotenv.config({ path: path.resolve(__dirname, '../../.env.template') });
@@ -316,19 +317,6 @@ async function syncUsersFromRepoStars(
             resolve(null);
         });
     });
-}
-
-function extractOwnerAndRepo(fullName: string) {
-    const parts = fullName.split("/");
-
-    if (parts.length !== 2) {
-        throw new Error(`Got a wrong repo name: ${fullName}`);
-    }
-    
-    return {
-        owner: parts[0],
-        repo: parts[1]
-    }
 }
 
 // Get GitHub users from user searching.
