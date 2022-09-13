@@ -4,11 +4,12 @@ import consola from "consola";
 import { getConnectionOptions } from "../../app/utils/db";
 import { createConnection } from "mysql2";
 import { pullRepos } from "./puller";
-import { extractReposFromRepoSearch } from "./syncer";
-import { createPool } from "generic-pool";
+import { syncForkRepos, syncRepos } from "./syncer";
+import { createPool, Pool } from "generic-pool";
 import { DateTime } from "luxon";
-import asyncPool from "tiny-async-pool";
-import { WorkerFactory } from "./worker";
+import { JobWorker, WorkerFactory } from "./worker";
+
+const DEFAULT_SYNC_STEP = 10;   // 10 minutes.
 
 // Load environments.
 dotenv.config({ path: path.resolve(__dirname, '../../.env.template') });
@@ -16,7 +17,6 @@ dotenv.config({ path: path.resolve(__dirname, '../../.env'), override: true });
 
 // Init logger.
 const logger = consola.withTag('sync-repos');
-const DEFAULT_SYNC_STEP = 10;   // 10 minutes.
 
 export interface GitHubRepo {
     repoId: number;
@@ -24,8 +24,8 @@ export interface GitHubRepo {
     ownerId: number;
     ownerLogin: string;
     ownerIsOrg: number;
-    description?: string;
-    primaryLanguage?: string;
+    description?: string | null;
+    primaryLanguage?: string | null;
     license?: string;
     size?: number;
     stars?: number;
@@ -34,15 +34,74 @@ export interface GitHubRepo {
     isFork?: boolean;
     isArchived?: boolean;
     isDeleted?: boolean;
-    latestReleasedAt: Date;
-    pushedAt: Date;
-    createdAt: Date;
-    updatedAt: Date;
+    latestReleasedAt?: Date;
+    pushedAt: Date | null;
+    createdAt: Date | null;
+    updatedAt: Date | null;
     refreshedAt?: Date;
 }
 
 async function main() {
-    // Init Worker Pool.
+    // Pull github repos from `github_events` table.
+    if (process.env.PULL_HISTORY_REPOS === '1') {
+        const conn = createConnection(getConnectionOptions());
+        await pullRepos(conn);
+    }
+
+    // Sync repos by GitHub API.
+    if (process.env.SYNC_REPOS === '1') {
+        // Init Worker Pool.
+        const workerPool = createWorkerPool();
+
+        // Generate sync jobs.
+        let from: DateTime, to: DateTime, step: number;
+        if (process.env.SYNC_HISTORY_REPOS_FROM === undefined) {
+            from = DateTime.utc(2011, 2, 12);
+        } else {
+            from = DateTime.fromSQL(process.env.SYNC_HISTORY_REPOS_FROM).toUTC()
+        }
+
+        if (process.env.SYNC_HISTORY_REPOS_TO === undefined) {
+            to = DateTime.utc();
+        } else {
+            to = DateTime.fromSQL(process.env.SYNC_HISTORY_REPOS_TO).toUTC()
+        }
+
+        if (process.env.SYNC_HISTORY_REPOS_STEP === undefined) {
+            step = DEFAULT_SYNC_STEP;
+        } else {
+            step = Number(process.env.SYNC_HISTORY_REPOS_STEP)
+        }
+
+        await syncRepos(workerPool, from, to, step);
+
+        // Clear worker pool.
+        workerPool.clear();
+    }
+
+    // Sync fork repos by GitHub API.
+    if (process.env.SYNC_FORK_REPOS === '1') {
+        // Init Worker Pool.
+        const workerPool = createWorkerPool();
+        const conn = createConnection(getConnectionOptions());
+
+        let offsetForks, pageSize = 10000;
+        if (process.env.SYNC_FORK_REPOS_OFFSET_FORKS) {
+            offsetForks = Number(process.env.SYNC_FORK_REPOS_OFFSET_FORKS);
+        }
+
+        if (process.env.SYNC_FORK_REPOS_PAGE_SIZE) {
+            pageSize = Number(process.env.SYNC_FORK_REPOS_PAGE_SIZE);
+        }
+
+        await syncForkRepos(workerPool, conn, pageSize, offsetForks);
+
+        // Clear worker pool.
+        workerPool.clear();
+    }
+}
+
+function createWorkerPool():Pool<JobWorker> {
     // Notice: every worker has one octokit client.
     const tokens = (process.env.SYNC_USER_GH_TOKENS || '').split(',').map(s => s.trim()).filter(Boolean);
     if (tokens.length === 0) {
@@ -57,54 +116,7 @@ async function main() {
     }).on('factoryDestroyError', function (err) {
         logger.error('factoryDestroyError', err)
     });
-
-    // Pull github repos from `github_events` table.
-    if (process.env.PULL_HISTORY_REPOS === '1') {
-        const conn = createConnection(getConnectionOptions());
-        await pullRepos(conn);
-    }
-
-    // Sync repos.
-
-    // Generate sync jobs.
-    let from: DateTime, to: DateTime, step: number;
-    if (process.env.SYNC_HISTORY_REPOS_FROM === undefined) {
-        from = DateTime.utc(2011, 2, 12);
-    } else {
-        from = DateTime.fromSQL(process.env.SYNC_HISTORY_REPOS_FROM).toUTC()
-    }
-
-    if (process.env.SYNC_HISTORY_REPOS_TO === undefined) {
-        to = DateTime.utc();
-    } else {
-        to = DateTime.fromSQL(process.env.SYNC_HISTORY_REPOS_TO).toUTC()
-    }
-
-    if (process.env.SYNC_HISTORY_REPOS_STEP === undefined) {
-        step = DEFAULT_SYNC_STEP;
-    } else {
-        step = Number(process.env.SYNC_HISTORY_REPOS_STEP)
-    }
-
-    // Split sync jobs.
-    const timeRanges: any[] = [];
-    let curr = to;
-    while (curr.diff(from, 'seconds').seconds >= 0) {
-        const prev = curr.minus({ 'days': 1 });
-        timeRanges.push({
-            tFrom: prev,
-            tTo: curr
-        });
-        logger.debug(`Create sync job from ${prev.toISO()} to ${curr.toISO()}.`);
-        curr = prev;
-    }
-
-    const concurrent = tokens.length;
-    logger.info(`Handling ${timeRanges.length} subtasks with ${concurrent} concurrent.`);
-    await asyncPool(concurrent, timeRanges, async ({ tFrom, tTo }) => {
-        await extractReposFromRepoSearch(workerPool, tFrom, tTo, step);
-        logger.success(`Finished loading repos from ${tFrom.toISO()} to ${tTo.toISO()}.`);
-    });
+    return workerPool;
 }
 
 main();
