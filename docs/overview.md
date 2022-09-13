@@ -3,6 +3,7 @@ sidebar_position: 0
 title: Overview
 description: OSS Insight API Overview
 sidebar_label: Overview
+slug: /
 ---
 
 ## API Host
