@@ -121,7 +121,13 @@ const config = {
             '**/_*'
           ]
         },
-        docs: false,
+        docs: {
+          id: "docs",
+          path: "docs",
+          routeBasePath: "/docs",
+          editUrl: "https://github.com/pingcap/ossinsight/tree/main",
+          sidebarPath: require.resolve("./sidebars.js"),
+        },
         blog: {
           blogTitle: 'Blog',
           blogDescription: 'Helping dev teams adopt OSS technologies and practices. Written by software engineers and community analysts.',
@@ -198,6 +204,9 @@ const config = {
               {label: '└─ Cryptocurrency Insight - not ready', to: '/workshop/cryptocurrency-insight'},
             ]
           },
+          /*
+          {to: '/docs/api', label: 'API', position: 'left'},
+          */
           /*
           {
             type: 'dropdown',
