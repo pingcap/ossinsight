@@ -4,6 +4,6 @@ export interface CacheOption {
 }
 
 export interface CacheProvider {
-    set(key: string, value: any, options?: CacheOption): void;
-    get(key: string): any;
+    set(key: string, value: any, options?: CacheOption): Promise<any>;
+    get(key: string): Promise<any>;
 }

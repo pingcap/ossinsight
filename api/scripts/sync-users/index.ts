@@ -3,14 +3,13 @@ import * as dotenv from "dotenv";
 import path from 'path';
 import { createPool, Pool } from 'generic-pool';
 import { DateTime } from 'luxon';
-import { createConnection, Connection } from 'mysql2';
 import { Octokit } from 'octokit';
 import asyncPool from 'tiny-async-pool';
 import { BatchLoader } from '../../app/core/BatchLoader';
 import { OctokitFactory } from '../../app/core/OctokitFactory';
 import { Locator, LocationCache } from '../../app/locator/Locator';
 import { SyncUserLog, SyncUserMode, SyncUserRecorder } from './recorder';
-import { getConnectionOptions } from '../../app/utils/db';
+import { ConnectionWrapper, getConnectionOptions } from '../../app/utils/db';
 import { extractOwnerAndRepo } from '../../app/utils/github';
 
 // Load environments.
@@ -62,7 +61,7 @@ interface KeywordWithCnt {
 
 async function main() {
     // Init TiDB client.
-    const conn = createConnection(getConnectionOptions());
+    const conn = new ConnectionWrapper(getConnectionOptions());
 
     // Init Octokit Pool.
     const tokens = (process.env.SYNC_USER_GH_TOKENS || '').split(',').map(s => s.trim()).filter(Boolean);
@@ -167,8 +166,8 @@ async function main() {
 
 // Get GitHub users from repo stars.
 
-async function getReposOrderByStars(conn: Connection):Promise<RepoWithStar[]> {
-    return new Promise((resolve, reject) => {
+async function getReposOrderByStars(conn: ConnectionWrapper):Promise<RepoWithStar[]> {
+    return new Promise(async (resolve, reject) => {
         const batchSize = 20000;
         // `l.repo_id IS NULL` means that the sync task for the specified repo has not been created.
         // `finishedAt IS NULL` means that the sync task for the specified repo has not been finished.
@@ -189,13 +188,12 @@ async function getReposOrderByStars(conn: Connection):Promise<RepoWithStar[]> {
         `;
 
         logger.info(`Get top ${batchSize} repos order by stars ...`);
-        conn.query(sql, [batchSize], (err, res) => {
-            if (err != null) {
-                reject(err);
-            } else {
-                resolve(res as RepoWithStar[]);
-            }
-        });
+        try {
+            const res = await conn.query(sql, [batchSize]);
+            resolve(res.result as RepoWithStar[]);
+        } catch (err) {
+            reject(err);
+        }
     });
 }
 
@@ -325,7 +323,7 @@ const MAX_PREFIX_LENGTH = parseInt(process.env.MAX_PREFIX_LENGTH || '8');
 const MAX_SEARCH_SIZE = 1000;
 const initPrefixLen = parseInt(process.env.MIN_PREFIX_LENGTH || '5');
 
-async function getUserSearchKeywords(conn: Connection):Promise<KeywordWithCnt[]> {
+async function getUserSearchKeywords(conn: ConnectionWrapper):Promise<KeywordWithCnt[]> {
     let pageSize = 20000;
     let page = 1;
     let offset = 0;
@@ -361,27 +359,26 @@ async function getUserSearchKeywords(conn: Connection):Promise<KeywordWithCnt[]>
     return result;
 }
 
-async function getUserSearchKeywordWithLen(conn: Connection, length: number, offset: number, size: number):Promise<KeywordWithCnt[]> {
-    return new Promise((resolve, reject) => {
-        conn.query(`
-            SELECT
-                SUBSTRING(login, 1, ?) AS prefix,
-                COUNT(*) AS cnt
-            FROM users u
-            GROUP BY prefix
-            ORDER BY cnt DESC
-            LIMIT ?, ?
-        `, [length, offset, size], (err, rows) => {
-            if (err != null) {
-                reject(err);
-            } else {
-                resolve(rows as KeywordWithCnt[]);
-            }
-        });
+async function getUserSearchKeywordWithLen(conn: ConnectionWrapper, length: number, offset: number, size: number):Promise<KeywordWithCnt[]> {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const res = await conn.query(`
+                SELECT
+                    SUBSTRING(login, 1, ?) AS prefix,
+                    COUNT(*) AS cnt
+                FROM users u
+                GROUP BY prefix
+                ORDER BY cnt DESC
+                LIMIT ?, ?
+            `, [length, offset, size]);
+            resolve(res.result as KeywordWithCnt[]);
+        } catch (err) {
+            reject(err);
+        }
     });
 }
 
-async function getUserSearchKeywordWithPrefixByPage(conn: Connection, root: KeywordWithCnt):Promise<KeywordWithCnt[]> {
+async function getUserSearchKeywordWithPrefixByPage(conn: ConnectionWrapper, root: KeywordWithCnt):Promise<KeywordWithCnt[]> {
     const maxPageSize = 2000;
     let result:KeywordWithCnt[] = [];
     let offset = 0;
@@ -415,26 +412,25 @@ async function getUserSearchKeywordWithPrefixByPage(conn: Connection, root: Keyw
     return result;
 }
 
-async function getUserSearchKeywordWithPrefix(conn: Connection, prefix: string, offset: number, size: number):Promise<KeywordWithCnt[]> {
-    return new Promise((resolve, reject) => {
-        conn.query(`
-            SELECT
-                SUBSTRING(login, 1, LENGTH(?) + 1) AS prefix,
-                COUNT(*) AS cnt
-            FROM users u
-            WHERE
-                login LIKE CONCAT(?, '%')
-                AND LENGTH(?) + 1 <= ?
-            GROUP BY prefix
-            ORDER BY cnt DESC
-            LIMIT ?, ?
-        `, [prefix, prefix, prefix, MAX_PREFIX_LENGTH, offset, size], (err, rows) => {
-            if (err != null) {
-                reject(err);
-            } else {
-                resolve(rows as KeywordWithCnt[]);
-            }
-        });
+async function getUserSearchKeywordWithPrefix(conn: ConnectionWrapper, prefix: string, offset: number, size: number):Promise<KeywordWithCnt[]> {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const res = await conn.query(`
+                SELECT
+                    SUBSTRING(login, 1, LENGTH(?) + 1) AS prefix,
+                    COUNT(*) AS cnt
+                FROM users u
+                WHERE
+                    login LIKE CONCAT(?, '%')
+                    AND LENGTH(?) + 1 <= ?
+                GROUP BY prefix
+                ORDER BY cnt DESC
+                LIMIT ?, ?
+            `, [prefix, prefix, prefix, MAX_PREFIX_LENGTH, offset, size]);
+            resolve(res.result as KeywordWithCnt[]);
+        } catch (err) {
+            reject(err);
+        }
     });
 }
 

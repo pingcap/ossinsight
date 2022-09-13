@@ -4,8 +4,7 @@ import { Factory } from "generic-pool"
 import { Octokit } from "octokit"
 import { throttling } from "@octokit/plugin-throttling";
 import { BatchLoader } from "../../app/core/BatchLoader";
-import { Connection, createConnection } from "mysql2";
-import { getConnectionOptions } from "../../app/utils/db";
+import { ConnectionWrapper, getConnectionOptions } from "../../app/utils/db";
 
 export const CustomOctokit = Octokit.plugin(throttling);
 export const SYMBOL_TOKEN = Symbol('PERSONAL_TOKEN');
@@ -32,7 +31,7 @@ export function eraseToken (value: string | undefined): string {
 
 export interface JobWorker {
   logger: Consola;
-  conn: Connection;
+  conn: ConnectionWrapper;
   octokit: Octokit;
   repoLoader: BatchLoader;
   repoLangLoader: BatchLoader;
@@ -88,7 +87,7 @@ export class WorkerFactory implements Factory<JobWorker> {
         });
 
         // Init TiDB client.
-        const conn = createConnection(getConnectionOptions());
+        const conn = new ConnectionWrapper(getConnectionOptions());
 
         // Init worker.
         const worker = {

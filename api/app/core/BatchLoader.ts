@@ -1,5 +1,5 @@
 import consola, { Consola } from "consola";
-import { Connection } from "mysql2";
+import { ConnectionWrapper } from "../utils/db";
 
 // The batch insert size.
 const DEFAULT_BATCH_SIZE = 100;
@@ -10,13 +10,13 @@ const DEFAULT_BATCH_SIZE = 100;
 const DEFAULT_FLUSH_INTERVAL = 10;
 
 export class BatchLoader {
-    private conn: Connection;
+    private conn: ConnectionWrapper;
     private buf: any[];
     private logger: Consola;
     private timer: NodeJS.Timer;
 
     constructor(
-        conn: Connection,
+        conn: ConnectionWrapper,
         readonly sql: string,
         readonly batchSize: number = DEFAULT_BATCH_SIZE,
         readonly flushInterval: number = DEFAULT_FLUSH_INTERVAL
@@ -40,21 +40,17 @@ export class BatchLoader {
         }
     }
 
-    flush() {
-        return new Promise((resolve, reject) => {
+    flush(): Promise<void> {
+        return new Promise(async (resolve, reject) => {
             if (this.buf.length > 0) {
-                this.conn.query(this.sql, [this.buf], (err, res) => {
+               try {
+                    await this.conn.query(this.sql, [this.buf]);
                     this.buf = [];
-
-                    if (err !== null) {
-                        this.logger.error(err);
-                        reject(err);
-                    } else {
-                        resolve(res);
-                    }
-                });
+               } catch (err) {
+                    reject(err);
+               }
             }
-            resolve(null);
+            resolve();
         });
     }
 }
