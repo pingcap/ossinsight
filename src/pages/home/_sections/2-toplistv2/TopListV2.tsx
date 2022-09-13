@@ -60,7 +60,7 @@ export function TopListV2() {
           }
         }}
         size='small'
-        rowsPerPageOptions={[5, 20, 50, 100]}
+        rowsPerPageOptions={[20, 50, 100]}
         component="div"
         count={data?.data.length ?? 0}
         rowsPerPage={rowsPerPage}
