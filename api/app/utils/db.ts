@@ -69,9 +69,23 @@ export class ConnectionWrapper {
     
     execute<T extends RowDataPacket[][] | RowDataPacket[] | OkPacket | OkPacket[] | ResultSetHeader>(
         sql: string,
+    ): Promise<QueryResponse<T>>;
+
+    execute<T extends RowDataPacket[][] | RowDataPacket[] | OkPacket | OkPacket[] | ResultSetHeader>(
+        sql: string,
+        values: any | any[] | { [param: string]: any }
+    ): Promise<QueryResponse<T>>;
+
+    execute<T extends RowDataPacket[][] | RowDataPacket[] | OkPacket | OkPacket[] | ResultSetHeader>(
+        sql: string,
+        values?: any | any[] | { [param: string]: any }
     ): Promise<QueryResponse<T>> {
+        if (values === undefined) {
+            values = [];
+        }
+
         return new Promise((resolve, reject) => {
-            this.conn.execute<T>(sql, (err: QueryError | null, result, fields) => {
+            this.conn.execute<T>(sql, values, (err: QueryError | null, result, fields) => {
                 if (err) {
                     reject(err);
                 } else {
@@ -82,5 +96,6 @@ export class ConnectionWrapper {
             });
         });
     }
+
 
 }
