@@ -22,6 +22,8 @@ export interface RepoWithForks {
     forks: number;
 }
 
+// Sync repos.
+
 export async function syncRepos(workerPool: Pool<JobWorker>, from: DateTime, to: DateTime, step: number) {
     // Split sync jobs.
     const timeRanges: any[] = [];
@@ -245,6 +247,8 @@ async function extractRepos(
     return firstPushedAt;
 }
 
+// Sync fork repos.
+
 export async function syncForkRepos(workerPool: Pool<JobWorker>, conn: Connection, pageSize: number, offsetForks?: number) {
     while (true) {
         logger.info(`Getting repos with offset ${offsetForks} and page size ${pageSize}.`);
@@ -363,6 +367,11 @@ async function extractForkRepos(
 
         try {
             const res = await octokit.graphql(query, variables) as any;
+            if (res.repository === null) {
+                logger.warn(`Repo ${repoName} has been disabled or removed, we can get its forks.`);
+                break;
+            }
+
             forks = res.repository?.forks
             rateLimit = res.rateLimit
         } catch (err: any) {

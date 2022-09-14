@@ -1,7 +1,7 @@
 import * as dotenv from "dotenv";
 import path from 'path';
 import consola from "consola";
-import { getConnectionOptions } from "../../app/utils/db";
+import { ConnectionWrapper, getConnectionOptions } from "../../app/utils/db";
 import { createConnection } from "mysql2";
 import { pullRepos } from "./puller";
 import { syncForkRepos, syncRepos } from "./syncer";
@@ -44,11 +44,11 @@ export interface GitHubRepo {
 async function main() {
     // Pull github repos from `github_events` table.
     if (process.env.PULL_HISTORY_REPOS === '1') {
-        const conn = createConnection(getConnectionOptions());
+        const conn = new ConnectionWrapper(getConnectionOptions());
         await pullRepos(conn);
     }
 
-    // Sync repos by GitHub API.
+    // Sync repos in batch by GitHub GraphQL API.
     if (process.env.SYNC_REPOS === '1') {
         // Init Worker Pool.
         const workerPool = createWorkerPool();
@@ -79,7 +79,7 @@ async function main() {
         workerPool.clear();
     }
 
-    // Sync fork repos by GitHub API.
+    // Sync fork of repos in batch by GitHub GraphQL API.
     if (process.env.SYNC_FORK_REPOS === '1') {
         // Init Worker Pool.
         const workerPool = createWorkerPool();
@@ -99,6 +99,18 @@ async function main() {
         // Clear worker pool.
         workerPool.clear();
     }
+
+    // TODO: Sync rest repos by REST API.
+    if (process.env.SYNC_REST_REPOS === '1') {
+        // Init Worker Pool.
+        const workerPool = createWorkerPool();
+        const conn = createConnection(getConnectionOptions());
+
+        // TODO
+
+        // Clear worker pool.
+        workerPool.clear();
+    } 
 }
 
 function createWorkerPool():Pool<JobWorker> {
