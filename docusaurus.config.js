@@ -271,6 +271,10 @@ const config = {
                 to: '/workshop/overview',
               },
               {
+                label: 'API',
+                to: '/docs',
+              },
+              {
                 label: 'How do we implement OSS Insight?',
                 to: '/blog/why-we-choose-tidb-to-support-ossinsight',
               },
