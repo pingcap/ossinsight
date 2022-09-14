@@ -6,9 +6,17 @@ sidebar_label: Overview
 slug: /
 ---
 
+
 ## API Host
 
 `https://api.ossinsight.io`
+
+
+## Allowed Origin
+
+* *.ossinsight.io
+* localhost
+* *.github1s.com
 
 
 ## API Rate Limit

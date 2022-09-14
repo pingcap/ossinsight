@@ -204,9 +204,7 @@ const config = {
               {label: '└─ Cryptocurrency Insight - not ready', to: '/workshop/cryptocurrency-insight'},
             ]
           },
-          /*
           {to: '/docs/api', label: 'API', position: 'left'},
-          */
           /*
           {
             type: 'dropdown',
