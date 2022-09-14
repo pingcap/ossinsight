@@ -13,7 +13,7 @@ sidebar_label: Trending Repos
 
 | Name | Type | Required |
 | --- | --- | --- |
-| language | enum(All,JavaScript,Java,Python,PHP,Rust,Go,Kotlin,PowerShell) | yes |
+| language | enum(All,JavaScript,Java,Python,PHP,Rust,Go,Kotlin,PowerShell...) | yes |
 | period | enum(last_day,last_week,last_month) | yes |
 
 ## Example
