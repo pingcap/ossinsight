@@ -17,8 +17,8 @@ WITH pr_24h AS (
                 actor_id, actor_login
 )
 SELECT 
-	actor_id, actor_login, (opened_prs + closed_prs + merged_prs) as total_prs,
+	actor_id, actor_login, (opened_prs + closed_prs + merged_prs) as total_pr_events,
 	opened_prs, closed_prs, merged_prs
 FROM pr_24h
-ORDER BY total_prs DESC
+ORDER BY total_pr_events DESC
 LIMIT 5

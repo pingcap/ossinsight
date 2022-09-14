@@ -15,8 +15,8 @@ WITH pr_24h AS (
                 repo_id, repo_name
 )
 SELECT 
-	repo_id, repo_name, (opened_prs + closed_prs + merged_prs) as total_prs,
+	repo_id, repo_name, (opened_prs + closed_prs + merged_prs) as total_pr_events,
 	opened_prs, closed_prs, merged_prs
 FROM pr_24h
-ORDER BY total_prs DESC
+ORDER BY total_pr_events DESC
 LIMIT 5
