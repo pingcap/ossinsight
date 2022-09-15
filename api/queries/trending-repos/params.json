@@ -3,12 +3,9 @@
   "refreshCron": {
     "param": "period",
     "on": {
-      "last_day": "@once",
-      "last_week": "@once",
-      "last_month": "@once",
       "past_24_hours": "@daily",
-      "past_week": "@weekly",
-      "past_month": "@monthly"
+      "past_week": "@daily",
+      "past_month": "@daily"
     }
   },
   "onlyFromCache": true,
@@ -16,14 +13,11 @@
     {
       "name": "period",
       "replaces": "DATE_SUB(NOW(), INTERVAL 1 MONTH)",
-      "default": "last_day",
+      "default": "past_24_hours",
       "enums": [
-        "last_day", "last_week", "last_month", "past_24_hours", "past_week", "past_month"
+       "past_24_hours", "past_week", "past_month"
       ],
       "template": {
-        "last_day": "DATE_SUB(NOW(), INTERVAL 1 DAY)",
-        "last_week": "DATE_SUB(NOW(), INTERVAL 1 WEEK)",
-        "last_month": "DATE_SUB(NOW(), INTERVAL 1 MONTH)",
         "past_24_hours": "DATE_SUB(NOW(), INTERVAL 1 DAY)",
         "past_week": "DATE_SUB(NOW(), INTERVAL 1 WEEK)",
         "past_month": "DATE_SUB(NOW(), INTERVAL 1 MONTH)"
