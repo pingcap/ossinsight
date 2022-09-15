@@ -12,11 +12,18 @@ slug: /
 `https://api.ossinsight.io`
 
 
-## Allowed Origin
+## API CORS
 
+Currently we only enable CORS for these domains:
 * *.ossinsight.io
 * localhost
 * *.github1s.com
+
+If you want to use OSS Insight API in your application, feel free to contact us via:
+
+
+* email: ossinsight@pingcap.com
+* or [open a pull request](https://github.com/pingcap/ossinsight/edit/main/docs/overview.md) directly
 
 
 ## API Rate Limit
