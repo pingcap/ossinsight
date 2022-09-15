@@ -11,8 +11,8 @@ WITH pr_24h AS (
                 type = 'PullRequestEvent'
                 AND (action = 'opened' OR action = 'closed')
                 AND created_at > DATE_SUB(NOW(), INTERVAL 1 DAY)
-                AND actor_login NOT LIKE '%[bot]'
-                AND actor_login NOT LIKE '%bot'
+                AND actor_login NOT IN (SELECT bu.login FROM blacklist_users bu)
+                AND actor_login NOT REGEXP '^(bot-.+|.+bot|.+\\[bot\\]|.+-bot-.+|robot-.+|.+-ci-.+|.+-ci|.+-testing|.+clabot.+|.+-gerrit|k8s-.+|.+-machine|.+-automation|github-.+|.+-github|.+-service|.+-builds|codecov-.+|.+teamcity.+|jenkins-.+|.+-jira-.+|witness.+|.+witness|signcla.+|.+signcla|.+-cicd-.+|.+autotester.+)$'
 	GROUP BY
                 actor_id, actor_login
 )
