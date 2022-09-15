@@ -3,7 +3,7 @@ import path from 'path';
 import consola from "consola";
 import { ConnectionWrapper, getConnectionOptions } from "../../app/utils/db";
 import { createConnection } from "mysql2";
-import { DEFAULT_PULL_HISTORY_REPOS_LIMIT, DEFAULT_PULL_HISTORY_REPOS_MIN_ROWS, pullOrgReposByLimit, pullOrgReposByTimeRangeWithLang, pullPersonalReposByLimit, pullPersonalReposByTimeRangeWithLang, pullRepos, pullReposWithLang, pullReposWithoutLang } from "./puller";
+import { DEFAULT_PULL_HISTORY_REPOS_LIMIT, DEFAULT_PULL_HISTORY_REPOS_MIN_ROWS, pullOrgReposByLimit, pullOrgReposByTimeRangeWithLang, pullPersonalReposByLimit, pullPersonalReposByTimeRangeWithLang, pullReposWithLang, pullReposWithoutLang } from "./puller";
 import { syncForkRepos, syncRepos } from "./syncer";
 import { createPool, Pool } from "generic-pool";
 import { DateTime } from "luxon";
@@ -152,7 +152,7 @@ async function main() {
         const workerPool = createWorkerPool();
         const conn = new ConnectionWrapper(getConnectionOptions());
 
-        const cron = process.env.SYNC_INC_REPOS_CRON || '0 0 10 * * *';
+        const cron = process.env.SYNC_INC_REPOS_CRON || '0 29 10 * * *';
         logger.info(`sync-repo is running on cronjob mode, schedule at: ${cron}.`);
 
         let limit = DEFAULT_PULL_HISTORY_REPOS_LIMIT;
@@ -167,12 +167,17 @@ async function main() {
 
         schedule.scheduleJob(cron, async () => {
             const to = DateTime.utc();
+            // Executed every hour to obtain the code repository with push in 1 hour.
             const from = to.minus({ hours: 1 });
-            const duration = { 'hour': 1 };
-            const step = DEFAULT_SYNC_STEP;
+            // Divide a subtask every 10 minutes so that it can be executed in parallel.
+            const duration = { 'minutes': 10 };
+            // The window size is set to 2 minutes.
+            const step = 2;
+            // Sync the fork repository and non fork repository at the same time.
             const filter = 'fork:true';
 
             logger.info(`Sync incremental repos from: ${from.toISO()}, to: ${to.toISO()} ...`);
+
             await syncRepos(workerPool, from, to, duration, step, filter);
             logger.success(`Synced incremental repos by through API.`);
 

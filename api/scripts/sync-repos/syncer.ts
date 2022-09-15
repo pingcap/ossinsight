@@ -370,7 +370,7 @@ async function extractForkReposForTimeRange(
         try {
             const res = await octokit.graphql(query, variables) as any;
             if (res.repository === null) {
-                logger.warn(`Repo ${repoName} has been disabled or removed, we can get its forks.`);
+                logger.warn(`Repo ${repoName} has been disabled or removed, we can't get its forks.`);
                 break;
             }
 

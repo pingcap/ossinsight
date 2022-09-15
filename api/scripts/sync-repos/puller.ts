@@ -3,7 +3,7 @@ import { DateTime } from "luxon";
 import { ConnectionWrapper } from "../../app/utils/db";
 import sleep from "../../app/utils/sleep";
 
-export const DEFAULT_PULL_HISTORY_REPOS_LIMIT = 1000;
+export const DEFAULT_PULL_HISTORY_REPOS_LIMIT = 10000;
 export const DEFAULT_PULL_HISTORY_REPOS_MIN_ROWS = 10;
 
 // Init logger.
