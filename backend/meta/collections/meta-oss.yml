@@ -1,0 +1,25 @@
+id: 10061
+name: Open Source Projects by Meta
+items:
+  - facebook/react
+  - facebook/docusaurus
+  - pytorch/pytorch
+  - facebook/jest
+  - facebookresearch/fastText
+  - facebook/rocksdb
+  - facebook/folly
+  - facebookresearch/detectron2
+  - facebook/draft-js
+  - facebook/flow
+  - facebookresearch/fairseq
+  - facebookresearch/faiss
+  - facebook/zstd
+  - facebook/hhvm
+  - facebookexperimental/recoil
+  - facebook/relay
+  - facebook/fresco
+  - facebook/prophet
+  - facebook/infer
+  - facebook/flipper
+  - pytorch/vision
+  - facebookresearch/ParlAI
