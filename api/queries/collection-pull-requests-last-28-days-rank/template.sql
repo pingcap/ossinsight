@@ -18,7 +18,7 @@ WITH prs_group_by_repo AS (
         type = 'PullRequestEvent'
         AND action = 'opened'
         AND repo_id IN (41986369, 16563587, 105944401)
-        AND ((DATE_FORMAT(created_at, '%Y-%m-01') BETWEEN DATE_FORMAT(DATE_SUB(CURRENT_DATE(), INTERVAL 56 DAY), '%Y-%m-01') AND DATE_FORMAT(CURRENT_DATE(), '%Y-%m-01'))
+        AND (DATE_FORMAT(created_at, '%Y-%m-01') BETWEEN DATE_FORMAT(DATE_SUB(CURRENT_DATE(), INTERVAL 56 DAY), '%Y-%m-01') AND DATE_FORMAT(CURRENT_DATE(), '%Y-%m-01'))
         AND created_at > DATE_SUB(CURRENT_DATE(), INTERVAL 56 DAY)
     GROUP BY period, repo_id
 ), prs_last_period AS (
