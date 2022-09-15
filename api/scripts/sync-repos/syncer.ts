@@ -1,6 +1,7 @@
+import { filter } from 'async';
 import consola from 'consola';
 import { Pool } from 'generic-pool';
-import { DateTime } from 'luxon';
+import { DateTime, DurationLike } from 'luxon';
 import Connection from 'mysql2/typings/mysql/lib/Connection';
 import { Octokit } from "octokit";
 import asyncPool from 'tiny-async-pool';
@@ -24,12 +25,12 @@ export interface RepoWithForks {
 
 // Sync repos.
 
-export async function syncRepos(workerPool: Pool<JobWorker>, from: DateTime, to: DateTime, step: number) {
+export async function syncRepos(workerPool: Pool<JobWorker>, from: DateTime, to: DateTime, duration: DurationLike, step: number, filter?: string) {
     // Split sync jobs.
     const timeRanges: any[] = [];
     let curr = to;
     while (curr.diff(from, 'seconds').seconds >= 0) {
-        const prev = curr.minus({ 'days': 1 });
+        const prev = curr.minus(duration);
         timeRanges.push({
             tFrom: prev,
             tTo: curr
@@ -41,13 +42,13 @@ export async function syncRepos(workerPool: Pool<JobWorker>, from: DateTime, to:
     // Execute sync jobs.
     logger.info(`Handling ${timeRanges.length} subtasks with ${workerPool.max} workers.`);
     await asyncPool(workerPool.max, timeRanges, async ({ tFrom, tTo }) => {
-        await extractReposForTimeRange(workerPool, tFrom, tTo, step);
+        await extractReposInConcurrent(workerPool, tFrom, tTo, step, filter);
         logger.success(`Finished loading repos from ${tFrom.toISO()} to ${tTo.toISO()}.`);
     });
 }
 
-async function extractReposForTimeRange(
-    workerPool: Pool<JobWorker>, from: DateTime, to: DateTime, step: number
+async function extractReposInConcurrent(
+    workerPool: Pool<JobWorker>, from: DateTime, to: DateTime, step: number, filter?: string
 ): Promise<any> {
     return new Promise((resolve, reject) => {
         workerPool.use(async (worker) => {
@@ -60,7 +61,9 @@ async function extractReposForTimeRange(
                     break;
                 }
 
-                const firstRepoPushedAt = await extractRepos(octokit, repoLoader, repoLangLoader, repoTopicLoader, left, right);
+                const firstRepoPushedAt = await extractReposForTimeRange(
+                    octokit, repoLoader, repoLangLoader, repoTopicLoader, left, right, filter
+                );
                 if (firstRepoPushedAt) {
                     right = firstRepoPushedAt
                     left = right.minus({ minutes: step });
@@ -75,9 +78,9 @@ async function extractReposForTimeRange(
     });
 }
 
-async function extractRepos(
+async function extractReposForTimeRange(
     octokit: Octokit, repoLoader: BatchLoader, repoLanguageLoader: BatchLoader, repoTopicLoader: BatchLoader, 
-    from: DateTime, to: DateTime
+    from: DateTime, to: DateTime, filter?: string
 ): Promise<DateTime | undefined> {
     let repoTotal = 0;
     let repoFetch = 0;
@@ -87,12 +90,11 @@ async function extractRepos(
 
     const fromISO = from.toISO();
     const toISO = to.toISO();
-    logger.info(`Fetching search repo result for time range from ${fromISO} to ${toISO}...`);
-    const queryVariable = process.env.SYNC_REPOS_GQL_QUERY;
     const variables = {
-        keyword: `sort:updated-desc ${queryVariable || ''} pushed:${fromISO}..${toISO}`,
+        keyword: `sort:updated-desc ${filter || ''} pushed:${fromISO}..${toISO}`,
         cursor: null
     };
+    logger.info(`Fetching search repo result for time range from ${fromISO} to ${toISO}...`);
 
     const query = /* GraphQL */ `
         query ($keyword: String!, $cursor: String) {
@@ -269,7 +271,7 @@ export async function syncForkRepos(workerPool: Pool<JobWorker>, conn: Connectio
             const { repoId, repoName, forks } = repo;
 
             try {
-                await extractForkReposForRepo(workerPool, conn, repoId, repoName, forks);
+                await extractForkReposInConcurrent(workerPool, conn, repoId, repoName, forks);
                 logger.success(`Fetched fork repos for repo <${repoId}, ${repoName}> with ${forks} forks.`);
             } catch (err) {
                 logger.error(`Failed to fetch fork repos for repo <${repoId}, ${repoName}> with ${forks} forks: `, err);
@@ -279,18 +281,18 @@ export async function syncForkRepos(workerPool: Pool<JobWorker>, conn: Connectio
     }
 }
 
-async function extractForkReposForRepo(workerPool: Pool<JobWorker>, conn: Connection, repoId: number, repoName: string, forks: number):Promise<void> {
+async function extractForkReposInConcurrent(workerPool: Pool<JobWorker>, conn: Connection, repoId: number, repoName: string, forks: number):Promise<void> {
     return new Promise((resolve, reject) => {
         workerPool.use(async (worker) => {
             const { octokit, repoLoader } = worker;
             logger.info(`Fetching fork repos for repo < ${repoId}, ${repoName} > with ${forks} forks...`,);
-            await extractForkRepos(octokit, repoLoader, repoId, repoName);
+            await extractForkReposForTimeRange(octokit, repoLoader, repoId, repoName);
             resolve();
         });
     });
 }
 
-async function extractForkRepos(
+async function extractForkReposForTimeRange(
     octokit: Octokit, repoLoader: BatchLoader, repoId: number, repoName: string
 ): Promise<void> {
     let repoFetch = 0;
@@ -368,7 +370,7 @@ async function extractForkRepos(
         try {
             const res = await octokit.graphql(query, variables) as any;
             if (res.repository === null) {
-                logger.warn(`Repo ${repoName} has been disabled or removed, we can get its forks.`);
+                logger.warn(`Repo ${repoName} has been disabled or removed, we can't get its forks.`);
                 break;
             }
 
