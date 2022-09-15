@@ -5,17 +5,19 @@
 </a>
 
 <h3 align="center">
-  <b><a href="https://ossinsight.io/collections/open-source-database">Rankings</a></b>
+  <b><a href="https://ossinsight.io/collections/open-source-database">Repo Rankings</a></b>
   •
   <b><a href="https://ossinsight.io/analyze/Ovilia">Developer Analytics</a></b>
   •
-  <a href="https://ossinsight.io/analyze/pingcap/tidb">Repository Analytics</a>
+  <a href="https://ossinsight.io/analyze/pingcap/tidb">Repo Analytics</a>
   •
   <a href="https://ossinsight.io/collections/open-source-database">Collections</a>
   •
   <a href="https://ossinsight.io/workshop/overview">Workshop</a>
   •
   <a href="https://ossinsight.io/blog">Blogs</a>
+  •
+  <a href="https://ossinsight.io/docs">API</a>
   •
   <a href="https://twitter.com/OSSInsight">Twitter</a>
 </h3>
