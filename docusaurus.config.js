@@ -189,7 +189,15 @@ const config = {
             label: 'Collections',
             activeBasePath: '/collections'
           },
-          {to: 'https://live.ossinsight.io', label: '💓 Live', position: 'left'},
+          {
+            type: 'dropdown',
+            label: '💓 Live',
+            position: 'left',
+            items: [
+              {label: '2D Version', to: 'https://live.ossinsight.io'},
+              {label: '3D Version - GitHub City', to: 'https://live.ossinsight.io/3d'},
+            ],
+          },
           {to: '/blog', label: 'Blog', position: 'left'},
           {
             type: 'dropdown',
