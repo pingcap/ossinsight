@@ -4,8 +4,8 @@
     "param": "period",
     "on": {
       "past_24_hours": "@daily",
-      "past_week": "@weekly",
-      "past_month": "@monthly"
+      "past_week": "@daily",
+      "past_month": "@daily"
     }
   },
   "onlyFromCache": true,
