@@ -191,7 +191,7 @@ const config = {
           },
           {
             type: 'dropdown',
-            label: '💓 Live',
+            label: 'Live',
             position: 'left',
             items: [
               {label: '2D Version', to: 'https://live.ossinsight.io'},
