@@ -27,3 +27,4 @@ items:
   - amplication/amplication
   - pocketbase/pocketbase
   - frappe/frappe
+  - surrealdb/surrealdb
