@@ -28,6 +28,7 @@ const CoolListContainer = styled(List)({
 const CoolListItem = styled(ListItem)({
   position: 'absolute',
   width: '100%',
+  paddingLeft: 0,
   transition: 'all .5s ease',
   opacity: 0.4,
   '&.item-enter': {
