@@ -1,9 +1,8 @@
 import * as dotenv from "dotenv";
 import * as path from 'path'
 import consola from "consola";
-import { getConnectionOptions, handleDisconnect } from "../../app/utils/db";
+import { ConnectionWrapper, getConnectionOptions } from "../../app/utils/db";
 import schedule from 'node-schedule';
-import { Connection, createConnection } from "mysql2";
 
 const DEFAULT_STEPS = 10;
 const NORMAL_TABLE_NAME = 'cache';
@@ -19,8 +18,7 @@ const cron = process.env.CACHE_GC_CRON || '0 */1 * * * *';
 const logger = consola.withTag('cache-gc');
 
 // Init TiDB client.
-const conn = createConnection(getConnectionOptions());
-handleDisconnect(conn);
+const conn = new ConnectionWrapper(getConnectionOptions());
 
 logger.info(`Execute cache GC job according cron expression: ${cron}`);
 schedule.scheduleJob(cron, async () => {
@@ -43,18 +41,17 @@ schedule.scheduleJob(cron, async () => {
   logger.info('Finished the cache gc.');
 });
 
-function clearCache(conn: Connection, tableName: string, steps: number = 10):Promise<number> {
-  return new Promise((resolve, reject) => {
-    conn.execute<any>(`
-      DELETE FROM ${tableName} ctc
-      WHERE expires > 0 AND DATE_ADD(updated_at, INTERVAL expires SECOND) < CURRENT_TIME
-      LIMIT ${steps};
-    `, (error, results) => {
-      if (error) {
-        reject(error);
-      } else {
-        resolve(results.affectedRows || 0);
-      }
-    });
+function clearCache(conn: ConnectionWrapper, tableName: string, steps: number = 10):Promise<number> {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await conn.execute<any>(`
+        DELETE FROM ${tableName} ctc
+        WHERE expires > 0 AND DATE_ADD(updated_at, INTERVAL expires SECOND) < CURRENT_TIME
+        LIMIT ${steps};
+      `);
+      resolve(res.result.affectedRows || 0);
+    } catch (err) {
+      reject(err);
+    }
   });
 }

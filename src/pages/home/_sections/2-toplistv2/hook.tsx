@@ -1,9 +1,10 @@
-import { params } from '../../../../../api/queries/recent-events-rank-v2/params.json';
+import { params } from '../../../../../api/queries/trending-repos/params.json';
 import { AsyncData, RemoteData, useRemoteData } from "../../../../components/RemoteCharts/hook";
-import React, { useMemo, useState } from "react";
+import React, { DependencyList, useCallback, useEffect, useMemo, useState } from "react";
 import { useSelectParam } from "../../../../components/params";
-import TileSelect from "../../../../components/TileSelect";
+import TileSelect, { TileSelectOption } from "../../../../components/TileSelect";
 import { paramCase } from "param-case";
+import { GitMergeIcon, ProjectIcon, RepoForkedIcon, RepoPushIcon, StarIcon } from "@primer/octicons-react";
 
 export type Language = string
 export type Period = string
@@ -12,16 +13,44 @@ export const periods: Period[] = params.find(param => param.name === 'period').e
 export const languages: Language[] = Object.keys(params.find(param => param.name === 'language').template);
 
 const periodOptions = periods.map(period => ({ key: period, title: snakeToCamel(period) }));
-const languageOptions = languages.map(language => ({ key: language, title: language }));
+const languageOptions = languages.map(language => ({ key: language, label: language }));
+const orderOptions: TileSelectOption[] = [
+  {
+    key: 'total_score',
+    label: 'Score',
+    icon: <ProjectIcon className="rotate-180" />,
+  },
+  {
+    key: 'stars',
+    label: 'Stars',
+    icon: <StarIcon />,
+  }, {
+    key: 'forks',
+    label: 'Forks',
+    icon: <RepoForkedIcon />,
+  },
+  {
+    key: 'pushes',
+    label: 'Pushes',
+    icon: <RepoPushIcon />,
+  },
+  {
+    key: 'pull_requests',
+    label: 'PRs',
+    icon: <GitMergeIcon />,
+  },
+];
 
 export type TopListData = {
   repo_id: number
   repo_name: string
+  description: string
   stars: number
   pushes: number
   pull_requests: number
+  forks: number
+  total_score: number
   language: Language
-  events: number
   // csv
   contributor_logins: string
   // csv
@@ -34,8 +63,8 @@ export type ProcessedTopListData = Omit<TopListData, 'contributor_logins' | 'col
 }
 
 
-export function useTopList(language: Language, period: Period): AsyncData<RemoteData<any, ProcessedTopListData>> {
-  const { data, loading, error } = useRemoteData<any, TopListData>('recent-events-rank-v2', {
+export function useTopList(language: Language, period: Period, orderBy: keyof TopListData): AsyncData<RemoteData<any, ProcessedTopListData>> {
+  const { data, loading, error } = useRemoteData<any, TopListData>('trending-repos', {
     language,
     period,
   }, false);
@@ -46,39 +75,76 @@ export function useTopList(language: Language, period: Period): AsyncData<Remote
     }
     return {
       ...data,
-      data: data.data.map(item => ({
-        ...item,
-        contributor_logins: item.contributor_logins?.split(','),
-        collection_names: item.collection_names?.split(','),
-      })),
+      data: data.data
+        .slice()
+        .sort((a, b) => ((b[orderBy] as number) ?? 0) - (a[orderBy] as number) ?? 0)
+        .map(item => ({
+          ...item,
+          contributor_logins: item.contributor_logins?.split(','),
+          collection_names: item.collection_names?.split(','),
+        })),
     };
-  }, [data]);
+  }, [data, orderBy]);
 
   return { data: processedData, loading, error };
 }
 
 export function useLanguages() {
-  const [value, setValue] = useState<string>(languageOptions[0].key);
-  const options = useMemo(() => {
-    return languageOptions.map(({ key, title }) => ({ key: key, label: title }));
-  }, [languageOptions]);
+  const [value, setValue] = useState<Language>(languageOptions[0].key);
 
   const select = (
-    <TileSelect value={value} onSelect={setValue} options={options} />
+    <TileSelect value={value} onSelect={setValue} options={languageOptions} />
   );
 
   return { select, value };
 }
 
 export function usePeriods() {
-  return useSelectParam(periodOptions, periodOptions[1], '', { variant: 'standard' }, {
+  return useSelectParam(periodOptions, periodOptions[0], '', { variant: 'standard' }, {
     disableUnderline: true,
     sx: { font: 'inherit', color: 'primary.main', lineHeight: 'inherit', '.MuiSelect-select': { pb: 0 } },
   });
 }
 
+export function useOrderBy() {
+  const [value, setValue] = useState<string>(orderOptions[0].key);
+
+  const select = (
+    <TileSelect value={value} onSelect={setValue} options={orderOptions} />
+  );
+
+  return { select, value };
+}
+
 function snakeToCamel(n) {
   return paramCase(n)
-  .replace(/^\w/g, a => a.toUpperCase())
-  .replace(/-/g, ' ');
+    .replace(/^\w/g, a => a.toUpperCase())
+    .replace(/-/g, ' ');
+}
+
+export function usePagination(data: RemoteData<any, ProcessedTopListData> | undefined, deps: DependencyList) {
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(20);
+
+  useEffect(() => {
+    setPage(0);
+  }, deps);
+
+  const handleChangePage = useCallback((event: unknown, newPage: number) => {
+    setPage(newPage);
+  }, [setPage]);
+
+  const handleChangeRowsPerPage = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  }, [setPage, setRowsPerPage]);
+
+  const list = useMemo(() => {
+    if (!data) {
+      return undefined;
+    }
+    return data.data.slice(page * rowsPerPage, (page + 1) * rowsPerPage);
+  }, [data, page, rowsPerPage]);
+
+  return { page, rowsPerPage, handleChangePage, handleChangeRowsPerPage, list };
 }

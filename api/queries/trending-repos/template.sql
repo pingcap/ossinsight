@@ -74,6 +74,7 @@ WITH stars AS (
     WHERE
         -- Filter rule: The repository must have at least 5 stars.
         stars > 5
+        AND stars < 50000
         -- Filter rule: The repository must have at least 5 forks.
         AND forks > 5
         -- Filter rule: The repository must have pushed new code within the last three months.

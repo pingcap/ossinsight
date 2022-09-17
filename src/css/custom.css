@@ -250,3 +250,7 @@ html[data-theme='dark'] img[src$='#gh-light-mode-only'] {
   margin-right: 0;
   margin-left: 8px;
 }
+
+.rotate-180 {
+  rotate: 180deg;
+}

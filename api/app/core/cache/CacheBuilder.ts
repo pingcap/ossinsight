@@ -1,5 +1,5 @@
 import { createConnection } from "mysql2";
-import { getConnectionOptions, handleDisconnect } from "../../utils/db";
+import { ConnectionWrapper, getConnectionOptions } from "../../utils/db";
 import Cache from './Cache'
 import CachedTableCacheProvider from "./CachedTableCacheProvider";
 import { CacheOption, CacheProvider } from "./CacheProvider";
@@ -11,11 +11,11 @@ export enum CacheProviderTypes {
 }
 
 class NoneCacheProvider implements CacheProvider {
-    set(key: string, value: any, options?: CacheOption | undefined): void {
-        return;
+    set(key: string, value: any, options?: CacheOption | undefined) {
+        return Promise.resolve();
     }
     get(key: string) {
-        return undefined;
+        return Promise.resolve();
     }
 }
 
@@ -32,12 +32,10 @@ export default class CacheBuilder {
     constructor(enableCache: boolean) {
         this.enableCache = enableCache;
         if (enableCache) {
-            const normalCacheConn = createConnection(getConnectionOptions());
-            handleDisconnect(normalCacheConn);
+            const normalCacheConn = new ConnectionWrapper(getConnectionOptions());
             this.normalCacheProvider = new NormalTableCacheProvider(normalCacheConn);
 
-            const cachedTableCacheConn = createConnection(getConnectionOptions());
-            handleDisconnect(normalCacheConn);
+            const cachedTableCacheConn = new ConnectionWrapper(getConnectionOptions());
             this.cachedTableCacheProvider = new CachedTableCacheProvider(cachedTableCacheConn);
         }
     }

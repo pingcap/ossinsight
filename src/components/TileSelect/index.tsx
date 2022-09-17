@@ -1,6 +1,7 @@
 import React, {
   ForwardedRef,
   forwardRef,
+  ReactNode,
   useCallback,
   useEffect,
   useLayoutEffect,
@@ -18,6 +19,7 @@ import { SelectChangeEvent } from "@mui/material/Select/SelectInput";
 export type TileSelectOption = {
   key: string
   label: string
+  icon?: ReactNode
 }
 
 export interface TileSelectProps {
@@ -129,11 +131,12 @@ export default function TileSelect({ options, value, onSelect }: TileSelectProps
             height="100%"
             sx={{ listStyle: 'none' }}
           >
-            {options.slice(0, length).map(({ key, label }) => (
+            {options.slice(0, length).map(({ key, label, icon }) => (
               <Option
                 key={key}
                 value={key}
                 label={label}
+                icon={icon}
                 selected={value === key}
                 onClick={onSelect}
               />
@@ -148,10 +151,8 @@ export default function TileSelect({ options, value, onSelect }: TileSelectProps
             value={selectValue}
             onChange={handleSelect}
             sx={{
-              minWidth: 120,
-              maxWidth: 120,
               fontSize: 14,
-              ml: 2,
+              ml: length > 0 ? 2 : 0,
               '.MuiSelect-select': {
                 pb: 0,
                 pl: 1,
@@ -163,7 +164,7 @@ export default function TileSelect({ options, value, onSelect }: TileSelectProps
             }}
             variant="standard"
             disableUnderline
-            renderValue={value => value ?? 'Others'}
+            renderValue={value => options.find(({ key }) => key === value)?.label ?? 'Others'}
           >
             {options.slice(length).map(({ key, label }) => (
               <MenuItem key={key} value={key}>{label}</MenuItem>
@@ -178,6 +179,7 @@ export default function TileSelect({ options, value, onSelect }: TileSelectProps
 interface OptionProps {
   value: string;
   label: string;
+  icon?: ReactNode;
   selected?: boolean;
   onClick?: (value: string) => void;
 }
@@ -185,6 +187,7 @@ interface OptionProps {
 const Option = forwardRef(function Option({
                                             value,
                                             label,
+                                            icon,
                                             selected = false,
                                             onClick,
                                           }: OptionProps, ref: ForwardedRef<HTMLLIElement>) {
@@ -215,6 +218,8 @@ const Option = forwardRef(function Option({
         color: selected ? 'primary.main' : undefined,
       }}
     >
+      {icon}
+      {icon && <Box mx={0.5} />}
       {label}
     </Box>
   );

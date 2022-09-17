@@ -108,41 +108,6 @@ const config = {
         ]
       }
     ],
-    [
-      '@docusaurus/plugin-content-blog',
-      {
-        id: '_blog',
-        routeBasePath: '_blog',
-        path: './_blog',
-      },
-    ],
-    [
-      '@docusaurus/plugin-client-redirects',
-      {
-        redirects: [
-          {
-            from: '/database/deep-insight-into-open-source-databases',
-            to: '/blog/deep-insight-into-open-source-databases',
-          },
-          {
-            from: '/js-framework/deep-insight-into-js-framework-2021',
-            to: '/blog/deep-insight-into-js-framework-2021',
-          },
-          {
-            from: '/language/deep-insight-into-programming-languages-2021',
-            to: '/blog/deep-insight-into-programming-languages-2021',
-          },
-          {
-            from: '/low-code/deep-insight-into-lowcode-development-tools-2021',
-            to: '/blog/deep-insight-into-lowcode-development-tools-2021',
-          },
-          {
-            from: '/web-framework/deep-insight-about-web-framework-2021',
-            to: '/blog/deep-insight-into-web-framework-2021',
-          },
-        ]
-      }
-    ],
     // 'docusaurus-plugin-hubspot',
   ],
   presets: [
@@ -156,7 +121,13 @@ const config = {
             '**/_*'
           ]
         },
-        docs: false,
+        docs: {
+          id: "docs",
+          path: "docs",
+          routeBasePath: "/docs",
+          editUrl: "https://github.com/pingcap/ossinsight/tree/main",
+          sidebarPath: require.resolve("./sidebars.js"),
+        },
         blog: {
           blogTitle: 'Blog',
           blogDescription: 'Helping dev teams adopt OSS technologies and practices. Written by software engineers and community analysts.',
@@ -218,6 +189,15 @@ const config = {
             label: 'Collections',
             activeBasePath: '/collections'
           },
+          {
+            type: 'dropdown',
+            label: '💓 Live',
+            position: 'left',
+            items: [
+              {label: '2D Version', to: 'https://live.ossinsight.io'},
+              {label: '3D Version - GitHub City', to: 'https://live.ossinsight.io/3d'},
+            ],
+          },
           {to: '/blog', label: 'Blog', position: 'left'},
           {
             type: 'dropdown',
@@ -232,6 +212,7 @@ const config = {
               {label: '└─ Cryptocurrency Insight - not ready', to: '/workshop/cryptocurrency-insight'},
             ]
           },
+          {to: '/docs', label: 'API', position: 'left'},
           /*
           {
             type: 'dropdown',
@@ -294,6 +275,10 @@ const config = {
               {
                 label: 'Workshop',
                 to: '/workshop/overview',
+              },
+              {
+                label: 'API',
+                to: '/docs',
               },
               {
                 label: 'How do we implement OSS Insight?',

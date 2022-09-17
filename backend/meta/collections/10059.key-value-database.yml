@@ -23,3 +23,4 @@ items:
   - cockroachdb/pebble
   - nutsdb/nutsdb
   - Snapchat/KeyDB
+  - OpenAtomFoundation/pika

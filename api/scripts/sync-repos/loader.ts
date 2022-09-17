@@ -11,11 +11,11 @@ export async function loadGitHubRepos(repoLoader: BatchLoader, repos: GitHubRepo
 export async function loadGitHubRepo(repoLoader: BatchLoader, repo: GitHubRepo) {
     let {
         repoId, repoName, ownerId, ownerLogin, ownerIsOrg, description, primaryLanguage, license, size, stars, forks, 
-        isFork, isArchived, latestReleasedAt, pushedAt, createdAt, updatedAt
+        isFork, isArchived, latestReleasedAt, parentRepoId, pushedAt, createdAt, updatedAt, 
     } = repo;
 
     await repoLoader.insert([
         repoId, repoName, ownerId, ownerLogin, ownerIsOrg, description, primaryLanguage, license, size, stars, forks, 
-        isFork, isArchived, latestReleasedAt, pushedAt, createdAt, updatedAt
+        isFork, isArchived, latestReleasedAt, parentRepoId, pushedAt, createdAt, updatedAt
     ]);
 }

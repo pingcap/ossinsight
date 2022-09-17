@@ -199,9 +199,9 @@ const GeneralSearch = ({ contrast, align = 'left', size, global = false }: Gener
     if (!open) {
       return `Search a developer or repo`
     } else if (type === 'user') {
-      return `Enter a Developer ID`
+      return `Enter a GitHub ID`
     } else {
-      return `Enter a Repo ID`
+      return `Enter a GitHub Repo Name`
     }
   }, [open, type])
 
