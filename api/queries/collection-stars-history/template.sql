@@ -1,23 +1,20 @@
 WITH acc AS (
     SELECT
+        /*+ MERGE() */
         event_month,
-        repo_name,
-        COUNT(actor_login) OVER(PARTITION BY repo_name ORDER BY event_month ASC) AS total
-    FROM (
-        SELECT
-            event_month,
-            actor_login,
-            FIRST_VALUE(repo_name) OVER (PARTITION BY repo_id ORDER BY created_at DESC) AS repo_name,
-            ROW_NUMBER() OVER(PARTITION BY repo_id, actor_login) AS row_num
-        FROM github_events
-        WHERE
-            type = 'WatchEvent' AND repo_id IN (41986369, 16563587, 105944401)
-    ) sub
-    WHERE row_num = 1
+        repo_id,
+        COUNT(actor_login) OVER(PARTITION BY repo_id ORDER BY event_month ASC) AS total
+    FROM github_events ge
+    WHERE
+        type = 'WatchEvent'
+        AND repo_id IN (41986369, 16563587, 105944401)
     ORDER BY event_month
 )
-SELECT event_month, repo_name, total
+SELECT
+    /*+ read_from_storage(tikv[r]) */
+    event_month, acc.repo_id AS repo_id, ANY_VALUE(r.repo_name) AS repo_name, total
 FROM acc
-GROUP BY event_month, repo_name
+LEFT JOIN github_repos r ON acc.repo_id = r.repo_id
+GROUP BY event_month, acc.repo_id
 ORDER BY event_month
 ;

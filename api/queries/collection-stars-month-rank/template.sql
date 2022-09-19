@@ -18,9 +18,9 @@ WITH stars_group_by_repo AS (
         type = 'WatchEvent'
         AND action = 'started'
         AND repo_id IN (41986369, 16563587, 105944401)
-        AND event_month IN (
-            DATE_FORMAT(DATE_SUB(NOW(), INTERVAL DAYOFMONTH(NOW()) DAY), '%Y-%m-01'),
-            DATE_FORMAT(DATE_SUB(DATE_SUB(NOW(), INTERVAL DAYOFMONTH(NOW()) DAY), INTERVAL 1 MONTH), '%Y-%m-01')
+        AND (
+            created_at BETWEEN DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 2 MONTH), '%Y-%m-01')
+            AND DATE_FORMAT(NOW(), '%Y-%m-01')
         )
     GROUP BY repo_id, event_month
 ), stars_last_month AS (

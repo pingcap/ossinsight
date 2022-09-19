@@ -1,26 +1,27 @@
 WITH acc AS (
     SELECT
+        /*+ MERGE() */
         event_month,
-        repo_name,
-        COUNT(number) OVER(PARTITION BY repo_name ORDER BY event_month ASC) AS total
+        repo_id,
+        COUNT(number) OVER(PARTITION BY repo_id ORDER BY event_month ASC) AS total
     FROM (
         SELECT
-            event_month,
-            number,
-            FIRST_VALUE(repo_name) OVER (PARTITION BY repo_id ORDER BY created_at DESC) AS repo_name,
-            ROW_NUMBER() OVER(PARTITION BY number) AS row_num
+            DATE_FORMAT(created_at, '%Y-%m-01') AS event_month,
+            repo_id,
+            number
         FROM github_events
         WHERE
-            type = 'PullRequestEvent' AND repo_id IN (41986369, 16563587, 105944401)
-            -- Exclude Bots
-            AND actor_login NOT LIKE '%bot%'
-            AND actor_login NOT IN (SELECT login FROM blacklist_users bu)
-    ) prs_with_latest_repo_name
-    WHERE row_num = 1
-    ORDER BY 1
+            type = 'PullRequestEvent'
+            AND action = 'opened'
+            AND repo_id IN (41986369, 16563587, 105944401)
+    ) sub
+    ORDER BY event_month
 )
-SELECT event_month, repo_name, ANY_VALUE(total) AS total
+SELECT
+    /*+ read_from_storage(tikv[r]) */
+    event_month, acc.repo_id AS repo_id, ANY_VALUE(r.repo_name) AS repo_name, ANY_VALUE(total) AS total
 FROM acc
-GROUP BY 1, 2
-ORDER BY 1
+LEFT JOIN github_repos r ON acc.repo_id = r.repo_id
+GROUP BY event_month, acc.repo_id
+ORDER BY event_month
 ;
