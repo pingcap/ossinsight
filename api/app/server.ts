@@ -1,12 +1,13 @@
 import Router from "koa-router";
-import Query from "./core/Query";
-import {DefaultState} from "koa";
+import Query, { playgroundQuery } from "./core/Query";
+import { DefaultState } from "koa";
+import koaBody from "koa-body";
 import type {ContextExtends} from "../index";
 import {register} from "prom-client";
 import {measureRequests, URLType} from "./middlewares/measureRequests";
 import { Socket, Server } from "socket.io";
 import { Consola } from "consola";
-import { TiDBQueryExecutor } from "./core/TiDBQueryExecutor";
+import { TiDBQueryExecutor, TiDBPlaygroundQueryExecutor } from "./core/TiDBQueryExecutor";
 import CacheBuilder from "./core/cache/CacheBuilder";
 import GhExecutor from "./core/GhExecutor";
 import CollectionService from "./services/CollectionService";
@@ -14,10 +15,12 @@ import UserService from "./services/UserService";
 import GHEventService from "./services/GHEventService";
 import StatsService from "./services/StatsService";
 import { BatchLoader } from "./core/BatchLoader";
+import { SqlParser } from "./utils/playground";
 
 export default async function httpServerRoutes(
   router: Router<DefaultState, ContextExtends>,
   queryExecutor: TiDBQueryExecutor,
+  playgroundQueryExecutor: TiDBPlaygroundQueryExecutor,
   cacheBuilder: CacheBuilder,
   ghExecutor: GhExecutor,
   collectionService: CollectionService,
@@ -168,6 +171,31 @@ export default async function httpServerRoutes(
   router.get('/metrics/:name', async ctx => {
     ctx.body = await register.getSingleMetricAsString(ctx.params.name)
   })
+
+  router.post(
+    "/q/playground",
+    koaBody(),
+    measureRequests({ urlLabel: "path" }),
+    async (ctx) => {
+      try {
+        const {
+          sql: sqlString,
+          type,
+          id,
+        } = ctx.request.body as { sql: string; type: "repo" | "user"; id: string };
+        const sqlParser = new SqlParser(type, id, sqlString);
+        const sql = sqlParser.sqlify();
+        const query = new playgroundQuery(playgroundQueryExecutor);
+        const res = await query.run(sql, null, ctx.request.ip, true);
+        ctx.response.status = 200;
+        ctx.response.body = res;
+      } catch (e) {
+        ctx.logger.error("Failed to request %s: ", ctx.request.originalUrl, e);
+        ctx.response.status = 500;
+        ctx.response.body = e;
+      }
+    }
+  );
 }
 
 export function socketServerRoutes(

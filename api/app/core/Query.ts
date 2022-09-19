@@ -12,6 +12,7 @@ import CollectionService from '../services/CollectionService';
 import CacheBuilder from './cache/CacheBuilder';
 import { QueryTemplateNotFoundError } from './QueryFactory';
 import UserService from '../services/UserService';
+import { SqlParser } from "../utils/playground";
 
 const EXPLAIN_QUERY_CACHE_HOUR = 0.01;
 
@@ -330,4 +331,47 @@ export default class Query {
 
 export function needPrefetch(queryDef: QuerySchema) {
   return queryDef.refreshCron !== undefined;
+}
+
+export class playgroundQuery {
+  name = "playground";
+
+  constructor(public readonly executor: TiDBQueryExecutor) {}
+
+  async run(
+    sql: string,
+    conn?: PoolConnection | null,
+    ip?: string,
+    limit = false
+  ) {
+    try {
+      const start = DateTime.now();
+      tidbQueryCounter.labels({ query: this.name, phase: "start" }).inc();
+
+      let res: Result;
+      if (conn) {
+        res = await this.executor.executeWithConn(conn, sql, limit);
+      } else {
+        res = await this.executor.execute(sql, limit);
+      }
+
+      const end = DateTime.now();
+      tidbQueryCounter.labels({ query: this.name, phase: "success" }).inc();
+
+      return {
+        requestedAt: start,
+        finishedAt: end,
+        spent: end.diff(start).as("seconds"),
+        sql,
+        fields: res.fields,
+        data: res.rows as any,
+      };
+    } catch (e) {
+      tidbQueryCounter.labels({ query: this.name, phase: "error" }).inc();
+      if (e) {
+        (e as any).sql = sql;
+      }
+      throw e;
+    }
+  }
 }
