@@ -29,3 +29,8 @@ If you want to use OSS Insight API in your application, feel free to contact us 
 ## API Rate Limit
 
 For each IP address, the rate limit allows for up to 60 requests per minute.
+
+
+## Who are using OSS Insight API
+
+* https://github1s.com/ - One second to read GitHub code with VS Code.
