@@ -13,7 +13,7 @@ export default function Page() {
     <CustomPage title="Stats">
       <Container maxWidth="lg" sx={{ py: 2 }}>
         <Typography variant='h1' mb={2}>
-          Indices usages
+          Index Usage
         </Typography>
         <IndexStats showTable stats={data?.data ?? []} />
       </Container>
