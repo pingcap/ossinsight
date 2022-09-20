@@ -2,7 +2,11 @@ import {readFile} from 'fs/promises'
 import path from 'path'
 import {DateTime, Duration} from "luxon";
 import type { QuerySchema } from '../../params.schema'
-import {TiDBQueryExecutor, Result} from "./TiDBQueryExecutor";
+import {
+  TiDBQueryExecutor,
+  Result,
+  TiDBPlaygroundQueryExecutor,
+} from "./TiDBQueryExecutor";
 import {CachedData} from "./cache/Cache";
 import consola from "consola";
 import {PoolConnection} from "mysql2";
@@ -336,7 +340,7 @@ export function needPrefetch(queryDef: QuerySchema) {
 export class playgroundQuery {
   name = "playground";
 
-  constructor(public readonly executor: TiDBQueryExecutor) {}
+  constructor(public readonly executor: TiDBPlaygroundQueryExecutor) {}
 
   async run(
     sql: string,

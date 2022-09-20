@@ -82,8 +82,11 @@ export class TiDBQueryExecutor implements QueryExecutor {
 }
 
 export class TiDBPlaygroundQueryExecutor extends TiDBQueryExecutor {
-  constructor(options: PoolOptions) {
+  limits: string[];
+
+  constructor(options: PoolOptions, connectionLimits: string[]) {
     super(options);
+    this.limits = connectionLimits;
   }
 
   async executeWithConn(
@@ -102,17 +105,8 @@ export class TiDBPlaygroundQueryExecutor extends TiDBQueryExecutor {
         sql: sql,
       };
 
-      const limitCmdList = [
-        `SET SESSION tidb_isolation_read_engines="tikv,tidb";`,
-        `SET SESSION tidb_mem_quota_query=8 << 23;`,
-        `SET SESSION tidb_enable_rate_limit_action = false;`,
-        `SET SESSION tidb_enable_paging=true;`,
-        `SET SESSION tidb_executor_concurrency=1;`,
-        `SET SESSION tidb_distsql_scan_concurrency=5;`,
-      ];
-
       if (limit) {
-        limitCmdList.forEach((cmd) => {
+        this.limits.forEach((cmd) => {
           connection.query(cmd, (err, rows, fields) => {
             if (err) {
               this.logger.warn(`Failed to enable query limit: ${cmd}`, err);

@@ -12,6 +12,7 @@ import {
   TiDBQueryExecutor,
   TiDBPlaygroundQueryExecutor,
 } from "./app/core/TiDBQueryExecutor";
+import { SESSION_LIMITS } from "./app/utils/playground";
 import CollectionService from "./app/services/CollectionService";
 import GHEventService from "./app/services/GHEventService";
 import UserService from "./app/services/UserService";
@@ -61,7 +62,8 @@ const playgroundQueryExecutor = new TiDBPlaygroundQueryExecutor(
   getConnectionOptions({
     connectionLimit: parseInt(process.env.CONNECTION_LIMIT || "10"),
     queueLimit: parseInt(process.env.QUEUE_LIMIT || "20"),
-  })
+  }),
+  SESSION_LIMITS
 );
 
 // Init Cache Builder;

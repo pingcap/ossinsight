@@ -62,7 +62,6 @@ export class SqlParser {
   private astToString(ast: AST) {
     const parsedSQLStr = this.parser.sqlify(ast);
     return parsedSQLStr;
-    // return `${PRESET_SQL}${parsedSQLStr};`;
   }
 
   public sqlify() {
@@ -70,10 +69,6 @@ export class SqlParser {
     return this.astToString(validatedAst);
   }
 }
-
-// const PRESET_SQL = `SET SESSION tidb_isolation_read_engines="tikv,tidb"; SET SESSION tidb_mem_quota_query=8 << 23;SET SESSION tidb_enable_rate_limit_action = false;SET SESSION tidb_enable_paging=true;SET SESSION tidb_executor_concurrency=1;SET SESSION tidb_distsql_scan_concurrency=5;`;
-const PRESET_SQL = `SET SESSION tidb_mem_quota_query=8 << 23;`;
-
 
 const LIMIT_AST_NODE = {
   seperator: "",
@@ -132,3 +127,12 @@ function parseSelectAst(ast: Select, fieldName: string, value: number) {
     };
   }
 }
+
+export const SESSION_LIMITS = [
+  `SET SESSION tidb_isolation_read_engines="tikv,tidb";`,
+  `SET SESSION tidb_mem_quota_query=8 << 23;`,
+  `SET SESSION tidb_enable_rate_limit_action = false;`,
+  `SET SESSION tidb_enable_paging=true;`,
+  `SET SESSION tidb_executor_concurrency=1;`,
+  `SET SESSION tidb_distsql_scan_concurrency=5;`,
+];
