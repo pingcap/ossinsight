@@ -3,7 +3,7 @@
   "params": [
     {
       "name": "tableName",
-      "replaces": "AND TABLE_NAME = 'github_events'"
+      "replaces": "github_events"
     }
   ]
 }
