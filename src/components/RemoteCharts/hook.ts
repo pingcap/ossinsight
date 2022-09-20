@@ -276,8 +276,7 @@ export const useSQLPlayground = (
           }
           if (e?.response?.data?.msg) {
             setError(e.response.data.msg);
-          }
-          if (e?.response?.data?.sqlMessage) {
+          } else if (e?.response?.data?.sqlMessage) {
             setError(e.response.data.sqlMessage);
           } else {
             setError(e);
