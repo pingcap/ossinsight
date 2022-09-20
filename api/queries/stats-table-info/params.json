@@ -1,0 +1,9 @@
+{
+  "cacheHours": 0,
+  "params": [
+    {
+      "name": "tableName",
+      "replaces": "AND TABLE_NAME = 'github_events'"
+    }
+  ]
+}
