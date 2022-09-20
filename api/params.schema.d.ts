@@ -5,11 +5,84 @@
  * and run json-schema-to-typescript to regenerate this file.
  */
 
+export type CoreSchemaMetaSchema =
+  | {
+      $id?: string;
+      $schema?: string;
+      $ref?: string;
+      $comment?: string;
+      title?: string;
+      description?: string;
+      default?: true;
+      readOnly?: boolean;
+      writeOnly?: boolean;
+      examples?: true[];
+      multipleOf?: number;
+      maximum?: number;
+      exclusiveMaximum?: number;
+      minimum?: number;
+      exclusiveMinimum?: number;
+      maxLength?: number;
+      minLength?: number;
+      pattern?: string;
+      additionalItems?: CoreSchemaMetaSchema;
+      items?: CoreSchemaMetaSchema | [CoreSchemaMetaSchema, ...CoreSchemaMetaSchema[]];
+      maxItems?: number;
+      minItems?: number;
+      uniqueItems?: boolean;
+      contains?: CoreSchemaMetaSchema;
+      maxProperties?: number;
+      minProperties?: number;
+      required?: string[];
+      additionalProperties?: CoreSchemaMetaSchema;
+      definitions?: {
+        [k: string]: CoreSchemaMetaSchema;
+      };
+      properties?: {
+        [k: string]: CoreSchemaMetaSchema;
+      };
+      patternProperties?: {
+        [k: string]: CoreSchemaMetaSchema;
+      };
+      dependencies?: {
+        [k: string]: CoreSchemaMetaSchema | string[];
+      };
+      propertyNames?: CoreSchemaMetaSchema;
+      const?: true;
+      enum?: [true, ...unknown[]];
+      type?:
+        | ("array" | "boolean" | "integer" | "null" | "number" | "object" | "string")
+        | [
+            "array" | "boolean" | "integer" | "null" | "number" | "object" | "string",
+            ...("array" | "boolean" | "integer" | "null" | "number" | "object" | "string")[]
+          ];
+      format?: string;
+      contentMediaType?: string;
+      contentEncoding?: string;
+      if?: CoreSchemaMetaSchema;
+      then?: CoreSchemaMetaSchema;
+      else?: CoreSchemaMetaSchema;
+      allOf?: [CoreSchemaMetaSchema, ...CoreSchemaMetaSchema[]];
+      anyOf?: [CoreSchemaMetaSchema, ...CoreSchemaMetaSchema[]];
+      oneOf?: [CoreSchemaMetaSchema, ...CoreSchemaMetaSchema[]];
+      not?: CoreSchemaMetaSchema;
+      [k: string]: unknown;
+    }
+  | boolean;
+
 export interface QuerySchema {
   /**
    * Query name, default is generated base on the file path.
    */
   name?: string;
+  /**
+   * Indicating if the query is private.
+   */
+  private?: boolean;
+  /**
+   * Query description for documentation.
+   */
+  description?: string;
   /**
    * Specify how to implement caching, NORMAL_TABLE are used by default.
    */
@@ -38,10 +111,7 @@ export interface QuerySchema {
    * Query params declaration.
    */
   params: Params[];
-  /**
-   * Special restrictions for params.
-   */
-  restrictions?: Restriction[];
+  resultSchema?: CoreSchemaMetaSchema;
 }
 export interface ConditionalRefreshCrons {
   param: string;
@@ -68,6 +138,10 @@ export interface Params {
    * URL Search param name for the query.
    */
   name: string;
+  /**
+   * Param description for documentation
+   */
+  description?: string;
   /**
    * Define the parameter type.
    */
@@ -102,8 +176,4 @@ export interface Params {
    * Regular expression for validating parameter value.
    */
   pattern?: string;
-}
-export interface Restriction {
-  fields: string[];
-  enums: string[][];
 }
