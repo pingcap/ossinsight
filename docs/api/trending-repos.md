@@ -14,8 +14,8 @@ sidebar_label: Trending Repos
 | Name | Type | Required |
 | --- | --- | --- |
 | language | enum(All,JavaScript,Java,Python,PHP,Rust,Go,Kotlin,PowerShell...) | yes |
-| period | enum(last_day,last_week,last_month) | yes |
+| period | enum(past_24_hours,past_week,past_month) | yes |
 
 ## Example
 
-`https://api.ossinsight.io/q/trending-repos?language=All&period=last_day`
+`https://api.ossinsight.io/q/trending-repos?language=All&period=past_24_hours`
