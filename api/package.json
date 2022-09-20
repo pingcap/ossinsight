@@ -29,6 +29,7 @@
     "dev:sync-repos": "NODE_OPTIONS='--max-old-space-size=4098' ts-node scripts/sync-repos/index.ts",
     "dev:sync-stats": "ts-node scripts/sync-stats/index.ts",
     "gen:schema-ts": "json2ts params.schema.json params.schema.d.ts",
+    "gen:api-documentation": "ts-node scripts/gen-openapi/index.ts",
     "validate:params": "ajv -s params.schema.json -d \"queries/*/params.json\"",
     "build": "tsc && pnpm run build:copy",
     "build:copy": "mkdir -p ./dist && cat .distfiles | xargs -I {} cp -r {} ./dist/{} 2>/dev/null || :",
@@ -83,6 +84,7 @@
     "ajv-cli": "^5.0.0",
     "jest": "^28.1.3",
     "json-schema-to-typescript": "^10.1.5",
+    "openapi3-ts": "^3.0.2",
     "ts-node": "^10.5.0",
     "typescript": "^4.5.5"
   }

@@ -36,6 +36,7 @@ specifiers:
   node-schedule: ^2.1.0
   node-sql-parser: ^4.5.0
   octokit: ^1.7.1
+  openapi3-ts: ^3.0.2
   p-queue: ^7.3.0
   pinyin: 3.0.0-alpha.5
   prom-client: ^14.0.1
@@ -95,6 +96,7 @@ devDependencies:
   ajv-cli: 5.0.0_ts-node@10.8.1
   jest: 28.1.3_cv4ngqlnn5rnhu2gcigbplrfje
   json-schema-to-typescript: 10.1.5
+  openapi3-ts: 3.0.2
   ts-node: 10.8.1_x2utdhayajzrh747hktprshhby
   typescript: 4.7.4
 
@@ -3913,6 +3915,12 @@ packages:
     resolution: {integrity: sha512-Fvw+Jemq5fjjyWz6CpKx6w9s7xxqo3+JCyM0WXWeCSOboZ8ABkyvP8ID4CZuChA/wxSx+XSJmdOm8rGVyJ1hdQ==}
     dev: false
 
+  /openapi3-ts/3.0.2:
+    resolution: {integrity: sha512-KF/06OkQPFSr9A+oadYYC3cIj8TZlzonREkQYFqx8i+wLllAxm6Bp8Fizo3jWXeIxZj/7V5LKtuNN/GxueWtcw==}
+    dependencies:
+      yaml: 2.1.1
+    dev: true
+
   /p-limit/2.3.0:
     resolution: {integrity: sha512-//88mFWSJx8lxCzwdAABTJL2MyWB12+eIY7MDL2SqLmAkeKU9qxRvWuSyTjm3FUmpBEMuFfckAIqEaVGUDxb6w==}
     engines: {node: '>=6'}
@@ -4803,7 +4811,6 @@ packages:
   /yaml/2.1.1:
     resolution: {integrity: sha512-o96x3OPo8GjWeSLF+wOAbrPfhFOGY0W00GNaxCDv+9hkcDJEnev1yh8S7pgHF0ik6zc8sQLuL8hjHjJULZp8bw==}
     engines: {node: '>= 14'}
-    dev: false
 
   /yargs-parser/21.1.1:
     resolution: {integrity: sha512-tVpsJW7DdjecAiFpbIB1e3qxIQsE6NoPc5/eTdrbbIC4h0LVsWhnoa3g+m2HclBIujHzsxZ4VJVA+GUuc2/LBw==}

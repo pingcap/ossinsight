@@ -20,3 +20,5 @@ test/result/*.log
 
 # Fox Mac OS
 .DS_Store
+
+openapi.yaml

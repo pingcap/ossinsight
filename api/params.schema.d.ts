@@ -5,6 +5,9 @@
  * and run json-schema-to-typescript to regenerate this file.
  */
 
+/**
+ * Result data schema for description.
+ */
 export type CoreSchemaMetaSchema =
   | {
       $id?: string;
@@ -25,29 +28,29 @@ export type CoreSchemaMetaSchema =
       maxLength?: number;
       minLength?: number;
       pattern?: string;
-      additionalItems?: CoreSchemaMetaSchema;
-      items?: CoreSchemaMetaSchema | [CoreSchemaMetaSchema, ...CoreSchemaMetaSchema[]];
+      additionalItems?: CoreSchemaMetaSchema1;
+      items?: CoreSchemaMetaSchema1 | [CoreSchemaMetaSchema1, ...CoreSchemaMetaSchema1[]];
       maxItems?: number;
       minItems?: number;
       uniqueItems?: boolean;
-      contains?: CoreSchemaMetaSchema;
+      contains?: CoreSchemaMetaSchema1;
       maxProperties?: number;
       minProperties?: number;
       required?: string[];
-      additionalProperties?: CoreSchemaMetaSchema;
+      additionalProperties?: CoreSchemaMetaSchema1;
       definitions?: {
-        [k: string]: CoreSchemaMetaSchema;
+        [k: string]: CoreSchemaMetaSchema1;
       };
       properties?: {
-        [k: string]: CoreSchemaMetaSchema;
+        [k: string]: CoreSchemaMetaSchema1;
       };
       patternProperties?: {
-        [k: string]: CoreSchemaMetaSchema;
+        [k: string]: CoreSchemaMetaSchema1;
       };
       dependencies?: {
-        [k: string]: CoreSchemaMetaSchema | string[];
+        [k: string]: CoreSchemaMetaSchema1 | string[];
       };
-      propertyNames?: CoreSchemaMetaSchema;
+      propertyNames?: CoreSchemaMetaSchema1;
       const?: true;
       enum?: [true, ...unknown[]];
       type?:
@@ -59,13 +62,77 @@ export type CoreSchemaMetaSchema =
       format?: string;
       contentMediaType?: string;
       contentEncoding?: string;
-      if?: CoreSchemaMetaSchema;
-      then?: CoreSchemaMetaSchema;
-      else?: CoreSchemaMetaSchema;
-      allOf?: [CoreSchemaMetaSchema, ...CoreSchemaMetaSchema[]];
-      anyOf?: [CoreSchemaMetaSchema, ...CoreSchemaMetaSchema[]];
-      oneOf?: [CoreSchemaMetaSchema, ...CoreSchemaMetaSchema[]];
-      not?: CoreSchemaMetaSchema;
+      if?: CoreSchemaMetaSchema1;
+      then?: CoreSchemaMetaSchema1;
+      else?: CoreSchemaMetaSchema1;
+      allOf?: [CoreSchemaMetaSchema1, ...CoreSchemaMetaSchema1[]];
+      anyOf?: [CoreSchemaMetaSchema1, ...CoreSchemaMetaSchema1[]];
+      oneOf?: [CoreSchemaMetaSchema1, ...CoreSchemaMetaSchema1[]];
+      not?: CoreSchemaMetaSchema1;
+      [k: string]: unknown;
+    }
+  | boolean;
+export type CoreSchemaMetaSchema1 =
+  | {
+      $id?: string;
+      $schema?: string;
+      $ref?: string;
+      $comment?: string;
+      title?: string;
+      description?: string;
+      default?: true;
+      readOnly?: boolean;
+      writeOnly?: boolean;
+      examples?: true[];
+      multipleOf?: number;
+      maximum?: number;
+      exclusiveMaximum?: number;
+      minimum?: number;
+      exclusiveMinimum?: number;
+      maxLength?: number;
+      minLength?: number;
+      pattern?: string;
+      additionalItems?: CoreSchemaMetaSchema1;
+      items?: CoreSchemaMetaSchema1 | [CoreSchemaMetaSchema1, ...CoreSchemaMetaSchema1[]];
+      maxItems?: number;
+      minItems?: number;
+      uniqueItems?: boolean;
+      contains?: CoreSchemaMetaSchema1;
+      maxProperties?: number;
+      minProperties?: number;
+      required?: string[];
+      additionalProperties?: CoreSchemaMetaSchema1;
+      definitions?: {
+        [k: string]: CoreSchemaMetaSchema1;
+      };
+      properties?: {
+        [k: string]: CoreSchemaMetaSchema1;
+      };
+      patternProperties?: {
+        [k: string]: CoreSchemaMetaSchema1;
+      };
+      dependencies?: {
+        [k: string]: CoreSchemaMetaSchema1 | string[];
+      };
+      propertyNames?: CoreSchemaMetaSchema1;
+      const?: true;
+      enum?: [true, ...unknown[]];
+      type?:
+        | ("array" | "boolean" | "integer" | "null" | "number" | "object" | "string")
+        | [
+            "array" | "boolean" | "integer" | "null" | "number" | "object" | "string",
+            ...("array" | "boolean" | "integer" | "null" | "number" | "object" | "string")[]
+          ];
+      format?: string;
+      contentMediaType?: string;
+      contentEncoding?: string;
+      if?: CoreSchemaMetaSchema1;
+      then?: CoreSchemaMetaSchema1;
+      else?: CoreSchemaMetaSchema1;
+      allOf?: [CoreSchemaMetaSchema1, ...CoreSchemaMetaSchema1[]];
+      anyOf?: [CoreSchemaMetaSchema1, ...CoreSchemaMetaSchema1[]];
+      oneOf?: [CoreSchemaMetaSchema1, ...CoreSchemaMetaSchema1[]];
+      not?: CoreSchemaMetaSchema1;
       [k: string]: unknown;
     }
   | boolean;
@@ -76,9 +143,9 @@ export interface QuerySchema {
    */
   name?: string;
   /**
-   * Indicating if the query is private.
+   * Indicating if the query is public.
    */
-  private?: boolean;
+  public?: boolean;
   /**
    * Query description for documentation.
    */
@@ -139,7 +206,7 @@ export interface Params {
    */
   name: string;
   /**
-   * Param description for documentation
+   * Param description for documentation. If undefined, value in param-descriptions.json would be taken as default
    */
   description?: string;
   /**
