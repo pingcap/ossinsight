@@ -4,7 +4,7 @@ import CacheBuilder from "../core/cache/CacheBuilder";
 import { TiDBQueryExecutor } from "../core/TiDBQueryExecutor";
 import { ConnectionWrapper, getConnectionOptions } from "../utils/db";
 
-const logger = consola.withTag('status-service');
+const logger = consola.withTag('stats-service');
 const STATS_QUERY_PREFIX = 'stats-'
 
 export default class StatsService {
@@ -17,7 +17,7 @@ export default class StatsService {
         const conn = new ConnectionWrapper(getConnectionOptions());
         this.queryStatsLoader = new BatchLoader(conn, `
             INSERT INTO stats_query_summary(query_name, digest_text, executed_at) VALUES ?
-        `);
+        `, 1);
     }
 
     async addQueryStatsRecord(queryName: string, digestText: string, executedAt: Date) {

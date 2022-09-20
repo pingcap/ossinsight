@@ -60,13 +60,13 @@ const ghExecutor = new GhExecutor(tokens, cacheBuilder);
 const collectionService = new CollectionService(queryExecutor, cacheBuilder);
 const userService = new UserService(queryExecutor, cacheBuilder);
 const ghEventService = new GHEventService(queryExecutor);
-const statusService = new StatsService(queryExecutor, cacheBuilder);
+const statsService = new StatsService(queryExecutor, cacheBuilder);
 
 // Init router.
 const router = new Router<App.DefaultState, ContextExtends>();
 httpServerRoutes(
   router, queryExecutor, cacheBuilder, ghExecutor, collectionService, 
-  userService, ghEventService, statusService
+  userService, ghEventService, statsService
 );
 app.use(router.routes()).use(router.allowedMethods());
 
