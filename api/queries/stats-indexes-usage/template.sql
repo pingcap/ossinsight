@@ -1,11 +1,11 @@
 SELECT
-    TABLE_NAME AS tableName,
-    KEY_NAME AS indexName,
-    ANY_VALUE(NON_UNIQUE) AS nonUnique,
-    GROUP_CONCAT(COLUMN_NAME ORDER BY SEQ_IN_INDEX) AS columns,
-    ANY_VALUE(IS_VISIBLE) AS isVisible,
-    ANY_VALUE(CLUSTERED) AS clustered
-FROM INFORMATION_SCHEMA.TIDB_INDEXES
+    table_name AS tableName,
+    index_name AS indexName,
+    COUNT(DISTINCT digest) AS queries,
+    SUM(exec_count) AS calls
+FROM stats_index_summary sis
 WHERE
-    TABLE_SCHEMA = database()
-GROUP BY TABLE_NAME, KEY_NAME;
+    summary_begin_time >= DATE_FORMAT(CURRENT_DATE(), '%Y-%m-%d 00:00:00')
+    AND summary_end_time <= DATE_FORMAT(CURRENT_DATE(), '%Y-%m-%d 23:59:59')
+GROUP BY table_name, index_name
+ORDER BY calls DESC
