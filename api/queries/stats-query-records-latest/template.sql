@@ -1,5 +1,5 @@
 SELECT
-    id, query_name, SUBSTRING(digest_text, 1, 200) AS digest_text, executed_at
+    id, query_name, digest_text, executed_at, UNIX_TIMESTAMP(executed_at) AS ts
 FROM
     stats_query_summary
 WHERE
