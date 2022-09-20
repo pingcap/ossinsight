@@ -14,7 +14,7 @@ export interface IndexStatsProps {
 
 export default function IndexStats({ stats, showTable = false }: IndexStatsProps) {
   return (
-    <Table className="clearTable" size='small'>
+    <Table className="clearTable">
       <TableHead>
         <TableRow>
           {showTable

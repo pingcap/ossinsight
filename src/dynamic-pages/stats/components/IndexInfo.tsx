@@ -13,7 +13,7 @@ export interface IndexInfoProps {
 
 export default function IndexInfo({ infos }: IndexInfoProps) {
   return (
-    <Table className="clearTable" size='small'>
+    <Table className="clearTable">
       <TableHead>
         <TableRow>
           <TableCell>
