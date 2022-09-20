@@ -64,7 +64,10 @@ export default class Cache<T> {
   }
 
   private async loadInternal(fallback: () => Promise<CachedData<T>>) {
-    const cachedData = await this.fetchDataFromCache();
+    let cachedData = null;
+    if (this.cacheHours !== 0) {
+      cachedData = await this.fetchDataFromCache();
+    }
 
     if (cachedData != null) {
       logger.info(`Hit cache of ${this.key}.`);

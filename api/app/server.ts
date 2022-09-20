@@ -12,6 +12,7 @@ import GhExecutor from "./core/GhExecutor";
 import CollectionService from "./services/CollectionService";
 import UserService from "./services/UserService";
 import GHEventService from "./services/GHEventService";
+import StatsService from "./services/StatsService";
 
 export default async function httpServerRoutes(
   router: Router<DefaultState, ContextExtends>,
@@ -20,13 +21,21 @@ export default async function httpServerRoutes(
   ghExecutor: GhExecutor,
   collectionService: CollectionService,
   userService: UserService,
-  ghEventService: GHEventService
+  ghEventService: GHEventService,
+  statsService: StatsService
 ) {
 
   router.get('/q/:query', measureRequests({ urlLabel: 'path' }), async ctx => {
     try {
-      const query = new Query(ctx.params.query, cacheBuilder, queryExecutor, ghEventService, collectionService, userService)
-      const res = await query.run(ctx.query, false, null, ctx.request.ip, true)
+      const queryName = ctx.params.query;
+      const query = new Query(
+        queryName, cacheBuilder, queryExecutor, ghEventService,
+        collectionService, userService
+      )
+      const res: any = await query.run(ctx.query, false, null, ctx.request.ip);
+      const { sql, requestedAt } = res;
+      statsService.addQueryStatsRecord(queryName, sql, requestedAt);
+
       ctx.response.status = 200
       ctx.response.body = res
     } catch (e) {
@@ -192,8 +201,7 @@ export function socketServerRoutes(
         searchMap,
         false,
         null,
-        socket.handshake.address,
-        true
+        socket.handshake.address
       );
       socket.emit(queryType, res);
     } catch (error) {
