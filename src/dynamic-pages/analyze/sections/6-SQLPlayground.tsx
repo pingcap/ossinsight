@@ -40,6 +40,7 @@ function renderAce(
       height="200px"
       showPrintMargin={false}
       value={value}
+      placeholder="The search scope is limited to the current repo, and the LIMIT is 100."
     />,
     container
   );
@@ -90,9 +91,6 @@ export const SQLPlayground = React.forwardRef(function (
             Run
           </LoadingButton>
         </Stack>
-        <Alert severity="info">
-          The search scope is limited to the current repo, and the LIMIT is 100.
-        </Alert>
         <Box
           id={`ace-container`}
           sx={{
