@@ -51,11 +51,38 @@ function a(url: string) {
   return `<a href="${url}" target="_blank">${url}</a>`;
 }
 
+function buildDescription(query: QuerySchema): string {
+  let res = query.description ?? "No description.";
+  res += '<hr/>';
+
+  if (query.cacheHours) {
+    if (query.cacheHours === -1) {
+      res += `<b>Cache hours:</b> Never expire<br/>`;
+    } else {
+      res += `<b>Cache hours:</b> ${query.cacheHours}<br/>`;
+    }
+  }
+
+  if (typeof query.refreshCron === 'string') {
+    res += `<b>Refresh Cron:</b> ${query.refreshCron}<br/>`;
+  }
+
+  if (typeof query.refreshHours === 'number') {
+    res += `<b>Refresh Hours:</b> ${query.refreshHours}<br/>`;
+  }
+
+  if (typeof query.onlyFromCache === 'boolean') {
+    res += `<b>Only From Cache:</b> ${query.onlyFromCache}<br/>`;
+  }
+
+  return res;
+}
+
 export function buildQuery(path: string, builder: OpenApiBuilder, params: QuerySchema) {
   builder.addPath(`/q/${path}`, {
     description: params.name ?? path,
     get: {
-      description: params.description,
+      description: buildDescription(params),
       tags: ['Query'],
       externalDocs: {
         description: "Source code on GitHub",
