@@ -85,6 +85,7 @@ WITH stars AS (
         AND LOWER(repo_name) NOT LIKE '%fuck%'
         -- Filter by repository language.
         AND primary_language = 'Java'
+        AND repo_name NOT IN (SELECT name FROM blacklist_repos)
         AND is_deleted = 0
     GROUP BY r.repo_id
     ORDER BY total_score DESC
