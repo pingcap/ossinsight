@@ -62,6 +62,8 @@ const playgroundQueryExecutor = new TiDBPlaygroundQueryExecutor(
   getConnectionOptions({
     connectionLimit: parseInt(process.env.CONNECTION_LIMIT || "10"),
     queueLimit: parseInt(process.env.QUEUE_LIMIT || "20"),
+    user: process.env.WEB_SHELL_USER,
+    password: process.env.WEB_SHELL_PASSWORD,
   }),
   SESSION_LIMITS
 );
