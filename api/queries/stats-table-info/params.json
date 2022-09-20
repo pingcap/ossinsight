@@ -3,7 +3,8 @@
   "params": [
     {
       "name": "tableName",
-      "replaces": "AND TABLE_NAME = 'github_events'"
+      "replaces": "github_events",
+      "pattern": "^[a-zA-Z][a-zA-Z0-9_-]*$"
     }
   ]
 }
