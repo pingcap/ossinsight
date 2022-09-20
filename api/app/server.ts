@@ -186,7 +186,7 @@ export default async function httpServerRoutes(
         const sqlParser = new SqlParser(type, id, sqlString);
         const sql = sqlParser.sqlify();
         const query = new playgroundQuery(playgroundQueryExecutor);
-        const res = await query.run(sql, null, ctx.request.ip, true);
+        const res = await query.run(sql, null, ctx.request.ip);
         ctx.response.status = 200;
         ctx.response.body = res;
       } catch (e) {

@@ -87,12 +87,13 @@ export class TiDBPlaygroundQueryExecutor extends TiDBQueryExecutor {
   constructor(options: PoolOptions, connectionLimits: string[]) {
     super(options);
     this.limits = connectionLimits;
+    this.bindOnConnection();
   }
 
   async executeWithConn(
-    connection: PoolConnection,
+    connection: Connection,
     sql: string,
-    limit: boolean = false
+    values: any[] = []
   ): Promise<Result> {
     return new Promise((resolve, reject) => {
       this.logger.debug(
@@ -101,23 +102,8 @@ export class TiDBPlaygroundQueryExecutor extends TiDBQueryExecutor {
         sql
       );
 
-      let queryOption: QueryOptions = {
-        sql: sql,
-      };
-
-      if (limit) {
-        this.limits.forEach((cmd) => {
-          connection.query(cmd, (err, rows, fields) => {
-            if (err) {
-              this.logger.warn(`Failed to enable query limit: ${cmd}`, err);
-            }
-          });
-        });
-        queryOption.timeout = 120000;
-      }
-
       const end = tidbQueryTimer.startTimer();
-      connection.query(queryOption, (err, rows, fields) => {
+      connection.query(sql, values, (err, rows, fields) => {
         end();
 
         // FIXME: the type of `fields` in the callback function's definition is wrong.
@@ -136,6 +122,18 @@ export class TiDBPlaygroundQueryExecutor extends TiDBQueryExecutor {
             rows: rows,
           });
         }
+      });
+    });
+  }
+
+  protected bindOnConnection() {
+    this.connections.on("connection", (connection) => {
+      this.limits.forEach((cmd) => {
+        connection.query(cmd, (err, rows, fields) => {
+          if (err) {
+            this.logger.warn(`Failed to enable query limit: ${cmd}`, err);
+          }
+        });
       });
     });
   }

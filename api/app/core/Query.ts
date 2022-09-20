@@ -342,21 +342,16 @@ export class playgroundQuery {
 
   constructor(public readonly executor: TiDBPlaygroundQueryExecutor) {}
 
-  async run(
-    sql: string,
-    conn?: PoolConnection | null,
-    ip?: string,
-    limit = false
-  ) {
+  async run(sql: string, conn?: PoolConnection | null, ip?: string) {
     try {
       const start = DateTime.now();
       tidbQueryCounter.labels({ query: this.name, phase: "start" }).inc();
 
       let res: Result;
       if (conn) {
-        res = await this.executor.executeWithConn(conn, sql, limit);
+        res = await this.executor.executeWithConn(conn, sql);
       } else {
-        res = await this.executor.execute(sql, limit);
+        res = await this.executor.execute(sql);
       }
 
       const end = DateTime.now();
