@@ -237,3 +237,55 @@ export const useTotalEvents = (run: boolean, interval = 1000) => {
 
   return total + added
 }
+
+
+export const useSQLPlayground = (
+  sql: string,
+  type: "repo" | "user",
+  id: string
+) => {
+  const [data, setData] = useState(undefined);
+  const [error, setError] = useState(undefined);
+  const [loading, setLoading] = useState(false);
+  const mounted = useRef(false);
+
+  useEffect(() => {
+    mounted.current = true;
+    return () => {
+      mounted.current = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    setData(undefined);
+    setError(undefined);
+    if (sql && id) {
+      setLoading(true);
+      core
+        .postPlaygroundSQL({ sql, type, id })
+        .then((data) => {
+          if (!mounted.current) {
+            return;
+          }
+          setData(data);
+          setLoading(false);
+        })
+        .catch((e) => {
+          if (!mounted.current) {
+            return;
+          }
+          if (e?.response?.data?.msg) {
+            setError(e.response.data.msg);
+          }
+          if (e?.response?.data?.sqlMessage) {
+            setError(e.response.data.sqlMessage);
+          } else {
+            setError(e);
+          }
+          setLoading(false);
+        });
+    }
+  }, [sql, type, id]);
+
+  return { data, loading, error };
+};

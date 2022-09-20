@@ -22,6 +22,25 @@ export const client = axios.create({
 // we need to delete default 'Accept' header to match preload resources.
 delete client.defaults.headers.common.Accept
 
+export const clientWithoutCache = axios.create({
+  baseURL: BASE_URL,
+  paramsSerializer: function paramsSerializer(params: any): string {
+    const usp = new URLSearchParams();
+    for (let [key, value] of Object.entries(params)) {
+      if (Array.isArray(value)) {
+        value.forEach(item => usp.append(key, item));
+      } else {
+        usp.set(key, String(value));
+      }
+    }
+    return usp.toString();
+  },
+});
+
+clientWithoutCache.interceptors.response.use(response => {
+  return response.data;
+});
+
 patchCacheInterceptors(client, createSimpleCache());
 
 client.interceptors.response.use(response => {

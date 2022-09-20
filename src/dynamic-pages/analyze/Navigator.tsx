@@ -78,6 +78,7 @@ const tabs: { id: string, label: string, icon?: JSX.Element }[] = [
   { id: 'issues', label: 'Issues' },
   { id: 'divider-1', label: 'Monthly Stats', icon: <AutoGraphIcon fontSize='inherit' sx={{ mr: 0.5 }} /> },
   { id: 'contributors', label: 'Contributors' },
+  { id: 'sql-playground', label: 'SQL Playground' },
 ];
 
 const matched = (n: number, i: number) => {

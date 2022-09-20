@@ -1,7 +1,7 @@
 import type { Collection, RepoInfo, SearchRepoInfo, UserInfo, UserType } from '@ossinsight/api';
 import { AxiosAdapter, AxiosRequestConfig } from 'axios';
 import { RemoteData } from '../components/RemoteCharts/hook';
-import { client } from './client';
+import { client, clientWithoutCache } from './client';
 import { wsQueryApiAdapter } from "./ws";
 
 export async function query<R, P = any>(query: string, params?: P, config?: Omit<AxiosRequestConfig, 'params'>): Promise<RemoteData<P, R>> {
@@ -40,4 +40,12 @@ export async function searchUser(keyword: string, type: UserType = 'user'): Prom
 
 export async function getCollections(): Promise<RemoteData<{}, Collection>> {
   return client.get(`/collections`);
+}
+
+export async function postPlaygroundSQL(params: {
+  sql: string;
+  type: "repo" | "user";
+  id: string;
+}): Promise<any> {
+  return clientWithoutCache.post(`/q/playground`, params).then(({ data }) => data);
 }

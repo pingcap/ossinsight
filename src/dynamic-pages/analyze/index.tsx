@@ -23,6 +23,7 @@ import { CommitsSection } from './sections/2-Commits';
 import { PullRequestsSection } from './sections/3-PullRequests';
 import { IssuesSection } from './sections/4-Issues';
 import { Contributors } from './sections/5-Contributors';
+import { SQLPlayground } from './sections/6-SQLPlayground';
 import {Redirect} from '@docusaurus/router';
 
 interface AnalyzePageParams {
@@ -37,6 +38,7 @@ const sections = [
   'pull-requests',
   'issues',
   'contributors',
+  'sql-playground',
 ]
 
 function AnalyzePage() {
@@ -112,6 +114,7 @@ function AnalyzePage() {
               <PullRequestsSection ref={sectionRefs[3]} />
               <IssuesSection ref={sectionRefs[4]} />
               {!comparingRepoName ? <Contributors ref={sectionRefs[5]} /> : undefined}
+              <SQLPlayground ref={sectionRefs[6]} />
               <TryItYourself campaign="compare" show fixed />
             </Container>
           </AnalyzeContext.Provider>
