@@ -1,9 +1,5 @@
 import * as React from "react";
 import { render, unmountComponentAtNode } from "react-dom";
-import AceEditor from "react-ace";
-import "ace-builds/src-noconflict/mode-sql";
-import "ace-builds/src-noconflict/theme-twilight";
-import "ace-builds/src-noconflict/ext-language_tools";
 import Stack from "@mui/material/Stack";
 import Box from "@mui/material/Box";
 import LoadingButton from "@mui/lab/LoadingButton";
@@ -28,6 +24,10 @@ function renderAce(
   value: string,
   onChange?: (value: string, event?: any) => void
 ) {
+  const AceEditor = require('react-ace').default;
+  require('ace-builds/src-noconflict/mode-sql');
+  require('ace-builds/src-noconflict/theme-twilight');
+  require('ace-builds/src-noconflict/ext-language_tools');
   render(
     <AceEditor
       mode="sql"
