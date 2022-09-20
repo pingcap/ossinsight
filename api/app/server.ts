@@ -32,7 +32,11 @@ export default async function httpServerRoutes(
   accessRecorder: BatchLoader
 ) {
 
-  router.get('/openapi.yaml', koaStatic(path.resolve(__dirname, '../openapi.yaml')));
+  router.get('/openapi.yaml', koaStatic(path.resolve(__dirname, '../openapi.yaml'), {
+    setHeaders: headers =>
+      headers
+        .setHeader('content-type', 'application/vnd.oai.openapi')
+        .setHeader('cache-control', 'no-cache')}));
 
   router.get('/q/:query', measureRequests(URLType.PATH, accessRecorder), async ctx => {
     try {
