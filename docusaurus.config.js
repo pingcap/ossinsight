@@ -104,6 +104,16 @@ const config = {
             params: getPrefetched('.prefetch/collections.json')?.data.map(({name}) => ({
               slug: require('param-case').paramCase(name)
             }))
+          },
+          {
+            path: '/stats/tables/:slug',
+            exact: true,
+            component: '@site/src/dynamic-pages/stats/tables',
+          },
+          {
+            path: '/stats',
+            exact: true,
+            component: '@site/src/dynamic-pages/stats',
           }
         ]
       }
