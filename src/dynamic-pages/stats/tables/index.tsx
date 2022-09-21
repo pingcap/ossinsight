@@ -10,11 +10,11 @@ import IndexInfo from "../components/IndexInfo";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import TableInfo from "../components/TableInfo";
-import { AxiosError } from "axios";
 import NotFound from "../../../theme/NotFound";
-import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import { useInterval } from "../components/useInterval";
+import Breadcrumbs from "@mui/material/Breadcrumbs";
+import Link from "@docusaurus/Link";
 
 
 interface TableStatsPageParams {
@@ -30,7 +30,7 @@ type TabKey = 'ddl' | 'index-info' | 'index-usage'
 export default function Page() {
   const { params: { slug } } = useRouteMatch<TableStatsPageParams>();
   const [current, setCurrent] = useState<TabKey>('index-usage');
-  const { data: tableInfoData, } = useRemoteData<QueryParams, TidbTableInfo>('stats-table-info', { tableName: slug }, false, true);
+  const { data: tableInfoData } = useRemoteData<QueryParams, TidbTableInfo>('stats-table-info', { tableName: slug }, false, true);
 
   const notFound = useMemo(() => {
     return tableInfoData?.data.length === 0;
@@ -43,7 +43,11 @@ export default function Page() {
   return (
     <CustomPage title={`Stats - ${slug}`}>
       <Container maxWidth="lg">
-        <Typography variant="h1" my={2}>{slug}</Typography>
+        <Breadcrumbs sx={{ my: 2 }}>
+          <Link to="/stats">Stats</Link>
+          <span>Tables</span>
+          <span>{slug}</span>
+        </Breadcrumbs>
         <TableInfo info={tableInfoData?.data[0]} />
         <Tabs onChange={(_, value) => setCurrent(value)} value={current} sx={{ mt: 2 }}>
           <Tab label="Index Usage" value="index-usage" />
@@ -61,7 +65,10 @@ export default function Page() {
 
 
 function IndexUsageTab({ slug }: TableStatsPageParams) {
-  const { data: indexUsageData, reload } = useRemoteData<QueryParams, TidbIndexStats>('stats-index-usage', { tableName: slug }, false, true, 'unique');
+  const {
+    data: indexUsageData,
+    reload,
+  } = useRemoteData<QueryParams, TidbIndexStats>('stats-index-usage', { tableName: slug }, false, true, 'unique');
   useInterval(reload, 1000);
   return <IndexStats stats={indexUsageData?.data ?? []} />;
 }

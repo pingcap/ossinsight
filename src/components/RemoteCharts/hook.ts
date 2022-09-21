@@ -127,6 +127,7 @@ export const useRealtimeRemoteData: UseRemoteData = (query: string, params: any,
         cancelToken:  new Axios.CancelToken(cancel => cancelRef.current = cancel),
         wsApi,
         disableCache: true,
+        excludeMeta: true,
       }))
     } catch (e) {
       if (mounted.current) {

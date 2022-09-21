@@ -19,7 +19,7 @@ export default function Page() {
     <CustomPage title="Stats">
       <Container maxWidth="lg" sx={{ py: 2 }}>
         <Typography variant="h1" mb={2}>
-          Index Usage
+          OSSInsight Stats
         </Typography>
         <Tabs onChange={(_, value) => setCurrent(value)} value={current} sx={{ mb: 2 }}>
           <Tab label="Live SQL" value="live-sql" />

@@ -13,6 +13,7 @@ export const wsQueryApiAdapter = (query: string, params: any, wsApi: 'unique' | 
     explain: !!explain,
     qid,
     params,
+    excludeMeta: config.excludeMeta,
   };
   if (socket.connected) {
     socket.emit('q', queryPayload);
