@@ -19,7 +19,7 @@ export default function Page() {
     <CustomPage title="Stats">
       <Container maxWidth="lg" sx={{ py: 2 }}>
         <Typography variant="h2" mb={2}>
-          What is happening in database:
+          Database Stats
         </Typography>
         <Tabs onChange={(_, value) => setCurrent(value)} value={current} sx={{ mb: 2 }}>
           <Tab label="Process List" value="live-sql" />
