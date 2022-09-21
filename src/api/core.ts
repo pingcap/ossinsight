@@ -6,7 +6,7 @@ import { wsQueryApiAdapter, wsQueryApiAdapterLegacy } from "./ws";
 
 export async function query<R, P = any>(query: string, params?: P, config?: Omit<AxiosRequestConfig, 'params'>): Promise<RemoteData<P, R>> {
   let adapter: AxiosAdapter | undefined = undefined
-  if (config.wsApi) {
+  if (config?.wsApi) {
     adapter = wsQueryApiAdapter(query, params, config.wsApi);
   }
   return client.get<any, RemoteData<P, R>>(`/q/${query}`, { params, adapter, ...config }).then(response => {
@@ -17,7 +17,7 @@ export async function query<R, P = any>(query: string, params?: P, config?: Omit
 
 export async function queryWithoutCache<R, P = any>(query: string, params?: P, config?: Omit<AxiosRequestConfig, 'params'>): Promise<RemoteData<P, R>> {
   let adapter: AxiosAdapter | undefined = undefined
-  if (config.wsApi) {
+  if (config?.wsApi) {
     adapter = wsQueryApiAdapter(query, params, config.wsApi);
   }
   return client.get<any, RemoteData<P, R>>(`/q/${query}`, { params, adapter, ...config, disableCache: true }).then(response => {
