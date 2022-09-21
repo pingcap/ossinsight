@@ -2,7 +2,7 @@ import { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
 import { unstable_serialize } from "swr";
 
 declare module 'axios' {
-  interface AxiosRequestConfig {
+  interface AxiosRequestConfig<D = any> {
     disableCache?: boolean;
     wsApi?: 'unique' | true | undefined;
     excludeMeta?: boolean;

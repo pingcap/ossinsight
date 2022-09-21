@@ -1,10 +1,9 @@
 import React, { MouseEventHandler, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { CoolList, CoolListInstance } from "../../../components/CoolList";
 import { styled } from "@mui/material/styles";
-import { useRealtimeRemoteData, useRemoteData } from "../../../components/RemoteCharts/hook";
+import { useRemoteData } from "../../../components/RemoteCharts/hook";
 import { InternalQueryRecord } from "@ossinsight/api";
 import { highlight } from 'sql-highlight';
-import './theme.css';
 import { useEventCallback } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
@@ -12,6 +11,8 @@ import Snackbar from "@mui/material/Snackbar";
 import CodeBlock from "@theme/CodeBlock";
 import { format as formatSql } from 'sql-formatter';
 import Box from "@mui/material/Box";
+import { useInterval } from "./useInterval";
+import './theme.css';
 
 const getKey = (item: InternalQueryRecord) => item.id;
 
@@ -36,7 +37,7 @@ export default function LiveSql() {
     }
   }, [initData.data]);
 
-  const data = useRealtimeRemoteData<{ offset: number }, InternalQueryRecord>(
+  const data = useRemoteData<{ offset: number }, InternalQueryRecord>(
     "stats-query-records-latest",
     {
       offset: offset.current,
@@ -45,15 +46,15 @@ export default function LiveSql() {
     !!offset.current,
     'unique',
   );
+  useInterval(data.reload, 5000);
 
   const [paused, setPaused] = useState(false);
 
   useEffect(() => {
     if (data.data) {
-      if (data.data.data.length > 0) {
-        dataRef.current = [data.data.data, 0];
-        offset.current = data.data.data.reduce((max, record) => Math.max(max, record.ts + 1), 0);
-      }
+      const [origin, i] = dataRef.current ?? [[], 0];
+      dataRef.current = [origin.slice(i).concat(data.data.data), 0];
+      offset.current = data.data.data.reduce((max, record) => Math.max(max, record.ts + 1), offset.current);
     }
   }, [data.data]);
 
