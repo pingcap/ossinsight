@@ -18,7 +18,7 @@ export default function Page() {
   return (
     <CustomPage title="Stats">
       <Container maxWidth="lg" sx={{ py: 2 }}>
-        <Typography variant="h2" mb={2}>
+        <Typography variant="h1" mb={2}>
           Database Stats
         </Typography>
         <Tabs onChange={(_, value) => setCurrent(value)} value={current} sx={{ mb: 2 }}>
