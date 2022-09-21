@@ -5,7 +5,8 @@ import { TiDBQueryExecutor } from "../core/TiDBQueryExecutor";
 import { ConnectionWrapper, getConnectionOptions } from "../utils/db";
 
 const logger = consola.withTag('stats-service');
-const STATS_QUERY_PREFIX = 'stats-'
+const STATS_QUERY_PREFIX = 'stats-';
+const INSERT_STATS_BATCH_SIZE = 2;
 
 export default class StatsService {
     private queryStatsLoader: BatchLoader;
@@ -17,13 +18,13 @@ export default class StatsService {
         const conn = new ConnectionWrapper(getConnectionOptions());
         this.queryStatsLoader = new BatchLoader(conn, `
             INSERT INTO stats_query_summary(query_name, digest_text, executed_at) VALUES ?
-        `, 1);
+        `, INSERT_STATS_BATCH_SIZE);
     }
 
-    async addQueryStatsRecord(queryName: string, digestText: string, executedAt: Date) {
+    async addQueryStatsRecord(queryName: string, digestText: string, executedAt: Date, refresh: boolean) {
         try {
-            // Skip stats query.
-            if (queryName === undefined || queryName.includes(STATS_QUERY_PREFIX)) {
+            // Skip stats queries and queries whose result read from cache.
+            if (queryName === undefined || queryName.includes(STATS_QUERY_PREFIX) || refresh != true) {
                 return;
             }
             digestText = digestText.replaceAll(/\s+/g, ' ');

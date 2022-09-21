@@ -16,6 +16,7 @@ export class NeedPreFetchError extends Error {
 export interface CachedData<T> {
   finishedAt: DateTime;
   data: T;
+  refresh?: boolean;
   [key: string]: any;
 }
 
@@ -107,7 +108,8 @@ export default class Cache<T> {
             EX: Math.round(this.cacheHours * 3600),
           });
         }
-      })
+      });
+      result.refresh = true;
     } catch (err) {
       logger.error('Failed to write cache for key %s.', this.key, err)
     }
