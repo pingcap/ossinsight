@@ -33,8 +33,8 @@ export default async function httpServerRoutes(
         collectionService, userService
       )
       const res: any = await query.run(ctx.query, false, null, ctx.request.ip);
-      const { sql, requestedAt } = res;
-      statsService.addQueryStatsRecord(queryName, sql, requestedAt);
+      const { sql, requestedAt, refresh } = res;
+      statsService.addQueryStatsRecord(queryName, sql, requestedAt, refresh);
 
       ctx.response.status = 200
       ctx.response.body = res
