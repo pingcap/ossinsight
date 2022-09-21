@@ -3,4 +3,4 @@ SELECT
 FROM
     stats_query_summary
 ORDER BY executed_at DESC
-LIMIT 100;
+LIMIT 40;

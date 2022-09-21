@@ -214,6 +214,7 @@ export function socketServerRoutes(
   interface WsQueryRequest {
     qid?: string | number
     explain?: boolean
+    excludeMeta?: boolean
     query: string
     params: Record<string, any>
   }
@@ -232,8 +233,10 @@ export function socketServerRoutes(
    * server will emit response directly to '/q/{query}' which is reusable across different
    * subscribers.
    *
-   * - Param `explain`: If `explain` exists, server will execute '/q/explain/{query}' instead, and to response topic
+   * - Param `explain`: If `explain` is true, server will execute '/q/explain/{query}' instead, and to response topic
    * would be `/q/explain/{query}?qid={qid}`
+   *
+   * - Param `excludeMeta`: If `excludeMeta` is true, server will only return `data` field in response payload
    *
    * - Error handling: If error occurs in Query.run phase, response.error would set to true, and payload
    * will be the error data.
@@ -258,6 +261,11 @@ export function socketServerRoutes(
         } else {
           res = await q.run(request.params, false, null, socket.handshake.address);
         }
+
+        if (request.excludeMeta) {
+          res = { data: res.data }
+        }
+
         response = {
           qid: request.qid,
           explain: request.explain,
