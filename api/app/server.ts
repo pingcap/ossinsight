@@ -258,7 +258,7 @@ export function socketServerRoutes(
         if (request.explain) {
           res = await q.explain(request.params);
         } else {
-          res = await q.run(request.params, false, null, socket.handshake.address, true);
+          res = await q.run(request.params, false, null, socket.handshake.address);
         }
         response = {
           qid: request.qid,
