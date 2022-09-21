@@ -168,13 +168,13 @@ export const SQLPlaygroundDrawer = () => {
             padding: "1.5rem",
           }}
         >
-          <H2
+          {/*<H2
             sx={{
               marginTop: 2,
             }}
           >
             SQL Playground
-          </H2>
+          </H2>*/}
           <Stack spacing={2}>
             <Stack direction="row" spacing={2}>
               <LoadingButton
