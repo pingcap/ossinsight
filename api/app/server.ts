@@ -211,6 +211,19 @@ export function socketServerRoutes(
     }
   });
 
+  interface WsQueryRequest {
+    qid?: string | number
+    explain?: boolean
+    query: string
+    params: Record<string, any>
+  }
+
+  interface WsQueryResponse {
+    qid?: string | number
+    explain?: boolean
+    error?: true
+    payload: any
+  }
   /*
    * This ws entrypoint provide a method to visit HTTP /q/:query and /q/explain/:query equally.
    * Client side should send a json message "{ qid?, explain, query, params }" to request a query.
@@ -225,23 +238,8 @@ export function socketServerRoutes(
    * - Error handling: If error occurs in Query.run phase, response.error would set to true, and payload
    * will be the error data.
    */
-  socket.on("q", async (queryMsg: string) => {
-    interface WsQueryRequest {
-      qid?: string | number
-      explain?: boolean
-      query: string
-      params: Record<string, any>
-    }
-
-    interface WsQueryResponse {
-      qid?: string | number
-      explain?: boolean
-      error?: true
-      payload: any
-    }
-
+  socket.on("q", async (request: WsQueryRequest) => {
     try {
-      const request: WsQueryRequest = JSON.parse(queryMsg)
       const topic = `/q/${request.explain ? 'explain/' : ''}${request.query}${request.qid ? `?qid=${request.qid}` : ''}`
       let response: WsQueryResponse
 
@@ -275,9 +273,9 @@ export function socketServerRoutes(
       }
       socket.emit(topic, response);
     } catch (error) {
-      logger.error("Failed to request %s[ws]: ", queryMsg, error);
+      logger.error("Failed to request %s[ws]: ", request, error);
       socket.emit('fatal-error/q', {
-        request: queryMsg,
+        request,
         error,
       });
     }
