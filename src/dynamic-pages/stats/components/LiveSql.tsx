@@ -11,6 +11,7 @@ import DialogContent from "@mui/material/DialogContent";
 import Snackbar from "@mui/material/Snackbar";
 import CodeBlock from "@theme/CodeBlock";
 import { format as formatSql } from 'sql-formatter';
+import Box from "@mui/material/Box";
 
 const getKey = (item: InternalQueryRecord) => item.id;
 
@@ -110,6 +111,12 @@ export default function LiveSql() {
       />
       <Dialog open={showDialog} onClose={handleCloseRecordDialog} maxWidth="lg" fullWidth>
         <DialogContent>
+          <Box>
+            Query: {record?.query_name}
+          </Box>
+          <Box sx={{ my: 2 }}>
+            Executed at: {record?.executed_at}
+          </Box>
           <CodeBlock className="language-sql">
             {formatSql(record?.digest_text ?? '', { language: 'mysql' })}
           </CodeBlock>
