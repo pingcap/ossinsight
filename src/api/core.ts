@@ -1,17 +1,26 @@
 import type { Collection, RepoInfo, SearchRepoInfo, UserInfo, UserType } from '@ossinsight/api';
-import { AxiosRequestConfig } from 'axios';
+import { AxiosAdapter, AxiosRequestConfig } from 'axios';
 import { RemoteData } from '../components/RemoteCharts/hook';
 import { client } from './client';
+import { wsQueryApiAdapter } from "./ws";
 
 export async function query<R, P = any>(query: string, params?: P, config?: Omit<AxiosRequestConfig, 'params'>): Promise<RemoteData<P, R>> {
-  return client.get<any, RemoteData<P, R>>(`/q/${query}`, { params, ...config }).then(response => {
+  let adapter: AxiosAdapter | undefined = undefined
+  if (config?.wsApi) {
+    adapter = wsQueryApiAdapter(query, params, config.wsApi);
+  }
+  return client.get<any, RemoteData<P, R>>(`/q/${query}`, { params, adapter, ...config }).then(response => {
     response.query = query;
     return response;
   });
 }
 
 export async function queryWithoutCache<R, P = any>(query: string, params?: P, config?: Omit<AxiosRequestConfig, 'params'>): Promise<RemoteData<P, R>> {
-  return client.get<any, RemoteData<P, R>>(`/q/${query}`, { params, ...config, disableCache: true }).then(response => {
+  let adapter: AxiosAdapter | undefined = undefined
+  if (config?.wsApi) {
+    adapter = wsQueryApiAdapter(query, params, config.wsApi);
+  }
+  return client.get<any, RemoteData<P, R>>(`/q/${query}`, { params, adapter, ...config, disableCache: true }).then(response => {
     response.query = query;
     return response;
   });

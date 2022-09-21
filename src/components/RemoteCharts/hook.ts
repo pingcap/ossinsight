@@ -34,11 +34,11 @@ export interface BaseQueryResult<Params extends {
 }
 
 interface UseRemoteData {
-  <Q extends keyof Queries, P = Queries[Q]['params'], T = Queries[Q]['data']>(query: Q, params: P, formatSql: boolean, shouldLoad?: boolean): AsyncData<RemoteData<P, T>>
-  <P, T>(query: string, params: P, formatSql: boolean, shouldLoad?: boolean): AsyncData<RemoteData<P, T>>
+  <Q extends keyof Queries, P = Queries[Q]['params'], T = Queries[Q]['data']>(query: Q, params: P, formatSql: boolean, shouldLoad?: boolean, wsApi?: 'unique' | true | undefined): AsyncData<RemoteData<P, T>> & { reload?: () => Promise<void>}
+  <P, T>(query: string, params: P, formatSql: boolean, shouldLoad?: boolean, wsApi?: 'unique' | true | undefined): AsyncData<RemoteData<P, T>> & { reload?: () => Promise<void>}
 }
 
-export const useRemoteData: UseRemoteData = (query: string, params: any, formatSql: boolean, shouldLoad: boolean = true): AsyncData<RemoteData<any, any>> & { reload: () => Promise<void>} => {
+export const useRemoteData: UseRemoteData = (query: string, params: any, formatSql: boolean, shouldLoad: boolean = true, wsApi?: 'unique' | true | undefined): AsyncData<RemoteData<any, any>> & { reload: () => Promise<void>} => {
   const { inView } = useContext(InViewContext)
   const [data, setData] = useState(undefined)
   const [error, setError] = useState(undefined)
@@ -63,7 +63,9 @@ export const useRemoteData: UseRemoteData = (query: string, params: any, formatS
       setLoading(true)
       setError(undefined)
       setData(await core.query(query, params, {
-        cancelToken:  new Axios.CancelToken(cancel => cancelRef.current = cancel)
+        cancelToken:  new Axios.CancelToken(cancel => cancelRef.current = cancel),
+        disableCache: wsApi && true,
+        wsApi,
       }))
     } catch (e) {
       if (mounted.current) {
@@ -96,7 +98,7 @@ export const useRemoteData: UseRemoteData = (query: string, params: any, formatS
   return {data, loading, error, reload}
 }
 
-export const useRealtimeRemoteData: UseRemoteData = (query: string, params: any, formatSql, shouldLoad = true): AsyncData<RemoteData<any, any>> => {
+export const useRealtimeRemoteData: UseRemoteData = (query: string, params: any, formatSql, shouldLoad = true, wsApi?: 'unique' | true | undefined): AsyncData<RemoteData<any, any>> => {
   const { inView } = useContext(InViewContext)
 
   const [data, setData] = useState(undefined)
@@ -123,7 +125,9 @@ export const useRealtimeRemoteData: UseRemoteData = (query: string, params: any,
       setError(undefined)
       setData(await core.query(query, params, {
         cancelToken:  new Axios.CancelToken(cancel => cancelRef.current = cancel),
+        wsApi,
         disableCache: true,
+        excludeMeta: true,
       }))
     } catch (e) {
       if (mounted.current) {
@@ -162,73 +166,6 @@ export const useRealtimeRemoteData: UseRemoteData = (query: string, params: any,
   return {data, loading, error}
 }
 
-export const useRealtimeRemoteDataWs: UseRemoteData = (
-  query: string,
-  params: any,
-  formatSql,
-  shouldLoad = true
-): AsyncData<RemoteData<any, any>> => {
-  const { inView } = useContext(InViewContext);
-
-  const [data, setData] = useState(undefined);
-  const [error, setError] = useState(undefined);
-  const [loading, setLoading] = useState(false);
-  const mounted = useRef(false);
-
-  const serializedParams = unstable_serialize([query, params]);
-
-  useEffect(() => {
-    mounted.current = true;
-    return () => {
-      mounted.current = false;
-    };
-  }, []);
-
-  const reload = useCallback(async () => {
-    try {
-      if (!mounted.current) {
-        return;
-      }
-      setError(undefined);
-      socket.emit("query", `${query}`);
-    } catch (e) {
-      if (mounted.current) {
-        setError(e);
-      }
-    } finally {
-    }
-  }, [serializedParams]);
-
-  useEffect(() => {
-    if (shouldLoad && inView) {
-      reload();
-      const h = setPromiseInterval(async () => {
-        await reload();
-      }, 5000);
-
-      return () => {
-        clearPromiseInterval(h);
-      };
-    }
-  }, [shouldLoad, inView, reload]);
-
-  useEffect(() => {
-    if (query) {
-      socket.on(query, (wsData) => {
-        if (process.env.NODE_ENV === "development") {
-          console.log("socket", query, wsData);
-        }
-        setData(wsData);
-      });
-      return () => {
-        socket.off(query);
-      };
-    }
-  }, [query]);
-
-  return { data, loading, error };
-};
-
 export const useTotalEvents = (run: boolean, interval = 1000) => {
   const [total, setTotal] = useState(0)
   const [added, setAdded] = useState(0)
@@ -250,7 +187,9 @@ export const useTotalEvents = (run: boolean, interval = 1000) => {
 
     const reloadTotal = async () => {
       try {
-        const { data: [{ cnt, latest_timestamp }] } = await core.queryWithoutCache('events-total')
+        const { data: [{ cnt, latest_timestamp }] } = await core.queryWithoutCache('events-total', undefined, {
+          wsApi: 'unique',
+        })
         if (!mounted.current) {
           return
         }
@@ -268,7 +207,8 @@ export const useTotalEvents = (run: boolean, interval = 1000) => {
       try {
         if (lastTs.current) {
           const { data: [{ cnt, latest_created_at }] } = await core.queryWithoutCache('events-increment', { ts: lastTs.current }, {
-            cancelToken: first ? undefined : new Axios.CancelToken(cancel => cancelRef.current = cancel)
+            cancelToken: first ? undefined : new Axios.CancelToken(cancel => cancelRef.current = cancel),
+            wsApi: 'unique',
           })
           if (!mounted.current) {
             return
@@ -296,71 +236,3 @@ export const useTotalEvents = (run: boolean, interval = 1000) => {
 
   return total + added
 }
-
-export const useTotalEventsWs = (run: boolean, interval = 1000) => {
-  const [total, setTotal] = useState(0);
-  const [added, setAdded] = useState(0);
-  const lastTs = useRef(0);
-  const cancelRef = useRef<() => void>();
-  const mounted = useRef(false);
-
-  const reloadTotal = async () => {
-    try {
-      const {
-        data: [{ cnt, latest_timestamp }],
-      } = await core.queryWithoutCache("events-total");
-      if (!mounted.current) {
-        return;
-      }
-      cancelRef.current?.();
-      lastTs.current = latest_timestamp;
-      setTotal(cnt);
-      setAdded(0);
-      return () => {
-        cancelRef.current?.();
-      };
-    } catch {}
-  };
-
-  useEffect(() => {
-    mounted.current = true;
-    return () => {
-      mounted.current = false;
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!run) {
-      return;
-    }
-
-    socket.on(`events-increment`, (wsData) => {
-      if (process.env.NODE_ENV === "development") {
-        console.log("socket", `events-increment?ts=${lastTs.current}`, wsData);
-      }
-      const {
-        data: [{ cnt, latest_created_at }],
-      } = wsData;
-      setAdded(cnt);
-    });
-
-    const hTotal = setPromiseInterval(async () => {
-      await reloadTotal();
-    }, 60000);
-
-    const hAdded = setPromiseInterval(async () => {
-      lastTs.current &&
-        socket.emit("query", `events-increment?ts=${lastTs.current}`);
-    }, interval);
-
-    reloadTotal();
-
-    return () => {
-      clearPromiseInterval(hTotal);
-      clearPromiseInterval(hAdded);
-      socket.off(`events-increment`);
-    };
-  }, [run]);
-
-  return total + added;
-};

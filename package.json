@@ -88,6 +88,7 @@
     "react-share": "^4.4.0",
     "react-sizeme": "^3.0.2",
     "react-transition-group": "^4.4.2",
+    "sql-highlight": "^4.2.1",
     "swr": "^1.2.2",
     "typescript": "^4.5.5",
     "xss": "^1.0.11"

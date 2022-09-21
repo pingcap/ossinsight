@@ -10,10 +10,7 @@ import {
 } from '@primer/octicons-react';
 import React, { useCallback, useEffect, useRef } from 'react';
 import { CoolList, CoolListInstance } from '../../../../../components/CoolList';
-import {
-  useRealtimeRemoteData,
-  useRealtimeRemoteDataWs,
-} from "../../../../../components/RemoteCharts/hook";
+import { useRealtimeRemoteData } from "../../../../../components/RemoteCharts/hook";
 
 type Event = {
   id: number
@@ -35,11 +32,12 @@ export default function Events({ show }: { show: boolean }) {
 
   const dataRef = useRef<[Event[], number]>([[], 0]);
   // const data = useRealtimeRemoteData<{}, Event>('events-increment-list', {}, false, show);
-  const data = useRealtimeRemoteDataWs<{}, Event>(
+  const data = useRealtimeRemoteData<{}, Event>(
     "events-increment-list",
     {},
     false,
-    show
+    show,
+    'unique',
   );
 
   useEffect(() => {
