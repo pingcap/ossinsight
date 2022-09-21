@@ -6,6 +6,7 @@ import TableCell from "@mui/material/TableCell";
 import TableBody from "@mui/material/TableBody";
 import TableRow from "@mui/material/TableRow";
 import Link from "@docusaurus/Link";
+import AnimatedNumber from "react-awesome-animated-number";
 
 export interface IndexStatsProps {
   stats: TidbIndexStats[];
@@ -27,9 +28,6 @@ export default function IndexStats({ stats, showTable = false }: IndexStatsProps
             Index
           </TableCell>
           <TableCell>
-            Queries
-          </TableCell>
-          <TableCell>
             Calls
           </TableCell>
         </TableRow>
@@ -49,10 +47,7 @@ export default function IndexStats({ stats, showTable = false }: IndexStatsProps
               {stat.indexName}
             </TableCell>
             <TableCell>
-              {stat.queries}
-            </TableCell>
-            <TableCell>
-              {stat.calls}
+              <AnimatedNumber value={stat.calls ?? 0} hasComma duration={200} size={14} />
             </TableCell>
           </TableRow>
         ))}

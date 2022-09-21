@@ -14,6 +14,7 @@ import { AxiosError } from "axios";
 import NotFound from "../../../theme/NotFound";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
+import { useInterval } from "../components/useInterval";
 
 
 interface TableStatsPageParams {
@@ -29,15 +30,11 @@ type TabKey = 'ddl' | 'index-info' | 'index-usage'
 export default function Page() {
   const { params: { slug } } = useRouteMatch<TableStatsPageParams>();
   const [current, setCurrent] = useState<TabKey>('index-usage');
-  const {
-    data: tableInfoData,
-    error,
-  } = useRemoteData<QueryParams, TidbTableInfo>('stats-table-info', { tableName: slug }, false, true);
-
+  const { data: tableInfoData, } = useRemoteData<QueryParams, TidbTableInfo>('stats-table-info', { tableName: slug }, false, true);
 
   const notFound = useMemo(() => {
-    return (error as AxiosError)?.response.data?.errno === 1146;
-  }, [error]);
+    return tableInfoData?.data.length === 0;
+  }, [tableInfoData]);
 
   if (notFound) {
     return <NotFound />;
@@ -62,8 +59,10 @@ export default function Page() {
   );
 }
 
+
 function IndexUsageTab({ slug }: TableStatsPageParams) {
-  const { data: indexUsageData } = useRemoteData<QueryParams, TidbIndexStats>('stats-index-usage', { tableName: slug }, false, true);
+  const { data: indexUsageData, reload } = useRemoteData<QueryParams, TidbIndexStats>('stats-index-usage', { tableName: slug }, false, true, 'unique');
+  useInterval(reload, 1000);
   return <IndexStats stats={indexUsageData?.data ?? []} />;
 }
 

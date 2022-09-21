@@ -40,7 +40,7 @@ export default function IndexInfo({ infos }: IndexInfoProps) {
               {info.indexName}
             </TableCell>
             <TableCell>
-              {info.columns.split(',').map(column => <Chip size='small' label={column} sx={{m: 0.25}} />)}
+              {info.columns.split(',').map(column => <Chip key={column} size='small' label={column} sx={{m: 0.25}} />)}
             </TableCell>
             <TableCell>
               {info.clustered}

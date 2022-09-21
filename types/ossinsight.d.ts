@@ -68,4 +68,12 @@ declare module '@ossinsight/api' {
     queries: number
     tableName: string
   }
+
+  export type InternalQueryRecord = {
+    digest_text: string
+    executed_at: string
+    id: number
+    query_name: string
+    ts: number
+  }
 }

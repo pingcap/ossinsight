@@ -8,19 +8,20 @@ import Accordion from "@mui/material/Accordion";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import format from 'human-format';
 
-const keys: (keyof TidbTableInfo)[] = [
-  'tableSchema',
-  'tableName',
-  'tableRows',
-  'avgRowLength',
-  'dataLength',
-  'indexLength',
-  'createTime',
-  'tableCollation',
-  'createOptions',
-  'rowIdShardingInfo',
-  'pkType',
+const entries: { key: keyof TidbTableInfo, humanFormat?: any }[] = [
+  { key: 'tableSchema' },
+  { key: 'tableName' },
+  { key: 'tableRows', humanFormat: {} },
+  { key: 'avgRowLength', humanFormat: { unit: 'B' } },
+  { key: 'dataLength', humanFormat: { unit: 'B' } },
+  { key: 'indexLength', humanFormat: { unit: 'B' } },
+  { key: 'createTime' },
+  { key: 'tableCollation' },
+  { key: 'createOptions' },
+  { key: 'rowIdShardingInfo' },
+  { key: 'pkType' },
 ];
 
 export default function TableInfo({ info }: { info: TidbTableInfo }) {
@@ -32,13 +33,13 @@ export default function TableInfo({ info }: { info: TidbTableInfo }) {
       <AccordionDetails>
         <Table className="clearTable" size="small">
           <TableBody>
-            {keys.map(key => (
+            {entries.map(({ key, humanFormat }) => (
               <TableRow key={key}>
                 <TableCell sx={{ fontWeight: 'bold' }}>
                   {key}
                 </TableCell>
                 <TableCell>
-                  {info?.[key] || '--'}
+                  {humanFormat ? format(info?.[key] || 0, humanFormat) : info?.[key] || '--'}
                 </TableCell>
               </TableRow>
             ))}
