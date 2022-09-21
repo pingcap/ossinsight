@@ -13,6 +13,7 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
+import Drawer from "@mui/material/Drawer";
 
 import { useSQLPlayground } from "../../../components/RemoteCharts/hook";
 import { useAnalyzeContext } from "../charts/context";
@@ -24,10 +25,10 @@ function renderAce(
   value: string,
   onChange?: (value: string, event?: any) => void
 ) {
-  const AceEditor = require('react-ace').default;
-  require('ace-builds/src-noconflict/mode-sql');
-  require('ace-builds/src-noconflict/theme-twilight');
-  require('ace-builds/src-noconflict/ext-language_tools');
+  const AceEditor = require("react-ace").default;
+  require("ace-builds/src-noconflict/mode-sql");
+  require("ace-builds/src-noconflict/theme-twilight");
+  require("ace-builds/src-noconflict/ext-language_tools");
   render(
     <AceEditor
       mode="sql"
@@ -41,79 +42,21 @@ function renderAce(
       showPrintMargin={false}
       value={value}
       placeholder="The search scope is limited to the current repo, and the LIMIT is 100."
+      fontSize={18}
     />,
     container
   );
 }
 
-export const SQLPlayground = React.forwardRef(function (
-  {},
-  ref: React.ForwardedRef<HTMLElement>
-) {
-  const [inputValue, setInputValue] = React.useState("");
-  const [sql, setSQL] = React.useState("");
-
-  const onChange = (newValue: string) => {
-    setInputValue(newValue);
-  };
-
-  React.useEffect(() => {
-    const container = document.getElementById("ace-container");
-    if (container) {
-      renderAce(container, inputValue, onChange);
-      return () => {
-        unmountComponentAtNode(container);
-      };
-    }
-  }, []);
-
-  const { repoId } = useAnalyzeContext();
-
-  const { data, loading, error } = useSQLPlayground(sql, "repo", `${repoId}`);
-
-  const handleSubmit = async () => {
-    console.log("query", inputValue);
-    setSQL(inputValue);
-  };
-
-  return (
-    <Section id="sql-playground" ref={ref}>
-      <H2>SQL Playground</H2>
-      <Stack spacing={2}>
-        <Stack direction="row" spacing={2}>
-          <LoadingButton
-            variant="contained"
-            disabled={!inputValue || !repoId}
-            onClick={handleSubmit}
-            endIcon={<PlayArrowIcon fontSize="inherit" />}
-            loading={loading}
-          >
-            Run
-          </LoadingButton>
-        </Stack>
-        <Box
-          id={`ace-container`}
-          sx={{
-            width: "100%",
-          }}
-        />
-        {error && (
-          <Alert severity="error">
-            <AlertTitle>Error</AlertTitle>
-            {`${error}`}
-          </Alert>
-        )}
-        <Box>{data && renderTable(data)}</Box>
-      </Stack>
-    </Section>
-  );
-});
-
 const renderTable = (data: { [x: string]: any }[]) => {
   return (
     <>
       <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650, marginBottom: 0 }} aria-label="data table" size="small">
+        <Table
+          sx={{ minWidth: 650, marginBottom: 0 }}
+          aria-label="data table"
+          size="small"
+        >
           <TableHead>
             <TableRow>
               {data[0] &&
@@ -145,6 +88,125 @@ const renderTable = (data: { [x: string]: any }[]) => {
           </TableBody>
         </Table>
       </TableContainer>
+    </>
+  );
+};
+
+export const SQLPlaygroundDrawer = () => {
+  const [inputValue, setInputValue] = React.useState("");
+  const [sql, setSQL] = React.useState("");
+  const [open, setOpen] = React.useState(false);
+
+  const { repoId, repoName, comparingRepoId } = useAnalyzeContext();
+
+  const aceRef = React.useRef<HTMLDivElement>(null);
+
+  const toggleDrawer =
+    (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
+      if (
+        event.type === "keydown" &&
+        ((event as React.KeyboardEvent).key === "Tab" ||
+          (event as React.KeyboardEvent).key === "Shift")
+      ) {
+        return;
+      }
+
+      setOpen(open);
+    };
+
+  React.useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key.toUpperCase() === "K" && (event.ctrlKey || event.metaKey)) {
+        //it was Ctrl + K (Cmd + K)
+        setOpen(true);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
+  const onChange = (newValue: string) => {
+    setInputValue(newValue);
+  };
+
+  React.useEffect(() => {
+    if (open) {
+      const container = aceRef.current;
+      if (container) {
+        renderAce(container, inputValue, onChange);
+        return () => {
+          unmountComponentAtNode(container);
+        };
+      }
+    }
+  }, [open]);
+
+  const { data, loading, error } = useSQLPlayground(sql, "repo", `${repoId}`);
+
+  const handleSubmit = async () => {
+    setSQL(inputValue);
+  };
+
+  return (
+    <>
+      <Drawer
+        anchor="bottom"
+        open={open}
+        onClose={toggleDrawer(false)}
+        ModalProps={{
+          keepMounted: true,
+        }}
+      >
+        <Box
+          sx={{
+            minHeight: "75vh",
+            maxHeight: "75vh",
+            overflowY: "auto",
+            width: "100%",
+            padding: "1.5rem",
+          }}
+        >
+          <H2
+            sx={{
+              marginTop: 2,
+            }}
+          >
+            SQL Playground
+          </H2>
+          <Stack spacing={2}>
+            <Stack direction="row" spacing={2}>
+              <LoadingButton
+                variant="contained"
+                disabled={!inputValue || !repoId}
+                onClick={handleSubmit}
+                endIcon={<PlayArrowIcon fontSize="inherit" />}
+                loading={loading}
+                sx={{
+                  marginLeft: "auto",
+                }}
+              >
+                Run
+              </LoadingButton>
+            </Stack>
+            <Box
+              ref={aceRef}
+              id={`sql-ace-container`}
+              sx={{
+                width: "100%",
+              }}
+            />
+            {error && (
+              <Alert severity="error">
+                <AlertTitle>Error</AlertTitle>
+                {`${error}`}
+              </Alert>
+            )}
+            <Box>{data && renderTable(data)}</Box>
+          </Stack>
+        </Box>
+      </Drawer>
     </>
   );
 };
