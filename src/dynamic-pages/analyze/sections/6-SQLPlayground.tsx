@@ -42,7 +42,7 @@ function renderAce(
       showPrintMargin={false}
       value={value}
       placeholder="The search scope is limited to the current repo, and the LIMIT is 100."
-      fontSize={18}
+      fontSize={16}
     />,
     container
   );
