@@ -2,7 +2,7 @@ import type { Collection, RepoInfo, SearchRepoInfo, UserInfo, UserType } from '@
 import { AxiosAdapter, AxiosRequestConfig } from 'axios';
 import { RemoteData } from '../components/RemoteCharts/hook';
 import { client } from './client';
-import { wsQueryApiAdapter, wsQueryApiAdapterLegacy } from "./ws";
+import { wsQueryApiAdapter } from "./ws";
 
 export async function query<R, P = any>(query: string, params?: P, config?: Omit<AxiosRequestConfig, 'params'>): Promise<RemoteData<P, R>> {
   let adapter: AxiosAdapter | undefined = undefined

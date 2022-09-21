@@ -1,5 +1,5 @@
 import { AxiosAdapter, AxiosError } from "axios";
-import { client, socket } from "./client";
+import { socket } from "./client";
 
 export const wsQueryApiAdapter = (query: string, params: any, wsApi: 'unique' | true): AxiosAdapter => async (config) => {
   let qid: string | undefined;
@@ -54,33 +54,6 @@ export const wsQueryApiAdapter = (query: string, params: any, wsApi: 'unique' | 
           config,
         });
       }
-    };
-    socket.once(topic, listener);
-  });
-};
-
-export const wsQueryApiAdapterLegacy = (query: string, params: any, wsApi: 'unique' | true): AxiosAdapter => async (config) => {
-  const queryName = query + (params ? '?' + client.defaults.paramsSerializer(params) : '')
-  socket.emit('query', queryName);
-
-  return new Promise((resolve, reject) => {
-    const topic = query;
-    const timeout = setTimeout(() => {
-      socket.off(topic, listener);
-      reject(new Error('Timeout'));
-    }, 10000);
-
-    const listener = result => {
-      clearTimeout(timeout);
-      resolve({
-        status: 200,
-        statusText: 'OK',
-        headers: {
-          'x-ws-api': 'true',
-        },
-        data: result,
-        config,
-      });
     };
     socket.once(topic, listener);
   });
