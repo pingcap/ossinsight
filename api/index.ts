@@ -13,6 +13,7 @@ import CollectionService from "./app/services/CollectionService";
 import GHEventService from "./app/services/GHEventService";
 import UserService from "./app/services/UserService";
 import { getConnectionOptions } from "./app/utils/db";
+import StatsService from "./app/services/StatsService";
 
 const logger = consola.withTag("app");
 
@@ -59,10 +60,14 @@ const ghExecutor = new GhExecutor(tokens, cacheBuilder);
 const collectionService = new CollectionService(queryExecutor, cacheBuilder);
 const userService = new UserService(queryExecutor, cacheBuilder);
 const ghEventService = new GHEventService(queryExecutor);
+const statsService = new StatsService(queryExecutor, cacheBuilder);
 
 // Init router.
 const router = new Router<App.DefaultState, ContextExtends>();
-httpServerRoutes(router, queryExecutor, cacheBuilder, ghExecutor, collectionService, userService, ghEventService);
+httpServerRoutes(
+  router, queryExecutor, cacheBuilder, ghExecutor, collectionService, 
+  userService, ghEventService, statsService
+);
 app.use(router.routes()).use(router.allowedMethods());
 
 // Init HTTP server.

@@ -225,7 +225,7 @@ export default class Query {
   }
 
   async run <T> (
-    params: Record<string, any>, refreshCache: boolean = false, conn?: PoolConnection | null, ip?: string, limit = false
+    params: Record<string, any>, refreshCache: boolean = false, conn?: PoolConnection | null, ip?: string
   ): Promise<CachedData<T>> {
     await this.ready();
 
@@ -246,9 +246,9 @@ export default class Query {
 
           let res: Result;
           if (conn) {
-            res = await this.executor.executeWithConn(conn, sql, limit)
+            res = await this.executor.executeWithConn(conn, sql)
           } else {
-            res = await this.executor.execute(sql, limit)
+            res = await this.executor.execute(sql)
           }
 
           const end = DateTime.now()
