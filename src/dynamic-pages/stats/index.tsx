@@ -18,11 +18,11 @@ export default function Page() {
   return (
     <CustomPage title="Stats">
       <Container maxWidth="lg" sx={{ py: 2 }}>
-        <Typography variant="h1" mb={2}>
-          OSSInsight Stats
+        <Typography variant="h2" mb={2}>
+          What is happening in database:
         </Typography>
         <Tabs onChange={(_, value) => setCurrent(value)} value={current} sx={{ mb: 2 }}>
-          <Tab label="Live SQL" value="live-sql" />
+          <Tab label="Process List" value="live-sql" />
           <Tab label="Index Usage" value="index-usage" />
         </Tabs>
         {current === 'live-sql' && <LiveSqlTab />}
