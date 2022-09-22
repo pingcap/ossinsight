@@ -33,7 +33,8 @@
     "validate:params": "ajv -s params.schema.json -d \"queries/*/params.json\"",
     "build": "tsc && pnpm run build:copy",
     "build:copy": "mkdir -p ./dist && cat .distfiles | xargs -I {} cp -r {} ./dist/{} 2>/dev/null || :",
-    "verify": "tsc --noEmit"
+    "verify": "tsc --noEmit",
+    "postinstall": "npm run gen:schema-ts && npm run gen:api-documentation"
   },
   "author": "",
   "license": "MIT",

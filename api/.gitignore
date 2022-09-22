@@ -21,4 +21,5 @@ test/result/*.log
 # Fox Mac OS
 .DS_Store
 
+params.schema.d.ts
 openapi.yaml
