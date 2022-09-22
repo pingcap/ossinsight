@@ -13,6 +13,7 @@ import CollectionService from "./services/CollectionService";
 import UserService from "./services/UserService";
 import GHEventService from "./services/GHEventService";
 import StatsService from "./services/StatsService";
+import { toCompact } from "./utils/compact";
 
 export default async function httpServerRoutes(
   router: Router<DefaultState, ContextExtends>,
@@ -215,6 +216,7 @@ export function socketServerRoutes(
     qid?: string | number
     explain?: boolean
     excludeMeta?: boolean
+    format?: 'compact'
     query: string
     params: Record<string, any>
   }
@@ -223,6 +225,8 @@ export function socketServerRoutes(
     qid?: string | number
     explain?: boolean
     error?: true
+    compact?: boolean
+    fields?: string[]
     payload: any
   }
   /*
@@ -236,7 +240,10 @@ export function socketServerRoutes(
    * - Param `explain`: If `explain` is true, server will execute '/q/explain/{query}' instead, and to response topic
    * would be `/q/explain/{query}?qid={qid}`
    *
-   * - Param `excludeMeta`: If `excludeMeta` is true, server will only return `data` field in response payload
+   * - Param `excludeMeta`: If `excludeMeta` is true, server will only return `data` field in response payload.
+   *
+   * - Param `format`: If `format` is compact, result will contain two parts: `fields` list and `data` array list.
+   * Example: { payload: { data: [['string field', <number>, ...], ...] }, compact: true, fields: ['field name 1', 'field name 2', ...] }
    *
    * - Error handling: If error occurs in Query.run phase, response.error would set to true, and payload
    * will be the error data.
@@ -270,6 +277,13 @@ export function socketServerRoutes(
           qid: request.qid,
           explain: request.explain,
           payload: res
+        }
+
+        if (request.format === 'compact') {
+          const { fields, data } = toCompact(res.data as any)
+          response.compact = true;
+          response.fields = fields;
+          response.payload.data = data;
         }
       } catch (e) {
         response = {
