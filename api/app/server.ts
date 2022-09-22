@@ -225,7 +225,6 @@ export function socketServerRoutes(
     explain?: boolean
     error?: true
     compact?: boolean
-    fields?: string[]
     payload: any
   }
   /*
@@ -274,7 +273,7 @@ export function socketServerRoutes(
         if (request.explain) {
           res = await q.explain(request.params);
         } else {
-          res = await q.run(request.params, false, null, socket.handshake.address, request.format === 'compact');
+          res = await q.run(request.params, false, null, socket.handshake.address, isCompact);
         }
 
         if (request.excludeMeta) {
