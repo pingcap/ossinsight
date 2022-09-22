@@ -1,7 +1,7 @@
+import dotenv from "dotenv";
 import App from "koa";
 import Router from "koa-router";
 import httpServerRoutes, { socketServerRoutes } from "./app/server";
-import dotenv from "dotenv";
 import consola, { Consola } from "consola";
 import cors from "@koa/cors";
 import { Server as SocketServer } from "socket.io";
@@ -14,11 +14,14 @@ import GHEventService from "./app/services/GHEventService";
 import UserService from "./app/services/UserService";
 import { getConnectionOptions } from "./app/utils/db";
 import StatsService from "./app/services/StatsService";
+import { DEFAULT_ALLOWED_ORIGIN, getAllowedOrigins, getCorsOrigin } from "./app/origins";
 
 const logger = consola.withTag("app");
 
 dotenv.config({ path: __dirname + "/.env.template" });
 dotenv.config({ path: __dirname + "/.env", override: true });
+
+const allowedOrigins = getAllowedOrigins();
 
 export interface ContextExtends extends App.DefaultContext {
   logger: Consola;
@@ -35,7 +38,11 @@ app.use(async (ctx, next) => {
 });
 
 // Enable CORS.
-app.use(cors({ origin: "*" }));
+app.use(cors({
+  origin: (ctx) => {
+    return getCorsOrigin(allowedOrigins, ctx.request.header.origin);
+  }
+}));
 
 // Init MySQL Executor.
 const queryExecutor = new TiDBQueryExecutor(
@@ -76,7 +83,13 @@ const httpServer = createServer(app.callback());
 // Init WebSocket server.
 const io = new SocketServer(httpServer, {
   cors: {
-    origin: "*",
+    origin: (requestOrigin, cb) => {
+      try {
+        cb(null, getCorsOrigin(allowedOrigins, requestOrigin))
+      } catch(err: any) {
+        cb(err, undefined);
+      }
+    },
   },
 });
 
