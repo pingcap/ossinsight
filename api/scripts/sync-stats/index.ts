@@ -47,7 +47,7 @@ SELECT
 FROM INFORMATION_SCHEMA.STATEMENTS_SUMMARY s
 JOIN numbers ON CHAR_LENGTH(s.INDEX_NAMES) - CHAR_LENGTH(REPLACE(s.INDEX_NAMES, ',', '')) >= numbers.n - 1
 WHERE SCHEMA_NAME = database()
-ON DUPLICATE KEY UPDATE exec_count = GREATEST(IFNULL(s.exec_count, 0), IFNULL(VALUES(exec_count), 0))
+ON DUPLICATE KEY UPDATE exec_count = GREATEST(IFNULL(stats_index_summary.exec_count, 0), IFNULL(VALUES(exec_count), 0))
 ;`;
 
 logger.info(`Execute sync stats job according cron expression: ${cron}`);
