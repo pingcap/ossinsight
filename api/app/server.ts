@@ -13,7 +13,6 @@ import CollectionService from "./services/CollectionService";
 import UserService from "./services/UserService";
 import GHEventService from "./services/GHEventService";
 import StatsService from "./services/StatsService";
-import { toCompact } from "./utils/compact";
 
 export default async function httpServerRoutes(
   router: Router<DefaultState, ContextExtends>,
@@ -243,13 +242,22 @@ export function socketServerRoutes(
    * - Param `excludeMeta`: If `excludeMeta` is true, server will only return `data` field in response payload.
    *
    * - Param `format`: If `format` is compact, result will contain two parts: `fields` list and `data` array list.
-   * Example: { payload: { data: [['string field', <number>, ...], ...] }, compact: true, fields: ['field name 1', 'field name 2', ...] }
+   * Example:
+   * ```json
+   * {
+   *    payload: {
+   *      fields: ['field name 1', 'field name 2', ...],
+   *      data: [['string field', <number>, ...], ...] },
+   *    compact: true
+   * }
+   * ```
    *
    * - Error handling: If error occurs in Query.run phase, response.error would set to true, and payload
    * will be the error data.
    */
   socket.on("q", async (request: WsQueryRequest) => {
     try {
+      const isCompact = request.format === 'compact'
       const topic = `/q/${request.explain ? 'explain/' : ''}${request.query}${request.qid ? `?qid=${request.qid}` : ''}`
       let response: WsQueryResponse
 
@@ -266,24 +274,21 @@ export function socketServerRoutes(
         if (request.explain) {
           res = await q.explain(request.params);
         } else {
-          res = await q.run(request.params, false, null, socket.handshake.address);
+          res = await q.run(request.params, false, null, socket.handshake.address, request.format === 'compact');
         }
 
         if (request.excludeMeta) {
-          res = { data: res.data }
+          res = {
+            data: res.data,
+            fields: isCompact ? res.fields : undefined,
+          }
         }
 
         response = {
           qid: request.qid,
           explain: request.explain,
-          payload: res
-        }
-
-        if (request.format === 'compact') {
-          const { fields, data } = toCompact(res.data as any)
-          response.compact = true;
-          response.fields = fields;
-          response.payload.data = data;
+          payload: res,
+          compact: isCompact,
         }
       } catch (e) {
         response = {

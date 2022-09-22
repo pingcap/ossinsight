@@ -1,7 +1,8 @@
-import {createPool, OkPacket, Pool, PoolConnection, PoolOptions, ResultSetHeader, RowDataPacket} from 'mysql2'
+import {createPool, OkPacket, Pool, PoolConnection, PoolOptions, ResultSetHeader, RowDataPacket, QueryOptions} from 'mysql2'
 import consola, {Consola} from "consola";
 import {tidbQueryTimer, waitTidbConnectionTimer} from "../metrics";
 import Connection from 'mysql2/typings/mysql/lib/Connection';
+import { InternalQueryOptions, parseQueryOptions } from "../utils/query";
 
 export interface Result {
   fields: FieldMeta[];
@@ -27,9 +28,9 @@ export class TiDBQueryExecutor implements QueryExecutor {
     this.logger = consola.withTag('mysql')
   }
 
-  async execute(sql: string, values: any[] = []): Promise<Result> {
+  async execute(sql: string | InternalQueryOptions, values: any[] = []): Promise<Result> {
     const connection = await this.getConnection();
-    
+
     try {
       return this.executeWithConn(connection, sql, values);
     } finally {
@@ -37,12 +38,12 @@ export class TiDBQueryExecutor implements QueryExecutor {
     }
   }
 
-  async executeWithConn(connection: Connection, sql: string, values: any[] = []): Promise<Result> {
+  async executeWithConn(connection: Connection, sql: string | InternalQueryOptions, values: any[] = []): Promise<Result> {
     return new Promise((resolve, reject) => {
       this.logger.debug('Executing sql by connection<%d>\n %s', connection.threadId, sql);
 
       const end = tidbQueryTimer.startTimer()
-      connection.query(sql, values, (err, rows, fields) => {
+      connection.query(parseQueryOptions(sql, values), (err, rows, fields) => {
         end()
 
         // FIXME: the type of `fields` in the callback function's definition is wrong.
