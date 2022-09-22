@@ -5,138 +5,6 @@
  * and run json-schema-to-typescript to regenerate this file.
  */
 
-/**
- * Result data schema for description.
- */
-export type CoreSchemaMetaSchema =
-  | {
-      $id?: string;
-      $schema?: string;
-      $ref?: string;
-      $comment?: string;
-      title?: string;
-      description?: string;
-      default?: true;
-      readOnly?: boolean;
-      writeOnly?: boolean;
-      examples?: true[];
-      multipleOf?: number;
-      maximum?: number;
-      exclusiveMaximum?: number;
-      minimum?: number;
-      exclusiveMinimum?: number;
-      maxLength?: number;
-      minLength?: number;
-      pattern?: string;
-      additionalItems?: CoreSchemaMetaSchema1;
-      items?: CoreSchemaMetaSchema1 | [CoreSchemaMetaSchema1, ...CoreSchemaMetaSchema1[]];
-      maxItems?: number;
-      minItems?: number;
-      uniqueItems?: boolean;
-      contains?: CoreSchemaMetaSchema1;
-      maxProperties?: number;
-      minProperties?: number;
-      required?: string[];
-      additionalProperties?: CoreSchemaMetaSchema1;
-      definitions?: {
-        [k: string]: CoreSchemaMetaSchema1;
-      };
-      properties?: {
-        [k: string]: CoreSchemaMetaSchema1;
-      };
-      patternProperties?: {
-        [k: string]: CoreSchemaMetaSchema1;
-      };
-      dependencies?: {
-        [k: string]: CoreSchemaMetaSchema1 | string[];
-      };
-      propertyNames?: CoreSchemaMetaSchema1;
-      const?: true;
-      enum?: [true, ...unknown[]];
-      type?:
-        | ("array" | "boolean" | "integer" | "null" | "number" | "object" | "string")
-        | [
-            "array" | "boolean" | "integer" | "null" | "number" | "object" | "string",
-            ...("array" | "boolean" | "integer" | "null" | "number" | "object" | "string")[]
-          ];
-      format?: string;
-      contentMediaType?: string;
-      contentEncoding?: string;
-      if?: CoreSchemaMetaSchema1;
-      then?: CoreSchemaMetaSchema1;
-      else?: CoreSchemaMetaSchema1;
-      allOf?: [CoreSchemaMetaSchema1, ...CoreSchemaMetaSchema1[]];
-      anyOf?: [CoreSchemaMetaSchema1, ...CoreSchemaMetaSchema1[]];
-      oneOf?: [CoreSchemaMetaSchema1, ...CoreSchemaMetaSchema1[]];
-      not?: CoreSchemaMetaSchema1;
-      [k: string]: unknown;
-    }
-  | boolean;
-export type CoreSchemaMetaSchema1 =
-  | {
-      $id?: string;
-      $schema?: string;
-      $ref?: string;
-      $comment?: string;
-      title?: string;
-      description?: string;
-      default?: true;
-      readOnly?: boolean;
-      writeOnly?: boolean;
-      examples?: true[];
-      multipleOf?: number;
-      maximum?: number;
-      exclusiveMaximum?: number;
-      minimum?: number;
-      exclusiveMinimum?: number;
-      maxLength?: number;
-      minLength?: number;
-      pattern?: string;
-      additionalItems?: CoreSchemaMetaSchema1;
-      items?: CoreSchemaMetaSchema1 | [CoreSchemaMetaSchema1, ...CoreSchemaMetaSchema1[]];
-      maxItems?: number;
-      minItems?: number;
-      uniqueItems?: boolean;
-      contains?: CoreSchemaMetaSchema1;
-      maxProperties?: number;
-      minProperties?: number;
-      required?: string[];
-      additionalProperties?: CoreSchemaMetaSchema1;
-      definitions?: {
-        [k: string]: CoreSchemaMetaSchema1;
-      };
-      properties?: {
-        [k: string]: CoreSchemaMetaSchema1;
-      };
-      patternProperties?: {
-        [k: string]: CoreSchemaMetaSchema1;
-      };
-      dependencies?: {
-        [k: string]: CoreSchemaMetaSchema1 | string[];
-      };
-      propertyNames?: CoreSchemaMetaSchema1;
-      const?: true;
-      enum?: [true, ...unknown[]];
-      type?:
-        | ("array" | "boolean" | "integer" | "null" | "number" | "object" | "string")
-        | [
-            "array" | "boolean" | "integer" | "null" | "number" | "object" | "string",
-            ...("array" | "boolean" | "integer" | "null" | "number" | "object" | "string")[]
-          ];
-      format?: string;
-      contentMediaType?: string;
-      contentEncoding?: string;
-      if?: CoreSchemaMetaSchema1;
-      then?: CoreSchemaMetaSchema1;
-      else?: CoreSchemaMetaSchema1;
-      allOf?: [CoreSchemaMetaSchema1, ...CoreSchemaMetaSchema1[]];
-      anyOf?: [CoreSchemaMetaSchema1, ...CoreSchemaMetaSchema1[]];
-      oneOf?: [CoreSchemaMetaSchema1, ...CoreSchemaMetaSchema1[]];
-      not?: CoreSchemaMetaSchema1;
-      [k: string]: unknown;
-    }
-  | boolean;
-
 export interface QuerySchema {
   /**
    * Query name, default is generated base on the file path.
@@ -178,7 +46,7 @@ export interface QuerySchema {
    * Query params declaration.
    */
   params: Params[];
-  resultSchema?: CoreSchemaMetaSchema;
+  resultSchema?: Schema;
 }
 export interface ConditionalRefreshCrons {
   param: string;
@@ -243,4 +111,148 @@ export interface Params {
    * Regular expression for validating parameter value.
    */
   pattern?: string;
+}
+/**
+ * Result data schema for description.
+ */
+export interface Schema {
+  title?: string;
+  multipleOf?: number;
+  maximum?: number;
+  exclusiveMaximum?: boolean;
+  minimum?: number;
+  exclusiveMinimum?: boolean;
+  maxLength?: number;
+  minLength?: number;
+  pattern?: string;
+  maxItems?: number;
+  minItems?: number;
+  uniqueItems?: boolean;
+  maxProperties?: number;
+  minProperties?: number;
+  /**
+   * @minItems 1
+   */
+  required?: [string, ...string[]];
+  /**
+   * @minItems 1
+   */
+  enum?: [unknown, ...unknown[]];
+  type?: "array" | "boolean" | "integer" | "number" | "object" | "string";
+  not?: Schema1 | Reference;
+  allOf?: (Schema1 | Reference)[];
+  oneOf?: (Schema1 | Reference)[];
+  anyOf?: (Schema1 | Reference)[];
+  items?: Schema1 | Reference;
+  properties?: {
+    [k: string]: Schema1 | Reference;
+  };
+  additionalProperties?: Schema1 | Reference | boolean;
+  description?: string;
+  format?: string;
+  default?: unknown;
+  nullable?: boolean;
+  discriminator?: Discriminator;
+  readOnly?: boolean;
+  writeOnly?: boolean;
+  example?: unknown;
+  externalDocs?: ExternalDocumentation;
+  deprecated?: boolean;
+  xml?: XML;
+  /**
+   * This interface was referenced by `Schema1`'s JSON-Schema definition
+   * via the `patternProperty` "^x-".
+   *
+   * This interface was referenced by `Schema`'s JSON-Schema definition
+   * via the `patternProperty` "^x-".
+   */
+  [k: string]: unknown;
+}
+export interface Schema1 {
+  title?: string;
+  multipleOf?: number;
+  maximum?: number;
+  exclusiveMaximum?: boolean;
+  minimum?: number;
+  exclusiveMinimum?: boolean;
+  maxLength?: number;
+  minLength?: number;
+  pattern?: string;
+  maxItems?: number;
+  minItems?: number;
+  uniqueItems?: boolean;
+  maxProperties?: number;
+  minProperties?: number;
+  /**
+   * @minItems 1
+   */
+  required?: [string, ...string[]];
+  /**
+   * @minItems 1
+   */
+  enum?: [unknown, ...unknown[]];
+  type?: "array" | "boolean" | "integer" | "number" | "object" | "string";
+  not?: Schema1 | Reference;
+  allOf?: (Schema1 | Reference)[];
+  oneOf?: (Schema1 | Reference)[];
+  anyOf?: (Schema1 | Reference)[];
+  items?: Schema1 | Reference;
+  properties?: {
+    [k: string]: Schema1 | Reference;
+  };
+  additionalProperties?: Schema1 | Reference | boolean;
+  description?: string;
+  format?: string;
+  default?: unknown;
+  nullable?: boolean;
+  discriminator?: Discriminator;
+  readOnly?: boolean;
+  writeOnly?: boolean;
+  example?: unknown;
+  externalDocs?: ExternalDocumentation;
+  deprecated?: boolean;
+  xml?: XML;
+  /**
+   * This interface was referenced by `Schema1`'s JSON-Schema definition
+   * via the `patternProperty` "^x-".
+   *
+   * This interface was referenced by `Schema`'s JSON-Schema definition
+   * via the `patternProperty` "^x-".
+   */
+  [k: string]: unknown;
+}
+export interface Reference {
+  /**
+   * This interface was referenced by `Reference`'s JSON-Schema definition
+   * via the `patternProperty` "^\$ref$".
+   */
+  [k: string]: string;
+}
+export interface Discriminator {
+  propertyName: string;
+  mapping?: {
+    [k: string]: string;
+  };
+  [k: string]: unknown;
+}
+export interface ExternalDocumentation {
+  description?: string;
+  url: string;
+  /**
+   * This interface was referenced by `ExternalDocumentation`'s JSON-Schema definition
+   * via the `patternProperty` "^x-".
+   */
+  [k: string]: unknown;
+}
+export interface XML {
+  name?: string;
+  namespace?: string;
+  prefix?: string;
+  attribute?: boolean;
+  wrapped?: boolean;
+  /**
+   * This interface was referenced by `XML`'s JSON-Schema definition
+   * via the `patternProperty` "^x-".
+   */
+  [k: string]: unknown;
 }

@@ -63,7 +63,7 @@
     },
     "resultSchema": {
       "description": "Result data schema for description.",
-      "$ref": "http://json-schema.org/draft-07/schema#"
+      "$ref": "openapi-2021-09-28.schema.json#/definitions/Schema"
     }
   },
   "additionalProperties": false,
