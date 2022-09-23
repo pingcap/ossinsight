@@ -1,4 +1,4 @@
-origins:
+private_origins:
   # Develop.
   - ^http://localhost:\d+/$
   # Preview.
@@ -6,5 +6,6 @@ origins:
   # Production.
   - ^https://ossinsight\.io/$
   - ^https://live\.ossinsight\.io/$
+public_origins:
   # External Users.
   - ^https://github1s\.com/$

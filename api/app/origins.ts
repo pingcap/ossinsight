@@ -6,7 +6,7 @@ import YAML from 'yaml'
 export const DEFAULT_ALLOWED_ORIGIN = 'https://ossinsight.io';
 const logger = consola.withTag("origins-loader");
 
-export function getAllowedOrigins(): RegExp[] {
+export function getAllowedOrigins(containPublic: boolean = false): RegExp[] {
     const configFile = path.resolve(__dirname, '../allowed-origins.yaml');
     if (!existsSync(configFile)) {
         logger.warn(`Can not found allowed origins file: ${configFile}, API server will allowed all origins.`);
@@ -15,8 +15,13 @@ export function getAllowedOrigins(): RegExp[] {
 
     try {
         const originFile = readFileSync(configFile, 'utf8');
-        const allowedOriginConfig = YAML.parse(originFile);
-        return (allowedOriginConfig.origins || []).map((origin: string) => {
+        const { private_origins: privateOrigins = [], public_origins: publicOrigins = [] } = YAML.parse(originFile);
+        let origins = privateOrigins;
+        if (containPublic && publicOrigins.length > 0 ) {
+            origins = origins.concat(publicOrigins);
+        }
+
+        return origins.map((origin: string) => {
             return new RegExp(origin);
         });
     } catch(err: any) {

@@ -12,7 +12,7 @@ collectDefaultMetrics({
 export const requestCounter = new Counter({
   name: metricsPrefix + 'request_count',
   help: 'Request count',
-  labelNames: ['url', 'phase', 'status'] as const,
+  labelNames: ['url', 'phase', 'status', 'origin'] as const,
 })
 
 export const tidbQueryCounter = new Counter({
@@ -69,11 +69,6 @@ export const cacheQueryTimer = new Summary({
   help: 'Cache query time',
   labelNames: ['op'] as const,
   percentiles: [0.999, 0.99, 0.95, 0.80, 0.50],
-})
-
-export const limitedRequestCounter = new Counter({
-  name: metricsPrefix + 'limited_http_request_count',
-  help: 'Limited HTTP request count',
 })
 
 export const readConfigTimer = new Summary({
