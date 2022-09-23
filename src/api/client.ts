@@ -4,48 +4,38 @@ import io from "socket.io-client";
 
 export const BASE_URL = process.env.APP_API_BASE || 'https://api.ossinsight.io';
 
-export const client = axios.create({
-  baseURL: BASE_URL,
-  paramsSerializer: function paramsSerializer(params: any): string {
-    const usp = new URLSearchParams();
-    for (let [key, value] of Object.entries(params)) {
-      if (Array.isArray(value)) {
-        value.forEach(item => usp.append(key, item));
-      } else {
-        usp.set(key, String(value));
+function createClient(enableCache = true) {
+  const client = axios.create({
+    baseURL: BASE_URL,
+    paramsSerializer: function paramsSerializer(params: any): string {
+      const usp = new URLSearchParams();
+      for (let [key, value] of Object.entries(params)) {
+        if (Array.isArray(value)) {
+          value.forEach((item) => usp.append(key, item));
+        } else {
+          usp.set(key, String(value));
+        }
       }
-    }
-    return usp.toString();
-  },
-});
+      return usp.toString();
+    },
+  });
 
-// we need to delete default 'Accept' header to match preload resources.
-delete client.defaults.headers.common.Accept
+  // we need to delete default 'Accept' header to match preload resources.
+  delete client.defaults.headers.common.Accept;
 
-export const clientWithoutCache = axios.create({
-  baseURL: BASE_URL,
-  paramsSerializer: function paramsSerializer(params: any): string {
-    const usp = new URLSearchParams();
-    for (let [key, value] of Object.entries(params)) {
-      if (Array.isArray(value)) {
-        value.forEach(item => usp.append(key, item));
-      } else {
-        usp.set(key, String(value));
-      }
-    }
-    return usp.toString();
-  },
-});
+  if (enableCache) {
+    patchCacheInterceptors(client, createSimpleCache());
+  }
 
-clientWithoutCache.interceptors.response.use(response => {
-  return response.data;
-});
+  client.interceptors.response.use((response) => {
+    return response.data;
+  });
 
-patchCacheInterceptors(client, createSimpleCache());
+  return client;
+}
 
-client.interceptors.response.use(response => {
-  return response.data;
-});
+export const client = createClient();
+export const clientWithoutCache = createClient(false);
 
 interface CheckReq {
   (config: AxiosRequestConfig): boolean;
