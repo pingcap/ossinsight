@@ -1,11 +1,10 @@
 origins:
   # Develop.
-  - ^http:\/\/localhost:3000\/$
-  - ^http:\/\/localhost:30000\/$
+  - ^http://localhost:\d+/$
   # Preview.
-  - ^https:\/\/pingcap-ossinsight-preview-pr-.+\.surge\.sh\/$
+  - ^https://pingcap-ossinsight-preview-pr-.+\.surge\.sh/$
   # Production.
-  - ^https:\/\/ossinsight\.io\/$
-  - ^https:\/\/live\.ossinsight\.io\/$
+  - ^https://ossinsight\.io/$
+  - ^https://live\.ossinsight\.io/$
   # External Users.
-  - ^https:\/\/github1s\.com\/$
+  - ^https://github1s\.com/$
