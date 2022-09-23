@@ -59,7 +59,9 @@ const config = {
       path.resolve(__dirname, 'plugins/prefetch'),
       {
         collections: '.prefetch/collections.json',
-      }
+        eventsTotal: '.prefetch/events-total.json',
+        '/q/events-total': 'prefetch',
+      },
     ],
     [
       "content-docs",
