@@ -19,6 +19,9 @@ export const client = axios.create({
   },
 });
 
+// we need to delete default 'Accept' header to match preload resources.
+delete client.defaults.headers.common.Accept
+
 patchCacheInterceptors(client, createSimpleCache());
 
 client.interceptors.response.use(response => {

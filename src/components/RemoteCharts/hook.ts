@@ -6,6 +6,7 @@ import InViewContext from "../InViewContext";
 import { core } from '../../api';
 import { clearPromiseInterval, setPromiseInterval } from "../../lib/promise-interval";
 import { socket } from "../../api/client";
+import { usePluginData } from "@docusaurus/core/lib/client/exports/useGlobalData";
 
 export interface AsyncData<T> {
   data: T | undefined
@@ -167,7 +168,9 @@ export const useRealtimeRemoteData: UseRemoteData = (query: string, params: any,
 }
 
 export const useTotalEvents = (run: boolean, interval = 1000) => {
-  const [total, setTotal] = useState(0)
+  const { eventsTotal } = usePluginData<{ eventsTotal: any }>('plugin-prefetch')
+
+  const [total, setTotal] = useState(eventsTotal.data[0].cnt)
   const [added, setAdded] = useState(0)
   const lastTs = useRef(0)
   const cancelRef = useRef<() => void>()
@@ -187,9 +190,7 @@ export const useTotalEvents = (run: boolean, interval = 1000) => {
 
     const reloadTotal = async () => {
       try {
-        const { data: [{ cnt, latest_timestamp }] } = await core.queryWithoutCache('events-total', undefined, {
-          wsApi: 'unique',
-        })
+        const { data: [{ cnt, latest_timestamp }] } = await core.queryWithoutCache('events-total', undefined)
         if (!mounted.current) {
           return
         }
