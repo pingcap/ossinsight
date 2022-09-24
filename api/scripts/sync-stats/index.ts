@@ -4,6 +4,7 @@ import consola from "consola";
 import { ConnectionWrapper, getConnectionOptions } from "../../app/utils/db";
 import schedule from 'node-schedule';
 import { DateTime } from "luxon";
+import { createPool, ResultSetHeader } from "mysql2";
 
 // Load environments.
 dotenv.config({ path: path.resolve(__dirname, '../../.env.template') });
@@ -15,7 +16,9 @@ const cron = process.env.SYNC_STATS_CRON || '*/5 * * * * *';
 const logger = consola.withTag('sync-stats');
 
 // Init TiDB client.
-const conn = new ConnectionWrapper(getConnectionOptions());
+const conn = createPool(getConnectionOptions({
+  connectionLimit: 1
+})).promise();
 
 const sql = `INSERT INTO stats_index_summary (summary_begin_time, summary_end_time, table_name, index_name, digest, plan_digest, exec_count)
 WITH RECURSIVE numbers (n) AS (
@@ -44,7 +47,7 @@ SELECT
 FROM INFORMATION_SCHEMA.STATEMENTS_SUMMARY s
 JOIN numbers ON CHAR_LENGTH(s.INDEX_NAMES) - CHAR_LENGTH(REPLACE(s.INDEX_NAMES, ',', '')) >= numbers.n - 1
 WHERE SCHEMA_NAME = database()
-ON DUPLICATE KEY UPDATE exec_count = s.exec_count
+ON DUPLICATE KEY UPDATE exec_count = GREATEST(IFNULL(stats_index_summary.exec_count, 0), IFNULL(VALUES(exec_count), 0))
 ;`;
 
 logger.info(`Execute sync stats job according cron expression: ${cron}`);
@@ -52,9 +55,8 @@ schedule.scheduleJob(cron, async () => {
   logger.info(`Syncing statement stats from INFORMATION_SCHEMA.STATEMENTS_SUMMARY table to stats_index_summary table ...`);
 
   try {
-    const { result } = await conn.execute<any>(sql);
-    const affectedRows: any = result.affectedRows;;
-    logger.success(`Synced ${affectedRows} SQL statement stats records at ${DateTime.utc().toISO()}.`);
+    const [rs] = await conn.execute<ResultSetHeader>(sql);
+    logger.success(`Synced ${rs.affectedRows} SQL statement stats records at ${DateTime.utc().toISO()}.`);
   } catch (err) {
     logger.error(`Failed to sync SQL statement stats at ${DateTime.utc().toISO()}: `, err);
   }

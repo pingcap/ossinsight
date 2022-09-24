@@ -89,7 +89,9 @@ async function main() {
         id, login, type, is_bot, company, company_formatted, address_formatted, country_code, state, city, 
         longitude, latitude, followers, followings, created_at, updated_at
     ) VALUES ?`;
-    const userLoader = new BatchLoader(conn, insertUserSQL, 2000);
+    const userLoader = new BatchLoader(conn, insertUserSQL, {
+        batchSize: 2000
+    });
 
     // Init sync user recorder.
     const syncUserRecorder = new SyncUserRecorder();

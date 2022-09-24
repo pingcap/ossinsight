@@ -59,7 +59,9 @@ const config = {
       path.resolve(__dirname, 'plugins/prefetch'),
       {
         collections: '.prefetch/collections.json',
-      }
+        eventsTotal: '.prefetch/events-total.json',
+        '/q/events-total': 'prefetch',
+      },
     ],
     [
       "content-docs",
@@ -222,6 +224,7 @@ const config = {
               {label: '└─ Cryptocurrency Insight - not ready', to: '/workshop/cryptocurrency-insight'},
             ]
           },
+          {to: '/docs', label: 'API', position: 'left'},
           /*
           {
             type: 'dropdown',
@@ -240,11 +243,10 @@ const config = {
               {label: 'About OSS Insight', to: '/about'},
               {label: 'About TiDB Cloud', to: 'https://en.pingcap.com/tidb-cloud?utm_source=ossinsight&utm_medium=referral'},
               {label: 'How do we implement OSS Insight?', to: '/blog/why-we-choose-tidb-to-support-ossinsight'},
-              {label: 'API', to: '/docs'},
+              {label: 'Stats', to: '/stats'},
               {label: 'Report an Issue', to: 'https://github.com/pingcap/ossinsight/issues'},
             ]
           },
-          {to: '/stats', label: 'Stats', position: 'left'},
           {
             href: 'https://twitter.com/OSSInsight',
             className: 'navbar-item-twitter',

@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "docusaurus": "docusaurus",
+    "build:plugins": "tsc -p plugins/tsconfig.json",
     "start": "docusaurus start",
     "start-silence": "docusaurus start --host 0.0.0.0 --port 30000 --no-open",
     "build": "docusaurus build",
@@ -14,7 +15,8 @@
     "write-translations": "docusaurus write-translations",
     "write-heading-ids": "docusaurus write-heading-ids",
     "prefetch": "node prefetch.mjs",
-    "postinstall": "node _dirty_mutate.mjs"
+    "postinstall": "node _dirty_mutate.mjs && npm run build:plugins",
+    "prestart": "npm run build:plugins"
   },
   "dependencies": {
     "@docusaurus/core": "2.0.0-beta.14",

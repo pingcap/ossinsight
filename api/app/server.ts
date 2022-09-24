@@ -3,7 +3,7 @@ import Query from "./core/Query";
 import {DefaultState} from "koa";
 import type {ContextExtends} from "../index";
 import {register} from "prom-client";
-import {measureRequests} from "./middlewares/measureRequests";
+import {measureRequests, URLType} from "./middlewares/measureRequests";
 import { Socket, Server } from "socket.io";
 import { Consola } from "consola";
 import { TiDBQueryExecutor } from "./core/TiDBQueryExecutor";
@@ -13,6 +13,7 @@ import CollectionService from "./services/CollectionService";
 import UserService from "./services/UserService";
 import GHEventService from "./services/GHEventService";
 import StatsService from "./services/StatsService";
+import { BatchLoader } from "./core/BatchLoader";
 
 export default async function httpServerRoutes(
   router: Router<DefaultState, ContextExtends>,
@@ -22,10 +23,11 @@ export default async function httpServerRoutes(
   collectionService: CollectionService,
   userService: UserService,
   ghEventService: GHEventService,
-  statsService: StatsService
+  statsService: StatsService,
+  accessRecorder: BatchLoader
 ) {
 
-  router.get('/q/:query', measureRequests({ urlLabel: 'path' }), async ctx => {
+  router.get('/q/:query', measureRequests(URLType.PATH, accessRecorder), async ctx => {
     try {
       const queryName = ctx.params.query;
       const query = new Query(
@@ -45,7 +47,7 @@ export default async function httpServerRoutes(
     }
   })
 
-  router.get('/q/explain/:query', measureRequests({ urlLabel: 'path' }), async ctx => {
+  router.get('/q/explain/:query', measureRequests(URLType.PATH, accessRecorder), async ctx => {
     try {
       const query = new Query(ctx.params.query, cacheBuilder, queryExecutor, ghEventService, collectionService, userService)
       const res = await query.explain(ctx.query)
@@ -58,7 +60,7 @@ export default async function httpServerRoutes(
     }
   })
 
-  router.get('/collections', measureRequests({ urlLabel: 'path' }), async ctx => {
+  router.get('/collections', measureRequests(URLType.PATH, accessRecorder), async ctx => {
     try {
       const res = await collectionService.getCollections();
       ctx.response.status = 200
@@ -70,7 +72,7 @@ export default async function httpServerRoutes(
     }
   })
 
-  router.get('/collections/:collectionId', measureRequests({ urlLabel: 'path' }), async ctx => {
+  router.get('/collections/:collectionId', measureRequests(URLType.PATH, accessRecorder), async ctx => {
     const { collectionId } = ctx.params
     try {
       const res = await collectionService.getCollectionRepos(parseInt(collectionId));
@@ -84,7 +86,7 @@ export default async function httpServerRoutes(
   })
 
   // qo means query options.
-  router.get('/qo/repos/groups/osdb', measureRequests({ urlLabel: 'path' }), async ctx => {
+  router.get('/qo/repos/groups/osdb', measureRequests(URLType.PATH), async ctx => {
     try {
       const res = await collectionService.getOSDBRepoGroups();
 
@@ -102,7 +104,7 @@ export default async function httpServerRoutes(
     }
   })
 
-  router.get('/gh/repo/:owner/:repo', measureRequests({ urlLabel: 'route' }), async ctx => {
+  router.get('/gh/repo/:owner/:repo', measureRequests(URLType.ROUTE, accessRecorder), async ctx => {
     const { owner, repo } = ctx.params
     try {
       const res = await ghExecutor.getRepo(owner, repo)
@@ -117,7 +119,7 @@ export default async function httpServerRoutes(
     }
   })
 
-  router.get('/gh/repos/search', measureRequests({ urlLabel: 'path' }), async ctx => {
+  router.get('/gh/repos/search', measureRequests(URLType.PATH, accessRecorder), async ctx => {
     const { keyword } = ctx.query;
 
     try {
@@ -138,7 +140,7 @@ export default async function httpServerRoutes(
     }
   })
 
-  router.get('/gh/users/search', measureRequests({ urlLabel: 'path' }), async ctx => {
+  router.get('/gh/users/search', measureRequests(URLType.PATH, accessRecorder), async ctx => {
     const { keyword, type } = ctx.query as any;
 
     try {

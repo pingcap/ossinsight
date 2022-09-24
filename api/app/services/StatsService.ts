@@ -18,7 +18,9 @@ export default class StatsService {
         const conn = new ConnectionWrapper(getConnectionOptions());
         this.queryStatsLoader = new BatchLoader(conn, `
             INSERT INTO stats_query_summary(query_name, digest_text, executed_at) VALUES ?
-        `, INSERT_STATS_BATCH_SIZE);
+        `, {
+            batchSize: INSERT_STATS_BATCH_SIZE
+        });
     }
 
     async addQueryStatsRecord(queryName: string, digestText: string, executedAt: Date, refresh: boolean) {

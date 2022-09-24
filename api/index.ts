@@ -1,7 +1,7 @@
+import dotenv from "dotenv";
 import App from "koa";
 import Router from "koa-router";
 import httpServerRoutes, { socketServerRoutes } from "./app/server";
-import dotenv from "dotenv";
 import consola, { Consola } from "consola";
 import cors from "@koa/cors";
 import { Server as SocketServer } from "socket.io";
@@ -12,13 +12,18 @@ import { TiDBQueryExecutor } from "./app/core/TiDBQueryExecutor";
 import CollectionService from "./app/services/CollectionService";
 import GHEventService from "./app/services/GHEventService";
 import UserService from "./app/services/UserService";
-import { getConnectionOptions } from "./app/utils/db";
+import { ConnectionWrapper, getConnectionOptions } from "./app/utils/db";
 import StatsService from "./app/services/StatsService";
+import { getAllowedOrigins, getCorsOrigin } from "./app/origins";
+import { BatchLoader } from "./app/core/BatchLoader";
 
 const logger = consola.withTag("app");
 
 dotenv.config({ path: __dirname + "/.env.template" });
 dotenv.config({ path: __dirname + "/.env", override: true });
+
+const allowedOrigins = getAllowedOrigins();
+const allowedOriginsWithPublic = getAllowedOrigins(true);
 
 export interface ContextExtends extends App.DefaultContext {
   logger: Consola;
@@ -35,7 +40,11 @@ app.use(async (ctx, next) => {
 });
 
 // Enable CORS.
-app.use(cors({ origin: "*" }));
+app.use(cors({
+  origin: (ctx) => {
+    return getCorsOrigin(allowedOriginsWithPublic, ctx.request.header.origin);
+  }
+}));
 
 // Init MySQL Executor.
 const queryExecutor = new TiDBQueryExecutor(
@@ -50,11 +59,15 @@ const enableCache = process.env.ENABLE_CACHE === "1" ? true : false;
 const cacheBuilder = new CacheBuilder(enableCache);
 
 // Init GitHub Executor.
-const tokens = (process.env.GH_TOKENS || "")
-  .split(",")
-  .map((s) => s.trim())
-  .filter(Boolean);
+const tokens = (process.env.GH_TOKENS || "").split(",").map((s) => s.trim()).filter(Boolean);
 const ghExecutor = new GhExecutor(tokens, cacheBuilder);
+
+// Init Access Log Batch Loader.
+const conn = new ConnectionWrapper(getConnectionOptions());
+const insertAccessLogSQL = `INSERT INTO access_logs(
+  remote_addr, origin, status_code, request_path, request_params
+) VALUES ?`;
+const accessRecorder = new BatchLoader(conn, insertAccessLogSQL);
 
 // Init Services.
 const collectionService = new CollectionService(queryExecutor, cacheBuilder);
@@ -66,7 +79,7 @@ const statsService = new StatsService(queryExecutor, cacheBuilder);
 const router = new Router<App.DefaultState, ContextExtends>();
 httpServerRoutes(
   router, queryExecutor, cacheBuilder, ghExecutor, collectionService, 
-  userService, ghEventService, statsService
+  userService, ghEventService, statsService, accessRecorder
 );
 app.use(router.routes()).use(router.allowedMethods());
 
@@ -76,7 +89,13 @@ const httpServer = createServer(app.callback());
 // Init WebSocket server.
 const io = new SocketServer(httpServer, {
   cors: {
-    origin: "*",
+    origin: (requestOrigin, cb) => {
+      try {
+        cb(null, getCorsOrigin(allowedOrigins, requestOrigin))
+      } catch(err: any) {
+        cb(err, undefined);
+      }
+    },
   },
 });
 
