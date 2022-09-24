@@ -34,23 +34,23 @@ export function measureRequests(urlType?: URLType, accessRecorder?: BatchLoader)
     }
 
     await measure(requestProcessTimer.labels({ url }), async () => {
+      const { header } = ctx;
       try {
-        requestCounter.labels({ url, phase: Phase.START }).inc();
+        requestCounter.labels({ url, origin: header.origin, phase: Phase.START }).inc();
         await next();
 
-        const { status, ip, query, origin, path } = ctx;
-
+        const { status, ip, query, path } = ctx;
         if (accessRecorder) {
-            accessRecorder.insert([ip, origin, status, path, JSON.stringify(query)]);
+            accessRecorder.insert([ip, header.origin, status, path, JSON.stringify(query)]);
         }
 
         if (status < 400) {
-          requestCounter.labels({ url, status, origin, phase: Phase.SUCCESS }).inc();
+          requestCounter.labels({ url, status, origin: header.origin, phase: Phase.SUCCESS }).inc();
         } else {
-          requestCounter.labels({ url, status, origin, phase: Phase.ERROR }).inc();
+          requestCounter.labels({ url, status, origin: header.origin, phase: Phase.ERROR }).inc();
         }
       } catch (e) {
-        requestCounter.labels({ url, origin, phase: Phase.ERROR }).inc();
+        requestCounter.labels({ url, origin: header.origin, phase: Phase.ERROR }).inc();
         throw e
       }
     });
