@@ -34,7 +34,7 @@ export default async function httpServerRoutes(
         queryName, cacheBuilder, queryExecutor, ghEventService,
         collectionService, userService
       )
-      const res: any = await query.run(ctx.query, false, null, ctx.request.ip);
+      const res: any = await query.execute(ctx.query, false, ctx.request.ip);
       const { sql, requestedAt, refresh } = res;
       statsService.addQueryStatsRecord(queryName, sql, requestedAt, refresh);
 
@@ -201,10 +201,9 @@ export function socketServerRoutes(
         collectionService,
         userService
       );
-      const res = await q.run(
+      const res = await q.execute(
         searchMap,
         false,
-        null,
         socket.handshake.address
       );
       socket.emit(queryType, res);
@@ -258,13 +257,15 @@ export function socketServerRoutes(
    */
   socket.on("q", async (request: WsQueryRequest) => {
     try {
-      const isCompact = request.format === 'compact'
-      const topic = `/q/${request.explain ? 'explain/' : ''}${request.query}${request.qid ? `?qid=${request.qid}` : ''}`
+      const { explain, query, qid, params, format, excludeMeta } = request;
+      const isCompact = format === 'compact';
+      const topic = `/q/${explain ? 'explain/' : ''}${query}${qid ? `?qid=${qid}` : ''}`
       let response: WsQueryResponse
 
       try {
+        const remoteAddr = socket.handshake.address;
         const q = new Query(
-          request.query,
+          query,
           cacheBuilder,
           queryExecutor,
           ghEventService,
@@ -272,13 +273,17 @@ export function socketServerRoutes(
           userService
         );
         let res
-        if (request.explain) {
-          res = await q.explain(request.params);
+        if (explain) {
+          res = await q.explain(params, false, remoteAddr, {
+            rowsAsArray: isCompact
+          });
         } else {
-          res = await q.run(request.params, false, null, socket.handshake.address, isCompact);
+          res = await q.execute(params, false, remoteAddr, {
+            rowsAsArray: isCompact
+          });
         }
 
-        if (request.excludeMeta) {
+        if (excludeMeta) {
           res = {
             data: res.data,
             fields: isCompact ? res.fields : undefined,
@@ -286,8 +291,8 @@ export function socketServerRoutes(
         }
 
         response = {
-          qid: request.qid,
-          explain: request.explain,
+          qid: qid,
+          explain: explain,
           payload: res,
           compact: isCompact,
         }

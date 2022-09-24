@@ -1,83 +1,106 @@
-import {createPool, OkPacket, Pool, PoolConnection, PoolOptions, ResultSetHeader, RowDataPacket, QueryOptions} from 'mysql2'
-import consola, {Consola} from "consola";
-import {tidbQueryTimer, waitTidbConnectionTimer} from "../metrics";
-import Connection from 'mysql2/typings/mysql/lib/Connection';
-import { InternalQueryOptions, parseQueryOptions } from "../utils/query";
+import consola from "consola";
+import { createPool } from "mysql2";
+import { PoolConnection, QueryOptions, Connection, PoolOptions, ResultSetHeader, FieldPacket, OkPacket, RowDataPacket, Pool } from "mysql2/promise";
+import {tidbQueryCounter, tidbQueryTimer, waitTidbConnectionTimer} from "../metrics";
 
-export interface Result {
-  fields: FieldMeta[];
-  rows: RowDataPacket[] | RowDataPacket[][] | OkPacket | OkPacket[] | ResultSetHeader;
-}
-
-export interface FieldMeta {
-    name: string;
-    columnType: number;
-}
+export type Rows = RowDataPacket[] | RowDataPacket[][] | OkPacket | OkPacket[] | ResultSetHeader;
+export interface Field {
+  name: string;
+  columnType: number;
+};
+export type Fields = Field[];
+export type Result = [Rows, Fields];
+export type Values = any | any[] | { [param: string]: any };
+export type Conn = PoolConnection;
 
 export interface QueryExecutor {
-  execute (sql: string): Promise<Result>
+  execute(queryKey: string, sql: string): Promise<Result>
 }
 
 export class TiDBQueryExecutor implements QueryExecutor {
+  private logger = consola.withTag('tidb-query-executor');
+  private connections: Pool;
 
-  private connections: Pool
-  private logger: Consola
-
-  constructor(options: PoolOptions) {
-    this.connections = createPool(options)
-    this.logger = consola.withTag('mysql')
+  constructor(
+    options: PoolOptions,
+    readonly enableMetrics: boolean = true
+  ) {
+    this.connections = createPool(options).promise();
   }
 
-  async execute(sql: string | InternalQueryOptions, values: any[] = []): Promise<Result> {
-    const connection = await this.getConnection();
+  async execute<T extends Rows>(queryKey: string, sql: string): Promise<[T, Fields]>;
+  async execute<T extends Rows>(queryKey: string, sql: string, values: Values): Promise<[T, Fields]>;
+  async execute<T extends Rows>(queryKey: string, options: QueryOptions): Promise<[T, Fields]>;
+  async execute<T extends Rows>(queryKey: string, sqlOrOptions: string | QueryOptions, values?: Values): Promise<[T, Fields]> {
+    const conn = await this.getConnection();
 
     try {
-      return this.executeWithConn(connection, sql, values);
+      if (typeof sqlOrOptions === 'string') {
+        return this.executeWithConn(conn, sqlOrOptions, values);
+      } else {
+        return this.executeWithConn(conn, queryKey, sqlOrOptions);
+      }
     } finally {
-      connection.release();
+      conn.release();
     }
   }
 
-  async executeWithConn(connection: Connection, sql: string | InternalQueryOptions, values: any[] = []): Promise<Result> {
-    return new Promise((resolve, reject) => {
-      this.logger.debug('Executing sql by connection<%d>\n %s', connection.threadId, sql);
+  async executeWithConn<T extends Rows>(conn: Conn, queryKey: string, sql: string): Promise<[T, Fields]>;
+  async executeWithConn<T extends Rows>(conn: Conn, queryKey: string, sql: string, values: Values): Promise<[T, Fields]>;
+  async executeWithConn<T extends Rows>(conn: Conn, queryKey: string, options: QueryOptions): Promise<[T, Fields]>;
+  async executeWithConn<T extends Rows>(conn: Conn, queryKey: string, sqlOrOptions: string | QueryOptions, values?: Values): Promise<[T, Fields]> {
+    let end = () => {};
+    if (this.enableMetrics) {
+      end = tidbQueryTimer.startTimer();
+      tidbQueryCounter.labels({ query: queryKey, phase: 'start' }).inc();
+    }
 
-      const end = tidbQueryTimer.startTimer()
-      connection.query(parseQueryOptions(sql, values), (err, rows, fields) => {
-        end()
+    try {
+      let rows, fields;
+      if (typeof sqlOrOptions === 'string') {
+        [rows, fields] = await conn.execute<T>(sqlOrOptions, values);
+      } else {
+        [rows, fields] = await conn.execute<T>(sqlOrOptions);
+      }
 
-        // FIXME: the type of `fields` in the callback function's definition is wrong.
-        const fieldDefs: FieldMeta[] = (fields || []).map((field: any) => {
+      end();
+      if (this.enableMetrics) {
+        tidbQueryCounter.labels({ query: queryKey, phase: 'success' }).inc();
+      }
+
+      return [
+        rows,
+        fields.map((field) => {
           return {
             name: field.name,
-            columnType: field.columnType
+            columnType: field.type
           }
-        });
+        })
+      ];
+    } catch (err) {
+      end();
+      if (this.enableMetrics) {
+        tidbQueryCounter.labels({ query: queryKey, phase: 'error' }).inc();
+      }
 
-        if (err) {
-          reject(err)
-        } else {
-          resolve({
-            fields: fieldDefs,
-            rows: rows,
-          })
-        }
-      })
-    });
+      throw err;
+    }
   }
 
   async getConnection(): Promise<PoolConnection> {
-    return new Promise((resolve, reject) => {
-      const end = waitTidbConnectionTimer.startTimer()
-      this.connections.getConnection((err, connection) => {
-        end()
-        if (err) {
-          this.logger.error('Failed to establish a connection', err)
-          reject(err)
-        }
-        resolve(connection);
-      });
-    });
+    let end = () => {};
+    if (this.enableMetrics) {
+      end = waitTidbConnectionTimer.startTimer();
+    }
+
+    try {
+      const conn = await this.connections.getConnection();
+      end();
+      return conn;
+    } catch(err: any) {
+      end();
+      throw err;
+    }
   }
 
 }
