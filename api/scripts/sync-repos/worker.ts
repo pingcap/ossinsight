@@ -94,9 +94,15 @@ export class WorkerFactory implements Factory<JobWorker> {
           logger: log,
           conn: conn,
           octokit: octokit,
-          repoLoader: new BatchLoader(conn, INSERT_REPOS_SQL, 2000),
-          repoLangLoader: new BatchLoader(conn, INSERT_REPOS_LANGUAGES_SQL, 2000),
-          repoTopicLoader: new BatchLoader(conn, INSERT_REPO_TOPICS_SQL, 2000)
+          repoLoader: new BatchLoader(conn, INSERT_REPOS_SQL, {
+            batchSize: 2000
+          }),
+          repoLangLoader: new BatchLoader(conn, INSERT_REPOS_LANGUAGES_SQL, {
+            batchSize: 2000
+          }),
+          repoTopicLoader: new BatchLoader(conn, INSERT_REPO_TOPICS_SQL, {
+            batchSize: 2000
+          })
         };
 
         Object.defineProperty(worker, SYMBOL_TOKEN, {value, writable: false, enumerable: false, configurable: false});

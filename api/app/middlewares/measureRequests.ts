@@ -1,48 +1,58 @@
-import {IMiddleware} from "koa-router";
-import {limitedRequestCounter, measure, requestCounter, requestProcessTimer} from "../metrics";
-import {Context, Next} from "koa";
+import { IMiddleware } from "koa-router";
+import { measure, requestCounter, requestProcessTimer } from "../metrics";
+import { BatchLoader } from "../core/BatchLoader";
+import consola from "consola";
 
-export interface MeasureRequestsParams {
-  urlLabel?: 'full' | 'path' | 'route'
+const logger = consola.withTag('measure-middleware');
+
+export enum URLType {
+  FULL = 'full',
+  PATH = 'path',
+  ROUTE = 'route'
 }
 
-export function measureRequests({urlLabel = 'path'}: MeasureRequestsParams): IMiddleware {
+export enum Phase {
+  START = 'start',
+  SUCCESS = 'success',
+  ERROR = 'error'
+}
+
+export function measureRequests(urlType?: URLType, accessRecorder?: BatchLoader): IMiddleware {
   return async (ctx, next) => {
-    let url: string = ctx.path
-    switch (urlLabel) {
-      case 'full':
+    let url: string;
+    switch (urlType) {
+      case URLType.FULL:
         url = ctx.url
         break
-      case 'route':
+      case URLType.ROUTE:
         if (ctx._matchedRoute) {
-          url = String(ctx._matchedRoute)
+          url = String(ctx._matchedRoute);
+          break
         }
-        break
+      default:
+        url = ctx.path;
     }
 
-    await measure(requestProcessTimer.labels({url}), async () => {
+    await measure(requestProcessTimer.labels({ url }), async () => {
       try {
-        requestCounter.labels({url, phase: 'start'}).inc()
-        await next()
-        if (ctx.status < 400) {
-          requestCounter.labels({url, phase: 'success', status: ctx.status}).inc()
+        requestCounter.labels({ url, phase: Phase.START }).inc();
+        await next();
+
+        const { status, ip, query, origin, path } = ctx;
+
+        if (accessRecorder) {
+            accessRecorder.insert([ip, origin, status, path, JSON.stringify(query)]);
+        }
+
+        if (status < 400) {
+          requestCounter.labels({ url, status, origin, phase: Phase.SUCCESS }).inc();
         } else {
-          requestCounter.labels({url, phase: 'error', status: ctx.status}).inc()
+          requestCounter.labels({ url, status, origin, phase: Phase.ERROR }).inc();
         }
       } catch (e) {
-        requestCounter.labels({url, phase: 'error'}).inc()
+        requestCounter.labels({ url, origin, phase: Phase.ERROR }).inc();
         throw e
       }
-    })
-  }
-}
-
-export async function measureLimitedRequests (ctx: Context, next: Next) {
-  try {
-    await next()
-  } finally {
-    if (ctx.status === 429) {
-      limitedRequestCounter.inc()
-    }
+    });
   }
 }
