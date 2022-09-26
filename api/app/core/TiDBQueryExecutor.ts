@@ -26,7 +26,7 @@ export class TiDBQueryExecutor implements QueryExecutor {
     readonly enableMetrics: boolean = true
   ) {
     this.connections = createPool(options)
-    this.logger = consola.withTag('mysql')
+    this.logger = consola.withTag('tidb-query-executor')
   }
 
   async execute<T extends Rows>(queryKey: string, sql: string): Promise<[T, Fields]>;
@@ -110,7 +110,7 @@ export class TiDBPlaygroundQueryExecutor extends TiDBQueryExecutor {
 
   constructor(options: PoolOptions, connectionLimits: string[]) {
     super(options);
-    this.logger = consola.withTag('mysql-playground')
+    this.logger = consola.withTag('playground-query-executor')
     decorateLimitedPool(this.connections, connectionLimits)
   }
 }
