@@ -124,7 +124,7 @@ export default class CollectionService {
           const start = DateTime.now()
           tidbQueryCounter.labels({ query: cacheKey, phase: 'start' }).inc()
 
-          const [rows, fields] = await this.executor.execute('cacheKey', sql)
+          const [rows, fields] = await this.executor.execute(cacheKey, sql)
 
           const end = DateTime.now()
           tidbQueryCounter.labels({ query: cacheKey, phase: 'success' }).inc()
