@@ -175,14 +175,18 @@ export default async function httpServerRoutes(
   router.post(
     "/q/playground",
     koaBody(),
-    measureRequests({ urlLabel: "path" }),
+    measureRequests(URLType.PATH, accessRecorder),
     async (ctx) => {
       try {
         const {
           sql: sqlString,
           type,
           id,
-        } = ctx.request.body as { sql: string; type: "repo" | "user"; id: string };
+        } = ctx.request.body as {
+          sql: string;
+          type: "repo" | "user";
+          id: string;
+        };
         const sqlParser = new SqlParser(type, id, sqlString);
         const sql = sqlParser.sqlify();
         const query = new playgroundQuery(playgroundQueryExecutor);
