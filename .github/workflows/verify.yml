@@ -1,4 +1,4 @@
-name: Verify Query Definition File
+name: Verify API server
 
 on:
   pull_request:
@@ -32,6 +32,9 @@ jobs:
 
       - name: Install Dependencies
         run: pnpm i --frozen-lockfile --strict-peer-dependencies
+
+      - name: Verify Sources
+        run: pnpm run verify
 
       - name: Verify Query Definition JSON
         run: |
