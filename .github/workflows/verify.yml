@@ -1,4 +1,4 @@
-name: Verify Api server
+name: Verify API server
 
 on:
   pull_request:
