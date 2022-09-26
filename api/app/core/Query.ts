@@ -151,9 +151,9 @@ export class playgroundQuery {
 
       let res: Result;
       if (conn) {
-        res = await this.executor.executeWithConn(conn, sql);
+        res = await this.executor.executeWithConn(conn, 'playground-sql', sql);
       } else {
-        res = await this.executor.execute(sql);
+        res = await this.executor.execute(sql, 'playground-sql');
       }
 
       const end = DateTime.now();
@@ -164,8 +164,8 @@ export class playgroundQuery {
         finishedAt: end,
         spent: end.diff(start).as("seconds"),
         sql,
-        fields: res.fields,
-        data: res.rows as any,
+        fields: res[1],
+        data: res[0],
       };
     } catch (e) {
       tidbQueryCounter.labels({ query: this.name, phase: "error" }).inc();

@@ -1,6 +1,5 @@
 import { Parser, AST, Select } from "node-sql-parser";
-
-import { BadParamsError, SQLExecuteError } from "../core/Query";
+import { BadParamsError } from "../core/QueryParam";
 
 export class SqlParser {
   parser: Parser;
@@ -18,6 +17,7 @@ export class SqlParser {
         break;
       case "user":
         this.type = "actor_id";
+        break;
       default:
         throw new BadParamsError("playground", `invalid type ${type}`);
     }
