@@ -1,7 +1,7 @@
-import consola from "consola";
-import { createPool } from "mysql2";
-import { PoolConnection, QueryOptions, Connection, PoolOptions, ResultSetHeader, FieldPacket, OkPacket, RowDataPacket, Pool } from "mysql2/promise";
+import consola, { Consola } from "consola";
+import { PoolConnection, QueryOptions, Connection, PoolOptions, ResultSetHeader, FieldPacket, OkPacket, RowDataPacket, createPool, Pool } from "mysql2/promise";
 import {tidbQueryCounter, tidbQueryTimer, waitTidbConnectionTimer} from "../metrics";
+import { decorateLimitedPool } from "../utils/db";
 
 export type Rows = RowDataPacket[] | RowDataPacket[][] | OkPacket | OkPacket[] | ResultSetHeader;
 export interface Field {
@@ -18,14 +18,15 @@ export interface QueryExecutor {
 }
 
 export class TiDBQueryExecutor implements QueryExecutor {
-  private logger = consola.withTag('tidb-query-executor');
-  private connections: Pool;
+  protected connections: Pool;
+  protected logger: Consola
 
   constructor(
     options: PoolOptions,
     readonly enableMetrics: boolean = true
   ) {
-    this.connections = createPool(options).promise();
+    this.connections = createPool(options)
+    this.logger = consola.withTag('mysql')
   }
 
   async execute<T extends Rows>(queryKey: string, sql: string): Promise<[T, Fields]>;
@@ -103,4 +104,12 @@ export class TiDBQueryExecutor implements QueryExecutor {
     }
   }
 
+}
+
+export class TiDBPlaygroundQueryExecutor extends TiDBQueryExecutor {
+
+  constructor(options: PoolOptions, connectionLimits: string[]) {
+    super(options);
+    decorateLimitedPool(this.connections, connectionLimits)
+  }
 }

@@ -1,5 +1,6 @@
 import consola, { Consola } from "consola";
 import { PoolOptions, Connection, createConnection, RowDataPacket, OkPacket, ResultSetHeader, FieldPacket, QueryError, Query } from "mysql2";
+import { Pool } from "mysql2/promise";
 
 const DEFAULT_TIDB_SERVER_PORT = '4000';
 
@@ -98,4 +99,33 @@ export class ConnectionWrapper {
     }
 
 
+}
+
+
+const LIMITED = Symbol('connection_limited')
+
+declare module 'mysql2/promise' {
+    interface Connection {
+        [LIMITED]?: true
+    }
+}
+
+export function decorateLimitedPool(pool: Pool, limits: string[]) {
+    const originalGetConnection = pool.getConnection.bind(pool);
+    pool.getConnection = async () => {
+        const conn = await originalGetConnection();
+        if (!conn[LIMITED]) {
+            for (const limit of limits) {
+                await conn.execute(limit)
+            }
+
+            Object.defineProperty(conn, LIMITED, {
+                value: true,
+                writable: false,
+                configurable: false,
+                enumerable: false,
+            })
+        }
+        return conn;
+    };
 }

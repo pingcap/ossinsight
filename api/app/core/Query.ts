@@ -2,10 +2,10 @@ import {readFile} from 'fs/promises'
 import path from 'path'
 import {DateTime, Duration} from "luxon";
 import type { QuerySchema } from '../../params.schema'
-import {TiDBQueryExecutor, Rows, Fields} from "./TiDBQueryExecutor";
+import {TiDBQueryExecutor, TiDBPlaygroundQueryExecutor, Result, Rows, Fields } from "./TiDBQueryExecutor";
 import {CachedData} from "./cache/Cache";
 import consola from "consola";
-import {dataQueryTimer, measure, readConfigTimer} from "../metrics";
+import { dataQueryTimer, measure, readConfigTimer, tidbQueryCounter } from "../metrics";
 import GHEventService from "../services/GHEventService";
 import CollectionService from '../services/CollectionService';
 import CacheBuilder from './cache/CacheBuilder';
@@ -137,4 +137,42 @@ export default class Query {
 
 export function needPrefetch(queryDef: QuerySchema) {
   return queryDef.refreshCron !== undefined;
+}
+
+export class playgroundQuery {
+  name = "playground";
+
+  constructor(public readonly executor: TiDBPlaygroundQueryExecutor) {}
+
+  async run(sql: string, conn?: PoolConnection | null, ip?: string) {
+    try {
+      const start = DateTime.now();
+      tidbQueryCounter.labels({ query: this.name, phase: "start" }).inc();
+
+      let res: Result;
+      if (conn) {
+        res = await this.executor.executeWithConn(conn, sql);
+      } else {
+        res = await this.executor.execute(sql);
+      }
+
+      const end = DateTime.now();
+      tidbQueryCounter.labels({ query: this.name, phase: "success" }).inc();
+
+      return {
+        requestedAt: start,
+        finishedAt: end,
+        spent: end.diff(start).as("seconds"),
+        sql,
+        fields: res.fields,
+        data: res.rows as any,
+      };
+    } catch (e) {
+      tidbQueryCounter.labels({ query: this.name, phase: "error" }).inc();
+      if (e) {
+        (e as any).sql = sql;
+      }
+      throw e;
+    }
+  }
 }
