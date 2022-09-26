@@ -110,6 +110,7 @@ export class TiDBPlaygroundQueryExecutor extends TiDBQueryExecutor {
 
   constructor(options: PoolOptions, connectionLimits: string[]) {
     super(options);
+    this.logger = consola.withTag('mysql-playground')
     decorateLimitedPool(this.connections, connectionLimits)
   }
 }
