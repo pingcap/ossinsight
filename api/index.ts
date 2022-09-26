@@ -8,7 +8,11 @@ import { Server as SocketServer } from "socket.io";
 import { createServer } from "http";
 import CacheBuilder from "./app/core/cache/CacheBuilder";
 import GhExecutor from "./app/core/GhExecutor";
-import { TiDBQueryExecutor } from "./app/core/TiDBQueryExecutor";
+import {
+  TiDBQueryExecutor,
+  TiDBPlaygroundQueryExecutor,
+} from "./app/core/TiDBQueryExecutor";
+import { SESSION_LIMITS } from "./app/utils/playground";
 import CollectionService from "./app/services/CollectionService";
 import GHEventService from "./app/services/GHEventService";
 import UserService from "./app/services/UserService";
@@ -54,6 +58,16 @@ const queryExecutor = new TiDBQueryExecutor(
   })
 );
 
+const playgroundQueryExecutor = new TiDBPlaygroundQueryExecutor(
+  getConnectionOptions({
+    connectionLimit: parseInt(process.env.CONNECTION_LIMIT || "10"),
+    queueLimit: parseInt(process.env.QUEUE_LIMIT || "20"),
+    user: process.env.WEB_SHELL_USER,
+    password: process.env.WEB_SHELL_PASSWORD,
+  }),
+  SESSION_LIMITS
+);
+
 // Init Cache Builder;
 const enableCache = process.env.ENABLE_CACHE === "1" ? true : false;
 const cacheBuilder = new CacheBuilder(enableCache);
@@ -78,8 +92,16 @@ const statsService = new StatsService(queryExecutor, cacheBuilder);
 // Init router.
 const router = new Router<App.DefaultState, ContextExtends>();
 httpServerRoutes(
-  router, queryExecutor, cacheBuilder, ghExecutor, collectionService, 
-  userService, ghEventService, statsService, accessRecorder
+  router,
+  queryExecutor,
+  playgroundQueryExecutor,
+  cacheBuilder,
+  ghExecutor,
+  collectionService,
+  userService,
+  ghEventService,
+  statsService,
+  accessRecorder
 );
 app.use(router.routes()).use(router.allowedMethods());
 

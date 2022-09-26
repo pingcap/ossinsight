@@ -2,7 +2,11 @@ import {readFile} from 'fs/promises'
 import path from 'path'
 import {DateTime, Duration} from "luxon";
 import type { QuerySchema } from '../../params.schema'
-import {TiDBQueryExecutor, Result} from "./TiDBQueryExecutor";
+import {
+  TiDBQueryExecutor,
+  Result,
+  TiDBPlaygroundQueryExecutor,
+} from "./TiDBQueryExecutor";
 import {CachedData} from "./cache/Cache";
 import consola from "consola";
 import {PoolConnection} from "mysql2";
@@ -12,6 +16,7 @@ import CollectionService from '../services/CollectionService';
 import CacheBuilder from './cache/CacheBuilder';
 import { QueryTemplateNotFoundError } from './QueryFactory';
 import UserService from '../services/UserService';
+import { SqlParser } from "../utils/playground";
 
 const EXPLAIN_QUERY_CACHE_HOUR = 0.01;
 
@@ -330,4 +335,42 @@ export default class Query {
 
 export function needPrefetch(queryDef: QuerySchema) {
   return queryDef.refreshCron !== undefined;
+}
+
+export class playgroundQuery {
+  name = "playground";
+
+  constructor(public readonly executor: TiDBPlaygroundQueryExecutor) {}
+
+  async run(sql: string, conn?: PoolConnection | null, ip?: string) {
+    try {
+      const start = DateTime.now();
+      tidbQueryCounter.labels({ query: this.name, phase: "start" }).inc();
+
+      let res: Result;
+      if (conn) {
+        res = await this.executor.executeWithConn(conn, sql);
+      } else {
+        res = await this.executor.execute(sql);
+      }
+
+      const end = DateTime.now();
+      tidbQueryCounter.labels({ query: this.name, phase: "success" }).inc();
+
+      return {
+        requestedAt: start,
+        finishedAt: end,
+        spent: end.diff(start).as("seconds"),
+        sql,
+        fields: res.fields,
+        data: res.rows as any,
+      };
+    } catch (e) {
+      tidbQueryCounter.labels({ query: this.name, phase: "error" }).inc();
+      if (e) {
+        (e as any).sql = sql;
+      }
+      throw e;
+    }
+  }
 }

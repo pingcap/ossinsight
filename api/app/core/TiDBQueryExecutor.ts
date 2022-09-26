@@ -19,8 +19,8 @@ export interface QueryExecutor {
 
 export class TiDBQueryExecutor implements QueryExecutor {
 
-  private connections: Pool
-  private logger: Consola
+  protected connections: Pool
+  protected logger: Consola
 
   constructor(options: PoolOptions) {
     this.connections = createPool(options)
@@ -79,4 +79,62 @@ export class TiDBQueryExecutor implements QueryExecutor {
     });
   }
 
+}
+
+export class TiDBPlaygroundQueryExecutor extends TiDBQueryExecutor {
+  limits: string[];
+
+  constructor(options: PoolOptions, connectionLimits: string[]) {
+    super(options);
+    this.limits = connectionLimits;
+    this.bindOnConnection();
+  }
+
+  async executeWithConn(
+    connection: Connection,
+    sql: string,
+    values: any[] = []
+  ): Promise<Result> {
+    return new Promise((resolve, reject) => {
+      this.logger.debug(
+        "Executing sql by connection<%d>\n %s",
+        connection.threadId,
+        sql
+      );
+
+      const end = tidbQueryTimer.startTimer();
+      connection.query(sql, values, (err, rows, fields) => {
+        end();
+
+        // FIXME: the type of `fields` in the callback function's definition is wrong.
+        const fieldDefs: FieldMeta[] = (fields || []).map((field: any) => {
+          return {
+            name: field.name,
+            columnType: field.columnType,
+          };
+        });
+
+        if (err) {
+          reject(err);
+        } else {
+          resolve({
+            fields: fieldDefs,
+            rows: rows,
+          });
+        }
+      });
+    });
+  }
+
+  protected bindOnConnection() {
+    this.connections.on("connection", (connection) => {
+      this.limits.forEach((cmd) => {
+        connection.query(cmd, (err, rows, fields) => {
+          if (err) {
+            this.logger.warn(`Failed to enable query limit: ${cmd}`, err);
+          }
+        });
+      });
+    });
+  }
 }
