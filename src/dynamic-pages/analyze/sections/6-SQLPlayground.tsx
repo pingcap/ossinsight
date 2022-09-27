@@ -1,5 +1,6 @@
 import * as React from "react";
-import { render, unmountComponentAtNode } from "react-dom";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+import { format } from "sql-formatter";
 import Stack from "@mui/material/Stack";
 import Box from "@mui/material/Box";
 import LoadingButton from "@mui/lab/LoadingButton";
@@ -20,34 +21,6 @@ import { useAnalyzeContext } from "../charts/context";
 import Section from "../Section";
 import { H2, P2 } from "../typography";
 
-function renderAce(
-  container: HTMLElement,
-  value: string,
-  onChange?: (value: string, event?: any) => void
-) {
-  const AceEditor = require("react-ace").default;
-  require("ace-builds/src-noconflict/mode-sql");
-  require("ace-builds/src-noconflict/theme-twilight");
-  require("ace-builds/src-noconflict/ext-language_tools");
-  render(
-    <AceEditor
-      mode="sql"
-      theme="twilight"
-      onChange={onChange}
-      name="UNIQUE_ID_OF_DIV"
-      editorProps={{ $blockScrolling: true }}
-      enableLiveAutocompletion
-      width="100%"
-      height="200px"
-      showPrintMargin={false}
-      value={value}
-      placeholder="The search scope is limited to the current repo, and the LIMIT is 100."
-      fontSize={16}
-    />,
-    container
-  );
-}
-
 const renderTable = (data: { [x: string]: any }[]) => {
   return (
     <>
@@ -61,7 +34,14 @@ const renderTable = (data: { [x: string]: any }[]) => {
             <TableRow>
               {data[0] &&
                 Object.keys(data[0]).map((key) => (
-                  <TableCell key={`th=${key}`}>{key}</TableCell>
+                  <TableCell
+                    key={`th=${key}`}
+                    sx={{
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {key}
+                  </TableCell>
                 ))}
             </TableRow>
           </TableHead>
@@ -75,12 +55,26 @@ const renderTable = (data: { [x: string]: any }[]) => {
                   {Object.keys(row).map((key, idx) => {
                     if (idx === 0) {
                       return (
-                        <TableCell key={key} component="th" scope="row">
+                        <TableCell
+                          key={key}
+                          component="th"
+                          scope="row"
+                          sx={{
+                            whiteSpace: "nowrap",
+                          }}
+                        >
                           {`${row[key]}`}
                         </TableCell>
                       );
                     }
-                    return <TableCell key={key}>{`${row[key]}`}</TableCell>;
+                    return (
+                      <TableCell
+                        key={key}
+                        sx={{
+                          whiteSpace: "nowrap",
+                        }}
+                      >{`${row[key]}`}</TableCell>
+                    );
                   })}
                 </TableRow>
               );
@@ -131,82 +125,149 @@ export const SQLPlaygroundDrawer = () => {
     setInputValue(newValue);
   };
 
-  React.useEffect(() => {
-    if (open) {
-      const container = aceRef.current;
-      if (container) {
-        renderAce(container, inputValue, onChange);
-        return () => {
-          unmountComponentAtNode(container);
-        };
-      }
-    }
-  }, [open]);
-
   const { data, loading, error } = useSQLPlayground(sql, "repo", `${repoId}`);
+
+  React.useEffect(() => {
+    if (data?.sql) {
+      const formattedSQL = format(data.sql, {
+        language: "mysql",
+        uppercase: true,
+        linesBetweenQueries: 2,
+      });
+      setInputValue(formattedSQL);
+    }
+  }, [data]);
 
   const handleSubmit = async () => {
     setSQL(inputValue);
   };
 
   return (
-    <>
-      <Drawer
-        anchor="bottom"
-        open={open}
-        onClose={toggleDrawer(false)}
-        ModalProps={{
-          keepMounted: true,
-        }}
-      >
-        <Box
-          sx={{
-            minHeight: "75vh",
-            maxHeight: "75vh",
-            overflowY: "auto",
-            width: "100%",
-            padding: "1.5rem",
-          }}
-        >
-          {/*<H2
-            sx={{
-              marginTop: 2,
+    <BrowserOnly>
+      {() => {
+        const AceEditor = require("react-ace").default;
+        require("ace-builds/src-noconflict/mode-sql");
+        require("ace-builds/src-noconflict/theme-twilight");
+        require("ace-builds/src-noconflict/ext-language_tools");
+        return (
+          <Drawer
+            anchor="bottom"
+            open={open}
+            onClose={toggleDrawer(false)}
+            ModalProps={{
+              keepMounted: true,
             }}
           >
-            SQL Playground
-          </H2>*/}
-          <Stack spacing={2}>
-            <Stack direction="row" spacing={2}>
-              <LoadingButton
-                variant="contained"
-                disabled={!inputValue || !repoId}
-                onClick={handleSubmit}
-                endIcon={<PlayArrowIcon fontSize="inherit" />}
-                loading={loading}
-                sx={{
-                  marginLeft: "auto",
-                }}
-              >
-                Run
-              </LoadingButton>
-            </Stack>
             <Box
-              ref={aceRef}
-              id={`sql-ace-container`}
               sx={{
+                minHeight: "75vh",
+                maxHeight: "75vh",
+                overflowY: "auto",
                 width: "100%",
+                padding: "1.5rem",
               }}
+            >
+              <Stack spacing={2}>
+                <Stack direction="row" spacing={2}>
+                  <LoadingButton
+                    variant="contained"
+                    disabled={!inputValue || !repoId}
+                    onClick={handleSubmit}
+                    endIcon={<PlayArrowIcon fontSize="inherit" />}
+                    loading={loading}
+                    sx={{
+                      marginLeft: "auto",
+                    }}
+                  >
+                    Run
+                  </LoadingButton>
+                </Stack>
+
+                <SQLEditor
+                  mode="sql"
+                  theme="twilight"
+                  onChange={onChange}
+                  name="SQL_PLAYGROUND"
+                  width="100%"
+                  height="200px"
+                  showPrintMargin={false}
+                  value={inputValue}
+                  placeholder={`The search scope is limited to the current repo, and the LIMIT is 100.\n\nExample:\n\nSELECT * FROM github_events WHERE repo_name = '${repoName}' LIMIT 100;`}
+                  fontSize={16}
+                  setOptions={{
+                    enableLiveAutocompletion: true,
+                  }}
+                />
+
+                {error && (
+                  <Alert severity="error">
+                    <AlertTitle>Error</AlertTitle>
+                    {`${error}`}
+                  </Alert>
+                )}
+                <Box>{data?.data && renderTable(data.data)}</Box>
+              </Stack>
+            </Box>
+          </Drawer>
+        );
+      }}
+    </BrowserOnly>
+  );
+};
+
+const SQLEditor = (props: {
+  placeholder: string;
+  mode: string;
+  theme: string;
+  name: string;
+  onChange: (newValue: string) => void;
+  value: string;
+  fontSize?: number;
+  showPrintMargin?: boolean;
+  showGutter?: boolean;
+  highlightActiveLine?: boolean;
+  width?: string;
+  height?: string;
+  setOptions?: {
+    useWorker?: boolean;
+    enableBasicAutocompletion?: boolean;
+    enableLiveAutocompletion?: boolean;
+    enableSnippets?: boolean;
+    showLineNumbers?: boolean;
+    tabSize?: number;
+  };
+}) => {
+  return (
+    <BrowserOnly>
+      {() => {
+        const AceEditor = require("react-ace").default;
+        require("ace-builds/src-noconflict/mode-sql");
+        require("ace-builds/src-noconflict/theme-twilight");
+        require("ace-builds/src-noconflict/ext-language_tools");
+        return (
+          <>
+            <AceEditor
+              placeholder={props.placeholder}
+              mode={props.mode}
+              theme={props.theme}
+              name={props.name}
+              // onLoad={props.onLoad}
+              onChange={props.onChange}
+              // onSelectionChange={this.onSelectionChange}
+              // onCursorChange={this.onCursorChange}
+              // onValidate={this.onValidate}
+              value={props.value}
+              fontSize={props.fontSize}
+              showPrintMargin={props.showPrintMargin}
+              showGutter={props.showGutter}
+              highlightActiveLine={props.highlightActiveLine}
+              width={props.width}
+              height={props.height}
+              setOptions={props.setOptions}
             />
-            {error && (
-              <Alert severity="error">
-                <AlertTitle>Error</AlertTitle>
-                {`${error}`}
-              </Alert>
-            )}
-            <Box>{data && renderTable(data)}</Box>
-          </Stack>
-        </Box>
-      </Drawer>
-    </>
+          </>
+        );
+      }}
+    </BrowserOnly>
   );
 };

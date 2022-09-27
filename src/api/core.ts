@@ -47,5 +47,5 @@ export async function postPlaygroundSQL(params: {
   type: "repo" | "user";
   id: string;
 }): Promise<any> {
-  return clientWithoutCache.post(`/q/playground`, params).then(({ data }) => data);
+  return clientWithoutCache.post(`/q/playground`, params).then((data) => data);
 }
