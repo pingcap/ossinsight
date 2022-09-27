@@ -3,7 +3,6 @@ import { CoolList, CoolListInstance } from "../../../components/CoolList";
 import { styled } from "@mui/material/styles";
 import { useRemoteData } from "../../../components/RemoteCharts/hook";
 import { InternalQueryRecord } from "@ossinsight/api";
-import { highlight } from 'sql-highlight';
 import { useEventCallback } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
@@ -142,15 +141,17 @@ export function renderSql(record: InternalQueryRecord, onClick: (record: Interna
 }
 
 export function Sql({ sql, onClick }: { sql: string, onClick: MouseEventHandler<HTMLSpanElement> | undefined }) {
-  const html = useMemo(() => {
+  const [html, setHtml] = useState(sql)
+
+  useEffect(() => {
     try {
-      return highlight(sql, {
+      const { highlight } = require('sql-highlight')
+      setHtml(highlight(sql, {
         html: true,
-      });
+      }))
     } catch (e) {
-      return sql;
     }
-  }, [sql]);
+  }, [sql])
 
   return <SqlText dangerouslySetInnerHTML={{ __html: html }} onClick={onClick} />;
 }
