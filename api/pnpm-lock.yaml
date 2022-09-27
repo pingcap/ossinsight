@@ -19,6 +19,7 @@ specifiers:
   '@types/tiny-async-pool': ^1.0.0
   '@types/validator': ^13.7.5
   ajv-cli: ^5.0.0
+  ajv-formats: ^2.1.1
   async: ^3.2.4
   axios: ^0.27.2
   consola: ^2.15.3
@@ -98,6 +99,7 @@ devDependencies:
   '@types/tiny-async-pool': 1.0.1
   '@types/validator': 13.7.5
   ajv-cli: 5.0.0_ts-node@10.8.1
+  ajv-formats: 2.1.1
   jest: 28.1.3_cv4ngqlnn5rnhu2gcigbplrfje
   json-schema-to-typescript: 11.0.2
   openapi3-ts: 3.0.2
@@ -1623,6 +1625,15 @@ packages:
       json5: 2.2.1
       minimist: 1.2.6
       ts-node: 10.8.1_x2utdhayajzrh747hktprshhby
+    dev: true
+
+  /ajv-formats/2.1.1:
+    resolution: {integrity: sha512-Wx0Kx52hxE7C18hkMEggYlEifqWZtYaRgouJor+WMdPnQyEK13vgEWyVNup7SoeeoLMsr4kf5h6dOW11I15MUA==}
+    peerDependenciesMeta:
+      ajv:
+        optional: true
+    dependencies:
+      ajv: 8.11.0
     dev: true
 
   /ajv/8.11.0:
