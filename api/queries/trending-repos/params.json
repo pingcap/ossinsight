@@ -1,6 +1,5 @@
 {
   "public": true,
-  "name": "Repository trending",
   "description": "Repository trending alternative to https://github.com/trending",
   "cacheHours": -1,
   "refreshCron": {
