@@ -23,3 +23,4 @@ test/result/*.log
 
 params.schema.d.ts
 openapi.yaml
+static/openapi.yaml

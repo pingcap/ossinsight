@@ -20,6 +20,8 @@ import { ConnectionWrapper, getConnectionOptions } from "./app/utils/db";
 import StatsService from "./app/services/StatsService";
 import { getAllowedOrigins, getCorsOrigin } from "./app/origins";
 import { BatchLoader } from "./app/core/BatchLoader";
+import koaStatic from "koa-static";
+import path from "path";
 
 const logger = consola.withTag("app");
 
@@ -42,6 +44,12 @@ app.use(async (ctx, next) => {
   ctx.logger = logger;
   await next();
 });
+
+app.use(koaStatic(path.resolve(__dirname, './static'), {
+  setHeaders: headers =>
+    headers
+      .setHeader('content-type', 'application/vnd.oai.openapi')
+      .setHeader('cache-control', 'no-cache')}));
 
 // Enable CORS.
 app.use(cors({

@@ -6,7 +6,8 @@ import { buildQuery } from "./utils";
 import { buildCommon } from "./common";
 
 const QUERIES_DIR = path.resolve(__dirname, '../../queries');
-const OUTPUT = path.resolve(__dirname, '../../openapi.yaml');
+const OUTPUT_DIR = path.resolve(__dirname, '../../static');
+const OUTPUT = path.resolve(OUTPUT_DIR, 'openapi.yaml');
 
 const builder = new OpenApiBuilder();
 
@@ -48,4 +49,5 @@ for (const dir of fs.readdirSync(QUERIES_DIR, { withFileTypes: true })) {
 }
 
 buildCommon(builder);
+fs.mkdirSync(OUTPUT_DIR, { recursive: true });
 fs.writeFileSync(OUTPUT, builder.getSpecAsYaml(), { encoding: 'utf-8' });
