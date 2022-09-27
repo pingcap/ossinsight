@@ -38,25 +38,18 @@
 #
 # Indexes
 #
-#  index_github_events_on_actor_id                               (actor_id)
-#  index_github_events_on_actor_id_type_action_event_month       (actor_id,type,action,event_month)
-#  index_github_events_on_actor_login                            (actor_login)
-#  index_github_events_on_closed_at                              (closed_at)
-#  index_github_events_on_comment_id                             (comment_id)
-#  index_github_events_on_commit_id                              (commit_id)
-#  index_github_events_on_created_at                             (created_at)
-#  index_github_events_on_id                                     (id)
-#  index_github_events_on_org_id                                 (org_id)
-#  index_github_events_on_org_login                              (org_login)
-#  index_github_events_on_pr_merged_at                           (pr_merged_at)
-#  index_github_events_on_pr_or_issue_id                         (pr_or_issue_id)
-#  index_github_events_on_repo_id                                (repo_id)
-#  index_github_events_on_repo_id_type_action_month_actor_login  (repo_id,type,action,event_month,actor_login)
-#  index_github_events_on_repo_id_type_actor_login               (repo_id,type,actor_login)
-#  index_github_events_on_repo_id_type_event_month               (repo_id,type,event_month)
-#  index_github_events_on_repo_id_type_number                    (repo_id,type,number)
-#  index_github_events_on_repo_id_type_push_distinct_size        (repo_id,type,push_distinct_size)
-#  index_github_events_on_repo_name                              (repo_name)
+#  index_ge_on_actor_id_type_action_created_at_repo_id_commits     (actor_id,type,action,created_at,repo_id,push_distinct_size)
+#  index_ge_on_creator_id_type_action_merged_created_at_add_del    (creator_user_id,type,action,pr_merged,created_at,additions,deletions)
+#  index_ge_on_org_id_type_action_created_at_number_pdsize_psize   (org_id,type,action,created_at,number,push_distinct_size,push_size)
+#  index_ge_on_org_id_type_action_pr_merged_created_at_add_del     (org_id,type,action,pr_merged,created_at,additions,deletions)
+#  index_ge_on_repo_id_type_action_created_at_number_pdsize_psize  (repo_id,type,action,created_at,number,push_distinct_size,push_size)
+#  index_ge_on_repo_id_type_action_pr_merged_created_at_add_del    (repo_id,type,action,pr_merged,created_at,additions,deletions)
+#  index_github_events_on_actor_login                              (actor_login)
+#  index_github_events_on_created_at                               (created_at)
+#  index_github_events_on_id                                       (id)
+#  index_github_events_on_org_id_type_action_month_actor_login     (org_id,type,action,event_month,actor_login)
+#  index_github_events_on_repo_id_type_action_month_actor_login    (repo_id,type,action,event_month,actor_login)
+#  index_github_events_on_repo_name                                (repo_name)
 #
 require "test_helper"
 
