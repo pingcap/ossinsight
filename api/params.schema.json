@@ -111,7 +111,14 @@
         },
         "default": {
           "description": "Default input value.",
-          "type": ["number", "string"]
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            }
+          ]
         },
         "enums": {
           "description": "Enums for prefetching and validating, default is no prefetching and validating.",
