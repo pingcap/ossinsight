@@ -37,7 +37,7 @@ export class TiDBQueryExecutor implements QueryExecutor {
 
     try {
       if (typeof sqlOrOptions === 'string') {
-        return this.executeWithConn(conn, sqlOrOptions, values);
+        return this.executeWithConn(conn, queryKey, sqlOrOptions, values);
       } else {
         return this.executeWithConn(conn, queryKey, sqlOrOptions);
       }
