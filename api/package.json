@@ -29,10 +29,12 @@
     "dev:sync-repos": "NODE_OPTIONS='--max-old-space-size=4098' ts-node scripts/sync-repos/index.ts",
     "dev:sync-stats": "ts-node scripts/sync-stats/index.ts",
     "gen:schema-ts": "json2ts params.schema.json params.schema.d.ts",
-    "validate:params": "ajv -s params.schema.json -d \"queries/*/params.json\"",
+    "gen:api-documentation": "ts-node scripts/gen-openapi/index.ts",
+    "validate:params": "ajv -s params.schema.json -r openapi-2021-09-28.schema.json -c ajv-formats -d \"queries/*/params.json\"",
     "build": "tsc && pnpm run build:copy",
     "build:copy": "mkdir -p ./dist && cat .distfiles | xargs -I {} cp -r {} ./dist/{} 2>/dev/null || :",
-    "verify": "tsc --noEmit"
+    "verify": "tsc --noEmit",
+    "postinstall": "npm run gen:schema-ts && npm run gen:api-documentation"
   },
   "author": "",
   "license": "MIT",
@@ -50,6 +52,7 @@
     "koa": "^2.13.4",
     "koa-body": "^5.0.0",
     "koa-router": "^10.1.1",
+    "koa-static": "^5.0.0",
     "lru-cache": "^7.13.1",
     "luxon": "^2.3.0",
     "mysql": "^2.18.1",
@@ -72,6 +75,7 @@
     "@types/jest": "^28.1.6",
     "@types/koa": "^2.13.4",
     "@types/koa-router": "^7.4.4",
+    "@types/koa-static": "^4.0.2",
     "@types/koa__cors": "^3.1.1",
     "@types/luxon": "^2.0.9",
     "@types/mysql": "^2.15.21",
@@ -81,8 +85,10 @@
     "@types/tiny-async-pool": "^1.0.0",
     "@types/validator": "^13.7.5",
     "ajv-cli": "^5.0.0",
+    "ajv-formats": "^2.1.1",
     "jest": "^28.1.3",
-    "json-schema-to-typescript": "^10.1.5",
+    "json-schema-to-typescript": "^11.0.2",
+    "openapi3-ts": "^3.0.2",
     "ts-node": "^10.5.0",
     "typescript": "^4.5.5"
   }
