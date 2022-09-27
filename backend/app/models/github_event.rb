@@ -2,40 +2,39 @@
 #
 # Table name: github_events
 #
-#  id                     :bigint
-#  action                 :string(255)
-#  actor_location         :string(255)
-#  actor_login            :string(255)
-#  additions              :bigint
-#  author_association     :string(255)
-#  closed_at              :datetime
-#  comments               :integer
-#  creator_user_login     :string(255)
-#  deletions              :bigint
-#  event_day              :date
-#  event_month            :date
-#  event_year             :integer
-#  language               :string(255)
-#  number                 :integer
-#  org_login              :string(255)
-#  pr_changed_files       :integer
-#  pr_merged              :boolean
-#  pr_merged_at           :datetime
-#  pr_or_issue_created_at :datetime
-#  pr_review_comments     :integer
-#  push_distinct_size     :integer
-#  push_size              :integer
-#  repo_name              :string(255)
-#  state                  :string(255)
-#  type                   :string(255)
-#  created_at             :datetime
-#  actor_id               :bigint
-#  comment_id             :bigint
-#  commit_id              :string(255)
-#  creator_user_id        :bigint
-#  org_id                 :bigint
-#  pr_or_issue_id         :bigint
-#  repo_id                :bigint
+#  id                     :bigint           default(0), not null
+#  action                 :string(11)       default(""), not null
+#  actor_login            :string(40)       default(""), not null
+#  additions              :bigint           default(0), not null
+#  author_association     :string(12)       default(""), not null
+#  closed_at              :datetime         default(Thu, 01 Jan 1970 00:00:00.000000000 UTC +00:00), not null
+#  comments               :integer          default(0), not null
+#  creator_user_login     :string(255)      default(""), not null
+#  deletions              :bigint           default(0), not null
+#  event_day              :date             not null
+#  event_month            :date             not null
+#  event_year             :integer          not null
+#  language               :string(26)       default(""), not null
+#  number                 :integer          default(0), not null
+#  org_login              :string(40)       default(""), not null
+#  pr_changed_files       :integer          default(0), not null
+#  pr_merged              :boolean          default(FALSE), not null
+#  pr_merged_at           :datetime         default(Thu, 01 Jan 1970 00:00:00.000000000 UTC +00:00), not null
+#  pr_or_issue_created_at :datetime         default(Thu, 01 Jan 1970 00:00:00.000000000 UTC +00:00), not null
+#  pr_review_comments     :integer          default(0), not null
+#  push_distinct_size     :integer          default(0), not null
+#  push_size              :integer          default(0), not null
+#  repo_name              :string(140)      default(""), not null
+#  state                  :string(6)        default(""), not null
+#  type                   :string(29)       default("WatchEvent"), not null
+#  created_at             :datetime         not null
+#  actor_id               :bigint           default(0), not null
+#  comment_id             :bigint           default(0), not null
+#  commit_id              :string(40)       default(""), not null
+#  creator_user_id        :bigint           default(0), not null
+#  org_id                 :bigint           default(0), not null
+#  pr_or_issue_id         :bigint           default(0), not null
+#  repo_id                :bigint           default(0), not null
 #
 # Indexes
 #
