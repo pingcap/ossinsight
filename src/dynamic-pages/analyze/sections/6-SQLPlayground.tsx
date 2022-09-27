@@ -20,6 +20,7 @@ import { useSQLPlayground } from "../../../components/RemoteCharts/hook";
 import { useAnalyzeContext } from "../charts/context";
 import Section from "../Section";
 import { H2, P2 } from "../typography";
+import { fontStyle } from "@mui/system";
 
 const renderTable = (data: { [x: string]: any }[]) => {
   return (
@@ -192,7 +193,7 @@ export const SQLPlaygroundDrawer = () => {
                   height="200px"
                   showPrintMargin={false}
                   value={inputValue}
-                  placeholder={`The search scope is limited to the current repo, and the LIMIT is 100.\n\nExample:\n\nSELECT * FROM github_events WHERE repo_name = '${repoName}' LIMIT 100;`}
+                  placeholder={`\nThe search scope is limited to the current repo, and the LIMIT is 100.\n\nExample:\n\nSELECT * FROM github_events WHERE repo_name = '${repoName}' LIMIT 100;`}
                   fontSize={16}
                   setOptions={{
                     enableLiveAutocompletion: true,
@@ -245,7 +246,15 @@ const SQLEditor = (props: {
         require("ace-builds/src-noconflict/theme-twilight");
         require("ace-builds/src-noconflict/ext-language_tools");
         return (
-          <>
+          <Box
+            sx={{
+              "& .ace_editor .ace_comment.ace_placeholder": {
+                fontStyle: "normal",
+                transform: "none",
+                opacity: 1,
+              },
+            }}
+          >
             <AceEditor
               placeholder={props.placeholder}
               mode={props.mode}
@@ -265,7 +274,7 @@ const SQLEditor = (props: {
               height={props.height}
               setOptions={props.setOptions}
             />
-          </>
+          </Box>
         );
       }}
     </BrowserOnly>
