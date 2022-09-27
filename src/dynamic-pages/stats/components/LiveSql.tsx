@@ -143,9 +143,13 @@ export function renderSql(record: InternalQueryRecord, onClick: (record: Interna
 
 export function Sql({ sql, onClick }: { sql: string, onClick: MouseEventHandler<HTMLSpanElement> | undefined }) {
   const html = useMemo(() => {
-    return highlight(sql, {
-      html: true,
-    });
+    try {
+      return highlight(sql, {
+        html: true,
+      });
+    } catch (e) {
+      return sql;
+    }
   }, [sql]);
 
   return <SqlText dangerouslySetInnerHTML={{ __html: html }} onClick={onClick} />;
