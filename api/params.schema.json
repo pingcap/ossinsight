@@ -63,7 +63,7 @@
     },
     "resultSchema": {
       "description": "Result data schema for description.",
-      "$ref": "https://spec.openapis.org/oas/3.0/schema/2021-09-28#/definitions/Schema"
+      "$ref": "openapi-2021-09-28.schema.json#/definitions/Schema"
     }
   },
   "additionalProperties": false,
