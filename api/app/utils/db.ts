@@ -114,6 +114,9 @@ type DecoratePoolConnectionsOptions = {
     initialSql: string[];
 }
 
+// Notice: Why do we not use the connection event, but rewrite the getConnection method?
+//
+// The connection event will not block the getConnection procedure, which would lead to an incomplete initialization state.
 export function decoratePoolConnections(pool: Pool, { initialSql }: DecoratePoolConnectionsOptions) {
     const originalGetConnection = pool.getConnection.bind(pool);
     pool.getConnection = async () => {
