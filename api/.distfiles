@@ -3,4 +3,4 @@ queries
 .env.template
 params-preset.json
 params.schema.json
-openapi.yaml
+static
