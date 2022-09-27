@@ -102,24 +102,28 @@ export class ConnectionWrapper {
 }
 
 
-const LIMITED = Symbol('connection_limited')
+const INITIALIZED = Symbol('connection_initialized')
 
 declare module 'mysql2/promise' {
     interface Connection {
-        [LIMITED]?: true
+        [INITIALIZED]?: true
     }
 }
 
-export function decorateLimitedPool(pool: Pool, limits: string[]) {
+type DecoratePoolConnectionsOptions = {
+    initialSql: string[];
+}
+
+export function decoratePoolConnections(pool: Pool, { initialSql }: DecoratePoolConnectionsOptions) {
     const originalGetConnection = pool.getConnection.bind(pool);
     pool.getConnection = async () => {
         const conn = await originalGetConnection();
-        if (!conn[LIMITED]) {
-            for (const limit of limits) {
-                await conn.execute(limit)
+        if (!conn[INITIALIZED]) {
+            for (const sql of initialSql) {
+                await conn.execute(sql);
             }
 
-            Object.defineProperty(conn, LIMITED, {
+            Object.defineProperty(conn, INITIALIZED, {
                 value: true,
                 writable: false,
                 configurable: false,

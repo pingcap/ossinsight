@@ -1,7 +1,7 @@
 import consola, { Consola } from "consola";
 import { PoolConnection, QueryOptions, Connection, PoolOptions, ResultSetHeader, FieldPacket, OkPacket, RowDataPacket, createPool, Pool } from "mysql2/promise";
 import {tidbQueryCounter, tidbQueryTimer, waitTidbConnectionTimer} from "../metrics";
-import { decorateLimitedPool } from "../utils/db";
+import { decoratePoolConnections } from "../utils/db";
 
 export type Rows = RowDataPacket[] | RowDataPacket[][] | OkPacket | OkPacket[] | ResultSetHeader;
 export interface Field {
@@ -111,6 +111,6 @@ export class TiDBPlaygroundQueryExecutor extends TiDBQueryExecutor {
   constructor(options: PoolOptions, connectionLimits: string[]) {
     super(options);
     this.logger = consola.withTag('playground-query-executor')
-    decorateLimitedPool(this.connections, connectionLimits)
+    decoratePoolConnections(this.connections, { initialSql: connectionLimits })
   }
 }
