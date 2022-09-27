@@ -1,7 +1,9 @@
 import Router from "koa-router";
 import Query, { playgroundQuery } from "./core/Query";
-import { DefaultState } from "koa";
+import {DefaultState} from "koa";
 import koaBody from "koa-body";
+import koaStatic from "koa-static";
+import path from "path";
 import type {ContextExtends} from "../index";
 import {register} from "prom-client";
 import {measureRequests, URLType} from "./middlewares/measureRequests";
@@ -29,6 +31,12 @@ export default async function httpServerRoutes(
   statsService: StatsService,
   accessRecorder: BatchLoader
 ) {
+
+  router.get('/openapi.yaml', koaStatic(path.resolve(__dirname, '../openapi.yaml'), {
+    setHeaders: headers =>
+      headers
+        .setHeader('content-type', 'application/vnd.oai.openapi')
+        .setHeader('cache-control', 'no-cache')}));
 
   router.get('/q/:query', measureRequests(URLType.PATH, accessRecorder), async ctx => {
     try {

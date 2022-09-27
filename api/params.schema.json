@@ -7,6 +7,15 @@
       "description": "Query name, default is generated base on the file path.",
       "type": "string"
     },
+    "public": {
+      "description": "Indicating if the query is public.",
+      "type": "boolean",
+      "default": false
+    },
+    "description": {
+      "description": "Query description for documentation.",
+      "type": "string"
+    },
     "cacheProvider": {
       "description": "Specify how to implement caching, NORMAL_TABLE are used by default.",
       "enum": ["NORMAL_TABLE", "CACHED_TABLE"]
@@ -52,12 +61,9 @@
         "$ref": "#/definitions/Params"
       }
     },
-    "restrictions": {
-      "description": "Special restrictions for params.",
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/Restriction"
-      }
+    "resultSchema": {
+      "description": "Result data schema for description.",
+      "$ref": "https://spec.openapis.org/oas/3.0/schema/2021-09-28#/definitions/Schema"
     }
   },
   "additionalProperties": false,
@@ -71,6 +77,10 @@
       "properties": {
         "name": {
           "description": "URL Search param name for the query.",
+          "type": "string"
+        },
+        "description": {
+          "description": "Param description for documentation. If undefined, value in param-descriptions.json would be taken as default",
           "type": "string"
         },
         "type": {
@@ -101,7 +111,14 @@
         },
         "default": {
           "description": "Default input value.",
-          "type": ["number", "string"]
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            }
+          ]
         },
         "enums": {
           "description": "Enums for prefetching and validating, default is no prefetching and validating.",
@@ -129,28 +146,6 @@
         "name",
         "replaces"
       ]
-    },
-    "Restriction": {
-      "type": "object",
-      "properties": {
-        "fields": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "enums": {
-          "type": "array",
-          "items": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          }
-        }
-      },
-      "additionalProperties": false,
-      "required": ["fields", "enums"]
     },
     "ConditionalHours": {
       "type": "object",

@@ -3,7 +3,7 @@ import * as dotenv from "dotenv";
 import schedule from 'node-schedule';
 import consola from "consola";
 import cronParser from 'cron-parser';
-import type {Params, QuerySchema, Restriction} from '../../params.schema'
+import type {Params, QuerySchema} from '../../params.schema'
 import {TiDBQueryExecutor} from "../../app/core/TiDBQueryExecutor";
 import GHEventService from "../../app/services/GHEventService";
 import CollectionService from '../../app/services/CollectionService';
@@ -26,14 +26,14 @@ const logger = consola.withTag('prefetch');
 // Generate a prefetch query job with passed parameters according to the query definition.
 function getQueryJobs(queryName: string, queryDef: QuerySchema, presets: Record<string, string[]>): QueryJob[] {
   const queryJobs: QueryJob[] = [];
-  const { params, restrictions = [], refreshQueue = DEFAULT_QUEUE_NAME, refreshCron } = queryDef;
+  const { params, refreshQueue = DEFAULT_QUEUE_NAME, refreshCron } = queryDef;
 
   // Notice: Queries without parameters are treated as pre-cached queries by default.
   let paramCombines = [];
   if (params.length === 0) {
     paramCombines = [{}];
   } else {
-    paramCombines = getParamCombines(params, restrictions, presets);
+    paramCombines = getParamCombines(params, presets);
   }
 
   logger.info(
@@ -58,7 +58,7 @@ function getQueryJobs(queryName: string, queryDef: QuerySchema, presets: Record<
   return queryJobs;
 }
 
-function getParamCombines(params: Params[], restrictions: Restriction[], presets: Record<string, string[]>) {
+function getParamCombines(params: Params[], presets: Record<string, string[]>) {
     // Calc to get all the combine of parameters.
     let paramCombines = params.reduce( (result: Record<string, any>[], param: Params) => {
       const key = param.name
@@ -81,20 +81,6 @@ function getParamCombines(params: Params[], restrictions: Restriction[], presets
         );
       }, []);
     }, []);
-  
-    // Filter out to get the combinations that satisfy the restrictions.
-    if (restrictions.length > 0) {
-      paramCombines = paramCombines.filter((paramCombine) => {
-        // Notice: All restrictions must be met.
-        return restrictions.every((restriction) => {
-          const values = restriction.fields.map((field) => paramCombine[field]);
-          // If it can match a certain combination of parameters, the restriction is satisfied.
-          if (restriction.enums.some((enumValues) => arrayDeepEquals(values, enumValues))) {
-            return true;
-          }
-        })
-      })
-    }
 
     return paramCombines;
 }

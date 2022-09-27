@@ -1,4 +1,7 @@
 {
+  "public": true,
+  "name": "Repository trending",
+  "description": "Repository trending alternative to https://github.com/trending",
   "cacheHours": -1,
   "refreshCron": {
     "param": "period",
@@ -12,6 +15,7 @@
   "params": [
     {
       "name": "period",
+      "description": "Trending time period.",
       "replaces": "DATE_SUB(NOW(), INTERVAL 1 MONTH)",
       "default": "past_24_hours",
       "enums": [
@@ -25,6 +29,7 @@
     },
     {
       "name": "language",
+      "description": "Primary language",
       "replaces": "AND primary_language = 'Java'",
       "default": "All",
       "enums": [
@@ -74,5 +79,46 @@
         "Fortran": "AND primary_language = 'Fortran'"
       }
     }
-  ]
+  ],
+  "resultSchema": {
+    "type": "object",
+    "properties": {
+      "repo_id": {
+        "type": "number"
+      },
+      "repo_name": {
+        "type": "string"
+      },
+      "language": {
+        "type": "string"
+      },
+      "description": {
+        "type": "string"
+      },
+      "stars": {
+        "type": "number"
+      },
+      "forks": {
+        "type": "number"
+      },
+      "pull_requests": {
+        "type": "number"
+      },
+      "pushes": {
+        "type": "number"
+      },
+      "total_score": {
+        "type": "number"
+      },
+      "contributor_logins": {
+        "type": "string",
+        "nullable": true
+      },
+      "collection_names": {
+        "type": "string",
+        "nullable": true
+      }
+    },
+    "required": ["repo_id", "repo_name", "language", "description", "stars", "forks", "pull_requests", "pushes", "total_score", "contributor_logins", "collection_names"]
+  }
 }

@@ -9,6 +9,7 @@ specifiers:
   '@types/jest': ^28.1.6
   '@types/koa': ^2.13.4
   '@types/koa-router': ^7.4.4
+  '@types/koa-static': ^4.0.2
   '@types/koa__cors': ^3.1.1
   '@types/luxon': ^2.0.9
   '@types/mysql': ^2.15.21
@@ -18,6 +19,7 @@ specifiers:
   '@types/tiny-async-pool': ^1.0.0
   '@types/validator': ^13.7.5
   ajv-cli: ^5.0.0
+  ajv-formats: ^2.1.1
   async: ^3.2.4
   axios: ^0.27.2
   consola: ^2.15.3
@@ -25,10 +27,11 @@ specifiers:
   dotenv: ^16.0.0
   generic-pool: ^3.8.2
   jest: ^28.1.3
-  json-schema-to-typescript: ^10.1.5
+  json-schema-to-typescript: ^11.0.2
   koa: ^2.13.4
   koa-body: ^5.0.0
   koa-router: ^10.1.1
+  koa-static: ^5.0.0
   lru-cache: ^7.13.1
   luxon: ^2.3.0
   mysql: ^2.18.1
@@ -36,6 +39,7 @@ specifiers:
   node-schedule: ^2.1.0
   node-sql-parser: ^4.5.0
   octokit: ^1.7.1
+  openapi3-ts: ^3.0.2
   p-queue: ^7.3.0
   pinyin: 3.0.0-alpha.5
   prom-client: ^14.0.1
@@ -62,6 +66,7 @@ dependencies:
   koa: 2.13.4
   koa-body: 5.0.0
   koa-router: 10.1.1
+  koa-static: 5.0.0
   lru-cache: 7.13.2
   luxon: 2.4.0
   mysql: 2.18.1
@@ -84,6 +89,7 @@ devDependencies:
   '@types/jest': 28.1.6
   '@types/koa': 2.13.4
   '@types/koa-router': 7.4.4
+  '@types/koa-static': 4.0.2
   '@types/koa__cors': 3.3.0
   '@types/luxon': 2.3.2
   '@types/mysql': 2.15.21
@@ -93,8 +99,10 @@ devDependencies:
   '@types/tiny-async-pool': 1.0.1
   '@types/validator': 13.7.5
   ajv-cli: 5.0.0_ts-node@10.8.1
+  ajv-formats: 2.1.1
   jest: 28.1.3_cv4ngqlnn5rnhu2gcigbplrfje
-  json-schema-to-typescript: 10.1.5
+  json-schema-to-typescript: 11.0.2
+  openapi3-ts: 3.0.2
   ts-node: 10.8.1_x2utdhayajzrh747hktprshhby
   typescript: 4.7.4
 
@@ -106,15 +114,6 @@ packages:
     dependencies:
       '@jridgewell/gen-mapping': 0.1.1
       '@jridgewell/trace-mapping': 0.3.14
-    dev: true
-
-  /@apidevtools/json-schema-ref-parser/9.0.9:
-    resolution: {integrity: sha512-GBD2Le9w2+lVFoc4vswGI/TjkNIZSVp7+9xPf+X3uidBfWnAeUWmquteSyt0+VCrhNMWj/FTABISQrD3Z/YA+w==}
-    dependencies:
-      '@jsdevtools/ono': 7.1.3
-      '@types/json-schema': 7.0.11
-      call-me-maybe: 1.0.1
-      js-yaml: 4.1.0
     dev: true
 
   /@babel/code-frame/7.18.6:
@@ -437,6 +436,15 @@ packages:
       '@babel/helper-string-parser': 7.18.10
       '@babel/helper-validator-identifier': 7.18.6
       to-fast-properties: 2.0.0
+    dev: true
+
+  /@bcherny/json-schema-ref-parser/9.0.9:
+    resolution: {integrity: sha512-vmEmnJCfpkLdas++9OYg6riIezTYqTHpqUTODJzHLzs5UnXujbOJW9VwcVCnyo1mVRt32FRr23iXBx/sX8YbeQ==}
+    dependencies:
+      '@jsdevtools/ono': 7.1.3
+      '@types/json-schema': 7.0.11
+      call-me-maybe: 1.0.1
+      js-yaml: 4.1.0
     dev: true
 
   /@bcoe/v8-coverage/0.2.3:
@@ -1441,6 +1449,19 @@ packages:
       '@types/koa': 2.13.4
     dev: true
 
+  /@types/koa-send/4.1.3:
+    resolution: {integrity: sha512-daaTqPZlgjIJycSTNjKpHYuKhXYP30atFc1pBcy6HHqB9+vcymDgYTguPdx9tO4HMOqNyz6bz/zqpxt5eLR+VA==}
+    dependencies:
+      '@types/koa': 2.13.4
+    dev: true
+
+  /@types/koa-static/4.0.2:
+    resolution: {integrity: sha512-ns/zHg+K6XVPMuohjpOlpkR1WLa4VJ9czgUP9bxkCDn0JZBtUWbD/wKDZzPGDclkQK1bpAEScufCHOy8cbfL0w==}
+    dependencies:
+      '@types/koa': 2.13.4
+      '@types/koa-send': 4.1.3
+    dev: true
+
   /@types/koa/2.13.4:
     resolution: {integrity: sha512-dfHYMfU+z/vKtQB7NUrthdAEiSvnLebvBjwHtfFmpZmB7em2N3WVQdHgnFq+xvyVgxW5jKDmjWfLD3lw4g4uTw==}
     dependencies:
@@ -1604,6 +1625,15 @@ packages:
       json5: 2.2.1
       minimist: 1.2.6
       ts-node: 10.8.1_x2utdhayajzrh747hktprshhby
+    dev: true
+
+  /ajv-formats/2.1.1:
+    resolution: {integrity: sha512-Wx0Kx52hxE7C18hkMEggYlEifqWZtYaRgouJor+WMdPnQyEK13vgEWyVNup7SoeeoLMsr4kf5h6dOW11I15MUA==}
+    peerDependenciesMeta:
+      ajv:
+        optional: true
+    dependencies:
+      ajv: 8.11.0
     dev: true
 
   /ajv/8.11.0:
@@ -2184,6 +2214,17 @@ packages:
       type: 1.2.0
     dev: true
 
+  /debug/3.2.7:
+    resolution: {integrity: sha512-CFjzYYAi4ThfiQvizrFQevTTXHtnCqWfe7x1AhgEscTz6ZbLbfoLRLPugTQyBth6f8ZERVUSyWHFD/7Wu4t1XQ==}
+    peerDependencies:
+      supports-color: '*'
+    peerDependenciesMeta:
+      supports-color:
+        optional: true
+    dependencies:
+      ms: 2.1.3
+    dev: false
+
   /debug/4.3.4:
     resolution: {integrity: sha512-PRWFHuSU3eDtQJPvnNY7Jcket1j0t5OuOsFzPPzsekD52Zl8qUfFIPEiswXqIvHWGVHOgX+7G/vCNNhehwxfkQ==}
     engines: {node: '>=6.0'}
@@ -2608,11 +2649,11 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  /glob-promise/3.4.0_glob@7.2.3:
-    resolution: {integrity: sha512-q08RJ6O+eJn+dVanerAndJwIcumgbDdYiUT7zFQl3Wm1xD6fBKtah7H8ZJChj4wP+8C+QfeVy8xautR7rdmKEw==}
-    engines: {node: '>=4'}
+  /glob-promise/4.2.2_glob@7.2.3:
+    resolution: {integrity: sha512-xcUzJ8NWN5bktoTIX7eOclO1Npxd/dyVqUJxlLIDasT4C7KZyqlPIwkdJ0Ypiy3p2ZKahTjK4M9uC3sNSfNMzw==}
+    engines: {node: '>=12'}
     peerDependencies:
-      glob: '*'
+      glob: ^7.1.6
     dependencies:
       '@types/glob': 7.2.0
       glob: 7.2.3
@@ -2694,6 +2735,16 @@ packages:
     dependencies:
       deep-equal: 1.0.1
       http-errors: 1.8.1
+    dev: false
+
+  /http-errors/1.6.3:
+    resolution: {integrity: sha512-lks+lVC8dgGyh97jxvxeYTWQFvh4uw4yC12gVl63Cg30sjPX4wuGcdkICVXDAESr6OJGjqGA8Iz5mkeN6zlD7A==}
+    engines: {node: '>= 0.6'}
+    dependencies:
+      depd: 1.1.2
+      inherits: 2.0.3
+      setprototypeof: 1.1.0
+      statuses: 1.5.0
     dev: false
 
   /http-errors/1.8.1:
@@ -2791,6 +2842,10 @@ packages:
     dependencies:
       once: 1.4.0
       wrappy: 1.0.2
+
+  /inherits/2.0.3:
+    resolution: {integrity: sha512-x00IRNXNy63jwGkJmzPigoySHbaqpNuzKbBOmzK+g2OdZpQ9w+sxCN+VSB3ja7IAge2OP2qpfxTjeNcyjmW1uw==}
+    dev: false
 
   /inherits/2.0.4:
     resolution: {integrity: sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==}
@@ -3361,28 +3416,20 @@ packages:
       ajv: 8.11.0
     dev: true
 
-  /json-schema-ref-parser/9.0.9:
-    resolution: {integrity: sha512-qcP2lmGy+JUoQJ4DOQeLaZDqH9qSkeGCK3suKWxJXS82dg728Mn3j97azDMaOUmJAN4uCq91LdPx4K7E8F1a7Q==}
-    engines: {node: '>=10'}
-    dependencies:
-      '@apidevtools/json-schema-ref-parser': 9.0.9
-    dev: true
-
-  /json-schema-to-typescript/10.1.5:
-    resolution: {integrity: sha512-X8bNNksfCQo6LhEuqNxmZr4eZpPjXZajmimciuk8eWXzZlif9Brq7WuMGD/SOhBKcRKP2SGVDNZbC28WQqx9Rg==}
-    engines: {node: '>=10.0.0'}
+  /json-schema-to-typescript/11.0.2:
+    resolution: {integrity: sha512-XRyeXBJeo/IH4eTP5D1ptX78vCvH86nMDt2k3AxO28C3uYWEDmy4mgPyMpb8bLJ/pJMElOGuQbnKR5Y6NSh3QQ==}
+    engines: {node: '>=12.0.0'}
     hasBin: true
     dependencies:
+      '@bcherny/json-schema-ref-parser': 9.0.9
       '@types/json-schema': 7.0.11
       '@types/lodash': 4.14.182
       '@types/prettier': 2.6.3
       cli-color: 2.0.2
       get-stdin: 8.0.0
       glob: 7.2.3
-      glob-promise: 3.4.0_glob@7.2.3
+      glob-promise: 4.2.2_glob@7.2.3
       is-glob: 4.0.3
-      json-schema-ref-parser: 9.0.9
-      json-stringify-safe: 5.0.1
       lodash: 4.17.21
       minimist: 1.2.6
       mkdirp: 1.0.4
@@ -3392,10 +3439,6 @@ packages:
 
   /json-schema-traverse/1.0.0:
     resolution: {integrity: sha512-NM8/P9n3XjXhIZn1lLhkFaACTOURQXjWhV4BA/RnOv8xvgqtqpAX9IO4mRQxSx1Rlo4tqzeqb0sOlruaOy3dug==}
-
-  /json-stringify-safe/5.0.1:
-    resolution: {integrity: sha512-ZClg6AaYvamvYEE82d3Iyd3vSSIjQ+odgjaTzRuO3s7toCdFKczob2i0zCh7JE8kWn17yvAWhUVxvqGwUalsRA==}
-    dev: true
 
   /json5/2.2.1:
     resolution: {integrity: sha512-1hqLFMSrGHRHxav9q9gNjJ5EXznIxGVO09xQRrwplcS8qs28pZ8s8hupZAmqDwZUmVZ2Qb2jnyPOWcDH8m8dlA==}
@@ -3479,6 +3522,27 @@ packages:
       koa-compose: 4.1.0
       methods: 1.1.2
       path-to-regexp: 6.2.1
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
+
+  /koa-send/5.0.1:
+    resolution: {integrity: sha512-tmcyQ/wXXuxpDxyNXv5yNNkdAMdFRqwtegBXUaowiQzUKqJehttS0x2j0eOZDQAyloAth5w6wwBImnFzkUz3pQ==}
+    engines: {node: '>= 8'}
+    dependencies:
+      debug: 4.3.4
+      http-errors: 1.8.1
+      resolve-path: 1.4.0
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
+
+  /koa-static/5.0.0:
+    resolution: {integrity: sha512-UqyYyH5YEXaJrf9S8E23GoJFQZXkBVJ9zYYMPGz919MSX1KuvAcycIuS0ci150HCoPf4XQVhQ84Qf8xRPWxFaQ==}
+    engines: {node: '>= 7.6.0'}
+    dependencies:
+      debug: 3.2.7
+      koa-send: 5.0.1
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -3913,6 +3977,12 @@ packages:
     resolution: {integrity: sha512-Fvw+Jemq5fjjyWz6CpKx6w9s7xxqo3+JCyM0WXWeCSOboZ8ABkyvP8ID4CZuChA/wxSx+XSJmdOm8rGVyJ1hdQ==}
     dev: false
 
+  /openapi3-ts/3.0.2:
+    resolution: {integrity: sha512-KF/06OkQPFSr9A+oadYYC3cIj8TZlzonREkQYFqx8i+wLllAxm6Bp8Fizo3jWXeIxZj/7V5LKtuNN/GxueWtcw==}
+    dependencies:
+      yaml: 2.1.1
+    dev: true
+
   /p-limit/2.3.0:
     resolution: {integrity: sha512-//88mFWSJx8lxCzwdAABTJL2MyWB12+eIY7MDL2SqLmAkeKU9qxRvWuSyTjm3FUmpBEMuFfckAIqEaVGUDxb6w==}
     engines: {node: '>=6'}
@@ -4182,6 +4252,14 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
+  /resolve-path/1.4.0:
+    resolution: {integrity: sha512-i1xevIst/Qa+nA9olDxLWnLk8YZbi8R/7JPbCMcgyWaFR6bKWaexgJgEB5oc2PKMjYdrHynyz0NY+if+H98t1w==}
+    engines: {node: '>= 0.8'}
+    dependencies:
+      http-errors: 1.6.3
+      path-is-absolute: 1.0.1
+    dev: false
+
   /resolve.exports/1.1.0:
     resolution: {integrity: sha512-J1l+Zxxp4XK3LUDZ9m60LRJF/mAe4z6a4xyabPHk7pvK5t35dACV32iIjJDFeWZFfZlO29w6SZ67knR0tHzJtQ==}
     engines: {node: '>=10'}
@@ -4249,6 +4327,10 @@ packages:
     resolution: {integrity: sha512-KiKBS8AnWGEyLzofFfmvKwpdPzqiy16LvQfK3yv/fVH7Bj13/wl3JSR1J+rfgRE9q7xUJK4qvgS8raSOeLUehw==}
     dev: false
     optional: true
+
+  /setprototypeof/1.1.0:
+    resolution: {integrity: sha512-BvE/TwpZX4FXExxOxZyRGQQv651MSwmWKZGqvmPcRIjDqWub67kTKuIMx43cZZrS/cBBzwBcNDWoFxt2XEFIpQ==}
+    dev: false
 
   /setprototypeof/1.2.0:
     resolution: {integrity: sha512-E5LDX7Wrp85Kil5bhZv46j8jOeboKq5JMmYM3gVGdGH8xFpPWXUMsNrlODCrkoxMEeNi/XZIwuRvY4XNwYMJpw==}
@@ -4803,7 +4885,6 @@ packages:
   /yaml/2.1.1:
     resolution: {integrity: sha512-o96x3OPo8GjWeSLF+wOAbrPfhFOGY0W00GNaxCDv+9hkcDJEnev1yh8S7pgHF0ik6zc8sQLuL8hjHjJULZp8bw==}
     engines: {node: '>= 14'}
-    dev: false
 
   /yargs-parser/21.1.1:
     resolution: {integrity: sha512-tVpsJW7DdjecAiFpbIB1e3qxIQsE6NoPc5/eTdrbbIC4h0LVsWhnoa3g+m2HclBIujHzsxZ4VJVA+GUuc2/LBw==}
