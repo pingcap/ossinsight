@@ -1,5 +1,5 @@
 import Router from "koa-router";
-import Query, { playgroundQuery } from "./core/Query";
+import Query, { PlaygroundQuery } from "./core/Query";
 import { DefaultState } from "koa";
 import koaBody from "koa-body";
 import type {ContextExtends} from "../index";
@@ -189,7 +189,7 @@ export default async function httpServerRoutes(
         };
         const sqlParser = new SqlParser(type, id, sqlString);
         const sql = sqlParser.sqlify();
-        const query = new playgroundQuery(playgroundQueryExecutor);
+        const query = new PlaygroundQuery(playgroundQueryExecutor);
         const res = await query.run(sql);
         ctx.response.status = 200;
         ctx.response.body = res;

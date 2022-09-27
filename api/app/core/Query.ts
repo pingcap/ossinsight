@@ -139,20 +139,14 @@ export function needPrefetch(queryDef: QuerySchema) {
   return queryDef.refreshCron !== undefined;
 }
 
-export class playgroundQuery {
-  name = "playground";
-
+export class PlaygroundQuery {
   constructor(public readonly executor: TiDBPlaygroundQueryExecutor) {}
 
   async run(sql: string) {
     try {
       const start = DateTime.now();
-      tidbQueryCounter.labels({ query: this.name, phase: "start" }).inc();
-
       const [data, fields] = await this.executor.execute('playground-sql', sql);
-
       const end = DateTime.now();
-      tidbQueryCounter.labels({ query: this.name, phase: "success" }).inc();
 
       return {
         requestedAt: start,
@@ -163,7 +157,6 @@ export class playgroundQuery {
         data,
       };
     } catch (e) {
-      tidbQueryCounter.labels({ query: this.name, phase: "error" }).inc();
       if (e) {
         (e as any).sql = sql;
       }
