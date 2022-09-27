@@ -2,8 +2,6 @@ import Router from "koa-router";
 import Query, { playgroundQuery } from "./core/Query";
 import {DefaultState} from "koa";
 import koaBody from "koa-body";
-import koaStatic from "koa-static";
-import path from "path";
 import type {ContextExtends} from "../index";
 import {register} from "prom-client";
 import {measureRequests, URLType} from "./middlewares/measureRequests";
