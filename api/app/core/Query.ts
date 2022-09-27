@@ -2,7 +2,14 @@ import {readFile} from 'fs/promises'
 import path from 'path'
 import {DateTime, Duration} from "luxon";
 import type { QuerySchema } from '../../params.schema'
-import {TiDBQueryExecutor, TiDBPlaygroundQueryExecutor, Result, Rows, Fields } from "./TiDBQueryExecutor";
+import {
+  TiDBQueryExecutor,
+  TiDBPlaygroundQueryExecutor,
+  Result,
+  Rows,
+  Fields,
+  QueryExecutor,
+} from "./TiDBQueryExecutor";
 import {CachedData} from "./cache/Cache";
 import consola from "consola";
 import { dataQueryTimer, measure, readConfigTimer, tidbQueryCounter } from "../metrics";
@@ -139,26 +146,26 @@ export function needPrefetch(queryDef: QuerySchema) {
   return queryDef.refreshCron !== undefined;
 }
 
-export class PlaygroundQuery {
-  constructor(public readonly executor: TiDBPlaygroundQueryExecutor) {}
+export class SimpleQuery {
+  constructor(public readonly sql: string, public readonly executor: QueryExecutor) {}
 
-  async run(sql: string) {
+  async run() {
     try {
       const start = DateTime.now();
-      const [data, fields] = await this.executor.execute('playground-sql', sql);
+      const [data, fields] = await this.executor.execute('playground-sql', this.sql);
       const end = DateTime.now();
 
       return {
         requestedAt: start,
         finishedAt: end,
         spent: end.diff(start).as("seconds"),
-        sql,
+        sql: this.sql,
         fields,
         data,
       };
     } catch (e) {
       if (e) {
-        (e as any).sql = sql;
+        (e as any).sql = this.sql;
       }
       throw e;
     }
