@@ -23,8 +23,6 @@ jobs:
         run: npm ci
       - name: Prefetch
         run: npm run prefetch
-      - name: Gen openapi.yaml
-        run: npm run gen:api-documentation
       - name: Build 🏗️
         run: npm run build
         env:
