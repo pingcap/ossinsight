@@ -19,7 +19,6 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
-import ListSubheader from "@mui/material/ListSubheader";
 import Typography from "@mui/material/Typography";
 
 import { useSQLPlayground } from "../../../components/RemoteCharts/hook";
@@ -163,7 +162,7 @@ export const SQLPlaygroundDrawer = () => {
           height: "75vh",
           overflow: "hidden",
           width: "100%",
-          padding: "1.5rem",
+          padding: "1rem",
         }}
       >
         <Stack
@@ -202,6 +201,7 @@ export const SQLPlaygroundDrawer = () => {
               <Stack direction="row" spacing={2}>
                 <LoadingButton
                   variant="contained"
+                  size="small"
                   disabled={!inputValue || !repoId}
                   onClick={handleSubmit}
                   endIcon={<PlayArrowIcon fontSize="inherit" />}
@@ -259,16 +259,6 @@ const PreDefinedSQLList = (props: {
   return (
     <Box>
       <List>
-        <ListSubheader
-          sx={{
-            paddingBottom: "1rem",
-            backgroundColor: "transparent",
-          }}
-        >
-          <Typography component="div" variant="h5">
-            {title}
-          </Typography>
-        </ListSubheader>
         {PREDEFINED_SQL_LIST.map((item) => {
           let sql = item.sql;
 
