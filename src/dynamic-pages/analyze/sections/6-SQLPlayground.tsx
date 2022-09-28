@@ -20,6 +20,8 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 import Typography from "@mui/material/Typography";
+import IconButton from "@mui/material/IconButton";
+import TerminalIcon from "@mui/icons-material/Terminal";
 
 import { useSQLPlayground } from "../../../components/RemoteCharts/hook";
 import { useAnalyzeContext } from "../charts/context";
@@ -147,101 +149,120 @@ export const SQLPlaygroundDrawer = () => {
     setInputValue(targetSQL);
   };
 
+  const handleClickTerminalBtn = (event: React.MouseEvent<HTMLElement>) => {
+    setOpen(true);
+  };
+
   return (
-    <Drawer
-      anchor="bottom"
-      open={open}
-      onClose={toggleDrawer(false)}
-      ModalProps={{
-        keepMounted: true,
-      }}
-    >
-      <Box
-        id="sql-playground-container"
+    <>
+      <IconButton
+        aria-label="Ppen SQL Playground"
+        onClick={handleClickTerminalBtn}
         sx={{
-          height: "75vh",
-          overflow: "hidden",
-          width: "100%",
-          padding: "1rem",
+          display: {
+            xs: "none",
+            // Remove next line to show terminal button on desktop
+            // md: "inline-flex",
+          },
         }}
       >
-        <Stack
-          direction="row"
-          spacing={2}
-          sx={{ marginBottom: "1rem", height: "100%" }}
+        <TerminalIcon />
+      </IconButton>
+      <Drawer
+        anchor="bottom"
+        open={open}
+        onClose={toggleDrawer(false)}
+        ModalProps={{
+          keepMounted: true,
+        }}
+      >
+        <Box
+          id="sql-playground-container"
+          sx={{
+            height: "75vh",
+            overflow: "hidden",
+            width: "100%",
+            padding: "1rem",
+          }}
         >
-          <Box
-            id="playground-left"
-            sx={{
-              height: "calc(100% - 3.28rem)",
-              marginTop: "3.28rem",
-              overflowY: "auto",
-              width: "40%",
-              maxWidth: "33vw",
-            }}
+          <Stack
+            direction="row"
+            spacing={2}
+            sx={{ marginBottom: "1rem", height: "100%" }}
           >
-            <PreDefinedSQLList
-              hadnleClick={handlePredefinedSQLChange}
-              replacements={[
-                { match: "repoId", value: `${repoId}` },
-                { match: "repoName", value: repoName },
-              ]}
-            />
-          </Box>
-          <Box
-            id="playground-right"
-            sx={{
-              height: "100%",
-              overflowY: "auto",
-              width: "100%",
-              padding: "0 1rem",
-            }}
-          >
-            <Stack spacing={2}>
-              <Stack direction="row" spacing={2}>
-                <LoadingButton
-                  variant="contained"
-                  size="small"
-                  disabled={!inputValue || !repoId}
-                  onClick={handleSubmit}
-                  endIcon={<PlayArrowIcon fontSize="inherit" />}
-                  loading={loading}
-                  sx={{
-                    marginLeft: "auto",
-                  }}
-                >
-                  Run
-                </LoadingButton>
-              </Stack>
-
-              <SQLEditor
-                mode="sql"
-                theme="twilight"
-                onChange={onChange}
-                name="SQL_PLAYGROUND"
-                width="100%"
-                height="200px"
-                showPrintMargin={false}
-                value={inputValue}
-                placeholder={`\nThe search scope is limited to the current repo, and the LIMIT is 100.\n\nExample:\n\nSELECT * FROM github_events WHERE repo_name = '${repoName}' LIMIT 100;`}
-                fontSize={16}
-                setOptions={{
-                  enableLiveAutocompletion: true,
-                }}
+            <Box
+              id="playground-left"
+              sx={{
+                height: "calc(100% - 3.28rem)",
+                marginTop: "3.28rem",
+                overflowY: "auto",
+                width: "40%",
+                maxWidth: "33vw",
+              }}
+            >
+              <PreDefinedSQLList
+                hadnleClick={handlePredefinedSQLChange}
+                replacements={[
+                  { match: "repoId", value: `${repoId}` },
+                  { match: "repoName", value: repoName },
+                ]}
               />
+            </Box>
+            <Box
+              id="playground-right"
+              sx={{
+                height: "100%",
+                overflowY: "auto",
+                width: "100%",
+                padding: "0 1rem",
+              }}
+            >
+              <Stack spacing={2}>
+                <Stack direction="row" spacing={2}>
+                  <LoadingButton
+                    variant="contained"
+                    size="small"
+                    disabled={!inputValue || !repoId}
+                    onClick={handleSubmit}
+                    endIcon={<PlayArrowIcon fontSize="inherit" />}
+                    loading={loading}
+                    sx={{
+                      marginLeft: "auto",
+                    }}
+                  >
+                    Run
+                  </LoadingButton>
+                </Stack>
 
-              {error && (
-                <Alert severity="error">
-                  <AlertTitle>Error</AlertTitle>
-                  {`${error}`}
-                </Alert>
-              )}
-              <Box>{data?.data && renderTable(data.data)}</Box>
-            </Stack>
-          </Box>
-        </Stack>
-      </Box>
-    </Drawer>
+                <SQLEditor
+                  mode="sql"
+                  theme="twilight"
+                  onChange={onChange}
+                  name="SQL_PLAYGROUND"
+                  width="100%"
+                  height="200px"
+                  showPrintMargin={false}
+                  value={inputValue}
+                  placeholder={`\nThe search scope is limited to the current repo, and the LIMIT is 100.\n\nExample:\n\nSELECT * FROM github_events WHERE repo_name = '${repoName}' LIMIT 100;`}
+                  fontSize={16}
+                  setOptions={{
+                    enableLiveAutocompletion: true,
+                  }}
+                />
+
+                {error && (
+                  <Alert severity="error">
+                    <AlertTitle>Error</AlertTitle>
+                    {`${error}`}
+                  </Alert>
+                )}
+                <Box>{data?.data && renderTable(data.data)}</Box>
+              </Stack>
+            </Box>
+          </Stack>
+        </Box>
+      </Drawer>
+    </>
   );
 };
 

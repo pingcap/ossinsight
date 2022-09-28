@@ -16,6 +16,7 @@ interface NewCompareHeaderProps extends BoxProps {
   repo1Placeholder?: string;
   repo2Placeholder?: string;
   sideWidth: string;
+  endAdornment?: React.ReactNode;
 }
 
 function NewCompareHeader({
@@ -30,6 +31,7 @@ function NewCompareHeader({
   repo2Placeholder,
   sx,
   sideWidth,
+  endAdornment,
   ...props
 }: NewCompareHeaderProps) {
   const { isDarkTheme } = useThemeContext();
@@ -74,6 +76,10 @@ function NewCompareHeader({
           onChange={onRepo2Change}
           onValid={onRepo2Valid}
         />
+
+        <Box marginLeft="auto" marginRight="2rem">
+          {endAdornment}
+        </Box>
       </Stack>
     </Box>
   );
