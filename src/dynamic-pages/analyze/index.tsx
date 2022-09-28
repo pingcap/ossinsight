@@ -88,6 +88,12 @@ function AnalyzePage() {
               repo1DisableClearable
               repo1Placeholder="Select to analyze"
               repo2Placeholder="Add to compare"
+              endAdornment={
+                !vs?.repo.id &&
+                main?.repo && (
+                  <SQLPlaygroundDrawer key={name} data={main?.repo} />
+                )
+              }
             />
           )}
         >
@@ -113,7 +119,6 @@ function AnalyzePage() {
               <PullRequestsSection ref={sectionRefs[3]} />
               <IssuesSection ref={sectionRefs[4]} />
               {!comparingRepoName ? <Contributors ref={sectionRefs[5]} /> : undefined}
-              {!vs?.repo.id && (<SQLPlaygroundDrawer key={name} />)}
               <TryItYourself campaign="compare" show fixed />
             </Container>
           </AnalyzeContext.Provider>
