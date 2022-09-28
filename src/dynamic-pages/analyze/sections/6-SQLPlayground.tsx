@@ -188,6 +188,31 @@ export const SQLPlaygroundDrawer = () => {
           <Stack
             direction="row"
             spacing={2}
+            sx={{
+              padding: "0 1rem 1rem 1rem",
+              alignItems: "center",
+            }}
+          >
+            {/* <Typography variant="h3" component="div" sx={{ flexGrow: 1 }}>
+              This is SQL Playground title
+            </Typography> */}
+            <LoadingButton
+              variant="contained"
+              size="small"
+              disabled={!inputValue || !repoId}
+              onClick={handleSubmit}
+              endIcon={<PlayArrowIcon fontSize="inherit" />}
+              loading={loading}
+              sx={{
+                marginLeft: "auto",
+              }}
+            >
+              Run
+            </LoadingButton>
+          </Stack>
+          <Stack
+            direction="row"
+            spacing={2}
             sx={{ marginBottom: "1rem", height: "100%" }}
           >
             <Box
@@ -217,47 +242,29 @@ export const SQLPlaygroundDrawer = () => {
                 padding: "0 1rem",
               }}
             >
-              <Stack spacing={2}>
-                <Stack direction="row" spacing={2}>
-                  <LoadingButton
-                    variant="contained"
-                    size="small"
-                    disabled={!inputValue || !repoId}
-                    onClick={handleSubmit}
-                    endIcon={<PlayArrowIcon fontSize="inherit" />}
-                    loading={loading}
-                    sx={{
-                      marginLeft: "auto",
-                    }}
-                  >
-                    Run
-                  </LoadingButton>
-                </Stack>
+              <SQLEditor
+                mode="sql"
+                theme="twilight"
+                onChange={onChange}
+                name="SQL_PLAYGROUND"
+                width="100%"
+                height="200px"
+                showPrintMargin={false}
+                value={inputValue}
+                placeholder={`\nThe search scope is limited to the current repo, and the LIMIT is 100.\n\nExample:\n\nSELECT * FROM github_events WHERE repo_name = '${repoName}' LIMIT 100;`}
+                fontSize={16}
+                setOptions={{
+                  enableLiveAutocompletion: true,
+                }}
+              />
 
-                <SQLEditor
-                  mode="sql"
-                  theme="twilight"
-                  onChange={onChange}
-                  name="SQL_PLAYGROUND"
-                  width="100%"
-                  height="200px"
-                  showPrintMargin={false}
-                  value={inputValue}
-                  placeholder={`\nThe search scope is limited to the current repo, and the LIMIT is 100.\n\nExample:\n\nSELECT * FROM github_events WHERE repo_name = '${repoName}' LIMIT 100;`}
-                  fontSize={16}
-                  setOptions={{
-                    enableLiveAutocompletion: true,
-                  }}
-                />
-
-                {error && (
-                  <Alert severity="error">
-                    <AlertTitle>Error</AlertTitle>
-                    {`${error}`}
-                  </Alert>
-                )}
-                <Box>{data?.data && renderTable(data.data)}</Box>
-              </Stack>
+              {error && (
+                <Alert severity="error">
+                  <AlertTitle>Error</AlertTitle>
+                  {`${error}`}
+                </Alert>
+              )}
+              <Box>{data?.data && renderTable(data.data)}</Box>
             </Box>
           </Stack>
         </Box>
