@@ -413,7 +413,7 @@ LIMIT
   {
     id: "total_events_of_this_repo",
     type: "sql",
-    title: "Total events of these repo - Realtime",
+    title: "Total events of this repo - Realtime",
     sql: `-- Delayed by 5 minutes: https://github.blog/changelog/2018-08-01-new-delay-public-events-api/
 SELECT
   COUNT(*)
@@ -526,7 +526,7 @@ LIMIT
     title: "Who star/unstar this repo again and again...",
     sql: `SELECT
   actor_login,
-  COUNT(*)
+  COUNT(*) AS cnt
 FROM
   github_events
 WHERE
@@ -534,10 +534,12 @@ WHERE
   AND type = 'WatchEvent' -- There is no unstar event in GitHub /events api
 GROUP BY
   actor_login
+HAVING
+  cnt > 1
 ORDER BY
   2 DESC
 LIMIT
-  1`,
+  100`,
   },
 ];
 
