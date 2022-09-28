@@ -309,7 +309,7 @@ const PreDefinedSQLList = (props: {
           },
           marginBottom: "0.5rem",
           backgroundColor: "transparent",
-          color: "primary",
+          color: "yellow",
           position: "unset",
         }}
       >
@@ -352,7 +352,7 @@ const PreDefinedSQLList = (props: {
                 <ListItemText
                   primary={item.title}
                   sx={{
-                    paddingLeft: "0.5rem",
+                    paddingLeft: "1rem",
                   }}
                 />
               </ListItemButton>
@@ -375,7 +375,7 @@ type PREDEFINED_SQL_ITEM_TYPE = {
 const PREDEFINED_SQL_LIST: PREDEFINED_SQL_ITEM_TYPE[] = [
   {
     id: "table_info",
-    title: "Table Info",
+    title: "Table Info ↓",
     type: "header",
   },
   {
@@ -394,7 +394,7 @@ FROM
   },
   {
     id: "ssql_using_index",
-    title: "SQL using index",
+    title: "SQLs that using index ↓",
     type: "header",
   },
   {
@@ -502,7 +502,7 @@ LIMIT
 ;`,
   },
   {
-    id: "loc",
+    id: "most_loc",
     type: "sql",
     title: "Who contributed the most lines of code?",
     sql: `SELECT
@@ -522,7 +522,8 @@ LIMIT
   },
   {
     id: "star_again_and_again",
-    name: "Who star/unstar this repo again and again...",
+    type: "sql",
+    title: "Who star/unstar this repo again and again...",
     sql: `SELECT
   actor_login,
   COUNT(*)
