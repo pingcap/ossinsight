@@ -15,6 +15,14 @@ import Paper from "@mui/material/Paper";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 import Drawer from "@mui/material/Drawer";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import Divider from "@mui/material/Divider";
+import ListSubheader from "@mui/material/ListSubheader";
+import Typography from "@mui/material/Typography";
 
 import { useSQLPlayground } from "../../../components/RemoteCharts/hook";
 import { useAnalyzeContext } from "../charts/context";
@@ -94,8 +102,6 @@ export const SQLPlaygroundDrawer = () => {
 
   const { repoId, repoName, comparingRepoId } = useAnalyzeContext();
 
-  const aceRef = React.useRef<HTMLDivElement>(null);
-
   const toggleDrawer =
     (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
       if (
@@ -143,78 +149,188 @@ export const SQLPlaygroundDrawer = () => {
     setSQL(inputValue);
   };
 
+  const handlePredefinedSQLChange = (targetSQL: string) => {
+    setInputValue(targetSQL);
+  };
+
   return (
-    <BrowserOnly>
-      {() => {
-        const AceEditor = require("react-ace").default;
-        require("ace-builds/src-noconflict/mode-sql");
-        require("ace-builds/src-noconflict/theme-twilight");
-        require("ace-builds/src-noconflict/ext-language_tools");
-        return (
-          <Drawer
-            anchor="bottom"
-            open={open}
-            onClose={toggleDrawer(false)}
-            ModalProps={{
-              keepMounted: true,
+    <Drawer
+      anchor="bottom"
+      open={open}
+      onClose={toggleDrawer(false)}
+      ModalProps={{
+        keepMounted: true,
+      }}
+    >
+      <Box
+        id="sql-playground-container"
+        sx={{
+          height: "75vh",
+          overflow: "hidden",
+          width: "100%",
+          padding: "1.5rem",
+        }}
+      >
+        <Stack
+          direction="row"
+          spacing={2}
+          sx={{ marginBottom: "1rem", height: "100%" }}
+        >
+          <Box
+            id="playground-left"
+            sx={{
+              height: "calc(100% - 3.28rem)",
+              marginTop: "3.28rem",
+              overflowY: "auto",
+              width: "30%",
+              maxWidth: "33vw",
             }}
           >
-            <Box
-              sx={{
-                minHeight: "75vh",
-                maxHeight: "75vh",
-                overflowY: "auto",
-                width: "100%",
-                padding: "1.5rem",
-              }}
-            >
-              <Stack spacing={2}>
-                <Stack direction="row" spacing={2}>
-                  <LoadingButton
-                    variant="contained"
-                    disabled={!inputValue || !repoId}
-                    onClick={handleSubmit}
-                    endIcon={<PlayArrowIcon fontSize="inherit" />}
-                    loading={loading}
-                    sx={{
-                      marginLeft: "auto",
-                    }}
-                  >
-                    Run
-                  </LoadingButton>
-                </Stack>
-
-                <SQLEditor
-                  mode="sql"
-                  theme="twilight"
-                  onChange={onChange}
-                  name="SQL_PLAYGROUND"
-                  width="100%"
-                  height="200px"
-                  showPrintMargin={false}
-                  value={inputValue}
-                  placeholder={`\nThe search scope is limited to the current repo, and the LIMIT is 100.\n\nExample:\n\nSELECT * FROM github_events WHERE repo_name = '${repoName}' LIMIT 100;`}
-                  fontSize={16}
-                  setOptions={{
-                    enableLiveAutocompletion: true,
+            <PreDefinedSQLList
+              hadnleClick={handlePredefinedSQLChange}
+              replacements={[
+                { match: "repoId", value: `${repoId}` },
+                { match: "repoName", value: repoName },
+              ]}
+            />
+          </Box>
+          <Box
+            id="playground-right"
+            sx={{
+              height: "100%",
+              overflowY: "auto",
+              width: "100%",
+              padding: "0 1rem",
+            }}
+          >
+            <Stack spacing={2}>
+              <Stack direction="row" spacing={2}>
+                <LoadingButton
+                  variant="contained"
+                  disabled={!inputValue || !repoId}
+                  onClick={handleSubmit}
+                  endIcon={<PlayArrowIcon fontSize="inherit" />}
+                  loading={loading}
+                  sx={{
+                    marginLeft: "auto",
                   }}
-                />
-
-                {error && (
-                  <Alert severity="error">
-                    <AlertTitle>Error</AlertTitle>
-                    {`${error}`}
-                  </Alert>
-                )}
-                <Box>{data?.data && renderTable(data.data)}</Box>
+                >
+                  Run
+                </LoadingButton>
               </Stack>
-            </Box>
-          </Drawer>
-        );
-      }}
-    </BrowserOnly>
+
+              <SQLEditor
+                mode="sql"
+                theme="twilight"
+                onChange={onChange}
+                name="SQL_PLAYGROUND"
+                width="100%"
+                height="200px"
+                showPrintMargin={false}
+                value={inputValue}
+                placeholder={`\nThe search scope is limited to the current repo, and the LIMIT is 100.\n\nExample:\n\nSELECT * FROM github_events WHERE repo_name = '${repoName}' LIMIT 100;`}
+                fontSize={16}
+                setOptions={{
+                  enableLiveAutocompletion: true,
+                }}
+              />
+
+              {error && (
+                <Alert severity="error">
+                  <AlertTitle>Error</AlertTitle>
+                  {`${error}`}
+                </Alert>
+              )}
+              <Box>{data?.data && renderTable(data.data)}</Box>
+            </Stack>
+          </Box>
+        </Stack>
+      </Box>
+    </Drawer>
   );
 };
+
+const PreDefinedSQLList = (props: {
+  title?: string;
+  hadnleClick: (sql: string) => void;
+  replacements?: { match: string; value: string }[]; // Replace the string `{{match}}` with `value` in SQL
+}) => {
+  const {
+    title = "Pre-defined SQL",
+    hadnleClick = () => {},
+    replacements = [],
+  } = props;
+
+  return (
+    <Box>
+      <List>
+        <ListSubheader
+          sx={{
+            paddingBottom: "1rem",
+          }}
+        >
+          <Typography component="div" variant="h5">
+            {title}
+          </Typography>
+        </ListSubheader>
+        {PREDEFINED_SQL_LIST.map((item) => {
+          let sql = item.sql;
+
+          replacements.forEach((replacement) => {
+            sql = sql.replaceAll(`{{${replacement.match}}}`, replacement.value);
+          });
+
+          return (
+            <ListItem disablePadding key={item.id}>
+              <ListItemButton
+                onClick={() => {
+                  hadnleClick(sql);
+                }}
+              >
+                <ListItemText primary={item.name} />
+              </ListItemButton>
+            </ListItem>
+          );
+        })}
+      </List>
+    </Box>
+  );
+};
+
+// Support variables in SQL: use {{<your variable>}}
+const PREDEFINED_SQL_LIST = [
+  {
+    id: "describe_table",
+    name: "Describe Table",
+    sql: "DESC github_events;",
+  },
+  {
+    id: "show_event_sum",
+    name: "Show Event Sum (monthly)",
+    sql: `SELECT
+    event_month, repo_id, total
+FROM (
+    SELECT
+        event_month,
+        repo_id,
+        COUNT(actor_login) OVER(ORDER BY event_month ASC) AS total,
+        ROW_NUMBER() OVER(PARTITION BY event_month) AS row_num
+    FROM github_events
+    WHERE
+        type = 'WatchEvent' AND repo_id = {{repoId}}
+    ORDER BY event_month
+) acc
+WHERE
+    row_num = 1
+ORDER BY event_month
+;`,
+  },
+  {
+    id: "hardest_contributor",
+    name: "Who is the hardest contributor in this repo?",
+    sql: `DESC github_events;`,
+  },
+];
 
 const SQLEditor = (props: {
   placeholder: string;
