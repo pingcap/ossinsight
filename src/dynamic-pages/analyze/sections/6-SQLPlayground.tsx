@@ -19,12 +19,14 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
+import ListSubheader from "@mui/material/ListSubheader";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import TerminalIcon from "@mui/icons-material/Terminal";
 
 import { useSQLPlayground } from "../../../components/RemoteCharts/hook";
 import { useAnalyzeContext } from "../charts/context";
+import { Repo } from "../../../components/CompareHeader/RepoSelector";
 
 const renderTable = (data: { [x: string]: any }[]) => {
   return (
@@ -91,12 +93,14 @@ const renderTable = (data: { [x: string]: any }[]) => {
   );
 };
 
-export const SQLPlaygroundDrawer = () => {
+export const SQLPlaygroundDrawer = (props: { data?: Repo }) => {
+  const { data: targetData } = props;
+
   const [inputValue, setInputValue] = React.useState("");
   const [sql, setSQL] = React.useState("");
   const [open, setOpen] = React.useState(false);
 
-  const { repoId, repoName, comparingRepoId } = useAnalyzeContext();
+  // const { repoId, repoName, comparingRepoId } = useAnalyzeContext();
 
   const toggleDrawer =
     (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
@@ -128,7 +132,11 @@ export const SQLPlaygroundDrawer = () => {
     setInputValue(newValue);
   };
 
-  const { data, loading, error } = useSQLPlayground(sql, "repo", `${repoId}`);
+  const { data, loading, error } = useSQLPlayground(
+    sql,
+    "repo",
+    `${targetData.id}`
+  );
 
   React.useEffect(() => {
     if (data?.sql) {
@@ -199,7 +207,7 @@ export const SQLPlaygroundDrawer = () => {
             <LoadingButton
               variant="contained"
               size="small"
-              disabled={!inputValue || !repoId}
+              disabled={!inputValue || !targetData.id}
               onClick={handleSubmit}
               endIcon={<PlayArrowIcon fontSize="inherit" />}
               loading={loading}
@@ -218,18 +226,17 @@ export const SQLPlaygroundDrawer = () => {
             <Box
               id="playground-left"
               sx={{
-                height: "calc(100% - 3.28rem)",
-                marginTop: "3.28rem",
+                height: "100%",
                 overflowY: "auto",
                 width: "40%",
-                maxWidth: "33vw",
+                maxWidth: "40vw",
               }}
             >
               <PreDefinedSQLList
                 hadnleClick={handlePredefinedSQLChange}
                 replacements={[
-                  { match: "repoId", value: `${repoId}` },
-                  { match: "repoName", value: repoName },
+                  { match: "repoId", value: `${targetData.id}` },
+                  { match: "repoName", value: targetData.name },
                 ]}
               />
             </Box>
@@ -251,7 +258,7 @@ export const SQLPlaygroundDrawer = () => {
                 height="200px"
                 showPrintMargin={false}
                 value={inputValue}
-                placeholder={`\nThe search scope is limited to the current repo, and the LIMIT is 100.\n\nExample:\n\nSELECT * FROM github_events WHERE repo_name = '${repoName}' LIMIT 100;`}
+                placeholder={`\nThe search scope is limited to the current repo, and the LIMIT is 100.\n\nExample:\n\nSELECT * FROM github_events WHERE repo_name = '${targetData.name}' LIMIT 100;`}
                 fontSize={16}
                 setOptions={{
                   enableLiveAutocompletion: true,
@@ -284,10 +291,35 @@ const PreDefinedSQLList = (props: {
     replacements = [],
   } = props;
 
+  const SQLListSubHeader = (props: { title: string }) => {
+    const { title } = props;
+    return (
+      <ListSubheader
+        sx={{
+          marginBottom: "0.5rem",
+          backgroundColor: "transparent",
+          color: "text.secondary",
+        }}
+      >
+        <Typography variant="h4" component="div">
+          {title}
+        </Typography>
+      </ListSubheader>
+    );
+  };
+
   return (
     <Box>
-      <List>
+      <List
+        sx={{
+          padding: 0,
+        }}
+      >
         {PREDEFINED_SQL_LIST.map((item) => {
+          if (item.type === "header") {
+            return <SQLListSubHeader title={item.title} />;
+          }
+
           let sql = item.sql;
 
           replacements.forEach((replacement) => {
@@ -301,7 +333,12 @@ const PreDefinedSQLList = (props: {
                   hadnleClick(sql);
                 }}
               >
-                <ListItemText primary={item.name} />
+                <ListItemText
+                  primary={item.title}
+                  sx={{
+                    paddingLeft: "0.5rem",
+                  }}
+                />
               </ListItemButton>
             </ListItem>
           );
@@ -311,23 +348,43 @@ const PreDefinedSQLList = (props: {
   );
 };
 
+type PREDEFINED_SQL_ITEM_TYPE = {
+  id: string;
+  title: string;
+  type: "header" | "sql";
+  sql?: string;
+};
+
 // Support variables in SQL: use {{<your variable>}}
-const PREDEFINED_SQL_LIST = [
+const PREDEFINED_SQL_LIST: PREDEFINED_SQL_ITEM_TYPE[] = [
+  {
+    id: "table_info",
+    title: "Table Info",
+    type: "header",
+  },
   {
     id: "table_schema",
-    name: "Show table schema!",
+    type: "sql",
+    title: "Show table schema!",
     sql: "DESC github_events;",
   },
   {
     id: "table_indexes",
-    name: "Show table indexes",
+    type: "sql",
+    title: "Show table indexes",
     sql: `SHOW indexes
 FROM
   github_events;`,
   },
   {
+    id: "ssql_using_index",
+    title: "SQL using index",
+    type: "header",
+  },
+  {
     id: "example_row",
-    name: "This is an example row",
+    type: "sql",
+    title: "This is an example row",
     sql: `SELECT
   *
 FROM
@@ -339,7 +396,8 @@ LIMIT
   },
   {
     id: "total_events_of_this_repo",
-    name: "Total events of these repo - Realtime",
+    type: "sql",
+    title: "Total events of these repo - Realtime",
     sql: `-- Delayed by 5 minutes: https://github.blog/changelog/2018-08-01-new-delay-public-events-api/
 SELECT
   COUNT(*)
@@ -353,7 +411,8 @@ LIMIT
   },
   {
     id: "first_pr",
-    name: "Who created the first pull request of this repo?",
+    type: "sql",
+    title: "Who created the first pull request of this repo?",
     sql: `SELECT
   *
 FROM
@@ -369,7 +428,8 @@ LIMIT
   },
   {
     id: "first_issue",
-    name: "Who closed the first issue?",
+    type: "sql",
+    title: "Who closed the first issue?",
     sql: `SELECT
   *
 FROM
@@ -385,7 +445,8 @@ LIMIT
   },
   {
     id: "latest_stargazer",
-    name: "Who is the latest stargazer?",
+    type: "sql",
+    title: "Who is the latest stargazer?",
     sql: `SELECT
   *
 FROM
@@ -401,7 +462,8 @@ LIMIT
   },
   {
     id: "active_reviewer",
-    name: "Who is the most active reviewer?",
+    type: "sql",
+    title: "Who is the most active reviewer?",
     sql: `
 SELECT
   actor_login,
@@ -425,7 +487,8 @@ LIMIT
   },
   {
     id: "loc",
-    name: "Who contributed the most lines of code?",
+    type: "sql",
+    title: "Who contributed the most lines of code?",
     sql: `SELECT
   actor_login,
   SUM(additions) AS loc_added
