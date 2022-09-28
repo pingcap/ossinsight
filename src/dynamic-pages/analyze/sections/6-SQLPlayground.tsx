@@ -18,17 +18,12 @@ import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import Divider from "@mui/material/Divider";
 import ListSubheader from "@mui/material/ListSubheader";
 import Typography from "@mui/material/Typography";
 
 import { useSQLPlayground } from "../../../components/RemoteCharts/hook";
 import { useAnalyzeContext } from "../charts/context";
-import Section from "../Section";
-import { H2, P2 } from "../typography";
-import { fontStyle } from "@mui/system";
 
 const renderTable = (data: { [x: string]: any }[]) => {
   return (
@@ -267,6 +262,7 @@ const PreDefinedSQLList = (props: {
         <ListSubheader
           sx={{
             paddingBottom: "1rem",
+            backgroundColor: "transparent",
           }}
         >
           <Typography component="div" variant="h5">
