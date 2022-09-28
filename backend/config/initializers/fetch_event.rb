@@ -58,7 +58,6 @@ class FetchEvent
     language = event.dig("payload", "pull_request", "base", "repo", "language")
     actor_id = event.dig("actor", 'id')
     actor_login = event.dig("actor", "login")
-    actor_location = event.dig("actor", "location")
     action = event.dig("payload", "action")
     additions = event.dig("payload", "pull_request", "additions")
     deletions = event.dig("payload", "pull_request", "deletions")
