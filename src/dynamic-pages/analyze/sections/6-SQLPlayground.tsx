@@ -300,9 +300,13 @@ const PreDefinedSQLList = (props: {
     return (
       <ListSubheader
         sx={{
+          "&:not(:first-of-type)": {
+            marginTop: "0.5rem",
+          },
           marginBottom: "0.5rem",
           backgroundColor: "transparent",
-          color: "text.secondary",
+          color: "primary",
+          position: "unset",
         }}
       >
         <Typography variant="h4" component="div">
