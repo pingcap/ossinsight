@@ -4,7 +4,7 @@ import { BadParamsError } from "../core/QueryParam";
 export class SqlParser {
   parser: Parser;
   sql: string;
-  ast: AST;
+  ast?: AST;
   type: string;
   id: number;
 
@@ -39,7 +39,10 @@ export class SqlParser {
         return ast;
       }
     } catch (error: any) {
-      throw new BadParamsError("playground", `${error.name} ${error.message}`);
+      // throw new BadParamsError("playground", `${error.name} ${error.message}`);
+      // Node-sql-parser does not support SHOW statement, etc.
+      // So we need to allow the error. If Node-sql-parser cannot parse the sql, we will use the original sql.
+      return undefined;
     }
   }
 
@@ -49,6 +52,8 @@ export class SqlParser {
       case "select":
         parseSelectAst(ast as Select, this.type, this.id);
         return ast;
+      case "set":
+        throw new BadParamsError("playground", `SET is not supported`);
       default:
         return ast;
     }
@@ -60,8 +65,12 @@ export class SqlParser {
   }
 
   public sqlify() {
-    const validatedAst = this.validateAst(this.ast);
-    return this.astToString(validatedAst);
+    // If Node-sql-parser cannot parse the sql, we will use the original sql.
+    if (this.ast) {
+      const ast = this.validateAst(this.ast);
+      return this.astToString(ast);
+    }
+    return this.sql;
   }
 }
 
