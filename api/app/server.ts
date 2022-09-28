@@ -306,9 +306,7 @@ export function socketServerRoutes(
         );
         let res
         if (explain) {
-          res = await q.explain(params, false, remoteAddr, {
-            rowsAsArray: true,
-          });
+          res = await q.explain(params, false, remoteAddr);
         } else {
           res = await q.execute(params, false, remoteAddr);
         }

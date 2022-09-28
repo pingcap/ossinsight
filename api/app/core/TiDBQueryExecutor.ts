@@ -56,6 +56,14 @@ export class TiDBQueryExecutor implements QueryExecutor {
       tidbQueryCounter.labels({ query: queryKey, phase: 'start' }).inc();
     }
 
+    if (queryKey.startsWith('explain:')) {
+      if (typeof sqlOrOptions === 'string') {
+        sqlOrOptions = `EXPLAIN ${sqlOrOptions}`;
+      } else {
+        sqlOrOptions.sql = `EXPLAIN ${sqlOrOptions.sql}`;
+      }
+    }
+
     try {
       let rows, fields;
       if (typeof sqlOrOptions === 'string') {
