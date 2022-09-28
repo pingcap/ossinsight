@@ -221,7 +221,11 @@ export const SQLPlaygroundDrawer = (props: { data?: Repo }) => {
           <Stack
             direction="row"
             spacing={2}
-            sx={{ marginBottom: "1rem", height: "100%" }}
+            sx={{
+              marginBottom: "1rem",
+              height: "100%",
+              maxHeight: "calc(100% - 3.5rem)",
+            }}
           >
             <Box
               id="playground-left"
