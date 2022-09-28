@@ -16,6 +16,7 @@ import GHEventService from "./services/GHEventService";
 import StatsService from "./services/StatsService";
 import { BatchLoader } from "./core/BatchLoader";
 import { SqlParser } from "./utils/playground";
+import { toCompactFormat } from "./utils/compact";
 
 export default async function httpServerRoutes(
   router: Router<DefaultState, ContextExtends>,
@@ -306,12 +307,14 @@ export function socketServerRoutes(
         let res
         if (explain) {
           res = await q.explain(params, false, remoteAddr, {
-            rowsAsArray: isCompact
+            rowsAsArray: true,
           });
         } else {
-          res = await q.execute(params, false, remoteAddr, {
-            rowsAsArray: isCompact
-          });
+          res = await q.execute(params, false, remoteAddr);
+        }
+
+        if (isCompact) {
+          res.data = toCompactFormat(res.data as any, res.fields)
         }
 
         if (excludeMeta) {
@@ -325,7 +328,7 @@ export function socketServerRoutes(
           qid: qid,
           explain: explain,
           payload: res,
-          compact: isCompact,
+          compact: explain ? undefined : isCompact,
         }
       } catch (e) {
         response = {
