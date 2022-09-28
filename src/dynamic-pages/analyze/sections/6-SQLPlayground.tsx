@@ -502,7 +502,7 @@ LIMIT
 ;`,
   },
   {
-    id: "most_loc",
+    id: "most_loc_added",
     type: "sql",
     title: "Who contributed the most lines of code?",
     sql: `SELECT
