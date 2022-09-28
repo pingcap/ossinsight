@@ -245,7 +245,9 @@ export const useSQLPlayground = (
   type: "repo" | "user",
   id: string
 ) => {
-  const [data, setData] = useState(undefined);
+  const [data, setData] = useState<
+    undefined | { data: any; sql: string; spent: number }
+  >(undefined);
   const [error, setError] = useState(undefined);
   const [loading, setLoading] = useState(false);
   const mounted = useRef(false);
@@ -264,13 +266,15 @@ export const useSQLPlayground = (
       setLoading(true);
       core
         .postPlaygroundSQL({ sql, type, id })
-        .then((data) => {
-          if (!mounted.current) {
-            return;
+        .then(
+          ({ data, sql, spent }: { data: any; sql: string; spent: number }) => {
+            if (!mounted.current) {
+              return;
+            }
+            setData({ data, sql, spent });
+            setLoading(false);
           }
-          setData(data);
-          setLoading(false);
-        })
+        )
         .catch((e) => {
           if (!mounted.current) {
             return;

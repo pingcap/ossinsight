@@ -113,7 +113,7 @@ function AnalyzePage() {
               <PullRequestsSection ref={sectionRefs[3]} />
               <IssuesSection ref={sectionRefs[4]} />
               {!comparingRepoName ? <Contributors ref={sectionRefs[5]} /> : undefined}
-              {!vs?.repo.id && (<SQLPlaygroundDrawer />)}
+              {!vs?.repo.id && (<SQLPlaygroundDrawer key={name} />)}
               <TryItYourself campaign="compare" show fixed />
             </Container>
           </AnalyzeContext.Provider>
