@@ -471,7 +471,7 @@ WHERE
   repo_id = {{repoId}}
   AND type = 'WatchEvent'
 ORDER BY
-  created_at DESC
+  created_at DESC -- Try to use ASC to get the first stargazer
 LIMIT
   1
 ;`,
@@ -519,6 +519,24 @@ ORDER BY
   2 DESC
 LIMIT
   5`,
+  },
+  {
+    id: "star_again_and_again",
+    name: "Who star/unstar this repo again and again...",
+    sql: `SELECT
+  actor_login,
+  COUNT(*)
+FROM
+  github_events
+WHERE
+  repo_id = {{repoId}}
+  AND type = 'WatchEvent' -- There is no unstar event in GitHub /events api
+GROUP BY
+  actor_login
+ORDER BY
+  2 DESC
+LIMIT
+  1`,
   },
 ];
 
