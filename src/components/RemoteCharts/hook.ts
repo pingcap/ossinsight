@@ -129,6 +129,7 @@ export const useRealtimeRemoteData: UseRemoteData = (query: string, params: any,
         wsApi,
         disableCache: true,
         excludeMeta: true,
+        format: 'compact',
       }))
     } catch (e) {
       if (mounted.current) {

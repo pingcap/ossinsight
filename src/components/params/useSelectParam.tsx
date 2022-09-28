@@ -18,7 +18,6 @@ export function useSelectParam<K extends string | number = string>(options: Sele
 
   const handleValueChange: SelectInputProps<SelectParamOption<K>>['onChange'] = useEventCallback((event) => {
     setValue(event.target.value as SelectParamOption<K>);
-    console.log(event.target.value);
   });
 
   const select = useMemo(() => (
