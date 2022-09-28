@@ -291,6 +291,10 @@ const PreDefinedSQLList = (props: {
     replacements = [],
   } = props;
 
+  const [selectedItemId, setSelectedItemId] = React.useState<string | null>(
+    null
+  );
+
   const SQLListSubHeader = (props: { title: string }) => {
     const { title } = props;
     return (
@@ -329,8 +333,12 @@ const PreDefinedSQLList = (props: {
           return (
             <ListItem disablePadding key={item.id}>
               <ListItemButton
+                selected={selectedItemId === item.id}
                 onClick={() => {
-                  hadnleClick(sql);
+                  if (selectedItemId !== item.id) {
+                    hadnleClick(sql);
+                    setSelectedItemId(item.id);
+                  }
                 }}
               >
                 <ListItemText
