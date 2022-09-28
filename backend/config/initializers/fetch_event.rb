@@ -88,10 +88,6 @@ class FetchEvent
     pr_or_issue_id = event.dig("payload", "pull_request", "id") ||
       event.dig("payload", "issue", "id")
 
-    author_association = event.dig("payload", "comment", 'author_association') ||
-      event.dig("payload", "review", 'author_association') ||
-      event.dig("payload", "issue", 'author_association') ||
-      event.dig("payload", "pull_request", 'author_association') 
 
     push_size = event.dig("payload", "size")
     push_distinct_size = event.dig("payload", "distinct_size")
@@ -142,7 +138,6 @@ class FetchEvent
       "event_day" => event_day,
       "event_month" => event_month,
       "event_year" => event_year,
-      "author_association" => author_association,
       'push_size' => push_size,
       'push_distinct_size' => push_distinct_size,
       "id" => event["id"],
