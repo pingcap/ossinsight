@@ -88,7 +88,12 @@ function AnalyzePage() {
               repo1DisableClearable
               repo1Placeholder="Select to analyze"
               repo2Placeholder="Add to compare"
-              endAdornment={!vs?.repo.id && (<SQLPlaygroundDrawer key={name} data={main?.repo} />)}
+              endAdornment={
+                !vs?.repo.id &&
+                main?.repo && (
+                  <SQLPlaygroundDrawer key={name} data={main?.repo} />
+                )
+              }
             />
           )}
         >
