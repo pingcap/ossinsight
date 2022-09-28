@@ -176,7 +176,7 @@ export const SQLPlaygroundDrawer = () => {
               height: "calc(100% - 3.28rem)",
               marginTop: "3.28rem",
               overflowY: "auto",
-              width: "30%",
+              width: "40%",
               maxWidth: "33vw",
             }}
           >
@@ -286,35 +286,132 @@ const PreDefinedSQLList = (props: {
 // Support variables in SQL: use {{<your variable>}}
 const PREDEFINED_SQL_LIST = [
   {
-    id: "describe_table",
-    name: "Describe Table",
+    id: "table_schema",
+    name: "Show table schema!",
     sql: "DESC github_events;",
   },
   {
-    id: "show_event_sum",
-    name: "Show Event Sum (monthly)",
+    id: "table_indexes",
+    name: "Show table indexes",
+    sql: `SHOW indexes
+FROM
+  github_events;`,
+  },
+  {
+    id: "example_row",
+    name: "This is an example row",
     sql: `SELECT
-    event_month, repo_id, total
-FROM (
-    SELECT
-        event_month,
-        repo_id,
-        COUNT(actor_login) OVER(ORDER BY event_month ASC) AS total,
-        ROW_NUMBER() OVER(PARTITION BY event_month) AS row_num
-    FROM github_events
-    WHERE
-        type = 'WatchEvent' AND repo_id = {{repoId}}
-    ORDER BY event_month
-) acc
+  *
+FROM
+  github_events
 WHERE
-    row_num = 1
-ORDER BY event_month
+  repo_id = {{repoId}}
+LIMIT
+  1`,
+  },
+  {
+    id: "total_events_of_this_repo",
+    name: "Total events of these repo - Realtime",
+    sql: `-- Delayed by 5 minutes: https://github.blog/changelog/2018-08-01-new-delay-public-events-api/
+SELECT
+  COUNT(*)
+FROM
+  github_events
+WHERE
+  -- repo_name = '{{repoName}}' -- try use this and find out why
+  repo_id = {{repoId}}
+LIMIT
+  100`,
+  },
+  {
+    id: "first_pr",
+    name: "Who created the first pull request of this repo?",
+    sql: `SELECT
+  *
+FROM
+  github_events
+WHERE
+  repo_id = {{repoId}}
+  AND type = 'PullRequestEvent'
+ORDER BY
+  created_at ASC
+LIMIT
+  1
 ;`,
   },
   {
-    id: "hardest_contributor",
-    name: "Who is the hardest contributor in this repo?",
-    sql: `DESC github_events;`,
+    id: "first_issue",
+    name: "Who closed the first issue?",
+    sql: `SELECT
+  *
+FROM
+  github_events
+WHERE
+  repo_id = {{repoId}}
+  AND type = 'IssuesEvent'
+  AND action = 'closed'
+ORDER BY
+  created_at ASC
+LIMIT
+  1`,
+  },
+  {
+    id: "latest_stargazer",
+    name: "Who is the latest stargazer?",
+    sql: `SELECT
+  *
+FROM
+  github_events
+WHERE
+  repo_id = {{repoId}}
+  AND type = 'WatchEvent'
+ORDER BY
+  created_at DESC
+LIMIT
+  1
+;`,
+  },
+  {
+    id: "active_reviewer",
+    name: "Who is the most active reviewer?",
+    sql: `
+SELECT
+  actor_login,
+  COUNT(*) AS comments
+FROM
+  github_events
+WHERE
+  repo_id = {{repoId}}
+  AND actor_login NOT LIKE '%bot%'
+  AND type IN (
+    'IssueCommentEvent',
+    'PullRequestReviewCommentEvent'
+  )
+GROUP BY
+  actor_login
+ORDER BY
+  comments DESC
+LIMIT
+  5
+;`,
+  },
+  {
+    id: "loc",
+    name: "Who contributed the most lines of code?",
+    sql: `SELECT
+  actor_login,
+  SUM(additions) AS loc_added
+FROM
+  github_events
+WHERE
+  repo_id = {{repoId}}
+  AND (type = 'PullRequestEvent')
+GROUP BY
+  actor_login
+ORDER BY
+  2 DESC
+LIMIT
+  5`,
   },
 ];
 
