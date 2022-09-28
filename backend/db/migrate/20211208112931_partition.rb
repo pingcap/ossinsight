@@ -28,14 +28,13 @@ class Partition < ActiveRecord::Migration[6.1]
         `pr_or_issue_id` bigint(20) NOT NULL DEFAULT 0,
         `event_day` date NOT NULL,
         `event_month` date NOT NULL,
-        `author_association` varchar(12) NOT NULL DEFAULT '',
         `event_year` int(11) NOT NULL,
         `push_size` int(11) NOT NULL DEFAULT 0,
         `push_distinct_size` int(11) NOT NULL DEFAULT 0,
         `creator_user_login` varchar(255) NOT NULL DEFAULT '',
         `creator_user_id` bigint(20) NOT NULL DEFAULT 0,
         `pr_or_issue_created_at` datetime NOT NULL DEFAULT '1970-01-01 00:00:00',
-        
+
         KEY `index_github_events_on_id` (`id`),
         KEY `index_github_events_on_actor_login` (`actor_login`),
         KEY `index_github_events_on_created_at` (`created_at`),

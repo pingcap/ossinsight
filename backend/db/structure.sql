@@ -161,7 +161,6 @@ CREATE TABLE `github_events` (
   `pr_or_issue_id` bigint(20) NOT NULL DEFAULT '0',
   `event_day` date NOT NULL,
   `event_month` date NOT NULL,
-  `author_association` varchar(12) NOT NULL DEFAULT '',
   `event_year` int(11) NOT NULL,
   `push_size` int(11) NOT NULL DEFAULT '0',
   `push_distinct_size` int(11) NOT NULL DEFAULT '0',

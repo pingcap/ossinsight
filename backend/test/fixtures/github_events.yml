@@ -6,7 +6,6 @@
 #  action                 :string(11)       default(""), not null
 #  actor_login            :string(40)       default(""), not null
 #  additions              :bigint           default(0), not null
-#  author_association     :string(12)       default(""), not null
 #  closed_at              :datetime         default(Thu, 01 Jan 1970 00:00:00.000000000 UTC +00:00), not null
 #  comments               :integer          default(0), not null
 #  creator_user_login     :string(255)      default(""), not null
