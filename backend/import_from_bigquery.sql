@@ -1,5 +1,5 @@
 CREATE TEMP TABLE archive AS SELECT 
-  coalesce(id, 0) as id,
+  coalesce(id, '0') as id,
   coalesce(type, '') as type,
   created_at,
   coalesce(repo.id, 0) as repo_id,
@@ -15,21 +15,21 @@ CREATE TEMP TABLE archive AS SELECT
   coalesce(actor.id, 0) as actor_id,
   coalesce(actor.login, '') as actor_login,
   coalesce(json_value(payload, '$.pull_request.base.repo.language'), '') as language,
-  coalesce(json_value(payload, '$.pull_request.additions'), 0) as additions,
-  coalesce(json_value(payload, '$.pull_request.deletions'), 0) as deletions,
+  coalesce(json_value(payload, '$.pull_request.additions'), '0') as additions,
+  coalesce(json_value(payload, '$.pull_request.deletions'), '0') as deletions,
   coalesce(json_value(payload, '$.action'), '') as action,
-  coalesce（
+  coalesce(
     CASE 
       WHEN json_value(payload, '$.pull_request.number') is not null THEN json_value(payload, '$.pull_request.number')
       WHEN json_value(payload, '$.issue.number') is not null THEN json_value(payload, '$.issue.number')
       ELSE json_value(payload, '$.number')
     END,
-  0) 
+  '0') 
   as number,
   coalesce(json_value(payload, '$.comment.commit_id'), '') as commit_id,
-  coalesce(json_value(payload, '$.comment.id'), 0) as comment_id,
-  coalesce(json_value(payload, '$.size'), 0) as push_size,
-  coalesce(json_value(payload, '$.distinct_size'), 0) as push_distinct_size,
+  coalesce(json_value(payload, '$.comment.id'), '0') as comment_id,
+  coalesce(json_value(payload, '$.size'), '0') as push_size,
+  coalesce(json_value(payload, '$.distinct_size'), '0') as push_distinct_size,
   coalesce(org.login, '') as org_login,
   coalesce(org.id, 0) as org_id,
   coalesce(
@@ -54,13 +54,13 @@ CREATE TEMP TABLE archive AS SELECT
       WHEN json_value(payload, '$.issue.comments') is not null THEN json_value(payload, '$.issue.comments')
       ELSE null
     END,
-  0) 
+  '0') 
   as comments,
 
   coalesce(cast(cast(json_value(payload, '$.pull_request.merged') as bool) as int64), 0) as pr_merged,
   coalesce(json_value(payload, '$.pull_request.merged_at'), '1970-01-01 00:00:00') as pr_merged_at,
-  coalesce(json_value(payload, '$.pull_request.changed_files'), 0) as pr_changed_files,
-  coalesce(json_value(payload, '$.pull_request.review_comments'), 0) as pr_review_comments,
+  coalesce(json_value(payload, '$.pull_request.changed_files'), '0') as pr_changed_files,
+  coalesce(json_value(payload, '$.pull_request.review_comments'), '0') as pr_review_comments,
   coalesce(
     CASE 
       WHEN json_value(payload, '$.pull_request.id') is not null THEN json_value(payload, '$.pull_request.id')
@@ -89,7 +89,7 @@ CREATE TEMP TABLE archive AS SELECT
       WHEN json_value(payload, '$.pull_request.user.id') is not null THEN json_value(payload, '$.pull_request.user.id')
       ELSE null
     END,
-  0)
+  '0')
   as creator_user_id,
 
   coalesce(
@@ -107,7 +107,7 @@ CREATE TEMP TABLE archive AS SELECT
 FROM `githubarchive.day.2*`;
 
 EXPORT DATA OPTIONS(
-  uri='gs://gharchive.live/v7/gharchive_dev.github_events.*.csv',
+  uri='gs://gharchive.live/new/gharchive_dev.github_events.*.csv',
   format='CSV',
   overwrite=true,
   header=true,
