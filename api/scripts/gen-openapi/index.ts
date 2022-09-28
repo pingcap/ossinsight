@@ -23,8 +23,14 @@ builder.addInfo({
   },
   version: '1.0.0',
 });
+builder.addOpenApiVersion('3.0.0')
 builder.addTag({
   name: 'Query',
+  description: 'Pre-defined queries provided by ossinsight',
+  externalDocs: {
+    url: 'https://github.com/pingcap/ossinsight/api/queries',
+    description: 'GitHub Source code',
+  }
 });
 builder.addExternalDocs({
   description: 'GitHub',
