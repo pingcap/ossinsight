@@ -68,13 +68,13 @@ function buildDescription(query: QuerySchema): string {
   if (typeof query.refreshCron === 'string') {
     table.push(['Refresh Cron:', query.refreshCron])
   } else if (typeof query.refreshCron === 'object') {
-    table.push(['Refresh Cron:', Object.values(query.refreshCron).join(' || ')])
+    table.push(['Refresh Cron:', Object.values(query.refreshCron.on).join(', ')])
   }
 
   if (typeof query.refreshHours === 'number') {
     table.push(['Refresh Hours:', query.refreshHours])
   } else if (typeof query.refreshHours === 'object') {
-    table.push(['Refresh Hours:', Object.values(query.refreshHours).join(' || ')])
+    table.push(['Refresh Hours:', Object.values(query.refreshHours.on).join(', ')])
   }
 
   if (typeof query.onlyFromCache === 'boolean') {
