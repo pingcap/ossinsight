@@ -59,7 +59,7 @@ export class JobScheduler {
                 const qStart = new Date();
                 const query = new Query(queryName, this.cacheBuilder, this.queryExecutor, this.ghEventService, this.collectionService, this.userService)
                 try {
-                  await query.run(params, true)
+                  await query.execute(params, true)
                 } catch (err) {
                   this.logger.error('Failed to prefetch query %s with params: %s', queryName, JSON.stringify(params), err)
                   this.logger.error('Failed raw url: %s', (err as any)?.rawSql?.replace(/\n/g, ' '))

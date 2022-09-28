@@ -55,9 +55,9 @@ schedule.scheduleJob(cron, async () => {
     logger.info(`Found ${collections.length} collections, start calc collection's repos ranking.`)
     for (const { id: collectionId, name } of collections) {
         const query = new Query(COLLECTIONS_RANKING_QUERY, cacheBuilder, queryExecutor, ghEventService, collectionService, userService)
-        const { data: collection_items } = await query.run({
+        const { data: collection_items } = await query.execute({
             collectionId: collectionId
-        }, true, null);
+        }, false);
         
         if (Array.isArray(collection_items)) {
             logger.info(`Found ${collection_items.length} repos in the collection <${name}> ...`);

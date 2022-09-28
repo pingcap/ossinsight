@@ -43,14 +43,9 @@ export default class UserService {
         `;
 
         try {
-          const start = DateTime.now()
-          tidbQueryCounter.labels({ query: cacheKey, phase: 'start' }).inc()
-
-          const { fields, rows } = await this.executor.execute(sql)
-
-          const end = DateTime.now()
-          tidbQueryCounter.labels({ query: cacheKey, phase: 'success' }).inc()
-
+          const start = DateTime.now();
+          const [rows, fields] = await this.executor.execute(cacheKey, sql);
+          const end = DateTime.now();
           return {
             params: {},
             requestedAt: start,
@@ -58,13 +53,10 @@ export default class UserService {
             spent: end.diff(start).as('seconds'),
             sql,
             fields: fields,
-            data: rows as any
+            data: rows
           }
-        } catch (e) {
-          tidbQueryCounter.labels({ query: cacheKey, phase: 'error' }).inc()
-          if (e) {
-            (e as any).sql = sql
-          }
+        } catch (e: any) {
+          e.sql = sql
           throw e
         }
       })

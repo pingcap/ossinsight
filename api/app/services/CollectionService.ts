@@ -1,22 +1,23 @@
 import {TiDBQueryExecutor} from "../core/TiDBQueryExecutor";
-import Cache, {CachedData} from "../core/cache/Cache";
+import {CachedData} from "../core/cache/Cache";
 import { dataQueryTimer, measure, tidbQueryCounter } from "../metrics";
 import { DateTime } from "luxon";
 import CacheBuilder, { CacheProviderTypes } from "../core/cache/CacheBuilder";
+import { RowDataPacket } from "mysql2/promise";
 
-interface Repo {
+export interface Repo extends RowDataPacket {
   id: any;
   name: string;
   group_name: string;
 }
 
-interface Collection {
+export interface Collection {
   id: number;
   slug: string;
   name: string;
 }
 
-interface CollectionItem {
+export interface CollectionItem {
   id: number;
   collection_id: number;
   repo_id: number;
@@ -40,8 +41,7 @@ export default class CollectionService {
   }
 
   async getOSDBRepoGroups() {
-    const res = await this.executor.execute('select id, name, group_name from osdb_repos;');
-    const repos = res.rows as Repo[]
+    const [repos] = await this.executor.execute<Repo[]>('osdb-repos', 'select id, name, group_name from osdb_repos;');
 
     if (Array.isArray(repos)) {
       const repoGroupMap = new Map();
@@ -81,12 +81,8 @@ export default class CollectionService {
 
         try {
           const start = DateTime.now()
-          tidbQueryCounter.labels({ query: cacheKey, phase: 'start' }).inc()
-
-          const { fields, rows } = await this.executor.execute(sql)
-
+          const [rows, fields] = await this.executor.execute(cacheKey, sql)
           const end = DateTime.now()
-          tidbQueryCounter.labels({ query: cacheKey, phase: 'success' }).inc()
 
           return {
             params: {},
@@ -95,13 +91,10 @@ export default class CollectionService {
             spent: end.diff(start).as('seconds'),
             sql,
             fields: fields,
-            data: rows as any
+            data: rows
           }
-        } catch (e) {
-          tidbQueryCounter.labels({ query: cacheKey, phase: 'error' }).inc()
-          if (e) {
-            (e as any).sql = sql
-          }
+        } catch (e: any) {
+          e.sql = sql
           throw e
         }
       })
@@ -131,7 +124,7 @@ export default class CollectionService {
           const start = DateTime.now()
           tidbQueryCounter.labels({ query: cacheKey, phase: 'start' }).inc()
 
-          const { fields, rows } = await this.executor.execute(sql)
+          const [rows, fields] = await this.executor.execute(cacheKey, sql)
 
           const end = DateTime.now()
           tidbQueryCounter.labels({ query: cacheKey, phase: 'success' }).inc()
@@ -143,7 +136,7 @@ export default class CollectionService {
             spent: end.diff(start).as('seconds'),
             sql,
             fields: fields,
-            data: rows as any
+            data: rows
           }
         } catch (e) {
           tidbQueryCounter.labels({ query: cacheKey, phase: 'error' }).inc()

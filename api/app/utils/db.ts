@@ -1,5 +1,6 @@
 import consola, { Consola } from "consola";
 import { PoolOptions, Connection, createConnection, RowDataPacket, OkPacket, ResultSetHeader, FieldPacket, QueryError, Query } from "mysql2";
+import { Pool } from "mysql2/promise";
 
 const DEFAULT_TIDB_SERVER_PORT = '4000';
 
@@ -98,4 +99,40 @@ export class ConnectionWrapper {
     }
 
 
+}
+
+
+const INITIALIZED = Symbol('connection_initialized')
+
+declare module 'mysql2/promise' {
+    interface Connection {
+        [INITIALIZED]?: true
+    }
+}
+
+type DecoratePoolConnectionsOptions = {
+    initialSql: string[];
+}
+
+// Notice: Why do we not use the connection event, but rewrite the getConnection method?
+//
+// The connection event will not block the getConnection procedure, which would lead to an incomplete initialization state.
+export function decoratePoolConnections(pool: Pool, { initialSql }: DecoratePoolConnectionsOptions) {
+    const originalGetConnection = pool.getConnection.bind(pool);
+    pool.getConnection = async () => {
+        const conn = await originalGetConnection();
+        if (!conn[INITIALIZED]) {
+            for (const sql of initialSql) {
+                await conn.execute(sql);
+            }
+
+            Object.defineProperty(conn, INITIALIZED, {
+                value: true,
+                writable: false,
+                configurable: false,
+                enumerable: false,
+            })
+        }
+        return conn;
+    };
 }

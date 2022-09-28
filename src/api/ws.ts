@@ -14,6 +14,7 @@ export const wsQueryApiAdapter = (query: string, params: any, wsApi: 'unique' | 
     qid,
     params,
     excludeMeta: config.excludeMeta,
+    format: config.format,
   };
   if (socket.connected) {
     socket.emit('q', queryPayload);
@@ -49,6 +50,7 @@ export const wsQueryApiAdapter = (query: string, params: any, wsApi: 'unique' | 
           statusText: 'OK',
           headers: {
             'x-ws-api': 'true',
+            'x-compact': result.compact ? 'true' : undefined,
           },
           data: result.payload,
           config,
