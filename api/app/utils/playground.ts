@@ -199,7 +199,7 @@ export const SESSION_LIMITS = [
   `SET SESSION tidb_mem_quota_query=8 << 24;`,
   `SET SESSION tidb_enable_rate_limit_action = false;`,
   `SET SESSION tidb_enable_paging=true;`,
-  `SET SESSION tidb_executor_concurrency=1;`,
+  `SET SESSION tidb_executor_concurrency=3;`,
   `SET SESSION tidb_distsql_scan_concurrency=5;`,
   `SET SESSION max_execution_time=10000;`,
 ];
