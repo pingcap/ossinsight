@@ -12,7 +12,7 @@ import {
   TiDBQueryExecutor,
   TiDBPlaygroundQueryExecutor,
 } from "./app/core/TiDBQueryExecutor";
-import { SESSION_LIMITS } from "./app/utils/playground";
+import { getPlaygroundSessionLimits } from "./app/utils/playground";
 import CollectionService from "./app/services/CollectionService";
 import GHEventService from "./app/services/GHEventService";
 import UserService from "./app/services/UserService";
@@ -22,11 +22,11 @@ import { getAllowedOrigins, getCorsOrigin } from "./app/origins";
 import { BatchLoader } from "./app/core/BatchLoader";
 import koaStatic from "koa-static";
 import path from "path";
+import { configEnv } from "./app/utils/env";
 
 const logger = consola.withTag("app");
 
-dotenv.config({ path: __dirname + "/.env.template" });
-dotenv.config({ path: __dirname + "/.env", override: true });
+configEnv(__dirname);
 
 const allowedOrigins = getAllowedOrigins();
 const allowedOriginsWithPublic = getAllowedOrigins(true);
@@ -73,7 +73,7 @@ const playgroundQueryExecutor = new TiDBPlaygroundQueryExecutor(
     user: process.env.WEB_SHELL_USER,
     password: process.env.WEB_SHELL_PASSWORD,
   }),
-  SESSION_LIMITS
+  getPlaygroundSessionLimits(),
 );
 
 // Init Cache Builder;
