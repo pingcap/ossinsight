@@ -40,15 +40,17 @@ export class ConnectionWrapper {
     constructor(options: PoolOptions) {
         this.log = consola.withTag('db-conn');
         this.conn = createConnection(options);
-        this.conn.on('error', (err: any) => {
+        const errorHandler = (err: any) => {
             if (!err.fatal) return;
             if (err.code !== 'PROTOCOL_CONNECTION_LOST') throw err;
 
             this.log.warn(`Database server connection lost, trying to reconnect.`);
             const newConn = createConnection(this.conn.config);
             newConn.connect();
+            newConn.on('error', errorHandler);
             this.conn = newConn;
-        });
+        }
+        this.conn.on('error', errorHandler);
     }
 
     query<T extends RowDataPacket[][] | RowDataPacket[] | OkPacket | OkPacket[] | ResultSetHeader>(
