@@ -1,5 +1,6 @@
-import { Parser, AST, Select, With } from "node-sql-parser";
+import { AST, Parser, Select, With } from "node-sql-parser";
 import { BadParamsError } from "../core/QueryParam";
+import { getEnv } from "./env";
 
 export class SqlParser {
   parser: Parser;
@@ -194,12 +195,7 @@ const isWhereLimitExist = (
   return false;
 };
 
-export const SESSION_LIMITS = [
-  `SET SESSION tidb_isolation_read_engines="tikv,tidb";`,
-  `SET SESSION tidb_mem_quota_query=8 << 24;`,
-  `SET SESSION tidb_enable_rate_limit_action = false;`,
-  `SET SESSION tidb_enable_paging=true;`,
-  `SET SESSION tidb_executor_concurrency=3;`,
-  `SET SESSION tidb_distsql_scan_concurrency=5;`,
-  `SET SESSION max_execution_time=10000;`,
-];
+export function getPlaygroundSessionLimits () {
+  return getEnv(/^PLAYGROUND_SESSION_(.+)$/)
+    .map(([key, value]) => `SET SESSION ${key} = ${value};`);
+}
