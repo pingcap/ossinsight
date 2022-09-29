@@ -12,6 +12,11 @@
       "type": "boolean",
       "default": false
     },
+    "deprecated": {
+      "description": "Indicating if the query is deprecated",
+      "type": "boolean",
+      "default": false
+    },
     "description": {
       "description": "Query description for documentation.",
       "type": "string"

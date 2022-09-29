@@ -48,31 +48,46 @@ function buildSourceUrl(path: string) {
 }
 
 function a(url: string) {
-  return `<a href="${url}" target="_blank">${url}</a>`;
+  return `[${url}](${url})`;
 }
 
 function buildDescription(query: QuerySchema): string {
   let res = query.description ?? "No description.";
-  res += '<hr/>';
+  res += '\n';
+
+  let table: [string, string | number | boolean][] = []
 
   if (query.cacheHours) {
     if (query.cacheHours === -1) {
-      res += `<b>Cache hours:</b> Never expire<br/>`;
+      table.push(['Cache Hours', 'Never expire'])
     } else {
-      res += `<b>Cache hours:</b> ${query.cacheHours}<br/>`;
+      table.push(['Cache Hours', query.cacheHours])
     }
   }
 
   if (typeof query.refreshCron === 'string') {
-    res += `<b>Refresh Cron:</b> ${query.refreshCron}<br/>`;
+    table.push(['Refresh Cron:', query.refreshCron])
+  } else if (typeof query.refreshCron === 'object') {
+    table.push(['Refresh Cron:', Object.values(query.refreshCron.on).join(', ')])
   }
 
   if (typeof query.refreshHours === 'number') {
-    res += `<b>Refresh Hours:</b> ${query.refreshHours}<br/>`;
+    table.push(['Refresh Hours:', query.refreshHours])
+  } else if (typeof query.refreshHours === 'object') {
+    table.push(['Refresh Hours:', Object.values(query.refreshHours.on).join(', ')])
   }
 
   if (typeof query.onlyFromCache === 'boolean') {
-    res += `<b>Only From Cache:</b> ${query.onlyFromCache}<br/>`;
+    table.push(['Only From Cache', query.onlyFromCache])
+  }
+
+  if (table.length > 0) {
+    res += '|Meta Info| |\n'
+    res += '|----|----|\n'
+    table.forEach(([k, v]) => {
+      res += `|${k}|${v}|\n`
+    })
+    res += '\n'
   }
 
   return res;
@@ -82,7 +97,9 @@ export function buildQuery(path: string, builder: OpenApiBuilder, params: QueryS
   builder.addPath(`/q/${path}`, {
     description: params.name ?? path,
     get: {
+      summary: path,
       description: buildDescription(params),
+      deprecated: params.deprecated,
       tags: ['Query'],
       externalDocs: {
         description: "Source code on GitHub",

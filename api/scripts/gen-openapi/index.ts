@@ -4,6 +4,7 @@ import { QuerySchema } from "../../params.schema";
 import { OpenApiBuilder } from 'openapi3-ts';
 import { buildQuery } from "./utils";
 import { buildCommon } from "./common";
+import { addCollectionApi } from "./predefined/collection";
 import { loadQueries } from "../../app/core/QueryFactory";
 
 const QUERIES_DIR = path.resolve(__dirname, '../../queries');
@@ -23,10 +24,33 @@ builder.addInfo({
     email: 'ossinsight@pingcap.com',
   },
   version: '1.0.0',
+  'x-logo': {
+    url: 'https://ossinsight.io/img/logo.png',
+    alt: 'OSSInsight Logo',
+  },
 });
+builder.addOpenApiVersion('3.0.0');
 builder.addTag({
   name: 'Query',
+  description: 'Pre-defined queries provided by ossinsight',
+  externalDocs: {
+    url: 'https://github.com/pingcap/ossinsight/api/queries',
+    description: 'GitHub Source code',
+  },
 });
+// TODO:
+// x-tagGroups:
+//   - name: General
+//     tags:
+//       - pet
+//       - store
+//   - name: User Management
+//     tags:
+//       - user
+//   - name: Models
+//     tags:
+//       - pet_model
+//       - store_model
 builder.addExternalDocs({
   description: 'GitHub',
   url: 'https://github.com/pingcap/ossinsight',
@@ -44,6 +68,7 @@ loadQueries()
     })
 
     buildCommon(builder);
+    addCollectionApi(builder);
     fs.mkdirSync(OUTPUT_DIR, { recursive: true });
     fs.writeFileSync(OUTPUT, builder.getSpecAsYaml(), { encoding: 'utf-8' });
   })
