@@ -31,7 +31,20 @@ export default async function httpServerRoutes(
   accessRecorder: BatchLoader
 ) {
 
-  router.get('/q/:query', measureRequests(URLType.PATH, accessRecorder), async ctx => {
+  router.get('/q/explain/:query(.*)', measureRequests(URLType.PATH, accessRecorder), async ctx => {
+    try {
+      const query = new Query(ctx.params.query, cacheBuilder, queryExecutor, ghEventService, collectionService, userService)
+      const res = await query.explain(ctx.query)
+      ctx.response.status = 200
+      ctx.response.body = res
+    } catch (e) {
+      ctx.logger.error('Failed to request %s: ', ctx.request.originalUrl, e)
+      ctx.response.status = 500
+      ctx.response.body = e
+    }
+  })
+
+  router.get('/q/:query(.*)', measureRequests(URLType.PATH, accessRecorder), async ctx => {
     try {
       const queryName = ctx.params.query;
       const query = new Query(
@@ -42,19 +55,6 @@ export default async function httpServerRoutes(
       const { sql, requestedAt, refresh } = res;
       statsService.addQueryStatsRecord(queryName, sql, requestedAt, refresh);
 
-      ctx.response.status = 200
-      ctx.response.body = res
-    } catch (e) {
-      ctx.logger.error('Failed to request %s: ', ctx.request.originalUrl, e)
-      ctx.response.status = 500
-      ctx.response.body = e
-    }
-  })
-
-  router.get('/q/explain/:query', measureRequests(URLType.PATH, accessRecorder), async ctx => {
-    try {
-      const query = new Query(ctx.params.query, cacheBuilder, queryExecutor, ghEventService, collectionService, userService)
-      const res = await query.explain(ctx.query)
       ctx.response.status = 200
       ctx.response.body = res
     } catch (e) {

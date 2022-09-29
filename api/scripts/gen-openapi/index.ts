@@ -4,6 +4,7 @@ import { QuerySchema } from "../../params.schema";
 import { OpenApiBuilder } from 'openapi3-ts';
 import { buildQuery } from "./utils";
 import { buildCommon } from "./common";
+import { loadQueries } from "../../app/core/QueryFactory";
 
 const QUERIES_DIR = path.resolve(__dirname, '../../queries');
 const OUTPUT_DIR = path.resolve(__dirname, '../../static');
@@ -28,26 +29,21 @@ builder.addTag({
 });
 builder.addExternalDocs({
   description: 'GitHub',
-  url: 'https://github.com/pingcap/ossinsight'
-})
+  url: 'https://github.com/pingcap/ossinsight',
+});
 
-for (const dir of fs.readdirSync(QUERIES_DIR, { withFileTypes: true })) {
-  if (!dir.isDirectory()) {
-    continue;
-  }
-  const QUERY_DIR = path.join(QUERIES_DIR, dir.name);
-  const PARAM_FILE = path.join(QUERY_DIR, 'params.json');
+loadQueries()
+  .then(queries => {
+    Object.entries(queries).forEach(([query, params]) => {
+      if (params.public) {
+        console.log('✅', query);
+        buildQuery(query, builder, params);
+      } else {
+        console.log('❌', query);
+      }
+    })
 
-  const params: QuerySchema = JSON.parse(fs.readFileSync(PARAM_FILE, { encoding: 'utf-8' }));
-
-  if (params.public) {
-    console.log('✅', dir.name);
-    buildQuery(dir.name.replace(/\//g, ''), builder, params);
-  } else {
-    console.log('❌', dir.name)
-  }
-}
-
-buildCommon(builder);
-fs.mkdirSync(OUTPUT_DIR, { recursive: true });
-fs.writeFileSync(OUTPUT, builder.getSpecAsYaml(), { encoding: 'utf-8' });
+    buildCommon(builder);
+    fs.mkdirSync(OUTPUT_DIR, { recursive: true });
+    fs.writeFileSync(OUTPUT, builder.getSpecAsYaml(), { encoding: 'utf-8' });
+  })
