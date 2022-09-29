@@ -201,9 +201,9 @@ export const SQLPlaygroundDrawer = (props: { data?: Repo }) => {
               alignItems: "center",
             }}
           >
-            {/* <Typography variant="h3" component="div" sx={{ flexGrow: 1 }}>
-              This is SQL Playground title
-            </Typography> */}
+            <Typography variant="h3" component="div" sx={{ flexGrow: 1 }}>
+              ⚠️  Playground uses LIMITED resource, so SQL should use index as much as possible, or it will be terminated.
+            </Typography>
             <LoadingButton
               variant="contained"
               size="small"
@@ -261,7 +261,13 @@ export const SQLPlaygroundDrawer = (props: { data?: Repo }) => {
                 width="100%"
                 height="200px"
                 showPrintMargin={false}
-                value={inputValue}
+                value={inputValue || `/*
+You should use index as much as possible here, and LIMIT is required too
+
+Repo Info:
+repo_name = '${targetData.name}'
+repo_id = ${targetData.id}
+*/`}
                 placeholder={`\nThe search scope is limited to the current repo, and the LIMIT is 100.\n\nExample:\n\nSELECT * FROM github_events WHERE repo_name = '${targetData.name}' LIMIT 100;`}
                 fontSize={16}
                 setOptions={{
@@ -375,13 +381,13 @@ type PREDEFINED_SQL_ITEM_TYPE = {
 const PREDEFINED_SQL_LIST: PREDEFINED_SQL_ITEM_TYPE[] = [
   {
     id: "table_info",
-    title: "Table Info ↓",
+    title: "Learn about table info ↓",
     type: "header",
   },
   {
     id: "table_schema",
     type: "sql",
-    title: "Show table schema!",
+    title: "Show table schema",
     sql: "DESC github_events;",
   },
   {
@@ -393,8 +399,8 @@ FROM
   github_events;`,
   },
   {
-    id: "ssql_using_index",
-    title: "SQLs that using index ↓",
+    id: "row_info",
+    title: "Learn about rows info ↓",
     type: "header",
   },
   {
@@ -411,9 +417,9 @@ LIMIT
   1`,
   },
   {
-    id: "total_events_of_this_repo",
+    id: "total_rows",
     type: "sql",
-    title: "Total events of this repo - Realtime",
+    title: "Total rows of this repo - Realtime",
     sql: `-- Delayed by 5 minutes: https://github.blog/changelog/2018-08-01-new-delay-public-events-api/
 SELECT
   COUNT(*)
@@ -424,6 +430,11 @@ WHERE
   repo_id = {{repoId}}
 LIMIT
   100`,
+  },
+  {
+    id: "this_repo",
+    title: "Learn about this repo ↓",
+    type: "header",
   },
   {
     id: "first_pr",
