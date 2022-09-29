@@ -25,6 +25,11 @@ const logger = consola.withTag('query');
 
 export type ExtendQueryOptions = Partial<QueryOptions>;
 
+export const enum QueryType {
+  query = 'query',
+  explain = 'explain',
+}
+
 export default class Query {
 
   public readonly path: string;
@@ -61,6 +66,10 @@ export default class Query {
     })
   }
 
+  get queryName(): string {
+    return this.queryDef!.name || this.name.replaceAll('/', '-');
+  }
+
   ready(): Promise<boolean> {
     return this.loadingPromise
   }
@@ -70,15 +79,15 @@ export default class Query {
   }
 
   async execute <T> (params: Record<string, any>, refreshCache: boolean = false, ip?: string, options?: ExtendQueryOptions): Promise<CachedData<T>> {
-    return this.run('query', refreshCache, false, false, params, ip, options);
+    return this.run(QueryType.query, refreshCache, false, false, params, ip, options);
   }
 
   async explain <T> (params: Record<string, any>, refreshCache: boolean = false, ip?: string, options?: ExtendQueryOptions): Promise<CachedData<T>> {
-    return this.run('explain', refreshCache, true, true, params, ip, options);
+    return this.run(QueryType.explain, refreshCache, true, true, params, ip, options);
   }
 
   private async run <T> (
-    prefix: string,
+    prefix: QueryType,
     refreshCache: boolean = false,
     ignoreCache: boolean = false,
     ignoreOnlyFromCache: boolean = false,
@@ -89,9 +98,8 @@ export default class Query {
     await this.ready();
 
     const { cacheHours = -1, onlyFromCache = false, cacheProvider } = this.queryDef!;
-    const queryName = this.queryDef!.name || this.name;
-    const queryKey = `${prefix}:${queryName}`;
-    const cacheKey = this.getQueryKey(prefix, queryName, this.queryDef!, params);
+    const queryKey = this.buildQueryKey(prefix);
+    const cacheKey = this.buildCacheKey(prefix, params);
     const cache = this.cacheBuilder.build(
       cacheProvider,
       cacheKey,
@@ -137,8 +145,16 @@ export default class Query {
     }, ip)
   }
 
-  private getQueryKey(prefix: string, queryName: string, queryDef: QuerySchema, params: Record<string, any>): string {
-    return `${prefix}:${queryName}:${queryDef!.params.map(p => params[p.name]).join('_')}`;
+  private buildQueryKey (type: QueryType): string {
+    return `${type}:${this.queryName}`;
+  }
+
+  private buildCacheKey (type: QueryType, params: Record<string, any>): string {
+    return `${this.buildQueryKey(type)}:${this.serializeParams(params)}`;
+  }
+
+  private serializeParams (params: Record<string, any>) {
+    return this.queryDef!.params.map(p => params[p.name]).join('_')
   }
 }
 
