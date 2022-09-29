@@ -2,8 +2,10 @@ import consola from 'consola';
 import { readFile } from 'fs/promises';
 import * as path from 'path'
 import * as fsp from 'fs/promises'
+import * as fs from 'fs'
 import { QuerySchema } from '../../params.schema';
 import { measure, readConfigTimer } from '../metrics';
+import { dir } from "async";
 
 export class QueryTemplateNotFoundError extends Error {
   readonly msg: string
@@ -29,11 +31,23 @@ export const TEMPLATE_FILENAME = 'template.sql';
 export const DEFINITION_FILENAME = 'params.json';
 
 export async function loadQueries(): Promise<Record<string, QuerySchema>> {
-  const paths = await fsp.readdir(QUERY_DEF_DIR)
   const res: Record<string, QuerySchema> = {}
-  for (let p of paths) {
-    res[p] = JSON.parse(await fsp.readFile(path.join(QUERY_DEF_DIR, p, DEFINITION_FILENAME), {encoding: "utf-8"}))
+  async function loadDir (root: string, current: string[]) {
+    const dirs = await fsp.readdir(path.join(root, ...current), { withFileTypes: true })
+    for (const dir of dirs) {
+      if (!dir.isDirectory()) {
+        continue;
+      }
+      const queryPath = path.join(...current, dir.name)
+      const pfn = path.join(root, queryPath, DEFINITION_FILENAME)
+      if (fs.existsSync(pfn)) {
+        res[queryPath] = JSON.parse(await fsp.readFile(pfn, {encoding: "utf-8"}))
+      }
+      await loadDir(root, [...current, dir.name])
+    }
   }
+  await loadDir(QUERY_DEF_DIR, [])
+
   return res
 }
 
