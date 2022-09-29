@@ -20,6 +20,7 @@ import TableContainer from "@mui/material/TableContainer";
 import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
 import LANGUAGE_COLORS from './language-colors.json';
+import { LinkExternalIcon } from "@primer/octicons-react";
 
 for (const lang in LANGUAGE_COLORS) {
   LANGUAGE_COLORS[lang.toLowerCase()] = LANGUAGE_COLORS[lang];
@@ -143,6 +144,11 @@ const Dot = styled('span')({
   verticalAlign: 'middle',
 });
 
+const ExternalLink = styled('a')({
+  marginLeft: 4,
+  color: '#7c7c7c',
+})
+
 const renderData = (data: ProcessedTopListData[], offset: number, history: History) => {
   return data.map((item, i) => (
     <TableRow key={item.repo_id}>
@@ -150,6 +156,9 @@ const renderData = (data: ProcessedTopListData[], offset: number, history: Histo
       <TableCell>
         <RepoName>
           <Link href={`/analyze/${item.repo_name}`} target="_blank">{item.repo_name}</Link>
+          <ExternalLink href={`https://github.com/${item.repo_name}`} target="_blank">
+            <LinkExternalIcon size={16} verticalAlign="middle" />
+          </ExternalLink>
         </RepoName>
         {renderCollections(item.collection_names, history)}
         <RepoDescription>
