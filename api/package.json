@@ -32,7 +32,7 @@
     "gen:api-documentation": "ts-node scripts/gen-openapi/index.ts",
     "validate:params": "ajv -s params.schema.json -r openapi-2021-09-28.schema.json -c ajv-formats -d \"queries/*/params.json\"",
     "build": "tsc && pnpm run build:copy",
-    "build:copy": "mkdir -p ./dist && cat .distfiles | xargs -I {} cp -r {} ./dist/{} 2>/dev/null || :",
+    "build:copy": "mkdir -p ./dist && rm -r ./dist/static && cat .distfiles | xargs -I {} cp -r {} ./dist/{} 2>/dev/null || :",
     "verify": "tsc --noEmit",
     "postinstall": "npm run gen:schema-ts && npm run gen:api-documentation"
   },
