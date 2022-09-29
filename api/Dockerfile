@@ -11,7 +11,7 @@ RUN pnpm i --frozen-lockfile
 
 RUN pnpm run build
 
-RUN pnpm prune --production
+RUN pnpm prune --production --config.ignore-scripts=true
 
 # Runtime stage.
 FROM node:18-alpine AS runtime
