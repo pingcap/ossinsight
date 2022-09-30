@@ -18,6 +18,7 @@ declare module '@ossinsight/api' {
       html_url: string
       login: string
     }
+    description: string
   }
 
   export interface UserInfo {

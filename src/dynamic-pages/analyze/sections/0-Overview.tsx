@@ -28,7 +28,7 @@ import { paramCase } from "param-case";
 export const OverviewSection = forwardRef(function ({}, ref: ForwardedRef<HTMLElement>) {
   const theme = useTheme()
   const isSmall = useMediaQuery(theme.breakpoints.down('md'))
-  const { repoId, comparingRepoName, repoName: name, comparingRepoId: vs } = useAnalyzeContext()
+  const { repoId, comparingRepoName, repoName: name, repoInfo, comparingRepoId: vs } = useAnalyzeContext()
   const { data: collectionData } = useRemoteData<any, Pick<Collection, 'id' | 'name'>>('get-repo-collections', { repoId }, false, !!repoId && !vs)
 
   const summaries: SummaryProps['items'] = useMemo(() => {
@@ -86,6 +86,7 @@ export const OverviewSection = forwardRef(function ({}, ref: ForwardedRef<HTMLEl
                 <LinkExternalIcon size={28} verticalAlign="middle" />
               </a>
             </H1>
+            <P2>{repoInfo?.description}</P2>
             {collectionData?.data && collectionData.data.length > 0
               ? (
                 <Box mb={1}>
