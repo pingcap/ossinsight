@@ -33,3 +33,4 @@ items:
   - rust-lang/mdBook
   - gridsome/gridsome
   - sphinx-doc/sphinx
+  - cecilapp/cecil
