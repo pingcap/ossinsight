@@ -1,5 +1,6 @@
 import * as React from "react";
 import BrowserOnly from "@docusaurus/BrowserOnly";
+import CodeBlock from "@theme/CodeBlock";
 import { format } from "sql-formatter";
 import Stack from "@mui/material/Stack";
 import Box from "@mui/material/Box";
@@ -318,7 +319,15 @@ repo_id = ${targetData.id}
                   </Typography>
                 </>
               )}
-              <Box>{data?.data && renderTable(data.data)}</Box>
+              {data?.data && (
+                <Box>
+                  {data?.sql?.startsWith("EXPLAIN") ? (
+                    <CodeBlock>{dataListToRawOutput(data.data)}</CodeBlock>
+                  ) : (
+                    renderTable(data.data)
+                  )}
+                </Box>
+              )}
             </Box>
           </Stack>
         </Box>
@@ -654,4 +663,47 @@ const SQLEditor = (props: {
       }}
     </BrowserOnly>
   );
+};
+
+const dataListToRawOutput = (dataList: { [key: string]: string }[]) => {
+  const results = [];
+  const rowsMaxLength = dataList.reduce(
+    (prev: { [key: string]: number }, item) => {
+      Object.keys(item).forEach((itemKey) => {
+        if (!(itemKey in prev)) {
+          prev[itemKey] = item[itemKey].length;
+        } else if (prev[itemKey] < item[itemKey].length) {
+          prev[itemKey] = item[itemKey].length;
+        }
+      });
+      return prev;
+    },
+    {}
+  );
+  let headStr = "";
+  Object.keys(rowsMaxLength).forEach((key) => {
+    const len = rowsMaxLength[key];
+    const headLength = key.length;
+    if (headLength > len) {
+      rowsMaxLength[key] = headLength;
+    }
+    headStr += key.padEnd(rowsMaxLength[key], " ") + " | ";
+  });
+  dataList.forEach((item) => {
+    const row = [];
+    Object.keys(rowsMaxLength).forEach((key) => {
+      const value = item[key];
+      const maxLength = rowsMaxLength[key];
+      row.push(value.padEnd(maxLength, " "));
+    });
+    results.push(row);
+  });
+
+  let outputStr = "";
+  for (let i = 0; i < results.length; i++) {
+    const rowData = results[i].join(" | ");
+    outputStr += rowData + "\n";
+  }
+
+  return `${headStr}\n${outputStr}`;
 };
