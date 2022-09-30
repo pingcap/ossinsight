@@ -145,21 +145,32 @@ function parseSelectAst(
     withItemAst && parseSelectAst(withItemAst, fieldName, value, depth + 1);
   });
   // Wrap where clause
+  // 30-Sep-2021: We don't need to add "repo_id = xxx" condition into where clause anymore
   if (!where) {
-    ast.where = WHERE_AST_NODE(fieldName, value);
+    // ast.where = WHERE_AST_NODE(fieldName, value);
+    if (from && from?.length > 0) {
+      throw new BadParamsError(
+        "playground",
+        `WHERE is required. Please add "WHERE ${fieldName} = ${value}" to your query.`
+      );
+    }
   } else {
     // Check if where clause already has the repo_id = xxx or actor_id = xxx
     const whereLimitExist = isWhereLimitExist(where, fieldName, value);
     if (whereLimitExist) {
       // do nothing
     } else {
-      where.parentheses = true;
-      ast.where = {
-        type: "binary_expr",
-        operator: "AND",
-        left: WHERE_AST_NODE(fieldName, value),
-        right: where,
-      };
+      // where.parentheses = true;
+      // ast.where = {
+      //   type: "binary_expr",
+      //   operator: "AND",
+      //   left: WHERE_AST_NODE(fieldName, value),
+      //   right: where,
+      // };
+      throw new BadParamsError(
+        "playground",
+        `Please add "${fieldName} = ${value}" to your each WHERE clause.`
+      );
     }
   }
   // Check UNION clause
@@ -195,7 +206,8 @@ const isWhereLimitExist = (
   return false;
 };
 
-export function getPlaygroundSessionLimits () {
-  return getEnv(/^PLAYGROUND_SESSION_(.+)$/)
-    .map(([key, value]) => `SET SESSION ${key} = ${value};`);
+export function getPlaygroundSessionLimits() {
+  return getEnv(/^PLAYGROUND_SESSION_(.+)$/).map(
+    ([key, value]) => `SET SESSION ${key} = ${value};`
+  );
 }
