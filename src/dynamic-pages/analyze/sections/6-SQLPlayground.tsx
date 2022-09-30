@@ -21,6 +21,7 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 import ListSubheader from "@mui/material/ListSubheader";
 import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import TerminalIcon from "@mui/icons-material/Terminal";
 
@@ -138,16 +139,25 @@ export const SQLPlaygroundDrawer = (props: { data?: Repo }) => {
     `${targetData.id}`
   );
 
-  React.useEffect(() => {
-    if (data?.sql) {
-      const formattedSQL = format(data.sql, {
-        language: "mysql",
-        uppercase: true,
-        linesBetweenQueries: 2,
-      });
-      setInputValue(formattedSQL);
-    }
-  }, [data]);
+  // React.useEffect(() => {
+  //   if (data?.sql) {
+  //     const formattedSQL = format(data.sql, {
+  //       language: "mysql",
+  //       uppercase: true,
+  //       linesBetweenQueries: 2,
+  //     });
+  //     setInputValue(formattedSQL);
+  //   }
+  // }, [data]);
+
+  const handleFormatSQLClick = () => {
+    const formattedSQL = format(inputValue, {
+      language: "mysql",
+      uppercase: true,
+      linesBetweenQueries: 2,
+    });
+    setInputValue(formattedSQL);
+  };
 
   const handleSubmit = async () => {
     setSQL(inputValue);
@@ -202,21 +212,37 @@ export const SQLPlaygroundDrawer = (props: { data?: Repo }) => {
             }}
           >
             <Typography variant="h3" component="div" sx={{ flexGrow: 1 }}>
-              ⚠️  Playground uses LIMITED resource, so SQL should use index as much as possible, or it will be terminated.
+              ⚠️ Playground uses LIMITED resource, so SQL should use index as
+              much as possible, or it will be terminated.
             </Typography>
-            <LoadingButton
-              variant="contained"
-              size="small"
-              disabled={!inputValue || !targetData.id}
-              onClick={handleSubmit}
-              endIcon={<PlayArrowIcon fontSize="inherit" />}
-              loading={loading}
+            <Box
               sx={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                gap: "1rem",
                 marginLeft: "auto",
               }}
             >
-              Run
-            </LoadingButton>
+              <Button
+                variant="contained"
+                size="small"
+                disabled={!inputValue || !targetData.id}
+                onClick={handleFormatSQLClick}
+              >
+                Format
+              </Button>
+              <LoadingButton
+                variant="contained"
+                size="small"
+                disabled={!inputValue || !targetData.id}
+                onClick={handleSubmit}
+                endIcon={<PlayArrowIcon fontSize="inherit" />}
+                loading={loading}
+              >
+                Run
+              </LoadingButton>
+            </Box>
           </Stack>
           <Stack
             direction="row"
@@ -261,14 +287,16 @@ export const SQLPlaygroundDrawer = (props: { data?: Repo }) => {
                 width="100%"
                 height="200px"
                 showPrintMargin={false}
-                value={inputValue || `/*
+                value={
+                  inputValue ||
+                  `/*
 You should use index as much as possible here, and LIMIT is required too
 
 Repo Info:
 repo_name = '${targetData.name}'
 repo_id = ${targetData.id}
-*/`}
-                placeholder={`\nThe search scope is limited to the current repo, and the LIMIT is 100.\n\nExample:\n\nSELECT * FROM github_events WHERE repo_name = '${targetData.name}' LIMIT 100;`}
+*/`
+                }
                 fontSize={16}
                 setOptions={{
                   enableLiveAutocompletion: true,
@@ -280,6 +308,15 @@ repo_id = ${targetData.id}
                   <AlertTitle>Error</AlertTitle>
                   {`${error}`}
                 </Alert>
+              )}
+              {data?.spent && data?.data && (
+                <>
+                  <Typography variant="body2" sx={{ padding: "1rem" }}>
+                    {`${data.data?.length} results in ${data.spent.toFixed(
+                      2
+                    )}s.`}
+                  </Typography>
+                </>
               )}
               <Box>{data?.data && renderTable(data.data)}</Box>
             </Box>
@@ -555,7 +592,7 @@ LIMIT
 ];
 
 const SQLEditor = (props: {
-  placeholder: string;
+  placeholder?: string;
   mode: string;
   theme: string;
   name: string;
