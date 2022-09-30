@@ -181,7 +181,7 @@ export const SQLPlaygroundDrawer = (props: { data?: Repo }) => {
           display: {
             xs: "none",
             // Remove next line to show terminal button on desktop
-            // md: "inline-flex",
+            md: "inline-flex",
           },
         }}
       >
