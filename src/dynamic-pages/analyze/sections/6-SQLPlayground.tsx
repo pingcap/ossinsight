@@ -213,7 +213,7 @@ export const SQLPlaygroundDrawer = (props: { data?: Repo }) => {
             }}
           >
             <Typography variant="h3" component="div" sx={{ flexGrow: 1 }}>
-              ⚠️ Playground uses LIMITED resource, so SQL should use index as
+              ⚠️  Playground uses LIMITED resource(cpu/mem), so SQL should use index as
               much as possible, or it will be terminated.
             </Typography>
             <Box
@@ -290,7 +290,8 @@ export const SQLPlaygroundDrawer = (props: { data?: Repo }) => {
                 showPrintMargin={false}
                 value={
                   inputValue ||
-                  `/*
+                  `
+/*
 You should use index as much as possible here, and LIMIT is required too
 
 Repo Info:
@@ -537,8 +538,7 @@ LIMIT
     id: "active_reviewer",
     type: "sql",
     title: "Who is the most active reviewer?",
-    sql: `
-SELECT
+    sql: `SELECT
   actor_login,
   COUNT(*) AS comments
 FROM
@@ -597,6 +597,58 @@ ORDER BY
   2 DESC
 LIMIT
   100`,
+  },
+  {
+    id: "learn_about_yourself",
+    title: "[Quiz] Learn about yourself",
+    type: "header",
+  },
+  {
+    id: "all_contributions_to_this_repo",
+    type: "sql",
+    title: "All your contributions to this repo",
+    sql: `SELECT
+  *
+FROM
+  github_events
+WHERE
+  repo_id = {{repoId}}
+  AND actor_login = '?' -- input your GitHub ID here`,
+  },
+  {
+    id: "biggest_pr",
+    type: "sql",
+    title: "Which is your biggest pull request to this repo",
+    sql: `SELECT
+  max(additions)
+FROM
+  github_events
+WHERE
+  repo_id = {{repoId}}
+  AND type = 'PullRequestEvent'
+  AND actor_login = '?' -- input your GitHub ID here`,
+  },
+  {
+    id: "pr_or_push",
+    type: "sql",
+    title: "Which do you like, pull request or push?",
+    sql: `SELECT
+  type,
+  count(*)
+FROM
+  github_events
+WHERE
+  repo_id = {{repoId}}
+  AND (
+    (
+      type = 'PullRequestEvent'
+      AND action = 'opened'
+    )
+    OR type = 'PushEvent'
+  )
+  AND actor_login = '?' -- input your GitHub ID here
+GROUP BY
+  type`,
   },
 ];
 
