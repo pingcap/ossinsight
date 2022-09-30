@@ -446,11 +446,6 @@ FROM
   github_events;`,
   },
   {
-    id: "row_info",
-    title: "Learn about rows info ↓",
-    type: "header",
-  },
-  {
     id: "example_row",
     type: "sql",
     title: "This is an example row",
@@ -474,9 +469,7 @@ FROM
   github_events
 WHERE
   -- repo_name = '{{repoName}}' -- try use this and find out why
-  repo_id = {{repoId}}
-LIMIT
-  100`,
+  repo_id = {{repoId}}`,
   },
   {
     id: "this_repo",
