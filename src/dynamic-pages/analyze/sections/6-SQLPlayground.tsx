@@ -212,9 +212,8 @@ export const SQLPlaygroundDrawer = (props: { data?: Repo }) => {
               alignItems: "center",
             }}
           >
-            <Typography variant="h3" component="div" sx={{ flexGrow: 1 }}>
-              ⚠️  Playground uses LIMITED resource(cpu/mem), so SQL should use index as
-              much as possible, or it will be terminated.
+            <Typography variant="h2" component="div" sx={{ flexGrow: 1, color: 'orange' }}>
+              Playground - Based on Row-Oriented Storage Engine
             </Typography>
             <Box
               sx={{
@@ -292,12 +291,25 @@ export const SQLPlaygroundDrawer = (props: { data?: Repo }) => {
                   inputValue ||
                   `
 /*
-You should use index as much as possible here, and LIMIT is required too
+⚠️  Playground uses LIMITED resource(cpu/mem), so SQL should use index as
+much as possible, or it will be terminated.
 
 Repo Info:
 repo_name = '${targetData.name}'
 repo_id = ${targetData.id}
-*/`
+
+Example:
+
+SELECT
+  *
+FROM
+  github_events
+WHERE
+  repo_id = {{{repoId}}
+LIMIT
+  1;
+*/
+`
                 }
                 fontSize={16}
                 setOptions={{
@@ -362,7 +374,7 @@ const PreDefinedSQLList = (props: {
           },
           marginBottom: "0.5rem",
           backgroundColor: "transparent",
-          color: "yellow",
+          color: "#5DADE2",
           position: "unset",
         }}
       >
