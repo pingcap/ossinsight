@@ -542,7 +542,7 @@ LIMIT
   {
     id: "active_reviewer",
     type: "sql",
-    title: "Who is the most active reviewer?",
+    title: "Who reviewed the most of code?",
     sql: `SELECT
   actor_login,
   COUNT(*) AS comments
