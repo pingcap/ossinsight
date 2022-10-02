@@ -198,10 +198,11 @@ export const SQLPlaygroundDrawer = (props: { data?: Repo }) => {
         <Box
           id="sql-playground-container"
           sx={{
-            height: "75vh",
+            height: "80vh",
             overflow: "hidden",
             width: "100%",
             padding: "1rem",
+            borderTop: "0.5px solid grey",
           }}
         >
           <Stack
@@ -285,7 +286,7 @@ export const SQLPlaygroundDrawer = (props: { data?: Repo }) => {
                 onChange={onChange}
                 name="SQL_PLAYGROUND"
                 width="100%"
-                height="200px"
+                height={data?.data?"250px":"350px"}
                 showPrintMargin={false}
                 value={
                   inputValue ||
