@@ -8,7 +8,7 @@
 #  additions              :bigint           default(0), not null
 #  closed_at              :datetime         default(Thu, 01 Jan 1970 00:00:00.000000000 UTC +00:00), not null
 #  comments               :integer          default(0), not null
-#  creator_user_login     :string(255)      default(""), not null
+#  creator_user_login     :string(40)       default(""), not null
 #  deletions              :bigint           default(0), not null
 #  event_day              :date             not null
 #  event_month            :date             not null
