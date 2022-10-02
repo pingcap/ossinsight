@@ -185,7 +185,7 @@ export const SQLPlaygroundDrawer = (props: { data?: Repo }) => {
           },
         }}
       >
-        <TerminalIcon />
+        <TerminalIcon /> SQL PLayground
       </IconButton>
       <Drawer
         anchor="bottom"
@@ -375,7 +375,7 @@ const PreDefinedSQLList = (props: {
           },
           marginBottom: "0.5rem",
           backgroundColor: "transparent",
-          color: "#5DADE2",
+          color: "#5DADF2",
           position: "unset",
         }}
       >
@@ -481,7 +481,7 @@ SELECT
 FROM
   github_events
 WHERE
-  -- repo_name = '{{repoName}}' -- try use this and find out why
+  -- repo_name = '{{repoName}}' -- try use this and find out the difference
   repo_id = {{repoId}}`,
   },
   {
