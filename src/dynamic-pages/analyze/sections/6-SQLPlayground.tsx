@@ -291,13 +291,13 @@ export const SQLPlaygroundDrawer = (props: { data?: Repo }) => {
                 value={
                   inputValue ||
                   `
-/*
-⚠️  Playground uses LIMITED resource(cpu/mem), so SQL should use index as
-much as possible, or it will be terminated.
+/* ⚠️ 
+Playground uses LIMITED resource(cpu/mem), so SQL should add:
 
-Repo Info:
-repo_name = '${targetData.name}'
-repo_id = ${targetData.id}
+  WHERE repo_id = ${targetData.id}
+
+to use index as much as possible, or it will be terminated.
+
 
 Example:
 
@@ -335,7 +335,7 @@ LIMIT
               )}
               {data?.data && (
                 <Box>
-                  {data?.sql?.startsWith("EXPLAIN") ? (
+                  {data?.sql?.match(/\bEXPLAIN\b/i) ? (
                     <CodeBlock>{dataListToRawOutput(data.data)}</CodeBlock>
                   ) : (
                     renderTable(data.data)
