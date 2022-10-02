@@ -185,7 +185,7 @@ export const SQLPlaygroundDrawer = (props: { data?: Repo }) => {
           },
         }}
       >
-        <TerminalIcon /> SQL PLayground
+        <TerminalIcon />
       </IconButton>
       <Drawer
         anchor="bottom"
