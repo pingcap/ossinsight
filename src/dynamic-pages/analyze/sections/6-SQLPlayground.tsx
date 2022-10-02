@@ -574,7 +574,8 @@ FROM
   github_events
 WHERE
   repo_id = {{repoId}}
-  AND (type = 'PullRequestEvent')
+  AND type = 'PullRequestEvent'
+  AND actor_login NOT LIKE '%bot%'
 GROUP BY
   actor_login
 ORDER BY
