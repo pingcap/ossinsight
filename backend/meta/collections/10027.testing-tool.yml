@@ -17,3 +17,4 @@ items:
   - wix/Detox
   - DevExpress/testcafe
   - AirtestProject/Airtest
+  - robotframework/robotframework
