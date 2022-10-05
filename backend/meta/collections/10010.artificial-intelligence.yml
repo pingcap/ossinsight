@@ -1,6 +1,7 @@
 id: 10010
 name: Artificial Intelligence
 items:
+  - nebuly-ai/nebullvm
   - tensorflow/tensorflow
   - huggingface/transformers
   - opencv/opencv
