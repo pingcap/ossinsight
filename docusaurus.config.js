@@ -224,7 +224,7 @@ const config = {
               {label: '└─ Cryptocurrency Insight - not ready', to: '/workshop/cryptocurrency-insight'},
             ]
           },
-          {to: '/docs', label: 'API', position: 'left'},
+          {to: '/docs/api', label: 'API', position: 'left'},
           /*
           {
             type: 'dropdown',
@@ -240,10 +240,10 @@ const config = {
             label: 'More',
             position: 'left',
             items: [
-              {label: 'About OSS Insight', to: '/about'},
+              {label: 'About OSS Insight', to: '/docs/about'},
               {label: 'About TiDB Cloud', to: 'https://en.pingcap.com/tidb-cloud?utm_source=ossinsight&utm_medium=referral'},
               {label: 'How do we implement OSS Insight?', to: '/blog/why-we-choose-tidb-to-support-ossinsight'},
-              {label: 'Stats', to: '/stats'},
+              {label: 'Database Stats', to: '/stats'},
               {label: 'Report an Issue', to: 'https://github.com/pingcap/ossinsight/issues'},
             ]
           },
@@ -291,7 +291,7 @@ const config = {
               },
               {
                 label: 'API',
-                to: '/docs',
+                to: '/docs/api',
               },
               {
                 label: 'How do we implement OSS Insight?',
@@ -299,7 +299,11 @@ const config = {
               },
               {
                 label: 'About',
-                to: '/about',
+                to: '/docs/about',
+              },
+              {
+                label: 'FAQ',
+                to: '/docs/faq',
               },
             ],
           },

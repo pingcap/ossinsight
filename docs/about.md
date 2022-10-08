@@ -1,6 +1,8 @@
 ---
-title: About
+sidebar_position: 0
+title: About OSS Insight
 description: We are a powerful insight tool that can help you analyze any GitHub repository/developer. And you can get insights with the monthly and historical rankings as well.
+hide_title: true
 ---
 
 <h1 align="center"> About OSS Insight 👁️</h1>
