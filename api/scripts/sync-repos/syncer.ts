@@ -1,104 +1,100 @@
-import { filter } from 'async';
+import async from 'async';
 import consola from 'consola';
 import { Pool } from 'generic-pool';
 import { DateTime, DurationLike } from 'luxon';
 import Connection from 'mysql2/typings/mysql/lib/Connection';
 import { Octokit } from "octokit";
 import asyncPool from 'tiny-async-pool';
-import { GitHubRepo } from '.';
 import { BatchLoader } from "../../app/core/BatchLoader";
 import { extractOwnerAndRepo } from '../../app/utils/github';
 import sleep from '../../app/utils/sleep';
+import { splitTimeRange } from '../../app/utils/times';
 import { loadGitHubRepos } from './loader';
+import { GitHubRepo } from './types';
 import { JobWorker } from './worker';
-
-const FROM_OFFSET = 10;
 
 // Init logger.
 const logger = consola.withTag('sync-repos');
 
-export interface RepoWithForks {
-    repoId: number;
-    repoName: string;
-    forks: number;
-}
-
 // Sync repos.
-
-export async function syncRepos(workerPool: Pool<JobWorker>, from: DateTime, to: DateTime, duration: DurationLike, step: number, filter?: string) {
-    // Split sync jobs.
-    const timeRanges: any[] = [];
-    let curr = to;
-    while (curr.diff(from, 'seconds').seconds >= 0) {
-        const prev = curr.minus(duration);
-        timeRanges.push({
-            tFrom: prev,
-            tTo: curr
-        });
-        logger.debug(`Create sync job from ${prev.toISO()} to ${curr.toISO()}.`);
-        curr = prev;
-    }
-
-    // Execute sync jobs.
-    logger.info(`Handling ${timeRanges.length} subtasks with ${workerPool.max} workers.`);
-    await asyncPool(workerPool.max, timeRanges, async ({ tFrom, tTo }) => {
-        await extractReposInConcurrent(workerPool, tFrom, tTo, step, filter);
-        logger.success(`Finished loading repos from ${tFrom.toISO()} to ${tTo.toISO()}.`);
-    });
-}
-
-async function extractReposInConcurrent(
-    workerPool: Pool<JobWorker>, from: DateTime, to: DateTime, step: number, filter?: string
-): Promise<any> {
-    return new Promise((resolve, reject) => {
-        workerPool.use(async (worker) => {
+export async function syncReposInConcurrent(
+    workerPool: Pool<JobWorker>, from: DateTime, to: DateTime, chunkSize: DurationLike, stepSize: number, 
+    filter: string | null, skipSyncRepoLanguages: boolean, skipSyncRepoTopics: boolean
+) {
+    // Workers ready.
+    const concurrent = workerPool.max;
+    const queue = async.queue(async ({ tFrom, tTo }) => {
+        logger.info(`Handle time range from ${tFrom} to ${tTo}.`);
+        try {
+            const worker = await workerPool.acquire();
             const { octokit, repoLoader, repoLangLoader, repoTopicLoader } = worker; 
-            let right = DateTime.fromJSDate(to.toJSDate());
-            let left = right.minus({ minutes: step });
+            let left = DateTime.fromJSDate(tFrom.toJSDate());
+            let right = left.plus(stepSize);
 
             while(true) {
-                if (left.diff(from, 'seconds').seconds < FROM_OFFSET) {
+                if (right.diff(tTo, 'seconds').seconds > 10) {
                     break;
                 }
 
-                const firstRepoPushedAt = await extractReposForTimeRange(
-                    octokit, repoLoader, repoLangLoader, repoTopicLoader, left, right, filter
+                const moreThan1k = await extractReposForTimeRange(
+                    octokit, repoLoader, repoLangLoader, repoTopicLoader, left, right, filter,
+                    skipSyncRepoLanguages, skipSyncRepoTopics
                 );
-                if (firstRepoPushedAt) {
-                    right = firstRepoPushedAt
-                    left = right.minus({ minutes: step });
+                if (moreThan1k) {
+                    if (right.diff(left, 'seconds').seconds <= 1) {
+                        right = left.plus({ seconds: 1 });
+                    } else {
+                        // Reduce the current step size to half of the original.
+                        right = left.plus({
+                            seconds: right.diff(left, 'seconds').seconds / 2
+                        });
+                    }
                 } else {
-                    right = left;
-                    left = right.minus({ minutes: step });
+                    left = right
+                    right = right.plus(stepSize);
                 }
             }
+            workerPool.release(worker);
+            logger.success(`Finished loading repos from ${tFrom.toISO()} to ${tTo.toISO()}.`);
+        } catch (err) {
+            logger.error(`Finished loading repos from ${tFrom.toISO()} to ${tTo.toISO()}.`);
+        }
+    }, concurrent);
 
-            resolve(true);
-        });
-    });
+    // Split sync jobs.
+    const timeRanges = splitTimeRange(from, to, chunkSize);
+
+    // Dispatch sync jobs.
+    logger.info(`Handling ${timeRanges.length} subtasks with ${concurrent} workers.`);
+    for (const timeRange of timeRanges) {
+        queue.pushAsync(timeRange);
+    }
+
+    // Wait for the workers finished all the jobs.
+    await queue.drain();
 }
 
 async function extractReposForTimeRange(
     octokit: Octokit, repoLoader: BatchLoader, repoLanguageLoader: BatchLoader, repoTopicLoader: BatchLoader, 
-    from: DateTime, to: DateTime, filter?: string
-): Promise<DateTime | undefined> {
+    from: DateTime, to: DateTime, filter: string | null, skipSyncRepoLanguages: boolean, 
+    skipSyncRepoTopics: boolean
+): Promise<boolean> {
     let repoTotal = 0;
     let repoFetch = 0;
     let totalCost = 0;
     let remaining = 0;
-    let firstPushedAt: DateTime | undefined;
 
     const fromISO = from.toISO();
     const toISO = to.toISO();
     const variables = {
-        keyword: `sort:updated-desc ${filter || ''} pushed:${fromISO}..${toISO}`,
+        q: `${filter || ''} pushed:${fromISO}..${toISO}`,
         cursor: null
     };
     logger.info(`Fetching search repo result for time range from ${fromISO} to ${toISO}...`);
 
     const query = /* GraphQL */ `
-        query ($keyword: String!, $cursor: String) {
-            search(type: REPOSITORY, query: $keyword, first: 100, after: $cursor) {
+        query ($q: String!, $cursor: String) {
+            search(type: REPOSITORY, query: $q, first: 100, after: $cursor) {
                 repositoryCount
                 nodes {
                     ... on Repository {
@@ -188,6 +184,10 @@ async function extractReposForTimeRange(
         repoTotal = search?.repositoryCount;
         repoFetch += search?.nodes.length;
 
+        if (repoTotal > 1000) {
+            return true;
+        }
+
         // Load GitHub repos.
         const githubRepos:GitHubRepo[] = [];
         for (const repo of search?.nodes) {
@@ -211,24 +211,17 @@ async function extractReposForTimeRange(
                 createdAt: repo.createdAt,
                 updatedAt: repo.updatedAt
             });
-            
-            const pushedAt = DateTime.fromISO(repo.pushedAt).toUTC();
-            if (
-                repo.pushedAt != undefined &&
-                (firstPushedAt === undefined || pushedAt.diff(firstPushedAt, 'seconds').seconds < 0) &&
-                (pushedAt.diff(from, 'seconds').seconds >= 0 && pushedAt.diff(to, 'seconds').seconds <= 0)
-            ) {
-                firstPushedAt = pushedAt;
-            }
 
-            if (Array.isArray(repo?.languages?.edges) && process.env.SKIP_SYNC_REPO_LANGUAGES !== '1') {
-                for (const { node, size } of repo?.languages?.edges) {
+            const repoLanguages = repo?.languages?.edges;
+            if (Array.isArray(repoLanguages) && !skipSyncRepoLanguages) {
+                for (const { node, size } of repoLanguages) {
                     repoLanguageLoader.insert([repo.databaseId, node.name, size]);
                 }
             }
 
-            if (Array.isArray(repo?.repositoryTopics?.nodes) && process.env.SKIP_SYNC_REPO_TOPICS !== '1') {
-                for (const { topic } of repo?.repositoryTopics?.nodes) {
+            const repoTopics = repo?.repositoryTopics?.nodes;
+            if (Array.isArray(repoTopics) && !skipSyncRepoTopics) {
+                for (const { topic } of repoTopics) {
                     repoTopicLoader.insert([repo.databaseId, topic.name]);
                 }
             }
@@ -245,12 +238,19 @@ async function extractReposForTimeRange(
         }
     }
 
-    logger.success(`Fetched ${repoFetch}/${repoTotal} repos for time range from: ${fromISO}, to: ${toISO}, last_pushed_at: ${firstPushedAt}, cost: ${totalCost}, remaining: ${remaining}.`);
-    return firstPushedAt;
+    logger.success(`Fetched ${repoFetch}/${repoTotal} repos for time range from: ${fromISO}, to: ${toISO}, cost: ${totalCost}, remaining: ${remaining}.`);
+    return false;
 }
 
 // Sync fork repos.
 
+export interface RepoWithForks {
+    repoId: number;
+    repoName: string;
+    forks: number;
+}
+
+// TODO: use async queue instead of asyncPool.
 export async function syncForkRepos(workerPool: Pool<JobWorker>, conn: Connection, pageSize: number, offsetForks?: number) {
     while (true) {
         logger.info(`Getting repos with offset ${offsetForks} and page size ${pageSize}.`);

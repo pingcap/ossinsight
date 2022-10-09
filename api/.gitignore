@@ -22,6 +22,8 @@ test/result/*.log
 # Fox Mac OS
 .DS_Store
 
+# Config file.
 params.schema.d.ts
 openapi.yaml
 static/openapi.yaml
+region-code-mappings.yaml

@@ -1,16 +1,17 @@
 import consola from 'consola';
 import * as dotenv from "dotenv";
 import path from 'path';
-import { createPool, Pool } from 'generic-pool';
-import { DateTime } from 'luxon';
-import { Octokit } from 'octokit';
-import asyncPool from 'tiny-async-pool';
-import { BatchLoader } from '../../app/core/BatchLoader';
-import { OctokitFactory } from '../../app/core/OctokitFactory';
-import { Locator, LocationCache } from '../../app/locator/Locator';
-import { SyncUserLog, SyncUserMode, SyncUserRecorder } from './recorder';
-import { ConnectionWrapper, getConnectionOptions } from '../../app/utils/db';
-import { extractOwnerAndRepo } from '../../app/utils/github';
+import { existsSync, readFileSync } from 'fs';
+import YAML from 'yaml';
+import { Command } from 'commander';
+import { DateTime, DurationLike } from 'luxon';
+import { createPool } from 'mysql2/promise';
+import { createWorkerPool } from '../sync-repos/worker';
+import { RegionCodeMapping } from './types';
+import { syncUsersFromTimeRangeSearch } from './syncer';
+import { formatAddressInBatch, formatOrgNamesInBatch, identifyBotsInBatch, loadOrgsToDatabase, Organization } from './processer';
+import { getConnectionOptions } from '../../app/utils/db';
+import { LocationCache, Locator } from '../../app/locator/Locator';
 
 // Load environments.
 dotenv.config({ path: path.resolve(__dirname, '../../.env.template') });
@@ -19,599 +20,192 @@ dotenv.config({ path: path.resolve(__dirname, '../../.env'), override: true });
 // Init logger.
 const logger = consola.withTag('sync-users-data');
 
-const BOT_LOGIN_REGEXP = /^(bot-.+|.+bot|.+\[bot\]|.+-bot-.+|robot-.+|.+-ci-.+|.+-ci|.+-testing|.+clabot.+|.+-gerrit|k8s-.+|.+-machine|.+-automation|github-.+|.+-github|.+-service|.+-builds|codecov-.+|.+teamcity.+|jenkins-.+|.+-jira-.+)$/;
-
-enum GitHubUserType {
-    ORG = 'ORG',
-    USR = 'USR'
-}
-
-interface GitHubUser {
-    id: number;
-    login: string;
-    type: GitHubUserType;
-    is_bot?: boolean;
-    company?: string;
-    company_formatted?: string;
-    address?: string;
-    address_formatted?: string;
-    country_code?: string;
-    state?: string;
-    city?: string;
-    longitude?: number;
-    latitude?: number;
-    followers: number;
-    following: number;
-    createdAt: Date;
-    updatedAt: Date;
-    deleted?: boolean;
-    refreshedAt?: Date;
-}
-
-interface RepoWithStar {
-    repoId: number;
-    repoName: string;
-    stars: number;
-}
-
-interface KeywordWithCnt {
-    prefix: string;
-    cnt: number;
-}
-
 async function main() {
-    // Init TiDB client.
-    const conn = new ConnectionWrapper(getConnectionOptions());
+    const program = new Command();
+    program.name('sync-users')
+        .description('Sync GitHub users public data to database.')
+        .version('0.1.0');
 
-    // Init Octokit Pool.
-    const tokens = (process.env.SYNC_USER_GH_TOKENS || '').split(',').map(s => s.trim()).filter(Boolean);
-    if (tokens.length === 0) {
-        logger.error('Must provide `SYNC_USER_GH_TOKENS`.');
-        process.exit();
-    }
-    const octokitPool = createPool(new OctokitFactory(tokens), {
-        min: 0,
-        max: tokens.length
-    });
-    octokitPool.on('factoryCreateError', function (err) {
-        logger.error('factoryCreateError', err)
-    }).on('factoryDestroyError', function (err) {
-        logger.error('factoryDestroyError', err)
-    });
+    program.command('sync-from-time-range-search')
+        .description('Import the database in batches according to the user creation time with GitHub search API.')
+        .requiredOption<DateTime>(
+            '--from <datetime>',
+            'The start time of time range, which is followed SQL date time format. Default: "2018-02-08".',
+            (value) => DateTime.fromSQL(value),
+            // GitHub was founded in 2008: https://en.wikipedia.org/wiki/GitHub
+            DateTime.fromSQL('2008-02-08')
+        )
+        .requiredOption<DateTime>(
+            '--to <datetime>',
+            'The end time of time range, which is followed SQL date time format. Default: now.',
+            (value) => DateTime.fromSQL(value),
+            DateTime.now()
+        )
+        .requiredOption<DurationLike>(
+            '--chunk-size <duration>',
+            `The chunk size is used to spilt the large task to many small subtask, so that we can process them 
+in concurrent. For example: --chunk-size='{ "days": 1 }'`,
+            (value) => JSON.parse(value),
+            { days: 1 }
+        )
+        .requiredOption<DurationLike>(
+            '--step-size <duration>',
+            `The step size is used to control what is the interval of repository creation time for a request 
+to obtain data. For example: --step-size='{ "minutes": 10 }'
+`,
+            (value) => JSON.parse(value),
+            { minutes: 10 }
+        )
+        .option('--filter [string]', `The query variable of GitHub GraphQL search API.
+Reference: https://docs.github.com/en/search-github/searching-on-github/searching-users`)
+        .action(async (options) => {
+            // Handle the command arguments.
+            let { from, to, chunkSize, stepSize, filter } = options;
 
-    // Init Location Locator.
-    const locationCache = new LocationCache();
-    const geoLocator = new Locator(locationCache);
-
-    // Init Users Loader.
-    // TODO: Support update GitHub user data on dup. 
-    const insertUserSQL = `INSERT IGNORE INTO github_users(
-        id, login, type, is_bot, company, company_formatted, address_formatted, country_code, state, city, 
-        longitude, latitude, followers, followings, created_at, updated_at
-    ) VALUES ?`;
-    const userLoader = new BatchLoader(conn, insertUserSQL, {
-        batchSize: 2000
-    });
-
-    // Init sync user recorder.
-    const syncUserRecorder = new SyncUserRecorder();
-
-    // Prepare sync users jobs.
-    const syncModes = ([process.env.SYNC_USER_FROM_REPO_STARS, process.env.SYNC_USER_FROM_USER_SEARCH]).filter((m) => m === '1');
-    if (syncModes.length === 0) {
-        logger.error('Must provide use at least one sync mode for syncing users.');
-        process.exit();
-    }
-    const syncJobs:SyncUserLog[] = [];
-
-    if (process.env.SYNC_USER_FROM_REPO_STARS === '1') {
-        const start = DateTime.now();
-        const repos = await getReposOrderByStars(conn);
-        for (const repo of repos) {
-            if (repo.repoName === undefined) continue;
-            syncJobs.push({
-                syncMode: SyncUserMode.SYNC_FROM_REPO_STARS,
-                repoId: repo.repoId,
-                repoName: repo.repoName
-            });
-        }
-        const cost = DateTime.now().diff(start).seconds;
-        logger.info(`Generated ${repos.length} sync-users jobs according to the repo stars, cost time: ${cost} s.`);
-    }
-
-    if (process.env.SYNC_USER_FROM_USER_SEARCH === '1') {
-        const start = DateTime.now();
-        const keywords = await getUserSearchKeywords(conn);
-        for (const keyword of keywords) {
-            if (keyword.prefix === undefined) continue;
-            syncJobs.push({
-                syncMode: SyncUserMode.SYNC_FROM_USER_SEARCH,
-                keyword: keyword.prefix
-            });
-        }
-        const cost = DateTime.now().diff(start).seconds;
-        logger.info(`Generated ${keywords.length} sync-users jobs according to the user search keywords, cost time: ${cost} s.`);
-    }
-
-    // Execute sync users job in concurrently.
-    const concurrent = tokens.length;
-    await asyncPool(concurrent, syncJobs, async (jobData) => {
-        if (jobData.syncMode === undefined) return;
-
-        try {
-            let job = await syncUserRecorder.findOne(jobData);
-            if (job === undefined) {
-                job = await syncUserRecorder.create(jobData);
+            const gitHubTokens = (process.env.SYNC_GH_TOKENS || '').split(',').map(s => s.trim()).filter(Boolean);
+            if (gitHubTokens.length === 0) {
+                logger.error('Must provide `SYNC_GH_TOKENS`.');
+                process.exit();
             }
 
-            // TODO: support focus sync users although this job has already finished.
-            if (job.finishedAt !== undefined) {
-                logger.info(`Skipping finished sync users job: ${JSON.stringify(jobData)}.`);
-            }
-            logger.info(`Running sync users job ${job.id}: `, job);
+            // Init Worker Pool.
+            const workerPool = createWorkerPool(gitHubTokens);
 
-            // TODO: support more sync user mode.
-            if (job.syncMode === SyncUserMode.SYNC_FROM_REPO_STARS) {
-                if (job.repoName === undefined) return;
-                await syncUsersFromRepoStars(octokitPool, geoLocator, userLoader, syncUserRecorder, job);
-            } else if (job.syncMode === SyncUserMode.SYNC_FROM_USER_SEARCH) {
-                if (job.keyword === undefined) return;
-                await syncUsersFromUserSearch(octokitPool, geoLocator, userLoader, syncUserRecorder, job);
-            }
+            logger.info(`Start sync users for time range from ${from} to ${to}.`);
+            await syncUsersFromTimeRangeSearch(workerPool, from, to, chunkSize, stepSize, filter);
+            logger.success(`Finished sync users for time range from ${from} to ${to}.`);
 
-            await syncUserRecorder.finish(job);
-        } catch(err) {
-            logger.error(`Failed to execute sync users job ${JSON.stringify(jobData)}:`, err);
-        }
-    });
-}
-
-// Get GitHub users from repo stars.
-
-async function getReposOrderByStars(conn: ConnectionWrapper):Promise<RepoWithStar[]> {
-    return new Promise(async (resolve, reject) => {
-        const batchSize = 20000;
-        // `l.repo_id IS NULL` means that the sync task for the specified repo has not been created.
-        // `finishedAt IS NULL` means that the sync task for the specified repo has not been finished.
-        const sql = `
-        SELECT
-            ge.repo_id AS repoId, ANY_VALUE(ge.repo_name) AS repoName,
-            approx_count_distinct(actor_login) AS stars
-        FROM github_events ge
-        LEFT JOIN sync_user_logs l ON ge.repo_id = l.repo_id
-        WHERE
-            type = 'WatchEvent'
-            AND event_year = DATE_FORMAT(NOW(), '2022-07-01')
-            AND (l.repo_id IS NULL OR l.finished_at IS NULL)
-        GROUP BY ge.repo_id
-        HAVING stars > 100
-        ORDER BY stars DESC
-        LIMIT ?;
-        `;
-
-        logger.info(`Get top ${batchSize} repos order by stars ...`);
-        try {
-            const res = await conn.query(sql, [batchSize]);
-            resolve(res.result as RepoWithStar[]);
-        } catch (err) {
-            reject(err);
-        }
-    });
-}
-
-async function syncUsersFromRepoStars(
-    octokitPool: Pool<Octokit>, geoLocator: Locator, userLoader: BatchLoader, syncUserRecorder: SyncUserRecorder, 
-    job: SyncUserLog
-): Promise<null> {
-    let { repoName, lastCursor = null } = job;
-    if (repoName === undefined) {
-        throw new Error('Must provide repo full name.');
-    }
-    if (process.env.IGNORE_LAST_CURSOR === '1') {
-        lastCursor = null
-    }
-    const { owner, repo } = extractOwnerAndRepo(repoName);
-
-    return new Promise((resolve, reject) => {
-        octokitPool.use(async (octokit) => {
-            let stargazerTotal = 0;
-            let stargazerFetch = 0;
-            let totalCost = 0;
-            let remaining = 0;
-            let page = 0;
-
-            logger.info(`Fetching stargazers for repo: ${owner}/${repo}, last cursor: ${lastCursor} ...`);
-
-            const variables = {
-                owner: owner,
-                repo: repo,
-                cursor: lastCursor
-            };
-            const query = /* GraphQL */ `
-            query($owner: String!, $repo: String!, $cursor: String) { 
-                repository(owner: $owner, name: $repo) {
-                    stargazers(first: 100, after: $cursor, orderBy: {field: STARRED_AT, direction: ASC}) {
-                        edges {
-                            node {
-                                databaseId
-                                login
-                                name
-                                company
-                                location
-                                followers {
-                                    totalCount
-                                }
-                                following {
-                                    totalCount
-                                }
-                                createdAt
-                                updatedAt
-                            }
-                            starredAt
-                        }
-                        pageInfo {
-                            hasNextPage
-                            endCursor
-                        }
-                        totalCount
-                    }
-                }
-                rateLimit {
-                    cost
-                    remaining
-                    resetAt
-                }
-            }
-            `;
-
-            while(true) {
-                const { repository, rateLimit } = await octokit.graphql(query, variables) as any;
-                const stargazers = repository?.stargazers;
-
-                remaining = rateLimit?.remaining;
-                totalCost += rateLimit?.cost;
-                stargazerTotal = stargazers?.totalCount;
-                stargazerFetch += stargazers?.edges.length;
-                page++;
-
-                logger.info(`Fetch ${stargazers?.edges.length} stargazers for repo: ${owner}/${repo} page: ${page}`);
-
-                // Load GitHub users.
-                const githubUsers:GitHubUser[] = [];
-                for (const stargazerEdge of stargazers.edges) {
-                    const stargazer = stargazerEdge.node;
-                    githubUsers.push({
-                        id: stargazer.databaseId,
-                        login: stargazer.login,
-                        type: GitHubUserType.USR,
-                        company: stargazer.company,
-                        address: stargazer.location,
-                        followers: stargazer.followers.totalCount,
-                        following: stargazer.following.totalCount,
-                        createdAt: stargazer.createdAt,
-                        updatedAt: stargazer.updatedAt
-                    });
-                }
-                loadGitHubUsers(geoLocator, userLoader, githubUsers).then((res) => {
-                    logger.info(`Async load ${res} GitHub users from the stars of repo ${owner}/${repo}.`);
-                });
-
-                // Switch to next page.
-                const pageInfo = stargazers?.pageInfo;
-
-                if (job.id === undefined) {
-                    logger.warn('Did not provide job ID, last cursor can be stored to the database.');
-                } else {
-                    syncUserRecorder.updateLastCursor(job.id, pageInfo.endCursor);
-                }
-
-                if (pageInfo?.hasNextPage === true) {
-                    variables.cursor = pageInfo.endCursor;
-                } else {
-                    break;
-                }
-            }
-
-            logger.info(`Fetched ${stargazerFetch}/${stargazerTotal} stargazers for repo: ${owner}/${repo} cost: ${totalCost} remaining: ${remaining}.`);
-            // TODO: return the last cursor for next time query.
-            resolve(null);
+            workerPool.clear();
         });
-    });
-}
 
-// Get GitHub users from user searching.
+    program.command('format-address-in-batch')
+        .description('Format users address in batch.')
+        .requiredOption<number>('--concurrent <num>', '', (value) => Number(value), 10)
+        .action(async (options) => {
+            const { concurrent } = options;
 
-const MAX_PREFIX_LENGTH = parseInt(process.env.MAX_PREFIX_LENGTH || '8');
-const MAX_SEARCH_SIZE = 1000;
-const initPrefixLen = parseInt(process.env.MIN_PREFIX_LENGTH || '5');
+            // Init TiDB client.
+            const pool = createPool(getConnectionOptions({
+                connectionLimit: concurrent
+            }));
 
-async function getUserSearchKeywords(conn: ConnectionWrapper):Promise<KeywordWithCnt[]> {
-    let pageSize = 20000;
-    let page = 1;
-    let offset = 0;
-    
-    let result:KeywordWithCnt[] = [];
-    while (true) {
-        const keywords = await getUserSearchKeywordWithLen(conn, initPrefixLen, offset, pageSize);
-        logger.info(`Traveling the prefix tree with init prefixes, page ${page}`);
+            // Init Location Locator.
+            const locationCache = new LocationCache();
+            const geoLocator = new Locator(locationCache, loadRegionCodeMap());
 
-        if (keywords.length === 0) {
-            break;
-        }
+            logger.success('Start address formatting in batch.');
+            await formatAddressInBatch(logger, pool, geoLocator, concurrent);
+            logger.success('Finished address formatting in batch.');
 
-        for (const keyword of keywords) {
-            if (keyword.cnt < MAX_SEARCH_SIZE * 0.75) {
-                logger.info(`Prefix ${keyword.prefix} has no enough sub-prefix need to travel, only ${keyword.cnt}, so skipped.`);
-                result.push(keyword);
-                continue;
-            }
-
-            const arr = await getUserSearchKeywordWithPrefixByPage(conn, keyword);
-            result = result.concat(arr);
-        }
-
-        page++;
-        offset = offset + pageSize;
-    }
-
-    result.sort((a, b) => {
-        return b.cnt - a.cnt;
-    });
-
-    return result;
-}
-
-async function getUserSearchKeywordWithLen(conn: ConnectionWrapper, length: number, offset: number, size: number):Promise<KeywordWithCnt[]> {
-    return new Promise(async (resolve, reject) => {
-        try {
-            const res = await conn.query(`
-                SELECT
-                    SUBSTRING(login, 1, ?) AS prefix,
-                    COUNT(*) AS cnt
-                FROM users u
-                GROUP BY prefix
-                ORDER BY cnt DESC
-                LIMIT ?, ?
-            `, [length, offset, size]);
-            resolve(res.result as KeywordWithCnt[]);
-        } catch (err) {
-            reject(err);
-        }
-    });
-}
-
-async function getUserSearchKeywordWithPrefixByPage(conn: ConnectionWrapper, root: KeywordWithCnt):Promise<KeywordWithCnt[]> {
-    const maxPageSize = 2000;
-    let result:KeywordWithCnt[] = [];
-    let offset = 0;
-
-    if (root.prefix.length + 1 >= MAX_PREFIX_LENGTH) {
-        result.push(root);
-        return result;
-    }
-
-    logger.info(`Traveling the prefix tree started with prefix: '${root.prefix}' cnt: ${root.cnt} ...`);
-
-    while (true) {
-        const keywords = await getUserSearchKeywordWithPrefix(conn, root.prefix, offset, maxPageSize);
-        if (keywords.length === 0) {
-            break;
-        }
-
-        for (let keyword of keywords) {
-            if (keyword.cnt > MAX_SEARCH_SIZE) {
-                // Travel the branch.
-                const branchResult = await getUserSearchKeywordWithPrefixByPage(conn, keyword);
-                result = result.concat(branchResult);
-            } else {
-                // Push the leaf.
-                result.push(keyword);
-            }
-        }
-
-        offset += maxPageSize;
-    }
-    return result;
-}
-
-async function getUserSearchKeywordWithPrefix(conn: ConnectionWrapper, prefix: string, offset: number, size: number):Promise<KeywordWithCnt[]> {
-    return new Promise(async (resolve, reject) => {
-        try {
-            const res = await conn.query(`
-                SELECT
-                    SUBSTRING(login, 1, LENGTH(?) + 1) AS prefix,
-                    COUNT(*) AS cnt
-                FROM users u
-                WHERE
-                    login LIKE CONCAT(?, '%')
-                    AND LENGTH(?) + 1 <= ?
-                GROUP BY prefix
-                ORDER BY cnt DESC
-                LIMIT ?, ?
-            `, [prefix, prefix, prefix, MAX_PREFIX_LENGTH, offset, size]);
-            resolve(res.result as KeywordWithCnt[]);
-        } catch (err) {
-            reject(err);
-        }
-    });
-}
-
-async function syncUsersFromUserSearch(
-    octokitPool: Pool<Octokit>, geoLocator: Locator, userLoader: BatchLoader, syncUserRecorder: SyncUserRecorder, 
-    job: SyncUserLog
-): Promise<any> {
-    const { keyword } = job;
-    const lastCursor = null;        // Ignore the last cursor.
-
-    if (keyword === undefined) {
-        throw new Error('Must provide the keyword for user searching.');
-    }
-
-    return new Promise((resolve, reject) => {
-        octokitPool.use(async (octokit) => {
-            let userTotal = 0;
-            let userFetch = 0;
-            let totalCost = 0;
-            let remaining = 0;
-            let page = 0;
-
-            logger.info(`Fetching search user result for keyword: ${keyword} ...`);
-
-            const variables = {
-                keyword: `in:login ${keyword}`,
-                cursor: lastCursor
-            };
-            const query = /* GraphQL */ `
-            query($keyword: String!, $cursor: String) { 
-                search(type: USER query: $keyword first: 100 after: $cursor) {
-                    userCount
-                    nodes {
-                        ... on Organization {
-                            databaseId
-                            __typename
-                            login
-                            name
-                            location
-                            createdAt
-                            updatedAt
-                        }
-                        ... on User {
-                            databaseId
-                            __typename
-                            login
-                            name
-                            company
-                            location
-                            followers {
-                                totalCount
-                            }
-                            following {
-                                totalCount
-                            }
-                            createdAt
-                            updatedAt
-                        }
-                    }
-                    pageInfo {
-                        hasNextPage
-                        endCursor
-                    }
-                }
-                rateLimit {
-                    limit
-                    cost
-                    remaining
-                    resetAt
-                }
-            }
-            `;
-
-            while(true) {
-                const { search, rateLimit } = await octokit.graphql(query, variables) as any;
-
-                remaining = rateLimit?.remaining;
-                totalCost += rateLimit?.cost;
-                userTotal = search?.userCount;
-                userFetch = search?.nodes.length;
-                page++;
-
-                logger.info(`Fetch ${search?.nodes.length} user result for keyword: ${keyword}, page: ${page}`);
-
-                // Load GitHub users.
-                const githubUsers:GitHubUser[] = [];
-                for (const user of search?.nodes) {
-                    let userType = GitHubUserType.USR;
-                    if (user.__typename === 'Organization') {
-                        userType = GitHubUserType.ORG;
-                    }
-
-                    githubUsers.push({
-                        id: user.databaseId,
-                        login: user.login,
-                        type: userType,
-                        company: user?.company,
-                        address: user.location,
-                        followers: user?.followers?.totalCount,
-                        following: user?.following?.totalCount,
-                        createdAt: user.createdAt,
-                        updatedAt: user.updatedAt
-                    });
-                }
-                loadGitHubUsers(geoLocator, userLoader, githubUsers).then((nUsers) => {
-                    logger.info(`Async load ${nUsers} GitHub users from the user search for keyword ${keyword}.`);
-                });
-
-                // Switch to next page.
-                const pageInfo = search?.pageInfo;
-
-                if (job.id === undefined) {
-                    logger.warn('Did not provide job ID, last cursor can be stored to the database.');
-                } else {
-                    syncUserRecorder.updateLastCursor(job.id, pageInfo.endCursor);
-                }
-
-                if (pageInfo?.hasNextPage === true) {
-                    variables.cursor = pageInfo.endCursor;
-                } else {
-                    break;
-                }
-            }
-
-            logger.info(`Fetched ${userFetch}/${userTotal} users for keyword: ${keyword} cost: ${totalCost} remaining: ${remaining}.`);
-            resolve(true);
+            pool.end();
         });
-    });
+
+    program.command('identify-bots')
+        .description('Identify bots and update the `is_bot` field.')
+        .requiredOption<number>('--concurrent <num>', '', (value) => Number(value), 4)
+        .action(async (options) => {
+            const { concurrent } = options;
+
+            // Init TiDB client.
+            const pool = createPool(getConnectionOptions({
+                connectionLimit: concurrent
+            }));
+
+            const botLogins = loadBotLoginsConfig();
+            logger.info(`Found ${botLogins.length} bot logins.`);
+
+            logger.success('Start bots identifying in batch.');
+            await identifyBotsInBatch(logger, pool, concurrent, botLogins);
+            logger.success('Finished bots identifying in batch.');
+
+            pool.end();
+        });
+
+    program.command('load-orgs-from-file')
+        .description('Load organization information from file.')
+        .requiredOption<number>('--concurrent <num>', '', (value) => Number(value), 4)
+        .action(async (options) => {
+            const { concurrent } = options;
+
+            // Init TiDB client.
+            const pool = createPool(getConnectionOptions({
+                connectionLimit: 2
+            }));
+
+            const organizations = loadOrganizationConfig();
+            logger.info(`Found ${organizations.length} organizations.`);
+
+            logger.success('Start organization name formatting.');
+            await loadOrgsToDatabase(logger, pool, concurrent, organizations);
+            logger.success('Finished organization name formatting.');
+
+            pool.end();
+        });
+
+    program.command('format-orgs')
+        .description('Format organization name of users in batch.')
+        .action(async (options) => {
+            // Init TiDB client.
+            const pool = createPool(getConnectionOptions({
+                connectionLimit: 2
+            }));
+
+            logger.success('Start organization\'s name formatting.');
+            await formatOrgNamesInBatch(logger, pool);
+            logger.success('Finished organization\'s name formatting.');
+
+            pool.end();
+        });
+
+    program.parse();
 }
 
-// Load GitHub users.
+function loadRegionCodeMap() {
+    let regionCodeMap:Record<string, string> = {};
+    // Please follow ISO 3166-1 alpha-2: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
+    const configFile = path.resolve(__dirname, '../../region-code-mappings.yaml');
+    if (existsSync(configFile)) {
+        const originFile = readFileSync(configFile, 'utf8');
+        const { mappings } = YAML.parse(originFile) as { mappings: RegionCodeMapping[]};
 
-async function loadGitHubUsers(geoLocator: Locator, userLoader: BatchLoader, users: GitHubUser[]): Promise<number> {
-    for (const user of users) {
-        await loadGitHubUser(geoLocator, userLoader, user);
+        if (Array.isArray(mappings)) {
+            for (let mapping of mappings) {
+                regionCodeMap[mapping.region_code] = mapping.country_code
+            }
+            logger.info(`Found ${mappings.length} region code mappings:`, regionCodeMap);
+        }
+    } else {
+        logger.info(`Didn't found region-code-mappings.yaml file.`);
     }
-    return users.length;
+    return regionCodeMap;
 }
 
-async function loadGitHubUser(geoLocator: Locator, userLoader: BatchLoader, user: GitHubUser) {
-    let { id, login, type, company, address, followers, following, createdAt, updatedAt } = user;
-    const isBot = BOT_LOGIN_REGEXP.test(login);
-    address = trimAddress(address);
-    company = trimCompanyName(company);
+function loadBotLoginsConfig() {
+    const configFile = path.resolve(__dirname, '../../bots.yaml');
+    if (existsSync(configFile)) {
+        const originFile = readFileSync(configFile, 'utf8');
+        const { bot_github_logins } = YAML.parse(originFile) as { bot_github_logins: string[]};
 
-    // TODO: Format company name.
-
-    // Reverse geolocation coding.
-    let addressFormatted = address;
-    let countryCode = null;
-    let state = null;
-    let city = null;
-    let longitude = null;
-    let latitude = null;
-
-    if (address !== undefined && process.env.FORMAT_ADDRESS === '1') {
-        const location = await geoLocator.geocode(address);
-        countryCode = location?.countryCode;
-        state = location?.state;
-        city = location?.city;
-        addressFormatted = location?.formattedAddress;
-        longitude = location?.longitude;
-        latitude = location?.latitude;
+        if (Array.isArray(bot_github_logins)) {
+            return bot_github_logins;
+        }
+    } else {
+        logger.info(`Didn't found bots.yaml file.`);
     }
-
-    userLoader.insert([
-        id, login, type, isBot, company, company, addressFormatted, countryCode, state, city, 
-        longitude, latitude, followers, following, createdAt, updatedAt
-    ]);
+    return [];
 }
 
-function trimCompanyName(companyName: string | undefined | null):(string | undefined) {
-    if (companyName === undefined || companyName === null) return undefined;
-    return companyName.trim()
-}
+function loadOrganizationConfig() {
+    const configFile = path.resolve(__dirname, '../../organizations.yaml');
+    if (existsSync(configFile)) {
+        const originFile = readFileSync(configFile, 'utf8');
+        const { organizations } = YAML.parse(originFile) as { organizations: Organization[]};
 
-function trimAddress(addressName?: string | undefined | null):(string | undefined) {
-    if (addressName === undefined || addressName === null) return undefined;
-    return addressName.trim()
+        if (Array.isArray(organizations)) { 
+            return organizations;
+        }
+    }
+    return [];
 }
 
 main();
