@@ -214,7 +214,7 @@ export const SQLPlaygroundDrawer = (props: { data?: Repo }) => {
             }}
           >
             <Typography variant="h2" component="div" sx={{ flexGrow: 1, color: 'orange' }}>
-              Playground - Based on Row-Oriented Storage Engine
+              Playground: Based on Row-Oriented Storage Engine
             </Typography>
             <Box
               sx={{
