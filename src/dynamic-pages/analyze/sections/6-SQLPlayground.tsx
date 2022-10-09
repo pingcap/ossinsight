@@ -638,7 +638,7 @@ WHERE
   {
     id: "pr_or_push",
     type: "sql",
-    title: "Which do you like, pull request or push?",
+    title: "Which do you prefer, pull request or push?",
     sql: `SELECT
   type,
   count(*)
