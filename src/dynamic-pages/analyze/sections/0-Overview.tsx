@@ -104,7 +104,7 @@ export const OverviewSection = forwardRef(function ({}, ref: ForwardedRef<HTMLEl
           </>
         )
       }
-      <Grid container spacing={0} alignItems='center'>
+      <Grid container spacing={0} alignItems='center' mb={!vs ? 2 : 0}>
         <Grid item xs={12} md={5}>
           <Summary items={summaries} query='analyze-repo-overview' />
         </Grid>
@@ -115,13 +115,20 @@ export const OverviewSection = forwardRef(function ({}, ref: ForwardedRef<HTMLEl
                 <Analyze query='analyze-stars-history'>
                   <H2 id='stars-history' analyzeTitle display='none'>Stars History</H2>
                   <P2 display='none'>The growth trend and the specific number of stars since the repository was established.</P2>
-                  <LineChart spec={{valueIndex: 'total', name: 'Stars'}} aspectRatio={isSmall ? 16 / 9 : 4 / 3}/>
+                  <LineChart spec={{valueIndex: 'total', name: 'Stars'}} aspectRatio={16 / 9}/>
                 </Analyze>
               )
               : <MonthlySummaryCard />
           }
         </Grid>
       </Grid>
+      {!vs && (
+        <Analyze query='analyze-stars-history'>
+          <H2 id='stars-history' analyzeTitle display='none'>Stars History</H2>
+          <P2 display='none'>The growth trend and the specific number of stars since the repository was established.</P2>
+          <LineChart spec={{valueIndex: 'total', name: 'Stars'}} aspectRatio={32 / 9}/>
+        </Analyze>
+      )}
     </Section>
   )
 })

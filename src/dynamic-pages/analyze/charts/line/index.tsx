@@ -32,6 +32,7 @@ export const LineChart = withChart<LineData<any>, { valueIndex: string, name: st
     left: undefined
   }),
   grid: {
+    left: 8,
     bottom: 8
   },
   dataset: [
