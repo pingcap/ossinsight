@@ -1,5 +1,5 @@
 import consola from "consola";
-import { ConnectionWrapper } from "../utils/db";
+import { Pool } from "mysql2/promise";
 
 export const DEFAULT_BATCH_SIZE = 100;
 export const DEFAULT_FLUSH_INTERVAL = 10;
@@ -35,8 +35,7 @@ export class BatchLoader {
     private maxRetries: number;
 
     constructor(
-        // TODO: replace with connection promisify.
-        readonly conn: ConnectionWrapper,
+        readonly connections: Pool,
         readonly sql: string,
         readonly option: Option = {}
     ) {
@@ -84,14 +83,15 @@ export class BatchLoader {
 
         for (let retries = 0; retries <= this.maxRetries; retries++) {
             try {
-                await this.conn.query(this.sql, records);
+                await this.connections.query(this.sql, records);
                 return;
             } catch (err) {
                 if (retries < this.maxRetries) {
-                    this.logger.error(`Failed to batch load ${records.length} records, retries: ${retries + 1}/${this.maxRetries}.`);
-                    continue
+                    this.logger.error(`Failed to batch load ${records[0].length} records, retries: ${retries + 1}/${this.maxRetries}: `, err);
+                    continue;
                 } else {
-                    this.logger.error(`Failed to batch load ${records.length} records, they will be lost: `, err);
+                    this.logger.error(`Failed to batch load ${records[0].length} records, they will be lost: `, err);
+                    break;
                 }
             }
         }

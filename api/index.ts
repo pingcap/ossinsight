@@ -23,6 +23,7 @@ import { BatchLoader } from "./app/core/BatchLoader";
 import koaStatic from "koa-static";
 import path from "path";
 import { configEnv } from "./app/utils/env";
+import { createPool } from "mysql2/promise";
 
 const logger = consola.withTag("app");
 
@@ -85,11 +86,13 @@ const tokens = (process.env.GH_TOKENS || "").split(",").map((s) => s.trim()).fil
 const ghExecutor = new GhExecutor(tokens, cacheBuilder);
 
 // Init Access Log Batch Loader.
-const conn = new ConnectionWrapper(getConnectionOptions());
+const pool = createPool(getConnectionOptions({
+  connectionLimit: 2
+}));
 const insertAccessLogSQL = `INSERT INTO access_logs(
   remote_addr, origin, status_code, request_path, request_params
 ) VALUES ?`;
-const accessRecorder = new BatchLoader(conn, insertAccessLogSQL);
+const accessRecorder = new BatchLoader(pool, insertAccessLogSQL);
 
 // Init Services.
 const collectionService = new CollectionService(queryExecutor, cacheBuilder);

@@ -1,5 +1,5 @@
-import { GitHubRepo } from ".";
 import { BatchLoader } from "../../app/core/BatchLoader";
+import { GitHubRepo } from "./types";
 
 export async function loadGitHubRepos(repoLoader: BatchLoader, repos: GitHubRepo[]): Promise<number> {
     for (const repo of repos) {

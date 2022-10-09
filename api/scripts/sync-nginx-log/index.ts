@@ -1,11 +1,12 @@
 import consola from 'consola';
 import * as dotenv from "dotenv";
 import { DateTime } from 'luxon';
+import { createPool } from 'mysql2/promise';
 import path from 'path';
 import { Tail } from 'tail';
 import { URL } from 'url';
 import { BatchLoader } from '../../app/core/BatchLoader';
-import { ConnectionWrapper, getConnectionOptions } from '../../app/utils/db';
+import { getConnectionOptions } from '../../app/utils/db';
 
 // The default access log format of nginx.
 // Reference: http://nginx.org/en/docs/http/ngx_http_log_module.html
@@ -51,11 +52,13 @@ async function main () {
     }
 
     // Init TiDB client.
-    const conn = new ConnectionWrapper(getConnectionOptions());
+    const pool = createPool(getConnectionOptions({
+        connectionLimit: 2
+    }));
 
     // Start read access log as stream.
     const sql = 'INSERT IGNORE INTO access_logs(remote_addr, status_code, request_path, request_params, requested_at) VALUES ?';
-    const loader = new BatchLoader(conn, sql);
+    const loader = new BatchLoader(pool, sql);
     const tail = new Tail(logFilepath);
     tail.on("line", function(line: string) {
         try {

@@ -1,8 +1,9 @@
 import consola from "consola";
+import { createPool } from "mysql2/promise";
 import { BatchLoader } from "../core/BatchLoader";
 import CacheBuilder from "../core/cache/CacheBuilder";
 import { TiDBQueryExecutor } from "../core/TiDBQueryExecutor";
-import { ConnectionWrapper, getConnectionOptions } from "../utils/db";
+import { getConnectionOptions } from "../utils/db";
 
 const logger = consola.withTag('stats-service');
 const STATS_QUERY_PREFIX = 'stats-';
@@ -15,8 +16,10 @@ export default class StatsService {
       readonly executor: TiDBQueryExecutor,
       public readonly cacheBuilder: CacheBuilder,
     ) {
-        const conn = new ConnectionWrapper(getConnectionOptions());
-        this.queryStatsLoader = new BatchLoader(conn, `
+        const pool = createPool(getConnectionOptions({
+            connectionLimit: 2
+        }));
+        this.queryStatsLoader = new BatchLoader(pool, `
             INSERT INTO stats_query_summary(query_name, digest_text, executed_at) VALUES ?
         `, {
             batchSize: INSERT_STATS_BATCH_SIZE
