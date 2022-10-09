@@ -86,7 +86,9 @@ const tokens = (process.env.GH_TOKENS || "").split(",").map((s) => s.trim()).fil
 const ghExecutor = new GhExecutor(tokens, cacheBuilder);
 
 // Init Access Log Batch Loader.
-const pool = createPool(getConnectionOptions());
+const pool = createPool(getConnectionOptions({
+  connectionLimit: 2
+}));
 const insertAccessLogSQL = `INSERT INTO access_logs(
   remote_addr, origin, status_code, request_path, request_params
 ) VALUES ?`;
