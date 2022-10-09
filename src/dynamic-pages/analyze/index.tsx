@@ -112,7 +112,7 @@ function AnalyzePage() {
             repoInfo: main?.repoInfo,
             comparingRepoInfo: vs?.repoInfo,
           }}>
-            <Container maxWidth="lg">
+            <Container maxWidth="xl">
               <OverviewSection ref={sectionRefs[0]} />
               <PeopleSection ref={sectionRefs[1]} />
               <CommitsSection ref={sectionRefs[2]} />

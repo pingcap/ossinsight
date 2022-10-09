@@ -49,7 +49,7 @@ export default function CustomPage({
         ) : undefined}
     >
       <div hidden style={{ height: 72 }} />
-      <div style={{ paddingLeft: sideWidth, paddingRight: sideWidth }}>
+      <div style={{ paddingLeft: sideWidth }}>
         <main
           style={{
             '--ifm-container-width-xl': '1200px',

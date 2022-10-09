@@ -24,6 +24,7 @@ import { useRemoteData } from "../../../components/RemoteCharts/hook";
 import { Collection } from "@ossinsight/api";
 import Chip from "@mui/material/Chip";
 import { paramCase } from "param-case";
+import MonthlySummaryCard from "../charts/montly-cards";
 
 export const OverviewSection = forwardRef(function ({}, ref: ForwardedRef<HTMLElement>) {
   const theme = useTheme()
@@ -104,15 +105,21 @@ export const OverviewSection = forwardRef(function ({}, ref: ForwardedRef<HTMLEl
         )
       }
       <Grid container spacing={0} alignItems='center'>
-        <Grid item xs={12} md={vs ? 7 : 6}>
+        <Grid item xs={12} md={5}>
           <Summary items={summaries} query='analyze-repo-overview' />
         </Grid>
-        <Grid item xs={12} md={vs ? 5 : 6}>
-          <Analyze query='analyze-stars-history'>
-            <H2 id='stars-history' analyzeTitle display='none'>Stars History</H2>
-            <P2 display='none'>The growth trend and the specific number of stars since the repository was established.</P2>
-            <LineChart spec={{valueIndex: 'total', name: 'Stars'}} aspectRatio={isSmall ? 16 / 9 : 4 / 3}/>
-          </Analyze>
+        <Grid item xs={12} md={7}>
+          {
+            vs
+              ? (
+                <Analyze query='analyze-stars-history'>
+                  <H2 id='stars-history' analyzeTitle display='none'>Stars History</H2>
+                  <P2 display='none'>The growth trend and the specific number of stars since the repository was established.</P2>
+                  <LineChart spec={{valueIndex: 'total', name: 'Stars'}} aspectRatio={isSmall ? 16 / 9 : 4 / 3}/>
+                </Analyze>
+              )
+              : <MonthlySummaryCard />
+          }
         </Grid>
       </Grid>
     </Section>
