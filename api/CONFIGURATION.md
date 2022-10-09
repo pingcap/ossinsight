@@ -74,7 +74,6 @@ organizations:
   - `FDN`: Foundation, may be a non-profit organization, it may be a composite group of several companies.
   - `COM`: Company.
   - `EDU`: Educational institution, may be a university.
-  - `N/A`: Unknown, 
+  - `N/A`: Unknown.
 - The `patterns` array filed, here you can add RegExp that match the current organization name.
 - The `domains` array field, you can add a domain name owned by the organization. If a user uses an email suffixed with this domain name as a public email address, he will be considered a member of this company or organization. For example: `linuxfoundation.org`
-
