@@ -1,11 +1,12 @@
 SELECT
-    TRIM(LOWER(REPLACE(u.company, '@', ''))) AS company,
+    TRIM(LOWER(REPLACE(gu.organization, '@', ''))) AS company,
     COUNT(DISTINCT actor_id)                 AS users_count
-FROM github_events
-         JOIN db_repos db ON db.id = github_events.repo_id
-         JOIN users u ON u.login = github_events.actor_login
-WHERE event_year = 2021
-  AND github_events.type IN (
+FROM github_events ge
+JOIN db_repos db ON db.id = ge.repo_id
+JOIN github_users gu ON gu.login = ge.actor_login
+WHERE
+  event_year = 2021
+  AND ge.type IN (
       'IssuesEvent',
       'PullRequestEvent',
       'IssueCommentEvent',
@@ -13,9 +14,9 @@ WHERE event_year = 2021
       'CommitCommentEvent',
       'PullRequestReviewEvent'
     )
-  AND u.company IS NOT NULL
-  AND u.company != ''
-  AND u.company != 'none'
+  AND gu.organization IS NOT NULL
+  AND gu.organization != ''
+  AND gu.organization != 'none'
 GROUP BY 1
 ORDER BY 2 DESC
 LIMIT 20

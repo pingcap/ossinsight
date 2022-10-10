@@ -1,12 +1,12 @@
 SELECT
     country_code,
     COUNT(DISTINCT actor_id) AS users_count
-FROM github_events
-JOIN db_repos db ON db.id = github_events.repo_id
-JOIN users u ON u.login = github_events.actor_login
+FROM github_events ge
+JOIN db_repos db ON db.id = ge.repo_id
+JOIN github_users gu ON gu.login = ge.actor_login
 WHERE
   event_year = 2021
-  AND github_events.type IN (
+  AND ge.type IN (
       'IssuesEvent',
       'PullRequestEvent',
       'IssueCommentEvent',

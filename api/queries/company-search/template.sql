@@ -1,8 +1,8 @@
 WITH company_ci AS (
-    SELECT LOWER(company) AS company, COUNT(*) AS cnt
-    FROM users
+    SELECT gu.organization AS company, COUNT(1) AS cnt
+    FROM github_users gu
     WHERE
-        LOWER(company) LIKE CONCAT('%', LOWER('Mini256'), '%')
+        gu.organization LIKE CONCAT('%', 'PingCAP', '%')
     GROUP BY company
 )
 SELECT
