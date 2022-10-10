@@ -6,7 +6,8 @@ WITH prs_with_language AS (
         type = 'PullRequestEvent'
         AND actor_id = 5086433
         AND action = 'opened'
-        AND language IS NOT NULL
+        AND language IS NOT NULL  -- TODO: remove
+        AND language != ''
     GROUP BY language
 ), s AS (
     SELECT SUM(cnt) AS total FROM prs_with_language

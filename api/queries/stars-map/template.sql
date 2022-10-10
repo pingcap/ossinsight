@@ -7,8 +7,9 @@ WITH group_by_area AS (
     WHERE
         ge.repo_id IN (41986369)
         AND ge.type = 'WatchEvent'
-        AND gu.country_code IS NOT NULL
+        AND gu.country_code IS NOT NULL -- TODO: remove
         AND gu.country_code != 'N/A'
+        AND gu.country_code != 'UND'
     GROUP BY country_or_area
     ORDER BY cnt DESC
 ), summary AS (

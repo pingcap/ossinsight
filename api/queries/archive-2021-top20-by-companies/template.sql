@@ -14,7 +14,7 @@ WHERE
       'CommitCommentEvent',
       'PullRequestReviewEvent'
     )
-  AND gu.organization IS NOT NULL
+  AND gu.organization IS NOT NULL  -- TODO: remove
   AND gu.organization != ''
   AND gu.organization != 'none'
 GROUP BY 1

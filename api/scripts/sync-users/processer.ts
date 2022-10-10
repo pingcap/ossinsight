@@ -1,4 +1,4 @@
-import async, { queue } from "async";
+import async from "async";
 import { Consola } from "consola";
 import { Pool, ResultSetHeader } from "mysql2/promise";
 import { DEFAULT_COUNTRY_CODE, DEFAULT_REGION_CODE, Locator } from "../../app/locator/Locator";
@@ -8,7 +8,10 @@ SELECT
     address, COUNT(1) AS cnt
 FROM
     github_users
-WHERE address IS NOT NULL AND country_code IS NULL
+WHERE
+    address IS NOT NULL
+    AND address != ''
+    AND (country_code IS NULL OR country_code = 'N/A')
 GROUP BY address
 ORDER BY cnt DESC
 LIMIT 10000
