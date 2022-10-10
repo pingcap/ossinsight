@@ -3,8 +3,8 @@ class Partition < ActiveRecord::Migration[6.1]
     create_sql = <<~SQL
       CREATE TABLE if not exists `github_events` (
         `id` bigint(20) NOT NULL DEFAULT 0,
-        `type` varchar(29) NOT NULL DEFAULT 'WatchEvent',
-        `created_at` datetime NOT NULL,
+        `type` varchar(29) NOT NULL DEFAULT 'Event',
+        `created_at` datetime NOT NULL DEFAULT '1970-01-01 00:00:00',
         `repo_id` bigint(20) NOT NULL DEFAULT 0,
         `repo_name` varchar(140)  NOT NULL DEFAULT '',
         `actor_id` bigint(20) NOT NULL DEFAULT 0,
