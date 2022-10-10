@@ -1,14 +1,14 @@
 SELECT company_name, issue_creators
 FROM (
     SELECT
-        TRIM(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(LOWER(u.company), ',', ''), '-', ''), '@', ''), '.', ''), 'ltd', ''), 'inc', ''), 'com', ''), 'www', '')) as company_name,
-        COUNT(distinct actor_login) as issue_creators
-    FROM github_events
-    LEFT JOIN users u ON github_events.actor_login = u.login
+        TRIM(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(LOWER(gu.organization), ',', ''), '-', ''), '@', ''), '.', ''), 'ltd', ''), 'inc', ''), 'com', ''), 'www', '')) as company_name,
+        COUNT(distinct ge.actor_login) as issue_creators
+    FROM github_events ge
+    LEFT JOIN github_users gu ON ge.actor_login = gu.login
     WHERE
-        repo_id IN (41986369)
-        AND github_events.type = 'IssuesEvent'
-        AND action = 'opened'
+        ge.repo_id IN (41986369)
+        AND ge.type = 'IssuesEvent'
+        AND ge.action = 'opened'
     GROUP BY company_name
  ) sub
 WHERE

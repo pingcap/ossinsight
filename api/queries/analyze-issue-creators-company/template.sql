@@ -1,9 +1,9 @@
 WITH issue_creator_companies AS (
     SELECT
-        TRIM(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(LOWER(u.company), ',', ''), '-', ''), '@', ''), 'www.', ''), 'inc', ''), '.com', ''), '.cn', ''), '.', '')) AS company_name,
+        TRIM(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(LOWER(u.organization), ',', ''), '-', ''), '@', ''), 'www.', ''), 'inc', ''), '.com', ''), '.cn', ''), '.', '')) AS company_name,
         COUNT(DISTINCT ge.actor_login) AS issue_creators
     FROM github_events ge
-    LEFT JOIN users u ON ge.actor_login = u.login
+    LEFT JOIN github_users u ON ge.actor_login = u.login
     WHERE
         ge.repo_id in (41986369)
         AND ge.type = 'IssuesEvent'

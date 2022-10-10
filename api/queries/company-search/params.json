@@ -3,7 +3,7 @@
   "params": [
     {
       "name": "keyword",
-      "replaces": "Mini256",
+      "replaces": "PingCAP",
       "pattern": "^[^\"%_]+$"
     }
   ]

@@ -2,16 +2,17 @@ select
     company_name
 from (
      select
-        /*+ READ_FROM_STORAGE(TIKV[u]) */
-        trim(replace(replace(replace(replace(replace(replace(replace(replace(lower(u.company), ',', ''), '-', ''), '@', ''), 'www.', ''), 'inc', ''), '.com', ''), '.cn', ''), '.', '')) as company_name,
+        trim(replace(replace(replace(replace(replace(replace(replace(replace(lower(gu.organization), ',', ''), '-', ''), '@', ''), 'www.', ''), 'inc', ''), '.com', ''), '.cn', ''), '.', '')) as company_name,
         repo_id,
         count(distinct actor_login) as stargazers
-     from github_events
-     left join users u ON github_events.actor_login = u.login
-     where repo_id IN (48833910, 156018) and github_events.type = 'WatchEvent'
+     from github_events ge
+     left join github_users gu ON ge.actor_login = gu.login
+     where repo_id IN (48833910, 156018) and ge.type = 'WatchEvent'
      group by 1, 2
 ) sub
-where length(company_name) != 0 and company_name not in ('-', 'none', 'no', 'home', 'n/a', 'null', 'unknown')
+where
+    length(company_name) != 0
+    and company_name not in ('-', 'none', 'no', 'home', 'n/a', 'null', 'unknown')
 group by 1
 having COUNT(distinct repo_id) > 1
 order by SUM(stargazers) desc

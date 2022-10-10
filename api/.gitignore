@@ -18,6 +18,7 @@ log
 *.log
 test/result/*.log
 .pnpm-debug.log
+/**/explain.result.txt
 
 # Fox Mac OS
 .DS_Store
