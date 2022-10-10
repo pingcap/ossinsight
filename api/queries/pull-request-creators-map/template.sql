@@ -9,6 +9,7 @@ WITH group_by_area AS (
         AND ge.type = 'PullRequestEvent'
         AND ge.action = 'opened'
         AND gu.country_code IS NOT NULL  -- TODO: remove
+        AND gu.country_code != 'UND'
         AND gu.country_code != 'N/A'
     GROUP BY country_or_area
     ORDER BY cnt DESC

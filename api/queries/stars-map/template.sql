@@ -8,6 +8,7 @@ WITH group_by_area AS (
         ge.repo_id IN (41986369)
         AND ge.type = 'WatchEvent'
         AND gu.country_code IS NOT NULL
+        AND gu.country_code != 'UND'
         AND gu.country_code != 'N/A'
     GROUP BY country_or_area
     ORDER BY cnt DESC

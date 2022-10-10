@@ -8,7 +8,7 @@ SELECT
     address, COUNT(1) AS cnt
 FROM
     github_users
-WHERE address IS NOT NULL AND country_code IS NULL
+WHERE address IS NOT NULL AND (country_code IS NULL OR country_code = 'N/A')
 GROUP BY address
 ORDER BY cnt DESC
 LIMIT 10000
