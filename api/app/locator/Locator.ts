@@ -17,8 +17,8 @@ const INVALID_ADDRESS_REGEXPS = [
 ];
 const REPLACE_WITH_EMPTY_TOKENS = ['省', '市', '区', '-', '，', '*', '#', '•', '.', ',', '·', '.', '/', '、'];
 const CONTAIN_CHINESE_REGEXP = /[\u4e00-\u9fa5]+/;
-export const DEFAULT_COUNTRY_CODE = 'N/A';
-export const DEFAULT_REGION_CODE = 'N/A';
+export const DEFAULT_COUNTRY_CODE = 'UND';
+export const DEFAULT_REGION_CODE = 'UND';
 
 export enum LocationProvider {
     GOOGLE_MAPS = "GOOGLE_MAPS",

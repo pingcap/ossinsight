@@ -431,6 +431,7 @@ async function getTopNonForkRepos(conn: Connection, pageSize: number, offsetFork
         FROM github_repos
         WHERE
             forks IS NOT NULL
+            AND forks > 0
             ${offsetForks ? `AND forks <= ${offsetForks}` : ''}
         ORDER BY forks DESC
         LIMIT ${pageSize}

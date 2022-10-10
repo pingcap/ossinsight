@@ -54,9 +54,13 @@ export async function pullOrgReposByTimeRangeWithLang(pool: Pool, from: string, 
         WHERE
             type = 'PullRequestEvent'
             AND repo_id IS NOT NULL
+            AND repo_id != 0
             AND repo_name IS NOT NULL
+            AND repo_name != ''
             AND org_id IS NOT NULL
+            AND org_id != 0
             AND org_login IS NOT NULL
+            AND org_login != ''
             AND created_at BETWEEN ? AND ?
         GROUP BY repo_id
     ;`, [from, to]);
@@ -77,9 +81,12 @@ export async function pullPersonalReposByTimeRangeWithLang(pool: Pool, from: str
         WHERE
             type = 'PullRequestEvent'
             AND repo_id IS NOT NULL
+            AND repo_id != 0
             AND repo_name LIKE CONCAT(actor_login, "/%")
             AND actor_id IS NOT NULL
+            AND actor_id != 0
             AND actor_login IS NOT NULL
+            AND actor_login != ''
             AND created_at BETWEEN ? AND ?
         GROUP BY repo_id
     ;`, [from, to]);
@@ -121,9 +128,13 @@ export async function pullOrgReposByLimit(pool: Pool, limit: number, minRows: nu
             LEFT JOIN github_repos r ON ge.repo_id = r.repo_id
             WHERE
                 ge.repo_id IS NOT NULL
+                AND ge.repo_id != 0
                 AND ge.repo_name IS NOT NULL
+                AND ge.repo_name != ''
                 AND ge.org_id IS NOT NULL
+                AND ge.repo_id != 0
                 AND ge.org_login IS NOT NULL
+                AND ge.repo_name != ''
                 AND r.repo_id IS NULL
             LIMIT ?
         ;`, [limit]);
@@ -156,9 +167,12 @@ export async function pullPersonalReposByLimit(pool: Pool, limit: number, minRow
             LEFT JOIN github_repos r ON ge.repo_id = r.repo_id
             WHERE
                 ge.repo_id IS NOT NULL
+                AND ge.repo_id != 0
                 AND ge.repo_name LIKE CONCAT(ge.actor_login, "/%")
                 AND ge.actor_id IS NOT NULL
+                AND ge.actor_id != 0
                 AND ge.actor_login IS NOT NULL
+                AND ge.actor_login != ''
                 AND r.repo_id IS NULL
             LIMIT ?
         ;`, [limit]);

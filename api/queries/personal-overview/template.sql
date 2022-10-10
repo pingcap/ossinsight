@@ -5,7 +5,8 @@ WITH repo_ids AS (
         ge.actor_id = 5086433
         AND type = 'CreateEvent'
         AND repo_name LIKE CONCAT(actor_login, '%')
-        AND repo_id IS NOT NULL
+        AND repo_id IS NOT NULL -- TODO: remove
+        AND repo_id != 0
 ), repos AS (
     SELECT 5086433 AS user_id, COUNT(repo_id) AS cnt FROM repo_ids
 ), star_repos AS (
