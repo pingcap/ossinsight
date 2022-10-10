@@ -18,7 +18,7 @@ export type LocationData = {
 function transformData(data: LocationData[]): [string, number, number, number][] {
   return data.map(item => {
     const title = alpha2ToTitle(item.country_or_area);
-    const {long, lat} = alpha2ToGeo(item.country_or_area);
+    const {long, lat} = alpha2ToGeo(item.country_or_area) || {};
     return [
       title,
       long,
