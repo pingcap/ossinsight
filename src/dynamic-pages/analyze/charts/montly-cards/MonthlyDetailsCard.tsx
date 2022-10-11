@@ -51,9 +51,9 @@ export function MonthlyDetailsCard() {
           <Analyze query="analyze-recent-issues">
             <Border>
               <Typography fontSize={16} fontWeight='bold'>
-                <GitPullRequestIcon />
+                <IssueOpenedIcon />
                 &nbsp;
-                Pull Requests
+                Issues
               </Typography>
               <Box height={8} />
               <LinesCompare
@@ -76,9 +76,9 @@ export function MonthlyDetailsCard() {
           <Analyze query="analyze-recent-pull-requests">
             <Border>
               <Typography fontSize={16} fontWeight='bold'>
-                <IssueOpenedIcon />
+                <GitPullRequestIcon />
                 &nbsp;
-                Issues
+                Pull Requests
               </Typography>
               <Box height={8} />
               <LinesCompare
