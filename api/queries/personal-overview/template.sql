@@ -26,7 +26,7 @@ WITH repo_ids AS (
             (type = 'PullRequestEvent' AND action = 'opened') OR
             (type = 'IssuesEvent' AND action = 'opened') OR
             (type = 'PullRequestReviewEvent' AND action = 'created') OR
-            (type = 'PushEvent' AND action IS NULL)
+            (type = 'PushEvent' AND action = '')
         )
         AND repo_id NOT IN (SELECT repo_id FROM repo_ids)
 ), issues AS (

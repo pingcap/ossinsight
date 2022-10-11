@@ -127,7 +127,7 @@ WITH stars AS (
                 (type = 'PullRequestEvent' AND action = 'opened') OR
                 (type = 'IssuesEvent' AND action = 'opened') OR
                 (type = 'PullRequestReviewEvent' AND action = 'created') OR
-                (type = 'PushEvent' AND action IS NULL)
+                (type = 'PushEvent' AND action = '')
             )
             AND (ge.created_at >= DATE_SUB(NOW(), INTERVAL 1 MONTH) AND ge.created_at <= NOW())
             AND ge.repo_id IN (SELECT tr.repo_id FROM topRepos tr)

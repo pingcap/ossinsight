@@ -12,7 +12,7 @@ WITH contributions AS (
             (type = 'IssueCommentEvent' AND action = 'created') OR
             (type = 'PullRequestReviewEvent' AND action = 'created') OR
             (type = 'PullRequestReviewCommentEvent' AND action = 'created') OR
-            (type = 'PushEvent' AND action IS NULL)
+            (type = 'PushEvent' AND action = '')
         )
         AND (created_at BETWEEN DATE_SUB(NOW(), INTERVAL 1 YEAR) AND NOW())
 )

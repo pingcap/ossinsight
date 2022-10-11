@@ -11,7 +11,7 @@ WITH activity_contribution_last_month AS (
             (type = 'IssueCommentEvent' AND action = 'created') OR
             (type = 'PullRequestReviewEvent' AND action = 'created') OR
             (type = 'PullRequestReviewCommentEvent' AND action = 'created') OR
-            (type = 'PushEvent' AND action IS NULL)
+            (type = 'PushEvent' AND action = '')
         )
     GROUP BY actor_login
     ORDER BY events DESC
@@ -28,7 +28,7 @@ WITH activity_contribution_last_month AS (
             (type = 'IssueCommentEvent' AND action = 'created') OR
             (type = 'PullRequestReviewEvent' AND action = 'created') OR
             (type = 'PullRequestReviewCommentEvent' AND action = 'created') OR
-            (type = 'PushEvent' AND action IS NULL)
+            (type = 'PushEvent' AND action = '')
         )
     GROUP BY actor_login
 ), s AS (

@@ -18,7 +18,7 @@ WHERE
         (type = 'IssueCommentEvent' AND action = 'created') OR
         (type = 'PullRequestReviewEvent' AND action = 'created') OR
         (type = 'PullRequestReviewCommentEvent' AND action = 'created') OR
-        (type = 'PushEvent' AND action IS NULL)
+        (type = 'PushEvent' AND action = '')
     )
 GROUP BY type, 2
 ORDER BY 2
