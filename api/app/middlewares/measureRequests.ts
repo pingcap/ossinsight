@@ -41,7 +41,7 @@ export function measureRequests(urlType?: URLType, accessRecorder?: BatchLoader)
 
         const { status, ip, query, path } = ctx;
         if (accessRecorder) {
-            accessRecorder.insert([ip, header.origin, status, path, JSON.stringify(query)]);
+            accessRecorder.insert([ip, header.origin || '', status, path, JSON.stringify(query)]);
         }
 
         if (status < 400) {

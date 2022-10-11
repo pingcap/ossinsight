@@ -4,12 +4,13 @@ import {TiDBQueryExecutor} from "../../app/core/TiDBQueryExecutor";
 import consola from "consola";
 import Query from "../../app/core/Query";
 import CacheBuilder from "../../app/core/cache/CacheBuilder";
-import CollectionService from "../../app/services/CollectionService";
+import CollectionService, { Collection } from "../../app/services/CollectionService";
 import GHEventService from "../../app/services/GHEventService";
 import UserService from "../../app/services/UserService";
 import schedule from 'node-schedule';
-import sleep from "../../app/utils/sleep";
-import { ConnectionWrapper, getConnectionOptions } from "../../app/utils/db";
+import { getConnectionOptions } from "../../app/utils/db";
+import { createPool } from "mysql2/promise";
+import async from "async";
 
 const COLLECTIONS_RANKING_QUERY = 'collection-stars-month-rank';
 
@@ -20,24 +21,31 @@ const logger = consola.withTag('calc-hot-collections');
 dotenv.config({ path: path.resolve(__dirname, '../../.env.template') });
 dotenv.config({ path: path.resolve(__dirname, '../../.env'), override: true });
 
-const cron = process.env.CALC_HOT_COLLECTIONS_CRON;
-if (cron === undefined || cron === '') {
-    logger.error('Please provide the `CALC_HOT_COLLECTIONS_CRON` environment variable.');
-    process.exit(-1);
+const concurrent = parseInt(process.env.CALC_HOT_COLLECTIONS_CONCURRENT || '5');
+
+if (process.env.CALC_HOT_COLLECTIONS_EXECUTE_ONCE === '1') {
+    calcHotCollectionsInConcurrent(concurrent);
+} else {
+    const cron = process.env.CALC_HOT_COLLECTIONS_CRON;
+    if (cron === undefined || cron === '') {
+        logger.error('Please provide the `CALC_HOT_COLLECTIONS_CRON` environment variable.');
+        process.exit(-1);
+    }
+    logger.info(`Execute calc hot collections job according cron expression: ${cron}`);
+    schedule.scheduleJob(cron, async () => {
+        calcHotCollectionsInConcurrent(concurrent);
+    });
 }
 
-const interval = parseInt(process.env.CALC_HOT_COLLECTIONS_INTERVAL || '30');
-
-// Notice: node-schedule does not support concurrency control, 
-// so it is best not to set the interval of cron expressions too close.
-logger.info(`Execute calc hot collections job according cron expression: ${cron}`);
-schedule.scheduleJob(cron, async () => {
+async function calcHotCollectionsInConcurrent(concurrent: number) {
     // Init TiDB client.
-    const conn = new ConnectionWrapper(getConnectionOptions());
+    const pool = createPool(getConnectionOptions({
+        connectionLimit: concurrent
+    }));
 
     // Init TiDB Query Executor.
     const queryExecutor = new TiDBQueryExecutor(getConnectionOptions({
-        connectionLimit: 1
+        connectionLimit: concurrent
     }));
 
     // Init Cache Builder; 
@@ -49,11 +57,9 @@ schedule.scheduleJob(cron, async () => {
     const userService = new UserService(queryExecutor, cacheBuilder);
     const ghEventService = new GHEventService(queryExecutor);
 
-    logger.info("Loading collections...");
-    const { data: collections } = await collectionService.getCollections();
-
-    logger.info(`Found ${collections.length} collections, start calc collection's repos ranking.`)
-    for (const { id: collectionId, name } of collections) {
+    // Init queue;
+    const queue = async.queue<Collection>(async (collection) => {
+        const { id: collectionId, name } = collection;
         const query = new Query(COLLECTIONS_RANKING_QUERY, cacheBuilder, queryExecutor, ghEventService, collectionService, userService)
         const { data: collection_items } = await query.execute({
             collectionId: collectionId
@@ -75,11 +81,22 @@ schedule.scheduleJob(cron, async () => {
                     WHERE collection_id = ${collectionId} AND repo_id = '${item.repo_id}'
                     `;
                 }
-                conn.execute(sql);
+                pool.execute(sql);
             }
             logger.info(`Updated the month rank for collection <${name}>.`)
         }
+    });
 
-        await sleep(interval * 1000);
+    logger.info("Loading collections...");
+    const { data: collections } = await collectionService.getCollections();
+    logger.info(`Found ${collections.length} collections, start calc collection's repos ranking.`);
+
+    for (const collection of collections) {
+        if (queue.started) {
+            await queue.unsaturated();
+        }
+        queue.push(collection);
     }
-});
+
+    await queue.drain();
+}
