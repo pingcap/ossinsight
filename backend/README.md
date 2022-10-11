@@ -39,7 +39,6 @@ pr_merged          | tinyint     | [null]   |     |         |
 pr_changed_files   | int         | [null]   |     |         |        
 pr_review_comments | int         | [null]   |     |         |        
 pr_or_issue_id     | bigint      | [null]   |     |         |           
-author_association | varchar     | [null]   |     |         |  
 
 
 
@@ -50,7 +49,6 @@ number             | int         | [null]   |     |         |
 state              | varchar     | [null]   |     |         |        
 closed_at          | datetime    | [null]   |     |         |    
 comments           | int         | [null]   |     |         |    
-author_association | varchar     | [null]   |     |         |   
 
 
 **PushEvent**
@@ -63,7 +61,6 @@ push_distinct_size | int         | [null]   |     |         |
 
 name               | column_type | ext_info | ref | default | comment
 ------------------ | ----------- | -------- | --- | ------- | ------- 
-author_association | varchar     | [null]   |     |         |   
 
 **PullRequestReviewCommentEvent**
 
@@ -71,14 +68,12 @@ name               | column_type | ext_info | ref | default | comment
 ------------------ | ----------- | -------- | --- | ------- | -------
 commit_id          | bigint      | [null]   |     |         |        
 comment_id         | bigint      | [null]   |     |         |       
-author_association | varchar     | [null]   |     |         |    
 
 
 **PullRequestReviewEvent**
 
 name               | column_type | ext_info | ref | default | comment
 ------------------ | ----------- | -------- | --- | ------- | ------- 
-author_association | varchar     | [null]   |     |         |   
 
 **CommitCommentEvent**
 
@@ -86,7 +81,6 @@ name               | column_type | ext_info | ref | default | comment
 ------------------ | ----------- | -------- | --- | ------- | ------- 
 commit_id          | bigint      | [null]   |     |         |        
 comment_id         | bigint      | [null]   |     |         |       
-author_association | varchar     | [null]   |     |         |   
       
 
 ## [cn_orgs](https://github.com/hooopo/gharchive/blob/main/meta/orgs/cn_orgs.yml)

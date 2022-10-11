@@ -7,7 +7,6 @@ class Importer
     repo_name 
     actor_id 
     actor_login 
-    actor_location 
     language 
     additions 
     deletions 
@@ -27,7 +26,6 @@ class Importer
     pr_or_issue_id 
     event_day 
     event_month 
-    author_association 
     event_year 
     push_size 
     push_distinct_size
@@ -59,66 +57,63 @@ class Importer
   def parse!
     puts "start parse json data ..."
     Yajl::Parser.parse(@json_stream) do |event|
-      repo_id = event.dig("repo", "id")
-      repo_name = event.dig("repo", "name")
+      repo_id = event.dig("repo", "id") || 0
+      repo_name = event.dig("repo", "name") || ''
 
-      language = event.dig("payload", "pull_request", "base", "repo", "language")
-      actor_id = event.dig("actor", 'id')
-      actor_login = event.dig("actor", "login")
-      actor_location = event.dig("actor", "location")
-      action = event.dig("payload", "action")
-      additions = event.dig("payload", "pull_request", "additions")
-      deletions = event.dig("payload", "pull_request", "deletions")
-      commit_id = event.dig("payload", "comment", "commit_id")
-      comment_id = event.dig("payload", "comment", "id")
+      language = event.dig("payload", "pull_request", "base", "repo", "language") || ''
+      actor_id = event.dig("actor", 'id') || 0
+      actor_login = event.dig("actor", "login") || ''
+      action = event.dig("payload", "action") || ''
+      additions = event.dig("payload", "pull_request", "additions") || 0
+      deletions = event.dig("payload", "pull_request", "deletions") || 0
+      commit_id = event.dig("payload", "comment", "commit_id") || ''
+      comment_id = event.dig("payload", "comment", "id") || 0
       org_id = event.dig("org", "id") if event["org"]
       org_login = event.dig("org", "login") if event["org"]
+      org_id = org_id || 0
+      org_login = org_login || ''
 
-      number = event.dig("payload", "issue", "number") || event.dig("payload", "pull_request", "number") || event.dig("payload", "number") # payload.issue.number? // .payload.pull_request.number? // .payload.number?
+
+      number = event.dig("payload", "issue", "number") || event.dig("payload", "pull_request", "number") || event.dig("payload", "number") || 0 # payload.issue.number? // .payload.pull_request.number? // .payload.number?
       
       # x.payload.pull_request.merged
-      pr_merged = event.dig("payload", "pull_request", "merged")
+      pr_merged = event.dig("payload", "pull_request", "merged") || 0
 
       # x.payload.[pull_request/issue].state
       state = event.dig("payload", "pull_request", "state") ||
-        event.dig("payload", "issue", "state")
+        event.dig("payload", "issue", "state") || ''
 
        # x.payload.[pull_request/issue].closed_at
       closed_at = event.dig("payload", "pull_request", "closed_at") ||
-        event.dig("payload", "issue", "closed_at")
+        event.dig("payload", "issue", "closed_at") || '1970-01-01 00:00:00'
 
       # x.payload.pull_request.merged_at
-      pr_merged_at = event.dig("payload", "pull_request", "merged_at") 
+      pr_merged_at = event.dig("payload", "pull_request", "merged_at") || '1970-01-01 00:00:00'
 
       comments = event.dig("payload", "pull_request", "comments") ||
-        event.dig("payload", "issue", "comments")
+        event.dig("payload", "issue", "comments") || 0
 
       pr_or_issue_id = event.dig("payload", "pull_request", "id") ||
-        event.dig("payload", "issue", "id")
+        event.dig("payload", "issue", "id") || 0
 
-      author_association = event.dig("payload", "comment", 'author_association') ||
-        event.dig("payload", "review", 'author_association') ||
-        event.dig("payload", "issue", 'author_association') ||
-        event.dig("payload", "pull_request", 'author_association') 
+      push_size = event.dig("payload", "size") || 0
+      push_distinct_size = event.dig("payload", "distinct_size") || 0
 
-      push_size = event.dig("payload", "size")
-      push_distinct_size = event.dig("payload", "distinct_size")
-
-      pr_changed_files = event.dig("payload", "pull_request", "changed_files")
-      pr_review_comments = event.dig("payload", "pull_request", "review_comments")
+      pr_changed_files = event.dig("payload", "pull_request", "changed_files") || 0
+      pr_review_comments = event.dig("payload", "pull_request", "review_comments") || 0
 
       creator_user_login = event.dig("payload", "comment", "user", "login") ||
         event.dig("payload", "review", "user", "login") ||
         event.dig("payload", "issue", "user", "login") ||
-        event.dig("payload", "pull_request", "user", "login")
+        event.dig("payload", "pull_request", "user", "login") || ''
 
       creator_user_id = event.dig("payload", "comment", "user", "id") ||
         event.dig("payload", "review", "user", "id") ||
         event.dig("payload", "issue", "user", "id") ||
-        event.dig("payload", "pull_request", "user", "id")
+        event.dig("payload", "pull_request", "user", "id") || 0
 
       pr_or_issue_created_at = event.dig("payload", "issue", "created_at") ||
-        event.dig("payload", "pull_request", "created_at")
+        event.dig("payload", "pull_request", "created_at") || '1970-01-01 00:00:00'
 
 
       date = event["created_at"].match(/((\d{4})-\d{2})-\d{2}/)
@@ -150,7 +145,6 @@ class Importer
         "event_day" => event_day,
         "event_month" => event_month,
         "event_year" => event_year,
-        "author_association" => author_association,
         'push_size' => push_size,
         'push_distinct_size' => push_distinct_size,
         "id" => event["id"],

@@ -26,7 +26,7 @@ ActiveRecord::Schema.define(version: 2021_12_14_161151) do
     t.string "name"
   end
 
-  create_table "github_events", id: false, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
+  create_table "github_events", id: false, charset: "utf8mb4", collation: "utf8mb4_bin", force: :cascade do |t|
     t.bigint "id"
     t.string "type"
     t.datetime "created_at"
@@ -97,7 +97,7 @@ ActiveRecord::Schema.define(version: 2021_12_14_161151) do
     t.index ["filename"], name: "index_import_logs_on_filename"
   end
 
-  create_table "users", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
+  create_table "users", id: :integer, charset: "utf8mb4", collation: "utf8mb4_bin", force: :cascade do |t|
     t.string "login", null: false
     t.string "company"
     t.timestamp "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
