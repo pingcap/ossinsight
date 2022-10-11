@@ -11,7 +11,7 @@ FROM
 WHERE
     address IS NOT NULL
     AND address != ''
-    AND (country_code IS NULL OR country_code = 'N/A')
+    AND (country_code IS NULL OR country_code = 'N/A' OR country_code = '')
 GROUP BY address
 ORDER BY cnt DESC
 LIMIT 10000
