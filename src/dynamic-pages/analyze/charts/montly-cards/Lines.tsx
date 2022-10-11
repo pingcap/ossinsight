@@ -55,10 +55,10 @@ export default function Lines({
       </Box>
       <EChartsx style={{ flex: 1 }} init={{ height: 96, renderer: 'canvas' }} theme="dark">
         <Once>
-          <XGrid left={0} top={8} bottom={8} right={0} />
-          <Tooltip formatter={params => `${params.marker} ${params.value[dayKey]}: <b>${params.value[dayOpenedValueKey]}</b> ${openedText}`} />
-          <Axis.Category.X axisTick={{ show: false }} axisLabel={{ color: '#7c7c7c' }} />
-          <Axis.Value.Y axisLabel={{ hideOverlap: true, color: '#7c7c7c' }} />
+          <XGrid left={0} top={4} bottom={0} right={0} />
+          <Tooltip formatter={params => `${params.marker} ${params.value[dayKey]}: <b>${params.value[dayOpenedValueKey]}</b>`} />
+          <Axis.Category.X axisTick={{ show: false }} axisLabel={{ color: '#7c7c7c', fontSize: 8 }} />
+          <Axis.Value.Y axisLabel={{ hideOverlap: true, color: '#7c7c7c', fontSize: 8 }} />
           <LineSeries encode={{ x: 'idx', y: dayOpenedValueKey }} color={colors[0]} />
           <LineSeries encode={{ x: 'idx', y: dayClosedValueKey }} color={colors[1]} />
         </Once>

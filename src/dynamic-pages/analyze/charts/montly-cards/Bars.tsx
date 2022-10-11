@@ -50,7 +50,7 @@ export default function Bars({ color, icon, title, dayValueKey, dayKey = 'curren
       </Box>
       <EChartsx style={{ flex: 1 }} init={{ height: 96, renderer: 'canvas' }} theme="dark">
         <Once>
-          <XGrid left={8} right={0} top={8} bottom={8} />
+          <XGrid left={8} right={0} top={4} bottom={0} />
           <Tooltip formatter={params => `${params.marker} ${params.value[dayKey]}: <b>${params.value[dayValueKey]}</b> ${title}`} />
           <Axis.Category.X axisTick={{ show: false }} axisLabel={{ color: '#7c7c7c', fontSize: 8 }} />
           <Axis.Value.Y axisLabel={{ hideOverlap: true, color: '#7c7c7c', fontSize: 8 }} />
