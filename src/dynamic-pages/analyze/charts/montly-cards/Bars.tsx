@@ -6,26 +6,6 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { useReversed } from "./hooks";
 
-//s.idx AS idx,
-//     cp.day AS current_period_day,
-//     IFNULL(cp.stars, 0) AS current_period_day_stars,
-//     IFNULL(cpt.total, 0) AS current_period_stars,
-//     lp.day AS last_period_day,
-//     IFNULL(lp.stars, 0) AS last_period_day_stars,
-//     IFNULL(lpt.total, 0) AS last_period_stars
-type StarData = {
-  idx: number
-  current_period_day: string
-  current_period_day_stars: number
-  current_period_stars: number
-  last_period_day: string
-  last_period_day_stars: number
-  last_period_stars: number
-}
-
-const DATE_FMT = 'yyyy-MM-dd';
-
-
 interface BarsProps {
   color: string;
   title: string;
@@ -36,7 +16,7 @@ interface BarsProps {
 }
 
 export default function Bars({ color, icon, title, dayValueKey, dayKey = 'current_period_day', totalKey }: BarsProps) {
-  const { data } = useAnalyzeChartContext<StarData>();
+  const { data } = useAnalyzeChartContext<any>();
 
   return (
     <Stack direction="row">

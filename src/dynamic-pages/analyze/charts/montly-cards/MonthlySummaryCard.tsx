@@ -5,6 +5,7 @@ import Bars from "./Bars";
 import Lines from './Lines';
 import { CommitIcon, GitPullRequestIcon, IssueOpenedIcon, StarIcon } from "@primer/octicons-react";
 import { styled } from "@mui/material/styles";
+import { Border } from "./ui";
 
 function MonthlySummaryCard() {
   return (
@@ -70,11 +71,5 @@ function MonthlySummaryCard() {
     </Grid>
   );
 }
-
-const Border = styled('div')({
-  border: 'rgba(255,255,255,15%) 1px solid',
-  borderRadius: 6,
-  padding: '8px 16px',
-});
 
 export default MonthlySummaryCard;

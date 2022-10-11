@@ -24,7 +24,7 @@ import { useRemoteData } from "../../../components/RemoteCharts/hook";
 import { Collection } from "@ossinsight/api";
 import Chip from "@mui/material/Chip";
 import { paramCase } from "param-case";
-import MonthlySummaryCard from "../charts/montly-cards";
+import { MonthlySummaryCard } from "../charts/montly-cards";
 
 export const OverviewSection = forwardRef(function ({}, ref: ForwardedRef<HTMLElement>) {
   const theme = useTheme()

@@ -77,6 +77,7 @@ const tabs: { id: string, label: string, icon?: JSX.Element }[] = [
   { id: 'pull-requests', label: 'Pull Requests' },
   { id: 'issues', label: 'Issues' },
   { id: 'divider-1', label: 'Monthly Stats', icon: <AutoGraphIcon fontSize='inherit' sx={{ mr: 0.5 }} /> },
+  { id: 'repository', label: 'Repository' },
   { id: 'contributors', label: 'Contributors' },
 ];
 

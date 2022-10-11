@@ -22,9 +22,10 @@ import { PeopleSection } from './sections/1-People';
 import { CommitsSection } from './sections/2-Commits';
 import { PullRequestsSection } from './sections/3-PullRequests';
 import { IssuesSection } from './sections/4-Issues';
-import { Contributors } from './sections/5-Contributors';
-import { SQLPlaygroundDrawer } from './sections/6-SQLPlayground';
+import { Contributors } from './sections/6-Contributors';
+import { SQLPlaygroundDrawer } from './sections/99-SQLPlayground';
 import {Redirect} from '@docusaurus/router';
+import { Repository } from "./sections/5-Repository";
 
 interface AnalyzePageParams {
   owner: string;
@@ -37,6 +38,7 @@ const sections = [
   'commits',
   'pull-requests',
   'issues',
+  'repository',
   'contributors',
 ]
 
@@ -118,7 +120,12 @@ function AnalyzePage() {
               <CommitsSection ref={sectionRefs[2]} />
               <PullRequestsSection ref={sectionRefs[3]} />
               <IssuesSection ref={sectionRefs[4]} />
-              {!comparingRepoName ? <Contributors ref={sectionRefs[5]} /> : undefined}
+              {!comparingRepoName ? (
+                <>
+                  <Repository ref={sectionRefs[5]} />
+                  <Contributors ref={sectionRefs[6]} />
+                </>
+              ) : undefined}
               <TryItYourself campaign="compare" show fixed />
             </Container>
           </AnalyzeContext.Provider>

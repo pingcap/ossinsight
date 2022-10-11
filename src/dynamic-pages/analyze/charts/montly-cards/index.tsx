@@ -1,1 +1,1 @@
-export { default } from './MonthlySummaryCard';
+export { default as MonthlySummaryCard } from './MonthlySummaryCard';
