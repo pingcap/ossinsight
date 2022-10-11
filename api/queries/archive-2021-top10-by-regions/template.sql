@@ -15,6 +15,7 @@ WHERE
       'PullRequestReviewEvent'
     )
   AND country_code IS NOT NULL -- TODO: remove
+  AND gu.country_code != ''
   AND country_code != 'N/A'
   AND country_code != 'UND'
 GROUP BY 1
