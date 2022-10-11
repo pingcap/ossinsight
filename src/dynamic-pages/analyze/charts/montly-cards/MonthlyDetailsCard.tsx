@@ -1,13 +1,6 @@
 import React from "react";
 import Analyze from "../Analyze";
-import {
-  CommitIcon,
-  GitMergeIcon,
-  GitPullRequestIcon,
-  IssueClosedIcon,
-  IssueOpenedIcon,
-  StarIcon,
-} from "@primer/octicons-react";
+import { CommitIcon, GitPullRequestIcon, IssueOpenedIcon, StarIcon } from "@primer/octicons-react";
 import Grid from "@mui/material/Grid";
 import BarsCompare from "./BarsCompare";
 import { Border } from "./ui";
@@ -15,6 +8,7 @@ import LinesCompare from "./LinesCompare";
 import Box from "@mui/material/Box";
 import TopContributors from "./TopContributors";
 import Typography from "@mui/material/Typography";
+import Map from "./Map";
 
 export function MonthlyDetailsCard() {
   return (
@@ -35,11 +29,13 @@ export function MonthlyDetailsCard() {
         </Grid>
         <Grid item flex={1}>
           <Border style={{ width: '100%', height: '100%' }}>
-
+            <Analyze query="analyze-stars-map" params={{ period: 'last_28_days' }}>
+              <Map />
+            </Analyze>
           </Border>
         </Grid>
         <Grid item>
-          <Analyze query='analyze-recent-top-contributors'>
+          <Analyze query="analyze-recent-top-contributors">
             <Border>
               <TopContributors />
             </Border>
@@ -50,7 +46,7 @@ export function MonthlyDetailsCard() {
         <Grid item>
           <Analyze query="analyze-recent-issues">
             <Border>
-              <Typography fontSize={16} fontWeight='bold'>
+              <Typography fontSize={16} fontWeight="bold">
                 <IssueOpenedIcon />
                 &nbsp;
                 Issues
@@ -75,7 +71,7 @@ export function MonthlyDetailsCard() {
         <Grid item>
           <Analyze query="analyze-recent-pull-requests">
             <Border>
-              <Typography fontSize={16} fontWeight='bold'>
+              <Typography fontSize={16} fontWeight="bold">
                 <GitPullRequestIcon />
                 &nbsp;
                 Pull Requests

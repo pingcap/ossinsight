@@ -24,7 +24,7 @@ export default function LinesCompare({ color, title, dayValueKey, dayKey = 'peri
 
   return (
     <Stack direction="row">
-      <Box display="flex" minWidth={72} flexDirection="column" justifyContent="center">
+      <Box display="flex" minWidth={84} flexDirection="column" justifyContent="center">
         <Typography fontSize={14} color="#C4C4C4" fontWeight="bold" whiteSpace="nowrap">
           {title}
         </Typography>

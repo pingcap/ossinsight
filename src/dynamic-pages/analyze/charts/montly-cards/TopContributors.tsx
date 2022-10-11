@@ -5,6 +5,7 @@ import PeopleIcon from '@mui/icons-material/People';
 import { useAnalyzeChartContext } from "../context";
 import Avatar from "@mui/material/Avatar";
 import Link from "@mui/material/Link";
+import Tooltip from "@mui/material/Tooltip";
 
 export default function TopContributors() {
   const { data } = useAnalyzeChartContext();
@@ -16,12 +17,19 @@ export default function TopContributors() {
       </Typography>
       <Stack direction="row">
         {(data.data?.data ?? []).map(({ actor_login }) => (
-          <Link href={`https://github.com/${actor_login}`} target="_blank">
-            <Avatar src={`https://github.com/${actor_login}.png`} sx={{ ml: 1 }} />
-          </Link>
+          <Contributor key={actor_login} login={actor_login} />
         ))}
       </Stack>
     </Stack>
   );
+}
 
+const Contributor = ({ login }: { login: string }) => {
+  return (
+    <Link href={`https://github.com/${login}`} target="_blank">
+      <Tooltip title={login}>
+        <Avatar src={`https://github.com/${login}.png`} sx={{ ml: 1 }} />
+      </Tooltip>
+    </Link>
+  )
 }
