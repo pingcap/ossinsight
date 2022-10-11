@@ -7,7 +7,8 @@
     "on": {
       "past_24_hours": "@daily",
       "past_week": "@daily",
-      "past_month": "@daily"
+      "past_month": "@daily",
+      "past_3_months": "@daily"
     }
   },
   "onlyFromCache": true,
@@ -18,12 +19,13 @@
       "replaces": "DATE_SUB(NOW(), INTERVAL 1 MONTH)",
       "default": "past_24_hours",
       "enums": [
-       "past_24_hours", "past_week", "past_month"
+       "past_24_hours", "past_week", "past_month", "past_3_months"
       ],
       "template": {
         "past_24_hours": "DATE_SUB(NOW(), INTERVAL 1 DAY)",
         "past_week": "DATE_SUB(NOW(), INTERVAL 1 WEEK)",
-        "past_month": "DATE_SUB(NOW(), INTERVAL 1 MONTH)"
+        "past_month": "DATE_SUB(NOW(), INTERVAL 1 MONTH)",
+        "past_3_months": "DATE_SUB(NOW(), INTERVAL 3 MONTH)"
       }
     },
     {
