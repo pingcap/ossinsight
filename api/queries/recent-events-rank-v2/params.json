@@ -40,7 +40,7 @@
         "C#": "AND sub.language = 'C#'",
         "C": "AND sub.language = 'C'",
         "C++": "AND sub.language = 'C++'",
-        "Unknown": "AND sub.language IS NULL"
+        "Unknown": "AND sub.language = ''"
       }
     }
   ]

@@ -6,7 +6,7 @@ SELECT
 FROM github_events ge
 WHERE
     actor_id = 5086433
-    AND ((type = 'PullRequestEvent' AND action = 'opened') OR (type = 'IssuesEvent' AND action = 'opened') OR (type = 'IssueCommentEvent' AND action = 'created') OR (type = 'PullRequestReviewEvent' AND action = 'created') OR (type = 'PullRequestReviewCommentEvent' AND action = 'created') OR (type = 'PushEvent' AND action IS NULL))
+    AND ((type = 'PullRequestEvent' AND action = 'opened') OR (type = 'IssuesEvent' AND action = 'opened') OR (type = 'IssueCommentEvent' AND action = 'created') OR (type = 'PullRequestReviewEvent' AND action = 'created') OR (type = 'PullRequestReviewCommentEvent' AND action = 'created') OR (type = 'PushEvent' AND action = ''))
     AND (created_at BETWEEN DATE_SUB(NOW(), INTERVAL 28 DAY) AND NOW())
 GROUP BY repo_id, event_period
 ORDER BY repo_id, event_period DESC

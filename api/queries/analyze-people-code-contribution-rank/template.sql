@@ -4,7 +4,7 @@ WITH former_contributors AS (
     WHERE
         repo_id = 41986369
         AND type = 'PushEvent'
-        AND action IS NULL
+        AND action = ''
         AND event_month < DATE_FORMAT(DATE_SUB(NOW(), INTERVAL DAYOFMONTH(NOW()) DAY), '%Y-%m-01')
         AND actor_login NOT LIKE '%bot' AND actor_login NOT LIKE '%[bot]' AND actor_login NOT IN (SELECT login FROM blacklist_users bu)
 ), code_contribution_last_month AS (
@@ -13,7 +13,7 @@ WITH former_contributors AS (
     WHERE
         repo_id = 41986369
         AND type = 'PushEvent'
-        AND action IS NULL
+        AND action = ''
         AND event_month = DATE_FORMAT(DATE_SUB(NOW(), INTERVAL DAYOFMONTH(NOW()) DAY), '%Y-%m-01')
         AND actor_login NOT LIKE '%bot' AND actor_login NOT LIKE '%[bot]' AND actor_login NOT IN (SELECT login FROM blacklist_users bu)
     GROUP BY actor_login
@@ -24,7 +24,7 @@ WITH former_contributors AS (
     WHERE
         repo_id = 41986369
         AND 'PushEvent'
-        AND action IS NULL
+        AND action = ''
         AND event_month = DATE_FORMAT(DATE_SUB(DATE_SUB(NOW(), INTERVAL DAYOFMONTH(NOW()) DAY), INTERVAL 1 MONTH), '%Y-%m-01')
         AND actor_login NOT LIKE '%bot' AND actor_login NOT LIKE '%[bot]' AND actor_login NOT IN (SELECT login FROM blacklist_users bu)
     GROUP BY actor_login

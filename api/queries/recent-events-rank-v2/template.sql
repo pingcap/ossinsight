@@ -49,7 +49,7 @@ WITH top20repos AS (
                     (type = 'PullRequestEvent' AND action = 'opened') OR
                     (type = 'IssuesEvent' AND action = 'opened') OR
                     (type = 'PullRequestReviewEvent' AND action = 'created') OR
-                    (type = 'PushEvent' AND action IS NULL)
+                    (type = 'PushEvent' AND action = '')
                 )
                 AND (ge.created_at BETWEEN '2022-04-04 02:59:59' AND '2022-05-04 02:59:59')
                 AND ge.repo_id IN (SELECT tr.repo_id FROM top20repos tr)
@@ -87,7 +87,7 @@ WITH top20repos AS (
     FROM github_events ge
     WHERE
         ge.type = 'PushEvent'
-        AND ge.action IS NULL
+        AND ge.action = ''
         AND (ge.created_at BETWEEN '2022-04-04 02:59:59' AND '2022-05-04 02:59:59')
         AND ge.actor_login NOT LIKE '%bot%'
         AND ge.repo_id IN (SELECT tr.repo_id FROM top20repos tr)

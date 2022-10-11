@@ -42,7 +42,7 @@ WITH prs AS (
     WHERE
         repo_id = 41986369
         AND type = 'PushEvent'
-        AND action IS NULL
+        AND action = ''
         AND ge.created_at > DATE_SUB(CURRENT_DATE(), INTERVAL 28 DAY) AND (event_month BETWEEN DATE_FORMAT(DATE_SUB(CURRENT_DATE(), INTERVAL 28 DAY), '%Y-%m-01') AND DATE_FORMAT(CURRENT_DATE(), '%Y-%m-01'))
         AND actor_login NOT LIKE '%bot' AND actor_login NOT LIKE '%[bot]' AND actor_login NOT IN (SELECT login FROM blacklist_users bu)
     GROUP BY actor_login

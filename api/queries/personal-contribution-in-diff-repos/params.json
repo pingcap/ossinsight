@@ -8,7 +8,7 @@
     },
     {
       "name": "activity_type",
-      "replaces": "AND ((type = 'PullRequestEvent' AND action = 'opened') OR (type = 'IssuesEvent' AND action = 'opened') OR (type = 'IssueCommentEvent' AND action = 'created') OR (type = 'PullRequestReviewEvent' AND action = 'created') OR (type = 'PullRequestReviewCommentEvent' AND action = 'created') OR (type = 'PushEvent' AND action IS NULL))",
+      "replaces": "AND ((type = 'PullRequestEvent' AND action = 'opened') OR (type = 'IssuesEvent' AND action = 'opened') OR (type = 'IssueCommentEvent' AND action = 'created') OR (type = 'PullRequestReviewEvent' AND action = 'created') OR (type = 'PullRequestReviewCommentEvent' AND action = 'created') OR (type = 'PushEvent' AND action = ''))",
       "enums": ["all", "pull_requests", "reviews", "review_comments", "issues",  "issue_comments", "pushes"],
       "template": {
         "pull_requests": "AND type = 'PullRequestEvent' AND action = 'opened'",
@@ -16,8 +16,8 @@
         "review_comments": "AND type = 'PullRequestReviewCommentEvent' AND action = 'created'",
         "issues": "AND type = 'IssuesEvent' AND action = 'opened'",
         "issue_comments": "AND type = 'IssueCommentEvent' AND action = 'created'",
-        "pushes": "AND type = 'PushEvent' AND action IS NULL",
-        "all": "AND ((type = 'PullRequestEvent' AND action = 'opened') OR (type = 'IssuesEvent' AND action = 'opened') OR (type = 'IssueCommentEvent' AND action = 'created') OR (type = 'PullRequestReviewEvent' AND action = 'created') OR (type = 'PullRequestReviewCommentEvent' AND action = 'created') OR (type = 'PushEvent' AND action IS NULL))"
+        "pushes": "AND type = 'PushEvent' AND action = ''",
+        "all": "AND ((type = 'PullRequestEvent' AND action = 'opened') OR (type = 'IssuesEvent' AND action = 'opened') OR (type = 'IssueCommentEvent' AND action = 'created') OR (type = 'PullRequestReviewEvent' AND action = 'created') OR (type = 'PullRequestReviewCommentEvent' AND action = 'created') OR (type = 'PushEvent' AND action = ''))"
       }
     },
     {
