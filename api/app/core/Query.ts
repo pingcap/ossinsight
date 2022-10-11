@@ -4,8 +4,6 @@ import {DateTime, Duration} from "luxon";
 import type { QuerySchema } from '../../params.schema'
 import {
   TiDBQueryExecutor,
-  TiDBPlaygroundQueryExecutor,
-  Result,
   Rows,
   Fields,
   QueryExecutor,
