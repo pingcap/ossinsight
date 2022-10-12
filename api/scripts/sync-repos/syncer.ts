@@ -9,16 +9,21 @@ import { BatchLoader } from "../../app/core/BatchLoader";
 import { extractOwnerAndRepo } from '../../app/utils/github';
 import sleep from '../../app/utils/sleep';
 import { splitTimeRange } from '../../app/utils/times';
-import { loadGitHubRepos } from './loader';
+import { loadGitHubRepos, WorkerPayload } from './loader';
 import { GitHubRepo } from './types';
-import { JobWorker } from './worker';
+import { JobWorker } from '../../app/core/GenericJobWorkerPool';
 
 // Init logger.
 const logger = consola.withTag('sync-repos');
 
+enum TimeRangeFiled {
+    CREATED = 'created',
+    PUSHED = 'pushed'
+}
+
 // Sync repos.
 export async function syncReposInConcurrent(
-    workerPool: Pool<JobWorker>, from: DateTime, to: DateTime, chunkSize: DurationLike, stepSize: number, 
+    workerPool: Pool<JobWorker<WorkerPayload>>, timeRangeField: TimeRangeFiled, from: DateTime, to: DateTime, chunkSize: DurationLike, stepSize: number, 
     filter: string | null, skipSyncRepoLanguages: boolean, skipSyncRepoTopics: boolean
 ) {
     // Workers ready.
@@ -27,7 +32,7 @@ export async function syncReposInConcurrent(
         logger.info(`Handle time range from ${tFrom} to ${tTo}.`);
         try {
             const worker = await workerPool.acquire();
-            const { octokit, repoLoader, repoLangLoader, repoTopicLoader } = worker; 
+            const { octokit, payload: { repoLoader, repoLangLoader, repoTopicLoader } } = worker; 
             let left = DateTime.fromJSDate(tFrom.toJSDate());
             let right = left.plus(stepSize);
 
@@ -37,7 +42,7 @@ export async function syncReposInConcurrent(
                 }
 
                 const moreThan1k = await extractReposForTimeRange(
-                    octokit, repoLoader, repoLangLoader, repoTopicLoader, left, right, filter,
+                    octokit, repoLoader, repoLangLoader, repoTopicLoader, timeRangeField, left, right, filter,
                     skipSyncRepoLanguages, skipSyncRepoTopics
                 );
                 if (moreThan1k) {
@@ -76,7 +81,7 @@ export async function syncReposInConcurrent(
 
 async function extractReposForTimeRange(
     octokit: Octokit, repoLoader: BatchLoader, repoLanguageLoader: BatchLoader, repoTopicLoader: BatchLoader, 
-    from: DateTime, to: DateTime, filter: string | null, skipSyncRepoLanguages: boolean, 
+    timeRangeField: TimeRangeFiled, from: DateTime, to: DateTime, filter: string | null, skipSyncRepoLanguages: boolean, 
     skipSyncRepoTopics: boolean
 ): Promise<boolean> {
     let repoTotal = 0;
@@ -87,7 +92,7 @@ async function extractReposForTimeRange(
     const fromISO = from.toISO();
     const toISO = to.toISO();
     const variables = {
-        q: `${filter || ''} pushed:${fromISO}..${toISO}`,
+        q: `${filter || ''} ${timeRangeField}:${fromISO}..${toISO}`,
         cursor: null
     };
     logger.info(`Fetching search repo result for time range from ${fromISO} to ${toISO}...`);
@@ -251,7 +256,9 @@ export interface RepoWithForks {
 }
 
 // TODO: use async queue instead of asyncPool.
-export async function syncForkRepos(workerPool: Pool<JobWorker>, conn: Connection, pageSize: number, offsetForks?: number) {
+export async function syncForkRepos(
+    workerPool: Pool<JobWorker<WorkerPayload>>, conn: Connection, pageSize: number, offsetForks?: number
+) {
     while (true) {
         logger.info(`Getting repos with offset ${offsetForks} and page size ${pageSize}.`);
         const repos = await getTopNonForkRepos(conn, pageSize, offsetForks);
@@ -281,10 +288,10 @@ export async function syncForkRepos(workerPool: Pool<JobWorker>, conn: Connectio
     }
 }
 
-async function extractForkReposInConcurrent(workerPool: Pool<JobWorker>, conn: Connection, repoId: number, repoName: string, forks: number):Promise<void> {
+async function extractForkReposInConcurrent(workerPool: Pool<JobWorker<WorkerPayload>>, conn: Connection, repoId: number, repoName: string, forks: number):Promise<void> {
     return new Promise((resolve, reject) => {
         workerPool.use(async (worker) => {
-            const { octokit, repoLoader } = worker;
+            const { octokit, payload: { repoLoader } } = worker;
             logger.info(`Fetching fork repos for repo < ${repoId}, ${repoName} > with ${forks} forks...`,);
             await extractForkReposForTimeRange(octokit, repoLoader, repoId, repoName);
             resolve();

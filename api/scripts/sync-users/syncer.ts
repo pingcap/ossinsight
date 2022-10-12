@@ -5,8 +5,8 @@ import { DateTime, DurationLike } from "luxon";
 import { Octokit } from "octokit";
 import { BatchLoader } from "../../app/core/BatchLoader";
 import { splitTimeRange } from "../../app/utils/times";
-import { JobWorker } from "../sync-repos/worker";
-import { loadGitHubUsers } from "./loader";
+import { JobWorker } from "../../app/core/GenericJobWorkerPool";
+import { loadGitHubUsers, WorkerPayload } from "./loader";
 import { GitHubUser, GitHubUserType } from "./types";
 
 // Init logger.
@@ -67,7 +67,7 @@ const SEARCH_USERS_BY_TIME_RANGE_GQL = /* GraphQL */ `
 `;
 
 export async function syncUsersFromTimeRangeSearch(
-    workerPool: Pool<JobWorker>, from: DateTime, to: DateTime,
+    workerPool: Pool<JobWorker<WorkerPayload>>, from: DateTime, to: DateTime,
     chunkSize: DurationLike, stepSize: DurationLike, filter?: string
 ) {
     // Workers ready.
@@ -76,7 +76,7 @@ export async function syncUsersFromTimeRangeSearch(
         logger.info(`Handle time range from ${tFrom} to ${tTo}.`);
         try {
             const worker = await workerPool.acquire();
-            const { octokit, userLoader } = worker; 
+            const { octokit, payload: { userLoader } } = worker; 
             let left = DateTime.fromJSDate(tFrom.toJSDate());
             let right = left.plus(stepSize);
 
