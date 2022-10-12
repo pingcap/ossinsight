@@ -9,7 +9,7 @@ class TrendingRepoGenerator
       select repo_name, count(distinct actor_login) as count
       from github_events
       where type = 'WatchEvent' and created_at >= '#{7.days.ago.to_s(:db)}'
-            and repo_name not in (select repo_name from trending_repos where repo_name is not null)
+            and repo_name not in (select repo_name from trending_repos where created_at >= '#{50.days.ago.to_s(:db)}' and repo_name is not null)
       group by 1
       having count(distinct actor_login) >= 100
       order by 2 desc
