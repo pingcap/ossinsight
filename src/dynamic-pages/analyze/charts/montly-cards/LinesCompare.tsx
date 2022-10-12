@@ -39,8 +39,8 @@ export default function LinesCompare({ color, title, dayValueKey, dayKey = 'peri
           <Tooltip trigger="axis" axisPointer={{}} formatter={formatter(title)} />
           <Axis.Category.X axisTick={{ show: false }} axisLabel={{ color: '#7c7c7c', fontSize: 8 }} />
           <Axis.Value.Y axisLabel={{ hideOverlap: true, color: '#7c7c7c', fontSize: 8 }} />
-          <LineSeries encode={{ x: 'idx', y: 'value' }} color={color} datasetId="current" />
-          <LineSeries encode={{ x: 'idx', y: 'value' }} color="#7C7C7C" datasetId="last" />
+          <LineSeries encode={{ x: 'idx', y: 'value' }} color={color} datasetId="current" showSymbol={false} smooth />
+          <LineSeries encode={{ x: 'idx', y: 'value' }} color="#7C7C7C" datasetId="last" showSymbol={false} smooth />
         </Once>
         <Dataset id="current" source={currentData} />
         <Dataset id="last" source={lastData} />

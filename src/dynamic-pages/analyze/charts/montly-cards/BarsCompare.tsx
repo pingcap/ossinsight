@@ -42,8 +42,8 @@ export default function BarsCompare({ color, icon, title, dayValueKey, dayKey = 
           <Tooltip trigger='axis' axisPointer={{}} formatter={formatter(title)}  />
           <Axis.Category.X axisTick={{ show: false }} axisLabel={{ color: '#7c7c7c', fontSize: 8 }} />
           <Axis.Value.Y axisLabel={{ hideOverlap: true, color: '#7c7c7c', fontSize: 8 }} />
-          <BarSeries encode={{ x: 'idx', y: 'value' }} color={color} datasetId='current' />
-          <BarSeries encode={{ x: 'idx', y: 'value' }} color='#7C7C7C' datasetId='last' />
+          <BarSeries encode={{ x: 'idx', y: 'value' }} color={color} datasetId='current' barMaxWidth={4} />
+          <BarSeries encode={{ x: 'idx', y: 'value' }} color='#7C7C7C' datasetId='last'  barMaxWidth={4} />
         </Once>
         <Dataset id='current' source={currentData} />
         <Dataset id='last' source={lastData} />

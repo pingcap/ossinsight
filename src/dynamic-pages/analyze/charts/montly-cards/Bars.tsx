@@ -37,7 +37,7 @@ export default function Bars({ color, icon, title, dayValueKey, dayKey = 'curren
             <Tooltip trigger="axis" axisPointer={{}} formatter={([params]) => `${params.marker} ${params.value[dayKey]}: <b>${params.value[dayValueKey]}</b> ${title}`} />
             <Axis.Category.X axisTick={{ show: false }} axisLabel={{ color: '#7c7c7c', fontSize: 8 }} />
             <Axis.Value.Y axisLabel={{ hideOverlap: true, color: '#7c7c7c', fontSize: 8 }} />
-            <BarSeries encode={{ x: 'idx', y: dayValueKey }} color={color} />
+            <BarSeries encode={{ x: 'idx', y: dayValueKey }} color={color} barMaxWidth={8} />
           </Once>
           <Dataset source={useReversed(data.data?.data ?? [])} />
         </EChartsx>

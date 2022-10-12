@@ -67,8 +67,8 @@ export default function Lines({
           />
           <Axis.Category.X axisTick={{ show: false }} axisLabel={{ color: '#7c7c7c', fontSize: 8 }} />
           <Axis.Value.Y axisLabel={{ hideOverlap: true, color: '#7c7c7c', fontSize: 8 }} />
-          <LineSeries encode={{ x: 'idx', y: dayOpenedValueKey }} color={colors[0]} />
-          <LineSeries encode={{ x: 'idx', y: dayClosedValueKey }} color={colors[1]} />
+          <LineSeries encode={{ x: 'idx', y: dayOpenedValueKey }} color={colors[0]} showSymbol={false} smooth />
+          <LineSeries encode={{ x: 'idx', y: dayClosedValueKey }} color={colors[1]} showSymbol={false} smooth />
         </Once>
         <Dataset source={useReversed(data.data?.data ?? [])} />
       </EChartsx>
