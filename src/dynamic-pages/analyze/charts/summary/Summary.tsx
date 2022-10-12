@@ -57,7 +57,7 @@ export default function Summary({items, query}: SummaryProps) {
       <Stack gap={1}>
         <Grid container flexWrap='wrap'>
           <Grid item xs={4}>
-            <Typography component='h3' fontSize={20} fontWeight='bold'>Overview {isSmall ? 'true' : 'false'}</Typography>
+            <Typography component='h3' fontSize={20} fontWeight='bold'>Overview</Typography>
           </Grid>
           <Grid item xs={isSmall ? 8 : 6} textAlign='right'>
             <DebugInfo />
