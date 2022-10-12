@@ -6,7 +6,7 @@ import YAML from 'yaml';
 import { Command } from 'commander';
 import { DateTime, DurationLike } from 'luxon';
 import { createPool } from 'mysql2/promise';
-import { createWorkerPool } from '../sync-repos/worker';
+import { createWorkerPool } from '../../app/core/GenericJobWorkerPool';
 import { RegionCodeMapping } from './types';
 import { syncUsersFromTimeRangeSearch } from './syncer';
 import { formatAddressInBatch, formatOrgNamesInBatch, identifyBotsInBatch, loadOrgsToDatabase, Organization } from './processer';

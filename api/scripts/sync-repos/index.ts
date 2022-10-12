@@ -4,10 +4,11 @@ import consola from "consola";
 import { Command } from "commander";
 import { createPool } from "mysql2/promise";
 import { DateTime, DurationLike } from "luxon";
-import { createWorkerPool } from "./worker";
+import { createWorkerPool } from "../../app/core/GenericJobWorkerPool";
 import { getConnectionOptions } from "../../app/utils/db";
 import {  pullReposWithLang, pullReposWithoutLang } from "./puller";
 import { syncReposInConcurrent } from "./syncer";
+import { createSyncReposWorkerPool } from "./loader";
 
 // Load environments.
 dotenv.config({ path: path.resolve(__dirname, '../../.env.template') });
@@ -15,6 +16,8 @@ dotenv.config({ path: path.resolve(__dirname, '../../.env'), override: true });
 
 // Init logger.
 const logger = consola.withTag('sync-repos');
+
+const DEFAULT_TIME_RANGE_FILED = 'created';
 
 async function main() {
     const program = new Command();
@@ -25,6 +28,12 @@ async function main() {
     // Sync repos in batch by GitHub GraphQL API.
     program.command('sync-from-time-range-search')
         .description('Import the database in batches according to the repositories last pushed time with GitHub search API.')
+        .requiredOption<String>(
+            '--time-range-field <\'created\'|\'pushed\'>',
+            'Search by when a repository was created or last updated. Default: "created".',
+            (value) => value,
+            DEFAULT_TIME_RANGE_FILED
+        )
         .requiredOption<DateTime>(
             '--from <datetime>',
             'The start time of time range, which is followed SQL date time format. Default: "2018-02-08".',
@@ -69,7 +78,7 @@ Reference: https://docs.github.com/en/search-github/searching-on-github/searchin
         )
         .action(async (options) => {
             // Handle the command arguments.
-            let { from, to, chunkSize, stepSize, filter = null, skipSyncRepoLanguages, skipSyncRepoTopics } = options;
+            let { timeRangeField, from, to, chunkSize, stepSize, filter = null, skipSyncRepoLanguages, skipSyncRepoTopics } = options;
 
             const gitHubTokens = (process.env.SYNC_GH_TOKENS || '').split(',').map(s => s.trim()).filter(Boolean);
             if (gitHubTokens.length === 0) {
@@ -78,9 +87,9 @@ Reference: https://docs.github.com/en/search-github/searching-on-github/searchin
             }
 
             // Init Worker Pool.
-            const workerPool = createWorkerPool(gitHubTokens);
+            const workerPool = createSyncReposWorkerPool(gitHubTokens);
 
-            await syncReposInConcurrent(workerPool, from, to, chunkSize, stepSize, filter, skipSyncRepoLanguages, skipSyncRepoTopics);
+            await syncReposInConcurrent(workerPool, timeRangeField, from, to, chunkSize, stepSize, filter, skipSyncRepoLanguages, skipSyncRepoTopics);
 
             // Clear worker pool.
             workerPool.clear();
