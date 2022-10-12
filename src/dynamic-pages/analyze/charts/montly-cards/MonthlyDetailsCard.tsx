@@ -14,7 +14,7 @@ export function MonthlyDetailsCard() {
   return (
     <Grid container spacing={1}>
       <Grid container item xs={12} lg={6} direction="column" spacing={1}>
-        <Grid item overflow='hidden' maxWidth='100% !important'>
+        <Grid item maxWidth='100% !important'>
           <Analyze query="analyze-recent-stars">
             <Border>
               <BarsCompare
@@ -43,7 +43,7 @@ export function MonthlyDetailsCard() {
         </Grid>
       </Grid>
       <Grid container item xs={12} lg={6} direction="column" spacing={1}>
-        <Grid item overflow='hidden' maxWidth='100% !important'>
+        <Grid item maxWidth='100% !important'>
           <Analyze query="analyze-recent-issues">
             <Border>
               <Typography fontSize={16} fontWeight="bold">
@@ -68,7 +68,7 @@ export function MonthlyDetailsCard() {
             </Border>
           </Analyze>
         </Grid>
-        <Grid item overflow='hidden' maxWidth='100% !important'>
+        <Grid item maxWidth='100% !important'>
           <Analyze query="analyze-recent-pull-requests">
             <Border>
               <Typography fontSize={16} fontWeight="bold">
@@ -93,7 +93,7 @@ export function MonthlyDetailsCard() {
             </Border>
           </Analyze>
         </Grid>
-        <Grid item overflow='hidden' maxWidth='100% !important'>
+        <Grid item maxWidth='100% !important'>
           <Analyze query="analyze-recent-commits">
             <Border>
               <BarsCompare

@@ -21,7 +21,7 @@ export default function Bars({ color, icon, title, dayValueKey, dayKey = 'curren
   const { data } = useAnalyzeChartContext<any>();
 
   return (
-    <Stack direction="row" style={{ overflow: 'hidden' }}>
+    <Stack direction="row">
       <Box minWidth={96} display='flex' flexDirection='column' justifyContent='center'>
         <Typography fontSize={16} fontWeight="bold" whiteSpace="nowrap">
           {icon}
@@ -30,16 +30,18 @@ export default function Bars({ color, icon, title, dayValueKey, dayKey = 'curren
         </Typography>
         <Typography color={color} fontWeight="bold" fontSize={24}>{data.data?.data[0][totalKey]}</Typography>
       </Box>
-      <EChartsx style={{ flex: 1, width: '100%' }} init={{ height: 74, renderer: 'canvas' }} theme="dark">
-        <Once>
-          <XGrid left={8} right={0} top={4} bottom={0} />
-          <Tooltip formatter={params => `${params.marker} ${params.value[dayKey]}: <b>${params.value[dayValueKey]}</b> ${title}`} />
-          <Axis.Category.X axisTick={{ show: false }} axisLabel={{ color: '#7c7c7c', fontSize: 8 }} />
-          <Axis.Value.Y axisLabel={{ hideOverlap: true, color: '#7c7c7c', fontSize: 8 }} />
-          <BarSeries encode={{ x: 'idx', y: dayValueKey }} color={color} />
-        </Once>
-        <Dataset source={useReversed(data.data?.data ?? [])} />
-      </EChartsx>
+      <Box flex={1} position='relative' height='74px'>
+        <EChartsx style={{ position: 'absolute', width: '100%', height: '100%', zIndex: 0 }} init={{ renderer: 'canvas' }} theme="dark">
+          <Once>
+            <XGrid left={8} right={0} top={4} bottom={0} />
+            <Tooltip trigger="axis" axisPointer={{}} formatter={([params]) => `${params.marker} ${params.value[dayKey]}: <b>${params.value[dayValueKey]}</b> ${title}`} />
+            <Axis.Category.X axisTick={{ show: false }} axisLabel={{ color: '#7c7c7c', fontSize: 8 }} />
+            <Axis.Value.Y axisLabel={{ hideOverlap: true, color: '#7c7c7c', fontSize: 8 }} />
+            <BarSeries encode={{ x: 'idx', y: dayValueKey }} color={color} />
+          </Once>
+          <Dataset source={useReversed(data.data?.data ?? [])} />
+        </EChartsx>
+      </Box>
     </Stack>
   );
 }

@@ -24,7 +24,7 @@ export default function BarsCompare({ color, icon, title, dayValueKey, dayKey = 
   const lastData = usePartData(reversed, 'last', dayValueKey, dayKey);
 
   return (
-    <Box style={{ overflow: 'hidden' }}>
+    <Box>
       <Box display='flex' flexDirection='column' justifyContent='center'>
         <Typography fontSize={16} fontWeight="bold" whiteSpace="nowrap">
           {icon}

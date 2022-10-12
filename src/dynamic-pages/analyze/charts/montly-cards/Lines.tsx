@@ -35,7 +35,7 @@ export default function Lines({
                               }: LinesProps) {
   const { data } = useAnalyzeChartContext();
   return (
-    <Box style={{ overflow: 'hidden' }}>
+    <Box>
       <Box minWidth={96} mb={1}>
         <Typography fontSize={16} fontWeight="bold" whiteSpace="nowrap">
           {icon}
@@ -56,7 +56,15 @@ export default function Lines({
       <EChartsx style={{ flex: 1 }} init={{ height: 105, renderer: 'canvas' }} theme="dark">
         <Once>
           <XGrid left={0} top={4} bottom={0} right={0} />
-          <Tooltip formatter={params => `${params.marker} ${params.value[dayKey]}: <b>${params.value[dayOpenedValueKey]}</b>`} />
+          <Tooltip
+            trigger="axis"
+            axisPointer={{}}
+            formatter={([p1, p2]) => [
+              p1.value[dayKey],
+              `${p1.marker} ${openedText}: <b>${p1.value[dayOpenedValueKey]}</b> ${title}`,
+              `${p2.marker} ${closedText}: <b>${p2.value[dayClosedValueKey]}</b> ${title}`,
+            ].join('<br>')}
+          />
           <Axis.Category.X axisTick={{ show: false }} axisLabel={{ color: '#7c7c7c', fontSize: 8 }} />
           <Axis.Value.Y axisLabel={{ hideOverlap: true, color: '#7c7c7c', fontSize: 8 }} />
           <LineSeries encode={{ x: 'idx', y: dayOpenedValueKey }} color={colors[0]} />
@@ -67,3 +75,7 @@ export default function Lines({
     </Box>
   );
 }
+
+const formatter = (title: string) => (seriesList: any[]): string => {
+  return seriesList.map(series => `${series.marker} ${series.data.day}: <b>${series.data.value}</b> ${title}`).join('<br>');
+};

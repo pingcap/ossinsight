@@ -10,7 +10,7 @@ import { Border } from "./ui";
 function MonthlySummaryCard() {
   return (
     <Grid container direction="column" spacing={1} paddingTop='34.75px' height='100%'>
-      <Grid item overflow='hidden' maxWidth='100% !important'>
+      <Grid item maxWidth='100% !important'>
         <Analyze query="analyze-recent-stars">
           <Border>
             <Bars
@@ -55,7 +55,7 @@ function MonthlySummaryCard() {
           </Analyze>
         </Grid>
       </Grid>
-      <Grid item overflow='hidden' maxWidth='100% !important'>
+      <Grid item maxWidth='100% !important'>
         <Analyze query="analyze-recent-commits">
           <Border>
             <Bars
