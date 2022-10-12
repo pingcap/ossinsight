@@ -19,7 +19,7 @@ const INSERT_USERS_SQL = `INSERT IGNORE INTO github_users(
     followings = VALUES(followings), created_at = VALUES(created_at), updated_at = VALUES(updated_at)
 ;`;
 
-export async function createSyncReposWorkerPool(tokens: string[]) {
+export function createSyncUsersWorkerPool(tokens: string[]) {
     return createWorkerPool<WorkerPayload>(tokens, (connPool: Pool) => {
         return {
             userLoader: new BatchLoader(connPool, INSERT_USERS_SQL, {

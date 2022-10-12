@@ -12,6 +12,7 @@ import { syncUsersFromTimeRangeSearch } from './syncer';
 import { formatAddressInBatch, formatOrgNamesInBatch, identifyBotsInBatch, loadOrgsToDatabase, Organization } from './processer';
 import { getConnectionOptions } from '../../app/utils/db';
 import { LocationCache, Locator } from '../../app/locator/Locator';
+import { createSyncUsersWorkerPool } from './loader';
 
 // Load environments.
 dotenv.config({ path: path.resolve(__dirname, '../../.env.template') });
@@ -69,7 +70,7 @@ Reference: https://docs.github.com/en/search-github/searching-on-github/searchin
             }
 
             // Init Worker Pool.
-            const workerPool = createWorkerPool(gitHubTokens);
+            const workerPool = createSyncUsersWorkerPool(gitHubTokens);
 
             logger.info(`Start sync users for time range from ${from} to ${to}.`);
             await syncUsersFromTimeRangeSearch(workerPool, from, to, chunkSize, stepSize, filter);
