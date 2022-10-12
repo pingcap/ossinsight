@@ -25,6 +25,8 @@ import { Collection } from "@ossinsight/api";
 import Chip from "@mui/material/Chip";
 import { paramCase } from "param-case";
 import { MonthlySummaryCard } from "../charts/montly-cards";
+import Typography from "@mui/material/Typography";
+import Stack from "@mui/material/Stack";
 
 export const OverviewSection = forwardRef(function ({}, ref: ForwardedRef<HTMLElement>) {
   const theme = useTheme()
@@ -106,6 +108,7 @@ export const OverviewSection = forwardRef(function ({}, ref: ForwardedRef<HTMLEl
       }
       <Grid container spacing={0} alignItems='center' mb={!vs ? 2 : 0}>
         <Grid item xs={12} lg={5}>
+          <Typography fontSize={20}>Overview</Typography>
           <Summary items={summaries} query='analyze-repo-overview' />
         </Grid>
         <Grid item xs={12} lg={7}>
@@ -118,7 +121,17 @@ export const OverviewSection = forwardRef(function ({}, ref: ForwardedRef<HTMLEl
                   <LineChart spec={{valueIndex: 'total', name: 'Stars'}} aspectRatio={16 / 9}/>
                 </Analyze>
               )
-              : <MonthlySummaryCard />
+              : (
+                <>
+                  <Stack direction='row' justifyContent='space-between' flexWrap='wrap'>
+                    <Typography fontSize={20} fontWeight='bold'>Last 28 days Stats</Typography>
+                    <Typography fontSize={16} component='a' href='#repository'>
+                      🆕 Compare with the last period
+                    </Typography>
+                  </Stack>
+                  <MonthlySummaryCard />
+                </>
+              )
           }
         </Grid>
       </Grid>

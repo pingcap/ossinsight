@@ -75,7 +75,3 @@ export default function Lines({
     </Box>
   );
 }
-
-const formatter = (title: string) => (seriesList: any[]): string => {
-  return seriesList.map(series => `${series.marker} ${series.data.day}: <b>${series.data.value}</b> ${title}`).join('<br>');
-};
