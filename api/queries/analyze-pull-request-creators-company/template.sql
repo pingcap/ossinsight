@@ -3,7 +3,7 @@ WITH pr_creator_companies AS (
         TRIM(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(gu.organization, ',', ''), '-', ''), '@', ''), 'www.', ''), 'inc', ''), '.com', ''), '.cn', ''), '.', '')) AS company_name,
         COUNT(DISTINCT ge.actor_login) AS code_contributors
     FROM github_events ge
-    LEFT JOIN github_users gu ON ge.actor_login = gu.login
+    LEFT JOIN github_users gu USE INDEX (index_gu_on_login_is_bot_organization_country_code) ON ge.actor_login = gu.login
     WHERE
         ge.repo_id in (41986369)
         AND ge.type = 'PullRequestEvent'

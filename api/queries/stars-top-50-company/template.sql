@@ -4,7 +4,7 @@ FROM (
         TRIM(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(gu.organization, ',', ''), '-', ''), '@', ''), '.', ''), 'ltd', ''), 'inc', ''), 'com', ''), 'www', '')) as company_name,
         COUNT(distinct actor_login) as stargazers
     FROM github_events ge
-    LEFT JOIN github_users gu ON ge.actor_login = gu.login
+    LEFT JOIN github_users gu USE INDEX (index_gu_on_login_is_bot_organization_country_code) ON ge.actor_login = gu.login
     WHERE
         ge.repo_id IN (41986369)
         AND ge.type = 'WatchEvent'
