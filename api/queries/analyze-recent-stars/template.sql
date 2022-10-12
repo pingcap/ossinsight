@@ -1,7 +1,13 @@
-WITH RECURSIVE seq(idx) AS (
-      SELECT 1 AS idx
+WITH RECURSIVE seq(idx, current_period_day, last_period_day) AS (
+      SELECT
+        1 AS idx,
+        CURRENT_DATE() AS current_period_day,
+        DATE_SUB(CURRENT_DATE(), INTERVAL 28 day) AS last_period_day
       UNION ALL
-      SELECT idx + 1 AS idx
+      SELECT
+        idx + 1 AS idx,
+        DATE_SUB(CURRENT_DATE(), INTERVAL idx + 1 day) AS current_period_day,
+        DATE_SUB(CURRENT_DATE(), INTERVAL idx + 1 + 28 day) AS last_period_day
       FROM seq
       WHERE idx < 28
 ), group_by_day AS (
@@ -44,10 +50,10 @@ WITH RECURSIVE seq(idx) AS (
 )
 SELECT
     s.idx AS idx,
-    cp.day AS current_period_day,
+    s.current_period_day AS current_period_day,
     IFNULL(cp.stars, 0) AS current_period_day_stars,
     IFNULL(cpt.total, 0) AS current_period_stars,
-    lp.day AS last_period_day,
+    s.last_period_day AS last_period_day,
     IFNULL(lp.stars, 0) AS last_period_day_stars,
     IFNULL(lpt.total, 0) AS last_period_stars
 FROM seq s

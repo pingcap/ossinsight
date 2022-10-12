@@ -1,7 +1,13 @@
-WITH RECURSIVE seq(idx) AS (
-      SELECT 1 AS idx
+WITH RECURSIVE seq(idx, current_period_day, last_period_day) AS (
+      SELECT
+        1 AS idx,
+        CURRENT_DATE() AS current_period_day,
+        DATE_SUB(CURRENT_DATE(), INTERVAL 28 day) AS last_period_day
       UNION ALL
-      SELECT idx + 1 AS idx
+      SELECT
+        idx + 1 AS idx,
+        DATE_SUB(CURRENT_DATE(), INTERVAL idx + 1 day) AS current_period_day,
+        DATE_SUB(CURRENT_DATE(), INTERVAL idx + 1 + 28 day) AS last_period_day
       FROM seq
       WHERE idx < 28
 ), opened_issues_group_by_day AS (
@@ -84,12 +90,12 @@ WITH RECURSIVE seq(idx) AS (
 )
 SELECT
     s.idx AS idx,
-    COALESCE(oicp.day, cicp.day) AS current_period_day,
+    s.current_period_day AS current_period_day,
     IFNULL(oicp.issues, 0) AS current_period_opened_day_issues,
     IFNULL(oicpt.total, 0) AS current_period_opened_issues,
     IFNULL(oilp.issues, 0) AS last_period_opened_day_issues,
     IFNULL(oilpt.total, 0) AS last_period_opened_issues,
-    COALESCE(oilp.day, cilp.day) AS last_period_day,
+    s.last_period_day AS last_period_day,
     IFNULL(cicp.issues, 0) AS current_period_closed_day_issues,
     IFNULL(cicpt.total, 0) AS current_period_closed_issues,
     IFNULL(cilp.issues, 0) AS last_period_closed_day_issues,
