@@ -23,7 +23,7 @@ export default function LinesCompare({ color, title, dayValueKey, dayKey = 'peri
   const lastData = usePartData(reversed, 'last', dayValueKey, dayKey);
 
   return (
-    <Stack direction="row">
+    <Stack direction="row" style={{ overflow: 'hidden' }}>
       <Box display="flex" minWidth={84} flexDirection="column" justifyContent="center">
         <Typography fontSize={14} color="#C4C4C4" fontWeight="bold" whiteSpace="nowrap">
           {title}
@@ -33,7 +33,7 @@ export default function LinesCompare({ color, title, dayValueKey, dayKey = 'peri
           <Diff value={diff} />
         </Typography>
       </Box>
-      <EChartsx style={{ flex: 1 }} init={{ height: 72, renderer: 'canvas' }} theme="dark">
+      <EChartsx style={{ flex: 1, width: '100%' }} init={{ height: 72, renderer: 'canvas' }} theme="dark">
         <Once>
           <XGrid left={8} right={0} top={4} bottom={0} />
           <Tooltip trigger="axis" axisPointer={{}} formatter={formatter(title)} />

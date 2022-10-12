@@ -35,7 +35,7 @@ export default function Lines({
                               }: LinesProps) {
   const { data } = useAnalyzeChartContext();
   return (
-    <>
+    <Box style={{ overflow: 'hidden' }}>
       <Box minWidth={96} mb={1}>
         <Typography fontSize={16} fontWeight="bold" whiteSpace="nowrap">
           {icon}
@@ -64,6 +64,6 @@ export default function Lines({
         </Once>
         <Dataset source={useReversed(data.data?.data ?? [])} />
       </EChartsx>
-    </>
+    </Box>
   );
 }
