@@ -9,7 +9,7 @@ import { Border } from "./ui";
 
 function MonthlySummaryCard() {
   return (
-    <Grid container direction="column" spacing={1} paddingTop='34.75px' height='100%'>
+    <Grid container direction="column" spacing={1} paddingTop='14.75px' height='100%'>
       <Grid item maxWidth='100% !important'>
         <Analyze query="analyze-recent-stars">
           <Border>
