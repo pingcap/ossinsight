@@ -2,7 +2,7 @@ select
     company_name
 from (
      select
-        trim(replace(replace(replace(replace(replace(replace(replace(replace(lower(gu.organization), ',', ''), '-', ''), '@', ''), 'www.', ''), 'inc', ''), '.com', ''), '.cn', ''), '.', '')) as company_name,
+        trim(replace(replace(replace(replace(replace(replace(replace(replace(gu.organization, ',', ''), '-', ''), '@', ''), 'www.', ''), 'inc', ''), '.com', ''), '.cn', ''), '.', '')) as company_name,
         repo_id,
         count(distinct actor_login) as stargazers
      from github_events ge

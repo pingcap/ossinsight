@@ -6,7 +6,7 @@ WITH company_ci AS (
     GROUP BY company
 )
 SELECT
-    TRIM(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(LOWER(company), 'www.', ''), '.com', ''), '!', ''), ',', ''), '-', ''), '@', ''), '.', ''), 'ltd', ''), 'inc', ''), 'corporation', '')) AS `name`,
+    TRIM(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(company, 'www.', ''), '.com', ''), '!', ''), ',', ''), '-', ''), '@', ''), '.', ''), 'ltd', ''), 'inc', ''), 'corporation', '')) AS `name`,
     SUM(cnt) AS total
 FROM company_ci
 GROUP BY `name`
