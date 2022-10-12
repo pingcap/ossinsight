@@ -105,10 +105,10 @@ export const OverviewSection = forwardRef(function ({}, ref: ForwardedRef<HTMLEl
         )
       }
       <Grid container spacing={0} alignItems='center' mb={!vs ? 2 : 0}>
-        <Grid item xs={12} md={5}>
+        <Grid item xs={12} lg={5}>
           <Summary items={summaries} query='analyze-repo-overview' />
         </Grid>
-        <Grid item xs={12} md={7}>
+        <Grid item xs={12} lg={7}>
           {
             vs
               ? (

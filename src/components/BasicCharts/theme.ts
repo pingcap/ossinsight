@@ -14,17 +14,18 @@ export function registerThemeVintage (bg = true) {
 
 export function registerThemeDark(bg = true) {
   const contrastColor = '#E9EAEE';
-  const boxColor = '#2c2c2c'
+  const boxColor = '#2c2c2c';
+  const borderColor = '#3c3c3c';
   const axisCommon = function () {
     return {
       axisLine: {
         lineStyle: {
-          color: contrastColor
+          color: borderColor
         }
       },
       axisTick: {
         lineStyle: {
-          color: contrastColor
+          color: borderColor
         }
       },
       axisLabel: {

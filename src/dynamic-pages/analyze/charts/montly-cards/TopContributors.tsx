@@ -10,12 +10,12 @@ import Tooltip from "@mui/material/Tooltip";
 export default function TopContributors() {
   const { data } = useAnalyzeChartContext();
   return (
-    <Stack direction="row" justifyContent="space-between" alignItems="center">
+    <Stack direction={['column', 'column', 'column', 'row']} justifyContent="space-between" alignItems="center">
       <Typography fontSize={16} fontWeight="bold" whiteSpace="nowrap">
         <PeopleIcon sx={{ verticalAlign: 'middle', mr: 0.5 }} />
         Top 5 Contributors
       </Typography>
-      <Stack direction="row">
+      <Stack direction="row" mt={[1, 1, 1, 0]}>
         {(data.data?.data ?? []).map(({ actor_login }) => (
           <Contributor key={actor_login} login={actor_login} />
         ))}
@@ -31,5 +31,5 @@ const Contributor = ({ login }: { login: string }) => {
         <Avatar src={`https://github.com/${login}.png`} sx={{ ml: 1 }} />
       </Tooltip>
     </Link>
-  )
-}
+  );
+};

@@ -36,7 +36,7 @@ export default function Lines({
   const { data } = useAnalyzeChartContext();
   return (
     <>
-      <Box minWidth={96}>
+      <Box minWidth={96} mb={1}>
         <Typography fontSize={16} fontWeight="bold" whiteSpace="nowrap">
           {icon}
           &nbsp;
@@ -53,7 +53,7 @@ export default function Lines({
           </Box>
         </Stack>
       </Box>
-      <EChartsx style={{ flex: 1 }} init={{ height: 96, renderer: 'canvas' }} theme="dark">
+      <EChartsx style={{ flex: 1 }} init={{ height: 105, renderer: 'canvas' }} theme="dark">
         <Once>
           <XGrid left={0} top={4} bottom={0} right={0} />
           <Tooltip formatter={params => `${params.marker} ${params.value[dayKey]}: <b>${params.value[dayOpenedValueKey]}</b>`} />

@@ -5,6 +5,8 @@ import Stack from "@mui/material/Stack";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { useReversed } from "./hooks";
+import ECharts from "../../../../components/ECharts";
+import { EChartsOption } from "echarts";
 
 interface BarsProps {
   color: string;
@@ -19,7 +21,7 @@ export default function Bars({ color, icon, title, dayValueKey, dayKey = 'curren
   const { data } = useAnalyzeChartContext<any>();
 
   return (
-    <Stack direction="row">
+    <Stack direction="row" style={{ overflow: 'hidden' }}>
       <Box minWidth={96} display='flex' flexDirection='column' justifyContent='center'>
         <Typography fontSize={16} fontWeight="bold" whiteSpace="nowrap">
           {icon}
@@ -28,7 +30,7 @@ export default function Bars({ color, icon, title, dayValueKey, dayKey = 'curren
         </Typography>
         <Typography color={color} fontWeight="bold" fontSize={24}>{data.data?.data[0][totalKey]}</Typography>
       </Box>
-      <EChartsx style={{ flex: 1 }} init={{ height: 96, renderer: 'canvas' }} theme="dark">
+      <EChartsx style={{ flex: 1, width: '100%' }} init={{ height: 74, renderer: 'canvas' }} theme="dark">
         <Once>
           <XGrid left={8} right={0} top={4} bottom={0} />
           <Tooltip formatter={params => `${params.marker} ${params.value[dayKey]}: <b>${params.value[dayValueKey]}</b> ${title}`} />

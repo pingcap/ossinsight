@@ -9,8 +9,8 @@ import { Border } from "./ui";
 
 function MonthlySummaryCard() {
   return (
-    <Grid container direction="column" spacing={1}>
-      <Grid item>
+    <Grid container direction="column" spacing={1} paddingTop='34.75px' height='100%'>
+      <Grid item overflow='hidden' maxWidth='100% !important'>
         <Analyze query="analyze-recent-stars">
           <Border>
             <Bars
@@ -24,7 +24,7 @@ function MonthlySummaryCard() {
         </Analyze>
       </Grid>
       <Grid item container direction="row" spacing={1}>
-        <Grid item xs={6}>
+        <Grid item xs={12} lg={6} width='100%'>
           <Analyze query="analyze-recent-pull-requests">
             <Border>
               <Lines
@@ -39,7 +39,7 @@ function MonthlySummaryCard() {
             </Border>
           </Analyze>
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={12} lg={6} width='100%'>
           <Analyze query="analyze-recent-issues">
             <Border>
               <Lines
@@ -55,7 +55,7 @@ function MonthlySummaryCard() {
           </Analyze>
         </Grid>
       </Grid>
-      <Grid item>
+      <Grid item overflow='hidden' maxWidth='100% !important'>
         <Analyze query="analyze-recent-commits">
           <Border>
             <Bars

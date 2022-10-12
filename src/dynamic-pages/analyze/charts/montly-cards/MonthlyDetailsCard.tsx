@@ -13,8 +13,8 @@ import Map from "./Map";
 export function MonthlyDetailsCard() {
   return (
     <Grid container spacing={1}>
-      <Grid container item sm={6} direction="column" spacing={1}>
-        <Grid item>
+      <Grid container item xs={12} lg={6} direction="column" spacing={1}>
+        <Grid item overflow='hidden' maxWidth='100% !important'>
           <Analyze query="analyze-recent-stars">
             <Border>
               <BarsCompare
@@ -27,14 +27,14 @@ export function MonthlyDetailsCard() {
             </Border>
           </Analyze>
         </Grid>
-        <Grid item flex={1}>
+        <Grid item flex={1} maxWidth='100% !important'>
           <Border style={{ width: '100%', height: '100%' }}>
             <Analyze query="analyze-stars-map" params={{ period: 'last_28_days' }}>
               <Map />
             </Analyze>
           </Border>
         </Grid>
-        <Grid item>
+        <Grid item maxWidth='100% !important'>
           <Analyze query="analyze-recent-top-contributors">
             <Border>
               <TopContributors />
@@ -42,8 +42,8 @@ export function MonthlyDetailsCard() {
           </Analyze>
         </Grid>
       </Grid>
-      <Grid container item sm={6} direction="column" spacing={1}>
-        <Grid item>
+      <Grid container item xs={12} lg={6} direction="column" spacing={1}>
+        <Grid item overflow='hidden' maxWidth='100% !important'>
           <Analyze query="analyze-recent-issues">
             <Border>
               <Typography fontSize={16} fontWeight="bold">
@@ -68,7 +68,7 @@ export function MonthlyDetailsCard() {
             </Border>
           </Analyze>
         </Grid>
-        <Grid item>
+        <Grid item overflow='hidden' maxWidth='100% !important'>
           <Analyze query="analyze-recent-pull-requests">
             <Border>
               <Typography fontSize={16} fontWeight="bold">
@@ -93,7 +93,7 @@ export function MonthlyDetailsCard() {
             </Border>
           </Analyze>
         </Grid>
-        <Grid item>
+        <Grid item overflow='hidden' maxWidth='100% !important'>
           <Analyze query="analyze-recent-commits">
             <Border>
               <BarsCompare
