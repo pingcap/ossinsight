@@ -1,7 +1,7 @@
 SELECT company_name, stargazers
 FROM (
     SELECT
-        TRIM(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(LOWER(gu.organization), ',', ''), '-', ''), '@', ''), '.', ''), 'ltd', ''), 'inc', ''), 'com', ''), 'www', '')) as company_name,
+        TRIM(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(gu.organization, ',', ''), '-', ''), '@', ''), '.', ''), 'ltd', ''), 'inc', ''), 'com', ''), 'www', '')) as company_name,
         COUNT(distinct actor_login) as stargazers
     FROM github_events ge
     LEFT JOIN github_users gu ON ge.actor_login = gu.login
