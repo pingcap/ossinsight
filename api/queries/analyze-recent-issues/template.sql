@@ -28,7 +28,7 @@ WITH RECURSIVE seq(idx, current_period_day, last_period_day) AS (
             FROM
                 github_events ge
             WHERE
-                type = 'PullRequestEvent'
+                type = 'IssuesEvent'
                 AND action = 'opened'
                 AND repo_id = 41986369
                 AND created_at > DATE_SUB(CURRENT_DATE(), INTERVAL 56 DAY)
@@ -54,9 +54,8 @@ WITH RECURSIVE seq(idx, current_period_day, last_period_day) AS (
             FROM
                 github_events ge
             WHERE
-                type = 'PullRequestEvent'
+                type = 'IssuesEvent'
                 AND action = 'closed'
-                AND pr_merged = true
                 AND repo_id = 41986369
                 AND created_at > DATE_SUB(CURRENT_DATE(), INTERVAL 56 DAY)
             GROUP BY day
