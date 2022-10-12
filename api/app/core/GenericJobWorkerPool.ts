@@ -24,20 +24,25 @@ export interface JobWorker<T> {
 }
 
 export type PayloadInitializer<T> = (connPool: Pool) => T;
+export type PayloadDestroyer<T> = (payload: T) => void;
 
 export class WorkerFactory<T> implements Factory<JobWorker<T>> {
     private tokens: Set<string | undefined> = new Set()
     private log: Consola;
   
-    constructor(tokens: string[], readonly payloadInitializer: PayloadInitializer<T>) {
+    constructor(
+      tokens: string[],
+      readonly payloadInitializer: PayloadInitializer<T>,
+      readonly payloadDestroyer: PayloadDestroyer<T>
+    ) {
       this.log = consola.withTag('worker-factory')
       tokens.forEach(token => this.tokens.add(token))
-      this.log.info('create with %s tokens', tokens.length)
+      this.log.info('Create workers with %s GitHub tokens.', tokens.length)
     }
   
     async create(): Promise<JobWorker<T>> {
       if (this.tokens.size <= 0) {
-        throw new Error('Out of personal tokens');
+        throw new Error('Out of GitHub personal tokens.');
       }
 
       // Get access token.
@@ -86,7 +91,7 @@ export class WorkerFactory<T> implements Factory<JobWorker<T>> {
         logger: log,
         pool: connPool,
         octokit: octokit,
-        payload: this.payloadInitializer(connPool)
+        payload: this.payloadInitializer(connPool),
       };
 
       Object.defineProperty(worker, SYMBOL_TOKEN, {value, writable: false, enumerable: false, configurable: false});
@@ -99,19 +104,27 @@ export class WorkerFactory<T> implements Factory<JobWorker<T>> {
       const { value } = Object.getOwnPropertyDescriptor(worker, SYMBOL_TOKEN)!
       this.tokens.add(value);
       const erasedToken = eraseToken(value);
-      this.log.info('Release client with token %s', erasedToken);
+      this.log.info('Release GitHub client with GitHub token %s.', erasedToken);
+
+      this.payloadDestroyer(worker.payload);
+      this.log.info('Release payload of the worker with GitHub token %s.', erasedToken);
+
+      worker.pool.end();
+      this.log.info('Release database connection pool of the worker with GitHub token %s.', erasedToken);
     }
 }
 
-export function createWorkerPool<T>(tokens: string[], payloadInitializer: PayloadInitializer<T>):GenericPool<JobWorker<T>> {
+export function createWorkerPool<T>(
+  tokens: string[], payloadInitializer: PayloadInitializer<T>, payloadDestroyer: PayloadDestroyer<T>
+): GenericPool<JobWorker<T>> {
   // Notice: every worker has one octokit client.
-  const workerPool = createGenericPool(new WorkerFactory<T>(tokens, payloadInitializer), {
+  const workerPool = createGenericPool(new WorkerFactory<T>(tokens, payloadInitializer, payloadDestroyer), {
       min: 0,
       max: tokens.length
   }).on('factoryCreateError', function (err) {
-      logger.error('factoryCreateError', err)
+      logger.error('Failed to create worker: ', err)
   }).on('factoryDestroyError', function (err) {
-      logger.error('factoryDestroyError', err)
+      logger.error('Failed to destroy worker: ', err)
   });
   return workerPool;
 }

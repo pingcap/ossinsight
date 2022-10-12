@@ -9,7 +9,7 @@ export interface WorkerPayload {
     repoTopicLoader: BatchLoader;
 }
 
-const INSERT_REPOS_SQL = `INSERT IGNORE INTO github_repos (
+const INSERT_REPOS_SQL = `INSERT INTO github_repos (
     repo_id, repo_name, owner_id, owner_login, owner_is_org, description, primary_language, license, size, stars, forks, 
     is_fork, is_archived, latest_released_at, parent_repo_id, pushed_at, created_at, updated_at
   ) VALUES ?
@@ -19,11 +19,11 @@ const INSERT_REPOS_SQL = `INSERT IGNORE INTO github_repos (
     is_archived = VALUES(is_archived), latest_released_at = VALUES(latest_released_at), parent_repo_id = VALUES(parent_repo_id), pushed_at = VALUES(pushed_at), created_at = VALUES(created_at), updated_at = VALUES(updated_at)
 ;`;
 
-const INSERT_REPO_LANGUAGES_SQL = `INSERT IGNORE INTO github_repo_languages (repo_id, language, size) VALUES ?
+const INSERT_REPO_LANGUAGES_SQL = `INSERT INTO github_repo_languages (repo_id, language, size) VALUES ?
 ON DUPLICATE KEY UPDATE repo_id = VALUES(repo_id), language = VALUES(language), size = VALUES(size)
 ;`;
 
-const INSERT_REPO_TOPICS_SQL = `INSERT IGNORE INTO github_repo_topics (repo_id, topic) VALUES ?
+const INSERT_REPO_TOPICS_SQL = `INSERT INTO github_repo_topics (repo_id, topic) VALUES ?
 ON DUPLICATE KEY UPDATE repo_id = VALUES(repo_id), topic = VALUES(topic)
 ;`;
 
@@ -40,6 +40,10 @@ export function createSyncReposWorkerPool(tokens: string[]) {
                 batchSize: 2000
             })
         }
+    }, async ({ repoLoader, repoLangLoader, repoTopicLoader }: WorkerPayload) => {
+        await repoLoader.flush();
+        await repoLangLoader.flush();
+        await repoTopicLoader.flush();
     });
 }
 

@@ -10,7 +10,7 @@ export interface WorkerPayload {
     userLoader: BatchLoader;
 }
 
-const INSERT_USERS_SQL = `INSERT IGNORE INTO github_users(
+const INSERT_USERS_SQL = `INSERT INTO github_users(
     id, login, type, is_bot, name, email, organization, address, public_repos, followers, followings, created_at, updated_at
   ) VALUES ?
   ON DUPLICATE KEY UPDATE
@@ -20,12 +20,14 @@ const INSERT_USERS_SQL = `INSERT IGNORE INTO github_users(
 ;`;
 
 export function createSyncUsersWorkerPool(tokens: string[]) {
-    return createWorkerPool<WorkerPayload>(tokens, (connPool: Pool) => {
+    return createWorkerPool<WorkerPayload>(tokens, (connections: Pool) => {
         return {
-            userLoader: new BatchLoader(connPool, INSERT_USERS_SQL, {
+            userLoader: new BatchLoader(connections, INSERT_USERS_SQL, {
                 batchSize: 2000
             }),              
         }
+    }, async ({ userLoader }: WorkerPayload) => {
+        await userLoader.flush();
     });
 }
 
