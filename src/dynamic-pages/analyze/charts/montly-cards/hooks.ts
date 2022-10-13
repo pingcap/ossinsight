@@ -19,5 +19,8 @@ export function useDiff(data: any[], valueKey: string, dayKey: string) {
   if (!item) {
     return '0'
   }
+  if (!item[`last_${valueKey}`]) {
+    return '';
+  }
   return ((item[`current_${valueKey}`] - item[`last_${valueKey}`]) / item[`last_${valueKey}`] * 100).toFixed(0) + '%'
 }
