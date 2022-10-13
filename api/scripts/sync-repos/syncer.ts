@@ -32,7 +32,8 @@ export async function syncReposInConcurrent(
         logger.info(`Handle time range from ${tFrom} to ${tTo}.`);
         try {
             const worker = await workerPool.acquire();
-            const { octokit, payload: { repoLoader, repoLangLoader, repoTopicLoader } } = worker; 
+            const { octokit, payload } = worker; 
+            const { repoLoader, repoLangLoader, repoTopicLoader } = payload!;
             let left = DateTime.fromJSDate(tFrom.toJSDate());
             let right = left.plus(stepSize);
 
@@ -291,7 +292,8 @@ export async function syncForkRepos(
 async function extractForkReposInConcurrent(workerPool: Pool<JobWorker<WorkerPayload>>, conn: Connection, repoId: number, repoName: string, forks: number):Promise<void> {
     return new Promise((resolve, reject) => {
         workerPool.use(async (worker) => {
-            const { octokit, payload: { repoLoader } } = worker;
+            const { octokit, payload } = worker;
+            const { repoLoader } = payload!;
             logger.info(`Fetching fork repos for repo < ${repoId}, ${repoName} > with ${forks} forks...`,);
             await extractForkReposForTimeRange(octokit, repoLoader, repoId, repoName);
             resolve();
