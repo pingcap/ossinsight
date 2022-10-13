@@ -35,3 +35,4 @@ items:
   - postgres/postgres
   - duckdb/duckdb
   - apache/shardingsphere
+  - milvus-io/milvus
