@@ -24,6 +24,9 @@ import { useRemoteData } from "../../../components/RemoteCharts/hook";
 import { Collection } from "@ossinsight/api";
 import Chip from "@mui/material/Chip";
 import { paramCase } from "param-case";
+import { MonthlySummaryCard } from "../charts/montly-cards";
+import Typography from "@mui/material/Typography";
+import Stack from "@mui/material/Stack";
 
 export const OverviewSection = forwardRef(function ({}, ref: ForwardedRef<HTMLElement>) {
   const theme = useTheme()
@@ -103,18 +106,41 @@ export const OverviewSection = forwardRef(function ({}, ref: ForwardedRef<HTMLEl
           </>
         )
       }
-      <Grid container spacing={0} alignItems='center'>
-        <Grid item xs={12} md={vs ? 7 : 6}>
+      <Grid container spacing={0} alignItems='center' mb={!vs ? 2 : 0} mt={2}>
+        <Grid item xs={12} lg={5}>
           <Summary items={summaries} query='analyze-repo-overview' />
         </Grid>
-        <Grid item xs={12} md={vs ? 5 : 6}>
-          <Analyze query='analyze-stars-history'>
-            <H2 id='stars-history' analyzeTitle display='none'>Stars History</H2>
-            <P2 display='none'>The growth trend and the specific number of stars since the repository was established.</P2>
-            <LineChart spec={{valueIndex: 'total', name: 'Stars'}} aspectRatio={isSmall ? 16 / 9 : 4 / 3}/>
-          </Analyze>
+        <Grid item xs={12} lg={7}>
+          {
+            vs
+              ? (
+                <Analyze query='analyze-stars-history'>
+                  <H2 id='stars-history' analyzeTitle display='none'>Stars History</H2>
+                  <P2 display='none'>The growth trend and the specific number of stars since the repository was established.</P2>
+                  <LineChart spec={{valueIndex: 'total', name: 'Stars'}} aspectRatio={16 / 9}/>
+                </Analyze>
+              )
+              : (
+                <>
+                  <Stack direction='row' justifyContent='space-between' flexWrap='wrap' mt={isSmall ? 2 : 0}>
+                    <Typography component='h3' fontSize={20} fontWeight='bold'>Last 28 days Stats</Typography>
+                    <Typography component='a' fontSize={16} href='#repository'>
+                      🆕 Compare with the previous period
+                    </Typography>
+                  </Stack>
+                  <MonthlySummaryCard />
+                </>
+              )
+          }
         </Grid>
       </Grid>
+      {!vs && (
+        <Analyze query='analyze-stars-history'>
+          <H2 id='stars-history' analyzeTitle display='none'>Stars History</H2>
+          <P2 display='none'>The growth trend and the specific number of stars since the repository was established.</P2>
+          <LineChart spec={{valueIndex: 'total', name: 'Stars'}} aspectRatio={isSmall ? 16 / 9 : 32 / 9}/>
+        </Analyze>
+      )}
     </Section>
   )
 })

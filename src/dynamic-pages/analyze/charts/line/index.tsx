@@ -21,18 +21,22 @@ export const LineChart = withChart<LineData<any>, { valueIndex: string, name: st
   compareData,
   repoName,
   comparingRepoName,
+  isSmall,
 }, {valueIndex, name, fromRecent = false}) => ({
   xAxis: timeAxis<'x'>(undefined, undefined, !fromRecent ? 'event_month' : fromRecent),
   yAxis: valueAxis<'y'>(undefined, {name}),
   title: title(propsTitle),
   tooltip: axisTooltip('line'),
   legend: legend({
-    top: 32,
+    top: isSmall ? 8 : 32,
     right: 0,
     left: undefined
   }),
   grid: {
-    bottom: 8
+    left: 8,
+    bottom: 8,
+    top: isSmall ? 8 : 64,
+    right: 8
   },
   dataset: [
     originalDataset(data),

@@ -24,6 +24,8 @@ export interface WorldMapChartProps<T> {
   metricColumnName: keyof T
   effect?: boolean
   size?: number
+  overrideOptions?: EChartsOption
+  aspectRatio?: boolean
 }
 
 function useMapOption (comparing: boolean): EChartsOption {
@@ -59,7 +61,7 @@ function useMapOption (comparing: boolean): EChartsOption {
       top: 16,
       bottom: 16,
       right: 16,
-      containLabel: true
+      containLabel: true,
     },
   }), [comparing])
 }
@@ -75,7 +77,9 @@ export default function WorldMapChart<T>(props: WorldMapChartProps<T>) {
     dimensionColumnName,
     metricColumnName,
     effect = true,
-    size = 24
+    size = 24,
+    overrideOptions = {},
+    aspectRatio = true,
   } = props;
   const theme = useTheme();
   const basicOption = useMapOption(!!compareData)
@@ -136,12 +140,14 @@ export default function WorldMapChart<T>(props: WorldMapChartProps<T>) {
     return {
       ...basicOption,
       series,
+      ...overrideOptions,
     }
   }, [basicOption, data, compareData, name, compareName, isSmall, effect])
 
   return (
     <ECharts
-      aspectRatio={16 / 9}
+      aspectRatio={aspectRatio ? 16 / 9 : undefined}
+      height={aspectRatio ? undefined : '100%'}
       showLoading={loading}
       option={options}
       notMerge={false}

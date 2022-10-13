@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useAnalyzeChartContext, useAnalyzeContext } from '../context';
 import Grid from '@mui/material/Grid';
 import {StaticSummaryItem, SummaryItem} from './SummaryItem';
@@ -9,6 +9,9 @@ import Stack from '@mui/material/Stack';
 import type {RepoInfo} from '@ossinsight/api';
 import { useDebugDialog } from "../../../../components/DebugDialog";
 import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import { useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 export type ItemBase = {
   icon?: React.ReactNode
@@ -32,28 +35,46 @@ export interface SummaryProps {
 
 const singleSize = [4, 6] as const;
 const compareSize = [4, 3] as const;
+const singleSmSize = [4, 8] as const;
+const compareSmSize = [4, 4] as const;
 
 export default function Summary({items, query}: SummaryProps) {
   const {comparingRepoId, repoName, comparingRepoName} = useAnalyzeContext();
+  const theme = useTheme()
 
-  const sizes = comparingRepoId ? compareSize : singleSize;
+  const isSmall = useMediaQuery(theme.breakpoints.down('lg'));
+
+  const sizes = useMemo(() => {
+    if (!!comparingRepoId) {
+      return isSmall ? compareSmSize : compareSize;
+    } else {
+      return isSmall ? singleSmSize : singleSize;
+    }
+  }, [isSmall, comparingRepoId]);
 
   return (
     <Analyze query={query}>
-      <DebugInfo />
       <Stack gap={1}>
+        <Grid container flexWrap='wrap'>
+          <Grid item xs={4}>
+            <Typography component='h3' fontSize={20} fontWeight='bold'>Overview</Typography>
+          </Grid>
+          <Grid item xs={isSmall ? 8 : 6} textAlign='right'>
+            <DebugInfo />
+          </Grid>
+        </Grid>
         <Grid container gap={1} wrap="nowrap">
-          <HeaderGrid item xs={4} md={sizes[0]}>
+          <HeaderGrid item xs={sizes[0]}>
             &nbsp;
           </HeaderGrid>
-          <HeaderGrid item xs={4} md={sizes[1]} sx={{textAlign: 'right'}}>
+          <HeaderGrid item xs={sizes[1]} sx={{textAlign: 'right'}}>
             <HeadText>
               {repoName}
             </HeadText>
           </HeaderGrid>
           {comparingRepoId
             ? (
-              <HeaderGrid item xs={4} md={sizes[1]} sx={{textAlign: 'right'}}>
+              <HeaderGrid item xs={sizes[1]} sx={{textAlign: 'right'}}>
                 <HeadText>
                   {comparingRepoName ?? <Skeleton variant="text" />}
                 </HeadText>

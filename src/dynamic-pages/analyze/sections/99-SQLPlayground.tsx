@@ -395,7 +395,7 @@ const PreDefinedSQLList = (props: {
       >
         {PREDEFINED_SQL_LIST.map((item) => {
           if (item.type === "header") {
-            return <SQLListSubHeader title={item.title} />;
+            return <SQLListSubHeader key={item.id} title={item.title} />;
           }
 
           let sql = item.sql;

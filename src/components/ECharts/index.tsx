@@ -1,6 +1,15 @@
-import React, { CSSProperties, ForwardedRef, Ref, RefCallback, useCallback, useContext, useMemo } from 'react';
+import React, {
+  CSSProperties,
+  ForwardedRef,
+  Ref,
+  RefCallback,
+  useCallback,
+  useContext,
+  useLayoutEffect,
+  useMemo, useRef, useState,
+} from 'react';
 import {EChartsReactProps} from "echarts-for-react/src/types";
-import EChartsReact from "echarts-for-react";
+import EChartsReact, { EChartsInstance } from "echarts-for-react";
 import useThemeContext from "@theme/hooks/useThemeContext";
 import {AspectRatio} from "react-aspect-ratio";
 import 'react-aspect-ratio/aspect-ratio.css'
@@ -52,11 +61,13 @@ const ECharts = React.forwardRef<EChartsReact, EChartsProps>(({aspectRatio, heig
   }, [opts, realHeight])
 
   const { echartsRef } = useContext(EChartsContext)
+  const [eRef, setERef] = useState<EChartsInstance>();
 
   const combinedRef: RefCallback<EChartsReact> = useCallback((instance) => {
     if (echartsRef) {
       echartsRef.current = instance
     }
+    setERef(instance);
     if (ref) {
       if (typeof ref === 'function') {
         ref(instance)
@@ -68,6 +79,10 @@ const ECharts = React.forwardRef<EChartsReact, EChartsProps>(({aspectRatio, heig
   }, [ref, echartsRef, observe])
 
   const fallback = useMemo(() => <EChartsPlaceholder aspectRatio={aspectRatio} height={realHeight} />, [aspectRatio, realHeight])
+
+  useLayoutEffect(() => {
+    eRef?.resize();
+  }, [eRef])
 
   return (
     <BrowserOnly fallback={fallback}>

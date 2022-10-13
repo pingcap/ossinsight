@@ -44,7 +44,7 @@ export function SummaryItem<F extends string>({title, icon, sizes, field, ...gri
 
   return (
     <Grid {...gridProps}>
-      <HeaderGrid item xs={4} md={sizes[0]}>
+      <HeaderGrid item xs={sizes[0]}>
         <Stack direction="row" alignItems="center" justifyContent="flex-start" spacing={1}>
           {icon}
           <Tooltip title={title} arrow disableHoverListener enterTouchDelay={0}>
@@ -52,7 +52,7 @@ export function SummaryItem<F extends string>({title, icon, sizes, field, ...gri
           </Tooltip>
         </Stack>
       </HeaderGrid>
-      <DataGrid item xs={4} md={sizes[1]}>
+      <DataGrid item xs={sizes[1]}>
         <Stack direction="row" alignItems="center" justifyContent="flex-end" spacing={1}>
           <BodyText>
             {getData(data, field) ?? <CircularProgress sx={{verticalAlign: -2}} size={24} />}
@@ -61,7 +61,7 @@ export function SummaryItem<F extends string>({title, icon, sizes, field, ...gri
       </DataGrid>
       {comparingRepoId
         ? (
-          <DataGrid item xs={4} md={sizes[1]}>
+          <DataGrid item xs={sizes[1]}>
             <BodyText>
               {getData(compareData, field) ?? <CircularProgress sx={{verticalAlign: -2}} size={24} />}
             </BodyText>
@@ -76,13 +76,13 @@ export function StaticSummaryItem({title, icon, sizes, data, comparingData, ...g
 
   return (
     <Grid {...gridProps}>
-      <HeaderGrid item xs={4} md={sizes[0]}>
+      <HeaderGrid item xs={sizes[0]}>
         <Stack direction="row" alignItems="center" justifyContent="flex-start" spacing={1}>
           {icon}
           <HeadText>{title}</HeadText>
         </Stack>
       </HeaderGrid>
-      <DataGrid item xs={4} md={sizes[1]}>
+      <DataGrid item xs={sizes[1]}>
         <Stack direction="row" alignItems="center" justifyContent="flex-end" spacing={1}>
           <BodyText>
             {repoInfo ? data(repoInfo) : <CircularProgress sx={{verticalAlign: -2}} size={24} />}
@@ -91,7 +91,7 @@ export function StaticSummaryItem({title, icon, sizes, data, comparingData, ...g
       </DataGrid>
       {comparingRepoId
         ? (
-          <DataGrid item xs={4} md={sizes[1]}>
+          <DataGrid item xs={sizes[1]}>
             <BodyText>
               {comparingRepoInfo ? data(comparingRepoInfo) : <Skeleton variant="text" />}
             </BodyText>
