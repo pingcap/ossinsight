@@ -125,7 +125,7 @@ export const OverviewSection = forwardRef(function ({}, ref: ForwardedRef<HTMLEl
                   <Stack direction='row' justifyContent='space-between' flexWrap='wrap' mt={isSmall ? 2 : 0}>
                     <Typography component='h3' fontSize={20} fontWeight='bold'>Last 28 days Stats</Typography>
                     <Typography component='a' fontSize={16} href='#repository'>
-                      🆕 Compare with the last period
+                      🆕 Compare with the previous period
                     </Typography>
                   </Stack>
                   <MonthlySummaryCard />
