@@ -59,7 +59,7 @@ class TweetRepo
     TXT
 
     txt << "\n" + contributors_txt if logins.present? 
-    txt << "\n" + "Get more insights into the repo: https://ossinsight.io/analyze/#{repo}"
+    txt << "\n" + " https://ossinsight.io/analyze/#{repo}"
     txt << "\n" + "##{language}" if language.present? 
 
     puts txt
