@@ -153,3 +153,7 @@ location     | varchar     | [null]         |     |         |
 ### Automatic Tweet for trending repo
 
 * bundle exec rails runner 'TrendingRepoGenerator.new(1).generate' # every 1 hour
+
+### Automatic Tweet for collection
+
+* bundle exec rails runner 'CollectionTweetGenerator.new(1).generate' # every day
