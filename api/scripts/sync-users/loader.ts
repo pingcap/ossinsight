@@ -40,7 +40,10 @@ export async function loadGitHubUsers(userLoader: BatchLoader, users: GitHubUser
 }
 
 export async function loadGitHubUser(userLoader: BatchLoader, user: GitHubUser) {
-    let { id, login, type, name, email, organization, address, public_repos, followers, following, createdAt, updatedAt } = user;
+    let {
+        id, login, type, name, email, organization, address, 
+        public_repos, followers, following, createdAt, updatedAt
+    } = user;
 
     const isBot = BOT_LOGIN_REGEXP.test(login);
     address = trimAddress(address);
@@ -48,30 +51,29 @@ export async function loadGitHubUser(userLoader: BatchLoader, user: GitHubUser) 
     email = encodeEmail(email);
 
     await userLoader.insert([
-        id, login, type, isBot, name, email, organization, address, public_repos, followers, following, createdAt, updatedAt
+        id, login, type, isBot, name, email, organization, address, 
+        public_repos, followers, following, createdAt, updatedAt
     ]);
 }
 
 // Utils.
 
-function trimOrganizationName(organizationName: string | undefined | null):(string | undefined) {
-    if (organizationName === undefined || organizationName === null) return undefined;
+function trimOrganizationName(organizationName?: string | null):string {
+    if (organizationName === undefined || organizationName === null) return '';
     return organizationName.trim()
 }
 
-function trimAddress(addressName?: string | undefined | null):(string | undefined) {
-    if (addressName === undefined || addressName === null) return undefined;
+function trimAddress(addressName?: string | null):string {
+    if (addressName === undefined || addressName === null) return '';
     return addressName.trim()
 }
 
-function encodeEmail(email?: string | null) {
-    if (!email) {
-        return null;
-    }
+function encodeEmail(email?: string | null):string {
+    if (email === undefined || email === null) return '';
 
     const parts = email.split('@');
     if (parts.length !== 2) {
-        return null;
+        return '';
     }
 
     const unique = parts[0];

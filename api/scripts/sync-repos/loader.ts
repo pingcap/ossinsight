@@ -10,13 +10,15 @@ export interface WorkerPayload {
 }
 
 const INSERT_REPOS_SQL = `INSERT INTO github_repos (
-    repo_id, repo_name, owner_id, owner_login, owner_is_org, description, primary_language, license, size, stars, forks, 
-    is_fork, is_archived, latest_released_at, parent_repo_id, pushed_at, created_at, updated_at
+    repo_id, repo_name, owner_id, owner_login, owner_is_org, 
+    description, primary_language, license, size, stars, forks, is_fork, is_archived,
+    latest_released_at, parent_repo_id, pushed_at, created_at, updated_at
   ) VALUES ?
   ON DUPLICATE KEY UPDATE
-    repo_id = VALUES(repo_id), repo_name = VALUES(repo_name), owner_id = VALUES(owner_id), owner_login = VALUES(owner_login), owner_is_org = VALUES(owner_is_org), description = VALUES(description), 
-    primary_language = VALUES(primary_language), license = VALUES(license), size = VALUES(size), stars = VALUES(stars), forks = VALUES(forks), is_fork = VALUES(is_fork), 
-    is_archived = VALUES(is_archived), latest_released_at = VALUES(latest_released_at), parent_repo_id = VALUES(parent_repo_id), pushed_at = VALUES(pushed_at), created_at = VALUES(created_at), updated_at = VALUES(updated_at)
+    repo_id = VALUES(repo_id), repo_name = VALUES(repo_name), owner_id = VALUES(owner_id), owner_login = VALUES(owner_login), owner_is_org = VALUES(owner_is_org), 
+    description = VALUES(description), primary_language = VALUES(primary_language), license = VALUES(license), 
+    size = VALUES(size), stars = VALUES(stars), forks = VALUES(forks), is_fork = VALUES(is_fork), is_archived = VALUES(is_archived), 
+    latest_released_at = VALUES(latest_released_at), parent_repo_id = VALUES(parent_repo_id), pushed_at = VALUES(pushed_at), created_at = VALUES(created_at), updated_at = VALUES(updated_at)
 ;`;
 
 const INSERT_REPO_LANGUAGES_SQL = `INSERT INTO github_repo_languages (repo_id, language, size) VALUES ?
@@ -56,12 +58,18 @@ export async function loadGitHubRepos(repoLoader: BatchLoader, repos: GitHubRepo
 
 export async function loadGitHubRepo(repoLoader: BatchLoader, repo: GitHubRepo) {
     let {
-        repoId, repoName, ownerId, ownerLogin, ownerIsOrg, description, primaryLanguage, license, size, stars, forks, 
-        isFork, isArchived, latestReleasedAt, parentRepoId, pushedAt, createdAt, updatedAt, 
+        repoId, repoName, ownerId, ownerLogin, ownerIsOrg, 
+        description, primaryLanguage, license, 
+        size, stars, forks, isFork, isArchived, 
+        latestReleasedAt, parentRepoId, pushedAt, createdAt, updatedAt, 
     } = repo;
 
+    const descriptionValue = description ? description.substring(0, 512) : '';
+
     await repoLoader.insert([
-        repoId, repoName, ownerId, ownerLogin, ownerIsOrg, description, primaryLanguage, license, size, stars, forks, 
-        isFork, isArchived, latestReleasedAt, parentRepoId, pushedAt, createdAt, updatedAt
+        repoId, repoName, ownerId, ownerLogin, ownerIsOrg, 
+        descriptionValue, primaryLanguage || '', license || '', 
+        size || 0, stars || 0, forks || 0, isFork || 0, isArchived || 0, 
+        latestReleasedAt, parentRepoId, pushedAt, createdAt, updatedAt
     ]);
 }
