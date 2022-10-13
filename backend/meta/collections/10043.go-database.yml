@@ -31,3 +31,4 @@ items:
   - uber/aresdb
   - FerretDB/FerretDB
   - polarsignals/frostdb
+  - milvus-io/milvus
