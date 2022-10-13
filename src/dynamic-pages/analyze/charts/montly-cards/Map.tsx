@@ -1,7 +1,5 @@
-import React, { useMemo } from "react";
-import { withBaseOption } from "@djagger/echartsx";
+import React from "react";
 import { useAnalyzeChartContext } from "../context";
-import { GeoComponentOption } from "echarts/components";
 import WorldMapChart from "../../../../components/BasicCharts/WorldMapChart";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
@@ -10,11 +8,10 @@ import { styled, useTheme } from "@mui/material/styles";
 
 export default function Map() {
   const { data } = useAnalyzeChartContext<any>();
-  const theme = useTheme();
 
   return (
     <Stack sx={{ height: '100%' }}>
-      <Typography align='center' fontSize={14}>
+      <Typography component="h4" align="center" fontSize={14}>
         🌟🌟🌟 from <Colored>{data.data?.data?.length ?? '0'}</Colored> Locations
       </Typography>
       <Box flex={1}>
@@ -33,4 +30,4 @@ export default function Map() {
 }
 const Colored = styled('span')({
   color: '#F58A00',
-})
+});
