@@ -1,11 +1,12 @@
 import React from "react";
-import { Axis, Dataset, EChartsx, Grid as XGrid, LineSeries, Once, Tooltip } from "@djagger/echartsx";
+import { Dataset, EChartsx, LineSeries, Once, Tooltip } from "@djagger/echartsx";
 import { useAnalyzeChartContext } from "../context";
 import Stack from "@mui/material/Stack";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { useDiff, usePartData, useReversed } from "./hooks";
 import { Diff } from "./ui";
+import { AxisBase, formatDate } from "./base";
 
 interface BarsProps {
   title: string;
@@ -35,10 +36,8 @@ export default function LinesCompare({ color, title, dayValueKey, dayKey = 'peri
       </Box>
       <EChartsx style={{ flex: 1, width: '100%' }} init={{ height: 72, renderer: 'canvas' }} theme="dark">
         <Once>
-          <XGrid left={8} right={0} top={4} bottom={0} />
+          <AxisBase />
           <Tooltip trigger="axis" axisPointer={{}} formatter={formatter(title)} />
-          <Axis.Category.X axisTick={{ show: false }} axisLabel={{ color: '#7c7c7c', fontSize: 8 }} />
-          <Axis.Value.Y axisLabel={{ hideOverlap: true, color: '#7c7c7c', fontSize: 8 }} />
           <LineSeries encode={{ x: 'idx', y: 'value' }} color={color} datasetId="current" showSymbol={false} smooth />
           <LineSeries encode={{ x: 'idx', y: 'value' }} color="#7C7C7C" datasetId="last" showSymbol={false} smooth />
         </Once>
@@ -50,5 +49,5 @@ export default function LinesCompare({ color, title, dayValueKey, dayKey = 'peri
 }
 
 const formatter = (title: string) => (seriesList: any[]): string => {
-  return seriesList.map(series => `${series.marker} ${series.data.day}: <b>${series.data.value}</b> ${title}`).join('<br>');
+  return seriesList.map(series => `${series.marker} ${formatDate(series.data.day)}: <b>${series.data.value}</b> ${title}`).join('<br>');
 };

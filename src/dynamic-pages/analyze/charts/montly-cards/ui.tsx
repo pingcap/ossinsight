@@ -1,6 +1,7 @@
 import React from "react";
 import { styled } from "@mui/material/styles";
 import { ArrowDownIcon, ArrowUpIcon } from "@primer/octicons-react";
+import Typography from "@mui/material/Typography";
 
 export const Border = styled('div')({
   border: 'rgba(255,255,255,15%) 1px solid',
@@ -33,3 +34,14 @@ export const Diff = ({ value }: { value: string }) => {
     </DiffTag>
   );
 };
+
+export const Title = ({ icon, title }: { icon: React.ReactNode, title: string }) => {
+  return (
+    <Typography component='h4' fontSize={16} fontWeight="bold" whiteSpace="nowrap" display='flex' alignItems='center'>
+      {icon}
+      <span style={{ marginLeft: 4 }}>
+        {title}
+      </span>
+    </Typography>
+  )
+}

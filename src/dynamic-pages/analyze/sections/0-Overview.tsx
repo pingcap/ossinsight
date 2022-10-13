@@ -122,7 +122,7 @@ export const OverviewSection = forwardRef(function ({}, ref: ForwardedRef<HTMLEl
               )
               : (
                 <>
-                  <Stack direction='row' justifyContent='space-between' flexWrap='wrap'>
+                  <Stack direction='row' justifyContent='space-between' flexWrap='wrap' mt={isSmall ? 2 : 0}>
                     <Typography component='h3' fontSize={20} fontWeight='bold'>Last 28 days Stats</Typography>
                     <Typography component='a' fontSize={16} href='#repository'>
                       🆕 Compare with the last period
@@ -138,7 +138,7 @@ export const OverviewSection = forwardRef(function ({}, ref: ForwardedRef<HTMLEl
         <Analyze query='analyze-stars-history'>
           <H2 id='stars-history' analyzeTitle display='none'>Stars History</H2>
           <P2 display='none'>The growth trend and the specific number of stars since the repository was established.</P2>
-          <LineChart spec={{valueIndex: 'total', name: 'Stars'}} aspectRatio={32 / 9}/>
+          <LineChart spec={{valueIndex: 'total', name: 'Stars'}} aspectRatio={isSmall ? 16 / 9 : 32 / 9}/>
         </Analyze>
       )}
     </Section>

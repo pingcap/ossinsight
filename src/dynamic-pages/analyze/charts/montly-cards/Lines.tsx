@@ -1,11 +1,12 @@
 import React from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import { Axis, Dataset, EChartsx, LineSeries, Once, Tooltip } from "@djagger/echartsx";
-import { Grid as XGrid } from "@djagger/echartsx/dist/components/option/gird";
+import { Dataset, EChartsx, LineSeries, Once, Tooltip } from "@djagger/echartsx";
 import Stack from "@mui/material/Stack";
 import { useAnalyzeChartContext } from "../context";
 import { useReversed } from "./hooks";
+import { AxisBase, formatDate } from "./base";
+import { Title } from "./ui";
 
 interface LinesProps {
   title: string;
@@ -37,36 +38,32 @@ export default function Lines({
   return (
     <Box>
       <Box minWidth={96} mb={1}>
-        <Typography fontSize={16} fontWeight="bold" whiteSpace="nowrap">
-          {icon}
-          &nbsp;
-          {title}
-        </Typography>
-        <Stack direction='row'>
+        <Title icon={icon} title={title} />
+        <Stack direction="row">
           <Box>
-            <Typography color='#7C7C7C' fontSize={14}>{openedText}</Typography>
-            <Typography color={colors[0]} fontWeight="bold" fontSize={24}>{data.data?.data[0][totalOpenedValueKey]}</Typography>
+            <Typography color="#7C7C7C" fontSize={14}>{openedText}</Typography>
+            <Typography color={colors[0]} fontWeight="bold"
+                        fontSize={24}>{data.data?.data[0][totalOpenedValueKey]}</Typography>
           </Box>
           <Box ml={2}>
-            <Typography color='#7C7C7C' fontSize={14}>{closedText}</Typography>
-            <Typography color={colors[1]} fontWeight="bold" fontSize={24}>{data.data?.data[0][totalClosedValueKey]}</Typography>
+            <Typography color="#7C7C7C" fontSize={14}>{closedText}</Typography>
+            <Typography color={colors[1]} fontWeight="bold"
+                        fontSize={24}>{data.data?.data[0][totalClosedValueKey]}</Typography>
           </Box>
         </Stack>
       </Box>
       <EChartsx style={{ flex: 1 }} init={{ height: 105, renderer: 'canvas' }} theme="dark">
         <Once>
-          <XGrid left={0} top={4} bottom={0} right={0} />
+          <AxisBase />
           <Tooltip
             trigger="axis"
             axisPointer={{}}
             formatter={([p1, p2]) => [
-              p1.value[dayKey],
+              formatDate(p1.value[dayKey]),
               `${p1.marker} ${openedText}: <b>${p1.value[dayOpenedValueKey]}</b> ${title}`,
               `${p2.marker} ${closedText}: <b>${p2.value[dayClosedValueKey]}</b> ${title}`,
             ].join('<br>')}
           />
-          <Axis.Category.X axisTick={{ show: false }} axisLabel={{ color: '#7c7c7c', fontSize: 8 }} />
-          <Axis.Value.Y axisLabel={{ hideOverlap: true, color: '#7c7c7c', fontSize: 8 }} />
           <LineSeries encode={{ x: 'idx', y: dayOpenedValueKey }} color={colors[0]} showSymbol={false} smooth />
           <LineSeries encode={{ x: 'idx', y: dayClosedValueKey }} color={colors[1]} showSymbol={false} smooth />
         </Once>
