@@ -2,6 +2,7 @@ require 'twitter'
 require 'uri'
 require 'open-uri'
 require 'yajl'
+require "htmlcsstoimage"
 
 class TweetRepo
   include ActionView::Helpers
@@ -20,9 +21,8 @@ class TweetRepo
   end
 
   def tweet!
-    # TODO add image
     return if repo_info["description"].to_s.scan(/\p{Han}+/).join.size >= 10
-    client.update(text)
+    client.update_with_media(text, generate_img)
   end
 
   def list_twitter_logins(n = 5)
@@ -33,6 +33,13 @@ class TweetRepo
       logins << info['twitter_username'] if info['twitter_username'].present?
     end
     logins
+  end
+
+  def generate_img 
+    url = "https://ossinsight.io/analyze/#{repo}"
+    img_client = HTMLCSSToImage.new
+    img_client.create_image('', url: url, selector: "#__docusaurus > div.main-wrapper > div:nth-child(2) > main > div > section:nth-child(1) > div:nth-child(2) > div.MuiGrid-root.MuiGrid-container.css-13nwvtd > div.MuiGrid-root.MuiGrid-item.MuiGrid-grid-xs-12.MuiGrid-grid-lg-7.css-c40sdo")
+    URI.open(img_client.url, read_timeout: 1000)
   end
 
   def text
@@ -51,7 +58,7 @@ class TweetRepo
     logins = list_twitter_logins
 
     txt = <<~TXT
-    Congrats to https://github.com/#{repo}, which has grown by #{[stars_incr, stars_count].min} stars in the last 7 days and has reached #{stars_count_pretty} stars. 
+    Congrats to #{repo}, which has grown by #{[stars_incr, stars_count].min} stars in the last 7 days and has reached #{stars_count_pretty} stars. 
     TXT
 
     contributors_txt = <<~TXT
@@ -65,10 +72,6 @@ class TweetRepo
     puts txt
     puts txt.size
     txt
-  end
-
-  def image 
-    # TODO
   end
 
   def stars_incr_count_last_7_days
