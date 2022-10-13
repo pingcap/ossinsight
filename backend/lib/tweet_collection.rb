@@ -41,8 +41,9 @@ class TweetCollection
     img_client = HTMLCSSToImage.new
     img = img_client.create_image('', 
       url: url, 
-      viewport_width: 1600,
-      selector: "#__docusaurus > div.main-wrapper > div:nth-child(2) > main > div > div > main > div > div:nth-child(3) > section > div.MuiTableContainer-root.css-kge0eu")
+      viewport_width: 768,
+      viewport_height: 1524,
+      selector: "#__docusaurus > div.main-wrapper > div:nth-child(2) > main > div > div > main > div > div:nth-child(3) > section > div.MuiTableContainer-root.css-kge0eu > table")
     URI.open(img.url, read_timeout: 1000)
   end
 
