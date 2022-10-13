@@ -29,7 +29,7 @@ WITH RECURSIVE seq(idx, current_period_day, last_period_day) AS (
                 github_events ge
             WHERE
                 type = 'PushEvent'
-                AND repo_id = 20580498
+                AND repo_id = 41986369
                 AND created_at > DATE_SUB(CURRENT_DATE(), INTERVAL 56 DAY)
             GROUP BY day
             ORDER BY day
