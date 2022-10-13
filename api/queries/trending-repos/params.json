@@ -44,7 +44,7 @@
         "PHP": "AND primary_language = 'PHP'",
         "C++": "AND primary_language = 'C++'",
         "C#": "AND primary_language = 'C#'",
-        "Typescript": "AND primary_language = 'Typescript'",
+        "TypeScript": "AND primary_language = 'TypeScript'",
         "Shell": "AND primary_language = 'Shell'",
         "C": "AND primary_language = 'C'",
         "Ruby": "AND primary_language = 'Ruby'",
