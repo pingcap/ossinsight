@@ -48,7 +48,7 @@ export default function Footer() {
             title='Join a Workshop to Setup a Mini OSS Insight'
             description='Tutorial: 25 min'
             codeStyleDescription={false}
-            readMore='/workshop/overview'
+            readMore='/docs/workshop/mini-ossinsight/introduction'
             buttonVariant='outlined'
             top={icon(require('./icon-3.png').default)}
             cardSx={{
