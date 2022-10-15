@@ -9,10 +9,10 @@ import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 
 const links: { title: string, href: string }[] = [
-  { title: 'Mini OSS Insight', href: '/workshop/mini-ossinsight/introduction' },
-  { title: 'NFT Insight', href: '/workshop/nft-insight' },
-  { title: 'Twitter Insight', href: '/workshop/twitter-insight' },
-  { title: 'Stack Overflow Insight', href: '/workshop/stackoverflow-insight' },
+  { title: 'Mini OSS Insight', href: '/docs/workshop/mini-ossinsight/introduction' },
+  { title: 'NFT Insight', href: '/docs/workshop/nft-insight' },
+  { title: 'Twitter Insight', href: '/docs/workshop/twitter-insight' },
+  { title: 'Stack Overflow Insight', href: '/docs/workshop/stackoverflow-insight' },
 ];
 
 export default function Workshop() {
