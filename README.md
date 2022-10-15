@@ -13,7 +13,7 @@
   •
   <a href="https://ossinsight.io/collections/open-source-database">Collections</a>
   •
-  <a href="https://ossinsight.io/workshop/overview">Workshop</a>
+  <a href="https://ossinsight.io/docs/workshop">Workshop</a>
   •
   <a href="https://ossinsight.io/blog">Blogs</a>
   •
