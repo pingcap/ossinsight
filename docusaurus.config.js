@@ -64,17 +64,6 @@ const config = {
       },
     ],
     [
-      "content-docs",
-      /** @type {import('@docusaurus/plugin-content-docs').Options} */
-      ({
-        id: "workshop",
-        path: "workshop",
-        routeBasePath: "/workshop",
-        editUrl: "https://github.com/pingcap/ossinsight/tree/main",
-        sidebarPath: require.resolve("./sidebars.js"),
-      }),
-    ],
-    [
       path.resolve(__dirname, 'plugins/dynamic-route'),
       {
         routes: [
@@ -216,12 +205,12 @@ const config = {
             label: 'Workshop',
             position: 'left',
             items: [
-              {label: '🗓️ Join Workshop!', to: '/workshop/overview'},
-              {label: '└─ mini OSS Insight 🔥', to: '/workshop/mini-ossinsight/introduction'},
-              {label: '└─ NFT Insight', to: '/workshop/nft-insight'},
-              {label: '└─ Twitter Insight - not ready', to: '/workshop/twitter-insight'},
-              {label: '└─ Stack Overflow Insight - not ready', to: '/workshop/stackoverflow-insight'},
-              {label: '└─ Cryptocurrency Insight - not ready', to: '/workshop/cryptocurrency-insight'},
+              {label: '🗓️ Join Workshop!', to: '/docs/workshop'},
+              {label: '└─ mini OSS Insight 🔥', to: '/docs/workshop/mini-ossinsight/introduction'},
+              {label: '└─ NFT Insight', to: '/docs/workshop/nft-insight'},
+              {label: '└─ Twitter Insight - not ready', to: '/docs/workshop/twitter-insight'},
+              {label: '└─ Stack Overflow Insight - not ready', to: '/docs/workshop/stackoverflow-insight'},
+              {label: '└─ Cryptocurrency Insight - not ready', to: '/docs/workshop/cryptocurrency-insight'},
             ]
           },
           {to: '/docs/api', label: 'API', position: 'left'},
@@ -287,7 +276,7 @@ const config = {
               },
               {
                 label: 'Workshop',
-                to: '/workshop/overview',
+                to: '/docs/workshop',
               },
               {
                 label: 'API',

@@ -1,5 +1,5 @@
 ---
-sidebar_position: 3
+sidebar_position: 4
 title: Showcase
 description: OSS Insight API Showcase
 sidebar_label: Showcase
