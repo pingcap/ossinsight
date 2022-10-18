@@ -55,23 +55,26 @@ export async function markDeletedRepos(logger: Consola, workers: GenericPool<Job
             const res = await octokit.rest.users.getByUsername({
                 username: ownerLogin
             });
-            const { id: userId, login, type, public_repos } = res.data;
+            const { id: userId, login: userLogin, type, public_repos } = res.data;
             const ownerIsOrg = type === 'Organization';
-            
+
             // Notice: It is important!
             if (userId !== ownerId) {
                 logger.warn(`The id of user with login ${ownerLogin} is different, user id: ${userId}, owner id: ${ownerId}.`);
                 return;
+            } else if (userLogin !== ownerLogin) {
+                logger.warn(`The login of user is ${userLogin}, which is different from owner login ${ownerLogin}.`);
+                return;
             }
 
             if (public_repos > publicReposLimit) {
-                logger.info(`Skip owner <${login}>, cause has too much public repos (${public_repos}).`);
+                logger.info(`Skip id <${ownerId}> and owner <${ownerLogin}>, cause has too much public repos (${public_repos}).`);
             } else {
                 // Found all repos of the user.
                 let actualRepos: number[] = [];
                 actualRepos = await getUserOrOrgRepos(octokit, ownerLogin, ownerIsOrg);
                 logger.info(
-                    `Handle owner <${login}>, who actually has ${actualRepos.length} repos, but owned ${ownedRepos} repos.`
+                    `Handle id <${ownerId}> and owner <${ownerLogin}>, who actually has ${actualRepos.length} repos, but owned ${ownedRepos} repos.`
                 );
 
                 // Marked all not-found repos of the user as deleted.
@@ -91,7 +94,7 @@ export async function markDeletedRepos(logger: Consola, workers: GenericPool<Job
             try {
                 const [rows] = await conn.query<any>(COUNT_OWNER_IDS_SQL, [ownerLogin]);
                 if (!Array.isArray(rows) || rows.length !== 1) {
-                    logger.error(`Skip owner <${ownerLogin}> has more than one owner ids: `, rows);
+                    logger.error(`Skip id <${ownerId}> and owner <${ownerLogin}> has more than one owner ids: `, rows);
                     return
                 }
 
