@@ -76,7 +76,8 @@ export async function syncUsersFromTimeRangeSearch(
         logger.info(`Handle time range from ${tFrom} to ${tTo}.`);
         try {
             const worker = await workerPool.acquire();
-            const { octokit, payload: { userLoader } } = worker; 
+            const { octokit, payload } = worker; 
+            const { userLoader } = payload!;
             let left = DateTime.fromJSDate(tFrom.toJSDate());
             let right = left.plus(stepSize);
 
