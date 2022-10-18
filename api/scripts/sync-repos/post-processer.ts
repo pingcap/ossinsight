@@ -89,18 +89,16 @@ export async function markDeletedRepos(logger: Consola, workers: GenericPool<Job
             }
 
             // Notice: We can't judge from this that the user does not exist. He may just change the login.
-            logger.error(`Login ${ownerLogin} has been deleted in GitHub.`);
-
             try {
                 const [rows] = await conn.query<any>(COUNT_OWNER_IDS_SQL, [ownerLogin]);
-                if (!Array.isArray(rows) || rows.length !== 1) {
-                    logger.error(`Skip id <${ownerId}> and owner <${ownerLogin}> has more than one owner ids: `, rows);
+                if (rows.length !== 1) {
+                    logger.warn(`Skip id <${ownerId}> and owner <${ownerLogin}> has ${rows?.length} owner ids`);
                     return
                 }
 
                 // Marked all repos of the not-found user as deleted.
                 const markedRepos = await markedUserOrOrgDeletedRepos(conn, logger, ownerId, ownerLogin);
-                logger.success(`Marked ${markedRepos} repos as deleted for login ${ownerLogin}.`);
+                logger.success(`Marked ${markedRepos} repos as deleted for login ${ownerLogin} (deleted).`);
             } catch(err) {
                 logger.error(`Failed to handle deleted owner ${ownerLogin}.`);
             }
@@ -172,7 +170,7 @@ async function markedUserOrOrgDeletedRepos(conn: Connection, logger: Consola, ow
             if (rs.affectedRows === 0) {
                 break
             } else {
-                logger.info(`Updated ${rs.affectedRows} repos for owner with id ${ownerId} and login ${ownerLogin}`);
+                logger.debug(`Updated ${rs.affectedRows} repos for owner with id ${ownerId} and login ${ownerLogin}`);
                 markedRepos += rs.affectedRows
             }
         }

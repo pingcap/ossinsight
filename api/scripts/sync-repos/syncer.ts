@@ -19,7 +19,7 @@ enum TimeRangeFiled {
     PUSHED = 'pushed'
 }
 
-const MARK_REPO_DELETED_SQL = `UPDATE github_repos SET is_deleted = 1 WHERE repo_name = ?`;
+const MARK_REPO_DELETED_SQL = `UPDATE github_repos SET is_deleted = 1 AND refreshedAt = NOW() WHERE repo_name = ?`;
 
 // Sync repos in batch.
 export async function syncReposInBatch(
