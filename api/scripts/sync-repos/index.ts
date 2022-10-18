@@ -8,7 +8,7 @@ import { getConnectionOptions } from "../../app/utils/db";
 import {  pullReposWithLang, pullReposWithoutLang } from "./puller";
 import { syncReposInConcurrent } from "./syncer";
 import { createSyncReposWorkerPool } from "./loader";
-import { createWorkerPool, JobWorker } from "../../app/core/GenericJobWorkerPool";
+import { createWorkerPool } from "../../app/core/GenericJobWorkerPool";
 import { markDeletedRepos } from "./post-processer";
 
 // Load environments.
@@ -100,9 +100,6 @@ Reference: https://docs.github.com/en/search-github/searching-on-github/searchin
     program.command('mark-deleted-repos')
         .description('Mark deleted repositories in th `github_repos` table.')
         .action(async (options) => {
-            // Handle the command arguments.
-            // let { from, to } = options;
-
             const gitHubTokens = (process.env.SYNC_GH_TOKENS || '').split(',').map(s => s.trim()).filter(Boolean);
             if (gitHubTokens.length === 0) {
                 logger.error('Must provide `SYNC_GH_TOKENS`.');
@@ -118,9 +115,10 @@ Reference: https://docs.github.com/en/search-github/searching-on-github/searchin
                 connectionLimit: 2
             }));
 
-            await markDeletedRepos(logger, workers, connections);
+            await markDeletedRepos(logger, workers, connections, 4000);
 
             workers.clear();
+            connections.end();
         });
 
     // Pull GitHub repositories with primary language from `github_events` table.
