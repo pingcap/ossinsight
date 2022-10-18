@@ -59,11 +59,11 @@ WITH stars AS (
         r.repo_name,
         r.primary_language,
         r.description,
-        IFNULL(s.total, 0) AS stars_inc,
+        s.total AS stars_inc,
         IFNULL(f.total, 0) AS forks_inc,
         -- Calculate the composite score for the repository.
         SUM(
-            IFNULL(s.score, 0) + 
+            s.score + 
             IFNULL(f.score, 0) +
             -- Give the new repository a higher score base.
             ABS(1 /  (1 + TIMESTAMPDIFF(YEAR, r.created_at, NOW()))) * 200
@@ -120,7 +120,7 @@ WITH stars AS (
         SELECT
             ge.repo_id AS repo_id,
             ge.actor_login AS actor_login,
-            IFNULL(COUNT(*), 0) AS cnt
+            COUNT(*) AS cnt
         FROM github_events ge
         WHERE
             (
