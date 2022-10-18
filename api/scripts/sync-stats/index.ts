@@ -1,7 +1,7 @@
 import * as dotenv from "dotenv";
 import * as path from 'path'
 import consola from "consola";
-import { ConnectionWrapper, getConnectionOptions } from "../../app/utils/db";
+import { getConnectionOptions } from "../../app/utils/db";
 import schedule from 'node-schedule';
 import { DateTime } from "luxon";
 import { createPool, ResultSetHeader } from "mysql2";

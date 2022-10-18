@@ -30,8 +30,8 @@ export async function syncReposInConcurrent(
     const concurrent = workerPool.max;
     const queue = async.queue(async ({ tFrom, tTo }) => {
         logger.info(`Handle time range from ${tFrom} to ${tTo}.`);
+        const worker = await workerPool.acquire();
         try {
-            const worker = await workerPool.acquire();
             const { octokit, payload } = worker; 
             const { repoLoader, repoLangLoader, repoTopicLoader } = payload!;
             let left = DateTime.fromJSDate(tFrom.toJSDate());
@@ -60,10 +60,12 @@ export async function syncReposInConcurrent(
                     right = right.plus(stepSize);
                 }
             }
-            workerPool.release(worker);
+
             logger.success(`Finished loading repos from ${tFrom.toISO()} to ${tTo.toISO()}.`);
         } catch (err) {
             logger.error(`Finished loading repos from ${tFrom.toISO()} to ${tTo.toISO()}.`);
+        } finally {
+            workerPool.release(worker);
         }
     }, concurrent);
 

@@ -4,11 +4,12 @@ import consola from "consola";
 import { Command } from "commander";
 import { createPool } from "mysql2/promise";
 import { DateTime, DurationLike } from "luxon";
-import { createWorkerPool } from "../../app/core/GenericJobWorkerPool";
 import { getConnectionOptions } from "../../app/utils/db";
 import {  pullReposWithLang, pullReposWithoutLang } from "./puller";
 import { syncReposInConcurrent } from "./syncer";
 import { createSyncReposWorkerPool } from "./loader";
+import { createWorkerPool } from "../../app/core/GenericJobWorkerPool";
+import { markDeletedRepos } from "./post-processer";
 
 // Load environments.
 dotenv.config({ path: path.resolve(__dirname, '../../.env.template') });
@@ -93,6 +94,31 @@ Reference: https://docs.github.com/en/search-github/searching-on-github/searchin
 
             // Clear worker pool.
             workerPool.clear();
+        });
+
+    // Mark deleted repos.
+    program.command('mark-deleted-repos')
+        .description('Mark deleted repositories in th `github_repos` table.')
+        .action(async (options) => {
+            const gitHubTokens = (process.env.SYNC_GH_TOKENS || '').split(',').map(s => s.trim()).filter(Boolean);
+            if (gitHubTokens.length === 0) {
+                logger.error('Must provide `SYNC_GH_TOKENS`.');
+                process.exit();
+            }
+
+            // Init logger.
+            logger.withTag('marked-deleted-repos');
+
+            // Init Worker Pool.
+            const workers = createWorkerPool<any>(gitHubTokens);
+            const connections = createPool(getConnectionOptions({
+                connectionLimit: 2
+            }));
+
+            await markDeletedRepos(logger, workers, connections, 4000);
+
+            workers.clear();
+            connections.end();
         });
 
     // Pull GitHub repositories with primary language from `github_events` table.

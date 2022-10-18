@@ -20,7 +20,7 @@ export interface JobWorker<T> {
   logger: Consola;
   pool: Pool;
   octokit: Octokit;
-  payload: T;
+  payload?: T;
 }
 
 export type PayloadInitializer<T> = (connPool: Pool) => T;
@@ -32,8 +32,8 @@ export class WorkerFactory<T> implements Factory<JobWorker<T>> {
   
     constructor(
       tokens: string[],
-      readonly payloadInitializer: PayloadInitializer<T>,
-      readonly payloadDestroyer: PayloadDestroyer<T>
+      readonly payloadInitializer?: PayloadInitializer<T>,
+      readonly payloadDestroyer?: PayloadDestroyer<T>
     ) {
       this.log = consola.withTag('worker-factory')
       tokens.forEach(token => this.tokens.add(token))
@@ -91,7 +91,7 @@ export class WorkerFactory<T> implements Factory<JobWorker<T>> {
         logger: log,
         pool: connPool,
         octokit: octokit,
-        payload: this.payloadInitializer(connPool),
+        payload: this.payloadInitializer ? this.payloadInitializer(connPool) : undefined,
       };
 
       Object.defineProperty(worker, SYMBOL_TOKEN, {value, writable: false, enumerable: false, configurable: false});
@@ -106,8 +106,10 @@ export class WorkerFactory<T> implements Factory<JobWorker<T>> {
       const erasedToken = eraseToken(value);
       this.log.info('Release GitHub client with GitHub token %s.', erasedToken);
 
-      this.payloadDestroyer(worker.payload);
-      this.log.info('Release payload of the worker with GitHub token %s.', erasedToken);
+      if (this.payloadDestroyer && worker.payload) {
+        this.payloadDestroyer(worker.payload);
+        this.log.info('Release payload of the worker with GitHub token %s.', erasedToken);
+      }
 
       worker.pool.end();
       this.log.info('Release database connection pool of the worker with GitHub token %s.', erasedToken);
@@ -115,7 +117,7 @@ export class WorkerFactory<T> implements Factory<JobWorker<T>> {
 }
 
 export function createWorkerPool<T>(
-  tokens: string[], payloadInitializer: PayloadInitializer<T>, payloadDestroyer: PayloadDestroyer<T>
+  tokens: string[], payloadInitializer?: PayloadInitializer<T>, payloadDestroyer?: PayloadDestroyer<T>
 ): GenericPool<JobWorker<T>> {
   // Notice: every worker has one octokit client.
   const workerPool = createGenericPool(new WorkerFactory<T>(tokens, payloadInitializer, payloadDestroyer), {
