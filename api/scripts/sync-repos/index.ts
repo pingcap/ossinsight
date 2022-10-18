@@ -23,8 +23,8 @@ const DEFAULT_TIME_RANGE_FILED = 'created';
 const DEFAULT_SPECIFY_SYNC_REPOS_SQL = `
 SELECT repo_id AS repoId, repo_name AS repoName
 FROM github_repos
-WHERE created_at = 0 AND is_deleted = 0
-LIMIT 1024
+WHERE (created_at = 0 OR created_at IS NULL) AND is_deleted = 0
+LIMIT 2048
 `;
 
 async function main() {
