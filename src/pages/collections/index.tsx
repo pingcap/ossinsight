@@ -7,7 +7,7 @@ import { useSearch, useSorter } from "./_components/filters";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 
-const title = 'Explore & Navigate Collection Name Word Cloud';
+const title = 'Explore Collections';
 const description = 'Find insights about the monthly or historical rankings and trends in technical fields with curated repository lists.';
 const Page = () => {
   const [sorter, Sorter] = useSorter();
