@@ -6,7 +6,7 @@ import { createPool } from "mysql2/promise";
 import { DateTime, DurationLike } from "luxon";
 import { getConnectionOptions } from "../../app/utils/db";
 import {  pullReposWithLang, pullReposWithoutLang } from "./puller";
-import { syncReposInConcurrent } from "./syncer";
+import { syncReposInBatch, syncReposInConcurrent } from "./syncer";
 import { createSyncReposWorkerPool } from "./loader";
 import { createWorkerPool } from "../../app/core/GenericJobWorkerPool";
 import { markDeletedRepos } from "./post-processer";
@@ -20,15 +20,29 @@ const logger = consola.withTag('sync-repos');
 
 const DEFAULT_TIME_RANGE_FILED = 'created';
 
+const DEFAULT_SPECIFY_SYNC_REPOS_SQL = `
+SELECT repo_id AS repoId, repo_name AS repoName
+FROM github_repos
+WHERE created_at = 0 AND is_deleted = 0
+LIMIT 1024
+`;
+
 async function main() {
     const program = new Command();
     program.name('sync-repos')
-        .description('Sync GitHub repositories public data to database (MySQL/TiDB).')
-        .version('0.1.0');
+        .version('0.1.0')
+        .description(`Sync GitHub repositories public data to database (MySQL/TiDB).
+There is a common workflow: 
+1. sync-repos sync-from-time-range-search
+2. sync-repos pull-repos-with-language
+3. sync-repos pull-repos-without-language
+4. sync-repos mark-deleted-repos
+5. sync-repos sync-repos-in-concurrent
+`);
 
     // Sync repos in batch by GitHub GraphQL API.
     program.command('sync-from-time-range-search')
-        .description('Import the database in batches according to the repositories last pushed time with GitHub search API.')
+        .description('Sync repos in batch by GitHub search API.')
         .requiredOption<String>(
             '--time-range-field <\'created\'|\'pushed\'>',
             'Search by when a repository was created or last updated. Default: "created".',
@@ -90,35 +104,10 @@ Reference: https://docs.github.com/en/search-github/searching-on-github/searchin
             // Init Worker Pool.
             const workerPool = createSyncReposWorkerPool(gitHubTokens);
 
-            await syncReposInConcurrent(workerPool, timeRangeField, from, to, chunkSize, stepSize, filter, skipSyncRepoLanguages, skipSyncRepoTopics);
+            await syncReposInBatch(workerPool, timeRangeField, from, to, chunkSize, stepSize, filter, skipSyncRepoLanguages, skipSyncRepoTopics);
 
             // Clear worker pool.
             workerPool.clear();
-        });
-
-    // Mark deleted repos.
-    program.command('mark-deleted-repos')
-        .description('Mark deleted repositories in th `github_repos` table.')
-        .action(async (options) => {
-            const gitHubTokens = (process.env.SYNC_GH_TOKENS || '').split(',').map(s => s.trim()).filter(Boolean);
-            if (gitHubTokens.length === 0) {
-                logger.error('Must provide `SYNC_GH_TOKENS`.');
-                process.exit();
-            }
-
-            // Init logger.
-            logger.withTag('marked-deleted-repos');
-
-            // Init Worker Pool.
-            const workers = createWorkerPool<any>(gitHubTokens);
-            const connections = createPool(getConnectionOptions({
-                connectionLimit: 2
-            }));
-
-            await markDeletedRepos(logger, workers, connections, 4000);
-
-            workers.clear();
-            connections.end();
         });
 
     // Pull GitHub repositories with primary language from `github_events` table.
@@ -171,7 +160,72 @@ Reference: https://docs.github.com/en/search-github/searching-on-github/searchin
             pool.end();
         });
 
+    // Mark deleted repos.
+    program.command('mark-deleted-repos')
+        .description('Mark deleted repositories in th `github_repos` table.')
+        .action(async (options) => {
+            const gitHubTokens = (process.env.SYNC_GH_TOKENS || '').split(',').map(s => s.trim()).filter(Boolean);
+            if (gitHubTokens.length === 0) {
+                logger.error('Must provide `SYNC_GH_TOKENS`.');
+                process.exit();
+            }
+
+            // Init logger.
+            logger.withTag('marked-deleted-repos');
+
+            // Init Worker Pool.
+            const workers = createWorkerPool<any>(gitHubTokens);
+            const connections = createPool(getConnectionOptions({
+                connectionLimit: 2
+            }));
+
+            await markDeletedRepos(logger, workers, connections, 4000);
+
+            workers.clear();
+            connections.end();
+        });
+
+    // Sync repos in concurrent by GitHub REST API.
+    program.command('sync-repos-in-concurrent')
+        .option<string>(
+            '--sql <SQL>',
+            `Specify which repositories need to be synchronized through SQL query results.`,
+            (value) => String(value),
+            DEFAULT_SPECIFY_SYNC_REPOS_SQL
+        )
+        .option<boolean>(
+            '--skip-sync-repo-topics <bool>',
+            `Skip sync the topics tagged for the repository.`,
+            (value) => Boolean(value),
+            false
+        )
+        .description('Sync repos in concurrent by GitHub REST API.')
+        .action(async (options) => {
+            // Handle the command arguments.
+            let { sql, skipSyncRepoLanguages, skipSyncRepoTopics } = options;
+
+            const gitHubTokens = (process.env.SYNC_GH_TOKENS || '').split(',').map(s => s.trim()).filter(Boolean);
+            if (gitHubTokens.length === 0) {
+                logger.error('Must provide `SYNC_GH_TOKENS`.');
+                process.exit();
+            }
+
+            // Init Worker Pool.
+            const workerPool = createSyncReposWorkerPool([...gitHubTokens]);
+            const connections = createPool(getConnectionOptions({
+                connectionLimit: 2
+            }));
+
+            await syncReposInConcurrent(workerPool, connections, sql, skipSyncRepoLanguages, skipSyncRepoTopics);
+
+            // Clear worker pool.
+            await workerPool.clear();
+            await connections.end();
+        });
+    
+
     program.parse();
 }
 
 main();
+

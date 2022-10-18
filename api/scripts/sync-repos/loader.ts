@@ -29,6 +29,8 @@ const INSERT_REPO_TOPICS_SQL = `INSERT INTO github_repo_topics (repo_id, topic) 
 ON DUPLICATE KEY UPDATE repo_id = VALUES(repo_id), topic = VALUES(topic)
 ;`;
 
+const MAX_BIGINT_VALUE = 9223372036854775807;
+
 export function createSyncReposWorkerPool(tokens: string[]) {
     return createWorkerPool<WorkerPayload>(tokens, (connPool: Pool) => {
         return {
@@ -65,11 +67,12 @@ export async function loadGitHubRepo(repoLoader: BatchLoader, repo: GitHubRepo) 
     } = repo;
 
     const descriptionValue = description ? description.substring(0, 512) : '';
+    const sizeValue = typeof size === 'number' && size < MAX_BIGINT_VALUE ? size : 0;
 
     await repoLoader.insert([
         repoId, repoName, ownerId, ownerLogin, ownerIsOrg, 
         descriptionValue, primaryLanguage || '', license || '', 
-        size || 0, stars || 0, forks || 0, isFork || 0, isArchived || 0, 
+        sizeValue, stars || 0, forks || 0, isFork || 0, isArchived || 0, 
         latestReleasedAt, parentRepoId, pushedAt, createdAt, updatedAt
     ]);
 }
