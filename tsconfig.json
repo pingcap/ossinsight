@@ -6,6 +6,10 @@
     "lib": ["dom","esnext"],
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "types": ["./types/ossinsight"]
+    "types": ["./types/ossinsight"],
+    "baseUrl": ".",
+    "paths": {
+      "@query/*": ["./api/queries/*"]
+    }
   }
 }

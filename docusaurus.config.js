@@ -49,6 +49,12 @@ const config = {
       }
     ],
     [
+      path.resolve(__dirname, 'plugins/alias'),
+      {
+        '@query': path.resolve(__dirname, 'api/queries/')
+      }
+    ],
+    [
       path.resolve(__dirname, 'plugins/gtag'),
       {
         trackingID: 'GTM-WBZS43V',
@@ -61,6 +67,7 @@ const config = {
         collections: '.prefetch/collections.json',
         eventsTotal: '.prefetch/events-total.json',
         '/q/events-total': 'prefetch',
+        '/q/recent-hot-collections': 'prefetch',
       },
     ],
     [

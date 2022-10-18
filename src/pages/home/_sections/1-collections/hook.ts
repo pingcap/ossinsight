@@ -3,7 +3,7 @@ import { useMemo } from "react";
 
 type RawRecentHotCollectionData = {
   id: number
-  name: "Static Site Generator"
+  name: string
   repos: number
   visits: number
 

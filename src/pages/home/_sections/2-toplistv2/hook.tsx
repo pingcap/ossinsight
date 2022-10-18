@@ -1,4 +1,4 @@
-import { params } from '../../../../../api/queries/trending-repos/params.json';
+import { params } from '@query/trending-repos/params.json';
 import { AsyncData, RemoteData, useRemoteData } from "../../../../components/RemoteCharts/hook";
 import React, { DependencyList, useCallback, useEffect, useMemo, useState } from "react";
 import { useSelectParam } from "../../../../components/params";
