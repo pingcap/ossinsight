@@ -18,7 +18,7 @@ export default function Collections() {
 
   return (
     <CollectionsContainer version={++version.current}>
-      {data?.data.map(collection => (
+      {data?.data.slice(0, 10).map(collection => (
         <Collection key={collection.id} {...collection} />
       ))}
       {!data ? <Loading /> : undefined}
