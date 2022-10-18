@@ -77,7 +77,9 @@ export default class CollectionService {
 
     return cache.load(async () => {
       return await measure(dataQueryTimer, async () => {
-        const sql = "select id, name, public from collections;";
+        const sql = `select c.id as id, c.name as name, c.public as public, count(ci.repo_id) as repo_count
+from collections c left join collection_items ci on c.id = ci.collection_id
+group by c.id, c.name, c.public;`;
 
         try {
           const start = DateTime.now()
