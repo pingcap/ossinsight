@@ -192,7 +192,7 @@ const config = {
         style: 'dark',
         items: [
           {
-            to: '/collections/open-source-database',
+            to: '/collections',
             position: 'left',
             label: 'Collections',
             activeBasePath: '/collections'
