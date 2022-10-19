@@ -275,7 +275,7 @@ const config = {
             items: [
               {
                 label: 'Collections',
-                to: '/collections/open-source-database',
+                to: '/collections',
               },
               {
                 label: 'Blog',
