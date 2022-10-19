@@ -26,7 +26,7 @@ export default function Collections({ sorter, search }: CollectionsProps) {
     }
 
     if (search) {
-      filterFn = n => n.name.indexOf(search) !== -1;
+      filterFn = n => n.name.toLowerCase().indexOf(search.toLowerCase()) !== -1;
     } else {
       filterFn = () => true
     }
@@ -49,8 +49,8 @@ export default function Collections({ sorter, search }: CollectionsProps) {
   return (
     <Grid container spacing={2}>
       {processedData.map(({ id, name, repos, collectionRepos }) => (
-        <Grid item {...sizes}>
-          <HotCollection key={id} name={name} repos={repos} collectionRepos={collectionRepos} />
+        <Grid key={id} item {...sizes}>
+          <HotCollection name={name} repos={repos} collectionRepos={collectionRepos} />
         </Grid>
       ))}
     </Grid>
