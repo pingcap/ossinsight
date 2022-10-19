@@ -1,17 +1,15 @@
 import async from 'async';
 import consola from 'consola';
-import { Pool } from 'generic-pool';
+import { Pool as GenericPool } from 'generic-pool';
 import { DateTime, DurationLike } from 'luxon';
-import Connection from 'mysql2/typings/mysql/lib/Connection';
 import { Octokit } from "octokit";
-import asyncPool from 'tiny-async-pool';
 import { BatchLoader } from "../../app/core/BatchLoader";
-import { extractOwnerAndRepo } from '../../app/utils/github';
-import sleep from '../../app/utils/sleep';
 import { splitTimeRange } from '../../app/utils/times';
-import { loadGitHubRepos, WorkerPayload } from './loader';
+import { loadGitHubRepo, loadGitHubRepos, WorkerPayload } from './loader';
 import { GitHubRepo } from './types';
 import { JobWorker } from '../../app/core/GenericJobWorkerPool';
+import { Pool, ResultSetHeader } from 'mysql2/promise';
+import { extractOwnerAndRepo } from '../../app/utils/github';
 
 // Init logger.
 const logger = consola.withTag('sync-repos');
@@ -21,9 +19,9 @@ enum TimeRangeFiled {
     PUSHED = 'pushed'
 }
 
-// Sync repos.
-export async function syncReposInConcurrent(
-    workerPool: Pool<JobWorker<WorkerPayload>>, timeRangeField: TimeRangeFiled, from: DateTime, to: DateTime, chunkSize: DurationLike, stepSize: number, 
+// Sync repos in batch.
+export async function syncReposInBatch(
+    workerPool: GenericPool<JobWorker<WorkerPayload>>, timeRangeField: TimeRangeFiled, from: DateTime, to: DateTime, chunkSize: DurationLike, stepSize: number, 
     filter: string | null, skipSyncRepoLanguages: boolean, skipSyncRepoTopics: boolean
 ) {
     // Workers ready.
@@ -63,7 +61,7 @@ export async function syncReposInConcurrent(
 
             logger.success(`Finished loading repos from ${tFrom.toISO()} to ${tTo.toISO()}.`);
         } catch (err) {
-            logger.error(`Finished loading repos from ${tFrom.toISO()} to ${tTo.toISO()}.`);
+            logger.error(`Failed to load repos from ${tFrom.toISO()} to ${tTo.toISO()}.`);
         } finally {
             workerPool.release(worker);
         }
@@ -250,120 +248,122 @@ async function extractReposForTimeRange(
     return false;
 }
 
-// Sync fork repos.
-
-export interface RepoWithForks {
-    repoId: number;
-    repoName: string;
-    forks: number;
-}
-
-// TODO: use async queue instead of asyncPool.
-export async function syncForkRepos(
-    workerPool: Pool<JobWorker<WorkerPayload>>, conn: Connection, pageSize: number, offsetForks?: number
+// Sync repos in concurrent.
+export async function syncReposInConcurrent(
+    workerPool: GenericPool<JobWorker<WorkerPayload>>, connections: Pool, sql: string,
+    skipSyncRepoLanguages: boolean, skipSyncRepoTopics: boolean
 ) {
-    while (true) {
-        logger.info(`Getting repos with offset ${offsetForks} and page size ${pageSize}.`);
-        const repos = await getTopNonForkRepos(conn, pageSize, offsetForks);
+    // Workers ready.
+    const concurrent = workerPool.max;
+    const queue = async.queue(async ({ repoId, repoName }) => {
+        const worker = await workerPool.acquire();
+        try {
+            const { octokit, payload, pool } = worker; 
+            const { repoLoader, repoLangLoader, repoTopicLoader } = payload!;
 
-        if (!Array.isArray(repos) || repos.length === 0) {
-            break;
+            await extractRepoInfoByGraphQL(
+                octokit, pool, repoLoader, repoLangLoader, repoTopicLoader, repoId, repoName, 
+                skipSyncRepoLanguages, skipSyncRepoTopics
+            );
+        } catch (err) {
+            logger.error(`Failed to load repo with name ${repoName}:`, err);
+        } finally {
+            workerPool.release(worker);
         }
-        const minForks = repos[0].forks;
-        const maxForks = repos[repos.length - 1].forks;
-        offsetForks = maxForks;
+    }, concurrent);
 
-        logger.success(`Got non-forks repos with most forks (from: ${maxForks}, to: ${minForks}).`);
+    // Dispatch sync jobs.
+    while (true) {
+        if (queue.started) {
+            await queue.unsaturated();
+        }
 
-        // Execute sync jobs.
-        logger.info(`Handling ${repos.length} subtasks with ${workerPool.max} workers.`);
-        await asyncPool(workerPool.max, repos, async (repo) => {
-            const { repoId, repoName, forks } = repo;
-
-            try {
-                await extractForkReposInConcurrent(workerPool, conn, repoId, repoName, forks);
-                logger.success(`Fetched fork repos for repo <${repoId}, ${repoName}> with ${forks} forks.`);
-            } catch (err) {
-                logger.error(`Failed to fetch fork repos for repo <${repoId}, ${repoName}> with ${forks} forks: `, err);
-                sleep(1000);
+        try {
+            logger.info(`Fetch repos...`);
+            const [repos] = await connections.query<any>(`${sql}`);
+            
+            if (Array.isArray(repos) && repos.length > 0) {
+                repos.forEach((repo) => {
+                    queue.pushAsync({
+                        repoId: repo.repoId,
+                        repoName: repo.repoName
+                    });   
+                });
+            } else {
+                break;
             }
-        });
+        } catch (err) {
+            logger.error(`Failed to fetch repos:`, err);
+            throw err;
+        }
     }
+
+    // Wait for the workers finished all the jobs.
+    await queue.drain();
 }
 
-async function extractForkReposInConcurrent(workerPool: Pool<JobWorker<WorkerPayload>>, conn: Connection, repoId: number, repoName: string, forks: number):Promise<void> {
-    return new Promise((resolve, reject) => {
-        workerPool.use(async (worker) => {
-            const { octokit, payload } = worker;
-            const { repoLoader } = payload!;
-            logger.info(`Fetching fork repos for repo < ${repoId}, ${repoName} > with ${forks} forks...`,);
-            await extractForkReposForTimeRange(octokit, repoLoader, repoId, repoName);
-            resolve();
-        });
-    });
-}
-
-async function extractForkReposForTimeRange(
-    octokit: Octokit, repoLoader: BatchLoader, repoId: number, repoName: string
+async function extractRepoInfoByGraphQL(
+    octokit: Octokit, connections: Pool, repoLoader: BatchLoader, repoLanguageLoader: BatchLoader, repoTopicLoader: BatchLoader, 
+    repoId: string, repoName: string, skipSyncRepoLanguages: boolean, skipSyncRepoTopics: boolean
 ): Promise<void> {
-    let repoFetch = 0;
-    let totalCost = 0;
-    let remaining = 0;
-
-    const { owner, repo } = extractOwnerAndRepo(repoName);
+    const { owner, repo: name } = extractOwnerAndRepo(repoName);
     const variables = {
         owner: owner,
-        repo: repo,
-        cursor: null
+        name: name
     };
-
     const query = /* GraphQL */ `
-        query ($owner: String!, $repo: String!, $cursor: String) {
-            repository(owner: $owner, name:$repo) {
-                forks(first: 100, orderBy: {field: CREATED_AT, direction: ASC}, after: $cursor) {
+        query ($owner: String!, $name: String!) {
+            repository(owner: $owner name: $name) {
+                databaseId
+                owner {
+                ... on User {
+                    databaseId
+                    login
+                    __typename
+                }
+                ... on Organization {
+                    databaseId
+                    login
+                    __typename
+                }
+                }
+                nameWithOwner
+                licenseInfo {
+                    key
+                }
+                isInOrganization
+                isFork
+                isArchived
+                description
+                primaryLanguage {
+                    name
+                }
+                diskUsage
+                stargazerCount
+                forkCount
+                latestRelease {
+                    createdAt
+                }
+                pushedAt
+                createdAt
+                updatedAt
+                languages(first: 20, orderBy: {field: SIZE, direction: DESC}) {
+                    edges {
+                        node {
+                        name
+                        }
+                        size
+                    }
+                }
+                repositoryTopics(first: 20) {
                     nodes {
-                        databaseId
-                        owner {
-                        ... on User {
-                            databaseId
-                            login
-                            __typename
-                        }
-                        ... on Organization {
-                            databaseId
-                            login
-                            __typename
-                        }
-                        }
-                        nameWithOwner
-                        licenseInfo {
-                            key
-                        }
-                        isInOrganization
-                        isFork
-                        isArchived
-                        description
-                        primaryLanguage {
+                        topic {
                             name
                         }
-                        diskUsage
-                        stargazerCount
-                        forkCount
-                        latestRelease {
-                            createdAt
-                        }
-                        pushedAt
-                        createdAt
-                        updatedAt
-                        parent {
-                            databaseId
-                        }
                     }
-                    pageInfo {
-                        startCursor
-                        hasNextPage
-                        endCursor
-                    }
+                }
+                parent {
+                    databaseId
                 }
             }
             rateLimit {
@@ -372,89 +372,70 @@ async function extractForkReposForTimeRange(
                 remaining
                 resetAt
             }
-        }
+            }
     `;
 
-    while(true) {
-        let forks, rateLimit;
+    try {
+        const { repository: repo, rateLimit } = await octokit.graphql(query, variables) as any;
+        const { cost, remaining } = rateLimit;
 
-        try {
-            const res = await octokit.graphql(query, variables) as any;
-            if (res.repository === null) {
-                logger.warn(`Repo ${repoName} has been disabled or removed, we can't get its forks.`);
-                break;
+        // Notice: Check if there are more than one repo with the same repo name.
+        // If the repo ids in the database is different from the one fetched from API, marked those repos as deleted.
+        if (repoId != repo.databaseId) {
+            await markDeletedRepoByRepoName(connections, repoName, repo.databaseId);
+        }
+
+        // Load GitHub repo.
+        loadGitHubRepo(repoLoader, {
+            repoId: repo.databaseId,
+            repoName: repo.nameWithOwner,
+            ownerId: repo?.owner?.databaseId,
+            ownerLogin: repo.owner?.login,
+            ownerIsOrg: repo.isInOrganization,
+            description: repo?.description,
+            primaryLanguage: repo?.primaryLanguage?.name,
+            license: repo?.licenseInfo?.key,
+            size: repo.diskUsage,
+            stars: repo.stargazerCount,
+            forks: repo.forkCount,
+            parentRepoId: repo?.parent?.databaseId,
+            isFork: repo.isFork,
+            isArchived: repo.isArchived,
+            latestReleasedAt: repo?.latestRelease?.createdAt,
+            pushedAt: repo.pushedAt,
+            createdAt: repo.createdAt,
+            updatedAt: repo.updatedAt
+        });
+    
+        const repoLanguages = repo?.languages?.edges;
+        if (Array.isArray(repoLanguages) && !skipSyncRepoLanguages) {
+            for (const { node, size } of repoLanguages) {
+                repoLanguageLoader.insert([repo.databaseId, node.name, size]);
             }
-
-            forks = res.repository?.forks
-            rateLimit = res.rateLimit
-        } catch (err: any) {
-            logger.error(`Failed to fetch repos: `, variables, err);
-            logger.info(err.message, err.response);
-            continue;
+        }
+    
+        const repoTopics = repo?.repositoryTopics?.nodes;
+        if (Array.isArray(repoTopics) && !skipSyncRepoTopics) {
+            for (const { topic } of repoTopics) {
+                repoTopicLoader.insert([repo.databaseId, topic.name]);
+            }
         }
 
-        remaining = rateLimit?.remaining;
-        totalCost += rateLimit?.cost;
-        repoFetch += forks?.nodes.length;
-
-        // Load GitHub repos.
-        const githubRepos:GitHubRepo[] = [];
-        for (const repo of forks?.nodes) {
-            githubRepos.push({
-                repoId: repo.databaseId,
-                repoName: repo.nameWithOwner,
-                ownerId: repo?.owner?.databaseId,
-                ownerLogin: repo.owner?.login,
-                ownerIsOrg: repo.isInOrganization,
-                description: repo?.description,
-                primaryLanguage: repo?.primaryLanguage?.name,
-                license: repo?.licenseInfo?.key,
-                size: repo.diskUsage,
-                stars: repo.stargazerCount,
-                forks: repo.forkCount,
-                parentRepoId: repo?.parent?.databaseId,
-                isFork: repo.isFork,
-                isArchived: repo.isArchived,
-                latestReleasedAt: repo?.latestRelease?.createdAt,
-                pushedAt: repo.pushedAt,
-                createdAt: repo.createdAt,
-                updatedAt: repo.updatedAt
-            });
-        }
-        loadGitHubRepos(repoLoader, githubRepos);
-
-        // Switch to next page.
-        const pageInfo = forks?.pageInfo;
-
-        if (pageInfo?.hasNextPage === true) {
-            variables.cursor = pageInfo.endCursor;
+        logger.success(`Synced repo ${repoName}, cost: ${cost}, remaining: ${remaining}.`);
+    } catch (err: any) {
+        if (typeof err.message === 'string' && err.message.includes('Could not resolve to a Repository with the name')) {
+            await markDeletedRepoByRepoName(connections, repoName);
         } else {
-            break;
+            logger.error(`Failed to fetch repo: ${JSON.stringify(variables)}: `, err);
         }
     }
-
-    logger.success(`Fetched ${repoFetch} forks for repo < ${repoId}, ${repoName} >, cost: ${totalCost}, remaining: ${remaining}.`);
 }
 
-async function getTopNonForkRepos(conn: Connection, pageSize: number, offsetForks?: number): Promise<RepoWithForks[]> {
-    const sql = `
-        SELECT repo_id AS repoId, repo_name AS repoName, forks
-        FROM github_repos
-        WHERE
-            forks IS NOT NULL
-            AND forks > 0
-            ${offsetForks ? `AND forks <= ${offsetForks}` : ''}
-        ORDER BY forks DESC
-        LIMIT ${pageSize}
-    `;
-
-    return new Promise((resolve, reject) => {
-        conn.query(sql, (err: any, rows: RepoWithForks[]) => {
-            if (err) {
-                reject(err);
-            } else {
-                resolve(rows);
-            }
-        });
-    });
+async function markDeletedRepoByRepoName(connections: Pool, repoName: string, excludeRepoId?: number) {
+    const [rs] = await connections.query<ResultSetHeader>(`
+        UPDATE github_repos SET is_deleted = 1, refreshed_at = NOW() WHERE repo_name = ? AND repo_id != ?
+    `, [repoName, excludeRepoId]);
+    if (rs.affectedRows === 1) {
+        logger.success(`Marked repo ${repoName} as deleted${excludeRepoId ? ` (exclude repo id: ${excludeRepoId})` : ''}.`);
+    }
 }

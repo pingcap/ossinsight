@@ -14,7 +14,7 @@ const logger = consola.withTag('sync-repos-puller');
  * 
  * Notice: Back off day by day from the current day, because the repo name of the repository may change, 
  * we need to follow the newer one. When encountering same repos with different name, we will skip update the repo information 
- * through `INSERT IGNORE` statement.
+ * through `INSERT ... ON DUPLICATE KEY UPDATE repo_name = repo_name` statement.
  * 
  * Notice: Only `PullRequestEvent` type event has language field.
  * 
@@ -42,14 +42,15 @@ export async function pullReposWithLang(pool: Pool, from: DateTime, to: DateTime
 
 export async function pullOrgReposByTimeRangeWithLang(pool: Pool, from: string, to: string):Promise<number> {
     const [rs] = await pool.execute<ResultSetHeader>(`
-        INSERT IGNORE INTO github_repos (repo_id, repo_name, owner_id, owner_login, owner_is_org, language) 
+        INSERT INTO github_repos (repo_id, repo_name, owner_id, owner_login, owner_is_org, primary_language, last_event_at) 
         SELECT
             repo_id,
-            ANY_VALUE(repo_name) AS repo_name,
-            ANY_VALUE(org_id) AS owner_id,
-            ANY_VALUE(org_login) AS owner_login,
+            repo_name,
+            org_id AS owner_id,
+            org_login AS owner_login,
             1 AS owner_is_org,
-            ANY_VALUE(language) AS language
+            language AS primary_language,
+            MAX(created_at) AS max_created_at
         FROM github_events ge
         WHERE
             type = 'PullRequestEvent'
@@ -62,21 +63,23 @@ export async function pullOrgReposByTimeRangeWithLang(pool: Pool, from: string, 
             AND org_login IS NOT NULL
             AND org_login != ''
             AND created_at BETWEEN ? AND ?
-        GROUP BY repo_id
+        GROUP BY repo_id, repo_name, org_id, org_login, language
+        ON DUPLICATE KEY UPDATE last_event_at = GREATEST(max_created_at, last_event_at)
     ;`, [from, to]);
     return rs.affectedRows;
 }
 
 export async function pullPersonalReposByTimeRangeWithLang(pool: Pool, from: string, to: string):Promise<number> {
     const [rs] = await pool.execute<any>(`
-        INSERT IGNORE INTO github_repos (repo_id, repo_name, owner_id, owner_login, owner_is_org, language) 
+        INSERT INTO github_repos (repo_id, repo_name, owner_id, owner_login, owner_is_org, primary_language, last_event_at) 
         SELECT
             repo_id,
-            ANY_VALUE(repo_name) AS repo_name,
-            ANY_VALUE(actor_id) AS owner_id,
-            ANY_VALUE(actor_login) AS owner_login,
+            repo_name AS repo_name,
+            actor_id AS owner_id,
+            actor_login AS owner_login,
             0 AS owner_is_org,
-            ANY_VALUE(language) AS language
+            language AS primary_language,
+            MAX(created_at) AS max_created_at
         FROM github_events ge
         WHERE
             type = 'PullRequestEvent'
@@ -88,7 +91,8 @@ export async function pullPersonalReposByTimeRangeWithLang(pool: Pool, from: str
             AND actor_login IS NOT NULL
             AND actor_login != ''
             AND created_at BETWEEN ? AND ?
-        GROUP BY repo_id
+        GROUP BY repo_id, repo_name, actor_id, actor_login, language
+        ON DUPLICATE KEY UPDATE last_event_at = GREATEST(max_created_at, last_event_at)
     ;`, [from, to]);
     return rs.affectedRows;
 }
@@ -117,13 +121,14 @@ export async function pullOrgReposByLimit(pool: Pool, limit: number, minRows: nu
     while (true) {
         logger.info(`Pulling org repos by limit ${limit} (round ${i}) ...`);
         const [rs] = await pool.execute<any>(`
-            INSERT IGNORE INTO github_repos (repo_id, repo_name, owner_id, owner_login, owner_is_org) 
+            INSERT INTO github_repos (repo_id, repo_name, owner_id, owner_login, owner_is_org, last_event_at) 
             SELECT
                 ge.repo_id,
                 ge.repo_name AS repo_name,
                 ge.org_id AS owner_id,
                 ge.org_login AS owner_login,
-                1 AS owner_is_org
+                1 AS owner_is_org,
+                MAX(created_at) AS max_created_at
             FROM github_events ge
             LEFT JOIN github_repos r ON ge.repo_id = r.repo_id
             WHERE
@@ -136,6 +141,7 @@ export async function pullOrgReposByLimit(pool: Pool, limit: number, minRows: nu
                 AND ge.org_login IS NOT NULL
                 AND ge.repo_name != ''
                 AND r.repo_id IS NULL
+            ON DUPLICATE KEY UPDATE last_event_at = GREATEST(max_created_at, last_event_at)
             LIMIT ?
         ;`, [limit]);
         const affectedRows = rs.affectedRows;
@@ -156,13 +162,14 @@ export async function pullPersonalReposByLimit(pool: Pool, limit: number, minRow
     let total = 0;
     while (true) {
         const [rs] = await pool.execute<any>(`
-            INSERT IGNORE INTO github_repos (repo_id, repo_name, owner_id, owner_login, owner_is_org) 
+            INSERT INTO github_repos (repo_id, repo_name, owner_id, owner_login, owner_is_org, last_event_at) 
             SELECT
                 ge.repo_id,
                 ge.repo_name AS repo_name,
                 ge.actor_id AS owner_id,
                 ge.actor_login AS owner_login,
-                0 AS owner_is_org
+                0 AS owner_is_org,
+                MAX(created_at) AS max_created_at
             FROM github_events ge
             LEFT JOIN github_repos r ON ge.repo_id = r.repo_id
             WHERE
@@ -174,6 +181,7 @@ export async function pullPersonalReposByLimit(pool: Pool, limit: number, minRow
                 AND ge.actor_login IS NOT NULL
                 AND ge.actor_login != ''
                 AND r.repo_id IS NULL
+            ON DUPLICATE KEY UPDATE last_event_at = GREATEST(max_created_at, last_event_at)
             LIMIT ?
         ;`, [limit]);
         const affectedRows = rs.affectedRows;
