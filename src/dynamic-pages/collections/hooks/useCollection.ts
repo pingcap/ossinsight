@@ -5,6 +5,7 @@ import useSWR from 'swr';
 import { core } from '../../../api';
 import { RemoteData } from '../../../components/RemoteCharts/hook';
 import { Collection } from '@ossinsight/api'
+import deepEqual from 'fast-deep-equal'
 
 export function useCollections(): Collection[] {
   const {collections} = usePluginData<{collections: RemoteData<any, Collection>}>('plugin-prefetch');
@@ -12,6 +13,7 @@ export function useCollections(): Collection[] {
   const { data } = useSWR<RemoteData<any, Collection>>('static/collections', {
     fetcher: core.getCollections,
     fallbackData: collections,
+    compare: deepEqual,
   });
 
   return useMemo(() => {
