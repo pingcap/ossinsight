@@ -18,5 +18,6 @@ export interface GitHubRepo {
     pushedAt: Date | null;
     createdAt: Date | null;
     updatedAt: Date | null;
+    lastEventAt?: Date | null;
     refreshedAt?: Date;
 }

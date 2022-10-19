@@ -1,5 +1,5 @@
 import consola from "consola";
-import { Pool } from "mysql2/promise";
+import { Pool, ResultSetHeader } from "mysql2/promise";
 
 export const DEFAULT_BATCH_SIZE = 100;
 export const DEFAULT_FLUSH_INTERVAL = 10;
@@ -80,10 +80,10 @@ export class BatchLoader {
         // So we can copy it to a temporary memory and clear the buffer so that it can continue to store new data.
         const records = [[...this.buf]];
         this.buf = [];
-
+        
         for (let retries = 0; retries <= this.maxRetries; retries++) {
-            try {
-                await this.connections.query(this.sql, records);
+            try {                
+                await this.connections.query<ResultSetHeader>(this.sql, records);
                 return;
             } catch (err) {
                 const num = records[0].length;

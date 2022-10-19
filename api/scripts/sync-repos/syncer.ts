@@ -19,8 +19,6 @@ enum TimeRangeFiled {
     PUSHED = 'pushed'
 }
 
-const MARK_REPO_DELETED_SQL = `UPDATE github_repos SET is_deleted = 1 AND refreshedAt = NOW() WHERE repo_name = ?`;
-
 // Sync repos in batch.
 export async function syncReposInBatch(
     workerPool: GenericPool<JobWorker<WorkerPayload>>, timeRangeField: TimeRangeFiled, from: DateTime, to: DateTime, chunkSize: DurationLike, stepSize: number, 
@@ -263,17 +261,10 @@ export async function syncReposInConcurrent(
             const { octokit, payload, pool } = worker; 
             const { repoLoader, repoLangLoader, repoTopicLoader } = payload!;
 
-            if (queue.idle()) {
-                extractRepoInfoByGraphQL(
-                    octokit, pool, repoLoader, repoLangLoader, repoTopicLoader, repoName, 
-                    skipSyncRepoLanguages, skipSyncRepoTopics
-                );
-            } else {
-                await extractRepoInfoByGraphQL(
-                    octokit, pool, repoLoader, repoLangLoader, repoTopicLoader, repoName, 
-                    skipSyncRepoLanguages, skipSyncRepoTopics
-                );
-            }
+            await extractRepoInfoByGraphQL(
+                octokit, pool, repoLoader, repoLangLoader, repoTopicLoader, repoId, repoName, 
+                skipSyncRepoLanguages, skipSyncRepoTopics
+            );
         } catch (err) {
             logger.error(`Failed to load repo with name ${repoName}:`, err);
         } finally {
@@ -286,18 +277,24 @@ export async function syncReposInConcurrent(
         if (queue.started) {
             await queue.unsaturated();
         }
-        logger.info(`Fetch repos...`);
-        const [repos] = await connections.query<any>(`${sql}`);
-        
-        if (Array.isArray(repos) && repos.length > 0) {
-            repos.forEach((repo) => {
-                queue.pushAsync({
-                    repoId: repo.repoId,
-                    repoName: repo.repoName
-                });   
-            });
-        } else {
-            break;
+
+        try {
+            logger.info(`Fetch repos...`);
+            const [repos] = await connections.query<any>(`${sql}`);
+            
+            if (Array.isArray(repos) && repos.length > 0) {
+                repos.forEach((repo) => {
+                    queue.pushAsync({
+                        repoId: repo.repoId,
+                        repoName: repo.repoName
+                    });   
+                });
+            } else {
+                break;
+            }
+        } catch (err) {
+            logger.error(`Failed to fetch repos:`, err);
+            throw err;
         }
     }
 
@@ -307,7 +304,7 @@ export async function syncReposInConcurrent(
 
 async function extractRepoInfoByGraphQL(
     octokit: Octokit, connections: Pool, repoLoader: BatchLoader, repoLanguageLoader: BatchLoader, repoTopicLoader: BatchLoader, 
-    repoName: string, skipSyncRepoLanguages: boolean, skipSyncRepoTopics: boolean
+    repoId: string, repoName: string, skipSyncRepoLanguages: boolean, skipSyncRepoTopics: boolean
 ): Promise<void> {
     const { owner, repo: name } = extractOwnerAndRepo(repoName);
     const variables = {
@@ -382,6 +379,12 @@ async function extractRepoInfoByGraphQL(
         const { repository: repo, rateLimit } = await octokit.graphql(query, variables) as any;
         const { cost, remaining } = rateLimit;
 
+        // Notice: Check if there are more than one repo with the same repo name.
+        // If the repo ids in the database is different from the one fetched from API, marked those repos as deleted.
+        if (repoId != repo.databaseId) {
+            await markDeletedRepoByRepoName(connections, repoName, repo.databaseId);
+        }
+
         // Load GitHub repo.
         loadGitHubRepo(repoLoader, {
             repoId: repo.databaseId,
@@ -421,12 +424,18 @@ async function extractRepoInfoByGraphQL(
         logger.success(`Synced repo ${repoName}, cost: ${cost}, remaining: ${remaining}.`);
     } catch (err: any) {
         if (typeof err.message === 'string' && err.message.includes('Could not resolve to a Repository with the name')) {
-            const [rs] = await connections.query<ResultSetHeader>(MARK_REPO_DELETED_SQL, [repoName]);
-            if (rs.affectedRows === 1) {
-                logger.success(`Marked repo ${repoName} as deleted.`);
-            }
+            await markDeletedRepoByRepoName(connections, repoName);
         } else {
             logger.error(`Failed to fetch repo: ${JSON.stringify(variables)}: `, err);
         }
+    }
+}
+
+async function markDeletedRepoByRepoName(connections: Pool, repoName: string, excludeRepoId?: number) {
+    const [rs] = await connections.query<ResultSetHeader>(`
+        UPDATE github_repos SET is_deleted = 1, refreshed_at = NOW() WHERE repo_name = ? AND repo_id != ?
+    `, [repoName, excludeRepoId]);
+    if (rs.affectedRows === 1) {
+        logger.success(`Marked repo ${repoName} as deleted${excludeRepoId ? ` (exclude repo id: ${excludeRepoId})` : ''}.`);
     }
 }

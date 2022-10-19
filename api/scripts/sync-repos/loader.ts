@@ -1,3 +1,5 @@
+import consola from "consola";
+import { DateTime } from "luxon";
 import { Pool } from "mysql2/promise";
 import { BatchLoader } from "../../app/core/BatchLoader";
 import { createWorkerPool } from "../../app/core/GenericJobWorkerPool";
@@ -8,6 +10,8 @@ export interface WorkerPayload {
     repoLangLoader: BatchLoader;
     repoTopicLoader: BatchLoader;
 }
+
+const logger = consola.withTag('repo-loader');
 
 const INSERT_REPOS_SQL = `INSERT INTO github_repos (
     repo_id, repo_name, owner_id, owner_login, owner_is_org, 
@@ -20,7 +24,7 @@ const INSERT_REPOS_SQL = `INSERT INTO github_repos (
     size = VALUES(size), stars = VALUES(stars), forks = VALUES(forks), is_fork = VALUES(is_fork), is_archived = VALUES(is_archived), 
     latest_released_at = VALUES(latest_released_at), parent_repo_id = VALUES(parent_repo_id), 
     pushed_at = VALUES(pushed_at), created_at = VALUES(created_at), updated_at = VALUES(updated_at),
-    refreshed_at = NOW()
+    refreshed_at = VALUES(refreshed_at)
 ;`;
 
 const INSERT_REPO_LANGUAGES_SQL = `INSERT INTO github_repo_languages (repo_id, language, size) VALUES ?
@@ -37,13 +41,13 @@ export function createSyncReposWorkerPool(tokens: string[]) {
     return createWorkerPool<WorkerPayload>(tokens, (connPool: Pool) => {
         return {
             repoLoader: new BatchLoader(connPool, INSERT_REPOS_SQL, {
-                batchSize: 2000
+                batchSize: 1000
             }),
             repoLangLoader: new BatchLoader(connPool, INSERT_REPO_LANGUAGES_SQL, {
-                batchSize: 2000
+                batchSize: 1000
             }),
             repoTopicLoader: new BatchLoader(connPool, INSERT_REPO_TOPICS_SQL, {
-                batchSize: 2000
+                batchSize: 1000
             })
         }
     }, async ({ repoLoader, repoLangLoader, repoTopicLoader }: WorkerPayload) => {
@@ -69,12 +73,18 @@ export async function loadGitHubRepo(repoLoader: BatchLoader, repo: GitHubRepo) 
     } = repo;
 
     const descriptionValue = description ? description.substring(0, 512) : '';
-    const sizeValue = typeof size === 'number' && size < MAX_BIGINT_VALUE ? size : 0;
+    let sizeValue = 0;
+    if (typeof size === 'number' && size < MAX_BIGINT_VALUE) {
+        sizeValue = size
+    } else {
+        logger.warn(`Unexpected size value: `, size);
+    }
+    const refreshedAtValue = DateTime.utc().toJSDate().toISOString()
 
     await repoLoader.insert([
         repoId, repoName, ownerId, ownerLogin, ownerIsOrg, 
         descriptionValue, primaryLanguage || '', license || '', 
         sizeValue, stars || 0, forks || 0, isFork || 0, isArchived || 0, 
-        latestReleasedAt, parentRepoId, pushedAt, createdAt, updatedAt
+        latestReleasedAt, parentRepoId, pushedAt, createdAt, updatedAt, refreshedAtValue
     ]);
-}
+} 

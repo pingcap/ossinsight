@@ -23,8 +23,9 @@ const DEFAULT_TIME_RANGE_FILED = 'created';
 const DEFAULT_SPECIFY_SYNC_REPOS_SQL = `
 SELECT repo_id AS repoId, repo_name AS repoName
 FROM github_repos
-WHERE created_at = 0 AND is_deleted = 0
-LIMIT 2048
+WHERE last_event_at != 0 AND (DATEDIFF(last_event_at, refreshed_at) > 5 OR refreshed_at = 0) AND is_deleted = 0
+ORDER BY last_event_at DESC
+LIMIT 1000
 `;
 
 async function main() {
@@ -115,10 +116,10 @@ Reference: https://docs.github.com/en/search-github/searching-on-github/searchin
         .description('Pull repositories data from github_events table.')
         .requiredOption<DateTime>(
             '--from <datetime>',
-            'The start time of time range, which is followed SQL date time format. Default: "2018-02-08".',
+            'The start time of time range, which is followed SQL date time format. Default: "2011-01-01".',
             (value) => DateTime.fromSQL(value),
             // GitHub was founded in 2008: https://en.wikipedia.org/wiki/GitHub
-            DateTime.fromSQL('2008-02-08')
+            DateTime.fromSQL('2011-01-01')
         )
         .requiredOption<DateTime>(
             '--to <datetime>',
@@ -143,7 +144,7 @@ Reference: https://docs.github.com/en/search-github/searching-on-github/searchin
         .description('Pull repositories data from github_events table.')
         .requiredOption<number>(
             '--limit <number>',
-            'The start time of time range, which is followed SQL date time format. Default: "2018-02-08".',
+            'Specify how many repos that will be imported at once.',
             (value) => Number(value),
             100000
         )
@@ -193,6 +194,12 @@ Reference: https://docs.github.com/en/search-github/searching-on-github/searchin
             (value) => String(value),
             DEFAULT_SPECIFY_SYNC_REPOS_SQL
         )
+        .option<number>(
+            '--concurrent-per-token <number>',
+            `Specify how much concurrent per token.`,
+            (value) => Number(value),
+            4
+        )
         .option<boolean>(
             '--skip-sync-repo-topics <bool>',
             `Skip sync the topics tagged for the repository.`,
@@ -202,7 +209,7 @@ Reference: https://docs.github.com/en/search-github/searching-on-github/searchin
         .description('Sync repos in concurrent by GitHub REST API.')
         .action(async (options) => {
             // Handle the command arguments.
-            let { sql, skipSyncRepoLanguages, skipSyncRepoTopics } = options;
+            let { sql, concurrentPerToken, skipSyncRepoLanguages, skipSyncRepoTopics } = options;
 
             const gitHubTokens = (process.env.SYNC_GH_TOKENS || '').split(',').map(s => s.trim()).filter(Boolean);
             if (gitHubTokens.length === 0) {
@@ -211,7 +218,12 @@ Reference: https://docs.github.com/en/search-github/searching-on-github/searchin
             }
 
             // Init Worker Pool.
-            const workerPool = createSyncReposWorkerPool([...gitHubTokens]);
+            const tokens = [];
+            for (let i = 1; i <= concurrentPerToken; i++) {
+                tokens.push(...gitHubTokens);
+            }
+
+            const workerPool = createSyncReposWorkerPool(tokens);
             const connections = createPool(getConnectionOptions({
                 connectionLimit: 2
             }));
@@ -222,7 +234,6 @@ Reference: https://docs.github.com/en/search-github/searching-on-github/searchin
             await workerPool.clear();
             await connections.end();
         });
-    
 
     program.parse();
 }
