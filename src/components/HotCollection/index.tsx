@@ -6,12 +6,24 @@ import Diff from "../Diff";
 import Link from "@docusaurus/Link";
 import Avatar from "@mui/material/Avatar";
 import { paramCase } from "param-case";
-import React from "react";
+import React, { useCallback } from "react";
 import Skeleton from "@mui/material/Skeleton";
+import { styled } from "@mui/material/styles";
+import { useHistory } from "@docusaurus/router";
 
-export default function HotCollection({ name, repos, collectionRepos }: Pick<RecentHotCollectionData, 'name' | 'repos' | 'collectionRepos'>) {
+interface HotCollectionProps extends Pick<RecentHotCollectionData, 'name' | 'repos' | 'collectionRepos'> {
+  variant?: 'clickable' | 'link'
+}
+
+export default function HotCollection({ variant = 'clickable', name, repos, collectionRepos }: HotCollectionProps) {
+  const history = useHistory()
+
+  const jump = useCallback(() => {
+    history.push(`/collections/${paramCase(name)}`);
+  }, [name]);
+
   return (
-    <Box border="2px dashed #3c3c3c" p={2} borderRadius={1} sx={{ '&:not(:first-child)': { ml: 2 } }}>
+    <Container onClick={jump} className={variant}>
       <Typography variant="body1" fontSize={16}>{name}</Typography>
       <Typography variant="body2" color="#7C7C7C" mt={2} mb={2}>{repos} repositories</Typography>
 
@@ -36,15 +48,21 @@ export default function HotCollection({ name, repos, collectionRepos }: Pick<Rec
         </Stack>
       ))}
 
-      <Box mt={2} fontSize={14}>
-        <Link href={`/collections/${paramCase(name)}`} target='_blank'>
-          &gt; See All
-        </Link>
-      </Box>
-    </Box>
+      {variant === 'link'
+        ? (
+          <Box mt={2} fontSize={14}>
+            <Link href={`/collections/${paramCase(name)}`} target="_blank">
+              &gt; See All
+            </Link>
+          </Box>
+        ) : (
+          <Link href={`/collections/${paramCase(name)}`} target="_blank" hidden>
+            &gt; See All
+          </Link>
+        )}
+    </Container>
   );
 }
-
 
 export function LoadingHotCollection() {
   return (
@@ -62,3 +80,20 @@ export function LoadingHotCollection() {
     </Box>
   );
 }
+
+const Container = styled(Box)(({ theme }) => ({
+  border: '2px dashed #3c3c3c',
+  padding: theme.spacing(2),
+  borderRadius: theme.spacing(1),
+  '&:not(:first-child)': {
+    marginLeft: theme.spacing(2),
+  },
+  '&.clickable': {
+    cursor: 'pointer',
+    transition: 'box-shadow .2s ease, transform .2s ease',
+    '&:hover': {
+      boxShadow: theme.shadows[16],
+      transform: 'translateY(-1px) scale(1.02)',
+    },
+  }
+}));

@@ -1,3 +1,9 @@
-.word-cloud-container text {
+.wordCloudContainer text {
   cursor: pointer;
+  opacity: 0.6;
+  transition: opacity .2s ease;
+}
+
+.wordCloudContainer text:hover {
+   opacity: 1;
 }

@@ -14,7 +14,7 @@ export default function Collections() {
   return (
     <CollectionsContainer version={++version.current}>
       {data?.data.slice(0, 10).map(({ id, name, repos, collectionRepos }) => (
-        <HotCollection key={id} name={name} repos={repos} collectionRepos={collectionRepos} />
+        <HotCollection key={id} variant='link' name={name} repos={repos} collectionRepos={collectionRepos} />
       ))}
       {!data ? <Loading /> : undefined}
     </CollectionsContainer>
