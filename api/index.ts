@@ -1,9 +1,9 @@
-import dotenv from "dotenv";
 import App from "koa";
 import Router from "koa-router";
 import httpServerRoutes, { socketServerRoutes } from "./app/server";
-import consola, { Consola } from "consola";
+import consola from "consola";
 import cors from "@koa/cors";
+import koaJwt from 'koa-jwt';
 import { Server as SocketServer } from "socket.io";
 import { createServer } from "http";
 import CacheBuilder from "./app/core/cache/CacheBuilder";
@@ -16,7 +16,7 @@ import { getPlaygroundSessionLimits } from "./app/utils/playground";
 import CollectionService from "./app/services/CollectionService";
 import GHEventService from "./app/services/GHEventService";
 import UserService from "./app/services/UserService";
-import { ConnectionWrapper, getConnectionOptions } from "./app/utils/db";
+import { getConnectionOptions } from "./app/utils/db";
 import StatsService from "./app/services/StatsService";
 import { getAllowedOrigins, getCorsOrigin } from "./app/origins";
 import { BatchLoader } from "./app/core/BatchLoader";
@@ -24,6 +24,7 @@ import koaStatic from "koa-static";
 import path from "path";
 import { configEnv } from "./app/utils/env";
 import { createPool } from "mysql2/promise";
+import { ContextExtends, GitHubAuthOption } from "./app/types";
 
 const logger = consola.withTag("app");
 
@@ -31,10 +32,15 @@ configEnv(__dirname);
 
 const allowedOrigins = getAllowedOrigins();
 const allowedOriginsWithPublic = getAllowedOrigins(true);
-
-export interface ContextExtends extends App.DefaultContext {
-  logger: Consola;
-}
+const githubAuthOption:GitHubAuthOption = {
+  enableGitHubLogin: process.env.GH_OAUTH_CLIENT_ID !== undefined && process.env.JWT_SECRET !== undefined,
+  jwtSecret: process.env.JWT_SECRET || 'ossinsight.io',
+  cookieName: process.env.JWT_COOKIE_NAME || 'o_access_token',
+  clientId: process.env.GH_OAUTH_CLIENT_ID || '',
+  clientSecret: process.env.GH_OAUTH_CLIENT_SECRET || '',
+  successCallback: process.env.GH_OAUTH_SUCCESS_CALLBACK || 'https://ossinsight.io/profile',
+  errorCallback: process.env.GH_OAUTH_ERROR_CALLBACK || 'https://ossinsight.io',
+};
 
 const app = new App<App.DefaultState, ContextExtends>({
   proxy: true,
@@ -46,18 +52,18 @@ app.use(async (ctx, next) => {
   await next();
 });
 
-app.use(koaStatic(path.resolve(__dirname, './static'), {
-  setHeaders: headers =>
-    headers
-      .setHeader('content-type', 'application/vnd.oai.openapi')
-      .setHeader('cache-control', 'no-cache')}));
-
 // Enable CORS.
 app.use(cors({
   origin: (ctx) => {
     return getCorsOrigin(allowedOriginsWithPublic, ctx.request.header.origin);
   }
 }));
+
+// Enable JWT.
+const jwtMiddleware = koaJwt({
+  secret: githubAuthOption.jwtSecret,
+  cookie: githubAuthOption.cookieName
+});
 
 // Init MySQL Executor.
 const queryExecutor = new TiDBQueryExecutor(
@@ -66,6 +72,15 @@ const queryExecutor = new TiDBQueryExecutor(
     queueLimit: parseInt(process.env.QUEUE_LIMIT || "20"),
   })
 );
+
+// Enable static HTTP server.
+app.use(koaStatic(path.resolve(__dirname, './static'), {
+  setHeaders: headers =>
+    headers
+      .setHeader('content-type', 'application/vnd.oai.openapi')
+      .setHeader('cache-control', 'no-cache')
+    }
+));
 
 const playgroundQueryExecutor = new TiDBPlaygroundQueryExecutor(
   getConnectionOptions({
@@ -112,7 +127,9 @@ httpServerRoutes(
   userService,
   ghEventService,
   statsService,
-  accessRecorder
+  accessRecorder,
+  jwtMiddleware,
+  githubAuthOption
 );
 app.use(router.routes()).use(router.allowedMethods());
 

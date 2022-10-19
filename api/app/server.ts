@@ -2,7 +2,6 @@ import Router from "koa-router";
 import Query, { SimpleQuery } from "./core/Query";
 import { DefaultState } from "koa";
 import koaBody from "koa-body";
-import type {ContextExtends} from "../index";
 import {register} from "prom-client";
 import {measureRequests, URLType} from "./middlewares/measureRequests";
 import { Socket, Server } from "socket.io";
@@ -17,6 +16,10 @@ import StatsService from "./services/StatsService";
 import { BatchLoader } from "./core/BatchLoader";
 import { SqlParser } from "./utils/playground";
 import { toCompactFormat } from "./utils/compact";
+import { Middleware } from "koa-jwt";
+import jwt from 'jsonwebtoken';
+import axios from "axios";
+import { ContextExtends, GitHubAuthOption } from "./types";
 
 export default async function httpServerRoutes(
   router: Router<DefaultState, ContextExtends>,
@@ -28,8 +31,72 @@ export default async function httpServerRoutes(
   userService: UserService,
   ghEventService: GHEventService,
   statsService: StatsService,
-  accessRecorder: BatchLoader
+  accessRecorder: BatchLoader,
+  jwtMiddleware: Middleware,
+  githubAuthOption: GitHubAuthOption,
 ) {
+
+  router.get('/auth/github/login', async ctx => {
+    const { clientId } = githubAuthOption;
+    const { protocol, host } = ctx;
+    const redirectURI = `${protocol}://${host}/auth/github/callback`;
+
+    const params = new URLSearchParams();
+    params.set("client_id", clientId);
+    params.set("redirect_uri", redirectURI);
+    params.set("state", Math.random().toString());
+    
+    return ctx.redirect(`https://github.com/login/oauth/authorize?${params.toString()}`)
+  });
+
+  router.get('/auth/github/callback', async ctx => {
+    const { clientId, clientSecret, jwtSecret, cookieName, successCallback, errorCallback } = githubAuthOption;
+    const { code } = ctx.request.query;
+    if (!code) {
+        return ctx.redirect(errorCallback)
+    }
+  
+    try {
+      // Get access token.
+      const tokenRes = await axios.post('https://github.com/login/oauth/access_token', {
+        code,
+        client_id: clientId,
+        client_secret: clientSecret
+      });
+      const accessToken = new URLSearchParams(tokenRes.data).get("access_token")
+      if (!accessToken) throw new Error('no access_token')
+
+      // Get user data.
+      const { data: { id, login, name, avatar_url } } = await axios({
+          url: 'https://api.github.com/user',
+          method: 'GET',
+          headers: {
+              Authorization: `token ${accessToken}`
+          }
+      });
+
+      // Sign JWT Token and save to the cookie.
+      const jwtToken = jwt.sign({
+        github_id: id,
+        github_login: login,
+        github_name: name,
+        github_avatar_url: avatar_url
+      }, jwtSecret);
+      ctx.cookies.set(cookieName, jwtToken, {
+        sameSite: "lax",
+        httpOnly: true
+      });
+
+      ctx.redirect(successCallback)
+    } catch (err:any) {
+      ctx.redirect(errorCallback)
+    }
+  });
+
+  router.get('/auth/test', jwtMiddleware, async ctx => {
+    ctx.status = 200
+    ctx.body = 'ok'
+  })
 
   router.get('/q/explain/:query(.*)', measureRequests(URLType.PATH, accessRecorder), async ctx => {
     try {
