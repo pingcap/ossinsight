@@ -17,6 +17,9 @@ declare module '@theme/Layout' {
   interface Props {
     keywords?: string | string[]
     image?: string
+    header?: JSX.Element;
+    side?: JSX.Element;
+    sideWidth?: string
   }
 }
 
@@ -30,6 +33,8 @@ export default function Layout(props: Props): JSX.Element {
     description,
     keywords,
     image,
+    header,
+    side,
   } = props;
 
   useKeyboardNavigation();
@@ -43,6 +48,9 @@ export default function Layout(props: Props): JSX.Element {
       <AnnouncementBar />
 
       <Navbar />
+
+      {header}
+      {side}
 
       <div
         className={clsx(
