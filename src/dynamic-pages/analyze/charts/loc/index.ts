@@ -12,7 +12,7 @@ import {
   utils,
   valueAxis,
 } from '../options';
-import {withChart} from '../chart';
+import { withChart } from '../chart';
 
 // lines of code
 export type LocData = {
@@ -22,36 +22,41 @@ export type LocData = {
   changes: number
 }
 
-export const LocChart = withChart<LocData>(({title: propsTitle}) => {
+export const LocChart = withChart<LocData>(({ title: propsTitle }) => {
 
   return {
-    dataset: utils.template<LocData>(({id, datasetId, data, context}) => {
+    dataset: utils.template<LocData>(({ id, datasetId, data, context }) => {
       const transformedData = transformLocData(data.data?.data ?? []);
-      context[`adjust-${id}`] = utils.adjustAxis(transformedData, [['additions', 'deletions'], ['total']]);
+      const adjusted = utils.adjustAxis(transformedData, [['additions', 'deletions'], ['total']]);
+      context.adjust = context.adjust ?? [];
+      for (let i = 0; i < 2; i++) {
+        context.adjust[i] = {
+          max: Math.max(adjusted[i].max, context.adjust[i]?.max ?? Number.MIN_VALUE),
+          min: Math.min(adjusted[i].min, context.adjust[i]?.min ?? Number.MAX_VALUE),
+        };
+      }
       return dataset(datasetId, transformedData);
     }),
     grid: topBottomLayoutGrid(),
     dataZoom: dataZoom(),
     title: title(propsTitle),
-    legend: legend({selectedMode: false}),
-    xAxis: utils.template(({id}) => timeAxis<'x'>(id, {gridId: id})),
-    yAxis: utils.template(({id, context}) => [
+    legend: legend({ selectedMode: false }),
+    xAxis: utils.template(({ id }) => timeAxis<'x'>(id, { gridId: id })),
+    yAxis: utils.template(({ id, context }) => [
       valueAxis<'y'>(`${id}-diff`, {
         gridId: id,
-        ...context[`adjust-${id}`][0],
+        ...context.adjust[0],
         position: 'left',
-        axisLabel: {showMaxLabel: false, showMinLabel: false},
         name: 'Diff / lines',
       }),
       valueAxis<'y'>(`${id}-total`, {
         gridId: id,
-        ...context[`adjust-${id}`][1],
+        ...context.adjust[1],
         position: 'right',
-        axisLabel: {showMaxLabel: false, showMinLabel: false},
         name: 'Total / lines',
       }),
     ]),
-    series: utils.template(({id, datasetId}) => [
+    series: utils.template(({ id, datasetId }) => [
       bar('event_month', 'additions', {
         datasetId: datasetId,
         stack: `stack-${id}`,
