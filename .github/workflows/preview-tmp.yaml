@@ -21,6 +21,7 @@ jobs:
           ref: refs/pull/${{ github.event.pull_request.number }}/merge
       - name: Use Node.js 18
         uses: actions/setup-node@v2.5.1
+        working-directory: web
         with:
           node-version: 18
           cache: 'npm'
@@ -32,6 +33,7 @@ jobs:
         run: npm run build
       - name: Deploy to ossinsight.surge.sh 🚀
         uses: afc163/surge-preview@v1
+        working-directory: web
         id: preview_step
         with:
           surge_token: ${{ secrets.SURGE_TOKEN }}
