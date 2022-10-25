@@ -5,15 +5,15 @@ import {
   dataZoom,
   formatMonth,
   logAxis,
-  originalDataset,
   standardDataset,
   timeAxis,
-  title, topBottomLayoutGrid,
+  title,
+  topBottomLayoutGrid,
   utils,
 } from '../options';
-import {withChart} from '../chart';
+import { withChart } from '../chart';
 import prettyMs from 'pretty-ms';
-import {alpha} from '@mui/material';
+import { alpha } from '@mui/material';
 
 // lines of code
 export type PrDurationData = {
@@ -25,49 +25,66 @@ export type PrDurationData = {
   p100: number
 }
 
-const fmtHours = (hours: number) => prettyMs(hours * 60 * 60 * 1000, {unitCount: 1});
+const fmtHours = (hours: number) => prettyMs(hours * 60 * 60 * 1000, { unitCount: 1 });
 
-function getMax (data: AsyncData<RemoteData<unknown, PrDurationData>>): number | undefined {
-  return data.data?.data.reduce((prev, current) => Math.max(prev, current.p100), 0)
+function getMax(data: AsyncData<RemoteData<unknown, PrDurationData>>): number | undefined {
+  return data.data?.data.reduce((prev, current) => Math.max(prev, current.p100), 0);
 }
 
-function getMin (data: AsyncData<RemoteData<unknown, PrDurationData>>): number | undefined {
-  return data.data?.data.reduce((prev, current) => Math.min(prev, current.p0 > 0 ? current.p0 : prev), Number.MAX_SAFE_INTEGER)
+function getMin(data: AsyncData<RemoteData<unknown, PrDurationData>>): number | undefined {
+  return data.data?.data.reduce((prev, current) => Math.min(prev, current.p0 > 0 ? current.p0 : prev), Number.MAX_SAFE_INTEGER);
 }
 
-export const DurationChart = withChart<PrDurationData>(({title: propsTitle, data}) => ({
-  dataset: standardDataset(),
-  grid: topBottomLayoutGrid(),
-  xAxis: utils.template(({id}) => timeAxis<'x'>(id, {gridId: id})),
-  yAxis: utils.template<PrDurationData>(({id, data}) => logAxis<'y'>(id, {
-    name: 'Duration',
-    gridId: id,
-    axisLabel: {formatter: fmtHours},
-    axisPointer: {
-      label: {
-        formatter: ({value}) => fmtHours(Number(value)),
+export const DurationChart = withChart<PrDurationData>(({ title: propsTitle, data, compareData }) => {
+  const max = utils.aggregate<PrDurationData>(all => {
+    if (all.length <= 1) {
+      return getMax(all[0]);
+    } else {
+      return Math.max(...all.map(getMax));
+    }
+  });
+
+  const min = utils.aggregate<PrDurationData>(all => {
+    if (all.length <= 1) {
+      return getMin(all[0]);
+    } else {
+      return Math.min(...all.map(getMin));
+    }
+  });
+
+  return {
+    dataset: standardDataset(),
+    grid: topBottomLayoutGrid(),
+    xAxis: utils.template(({ id }) => timeAxis<'x'>(id, { gridId: id })),
+    yAxis: utils.template<PrDurationData>(({ id, data }) => logAxis<'y'>(id, {
+      name: 'Duration',
+      gridId: id,
+      axisLabel: { formatter: fmtHours },
+      axisPointer: {
+        label: {
+          formatter: ({ value }) => fmtHours(Number(value)),
+        },
       },
-    },
-    max: Math.pow(10, Math.ceil(Math.log10(getMax(data)))),
-    min: Math.pow(10, Math.floor(Math.log10(getMin(data))))
-  })),
-  dataZoom: dataZoom(),
-  title: title(propsTitle),
-  series: utils.template(({id, datasetId}) => boxplot('event_month', ['p0', 'p25', 'p50', 'p75', 'p100'], {
-    datasetId,
-    xAxisId: id,
-    yAxisId: id,
-    itemStyle: {
-      color: alpha('#dd6b66', .3),
-      borderWidth: 1,
-    },
-    boxWidth: ['40%', '40%']
-  })),
-  tooltip: axisTooltip('cross', {
-    renderMode: 'html',
-    formatter: params => {
-      const {value, marker} = params[0];
-      return `
+      max,
+      min,
+    })),
+    dataZoom: dataZoom(),
+    title: title(propsTitle),
+    series: utils.template(({ id, datasetId }) => boxplot('event_month', ['p0', 'p25', 'p50', 'p75', 'p100'], {
+      datasetId,
+      xAxisId: id,
+      yAxisId: id,
+      itemStyle: {
+        color: alpha('#dd6b66', .3),
+        borderWidth: 1,
+      },
+      boxWidth: ['40%', '40%'],
+    })),
+    tooltip: axisTooltip('cross', {
+      renderMode: 'html',
+      formatter: params => {
+        const { value, marker } = params[0];
+        return `
         ${marker}
         <span>${formatMonth(value.event_month)}</span>
         <br/>
@@ -81,9 +98,10 @@ export const DurationChart = withChart<PrDurationData>(({title: propsTitle, data
         <br/>
         <b>max</b>: ${fmtHours(value.p100)}
       `;
-    },
-  }),
-}), {
+      },
+    }),
+  };
+}, {
   aspectRatio: 16 / 9,
 });
 

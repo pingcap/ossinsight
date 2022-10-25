@@ -1,5 +1,6 @@
 import {AsyncData, RemoteData} from '../../../../../components/RemoteCharts/hook';
 import {KeyOfType, range} from './data';
+import { upBound } from "../../utils";
 
 export function adjustAxis<T extends Record<string, any>>(data: T[], keys: KeyOfType<T, number>[][]): { min?: number, max?: number }[] {
   if (!data.length) {
@@ -32,8 +33,8 @@ export function adjustAxis<T extends Record<string, any>>(data: T[], keys: KeyOf
   }
 
   return ranges.map(([min, max]) => ({
-    min: Math.min(min, -max / r) * (1 + 0.2 * r),
-    max: Math.max(max, -min * r) * 1.2
+    min: upBound(Math.min(min, -max / r)),
+    max: upBound(Math.max(max, -min * r))
   }))
 }
 
