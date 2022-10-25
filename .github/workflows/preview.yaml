@@ -1,13 +1,9 @@
-name: Surge PR Preview
+name: Surge PR Preview (Temp for \#917)
 
 on:
   pull_request_target:
     paths:
       - 'web/**'
-
-defaults:
-  run:
-    working-directory: web
 
 jobs:
   preview:
@@ -15,6 +11,7 @@ jobs:
     defaults:
       run:
         shell: bash
+        working-directory: ./web
     steps:
       - uses: actions/checkout@v2
         with:
@@ -24,6 +21,7 @@ jobs:
         with:
           node-version: 18
           cache: 'npm'
+          cache-dependency-path: web/package-lock.json
       - name: Install
         run: npm ci
       - name: Prefetch
@@ -38,5 +36,4 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           teardown: true
           build: echo 'Deployed to surge'
-          dist: './build'
-          
+          dist: './web/build'
