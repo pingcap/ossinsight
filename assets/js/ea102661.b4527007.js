@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkweb=self.webpackChunkweb||[]).push([[4577],{19993:(e,t,a)=>{a.r(t),a.d(t,{default:()=>l});var n=a(67294),u=a(16550);function l(){return n.createElement(u.l_,{to:"/analyze"})}}}]);
