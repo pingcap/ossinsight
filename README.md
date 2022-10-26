@@ -1,7 +1,7 @@
 <h1 align="center">Open Source Software Insight!</h1>
 
 <a href="https://ossinsight.io">
-  <img src="/static/img/screenshots/homepage-2.gif"
+  <img src="/web/static/img/screenshots/homepage-2.gif"
 </a>
 
 <h3 align="center">
@@ -125,6 +125,6 @@ Examples:
 
 <div align="center">
   <a href="https://en.pingcap.com/tidb-cloud/?utm_source=ossinsight&utm_medium=referral">
-    <img src="/static/img/tidb-cloud-logo-w.png" height=50 />
+    <img src="/web/static/img/tidb-cloud-logo-w.png" height=50 />
   </a>
 </div>
