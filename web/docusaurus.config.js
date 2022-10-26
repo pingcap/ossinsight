@@ -44,6 +44,10 @@ const config = {
     locales: ['en'],
   },
 
+  stylesheets: [
+    'https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap'
+  ],
+
   clientModules: [
     path.resolve(__dirname, './src/client/linkedin.js'),
     path.resolve(__dirname, './src/client/sentry.ts'),
