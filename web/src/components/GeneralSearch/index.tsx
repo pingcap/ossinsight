@@ -253,6 +253,7 @@ const GeneralSearch = ({ contrast, align = 'left', size, global = false }: Gener
       inputValue={keyword}
       onInputChange={handleInputChange}
       onHighlightChange={handleHighlightChange}
+      forcePopupIcon={false}
       sx={useMemo(() => ({
         maxWidth: size === 'large' ? 540 : 300,
         flex: 1,
