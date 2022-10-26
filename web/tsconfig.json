@@ -1,0 +1,21 @@
+{
+  // This file is not used in compilation. It is here just for a nice editor experience.
+  "extends": "@tsconfig/docusaurus/tsconfig.json",
+  "compilerOptions": {
+    "target": "esnext",
+    "moduleResolution": "node",
+    "lib": ["dom","esnext"],
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "types": [
+      "@docusaurus/plugin-google-gtag/src/types.d.ts",
+      "./types/ossinsight",
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "@query/*": ["../api/queries/*"],
+      "@site/*": ["./*"],
+      "@docusaurus/theme-common/*": ["./node_modules/@docusaurus/theme-common/lib/*"]
+    }
+  }
+}
