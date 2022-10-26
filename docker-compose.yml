@@ -51,7 +51,7 @@ services:
     image: hooopo/ossinsight-fe:latest
     restart: always
     build:
-      context: .
+      context: ./web
       dockerfile: ./Dockerfile
       args:
         NODE_ENV: 'development'
@@ -62,10 +62,10 @@ services:
       - APP_HOST=http://localhost:3450
       - APP_API_BASE=http://localhost:3450
     volumes:
-      - ./:/app:delegated
-      - node_modules:/app/node_modules
-      - prefetch:/app/.prefetch
-      - docusaurus:/app/.docusaurus
+      - web/:/app:delegated
+      - web/node_modules:/app/node_modules
+      - web/prefetch:/app/.prefetch
+      - web/docusaurus:/app/.docusaurus
 
 networks:
   default:
