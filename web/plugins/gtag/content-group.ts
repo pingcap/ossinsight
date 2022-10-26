@@ -1,24 +1,29 @@
-module.exports.getContentGroup = function getContentGroup ({ pathname, search }) {
+type GetContentGroupOptions = {
+  pathname: string
+  search: string
+}
+
+export function getContentGroup({ pathname, search }: GetContentGroupOptions): string {
   // collections
   if (/\/collections\//.test(pathname)) {
     if (/\/trends/.test(pathname)) {
-      return 'collections trends'
+      return 'collections trends';
     } else {
-      return 'collections monthly'
+      return 'collections monthly';
     }
   } else if (/\/analyze\//.test(pathname)) {
     if (/\/analyze\/[^/]+\/[^/]+/.test(pathname)) {
       if (/vs=/.test(search)) {
-        return 'compare'
+        return 'compare';
       } else {
-        return 'analyze'
+        return 'analyze';
       }
     } else if (/\/analyze\/[^/]+/.test(pathname)) {
-      return 'analyze-user'
+      return 'analyze-user';
     }
   } else if (/\/blog\//.test(pathname)) {
-    return 'blog'
+    return 'blog';
   } else if (/\/workshop\//.test(pathname)) {
-    return 'workshop'
+    return 'workshop';
   }
 }

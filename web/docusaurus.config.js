@@ -73,6 +73,13 @@ const config = {
       },
     ],
     [
+      path.resolve(__dirname, 'plugins/gtag'),
+      {
+        trackingID: 'GTM-WBZS43V',
+        anonymizeIP: true,
+      }
+    ],
+    [
       path.resolve(__dirname, 'plugins/dynamic-route'),
       {
         routes: [

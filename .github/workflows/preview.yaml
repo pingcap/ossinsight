@@ -27,7 +27,7 @@ jobs:
       - name: Prefetch
         run: npm run prefetch
       - name: Build 🏗️
-        run: npm run build
+        run: OSSINSIGHT_PREVIEW=true npm run build
       - name: Deploy to ossinsight.surge.sh 🚀
         uses: afc163/surge-preview@v1
         id: preview_step
