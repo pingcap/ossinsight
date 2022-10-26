@@ -8,17 +8,19 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16.x]
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./web
 
     steps:
       - uses: actions/checkout@v2.4.0
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v2.5.1
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 18
           cache: 'npm'
+          cache-dependency-path: web/package-lock.json
       - name: Install
         run: npm ci
       - name: Prefetch
@@ -32,4 +34,4 @@ jobs:
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BRANCH: gh-pages # The branch the action should deploy to.
-          FOLDER: build # The folder the action should deploy.
+          FOLDER: web/build # The folder the action should deploy.

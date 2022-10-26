@@ -28,7 +28,7 @@ jobs:
         name: Build and Push FE to dockerhub
         uses: docker/build-push-action@v3
         with:
-          context: .
+          context: ./web
           push: true
           tags: hooopo/ossinsight-fe:latest
       - 
