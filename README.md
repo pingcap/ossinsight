@@ -119,7 +119,7 @@ Examples:
 
 ## Development
 
-* [Step by Step](https://ossinsight.io/workshop/mini-ossinsight/step-by-step/find-data-source)
+* [Step by Step](https://ossinsight.io/docs/workshop/mini-ossinsight/step-by-step/find-data-source)
 
 ## Sponsors
 
