@@ -1,0 +1,14 @@
+id: 10064
+name: Javascript Build Tool
+items:
+  - evanw/esbuild
+  - webpack/webpack
+  - vitejs/vite
+  - parcel-bundler/parcel
+  - nrwl/nx
+  - vercel/turbo
+  - FredKSchott/snowpack
+  - jaredpalmer/tsdx
+  - rollup/rollup
+  - developit/microbundle
+  - preactjs/wmr
