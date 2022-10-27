@@ -306,7 +306,7 @@ SELECT
 FROM
   github_events
 WHERE
-  repo_id = {{{repoId}}
+  repo_id = {{repoId}}
 LIMIT
   1;
 */
