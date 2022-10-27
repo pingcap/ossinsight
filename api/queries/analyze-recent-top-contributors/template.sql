@@ -47,7 +47,7 @@ WITH prs AS (
         AND actor_login NOT LIKE '%bot' AND actor_login NOT LIKE '%[bot]' AND actor_login NOT IN (SELECT login FROM blacklist_users bu)
     GROUP BY actor_login
 )
-SELECT actor_login, actor_login, events
+SELECT actor_login, events
 FROM (
     SELECT * FROM prs
     UNION
