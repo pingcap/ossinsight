@@ -1,0 +1,31 @@
+.blue {
+  color: #90BDFF;
+}
+
+.orange {
+  color: #EA7E53;
+}
+
+.green {
+  color: #91CA8C;
+}
+
+.orangeBox {
+  background-color: #EA7E53;
+  color: #982300;
+}
+
+.purpleBox {
+  background-color: #B78DC1;
+  color: #70008B;
+}
+
+.greenBox {
+  background-color: #91CA8C;
+  color: #086000;
+}
+
+.blueBox {
+  background-color: #90BDFF;
+  color: #0048B1;
+}

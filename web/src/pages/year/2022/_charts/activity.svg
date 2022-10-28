@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="656" height="500" viewBox="0 0 656 500">
+  <g id="组_118" data-name="组 118" transform="translate(-1069.257 -5764.03)">
+    <g id="组_16" data-name="组 16" transform="translate(-26.743 1783.03)">
+      <path id="矩形_7" data-name="矩形 7" d="M6,0H655a0,0,0,0,1,0,0V60a0,0,0,0,1,0,0H6a6,6,0,0,1-6-6V6A6,6,0,0,1,6,0Z" transform="translate(1096 3981)" fill="#958dc1"/>
+      <path id="矩形_8" data-name="矩形 8" d="M6,0H586a0,0,0,0,1,0,0V60a0,0,0,0,1,0,0H6a6,6,0,0,1-6-6V6A6,6,0,0,1,6,0Z" transform="translate(1165 4073)" fill="#7289ab"/>
+      <path id="矩形_9" data-name="矩形 9" d="M6,0H549a0,0,0,0,1,0,0V60a0,0,0,0,1,0,0H6a6,6,0,0,1-6-6V6A6,6,0,0,1,6,0Z" transform="translate(1202 4165)" fill="#73a373"/>
+      <path id="矩形_10" data-name="矩形 10" d="M6,0H275a0,0,0,0,1,0,0V60a0,0,0,0,1,0,0H6a6,6,0,0,1-6-6V6A6,6,0,0,1,6,0Z" transform="translate(1476 4257)" fill="#dd6b66"/>
+      <path id="矩形_11" data-name="矩形 11" d="M6,0H250a0,0,0,0,1,0,0V60a0,0,0,0,1,0,0H6a6,6,0,0,1-6-6V6A6,6,0,0,1,6,0Z" transform="translate(1501 4349)" fill="#74999f"/>
+      <text id="Low_Code:_75.58_" data-name="Low Code: 75.58%" transform="translate(1489 3996.813)" fill="#e0e0e0" font-size="24" font-family="JetBrainsMono-Bold, JetBrains Mono" font-weight="700"><tspan x="7.6" y="24">Low Code: 75.58%</tspan></text>
+      <text id="Web_3:_62.68_" data-name="Web 3: 62.68%" transform="translate(1470 4088.813)" fill="#e0e0e0" font-size="24" font-family="JetBrainsMono-Bold, JetBrains Mono" font-weight="700"><tspan x="69.8" y="24">Web 3: 62.68%</tspan></text>
+      <text id="Actions:_58.48_" data-name="Actions: 58.48%" transform="translate(1489 4180.959)" fill="#e0e0e0" font-size="24" font-family="JetBrainsMono-Bold, JetBrains Mono" font-weight="700"><tspan x="22" y="24">Actions: 58.48%</tspan></text>
+      <text id="Database:_30.82_" data-name="Database: 30.82%" transform="translate(1489 4272.813)" fill="#e0e0e0" font-size="24" font-family="JetBrainsMono-Bold, JetBrains Mono" font-weight="700"><tspan x="7.6" y="24">Database: 30.82%</tspan></text>
+      <text id="AI:_28.55_" data-name="AI: 28.55%" transform="translate(1542 4364.813)" fill="#e0e0e0" font-size="24" font-family="JetBrainsMono-Bold, JetBrains Mono" font-weight="700"><tspan x="41" y="24">AI: 28.55%</tspan></text>
+    </g>
+    <text id="_Time_range:_2022.01.01-2022.09.01_exclude_bots" data-name="* Time range: 2022.01.01-2022.09.01, exclude bots" transform="translate(1254.257 6259.03)" fill="#7c7c7c" font-size="16" font-family="JetBrainsMono-Regular, JetBrains Mono"><tspan x="0" y="0">* Time range: 2022.01.01-2022.09.01, exclude bots</tspan></text>
+  </g>
+</svg>
