@@ -2,7 +2,6 @@ import Section, { SubSection } from "@site/src/pages/year/2022/_components/Secti
 import React from "react";
 import Split from "@site/src/pages/year/2022/_components/Split";
 import Insights from "@site/src/pages/year/2022/_components/Insights";
-import Box from "@mui/material/Box";
 import _LanguagesChart from '../_charts/languages.svg';
 import _BackendLanguagesChart from '../_charts/backend-languages.svg';
 import { styled } from "@mui/material/styles";

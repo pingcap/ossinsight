@@ -3,6 +3,7 @@ import Section, { SubSection } from "../_components/Section";
 import { H2, H3, P2 } from "../_components/typograph";
 import { styled } from "@mui/material/styles";
 import _ActivitiesChart from "../_charts/activity.svg";
+import { BarChart, LineChart } from '../_components/charts';
 import Split from "../_components/Split";
 import { BR, ResponsiveAligned, ResponsiveAlignedRight, ResponsiveColumnFlex, Spacer } from "../_components/styled";
 import Insights, { InsightsProps } from "../_components/Insights";
@@ -25,13 +26,14 @@ export default function () {
             </Insights>
           </ResponsiveColumnFlex>
           <ResponsiveAlignedRight>
-            <ActivitiesChart width={undefined} height={undefined} />
+            <ActivitiesChart />
           </ResponsiveAlignedRight>
         </Split>
       </SubSection>
-      <SubSection>
-        <H3>{detailsTitle}</H3>
-        <P2 mt={3}>{detailsDescription}</P2>
+      <SubSection
+        title={detailsTitle}
+        description={detailsDescription}
+      >
         {detailedCharts.map(({ Chart, insights }, i) => (
           <Split key={i} mt={12} reversed={i % 2 === 0} spacing={4}>
             <ResponsiveColumnFlex justifyContent='center'>
@@ -53,9 +55,20 @@ const description = 'Each year, technology introduces new buzz words. Can we gai
 const activityTitle = 'Activity levels of popular topics';
 const activityDescription = 'We queried the number of open source repositories associated with each technical area, as well as the percentage of active repositories in 2022. Forking repositories are not included. “Active in 2022” means that collaborative events initiated by non-bots occurred in 2022. Collaborative events include CommitCommentEvent, IssueCommentEvent, IssuesEvent, PullRequestEvent, PullRequestReviewCommentEvent, PullRequestReviewEvent, PushEvent, and ReleaseEvent.';
 const activityInsights = 'This figure shows that open source repositories in the Low Code topic are the most active, with 76.3% being active in 2022, followed by Web3 with 63.85%.';
-const ActivitiesChart = styled(_ActivitiesChart)({
-  maxWidth: 656,
-});
+const ActivitiesChart = (() => {
+  return (
+    <BarChart
+      data={require('../_charts/activity.json')}
+      fallbackImage={require('../_charts/activity.svg')}
+      footnote='* Time range: 2022.01.01-2022.09.01, exclude bots'
+      sx={{
+        height: 428,
+        maxHeight: 428,
+        maxWidth: 656,
+      }}
+    />
+  )
+})
 
 const detailsTitle = 'Details in Popular topics';
 const detailsDescription = (
@@ -80,7 +93,20 @@ const detailedCharts: {
   insights: InsightsProps['children']
 }[] = [
   {
-    Chart: makeChartSvg(require('../_charts/low-code.svg').default),
+    Chart: () => {
+      return (
+        <LineChart
+          name='Low Code'
+          data={require('../_charts/low-code.json')}
+          fallbackImage={require('../_charts/low-code.svg').default}
+          sx={{
+            maxWidth: 686,
+            height: 607,
+            maxHeight: 607,
+          }}
+        />
+      )
+    },
     insights: (
       <>
         Projects in the Low Code field are mostly open source, and it can be seen that 2021 is the peak period of
@@ -94,7 +120,20 @@ const detailedCharts: {
     ),
   },
   {
-    Chart: makeChartSvg(require('../_charts/web3.svg').default),
+    Chart: () => {
+      return (
+        <LineChart
+          name='Web 3'
+          data={require('../_charts/web3.json')}
+          fallbackImage={require('../_charts/web3.svg').default}
+          sx={{
+            maxWidth: 686,
+            height: 607,
+            maxHeight: 607,
+          }}
+        />
+      )
+    },
     insights: (
       <>
         Most of the core technical of the Web3 field is currently not open source, and open source is mostly some
@@ -106,7 +145,20 @@ const detailedCharts: {
     ),
   },
   {
-    Chart: makeChartSvg(require('../_charts/actions.svg').default),
+    Chart: () => {
+      return (
+        <LineChart
+          name='Actions'
+          data={require('../_charts/actions.json')}
+          fallbackImage={require('../_charts/actions.svg').default}
+          sx={{
+            maxWidth: 686,
+            height: 607,
+            maxHeight: 607,
+          }}
+        />
+      )
+    },
     insights: (
       <>
         The annual increase in repositories in Actions has been declining, but developer engagement and industry
@@ -115,7 +167,20 @@ const detailedCharts: {
     ),
   },
   {
-    Chart: makeChartSvg(require('../_charts/database.svg').default),
+    Chart: () => {
+      return (
+        <LineChart
+          name='Database'
+          data={require('../_charts/database.json')}
+          fallbackImage={require('../_charts/database.svg').default}
+          sx={{
+            maxWidth: 686,
+            height: 607,
+            maxHeight: 607,
+          }}
+        />
+      )
+    },
     insights: (
       <>
         Open source projects in the database field account for the majority. As an open source project in the direction
@@ -125,7 +190,20 @@ const detailedCharts: {
     ),
   },
   {
-    Chart: makeChartSvg(require('../_charts/ai.svg').default),
+    Chart: () => {
+      return (
+        <LineChart
+          name='AI'
+          data={require('../_charts/ai.json')}
+          fallbackImage={require('../_charts/ai.svg').default}
+          sx={{
+            maxWidth: 686,
+            height: 607,
+            maxHeight: 607,
+          }}
+        />
+      )
+    },
     insights: (
       <>
         Open source projects in AI field have been gradually slowing down after 2 years of high growth in 2020-2021.

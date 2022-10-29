@@ -26,7 +26,7 @@ export default function Insights({
           <Logo width={40} src="/img/favicon-1.png" alt="logo" />
         </H4>
       )}
-      <Body as="p">
+      <Body as="div">
         {children}
       </Body>
     </Box>

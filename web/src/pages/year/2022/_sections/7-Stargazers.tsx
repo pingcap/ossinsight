@@ -1,17 +1,17 @@
 import React from "react";
 import Section from "../_components/Section";
-import { H2, P2 } from "../_components/typograph";
 import { styled } from "@mui/material/styles";
 import { LI, ResponsiveAlignedRight, UL } from "../_components/styled";
-import _StargazersChart from '../_charts/stargazers.svg';
-import Box from "@mui/material/Box";
+import { BarChart } from "@site/src/pages/year/2022/_components/charts";
 
 
 export default function () {
   return (
-    <Section>
-      <H2>{title}</H2>
-      <P2 mt={3} maxWidth={939}>{description}</P2>
+    <Section
+      title={title}
+      description={description}
+      descriptionProps={{ maxWidth: 939 }}
+    >
       <ResponsiveAlignedRight sx={{ position: 'relative', mt: 8 }}>
         <Users
           sx={theme => ({
@@ -20,12 +20,12 @@ export default function () {
               left: 0,
               top: 0,
               maxWidth: 800,
-            }
+            },
           })}
         >
           {users.map(user => <User key={user.login} {...user} />)}
         </Users>
-        <StargazersChart width={undefined} height={undefined} />
+        <StargazersChart />
       </ResponsiveAlignedRight>
     </Section>
   );
@@ -100,5 +100,15 @@ const Extra = styled('div')({
   fontSize: 20,
 });
 
-const StargazersChart = styled(_StargazersChart)({
-})
+const StargazersChart = () => {
+  return (
+    <BarChart
+      data={require('../_charts/stargazers.json')}
+      fallbackImage={require('../_charts/stargazers.svg')}
+      sx={{
+        height: 696,
+        maxHeight: 696,
+      }}
+    />
+  );
+};

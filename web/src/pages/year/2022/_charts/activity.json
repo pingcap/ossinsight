@@ -1,0 +1,27 @@
+{
+  "unit": "%",
+  "x": "value",
+  "y": "name",
+  "data": [
+    {
+      "name": "Low Code",
+      "value": 75.58
+    },
+    {
+      "name": "Web 3",
+      "value": 62.68
+    },
+    {
+      "name": "Actions",
+      "value": 58.48
+    },
+    {
+      "name": "Database",
+      "value": 30.82
+    },
+    {
+      "name": "AI",
+      "value": 28.55
+    }
+  ]
+}

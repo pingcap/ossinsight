@@ -12,6 +12,8 @@ const sections = [
   require('./_sections/5-PopularRepos'),
   require('./_sections/6-ActiveRepos'),
   require('./_sections/7-Stargazers'),
+  require('./_sections/8-MostActiveDevelopers'),
+  require('./_sections/9-WeekdayWeekend'),
 ];
 
 export default function Page() {

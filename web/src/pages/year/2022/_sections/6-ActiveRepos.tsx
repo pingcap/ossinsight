@@ -10,9 +10,10 @@ import _MSIcon from '../_icons/ms.svg';
 
 export default function () {
   return (
-    <Section>
-      <H2>{title}</H2>
-      <P2 mt={3}>{description}</P2>
+    <Section
+      title={title}
+      description={description}
+    >
       <Split mt={6}>
         <RepoRanks list={list} />
         <ResponsiveColumnFlex height='100%'>
@@ -139,7 +140,7 @@ const insights = [
     <BR />
     <UL>
       {list2022.map(item => (
-        <LI>
+        <LI key={item}>
           {ghLink(item)}
         </LI>
       ))}
@@ -162,7 +163,7 @@ const RepoRanks = ({ list }: { list: Rank[] }) => {
       </thead>
       <tbody>
       {list.map((rank, i) => (
-        <tr className={rank.count > 3 ? colors.orange : colors.green}>
+        <tr key={i} className={rank.count > 3 ? colors.orange : colors.green}>
           <td>
             {ghLink(rank.repo, false)}
             {rank.icon}

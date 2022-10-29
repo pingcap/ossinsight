@@ -6,10 +6,22 @@ import Repos, { ReposProps } from "../_components/Repos";
 
 export default function () {
   return (
-    <Section>
-      <H2>{title}</H2>
-      <P2 mt={3}>{description}</P2>
-      <Grid container spacing={2} height={700} mt={6} direction="row">
+    <Section
+      title={title}
+      description={description}
+    >
+      <Grid
+        container
+        spacing={2}
+        height={700}
+        mt={6}
+        direction="row"
+        sx={(theme) => ({
+          [theme.breakpoints.up('md')]: {
+            height: 700,
+          }
+        })}
+      >
         <Grid container item sm={12} md={groupSpan(0, 1)} spacing={2} height="100%" direction="column" wrap="nowrap">
           <Grid item xs={span(0, 1)}>
             <Repos {...repos[0]} />
