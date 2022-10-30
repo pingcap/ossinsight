@@ -61,8 +61,11 @@ export default function RankChart({ data, ...props }: RankChartProps) {
             hoverBorderWidth: 5,
             pointBackgroundColor: defaultColors[i % defaultColors.length],
             pointBorderColor: defaultColors[i % defaultColors.length] + '80',
+            pointHoverBorderColor: defaultColors[i % defaultColors.length] + '80',
             pointRadius: 8,
-            hoverPointRadius: 8,
+            pointHoverRadius: 8,
+            pointBorderWidth: 4,
+            pointHoverBorderWidth: 4,
             datalabels: {
               labels: {
                 index: {
