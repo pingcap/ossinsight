@@ -108,16 +108,16 @@ const list: Rank[] = [
 
 
 const list2022: string[] = [
-  'NixOS/nixpkgs',
   'archway-network/testnets',
-  'education/GitHubGraduation-2022',
   'element-fi/elf-council-frontend',
-  'rust-lang/rust',
   'solana-labs/token-list',
+  'education/GitHubGraduation-2022',
   'taozhiyu/TyProAction',
+  'NixOS/nixpkgs',
+  'rust-lang/rust',
 ];
 const ghLink = (item, bold = true) => {
-  const link = <A href={`https://github.com/${item}`} target="_blank" rel="noopener">{item}</A>;
+  const link = <A href={`https://ossinsight.io/analyze/${item}`} target="_blank" rel="noopener">{item}</A>;
   if (bold) {
     return <strong>{link}</strong>;
   } else {
