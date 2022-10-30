@@ -1,6 +1,6 @@
 import React from 'react'
 import Section from '../_components/Section'
-import MostActiveDevelopersChart from "@site/src/pages/year/2022/_components/charts/MostActiveDevelopersChart";
+import { MostActiveDevelopersChart } from "../_components/charts";
 import Stack from "@mui/material/Stack";
 import Insights from '../_components/Insights'
 

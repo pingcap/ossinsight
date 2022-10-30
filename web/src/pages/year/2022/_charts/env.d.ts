@@ -14,9 +14,13 @@ export type LineData<T> = {
   data: T[]
 }
 
+export type WeekdayDistributionData = {
+  unit: string;
+  data: [string, number, number, number, number, number, number, number][]
+}
 
 declare module "./*.json" {
-  type Data = BarData<any> | LineData<any>
+  type Data = BarData<any> | LineData<any> | WeekdayDistributionData
 
   export default Data;
 }

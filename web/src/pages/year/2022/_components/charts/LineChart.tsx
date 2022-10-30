@@ -143,7 +143,7 @@ export default function LineChart<T extends Record<string, any>>({
             usePointStyle: true,
             callbacks: {
               label: item => {
-                return `${item.dataset.label}: ${item.dataset.data[item.dataIndex]}%`
+                return `${item.dataset.label}: ${item.dataset.data[item.dataIndex]}${data.unit}`
               }
             }
           },

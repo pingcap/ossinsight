@@ -55,6 +55,19 @@ const PieOutLabelPlugin: Plugin = {
     chart.options.plugins.legend.display = false;
     chart.options.plugins.tooltip.enabled = false;
   },
+  beforeDraw(chart: Chart): boolean | void {
+    chart.data.datasets
+      .forEach((dataset, i) => {
+        if (isPieLike(chart, dataset)) {
+          // Start here
+          const meta: ChartMeta<ArcElement<ArcProps, any>> = chart.getDatasetMeta(i) as any;
+          const max = Math.max(...dataset.data as number[])
+          meta.data.forEach((datapoint, i) => {
+            (datapoint as unknown as ArcProps).outerRadius = Math.pow(dataset.data[i] as number / max, 0.2) * (meta.controller as PieController).outerRadius
+          })
+        }
+      });
+  },
   afterDatasetDraw(chart: Chart) {
     const options = chart.options.plugins.outlabel;
 
@@ -63,6 +76,7 @@ const PieOutLabelPlugin: Plugin = {
         if (isPieLike(chart, dataset)) {
           // Start here
           const meta: ChartMeta<ArcElement<ArcProps, any>> = chart.getDatasetMeta(i) as any;
+          const maxOuterRadius = (meta.controller as PieController).outerRadius
           meta.data.forEach((datapoint, i) => {
             const {
               x,
@@ -80,7 +94,7 @@ const PieOutLabelPlugin: Plugin = {
 
             // Compute three path points
             let p0 = moveX(point, arcPosition.left, 20);
-            let p1 = moveX(p0, arcPosition.left, 120);
+            let p1 = moveX(p0, arcPosition.left, 120 + Math.abs(Math.cos(angle)) * (maxOuterRadius - outerRadius));
             let p2 = moveY(p1, arcPosition.top, 25);
 
             ctx.beginPath();
