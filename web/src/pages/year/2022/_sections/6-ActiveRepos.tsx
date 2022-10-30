@@ -40,6 +40,11 @@ const title = 'The Most Active Repos over the 4 years';
 const description = 'Here we look up the top 20 active projects per year from 2019 to 2022 and count the total number of listing in the ranking.';
 const list: Rank[] = [
   {
+    repo: 'microsoft/vscode',
+    count: 4,
+    icon: <MSIcon />,
+  },
+  {
     repo: 'flutter/flutter',
     count: 4,
   },
@@ -62,11 +67,6 @@ const list: Rank[] = [
   },
   {
     repo: 'microsoft/TypeScript',
-    count: 4,
-    icon: <MSIcon />,
-  },
-  {
-    repo: 'microsoft/vscode',
     count: 4,
     icon: <MSIcon />,
   },
