@@ -4,12 +4,13 @@
   "compilerOptions": {
     "target": "esnext",
     "moduleResolution": "node",
+    "module": "esnext",
     "lib": ["dom","esnext"],
     "resolveJsonModule": true,
     "isolatedModules": true,
     "types": [
       "@docusaurus/plugin-google-gtag/src/types.d.ts",
-      "./types/ossinsight",
+      "./types/ossinsight"
     ],
     "baseUrl": ".",
     "paths": {

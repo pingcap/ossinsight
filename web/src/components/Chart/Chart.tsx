@@ -9,6 +9,7 @@ import { applyForwardedRef } from "../../utils/ref";
 import { unstable_serialize } from "swr";
 import { styled, Theme } from "@mui/material/styles";
 import { SxProps } from "@mui/system/styleFunctionSx";
+import './defaults';
 
 export type ChartProps<TType extends ChartType = ChartType, TData = DefaultDataPoint<TType>, TLabel = unknown> = {
   fallbackImage?: string;
