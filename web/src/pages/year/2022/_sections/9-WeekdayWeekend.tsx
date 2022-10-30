@@ -10,7 +10,13 @@ export default function () {
       descriptionProps={{ maxWidth: 1165 }}
     >
       <PieChart
-        sx={{ maxHeight: 400, mt: 6 }}
+        sx={theme => ({
+          [theme.breakpoints.up('md')]: {
+            maxHeight: 400,
+          },
+          height: 500,
+          mt: 6,
+        })}
       />
     </Section>
   );

@@ -51,9 +51,22 @@ const PieOutLabelPlugin: Plugin = {
     chart.options.layout.padding = {
       left: 160,
       right: 160,
+      top: 0,
+      bottom: 0,
     };
     chart.options.plugins.legend.display = false;
     chart.options.plugins.tooltip.enabled = false;
+  },
+  resize(chart: Chart, { size }) {
+    const vertical = size.width < size.height * 1.5
+    if (vertical) {
+      chart.options.layout.padding = {
+        left: 0,
+        right: 0,
+        top: 60,
+        bottom: 60,
+      }
+    }
   },
   beforeDraw(chart: Chart): boolean | void {
     chart.data.datasets
@@ -69,6 +82,7 @@ const PieOutLabelPlugin: Plugin = {
       });
   },
   afterDatasetDraw(chart: Chart) {
+    const vertical = chart.width < chart.height * 1.5
     const options = chart.options.plugins.outlabel;
 
     chart.data.datasets
@@ -94,8 +108,8 @@ const PieOutLabelPlugin: Plugin = {
 
             // Compute three path points
             let p0 = moveX(point, arcPosition.left, 20);
-            let p1 = moveX(p0, arcPosition.left, 120 + Math.abs(Math.cos(angle)) * (maxOuterRadius - outerRadius));
-            let p2 = moveY(p1, arcPosition.top, 25);
+            let p1 = moveX(p0, arcPosition.left, vertical ? 30 : (120 + Math.abs(Math.cos(angle)) * (maxOuterRadius - outerRadius)));
+            let p2 = moveY(p1, arcPosition.top, vertical ? -(40 + Math.abs(Math.sin(angle)) * (maxOuterRadius - outerRadius)) : 25);
 
             ctx.beginPath();
             ctx.lineWidth = options.lineThickness as number;
@@ -106,7 +120,7 @@ const PieOutLabelPlugin: Plugin = {
             ctx.lineTo(p2.x, p2.y);
             ctx.stroke();
 
-            drawText(options, ctx, p2, arcPosition, chart.data.labels[i] as never, `${dataset.data[i]}%`);
+            drawText(options, ctx, p2, arcPosition, vertical, chart.data.labels[i] as never, `${dataset.data[i]}%`);
           });
         }
       });
@@ -157,14 +171,14 @@ function moveY(p: Point, top: boolean, distance: number): Point {
   };
 }
 
-function drawText(options: PieOutLabelOptions, ctx: CanvasRenderingContext2D, p: Point, position: ArcPosition, label: string, value: any) {
+function drawText(options: PieOutLabelOptions, ctx: CanvasRenderingContext2D, p: Point, position: ArcPosition, vertical: boolean, label: string, value: any) {
   // Draw label
-  ctx.textAlign = position.left ? "end" : "start";
+  ctx.textAlign = position.left !== vertical ? "end" : "start";
   ctx.textBaseline = position.top ? "hanging" : "alphabetic";
   ctx.font = fontString(options.label.font.size, options.label.font.weight, options.label.font.family);
   ctx.fillStyle = options.label.color;
-  let x = p.x + (position.left ? 20 : -20);
-  let y = p.y + (position.top ? 4 : -4);
+  let x = p.x + (position.left ? 20 : -20) + 40 * (vertical ? position.top ? -1 : 1 : 0);
+  let y = p.y + (position.top ? 4 : -4) + 65 * (vertical ? position.top ? -1 : 1 : 0);
   ctx.fillText(label, x, y);
 
   // Dray value
