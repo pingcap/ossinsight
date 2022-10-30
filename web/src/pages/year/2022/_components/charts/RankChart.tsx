@@ -38,7 +38,6 @@ function compact(data: RankData): (rank: number) => [index: number, offset: numb
   }
 
   return rank => {
-    console.log('get', cache[rank]);
     return cache[rank];
   };
 }
