@@ -3,6 +3,7 @@ import Chart, { ChartProps } from "@site/src/components/Chart";
 import { getDaysOfWeek } from "@site/src/utils/intl";
 import { defaultColors } from "./colors";
 import { useThemeMediaQuery } from "@site/src/hooks/theme";
+import useIsLarge from "@site/src/pages/year/2022/_components/hooks/useIsLarge";
 
 interface WeekdayDistributionDataProps extends Pick<ChartProps, 'sx'>{
   data: import('../../_charts/env').WeekdayDistributionData;
@@ -11,12 +12,12 @@ interface WeekdayDistributionDataProps extends Pick<ChartProps, 'sx'>{
 const DAYS = getDaysOfWeek('en-US', 'long');
 
 export default function WeekdayDistributionData({ data, sx }: WeekdayDistributionDataProps) {
-  const large = useThemeMediaQuery(theme => theme.breakpoints.up('md'));
+  const large = useIsLarge();
 
   return (
     <Chart<'bar'>
       type="bar"
-      aspect={large ? 1316 / 766 : 658 / 766}
+      aspect={large ? 16 / 9 : 3 / 4}
       sx={sx}
       data={{
         labels: data.data.map(item => item[0]),
@@ -39,7 +40,7 @@ export default function WeekdayDistributionData({ data, sx }: WeekdayDistributio
             ticks: {
               color: '#E0E0E0',
               font: {
-                size: 22,
+                size: 16,
               },
               callback: value => `${value}${data.unit}`,
             },
@@ -52,7 +53,7 @@ export default function WeekdayDistributionData({ data, sx }: WeekdayDistributio
             ticks: {
               color: '#E0E0E0',
               font: {
-                size: 19,
+                size: 16,
               },
             },
           },
@@ -62,7 +63,7 @@ export default function WeekdayDistributionData({ data, sx }: WeekdayDistributio
             labels: {
               color: '#E0E0E0',
               font: {
-                size: 22,
+                size: 16,
                 family: 'JetBrains Mono',
               },
               boxWidth: 18,
@@ -75,12 +76,12 @@ export default function WeekdayDistributionData({ data, sx }: WeekdayDistributio
           tooltip: {
             titleColor: '#BFBFBF',
             titleFont: {
-              size: 20,
+              size: 16,
               family: 'JetBrains Mono',
               weight: 'bold',
             },
             bodyFont: {
-              size: 24,
+              size: 20,
               family: 'JetBrains Mono',
             },
             boxPadding: 8,

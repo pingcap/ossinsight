@@ -17,6 +17,7 @@ export default function () {
         mt={6}
         direction="row"
         sx={(theme) => ({
+          height: 'unset',
           [theme.breakpoints.up('md')]: {
             height: 700,
           }

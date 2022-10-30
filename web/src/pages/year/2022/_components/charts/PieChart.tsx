@@ -7,7 +7,6 @@ export default function PieChart({ sx }: Pick<ChartProps, 'sx'>) {
     <Chart<'pie'>
       sx={sx}
       type="pie"
-      aspect={1}
       data={{
         labels: ['Weekdays', 'Weekends'],
         datasets: [{

@@ -3,6 +3,7 @@ import Section from "../_components/Section";
 import { styled } from "@mui/material/styles";
 import { LI, ResponsiveAlignedRight, UL } from "../_components/styled";
 import { BarChart } from "@site/src/pages/year/2022/_components/charts";
+import useIsLarge from "@site/src/pages/year/2022/_components/hooks/useIsLarge";
 
 
 export default function () {
@@ -101,13 +102,14 @@ const Extra = styled('div')({
 });
 
 const StargazersChart = () => {
+  const large = useIsLarge();
+
   return (
     <BarChart
       data={require('../_charts/stargazers.json')}
-      fallbackImage={require('../_charts/stargazers.svg')}
+      aspect={large ? 16 / 9 : 3 / 4}
       sx={{
-        height: 696,
-        maxHeight: 696,
+        width: '100%',
       }}
     />
   );

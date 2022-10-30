@@ -4,7 +4,7 @@ import { defaultColors } from './colors';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 
-interface BarChartProps<T> extends Pick<ChartProps, 'fallbackImage' | 'name' | 'sx'> {
+interface BarChartProps<T> extends Pick<ChartProps, 'fallbackImage' | 'name' | 'sx' | 'aspect'> {
   data: import("../../_charts/env").BarData<T>;
   footnote?: string;
 }
@@ -50,8 +50,8 @@ export default function BarChart<T extends Record<string, any>>({
             padding: 32,
             font: {
               family: 'JetBrains Mono',
-              size: 16,
-            }
+              size: 13,
+            },
           },
           legend: {
             display: false,
@@ -72,17 +72,17 @@ export default function BarChart<T extends Record<string, any>>({
               family: 'JetBrains Mono',
             },
             formatter: (value, context) => {
-              return `${data[context.dataIndex][y]}: ${value}${unit ? ` ${unit}` : ''}`
+              return `${data[context.dataIndex][y]}: ${value}${unit ?? ''}`;
             },
             anchor: 'end',
             clamp: true,
             textAlign: 'start',
             align: 'start',
-          }
+          },
         },
       }}
       plugins={[
-        ChartDataLabels
+        ChartDataLabels,
       ]}
     />
   );

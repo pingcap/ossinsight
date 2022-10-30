@@ -2,6 +2,9 @@ import Chart, { ChartProps } from "@site/src/components/Chart";
 import React, { useMemo } from "react";
 import { defaultColors } from './colors';
 import { ScriptableContext } from "chart.js";
+import { useThemeMediaQuery } from "@site/src/hooks/theme";
+import useIsLarge from "@site/src/pages/year/2022/_components/hooks/useIsLarge";
+import { useChartFontSizes } from "@site/src/pages/year/2022/_components/charts/theme";
 
 
 interface BarChartProps<T> extends Pick<ChartProps, 'fallbackImage' | 'name' | 'sx'> {
@@ -32,10 +35,12 @@ export default function LineChart<T extends Record<string, any>>({
   ...props
 }: BarChartProps<T>) {
   const [record, labels] = useMemo(() => labeledData(data), [data]);
+  const large = useIsLarge();
 
   return (
     <Chart<"line">
       once
+      aspect={large ? 16 / 9 : 1}
       {...props}
       type="line"
       data={{
@@ -69,6 +74,7 @@ export default function LineChart<T extends Record<string, any>>({
                 size: 19,
                 family: 'JetBrains Mono',
               },
+              padding: 4,
             },
           },
           y: {
@@ -83,7 +89,7 @@ export default function LineChart<T extends Record<string, any>>({
                 family: 'JetBrains Mono',
               },
               callback: value => `${value}${data.unit}`,
-              padding: 32,
+              padding: 4,
             },
           },
         },
@@ -122,7 +128,6 @@ export default function LineChart<T extends Record<string, any>>({
             font: {
               size: 24,
               weight: 'bold',
-              family: 'JetBrains Mono',
             }
           },
           tooltip: {

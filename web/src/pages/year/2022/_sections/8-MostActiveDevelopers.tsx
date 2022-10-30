@@ -17,7 +17,9 @@ export default function () {
         direction={['column', 'column', 'row']}
         justifyContent='space-between'
       >
-        <MostActiveDevelopersChart sx={{ maxWidth: 977 }} />
+        <div style={{ flex: 1 }}>
+          <MostActiveDevelopersChart sx={{ maxWidth: 977 }} />
+        </div>
         <Insights title='95%' sx={{ maxWidth: 458 }}>
           {insight}
         </Insights>

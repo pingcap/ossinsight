@@ -19,6 +19,12 @@ export type WeekdayDistributionData = {
   data: [string, number, number, number, number, number, number, number][]
 }
 
+export type CountryData = {
+  unit: string
+  labels: string[]
+  data: [string, string, ...number[]][]
+}
+
 declare module "./*.json" {
   type Data = BarData<any> | LineData<any> | WeekdayDistributionData
 

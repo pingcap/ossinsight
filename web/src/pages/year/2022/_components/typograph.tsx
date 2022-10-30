@@ -6,7 +6,7 @@ export function H1({
   ...props
 }: Omit<TypographyProps<'h1'>, 'variant' | 'fontSize' | 'color' | 'fontWeight'>) {
   return (
-    <Typography variant="h1" fontFamily='JetBrains Mono' fontSize={64} {...props}>
+    <Typography variant="h1" fontFamily='JetBrains Mono' fontSize='2.4em' {...props}>
       {children}
     </Typography>
   );
@@ -17,7 +17,7 @@ export function H2({
   ...props
 }: Omit<TypographyProps<'h2'>, 'variant' | 'fontSize' | 'color' | 'fontWeight'>) {
   return (
-    <Typography variant="h2" fontFamily='JetBrains Mono' fontSize={48} {...props}>
+    <Typography variant="h2" fontFamily='JetBrains Mono' fontSize='1.6em' {...props}>
       {children}
     </Typography>
   );
@@ -28,7 +28,7 @@ export function H3({
   ...props
 }: Omit<TypographyProps<'h3'>, 'variant' | 'fontSize' | 'color' | 'fontWeight'>) {
   return (
-    <Typography variant="h3" fontFamily='JetBrains Mono' fontSize={32} {...props}>
+    <Typography variant="h3" fontFamily='JetBrains Mono' fontSize='1.4em' {...props}>
       {children}
     </Typography>
   );
@@ -40,7 +40,7 @@ export function H4({
   ...props
 }: Omit<TypographyProps<'h4'>, 'variant' | 'fontSize' | 'color' | 'fontWeight'>) {
   return (
-    <Typography variant="h4" fontFamily='JetBrains Mono' fontSize={28} {...props}>
+    <Typography variant="h4" fontFamily='JetBrains Mono' fontSize='1.2em' {...props}>
       {children}
     </Typography>
   );
@@ -51,7 +51,7 @@ export function P1({
   ...props
 }: Omit<TypographyProps<'p'>, 'variant' | 'fontSize' | 'color' | 'fontWeight'>) {
   return (
-    <Typography variant="body1" fontFamily='JetBrains Mono' fontSize={20} color="#E0E0E0" {...props}>
+    <Typography variant="body1" fontFamily='JetBrains Mono' fontSize='0.9em' color="#E0E0E0" {...props}>
       {children}
     </Typography>
   );
@@ -62,7 +62,7 @@ export function P2({
   ...props
 }: Omit<TypographyProps<'p'>, 'variant' | 'fontSize' | 'color' | 'fontWeight'>) {
   return (
-    <Typography variant="body1" fontFamily='JetBrains Mono' fontSize={20} color="#7C7C7C" {...props}>
+    <Typography variant="body1" fontFamily='JetBrains Mono' fontSize='0.9em' color="#7C7C7C" {...props}>
       {children}
     </Typography>
   );

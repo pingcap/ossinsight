@@ -16,7 +16,7 @@ export default function () {
     >
       <Split mt={6}>
         <RepoRanks list={list} />
-        <ResponsiveColumnFlex height='100%'>
+        <ResponsiveColumnFlex>
           {insights.map((insight, i) => (
             insight ? <Insights key={i} hideTitle={i > 0}>{insight}</Insights> : <Spacer key={i} />
           ))}
@@ -186,6 +186,7 @@ const Table = styled('table')({
   display: 'table',
   width: '100%',
   maxWidth: 547,
+  margin: 0,
   'thead, tbody, tr, td, th': {
     border: 'none',
     background: 'none !important',
@@ -194,7 +195,7 @@ const Table = styled('table')({
     width: '100%',
   },
   'td, th': {
-    padding: '16px 0'
+    padding: '8px 0'
   }
 });
 

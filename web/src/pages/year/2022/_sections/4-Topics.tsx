@@ -1,14 +1,16 @@
 import React, { ComponentType, SVGProps } from "react";
 import Section, { SubSection } from "../_components/Section";
 import { H2, H3, P2 } from "../_components/typograph";
-import { styled } from "@mui/material/styles";
-import _ActivitiesChart from "../_charts/activity.svg";
 import { BarChart, LineChart } from '../_components/charts';
 import Split from "../_components/Split";
 import { BR, ResponsiveAligned, ResponsiveAlignedRight, ResponsiveColumnFlex, Spacer } from "../_components/styled";
 import Insights, { InsightsProps } from "../_components/Insights";
+import { useThemeMediaQuery } from "@site/src/hooks/theme";
+import useIsLarge from "@site/src/pages/year/2022/_components/hooks/useIsLarge";
 
 export default function () {
+  const large = useIsLarge();
+
   return (
     <Section>
       <SubSection>
@@ -35,7 +37,7 @@ export default function () {
         description={detailsDescription}
       >
         {detailedCharts.map(({ Chart, insights }, i) => (
-          <Split key={i} mt={12} reversed={i % 2 === 0} spacing={4}>
+          <Split key={i} mt={12} reversed={large && i % 2 === 0} spacing={4}>
             <ResponsiveColumnFlex justifyContent='center'>
               <Insights maxWidth={711}>{insights}</Insights>
             </ResponsiveColumnFlex>
@@ -56,14 +58,14 @@ const activityTitle = 'Activity levels of popular topics';
 const activityDescription = 'We queried the number of open source repositories associated with each technical area, as well as the percentage of active repositories in 2022. Forking repositories are not included. “Active in 2022” means that collaborative events initiated by non-bots occurred in 2022. Collaborative events include CommitCommentEvent, IssueCommentEvent, IssuesEvent, PullRequestEvent, PullRequestReviewCommentEvent, PullRequestReviewEvent, PushEvent, and ReleaseEvent.';
 const activityInsights = 'This figure shows that open source repositories in the Low Code topic are the most active, with 76.3% being active in 2022, followed by Web3 with 63.85%.';
 const ActivitiesChart = (() => {
+  const large = useIsLarge()
+
   return (
     <BarChart
+      aspect={large ? 16 / 9 : 4 / 3}
       data={require('../_charts/activity.json')}
-      fallbackImage={require('../_charts/activity.svg')}
       footnote='* Time range: 2022.01.01-2022.09.01, exclude bots'
       sx={{
-        height: 428,
-        maxHeight: 428,
         maxWidth: 656,
       }}
     />
@@ -82,12 +84,6 @@ const detailsDescription = (
   </>
 );
 
-function makeChartSvg(svg: ComponentType<SVGProps<SVGSVGElement>>) {
-  return styled(svg)({
-    maxWidth: 686,
-  });
-}
-
 const detailedCharts: {
   Chart: ComponentType<SVGProps<SVGSVGElement>>
   insights: InsightsProps['children']
@@ -98,12 +94,7 @@ const detailedCharts: {
         <LineChart
           name='Low Code'
           data={require('../_charts/low-code.json')}
-          fallbackImage={require('../_charts/low-code.svg').default}
-          sx={{
-            maxWidth: 686,
-            height: 607,
-            maxHeight: 607,
-          }}
+          sx={{ maxWidth: 686, }}
         />
       )
     },
@@ -125,12 +116,7 @@ const detailedCharts: {
         <LineChart
           name='Web 3'
           data={require('../_charts/web3.json')}
-          fallbackImage={require('../_charts/web3.svg').default}
-          sx={{
-            maxWidth: 686,
-            height: 607,
-            maxHeight: 607,
-          }}
+          sx={{ maxWidth: 686, }}
         />
       )
     },
@@ -150,12 +136,7 @@ const detailedCharts: {
         <LineChart
           name='Actions'
           data={require('../_charts/actions.json')}
-          fallbackImage={require('../_charts/actions.svg').default}
-          sx={{
-            maxWidth: 686,
-            height: 607,
-            maxHeight: 607,
-          }}
+          sx={{ maxWidth: 686, }}
         />
       )
     },
@@ -172,12 +153,7 @@ const detailedCharts: {
         <LineChart
           name='Database'
           data={require('../_charts/database.json')}
-          fallbackImage={require('../_charts/database.svg').default}
-          sx={{
-            maxWidth: 686,
-            height: 607,
-            maxHeight: 607,
-          }}
+          sx={{ maxWidth: 686, }}
         />
       )
     },
@@ -195,12 +171,7 @@ const detailedCharts: {
         <LineChart
           name='AI'
           data={require('../_charts/ai.json')}
-          fallbackImage={require('../_charts/ai.svg').default}
-          sx={{
-            maxWidth: 686,
-            height: 607,
-            maxHeight: 607,
-          }}
+          sx={{ maxWidth: 686, }}
         />
       )
     },

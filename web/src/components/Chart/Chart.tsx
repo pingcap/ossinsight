@@ -1,4 +1,4 @@
-import React, { ForwardedRef, forwardRef, useEffect, useLayoutEffect, useRef } from "react";
+import React, { ForwardedRef, forwardRef, useEffect, useRef } from "react";
 import ChartJs, {
   ChartConfiguration,
   ChartConfigurationCustomTypesPerDataset,
@@ -29,7 +29,7 @@ const CanvasChart: ChartElement = forwardRef<ChartJs>(function <TType extends Ch
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const chartRef = useRef<ChartJs>();
 
-    useLayoutEffect(() => {
+    useEffect(() => {
       if (canvasRef.current) {
         const chartInstance = chartRef.current = new ChartJs(canvasRef.current, config);
         applyForwardedRef(ref, chartInstance);
@@ -46,19 +46,12 @@ const CanvasChart: ChartElement = forwardRef<ChartJs>(function <TType extends Ch
     useEffect(() => {
       const chartInstance = chartRef.current;
       if (chartInstance) {
-        if (aspect) {
-          chartInstance.options.aspectRatio = aspect;
-          chartInstance.options.maintainAspectRatio = true;
-        } else {
-          chartInstance.options.aspectRatio = undefined;
-          chartInstance.options.maintainAspectRatio = false;
-        }
-        chartInstance.update('resize');
+        applyAspect(chartInstance, aspect);
+        chartInstance.update();
       }
     }, [aspect]);
 
     const dataDep = unstable_serialize(config.data);
-    const optionsDep = unstable_serialize(config.options);
 
     useEffect(() => {
       if (!once && chartRef.current) {
@@ -68,18 +61,32 @@ const CanvasChart: ChartElement = forwardRef<ChartJs>(function <TType extends Ch
     }, [dataDep]);
 
     useEffect(() => {
-      if (!once && chartRef.current) {
+      if (!chartRef.current) {
         chartRef.current.options = config.options;
       }
-    }, [optionsDep]);
+    }, [config.options]);
 
     return (
-      <Canvas ref={canvasRef} sx={sx} />
+      <CanvasContainer sx={sx}>
+        <canvas ref={canvasRef} style={{ maxWidth: '100%', maxHeight: aspect ? undefined : '100%' }} />
+      </CanvasContainer>
     );
   },
 );
 
-const Canvas = styled('canvas')({});
+function applyAspect(chartInstance: ChartJs, aspect: number) {
+  if (aspect) {
+    chartInstance.options.aspectRatio = aspect;
+    chartInstance.options.maintainAspectRatio = true;
+  } else {
+    chartInstance.options.aspectRatio = undefined;
+    chartInstance.options.maintainAspectRatio = false;
+  }
+}
+
+const CanvasContainer = styled('div')({
+  alignSelf: 'stretch',
+});
 
 const FallbackChart: ChartElement = forwardRef<ChartJs>(function FallbackChart({
   fallbackImage,
