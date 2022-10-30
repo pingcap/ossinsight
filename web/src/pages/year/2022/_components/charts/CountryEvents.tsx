@@ -2,6 +2,7 @@ import React from "react";
 import Chart, { ChartProps } from "@site/src/components/Chart";
 import { defaultColors } from "@site/src/pages/year/2022/_components/charts/colors";
 import ChartDataLabels from "chartjs-plugin-datalabels";
+import useIsLarge from "@site/src/pages/year/2022/_components/hooks/useIsLarge";
 
 interface CountryEventsProps extends Pick<ChartProps, 'sx'> {
   data: import('../../_charts/env').CountryData;
@@ -14,10 +15,12 @@ type EventPoint = {
 }
 
 export default function CountryEvents({ data, sx }: CountryEventsProps) {
+  const large = useIsLarge();
   return (
     <Chart<'scatter', EventPoint[]>
       type="scatter"
       sx={sx}
+      aspect={large ? 16 / 9 : 3 / 4}
       data={{
         labels: data.labels,
         datasets: data.data.map(([country, code, ...items], i) => ({
@@ -27,7 +30,6 @@ export default function CountryEvents({ data, sx }: CountryEventsProps) {
             y: i,
             value,
           })),
-          backgroundColor: defaultColors[i % defaultColors.length],
         })),
       }}
       options={{
@@ -37,11 +39,14 @@ export default function CountryEvents({ data, sx }: CountryEventsProps) {
         elements: {
           point: {
             pointStyle: 'rect',
-            radius: 40,
+            radius: ctx => Math.sqrt((ctx.dataset.data[ctx.dataIndex] as EventPoint).value / 100) * 40,
             hoverRadius: 40,
             borderWidth: 4,
-            backgroundColor: ctx => defaultColors[ctx.dataIndex] + '80',
-            // hoverBackgroundColor: ctx => defaultColors[ctx.dataIndex],
+            hoverBorderWidth: 4,
+            borderColor: '#4D4D4D80',
+            backgroundColor: '#4D4D4D',
+            hoverBorderColor: ctx => defaultColors[ctx.datasetIndex % defaultColors.length] + '80',
+            hoverBackgroundColor: ctx => defaultColors[ctx.datasetIndex % defaultColors.length],
           },
         },
         scales: {
@@ -65,7 +70,7 @@ export default function CountryEvents({ data, sx }: CountryEventsProps) {
           y: {
             reverse: true,
             ticks: {
-              callback: value => `${data.data[value][1]}`,
+              callback: value => `${data.data[value]?.[1]}`,
               padding: 16,
               color: '#E0E0E0',
               font: {
@@ -82,6 +87,9 @@ export default function CountryEvents({ data, sx }: CountryEventsProps) {
           legend: {
             display: false,
           },
+          tooltip: {
+            enabled: false,
+          },
           datalabels: {
             color: 'white',
             font: {
@@ -94,6 +102,7 @@ export default function CountryEvents({ data, sx }: CountryEventsProps) {
             },
             align: 'center',
             anchor: 'center',
+            display: ctx => ctx.active,
           }
         },
       }}

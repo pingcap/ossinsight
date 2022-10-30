@@ -32,6 +32,7 @@ const CanvasChart: ChartElement = forwardRef<ChartJs>(function <TType extends Ch
     useEffect(() => {
       if (canvasRef.current) {
         const chartInstance = chartRef.current = new ChartJs(canvasRef.current, config);
+        applyAspect(chartInstance, aspect);
         applyForwardedRef(ref, chartInstance);
       }
       return () => {
@@ -75,6 +76,9 @@ const CanvasChart: ChartElement = forwardRef<ChartJs>(function <TType extends Ch
 );
 
 function applyAspect(chartInstance: ChartJs, aspect: number) {
+  if (!chartInstance.options) {
+    return
+  }
   if (aspect) {
     chartInstance.options.aspectRatio = aspect;
     chartInstance.options.maintainAspectRatio = true;

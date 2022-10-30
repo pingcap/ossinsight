@@ -2,14 +2,13 @@ import Layout from "@theme/Layout";
 import React, { createElement } from "react";
 import Container from "@mui/material/Container";
 import Head from "@docusaurus/Head";
-import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
 
 const sections = [
   require('./_sections/0-Banner'),
   require('./_sections/1-Keynotes'),
   require('./_sections/2-Languages'),
-  // require('./_sections/3-Countries'),
+  require('./_sections/3-Countries'),
   require('./_sections/4-Topics'),
   require('./_sections/5-PopularRepos'),
   require('./_sections/6-ActiveRepos'),
