@@ -64,12 +64,12 @@
         <circle cx="5" cy="5" r="5" stroke="none"/>
         <circle cx="5" cy="5" r="4.5" fill="none"/>
       </g>
-      <text id="New_event" data-name="New event" transform="translate(401.928 5615.021)" fill="#bfbfbf" font-size="16" font-family="JetBrainsMono-Regular, JetBrains Mono"><tspan x="0" y="0">New event</tspan></text>
+      <text id="New_event" data-name="New events" transform="translate(401.928 5615.021)" fill="#bfbfbf" font-size="16" font-family="JetBrainsMono-Regular, JetBrains Mono"><tspan x="0" y="0">New events</tspan></text>
       <g id="椭圆_394" data-name="椭圆 394" transform="translate(691.691 5605.021)" fill="#91ca8c" stroke="#90ca8b" stroke-width="1">
         <circle cx="5" cy="5" r="5" stroke="none"/>
         <circle cx="5" cy="5" r="4.5" fill="none"/>
       </g>
-      <text id="New_star" data-name="New star" transform="translate(709.429 5615.021)" fill="#bfbfbf" font-size="16" font-family="JetBrainsMono-Regular, JetBrains Mono"><tspan x="0" y="0">New star</tspan></text>
+      <text id="New_star" data-name="New stars" transform="translate(709.429 5615.021)" fill="#bfbfbf" font-size="16" font-family="JetBrainsMono-Regular, JetBrains Mono"><tspan x="0" y="0">New stars</tspan></text>
     </g>
   </g>
 </svg>

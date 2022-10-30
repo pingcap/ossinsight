@@ -36,7 +36,7 @@ export default function Repos({ color, category, value, percent, list }: ReposPr
         {list.map(item => (
           <LI key={item}>
             {/^\S+\/\S+$/.test(item)
-              ? (<A href={`https://github.com/${item}`} target="_blank" rel="noopener">{item}</A>) : (item)}
+              ? (<A href={`https://ossinsight.io/analyze/${item}`} target="_blank" rel="noopener">{item}</A>) : (item)}
           </LI>
         ))}
       </UL>

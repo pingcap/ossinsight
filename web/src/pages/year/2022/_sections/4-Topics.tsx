@@ -114,7 +114,7 @@ const detailedCharts: {
     Chart: () => {
       return (
         <LineChart
-          name='Web 3'
+          name='Web3'
           data={require('../_charts/web3.json')}
           sx={{ maxWidth: 686, }}
         />

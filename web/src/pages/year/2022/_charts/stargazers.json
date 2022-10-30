@@ -1,12 +1,7 @@
 {
-  "unit": "%",
   "x": "value",
   "y": "name",
   "data": [
-    {
-      "name": "omasanori",
-      "value": 12473
-    },
     {
       "name": "5l1v3r1",
       "value": 12592
@@ -14,6 +9,10 @@
     {
       "name": "Baby8093girl",
       "value": 12833
+    },
+    {
+      "name": "mvandermeulen",
+      "value": 12991
     },
     {
       "name": "gosoxharp",

@@ -10,7 +10,7 @@ export default function PieChart({ sx }: Pick<ChartProps, 'sx'>) {
       data={{
         labels: ['Weekdays', 'Weekends'],
         datasets: [{
-          data: [77.5, 22.5],
+          data: [77.73, 22.27],
           backgroundColor: ['#DD6B66', '#7289AB'],
         }],
       }}

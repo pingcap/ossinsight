@@ -67,22 +67,22 @@
     </g>
     <g id="组_92" data-name="组 92" transform="translate(-17.362 3425.293)">
       <circle id="椭圆_397" data-name="椭圆 397" cx="5" cy="5" r="5" transform="translate(258.809 5604.021)" fill="#90bdff"/>
-      <text id="New_repo" data-name="New repo" transform="translate(276.547 5614.521)" fill="#bfbfbf" font-size="16" font-family="JetBrainsMono-Regular, JetBrains Mono"><tspan x="0" y="0">New repo</tspan></text>
+      <text id="New_repos" data-name="New repos" transform="translate(276.547 5614.521)" fill="#bfbfbf" font-size="16" font-family="JetBrainsMono-Regular, JetBrains Mono"><tspan x="0" y="0">New repos</tspan></text>
       <g id="椭圆_395" data-name="椭圆 395" transform="translate(518.31 5604.521)" fill="#b78dc1" stroke="#b78dc1" stroke-width="1">
         <circle cx="5" cy="5" r="5" stroke="none"/>
         <circle cx="5" cy="5" r="4.5" fill="none"/>
       </g>
-      <text id="New_developer" data-name="New developer" transform="translate(536.31 5615.021)" fill="#bfbfbf" font-size="16" font-family="JetBrainsMono-Regular, JetBrains Mono"><tspan x="0" y="0">New developer</tspan></text>
+      <text id="New_developers" data-name="New developers" transform="translate(536.31 5615.021)" fill="#bfbfbf" font-size="16" font-family="JetBrainsMono-Regular, JetBrains Mono"><tspan x="0" y="0">New developers</tspan></text>
       <g id="椭圆_396" data-name="椭圆 396" transform="translate(383.928 5604.021)" fill="#ea7e53" stroke="#ea7e53" stroke-width="1">
         <circle cx="5" cy="5" r="5" stroke="none"/>
         <circle cx="5" cy="5" r="4.5" fill="none"/>
       </g>
-      <text id="New_event" data-name="New event" transform="translate(401.928 5615.021)" fill="#bfbfbf" font-size="16" font-family="JetBrainsMono-Regular, JetBrains Mono"><tspan x="0" y="0">New event</tspan></text>
+      <text id="New_events" data-name="New events" transform="translate(401.928 5615.021)" fill="#bfbfbf" font-size="16" font-family="JetBrainsMono-Regular, JetBrains Mono"><tspan x="0" y="0">New events</tspan></text>
       <g id="椭圆_394" data-name="椭圆 394" transform="translate(691.691 5605.021)" fill="#91ca8c" stroke="#90ca8b" stroke-width="1">
         <circle cx="5" cy="5" r="5" stroke="none"/>
         <circle cx="5" cy="5" r="4.5" fill="none"/>
       </g>
-      <text id="New_star" data-name="New star" transform="translate(709.429 5615.021)" fill="#bfbfbf" font-size="16" font-family="JetBrainsMono-Regular, JetBrains Mono"><tspan x="0" y="0">New star</tspan></text>
+      <text id="New_stars" data-name="New stars" transform="translate(709.429 5615.021)" fill="#bfbfbf" font-size="16" font-family="JetBrainsMono-Regular, JetBrains Mono"><tspan x="0" y="0">New stars</tspan></text>
     </g>
   </g>
 </svg>
