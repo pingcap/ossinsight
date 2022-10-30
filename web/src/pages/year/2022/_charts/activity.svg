@@ -6,11 +6,11 @@
       <path id="矩形_9" data-name="矩形 9" d="M6,0H549a0,0,0,0,1,0,0V60a0,0,0,0,1,0,0H6a6,6,0,0,1-6-6V6A6,6,0,0,1,6,0Z" transform="translate(1202 4165)" fill="#73a373"/>
       <path id="矩形_10" data-name="矩形 10" d="M6,0H275a0,0,0,0,1,0,0V60a0,0,0,0,1,0,0H6a6,6,0,0,1-6-6V6A6,6,0,0,1,6,0Z" transform="translate(1476 4257)" fill="#dd6b66"/>
       <path id="矩形_11" data-name="矩形 11" d="M6,0H250a0,0,0,0,1,0,0V60a0,0,0,0,1,0,0H6a6,6,0,0,1-6-6V6A6,6,0,0,1,6,0Z" transform="translate(1501 4349)" fill="#74999f"/>
-      <text id="Low_Code:_75.58_" data-name="Low Code: 75.58%" transform="translate(1489 3996.813)" fill="#e0e0e0" font-size="24" font-family="JetBrainsMono-Bold, JetBrains Mono" font-weight="700"><tspan x="7.6" y="24">Low Code: 75.58%</tspan></text>
-      <text id="Web_3:_62.68_" data-name="Web 3: 62.68%" transform="translate(1470 4088.813)" fill="#e0e0e0" font-size="24" font-family="JetBrainsMono-Bold, JetBrains Mono" font-weight="700"><tspan x="69.8" y="24">Web 3: 62.68%</tspan></text>
-      <text id="Actions:_58.48_" data-name="Actions: 58.48%" transform="translate(1489 4180.959)" fill="#e0e0e0" font-size="24" font-family="JetBrainsMono-Bold, JetBrains Mono" font-weight="700"><tspan x="22" y="24">Actions: 58.48%</tspan></text>
-      <text id="Database:_30.82_" data-name="Database: 30.82%" transform="translate(1489 4272.813)" fill="#e0e0e0" font-size="24" font-family="JetBrainsMono-Bold, JetBrains Mono" font-weight="700"><tspan x="7.6" y="24">Database: 30.82%</tspan></text>
-      <text id="AI:_28.55_" data-name="AI: 28.55%" transform="translate(1542 4364.813)" fill="#e0e0e0" font-size="24" font-family="JetBrainsMono-Bold, JetBrains Mono" font-weight="700"><tspan x="41" y="24">AI: 28.55%</tspan></text>
+      <text id="Low_Code:_76.30_" data-name="Low Code: 76.30%" transform="translate(1489 3996.813)" fill="#e0e0e0" font-size="24" font-family="JetBrainsMono-Bold, JetBrains Mono" font-weight="700"><tspan x="7.6" y="24">Low Code: 76.30%</tspan></text>
+      <text id="Web_3:_63.85_" data-name="Web 3: 63.85%" transform="translate(1470 4088.813)" fill="#e0e0e0" font-size="24" font-family="JetBrainsMono-Bold, JetBrains Mono" font-weight="700"><tspan x="69.8" y="24">Web 3: 63.85%</tspan></text>
+      <text id="GitHub Actions:_60.18_" data-name="GitHub Actions: 60.18%" transform="translate(1390 4180.959)" fill="#e0e0e0" font-size="24" font-family="JetBrainsMono-Bold, JetBrains Mono" font-weight="700"><tspan x="22" y="24">GitHub Actions: 60.18%</tspan></text>
+      <text id="Database:_31.94_" data-name="Database: 31.94%" transform="translate(1489 4272.813)" fill="#e0e0e0" font-size="24" font-family="JetBrainsMono-Bold, JetBrains Mono" font-weight="700"><tspan x="7.6" y="24">Database: 31.94%</tspan></text>
+      <text id="AI:_29.13_" data-name="AI: 29.13%" transform="translate(1542 4364.813)" fill="#e0e0e0" font-size="24" font-family="JetBrainsMono-Bold, JetBrains Mono" font-weight="700"><tspan x="41" y="24">AI: 29.13%</tspan></text>
     </g>
     <text id="_Time_range:_2022.01.01-2022.09.01_exclude_bots" data-name="* Time range: 2022.01.01-2022.09.01, exclude bots" transform="translate(1254.257 6259.03)" fill="#7c7c7c" font-size="16" font-family="JetBrainsMono-Regular, JetBrains Mono"><tspan x="0" y="0">* Time range: 2022.01.01-2022.09.01, exclude bots</tspan></text>
   </g>
