@@ -2,6 +2,7 @@ import Section, { SubSection } from "@site/src/pages/year/2022/_components/Secti
 import React from "react";
 import Split from "@site/src/pages/year/2022/_components/Split";
 import Insights from "@site/src/pages/year/2022/_components/Insights";
+import { RankChart } from "../_components/charts";
 import _LanguagesChart from '../_charts/languages.svg';
 import _BackendLanguagesChart from '../_charts/backend-languages.svg';
 import { styled } from "@mui/material/styles";
@@ -22,7 +23,7 @@ export default function () {
             </Insights>
           </ResponsiveColumnFlex>
           <ResponsiveAlignedRight>
-            <LanguagesChart width={undefined} height={undefined} />
+            <RankChart data={require('../_charts/languages.json')} aspect={7 / 10} sx={{ maxWidth: 600 }} />
           </ResponsiveAlignedRight>
         </Split>
       </SubSection>
@@ -37,7 +38,7 @@ export default function () {
             </Insights>
           </ResponsiveColumnFlex>
           <ResponsiveAlignedRight>
-            <BackendLanguagesChart width={undefined} height={undefined} />
+            <RankChart data={require('../_charts/backend-languages.json')} aspect={7 / 10} sx={{ maxWidth: 600 }} />
           </ResponsiveAlignedRight>
         </Split>
       </SubSection>
