@@ -129,6 +129,7 @@ const config = {
         ]
       }
     ],
+    './plugins/mui'
   ],
 
   presets: [

@@ -56,6 +56,7 @@
   "devDependencies": {
     "@djagger/echartsx": "^0.0.21",
     "@docusaurus/module-type-aliases": "2.1.0",
+    "@emotion/server": "^11.10.0",
     "@geo-maps/countries-land-10km": "^0.6.0",
     "@makotot/ghostui": "^2.0.0",
     "@mui/x-data-grid": "^5.5.1",
