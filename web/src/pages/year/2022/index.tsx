@@ -1,5 +1,5 @@
 import Layout from "@theme/Layout";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import Container from "@mui/material/Container";
 import Head from "@docusaurus/Head";
 import { styled } from "@mui/material/styles";
@@ -52,11 +52,11 @@ export default function Page() {
           <PageContainer>
             <BrowserHash value={ids[currentElementIndexInViewport]} />
             <Container component="main" maxWidth="xl" sx={{ py: 8 }}>
-              {sections.map(({ default: Section }, i) => (
+              {useMemo(() => sections.map(({ default: Section }, i) => (
                 <SectionContext.Provider key={i} value={{ id: ids[i], ref: refs[i] }}>
                   <Section />
                 </SectionContext.Provider>
-              ))}
+              )), [sections])}
             </Container>
           </PageContainer>
         )}
