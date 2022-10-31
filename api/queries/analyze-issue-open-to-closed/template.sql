@@ -1,6 +1,6 @@
 with issue_with_closed_at as (
     select
-        number, event_month, created_at as closed_at
+        number, DATE_FORMAT(created_at, '%Y-%m-01') AS event_month, created_at as closed_at
     from
         github_events ge
     where
@@ -21,7 +21,7 @@ with issue_with_closed_at as (
         and repo_id = 41986369
 ), tdiff as (
     select
-        event_month,
+        DATE_FORMAT(event_month, '%Y-%m-01') AS event_month,
         (UNIX_TIMESTAMP(iwc.closed_at) - UNIX_TIMESTAMP(iwo.opened_at)) as diff
     from
         issue_with_opened_at iwo

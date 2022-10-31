@@ -10,46 +10,41 @@ WITH issues_group_by_repo AS (
     GROUP BY repo_id
 ), issues_group_by_month AS (
     SELECT
-        event_month,
+        DATE_FORMAT(created_at, '%Y-%m-01') AS event_month,
         repo_id,
-        ANY_VALUE(repo_name) AS repo_name,
         COUNT(DISTINCT number) AS issues
     FROM github_events
     WHERE
         type = 'IssuesEvent'
         AND action = 'opened'
         AND repo_id IN (41986369, 16563587, 105944401)
-        AND event_month IN (
-            DATE_FORMAT(DATE_SUB(NOW(), INTERVAL DAYOFMONTH(NOW()) DAY), '%Y-%m-01'),
-            DATE_FORMAT(DATE_SUB(DATE_SUB(NOW(), INTERVAL DAYOFMONTH(NOW()) DAY), INTERVAL 1 MONTH), '%Y-%m-01')
-        )
-    GROUP BY event_month, repo_id
+        AND created_at < DATE_FORMAT(NOW(), '%Y-%m-01')
+        AND created_at >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 2 MONTH), '%Y-%m-01')
+    GROUP BY DATE_FORMAT(created_at, '%Y-%m-01'), repo_id
 ), issues_last_month AS (
     SELECT
         event_month,
         repo_id,
-        repo_name,
         issues,
         ROW_NUMBER() OVER(ORDER BY issues DESC) AS `rank`
     FROM
         issues_group_by_month sgn
     WHERE
-        event_month = DATE_FORMAT(DATE_SUB(NOW(), INTERVAL DAYOFMONTH(NOW()) DAY), '%Y-%m-01')
+        event_month = DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH), '%Y-%m-01')
 ), issues_last_2nd_month AS (
     SELECT
         event_month,
         repo_id,
-        repo_name,
         issues,
         ROW_NUMBER() OVER(ORDER BY issues DESC) AS `rank`
     FROM
         issues_group_by_month sgn
     WHERE
-        event_month = DATE_FORMAT(DATE_SUB(DATE_SUB(NOW(), INTERVAL DAYOFMONTH(NOW()) DAY), INTERVAL 1 MONTH), '%Y-%m-01')
+        event_month = DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 2 MONTH), '%Y-%m-01')
 )
 SELECT
     ilm.repo_id,
-    ilm.repo_name,
+    r.repo_name,
     DATE_FORMAT(DATE_SUB(NOW(), INTERVAL DAYOFMONTH(NOW()) DAY), '%Y-%m') AS current_month,
     DATE_FORMAT(DATE_SUB(DATE_SUB(NOW(), INTERVAL DAYOFMONTH(NOW()) DAY), INTERVAL 1 MONTH), '%Y-%m') AS last_month,
     -- Issues
@@ -63,4 +58,5 @@ SELECT
 FROM issues_group_by_repo igr
 JOIN issues_last_month ilm ON igr.repo_id = ilm.repo_id
 LEFT JOIN issues_last_2nd_month il2m ON ilm.repo_id = il2m.repo_id
+LEFT JOIN github_repos r ON igr.repo_id = r.repo_id
 ORDER BY current_month_rank;
