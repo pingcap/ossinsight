@@ -9,44 +9,39 @@ WITH prs_group_by_repo AS (
     GROUP BY repo_id
 ), prs_group_by_month AS (
     SELECT
-        event_month,
+        DATE_FORMAT(created_at, '%Y-%m-01') AS event_month,
         repo_id,
-        ANY_VALUE(repo_name) AS repo_name,
         COUNT(*) AS prs
     FROM github_events
     WHERE
         type = 'PullRequestEvent'
         AND action = 'opened'
         AND repo_id IN (41986369, 16563587, 105944401)
-        AND event_month IN (
-            DATE_FORMAT(DATE_SUB(NOW(), INTERVAL DAYOFMONTH(NOW()) DAY), '%Y-%m-01'),
-            DATE_FORMAT(DATE_SUB(DATE_SUB(NOW(), INTERVAL DAYOFMONTH(NOW()) DAY), INTERVAL 1 MONTH), '%Y-%m-01')
-        )
-    GROUP BY event_month, repo_id
+        AND created_at < DATE_FORMAT(NOW(), '%Y-%m-01')
+        AND created_at >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 2 MONTH), '%Y-%m-01')
+    GROUP BY DATE_FORMAT(created_at, '%Y-%m-01'), repo_id
 ), prs_last_month AS (
     SELECT
         event_month,
         repo_id,
-        repo_name,
         prs,
         ROW_NUMBER() OVER(ORDER BY prs DESC) AS `rank`
     FROM prs_group_by_month sgn
     WHERE
-        event_month = DATE_FORMAT(DATE_SUB(NOW(), INTERVAL DAYOFMONTH(NOW()) DAY), '%Y-%m-01')
+        event_month = DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH), '%Y-%m-01')
 ), prs_last_2nd_month AS (
     SELECT
         event_month,
         repo_id,
-        repo_name,
         prs,
         ROW_NUMBER() OVER(ORDER BY prs DESC) AS `rank`
     FROM prs_group_by_month sgn
     WHERE
-        event_month = DATE_FORMAT(DATE_SUB(DATE_SUB(NOW(), INTERVAL DAYOFMONTH(NOW()) DAY), INTERVAL 1 MONTH), '%Y-%m-01')
+        event_month = DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 2 MONTH), '%Y-%m-01')
 )
 SELECT
     plm.repo_id,
-    plm.repo_name,
+    r.repo_name,
     DATE_FORMAT(DATE_SUB(NOW(), INTERVAL DAYOFMONTH(NOW()) DAY), '%Y-%m') AS current_month,
     DATE_FORMAT(DATE_SUB(DATE_SUB(NOW(), INTERVAL DAYOFMONTH(NOW()) DAY), INTERVAL 1 MONTH), '%Y-%m') AS last_month,
     -- PRs
@@ -60,4 +55,5 @@ SELECT
 FROM prs_group_by_repo pgr
 JOIN prs_last_month plm ON pgr.repo_id = plm.repo_id
 LEFT JOIN prs_last_2nd_month pl2m ON plm.repo_id = pl2m.repo_id
+LEFT JOIN github_repos r ON pgr.repo_id = r.repo_id
 ORDER BY current_month_rank;

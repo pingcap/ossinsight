@@ -9,42 +9,37 @@ WITH stars_group_by_repo AS (
     GROUP BY repo_id
 ), stars_group_by_month AS (
     SELECT
-        event_month,
+        DATE_FORMAT(created_at, '%Y-%m-01') AS event_month,
         repo_id,
-        ANY_VALUE(repo_name) AS repo_name,
         COUNT(actor_login) AS stars
     FROM github_events
     WHERE
         type = 'WatchEvent'
         AND action = 'started'
         AND repo_id IN (41986369, 16563587, 105944401)
-        AND event_month IN (
-            DATE_FORMAT(DATE_SUB(NOW(), INTERVAL DAYOFMONTH(NOW()) DAY), '%Y-%m-01'),
-            DATE_FORMAT(DATE_SUB(DATE_SUB(NOW(), INTERVAL DAYOFMONTH(NOW()) DAY), INTERVAL 1 MONTH), '%Y-%m-01')
-        )
-    GROUP BY repo_id, event_month
+        AND created_at < DATE_FORMAT(NOW(), '%Y-%m-01')
+        AND created_at >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 2 MONTH), '%Y-%m-01')
+    GROUP BY repo_id, DATE_FORMAT(created_at, '%Y-%m-01')
 ), stars_last_month AS (
     SELECT
         repo_id,
-        repo_name,
         stars,
         ROW_NUMBER() OVER(ORDER BY stars DESC) AS `rank`
     FROM stars_group_by_month
     WHERE
-        event_month = DATE_FORMAT(DATE_SUB(NOW(), INTERVAL DAYOFMONTH(NOW()) DAY), '%Y-%m-01')
+        event_month = DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH), '%Y-%m-01')
 ), stars_last_2nd_month AS (
     SELECT
         repo_id,
-        repo_name,
         stars,
         ROW_NUMBER() OVER(ORDER BY stars DESC) AS `rank`
     FROM stars_group_by_month
     WHERE
-        event_month = DATE_FORMAT(DATE_SUB(DATE_SUB(NOW(), INTERVAL DAYOFMONTH(NOW()) DAY), INTERVAL 1 MONTH), '%Y-%m-01')
+        event_month = DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 2 MONTH), '%Y-%m-01')
 )
 SELECT
     sgr.repo_id,
-    slm.repo_name,
+    r.repo_name,
     DATE_FORMAT(DATE_SUB(NOW(), INTERVAL DAYOFMONTH(NOW()) DAY), '%Y-%m') AS current_month,
     DATE_FORMAT(DATE_SUB(DATE_SUB(NOW(), INTERVAL DAYOFMONTH(NOW()) DAY), INTERVAL 1 MONTH), '%Y-%m') AS last_month,
     -- Stars
@@ -58,4 +53,5 @@ SELECT
 FROM stars_group_by_repo sgr 
 JOIN stars_last_month slm ON sgr.repo_id = slm.repo_id
 LEFT JOIN stars_last_2nd_month sl2m ON slm.repo_id = sl2m.repo_id
+LEFT JOIN github_repos r ON sgr.repo_id = r.repo_id
 ORDER BY current_month_rank;
