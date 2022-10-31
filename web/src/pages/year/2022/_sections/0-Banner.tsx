@@ -17,7 +17,7 @@ export default function () {
       <H1>
         Trends and Insights from GitHub 2022
       </H1>
-      <P2 mt={8}>
+      <P2 mt={8} maxWidth={880}>
         {description}
       </P2>
       <UL sx={{ mt: 4 }}>

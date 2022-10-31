@@ -1,7 +1,7 @@
 import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
-import { HTMLAttributes } from "react";
-import React from "react";
+import React, { HTMLAttributes } from "react";
+import { Coronavirus, KeyboardDoubleArrowDownRounded } from "@mui/icons-material";
 
 export const HeadlineTag = styled('div')(({ theme }) => ({
   fontFamily: 'JetBrains Mono',
@@ -45,15 +45,15 @@ export const A = styled('a')({
   color: 'inherit',
   '&:hover': {
     color: 'inherit',
-  }
-})
+  },
+});
 
 export const Spacer = styled('span', { label: 'Spacer' })(({ theme }) => ({
   [theme.breakpoints.up('md')]: {
     flex: 1,
     alignSelf: 'stretch',
-  }
-}))
+  },
+}));
 
 export const ResponsiveColumnFlex = styled(Box)(({ theme, maxWidth, height }) => ({
   height: 'unset',
@@ -64,7 +64,7 @@ export const ResponsiveColumnFlex = styled(Box)(({ theme, maxWidth, height }) =>
     height: height ?? '100%',
     maxWidth,
   },
-}))
+}));
 
 export const ResponsiveAlignedRight = styled('div')(({ theme }) => ({
   [theme.breakpoints.up('md')]: {
@@ -73,8 +73,8 @@ export const ResponsiveAlignedRight = styled('div')(({ theme }) => ({
     height: '100%',
     alignItems: 'flex-end',
     justifyContent: 'center',
-  }
-}))
+  },
+}));
 
 export const ResponsiveAlignedLeft = styled('div')(({ theme }) => ({
   [theme.breakpoints.up('md')]: {
@@ -83,13 +83,37 @@ export const ResponsiveAlignedLeft = styled('div')(({ theme }) => ({
     height: '100%',
     alignItems: 'flex-start',
     justifyContent: 'center',
-  }
-}))
+  },
+}));
 
-export function ResponsiveAligned ({ type, ...props }: HTMLAttributes<HTMLDivElement> & { type: 'left' | 'right' }) {
+export function ResponsiveAligned({ type, ...props }: HTMLAttributes<HTMLDivElement> & { type: 'left' | 'right' }) {
   if (type === 'left') {
-    return <ResponsiveAlignedLeft {...props} />
+    return <ResponsiveAlignedLeft {...props} />;
   } else {
-    return <ResponsiveAlignedRight {...props} />
+    return <ResponsiveAlignedRight {...props} />;
   }
 }
+
+export const MrO = styled('img')(({ theme }) => ({
+  position: 'absolute',
+  display: 'block',
+  top: 120,
+  right: 0,
+  [theme.breakpoints.down('lg')]: {
+    display: 'none',
+  }
+}));
+
+export const AnimatedDownIcon = styled(require('../_icons/arrow.svg').default)(({ theme }) => ({
+  position: 'absolute',
+  top: 700,
+  right: 170,
+  opacity: 0.7,
+  [theme.breakpoints.down('lg')]: {
+    top: 300,
+    right: 16,
+  },
+  [theme.breakpoints.down('md')]: {
+    top: 500,
+  }
+}))

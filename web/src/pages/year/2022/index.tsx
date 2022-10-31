@@ -6,7 +6,10 @@ import { styled } from "@mui/material/styles";
 import { highlights } from "./_sections/0-Banner";
 import { paramCase } from "param-case";
 import { SectionContext } from "./_components/Section";
+import Share from "./_components/Share";
 import { Scrollspy } from '@makotot/ghostui';
+import { useHistory } from "@docusaurus/router";
+import { AnimatedDownIcon, MrO } from "@site/src/pages/year/2022/_components/styled";
 
 const fonts = [
   'https://fonts.googleapis.com/css?family=JetBrains+Mono',
@@ -51,7 +54,10 @@ export default function Page() {
         {({ currentElementIndexInViewport }) => (
           <PageContainer>
             <BrowserHash value={ids[currentElementIndexInViewport]} />
+            <Share />
             <Container component="main" maxWidth="lg" sx={{ py: 6 }}>
+              <MrO width='371' height='570' src={require('./_icons/mro.png').default} alt='Logo' />
+              <AnimatedDownIcon className='animated-down-icon' />
               {useMemo(() => sections.map(({ default: Section }, i) => (
                 <SectionContext.Provider key={i} value={{ id: ids[i], ref: refs[i] }}>
                   <Section />
@@ -75,4 +81,5 @@ function BrowserHash({ value }: { value: string | undefined }) {
 const PageContainer = styled('div', { label: 'PageContainer' })({
   background: "transparent linear-gradient(180deg, #242526 0%, #0B003B 100%) 0% 0% no-repeat padding-box",
   fontSize: 20,
+  overflow: 'hidden',
 });
