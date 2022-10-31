@@ -1,41 +1,83 @@
-import { useThemeMediaQuery } from "@site/src/hooks/theme";
-import { useMemo } from "react";
+import { responsive } from "./responsive";
+import ChartJs, { Color, FontSpec, GridLineOptions, TitleOptions } from "chart.js/auto";
 
-export function useChartFontSizeBase() {
-  const large = useThemeMediaQuery(theme => theme.breakpoints.up('md'));
-  const small = useThemeMediaQuery(theme => theme.breakpoints.down('sm'));
 
-  if (large) {
-    return 20;
-  } else if (small) {
-    return 12;
-  } else {
-    return 16;
+namespace theme {
+  export namespace font {
+    export const title = responsive<FontSpec>({
+      size: [14, 16, 20],
+      weight: ['bold'],
+    });
+
+    export const subtitle = responsive<FontSpec>({
+      size: [10, 13],
+      style: [undefined, 'italic'],
+      weight: [undefined, 'bold'],
+    });
+
+
+    export const ticks = responsive<FontSpec>({
+      size: [10, 12, 14],
+    });
+
+    export const legend = responsive<FontSpec>({
+      size: [10, 13, 15],
+    });
+
+    export const tooltipTitle = responsive<FontSpec>({
+      size: [14, 16, 18],
+      weight: ['bold'],
+    });
+
+    export const tooltipBody = responsive<FontSpec>({
+      size: [16, 18, 20],
+    });
   }
-}
 
-export type FontSizes = {
-  title: () => number
-  axisTick: () => number
-  dataLabel: () => number
-  tooltipTitle: () => number
-  tooltipBody: () => number
-  subtitle: () => number
-  legend: () => number
-}
+  export namespace color {
+    export const title = '#FFFFFF';
+    export const tooltipTitle = '#BFBFBF';
+    export const subtitle = '#7C7C7C';
+    export const gridLine = '#BFBFBF80';
+    export const ticks = '#E0E0E0'
+    export const legend = '#BFBFBF'
+  }
 
-export function useChartFontSizes(): FontSizes {
-  const base = useChartFontSizeBase();
-
-  return useMemo(() => {
-    return {
-      title: () => base,
-      axisTick: () => 0.75 * base,
-      dataLabel: () => base,
-      tooltipTitle: () => base,
-      tooltipBody: () => 1.25 * base,
-      subtitle: () => base * 0.7,
-      legend: () => 0.8 * base,
+  export namespace grid {
+    export const normal: Partial<GridLineOptions> = {
+      color: color.gridLine,
+      borderColor: 'transparent',
+      borderDash: [4, 4],
     };
-  }, [base]);
+
+    export const hidden: Partial<GridLineOptions> = {
+      display: false,
+      borderColor: 'transparent',
+    };
+  }
+
+  export const title = (text: string | undefined, _color?: Color | undefined): Partial<TitleOptions> => ({
+    display: !!text,
+    position: 'top',
+    text,
+    color: color.title ?? _color,
+    font: font.title,
+  });
+
+  export const subtitle = (text: string): Partial<TitleOptions> => ({
+    position: 'bottom',
+    align: 'end',
+    text,
+    display: !!text,
+    color: color.subtitle,
+    padding: 12,
+    font: font.subtitle,
+  });
 }
+
+ChartJs.defaults.font = {
+  family: 'JetBrains Mono',
+  size: 20,
+};
+
+export default theme;

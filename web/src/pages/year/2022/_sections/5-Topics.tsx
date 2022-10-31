@@ -5,7 +5,6 @@ import { BarChart, LineChart } from '../_components/charts';
 import Split from "../_components/Split";
 import { BR, ResponsiveAligned, ResponsiveAlignedRight, ResponsiveColumnFlex, Spacer } from "../_components/styled";
 import Insights, { InsightsProps } from "../_components/Insights";
-import { useThemeMediaQuery } from "@site/src/hooks/theme";
 import useIsLarge from "@site/src/pages/year/2022/_components/hooks/useIsLarge";
 
 export default function () {
@@ -38,7 +37,7 @@ export default function () {
       >
         {detailedCharts.map(({ Chart, insights }, i) => (
           <Split key={i} mt={12} reversed={large && i % 2 === 0} spacing={4}>
-            <ResponsiveColumnFlex justifyContent='center'>
+            <ResponsiveColumnFlex justifyContent="center">
               <Insights maxWidth={711}>{insights}</Insights>
             </ResponsiveColumnFlex>
             <ResponsiveAligned type={i % 2 === 0 ? 'left' : 'right'}>
@@ -58,19 +57,19 @@ const activityTitle = 'Activity levels of popular topics';
 const activityDescription = 'We queried the number of open source repositories associated with each technical area, as well as the percentage of active repositories in 2022.';
 const activityInsights = 'This figure shows that open source repositories in the Low Code topic are the most active, with 76.3% being active in 2022, followed by Web3 with 63.85%';
 const ActivitiesChart = (() => {
-  const large = useIsLarge()
+  const large = useIsLarge();
 
   return (
     <BarChart
       aspect={large ? 16 / 9 : 4 / 3}
       data={require('../_charts/activity.json')}
-      footnote='* Time range: 2022.01.01-2022.09.30, exclude bots'
+      footnote="* Time range: 2022.01.01-2022.09.30, exclude bots"
       sx={{
         maxWidth: 656,
       }}
     />
-  )
-})
+  );
+});
 
 const detailsTitle = 'Popular topics over the past four years';
 const detailsDescription = (
@@ -82,7 +81,9 @@ const detailsDescription = (
     - The number of developers participating in collaborative events
     - The annual increment of stars
     <BR />
-    Then, we calculated the growth rate for each year which can reflect new entrants, developer engagement in this technical field, and the industry's interest in this area. For 2022, we compare its first nine months with the first nine months of 2021.
+    Then, we calculated the growth rate for each year which can reflect new entrants, developer engagement in this
+    technical field, and the industry's interest in this area. For 2022, we compare its first nine months with the first
+    nine months of 2021.
     <BR />
     * The 2022 data comparison period is 2022.01.01 - 2022.09.30, compared to 2021.01.01 - 2021.09.30.
   </>
@@ -96,15 +97,19 @@ const detailedCharts: {
     Chart: () => {
       return (
         <LineChart
-          name='Low Code'
+          name="Low Code"
           data={require('../_charts/low-code.json')}
-          sx={{ maxWidth: 686, }}
+          sx={{ maxWidth: 686 }}
         />
-      )
+      );
     },
     insights: (
       <>
-        We can see that 2020 is the peak period of project development, with a <strong>313.43%</strong> increase in new repositories and a <strong>157.06%</strong> increase in developer collaborative events. The industry's interest increased most significantly in 2021, reaching <strong>184.82%</strong>. In 2022, the year-on-year growth data shows that the number of new repositories decreased <strong>(-26.21%)</strong>, but developer engagement and industry interest are still rising.
+        We can see that 2020 is the peak period of project development, with a <strong>313.43%</strong> increase in new
+        repositories and a <strong>157.06%</strong> increase in developer collaborative events. The industry's interest
+        increased most significantly in 2021, reaching <strong>184.82%</strong>. In 2022, the year-on-year growth data
+        shows that the number of new repositories decreased <strong>(-26.21%)</strong>, but developer engagement and
+        industry interest are still rising.
       </>
     ),
   },
@@ -112,15 +117,17 @@ const detailedCharts: {
     Chart: () => {
       return (
         <LineChart
-          name='Web3'
+          name="Web3"
           data={require('../_charts/web3.json')}
-          sx={{ maxWidth: 686, }}
+          sx={{ maxWidth: 686 }}
         />
-      )
+      );
     },
     insights: (
       <>
-        Whether it is the creation of new repositories, developers, or the interest of the industry, the Web3 ecosystem has grown rapidly in recent years, and the growth rate of new repositories peaked at <strong>322.65%</strong> in 2021.
+        Whether it is the creation of new repositories, developers, or the interest of the industry, the Web3 ecosystem
+        has grown rapidly in recent years, and the growth rate of new repositories peaked at <strong>322.65%</strong> in
+        2021.
       </>
     ),
   },
@@ -128,15 +135,16 @@ const detailedCharts: {
     Chart: () => {
       return (
         <LineChart
-          name='GitHub Actions'
+          name="GitHub Actions"
           data={require('../_charts/actions.json')}
-          sx={{ maxWidth: 686, }}
+          sx={{ maxWidth: 686 }}
         />
-      )
+      );
     },
     insights: (
       <>
-        The annual increase of GitHub Actions repositories has been declining, but developer engagement and the industry's interest are still increasing slightly.
+        The annual increase of GitHub Actions repositories has been declining, but developer engagement and the
+        industry's interest are still increasing slightly.
       </>
     ),
   },
@@ -144,15 +152,16 @@ const detailedCharts: {
     Chart: () => {
       return (
         <LineChart
-          name='Database'
+          name="Database"
           data={require('../_charts/database.json')}
-          sx={{ maxWidth: 686, }}
+          sx={{ maxWidth: 686 }}
         />
-      )
+      );
     },
     insights: (
       <>
-        As an infrastructure project, the Database project's threshold is high. Compared with projects in other fields, a database project has a stable growth rate.
+        As an infrastructure project, the Database project's threshold is high. Compared with projects in other fields,
+        a database project has a stable growth rate.
       </>
     ),
   },
@@ -160,15 +169,15 @@ const detailedCharts: {
     Chart: () => {
       return (
         <LineChart
-          name='AI'
+          name="AI"
           data={require('../_charts/ai.json')}
-          sx={{ maxWidth: 686, }}
+          sx={{ maxWidth: 686 }}
         />
-      )
+      );
     },
     insights: (
       <>
-        After two years of high growth in 2016 and 2017, open source projects in AI have been growing  gradually slowly.
+        After two years of high growth in 2016 and 2017, open source projects in AI have been growing gradually slowly.
       </>
     ),
   },

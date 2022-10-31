@@ -2,6 +2,8 @@ import Chart, { ChartProps } from "@site/src/components/Chart";
 import React, { useMemo } from "react";
 import { defaultColors } from "@site/src/pages/year/2022/_components/charts/colors";
 import ChartDataLabels from "chartjs-plugin-datalabels";
+import theme from "@site/src/pages/year/2022/_components/charts/theme";
+import { responsive } from "@site/src/pages/year/2022/_components/charts/responsive";
 
 type RankData = {
   labels: string[]
@@ -75,8 +77,8 @@ export default function RankChart({ data, footnote, ...props }: RankChartProps) 
                 label: {
                   formatter: () => item.name,
                   display: ctx => (ctx.dataIndex === d.length - 1),
-                }
-              }
+                },
+              },
             },
           };
         }),
@@ -84,16 +86,13 @@ export default function RankChart({ data, footnote, ...props }: RankChartProps) 
       options={{
         layout: {
           padding: {
-            right: 180
-          }
+            right: 180,
+          },
         },
         scales: {
           y: {
             reverse: true,
-            grid: {
-              display: false,
-              borderColor: 'rgba(0,0,0,0)',
-            },
+            grid: theme.grid.hidden,
             ticks: {
               display: false,
             },
@@ -102,15 +101,10 @@ export default function RankChart({ data, footnote, ...props }: RankChartProps) 
           x: {
             position: 'top',
             ticks: {
-              color: '#E0E0E0',
-              font: {
-                size: 16,
-              },
+              color: theme.color.ticks,
+              font: theme.font.ticks,
             },
-            grid: {
-              display: false,
-              borderColor: 'rgba(0,0,0,0)',
-            },
+            grid: theme.grid.hidden,
           },
         },
         plugins: {
@@ -120,34 +114,29 @@ export default function RankChart({ data, footnote, ...props }: RankChartProps) 
           tooltip: {
             enabled: false,
           },
-          subtitle: {
-            position: 'bottom',
-            fullSize: true,
-            align: 'center',
-            text: footnote,
-            display: !!footnote,
-            color: '#7C7C7C',
-            font: {
-              family: 'JetBrains Mono',
-              size: 13,
-            },
-          },
+          subtitle: theme.subtitle(footnote),
           datalabels: {
             labels: {
               index: {
                 display: true,
                 color: '#ffffff',
+                anchor: 'center',
+                align: 'center',
+                font: {
+                  size: 10,
+                  weight: 'bold',
+                },
               },
               label: {
                 display: true,
-                offset: 16,
+                offset: responsive<number>([8, 12, 16]),
                 anchor: 'center',
                 align: 'right',
                 color: ctx => defaultColors[ctx.datasetIndex % defaultColors.length],
                 font: {
                   size: 14,
                 },
-              }
+              },
             },
           },
         },

@@ -1,8 +1,8 @@
 import Section from "@site/src/pages/year/2022/_components/Section";
-import React, { ReactNode } from "react";
+import React from "react";
 import { IssueOpenedIcon, RepoForkedIcon, StarIcon } from "@primer/octicons-react";
 import Keynote, { KeynoteProps } from "@site/src/pages/year/2022/_components/Keynote";
-import colors from '../_components/colors.module.css'
+import colors from '../_components/colors.module.css';
 import Split from "@site/src/pages/year/2022/_components/Split";
 
 export default function () {
@@ -16,7 +16,6 @@ export default function () {
     </Section>
   );
 }
-
 
 
 const keynotes: KeynoteProps[] = [

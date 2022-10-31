@@ -52,7 +52,7 @@ const tableContent: {
   },
   {
     name: 'Web3',
-    fuzzy: 'web3'
+    fuzzy: 'web3',
   },
   {
     name: 'Database',
@@ -63,7 +63,7 @@ const tableContent: {
         nosql, newsql, sql
         mongodb,neo4j
       </>
-    )
+    ),
   },
   {
     name: 'AI',
@@ -95,14 +95,13 @@ const tableContent: {
         classification
         action-recognition
       </>
-    )
-  }
-]
+    ),
+  },
+];
 
 const Table = styled('table')({
   display: 'table',
   width: '100%',
-  fontFamily: 'JetBrains Mono',
   fontSize: 13,
   marginTop: 24,
 });

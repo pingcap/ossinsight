@@ -4,7 +4,6 @@ import React, { HTMLAttributes } from "react";
 import { Coronavirus, KeyboardDoubleArrowDownRounded } from "@mui/icons-material";
 
 export const HeadlineTag = styled('div')(({ theme }) => ({
-  fontFamily: 'JetBrains Mono',
   background: 'transparent linear-gradient(89deg, #EA7E53 0%, #3E2A75 100%) 0% 0% no-repeat padding-box',
   color: 'white',
   display: 'flex',

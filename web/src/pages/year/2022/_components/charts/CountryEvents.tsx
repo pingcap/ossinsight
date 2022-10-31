@@ -5,6 +5,9 @@ import ChartDataLabels from "chartjs-plugin-datalabels";
 import useIsLarge from "@site/src/pages/year/2022/_components/hooks/useIsLarge";
 import { ScriptableContext } from "chart.js";
 import countryCodeEmoji from "country-code-emoji";
+import ChartJs from "chart.js/auto";
+import { responsive } from "@site/src/pages/year/2022/_components/charts/responsive";
+import theme from "./theme";
 
 interface CountryEventsProps extends Pick<ChartProps, 'sx'> {
   data: import('../../_charts/env').CountryData;
@@ -20,6 +23,11 @@ type EventPoint = {
 
 function isHighlight(data: import('../../_charts/env').CountryData, ctx: Pick<ScriptableContext<any>, 'dataIndex' | 'datasetIndex'>) {
   return data.highlights?.[ctx.datasetIndex]?.includes(ctx.dataIndex) ?? false;
+}
+
+function scatterSize(chart: ChartJs, maxWidth: number, count: number) {
+  count += 2;
+  return Math.min((((chart.chartArea?.width ?? chart.width) - (count - 1) * 4)) / count, maxWidth);
 }
 
 export default function CountryEvents({ data, sx }: CountryEventsProps) {
@@ -44,22 +52,20 @@ export default function CountryEvents({ data, sx }: CountryEventsProps) {
         })),
       }}
       options={{
-        font: {
-          family: 'JetBrains Mono',
-        },
         elements: {
           point: {
             pointStyle: 'rect',
             radius: ctx => {
+              const size = scatterSize(ctx.chart, 30, data.labels.length)
               if (isHighlight(data, ctx)) {
-                return 30
+                return size;
               } else {
-                return Math.sqrt((ctx.dataset.data[ctx.dataIndex] as EventPoint).value / 100) * 30;
+                return Math.sqrt((ctx.dataset.data[ctx.dataIndex] as EventPoint).value / 100) * size;
               }
             },
-            hoverRadius: 30,
-            borderWidth: 4,
-            hoverBorderWidth: 4,
+            hoverRadius: ctx => scatterSize(ctx.chart, 30, data.labels.length),
+            borderWidth: responsive([0, 2, 4]),
+            hoverBorderWidth: responsive([0, 2, 4]),
             borderColor: ctx => {
               if (isHighlight(data, ctx)) {
                 return defaultColors[ctx.datasetIndex % defaultColors.length] + '80';
@@ -67,7 +73,7 @@ export default function CountryEvents({ data, sx }: CountryEventsProps) {
                 return '#4D4D4D80';
               }
             },
-            backgroundColor:ctx => {
+            backgroundColor: ctx => {
               if (isHighlight(data, ctx)) {
                 return defaultColors[ctx.datasetIndex % defaultColors.length] + '80';
               } else {
@@ -85,34 +91,26 @@ export default function CountryEvents({ data, sx }: CountryEventsProps) {
               callback: value => data.labels[value],
               padding: 16,
               align: 'start',
-              color: '#E0E0E0',
-              font: {
-                size: 12,
-              },
+              color: theme.color.ticks,
+              font: theme.font.ticks,
             },
             position: 'top',
-            grid: {
-              display: false,
-              borderColor: 'rgba(0,0,0,0)',
-            },
+            grid: theme.grid.hidden,
           },
           y: {
             reverse: true,
             ticks: {
               callback: value => {
-                const code = data.data[value]?.[1]
+                const code = data.data[value]?.[1];
                 return code && countryCodeEmoji(code);
               },
               padding: 16,
-              color: '#E0E0E0',
+              color: theme.color.ticks,
               font: {
                 size: 28,
               },
             },
-            grid: {
-              display: false,
-              borderColor: 'rgba(0,0,0,0)',
-            },
+            grid: theme.grid.hidden,
           },
         },
         plugins: {
@@ -122,25 +120,22 @@ export default function CountryEvents({ data, sx }: CountryEventsProps) {
           tooltip: {
             enabled: true,
             displayColors: false,
-            bodyFont: {
-              size: 16
-            },
+            bodyFont: theme.font.tooltipBody,
             padding: 16,
             callbacks: {
               label: (item) => {
-                const event = data.labels[item.dataIndex]
-                const { country, value, code } = item.dataset.data[item.dataIndex] as EventPoint
-                return `${event} from ${country} ${countryCodeEmoji(code)}: ${value}${data.unit}`;
-              }
-            }
+                const event = data.labels[item.dataIndex];
+                const { value, code } = item.dataset.data[item.dataIndex] as EventPoint;
+                return `${event} from ${countryCodeEmoji(code)}: ${value}${data.unit}`;
+              },
+            },
           },
           datalabels: {
             color: 'white',
-            font: {
-              weight: 'bold',
-              size: 12,
-              family: 'JetBrains Mono',
-            },
+            font: responsive({
+              size: [8, 10, 12],
+              weight: ['normal', 'bold']
+            }),
             formatter: (value) => {
               return value.value + '%';
             },

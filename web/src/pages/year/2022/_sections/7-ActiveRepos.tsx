@@ -1,6 +1,5 @@
 import React, { ReactElement } from "react";
 import Section from "../_components/Section";
-import { H2, P2 } from "../_components/typograph";
 import { A, BR, LI, ResponsiveColumnFlex, Spacer, UL } from "../_components/styled";
 import Split from "../_components/Split";
 import Insights from "../_components/Insights";
@@ -34,8 +33,8 @@ type Rank = {
 
 const MSIcon = styled(_MSIcon)({
   display: 'inline-flex',
-  verticalAlign: -7
-})
+  verticalAlign: -7,
+});
 const title = 'The most active repositories over the past four years';
 const description = 'Here we looked up the top 20 active repositories per year from 2019 to 2022 and counted the total number of listings per repository. The activity of the repository is ranked according to the number of developers participating in collaborative events.';
 const list: Rank[] = [
@@ -129,7 +128,8 @@ const insights = [
     {ghLink('Microsoft')} has the most repositories on the list, with five.
   </>,
   <>
-    {ghLink('tensorflow/tensorflow')} and {ghLink('kubernetes/kubernetes')} both dropped out of the top 20 after three consecutive years on the list (2019 to 2021).
+    {ghLink('tensorflow/tensorflow')} and {ghLink('kubernetes/kubernetes')} both dropped out of the top 20 after three
+    consecutive years on the list (2019 to 2021).
   </>,
   undefined,
   <>
@@ -177,7 +177,6 @@ const RepoRanks = ({ list }: { list: Rank[] }) => {
 };
 
 const Table = styled('table')({
-  fontFamily: 'JetBrains Mono',
   fontSize: 16,
   border: 'none',
   display: 'table',
@@ -192,8 +191,8 @@ const Table = styled('table')({
     width: '100%',
   },
   'td, th': {
-    padding: '8px 0'
-  }
+    padding: '8px 0',
+  },
 });
 
 const Dot = styled('span')({

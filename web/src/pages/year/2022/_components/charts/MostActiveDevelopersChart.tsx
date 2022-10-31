@@ -1,10 +1,9 @@
 import React from "react";
 import Chart, { ChartProps } from "@site/src/components/Chart";
 import data from '../../_charts/developers.json';
-import { defaultColors } from "@site/src/pages/year/2022/_components/charts/colors";
 import ChartDataLabels from "chartjs-plugin-datalabels";
-import { useThemeMediaQuery } from "@site/src/hooks/theme";
 import useIsLarge from "@site/src/pages/year/2022/_components/hooks/useIsLarge";
+import theme from "./theme";
 
 function years(from, to: number): string[] {
   const arr: string[] = [];
@@ -31,7 +30,7 @@ export default function MostActiveDevelopersChart(props: Omit<ChartProps, 'once'
           borderWidth: 5,
           pointRadius: 0,
           pointBorderWidth: 0,
-        },{
+        }, {
           type: 'bar',
           label: 'bot',
           data: data.map(item => item[2]),
@@ -59,20 +58,15 @@ export default function MostActiveDevelopersChart(props: Omit<ChartProps, 'once'
           },
           x: {
             ticks: {
-              color: '#E0E0E080',
-              font: {
-                family: 'JetBrains Mono',
-                size: 14,
-                weight: 'bold',
-              }
-            }
-          }
+              color: `${theme.color.ticks}80`,
+              font: theme.font.ticks,
+            },
+          },
         },
         plugins: {
           datalabels: {
-            color: '#E0E0E080',
+            color: `${theme.color.ticks}80`,
             font: {
-              family: 'JetBrains Mono',
               size: 12,
             },
             anchor: 'end',
@@ -86,11 +80,8 @@ export default function MostActiveDevelopersChart(props: Omit<ChartProps, 'once'
           legend: {
             labels: {
               filter: (item) => item.datasetIndex >= 1,
-              color: '#E0E0E080',
-              font: {
-                size: 14,
-                family: 'JetBrains Mono',
-              },
+              color: `${theme.color.legend}80`,
+              font: theme.font.legend,
               boxWidth: 18,
               boxHeight: 18,
               padding: 10,
@@ -99,23 +90,16 @@ export default function MostActiveDevelopersChart(props: Omit<ChartProps, 'once'
             align: 'start',
           },
           tooltip: {
-            titleColor: '#BFBFBF',
-            titleFont: {
-              size: 14,
-              family: 'JetBrains Mono',
-              weight: 'bold',
-            },
-            bodyFont: {
-              size: 18,
-              family: 'JetBrains Mono'
-            },
+            titleColor: theme.color.tooltipTitle,
+            titleFont: theme.font.tooltipTitle,
+            bodyFont: theme.font.tooltipBody,
             boxPadding: 8,
             padding: 12,
             boxWidth: 10,
             boxHeight: 10,
             usePointStyle: true,
           },
-        }
+        },
       }}
       plugins={[ChartDataLabels]}
       {...props}

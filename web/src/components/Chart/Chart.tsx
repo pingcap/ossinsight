@@ -10,6 +10,7 @@ import { unstable_serialize } from "swr";
 import { styled, Theme } from "@mui/material/styles";
 import { SxProps } from "@mui/system/styleFunctionSx";
 import './defaults';
+import { useFonts } from "@site/src/components/Chart/fonts";
 
 export type ChartProps<TType extends ChartType = ChartType, TData = DefaultDataPoint<TType>, TLabel = unknown> = {
   fallbackImage?: string;
@@ -70,6 +71,8 @@ const CanvasChart: ChartElement = forwardRef<ChartJs>(function <TType extends Ch
       }
     }, [config.options]);
 
+    useFonts(chartRef);
+
     return (
       <CanvasContainer sx={sx}>
         <canvas ref={canvasRef} style={{ maxWidth: '100%', maxHeight: aspect ? undefined : '100%' }} />
@@ -80,7 +83,7 @@ const CanvasChart: ChartElement = forwardRef<ChartJs>(function <TType extends Ch
 
 function applyAspect(chartInstance: ChartJs, aspect: number) {
   if (!chartInstance.options) {
-    return
+    return;
   }
   if (aspect) {
     chartInstance.options.aspectRatio = aspect;

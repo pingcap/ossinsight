@@ -1,6 +1,5 @@
 import React from "react";
 import Section from "../_components/Section";
-import { H2, P2 } from "../_components/typograph";
 import Grid from "@mui/material/Grid";
 import Repos, { ReposProps } from "../_components/Repos";
 
@@ -20,7 +19,7 @@ export default function () {
           height: 'unset',
           [theme.breakpoints.up('md')]: {
             height: 700,
-          }
+          },
         })}
       >
         <Grid container item sm={12} md={groupSpan(0, 1)} spacing={2} height="100%" direction="column" wrap="nowrap">
@@ -52,7 +51,7 @@ function span(n: number, o: number) {
 }
 
 function groupSpan(a, b) {
-  return (parseInt(repos[a].percent) + parseInt(repos[b].percent)) / 100 * 12
+  return (parseInt(repos[a].percent) + parseInt(repos[b].percent)) / 100 * 12;
 }
 
 const repos: ReposProps[] = [{

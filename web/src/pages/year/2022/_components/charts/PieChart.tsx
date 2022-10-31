@@ -25,7 +25,6 @@ export default function PieChart({ sx }: Pick<ChartProps, 'sx'>) {
             label: {
               color: '#BFBFBF',
               font: {
-                family: 'JetBrains Mono',
                 weight: 'bold',
                 size: 24,
               },
@@ -33,7 +32,6 @@ export default function PieChart({ sx }: Pick<ChartProps, 'sx'>) {
             value: {
               color: '#FFFFFF',
               font: {
-                family: 'JetBrains Mono',
                 weight: 'bold',
                 size: 36,
               },

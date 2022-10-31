@@ -16,7 +16,6 @@ export default function Repos({ color, category, value, percent, list }: ReposPr
   return (
     <Box
       className={colors[`${color}Box`]}
-      fontFamily="JetBrains Mono"
       position="relative"
       p={4}
       height='100%'

@@ -60,7 +60,6 @@ interface UserProps {
 }
 
 const Users = styled(UL)(({ theme }) => ({
-  fontFamily: "JetBrains Mono",
   display: 'flex',
   flexWrap: 'wrap',
   marginLeft: theme.spacing(-4),

@@ -61,8 +61,8 @@ const PieOutLabelPlugin: Plugin = {
     const vertical = size.width < size.height * 1.5
     if (vertical) {
       chart.options.layout.padding = {
-        left: 0,
-        right: 0,
+        left: 10,
+        right: 10,
         top: 60,
         bottom: 60,
       }

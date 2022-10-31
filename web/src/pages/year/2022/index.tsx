@@ -8,12 +8,10 @@ import { paramCase } from "param-case";
 import { SectionContext } from "./_components/Section";
 import Share from "./_components/Share";
 import { Scrollspy } from '@makotot/ghostui';
-import { useHistory } from "@docusaurus/router";
 import { AnimatedDownIcon, MrO } from "@site/src/pages/year/2022/_components/styled";
 
 const fonts = [
-  'https://fonts.googleapis.com/css?family=JetBrains+Mono',
-  'https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@1,100&display=swap',
+  'https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,600;0,700;1,100;1,400;1,600&display=swap',
 ];
 
 const sections = [
@@ -91,5 +89,6 @@ function BrowserHash({ value }: { value: string | undefined }) {
 const PageContainer = styled('div', { label: 'PageContainer' })({
   background: "transparent linear-gradient(180deg, #242526 0%, #0B003B 100%) 0% 0% no-repeat padding-box",
   fontSize: 20,
+  fontFamily: "'JetBrains Mono', monospace",
   overflow: 'hidden',
 });

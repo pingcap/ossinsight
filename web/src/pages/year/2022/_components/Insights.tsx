@@ -44,7 +44,6 @@ const Body = styled(Typography)({
   fontSize: '0.9em',
   color: '#7C7C7C',
   marginTop: 32,
-  fontFamily: 'JetBrains Mono',
   '&:before': {
     display: 'block',
     content: '" "',

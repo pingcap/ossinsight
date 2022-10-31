@@ -2,9 +2,8 @@ import Chart, { ChartProps } from "@site/src/components/Chart";
 import React, { useMemo } from "react";
 import { defaultColors } from './colors';
 import { ScriptableContext } from "chart.js";
-import { useThemeMediaQuery } from "@site/src/hooks/theme";
 import useIsLarge from "@site/src/pages/year/2022/_components/hooks/useIsLarge";
-import { useChartFontSizes } from "@site/src/pages/year/2022/_components/charts/theme";
+import theme from "./theme";
 
 
 interface BarChartProps<T> extends Pick<ChartProps, 'fallbackImage' | 'name' | 'sx'> {
@@ -64,30 +63,18 @@ export default function LineChart<T extends Record<string, any>>({
         maintainAspectRatio: false,
         scales: {
           x: {
-            grid: {
-              color: '#BFBFBF80',
-              borderDash: [4, 4],
-            },
+            grid: theme.grid.normal,
             ticks: {
-              color: '#E0E0E0',
-              font: {
-                size: 15,
-                family: 'JetBrains Mono',
-              },
+              color: theme.color.ticks,
+              font: theme.font.ticks,
               padding: 4,
             },
           },
           y: {
-            grid: {
-              color: '#BFBFBF80',
-              borderDash: [4, 4],
-            },
+            grid: theme.grid.normal,
             ticks: {
-              color: '#E0E0E0',
-              font: {
-                size: 15,
-                family: 'JetBrains Mono',
-              },
+              color: theme.color.ticks,
+              font: theme.font.ticks,
               callback: value => `${value}${data.unit}`,
               padding: 4,
               maxTicksLimit: 7,
@@ -95,17 +82,7 @@ export default function LineChart<T extends Record<string, any>>({
           },
         },
         plugins: {
-          subtitle: {
-            position: 'bottom',
-            align: 'end',
-            text: footnote,
-            display: !!footnote,
-            color: '#7C7C7C',
-            font: {
-              family: 'JetBrains Mono',
-              size: 16,
-            }
-          },
+          subtitle: theme.subtitle(props.name),
           legend: {
             display: true,
             position: 'bottom',
@@ -113,35 +90,16 @@ export default function LineChart<T extends Record<string, any>>({
               usePointStyle: true,
               boxWidth: 10,
               boxHeight: 10,
-              color: '#BFBFBF',
               padding: 24,
-              font: {
-                size: 14,
-                family: 'JetBrains Mono',
-              }
-            }
+              color: theme.color.legend,
+              font: theme.font.legend,
+            },
           },
-          title: {
-            display: true,
-            position: 'top',
-            text: props.name,
-            color: 'white',
-            font: {
-              size: 20,
-              weight: 'bold',
-            }
-          },
+          title: theme.title(props.name, 'white'),
           tooltip: {
-            titleColor: '#BFBFBF',
-            titleFont: {
-              size: 16,
-              family: 'JetBrains Mono',
-              weight: 'bold',
-            },
-            bodyFont: {
-              size: 18,
-              family: 'JetBrains Mono'
-            },
+            titleColor: theme.color.tooltipTitle,
+            titleFont: theme.font.tooltipTitle,
+            bodyFont: theme.font.tooltipBody,
             boxPadding: 8,
             padding: 12,
             boxWidth: 10,
@@ -149,9 +107,9 @@ export default function LineChart<T extends Record<string, any>>({
             usePointStyle: true,
             callbacks: {
               label: item => {
-                return `${item.dataset.label}: ${item.dataset.data[item.dataIndex]}${data.unit}`
-              }
-            }
+                return `${item.dataset.label}: ${item.dataset.data[item.dataIndex]}${data.unit}`;
+              },
+            },
           },
         },
       }}

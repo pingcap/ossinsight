@@ -15,7 +15,7 @@ export default function () {
         <CountryEvents data={require('../_charts/country-data.json')} />
         <Box>
           {insights.map((insight, i) => (
-            <Insights hideTitle={i !== 0}>{insight}</Insights>
+            <Insights key={i} hideTitle={i !== 0}>{insight}</Insights>
           ))}
         </Box>
       </Split>

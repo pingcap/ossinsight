@@ -1,9 +1,9 @@
 import Chart, { ChartProps } from "@site/src/components/Chart";
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import { defaultColors } from './colors';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import useIsLarge from "@site/src/pages/year/2022/_components/hooks/useIsLarge";
-import ChartJs from "chart.js/auto";
+import { responsive } from "./responsive";
+import theme from "./theme";
 
 
 interface BarChartProps<T> extends Pick<ChartProps, 'fallbackImage' | 'name' | 'sx' | 'aspect'> {
@@ -16,24 +16,8 @@ export default function BarChart<T extends Record<string, any>>({
   footnote,
   ...props
 }: BarChartProps<T>) {
-  const chartRef = useRef<ChartJs | undefined>();
-
-  const large = useIsLarge();
-  useEffect(() => {
-    const chart = chartRef.current;
-    if (chart) {
-      chart.options.plugins.datalabels.font = {
-        weight: 'bold',
-        size: large ? 20 : 16,
-        family: 'JetBrains Mono',
-      };
-      chart.update('none');
-    }
-  }, [large]);
-
   return (
     <Chart<"bar">
-      ref={chartRef}
       once
       {...props}
       type="bar"
@@ -59,36 +43,20 @@ export default function BarChart<T extends Record<string, any>>({
           },
         },
         plugins: {
-          subtitle: {
-            position: 'bottom',
-            align: 'end',
-            text: footnote,
-            display: !!footnote,
-            color: '#7C7C7C',
-            padding: 32,
-            font: {
-              family: 'JetBrains Mono',
-              size: 13,
-            },
-          },
+          title: theme.title(props.name),
+          subtitle: theme.subtitle(footnote),
           legend: {
             display: false,
-          },
-          title: {
-            display: !!props.name,
-            position: 'top',
-            text: props.name,
           },
           tooltip: {
             enabled: false,
           },
           datalabels: {
             color: 'white',
-            font: {
-              weight: 'bold',
-              size: large ? 20 : 16,
-              family: 'JetBrains Mono',
-            },
+            font: responsive({
+              size: [12, 14, 16],
+              weight: [undefined, 'bold', 'bold'],
+            }),
             formatter: (value, context) => {
               return `${data[context.dataIndex][y]}: ${value}${unit ?? ''}${postfix ? ` ${data[context.dataIndex][postfix]}` : ''}`;
             },
