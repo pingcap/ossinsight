@@ -20,7 +20,7 @@ export default function CountryEvents({ data, sx }: CountryEventsProps) {
     <Chart<'scatter', EventPoint[]>
       type="scatter"
       sx={sx}
-      aspect={large ? 16 / 9 : 3 / 4}
+      aspect={large ? 9 / 12 : 3 / 5}
       data={{
         labels: data.labels,
         datasets: data.data.map(([country, code, ...items], i) => ({
@@ -39,8 +39,8 @@ export default function CountryEvents({ data, sx }: CountryEventsProps) {
         elements: {
           point: {
             pointStyle: 'rect',
-            radius: ctx => Math.sqrt((ctx.dataset.data[ctx.dataIndex] as EventPoint).value / 100) * 40,
-            hoverRadius: 40,
+            radius: ctx => Math.sqrt((ctx.dataset.data[ctx.dataIndex] as EventPoint).value / 100) * 30,
+            hoverRadius: 30,
             borderWidth: 4,
             hoverBorderWidth: 4,
             borderColor: '#4D4D4D80',
@@ -51,14 +51,14 @@ export default function CountryEvents({ data, sx }: CountryEventsProps) {
         },
         scales: {
           x: {
-            min: -0.5,
+            min: -1,
             ticks: {
               callback: value => data.labels[value],
               padding: 16,
               align: 'start',
               color: '#E0E0E0',
               font: {
-                size: 20,
+                size: 12,
               },
             },
             position: 'top',
@@ -74,7 +74,7 @@ export default function CountryEvents({ data, sx }: CountryEventsProps) {
               padding: 16,
               color: '#E0E0E0',
               font: {
-                size: 20,
+                size: 14,
               },
             },
             grid: {
