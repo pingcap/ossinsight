@@ -19,7 +19,7 @@ export default function () {
       </SubSection>
       <SubSection>
         <Split>
-          <ResponsiveColumnFlex height={650}>
+          <ResponsiveColumnFlex height={350}>
             <H3>{activityTitle}</H3>
             <P2 mt={3}>{activityDescription}</P2>
             <Spacer />
