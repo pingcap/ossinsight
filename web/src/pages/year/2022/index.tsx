@@ -21,12 +21,12 @@ const sections = [
   require('./_sections/1-Keynotes'),
   require('./_sections/2-Languages'),
   require('./_sections/3-Countries'),
-  require('./_sections/4-Topics'),
-  require('./_sections/5-PopularRepos'),
-  require('./_sections/6-ActiveRepos'),
-  require('./_sections/7-Stargazers'),
-  require('./_sections/8-MostActiveDevelopers'),
-  require('./_sections/9-WeekdayWeekend'),
+  require('./_sections/4-WeekdayWeekend'),
+  require('./_sections/5-Topics'),
+  require('./_sections/6-PopularRepos'),
+  require('./_sections/7-ActiveRepos'),
+  require('./_sections/8-Stargazers'),
+  require('./_sections/9-MostActiveDevelopers'),
   require('./_sections/99-Appendix'),
 ];
 
