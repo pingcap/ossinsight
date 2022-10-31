@@ -40,7 +40,7 @@ export default function LineChart<T extends Record<string, any>>({
   return (
     <Chart<"line">
       once
-      aspect={large ? 16 / 9 : 1}
+      aspect={large ? 4 / 3 : 1}
       {...props}
       type="line"
       data={{
@@ -71,7 +71,7 @@ export default function LineChart<T extends Record<string, any>>({
             ticks: {
               color: '#E0E0E0',
               font: {
-                size: 19,
+                size: 15,
                 family: 'JetBrains Mono',
               },
               padding: 4,
@@ -85,11 +85,12 @@ export default function LineChart<T extends Record<string, any>>({
             ticks: {
               color: '#E0E0E0',
               font: {
-                size: 19,
+                size: 15,
                 family: 'JetBrains Mono',
               },
               callback: value => `${value}${data.unit}`,
               padding: 4,
+              maxTicksLimit: 7,
             },
           },
         },
@@ -115,7 +116,7 @@ export default function LineChart<T extends Record<string, any>>({
               color: '#BFBFBF',
               padding: 24,
               font: {
-                size: 16,
+                size: 14,
                 family: 'JetBrains Mono',
               }
             }
@@ -126,19 +127,19 @@ export default function LineChart<T extends Record<string, any>>({
             text: props.name,
             color: 'white',
             font: {
-              size: 24,
+              size: 20,
               weight: 'bold',
             }
           },
           tooltip: {
             titleColor: '#BFBFBF',
             titleFont: {
-              size: 20,
+              size: 16,
               family: 'JetBrains Mono',
               weight: 'bold',
             },
             bodyFont: {
-              size: 24,
+              size: 18,
               family: 'JetBrains Mono'
             },
             boxPadding: 8,

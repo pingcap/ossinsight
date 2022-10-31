@@ -16,6 +16,7 @@ export default function () {
         mt={4}
         direction={['column', 'column', 'row']}
         justifyContent='space-between'
+        columnGap={4}
       >
         <div style={{ flex: 1 }}>
           <MostActiveDevelopersChart sx={{ maxWidth: 977 }} />

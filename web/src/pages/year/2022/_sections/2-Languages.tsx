@@ -3,9 +3,6 @@ import React from "react";
 import Split from "@site/src/pages/year/2022/_components/Split";
 import Insights from "@site/src/pages/year/2022/_components/Insights";
 import { RankChart } from "../_components/charts";
-import _LanguagesChart from '../_charts/languages.svg';
-import _BackendLanguagesChart from '../_charts/backend-languages.svg';
-import { styled } from "@mui/material/styles";
 import { H2, H3, P2 } from "../_components/typograph";
 import { BR, ResponsiveAlignedRight, ResponsiveColumnFlex, Spacer } from "../_components/styled";
 
@@ -23,7 +20,12 @@ export default function () {
             </Insights>
           </ResponsiveColumnFlex>
           <ResponsiveAlignedRight>
-            <RankChart data={require('../_charts/languages.json')} aspect={7 / 10} sx={{ maxWidth: 600 }} />
+            <RankChart
+              data={require('../_charts/languages.json')}
+              aspect={8 / 10}
+              sx={{ maxWidth: 600 }}
+              footnote={footnote}
+            />
           </ResponsiveAlignedRight>
         </Split>
       </SubSection>
@@ -38,17 +40,18 @@ export default function () {
             </Insights>
           </ResponsiveColumnFlex>
           <ResponsiveAlignedRight>
-            <RankChart data={require('../_charts/backend-languages.json')} aspect={7 / 10} sx={{ maxWidth: 600 }} />
+            <RankChart
+              data={require('../_charts/backend-languages.json')}
+              aspect={8 / 10}
+              sx={{ maxWidth: 600 }}
+              footnote={footnote}
+            />
           </ResponsiveAlignedRight>
         </Split>
       </SubSection>
     </Section>
   );
 }
-
-const LanguagesChart = styled(_LanguagesChart)({
-  maxWidth: 656,
-});
 
 const title = `Top languages 
 in the open source world 
@@ -66,10 +69,8 @@ const insights = (
   </>
 );
 
+const footnote = '* 2022: 01.01-09.01, exclude fork repositories'
 
-const BackendLanguagesChart = styled(_BackendLanguagesChart)({
-  maxWidth: 542,
-});
 
 const backendTitle = `Rankings of back-end programming languages`;
 
@@ -82,3 +83,5 @@ const backendInsights = (
     Rust has been trending upward for several years, ranking #9 in 2022.
   </>
 );
+
+const backendFootnote = '* 2022: 01.01-09.01, exclude bots'

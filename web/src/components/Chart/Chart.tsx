@@ -35,6 +35,7 @@ const CanvasChart: ChartElement = forwardRef<ChartJs>(function <TType extends Ch
         const chartInstance = chartRef.current = new ChartJs(canvasRef.current, config);
         applyAspect(chartInstance, aspect);
         applyForwardedRef(ref, chartInstance);
+        chartInstance.update();
       }
       return () => {
         if (chartRef.current) {
@@ -49,7 +50,7 @@ const CanvasChart: ChartElement = forwardRef<ChartJs>(function <TType extends Ch
       const chartInstance = chartRef.current;
       if (chartInstance) {
         applyAspect(chartInstance, aspect);
-        chartInstance.update();
+        chartInstance.update('none');
       }
     }, [aspect]);
 
@@ -65,6 +66,7 @@ const CanvasChart: ChartElement = forwardRef<ChartJs>(function <TType extends Ch
     useEffect(() => {
       if (!chartRef.current) {
         chartRef.current.options = config.options;
+        chartRef.current.update('none');
       }
     }, [config.options]);
 

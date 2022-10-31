@@ -29,7 +29,9 @@ export const UL = styled('ul')({
   listStyle: 'none',
 });
 
-export const LI = styled('li')({});
+export const LI = styled('li')({
+  boxSizing: 'border-box',
+});
 
 export const BR = styled('span')({
   '&:before': {

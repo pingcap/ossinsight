@@ -40,7 +40,7 @@ export default function WeekdayDistributionData({ data, sx }: WeekdayDistributio
             ticks: {
               color: '#E0E0E0',
               font: {
-                size: 16,
+                size: 14,
               },
               callback: value => `${value}${data.unit}`,
             },
@@ -53,7 +53,7 @@ export default function WeekdayDistributionData({ data, sx }: WeekdayDistributio
             ticks: {
               color: '#E0E0E0',
               font: {
-                size: 16,
+                size: 13,
               },
             },
           },
@@ -63,7 +63,7 @@ export default function WeekdayDistributionData({ data, sx }: WeekdayDistributio
             labels: {
               color: '#E0E0E0',
               font: {
-                size: 16,
+                size: 13,
                 family: 'JetBrains Mono',
               },
               boxWidth: 18,

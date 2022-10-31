@@ -2,7 +2,8 @@ import Section from "@site/src/pages/year/2022/_components/Section";
 import React from "react";
 import { P2, H1 } from "@site/src/pages/year/2022/_components/typograph";
 import CodeIcon from '@mui/icons-material/Code';
-import { HeadlineTag, LI, UL } from "@site/src/pages/year/2022/_components/styled";
+import { A, HeadlineTag, LI, UL } from "@site/src/pages/year/2022/_components/styled";
+import { paramCase } from "param-case";
 
 export default function () {
   return (
@@ -22,7 +23,11 @@ export default function () {
       <UL sx={{ mt: 4 }}>
         {highlights.map(highlight => (
           <LI key={highlight}>
-            <P2>- {highlight}</P2>
+            <P2>
+              <A href={`#${paramCase(highlight)}`}>
+                - {highlight}
+              </A>
+            </P2>
           </LI>
         ))}
       </UL>
@@ -32,8 +37,13 @@ export default function () {
 
 const description = `We analyzed more than 5,000,000,000 rows of GitHub event data and got the results here. In this report, you'll get interesting findings about open source software on GitHub in 2022, including:`;
 
+<<<<<<< HEAD
 const highlights: string[] = [
   'Top programming languages in open source',
+=======
+export const highlights: string[] = [
+  'Top programming languages from 2019 to 2022',
+>>>>>>> 3d598da9129fd6e2b961cd49c80f727c5ea09807
   'Geographic distribution behavior by country or region',
   'Popular open source topics',
   'The most popular repositories',

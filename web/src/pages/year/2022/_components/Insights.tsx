@@ -41,7 +41,7 @@ const Logo = styled('img')({
 const Body = styled(Typography)({
   position: 'relative',
   paddingLeft: 22,
-  fontSize: 18,
+  fontSize: '0.9em',
   color: '#7C7C7C',
   marginTop: 32,
   fontFamily: 'JetBrains Mono',

@@ -14,7 +14,15 @@ export default function Keynote({ icon, title, description }: KeynoteProps) {
       <Box>
         {icon}
       </Box>
-      <H3 mt={6}>
+      <H3
+        mt={6}
+        sx={theme => ({
+          [theme.breakpoints.up('md')]: {
+            mt: 6
+          },
+          mt: 2
+        })}
+      >
         {title}
       </H3>
       <P1 mt={2}>

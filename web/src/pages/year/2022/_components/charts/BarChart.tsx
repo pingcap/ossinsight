@@ -1,7 +1,9 @@
 import Chart, { ChartProps } from "@site/src/components/Chart";
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { defaultColors } from './colors';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
+import useIsLarge from "@site/src/pages/year/2022/_components/hooks/useIsLarge";
+import ChartJs from "chart.js/auto";
 
 
 interface BarChartProps<T> extends Pick<ChartProps, 'fallbackImage' | 'name' | 'sx' | 'aspect'> {
@@ -14,8 +16,24 @@ export default function BarChart<T extends Record<string, any>>({
   footnote,
   ...props
 }: BarChartProps<T>) {
+  const chartRef = useRef<ChartJs | undefined>();
+
+  const large = useIsLarge();
+  useEffect(() => {
+    const chart = chartRef.current;
+    if (chart) {
+      chart.options.plugins.datalabels.font = {
+        weight: 'bold',
+        size: large ? 20 : 16,
+        family: 'JetBrains Mono',
+      };
+      chart.update('none');
+    }
+  }, [large]);
+
   return (
     <Chart<"bar">
+      ref={chartRef}
       once
       {...props}
       type="bar"
@@ -68,7 +86,7 @@ export default function BarChart<T extends Record<string, any>>({
             color: 'white',
             font: {
               weight: 'bold',
-              size: 20,
+              size: large ? 20 : 16,
               family: 'JetBrains Mono',
             },
             formatter: (value, context) => {
