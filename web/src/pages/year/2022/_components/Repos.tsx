@@ -29,7 +29,7 @@ export default function Repos({ color, category, value, percent, list }: ReposPr
           bottom: 16,
           textAlign: 'right',
           fontWeight: 'bold',
-          fontSize: 12,
+          fontSize: 14,
         }}
       >
         {list.map(item => (

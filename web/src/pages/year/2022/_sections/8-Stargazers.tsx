@@ -102,7 +102,7 @@ const Login = styled('div', { label: 'Login' })(({ theme }) => ({
     display: 'block',
     marginLeft: 0,
   },
-  fontSize: '0.8em',
+  fontSize: '1.2em',
   display: 'inline-block',
   fontWeight: 'bold',
   color: 'white',

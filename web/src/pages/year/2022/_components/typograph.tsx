@@ -6,7 +6,7 @@ export function H1({
   ...props
 }: Omit<TypographyProps<'h1'>, 'variant' | 'fontSize' | 'color' | 'fontWeight'>) {
   return (
-    <Typography variant="h1" fontFamily='inherit' fontSize='2.2em' {...props}>
+    <Typography variant="h1" fontFamily='inherit' fontSize='2em' {...props}>
       {children}
     </Typography>
   );
@@ -51,7 +51,7 @@ export function P1({
   ...props
 }: Omit<TypographyProps<'p'>, 'variant' | 'fontSize' | 'color' | 'fontWeight'>) {
   return (
-    <Typography variant="body1" fontFamily='inherit' fontSize='0.9em' color="#E0E0E0" {...props}>
+    <Typography variant="body1" fontFamily='inherit' fontSize='0.8em' color="#E0E0E0" {...props}>
       {children}
     </Typography>
   );
@@ -62,7 +62,7 @@ export function P2({
   ...props
 }: Omit<TypographyProps<'p'>, 'variant' | 'fontSize' | 'color' | 'fontWeight'>) {
   return (
-    <Typography variant="body1" fontFamily='inherit' fontSize='0.9em' color="#7C7C7C" mt={[1, 2, 3]} {...props}>
+    <Typography variant="body1" fontFamily='inherit' fontSize='0.8em' color="#7C7C7C" mt={[1, 2, 3]} {...props}>
       {children}
     </Typography>
   );

@@ -40,10 +40,10 @@ const description = `We analyzed more than 5,000,000,000 rows of GitHub event da
 export const highlights: string[] = [
   'Top programming languages in open source',
   'Geographic distribution behavior by country or region',
+  'Developer behavior distribution on weekdays and weekends',
   'Popular open source topics',
   'The most popular repositories',
   'The most active repositories',
   'The developers who gave the most stars',
   'The most active developers',
-  'Developer behavior distribution on weekdays and weekends',
 ];

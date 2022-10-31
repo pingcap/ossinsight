@@ -34,7 +34,7 @@ export default function () {
 }
 
 const title = 'How we classify technical fields by topics';
-const description = 'We query the event distribution for each Weekday/Weekend in 2022 and calculate the distribution of each event on 7 days of the week and the distribution of events for each day.';
+const description = 'We do exact matching and fuzzy matching based on the repository topic. Exact matching means that the repository topics have a topic that exactly matches the word, and fuzzy matching means that the repository topics have a topic that contains the word.';
 
 const tableContent: {
   name: string

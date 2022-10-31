@@ -41,8 +41,8 @@ const Logo = styled('img')({
 
 const Body = styled(Box)(({}) => ({
   position: 'relative',
-  paddingLeft: 22,
-  fontSize: '0.9em',
+  paddingLeft: 16,
+  fontSize: '0.8em',
   color: '#7C7C7C',
   '&:before': {
     display: 'block',

@@ -2,6 +2,7 @@ import Section, { SubSection } from "@site/src/pages/year/2022/_components/Secti
 import React from "react";
 import { PieChart, WeekdayDistributionData } from '../_components/charts';
 import Insights from "@site/src/pages/year/2022/_components/Insights";
+import { BR } from "../_components/styled";
 
 export default function () {
   return (
@@ -44,10 +45,8 @@ const description = 'We queried the distribution of each event type over the sev
 const distributionTitle = 'The distribution of specific events';
 const distributionInsight = (
   <>
-    PushEvent, WatchEvent and ForkEvent are not much different in Weekday and Weekend.
-    PullRequestReviewEvent is the most different.
-    WatchEvent and ForkEvent are more personal behaviors, PullRequestReviewEvents are more work behaviors,
-    PushEvents are used more in personal projects.
-    PushEvent, WatchEvent and ForkEvent account for a larger proportion of Weekend.
+    Pull Request Event, Pull Request Review Event, and Issues Event all have the highest percentage on Tuesdays, while the lowest percentage is on the weekends.
+    <BR />
+    The amount of Push Event, Watch Event, and Fork Event activities are similar on weekdays and weekends, while the Pull Request Review Event is the most different. Watch Event and Fork Event are more personal behaviors, Pull Request Review Events are more work behaviors, and Push Events are used more in personal projects.
   </>
 );

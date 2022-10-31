@@ -51,11 +51,19 @@ export default function () {
 }
 
 const title = 'Popular open source topics';
-const description = 'Each year, technology introduces new buzz words. Can we gain insight into technical trends through the open source repositories behind the hot words? We investigated five technical areas: Low Code, Web3, GitHub Actions, Database, and AI.';
-
+const description = (
+  <>
+    Each year, technology introduces new buzz words. Can we gain insight into technical trends through the open source repositories behind the hot words? We investigated five technical areas: <strong>Low Code, Web3, GitHub Actions, Database, and AI</strong>.
+  </>
+);
 const activityTitle = 'Activity levels of popular topics';
 const activityDescription = 'We queried the number of open source repositories associated with each technical area, as well as the percentage of active repositories in 2022.';
-const activityInsights = 'This figure shows that open source repositories in the Low Code topic are the most active, with 76.3% being active in 2022, followed by Web3 with 63.85%';
+const activityInsights = (
+  <>
+   This figure shows that open source repositories in the Low Code topic are the most active, with <strong>76.3%</strong> being active in 2022, followed by Web3 with <strong>63.85%</strong>.
+  </>
+);
+
 const ActivitiesChart = (() => {
   const large = useIsLarge();
 
@@ -63,7 +71,7 @@ const ActivitiesChart = (() => {
     <BarChart
       aspect={large ? 16 / 9 : 4 / 3}
       data={require('../_charts/activity.json')}
-      footnote="* Time range: 2022.01.01-2022.09.30, exclude bots"
+      footnote="* Time range of 2022: 01.01-09.30, excluding bot events and forking repositories"
       sx={{
         maxWidth: 656,
       }}
@@ -77,15 +85,16 @@ const detailsDescription = (
     We queried the following items for each technical area from 2015 to 2022:
     <BR />
     - The annual increment of repositories
+    <BR />
     - The annual increment of collaborative events
+    <BR />
     - The number of developers participating in collaborative events
+    <BR />
     - The annual increment of stars
     <BR />
     Then, we calculated the growth rate for each year which can reflect new entrants, developer engagement in this
     technical field, and the industry's interest in this area. For 2022, we compare its first nine months with the first
     nine months of 2021.
-    <BR />
-    * The 2022 data comparison period is 2022.01.01 - 2022.09.30, compared to 2021.01.01 - 2021.09.30.
   </>
 );
 

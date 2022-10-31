@@ -9,7 +9,7 @@ export const HeadlineTag = styled('div')(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  fontSize: '1.4em',
+  fontSize: '1.2em',
   fontWeight: 'bold',
   borderRadius: 62,
   marginBottom: 16,

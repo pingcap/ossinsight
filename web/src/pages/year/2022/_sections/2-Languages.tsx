@@ -61,16 +61,16 @@ const description = `This chart ranks programming languages ​​yearly from 20
 
 const insights = (
   <>
-    Python surpassed Java and moved to #3 in 2021.
+    Python surpassed Java and moved to <strong>#3</strong> in 2021.
     <BR />
-    TypeScript rose from #10 to #6, and SCSS rose from #39 to #19. The rise of SCSS shows that open source projects that
+    TypeScript rose from #10 to <strong>#6</strong>, and SCSS rose from #39 to <strong>#19</strong>. The rise of SCSS shows that open source projects that
     value front-end expressiveness are gradually gaining popularity.
     <BR />
     The two languages Ruby and R dropped a lot in ranking over the years.
   </>
 );
 
-const footnote = '* 2022: 01.01-09.01, exclude fork repositories';
+const footnote = '* 2022: 01.01-09.30, excluding forking repositories';
 
 
 const backendTitle = `Rankings of back-end programming languages`;
@@ -79,10 +79,10 @@ const backendDescription = `The programming languages used in a pull request ref
 
 const backendInsights = (
   <>
-    Python and Java rank #1 and #2 respectively. In 2021, Go overtook Ruby to rank #3 in 2021.
+    Python and Java rank #1 and #2 respectively. In 2021, Go overtook Ruby to rank <strong>#3</strong> in 2021.
     <BR />
-    Rust has been trending upward for several years, ranking #9 in 2022.
+    Rust has been trending upward for several years, ranking <strong>#9</strong> in 2022.
   </>
 );
 
-const backendFootnote = '* 2022: 01.01-09.01, exclude bots';
+const backendFootnote = '* 2022: 01.01-09.30, excluding bot events';
