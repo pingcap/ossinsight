@@ -24,6 +24,7 @@ export type CountryData = {
   unit: string
   labels: string[]
   data: [string, string, ...number[]][]
+  highlights: number[][]
 }
 
 declare module "./*.json" {
