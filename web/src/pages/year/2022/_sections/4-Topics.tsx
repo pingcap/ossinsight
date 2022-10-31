@@ -52,7 +52,7 @@ export default function () {
 }
 
 const title = 'Popular open source topics';
-const description = 'Each year, technology introduces new buzz words. Can we gain insight into technical trends through the open source repositories behind the hot words? We investigated five technical areas: Low Code, Web3, Actions, Database, and AI.';
+const description = 'Each year, technology introduces new buzz words. Can we gain insight into technical trends through the open source repositories behind the hot words? We investigated five technical areas: Low Code, Web3, GitHub Actions, Database, and AI.';
 
 const activityTitle = 'Activity levels of popular topics';
 const activityDescription = 'We queried the number of open source repositories associated with each technical area, as well as the percentage of active repositories in 2022. Forking repositories are not included. “Active in 2022” means that collaborative events initiated by non-bots occurred in 2022. Collaborative events include CommitCommentEvent, IssueCommentEvent, IssuesEvent, PullRequestEvent, PullRequestReviewCommentEvent, PullRequestReviewEvent, PushEvent, and ReleaseEvent.';
@@ -134,7 +134,7 @@ const detailedCharts: {
     Chart: () => {
       return (
         <LineChart
-          name='Actions'
+          name='GitHub Actions'
           data={require('../_charts/actions.json')}
           sx={{ maxWidth: 686, }}
         />
@@ -142,7 +142,7 @@ const detailedCharts: {
     },
     insights: (
       <>
-        The annual increase in repositories in Actions has been declining, but developer engagement and industry
+        The annual increase in repositories in GitHub Actions has been declining, but developer engagement and industry
         attention are still increasing slightly.
       </>
     ),

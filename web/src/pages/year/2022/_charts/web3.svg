@@ -59,7 +59,7 @@
         <circle cx="5" cy="5" r="5" stroke="none"/>
         <circle cx="5" cy="5" r="4.5" fill="none"/>
       </g>
-      <text id="New_developer" data-name="New developer" transform="translate(536.31 5615.021)" fill="#bfbfbf" font-size="16" font-family="JetBrainsMono-Regular, JetBrains Mono"><tspan x="0" y="0">New developer</tspan></text>
+      <text id="New_developers" data-name="New developers" transform="translate(536.31 5615.021)" fill="#bfbfbf" font-size="16" font-family="JetBrainsMono-Regular, JetBrains Mono"><tspan x="0" y="0">New developers</tspan></text>
       <g id="椭圆_396" data-name="椭圆 396" transform="translate(383.928 5604.021)" fill="#ea7e53" stroke="#ea7e53" stroke-width="1">
         <circle cx="5" cy="5" r="5" stroke="none"/>
         <circle cx="5" cy="5" r="4.5" fill="none"/>
