@@ -142,6 +142,6 @@ const Table = styled('table')({
   display: 'table',
   width: '100%',
   fontFamily: 'JetBrains Mono',
-  fontSize: 14,
+  fontSize: 13,
   marginTop: 24,
 });

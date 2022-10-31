@@ -16,10 +16,10 @@ export default function () {
       <ResponsiveAlignedRight sx={{ position: 'relative', mt: 8 }}>
         <Users
           sx={theme => ({
+            position: 'absolute',
+            left: 0,
+            top: 0,
             [theme.breakpoints.up('md')]: {
-              position: 'absolute',
-              left: 0,
-              top: 0,
               maxWidth: 800,
             },
           })}
@@ -59,15 +59,26 @@ interface UserProps {
   stars: number;
 }
 
-const Users = styled(UL)({
+const Users = styled(UL)(({ theme }) => ({
   fontFamily: "JetBrains Mono",
   display: 'flex',
   flexWrap: 'wrap',
-});
+  marginLeft: theme.spacing(-4),
+  marginRight: theme.spacing(-4),
+}));
 
 function User({ index, login, stars }: UserProps) {
   return (
-    <LI sx={{ mr: 12, mb: 12 }}>
+    <LI
+      sx={theme => ({
+        ml: 4,
+        mt: 4,
+        width: '100%',
+        [theme.breakpoints.up('md')]: {
+          width: `calc(50% - ${theme.spacing(4)})`,
+        },
+      })}
+    >
       <Rank>{index}</Rank>
       <Login>{login}</Login>
       <Details>{stars} stars</Details>
@@ -76,30 +87,48 @@ function User({ index, login, stars }: UserProps) {
   );
 }
 
-const Rank = styled('div')({
-  fontSize: 40,
+const Rank = styled('div', { label: 'Rank' })(({ theme }) => ({
+  [theme.breakpoints.up('md')]: {
+    fontSize: 28,
+    display: 'block',
+  },
+  fontSize: 16,
+  display: 'inline-block',
   fontStyle: 'italic',
   fontWeight: 100,
   color: '#BFBFBF',
-});
+}));
 
-const Login = styled('div')({
-  fontSize: 33,
+const Login = styled('div', { label: 'Login' })(({ theme }) => ({
+  [theme.breakpoints.up('md')]: {
+    fontSize: 24,
+    display: 'block',
+    marginLeft: 0,
+  },
+  fontSize: 16,
+  display: 'inline-block',
   fontWeight: 'bold',
   color: 'white',
-  marginTop: 16,
-});
+  marginTop: 12,
+  marginLeft: 8,
+}));
 
-const Details = styled('div')({
+const Details = styled('div', { label: 'Details' })(({ theme }) => ({
   color: 'white',
-  fontSize: 30,
-  marginTop: 16,
-});
+  [theme.breakpoints.up('md')]: {
+    fontSize: 20,
+  },
+  fontSize: 14,
+  marginTop: 12,
+}));
 
-const Extra = styled('div')({
+const Extra = styled('div', { label: 'Extra' })(({ theme }) => (({
   color: '#BFBFBF',
-  fontSize: 20,
-});
+  [theme.breakpoints.up('md')]: {
+    fontSize: 14,
+  },
+  fontSize: 12
+})));
 
 const StargazersChart = () => {
   const large = useIsLarge();

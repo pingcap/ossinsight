@@ -62,7 +62,7 @@ export default function MostActiveDevelopersChart(props: Omit<ChartProps, 'once'
               color: '#E0E0E080',
               font: {
                 family: 'JetBrains Mono',
-                size: 16,
+                size: 14,
                 weight: 'bold',
               }
             }
@@ -73,7 +73,7 @@ export default function MostActiveDevelopersChart(props: Omit<ChartProps, 'once'
             color: '#E0E0E080',
             font: {
               family: 'JetBrains Mono',
-              size: 16,
+              size: 12,
             },
             anchor: 'end',
             formatter: value => value === 0 ? '' : value,
@@ -88,7 +88,7 @@ export default function MostActiveDevelopersChart(props: Omit<ChartProps, 'once'
               filter: (item) => item.datasetIndex >= 1,
               color: '#E0E0E080',
               font: {
-                size: 16,
+                size: 14,
                 family: 'JetBrains Mono',
               },
               boxWidth: 18,
@@ -101,12 +101,12 @@ export default function MostActiveDevelopersChart(props: Omit<ChartProps, 'once'
           tooltip: {
             titleColor: '#BFBFBF',
             titleFont: {
-              size: 16,
+              size: 14,
               family: 'JetBrains Mono',
               weight: 'bold',
             },
             bodyFont: {
-              size: 20,
+              size: 18,
               family: 'JetBrains Mono'
             },
             boxPadding: 8,

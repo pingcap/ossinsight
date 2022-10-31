@@ -125,8 +125,8 @@ const detailedCharts: {
         Most of the core technical of the Web3 field is currently not open source, and open source is mostly some
         peripheral projects, so open source projects can reflect the development of the Web3 ecology to a certain
         extent. Whether it is the participation of new repositories, developers, or the attention of the industry The
-        Web3 ecosystem has maintained rapid growth in recent years, and the growth rate of new repositories peaked at
-        <strong>360.22%</strong> in 2021.
+        Web3 ecosystem has maintained rapid growth in recent years, and the growth rate of new repositories peaked
+        at <strong>360.22%</strong> in 2021.
       </>
     ),
   },

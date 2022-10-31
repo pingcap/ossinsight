@@ -13,6 +13,7 @@ type RankData = {
 
 interface RankChartProps extends Pick<ChartProps, 'sx' | 'aspect'> {
   data: RankData;
+  footnote?: string;
 }
 
 function compact(data: RankData): (rank: number) => [index: number, offset: number] {
@@ -42,7 +43,7 @@ function compact(data: RankData): (rank: number) => [index: number, offset: numb
   };
 }
 
-export default function RankChart({ data, ...props }: RankChartProps) {
+export default function RankChart({ data, footnote, ...props }: RankChartProps) {
   const comp = useMemo(() => compact(data), [data]);
 
   return (
@@ -103,7 +104,7 @@ export default function RankChart({ data, ...props }: RankChartProps) {
             ticks: {
               color: '#E0E0E0',
               font: {
-                size: 20,
+                size: 16,
               },
             },
             grid: {
@@ -119,6 +120,18 @@ export default function RankChart({ data, ...props }: RankChartProps) {
           tooltip: {
             enabled: false,
           },
+          subtitle: {
+            position: 'bottom',
+            fullSize: true,
+            align: 'center',
+            text: footnote,
+            display: !!footnote,
+            color: '#7C7C7C',
+            font: {
+              family: 'JetBrains Mono',
+              size: 13,
+            },
+          },
           datalabels: {
             labels: {
               index: {
@@ -132,7 +145,7 @@ export default function RankChart({ data, ...props }: RankChartProps) {
                 align: 'right',
                 color: ctx => defaultColors[ctx.datasetIndex % defaultColors.length],
                 font: {
-                  size: 16,
+                  size: 14,
                 },
               }
             },

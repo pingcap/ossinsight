@@ -51,7 +51,7 @@ export default function Page() {
         {({ currentElementIndexInViewport }) => (
           <PageContainer>
             <BrowserHash value={ids[currentElementIndexInViewport]} />
-            <Container component="main" maxWidth="xl" sx={{ py: 8 }}>
+            <Container component="main" maxWidth="lg" sx={{ py: 6 }}>
               {useMemo(() => sections.map(({ default: Section }, i) => (
                 <SectionContext.Provider key={i} value={{ id: ids[i], ref: refs[i] }}>
                   <Section />

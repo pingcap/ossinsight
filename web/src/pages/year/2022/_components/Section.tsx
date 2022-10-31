@@ -35,7 +35,7 @@ export default function Section({
         '&:not(:first-of-type)': {
           borderTop: '6px dashed #4D4D4D',
         },
-        py: 12,
+        py: 8,
       }}
       ref={ref}
     >
@@ -52,9 +52,9 @@ export function SubSection({ title, description, children }: PropsWithChildren<S
       component="div"
       sx={{
         '&:not(:first-of-type)': {
-          borderTop: '3px solid #4D4D4D',
+          borderTop: '3px solid #4D4D4D80',
         },
-        py: 12,
+        py: 6,
       }}
     >
       {title && <H3>{title}</H3>}
