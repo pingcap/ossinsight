@@ -37,13 +37,8 @@ export default function () {
 
 const description = `We analyzed more than 5,000,000,000 rows of GitHub event data and got the results here. In this report, you'll get interesting findings about open source software on GitHub in 2022, including:`;
 
-<<<<<<< HEAD
 const highlights: string[] = [
   'Top programming languages in open source',
-=======
-export const highlights: string[] = [
-  'Top programming languages from 2019 to 2022',
->>>>>>> 3d598da9129fd6e2b961cd49c80f727c5ea09807
   'Geographic distribution behavior by country or region',
   'Popular open source topics',
   'The most popular repositories',
