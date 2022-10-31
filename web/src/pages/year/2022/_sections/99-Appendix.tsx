@@ -102,6 +102,6 @@ const tableContent: {
 const Table = styled('table')({
   display: 'table',
   width: '100%',
-  fontSize: 13,
+  fontSize: '0.8em',
   marginTop: 24,
 });

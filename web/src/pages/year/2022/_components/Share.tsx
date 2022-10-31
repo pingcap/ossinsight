@@ -82,6 +82,7 @@ export default function Share() {
 const ShareContainer = styled(Stack)({
   opacity: 0.4,
   position: 'fixed',
+  zIndex: 1100,
   bottom: 32,
   right: 16,
   width: 56,

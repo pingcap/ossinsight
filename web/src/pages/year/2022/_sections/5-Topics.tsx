@@ -14,13 +14,13 @@ export default function () {
     <Section>
       <SubSection>
         <H2>{title}</H2>
-        <P2 maxWidth={1054} mt={3}>{description}</P2>
+        <P2 maxWidth={1054}>{description}</P2>
       </SubSection>
       <SubSection>
         <Split>
           <ResponsiveColumnFlex height={350}>
             <H3>{activityTitle}</H3>
-            <P2 mt={3}>{activityDescription}</P2>
+            <P2>{activityDescription}</P2>
             <Spacer />
             <Insights>
               {activityInsights}
@@ -36,7 +36,7 @@ export default function () {
         description={detailsDescription}
       >
         {detailedCharts.map(({ Chart, insights }, i) => (
-          <Split key={i} mt={12} reversed={large && i % 2 === 0} spacing={4}>
+          <Split key={i} mt={[2,4,6]} reversed={large && i % 2 === 0} spacing={4}>
             <ResponsiveColumnFlex justifyContent="center">
               <Insights maxWidth={711}>{insights}</Insights>
             </ResponsiveColumnFlex>

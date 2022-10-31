@@ -23,10 +23,10 @@ export default function Insights({
       {!hideTitle && (
         <H4 {...titleProps}>
           {title}
-          <Logo width={40} src="/img/favicon-1.png" alt="logo" />
+          <Logo src="/img/favicon-1.png" alt="logo" />
         </H4>
       )}
-      <Body as="div">
+      <Body mt={[2, 3, 4]}>
         {children}
       </Body>
     </Box>
@@ -36,14 +36,14 @@ export default function Insights({
 const Logo = styled('img')({
   verticalAlign: 'text-bottom',
   marginLeft: 8,
+  width: '2em',
 });
 
-const Body = styled(Typography)({
+const Body = styled(Box)(({}) => ({
   position: 'relative',
   paddingLeft: 22,
   fontSize: '0.9em',
   color: '#7C7C7C',
-  marginTop: 32,
   '&:before': {
     display: 'block',
     content: '" "',
@@ -58,4 +58,4 @@ const Body = styled(Typography)({
     color: '#FFFFFF',
     fontWeight: 'border',
   },
-});
+}));

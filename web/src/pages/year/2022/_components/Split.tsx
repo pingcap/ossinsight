@@ -13,7 +13,7 @@ export default function Split({ children, reversed = false, ...props }: SplitPro
   const md = useMemo(() => 12 / size, [size]);
 
   return (
-    <Grid container justifyContent="space-between" alignItems="center" columnSpacing={4} rowSpacing={4} {...props}>
+    <Grid container justifyContent="space-between" alignItems="center" spacing={[2,3,4]} {...props}>
       {children.map((child, i) => (
         <Grid
           key={i}

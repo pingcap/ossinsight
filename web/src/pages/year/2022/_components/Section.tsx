@@ -31,12 +31,27 @@ export default function Section({
     <Box
       id={id}
       component="section"
-      sx={{
+      sx={theme => ({
         '&:not(:first-of-type)': {
-          borderTop: '6px dashed #4D4D4D',
+          borderTop: '2px dashed #4D4D4D',
         },
-        py: 8,
-      }}
+        [theme.breakpoints.up('sm')]: {
+          py: 4,
+          borderWidth: '3px !important',
+        },
+        [theme.breakpoints.up('md')]: {
+          py: 6,
+          borderWidth: '4px !important',
+        },
+        [theme.breakpoints.up('lg')]: {
+          py: 8,
+          borderWidth: '6px !important',
+          '&:not(:first-of-type)': {
+            pt: 8
+          },
+        },
+        py: 3,
+      })}
       ref={ref}
     >
       {title && <H2>{title}</H2>}
@@ -50,12 +65,26 @@ export function SubSection({ title, description, children }: PropsWithChildren<S
   return (
     <Box
       component="div"
-      sx={{
-        '&:not(:first-of-type)': {
-          borderTop: '3px solid #4D4D4D80',
+      sx={theme => ({
+        '&:first-of-type': {
+          pt: 0,
         },
-        py: 6,
-      }}
+        '&:not(:first-of-type)': {
+          borderTop: '1px solid #4D4D4D40',
+        },
+        py: 2,
+        [theme.breakpoints.up('sm')]: {
+          py: 3,
+          borderWidth: '2px !important',
+        },
+        [theme.breakpoints.up('md')]: {
+          py: 5,
+          borderWidth: '3px !important',
+        },
+        [theme.breakpoints.up('lg')]: {
+          py: 6,
+        }
+      })}
     >
       {title && <H3>{title}</H3>}
       {description && <P2 mt={3}>{description}</P2>}

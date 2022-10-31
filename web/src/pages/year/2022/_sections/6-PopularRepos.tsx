@@ -13,7 +13,7 @@ export default function () {
         container
         spacing={2}
         height={700}
-        mt={6}
+        mt={[2,4,6]}
         direction="row"
         sx={(theme) => ({
           height: 'unset',

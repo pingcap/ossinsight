@@ -22,7 +22,7 @@ export default function () {
         />
       </SubSection>
       <SubSection title={distributionTitle}>
-        <Insights mt={6}>{distributionInsight}</Insights>
+        <Insights mt={[2,4,6]}>{distributionInsight}</Insights>
         <WeekdayDistributionData
           sx={{
             width: '100%',

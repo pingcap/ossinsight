@@ -9,16 +9,16 @@ export const HeadlineTag = styled('div')(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  fontSize: 40,
+  fontSize: '1.4em',
   fontWeight: 'bold',
   borderRadius: 62,
   marginBottom: 16,
-  paddingLeft: 32,
-  paddingRight: 32,
-  paddingTop: 16,
-  paddingBottom: 16,
-  [theme.breakpoints.up('md')]: {
+  padding: '12px 24px',
+  [theme.breakpoints.up('sm')]: {
     width: 'max-content',
+    paddingTop: 16,
+    paddingBottom: 16,
+    padding: '16px 32px'
   },
 }));
 
@@ -109,10 +109,10 @@ export const AnimatedDownIcon = styled(require('../_icons/arrow.svg').default)((
   right: 170,
   opacity: 0.7,
   [theme.breakpoints.down('lg')]: {
-    top: 300,
+    top: 268,
     right: 16,
   },
   [theme.breakpoints.down('md')]: {
-    top: 500,
+    top: 328,
   }
 }))

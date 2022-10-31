@@ -53,14 +53,19 @@ export default function Page() {
           <link key={font} href={font} rel="stylesheet" />
         ))}
       </Head>
-      <Scrollspy sectionRefs={refs} offset={-170}>
+      <Scrollspy sectionRefs={refs} offset={-120}>
         {({ currentElementIndexInViewport }) => (
           <PageContainer>
             <BrowserHash value={ids[currentElementIndexInViewport]} />
             <Share />
-            <Container component="main" maxWidth="lg" sx={{ py: 6 }}>
-              <MrO width='371' height='570' src={require('./_icons/mro.png').default} alt='Logo' />
-              <AnimatedDownIcon className='animated-down-icon' />
+            <Container component="main" maxWidth="lg" sx={theme => ({
+              py: 2,
+              [theme.breakpoints.up('md')]: {
+                py: 6,
+              },
+            })}>
+              <MrO width="371" height="570" src={require('./_icons/mro.png').default} alt="Logo" />
+              <AnimatedDownIcon className="animated-down-icon" />
               {useMemo(() => sections.map(({ default: Section }, i) => (
                 <SectionContext.Provider key={i} value={{ id: ids[i], ref: refs[i] }}>
                   <Section />
@@ -74,21 +79,27 @@ export default function Page() {
   );
 }
 
-const title = 'Open Source Highlights: Trends and Insights from GitHub 2022'
-const description = 'We analyzed 5 billion+ GitHub events and got interesting findings about open source software, such as top programming languages, geographic distribution behavior by country or region, popular open source topics, and the most active repositories and developers.'
-const keywords = 'GitHub annual report, GitHub 2022, The State of the Octoverse, GitHub insights, Open Source, top programming languages, most active developers, most active repositories'
-const image = '/img/year/2022/thumbnail.png'
+const title = 'Open Source Highlights: Trends and Insights from GitHub 2022';
+const description = 'We analyzed 5 billion+ GitHub events and got interesting findings about open source software, such as top programming languages, geographic distribution behavior by country or region, popular open source topics, and the most active repositories and developers.';
+const keywords = 'GitHub annual report, GitHub 2022, The State of the Octoverse, GitHub insights, Open Source, top programming languages, most active developers, most active repositories';
+const image = '/img/year/2022/thumbnail.png';
 
 function BrowserHash({ value }: { value: string | undefined }) {
   useEffect(() => {
-    history.replaceState(null, null, value ? `#${value}` : location.pathname + location.search)
+    history.replaceState(null, null, value ? `#${value}` : location.pathname + location.search);
   }, [value]);
   return <></>;
 }
 
-const PageContainer = styled('div', { label: 'PageContainer' })({
+const PageContainer = styled('div', { label: 'PageContainer' })(({ theme }) => ({
   background: "transparent linear-gradient(180deg, #242526 0%, #0B003B 100%) 0% 0% no-repeat padding-box",
-  fontSize: 20,
   fontFamily: "'JetBrains Mono', monospace",
   overflow: 'hidden',
-});
+  fontSize: 14,
+  [theme.breakpoints.up('md')]: {
+    fontSize: 16,
+  },
+  [theme.breakpoints.up('lg')]: {
+    fontSize: 20,
+  }
+}));

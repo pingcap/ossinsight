@@ -10,12 +10,12 @@ export default function () {
   return (
     <Section>
       <SubSection>
-        <Split spacing={2}>
+        <Split>
           <ResponsiveColumnFlex maxWidth={711}>
             <H2 whiteSpace="pre-wrap">{title}</H2>
-            <P2 mt={3}>{description}</P2>
+            <P2>{description}</P2>
             <Spacer />
-            <Insights>
+            <Insights mt={[2, 2, 4]}>
               {insights}
             </Insights>
           </ResponsiveColumnFlex>
@@ -33,9 +33,9 @@ export default function () {
         <Split spacing={2}>
           <ResponsiveColumnFlex maxWidth={711}>
             <H3>{backendTitle}</H3>
-            <P2 mt={3}>{backendDescription}</P2>
+            <P2>{backendDescription}</P2>
             <Spacer />
-            <Insights>
+            <Insights mt={[2, 2, 4]}>
               {backendInsights}
             </Insights>
           </ResponsiveColumnFlex>
@@ -63,13 +63,14 @@ const insights = (
   <>
     Python surpassed Java and moved to #3 in 2021.
     <BR />
-    TypeScript rose from  #10 to #6, and SCSS rose from #39 to #19. The rise of SCSS shows that open source projects that value front-end expressiveness are gradually gaining popularity.
+    TypeScript rose from #10 to #6, and SCSS rose from #39 to #19. The rise of SCSS shows that open source projects that
+    value front-end expressiveness are gradually gaining popularity.
     <BR />
     The two languages Ruby and R dropped a lot in ranking over the years.
   </>
 );
 
-const footnote = '* 2022: 01.01-09.01, exclude fork repositories'
+const footnote = '* 2022: 01.01-09.01, exclude fork repositories';
 
 
 const backendTitle = `Rankings of back-end programming languages`;
@@ -84,4 +85,4 @@ const backendInsights = (
   </>
 );
 
-const backendFootnote = '* 2022: 01.01-09.01, exclude bots'
+const backendFootnote = '* 2022: 01.01-09.01, exclude bots';

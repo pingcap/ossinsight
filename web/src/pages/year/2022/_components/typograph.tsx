@@ -62,7 +62,7 @@ export function P2({
   ...props
 }: Omit<TypographyProps<'p'>, 'variant' | 'fontSize' | 'color' | 'fontWeight'>) {
   return (
-    <Typography variant="body1" fontFamily='inherit' fontSize='0.9em' color="#7C7C7C" {...props}>
+    <Typography variant="body1" fontFamily='inherit' fontSize='0.9em' color="#7C7C7C" mt={[1, 2, 3]} {...props}>
       {children}
     </Typography>
   );

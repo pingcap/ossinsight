@@ -88,10 +88,9 @@ function User({ index, login, stars }: UserProps) {
 
 const Rank = styled('div', { label: 'Rank' })(({ theme }) => ({
   [theme.breakpoints.up('md')]: {
-    fontSize: 28,
     display: 'block',
   },
-  fontSize: 16,
+  fontSize: '1em',
   display: 'inline-block',
   fontStyle: 'italic',
   fontWeight: 100,
@@ -100,11 +99,10 @@ const Rank = styled('div', { label: 'Rank' })(({ theme }) => ({
 
 const Login = styled('div', { label: 'Login' })(({ theme }) => ({
   [theme.breakpoints.up('md')]: {
-    fontSize: 24,
     display: 'block',
     marginLeft: 0,
   },
-  fontSize: 16,
+  fontSize: '0.8em',
   display: 'inline-block',
   fontWeight: 'bold',
   color: 'white',
@@ -114,19 +112,13 @@ const Login = styled('div', { label: 'Login' })(({ theme }) => ({
 
 const Details = styled('div', { label: 'Details' })(({ theme }) => ({
   color: 'white',
-  [theme.breakpoints.up('md')]: {
-    fontSize: 20,
-  },
-  fontSize: 14,
+  fontSize: '1em',
   marginTop: 12,
 }));
 
 const Extra = styled('div', { label: 'Extra' })(({ theme }) => (({
   color: '#BFBFBF',
-  [theme.breakpoints.up('md')]: {
-    fontSize: 14,
-  },
-  fontSize: 12
+  fontSize: '0.8em'
 })));
 
 const StargazersChart = () => {

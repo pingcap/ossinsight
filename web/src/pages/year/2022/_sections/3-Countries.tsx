@@ -11,7 +11,7 @@ export default function () {
       title={title}
       description={description}
     >
-      <Split mt={3}>
+      <Split mt={[1, 2, 3]}>
         <CountryEvents data={require('../_charts/country-data.json')} />
         <Box>
           {insights.map((insight, i) => (

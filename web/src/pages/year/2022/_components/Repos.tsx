@@ -29,7 +29,7 @@ export default function Repos({ color, category, value, percent, list }: ReposPr
           bottom: 16,
           textAlign: 'right',
           fontWeight: 'bold',
-          fontSize: 13,
+          fontSize: 12,
         }}
       >
         {list.map(item => (
@@ -44,13 +44,13 @@ export default function Repos({ color, category, value, percent, list }: ReposPr
 }
 
 const Category = styled('div')({
-  fontSize: 20,
+  fontSize: '1em',
   fontWeight: 'bold',
   color: 'white',
 });
 
 const Percent = styled('div')({
-  fontSize: 48,
+  fontSize: '2.4em',
   fontWeight: 'bold',
   color: 'white',
   marginTop: 24,

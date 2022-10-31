@@ -13,7 +13,7 @@ export default function () {
       descriptionProps={{ maxWidth: 849 }}
     >
       <Stack
-        mt={4}
+        mt={[1,2,4]}
         direction={['column', 'column', 'row']}
         justifyContent='space-between'
         columnGap={4}

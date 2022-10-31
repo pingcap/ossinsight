@@ -82,7 +82,7 @@ export default function LineChart<T extends Record<string, any>>({
           },
         },
         plugins: {
-          subtitle: theme.subtitle(props.name),
+          subtitle: theme.subtitle(footnote),
           legend: {
             display: true,
             position: 'bottom',

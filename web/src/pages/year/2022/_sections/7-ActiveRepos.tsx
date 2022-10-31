@@ -13,7 +13,7 @@ export default function () {
       title={title}
       description={description}
     >
-      <Split mt={6}>
+      <Split mt={[2,4,6]}>
         <RepoRanks list={list} />
         <ResponsiveColumnFlex>
           {insights.map((insight, i) => (
@@ -177,7 +177,7 @@ const RepoRanks = ({ list }: { list: Rank[] }) => {
 };
 
 const Table = styled('table')({
-  fontSize: 16,
+  fontSize: '0.8em',
   border: 'none',
   display: 'table',
   width: '100%',
