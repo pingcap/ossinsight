@@ -2,6 +2,7 @@ export type BarData<T> = {
   unit: string
   x: keyof T
   y: keyof T
+  postfix: keyof T
   label?: keyof T
   data: T[]
 }

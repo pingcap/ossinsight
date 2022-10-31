@@ -12,7 +12,7 @@ interface BarChartProps<T> extends Pick<ChartProps, 'fallbackImage' | 'name' | '
 }
 
 export default function BarChart<T extends Record<string, any>>({
-  data: { data, x, y, unit },
+  data: { data, x, y, unit, postfix },
   footnote,
   ...props
 }: BarChartProps<T>) {
@@ -90,7 +90,7 @@ export default function BarChart<T extends Record<string, any>>({
               family: 'JetBrains Mono',
             },
             formatter: (value, context) => {
-              return `${data[context.dataIndex][y]}: ${value}${unit ?? ''}`;
+              return `${data[context.dataIndex][y]}: ${value}${unit ?? ''}${postfix ? ` ${data[context.dataIndex][postfix]}` : ''}`;
             },
             anchor: 'end',
             clamp: true,
