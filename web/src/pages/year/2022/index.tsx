@@ -44,7 +44,12 @@ if (sections.length !== ids.length) {
 export default function Page() {
   const refs = sections.map(() => useRef<HTMLDivElement | null>(null));
   return (
-    <Layout>
+    <Layout
+      title={title}
+      description={description}
+      keywords={keywords}
+      image={image}
+    >
       <Head>
         {fonts.map(font => (
           <link key={font} href={font} rel="stylesheet" />
@@ -70,6 +75,11 @@ export default function Page() {
     </Layout>
   );
 }
+
+const title = 'Open Source Highlights: Trends and Insights from GitHub 2022'
+const description = 'We analyzed 5 billion+ GitHub events and got interesting findings about open source software, such as top programming languages, geographic distribution behavior by country or region, popular open source topics, and the most active repositories and developers.'
+const keywords = 'GitHub annual report, GitHub 2022, The State of the Octoverse, GitHub insights, Open Source, top programming languages, most active developers, most active repositories'
+const image = '/img/year/2022/thumbnail.png'
 
 function BrowserHash({ value }: { value: string | undefined }) {
   useEffect(() => {
