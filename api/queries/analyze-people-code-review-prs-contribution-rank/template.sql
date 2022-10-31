@@ -10,7 +10,8 @@ WITH review_contribution_last_month AS (
             (type = 'PullRequestReviewEvent' AND action = 'created') OR
             (type = 'PullRequestReviewCommentEvent' AND action = 'created')
         )
-        AND event_month = DATE_FORMAT(DATE_SUB(NOW(), INTERVAL DAYOFMONTH(NOW()) DAY), '%Y-%m-01')
+        AND created_at >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH), '%Y-%m-01')
+        AND created_at < DATE_FORMAT(NOW(), '%Y-%m-01')
         AND actor_login NOT LIKE '%bot' AND actor_login NOT LIKE '%[bot]' AND actor_login NOT IN (SELECT login FROM blacklist_users bu)
     GROUP BY actor_id
 ), review_contribution_last_2nd_month AS (
@@ -25,7 +26,8 @@ WITH review_contribution_last_month AS (
             (type = 'PullRequestReviewEvent' AND action = 'created') OR
             (type = 'PullRequestReviewCommentEvent' AND action = 'created')
         )
-        AND event_month = DATE_FORMAT(DATE_SUB(DATE_SUB(NOW(), INTERVAL DAYOFMONTH(NOW()) DAY), INTERVAL 1 MONTH), '%Y-%m-01')
+        AND created_at >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 2 MONTH), '%Y-%m-01')
+        AND created_at < DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH), '%Y-%m-01')
         AND actor_login NOT LIKE '%bot' AND actor_login NOT LIKE '%[bot]' AND actor_login NOT IN (SELECT login FROM blacklist_users bu)
     GROUP BY actor_id
 )

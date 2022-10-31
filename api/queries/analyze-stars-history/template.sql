@@ -2,10 +2,10 @@ SELECT
     event_month, repo_id, total
 FROM (
     SELECT
-        event_month,
+        DATE_FORMAT(created_at, '%Y-%m-01') as event_month,
         repo_id,
-        COUNT(actor_login) OVER(ORDER BY event_month ASC) AS total,
-        ROW_NUMBER() OVER(PARTITION BY event_month) AS row_num
+        COUNT(actor_login) OVER(ORDER BY DATE_FORMAT(created_at, '%Y-%m-01') ASC) AS total,
+        ROW_NUMBER() OVER(PARTITION BY DATE_FORMAT(created_at, '%Y-%m-01')) AS row_num
     FROM github_events
     WHERE
         type = 'WatchEvent' AND repo_id = 41986369

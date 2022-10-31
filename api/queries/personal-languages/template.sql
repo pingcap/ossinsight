@@ -1,14 +1,15 @@
 WITH prs_with_language AS (
     SELECT
-        language, COUNT(1) AS cnt
+        gr.primary_language AS language, COUNT(1) AS cnt
     FROM github_events ge
+    LEFT JOIN github_repos gr ON ge.repo_id = gr.repo_id
     WHERE
         type = 'PullRequestEvent'
         AND actor_id = 5086433
         AND action = 'opened'
-        AND language IS NOT NULL  -- TODO: remove
-        AND language != ''
-    GROUP BY language
+        AND gr.primary_language IS NOT NULL  -- TODO: remove
+        AND gr.primary_language != ''
+    GROUP BY gr.primary_language
 ), s AS (
     SELECT SUM(cnt) AS total FROM prs_with_language
 )

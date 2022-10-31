@@ -6,7 +6,7 @@ WITH former_contributors AS (
         AND type = 'PullRequestEvent'
         AND action = 'closed'
         AND pr_merged = true
-        AND event_month < DATE_FORMAT(DATE_SUB(NOW(), INTERVAL DAYOFMONTH(NOW()) DAY), '%Y-%m-01')
+        AND created_at < DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH), '%Y-%m-01')
         AND creator_user_login NOT LIKE '%bot' AND creator_user_login NOT LIKE '%[bot]' AND creator_user_login NOT IN (SELECT login FROM blacklist_users bu)
 ), code_contribution_last_month AS (
     SELECT creator_user_login, COUNT(*) AS events
@@ -16,7 +16,8 @@ WITH former_contributors AS (
         AND type = 'PullRequestEvent'
         AND action = 'closed'
         AND pr_merged = true
-        AND event_month = DATE_FORMAT(DATE_SUB(NOW(), INTERVAL DAYOFMONTH(NOW()) DAY), '%Y-%m-01')
+        AND created_at >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH), '%Y-%m-01')
+        AND created_at < DATE_FORMAT(NOW(), '%Y-%m-01')
         AND creator_user_login NOT LIKE '%bot' AND creator_user_login NOT LIKE '%[bot]' AND creator_user_login NOT IN (SELECT login FROM blacklist_users bu)
     GROUP BY creator_user_login
     ORDER BY events DESC
@@ -28,7 +29,8 @@ WITH former_contributors AS (
         AND type = 'PullRequestEvent'
         AND action = 'closed'
         AND pr_merged = true
-        AND event_month = DATE_FORMAT(DATE_SUB(DATE_SUB(NOW(), INTERVAL DAYOFMONTH(NOW()) DAY), INTERVAL 1 MONTH), '%Y-%m-01')
+        AND created_at >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 2 MONTH), '%Y-%m-01')
+        AND created_at < DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH), '%Y-%m-01')
         AND creator_user_login NOT LIKE '%bot' AND creator_user_login NOT LIKE '%[bot]' AND creator_user_login NOT IN (SELECT login FROM blacklist_users bu)
     GROUP BY creator_user_login
     ORDER BY events DESC
