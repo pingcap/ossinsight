@@ -28,7 +28,7 @@ export default function () {
   )
 }
 
-const title = 'The Most Active Developers Since 2011'
-const description = 'We looked at the top 20 most active developers per year since 2011 and judgment whether the user is a bot manually.'
-const insight = 'The most active developers Top 20 from 2011-2022, bots started to overtake humans in 2013 and reach over 95% in 2022.'
+const title = 'The most active developers since 2011'
+const description = "We queried the top 20 most active developers per year since 2011. This time we didn't filter out bot events."
+const insight = 'We found that the percentage of bots is becoming larger and larger. Bots started to overtake humans in 2013 and have reached over 95% in 2022.'
 

@@ -55,8 +55,8 @@ const title = 'Popular open source topics';
 const description = 'Each year, technology introduces new buzz words. Can we gain insight into technical trends through the open source repositories behind the hot words? We investigated five technical areas: Low Code, Web3, GitHub Actions, Database, and AI.';
 
 const activityTitle = 'Activity levels of popular topics';
-const activityDescription = 'We queried the number of open source repositories associated with each technical area, as well as the percentage of active repositories in 2022. Forking repositories are not included. “Active in 2022” means that collaborative events initiated by non-bots occurred in 2022. Collaborative events include CommitCommentEvent, IssueCommentEvent, IssuesEvent, PullRequestEvent, PullRequestReviewCommentEvent, PullRequestReviewEvent, PushEvent, and ReleaseEvent.';
-const activityInsights = 'This figure shows that open source repositories in the Low Code topic are the most active, with 76.3% being active in 2022, followed by Web3 with 63.85%.';
+const activityDescription = 'We queried the number of open source repositories associated with each technical area, as well as the percentage of active repositories in 2022.';
+const activityInsights = 'This figure shows that open source repositories in the Low Code topic are the most active, with 76.3% being active in 2022, followed by Web3 with 63.85%';
 const ActivitiesChart = (() => {
   const large = useIsLarge()
 
@@ -64,7 +64,7 @@ const ActivitiesChart = (() => {
     <BarChart
       aspect={large ? 16 / 9 : 4 / 3}
       data={require('../_charts/activity.json')}
-      footnote='* Time range: 2022.01.01-2022.09.01, exclude bots'
+      footnote='* Time range: 2022.01.01-2022.09.30, exclude bots'
       sx={{
         maxWidth: 656,
       }}
@@ -72,13 +72,17 @@ const ActivitiesChart = (() => {
   )
 })
 
-const detailsTitle = 'Details in Popular topics';
+const detailsTitle = 'Popular topics over the past four years';
 const detailsDescription = (
   <>
-    We looked at the annual increment of repositories, the annual increment of collaborative events, the number of
-    developers participating in collaborative events, the annual increment of stars for each technology area over a
-    4-year period. Then calculated the percentage growth for each year which can reflect new entrants, developer
-    engagement in this technical field and the industry’s interest in this area.
+    We queried the following items for each technical area from 2015 to 2022:
+    <BR />
+    - The annual increment of repositories
+    - The annual increment of collaborative events
+    - The number of developers participating in collaborative events
+    - The annual increment of stars
+    <BR />
+    Then, we calculated the growth rate for each year which can reflect new entrants, developer engagement in this technical field, and the industry's interest in this area. For 2022, we compare its first nine months with the first nine months of 2021.
     <BR />
     * The 2022 data comparison period is 2022.01.01 - 2022.09.30, compared to 2021.01.01 - 2021.09.30.
   </>
@@ -100,13 +104,7 @@ const detailedCharts: {
     },
     insights: (
       <>
-        Projects in the Low Code field are mostly open source, and it can be seen that 2021 is the peak period of
-        project development, with a <strong>334.4%</strong> increase in new repositories and
-        a <strong>191.84%</strong> increase in developer
-        collaboration events.The industry’s attention increased most significantly in 2021, <strong>reaching
-        227.47%</strong>.From
-        January to September 2022, the year-on-year growth data shows that the number of new repositories is
-        decreasing(<strong>-31.89%</strong>), but developer engagement and industry attention are still rising.
+        We can see that 2020 is the peak period of project development, with a <strong>313.43%</strong> increase in new repositories and a <strong>157.06%</strong> increase in developer collaborative events. The industry's interest increased most significantly in 2021, reaching <strong>184.82%</strong>. In 2022, the year-on-year growth data shows that the number of new repositories decreased <strong>(-26.21%)</strong>, but developer engagement and industry interest are still rising.
       </>
     ),
   },
@@ -122,11 +120,7 @@ const detailedCharts: {
     },
     insights: (
       <>
-        Most of the core technical of the Web3 field is currently not open source, and open source is mostly some
-        peripheral projects, so open source projects can reflect the development of the Web3 ecology to a certain
-        extent. Whether it is the participation of new repositories, developers, or the attention of the industry The
-        Web3 ecosystem has maintained rapid growth in recent years, and the growth rate of new repositories peaked at
-        <strong>360.22%</strong> in 2021.
+        Whether it is the creation of new repositories, developers, or the interest of the industry, the Web3 ecosystem has grown rapidly in recent years, and the growth rate of new repositories peaked at <strong>322.65%</strong> in 2021.
       </>
     ),
   },
@@ -142,8 +136,7 @@ const detailedCharts: {
     },
     insights: (
       <>
-        The annual increase in repositories in GitHub Actions has been declining, but developer engagement and industry
-        attention are still increasing slightly.
+        The annual increase of GitHub Actions repositories has been declining, but developer engagement and the industry's interest are still increasing slightly.
       </>
     ),
   },
@@ -159,9 +152,7 @@ const detailedCharts: {
     },
     insights: (
       <>
-        Open source projects in the database field account for the majority. As an open source project in the direction
-        of infrastructure, the threshold is high, compared with other fields, the growth rate in all aspects is
-        relatively stable.
+        As an infrastructure project, the Database project's threshold is high. Compared with projects in other fields, a database project has a stable growth rate.
       </>
     ),
   },
@@ -177,7 +168,7 @@ const detailedCharts: {
     },
     insights: (
       <>
-        Open source projects in AI field have been gradually slowing down after 2 years of high growth in 2020-2021.
+        After two years of high growth in 2016 and 2017, open source projects in AI have been growing  gradually slowly.
       </>
     ),
   },

@@ -28,7 +28,7 @@ const keynotes: KeynoteProps[] = [
   {
     icon: <RepoForkedIcon size={24} className={colors.orange} />,
     title: 'About time range',
-    description: ' In this report, the time range of 2022 is from January 1, 2022 to September 30, 2022. When comparing data of 2022 with another year, we use year-on-year analysis.',
+    description: 'In this report, the data collection range of 2022 is from January 1, 2022 to September 30, 2022. When comparing data of 2022 with another year, we use year-on-year analysis.',
   },
   {
     icon: <StarIcon size={24} className={colors.green} />,

@@ -44,8 +44,8 @@ export default function () {
   );
 }
 
-const title = 'The Most Popular Repos in 2022';
-const description = 'The number of stars is the most visible indication of the popularity of open source projects. We looked at the 50 projects that received the most star in 2022(01.01 - 09.30).';
+const title = 'The most popular repositories in 2022';
+const description = 'The number of stars is the most visible indication of the popularity of open source projects. We looked at the 50 projects that received the most stars from January 1 to September 30, 2022.';
 
 function span(n: number, o: number) {
   return parseInt(repos[n].percent) / (parseInt(repos[n].percent) + parseInt(repos[o].percent)) * 12;
@@ -83,6 +83,7 @@ const repos: ReposProps[] = [{
   value: 12,
   percent: '24%',
   list: [
+    '...',
     'Anduin2017/HowToCook',
     'donnemartin/system-design-primer',
     'jwasham/coding-interview-university',
@@ -93,6 +94,7 @@ const repos: ReposProps[] = [{
   value: 12,
   percent: '24%',
   list: [
+    '...',
     'sindresorhus/awesome',
     'public-apis/public-apis',
     'EbookFoundation/free-programming-books',

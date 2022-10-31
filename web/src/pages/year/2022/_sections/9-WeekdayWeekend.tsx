@@ -22,5 +22,5 @@ export default function () {
   );
 }
 
-const title = 'Behavior distribution by Weekdays/Weekends';
-const description = 'We query the event distribution for each Weekday/Weekend in 2022 and calculate the distribution of each event on 7 days of the week and the distribution of events for each day.';
+const title = 'Developer behavior distribution on weekdays and weekends';
+const description = 'We queried the distribution of each event type over the seven days of the week.';

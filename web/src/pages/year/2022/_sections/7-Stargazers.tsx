@@ -32,8 +32,8 @@ export default function () {
   );
 }
 
-const title = 'Who Gave the Most Stars in 2022';
-const description = 'We queried the developers who gave the most stars in 2022, took the Top 10, filtered the accounts of suspected robots.';
+const title = 'Who gave the most stars in 2022';
+const description = "We queried the developers who gave the most stars in 2022, took the top 20, and filtered out accounts of suspected bots. If a developer's number of star events divided by the number of starred repositories is equal to or greater than 2, we suspect this user to be a bot.";
 
 const users: UserProps[] = [
   {

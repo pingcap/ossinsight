@@ -36,8 +36,8 @@ const MSIcon = styled(_MSIcon)({
   display: 'inline-flex',
   verticalAlign: -7
 })
-const title = 'The Most Active Repos over the 4 years';
-const description = 'Here we look up the top 20 active projects per year from 2019 to 2022 and count the total number of listing in the ranking.';
+const title = 'The most active repositories over the past four years';
+const description = 'Here we looked up the top 20 active repositories per year from 2019 to 2022 and counted the total number of listings per repository. The activity of the repository is ranked according to the number of developers participating in collaborative events.';
 const list: Rank[] = [
   {
     repo: 'microsoft/vscode',
@@ -126,13 +126,10 @@ const ghLink = (item, bold = true) => {
 };
 const insights = [
   <>
-    {ghLink('Microsoft')} is the organization with the most projects on the list, with 4 projects having been on
-    the list.
+    {ghLink('Microsoft')} has the most repositories on the list, with five.
   </>,
   <>
-    {ghLink('tensorflow/tensorflow')} and {ghLink('kubernetes/kubernetes')} both dropped out of the Top 20
-    after 3 consecutive years on the list
-    from 2019-2021.
+    {ghLink('tensorflow/tensorflow')} and {ghLink('kubernetes/kubernetes')} both dropped out of the top 20 after three consecutive years on the list (2019 to 2021).
   </>,
   undefined,
   <>

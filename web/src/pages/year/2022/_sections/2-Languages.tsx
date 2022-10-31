@@ -54,14 +54,13 @@ const title = `Top languages
 in the open source world 
 over the past four years`;
 
-const description = `This chart ranks programming languages ​​yearly from January 1, 2019 to September 30, 2022 based on the ratio of new repositories using these languages to all new repositories. We filtered out forking projects.`;
+const description = `This chart ranks programming languages ​​yearly from 2019 to 2022 based on the ratio of new repositories using these languages to all new repositories.`;
 
 const insights = (
   <>
-    JavaScript and HTML consistently rank #1, with Python surpassing Java and moving to #3 in 2021.
+    Python surpassed Java and moved to #3 in 2021.
     <BR />
-    In 2022, TypeScript rose from #10 to #6, and SCSS rose from #39 to #19. The rise of SCSS shows that open source
-    projects that value front-end expressiveness are gradually gaining popularity.
+    TypeScript rose from  #10 to #6, and SCSS rose from #39 to #19. The rise of SCSS shows that open source projects that value front-end expressiveness are gradually gaining popularity.
     <BR />
     The two languages Ruby and R dropped a lot in ranking over the years.
   </>
@@ -74,12 +73,12 @@ const BackendLanguagesChart = styled(_BackendLanguagesChart)({
 
 const backendTitle = `Rankings of back-end programming languages`;
 
-const backendDescription = `Front-end languages are used more often in new repositories. But the programming language used in a pull request reflect which languages developers used. To find out the most popular back-end programming languages, we queried the distribution of new pull requests from January 1, 2019 to September 30, 2022 and took the top 10 for each year. We filtered out bot events.`;
+const backendDescription = `The programming languages used in a pull request reflect which languages developers used. To find out the most popular back-end programming languages, we queried the distribution of programming languages by new pull requests from 2019 to 2022 and took the top 10 for each year.`;
 
 const backendInsights = (
   <>
     Python and Java rank #1 and #2 respectively. In 2021, Go overtook Ruby to rank #3 in 2021.
     <BR />
-    Rust has been trending upward for several years, reaching 1.8% in 2022, ranking #9.
+    Rust has been trending upward for several years, ranking #9 in 2022.
   </>
 );

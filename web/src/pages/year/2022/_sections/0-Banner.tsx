@@ -30,15 +30,15 @@ export default function () {
   );
 }
 
-const description = `We analyzed more than 5,000,000,000 rows of GitHub event data and got the results here. In this report, you’ll get interesting findings about open source software on GitHub, including:`;
+const description = `We analyzed more than 5,000,000,000 rows of GitHub event data and got the results here. In this report, you'll get interesting findings about open source software on GitHub in 2022, including:`;
 
 const highlights: string[] = [
-  'Top programming languages from 2019 to 2022',
+  'Top programming languages in open source',
   'Geographic distribution behavior by country or region',
-  'Popular open source topics from 2019 to 2022',
-  'The most popular repositories in 2022',
-  'The most active repositories from 2019 to 2022',
-  'The developer who gave the most stars in 2022',
-  'The most active developers since 2011',
+  'Popular open source topics',
+  'The most popular repositories',
+  'The most active repositories',
+  'The developers who gave the most stars',
+  'The most active developers',
   'Developer behavior distribution on weekdays and weekends',
 ];
