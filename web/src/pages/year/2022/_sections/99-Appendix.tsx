@@ -1,41 +1,78 @@
 import React, { ReactNode } from "react";
-import Section from "../_components/Section";
+import Section, { SubSection } from "../_components/Section";
 import { styled } from "@mui/material/styles";
+import Keynote, { KeynoteProps } from "@site/src/pages/year/2022/_components/Keynote";
+import {AdditionalTag} from "@site/src/pages/year/2022/_components/styled";
+import { IssueOpenedIcon, RepoForkedIcon, StarIcon } from "@primer/octicons-react";
+import colors from "@site/src/pages/year/2022/_components/colors.module.css";
+import Split from "@site/src/pages/year/2022/_components/Split";
+import Box from "@mui/material/Box";
 
 export default function () {
   return (
-    <Section
-      additional='Appendix'
-      title={title}
-      description={description}
-      descriptionProps={{
-        maxWidth: 1165,
-      }}
-    >
-      <Table>
-        <thead>
-        <tr>
-          <th>Topic</th>
-          <th>Exact matching</th>
-          <th>Fuzzy matching</th>
-        </tr>
-        </thead>
-        <tbody>
-        {tableContent.map((row, i) => (
-          <tr key={i}>
-            <td>{row.name}</td>
-            <td>{row.matched}</td>
-            <td style={{ whiteSpace: 'pre-wrap' }}>{row.fuzzy}</td>
+    <Section>
+      <SubSection
+        additional='Appendix'
+        title='Term Description'
+      >
+        <Box mt={4}>
+          <Split>
+            {keynotes.map((keynote, i) => (
+              <Keynote key={i} {...keynote} />
+            ))}
+          </Split>
+        </Box>
+      </SubSection>
+      <SubSection
+        title={tableTitle}
+        description={tableDescription}
+        descriptionProps={{
+          maxWidth: 1165,
+        }}
+      >
+        <Table>
+          <thead>
+          <tr>
+            <th>Topic</th>
+            <th>Exact matching</th>
+            <th>Fuzzy matching</th>
           </tr>
-        ))}
-        </tbody>
-      </Table>
+          </thead>
+          <tbody>
+          {tableContent.map((row, i) => (
+            <tr key={i}>
+              <td>{row.name}</td>
+              <td>{row.matched}</td>
+              <td style={{ whiteSpace: 'pre-wrap' }}>{row.fuzzy}</td>
+            </tr>
+          ))}
+          </tbody>
+        </Table>
+      </SubSection>
     </Section>
   );
 }
 
-const title = 'How we classify technical fields by topics';
-const description = 'We do exact matching and fuzzy matching based on the repository topic. Exact matching means that the repository topics have a topic that exactly matches the word, and fuzzy matching means that the repository topics have a topic that contains the word.';
+const keynotes: KeynoteProps[] = [
+  {
+    icon: <IssueOpenedIcon size={24} className={colors.blue} />,
+    title: 'About GitHub events',
+    description: 'GitHub events are triggered by user actions, like starring a repository or pushing code.',
+  },
+  {
+    icon: <RepoForkedIcon size={24} className={colors.orange} />,
+    title: 'About time range',
+    description: 'In this report, the data collection range of 2022 is from January 1, 2022 to September 30, 2022. When comparing data of 2022 with another year, we use year-on-year analysis.',
+  },
+  {
+    icon: <StarIcon size={24} className={colors.green} />,
+    title: 'About bot events',
+    description: 'Bot-triggered events account for a growing percentage of GitHub events. However, these events are not the focus of this report. We filtered out most of the bot-initiated events by matching regular expressions.',
+  },
+];
+
+const tableTitle = 'How we classify technical fields by topics';
+const tableDescription = 'We do exact matching and fuzzy matching based on the repository topic. Exact matching means that the repository topics have a topic that exactly matches the word, and fuzzy matching means that the repository topics have a topic that contains the word.';
 
 const tableContent: {
   name: string

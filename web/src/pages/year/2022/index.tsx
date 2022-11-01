@@ -24,14 +24,12 @@ const sections = [
   require('./_sections/7-ActiveRepos'),
   require('./_sections/8-Stargazers'),
   require('./_sections/9-MostActiveDevelopers'),
-  require('./_sections/98-Keynotes'),
   require('./_sections/99-Appendix'),
 ];
 
 const ids: (string | undefined)[] = [
   undefined,
   ...highlights.map(h => paramCase(h)),
-  undefined,
   undefined,
 ];
 

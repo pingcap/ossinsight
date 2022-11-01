@@ -66,7 +66,7 @@ export default function HotCollection({ variant = 'clickable', name, repos, coll
 
 export function LoadingHotCollection() {
   return (
-    <Box border="2px dashed #3c3c3c" p={2} borderRadius={1} sx={{ '&:not(:first-child)': { ml: 2 } }}>
+    <Box border="2px dashed #3c3c3c" p={2} borderRadius={1} sx={{ '&:not(:first-of-type)': { ml: 2 } }}>
       <Skeleton width={150} />
       <Skeleton width={160} sx={{ mt: 2 }} />
       <Skeleton width={120} sx={{ my: 2 }} />
@@ -85,7 +85,7 @@ const Container = styled(Box)(({ theme }) => ({
   border: '2px dashed #3c3c3c',
   padding: theme.spacing(2),
   borderRadius: theme.spacing(1),
-  '&:not(:first-child)': {
+  '&:not(:first-of-type)': {
     marginLeft: theme.spacing(2),
   },
   '&.clickable': {

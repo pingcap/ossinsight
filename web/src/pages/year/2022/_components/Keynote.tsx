@@ -1,6 +1,6 @@
 import React, { ReactNode } from "react";
 import Box from "@mui/material/Box";
-import { H3, P1 } from './typograph';
+import { H4, P1 } from './typograph';
 
 export interface KeynoteProps {
   icon: ReactNode;
@@ -14,17 +14,9 @@ export default function Keynote({ icon, title, description }: KeynoteProps) {
       <Box>
         {icon}
       </Box>
-      <H3
-        mt={6}
-        sx={theme => ({
-          [theme.breakpoints.up('md')]: {
-            mt: 6
-          },
-          mt: 2
-        })}
-      >
+      <H4 mt={2}>
         {title}
-      </H3>
+      </H4>
       <P1 mt={2}>
         {description}
       </P1>

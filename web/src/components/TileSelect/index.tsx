@@ -209,7 +209,7 @@ const Option = forwardRef(function Option({
       lineHeight="1"
       sx={{
         transition: 'all .2s ease',
-        '&:not(:first-child)': { ml: 2 },
+        '&:not(:first-of-type)': { ml: 2 },
         px: 1,
         py: 0.5,
         userSelect: 'none',
