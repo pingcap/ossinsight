@@ -1,45 +1,31 @@
-with issue_with_closed_at as (
-    select
-        pr_or_issue_id, db.group_name as repo_group_name, created_at as closed_at
-    from
+WITH tdiff AS (
+    SELECT
+        group_name AS repo_group_name,
+        TIMESTAMPDIFF(HOUR, ge.pr_or_issue_created_at, ge.created_at) / 24 AS diff
+    FROM
         github_events ge
-        join osdb_repos db on ge.repo_id = db.id
-    where
+        JOIN osdb_repos db ON ge.repo_id = db.id
+    WHERE
         type = 'IssuesEvent'
-        and action = 'closed'
-), issue_with_opened_at as (
-    select
-        pr_or_issue_id, db.group_name as repo_group_name, created_at as opened_at
-    from
-        github_events ge
-        join osdb_repos db on ge.repo_id = db.id
-    where
-        type = 'IssuesEvent'
-        and action = 'opened'
-        and actor_login not like '%bot%' and actor_login != 'cockroach-teamcity'
-), tdiff as (
-    select
-        iwo.repo_group_name,
-        (UNIX_TIMESTAMP(iwc.closed_at) - UNIX_TIMESTAMP(iwo.opened_at)) / 60 / 60 / 24 as diff
-    from
-        issue_with_opened_at iwo
-        join issue_with_closed_at iwc on iwo.pr_or_issue_id = iwc.pr_or_issue_id
-), trank as (
-    select
+        AND action = 'closed'
+        AND creator_user_login NOT LIKE '%bot%'
+        AND creator_user_login NOT IN ('cockroach-teamcity', 'elasticmachine')
+), trank AS (
+    SELECT
         repo_group_name,
         diff,
-        ROW_NUMBER() over (partition by repo_group_name order by diff) as r,
-        count(*) over (partition by repo_group_name) as cnt
-    from
+        ROW_NUMBER() OVER (PARTITION BY repo_group_name ORDER BY diff) AS r,
+        count(*) OVER (PARTITION BY repo_group_name) AS cnt
+    FROM
         tdiff
-    where
+    WHERE
         diff > 0.1
 )
-select
+SELECT
     repo_group_name,
-    diff as 'days'
-from
+    diff AS 'days'
+FROM
     trank
-where
+WHERE
     r = (cnt DIV 2)
-order by 2 asc
+ORDER BY 2 ASC
