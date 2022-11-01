@@ -192,7 +192,7 @@ const config = {
       announcementBar: {
         id: 'announcement-20221101',
         content:
-          '💡 <a target="_blank" href="/year/2022" style="font-weight:bold">🎉 Check out highlights from GitHub 2022!</a>',
+          '<a target="_blank" href="/year/2022" style="font-weight:bold">🎉 Check out highlights from GitHub 2022!</a>',
         backgroundColor: '#6F6290',
         textColor: '#ffffff',
         isCloseable: true,

@@ -79,7 +79,7 @@ const ActivitiesChart = (() => {
   );
 });
 
-const detailsTitle = 'Popular topics over the past four years';
+const detailsTitle = 'Popular topics over the years';
 const detailsDescription = (
   <>
     We queried the following items for each technical area from 2015 to 2022:

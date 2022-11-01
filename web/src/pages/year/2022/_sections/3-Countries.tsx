@@ -26,7 +26,7 @@ export default function () {
   );
 }
 
-const title = 'Geographic distribution behavior by country or region';
+const title = 'Geographic distribution of developer behavior';
 const description = 'We queried the number of various events that occurred throughout the world from January 1 to September 30, 2022 and identified the top 10 countries by the number of events triggered by developers in these countries. The chart displays the proportion of each event type by country or region.';
 const footnote = '* Time range: 2022.01.01-2022.09.30, excluding bot events';
 const insights = [

@@ -62,7 +62,7 @@ export default function Page() {
                 py: 6,
               },
             })}>
-              <MrO width="371" height="570" src={require('./_icons/mro.png').default} alt="Logo" />
+              <MrO width="296.8" height="456" src={require('./_icons/mro.png').default} alt="Logo" />
               <AnimatedDownIcon className="animated-down-icon" />
               {useMemo(() => sections.map(({ default: Section }, i) => (
                 <SectionContext.Provider key={i} value={{ id: ids[i], ref: refs[i] }}>

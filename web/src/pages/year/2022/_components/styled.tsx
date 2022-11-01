@@ -27,9 +27,9 @@ export const AdditionalTag = styled('div')(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  fontSize: '1em',
+  fontSize: '0.6em',
   fontWeight: 'normal',
-  borderRadius: 12,
+  borderRadius: 6,
   marginBottom: theme.spacing(1.5),
   padding: theme.spacing(0.5, 1),
   color: '#E3E3E3',
@@ -115,7 +115,7 @@ export function ResponsiveAligned({ type, ...props }: HTMLAttributes<HTMLDivElem
 export const MrO = styled('img')(({ theme }) => ({
   position: 'absolute',
   display: 'block',
-  top: 40,
+  top: 96,
   right: 0,
   [theme.breakpoints.down('lg')]: {
     display: 'none',
