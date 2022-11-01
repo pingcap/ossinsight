@@ -230,6 +230,7 @@ const config = {
             ],
           },
           {to: '/blog', label: 'Blog', position: 'left'},
+          {to: '/docs/api', label: 'API', position: 'left'},
           /*{
             type: 'dropdown',
             label: 'Workshop',
@@ -259,7 +260,6 @@ const config = {
             position: 'left',
             items: [
               {label: 'Workshop', to: '/docs/workshop'},
-              {to: '/docs/api', label: 'API'},
               {label: 'About OSS Insight', to: '/docs/about'},
               {label: 'About TiDB Cloud', to: 'https://en.pingcap.com/tidb-cloud?utm_source=ossinsight&utm_medium=referral'},
               {label: 'How do we implement OSS Insight?', to: '/blog/why-we-choose-tidb-to-support-ossinsight'},
