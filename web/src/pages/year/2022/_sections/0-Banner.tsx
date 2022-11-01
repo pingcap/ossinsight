@@ -37,12 +37,12 @@ export default function () {
 const description = `We analyzed more than 5,000,000,000 rows of GitHub event data and got the results here. In this report, you'll get interesting findings about open source software on GitHub in 2022, including:`;
 
 export const highlights: string[] = [
-  '🦭 Top programming languages',
+  '⌨️ Top programming languages',
   '🌍 Geographic distribution',
-  '📅 Developer behavior distribution',
-  '🔥 The most active repositories',
-  '🎙️ Popular technical fields',
-  '👏 The most popular repositories',
-  '🌟 Stargazers',
-  '😃 The most active developers',
+  '📅 Contribution time allocation',
+  '📈 Technology trends',
+  '🔥 The most popular repositories',
+  '✨ The most active repositories',
+  '🌟 Top stargazers',
+  '🤖 The most active developers',
 ];
