@@ -8,7 +8,6 @@ export function useFonts(chartRef: RefObject<ChartJs>, family = 'JetBrains Mono'
       return;
     }
     if (event.fontfaces.find(ff => ff.family === family)) {
-      console.log('update chart for font family changed');
       chartRef.current.update('none');
     }
   });
