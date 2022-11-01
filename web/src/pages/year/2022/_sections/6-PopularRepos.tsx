@@ -85,10 +85,10 @@ const repos: ReposProps[] = [{
   value: 12,
   percent: '24%',
   list: [
-    '...',
     'Anduin2017/HowToCook',
     'donnemartin/system-design-primer',
     'jwasham/coding-interview-university',
+    '...',
   ],
 }, {
   color: 'blue',
@@ -96,9 +96,9 @@ const repos: ReposProps[] = [{
   value: 12,
   percent: '24%',
   list: [
-    '...',
     'sindresorhus/awesome',
     'public-apis/public-apis',
     'EbookFoundation/free-programming-books',
+    '...',
   ],
 }];

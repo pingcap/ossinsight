@@ -42,7 +42,7 @@ export default function () {
               data={require('../_charts/backend-languages.json')}
               aspect={8 / 10}
               sx={{ maxWidth: 600 }}
-              footnote={footnote}
+              footnote={backendFootnote}
             />
           </ResponsiveAlignedRight>
         </Split>
