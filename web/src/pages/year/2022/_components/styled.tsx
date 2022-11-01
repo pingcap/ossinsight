@@ -22,6 +22,25 @@ export const HeadlineTag = styled('div')(({ theme }) => ({
   },
 }));
 
+export const AdditionalTag = styled('div')(({ theme }) => ({
+  background: 'transparent linear-gradient(89deg, #EA7E5380 0%, #3E2A7580 100%) 0% 0% no-repeat padding-box',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  fontSize: '1em',
+  fontWeight: 'normal',
+  borderRadius: 12,
+  marginBottom: theme.spacing(1.5),
+  padding: theme.spacing(0.5, 1),
+  color: '#E3E3E3',
+  width: 'max-content',
+  [theme.breakpoints.up('sm')]: {
+    paddingTop: 4,
+    paddingBottom: 4,
+    padding: theme.spacing( 1, 2),
+  },
+}));
+
 export const UL = styled('ul')({
   padding: 0,
   margin: 0,

@@ -5,6 +5,7 @@ import { styled } from "@mui/material/styles";
 export default function () {
   return (
     <Section
+      additional='Appendix'
       title={title}
       description={description}
       descriptionProps={{

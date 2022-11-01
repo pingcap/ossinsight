@@ -4,7 +4,7 @@ import Split from "@site/src/pages/year/2022/_components/Split";
 import Insights from "@site/src/pages/year/2022/_components/Insights";
 import { RankChart } from "../_components/charts";
 import { H2, H3, P2 } from "../_components/typograph";
-import { BR, ResponsiveAlignedRight, ResponsiveColumnFlex, Spacer } from "../_components/styled";
+import { AdditionalTag, BR, ResponsiveAlignedRight, ResponsiveColumnFlex, Spacer } from "../_components/styled";
 
 export default function () {
   return (
@@ -31,6 +31,7 @@ export default function () {
       <SubSection>
         <Split spacing={2}>
           <ResponsiveColumnFlex maxWidth={711}>
+            <AdditionalTag>Additional Notes</AdditionalTag>
             <H3>{backendTitle}</H3>
             <P2>{backendDescription}</P2>
             <Insights mt={[2, 2, 4]}>

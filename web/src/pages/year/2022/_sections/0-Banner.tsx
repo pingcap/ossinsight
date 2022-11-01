@@ -4,6 +4,7 @@ import { P2, H1 } from "@site/src/pages/year/2022/_components/typograph";
 import CodeIcon from '@mui/icons-material/Code';
 import { A, HeadlineTag, LI, UL } from "@site/src/pages/year/2022/_components/styled";
 import { paramCase } from "param-case";
+import LinkIcon from "@mui/icons-material/Link";
 
 export default function () {
   return (
@@ -20,11 +21,12 @@ export default function () {
       <P2 mt={8} maxWidth={880}>
         {description}
       </P2>
-      <UL sx={{ mt: 4, fontSize: '0.8em', color: "#7C7C7C" }}>
+      <UL sx={{ mt: 4, fontSize: '0.8em', color: "#E3E3E3" }}>
         {highlights.map(highlight => (
           <LI key={highlight}>
             <A href={`#${paramCase(highlight)}`}>
-              - {highlight}
+              <LinkIcon fontSize='inherit' sx={{ verticalAlign: 'middle', mr: 0.5 }} />
+              {highlight}
             </A>
           </LI>
         ))}

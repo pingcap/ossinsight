@@ -1,9 +1,11 @@
 import Box from "@mui/material/Box";
-import React, { createContext, ForwardedRef, forwardRef, PropsWithChildren, ReactNode, Ref, useContext } from "react";
+import React, { createContext, PropsWithChildren, ReactNode, Ref, useContext } from "react";
 import { H2, H3, P2 } from './typograph';
 import { TypographyProps } from "@mui/material/Typography";
+import { AdditionalTag } from "./styled";
 
 interface SectionProps {
+  additional?: string;
   title?: ReactNode;
   description?: ReactNode;
   descriptionProps?: TypographyProps<'div'>;
@@ -20,6 +22,7 @@ export const SectionContext = createContext<SectionContextValues>({
 });
 
 export default function Section({
+  additional,
   title,
   description,
   descriptionProps = {},
@@ -47,13 +50,14 @@ export default function Section({
           py: 10,
           borderWidth: '4px !important',
           '&:not(:first-of-type)': {
-            pt: 10
+            pt: 10,
           },
         },
         py: 6,
       })}
       ref={ref}
     >
+      {additional && <AdditionalTag>{additional}</AdditionalTag>}
       {title && <H2>{title}</H2>}
       {description && <P2 mt={3} {...descriptionProps}>{description}</P2>}
       {children}
@@ -83,7 +87,7 @@ export function SubSection({ title, description, children }: PropsWithChildren<S
         },
         [theme.breakpoints.up('lg')]: {
           py: 12,
-        }
+        },
       })}
     >
       {title && <H3>{title}</H3>}
