@@ -115,7 +115,7 @@ export function ResponsiveAligned({ type, ...props }: HTMLAttributes<HTMLDivElem
 export const MrO = styled('img')(({ theme }) => ({
   position: 'absolute',
   display: 'block',
-  top: 120,
+  top: 40,
   right: 0,
   [theme.breakpoints.down('lg')]: {
     display: 'none',
@@ -124,7 +124,7 @@ export const MrO = styled('img')(({ theme }) => ({
 
 export const AnimatedDownIcon = styled(require('../_icons/arrow.svg').default)(({ theme }) => ({
   position: 'absolute',
-  top: 700,
+  top: 600,
   right: 170,
   opacity: 0.7,
   [theme.breakpoints.down('lg')]: {

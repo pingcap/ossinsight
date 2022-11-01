@@ -16,7 +16,6 @@ const fonts = [
 
 const sections = [
   require('./_sections/0-Banner'),
-  require('./_sections/1-Keynotes'),
   require('./_sections/2-Languages'),
   require('./_sections/3-Countries'),
   require('./_sections/4-WeekdayWeekend'),
@@ -25,13 +24,14 @@ const sections = [
   require('./_sections/7-ActiveRepos'),
   require('./_sections/8-Stargazers'),
   require('./_sections/9-MostActiveDevelopers'),
+  require('./_sections/98-Keynotes'),
   require('./_sections/99-Appendix'),
 ];
 
 const ids: (string | undefined)[] = [
   undefined,
-  undefined,
   ...highlights.map(h => paramCase(h)),
+  undefined,
   undefined,
 ];
 

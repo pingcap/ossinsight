@@ -3,7 +3,7 @@ import SpeedDial from "@mui/material/SpeedDial";
 import { styled } from "@mui/material/styles";
 import ShareIcon from "@mui/icons-material/Share";
 import SpeedDialAction from "@mui/material/SpeedDialAction";
-import { LinkedinIcon, RedditIcon, TelegramIcon, TwitterIcon } from 'react-share';
+import { LinkedinIcon, RedditIcon, TelegramIcon } from 'react-share';
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import { useHistory } from "@docusaurus/router";
 import { useEventCallback } from "@mui/material";
@@ -35,10 +35,13 @@ export default function Share() {
 
   useEffect(() => {
     const handler = () => {
-      setShow(window.scrollY > 100)
-    }
-    document.addEventListener('scroll', handler)
-  }, [])
+      setShow(window.scrollY > 100);
+    };
+    document.addEventListener('scroll', handler);
+    return () => {
+      document.removeEventListener('scroll', handler);
+    };
+  }, []);
 
   return (
     <ShareContainer
