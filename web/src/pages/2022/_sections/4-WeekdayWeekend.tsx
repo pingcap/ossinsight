@@ -1,7 +1,7 @@
-import Section, { SubSection } from "@site/src/pages/year/2022/_components/Section";
+import Section, { SubSection } from "../_components/Section";
 import React from "react";
 import { PieChart, WeekdayDistributionData } from '../_components/charts';
-import Insights from "@site/src/pages/year/2022/_components/Insights";
+import Insights from "../_components/Insights";
 import { BR } from "../_components/styled";
 
 export default function () {

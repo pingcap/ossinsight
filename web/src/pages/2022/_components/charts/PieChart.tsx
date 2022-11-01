@@ -1,6 +1,6 @@
 import Chart, { ChartProps } from "@site/src/components/Chart";
 import React from "react";
-import PieOutLabelPlugin from "@site/src/pages/year/2022/_components/charts/PieOutLabelPlugin";
+import PieOutLabelPlugin from "./PieOutLabelPlugin";
 
 export default function PieChart({ sx }: Pick<ChartProps, 'sx'>) {
   return (

@@ -1,7 +1,7 @@
-import Section, { SubSection } from "@site/src/pages/year/2022/_components/Section";
+import Section, { SubSection } from "../_components/Section";
 import React from "react";
-import Split from "@site/src/pages/year/2022/_components/Split";
-import Insights from "@site/src/pages/year/2022/_components/Insights";
+import Split from "../_components/Split";
+import Insights from "../_components/Insights";
 import { RankChart } from "../_components/charts";
 import { H2, H3, P2 } from "../_components/typograph";
 import { AdditionalTag, BR, ResponsiveAlignedRight, ResponsiveColumnFlex, Spacer } from "../_components/styled";

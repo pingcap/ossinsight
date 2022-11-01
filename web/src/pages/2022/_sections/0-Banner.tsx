@@ -1,10 +1,11 @@
-import Section from "@site/src/pages/year/2022/_components/Section";
+import Section from "../_components/Section";
 import React from "react";
-import { H1, P2 } from "@site/src/pages/year/2022/_components/typograph";
+import { H1, P2 } from "../_components/typograph";
 import CodeIcon from '@mui/icons-material/Code';
-import { A, HeadlineTag, LI, UL } from "@site/src/pages/year/2022/_components/styled";
+import { A, Footnote, HeadlineTag, LI, UL } from "../_components/styled";
 import { paramCase } from "param-case";
 import Grid from "@mui/material/Grid";
+import InfoIcon from "@mui/icons-material/InfoOutlined";
 
 export default function () {
   return (
@@ -30,6 +31,12 @@ export default function () {
           </Grid>
         ))}
       </Grid>
+      <Footnote sx={{ mt: 3 }}>
+        <A href='#term-description'>
+          <InfoIcon fontSize='inherit' sx={{ verticalAlign: -2, mr: 0.5 }} />
+          Term description
+        </A>
+      </Footnote>
     </Section>
   );
 }

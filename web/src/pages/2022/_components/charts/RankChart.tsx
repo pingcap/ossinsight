@@ -1,9 +1,9 @@
 import Chart, { ChartProps } from "@site/src/components/Chart";
 import React, { useMemo } from "react";
-import { defaultColors } from "@site/src/pages/year/2022/_components/charts/colors";
+import { defaultColors } from "./colors";
 import ChartDataLabels from "chartjs-plugin-datalabels";
-import theme from "@site/src/pages/year/2022/_components/charts/theme";
-import { responsive } from "@site/src/pages/year/2022/_components/charts/responsive";
+import theme from "./theme";
+import { responsive } from "./responsive";
 
 type RankData = {
   labels: string[]

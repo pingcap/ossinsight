@@ -8,7 +8,7 @@ import { paramCase } from "param-case";
 import { SectionContext } from "./_components/Section";
 import Share from "./_components/Share";
 import { Scrollspy } from '@makotot/ghostui';
-import { AnimatedDownIcon, MrO } from "@site/src/pages/year/2022/_components/styled";
+import { AnimatedDownIcon, MrO } from "./_components/styled";
 
 const fonts = [
   'https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,600;0,700;1,100;1,400;1,600&display=swap',
@@ -30,7 +30,7 @@ const sections = [
 const ids: (string | undefined)[] = [
   undefined,
   ...highlights.map(h => paramCase(h)),
-  undefined,
+  'term-description',
 ];
 
 if (sections.length !== ids.length) {
@@ -80,7 +80,7 @@ export default function Page() {
 const title = 'Open Source Highlights: Trends and Insights from GitHub 2022';
 const description = 'We analyzed 5 billion+ GitHub events and got interesting findings about open source software, such as top programming languages, geographic distribution behavior by country or region, popular open source topics, and the most active repositories and developers.';
 const keywords = 'GitHub annual report, GitHub 2022, The State of the Octoverse, GitHub insights, Open Source, top programming languages, most active developers, most active repositories';
-const image = '/img/year/2022/thumbnail.png';
+const image = '/img/2022/thumbnail.png';
 
 function BrowserHash({ value }: { value: string | undefined }) {
   useEffect(() => {

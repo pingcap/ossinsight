@@ -2,7 +2,7 @@ import React from "react";
 import Chart, { ChartProps } from "@site/src/components/Chart";
 import data from '../../_charts/developers.json';
 import ChartDataLabels from "chartjs-plugin-datalabels";
-import useIsLarge from "@site/src/pages/year/2022/_components/hooks/useIsLarge";
+import useIsLarge from "../hooks/useIsLarge";
 import theme from "./theme";
 
 function years(from, to: number): string[] {

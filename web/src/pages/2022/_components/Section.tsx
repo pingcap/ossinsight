@@ -7,6 +7,7 @@ import { AdditionalTag } from "./styled";
 interface SectionProps {
   additional?: string;
   title?: ReactNode;
+  titleComponent?: typeof H3;
   description?: ReactNode;
   descriptionProps?: TypographyProps<'div'>;
 }
@@ -65,7 +66,7 @@ export default function Section({
   );
 }
 
-export function SubSection({ additional, title, description, children }: PropsWithChildren<SectionProps>) {
+export function SubSection({ additional, title, titleComponent: Title = H3, description, children }: PropsWithChildren<SectionProps>) {
   return (
     <Box
       component="div"
@@ -91,7 +92,7 @@ export function SubSection({ additional, title, description, children }: PropsWi
       })}
     >
       {additional && <AdditionalTag>{additional}</AdditionalTag>}
-      {title && <H3>{title}</H3>}
+      {title && <Title>{title}</Title>}
       {description && <P2 mt={3}>{description}</P2>}
       {children}
     </Box>

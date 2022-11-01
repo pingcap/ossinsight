@@ -1,12 +1,12 @@
 import React from "react";
 import Chart, { ChartProps } from "@site/src/components/Chart";
-import { defaultColors } from "@site/src/pages/year/2022/_components/charts/colors";
+import { defaultColors } from "./colors";
 import ChartDataLabels from "chartjs-plugin-datalabels";
-import useIsLarge from "@site/src/pages/year/2022/_components/hooks/useIsLarge";
+import useIsLarge from "../hooks/useIsLarge";
 import { ScriptableContext } from "chart.js";
 import countryCodeEmoji from "country-code-emoji";
 import ChartJs from "chart.js/auto";
-import { responsive } from "@site/src/pages/year/2022/_components/charts/responsive";
+import { responsive } from "./responsive";
 import theme from "./theme";
 
 interface CountryEventsProps extends Pick<ChartProps, 'sx'> {

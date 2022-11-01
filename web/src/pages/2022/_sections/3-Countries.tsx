@@ -1,6 +1,6 @@
 import React from "react";
 import Section from "../_components/Section";
-import CountryEvents from "@site/src/pages/year/2022/_components/charts/CountryEvents";
+import CountryEvents from "../_components/charts/CountryEvents";
 import Split from "../_components/Split";
 import Insights from "../_components/Insights";
 import Box from "@mui/material/Box";

@@ -5,7 +5,7 @@ import { BarChart, LineChart } from '../_components/charts';
 import Split from "../_components/Split";
 import { BR, ResponsiveAligned, ResponsiveAlignedRight, ResponsiveColumnFlex, Spacer } from "../_components/styled";
 import Insights, { InsightsProps } from "../_components/Insights";
-import useIsLarge from "@site/src/pages/year/2022/_components/hooks/useIsLarge";
+import useIsLarge from "../_components/hooks/useIsLarge";
 
 export default function () {
   const large = useIsLarge();

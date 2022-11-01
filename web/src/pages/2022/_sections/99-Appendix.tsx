@@ -1,12 +1,12 @@
 import React, { ReactNode } from "react";
 import Section, { SubSection } from "../_components/Section";
 import { styled } from "@mui/material/styles";
-import Keynote, { KeynoteProps } from "@site/src/pages/year/2022/_components/Keynote";
-import {AdditionalTag} from "@site/src/pages/year/2022/_components/styled";
+import Keynote, { KeynoteProps } from "../_components/Keynote";
 import { IssueOpenedIcon, RepoForkedIcon, StarIcon } from "@primer/octicons-react";
-import colors from "@site/src/pages/year/2022/_components/colors.module.css";
-import Split from "@site/src/pages/year/2022/_components/Split";
+import colors from "../_components/colors.module.css";
+import Split from "../_components/Split";
 import Box from "@mui/material/Box";
+import { H2 } from "../_components/typograph";
 
 export default function () {
   return (
@@ -14,6 +14,7 @@ export default function () {
       <SubSection
         additional='Appendix'
         title='Term Description'
+        titleComponent={H2}
       >
         <Box mt={4}>
           <Split>
