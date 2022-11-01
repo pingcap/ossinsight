@@ -1,0 +1,33 @@
+{
+  "unit": "%",
+  "x": "value",
+  "y": "name",
+  "postfix": "postfix",
+  "data": [
+    {
+      "name": "Low Code",
+      "value": 76.30,
+      "postfix": "(1,852 repos)"
+    },
+    {
+      "name": "Web3",
+      "value": 63.85,
+      "postfix": "(5,361 repos)"
+    },
+    {
+      "name": "GitHub Actions",
+      "value": 60.18,
+      "postfix": "(15,191 repos)"
+    },
+    {
+      "name": "Database",
+      "value": 31.94,
+      "postfix": "(294,004 repos)"
+    },
+    {
+      "name": "AI",
+      "value": 29.13,
+      "postfix": "(536,651 repos)"
+    }
+  ]
+}

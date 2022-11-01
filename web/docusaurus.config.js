@@ -129,6 +129,7 @@ const config = {
         ]
       }
     ],
+    './plugins/mui'
   ],
 
   presets: [
@@ -189,9 +190,9 @@ const config = {
         respectPrefersColorScheme: false,
       },
       announcementBar: {
-        id: 'announcement-20220623',
+        id: 'announcement-20221101',
         content:
-          '💡 <a target="_blank" href="/blog/why-we-choose-tidb-to-support-ossinsight/" style="font-weight:bold">How we built a powerful insight tool in a week ?</a>',
+          '<a target="_blank" href="/2022" style="font-weight:bold">🎉 Check out highlights from GitHub 2022!</a>',
         backgroundColor: '#6F6290',
         textColor: '#ffffff',
         isCloseable: true,
@@ -209,6 +210,11 @@ const config = {
         style: 'dark',
         items: [
           {
+            to: '/2022',
+            position: 'left',
+            label: '📜 GitHub 2022',
+          },
+          {
             to: '/collections',
             position: 'left',
             label: 'Collections',
@@ -224,7 +230,7 @@ const config = {
             ],
           },
           {to: '/blog', label: 'Blog', position: 'left'},
-          {
+          /*{
             type: 'dropdown',
             label: 'Workshop',
             position: 'left',
@@ -236,8 +242,7 @@ const config = {
               {label: '└─ Stack Overflow Insight - not ready', to: '/docs/workshop/stackoverflow-insight'},
               {label: '└─ Cryptocurrency Insight - not ready', to: '/docs/workshop/cryptocurrency-insight'},
             ]
-          },
-          {to: '/docs/api', label: 'API', position: 'left'},
+          },*/
           /*
           {
             type: 'dropdown',
@@ -253,6 +258,8 @@ const config = {
             label: 'More',
             position: 'left',
             items: [
+              {label: 'Workshop', to: '/docs/workshop'},
+              {to: '/docs/api', label: 'API'},
               {label: 'About OSS Insight', to: '/docs/about'},
               {label: 'About TiDB Cloud', to: 'https://en.pingcap.com/tidb-cloud?utm_source=ossinsight&utm_medium=referral'},
               {label: 'How do we implement OSS Insight?', to: '/blog/why-we-choose-tidb-to-support-ossinsight'},

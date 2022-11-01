@@ -56,6 +56,7 @@
   "devDependencies": {
     "@djagger/echartsx": "^0.0.21",
     "@docusaurus/module-type-aliases": "2.1.0",
+    "@emotion/server": "^11.10.0",
     "@geo-maps/countries-land-10km": "^0.6.0",
     "@makotot/ghostui": "^2.0.0",
     "@mui/x-data-grid": "^5.5.1",
@@ -69,6 +70,9 @@
     "@types/webpack-env": "^1.16.3",
     "ahooks": "^3.7.1",
     "animate.css": "^4.1.1",
+    "chart.js": "^3.9.1",
+    "chartjs-plugin-datalabels": "^2.1.0",
+    "country-code-emoji": "^2.3.0",
     "d3-hierarchy": "^3.1.2",
     "deepmerge": "^4.2.2",
     "echarts": "^5.3.2",
