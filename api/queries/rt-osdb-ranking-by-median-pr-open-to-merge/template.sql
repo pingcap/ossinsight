@@ -1,37 +1,29 @@
-with issue_with_merged_at as (
-    select
-        pr_or_issue_id, db.group_name as repo_group_name, created_at as merged_at
-    from
-        github_events ge
-        join osdb_repos db on ge.repo_id = db.id
-    where
+WITH tdiff AS (
+    SELECT
+        group_name AS repo_group_name,
+        TIMESTAMPDIFF(HOUR, ge.pr_or_issue_created_at, ge.created_at) / 24 AS diff
+    FROM github_events ge
+    JOIN osdb_repos db ON ge.repo_id = db.id
+    WHERE
         type = 'PullRequestEvent'
-        and action = 'closed'
-), issue_with_opened_at as (
-    select
-        pr_or_issue_id, db.group_name as repo_group_name, created_at as opened_at
-    from
-        github_events ge
-        join osdb_repos db on ge.repo_id = db.id
-    where
-        type = 'PullRequestEvent'
-        and action = 'opened'
-        and actor_login not like '%bot%'
-), tdiff as (
-    select
-        iwo.repo_group_name,
-        (UNIX_TIMESTAMP(iwm.merged_at) - UNIX_TIMESTAMP(iwo.opened_at)) / 60 / 60 / 24 as diff,
-        ROW_NUMBER() over (partition by iwo.repo_group_name order by (UNIX_TIMESTAMP(iwm.merged_at) - UNIX_TIMESTAMP(iwo.opened_at))) as r,
-        count(*) over (partition by iwo.repo_group_name) as cnt
-    from
-        issue_with_opened_at iwo
-        join issue_with_merged_at iwm on iwo.pr_or_issue_id = iwm.pr_or_issue_id
+        AND action = 'closed'
+        AND actor_login NOT LIKE '%bot%'
+), trank AS (
+    SELECT
+        repo_group_name,
+        diff,
+        ROW_NUMBER() OVER (PARTITION BY repo_group_name ORDER BY diff) AS r,
+        COUNT(*) OVER (PARTITION BY repo_group_name) AS cnt
+    FROM
+        tdiff
+    WHERE
+        diff > 0.1
 )
-select
+SELECT
     repo_group_name,
-    diff as 'days'
-from
-    tdiff
-where
+    diff AS 'days'
+FROM
+    trank
+WHERE
     r = (cnt DIV 2)
-order by 2 asc
+ORDER BY 2 ASC
