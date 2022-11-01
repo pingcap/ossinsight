@@ -12,7 +12,10 @@ export default function () {
       description={description}
     >
       <Split mt={[1, 2, 3]}>
-        <CountryEvents data={require('../_charts/country-data.json')} />
+        <CountryEvents
+          data={require('../_charts/country-data.json')}
+          footnote={footnote}
+        />
         <Box>
           {insights.map((insight, i) => (
             <Insights key={i} hideTitle={i !== 0}>{insight}</Insights>
@@ -25,6 +28,7 @@ export default function () {
 
 const title = 'Geographic distribution behavior by country or region';
 const description = 'We queried the number of various events that occurred throughout the world from January 1 to September 30, 2022 and identified the top 10 countries by the number of events triggered by developers in these countries. The chart displays the proportion of each event type by country or region.';
+const footnote = '* Time range: 2022.01.01-2022.09.30, excluding bot events';
 const insights = [
   <>The events triggered in the top 10 countries account for about <strong>23.27%</strong> of all GitHub events. However, the number of developers from these countries is only <strong>10%</strong>.</>,
   <>🇺🇸 <strong>US developers</strong> are most likely to review code, with a <strong>PullRequestReviewEvent share of 6.15%</strong>.</>,

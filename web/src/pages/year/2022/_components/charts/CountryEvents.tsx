@@ -11,6 +11,7 @@ import theme from "./theme";
 
 interface CountryEventsProps extends Pick<ChartProps, 'sx'> {
   data: import('../../_charts/env').CountryData;
+  footnote?: string
 }
 
 type EventPoint = {
@@ -30,7 +31,7 @@ function scatterSize(chart: ChartJs, maxWidth: number, count: number) {
   return Math.min((((chart.chartArea?.width ?? chart.width) - (count - 1) * 4)) / count, maxWidth);
 }
 
-export default function CountryEvents({ data, sx }: CountryEventsProps) {
+export default function CountryEvents({ data, footnote, sx }: CountryEventsProps) {
   const large = useIsLarge();
 
   return (
@@ -145,6 +146,7 @@ export default function CountryEvents({ data, sx }: CountryEventsProps) {
               return ctx.active || isHighlight(data, ctx);
             },
           },
+          subtitle: theme.subtitle(footnote),
         },
       }}
       plugins={[ChartDataLabels]}
