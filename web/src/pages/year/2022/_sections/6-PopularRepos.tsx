@@ -2,6 +2,7 @@ import React from "react";
 import Section from "../_components/Section";
 import Grid from "@mui/material/Grid";
 import Repos, { ReposProps } from "../_components/Repos";
+import { Footnote } from "../_components/styled";
 
 export default function () {
   return (
@@ -39,12 +40,14 @@ export default function () {
           </Grid>
         </Grid>
       </Grid>
+      <Footnote>{footnote}</Footnote>
     </Section>
   );
 }
 
 const title = 'The most popular repositories in 2022';
 const description = 'The number of stars is the most visible indication of the popularity of open source projects. We looked at the 50 projects that received the most stars from January 1 to September 30, 2022.';
+const footnote = '* Time range: 2022.01.01-2022.09.30, excluding bot events';
 
 function span(n: number, o: number) {
   return parseInt(repos[n].percent) / (parseInt(repos[n].percent) + parseInt(repos[o].percent)) * 12;

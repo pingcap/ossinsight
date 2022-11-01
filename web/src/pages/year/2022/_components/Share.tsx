@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import SpeedDial from "@mui/material/SpeedDial";
 import { styled } from "@mui/material/styles";
 import ShareIcon from "@mui/icons-material/Share";
@@ -21,6 +21,7 @@ function jump(link: string) {
 }
 
 export default function Share() {
+  const [show, setShow] = useState(false);
   const { siteConfig } = useDocusaurusContext();
   const { createHref } = useHistory();
 
@@ -32,8 +33,21 @@ export default function Share() {
     return document.title;
   }, []);
 
+  useEffect(() => {
+    const handler = () => {
+      setShow(window.scrollY > 100)
+    }
+    document.addEventListener('scroll', handler)
+  }, [])
+
   return (
-    <ShareContainer justifyContent="space-between" alignItems="center">
+    <ShareContainer
+      justifyContent="space-between"
+      alignItems="center"
+      sx={{
+        opacity: show ? undefined : 0,
+      }}
+    >
       <Box minHeight={56} width="100%" position="relative">
         <SpeedDial
           sx={{

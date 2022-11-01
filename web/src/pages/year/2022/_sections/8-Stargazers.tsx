@@ -34,6 +34,7 @@ export default function () {
 
 const title = 'Who gave the most stars in 2022';
 const description = "We queried the developers who gave the most stars in 2022, took the top 20, and filtered out accounts of suspected bots. If a developer's number of star events divided by the number of starred repositories is equal to or greater than 2, we suspect this user to be a bot.";
+const footnote = '* Time range: 2022.01.01-2022.09.30, excluding bot events';
 
 const users: UserProps[] = [
   {
@@ -127,6 +128,7 @@ const StargazersChart = () => {
   return (
     <BarChart
       data={require('../_charts/stargazers.json')}
+      footnote={footnote}
       aspect={large ? 16 / 9 : 3 / 4}
       sx={{
         width: '100%',

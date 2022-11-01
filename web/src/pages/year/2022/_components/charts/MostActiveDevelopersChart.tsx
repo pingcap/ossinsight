@@ -13,7 +13,11 @@ function years(from, to: number): string[] {
   return arr;
 }
 
-export default function MostActiveDevelopersChart(props: Omit<ChartProps, 'once' | 'data' | 'aspect'>) {
+interface MostActiveDevelopersChartProps extends Omit<ChartProps, 'once' | 'data' | 'aspect'> {
+  footnote?: string
+}
+
+export default function MostActiveDevelopersChart({ footnote, ...props }: MostActiveDevelopersChartProps) {
   const large = useIsLarge();
 
   return (
@@ -99,6 +103,7 @@ export default function MostActiveDevelopersChart(props: Omit<ChartProps, 'once'
             boxHeight: 10,
             usePointStyle: true,
           },
+          subtitle: theme.subtitle(footnote),
         },
       }}
       plugins={[ChartDataLabels]}

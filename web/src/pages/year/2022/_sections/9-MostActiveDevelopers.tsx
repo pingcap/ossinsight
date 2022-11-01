@@ -19,7 +19,10 @@ export default function () {
         columnGap={4}
       >
         <div style={{ flex: 1 }}>
-          <MostActiveDevelopersChart sx={{ maxWidth: 977 }} />
+          <MostActiveDevelopersChart
+            sx={{ maxWidth: 977 }}
+            footnote={footnote}
+          />
         </div>
         <Insights title='95%' sx={{ maxWidth: 458 }}>
           {insight}
@@ -31,5 +34,6 @@ export default function () {
 
 const title = 'The most active developers since 2011'
 const description = "We queried the top 20 most active developers per year since 2011. This time we didn't filter out bot events."
+const footnote = '* Time range: 2022.01.01-2022.09.30';
 const insight = 'We found that the percentage of bots is becoming larger and larger. Bots started to overtake humans in 2013 and have reached over 95% in 2022.'
 

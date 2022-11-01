@@ -100,6 +100,7 @@ export default function CountryEvents({ data, footnote, sx }: CountryEventsProps
           },
           y: {
             reverse: true,
+            max: data.labels.length + 1,
             ticks: {
               callback: value => {
                 const code = data.data[value]?.[1];

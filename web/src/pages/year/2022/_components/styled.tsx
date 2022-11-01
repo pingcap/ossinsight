@@ -116,3 +116,14 @@ export const AnimatedDownIcon = styled(require('../_icons/arrow.svg').default)((
     top: 328,
   }
 }))
+
+export const Footnote = styled('div')(({ theme }) => ({
+  color: '#7C7C7C',
+  fontSize: 10,
+  marginTop: theme.spacing(2),
+  [theme.breakpoints.up('md')]: {
+    fontSize: 13,
+    fontWeight: 'bold',
+    fontStyle: 'italic',
+  }
+}))

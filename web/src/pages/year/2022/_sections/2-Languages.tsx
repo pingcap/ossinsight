@@ -14,7 +14,6 @@ export default function () {
           <ResponsiveColumnFlex maxWidth={711}>
             <H2 whiteSpace="pre-wrap">{title}</H2>
             <P2>{description}</P2>
-            <Spacer />
             <Insights mt={[2, 2, 4]}>
               {insights}
             </Insights>
@@ -34,7 +33,6 @@ export default function () {
           <ResponsiveColumnFlex maxWidth={711}>
             <H3>{backendTitle}</H3>
             <P2>{backendDescription}</P2>
-            <Spacer />
             <Insights mt={[2, 2, 4]}>
               {backendInsights}
             </Insights>

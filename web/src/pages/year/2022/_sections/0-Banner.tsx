@@ -20,14 +20,12 @@ export default function () {
       <P2 mt={8} maxWidth={880}>
         {description}
       </P2>
-      <UL sx={{ mt: 4 }}>
+      <UL sx={{ mt: 4, fontSize: '0.8em', color: "#7C7C7C" }}>
         {highlights.map(highlight => (
           <LI key={highlight}>
-            <P2>
-              <A href={`#${paramCase(highlight)}`}>
-                - {highlight}
-              </A>
-            </P2>
+            <A href={`#${paramCase(highlight)}`}>
+              - {highlight}
+            </A>
           </LI>
         ))}
       </UL>

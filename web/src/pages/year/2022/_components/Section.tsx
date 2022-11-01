@@ -47,7 +47,7 @@ export default function Section({
           py: 10,
           borderWidth: '4px !important',
           '&:not(:first-of-type)': {
-            pt: 12
+            pt: 10
           },
         },
         py: 6,
