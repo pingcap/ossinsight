@@ -1,4 +1,3 @@
-import { useLocation } from '@docusaurus/router';
 import { Close } from '@mui/icons-material';
 import ConstructionIcon from '@mui/icons-material/Construction';
 import { useEventCallback } from '@mui/material';
@@ -8,10 +7,6 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import { SxProps } from '@mui/system';
 import React, { MouseEventHandler, useEffect, useMemo, useState } from 'react';
-import { responsiveSx } from '../../pages/home/_components/responsive';
-
-export interface HowItWorksProps {
-}
 
 function getInitialDisplay () {
   if (typeof window === 'undefined') {
@@ -19,7 +14,7 @@ function getInitialDisplay () {
   } else {
     return [
       window.location.search.includes('utm_medium=promotion'),
-      /\/(o|d)/.test(window.location.pathname),
+      /\/([od])/.test(window.location.pathname),
     ].map(Boolean).includes(true);
   }
 }
@@ -29,7 +24,7 @@ const url = 'https://share.hsforms.com/1E-qtGQWrTVmctP8kBT34gw2npzm';
 let _display = getInitialDisplay();
 const delay = 80000;
 
-export default function HowItWorks ({}: HowItWorksProps) {
+export default function HowItWorks () {
   const [display, setDisplay] = useState(false);
 
   useEffect(() => {
@@ -50,7 +45,7 @@ export default function HowItWorks ({}: HowItWorksProps) {
         py: 1,
         px: 2,
         pl: 1,
-      }
+      },
     ];
   }, []);
 
@@ -82,7 +77,7 @@ export default function HowItWorks ({}: HowItWorksProps) {
         <Typography variant="body2" sx={{ pr: 1.5, fontSize: 14 }}>
           {'>>>'} Join workshop
           &nbsp;
-          <ConstructionIcon fontSize='inherit' sx={{ verticalAlign: 'text-bottom' }} />
+          <ConstructionIcon fontSize="inherit" sx={{ verticalAlign: 'text-bottom' }} />
         </Typography>
       </Button>
       <IconButton

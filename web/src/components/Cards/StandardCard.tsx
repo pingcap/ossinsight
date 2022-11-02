@@ -129,8 +129,7 @@ export default function StandardCard ({
           </Box>
           )
         : undefined}
-      {description
-        ? (
+      {description != null && (
           <Typography
             variant="body1"
             sx={{
@@ -141,8 +140,7 @@ export default function StandardCard ({
             }}>
             {description}
           </Typography>
-          )
-        : undefined}
+      )}
       {readMore
         ? (
           <Button component={Link} rel={isInternalUrl(readMore) ? undefined : 'noopener'} to={readMore} size="small" variant={buttonVariant ?? 'text'} sx={{ mt: 2 }}>

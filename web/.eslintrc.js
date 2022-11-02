@@ -54,5 +54,8 @@ module.exports = {
   },
   rules: {
     'react/display-name': ['warn'],
+    'react/prop-types': ['error', {
+      skipUndeclared: true,
+    }],
   }
 };

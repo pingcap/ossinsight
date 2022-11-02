@@ -1,16 +1,16 @@
-import React, { ForwardedRef, forwardRef, useEffect, useRef } from 'react';
+import React, { ForwardedRef, forwardRef, RefAttributes, useEffect, useRef } from 'react';
 import ChartJs, {
   ChartConfiguration,
   ChartConfigurationCustomTypesPerDataset,
   ChartType,
   DefaultDataPoint,
 } from 'chart.js/auto';
-import { applyForwardedRef } from '../../utils/ref';
+import { applyForwardedRef } from '@site/src/utils/ref';
 import { unstable_serialize } from 'swr';
 import { styled, Theme } from '@mui/material/styles';
 import { SxProps } from '@mui/system/styleFunctionSx';
 import './defaults';
-import { useFonts } from '@site/src/components/Chart/fonts';
+import { useFonts } from './fonts';
 
 export type ChartProps<TType extends ChartType = ChartType, TData = DefaultDataPoint<TType>, TLabel = unknown> = {
   fallbackImage?: string;
@@ -20,16 +20,16 @@ export type ChartProps<TType extends ChartType = ChartType, TData = DefaultDataP
   sx?: SxProps<Theme>;
 } & (ChartConfiguration<TType, TData, TLabel> | ChartConfigurationCustomTypesPerDataset<TType, TData, TLabel>);
 
-const CanvasChart: ChartElement = forwardRef<ChartJs>(function <TType extends ChartType = ChartType, TData = DefaultDataPoint<TType>, TLabel = unknown>({
+const CanvasChart: ChartElement = forwardRef(function CanvasChart<TType extends ChartType = ChartType, TData = DefaultDataPoint<TType>, TLabel = unknown> ({
   fallbackImage,
   name,
   once,
   sx,
   aspect,
   ...config
-}: ChartProps, ref: ForwardedRef<ChartJs>) {
+}: ChartProps<TType, TData, TLabel>, ref: ForwardedRef<ChartJs<TType, TData, TLabel> | undefined>) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const chartRef = useRef<ChartJs>();
+  const chartRef = useRef<ChartJs<TType, TData, TLabel>>();
 
   useEffect(() => {
     if (canvasRef.current != null) {
@@ -65,27 +65,25 @@ const CanvasChart: ChartElement = forwardRef<ChartJs>(function <TType extends Ch
   }, [dataDep]);
 
   useEffect(() => {
-    if (chartRef.current == null) {
-      chartRef.current.options = config.options;
-      chartRef.current.update('none');
+    if (chartRef.current) {
+      if (config.options) {
+        chartRef.current.options = config.options;
+        chartRef.current.update('none');
+      }
     }
   }, [config.options]);
 
   useFonts(chartRef);
 
   return (
-      <CanvasContainer sx={sx}>
-        <canvas ref={canvasRef} style={{ maxWidth: '100%', maxHeight: aspect ? undefined : '100%' }} />
-      </CanvasContainer>
+    <CanvasContainer sx={sx}>
+      <canvas ref={canvasRef} style={{ maxWidth: '100%', maxHeight: isFinite(aspect ?? NaN) ? undefined : '100%' }} />
+    </CanvasContainer>
   );
-},
-);
+});
 
-function applyAspect (chartInstance: ChartJs, aspect: number) {
-  if (!chartInstance.options) {
-    return;
-  }
-  if (aspect) {
+function applyAspect (chartInstance: ChartJs<any, any, any>, aspect: number | undefined) {
+  if (isFinite(aspect ?? NaN)) {
     chartInstance.options.aspectRatio = aspect;
     chartInstance.options.maintainAspectRatio = true;
   } else {
@@ -98,21 +96,25 @@ const CanvasContainer = styled('div')({
   alignSelf: 'stretch',
 });
 
-const FallbackChart: ChartElement = forwardRef<ChartJs>(function FallbackChart ({
+const FallbackChart: ChartElement = forwardRef(function FallbackChart<TType extends ChartType = ChartType, TData = DefaultDataPoint<TType>, TLabel = unknown> ({
   fallbackImage,
   name,
   sx,
-}: ChartProps, ref) {
-  return (
-    <Img alt={name} src={fallbackImage} sx={sx} />
-  );
+}: ChartProps<TType, TData, TLabel>, ref: ForwardedRef<ChartJs<TType, TData, TLabel> | undefined>) {
+  if (fallbackImage) {
+    return (
+      <Img alt={name} src={fallbackImage} sx={sx} />
+    );
+  } else {
+    return <CanvasContainer sx={sx} />;
+  }
 });
 
 const Img = styled('img')({});
 
 export type ChartElement = <TType extends ChartType = ChartType, TData = DefaultDataPoint<TType>, TLabel = unknown>(
-  props: ChartProps<TType, TData, TLabel> & { ref?: ForwardedRef<ChartJs | undefined> },
-) => JSX.Element;
+  props: ChartProps<TType, TData, TLabel> & RefAttributes<ChartJs<TType, TData, TLabel> | undefined>,
+) => JSX.Element | null;
 
 const Chart: ChartElement = typeof window === 'undefined' ? FallbackChart : CanvasChart;
 export default Chart;

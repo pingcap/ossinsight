@@ -6,6 +6,7 @@ import { CanvasRenderer } from 'echarts/renderers';
 import { TextCommonOption } from 'echarts/types/src/util/types';
 import React, { useMemo } from 'react';
 import ECharts from '../ECharts';
+import { KeyOfType } from '../../dynamic-pages/analyze/charts/options/utils/data';
 
 // Register the required components
 echarts.use(
@@ -20,8 +21,8 @@ interface BarChartProps<T> {
   size: number
   n: number
   deps?: unknown[]
-  categoryIndex: keyof T
-  valueIndex: keyof T
+  categoryIndex: KeyOfType<T, string>
+  valueIndex: KeyOfType<T, number>
   type?: 'repo' | 'owner' | 'lang' | false // for click
   rich?: Record<string, TextCommonOption>
 }
@@ -60,13 +61,13 @@ export default function BarChart<T> ({ seriesName = 'Count', data, loading = fal
         inverse: true,
         axisLabel: {
           rotate: 0,
-          formatter: function (value, index) {
+          formatter: function (value: string, index) {
             switch (type) {
               case 'repo':
                 return value;
               case 'owner':
               case 'lang':
-                return `${value} {${value.replace(/[+-\[\]]/g, '_')}|}`;
+                return `${value} {${value.replace(/[+-[\]]/g, '_')}|}`;
               default:
                 return value;
             }
@@ -75,9 +76,9 @@ export default function BarChart<T> ({ seriesName = 'Count', data, loading = fal
             switch (type) {
               case 'owner':
                 return data.reduce<Record<string, TextCommonOption>>((p, c) => {
-                  p[String(c[categoryIndex]).replace(/[-\[\]]/g, '_')] = {
+                  p[String(c[categoryIndex]).replace(/[-[\]]/g, '_')] = {
                     backgroundColor: {
-                      image: getGithubAvatar(`${c[categoryIndex]}`)
+                      image: getGithubAvatar(`${c[categoryIndex] as string}`)
                     },
                     width: 24,
                     height: 24
@@ -88,7 +89,7 @@ export default function BarChart<T> ({ seriesName = 'Count', data, loading = fal
                 return data.reduce<Record<string, TextCommonOption>>((p, c) => {
                   p[String(c[categoryIndex]).replace(/\+/g, '_')] = {
                     backgroundColor: {
-                      image: '/img/lang/' + c[categoryIndex] + '.png'
+                      image: `/img/lang/${c[categoryIndex] as string}.png`
                     },
                     width: 48,
                     height: 48
@@ -102,7 +103,7 @@ export default function BarChart<T> ({ seriesName = 'Count', data, loading = fal
       series: [
         {
           name: seriesName,
-          data: data.map(d => d[valueIndex]),
+          data: data.map(d => d[valueIndex] as number),
           type: 'bar',
           barWidth: clear ? size / 2 : size,
         }
@@ -118,11 +119,11 @@ export default function BarChart<T> ({ seriesName = 'Count', data, loading = fal
 
   const onEvents = useMemo(() => {
     return {
-      click: params => {
+      click: (params) => {
         if (type === 'repo' && 'name' in params) {
-          window.open(`https://github.com/${params.name}`);
+          window.open(`https://github.com/${params.name as string}`);
         } else if (type === 'owner' && 'name' in params) {
-          window.open(`https://github.com/${params.name}`);
+          window.open(`https://github.com/${params.name as string}`);
         }
       }
     };

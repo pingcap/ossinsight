@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 
 function getBase () {
   if (typeof window === 'undefined') {

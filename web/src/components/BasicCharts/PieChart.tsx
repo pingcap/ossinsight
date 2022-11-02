@@ -61,7 +61,7 @@ export default function PieChart<T> ({
   compareData,
   categoryIndex,
   valueIndex,
-  deps,
+  deps = [],
 }: PieChartProps<T>) {
   const isDarkTheme = useIsDarkTheme();
   const basicOption = usePieSeries(isDarkTheme);

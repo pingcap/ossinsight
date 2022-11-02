@@ -3,12 +3,18 @@ import Grid, { GridProps } from '@mui/material/Grid';
 
 type GridSizeProps = Pick<GridProps, 'xs' | 'sm' | 'md' | 'lg' | 'xl'>;
 
+function isIterable<T> (e: any): e is Iterable<T> {
+  return typeof e[Symbol.iterator] === 'function';
+}
+
 function withDefaultSizes (children: ReactNode, sizes: GridSizeProps, key?: string | number): ReactNode {
   if (Object.keys(sizes).length === 0) {
     return children;
   }
-  if (children instanceof Array) {
-    return children.map((node, i) => withDefaultSizes(node, sizes, i));
+  if (typeof children === 'string') {
+    return children;
+  } else if (isIterable(children)) {
+    return Array.from(children).map((node, i) => withDefaultSizes(node, sizes, i));
   } else if (React.isValidElement(children)) {
     return cloneElement(children, Object.assign({}, children.props, sizes, { key: children.key ?? key }));
   } else {
@@ -22,11 +28,11 @@ export interface CardsProps extends GridProps {
 export default function Cards ({ xs, sm, md, lg, xl, children, ...props }: PropsWithChildren<CardsProps>) {
   const sizeProps = useMemo(() => {
     const res: GridSizeProps = {};
-    if (xs) res.xs = xs;
-    if (sm) res.sm = sm;
-    if (md) res.md = md;
-    if (lg) res.lg = lg;
-    if (xl) res.xl = xl;
+    if (xs != null) res.xs = xs;
+    if (xs != null) res.sm = sm;
+    if (xs != null) res.md = md;
+    if (xs != null) res.lg = lg;
+    if (xs != null) res.xl = xl;
     return res;
   }, [xs, sm, md, lg, xl]);
 

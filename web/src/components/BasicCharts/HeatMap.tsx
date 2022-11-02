@@ -8,6 +8,7 @@ import FormControl from '@mui/material/FormControl';
 import { InputLabel, Select } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
 import ECharts from '../ECharts';
+import { KeyOfType } from '../../dynamic-pages/analyze/charts/options/utils/data';
 
 const zones: number[] = [
 ];
@@ -30,9 +31,9 @@ const days = [
 export interface HeatMapChartProps<T> {
   loading: boolean
   data: T[]
-  xAxisColumnName: keyof T
-  yAxisColumnName: keyof T
-  valueColumnName: keyof T
+  xAxisColumnName: KeyOfType<T, number>
+  yAxisColumnName: KeyOfType<T, number>
+  valueColumnName: KeyOfType<T, number>
   deps: any[]
 }
 
@@ -63,10 +64,10 @@ export default function HeatMapChart<T> ({
       if (value < min) {
         min = value;
       }
-      return [(item[xAxisColumnName] as any + zone + 24) % 24, item[yAxisColumnName], value];
+      return [(item[xAxisColumnName] as number + zone + 24) % 24, item[yAxisColumnName], value];
     });
     return {
-      data: arr || [],
+      data: arr,
       min,
       max
     };

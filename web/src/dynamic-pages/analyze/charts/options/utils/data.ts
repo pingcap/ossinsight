@@ -3,6 +3,9 @@ export type KeyOfType<T, V> = keyof {
   [P in keyof T as T[P] extends V ? P : never]: any
 };
 
+// https://stackoverflow.com/questions/74272393/how-to-distinguish-different-functions-signature-with-conditional-type-checks
+export type KeyOfTypeOptionalIncluded<T, Condition> = KeyOfType<T, Condition | undefined>;
+
 export function range<T extends Record<string, any>, K extends KeyOfType<T, number>> (data: T[], keys: K[]): [min: number, max: number] | undefined {
   if (data.length === 0) {
     return undefined;

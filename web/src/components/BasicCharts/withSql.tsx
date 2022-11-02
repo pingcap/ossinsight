@@ -4,7 +4,7 @@ import Skeleton from '@mui/material/Skeleton';
 import CodeBlock from '@theme/CodeBlock';
 import Details from '@theme/Details';
 
-export const renderCodes = sql => {
+export const renderCodes = (sql: string | undefined) => {
   let content;
   if (!sql) {
     content = (

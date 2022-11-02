@@ -23,7 +23,7 @@ export default function DataGrid<Q> ({ columns, data }: DataGridProps<Q>) {
       </thead>
       <tbody>
       {data?.map((row, i) => (
-        <tr>
+        <tr key={i}>
           {columns.map(({ field, render }) => (
             <td key={field as string}>
               { render?.(row[field], row, i) ?? row[field]}

@@ -1,12 +1,12 @@
 import React, { forwardRef, lazy, Suspense } from 'react';
-import type { ChartElement, ChartProps } from '@site/src/components/Chart/Chart';
+import type { ChartElement } from '@site/src/components/Chart/Chart';
 import { styled } from '@mui/material/styles';
 
 export type { ChartProps, ChartElement } from './Chart';
 
 const PromiseChart = lazy(async () => await import('./Chart')) as ChartElement;
 
-const Chart: ChartElement = forwardRef((props, ref) => {
+const Chart: ChartElement = forwardRef(function LazyChart (props, ref) {
   if (typeof window === 'undefined') {
     return <Placeholder sx={props.sx} />;
   }
