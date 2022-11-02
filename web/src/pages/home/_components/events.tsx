@@ -35,7 +35,7 @@ type Event = {
 const getKey = (e: Event) => e.id;
 
 export default function Events ({ show }: { show: boolean }) {
-  const ref = useRef<CoolListInstance<Event>>();
+  const ref = useRef<CoolListInstance<Event>>(null);
   const intervalHandler = useRef<ReturnType<typeof setInterval>>();
 
   const dataRef = useRef<[Event[], number]>([[], 0]);

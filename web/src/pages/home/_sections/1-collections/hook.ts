@@ -22,7 +22,7 @@ export type RecentHotCollectionData = Pick<RawRecentHotCollectionData, 'id' | 'n
 export function useRecentHotCollections (): AsyncData<RemoteData<any, RecentHotCollectionData>> {
   const { data, loading, error } = useRemoteData<any, RawRecentHotCollectionData>('recent-hot-collections', {}, false);
 
-  const processedData: RemoteData<any, RecentHotCollectionData> = useMemo(() => {
+  const processedData: RemoteData<any, RecentHotCollectionData> | undefined = useMemo(() => {
     if (data == null) {
       return undefined;
     }

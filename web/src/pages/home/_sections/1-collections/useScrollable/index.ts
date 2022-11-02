@@ -15,7 +15,7 @@ interface UserScrollableResult {
 }
 
 export function useScrollable ({ direction = 'x' }: UserScrollableProps): UserScrollableResult {
-  const [element, setElement] = useState<HTMLElement>(null);
+  const [element, setElement] = useState<HTMLElement | null>(null);
   const [scrollable, setScrollable] = useState<Scrollable>(false);
 
   const ref = useEventCallback((element: HTMLElement | null) => {
@@ -65,6 +65,9 @@ export function useScrollable ({ direction = 'x' }: UserScrollableProps): UserSc
   }, [element, direction, recompute]);
 
   const scroll = useCallback((offset: number = 100) => {
+    if (!element) {
+      return;
+    }
     const { width, height } = element.getBoundingClientRect();
     element.scrollBy({
       [direction === 'x' ? 'left' : 'top']: offset * (direction === 'x' ? width : height),

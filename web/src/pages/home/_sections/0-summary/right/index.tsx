@@ -2,7 +2,7 @@ import { ErrorOutlined } from '@mui/icons-material';
 import { styled } from '@mui/material/styles';
 import Tooltip from '@mui/material/Tooltip';
 import React from 'react';
-import InViewContainer from '../../../../../components/InViewContainer';
+import InViewContainer from '@site/src/components/InViewContainer';
 import { Item } from '../../../_components/StackItem';
 import { fontSizes } from '../../../_components/typography';
 import Events from './Events';

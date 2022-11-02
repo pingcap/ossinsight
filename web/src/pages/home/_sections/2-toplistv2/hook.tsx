@@ -9,8 +9,8 @@ import { GitMergeIcon, ProjectIcon, RepoForkedIcon, RepoPushIcon, StarIcon } fro
 export type Language = string;
 export type Period = string;
 
-export const periods: Period[] = params.find(param => param.name === 'period').enums;
-export const languages: Language[] = Object.keys(params.find(param => param.name === 'language').template);
+export const periods: Period[] = params.find(param => param.name === 'period')?.enums ?? [];
+export const languages: Language[] = Object.keys(params.find(param => param.name === 'language')?.template ?? {});
 
 const periodOptions = periods.map(period => ({ key: period, title: snakeToCamel(period) }));
 const languageOptions = languages.map(language => ({ key: language, label: language }));
@@ -68,7 +68,7 @@ export function useTopList (language: Language, period: Period, orderBy: keyof T
     period,
   }, false);
 
-  const processedData: RemoteData<any, ProcessedTopListData> = useMemo(() => {
+  const processedData: RemoteData<any, ProcessedTopListData> | undefined = useMemo(() => {
     if (data == null) {
       return undefined;
     }
@@ -99,7 +99,7 @@ export function useLanguages () {
 }
 
 export function usePeriods () {
-  return useSelectParam(periodOptions, periodOptions[0], '', { variant: 'standard' }, {
+  return useSelectParam<string, false>(periodOptions, periodOptions[0], '', { variant: 'standard' }, {
     disableUnderline: true,
     sx: { font: 'inherit', color: 'primary.main', lineHeight: 'inherit', '.MuiSelect-select': { pb: 0 } },
   });

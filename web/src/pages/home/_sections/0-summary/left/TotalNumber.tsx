@@ -2,8 +2,8 @@ import { styled } from '@mui/material/styles';
 import React from 'react';
 import AnimatedNumber from 'react-awesome-animated-number';
 import { useInView } from 'react-intersection-observer';
-import { useTotalEvents } from '../../../../../components/RemoteCharts/hook';
-import useVisibility from '../../../../../hooks/visibility';
+import { useTotalEvents } from '@site/src/components/RemoteCharts/hook';
+import useVisibility from '@site/src/hooks/visibility';
 
 const StyledAnimatedNumber = styled(AnimatedNumber)({
   color: '#E30C34',

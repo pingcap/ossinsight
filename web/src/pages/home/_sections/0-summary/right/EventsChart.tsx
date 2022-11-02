@@ -3,7 +3,7 @@ import Box from '@mui/material/Box';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import React, { useLayoutEffect, useRef } from 'react';
-import { useRealtimeEvents } from '../../../../../components/RealtimeSummary/hooks';
+import { useRealtimeEvents } from '@site/src/components/RealtimeSummary/hooks';
 import { EChartsType } from 'echarts/core';
 
 export const EventsChart = ({ show }: { show: boolean }) => {

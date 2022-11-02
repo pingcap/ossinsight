@@ -5,7 +5,8 @@ import Stack from '@mui/material/Stack';
 import { useScrollable } from './useScrollable';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import ArrowLeftIcon from '@mui/icons-material/ArrowLeft';
-import HotCollection, { LoadingHotCollection } from '../../../../components/HotCollection';
+import HotCollection, { LoadingHotCollection } from '@site/src/components/HotCollection';
+import { notFalsy } from '@site/src/utils/value';
 
 export default function Collections () {
   const { data } = useRecentHotCollections();
@@ -40,8 +41,8 @@ const CollectionsContainer = ({ version, children }: PropsWithChildren<{ version
 
   return (
     <Box position="relative">
-      <ScrollIndicator type="backward" onClick={() => scroll(-0.6)} show={!!scrollable && scrollable !== 'forward'} />
-      <ScrollIndicator type="forward" onClick={() => scroll(0.6)} show={!!scrollable && scrollable !== 'backward'} />
+      <ScrollIndicator type="backward" onClick={() => scroll(-0.6)} show={notFalsy(scrollable) && scrollable !== 'forward'} />
+      <ScrollIndicator type="forward" onClick={() => scroll(0.6)} show={notFalsy(scrollable) && scrollable !== 'backward'} />
       <Stack direction="row" overflow="auto" ref={ref}>
         {children}
       </Stack>
