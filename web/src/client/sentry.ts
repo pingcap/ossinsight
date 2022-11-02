@@ -1,5 +1,5 @@
-import * as Sentry from "@sentry/react";
-import { BrowserTracing } from "@sentry/tracing";
+import * as Sentry from '@sentry/react';
+import { BrowserTracing } from '@sentry/tracing';
 
 Sentry.init({
   enabled: !!process.env.SENTRY_DSN,

@@ -1,8 +1,8 @@
 import React, { useMemo } from 'react';
-import { CacheProvider } from "@emotion/react";
-import createCache from "@emotion/cache";
+import { CacheProvider } from '@emotion/react';
+import createCache from '@emotion/cache';
 
-function ClientRoot({ children }) {
+function ClientRoot ({ children }) {
   const cache = useMemo(() => createCache({ key: 'css' }), []);
   return (
     <CacheProvider value={cache}>
@@ -11,7 +11,7 @@ function ClientRoot({ children }) {
   );
 }
 
-function ServerRoot({ children }) {
+function ServerRoot ({ children }) {
   return (
     <>{children}</>
   );

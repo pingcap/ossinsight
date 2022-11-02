@@ -1,9 +1,9 @@
-import React from "react";
-import RepoSelector, { Repo } from "./RepoSelector";
-import Grid from "@mui/material/Grid";
-import Box, { BoxProps } from "@mui/material/Box";
-import { combineSx } from "../../utils/mui";
-import { useIsDarkTheme } from "@site/src/hooks/theme";
+import React from 'react';
+import RepoSelector, { Repo } from './RepoSelector';
+import Grid from '@mui/material/Grid';
+import Box, { BoxProps } from '@mui/material/Box';
+import { combineSx } from '../../utils/mui';
+import { useIsDarkTheme } from '@site/src/hooks/theme';
 
 interface CompareHeaderProps extends BoxProps {
   repo1: Repo | null;
@@ -17,7 +17,7 @@ interface CompareHeaderProps extends BoxProps {
   repo2Placeholder?: string;
 }
 
-function CompareHeader({
+function CompareHeader ({
   repo1,
   repo2,
   onRepo1Change,

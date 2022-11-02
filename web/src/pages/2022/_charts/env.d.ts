@@ -5,7 +5,7 @@ export type BarData<T> = {
   postfix: keyof T
   label?: keyof T
   data: T[]
-}
+};
 
 export type LineData<T> = {
   unit: string;
@@ -13,22 +13,22 @@ export type LineData<T> = {
   label: number,
   x: string[],
   data: T[]
-}
+};
 
 export type WeekdayDistributionData = {
   unit: string;
-  data: [string, number, number, number, number, number, number, number][]
-}
+  data: Array<[string, number, number, number, number, number, number, number]>
+};
 
 export type CountryData = {
   unit: string
   labels: string[]
-  data: [string, string, ...number[]][]
+  data: Array<[string, string, ...number[]]>
   highlights: number[][]
-}
+};
 
-declare module "./*.json" {
-  type Data = BarData<any> | LineData<any> | WeekdayDistributionData
+declare module './*.json' {
+  type Data = BarData<any> | LineData<any> | WeekdayDistributionData;
 
   export default Data;
 }

@@ -1,4 +1,4 @@
-import { DefinePlugin } from 'webpack'
+import { DefinePlugin } from 'webpack';
 
 module.exports = function (_, options: Record<string, any>) {
   return {
@@ -6,7 +6,7 @@ module.exports = function (_, options: Record<string, any>) {
     configureWebpack () {
       return {
         plugins: [new DefinePlugin(options)]
-      }
+      };
     }
-  }
-}
+  };
+};

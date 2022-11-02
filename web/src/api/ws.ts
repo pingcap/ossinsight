@@ -1,5 +1,5 @@
-import { AxiosAdapter, AxiosError } from "axios";
-import { socket } from "./client";
+import { AxiosAdapter, AxiosError } from 'axios';
+import { socket } from './client';
 
 export const wsQueryApiAdapter = (query: string, params: any, wsApi: 'unique' | true): AxiosAdapter => async (config) => {
   let qid: string | undefined;
@@ -23,7 +23,7 @@ export const wsQueryApiAdapter = (query: string, params: any, wsApi: 'unique' | 
       socket.emit('q', queryPayload);
     });
   }
-  return new Promise((resolve, reject) => {
+  return await new Promise((resolve, reject) => {
     const topic = `/q/${query}${qid ? `?qid=${qid}` : ''}`;
     const timeout = setTimeout(() => {
       socket.off(topic, listener);
@@ -40,7 +40,7 @@ export const wsQueryApiAdapter = (query: string, params: any, wsApi: 'unique' | 
             data: result.payload,
           },
           isAxiosError: true,
-          toJSON() {
+          toJSON () {
             return result.payload;
           },
         } as AxiosError);
@@ -62,5 +62,5 @@ export const wsQueryApiAdapter = (query: string, params: any, wsApi: 'unique' | 
 };
 
 socket.on('fatal-error/q', error => {
-  console.error('ws query error', error)
-})
+  console.error('ws query error', error);
+});

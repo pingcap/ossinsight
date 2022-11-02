@@ -1,14 +1,14 @@
-import React from "react";
-import Container from "@mui/material/Container";
-import CustomPage from "../../theme/CustomPage";
-import WordCloud from "./_components/WordCloud";
-import Collections from "./_components/Collections";
-import { useSearch, useSorter } from "./_components/filters";
-import Stack from "@mui/material/Stack";
-import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
-import AddIcon from "@mui/icons-material/Add";
-import Link from '@docusaurus/Link'
+import React from 'react';
+import Container from '@mui/material/Container';
+import CustomPage from '../../theme/CustomPage';
+import WordCloud from './_components/WordCloud';
+import Collections from './_components/Collections';
+import { useSearch, useSorter } from './_components/filters';
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
+import AddIcon from '@mui/icons-material/Add';
+import Link from '@docusaurus/Link';
 
 const title = 'Explore Collections';
 const description = 'Find insights about the monthly or historical rankings and trends in technical fields with curated repository lists.';

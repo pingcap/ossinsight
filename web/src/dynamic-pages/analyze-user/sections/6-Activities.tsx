@@ -1,30 +1,30 @@
-import React, { ForwardedRef, forwardRef, useCallback, useContext, useMemo, useRef, useState } from "react";
-import Section from "../../../components/Section/Section";
-import InViewContext from "../../../components/InViewContext";
-import { useAnalyzeUserContext } from "../charts/context";
+import React, { ForwardedRef, forwardRef, useCallback, useContext, useMemo, useRef, useState } from 'react';
+import Section from '../../../components/Section/Section';
+import InViewContext from '../../../components/InViewContext';
+import { useAnalyzeUserContext } from '../charts/context';
 import {
   ContributionActivityRange, contributionActivityRanges,
   ContributionActivityType, contributionActivityTypes,
   usePersonalContributionActivities,
   usePersonalData,
   useRange,
-} from "../hooks/usePersonal";
-import { Axis, Dataset, EChartsx, Grid, Legend, Once, Title, Tooltip, withBaseOption } from "@djagger/echartsx";
-import { Common } from "../charts/Common";
-import { useDimension } from "../hooks/useDimension";
-import { ScatterSeriesOption } from "echarts/charts";
-import { primary } from "../colors";
-import { TooltipFormatterCallback } from "echarts/types/dist/shared";
-import Box from "@mui/material/Box";
-import { InputLabel, Select, useEventCallback } from "@mui/material";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import { SelectChangeEvent } from "@mui/material/Select";
-import { SectionHeading } from "../../../components/Section";
-import ChartWrapper from "../charts/ChartWrapper";
-import { EChartsType } from "echarts/core";
+} from '../hooks/usePersonal';
+import { Axis, Dataset, EChartsx, Grid, Legend, Once, Title, Tooltip, withBaseOption } from '@djagger/echartsx';
+import { Common } from '../charts/Common';
+import { useDimension } from '../hooks/useDimension';
+import { ScatterSeriesOption } from 'echarts/charts';
+import { primary } from '../colors';
+import { TooltipFormatterCallback } from 'echarts/types/dist/shared';
+import Box from '@mui/material/Box';
+import { InputLabel, Select, useEventCallback } from '@mui/material';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import { SelectChangeEvent } from '@mui/material/Select';
+import { SectionHeading } from '../../../components/Section';
+import ChartWrapper from '../charts/ChartWrapper';
+import { EChartsType } from 'echarts/core';
 
-export default forwardRef(function ActivitiesSection({}, ref: ForwardedRef<HTMLElement>) {
+export default forwardRef(function ActivitiesSection ({}, ref: ForwardedRef<HTMLElement>) {
   return (
     <Section id='activities' ref={ref}>
       <SectionHeading
@@ -47,36 +47,36 @@ const Activities = () => {
   );
 };
 
-const Scatter = withBaseOption<ScatterSeriesOption>('series', { type: 'scatter' }, 'Scatter')
+const Scatter = withBaseOption<ScatterSeriesOption>('series', { type: 'scatter' }, 'Scatter');
 
 const ActivityChart = ({ userId, show }: ModuleProps) => {
-  const [type, setType] = useState<ContributionActivityType>('all')
-  const [period, setPeriod] = useState<ContributionActivityRange>('last_28_days')
+  const [type, setType] = useState<ContributionActivityType>('all');
+  const [period, setPeriod] = useState<ContributionActivityRange>('last_28_days');
 
-  const { data, loading } = usePersonalContributionActivities(userId, type, period, show)
-  const repoNames = useDimension(data?.data ?? [], 'repo_name')
+  const { data, loading } = usePersonalContributionActivities(userId, type, period, show);
+  const repoNames = useDimension(data?.data ?? [], 'repo_name');
 
-  const [min, max] = useRange(period)
+  const [min, max] = useRange(period);
 
-  const typeString = useMemo(() => contributionActivityTypes.find(({ key }) => type === key)?.label, [type])
-  const periodString = useMemo(() => contributionActivityRanges.find(({ key }) => period === key)?.label, [period])
+  const typeString = useMemo(() => contributionActivityTypes.find(({ key }) => type === key)?.label, [type]);
+  const periodString = useMemo(() => contributionActivityRanges.find(({ key }) => period === key)?.label, [period]);
 
   const tooltipFormatter: TooltipFormatterCallback<any> = useCallback(({ value }) => {
-    return `${value.event_period} ${value.cnt} ${typeString} on ${value.repo_name}`
-  }, [typeString])
+    return `${value.event_period} ${value.cnt} ${typeString} on ${value.repo_name}`;
+  }, [typeString]);
 
   const handleTypeChange = useEventCallback((e: SelectChangeEvent<ContributionActivityType>) => {
-    setType(e.target.value as ContributionActivityType)
-  })
+    setType(e.target.value as ContributionActivityType);
+  });
   const handlePeriodChange = useEventCallback((e: SelectChangeEvent<ContributionActivityRange>) => {
-    setPeriod(e.target.value as ContributionActivityRange)
-  })
+    setPeriod(e.target.value as ContributionActivityRange);
+  });
 
   const title = useMemo(() => {
-    return `${typeString} in ${periodString}`
-  }, [typeString, periodString])
+    return `${typeString} in ${periodString}`;
+  }, [typeString, periodString]);
 
-  const chart = useRef<EChartsType | undefined>()
+  const chart = useRef<EChartsType | undefined>();
 
   return (
     <ChartWrapper title={title} chart={chart} repo remoteData={data} loading={loading}>
@@ -117,4 +117,4 @@ const ActivityChart = ({ userId, show }: ModuleProps) => {
 type ModuleProps = {
   userId: number
   show: boolean
-}
+};

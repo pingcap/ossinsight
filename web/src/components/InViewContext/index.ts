@@ -1,11 +1,11 @@
-import {createContext} from "react";
+import { createContext } from 'react';
 
 interface InViewContextProps {
-    inView: boolean;
+  inView: boolean;
 }
 
 const InViewContext = createContext<InViewContextProps>({
   inView: true,
 });
 
-export default InViewContext
+export default InViewContext;

@@ -23,15 +23,15 @@ export type PrDurationData = {
   p50: number
   p75: number
   p100: number
-}
+};
 
 const fmtHours = (hours: number) => prettyMs(hours * 60 * 60 * 1000, { unitCount: 1 });
 
-function getMax(data: AsyncData<RemoteData<unknown, PrDurationData>>): number | undefined {
+function getMax (data: AsyncData<RemoteData<unknown, PrDurationData>>): number | undefined {
   return data.data?.data.reduce((prev, current) => Math.max(prev, current.p100), 0);
 }
 
-function getMin(data: AsyncData<RemoteData<unknown, PrDurationData>>): number | undefined {
+function getMin (data: AsyncData<RemoteData<unknown, PrDurationData>>): number | undefined {
   return data.data?.data.reduce((prev, current) => Math.min(prev, current.p0 > 0 ? current.p0 : prev), Number.MAX_SAFE_INTEGER);
 }
 
@@ -75,7 +75,7 @@ export const DurationChart = withChart<PrDurationData>(({ title: propsTitle, dat
       xAxisId: id,
       yAxisId: id,
       itemStyle: {
-        color: alpha('#dd6b66', .3),
+        color: alpha('#dd6b66', 0.3),
         borderWidth: 1,
       },
       boxWidth: ['40%', '40%'],
@@ -104,4 +104,3 @@ export const DurationChart = withChart<PrDurationData>(({ title: propsTitle, dat
 }, {
   aspectRatio: 16 / 9,
 });
-

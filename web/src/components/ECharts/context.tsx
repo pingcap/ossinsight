@@ -1,5 +1,5 @@
-import {createContext, MutableRefObject, Ref} from "react";
-import EChartsReact from "echarts-for-react";
+import { createContext, MutableRefObject, Ref } from 'react';
+import EChartsReact from 'echarts-for-react';
 
 export interface EChartsContextProps {
   echartsRef?: MutableRefObject<EChartsReact>
@@ -13,4 +13,4 @@ export default createContext<EChartsContextProps>({
   title: undefined,
   description: undefined,
   keyword: undefined,
-})
+});

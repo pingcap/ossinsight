@@ -1,16 +1,16 @@
-import * as React from "react";
-import {useMemo} from "react";
-import useThemeContext from "@theme/hooks/useThemeContext";
-import * as echarts from "echarts";
-import {EChartsOption, EffectScatterSeriesOption, ScatterSeriesOption} from "echarts";
+import * as React from 'react';
+import { useMemo } from 'react';
+import useThemeContext from '@theme/hooks/useThemeContext';
+import * as echarts from 'echarts';
+import { EChartsOption, EffectScatterSeriesOption, ScatterSeriesOption } from 'echarts';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import {useTheme} from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles';
 import map from '@geo-maps/countries-land-10km';
-import {alpha2ToGeo, alpha2ToTitle} from "../../lib/areacode";
-import ECharts from "../ECharts";
+import { alpha2ToGeo, alpha2ToTitle } from '../../lib/areacode';
+import ECharts from '../ECharts';
 
 if (!echarts.getMap('world')) {
-  echarts.registerMap('world', map())
+  echarts.registerMap('world', map());
 }
 
 export interface WorldMapChartProps<T> {
@@ -43,7 +43,7 @@ function useMapOption (comparing: boolean): EChartsOption {
       itemStyle: {
         color: '#ccc',
         borderWidth: 1,
-        borderColor: "#ccc",
+        borderColor: '#ccc',
       }
     },
     tooltip: {
@@ -54,7 +54,7 @@ function useMapOption (comparing: boolean): EChartsOption {
       type: 'scroll',
       left: comparing ? 'center' : 0,
       top: comparing ? 0 : 'center',
-      orient: comparing ? "horizontal" : "vertical"
+      orient: comparing ? 'horizontal' : 'vertical'
     },
     grid: {
       left: 16,
@@ -63,10 +63,10 @@ function useMapOption (comparing: boolean): EChartsOption {
       right: 16,
       containLabel: true,
     },
-  }), [comparing])
+  }), [comparing]);
 }
 
-export default function WorldMapChart<T>(props: WorldMapChartProps<T>) {
+export default function WorldMapChart<T> (props: WorldMapChartProps<T>) {
   const {
     loading,
     data,
@@ -82,22 +82,22 @@ export default function WorldMapChart<T>(props: WorldMapChartProps<T>) {
     aspectRatio = true,
   } = props;
   const theme = useTheme();
-  const basicOption = useMapOption(!!compareData)
-  const isSmall = useMediaQuery(theme.breakpoints.down('md'))
+  const basicOption = useMapOption(!(compareData == null));
+  const isSmall = useMediaQuery(theme.breakpoints.down('md'));
 
   const options: EChartsOption = useMemo(() => {
-    const max = Math.max(data[0]?.[metricColumnName] as unknown as number ?? 0, compareData?.[0]?.[metricColumnName] as unknown as number ?? 0)
+    const max = Math.max(data[0]?.[metricColumnName] as unknown as number ?? 0, compareData?.[0]?.[metricColumnName] as unknown as number ?? 0);
 
-    let series: (ScatterSeriesOption | EffectScatterSeriesOption)[] = []
+    let series: Array<ScatterSeriesOption | EffectScatterSeriesOption> = [];
 
-    if (!compareData) {
+    if (compareData == null) {
       series = data.map((item) => {
-        const title = alpha2ToTitle(item[dimensionColumnName])
+        const title = alpha2ToTitle(item[dimensionColumnName]);
         const value = item[metricColumnName];
-        const {long, lat} = alpha2ToGeo((item[dimensionColumnName] as any as string).toUpperCase()) || {}
+        const { long, lat } = alpha2ToGeo((item[dimensionColumnName] as any as string).toUpperCase()) || {};
 
         return {
-          type: effect ? "effectScatter" : 'scatter' as 'effectScatter' | 'scatter',
+          type: effect ? 'effectScatter' : 'scatter' as 'effectScatter' | 'scatter',
           geoIndex: 0,
           coordinateSystem: 'geo',
           name: title,
@@ -111,11 +111,11 @@ export default function WorldMapChart<T>(props: WorldMapChartProps<T>) {
             return 1 + Math.sqrt(val[2] / max) * size;
           },
           data: [[long, lat, value, title]],
-        }
-      })
+        };
+      });
     } else {
       series = [data, compareData].map((data, i) => ({
-        type: effect ? "effectScatter" : 'scatter' as 'effectScatter' | 'scatter',
+        type: effect ? 'effectScatter' : 'scatter' as 'effectScatter' | 'scatter',
         geoIndex: 0,
         coordinateSystem: 'geo',
         name: [name, compareName][i],
@@ -129,20 +129,20 @@ export default function WorldMapChart<T>(props: WorldMapChartProps<T>) {
           return 1 + Math.sqrt(val[2] / max) * size;
         },
         data: data.map(item => {
-          const title = alpha2ToTitle(item[dimensionColumnName])
+          const title = alpha2ToTitle(item[dimensionColumnName]);
           const value = item[metricColumnName];
-          const {long, lat} = alpha2ToGeo((item[dimensionColumnName] as any as string).toUpperCase()) || {}
-          return [long, lat, value, title]
+          const { long, lat } = alpha2ToGeo((item[dimensionColumnName] as any as string).toUpperCase()) || {};
+          return [long, lat, value, title];
         }),
-      }))
+      }));
     }
 
     return {
       ...basicOption,
       series,
       ...overrideOptions,
-    }
-  }, [basicOption, data, compareData, name, compareName, isSmall, effect])
+    };
+  }, [basicOption, data, compareData, name, compareName, isSmall, effect]);
 
   return (
     <ECharts
@@ -153,5 +153,5 @@ export default function WorldMapChart<T>(props: WorldMapChartProps<T>) {
       notMerge={false}
       lazyUpdate={true}
     />
-  )
+  );
 }

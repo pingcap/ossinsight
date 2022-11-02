@@ -31,9 +31,9 @@ declare module '@ossinsight/api' {
     name: string
     slug: string
     public: 0 | 1
-  }
+  };
 
-  export type UserType = 'user' | 'org'
+  export type UserType = 'user' | 'org';
 
   export type TidbTableInfo = {
     tableSchema: string
@@ -47,28 +47,28 @@ declare module '@ossinsight/api' {
     createOptions: string
     rowIdShardingInfo: string
     pkType: string
-  }
+  };
 
   export type TidbTableDDL = {
     'Create Table': string
     'Table': string
-  }
+  };
 
   export type TidbIndexInfo = {
-    clustered: "YES" | "NO"
+    clustered: 'YES' | 'NO'
     columns: string
     indexName: string
-    isVisible: "YES" | "NO"
+    isVisible: 'YES' | 'NO'
     nonUnique: 0 | 1
     tableName: string
-  }
+  };
 
   export type TidbIndexStats = {
     calls: number
     indexName: string
     queries: number
     tableName: string
-  }
+  };
 
   export type InternalQueryRecord = {
     digest_text: string
@@ -76,5 +76,5 @@ declare module '@ossinsight/api' {
     id: number
     query_name: string
     ts: number
-  }
+  };
 }

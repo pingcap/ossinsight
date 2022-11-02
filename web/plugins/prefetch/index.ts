@@ -1,31 +1,30 @@
-import { Plugin } from "@docusaurus/types";
+import { Plugin } from '@docusaurus/types';
 import * as fs from 'fs/promises';
-
 
 type PrefetchLinkContent = {
   type: 'prefetch-link',
   links: string[]
-}
+};
 
 type GlobalPresetContent = {
   type: 'global-preset',
   resources: Record<string, string>
-}
+};
 
-type PrefetchContent = PrefetchLinkContent | GlobalPresetContent
+type PrefetchContent = PrefetchLinkContent | GlobalPresetContent;
 
-function isGlobalPreset(content: PrefetchContent): content is GlobalPresetContent {
+function isGlobalPreset (content: PrefetchContent): content is GlobalPresetContent {
   return content.type === 'global-preset';
 }
 
-function isPrefetchLink(content: PrefetchContent): content is PrefetchLinkContent {
+function isPrefetchLink (content: PrefetchContent): content is PrefetchLinkContent {
   return content.type === 'prefetch-link';
 }
 
-export default function PrefetchPlugin(_, options: Record<string, string>): Plugin<PrefetchContent[]> {
+export default function PrefetchPlugin (_, options: Record<string, string>): Plugin<PrefetchContent[]> {
   return {
     name: 'plugin-prefetch',
-    async loadContent() {
+    async loadContent () {
       const content: PrefetchContent[] = [];
       const links: string[] = [];
       const resources = {};
@@ -51,7 +50,7 @@ export default function PrefetchPlugin(_, options: Record<string, string>): Plug
       });
       return content;
     },
-    injectHtmlTags({ content }) {
+    injectHtmlTags ({ content }) {
       return {
         headTags: content
           .filter(isPrefetchLink)
@@ -68,7 +67,7 @@ export default function PrefetchPlugin(_, options: Record<string, string>): Plug
           })),
       };
     },
-    async contentLoaded({ actions, content }) {
+    async contentLoaded ({ actions, content }) {
       const { setGlobalData } = actions;
       content
         .filter(isGlobalPreset)

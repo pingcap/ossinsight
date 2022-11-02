@@ -1,16 +1,16 @@
-import React from "react";
-import Analyze from "../Analyze";
-import { CommitIcon, GitPullRequestIcon, IssueOpenedIcon, StarIcon } from "@primer/octicons-react";
-import Grid from "@mui/material/Grid";
-import BarsCompare from "./BarsCompare";
-import { Border } from "./ui";
-import LinesCompare from "./LinesCompare";
-import Box from "@mui/material/Box";
-import TopContributors from "./TopContributors";
-import Typography from "@mui/material/Typography";
-import Map from "./Map";
+import React from 'react';
+import Analyze from '../Analyze';
+import { CommitIcon, GitPullRequestIcon, IssueOpenedIcon, StarIcon } from '@primer/octicons-react';
+import Grid from '@mui/material/Grid';
+import BarsCompare from './BarsCompare';
+import { Border } from './ui';
+import LinesCompare from './LinesCompare';
+import Box from '@mui/material/Box';
+import TopContributors from './TopContributors';
+import Typography from '@mui/material/Typography';
+import Map from './Map';
 
-export function MonthlyDetailsCard() {
+export function MonthlyDetailsCard () {
   return (
     <Grid container spacing={1}>
       <Grid container item xs={12} lg={6} direction="column" spacing={1}>

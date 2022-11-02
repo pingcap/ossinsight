@@ -1,19 +1,19 @@
-import React, { ChangeEvent, useState } from "react";
-import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
-import ToggleButton from "@mui/material/ToggleButton";
-import Divider from "@mui/material/Divider";
-import { styled } from "@mui/material/styles";
-import { ArrowDownIcon, SearchIcon } from "@primer/octicons-react";
-import InputAdornment from "@mui/material/InputAdornment";
-import { useEventCallback } from "@mui/material";
-import TextField from "@mui/material/TextField";
+import React, { ChangeEvent, useState } from 'react';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import ToggleButton from '@mui/material/ToggleButton';
+import Divider from '@mui/material/Divider';
+import { styled } from '@mui/material/styles';
+import { ArrowDownIcon, SearchIcon } from '@primer/octicons-react';
+import InputAdornment from '@mui/material/InputAdornment';
+import { useEventCallback } from '@mui/material';
+import TextField from '@mui/material/TextField';
 
 export const enum SortType {
   alphabetical = 'alphabetical',
   recent = 'recent'
 }
 
-export function useSearch() {
+export function useSearch () {
   const [search, setSearch] = useState('');
 
   const handleSearchChange = useEventCallback((event: ChangeEvent<HTMLInputElement>) => {
@@ -38,7 +38,7 @@ export function useSearch() {
   )] as const;
 }
 
-export function useSorter() {
+export function useSorter () {
   const [sort, setSort] = useState<SortType>(SortType.alphabetical);
 
   const handleSortChange = (

@@ -5,9 +5,9 @@ import {
   type NavbarSecondaryMenuComponent,
   ThemeClassNames,
 } from '@docusaurus/theme-common';
-import {useNavbarMobileSidebar} from '@docusaurus/theme-common/internal';
+import { useNavbarMobileSidebar } from '@docusaurus/theme-common/internal';
 import DocSidebarItems from '@theme/DocSidebarItems';
-import type {Props} from '@theme/DocSidebar/Mobile';
+import type { Props } from '@theme/DocSidebar/Mobile';
 
 // eslint-disable-next-line react/function-component-definition
 const DocSidebarMobileSecondaryMenu: NavbarSecondaryMenuComponent<Props> = ({
@@ -37,7 +37,7 @@ const DocSidebarMobileSecondaryMenu: NavbarSecondaryMenuComponent<Props> = ({
   );
 };
 
-function DocSidebarMobile(props: Props) {
+function DocSidebarMobile (props: Props) {
   return (
     <NavbarSecondaryMenuFiller
       component={DocSidebarMobileSecondaryMenu}

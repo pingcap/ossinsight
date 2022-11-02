@@ -7,7 +7,7 @@ interface InViewContainerProps {
   children: JSX.Element | ((show: boolean) => JSX.Element);
 }
 
-export default function InViewContainer({ children }: InViewContainerProps) {
+export default function InViewContainer ({ children }: InViewContainerProps) {
   const visible = useVisibility();
   const { inView, ref } = useInView({ fallbackInView: true });
 
@@ -31,7 +31,7 @@ export default function InViewContainer({ children }: InViewContainerProps) {
   );
 }
 
-export function withInViewContainer<P>(Component: FC<P>): FC<P> {
+export function withInViewContainer<P> (Component: FC<P>): FC<P> {
   return (props: P) => (
     <InViewContainer>
       <Component {...props} />

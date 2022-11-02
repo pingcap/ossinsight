@@ -3,7 +3,7 @@ import { OptionId } from 'echarts/types/src/util/types';
 import { dangerousGetCtx } from './_danger';
 import { isSmall } from './sizes';
 
-export function grid(id: OptionId, option: GridOption = {}): GridOption {
+export function grid (id: OptionId, option: GridOption = {}): GridOption {
   const small = isSmall();
   return {
     top: small ? 32 : 64,
@@ -15,7 +15,7 @@ export function grid(id: OptionId, option: GridOption = {}): GridOption {
   };
 }
 
-export function topBottomLayoutGrid() {
+export function topBottomLayoutGrid () {
   const { context, height, isSmall, comparingRepoName } = dangerousGetCtx();
   if (!comparingRepoName) {
     return grid('main');
@@ -33,13 +33,13 @@ export function topBottomLayoutGrid() {
     context.layoutSubGridHeight = subGridHeight;
     context.layoutGap = gap;
     return [
-      grid('main', { top: top, bottom: topBottom }),
-      grid('vs', { top: bottomTop, bottom: bottom }),
+      grid('main', { top, bottom: topBottom }),
+      grid('vs', { top: bottomTop, bottom }),
     ];
   }
 }
 
-export function leftRightLayoutGrid() {
+export function leftRightLayoutGrid () {
   const { context, comparingRepoName } = dangerousGetCtx();
   if (!comparingRepoName) {
     return grid('main');

@@ -1,7 +1,7 @@
-import React from 'react'
+import React from 'react';
 import Section from '../../_components/Section';
-import Collections from "./Collections";
-import { H2, Body } from "../../_components/typography";
+import Collections from './Collections';
+import { H2, Body } from '../../_components/typography';
 
 export function CollectionsSection () {
   return (
@@ -10,5 +10,5 @@ export function CollectionsSection () {
       <Body sx={{ mb: 4, mt: 2, fontSize: 14 }}>Insights about the monthly and historical rankings and trends in technical fields with curated repository lists.</Body>
       <Collections />
     </Section>
-  )
+  );
 }

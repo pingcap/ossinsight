@@ -1,13 +1,13 @@
-import React, { PropsWithChildren, useEffect, useRef } from "react";
-import { useRecentHotCollections } from "./hook";
-import Box from "@mui/material/Box";
-import Stack from "@mui/material/Stack";
-import { useScrollable } from "./useScrollable";
+import React, { PropsWithChildren, useEffect, useRef } from 'react';
+import { useRecentHotCollections } from './hook';
+import Box from '@mui/material/Box';
+import Stack from '@mui/material/Stack';
+import { useScrollable } from './useScrollable';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import ArrowLeftIcon from '@mui/icons-material/ArrowLeft';
-import HotCollection, { LoadingHotCollection } from "../../../../components/HotCollection";
+import HotCollection, { LoadingHotCollection } from '../../../../components/HotCollection';
 
-export default function Collections() {
+export default function Collections () {
   const { data } = useRecentHotCollections();
   const version = useRef(0);
 
@@ -16,7 +16,7 @@ export default function Collections() {
       {data?.data.slice(0, 10).map(({ id, name, repos, collectionRepos }) => (
         <HotCollection key={id} variant='link' name={name} repos={repos} collectionRepos={collectionRepos} />
       ))}
-      {!data ? <Loading /> : undefined}
+      {(data == null) ? <Loading /> : undefined}
     </CollectionsContainer>
   );
 }
@@ -49,7 +49,7 @@ const CollectionsContainer = ({ version, children }: PropsWithChildren<{ version
   );
 };
 
-type ScrollIndicatorProps = { type: 'forward' | 'backward', onClick: () => void, show: boolean }
+type ScrollIndicatorProps = { type: 'forward' | 'backward', onClick: () => void, show: boolean };
 const ScrollIndicator = ({ type, onClick, show }: ScrollIndicatorProps) => {
   return (
     <Box

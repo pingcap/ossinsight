@@ -8,16 +8,15 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { use } from 'echarts/core';
 import { CanvasRenderer } from 'echarts/renderers';
 import React from 'react';
-import AnimatedNumber from "react-awesome-animated-number";
+import AnimatedNumber from 'react-awesome-animated-number';
 import useVisibility from '../../hooks/visibility';
-import { useTotalEvents } from "../RemoteCharts/hook";
+import { useTotalEvents } from '../RemoteCharts/hook';
 import { useRealtimeEvents } from './hooks';
-
 
 use(CanvasRenderer);
 
 const Chart = ({ visible }: { visible: boolean }) => {
-  const data = useRealtimeEvents(visible)
+  const data = useRealtimeEvents(visible);
 
   return (
     <Box width="100px" maxWidth="100px" minWidth="100px" marginLeft="8px">
@@ -26,7 +25,7 @@ const Chart = ({ visible }: { visible: boolean }) => {
           <Grid containLabel={true} top={0} bottom={8} left={0} right={0} />
           <Axis.Category.X axisLine={{ show: false }} axisTick={{ show: false }} axisLabel={{ show: false }}
                        splitLine={{ show: false }} />
-          <Axis.Value.Y axisLine={{ show: false }} axisTick={{ show: false }} axisLabel={{ show: true, align: 'right', fontSize: 4, showMinLabel: true, hideOverlap: true}}
+          <Axis.Value.Y axisLine={{ show: false }} axisTick={{ show: false }} axisLabel={{ show: true, align: 'right', fontSize: 4, showMinLabel: true, hideOverlap: true }}
                         splitLine={{ show: false }} position={'right'} interval={100} />
           <BarSeries datasetId='original' silent color="#FFE895" encode={{ x: 'latest_timestamp', y: 'cnt' }} barMaxWidth={4} />
         </Once>
@@ -49,8 +48,8 @@ const Counts = ({ visible }: { visible: boolean }) => {
         <AnimatedNumber value={total ?? 0} hasComma duration={200} size={18} />
       </Numbers>
     </Stack>
-  )
-}
+  );
+};
 
 const Span = styled('span')({
   fontSize: '10px',
@@ -81,19 +80,19 @@ const TooltipTitle = () => (
     <br/>
     📊 Each bar = Data importing in per 5 seconds.
   </div>
-)
+);
 
 export const RealtimeSummary = () => {
-  const visible = useVisibility()
-  const isSmall = useMediaQuery('(max-width: 600px)')
-  const { pathname } = useLocation()
+  const visible = useVisibility();
+  const isSmall = useMediaQuery('(max-width: 600px)');
+  const { pathname } = useLocation();
 
   if (pathname === '/') {
-    return <></>
+    return <></>;
   }
 
   if (isSmall) {
-    return <></>
+    return <></>;
   }
 
   return (

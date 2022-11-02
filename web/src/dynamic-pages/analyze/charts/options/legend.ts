@@ -1,7 +1,7 @@
-import {EChartsOption} from 'echarts';
+import { EChartsOption } from 'echarts';
 import { isSmall } from './sizes';
 
-export function legend(option: EChartsOption['legend'] = {}): EChartsOption['legend'] {
+export function legend (option: EChartsOption['legend'] = {}): EChartsOption['legend'] {
   if (isSmall()) {
     return {
       left: 'center',
@@ -10,7 +10,7 @@ export function legend(option: EChartsOption['legend'] = {}): EChartsOption['leg
       type: 'scroll',
       ...option,
       orient: 'horizontal',
-    }
+    };
   } else {
     return {
       left: 8,

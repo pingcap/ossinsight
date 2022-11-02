@@ -1,16 +1,16 @@
-import React from "react";
-import { TidbTableInfo } from "@ossinsight/api";
-import Table from "@mui/material/Table";
-import TableRow from "@mui/material/TableRow";
-import TableCell from "@mui/material/TableCell";
-import TableBody from "@mui/material/TableBody";
-import Accordion from "@mui/material/Accordion";
-import AccordionDetails from "@mui/material/AccordionDetails";
-import AccordionSummary from "@mui/material/AccordionSummary";
+import React from 'react';
+import { TidbTableInfo } from '@ossinsight/api';
+import Table from '@mui/material/Table';
+import TableRow from '@mui/material/TableRow';
+import TableCell from '@mui/material/TableCell';
+import TableBody from '@mui/material/TableBody';
+import Accordion from '@mui/material/Accordion';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import AccordionSummary from '@mui/material/AccordionSummary';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import format from 'human-format';
 
-const entries: { key: keyof TidbTableInfo, humanFormat?: any }[] = [
+const entries: Array<{ key: keyof TidbTableInfo, humanFormat?: any }> = [
   { key: 'tableSchema' },
   { key: 'tableName' },
   { key: 'tableRows', humanFormat: {} },
@@ -24,7 +24,7 @@ const entries: { key: keyof TidbTableInfo, humanFormat?: any }[] = [
   { key: 'pkType' },
 ];
 
-export default function TableInfo({ info }: { info: TidbTableInfo }) {
+export default function TableInfo ({ info }: { info: TidbTableInfo }) {
   return (
     <Accordion>
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>

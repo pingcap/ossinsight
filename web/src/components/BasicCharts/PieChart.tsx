@@ -1,13 +1,13 @@
-import * as echarts from "echarts/core";
-import { GridComponent, TitleComponent, TooltipComponent } from "echarts/components";
-import { PieChart as EPieChart } from "echarts/charts";
-import { CanvasRenderer } from "echarts/renderers";
-import * as React from "react";
-import { useMemo } from "react";
-import { TextCommonOption } from "echarts/types/src/util/types";
-import { EChartsOption, PieSeriesOption } from "echarts";
-import ECharts from "../ECharts";
-import { useIsDarkTheme } from "@site/src/hooks/theme";
+import * as echarts from 'echarts/core';
+import { GridComponent, TitleComponent, TooltipComponent } from 'echarts/components';
+import { PieChart as EPieChart } from 'echarts/charts';
+import { CanvasRenderer } from 'echarts/renderers';
+import * as React from 'react';
+import { useMemo } from 'react';
+import { TextCommonOption } from 'echarts/types/src/util/types';
+import { EChartsOption, PieSeriesOption } from 'echarts';
+import ECharts from '../ECharts';
+import { useIsDarkTheme } from '@site/src/hooks/theme';
 
 echarts.use(
   [TitleComponent, TooltipComponent, GridComponent, EPieChart, CanvasRenderer],
@@ -26,7 +26,7 @@ export interface PieChartProps<T> {
   rich?: Record<string, TextCommonOption>;
 }
 
-function usePieSeries(isDarkTheme: boolean): PieSeriesOption {
+function usePieSeries (isDarkTheme: boolean): PieSeriesOption {
   return useMemo(() => ({
     type: 'pie',
     radius: ['35%', '65%'],
@@ -54,7 +54,7 @@ function usePieSeries(isDarkTheme: boolean): PieSeriesOption {
   }), [isDarkTheme]);
 }
 
-export default function PieChart<T>({
+export default function PieChart<T> ({
   seriesName,
   loading,
   data,
@@ -84,7 +84,7 @@ export default function PieChart<T>({
 
     series.push(baseSeries);
 
-    if (compareData) {
+    if (compareData != null) {
       baseSeries.center = ['25%', '55%'];
 
       const compareSeries = {
@@ -118,7 +118,7 @@ export default function PieChart<T>({
         right: '20px',
         top: 20,
         bottom: 20,
-        x: "right",
+        x: 'right',
         formatter: '{name}',
       },
       series,

@@ -1,4 +1,4 @@
-import {Chart} from './Chart'
-import {useForm} from './Form'
+import { Chart } from './Chart';
+import { useForm } from './Form';
 
-export default {Chart, useForm}
+export default { Chart, useForm };

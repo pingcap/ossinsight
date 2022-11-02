@@ -1,13 +1,13 @@
-import Typography from "@mui/material/Typography";
-import React from "react";
-import Stack from "@mui/material/Stack";
+import Typography from '@mui/material/Typography';
+import React from 'react';
+import Stack from '@mui/material/Stack';
 import PeopleIcon from '@mui/icons-material/People';
-import { useAnalyzeChartContext } from "../context";
-import Avatar from "@mui/material/Avatar";
-import Link from "@mui/material/Link";
-import Tooltip from "@mui/material/Tooltip";
+import { useAnalyzeChartContext } from '../context';
+import Avatar from '@mui/material/Avatar';
+import Link from '@mui/material/Link';
+import Tooltip from '@mui/material/Tooltip';
 
-export default function TopContributors() {
+export default function TopContributors () {
   const { data } = useAnalyzeChartContext();
   return (
     <Stack direction={['column', 'column', 'column', 'row']} justifyContent="space-between" alignItems="center">

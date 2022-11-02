@@ -1,11 +1,11 @@
-import React, { ForwardedRef, forwardRef, ReactNode, useContext, useMemo, useRef } from "react";
-import Section, { SectionHeading } from "../../../components/Section";
-import { useAnalyzeUserContext } from "../charts/context";
-import { contributionTypes, PersonalOverview, usePersonalData, usePersonalOverview } from "../hooks/usePersonal";
-import InViewContext from "../../../components/InViewContext";
-import Stack from "@mui/material/Stack";
-import Avatar from "@mui/material/Avatar";
-import Typography from "@mui/material/Typography";
+import React, { ForwardedRef, forwardRef, ReactNode, useContext, useMemo, useRef } from 'react';
+import Section, { SectionHeading } from '../../../components/Section';
+import { useAnalyzeUserContext } from '../charts/context';
+import { contributionTypes, PersonalOverview, usePersonalData, usePersonalOverview } from '../hooks/usePersonal';
+import InViewContext from '../../../components/InViewContext';
+import Stack from '@mui/material/Stack';
+import Avatar from '@mui/material/Avatar';
+import Typography from '@mui/material/Typography';
 import {
   CodeReviewIcon,
   CommitIcon,
@@ -13,22 +13,22 @@ import {
   IssueOpenedIcon,
   MarkGithubIcon, RepoIcon,
   StarIcon,
-} from "@primer/octicons-react";
-import Link from "@docusaurus/Link";
-import { styled } from "@mui/material/styles";
-import Box from "@mui/material/Box";
-import Skeleton from "@mui/material/Skeleton";
-import { Axis, Dataset, EChartsx, LineSeries, Once, Title } from "@djagger/echartsx";
+} from '@primer/octicons-react';
+import Link from '@docusaurus/Link';
+import { styled } from '@mui/material/styles';
+import Box from '@mui/material/Box';
+import Skeleton from '@mui/material/Skeleton';
+import { Axis, Dataset, EChartsx, LineSeries, Once, Title } from '@djagger/echartsx';
 import colors from '../colors.module.css';
 import { chartColors, languageColors } from '../colors';
-import { Common } from "../charts/Common";
-import Tooltip from "@mui/material/Tooltip";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import { useDimension } from "../hooks/useDimension";
-import ChartWrapper from "../charts/ChartWrapper";
-import { EChartsType } from "echarts/core";
+import { Common } from '../charts/Common';
+import Tooltip from '@mui/material/Tooltip';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import { useDimension } from '../hooks/useDimension';
+import ChartWrapper from '../charts/ChartWrapper';
+import { EChartsType } from 'echarts/core';
 
-export default forwardRef(function OverviewSection({}, ref: ForwardedRef<HTMLElement>) {
+export default forwardRef(function OverviewSection ({}, ref: ForwardedRef<HTMLElement>) {
   return (
     <Section id='overview' ref={ref}>
       <Overview />
@@ -63,14 +63,13 @@ const Overview = () => {
 
     </>
   );
-
 };
 
 type ModuleProps = {
   login: string
   userId: number
   show: boolean
-}
+};
 
 const Banner = ({ login }: { login: string }) => {
   return (
@@ -97,21 +96,21 @@ type OverviewItemProps = {
   children?: (value: any, data: PersonalOverview | undefined) => React.ReactNode
   tooltip?: string
   dataColSpan?: number
-}
+};
 
 const OverviewTable = ({ userId, show }: ModuleProps) => {
   const { data } = usePersonalOverview(userId, !!userId && show);
 
   const OverviewItem = useMemo(() => {
     return ({ field, icon, name, tooltip, dataColSpan, children }: OverviewItemProps) => {
-      let tooltipEl: ReactNode = undefined
+      let tooltipEl: ReactNode;
 
       if (tooltip) {
         tooltipEl = (
           <Tooltip title={tooltip} arrow>
             <InfoOutlinedIcon fontSize='small' htmlColor='#535353' sx={{ verticalAlign: 'text-bottom' }} />
           </Tooltip>
-        )
+        );
       }
       return (
         <Pair data={data} name={field} renderValue={children} dataColSpan={dataColSpan}>
@@ -195,7 +194,7 @@ const OverviewTable = ({ userId, show }: ModuleProps) => {
 const Languages = ({ userId, show }: ModuleProps) => {
   const { data } = usePersonalData('personal-languages', userId, show);
 
-  if (!data) {
+  if (data == null) {
     return <Skeleton />;
   }
 
@@ -229,8 +228,8 @@ const Languages = ({ userId, show }: ModuleProps) => {
 
 const ContributorTrends = ({ userId, show }: ModuleProps) => {
   const { data, loading } = usePersonalData('personal-contribution-trends', userId, show);
-  const validContributionTypes = useDimension(data?.data ?? [], 'contribution_type')
-  const chart = useRef<EChartsType>()
+  const validContributionTypes = useDimension(data?.data ?? [], 'contribution_type');
+  const chart = useRef<EChartsType>();
 
   return (
     <ChartWrapper title='Contribution Trends' remoteData={data} loading={loading} chart={chart}>
@@ -276,7 +275,7 @@ type PairProps = {
   renderValue?: (value: any, data: PersonalOverview | undefined) => React.ReactNode
   children: ReactNode
   dataColSpan?: number
-}
+};
 
 const Pair = ({ children, name, data, renderValue = value => value, dataColSpan }: PairProps) => {
   const value = data?.[name];
@@ -285,7 +284,7 @@ const Pair = ({ children, name, data, renderValue = value => value, dataColSpan 
       <Td sx={{ color: '#C4C4C4' }}>{children}</Td>
       <Td colSpan={dataColSpan}>
         <b>
-          {!data ? <Skeleton width={24} sx={{ display: 'inline-block' }} /> : renderValue(value, data)}
+          {(data == null) ? <Skeleton width={24} sx={{ display: 'inline-block' }} /> : renderValue(value, data)}
         </b>
       </Td>
     </>

@@ -1,14 +1,14 @@
-import Grid, { GridProps } from "@mui/material/Grid";
-import Card, { CardProps } from "@mui/material/Card";
-import Typography from "@mui/material/Typography";
-import AspectRatio from "react-aspect-ratio";
+import Grid, { GridProps } from '@mui/material/Grid';
+import Card, { CardProps } from '@mui/material/Card';
+import Typography from '@mui/material/Typography';
+import AspectRatio from 'react-aspect-ratio';
 import React, { useCallback, useState } from 'react';
 import Button, { ButtonProps } from '@mui/material/Button';
-import Chip from "@mui/material/Chip";
-import Box from "@mui/material/Box";
+import Chip from '@mui/material/Chip';
+import Box from '@mui/material/Box';
 import ButtonBase from '@mui/material/ButtonBase';
-import Link from "@docusaurus/Link";
-import isInternalUrl from "@docusaurus/isInternalUrl";
+import Link from '@docusaurus/Link';
+import isInternalUrl from '@docusaurus/isInternalUrl';
 
 export interface StandardCardProps extends Omit<GridProps<any, any>, 'item' | 'container'> {
   title: React.ReactNode;
@@ -27,7 +27,7 @@ export interface StandardCardProps extends Omit<GridProps<any, any>, 'item' | 'c
   size?: 'small';
 }
 
-function withClickable(children: React.ReactNode, {
+function withClickable (children: React.ReactNode, {
   link,
   cardSx,
   elevation: propsElevation,
@@ -86,7 +86,7 @@ function withClickable(children: React.ReactNode, {
   }
 }
 
-export default function StandardCard({
+export default function StandardCard ({
   title,
   aspectRatio = 16 / 9,
   image,
@@ -115,18 +115,20 @@ export default function StandardCard({
         }}>
         {title}
       </Typography>
-      {image
+      {(image != null)
         ? (
           <AspectRatio ratio={aspectRatio}>
             {image}
           </AspectRatio>
-        ) : undefined}
-      {tags
+          )
+        : undefined}
+      {(tags != null)
         ? (
           <Box sx={{ my: 2 }}>
             {tags.map((tag, i) => <Chip size="small" label={tag} key={i} sx={{ mr: 2 }} />)}
           </Box>
-        ) : undefined}
+          )
+        : undefined}
       {description
         ? (
           <Typography
@@ -139,13 +141,15 @@ export default function StandardCard({
             }}>
             {description}
           </Typography>
-        ) : undefined}
+          )
+        : undefined}
       {readMore
         ? (
           <Button component={Link} rel={isInternalUrl(readMore) ? undefined : 'noopener'} to={readMore} size="small" variant={buttonVariant ?? 'text'} sx={{ mt: 2 }}>
             {buttonText}
           </Button>
-        ) : undefined}
+          )
+        : undefined}
     </>
   );
 
@@ -156,4 +160,3 @@ export default function StandardCard({
     </Grid>
   );
 }
-

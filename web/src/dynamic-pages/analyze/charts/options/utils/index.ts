@@ -1,2 +1,2 @@
-export * from './axis'
-export * from './analyze'
+export * from './axis';
+export * from './analyze';

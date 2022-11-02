@@ -28,7 +28,7 @@ export const AnalyzeChartContext = createContext<AnalyzeChartContextProps>({
   descriptionRef: undefined,
 });
 
-export function useAnalyzeChartContext<T>(): AnalyzeChartContextProps<T> {
+export function useAnalyzeChartContext<T> (): AnalyzeChartContextProps<T> {
   return useContext(AnalyzeChartContext) as AnalyzeChartContextProps<T>;
 }
 
@@ -50,11 +50,11 @@ export const AnalyzeContext = createContext<AnalyzeContextProps>({
   comparingRepoInfo: undefined,
 });
 
-export function useAnalyzeContext() {
+export function useAnalyzeContext () {
   return useContext(AnalyzeContext);
 }
 
-export function isNoData(ctx: AnalyzeChartContextProps) {
+export function isNoData (ctx: AnalyzeChartContextProps) {
   if (ctx.data.loading || ctx.compareData.loading) {
     return false;
   }

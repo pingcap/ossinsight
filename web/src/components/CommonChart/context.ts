@@ -1,4 +1,4 @@
-import { createContext } from "react";
+import { createContext } from 'react';
 
 export interface CommonChartProps {
   shareInfo?: CommonChartShareInfo
@@ -14,4 +14,4 @@ export interface CommonChartShareInfo {
 
 export default createContext<CommonChartProps>({
   shareInfo: undefined,
-})
+});

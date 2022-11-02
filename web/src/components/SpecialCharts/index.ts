@@ -1,1 +1,1 @@
-export { default as YoyChart } from './YoyChart'
+export { default as YoyChart } from './YoyChart';

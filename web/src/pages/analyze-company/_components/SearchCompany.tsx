@@ -1,11 +1,11 @@
-import Autocomplete from "@mui/material/Autocomplete";
-import React, { ChangeEventHandler, useMemo, useState } from "react";
-import TextField from "@mui/material/TextField";
-import { CompanyInfo, useCompanyList } from "./hooks";
-import { ListItem, ListItemButton, ListItemText, Popper, useEventCallback } from "@mui/material";
-import { useDebounced } from "../../../components/CompareHeader/useSearchRepo";
-import InputAdornment from "@mui/material/InputAdornment";
-import { Search } from "@mui/icons-material";
+import Autocomplete from '@mui/material/Autocomplete';
+import React, { ChangeEventHandler, useMemo, useState } from 'react';
+import TextField from '@mui/material/TextField';
+import { CompanyInfo, useCompanyList } from './hooks';
+import { ListItem, ListItemButton, ListItemText, Popper, useEventCallback } from '@mui/material';
+import { useDebounced } from '../../../components/CompareHeader/useSearchRepo';
+import InputAdornment from '@mui/material/InputAdornment';
+import { Search } from '@mui/icons-material';
 
 interface SearchCompanyProps {
   value: CompanyInfo | null;
@@ -58,12 +58,12 @@ const SearchCompany = ({ value, onChange }: SearchCompanyProps) => {
             placeholder: 'Search by company name',
             sx: {
               color: '#333',
-              "::placeholder": {
+              '::placeholder': {
                 color: '#dfdfdf'
               },
               borderRadius: 2
             }
-        }}
+          }}
         />
       )}
       PopperComponent={CustomPopper}
@@ -71,6 +71,6 @@ const SearchCompany = ({ value, onChange }: SearchCompanyProps) => {
   );
 };
 
-const CustomPopper = props => <Popper {...props} placement='bottom-start' />
+const CustomPopper = props => <Popper {...props} placement='bottom-start' />;
 
 export default SearchCompany;

@@ -1,10 +1,10 @@
-import React, {PropsWithChildren} from "react";
-import Box from "@mui/material/Box";
-import Container from "@mui/material/Container";
-import {responsive} from './responsive'
-import { Breakpoint } from "@mui/system";
+import React, { PropsWithChildren } from 'react';
+import Box from '@mui/material/Box';
+import Container from '@mui/material/Container';
+import { responsive } from './responsive';
+import { Breakpoint } from '@mui/system';
 
-export interface SectionProps{
+export interface SectionProps {
   darker?: boolean
   pt?: number
   id?: string
@@ -14,9 +14,9 @@ export interface SectionProps{
 const dark = {
   default: '#242526',
   darker: '#1C1E21',
-}
+};
 
-export default function Section ({id, darker = false, pt, maxWidth = 'xl', children}: PropsWithChildren<SectionProps>) {
+export default function Section ({ id, darker = false, pt, maxWidth = 'xl', children }: PropsWithChildren<SectionProps>) {
   return (
     <Box
       component='section'
@@ -33,5 +33,5 @@ export default function Section ({id, darker = false, pt, maxWidth = 'xl', child
         {children}
       </Container>
     </Box>
-  )
+  );
 }

@@ -21,7 +21,7 @@ export const useRank = (period = 'last_hour'): SWRResponse<RepoRankData> => {
   return useSWR<RepoRankData>(['recent-events-rank', period], {
     fetcher: async (q, period) => {
       const data = await query<RepoRank>(q, { period });
-      let res: RepoRankData = data.data as RepoRankData;
+      const res: RepoRankData = data.data as RepoRankData;
       res.sql = data.sql;
       return res;
     },

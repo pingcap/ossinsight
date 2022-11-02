@@ -17,7 +17,7 @@ export type TimeHeatData = {
   dayofweek: number
   hour: number
   pushes: number
-}
+};
 
 const hours = [
   '0h', '1h', '2h', '3h', '4h', '5h', '6h',
@@ -31,8 +31,8 @@ const days = [
 ];
 
 const applyZone = (hour: number | string, zone: number): number => {
-  return (Number(hour) + zone + 24) % 24
-}
+  return (Number(hour) + zone + 24) % 24;
+};
 
 const prepareData = (zone: number) => (data: TimeHeatData[]): TimeHeatData[] => {
   if (data.length === 0) {
@@ -60,10 +60,10 @@ const prepareData = (zone: number) => (data: TimeHeatData[]): TimeHeatData[] => 
 };
 
 export const TimeHeatChart = withChart<TimeHeatData, { zone: number }>(({
-                                                                          title: propsTitle,
-                                                                          data,
-                                                                          isSmall,
-                                                                        }, { zone }) => ({
+  title: propsTitle,
+  data,
+  isSmall,
+}, { zone }) => ({
   dataset: standardDataset(prepareData(zone)),
   title: title(propsTitle),
   legend: legend(),
@@ -89,4 +89,3 @@ export const TimeHeatChart = withChart<TimeHeatData, { zone: number }>(({
 }), {
   aspectRatio: 24 / 10,
 });
-

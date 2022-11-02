@@ -1,5 +1,5 @@
-import 'react'
-import 'grecaptcha'
+import 'react';
+import 'grecaptcha';
 
 declare module 'react' {
   interface CSSProperties {

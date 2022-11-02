@@ -8,9 +8,9 @@ import DocSidebarNavbarItem from '@theme/NavbarItem/DocSidebarNavbarItem';
 import DocsVersionNavbarItem from '@theme/NavbarItem/DocsVersionNavbarItem';
 import DocsVersionDropdownNavbarItem from '@theme/NavbarItem/DocsVersionDropdownNavbarItem';
 
-import type {ComponentTypesObject} from '@theme/NavbarItem/ComponentTypes';
-import AnalyzeSearchNavbarItem from "./AnalyzeSearchNavbarItem";
-import RealtimeSummaryNavbarItem from "@site/src/theme/NavbarItem/RealtimeSummaryNavbarItem";
+import type { ComponentTypesObject } from '@theme/NavbarItem/ComponentTypes';
+import AnalyzeSearchNavbarItem from './AnalyzeSearchNavbarItem';
+import RealtimeSummaryNavbarItem from '@site/src/theme/NavbarItem/RealtimeSummaryNavbarItem';
 
 const ComponentTypes: ComponentTypesObject = {
   default: DefaultNavbarItem,

@@ -15,7 +15,7 @@ import { countNames } from './utils';
 
 use(CanvasRenderer);
 
-export default withInViewContainer(function HistoryRankSection() {
+export default withInViewContainer(function HistoryRankSection () {
   const { collection } = useContext(CollectionsContext);
 
   const { dimension, tabs } = useDimensionTabs('historical-rankings');

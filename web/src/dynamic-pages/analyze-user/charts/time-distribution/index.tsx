@@ -1,13 +1,13 @@
-import { Personal } from "../../hooks/usePersonal";
-import React, { useMemo } from "react";
-import Box from "@mui/material/Box";
+import { Personal } from '../../hooks/usePersonal';
+import React, { useMemo } from 'react';
+import Box from '@mui/material/Box';
 
 interface TimeDistributionProps {
   title: string;
   size: number;
   gap: number;
   offset: number;
-  data: Personal<'personal-contribution-time-distribution'>[];
+  data: Array<Personal<'personal-contribution-time-distribution'>>;
 }
 
 const times = Array(24).fill(0).map((_, i) => i);
@@ -15,7 +15,7 @@ const days = Array(7).fill(0).map((_, i) => i);
 
 const DAY_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 // const TIME_NAMES = ['0a', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12p', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11'];
-const TIME_NAMES = Array(24).fill(0).map((_, i) => i)
+const TIME_NAMES = Array(24).fill(0).map((_, i) => i);
 
 const TimeDistribution = ({ title, size, gap, offset, data }: TimeDistributionProps) => {
   const max = useMemo(() => {
@@ -30,7 +30,7 @@ const TimeDistribution = ({ title, size, gap, offset, data }: TimeDistributionPr
   }, [size, gap]);
 
   const height = useMemo(() => {
-    return size * 7 + gap * 6 + 40 /* for legends */;
+    return size * 7 + gap * 6 + 40;
   }, [size, gap]);
 
   return (

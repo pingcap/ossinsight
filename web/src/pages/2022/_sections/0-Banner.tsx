@@ -1,11 +1,11 @@
-import Section from "../_components/Section";
-import React from "react";
-import { H1, P2 } from "../_components/typograph";
+import Section from '../_components/Section';
+import React from 'react';
+import { H1, P2 } from '../_components/typograph';
 import CodeIcon from '@mui/icons-material/Code';
-import { A, Footnote, HeadlineTag, LI, UL } from "../_components/styled";
-import { paramCase } from "param-case";
-import Grid from "@mui/material/Grid";
-import InfoIcon from "@mui/icons-material/InfoOutlined";
+import { A, Footnote, HeadlineTag, LI, UL } from '../_components/styled';
+import { paramCase } from 'param-case';
+import Grid from '@mui/material/Grid';
+import InfoIcon from '@mui/icons-material/InfoOutlined';
 
 export default function () {
   return (
@@ -41,7 +41,7 @@ export default function () {
   );
 }
 
-const description = `We analyzed more than 5,000,000,000 rows of GitHub event data and got the results here. In this report, you'll get interesting findings about open source software on GitHub in 2022, including:`;
+const description = 'We analyzed more than 5,000,000,000 rows of GitHub event data and got the results here. In this report, you\'ll get interesting findings about open source software on GitHub in 2022, including:';
 
 export const highlights: string[] = [
   '⌨️ Top programming languages',

@@ -1,12 +1,12 @@
-import React from "react";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import { Dataset, EChartsx, LineSeries, Once, Tooltip } from "@djagger/echartsx";
-import Stack from "@mui/material/Stack";
-import { useAnalyzeChartContext } from "../context";
-import { useReversed } from "./hooks";
-import { AxisBase, formatDate } from "./base";
-import { Title } from "./ui";
+import React from 'react';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import { Dataset, EChartsx, LineSeries, Once, Tooltip } from '@djagger/echartsx';
+import Stack from '@mui/material/Stack';
+import { useAnalyzeChartContext } from '../context';
+import { useReversed } from './hooks';
+import { AxisBase, formatDate } from './base';
+import { Title } from './ui';
 
 interface LinesProps {
   title: string;
@@ -22,18 +22,18 @@ interface LinesProps {
 }
 
 const DEFAULT_COLORS: [string, string] = ['#63C16D', '#904DC9'];
-export default function Lines({
-                                icon,
-                                title,
-                                colors = DEFAULT_COLORS,
-                                openedText = 'Opened',
-                                closedText,
-                                dayOpenedValueKey,
-                                totalOpenedValueKey,
-                                totalClosedValueKey,
-                                dayClosedValueKey,
-                                dayKey = 'current_period_day',
-                              }: LinesProps) {
+export default function Lines ({
+  icon,
+  title,
+  colors = DEFAULT_COLORS,
+  openedText = 'Opened',
+  closedText,
+  dayOpenedValueKey,
+  totalOpenedValueKey,
+  totalClosedValueKey,
+  dayClosedValueKey,
+  dayKey = 'current_period_day',
+}: LinesProps) {
   const { data } = useAnalyzeChartContext();
   return (
     <Box>

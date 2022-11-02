@@ -2,7 +2,7 @@ import { EChartsOption } from 'echarts';
 import { isSmall } from './sizes';
 import { template } from './utils';
 
-export function dataZoom(option: EChartsOption['dataZoom'] = undefined): EChartsOption['dataZoom'] {
+export function dataZoom (option: EChartsOption['dataZoom'] = undefined): EChartsOption['dataZoom'] {
   if (isSmall()) {
     return { show: false };
   }

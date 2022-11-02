@@ -1,9 +1,8 @@
 import useMediaQuery from '@mui/material/useMediaQuery';
-import React, { forwardRef } from 'react';
+import React, { forwardRef, ForwardedRef, useCallback, useEffect, useMemo, useState } from 'react';
 import List, { ListProps } from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import { styled } from '@mui/material/styles';
-import { ForwardedRef, useCallback, useEffect, useMemo, useState } from 'react';
 import {
   CSSTransition,
   TransitionGroup,
@@ -17,13 +16,13 @@ export interface CoolListProps<T> extends Omit<ListProps, 'children' | 'ref'> {
 }
 
 export interface CoolListInstance<T> {
-  add (item: T)
+  add: (item: T) => any
 }
 
 const CoolListContainer = styled(List)({
   position: 'relative',
   padding: 0,
-})
+});
 
 const CoolListItem = styled(ListItem)({
   position: 'absolute',
@@ -50,33 +49,33 @@ const CoolListItem = styled(ListItem)({
   '&:hover': {
     opacity: 1,
   }
-})
+});
 
 function CoolList<T> ({ maxLength, itemHeight, getKey, children, ...props }: CoolListProps<T>, ref: ForwardedRef<CoolListInstance<T>>) {
-  const [list, setList] = useState<T[]>([])
+  const [list, setList] = useState<T[]>([]);
 
   const add = useCallback((item: T) => {
     setList(list => {
       if (list.length === maxLength) {
-        return [item].concat(list.slice(0, maxLength - 1))
+        return [item].concat(list.slice(0, maxLength - 1));
       } else {
-        return [item].concat(list)
+        return [item].concat(list);
       }
-    })
-  }, [maxLength])
+    });
+  }, [maxLength]);
 
   useEffect(() => {
     const instance = {
       add
-    }
-    if (ref) {
+    };
+    if (ref != null) {
       if (typeof ref === 'function') {
-        ref(instance)
+        ref(instance);
       } else {
-        ref.current = instance
+        ref.current = instance;
       }
     }
-  }, [])
+  }, []);
 
   return (
     <TransitionGroup component={CoolListContainer} {...props} sx={{ height: itemHeight * maxLength }}>
@@ -88,7 +87,7 @@ function CoolList<T> ({ maxLength, itemHeight, getKey, children, ...props }: Coo
         </CSSTransition>
       ))}
       </TransitionGroup>
-  )
+  );
 }
 
-export default forwardRef(CoolList)
+export default forwardRef(CoolList);

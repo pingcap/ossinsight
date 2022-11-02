@@ -1,5 +1,5 @@
 import * as d3 from 'd3-hierarchy';
-import {CustomSeriesOption} from 'echarts';
+import { CustomSeriesOption } from 'echarts';
 import {
   CustomSeriesRenderItemAPI,
   CustomSeriesRenderItemParams,
@@ -16,10 +16,10 @@ export interface D3HierarchyItem {
   color?: string
 }
 
-export function d3Hierarchy(seriesData: D3HierarchyItem[], maxDepth: number): CustomSeriesOption {
-  let displayRoot = stratify();
+export function d3Hierarchy (seriesData: D3HierarchyItem[], maxDepth: number): CustomSeriesOption {
+  const displayRoot = stratify();
 
-  function stratify() {
+  function stratify () {
     return d3
       .stratify<D3HierarchyItem>()
       .parentId(function (d) {
@@ -33,7 +33,7 @@ export function d3Hierarchy(seriesData: D3HierarchyItem[], maxDepth: number): Cu
       });
   }
 
-  function overallLayout(params: CustomSeriesRenderItemParams, api: CustomSeriesRenderItemAPI) {
+  function overallLayout (params: CustomSeriesRenderItemParams, api: CustomSeriesRenderItemAPI) {
     const context = params.context;
 
     context.nodes = {};
@@ -46,7 +46,7 @@ export function d3Hierarchy(seriesData: D3HierarchyItem[], maxDepth: number): Cu
     });
   }
 
-  function renderItem(params: CustomSeriesRenderItemParams, api: CustomSeriesRenderItemAPI): CustomSeriesRenderItemReturn {
+  function renderItem (params: CustomSeriesRenderItemParams, api: CustomSeriesRenderItemAPI): CustomSeriesRenderItemReturn {
     const context = params.context;
     // Only do that layout once in each time `setOption` called.
     if (!context.layout) {
@@ -74,14 +74,14 @@ export function d3Hierarchy(seriesData: D3HierarchyItem[], maxDepth: number): Cu
     }
     return {
       type: 'circle',
-      focus: focus,
+      focus,
       shape: {
         cx: node.x,
         cy: node.y + 16,
         r: node.r,
       },
       transition: ['shape'],
-      z2: z2,
+      z2,
       textContent: {
         type: 'text',
         style: {
@@ -120,7 +120,7 @@ export function d3Hierarchy(seriesData: D3HierarchyItem[], maxDepth: number): Cu
 
   return {
     type: 'custom',
-    renderItem: renderItem,
+    renderItem,
     progressive: 0,
     coordinateSystem: 'none',
     encode: {

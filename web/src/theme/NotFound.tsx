@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react';
 import Translate, { translate } from '@docusaurus/Translate';
 import { PageMetadata } from '@docusaurus/theme-common';
 import Layout from '@theme/Layout';
-import { useHistory } from "@docusaurus/router";
-import Typography from "@mui/material/Typography";
-import CircularProgress from "@mui/material/CircularProgress";
+import { useHistory } from '@docusaurus/router';
+import Typography from '@mui/material/Typography';
+import CircularProgress from '@mui/material/CircularProgress';
 
-export default function NotFound(): JSX.Element {
+export default function NotFound (): JSX.Element {
   const history = useHistory();
   const [display, setDisplay] = useState(false);
 
@@ -36,7 +36,9 @@ export default function NotFound(): JSX.Element {
         title={translate({
           id: 'theme.NotFound.title',
           message: 'Page Not Found',
-        }) ? undefined : 'Loading...'}
+        })
+          ? undefined
+          : 'Loading...'}
         description="The comprehensive Open Source Software insight tool by analyzing massive events from GitHub, powered by TiDB, the best insight building database of data agility."
         image="/img/screenshots/homepage.png"
       />
@@ -47,7 +49,7 @@ export default function NotFound(): JSX.Element {
   );
 }
 
-function renderRedirect() {
+function renderRedirect () {
   return (
     <main className="container margin-vert--xl">
       <div className="row">
@@ -63,7 +65,7 @@ function renderRedirect() {
   );
 }
 
-function renderNotFound() {
+function renderNotFound () {
   return (
     <main className="container margin-vert--xl">
       <div className="row">

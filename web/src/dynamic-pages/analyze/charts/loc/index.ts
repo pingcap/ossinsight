@@ -20,10 +20,9 @@ export type LocData = {
   additions: number
   deletions: number
   changes: number
-}
+};
 
 export const LocChart = withChart<LocData>(({ title: propsTitle }) => {
-
   return {
     dataset: utils.template<LocData>(({ id, datasetId, data, context }) => {
       const transformedData = transformLocData(data.data?.data ?? []);
@@ -58,7 +57,7 @@ export const LocChart = withChart<LocData>(({ title: propsTitle }) => {
     ]),
     series: utils.template(({ id, datasetId }) => [
       bar('event_month', 'additions', {
-        datasetId: datasetId,
+        datasetId,
         stack: `stack-${id}`,
         color: '#57ab5a',
         xAxisId: id,
@@ -66,7 +65,7 @@ export const LocChart = withChart<LocData>(({ title: propsTitle }) => {
         barMaxWidth: 8,
       }),
       bar('event_month', 'deletions', {
-        datasetId: datasetId,
+        datasetId,
         stack: `stack-${id}`,
         color: '#e5534b',
         xAxisId: id,
@@ -74,7 +73,7 @@ export const LocChart = withChart<LocData>(({ title: propsTitle }) => {
         barMaxWidth: 8,
       }),
       line('event_month', 'total', {
-        datasetId: datasetId,
+        datasetId,
         showSymbol: false,
         color: '#cc6b2c',
         xAxisId: id,
@@ -102,7 +101,7 @@ export const LocChart = withChart<LocData>(({ title: propsTitle }) => {
   aspectRatio: 16 / 9,
 });
 
-function transformLocData(data: LocData[]) {
+function transformLocData (data: LocData[]) {
   let total = 0;
   return data.map(item => ({
     event_month: item.event_month,

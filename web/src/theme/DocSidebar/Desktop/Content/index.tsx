@@ -1,12 +1,12 @@
 import React, { ComponentType, useState } from 'react';
 import clsx from 'clsx';
-import {ThemeClassNames} from '@docusaurus/theme-common';
+import { ThemeClassNames } from '@docusaurus/theme-common';
 import {
   useAnnouncementBar,
   useScrollPosition,
 } from '@docusaurus/theme-common/internal';
 import DocSidebarItems from '@theme/DocSidebarItems';
-import type {Props} from '@theme/DocSidebar/Desktop/Content';
+import type { Props } from '@theme/DocSidebar/Desktop/Content';
 
 import styles from './styles.module.css';
 
@@ -16,12 +16,12 @@ declare module '@theme/DocSidebar/Desktop/Content' {
   }
 }
 
-function useShowAnnouncementBar() {
-  const {isActive} = useAnnouncementBar();
+function useShowAnnouncementBar () {
+  const { isActive } = useAnnouncementBar();
   const [showAnnouncementBar, setShowAnnouncementBar] = useState(isActive);
 
   useScrollPosition(
-    ({scrollY}) => {
+    ({ scrollY }) => {
       if (isActive) {
         setShowAnnouncementBar(scrollY === 0);
       }
@@ -31,7 +31,7 @@ function useShowAnnouncementBar() {
   return isActive && showAnnouncementBar;
 }
 
-export default function DocSidebarDesktopContent({
+export default function DocSidebarDesktopContent ({
   path,
   sidebar,
   className,

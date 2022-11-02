@@ -1,17 +1,17 @@
-import { PluginContext } from "@docusaurus/plugin-client-redirects/lib/types";
-import { Plugin, RouteConfig } from "@docusaurus/types";
+import { PluginContext } from '@docusaurus/plugin-client-redirects/lib/types';
+import { Plugin, RouteConfig } from '@docusaurus/types';
 
 type DynamicRoutePluginOptions = {
-  routes: (RouteConfig & {
-    params: Record<string, string>[]
-  })[]
-}
+  routes: Array<RouteConfig & {
+    params: Array<Record<string, string>>
+  }>
+};
 
 const DynamicRoutePlugin = function (context: PluginContext, options: DynamicRoutePluginOptions): Plugin {
   return {
     name: 'plugin-dynamic-routes',
 
-    async contentLoaded({ content, actions }) {
+    async contentLoaded ({ content, actions }) {
       const { routes } = options;
       const { addRoute } = actions;
 
@@ -22,7 +22,7 @@ const DynamicRoutePlugin = function (context: PluginContext, options: DynamicRou
           params.forEach(param => {
             let { path, ...rest } = route;
             Object.entries(param).forEach(([k, v]) => {
-              path = (path as string).replace(':' + k, String(v));
+              path = (path).replace(':' + k, String(v));
             });
             addRoute({ path, ...rest });
           });

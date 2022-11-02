@@ -8,16 +8,16 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { EChartsReactProps } from "echarts-for-react/src/types";
-import EChartsReact, { EChartsInstance } from "echarts-for-react";
-import { AspectRatio } from "react-aspect-ratio";
+import { EChartsReactProps } from 'echarts-for-react/src/types';
+import EChartsReact, { EChartsInstance } from 'echarts-for-react';
+import { AspectRatio } from 'react-aspect-ratio';
 import 'react-aspect-ratio/aspect-ratio.css';
-import BrowserOnly from "@docusaurus/BrowserOnly";
-import { registerThemeDark, registerThemeVintage } from "../BasicCharts/theme";
-import { Opts } from "echarts-for-react/lib/types";
+import BrowserOnly from '@docusaurus/BrowserOnly';
+import { registerThemeDark, registerThemeVintage } from '../BasicCharts/theme';
+import { Opts } from 'echarts-for-react/lib/types';
 import EChartsContext from './context';
 import InViewContext from '../InViewContext';
-import { useIsDarkTheme } from "@site/src/hooks/theme";
+import { useIsDarkTheme } from '@site/src/hooks/theme';
 
 interface SizeProps {
   aspectRatio?: number;
@@ -61,7 +61,7 @@ const ECharts = React.forwardRef<EChartsReact, EChartsProps>(({
 
   const echartsOpts: Opts = useMemo(() => {
     return Object.assign({
-      devicePixelRatio: typeof window === "undefined" ? 1 : window.devicePixelRatio,
+      devicePixelRatio: typeof window === 'undefined' ? 1 : window.devicePixelRatio,
       renderer: 'canvas',
       height: 'auto',
       locale: 'en',
@@ -72,11 +72,11 @@ const ECharts = React.forwardRef<EChartsReact, EChartsProps>(({
   const [eRef, setERef] = useState<EChartsInstance>();
 
   const combinedRef: RefCallback<EChartsReact> = useCallback((instance) => {
-    if (echartsRef) {
+    if (echartsRef != null) {
       echartsRef.current = instance;
     }
     setERef(instance);
-    if (ref) {
+    if (ref != null) {
       if (typeof ref === 'function') {
         ref(instance);
       } else {

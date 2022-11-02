@@ -1,20 +1,19 @@
-import {EChartsOption} from "echarts";
-import React, {useMemo} from "react";
-import ECharts from "../ECharts";
+import { EChartsOption } from 'echarts';
+import React, { useMemo } from 'react';
+import ECharts from '../ECharts';
 
 interface ZScoreChartProps {
-  data: {
+  data: Array<{
     name: string
     z_score: number
     z_score_star: number
     z_score_user: number
     z_score_pr: number
-  }[]
+  }>
   loading?: boolean
 }
 
-
-export default function ZScoreChart({data, loading}: ZScoreChartProps) {
+export default function ZScoreChart ({ data, loading }: ZScoreChartProps) {
   const option: EChartsOption = useMemo(() => {
     return {
       legend: {
@@ -22,13 +21,13 @@ export default function ZScoreChart({data, loading}: ZScoreChartProps) {
       },
       tooltip: {
         show: true,
-        trigger: "axis",
+        trigger: 'axis',
         axisPointer: {
           type: 'shadow'
         }
       },
       yAxis: {
-        type: "category",
+        type: 'category',
         data: data.map(data => data.name),
         inverse: true
       },
@@ -76,8 +75,8 @@ export default function ZScoreChart({data, loading}: ZScoreChartProps) {
           }
         }
       ]
-    }
-  }, [data])
+    };
+  }, [data]);
 
   return (
     <ECharts
@@ -87,5 +86,5 @@ export default function ZScoreChart({data, loading}: ZScoreChartProps) {
       lazyUpdate
       notMerge={false}
     />
-  )
+  );
 }

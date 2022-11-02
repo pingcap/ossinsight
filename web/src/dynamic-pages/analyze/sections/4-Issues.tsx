@@ -11,19 +11,19 @@ import Section from '../Section';
 import { H2, H3, P2 } from '../typography';
 
 export const IssuesSection = forwardRef(function ({}, ref: ForwardedRef<HTMLElement>) {
-  const theme = useTheme()
-  const isSmall = useMediaQuery(theme.breakpoints.down('md'))
-  const { comparingRepoId: vs } = useAnalyzeContext()
-  const commonAspectRatio = isSmall ? vs ? 4 / 3 : 4 / 3 : vs ? 16 / 9 : 20 / 9
+  const theme = useTheme();
+  const isSmall = useMediaQuery(theme.breakpoints.down('md'));
+  const { comparingRepoId: vs } = useAnalyzeContext();
+  const commonAspectRatio = isSmall ? vs ? 4 / 3 : 4 / 3 : vs ? 16 / 9 : 20 / 9;
 
   const issuesSummaries: SummaryProps['items'] = useMemo(() => {
     return [
-      {title: 'Total issues', alt: 'Total issues', field: 'issues'},
-      {title: 'Creators', alt: 'Total issue creators', field: 'issue_creators'},
-      {title: 'Comments', alt: 'Total issue comments', field: 'issue_comments'},
-      {title: 'Commenters', alt: 'Total issue commenters', field: 'issue_commenters'},
-    ]
-  }, [])
+      { title: 'Total issues', alt: 'Total issues', field: 'issues' },
+      { title: 'Creators', alt: 'Total issue creators', field: 'issue_creators' },
+      { title: 'Comments', alt: 'Total issue comments', field: 'issue_comments' },
+      { title: 'Commenters', alt: 'Total issue commenters', field: 'issue_commenters' },
+    ];
+  }, []);
 
   return (
     <Section id='issues' ref={ref}>
@@ -52,5 +52,5 @@ export const IssuesSection = forwardRef(function ({}, ref: ForwardedRef<HTMLElem
         <IssueChart aspectRatio={commonAspectRatio} />
       </Analyze>
     </Section>
-  )
-})
+  );
+});

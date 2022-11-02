@@ -1,13 +1,13 @@
 import { params } from '@query/trending-repos/params.json';
-import { AsyncData, RemoteData, useRemoteData } from "../../../../components/RemoteCharts/hook";
-import React, { DependencyList, useCallback, useEffect, useMemo, useState } from "react";
-import { useSelectParam } from "../../../../components/params";
-import TileSelect, { TileSelectOption } from "../../../../components/TileSelect";
-import { paramCase } from "param-case";
-import { GitMergeIcon, ProjectIcon, RepoForkedIcon, RepoPushIcon, StarIcon } from "@primer/octicons-react";
+import { AsyncData, RemoteData, useRemoteData } from '../../../../components/RemoteCharts/hook';
+import React, { DependencyList, useCallback, useEffect, useMemo, useState } from 'react';
+import { useSelectParam } from '../../../../components/params';
+import TileSelect, { TileSelectOption } from '../../../../components/TileSelect';
+import { paramCase } from 'param-case';
+import { GitMergeIcon, ProjectIcon, RepoForkedIcon, RepoPushIcon, StarIcon } from '@primer/octicons-react';
 
-export type Language = string
-export type Period = string
+export type Language = string;
+export type Period = string;
 
 export const periods: Period[] = params.find(param => param.name === 'period').enums;
 export const languages: Language[] = Object.keys(params.find(param => param.name === 'language').template);
@@ -55,22 +55,21 @@ export type TopListData = {
   contributor_logins: string
   // csv
   collection_names: string
-}
+};
 
 export type ProcessedTopListData = Omit<TopListData, 'contributor_logins' | 'collection_names'> & {
   contributor_logins: string[]
   collection_names: string[]
-}
+};
 
-
-export function useTopList(language: Language, period: Period, orderBy: keyof TopListData): AsyncData<RemoteData<any, ProcessedTopListData>> {
+export function useTopList (language: Language, period: Period, orderBy: keyof TopListData): AsyncData<RemoteData<any, ProcessedTopListData>> {
   const { data, loading, error } = useRemoteData<any, TopListData>('trending-repos', {
     language,
     period,
   }, false);
 
   const processedData: RemoteData<any, ProcessedTopListData> = useMemo(() => {
-    if (!data) {
+    if (data == null) {
       return undefined;
     }
     return {
@@ -89,7 +88,7 @@ export function useTopList(language: Language, period: Period, orderBy: keyof To
   return { data: processedData, loading, error };
 }
 
-export function useLanguages() {
+export function useLanguages () {
   const [value, setValue] = useState<Language>(languageOptions[0].key);
 
   const select = (
@@ -99,14 +98,14 @@ export function useLanguages() {
   return { select, value };
 }
 
-export function usePeriods() {
+export function usePeriods () {
   return useSelectParam(periodOptions, periodOptions[0], '', { variant: 'standard' }, {
     disableUnderline: true,
     sx: { font: 'inherit', color: 'primary.main', lineHeight: 'inherit', '.MuiSelect-select': { pb: 0 } },
   });
 }
 
-export function useOrderBy() {
+export function useOrderBy () {
   const [value, setValue] = useState<string>(orderOptions[0].key);
 
   const select = (
@@ -116,13 +115,13 @@ export function useOrderBy() {
   return { select, value };
 }
 
-function snakeToCamel(n) {
+function snakeToCamel (n) {
   return paramCase(n)
     .replace(/^\w/g, a => a.toUpperCase())
     .replace(/-/g, ' ');
 }
 
-export function usePagination(data: RemoteData<any, ProcessedTopListData> | undefined, deps: DependencyList) {
+export function usePagination (data: RemoteData<any, ProcessedTopListData> | undefined, deps: DependencyList) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(20);
 
@@ -140,7 +139,7 @@ export function usePagination(data: RemoteData<any, ProcessedTopListData> | unde
   }, [setPage, setRowsPerPage]);
 
   const list = useMemo(() => {
-    if (!data) {
+    if (data == null) {
       return undefined;
     }
     return data.data.slice(page * rowsPerPage, (page + 1) * rowsPerPage);

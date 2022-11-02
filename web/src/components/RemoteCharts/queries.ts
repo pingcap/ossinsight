@@ -1,9 +1,9 @@
-import {BaseQueryResult} from "./hook";
+import { BaseQueryResult } from './hook';
 
 type CommonRankParams = {
   n: number
   repo: string
-}
+};
 
 interface CommonRankData {
   repo_name
@@ -17,8 +17,8 @@ interface ContributorsRankData extends CommonRankData {
   contributors_count: number
 }
 
-type RepoEventsRankQuery<T> = BaseQueryResult<CommonRankParams & T, RepoEventsRankData>
-type ContributorsRankQuery<T> = BaseQueryResult<CommonRankParams & T, ContributorsRankData>
+type RepoEventsRankQuery<T> = BaseQueryResult<CommonRankParams & T, RepoEventsRankData>;
+type ContributorsRankQuery<T> = BaseQueryResult<CommonRankParams & T, ContributorsRankData>;
 
 export interface Queries extends Record<string, BaseQueryResult<any, any>> {
   'events-history': RepoEventsRankQuery<{
@@ -45,6 +45,6 @@ export interface Queries extends Record<string, BaseQueryResult<any, any>> {
   'rt-top20-by-companies': BaseQueryResult<{ repo: string }, { company: string, num: number }>
   'rt-top5-by-language': BaseQueryResult<{ repo: string }, { language: string, num: number }>
   'rt-osdb-contributors-by-repo-group': BaseQueryResult<{}, { repo_group_name: string, contributor: string, prs: number }>
-  'events-total': BaseQueryResult<{}, {cnt: number}>
+  'events-total': BaseQueryResult<{}, { cnt: number }>
   'events-last-imported': BaseQueryResult<{}, { type: string, cnt: number }>
 }

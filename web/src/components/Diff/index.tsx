@@ -1,8 +1,7 @@
-import React from "react";
-import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
-import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
-import Box from "@mui/material/Box";
-
+import React from 'react';
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import Box from '@mui/material/Box';
 
 const formatNumber = (v: number) => v.toFixed(1).replace(/[.,]0$/, '');
 
@@ -35,4 +34,4 @@ const Diff = ({ val, suffix, reverse = false }: { val: number, suffix?: string, 
   }
 };
 
-export default Diff
+export default Diff;

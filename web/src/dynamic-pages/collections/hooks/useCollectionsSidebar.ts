@@ -2,7 +2,7 @@ import { PropSidebar } from '@docusaurus/plugin-content-docs';
 import { useMemo } from 'react';
 import { useCollections } from './useCollection';
 
-export function useCollectionsSidebar(): PropSidebar {
+export function useCollectionsSidebar (): PropSidebar {
   const collections = useCollections();
 
   return useMemo(() => collections.filter(collection => collection.public !== 0).map(collection => ({

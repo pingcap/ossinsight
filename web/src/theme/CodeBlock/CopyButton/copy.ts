@@ -1,4 +1,4 @@
 
 export default function copy (text) {
-  navigator.clipboard.writeText(text).catch(console.error)
+  navigator.clipboard.writeText(text).catch(console.error);
 }

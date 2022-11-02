@@ -1,9 +1,6 @@
-import {useAnalyzeChartContext, useAnalyzeContext} from '../context';
-
+import { useAnalyzeChartContext, useAnalyzeContext } from '../context';
 
 export function List () {
-  const {comparingRepoId} = useAnalyzeContext()
-  const {data} = useAnalyzeChartContext()
-
-
+  const { comparingRepoId } = useAnalyzeContext();
+  const { data } = useAnalyzeChartContext();
 }

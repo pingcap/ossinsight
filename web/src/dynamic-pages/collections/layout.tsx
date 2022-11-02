@@ -1,6 +1,6 @@
-import Link from "@docusaurus/Link";
+import Link from '@docusaurus/Link';
 import { useLocation } from '@docusaurus/router';
-import { useRouteMatch } from 'react-router'
+import { useRouteMatch } from 'react-router';
 import { translate } from '@docusaurus/Translate';
 import { Add } from '@mui/icons-material';
 import Stack from '@mui/material/Stack';
@@ -30,9 +30,9 @@ export interface CollectionsPageLayoutProps {
   keywords: string[]
 }
 
-function CollectionsPageLayout({ title: propTitle, description, keywords, children }: PropsWithChildren<CollectionsPageLayoutProps>) {
-  let { params: { slug } } = useRouteMatch<CollectionsPageParams>();
-  const { pathname } = useLocation()
+function CollectionsPageLayout ({ title: propTitle, description, keywords, children }: PropsWithChildren<CollectionsPageLayoutProps>) {
+  const { params: { slug } } = useRouteMatch<CollectionsPageParams>();
+  const { pathname } = useLocation();
   const collection = useCollection(slug);
   const sidebar = useCollectionsSidebar();
   const [hiddenSidebarContainer, setHiddenSidebarContainer] = useState(false);
@@ -45,7 +45,7 @@ function CollectionsPageLayout({ title: propTitle, description, keywords, childr
     setHiddenSidebarContainer((value) => !value);
   }, [hiddenSidebar]);
 
-  const title = useMemo(() => propTitle(collection), [propTitle, collection])
+  const title = useMemo(() => propTitle(collection), [propTitle, collection]);
 
   return (
     <CustomPage title={title} description={description} keywords={keywords} image={require('./thumbnail.png').default}>
@@ -138,7 +138,7 @@ const SidebarFooter = () => {
         </Typography>
       </Stack>
     </Link>
-  )
-}
+  );
+};
 
 export default CollectionsPageLayout;

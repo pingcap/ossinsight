@@ -1,5 +1,5 @@
 
-export type PromiseIntervalHandle = { timeout: ReturnType<typeof setTimeout>, stop: boolean }
+export type PromiseIntervalHandle = { timeout: ReturnType<typeof setTimeout>, stop: boolean };
 
 /**
  * Like setInterval, but only trigger next timer when handler promise is already finished (resolved or rejected).
@@ -7,25 +7,25 @@ export type PromiseIntervalHandle = { timeout: ReturnType<typeof setTimeout>, st
  * @param handler
  * @param interval
  */
-export function setPromiseInterval(handler: () => Promise<void>, interval: number): PromiseIntervalHandle {
-  const handle: PromiseIntervalHandle = { timeout: 0 as any, stop: false }
+export function setPromiseInterval (handler: () => Promise<void>, interval: number): PromiseIntervalHandle {
+  const handle: PromiseIntervalHandle = { timeout: 0 as any, stop: false };
 
-  function run() {
+  function run () {
     if (handle.stop) {
-      return
+      return;
     }
     handler()
-    .finally(() => {
-      handle.timeout = setTimeout(run, interval)
-    })
+      .finally(() => {
+        handle.timeout = setTimeout(run, interval);
+      });
   }
 
-  handle.timeout = setTimeout(run, interval)
+  handle.timeout = setTimeout(run, interval);
 
-  return handle
+  return handle;
 }
 
-export function clearPromiseInterval(handle: PromiseIntervalHandle) {
-  handle.stop = true
-  clearTimeout(handle.timeout)
+export function clearPromiseInterval (handle: PromiseIntervalHandle) {
+  handle.stop = true;
+  clearTimeout(handle.timeout);
 }

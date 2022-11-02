@@ -1,8 +1,8 @@
-import Box from "@mui/material/Box";
-import React, { createContext, PropsWithChildren, ReactNode, Ref, useContext } from "react";
+import Box from '@mui/material/Box';
+import React, { createContext, PropsWithChildren, ReactNode, Ref, useContext } from 'react';
 import { H2, H3, P2 } from './typograph';
-import { TypographyProps } from "@mui/material/Typography";
-import { AdditionalTag } from "./styled";
+import { TypographyProps } from '@mui/material/Typography';
+import { AdditionalTag } from './styled';
 
 interface SectionProps {
   additional?: string;
@@ -22,7 +22,7 @@ export const SectionContext = createContext<SectionContextValues>({
   ref: undefined,
 });
 
-export default function Section({
+export default function Section ({
   additional,
   title,
   description,
@@ -66,7 +66,7 @@ export default function Section({
   );
 }
 
-export function SubSection({ additional, title, titleComponent: Title = H3, description, children }: PropsWithChildren<SectionProps>) {
+export function SubSection ({ additional, title, titleComponent: Title = H3, description, children }: PropsWithChildren<SectionProps>) {
   return (
     <Box
       component="div"

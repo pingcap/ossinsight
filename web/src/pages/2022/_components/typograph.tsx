@@ -1,7 +1,7 @@
-import Typography, { TypographyProps } from "@mui/material/Typography";
-import React from "react";
+import Typography, { TypographyProps } from '@mui/material/Typography';
+import React from 'react';
 
-export function H1({
+export function H1 ({
   children,
   ...props
 }: Omit<TypographyProps<'h1'>, 'variant' | 'fontSize' | 'color' | 'fontWeight'>) {
@@ -12,7 +12,7 @@ export function H1({
   );
 }
 
-export function H2({
+export function H2 ({
   children,
   ...props
 }: Omit<TypographyProps<'h2'>, 'variant' | 'fontSize' | 'color' | 'fontWeight'>) {
@@ -23,7 +23,7 @@ export function H2({
   );
 }
 
-export function H3({
+export function H3 ({
   children,
   ...props
 }: Omit<TypographyProps<'h3'>, 'variant' | 'fontSize' | 'color' | 'fontWeight'>) {
@@ -34,8 +34,7 @@ export function H3({
   );
 }
 
-
-export function H4({
+export function H4 ({
   children,
   ...props
 }: Omit<TypographyProps<'h4'>, 'variant' | 'fontSize' | 'color' | 'fontWeight'>) {
@@ -46,7 +45,7 @@ export function H4({
   );
 }
 
-export function P1({
+export function P1 ({
   children,
   ...props
 }: Omit<TypographyProps<'p'>, 'variant' | 'fontSize' | 'color' | 'fontWeight'>) {
@@ -57,7 +56,7 @@ export function P1({
   );
 }
 
-export function P2({
+export function P2 ({
   children,
   ...props
 }: Omit<TypographyProps<'p'>, 'variant' | 'fontSize' | 'color' | 'fontWeight'>) {

@@ -12,7 +12,7 @@ import {
   valueAxis,
 } from '../options';
 import { withChart } from '../chart';
-import { upBound } from "../utils";
+import { upBound } from '../utils';
 
 // lines of code
 export type PrData = {
@@ -23,7 +23,7 @@ export type PrData = {
   s: number
   xl: number
   xs: number
-}
+};
 
 export const PrChart = withChart<PrData>(
   ({ title: propsTitle, isSmall, data }) => {
@@ -88,7 +88,7 @@ export const PrChart = withChart<PrData>(
 
 const fmt = val => `${val} PRs`;
 
-function transformLocData(data: PrData[]) {
+function transformLocData (data: PrData[]) {
   let total = 0;
   return data.map(item => ({
     ...item,

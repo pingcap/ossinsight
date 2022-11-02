@@ -1,7 +1,7 @@
-import {styled} from '@mui/material/styles';
+import { styled } from '@mui/material/styles';
 import Grid from '@mui/material/Grid';
 
-export const HeaderGrid = styled(Grid)(({theme}) => ({
+export const HeaderGrid = styled(Grid)(({ theme }) => ({
   backgroundColor: 'rgba(69,69,69,.5)',
   borderRadius: theme.spacing(1),
   height: theme.spacing(6.5),
@@ -11,7 +11,7 @@ export const HeaderGrid = styled(Grid)(({theme}) => ({
   textOverflow: 'ellipsis'
 }));
 
-export const DataGrid = styled(Grid)(({theme}) => ({
+export const DataGrid = styled(Grid)(({ theme }) => ({
   backgroundColor: 'rgba(44,44,44,.5)',
   borderRadius: theme.spacing(1),
   height: theme.spacing(6.5),
@@ -19,7 +19,7 @@ export const DataGrid = styled(Grid)(({theme}) => ({
   textAlign: 'right',
 }));
 
-export const HeadText = styled('span')(({theme}) => ({
+export const HeadText = styled('span')(({ theme }) => ({
   fontSize: 16,
   fontColor: 'rgba(196,196,196)',
   textAlign: 'left',
@@ -29,7 +29,7 @@ export const HeadText = styled('span')(({theme}) => ({
   textOverflow: 'ellipsis'
 }));
 
-export const BodyText = styled('span')(({theme}) => ({
+export const BodyText = styled('span')(({ theme }) => ({
   fontSize: 16,
   fontColor: 'white',
   fontWeight: 'bold',

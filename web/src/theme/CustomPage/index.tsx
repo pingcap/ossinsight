@@ -19,7 +19,7 @@ export interface CustomPageProps extends LayoutProps {
   Side?: () => JSX.Element;
 }
 
-export default function CustomPage({
+export default function CustomPage ({
   children,
   header,
   footer = true,
@@ -28,7 +28,6 @@ export default function CustomPage({
   Side,
   ...props
 }: PropsWithChildren<CustomPageProps>) {
-
   useLayoutEffect(() => {
     const id = location.hash.replace(/^#/, '');
     document.getElementById(id)?.scrollIntoView();
@@ -39,14 +38,15 @@ export default function CustomPage({
       {...props}
       header={header}
       sideWidth={sideWidth}
-      side={(sideWidth && Side)
+      side={(sideWidth && (Side != null))
         ? (
           <Box component="aside" width={sideWidth} position="sticky" top="calc(var(--ifm-navbar-height) + 76px)" height={0} zIndex={0}>
             <Box marginTop='-76px' height='calc(100vh - var(--ifm-navbar-height))'>
               <Side />
             </Box>
           </Box>
-        ) : undefined}
+          )
+        : undefined}
     >
       <div hidden style={{ height: 72 }} />
       <div style={{ paddingLeft: sideWidth, paddingRight: sideWidth }}>

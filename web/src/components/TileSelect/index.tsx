@@ -8,19 +8,18 @@ import React, {
   useMemo,
   useRef,
   useState,
-} from "react";
-import Box from "@mui/material/Box";
-import Stack from "@mui/material/Stack";
-import { Select, useEventCallback } from "@mui/material";
-import MenuItem from "@mui/material/MenuItem";
-import { SelectChangeEvent } from "@mui/material/Select/SelectInput";
-
+} from 'react';
+import Box from '@mui/material/Box';
+import Stack from '@mui/material/Stack';
+import { Select, useEventCallback } from '@mui/material';
+import MenuItem from '@mui/material/MenuItem';
+import { SelectChangeEvent } from '@mui/material/Select/SelectInput';
 
 export type TileSelectOption = {
   key: string
   label: string
   icon?: ReactNode
-}
+};
 
 export interface TileSelectProps {
   value: string;
@@ -28,7 +27,7 @@ export interface TileSelectProps {
   options: TileSelectOption[];
 }
 
-export default function TileSelect({ options, value, onSelect }: TileSelectProps) {
+export default function TileSelect ({ options, value, onSelect }: TileSelectProps) {
   const ref = useRef<HTMLOListElement>();
   const refs = useRef<HTMLLIElement[]>(options.map(() => undefined));
   const [length, setLength] = useState(options.length);
@@ -38,10 +37,10 @@ export default function TileSelect({ options, value, onSelect }: TileSelectProps
   }, [options]);
 
   const recompute = useEventCallback(() => {
-    if (!ref.current) {
+    if (ref.current == null) {
       return;
     }
-    let width = ref.current.clientWidth;
+    const width = ref.current.clientWidth;
     let i = 0;
 
     for (const el of refs.current) {
@@ -57,7 +56,7 @@ export default function TileSelect({ options, value, onSelect }: TileSelectProps
   });
 
   useLayoutEffect(() => {
-    if (!ref.current) {
+    if (ref.current == null) {
       return;
     }
     recompute();
@@ -143,7 +142,8 @@ export default function TileSelect({ options, value, onSelect }: TileSelectProps
             ))}
           </Stack>
         </Box>
-        {options.length > length ? (
+        {options.length > length
+          ? (
           <Select
             label="Other"
             displayEmpty
@@ -170,7 +170,8 @@ export default function TileSelect({ options, value, onSelect }: TileSelectProps
               <MenuItem key={key} value={key}>{label}</MenuItem>
             ))}
           </Select>
-        ) : undefined}
+            )
+          : undefined}
       </Stack>
     </Box>
   );
@@ -184,13 +185,13 @@ interface OptionProps {
   onClick?: (value: string) => void;
 }
 
-const Option = forwardRef(function Option({
-                                            value,
-                                            label,
-                                            icon,
-                                            selected = false,
-                                            onClick,
-                                          }: OptionProps, ref: ForwardedRef<HTMLLIElement>) {
+const Option = forwardRef(function Option ({
+  value,
+  label,
+  icon,
+  selected = false,
+  onClick,
+}: OptionProps, ref: ForwardedRef<HTMLLIElement>) {
   const handleClick = useCallback(() => {
     onClick(value);
   }, [value]);

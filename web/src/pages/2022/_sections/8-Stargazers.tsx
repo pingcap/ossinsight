@@ -1,10 +1,9 @@
-import React from "react";
-import Section from "../_components/Section";
-import { styled } from "@mui/material/styles";
-import { LI, ResponsiveAlignedRight, UL } from "../_components/styled";
-import { BarChart } from "../_components/charts";
-import useIsLarge from "../_components/hooks/useIsLarge";
-
+import React from 'react';
+import Section from '../_components/Section';
+import { styled } from '@mui/material/styles';
+import { LI, ResponsiveAlignedRight, UL } from '../_components/styled';
+import { BarChart } from '../_components/charts';
+import useIsLarge from '../_components/hooks/useIsLarge';
 
 export default function () {
   return (
@@ -67,7 +66,7 @@ const Users = styled(UL)(({ theme }) => ({
   marginRight: theme.spacing(-4),
 }));
 
-function User({ index, login, stars }: UserProps) {
+function User ({ index, login, stars }: UserProps) {
   return (
     <LI
       sx={theme => ({

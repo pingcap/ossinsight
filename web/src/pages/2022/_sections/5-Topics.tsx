@@ -1,11 +1,11 @@
-import React, { ComponentType, SVGProps } from "react";
-import Section, { SubSection } from "../_components/Section";
-import { H2, H3, P2 } from "../_components/typograph";
+import React, { ComponentType, SVGProps } from 'react';
+import Section, { SubSection } from '../_components/Section';
+import { H2, H3, P2 } from '../_components/typograph';
 import { BarChart, LineChart } from '../_components/charts';
-import Split from "../_components/Split";
-import { BR, ResponsiveAligned, ResponsiveAlignedRight, ResponsiveColumnFlex, Spacer } from "../_components/styled";
-import Insights, { InsightsProps } from "../_components/Insights";
-import useIsLarge from "../_components/hooks/useIsLarge";
+import Split from '../_components/Split';
+import { BR, ResponsiveAligned, ResponsiveAlignedRight, ResponsiveColumnFlex, Spacer } from '../_components/styled';
+import Insights, { InsightsProps } from '../_components/Insights';
+import useIsLarge from '../_components/hooks/useIsLarge';
 
 export default function () {
   const large = useIsLarge();
@@ -36,7 +36,7 @@ export default function () {
         description={detailsDescription}
       >
         {detailedCharts.map(({ Chart, insights }, i) => (
-          <Split key={i} mt={[2,4,6]} reversed={large && i % 2 === 0} spacing={4}>
+          <Split key={i} mt={[2, 4, 6]} reversed={large && i % 2 === 0} spacing={4}>
             <ResponsiveColumnFlex justifyContent="center">
               <Insights maxWidth={711}>{insights}</Insights>
             </ResponsiveColumnFlex>
@@ -64,7 +64,7 @@ const activityInsights = (
   </>
 );
 
-const ActivitiesChart = (() => {
+const ActivitiesChart = () => {
   const large = useIsLarge();
 
   return (
@@ -77,7 +77,7 @@ const ActivitiesChart = (() => {
       }}
     />
   );
-});
+};
 
 const detailsTitle = 'Popular topics over the years';
 const detailsDescription = (
@@ -98,10 +98,10 @@ const detailsDescription = (
   </>
 );
 
-const detailedCharts: {
+const detailedCharts: Array<{
   Chart: ComponentType<SVGProps<SVGSVGElement>>
   insights: InsightsProps['children']
-}[] = [
+}> = [
   {
     Chart: () => {
       return (

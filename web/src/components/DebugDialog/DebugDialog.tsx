@@ -19,21 +19,21 @@ export interface DebugDialogProps {
 }
 
 const explainKeywordDict = {
-  'cop' : 'distributed',
-  'batchCop' : 'distributed',
-  'tikv' : 'row',
-  'tiflash' : 'column',
-}
+  cop: 'distributed',
+  batchCop: 'distributed',
+  tikv: 'row',
+  tiflash: 'column',
+};
 
 const replaceAllKeyword = (str: string | undefined) => {
   if (!str) {
-    return str
+    return str;
   }
-  for (let [key, value] of Object.entries(explainKeywordDict)) {
+  for (const [key, value] of Object.entries(explainKeywordDict)) {
     str = str.replace(new RegExp(key, 'g'), value);
   }
   return str;
-}
+};
 
 export const DebugDialog = ({ sql, query, params, open, onClose }: DebugDialogProps) => {
   const [type, setType] = useState<'explain' | 'trace'>(null);
@@ -46,9 +46,9 @@ export const DebugDialog = ({ sql, query, params, open, onClose }: DebugDialogPr
   const renderChild = () => {
     if (type) {
       if (error) {
-        return <Alert severity='error'>Request failed ${(error as any)?.message ?? ''}</Alert>
+        return <Alert severity='error'>Request failed ${(error as any)?.message ?? ''}</Alert>;
       }
-      if (!data) {
+      if (data == null) {
         return (
           <Box sx={{ pt: 0.5 }}>
             <Skeleton width="80%" />
@@ -78,7 +78,7 @@ export const DebugDialog = ({ sql, query, params, open, onClose }: DebugDialogPr
             </Box>
           </Box>
         </Box>
-      )
+      );
     } else {
       return (
         <CodeBlock className="language-sql">
@@ -99,7 +99,7 @@ export const DebugDialog = ({ sql, query, params, open, onClose }: DebugDialogPr
         <Container>
           <Tabs value={type} onChange={handleTabChange}>
             <Tab value={null} label="SQL" />
-            {/*<Tab value="trace" label="TRACE" />*/}
+            {/* <Tab value="trace" label="TRACE" /> */}
             <Tab value="explain" label="EXPLAIN" />
           </Tabs>
           <br />

@@ -3,16 +3,18 @@ import { TitleOption } from 'echarts/types/dist/shared';
 import { dangerousGetCtx } from './_danger';
 import { template } from './utils';
 
-export function title(text: string | undefined, options: EChartsOption['title'] = {}): EChartsOption['title'] {
+export function title (text: string | undefined, options: EChartsOption['title'] = {}): EChartsOption['title'] {
   const { context, isSmall, comparingRepoName } = dangerousGetCtx();
   if (isSmall) {
     return undefined;
   }
   if (!context.layout || !comparingRepoName) {
-    return text ? [{
-      ...options,
-      text,
-    }] : [];
+    return text
+      ? [{
+          ...options,
+          text,
+        }]
+      : [];
   }
   const { layout, layoutTop, layoutSubGridHeight, layoutGap } = context;
   if (layout === 'top-bottom') {
@@ -24,10 +26,12 @@ export function title(text: string | undefined, options: EChartsOption['title'] 
       },
       left: 'center',
       top: layoutTop + (layoutSubGridHeight + layoutGap) * i - 24,
-    } as TitleOption)).concat(text ? [{
-      ...options,
-      text,
-    }] : []);
+    } as TitleOption)).concat(text
+      ? [{
+          ...options,
+          text,
+        }]
+      : []);
   } else {
     return template(({ name }, i) => ({
       text: name,
@@ -37,9 +41,11 @@ export function title(text: string | undefined, options: EChartsOption['title'] 
       },
       left: `${25 + i * 50}%`,
       top: 8,
-    } as TitleOption)).concat(text ? {
-      ...options,
-      text,
-    } : []);
+    } as TitleOption)).concat(text
+      ? {
+          ...options,
+          text,
+        }
+      : []);
   }
 }

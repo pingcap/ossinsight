@@ -27,15 +27,15 @@ interface BarChartProps<T> {
 }
 
 const getGithubAvatar = (src: string) => {
-  if (/\[bot]/.test(src)) {
+  if (src.includes('[bot]')) {
     return 'https://github.com/github.png';
   } else {
-    return `https://github.com/${src}.png`
+    return `https://github.com/${src}.png`;
   }
-}
+};
 
-export default function BarChart<T>({seriesName = 'Count', data, loading = false, clear = false, size, n, deps = [], categoryIndex, valueIndex, type = 'repo'}: BarChartProps<T>) {
-  size = type === 'lang' ? 48 : size
+export default function BarChart<T> ({ seriesName = 'Count', data, loading = false, clear = false, size, n, deps = [], categoryIndex, valueIndex, type = 'repo' }: BarChartProps<T>) {
+  size = type === 'lang' ? 48 : size;
   const options: EChartsOption = useMemo(() => {
     return {
       tooltip: {
@@ -63,38 +63,38 @@ export default function BarChart<T>({seriesName = 'Count', data, loading = false
           formatter: function (value, index) {
             switch (type) {
               case 'repo':
-                return value
+                return value;
               case 'owner':
               case 'lang':
-                return `${value} {${value.replace(/[+-\[\]]/g, '_')}|}`
+                return `${value} {${value.replace(/[+-\[\]]/g, '_')}|}`;
               default:
-                return value
+                return value;
             }
           },
           rich: (() => {
             switch (type) {
-              case "owner":
-                return data.reduce((p, c) => {
+              case 'owner':
+                return data.reduce<Record<string, TextCommonOption>>((p, c) => {
                   p[String(c[categoryIndex]).replace(/[-\[\]]/g, '_')] = {
                     backgroundColor: {
                       image: getGithubAvatar(`${c[categoryIndex]}`)
                     },
                     width: 24,
                     height: 24
-                  }
-                  return p
-                }, {} as Record<string, TextCommonOption>)
-              case "lang":
-                return data.reduce((p, c) => {
+                  };
+                  return p;
+                }, {});
+              case 'lang':
+                return data.reduce<Record<string, TextCommonOption>>((p, c) => {
                   p[String(c[categoryIndex]).replace(/\+/g, '_')] = {
                     backgroundColor: {
                       image: '/img/lang/' + c[categoryIndex] + '.png'
                     },
                     width: 48,
                     height: 48
-                  }
-                  return p
-                }, {} as Record<string, TextCommonOption>)
+                  };
+                  return p;
+                }, {});
             }
           })()
         }
@@ -107,26 +107,26 @@ export default function BarChart<T>({seriesName = 'Count', data, loading = false
           barWidth: clear ? size / 2 : size,
         }
       ]
-    }
-  }, [data, ...deps, categoryIndex, valueIndex, size, clear])
+    };
+  }, [data, ...deps, categoryIndex, valueIndex, size, clear]);
 
   const height = useMemo(() => {
-    const result = loading ? 400 : Math.max(Math.min(n, data.length), 5) * (size * (clear ? 1 : 1.5))
+    const result = loading ? 400 : Math.max(Math.min(n, data.length), 5) * (size * (clear ? 1 : 1.5));
 
-    return result
-  }, [size, loading, clear])
+    return result;
+  }, [size, loading, clear]);
 
   const onEvents = useMemo(() => {
     return {
-      'click': params => {
+      click: params => {
         if (type === 'repo' && 'name' in params) {
-          window.open(`https://github.com/${params.name}`)
+          window.open(`https://github.com/${params.name}`);
         } else if (type === 'owner' && 'name' in params) {
-          window.open(`https://github.com/${params.name}`)
+          window.open(`https://github.com/${params.name}`);
         }
       }
-    }
-  }, [])
+    };
+  }, []);
 
   return (
     <ECharts
@@ -142,7 +142,7 @@ export default function BarChart<T>({seriesName = 'Count', data, loading = false
       }}
       onEvents={onEvents}
     />
-  )
+  );
 }
 
 interface BarChartLegacyProps {
@@ -152,13 +152,13 @@ interface BarChartLegacyProps {
   values: number[]
 }
 
-export function BarChartLegacy({seriesName, categories, values, size}: BarChartLegacyProps) {
+export function BarChartLegacy ({ seriesName, categories, values, size }: BarChartLegacyProps) {
   const data = useMemo(() => {
     return categories.map((category, i) => ({
       category,
       value: values[i]
-    }))
-  }, [categories, values])
+    }));
+  }, [categories, values]);
 
   return (
     <BarChart
@@ -171,5 +171,5 @@ export function BarChartLegacy({seriesName, categories, values, size}: BarChartL
       valueIndex='value'
       clear={false}
     />
-  )
+  );
 }

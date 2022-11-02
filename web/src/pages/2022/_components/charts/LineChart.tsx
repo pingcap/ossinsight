@@ -1,19 +1,18 @@
-import Chart, { ChartProps } from "@site/src/components/Chart";
-import React, { useMemo } from "react";
+import Chart, { ChartProps } from '@site/src/components/Chart';
+import React, { useMemo } from 'react';
 import { defaultColors } from './colors';
-import { ScriptableContext } from "chart.js";
-import useIsLarge from "../hooks/useIsLarge";
-import theme from "./theme";
-
+import { ScriptableContext } from 'chart.js';
+import useIsLarge from '../hooks/useIsLarge';
+import theme from './theme';
 
 interface BarChartProps<T> extends Pick<ChartProps, 'fallbackImage' | 'name' | 'sx'> {
-  data: import("../../_charts/env").LineData<T>;
+  data: import('../../_charts/env').LineData<T>;
   footnote?: string,
 }
 
-const labeledData = function <T, L extends import("../../_charts/env").LineData<T>>(lineData: L): [Record<string, T[]>, string[]] {
+const labeledData = function <T, L extends import('../../_charts/env').LineData<T>>(lineData: L): [Record<string, T[]>, string[]] {
   const labels: string[] = [];
-  const record = lineData.data.reduce((record, item) => {
+  const record = lineData.data.reduce<Record<string, T[]>>((record, item) => {
     const label: string = item[lineData.label] as never;
     if (record[label]) {
       record[label].push(item);
@@ -22,13 +21,13 @@ const labeledData = function <T, L extends import("../../_charts/env").LineData<
       labels.push(label);
     }
     return record;
-  }, {} as Record<string, T[]>);
+  }, {});
   return [record, labels];
 };
 
 const color = (context: ScriptableContext<'line'>) => defaultColors[context.datasetIndex % defaultColors.length];
 
-export default function LineChart<T extends Record<string, any>>({
+export default function LineChart<T extends Record<string, any>> ({
   data,
   footnote,
   ...props
@@ -37,7 +36,7 @@ export default function LineChart<T extends Record<string, any>>({
   const large = useIsLarge();
 
   return (
-    <Chart<"line">
+    <Chart<'line'>
       once
       aspect={large ? 4 / 3 : 1}
       {...props}

@@ -1,5 +1,5 @@
-import {OptionId} from 'echarts/types/src/util/types';
-import {XAXisOption, YAXisOption} from 'echarts/types/dist/shared';
+import { OptionId } from 'echarts/types/src/util/types';
+import { XAXisOption, YAXisOption } from 'echarts/types/dist/shared';
 import merge from 'deepmerge';
 import {
   AxisBaseOption,
@@ -12,18 +12,18 @@ import format from 'human-format';
 import { utils } from './index';
 import { dangerousGetCtx } from './_danger';
 import { isSmall } from './sizes';
-import { DateTime } from "luxon";
+import { DateTime } from 'luxon';
 
 type AxisOption<T extends 'x' | 'y', Base extends AxisBaseOption = AxisBaseOption> =
   (T extends 'x' ? XAXisOption : YAXisOption)
-  & Base
+  & Base;
 
-function filterEnum<T>(value: string | undefined, enums: T[]): T | undefined {
-  return enums.indexOf(value as any) !== -1 ? value : undefined as any
+function filterEnum<T> (value: string | undefined, enums: T[]): T | undefined {
+  return enums.includes(value as any) ? value : undefined as any;
 }
 
-export function valueAxis<T extends 'x' | 'y'>(id?: OptionId, option: AxisOption<T, ValueAxisBaseOption> = {}): AxisOption<T> {
-  const small = isSmall()
+export function valueAxis<T extends 'x' | 'y'> (id?: OptionId, option: AxisOption<T, ValueAxisBaseOption> = {}): AxisOption<T> {
+  const small = isSmall();
   return merge<AxisOption<T>>(option, {
     id,
     type: 'value',
@@ -44,7 +44,7 @@ export function valueAxis<T extends 'x' | 'y'>(id?: OptionId, option: AxisOption
   });
 }
 
-export function categoryAxis<T extends 'x' | 'y'>(id?: OptionId, option: AxisOption<T, CategoryAxisBaseOption> = {}): AxisOption<T> {
+export function categoryAxis<T extends 'x' | 'y'> (id?: OptionId, option: AxisOption<T, CategoryAxisBaseOption> = {}): AxisOption<T> {
   return merge<AxisOption<T>>(option, {
     id,
     type: 'category',
@@ -54,8 +54,8 @@ export function categoryAxis<T extends 'x' | 'y'>(id?: OptionId, option: AxisOpt
   });
 }
 
-export function logAxis<T extends 'x' | 'y'>(id?: OptionId, option: AxisOption<T, LogAxisBaseOption> = {}): AxisOption<T> {
-  const small = isSmall()
+export function logAxis<T extends 'x' | 'y'> (id?: OptionId, option: AxisOption<T, LogAxisBaseOption> = {}): AxisOption<T> {
+  const small = isSmall();
   return merge<AxisOption<T>>(option, {
     id,
     type: 'log',
@@ -86,20 +86,20 @@ const months = [
 ];
 
 export const formatMonth = (value: number | string | Date) => {
-  const date = new Date(value)
-  return `${months[date.getMonth()]} ${date.getFullYear()}`
-}
+  const date = new Date(value);
+  return `${months[date.getMonth()]} ${date.getFullYear()}`;
+};
 
-const now = new Date()
+const now = new Date();
 
-export function timeAxis<T extends 'x' | 'y'>(id?: OptionId, option: AxisOption<T, TimeAxisBaseOption> = {}, fromRecent: string | boolean | undefined = 'event_month'): AxisOption<T> {
+export function timeAxis<T extends 'x' | 'y'> (id?: OptionId, option: AxisOption<T, TimeAxisBaseOption> = {}, fromRecent: string | boolean | undefined = 'event_month'): AxisOption<T> {
   return merge<AxisOption<T, TimeAxisBaseOption>>(option, {
     id,
     type: 'time',
     axisPointer: {
       label: {
-        formatter: ({value}) => {
-          return formatMonth(value)
+        formatter: ({ value }) => {
+          return formatMonth(value);
         }
       }
     },

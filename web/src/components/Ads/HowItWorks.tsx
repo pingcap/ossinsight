@@ -15,30 +15,30 @@ export interface HowItWorksProps {
 
 function getInitialDisplay () {
   if (typeof window === 'undefined') {
-    return false
+    return false;
   } else {
     return [
-      /utm_medium=promotion/.test(window.location.search),
+      window.location.search.includes('utm_medium=promotion'),
       /\/(o|d)/.test(window.location.pathname),
-    ].map(Boolean).includes(true)
+    ].map(Boolean).includes(true);
   }
 }
 
 const url = 'https://share.hsforms.com/1E-qtGQWrTVmctP8kBT34gw2npzm';
 
 let _display = getInitialDisplay();
-const delay = 80000
+const delay = 80000;
 
-export default function HowItWorks({}: HowItWorksProps) {
+export default function HowItWorks ({}: HowItWorksProps) {
   const [display, setDisplay] = useState(false);
 
   useEffect(() => {
     if (_display) {
       setTimeout(() => {
-        setDisplay(true)
-      }, delay)
+        setDisplay(true);
+      }, delay);
     }
-  }, [])
+  }, []);
 
   const _sx: SxProps = useMemo(() => {
     return [
@@ -56,10 +56,10 @@ export default function HowItWorks({}: HowItWorksProps) {
 
   const handleClickClose: MouseEventHandler<any> = useEventCallback((event) => {
     setDisplay(false);
-    _display = false
+    _display = false;
     event.stopPropagation();
     event.preventDefault();
-  })
+  });
 
   if (!display) {
     return <></>;

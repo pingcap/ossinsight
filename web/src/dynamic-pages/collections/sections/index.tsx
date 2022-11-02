@@ -6,7 +6,7 @@ import AspectRatio from 'react-aspect-ratio';
 import type { Collection } from '@ossinsight/api';
 import { H1, P1 } from './typograpy';
 
-export default function Sections ({ collection, description, children }: PropsWithChildren<{ description: string, collection: Collection}>) {
+export default function Sections ({ collection, description, children }: PropsWithChildren<{ description: string, collection: Collection }>) {
   return (
     <>
       <P1>{description}</P1>
@@ -18,22 +18,22 @@ export default function Sections ({ collection, description, children }: PropsWi
       </Grid> */}
       {children}
     </>
-  )
+  );
 }
 
 const Link = ({ title, source, target, color }: { title: string[], source: string, target: string, color: string }) => {
-  const ref = useRef<HTMLVideoElement>()
+  const ref = useRef<HTMLVideoElement>();
   useLayoutEffect(() => {
-    const video = ref.current
-    if (video) {
+    const video = ref.current;
+    if (video != null) {
       video.onload = function () {
-        video.play().catch()
-      }
+        video.play().catch();
+      };
     }
-  }, [])
+  }, []);
 
   return (
-    <Grid item xs={12} md={4} mt={2} mr={2} component='a' pl={2} pr={1} href={target} height={102} maxWidth='243px !important' display='flex' sx={{background: color}} borderRadius='6px' justifyContent='space-between' alignItems='center'>
+    <Grid item xs={12} md={4} mt={2} mr={2} component='a' pl={2} pr={1} href={target} height={102} maxWidth='243px !important' display='flex' sx={{ background: color }} borderRadius='6px' justifyContent='space-between' alignItems='center'>
       <Box flex={1} fontSize={16} fontWeight='bold' color='white'>
         <Box>
           {title.map(line => <Box key={line} display='block'>{line}</Box>)}
@@ -41,10 +41,10 @@ const Link = ({ title, source, target, color }: { title: string[], source: strin
         </Box>
       </Box>
       <div style={{ flex: 1, maxWidth: 98 }}>
-        <AspectRatio ratio={856/776} style={{ width: '100%' }}>
+        <AspectRatio ratio={856 / 776} style={{ width: '100%' }}>
           <video ref={ref} src={source} width="100%" height="100%" autoPlay loop muted />
         </AspectRatio>
       </div>
     </Grid>
-  )
-}
+  );
+};

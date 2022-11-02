@@ -11,18 +11,18 @@ import { useCollectionHistory } from '../hooks/data';
 import { useDimensionTabs } from '../hooks/useTabs';
 import { withRemote } from '../hooks/withRemote';
 import { H2, P2 } from './typograpy';
-import { formatTime } from "./utils";
+import { formatTime } from './utils';
 
 use(CanvasRenderer);
 
-export default withInViewContainer(function HistorySection() {
+export default withInViewContainer(function HistorySection () {
   const { collection } = useContext(CollectionsContext);
 
   const { dimension, tabs } = useDimensionTabs('historical-trending');
   const asyncData = useCollectionHistory(collection?.id, dimension.key);
 
   const top10Names = useMemo(() => {
-    if (!asyncData.data) {
+    if (asyncData.data == null) {
       return [];
     }
     const maxTime = asyncData.data.data.reduce((set, item) => {
@@ -36,7 +36,7 @@ export default withInViewContainer(function HistorySection() {
   }, [asyncData.data]);
 
   const top10Data: typeof asyncData = useMemo(() => {
-    if (!asyncData.data) {
+    if (asyncData.data == null) {
       return asyncData;
     }
     const top10NamesSet = top10Names

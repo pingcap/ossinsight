@@ -1,13 +1,13 @@
 import React from 'react';
-import Grid, {GridProps} from '@mui/material/Grid';
-import {BodyText, DataGrid, HeaderGrid, HeadText} from './styled';
-import {useAnalyzeChartContext, useAnalyzeContext} from '../context';
+import Grid, { GridProps } from '@mui/material/Grid';
+import { BodyText, DataGrid, HeaderGrid, HeadText } from './styled';
+import { useAnalyzeChartContext, useAnalyzeContext } from '../context';
 import Stack from '@mui/material/Stack';
 import Tooltip from '@mui/material/Tooltip';
-import {AsyncData, RemoteData} from '../../../../components/RemoteCharts/hook';
+import { AsyncData, RemoteData } from '../../../../components/RemoteCharts/hook';
 import Skeleton from '@mui/material/Skeleton';
 import CircularProgress from '@mui/material/CircularProgress';
-import type {RepoInfo} from '@ossinsight/api';
+import type { RepoInfo } from '@ossinsight/api';
 
 export interface SummaryItemProps<F extends string> extends Omit<GridProps, 'title'> {
   icon?: React.ReactNode;
@@ -17,7 +17,6 @@ export interface SummaryItemProps<F extends string> extends Omit<GridProps, 'tit
   sizes: readonly [number, number];
 }
 
-
 export interface StaticSummaryItemProps extends Omit<GridProps, 'title'> {
   icon?: React.ReactNode;
   title: React.ReactNode;
@@ -26,9 +25,9 @@ export interface StaticSummaryItemProps extends Omit<GridProps, 'title'> {
   sizes: readonly [number, number];
 }
 
-function getData<K extends string>(data: AsyncData<RemoteData<unknown, Record<K, number>>>, key: K): number | undefined {
+function getData<K extends string> (data: AsyncData<RemoteData<unknown, Record<K, number>>>, key: K): number | undefined {
   const item = data.data?.data[0];
-  if (!item) {
+  if (item == null) {
     return undefined;
   }
   if (key === '*') {
@@ -38,9 +37,9 @@ function getData<K extends string>(data: AsyncData<RemoteData<unknown, Record<K,
   }
 }
 
-export function SummaryItem<F extends string>({title, icon, sizes, field, ...gridProps}: SummaryItemProps<F>) {
-  const {comparingRepoId} = useAnalyzeContext();
-  const {data, compareData} = useAnalyzeChartContext<Record<F, number>>();
+export function SummaryItem<F extends string> ({ title, icon, sizes, field, ...gridProps }: SummaryItemProps<F>) {
+  const { comparingRepoId } = useAnalyzeContext();
+  const { data, compareData } = useAnalyzeChartContext<Record<F, number>>();
 
   return (
     <Grid {...gridProps}>
@@ -55,7 +54,7 @@ export function SummaryItem<F extends string>({title, icon, sizes, field, ...gri
       <DataGrid item xs={sizes[1]}>
         <Stack direction="row" alignItems="center" justifyContent="flex-end" spacing={1}>
           <BodyText>
-            {getData(data, field) ?? <CircularProgress sx={{verticalAlign: -2}} size={24} />}
+            {getData(data, field) ?? <CircularProgress sx={{ verticalAlign: -2 }} size={24} />}
           </BodyText>
         </Stack>
       </DataGrid>
@@ -63,16 +62,17 @@ export function SummaryItem<F extends string>({title, icon, sizes, field, ...gri
         ? (
           <DataGrid item xs={sizes[1]}>
             <BodyText>
-              {getData(compareData, field) ?? <CircularProgress sx={{verticalAlign: -2}} size={24} />}
+              {getData(compareData, field) ?? <CircularProgress sx={{ verticalAlign: -2 }} size={24} />}
             </BodyText>
           </DataGrid>
-        ) : undefined}
+          )
+        : undefined}
     </Grid>
   );
 }
 
-export function StaticSummaryItem({title, icon, sizes, data, comparingData, ...gridProps}: StaticSummaryItemProps) {
-  const {comparingRepoId, repoInfo, comparingRepoInfo} = useAnalyzeContext();
+export function StaticSummaryItem ({ title, icon, sizes, data, comparingData, ...gridProps }: StaticSummaryItemProps) {
+  const { comparingRepoId, repoInfo, comparingRepoInfo } = useAnalyzeContext();
 
   return (
     <Grid {...gridProps}>
@@ -85,7 +85,7 @@ export function StaticSummaryItem({title, icon, sizes, data, comparingData, ...g
       <DataGrid item xs={sizes[1]}>
         <Stack direction="row" alignItems="center" justifyContent="flex-end" spacing={1}>
           <BodyText>
-            {repoInfo ? data(repoInfo) : <CircularProgress sx={{verticalAlign: -2}} size={24} />}
+            {(repoInfo != null) ? data(repoInfo) : <CircularProgress sx={{ verticalAlign: -2 }} size={24} />}
           </BodyText>
         </Stack>
       </DataGrid>
@@ -93,10 +93,11 @@ export function StaticSummaryItem({title, icon, sizes, data, comparingData, ...g
         ? (
           <DataGrid item xs={sizes[1]}>
             <BodyText>
-              {comparingRepoInfo ? data(comparingRepoInfo) : <Skeleton variant="text" />}
+              {(comparingRepoInfo != null) ? data(comparingRepoInfo) : <Skeleton variant="text" />}
             </BodyText>
           </DataGrid>
-        ) : undefined}
+          )
+        : undefined}
     </Grid>
   );
 }

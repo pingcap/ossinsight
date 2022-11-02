@@ -20,13 +20,13 @@ import { useCollectionMonthRank } from '../hooks/data';
 import { useDimensionTabs } from '../hooks/useTabs';
 import { withRemote } from '../hooks/withRemote';
 import { H2, H3, P1, P2 } from './typograpy';
-import { formatTime } from "./utils";
-import Diff from "../../../components/Diff";
-import { CollectionDateTypeEnum, collectionDisplayType } from "../dimensions";
+import { formatTime } from './utils';
+import Diff from '../../../components/Diff';
+import { CollectionDateTypeEnum, collectionDisplayType } from '../dimensions';
 
 const TableCell = styled(MuiTableCell)(() => ({
-  borderBottom: "1px solid #222"
-}))
+  borderBottom: '1px solid #222'
+}));
 
 const NumberCell = styled(TableCell)(() => ({
   fontSize: 18,
@@ -45,8 +45,7 @@ const HeaderCell = styled(NumberCell)(() => ({
   fontWeight: 'bold',
 }));
 
-
-export default withInViewContainer(function MonthRankSection() {
+export default withInViewContainer(function MonthRankSection () {
   const { collection } = useContext(CollectionsContext);
 
   const { dimension, tabs, dateType } = useDimensionTabs('monthly-rankings', true);
@@ -92,7 +91,7 @@ export default withInViewContainer(function MonthRankSection() {
                     )}
                     <HeaderCell>Repository</HeaderCell>
                     <HeaderCell>{dimension.title}</HeaderCell>
-                    <HeaderCell sx={{ color: "gray" }} align="right">
+                    <HeaderCell sx={{ color: 'gray' }} align="right">
                       Total
                     </HeaderCell>
                   </TableRow>
@@ -119,7 +118,7 @@ export default withInViewContainer(function MonthRankSection() {
                         <Stack direction="row" spacing={1} alignItems="center">
                           <Avatar
                             src={`https://github.com/${
-                              item.repo_name.split("/")[0]
+                              item.repo_name.split('/')[0]
                             }.png`}
                             sx={{ width: 20, height: 20 }}
                           />
@@ -128,7 +127,7 @@ export default withInViewContainer(function MonthRankSection() {
                             style={{
                               fontSize: 16,
                               marginLeft: 8,
-                              whiteSpace: "nowrap",
+                              whiteSpace: 'nowrap',
                             }}
                           >
                             {item.repo_name}
@@ -145,10 +144,10 @@ export default withInViewContainer(function MonthRankSection() {
                         </NumberCell>
                       }
                       <NumberCell
-                        sx={{ color: "gray", fontWeight: "normal" }}
+                        sx={{ color: 'gray', fontWeight: 'normal' }}
                         align="right"
                       >
-                        {format(item.total, { separator: "" })}
+                        {format(item.total, { separator: '' })}
                       </NumberCell>
                     </TableRow>
                   ))}
@@ -169,20 +168,20 @@ export default withInViewContainer(function MonthRankSection() {
                     <HeaderCell>
                       <Skeleton
                         variant="text"
-                        sx={{ display: "inline-block" }}
+                        sx={{ display: 'inline-block' }}
                         width={64}
                       />
                     </HeaderCell>
                     <HeaderCell>
                       <Skeleton
                         variant="text"
-                        sx={{ display: "inline-block" }}
+                        sx={{ display: 'inline-block' }}
                         width={64}
                       />
                     </HeaderCell>
                     <HeaderCell>Repository</HeaderCell>
                     <HeaderCell>{dimension.title}</HeaderCell>
-                    <HeaderCell sx={{ color: "gray" }} align="right">
+                    <HeaderCell sx={{ color: 'gray' }} align="right">
                       Total
                     </HeaderCell>
                   </TableRow>
@@ -195,7 +194,7 @@ export default withInViewContainer(function MonthRankSection() {
                         <NumberCell>
                           <Skeleton
                             variant="text"
-                            sx={{ display: "inline-block" }}
+                            sx={{ display: 'inline-block' }}
                             width={32}
                           />
                           <Diff val={0} reverse />
@@ -203,7 +202,7 @@ export default withInViewContainer(function MonthRankSection() {
                         <NumberCell>
                           <Skeleton
                             variant="text"
-                            sx={{ display: "inline-block" }}
+                            sx={{ display: 'inline-block' }}
                             width={32}
                           />
                         </NumberCell>
@@ -215,13 +214,13 @@ export default withInViewContainer(function MonthRankSection() {
                           >
                             <Skeleton
                               variant="circular"
-                              sx={{ display: "inline-block" }}
+                              sx={{ display: 'inline-block' }}
                               width={26}
                               height={26}
                             />
                             <Skeleton
                               variant="text"
-                              sx={{ display: "inline-block", flex: 1 }}
+                              sx={{ display: 'inline-block', flex: 1 }}
                               height={26}
                             />
                           </Stack>
@@ -229,15 +228,15 @@ export default withInViewContainer(function MonthRankSection() {
                         <NumberCell>
                           <Skeleton
                             variant="text"
-                            sx={{ display: "inline-block" }}
+                            sx={{ display: 'inline-block' }}
                             width={32}
                           />
                           <Diff val={0} suffix="%" />
                         </NumberCell>
-                        <NumberCell sx={{ color: "gray" }} align="right">
+                        <NumberCell sx={{ color: 'gray' }} align="right">
                           <Skeleton
                             variant="text"
-                            sx={{ display: "inline-block" }}
+                            sx={{ display: 'inline-block' }}
                             width={32}
                           />
                         </NumberCell>

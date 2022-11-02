@@ -5,7 +5,7 @@ import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import Box from '@mui/material/Box';
 
-const minDate = new Date("2011-01-01");
+const minDate = new Date('2011-01-01');
 const maxDate = new Date();
 
 export interface DateRangeSelectorProps {
@@ -13,7 +13,7 @@ export interface DateRangeSelectorProps {
   onChange: (range: [Date | null, Date | null]) => void
 }
 
-export default function DateRangeSelector(props: DateRangeSelectorProps) {
+export default function DateRangeSelector (props: DateRangeSelectorProps) {
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <DateRangePicker<Date>

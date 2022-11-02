@@ -9,16 +9,16 @@ export interface AnalyzeSelectorProps {
   size?: 'large'
 }
 
-export default function AnalyzeSelector ({placeholder = 'Quick insights on any repo', align, size, contrast}: AnalyzeSelectorProps) {
-  const history = useHistory()
+export default function AnalyzeSelector ({ placeholder = 'Quick insights on any repo', align, size, contrast }: AnalyzeSelectorProps) {
+  const history = useHistory();
   const onAnalyzeRepoChanged = useCallback((repo: Repo | undefined) => {
-    if (repo) {
-      history.push(`/analyze/${repo.name}`)
+    if (repo != null) {
+      history.push(`/analyze/${repo.name}`);
     }
-  }, [])
+  }, []);
   const onAnalyzeRepoValid = useCallback(() => {
-    return undefined
-  }, [])
+    return undefined;
+  }, []);
 
   return (
     <RepoSelector
@@ -31,5 +31,5 @@ export default function AnalyzeSelector ({placeholder = 'Quick insights on any r
       size={size}
       contrast={contrast}
     />
-  )
+  );
 }

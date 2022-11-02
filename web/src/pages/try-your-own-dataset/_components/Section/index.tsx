@@ -1,8 +1,8 @@
 import Container from '@mui/material/Container';
-import React, {PropsWithChildren} from "react";
-import Button, {ButtonProps} from "@mui/material/Button";
-import styles from "./styles.module.css";
-import ArrowRightIcon from "@mui/icons-material/ArrowRight";
+import React, { PropsWithChildren } from 'react';
+import Button, { ButtonProps } from '@mui/material/Button';
+import styles from './styles.module.css';
+import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 
 export interface SectionProps {
   title?: React.ReactNode
@@ -12,9 +12,9 @@ export interface SectionProps {
   buttonLink?: string
 }
 
-export default function Section({title, subtitle, buttonLink, buttonText, backgroundImage, children}: PropsWithChildren<SectionProps>) {
+export default function Section ({ title, subtitle, buttonLink, buttonText, backgroundImage, children }: PropsWithChildren<SectionProps>) {
   return (
-    <section className={styles.section} style={backgroundImage && { backgroundImage: `url("${backgroundImage}")`}}>
+    <section className={styles.section} style={backgroundImage && { backgroundImage: `url("${backgroundImage}")` }}>
       <Container maxWidth='xl'>
         {title
           ? <h2 className={styles.sectionTitle}>{title}</h2>
@@ -30,7 +30,8 @@ export default function Section({title, subtitle, buttonLink, buttonText, backgr
                   &nbsp;
                   {buttonText}
                 </a>
-              ) : undefined}
+                )
+              : undefined}
         </p>
           : undefined}
         <div>
@@ -38,5 +39,5 @@ export default function Section({title, subtitle, buttonLink, buttonText, backgr
         </div>
       </Container>
     </section>
-  )
+  );
 }

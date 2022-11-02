@@ -5,31 +5,30 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Skeleton from '@mui/material/Skeleton';
 import { AxiosError } from 'axios';
-import React, { useCallback, useMemo, useState } from 'react';
-import { ReactNode } from 'react';
+import React, { useCallback, useMemo, useState, ReactNode } from 'react';
 import DebugDialog from '../../../components/DebugDialog/DebugDialog';
 import { AsyncData, RemoteData } from '../../../components/RemoteCharts/hook';
-import { useDebugDialog } from "../../../components/DebugDialog";
+import { useDebugDialog } from '../../../components/DebugDialog';
 
-export function withRemote<T>({ data, loading, error }: AsyncData<RemoteData<any, T>>, render: (data: RemoteData<any, T>) => ReactNode, fallback?: () => ReactNode) {
-  const { dialog: debugDialog, button: debugButton } = useDebugDialog(data)
+export function withRemote<T> ({ data, loading, error }: AsyncData<RemoteData<any, T>>, render: (data: RemoteData<any, T>) => ReactNode, fallback?: () => ReactNode) {
+  const { dialog: debugDialog, button: debugButton } = useDebugDialog(data);
 
   const errorMessage = useMemo(() => {
     if (!error) {
-      return undefined
+      return undefined;
     }
     const errMsg = (error as AxiosError)?.response?.data?.message || String(error || '');
     if (errMsg.indexOf('API rate limit exceeded') !== -1) {
-      return 'Too frequent to operate, please try again after one minute.'
+      return 'Too frequent to operate, please try again after one minute.';
     }
-    return errMsg
-  }, [error])
+    return errMsg;
+  }, [error]);
 
   if (error) {
     return (
       <Alert severity='error'>{errorMessage}</Alert>
-    )
-  } else if (data) {
+    );
+  } else if (data != null) {
     return (
       <>
         <Box display='flex' justifyContent='flex-end'>
@@ -38,8 +37,8 @@ export function withRemote<T>({ data, loading, error }: AsyncData<RemoteData<any
         {render(data)}
         {debugDialog}
       </>
-    )
-  } else if (fallback) {
+    );
+  } else if (fallback != null) {
     return (
       <>
         <Box display='flex' justifyContent='flex-end'>
@@ -47,14 +46,14 @@ export function withRemote<T>({ data, loading, error }: AsyncData<RemoteData<any
         </Box>
         {fallback()}
       </>
-    )
+    );
   } else {
     return (
       <Box>
-        <Skeleton variant='text' width='70%' sx={{mt: 1 }} />
-        <Skeleton variant='text' width='60%' sx={{mt: 1 }} />
-        <Skeleton variant='text' width='90%' sx={{my: 1 }} />
+        <Skeleton variant='text' width='70%' sx={{ mt: 1 }} />
+        <Skeleton variant='text' width='60%' sx={{ mt: 1 }} />
+        <Skeleton variant='text' width='90%' sx={{ my: 1 }} />
       </Box>
-    )
+    );
   }
 }

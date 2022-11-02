@@ -1,6 +1,6 @@
-import { createContext, MutableRefObject, RefCallback, useContext } from "react";
-import EChartsReact from "echarts-for-react";
-import { AsyncData, RemoteData } from "../../../components/RemoteCharts/hook";
+import { createContext, MutableRefObject, RefCallback, useContext } from 'react';
+import EChartsReact from 'echarts-for-react';
+import { AsyncData, RemoteData } from '../../../components/RemoteCharts/hook';
 
 export interface AnalyzeUserChartContextProps<T = unknown> {
   query: string;
