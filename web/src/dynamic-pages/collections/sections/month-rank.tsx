@@ -1,8 +1,5 @@
 import Link from '@docusaurus/Link';
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import Avatar from '@mui/material/Avatar';
-import Paper from '@mui/material/Paper';
 import Skeleton from '@mui/material/Skeleton';
 import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
@@ -19,7 +16,7 @@ import CollectionsContext from '../context';
 import { useCollectionMonthRank } from '../hooks/data';
 import { useDimensionTabs } from '../hooks/useTabs';
 import { withRemote } from '../hooks/withRemote';
-import { H2, H3, P1, P2 } from './typograpy';
+import { H2, H3, P2 } from './typograpy';
 import { formatTime } from './utils';
 import Diff from '../../../components/Diff';
 import { CollectionDateTypeEnum, collectionDisplayType } from '../dimensions';
@@ -67,10 +64,7 @@ export default withInViewContainer(function MonthRankSection () {
         (data) => (
           <>
             <H3 fontSize={14} align="center">
-              {`${
-                collectionDisplayType.find((i) => i.type === dateType)
-                  .tableTitle
-              } Ranking - ${dimension.title}`}
+              {`${collectionDisplayType.find((i) => i.type === dateType)?.tableTitle ?? 'unknown'} Ranking - ${dimension.title}`}
             </H3>
             <TableContainer>
               <Table className="clearTable" size="small" stickyHeader>

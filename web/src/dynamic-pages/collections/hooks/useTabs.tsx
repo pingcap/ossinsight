@@ -5,7 +5,7 @@ import ButtonGroup from '@mui/material/ButtonGroup';
 import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
 import React, { useMemo, useState } from 'react';
-import useUrlSearchState, { stringParam } from '../../../hooks/url-search-state';
+import useUrlSearchState from '../../../hooks/url-search-state';
 import IconTab from '../components/IconTab';
 import _dimensions, {
   Dimension,
@@ -23,7 +23,7 @@ export function useDimensionTabs (searchKey: string, assurePrefix = false) {
   const [dateType, setDateType] = useState(CollectionDateTypeEnum.Last28Days);
 
   const handleChangeDimension = useEventCallback((e, dimensionKey: string) => {
-    setDimension(dimensions.find(dimension => dimension.key === dimensionKey));
+    setDimension(dimensions.find(dimension => dimension.key === dimensionKey) ?? dimensions[0]);
   });
 
   const handleChangeDateType = (targetType: CollectionDateTypeEnum) => () => {

@@ -1,6 +1,7 @@
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import { AsyncData, RemoteData, useRemoteData } from '../../../components/RemoteCharts/hook';
 import { CollectionDateTypeEnum } from '../dimensions';
+import { notFalsy } from '@site/src/utils/value';
 
 export type CollectionHistoryData = {
   repo_name: string;
@@ -49,7 +50,7 @@ export function useCollectionHistory (collectionId: number | undefined, dimensio
     // fill previous value if some data missed
     function fix (data: CollectionHistoryData[]): CollectionHistoryData[] {
       // SWR may reuse the original data
-      if (data[SYMBOL_TRANSFORMED]) {
+      if (notFalsy(data[SYMBOL_TRANSFORMED])) {
         return data[SYMBOL_TRANSFORMED];
       }
       if (data.length === 0) {
@@ -75,6 +76,7 @@ export function useCollectionHistory (collectionId: number | undefined, dimensio
 
         // fill current data
         while (i < data.length) {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           const { repo_name, total, event_month } = data[i];
           if (event_month === current) {
             latestValues[repo_name] = total;
@@ -131,11 +133,8 @@ export function useCollectionMonthRank (
   dimension: string,
   type?: CollectionDateTypeEnum,
 ) {
-  return useRemoteData<
-  any,
-  CollectionMonthRankData & CollectionLastMonthRankData
-  >(
-    `collection-${dimension}-${type || 'month'}-rank`,
+  return useRemoteData<any, CollectionMonthRankData & CollectionLastMonthRankData>(
+    `collection-${dimension}-${type ?? 'month'}-rank`,
     { collectionId },
     false,
     collectionId !== undefined,

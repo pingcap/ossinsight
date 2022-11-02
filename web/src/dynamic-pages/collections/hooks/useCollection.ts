@@ -8,7 +8,7 @@ import { Collection } from '@ossinsight/api';
 import deepEqual from 'fast-deep-equal';
 
 export function useCollections (): Collection[] {
-  const { collections } = usePluginData<{ collections: RemoteData<any, Collection> }>('plugin-prefetch');
+  const { collections } = usePluginData('plugin-prefetch') as { collections: RemoteData<any, Collection> };
 
   const { data } = useSWR<RemoteData<any, Collection>>('static/collections', {
     fetcher: core.getCollections,

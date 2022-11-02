@@ -5,12 +5,10 @@ import { translate } from '@docusaurus/Translate';
 import { Add } from '@mui/icons-material';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import BackToTopButton from '@theme/BackToTopButton';
 import DocSidebar from '@theme/DocSidebar';
 import IconArrow from '@theme/Icon/Arrow';
 import clsx from 'clsx';
 import React, { PropsWithChildren, useCallback, useMemo, useState } from 'react';
-import { registerThemeDark } from '../../components/BasicCharts';
 import CustomPage from '../../theme/CustomPage';
 import CollectionsContext from './context';
 import type { Collection } from '@ossinsight/api';
@@ -19,6 +17,7 @@ import { useCollectionsSidebar } from './hooks/useCollectionsSidebar';
 import Sections from './sections';
 import { H1 } from './sections/typograpy';
 import styles from './styles.module.css';
+import { isFalsy, notFalsy } from '@site/src/utils/value';
 
 interface CollectionsPageParams {
   slug: string;
@@ -53,7 +52,7 @@ function CollectionsPageLayout ({ title: propTitle, description, keywords, child
         <div className={styles.collectionsPage}>
 
           <div className={styles.collectionsMainContainer}>
-            {sidebar && (
+            {notFalsy(sidebar) && (
               <aside
                 className={clsx(styles.collectionsSidebarContainer, {
                   [styles.collectionsSidebarContainerHidden]: hiddenSidebarContainer,
@@ -105,7 +104,7 @@ function CollectionsPageLayout ({ title: propTitle, description, keywords, child
             <main
               className={clsx(styles.collectionsMainContainer, {
                 [styles.collectionsMainContainerEnhanced]:
-                hiddenSidebarContainer || !sidebar,
+                hiddenSidebarContainer || isFalsy(sidebar),
               })}>
               <div
                 className={clsx(
@@ -116,7 +115,7 @@ function CollectionsPageLayout ({ title: propTitle, description, keywords, child
                   },
                 )}>
                 <H1>{title}</H1>
-                <Sections collection={collection} description={description}>
+                <Sections description={description}>
                   {children}
                 </Sections>
               </div>
@@ -130,10 +129,10 @@ function CollectionsPageLayout ({ title: propTitle, description, keywords, child
 
 const SidebarFooter = () => {
   return (
-    <Link to='https://github.com/pingcap/ossinsight#how-to-add-collections'>
-      <Stack direction='row' width='100%' height='100%' alignItems='center' justifyContent='center' spacing={1}>
+    <Link to="https://github.com/pingcap/ossinsight#how-to-add-collections">
+      <Stack direction="row" width="100%" height="100%" alignItems="center" justifyContent="center" spacing={1}>
         <Add />
-        <Typography variant='body2' component='span' fontSize='inherit'>
+        <Typography variant="body2" component="span" fontSize="inherit">
           Add a Collection
         </Typography>
       </Stack>

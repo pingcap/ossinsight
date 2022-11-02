@@ -1,27 +1,28 @@
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
-import { DateTime } from 'luxon';
+import { notNullish, Nullish } from '@site/src/utils/value';
 
 export interface UseUrlSearchStateProps<T> {
   defaultValue: T | (() => T);
-  serialize: (value: T) => string;
+  serialize: (value: T) => string | Nullish;
   deserialize: (string: string) => T;
 }
 
 export type UseUrlSearchStateHook = <T> (key: string, props: UseUrlSearchStateProps<T>) => [T, Dispatch<SetStateAction<T>>];
 
 function useUrlSearchStateSSR<T> (key: string, { defaultValue }: UseUrlSearchStateProps<T>): [T, Dispatch<SetStateAction<T>>] {
-  return useState<T | undefined>(defaultValue);
+  return useState<T>(defaultValue);
 }
 
 function useUrlSearchStateCSR<T> (key: string, {
   defaultValue,
   deserialize,
   serialize,
-}: UseUrlSearchStateProps<T>, push: boolean = false): [T | undefined, Dispatch<SetStateAction<T | undefined>>] {
+}: UseUrlSearchStateProps<T>, push: boolean = false): [T, Dispatch<SetStateAction<T>>] {
   const initialValue = useMemo(() => {
     const usp = new URLSearchParams(location.search);
-    if (usp.has(key)) {
-      return deserialize(usp.get(key));
+    const v = usp.get(key);
+    if (notNullish(v)) {
+      return deserialize(v);
     } else {
       return defaultValue;
     }
@@ -40,9 +41,9 @@ function useUrlSearchStateCSR<T> (key: string, {
     const hash = location.hash ? `${location.hash}` : '';
     const url = location.pathname + search + hash;
     if (push) {
-      window.history.pushState(null, null, url);
+      window.history.pushState(null, '', url);
     } else {
-      window.history.replaceState(null, null, url);
+      window.history.replaceState(null, '', url);
     }
   }, [value]);
 
@@ -58,48 +59,5 @@ export function stringParam (defaultValue?): UseUrlSearchStateProps<string> {
     defaultValue,
     serialize: s => s,
     deserialize: s => s,
-  };
-}
-
-export function numberParam (defaultValue?): UseUrlSearchStateProps<number> {
-  return {
-    defaultValue,
-    serialize: value => isFinite(value) ? String(value) : undefined,
-    deserialize: string => {
-      if (!string) {
-        return undefined;
-      }
-      const number = Number(string);
-      return isFinite(number) ? number : undefined;
-    },
-  };
-}
-
-export function booleanParam (defaultValue?): UseUrlSearchStateProps<boolean> {
-  return {
-    defaultValue,
-    serialize: v => String(v),
-    deserialize: s => s ? Boolean(s) : undefined,
-  };
-}
-
-export function dateParam (fmt = 'yyyy-MM-dd HH:mm:ss', defaultValue?): UseUrlSearchStateProps<Date | null> {
-  return {
-    defaultValue,
-    serialize: date => (date != null) ? DateTime.fromJSDate(date).toFormat(fmt) : undefined,
-    deserialize: dateString => dateString ? DateTime.fromFormat(dateString, fmt).toJSDate() : undefined,
-  };
-}
-
-export function dateRangeParam (fmt = 'yyyy-MM-dd HH:mm:ss', defaultValue?): UseUrlSearchStateProps<[Date | null, Date | null]> {
-  const reuse = dateParam(fmt);
-  return {
-    defaultValue,
-    serialize: (dates) => ((dates[0] != null) || (dates[1] != null))
-      ? dates.map(d => reuse.serialize(d) ?? '').join(',')
-      : undefined,
-    deserialize: (rangeString) => (rangeString[0] || rangeString[1])
-      ? rangeString.split(',', 2).map(ds => reuse.deserialize(ds) ?? null) as [Date | null, Date | null]
-      : undefined,
   };
 }

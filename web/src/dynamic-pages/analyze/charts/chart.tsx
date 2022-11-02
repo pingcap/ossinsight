@@ -12,6 +12,7 @@ import useDimensions from 'react-cool-dimensions';
 import { debounce, useEventCallback } from '@mui/material';
 import { useDebugDialog } from '../../../components/DebugDialog';
 import { notFalsy } from '@site/src/utils/value';
+import { useUnmountedRef } from 'ahooks';
 
 export function withChart<T = unknown, P = void> (useOption: (props: DangerousCtx<T>, chartProps: P) => EChartsOption, defaultProps: Partial<Omit<EChartsProps, 'option'>> = {}) {
   return (props: Omit<EChartsProps, 'option'> & (P extends void ? {} : { spec: P })) => {
@@ -22,10 +23,14 @@ export function withChart<T = unknown, P = void> (useOption: (props: DangerousCt
     const isSmall = useMediaQuery(theme.breakpoints.down('md'));
     const [width, setWidth] = useState(640);
     const [height, setHeight] = useState(480);
+    const unmountedRef = useUnmountedRef();
     const { observe, unobserve } = useDimensions({
       onResize: useMemo(
         () =>
           debounce(({ width, height }) => {
+            if (unmountedRef.current) {
+              return;
+            }
             // Triggered once per every 500 milliseconds
             setWidth(width);
             setHeight(height);

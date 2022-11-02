@@ -68,7 +68,7 @@ export default withInViewContainer(function HistorySection () {
             fields={{ name: 'repo_name', time: 'event_month', value: 'total' }}
             formatTime={formatTime}
           >
-            <Title id="title" top={0} text={`Top 10 ${collection.name} - ${dimension.title}`} />
+            <Title id="title" top={0} text={`Top 10 ${collection?.name ?? 'undefined'} - ${dimension.title}`} />
             <Watermark left="10%" top="10%" />
             <Toolbox feature={{ saveAsImage: { title: '' } }} />
             <Legend top="center" left="10%" orient="vertical" type="scroll" data={top10Names} />
