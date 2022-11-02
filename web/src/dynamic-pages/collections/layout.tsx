@@ -25,9 +25,9 @@ interface CollectionsPageParams {
 }
 
 export interface CollectionsPageLayoutProps {
-  title: (collection?: Collection) => string
-  description: string
-  keywords: string[]
+  title: (collection?: Collection) => string;
+  description: string;
+  keywords: string[];
 }
 
 function CollectionsPageLayout ({ title: propTitle, description, keywords, children }: PropsWithChildren<CollectionsPageLayoutProps>) {

@@ -21,20 +21,20 @@ const hours = [
   '0h', '1h', '2h', '3h', '4h', '5h', '6h',
   '7h', '8h', '9h', '10h', '11h',
   '12h', '13h', '14h', '15h', '16h', '17h',
-  '18h', '19h', '20h', '21h', '22h', '23h'
+  '18h', '19h', '20h', '21h', '22h', '23h',
 ];
 
 const days = [
-  'Sun', 'Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat'
+  'Sun', 'Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat',
 ];
 
 export interface HeatMapChartProps<T> {
-  loading: boolean
-  data: T[]
-  xAxisColumnName: KeyOfType<T, number>
-  yAxisColumnName: KeyOfType<T, number>
-  valueColumnName: KeyOfType<T, number>
-  deps: any[]
+  loading: boolean;
+  data: T[];
+  xAxisColumnName: KeyOfType<T, number>;
+  yAxisColumnName: KeyOfType<T, number>;
+  valueColumnName: KeyOfType<T, number>;
+  deps: any[];
 }
 
 export default function HeatMapChart<T> ({
@@ -69,14 +69,14 @@ export default function HeatMapChart<T> ({
     return {
       data: arr,
       min,
-      max
+      max,
     };
   }, [rawData, zone, isSmall]);
 
   const options = useMemo(() => {
     return {
       tooltip: {
-        show: true
+        show: true,
       },
       grid: isSmall
         ? {
@@ -84,52 +84,52 @@ export default function HeatMapChart<T> ({
             bottom: '0',
             left: '0',
             right: '0',
-            containLabel: true
+            containLabel: true,
           }
         : {
             top: '0',
             bottom: '16%',
             left: '0',
             right: '0',
-            containLabel: true
+            containLabel: true,
           },
       xAxis: {
         type: 'category',
         data: hours,
         splitArea: {
-          show: true
+          show: true,
         },
         nameLocation: 'middle',
         nameGap: 50,
         nameTextStyle: {
           fontSize: 13,
           fontWeight: 'bold',
-          color: '#959aa9'
+          color: '#959aa9',
         },
         axisLabel: {
           color: '#959aa9',
-          fontWeight: 'bold'
+          fontWeight: 'bold',
         },
-        inverse: false
+        inverse: false,
       },
       yAxis: {
         type: 'category',
         data: days,
         splitArea: {
-          show: true
+          show: true,
         },
         nameLocation: 'middle',
         nameGap: 50,
         nameTextStyle: {
           fontSize: 13,
           fontWeight: 'bold',
-          color: '#959aa9'
+          color: '#959aa9',
         },
         axisLabel: {
           color: '#959aa9',
           fontWeight: 'bold',
           rotate: isSmall ? 0 : 0,
-          fontSize: isSmall ? 8 : undefined
+          fontSize: isSmall ? 8 : undefined,
         },
         position: 'top',
       },
@@ -145,15 +145,15 @@ export default function HeatMapChart<T> ({
         type: 'heatmap',
         data,
         label: {
-          show: false
+          show: false,
         },
         emphasis: {
           itemStyle: {
             shadowBlur: 10,
-            shadowColor: 'rgba(0, 0, 0, 0.5)'
-          }
-        }
-      }
+            shadowColor: 'rgba(0, 0, 0, 0.5)',
+          },
+        },
+      },
     };
   }, [data, isSmall, ...deps]);
 

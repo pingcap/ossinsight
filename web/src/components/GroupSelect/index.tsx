@@ -9,12 +9,12 @@ import { useIsDarkTheme } from '@site/src/hooks/theme';
 declare global {
   interface Window {
     osdbgroup: Array<{
-      group_name: string
+      group_name: string;
       repos: Array<{
-        group_name: string
-        name: string
-        id: number
-      }>
+        group_name: string;
+        name: string;
+        id: number;
+      }>;
     }>;
   }
 }

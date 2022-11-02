@@ -118,7 +118,7 @@ const Details = styled('div', { label: 'Details' })(({ theme }) => ({
 
 const Extra = styled('div', { label: 'Extra' })(({ theme }) => (({
   color: '#BFBFBF',
-  fontSize: '0.8em'
+  fontSize: '0.8em',
 })));
 
 const StargazersChart = () => {

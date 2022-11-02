@@ -14,9 +14,9 @@ import { withChart } from '../chart';
 
 // lines of code
 export type TimeHeatData = {
-  dayofweek: number
-  hour: number
-  pushes: number
+  dayofweek: number;
+  hour: number;
+  pushes: number;
 };
 
 const hours = [

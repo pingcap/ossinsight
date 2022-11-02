@@ -30,7 +30,7 @@ export default function Footer () {
             buttonVariant='outlined'
             top={icon(require('./icon-1.png').default)}
             cardSx={{
-              backgroundColor: '#2c2c2c'
+              backgroundColor: '#2c2c2c',
             }}
           />
           <StandardCard
@@ -41,7 +41,7 @@ export default function Footer () {
             buttonVariant='outlined'
             top={icon(require('./icon-2.png').default)}
             cardSx={{
-              backgroundColor: '#2c2c2c'
+              backgroundColor: '#2c2c2c',
             }}
           />
           <StandardCard
@@ -52,7 +52,7 @@ export default function Footer () {
             buttonVariant='outlined'
             top={icon(require('./icon-3.png').default)}
             cardSx={{
-              backgroundColor: '#2c2c2c'
+              backgroundColor: '#2c2c2c',
             }}
           />
         </Cards>

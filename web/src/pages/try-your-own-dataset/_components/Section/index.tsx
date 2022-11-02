@@ -5,11 +5,11 @@ import styles from './styles.module.css';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 
 export interface SectionProps {
-  title?: React.ReactNode
-  subtitle?: React.ReactNode
-  backgroundImage?: string
-  buttonText?: React.ReactNode
-  buttonLink?: string
+  title?: React.ReactNode;
+  subtitle?: React.ReactNode;
+  backgroundImage?: string;
+  buttonText?: React.ReactNode;
+  buttonLink?: string;
 }
 
 export default function Section ({ title, subtitle, buttonLink, buttonText, backgroundImage, children }: PropsWithChildren<SectionProps>) {

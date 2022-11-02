@@ -6,7 +6,7 @@ import xss from 'xss';
 
 // lines of code
 export type CompanyData = {
-  company_name: string
+  company_name: string;
 };
 
 export const CompaniesChart = withChart<CompanyData, { valueIndex: string }>(({
@@ -40,7 +40,7 @@ export const CompaniesChart = withChart<CompanyData, { valueIndex: string }>(({
         depth: 1,
         value: 0,
         index: -1,
-        parentId: 'root'
+        parentId: 'root',
       }))));
     }
     const series = d3Hierarchy(res, 1);
@@ -57,7 +57,7 @@ export const CompaniesChart = withChart<CompanyData, { valueIndex: string }>(({
       selectedMode: false,
     }),
     tooltip: itemTooltip({
-      formatter: params => `${params.value.name}: ${params.value.value}`
+      formatter: params => `${params.value.name}: ${params.value.value}`,
     }),
     hoverLayerThreshold: Infinity,
     series: [

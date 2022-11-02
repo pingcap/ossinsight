@@ -47,22 +47,22 @@ type Param = { repoId: number, excludeBots: boolean };
 type Result = { actor_id: number, actor_login: string, proportion: number, row_num: number };
 
 type TypeMap = {
-  'analyze-people-activities-contribution-rank': Result & ChangedEvents
-  'analyze-people-code-pr-contribution-rank': Result & ChangedEvents
-  'analyze-people-code-changes-contribution-rank': Result & ChangedCodes
-  'analyze-people-code-contribution-rank': Result & ChangedEvents & { is_new_contributor: 0 | 1 }
-  'analyze-people-code-review-comments-contribution-rank': Result & ChangedEvents
-  'analyze-people-code-review-prs-contribution-rank': Result & ChangedEvents
-  'analyze-people-code-review-submits-contribution-rank': Result & ChangedEvents
-  'analyze-people-issue-close-contribution-rank': Result & ChangedEvents
-  'analyze-people-issue-comment-contribution-rank': Result & ChangedEvents
-  'analyze-people-issue-contribution-rank': Result & ChangedEvents & { is_new_contributor: 0 | 1 }
+  'analyze-people-activities-contribution-rank': Result & ChangedEvents;
+  'analyze-people-code-pr-contribution-rank': Result & ChangedEvents;
+  'analyze-people-code-changes-contribution-rank': Result & ChangedCodes;
+  'analyze-people-code-contribution-rank': Result & ChangedEvents & { is_new_contributor: 0 | 1 };
+  'analyze-people-code-review-comments-contribution-rank': Result & ChangedEvents;
+  'analyze-people-code-review-prs-contribution-rank': Result & ChangedEvents;
+  'analyze-people-code-review-submits-contribution-rank': Result & ChangedEvents;
+  'analyze-people-issue-close-contribution-rank': Result & ChangedEvents;
+  'analyze-people-issue-comment-contribution-rank': Result & ChangedEvents;
+  'analyze-people-issue-contribution-rank': Result & ChangedEvents & { is_new_contributor: 0 | 1 };
 };
 
 type Descriptor<K extends keyof TypeMap> = {
-  key: K
-  title: string
-  render: (item: TypeMap[K], first: TypeMap[K], options: { percentage: boolean, lastMonth: string }) => JSX.Element
+  key: K;
+  title: string;
+  render: (item: TypeMap[K], first: TypeMap[K], options: { percentage: boolean, lastMonth: string }) => JSX.Element;
 };
 
 const descriptors: Array<Descriptor<any>> = [
@@ -133,8 +133,8 @@ function renderBasic (item: Result & ChangedEvents & { is_new_contributor?: 0 | 
         tooltip: {
           sx: {
             backgroundColor: '#3c3c3c',
-          }
-        }
+          },
+        },
       }}
       title={(
         <Box>

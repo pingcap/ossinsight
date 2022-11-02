@@ -29,8 +29,8 @@ export default function Page () {
                 px: 8,
                 py: 4,
                 [theme.breakpoints.down('md')]: {
-                  p: 2
-                }
+                  p: 2,
+                },
               })}
             >
               <Cards xs={12} md={6} spacing={4}>
@@ -79,7 +79,7 @@ export default function Page () {
           <Grid item xs={12} lg={4}>
             <Card sx={[
               { px: 4, py: 4, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' },
-              theme => ({ [theme.breakpoints.up('lg')]: { height: '100%' } })
+              theme => ({ [theme.breakpoints.up('lg')]: { height: '100%' } }),
             ]}>
               <IconSet />
               <Typography variant='h3' sx={{ fontWeight: 'bold', my: 4 }}>

@@ -14,7 +14,7 @@ function years (from, to: number): string[] {
 }
 
 interface MostActiveDevelopersChartProps extends Omit<ChartProps, 'once' | 'data' | 'aspect'> {
-  footnote?: string
+  footnote?: string;
 }
 
 export default function MostActiveDevelopersChart ({ footnote, ...props }: MostActiveDevelopersChartProps) {

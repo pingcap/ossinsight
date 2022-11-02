@@ -10,7 +10,7 @@ import TextField from '@mui/material/TextField';
 
 export const enum SortType {
   alphabetical = 'alphabetical',
-  recent = 'recent'
+  recent = 'recent',
 }
 
 export function useSearch () {

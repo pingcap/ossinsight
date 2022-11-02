@@ -16,10 +16,10 @@ import { withChart } from '../chart';
 
 // lines of code
 export type LocData = {
-  event_month: string
-  additions: number
-  deletions: number
-  changes: number
+  event_month: string;
+  additions: number;
+  deletions: number;
+  changes: number;
 };
 
 export const LocChart = withChart<LocData>(({ title: propsTitle }) => {

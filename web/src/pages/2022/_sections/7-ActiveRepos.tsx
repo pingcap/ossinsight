@@ -29,9 +29,9 @@ export default function () {
 }
 
 type Rank = {
-  repo: string
-  count: number
-  icon?: ReactElement
+  repo: string;
+  count: number;
+  icon?: ReactElement;
 };
 
 const MSIcon = styled(_MSIcon)({

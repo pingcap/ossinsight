@@ -3,13 +3,13 @@ import { useRemoteData } from '../RemoteCharts/hook';
 import { renderChart } from '../RemoteCharts/withQuery';
 import BrowserOnly from '@docusaurus/core/lib/client/exports/BrowserOnly';
 import { Queries } from '../RemoteCharts/queries';
-import { EChartsOption, SeriesOption } from 'echarts';
+import { EChartsOption } from 'echarts';
 import * as echarts from 'echarts/core';
 import ECharts from '../ECharts';
 
 export interface ContributorsChartsProps {
-  type: 'prs' | 'contributors'
-  percent?: boolean
+  type: 'prs' | 'contributors';
+  percent?: boolean;
 }
 
 const blank = {};
@@ -43,11 +43,11 @@ const stepLabels = [
 type StepData = [repo: string, total: number, ...steps: number[]];
 
 interface ChartsProps {
-  data: Data[]
-  type: 'prs' | 'contributors'
-  percent: boolean
-  loading: boolean
-  size: number
+  data: Data[];
+  type: 'prs' | 'contributors';
+  percent: boolean;
+  loading: boolean;
+  size: number;
 }
 
 function Charts ({ data: rawData, type, percent, loading, size }: ChartsProps) {
@@ -60,11 +60,11 @@ function Charts ({ data: rawData, type, percent, loading, size }: ChartsProps) {
         trigger: 'axis',
         axisPointer: {
           // Use axis to trigger tooltip
-          type: 'shadow' // 'shadow' as default; can also be 'line' or 'shadow'
-        }
+          type: 'shadow', // 'shadow' as default; can also be 'line' or 'shadow'
+        },
       },
       legend: {
-        show: true
+        show: true,
       },
       xAxis: {
         type: 'value',
@@ -72,10 +72,10 @@ function Charts ({ data: rawData, type, percent, loading, size }: ChartsProps) {
         name: type,
         axisLabel: {
           formatter: percent
-            ? (value: number) => (value * 100) + '%'
-            : (value) => `${value} ${type}`
+            ? (value: number) => `${value * 100}%`
+            : (value: number | string) => `${value} ${type}`,
         },
-        max: percent ? 1 : undefined
+        max: percent ? 1 : undefined,
       },
       yAxis: {
         type: 'category',
@@ -88,21 +88,21 @@ function Charts ({ data: rawData, type, percent, loading, size }: ChartsProps) {
         data: data.map((items) => items[i + 2]),
         stack: 'total',
         emphasis: {
-          focus: 'series'
+          focus: 'series',
         },
         label: !percent && i === steps.length - 1
           ? {
               show: true,
               position: 'right',
-              formatter: (params) => `${data[params.dataIndex][1]}`
+              formatter: (params) => `${data[params.dataIndex][1]}`,
             }
           : undefined,
         tooltip: {
           valueFormatter: (value) => percent
             ? ((value as number) * 100).toFixed(1) + '%'
-            : value
-        }
-      } as SeriesOption))
+            : String(value),
+        },
+      })),
     };
   }, [steps, data, type]);
 
@@ -127,11 +127,11 @@ function Charts ({ data: rawData, type, percent, loading, size }: ChartsProps) {
 }
 
 function useOrdered (data: Data[]): GroupedData {
-  return useMemo(() => data.reduce((result, item) => {
-    if (!result[item.repo_group_name]) {
+  return useMemo(() => data.reduce((result: GroupedData, item) => {
+    if (result[item.repo_group_name] == null) {
       result[item.repo_group_name] = {
         contributors: [],
-        totalPrs: 0
+        totalPrs: 0,
       };
     }
     const obj = result[item.repo_group_name];

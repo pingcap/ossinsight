@@ -4,13 +4,13 @@ import { dangerousGetCtx } from '../_danger';
 import { COMPARING_DATASET_ID, ORIGINAL_DATASET_ID } from '../dataset';
 
 interface AnalyzeTemplateParams<T> {
-  id: 'main' | 'vs'
-  datasetId: typeof ORIGINAL_DATASET_ID | typeof COMPARING_DATASET_ID
+  id: 'main' | 'vs';
+  datasetId: typeof ORIGINAL_DATASET_ID | typeof COMPARING_DATASET_ID;
   repoInfo: RepoInfo | undefined;
   data: AsyncData<RemoteData<unknown, T>>;
   name: string;
   // be careful to use this
-  context: Record<string, any>
+  context: Record<string, any>;
 }
 
 export function template<P, T = any> (fp: (params: AnalyzeTemplateParams<P>, i: number) => (T | T[])): T[] {

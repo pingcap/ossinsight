@@ -10,19 +10,19 @@ import ECharts from '../ECharts';
 
 // Register the required components
 echarts.use(
-  [TitleComponent, TooltipComponent, GridComponent, ELineChart, LabelLayout, CanvasRenderer]
+  [TitleComponent, TooltipComponent, GridComponent, ELineChart, LabelLayout, CanvasRenderer],
 );
 
 type RawData = {
-  event_year: number
-  repo_name: string
-  stars: string
+  event_year: number;
+  repo_name: string;
+  stars: string;
 };
 
 interface DynamicStarsChartProps {
-  data: RawData[]
-  loading: boolean
-  aspectRatio?: number
+  data: RawData[];
+  loading: boolean;
+  aspectRatio?: number;
 }
 
 export default function DynamicStarsChart ({ data, aspectRatio = 16 / 9, loading }: DynamicStarsChartProps) {
@@ -34,12 +34,13 @@ export default function DynamicStarsChart ({ data, aspectRatio = 16 / 9, loading
     const datasets: DatasetOption[] = [{
       id: 'raw',
       source: ([['event_year', 'repo_name', 'stars']] as any)
-        .concat(data.map(({ event_year, repo_name, stars }) => ([event_year, repo_name, parseInt(stars)])))
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        .concat(data.map(({ event_year, repo_name, stars }) => ([event_year, repo_name, parseInt(stars)]))),
     }, {
       transform: {
         type: 'sort',
-        config: { dimension: 'year', order: 'asc' }
-      }
+        config: { dimension: 'year', order: 'asc' },
+      },
     }];
 
     return datasets.concat(repos.map(repo => ({
@@ -48,9 +49,9 @@ export default function DynamicStarsChart ({ data, aspectRatio = 16 / 9, loading
       transform: {
         type: 'filter',
         config: {
-          and: [{ dimension: 'repo_name', '=': repo }]
-        }
-      }
+          and: [{ dimension: 'repo_name', '=': repo }],
+        },
+      },
     })));
   }, [data, repos]);
 
@@ -64,18 +65,18 @@ export default function DynamicStarsChart ({ data, aspectRatio = 16 / 9, loading
         show: true,
         formatter: function (params) {
           const { value } = params;
-          return value[1] + ': ' + value[2];
-        }
+          return `${value[1] as string}: ${value[2] as string}`;
+        },
       },
       labelLayout: {
-        moveOverlap: 'shiftY'
+        moveOverlap: 'shiftY',
       },
       emphasis: {
-        focus: 'series'
+        focus: 'series',
       },
       smooth: true,
       lineStyle: {
-        cap: 'round'
+        cap: 'round',
       },
       encode: {
         x: 'year',
@@ -83,8 +84,8 @@ export default function DynamicStarsChart ({ data, aspectRatio = 16 / 9, loading
         label: ['stars'],
         itemName: 'event_year',
         tooltip: ['stars'],
-        val: 'stars'
-      }
+        val: 'stars',
+      },
     }));
   }, [repos]);
 
@@ -98,21 +99,21 @@ export default function DynamicStarsChart ({ data, aspectRatio = 16 / 9, loading
       },
       tooltip: {
         order: 'valueDesc',
-        trigger: 'axis'
+        trigger: 'axis',
       },
       xAxis: {
         type: 'category',
-        nameLocation: 'end'
+        nameLocation: 'end',
       },
       yAxis: {
-        name: 'stars'
+        name: 'stars',
       },
       grid: {
         containLabel: true,
         right: '30%',
-        left: 0
+        left: 0,
       },
-      series
+      series,
     };
   }, [datasets, series]);
 

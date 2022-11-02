@@ -3,10 +3,10 @@ import React, { useCallback } from 'react';
 import RepoSelector, { Repo } from '../CompareHeader/RepoSelector';
 
 export interface AnalyzeSelectorProps {
-  placeholder?: string
-  align?: 'left' | 'right'
-  contrast?: boolean
-  size?: 'large'
+  placeholder?: string;
+  align?: 'left' | 'right';
+  contrast?: boolean;
+  size?: 'large';
 }
 
 export default function AnalyzeSelector ({ placeholder = 'Quick insights on any repo', align, size, contrast }: AnalyzeSelectorProps) {

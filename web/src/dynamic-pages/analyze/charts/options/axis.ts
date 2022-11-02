@@ -34,13 +34,13 @@ export function valueAxis<T extends 'x' | 'y'> (id?: OptionId, option: AxisOptio
     splitNumber: small ? 3 : undefined as any,
     axisPointer: {
       label: {
-        precision: 0
+        precision: 0,
       },
     },
     nameTextStyle: {
       opacity: small ? 0 : 1,
-      align: filterEnum(option.position || 'left', ['left', 'right'])
-    }
+      align: filterEnum(option.position || 'left', ['left', 'right']),
+    },
   });
 }
 
@@ -49,8 +49,8 @@ export function categoryAxis<T extends 'x' | 'y'> (id?: OptionId, option: AxisOp
     id,
     type: 'category',
     nameTextStyle: {
-      align: filterEnum(option.position || 'left', ['left', 'right'])
-    }
+      align: filterEnum(option.position || 'left', ['left', 'right']),
+    },
   });
 }
 
@@ -66,7 +66,7 @@ export function logAxis<T extends 'x' | 'y'> (id?: OptionId, option: AxisOption<
     splitNumber: small ? 3 : undefined as any,
     axisLabel: {
       margin: 8,
-    }
+    },
   });
 }
 
@@ -100,8 +100,8 @@ export function timeAxis<T extends 'x' | 'y'> (id?: OptionId, option: AxisOption
       label: {
         formatter: ({ value }) => {
           return formatMonth(value);
-        }
-      }
+        },
+      },
     },
     // TODO: prevent compute multi-times
     min: fromRecent ? fromRecent === true ? undefined : DateTime.fromISO(utils.min<any, any>(fromRecent)).minus({ month: 1 }).toJSDate() : new Date(2011, 0, 1, 0, 0, 0, 0),

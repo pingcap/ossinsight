@@ -20,7 +20,7 @@ const Subtitle = styled('p')({
 });
 
 const Strong = styled('strong')({
-  color: '#47D9A1'
+  color: '#47D9A1',
 });
 
 const Right = () => {

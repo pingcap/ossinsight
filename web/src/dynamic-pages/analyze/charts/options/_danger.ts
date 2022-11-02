@@ -1,10 +1,10 @@
 import { AnalyzeChartContextProps, AnalyzeContextProps } from '../context';
 
 export interface DangerousCtx<T> extends AnalyzeContextProps, AnalyzeChartContextProps<T> {
-  width: number
-  height: number
-  isSmall: boolean
-  context: Record<string, any>
+  width: number;
+  height: number;
+  isSmall: boolean;
+  context: Record<string, any>;
 }
 
 let dangerousCtx: DangerousCtx<unknown> | undefined;

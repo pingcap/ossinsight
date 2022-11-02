@@ -34,6 +34,6 @@ export function adjustAxis<T extends Record<string, any>> (data: T[], keys: Arra
 
   return ranges.map(([min, max]) => ({
     min: upBound(Math.min(min, -max / r)),
-    max: upBound(Math.max(max, -min * r))
+    max: upBound(Math.max(max, -min * r)),
   }));
 }

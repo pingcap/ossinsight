@@ -15,6 +15,6 @@ export function worldMapGeo (): EChartsOption['geo'] {
       color: '#ccc',
       borderWidth: 1,
       borderColor: '#ccc',
-    }
+    },
   };
 }

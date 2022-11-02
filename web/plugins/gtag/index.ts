@@ -24,7 +24,7 @@ export default function (
               gtag('js', new Date());
               gtag('config', '{TRACKING_ID}', '{ ...args }');`,
             },
-          ]
+          ],
         };
       }
       return plugin.injectHtmlTags(args);

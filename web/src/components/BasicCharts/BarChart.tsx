@@ -10,21 +10,21 @@ import { KeyOfType } from '../../dynamic-pages/analyze/charts/options/utils/data
 
 // Register the required components
 echarts.use(
-  [TitleComponent, TooltipComponent, GridComponent, EBarChart, CanvasRenderer]
+  [TitleComponent, TooltipComponent, GridComponent, EBarChart, CanvasRenderer],
 );
 
 interface BarChartProps<T> {
-  seriesName?: string
-  data: T[]
-  loading?: boolean
-  clear?: boolean
-  size: number
-  n: number
-  deps?: unknown[]
-  categoryIndex: KeyOfType<T, string>
-  valueIndex: KeyOfType<T, number>
-  type?: 'repo' | 'owner' | 'lang' | false // for click
-  rich?: Record<string, TextCommonOption>
+  seriesName?: string;
+  data: T[];
+  loading?: boolean;
+  clear?: boolean;
+  size: number;
+  n: number;
+  deps?: unknown[];
+  categoryIndex: KeyOfType<T, string>;
+  valueIndex: KeyOfType<T, number>;
+  type?: 'repo' | 'owner' | 'lang' | false; // for click
+  rich?: Record<string, TextCommonOption>;
 }
 
 const getGithubAvatar = (src: string) => {
@@ -42,18 +42,18 @@ export default function BarChart<T> ({ seriesName = 'Count', data, loading = fal
       tooltip: {
         trigger: 'axis',
         axisPointer: {
-          type: 'shadow'
-        }
+          type: 'shadow',
+        },
       },
       grid: {
         containLabel: true,
         left: (clear ? 0 : 8) + (type === 'owner' ? 24 : 0),
         top: clear ? 0 : 16,
-        bottom: clear ? 0 : 16
+        bottom: clear ? 0 : 16,
       },
       xAxis: {
         type: 'value',
-        position: 'top'
+        position: 'top',
       },
       yAxis: {
         type: 'category',
@@ -78,10 +78,10 @@ export default function BarChart<T> ({ seriesName = 'Count', data, loading = fal
                 return data.reduce<Record<string, TextCommonOption>>((p, c) => {
                   p[String(c[categoryIndex]).replace(/[-[\]]/g, '_')] = {
                     backgroundColor: {
-                      image: getGithubAvatar(`${c[categoryIndex] as string}`)
+                      image: getGithubAvatar(`${c[categoryIndex] as string}`),
                     },
                     width: 24,
-                    height: 24
+                    height: 24,
                   };
                   return p;
                 }, {});
@@ -89,16 +89,16 @@ export default function BarChart<T> ({ seriesName = 'Count', data, loading = fal
                 return data.reduce<Record<string, TextCommonOption>>((p, c) => {
                   p[String(c[categoryIndex]).replace(/\+/g, '_')] = {
                     backgroundColor: {
-                      image: `/img/lang/${c[categoryIndex] as string}.png`
+                      image: `/img/lang/${c[categoryIndex] as string}.png`,
                     },
                     width: 48,
-                    height: 48
+                    height: 48,
                   };
                   return p;
                 }, {});
             }
-          })()
-        }
+          })(),
+        },
       },
       series: [
         {
@@ -106,8 +106,8 @@ export default function BarChart<T> ({ seriesName = 'Count', data, loading = fal
           data: data.map(d => d[valueIndex] as number),
           type: 'bar',
           barWidth: clear ? size / 2 : size,
-        }
-      ]
+        },
+      ],
     };
   }, [data, ...deps, categoryIndex, valueIndex, size, clear]);
 
@@ -125,7 +125,7 @@ export default function BarChart<T> ({ seriesName = 'Count', data, loading = fal
         } else if (type === 'owner' && 'name' in params) {
           window.open(`https://github.com/${params.name as string}`);
         }
-      }
+      },
     };
   }, []);
 
@@ -147,17 +147,17 @@ export default function BarChart<T> ({ seriesName = 'Count', data, loading = fal
 }
 
 interface BarChartLegacyProps {
-  seriesName: string
-  size: number
-  categories: string[]
-  values: number[]
+  seriesName: string;
+  size: number;
+  categories: string[];
+  values: number[];
 }
 
 export function BarChartLegacy ({ seriesName, categories, values, size }: BarChartLegacyProps) {
   const data = useMemo(() => {
     return categories.map((category, i) => ({
       category,
-      value: values[i]
+      value: values[i],
     }));
   }, [categories, values]);
 

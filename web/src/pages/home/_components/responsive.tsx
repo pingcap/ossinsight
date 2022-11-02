@@ -6,10 +6,10 @@ export function responsive<K extends keyof AllSystemCSSProperties> (key: K, sm: 
   return (theme: Theme) => ({
     [key]: all,
     [theme.breakpoints.down('lg')]: {
-      [key]: md
+      [key]: md,
     },
     [theme.breakpoints.down('md')]: {
-      [key]: sm
+      [key]: sm,
     },
   });
 }
@@ -28,6 +28,6 @@ export function responsiveSx (sm: SubSx, md: SubSx, all: SubSx): (theme: Theme) 
   return (theme: Theme) => ({
     ...apply(theme, all),
     [theme.breakpoints.down('md')]: apply(theme, sm),
-    [theme.breakpoints.down('lg')]: apply(theme, sm)
+    [theme.breakpoints.down('lg')]: apply(theme, sm),
   });
 }

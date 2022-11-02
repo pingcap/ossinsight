@@ -2,13 +2,13 @@ import { Plugin } from '@docusaurus/types';
 import * as fs from 'fs/promises';
 
 type PrefetchLinkContent = {
-  type: 'prefetch-link',
-  links: string[]
+  type: 'prefetch-link';
+  links: string[];
 };
 
 type GlobalPresetContent = {
-  type: 'global-preset',
-  resources: Record<string, string>
+  type: 'global-preset';
+  resources: Record<string, string>;
 };
 
 type PrefetchContent = PrefetchLinkContent | GlobalPresetContent;

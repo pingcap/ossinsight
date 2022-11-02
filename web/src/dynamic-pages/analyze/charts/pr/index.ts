@@ -16,13 +16,13 @@ import { upBound } from '../utils';
 
 // lines of code
 export type PrData = {
-  all_size: number
-  event_month: string
-  l: number
-  m: number
-  s: number
-  xl: number
-  xs: number
+  all_size: number;
+  event_month: string;
+  l: number;
+  m: number;
+  s: number;
+  xl: number;
+  xs: number;
 };
 
 export const PrChart = withChart<PrData>(

@@ -1,3 +1,5 @@
+/* eslint-disable */
+// Deprecated
 import React, { useMemo, useState } from 'react';
 import Stack from '@mui/material/Stack';
 import FormControl from '@mui/material/FormControl';
@@ -9,25 +11,25 @@ import InputAdornment from '@mui/material/InputAdornment';
 import { Queries } from '../queries';
 
 export type Type<Q extends keyof Queries = any> = {
-  title: string
-  key: string
+  title: string;
+  key: string;
   value: {
-    category: Q
-    params: Partial<Queries[Q]['params']>
-    valueIndex: keyof Queries[Q]['data']
-  }
+    category: Q;
+    params: Partial<Queries[Q]['params']>;
+    valueIndex: keyof Queries[Q]['data'];
+  };
 };
 
 export type Query<Q extends keyof Queries> = Queries[Q]['params'] & {
-  category: Q
-  valueIndex: keyof Queries[Q]['data']
-  n: number
-  years: number
+  category: Q;
+  valueIndex: keyof Queries[Q]['data'];
+  n: number;
+  years: number;
 };
 
 interface UseFormResult<Q extends keyof Queries> {
-  query: Query<Q>
-  form: JSX.Element
+  query: Query<Q>;
+  form: JSX.Element;
 }
 
 const types: Type[] = [
@@ -37,8 +39,8 @@ const types: Type[] = [
     value: {
       category: 'events-history',
       params: { event: 'WatchEvent' },
-      valueIndex: 'events_count'
-    }
+      valueIndex: 'events_count',
+    },
   },
   {
     title: 'Forks',
@@ -46,8 +48,8 @@ const types: Type[] = [
     value: {
       category: 'events-history',
       params: { event: 'ForkEvent' },
-      valueIndex: 'events_count'
-    }
+      valueIndex: 'events_count',
+    },
   },
   {
     title: 'PRs',
@@ -55,8 +57,8 @@ const types: Type[] = [
     value: {
       category: 'events-history',
       params: { event: 'PullRequestEvent' },
-      valueIndex: 'events_count'
-    }
+      valueIndex: 'events_count',
+    },
   },
   {
     title: 'Contributors (PRs opened)',
@@ -64,8 +66,8 @@ const types: Type[] = [
     value: {
       category: 'contributors-history',
       params: { action: 'opened', merged: '*' },
-      valueIndex: 'contributors_count'
-    }
+      valueIndex: 'contributors_count',
+    },
   },
   {
     title: 'Contributors (PRs merged)',
@@ -73,8 +75,8 @@ const types: Type[] = [
     value: {
       category: 'contributors-history',
       params: { action: 'closed', merged: 'true' },
-      valueIndex: 'contributors_count'
-    }
+      valueIndex: 'contributors_count',
+    },
   },
 ];
 
@@ -92,8 +94,8 @@ export const useForm = ({ noSearch }) => {
     if (!noSearch && typeof window !== 'undefined') {
       const usp = new URLSearchParams(location.search);
       const type = usp.get('type');
-      const years = parseInt(usp.get('years'));
-      const limits = parseInt(usp.get('n'));
+      const years = parseInt(usp.get('years') ?? '');
+      const limits = parseInt(usp.get('n') ?? '');
       if (type) {
         const found: Type | undefined = types.find(({ key }) => key === type);
         if (found != null) {
@@ -120,7 +122,7 @@ export const useForm = ({ noSearch }) => {
       usp.set('type', type.key);
       usp.set('n', String(n));
       usp.set('years', String(years));
-      window.history.replaceState(null, null, '?' + usp.toString());
+      window.history.replaceState(null, '', '?' + usp.toString());
     }
 
     return {
@@ -128,7 +130,7 @@ export const useForm = ({ noSearch }) => {
       valueIndex: type.value.valueIndex,
       ...type.value.params,
       n,
-      years
+      years,
     };
   }, [type, n, years]);
 
@@ -148,7 +150,7 @@ export const useForm = ({ noSearch }) => {
           {types.map(type => (
             <MenuItem key={type.key} value={type.key}>
               {type.title}
-            </MenuItem>)
+            </MenuItem>),
           )}
         </Select>
       </FormControl>
@@ -159,7 +161,7 @@ export const useForm = ({ noSearch }) => {
           value={n}
           onChange={e => setN(Number(e.target.value))}
           InputProps={{
-            startAdornment: <InputAdornment position="start">Top</InputAdornment>
+            startAdornment: <InputAdornment position="start">Top</InputAdornment>,
           }}
         >
           {allLimits.map(n => <MenuItem key={n} value={n}>{n}</MenuItem>)}
@@ -173,7 +175,7 @@ export const useForm = ({ noSearch }) => {
           select
           InputProps={{
             startAdornment: <InputAdornment position="start">Recent</InputAdornment>,
-            endAdornment: <InputAdornment position="start" sx={{ mr: 4 }}>Year(s)</InputAdornment>
+            endAdornment: <InputAdornment position="start" sx={{ mr: 4 }}>Year(s)</InputAdornment>,
           }}
         >
           {allYears.map(n => <MenuItem key={n} value={n}>{n}</MenuItem>)}

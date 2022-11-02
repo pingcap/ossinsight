@@ -6,7 +6,7 @@ import ButtonBase from '@mui/material/ButtonBase';
 import { responsiveSx } from './responsive';
 
 export interface TagProps extends Props {
-  color: string
+  color: string;
 }
 
 export default function Tag ({ color, children, ...props }: PropsWithChildren<TagProps>) {
@@ -25,12 +25,12 @@ export default function Tag ({ color, children, ...props }: PropsWithChildren<Ta
           ':hover': {
             backgroundColor: hoverBg,
             textDecoration: 'none',
-            color
+            color,
           },
           display: 'inline-flex',
           borderRadius: 1,
           alignItems: 'center',
-          marginTop: '0 !important'
+          marginTop: '0 !important',
         },
         responsiveSx({
           fontSize: 14,

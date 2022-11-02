@@ -30,7 +30,7 @@ export default function () {
             maxWidth: 1316,
             marginLeft: 'auto',
             marginRight: 'auto',
-            mt: 6
+            mt: 6,
           }}
           data={require('../_charts/weekday-distribution.json')}
         />

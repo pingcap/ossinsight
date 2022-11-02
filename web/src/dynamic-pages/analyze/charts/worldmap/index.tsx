@@ -11,8 +11,8 @@ if (!echarts.getMap('world')) {
 
 // lines of code
 export type LocationData = {
-  country_or_area: string
-  count: number
+  country_or_area: string;
+  count: number;
 };
 
 function transformData (data: LocationData[]): Array<[string, number, number, number]> {
@@ -47,7 +47,7 @@ export const WorldMapChart = withChart<LocationData>(({ title: propsTitle }) => 
   return {
     dataset: utils.template<LocationData>(({ datasetId, data }) => datasets(datasetId, 1, data.data?.data ?? [])),
     legend: legend({
-      top: '6%'
+      top: '6%',
     }),
     title: title(propsTitle),
     geo: worldMapGeo(),

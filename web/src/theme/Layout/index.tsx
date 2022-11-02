@@ -15,11 +15,11 @@ import HowItWorks from '@site/src/components/Ads/HowItWorks';
 
 declare module '@theme/Layout' {
   interface Props {
-    keywords?: string | string[]
-    image?: string
+    keywords?: string | string[];
+    image?: string;
     header?: JSX.Element;
     side?: JSX.Element;
-    sideWidth?: string
+    sideWidth?: string;
   }
 }
 

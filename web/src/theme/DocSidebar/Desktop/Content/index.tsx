@@ -12,7 +12,7 @@ import styles from './styles.module.css';
 
 declare module '@theme/DocSidebar/Desktop/Content' {
   interface Props {
-    Footer: ComponentType | undefined
+    Footer: ComponentType | undefined;
   }
 }
 

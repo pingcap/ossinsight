@@ -3,8 +3,8 @@ import { Plugin, RouteConfig } from '@docusaurus/types';
 
 type DynamicRoutePluginOptions = {
   routes: Array<RouteConfig & {
-    params?: Array<Record<string, string>>
-  }>
+    params?: Array<Record<string, string>>;
+  }>;
 };
 
 const DynamicRoutePlugin = function (context: PluginContext, options: DynamicRoutePluginOptions): Plugin {

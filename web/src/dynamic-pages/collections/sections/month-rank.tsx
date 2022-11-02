@@ -25,7 +25,7 @@ import Diff from '../../../components/Diff';
 import { CollectionDateTypeEnum, collectionDisplayType } from '../dimensions';
 
 const TableCell = styled(MuiTableCell)(() => ({
-  borderBottom: '1px solid #222'
+  borderBottom: '1px solid #222',
 }));
 
 const NumberCell = styled(TableCell)(() => ({
@@ -246,7 +246,7 @@ export default withInViewContainer(function MonthRankSection () {
               </Table>
             </TableContainer>
           </>
-        )
+        ),
       )}
     </section>
   );

@@ -29,14 +29,14 @@ function isPieLike<TData> (chart: Chart, dataset: ChartDataset<any, TData>): dat
 declare module 'chart.js' {
   type PieOutLabelOptions = DeepPartial<{
     label: {
-      color: string
-      font: FontSpec
-    },
+      color: string;
+      font: FontSpec;
+    };
     value: {
-      color: string
-      font: FontSpec
-    },
-    lineThickness: number
+      color: string;
+      font: FontSpec;
+    };
+    lineThickness: number;
   }>;
 
   interface PluginOptionsByType<TType extends ChartType> {
@@ -127,8 +127,8 @@ const PieOutLabelPlugin: Plugin = {
 };
 
 type ArcPosition = {
-  left: boolean
-  top: boolean
+  left: boolean;
+  top: boolean;
 };
 
 function getCenter ({

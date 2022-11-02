@@ -7,7 +7,7 @@ declare module '@theme/Layout' {
   interface Props {
     header?: JSX.Element;
     side?: JSX.Element;
-    sideWidth?: string
+    sideWidth?: string;
   }
 }
 

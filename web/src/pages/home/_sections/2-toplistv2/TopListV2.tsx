@@ -57,8 +57,8 @@ export function TopListV2 () {
             padding: 0,
             '& > p': {
               margin: '0 !important',
-            }
-          }
+            },
+          },
         }}
         size='small'
         rowsPerPageOptions={[20, 50, 100]}

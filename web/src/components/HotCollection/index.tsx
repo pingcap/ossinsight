@@ -12,7 +12,7 @@ import { styled } from '@mui/material/styles';
 import { useHistory } from '@docusaurus/router';
 
 interface HotCollectionProps extends Pick<RecentHotCollectionData, 'name' | 'repos' | 'collectionRepos'> {
-  variant?: 'clickable' | 'link'
+  variant?: 'clickable' | 'link';
 }
 
 export default function HotCollection ({ variant = 'clickable', name, repos, collectionRepos }: HotCollectionProps) {
@@ -96,5 +96,5 @@ const Container = styled(Box)(({ theme }) => ({
       boxShadow: theme.shadows[16],
       transform: 'translateY(-1px) scale(1.02)',
     },
-  }
+  },
 }));

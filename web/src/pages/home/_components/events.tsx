@@ -21,15 +21,15 @@ import {
 } from '../../../components/RemoteCharts/hook';
 
 type Event = {
-  id: number
-  type: 'PushEvent' | 'CreateEvent' | 'PullRequestEvent' | 'WatchEvent' | 'IssueCommentEvent' | 'IssuesEvent' | 'DeleteEvent' | 'ForkEvent' | 'PullRequestReviewCommentEvent' | 'PullRequestReviewEvent' | 'GollumEvent' | 'ReleaseEvent' | 'MemberEvent' | 'CommitCommentEvent' | 'PublicEvent' | 'GistEvent' | 'FollowEvent' | 'Event' | 'DownloadEvent' | 'TeamAddEvent' | 'ForkApplyEvent'
-  repo_name: string
-  org_login: string
-  actor_login: string
-  number: number
-  action: 'added' | 'update' | 'created' | 'opened' | 'edited' | 'published' | 'fork' | 'create' | 'merged' | 'started' | 'synchronize' | 'closed' | 'labeled' | 'reopened'
-  created_at: string
-  pr_merged: 0 | 1 | null
+  id: number;
+  type: 'PushEvent' | 'CreateEvent' | 'PullRequestEvent' | 'WatchEvent' | 'IssueCommentEvent' | 'IssuesEvent' | 'DeleteEvent' | 'ForkEvent' | 'PullRequestReviewCommentEvent' | 'PullRequestReviewEvent' | 'GollumEvent' | 'ReleaseEvent' | 'MemberEvent' | 'CommitCommentEvent' | 'PublicEvent' | 'GistEvent' | 'FollowEvent' | 'Event' | 'DownloadEvent' | 'TeamAddEvent' | 'ForkApplyEvent';
+  repo_name: string;
+  org_login: string;
+  actor_login: string;
+  number: number;
+  action: 'added' | 'update' | 'created' | 'opened' | 'edited' | 'published' | 'fork' | 'create' | 'merged' | 'started' | 'synchronize' | 'closed' | 'labeled' | 'reopened';
+  created_at: string;
+  pr_merged: 0 | 1 | null;
 };
 
 const getKey = (e: Event) => e.id;

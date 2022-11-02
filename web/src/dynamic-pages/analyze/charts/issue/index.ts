@@ -18,9 +18,9 @@ import { upBound } from '../utils';
 
 // lines of code
 export type IssueData = {
-  event_month: string
-  opened: number
-  closed: number
+  event_month: string;
+  opened: number;
+  closed: number;
 };
 
 function lineArea (x: OptionEncodeValue, y: OptionEncodeValue, yAxis: string, option: LineSeriesOption = {}) {

@@ -13,7 +13,7 @@ export interface D3HierarchyItem {
   depth: number;
   index: number;
   parentId: string;
-  color?: string
+  color?: string;
 }
 
 export function d3Hierarchy (seriesData: D3HierarchyItem[], maxDepth: number): CustomSeriesOption {
@@ -126,7 +126,7 @@ export function d3Hierarchy (seriesData: D3HierarchyItem[], maxDepth: number): C
     encode: {
       tooltip: 'value',
       itemName: 'name',
-      value: 'value'
+      value: 'value',
     },
   };
 }

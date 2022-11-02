@@ -6,7 +6,7 @@ export const useRepo = (repoName: string | undefined): SWRResponse<RepoInfo> => 
   return useSWR<RepoInfo>(repoName ? [repoName, 'gh:repo'] : undefined, {
     fetcher: getRepo,
     revalidateOnFocus: false,
-    revalidateOnReconnect: false
+    revalidateOnReconnect: false,
   });
 };
 
@@ -21,6 +21,6 @@ export const useUser = (login: string | undefined): SWRResponse<UserInfo> => {
       }
     },
     revalidateOnFocus: false,
-    revalidateOnReconnect: false
+    revalidateOnReconnect: false,
   });
 };

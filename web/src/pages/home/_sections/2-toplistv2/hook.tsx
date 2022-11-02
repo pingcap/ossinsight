@@ -1,8 +1,8 @@
 import { params } from '@query/trending-repos/params.json';
-import { AsyncData, RemoteData, useRemoteData } from '../../../../components/RemoteCharts/hook';
+import { AsyncData, RemoteData, useRemoteData } from '@site/src/components/RemoteCharts/hook';
 import React, { DependencyList, useCallback, useEffect, useMemo, useState } from 'react';
-import { useSelectParam } from '../../../../components/params';
-import TileSelect, { TileSelectOption } from '../../../../components/TileSelect';
+import { useSelectParam } from '@site/src/components/params';
+import TileSelect, { TileSelectOption } from '@site/src//components/TileSelect';
 import { paramCase } from 'param-case';
 import { GitMergeIcon, ProjectIcon, RepoForkedIcon, RepoPushIcon, StarIcon } from '@primer/octicons-react';
 
@@ -42,24 +42,24 @@ const orderOptions: TileSelectOption[] = [
 ];
 
 export type TopListData = {
-  repo_id: number
-  repo_name: string
-  description: string
-  stars: number
-  pushes: number
-  pull_requests: number
-  forks: number
-  total_score: number
-  language: Language
+  repo_id: number;
+  repo_name: string;
+  description: string;
+  stars: number;
+  pushes: number;
+  pull_requests: number;
+  forks: number;
+  total_score: number;
+  language: Language;
   // csv
-  contributor_logins: string
+  contributor_logins: string;
   // csv
-  collection_names: string
+  collection_names: string;
 };
 
 export type ProcessedTopListData = Omit<TopListData, 'contributor_logins' | 'collection_names'> & {
-  contributor_logins: string[]
-  collection_names: string[]
+  contributor_logins: string[];
+  collection_names: string[];
 };
 
 export function useTopList (language: Language, period: Period, orderBy: keyof TopListData): AsyncData<RemoteData<any, ProcessedTopListData>> {

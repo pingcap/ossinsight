@@ -99,8 +99,8 @@ const detailsDescription = (
 );
 
 const detailedCharts: Array<{
-  Chart: ComponentType<SVGProps<SVGSVGElement>>
-  insights: InsightsProps['children']
+  Chart: ComponentType<SVGProps<SVGSVGElement>>;
+  insights: InsightsProps['children'];
 }> = [
   {
     Chart: () => {

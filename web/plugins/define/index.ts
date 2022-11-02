@@ -5,8 +5,8 @@ module.exports = function (_, options: Record<string, any>) {
     name: 'plugin-define',
     configureWebpack () {
       return {
-        plugins: [new DefinePlugin(options)]
+        plugins: [new DefinePlugin(options)],
       };
-    }
+    },
   };
 };

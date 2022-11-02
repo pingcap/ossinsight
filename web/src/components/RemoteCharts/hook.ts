@@ -1,48 +1,49 @@
 import { Queries } from './queries';
-import useSWR, { unstable_serialize } from 'swr';
+import { unstable_serialize } from 'swr';
 import Axios, { Canceler } from 'axios';
-import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import InViewContext from '../InViewContext';
 import { core } from '../../api';
 import { clearPromiseInterval, setPromiseInterval } from '../../lib/promise-interval';
-import { socket } from '../../api/client';
 import { usePluginData } from '@docusaurus/core/lib/client/exports/useGlobalData';
+import { isNullish, notNullish } from '@site/src/utils/value';
+import { getErrorMessage, isAxiosError } from '@site/src/utils/error';
 
 export interface AsyncData<T> {
-  data: T | undefined
-  loading: boolean
-  error: unknown | undefined
+  data: T | undefined;
+  loading: boolean;
+  error: unknown | undefined;
 }
 
 export interface RemoteData<P, T> {
-  query: string
-  params: P
-  data: T[]
-  requestedAt: string
-  expiresAt: string
-  spent: number
-  sql: string
+  query: string;
+  params: P;
+  data: T[];
+  requestedAt: string;
+  expiresAt: string;
+  spent: number;
+  sql: string;
   fields: Array<{
-    name: string & keyof T
-    columnType: number
-  }>
+    name: string & keyof T;
+    columnType: number;
+  }>;
 }
 
-export interface BaseQueryResult<Params extends {
-}, Data> {
-  params: Params
-  data: Data
+export interface BaseQueryResult<Params extends {}, Data> {
+  params: Params;
+  data: Data;
 }
 
 interface UseRemoteData {
-  <Q extends keyof Queries, P = Queries[Q]['params'], T = Queries[Q]['data']>(query: Q, params: P, formatSql: boolean, shouldLoad?: boolean, wsApi?: 'unique' | true | undefined): AsyncData<RemoteData<P, T>> & { reload?: () => Promise<void> }
-  <P, T>(query: string, params: P, formatSql: boolean, shouldLoad?: boolean, wsApi?: 'unique' | true | undefined): AsyncData<RemoteData<P, T>> & { reload?: () => Promise<void> }
+  <Q extends keyof Queries, P = Queries[Q]['params'], T = Queries[Q]['data']> (query: Q, params: P, formatSql: boolean, shouldLoad?: boolean, wsApi?: 'unique' | true | undefined): AsyncData<RemoteData<P, T>> & { reload?: () => Promise<void> };
+
+  <P, T> (query: string, params: P, formatSql: boolean, shouldLoad?: boolean, wsApi?: 'unique' | true | undefined): AsyncData<RemoteData<P, T>> & { reload?: () => Promise<void> };
 }
 
-export const useRemoteData: UseRemoteData = (query: string, params: any, formatSql: boolean, shouldLoad: boolean = true, wsApi?: 'unique' | true | undefined): AsyncData<RemoteData<any, any>> & { reload: () => Promise<void> } => {
+export const useRemoteData: UseRemoteData = (query: string, params: any, formatSql: boolean, shouldLoad: boolean = true, wsApi?: 'unique' | boolean | undefined): AsyncData<RemoteData<any, any>> & { reload: () => Promise<void> } => {
   const { inView } = useContext(InViewContext);
-  const [data, setData] = useState(undefined);
-  const [error, setError] = useState(undefined);
+  const [data, setData] = useState<RemoteData<any, any>>();
+  const [error, setError] = useState<unknown>();
   const [loading, setLoading] = useState(false);
   const cancelRef = useRef<Canceler>();
   const mounted = useRef(false);
@@ -64,8 +65,8 @@ export const useRemoteData: UseRemoteData = (query: string, params: any, formatS
       setLoading(true);
       setError(undefined);
       setData(await core.query(query, params, {
-        cancelToken: new Axios.CancelToken(cancel => cancelRef.current = cancel),
-        disableCache: wsApi && true,
+        cancelToken: new Axios.CancelToken(cancel => { cancelRef.current = cancel; }),
+        disableCache: wsApi != null,
         wsApi,
       }));
     } catch (e) {
@@ -91,10 +92,10 @@ export const useRemoteData: UseRemoteData = (query: string, params: any, formatS
   }, [serializedParams]);
 
   useEffect(() => {
-    if (inView && shouldLoad && !data && !loading && !error) {
-      reload();
+    if (inView && shouldLoad && isNullish(data) && !loading && isNullish(error)) {
+      void reload();
     }
-  }, [shouldLoad, inView, reload, data, !loading && !error]);
+  }, [shouldLoad, inView, reload, data, !loading && isNullish(error)]);
 
   return { data, loading, error, reload };
 };
@@ -102,8 +103,8 @@ export const useRemoteData: UseRemoteData = (query: string, params: any, formatS
 export const useRealtimeRemoteData: UseRemoteData = (query: string, params: any, formatSql, shouldLoad = true, wsApi?: 'unique' | true | undefined): AsyncData<RemoteData<any, any>> => {
   const { inView } = useContext(InViewContext);
 
-  const [data, setData] = useState(undefined);
-  const [error, setError] = useState(undefined);
+  const [data, setData] = useState<RemoteData<any, any>>();
+  const [error, setError] = useState<unknown>();
   const [loading, setLoading] = useState(false);
   const cancelRef = useRef<Canceler>();
   const mounted = useRef(false);
@@ -125,7 +126,7 @@ export const useRealtimeRemoteData: UseRemoteData = (query: string, params: any,
       setLoading(true);
       setError(undefined);
       setData(await core.query(query, params, {
-        cancelToken: new Axios.CancelToken(cancel => cancelRef.current = cancel),
+        cancelToken: new Axios.CancelToken(cancel => { cancelRef.current = cancel; }),
         wsApi,
         disableCache: true,
         excludeMeta: true,
@@ -155,7 +156,7 @@ export const useRealtimeRemoteData: UseRemoteData = (query: string, params: any,
 
   useEffect(() => {
     if (shouldLoad && inView) {
-      reload();
+      void reload();
       const h = setPromiseInterval(async () => {
         await reload();
       }, 5000);
@@ -169,7 +170,7 @@ export const useRealtimeRemoteData: UseRemoteData = (query: string, params: any,
 };
 
 export const useTotalEvents = (run: boolean, interval = 1000) => {
-  const { eventsTotal } = usePluginData<{ eventsTotal: any }>('plugin-prefetch');
+  const { eventsTotal } = usePluginData('plugin-prefetch') as { eventsTotal: RemoteData<any, { cnt: number }> };
 
   const [total, setTotal] = useState(eventsTotal.data[0].cnt);
   const [added, setAdded] = useState(0);
@@ -191,7 +192,8 @@ export const useTotalEvents = (run: boolean, interval = 1000) => {
 
     const reloadTotal = async () => {
       try {
-        const { data: [{ cnt, latest_timestamp }] } = await core.queryWithoutCache('events-total', undefined);
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        const { data: [{ cnt, latest_timestamp }] } = await core.queryWithoutCache<{ cnt: number, latest_timestamp: number }>('events-total', undefined);
         if (!mounted.current) {
           return;
         }
@@ -202,14 +204,15 @@ export const useTotalEvents = (run: boolean, interval = 1000) => {
         return () => {
           cancelRef.current?.();
         };
-      } catch {}
+      } catch {
+      }
     };
 
     const reloadAdded = async (first: boolean) => {
       try {
         if (lastTs.current) {
-          const { data: [{ cnt, latest_created_at }] } = await core.queryWithoutCache('events-increment', { ts: lastTs.current }, {
-            cancelToken: first ? undefined : new Axios.CancelToken(cancel => cancelRef.current = cancel),
+          const { data: [{ cnt }] } = await core.queryWithoutCache<{ cnt: number, latest_created_at: number }>('events-increment', { ts: lastTs.current }, {
+            cancelToken: first ? undefined : new Axios.CancelToken(cancel => { cancelRef.current = cancel; }),
             wsApi: 'unique',
           });
           if (!mounted.current) {
@@ -217,7 +220,8 @@ export const useTotalEvents = (run: boolean, interval = 1000) => {
           }
           setAdded(cnt);
         }
-      } catch {}
+      } catch {
+      }
     };
 
     const hTotal = setPromiseInterval(async () => {
@@ -228,7 +232,7 @@ export const useTotalEvents = (run: boolean, interval = 1000) => {
       await reloadAdded(false);
     }, interval);
 
-    reloadTotal().then(async () => await reloadAdded(true));
+    void reloadTotal().then(async () => await reloadAdded(true));
 
     return () => {
       clearPromiseInterval(hTotal);
@@ -242,12 +246,10 @@ export const useTotalEvents = (run: boolean, interval = 1000) => {
 export const useSQLPlayground = (
   sql: string,
   type: 'repo' | 'user',
-  id: string
+  id: string,
 ) => {
-  const [data, setData] = useState<
-  undefined | { data: any; sql: string; spent: number }
-  >(undefined);
-  const [error, setError] = useState(undefined);
+  const [data, setData] = useState<{ data: any, sql: string, spent: number }>();
+  const [error, setError] = useState<unknown>();
   const [loading, setLoading] = useState(false);
   const mounted = useRef(false);
 
@@ -266,24 +268,33 @@ export const useSQLPlayground = (
       core
         .postPlaygroundSQL({ sql, type, id })
         .then(
-          ({ data, sql, spent }: { data: any; sql: string; spent: number }) => {
+          ({ data, sql, spent }: { data: any, sql: string, spent: number }) => {
             if (!mounted.current) {
               return;
             }
             setData({ data, sql, spent });
             setLoading(false);
-          }
+          },
         )
         .catch((e) => {
           if (!mounted.current) {
             return;
           }
-          if (e?.response?.data?.msg) {
-            setError(e.response.data.msg);
-          } else if (e?.response?.data?.sqlMessage) {
-            setError(e.response.data.sqlMessage);
-          } else {
-            setError(e);
+          let errorParsed = false;
+          if (isAxiosError(e)) {
+            if (notNullish(e.response)) {
+              const { msg, sqlMessage } = e.response.data;
+              if (notNullish(msg)) {
+                setError(msg);
+                errorParsed = true;
+              } else if (notNullish(sqlMessage)) {
+                setError(sqlMessage);
+                errorParsed = true;
+              }
+            }
+          }
+          if (!errorParsed) {
+            setError(getErrorMessage(e));
           }
           setLoading(false);
         });

@@ -2,15 +2,15 @@ import React from 'react';
 import styles from './data-grid.module.css';
 
 export type DataGridColumn<T, F extends keyof T = keyof T> = {
-  field: F
-  title: string
-  render?: (field: T[F], data: T, n: number) => any
+  field: F;
+  title: string;
+  render?: (field: T[F], data: T, n: number) => any;
 };
 
 interface DataGridProps<T> {
-  data?: T[]
-  columns: Array<DataGridColumn<T>>
-  loading?: boolean
+  data?: T[];
+  columns: Array<DataGridColumn<T>>;
+  loading?: boolean;
 }
 
 export default function DataGrid<Q> ({ columns, data }: DataGridProps<Q>) {

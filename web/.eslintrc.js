@@ -7,7 +7,7 @@ module.exports = {
   },
   extends: [
     'plugin:react/recommended',
-    'standard-with-typescript'
+    'standard-with-typescript',
   ],
   overrides: [
     {
@@ -20,12 +20,22 @@ module.exports = {
     {
       files: ["**/*.ts", "**/*.tsx", "**/*.d.ts"],
       rules: {
-        '@typescript-eslint/comma-dangle': ['error', 'only-multiline'],
+        '@typescript-eslint/comma-dangle': ['error', 'always-multiline'],
         'semi': 'off',
         '@typescript-eslint/semi': ['error', 'always'],
         '@typescript-eslint/explicit-function-return-type': 'off',
         '@typescript-eslint/consistent-type-definitions': 'off',
-        '@typescript-eslint/member-delimiter-style': 'off',
+        '@typescript-eslint/member-delimiter-style': ['error', {
+          "multiline": {
+            "delimiter": "semi",
+            "requireLast": true
+          },
+          "singleline": {
+            "delimiter": "comma",
+            "requireLast": false
+          },
+          "multilineDetection": "brackets"
+        }],
         '@typescript-eslint/array-type': ['error', {default: 'array-simple'}],
         '@typescript-eslint/no-var-requires': 'off',
         '@typescript-eslint/strict-boolean-expressions': ['error', {
@@ -45,7 +55,7 @@ module.exports = {
     ],
   },
   plugins: [
-    'react'
+    'react',
   ],
   settings: {
     react: {

@@ -4,11 +4,11 @@ import React from 'react';
 import styles from '../analyze/styles.module.css';
 
 export type Dimension = {
-  icon?: JSX.Element
-  title: string
-  key: 'stars' | 'pull-requests' | 'pull-request-creators' | 'issues'
-  search: null | 'prs' | 'pr-creators' | 'issues'
-  prefix?: string
+  icon?: JSX.Element;
+  title: string;
+  key: 'stars' | 'pull-requests' | 'pull-request-creators' | 'issues';
+  search: null | 'prs' | 'pr-creators' | 'issues';
+  prefix?: string;
 };
 
 const PrCreatorIcon = ({ size }: { size: number }) => (

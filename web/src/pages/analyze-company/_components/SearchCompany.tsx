@@ -45,7 +45,7 @@ const SearchCompany = ({ value, onChange }: SearchCompanyProps) => {
           {...params}
           sx={{
             backgroundColor: 'white',
-            borderRadius: 2
+            borderRadius: 2,
           }}
           onChange={handleInputChange}
           InputProps={{
@@ -59,10 +59,10 @@ const SearchCompany = ({ value, onChange }: SearchCompanyProps) => {
             sx: {
               color: '#333',
               '::placeholder': {
-                color: '#dfdfdf'
+                color: '#dfdfdf',
               },
-              borderRadius: 2
-            }
+              borderRadius: 2,
+            },
           }}
         />
       )}

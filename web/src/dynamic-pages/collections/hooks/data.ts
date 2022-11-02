@@ -3,29 +3,29 @@ import { AsyncData, RemoteData, useRemoteData } from '../../../components/Remote
 import { CollectionDateTypeEnum } from '../dimensions';
 
 export type CollectionHistoryData = {
-  repo_name: string
-  event_month: string
-  total: number
+  repo_name: string;
+  event_month: string;
+  total: number;
 };
 
 export type CollectionHistoryRankData = {
-  repo_name: string
-  event_year: number
-  total: number
-  rank: number
+  repo_name: string;
+  event_year: number;
+  total: number;
+  rank: number;
 };
 
 export type CollectionMonthRankData = {
-  current_month: string
-  last_month: string
-  repo_name: string
-  current_month_total: number
-  last_month_total: number
-  total_mom: number
-  current_month_rank: number
-  last_month_rank: number
-  rank_mom: number
-  total: number
+  current_month: string;
+  last_month: string;
+  repo_name: string;
+  current_month_total: number;
+  last_month_total: number;
+  total_mom: number;
+  current_month_rank: number;
+  last_month_rank: number;
+  rank_mom: number;
+  total: number;
 };
 
 export type CollectionLastMonthRankData = {
@@ -92,7 +92,7 @@ export function useCollectionHistory (collectionId: number | undefined, dimensio
             result.push({
               event_month: current,
               repo_name: name,
-              total: latestValues[name]
+              total: latestValues[name],
             });
           });
         }
@@ -129,7 +129,7 @@ export function useCollectionHistoryRank (collectionId: number | undefined, dime
 export function useCollectionMonthRank (
   collectionId: number | undefined,
   dimension: string,
-  type?: CollectionDateTypeEnum
+  type?: CollectionDateTypeEnum,
 ) {
   return useRemoteData<
   any,
@@ -138,6 +138,6 @@ export function useCollectionMonthRank (
     `collection-${dimension}-${type || 'month'}-rank`,
     { collectionId },
     false,
-    collectionId !== undefined
+    collectionId !== undefined,
   );
 }

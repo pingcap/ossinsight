@@ -10,8 +10,8 @@ import ChartWrapper from '../charts/ChartWrapper';
 import { EChartsType } from 'echarts/core';
 
 type PrSize = {
-  name: string
-  description: string
+  name: string;
+  description: string;
 };
 
 // 'xs (0-9 lines)', 's (10-29 lines)', 'm (30-99 lines)', 'l (100-499 lines)', 'xl (500-999 lines)', 'xxl (1000+ lines)'
@@ -161,6 +161,6 @@ const LineOfCodes = ({ userId, show }: ModuleProps) => {
 };
 
 type ModuleProps = {
-  userId: number
-  show: boolean
+  userId: number;
+  show: boolean;
 };

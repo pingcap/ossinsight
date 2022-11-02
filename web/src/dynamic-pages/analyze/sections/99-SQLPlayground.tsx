@@ -137,7 +137,7 @@ export const SQLPlaygroundDrawer = (props: { data?: Repo }) => {
   const { data, loading, error } = useSQLPlayground(
     sql,
     'repo',
-    `${targetData.id}`
+    `${targetData.id}`,
   );
 
   // React.useEffect(() => {
@@ -328,7 +328,7 @@ LIMIT
                 <>
                   <Typography variant="body2" sx={{ padding: '1rem' }}>
                     {`${data.data?.length} results in ${data.spent.toFixed(
-                      2
+                      2,
                     )}s.`}
                   </Typography>
                 </>
@@ -355,7 +355,7 @@ LIMIT
 const PreDefinedSQLList = (props: {
   title?: string;
   hadnleClick: (sql: string) => void;
-  replacements?: Array<{ match: string; value: string }>; // Replace the string `{{match}}` with `value` in SQL
+  replacements?: Array<{ match: string, value: string }>; // Replace the string `{{match}}` with `value` in SQL
 }) => {
   const {
     title = 'Pre-defined SQL',
@@ -364,7 +364,7 @@ const PreDefinedSQLList = (props: {
   } = props;
 
   const [selectedItemId, setSelectedItemId] = React.useState<string | null>(
-    null
+    null,
   );
 
   const SQLListSubHeader = (props: { title: string }) => {
@@ -739,7 +739,7 @@ const dataListToRawOutput = (dataList: Array<{ [key: string]: string }>) => {
       });
       return prev;
     },
-    {}
+    {},
   );
   let headStr = '';
   Object.keys(rowsMaxLength).forEach((key) => {

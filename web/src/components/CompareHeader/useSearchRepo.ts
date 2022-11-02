@@ -5,8 +5,8 @@ import { core } from '../../api';
 import { AsyncData } from '../RemoteCharts/hook';
 
 export interface Repo extends Record<string, unknown> {
-  id: number
-  name: string
+  id: number;
+  name: string;
 }
 
 export function useDebounced<T> (value: T, wait?: number) {

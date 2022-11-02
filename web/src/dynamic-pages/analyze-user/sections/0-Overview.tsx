@@ -66,9 +66,9 @@ const Overview = () => {
 };
 
 type ModuleProps = {
-  login: string
-  userId: number
-  show: boolean
+  login: string;
+  userId: number;
+  show: boolean;
 };
 
 const Banner = ({ login }: { login: string }) => {
@@ -90,12 +90,12 @@ const Banner = ({ login }: { login: string }) => {
 };
 
 type OverviewItemProps = {
-  field?: keyof PersonalOverview
-  icon: ReactNode
-  name: string
-  children?: (value: any, data: PersonalOverview | undefined) => React.ReactNode
-  tooltip?: string
-  dataColSpan?: number
+  field?: keyof PersonalOverview;
+  icon: ReactNode;
+  name: string;
+  children?: (value: any, data: PersonalOverview | undefined) => React.ReactNode;
+  tooltip?: string;
+  dataColSpan?: number;
 };
 
 const OverviewTable = ({ userId, show }: ModuleProps) => {
@@ -270,11 +270,11 @@ const CustomDivider = styled('hr')({
 });
 
 type PairProps = {
-  data: PersonalOverview | undefined
-  name?: keyof PersonalOverview
-  renderValue?: (value: any, data: PersonalOverview | undefined) => React.ReactNode
-  children: ReactNode
-  dataColSpan?: number
+  data: PersonalOverview | undefined;
+  name?: keyof PersonalOverview;
+  renderValue?: (value: any, data: PersonalOverview | undefined) => React.ReactNode;
+  children: ReactNode;
+  dataColSpan?: number;
 };
 
 const Pair = ({ children, name, data, renderValue = value => value, dataColSpan }: PairProps) => {

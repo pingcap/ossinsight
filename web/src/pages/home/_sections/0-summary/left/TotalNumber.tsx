@@ -12,7 +12,7 @@ const StyledAnimatedNumber = styled(AnimatedNumber)({
 });
 
 export interface TotalNumberProps {
-  fontSize?: number
+  fontSize?: number;
 }
 
 const TotalNumber = ({ fontSize = 24 }: TotalNumberProps) => {

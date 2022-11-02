@@ -141,8 +141,8 @@ function AnalyzePage () {
 export default () => <BrowserOnly>{() => <AnalyzePage />}</BrowserOnly>;
 
 type InfoPack = {
-  repoInfo: RepoInfo
-  repo: Repo
+  repoInfo: RepoInfo;
+  repo: Repo;
 };
 
 function toRepo (repo: RepoInfo | undefined): InfoPack | undefined {

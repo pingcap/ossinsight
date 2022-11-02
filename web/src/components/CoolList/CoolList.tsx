@@ -1,22 +1,18 @@
-import useMediaQuery from '@mui/material/useMediaQuery';
-import React, { forwardRef, ForwardedRef, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { ForwardedRef, forwardRef, useCallback, useEffect, useState } from 'react';
 import List, { ListProps } from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import { styled } from '@mui/material/styles';
-import {
-  CSSTransition,
-  TransitionGroup,
-} from 'react-transition-group';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 export interface CoolListProps<T> extends Omit<ListProps, 'children' | 'ref'> {
-  maxLength: number
-  itemHeight: number
-  getKey: (item: T) => string | number
-  children: (item: T) => JSX.Element
+  maxLength: number;
+  itemHeight: number;
+  getKey: (item: T) => string | number;
+  children: (item: T) => JSX.Element;
 }
 
 export interface CoolListInstance<T> {
-  add: (item: T) => any
+  add: (item: T) => any;
 }
 
 const CoolListContainer = styled(List)({
@@ -32,7 +28,7 @@ const CoolListItem = styled(ListItem)({
   opacity: 0.4,
   '&.item-enter': {
     opacity: 0,
-    transform: 'translate3d(-10%, 0, 0) scale(0.85)'
+    transform: 'translate3d(-10%, 0, 0) scale(0.85)',
   },
   '&.item-enter-active': {
     opacity: 0.4,
@@ -44,11 +40,11 @@ const CoolListItem = styled(ListItem)({
   },
   '&.item-exit-active': {
     opacity: 0,
-    transform: 'translate3d(-10%, 0, 0) scale(0.85)'
+    transform: 'translate3d(-10%, 0, 0) scale(0.85)',
   },
   '&:hover': {
     opacity: 1,
-  }
+  },
 });
 
 function CoolList<T> ({ maxLength, itemHeight, getKey, children, ...props }: CoolListProps<T>, ref: ForwardedRef<CoolListInstance<T>>) {
@@ -66,7 +62,7 @@ function CoolList<T> ({ maxLength, itemHeight, getKey, children, ...props }: Coo
 
   useEffect(() => {
     const instance = {
-      add
+      add,
     };
     if (ref != null) {
       if (typeof ref === 'function') {
@@ -80,13 +76,13 @@ function CoolList<T> ({ maxLength, itemHeight, getKey, children, ...props }: Coo
   return (
     <TransitionGroup component={CoolListContainer} {...props} sx={{ height: itemHeight * maxLength }}>
       {list.map((item, index) => (
-        <CSSTransition key={getKey(item)} timeout={500} classNames='item'>
+        <CSSTransition key={getKey(item)} timeout={500} classNames="item">
           <CoolListItem sx={{ top: index * itemHeight, height: itemHeight }}>
             {children(item)}
           </CoolListItem>
         </CSSTransition>
       ))}
-      </TransitionGroup>
+    </TransitionGroup>
   );
 }
 

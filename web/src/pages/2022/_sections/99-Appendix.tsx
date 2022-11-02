@@ -76,9 +76,9 @@ const tableTitle = 'How we classify technical fields by topics';
 const tableDescription = 'We do exact matching and fuzzy matching based on the repository topic. Exact matching means that the repository topics have a topic that exactly matches the word, and fuzzy matching means that the repository topics have a topic that contains the word.';
 
 const tableContent: Array<{
-  name: string
-  matched?: ReactNode
-  fuzzy?: ReactNode
+  name: string;
+  matched?: ReactNode;
+  fuzzy?: ReactNode;
 }> = [
   {
     name: 'GitHub Actions',

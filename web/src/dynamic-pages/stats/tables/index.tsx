@@ -21,7 +21,7 @@ interface TableStatsPageParams {
 }
 
 type QueryParams = {
-  tableName: string
+  tableName: string;
 };
 
 type TabKey = 'ddl' | 'index-info' | 'index-usage';

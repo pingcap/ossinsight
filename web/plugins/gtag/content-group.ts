@@ -1,6 +1,6 @@
 type GetContentGroupOptions = {
-  pathname: string
-  search: string
+  pathname: string;
+  search: string;
 };
 
 export function getContentGroup ({ pathname, search }: GetContentGroupOptions): string | undefined {

@@ -55,7 +55,7 @@ export function boxplot (x: OptionEncodeValue, y: [DimensionLoose, DimensionLoos
       y,
       tooltip: y,
       ...((option.encode != null) || {}),
-    }
+    },
   };
 }
 

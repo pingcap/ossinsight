@@ -99,5 +99,5 @@ const PageContainer = styled('div', { label: 'PageContainer' })(({ theme }) => (
   },
   [theme.breakpoints.up('lg')]: {
     fontSize: 20,
-  }
+  },
 }));

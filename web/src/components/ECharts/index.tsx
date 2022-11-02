@@ -1,13 +1,4 @@
-import React, {
-  CSSProperties,
-  ForwardedRef,
-  RefCallback,
-  useCallback,
-  useContext,
-  useLayoutEffect,
-  useMemo,
-  useState,
-} from 'react';
+import React, { CSSProperties, ForwardedRef, RefCallback, useCallback, useContext, useLayoutEffect, useMemo, useState } from 'react';
 import { EChartsReactProps } from 'echarts-for-react/src/types';
 import EChartsReact, { EChartsInstance } from 'echarts-for-react';
 import { AspectRatio } from 'react-aspect-ratio';
@@ -18,6 +9,7 @@ import { Opts } from 'echarts-for-react/lib/types';
 import EChartsContext from './context';
 import InViewContext from '../InViewContext';
 import { useIsDarkTheme } from '@site/src/hooks/theme';
+import { coalesceFalsy, isFiniteNumber, isPositiveNumber } from '@site/src/utils/value';
 
 interface SizeProps {
   aspectRatio?: number;
@@ -32,7 +24,7 @@ export interface EChartsProps extends EChartsReactProps, SizeProps {
 registerThemeVintage();
 registerThemeDark();
 
-const ECharts = React.forwardRef<EChartsReact, EChartsProps>(({
+const ECharts = React.forwardRef<EChartsReact, EChartsProps>(function ECharts ({
   aspectRatio,
   height,
   style,
@@ -40,12 +32,12 @@ const ECharts = React.forwardRef<EChartsReact, EChartsProps>(({
   echartsStyle: echartsStyleProp,
   observe,
   ...props
-}, ref: ForwardedRef<EChartsReact>) => {
+}, ref: ForwardedRef<EChartsReact>) {
   const realHeight = useMemo(() => {
-    if (aspectRatio) {
+    if (isPositiveNumber(aspectRatio)) {
       return '100%';
     } else {
-      return height || 400;
+      return coalesceFalsy(height, 400);
     }
   }, [aspectRatio, height]);
 
@@ -73,7 +65,7 @@ const ECharts = React.forwardRef<EChartsReact, EChartsProps>(({
 
   const combinedRef: RefCallback<EChartsReact> = useCallback((instance) => {
     if (echartsRef != null) {
-      echartsRef.current = instance;
+      echartsRef.current = instance ?? undefined;
     }
     setERef(instance);
     if (ref != null) {
@@ -108,7 +100,7 @@ const ECharts = React.forwardRef<EChartsReact, EChartsProps>(({
           />
         );
 
-        if (aspectRatio) {
+        if (isFiniteNumber(aspectRatio)) {
           return (
             <AspectRatio ratio={aspectRatio} style={style}>
               {child}
@@ -123,14 +115,14 @@ const ECharts = React.forwardRef<EChartsReact, EChartsProps>(({
 });
 
 const EChartsPlaceholder = ({ height, aspectRatio }: SizeProps) => {
-  if (aspectRatio) {
+  if (isFiniteNumber(aspectRatio)) {
     return (
       <AspectRatio ratio={aspectRatio}>
         <div />
       </AspectRatio>
     );
   } else {
-    return <div style={{ height: height || 400, width: '100%' }} />;
+    return <div style={{ height: coalesceFalsy(height, 400), width: '100%' }} />;
   }
 };
 

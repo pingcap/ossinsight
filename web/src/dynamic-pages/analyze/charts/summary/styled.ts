@@ -8,7 +8,7 @@ export const HeaderGrid = styled(Grid)(({ theme }) => ({
   padding: `0 ${theme.spacing(1.5)}!important`,
   overflow: 'hidden',
   whiteSpace: 'nowrap',
-  textOverflow: 'ellipsis'
+  textOverflow: 'ellipsis',
 }));
 
 export const DataGrid = styled(Grid)(({ theme }) => ({
@@ -26,7 +26,7 @@ export const HeadText = styled('span')(({ theme }) => ({
   lineHeight: theme.spacing(6.5),
   overflow: 'hidden',
   whiteSpace: 'nowrap',
-  textOverflow: 'ellipsis'
+  textOverflow: 'ellipsis',
 }));
 
 export const BodyText = styled('span')(({ theme }) => ({

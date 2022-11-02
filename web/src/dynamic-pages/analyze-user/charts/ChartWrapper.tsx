@@ -7,20 +7,20 @@ import { RemoteData } from '../../../components/RemoteCharts/hook';
 import { useDebugDialog } from '../../../components/DebugDialog';
 
 export interface ChartWrapperProps {
-  title?: string
-  description?: string
-  href?: string
-  children: ReactNode
-  chart?: RefObject<EChartsType>
-  repo?: boolean
-  remoteData?: RemoteData<any, any>
-  loading?: boolean
+  title?: string;
+  description?: string;
+  href?: string;
+  children: ReactNode;
+  chart?: RefObject<EChartsType>;
+  repo?: boolean;
+  remoteData?: RemoteData<any, any>;
+  loading?: boolean;
 }
 
 export interface ChartWrapperContextProps {
-  title?: string
-  description?: string
-  href?: string
+  title?: string;
+  description?: string;
+  href?: string;
 }
 
 function ChartWrapper ({ title, description, href, chart, repo, remoteData, loading = false, children }: ChartWrapperProps) {
@@ -49,9 +49,9 @@ function ChartWrapper ({ title, description, href, chart, repo, remoteData, load
             fontSize: 16,
             fontWeight: 'bold',
             text: 'No relevant data yet',
-            fill: '#7c7c7c'
-          }
-        }]
+            fill: '#7c7c7c',
+          },
+        }],
       });
     }
   }, [loading]);

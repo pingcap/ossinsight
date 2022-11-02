@@ -2,8 +2,8 @@ import React, { ReactNode } from 'react';
 import Typography from '@mui/material/Typography';
 
 export interface SectionHeadingProps {
-  title: ReactNode
-  description: ReactNode
+  title: ReactNode;
+  description: ReactNode;
 }
 
 const SectionHeading = ({ title, description }: SectionHeadingProps) => {

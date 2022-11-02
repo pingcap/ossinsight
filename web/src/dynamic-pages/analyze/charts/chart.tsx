@@ -29,7 +29,7 @@ export function withChart<T = unknown, P = {}> (useOption: (props: DangerousCtx<
             setWidth(width);
             setHeight(height);
           }, 500),
-        [setWidth, setHeight]
+        [setWidth, setHeight],
       ),
     });
 
@@ -39,7 +39,7 @@ export function withChart<T = unknown, P = {}> (useOption: (props: DangerousCtx<
           width: undefined,
           height: undefined,
         });
-      })
+      }),
     });
 
     useEffect(() => {
@@ -79,8 +79,8 @@ export function withChart<T = unknown, P = {}> (useOption: (props: DangerousCtx<
           fontSize: 16,
           fontWeight: 'bold',
           text: 'No relevant data yet',
-          fill: '#7c7c7c'
-        }
+          fill: '#7c7c7c',
+        },
       };
     }
     dangerousSetCtx(undefined);

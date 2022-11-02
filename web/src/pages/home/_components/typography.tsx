@@ -8,7 +8,7 @@ export const fontSizes = {
   h2: responsive('fontSize', 24, 36, 48),
   h2plus: responsive('fontSize', 28, 48, 64),
   subtitle: responsive('fontSize', 14, 18, 24),
-  body: responsive('fontSize', 12, 16, 20)
+  body: responsive('fontSize', 12, 16, 20),
 };
 
 export const aligns = {
@@ -60,7 +60,7 @@ export const Subtitle = (props: TypographyProps<'p'>) => (
     variant='subtitle1'
     sx={[
       responsive('mt', 1, 2, 7),
-      fontSizes.subtitle
+      fontSizes.subtitle,
     ]}
   />
 );
@@ -72,7 +72,7 @@ export const Body = (props: TypographyProps) => (
     sx={combineSx([
       { color: '#C4C4C4' },
       responsive('mt', 2, 4, 6),
-      fontSizes.body
+      fontSizes.body,
     ], props.sx)}
   />
 );

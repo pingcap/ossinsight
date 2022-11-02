@@ -9,13 +9,14 @@ import Tabs from '@mui/material/Tabs';
 import CodeBlock from '@theme/CodeBlock';
 import React, { useState } from 'react';
 import { useRemoteData } from '../RemoteCharts/hook';
+import { getErrorMessage } from '@site/src/utils/error';
 
 export interface DebugDialogProps {
-  sql?: string,
-  query: string,
-  params?: any,
-  open: boolean,
-  onClose: () => any
+  sql?: string;
+  query: string;
+  params?: any;
+  open: boolean;
+  onClose: () => any;
 }
 
 const explainKeywordDict = {
@@ -36,8 +37,8 @@ const replaceAllKeyword = (str: string | undefined) => {
 };
 
 export const DebugDialog = ({ sql, query, params, open, onClose }: DebugDialogProps) => {
-  const [type, setType] = useState<'explain' | 'trace'>(null);
-  const { data, error } = useRemoteData(`${type}/${query}`, params, false, !!open && !!type && !!params);
+  const [type, setType] = useState<'explain' | 'trace' | null>(null);
+  const { data, error } = useRemoteData(`${type ?? 'undefined'}/${query}`, params, false, open && !!type && params != null);
 
   const handleTabChange = useEventCallback((e: any, type: 'explain' | 'trace') => {
     setType(type);
@@ -45,8 +46,8 @@ export const DebugDialog = ({ sql, query, params, open, onClose }: DebugDialogPr
 
   const renderChild = () => {
     if (type) {
-      if (error) {
-        return <Alert severity='error'>Request failed ${(error as any)?.message ?? ''}</Alert>;
+      if (error != null) {
+        return <Alert severity='error'>Request failed ${getErrorMessage(error)}</Alert>;
       }
       if (data == null) {
         return (

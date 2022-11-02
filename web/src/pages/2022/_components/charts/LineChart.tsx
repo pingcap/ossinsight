@@ -7,7 +7,7 @@ import theme from './theme';
 
 interface BarChartProps<T> extends Pick<ChartProps, 'fallbackImage' | 'name' | 'sx'> {
   data: import('../../_charts/env').LineData<T>;
-  footnote?: string,
+  footnote?: string;
 }
 
 const labeledData = function <T, L extends import('../../_charts/env').LineData<T>>(lineData: L): [Record<string, T[]>, string[]] {

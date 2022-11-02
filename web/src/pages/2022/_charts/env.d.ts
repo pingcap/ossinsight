@@ -1,30 +1,30 @@
 export type BarData<T> = {
-  unit: string
-  x: keyof T
-  y: keyof T
-  postfix: keyof T
-  label?: keyof T
-  data: T[]
+  unit: string;
+  x: keyof T;
+  y: keyof T;
+  postfix: keyof T;
+  label?: keyof T;
+  data: T[];
 };
 
 export type LineData<T> = {
   unit: string;
-  y: number,
-  label: number,
-  x: string[],
-  data: T[]
+  y: number;
+  label: number;
+  x: string[];
+  data: T[];
 };
 
 export type WeekdayDistributionData = {
   unit: string;
-  data: Array<[string, number, number, number, number, number, number, number]>
+  data: Array<[string, number, number, number, number, number, number, number]>;
 };
 
 export type CountryData = {
-  unit: string
-  labels: string[]
-  data: Array<[string, string, ...number[]]>
-  highlights: number[][]
+  unit: string;
+  labels: string[];
+  data: Array<[string, string, ...number[]]>;
+  highlights: number[][];
 };
 
 declare module './*.json' {

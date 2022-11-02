@@ -5,8 +5,8 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 
 interface GithubOwner {
-  owner: string
-  size?: number | string
+  owner: string;
+  size?: number | string;
 }
 
 const Owner = ({ owner, size = '1em' }: GithubOwner) => {

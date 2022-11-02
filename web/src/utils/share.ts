@@ -8,7 +8,7 @@ export function twitterLink (
     via,
     hashtags = [],
     related = [],
-  }: { title?: string; via?: string; hashtags?: string[]; related?: string[] },
+  }: { title?: string, via?: string, hashtags?: string[], related?: string[] },
 ) {
   return (
     'https://twitter.com/share' +

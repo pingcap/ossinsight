@@ -17,12 +17,12 @@ import { alpha } from '@mui/material';
 
 // lines of code
 export type PrDurationData = {
-  event_month: string
-  p0: number
-  p25: number
-  p50: number
-  p75: number
-  p100: number
+  event_month: string;
+  p0: number;
+  p25: number;
+  p50: number;
+  p75: number;
+  p100: number;
 };
 
 const fmtHours = (hours: number) => prettyMs(hours * 60 * 60 * 1000, { unitCount: 1 });

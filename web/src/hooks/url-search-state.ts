@@ -2,9 +2,9 @@ import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
 import { DateTime } from 'luxon';
 
 export interface UseUrlSearchStateProps<T> {
-  defaultValue: T | (() => T)
-  serialize: (value: T) => string
-  deserialize: (string: string) => T
+  defaultValue: T | (() => T);
+  serialize: (value: T) => string;
+  deserialize: (string: string) => T;
 }
 
 export type UseUrlSearchStateHook = <T> (key: string, props: UseUrlSearchStateProps<T>) => [T, Dispatch<SetStateAction<T>>];
@@ -16,7 +16,7 @@ function useUrlSearchStateSSR<T> (key: string, { defaultValue }: UseUrlSearchSta
 function useUrlSearchStateCSR<T> (key: string, {
   defaultValue,
   deserialize,
-  serialize
+  serialize,
 }: UseUrlSearchStateProps<T>, push: boolean = false): [T | undefined, Dispatch<SetStateAction<T | undefined>>] {
   const initialValue = useMemo(() => {
     const usp = new URLSearchParams(location.search);
@@ -57,7 +57,7 @@ export function stringParam (defaultValue?): UseUrlSearchStateProps<string> {
   return {
     defaultValue,
     serialize: s => s,
-    deserialize: s => s
+    deserialize: s => s,
   };
 }
 
@@ -71,7 +71,7 @@ export function numberParam (defaultValue?): UseUrlSearchStateProps<number> {
       }
       const number = Number(string);
       return isFinite(number) ? number : undefined;
-    }
+    },
   };
 }
 
@@ -79,7 +79,7 @@ export function booleanParam (defaultValue?): UseUrlSearchStateProps<boolean> {
   return {
     defaultValue,
     serialize: v => String(v),
-    deserialize: s => s ? Boolean(s) : undefined
+    deserialize: s => s ? Boolean(s) : undefined,
   };
 }
 
@@ -87,7 +87,7 @@ export function dateParam (fmt = 'yyyy-MM-dd HH:mm:ss', defaultValue?): UseUrlSe
   return {
     defaultValue,
     serialize: date => (date != null) ? DateTime.fromJSDate(date).toFormat(fmt) : undefined,
-    deserialize: dateString => dateString ? DateTime.fromFormat(dateString, fmt).toJSDate() : undefined
+    deserialize: dateString => dateString ? DateTime.fromFormat(dateString, fmt).toJSDate() : undefined,
   };
 }
 
@@ -100,6 +100,6 @@ export function dateRangeParam (fmt = 'yyyy-MM-dd HH:mm:ss', defaultValue?): Use
       : undefined,
     deserialize: (rangeString) => (rangeString[0] || rangeString[1])
       ? rangeString.split(',', 2).map(ds => reuse.deserialize(ds) ?? null) as [Date | null, Date | null]
-      : undefined
+      : undefined,
   };
 }

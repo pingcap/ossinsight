@@ -9,8 +9,8 @@ const minDate = new Date('2011-01-01');
 const maxDate = new Date();
 
 export interface DateRangeSelectorProps {
-  value: [Date | null, Date | null]
-  onChange: (range: [Date | null, Date | null]) => void
+  value: [Date | null, Date | null];
+  onChange: (range: [Date | null, Date | null]) => void;
 }
 
 export default function DateRangeSelector (props: DateRangeSelectorProps) {

@@ -24,7 +24,7 @@ export function useGeneralSearch<T extends SearchType> (type: T, keyword: string
       },
       revalidateOnMount: true,
       revalidateOnReconnect: false,
-      shouldRetryOnError: false
+      shouldRetryOnError: false,
     });
 
   return {

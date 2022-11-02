@@ -8,37 +8,37 @@ import ECharts from '../ECharts';
 
 // Register the required components
 echarts.use(
-  [TitleComponent, TooltipComponent, GridComponent, EBarChart, CanvasRenderer]
+  [TitleComponent, TooltipComponent, GridComponent, EBarChart, CanvasRenderer],
 );
 
 interface YoyChartProps {
   data: Array<{
-    name: string
-    stars2020: number
-    stars2021: number
-    yoy: number
-  }>
-  aspectRatio?: number
-  loading?: boolean
+    name: string;
+    stars2020: number;
+    stars2021: number;
+    yoy: number;
+  }>;
+  aspectRatio?: number;
+  loading?: boolean;
 }
 
 export default function YoyChart ({ data, aspectRatio = 6 / 5, loading }: YoyChartProps) {
   const option: EChartsOption = useMemo(() => {
     return {
       legend: {
-        show: true
+        show: true,
       },
       tooltip: {
         show: true,
         trigger: 'axis',
         axisPointer: {
-          type: 'shadow'
-        }
+          type: 'shadow',
+        },
       },
       yAxis: {
         type: 'category',
         data: data.map(data => data.name),
-        inverse: true
+        inverse: true,
       },
       xAxis: [{
         id: 0,
@@ -52,8 +52,8 @@ export default function YoyChart ({ data, aspectRatio = 6 / 5, loading }: YoyCha
           return -Math.max(Math.abs(max), Math.abs(min)) * 1.2;
         },
         axisLabel: {
-          show: true
-        }
+          show: true,
+        },
       }, {
         id: 1,
         name: 'yoy',
@@ -66,12 +66,12 @@ export default function YoyChart ({ data, aspectRatio = 6 / 5, loading }: YoyCha
           return -Math.max(Math.abs(max), Math.abs(min)) * 1.2;
         },
         axisLabel: {
-          show: true
-        }
+          show: true,
+        },
       }],
       grid: {
         containLabel: true,
-        left: 0
+        left: 0,
       },
       series: [
         {
@@ -79,22 +79,22 @@ export default function YoyChart ({ data, aspectRatio = 6 / 5, loading }: YoyCha
           type: 'bar',
           data: data.map(data => data.stars2020),
           xAxisId: '0',
-          itemStyle: { opacity: 0.3 }
+          itemStyle: { opacity: 0.3 },
         },
         {
           name: 'stars2021',
           type: 'bar',
           data: data.map(data => data.stars2021),
           xAxisId: '0',
-          itemStyle: { opacity: 0.3 }
+          itemStyle: { opacity: 0.3 },
         },
         {
           name: 'yoy',
           type: 'bar',
           data: data.map(data => data.yoy),
           xAxisId: '1',
-        }
-      ]
+        },
+      ],
     };
   }, [data]);
 

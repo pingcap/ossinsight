@@ -9,13 +9,13 @@ export const Item = styled(Box)(({ theme }) => ({
   flex: 1,
   [theme.breakpoints.down('md')]: {
     width: '100%',
-    padding: theme.spacing(1)
-  }
+    padding: theme.spacing(1),
+  },
 }));
 
 export const AlignRightItem = styled(Item)(({ theme }) => ({
   textAlign: 'right',
   [theme.breakpoints.down('md')]: {
-    textAlign: 'left'
-  }
+    textAlign: 'left',
+  },
 }));

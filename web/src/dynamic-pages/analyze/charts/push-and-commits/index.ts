@@ -15,9 +15,9 @@ import { upBound } from '../utils';
 
 // lines of code
 export type PushesAndCommitsData = {
-  event_month: string
-  pushes: number
-  commits: number
+  event_month: string;
+  pushes: number;
+  commits: number;
 };
 
 export const PushesAndCommitsChart = withChart<PushesAndCommitsData>(

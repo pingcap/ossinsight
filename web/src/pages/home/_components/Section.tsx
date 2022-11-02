@@ -5,10 +5,10 @@ import { responsive } from './responsive';
 import { Breakpoint } from '@mui/system';
 
 export interface SectionProps {
-  darker?: boolean
-  pt?: number
-  id?: string
-  maxWidth?: Breakpoint | false
+  darker?: boolean;
+  pt?: number;
+  id?: string;
+  maxWidth?: Breakpoint | false;
 }
 
 const dark = {
@@ -25,7 +25,7 @@ export default function Section ({ id, darker = false, pt, maxWidth = 'xl', chil
         responsive('py', 2, 4, 6),
         {
           backgroundColor: darker ? dark.darker : dark.default,
-          pt
+          pt,
         },
       ]}
     >

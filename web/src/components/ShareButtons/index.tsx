@@ -10,7 +10,6 @@ import {
   TwitterShareButton,
 } from 'react-share';
 import styles from './index.module.css';
-import { useThemeConfig } from '@docusaurus/theme-common';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import { useHistory } from '@docusaurus/router';
 

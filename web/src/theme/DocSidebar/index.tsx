@@ -6,7 +6,7 @@ import type { Props } from '@theme/DocSidebar';
 
 declare module '@theme/DocSidebar' {
   interface Props {
-    Footer?: ComponentType | undefined
+    Footer?: ComponentType | undefined;
   }
 }
 

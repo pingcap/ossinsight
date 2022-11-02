@@ -12,7 +12,7 @@ import {
 } from '../options';
 
 type LineData<T extends string> = Record<T, number> & {
-  event_month: string
+  event_month: string;
 };
 
 export const LineChart = withChart<LineData<any>, { valueIndex: string, name: string, fromRecent?: boolean }>(({
@@ -30,13 +30,13 @@ export const LineChart = withChart<LineData<any>, { valueIndex: string, name: st
   legend: legend({
     top: isSmall ? 8 : 32,
     right: 0,
-    left: undefined
+    left: undefined,
   }),
   grid: {
     left: 8,
     bottom: 8,
     top: isSmall ? 8 : 64,
-    right: 8
+    right: 8,
   },
   dataset: [
     originalDataset(data),

@@ -54,6 +54,6 @@ const CodeReviewHistory = ({ userId, show }: ModuleProps) => {
 };
 
 type ModuleProps = {
-  userId: number
-  show: boolean
+  userId: number;
+  show: boolean;
 };

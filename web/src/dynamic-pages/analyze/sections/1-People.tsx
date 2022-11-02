@@ -138,5 +138,5 @@ const PrCreatorIcon = ({ size }: { size: number }) => (
 const companyValueIndices = {
   'analyze-stars-company': 'stargazers',
   'analyze-issue-creators-company': 'issue_creators',
-  'analyze-pull-request-creators-company': 'code_contributors'
+  'analyze-pull-request-creators-company': 'code_contributors',
 };

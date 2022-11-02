@@ -1,21 +1,21 @@
 import { AsyncData, useRemoteData } from '../../../components/RemoteCharts/hook';
 
 export type CompanyInfo = {
-  name: string
-  total: number
+  name: string;
+  total: number;
 };
 
 export type CompanyContributionData = {
-  repo_id: number
-  repo_name: string
+  repo_id: number;
+  repo_name: string;
 
-  contributions: number
-  pushes: number
-  pull_requests: number
-  reviews: number
-  review_comments: number
-  issues: number
-  issue_comments: number
+  contributions: number;
+  pushes: number;
+  pull_requests: number;
+  reviews: number;
+  review_comments: number;
+  issues: number;
+  issue_comments: number;
 };
 
 export function useCompanyList (keyword: string): AsyncData<CompanyInfo[]> {
@@ -23,7 +23,7 @@ export function useCompanyList (keyword: string): AsyncData<CompanyInfo[]> {
   return {
     data: data?.data ?? [],
     loading,
-    error
+    error,
   };
 }
 

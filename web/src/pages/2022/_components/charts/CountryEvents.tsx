@@ -11,15 +11,15 @@ import theme from './theme';
 
 interface CountryEventsProps extends Pick<ChartProps, 'sx'> {
   data: import('../../_charts/env').CountryData;
-  footnote?: string
+  footnote?: string;
 }
 
 type EventPoint = {
-  x: number
-  y: number
-  value: number
-  country: string
-  code: string
+  x: number;
+  y: number;
+  value: number;
+  country: string;
+  code: string;
 };
 
 function isHighlight (data: import('../../_charts/env').CountryData, ctx: Pick<ScriptableContext<any>, 'dataIndex' | 'datasetIndex'>) {
@@ -136,7 +136,7 @@ export default function CountryEvents ({ data, footnote, sx }: CountryEventsProp
             color: 'white',
             font: responsive({
               size: [8, 10, 12],
-              weight: ['normal', 'bold']
+              weight: ['normal', 'bold'],
             }),
             formatter: (value) => {
               return value.value + '%';

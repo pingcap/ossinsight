@@ -8,7 +8,7 @@ import TableBody from '@mui/material/TableBody';
 import Skeleton from '@mui/material/Skeleton';
 
 interface CompaniesProps {
-  company: CompanyInfo
+  company: CompanyInfo;
 }
 
 const Companies = ({ company }: CompaniesProps) => {
@@ -26,9 +26,9 @@ const Companies = ({ company }: CompaniesProps) => {
 };
 
 type Dimension = {
-  key: keyof CompanyContributionData
-  title: string
-  align?: 'right'
+  key: keyof CompanyContributionData;
+  title: string;
+  align?: 'right';
 };
 
 const DIMENSIONS: Dimension[] = [
@@ -55,7 +55,7 @@ const DataTable = ({ data, loading }: { data: CompanyContributionData[], loading
         sx={theme => ({
           '.MuiTableRow-root:nth-of-type(odd)': {
             backgroundColor: theme.palette.action.hover,
-          }
+          },
         })}
       >
       {loading ? renderLoading() : renderData(data)}

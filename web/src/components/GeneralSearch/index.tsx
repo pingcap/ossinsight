@@ -25,6 +25,7 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { SearchRepoInfo, UserInfo } from '@ossinsight/api';
 import React, {
+  FC, ForwardedRef,
   forwardRef,
   KeyboardEventHandler,
   ReactNode,
@@ -43,9 +44,9 @@ import { AutocompleteHighlightChangeReason } from '@mui/base/AutocompleteUnstyle
 
 export interface GeneralSearchProps {
   contrast?: boolean;
-  align?: 'left' | 'right' | 'center'
-  size?: 'large'
-  global?: boolean
+  align?: 'left' | 'right' | 'center';
+  size?: 'large';
+  global?: boolean;
 }
 
 type Option = SearchRepoInfo | UserInfo;
@@ -104,7 +105,7 @@ const PopperContainer = styled(Stack)(({ theme }) => ({
   [theme.breakpoints.up('md')]: {
     minWidth: 280,
     maxHeight: '80vh !important',
-  }
+  },
 }));
 
 const AvatarContainer = styled('div')({
@@ -161,15 +162,15 @@ const renderRepo = (props: ListItemProps, option: Option, highlight: boolean) =>
   );
 };
 
-const GeneralSearch = ({ contrast, align = 'left', size, global = false }: GeneralSearchProps) => {
+const GeneralSearch: FC<GeneralSearchProps> = ({ contrast, align = 'left', size, global = false }: GeneralSearchProps) => {
   const [keyword, setKeyword] = useState('');
   const [type, tabs, next] = useTabs();
-  const [option, setOption] = useState<Option>(null);
+  const [option, setOption] = useState<Option | null>(null);
   const [open, setOpen] = useState(false);
-  const [highlight, setHighlight] = useState<Option>(null);
+  const [highlight, setHighlight] = useState<Option | null>(null);
   const history = useHistory();
   const inputRef = useRef<HTMLInputElement>(null);
-  const { data: list, error, loading } = useGeneralSearch(type, keyword);
+  const { data: list, loading } = useGeneralSearch(type, keyword);
 
   const handleOptionChange = useCallback((_: any, option: Option) => {
     setOption(option);
@@ -247,7 +248,7 @@ const GeneralSearch = ({ contrast, align = 'left', size, global = false }: Gener
       onOpen={handleOpen}
       onClose={handleClose}
       loading={loading}
-      options={list}
+      options={list ?? []}
       isOptionEqualToValue={isOptionEqual}
       getOptionLabel={getOptionLabel}
       value={option}
@@ -326,35 +327,39 @@ const GeneralSearch = ({ contrast, align = 'left', size, global = false }: Gener
           </Box>
         </PopperContainer>
       )}
-      ListboxComponent={useCallback(forwardRef<HTMLElement, React.HTMLAttributes<HTMLElement>>(({ children, ...props }, ref) => (
-        <PopperContainer ref={ref} {...props}>
-          {tabs}
-          <List dense disablePadding>
-            {children}
-          </List>
-          <Box height={32} p={0.5} bgcolor='#121212' display={['none', 'block']}>
-            <Stack direction='row'>
-              <TipGroup text='To Navigate'>
-                <Stack direction='row'>
-                  <TipIcon textContent icon='TAB' />
-                  <TipIcon icon={<KeyboardUpIcon fontSize='inherit'/>} />
-                  <TipIcon icon={<KeyboardDownIcon fontSize='inherit'/>} />
-                </Stack>
-              </TipGroup>
-              <TipGroup text='To Cancel'>
-                <TipIcon textContent icon='ESC' />
-              </TipGroup>
-              <TipGroup text='To Enter'>
-                <TipIcon icon={<KeyboardReturnIcon fontSize='inherit'/>} />
-              </TipGroup>
-            </Stack>
-          </Box>
-        </PopperContainer>
-      )), [tabs])}
+      ListboxComponent={useCallback(forwardRef(function SearchList ({ children, ...props }: React.HTMLAttributes<HTMLElement>, ref: ForwardedRef<HTMLElement>) {
+        return (
+          <PopperContainer ref={ref} {...props}>
+            {tabs}
+            <List dense disablePadding>
+              {children}
+            </List>
+            <Box height={32} p={0.5} bgcolor='#121212' display={['none', 'block']}>
+              <Stack direction='row'>
+                <TipGroup text='To Navigate'>
+                  <Stack direction='row'>
+                    <TipIcon textContent icon='TAB' />
+                    <TipIcon icon={<KeyboardUpIcon fontSize='inherit'/>} />
+                    <TipIcon icon={<KeyboardDownIcon fontSize='inherit'/>} />
+                  </Stack>
+                </TipGroup>
+                <TipGroup text='To Cancel'>
+                  <TipIcon textContent icon='ESC' />
+                </TipGroup>
+                <TipGroup text='To Enter'>
+                  <TipIcon icon={<KeyboardReturnIcon fontSize='inherit'/>} />
+                </TipGroup>
+              </Stack>
+            </Box>
+          </PopperContainer>
+        );
+      }), [tabs])}
       PopperComponent={CustomPopper}
     />
   );
 };
+
+GeneralSearch.displayName = 'GeneralSearch';
 
 const TipGroup = ({ children, text }: { text: string, children: JSX.Element }) => (
   <Stack direction='row' mr={1}>

@@ -18,7 +18,7 @@ export const HeadlineTag = styled('div')(({ theme }) => ({
     width: 'max-content',
     paddingTop: 16,
     paddingBottom: 16,
-    padding: '16px 32px'
+    padding: '16px 32px',
   },
 }));
 
@@ -119,7 +119,7 @@ export const MrO = styled('img')(({ theme }) => ({
   right: 0,
   [theme.breakpoints.down('lg')]: {
     display: 'none',
-  }
+  },
 }));
 
 export const AnimatedDownIcon = styled(require('../_icons/arrow.svg').default)(({ theme }) => ({
@@ -133,7 +133,7 @@ export const AnimatedDownIcon = styled(require('../_icons/arrow.svg').default)((
   },
   [theme.breakpoints.down('md')]: {
     top: 328,
-  }
+  },
 }));
 
 export const Footnote = styled('div')(({ theme }) => ({
@@ -144,5 +144,5 @@ export const Footnote = styled('div')(({ theme }) => ({
     fontSize: 13,
     fontWeight: 'bold',
     fontStyle: 'italic',
-  }
+  },
 }));

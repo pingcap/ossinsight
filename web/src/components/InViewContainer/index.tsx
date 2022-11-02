@@ -31,10 +31,12 @@ export default function InViewContainer ({ children }: InViewContainerProps) {
   );
 }
 
-export function withInViewContainer<P> (Component: FC<P>): FC<P> {
-  return (props: P) => (
+export function withInViewContainer<P extends JSX.IntrinsicAttributes> (Component: FC<P>): FC<P> {
+  const comp: FC<P> = (props: P) => (
     <InViewContainer>
       <Component {...props} />
     </InViewContainer>
   );
+  comp.displayName = 'InViewContainerHOC';
+  return comp;
 }

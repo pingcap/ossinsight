@@ -4,14 +4,14 @@ import React, { useMemo } from 'react';
 import { Queries } from '../queries';
 
 interface ChartProps<Q extends keyof Queries = any> extends Record<string, any> {
-  query: Query<Q>
+  query: Query<Q>;
 }
 
 export const Chart = ({ category, categoryIndex = 'repo_name', valueIndex, ...props }: ChartProps) => {
   const Chart = useMemo(() => {
     return withPieChartQuery(category, {
       categoryIndex,
-      valueIndex
+      valueIndex,
     });
   }, [category, categoryIndex, valueIndex]);
 

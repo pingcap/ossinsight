@@ -6,11 +6,11 @@ import theme from './theme';
 import { responsive } from './responsive';
 
 type RankData = {
-  labels: string[]
+  labels: string[];
   data: Array<{
-    name: string
-    rank: number[]
-  }>
+    name: string;
+    rank: number[];
+  }>;
 };
 
 interface RankChartProps extends Pick<ChartProps, 'sx' | 'aspect'> {

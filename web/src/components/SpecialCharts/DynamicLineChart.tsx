@@ -10,7 +10,7 @@ import ECharts from '../ECharts';
 
 // Register the required components
 echarts.use(
-  [TitleComponent, TooltipComponent, GridComponent, ELineChart, LabelLayout, CanvasRenderer]
+  [TitleComponent, TooltipComponent, GridComponent, ELineChart, LabelLayout, CanvasRenderer],
 );
 
 interface DynamicLineChartProps {
@@ -60,14 +60,14 @@ export default function DynamicLineChart (props: DynamicLineChartProps) {
 
     const datasets: DatasetOption[] = [{
       id: 'raw',
-      source
+      source,
     }, {
       transform: {
         type: 'sort',
         config: {
-          dimension: 'year', order: 'asc'
-        }
-      }
+          dimension: 'year', order: 'asc',
+        },
+      },
     }];
 
     return datasets.concat(seriesData.map(series => ({
@@ -77,10 +77,10 @@ export default function DynamicLineChart (props: DynamicLineChartProps) {
         type: 'filter',
         config: {
           and: [{
-            dimension: seriesIndex, '=': series
-          }]
-        }
-      }
+            dimension: seriesIndex, '=': series,
+          }],
+        },
+      },
     })));
   }, [data, seriesData]);
 
@@ -95,17 +95,17 @@ export default function DynamicLineChart (props: DynamicLineChartProps) {
         formatter: function (params) {
           const { value } = params;
           return value[1];
-        }
+        },
       },
       labelLayout: {
-        moveOverlap: 'shiftY'
+        moveOverlap: 'shiftY',
       },
       emphasis: {
-        focus: 'series'
+        focus: 'series',
       },
       smooth: true,
       lineStyle: {
-        cap: 'round'
+        cap: 'round',
       },
       encode: {
         x: 'year',
@@ -113,8 +113,8 @@ export default function DynamicLineChart (props: DynamicLineChartProps) {
         label: [yIndex],
         itemName: xIndex,
         tooltip: [yIndex],
-        val: yIndex
-      }
+        val: yIndex,
+      },
     }));
   }, [seriesData]);
 
@@ -128,21 +128,21 @@ export default function DynamicLineChart (props: DynamicLineChartProps) {
       },
       tooltip: {
         order: 'valueDesc',
-        trigger: 'axis'
+        trigger: 'axis',
       },
       xAxis: {
         type: 'category',
-        nameLocation: 'end'
+        nameLocation: 'end',
       },
       yAxis: {
-        name: yIndex
+        name: yIndex,
       },
       grid: {
         containLabel: true,
         right: '30%',
-        left: 0
+        left: 0,
       },
-      series
+      series,
     };
   }, [datasets, series]);
 

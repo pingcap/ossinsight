@@ -14,9 +14,9 @@ import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
 export type ItemBase = {
-  icon?: React.ReactNode
-  title: React.ReactNode
-  alt: string
+  icon?: React.ReactNode;
+  title: React.ReactNode;
+  alt: string;
 };
 
 export type QueryItem = ItemBase & {
@@ -24,12 +24,12 @@ export type QueryItem = ItemBase & {
 };
 
 export type StaticItem = ItemBase & {
-  data?: (repoInfo: RepoInfo) => any
-  comparingData?: any
+  data?: (repoInfo: RepoInfo) => any;
+  comparingData?: any;
 };
 
 export interface SummaryProps {
-  query: string
+  query: string;
   items: Array<QueryItem | StaticItem>;
 }
 
