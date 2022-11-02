@@ -9,7 +9,27 @@ module.exports = {
     'plugin:react/recommended',
     'standard-with-typescript'
   ],
-  overrides: [],
+  overrides: [
+    {
+      files: ["**/*.ts", "**/*.tsx", "**/*.d.ts"],
+      rules: {
+        'react/display-name': ['warn'],
+        '@typescript-eslint/comma-dangle': ['error', 'only-multiline'],
+        'semi': 'off',
+        '@typescript-eslint/semi': ['error', 'always'],
+        '@typescript-eslint/explicit-function-return-type': 'off',
+        '@typescript-eslint/consistent-type-definitions': 'off',
+        '@typescript-eslint/member-delimiter-style': 'off',
+        '@typescript-eslint/array-type': ['error', {default: 'array-simple'}],
+        '@typescript-eslint/no-var-requires': 'off',
+        '@typescript-eslint/strict-boolean-expressions': ['error', {
+          allowString: true,
+          allowNullableBoolean: true,
+          allowNullableString: true,
+        }]
+      }
+    }
+  ],
   parserOptions: {
     ecmaVersion: 'latest',
     sourceType: 'module',
@@ -21,22 +41,6 @@ module.exports = {
   plugins: [
     'react'
   ],
-  rules: {
-    'react/display-name': ['warn'],
-    '@typescript-eslint/comma-dangle': ['error', 'only-multiline'],
-    'semi': 'off',
-    '@typescript-eslint/semi': ['error', 'always'],
-    '@typescript-eslint/explicit-function-return-type': 'off',
-    '@typescript-eslint/consistent-type-definitions': 'off',
-    '@typescript-eslint/member-delimiter-style': 'off',
-    '@typescript-eslint/array-type': ['error', {default: 'array-simple'}],
-    '@typescript-eslint/no-var-requires': 'off',
-    '@typescript-eslint/strict-boolean-expressions': ['error', {
-      allowString: true,
-      allowNullableBoolean: true,
-      allowNullableString: true,
-    }]
-  },
   settings: {
     react: {
       version: 'detect'
