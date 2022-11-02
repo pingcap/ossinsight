@@ -20,7 +20,7 @@
     "prestart": "npm run build:plugins && npm run prefetch",
     "lint": "eslint --cache .",
     "lint:ci": "eslint --quiet .",
-    "lint:fix": "eslint --cache --fix .",
+    "lint:fix": "eslint --cache --fix ."
   },
   "dependencies": {
     "@docusaurus/core": "2.1.0",
