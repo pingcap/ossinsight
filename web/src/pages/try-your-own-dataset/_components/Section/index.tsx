@@ -1,8 +1,8 @@
 import Container from '@mui/material/Container';
 import React, { PropsWithChildren } from 'react';
-import Button, { ButtonProps } from '@mui/material/Button';
 import styles from './styles.module.css';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
+import { notFalsy } from '@site/src/utils/value';
 
 export interface SectionProps {
   title?: React.ReactNode;
@@ -14,25 +14,29 @@ export interface SectionProps {
 
 export default function Section ({ title, subtitle, buttonLink, buttonText, backgroundImage, children }: PropsWithChildren<SectionProps>) {
   return (
-    <section className={styles.section} style={backgroundImage && { backgroundImage: `url("${backgroundImage}")` }}>
-      <Container maxWidth='xl'>
-        {title
+    <section
+      className={styles.section}
+      style={{
+        backgroundImage: notFalsy(backgroundImage) ? `url("${backgroundImage}")` : undefined,
+      }}>
+      <Container maxWidth="xl">
+        {notFalsy(title)
           ? <h2 className={styles.sectionTitle}>{title}</h2>
           : undefined
         }
-        {subtitle
+        {notFalsy(subtitle)
           ? <p className={styles.sectionSubtitle}>
             {subtitle}
-            {buttonText
+            {notFalsy(buttonText)
               ? (
-                <a href={buttonLink}>
-                  <ArrowRightIcon sx={{ verticalAlign: 'text-bottom' }} />
-                  &nbsp;
-                  {buttonText}
-                </a>
+                  <a href={buttonLink}>
+                    <ArrowRightIcon sx={{ verticalAlign: 'text-bottom' }} />
+                    &nbsp;
+                    {buttonText}
+                  </a>
                 )
               : undefined}
-        </p>
+          </p>
           : undefined}
         <div>
           {children}
