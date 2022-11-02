@@ -1,5 +1,5 @@
 declare module 'axios' {
-  interface AxiosRequestConfig<D = any> {
+  interface AxiosRequestConfig {
     disableCache?: boolean;
     wsApi?: 'unique' | true | undefined;
     excludeMeta?: boolean;

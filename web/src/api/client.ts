@@ -3,7 +3,7 @@ import { createSimpleCache, patchCacheInterceptors } from './axios/cache';
 import io from 'socket.io-client';
 import { transformCompactResponseInterceptor } from './axios/compact';
 
-export const BASE_URL = process.env.APP_API_BASE || 'https://api.ossinsight.io';
+export const BASE_URL = (process.env.APP_API_BASE ?? '') || 'https://api.ossinsight.io';
 
 function createClient (enableCache = true) {
   const client = axios.create({

@@ -30,7 +30,7 @@ const makeKey = (config: AxiosRequestConfig): string | undefined => {
   if (config.disableCache) {
     return undefined;
   }
-  return config.method + ':' + config.url + ':' + unstable_serialize(config.params);
+  return `${config.method ?? 'unknown'}:${config.url ?? 'unknown'}:${unstable_serialize(config.params)}`;
 };
 
 const cacheRequest = (cache: Cache) => async (config: AxiosRequestConfig): Promise<AxiosRequestConfig> => {

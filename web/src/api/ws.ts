@@ -1,5 +1,26 @@
-import { AxiosAdapter, AxiosError } from 'axios';
+import { AxiosAdapter, AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { socket } from './client';
+
+interface Resp {
+  error?: boolean;
+  payload: any;
+  compact?: boolean;
+}
+
+class AxiosLikeError extends Error implements AxiosError {
+  isAxiosError = true;
+  request = undefined;
+
+  originalError: any;
+
+  constructor (error: any, public code: string, public config: AxiosRequestConfig, public response: AxiosResponse) {
+    super(error);
+  }
+
+  toJSON (): object {
+    return this.originalError;
+  }
+}
 
 export const wsQueryApiAdapter = (query: string, params: any, wsApi: 'unique' | true): AxiosAdapter => async (config) => {
   let qid: string | undefined;
@@ -30,27 +51,23 @@ export const wsQueryApiAdapter = (query: string, params: any, wsApi: 'unique' | 
       reject(new Error('Timeout'));
     }, 1000);
 
-    const listener = result => {
+    const listener = (result: Resp) => {
       clearTimeout(timeout);
       if (result.error) {
-        reject({
+        reject(new AxiosLikeError(result.payload, 'ERROR', config, {
+          status: 500,
+          statusText: 'ERROR',
+          data: result.payload,
+          headers: {},
           config,
-          response: {
-            status: 500,
-            data: result.payload,
-          },
-          isAxiosError: true,
-          toJSON () {
-            return result.payload;
-          },
-        } as AxiosError);
+        }));
       } else {
         resolve({
           status: 200,
           statusText: 'OK',
           headers: {
             'x-ws-api': 'true',
-            'x-compact': result.compact ? 'true' : undefined,
+            'x-compact': result.compact ? 'true' : 'false',
           },
           data: result.payload,
           config,
