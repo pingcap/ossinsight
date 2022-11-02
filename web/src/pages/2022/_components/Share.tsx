@@ -14,8 +14,6 @@ import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 
-const shares = [];
-
 function jump (link: string) {
   window.open(link, '_blank');
 }

@@ -14,11 +14,11 @@ function getResponsiveIndex (chart: ChartJs): number {
   return chart.width < 400 ? 0 : chart.width < 600 ? 1 : 2;
 }
 
-function isObject<T> (t: any): t is object {
+function isObject (t: any): t is object {
   return typeof t === 'object' && t;
 }
 
-export function responsive<T> (spec: Responsive<PartialOrPrimitive<T>>): (ctx: Pick<ScriptableContext<any>, 'chart'>) => PartialOrPrimitive<T> | undefined {
+export function responsive<T> (spec: Responsive<PartialOrPrimitive<T>>): ((ctx: Pick<ScriptableContext<any>, 'chart'>) => PartialOrPrimitive<T>) | undefined {
   let specs: Array<PartialOrPrimitive<T>>;
   if (isObject(spec)) {
     if (!(spec instanceof Array)) {

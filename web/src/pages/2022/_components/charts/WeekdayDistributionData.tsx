@@ -72,7 +72,7 @@ export default function WeekdayDistributionData ({ data, sx }: WeekdayDistributi
             usePointStyle: true,
             callbacks: {
               label: item => {
-                return `${item.dataset.label}: ${item.dataset.data[item.dataIndex]}${data.unit}`;
+                return `${item.dataset.label as string}: ${item.dataset.data[item.dataIndex]}${data.unit}`;
               },
             },
           },

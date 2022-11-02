@@ -4,6 +4,7 @@ import { defaultColors } from './colors';
 import { ScriptableContext } from 'chart.js';
 import useIsLarge from '../hooks/useIsLarge';
 import theme from './theme';
+import { notNullish } from '@site/src/utils/value';
 
 interface BarChartProps<T> extends Pick<ChartProps, 'fallbackImage' | 'name' | 'sx'> {
   data: import('../../_charts/env').LineData<T>;
@@ -14,7 +15,7 @@ const labeledData = function <T, L extends import('../../_charts/env').LineData<
   const labels: string[] = [];
   const record = lineData.data.reduce<Record<string, T[]>>((record, item) => {
     const label: string = item[lineData.label] as never;
-    if (record[label]) {
+    if (notNullish(record[label])) {
       record[label].push(item);
     } else {
       record[label] = [item];
@@ -32,7 +33,7 @@ export default function LineChart<T extends Record<string, any>> ({
   footnote,
   ...props
 }: BarChartProps<T>) {
-  const [record, labels] = useMemo(() => labeledData(data), [data]);
+  const [record, labels] = useMemo(() => labeledData<T, BarChartProps<T>['data']>(data), [data]);
   const large = useIsLarge();
 
   return (
@@ -106,7 +107,7 @@ export default function LineChart<T extends Record<string, any>> ({
             usePointStyle: true,
             callbacks: {
               label: item => {
-                return `${item.dataset.label}: ${item.dataset.data[item.dataIndex]}${data.unit}`;
+                return `${item.dataset.label ?? 'undefined'}: ${item.dataset.data[item.dataIndex] as number}${data.unit}`;
               },
             },
           },

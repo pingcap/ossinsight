@@ -8,6 +8,7 @@ import countryCodeEmoji from 'country-code-emoji';
 import ChartJs from 'chart.js/auto';
 import { responsive } from './responsive';
 import theme from './theme';
+import { notFalsy } from '@site/src/utils/value';
 
 interface CountryEventsProps extends Pick<ChartProps, 'sx'> {
   data: import('../../_charts/env').CountryData;
@@ -104,7 +105,7 @@ export default function CountryEvents ({ data, footnote, sx }: CountryEventsProp
             ticks: {
               callback: value => {
                 const code = data.data[value]?.[1];
-                return code && countryCodeEmoji(code);
+                return notFalsy(code) ? countryCodeEmoji(code) : undefined;
               },
               padding: 16,
               color: theme.color.ticks,
@@ -139,7 +140,7 @@ export default function CountryEvents ({ data, footnote, sx }: CountryEventsProp
               weight: ['normal', 'bold'],
             }),
             formatter: (value) => {
-              return value.value + '%';
+              return `${value.value as string}%`;
             },
             align: 'center',
             anchor: 'center',

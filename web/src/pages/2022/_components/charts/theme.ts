@@ -1,5 +1,7 @@
+/* eslint-disable @typescript-eslint/no-namespace */
 import { responsive } from './responsive';
 import ChartJs, { Color, FontSpec, GridLineOptions, TitleOptions } from 'chart.js/auto';
+import { notNullish } from '@site/src/utils/value';
 
 namespace theme {
   export namespace font {
@@ -62,11 +64,11 @@ namespace theme {
     font: font.title,
   });
 
-  export const subtitle = (text: string): Partial<TitleOptions> => ({
+  export const subtitle = (text: string | undefined): Partial<TitleOptions> => ({
     position: 'bottom',
     align: 'end',
     text,
-    display: !!text,
+    display: notNullish(text),
     color: color.subtitle,
     padding: 12,
     font: font.subtitle,

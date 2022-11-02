@@ -1,9 +1,11 @@
+import { KeyOfType, KeyOfTypeOptionalIncluded } from '@site/src/dynamic-pages/analyze/charts/options/utils/data';
+
 export type BarData<T> = {
   unit: string;
-  x: keyof T;
-  y: keyof T;
-  postfix: keyof T;
-  label?: keyof T;
+  x: KeyOfType<T, number>;
+  y: KeyOfType<T, string>;
+  postfix: KeyOfTypeOptionalIncluded<T, string>;
+  label?: KeyOfTypeOptionalIncluded<T, string>;
   data: T[];
 };
 

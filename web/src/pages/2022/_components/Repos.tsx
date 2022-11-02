@@ -1,4 +1,4 @@
-import Box, { BoxProps } from '@mui/material/Box';
+import Box from '@mui/material/Box';
 import React from 'react';
 import { styled } from '@mui/material/styles';
 import colors from './colors.module.css';
@@ -18,7 +18,7 @@ export default function Repos ({ color, category, value, percent, list }: ReposP
       className={colors[`${color}Box`]}
       position="relative"
       p={4}
-      height='100%'
+      height="100%"
     >
       <Category>{category}: {value}</Category>
       <Percent>{percent}</Percent>

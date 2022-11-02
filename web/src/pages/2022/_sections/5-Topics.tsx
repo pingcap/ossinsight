@@ -60,7 +60,7 @@ const activityTitle = 'Activity levels of popular topics';
 const activityDescription = 'We queried the number of open source repositories associated with each technical area, as well as the percentage of active repositories in 2022.';
 const activityInsights = (
   <>
-   This figure shows that open source repositories in the Low Code topic are the most active, with <strong>76.3%</strong> being active in 2022, followed by Web3 with <strong>63.85%</strong>.
+    This figure shows that open source repositories in the Low Code topic are the most active, with <strong>76.3%</strong> being active in 2022, followed by Web3 with <strong>63.85%</strong>.
   </>
 );
 
@@ -93,7 +93,7 @@ const detailsDescription = (
     - The annual increment of stars
     <BR />
     Then, we calculated the growth rate for each year which can reflect new entrants, developer engagement in this
-    technical field, and the industry's interest in this area. For 2022, we compare its first nine months with the first
+    technical field, and the industry&apos;s interest in this area. For 2022, we compare its first nine months with the first
     nine months of 2021.
   </>
 );
@@ -115,7 +115,7 @@ const detailedCharts: Array<{
     insights: (
       <>
         We can see that 2020 is the peak period of project development, with a <strong>313.43%</strong> increase in new
-        repositories and a <strong>157.06%</strong> increase in developer collaborative events. The industry's interest
+        repositories and a <strong>157.06%</strong> increase in developer collaborative events. The industry&apos;s interest
         increased most significantly in 2021, reaching <strong>184.82%</strong>. In 2022, the year-on-year growth data
         shows that the number of new repositories decreased <strong>(-26.21%)</strong>, but developer engagement and
         industry interest are still rising.
@@ -153,7 +153,7 @@ const detailedCharts: Array<{
     insights: (
       <>
         The annual increase of GitHub Actions repositories has been declining, but developer engagement and the
-        industry's interest are still increasing slightly.
+        industry&apos;s interest are still increasing slightly.
       </>
     ),
   },
@@ -169,7 +169,7 @@ const detailedCharts: Array<{
     },
     insights: (
       <>
-        As an infrastructure project, the Database project's threshold is high. Compared with projects in other fields,
+        As an infrastructure project, the Database project&apos;s threshold is high. Compared with projects in other fields,
         a database project has a stable growth rate.
       </>
     ),

@@ -1,7 +1,6 @@
 import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import React, { HTMLAttributes } from 'react';
-import { Coronavirus, KeyboardDoubleArrowDownRounded } from '@mui/icons-material';
 
 export const HeadlineTag = styled('div')(({ theme }) => ({
   background: 'transparent linear-gradient(89deg, #EA7E53 0%, #3E2A75 100%) 0% 0% no-repeat padding-box',

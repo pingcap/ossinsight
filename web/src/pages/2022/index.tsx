@@ -84,7 +84,7 @@ const image = '/img/2022/thumbnail.png';
 
 function BrowserHash ({ value }: { value: string | undefined }) {
   useEffect(() => {
-    history.replaceState(null, null, value ? `#${value}` : location.pathname + location.search);
+    history.replaceState(null, '', value ? `#${value}` : location.pathname + location.search);
   }, [value]);
   return <></>;
 }

@@ -1,20 +1,8 @@
-import {
-  ArcElement,
-  ArcProps,
-  Chart,
-  ChartArea,
-  ChartConfiguration,
-  ChartDataset,
-  ChartMeta,
-  Color,
-  DoughnutController,
-  PieController,
-  Plugin,
-  Point,
-} from 'chart.js/auto';
+import { ArcElement, ArcProps, Chart, ChartConfiguration, ChartDataset, ChartMeta, Color, PieController, Plugin, Point } from 'chart.js/auto';
 import { fontString } from 'chart.js/helpers';
 import { ChartType, FontSpec, PieOutLabelOptions } from 'chart.js';
 import { DeepPartial } from 'chart.js/types/utils';
+import { isNullish } from '@site/src/utils/value';
 
 const SUPPORT_TYPES = ['pie', 'doughnut'];
 
@@ -27,39 +15,70 @@ function isPieLike<TData> (chart: Chart, dataset: ChartDataset<any, TData>): dat
 }
 
 declare module 'chart.js' {
-  type PieOutLabelOptions = DeepPartial<{
+  type PieOutLabelOptions = {
     label: {
       color: string;
-      font: FontSpec;
+      font: Partial<FontSpec>;
     };
     value: {
       color: string;
-      font: FontSpec;
+      font: Partial<FontSpec>;
     };
     lineThickness: number;
-  }>;
+  };
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface PluginOptionsByType<TType extends ChartType> {
     outlabel: PieOutLabelOptions;
   }
 }
 
-const PieOutLabelPlugin: Plugin = {
+const DEFAULT_OPTIONS: PieOutLabelOptions = {
+  label: {
+    color: 'white',
+    font: { size: 12 },
+  },
+  value: {
+    color: 'white',
+    font: { size: 12 },
+  },
+  lineThickness: 3,
+};
+
+const PieOutLabelPlugin: Plugin<'pie' | 'doughnut', void> = {
   id: 'pie-out-label-plugin',
   beforeInit (chart: Chart) {
-    chart.options.layout.padding = {
+    const options = chart.options;
+    if (isNullish(options.layout)) {
+      options.layout = {};
+    }
+    options.layout.padding = {
       left: 160,
       right: 160,
       top: 0,
       bottom: 0,
     };
-    chart.options.plugins.legend.display = false;
-    chart.options.plugins.tooltip.enabled = false;
+
+    if (isNullish(options.plugins)) {
+      options.plugins = {};
+    }
+    if (isNullish(options.plugins.legend)) {
+      options.plugins.legend = {};
+    }
+    if (isNullish(options.plugins.tooltip)) {
+      options.plugins.tooltip = {};
+    }
+    options.plugins.legend.display = false;
+    options.plugins.tooltip.enabled = false;
   },
   resize (chart: Chart, { size }) {
     const vertical = size.width < size.height * 1.5;
     if (vertical) {
-      chart.options.layout.padding = {
+      const options = chart.options;
+      if (isNullish(options.layout)) {
+        options.layout = {};
+      }
+      options.layout.padding = {
         left: 10,
         right: 10,
         top: 60,
@@ -82,7 +101,7 @@ const PieOutLabelPlugin: Plugin = {
   },
   afterDatasetDraw (chart: Chart) {
     const vertical = chart.width < chart.height * 1.5;
-    const options = chart.options.plugins.outlabel;
+    const options = chart.options.plugins?.outlabel ?? DEFAULT_OPTIONS;
 
     chart.data.datasets
       .forEach((dataset, i) => {
@@ -119,7 +138,7 @@ const PieOutLabelPlugin: Plugin = {
             ctx.lineTo(p2.x, p2.y);
             ctx.stroke();
 
-            drawText(options, ctx, p2, arcPosition, vertical, chart.data.labels[i] as never, `${dataset.data[i]}%`);
+            drawText(options, ctx, p2, arcPosition, vertical, chart.data.labels?.[i] as string ?? 'no label', `${dataset.data[i] as number}%`);
           });
         }
       });
@@ -130,19 +149,6 @@ type ArcPosition = {
   left: boolean;
   top: boolean;
 };
-
-function getCenter ({
-  top,
-  left,
-  height,
-  width,
-  right,
-  bottom,
-}: ChartArea, controller: PieController | DoughnutController): Point {
-  const x = left + width / 2 + controller.offsetX;
-  const y = top + height / 2 + controller.offsetY;
-  return { x, y };
-}
 
 function getPointOnArc (center: Point, radius: number, arc: number): Point {
   return { x: center.x + radius * Math.cos(arc), y: center.y + radius * Math.sin(arc) };
@@ -170,12 +176,12 @@ function moveY (p: Point, top: boolean, distance: number): Point {
   };
 }
 
-function drawText (options: PieOutLabelOptions, ctx: CanvasRenderingContext2D, p: Point, position: ArcPosition, vertical: boolean, label: string, value: any) {
+function drawText (options: DeepPartial<PieOutLabelOptions>, ctx: CanvasRenderingContext2D, p: Point, position: ArcPosition, vertical: boolean, label: string, value: any) {
   // Draw label
   ctx.textAlign = position.left !== vertical ? 'end' : 'start';
   ctx.textBaseline = position.top ? 'hanging' : 'alphabetic';
-  ctx.font = fontString(options.label.font.size, options.label.font.weight, options.label.font.family);
-  ctx.fillStyle = options.label.color;
+  ctx.font = fontString(options.label?.font?.size ?? DEFAULT_OPTIONS.label?.font?.size ?? 12, options.label?.font?.weight ?? 'normal', options.label?.font?.family ?? 'monospace');
+  ctx.fillStyle = options.label?.color ?? DEFAULT_OPTIONS.label.color;
   const x = p.x + (position.left ? 20 : -20) + 40 * (vertical ? position.top ? -1 : 1 : 0);
   let y = p.y + (position.top ? 4 : -4) + 65 * (vertical ? position.top ? -1 : 1 : 0);
   ctx.fillText(label, x, y);
@@ -183,8 +189,8 @@ function drawText (options: PieOutLabelOptions, ctx: CanvasRenderingContext2D, p
   // Dray value
   const metrics = ctx.measureText(label);
   y += position.top ? metrics.actualBoundingBoxDescent + 4 : -metrics.actualBoundingBoxAscent - 8;
-  ctx.font = fontString(options.value.font.size, options.value.font.weight, options.value.font.family);
-  ctx.fillStyle = options.value.color;
+  ctx.font = fontString(options.value?.font?.size ?? DEFAULT_OPTIONS.value?.font?.size ?? 12, options.value?.font?.weight ?? 'normal', options.value?.font?.family ?? 'monospace');
+  ctx.fillStyle = options.value?.color ?? DEFAULT_OPTIONS.value.color;
   ctx.fillText(value, x, y);
 }
 

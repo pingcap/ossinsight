@@ -4,7 +4,7 @@ import Split from '../_components/Split';
 import Insights from '../_components/Insights';
 import { RankChart } from '../_components/charts';
 import { H2, H3, P2 } from '../_components/typograph';
-import { AdditionalTag, BR, ResponsiveAlignedRight, ResponsiveColumnFlex, Spacer } from '../_components/styled';
+import { AdditionalTag, BR, ResponsiveAlignedRight, ResponsiveColumnFlex } from '../_components/styled';
 
 export default function () {
   return (

@@ -118,7 +118,7 @@ const list2022: string[] = [
   'NixOS/nixpkgs',
   'rust-lang/rust',
 ];
-const ghLink = (item, bold = true) => {
+const ghLink = (item: string, bold = true) => {
   const link = <A href={`https://ossinsight.io/analyze/${item}`} target="_blank" rel="noopener">{item}</A>;
   if (bold) {
     return <strong>{link}</strong>;
