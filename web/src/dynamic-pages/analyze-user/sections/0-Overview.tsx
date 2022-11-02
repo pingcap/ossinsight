@@ -194,7 +194,7 @@ const OverviewTable = ({ userId, show }: ModuleProps) => {
 const Languages = ({ userId, show }: ModuleProps) => {
   const { data } = usePersonalData('personal-languages', userId, show);
 
-  if (data == null) {
+  if (isNullish(data)) {
     return <Skeleton />;
   }
 
@@ -284,7 +284,7 @@ const Pair = ({ children, name, data, renderValue = value => value, dataColSpan 
       <Td sx={{ color: '#C4C4C4' }}>{children}</Td>
       <Td colSpan={dataColSpan}>
         <b>
-          {(data == null) ? <Skeleton width={24} sx={{ display: 'inline-block' }} /> : renderValue(value, data)}
+          {isNullish(data) ? <Skeleton width={24} sx={{ display: 'inline-block' }} /> : renderValue(value, data)}
         </b>
       </Td>
     </>

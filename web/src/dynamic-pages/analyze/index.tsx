@@ -92,7 +92,7 @@ function AnalyzePage () {
               repo2Placeholder="Add to compare"
               endAdornment={
                 notNullish(vs) &&
-                ((main?.repo) != null) && (
+                (notNullish(main?.repo)) && (
                   <SQLPlaygroundDrawer key={name} data={main?.repo} />
                 )
               }
@@ -146,7 +146,7 @@ type InfoPack = {
 };
 
 function toRepo (repo: RepoInfo | undefined): InfoPack | undefined {
-  return (repo != null)
+  return notNullish(repo)
     ? {
         repoInfo: repo,
         repo: {

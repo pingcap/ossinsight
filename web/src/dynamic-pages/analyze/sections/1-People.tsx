@@ -99,7 +99,7 @@ const IconTab = ({ children, id, icon, defaultTab, ...props }: PropsWithChildren
 
   useEffect(() => {
     if (defaultTab) {
-      if (ref.current != null) {
+      if (notNullish(ref.current)) {
         headingRef?.(ref.current);
       }
     }

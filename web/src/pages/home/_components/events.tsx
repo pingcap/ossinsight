@@ -19,6 +19,7 @@ import { CoolList, CoolListInstance } from '../../../components/CoolList';
 import {
   useRealtimeRemoteData,
 } from '../../../components/RemoteCharts/hook';
+import { notNullish } from '@site/src/utils/value';
 
 type Event = {
   id: number;
@@ -49,7 +50,7 @@ export default function Events ({ show }: { show: boolean }) {
   );
 
   useEffect(() => {
-    if (data.data != null) {
+    if (notNullish(data.data)) {
       dataRef.current = [data.data.data, 0];
     }
   }, [data.data]);

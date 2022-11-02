@@ -12,6 +12,7 @@ import { useDimensionTabs } from '../hooks/useTabs';
 import { withRemote } from '../hooks/withRemote';
 import { H2, P2 } from './typograpy';
 import { formatTime } from './utils';
+import { isNullish } from '@site/src/utils/value';
 
 use(CanvasRenderer);
 
@@ -22,7 +23,7 @@ export default withInViewContainer(function HistorySection () {
   const asyncData = useCollectionHistory(collection?.id, dimension.key);
 
   const top10Names = useMemo(() => {
-    if (asyncData.data == null) {
+    if (isNullish(asyncData.data)) {
       return [];
     }
     const maxTime = asyncData.data.data.reduce((set, item) => {
@@ -36,7 +37,7 @@ export default withInViewContainer(function HistorySection () {
   }, [asyncData.data]);
 
   const top10Data: typeof asyncData = useMemo(() => {
-    if (asyncData.data == null) {
+    if (isNullish(asyncData.data)) {
       return asyncData;
     }
     const top10NamesSet = top10Names

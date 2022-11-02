@@ -12,6 +12,7 @@ import NavbarLogo from '@theme/Navbar/Logo';
 import NavbarSearch from '@theme/Navbar/Search';
 
 import styles from './styles.module.css';
+import { isNullish } from '@site/src/utils/value';
 
 function useNavbarItems () {
   // TODO temporary casting until ThemeConfig type is improved
@@ -67,7 +68,7 @@ export default function NavbarContent (): JSX.Element {
         <>
           <NavbarItems items={rightItems} />
           <NavbarColorModeToggle className={styles.colorModeToggle} />
-          {(searchBarItem == null) && (
+          {isNullish(searchBarItem) && (
             <NavbarSearch>
               <SearchBar />
             </NavbarSearch>

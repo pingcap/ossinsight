@@ -13,6 +13,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/Add';
 import './style.css';
 import { getErrorMessage } from '@site/src/utils/error';
+import { notNullish } from '@site/src/utils/value';
 
 export type { Repo } from './useSearchRepo';
 
@@ -173,7 +174,7 @@ export default function RepoSelector ({
         />
       )}
     />
-    <Snackbar open={error != null && !dismissError} autoHideDuration={3000} onClose={() => setDismissError(true)}>
+    <Snackbar open={notNullish(error) && !dismissError} autoHideDuration={3000} onClose={() => setDismissError(true)}>
       <Alert severity="error" sx={{ width: '100%' }}>{errorMessage}</Alert>
     </Snackbar>
   </>);
@@ -262,7 +263,7 @@ export function FirstRepoSelector ({
 
       )}
     />
-    <Snackbar open={error != null && !dismissError} autoHideDuration={3000} onClose={() => setDismissError(true)}>
+    <Snackbar open={notNullish(error) && !dismissError} autoHideDuration={3000} onClose={() => setDismissError(true)}>
       <Alert severity="error" sx={{ width: '100%' }}>{errorMessage}</Alert>
     </Snackbar>
   </>);
@@ -300,8 +301,8 @@ export function SecondRepoSelector ({
       disableClearable={disableClearable as any}
       forcePopupIcon={false}
       sx={{
-        border: (repo != null) ? 'none' : '1px dashed rgba(255,255,255,0.5)',
-        py: (repo != null) ? '2px' : undefined,
+        border: notNullish(repo) ? 'none' : '1px dashed rgba(255,255,255,0.5)',
+        py: notNullish(repo) ? '2px' : undefined,
         boxSizing: 'border-box',
         borderRadius: '6px',
         '.MuiAutocomplete-endAdornment': {
@@ -318,9 +319,9 @@ export function SecondRepoSelector ({
       }}
       renderInput={(params) => (
         <Stack direction="row" alignItems="center">
-          {(repo != null) ? undefined : <AddIcon sx={{ color: 'rgba(255,255,255,0.5)', ml: 1, fontWeight: 'bold' }} />}
+          {notNullish(repo) ? undefined : <AddIcon sx={{ color: 'rgba(255,255,255,0.5)', ml: 1, fontWeight: 'bold' }} />}
           <SearchContainer sx={{ height: '36px' }}>
-            <SearchLabel sx={{ paddingRight: (repo != null) ? '38px' : undefined }}>
+            <SearchLabel sx={{ paddingRight: notNullish(repo) ? '38px' : undefined }}>
               {(params.inputProps.value as string) || placeholder}
             </SearchLabel>
             <InputBase
@@ -354,7 +355,7 @@ export function SecondRepoSelector ({
 
       )}
     />
-    <Snackbar open={error != null && !dismissError} autoHideDuration={3000} onClose={() => setDismissError(true)}>
+    <Snackbar open={notNullish(error) && !dismissError} autoHideDuration={3000} onClose={() => setDismissError(true)}>
       <Alert severity="error" sx={{ width: '100%' }}>{errorMessage}</Alert>
     </Snackbar>
   </>);

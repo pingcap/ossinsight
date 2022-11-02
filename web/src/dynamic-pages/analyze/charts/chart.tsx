@@ -78,6 +78,7 @@ export function withChart<T = unknown, P = void> (useOption: (props: DangerousCt
     // show no data
     if (isNoData(ctx as AnalyzeChartContextProps)) {
       option.graphic = {
+        id: 'no-data',
         type: 'text',
         left: 'center',
         top: 'middle',
@@ -87,6 +88,12 @@ export function withChart<T = unknown, P = void> (useOption: (props: DangerousCt
           text: 'No relevant data yet',
           fill: '#7c7c7c',
         },
+      };
+    } else {
+      option.graphic = {
+        id: 'no-data',
+        invisible: true,
+        type: 'text',
       };
     }
     dangerousSetCtx(undefined);

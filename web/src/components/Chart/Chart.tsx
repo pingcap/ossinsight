@@ -11,6 +11,7 @@ import { styled, Theme } from '@mui/material/styles';
 import { SxProps } from '@mui/system/styleFunctionSx';
 import './defaults';
 import { useFonts } from './fonts';
+import { notNullish } from '@site/src/utils/value';
 
 export type ChartProps<TType extends ChartType = ChartType, TData = DefaultDataPoint<TType>, TLabel = unknown> = {
   fallbackImage?: string;
@@ -32,14 +33,14 @@ const CanvasChart: ChartElement = forwardRef(function CanvasChart<TType extends 
   const chartRef = useRef<ChartJs<TType, TData, TLabel>>();
 
   useEffect(() => {
-    if (canvasRef.current != null) {
+    if (notNullish(canvasRef.current)) {
       const chartInstance = chartRef.current = new ChartJs(canvasRef.current, config);
       applyAspect(chartInstance, aspect);
       applyForwardedRef(ref, chartInstance);
       chartInstance.update();
     }
     return () => {
-      if (chartRef.current != null) {
+      if (notNullish(chartRef.current)) {
         chartRef.current.destroy();
       }
       chartRef.current = undefined;
@@ -49,7 +50,7 @@ const CanvasChart: ChartElement = forwardRef(function CanvasChart<TType extends 
 
   useEffect(() => {
     const chartInstance = chartRef.current;
-    if (chartInstance != null) {
+    if (notNullish(chartInstance)) {
       applyAspect(chartInstance, aspect);
       chartInstance.update('none');
     }
@@ -58,7 +59,7 @@ const CanvasChart: ChartElement = forwardRef(function CanvasChart<TType extends 
   const dataDep = unstable_serialize(config.data);
 
   useEffect(() => {
-    if (!once && (chartRef.current != null)) {
+    if (!once && notNullish(chartRef.current)) {
       chartRef.current.data = config.data;
       chartRef.current.update();
     }

@@ -1,6 +1,7 @@
 import { useHistory } from '@docusaurus/router';
 import React, { useCallback } from 'react';
 import RepoSelector, { Repo } from '../CompareHeader/RepoSelector';
+import { notNullish } from '@site/src/utils/value';
 
 export interface AnalyzeSelectorProps {
   placeholder?: string;
@@ -11,8 +12,8 @@ export interface AnalyzeSelectorProps {
 
 export default function AnalyzeSelector ({ placeholder = 'Quick insights on any repo', align, size, contrast }: AnalyzeSelectorProps) {
   const history = useHistory();
-  const onAnalyzeRepoChanged = useCallback((repo: Repo | undefined) => {
-    if (repo != null) {
+  const onAnalyzeRepoChanged = useCallback((repo: Repo | null) => {
+    if (notNullish(repo)) {
       history.push(`/analyze/${repo.name}`);
     }
   }, []);
@@ -24,7 +25,7 @@ export default function AnalyzeSelector ({ placeholder = 'Quick insights on any 
     <RepoSelector
       defaultRepoName='recommend-repo-list-1-keyword'
       label={placeholder}
-      repo={undefined}
+      repo={null}
       onChange={onAnalyzeRepoChanged}
       onValid={onAnalyzeRepoValid}
       align={align}

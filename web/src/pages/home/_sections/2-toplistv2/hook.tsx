@@ -5,6 +5,7 @@ import { useSelectParam } from '@site/src/components/params';
 import TileSelect, { TileSelectOption } from '@site/src//components/TileSelect';
 import { paramCase } from 'param-case';
 import { GitMergeIcon, ProjectIcon, RepoForkedIcon, RepoPushIcon, StarIcon } from '@primer/octicons-react';
+import { isNullish } from '@site/src/utils/value';
 
 export type Language = string;
 export type Period = string;
@@ -69,7 +70,7 @@ export function useTopList (language: Language, period: Period, orderBy: keyof T
   }, false);
 
   const processedData: RemoteData<any, ProcessedTopListData> | undefined = useMemo(() => {
-    if (data == null) {
+    if (isNullish(data)) {
       return undefined;
     }
     return {
@@ -139,7 +140,7 @@ export function usePagination (data: RemoteData<any, ProcessedTopListData> | und
   }, [setPage, setRowsPerPage]);
 
   const list = useMemo(() => {
-    if (data == null) {
+    if (isNullish(data)) {
       return undefined;
     }
     return data.data.slice(page * rowsPerPage, (page + 1) * rowsPerPage);

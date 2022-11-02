@@ -17,7 +17,7 @@ import { SelectChangeEvent } from '@mui/material/Select/SelectInput';
 import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
 import Badge from '@mui/material/Badge';
-import React, { ForwardedRef, forwardRef, useMemo, useState } from 'react';
+import React, { cloneElement, ForwardedRef, forwardRef, useMemo, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useAnalyzeContext } from '../charts/context';
 import { RemoteData, useRemoteData } from '../../../components/RemoteCharts/hook';
@@ -308,7 +308,10 @@ export const Contributors = forwardRef(function (_, ref: ForwardedRef<HTMLElemen
           </Box>
         )}
         <BarContainer ref={inViewRef}>
-          {list.map((item, index, all) => descriptor.render(item, all[0], { percentage: type === 'percentage', lastMonth }))}
+          {list.map((item, index, all) => {
+            const el = descriptor.render(item, all[0], { percentage: type === 'percentage', lastMonth });
+            return cloneElement(el, { key: item.actor_login });
+          })}
         </BarContainer>
       </Box>
     </Section>

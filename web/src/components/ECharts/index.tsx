@@ -9,7 +9,7 @@ import { Opts } from 'echarts-for-react/lib/types';
 import EChartsContext from './context';
 import InViewContext from '../InViewContext';
 import { useIsDarkTheme } from '@site/src/hooks/theme';
-import { coalesceFalsy, isFiniteNumber, isPositiveNumber } from '@site/src/utils/value';
+import { coalesceFalsy, isFiniteNumber, isPositiveNumber, notNullish } from '@site/src/utils/value';
 
 interface SizeProps {
   aspectRatio?: number;
@@ -64,11 +64,11 @@ const ECharts = React.forwardRef<EChartsReact, EChartsProps>(function ECharts ({
   const [eRef, setERef] = useState<EChartsInstance>();
 
   const combinedRef: RefCallback<EChartsReact> = useCallback((instance) => {
-    if (echartsRef != null) {
-      echartsRef.current = instance ?? undefined;
+    if (notNullish(echartsRef)) {
+      echartsRef.current = instance ?? null;
     }
     setERef(instance);
-    if (ref != null) {
+    if (notNullish(ref)) {
       if (typeof ref === 'function') {
         ref(instance);
       } else {

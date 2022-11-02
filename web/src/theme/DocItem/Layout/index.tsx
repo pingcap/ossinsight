@@ -14,6 +14,7 @@ import type { Props } from '@theme/DocItem/Layout';
 
 import styles from './styles.module.css';
 import ShareButtons from '@site/src/components/ShareButtons';
+import { notNullish } from '@site/src/utils/value';
 
 /**
  * Decide if the toc should be rendered, on mobile or desktop viewports
@@ -60,7 +61,7 @@ export default function DocItemLayout ({ children }: Props): JSX.Element {
           <DocItemPaginator />
         </div>
       </div>
-      {(docTOC.desktop != null) && <div className="col col--3">{docTOC.desktop}</div>}
+      {notNullish(docTOC.desktop) && <div className="col col--3">{docTOC.desktop}</div>}
     </div>
   );
 }

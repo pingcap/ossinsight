@@ -41,6 +41,7 @@ import KeyboardUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
 import { AutocompleteHighlightChangeReason } from '@mui/base/AutocompleteUnstyled/useAutocomplete';
+import { notNullish } from '@site/src/utils/value';
 
 export interface GeneralSearchProps {
   contrast?: boolean;
@@ -379,7 +380,7 @@ const TipIcon = ({ icon, textContent = false, reverse = false, display }: { icon
     height={24}
     mr={0.5}
     px={textContent ? 1 : 0}
-    display={(display != null) ? display.map(b => b ? 'flex' : 'none') : 'flex'}
+    display={notNullish(display) ? display.map(b => b ? 'flex' : 'none') : 'flex'}
     alignItems='center'
     justifyContent='center'
   >

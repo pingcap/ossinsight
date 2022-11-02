@@ -60,12 +60,20 @@ export function isEmptyArray<T> (value: T[] | Nullish): boolean {
   if (isNullish(value)) {
     return true;
   }
-  return value.length === 0;
+  if (value instanceof Array) {
+    return value.length === 0;
+  } else {
+    return false;
+  }
 }
 
 export function nonEmptyArray<T> (value: T[] | Nullish): value is T[] {
   if (isNullish(value)) {
     return false;
   }
-  return value.length > 0;
+  if (value instanceof Array) {
+    return value.length > 0;
+  } else {
+    return false;
+  }
 }

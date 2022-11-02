@@ -8,8 +8,9 @@ import map from '@geo-maps/countries-land-10km';
 import { alpha2ToGeo, alpha2ToTitle } from '../../lib/areacode';
 import ECharts from '../ECharts';
 import { KeyOfType } from '../../dynamic-pages/analyze/charts/options/utils/data';
+import { isNullish, notNullish } from '@site/src/utils/value';
 
-if (echarts.getMap('world') == null) {
+if (isNullish(echarts.getMap('world'))) {
   echarts.registerMap('world', map());
 }
 
@@ -81,7 +82,7 @@ export default function WorldMapChart<T> (props: WorldMapChartProps<T>) {
     aspectRatio = true,
   } = props;
   const theme = useTheme();
-  const basicOption = useMapOption(!(compareData == null));
+  const basicOption = useMapOption(notNullish(compareData));
   const isSmall = useMediaQuery(theme.breakpoints.down('md'));
 
   const options: EChartsOption = useMemo(() => {
@@ -89,7 +90,7 @@ export default function WorldMapChart<T> (props: WorldMapChartProps<T>) {
 
     let series: Array<ScatterSeriesOption | EffectScatterSeriesOption> = [];
 
-    if (compareData == null) {
+    if (isNullish(compareData)) {
       series = data.map((item) => {
         const title = alpha2ToTitle(item[dimensionColumnName] as string);
         const value = item[metricColumnName];

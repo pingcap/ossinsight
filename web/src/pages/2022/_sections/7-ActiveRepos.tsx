@@ -6,6 +6,7 @@ import Insights from '../_components/Insights';
 import { styled } from '@mui/material/styles';
 import colors from '../_components/colors.module.css';
 import _MSIcon from '../_icons/ms.svg';
+import { notNullish } from '@site/src/utils/value';
 
 export default function () {
   return (
@@ -20,7 +21,7 @@ export default function () {
         </div>
         <ResponsiveColumnFlex>
           {insights.map((insight, i) => (
-            (insight != null) ? <Insights key={i} hideTitle={i > 0}>{insight}</Insights> : <Spacer key={i} />
+            notNullish(insight) ? <Insights key={i} hideTitle={i > 0}>{insight}</Insights> : <Spacer key={i} />
           ))}
         </ResponsiveColumnFlex>
       </Split>

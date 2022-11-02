@@ -5,7 +5,7 @@ import { useAnalyzeUserContext } from './context';
 import { useHistory } from '@docusaurus/router';
 import { RemoteData } from '../../../components/RemoteCharts/hook';
 import { useDebugDialog } from '../../../components/DebugDialog';
-import { isEmptyArray } from '@site/src/utils/value';
+import { isEmptyArray, nonEmptyArray, notNullish } from '@site/src/utils/value';
 
 export interface ChartWrapperProps {
   title?: string;
@@ -46,7 +46,7 @@ function ChartWrapper ({ title, description, href, chart, repo, remoteData, load
           left: 'center',
           top: 'middle',
           style: {
-            opacity: (loading || isEmptyArray(remoteData?.data)) ? 0 : undefined,
+            opacity: (loading || nonEmptyArray(remoteData?.data)) ? 0 : undefined,
             fontSize: 16,
             fontWeight: 'bold',
             text: 'No relevant data yet',
@@ -71,7 +71,7 @@ function ChartWrapper ({ title, description, href, chart, repo, remoteData, load
     if (!repo) {
       return;
     }
-    if ((chart?.current) != null) {
+    if (notNullish(chart) && notNullish(chart.current)) {
       const clickHandler = params => {
         let name: string;
         if (/[xy]Axis/.test(params.componentType)) {

@@ -8,7 +8,7 @@ import { AsyncData, RemoteData } from '@site/src/components/RemoteCharts/hook';
 import Skeleton from '@mui/material/Skeleton';
 import CircularProgress from '@mui/material/CircularProgress';
 import type { RepoInfo } from '@ossinsight/api';
-import { notNullish } from '@site/src/utils/value';
+import { isNullish, notNullish } from '@site/src/utils/value';
 
 export interface SummaryItemProps<F extends string> extends Omit<GridProps, 'title'> {
   icon?: React.ReactNode;
@@ -28,7 +28,7 @@ export interface StaticSummaryItemProps extends Omit<GridProps, 'title'> {
 
 function getData<K extends string> (data: AsyncData<RemoteData<unknown, Record<K, number>>>, key: K): number | undefined {
   const item = data.data?.data[0];
-  if (item == null) {
+  if (isNullish(item)) {
     return undefined;
   }
   if (key === '*') {
@@ -86,7 +86,7 @@ export function StaticSummaryItem ({ title, icon, sizes, data, comparingData, ..
       <DataGrid item xs={sizes[1]}>
         <Stack direction="row" alignItems="center" justifyContent="flex-end" spacing={1}>
           <BodyText>
-            {(repoInfo != null) ? data(repoInfo) : <CircularProgress sx={{ verticalAlign: -2 }} size={24} />}
+            {notNullish(repoInfo) ? data(repoInfo) : <CircularProgress sx={{ verticalAlign: -2 }} size={24} />}
           </BodyText>
         </Stack>
       </DataGrid>
@@ -94,7 +94,7 @@ export function StaticSummaryItem ({ title, icon, sizes, data, comparingData, ..
         ? (
           <DataGrid item xs={sizes[1]}>
             <BodyText>
-              {(comparingRepoInfo != null) ? data(comparingRepoInfo) : <Skeleton variant="text" />}
+              {notNullish(comparingRepoInfo) ? data(comparingRepoInfo) : <Skeleton variant="text" />}
             </BodyText>
           </DataGrid>
           )

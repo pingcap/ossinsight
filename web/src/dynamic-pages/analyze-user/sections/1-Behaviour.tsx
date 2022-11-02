@@ -16,6 +16,7 @@ import ChartWrapper from '../charts/ChartWrapper';
 import { useDimension } from '../hooks/useDimension';
 import { EChartsType } from 'echarts/core';
 import { paramCase } from 'param-case';
+import { isNullish } from '@site/src/utils/value';
 
 export default forwardRef(function BehaviourSection (_, ref: ForwardedRef<HTMLElement>) {
   return (
@@ -56,7 +57,7 @@ const AllContributions = ({ userId, show }: ModuleProps) => {
 
   const chart = useRef<EChartsType>(null);
 
-  if (data == null) {
+  if (isNullish(data)) {
     return <></>;
   }
 

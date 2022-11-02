@@ -335,7 +335,7 @@ LIMIT
               )}
               {data?.data && (
                 <Box>
-                  {((data?.sql?.match(/\bEXPLAIN\b/i)) != null)
+                  {notNullish((data?.sql?.match(/\bEXPLAIN\b/i)))
                     ? (
                     <CodeBlock>{dataListToRawOutput(data.data)}</CodeBlock>
                       )

@@ -9,6 +9,7 @@ import Box from '@mui/material/Box';
 import ButtonBase from '@mui/material/ButtonBase';
 import Link from '@docusaurus/Link';
 import isInternalUrl from '@docusaurus/isInternalUrl';
+import { notNullish } from '@site/src/utils/value';
 
 export interface StandardCardProps extends Omit<GridProps<any, any>, 'item' | 'container'> {
   title: React.ReactNode;
@@ -115,21 +116,21 @@ export default function StandardCard ({
         }}>
         {title}
       </Typography>
-      {(image != null)
+      {notNullish(image)
         ? (
           <AspectRatio ratio={aspectRatio}>
             {image}
           </AspectRatio>
           )
         : undefined}
-      {(tags != null)
+      {notNullish(tags)
         ? (
           <Box sx={{ my: 2 }}>
             {tags.map((tag, i) => <Chip size="small" label={tag} key={i} sx={{ mr: 2 }} />)}
           </Box>
           )
         : undefined}
-      {description != null && (
+      {notNullish(description) && (
           <Typography
             variant="body1"
             sx={{

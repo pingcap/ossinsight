@@ -6,6 +6,7 @@ import { Queries } from '../RemoteCharts/queries';
 import { EChartsOption } from 'echarts';
 import * as echarts from 'echarts/core';
 import ECharts from '../ECharts';
+import { isNullish } from '@site/src/utils/value';
 
 export interface ContributorsChartsProps {
   type: 'prs' | 'contributors';
@@ -128,7 +129,7 @@ function Charts ({ data: rawData, type, percent, loading, size }: ChartsProps) {
 
 function useOrdered (data: Data[]): GroupedData {
   return useMemo(() => data.reduce((result: GroupedData, item) => {
-    if (result[item.repo_group_name] == null) {
+    if (isNullish(result[item.repo_group_name])) {
       result[item.repo_group_name] = {
         contributors: [],
         totalPrs: 0,

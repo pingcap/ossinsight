@@ -5,6 +5,7 @@ import DocSidebarItem from '@theme/DocSidebarItem';
 import type { Props } from '@theme/DocSidebarItems';
 
 import styles from './styles.module.css';
+import { notNullish } from '@site/src/utils/value';
 
 declare module '@theme/DocSidebarItems' {
   interface Props {
@@ -20,7 +21,7 @@ function DocSidebarItems ({ items, Footer, ...props }: Props): JSX.Element {
       {items.map((item, index) => (
         <DocSidebarItem key={index} item={item} index={index} {...props} />
       ))}
-      {(Footer != null) && <li className={styles.sidebarFooter}><Footer /></li>}
+      {notNullish(Footer) && <li className={styles.sidebarFooter}><Footer /></li>}
     </DocSidebarItemsExpandedStateProvider>
   );
 }

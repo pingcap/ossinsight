@@ -3,6 +3,7 @@ import List, { ListProps } from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import { styled } from '@mui/material/styles';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import { notNullish } from '@site/src/utils/value';
 
 export interface CoolListProps<T> extends Omit<ListProps, 'children' | 'ref'> {
   maxLength: number;
@@ -64,7 +65,7 @@ function CoolList<T> ({ maxLength, itemHeight, getKey, children, ...props }: Coo
     const instance = {
       add,
     };
-    if (ref != null) {
+    if (notNullish(ref)) {
       if (typeof ref === 'function') {
         ref(instance);
       } else {

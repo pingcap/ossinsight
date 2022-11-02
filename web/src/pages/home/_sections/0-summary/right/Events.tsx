@@ -11,6 +11,7 @@ import {
 import React, { useCallback, useEffect, useRef } from 'react';
 import { CoolList, CoolListInstance } from '@site/src/components/CoolList';
 import { useRealtimeRemoteData } from '@site/src/components/RemoteCharts/hook';
+import { notNullish } from '@site/src/utils/value';
 
 type Event = {
   id: number;
@@ -41,7 +42,7 @@ export default function Events ({ show }: { show: boolean }) {
   );
 
   useEffect(() => {
-    if (data.data != null) {
+    if (notNullish(data.data)) {
       dataRef.current = [data.data.data, 0];
     }
   }, [data.data]);

@@ -6,7 +6,7 @@ import { useScrollable } from './useScrollable';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import ArrowLeftIcon from '@mui/icons-material/ArrowLeft';
 import HotCollection, { LoadingHotCollection } from '@site/src/components/HotCollection';
-import { notFalsy } from '@site/src/utils/value';
+import { isNullish, notFalsy } from '@site/src/utils/value';
 
 export default function Collections () {
   const { data } = useRecentHotCollections();
@@ -17,7 +17,7 @@ export default function Collections () {
       {data?.data.slice(0, 10).map(({ id, name, repos, collectionRepos }) => (
         <HotCollection key={id} variant='link' name={name} repos={repos} collectionRepos={collectionRepos} />
       ))}
-      {(data == null) ? <Loading /> : undefined}
+      {isNullish(data) ? <Loading /> : undefined}
     </CollectionsContainer>
   );
 }

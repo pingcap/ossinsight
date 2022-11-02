@@ -31,7 +31,7 @@ export default function LiveSql () {
   );
 
   useEffect(() => {
-    if (initData.data != null) {
+    if (notNullish(initData.data)) {
       dataRef.current = [initData.data.data, 0];
       offset.current = initData.data.data.reduce((max, record) => Math.max(max, record.ts + 1), 0);
     }
@@ -51,7 +51,7 @@ export default function LiveSql () {
   const [paused, setPaused] = useState(false);
 
   useEffect(() => {
-    if (data.data != null) {
+    if (notNullish(data.data)) {
       const [origin, i] = dataRef.current ?? [[], 0];
       dataRef.current = [origin.slice(i).concat(data.data.data), 0];
       offset.current = data.data.data.reduce((max, record) => Math.max(max, record.ts + 1), offset.current ?? 0);

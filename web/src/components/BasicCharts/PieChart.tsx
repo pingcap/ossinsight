@@ -8,6 +8,7 @@ import { TextCommonOption } from 'echarts/types/src/util/types';
 import { EChartsOption, PieSeriesOption } from 'echarts';
 import ECharts from '../ECharts';
 import { useIsDarkTheme } from '@site/src/hooks/theme';
+import { notNullish } from '@site/src/utils/value';
 
 echarts.use(
   [TitleComponent, TooltipComponent, GridComponent, EPieChart, CanvasRenderer],
@@ -84,7 +85,7 @@ export default function PieChart<T> ({
 
     series.push(baseSeries);
 
-    if (compareData != null) {
+    if (notNullish(compareData)) {
       baseSeries.center = ['25%', '55%'];
 
       const compareSeries = {

@@ -9,6 +9,7 @@ import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
 import { Queries } from '../queries';
+import { notNullish } from '@site/src/utils/value';
 
 export type Type<Q extends keyof Queries = any> = {
   title: string;
@@ -98,7 +99,7 @@ export const useForm = ({ noSearch }) => {
       const limits = parseInt(usp.get('n') ?? '');
       if (type) {
         const found: Type | undefined = types.find(({ key }) => key === type);
-        if (found != null) {
+        if (notNullish(found)) {
           initialType = found;
         }
       }

@@ -27,7 +27,7 @@ import { paramCase } from 'param-case';
 import { MonthlySummaryCard } from '../charts/montly-cards';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
-import { isNullish, notNullish } from '@site/src/utils/value';
+import { isNullish, nonEmptyArray, notNullish } from '@site/src/utils/value';
 
 export const OverviewSection = forwardRef(function (_, ref: ForwardedRef<HTMLElement>) {
   const theme = useTheme();
@@ -93,7 +93,7 @@ export const OverviewSection = forwardRef(function (_, ref: ForwardedRef<HTMLEle
               </a>
             </H1>
             <P2>{repoInfo?.description}</P2>
-            {((collectionData?.data) != null) && collectionData.data.length > 0
+            {notNullish(collectionData) && nonEmptyArray(collectionData.data)
               ? (
                 <Box mb={1}>
                   In Collection:

@@ -14,7 +14,7 @@ import Stack from '@mui/material/Stack';
 import { Select, useEventCallback } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
 import { SelectChangeEvent } from '@mui/material/Select/SelectInput';
-import { notFalsy } from '@site/src/utils/value';
+import { isNullish, notFalsy } from '@site/src/utils/value';
 
 export type TileSelectOption = {
   key: string;
@@ -38,7 +38,7 @@ export default function TileSelect ({ options, value, onSelect }: TileSelectProp
   }, [options]);
 
   const recompute = useEventCallback(() => {
-    if (ref.current == null) {
+    if (isNullish(ref.current)) {
       return;
     }
     const width = ref.current.clientWidth;
@@ -57,7 +57,7 @@ export default function TileSelect ({ options, value, onSelect }: TileSelectProp
   });
 
   useLayoutEffect(() => {
-    if (ref.current == null) {
+    if (isNullish(ref.current)) {
       return;
     }
     recompute();

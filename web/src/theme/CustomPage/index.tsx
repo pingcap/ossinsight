@@ -2,6 +2,7 @@ import Box from '@mui/material/Box';
 import Layout, { Props as LayoutProps } from '@theme/Layout';
 import React, { PropsWithChildren, useLayoutEffect } from 'react';
 import Footer from '../../components/Footer';
+import { notNullish } from '@site/src/utils/value';
 
 declare module '@theme/Layout' {
   interface Props {
@@ -38,7 +39,7 @@ export default function CustomPage ({
       {...props}
       header={header}
       sideWidth={sideWidth}
-      side={(sideWidth && (Side != null))
+      side={(sideWidth && notNullish(Side))
         ? (
           <Box component="aside" width={sideWidth} position="sticky" top="calc(var(--ifm-navbar-height) + 76px)" height={0} zIndex={0}>
             <Box marginTop='-76px' height='calc(100vh - var(--ifm-navbar-height))'>

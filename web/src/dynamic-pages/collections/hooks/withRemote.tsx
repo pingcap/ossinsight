@@ -24,7 +24,7 @@ export function withRemote<T> ({ data, loading, error }: AsyncData<RemoteData<an
     return (
       <Alert severity="error">{errorMessage}</Alert>
     );
-  } else if (data != null) {
+  } else if (notNullish(data)) {
     return (
       <>
         <Box display="flex" justifyContent="flex-end">
@@ -34,7 +34,7 @@ export function withRemote<T> ({ data, loading, error }: AsyncData<RemoteData<an
         {debugDialog}
       </>
     );
-  } else if (fallback != null) {
+  } else if (notNullish(fallback)) {
     return (
       <>
         <Box display="flex" justifyContent="flex-end">

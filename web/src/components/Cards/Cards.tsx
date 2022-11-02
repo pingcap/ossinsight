@@ -1,5 +1,6 @@
 import React, { cloneElement, PropsWithChildren, ReactNode, useMemo } from 'react';
 import Grid, { GridProps } from '@mui/material/Grid';
+import { notNullish } from '@site/src/utils/value';
 
 type GridSizeProps = Pick<GridProps, 'xs' | 'sm' | 'md' | 'lg' | 'xl'>;
 
@@ -28,11 +29,11 @@ export interface CardsProps extends GridProps {
 export default function Cards ({ xs, sm, md, lg, xl, children, ...props }: PropsWithChildren<CardsProps>) {
   const sizeProps = useMemo(() => {
     const res: GridSizeProps = {};
-    if (xs != null) res.xs = xs;
-    if (xs != null) res.sm = sm;
-    if (xs != null) res.md = md;
-    if (xs != null) res.lg = lg;
-    if (xs != null) res.xl = xl;
+    if (notNullish(xs)) res.xs = xs;
+    if (notNullish(sm)) res.sm = sm;
+    if (notNullish(md)) res.md = md;
+    if (notNullish(lg)) res.lg = lg;
+    if (notNullish(xl)) res.xl = xl;
     return res;
   }, [xs, sm, md, lg, xl]);
 
