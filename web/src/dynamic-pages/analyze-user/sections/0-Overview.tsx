@@ -8,7 +8,6 @@ import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 import {
   CodeReviewIcon,
-  CommitIcon,
   GitPullRequestIcon,
   IssueOpenedIcon,
   MarkGithubIcon, RepoIcon,
@@ -27,8 +26,9 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { useDimension } from '../hooks/useDimension';
 import ChartWrapper from '../charts/ChartWrapper';
 import { EChartsType } from 'echarts/core';
+import { isNullish, notNullish } from '@site/src/utils/value';
 
-export default forwardRef(function OverviewSection ({}, ref: ForwardedRef<HTMLElement>) {
+export default forwardRef(function OverviewSection (_, ref: ForwardedRef<HTMLElement>) {
   return (
     <Section id='overview' ref={ref}>
       <Overview />
@@ -49,7 +49,7 @@ const Overview = () => {
             title="Overview"
             description={(
               <>
-                All results are calculated only by developer's <b>public activities</b> showed on GitHub. See details in <Link href='https://gharchive.org' target='_blank'>gharchive</Link>!
+                All results are calculated only by developer&apos;s <b>public activities</b> showed on GitHub. See details in <Link href='https://gharchive.org' target='_blank'>gharchive</Link>!
               </>
             )}
           />
@@ -67,7 +67,7 @@ const Overview = () => {
 
 type ModuleProps = {
   login: string;
-  userId: number;
+  userId?: number;
   show: boolean;
 };
 
@@ -93,13 +93,13 @@ type OverviewItemProps = {
   field?: keyof PersonalOverview;
   icon: ReactNode;
   name: string;
-  children?: (value: any, data: PersonalOverview | undefined) => React.ReactNode;
+  children?: (value: any, data: PersonalOverview) => React.ReactNode;
   tooltip?: string;
   dataColSpan?: number;
 };
 
 const OverviewTable = ({ userId, show }: ModuleProps) => {
-  const { data } = usePersonalOverview(userId, !!userId && show);
+  const { data } = usePersonalOverview(userId, notNullish(userId) && show);
 
   const OverviewItem = useMemo(() => {
     return ({ field, icon, name, tooltip, dataColSpan, children }: OverviewItemProps) => {
@@ -175,7 +175,7 @@ const OverviewTable = ({ userId, show }: ModuleProps) => {
           tooltip="Here is the code line changes in pull requests."
           dataColSpan={2}
         >
-          {(value, data) => (
+          {(value, data: PersonalOverview) => (
             <>
               <Addition>+{data.code_additions}</Addition>
               &nbsp;
@@ -229,7 +229,7 @@ const Languages = ({ userId, show }: ModuleProps) => {
 const ContributorTrends = ({ userId, show }: ModuleProps) => {
   const { data, loading } = usePersonalData('personal-contribution-trends', userId, show);
   const validContributionTypes = useDimension(data?.data ?? [], 'contribution_type');
-  const chart = useRef<EChartsType>();
+  const chart = useRef<EChartsType>(null);
 
   return (
     <ChartWrapper title='Contribution Trends' remoteData={data} loading={loading} chart={chart}>
@@ -271,14 +271,14 @@ const CustomDivider = styled('hr')({
 
 type PairProps = {
   data: PersonalOverview | undefined;
-  name?: keyof PersonalOverview;
-  renderValue?: (value: any, data: PersonalOverview | undefined) => React.ReactNode;
+  name: keyof PersonalOverview | undefined;
+  renderValue?: (value: any, data: PersonalOverview) => React.ReactNode;
   children: ReactNode;
   dataColSpan?: number;
 };
 
 const Pair = ({ children, name, data, renderValue = value => value, dataColSpan }: PairProps) => {
-  const value = data?.[name];
+  const value = isNullish(name) ? data : data?.[name];
   return (
     <>
       <Td sx={{ color: '#C4C4C4' }}>{children}</Td>

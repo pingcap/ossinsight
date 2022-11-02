@@ -1,10 +1,11 @@
-import React, { createContext, ReactNode, RefObject, useEffect, useLayoutEffect } from 'react';
+import React, { createContext, ReactNode, RefObject, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import { EChartsType } from 'echarts/core';
 import { useAnalyzeUserContext } from './context';
 import { useHistory } from '@docusaurus/router';
 import { RemoteData } from '../../../components/RemoteCharts/hook';
 import { useDebugDialog } from '../../../components/DebugDialog';
+import { isEmptyArray } from '@site/src/utils/value';
 
 export interface ChartWrapperProps {
   title?: string;
@@ -45,7 +46,7 @@ function ChartWrapper ({ title, description, href, chart, repo, remoteData, load
           left: 'center',
           top: 'middle',
           style: {
-            opacity: (loading || remoteData?.data.length) ? 0 : undefined,
+            opacity: (loading || isEmptyArray(remoteData?.data)) ? 0 : undefined,
             fontSize: 16,
             fontWeight: 'bold',
             text: 'No relevant data yet',
@@ -78,7 +79,7 @@ function ChartWrapper ({ title, description, href, chart, repo, remoteData, load
         } else {
           name = params.name;
         }
-        if (/^[^\/]+\/[^\/]+$/.test(name)) {
+        if (/^[^/]+\/[^/]+$/.test(name)) {
           history.push(`/analyze/${name}`);
         }
       };
@@ -93,7 +94,7 @@ function ChartWrapper ({ title, description, href, chart, repo, remoteData, load
   return (
     <Box sx={{ mb: 4 }}>
       <ChartWrapperContext.Provider value={{ title, description, href }}>
-        <Box display='flex' justifyContent='flex-end'>
+        <Box display="flex" justifyContent="flex-end">
           {button}
         </Box>
         {children}
@@ -103,7 +104,6 @@ function ChartWrapper ({ title, description, href, chart, repo, remoteData, load
   );
 }
 
-export const ChartWrapperContext = createContext<ChartWrapperContextProps>({
-});
+export const ChartWrapperContext = createContext<ChartWrapperContextProps>({});
 
 export default ChartWrapper;

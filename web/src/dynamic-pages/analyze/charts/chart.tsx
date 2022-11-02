@@ -51,7 +51,7 @@ export function withChart<T = unknown, P = void> (useOption: (props: DangerousCt
     }, []);
 
     const { dialog: debugDialog, button: debugButton } = useDebugDialog(chartContext.data.data);
-    const echartsRef = useRef<EChartsReact | null>(null);
+    const echartsRef = useRef<EChartsReact>(null);
 
     const shareInfo: CommonChartShareInfo = {
       title: chartContext.title,

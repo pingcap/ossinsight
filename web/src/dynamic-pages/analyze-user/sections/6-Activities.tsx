@@ -2,15 +2,8 @@ import React, { ForwardedRef, forwardRef, useCallback, useContext, useMemo, useR
 import Section from '../../../components/Section/Section';
 import InViewContext from '../../../components/InViewContext';
 import { useAnalyzeUserContext } from '../charts/context';
-import {
-  ContributionActivityRange, contributionActivityRanges,
-  ContributionActivityType, contributionActivityTypes,
-  usePersonalContributionActivities,
-  usePersonalData,
-  useRange,
-} from '../hooks/usePersonal';
+import { ContributionActivityRange, contributionActivityRanges, ContributionActivityType, contributionActivityTypes, usePersonalContributionActivities, useRange } from '../hooks/usePersonal';
 import { Axis, Dataset, EChartsx, Grid, Legend, Once, Title, Tooltip, withBaseOption } from '@djagger/echartsx';
-import { Common } from '../charts/Common';
 import { useDimension } from '../hooks/useDimension';
 import { ScatterSeriesOption } from 'echarts/charts';
 import { primary } from '../colors';
@@ -24,9 +17,9 @@ import { SectionHeading } from '../../../components/Section';
 import ChartWrapper from '../charts/ChartWrapper';
 import { EChartsType } from 'echarts/core';
 
-export default forwardRef(function ActivitiesSection ({}, ref: ForwardedRef<HTMLElement>) {
+export default forwardRef(function ActivitiesSection (_, ref: ForwardedRef<HTMLElement>) {
   return (
-    <Section id='activities' ref={ref}>
+    <Section id="activities" ref={ref}>
       <SectionHeading
         title="Contribution Activities"
         description={<>All personal activities happened on <b>all public repositories</b> in GitHub since 2011. You can check each specific activity type by type with a timeline.</>}
@@ -62,7 +55,7 @@ const ActivityChart = ({ userId, show }: ModuleProps) => {
   const periodString = useMemo(() => contributionActivityRanges.find(({ key }) => period === key)?.label, [period]);
 
   const tooltipFormatter: TooltipFormatterCallback<any> = useCallback(({ value }) => {
-    return `${value.event_period} ${value.cnt} ${typeString} on ${value.repo_name}`;
+    return `${value.event_period as string} ${value.cnt as number} ${typeString as string} on ${value.repo_name as string}`;
   }, [typeString]);
 
   const handleTypeChange = useEventCallback((e: SelectChangeEvent<ContributionActivityType>) => {
@@ -73,10 +66,10 @@ const ActivityChart = ({ userId, show }: ModuleProps) => {
   });
 
   const title = useMemo(() => {
-    return `${typeString} in ${periodString}`;
+    return `${typeString ?? 'undefined'} in ${periodString ?? 'undefined'}`;
   }, [typeString, periodString]);
 
-  const chart = useRef<EChartsType | undefined>();
+  const chart = useRef<EChartsType>(null);
 
   return (
     <ChartWrapper title={title} chart={chart} repo remoteData={data} loading={loading}>
@@ -100,21 +93,21 @@ const ActivityChart = ({ userId, show }: ModuleProps) => {
       </Box>
       <EChartsx init={{ height: 240 + 30 * repoNames.length, renderer: 'canvas' }} theme="dark" ref={chart}>
         <Once>
-          <Legend type="scroll" orient="horizontal" top={32}/>
-          <Grid top={64} left={8} right={8} bottom={8} containLabel/>
+          <Legend type="scroll" orient="horizontal" top={32} />
+          <Grid top={64} left={8} right={8} bottom={8} containLabel />
           <Tooltip trigger="item" />
           <Axis.Category.Y axisTick={{ show: false }} axisLine={{ show: false }} triggerEvent />
         </Once>
-        <Title text={title} left="center"/>
+        <Title text={title} left="center" />
         <Axis.Time.X min={min} max={max} />
         <Scatter encode={{ x: 'event_period', y: 'repo_name', value: 'cnt' }} symbolSize={(val) => Math.min(val.cnt * 5, 60)} tooltip={{ formatter: tooltipFormatter }} color={primary} />
-        <Dataset source={data?.data ?? []}/>
+        <Dataset source={data?.data ?? []} />
       </EChartsx>
     </ChartWrapper>
   );
 };
 
 type ModuleProps = {
-  userId: number;
+  userId: number | undefined;
   show: boolean;
 };

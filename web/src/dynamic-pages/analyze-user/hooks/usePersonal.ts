@@ -1,5 +1,6 @@
 import { AsyncData, RemoteData, useRemoteData } from '../../../components/RemoteCharts/hook';
 import { useMemo } from 'react';
+import { notNullish } from '@site/src/utils/value';
 
 type RequestMap = {
   'personal-contribution-time-distribution': { dayofweek: number, hour: number, cnt: number, type: string };
@@ -23,7 +24,7 @@ export const contributionTypes: ContributionType[] = ['issues', 'pull_requests',
 type PersonalDataParams = { userId: number };
 
 export function usePersonalData<K extends keyof RequestMap> (key: K, userId: number | undefined, run: boolean, params: any = {}) {
-  return useRemoteData<PersonalDataParams, RequestMap[K]>(key, { userId, ...params }, false, !!userId && run);
+  return useRemoteData<PersonalDataParams, RequestMap[K]>(key, { userId, ...params }, false, notNullish(userId) && run);
 }
 
 export type PersonalOverview = {
@@ -46,7 +47,7 @@ export function usePersonalOverview (userId: number | undefined, run: boolean): 
     data,
     loading,
     error,
-  } = useRemoteData<PersonalDataParams, PersonalOverview>('personal-overview', { userId }, false, !!userId && run);
+  } = useRemoteData<PersonalDataParams, PersonalOverview>('personal-overview', { userId } as any, false, notNullish(userId) && run);
 
   return {
     data: data?.data[0],
@@ -80,7 +81,7 @@ export function usePersonalContributionActivities (userId: number | undefined, t
     activity_type: type,
     time_range: timeRange,
     period: timeRange === 'last_28_days' ? 'day' : 'hour',
-  }, false, !!userId && run);
+  }, false, notNullish(userId) && run);
 }
 
 export function useRange (range: ContributionActivityRange): [Date, Date] {

@@ -17,7 +17,7 @@ import { useDimension } from '../hooks/useDimension';
 import { EChartsType } from 'echarts/core';
 import { paramCase } from 'param-case';
 
-export default forwardRef(function BehaviourSection ({}, ref: ForwardedRef<HTMLElement>) {
+export default forwardRef(function BehaviourSection (_, ref: ForwardedRef<HTMLElement>) {
   return (
     <Section id='behaviour' ref={ref}>
       <Behaviour />
@@ -54,7 +54,7 @@ const AllContributions = ({ userId, show }: ModuleProps) => {
     return Array.from(map.entries()).sort((a, b) => b[1] - a[1]).map(entry => entry[0]);
   }, [data]);
 
-  const chart = useRef<EChartsType | undefined>();
+  const chart = useRef<EChartsType>(null);
 
   if (data == null) {
     return <></>;
@@ -90,7 +90,7 @@ function toCamel (n) {
 }
 const eventTypesWithoutAll = ['pushes', 'issues', 'issue_comments', 'pull_requests', 'reviews', 'review_comments'];
 const eventTypes = ['all', 'pushes', 'issues', 'issue_comments', 'pull_requests', 'reviews', 'review_comments'];
-const timezones = [];
+const timezones: number[] = [];
 const periods = ['last_1_year', 'last_3_year', 'all_times'];
 
 const formatZone = (zone: number) => `UTC ${zone < 0 ? zone : `+${zone}`}`;
@@ -161,6 +161,6 @@ const ContributionTime = ({ userId, show }: ModuleProps) => {
 };
 
 type ModuleProps = {
-  userId: number;
+  userId: number | undefined;
   show: boolean;
 };

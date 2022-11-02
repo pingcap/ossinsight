@@ -95,7 +95,7 @@ const IconTab = ({ children, id, icon, defaultTab, ...props }: PropsWithChildren
   const handleClick = useCallback((event: React.MouseEvent<HTMLHeadingElement>) => {
     headingRef?.(event.currentTarget);
   }, []);
-  const ref = useRef<HTMLHeadingElement | null>(null);
+  const ref = useRef<HTMLHeadingElement>(null);
 
   useEffect(() => {
     if (defaultTab) {

@@ -17,6 +17,7 @@ import { Theme } from '@mui/material/styles';
 import { Redirect } from '@docusaurus/router';
 import { useRouteMatch } from 'react-router';
 import { useUser } from '../../api';
+import { notNullish } from '@site/src/utils/value';
 
 registerThemeDark();
 
@@ -36,14 +37,14 @@ const Page = () => {
   const isSmall = useMediaQuery<Theme>('(max-width:600px)');
   const sideWidth = isSmall ? undefined : '160px';
 
-  if (error) {
+  if (notNullish(error)) {
     return <Redirect to='/404' />;
   }
 
   return (
     <Scrollspy sectionRefs={sectionRefs} offset={-140}>
       {({ currentElementIndexInViewport }) => (
-        <CustomPage Side={() => isSmall ? undefined : <Navigator value={sections[currentElementIndexInViewport]} type="side" />} sideWidth={sideWidth}>
+        <CustomPage Side={() => isSmall ? null : <Navigator value={sections[currentElementIndexInViewport]} type="side" />} sideWidth={sideWidth}>
           <AnalyzeUserContextProvider value={{ login, userId, loading, error }}>
             <Container maxWidth="lg">
               <OverviewSection ref={sectionRefs[0]} />

@@ -9,7 +9,7 @@ import { blue, lightBlue } from '../colors';
 import ChartWrapper from '../charts/ChartWrapper';
 import { EChartsType } from 'echarts/core';
 
-export default forwardRef(function IssueSection ({}, ref: ForwardedRef<HTMLElement>) {
+export default forwardRef(function IssueSection (_, ref: ForwardedRef<HTMLElement>) {
   return (
     <Section id='issue' ref={ref}>
       <Issue />
@@ -35,7 +35,7 @@ const Issue = () => {
 const IssueHistory = ({ userId, show }: ModuleProps) => {
   const { data, loading } = usePersonalData('personal-issues-history', userId, show);
 
-  const chart = useRef<EChartsType | undefined>();
+  const chart = useRef<EChartsType>(null);
 
   return (
     <ChartWrapper title="Issue History" chart={chart} remoteData={data} loading={loading}>
@@ -54,6 +54,6 @@ const IssueHistory = ({ userId, show }: ModuleProps) => {
 };
 
 type ModuleProps = {
-  userId: number;
+  userId: number | undefined;
   show: boolean;
 };
