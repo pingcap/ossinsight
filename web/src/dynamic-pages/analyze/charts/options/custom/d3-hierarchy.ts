@@ -1,3 +1,4 @@
+/* eslint-disable */
 import * as d3 from 'd3-hierarchy';
 import { CustomSeriesOption } from 'echarts';
 import {
@@ -29,12 +30,12 @@ export function d3Hierarchy (seriesData: D3HierarchyItem[], maxDepth: number): C
         return d.value || 0;
       })
       .sort(function (a, b) {
-        return b.value - a.value;
+        return (b.value ?? 0) - (a.value ?? 0);
       });
   }
 
   function overallLayout (params: CustomSeriesRenderItemParams, api: CustomSeriesRenderItemAPI) {
-    const context = params.context;
+    const context: any = params.context;
 
     context.nodes = {};
     d3
@@ -42,12 +43,12 @@ export function d3Hierarchy (seriesData: D3HierarchyItem[], maxDepth: number): C
       .size([api.getWidth() - 32, api.getHeight() - 32])
       .padding(8)(displayRoot);
     displayRoot.descendants().forEach(function (node, index) {
-      context.nodes[node.id] = node;
+      context.nodes[node.id ?? ''] = node;
     });
   }
 
   function renderItem (params: CustomSeriesRenderItemParams, api: CustomSeriesRenderItemAPI): CustomSeriesRenderItemReturn {
-    const context = params.context;
+    const context: any = params.context;
     // Only do that layout once in each time `setOption` called.
     if (!context.layout) {
       context.layout = true;
@@ -115,7 +116,7 @@ export function d3Hierarchy (seriesData: D3HierarchyItem[], maxDepth: number): C
           shadowColor: 'rgba(0,0,0,0.3)',
         },
       },
-    };
+    } as any;
   }
 
   return {

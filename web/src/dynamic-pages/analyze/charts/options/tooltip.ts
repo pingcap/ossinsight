@@ -6,7 +6,7 @@ export function axisTooltip (type: 'line' | 'shadow' | 'cross' | 'none', option:
     show: true,
     trigger: 'axis',
     axisPointer: {
-      ...((option.axisPointer != null) || {}),
+      ...option.axisPointer,
       type,
     },
   };

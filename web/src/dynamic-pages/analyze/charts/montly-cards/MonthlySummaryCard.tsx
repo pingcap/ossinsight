@@ -4,7 +4,6 @@ import Analyze from '../Analyze';
 import Bars from './Bars';
 import Lines from './Lines';
 import { CommitIcon, GitPullRequestIcon, IssueOpenedIcon, StarIcon } from '@primer/octicons-react';
-import { styled } from '@mui/material/styles';
 import { Border } from './ui';
 
 function MonthlySummaryCard () {

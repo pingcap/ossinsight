@@ -10,9 +10,9 @@ import {
 } from 'echarts/types/src/coord/axisCommonTypes';
 import format from 'human-format';
 import { utils } from './index';
-import { dangerousGetCtx } from './_danger';
 import { isSmall } from './sizes';
 import { DateTime } from 'luxon';
+import { notFalsy } from '@site/src/utils/value';
 
 type AxisOption<T extends 'x' | 'y', Base extends AxisBaseOption = AxisBaseOption> =
   (T extends 'x' ? XAXisOption : YAXisOption)
@@ -39,7 +39,7 @@ export function valueAxis<T extends 'x' | 'y'> (id?: OptionId, option: AxisOptio
     },
     nameTextStyle: {
       opacity: small ? 0 : 1,
-      align: filterEnum(option.position || 'left', ['left', 'right']),
+      align: filterEnum(option.position ?? 'left', ['left', 'right']),
     },
   });
 }
@@ -49,7 +49,7 @@ export function categoryAxis<T extends 'x' | 'y'> (id?: OptionId, option: AxisOp
     id,
     type: 'category',
     nameTextStyle: {
-      align: filterEnum(option.position || 'left', ['left', 'right']),
+      align: filterEnum(option.position ?? 'left', ['left', 'right']),
     },
   });
 }
@@ -61,7 +61,7 @@ export function logAxis<T extends 'x' | 'y'> (id?: OptionId, option: AxisOption<
     type: 'log',
     nameTextStyle: {
       opacity: small ? 0 : 1,
-      align: filterEnum(option.position || 'left', ['left', 'right']),
+      align: filterEnum(option.position ?? 'left', ['left', 'right']),
     },
     splitNumber: small ? 3 : undefined as any,
     axisLabel: {
@@ -104,7 +104,7 @@ export function timeAxis<T extends 'x' | 'y'> (id?: OptionId, option: AxisOption
       },
     },
     // TODO: prevent compute multi-times
-    min: fromRecent ? fromRecent === true ? undefined : DateTime.fromISO(utils.min<any, any>(fromRecent)).minus({ month: 1 }).toJSDate() : new Date(2011, 0, 1, 0, 0, 0, 0),
+    min: notFalsy(fromRecent) ? fromRecent === true ? undefined : DateTime.fromISO(utils.min<any, any>(fromRecent)).minus({ month: 1 }).toJSDate() : new Date(2011, 0, 1, 0, 0, 0, 0),
     max: DateTime.fromJSDate(new Date(now.getFullYear(), now.getMonth(), 1, 0, 0, 0, 0)).plus({ month: 1 }).toJSDate(),
     minInterval: 3600 * 24 * 1000 * 28,
   });

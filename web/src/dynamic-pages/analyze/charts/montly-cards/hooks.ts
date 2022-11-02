@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { isFalsy, isNullish } from '@site/src/utils/value';
 
 export function useReversed<T> (source: T[]): T[] {
   return useMemo(() => [...source].reverse().map(item => {
@@ -16,10 +17,10 @@ export function usePartData (data: any[], part: 'current' | 'last', valueKey: st
 
 export function useDiff (data: any[], valueKey: string, dayKey: string) {
   const item = data[0];
-  if (!item) {
+  if (isNullish(item)) {
     return '0';
   }
-  if (!item[`last_${valueKey}`]) {
+  if (isFalsy(item[`last_${valueKey}`])) {
     return '';
   }
   return ((item[`current_${valueKey}`] - item[`last_${valueKey}`]) / item[`last_${valueKey}`] * 100).toFixed(0) + '%';

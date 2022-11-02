@@ -49,5 +49,5 @@ export default function LinesCompare ({ color, title, dayValueKey, dayKey = 'per
 }
 
 const formatter = (title: string) => (seriesList: any[]): string => {
-  return seriesList.map(series => `${series.marker} ${formatDate(series.data.day)}: <b>${series.data.value}</b> ${title}`).join('<br>');
+  return seriesList.map(series => `${series.marker as string} ${formatDate(series.data.day)}: <b>${series.data.value as number}</b> ${title}`).join('<br>');
 };

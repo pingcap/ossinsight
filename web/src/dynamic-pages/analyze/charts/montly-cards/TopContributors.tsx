@@ -16,8 +16,8 @@ export default function TopContributors () {
         Top 5 Contributors
       </Typography>
       <Stack direction="row" mt={[1, 1, 1, 0]}>
-        {(data.data?.data ?? []).map(({ actor_login }) => (
-          <Contributor key={actor_login} login={actor_login} />
+        {(data.data?.data ?? []).map(({ actor_login: actorLogin }) => (
+          <Contributor key={actorLogin} login={actorLogin} />
         ))}
       </Stack>
     </Stack>

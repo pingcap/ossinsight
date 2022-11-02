@@ -7,11 +7,12 @@ import Skeleton from '@mui/material/Skeleton';
 import Analyze from '../Analyze';
 import Stack from '@mui/material/Stack';
 import type { RepoInfo } from '@ossinsight/api';
-import { useDebugDialog } from '../../../../components/DebugDialog';
+import { useDebugDialog } from '@site/src/components/DebugDialog';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import { notNullish } from '@site/src/utils/value';
 
 export type ItemBase = {
   icon?: React.ReactNode;
@@ -45,7 +46,7 @@ export default function Summary ({ items, query }: SummaryProps) {
   const isSmall = useMediaQuery(theme.breakpoints.down('lg'));
 
   const sizes = useMemo(() => {
-    if (comparingRepoId) {
+    if (notNullish(comparingRepoId)) {
       return isSmall ? compareSmSize : compareSize;
     } else {
       return isSmall ? singleSmSize : singleSize;
@@ -72,7 +73,7 @@ export default function Summary ({ items, query }: SummaryProps) {
               {repoName}
             </HeadText>
           </HeaderGrid>
-          {comparingRepoId
+          {notNullish(comparingRepoId)
             ? (
               <HeaderGrid item xs={sizes[1]} sx={{ textAlign: 'right' }}>
                 <HeadText>

@@ -9,12 +9,6 @@ import {
 } from 'echarts';
 import { ORIGINAL_DATASET_ID } from './dataset';
 import { DimensionLoose, OptionEncodeValue } from 'echarts/types/src/util/types';
-import { alpha, darken } from '@mui/material';
-
-interface CartesianSeriesEncodeOption {
-  x: OptionEncodeValue;
-  y: OptionEncodeValue;
-}
 
 export function bar (x: OptionEncodeValue, y: OptionEncodeValue, option: BarSeriesOption = {}): BarSeriesOption {
   return {
@@ -25,7 +19,7 @@ export function bar (x: OptionEncodeValue, y: OptionEncodeValue, option: BarSeri
     encode: {
       x,
       y,
-      ...((option.encode != null) || {}),
+      ...option.encode,
     },
   };
 }
@@ -40,7 +34,7 @@ export function line (x: OptionEncodeValue, y: OptionEncodeValue, option: LineSe
     encode: {
       x,
       y,
-      ...((option.encode != null) || {}),
+      ...option.encode,
     },
   };
 }
@@ -54,7 +48,7 @@ export function boxplot (x: OptionEncodeValue, y: [DimensionLoose, DimensionLoos
       x,
       y,
       tooltip: y,
-      ...((option.encode != null) || {}),
+      ...option.encode,
     },
   };
 }
@@ -92,7 +86,7 @@ export function heatmap (x: OptionEncodeValue, y: OptionEncodeValue, value: Opti
       x,
       y,
       value,
-      ...((option.encode != null) || {}),
+      ...option.encode,
     },
   };
 }

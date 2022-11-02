@@ -104,7 +104,7 @@ export const IssueChart = withChart<IssueData>(({ title: propsTitle, data }) => 
 },
 );
 
-const fmt = val => `${val} Issues`;
+const fmt = (val: string | number) => `${val} Issues`;
 
 function aggregate (data: IssueData[]) {
   let openedTotal = 0;

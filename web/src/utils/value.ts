@@ -55,3 +55,10 @@ export function coalesceFalsy<T, P> (value: T, fallback: P): T extends Falsy ? P
 export function coalesceNullish<T, P> (value: T, fallback: P): T extends Nullish ? P : T {
   return (isNullish(value) ? fallback : value) as never;
 }
+
+export function isEmptyArray<T> (value: T[] | Nullish): boolean {
+  if (isNullish(value)) {
+    return true;
+  }
+  return value.length > 0;
+}

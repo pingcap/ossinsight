@@ -39,13 +39,15 @@ const prepareData = (zone: number) => (data: TimeHeatData[]): TimeHeatData[] => 
     return [];
   }
   const newData = [...data];
-  const boolMap = Array(24 * 7).fill(false, 0, 24 * 7);
+  const boolMap: boolean[] = Array(24 * 7).fill(false, 0, 24 * 7);
   for (let i = 0; i < newData.length; i++) {
     const item = newData[i] = { ...newData[i] };
     item.hour = applyZone(item.hour, zone);
     boolMap[item.dayofweek + item.hour * 7] = true;
   }
+  // eslint-disable-next-line @typescript-eslint/no-for-in-array
   for (const hour in hours) {
+    // eslint-disable-next-line @typescript-eslint/no-for-in-array
     for (const day in days) {
       if (!boolMap[parseInt(day) + applyZone(parseInt(hour), zone) * 7]) {
         newData.push({

@@ -86,12 +86,12 @@ export const LocChart = withChart<LocData>(({ title: propsTitle }) => {
         return `
         <div>${formatMonth(add.value.event_month)}</div>
         <div>
-          <b style="color: ${add.color}; font-weight: 800">+${add.value.additions}</b>
-          <b style="color: ${del.color}; font-weight: 800">-${Math.abs(del.value.deletions)}</b>
+          <b style="color: ${add.color as string}; font-weight: 800">+${add.value.additions as number}</b>
+          <b style="color: ${del.color as string}; font-weight: 800">-${Math.abs(del.value.deletions)}</b>
         </div>
         <div>
-          ${total.marker}
-          <b>Total: ${total.value.total} lines</b>
+          ${total.marker as string}
+          <b>Total: ${total.value.total as string} lines</b>
         </div>
       `;
       },

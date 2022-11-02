@@ -4,10 +4,11 @@ import { BodyText, DataGrid, HeaderGrid, HeadText } from './styled';
 import { useAnalyzeChartContext, useAnalyzeContext } from '../context';
 import Stack from '@mui/material/Stack';
 import Tooltip from '@mui/material/Tooltip';
-import { AsyncData, RemoteData } from '../../../../components/RemoteCharts/hook';
+import { AsyncData, RemoteData } from '@site/src/components/RemoteCharts/hook';
 import Skeleton from '@mui/material/Skeleton';
 import CircularProgress from '@mui/material/CircularProgress';
 import type { RepoInfo } from '@ossinsight/api';
+import { notNullish } from '@site/src/utils/value';
 
 export interface SummaryItemProps<F extends string> extends Omit<GridProps, 'title'> {
   icon?: React.ReactNode;
@@ -20,7 +21,7 @@ export interface SummaryItemProps<F extends string> extends Omit<GridProps, 'tit
 export interface StaticSummaryItemProps extends Omit<GridProps, 'title'> {
   icon?: React.ReactNode;
   title: React.ReactNode;
-  data?: (repoInfo: RepoInfo) => any;
+  data: (repoInfo: RepoInfo) => any;
   comparingData?: any;
   sizes: readonly [number, number];
 }
@@ -58,7 +59,7 @@ export function SummaryItem<F extends string> ({ title, icon, sizes, field, ...g
           </BodyText>
         </Stack>
       </DataGrid>
-      {comparingRepoId
+      {notNullish(comparingRepoId)
         ? (
           <DataGrid item xs={sizes[1]}>
             <BodyText>
@@ -89,7 +90,7 @@ export function StaticSummaryItem ({ title, icon, sizes, data, comparingData, ..
           </BodyText>
         </Stack>
       </DataGrid>
-      {comparingRepoId
+      {notNullish(comparingRepoId)
         ? (
           <DataGrid item xs={sizes[1]}>
             <BodyText>

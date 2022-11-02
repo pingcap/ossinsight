@@ -42,7 +42,8 @@ module.exports = {
           allowNullableBoolean: true,
           allowNullableString: true,
           allowNullableObject: true,
-        }]
+        }],
+        '@typescript-eslint/no-invalid-void-type': 'off',
       }
     }
   ],

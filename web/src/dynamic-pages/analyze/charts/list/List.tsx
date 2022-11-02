@@ -6,6 +6,7 @@ import React, { useMemo } from 'react';
 import { useAnalyzeChartContext, useAnalyzeContext } from '../context';
 import { BodyText, HeadText } from '../summary/styled';
 import { DataItem, HeaderItem } from './styled';
+import { notFalsy, notNullish } from '@site/src/utils/value';
 
 interface ListProps {
   n: number;
@@ -20,7 +21,7 @@ const arr = n => Array(n).fill(true, 0, n);
 
 export default function List ({ n, valueIndex, nameIndex, percentIndex, title, transformName = name => name }: ListProps) {
   const { repoName, comparingRepoName } = useAnalyzeContext();
-  const { data, compareData } = useAnalyzeChartContext();
+  const { data, compareData } = useAnalyzeChartContext<any>();
 
   const base = useMemo(() => arr(n), [n]);
 
@@ -59,14 +60,14 @@ export default function List ({ n, valueIndex, nameIndex, percentIndex, title, t
             <DataItem flex={1}>
               <Stack direction="row" px={comparingRepoName ? 1 : 2} py={comparingRepoName ? 0.5 : 1} alignItems="center" justifyContent="space-between">
                 <HeadText sx={{ fontSize: 12, lineHeight: 1 }}>
-                  {i < data.data?.data.length
-                    ? data.data?.data[i][nameIndex]
+                  {(notNullish(data.data) && i < data.data.data.length)
+                    ? notFalsy(data.data.data[i][nameIndex])
                       ? transformName(data.data.data[i][nameIndex])
                       : undefined
                     : '--'}
                 </HeadText>
                 <span>
-                  {valueIndex && i < data.data?.data.length
+                  {valueIndex && notNullish(data.data) && i < data.data.data.length
                     ? (
                       <BodyText sx={{ fontSize: 12, lineHeight: 1 }}>
                         {data.data?.data[i][valueIndex]}
@@ -74,7 +75,7 @@ export default function List ({ n, valueIndex, nameIndex, percentIndex, title, t
                       )
                     : undefined}
                   &nbsp;
-                  {i < data.data?.data.length
+                  {notNullish(data.data) && i < data.data.data.length
                     ? (
                       <Typography
                         variant="caption"

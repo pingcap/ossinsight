@@ -1,6 +1,7 @@
 import React, { RefCallback, useCallback, useState } from 'react';
 import { AnalyzeChartContext, AnalyzeChartContextProps, useAnalyzeContext } from '../context';
-import { useRemoteData } from '../../../../components/RemoteCharts/hook';
+import { useRemoteData } from '@site/src/components/RemoteCharts/hook';
+import { notNullish } from '@site/src/utils/value';
 
 export interface AnalyzeProps {
   query: string;
@@ -10,15 +11,15 @@ export interface AnalyzeProps {
 
 export default function Analyze ({ query, params, children }: AnalyzeProps) {
   const { repoId, comparingRepoId } = useAnalyzeContext();
-  const repoData = useRemoteData(query, { repoId, ...((params != null) || {}) }, false, !!repoId);
-  const compareRepoData = useRemoteData(query, { repoId: comparingRepoId, ...((params != null) || {}) }, false, !!comparingRepoId);
+  const repoData = useRemoteData(query, { repoId, ...params }, false, notNullish(repoId));
+  const compareRepoData = useRemoteData(query, { repoId: comparingRepoId, ...params }, false, notNullish(comparingRepoId));
   const [title, setTitle] = useState<string>();
   const [hash, setHash] = useState<string>();
   const [description, setDescription] = useState<string>();
 
   const headingRef: RefCallback<HTMLHeadingElement> = useCallback((el) => {
-    if (el != null) {
-      setTitle(el.textContent.trim());
+    if (notNullish(el)) {
+      setTitle(el.textContent?.trim());
       setHash(el.id);
     } else {
       setTitle(undefined);
@@ -27,7 +28,7 @@ export default function Analyze ({ query, params, children }: AnalyzeProps) {
   }, []);
 
   const descriptionRef: RefCallback<HTMLParagraphElement> = useCallback((el) => {
-    setDescription(el?.textContent.trim() ?? undefined);
+    setDescription(el?.textContent?.trim() ?? undefined);
   }, []);
 
   const contextValue: AnalyzeChartContextProps = {

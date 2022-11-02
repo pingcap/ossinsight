@@ -1,4 +1,4 @@
-import { AsyncData, RemoteData } from '../../../../components/RemoteCharts/hook';
+import { AsyncData, RemoteData } from '@site/src/components/RemoteCharts/hook';
 import {
   axisTooltip,
   boxplot,
@@ -40,7 +40,7 @@ export const DurationChart = withChart<PrDurationData>(({ title: propsTitle, dat
     if (all.length <= 1) {
       return getMax(all[0]);
     } else {
-      return Math.max(...all.map(getMax));
+      return Math.max(...all.map(val => getMax(val) ?? 0));
     }
   });
 
@@ -48,7 +48,7 @@ export const DurationChart = withChart<PrDurationData>(({ title: propsTitle, dat
     if (all.length <= 1) {
       return getMin(all[0]);
     } else {
-      return Math.min(...all.map(getMin));
+      return Math.min(...all.map(val => getMin(val) ?? 0));
     }
   });
 
@@ -85,7 +85,7 @@ export const DurationChart = withChart<PrDurationData>(({ title: propsTitle, dat
       formatter: params => {
         const { value, marker } = params[0];
         return `
-        ${marker}
+        ${marker as string}
         <span>${formatMonth(value.event_month)}</span>
         <br/>
         <b>min</b>: ${fmtHours(value.p0)}

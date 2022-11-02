@@ -86,7 +86,7 @@ export const PrChart = withChart<PrData>(
   },
 );
 
-const fmt = val => `${val} PRs`;
+const fmt = (val: number) => `${val} PRs`;
 
 function transformLocData (data: PrData[]) {
   let total = 0;

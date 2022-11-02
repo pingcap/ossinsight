@@ -34,7 +34,7 @@ export default function Lines ({
   dayClosedValueKey,
   dayKey = 'current_period_day',
 }: LinesProps) {
-  const { data } = useAnalyzeChartContext();
+  const { data } = useAnalyzeChartContext<any>();
   return (
     <Box>
       <Box minWidth={96} mb={1}>
@@ -60,8 +60,8 @@ export default function Lines ({
             axisPointer={{}}
             formatter={([p1, p2]) => [
               formatDate(p1.value[dayKey]),
-              `${p1.marker} ${openedText}: <b>${p1.value[dayOpenedValueKey]}</b> ${title}`,
-              `${p2.marker} ${closedText}: <b>${p2.value[dayClosedValueKey]}</b> ${title}`,
+              `${p1.marker as string} ${openedText}: <b>${p1.value[dayOpenedValueKey] as string}</b> ${title}`,
+              `${p2.marker as string} ${closedText}: <b>${p2.value[dayClosedValueKey] as string}</b> ${title}`,
             ].join('<br>')}
           />
           <LineSeries encode={{ x: 'idx', y: dayOpenedValueKey }} color={colors[0]} showSymbol={false} smooth />

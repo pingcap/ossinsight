@@ -32,7 +32,7 @@ export default function Bars ({ color, icon, title, dayValueKey, dayKey = 'curre
           <Once>
             <AxisBase />
             <Tooltip trigger="axis" axisPointer={{}}
-                     formatter={([params]) => `${params.marker} ${formatDate(params.value[dayKey])}: <b>${params.value[dayValueKey]}</b> ${title}`} />
+                     formatter={([params]) => `${params.marker as string} ${formatDate(params.value[dayKey])}: <b>${params.value[dayValueKey] as number}</b> ${title}`} />
             <BarSeries encode={{ x: 'idx', y: dayValueKey }} color={color} barMaxWidth={8} />
           </Once>
           <Dataset source={useReversed(data.data?.data ?? [])} />

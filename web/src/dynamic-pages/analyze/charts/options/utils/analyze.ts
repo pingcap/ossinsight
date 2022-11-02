@@ -2,6 +2,7 @@ import type { RepoInfo } from '@ossinsight/api';
 import { AsyncData, RemoteData } from '../../../../../components/RemoteCharts/hook';
 import { dangerousGetCtx } from '../_danger';
 import { COMPARING_DATASET_ID, ORIGINAL_DATASET_ID } from '../dataset';
+import { notNullish } from '@site/src/utils/value';
 
 interface AnalyzeTemplateParams<T> {
   id: 'main' | 'vs';
@@ -49,13 +50,16 @@ export function simple<T> (single: T, comparing: T) {
 export function aggregate<P, T = any> (fp: (all: Array<AsyncData<RemoteData<unknown, P>>>, name: string[]) => T): T {
   const { data, repoName, compareData, comparingRepoName } = dangerousGetCtx<P>();
   const res: Array<AsyncData<RemoteData<unknown, P>>> = [];
-  if (data) {
+  const names: string[] = [];
+  if (notNullish(data)) {
     res.push(data);
+    names.push(repoName);
   }
-  if (compareData) {
+  if (notNullish(compareData)) {
     res.push(compareData);
+    names.push(comparingRepoName as string);
   }
-  return fp(res, [repoName, comparingRepoName]);
+  return fp(res, names);
 }
 
 export function min<P, K extends keyof P> (key: K): P[K] | undefined {

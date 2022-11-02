@@ -1,26 +1,32 @@
-import { AsyncData, RemoteData } from '../../../../../components/RemoteCharts/hook';
 import { KeyOfType, range } from './data';
 import { upBound } from '../../utils';
+import { notNullish } from '@site/src/utils/value';
 
-export function adjustAxis<T extends Record<string, any>> (data: T[], keys: Array<Array<KeyOfType<T, number>>>): Array<{ min?: number, max?: number }> {
+export function adjustAxis<T extends Record<string, any>> (data: T[], keys: Array<Array<KeyOfType<T, number>>>): Array<{ min: number, max: number }> {
   if (data.length === 0) {
-    return keys.map(() => ({}));
+    return keys.map(() => ({
+      min: 0,
+      max: 0,
+    }));
   }
   const ranges = keys.map(key => range(data, key));
 
-  const hasNegative = ranges.reduce((prev, current) => (prev || current[1] >= 0), false);
-  const hasPositive = ranges.reduce((prev, current) => (prev || current[0] <= 0), false);
+  const hasNegative = ranges.reduce((prev, current) => (prev || (notNullish(current) && current[1] >= 0)), false);
+  const hasPositive = ranges.reduce((prev, current) => (prev || (notNullish(current) && current[0] <= 0)), false);
 
   if (!hasNegative || !hasPositive) {
-    return keys.map(() => ({}));
+    return keys.map(() => ({
+      min: 0,
+      max: 0,
+    }));
   }
 
   let r = Infinity;
   const rList: Array<number | undefined> = [];
 
   for (const range of ranges) {
-    const [min, max] = range;
-    if (min < 0 && max > 0) {
+    if (notNullish(range)) {
+      const [min, max] = range;
       rList.push(r);
       const prev = Math.min(Math.abs(r - 1));
       const curr = Math.max(max / -min - 1);
@@ -32,8 +38,18 @@ export function adjustAxis<T extends Record<string, any>> (data: T[], keys: Arra
     }
   }
 
-  return ranges.map(([min, max]) => ({
-    min: upBound(Math.min(min, -max / r)),
-    max: upBound(Math.max(max, -min * r)),
-  }));
+  return ranges.map((range) => {
+    if (range) {
+      const [min, max] = range;
+      return {
+        min: upBound(Math.min(min, -max / r)),
+        max: upBound(Math.max(max, -min * r)),
+      };
+    } else {
+      return {
+        min: 0,
+        max: 0,
+      };
+    }
+  });
 }

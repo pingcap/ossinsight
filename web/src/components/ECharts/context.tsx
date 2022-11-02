@@ -2,7 +2,7 @@ import { createContext, MutableRefObject } from 'react';
 import EChartsReact from 'echarts-for-react';
 
 export interface EChartsContextProps {
-  echartsRef?: MutableRefObject<EChartsReact | undefined>;
+  echartsRef?: MutableRefObject<EChartsReact | null>;
   title?: string;
   description?: string;
   keyword?: string[];

@@ -1,4 +1,3 @@
-import React from 'react';
 import { withChart } from '../chart';
 import {
   axisTooltip,
@@ -43,7 +42,7 @@ export const LineChart = withChart<LineData<any>, { valueIndex: string, name: st
     comparingDataset(compareData),
   ],
   series: [
-    line('event_month', valueIndex, { name: repoName, showSymbol: data.data?.data.length <= 1 }),
-    line('event_month', valueIndex, { datasetId: COMPARING_DATASET_ID, name: comparingRepoName, showSymbol: compareData.data?.data.length <= 1 }),
+    line('event_month', valueIndex, { name: repoName, showSymbol: (data.data?.data.length ?? NaN) <= 1 }),
+    line('event_month', valueIndex, { datasetId: COMPARING_DATASET_ID, name: comparingRepoName, showSymbol: (compareData.data?.data.length ?? NaN) <= 1 }),
   ],
 }));

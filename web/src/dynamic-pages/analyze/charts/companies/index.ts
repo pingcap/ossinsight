@@ -16,9 +16,8 @@ export const CompaniesChart = withChart<CompanyData, { valueIndex: string }>(({
   const { dataset: ds, series } = utils.aggregate<CompanyData>((all, names) => {
     let index = 0;
     const res = all.flatMap((data, i) =>
-      transformCompanyData(data.data?.data ?? [], chartProps.valueIndex)
+      transformCompanyData(data.data?.data ?? [], chartProps?.valueIndex)
         .map(item => {
-          item.value;
           item.id = `${i}-${item.name}`;
           item.index = index++;
           item.color = ['#dd6b66', '#759aa0'][i];
@@ -57,7 +56,7 @@ export const CompaniesChart = withChart<CompanyData, { valueIndex: string }>(({
       selectedMode: false,
     }),
     tooltip: itemTooltip({
-      formatter: params => `${params.value.name}: ${params.value.value}`,
+      formatter: params => `${params.value.name as string}: ${params.value.value as string}`,
     }),
     hoverLayerThreshold: Infinity,
     series: [
@@ -69,7 +68,10 @@ export const CompaniesChart = withChart<CompanyData, { valueIndex: string }>(({
   aspectRatio: 16 / 9,
 });
 
-function transformCompanyData (data: CompanyData[], valueIndex: string): D3HierarchyItem[] {
+function transformCompanyData (data: CompanyData[], valueIndex: string | undefined): D3HierarchyItem[] {
+  if (!valueIndex) {
+    return [];
+  }
   return data.flatMap((item, index) => ({
     id: '',
     group: '',
