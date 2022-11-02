@@ -15,3 +15,4 @@ babel.config.js
 
 # Special files
 src/api/_todo_hardcoded.ts
+src/client/linkedin.js
