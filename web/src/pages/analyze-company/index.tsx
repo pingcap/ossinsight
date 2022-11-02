@@ -7,7 +7,7 @@ import { CompanyInfo } from './_components/hooks';
 import Typography from '@mui/material/Typography';
 
 const Page = () => {
-  const [company, setCompany] = useState<CompanyInfo>(null);
+  const [company, setCompany] = useState<CompanyInfo | null>(null);
 
   return (
     <CustomPage>

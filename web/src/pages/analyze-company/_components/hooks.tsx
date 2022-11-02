@@ -27,6 +27,6 @@ export function useCompanyList (keyword: string): AsyncData<CompanyInfo[]> {
   };
 }
 
-export function useCompanyContributions (companyName: string) {
+export function useCompanyContributions (companyName: string | undefined) {
   return useRemoteData('company-contribution-repos-rank', { companyName }, false, !!companyName);
 }

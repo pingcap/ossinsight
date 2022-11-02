@@ -6,15 +6,16 @@ import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
 import TableBody from '@mui/material/TableBody';
 import Skeleton from '@mui/material/Skeleton';
+import { isNullish } from '@site/src/utils/value';
 
 interface CompaniesProps {
-  company: CompanyInfo;
+  company: CompanyInfo | null;
 }
 
 const Companies = ({ company }: CompaniesProps) => {
   const { data, loading } = useCompanyContributions(company?.name);
 
-  if (!company) {
+  if (isNullish(company)) {
     return <></>;
   }
 
