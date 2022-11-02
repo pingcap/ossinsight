@@ -11,9 +11,15 @@ module.exports = {
   ],
   overrides: [
     {
+      files: ["**/*.js"],
+      rules: {
+        'comma-dangle': ['error', 'only-multiline'],
+        'semi': ['error', 'always'],
+      }
+    },
+    {
       files: ["**/*.ts", "**/*.tsx", "**/*.d.ts"],
       rules: {
-        'react/display-name': ['warn'],
         '@typescript-eslint/comma-dangle': ['error', 'only-multiline'],
         'semi': 'off',
         '@typescript-eslint/semi': ['error', 'always'],
@@ -45,5 +51,8 @@ module.exports = {
     react: {
       version: 'detect'
     }
+  },
+  rules: {
+    'react/display-name': ['warn'],
   }
 };
