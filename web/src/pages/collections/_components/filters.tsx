@@ -13,7 +13,7 @@ export const enum SortType {
   recent = 'recent',
 }
 
-export function useSearch () {
+export function useSearch (): readonly [search: string, Search: JSX.Element] {
   const [search, setSearch] = useState('');
 
   const handleSearchChange = useEventCallback((event: ChangeEvent<HTMLInputElement>) => {
@@ -21,6 +21,7 @@ export function useSearch () {
   });
 
   return [search, (
+    // eslint-disable-next-line react/jsx-key
     <TextField
       variant="outlined"
       size="small"
@@ -38,7 +39,7 @@ export function useSearch () {
   )] as const;
 }
 
-export function useSorter () {
+export function useSorter (): readonly [sort: SortType, Sort: JSX.Element] {
   const [sort, setSort] = useState<SortType>(SortType.alphabetical);
 
   const handleSortChange = (
@@ -51,6 +52,7 @@ export function useSorter () {
   };
 
   return [sort, (
+    // eslint-disable-next-line react/jsx-key
     <StyledToggleButtonGroup
       size="small"
       value={sort}

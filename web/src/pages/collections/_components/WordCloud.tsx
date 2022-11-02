@@ -6,6 +6,7 @@ import BrowserOnly from '@docusaurus/BrowserOnly';
 import { styled } from '@mui/material/styles';
 import D3WordCloud from 'react-d3-cloud';
 import styles from './style.module.css';
+import { notNullish } from '@site/src/utils/value';
 
 export default function WordCloud () {
   const collections = useCollections();
@@ -27,20 +28,22 @@ export default function WordCloud () {
     <TagContainer className={styles.wordCloudContainer} ref={ref}>
       <BrowserOnly>
         {() => (
-          (size != null) && <D3WordCloud
-            width={size.width}
-            height={size.height}
-            data={tags}
-            font="system-ui"
-            fontStyle="italic"
-            fontWeight="bold"
-            fontSize={() => 16}
-            random={random}
-            rotate={() => (~~(random() * 2) - 1) * 90}
-            onWordClick={(_, d) => {
-              history.push(`/collections/${(d as any).slug}`);
-            }}
-          />
+          <>
+            {notNullish(size) && <D3WordCloud
+              width={size.width}
+              height={size.height}
+              data={tags}
+              font="system-ui"
+              fontStyle="italic"
+              fontWeight="bold"
+              fontSize={() => 16}
+              random={random}
+              rotate={() => (~~(random() * 2) - 1) * 90}
+              onWordClick={(_, d) => {
+                history.push(`/collections/${(d as any).slug as string}`);
+              }}
+            />}
+          </>
         )}
       </BrowserOnly>
     </TagContainer>
