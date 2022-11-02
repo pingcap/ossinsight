@@ -34,13 +34,13 @@ export interface BaseQueryResult<Params extends {}, Data> {
   data: Data;
 }
 
-interface UseRemoteData {
+interface UseRemoteData<Reloadable extends boolean> {
   <Q extends keyof Queries, P = Queries[Q]['params'], T = Queries[Q]['data']> (query: Q, params: P, formatSql: boolean, shouldLoad?: boolean, wsApi?: 'unique' | true | undefined): AsyncData<RemoteData<P, T>> & { reload?: () => Promise<void> };
 
-  <P, T> (query: string, params: P, formatSql: boolean, shouldLoad?: boolean, wsApi?: 'unique' | true | undefined): AsyncData<RemoteData<P, T>> & { reload?: () => Promise<void> };
+  <P, T> (query: string, params: P, formatSql: boolean, shouldLoad?: boolean, wsApi?: 'unique' | true | undefined): AsyncData<RemoteData<P, T>> & (Reloadable extends true ? { reload: () => Promise<void> } : {});
 }
 
-export const useRemoteData: UseRemoteData = (query: string, params: any, formatSql: boolean, shouldLoad: boolean = true, wsApi?: 'unique' | boolean | undefined): AsyncData<RemoteData<any, any>> & { reload: () => Promise<void> } => {
+export const useRemoteData: UseRemoteData<true> = (query: string, params: any, formatSql: boolean, shouldLoad: boolean = true, wsApi?: 'unique' | boolean | undefined): AsyncData<RemoteData<any, any>> & { reload: () => Promise<void> } => {
   const { inView } = useContext(InViewContext);
   const [data, setData] = useState<RemoteData<any, any>>();
   const [error, setError] = useState<unknown>();
@@ -100,7 +100,7 @@ export const useRemoteData: UseRemoteData = (query: string, params: any, formatS
   return { data, loading, error, reload };
 };
 
-export const useRealtimeRemoteData: UseRemoteData = (query: string, params: any, formatSql, shouldLoad = true, wsApi?: 'unique' | true | undefined): AsyncData<RemoteData<any, any>> => {
+export const useRealtimeRemoteData: UseRemoteData<false> = (query: string, params: any, formatSql, shouldLoad = true, wsApi?: 'unique' | true | undefined): AsyncData<RemoteData<any, any>> => {
   const { inView } = useContext(InViewContext);
 
   const [data, setData] = useState<RemoteData<any, any>>();

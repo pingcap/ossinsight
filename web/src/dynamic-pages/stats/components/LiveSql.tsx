@@ -1,4 +1,4 @@
-import React, { MouseEventHandler, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { MouseEventHandler, useCallback, useEffect, useRef, useState } from 'react';
 import { CoolList, CoolListInstance } from '../../../components/CoolList';
 import { styled } from '@mui/material/styles';
 import { useRemoteData } from '../../../components/RemoteCharts/hook';
@@ -12,16 +12,17 @@ import { format as formatSql } from 'sql-formatter';
 import Box from '@mui/material/Box';
 import { useInterval } from './useInterval';
 import './theme.css';
+import { notNullish } from '@site/src/utils/value';
 
 const getKey = (item: InternalQueryRecord) => item.id;
 
 export default function LiveSql () {
-  const ref = useRef<CoolListInstance<InternalQueryRecord>>();
+  const ref = useRef<CoolListInstance<InternalQueryRecord>>(null);
   const intervalHandler = useRef<ReturnType<typeof setInterval>>();
 
   const dataRef = useRef<[InternalQueryRecord[], number]>([[], 0]);
   const offset = useRef<number>();
-  const initData = useRemoteData<{}, InternalQueryRecord>(
+  const initData = useRemoteData<undefined, InternalQueryRecord>(
     'stats-query-records',
     undefined,
     false,
@@ -39,10 +40,10 @@ export default function LiveSql () {
   const data = useRemoteData<{ offset: number }, InternalQueryRecord>(
     'stats-query-records-latest',
     {
-      offset: offset.current,
+      offset: offset.current as number,
     },
     false,
-    !!offset.current,
+    notNullish(offset.current),
     'unique',
   );
   useInterval(data.reload, 5000);
@@ -53,7 +54,7 @@ export default function LiveSql () {
     if (data.data != null) {
       const [origin, i] = dataRef.current ?? [[], 0];
       dataRef.current = [origin.slice(i).concat(data.data.data), 0];
-      offset.current = data.data.data.reduce((max, record) => Math.max(max, record.ts + 1), offset.current);
+      offset.current = data.data.data.reduce((max, record) => Math.max(max, record.ts + 1), offset.current ?? 0);
     }
   }, [data.data]);
 

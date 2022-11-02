@@ -9,6 +9,7 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import format from 'human-format';
+import { notFalsy, coalesceFalsy } from '@site/src/utils/value';
 
 const entries: Array<{ key: keyof TidbTableInfo, humanFormat?: any }> = [
   { key: 'tableSchema' },
@@ -24,7 +25,7 @@ const entries: Array<{ key: keyof TidbTableInfo, humanFormat?: any }> = [
   { key: 'pkType' },
 ];
 
-export default function TableInfo ({ info }: { info: TidbTableInfo }) {
+export default function TableInfo ({ info }: { info: TidbTableInfo | undefined }) {
   return (
     <Accordion>
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
@@ -39,7 +40,7 @@ export default function TableInfo ({ info }: { info: TidbTableInfo }) {
                   {key}
                 </TableCell>
                 <TableCell>
-                  {humanFormat ? format(info?.[key] || 0, humanFormat) : info?.[key] || '--'}
+                  {notFalsy(humanFormat) ? format(coalesceFalsy(info?.[key], 0), humanFormat) : coalesceFalsy(info?.[key], '--')}
                 </TableCell>
               </TableRow>
             ))}

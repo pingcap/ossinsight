@@ -37,7 +37,7 @@ function LiveSqlTab () {
 }
 
 function IndexUsageTab () {
-  const { data, reload } = useRemoteData<{}, TidbIndexStats>('stats-indexes-usage', undefined, false, true, true);
+  const { data, reload } = useRemoteData<undefined, TidbIndexStats>('stats-indexes-usage', undefined, false, true, true);
   useInterval(reload, 1000);
 
   return <IndexStats showTable stats={data?.data ?? []} />;
