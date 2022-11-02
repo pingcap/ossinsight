@@ -8,6 +8,7 @@
     "lib": ["dom","esnext"],
     "resolveJsonModule": true,
     "isolatedModules": true,
+    "strictNullChecks": true,
     "types": [
       "@docusaurus/plugin-google-gtag/src/types.d.ts",
       "./types/ossinsight"

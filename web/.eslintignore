@@ -1,0 +1,10 @@
+static
+build
+.docusaurus
+.prefetch
+
+.eslintrc.js
+sidebars.js
+prefetch.mjs
+docusaurus.config.js
+babel.config.js
