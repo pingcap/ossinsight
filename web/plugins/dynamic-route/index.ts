@@ -3,7 +3,7 @@ import { Plugin, RouteConfig } from '@docusaurus/types';
 
 type DynamicRoutePluginOptions = {
   routes: Array<RouteConfig & {
-    params: Array<Record<string, string>>
+    params?: Array<Record<string, string>>
   }>
 };
 
@@ -18,7 +18,7 @@ const DynamicRoutePlugin = function (context: PluginContext, options: DynamicRou
       routes.forEach(routeOption => {
         const { params, ...route } = routeOption;
 
-        if (params) {
+        if (params != null) {
           params.forEach(param => {
             let { path, ...rest } = route;
             Object.entries(param).forEach(([k, v]) => {

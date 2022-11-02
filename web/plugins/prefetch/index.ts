@@ -51,6 +51,8 @@ export default function PrefetchPlugin (_, options: Record<string, string>): Plu
       return content;
     },
     injectHtmlTags ({ content }) {
+      const API_BASE = (process.env.APP_API_BASE ?? '') || 'https://api.ossinsight.io';
+
       return {
         headTags: content
           .filter(isPrefetchLink)
@@ -60,7 +62,7 @@ export default function PrefetchPlugin (_, options: Record<string, string>): Plu
             type: 'application/json',
             attributes: {
               rel: 'preload',
-              href: (process.env.APP_API_BASE || 'https://api.ossinsight.io') + link,
+              href: API_BASE + link,
               as: 'fetch',
               crossorigin: 'anonymous',
             },

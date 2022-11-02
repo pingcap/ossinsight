@@ -36,7 +36,7 @@ const clientModule: ClientModule = {
         // elsewhere.
         const contentGroup = getContentGroup(location);
         // Set content group if exists
-        if (contentGroup) {
+        if (contentGroup != null) {
           window.gtag('set', 'content_group', contentGroup);
         }
         window.gtag('event', 'page_view', {

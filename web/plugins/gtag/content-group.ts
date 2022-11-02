@@ -3,7 +3,7 @@ type GetContentGroupOptions = {
   search: string
 };
 
-export function getContentGroup ({ pathname, search }: GetContentGroupOptions): string {
+export function getContentGroup ({ pathname, search }: GetContentGroupOptions): string | undefined {
   // collections
   if (pathname.includes('/collections/')) {
     if (pathname.includes('/trends')) {
@@ -25,5 +25,7 @@ export function getContentGroup ({ pathname, search }: GetContentGroupOptions): 
     return 'blog';
   } else if (pathname.includes('/workshop/')) {
     return 'workshop';
+  } else {
+    return undefined;
   }
 }

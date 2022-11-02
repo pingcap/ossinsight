@@ -23,7 +23,7 @@ export default function PrefetchPlugin (): Plugin<void> {
   return {
     name: 'plugin-material-ui',
     async loadContent () {
-      const DOCUSAURUS_CORE_VERSION = require(path.resolve(PROJ_ROOT, 'package-lock.json')).packages['node_modules/@docusaurus/core'].version;
+      const DOCUSAURUS_CORE_VERSION: string = require(path.resolve(PROJ_ROOT, 'package-lock.json')).packages['node_modules/@docusaurus/core'].version;
 
       // Check md5 of serverEntry.js
       const ORIGINAL_MD5 = await fsp.readFile(path.resolve(__dirname, 'serverEntry.js.md5'), { encoding: 'utf-8' });
@@ -45,7 +45,7 @@ export default function PrefetchPlugin (): Plugin<void> {
             errChunks.push(chunk);
           }
         });
-        proc.on('exit', async () => {
+        proc.on('exit', () => {
           if (proc.exitCode === 0) {
             resolve();
           } else {

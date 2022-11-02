@@ -30,6 +30,12 @@ module.exports = {
     '@typescript-eslint/consistent-type-definitions': 'off',
     '@typescript-eslint/member-delimiter-style': 'off',
     '@typescript-eslint/array-type': ['error', {default: 'array-simple'}],
+    '@typescript-eslint/no-var-requires': 'off',
+    '@typescript-eslint/strict-boolean-expressions': ['error', {
+      allowString: true,
+      allowNullableBoolean: true,
+      allowNullableString: true,
+    }]
   },
   settings: {
     react: {
