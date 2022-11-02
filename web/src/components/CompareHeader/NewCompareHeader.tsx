@@ -3,7 +3,6 @@ import Stack from '@mui/material/Stack/Stack';
 import React from 'react';
 import { combineSx } from '../../utils/mui';
 import { FirstRepoSelector, Repo, SecondRepoSelector } from './RepoSelector';
-import { useIsDarkTheme } from '@site/src/hooks/theme';
 
 interface NewCompareHeaderProps extends BoxProps {
   repo1: Repo | null;
@@ -34,8 +33,6 @@ function NewCompareHeader ({
   endAdornment,
   ...props
 }: NewCompareHeaderProps) {
-  const isDarkTheme = useIsDarkTheme();
-
   return (
     <Box
       position="sticky"

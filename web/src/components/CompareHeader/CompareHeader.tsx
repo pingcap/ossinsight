@@ -49,7 +49,7 @@ function CompareHeader ({
       <Grid container>
         <Grid item xs={5.5} display="flex" justifyContent="flex-end" px={1}>
           <RepoSelector
-            label={repo1Placeholder || 'Repo Name 1'}
+            label={repo1Placeholder ?? 'Repo Name 1'}
             defaultRepoName="recommend-repo-list-1-keyword"
             repo={repo1}
             onChange={onRepo1Change}
@@ -71,7 +71,7 @@ function CompareHeader ({
         </Grid>
         <Grid item xs={5.5} display="flex" justifyContent="flex-start" px={1}>
           <RepoSelector
-            label={repo2Placeholder || 'Repo Name 2'}
+            label={repo2Placeholder ?? 'Repo Name 2'}
             defaultRepoName="recommend-repo-list-2-keyword"
             repo={repo2}
             onChange={onRepo2Change}
