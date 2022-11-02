@@ -43,7 +43,7 @@ function useDocTOC () {
 
 export default function DocItemLayout ({ children }: Props): JSX.Element {
   const docTOC = useDocTOC();
-  const { metadata: { title }, frontMatter } = useDoc();
+  const { metadata: { title } } = useDoc();
   return (
     <div className="row">
       <div className={clsx('col', !docTOC.hidden && styles.docItemCol)}>
