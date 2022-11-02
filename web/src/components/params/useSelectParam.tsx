@@ -4,7 +4,6 @@ import MenuItem from '@mui/material/MenuItem';
 import { FormControl, InputLabel, unstable_useId, useEventCallback } from '@mui/material';
 import { SelectInputProps } from '@mui/material/Select/SelectInput';
 import { FormControlProps } from '@mui/material/FormControl/FormControl';
-import { coalesceNullish } from '@site/src/utils/value';
 import { isString } from 'ahooks/es/utils';
 
 export type SelectParamOption<K extends string | number = string> = {
@@ -16,8 +15,19 @@ function renderSelectParamOption<K extends string | number> (option: SelectParam
   return isString(option) ? '' : option.title;
 }
 
-export function useSelectParam<K extends string | number = string> (options: Array<SelectParamOption<K>>, defaultValue: SelectParamOption<K> | null = null, label: string = '', props: FormControlProps = {}, selectProps: SelectProps<SelectParamOption<K>> = {}) {
-  const [value, setValue] = useState<SelectParamOption<K> | ''>(coalesceNullish(defaultValue, ''));
+interface UseSelectParamResult<K extends string | number, AllowEmpty extends boolean> {
+  select: JSX.Element;
+  value: AllowEmpty extends true ? SelectParamOption<K> | null : SelectParamOption<K>;
+}
+
+export function useSelectParam<K extends string | number = string, AllowEmpty extends boolean = true> (
+  options: Array<SelectParamOption<K>>,
+  defaultValue: SelectParamOption<K>,
+  label: string,
+  props: FormControlProps = {},
+  selectProps: SelectProps<SelectParamOption<K>> = {},
+): UseSelectParamResult<K, AllowEmpty> {
+  const [value, setValue] = useState<SelectParamOption<K> | (AllowEmpty extends true ? '' : never)>(defaultValue);
   const id = unstable_useId() ?? 'fatal-id';
 
   const handleValueChange: SelectInputProps<SelectParamOption<K>>['onChange'] = useEventCallback((event) => {
@@ -45,5 +55,8 @@ export function useSelectParam<K extends string | number = string> (options: Arr
     </FormControl>
   ), [options, value, id]);
 
-  return { select, value };
+  return {
+    select,
+    value: (value === '' ? null : value) as never,
+  };
 }

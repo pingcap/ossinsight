@@ -6,7 +6,7 @@ import InViewContext from '../InViewContext';
 import { core } from '../../api';
 import { clearPromiseInterval, setPromiseInterval } from '../../lib/promise-interval';
 import { usePluginData } from '@docusaurus/core/lib/client/exports/useGlobalData';
-import { isNullish, notNullish } from '@site/src/utils/value';
+import { isNonemptyString, isNullish, notNullish } from '@site/src/utils/value';
 import { getErrorMessage, isAxiosError } from '@site/src/utils/error';
 
 export interface AsyncData<T> {
@@ -248,8 +248,8 @@ export const useSQLPlayground = (
   type: 'repo' | 'user',
   id: string,
 ) => {
-  const [data, setData] = useState<{ data: any, sql: string, spent: number }>();
-  const [error, setError] = useState<unknown>();
+  const [data, setData] = useState<Pick<RemoteData<any, any>, 'data' | 'sql' | 'spent'>>();
+  const [error, setError] = useState<string>();
   const [loading, setLoading] = useState(false);
   const mounted = useRef(false);
 
@@ -268,7 +268,7 @@ export const useSQLPlayground = (
       core
         .postPlaygroundSQL({ sql, type, id })
         .then(
-          ({ data, sql, spent }: { data: any, sql: string, spent: number }) => {
+          ({ data, sql, spent }: RemoteData<any, any>) => {
             if (!mounted.current) {
               return;
             }
@@ -283,11 +283,11 @@ export const useSQLPlayground = (
           let errorParsed = false;
           if (isAxiosError(e)) {
             if (notNullish(e.response)) {
-              const { msg, sqlMessage } = e.response.data;
-              if (notNullish(msg)) {
+              const { msg, sqlMessage } = e.response?.data ?? {};
+              if (isNonemptyString(msg)) {
                 setError(msg);
                 errorParsed = true;
-              } else if (notNullish(sqlMessage)) {
+              } else if (isNonemptyString(sqlMessage)) {
                 setError(sqlMessage);
                 errorParsed = true;
               }

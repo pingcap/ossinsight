@@ -1,6 +1,6 @@
 import AnalyticsIcon from '@mui/icons-material/Analytics';
 import AutoGraphIcon from '@mui/icons-material/AutoGraph';
-import { BottomNavigation, BottomNavigationAction, useEventCallback } from '@mui/material';
+import { BottomNavigation, BottomNavigationAction } from '@mui/material';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';

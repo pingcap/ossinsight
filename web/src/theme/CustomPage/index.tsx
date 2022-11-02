@@ -16,7 +16,7 @@ export interface CustomPageProps extends LayoutProps {
   dark?: boolean;
   header?: JSX.Element;
   sideWidth?: string;
-  Side?: () => JSX.Element;
+  Side?: () => JSX.Element | null;
 }
 
 export default function CustomPage ({

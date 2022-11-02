@@ -17,7 +17,7 @@ import { SelectChangeEvent } from '@mui/material/Select/SelectInput';
 import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
 import Badge from '@mui/material/Badge';
-import React, { ForwardedRef, forwardRef, useCallback, useMemo, useState } from 'react';
+import React, { ForwardedRef, forwardRef, useMemo, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useAnalyzeContext } from '../charts/context';
 import { RemoteData, useRemoteData } from '../../../components/RemoteCharts/hook';
@@ -28,6 +28,7 @@ import { DateTime } from 'luxon';
 import Tooltip from '@mui/material/Tooltip';
 import { useDebugDialog } from '../../../components/DebugDialog';
 import CircularProgress from '@mui/material/CircularProgress';
+import { notNullish } from '@site/src/utils/value';
 
 type ChangedEvents = { last_month_events: number, last_2nd_month_events: number, changes: number };
 
@@ -171,16 +172,11 @@ function renderBasic (item: Result & ChangedEvents & { is_new_contributor?: 0 | 
   );
 }
 
-// TODO
-function renderCodes (item: Result & ChangedCodes, first: Result & ChangedCodes): JSX.Element {
-  return <></>;
-}
-
-function useData<K extends keyof TypeMap> (repoId: number, key: string, excludeBots: boolean, show: boolean): [Array<TypeMap[K]>, RemoteData<any, TypeMap[K]>, boolean] {
+function useData<K extends keyof TypeMap> (repoId: number | undefined, key: string, excludeBots: boolean, show: boolean): [Array<TypeMap[K]>, RemoteData<any, TypeMap[K]> | undefined, boolean] {
   const { data, loading } = useRemoteData<Param, TypeMap[K]>(key, {
-    repoId,
+    repoId: repoId as never,
     excludeBots,
-  }, false, !!repoId && show);
+  }, false, notNullish(repoId) && show);
 
   return [data?.data ?? [], data, loading];
 }
@@ -227,7 +223,7 @@ const useLastMonth = () => {
   }, []);
 };
 
-export const Contributors = forwardRef(function ({}, ref: ForwardedRef<HTMLElement>) {
+export const Contributors = forwardRef(function (_, ref: ForwardedRef<HTMLElement>) {
   const visible = useVisibility();
   const { ref: inViewRef, inView } = useInView();
 
@@ -240,7 +236,7 @@ export const Contributors = forwardRef(function ({}, ref: ForwardedRef<HTMLEleme
   const { dialog: debugDialog, button: debugButton } = useDebugDialog(data);
 
   const handleChangeDescriptor = useEventCallback((event: SelectChangeEvent<Descriptor<any>>) => {
-    setDescriptor(descriptors.find(descriptor => descriptor.key === event.target.value));
+    setDescriptor(descriptors.find(descriptor => descriptor.key === event.target.value) as Descriptor<any>);
   });
 
   const handleChangeType = useEventCallback((event, value: string) => {

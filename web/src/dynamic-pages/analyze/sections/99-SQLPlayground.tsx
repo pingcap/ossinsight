@@ -27,10 +27,10 @@ import IconButton from '@mui/material/IconButton';
 import TerminalIcon from '@mui/icons-material/Terminal';
 
 import { useSQLPlayground } from '../../../components/RemoteCharts/hook';
-import { useAnalyzeContext } from '../charts/context';
 import { Repo } from '../../../components/CompareHeader/RepoSelector';
+import { isFiniteNumber, isNullish, notFalsy, notNullish } from '@site/src/utils/value';
 
-const renderTable = (data: Array<{ [x: string]: any }>) => {
+const renderTable = (data: Array<{ [x: string]: string | number }>) => {
   return (
     <>
       <TableContainer component={Paper}>
@@ -41,7 +41,7 @@ const renderTable = (data: Array<{ [x: string]: any }>) => {
         >
           <TableHead>
             <TableRow>
-              {data[0] &&
+              {notNullish(data[0]) &&
                 Object.keys(data[0]).map((key) => (
                   <TableCell
                     key={`th=${key}`}
@@ -137,7 +137,7 @@ export const SQLPlaygroundDrawer = (props: { data?: Repo }) => {
   const { data, loading, error } = useSQLPlayground(
     sql,
     'repo',
-    `${targetData.id}`,
+    `${targetData?.id ?? 'undefined'}`,
   );
 
   // React.useEffect(() => {
@@ -160,7 +160,7 @@ export const SQLPlaygroundDrawer = (props: { data?: Repo }) => {
     setInputValue(formattedSQL);
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     setSQL(inputValue);
   };
 
@@ -228,7 +228,7 @@ export const SQLPlaygroundDrawer = (props: { data?: Repo }) => {
               <Button
                 variant="contained"
                 size="small"
-                disabled={!inputValue || !targetData.id}
+                disabled={!inputValue || isNullish(targetData?.id)}
                 onClick={handleFormatSQLClick}
               >
                 Format
@@ -236,7 +236,7 @@ export const SQLPlaygroundDrawer = (props: { data?: Repo }) => {
               <LoadingButton
                 variant="contained"
                 size="small"
-                disabled={!inputValue || !targetData.id}
+                disabled={!inputValue || isNullish(targetData?.id)}
                 onClick={handleSubmit}
                 endIcon={<PlayArrowIcon fontSize="inherit" />}
                 loading={loading}
@@ -266,8 +266,8 @@ export const SQLPlaygroundDrawer = (props: { data?: Repo }) => {
               <PreDefinedSQLList
                 hadnleClick={handlePredefinedSQLChange}
                 replacements={[
-                  { match: 'repoId', value: `${targetData.id}` },
-                  { match: 'repoName', value: targetData.name },
+                  { match: 'repoId', value: `${targetData?.id ?? 'undefined'}` },
+                  { match: 'repoName', value: targetData?.name ?? 'undefined' },
                 ]}
               />
             </Box>
@@ -294,7 +294,7 @@ export const SQLPlaygroundDrawer = (props: { data?: Repo }) => {
 /* ⚠️ 
 Playground uses LIMITED resource(cpu/mem), so SQL should add:
 
-  WHERE repo_id = ${targetData.id}
+  WHERE repo_id = ${targetData?.id ?? 'undefined'}
 
 to use index as much as possible, or it will be terminated.
 
@@ -318,16 +318,16 @@ LIMIT
                 }}
               />
 
-              {error && (
+              {notFalsy(error) && (
                 <Alert severity="error">
                   <AlertTitle>Error</AlertTitle>
                   {`${error}`}
                 </Alert>
               )}
-              {data?.spent && data?.data && (
+              {isFiniteNumber(data?.spent) && notNullish(data) && (
                 <>
                   <Typography variant="body2" sx={{ padding: '1rem' }}>
-                    {`${data.data?.length} results in ${data.spent.toFixed(
+                    {`${data.data.length} results in ${data.spent.toFixed(
                       2,
                     )}s.`}
                   </Typography>
@@ -358,7 +358,7 @@ const PreDefinedSQLList = (props: {
   replacements?: Array<{ match: string, value: string }>; // Replace the string `{{match}}` with `value` in SQL
 }) => {
   const {
-    title = 'Pre-defined SQL',
+    // title = 'Pre-defined SQL',
     hadnleClick = () => {},
     replacements = [],
   } = props;
@@ -403,7 +403,7 @@ const PreDefinedSQLList = (props: {
           let sql = item.sql;
 
           replacements.forEach((replacement) => {
-            sql = sql.replaceAll(`{{${replacement.match}}}`, replacement.value);
+            sql = sql?.replaceAll(`{{${replacement.match}}}`, replacement.value);
           });
 
           return (
@@ -412,7 +412,7 @@ const PreDefinedSQLList = (props: {
                 selected={selectedItemId === item.id}
                 onClick={() => {
                   if (selectedItemId !== item.id) {
-                    hadnleClick(sql);
+                    hadnleClick(sql ?? '');
                     setSelectedItemId(item.id);
                   }
                 }}
@@ -727,7 +727,7 @@ const SQLEditor = (props: {
 };
 
 const dataListToRawOutput = (dataList: Array<{ [key: string]: string }>) => {
-  const results = [];
+  const results: string[][] = [];
   const rowsMaxLength = dataList.reduce(
     (prev: { [key: string]: number }, item) => {
       Object.keys(item).forEach((itemKey) => {
@@ -751,7 +751,7 @@ const dataListToRawOutput = (dataList: Array<{ [key: string]: string }>) => {
     headStr += key.padEnd(rowsMaxLength[key], ' ') + ' | ';
   });
   dataList.forEach((item) => {
-    const row = [];
+    const row: string[] = [];
     Object.keys(rowsMaxLength).forEach((key) => {
       const value = item[key];
       const maxLength = rowsMaxLength[key];

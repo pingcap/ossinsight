@@ -6,7 +6,6 @@ import { Scrollspy } from '@makotot/ghostui';
 import { useMediaQuery } from '@mui/material';
 import Container from '@mui/material/Container';
 import { Theme } from '@mui/material/styles';
-import Error from '@theme/Error';
 import React, { useCallback, useRef } from 'react';
 import { AnalyzeContext } from './charts/context';
 import { useRepo } from '../../api';
@@ -26,6 +25,7 @@ import { IssuesSection } from './sections/4-Issues';
 import { Contributors } from './sections/6-Contributors';
 import { SQLPlaygroundDrawer } from './sections/99-SQLPlayground';
 import { Repository } from './sections/5-Repository';
+import { isNullish, notNullish } from '@site/src/utils/value';
 
 interface AnalyzePageParams {
   owner: string;
@@ -58,7 +58,7 @@ function AnalyzePage () {
     });
   }, [history, location]);
 
-  const onComparingRepoChange = useCallback((repo: Repo | undefined) => {
+  const onComparingRepoChange = useCallback((repo: Repo | null) => {
     setComparingRepoName(repo?.name);
   }, []);
 
@@ -66,9 +66,9 @@ function AnalyzePage () {
 
   // Out of mui theme context, so we need to use magic number here
   const isSmall = useMediaQuery<Theme>('(max-width:600px)');
-  const sideWidth = isSmall ? undefined : '160px';
+  const sideWidth = isSmall ? '0' : '160px';
 
-  if ((main == null) && error) {
+  if (isNullish(main) && notNullish(error)) {
     return <Redirect to='/404' />;
   }
 
@@ -77,12 +77,12 @@ function AnalyzePage () {
       {({ currentElementIndexInViewport }) => (
         <CustomPage
           sideWidth={sideWidth}
-          Side={() => !isSmall ? <Navigator comparing={!!comparingRepoName} type='side' value={sections[currentElementIndexInViewport]} /> : undefined}
+          Side={() => !isSmall ? <Navigator comparing={!!comparingRepoName} type='side' value={sections[currentElementIndexInViewport]} /> : null}
           header={(
             <NewCompareHeader
               sideWidth={sideWidth}
-              repo1={main?.repo}
-              repo2={vs?.repo}
+              repo1={main?.repo ?? null}
+              repo2={vs?.repo ?? null}
               onRepo1Change={onRepoChange}
               onRepo2Change={onComparingRepoChange}
               onRepo1Valid={allValid}
@@ -91,7 +91,7 @@ function AnalyzePage () {
               repo1Placeholder="Select to analyze"
               repo2Placeholder="Add to compare"
               endAdornment={
-                !vs?.repo.id &&
+                notNullish(vs) &&
                 ((main?.repo) != null) && (
                   <SQLPlaygroundDrawer key={name} data={main?.repo} />
                 )
@@ -170,8 +170,8 @@ function useMainRepo (): AsyncData<InfoPack> & { name: string } {
   };
 }
 
-function useVsRepo (): AsyncData<InfoPack> & { name: string, setName: (val: string | undefined) => void } {
-  const [vs, setVs] = useUrlSearchState('vs', stringParam());
+function useVsRepo (): AsyncData<InfoPack> & { name: string | undefined, setName: (val: string | undefined) => void } {
+  const [vs, setVs] = useUrlSearchState<string | undefined>('vs', stringParam());
 
   const { data: repo, isValidating, error } = useRepo(vs);
   return {
@@ -179,6 +179,8 @@ function useVsRepo (): AsyncData<InfoPack> & { name: string, setName: (val: stri
     loading: isValidating,
     error,
     name: vs,
-    setName: setVs,
+    setName: useCallback((name) => {
+      setVs(name);
+    }, [setVs]),
   };
 }

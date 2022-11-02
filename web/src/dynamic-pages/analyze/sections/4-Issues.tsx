@@ -9,12 +9,13 @@ import { IssueChart } from '../charts/issue';
 import Summary, { SummaryProps } from '../charts/summary';
 import Section from '../Section';
 import { H2, H3, P2 } from '../typography';
+import { notNullish } from '@site/src/utils/value';
 
-export const IssuesSection = forwardRef(function ({}, ref: ForwardedRef<HTMLElement>) {
+export const IssuesSection = forwardRef(function (_, ref: ForwardedRef<HTMLElement>) {
   const theme = useTheme();
   const isSmall = useMediaQuery(theme.breakpoints.down('md'));
   const { comparingRepoId: vs } = useAnalyzeContext();
-  const commonAspectRatio = isSmall ? vs ? 4 / 3 : 4 / 3 : vs ? 16 / 9 : 20 / 9;
+  const commonAspectRatio = isSmall ? notNullish(vs) ? 4 / 3 : 4 / 3 : notNullish(vs) ? 16 / 9 : 20 / 9;
 
   const issuesSummaries: SummaryProps['items'] = useMemo(() => {
     return [
@@ -29,7 +30,7 @@ export const IssuesSection = forwardRef(function ({}, ref: ForwardedRef<HTMLElem
     <Section id='issues' ref={ref}>
       <H2>Issues</H2>
       <Grid container spacing={2} alignItems='center'>
-        <Grid item xs={12} md={vs ? 8 : 6}>
+        <Grid item xs={12} md={notNullish(vs) ? 8 : 6}>
           <Summary items={issuesSummaries} query='analyze-repo-issue-overview' />
         </Grid>
       </Grid>

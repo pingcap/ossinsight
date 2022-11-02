@@ -27,12 +27,13 @@ import { paramCase } from 'param-case';
 import { MonthlySummaryCard } from '../charts/montly-cards';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
+import { isNullish, notNullish } from '@site/src/utils/value';
 
-export const OverviewSection = forwardRef(function ({}, ref: ForwardedRef<HTMLElement>) {
+export const OverviewSection = forwardRef(function (_, ref: ForwardedRef<HTMLElement>) {
   const theme = useTheme();
   const isSmall = useMediaQuery(theme.breakpoints.down('md'));
   const { repoId, comparingRepoName, repoName: name, repoInfo, comparingRepoId: vs } = useAnalyzeContext();
-  const { data: collectionData } = useRemoteData<any, Pick<Collection, 'id' | 'name'>>('get-repo-collections', { repoId }, false, !!repoId && !vs);
+  const { data: collectionData } = useRemoteData<any, Pick<Collection, 'id' | 'name'>>('get-repo-collections', { repoId }, false, notNullish(repoId) && isNullish(vs));
 
   const summaries: SummaryProps['items'] = useMemo(() => {
     return [{
@@ -109,13 +110,13 @@ export const OverviewSection = forwardRef(function ({}, ref: ForwardedRef<HTMLEl
           </>
             )
       }
-      <Grid container spacing={0} alignItems='center' mb={!vs ? 2 : 0} mt={2}>
+      <Grid container spacing={0} alignItems='center' mb={isNullish(vs) ? 2 : 0} mt={2}>
         <Grid item xs={12} lg={5}>
           <Summary items={summaries} query='analyze-repo-overview' />
         </Grid>
         <Grid item xs={12} lg={7}>
           {
-            vs
+            notNullish(vs)
               ? (
                 <Analyze query='analyze-stars-history'>
                   <H2 id='stars-history' analyzeTitle display='none'>Stars History</H2>
@@ -137,7 +138,7 @@ export const OverviewSection = forwardRef(function ({}, ref: ForwardedRef<HTMLEl
           }
         </Grid>
       </Grid>
-      {!vs && (
+      {isNullish(vs) && (
         <Analyze query='analyze-stars-history'>
           <H2 id='stars-history' analyzeTitle display='none'>Stars History</H2>
           <P2 display='none'>The growth trend and the specific number of stars since the repository was established.</P2>

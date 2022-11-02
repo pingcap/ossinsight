@@ -1,6 +1,5 @@
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
-import { useTheme } from '@mui/material/styles';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import { GitMergeIcon, IssueOpenedIcon, PersonIcon, StarIcon } from '@primer/octicons-react';
@@ -22,9 +21,9 @@ import { alpha2ToTitle } from '../../../lib/areacode';
 import Section from '../Section';
 import styles from '../styles.module.css';
 import { H2, H3, H4, P2 } from '../typography';
+import { notNullish } from '@site/src/utils/value';
 
-export const PeopleSection = forwardRef(function ({}, ref: ForwardedRef<HTMLElement>) {
-  const theme = useTheme();
+export const PeopleSection = forwardRef(function (_, ref: ForwardedRef<HTMLElement>) {
   const { comparingRepoId: vs, comparingRepoName } = useAnalyzeContext();
 
   // hooks for sections
@@ -60,10 +59,10 @@ export const PeopleSection = forwardRef(function ({}, ref: ForwardedRef<HTMLElem
           </Tabs>
         </Box>
         <Grid container alignItems='center'>
-          <Grid item xs={12} md={vs ? 8 : 9}>
+          <Grid item xs={12} md={notNullish(vs) ? 8 : 9}>
             <WorldMapChart aspectRatio={3 / 2} />
           </Grid>
-          <Grid item xs={12} md={vs ? 4 : 3}>
+          <Grid item xs={12} md={notNullish(vs) ? 4 : 3}>
             <List title='Geo-Locations' n={10} /* valueIndex='count' */ nameIndex='country_or_area' percentIndex='percentage' transformName={alpha2ToTitle} />
           </Grid>
         </Grid>
@@ -73,16 +72,16 @@ export const PeopleSection = forwardRef(function ({}, ref: ForwardedRef<HTMLElem
         <P2>Company information about Stargazers, Issue creators, and Pull Request creators(analyzed with the public github infomation).</P2>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <Tabs value={companyType} onChange={handleChangeCompanyType} variant='scrollable' scrollButtons='auto' allowScrollButtonsMobile>
-            <IconTab defaultTab id='companies-stargazers' value='analyze-stars-company' icon={<StarIcon />}>Stargazers<span style={{ display: 'none' }}>' Companies</span></IconTab>
-            <IconTab id='companies-issue-creators' value='analyze-issue-creators-company' icon={<IssueCreatorIcon size={24} />}>Issue Creators<span style={{ display: 'none' }}>' Companies</span></IconTab>
-            <IconTab id='companies-pr-creators' value='analyze-pull-request-creators-company' icon={<PrCreatorIcon size={24} />}>Pull Requests Creators<span style={{ display: 'none' }}>' Companies</span></IconTab>
+            <IconTab defaultTab id='companies-stargazers' value='analyze-stars-company' icon={<StarIcon />}>Stargazers<span style={{ display: 'none' }}>&apos; Companies</span></IconTab>
+            <IconTab id='companies-issue-creators' value='analyze-issue-creators-company' icon={<IssueCreatorIcon size={24} />}>Issue Creators<span style={{ display: 'none' }}>&apos; Companies</span></IconTab>
+            <IconTab id='companies-pr-creators' value='analyze-pull-request-creators-company' icon={<PrCreatorIcon size={24} />}>Pull Requests Creators<span style={{ display: 'none' }}>&apos; Companies</span></IconTab>
           </Tabs>
         </Box>
         <Grid container alignItems='center'>
-          <Grid item xs={12} md={vs ? 8 : 9}>
+          <Grid item xs={12} md={notNullish(vs) ? 8 : 9}>
             <CompaniesChart spec={{ valueIndex: companyValueIndices[companyType] }} aspectRatio={3 / 2} />
           </Grid>
-          <Grid item xs={12} md={vs ? 4 : 3}>
+          <Grid item xs={12} md={notNullish(vs) ? 4 : 3}>
             <List title='Companies' n={10} /* valueIndex={companyValueIndices[companyType]} */ nameIndex='company_name' percentIndex='proportion' />
           </Grid>
         </Grid>
@@ -94,14 +93,14 @@ export const PeopleSection = forwardRef(function ({}, ref: ForwardedRef<HTMLElem
 const IconTab = ({ children, id, icon, defaultTab, ...props }: PropsWithChildren<{ id: string, value: string, icon?: React.ReactNode, defaultTab?: boolean }>) => {
   const { headingRef } = useContext(AnalyzeChartContext);
   const handleClick = useCallback((event: React.MouseEvent<HTMLHeadingElement>) => {
-    headingRef(event.currentTarget);
+    headingRef?.(event.currentTarget);
   }, []);
-  const ref = useRef<HTMLHeadingElement>();
+  const ref = useRef<HTMLHeadingElement | null>(null);
 
   useEffect(() => {
     if (defaultTab) {
       if (ref.current != null) {
-        headingRef(ref.current);
+        headingRef?.(ref.current);
       }
     }
   }, []);
