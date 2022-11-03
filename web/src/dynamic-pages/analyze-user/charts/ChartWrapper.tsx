@@ -5,7 +5,7 @@ import { useAnalyzeUserContext } from './context';
 import { useHistory } from '@docusaurus/router';
 import { RemoteData } from '../../../components/RemoteCharts/hook';
 import { useDebugDialog } from '../../../components/DebugDialog';
-import { isEmptyArray, nonEmptyArray, notNullish } from '@site/src/utils/value';
+import { nonEmptyArray, notNullish } from '@site/src/utils/value';
 
 export interface ChartWrapperProps {
   title?: string;
