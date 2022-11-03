@@ -25,7 +25,9 @@ jobs:
       - name: Install
         run: npm ci
       - name: Lint
-        run: npm run lint:ci
+        run: |
+          npm run lint:ci
+          npx tsc --noEmit
 
   preview:
     runs-on: ubuntu-latest

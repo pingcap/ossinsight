@@ -58,7 +58,7 @@ const ThemeAdaptor = ({ children, dark }: PropsWithChildren<{ dark?: boolean }>)
     },
   });
 
-  const [group, setGroup] = useState<string>(undefined);
+  const [group, setGroup] = useState<string>();
 
   return (
     <GroupSelectContext.Provider value={{ group, setGroup }}>

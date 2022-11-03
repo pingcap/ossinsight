@@ -45,7 +45,7 @@ const DEFAULT_OPTIONS: PieOutLabelOptions = {
   lineThickness: 3,
 };
 
-const PieOutLabelPlugin: Plugin<'pie' | 'doughnut', void> = {
+const PieOutLabelPlugin: Plugin<'pie' | 'doughnut'> = {
   id: 'pie-out-label-plugin',
   beforeInit (chart: Chart) {
     const options = chart.options;

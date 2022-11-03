@@ -25,8 +25,7 @@ export type QueryItem = ItemBase & {
 };
 
 export type StaticItem = ItemBase & {
-  data?: (repoInfo: RepoInfo) => any;
-  comparingData?: any;
+  data: (repoInfo: RepoInfo) => any;
 };
 
 export interface SummaryProps {
@@ -88,9 +87,8 @@ export default function Summary ({ items, query }: SummaryProps) {
               <SummaryItem container flexWrap="nowrap" gap={1} {...item} sizes={sizes} key={item.field} />
             );
           } else {
-            const { data, comparingData, ...props } = item;
-            return <StaticSummaryItem key={i} container flexWrap="nowrap" gap={1} data={data}
-                                      comparingData={comparingData} {...props} sizes={sizes} />;
+            const { data, ...props } = item;
+            return <StaticSummaryItem key={i} container flexWrap="nowrap" gap={1} data={data} {...props} sizes={sizes} />;
           }
         })}
       </Stack>

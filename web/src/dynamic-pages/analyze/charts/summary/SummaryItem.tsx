@@ -22,7 +22,6 @@ export interface StaticSummaryItemProps extends Omit<GridProps, 'title'> {
   icon?: React.ReactNode;
   title: React.ReactNode;
   data: (repoInfo: RepoInfo) => any;
-  comparingData?: any;
   sizes: readonly [number, number];
 }
 
@@ -72,7 +71,7 @@ export function SummaryItem<F extends string> ({ title, icon, sizes, field, ...g
   );
 }
 
-export function StaticSummaryItem ({ title, icon, sizes, data, comparingData, ...gridProps }: StaticSummaryItemProps) {
+export function StaticSummaryItem ({ title, icon, sizes, data, ...gridProps }: StaticSummaryItemProps) {
   const { comparingRepoId, repoInfo, comparingRepoInfo } = useAnalyzeContext();
 
   return (

@@ -46,7 +46,7 @@ type QueryComponentProps<Q extends keyof Queries> = Queries[Q]['params'] & {
 
 export function renderChart (query, chart, { error, data }: AsyncData<RemoteData<any, any>>, clear = false) {
   const { dialog: debugDialog, button: debugButton } = useDebugDialog(data);
-  const echartsRef = useRef<EChartsReact>();
+  const echartsRef = useRef<EChartsReact>(null);
 
   if (notNullish(error)) {
     return <Alert severity="error">Request failed ${getErrorMessage(error)}</Alert>;

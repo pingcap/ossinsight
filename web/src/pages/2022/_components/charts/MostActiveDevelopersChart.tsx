@@ -4,6 +4,7 @@ import data from '../../_charts/developers.json';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import useIsLarge from '../hooks/useIsLarge';
 import theme from './theme';
+import { notNullish } from '@site/src/utils/value';
 
 function years (from, to: number): string[] {
   const arr: string[] = [];
@@ -83,7 +84,7 @@ export default function MostActiveDevelopersChart ({ footnote, ...props }: MostA
           },
           legend: {
             labels: {
-              filter: (item) => item.datasetIndex >= 1,
+              filter: (item) => notNullish(item.datasetIndex) && item.datasetIndex >= 1,
               color: `${theme.color.legend}80`,
               font: theme.font.legend,
               boxWidth: 18,
