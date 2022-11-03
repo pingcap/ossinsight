@@ -1,7 +1,7 @@
-import { AxiosResponse } from "axios";
+import { AxiosResponse } from 'axios';
 
 export const transformCompactResponseInterceptor = (response: AxiosResponse): AxiosResponse => {
-  if (!Boolean(response.headers['x-compact'])) {
+  if (response.headers['x-compact'] !== 'true') {
     return response;
   }
   const { data, fields } = response.data;

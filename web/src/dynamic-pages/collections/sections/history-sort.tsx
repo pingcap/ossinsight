@@ -11,12 +11,12 @@ import { useCollectionHistory } from '../hooks/data';
 import { useDimensionTabs } from '../hooks/useTabs';
 import { withRemote } from '../hooks/withRemote';
 import { H2, P2 } from './typograpy';
-import { formatTime } from "./utils";
+import { formatTime } from './utils';
 
 use(CanvasRenderer);
 use(SVGRenderer);
 
-export default withInViewContainer(function HistorySortSection() {
+export default withInViewContainer(function HistorySortSection () {
   const { collection } = useContext(CollectionsContext);
 
   const { dimension, tabs } = useDimensionTabs('bar-chart-race');
@@ -40,9 +40,9 @@ export default withInViewContainer(function HistorySortSection() {
             fields={{ name: 'repo_name', time: 'event_month', value: 'total' }}
             interval={400}
             max={15}
-            filename={collection.slug}
+            filename={collection?.slug}
           >
-            <Title id="title" text={`${collection.name} - ${dimension.title}`} />
+            <Title id="title" text={`${collection?.name ?? 'undefined'} - ${dimension.title}`} />
             <Watermark right="5%" bottom="10%" />
           </SortingBarChart>
         ),

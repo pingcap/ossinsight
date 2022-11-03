@@ -2,6 +2,7 @@ import { createContext, MutableRefObject, RefCallback, useContext } from 'react'
 import { AsyncData, RemoteData } from '../../../components/RemoteCharts/hook';
 import EChartsReact from 'echarts-for-react';
 import type { RepoInfo } from '@ossinsight/api';
+import { isEmptyArray } from '@site/src/utils/value';
 
 export interface AnalyzeChartContextProps<T = unknown> {
   query: string;
@@ -28,7 +29,7 @@ export const AnalyzeChartContext = createContext<AnalyzeChartContextProps>({
   descriptionRef: undefined,
 });
 
-export function useAnalyzeChartContext<T>(): AnalyzeChartContextProps<T> {
+export function useAnalyzeChartContext<T> (): AnalyzeChartContextProps<T> {
   return useContext(AnalyzeChartContext) as AnalyzeChartContextProps<T>;
 }
 
@@ -50,13 +51,13 @@ export const AnalyzeContext = createContext<AnalyzeContextProps>({
   comparingRepoInfo: undefined,
 });
 
-export function useAnalyzeContext() {
+export function useAnalyzeContext () {
   return useContext(AnalyzeContext);
 }
 
-export function isNoData(ctx: AnalyzeChartContextProps) {
+export function isNoData (ctx: AnalyzeChartContextProps) {
   if (ctx.data.loading || ctx.compareData.loading) {
     return false;
   }
-  return !(!!ctx.data.data?.data.length || !!ctx.compareData.data?.data.length);
+  return isEmptyArray(ctx.data.data?.data) && isEmptyArray(ctx.compareData.data?.data);
 }

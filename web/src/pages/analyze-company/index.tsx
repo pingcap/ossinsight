@@ -1,13 +1,13 @@
-import React, { useState } from "react";
-import CustomPage from "../../theme/CustomPage";
-import SearchCompany from "./_components/SearchCompany";
-import Companies from "./_components/Companies";
-import Container from "@mui/material/Container";
-import { CompanyInfo } from "./_components/hooks";
-import Typography from "@mui/material/Typography";
+import React, { useState } from 'react';
+import CustomPage from '../../theme/CustomPage';
+import SearchCompany from './_components/SearchCompany';
+import Companies from './_components/Companies';
+import Container from '@mui/material/Container';
+import { CompanyInfo } from './_components/hooks';
+import Typography from '@mui/material/Typography';
 
 const Page = () => {
-  const [company, setCompany] = useState<CompanyInfo>(null)
+  const [company, setCompany] = useState<CompanyInfo | null>(null);
 
   return (
     <CustomPage>
@@ -23,7 +23,7 @@ const Page = () => {
         <Companies company={company} />
       </Container>
     </CustomPage>
-  )
-}
+  );
+};
 
-export default Page
+export default Page;

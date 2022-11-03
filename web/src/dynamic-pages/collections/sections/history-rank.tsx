@@ -15,7 +15,7 @@ import { countNames } from './utils';
 
 use(CanvasRenderer);
 
-export default withInViewContainer(function HistoryRankSection() {
+export default withInViewContainer(function HistoryRankSection () {
   const { collection } = useContext(CollectionsContext);
 
   const { dimension, tabs } = useDimensionTabs('historical-rankings');
@@ -38,7 +38,7 @@ export default withInViewContainer(function HistoryRankSection() {
 
             fields={{ name: 'repo_name', time: 'event_year', value: 'total', rank: 'rank' }}
           >
-            <Title id="title" text={`${collection.name} - ${dimension.title}`} />
+            <Title id="title" text={`${collection?.name ?? 'undefined'} - ${dimension.title}`} />
             <Watermark left="5%" bottom="15%" />
             <Toolbox feature={{ saveAsImage: { title: '' } }} />
           </RankChart>

@@ -1,8 +1,8 @@
-import Section, { SubSection } from "../_components/Section";
-import React from "react";
+import Section, { SubSection } from '../_components/Section';
+import React from 'react';
 import { PieChart, WeekdayDistributionData } from '../_components/charts';
-import Insights from "../_components/Insights";
-import { BR } from "../_components/styled";
+import Insights from '../_components/Insights';
+import { BR } from '../_components/styled';
 
 export default function () {
   return (
@@ -23,14 +23,14 @@ export default function () {
         />
       </SubSection>
       <SubSection title={distributionTitle}>
-        <Insights mt={[2,4,6]}>{distributionInsight}</Insights>
+        <Insights mt={[2, 4, 6]}>{distributionInsight}</Insights>
         <WeekdayDistributionData
           sx={{
             width: '100%',
             maxWidth: 1316,
             marginLeft: 'auto',
             marginRight: 'auto',
-            mt: 6
+            mt: 6,
           }}
           data={require('../_charts/weekday-distribution.json')}
         />

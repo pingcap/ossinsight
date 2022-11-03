@@ -1,9 +1,9 @@
-import React from "react";
-import Section from "../_components/Section";
-import CountryEvents from "../_components/charts/CountryEvents";
-import Split from "../_components/Split";
-import Insights from "../_components/Insights";
-import Box from "@mui/material/Box";
+import React from 'react';
+import Section from '../_components/Section';
+import CountryEvents from '../_components/charts/CountryEvents';
+import Split from '../_components/Split';
+import Insights from '../_components/Insights';
+import Box from '@mui/material/Box';
 
 export default function () {
   return (

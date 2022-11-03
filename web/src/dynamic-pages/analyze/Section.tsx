@@ -1,1 +1,1 @@
-export { default } from '../../components/Section'
+export { default } from '../../components/Section';

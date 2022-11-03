@@ -1,33 +1,32 @@
-import React, { useMemo, useState } from "react";
-import CustomPage from "../../../theme/CustomPage";
-import { useRouteMatch } from 'react-router'
-import { useRemoteData } from "../../../components/RemoteCharts/hook";
-import { TidbIndexInfo, TidbIndexStats, TidbTableDDL, TidbTableInfo } from "@ossinsight/api";
-import IndexStats from "../components/IndexStats";
-import CodeBlock from "@theme/CodeBlock";
-import Container from "@mui/material/Container";
-import IndexInfo from "../components/IndexInfo";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
-import TableInfo from "../components/TableInfo";
-import NotFound from "../../../theme/NotFound";
-import Box from "@mui/material/Box";
-import { useInterval } from "../components/useInterval";
-import Breadcrumbs from "@mui/material/Breadcrumbs";
-import Link from "@docusaurus/Link";
-
+import React, { useMemo, useState } from 'react';
+import CustomPage from '../../../theme/CustomPage';
+import { useRouteMatch } from 'react-router';
+import { useRemoteData } from '../../../components/RemoteCharts/hook';
+import { TidbIndexInfo, TidbIndexStats, TidbTableDDL, TidbTableInfo } from '@ossinsight/api';
+import IndexStats from '../components/IndexStats';
+import CodeBlock from '@theme/CodeBlock';
+import Container from '@mui/material/Container';
+import IndexInfo from '../components/IndexInfo';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import TableInfo from '../components/TableInfo';
+import NotFound from '../../../theme/NotFound';
+import Box from '@mui/material/Box';
+import { useInterval } from '../components/useInterval';
+import Breadcrumbs from '@mui/material/Breadcrumbs';
+import Link from '@docusaurus/Link';
 
 interface TableStatsPageParams {
   slug: string;
 }
 
 type QueryParams = {
-  tableName: string
-}
+  tableName: string;
+};
 
-type TabKey = 'ddl' | 'index-info' | 'index-usage'
+type TabKey = 'ddl' | 'index-info' | 'index-usage';
 
-export default function Page() {
+export default function Page () {
   const { params: { slug } } = useRouteMatch<TableStatsPageParams>();
   const [current, setCurrent] = useState<TabKey>('index-usage');
   const { data: tableInfoData } = useRemoteData<QueryParams, TidbTableInfo>('stats-table-info', { tableName: slug }, false, true);
@@ -63,8 +62,7 @@ export default function Page() {
   );
 }
 
-
-function IndexUsageTab({ slug }: TableStatsPageParams) {
+function IndexUsageTab ({ slug }: TableStatsPageParams) {
   const {
     data: indexUsageData,
     reload,
@@ -73,15 +71,15 @@ function IndexUsageTab({ slug }: TableStatsPageParams) {
   return <IndexStats stats={indexUsageData?.data ?? []} />;
 }
 
-function IndexInfoTab({ slug }: TableStatsPageParams) {
+function IndexInfoTab ({ slug }: TableStatsPageParams) {
   const { data: indexInfoData } = useRemoteData<QueryParams, TidbIndexInfo>('stats-index-info', { tableName: slug }, false, true);
   return <IndexInfo infos={indexInfoData?.data ?? []} />;
 }
 
-function DdlTab({ slug }: TableStatsPageParams) {
+function DdlTab ({ slug }: TableStatsPageParams) {
   const { data: ddlData } = useRemoteData<QueryParams, TidbTableDDL>('stats-table-ddl', { tableName: slug }, false, true);
   const ddl = useMemo(() => {
-    return ddlData?.data[0]["Create Table"];
+    return ddlData?.data[0]['Create Table'];
   }, [ddlData]);
   return ddl ? <CodeBlock className="language-sql">{ddl}</CodeBlock> : null;
 }

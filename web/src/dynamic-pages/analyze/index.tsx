@@ -1,16 +1,15 @@
 import BrowserOnly from '@docusaurus/BrowserOnly';
 import Head from '@docusaurus/Head';
-import { useHistory, useLocation } from '@docusaurus/router';
-import { useRouteMatch } from "react-router";
+import { useHistory, useLocation, Redirect } from '@docusaurus/router';
+import { useRouteMatch } from 'react-router';
 import { Scrollspy } from '@makotot/ghostui';
 import { useMediaQuery } from '@mui/material';
 import Container from '@mui/material/Container';
 import { Theme } from '@mui/material/styles';
-import Error from '@theme/Error';
 import React, { useCallback, useRef } from 'react';
 import { AnalyzeContext } from './charts/context';
 import { useRepo } from '../../api';
-import type { RepoInfo } from '@ossinsight/api'
+import type { RepoInfo } from '@ossinsight/api';
 import NewCompareHeader from '../../components/CompareHeader/NewCompareHeader';
 import { Repo } from '../../components/CompareHeader/RepoSelector';
 import { AsyncData } from '../../components/RemoteCharts/hook';
@@ -25,8 +24,8 @@ import { PullRequestsSection } from './sections/3-PullRequests';
 import { IssuesSection } from './sections/4-Issues';
 import { Contributors } from './sections/6-Contributors';
 import { SQLPlaygroundDrawer } from './sections/99-SQLPlayground';
-import {Redirect} from '@docusaurus/router';
-import { Repository } from "./sections/5-Repository";
+import { Repository } from './sections/5-Repository';
+import { isNullish, notNullish } from '@site/src/utils/value';
 
 interface AnalyzePageParams {
   owner: string;
@@ -41,16 +40,16 @@ const sections = [
   'issues',
   'repository',
   'contributors',
-]
+];
 
-function AnalyzePage() {
+function AnalyzePage () {
   const history = useHistory();
   const location = useLocation();
 
   const { data: main, name, error } = useMainRepo();
   const { data: vs, name: comparingRepoName, setName: setComparingRepoName } = useVsRepo();
 
-  const sectionRefs = sections.map(section => useRef<HTMLElement>(null))
+  const sectionRefs = sections.map(section => useRef<HTMLElement>(null));
 
   const onRepoChange = useCallback((repo: Repo) => {
     history.push({
@@ -59,18 +58,18 @@ function AnalyzePage() {
     });
   }, [history, location]);
 
-  const onComparingRepoChange = useCallback((repo: Repo | undefined) => {
+  const onComparingRepoChange = useCallback((repo: Repo | null) => {
     setComparingRepoName(repo?.name);
   }, []);
 
   const allValid = useCallback(() => undefined, []);
 
   // Out of mui theme context, so we need to use magic number here
-  const isSmall = useMediaQuery<Theme>('(max-width:600px)')
-  const sideWidth = isSmall ? undefined : '160px'
+  const isSmall = useMediaQuery<Theme>('(max-width:600px)');
+  const sideWidth = isSmall ? '0' : '160px';
 
-  if (!main && error) {
-    return <Redirect to='/404' />
+  if (isNullish(main) && notNullish(error)) {
+    return <Redirect to='/404' />;
   }
 
   return (
@@ -78,12 +77,12 @@ function AnalyzePage() {
       {({ currentElementIndexInViewport }) => (
         <CustomPage
           sideWidth={sideWidth}
-          Side={() => !isSmall ? <Navigator comparing={!!comparingRepoName} type='side' value={sections[currentElementIndexInViewport]} /> : undefined}
+          Side={() => !isSmall ? <Navigator comparing={!!comparingRepoName} type='side' value={sections[currentElementIndexInViewport]} /> : null}
           header={(
             <NewCompareHeader
               sideWidth={sideWidth}
-              repo1={main?.repo}
-              repo2={vs?.repo}
+              repo1={main?.repo ?? null}
+              repo2={vs?.repo ?? null}
               onRepo1Change={onRepoChange}
               onRepo2Change={onComparingRepoChange}
               onRepo1Valid={allValid}
@@ -92,8 +91,8 @@ function AnalyzePage() {
               repo1Placeholder="Select to analyze"
               repo2Placeholder="Add to compare"
               endAdornment={
-                !vs?.repo.id &&
-                main?.repo && (
+                notNullish(vs) &&
+                (notNullish(main?.repo)) && (
                   <SQLPlaygroundDrawer key={name} data={main?.repo} />
                 )
               }
@@ -121,12 +120,14 @@ function AnalyzePage() {
               <CommitsSection ref={sectionRefs[2]} />
               <PullRequestsSection ref={sectionRefs[3]} />
               <IssuesSection ref={sectionRefs[4]} />
-              {!comparingRepoName ? (
+              {!comparingRepoName
+                ? (
                 <>
                   <Repository ref={sectionRefs[5]} />
                   <Contributors ref={sectionRefs[6]} />
                 </>
-              ) : undefined}
+                  )
+                : undefined}
               <TryItYourself campaign="compare" show fixed />
             </Container>
           </AnalyzeContext.Provider>
@@ -137,26 +138,27 @@ function AnalyzePage() {
   );
 }
 
-export default () => <BrowserOnly>{() => <AnalyzePage />}</BrowserOnly>
-
+export default () => <BrowserOnly>{() => <AnalyzePage />}</BrowserOnly>;
 
 type InfoPack = {
-  repoInfo: RepoInfo
-  repo: Repo
+  repoInfo: RepoInfo;
+  repo: Repo;
+};
+
+function toRepo (repo: RepoInfo | undefined): InfoPack | undefined {
+  return notNullish(repo)
+    ? {
+        repoInfo: repo,
+        repo: {
+          id: repo.id,
+          name: repo.full_name,
+        },
+      }
+    : undefined;
 }
 
-function toRepo(repo: RepoInfo | undefined): InfoPack | undefined {
-  return repo ? {
-    repoInfo: repo,
-    repo: {
-      id: repo.id,
-      name: repo.full_name,
-    },
-  } : undefined;
-}
-
-function useMainRepo(): AsyncData<InfoPack> & { name: string } {
-  let { params: { owner, repo: repoName } } = useRouteMatch<AnalyzePageParams>();
+function useMainRepo (): AsyncData<InfoPack> & { name: string } {
+  const { params: { owner, repo: repoName } } = useRouteMatch<AnalyzePageParams>();
   const name = `${owner}/${repoName}`;
   const { data: repo, isValidating, error } = useRepo(name);
 
@@ -168,8 +170,8 @@ function useMainRepo(): AsyncData<InfoPack> & { name: string } {
   };
 }
 
-function useVsRepo(): AsyncData<InfoPack> & { name: string, setName: (val: string | undefined) => void } {
-  const [vs, setVs] = useUrlSearchState('vs', stringParam());
+function useVsRepo (): AsyncData<InfoPack> & { name: string | undefined, setName: (val: string | undefined) => void } {
+  const [vs, setVs] = useUrlSearchState<string | undefined>('vs', stringParam());
 
   const { data: repo, isValidating, error } = useRepo(vs);
   return {
@@ -177,6 +179,8 @@ function useVsRepo(): AsyncData<InfoPack> & { name: string, setName: (val: strin
     loading: isValidating,
     error,
     name: vs,
-    setName: setVs,
+    setName: useCallback((name) => {
+      setVs(name);
+    }, [setVs]),
   };
 }

@@ -1,4 +1,4 @@
-import { Plugin } from "@docusaurus/types";
+import { Plugin } from '@docusaurus/types';
 import path from 'node:path';
 import { NormalModuleReplacementPlugin } from 'webpack';
 import { createHash } from 'node:crypto';
@@ -13,7 +13,7 @@ const PATCH_TARGET_FILE = path.resolve(__dirname, 'serverEntry.js');
 
 const CMD_PATCH = `patch ${SOURCE_FILE} ${PATCH_FILE} -o ${PATCH_TARGET_FILE}`;
 
-export default function PrefetchPlugin(): Plugin<void> {
+export default function PrefetchPlugin (): Plugin<void> {
   if (process.env.NODE_ENV !== 'production') {
     return {
       name: 'plugin-material-ui',
@@ -22,8 +22,8 @@ export default function PrefetchPlugin(): Plugin<void> {
 
   return {
     name: 'plugin-material-ui',
-    async loadContent() {
-      const DOCUSAURUS_CORE_VERSION = require(path.resolve(PROJ_ROOT, 'package-lock.json')).packages['node_modules/@docusaurus/core'].version;
+    async loadContent () {
+      const DOCUSAURUS_CORE_VERSION: string = require(path.resolve(PROJ_ROOT, 'package-lock.json')).packages['node_modules/@docusaurus/core'].version;
 
       // Check md5 of serverEntry.js
       const ORIGINAL_MD5 = await fsp.readFile(path.resolve(__dirname, 'serverEntry.js.md5'), { encoding: 'utf-8' });
@@ -38,14 +38,14 @@ export default function PrefetchPlugin(): Plugin<void> {
       // do patch
       await new Promise<void>((resolve, reject) => {
         const proc = cp.exec(CMD_PATCH);
-        let errChunks = [];
+        const errChunks = [];
         proc.stderr.on('readable', () => {
           let chunk;
-          while (null !== (chunk = proc.stderr.read())) {
+          while ((chunk = proc.stderr.read()) !== null) {
             errChunks.push(chunk);
           }
         });
-        proc.on('exit', async () => {
+        proc.on('exit', () => {
           if (proc.exitCode === 0) {
             resolve();
           } else {
@@ -54,7 +54,7 @@ export default function PrefetchPlugin(): Plugin<void> {
         });
       });
     },
-    configureWebpack() {
+    configureWebpack () {
       return {
         plugins: [
           new NormalModuleReplacementPlugin(/@docusaurus\/core\/lib\/client\/serverEntry\.js/, path.resolve(__dirname, './serverEntry.js')),

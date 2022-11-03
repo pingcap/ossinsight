@@ -1,0 +1,16 @@
+{
+  "name": "ossinsight",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "prepare": "husky install"
+  },
+  "devDependencies": {
+    "husky": "^8.0.1",
+    "lint-staged": "^13.0.3"
+  },
+  "workspaces": [
+    "web",
+    "api"
+  ]
+}

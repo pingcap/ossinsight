@@ -1,18 +1,18 @@
-import {EChartsOption} from 'echarts';
+import { EChartsOption } from 'echarts';
 
-export function axisTooltip(type: 'line' | 'shadow' | 'cross' | 'none', option: Exclude<EChartsOption['tooltip'], any[]> = {}): EChartsOption['tooltip'] {
+export function axisTooltip (type: 'line' | 'shadow' | 'cross' | 'none', option: Exclude<EChartsOption['tooltip'], any[]> = {}): EChartsOption['tooltip'] {
   return {
     ...option,
     show: true,
     trigger: 'axis',
     axisPointer: {
-      ...(option.axisPointer || {}),
+      ...option.axisPointer,
       type,
     },
   };
 }
 
-export function itemTooltip(option: EChartsOption['tooltip'] = {}): EChartsOption['tooltip'] {
+export function itemTooltip (option: EChartsOption['tooltip'] = {}): EChartsOption['tooltip'] {
   return {
     renderMode: 'html',
     ...option,

@@ -3,18 +3,18 @@ import Box from '@mui/material/Box';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import React, { useLayoutEffect, useRef } from 'react';
-import { useRealtimeEvents } from '../../../../../components/RealtimeSummary/hooks';
-import { EChartsType } from "echarts/core";
+import { useRealtimeEvents } from '@site/src/components/RealtimeSummary/hooks';
+import { EChartsType } from 'echarts/core';
 
-export const EventsChart = ({show}: { show: boolean }) => {
-  const data = useRealtimeEvents(show)
-  const theme = useTheme()
-  const isSmall = useMediaQuery(theme.breakpoints.down('sm'))
-  const echartsRef = useRef<EChartsType>()
+export const EventsChart = ({ show }: { show: boolean }) => {
+  const data = useRealtimeEvents(show);
+  const theme = useTheme();
+  const isSmall = useMediaQuery(theme.breakpoints.down('sm'));
+  const echartsRef = useRef<EChartsType>();
 
   useLayoutEffect(() => {
-    echartsRef.current?.resize({ width: 'auto' })
-  }, [isSmall])
+    echartsRef.current?.resize({ width: 'auto' });
+  }, [isSmall]);
 
   return (
     <Box width={isSmall ? '100%' : '61.8%'}>
@@ -23,7 +23,7 @@ export const EventsChart = ({show}: { show: boolean }) => {
           <Grid containLabel={true} top={0} bottom={8} left={0} right={0} />
           <Axis.Category.X axisLine={{ show: false }} axisTick={{ show: false }} axisLabel={{ show: false }}
                            splitLine={{ show: false }} />
-          <Axis.Value.Y axisLine={{ show: false }} axisTick={{ show: false }} axisLabel={{ show: true, align: 'right', fontSize: 12, showMinLabel: true, showMaxLabel: false, hideOverlap: true}}
+          <Axis.Value.Y axisLine={{ show: false }} axisTick={{ show: false }} axisLabel={{ show: true, align: 'right', fontSize: 12, showMinLabel: true, showMaxLabel: false, hideOverlap: true }}
                         splitLine={{ show: false }} position={'left'} interval={100} />
           <BarSeries datasetId='original' silent color="#F77C00" encode={{ x: 'latest_timestamp', y: 'cnt' }} barMaxWidth={12} />
         </Once>
@@ -31,6 +31,6 @@ export const EventsChart = ({show}: { show: boolean }) => {
       </EChartsx>
     </Box>
   );
-}
+};
 
-export default EventsChart
+export default EventsChart;

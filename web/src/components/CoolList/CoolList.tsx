@@ -1,29 +1,25 @@
-import useMediaQuery from '@mui/material/useMediaQuery';
-import React, { forwardRef } from 'react';
+import React, { ForwardedRef, forwardRef, useCallback, useEffect, useState } from 'react';
 import List, { ListProps } from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import { styled } from '@mui/material/styles';
-import { ForwardedRef, useCallback, useEffect, useMemo, useState } from 'react';
-import {
-  CSSTransition,
-  TransitionGroup,
-} from 'react-transition-group';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import { notNullish } from '@site/src/utils/value';
 
 export interface CoolListProps<T> extends Omit<ListProps, 'children' | 'ref'> {
-  maxLength: number
-  itemHeight: number
-  getKey: (item: T) => string | number
-  children: (item: T) => JSX.Element
+  maxLength: number;
+  itemHeight: number;
+  getKey: (item: T) => string | number;
+  children: (item: T) => JSX.Element;
 }
 
 export interface CoolListInstance<T> {
-  add (item: T)
+  add: (item: T) => any;
 }
 
 const CoolListContainer = styled(List)({
   position: 'relative',
   padding: 0,
-})
+});
 
 const CoolListItem = styled(ListItem)({
   position: 'absolute',
@@ -33,7 +29,7 @@ const CoolListItem = styled(ListItem)({
   opacity: 0.4,
   '&.item-enter': {
     opacity: 0,
-    transform: 'translate3d(-10%, 0, 0) scale(0.85)'
+    transform: 'translate3d(-10%, 0, 0) scale(0.85)',
   },
   '&.item-enter-active': {
     opacity: 0.4,
@@ -45,50 +41,50 @@ const CoolListItem = styled(ListItem)({
   },
   '&.item-exit-active': {
     opacity: 0,
-    transform: 'translate3d(-10%, 0, 0) scale(0.85)'
+    transform: 'translate3d(-10%, 0, 0) scale(0.85)',
   },
   '&:hover': {
     opacity: 1,
-  }
-})
+  },
+});
 
 function CoolList<T> ({ maxLength, itemHeight, getKey, children, ...props }: CoolListProps<T>, ref: ForwardedRef<CoolListInstance<T>>) {
-  const [list, setList] = useState<T[]>([])
+  const [list, setList] = useState<T[]>([]);
 
   const add = useCallback((item: T) => {
     setList(list => {
       if (list.length === maxLength) {
-        return [item].concat(list.slice(0, maxLength - 1))
+        return [item].concat(list.slice(0, maxLength - 1));
       } else {
-        return [item].concat(list)
+        return [item].concat(list);
       }
-    })
-  }, [maxLength])
+    });
+  }, [maxLength]);
 
   useEffect(() => {
     const instance = {
-      add
-    }
-    if (ref) {
+      add,
+    };
+    if (notNullish(ref)) {
       if (typeof ref === 'function') {
-        ref(instance)
+        ref(instance);
       } else {
-        ref.current = instance
+        ref.current = instance;
       }
     }
-  }, [])
+  }, []);
 
   return (
     <TransitionGroup component={CoolListContainer} {...props} sx={{ height: itemHeight * maxLength }}>
       {list.map((item, index) => (
-        <CSSTransition key={getKey(item)} timeout={500} classNames='item'>
+        <CSSTransition key={getKey(item)} timeout={500} classNames="item">
           <CoolListItem sx={{ top: index * itemHeight, height: itemHeight }}>
             {children(item)}
           </CoolListItem>
         </CSSTransition>
       ))}
-      </TransitionGroup>
-  )
+    </TransitionGroup>
+  );
 }
 
-export default forwardRef(CoolList)
+export default forwardRef(CoolList);

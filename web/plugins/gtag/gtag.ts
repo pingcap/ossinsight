@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {ClientModule} from '@docusaurus/types';
-import { getContentGroup } from "./content-group";
+import type { ClientModule } from '@docusaurus/types';
+import { getContentGroup } from './content-group';
 
 declare global {
   interface Window {
@@ -19,9 +19,9 @@ declare global {
 }
 
 const clientModule: ClientModule = {
-  onRouteDidUpdate({location, previousLocation}) {
+  onRouteDidUpdate ({ location, previousLocation }) {
     if (
-      previousLocation &&
+      (previousLocation != null) &&
       (location.pathname !== previousLocation.pathname ||
         location.search !== previousLocation.search ||
         location.hash !== previousLocation.hash)
@@ -34,10 +34,10 @@ const clientModule: ClientModule = {
       setTimeout(() => {
         // Always refer to the variable on window in case it gets overridden
         // elsewhere.
-        const contentGroup = getContentGroup(location)
+        const contentGroup = getContentGroup(location);
         // Set content group if exists
-        if (contentGroup) {
-          window.gtag('set', 'content_group', contentGroup)
+        if (contentGroup != null) {
+          window.gtag('set', 'content_group', contentGroup);
         }
         window.gtag('event', 'page_view', {
           page_title: document.title,

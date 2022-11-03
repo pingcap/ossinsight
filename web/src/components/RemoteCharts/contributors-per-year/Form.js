@@ -1,62 +1,60 @@
-import React, {useMemo, useState} from "react";
-import Stack from "@mui/material/Stack";
-import FormControl from "@mui/material/FormControl";
-import InputLabel from "@mui/material/InputLabel";
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
-import TextField from "@mui/material/TextField";
-import InputAdornment from "@mui/material/InputAdornment";
+import React, { useMemo, useState } from 'react';
+import Stack from '@mui/material/Stack';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import TextField from '@mui/material/TextField';
+import InputAdornment from '@mui/material/InputAdornment';
 
 const types = [
-  {title: 'Contributors (PRs opened)', value: 'all'},
-  {title: 'Contributors (PRs merged)', value: 'merged'},
-]
+  { title: 'Contributors (PRs opened)', value: 'all' },
+  { title: 'Contributors (PRs merged)', value: 'merged' }
+];
 
-const allLimits = [10, 20, 50]
+const allLimits = [10, 20, 50];
 
 export const useForm = ({ noSearch }) => {
+  const random = useMemo(() => Math.random(), []);
 
-  const random = useMemo(() => Math.random(), [])
-
-  const {initialType, initialLimits} = useMemo(() => {
-    let initialType = types[0].value
-    let initialLimits = 10
+  const { initialType, initialLimits } = useMemo(() => {
+    let initialType = types[0].value;
+    let initialLimits = 10;
     if (!noSearch && typeof window !== 'undefined') {
-      const usp = new URLSearchParams(location.search)
-      const type = usp.get('type')
-      const limits = parseInt(usp.get('n'))
-      if (type && types.find(({value}) => value === type)) {
-        initialType = type
+      const usp = new URLSearchParams(location.search);
+      const type = usp.get('type');
+      const limits = parseInt(usp.get('n'));
+      if (type && types.find(({ value }) => value === type)) {
+        initialType = type;
       }
       if (limits && allLimits.indexOf(limits) >= 0) {
-        initialLimits = limits
+        initialLimits = limits;
       }
-
     }
-    return {initialType, initialLimits}
-  }, [])
+    return { initialType, initialLimits };
+  }, []);
 
-  const [type, setType] = useState(initialType)
-  const [n, setN] = useState(initialLimits)
+  const [type, setType] = useState(initialType);
+  const [n, setN] = useState(initialLimits);
 
   const query = useMemo(() => {
     if (!noSearch && typeof window !== 'undefined') {
-      const usp = new window.URLSearchParams()
-      usp.set('type', type)
-      usp.set('n', String(n))
-      window.history.replaceState(null, null, '?' + usp.toString())
+      const usp = new window.URLSearchParams();
+      usp.set('type', type);
+      usp.set('n', String(n));
+      window.history.replaceState(null, null, '?' + usp.toString());
     }
 
     return {
       action: type === 'all' ? 'opened' : 'closed',
       merged: type === 'all' ? '*' : 'true',
-      n,
-    }
-  }, [type, n])
+      n
+    };
+  }, [type, n]);
 
   const form = (
-    <Stack direction='row' sx={{flexWrap: 'wrap', alignItems: 'flex-end', gap: 4}}>
-      <FormControl variant="standard" sx={{minWidth: '230px', maxWidth: '230px'}}>
+    <Stack direction='row' sx={{ flexWrap: 'wrap', alignItems: 'flex-end', gap: 4 }}>
+      <FormControl variant="standard" sx={{ minWidth: '230px', maxWidth: '230px' }}>
         <InputLabel id={`cubechart-${random}-type`}>Type</InputLabel>
         <Select
           id={`cubechart-${random}-type`}
@@ -68,7 +66,7 @@ export const useForm = ({ noSearch }) => {
           {types.map(type => <MenuItem key={type.value} value={type.value}>{type.title}</MenuItem>)}
         </Select>
       </FormControl>
-      <FormControl variant="standard" sx={{minWidth: '120px', maxWidth: '120px'}}>
+      <FormControl variant="standard" sx={{ minWidth: '120px', maxWidth: '120px' }}>
         <TextField
           variant="standard"
           id={`cubechart-${random}-type`}
@@ -83,7 +81,7 @@ export const useForm = ({ noSearch }) => {
         </TextField>
       </FormControl>
     </Stack>
-  )
+  );
 
-  return {form, query}
-}
+  return { form, query };
+};

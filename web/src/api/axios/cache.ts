@@ -1,27 +1,27 @@
-import { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
-import { unstable_serialize } from "swr";
+import { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
+import { unstable_serialize } from 'swr';
 
 interface Cache {
-  get(key: string): Promise<any>;
+  get: (key: string) => Promise<any>;
 
-  set(key: string, value: any): Promise<void>;
+  set: (key: string, value: any) => Promise<void>;
 
-  del(key: string): Promise<void>;
+  del: (key: string) => Promise<void>;
 }
 
 export const createSimpleCache = (): Cache => {
   const map = new Map();
   return {
-    get(key: string): Promise<any> {
-      return Promise.resolve(map.get(key));
+    async get (key: string): Promise<any> {
+      return await Promise.resolve(map.get(key));
     },
-    set(key: string, value: any): Promise<void> {
+    async set (key: string, value: any): Promise<void> {
       map.set(key, value);
-      return Promise.resolve();
+      return await Promise.resolve();
     },
-    del(key: string): Promise<void> {
+    async del (key: string): Promise<void> {
       map.delete(key);
-      return Promise.resolve();
+      return await Promise.resolve();
     },
   };
 };
@@ -30,7 +30,7 @@ const makeKey = (config: AxiosRequestConfig): string | undefined => {
   if (config.disableCache) {
     return undefined;
   }
-  return config.method + ':' + config.url + ':' + unstable_serialize(config.params);
+  return `${config.method ?? 'unknown'}:${config.url ?? 'unknown'}:${unstable_serialize(config.params)}`;
 };
 
 const cacheRequest = (cache: Cache) => async (config: AxiosRequestConfig): Promise<AxiosRequestConfig> => {
@@ -41,7 +41,7 @@ const cacheRequest = (cache: Cache) => async (config: AxiosRequestConfig): Promi
     if (value !== undefined) {
       return {
         ...config,
-        adapter: () => Promise.resolve(value),
+        adapter: async () => await Promise.resolve(value),
       };
     }
   }
@@ -58,7 +58,7 @@ const cacheResponse = (cache: Cache) => async (response: AxiosResponse): Promise
   return response;
 };
 
-export function patchCacheInterceptors(axios: AxiosInstance, cache: Cache): () => void {
+export function patchCacheInterceptors (axios: AxiosInstance, cache: Cache): () => void {
   const reqId = axios.interceptors.request.use(cacheRequest(cache));
   const resId = axios.interceptors.response.use(cacheResponse(cache));
 

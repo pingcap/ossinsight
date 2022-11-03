@@ -4,7 +4,8 @@ import DocSidebarItem from '@theme/DocSidebarItem';
 
 import type { Props } from '@theme/DocSidebarItems';
 
-import styles from './styles.module.css'
+import styles from './styles.module.css';
+import { notNullish } from '@site/src/utils/value';
 
 declare module '@theme/DocSidebarItems' {
   interface Props {
@@ -14,13 +15,13 @@ declare module '@theme/DocSidebarItems' {
 
 // TODO this item should probably not receive the "activePath" props
 // TODO this triggers whole sidebar re-renders on navigation
-function DocSidebarItems({ items, Footer, ...props }: Props): JSX.Element {
+function DocSidebarItems ({ items, Footer, ...props }: Props): JSX.Element {
   return (
     <DocSidebarItemsExpandedStateProvider>
       {items.map((item, index) => (
         <DocSidebarItem key={index} item={item} index={index} {...props} />
       ))}
-      {Footer && <li className={styles.sidebarFooter}><Footer /></li>}
+      {notNullish(Footer) && <li className={styles.sidebarFooter}><Footer /></li>}
     </DocSidebarItemsExpandedStateProvider>
   );
 }

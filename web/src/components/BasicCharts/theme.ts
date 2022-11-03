@@ -1,5 +1,4 @@
-import * as echarts from "echarts/core";
-import {EChartsOption} from 'echarts';
+import * as echarts from 'echarts/core';
 
 export function registerThemeVintage (bg = true) {
   const colorPalette = ['#d87c7c', '#919e8b', '#d7ab82', '#6e7074', '#61a0a8', '#efa18d', '#787464', '#cc7e63', '#724e58', '#4b565b'];
@@ -7,12 +6,12 @@ export function registerThemeVintage (bg = true) {
     color: colorPalette,
     backgroundColor: undefined,
     graph: {
-      color: colorPalette
-    }
+      color: colorPalette,
+    },
   });
 }
 
-export function registerThemeDark(bg = true) {
+export function registerThemeDark (bg = true) {
   const contrastColor = '#E9EAEE';
   const boxColor = '#2c2c2c';
   const borderColor = '#3c3c3c';
@@ -20,51 +19,51 @@ export function registerThemeDark(bg = true) {
     return {
       axisLine: {
         lineStyle: {
-          color: borderColor
-        }
+          color: borderColor,
+        },
       },
       axisTick: {
         lineStyle: {
-          color: borderColor
-        }
+          color: borderColor,
+        },
       },
       axisLabel: {
         textStyle: {
-          color: '#ccc'
-        }
+          color: '#ccc',
+        },
       },
       splitLine: {
         lineStyle: {
           type: 'dashed',
           color: '#2c2c2c',
-          width: 0.5
-        }
+          width: 0.5,
+        },
       },
       splitArea: {
         areaStyle: {
-          color: contrastColor
-        }
+          color: contrastColor,
+        },
       },
       axisPointer: {
         label: {
-          backgroundColor: boxColor
-        }
+          backgroundColor: boxColor,
+        },
       },
       nameTextStyle: {
         fontStyle: 'italic',
-        color: 'gray'
-      }
+        color: 'gray',
+      },
     };
   };
 
-  const colorPalette = ['#dd6b66','#759aa0','#e69d87','#8dc1a9','#ea7e53','#eedd78','#73a373','#73b9bc','#7289ab', '#91ca8c','#f49f42'];
+  const colorPalette = ['#dd6b66', '#759aa0', '#e69d87', '#8dc1a9', '#ea7e53', '#eedd78', '#73a373', '#73b9bc', '#7289ab', '#91ca8c', '#f49f42'];
   const theme = {
     color: colorPalette,
     backgroundColor: 'rgba(24, 25, 26)',
     tooltip: {
       backgroundColor: boxColor,
       textStyle: {
-        color: contrastColor
+        color: contrastColor,
       },
       borderWidth: 0,
       shadowBlur: 8,
@@ -73,24 +72,24 @@ export function registerThemeDark(bg = true) {
       shadowOffsetY: 0,
       axisPointer: {
         lineStyle: {
-          color: contrastColor
+          color: contrastColor,
         },
         crossStyle: {
-          color: contrastColor
-        }
+          color: contrastColor,
+        },
       },
-      renderMode: 'html'
+      renderMode: 'html',
     },
     grid: {
-      containLabel: true
+      containLabel: true,
     },
     legend: {
       textStyle: {
-        color: contrastColor
-      }
+        color: contrastColor,
+      },
     },
     textStyle: {
-      color: contrastColor
+      color: contrastColor,
     },
     title: {
       left: 'center',
@@ -98,43 +97,43 @@ export function registerThemeDark(bg = true) {
       textStyle: {
         color: contrastColor,
         fontSize: 14,
-        align: 'center'
-      }
+        align: 'center',
+      },
     },
     toolbox: {
       iconStyle: {
         normal: {
-          borderColor: contrastColor
-        }
-      }
+          borderColor: contrastColor,
+        },
+      },
     },
     dataZoom: {
       textStyle: {
-        color: contrastColor
-      }
+        color: contrastColor,
+      },
     },
     timeline: {
       lineStyle: {
-        color: contrastColor
+        color: contrastColor,
       },
       itemStyle: {
         normal: {
-          color: colorPalette[1]
-        }
+          color: colorPalette[1],
+        },
       },
       label: {
         normal: {
           textStyle: {
-            color: contrastColor
-          }
-        }
+            color: contrastColor,
+          },
+        },
       },
       controlStyle: {
         normal: {
           color: contrastColor,
-          borderColor: contrastColor
-        }
-      }
+          borderColor: contrastColor,
+        },
+      },
     },
     timeAxis: axisCommon(),
     logAxis: axisCommon(),
@@ -142,17 +141,17 @@ export function registerThemeDark(bg = true) {
     categoryAxis: axisCommon(),
 
     line: {
-      symbol: 'circle'
+      symbol: 'circle',
     },
     graph: {
-      color: colorPalette
+      color: colorPalette,
     },
     gauge: {
       title: {
         textStyle: {
-          color: contrastColor
-        }
-      }
+          color: contrastColor,
+        },
+      },
     },
     candlestick: {
       itemStyle: {
@@ -160,18 +159,18 @@ export function registerThemeDark(bg = true) {
           color: '#FD1050',
           color0: '#0CF49B',
           borderColor: '#FD1050',
-          borderColor0: '#0CF49B'
-        }
-      }
+          borderColor0: '#0CF49B',
+        },
+      },
     },
 
     visualMap: {
       textStyle: {
-        color: contrastColor
-      }
-    }
+        color: contrastColor,
+      },
+    },
   };
-  // @ts-ignore
+  // @ts-expect-error
   theme.categoryAxis.splitLine.show = false;
   echarts.registerTheme('dark', theme);
 }

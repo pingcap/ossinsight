@@ -1,8 +1,8 @@
-import React, { ReactNode } from "react";
-import Box, { BoxProps } from "@mui/material/Box";
-import { H4 } from "./typograph";
-import { styled } from "@mui/material/styles";
-import Typography, { TypographyProps } from "@mui/material/Typography";
+import React, { ReactNode } from 'react';
+import Box, { BoxProps } from '@mui/material/Box';
+import { H4 } from './typograph';
+import { styled } from '@mui/material/styles';
+import { TypographyProps } from '@mui/material/Typography';
 
 export interface InsightsProps extends BoxProps {
   hideTitle?: boolean;
@@ -11,7 +11,7 @@ export interface InsightsProps extends BoxProps {
   titleProps?: TypographyProps<'h4'>;
 }
 
-export default function Insights({
+export default function Insights ({
   hideTitle = false,
   children,
   title = 'Insights',
@@ -39,7 +39,7 @@ const Logo = styled('img')({
   width: '2em',
 });
 
-const Body = styled(Box)(({}) => ({
+const Body = styled(Box)({
   position: 'relative',
   paddingLeft: 16,
   fontSize: '0.8em',
@@ -58,4 +58,4 @@ const Body = styled(Box)(({}) => ({
     color: '#FFFFFF',
     fontWeight: 'border',
   },
-}));
+});

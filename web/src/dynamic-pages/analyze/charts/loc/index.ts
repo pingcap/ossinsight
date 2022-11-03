@@ -16,14 +16,13 @@ import { withChart } from '../chart';
 
 // lines of code
 export type LocData = {
-  event_month: string
-  additions: number
-  deletions: number
-  changes: number
-}
+  event_month: string;
+  additions: number;
+  deletions: number;
+  changes: number;
+};
 
 export const LocChart = withChart<LocData>(({ title: propsTitle }) => {
-
   return {
     dataset: utils.template<LocData>(({ id, datasetId, data, context }) => {
       const transformedData = transformLocData(data.data?.data ?? []);
@@ -58,7 +57,7 @@ export const LocChart = withChart<LocData>(({ title: propsTitle }) => {
     ]),
     series: utils.template(({ id, datasetId }) => [
       bar('event_month', 'additions', {
-        datasetId: datasetId,
+        datasetId,
         stack: `stack-${id}`,
         color: '#57ab5a',
         xAxisId: id,
@@ -66,7 +65,7 @@ export const LocChart = withChart<LocData>(({ title: propsTitle }) => {
         barMaxWidth: 8,
       }),
       bar('event_month', 'deletions', {
-        datasetId: datasetId,
+        datasetId,
         stack: `stack-${id}`,
         color: '#e5534b',
         xAxisId: id,
@@ -74,7 +73,7 @@ export const LocChart = withChart<LocData>(({ title: propsTitle }) => {
         barMaxWidth: 8,
       }),
       line('event_month', 'total', {
-        datasetId: datasetId,
+        datasetId,
         showSymbol: false,
         color: '#cc6b2c',
         xAxisId: id,
@@ -87,12 +86,12 @@ export const LocChart = withChart<LocData>(({ title: propsTitle }) => {
         return `
         <div>${formatMonth(add.value.event_month)}</div>
         <div>
-          <b style="color: ${add.color}; font-weight: 800">+${add.value.additions}</b>
-          <b style="color: ${del.color}; font-weight: 800">-${Math.abs(del.value.deletions)}</b>
+          <b style="color: ${add.color as string}; font-weight: 800">+${add.value.additions as number}</b>
+          <b style="color: ${del.color as string}; font-weight: 800">-${Math.abs(del.value.deletions)}</b>
         </div>
         <div>
-          ${total.marker}
-          <b>Total: ${total.value.total} lines</b>
+          ${total.marker as string}
+          <b>Total: ${total.value.total as string} lines</b>
         </div>
       `;
       },
@@ -102,7 +101,7 @@ export const LocChart = withChart<LocData>(({ title: propsTitle }) => {
   aspectRatio: 16 / 9,
 });
 
-function transformLocData(data: LocData[]) {
+function transformLocData (data: LocData[]) {
   let total = 0;
   return data.map(item => ({
     event_month: item.event_month,

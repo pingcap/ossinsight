@@ -1,18 +1,18 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import CustomPage from '../../theme/CustomPage';
-import IndexStats from "./components/IndexStats";
-import { TidbIndexStats } from "@ossinsight/api";
-import { useRemoteData } from "../../components/RemoteCharts/hook";
-import Container from "@mui/material/Container";
-import Typography from "@mui/material/Typography";
-import { useInterval } from "./components/useInterval";
-import LiveSql from "./components/LiveSql";
-import Tab from "@mui/material/Tab";
-import Tabs from "@mui/material/Tabs";
+import IndexStats from './components/IndexStats';
+import { TidbIndexStats } from '@ossinsight/api';
+import { useRemoteData } from '../../components/RemoteCharts/hook';
+import Container from '@mui/material/Container';
+import Typography from '@mui/material/Typography';
+import { useInterval } from './components/useInterval';
+import LiveSql from './components/LiveSql';
+import Tab from '@mui/material/Tab';
+import Tabs from '@mui/material/Tabs';
 
-type TabKey = 'live-sql' | 'index-usage'
+type TabKey = 'live-sql' | 'index-usage';
 
-export default function Page() {
+export default function Page () {
   const [current, setCurrent] = useState<TabKey>('live-sql');
 
   return (
@@ -32,12 +32,12 @@ export default function Page() {
   );
 }
 
-function LiveSqlTab() {
+function LiveSqlTab () {
   return <LiveSql />;
 }
 
-function IndexUsageTab() {
-  const { data, reload } = useRemoteData<{}, TidbIndexStats>('stats-indexes-usage', undefined, false, true, true);
+function IndexUsageTab () {
+  const { data, reload } = useRemoteData<undefined, TidbIndexStats>('stats-indexes-usage', undefined, false, true, true);
   useInterval(reload, 1000);
 
   return <IndexStats showTable stats={data?.data ?? []} />;

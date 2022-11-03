@@ -1,12 +1,12 @@
-import React from "react";
-import { useAnalyzeChartContext } from "../context";
-import WorldMapChart from "../../../../components/BasicCharts/WorldMapChart";
-import Typography from "@mui/material/Typography";
-import Stack from "@mui/material/Stack";
-import Box from "@mui/material/Box";
-import { styled, useTheme } from "@mui/material/styles";
+import React from 'react';
+import { useAnalyzeChartContext } from '../context';
+import WorldMapChart from '../../../../components/BasicCharts/WorldMapChart';
+import Typography from '@mui/material/Typography';
+import Stack from '@mui/material/Stack';
+import Box from '@mui/material/Box';
+import { styled } from '@mui/material/styles';
 
-export default function Map() {
+export default function Map () {
   const { data } = useAnalyzeChartContext<any>();
 
   return (

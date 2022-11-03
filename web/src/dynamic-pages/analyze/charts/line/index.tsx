@@ -1,5 +1,4 @@
-import React from 'react';
-import {withChart} from '../chart';
+import { withChart } from '../chart';
 import {
   axisTooltip,
   COMPARING_DATASET_ID,
@@ -12,8 +11,8 @@ import {
 } from '../options';
 
 type LineData<T extends string> = Record<T, number> & {
-  event_month: string
-}
+  event_month: string;
+};
 
 export const LineChart = withChart<LineData<any>, { valueIndex: string, name: string, fromRecent?: boolean }>(({
   title: propsTitle,
@@ -22,28 +21,28 @@ export const LineChart = withChart<LineData<any>, { valueIndex: string, name: st
   repoName,
   comparingRepoName,
   isSmall,
-}, {valueIndex, name, fromRecent = false}) => ({
+}, { valueIndex, name, fromRecent = false }) => ({
   xAxis: timeAxis<'x'>(undefined, undefined, !fromRecent ? 'event_month' : fromRecent),
-  yAxis: valueAxis<'y'>(undefined, {name}),
+  yAxis: valueAxis<'y'>(undefined, { name }),
   title: title(propsTitle),
   tooltip: axisTooltip('line'),
   legend: legend({
     top: isSmall ? 8 : 32,
     right: 0,
-    left: undefined
+    left: undefined,
   }),
   grid: {
     left: 8,
     bottom: 8,
     top: isSmall ? 8 : 64,
-    right: 8
+    right: 8,
   },
   dataset: [
     originalDataset(data),
     comparingDataset(compareData),
   ],
   series: [
-    line('event_month', valueIndex, {name: repoName, showSymbol: data.data?.data.length <= 1}),
-    line('event_month', valueIndex, {datasetId: COMPARING_DATASET_ID, name: comparingRepoName, showSymbol: compareData.data?.data.length <= 1}),
+    line('event_month', valueIndex, { name: repoName, showSymbol: (data.data?.data.length ?? NaN) <= 1 }),
+    line('event_month', valueIndex, { datasetId: COMPARING_DATASET_ID, name: comparingRepoName, showSymbol: (compareData.data?.data.length ?? NaN) <= 1 }),
   ],
 }));

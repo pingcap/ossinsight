@@ -1,10 +1,10 @@
-import React, {type ReactNode} from 'react';
-import {useThemeConfig} from '@docusaurus/theme-common';
+import React, { type ReactNode } from 'react';
+import { useThemeConfig } from '@docusaurus/theme-common';
 import {
   splitNavbarItems,
   useNavbarMobileSidebar,
 } from '@docusaurus/theme-common/internal';
-import NavbarItem, {type Props as NavbarItemConfig} from '@theme/NavbarItem';
+import NavbarItem, { type Props as NavbarItemConfig } from '@theme/NavbarItem';
 import NavbarColorModeToggle from '@theme/Navbar/ColorModeToggle';
 import SearchBar from '@theme/SearchBar';
 import NavbarMobileSidebarToggle from '@theme/Navbar/MobileSidebar/Toggle';
@@ -12,13 +12,14 @@ import NavbarLogo from '@theme/Navbar/Logo';
 import NavbarSearch from '@theme/Navbar/Search';
 
 import styles from './styles.module.css';
+import { isNullish } from '@site/src/utils/value';
 
-function useNavbarItems() {
+function useNavbarItems () {
   // TODO temporary casting until ThemeConfig type is improved
   return useThemeConfig().navbar.items as NavbarItemConfig[];
 }
 
-function NavbarItems({items}: {items: NavbarItemConfig[]}): JSX.Element {
+function NavbarItems ({ items }: { items: NavbarItemConfig[] }): JSX.Element {
   return (
     <>
       {items.map((item, i) => (
@@ -28,7 +29,7 @@ function NavbarItems({items}: {items: NavbarItemConfig[]}): JSX.Element {
   );
 }
 
-function NavbarContentLayout({
+function NavbarContentLayout ({
   left,
   right,
 }: {
@@ -43,7 +44,7 @@ function NavbarContentLayout({
   );
 }
 
-export default function NavbarContent(): JSX.Element {
+export default function NavbarContent (): JSX.Element {
   const mobileSidebar = useNavbarMobileSidebar();
 
   const items = useNavbarItems();
@@ -67,7 +68,7 @@ export default function NavbarContent(): JSX.Element {
         <>
           <NavbarItems items={rightItems} />
           <NavbarColorModeToggle className={styles.colorModeToggle} />
-          {!searchBarItem && (
+          {isNullish(searchBarItem) && (
             <NavbarSearch>
               <SearchBar />
             </NavbarSearch>

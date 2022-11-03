@@ -1,39 +1,40 @@
 import type { ProcessedTopListData } from './hook';
-import { useLanguages, useOrderBy, usePagination, usePeriods, useTopList } from "./hook";
-import Table from "@mui/material/Table";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import TableCell from "@mui/material/TableCell";
-import TableBody from "@mui/material/TableBody";
-import Skeleton from "@mui/material/Skeleton";
-import React, { useState } from "react";
-import Link from "@docusaurus/Link";
-import Avatar from "@mui/material/Avatar";
-import Stack from "@mui/material/Stack";
-import { Chip, TablePagination } from "@mui/material";
+import { useLanguages, usePagination, usePeriods, useTopList } from './hook';
+import Table from '@mui/material/Table';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import TableCell from '@mui/material/TableCell';
+import TableBody from '@mui/material/TableBody';
+import Skeleton from '@mui/material/Skeleton';
+import React from 'react';
+import Link from '@docusaurus/Link';
+import Avatar from '@mui/material/Avatar';
+import Stack from '@mui/material/Stack';
+import { Chip, TablePagination } from '@mui/material';
 import { useHistory } from '@docusaurus/router';
 import type { History } from 'history';
-import { paramCase } from "param-case";
-import Box from "@mui/material/Box";
-import { useDebugDialog } from "../../../../components/DebugDialog";
-import TableContainer from "@mui/material/TableContainer";
-import Typography from "@mui/material/Typography";
-import { styled } from "@mui/material/styles";
+import { paramCase } from 'param-case';
+import Box from '@mui/material/Box';
+import { useDebugDialog } from '@site/src/components/DebugDialog';
+import TableContainer from '@mui/material/TableContainer';
+import Typography from '@mui/material/Typography';
+import { styled } from '@mui/material/styles';
 import LANGUAGE_COLORS from './language-colors.json';
-import { LinkExternalIcon } from "@primer/octicons-react";
+import { LinkExternalIcon } from '@primer/octicons-react';
+import { notNullish } from '@site/src/utils/value';
 
 for (const lang in LANGUAGE_COLORS) {
   LANGUAGE_COLORS[lang.toLowerCase()] = LANGUAGE_COLORS[lang];
 }
 
-export function TopListV2() {
+export function TopListV2 () {
   const { select: periodSelect, value: period } = usePeriods();
   const { select: languageSelect, value: language } = useLanguages();
   // const { select: orderBySelect, value: orderBy } = useOrderBy();
-  const { data, loading, error } = useTopList(language, period.key, 'total_score');
+  const { data, loading } = useTopList(language, period.key, 'total_score');
   const { dialog: debugDialog, button: debugButton } = useDebugDialog(data);
 
-  const { page, rowsPerPage, list, handleChangePage, handleChangeRowsPerPage } = usePagination(data, [period.key, language])
+  const { page, rowsPerPage, list, handleChangePage, handleChangeRowsPerPage } = usePagination(data, [period.key, language]);
 
   return (
     <Box>
@@ -44,8 +45,8 @@ export function TopListV2() {
           Language&nbsp;:&nbsp;&nbsp;&nbsp;
         </span>
         {languageSelect}
-        {/*<Divider orientation="vertical" flexItem sx={{ ml: 0.5, mr: 1, bgcolor: 'rgba(255,255,255,.4)', width: 2 }} />*/}
-        {/*{orderBySelect}*/}
+        {/* <Divider orientation="vertical" flexItem sx={{ ml: 0.5, mr: 1, bgcolor: 'rgba(255,255,255,.4)', width: 2 }} /> */}
+        {/* {orderBySelect} */}
         {debugButton}
       </Stack>
       <TablePagination
@@ -54,13 +55,13 @@ export function TopListV2() {
             display: 'none',
           },
           '.MuiToolbar-root': {
-            'padding': 0,
+            padding: 0,
             '& > p': {
               margin: '0 !important',
-            }
-          }
+            },
+          },
         }}
-        size='small'
+        size="small"
         rowsPerPageOptions={[20, 50, 100]}
         component="div"
         count={data?.data.length ?? 0}
@@ -80,8 +81,7 @@ export function TopListV2() {
   );
 }
 
-
-const DataTable = ({ data, loading, page, rowsPerPage }: { data: ProcessedTopListData[], loading: boolean,  page: number, rowsPerPage: number }) => {
+const DataTable = ({ data, loading, page, rowsPerPage }: { data: ProcessedTopListData[] | undefined, loading: boolean, page: number, rowsPerPage: number }) => {
   const history = useHistory();
 
   return (
@@ -105,7 +105,7 @@ const DataTable = ({ data, loading, page, rowsPerPage }: { data: ProcessedTopLis
             },
           })}
         >
-          {data ? renderData(data, page * rowsPerPage, history) : renderLoading()}
+          {notNullish(data) ? renderData(data, page * rowsPerPage, history) : renderLoading()}
         </TableBody>
       </Table>
     </TableContainer>
@@ -147,7 +147,7 @@ const Dot = styled('span')({
 const ExternalLink = styled('a')({
   marginLeft: 4,
   color: '#7c7c7c',
-})
+});
 
 const renderData = (data: ProcessedTopListData[], offset: number, history: History) => {
   return data.map((item, i) => (

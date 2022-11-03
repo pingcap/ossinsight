@@ -1,7 +1,6 @@
-import { styled } from "@mui/material/styles";
-import Box from "@mui/material/Box";
-import React, { HTMLAttributes } from "react";
-import { Coronavirus, KeyboardDoubleArrowDownRounded } from "@mui/icons-material";
+import { styled } from '@mui/material/styles';
+import Box from '@mui/material/Box';
+import React, { HTMLAttributes } from 'react';
 
 export const HeadlineTag = styled('div')(({ theme }) => ({
   background: 'transparent linear-gradient(89deg, #EA7E53 0%, #3E2A75 100%) 0% 0% no-repeat padding-box',
@@ -18,7 +17,7 @@ export const HeadlineTag = styled('div')(({ theme }) => ({
     width: 'max-content',
     paddingTop: 16,
     paddingBottom: 16,
-    padding: '16px 32px'
+    padding: '16px 32px',
   },
 }));
 
@@ -37,7 +36,7 @@ export const AdditionalTag = styled('div')(({ theme }) => ({
   [theme.breakpoints.up('sm')]: {
     paddingTop: 4,
     paddingBottom: 4,
-    padding: theme.spacing( 1, 2),
+    padding: theme.spacing(1, 2),
   },
 }));
 
@@ -104,7 +103,7 @@ export const ResponsiveAlignedLeft = styled('div')(({ theme }) => ({
   },
 }));
 
-export function ResponsiveAligned({ type, ...props }: HTMLAttributes<HTMLDivElement> & { type: 'left' | 'right' }) {
+export function ResponsiveAligned ({ type, ...props }: HTMLAttributes<HTMLDivElement> & { type: 'left' | 'right' }) {
   if (type === 'left') {
     return <ResponsiveAlignedLeft {...props} />;
   } else {
@@ -119,7 +118,7 @@ export const MrO = styled('img')(({ theme }) => ({
   right: 0,
   [theme.breakpoints.down('lg')]: {
     display: 'none',
-  }
+  },
 }));
 
 export const AnimatedDownIcon = styled(require('../_icons/arrow.svg').default)(({ theme }) => ({
@@ -133,8 +132,8 @@ export const AnimatedDownIcon = styled(require('../_icons/arrow.svg').default)((
   },
   [theme.breakpoints.down('md')]: {
     top: 328,
-  }
-}))
+  },
+}));
 
 export const Footnote = styled('div')(({ theme }) => ({
   color: '#7C7C7C',
@@ -144,5 +143,5 @@ export const Footnote = styled('div')(({ theme }) => ({
     fontSize: 13,
     fontWeight: 'bold',
     fontStyle: 'italic',
-  }
-}))
+  },
+}));

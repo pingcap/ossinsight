@@ -1,16 +1,16 @@
 import axios, { AxiosRequestConfig } from 'axios';
-import { createSimpleCache, patchCacheInterceptors } from "./axios/cache";
-import io from "socket.io-client";
-import { transformCompactResponseInterceptor } from "./axios/compact";
+import { createSimpleCache, patchCacheInterceptors } from './axios/cache';
+import io from 'socket.io-client';
+import { transformCompactResponseInterceptor } from './axios/compact';
 
-export const BASE_URL = process.env.APP_API_BASE || 'https://api.ossinsight.io';
+export const BASE_URL = (process.env.APP_API_BASE ?? '') || 'https://api.ossinsight.io';
 
-function createClient(enableCache = true) {
+function createClient (enableCache = true) {
   const client = axios.create({
     baseURL: BASE_URL,
-    paramsSerializer: function paramsSerializer(params: any): string {
+    paramsSerializer: function paramsSerializer (params: any): string {
       const usp = new URLSearchParams();
-      for (let [key, value] of Object.entries(params)) {
+      for (const [key, value] of Object.entries(params)) {
         if (Array.isArray(value)) {
           value.forEach((item) => usp.append(key, item));
         } else {
@@ -39,11 +39,9 @@ function createClient(enableCache = true) {
 export const client = createClient();
 export const clientWithoutCache = createClient(false);
 
-interface CheckReq {
-  (config: AxiosRequestConfig): boolean;
-}
+type CheckReq = (config: AxiosRequestConfig) => boolean;
 
-export function registerStaticData(checkReq: CheckReq, data: any) {
+export function registerStaticData (checkReq: CheckReq, data: any) {
   client.interceptors.request.use(config => {
     if (!checkReq(config)) {
       return config;
@@ -63,10 +61,10 @@ export function registerStaticData(checkReq: CheckReq, data: any) {
 
 export const socket = io(BASE_URL);
 
-socket.on("connect", () => {
-  console.log(`socket connect`);
+socket.on('connect', () => {
+  console.log('socket connect');
 });
 
-socket.on("disconnect", () => {
-  console.log(`socket disconnect`);
+socket.on('disconnect', () => {
+  console.log('socket disconnect');
 });

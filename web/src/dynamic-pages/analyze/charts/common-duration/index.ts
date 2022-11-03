@@ -1,4 +1,4 @@
-import { AsyncData, RemoteData } from '../../../../components/RemoteCharts/hook';
+import { AsyncData, RemoteData } from '@site/src/components/RemoteCharts/hook';
 import {
   axisTooltip,
   boxplot,
@@ -17,22 +17,22 @@ import { alpha } from '@mui/material';
 
 // lines of code
 export type PrDurationData = {
-  event_month: string
-  p0: number
-  p25: number
-  p50: number
-  p75: number
-  p100: number
-}
+  event_month: string;
+  p0: number;
+  p25: number;
+  p50: number;
+  p75: number;
+  p100: number;
+};
 
 const fmtHours = (hours: number) => prettyMs(hours * 60 * 60 * 1000, { unitCount: 1 });
 
-function getMax(data: AsyncData<RemoteData<unknown, PrDurationData>>): number | undefined {
-  return data.data?.data.reduce((prev, current) => Math.max(prev, current.p100), 0);
+function getMax (data: AsyncData<RemoteData<unknown, PrDurationData>>): number {
+  return data.data?.data.reduce((prev, current) => Math.max(prev, current.p100), 0) ?? 0;
 }
 
-function getMin(data: AsyncData<RemoteData<unknown, PrDurationData>>): number | undefined {
-  return data.data?.data.reduce((prev, current) => Math.min(prev, current.p0 > 0 ? current.p0 : prev), Number.MAX_SAFE_INTEGER);
+function getMin (data: AsyncData<RemoteData<unknown, PrDurationData>>): number {
+  return data.data?.data.reduce((prev, current) => Math.min(prev, current.p0 > 0 ? current.p0 : prev), Number.MAX_SAFE_INTEGER) ?? Number.MAX_SAFE_INTEGER;
 }
 
 export const DurationChart = withChart<PrDurationData>(({ title: propsTitle, data, compareData }) => {
@@ -40,7 +40,7 @@ export const DurationChart = withChart<PrDurationData>(({ title: propsTitle, dat
     if (all.length <= 1) {
       return getMax(all[0]);
     } else {
-      return Math.max(...all.map(getMax));
+      return Math.max(...all.map(val => getMax(val)));
     }
   });
 
@@ -48,7 +48,7 @@ export const DurationChart = withChart<PrDurationData>(({ title: propsTitle, dat
     if (all.length <= 1) {
       return getMin(all[0]);
     } else {
-      return Math.min(...all.map(getMin));
+      return Math.min(...all.map(val => getMin(val)));
     }
   });
 
@@ -75,7 +75,7 @@ export const DurationChart = withChart<PrDurationData>(({ title: propsTitle, dat
       xAxisId: id,
       yAxisId: id,
       itemStyle: {
-        color: alpha('#dd6b66', .3),
+        color: alpha('#dd6b66', 0.3),
         borderWidth: 1,
       },
       boxWidth: ['40%', '40%'],
@@ -85,7 +85,7 @@ export const DurationChart = withChart<PrDurationData>(({ title: propsTitle, dat
       formatter: params => {
         const { value, marker } = params[0];
         return `
-        ${marker}
+        ${marker as string}
         <span>${formatMonth(value.event_month)}</span>
         <br/>
         <b>min</b>: ${fmtHours(value.p0)}
@@ -104,4 +104,3 @@ export const DurationChart = withChart<PrDurationData>(({ title: propsTitle, dat
 }, {
   aspectRatio: 16 / 9,
 });
-

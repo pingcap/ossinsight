@@ -1,19 +1,19 @@
 type GetContentGroupOptions = {
-  pathname: string
-  search: string
-}
+  pathname: string;
+  search: string;
+};
 
-export function getContentGroup({ pathname, search }: GetContentGroupOptions): string {
+export function getContentGroup ({ pathname, search }: GetContentGroupOptions): string | undefined {
   // collections
-  if (/\/collections\//.test(pathname)) {
-    if (/\/trends/.test(pathname)) {
+  if (pathname.includes('/collections/')) {
+    if (pathname.includes('/trends')) {
       return 'collections trends';
     } else {
       return 'collections monthly';
     }
-  } else if (/\/analyze\//.test(pathname)) {
+  } else if (pathname.includes('/analyze/')) {
     if (/\/analyze\/[^/]+\/[^/]+/.test(pathname)) {
-      if (/vs=/.test(search)) {
+      if (search.includes('vs=')) {
         return 'compare';
       } else {
         return 'analyze';
@@ -21,9 +21,11 @@ export function getContentGroup({ pathname, search }: GetContentGroupOptions): s
     } else if (/\/analyze\/[^/]+/.test(pathname)) {
       return 'analyze-user';
     }
-  } else if (/\/blog\//.test(pathname)) {
+  } else if (pathname.includes('/blog/')) {
     return 'blog';
-  } else if (/\/workshop\//.test(pathname)) {
+  } else if (pathname.includes('/workshop/')) {
     return 'workshop';
+  } else {
+    return undefined;
   }
 }

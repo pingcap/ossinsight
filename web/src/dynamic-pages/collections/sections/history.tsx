@@ -11,18 +11,19 @@ import { useCollectionHistory } from '../hooks/data';
 import { useDimensionTabs } from '../hooks/useTabs';
 import { withRemote } from '../hooks/withRemote';
 import { H2, P2 } from './typograpy';
-import { formatTime } from "./utils";
+import { formatTime } from './utils';
+import { isNullish } from '@site/src/utils/value';
 
 use(CanvasRenderer);
 
-export default withInViewContainer(function HistorySection() {
+export default withInViewContainer(function HistorySection () {
   const { collection } = useContext(CollectionsContext);
 
   const { dimension, tabs } = useDimensionTabs('historical-trending');
   const asyncData = useCollectionHistory(collection?.id, dimension.key);
 
   const top10Names = useMemo(() => {
-    if (!asyncData.data) {
+    if (isNullish(asyncData.data)) {
       return [];
     }
     const maxTime = asyncData.data.data.reduce((set, item) => {
@@ -36,7 +37,7 @@ export default withInViewContainer(function HistorySection() {
   }, [asyncData.data]);
 
   const top10Data: typeof asyncData = useMemo(() => {
-    if (!asyncData.data) {
+    if (isNullish(asyncData.data)) {
       return asyncData;
     }
     const top10NamesSet = top10Names
@@ -68,7 +69,7 @@ export default withInViewContainer(function HistorySection() {
             fields={{ name: 'repo_name', time: 'event_month', value: 'total' }}
             formatTime={formatTime}
           >
-            <Title id="title" top={0} text={`Top 10 ${collection.name} - ${dimension.title}`} />
+            <Title id="title" top={0} text={`Top 10 ${collection?.name ?? 'undefined'} - ${dimension.title}`} />
             <Watermark left="10%" top="10%" />
             <Toolbox feature={{ saveAsImage: { title: '' } }} />
             <Legend top="center" left="10%" orient="vertical" type="scroll" data={top10Names} />

@@ -6,7 +6,6 @@ import { stackDirection } from '../../_components/StackItem';
 import Left from './left';
 import Right from './right';
 
-
 export function SummarySection () {
   return (
     <Section pt={4}>
@@ -20,5 +19,3 @@ export function SummarySection () {
     </Section>
   );
 }
-
-

@@ -1,6 +1,6 @@
-import {EChartsOption} from 'echarts';
+import { EChartsOption } from 'echarts';
 
-export function worldMapGeo(): EChartsOption['geo'] {
+export function worldMapGeo (): EChartsOption['geo'] {
   return {
     roam: false,
     map: 'world',
@@ -14,7 +14,7 @@ export function worldMapGeo(): EChartsOption['geo'] {
     itemStyle: {
       color: '#ccc',
       borderWidth: 1,
-      borderColor: "#ccc",
-    }
+      borderColor: '#ccc',
+    },
   };
 }

@@ -2,15 +2,14 @@ import { ErrorOutlined } from '@mui/icons-material';
 import { styled } from '@mui/material/styles';
 import Tooltip from '@mui/material/Tooltip';
 import React from 'react';
-import InViewContainer from '../../../../../components/InViewContainer';
+import InViewContainer from '@site/src/components/InViewContainer';
 import { Item } from '../../../_components/StackItem';
 import { fontSizes } from '../../../_components/typography';
 import Events from './Events';
 import EventsChart from './EventsChart';
-import Button from "@mui/material/Button";
+import Button from '@mui/material/Button';
 import Link from '@mui/material/Link';
-import Box from "@mui/material/Box";
-
+import Box from '@mui/material/Box';
 
 const Subtitle = styled('p')({
   fontSize: '14px',
@@ -18,15 +17,15 @@ const Subtitle = styled('p')({
   fontWeight: 'bold',
   marginBottom: '8px',
   marginTop: '16px',
-})
+});
 
 const Strong = styled('strong')({
-  color: '#47D9A1'
-})
+  color: '#47D9A1',
+});
 
 const Right = () => {
   return (
-    <Item sx={[{flex: 0.618}, fontSizes.h1]}>
+    <Item sx={[{ flex: 0.618 }, fontSizes.h1]}>
       <Subtitle sx={{ mt: 0 }}>
         Events per 5 seconds
       </Subtitle>
@@ -44,12 +43,12 @@ const Right = () => {
         {show => <Events show={show} />}
       </InViewContainer>
       <Box fontSize={12} mt={3}>
-        <Button sx={{fontSize: 12, fontWeight: 'regular', verticalAlign: 'baseline', textDecoration: 'underline', color:'#7c7c7c'}} component={Link} href='/blog/why-we-choose-tidb-to-support-ossinsight'>
+        <Button sx={{ fontSize: 12, fontWeight: 'regular', verticalAlign: 'baseline', textDecoration: 'underline', color: '#7c7c7c' }} component={Link} href='/blog/why-we-choose-tidb-to-support-ossinsight'>
           🤖️ How do we create this real-time effect?
         </Button>
       </Box>
     </Item>
-  )
-}
+  );
+};
 
-export default Right
+export default Right;

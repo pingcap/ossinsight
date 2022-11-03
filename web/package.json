@@ -12,12 +12,17 @@
     "serve": "docusaurus serve",
     "write-translations": "docusaurus write-translations",
     "write-heading-ids": "docusaurus write-heading-ids",
-    "typecheck": "tsc",
+    "typecheck": "npm run typecheck:main && npm run typecheck:plugins",
+    "typecheck:main": "tsc --noEmit -p ./tsconfig.json",
+    "typecheck:plugins": "tsc --noEmit -p ./plugins/tsconfig.json",
     "build:plugins": "tsc -p plugins/tsconfig.json",
     "prefetch": "node prefetch.mjs",
     "prebuild": "npm run build:plugins && npm run prefetch",
     "postinstall": "npm run build:plugins",
-    "prestart": "npm run build:plugins && npm run prefetch"
+    "prestart": "npm run build:plugins && npm run prefetch",
+    "lint": "eslint --cache .",
+    "lint:ci": "eslint --quiet .",
+    "lint:fix": "eslint --cache --fix ."
   },
   "dependencies": {
     "@docusaurus/core": "2.1.0",
@@ -68,6 +73,7 @@
     "@types/luxon": "^2.0.9",
     "@types/react-copy-to-clipboard": "^5.0.2",
     "@types/webpack-env": "^1.16.3",
+    "@typescript-eslint/eslint-plugin": "^5.42.0",
     "ahooks": "^3.7.1",
     "animate.css": "^4.1.1",
     "chart.js": "^3.9.1",
@@ -76,6 +82,12 @@
     "d3-hierarchy": "^3.1.2",
     "deepmerge": "^4.2.2",
     "echarts": "^5.3.2",
+    "eslint": "^8.26.0",
+    "eslint-config-standard-with-typescript": "^23.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-n": "^15.4.0",
+    "eslint-plugin-promise": "^6.1.1",
+    "eslint-plugin-react": "^7.31.10",
     "human-format": "^1.0.0",
     "node-fetch": "^3.2.4",
     "param-case": "^3.0.4",
@@ -90,7 +102,7 @@
     "react-transition-group": "^4.4.2",
     "sql-highlight": "^4.2.1",
     "swr": "^1.2.2",
-    "typescript": "^4.7.4",
+    "typescript": "^4.8.4",
     "xss": "^1.0.11"
   },
   "browserslist": {
@@ -107,5 +119,10 @@
   },
   "engines": {
     "node": ">=18.11"
+  },
+  "lint-staged": {
+    "*.{js,ts,jsx,tsx}": [
+      "npx eslint --cache --fix"
+    ]
   }
 }

@@ -1,5 +1,6 @@
+/* eslint-disable */
 import * as d3 from 'd3-hierarchy';
-import {CustomSeriesOption} from 'echarts';
+import { CustomSeriesOption } from 'echarts';
 import {
   CustomSeriesRenderItemAPI,
   CustomSeriesRenderItemParams,
@@ -13,13 +14,13 @@ export interface D3HierarchyItem {
   depth: number;
   index: number;
   parentId: string;
-  color?: string
+  color?: string;
 }
 
-export function d3Hierarchy(seriesData: D3HierarchyItem[], maxDepth: number): CustomSeriesOption {
-  let displayRoot = stratify();
+export function d3Hierarchy (seriesData: D3HierarchyItem[], maxDepth: number): CustomSeriesOption {
+  const displayRoot = stratify();
 
-  function stratify() {
+  function stratify () {
     return d3
       .stratify<D3HierarchyItem>()
       .parentId(function (d) {
@@ -29,12 +30,12 @@ export function d3Hierarchy(seriesData: D3HierarchyItem[], maxDepth: number): Cu
         return d.value || 0;
       })
       .sort(function (a, b) {
-        return b.value - a.value;
+        return (b.value ?? 0) - (a.value ?? 0);
       });
   }
 
-  function overallLayout(params: CustomSeriesRenderItemParams, api: CustomSeriesRenderItemAPI) {
-    const context = params.context;
+  function overallLayout (params: CustomSeriesRenderItemParams, api: CustomSeriesRenderItemAPI) {
+    const context: any = params.context;
 
     context.nodes = {};
     d3
@@ -42,12 +43,12 @@ export function d3Hierarchy(seriesData: D3HierarchyItem[], maxDepth: number): Cu
       .size([api.getWidth() - 32, api.getHeight() - 32])
       .padding(8)(displayRoot);
     displayRoot.descendants().forEach(function (node, index) {
-      context.nodes[node.id] = node;
+      context.nodes[node.id ?? ''] = node;
     });
   }
 
-  function renderItem(params: CustomSeriesRenderItemParams, api: CustomSeriesRenderItemAPI): CustomSeriesRenderItemReturn {
-    const context = params.context;
+  function renderItem (params: CustomSeriesRenderItemParams, api: CustomSeriesRenderItemAPI): CustomSeriesRenderItemReturn {
+    const context: any = params.context;
     // Only do that layout once in each time `setOption` called.
     if (!context.layout) {
       context.layout = true;
@@ -74,14 +75,14 @@ export function d3Hierarchy(seriesData: D3HierarchyItem[], maxDepth: number): Cu
     }
     return {
       type: 'circle',
-      focus: focus,
+      focus,
       shape: {
         cx: node.x,
         cy: node.y + 16,
         r: node.r,
       },
       transition: ['shape'],
-      z2: z2,
+      z2,
       textContent: {
         type: 'text',
         style: {
@@ -115,18 +116,18 @@ export function d3Hierarchy(seriesData: D3HierarchyItem[], maxDepth: number): Cu
           shadowColor: 'rgba(0,0,0,0.3)',
         },
       },
-    };
+    } as any;
   }
 
   return {
     type: 'custom',
-    renderItem: renderItem,
+    renderItem,
     progressive: 0,
     coordinateSystem: 'none',
     encode: {
       tooltip: 'value',
       itemName: 'name',
-      value: 'value'
+      value: 'value',
     },
   };
 }

@@ -8,8 +8,8 @@
     "lib": ["dom","esnext"],
     "resolveJsonModule": true,
     "isolatedModules": true,
+    "strictNullChecks": true,
     "types": [
-      "@docusaurus/plugin-google-gtag/src/types.d.ts",
       "./types/ossinsight"
     ],
     "baseUrl": ".",
@@ -18,5 +18,6 @@
       "@site/*": ["./*"],
       "@docusaurus/theme-common/*": ["./node_modules/@docusaurus/theme-common/lib/*"]
     }
-  }
+  },
+  "exclude": ["plugins"],
 }

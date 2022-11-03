@@ -1,28 +1,29 @@
-import React, { MouseEventHandler, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { CoolList, CoolListInstance } from "../../../components/CoolList";
-import { styled } from "@mui/material/styles";
-import { useRemoteData } from "../../../components/RemoteCharts/hook";
-import { InternalQueryRecord } from "@ossinsight/api";
-import { useEventCallback } from "@mui/material";
-import Dialog from "@mui/material/Dialog";
-import DialogContent from "@mui/material/DialogContent";
-import Snackbar from "@mui/material/Snackbar";
-import CodeBlock from "@theme/CodeBlock";
+import React, { MouseEventHandler, useCallback, useEffect, useRef, useState } from 'react';
+import { CoolList, CoolListInstance } from '../../../components/CoolList';
+import { styled } from '@mui/material/styles';
+import { useRemoteData } from '../../../components/RemoteCharts/hook';
+import { InternalQueryRecord } from '@ossinsight/api';
+import { useEventCallback } from '@mui/material';
+import Dialog from '@mui/material/Dialog';
+import DialogContent from '@mui/material/DialogContent';
+import Snackbar from '@mui/material/Snackbar';
+import CodeBlock from '@theme/CodeBlock';
 import { format as formatSql } from 'sql-formatter';
-import Box from "@mui/material/Box";
-import { useInterval } from "./useInterval";
+import Box from '@mui/material/Box';
+import { useInterval } from './useInterval';
 import './theme.css';
+import { notNullish } from '@site/src/utils/value';
 
 const getKey = (item: InternalQueryRecord) => item.id;
 
-export default function LiveSql() {
-  const ref = useRef<CoolListInstance<InternalQueryRecord>>();
+export default function LiveSql () {
+  const ref = useRef<CoolListInstance<InternalQueryRecord>>(null);
   const intervalHandler = useRef<ReturnType<typeof setInterval>>();
 
   const dataRef = useRef<[InternalQueryRecord[], number]>([[], 0]);
   const offset = useRef<number>();
-  const initData = useRemoteData<{}, InternalQueryRecord>(
-    "stats-query-records",
+  const initData = useRemoteData<undefined, InternalQueryRecord>(
+    'stats-query-records',
     undefined,
     false,
     true,
@@ -30,19 +31,19 @@ export default function LiveSql() {
   );
 
   useEffect(() => {
-    if (initData.data) {
+    if (notNullish(initData.data)) {
       dataRef.current = [initData.data.data, 0];
       offset.current = initData.data.data.reduce((max, record) => Math.max(max, record.ts + 1), 0);
     }
   }, [initData.data]);
 
   const data = useRemoteData<{ offset: number }, InternalQueryRecord>(
-    "stats-query-records-latest",
+    'stats-query-records-latest',
     {
-      offset: offset.current,
+      offset: offset.current as number,
     },
     false,
-    !!offset.current,
+    notNullish(offset.current),
     'unique',
   );
   useInterval(data.reload, 5000);
@@ -50,10 +51,10 @@ export default function LiveSql() {
   const [paused, setPaused] = useState(false);
 
   useEffect(() => {
-    if (data.data) {
+    if (notNullish(data.data)) {
       const [origin, i] = dataRef.current ?? [[], 0];
       dataRef.current = [origin.slice(i).concat(data.data.data), 0];
-      offset.current = data.data.data.reduce((max, record) => Math.max(max, record.ts + 1), offset.current);
+      offset.current = data.data.data.reduce((max, record) => Math.max(max, record.ts + 1), offset.current ?? 0);
     }
   }, [data.data]);
 
@@ -134,24 +135,24 @@ const SqlText = styled('span')({
   cursor: 'pointer',
 });
 
-export function renderSql(record: InternalQueryRecord, onClick: (record: InternalQueryRecord) => void) {
+export function renderSql (record: InternalQueryRecord, onClick: (record: InternalQueryRecord) => void) {
   return (
     <Sql sql={record.digest_text} onClick={() => onClick(record)} />
   );
 }
 
-export function Sql({ sql, onClick }: { sql: string, onClick: MouseEventHandler<HTMLSpanElement> | undefined }) {
-  const [html, setHtml] = useState(sql)
+export function Sql ({ sql, onClick }: { sql: string, onClick: MouseEventHandler<HTMLSpanElement> | undefined }) {
+  const [html, setHtml] = useState(sql);
 
   useEffect(() => {
     try {
-      const { highlight } = require('sql-highlight')
+      const { highlight } = require('sql-highlight');
       setHtml(highlight(sql, {
         html: true,
-      }))
+      }));
     } catch (e) {
     }
-  }, [sql])
+  }, [sql]);
 
   return <SqlText dangerouslySetInnerHTML={{ __html: html }} onClick={onClick} />;
 }

@@ -1,26 +1,25 @@
 import { dataset, itemTooltip, legend, title, utils } from '../options';
-import {withChart} from '../chart';
-import {d3Hierarchy, D3HierarchyItem} from '../options/custom/d3-hierarchy';
+import { withChart } from '../chart';
+import { d3Hierarchy, D3HierarchyItem } from '../options/custom/d3-hierarchy';
 import { template } from '../options/utils';
 import xss from 'xss';
 
 // lines of code
 export type CompanyData = {
-  company_name: string
-}
+  company_name: string;
+};
 
 export const CompaniesChart = withChart<CompanyData, { valueIndex: string }>(({
   title: propsTitle,
   data,
 }, chartProps) => {
-  const {dataset: ds, series} = utils.aggregate<CompanyData>((all, names) => {
-    let index = 0
+  const { dataset: ds, series } = utils.aggregate<CompanyData>((all, names) => {
+    let index = 0;
     const res = all.flatMap((data, i) =>
-      transformCompanyData(data.data?.data ?? [], chartProps.valueIndex)
+      transformCompanyData(data.data?.data ?? [], chartProps?.valueIndex)
         .map(item => {
-          item.value;
-          item.id = `${i}-${item.name}`
-          item.index = index++
+          item.id = `${i}-${item.name}`;
+          item.index = index++;
           item.color = ['#dd6b66', '#759aa0'][i];
           return item;
         }),
@@ -36,17 +35,17 @@ export const CompaniesChart = withChart<CompanyData, { valueIndex: string }>(({
     if (res.length < 51) {
       res.push(...(new Array(51 - res.length).fill(0).map((_, i) => ({
         id: `ph-${i}`,
-        name :'',
+        name: '',
         depth: 1,
         value: 0,
         index: -1,
-        parentId: 'root'
-      }))))
+        parentId: 'root',
+      }))));
     }
     const series = d3Hierarchy(res, 1);
     return {
       dataset: dataset(undefined, res),
-      series: series,
+      series,
     };
   });
   return {
@@ -57,11 +56,11 @@ export const CompaniesChart = withChart<CompanyData, { valueIndex: string }>(({
       selectedMode: false,
     }),
     tooltip: itemTooltip({
-      formatter: params => `${params.value.name}: ${params.value.value}`
+      formatter: params => `${params.value.name as string}: ${params.value.value as string}`,
     }),
     hoverLayerThreshold: Infinity,
     series: [
-      ...template(({name}) => ({ type: 'custom', name, color: [], coordinateSystem: 'none' })),
+      ...template(({ name }) => ({ type: 'custom', name, color: [], coordinateSystem: 'none' })),
       series,
     ],
   };
@@ -69,7 +68,10 @@ export const CompaniesChart = withChart<CompanyData, { valueIndex: string }>(({
   aspectRatio: 16 / 9,
 });
 
-function transformCompanyData(data: CompanyData[], valueIndex: string): D3HierarchyItem[] {
+function transformCompanyData (data: CompanyData[], valueIndex: string | undefined): D3HierarchyItem[] {
+  if (!valueIndex) {
+    return [];
+  }
   return data.flatMap((item, index) => ({
     id: '',
     group: '',

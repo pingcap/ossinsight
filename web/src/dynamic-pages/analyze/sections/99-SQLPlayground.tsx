@@ -1,36 +1,36 @@
-import * as React from "react";
-import BrowserOnly from "@docusaurus/BrowserOnly";
-import CodeBlock from "@theme/CodeBlock";
-import { format } from "sql-formatter";
-import Stack from "@mui/material/Stack";
-import Box from "@mui/material/Box";
-import LoadingButton from "@mui/lab/LoadingButton";
-import PlayArrowIcon from "@mui/icons-material/PlayArrow";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
-import Alert from "@mui/material/Alert";
-import AlertTitle from "@mui/material/AlertTitle";
-import Drawer from "@mui/material/Drawer";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemText from "@mui/material/ListItemText";
-import ListSubheader from "@mui/material/ListSubheader";
-import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
-import IconButton from "@mui/material/IconButton";
-import TerminalIcon from "@mui/icons-material/Terminal";
+import * as React from 'react';
+import BrowserOnly from '@docusaurus/BrowserOnly';
+import CodeBlock from '@theme/CodeBlock';
+import { format } from 'sql-formatter';
+import Stack from '@mui/material/Stack';
+import Box from '@mui/material/Box';
+import LoadingButton from '@mui/lab/LoadingButton';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+import Alert from '@mui/material/Alert';
+import AlertTitle from '@mui/material/AlertTitle';
+import Drawer from '@mui/material/Drawer';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemText from '@mui/material/ListItemText';
+import ListSubheader from '@mui/material/ListSubheader';
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import TerminalIcon from '@mui/icons-material/Terminal';
 
-import { useSQLPlayground } from "../../../components/RemoteCharts/hook";
-import { useAnalyzeContext } from "../charts/context";
-import { Repo } from "../../../components/CompareHeader/RepoSelector";
+import { useSQLPlayground } from '../../../components/RemoteCharts/hook';
+import { Repo } from '../../../components/CompareHeader/RepoSelector';
+import { isFiniteNumber, isNullish, notFalsy, notNullish } from '@site/src/utils/value';
 
-const renderTable = (data: { [x: string]: any }[]) => {
+const renderTable = (data: Array<{ [x: string]: string | number }>) => {
   return (
     <>
       <TableContainer component={Paper}>
@@ -41,12 +41,12 @@ const renderTable = (data: { [x: string]: any }[]) => {
         >
           <TableHead>
             <TableRow>
-              {data[0] &&
+              {notNullish(data[0]) &&
                 Object.keys(data[0]).map((key) => (
                   <TableCell
                     key={`th=${key}`}
                     sx={{
-                      whiteSpace: "nowrap",
+                      whiteSpace: 'nowrap',
                     }}
                   >
                     {key}
@@ -69,7 +69,7 @@ const renderTable = (data: { [x: string]: any }[]) => {
                           component="th"
                           scope="row"
                           sx={{
-                            whiteSpace: "nowrap",
+                            whiteSpace: 'nowrap',
                           }}
                         >
                           {`${row[key]}`}
@@ -80,7 +80,7 @@ const renderTable = (data: { [x: string]: any }[]) => {
                       <TableCell
                         key={key}
                         sx={{
-                          whiteSpace: "nowrap",
+                          whiteSpace: 'nowrap',
                         }}
                       >{`${row[key]}`}</TableCell>
                     );
@@ -98,8 +98,8 @@ const renderTable = (data: { [x: string]: any }[]) => {
 export const SQLPlaygroundDrawer = (props: { data?: Repo }) => {
   const { data: targetData } = props;
 
-  const [inputValue, setInputValue] = React.useState("");
-  const [sql, setSQL] = React.useState("");
+  const [inputValue, setInputValue] = React.useState('');
+  const [sql, setSQL] = React.useState('');
   const [open, setOpen] = React.useState(false);
 
   // const { repoId, repoName, comparingRepoId } = useAnalyzeContext();
@@ -107,9 +107,9 @@ export const SQLPlaygroundDrawer = (props: { data?: Repo }) => {
   const toggleDrawer =
     (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
       if (
-        event.type === "keydown" &&
-        ((event as React.KeyboardEvent).key === "Tab" ||
-          (event as React.KeyboardEvent).key === "Shift")
+        event.type === 'keydown' &&
+        ((event as React.KeyboardEvent).key === 'Tab' ||
+          (event as React.KeyboardEvent).key === 'Shift')
       ) {
         return;
       }
@@ -119,14 +119,14 @@ export const SQLPlaygroundDrawer = (props: { data?: Repo }) => {
 
   React.useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key.toUpperCase() === "K" && (event.ctrlKey || event.metaKey)) {
-        //it was Ctrl + K (Cmd + K)
+      if (event.key.toUpperCase() === 'K' && (event.ctrlKey || event.metaKey)) {
+        // it was Ctrl + K (Cmd + K)
         setOpen(true);
       }
     };
-    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener('keydown', handleKeyDown);
     return () => {
-      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener('keydown', handleKeyDown);
     };
   }, []);
 
@@ -136,8 +136,8 @@ export const SQLPlaygroundDrawer = (props: { data?: Repo }) => {
 
   const { data, loading, error } = useSQLPlayground(
     sql,
-    "repo",
-    `${targetData.id}`
+    'repo',
+    `${targetData?.id ?? 'undefined'}`,
   );
 
   // React.useEffect(() => {
@@ -153,14 +153,14 @@ export const SQLPlaygroundDrawer = (props: { data?: Repo }) => {
 
   const handleFormatSQLClick = () => {
     const formattedSQL = format(inputValue, {
-      language: "mysql",
+      language: 'mysql',
       uppercase: true,
       linesBetweenQueries: 2,
     });
     setInputValue(formattedSQL);
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     setSQL(inputValue);
   };
 
@@ -179,9 +179,9 @@ export const SQLPlaygroundDrawer = (props: { data?: Repo }) => {
         onClick={handleClickTerminalBtn}
         sx={{
           display: {
-            xs: "none",
+            xs: 'none',
             // Remove next line to show terminal button on desktop
-            md: "inline-flex",
+            md: 'inline-flex',
           },
         }}
       >
@@ -198,19 +198,19 @@ export const SQLPlaygroundDrawer = (props: { data?: Repo }) => {
         <Box
           id="sql-playground-container"
           sx={{
-            height: "80vh",
-            overflow: "hidden",
-            width: "100%",
-            padding: "1rem",
-            borderTop: "0.5px solid grey",
+            height: '80vh',
+            overflow: 'hidden',
+            width: '100%',
+            padding: '1rem',
+            borderTop: '0.5px solid grey',
           }}
         >
           <Stack
             direction="row"
             spacing={2}
             sx={{
-              padding: "0 1rem 1rem 1rem",
-              alignItems: "center",
+              padding: '0 1rem 1rem 1rem',
+              alignItems: 'center',
             }}
           >
             <Typography variant="h2" component="div" sx={{ flexGrow: 1, color: 'orange' }}>
@@ -218,17 +218,17 @@ export const SQLPlaygroundDrawer = (props: { data?: Repo }) => {
             </Typography>
             <Box
               sx={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                gap: "1rem",
-                marginLeft: "auto",
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: '1rem',
+                marginLeft: 'auto',
               }}
             >
               <Button
                 variant="contained"
                 size="small"
-                disabled={!inputValue || !targetData.id}
+                disabled={!inputValue || isNullish(targetData?.id)}
                 onClick={handleFormatSQLClick}
               >
                 Format
@@ -236,7 +236,7 @@ export const SQLPlaygroundDrawer = (props: { data?: Repo }) => {
               <LoadingButton
                 variant="contained"
                 size="small"
-                disabled={!inputValue || !targetData.id}
+                disabled={!inputValue || isNullish(targetData?.id)}
                 onClick={handleSubmit}
                 endIcon={<PlayArrowIcon fontSize="inherit" />}
                 loading={loading}
@@ -249,35 +249,35 @@ export const SQLPlaygroundDrawer = (props: { data?: Repo }) => {
             direction="row"
             spacing={2}
             sx={{
-              marginBottom: "1rem",
-              height: "100%",
-              maxHeight: "calc(100% - 3.5rem)",
+              marginBottom: '1rem',
+              height: '100%',
+              maxHeight: 'calc(100% - 3.5rem)',
             }}
           >
             <Box
               id="playground-left"
               sx={{
-                height: "100%",
-                overflowY: "auto",
-                width: "40%",
-                maxWidth: "40vw",
+                height: '100%',
+                overflowY: 'auto',
+                width: '40%',
+                maxWidth: '40vw',
               }}
             >
               <PreDefinedSQLList
                 hadnleClick={handlePredefinedSQLChange}
                 replacements={[
-                  { match: "repoId", value: `${targetData.id}` },
-                  { match: "repoName", value: targetData.name },
+                  { match: 'repoId', value: `${targetData?.id ?? 'undefined'}` },
+                  { match: 'repoName', value: targetData?.name ?? 'undefined' },
                 ]}
               />
             </Box>
             <Box
               id="playground-right"
               sx={{
-                height: "100%",
-                overflowY: "auto",
-                width: "100%",
-                padding: "0 1rem",
+                height: '100%',
+                overflowY: 'auto',
+                width: '100%',
+                padding: '0 1rem',
               }}
             >
               <SQLEditor
@@ -286,7 +286,7 @@ export const SQLPlaygroundDrawer = (props: { data?: Repo }) => {
                 onChange={onChange}
                 name="SQL_PLAYGROUND"
                 width="100%"
-                height={data?.data?"250px":"350px"}
+                height={data?.data ? '250px' : '350px'}
                 showPrintMargin={false}
                 value={
                   inputValue ||
@@ -294,7 +294,7 @@ export const SQLPlaygroundDrawer = (props: { data?: Repo }) => {
 /* ⚠️ 
 Playground uses LIMITED resource(cpu/mem), so SQL should add:
 
-  WHERE repo_id = ${targetData.id}
+  WHERE repo_id = ${targetData?.id ?? 'undefined'}
 
 to use index as much as possible, or it will be terminated.
 
@@ -318,28 +318,30 @@ LIMIT
                 }}
               />
 
-              {error && (
+              {notFalsy(error) && (
                 <Alert severity="error">
                   <AlertTitle>Error</AlertTitle>
                   {`${error}`}
                 </Alert>
               )}
-              {data?.spent && data?.data && (
+              {isFiniteNumber(data?.spent) && notNullish(data) && (
                 <>
-                  <Typography variant="body2" sx={{ padding: "1rem" }}>
-                    {`${data.data?.length} results in ${data.spent.toFixed(
-                      2
+                  <Typography variant="body2" sx={{ padding: '1rem' }}>
+                    {`${data.data.length} results in ${data.spent.toFixed(
+                      2,
                     )}s.`}
                   </Typography>
                 </>
               )}
               {data?.data && (
                 <Box>
-                  {data?.sql?.match(/\bEXPLAIN\b/i) ? (
+                  {notNullish((data?.sql?.match(/\bEXPLAIN\b/i)))
+                    ? (
                     <CodeBlock>{dataListToRawOutput(data.data)}</CodeBlock>
-                  ) : (
-                    renderTable(data.data)
-                  )}
+                      )
+                    : (
+                        renderTable(data.data)
+                      )}
                 </Box>
               )}
             </Box>
@@ -353,16 +355,16 @@ LIMIT
 const PreDefinedSQLList = (props: {
   title?: string;
   hadnleClick: (sql: string) => void;
-  replacements?: { match: string; value: string }[]; // Replace the string `{{match}}` with `value` in SQL
+  replacements?: Array<{ match: string, value: string }>; // Replace the string `{{match}}` with `value` in SQL
 }) => {
   const {
-    title = "Pre-defined SQL",
+    // title = 'Pre-defined SQL',
     hadnleClick = () => {},
     replacements = [],
   } = props;
 
   const [selectedItemId, setSelectedItemId] = React.useState<string | null>(
-    null
+    null,
   );
 
   const SQLListSubHeader = (props: { title: string }) => {
@@ -370,13 +372,13 @@ const PreDefinedSQLList = (props: {
     return (
       <ListSubheader
         sx={{
-          "&:not(:first-of-type)": {
-            marginTop: "0.5rem",
+          '&:not(:first-of-type)': {
+            marginTop: '0.5rem',
           },
-          marginBottom: "0.5rem",
-          backgroundColor: "transparent",
-          color: "#5DADF2",
-          position: "unset",
+          marginBottom: '0.5rem',
+          backgroundColor: 'transparent',
+          color: '#5DADF2',
+          position: 'unset',
         }}
       >
         <Typography variant="h4" component="div">
@@ -394,14 +396,14 @@ const PreDefinedSQLList = (props: {
         }}
       >
         {PREDEFINED_SQL_LIST.map((item) => {
-          if (item.type === "header") {
+          if (item.type === 'header') {
             return <SQLListSubHeader key={item.id} title={item.title} />;
           }
 
           let sql = item.sql;
 
           replacements.forEach((replacement) => {
-            sql = sql.replaceAll(`{{${replacement.match}}}`, replacement.value);
+            sql = sql?.replaceAll(`{{${replacement.match}}}`, replacement.value);
           });
 
           return (
@@ -410,7 +412,7 @@ const PreDefinedSQLList = (props: {
                 selected={selectedItemId === item.id}
                 onClick={() => {
                   if (selectedItemId !== item.id) {
-                    hadnleClick(sql);
+                    hadnleClick(sql ?? '');
                     setSelectedItemId(item.id);
                   }
                 }}
@@ -418,7 +420,7 @@ const PreDefinedSQLList = (props: {
                 <ListItemText
                   primary={item.title}
                   sx={{
-                    paddingLeft: "1rem",
+                    paddingLeft: '1rem',
                   }}
                 />
               </ListItemButton>
@@ -433,35 +435,35 @@ const PreDefinedSQLList = (props: {
 type PREDEFINED_SQL_ITEM_TYPE = {
   id: string;
   title: string;
-  type: "header" | "sql";
+  type: 'header' | 'sql';
   sql?: string;
 };
 
 // Support variables in SQL: use {{<your variable>}}
 const PREDEFINED_SQL_LIST: PREDEFINED_SQL_ITEM_TYPE[] = [
   {
-    id: "table_info",
-    title: "Learn about table info ↓",
-    type: "header",
+    id: 'table_info',
+    title: 'Learn about table info ↓',
+    type: 'header',
   },
   {
-    id: "table_schema",
-    type: "sql",
-    title: "Show table schema",
-    sql: "DESC github_events;",
+    id: 'table_schema',
+    type: 'sql',
+    title: 'Show table schema',
+    sql: 'DESC github_events;',
   },
   {
-    id: "table_indexes",
-    type: "sql",
-    title: "Show table indexes",
+    id: 'table_indexes',
+    type: 'sql',
+    title: 'Show table indexes',
     sql: `SHOW indexes
 FROM
   github_events;`,
   },
   {
-    id: "example_row",
-    type: "sql",
-    title: "This is an example row",
+    id: 'example_row',
+    type: 'sql',
+    title: 'This is an example row',
     sql: `SELECT
   *
 FROM
@@ -472,9 +474,9 @@ LIMIT
   1`,
   },
   {
-    id: "total_rows",
-    type: "sql",
-    title: "Total rows of this repo - Realtime",
+    id: 'total_rows',
+    type: 'sql',
+    title: 'Total rows of this repo - Realtime',
     sql: `-- Delayed by 5 minutes: https://github.blog/changelog/2018-08-01-new-delay-public-events-api/
 SELECT
   COUNT(*)
@@ -485,14 +487,14 @@ WHERE
   repo_id = {{repoId}}`,
   },
   {
-    id: "this_repo",
-    title: "Learn about this repo ↓",
-    type: "header",
+    id: 'this_repo',
+    title: 'Learn about this repo ↓',
+    type: 'header',
   },
   {
-    id: "first_pr",
-    type: "sql",
-    title: "Who created the first pull request of this repo?",
+    id: 'first_pr',
+    type: 'sql',
+    title: 'Who created the first pull request of this repo?',
     sql: `SELECT
   *
 FROM
@@ -507,9 +509,9 @@ LIMIT
 ;`,
   },
   {
-    id: "first_issue",
-    type: "sql",
-    title: "Who closed the first issue?",
+    id: 'first_issue',
+    type: 'sql',
+    title: 'Who closed the first issue?',
     sql: `SELECT
   *
 FROM
@@ -524,9 +526,9 @@ LIMIT
   1`,
   },
   {
-    id: "latest_stargazer",
-    type: "sql",
-    title: "Who is the latest stargazer?",
+    id: 'latest_stargazer',
+    type: 'sql',
+    title: 'Who is the latest stargazer?',
     sql: `SELECT
   *
 FROM
@@ -541,9 +543,9 @@ LIMIT
 ;`,
   },
   {
-    id: "active_reviewer",
-    type: "sql",
-    title: "Who reviewed the most of code?",
+    id: 'active_reviewer',
+    type: 'sql',
+    title: 'Who reviewed the most of code?',
     sql: `SELECT
   actor_login,
   COUNT(*) AS comments
@@ -565,9 +567,9 @@ LIMIT
 ;`,
   },
   {
-    id: "most_loc_added",
-    type: "sql",
-    title: "Who contributed the most lines of code?",
+    id: 'most_loc_added',
+    type: 'sql',
+    title: 'Who contributed the most lines of code?',
     sql: `SELECT
   actor_login,
   SUM(additions) AS loc_added
@@ -585,9 +587,9 @@ LIMIT
   5`,
   },
   {
-    id: "star_again_and_again",
-    type: "sql",
-    title: "Who star/unstar this repo again and again...",
+    id: 'star_again_and_again',
+    type: 'sql',
+    title: 'Who star/unstar this repo again and again...',
     sql: `SELECT
   actor_login,
   COUNT(*) AS cnt
@@ -606,14 +608,14 @@ LIMIT
   100`,
   },
   {
-    id: "learn_about_yourself",
-    title: "[Quiz] Learn about yourself",
-    type: "header",
+    id: 'learn_about_yourself',
+    title: '[Quiz] Learn about yourself',
+    type: 'header',
   },
   {
-    id: "all_contributions_to_this_repo",
-    type: "sql",
-    title: "All your contributions to this repo",
+    id: 'all_contributions_to_this_repo',
+    type: 'sql',
+    title: 'All your contributions to this repo',
     sql: `SELECT
   *
 FROM
@@ -623,9 +625,9 @@ WHERE
   AND actor_login = '?' -- input your GitHub ID here`,
   },
   {
-    id: "biggest_pr",
-    type: "sql",
-    title: "Which is your biggest pull request to this repo",
+    id: 'biggest_pr',
+    type: 'sql',
+    title: 'Which is your biggest pull request to this repo',
     sql: `SELECT
   max(additions)
 FROM
@@ -636,9 +638,9 @@ WHERE
   AND actor_login = '?' -- input your GitHub ID here`,
   },
   {
-    id: "pr_or_push",
-    type: "sql",
-    title: "Which do you prefer, pull request or push?",
+    id: 'pr_or_push',
+    type: 'sql',
+    title: 'Which do you prefer, pull request or push?',
     sql: `SELECT
   type,
   count(*)
@@ -684,16 +686,16 @@ const SQLEditor = (props: {
   return (
     <BrowserOnly>
       {() => {
-        const AceEditor = require("react-ace").default;
-        require("ace-builds/src-noconflict/mode-sql");
-        require("ace-builds/src-noconflict/theme-twilight");
-        require("ace-builds/src-noconflict/ext-language_tools");
+        const AceEditor = require('react-ace').default;
+        require('ace-builds/src-noconflict/mode-sql');
+        require('ace-builds/src-noconflict/theme-twilight');
+        require('ace-builds/src-noconflict/ext-language_tools');
         return (
           <Box
             sx={{
-              "& .ace_editor .ace_comment.ace_placeholder": {
-                fontStyle: "normal",
-                transform: "none",
+              '& .ace_editor .ace_comment.ace_placeholder': {
+                fontStyle: 'normal',
+                transform: 'none',
                 opacity: 1,
               },
             }}
@@ -724,8 +726,8 @@ const SQLEditor = (props: {
   );
 };
 
-const dataListToRawOutput = (dataList: { [key: string]: string }[]) => {
-  const results = [];
+const dataListToRawOutput = (dataList: Array<{ [key: string]: string }>) => {
+  const results: string[][] = [];
   const rowsMaxLength = dataList.reduce(
     (prev: { [key: string]: number }, item) => {
       Object.keys(item).forEach((itemKey) => {
@@ -737,31 +739,31 @@ const dataListToRawOutput = (dataList: { [key: string]: string }[]) => {
       });
       return prev;
     },
-    {}
+    {},
   );
-  let headStr = "";
+  let headStr = '';
   Object.keys(rowsMaxLength).forEach((key) => {
     const len = rowsMaxLength[key];
     const headLength = key.length;
     if (headLength > len) {
       rowsMaxLength[key] = headLength;
     }
-    headStr += key.padEnd(rowsMaxLength[key], " ") + " | ";
+    headStr += key.padEnd(rowsMaxLength[key], ' ') + ' | ';
   });
   dataList.forEach((item) => {
-    const row = [];
+    const row: string[] = [];
     Object.keys(rowsMaxLength).forEach((key) => {
       const value = item[key];
       const maxLength = rowsMaxLength[key];
-      row.push(value.padEnd(maxLength, " "));
+      row.push(value.padEnd(maxLength, ' '));
     });
     results.push(row);
   });
 
-  let outputStr = "";
+  let outputStr = '';
   for (let i = 0; i < results.length; i++) {
-    const rowData = results[i].join(" | ");
-    outputStr += rowData + "\n";
+    const rowData = results[i].join(' | ');
+    outputStr += rowData + '\n';
   }
 
   return `${headStr}\n${outputStr}`;

@@ -1,8 +1,8 @@
-import Box, { BoxProps } from "@mui/material/Box";
-import React from "react";
-import { styled } from "@mui/material/styles";
+import Box from '@mui/material/Box';
+import React from 'react';
+import { styled } from '@mui/material/styles';
 import colors from './colors.module.css';
-import { A, LI, UL } from "./styled";
+import { A, LI, UL } from './styled';
 
 export interface ReposProps {
   color: string;
@@ -12,13 +12,13 @@ export interface ReposProps {
   list: string[];
 }
 
-export default function Repos({ color, category, value, percent, list }: ReposProps) {
+export default function Repos ({ color, category, value, percent, list }: ReposProps) {
   return (
     <Box
       className={colors[`${color}Box`]}
       position="relative"
       p={4}
-      height='100%'
+      height="100%"
     >
       <Category>{category}: {value}</Category>
       <Percent>{percent}</Percent>
@@ -35,7 +35,8 @@ export default function Repos({ color, category, value, percent, list }: ReposPr
         {list.map(item => (
           <LI key={item}>
             {/^\S+\/\S+$/.test(item)
-              ? (<A href={`https://ossinsight.io/analyze/${item}`} target="_blank" rel="noopener">{item}</A>) : (item)}
+              ? (<A href={`https://ossinsight.io/analyze/${item}`} target="_blank" rel="noopener">{item}</A>)
+              : (item)}
           </LI>
         ))}
       </UL>

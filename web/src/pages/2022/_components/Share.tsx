@@ -1,26 +1,24 @@
-import React, { useCallback, useEffect, useState } from "react";
-import SpeedDial from "@mui/material/SpeedDial";
-import { styled } from "@mui/material/styles";
-import ShareIcon from "@mui/icons-material/Share";
-import SpeedDialAction from "@mui/material/SpeedDialAction";
+import React, { useCallback, useEffect, useState } from 'react';
+import SpeedDial from '@mui/material/SpeedDial';
+import { styled } from '@mui/material/styles';
+import ShareIcon from '@mui/icons-material/Share';
+import SpeedDialAction from '@mui/material/SpeedDialAction';
 import { LinkedinIcon, RedditIcon, TelegramIcon } from 'react-share';
-import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
-import { useHistory } from "@docusaurus/router";
-import { useEventCallback } from "@mui/material";
-import { linkedinLink, redditLink, telegramLink, twitterLink } from "@site/src/utils/share";
-import { Twitter } from "@mui/icons-material";
-import ButtonBase from "@mui/material/ButtonBase";
-import Stack from "@mui/material/Stack";
-import Box from "@mui/material/Box";
-import Divider from "@mui/material/Divider";
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+import { useHistory } from '@docusaurus/router';
+import { useEventCallback } from '@mui/material';
+import { linkedinLink, redditLink, telegramLink, twitterLink } from '@site/src/utils/share';
+import { Twitter } from '@mui/icons-material';
+import ButtonBase from '@mui/material/ButtonBase';
+import Stack from '@mui/material/Stack';
+import Box from '@mui/material/Box';
+import Divider from '@mui/material/Divider';
 
-const shares = [];
-
-function jump(link: string) {
+function jump (link: string) {
   window.open(link, '_blank');
 }
 
-export default function Share() {
+export default function Share () {
   const [show, setShow] = useState(false);
   const { siteConfig } = useDocusaurusContext();
   const { createHref } = useHistory();

@@ -1,30 +1,30 @@
-import React from "react";
-import styles from './data-grid.module.css'
+import React from 'react';
+import styles from './data-grid.module.css';
 
 export type DataGridColumn<T, F extends keyof T = keyof T> = {
-  field: F
-  title: string
-  render?: (field: T[F], data: T, n: number) => any
-}
+  field: F;
+  title: string;
+  render?: (field: T[F], data: T, n: number) => any;
+};
 
 interface DataGridProps<T> {
-  data?: T[]
-  columns: DataGridColumn<T>[]
-  loading?: boolean
+  data?: T[];
+  columns: Array<DataGridColumn<T>>;
+  loading?: boolean;
 }
 
-export default function DataGrid<Q>({columns, data}: DataGridProps<Q>) {
+export default function DataGrid<Q> ({ columns, data }: DataGridProps<Q>) {
   return (
     <table className={styles.dataGridTable}>
       <thead>
       <tr>
-        {columns.map(({title, field}) => <th key={field as string}>{title}</th>)}
+        {columns.map(({ title, field }) => <th key={field as string}>{title}</th>)}
       </tr>
       </thead>
       <tbody>
       {data?.map((row, i) => (
-        <tr>
-          {columns.map(({field, render}) => (
+        <tr key={i}>
+          {columns.map(({ field, render }) => (
             <td key={field as string}>
               { render?.(row[field], row, i) ?? row[field]}
             </td>
@@ -33,5 +33,5 @@ export default function DataGrid<Q>({columns, data}: DataGridProps<Q>) {
       ))}
       </tbody>
     </table>
-  )
+  );
 }

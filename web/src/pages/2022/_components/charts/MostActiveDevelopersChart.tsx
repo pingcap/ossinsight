@@ -1,11 +1,12 @@
-import React from "react";
-import Chart, { ChartProps } from "@site/src/components/Chart";
+import React from 'react';
+import Chart, { ChartProps } from '@site/src/components/Chart';
 import data from '../../_charts/developers.json';
-import ChartDataLabels from "chartjs-plugin-datalabels";
-import useIsLarge from "../hooks/useIsLarge";
-import theme from "./theme";
+import ChartDataLabels from 'chartjs-plugin-datalabels';
+import useIsLarge from '../hooks/useIsLarge';
+import theme from './theme';
+import { notNullish } from '@site/src/utils/value';
 
-function years(from, to: number): string[] {
+function years (from, to: number): string[] {
   const arr: string[] = [];
   for (let i = from, j = 0; i <= to; i++, j++) {
     arr[j] = String(i);
@@ -14,10 +15,10 @@ function years(from, to: number): string[] {
 }
 
 interface MostActiveDevelopersChartProps extends Omit<ChartProps, 'once' | 'data' | 'aspect'> {
-  footnote?: string
+  footnote?: string;
 }
 
-export default function MostActiveDevelopersChart({ footnote, ...props }: MostActiveDevelopersChartProps) {
+export default function MostActiveDevelopersChart ({ footnote, ...props }: MostActiveDevelopersChartProps) {
   const large = useIsLarge();
 
   return (
@@ -83,7 +84,7 @@ export default function MostActiveDevelopersChart({ footnote, ...props }: MostAc
           },
           legend: {
             labels: {
-              filter: (item) => item.datasetIndex >= 1,
+              filter: (item) => notNullish(item.datasetIndex) && item.datasetIndex >= 1,
               color: `${theme.color.legend}80`,
               font: theme.font.legend,
               boxWidth: 18,

@@ -1,9 +1,10 @@
-import { RemoteData } from "../RemoteCharts/hook";
-import React, { useState } from "react";
-import DebugDialog from "./DebugDialog";
-import { useEventCallback } from "@mui/material";
-import Button from "@mui/material/Button";
-import CodeIcon from "@mui/icons-material/Code";
+import { RemoteData } from '../RemoteCharts/hook';
+import React, { useState } from 'react';
+import DebugDialog from './DebugDialog';
+import { useEventCallback } from '@mui/material';
+import Button from '@mui/material/Button';
+import CodeIcon from '@mui/icons-material/Code';
+import { isNullish, notNullish } from '@site/src/utils/value';
 
 export interface UseDebugDialogParams extends Pick<RemoteData<any, any>, 'sql' | 'query' | 'params'> {
 
@@ -15,7 +16,7 @@ export interface UseDebugDialogResult {
   show: boolean;
 }
 
-export function useDebugDialog(params: UseDebugDialogParams): UseDebugDialogResult {
+export function useDebugDialog (params: UseDebugDialogParams | undefined): UseDebugDialogResult {
   const [showDebugModel, setShowDebugModel] = useState(false);
 
   const handleCloseDebugModel = useEventCallback(() => {
@@ -28,10 +29,10 @@ export function useDebugDialog(params: UseDebugDialogParams): UseDebugDialogResu
 
   const dialog = (
     <DebugDialog
-      query={params?.query}
+      query={params?.query ?? ''}
       sql={params?.sql}
       params={params?.params}
-      open={!!params && showDebugModel}
+      open={notNullish(params) && showDebugModel}
       onClose={handleCloseDebugModel}
     />
   );
@@ -41,7 +42,7 @@ export function useDebugDialog(params: UseDebugDialogParams): UseDebugDialogResu
       size="small"
       onClick={handleShowDebugModel}
       endIcon={<CodeIcon />}
-      disabled={!params}
+      disabled={isNullish(params)}
     >
       SHOW SQL
     </Button>

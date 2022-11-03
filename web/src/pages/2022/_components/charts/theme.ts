@@ -1,6 +1,7 @@
-import { responsive } from "./responsive";
-import ChartJs, { Color, FontSpec, GridLineOptions, TitleOptions } from "chart.js/auto";
-
+/* eslint-disable @typescript-eslint/no-namespace */
+import { responsive } from './responsive';
+import ChartJs, { Color, FontSpec, GridLineOptions, TitleOptions } from 'chart.js/auto';
+import { notNullish } from '@site/src/utils/value';
 
 namespace theme {
   export namespace font {
@@ -14,7 +15,6 @@ namespace theme {
       style: [undefined, 'italic'],
       weight: [undefined, 'bold'],
     });
-
 
     export const ticks = responsive<FontSpec>({
       size: [10, 12, 14],
@@ -39,8 +39,8 @@ namespace theme {
     export const tooltipTitle = '#BFBFBF';
     export const subtitle = '#7C7C7C';
     export const gridLine = '#BFBFBF80';
-    export const ticks = '#E0E0E0'
-    export const legend = '#BFBFBF'
+    export const ticks = '#E0E0E0';
+    export const legend = '#BFBFBF';
   }
 
   export namespace grid {
@@ -64,11 +64,11 @@ namespace theme {
     font: font.title,
   });
 
-  export const subtitle = (text: string): Partial<TitleOptions> => ({
+  export const subtitle = (text: string | undefined): Partial<TitleOptions> => ({
     position: 'bottom',
     align: 'end',
     text,
-    display: !!text,
+    display: notNullish(text),
     color: color.subtitle,
     padding: 12,
     font: font.subtitle,

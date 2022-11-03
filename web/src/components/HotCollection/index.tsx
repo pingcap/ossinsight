@@ -1,22 +1,22 @@
-import { RecentHotCollectionData } from "../../pages/home/_sections/1-collections/hook";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import Stack from "@mui/material/Stack";
-import Diff from "../Diff";
-import Link from "@docusaurus/Link";
-import Avatar from "@mui/material/Avatar";
-import { paramCase } from "param-case";
-import React, { useCallback } from "react";
-import Skeleton from "@mui/material/Skeleton";
-import { styled } from "@mui/material/styles";
-import { useHistory } from "@docusaurus/router";
+import { RecentHotCollectionData } from '../../pages/home/_sections/1-collections/hook';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import Stack from '@mui/material/Stack';
+import Diff from '../Diff';
+import Link from '@docusaurus/Link';
+import Avatar from '@mui/material/Avatar';
+import { paramCase } from 'param-case';
+import React, { useCallback } from 'react';
+import Skeleton from '@mui/material/Skeleton';
+import { styled } from '@mui/material/styles';
+import { useHistory } from '@docusaurus/router';
 
 interface HotCollectionProps extends Pick<RecentHotCollectionData, 'name' | 'repos' | 'collectionRepos'> {
-  variant?: 'clickable' | 'link'
+  variant?: 'clickable' | 'link';
 }
 
-export default function HotCollection({ variant = 'clickable', name, repos, collectionRepos }: HotCollectionProps) {
-  const history = useHistory()
+export default function HotCollection ({ variant = 'clickable', name, repos, collectionRepos }: HotCollectionProps) {
+  const history = useHistory();
 
   const jump = useCallback(() => {
     history.push(`/collections/${paramCase(name)}`);
@@ -36,7 +36,7 @@ export default function HotCollection({ variant = 'clickable', name, repos, coll
           <Box overflow='hidden' textOverflow='ellipsis' whiteSpace='nowrap'>
             <Link href={`/analyze/${repo.repo_name}`} target='_blank'>
               <Stack direction="row" alignItems="center">
-                <Box component='span' display='inline-flex' bgcolor='lightgrey' borderRadius='24px' padding='0px' alignItems='center' justifyContent='center' sx={{ verticalAlign: 'text-bottom'}} mr={1}>
+                <Box component='span' display='inline-flex' bgcolor='lightgrey' borderRadius='24px' padding='0px' alignItems='center' justifyContent='center' sx={{ verticalAlign: 'text-bottom' }} mr={1}>
                   <Avatar src={`https://github.com/${repo.repo_name.split('/')[0]}.png`} />
                 </Box>
                 <Box component="span" whiteSpace="nowrap" ml={1}>
@@ -55,16 +55,17 @@ export default function HotCollection({ variant = 'clickable', name, repos, coll
               &gt; See All
             </Link>
           </Box>
-        ) : (
+          )
+        : (
           <Link href={`/collections/${paramCase(name)}`} target="_blank" hidden>
             &gt; See All
           </Link>
-        )}
+          )}
     </Container>
   );
 }
 
-export function LoadingHotCollection() {
+export function LoadingHotCollection () {
   return (
     <Box border="2px dashed #3c3c3c" p={2} borderRadius={1} sx={{ '&:not(:first-of-type)': { ml: 2 } }}>
       <Skeleton width={150} />
@@ -95,5 +96,5 @@ const Container = styled(Box)(({ theme }) => ({
       boxShadow: theme.shadows[16],
       transform: 'translateY(-1px) scale(1.02)',
     },
-  }
+  },
 }));

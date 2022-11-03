@@ -1,5 +1,5 @@
 import createPlugin, { PluginOptions } from '@docusaurus/plugin-google-gtag';
-import { LoadContext, Plugin } from "@docusaurus/types";
+import { LoadContext, Plugin } from '@docusaurus/types';
 
 export default function (
   context: LoadContext,
@@ -10,10 +10,10 @@ export default function (
 
   return {
     ...plugin,
-    getClientModules() {
+    getClientModules () {
       return isProd ? ['./gtag'] : ['./gtag.dev'];
     },
-    injectHtmlTags(args) {
+    injectHtmlTags (args) {
       if (!isProd) {
         return {
           headTags: [
@@ -24,7 +24,7 @@ export default function (
               gtag('js', new Date());
               gtag('config', '{TRACKING_ID}', '{ ...args }');`,
             },
-          ]
+          ],
         };
       }
       return plugin.injectHtmlTags(args);

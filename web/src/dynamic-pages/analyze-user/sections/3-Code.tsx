@@ -1,20 +1,21 @@
-import React, { ForwardedRef, forwardRef, useContext, useMemo, useRef } from "react";
-import Section, { SectionHeading } from "../../../components/Section";
-import InViewContext from "../../../components/InViewContext";
-import { useAnalyzeUserContext } from "../charts/context";
-import { usePersonalData } from "../hooks/usePersonal";
-import { Axis, BarSeries, Dataset, EChartsx, LineSeries, Once, Title } from "@djagger/echartsx";
-import { Common } from "../charts/Common";
-import { green, lightGreen, purple, redColors } from "../colors";
-import ChartWrapper from "../charts/ChartWrapper";
-import { EChartsType } from "echarts/core";
+import React, { ForwardedRef, forwardRef, useContext, useMemo, useRef } from 'react';
+import Section, { SectionHeading } from '../../../components/Section';
+import InViewContext from '../../../components/InViewContext';
+import { useAnalyzeUserContext } from '../charts/context';
+import { usePersonalData } from '../hooks/usePersonal';
+import { Axis, BarSeries, Dataset, EChartsx, LineSeries, Once } from '@djagger/echartsx';
+import { Common } from '../charts/Common';
+import { green, lightGreen, purple, redColors } from '../colors';
+import ChartWrapper from '../charts/ChartWrapper';
+import { EChartsType } from 'echarts/core';
+import { nonEmptyArray } from '@site/src/utils/value';
 
 type PrSize = {
-  name: string
-  description: string
-}
+  name: string;
+  description: string;
+};
 
-//'xs (0-9 lines)', 's (10-29 lines)', 'm (30-99 lines)', 'l (100-499 lines)', 'xl (500-999 lines)', 'xxl (1000+ lines)'
+// 'xs (0-9 lines)', 's (10-29 lines)', 'm (30-99 lines)', 'l (100-499 lines)', 'xl (500-999 lines)', 'xxl (1000+ lines)'
 const sizes: PrSize[] = [
   { name: 'xs', description: '0-9 lines' },
   { name: 's', description: '10-29 lines' },
@@ -23,9 +24,9 @@ const sizes: PrSize[] = [
   { name: 'xl', description: '500-999 lines' },
   { name: 'xxl', description: '1000+ lines' },
 
-]
+];
 
-export default forwardRef(function CodeSection({}, ref: ForwardedRef<HTMLElement>) {
+export default forwardRef(function CodeSection (_, ref: ForwardedRef<HTMLElement>) {
   return (
     <Section id='code' ref={ref}>
       <Code />
@@ -54,7 +55,7 @@ const Code = () => {
 const CodeSubmitHistory = ({ userId, show }: ModuleProps) => {
   const { data, loading } = usePersonalData('personal-pushes-and-commits', userId, show);
 
-  const chart = useRef<EChartsType | undefined>()
+  const chart = useRef<EChartsType>(null);
 
   return (
     <ChartWrapper title="Code Submit History" chart={chart} remoteData={data} loading={loading}>
@@ -75,7 +76,7 @@ const CodeSubmitHistory = ({ userId, show }: ModuleProps) => {
 const PullRequestHistory = ({ userId, show }: ModuleProps) => {
   const { data, loading } = usePersonalData('personal-pull-request-action-history', userId, show);
 
-  const chart = useRef<EChartsType | undefined>()
+  const chart = useRef<EChartsType>(null);
 
   return (
     <ChartWrapper title="Pull Request History" chart={chart} remoteData={data} loading={loading}>
@@ -90,11 +91,13 @@ const PullRequestHistory = ({ userId, show }: ModuleProps) => {
                       areaStyle={{ opacity: 0.15 }} symbolSize={0} lineStyle={{ width: 1 }} />
         </Once>
         <Dataset id="original" source={data?.data ?? []} />
-        {data?.data.length ? <Dataset id="source" fromDatasetId="original"
+        {nonEmptyArray(data?.data)
+          ? <Dataset id="source" fromDatasetId="original"
                          transform={{
                            type: 'sort',
                            config: { dimension: 'event_month', order: 'asc' },
-                         }} /> : undefined}
+                         }} />
+          : undefined}
       </EChartsx>
     </ChartWrapper>
   );
@@ -103,7 +106,7 @@ const PullRequestHistory = ({ userId, show }: ModuleProps) => {
 const PullRequestSize = ({ userId, show }: ModuleProps) => {
   const { data, loading } = usePersonalData('personal-pull-request-size-history', userId, show);
 
-  const chart = useRef<EChartsType | undefined>()
+  const chart = useRef<EChartsType>(null);
 
   return (
     <ChartWrapper title="Pull Request Size" chart={chart} remoteData={data} loading={loading}>
@@ -127,6 +130,7 @@ const LineOfCodes = ({ userId, show }: ModuleProps) => {
   const { data, loading } = usePersonalData('personal-pull-request-code-changes-history', userId, show);
 
   const mappedData = useMemo(() => {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     return data?.data.map(({ additions, deletions, event_month, changes }) => ({
       additions,
       deletions: -deletions,
@@ -135,7 +139,7 @@ const LineOfCodes = ({ userId, show }: ModuleProps) => {
     })) ?? [];
   }, [data]);
 
-  const chart = useRef<EChartsType | undefined>()
+  const chart = useRef<EChartsType>(null);
 
   return (
     <ChartWrapper title="Lines of changes in PRs" chart={chart} remoteData={data} loading={loading}>
@@ -159,6 +163,6 @@ const LineOfCodes = ({ userId, show }: ModuleProps) => {
 };
 
 type ModuleProps = {
-  userId: number
-  show: boolean
-}
+  userId: number | undefined;
+  show: boolean;
+};

@@ -1,10 +1,10 @@
-import Section, { SubSection } from "../_components/Section";
-import React from "react";
-import Split from "../_components/Split";
-import Insights from "../_components/Insights";
-import { RankChart } from "../_components/charts";
-import { H2, H3, P2 } from "../_components/typograph";
-import { AdditionalTag, BR, ResponsiveAlignedRight, ResponsiveColumnFlex, Spacer } from "../_components/styled";
+import Section, { SubSection } from '../_components/Section';
+import React from 'react';
+import Split from '../_components/Split';
+import Insights from '../_components/Insights';
+import { RankChart } from '../_components/charts';
+import { H2, H3, P2 } from '../_components/typograph';
+import { AdditionalTag, BR, ResponsiveAlignedRight, ResponsiveColumnFlex } from '../_components/styled';
 
 export default function () {
   return (
@@ -56,7 +56,7 @@ const title = `Top languages
 in the open source world 
 over the past four years`;
 
-const description = `This chart ranks programming languages ​​yearly from 2019 to 2022 based on the ratio of new repositories using these languages to all new repositories.`;
+const description = 'This chart ranks programming languages ​​yearly from 2019 to 2022 based on the ratio of new repositories using these languages to all new repositories.';
 
 const insights = (
   <>
@@ -71,10 +71,9 @@ const insights = (
 
 const footnote = '* 2022: 01.01-09.30, excluding forking repositories';
 
+const backendTitle = 'Rankings of back-end programming languages';
 
-const backendTitle = `Rankings of back-end programming languages`;
-
-const backendDescription = `The programming languages used in a pull request reflect which languages developers used. To find out the most popular back-end programming languages, we queried the distribution of programming languages by new pull requests from 2019 to 2022 and took the top 10 for each year.`;
+const backendDescription = 'The programming languages used in a pull request reflect which languages developers used. To find out the most popular back-end programming languages, we queried the distribution of programming languages by new pull requests from 2019 to 2022 and took the top 10 for each year.';
 
 const backendInsights = (
   <>

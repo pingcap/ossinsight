@@ -18,30 +18,31 @@ import React, { useCallback, useEffect, useRef } from 'react';
 import { CoolList, CoolListInstance } from '../../../components/CoolList';
 import {
   useRealtimeRemoteData,
-} from "../../../components/RemoteCharts/hook";
+} from '../../../components/RemoteCharts/hook';
+import { notNullish } from '@site/src/utils/value';
 
 type Event = {
-  id: number
-  type: 'PushEvent' | 'CreateEvent' | 'PullRequestEvent' | 'WatchEvent' | 'IssueCommentEvent' | 'IssuesEvent' | 'DeleteEvent' | 'ForkEvent' | 'PullRequestReviewCommentEvent' | 'PullRequestReviewEvent' | 'GollumEvent' | 'ReleaseEvent' | 'MemberEvent' | 'CommitCommentEvent' | 'PublicEvent' | 'GistEvent' | 'FollowEvent' | 'Event' | 'DownloadEvent' | 'TeamAddEvent' | 'ForkApplyEvent'
-  repo_name: string
-  org_login: string
-  actor_login: string
-  number: number
-  action: 'added' | 'update' | 'created' | 'opened' | 'edited' | 'published' | 'fork' | 'create' | 'merged' | 'started' | 'synchronize' | 'closed' | 'labeled' | 'reopened'
-  created_at: string
-  pr_merged: 0 | 1 | null
-}
+  id: number;
+  type: 'PushEvent' | 'CreateEvent' | 'PullRequestEvent' | 'WatchEvent' | 'IssueCommentEvent' | 'IssuesEvent' | 'DeleteEvent' | 'ForkEvent' | 'PullRequestReviewCommentEvent' | 'PullRequestReviewEvent' | 'GollumEvent' | 'ReleaseEvent' | 'MemberEvent' | 'CommitCommentEvent' | 'PublicEvent' | 'GistEvent' | 'FollowEvent' | 'Event' | 'DownloadEvent' | 'TeamAddEvent' | 'ForkApplyEvent';
+  repo_name: string;
+  org_login: string;
+  actor_login: string;
+  number: number;
+  action: 'added' | 'update' | 'created' | 'opened' | 'edited' | 'published' | 'fork' | 'create' | 'merged' | 'started' | 'synchronize' | 'closed' | 'labeled' | 'reopened';
+  created_at: string;
+  pr_merged: 0 | 1 | null;
+};
 
 const getKey = (e: Event) => e.id;
 
-export default function Events({ show }: { show: boolean }) {
-  const ref = useRef<CoolListInstance<Event>>();
+export default function Events ({ show }: { show: boolean }) {
+  const ref = useRef<CoolListInstance<Event>>(null);
   const intervalHandler = useRef<ReturnType<typeof setInterval>>();
 
   const dataRef = useRef<[Event[], number]>([[], 0]);
   // const data = useRealtimeRemoteData<{}, Event>('events-increment-list', {}, false, show);
   const data = useRealtimeRemoteData<{}, Event>(
-    "events-increment-list",
+    'events-increment-list',
     {},
     false,
     show,
@@ -49,7 +50,7 @@ export default function Events({ show }: { show: boolean }) {
   );
 
   useEffect(() => {
-    if (data.data) {
+    if (notNullish(data.data)) {
       dataRef.current = [data.data.data, 0];
     }
   }, [data.data]);
@@ -99,7 +100,7 @@ const EventText = styled('span')({
   textOverflow: 'ellipsis',
 });
 
-function renderEvent(event: Event) {
+function renderEvent (event: Event) {
   return (
     <EventText>
       {renderVerb(event)}
@@ -109,7 +110,7 @@ function renderEvent(event: Event) {
   );
 }
 
-function renderVerb(event: Event) {
+function renderVerb (event: Event) {
   const actor = <a href={`https://github.com/${event.actor_login}`} rel="noopener">{event.actor_login}</a>;
   switch (event.type) {
     case 'PushEvent':
@@ -117,7 +118,7 @@ function renderVerb(event: Event) {
     case 'CreateEvent':
       return <><RepoIcon size={12} /> {actor} created</>;
     case 'PullRequestEvent': {
-      const pr = <a href={prUrl(event)} target="_blank" rel="noopener">#{event.number}</a>;
+      const pr = <a href={prUrl(event)} target="_blank" rel="noopener noreferrer">#{event.number}</a>;
       switch (event.action) {
         case 'closed':
           if (event.pr_merged) {
@@ -134,7 +135,7 @@ function renderVerb(event: Event) {
     case 'ForkEvent':
       return <><RepoForkedIcon size={12} /> {actor} forked</>;
     case 'IssuesEvent': {
-      const issue = <a href={issueUrl(event)} target="_blank" rel="noopener">#{event.number}</a>;
+      const issue = <a href={issueUrl(event)} target="_blank" rel="noopener noreferrer">#{event.number}</a>;
       switch (event.action) {
         case 'closed':
           return <><IssueClosedIcon size={12} /> {actor} closed {issue} in</>;
@@ -143,15 +144,15 @@ function renderVerb(event: Event) {
       }
     }
     case 'PullRequestReviewCommentEvent': {
-      const pr = <a href={prUrl(event)} target="_blank" rel="noopener">#{event.number}</a>;
+      const pr = <a href={prUrl(event)} target="_blank" rel="noopener noreferrer">#{event.number}</a>;
       return <><CommentIcon size={12} /> {actor} commented review PR {pr} in</>;
     }
     case 'PullRequestReviewEvent': {
-      const pr = <a href={prUrl(event)} target="_blank" rel="noopener">#{event.number}</a>;
+      const pr = <a href={prUrl(event)} target="_blank" rel="noopener noreferrer">#{event.number}</a>;
       return <><CodeReviewIcon size={12} /> {actor} review PR {pr} in</>;
     }
     case 'IssueCommentEvent': {
-      const issue = <a href={issueUrl(event)} target="_blank" rel="noopener">#{event.number}</a>;
+      const issue = <a href={issueUrl(event)} target="_blank" rel="noopener noreferrer">#{event.number}</a>;
       return <><CommentIcon size={12} /> {actor} commented issue {issue} in</>;
     }
     case 'CommitCommentEvent':
@@ -178,17 +179,16 @@ function renderVerb(event: Event) {
   }
 }
 
-function renderTarget(event: Event) {
+function renderTarget (event: Event) {
   if (event.repo_name) {
-    return <a href={`https://github.com/${event.repo_name}`} target="_blank" rel="noopener">{event.repo_name}</a>;
+    return <a href={`https://github.com/${event.repo_name}`} target="_blank" rel="noopener noreferrer">{event.repo_name}</a>;
   }
 }
 
-function prUrl(event: Event): string {
+function prUrl (event: Event): string {
   return `https://github.com/${event.repo_name}/pull/${event.number}`;
 }
 
-
-function issueUrl(event: Event): string {
+function issueUrl (event: Event): string {
   return `https://github.com/${event.repo_name}/issues/${event.number}`;
 }

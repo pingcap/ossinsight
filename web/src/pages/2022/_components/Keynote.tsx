@@ -1,5 +1,5 @@
-import React, { ReactNode } from "react";
-import Box from "@mui/material/Box";
+import React, { ReactNode } from 'react';
+import Box from '@mui/material/Box';
 import { H4, P1 } from './typograph';
 
 export interface KeynoteProps {
@@ -8,7 +8,7 @@ export interface KeynoteProps {
   description: string;
 }
 
-export default function Keynote({ icon, title, description }: KeynoteProps) {
+export default function Keynote ({ icon, title, description }: KeynoteProps) {
   return (
     <Box maxWidth={418}>
       <Box>

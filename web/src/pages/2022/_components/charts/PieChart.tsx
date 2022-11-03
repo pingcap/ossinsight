@@ -1,8 +1,8 @@
-import Chart, { ChartProps } from "@site/src/components/Chart";
-import React from "react";
-import PieOutLabelPlugin from "./PieOutLabelPlugin";
+import Chart, { ChartProps } from '@site/src/components/Chart';
+import React from 'react';
+import PieOutLabelPlugin from './PieOutLabelPlugin';
 
-export default function PieChart({ sx }: Pick<ChartProps, 'sx'>) {
+export default function PieChart ({ sx }: Pick<ChartProps, 'sx'>) {
   return (
     <Chart<'pie'>
       sx={sx}

@@ -1,31 +1,30 @@
-import React, { ForwardedRef, forwardRef, useContext, useMemo, useRef, useState } from "react";
-import Section, { SectionHeading } from "../../../components/Section";
-import { useAnalyzeUserContext } from "../charts/context";
-import InViewContext from "../../../components/InViewContext";
-import { usePersonalData } from "../hooks/usePersonal";
-import Box from "@mui/material/Box";
-import { InputLabel, Select, useEventCallback } from "@mui/material";
-import MenuItem from "@mui/material/MenuItem";
-import { SelectChangeEvent } from "@mui/material/Select";
-import FormControl from "@mui/material/FormControl";
-import TimeDistribution from "../charts/time-distribution";
-import { Axis, BarSeries, Dataset, EChartsx, Once } from "@djagger/echartsx";
-import { Common } from "../charts/Common";
-import { chartColors } from "../colors";
-import ChartWrapper from "../charts/ChartWrapper";
-import { useDimension } from "../hooks/useDimension";
-import { EChartsType } from "echarts/core";
-import { paramCase } from "param-case";
+import React, { ForwardedRef, forwardRef, useContext, useMemo, useRef, useState } from 'react';
+import Section, { SectionHeading } from '../../../components/Section';
+import { useAnalyzeUserContext } from '../charts/context';
+import InViewContext from '../../../components/InViewContext';
+import { usePersonalData } from '../hooks/usePersonal';
+import Box from '@mui/material/Box';
+import { InputLabel, Select, useEventCallback } from '@mui/material';
+import MenuItem from '@mui/material/MenuItem';
+import { SelectChangeEvent } from '@mui/material/Select';
+import FormControl from '@mui/material/FormControl';
+import TimeDistribution from '../charts/time-distribution';
+import { Axis, BarSeries, Dataset, EChartsx, Once } from '@djagger/echartsx';
+import { Common } from '../charts/Common';
+import { chartColors } from '../colors';
+import ChartWrapper from '../charts/ChartWrapper';
+import { useDimension } from '../hooks/useDimension';
+import { EChartsType } from 'echarts/core';
+import { paramCase } from 'param-case';
+import { isNullish } from '@site/src/utils/value';
 
-
-export default forwardRef(function BehaviourSection({}, ref: ForwardedRef<HTMLElement>) {
+export default forwardRef(function BehaviourSection (_, ref: ForwardedRef<HTMLElement>) {
   return (
     <Section id='behaviour' ref={ref}>
       <Behaviour />
     </Section>
   );
 });
-
 
 const Behaviour = () => {
   const { userId } = useAnalyzeUserContext();
@@ -43,11 +42,10 @@ const Behaviour = () => {
   );
 };
 
-
 const AllContributions = ({ userId, show }: ModuleProps) => {
   const { data, loading } = usePersonalData('personal-contributions-for-repos', userId, show);
 
-  const validEventTypes = useDimension(data?.data ?? [], 'type')
+  const validEventTypes = useDimension(data?.data ?? [], 'type');
 
   const repos = useMemo(() => {
     const map = (data?.data ?? []).reduce((map, cv) => {
@@ -57,9 +55,9 @@ const AllContributions = ({ userId, show }: ModuleProps) => {
     return Array.from(map.entries()).sort((a, b) => b[1] - a[1]).map(entry => entry[0]);
   }, [data]);
 
-  const chart = useRef<EChartsType | undefined>()
+  const chart = useRef<EChartsType>(null);
 
-  if (!data) {
+  if (isNullish(data)) {
     return <></>;
   }
 
@@ -86,14 +84,14 @@ const AllContributions = ({ userId, show }: ModuleProps) => {
   );
 };
 
-function toCamel(n) {
+function toCamel (n) {
   return paramCase(n)
     .replace(/^\w/g, a => a.toUpperCase())
     .replace(/-/g, ' ');
 }
 const eventTypesWithoutAll = ['pushes', 'issues', 'issue_comments', 'pull_requests', 'reviews', 'review_comments'];
 const eventTypes = ['all', 'pushes', 'issues', 'issue_comments', 'pull_requests', 'reviews', 'review_comments'];
-const timezones = [];
+const timezones: number[] = [];
 const periods = ['last_1_year', 'last_3_year', 'all_times'];
 
 const formatZone = (zone: number) => `UTC ${zone < 0 ? zone : `+${zone}`}`;
@@ -118,7 +116,7 @@ const ContributionTime = ({ userId, show }: ModuleProps) => {
 
   const handlePeriodChange = useEventCallback((e: SelectChangeEvent) => {
     setPeriod(e.target.value);
-  })
+  });
 
   const filteredData = useMemo(() => {
     return (data?.data ?? []).filter(item => item.type === type);
@@ -164,6 +162,6 @@ const ContributionTime = ({ userId, show }: ModuleProps) => {
 };
 
 type ModuleProps = {
-  userId: number
-  show: boolean
-}
+  userId: number | undefined;
+  show: boolean;
+};

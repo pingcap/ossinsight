@@ -1,27 +1,27 @@
-import Typography from "@mui/material/Typography";
-import {Cards, StandardCard} from "../Cards";
-import React from "react";
-import Section from "../../pages/home/_components/Section";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Link from "@docusaurus/Link";
+import Typography from '@mui/material/Typography';
+import { Cards, StandardCard } from '../Cards';
+import React from 'react';
+import Section from '../../pages/home/_components/Section';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Link from '@docusaurus/Link';
 
 const icon = (src) => {
   return (
-    <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'center', py: 4}}>
+    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', py: 4 }}>
       <img src={src} alt='logo' width='54' height='54' />
     </Box>
-  )
-}
+  );
+};
 
-export default function Footer() {
+export default function Footer () {
   return (
     <>
       <Section>
-        <Typography variant='h2' sx={{fontSize:40}} align='center'>
+        <Typography variant='h2' sx={{ fontSize: 40 }} align='center'>
           Wonder how OSS Insight works?
         </Typography>
-        <Cards sx={{mt: 2}} xs={12} sm={6} md={4}>
+        <Cards sx={{ mt: 2 }} xs={12} sm={6} md={4}>
           <StandardCard
             title='How do we implement OSS Insight ?'
             description='Blog: 10 min read'
@@ -30,7 +30,7 @@ export default function Footer() {
             buttonVariant='outlined'
             top={icon(require('./icon-1.png').default)}
             cardSx={{
-              backgroundColor: '#2c2c2c'
+              backgroundColor: '#2c2c2c',
             }}
           />
           <StandardCard
@@ -41,7 +41,7 @@ export default function Footer() {
             buttonVariant='outlined'
             top={icon(require('./icon-2.png').default)}
             cardSx={{
-              backgroundColor: '#2c2c2c'
+              backgroundColor: '#2c2c2c',
             }}
           />
           <StandardCard
@@ -52,13 +52,13 @@ export default function Footer() {
             buttonVariant='outlined'
             top={icon(require('./icon-3.png').default)}
             cardSx={{
-              backgroundColor: '#2c2c2c'
+              backgroundColor: '#2c2c2c',
             }}
           />
         </Cards>
-        <Box textAlign='center' sx={{fontSize: 24, mt: 6}}>
+        <Box textAlign='center' sx={{ fontSize: 24, mt: 6 }}>
         Want to create your own IDEAInsight in a day?&nbsp;<br />
-          <Button sx={{fontSize: 24, fontWeight: 'bold', verticalAlign: 'baseline', textDecoration: 'underline'}} component={Link} href='https://share.hsforms.com/1E-qtGQWrTVmctP8kBT34gw2npzm' rel='noopener'>
+          <Button sx={{ fontSize: 24, fontWeight: 'bold', verticalAlign: 'baseline', textDecoration: 'underline' }} component={Link} href='https://share.hsforms.com/1E-qtGQWrTVmctP8kBT34gw2npzm' rel='noopener'>
             Join a workshop!
           </Button>
         </Box>
@@ -70,16 +70,16 @@ export default function Footer() {
             <a href="https://twitter.com/OSSInsight">@OSSInsight</a>
             &nbsp;and join the conversation using the hashtags
             <br />
-            <a href="https://twitter.com/hashtag/OSSInsight" target='_blank'>
+            <a href="https://twitter.com/hashtag/OSSInsight" target='_blank' rel="noreferrer">
               #OSSInsight
             </a>
             &nbsp;
-            <a href="https://twitter.com/hashtag/TiDBCloud" target='_blank'>
+            <a href="https://twitter.com/hashtag/TiDBCloud" target='_blank' rel="noreferrer">
               #TiDBCloud
             </a>
           </h3>
         </div>
       </Section>
     </>
-  )
+  );
 }

@@ -1,52 +1,51 @@
-import {EChartsOption} from "echarts";
-import React, {useMemo} from "react";
-import ECharts from "../ECharts";
+import { EChartsOption } from 'echarts';
+import React, { useMemo } from 'react';
+import ECharts from '../ECharts';
 
 interface ZScoreChartProps {
-  data: {
-    name: string
-    z_score: number
-    z_score_star: number
-    z_score_user: number
-    z_score_pr: number
-  }[]
-  loading?: boolean
+  data: Array<{
+    name: string;
+    z_score: number;
+    z_score_star: number;
+    z_score_user: number;
+    z_score_pr: number;
+  }>;
+  loading?: boolean;
 }
 
-
-export default function ZScoreChart({data, loading}: ZScoreChartProps) {
+export default function ZScoreChart ({ data, loading }: ZScoreChartProps) {
   const option: EChartsOption = useMemo(() => {
     return {
       legend: {
-        show: true
+        show: true,
       },
       tooltip: {
         show: true,
-        trigger: "axis",
+        trigger: 'axis',
         axisPointer: {
-          type: 'shadow'
-        }
+          type: 'shadow',
+        },
       },
       yAxis: {
-        type: "category",
+        type: 'category',
         data: data.map(data => data.name),
-        inverse: true
+        inverse: true,
       },
       xAxis: [{
         name: 'z-score',
         axisLabel: {
-          show: true
-        }
+          show: true,
+        },
       }],
       grid: {
         containLabel: true,
-        left: 8
+        left: 8,
       },
       series: [
         {
           name: 'z-score',
           type: 'bar',
-          data: data.map(data => data.z_score)
+          data: data.map(data => data.z_score),
         },
         {
           name: 'z-score star',
@@ -54,8 +53,8 @@ export default function ZScoreChart({data, loading}: ZScoreChartProps) {
           data: data.map(data => data.z_score_star),
           stack: 'base',
           itemStyle: {
-            opacity: 0.5
-          }
+            opacity: 0.5,
+          },
         },
         {
           name: 'z-score user',
@@ -63,8 +62,8 @@ export default function ZScoreChart({data, loading}: ZScoreChartProps) {
           data: data.map(data => data.z_score_user),
           stack: 'base',
           itemStyle: {
-            opacity: 0.5
-          }
+            opacity: 0.5,
+          },
         },
         {
           name: 'z-score pr',
@@ -72,12 +71,12 @@ export default function ZScoreChart({data, loading}: ZScoreChartProps) {
           data: data.map(data => data.z_score_pr),
           stack: 'base',
           itemStyle: {
-            opacity: 0.5
-          }
-        }
-      ]
-    }
-  }, [data])
+            opacity: 0.5,
+          },
+        },
+      ],
+    };
+  }, [data]);
 
   return (
     <ECharts
@@ -87,5 +86,5 @@ export default function ZScoreChart({data, loading}: ZScoreChartProps) {
       lazyUpdate
       notMerge={false}
     />
-  )
+  );
 }

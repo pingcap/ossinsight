@@ -1,12 +1,12 @@
-import React, { ReactNode } from "react";
-import Section, { SubSection } from "../_components/Section";
-import { styled } from "@mui/material/styles";
-import Keynote, { KeynoteProps } from "../_components/Keynote";
-import { IssueOpenedIcon, RepoForkedIcon, StarIcon } from "@primer/octicons-react";
-import colors from "../_components/colors.module.css";
-import Split from "../_components/Split";
-import Box from "@mui/material/Box";
-import { H2 } from "../_components/typograph";
+import React, { ReactNode } from 'react';
+import Section, { SubSection } from '../_components/Section';
+import { styled } from '@mui/material/styles';
+import Keynote, { KeynoteProps } from '../_components/Keynote';
+import { IssueOpenedIcon, RepoForkedIcon, StarIcon } from '@primer/octicons-react';
+import colors from '../_components/colors.module.css';
+import Split from '../_components/Split';
+import Box from '@mui/material/Box';
+import { H2 } from '../_components/typograph';
 
 export default function () {
   return (
@@ -75,11 +75,11 @@ const keynotes: KeynoteProps[] = [
 const tableTitle = 'How we classify technical fields by topics';
 const tableDescription = 'We do exact matching and fuzzy matching based on the repository topic. Exact matching means that the repository topics have a topic that exactly matches the word, and fuzzy matching means that the repository topics have a topic that contains the word.';
 
-const tableContent: {
-  name: string
-  matched?: ReactNode
-  fuzzy?: ReactNode
-}[] = [
+const tableContent: Array<{
+  name: string;
+  matched?: ReactNode;
+  fuzzy?: ReactNode;
+}> = [
   {
     name: 'GitHub Actions',
     matched: 'actions',

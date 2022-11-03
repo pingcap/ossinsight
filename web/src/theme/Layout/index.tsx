@@ -1,29 +1,29 @@
 import React from 'react';
 import clsx from 'clsx';
 import ErrorBoundary from '@docusaurus/ErrorBoundary';
-import {PageMetadata, ThemeClassNames} from '@docusaurus/theme-common';
-import {useKeyboardNavigation} from '@docusaurus/theme-common/internal';
+import { PageMetadata, ThemeClassNames } from '@docusaurus/theme-common';
+import { useKeyboardNavigation } from '@docusaurus/theme-common/internal';
 import SkipToContent from '@theme/SkipToContent';
 import AnnouncementBar from '@theme/AnnouncementBar';
 import Navbar from '@theme/Navbar';
 import Footer from '@theme/Footer';
 import LayoutProvider from '@theme/Layout/Provider';
 import ErrorPageContent from '@theme/ErrorPageContent';
-import type {Props} from '@theme/Layout';
+import type { Props } from '@theme/Layout';
 import styles from './styles.module.css';
-import HowItWorks from "@site/src/components/Ads/HowItWorks";
+import HowItWorks from '@site/src/components/Ads/HowItWorks';
 
 declare module '@theme/Layout' {
   interface Props {
-    keywords?: string | string[]
-    image?: string
+    keywords?: string | string[];
+    image?: string;
     header?: JSX.Element;
     side?: JSX.Element;
-    sideWidth?: string
+    sideWidth?: string;
   }
 }
 
-export default function Layout(props: Props): JSX.Element {
+export default function Layout (props: Props): JSX.Element {
   const {
     children,
     noFooter,

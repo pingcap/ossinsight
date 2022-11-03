@@ -1,36 +1,36 @@
 import React, { useMemo } from 'react';
 import { useAnalyzeChartContext, useAnalyzeContext } from '../context';
 import Grid from '@mui/material/Grid';
-import {StaticSummaryItem, SummaryItem} from './SummaryItem';
-import {HeaderGrid, HeadText} from './styled';
+import { StaticSummaryItem, SummaryItem } from './SummaryItem';
+import { HeaderGrid, HeadText } from './styled';
 import Skeleton from '@mui/material/Skeleton';
 import Analyze from '../Analyze';
 import Stack from '@mui/material/Stack';
-import type {RepoInfo} from '@ossinsight/api';
-import { useDebugDialog } from "../../../../components/DebugDialog";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import { useTheme } from "@mui/material/styles";
-import useMediaQuery from "@mui/material/useMediaQuery";
+import type { RepoInfo } from '@ossinsight/api';
+import { useDebugDialog } from '@site/src/components/DebugDialog';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { notNullish } from '@site/src/utils/value';
 
 export type ItemBase = {
-  icon?: React.ReactNode
-  title: React.ReactNode
-  alt: string
-}
+  icon?: React.ReactNode;
+  title: React.ReactNode;
+  alt: string;
+};
 
 export type QueryItem = ItemBase & {
   field: any;
-}
+};
 
 export type StaticItem = ItemBase & {
-  data?: (repoInfo: RepoInfo) => any
-  comparingData?: any
-}
+  data: (repoInfo: RepoInfo) => any;
+};
 
 export interface SummaryProps {
-  query: string
-  items: (QueryItem | StaticItem)[];
+  query: string;
+  items: Array<QueryItem | StaticItem>;
 }
 
 const singleSize = [4, 6] as const;
@@ -38,14 +38,14 @@ const compareSize = [4, 3] as const;
 const singleSmSize = [4, 8] as const;
 const compareSmSize = [4, 4] as const;
 
-export default function Summary({items, query}: SummaryProps) {
-  const {comparingRepoId, repoName, comparingRepoName} = useAnalyzeContext();
-  const theme = useTheme()
+export default function Summary ({ items, query }: SummaryProps) {
+  const { comparingRepoId, repoName, comparingRepoName } = useAnalyzeContext();
+  const theme = useTheme();
 
   const isSmall = useMediaQuery(theme.breakpoints.down('lg'));
 
   const sizes = useMemo(() => {
-    if (!!comparingRepoId) {
+    if (notNullish(comparingRepoId)) {
       return isSmall ? compareSmSize : compareSize;
     } else {
       return isSmall ? singleSmSize : singleSize;
@@ -67,14 +67,14 @@ export default function Summary({items, query}: SummaryProps) {
           <HeaderGrid item xs={sizes[0]}>
             &nbsp;
           </HeaderGrid>
-          <HeaderGrid item xs={sizes[1]} sx={{textAlign: 'right'}}>
+          <HeaderGrid item xs={sizes[1]} sx={{ textAlign: 'right' }}>
             <HeadText>
               {repoName}
             </HeadText>
           </HeaderGrid>
-          {comparingRepoId
+          {notNullish(comparingRepoId)
             ? (
-              <HeaderGrid item xs={sizes[1]} sx={{textAlign: 'right'}}>
+              <HeaderGrid item xs={sizes[1]} sx={{ textAlign: 'right' }}>
                 <HeadText>
                   {comparingRepoName ?? <Skeleton variant="text" />}
                 </HeadText>
@@ -87,9 +87,8 @@ export default function Summary({items, query}: SummaryProps) {
               <SummaryItem container flexWrap="nowrap" gap={1} {...item} sizes={sizes} key={item.field} />
             );
           } else {
-            const {data, comparingData, ...props} = item;
-            return <StaticSummaryItem key={i} container flexWrap="nowrap" gap={1} data={data}
-                                      comparingData={comparingData} {...props} sizes={sizes} />;
+            const { data, ...props } = item;
+            return <StaticSummaryItem key={i} container flexWrap="nowrap" gap={1} data={data} {...props} sizes={sizes} />;
           }
         })}
       </Stack>
@@ -106,5 +105,5 @@ const DebugInfo = () => {
       {debugButton}
       {debugDialog}
     </Box>
-  )
+  );
 };

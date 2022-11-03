@@ -1,17 +1,17 @@
-import React from "react";
-import Chart, { ChartProps } from "@site/src/components/Chart";
-import { getDaysOfWeek } from "@site/src/utils/intl";
-import { defaultColors } from "./colors";
-import useIsLarge from "../hooks/useIsLarge";
-import theme from "./theme";
+import React from 'react';
+import Chart, { ChartProps } from '@site/src/components/Chart';
+import { getDaysOfWeek } from '@site/src/utils/intl';
+import { defaultColors } from './colors';
+import useIsLarge from '../hooks/useIsLarge';
+import theme from './theme';
 
-interface WeekdayDistributionDataProps extends Pick<ChartProps, 'sx'>{
+interface WeekdayDistributionDataProps extends Pick<ChartProps, 'sx'> {
   data: import('../../_charts/env').WeekdayDistributionData;
 }
 
 const DAYS = getDaysOfWeek('en-US', 'long');
 
-export default function WeekdayDistributionData({ data, sx }: WeekdayDistributionDataProps) {
+export default function WeekdayDistributionData ({ data, sx }: WeekdayDistributionDataProps) {
   const large = useIsLarge();
 
   return (
@@ -72,7 +72,7 @@ export default function WeekdayDistributionData({ data, sx }: WeekdayDistributio
             usePointStyle: true,
             callbacks: {
               label: item => {
-                return `${item.dataset.label}: ${item.dataset.data[item.dataIndex]}${data.unit}`;
+                return `${item.dataset.label as string}: ${item.dataset.data[item.dataIndex]}${data.unit}`;
               },
             },
           },

@@ -9,27 +9,28 @@ import { PrChart } from '../charts/pr';
 import Summary, { SummaryProps } from '../charts/summary';
 import Section from '../Section';
 import { H2, H3, P2 } from '../typography';
+import { notNullish } from '@site/src/utils/value';
 
-export const PullRequestsSection = forwardRef(function ({}, ref: ForwardedRef<HTMLElement>) {
-  const theme = useTheme()
-  const isSmall = useMediaQuery(theme.breakpoints.down('md'))
-  const { comparingRepoId: vs } = useAnalyzeContext()
-  const commonAspectRatio = isSmall ? vs ? 4 / 3 : 4 / 3 : vs ? 16 / 9 : 20 / 9
+export const PullRequestsSection = forwardRef(function (_, ref: ForwardedRef<HTMLElement>) {
+  const theme = useTheme();
+  const isSmall = useMediaQuery(theme.breakpoints.down('md'));
+  const { comparingRepoId: vs } = useAnalyzeContext();
+  const commonAspectRatio = isSmall ? notNullish(vs) ? 4 / 3 : 4 / 3 : notNullish(vs) ? 16 / 9 : 20 / 9;
 
   const prSummaries: SummaryProps['items'] = useMemo(() => {
     return [
-      {title: 'Total PRs', alt: 'Total PRs', field: 'pull_requests'},
-      {title: 'Creators', alt: 'Total PR creators', field: 'pull_request_creators'},
-      {title: 'Reviews', alt: 'Total PR reviews', field: 'pull_request_reviews'},
-      {title: 'Reviewers', alt: 'Total PR reviewers', field: 'pull_request_reviewers'},
-    ]
-  }, [])
+      { title: 'Total PRs', alt: 'Total PRs', field: 'pull_requests' },
+      { title: 'Creators', alt: 'Total PR creators', field: 'pull_request_creators' },
+      { title: 'Reviews', alt: 'Total PR reviews', field: 'pull_request_reviews' },
+      { title: 'Reviewers', alt: 'Total PR reviewers', field: 'pull_request_reviewers' },
+    ];
+  }, []);
 
   return (
     <Section id='pull-requests' ref={ref}>
       <H2>Pull Requests</H2>
       <Grid container spacing={2} alignItems='center'>
-        <Grid item xs={12} md={vs ? 8 : 6}>
+        <Grid item xs={12} md={notNullish(vs) ? 8 : 6}>
           <Summary items={prSummaries} query='analyze-repo-pr-overview' />
         </Grid>
       </Grid>
@@ -38,7 +39,7 @@ export const PullRequestsSection = forwardRef(function ({}, ref: ForwardedRef<HT
         <P2>
           We divide the size of Pull Request into six intervals, from xs to xxl (based on the changes of code lines). Learn more about
           &nbsp;
-          <a href='https://github.com/kubernetes/kubernetes/labels?q=size' target='_blank'>
+          <a href='https://github.com/kubernetes/kubernetes/labels?q=size' target='_blank' rel="noreferrer">
             PR size
           </a>.
         </P2>
@@ -56,5 +57,5 @@ export const PullRequestsSection = forwardRef(function ({}, ref: ForwardedRef<HT
         <DurationChart aspectRatio={commonAspectRatio} />
       </Analyze>
     </Section>
-  )
-})
+  );
+});

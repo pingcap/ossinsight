@@ -1,4 +1,4 @@
-import React, { CSSProperties, useMemo } from "react";
+import React, { CSSProperties, useMemo } from 'react';
 import {
   LinkedinIcon,
   LinkedinShareButton,
@@ -8,11 +8,10 @@ import {
   TelegramShareButton,
   TwitterIcon,
   TwitterShareButton,
-} from "react-share";
+} from 'react-share';
 import styles from './index.module.css';
-import { useThemeConfig } from "@docusaurus/theme-common";
-import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
-import { useHistory } from "@docusaurus/router";
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+import { useHistory } from '@docusaurus/router';
 
 const size = 32;
 
@@ -26,11 +25,11 @@ interface ShareButtonsProps {
 
 const ShareButtons = ({ shareUrl, disabled = false, title, hashtags, style }: ShareButtonsProps) => {
   const { siteConfig } = useDocusaurusContext();
-  const { location, createHref } = useHistory()
+  const { location, createHref } = useHistory();
 
   const url = useMemo(() => {
-    return shareUrl ?? (siteConfig.url + createHref(location))
-  }, [shareUrl, location])
+    return shareUrl ?? (siteConfig.url + createHref(location));
+  }, [shareUrl, location]);
 
   return (
     <div className={styles.shareButtons} style={style}>

@@ -7,12 +7,12 @@ const TitleLine = () => {
     <H1>
       Open Source Software
       <br />
-      <Span sx={{color: '#FFE895'}}>
-        <VisibilityOutlinedIcon fontSize='inherit' sx={{verticalAlign: 'text-bottom'}} />
+      <Span sx={{ color: '#FFE895' }}>
+        <VisibilityOutlinedIcon fontSize='inherit' sx={{ verticalAlign: 'text-bottom' }} />
         &nbsp;Insight
       </Span>
     </H1>
-  )
-}
+  );
+};
 
-export default TitleLine
+export default TitleLine;

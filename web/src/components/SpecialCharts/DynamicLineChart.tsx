@@ -1,16 +1,16 @@
-import React, {useMemo} from "react";
-import * as echarts from "echarts/core";
-import {GridComponent, TitleComponent, TooltipComponent} from "echarts/components";
-import {LinesChart as ELineChart} from "echarts/charts";
-import {CanvasRenderer} from "echarts/renderers";
-import {LabelLayout} from "echarts/features"
-import {DatasetOption} from "echarts/types/dist/shared";
-import {EChartsOption, SeriesOption} from "echarts";
-import ECharts from "../ECharts";
+import React, { useMemo } from 'react';
+import * as echarts from 'echarts/core';
+import { GridComponent, TitleComponent, TooltipComponent } from 'echarts/components';
+import { LinesChart as ELineChart } from 'echarts/charts';
+import { CanvasRenderer } from 'echarts/renderers';
+import { LabelLayout } from 'echarts/features';
+import { DatasetOption } from 'echarts/types/dist/shared';
+import { EChartsOption, SeriesOption } from 'echarts';
+import ECharts from '../ECharts';
 
 // Register the required components
 echarts.use(
-  [TitleComponent, TooltipComponent, GridComponent, ELineChart, LabelLayout, CanvasRenderer]
+  [TitleComponent, TooltipComponent, GridComponent, ELineChart, LabelLayout, CanvasRenderer],
 );
 
 interface DynamicLineChartProps {
@@ -28,7 +28,7 @@ const DEFAULT_Y_INDEX = 'stars';
 const DEFAULT_SERIES_INDEX = 'series_name';
 const DEFAULT_SERIES_VALUE = 'default_series';
 
-export default function DynamicLineChart(props: DynamicLineChartProps) {
+export default function DynamicLineChart (props: DynamicLineChartProps) {
   const {
     data,
     loading,
@@ -37,14 +37,14 @@ export default function DynamicLineChart(props: DynamicLineChartProps) {
     yIndex = DEFAULT_Y_INDEX,
     seriesIndex = DEFAULT_SERIES_INDEX,
   } = props;
-  
+
   const seriesData = useMemo(() => {
     if (seriesIndex === DEFAULT_SERIES_INDEX) {
       return [DEFAULT_SERIES_VALUE];
     } else {
-      return Array.from(new Set(data.map(row => row[seriesIndex])))
+      return Array.from(new Set(data.map(row => row[seriesIndex])));
     }
-  }, [data])
+  }, [data]);
 
   const datasets: DatasetOption[] = useMemo(() => {
     let source = [];
@@ -54,21 +54,21 @@ export default function DynamicLineChart(props: DynamicLineChartProps) {
       }));
     } else {
       source = ([[xIndex, yIndex, seriesIndex]] as any).concat(data.map((item) => {
-        return [item[xIndex], parseInt(item[yIndex]), item[seriesIndex]]
+        return [item[xIndex], parseInt(item[yIndex]), item[seriesIndex]];
       }));
     }
 
     const datasets: DatasetOption[] = [{
       id: 'raw',
-      source: source
+      source,
     }, {
       transform: {
         type: 'sort',
         config: {
-          dimension: 'year', order: 'asc'
-        }
-      }
-    }]
+          dimension: 'year', order: 'asc',
+        },
+      },
+    }];
 
     return datasets.concat(seriesData.map(series => ({
       id: series,
@@ -77,12 +77,12 @@ export default function DynamicLineChart(props: DynamicLineChartProps) {
         type: 'filter',
         config: {
           and: [{
-            dimension: seriesIndex, '=': series
-          }]
-        }
-      }
-    })))
-  }, [data, seriesData])
+            dimension: seriesIndex, '=': series,
+          }],
+        },
+      },
+    })));
+  }, [data, seriesData]);
 
   const series: SeriesOption[] = useMemo(() => {
     return seriesData.map(series => ({
@@ -93,19 +93,19 @@ export default function DynamicLineChart(props: DynamicLineChartProps) {
       endLabel: {
         show: true,
         formatter: function (params) {
-          const { value } = params
-          return value[1]
-        }
+          const { value } = params;
+          return value[1];
+        },
       },
       labelLayout: {
-        moveOverlap: 'shiftY'
+        moveOverlap: 'shiftY',
       },
       emphasis: {
-        focus: 'series'
+        focus: 'series',
       },
       smooth: true,
       lineStyle: {
-        cap: "round"
+        cap: 'round',
       },
       encode: {
         x: 'year',
@@ -113,10 +113,10 @@ export default function DynamicLineChart(props: DynamicLineChartProps) {
         label: [yIndex],
         itemName: xIndex,
         tooltip: [yIndex],
-        val: yIndex
-      }
-    }))
-  }, [seriesData])
+        val: yIndex,
+      },
+    }));
+  }, [seriesData]);
 
   const option: EChartsOption = useMemo(() => {
     return {
@@ -128,23 +128,23 @@ export default function DynamicLineChart(props: DynamicLineChartProps) {
       },
       tooltip: {
         order: 'valueDesc',
-        trigger: 'axis'
+        trigger: 'axis',
       },
       xAxis: {
         type: 'category',
-        nameLocation: 'end'
+        nameLocation: 'end',
       },
       yAxis: {
-        name: yIndex
+        name: yIndex,
       },
       grid: {
         containLabel: true,
         right: '30%',
-        left: 0
+        left: 0,
       },
-      series: series
-    }
-  }, [datasets, series])
+      series,
+    };
+  }, [datasets, series]);
 
   return (
     <ECharts
@@ -154,5 +154,5 @@ export default function DynamicLineChart(props: DynamicLineChartProps) {
       lazyUpdate
       notMerge={false}
     />
-  )
+  );
 }

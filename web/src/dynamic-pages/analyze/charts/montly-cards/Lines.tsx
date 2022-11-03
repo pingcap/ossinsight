@@ -1,12 +1,12 @@
-import React from "react";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import { Dataset, EChartsx, LineSeries, Once, Tooltip } from "@djagger/echartsx";
-import Stack from "@mui/material/Stack";
-import { useAnalyzeChartContext } from "../context";
-import { useReversed } from "./hooks";
-import { AxisBase, formatDate } from "./base";
-import { Title } from "./ui";
+import React from 'react';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import { Dataset, EChartsx, LineSeries, Once, Tooltip } from '@djagger/echartsx';
+import Stack from '@mui/material/Stack';
+import { useAnalyzeChartContext } from '../context';
+import { useReversed } from './hooks';
+import { AxisBase, formatDate } from './base';
+import { Title } from './ui';
 
 interface LinesProps {
   title: string;
@@ -22,19 +22,19 @@ interface LinesProps {
 }
 
 const DEFAULT_COLORS: [string, string] = ['#63C16D', '#904DC9'];
-export default function Lines({
-                                icon,
-                                title,
-                                colors = DEFAULT_COLORS,
-                                openedText = 'Opened',
-                                closedText,
-                                dayOpenedValueKey,
-                                totalOpenedValueKey,
-                                totalClosedValueKey,
-                                dayClosedValueKey,
-                                dayKey = 'current_period_day',
-                              }: LinesProps) {
-  const { data } = useAnalyzeChartContext();
+export default function Lines ({
+  icon,
+  title,
+  colors = DEFAULT_COLORS,
+  openedText = 'Opened',
+  closedText,
+  dayOpenedValueKey,
+  totalOpenedValueKey,
+  totalClosedValueKey,
+  dayClosedValueKey,
+  dayKey = 'current_period_day',
+}: LinesProps) {
+  const { data } = useAnalyzeChartContext<any>();
   return (
     <Box>
       <Box minWidth={96} mb={1}>
@@ -60,8 +60,8 @@ export default function Lines({
             axisPointer={{}}
             formatter={([p1, p2]) => [
               formatDate(p1.value[dayKey]),
-              `${p1.marker} ${openedText}: <b>${p1.value[dayOpenedValueKey]}</b> ${title}`,
-              `${p2.marker} ${closedText}: <b>${p2.value[dayClosedValueKey]}</b> ${title}`,
+              `${p1.marker as string} ${openedText}: <b>${p1.value[dayOpenedValueKey] as string}</b> ${title}`,
+              `${p2.marker as string} ${closedText}: <b>${p2.value[dayClosedValueKey] as string}</b> ${title}`,
             ].join('<br>')}
           />
           <LineSeries encode={{ x: 'idx', y: dayOpenedValueKey }} color={colors[0]} showSymbol={false} smooth />

@@ -1,4 +1,4 @@
-import { EventsHistoryRemoteChart as Chart } from './Chart'
-import { useForm } from './Form'
+import { EventsHistoryRemoteChart as Chart } from './Chart';
+import { useForm } from './Form';
 
-export default { useForm, Chart }
+export default { useForm, Chart };

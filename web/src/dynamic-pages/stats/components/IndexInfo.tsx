@@ -1,17 +1,17 @@
 import React from 'react';
-import { TidbIndexInfo } from "@ossinsight/api";
-import Table from "@mui/material/Table";
-import TableHead from "@mui/material/TableHead";
-import TableCell from "@mui/material/TableCell";
-import TableBody from "@mui/material/TableBody";
-import TableRow from "@mui/material/TableRow";
-import Chip from "@mui/material/Chip";
+import { TidbIndexInfo } from '@ossinsight/api';
+import Table from '@mui/material/Table';
+import TableHead from '@mui/material/TableHead';
+import TableCell from '@mui/material/TableCell';
+import TableBody from '@mui/material/TableBody';
+import TableRow from '@mui/material/TableRow';
+import Chip from '@mui/material/Chip';
 
 export interface IndexInfoProps {
   infos: TidbIndexInfo[];
 }
 
-export default function IndexInfo({ infos }: IndexInfoProps) {
+export default function IndexInfo ({ infos }: IndexInfoProps) {
   return (
     <Table className="clearTable">
       <TableHead>
@@ -40,7 +40,7 @@ export default function IndexInfo({ infos }: IndexInfoProps) {
               {info.indexName}
             </TableCell>
             <TableCell>
-              {info.columns.split(',').map(column => <Chip key={column} size='small' label={column} sx={{m: 0.25}} />)}
+              {info.columns.split(',').map(column => <Chip key={column} size='small' label={column} sx={{ m: 0.25 }} />)}
             </TableCell>
             <TableCell>
               {info.clustered}

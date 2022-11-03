@@ -1,5 +1,5 @@
 import React from 'react';
-import {composeProviders} from '@docusaurus/theme-common';
+import { composeProviders } from '@docusaurus/theme-common';
 import {
   ColorModeProvider,
   TabGroupChoiceProvider,
@@ -9,8 +9,8 @@ import {
   NavbarProvider,
   PluginHtmlClassNameProvider,
 } from '@docusaurus/theme-common/internal';
-import type {Props} from '@theme/Layout/Provider';
-import ThemeAdaptor from "@site/src/components/ThemeAdaptor";
+import type { Props } from '@theme/Layout/Provider';
+import ThemeAdaptor from '@site/src/components/ThemeAdaptor';
 
 const Provider = composeProviders([
   ColorModeProvider,
@@ -23,6 +23,6 @@ const Provider = composeProviders([
   ThemeAdaptor,
 ]);
 
-export default function LayoutProvider({children}: Props): JSX.Element {
+export default function LayoutProvider ({ children }: Props): JSX.Element {
   return <Provider>{children}</Provider>;
 }

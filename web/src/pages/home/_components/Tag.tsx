@@ -1,18 +1,17 @@
-import React, {PropsWithChildren, useMemo} from "react";
-import {alpha} from "@mui/material";
+import React, { PropsWithChildren, useMemo } from 'react';
+import { alpha } from '@mui/material';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
-import {Props} from '@docusaurus/Link';
-import Link from '@docusaurus/Link'
-import ButtonBase from "@mui/material/ButtonBase";
-import {responsiveSx} from "./responsive";
+import Link, { Props } from '@docusaurus/Link';
+import ButtonBase from '@mui/material/ButtonBase';
+import { responsiveSx } from './responsive';
 
 export interface TagProps extends Props {
-  color: string
+  color: string;
 }
 
-export default function Tag({color, children, ...props}: PropsWithChildren<TagProps>) {
-  const bg = useMemo(() => alpha(color, .1), [color])
-  const hoverBg = useMemo(() => alpha(color, .2), [color])
+export default function Tag ({ color, children, ...props }: PropsWithChildren<TagProps>) {
+  const bg = useMemo(() => alpha(color, 0.1), [color]);
+  const hoverBg = useMemo(() => alpha(color, 0.2), [color]);
 
   return (
     <ButtonBase
@@ -26,12 +25,12 @@ export default function Tag({color, children, ...props}: PropsWithChildren<TagPr
           ':hover': {
             backgroundColor: hoverBg,
             textDecoration: 'none',
-            color
+            color,
           },
           display: 'inline-flex',
           borderRadius: 1,
           alignItems: 'center',
-          marginTop: '0 !important'
+          marginTop: '0 !important',
         },
         responsiveSx({
           fontSize: 14,
@@ -49,10 +48,10 @@ export default function Tag({color, children, ...props}: PropsWithChildren<TagPr
           px: 2,
           py: 1.5,
         })]}>
-      <ArrowRightIcon sx={{ml: -1, mr: 0.5}} />
+      <ArrowRightIcon sx={{ ml: -1, mr: 0.5 }} />
       <span>
         {children}
       </span>
     </ButtonBase>
-  )
+  );
 }

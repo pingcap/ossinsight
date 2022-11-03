@@ -1,14 +1,14 @@
-import Layout from "@theme/Layout";
-import React, { useEffect, useMemo, useRef } from "react";
-import Container from "@mui/material/Container";
-import Head from "@docusaurus/Head";
-import { styled } from "@mui/material/styles";
-import { highlights } from "./_sections/0-Banner";
-import { paramCase } from "param-case";
-import { SectionContext } from "./_components/Section";
-import Share from "./_components/Share";
+import Layout from '@theme/Layout';
+import React, { useEffect, useMemo, useRef } from 'react';
+import Container from '@mui/material/Container';
+import Head from '@docusaurus/Head';
+import { styled } from '@mui/material/styles';
+import { highlights } from './_sections/0-Banner';
+import { paramCase } from 'param-case';
+import { SectionContext } from './_components/Section';
+import Share from './_components/Share';
 import { Scrollspy } from '@makotot/ghostui';
-import { AnimatedDownIcon, MrO } from "./_components/styled";
+import { AnimatedDownIcon, MrO } from './_components/styled';
 
 const fonts = [
   'https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,600;0,700;1,100;1,400;1,600&display=swap',
@@ -27,7 +27,7 @@ const sections = [
   require('./_sections/99-Appendix'),
 ];
 
-const ids: (string | undefined)[] = [
+const ids: Array<string | undefined> = [
   undefined,
   ...highlights.map(h => paramCase(h)),
   'term-description',
@@ -37,7 +37,7 @@ if (sections.length !== ids.length) {
   throw new Error(`sections size (${sections.length}) must equals to ids size (${ids.length})`);
 }
 
-export default function Page() {
+export default function Page () {
   const refs = sections.map(() => useRef<HTMLDivElement | null>(null));
   return (
     <Layout
@@ -82,15 +82,15 @@ const description = 'We analyzed 5 billion+ GitHub events and got interesting fi
 const keywords = 'GitHub annual report, GitHub 2022, The State of the Octoverse, GitHub insights, Open Source, top programming languages, most active developers, most active repositories';
 const image = '/img/2022/thumbnail.png';
 
-function BrowserHash({ value }: { value: string | undefined }) {
+function BrowserHash ({ value }: { value: string | undefined }) {
   useEffect(() => {
-    history.replaceState(null, null, value ? `#${value}` : location.pathname + location.search);
+    history.replaceState(null, '', value ? `#${value}` : location.pathname + location.search);
   }, [value]);
   return <></>;
 }
 
 const PageContainer = styled('div', { label: 'PageContainer' })(({ theme }) => ({
-  background: "transparent linear-gradient(180deg, #242526 0%, #0B003B 100%) 0% 0% no-repeat padding-box",
+  background: 'transparent linear-gradient(180deg, #242526 0%, #0B003B 100%) 0% 0% no-repeat padding-box',
   fontFamily: "'JetBrains Mono', monospace",
   overflow: 'hidden',
   fontSize: 14,
@@ -99,5 +99,5 @@ const PageContainer = styled('div', { label: 'PageContainer' })(({ theme }) => (
   },
   [theme.breakpoints.up('lg')]: {
     fontSize: 20,
-  }
+  },
 }));

@@ -1,25 +1,25 @@
-import Chart, { ChartProps } from "@site/src/components/Chart";
-import React, { useMemo } from "react";
-import { defaultColors } from "./colors";
-import ChartDataLabels from "chartjs-plugin-datalabels";
-import theme from "./theme";
-import { responsive } from "./responsive";
+import Chart, { ChartProps } from '@site/src/components/Chart';
+import React, { useMemo } from 'react';
+import { defaultColors } from './colors';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
+import theme from './theme';
+import { responsive } from './responsive';
 
 type RankData = {
-  labels: string[]
-  data: {
-    name: string
-    rank: number[]
-  }[]
-}
+  labels: string[];
+  data: Array<{
+    name: string;
+    rank: number[];
+  }>;
+};
 
 interface RankChartProps extends Pick<ChartProps, 'sx' | 'aspect'> {
   data: RankData;
   footnote?: string;
 }
 
-function compact(data: RankData): (rank: number) => [index: number, offset: number] {
-  const cache: [index: number, offset: number][] = [];
+function compact (data: RankData): (rank: number) => [index: number, offset: number] {
+  const cache: Array<[index: number, offset: number]> = [];
   const set = new Set<number>();
   let max = 0;
   data.data.forEach(({ rank }) => {
@@ -45,7 +45,7 @@ function compact(data: RankData): (rank: number) => [index: number, offset: numb
   };
 }
 
-export default function RankChart({ data, footnote, ...props }: RankChartProps) {
+export default function RankChart ({ data, footnote, ...props }: RankChartProps) {
   const comp = useMemo(() => compact(data), [data]);
 
   return (

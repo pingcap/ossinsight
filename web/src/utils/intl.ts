@@ -14,4 +14,3 @@ export const getDayOfWeek = (shortName, locale = 'en-US', length: 'short' | 'lon
 
 export const getDaysOfWeek = (locale = 'en-US', length: 'short' | 'long' | 'narrow' = 'short') =>
   shortWeekdays.map(shortName => getDayOfWeek(shortName, locale, length));
-

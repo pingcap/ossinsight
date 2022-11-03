@@ -1,15 +1,15 @@
-import React, { PropsWithChildren, useState } from "react";
-import { createTheme } from "@mui/material";
-import ThemeProvider from "@mui/system/ThemeProvider";
-import GroupSelectContext from "../GroupSelect/GroupSelectContext";
+import React, { PropsWithChildren, useState } from 'react';
+import { createTheme } from '@mui/material';
+import ThemeProvider from '@mui/system/ThemeProvider';
+import GroupSelectContext from '../GroupSelect/GroupSelectContext';
 import { use } from 'echarts/core';
 import { CanvasRenderer } from 'echarts/renderers';
-import { useIsDarkTheme } from "@site/src/hooks/theme";
+import { useIsDarkTheme } from '@site/src/hooks/theme';
 
 use(CanvasRenderer);
 
 const ThemeAdaptor = ({ children, dark }: PropsWithChildren<{ dark?: boolean }>) => {
-  const isDarkTheme = useIsDarkTheme()
+  const isDarkTheme = useIsDarkTheme();
   const theme = createTheme({
     palette: {
       mode: (dark ?? isDarkTheme) ? 'dark' : undefined,
@@ -58,7 +58,7 @@ const ThemeAdaptor = ({ children, dark }: PropsWithChildren<{ dark?: boolean }>)
     },
   });
 
-  const [group, setGroup] = useState<string>(undefined);
+  const [group, setGroup] = useState<string>();
 
   return (
     <GroupSelectContext.Provider value={{ group, setGroup }}>

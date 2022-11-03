@@ -1,25 +1,25 @@
-import React, { useCallback, useContext } from "react";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
+import React, { useCallback, useContext } from 'react';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
-import GroupSelectContext from "./GroupSelectContext";
-import Box from "@mui/material/Box";
-import { groups } from "./groups";
-import { useIsDarkTheme } from "@site/src/hooks/theme";
+import GroupSelectContext from './GroupSelectContext';
+import Box from '@mui/material/Box';
+import { groups } from './groups';
+import { useIsDarkTheme } from '@site/src/hooks/theme';
 
 declare global {
   interface Window {
-    osdbgroup: {
-      group_name: string
-      repos: {
-        group_name: string
-        name: string
-        id: number
-      }[]
-    }[];
+    osdbgroup: Array<{
+      group_name: string;
+      repos: Array<{
+        group_name: string;
+        name: string;
+        id: number;
+      }>;
+    }>;
   }
 }
 
-export default function GroupSelect() {
+export default function GroupSelect () {
   const isDarkTheme = useIsDarkTheme();
   const { group, setGroup } = useContext(GroupSelectContext);
 

@@ -1,15 +1,15 @@
-import React, { useMemo } from "react";
-import { RecentHotCollectionData, useRecentHotCollections } from "../../home/_sections/1-collections/hook";
-import HotCollection, { LoadingHotCollection } from "../../../components/HotCollection";
-import Grid from "@mui/material/Grid";
-import { SortType } from "./filters";
+import React, { useMemo } from 'react';
+import { RecentHotCollectionData, useRecentHotCollections } from '../../home/_sections/1-collections/hook';
+import HotCollection, { LoadingHotCollection } from '../../../components/HotCollection';
+import Grid from '@mui/material/Grid';
+import { SortType } from './filters';
 
 interface CollectionsProps {
   sorter: SortType;
   search: string;
 }
 
-export default function Collections({ sorter, search }: CollectionsProps) {
+export default function Collections ({ sorter, search }: CollectionsProps) {
   const { data, loading } = useRecentHotCollections();
 
   const processedData = useMemo(() => {
@@ -26,9 +26,9 @@ export default function Collections({ sorter, search }: CollectionsProps) {
     }
 
     if (search) {
-      filterFn = n => n.name.toLowerCase().indexOf(search.toLowerCase()) !== -1;
+      filterFn = n => n.name.toLowerCase().includes(search.toLowerCase());
     } else {
-      filterFn = () => true
+      filterFn = () => true;
     }
 
     return data?.data.filter(filterFn).sort(sortFn) ?? [];
@@ -56,7 +56,6 @@ export default function Collections({ sorter, search }: CollectionsProps) {
     </Grid>
   );
 }
-
 
 const sizes = {
   sm: 12,

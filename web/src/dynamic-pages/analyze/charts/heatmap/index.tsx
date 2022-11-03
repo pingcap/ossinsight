@@ -14,10 +14,10 @@ import { withChart } from '../chart';
 
 // lines of code
 export type TimeHeatData = {
-  dayofweek: number
-  hour: number
-  pushes: number
-}
+  dayofweek: number;
+  hour: number;
+  pushes: number;
+};
 
 const hours = [
   '0h', '1h', '2h', '3h', '4h', '5h', '6h',
@@ -31,21 +31,23 @@ const days = [
 ];
 
 const applyZone = (hour: number | string, zone: number): number => {
-  return (Number(hour) + zone + 24) % 24
-}
+  return (Number(hour) + zone + 24) % 24;
+};
 
 const prepareData = (zone: number) => (data: TimeHeatData[]): TimeHeatData[] => {
   if (data.length === 0) {
     return [];
   }
   const newData = [...data];
-  const boolMap = Array(24 * 7).fill(false, 0, 24 * 7);
+  const boolMap: boolean[] = Array(24 * 7).fill(false, 0, 24 * 7);
   for (let i = 0; i < newData.length; i++) {
     const item = newData[i] = { ...newData[i] };
     item.hour = applyZone(item.hour, zone);
     boolMap[item.dayofweek + item.hour * 7] = true;
   }
+  // eslint-disable-next-line @typescript-eslint/no-for-in-array
   for (const hour in hours) {
+    // eslint-disable-next-line @typescript-eslint/no-for-in-array
     for (const day in days) {
       if (!boolMap[parseInt(day) + applyZone(parseInt(hour), zone) * 7]) {
         newData.push({
@@ -60,10 +62,10 @@ const prepareData = (zone: number) => (data: TimeHeatData[]): TimeHeatData[] => 
 };
 
 export const TimeHeatChart = withChart<TimeHeatData, { zone: number }>(({
-                                                                          title: propsTitle,
-                                                                          data,
-                                                                          isSmall,
-                                                                        }, { zone }) => ({
+  title: propsTitle,
+  data,
+  isSmall,
+}, { zone }) => ({
   dataset: standardDataset(prepareData(zone)),
   title: title(propsTitle),
   legend: legend(),
@@ -89,4 +91,3 @@ export const TimeHeatChart = withChart<TimeHeatData, { zone: number }>(({
 }), {
   aspectRatio: 24 / 10,
 });
-

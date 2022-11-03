@@ -1,11 +1,11 @@
-import { Plugin } from "@docusaurus/types";
+import { Plugin } from '@docusaurus/types';
 
-type AliasPluginOptions = import('webpack').Configuration['resolve']['alias']
+type AliasPluginOptions = import('webpack').Configuration['resolve']['alias'];
 
-export default function AliasPlugin(_, options: AliasPluginOptions): Plugin {
+export default function AliasPlugin (_, options: AliasPluginOptions): Plugin {
   return {
     name: 'plugin-alias',
-    configureWebpack() {
+    configureWebpack () {
       return {
         resolve: {
           alias: options,

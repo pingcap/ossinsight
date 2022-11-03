@@ -1,8 +1,9 @@
-import Box from "@mui/material/Box";
-import React, { createContext, PropsWithChildren, ReactNode, Ref, useContext } from "react";
+import Box from '@mui/material/Box';
+import React, { createContext, PropsWithChildren, ReactNode, Ref, useContext } from 'react';
 import { H2, H3, P2 } from './typograph';
-import { TypographyProps } from "@mui/material/Typography";
-import { AdditionalTag } from "./styled";
+import { TypographyProps } from '@mui/material/Typography';
+import { AdditionalTag } from './styled';
+import { notFalsy } from '@site/src/utils/value';
 
 interface SectionProps {
   additional?: string;
@@ -22,7 +23,7 @@ export const SectionContext = createContext<SectionContextValues>({
   ref: undefined,
 });
 
-export default function Section({
+export default function Section ({
   additional,
   title,
   description,
@@ -59,14 +60,14 @@ export default function Section({
       ref={ref}
     >
       {additional && <AdditionalTag>{additional}</AdditionalTag>}
-      {title && <H2>{title}</H2>}
-      {description && <P2 mt={3} {...descriptionProps}>{description}</P2>}
+      {notFalsy(title) && <H2>{title}</H2>}
+      {notFalsy(description) && <P2 mt={3} {...descriptionProps}>{description}</P2>}
       {children}
     </Box>
   );
 }
 
-export function SubSection({ additional, title, titleComponent: Title = H3, description, children }: PropsWithChildren<SectionProps>) {
+export function SubSection ({ additional, title, titleComponent: Title = H3, description, children }: PropsWithChildren<SectionProps>) {
   return (
     <Box
       component="div"
@@ -92,8 +93,8 @@ export function SubSection({ additional, title, titleComponent: Title = H3, desc
       })}
     >
       {additional && <AdditionalTag>{additional}</AdditionalTag>}
-      {title && <Title>{title}</Title>}
-      {description && <P2 mt={3}>{description}</P2>}
+      {notFalsy(title) && <Title>{title}</Title>}
+      {notFalsy(description) && <P2 mt={3}>{description}</P2>}
       {children}
     </Box>
   );

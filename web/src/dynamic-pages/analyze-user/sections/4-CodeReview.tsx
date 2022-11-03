@@ -1,15 +1,15 @@
-import React, { ForwardedRef, forwardRef, useContext, useRef } from "react";
-import Section, { SectionHeading } from "../../../components/Section";
-import { usePersonalData } from "../hooks/usePersonal";
-import { Axis, BarSeries, Dataset, EChartsx, Once } from "@djagger/echartsx";
-import InViewContext from "../../../components/InViewContext";
-import { useAnalyzeUserContext } from "../charts/context";
-import { Common } from "../charts/Common";
-import { orange, primary } from "../colors";
-import ChartWrapper from "../charts/ChartWrapper";
-import { EChartsType } from "echarts/core";
+import React, { ForwardedRef, forwardRef, useContext, useRef } from 'react';
+import Section, { SectionHeading } from '../../../components/Section';
+import { usePersonalData } from '../hooks/usePersonal';
+import { Axis, BarSeries, Dataset, EChartsx, Once } from '@djagger/echartsx';
+import InViewContext from '../../../components/InViewContext';
+import { useAnalyzeUserContext } from '../charts/context';
+import { Common } from '../charts/Common';
+import { orange, primary } from '../colors';
+import ChartWrapper from '../charts/ChartWrapper';
+import { EChartsType } from 'echarts/core';
 
-export default forwardRef(function CodeReviewSection({}, ref: ForwardedRef<HTMLElement>) {
+export default forwardRef(function CodeReviewSection (_, ref: ForwardedRef<HTMLElement>) {
   return (
     <Section id='code-review' ref={ref}>
       <CodeReview />
@@ -35,7 +35,7 @@ const CodeReview = () => {
 const CodeReviewHistory = ({ userId, show }: ModuleProps) => {
   const { data, loading } = usePersonalData('personal-pull-request-reviews-history', userId, show);
 
-  const chart = useRef<EChartsType | undefined>()
+  const chart = useRef<EChartsType>(null);
 
   return (
     <ChartWrapper title="Code Review History" chart={chart} remoteData={data} loading={loading}>
@@ -54,6 +54,6 @@ const CodeReviewHistory = ({ userId, show }: ModuleProps) => {
 };
 
 type ModuleProps = {
-  userId: number
-  show: boolean
-}
+  userId: number | undefined;
+  show: boolean;
+};

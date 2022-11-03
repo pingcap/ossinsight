@@ -1,46 +1,47 @@
-import React, {useMemo} from "react";
-import * as echarts from "echarts/core";
-import {GridComponent, TitleComponent, TooltipComponent} from "echarts/components";
-import {LinesChart as ELineChart} from "echarts/charts";
-import {CanvasRenderer} from "echarts/renderers";
-import {LabelLayout} from "echarts/features"
-import {DatasetOption} from "echarts/types/dist/shared";
-import {EChartsOption, SeriesOption} from "echarts";
-import ECharts from "../ECharts";
+import React, { useMemo } from 'react';
+import * as echarts from 'echarts/core';
+import { GridComponent, TitleComponent, TooltipComponent } from 'echarts/components';
+import { LinesChart as ELineChart } from 'echarts/charts';
+import { CanvasRenderer } from 'echarts/renderers';
+import { LabelLayout } from 'echarts/features';
+import { DatasetOption } from 'echarts/types/dist/shared';
+import { EChartsOption, SeriesOption } from 'echarts';
+import ECharts from '../ECharts';
 
 // Register the required components
 echarts.use(
-  [TitleComponent, TooltipComponent, GridComponent, ELineChart, LabelLayout, CanvasRenderer]
+  [TitleComponent, TooltipComponent, GridComponent, ELineChart, LabelLayout, CanvasRenderer],
 );
 
 type RawData = {
-  event_year: number
-  repo_name: string
-  stars: string
-}
+  event_year: number;
+  repo_name: string;
+  stars: string;
+};
 
 interface DynamicStarsChartProps {
-  data: RawData[]
-  loading: boolean
-  aspectRatio?: number
+  data: RawData[];
+  loading: boolean;
+  aspectRatio?: number;
 }
 
-export default function DynamicStarsChart({data, aspectRatio = 16 / 9, loading}: DynamicStarsChartProps) {
+export default function DynamicStarsChart ({ data, aspectRatio = 16 / 9, loading }: DynamicStarsChartProps) {
   const repos = useMemo(() => {
-    return Array.from(new Set(data.map(row => row.repo_name)))
-  }, [data])
+    return Array.from(new Set(data.map(row => row.repo_name)));
+  }, [data]);
 
   const datasets: DatasetOption[] = useMemo(() => {
     const datasets: DatasetOption[] = [{
       id: 'raw',
       source: ([['event_year', 'repo_name', 'stars']] as any)
-        .concat(data.map(({event_year, repo_name, stars}) => ([event_year, repo_name, parseInt(stars)])))
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        .concat(data.map(({ event_year, repo_name, stars }) => ([event_year, repo_name, parseInt(stars)]))),
     }, {
       transform: {
         type: 'sort',
-        config: {dimension: 'year', order: 'asc'}
-      }
-    }]
+        config: { dimension: 'year', order: 'asc' },
+      },
+    }];
 
     return datasets.concat(repos.map(repo => ({
       id: repo,
@@ -48,11 +49,11 @@ export default function DynamicStarsChart({data, aspectRatio = 16 / 9, loading}:
       transform: {
         type: 'filter',
         config: {
-          and: [{dimension: 'repo_name', '=': repo}]
-        }
-      }
-    })))
-  }, [data, repos])
+          and: [{ dimension: 'repo_name', '=': repo }],
+        },
+      },
+    })));
+  }, [data, repos]);
 
   const series: SeriesOption[] = useMemo(() => {
     return repos.map(repo => ({
@@ -63,19 +64,19 @@ export default function DynamicStarsChart({data, aspectRatio = 16 / 9, loading}:
       endLabel: {
         show: true,
         formatter: function (params) {
-          const { value } = params
-          return value[1] + ': ' + value[2]
-        }
+          const { value } = params;
+          return `${value[1] as string}: ${value[2] as string}`;
+        },
       },
       labelLayout: {
-        moveOverlap: 'shiftY'
+        moveOverlap: 'shiftY',
       },
       emphasis: {
-        focus: 'series'
+        focus: 'series',
       },
       smooth: true,
       lineStyle: {
-        cap: "round"
+        cap: 'round',
       },
       encode: {
         x: 'year',
@@ -83,10 +84,10 @@ export default function DynamicStarsChart({data, aspectRatio = 16 / 9, loading}:
         label: ['stars'],
         itemName: 'event_year',
         tooltip: ['stars'],
-        val: 'stars'
-      }
-    }))
-  }, [repos])
+        val: 'stars',
+      },
+    }));
+  }, [repos]);
 
   const option: EChartsOption = useMemo(() => {
     return {
@@ -98,23 +99,23 @@ export default function DynamicStarsChart({data, aspectRatio = 16 / 9, loading}:
       },
       tooltip: {
         order: 'valueDesc',
-        trigger: 'axis'
+        trigger: 'axis',
       },
       xAxis: {
         type: 'category',
-        nameLocation: 'end'
+        nameLocation: 'end',
       },
       yAxis: {
-        name: 'stars'
+        name: 'stars',
       },
       grid: {
         containLabel: true,
         right: '30%',
-        left: 0
+        left: 0,
       },
-      series: series
-    }
-  }, [datasets, series])
+      series,
+    };
+  }, [datasets, series]);
 
   return (
     <ECharts
@@ -124,5 +125,5 @@ export default function DynamicStarsChart({data, aspectRatio = 16 / 9, loading}:
       lazyUpdate
       notMerge={false}
     />
-  )
+  );
 }

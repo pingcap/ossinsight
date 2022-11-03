@@ -25,10 +25,10 @@ export interface NavigatorProps {
   type: 'side' | 'bottom';
 }
 
-export function Navigator({ value, type }: NavigatorProps) {
+export function Navigator ({ value, type }: NavigatorProps) {
   const idx = useMemo(() => {
-    return tabs.findIndex(el => el.id === value)
-  }, [value])
+    return tabs.findIndex(el => el.id === value);
+  }, [value]);
 
   if (type === 'side') {
     return (
@@ -68,7 +68,7 @@ export function Navigator({ value, type }: NavigatorProps) {
   }
 }
 
-const tabs: { id: string, label: string, icon?: JSX.Element }[] = [
+const tabs: Array<{ id: string, label: string, icon?: JSX.Element }> = [
   { id: 'divider-0', label: 'Analytics', icon: <AnalyticsIcon fontSize='inherit' sx={{ mr: 0.5 }} /> },
   { id: 'overview', label: 'Overview' },
   { id: 'behaviour', label: 'Behaviour' },
@@ -81,8 +81,8 @@ const tabs: { id: string, label: string, icon?: JSX.Element }[] = [
 ];
 
 const matched = (n: number, i: number) => {
-  return i > n && i - n <= 5
-}
+  return i > n && i - n <= 5;
+};
 
 const renderTabs = (n: number | undefined, index: number) => {
   return tabs.slice(0, n).map((tab, i) => {

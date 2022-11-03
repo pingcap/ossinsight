@@ -1,19 +1,19 @@
-import React from "react";
-import { styled } from "@mui/material/styles";
-import Stack, { StackProps } from "@mui/material/Stack";
-import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
+import React from 'react';
+import { styled } from '@mui/material/styles';
+import Stack, { StackProps } from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
 import Link from '@docusaurus/Link';
-import Box from "@mui/material/Box";
+import Box from '@mui/material/Box';
 
-const links: { title: string, href: string }[] = [
+const links: Array<{ title: string, href: string }> = [
   { title: 'Mini OSS Insight', href: '/docs/workshop/mini-ossinsight/introduction' },
   { title: 'NFT Insight', href: '/docs/workshop/nft-insight' },
   { title: 'Twitter Insight', href: '/docs/workshop/twitter-insight' },
   { title: 'Stack Overflow Insight', href: '/docs/workshop/stackoverflow-insight' },
 ];
 
-export default function Workshop() {
+export default function Workshop () {
   return (
     <Stack direction={['column', 'column', 'row']}>
       <Card>

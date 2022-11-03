@@ -1,16 +1,16 @@
 import React, { ComponentType } from 'react';
-import {useWindowSize} from '@docusaurus/theme-common';
+import { useWindowSize } from '@docusaurus/theme-common';
 import DocSidebarDesktop from '@theme/DocSidebar/Desktop';
 import DocSidebarMobile from '@theme/DocSidebar/Mobile';
-import type {Props} from '@theme/DocSidebar';
+import type { Props } from '@theme/DocSidebar';
 
 declare module '@theme/DocSidebar' {
   interface Props {
-    Footer?: ComponentType | undefined
+    Footer?: ComponentType | undefined;
   }
 }
 
-export default function DocSidebar(props: Props): JSX.Element {
+export default function DocSidebar (props: Props): JSX.Element {
   const windowSize = useWindowSize();
 
   // Desktop sidebar visible on hydration: need SSR rendering

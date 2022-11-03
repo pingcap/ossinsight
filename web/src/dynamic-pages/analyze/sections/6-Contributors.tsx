@@ -17,55 +17,56 @@ import { SelectChangeEvent } from '@mui/material/Select/SelectInput';
 import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
 import Badge from '@mui/material/Badge';
-import React, { ForwardedRef, forwardRef, useCallback, useMemo, useState } from 'react';
+import React, { cloneElement, ForwardedRef, forwardRef, useMemo, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useAnalyzeContext } from '../charts/context';
 import { RemoteData, useRemoteData } from '../../../components/RemoteCharts/hook';
 import useVisibility from '../../../hooks/visibility';
 import Section from '../Section';
 import { H2, P2 } from '../typography';
-import { DateTime } from "luxon";
-import Tooltip from "@mui/material/Tooltip";
-import { useDebugDialog } from "../../../components/DebugDialog";
-import CircularProgress from "@mui/material/CircularProgress";
+import { DateTime } from 'luxon';
+import Tooltip from '@mui/material/Tooltip';
+import { useDebugDialog } from '../../../components/DebugDialog';
+import CircularProgress from '@mui/material/CircularProgress';
+import { notNullish } from '@site/src/utils/value';
 
-type ChangedEvents = { last_month_events: number, last_2nd_month_events: number, changes: number }
+type ChangedEvents = { last_month_events: number, last_2nd_month_events: number, changes: number };
 
-type CodeType = 'add' | 'delete' | 'lines'
+type CodeType = 'add' | 'delete' | 'lines';
 type CodeKeys<K extends CodeType> =
   `${K}_row_num`
   | `last_month_${K}`
   | `last_2nd_month_${K}`
   | `${K}_changed`
-  | `${K}_proportion`
+  | `${K}_proportion`;
 type ChangedCodes =
   Record<CodeKeys<'add'>, number>
   & Record<CodeKeys<'delete'>, number>
-  & Record<CodeKeys<'lines'>, number>
+  & Record<CodeKeys<'lines'>, number>;
 
-type Param = { repoId: number, excludeBots: boolean }
-type Result = { actor_id: number, actor_login: string, proportion: number, row_num: number }
+type Param = { repoId: number, excludeBots: boolean };
+type Result = { actor_id: number, actor_login: string, proportion: number, row_num: number };
 
 type TypeMap = {
-  'analyze-people-activities-contribution-rank': Result & ChangedEvents
-  'analyze-people-code-pr-contribution-rank': Result & ChangedEvents
-  'analyze-people-code-changes-contribution-rank': Result & ChangedCodes
-  'analyze-people-code-contribution-rank': Result & ChangedEvents & { is_new_contributor: 0 | 1 }
-  'analyze-people-code-review-comments-contribution-rank': Result & ChangedEvents
-  'analyze-people-code-review-prs-contribution-rank': Result & ChangedEvents
-  'analyze-people-code-review-submits-contribution-rank': Result & ChangedEvents
-  'analyze-people-issue-close-contribution-rank': Result & ChangedEvents
-  'analyze-people-issue-comment-contribution-rank': Result & ChangedEvents
-  'analyze-people-issue-contribution-rank': Result & ChangedEvents & { is_new_contributor: 0 | 1 }
-}
+  'analyze-people-activities-contribution-rank': Result & ChangedEvents;
+  'analyze-people-code-pr-contribution-rank': Result & ChangedEvents;
+  'analyze-people-code-changes-contribution-rank': Result & ChangedCodes;
+  'analyze-people-code-contribution-rank': Result & ChangedEvents & { is_new_contributor: 0 | 1 };
+  'analyze-people-code-review-comments-contribution-rank': Result & ChangedEvents;
+  'analyze-people-code-review-prs-contribution-rank': Result & ChangedEvents;
+  'analyze-people-code-review-submits-contribution-rank': Result & ChangedEvents;
+  'analyze-people-issue-close-contribution-rank': Result & ChangedEvents;
+  'analyze-people-issue-comment-contribution-rank': Result & ChangedEvents;
+  'analyze-people-issue-contribution-rank': Result & ChangedEvents & { is_new_contributor: 0 | 1 };
+};
 
 type Descriptor<K extends keyof TypeMap> = {
-  key: K
-  title: string
-  render: (item: TypeMap[K], first: TypeMap[K], options: { percentage: boolean, lastMonth: string }) => JSX.Element
-}
+  key: K;
+  title: string;
+  render: (item: TypeMap[K], first: TypeMap[K], options: { percentage: boolean, lastMonth: string }) => JSX.Element;
+};
 
-const descriptors: Descriptor<any>[] = [
+const descriptors: Array<Descriptor<any>> = [
   {
     key: 'analyze-people-activities-contribution-rank',
     title: 'All Activities',
@@ -118,7 +119,7 @@ const descriptors: Descriptor<any>[] = [
   // },
 ];
 
-function renderBasic(item: Result & ChangedEvents & { is_new_contributor?: 0 | 1 }, first: Result & ChangedEvents, { percentage, lastMonth }: { percentage: boolean, lastMonth: string }): JSX.Element {
+function renderBasic (item: Result & ChangedEvents & { is_new_contributor?: 0 | 1 }, first: Result & ChangedEvents, { percentage, lastMonth }: { percentage: boolean, lastMonth: string }): JSX.Element {
   let avatar = <Avatar src={`https://github.com/${item.actor_login}.png`} />;
   if (item.is_new_contributor) {
     avatar = (
@@ -133,8 +134,8 @@ function renderBasic(item: Result & ChangedEvents & { is_new_contributor?: 0 | 1
         tooltip: {
           sx: {
             backgroundColor: '#3c3c3c',
-          }
-        }
+          },
+        },
       }}
       title={(
         <Box>
@@ -151,7 +152,7 @@ function renderBasic(item: Result & ChangedEvents & { is_new_contributor?: 0 | 1
     >
       <Line key={item.actor_login}>
         <ListItemAvatar>
-          <a href={`/analyze/${item.actor_login}`} target="_blank" rel="noopener">
+          <a href={`/analyze/${item.actor_login}`} target="_blank" rel="noopener noreferrer">
             {avatar}
           </a>
         </ListItemAvatar>
@@ -162,24 +163,20 @@ function renderBasic(item: Result & ChangedEvents & { is_new_contributor?: 0 | 1
         {percentage
           ? (
             <Number>{(item.proportion * 100).toPrecision(2)}%</Number>
-          ) : (
+            )
+          : (
             <Number>{item.last_month_events} ({item.changes >= 0 ? `+${item.changes}` : item.changes})</Number>
-          )}
+            )}
       </Line>
     </Tooltip>
   );
 }
 
-// TODO
-function renderCodes(item: Result & ChangedCodes, first: Result & ChangedCodes): JSX.Element {
-  return <></>;
-}
-
-function useData<K extends keyof TypeMap>(repoId: number, key: string, excludeBots: boolean, show: boolean): [TypeMap[K][], RemoteData<any, TypeMap[K]>, boolean] {
+function useData<K extends keyof TypeMap> (repoId: number | undefined, key: string, excludeBots: boolean, show: boolean): [Array<TypeMap[K]>, RemoteData<any, TypeMap[K]> | undefined, boolean] {
   const { data, loading } = useRemoteData<Param, TypeMap[K]>(key, {
-    repoId,
+    repoId: repoId as never,
     excludeBots,
-  }, false, !!repoId && show);
+  }, false, notNullish(repoId) && show);
 
   return [data?.data ?? [], data, loading];
 }
@@ -217,16 +214,16 @@ const Number = styled('span')({
 
 const Spacer = styled('div')({
   flex: 100,
-})
+});
 
 const useLastMonth = () => {
   return useMemo(() => {
-    let dt = DateTime.now().minus({ month: 1 })
-    return dt.toFormat('yyyy/MM')
-  }, [])
-}
+    const dt = DateTime.now().minus({ month: 1 });
+    return dt.toFormat('yyyy/MM');
+  }, []);
+};
 
-export const Contributors = forwardRef(function ({}, ref: ForwardedRef<HTMLElement>) {
+export const Contributors = forwardRef(function (_, ref: ForwardedRef<HTMLElement>) {
   const visible = useVisibility();
   const { ref: inViewRef, inView } = useInView();
 
@@ -236,10 +233,10 @@ export const Contributors = forwardRef(function ({}, ref: ForwardedRef<HTMLEleme
   const [excludeBots, setExcludeBots] = useState(true);
   const [list, data, loading] = useData(repoId, descriptor.key, excludeBots, visible && inView);
 
-  const { dialog: debugDialog, button: debugButton } = useDebugDialog(data)
+  const { dialog: debugDialog, button: debugButton } = useDebugDialog(data);
 
   const handleChangeDescriptor = useEventCallback((event: SelectChangeEvent<Descriptor<any>>) => {
-    setDescriptor(descriptors.find(descriptor => descriptor.key === event.target.value));
+    setDescriptor(descriptors.find(descriptor => descriptor.key === event.target.value) as Descriptor<any>);
   });
 
   const handleChangeType = useEventCallback((event, value: string) => {
@@ -247,10 +244,10 @@ export const Contributors = forwardRef(function ({}, ref: ForwardedRef<HTMLEleme
   });
 
   const handleChangeExcludeBots = useEventCallback((event, value: boolean) => {
-    setExcludeBots(value)
-  })
+    setExcludeBots(value);
+  });
 
-  const lastMonth = useLastMonth()
+  const lastMonth = useLastMonth();
 
   const selectDescriptor = (
     <FormControl variant="standard">
@@ -266,11 +263,11 @@ export const Contributors = forwardRef(function ({}, ref: ForwardedRef<HTMLEleme
         ))}
       </Select>
     </FormControl>
-  )
+  );
 
   const switchExcludeBots = (
     <FormControlLabel control={<Switch checked={excludeBots} onChange={handleChangeExcludeBots} />} label="Exclude Bots" />
-  )
+  );
 
   const toggleType = (
     <ToggleButtonGroup
@@ -283,7 +280,7 @@ export const Contributors = forwardRef(function ({}, ref: ForwardedRef<HTMLEleme
       <ToggleButton value='count'># Total Events</ToggleButton>
       <ToggleButton value='percentage'>% Percentage</ToggleButton>
     </ToggleButtonGroup>
-  )
+  );
 
   return (
     <Section id="contributors" ref={ref}>
@@ -311,7 +308,10 @@ export const Contributors = forwardRef(function ({}, ref: ForwardedRef<HTMLEleme
           </Box>
         )}
         <BarContainer ref={inViewRef}>
-          {list.map((item, index, all) => descriptor.render(item, all[0], { percentage: type === 'percentage', lastMonth }))}
+          {list.map((item, index, all) => {
+            const el = descriptor.render(item, all[0], { percentage: type === 'percentage', lastMonth });
+            return cloneElement(el, { key: item.actor_login });
+          })}
         </BarContainer>
       </Box>
     </Section>

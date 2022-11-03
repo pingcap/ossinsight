@@ -1,12 +1,12 @@
-import React from "react";
-import { Dataset, EChartsx, LineSeries, Once, Tooltip } from "@djagger/echartsx";
-import { useAnalyzeChartContext } from "../context";
-import Stack from "@mui/material/Stack";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import { useDiff, usePartData, useReversed } from "./hooks";
-import { Diff } from "./ui";
-import { AxisBase, formatDate } from "./base";
+import React from 'react';
+import { Dataset, EChartsx, LineSeries, Once, Tooltip } from '@djagger/echartsx';
+import { useAnalyzeChartContext } from '../context';
+import Stack from '@mui/material/Stack';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import { useDiff, usePartData, useReversed } from './hooks';
+import { Diff } from './ui';
+import { AxisBase, formatDate } from './base';
 
 interface BarsProps {
   title: string;
@@ -16,7 +16,7 @@ interface BarsProps {
   totalKey: string;
 }
 
-export default function LinesCompare({ color, title, dayValueKey, dayKey = 'period_day', totalKey }: BarsProps) {
+export default function LinesCompare ({ color, title, dayValueKey, dayKey = 'period_day', totalKey }: BarsProps) {
   const { data } = useAnalyzeChartContext<any>();
   const diff = useDiff(data.data?.data ?? [], totalKey, dayKey);
   const reversed = useReversed(data.data?.data ?? []);
@@ -49,5 +49,5 @@ export default function LinesCompare({ color, title, dayValueKey, dayKey = 'peri
 }
 
 const formatter = (title: string) => (seriesList: any[]): string => {
-  return seriesList.map(series => `${series.marker} ${formatDate(series.data.day)}: <b>${series.data.value}</b> ${title}`).join('<br>');
+  return seriesList.map(series => `${series.marker as string} ${formatDate(series.data.day)}: <b>${series.data.value as number}</b> ${title}`).join('<br>');
 };

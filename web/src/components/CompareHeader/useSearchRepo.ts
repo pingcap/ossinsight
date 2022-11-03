@@ -5,11 +5,11 @@ import { core } from '../../api';
 import { AsyncData } from '../RemoteCharts/hook';
 
 export interface Repo extends Record<string, unknown> {
-  id: number
-  name: string
+  id: number;
+  name: string;
 }
 
-export function useDebounced<T>(value: T, wait?: number) {
+export function useDebounced<T> (value: T, wait?: number) {
   const [debouncedValue, setDebouncedValue] = useState(value);
 
   const wrappedSetDebouncedValue = useCallback(debounce(setDebouncedValue, wait), [wait]);
@@ -22,8 +22,7 @@ export function useDebounced<T>(value: T, wait?: number) {
   return debouncedValue;
 }
 
-export function useSearchRepo(keyword: string): AsyncData<Repo[]> {
-
+export function useSearchRepo (keyword: string): AsyncData<Repo[]> {
   const searchKey = useDebounced(keyword, 500);
 
   const {

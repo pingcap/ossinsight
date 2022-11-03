@@ -13,12 +13,13 @@ import DocBreadcrumbs from '@theme/DocBreadcrumbs';
 import type { Props } from '@theme/DocItem/Layout';
 
 import styles from './styles.module.css';
-import ShareButtons from "@site/src/components/ShareButtons";
+import ShareButtons from '@site/src/components/ShareButtons';
+import { notNullish } from '@site/src/utils/value';
 
 /**
  * Decide if the toc should be rendered, on mobile or desktop viewports
  */
-function useDocTOC() {
+function useDocTOC () {
   const { frontMatter, toc } = useDoc();
   const windowSize = useWindowSize();
 
@@ -28,9 +29,11 @@ function useDocTOC() {
   const mobile = canRender ? <DocItemTOCMobile /> : undefined;
 
   const desktop =
-    canRender && (windowSize === 'desktop' || windowSize === 'ssr') ? (
+    canRender && (windowSize === 'desktop' || windowSize === 'ssr')
+      ? (
       <DocItemTOCDesktop />
-    ) : undefined;
+        )
+      : undefined;
 
   return {
     hidden,
@@ -39,9 +42,9 @@ function useDocTOC() {
   };
 }
 
-export default function DocItemLayout({ children }: Props): JSX.Element {
+export default function DocItemLayout ({ children }: Props): JSX.Element {
   const docTOC = useDocTOC();
-  const { metadata: { title }, frontMatter } = useDoc();
+  const { metadata: { title } } = useDoc();
   return (
     <div className="row">
       <div className={clsx('col', !docTOC.hidden && styles.docItemCol)}>
@@ -58,7 +61,7 @@ export default function DocItemLayout({ children }: Props): JSX.Element {
           <DocItemPaginator />
         </div>
       </div>
-      {docTOC.desktop && <div className="col col--3">{docTOC.desktop}</div>}
+      {notNullish(docTOC.desktop) && <div className="col col--3">{docTOC.desktop}</div>}
     </div>
   );
 }

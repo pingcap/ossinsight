@@ -5,25 +5,25 @@ import ButtonGroup from '@mui/material/ButtonGroup';
 import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
 import React, { useMemo, useState } from 'react';
-import useUrlSearchState, { stringParam } from '../../../hooks/url-search-state';
+import useUrlSearchState from '../../../hooks/url-search-state';
 import IconTab from '../components/IconTab';
 import _dimensions, {
   Dimension,
   collectionDisplayType,
   CollectionDateTypeEnum,
-} from "../dimensions";
+} from '../dimensions';
 
-export function useDimensionTabs(searchKey: string, assurePrefix = false) {
-  const dimensions = useMemo(() => _dimensions.filter(d => assurePrefix ? !!d.prefix : true), [assurePrefix])
+export function useDimensionTabs (searchKey: string, assurePrefix = false) {
+  const dimensions = useMemo(() => _dimensions.filter(d => assurePrefix ? !!d.prefix : true), [assurePrefix]);
   const [dimension, setDimension] = useUrlSearchState<Dimension>(searchKey, {
     defaultValue: dimensions[0],
     serialize: d => d.search,
     deserialize: k => dimensions.find(dimension => dimension.search === k) ?? dimensions[0],
-  })
+  });
   const [dateType, setDateType] = useState(CollectionDateTypeEnum.Last28Days);
 
   const handleChangeDimension = useEventCallback((e, dimensionKey: string) => {
-    setDimension(dimensions.find(dimension => dimension.key === dimensionKey));
+    setDimension(dimensions.find(dimension => dimension.key === dimensionKey) ?? dimensions[0]);
   });
 
   const handleChangeDateType = (targetType: CollectionDateTypeEnum) => () => {
@@ -32,7 +32,7 @@ export function useDimensionTabs(searchKey: string, assurePrefix = false) {
 
   const tabs = (
     <Stack
-      direction={{ xs: "column", sm: "row", md: "column", lg: "row" }}
+      direction={{ xs: 'column', sm: 'row', md: 'column', lg: 'row' }}
       justifyContent="space-between"
       gap="1rem"
       flexWrap="wrap"
@@ -54,11 +54,11 @@ export function useDimensionTabs(searchKey: string, assurePrefix = false) {
           </IconTab>
         ))}
       </Tabs>
-      {searchKey === "monthly-rankings" && (
+      {searchKey === 'monthly-rankings' && (
         <Box
           sx={{
-            display: "flex",
-            alignItems: "center",
+            display: 'flex',
+            alignItems: 'center',
           }}
         >
           <ButtonGroup
@@ -70,9 +70,9 @@ export function useDimensionTabs(searchKey: string, assurePrefix = false) {
               return (
                 <Button
                   key={colType.type}
-                  sx={{ textTransform: "none" }}
+                  sx={{ textTransform: 'none' }}
                   onClick={handleChangeDateType(colType.type)}
-                  variant={colType.type === dateType ? "contained" : "outlined"}
+                  variant={colType.type === dateType ? 'contained' : 'outlined'}
                 >
                   {colType.label}
                 </Button>

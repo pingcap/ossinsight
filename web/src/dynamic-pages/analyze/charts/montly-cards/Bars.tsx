@@ -1,12 +1,12 @@
-import React from "react";
-import { BarSeries, Dataset, EChartsx, Once, Tooltip } from "@djagger/echartsx";
-import { useAnalyzeChartContext } from "../context";
-import Stack from "@mui/material/Stack";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import { useReversed } from "./hooks";
-import { AxisBase, formatDate } from "./base";
-import { Title } from "./ui";
+import React from 'react';
+import { BarSeries, Dataset, EChartsx, Once, Tooltip } from '@djagger/echartsx';
+import { useAnalyzeChartContext } from '../context';
+import Stack from '@mui/material/Stack';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import { useReversed } from './hooks';
+import { AxisBase, formatDate } from './base';
+import { Title } from './ui';
 
 interface BarsProps {
   color: string;
@@ -17,7 +17,7 @@ interface BarsProps {
   totalKey: string;
 }
 
-export default function Bars({ color, icon, title, dayValueKey, dayKey = 'current_period_day', totalKey }: BarsProps) {
+export default function Bars ({ color, icon, title, dayValueKey, dayKey = 'current_period_day', totalKey }: BarsProps) {
   const { data } = useAnalyzeChartContext<any>();
 
   return (
@@ -32,7 +32,7 @@ export default function Bars({ color, icon, title, dayValueKey, dayKey = 'curren
           <Once>
             <AxisBase />
             <Tooltip trigger="axis" axisPointer={{}}
-                     formatter={([params]) => `${params.marker} ${formatDate(params.value[dayKey])}: <b>${params.value[dayValueKey]}</b> ${title}`} />
+                     formatter={([params]) => `${params.marker as string} ${formatDate(params.value[dayKey])}: <b>${params.value[dayValueKey] as number}</b> ${title}`} />
             <BarSeries encode={{ x: 'idx', y: dayValueKey }} color={color} barMaxWidth={8} />
           </Once>
           <Dataset source={useReversed(data.data?.data ?? [])} />

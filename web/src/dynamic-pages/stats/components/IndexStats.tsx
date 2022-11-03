@@ -1,19 +1,19 @@
 import React from 'react';
-import { TidbIndexStats } from "@ossinsight/api";
-import Table from "@mui/material/Table";
-import TableHead from "@mui/material/TableHead";
-import TableCell from "@mui/material/TableCell";
-import TableBody from "@mui/material/TableBody";
-import TableRow from "@mui/material/TableRow";
-import Link from "@docusaurus/Link";
-import AnimatedNumber from "react-awesome-animated-number";
+import { TidbIndexStats } from '@ossinsight/api';
+import Table from '@mui/material/Table';
+import TableHead from '@mui/material/TableHead';
+import TableCell from '@mui/material/TableCell';
+import TableBody from '@mui/material/TableBody';
+import TableRow from '@mui/material/TableRow';
+import Link from '@docusaurus/Link';
+import AnimatedNumber from 'react-awesome-animated-number';
 
 export interface IndexStatsProps {
   stats: TidbIndexStats[];
   showTable?: boolean;
 }
 
-export default function IndexStats({ stats, showTable = false }: IndexStatsProps) {
+export default function IndexStats ({ stats, showTable = false }: IndexStatsProps) {
   return (
     <Table className="clearTable">
       <TableHead>
@@ -23,7 +23,8 @@ export default function IndexStats({ stats, showTable = false }: IndexStatsProps
               <TableCell>
                 Table
               </TableCell>
-            ) : undefined}
+              )
+            : undefined}
           <TableCell>
             Index
           </TableCell>
@@ -42,7 +43,8 @@ export default function IndexStats({ stats, showTable = false }: IndexStatsProps
                     {stat.tableName}
                   </Link>
                 </TableCell>
-              ) : undefined}
+                )
+              : undefined}
             <TableCell>
               {stat.indexName}
             </TableCell>

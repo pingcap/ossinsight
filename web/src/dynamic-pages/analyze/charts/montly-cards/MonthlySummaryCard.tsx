@@ -1,13 +1,12 @@
-import React from "react";
-import Grid from "@mui/material/Grid";
-import Analyze from "../Analyze";
-import Bars from "./Bars";
+import React from 'react';
+import Grid from '@mui/material/Grid';
+import Analyze from '../Analyze';
+import Bars from './Bars';
 import Lines from './Lines';
-import { CommitIcon, GitPullRequestIcon, IssueOpenedIcon, StarIcon } from "@primer/octicons-react";
-import { styled } from "@mui/material/styles";
-import { Border } from "./ui";
+import { CommitIcon, GitPullRequestIcon, IssueOpenedIcon, StarIcon } from '@primer/octicons-react';
+import { Border } from './ui';
 
-function MonthlySummaryCard() {
+function MonthlySummaryCard () {
   return (
     <Grid container direction="column" spacing={1} paddingTop='14.75px' height='100%'>
       <Grid item maxWidth='100% !important'>

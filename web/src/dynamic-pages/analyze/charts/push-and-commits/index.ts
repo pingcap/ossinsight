@@ -11,15 +11,14 @@ import {
   valueAxis,
 } from '../options';
 import { withChart } from '../chart';
-import { upBound } from "../utils";
+import { upBound } from '../utils';
 
 // lines of code
 export type PushesAndCommitsData = {
-  event_month: string
-  pushes: number
-  commits: number
-}
-
+  event_month: string;
+  pushes: number;
+  commits: number;
+};
 
 export const PushesAndCommitsChart = withChart<PushesAndCommitsData>(
   ({ title: propsTitle }) => {

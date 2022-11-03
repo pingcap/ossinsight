@@ -1,11 +1,11 @@
-import { RefCallback, useCallback, useEffect, useState } from "react";
-import { useEventCallback } from "@mui/material";
+import { RefCallback, useCallback, useEffect, useState } from 'react';
+import { useEventCallback } from '@mui/material';
 
 interface UserScrollableProps {
   direction: 'x' | 'y';
 }
 
-type Scrollable = true | 'forward' | 'backward' | false
+type Scrollable = true | 'forward' | 'backward' | false;
 
 interface UserScrollableResult {
   ref: RefCallback<HTMLElement | null>;
@@ -14,8 +14,8 @@ interface UserScrollableResult {
   recompute: () => void;
 }
 
-export function useScrollable({ direction = 'x' }: UserScrollableProps): UserScrollableResult {
-  const [element, setElement] = useState<HTMLElement>(null);
+export function useScrollable ({ direction = 'x' }: UserScrollableProps): UserScrollableResult {
+  const [element, setElement] = useState<HTMLElement | null>(null);
   const [scrollable, setScrollable] = useState<Scrollable>(false);
 
   const ref = useEventCallback((element: HTMLElement | null) => {
@@ -65,6 +65,9 @@ export function useScrollable({ direction = 'x' }: UserScrollableProps): UserScr
   }, [element, direction, recompute]);
 
   const scroll = useCallback((offset: number = 100) => {
+    if (!element) {
+      return;
+    }
     const { width, height } = element.getBoundingClientRect();
     element.scrollBy({
       [direction === 'x' ? 'left' : 'top']: offset * (direction === 'x' ? width : height),

@@ -1,37 +1,38 @@
-import React from "react";
-import Chart, { ChartProps } from "@site/src/components/Chart";
-import { defaultColors } from "./colors";
-import ChartDataLabels from "chartjs-plugin-datalabels";
-import useIsLarge from "../hooks/useIsLarge";
-import { ScriptableContext } from "chart.js";
-import countryCodeEmoji from "country-code-emoji";
-import ChartJs from "chart.js/auto";
-import { responsive } from "./responsive";
-import theme from "./theme";
+import React from 'react';
+import Chart, { ChartProps } from '@site/src/components/Chart';
+import { defaultColors } from './colors';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
+import useIsLarge from '../hooks/useIsLarge';
+import { ScriptableContext } from 'chart.js';
+import countryCodeEmoji from 'country-code-emoji';
+import ChartJs from 'chart.js/auto';
+import { responsive } from './responsive';
+import theme from './theme';
+import { notFalsy } from '@site/src/utils/value';
 
 interface CountryEventsProps extends Pick<ChartProps, 'sx'> {
   data: import('../../_charts/env').CountryData;
-  footnote?: string
+  footnote?: string;
 }
 
 type EventPoint = {
-  x: number
-  y: number
-  value: number
-  country: string
-  code: string
-}
+  x: number;
+  y: number;
+  value: number;
+  country: string;
+  code: string;
+};
 
-function isHighlight(data: import('../../_charts/env').CountryData, ctx: Pick<ScriptableContext<any>, 'dataIndex' | 'datasetIndex'>) {
+function isHighlight (data: import('../../_charts/env').CountryData, ctx: Pick<ScriptableContext<any>, 'dataIndex' | 'datasetIndex'>) {
   return data.highlights?.[ctx.datasetIndex]?.includes(ctx.dataIndex) ?? false;
 }
 
-function scatterSize(chart: ChartJs, maxWidth: number, count: number) {
+function scatterSize (chart: ChartJs, maxWidth: number, count: number) {
   count += 2;
   return Math.min((((chart.chartArea?.width ?? chart.width) - (count - 1) * 4)) / count, maxWidth);
 }
 
-export default function CountryEvents({ data, footnote, sx }: CountryEventsProps) {
+export default function CountryEvents ({ data, footnote, sx }: CountryEventsProps) {
   const large = useIsLarge();
 
   return (
@@ -57,7 +58,7 @@ export default function CountryEvents({ data, footnote, sx }: CountryEventsProps
           point: {
             pointStyle: 'rect',
             radius: ctx => {
-              const size = scatterSize(ctx.chart, 30, data.labels.length)
+              const size = scatterSize(ctx.chart, 30, data.labels.length);
               if (isHighlight(data, ctx)) {
                 return size;
               } else {
@@ -104,7 +105,7 @@ export default function CountryEvents({ data, footnote, sx }: CountryEventsProps
             ticks: {
               callback: value => {
                 const code = data.data[value]?.[1];
-                return code && countryCodeEmoji(code);
+                return notFalsy(code) ? countryCodeEmoji(code) : undefined;
               },
               padding: 16,
               color: theme.color.ticks,
@@ -136,10 +137,10 @@ export default function CountryEvents({ data, footnote, sx }: CountryEventsProps
             color: 'white',
             font: responsive({
               size: [8, 10, 12],
-              weight: ['normal', 'bold']
+              weight: ['normal', 'bold'],
             }),
             formatter: (value) => {
-              return value.value + '%';
+              return `${value.value as string}%`;
             },
             align: 'center',
             anchor: 'center',

@@ -1,16 +1,16 @@
-export function upBound(num: number): number {
+export function upBound (num: number): number {
   if (num === 0) {
-    return 0
+    return 0;
   }
 
-  const sign = Math.sign(num)
-  const mag = Math.abs(num)
+  const sign = Math.sign(num);
+  const mag = Math.abs(num);
 
-  let base = 1
+  let base = 1;
   while (mag > base) {
-    base *= 10
+    base *= 10;
   }
-  base /= 20
+  base /= 20;
 
   return (Math.floor(mag / base) + 1) * base * sign;
 }

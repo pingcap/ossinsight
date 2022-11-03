@@ -6,6 +6,29 @@ on:
       - 'web/**'
 
 jobs:
+  verify:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./web
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: refs/pull/${{ github.event.pull_request.number }}/merge
+      - name: Use Node.js 18
+        uses: actions/setup-node@v2.5.1
+        with:
+          node-version: 18
+          cache: 'npm'
+          cache-dependency-path: web/package-lock.json
+      - name: Install
+        run: npm ci
+      - name: Lint
+        run: |
+          npm run lint:ci
+          npm run typecheck
+
   preview:
     runs-on: ubuntu-latest
     defaults:

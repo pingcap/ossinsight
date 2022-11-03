@@ -7,16 +7,10 @@ import {
   ScatterSeriesOption,
   TreemapSeriesOption,
 } from 'echarts';
-import {ORIGINAL_DATASET_ID} from './dataset';
-import {DimensionLoose, OptionEncodeValue} from 'echarts/types/src/util/types';
-import {alpha, darken} from '@mui/material';
+import { ORIGINAL_DATASET_ID } from './dataset';
+import { DimensionLoose, OptionEncodeValue } from 'echarts/types/src/util/types';
 
-interface CartesianSeriesEncodeOption {
-  x: OptionEncodeValue;
-  y: OptionEncodeValue;
-}
-
-export function bar(x: OptionEncodeValue, y: OptionEncodeValue, option: BarSeriesOption = {}): BarSeriesOption {
+export function bar (x: OptionEncodeValue, y: OptionEncodeValue, option: BarSeriesOption = {}): BarSeriesOption {
   return {
     name: String(y),
     datasetId: ORIGINAL_DATASET_ID,
@@ -25,12 +19,12 @@ export function bar(x: OptionEncodeValue, y: OptionEncodeValue, option: BarSerie
     encode: {
       x,
       y,
-      ...(option.encode || {}),
+      ...option.encode,
     },
   };
 }
 
-export function line(x: OptionEncodeValue, y: OptionEncodeValue, option: LineSeriesOption = {}): LineSeriesOption {
+export function line (x: OptionEncodeValue, y: OptionEncodeValue, option: LineSeriesOption = {}): LineSeriesOption {
   return {
     name: String(y),
     datasetId: ORIGINAL_DATASET_ID,
@@ -40,12 +34,12 @@ export function line(x: OptionEncodeValue, y: OptionEncodeValue, option: LineSer
     encode: {
       x,
       y,
-      ...(option.encode || {}),
+      ...option.encode,
     },
   };
 }
 
-export function boxplot(x: OptionEncodeValue, y: [DimensionLoose, DimensionLoose, DimensionLoose, DimensionLoose, DimensionLoose], option: BoxplotSeriesOption = {}): BoxplotSeriesOption {
+export function boxplot (x: OptionEncodeValue, y: [DimensionLoose, DimensionLoose, DimensionLoose, DimensionLoose, DimensionLoose], option: BoxplotSeriesOption = {}): BoxplotSeriesOption {
   return {
     datasetId: ORIGINAL_DATASET_ID,
     ...option,
@@ -54,12 +48,12 @@ export function boxplot(x: OptionEncodeValue, y: [DimensionLoose, DimensionLoose
       x,
       y,
       tooltip: y,
-      ...(option.encode || {}),
-    }
+      ...option.encode,
+    },
   };
 }
 
-export function treemap(data: TreemapSeriesOption['data']): TreemapSeriesOption {
+export function treemap (data: TreemapSeriesOption['data']): TreemapSeriesOption {
   return {
     type: 'treemap',
     data,
@@ -77,7 +71,7 @@ export function treemap(data: TreemapSeriesOption['data']): TreemapSeriesOption 
   };
 }
 
-export function heatmap(x: OptionEncodeValue, y: OptionEncodeValue, value: OptionEncodeValue, option: HeatmapSeriesOption = {}): HeatmapSeriesOption {
+export function heatmap (x: OptionEncodeValue, y: OptionEncodeValue, value: OptionEncodeValue, option: HeatmapSeriesOption = {}): HeatmapSeriesOption {
   return {
     datasetId: ORIGINAL_DATASET_ID,
     emphasis: {
@@ -92,12 +86,12 @@ export function heatmap(x: OptionEncodeValue, y: OptionEncodeValue, value: Optio
       x,
       y,
       value,
-      ...(option.encode || {}),
+      ...option.encode,
     },
   };
 }
 
-export function scatters(idPrefix: string, topN: number, max: number, option: ScatterSeriesOption & EffectScatterSeriesOption = {}): (ScatterSeriesOption | EffectScatterSeriesOption)[] {
+export function scatters (idPrefix: string, topN: number, max: number, option: ScatterSeriesOption & EffectScatterSeriesOption = {}): Array<ScatterSeriesOption | EffectScatterSeriesOption> {
   const commonOptions: ScatterSeriesOption & EffectScatterSeriesOption = {
     coordinateSystem: 'geo',
     encode: {

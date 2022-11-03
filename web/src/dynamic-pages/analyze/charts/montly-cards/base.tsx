@@ -1,6 +1,6 @@
-import { Grid as XGrid } from "@djagger/echartsx/dist/components/option/gird";
-import { Axis } from "@djagger/echartsx";
-import React from "react";
+import { Grid as XGrid } from '@djagger/echartsx/dist/components/option/gird';
+import { Axis } from '@djagger/echartsx';
+import React from 'react';
 
 export const AxisBase = () => {
   return (

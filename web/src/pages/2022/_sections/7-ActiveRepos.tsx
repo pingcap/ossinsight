@@ -1,11 +1,12 @@
-import React, { ReactElement } from "react";
-import Section from "../_components/Section";
-import { A, BR, Footnote, LI, ResponsiveColumnFlex, Spacer, UL } from "../_components/styled";
-import Split from "../_components/Split";
-import Insights from "../_components/Insights";
-import { styled } from "@mui/material/styles";
+import React, { ReactElement } from 'react';
+import Section from '../_components/Section';
+import { A, BR, Footnote, LI, ResponsiveColumnFlex, Spacer, UL } from '../_components/styled';
+import Split from '../_components/Split';
+import Insights from '../_components/Insights';
+import { styled } from '@mui/material/styles';
 import colors from '../_components/colors.module.css';
 import _MSIcon from '../_icons/ms.svg';
+import { notNullish } from '@site/src/utils/value';
 
 export default function () {
   return (
@@ -13,14 +14,14 @@ export default function () {
       title={title}
       description={description}
     >
-      <Split mt={[2,4,6]}>
+      <Split mt={[2, 4, 6]}>
         <div>
           <RepoRanks list={list} />
           <Footnote>{footnote}</Footnote>
         </div>
         <ResponsiveColumnFlex>
           {insights.map((insight, i) => (
-            insight ? <Insights key={i} hideTitle={i > 0}>{insight}</Insights> : <Spacer key={i} />
+            notNullish(insight) ? <Insights key={i} hideTitle={i > 0}>{insight}</Insights> : <Spacer key={i} />
           ))}
         </ResponsiveColumnFlex>
       </Split>
@@ -29,10 +30,10 @@ export default function () {
 }
 
 type Rank = {
-  repo: string
-  count: number
-  icon?: ReactElement
-}
+  repo: string;
+  count: number;
+  icon?: ReactElement;
+};
 
 const MSIcon = styled(_MSIcon)({
   display: 'inline-flex',
@@ -40,7 +41,7 @@ const MSIcon = styled(_MSIcon)({
 });
 const title = 'The most active repositories over the past four years';
 const description = 'Here we looked up the top 20 active repositories per year from 2019 to 2022 and counted the total number of listings per repository. The activity of the repository is ranked according to the number of developers participating in collaborative events.';
-const footnote = '* Time range: 2022.01.01-2022.09.30, excluding bot events'
+const footnote = '* Time range: 2022.01.01-2022.09.30, excluding bot events';
 const list: Rank[] = [
   {
     repo: 'microsoft/vscode',
@@ -109,7 +110,6 @@ const list: Rank[] = [
   },
 ];
 
-
 const list2022: string[] = [
   'archway-network/testnets',
   'element-fi/elf-council-frontend',
@@ -119,7 +119,7 @@ const list2022: string[] = [
   'NixOS/nixpkgs',
   'rust-lang/rust',
 ];
-const ghLink = (item, bold = true) => {
+const ghLink = (item: string, bold = true) => {
   const link = <A href={`https://ossinsight.io/analyze/${item}`} target="_blank" rel="noopener">{item}</A>;
   if (bold) {
     return <strong>{link}</strong>;
@@ -207,4 +207,3 @@ const Dot = styled('span')({
   borderRadius: '50%',
   marginRight: 8,
 });
-

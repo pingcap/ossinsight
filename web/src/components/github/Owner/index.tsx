@@ -1,20 +1,20 @@
-import React from "react";
+import React from 'react';
 
-import Avatar from "@mui/material/Avatar";
-import Stack from "@mui/material/Stack";
-import Typography from "@mui/material/Typography";
+import Avatar from '@mui/material/Avatar';
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
 
 interface GithubOwner {
-  owner: string
-  size?: number | string
+  owner: string;
+  size?: number | string;
 }
 
-const Owner = ({owner, size = '1em'}: GithubOwner) => {
+const Owner = ({ owner, size = '1em' }: GithubOwner) => {
   return (
     <Stack
       direction="row"
       spacing={1}
-      sx={{alignItems: 'center'}}
+      sx={{ alignItems: 'center' }}
       component='a'
       href={`https://github.com/${owner}`}
       target='_blank'
@@ -22,15 +22,15 @@ const Owner = ({owner, size = '1em'}: GithubOwner) => {
       <Avatar
         alt={owner}
         src={`https://github.com/${owner}.png?size=20`}
-        sx={{width: size, height: size}}
+        sx={{ width: size, height: size }}
       />
       <Typography>
         {owner}
       </Typography>
     </Stack>
-  )
-}
+  );
+};
 
-Owner.displayName = 'GithubOwner'
+Owner.displayName = 'GithubOwner';
 
-export default Owner
+export default Owner;

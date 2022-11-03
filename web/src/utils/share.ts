@@ -1,14 +1,14 @@
 // see https://github.com/nygardk/react-share/tree/master/src
-import objectToGetParams from "react-share/es/utils/objectToGetParams";
+import objectToGetParams from 'react-share/es/utils/objectToGetParams';
 
-export function twitterLink(
+export function twitterLink (
   url: string,
   {
     title,
     via,
     hashtags = [],
     related = [],
-  }: { title?: string; via?: string; hashtags?: string[]; related?: string[] },
+  }: { title?: string, via?: string, hashtags?: string[], related?: string[] },
 ) {
   return (
     'https://twitter.com/share' +
@@ -22,7 +22,6 @@ export function twitterLink(
   );
 }
 
-
 type Options = {
   /** The url-encoded title value that you wish you use. */
   title?: string;
@@ -32,15 +31,14 @@ type Options = {
   source?: string;
 };
 
-export function linkedinLink(url: string, { title, summary, source }: Options) {
+export function linkedinLink (url: string, { title, summary, source }: Options) {
   return (
     'https://linkedin.com/shareArticle' +
     objectToGetParams({ url, mini: 'true', title, summary, source })
   );
 }
 
-
-export function redditLink(url: string, { title }: { title?: string }) {
+export function redditLink (url: string, { title }: { title?: string }) {
   return (
     'https://www.reddit.com/submit' +
     objectToGetParams({
@@ -50,7 +48,7 @@ export function redditLink(url: string, { title }: { title?: string }) {
   );
 }
 
-export function telegramLink(url: string, { title }: { title?: string }) {
+export function telegramLink (url: string, { title }: { title?: string }) {
   return (
     'https://telegram.me/share/url' +
     objectToGetParams({
@@ -59,4 +57,3 @@ export function telegramLink(url: string, { title }: { title?: string }) {
     })
   );
 }
-

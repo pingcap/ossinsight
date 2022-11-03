@@ -9,35 +9,37 @@ import Tabs from '@mui/material/Tabs';
 import CodeBlock from '@theme/CodeBlock';
 import React, { useState } from 'react';
 import { useRemoteData } from '../RemoteCharts/hook';
+import { getErrorMessage } from '@site/src/utils/error';
+import { isNullish, notNullish } from '@site/src/utils/value';
 
 export interface DebugDialogProps {
-  sql?: string,
-  query: string,
-  params?: any,
-  open: boolean,
-  onClose: () => any
+  sql?: string;
+  query: string;
+  params?: any;
+  open: boolean;
+  onClose: () => any;
 }
 
 const explainKeywordDict = {
-  'cop' : 'distributed',
-  'batchCop' : 'distributed',
-  'tikv' : 'row',
-  'tiflash' : 'column',
-}
+  cop: 'distributed',
+  batchCop: 'distributed',
+  tikv: 'row',
+  tiflash: 'column',
+};
 
 const replaceAllKeyword = (str: string | undefined) => {
   if (!str) {
-    return str
+    return str;
   }
-  for (let [key, value] of Object.entries(explainKeywordDict)) {
+  for (const [key, value] of Object.entries(explainKeywordDict)) {
     str = str.replace(new RegExp(key, 'g'), value);
   }
   return str;
-}
+};
 
 export const DebugDialog = ({ sql, query, params, open, onClose }: DebugDialogProps) => {
-  const [type, setType] = useState<'explain' | 'trace'>(null);
-  const { data, error } = useRemoteData(`${type}/${query}`, params, false, !!open && !!type && !!params);
+  const [type, setType] = useState<'explain' | 'trace' | null>(null);
+  const { data, error } = useRemoteData(`${type ?? 'undefined'}/${query}`, params, false, open && !!type && notNullish(params));
 
   const handleTabChange = useEventCallback((e: any, type: 'explain' | 'trace') => {
     setType(type);
@@ -45,10 +47,10 @@ export const DebugDialog = ({ sql, query, params, open, onClose }: DebugDialogPr
 
   const renderChild = () => {
     if (type) {
-      if (error) {
-        return <Alert severity='error'>Request failed ${(error as any)?.message ?? ''}</Alert>
+      if (notNullish(error)) {
+        return <Alert severity='error'>Request failed ${getErrorMessage(error)}</Alert>;
       }
-      if (!data) {
+      if (isNullish(data)) {
         return (
           <Box sx={{ pt: 0.5 }}>
             <Skeleton width="80%" />
@@ -78,7 +80,7 @@ export const DebugDialog = ({ sql, query, params, open, onClose }: DebugDialogPr
             </Box>
           </Box>
         </Box>
-      )
+      );
     } else {
       return (
         <CodeBlock className="language-sql">
@@ -99,7 +101,7 @@ export const DebugDialog = ({ sql, query, params, open, onClose }: DebugDialogPr
         <Container>
           <Tabs value={type} onChange={handleTabChange}>
             <Tab value={null} label="SQL" />
-            {/*<Tab value="trace" label="TRACE" />*/}
+            {/* <Tab value="trace" label="TRACE" /> */}
             <Tab value="explain" label="EXPLAIN" />
           </Tabs>
           <br />
