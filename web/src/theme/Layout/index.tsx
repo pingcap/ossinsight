@@ -12,6 +12,7 @@ import ErrorPageContent from '@theme/ErrorPageContent';
 import type { Props } from '@theme/Layout';
 import styles from './styles.module.css';
 import HowItWorks from '@site/src/components/Ads/HowItWorks';
+import VideoAds from '@site/src/components/Ads/VideoAds';
 
 declare module '@theme/Layout' {
   interface Props {
@@ -66,6 +67,8 @@ export default function Layout (props: Props): JSX.Element {
       {!noFooter && <Footer />}
 
       <HowItWorks />
+
+      <VideoAds thumbnailUrl="/img/video-ads-thumbnail.png" url="https://www.youtube.com/watch?v=JGfoRdVxSi4" delay={6000} />
     </LayoutProvider>
   );
 }
