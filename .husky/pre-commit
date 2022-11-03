@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-npx -w web lint-staged
-npm run -w web typecheck
+pushd web
+npx lint-staged
+npm run typecheck
+popd
