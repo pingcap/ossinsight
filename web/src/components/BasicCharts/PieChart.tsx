@@ -1,18 +1,10 @@
-import * as echarts from 'echarts/core';
-import { GridComponent, TitleComponent, TooltipComponent } from 'echarts/components';
-import { PieChart as EPieChart } from 'echarts/charts';
-import { CanvasRenderer } from 'echarts/renderers';
 import * as React from 'react';
 import { useMemo } from 'react';
 import { TextCommonOption } from 'echarts/types/src/util/types';
-import { EChartsOption, PieSeriesOption } from 'echarts';
+import type { EChartsOption, PieSeriesOption } from 'echarts';
 import ECharts from '../ECharts';
 import { useIsDarkTheme } from '@site/src/hooks/theme';
 import { notNullish } from '@site/src/utils/value';
-
-echarts.use(
-  [TitleComponent, TooltipComponent, GridComponent, EPieChart, CanvasRenderer],
-);
 
 export interface PieChartProps<T> {
   seriesName?: string;

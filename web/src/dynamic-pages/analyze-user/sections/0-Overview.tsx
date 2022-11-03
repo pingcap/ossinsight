@@ -11,7 +11,8 @@ import {
   StarIcon,
 } from '@primer/octicons-react';
 import Link from '@docusaurus/Link';
-import { Axis, Dataset, EChartsx, LineSeries, Once, Title } from '@djagger/echartsx';
+import { EChartsx } from '@site/src/components/ECharts';
+import { Axis, Dataset, LineSeries, Once, Title } from '@djagger/echartsx';
 import colors from '../colors.module.css';
 import { chartColors, languageColors } from '../colors';
 import { Common } from '../charts/Common';

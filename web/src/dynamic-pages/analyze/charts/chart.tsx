@@ -1,8 +1,8 @@
-import EChartsReact from 'echarts-for-react';
+import type EChartsReact from 'echarts-for-react';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import CommonChartContext, { CommonChartShareInfo } from '../../../components/CommonChart/context';
 import { AnalyzeChartContextProps, isNoData, useAnalyzeChartContext, useAnalyzeContext } from './context';
-import { EChartsOption } from 'echarts';
+import type { EChartsOption } from 'echarts';
 import ECharts, { EChartsContext, EChartsProps } from '../../../components/ECharts';
 import { DangerousCtx, dangerousSetCtx } from './options/_danger';
 import useDimensions from 'react-cool-dimensions';

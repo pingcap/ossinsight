@@ -1,6 +1,5 @@
-import { Legend, LineChart, Title, Toolbox } from '@djagger/echartsx';
-import { use } from 'echarts/core';
-import { CanvasRenderer } from 'echarts/renderers';
+import { LineChart } from '@site/src/components/ECharts';
+import { Legend, Title, Toolbox } from '@djagger/echartsx';
 import React, { useContext, useMemo } from 'react';
 import { withInViewContainer } from '../../../components/InViewContainer';
 import Watermark from '../components/Watermark';
@@ -13,8 +12,6 @@ import { formatTime } from './utils';
 import { isNullish } from '@site/src/utils/value';
 
 import { Box, Skeleton } from '@mui/material';
-
-use(CanvasRenderer);
 
 export default withInViewContainer(function HistorySection () {
   const { collection } = useContext(CollectionsContext);

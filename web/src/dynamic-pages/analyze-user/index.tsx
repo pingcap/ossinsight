@@ -8,16 +8,13 @@ import CodeReviewSection from './sections/4-CodeReview';
 import IssueSection from './sections/5-Issue';
 import ActivitiesSection from './sections/6-Activities';
 import { AnalyzeUserContextProps, AnalyzeUserContextProvider } from './charts/context';
-import { registerThemeDark } from '../../components/BasicCharts';
 import { Navigator } from './Navigator';
 import { Scrollspy } from '@makotot/ghostui';
-import { useMediaQuery, Container, Theme } from '@mui/material';
+import { Container, Theme, useMediaQuery } from '@mui/material';
 import { Redirect } from '@docusaurus/router';
 import { useRouteMatch } from 'react-router';
 import { useUser } from '../../api';
 import { notNullish } from '@site/src/utils/value';
-
-registerThemeDark();
 
 const sections = [
   'overview',
@@ -36,7 +33,7 @@ const Page = () => {
   const sideWidth = isSmall ? undefined : '160px';
 
   if (notNullish(error)) {
-    return <Redirect to='/404' />;
+    return <Redirect to="/404" />;
   }
 
   return (

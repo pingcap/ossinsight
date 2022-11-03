@@ -1,4 +1,4 @@
-import { EChartsOption } from 'echarts';
+import type { EChartsOption } from 'echarts';
 
 export function axisTooltip (type: 'line' | 'shadow' | 'cross' | 'none', option: Exclude<EChartsOption['tooltip'], any[]> = {}): EChartsOption['tooltip'] {
   return {

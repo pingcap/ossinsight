@@ -1,6 +1,5 @@
-import { RankChart, Title, Toolbox } from '@djagger/echartsx';
-import { use } from 'echarts/core';
-import { CanvasRenderer } from 'echarts/renderers';
+import { RankChart } from '@site/src/components/ECharts';
+import { Title, Toolbox } from '@djagger/echartsx';
 import React, { useContext } from 'react';
 import { withInViewContainer } from '../../../components/InViewContainer';
 import Watermark from '../components/Watermark';
@@ -12,8 +11,6 @@ import { H2, P2 } from './typograpy';
 import { countNames } from './utils';
 
 import { Box, Skeleton } from '@mui/material';
-
-use(CanvasRenderer);
 
 export default withInViewContainer(function HistoryRankSection () {
   const { collection } = useContext(CollectionsContext);

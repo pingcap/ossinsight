@@ -1,5 +1,6 @@
 import React from 'react';
-import { Dataset, EChartsx, LineSeries, Once, Tooltip } from '@djagger/echartsx';
+import { EChartsx } from '@site/src/components/ECharts';
+import { Dataset, LineSeries, Once, Tooltip } from '@djagger/echartsx';
 import { useAnalyzeChartContext } from '../context';
 import { useReversed } from './hooks';
 import { AxisBase, formatDate } from './base';

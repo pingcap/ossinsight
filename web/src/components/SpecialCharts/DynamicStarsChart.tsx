@@ -1,17 +1,7 @@
 import React, { useMemo } from 'react';
-import * as echarts from 'echarts/core';
-import { GridComponent, TitleComponent, TooltipComponent } from 'echarts/components';
-import { LinesChart as ELineChart } from 'echarts/charts';
-import { CanvasRenderer } from 'echarts/renderers';
-import { LabelLayout } from 'echarts/features';
 import { DatasetOption } from 'echarts/types/dist/shared';
-import { EChartsOption, SeriesOption } from 'echarts';
+import type { EChartsOption, SeriesOption } from 'echarts';
 import ECharts from '../ECharts';
-
-// Register the required components
-echarts.use(
-  [TitleComponent, TooltipComponent, GridComponent, ELineChart, LabelLayout, CanvasRenderer],
-);
 
 type RawData = {
   event_year: number;

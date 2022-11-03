@@ -13,7 +13,8 @@ import {
   FormControl,
 } from '@mui/material';
 import TimeDistribution from '../charts/time-distribution';
-import { Axis, BarSeries, Dataset, EChartsx, Once } from '@djagger/echartsx';
+import { EChartsx } from '@site/src/components/ECharts';
+import { Axis, BarSeries, Dataset, Once } from '@djagger/echartsx';
 import { Common } from '../charts/Common';
 import { chartColors } from '../colors';
 import ChartWrapper from '../charts/ChartWrapper';

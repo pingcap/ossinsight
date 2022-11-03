@@ -1,4 +1,4 @@
-import { EChartsOption } from 'echarts';
+import type { EChartsOption } from 'echarts';
 
 export function worldMapGeo (): EChartsOption['geo'] {
   return {

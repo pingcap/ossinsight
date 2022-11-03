@@ -1,5 +1,6 @@
 import React from 'react';
-import { BarSeries, Dataset, EChartsx, Once, Tooltip } from '@djagger/echartsx';
+import { EChartsx } from '@site/src/components/ECharts';
+import { BarSeries, Dataset, Once, Tooltip } from '@djagger/echartsx';
 import { useAnalyzeChartContext } from '../context';
 import { useDiff, usePartData, useReversed } from './hooks';
 import { Diff, Title } from './ui';

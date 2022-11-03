@@ -4,7 +4,12 @@ module.exports = {
     [
       'babel-plugin-direct-import',
       {
-        modules: ['@mui/system', '@mui/material', '@mui/icons-material'],
+        modules: [
+          '@mui/system',
+          '@mui/material',
+          '@mui/icons-material',
+          '@djagger/echartsx',
+        ],
       },
     ],
   ]

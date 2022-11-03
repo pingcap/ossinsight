@@ -1,7 +1,6 @@
-import { Axis, BarSeries, Dataset, EChartsx, Grid, Once } from '@djagger/echartsx';
+import { EChartsx } from '@site/src/components/ECharts';
+import { Axis, BarSeries, Dataset, Grid, Once } from '@djagger/echartsx';
 import { useLocation } from '@docusaurus/router';
-import { use } from 'echarts/core';
-import { CanvasRenderer } from 'echarts/renderers';
 import React from 'react';
 import AnimatedNumber from 'react-awesome-animated-number';
 import useVisibility from '../../hooks/visibility';
@@ -9,8 +8,6 @@ import { useTotalEvents } from '../RemoteCharts/hook';
 import { useRealtimeEvents } from './hooks';
 
 import { Box, Stack, styled, Tooltip, useMediaQuery } from '@mui/material';
-
-use(CanvasRenderer);
 
 const Chart = ({ visible }: { visible: boolean }) => {
   const data = useRealtimeEvents(visible);

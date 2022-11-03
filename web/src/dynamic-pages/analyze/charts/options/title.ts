@@ -1,4 +1,4 @@
-import { EChartsOption } from 'echarts';
+import type { EChartsOption } from 'echarts';
 import { TitleOption } from 'echarts/types/dist/shared';
 import { dangerousGetCtx } from './_danger';
 import { template } from './utils';

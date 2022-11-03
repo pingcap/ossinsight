@@ -1,11 +1,8 @@
 import React from 'react';
-import { registerThemeDark } from '../../components/BasicCharts';
 import type { Collection } from '@ossinsight/api';
 import CollectionsPageLayout from './layout';
 import MonthRankSection from './sections/month-rank';
 import HistoryRankSection from './sections/history-rank';
-
-registerThemeDark();
 
 const getTitle = (collection?: Collection) => collection?.name ? `${collection.name} - Ranking` : 'Loading - Ranking';
 const description = 'Last 28 days / Monthly ranking of repos in this collection by stars, pull requests, issues. Historical Ranking by Popularity.';

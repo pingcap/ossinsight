@@ -1,7 +1,8 @@
 import React, { ForwardedRef, forwardRef, useContext, useRef } from 'react';
 import Section, { SectionHeading } from '../../../components/Section';
 import { usePersonalData } from '../hooks/usePersonal';
-import { Axis, BarSeries, Dataset, EChartsx, Once } from '@djagger/echartsx';
+import { EChartsx } from '@site/src/components/ECharts';
+import { Axis, BarSeries, Dataset, Once } from '@djagger/echartsx';
 import InViewContext from '../../../components/InViewContext';
 import { useAnalyzeUserContext } from '../charts/context';
 import { Common } from '../charts/Common';

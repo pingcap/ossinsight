@@ -9,7 +9,7 @@ import ZScoreChart from '../SpecialCharts/ZScoreChart';
 import DynamicStarsChart from '../SpecialCharts/DynamicStarsChart';
 import DynamicLineChart from '../SpecialCharts/DynamicLineChart';
 import { EChartsContext } from '../ECharts';
-import EChartsReact from 'echarts-for-react';
+import type EChartsReact from 'echarts-for-react';
 import { useDebugDialog } from '../DebugDialog';
 import { isNullish, notNullish } from '@site/src/utils/value';
 import { getErrorMessage } from '@site/src/utils/error';

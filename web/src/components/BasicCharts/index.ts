@@ -6,4 +6,4 @@ export type { HeatMapChartProps } from './HeatMap';
 export { default as DataGrid } from './DataGrid';
 export type { DataGridColumn } from './DataGrid';
 export { default as ChartWithSql, renderCodes } from './withSql';
-export { registerThemeVintage, registerThemeDark } from './theme';
+export { registerThemeDark } from './theme';
