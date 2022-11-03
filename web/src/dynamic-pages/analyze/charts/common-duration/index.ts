@@ -27,12 +27,12 @@ export type PrDurationData = {
 
 const fmtHours = (hours: number) => prettyMs(hours * 60 * 60 * 1000, { unitCount: 1 });
 
-function getMax (data: AsyncData<RemoteData<unknown, PrDurationData>>): number | undefined {
-  return data.data?.data.reduce((prev, current) => Math.max(prev, current.p100), 0);
+function getMax (data: AsyncData<RemoteData<unknown, PrDurationData>>): number {
+  return data.data?.data.reduce((prev, current) => Math.max(prev, current.p100), 0) ?? 0;
 }
 
-function getMin (data: AsyncData<RemoteData<unknown, PrDurationData>>): number | undefined {
-  return data.data?.data.reduce((prev, current) => Math.min(prev, current.p0 > 0 ? current.p0 : prev), Number.MAX_SAFE_INTEGER);
+function getMin (data: AsyncData<RemoteData<unknown, PrDurationData>>): number {
+  return data.data?.data.reduce((prev, current) => Math.min(prev, current.p0 > 0 ? current.p0 : prev), Number.MAX_SAFE_INTEGER) ?? Number.MAX_SAFE_INTEGER;
 }
 
 export const DurationChart = withChart<PrDurationData>(({ title: propsTitle, data, compareData }) => {
@@ -40,7 +40,7 @@ export const DurationChart = withChart<PrDurationData>(({ title: propsTitle, dat
     if (all.length <= 1) {
       return getMax(all[0]);
     } else {
-      return Math.max(...all.map(val => getMax(val) ?? 0));
+      return Math.max(...all.map(val => getMax(val)));
     }
   });
 
@@ -48,7 +48,7 @@ export const DurationChart = withChart<PrDurationData>(({ title: propsTitle, dat
     if (all.length <= 1) {
       return getMin(all[0]);
     } else {
-      return Math.min(...all.map(val => getMin(val) ?? 0));
+      return Math.min(...all.map(val => getMin(val)));
     }
   });
 
