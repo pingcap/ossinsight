@@ -1,6 +1,4 @@
 import { SortingBarChart, Title } from '@djagger/echartsx';
-import Box from '@mui/material/Box';
-import Skeleton from '@mui/material/Skeleton';
 import { use } from 'echarts/core';
 import { CanvasRenderer, SVGRenderer } from 'echarts/renderers';
 import React, { useContext } from 'react';
@@ -12,6 +10,8 @@ import { useDimensionTabs } from '../hooks/useTabs';
 import { withRemote } from '../hooks/withRemote';
 import { H2, P2 } from './typograpy';
 import { formatTime } from './utils';
+
+import { Box, Skeleton } from '@mui/material';
 
 use(CanvasRenderer);
 use(SVGRenderer);

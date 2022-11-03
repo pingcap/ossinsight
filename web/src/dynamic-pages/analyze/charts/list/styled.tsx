@@ -1,5 +1,4 @@
-import { styled } from '@mui/material/styles';
-import Box from '@mui/material/Box';
+import { styled, Box } from '@mui/material';
 
 export const HeaderItem = styled(Box)(({ theme }) => ({
   backgroundColor: '#2c2c2c',

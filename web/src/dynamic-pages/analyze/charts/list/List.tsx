@@ -1,12 +1,10 @@
-import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
-import Stack from '@mui/material/Stack';
-import Typography from '@mui/material/Typography';
 import React, { useMemo } from 'react';
 import { useAnalyzeChartContext, useAnalyzeContext } from '../context';
 import { BodyText, HeadText } from '../summary/styled';
 import { DataItem, HeaderItem } from './styled';
 import { notFalsy, notNullish } from '@site/src/utils/value';
+
+import { Box, Grid, Stack, Typography } from '@mui/material';
 
 interface ListProps {
   n: number;

@@ -1,15 +1,18 @@
 import React from 'react';
 import { TidbTableInfo } from '@ossinsight/api';
-import Table from '@mui/material/Table';
-import TableRow from '@mui/material/TableRow';
-import TableCell from '@mui/material/TableCell';
-import TableBody from '@mui/material/TableBody';
-import Accordion from '@mui/material/Accordion';
-import AccordionDetails from '@mui/material/AccordionDetails';
-import AccordionSummary from '@mui/material/AccordionSummary';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import format from 'human-format';
 import { notFalsy, coalesceFalsy } from '@site/src/utils/value';
+
+import {
+  Table,
+  TableRow,
+  TableCell,
+  TableBody,
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+} from '@mui/material';
 
 const entries: Array<{ key: keyof TidbTableInfo, humanFormat?: any }> = [
   { key: 'tableSchema' },

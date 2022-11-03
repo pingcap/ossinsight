@@ -76,6 +76,7 @@
     "@typescript-eslint/eslint-plugin": "^5.42.0",
     "ahooks": "^3.7.1",
     "animate.css": "^4.1.1",
+    "babel-plugin-direct-import": "^1.0.0",
     "chart.js": "^3.9.1",
     "chartjs-plugin-datalabels": "^2.1.0",
     "country-code-emoji": "^2.3.0",

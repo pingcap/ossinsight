@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
-import Box from '@mui/material/Box';
 import { H4, P1 } from './typograph';
+import { Box } from '@mui/material';
 
 export interface KeynoteProps {
   icon: ReactNode;

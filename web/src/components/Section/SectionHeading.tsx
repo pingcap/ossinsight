@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import Typography from '@mui/material/Typography';
+import { Typography } from '@mui/material';
 
 export interface SectionHeadingProps {
   title: ReactNode;

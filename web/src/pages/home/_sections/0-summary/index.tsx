@@ -1,10 +1,10 @@
-import Divider from '@mui/material/Divider';
-import Stack from '@mui/material/Stack';
 import React from 'react';
 import Section from '../../_components/Section';
 import { stackDirection } from '../../_components/StackItem';
 import Left from './left';
 import Right from './right';
+
+import { Divider, Stack } from '@mui/material';
 
 export function SummarySection () {
   return (

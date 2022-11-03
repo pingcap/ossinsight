@@ -3,10 +3,10 @@ import React, { useMemo, useRef } from 'react';
 import { useHistory } from '@docusaurus/router';
 import { useSize } from 'ahooks';
 import BrowserOnly from '@docusaurus/BrowserOnly';
-import { styled } from '@mui/material/styles';
 import D3WordCloud from 'react-d3-cloud';
 import styles from './style.module.css';
 import { notNullish } from '@site/src/utils/value';
+import { styled } from '@mui/material';
 
 export default function WordCloud () {
   const collections = useCollections();

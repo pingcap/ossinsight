@@ -1,10 +1,6 @@
 import { Close } from '@mui/icons-material';
 import ConstructionIcon from '@mui/icons-material/Construction';
-import { useEventCallback } from '@mui/material';
-import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
-import Paper from '@mui/material/Paper';
-import Typography from '@mui/material/Typography';
+import { useEventCallback, Button, IconButton, Paper, Typography } from '@mui/material';
 import { SxProps } from '@mui/system';
 import React, { MouseEventHandler, useEffect, useMemo, useState } from 'react';
 

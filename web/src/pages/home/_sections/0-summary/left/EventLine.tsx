@@ -1,8 +1,7 @@
 import React from 'react';
 import { Headline } from '../../../_components/typography';
 import TotalNumber from './TotalNumber';
-import { useTheme } from '@mui/material/styles';
-import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme, useMediaQuery } from '@mui/material';
 
 const EventLine = () => {
   const theme = useTheme();

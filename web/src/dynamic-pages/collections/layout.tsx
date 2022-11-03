@@ -3,8 +3,6 @@ import { useLocation } from '@docusaurus/router';
 import { useRouteMatch } from 'react-router';
 import { translate } from '@docusaurus/Translate';
 import { Add } from '@mui/icons-material';
-import Stack from '@mui/material/Stack';
-import Typography from '@mui/material/Typography';
 import DocSidebar from '@theme/DocSidebar';
 import IconArrow from '@theme/Icon/Arrow';
 import clsx from 'clsx';
@@ -18,6 +16,8 @@ import Sections from './sections';
 import { H1 } from './sections/typograpy';
 import styles from './styles.module.css';
 import { isFalsy, notFalsy } from '@site/src/utils/value';
+
+import { Stack, Typography } from '@mui/material';
 
 interface CollectionsPageParams {
   slug: string;

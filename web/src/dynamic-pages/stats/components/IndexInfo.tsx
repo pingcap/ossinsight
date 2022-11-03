@@ -1,11 +1,6 @@
 import React from 'react';
 import { TidbIndexInfo } from '@ossinsight/api';
-import Table from '@mui/material/Table';
-import TableHead from '@mui/material/TableHead';
-import TableCell from '@mui/material/TableCell';
-import TableBody from '@mui/material/TableBody';
-import TableRow from '@mui/material/TableRow';
-import Chip from '@mui/material/Chip';
+import { Table, TableHead, TableCell, TableBody, TableRow, Chip } from '@mui/material';
 
 export interface IndexInfoProps {
   infos: TidbIndexInfo[];

@@ -1,8 +1,8 @@
-import Box, { BoxProps } from '@mui/material/Box';
-import Stack from '@mui/material/Stack/Stack';
+import { BoxProps } from '@mui/material/Box';
 import React from 'react';
 import { combineSx } from '../../utils/mui';
 import { FirstRepoSelector, Repo, SecondRepoSelector } from './RepoSelector';
+import { Box, Stack } from '@mui/material';
 
 interface NewCompareHeaderProps extends BoxProps {
   repo1: Repo | null;

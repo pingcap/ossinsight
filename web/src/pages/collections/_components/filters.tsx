@@ -1,12 +1,14 @@
 import React, { ChangeEvent, useState } from 'react';
-import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
-import ToggleButton from '@mui/material/ToggleButton';
-import Divider from '@mui/material/Divider';
-import { styled } from '@mui/material/styles';
 import { ArrowDownIcon, SearchIcon } from '@primer/octicons-react';
-import InputAdornment from '@mui/material/InputAdornment';
-import { useEventCallback } from '@mui/material';
-import TextField from '@mui/material/TextField';
+import {
+  useEventCallback,
+  ToggleButtonGroup,
+  ToggleButton,
+  Divider,
+  styled,
+  InputAdornment,
+  TextField,
+} from '@mui/material';
 
 export const enum SortType {
   alphabetical = 'alphabetical',

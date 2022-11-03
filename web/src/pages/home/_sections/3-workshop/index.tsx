@@ -2,9 +2,9 @@ import { Body, H2 } from '../../_components/typography';
 import Section from '../../_components/Section';
 import React from 'react';
 import Workshop from './Workshop';
-import Stack from '@mui/material/Stack';
-import Box from '@mui/material/Box';
 import Image from '../../../../components/Image';
+
+import { Stack, Box } from '@mui/material';
 
 export function WorkshopSection () {
   return (

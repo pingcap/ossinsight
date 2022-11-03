@@ -2,33 +2,36 @@ import * as React from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
 import CodeBlock from '@theme/CodeBlock';
 import { format } from 'sql-formatter';
-import Stack from '@mui/material/Stack';
-import Box from '@mui/material/Box';
 import LoadingButton from '@mui/lab/LoadingButton';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-import Alert from '@mui/material/Alert';
-import AlertTitle from '@mui/material/AlertTitle';
-import Drawer from '@mui/material/Drawer';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemText from '@mui/material/ListItemText';
-import ListSubheader from '@mui/material/ListSubheader';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
 import TerminalIcon from '@mui/icons-material/Terminal';
 
 import { useSQLPlayground } from '../../../components/RemoteCharts/hook';
 import { Repo } from '../../../components/CompareHeader/RepoSelector';
 import { isFiniteNumber, isNullish, notFalsy, notNullish } from '@site/src/utils/value';
+
+import {
+  Stack,
+  Box,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Alert,
+  AlertTitle,
+  Drawer,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+  ListSubheader,
+  Typography,
+  Button,
+  IconButton,
+} from '@mui/material';
 
 const renderTable = (data: Array<{ [x: string]: string | number }>) => {
   return (
@@ -172,129 +175,128 @@ export const SQLPlaygroundDrawer = (props: { data?: Repo }) => {
     setOpen(true);
   };
 
-  return (
-    <>
-      <IconButton
-        aria-label="Ppen SQL Playground"
-        onClick={handleClickTerminalBtn}
+  return <>
+    <IconButton
+      aria-label="Ppen SQL Playground"
+      onClick={handleClickTerminalBtn}
+      sx={{
+        display: {
+          xs: 'none',
+          // Remove next line to show terminal button on desktop
+          md: 'inline-flex',
+        },
+      }}
+    >
+      <TerminalIcon />
+    </IconButton>
+    <Drawer
+      anchor="bottom"
+      open={open}
+      onClose={toggleDrawer(false)}
+      ModalProps={{
+        keepMounted: true,
+      }}
+    >
+      <Box
+        id="sql-playground-container"
         sx={{
-          display: {
-            xs: 'none',
-            // Remove next line to show terminal button on desktop
-            md: 'inline-flex',
-          },
+          height: '80vh',
+          overflow: 'hidden',
+          width: '100%',
+          padding: '1rem',
+          borderTop: '0.5px solid grey',
         }}
       >
-        <TerminalIcon />
-      </IconButton>
-      <Drawer
-        anchor="bottom"
-        open={open}
-        onClose={toggleDrawer(false)}
-        ModalProps={{
-          keepMounted: true,
-        }}
-      >
-        <Box
-          id="sql-playground-container"
+        <Stack
+          direction="row"
+          spacing={2}
           sx={{
-            height: '80vh',
-            overflow: 'hidden',
-            width: '100%',
-            padding: '1rem',
-            borderTop: '0.5px solid grey',
+            padding: '0 1rem 1rem 1rem',
+            alignItems: 'center',
           }}
         >
-          <Stack
-            direction="row"
-            spacing={2}
+          <Typography variant="h2" component="div" sx={{ flexGrow: 1, color: 'orange' }}>
+            Playground: Based on Row-Oriented Storage Engine
+          </Typography>
+          <Box
             sx={{
-              padding: '0 1rem 1rem 1rem',
+              display: 'flex',
+              flexDirection: 'row',
               alignItems: 'center',
+              gap: '1rem',
+              marginLeft: 'auto',
             }}
           >
-            <Typography variant="h2" component="div" sx={{ flexGrow: 1, color: 'orange' }}>
-              Playground: Based on Row-Oriented Storage Engine
-            </Typography>
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-                gap: '1rem',
-                marginLeft: 'auto',
-              }}
+            <Button
+              variant="contained"
+              size="small"
+              disabled={!inputValue || isNullish(targetData?.id)}
+              onClick={handleFormatSQLClick}
             >
-              <Button
-                variant="contained"
-                size="small"
-                disabled={!inputValue || isNullish(targetData?.id)}
-                onClick={handleFormatSQLClick}
-              >
-                Format
-              </Button>
-              <LoadingButton
-                variant="contained"
-                size="small"
-                disabled={!inputValue || isNullish(targetData?.id)}
-                onClick={handleSubmit}
-                endIcon={<PlayArrowIcon fontSize="inherit" />}
-                loading={loading}
-              >
-                Run
-              </LoadingButton>
-            </Box>
-          </Stack>
-          <Stack
-            direction="row"
-            spacing={2}
+              Format
+            </Button>
+            <LoadingButton
+              variant="contained"
+              size="small"
+              disabled={!inputValue || isNullish(targetData?.id)}
+              onClick={handleSubmit}
+              endIcon={<PlayArrowIcon fontSize="inherit" />}
+              loading={loading}
+            >
+              Run
+            </LoadingButton>
+          </Box>
+        </Stack>
+        <Stack
+          direction="row"
+          spacing={2}
+          sx={{
+            marginBottom: '1rem',
+            height: '100%',
+            maxHeight: 'calc(100% - 3.5rem)',
+          }}
+        >
+          <Box
+            id="playground-left"
             sx={{
-              marginBottom: '1rem',
               height: '100%',
-              maxHeight: 'calc(100% - 3.5rem)',
+              overflowY: 'auto',
+              width: '40%',
+              maxWidth: '40vw',
             }}
           >
-            <Box
-              id="playground-left"
-              sx={{
-                height: '100%',
-                overflowY: 'auto',
-                width: '40%',
-                maxWidth: '40vw',
-              }}
-            >
-              <PreDefinedSQLList
-                hadnleClick={handlePredefinedSQLChange}
-                replacements={[
-                  { match: 'repoId', value: `${targetData?.id ?? 'undefined'}` },
-                  { match: 'repoName', value: targetData?.name ?? 'undefined' },
-                ]}
-              />
-            </Box>
-            <Box
-              id="playground-right"
-              sx={{
-                height: '100%',
-                overflowY: 'auto',
-                width: '100%',
-                padding: '0 1rem',
-              }}
-            >
-              <SQLEditor
-                mode="sql"
-                theme="twilight"
-                onChange={onChange}
-                name="SQL_PLAYGROUND"
-                width="100%"
-                height={data?.data ? '250px' : '350px'}
-                showPrintMargin={false}
-                value={
-                  inputValue ||
-                  `
+            <PreDefinedSQLList
+              hadnleClick={handlePredefinedSQLChange}
+              replacements={[
+                { match: 'repoId', value: `${targetData?.id ?? 'undefined'}` },
+                { match: 'repoName', value: targetData?.name ?? 'undefined' },
+              ]}
+            />
+          </Box>
+          <Box
+            id="playground-right"
+            sx={{
+              height: '100%',
+              overflowY: 'auto',
+              width: '100%',
+              padding: '0 1rem',
+            }}
+          >
+            <SQLEditor
+              mode="sql"
+              theme="twilight"
+              onChange={onChange}
+              name="SQL_PLAYGROUND"
+              width="100%"
+              height={data?.data ? '250px' : '350px'}
+              showPrintMargin={false}
+              value={
+                inputValue ||
+                `
 /* ⚠️ 
 Playground uses LIMITED resource(cpu/mem), so SQL should add:
 
-  WHERE repo_id = ${targetData?.id ?? 'undefined'}
+WHERE repo_id = ${targetData?.id ?? 'undefined'}
 
 to use index as much as possible, or it will be terminated.
 
@@ -302,54 +304,53 @@ to use index as much as possible, or it will be terminated.
 Example:
 
 SELECT
-  *
+*
 FROM
-  github_events
+github_events
 WHERE
-  repo_id = {{repoId}}
+repo_id = {{repoId}}
 LIMIT
-  1;
+1;
 */
 `
-                }
-                fontSize={16}
-                setOptions={{
-                  enableLiveAutocompletion: true,
-                }}
-              />
+              }
+              fontSize={16}
+              setOptions={{
+                enableLiveAutocompletion: true,
+              }}
+            />
 
-              {notFalsy(error) && (
-                <Alert severity="error">
-                  <AlertTitle>Error</AlertTitle>
-                  {`${error}`}
-                </Alert>
-              )}
-              {isFiniteNumber(data?.spent) && notNullish(data) && (
-                <>
-                  <Typography variant="body2" sx={{ padding: '1rem' }}>
-                    {`${data.data.length} results in ${data.spent.toFixed(
-                      2,
-                    )}s.`}
-                  </Typography>
-                </>
-              )}
-              {data?.data && (
-                <Box>
-                  {notNullish((data?.sql?.match(/\bEXPLAIN\b/i)))
-                    ? (
-                    <CodeBlock>{dataListToRawOutput(data.data)}</CodeBlock>
-                      )
-                    : (
-                        renderTable(data.data)
-                      )}
-                </Box>
-              )}
-            </Box>
-          </Stack>
-        </Box>
-      </Drawer>
-    </>
-  );
+            {notFalsy(error) && (
+              <Alert severity="error">
+                <AlertTitle>Error</AlertTitle>
+                {`${error}`}
+              </Alert>
+            )}
+            {isFiniteNumber(data?.spent) && notNullish(data) && (
+              <>
+                <Typography variant="body2" sx={{ padding: '1rem' }}>
+                  {`${data.data.length} results in ${data.spent.toFixed(
+                    2,
+                  )}s.`}
+                </Typography>
+              </>
+            )}
+            {data?.data && (
+              <Box>
+                {notNullish((data?.sql?.match(/\bEXPLAIN\b/i)))
+                  ? (
+                  <CodeBlock>{dataListToRawOutput(data.data)}</CodeBlock>
+                    )
+                  : (
+                      renderTable(data.data)
+                    )}
+              </Box>
+            )}
+          </Box>
+        </Stack>
+      </Box>
+    </Drawer>
+  </>;
 };
 
 const PreDefinedSQLList = (props: {

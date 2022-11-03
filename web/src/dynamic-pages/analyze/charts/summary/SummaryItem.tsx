@@ -1,14 +1,12 @@
 import React from 'react';
-import Grid, { GridProps } from '@mui/material/Grid';
+import { GridProps } from '@mui/material/Grid';
 import { BodyText, DataGrid, HeaderGrid, HeadText } from './styled';
 import { useAnalyzeChartContext, useAnalyzeContext } from '../context';
-import Stack from '@mui/material/Stack';
-import Tooltip from '@mui/material/Tooltip';
 import { AsyncData, RemoteData } from '@site/src/components/RemoteCharts/hook';
-import Skeleton from '@mui/material/Skeleton';
-import CircularProgress from '@mui/material/CircularProgress';
 import type { RepoInfo } from '@ossinsight/api';
 import { isNullish, notNullish } from '@site/src/utils/value';
+
+import { Grid, Stack, Tooltip, Skeleton, CircularProgress } from '@mui/material';
 
 export interface SummaryItemProps<F extends string> extends Omit<GridProps, 'title'> {
   icon?: React.ReactNode;

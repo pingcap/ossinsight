@@ -1,9 +1,9 @@
 import React from 'react';
 import RepoSelector, { Repo } from './RepoSelector';
-import Grid from '@mui/material/Grid';
-import Box, { BoxProps } from '@mui/material/Box';
+import { BoxProps } from '@mui/material/Box';
 import { combineSx } from '../../utils/mui';
 import { useIsDarkTheme } from '@site/src/hooks/theme';
+import { Grid, Box } from '@mui/material';
 
 interface CompareHeaderProps extends BoxProps {
   repo1: Repo | null;

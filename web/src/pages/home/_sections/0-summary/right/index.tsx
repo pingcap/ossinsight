@@ -1,15 +1,11 @@
 import { ErrorOutlined } from '@mui/icons-material';
-import { styled } from '@mui/material/styles';
-import Tooltip from '@mui/material/Tooltip';
 import React from 'react';
 import InViewContainer from '@site/src/components/InViewContainer';
 import { Item } from '../../../_components/StackItem';
 import { fontSizes } from '../../../_components/typography';
 import Events from './Events';
 import EventsChart from './EventsChart';
-import Button from '@mui/material/Button';
-import Link from '@mui/material/Link';
-import Box from '@mui/material/Box';
+import { styled, Tooltip, Button, Link, Box } from '@mui/material';
 
 const Subtitle = styled('p')({
   fontSize: '14px',

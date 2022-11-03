@@ -1,8 +1,8 @@
 import React, { PropsWithChildren } from 'react';
-import Box from '@mui/material/Box';
-import Skeleton from '@mui/material/Skeleton';
 import CodeBlock from '@theme/CodeBlock';
 import Details from '@theme/Details';
+
+import { Box, Skeleton } from '@mui/material';
 
 export const renderCodes = (sql: string | undefined) => {
   let content;

@@ -1,14 +1,13 @@
 import React from 'react';
 import Analyze from '../Analyze';
 import { CommitIcon, GitPullRequestIcon, IssueOpenedIcon, StarIcon } from '@primer/octicons-react';
-import Grid from '@mui/material/Grid';
 import BarsCompare from './BarsCompare';
 import { Border } from './ui';
 import LinesCompare from './LinesCompare';
-import Box from '@mui/material/Box';
 import TopContributors from './TopContributors';
-import Typography from '@mui/material/Typography';
 import Map from './Map';
+
+import { Grid, Box, Typography } from '@mui/material';
 
 export function MonthlyDetailsCard () {
   return (

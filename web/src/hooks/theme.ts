@@ -1,6 +1,6 @@
 import { useColorMode } from '@docusaurus/theme-common';
-import { Theme, useTheme } from '@mui/material/styles';
-import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
+import { Theme, useMediaQuery } from '@mui/material';
 
 export function useIsDarkTheme () {
   const { colorMode } = useColorMode();

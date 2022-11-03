@@ -8,11 +8,15 @@ import { useDimension } from '../hooks/useDimension';
 import { ScatterSeriesOption } from 'echarts/charts';
 import { primary } from '../colors';
 import { TooltipFormatterCallback } from 'echarts/types/dist/shared';
-import Box from '@mui/material/Box';
-import { InputLabel, Select, useEventCallback } from '@mui/material';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import { SelectChangeEvent } from '@mui/material/Select';
+import {
+  InputLabel,
+  Select,
+  useEventCallback,
+  Box,
+  MenuItem,
+  FormControl,
+  SelectChangeEvent,
+} from '@mui/material';
 import { SectionHeading } from '../../../components/Section';
 import ChartWrapper from '../charts/ChartWrapper';
 import { EChartsType } from 'echarts/core';

@@ -4,8 +4,8 @@ import { H1, P2 } from '../_components/typograph';
 import CodeIcon from '@mui/icons-material/Code';
 import { A, Footnote, HeadlineTag, LI, UL } from '../_components/styled';
 import { paramCase } from 'param-case';
-import Grid from '@mui/material/Grid';
 import InfoIcon from '@mui/icons-material/InfoOutlined';
+import { Grid } from '@mui/material';
 
 export default function () {
   return (

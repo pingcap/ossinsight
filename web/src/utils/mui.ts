@@ -1,6 +1,6 @@
 import { SxProps } from '@mui/system';
-import { Theme } from '@mui/material/styles';
 import { SystemStyleObject } from '@mui/system/styleFunctionSx/styleFunctionSx';
+import { Theme } from '@mui/material';
 
 export function combineSx<T extends Theme = Theme> (...list: Array<SxProps<T> | undefined>): SxProps<T> {
   const res: Array<SystemStyleObject<Theme> | ((theme: Theme) => SystemStyleObject<Theme>)> = [];

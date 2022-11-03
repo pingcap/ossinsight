@@ -1,6 +1,6 @@
 import React, { forwardRef, lazy, Suspense } from 'react';
 import type { ChartElement } from '@site/src/components/Chart/Chart';
-import { styled } from '@mui/material/styles';
+import { styled } from '@mui/material';
 
 export type { ChartProps, ChartElement } from './Chart';
 

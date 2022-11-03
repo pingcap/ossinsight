@@ -1,12 +1,11 @@
 import React from 'react';
 import { BarSeries, Dataset, EChartsx, Once, Tooltip } from '@djagger/echartsx';
 import { useAnalyzeChartContext } from '../context';
-import Stack from '@mui/material/Stack';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
 import { useReversed } from './hooks';
 import { AxisBase, formatDate } from './base';
 import { Title } from './ui';
+
+import { Stack, Box, Typography } from '@mui/material';
 
 interface BarsProps {
   color: string;

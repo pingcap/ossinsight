@@ -1,14 +1,4 @@
 import Link from '@docusaurus/Link';
-import Avatar from '@mui/material/Avatar';
-import Skeleton from '@mui/material/Skeleton';
-import Stack from '@mui/material/Stack';
-import { styled } from '@mui/material/styles';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import MuiTableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
 import format from 'human-format';
 import React, { useContext } from 'react';
 import { withInViewContainer } from '../../../components/InViewContainer';
@@ -20,6 +10,19 @@ import { H2, H3, P2 } from './typograpy';
 import { formatTime } from './utils';
 import Diff from '../../../components/Diff';
 import { CollectionDateTypeEnum, collectionDisplayType } from '../dimensions';
+
+import {
+  Avatar,
+  Skeleton,
+  Stack,
+  styled,
+  Table,
+  TableBody,
+  TableCell as MuiTableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+} from '@mui/material';
 
 const TableCell = styled(MuiTableCell)(() => ({
   borderBottom: '1px solid #222',

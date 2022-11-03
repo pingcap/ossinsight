@@ -8,21 +8,21 @@ import {
   ListItemText,
   PopperProps,
   useEventCallback,
+  Autocomplete,
+  Avatar,
+  Box,
+  CircularProgress,
+  InputAdornment,
+  List,
+  Popper,
+  Skeleton,
+  Stack,
+  styled,
+  Tab,
+  Tabs,
+  TextField,
+  Typography,
 } from '@mui/material';
-import Autocomplete from '@mui/material/Autocomplete';
-import Avatar from '@mui/material/Avatar';
-import Box from '@mui/material/Box';
-import CircularProgress from '@mui/material/CircularProgress';
-import InputAdornment from '@mui/material/InputAdornment';
-import List from '@mui/material/List';
-import Popper from '@mui/material/Popper';
-import Skeleton from '@mui/material/Skeleton';
-import Stack from '@mui/material/Stack';
-import { styled } from '@mui/material/styles';
-import Tab from '@mui/material/Tab';
-import Tabs from '@mui/material/Tabs';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
 import { SearchRepoInfo, UserInfo } from '@ossinsight/api';
 import React, {
   FC, ForwardedRef,

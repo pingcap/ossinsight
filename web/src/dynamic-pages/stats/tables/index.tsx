@@ -5,16 +5,13 @@ import { useRemoteData } from '../../../components/RemoteCharts/hook';
 import { TidbIndexInfo, TidbIndexStats, TidbTableDDL, TidbTableInfo } from '@ossinsight/api';
 import IndexStats from '../components/IndexStats';
 import CodeBlock from '@theme/CodeBlock';
-import Container from '@mui/material/Container';
 import IndexInfo from '../components/IndexInfo';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
 import TableInfo from '../components/TableInfo';
 import NotFound from '../../../theme/NotFound';
-import Box from '@mui/material/Box';
 import { useInterval } from '../components/useInterval';
-import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Link from '@docusaurus/Link';
+
+import { Container, Tabs, Tab, Box, Breadcrumbs } from '@mui/material';
 
 interface TableStatsPageParams {
   slug: string;

@@ -1,24 +1,27 @@
 import type { ProcessedTopListData } from './hook';
 import { useLanguages, usePagination, usePeriods, useTopList } from './hook';
-import Table from '@mui/material/Table';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import TableCell from '@mui/material/TableCell';
-import TableBody from '@mui/material/TableBody';
-import Skeleton from '@mui/material/Skeleton';
 import React from 'react';
 import Link from '@docusaurus/Link';
-import Avatar from '@mui/material/Avatar';
-import Stack from '@mui/material/Stack';
-import { Chip, TablePagination } from '@mui/material';
+import {
+  Chip,
+  TablePagination,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  Skeleton,
+  Avatar,
+  Stack,
+  Box,
+  TableContainer,
+  Typography,
+  styled,
+} from '@mui/material';
 import { useHistory } from '@docusaurus/router';
 import type { History } from 'history';
 import { paramCase } from 'param-case';
-import Box from '@mui/material/Box';
 import { useDebugDialog } from '@site/src/components/DebugDialog';
-import TableContainer from '@mui/material/TableContainer';
-import Typography from '@mui/material/Typography';
-import { styled } from '@mui/material/styles';
 import LANGUAGE_COLORS from './language-colors.json';
 import { LinkExternalIcon } from '@primer/octicons-react';
 import { notNullish } from '@site/src/utils/value';

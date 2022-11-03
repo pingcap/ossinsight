@@ -1,8 +1,8 @@
 import React, { useMemo } from 'react';
 import { RecentHotCollectionData, useRecentHotCollections } from '../../home/_sections/1-collections/hook';
 import HotCollection, { LoadingHotCollection } from '../../../components/HotCollection';
-import Grid from '@mui/material/Grid';
 import { SortType } from './filters';
+import { Grid } from '@mui/material';
 
 interface CollectionsProps {
   sorter: SortType;

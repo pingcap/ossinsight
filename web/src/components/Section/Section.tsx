@@ -1,9 +1,9 @@
-import Box from '@mui/material/Box';
-import { styled } from '@mui/material/styles';
 import React, { ForwardedRef, forwardRef, PropsWithChildren } from 'react';
 import { useInView } from 'react-intersection-observer';
 import InViewContext from '../../components/InViewContext';
 import useVisibility from '../../hooks/visibility';
+
+import { Box, styled } from '@mui/material';
 
 function Section ({
   children,

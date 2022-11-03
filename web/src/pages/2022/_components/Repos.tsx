@@ -1,8 +1,8 @@
-import Box from '@mui/material/Box';
 import React from 'react';
-import { styled } from '@mui/material/styles';
 import colors from './colors.module.css';
 import { A, LI, UL } from './styled';
+
+import { Box, styled } from '@mui/material';
 
 export interface ReposProps {
   color: string;

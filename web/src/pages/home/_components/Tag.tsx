@@ -1,8 +1,7 @@
 import React, { PropsWithChildren, useMemo } from 'react';
-import { alpha } from '@mui/material';
+import { alpha, ButtonBase } from '@mui/material';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import Link, { Props } from '@docusaurus/Link';
-import ButtonBase from '@mui/material/ButtonBase';
 import { responsiveSx } from './responsive';
 
 export interface TagProps extends Props {

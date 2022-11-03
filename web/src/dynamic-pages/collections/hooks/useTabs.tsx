@@ -1,9 +1,4 @@
-import { useEventCallback } from '@mui/material';
-import Tabs from '@mui/material/Tabs';
-import Button from '@mui/material/Button';
-import ButtonGroup from '@mui/material/ButtonGroup';
-import Stack from '@mui/material/Stack';
-import Box from '@mui/material/Box';
+import { useEventCallback, Tabs, Button, ButtonGroup, Stack, Box } from '@mui/material';
 import React, { useMemo, useState } from 'react';
 import useUrlSearchState from '../../../hooks/url-search-state';
 import IconTab from '../components/IconTab';

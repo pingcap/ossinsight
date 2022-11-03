@@ -3,8 +3,7 @@ import Translate, { translate } from '@docusaurus/Translate';
 import { PageMetadata } from '@docusaurus/theme-common';
 import Layout from '@theme/Layout';
 import { useHistory } from '@docusaurus/router';
-import Typography from '@mui/material/Typography';
-import CircularProgress from '@mui/material/CircularProgress';
+import { Typography, CircularProgress } from '@mui/material';
 
 export default function NotFound (): JSX.Element {
   const history = useHistory();

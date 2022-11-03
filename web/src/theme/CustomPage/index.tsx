@@ -1,8 +1,8 @@
-import Box from '@mui/material/Box';
 import Layout, { Props as LayoutProps } from '@theme/Layout';
 import React, { PropsWithChildren, useLayoutEffect } from 'react';
 import Footer from '../../components/Footer';
 import { notNullish } from '@site/src/utils/value';
+import { Box } from '@mui/material';
 
 declare module '@theme/Layout' {
   interface Props {

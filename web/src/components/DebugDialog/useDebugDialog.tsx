@@ -1,8 +1,7 @@
 import { RemoteData } from '../RemoteCharts/hook';
 import React, { useState } from 'react';
 import DebugDialog from './DebugDialog';
-import { useEventCallback } from '@mui/material';
-import Button from '@mui/material/Button';
+import { useEventCallback, Button } from '@mui/material';
 import CodeIcon from '@mui/icons-material/Code';
 import { isNullish, notNullish } from '@site/src/utils/value';
 

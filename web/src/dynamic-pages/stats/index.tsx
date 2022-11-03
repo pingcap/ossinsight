@@ -3,12 +3,9 @@ import CustomPage from '../../theme/CustomPage';
 import IndexStats from './components/IndexStats';
 import { TidbIndexStats } from '@ossinsight/api';
 import { useRemoteData } from '../../components/RemoteCharts/hook';
-import Container from '@mui/material/Container';
-import Typography from '@mui/material/Typography';
 import { useInterval } from './components/useInterval';
 import LiveSql from './components/LiveSql';
-import Tab from '@mui/material/Tab';
-import Tabs from '@mui/material/Tabs';
+import { Container, Typography, Tab, Tabs } from '@mui/material';
 
 type TabKey = 'live-sql' | 'index-usage';
 

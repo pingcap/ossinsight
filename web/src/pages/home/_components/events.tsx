@@ -1,4 +1,3 @@
-import { styled } from '@mui/material/styles';
 import {
   CodeReviewIcon,
   CommentIcon, GitMergeIcon,
@@ -20,6 +19,7 @@ import {
   useRealtimeRemoteData,
 } from '../../../components/RemoteCharts/hook';
 import { notNullish } from '@site/src/utils/value';
+import { styled } from '@mui/material';
 
 type Event = {
   id: number;

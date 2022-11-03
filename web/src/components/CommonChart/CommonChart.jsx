@@ -1,5 +1,4 @@
 import React, { useContext, useMemo } from 'react';
-import Divider from '@mui/material/Divider';
 import { useInView } from 'react-intersection-observer';
 import InViewContext from '../InViewContext';
 import GroupSelectContext from '../GroupSelect/GroupSelectContext';
@@ -7,6 +6,7 @@ import { groups } from '../GroupSelect/groups';
 import CommonChartContext from './context';
 import useVisibility from '../../hooks/visibility';
 import BrowserOnly from '@docusaurus/BrowserOnly';
+import { Divider } from '@mui/material';
 
 // eslint-disable-next-line react/prop-types
 function CommonChart ({ chart: rawChart, noSearch, comparing, shareInfo, ...rest }) {

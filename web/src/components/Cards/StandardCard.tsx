@@ -1,15 +1,13 @@
-import Grid, { GridProps } from '@mui/material/Grid';
-import Card, { CardProps } from '@mui/material/Card';
-import Typography from '@mui/material/Typography';
+import { GridProps } from '@mui/material/Grid';
+import { CardProps } from '@mui/material/Card';
 import AspectRatio from 'react-aspect-ratio';
 import React, { useCallback, useState } from 'react';
-import Button, { ButtonProps } from '@mui/material/Button';
-import Chip from '@mui/material/Chip';
-import Box from '@mui/material/Box';
-import ButtonBase from '@mui/material/ButtonBase';
+import { ButtonProps } from '@mui/material/Button';
 import Link from '@docusaurus/Link';
 import isInternalUrl from '@docusaurus/isInternalUrl';
 import { notNullish } from '@site/src/utils/value';
+
+import { Grid, Card, Typography, Button, Chip, Box, ButtonBase } from '@mui/material';
 
 export interface StandardCardProps extends Omit<GridProps<any, any>, 'item' | 'container'> {
   title: React.ReactNode;

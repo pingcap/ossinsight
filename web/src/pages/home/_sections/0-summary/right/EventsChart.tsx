@@ -1,10 +1,9 @@
 import { Axis, BarSeries, Dataset, EChartsx, Grid, Once } from '@djagger/echartsx';
-import Box from '@mui/material/Box';
-import { useTheme } from '@mui/material/styles';
-import useMediaQuery from '@mui/material/useMediaQuery';
 import React, { useLayoutEffect, useRef } from 'react';
 import { useRealtimeEvents } from '@site/src/components/RealtimeSummary/hooks';
 import { EChartsType } from 'echarts/core';
+
+import { Box, useTheme, useMediaQuery } from '@mui/material';
 
 export const EventsChart = ({ show }: { show: boolean }) => {
   const data = useRealtimeEvents(show);

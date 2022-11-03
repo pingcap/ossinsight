@@ -1,11 +1,11 @@
 import React, { createContext, ReactNode, RefObject, useEffect } from 'react';
-import Box from '@mui/material/Box';
 import { EChartsType } from 'echarts/core';
 import { useAnalyzeUserContext } from './context';
 import { useHistory } from '@docusaurus/router';
 import { RemoteData } from '../../../components/RemoteCharts/hook';
 import { useDebugDialog } from '../../../components/DebugDialog';
 import { nonEmptyArray, notNullish } from '@site/src/utils/value';
+import { Box } from '@mui/material';
 
 export interface ChartWrapperProps {
   title?: string;

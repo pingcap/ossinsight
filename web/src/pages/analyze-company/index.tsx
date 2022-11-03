@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 import CustomPage from '../../theme/CustomPage';
 import SearchCompany from './_components/SearchCompany';
 import Companies from './_components/Companies';
-import Container from '@mui/material/Container';
 import { CompanyInfo } from './_components/hooks';
-import Typography from '@mui/material/Typography';
+import { Container, Typography } from '@mui/material';
 
 const Page = () => {
   const [company, setCompany] = useState<CompanyInfo | null>(null);

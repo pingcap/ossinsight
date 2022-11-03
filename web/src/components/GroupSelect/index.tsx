@@ -1,10 +1,10 @@
 import React, { useCallback, useContext } from 'react';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
+import { SelectChangeEvent } from '@mui/material/Select';
 import GroupSelectContext from './GroupSelectContext';
-import Box from '@mui/material/Box';
 import { groups } from './groups';
 import { useIsDarkTheme } from '@site/src/hooks/theme';
+
+import { Select, MenuItem, Box } from '@mui/material';
 
 declare global {
   interface Window {

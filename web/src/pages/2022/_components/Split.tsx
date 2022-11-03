@@ -1,6 +1,6 @@
 import React, { ReactElement, useMemo } from 'react';
-import Grid, { GridProps } from '@mui/material/Grid';
-import { Breakpoint } from '@mui/material';
+import { GridProps } from '@mui/material/Grid';
+import { Breakpoint, Grid } from '@mui/material';
 
 interface SplitProps extends Omit<GridProps, 'item' | 'container' | Breakpoint> {
   children: ReactElement[];

@@ -1,10 +1,9 @@
-import Typography from '@mui/material/Typography';
 import { Cards, StandardCard } from '../Cards';
 import React from 'react';
 import Section from '../../pages/home/_components/Section';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import Link from '@docusaurus/Link';
+
+import { Typography, Box, Button } from '@mui/material';
 
 const icon = (src) => {
   return (

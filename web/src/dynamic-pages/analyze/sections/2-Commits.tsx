@@ -1,6 +1,3 @@
-import Grid from '@mui/material/Grid';
-import { useTheme } from '@mui/material/styles';
-import useMediaQuery from '@mui/material/useMediaQuery';
 import React, { ForwardedRef, forwardRef } from 'react';
 import Analyze from '../charts/Analyze';
 import { useAnalyzeContext } from '../charts/context';
@@ -10,8 +7,9 @@ import { PushesAndCommitsChart } from '../charts/push-and-commits';
 import Section from '../Section';
 import { H2, H3, P2 } from '../typography';
 import { useSelectParam } from '../../../components/params';
-import Stack from '@mui/material/Stack';
 import { notNullish } from '@site/src/utils/value';
+
+import { Grid, useTheme, useMediaQuery, Stack } from '@mui/material';
 
 const PERIOD_OPTIONS = [{
   key: 'last_1_year',

@@ -3,9 +3,7 @@ import Head from '@docusaurus/Head';
 import { useHistory, useLocation, Redirect } from '@docusaurus/router';
 import { useRouteMatch } from 'react-router';
 import { Scrollspy } from '@makotot/ghostui';
-import { useMediaQuery } from '@mui/material';
-import Container from '@mui/material/Container';
-import { Theme } from '@mui/material/styles';
+import { useMediaQuery, Container, Theme } from '@mui/material';
 import React, { useCallback, useRef } from 'react';
 import { AnalyzeContext } from './charts/context';
 import { useRepo } from '../../api';
@@ -13,7 +11,6 @@ import type { RepoInfo } from '@ossinsight/api';
 import NewCompareHeader from '../../components/CompareHeader/NewCompareHeader';
 import { Repo } from '../../components/CompareHeader/RepoSelector';
 import { AsyncData } from '../../components/RemoteCharts/hook';
-import TryItYourself from '../../components/Ads/TryItYourself';
 import useUrlSearchState, { stringParam } from '../../hooks/url-search-state';
 import CustomPage from '../../theme/CustomPage';
 import { Navigator } from './Navigator';
@@ -128,7 +125,6 @@ function AnalyzePage () {
                 </>
                   )
                 : undefined}
-              <TryItYourself campaign="compare" show fixed />
             </Container>
           </AnalyzeContext.Provider>
           {isSmall ? <Navigator comparing={!!comparingRepoName} value={sections[currentElementIndexInViewport]} type='bottom' /> : undefined}

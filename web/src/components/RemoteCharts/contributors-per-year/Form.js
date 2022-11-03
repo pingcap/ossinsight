@@ -1,11 +1,14 @@
 import React, { useMemo, useState } from 'react';
-import Stack from '@mui/material/Stack';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import TextField from '@mui/material/TextField';
-import InputAdornment from '@mui/material/InputAdornment';
+
+import {
+  Stack,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  TextField,
+  InputAdornment,
+} from '@mui/material';
 
 const types = [
   { title: 'Contributors (PRs opened)', value: 'all' },

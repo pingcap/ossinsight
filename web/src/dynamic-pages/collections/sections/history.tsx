@@ -1,6 +1,4 @@
 import { Legend, LineChart, Title, Toolbox } from '@djagger/echartsx';
-import Box from '@mui/material/Box';
-import Skeleton from '@mui/material/Skeleton';
 import { use } from 'echarts/core';
 import { CanvasRenderer } from 'echarts/renderers';
 import React, { useContext, useMemo } from 'react';
@@ -13,6 +11,8 @@ import { withRemote } from '../hooks/withRemote';
 import { H2, P2 } from './typograpy';
 import { formatTime } from './utils';
 import { isNullish } from '@site/src/utils/value';
+
+import { Box, Skeleton } from '@mui/material';
 
 use(CanvasRenderer);
 

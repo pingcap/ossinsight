@@ -1,5 +1,4 @@
-import { Typography } from '@mui/material';
-import { TypographyProps } from '@mui/material/Typography';
+import { Typography, TypographyProps } from '@mui/material';
 import React from 'react';
 
 export const H1 = ({ ...props }: TypographyProps) => {

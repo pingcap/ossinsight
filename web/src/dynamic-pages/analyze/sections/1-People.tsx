@@ -1,7 +1,3 @@
-import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
-import Tab from '@mui/material/Tab';
-import Tabs from '@mui/material/Tabs';
 import { GitMergeIcon, IssueOpenedIcon, PersonIcon, StarIcon } from '@primer/octicons-react';
 import React, {
   ForwardedRef,
@@ -22,6 +18,8 @@ import Section from '../Section';
 import styles from '../styles.module.css';
 import { H2, H3, H4, P2 } from '../typography';
 import { notNullish } from '@site/src/utils/value';
+
+import { Box, Grid, Tab, Tabs } from '@mui/material';
 
 export const PeopleSection = forwardRef(function (_, ref: ForwardedRef<HTMLElement>) {
   const { comparingRepoId: vs, comparingRepoName } = useAnalyzeContext();

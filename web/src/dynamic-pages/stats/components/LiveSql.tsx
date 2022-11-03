@@ -1,15 +1,10 @@
 import React, { MouseEventHandler, useCallback, useEffect, useRef, useState } from 'react';
 import { CoolList, CoolListInstance } from '../../../components/CoolList';
-import { styled } from '@mui/material/styles';
 import { useRemoteData } from '../../../components/RemoteCharts/hook';
 import { InternalQueryRecord } from '@ossinsight/api';
-import { useEventCallback } from '@mui/material';
-import Dialog from '@mui/material/Dialog';
-import DialogContent from '@mui/material/DialogContent';
-import Snackbar from '@mui/material/Snackbar';
+import { useEventCallback, styled, Dialog, DialogContent, Snackbar, Box } from '@mui/material';
 import CodeBlock from '@theme/CodeBlock';
 import { format as formatSql } from 'sql-formatter';
-import Box from '@mui/material/Box';
 import { useInterval } from './useInterval';
 import './theme.css';
 import { notNullish } from '@site/src/utils/value';

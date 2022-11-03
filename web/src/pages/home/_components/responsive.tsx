@@ -1,6 +1,6 @@
 import { AllSystemCSSProperties } from '@mui/system/styleFunctionSx/styleFunctionSx';
-import { Theme } from '@mui/material/styles';
 import { SystemStyleObject } from '@mui/system';
+import { Theme } from '@mui/material';
 
 export function responsive<K extends keyof AllSystemCSSProperties> (key: K, sm: AllSystemCSSProperties[K], md: AllSystemCSSProperties[K], all: AllSystemCSSProperties[K]): (theme: Theme) => SystemStyleObject<Theme> {
   return (theme: Theme) => ({

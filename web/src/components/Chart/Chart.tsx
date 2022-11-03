@@ -7,11 +7,13 @@ import ChartJs, {
 } from 'chart.js/auto';
 import { applyForwardedRef } from '@site/src/utils/ref';
 import { unstable_serialize } from 'swr';
-import { styled, Theme } from '@mui/material/styles';
+import { Theme } from '@mui/material/styles';
 import { SxProps } from '@mui/system/styleFunctionSx';
 import './defaults';
 import { useFonts } from './fonts';
 import { notNullish } from '@site/src/utils/value';
+
+import { styled } from '@mui/material';
 
 export type ChartProps<TType extends ChartType = ChartType, TData = DefaultDataPoint<TType>, TLabel = unknown> = {
   fallbackImage?: string;

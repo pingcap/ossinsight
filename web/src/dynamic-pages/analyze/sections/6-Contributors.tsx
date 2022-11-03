@@ -5,18 +5,20 @@ import {
   ListItemAvatar,
   Switch,
   useEventCallback,
+  Avatar,
+  Box,
+  List,
+  MenuItem,
+  Select,
+  ToggleButtonGroup,
+  ToggleButton,
+  SelectChangeEvent,
+  Stack,
+  styled,
+  Badge,
+  Tooltip,
+  CircularProgress,
 } from '@mui/material';
-import Avatar from '@mui/material/Avatar';
-import Box from '@mui/material/Box';
-import List from '@mui/material/List';
-import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
-import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
-import ToggleButton from '@mui/material/ToggleButton';
-import { SelectChangeEvent } from '@mui/material/Select/SelectInput';
-import Stack from '@mui/material/Stack';
-import { styled } from '@mui/material/styles';
-import Badge from '@mui/material/Badge';
 import React, { cloneElement, ForwardedRef, forwardRef, useMemo, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useAnalyzeContext } from '../charts/context';
@@ -25,9 +27,7 @@ import useVisibility from '../../../hooks/visibility';
 import Section from '../Section';
 import { H2, P2 } from '../typography';
 import { DateTime } from 'luxon';
-import Tooltip from '@mui/material/Tooltip';
 import { useDebugDialog } from '../../../components/DebugDialog';
-import CircularProgress from '@mui/material/CircularProgress';
 import { notNullish } from '@site/src/utils/value';
 
 type ChangedEvents = { last_month_events: number, last_2nd_month_events: number, changes: number };
