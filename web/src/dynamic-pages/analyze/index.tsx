@@ -91,7 +91,7 @@ function AnalyzePage () {
               repo1Placeholder="Select to analyze"
               repo2Placeholder="Add to compare"
               endAdornment={
-                notNullish(vs) &&
+                isNullish(vs) &&
                 (notNullish(main?.repo)) && (
                   <SQLPlaygroundDrawer key={name} data={main?.repo} />
                 )
