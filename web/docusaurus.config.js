@@ -3,26 +3,27 @@
 
 const lightCodeTheme = require('prism-react-renderer/themes/github');
 const darkCodeTheme = require('prism-react-renderer/themes/dracula');
-const path = require("path");
-const fs = require("fs");
+const path = require('path');
+const fs = require('fs');
 
-const HOST = process.env.APP_HOST || 'https://ossinsight.io'
-const API_BASE = process.env.APP_API_BASE || 'https://api.ossinsight.io'
-const DATABASE_URL = process.env.DATABASE_URL || ''
-const SENTRY_DSN = process.env.SENTRY_DSN || ''
+const HOST = process.env.APP_HOST || 'https://ossinsight.io';
+const API_BASE = process.env.APP_API_BASE || 'https://api.ossinsight.io';
+const DATABASE_URL = process.env.DATABASE_URL || '';
+const SENTRY_DSN = process.env.SENTRY_DSN || '';
 
 const getPresets = (fn) => {
   return fs.readFileSync(fn, { encoding: 'utf-8' })
     .split('\n')
     .map(line => line.trim())
-    .filter(s => s)
-}
+    .filter(s => s);
+};
 
 const getPrefetched = fn => {
   try {
-    return JSON.parse(fs.readFileSync(fn, {encoding: 'utf-8'}))
-  } catch (e) {}
-}
+    return JSON.parse(fs.readFileSync(fn, { encoding: 'utf-8' }));
+  } catch (e) {
+  }
+};
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -104,7 +105,7 @@ const config = {
             path: '/collections/:slug',
             exact: true,
             component: '@site/src/dynamic-pages/collections',
-            params: getPrefetched('.prefetch/collections.json')?.data.map(({name}) => ({
+            params: getPrefetched('.prefetch/collections.json')?.data.map(({ name }) => ({
               slug: require('param-case').paramCase(name)
             }))
           },
@@ -112,7 +113,7 @@ const config = {
             path: '/collections/:slug/trends',
             exact: true,
             component: '@site/src/dynamic-pages/collections/dynamic-trends',
-            params: getPrefetched('.prefetch/collections.json')?.data.map(({name}) => ({
+            params: getPrefetched('.prefetch/collections.json')?.data.map(({ name }) => ({
               slug: require('param-case').paramCase(name)
             }))
           },
@@ -144,11 +145,11 @@ const config = {
           ]
         },
         docs: {
-          id: "docs",
-          path: "docs",
-          routeBasePath: "/docs",
-          editUrl: "https://github.com/pingcap/ossinsight/tree/main",
-          sidebarPath: require.resolve("./sidebars.js"),
+          id: 'docs',
+          path: 'docs',
+          routeBasePath: '/docs',
+          editUrl: 'https://github.com/pingcap/ossinsight/tree/main',
+          sidebarPath: require.resolve('./sidebars.js'),
         },
         blog: {
           blogTitle: 'Blog',
@@ -181,8 +182,11 @@ const config = {
     ({
       image: 'img/screenshots/homepage.png',
       metadata: [
-        {name: 'twitter:card', content: 'summary_large_image'},
-        {name: 'keywords', content: 'tidb, mysql, github events, github archive, github metrics, oss, compare oss, oss analysis, pingcap, insight tool, data visualization, rank, trend'}
+        { name: 'twitter:card', content: 'summary_large_image' },
+        {
+          name: 'keywords',
+          content: 'tidb, mysql, github events, github archive, github metrics, oss, compare oss, oss analysis, pingcap, insight tool, data visualization, rank, trend'
+        }
       ],
       colorMode: {
         defaultMode: 'dark',
@@ -225,13 +229,13 @@ const config = {
             label: 'Live',
             position: 'left',
             items: [
-              {label: '2D Version', to: 'https://live.ossinsight.io'},
-              {label: '3D Version - GitHub City', to: 'https://live.ossinsight.io/3d'},
+              { label: '2D Version', to: 'https://live.ossinsight.io' },
+              { label: '3D Version - GitHub City', to: 'https://live.ossinsight.io/3d' },
             ],
           },
-          {to: '/blog', label: 'Blog', position: 'left'},
-          {to: '/docs/api', label: 'API', position: 'left'},
-          /*{
+          { to: '/blog', label: 'Blog', position: 'left' },
+          { to: '/docs/api', label: 'API', position: 'left' },
+          /* {
             type: 'dropdown',
             label: 'Workshop',
             position: 'left',
@@ -243,7 +247,7 @@ const config = {
               {label: '└─ Stack Overflow Insight - not ready', to: '/docs/workshop/stackoverflow-insight'},
               {label: '└─ Cryptocurrency Insight - not ready', to: '/docs/workshop/cryptocurrency-insight'},
             ]
-          },*/
+          }, */
           /*
           {
             type: 'dropdown',
@@ -259,12 +263,15 @@ const config = {
             label: 'More',
             position: 'left',
             items: [
-              {label: 'Workshop', to: '/docs/workshop'},
-              {label: 'About OSS Insight', to: '/docs/about'},
-              {label: 'About TiDB Cloud', to: 'https://en.pingcap.com/tidb-cloud?utm_source=ossinsight&utm_medium=referral'},
-              {label: 'How do we implement OSS Insight?', to: '/blog/why-we-choose-tidb-to-support-ossinsight'},
-              {label: 'Database Stats', to: '/stats'},
-              {label: 'Report an Issue', to: 'https://github.com/pingcap/ossinsight/issues'},
+              { label: 'Workshop', to: '/docs/workshop' },
+              { label: 'About OSS Insight', to: '/docs/about' },
+              {
+                label: 'About TiDB Cloud',
+                to: 'https://en.pingcap.com/tidb-cloud?utm_source=ossinsight&utm_medium=referral'
+              },
+              { label: 'How do we implement OSS Insight?', to: '/blog/why-we-choose-tidb-to-support-ossinsight' },
+              { label: 'Database Stats', to: '/stats' },
+              { label: 'Report an Issue', to: 'https://github.com/pingcap/ossinsight/issues' },
             ]
           },
           {
@@ -285,15 +292,15 @@ const config = {
             label: '⚙️ ',
             position: 'right',
             items: [
-              {label: 'Database Overview', to: 'http://localhost:2379/dashboard/#/overview'},
-              {label: '└─ Cluster Topology', to: 'http://localhost:2379/dashboard/#/cluster_info/store_topology'},
-              {label: '└─ Host Info: CPU, Memory, Disk', to: 'http://localhost:2379/dashboard/#/cluster_info/instance'},
-              {label: 'Database Diagnostic', to: 'http://localhost:2379/dashboard/#/system_report'},
-              {label: '└─ All SQL Statements', to: 'http://localhost:2379/dashboard/#/statement'},
-              {label: '└─ SQLs Cause High Load', to: 'http://localhost:2379/dashboard/#/topsql'},
-              {label: '└─ Slow Queries', to: 'http://localhost:2379/dashboard/#/topsql'},
-              {label: '└─ Traffic Hotspots', to: 'http://localhost:2379/dashboard/#/keyviz'},
-              {label: 'Database Logs', to: 'http://localhost:2379/dashboard/#/search_logs'},
+              { label: 'Database Overview', to: 'http://localhost:2379/dashboard/#/overview' },
+              { label: '└─ Cluster Topology', to: 'http://localhost:2379/dashboard/#/cluster_info/store_topology' },
+              { label: '└─ Host Info: CPU, Memory, Disk', to: 'http://localhost:2379/dashboard/#/cluster_info/instance' },
+              { label: 'Database Diagnostic', to: 'http://localhost:2379/dashboard/#/system_report' },
+              { label: '└─ All SQL Statements', to: 'http://localhost:2379/dashboard/#/statement' },
+              { label: '└─ SQLs Cause High Load', to: 'http://localhost:2379/dashboard/#/topsql' },
+              { label: '└─ Slow Queries', to: 'http://localhost:2379/dashboard/#/topsql' },
+              { label: '└─ Traffic Hotspots', to: 'http://localhost:2379/dashboard/#/keyviz' },
+              { label: 'Database Logs', to: 'http://localhost:2379/dashboard/#/search_logs' },
             ]
           },
         ].filter(Boolean),

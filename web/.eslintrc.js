@@ -11,14 +11,14 @@ module.exports = {
   ],
   overrides: [
     {
-      files: ["**/*.js"],
+      files: ['**/*.js', '**/*.mjs', '**/*.jsx'],
       rules: {
         'comma-dangle': ['error', 'only-multiline'],
         'semi': ['error', 'always'],
       }
     },
     {
-      files: ["**/*.ts", "**/*.tsx", "**/*.d.ts"],
+      files: ['**/*.ts', '**/*.tsx', '**/*.d.ts'],
       rules: {
         '@typescript-eslint/comma-dangle': ['error', 'always-multiline'],
         'semi': 'off',
@@ -26,17 +26,17 @@ module.exports = {
         '@typescript-eslint/explicit-function-return-type': 'off',
         '@typescript-eslint/consistent-type-definitions': 'off',
         '@typescript-eslint/member-delimiter-style': ['error', {
-          "multiline": {
-            "delimiter": "semi",
-            "requireLast": true
+          'multiline': {
+            'delimiter': 'semi',
+            'requireLast': true
           },
-          "singleline": {
-            "delimiter": "comma",
-            "requireLast": false
+          'singleline': {
+            'delimiter': 'comma',
+            'requireLast': false
           },
-          "multilineDetection": "brackets"
+          'multilineDetection': 'brackets'
         }],
-        '@typescript-eslint/array-type': ['error', {default: 'array-simple'}],
+        '@typescript-eslint/array-type': ['error', { default: 'array-simple' }],
         '@typescript-eslint/no-var-requires': 'off',
         '@typescript-eslint/strict-boolean-expressions': ['error', {
           allowNullableBoolean: true,
@@ -44,6 +44,15 @@ module.exports = {
           allowNullableObject: true,
         }],
         '@typescript-eslint/no-invalid-void-type': 'off',
+      }
+    },
+    {
+      files: ['**/*.jsx', '**/*.tsx'],
+      rules: {
+        'react/display-name': ['warn'],
+        'react/prop-types': ['error', {
+          skipUndeclared: true,
+        }],
       }
     }
   ],
@@ -64,9 +73,5 @@ module.exports = {
     }
   },
   rules: {
-    'react/display-name': ['warn'],
-    'react/prop-types': ['error', {
-      skipUndeclared: true,
-    }],
   }
 };

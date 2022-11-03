@@ -1,6 +1,7 @@
 import { Plugin } from '@docusaurus/types';
+import type { ResolveOptions } from 'webpack';
 
-type AliasPluginOptions = import('webpack').Configuration['resolve']['alias'];
+type AliasPluginOptions = ResolveOptions['alias'];
 
 export default function AliasPlugin (_, options: AliasPluginOptions): Plugin {
   return {

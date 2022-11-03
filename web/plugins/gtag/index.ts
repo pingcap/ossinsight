@@ -27,7 +27,7 @@ export default function (
           ],
         };
       }
-      return plugin.injectHtmlTags(args);
+      return plugin.injectHtmlTags?.(args) ?? {};
     },
   };
 }

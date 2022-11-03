@@ -19,5 +19,7 @@
       "@docusaurus/theme-common/*": ["./node_modules/@docusaurus/theme-common/lib/*"]
     }
   },
-  "exclude": ["plugins"],
+  "exclude": [
+    "./plugins/**/*.ts"
+  ],
 }

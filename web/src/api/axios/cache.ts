@@ -1,5 +1,6 @@
 import { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { unstable_serialize } from 'swr';
+import { notNullish } from '@site/src/utils/value';
 
 interface Cache {
   get: (key: string) => Promise<any>;
@@ -36,9 +37,9 @@ const makeKey = (config: AxiosRequestConfig): string | undefined => {
 const cacheRequest = (cache: Cache) => async (config: AxiosRequestConfig): Promise<AxiosRequestConfig> => {
   const key = makeKey(config);
 
-  if (key !== undefined) {
+  if (notNullish(key)) {
     const value = await cache.get(key);
-    if (value !== undefined) {
+    if (notNullish(value)) {
       return {
         ...config,
         adapter: async () => await Promise.resolve(value),
@@ -51,7 +52,7 @@ const cacheRequest = (cache: Cache) => async (config: AxiosRequestConfig): Promi
 const cacheResponse = (cache: Cache) => async (response: AxiosResponse): Promise<AxiosResponse> => {
   const key = makeKey(response.config);
 
-  if (key !== undefined && response.status >= 200 && response.status < 300) {
+  if (notNullish(key) && response.status >= 200 && response.status < 300) {
     await cache.set(key, response);
   }
 

@@ -1,4 +1,5 @@
 import ChartJs, { ScriptableContext } from 'chart.js/auto';
+import { notNullish } from '@site/src/utils/value';
 
 type ResponsiveObject<T extends object> = {
   [P in keyof T]: Array<T[P]>
@@ -27,7 +28,7 @@ export function responsive<T> (spec: Responsive<PartialOrPrimitive<T>>): ((ctx: 
         let last: any;
         for (let i = 0; i < 3; i++) {
           const value = spec[key][i];
-          if (value !== undefined && value !== null) {
+          if (notNullish(value)) {
             last = value;
           }
           (resolvedSpecs[i] as any)[key] = last;

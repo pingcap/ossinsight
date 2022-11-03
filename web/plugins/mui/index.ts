@@ -38,10 +38,10 @@ export default function PrefetchPlugin (): Plugin<void> {
       // do patch
       await new Promise<void>((resolve, reject) => {
         const proc = cp.exec(CMD_PATCH);
-        const errChunks = [];
-        proc.stderr.on('readable', () => {
+        const errChunks: any[] = [];
+        proc.stderr?.on('readable', () => {
           let chunk;
-          while ((chunk = proc.stderr.read()) !== null) {
+          while ((chunk = proc.stderr?.read()) != null) {
             errChunks.push(chunk);
           }
         });

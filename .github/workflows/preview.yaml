@@ -23,7 +23,7 @@ jobs:
           cache: 'npm'
           cache-dependency-path: web/package-lock.json
       - name: Install
-        run: npm ci
+        run: npm ci --prefer-offline --no-audit
       - name: Lint
         run: |
           npm run lint:ci
@@ -46,7 +46,7 @@ jobs:
           cache: 'npm'
           cache-dependency-path: web/package-lock.json
       - name: Install
-        run: npm ci
+        run: npm ci --prefer-offline --no-audit
       - name: Prefetch
         run: npm run prefetch
       - name: Build 🏗️
