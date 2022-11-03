@@ -1,10 +1,7 @@
-import Box from '@mui/material/Box';
 import React from 'react';
 import GeneralSearch from '../../../../../components/GeneralSearch';
-import Typography from '@mui/material/Typography';
 import { aligns } from '../../../_components/typography';
-import { useTheme } from '@mui/material/styles';
-import useMediaQuery from '@mui/material/useMediaQuery';
+import { Box, Typography, useTheme, useMediaQuery } from '@mui/material';
 
 const GeneralSearchLine = () => {
   const theme = useTheme();

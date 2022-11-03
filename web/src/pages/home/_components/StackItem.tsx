@@ -1,5 +1,4 @@
-import Box from '@mui/material/Box';
-import { styled } from '@mui/material/styles';
+import { Box, styled } from '@mui/material';
 
 export const stackDirection = { xs: 'column', md: 'row' } as const;
 

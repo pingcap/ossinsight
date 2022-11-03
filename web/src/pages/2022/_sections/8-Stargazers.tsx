@@ -1,9 +1,9 @@
 import React from 'react';
 import Section from '../_components/Section';
-import { styled } from '@mui/material/styles';
 import { LI, ResponsiveAlignedRight, UL } from '../_components/styled';
 import { BarChart } from '../_components/charts';
 import useIsLarge from '../_components/hooks/useIsLarge';
+import { styled } from '@mui/material';
 
 export default function () {
   return (

@@ -1,11 +1,4 @@
-import { useEventCallback } from '@mui/material';
-import Alert from '@mui/material/Alert';
-import Box from '@mui/material/Box';
-import Container from '@mui/material/Container';
-import Dialog from '@mui/material/Dialog';
-import Skeleton from '@mui/material/Skeleton';
-import Tab from '@mui/material/Tab';
-import Tabs from '@mui/material/Tabs';
+import { useEventCallback, Alert, Box, Container, Dialog, Skeleton, Tab, Tabs } from '@mui/material';
 import CodeBlock from '@theme/CodeBlock';
 import React, { useState } from 'react';
 import { useRemoteData } from '../RemoteCharts/hook';

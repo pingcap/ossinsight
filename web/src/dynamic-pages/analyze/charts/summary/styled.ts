@@ -1,5 +1,4 @@
-import { styled } from '@mui/material/styles';
-import Grid from '@mui/material/Grid';
+import { styled, Grid } from '@mui/material';
 
 export const HeaderGrid = styled(Grid)(({ theme }) => ({
   backgroundColor: 'rgba(69,69,69,.5)',

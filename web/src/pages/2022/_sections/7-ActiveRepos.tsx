@@ -3,10 +3,10 @@ import Section from '../_components/Section';
 import { A, BR, Footnote, LI, ResponsiveColumnFlex, Spacer, UL } from '../_components/styled';
 import Split from '../_components/Split';
 import Insights from '../_components/Insights';
-import { styled } from '@mui/material/styles';
 import colors from '../_components/colors.module.css';
 import _MSIcon from '../_icons/ms.svg';
 import { notNullish } from '@site/src/utils/value';
+import { styled } from '@mui/material';
 
 export default function () {
   return (

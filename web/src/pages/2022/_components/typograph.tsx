@@ -1,5 +1,7 @@
-import Typography, { TypographyProps } from '@mui/material/Typography';
+import { TypographyProps } from '@mui/material/Typography';
 import React from 'react';
+
+import { Typography } from '@mui/material';
 
 export function H1 ({
   children,

@@ -3,13 +3,18 @@ import Section, { SectionHeading } from '../../../components/Section';
 import { useAnalyzeUserContext } from '../charts/context';
 import InViewContext from '../../../components/InViewContext';
 import { usePersonalData } from '../hooks/usePersonal';
-import Box from '@mui/material/Box';
-import { InputLabel, Select, useEventCallback } from '@mui/material';
-import MenuItem from '@mui/material/MenuItem';
-import { SelectChangeEvent } from '@mui/material/Select';
-import FormControl from '@mui/material/FormControl';
+import {
+  InputLabel,
+  Select,
+  useEventCallback,
+  Box,
+  MenuItem,
+  SelectChangeEvent,
+  FormControl,
+} from '@mui/material';
 import TimeDistribution from '../charts/time-distribution';
-import { Axis, BarSeries, Dataset, EChartsx, Once } from '@djagger/echartsx';
+import { EChartsx } from '@site/src/components/ECharts';
+import { Axis, BarSeries, Dataset, Once } from '@djagger/echartsx';
 import { Common } from '../charts/Common';
 import { chartColors } from '../colors';
 import ChartWrapper from '../charts/ChartWrapper';

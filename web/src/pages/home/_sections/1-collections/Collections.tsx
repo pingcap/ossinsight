@@ -1,12 +1,12 @@
 import React, { PropsWithChildren, useEffect, useRef } from 'react';
 import { useRecentHotCollections } from './hook';
-import Box from '@mui/material/Box';
-import Stack from '@mui/material/Stack';
 import { useScrollable } from './useScrollable';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import ArrowLeftIcon from '@mui/icons-material/ArrowLeft';
 import HotCollection, { LoadingHotCollection } from '@site/src/components/HotCollection';
 import { isNullish, notFalsy } from '@site/src/utils/value';
+
+import { Box, Stack } from '@mui/material';
 
 export default function Collections () {
   const { data } = useRecentHotCollections();

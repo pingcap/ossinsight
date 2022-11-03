@@ -12,7 +12,7 @@ import {
 } from '../options';
 import { withChart } from '../chart';
 import { OptionEncodeValue } from 'echarts/types/src/util/types';
-import { LineSeriesOption } from 'echarts';
+import type { LineSeriesOption } from 'echarts';
 import deepmerge from 'deepmerge';
 import { upBound } from '../utils';
 

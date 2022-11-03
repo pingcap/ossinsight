@@ -1,10 +1,7 @@
 import React from 'react';
-import { styled } from '@mui/material/styles';
-import Stack, { StackProps } from '@mui/material/Stack';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
+import { StackProps } from '@mui/material/Stack';
 import Link from '@docusaurus/Link';
-import Box from '@mui/material/Box';
+import { styled, Stack, Typography, Button, Box } from '@mui/material';
 
 const links: Array<{ title: string, href: string }> = [
   { title: 'Mini OSS Insight', href: '/docs/workshop/mini-ossinsight/introduction' },

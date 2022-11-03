@@ -1,4 +1,4 @@
-import { EChartsOption } from 'echarts';
+import type { EChartsOption } from 'echarts';
 import React, { useMemo } from 'react';
 import ECharts from '../ECharts';
 

@@ -1,12 +1,12 @@
 import React from 'react';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import { Dataset, EChartsx, LineSeries, Once, Tooltip } from '@djagger/echartsx';
-import Stack from '@mui/material/Stack';
+import { EChartsx } from '@site/src/components/ECharts';
+import { Dataset, LineSeries, Once, Tooltip } from '@djagger/echartsx';
 import { useAnalyzeChartContext } from '../context';
 import { useReversed } from './hooks';
 import { AxisBase, formatDate } from './base';
 import { Title } from './ui';
+
+import { Box, Typography, Stack } from '@mui/material';
 
 interface LinesProps {
   title: string;

@@ -1,12 +1,12 @@
 import React, { ReactNode } from 'react';
 import Section, { SubSection } from '../_components/Section';
-import { styled } from '@mui/material/styles';
 import Keynote, { KeynoteProps } from '../_components/Keynote';
 import { IssueOpenedIcon, RepoForkedIcon, StarIcon } from '@primer/octicons-react';
 import colors from '../_components/colors.module.css';
 import Split from '../_components/Split';
-import Box from '@mui/material/Box';
 import { H2 } from '../_components/typograph';
+
+import { styled, Box } from '@mui/material';
 
 export default function () {
   return (

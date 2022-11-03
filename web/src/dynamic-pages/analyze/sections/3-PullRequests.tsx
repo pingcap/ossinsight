@@ -1,6 +1,3 @@
-import Grid from '@mui/material/Grid';
-import { useTheme } from '@mui/material/styles';
-import useMediaQuery from '@mui/material/useMediaQuery';
 import React, { ForwardedRef, forwardRef, useMemo } from 'react';
 import Analyze from '../charts/Analyze';
 import { DurationChart } from '../charts/common-duration';
@@ -10,6 +7,8 @@ import Summary, { SummaryProps } from '../charts/summary';
 import Section from '../Section';
 import { H2, H3, P2 } from '../typography';
 import { notNullish } from '@site/src/utils/value';
+
+import { Grid, useTheme, useMediaQuery } from '@mui/material';
 
 export const PullRequestsSection = forwardRef(function (_, ref: ForwardedRef<HTMLElement>) {
   const theme = useTheme();

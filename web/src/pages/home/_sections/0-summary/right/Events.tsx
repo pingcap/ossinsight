@@ -1,4 +1,3 @@
-import { styled } from '@mui/material/styles';
 import {
   CodeReviewIcon,
   CommentIcon,
@@ -12,6 +11,7 @@ import React, { useCallback, useEffect, useRef } from 'react';
 import { CoolList, CoolListInstance } from '@site/src/components/CoolList';
 import { useRealtimeRemoteData } from '@site/src/components/RemoteCharts/hook';
 import { notNullish } from '@site/src/utils/value';
+import { styled } from '@mui/material';
 
 type Event = {
   id: number;

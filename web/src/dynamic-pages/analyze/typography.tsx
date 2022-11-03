@@ -1,6 +1,5 @@
 import React, { forwardRef, RefCallback } from 'react';
-import { TypographyProps } from '@mui/material/Typography';
-import { Typography } from '@mui/material';
+import { Typography, TypographyProps } from '@mui/material';
 import { useAnalyzeChartContext } from './charts/context';
 
 interface AnalyzeTitle {

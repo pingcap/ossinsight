@@ -1,9 +1,15 @@
-import { IconButton, Tooltip } from '@mui/material';
+import {
+  IconButton,
+  Tooltip,
+  Box,
+  Grid,
+  useTheme,
+  useMediaQuery,
+  Chip,
+  Typography,
+  Stack,
+} from '@mui/material';
 import InfoOutlined from '@mui/icons-material/InfoOutlined';
-import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
-import { useTheme } from '@mui/material/styles';
-import useMediaQuery from '@mui/material/useMediaQuery';
 import {
   CodeIcon,
   GitCommitIcon,
@@ -22,11 +28,8 @@ import Section from '../Section';
 import { H1, H2, P2 } from '../typography';
 import { useRemoteData } from '../../../components/RemoteCharts/hook';
 import { Collection } from '@ossinsight/api';
-import Chip from '@mui/material/Chip';
 import { paramCase } from 'param-case';
 import { MonthlySummaryCard } from '../charts/montly-cards';
-import Typography from '@mui/material/Typography';
-import Stack from '@mui/material/Stack';
 import { isNullish, nonEmptyArray, notNullish } from '@site/src/utils/value';
 
 export const OverviewSection = forwardRef(function (_, ref: ForwardedRef<HTMLElement>) {

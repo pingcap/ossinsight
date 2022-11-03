@@ -1,15 +1,18 @@
 /* eslint-disable */
 // Deprecated
 import React, { useMemo, useState } from 'react';
-import Stack from '@mui/material/Stack';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import TextField from '@mui/material/TextField';
-import InputAdornment from '@mui/material/InputAdornment';
 import { Queries } from '../queries';
 import { notNullish } from '@site/src/utils/value';
+
+import {
+  Stack,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  TextField,
+  InputAdornment,
+} from '@mui/material';
 
 export type Type<Q extends keyof Queries = any> = {
   title: string;

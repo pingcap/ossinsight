@@ -3,9 +3,6 @@ import Section, { SectionHeading } from '../../../components/Section';
 import { useAnalyzeUserContext } from '../charts/context';
 import { contributionTypes, PersonalOverview, usePersonalData, usePersonalOverview } from '../hooks/usePersonal';
 import InViewContext from '../../../components/InViewContext';
-import Stack from '@mui/material/Stack';
-import Avatar from '@mui/material/Avatar';
-import Typography from '@mui/material/Typography';
 import {
   CodeReviewIcon,
   GitPullRequestIcon,
@@ -14,19 +11,18 @@ import {
   StarIcon,
 } from '@primer/octicons-react';
 import Link from '@docusaurus/Link';
-import { styled } from '@mui/material/styles';
-import Box from '@mui/material/Box';
-import Skeleton from '@mui/material/Skeleton';
-import { Axis, Dataset, EChartsx, LineSeries, Once, Title } from '@djagger/echartsx';
+import { EChartsx } from '@site/src/components/ECharts';
+import { Axis, Dataset, LineSeries, Once, Title } from '@djagger/echartsx';
 import colors from '../colors.module.css';
 import { chartColors, languageColors } from '../colors';
 import { Common } from '../charts/Common';
-import Tooltip from '@mui/material/Tooltip';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { useDimension } from '../hooks/useDimension';
 import ChartWrapper from '../charts/ChartWrapper';
 import { EChartsType } from 'echarts/core';
 import { isNullish, notNullish } from '@site/src/utils/value';
+
+import { Stack, Avatar, Typography, styled, Box, Skeleton, Tooltip } from '@mui/material';
 
 export default forwardRef(function OverviewSection (_, ref: ForwardedRef<HTMLElement>) {
   return (

@@ -1,8 +1,8 @@
 import React from 'react';
 import Section from '../_components/Section';
-import Grid from '@mui/material/Grid';
 import Repos, { ReposProps } from '../_components/Repos';
 import { Footnote } from '../_components/styled';
+import { Grid } from '@mui/material';
 
 export default function () {
   return (

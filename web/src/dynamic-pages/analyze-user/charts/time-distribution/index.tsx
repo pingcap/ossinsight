@@ -1,6 +1,6 @@
 import { Personal } from '../../hooks/usePersonal';
 import React, { useMemo } from 'react';
-import Box from '@mui/material/Box';
+import { Box } from '@mui/material';
 
 interface TimeDistributionProps {
   title: string;

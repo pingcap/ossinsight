@@ -1,12 +1,7 @@
 import * as React from 'react';
 import { useCallback, useMemo, useState } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
-import { useTheme } from '@mui/material/styles';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import Box from '@mui/material/Box';
-import FormControl from '@mui/material/FormControl';
-import { InputLabel, Select } from '@mui/material';
-import MenuItem from '@mui/material/MenuItem';
+import { InputLabel, Select, useTheme, useMediaQuery, Box, FormControl, MenuItem } from '@mui/material';
 import ECharts from '../ECharts';
 import { KeyOfType } from '../../dynamic-pages/analyze/charts/options/utils/data';
 

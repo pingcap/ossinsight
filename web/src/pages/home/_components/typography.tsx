@@ -1,7 +1,9 @@
 import React from 'react';
-import Typography, { TypographyProps } from '@mui/material/Typography';
+import { TypographyProps } from '@mui/material/Typography';
 import { combineSx } from '../../../utils/mui';
 import { responsive } from './responsive';
+
+import { Typography } from '@mui/material';
 
 export const fontSizes = {
   h1: responsive('fontSize', 28, 48, 64),

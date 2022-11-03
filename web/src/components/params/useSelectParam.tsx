@@ -1,9 +1,14 @@
 import React, { useMemo, useState } from 'react';
-import Select, { SelectProps } from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import { FormControl, InputLabel, unstable_useId, useEventCallback } from '@mui/material';
-import { SelectInputProps } from '@mui/material/Select/SelectInput';
-import { FormControlProps } from '@mui/material/FormControl/FormControl';
+import { SelectProps } from '@mui/material/Select';
+import {
+  FormControl,
+  InputLabel,
+  unstable_useId,
+  useEventCallback,
+  Select,
+  MenuItem,
+  FormControlProps,
+} from '@mui/material';
 import { isString } from 'ahooks/es/utils';
 
 export type SelectParamOption<K extends string | number = string> = {
@@ -30,7 +35,7 @@ export function useSelectParam<K extends string | number = string, AllowEmpty ex
   const [value, setValue] = useState<SelectParamOption<K> | (AllowEmpty extends true ? '' : never)>(defaultValue);
   const id = unstable_useId() ?? 'fatal-id';
 
-  const handleValueChange: SelectInputProps<SelectParamOption<K>>['onChange'] = useEventCallback((event) => {
+  const handleValueChange: SelectProps<SelectParamOption<K>>['onChange'] = useEventCallback((event) => {
     setValue(event.target.value as SelectParamOption<K>);
   });
 

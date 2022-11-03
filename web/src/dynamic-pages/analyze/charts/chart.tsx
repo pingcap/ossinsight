@@ -1,15 +1,12 @@
-import Box from '@mui/material/Box';
-import { useTheme } from '@mui/material/styles';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import EChartsReact from 'echarts-for-react';
+import type EChartsReact from 'echarts-for-react';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import CommonChartContext, { CommonChartShareInfo } from '../../../components/CommonChart/context';
 import { AnalyzeChartContextProps, isNoData, useAnalyzeChartContext, useAnalyzeContext } from './context';
-import { EChartsOption } from 'echarts';
+import type { EChartsOption } from 'echarts';
 import ECharts, { EChartsContext, EChartsProps } from '../../../components/ECharts';
 import { DangerousCtx, dangerousSetCtx } from './options/_danger';
 import useDimensions from 'react-cool-dimensions';
-import { debounce, useEventCallback } from '@mui/material';
+import { debounce, useEventCallback, Box, useTheme, useMediaQuery } from '@mui/material';
 import { useDebugDialog } from '../../../components/DebugDialog';
 import { notFalsy } from '@site/src/utils/value';
 import { useUnmountedRef } from 'ahooks';

@@ -130,7 +130,8 @@ const config = {
         ]
       }
     ],
-    './plugins/mui'
+    './plugins/mui',
+    './plugins/analyze',
   ],
 
   presets: [

@@ -1,14 +1,14 @@
 import Layout from '@theme/Layout';
 import React, { useEffect, useMemo, useRef } from 'react';
-import Container from '@mui/material/Container';
 import Head from '@docusaurus/Head';
-import { styled } from '@mui/material/styles';
 import { highlights } from './_sections/0-Banner';
 import { paramCase } from 'param-case';
 import { SectionContext } from './_components/Section';
 import Share from './_components/Share';
 import { Scrollspy } from '@makotot/ghostui';
 import { AnimatedDownIcon, MrO } from './_components/styled';
+
+import { Container, styled } from '@mui/material';
 
 const fonts = [
   'https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,600;0,700;1,100;1,400;1,600&display=swap',

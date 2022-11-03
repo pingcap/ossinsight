@@ -1,18 +1,13 @@
 import React, { useMemo } from 'react';
 import { useAnalyzeChartContext, useAnalyzeContext } from '../context';
-import Grid from '@mui/material/Grid';
 import { StaticSummaryItem, SummaryItem } from './SummaryItem';
 import { HeaderGrid, HeadText } from './styled';
-import Skeleton from '@mui/material/Skeleton';
 import Analyze from '../Analyze';
-import Stack from '@mui/material/Stack';
 import type { RepoInfo } from '@ossinsight/api';
 import { useDebugDialog } from '@site/src/components/DebugDialog';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import { useTheme } from '@mui/material/styles';
-import useMediaQuery from '@mui/material/useMediaQuery';
 import { notNullish } from '@site/src/utils/value';
+
+import { Grid, Skeleton, Stack, Box, Typography, useTheme, useMediaQuery } from '@mui/material';
 
 export type ItemBase = {
   icon?: React.ReactNode;

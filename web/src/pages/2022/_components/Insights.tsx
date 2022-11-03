@@ -1,8 +1,7 @@
 import React, { ReactNode } from 'react';
-import Box, { BoxProps } from '@mui/material/Box';
+import { BoxProps } from '@mui/material/Box';
 import { H4 } from './typograph';
-import { styled } from '@mui/material/styles';
-import { TypographyProps } from '@mui/material/Typography';
+import { Box, styled, TypographyProps } from '@mui/material';
 
 export interface InsightsProps extends BoxProps {
   hideTitle?: boolean;

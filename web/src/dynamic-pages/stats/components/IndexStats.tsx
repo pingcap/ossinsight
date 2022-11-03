@@ -1,12 +1,9 @@
 import React from 'react';
 import { TidbIndexStats } from '@ossinsight/api';
-import Table from '@mui/material/Table';
-import TableHead from '@mui/material/TableHead';
-import TableCell from '@mui/material/TableCell';
-import TableBody from '@mui/material/TableBody';
-import TableRow from '@mui/material/TableRow';
 import Link from '@docusaurus/Link';
 import AnimatedNumber from 'react-awesome-animated-number';
+
+import { Table, TableHead, TableCell, TableBody, TableRow } from '@mui/material';
 
 export interface IndexStatsProps {
   stats: TidbIndexStats[];

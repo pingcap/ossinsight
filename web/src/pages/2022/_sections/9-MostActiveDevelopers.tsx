@@ -1,8 +1,8 @@
 import React from 'react';
 import Section from '../_components/Section';
 import { MostActiveDevelopersChart } from '../_components/charts';
-import Stack from '@mui/material/Stack';
 import Insights from '../_components/Insights';
+import { Stack } from '@mui/material';
 
 export default function () {
   return (

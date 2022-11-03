@@ -1,14 +1,7 @@
-import * as echarts from 'echarts';
 import { itemTooltip, legend, scatters, title, utils, worldMapGeo } from '../options';
 import { withChart } from '../chart';
-import map from '@geo-maps/countries-land-10km';
 import { alpha2ToGeo, alpha2ToTitle } from '@site/src/lib/areacode';
 import { DatasetOption } from 'echarts/types/dist/shared';
-import { isNullish } from '@site/src/utils/value';
-
-if (isNullish(echarts.getMap('world'))) {
-  echarts.registerMap('world', map());
-}
 
 // lines of code
 export type LocationData = {

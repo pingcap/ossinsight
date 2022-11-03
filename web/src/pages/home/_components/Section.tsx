@@ -1,8 +1,8 @@
 import React, { PropsWithChildren } from 'react';
-import Box from '@mui/material/Box';
-import Container from '@mui/material/Container';
 import { responsive } from './responsive';
 import { Breakpoint } from '@mui/system';
+
+import { Box, Container } from '@mui/material';
 
 export interface SectionProps {
   darker?: boolean;

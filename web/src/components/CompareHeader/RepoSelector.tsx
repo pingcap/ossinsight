@@ -1,12 +1,16 @@
-import Stack from '@mui/material/Stack';
-import { styled } from '@mui/material/styles';
 import * as React from 'react';
 import { useCallback, useMemo, useState } from 'react';
-import TextField from '@mui/material/TextField';
-import InputBase from '@mui/material/InputBase';
-import Autocomplete from '@mui/material/Autocomplete';
-import CircularProgress from '@mui/material/CircularProgress';
-import { Alert, Popper, Snackbar } from '@mui/material';
+import {
+  Alert,
+  Popper,
+  Snackbar,
+  Stack,
+  styled,
+  TextField,
+  InputBase,
+  Autocomplete,
+  CircularProgress,
+} from '@mui/material';
 import { UseAutocompleteProps } from '@mui/base/AutocompleteUnstyled/useAutocomplete';
 import { Repo, useSearchRepo } from './useSearchRepo';
 import SearchIcon from '@mui/icons-material/Search';

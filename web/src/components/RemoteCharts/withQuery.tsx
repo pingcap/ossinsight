@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { useRef } from 'react';
 import { AsyncData, RemoteData, useRemoteData } from './hook';
-import Alert from '@mui/material/Alert';
 import { BarChart, ChartWithSql, HeatMapChart, PieChart } from '../BasicCharts';
 import { Queries } from './queries';
 import { YoyChart } from '../SpecialCharts';
@@ -9,12 +8,13 @@ import WorldMapChart from '../BasicCharts/WorldMapChart';
 import ZScoreChart from '../SpecialCharts/ZScoreChart';
 import DynamicStarsChart from '../SpecialCharts/DynamicStarsChart';
 import DynamicLineChart from '../SpecialCharts/DynamicLineChart';
-import Box from '@mui/material/Box';
 import { EChartsContext } from '../ECharts';
-import EChartsReact from 'echarts-for-react';
+import type EChartsReact from 'echarts-for-react';
 import { useDebugDialog } from '../DebugDialog';
 import { isNullish, notNullish } from '@site/src/utils/value';
 import { getErrorMessage } from '@site/src/utils/error';
+
+import { Alert, Box } from '@mui/material';
 
 type Indexes<Q extends keyof Queries> = {
   categoryIndex: keyof Queries[Q]['data'];

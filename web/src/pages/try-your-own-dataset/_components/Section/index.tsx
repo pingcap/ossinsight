@@ -1,8 +1,8 @@
-import Container from '@mui/material/Container';
 import React, { PropsWithChildren } from 'react';
 import styles from './styles.module.css';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import { notFalsy } from '@site/src/utils/value';
+import { Container } from '@mui/material';
 
 export interface SectionProps {
   title?: React.ReactNode;

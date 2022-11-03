@@ -1,16 +1,13 @@
-import Grid from '@mui/material/Grid';
 import React from 'react';
 import CustomPage from '../../theme/CustomPage';
-import Typography from '@mui/material/Typography';
 import Section from './_components/Section';
-import Card from '@mui/material/Card';
 import { Cards, StandardCard } from '../../components/Cards';
-import Button from '@mui/material/Button';
 import Link from '@docusaurus/Link';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import Image from '../../components/Image';
-import Container from '@mui/material/Container';
 import IconSet from './icon-set.svg';
+
+import { Grid, Typography, Card, Button, Container } from '@mui/material';
 
 const title = '🔥 Try Your Own Dataset ! ';
 

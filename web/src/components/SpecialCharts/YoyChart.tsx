@@ -1,15 +1,6 @@
 import React, { useMemo } from 'react';
-import { EChartsOption } from 'echarts';
-import * as echarts from 'echarts/core';
-import { GridComponent, TitleComponent, TooltipComponent } from 'echarts/components';
-import { BarChart as EBarChart } from 'echarts/charts';
-import { CanvasRenderer } from 'echarts/renderers';
+import type { EChartsOption } from 'echarts';
 import ECharts from '../ECharts';
-
-// Register the required components
-echarts.use(
-  [TitleComponent, TooltipComponent, GridComponent, EBarChart, CanvasRenderer],
-);
 
 interface YoyChartProps {
   data: Array<{

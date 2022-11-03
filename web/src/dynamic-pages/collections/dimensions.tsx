@@ -1,7 +1,7 @@
-import Box from '@mui/material/Box';
 import { GitMergeIcon, IssueOpenedIcon, PersonIcon, StarIcon } from '@primer/octicons-react';
 import React from 'react';
 import styles from '../analyze/styles.module.css';
+import { Box } from '@mui/material';
 
 export type Dimension = {
   icon?: JSX.Element;

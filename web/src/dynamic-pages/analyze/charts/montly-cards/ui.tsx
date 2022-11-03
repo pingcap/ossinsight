@@ -1,7 +1,6 @@
 import React from 'react';
-import { styled } from '@mui/material/styles';
 import { ArrowDownIcon, ArrowUpIcon } from '@primer/octicons-react';
-import Typography from '@mui/material/Typography';
+import { styled, Typography } from '@mui/material';
 
 export const Border = styled('div')({
   border: 'rgba(255,255,255,15%) 1px solid',

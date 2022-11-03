@@ -1,6 +1,6 @@
 import React from 'react';
-import Box from '@mui/material/Box';
 import GeneralSearch from '@site/src/components/GeneralSearch';
+import { Box } from '@mui/material';
 
 export default function AnalyzeSearchNavbarItem () {
   return (

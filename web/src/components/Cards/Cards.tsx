@@ -1,6 +1,8 @@
 import React, { cloneElement, PropsWithChildren, ReactNode, useMemo } from 'react';
-import Grid, { GridProps } from '@mui/material/Grid';
+import { GridProps } from '@mui/material/Grid';
 import { notNullish } from '@site/src/utils/value';
+
+import { Grid } from '@mui/material';
 
 type GridSizeProps = Pick<GridProps, 'xs' | 'sm' | 'md' | 'lg' | 'xl'>;
 

@@ -1,10 +1,15 @@
-import Autocomplete from '@mui/material/Autocomplete';
 import React, { ChangeEventHandler, useState } from 'react';
-import TextField from '@mui/material/TextField';
 import { CompanyInfo, useCompanyList } from './hooks';
-import { ListItem, ListItemText, Popper, useEventCallback } from '@mui/material';
+import {
+  ListItem,
+  ListItemText,
+  Popper,
+  useEventCallback,
+  Autocomplete,
+  TextField,
+  InputAdornment,
+} from '@mui/material';
 import { useDebounced } from '../../../components/CompareHeader/useSearchRepo';
-import InputAdornment from '@mui/material/InputAdornment';
 import { Search } from '@mui/icons-material';
 
 interface SearchCompanyProps {

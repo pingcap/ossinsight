@@ -1,5 +1,5 @@
 import { createContext, MutableRefObject } from 'react';
-import EChartsReact from 'echarts-for-react';
+import type EChartsReact from 'echarts-for-react';
 
 export interface EChartsContextProps {
   echartsRef?: MutableRefObject<EChartsReact | null>;

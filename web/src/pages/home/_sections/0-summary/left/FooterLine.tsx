@@ -1,6 +1,6 @@
-import { styled } from '@mui/material/styles';
 import React from 'react';
 import { aligns, Body } from '../../../_components/typography';
+import { styled } from '@mui/material';
 
 const Logo = styled('img')(({ theme }) => ({
   verticalAlign: 'text-bottom',

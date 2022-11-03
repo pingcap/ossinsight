@@ -1,15 +1,11 @@
 import { RecentHotCollectionData } from '../../pages/home/_sections/1-collections/hook';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import Stack from '@mui/material/Stack';
 import Diff from '../Diff';
 import Link from '@docusaurus/Link';
-import Avatar from '@mui/material/Avatar';
 import { paramCase } from 'param-case';
 import React, { useCallback } from 'react';
-import Skeleton from '@mui/material/Skeleton';
-import { styled } from '@mui/material/styles';
 import { useHistory } from '@docusaurus/router';
+
+import { Box, Typography, Stack, Avatar, Skeleton, styled } from '@mui/material';
 
 interface HotCollectionProps extends Pick<RecentHotCollectionData, 'name' | 'repos' | 'collectionRepos'> {
   variant?: 'clickable' | 'link';

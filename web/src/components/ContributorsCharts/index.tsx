@@ -3,8 +3,7 @@ import { useRemoteData } from '../RemoteCharts/hook';
 import { renderChart } from '../RemoteCharts/withQuery';
 import BrowserOnly from '@docusaurus/core/lib/client/exports/BrowserOnly';
 import { Queries } from '../RemoteCharts/queries';
-import { EChartsOption } from 'echarts';
-import * as echarts from 'echarts/core';
+import type { EChartsOption } from 'echarts';
 import ECharts from '../ECharts';
 import { isNullish } from '@site/src/utils/value';
 
@@ -116,7 +115,6 @@ function Charts ({ data: rawData, type, percent, loading, size }: ChartsProps) {
       option={option}
       showLoading={loading}
       height={height}
-      echarts={echarts}
       notMerge={false}
       lazyUpdate={true}
       style={{

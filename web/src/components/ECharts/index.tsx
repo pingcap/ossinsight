@@ -1,131 +1,110 @@
-import React, { CSSProperties, ForwardedRef, RefCallback, useCallback, useContext, useLayoutEffect, useMemo, useState } from 'react';
-import { EChartsReactProps } from 'echarts-for-react/src/types';
-import EChartsReact, { EChartsInstance } from 'echarts-for-react';
-import { AspectRatio } from 'react-aspect-ratio';
+import React, { ForwardedRef, forwardRef, lazy, PropsWithChildren, Suspense } from 'react';
+import AspectRatio from 'react-aspect-ratio';
+import { isPositiveNumber } from '@site/src/utils/value';
+import { Backdrop, CircularProgress } from '@mui/material';
+import type EChartsReact from 'echarts-for-react';
 import 'react-aspect-ratio/aspect-ratio.css';
-import BrowserOnly from '@docusaurus/BrowserOnly';
-import { registerThemeDark, registerThemeVintage } from '../BasicCharts/theme';
-import { Opts } from 'echarts-for-react/lib/types';
-import EChartsContext from './context';
-import InViewContext from '../InViewContext';
-import { useIsDarkTheme } from '@site/src/hooks/theme';
-import { coalesceFalsy, isFiniteNumber, isPositiveNumber, notNullish } from '@site/src/utils/value';
+import { EChartsType } from 'echarts/types/dist/shared';
+import type { TypedKey } from '@djagger/echartsx/dist/charts/sort-bar/hook';
 
-interface SizeProps {
-  aspectRatio?: number;
-  height?: number | string;
-  echartsStyle?: CSSProperties;
-}
+// TODO: Redesign lazy imports
 
-export interface EChartsProps extends EChartsReactProps, SizeProps {
-  observe?: (element?: HTMLElement | null) => void;
-}
+const LazyECharts = lazy(async () => await import('./lazy').then(({ ECharts }) => ({ default: ECharts })));
+const LazyEChartsx = lazy(async () => await import('./lazy').then(({ EChartsx }) => ({ default: EChartsx })));
+const LazyLineChart: typeof import('@djagger/echartsx').LineChart = lazy(async () => await import('./lazy').then(({ LineChart }) => ({ default: LineChart }))) as never;
+const LazyRankChart: typeof import('@djagger/echartsx').RankChart = lazy(async () => await import('./lazy').then(({ RankChart }) => ({ default: RankChart }))) as never;
+const LazySortingBarChart: typeof import('@djagger/echartsx').SortingBarChart = lazy(async () => await import('./lazy').then(({ SortingBarChart }) => ({ default: SortingBarChart }))) as never;
 
-registerThemeVintage();
-registerThemeDark();
-
-const ECharts = React.forwardRef<EChartsReact, EChartsProps>(function ECharts ({
-  aspectRatio,
-  height,
-  style,
-  opts,
-  echartsStyle: echartsStyleProp,
-  observe,
-  ...props
-}, ref: ForwardedRef<EChartsReact>) {
-  const realHeight = useMemo(() => {
-    if (isPositiveNumber(aspectRatio)) {
-      return '100%';
-    } else {
-      return coalesceFalsy(height, 400);
-    }
-  }, [aspectRatio, height]);
-
-  const { inView } = useContext(InViewContext);
-
-  const echartsStyle = useMemo(() => {
-    const result: CSSProperties = Object.assign({}, echartsStyleProp);
-    result.height = realHeight;
-    result.width = '100%';
-    result.overflow = 'hidden';
-    return result;
-  }, [style, aspectRatio, realHeight, inView]);
-
-  const echartsOpts: Opts = useMemo(() => {
-    return Object.assign({
-      devicePixelRatio: typeof window === 'undefined' ? 1 : window.devicePixelRatio,
-      renderer: 'canvas',
-      height: 'auto',
-      locale: 'en',
-    }, opts);
-  }, [opts, realHeight]);
-
-  const { echartsRef } = useContext(EChartsContext);
-  const [eRef, setERef] = useState<EChartsInstance>();
-
-  const combinedRef: RefCallback<EChartsReact> = useCallback((instance) => {
-    if (notNullish(echartsRef)) {
-      echartsRef.current = instance ?? null;
-    }
-    setERef(instance);
-    if (notNullish(ref)) {
-      if (typeof ref === 'function') {
-        ref(instance);
-      } else {
-        ref.current = instance;
-      }
-    }
-    observe?.(instance?.ele ?? null);
-  }, [ref, echartsRef, observe]);
-
-  const fallback = useMemo(() => <EChartsPlaceholder aspectRatio={aspectRatio}
-                                                     height={realHeight} />, [aspectRatio, realHeight]);
-
-  useLayoutEffect(() => {
-    eRef?.resize();
-  }, [eRef]);
-
+const EChart = forwardRef(function AsyncECharts (props: Exclude<import('./ECharts').EChartsProps, 'echarts'>, ref: ForwardedRef<EChartsReact>) {
+  if (typeof window === 'undefined') {
+    return <LazyEChartsPlaceholder {...props} />;
+  }
   return (
-    <BrowserOnly fallback={fallback}>
-      {() => {
-        const isDarkTheme = useIsDarkTheme();
-
-        const child = (
-          <EChartsReact
-            {...props}
-            opts={echartsOpts}
-            style={echartsStyle}
-            ref={combinedRef}
-            theme={isDarkTheme ? 'dark' : 'vintage'}
-          />
-        );
-
-        if (isFiniteNumber(aspectRatio)) {
-          return (
-            <AspectRatio ratio={aspectRatio} style={style}>
-              {child}
-            </AspectRatio>
-          );
-        } else {
-          return child;
-        }
-      }}
-    </BrowserOnly>
+    <Suspense
+      fallback={<LazyEChartsPlaceholder {...props} />}
+    >
+      <LazyECharts {...props} ref={ref} />
+    </Suspense>
   );
 });
 
-const EChartsPlaceholder = ({ height, aspectRatio }: SizeProps) => {
-  if (isFiniteNumber(aspectRatio)) {
+function LazyEChartsPlaceholder ({ style, aspectRatio, height }: import('./ECharts').EChartsProps) {
+  if (isPositiveNumber(aspectRatio)) {
     return (
-      <AspectRatio ratio={aspectRatio}>
-        <div />
+      <AspectRatio ratio={aspectRatio} style={{ ...style, position: 'relative' }}>
+        <Backdrop open sx={{ position: 'absolute' }}>
+          <CircularProgress />
+        </Backdrop>
       </AspectRatio>
     );
   } else {
-    return <div style={{ height: coalesceFalsy(height, 400), width: '100%' }} />;
+    return (
+      <div style={{ ...style, height: height ?? style?.height, position: 'relative' }}>
+        <Backdrop open sx={{ position: 'absolute' }}>
+          <CircularProgress />
+        </Backdrop>
+      </div>
+    );
   }
-};
+}
 
-export default ECharts;
+export const EChartsx = forwardRef(function AsyncEChartsx (props: import('@djagger/echartsx').OptionProps, ref: ForwardedRef<EChartsType>) {
+  if (typeof window === 'undefined') {
+    return <LazyEChartsxPlaceholder style={props.style} />;
+  }
+  return (
+    <Suspense
+      fallback={<LazyEChartsxPlaceholder style={props.style} />}
+    >
+      <LazyEChartsx {...props} ref={ref} />
+    </Suspense>
+  );
+});
+
+export const LineChart = forwardRef(function <T> (props: PropsWithChildren<import('@djagger/echartsx').LineChartProps<T>>, ref: ForwardedRef<EChartsType>) {
+  if (typeof window === 'undefined') {
+    return <LazyEChartsxPlaceholder height={props.height} />;
+  }
+  return (
+    <Suspense
+      fallback={<LazyEChartsxPlaceholder height={props.height} />}
+    >
+      <LazyLineChart<T> {...props} ref={ref} />
+    </Suspense>
+  );
+});
+
+export const RankChart = forwardRef(function <T> (props: PropsWithChildren<import('@djagger/echartsx').RankChartProps<T>>, ref: ForwardedRef<EChartsType>) {
+  if (typeof window === 'undefined') {
+    return <LazyEChartsxPlaceholder height={props.height} />;
+  }
+  return (
+    <Suspense
+      fallback={<LazyEChartsxPlaceholder height={props.height} />}
+    >
+      <LazyRankChart<T> {...props} ref={ref} />
+    </Suspense>
+  );
+});
+
+export const SortingBarChart = forwardRef(function <T, N extends TypedKey<T, string>, K extends TypedKey<T, string>> (props: PropsWithChildren<import('@djagger/echartsx').SortingBarChartProps<T, N, K>>, ref: ForwardedRef<EChartsType>) {
+  if (typeof window === 'undefined') {
+    return <LazyEChartsxPlaceholder height={props.height} />;
+  }
+  return (
+    <Suspense
+      fallback={<LazyEChartsxPlaceholder height={props.height} />}
+    >
+      <LazySortingBarChart<T, N, K> {...props} ref={ref} />
+    </Suspense>
+  );
+});
+
+function LazyEChartsxPlaceholder ({ style, height }: { style?: any, height?: any }) {
+  return <div style={{ ...style, height }} />;
+}
+
+export default EChart;
+export type { EChartsProps } from './ECharts';
 export { default as EChartsContext } from './context';
 export type { EChartsContextProps } from './context';

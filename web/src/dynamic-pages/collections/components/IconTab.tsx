@@ -1,5 +1,5 @@
-import Tab from '@mui/material/Tab';
 import React, { PropsWithChildren } from 'react';
+import { Tab } from '@mui/material';
 
 const IconTab = ({
   children,

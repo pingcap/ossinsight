@@ -3,12 +3,13 @@ import Section, { SectionHeading } from '../../../components/Section';
 import InViewContext from '../../../components/InViewContext';
 import { usePersonalData } from '../hooks/usePersonal';
 import { useAnalyzeUserContext } from '../charts/context';
-import Box from '@mui/material/Box';
-import { Axis, BarSeries, Dataset, EChartsx, Once } from '@djagger/echartsx';
+import { EChartsx } from '@site/src/components/ECharts';
+import { Axis, BarSeries, Dataset, Once } from '@djagger/echartsx';
 import { Common } from '../charts/Common';
 import { chartColors } from '../colors';
 import ChartWrapper from '../charts/ChartWrapper';
 import { EChartsType } from 'echarts/core';
+import { Box } from '@mui/material';
 
 export default forwardRef(function StarSection (_, ref: ForwardedRef<HTMLElement>) {
   return (

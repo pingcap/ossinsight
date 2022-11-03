@@ -1,12 +1,15 @@
 import AnalyticsIcon from '@mui/icons-material/Analytics';
 import AutoGraphIcon from '@mui/icons-material/AutoGraph';
-import { BottomNavigation, BottomNavigationAction } from '@mui/material';
-import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
-import Stack from '@mui/material/Stack';
-import { styled } from '@mui/material/styles';
-import Tab from '@mui/material/Tab';
-import Tabs from '@mui/material/Tabs';
+import {
+  BottomNavigation,
+  BottomNavigationAction,
+  Box,
+  Paper,
+  Stack,
+  styled,
+  Tab,
+  Tabs,
+} from '@mui/material';
 import React, { useMemo } from 'react';
 
 const SideContainer = styled('div')({

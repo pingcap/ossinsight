@@ -1,7 +1,7 @@
 import React from 'react';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-import Box from '@mui/material/Box';
+import { Box } from '@mui/material';
 
 const formatNumber = (v: number) => v.toFixed(1).replace(/[.,]0$/, '');
 

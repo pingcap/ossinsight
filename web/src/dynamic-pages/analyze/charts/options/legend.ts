@@ -1,4 +1,4 @@
-import { EChartsOption } from 'echarts';
+import type { EChartsOption } from 'echarts';
 import { isSmall } from './sizes';
 
 export function legend (option: EChartsOption['legend'] = {}): EChartsOption['legend'] {

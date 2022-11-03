@@ -1,6 +1,6 @@
 /* eslint-disable */
 import * as d3 from 'd3-hierarchy';
-import { CustomSeriesOption } from 'echarts';
+import type { CustomSeriesOption } from 'echarts';
 import {
   CustomSeriesRenderItemAPI,
   CustomSeriesRenderItemParams,

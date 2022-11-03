@@ -1,16 +1,16 @@
-import { Axis, BarSeries, Dataset, EChartsx, Grid, Once } from '@djagger/echartsx';
-import Box from '@mui/material/Box';
-import { useTheme } from '@mui/material/styles';
-import useMediaQuery from '@mui/material/useMediaQuery';
+import { EChartsx } from '@site/src/components/ECharts';
+import { Axis, BarSeries, Dataset, Grid, Once } from '@djagger/echartsx';
 import React, { useLayoutEffect, useRef } from 'react';
 import { useRealtimeEvents } from '@site/src/components/RealtimeSummary/hooks';
-import { EChartsType } from 'echarts/core';
+import type { EChartsType } from 'echarts/core';
+
+import { Box, useTheme, useMediaQuery } from '@mui/material';
 
 export const EventsChart = ({ show }: { show: boolean }) => {
   const data = useRealtimeEvents(show);
   const theme = useTheme();
   const isSmall = useMediaQuery(theme.breakpoints.down('sm'));
-  const echartsRef = useRef<EChartsType>();
+  const echartsRef = useRef<EChartsType>(null);
 
   useLayoutEffect(() => {
     echartsRef.current?.resize({ width: 'auto' });

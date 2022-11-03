@@ -1,9 +1,9 @@
-import Box from '@mui/material/Box';
 import React, { createContext, PropsWithChildren, ReactNode, Ref, useContext } from 'react';
 import { H2, H3, P2 } from './typograph';
-import { TypographyProps } from '@mui/material/Typography';
 import { AdditionalTag } from './styled';
 import { notFalsy } from '@site/src/utils/value';
+
+import { Box, TypographyProps } from '@mui/material';
 
 interface SectionProps {
   additional?: string;

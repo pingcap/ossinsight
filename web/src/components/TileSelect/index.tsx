@@ -9,11 +9,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import Box from '@mui/material/Box';
-import Stack from '@mui/material/Stack';
-import { Select, useEventCallback } from '@mui/material';
-import MenuItem from '@mui/material/MenuItem';
-import { SelectChangeEvent } from '@mui/material/Select/SelectInput';
+import { Select, useEventCallback, Box, Stack, MenuItem, SelectChangeEvent } from '@mui/material';
 import { isNullish, notFalsy } from '@site/src/utils/value';
 
 export type TileSelectOption = {

@@ -1,18 +1,12 @@
 import * as React from 'react';
 import { useMemo } from 'react';
-import * as echarts from 'echarts';
-import { EChartsOption, EffectScatterSeriesOption, ScatterSeriesOption } from 'echarts';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import { useTheme } from '@mui/material/styles';
-import map from '@geo-maps/countries-land-10km';
+import type { EChartsOption, EffectScatterSeriesOption, ScatterSeriesOption } from 'echarts';
 import { alpha2ToGeo, alpha2ToTitle } from '../../lib/areacode';
 import ECharts from '../ECharts';
 import { KeyOfType } from '../../dynamic-pages/analyze/charts/options/utils/data';
 import { isNullish, notNullish } from '@site/src/utils/value';
 
-if (isNullish(echarts.getMap('world'))) {
-  echarts.registerMap('world', map());
-}
+import { useMediaQuery, useTheme } from '@mui/material';
 
 export interface WorldMapChartProps<T> {
   loading?: boolean;

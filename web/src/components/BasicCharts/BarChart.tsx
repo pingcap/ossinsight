@@ -1,17 +1,8 @@
-import { EChartsOption } from 'echarts';
-import { BarChart as EBarChart } from 'echarts/charts';
-import { GridComponent, TitleComponent, TooltipComponent } from 'echarts/components';
-import * as echarts from 'echarts/core';
-import { CanvasRenderer } from 'echarts/renderers';
+import type { EChartsOption } from 'echarts';
 import { TextCommonOption } from 'echarts/types/src/util/types';
 import React, { useMemo } from 'react';
 import ECharts from '../ECharts';
 import { KeyOfType } from '../../dynamic-pages/analyze/charts/options/utils/data';
-
-// Register the required components
-echarts.use(
-  [TitleComponent, TooltipComponent, GridComponent, EBarChart, CanvasRenderer],
-);
 
 interface BarChartProps<T> {
   seriesName?: string;
@@ -134,7 +125,6 @@ export default function BarChart<T> ({ seriesName = 'Count', data, loading = fal
       height={height}
       showLoading={loading}
       option={options}
-      echarts={echarts}
       notMerge={false}
       lazyUpdate={true}
       style={{
