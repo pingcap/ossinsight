@@ -1,5 +1,6 @@
 import { AsyncData, RemoteData, useRemoteData } from '../../../../components/RemoteCharts/hook';
 import { useMemo } from 'react';
+import { isNullish } from '@site/src/utils/value';
 
 type RawRecentHotCollectionData = {
   id: number;
@@ -23,7 +24,7 @@ export function useRecentHotCollections (): AsyncData<RemoteData<any, RecentHotC
   const { data, loading, error } = useRemoteData<any, RawRecentHotCollectionData>('recent-hot-collections', {}, false);
 
   const processedData: RemoteData<any, RecentHotCollectionData> | undefined = useMemo(() => {
-    if (data == null) {
+    if (isNullish(data)) {
       return undefined;
     }
     const collections: RecentHotCollectionData[] = [];

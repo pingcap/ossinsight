@@ -6,13 +6,6 @@ build
 plugins/**/*.js
 plugins/**/*.d.ts
 
-# Config
-.eslintrc.js
-sidebars.js
-prefetch.mjs
-docusaurus.config.js
-babel.config.js
-
 # Special files
 src/api/_todo_hardcoded.ts
 src/client/linkedin.js

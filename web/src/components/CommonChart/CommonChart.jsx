@@ -8,6 +8,7 @@ import CommonChartContext from './context';
 import useVisibility from '../../hooks/visibility';
 import BrowserOnly from '@docusaurus/BrowserOnly';
 
+// eslint-disable-next-line react/prop-types
 function CommonChart ({ chart: rawChart, noSearch, comparing, shareInfo, ...rest }) {
   const visible = useVisibility();
   const { inView, ref } = useInView({ fallbackInView: true });

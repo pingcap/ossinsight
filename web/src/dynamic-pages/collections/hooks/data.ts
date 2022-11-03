@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { AsyncData, RemoteData, useRemoteData } from '../../../components/RemoteCharts/hook';
 import { CollectionDateTypeEnum } from '../dimensions';
-import { notFalsy } from '@site/src/utils/value';
+import { notFalsy, notNullish } from '@site/src/utils/value';
 
 export type CollectionHistoryData = {
   repo_name: string;
@@ -44,7 +44,7 @@ export type CollectionLastMonthRankData = {
 const SYMBOL_TRANSFORMED = Symbol('transformed-data');
 
 export function useCollectionHistory (collectionId: number | undefined, dimension: string): AsyncData<RemoteData<any, CollectionHistoryData>> {
-  const { data, loading, error } = useRemoteData<any, CollectionHistoryData>(`collection-${dimension}-history`, { collectionId }, false, collectionId !== undefined);
+  const { data, loading, error } = useRemoteData<any, CollectionHistoryData>(`collection-${dimension}-history`, { collectionId }, false, notNullish(collectionId));
 
   return useMemo(() => {
     // fill previous value if some data missed
@@ -125,7 +125,7 @@ export function useCollectionHistory (collectionId: number | undefined, dimensio
 }
 
 export function useCollectionHistoryRank (collectionId: number | undefined, dimension: string) {
-  return useRemoteData<any, CollectionHistoryRankData>(`collection-${dimension}-history-rank`, { collectionId }, false, collectionId !== undefined);
+  return useRemoteData<any, CollectionHistoryRankData>(`collection-${dimension}-history-rank`, { collectionId }, false, notNullish(collectionId));
 }
 
 export function useCollectionMonthRank (
@@ -137,6 +137,6 @@ export function useCollectionMonthRank (
     `collection-${dimension}-${type ?? 'month'}-rank`,
     { collectionId },
     false,
-    collectionId !== undefined,
+    notNullish(collectionId),
   );
 }

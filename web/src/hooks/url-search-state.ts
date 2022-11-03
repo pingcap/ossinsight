@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
-import { notNullish, Nullish } from '@site/src/utils/value';
+import { isNullish, notNullish, Nullish } from '@site/src/utils/value';
 
 export interface UseUrlSearchStateProps<T> {
   defaultValue: T | (() => T);
@@ -31,7 +31,7 @@ function useUrlSearchStateCSR<T> (key: string, {
   useEffect(() => {
     const sv = serialize(value);
     const usp = new URLSearchParams(location.search);
-    if (sv === undefined || sv === null) {
+    if (isNullish(sv)) {
       usp.delete(key);
     } else {
       usp.set(key, sv);

@@ -51,7 +51,7 @@ function useRepoSelector ({
   const onAutoCompleteChange = useCallback((event, newValue: Repo) => {
     const validMessage = onValid(newValue);
 
-    if (validMessage !== undefined) {
+    if (notNullish(validMessage)) {
       setTextFieldError(true);
       setHelperText(validMessage);
     } else {
