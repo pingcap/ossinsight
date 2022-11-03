@@ -117,5 +117,10 @@
   },
   "engines": {
     "node": ">=18.11"
+  },
+  "lint-staged": {
+    "*.{js,ts,jsx,tsx}": [
+      "npx eslint --cache --fix"
+    ]
   }
 }
