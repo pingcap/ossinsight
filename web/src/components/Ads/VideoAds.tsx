@@ -26,6 +26,7 @@ export default function VideoAds ({ thumbnailUrl, delay, url }: VideoAdsProps) {
 
   const handleClickClose: MouseEventHandler = useEventCallback((event) => {
     setShowButton(false);
+    event.stopPropagation();
   });
 
   const handleClickMask: MouseEventHandler = useEventCallback(() => {
@@ -49,19 +50,21 @@ export default function VideoAds ({ thumbnailUrl, delay, url }: VideoAdsProps) {
         )}
       </Mask>
       <VideoAdsContainer
+        ratio={16 / 9}
         className={`${showButton ? 'show' : ''}`}
-        onClick={handleClick}
       >
-        <img width="100%" src={thumbnailUrl} alt="Video Thumbnail" />
-        <CloseButton onClick={handleClickClose}>
-          <Close />
-        </CloseButton>
+        <div onClick={handleClick}>
+          <img width="100%" src={thumbnailUrl} alt="Video Thumbnail" />
+          <CloseButton onClick={handleClickClose}>
+            <Close />
+          </CloseButton>
+        </div>
       </VideoAdsContainer>
     </>
   );
 }
 
-const VideoAdsContainer = styled('div', {
+const VideoAdsContainer = styled(AspectRatio, {
   name: 'VideoAdsContainer',
 })(({ theme }) => css`
   position: fixed;
@@ -69,7 +72,6 @@ const VideoAdsContainer = styled('div', {
   right: ${theme.spacing(2)};
   bottom: ${theme.spacing(2)};
   width: min(400px, calc(100% - ${theme.spacing(2)} * 2));
-  height: 225px;
   display: flex;
   align-content: flex-end;
   justify-content: center;
@@ -80,7 +82,7 @@ const VideoAdsContainer = styled('div', {
   transition: box-shadow .2s ease, transform .7s ease, opacity .5s;
   opacity: 0;
   perspective: 700px;
-  transform: rotateY(30deg) translateX(20px);
+  transform: rotateX(15deg) rotateY(15deg) translateX(20px);
   pointer-events: none;
 
   &.show {
@@ -107,5 +109,5 @@ const Mask = styled(Backdrop)`
 `;
 
 const VideoContainer = styled(AspectRatio)`
-  width: min(100% - 32px, 560px);
+  width: min(100% - 32px, 60%, 100vh / 9 * 16 - 32px);
 `;

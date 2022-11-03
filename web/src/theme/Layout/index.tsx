@@ -68,7 +68,7 @@ export default function Layout (props: Props): JSX.Element {
 
       <HowItWorks />
 
-      <VideoAds thumbnailUrl="/img/video-ads-thumbnail.png" url="https://www.youtube.com/watch?v=JGfoRdVxSi4" delay={6000} />
+      <VideoAds thumbnailUrl="/img/video-ads-thumbnail.png" url="https://www.youtube.com/embed/JGfoRdVxSi4" delay={6000} />
     </LayoutProvider>
   );
 }
