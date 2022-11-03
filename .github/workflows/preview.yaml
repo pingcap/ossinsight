@@ -27,7 +27,7 @@ jobs:
       - name: Lint
         run: |
           npm run lint:ci
-          npx tsc --noEmit
+          npm run typecheck
 
   preview:
     runs-on: ubuntu-latest
