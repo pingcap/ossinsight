@@ -3,6 +3,8 @@ import { Backdrop, css, IconButton, styled, useEventCallback } from '@mui/materi
 import { Close } from '@mui/icons-material';
 import AspectRatio from 'react-aspect-ratio';
 
+let alreadyClosed = false;
+
 export interface VideoAdsProps {
   thumbnailUrl: string;
   url: string;
@@ -11,7 +13,7 @@ export interface VideoAdsProps {
 
 export default function VideoAds ({ thumbnailUrl, delay, url }: VideoAdsProps) {
   const [show, setShow] = useState(false);
-  const [showButton, setShowButton] = useState(false);
+  const [showButton, setShowButton] = useState(alreadyClosed);
   useEffect(() => {
     const h = setTimeout(() => {
       setShowButton(true);
@@ -22,11 +24,13 @@ export default function VideoAds ({ thumbnailUrl, delay, url }: VideoAdsProps) {
   const handleClick: MouseEventHandler = useEventCallback(() => {
     setShowButton(false);
     setShow(true);
+    alreadyClosed = true;
   });
 
   const handleClickClose: MouseEventHandler = useEventCallback((event) => {
     setShowButton(false);
     event.stopPropagation();
+    alreadyClosed = true;
   });
 
   const handleClickMask: MouseEventHandler = useEventCallback(() => {
