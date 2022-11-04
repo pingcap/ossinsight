@@ -1,6 +1,6 @@
 import React, { MouseEventHandler, useEffect, useState } from 'react';
 import { Backdrop, css, IconButton, styled, useEventCallback } from '@mui/material';
-import { Close } from '@mui/icons-material';
+import { Close, PlayArrow } from '@mui/icons-material';
 import AspectRatio from 'react-aspect-ratio';
 
 let alreadyClosed = false;
@@ -17,7 +17,7 @@ export default function VideoAds ({ thumbnailUrl, delay, url }: VideoAdsProps) {
   useEffect(() => {
     const h = setTimeout(() => {
       setShowButton(true);
-    }, delay);
+    }, process.env.NODE_ENV === 'development' ? 0 : delay);
     return () => clearTimeout(h);
   }, []);
 
@@ -59,6 +59,9 @@ export default function VideoAds ({ thumbnailUrl, delay, url }: VideoAdsProps) {
       >
         <div onClick={handleClick}>
           <img width="100%" src={thumbnailUrl} alt="Video Thumbnail" />
+          <PlayIconContainer>
+            <PlayArrow fontSize="inherit" opacity={0.7} />
+          </PlayIconContainer>
           <CloseButton onClick={handleClickClose}>
             <Close />
           </CloseButton>
@@ -114,4 +117,17 @@ const Mask = styled(Backdrop)`
 
 const VideoContainer = styled(AspectRatio)`
   width: min(100% - 32px, 1080px, 100vh / 9 * 16 - 32px);
+`;
+
+const PlayIconContainer = styled('div')`
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 128px;
+  background-color: rgba(0, 0, 0, 0.4);
 `;
