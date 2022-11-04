@@ -23,13 +23,12 @@ export default function VideoAds ({ thumbnailUrl, delay, url }: VideoAdsProps) {
   }, []);
 
   const handleClick: MouseEventHandler = useEventCallback(() => {
-    setShowButton(false);
     setShow(true);
-    alreadyClosed = true;
   });
 
   const handleClickClose: MouseEventHandler = useEventCallback((event) => {
     setShowButton(false);
+    setShow(false);
     event.stopPropagation();
     alreadyClosed = true;
   });
@@ -43,14 +42,19 @@ export default function VideoAds ({ thumbnailUrl, delay, url }: VideoAdsProps) {
       <Mask open={show} onClick={handleClickMask}>
         {show && (
           <VideoContainer ratio={16 / 9}>
-            <iframe
-              width="100%"
-              height="100%"
-              src={url}
-              title="YouTube video player"
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            />
+            <div>
+              <CloseButton onClick={handleClickClose}>
+                <Close />
+              </CloseButton>
+              <iframe
+                width="100%"
+                height="100%"
+                src={url}
+                title="YouTube video player"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              />
+            </div>
           </VideoContainer>
         )}
       </Mask>
