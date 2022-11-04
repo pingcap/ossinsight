@@ -1,12 +1,17 @@
 {
   "name": "ossinsight",
+  "version": "0.0.0",
   "private": true,
-  "version": "1.0.0",
+  "license": "MIT",
+  "workspaces": [
+    "packages/feeds-server"
+  ],
   "scripts": {
     "prepare": "husky install"
   },
   "devDependencies": {
     "husky": "^8.0.1",
     "lint-staged": "^13.0.3"
-  }
+  },
+  "packageManager": "pnpm@7.3.0"
 }
