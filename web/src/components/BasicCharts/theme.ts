@@ -79,6 +79,7 @@ export function registerThemeDark (bg = true) {
     },
     textStyle: {
       color: contrastColor,
+      fontFamily: 'JetBrains Mono',
     },
     title: {
       left: 'center',
