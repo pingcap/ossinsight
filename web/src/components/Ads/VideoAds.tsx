@@ -113,5 +113,5 @@ const Mask = styled(Backdrop)`
 `;
 
 const VideoContainer = styled(AspectRatio)`
-  width: min(100% - 32px, 60%, 100vh / 9 * 16 - 32px);
+  width: min(100% - 32px, 1080px, 100vh / 9 * 16 - 32px);
 `;
