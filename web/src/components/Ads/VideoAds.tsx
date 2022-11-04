@@ -75,7 +75,7 @@ export default function VideoAds ({ thumbnailUrl, delay, url }: VideoAdsProps) {
         <div onClick={handleClick}>
           <img width="100%" src={thumbnailUrl} alt="Video Thumbnail" />
           <PlayIconContainer>
-            <PlayCircleRoundedIcon fontSize="inherit" opacity={0.5} />
+            <PlayCircleRoundedIcon fontSize="inherit" opacity={0.3} />
           </PlayIconContainer>
           <CloseButton onClick={handleClickClose}>
             <Close />
@@ -93,7 +93,7 @@ const VideoAdsContainer = styled(AspectRatio, {
   z-index: 1000;
   right: ${theme.spacing(2)};
   bottom: ${theme.spacing(2)};
-  width: min(400px, calc(100% - ${theme.spacing(2)} * 2));
+  width: min(300px, calc(100% - ${theme.spacing(2)} * 2));
   display: flex;
   align-content: flex-end;
   justify-content: center;
