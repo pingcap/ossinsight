@@ -54,7 +54,7 @@ export const DebugDialog = ({ sql, query, params, open, onClose }: DebugDialogPr
       }
       return (
         <Box sx={{ overflowX: 'scroll', color: 'rgb(248, 248, 242)', backgroundColor: 'rgb(40, 42, 54)', borderRadius: 2, py: 2 }} mb={2}>
-          <Box display='table' fontFamily='monospace' fontSize={16} lineHeight={1} sx={{ borderSpacing: '16px 0' }}>
+          <Box display='table' fontSize={16} lineHeight={1.5} sx={{ borderSpacing: '16px 0' }}>
             <Box display='table-header-group'>
               <Box display='table-row'>
                 {data.fields.map(field => (

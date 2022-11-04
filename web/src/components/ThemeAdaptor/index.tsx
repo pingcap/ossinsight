@@ -15,6 +15,7 @@ const ThemeAdaptor = ({ children, dark }: PropsWithChildren<{ dark?: boolean }>)
       },
     },
     typography: {
+      fontFamily: 'var(--ifm-font-family-base)',
       h1: {
         fontFamily: 'var(--ifm-heading-font-family)',
         fontSize: 'var(--ifm-h1-font-size)',

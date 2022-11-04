@@ -44,6 +44,10 @@
   --ifm-z-index-fixed-mui: 11;
   --ifm-z-index-fixed: 14;
   --ifm-z-index-overlay: 16;
+
+  --ifm-font-family-base: JetBrains Mono, monospace;
+  --ifm-heading-font-family: JetBrains Mono, monospace;
+  --ifm-font-family-monospace: JetBrains Mono, monospace;
 }
 
 /* animate.css overwrite*/

@@ -77,7 +77,6 @@ const TimeDistribution = ({ title, size, gap, offset, data }: TimeDistributionPr
               textAnchor="end"
               fontSize={12}
               fill="#aaa"
-              fontFamily="monospace"
             >
               {name}
             </text>
@@ -90,7 +89,6 @@ const TimeDistribution = ({ title, size, gap, offset, data }: TimeDistributionPr
               textAnchor="middle"
               fontSize={12}
               fill="#aaa"
-              fontFamily="monospace"
             >
               {name}
             </text>

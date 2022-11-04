@@ -11,7 +11,6 @@ import { AnimatedDownIcon, MrO } from './_components/styled';
 import { Container, styled } from '@mui/material';
 
 const fonts = [
-  'https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,600;0,700;1,100;1,400;1,600&display=swap',
 ];
 
 const sections = [
@@ -91,7 +90,6 @@ function BrowserHash ({ value }: { value: string | undefined }) {
 
 const PageContainer = styled('div', { label: 'PageContainer' })(({ theme }) => ({
   background: 'transparent linear-gradient(180deg, #242526 0%, #0B003B 100%) 0% 0% no-repeat padding-box',
-  fontFamily: "'JetBrains Mono', monospace",
   overflow: 'hidden',
   fontSize: 14,
   [theme.breakpoints.up('md')]: {

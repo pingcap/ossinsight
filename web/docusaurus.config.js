@@ -46,7 +46,7 @@ const config = {
   },
 
   stylesheets: [
-    'https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap'
+    'https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,600;0,700;1,100;1,400;1,600&display=swap',
   ],
 
   clientModules: [
