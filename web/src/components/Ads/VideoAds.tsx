@@ -1,6 +1,7 @@
 import React, { MouseEventHandler, useEffect, useState } from 'react';
 import { Backdrop, css, IconButton, styled, useEventCallback } from '@mui/material';
-import { Close, PlayArrow } from '@mui/icons-material';
+import { Close } from '@mui/icons-material';
+import PlayCircleRoundedIcon from '@mui/icons-material/PlayCircleRounded';
 import AspectRatio from 'react-aspect-ratio';
 
 let alreadyClosed = false;
@@ -60,7 +61,7 @@ export default function VideoAds ({ thumbnailUrl, delay, url }: VideoAdsProps) {
         <div onClick={handleClick}>
           <img width="100%" src={thumbnailUrl} alt="Video Thumbnail" />
           <PlayIconContainer>
-            <PlayArrow fontSize="inherit" opacity={0.7} />
+            <PlayCircleRoundedIcon fontSize="inherit" opacity={0.5}/>
           </PlayIconContainer>
           <CloseButton onClick={handleClickClose}>
             <Close />
