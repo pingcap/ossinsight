@@ -4,20 +4,30 @@ import { Close } from '@mui/icons-material';
 import PlayCircleRoundedIcon from '@mui/icons-material/PlayCircleRounded';
 import AspectRatio from 'react-aspect-ratio';
 
-let alreadyClosed = false;
-
 export interface VideoAdsProps {
   thumbnailUrl: string;
   url: string;
   delay: number;
 }
 
+function isSessionClosed (url) {
+  const item = sessionStorage.getItem('video-ads:' + btoa(url));
+  return item === 'true';
+}
+
+function setSessionClosed (url) {
+  sessionStorage.setItem('video-ads:' + btoa(url), 'true');
+}
+
 export default function VideoAds ({ thumbnailUrl, delay, url }: VideoAdsProps) {
   const [show, setShow] = useState(false);
-  const [showButton, setShowButton] = useState(alreadyClosed);
+  const [showButton, setShowButton] = useState(false);
+
   useEffect(() => {
     const h = setTimeout(() => {
-      setShowButton(true);
+      if (!isSessionClosed(url)) {
+        setShowButton(true);
+      }
     }, process.env.NODE_ENV === 'development' ? 0 : delay);
     return () => clearTimeout(h);
   }, []);
@@ -29,8 +39,8 @@ export default function VideoAds ({ thumbnailUrl, delay, url }: VideoAdsProps) {
   const handleClickClose: MouseEventHandler = useEventCallback((event) => {
     setShowButton(false);
     setShow(false);
+    setSessionClosed(url);
     event.stopPropagation();
-    alreadyClosed = true;
   });
 
   const handleClickMask: MouseEventHandler = useEventCallback(() => {
@@ -65,7 +75,7 @@ export default function VideoAds ({ thumbnailUrl, delay, url }: VideoAdsProps) {
         <div onClick={handleClick}>
           <img width="100%" src={thumbnailUrl} alt="Video Thumbnail" />
           <PlayIconContainer>
-            <PlayCircleRoundedIcon fontSize="inherit" opacity={0.5}/>
+            <PlayCircleRoundedIcon fontSize="inherit" opacity={0.5} />
           </PlayIconContainer>
           <CloseButton onClick={handleClickClose}>
             <Close />
