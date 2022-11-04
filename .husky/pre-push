@@ -2,5 +2,6 @@
 . "$(dirname -- "$0")/_/husky.sh"
 
 pushd web
-npx lint-staged
+npm run lint
+npm run typecheck
 popd
