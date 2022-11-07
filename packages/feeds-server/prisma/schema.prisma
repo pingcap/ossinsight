@@ -1,0 +1,61 @@
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["interactiveTransactions"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                  Int             @id @default(autoincrement())
+  githubId            Int             @map("github_id") @unique(map: "index_u_on_github_id")
+  githubLogin         String          @map("github_login") @db.VarChar(40)
+  emailAddress        String          @map("email_address") @db.VarChar(255)
+  emailGetUpdates     Boolean         @map("email_get_updates") @db.Bit(1)
+  createdAt           DateTime        @map("created_at") @default(now()) @db.DateTime(0)
+  watchedRepos        WatchedRepo[]
+  sentRepoMilestones  SentRepoMilestone[]
+
+  @@map("sys_users")
+}
+
+model WatchedRepo {
+  userId     Int      @map("user_id")
+  repoId     Int      @map("repo_id")
+  watchedAt  DateTime @map("watched_at") @default(now()) @db.DateTime(0)
+  user       User     @relation(fields: [userId], references: [id])
+
+  @@id([userId, repoId])
+  @@map("sys_watched_repos")
+}
+
+model SentRepoMilestone {
+  userId            Int      @map("user_id")
+  repoMilestoneId   Int      @map("repo_milestone_id")
+  sentAt            DateTime @map("sent_at") @default(now()) @db.DateTime(0)
+  user              User     @relation(fields: [userId], references: [id])
+
+  @@id([userId, repoMilestoneId])
+  @@map("sys_sent_repo_milestones")
+}
+
+model RepoMilestone {
+  id                Int      @id
+  repoId            Int      @map("repo_id") @default(0)
+  milestoneTypeId   Int      @map("milestone_type_id") @default(0)
+  milestoneNumber   Int      @map("milestone_number") @default(0)
+  payload           Json?
+  reachedAt         DateTime @map("reached_at") @db.DateTime(0)
+
+  @@unique([repoId, milestoneTypeId, milestoneNumber], map: "index_rm_on_repo_id_milestone_type_number")
+  @@map("sys_repo_milestones")
+}
+
+model RepoMileStoneType {
+  id   Int    @id
+  name String @db.VarChar(30)
+
+  @@map("sys_repo_milestone_types")
+}
