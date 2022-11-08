@@ -32,6 +32,7 @@ import {
   Button,
   IconButton,
 } from '@mui/material';
+import { useGtagEventDispatcher } from '@site/src/hooks/gtag';
 
 const renderTable = (data: Array<{ [x: string]: string | number }>) => {
   return (
@@ -104,6 +105,7 @@ export const SQLPlaygroundDrawer = (props: { data?: Repo }) => {
   const [inputValue, setInputValue] = React.useState('');
   const [sql, setSQL] = React.useState('');
   const [open, setOpen] = React.useState(false);
+  const dispatchClickEvent = useGtagEventDispatcher('click_link_all');
 
   // const { repoId, repoName, comparingRepoId } = useAnalyzeContext();
 
@@ -125,6 +127,7 @@ export const SQLPlaygroundDrawer = (props: { data?: Repo }) => {
       if (event.key.toUpperCase() === 'K' && (event.ctrlKey || event.metaKey)) {
         // it was Ctrl + K (Cmd + K)
         setOpen(true);
+        dispatchClickEvent({ click_text: 'Open SQL Playground (Shortcut)' });
       }
     };
     window.addEventListener('keydown', handleKeyDown);
@@ -173,6 +176,7 @@ export const SQLPlaygroundDrawer = (props: { data?: Repo }) => {
 
   const handleClickTerminalBtn = (event: React.MouseEvent<HTMLElement>) => {
     setOpen(true);
+    dispatchClickEvent({ click_text: 'Open SQL Playground' });
   };
 
   return <>
