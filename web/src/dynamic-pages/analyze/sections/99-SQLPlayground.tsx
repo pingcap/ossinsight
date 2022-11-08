@@ -308,7 +308,7 @@ SELECT
 FROM
 github_events
 WHERE
-repo_id = {{repoId}}
+repo_id = ${targetData?.id ?? '{{repoId}}'}
 LIMIT
 1;
 */
