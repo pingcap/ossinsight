@@ -13,57 +13,74 @@ Now, the data is ready, let's try to analyze these data with SQL!
 
 #### i. Example 1
 
-Look at `ti-chi-bot`'s details, it is a robot:
+Let's learn the data!
 
 <Tabs>
   <TabItem value="sql" label="SQL">
 
 ```sql
 SELECT
-    type, COUNT(*) AS events
-FROM github_events
-WHERE
-    actor_login = 'ti-chi-bot'
-GROUP BY type;
+  *
+FROM
+  github_events
+LIMIT
+  1
 ```
 
   </TabItem>
-  <TabItem value="cloud" label="Explain SQL - TiDB Cloud">
+  <TabItem value="explain" label="Explain">
 
 ```
-+--------------------------------+---------+-----------+----------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| id                             | estRows | task      | access object                                                              | operator info                                                                                                                                                    |
-+--------------------------------+---------+-----------+----------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Projection_5                   | 1.00    | root      |                                                                            | gharchive_dev.github_events.type, Column#36                                                                                                                      |
-| └─HashAgg_24                   | 1.00    | root      |                                                                            | group by:gharchive_dev.github_events.type, funcs:count(Column#44)->Column#36, funcs:firstrow(gharchive_dev.github_events.type)->gharchive_dev.github_events.type |
-|   └─IndexLookUp_25             | 1.00    | root      | partition:all                                                              |                                                                                                                                                                  |
-|     ├─IndexRangeScan_22(Build) | 7550.14 | cop[tikv] | table:github_events, index:index_github_events_on_actor_login(actor_login) | range:["ti-chi-bot","ti-chi-bot"], keep order:false                                                                                                              |
-|     └─HashAgg_7(Probe)         | 1.00    | cop[tikv] |                                                                            | group by:gharchive_dev.github_events.type, funcs:count(1)->Column#44                                                                                             |
-|       └─TableRowIDScan_23      | 7550.14 | cop[tikv] | table:github_events                                                        | keep order:false                                                                                                                                                 |
-+--------------------------------+---------+-----------+----------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-```
-  </TabItem>
-  <TabItem value="local" label="Explain SQL - Local TiDB">
-
-```
-+------------------------------------+---------+-----------+----------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| id                                 | estRows | task      | access object                                                              | operator info                                                                                                                                                    |
-+------------------------------------+---------+-----------+----------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Projection_5                       | 1.00    | root      |                                                                            | gharchive_dev.github_events.type, Column#33                                                                                                                      |
-| └─HashAgg_17                       | 1.00    | root      |                                                                            | group by:gharchive_dev.github_events.type, funcs:count(Column#37)->Column#33, funcs:firstrow(gharchive_dev.github_events.type)->gharchive_dev.github_events.type |
-|   └─IndexLookUp_18                 | 1.00    | root      |                                                                            |                                                                                                                                                                  |
-|     ├─IndexRangeScan_15(Build)     | 8938.94 | cop[tikv] | table:github_events, index:index_github_events_on_actor_login(actor_login) | range:["ti-chi-bot","ti-chi-bot"], keep order:false                                                                                                              |
-|     └─HashAgg_7(Probe)             | 1.00    | cop[tikv] |                                                                            | group by:gharchive_dev.github_events.type, funcs:count(1)->Column#37                                                                                             |
-|       └─TableRowIDScan_16          | 8938.94 | cop[tikv] | table:github_events                                                        | keep order:false                                                                                                                                                 |
-+------------------------------------+---------+-----------+----------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
++---------------------------+---------+-----------+---------------------+--------------------------------+
+| id                        | estRows | task      | access object       | operator info                  |
++---------------------------+---------+-----------+---------------------+--------------------------------+
+| Limit_7                   | 1.00    | root      |                     | offset:0, count:1              |
+| └─TableReader_11          | 1.00    | root      |                     | data:Limit_10                  |
+|   └─Limit_10              | 1.00    | cop[tikv] |                     | offset:0, count:1              |
+|     └─TableFullScan_9     | 1.00    | cop[tikv] | table:github_events | keep order:false, stats:pseudo |
++---------------------------+---------+-----------+---------------------+--------------------------------+
 ```
 
   </TabItem>
 </Tabs>
 
-:::info Test
-* [ti-chi-bot](https://github.com/ti-chi-bot)
-:::
+Result:
+
+```
+***************************[ 1. row ]***************************
+id                     | 0
+type                   | PushEvent
+created_at             | 2014-04-24 20:45:30
+repo_id                | 17139664
+repo_name              | recserv.uiowa.edu
+actor_id               | 0
+actor_login            | jwfuller
+language               |
+additions              | 0
+deletions              | 0
+action                 |
+number                 | 0
+commit_id              |
+comment_id             | 0
+org_login              | ITS-UofIowa
+org_id                 | 0
+state                  |
+closed_at              | 1970-01-01 00:00:00
+comments               | 0
+pr_merged_at           | 1970-01-01 00:00:00
+pr_merged              | 0
+pr_changed_files       | 0
+pr_review_comments     | 0
+pr_or_issue_id         | 0
+event_day              | 2014-04-24
+event_month            | 2014-04-01
+event_year             | 2014
+push_size              | 14
+push_distinct_size     | 0
+creator_user_login     |
+creator_user_id        | 0
+pr_or_issue_created_at | 1970-01-01 00:00:00
+```
 
 #### ii. Example 2
 
@@ -85,22 +102,22 @@ SELECT
   event_month, stars
 FROM (
   SELECT
-    event_month,
-    COUNT(1) OVER (ORDER BY event_month) AS stars,
-    ROW_NUMBER() OVER (PARTITION BY event_month) AS row_num
+    date_format(created_at, '%Y-%m-01') as event_month,
+    COUNT(1) OVER (ORDER BY date_format(created_at, '%Y-%m-01')) AS stars,
+    ROW_NUMBER() OVER (PARTITION BY date_format(created_at, '%Y-%m-01')) AS row_num
   FROM
     github_events
   WHERE
     type = 'WatchEvent'
     AND repo_id = 41986369
-  ORDER BY event_month
+  ORDER BY 1
 ) sub
 WHERE row_num = 1
 ;
 ```
 
   </TabItem>
-  <TabItem value="explain" label="Explain">
+  <TabItem value="explain" label="Explain SQL">
 
 ```
 +-----------------------------------+----------+-----------+--------------------------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------+
@@ -134,7 +151,7 @@ The below SQL is picked from [blog - Love, Code, and Robot](/blog/say-thanks-to-
 ```sql
 WITH bots_with_first_seen AS (
     SELECT
-        actor_login, MIN(event_year) AS first_seen_at
+        actor_login, MIN(YEAR(created_at)) AS first_seen_at
     FROM github_events ge
     WHERE
         actor_login REGEXP '^(bot-.+|.+bot|.+\\[bot\\]|.+-bot-.+|robot-.+|.+-ci-.+|.+-ci|.+-testing|.+clabot.+|.+-gerrit|k8s-.+|.+-machine|.+-automation|github-.+|.+-github|.+-service|.+-builds|codecov-.+|.+teamcity.+|jenkins-.+|.+-jira-.+)$'
@@ -155,7 +172,7 @@ ORDER BY event_year;
 ```
 
   </TabItem>
-  <TabItem value="cloud" label="Explain SQL - TiDB Cloud">
+  <TabItem value="explain" label="Explain SQL">
 
 ```
 +------------------------------+-----------+-----------+---------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -181,41 +198,11 @@ ORDER BY event_year;
 +------------------------------+-----------+-----------+---------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 ```
   </TabItem>
-  <TabItem value="local" label="Explain SQL - Local TiDB">
-
-```sql
-+----------------------------------+------------+-----------+---------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| id                               | estRows    | task      | access object | operator info                                                                                                                                                                                                                                                          |
-+----------------------------------+------------+-----------+---------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Sort_48                          | 56047.89   | root      |               | Column#41                                                                                                                                                                                                                                                              |
-| └─Projection_50                  | 56047.89   | root      |               | any_value(Column#40)->Column#42, Column#41                                                                                                                                                                                                                             |
-|   └─HashAgg_51                   | 56047.89   | root      |               | group by:Column#41, funcs:firstrow(Column#40)->Column#40, funcs:firstrow(Column#41)->Column#41                                                                                                                                                                         |
-|     └─CTEFullScan_52             | 56047.89   | root      | CTE:acc       | data:CTE_1                                                                                                                                                                                                                                                             |
-| CTE_1                            | 56047.89   | root      |               | Non-Recursive CTE                                                                                                                                                                                                                                                      |
-| └─Selection_38(Seed Part)        | 56047.89   | root      |               | 1                                                                                                                                                                                                                                                                      |
-|   └─Projection_39                | 70059.86   | root      |               | Column#37, Column#35                                                                                                                                                                                                                                                   |
-|     └─Window_45                  | 70059.86   | root      |               | count(gharchive_dev.github_events.actor_login)->Column#37 over(order by Column#35 range between unbounded preceding and current row)                                                                                                                                   |
-|       └─Sort_47                  | 70059.86   | root      |               | Column#35                                                                                                                                                                                                                                                              |
-|         └─CTEFullScan_46         | 70059.86   | root      | CTE:bwfs      | data:CTE_0                                                                                                                                                                                                                                                             |
-| CTE_0                            | 70059.86   | root      |               | Non-Recursive CTE                                                                                                                                                                                                                                                      |
-| └─Sort_18(Seed Part)             | 70059.86   | root      |               | Column#33                                                                                                                                                                                                                                                              |
-|   └─Projection_20                | 70059.86   | root      |               | gharchive_dev.github_events.actor_login, Column#33                                                                                                                                                                                                                     |
-|     └─HashAgg_21                 | 70059.86   | root      |               | group by:gharchive_dev.github_events.actor_login, funcs:min(gharchive_dev.github_events.event_year)->Column#33, funcs:firstrow(gharchive_dev.github_events.actor_login)->gharchive_dev.github_events.actor_login                                                       |
-|       └─Selection_28             | 824598.40  | root      |               | regexp(gharchive_dev.github_events.actor_login, "^(bot-.+|.+bot|.+\[bot\]|.+-bot-.+|robot-.+|.+-ci-.+|.+-ci|.+-testing|.+clabot.+|.+-gerrit|k8s-.+|.+-machine|.+-automation|github-.+|.+-github|.+-service|.+-builds|codecov-.+|.+teamcity.+|jenkins-.+|.+-jira-.+)$") |
-|         └─TableReader_27         | 1030748.00 | root      |               | data:TableFullScan_26                                                                                                                                                                                                                                                  |
-|           └─TableFullScan_26     | 1030748.00 | cop[tikv] | table:ge      | keep order:false                                                                                                                                                                                                                                                       |
-+----------------------------------+------------+-----------+---------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-```
-
-  </TabItem>
 </Tabs>
 
-results:
+Result:
 
-<Tabs>
-  <TabItem value="cloud" label="Result - TiDB Cloud" default>
-
-Remember there are only 240k rows stored in your Developer Tier database.
+(Remember there are only 240k rows stored in your Developer Tier database.)
 
 ```
 +------------+------------+
@@ -234,34 +221,6 @@ Remember there are only 240k rows stored in your Developer Tier database.
 
 mysql>
 ```
-  </TabItem>
-  <TabItem value="local" label="Result - Local TiDB">
-
-There are millions of rows stored in your local TiDB running on laptop/servers. 
-
-```
-+------------+------------+
-| bots_total | event_year |
-+------------+------------+
-|          4 |       2011 |
-|          8 |       2012 |
-|         22 |       2013 |
-|         50 |       2014 |
-|         71 |       2015 |
-|        132 |       2016 |
-|        172 |       2017 |
-|        243 |       2018 |
-|        342 |       2019 |
-|        450 |       2020 |
-|        561 |       2021 |
-|        622 |       2022 |
-+------------+------------+
-12 rows in set (2.39 sec)
-
-mysql>
-```
-  </TabItem>
-</Tabs>
 
 <br />
 <br />
@@ -325,7 +284,7 @@ GROUP BY event_year
 ORDER BY event_year;
 ```
   </TabItem>
-  <TabItem value="cloud" label="Explain - TiDB Cloud">
+  <TabItem value="explain" label="Explain SQL">
 
 ```
 +----------------------------------------+-----------+--------------+---------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -355,38 +314,6 @@ ORDER BY event_year;
 |                     └─TableFullScan_47 | 239589.00 | mpp[tiflash] | table:ge      | keep order:false, PartitionTableScan:true                                                                                                                                                                                                                              |
 +----------------------------------------+-----------+--------------+---------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 ```
-  </TabItem>
-  <TabItem value="local" label="Explain - Local TiDB">
-
-```
-+--------------------------------------------+------------+--------------+---------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| id                                         | estRows    | task         | access object | operator info                                                                                                                                                                                                                                                          |
-+--------------------------------------------+------------+--------------+---------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Sort_74                                    | 56949.11   | root         |               | Column#41                                                                                                                                                                                                                                                              |
-| └─Projection_76                            | 56949.11   | root         |               | any_value(Column#40)->Column#42, Column#41                                                                                                                                                                                                                             |
-|   └─HashAgg_77                             | 56949.11   | root         |               | group by:Column#41, funcs:firstrow(Column#40)->Column#40, funcs:firstrow(Column#41)->Column#41                                                                                                                                                                         |
-|     └─CTEFullScan_78                       | 56949.11   | root         | CTE:acc       | data:CTE_1                                                                                                                                                                                                                                                             |
-| CTE_1                                      | 56949.11   | root         |               | Non-Recursive CTE                                                                                                                                                                                                                                                      |
-| └─Selection_64(Seed Part)                  | 56949.11   | root         |               | 1                                                                                                                                                                                                                                                                      |
-|   └─Projection_65                          | 71186.39   | root         |               | Column#37, Column#35                                                                                                                                                                                                                                                   |
-|     └─Window_71                            | 71186.39   | root         |               | count(gharchive_dev.github_events.actor_login)->Column#37 over(order by Column#35 range between unbounded preceding and current row)                                                                                                                                   |
-|       └─Sort_73                            | 71186.39   | root         |               | Column#35                                                                                                                                                                                                                                                              |
-|         └─CTEFullScan_72                   | 71186.39   | root         | CTE:bwfs      | data:CTE_0                                                                                                                                                                                                                                                             |
-| CTE_0                                      | 71186.39   | root         |               | Non-Recursive CTE                                                                                                                                                                                                                                                      |
-| └─Sort_18(Seed Part)                       | 71186.39   | root         |               | Column#33                                                                                                                                                                                                                                                              |
-|   └─Projection_20                          | 71186.39   | root         |               | gharchive_dev.github_events.actor_login, Column#33                                                                                                                                                                                                                     |
-|     └─TableReader_54                       | 71186.39   | root         |               | data:ExchangeSender_53                                                                                                                                                                                                                                                 |
-|       └─ExchangeSender_53                  | 71186.39   | mpp[tiflash] |               | ExchangeType: PassThrough                                                                                                                                                                                                                                              |
-|         └─Projection_49                    | 71186.39   | mpp[tiflash] |               | Column#33, gharchive_dev.github_events.actor_login                                                                                                                                                                                                                     |
-|           └─HashAgg_50                     | 71186.39   | mpp[tiflash] |               | group by:gharchive_dev.github_events.actor_login, funcs:min(Column#46)->Column#33, funcs:firstrow(gharchive_dev.github_events.actor_login)->gharchive_dev.github_events.actor_login                                                                                    |
-|             └─ExchangeReceiver_52          | 71186.39   | mpp[tiflash] |               |                                                                                                                                                                                                                                                                        |
-|               └─ExchangeSender_51          | 71186.39   | mpp[tiflash] |               | ExchangeType: HashPartition, Hash Cols: [name: gharchive_dev.github_events.actor_login, collate: utf8mb4_unicode_ci]                                                                                                                                                   |
-|                 └─HashAgg_25               | 71186.39   | mpp[tiflash] |               | group by:gharchive_dev.github_events.actor_login, funcs:min(gharchive_dev.github_events.event_year)->Column#46                                                                                                                                                         |
-|                   └─Selection_48           | 837857.60  | mpp[tiflash] |               | regexp(gharchive_dev.github_events.actor_login, "^(bot-.+|.+bot|.+\[bot\]|.+-bot-.+|robot-.+|.+-ci-.+|.+-ci|.+-testing|.+clabot.+|.+-gerrit|k8s-.+|.+-machine|.+-automation|github-.+|.+-github|.+-service|.+-builds|codecov-.+|.+teamcity.+|jenkins-.+|.+-jira-.+)$") |
-|                     └─TableFullScan_47     | 1047322.00 | mpp[tiflash] | table:ge      | keep order:false                                                                                                                                                                                                                                                       |
-+--------------------------------------------+------------+--------------+---------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-```
-
   </TabItem>
 </Tabs>
 
