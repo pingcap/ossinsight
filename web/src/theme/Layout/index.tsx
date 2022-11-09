@@ -12,6 +12,7 @@ import ErrorPageContent from '@theme/ErrorPageContent';
 import type { Props } from '@theme/Layout';
 import styles from './styles.module.css';
 import VideoAds from '@site/src/components/Ads/VideoAds';
+import CustomFooter from '@site/src/components/Footer';
 
 declare module '@theme/Layout' {
   interface Props {
@@ -35,6 +36,8 @@ export default function Layout (props: Props): JSX.Element {
     image,
     header,
     side,
+    sideWidth,
+    customFooter,
   } = props;
 
   useKeyboardNavigation();
@@ -63,7 +66,8 @@ export default function Layout (props: Props): JSX.Element {
         </ErrorBoundary>
       </div>
 
-      {!noFooter && <Footer />}
+      {!noFooter && customFooter && <CustomFooter sideWidth={sideWidth} />}
+      {!noFooter && <Footer sideWidth={sideWidth} />}
       <VideoAds thumbnailUrl="/img/video-ads-thumbnail.png" url="https://www.youtube.com/embed/6ofDBgXh4So?enablejsapi=1" delay={6000} />
     </LayoutProvider>
   );

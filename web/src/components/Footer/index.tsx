@@ -13,10 +13,10 @@ const icon = (src) => {
   );
 };
 
-export default function Footer () {
+export default function Footer ({ sideWidth }: { sideWidth?: string }) {
   return (
     <>
-      <Section>
+      <Section sideWidth={sideWidth}>
         <Typography variant='h2' sx={{ fontSize: 40 }} align='center'>
           Wonder how OSS Insight works?
         </Typography>
@@ -62,7 +62,7 @@ export default function Footer () {
           </Button>
         </Box>
       </Section>
-      <Section darker>
+      <Section darker sideWidth={sideWidth}>
         <div className="text--center">
           <h3>
             Follow us at&nbsp;
