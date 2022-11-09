@@ -5,7 +5,7 @@ authors: [fendy, hooopo]
 tags: [tidbcloud]
 image: ./import.png
 description: In this tutorial, we will provide you with a piece of sample data of all GitHub events occurring on January 1, 2022, and walk you through on how to use TiDB Cloud to analyze this data in 10 minutes. 
-keywords: [tutorial, TiDB Developer Tier, Import massive data, column storage replica, tidb, top ranking, github, database, github archive, gitHub metrics]
+keywords: [tutorial, TiDB Cloud Serverless Tier, Import massive data, column storage replica, tidb, top ranking, github, database, github archive, gitHub metrics]
 ---
 
 [TiDB](https://docs.pingcap.com/tidb/stable/overview?utm_source=ossinsight&utm_medium=referral) is an open source distributed NewSQL database with horizontal scalability, high availability, and strong consistency. It can also deal with mixed OLTP and OLAP workloads at the same time by leveraging its hybrid transactional and analytical (HTAP) capability. 
@@ -21,8 +21,8 @@ In this tutorial, we will provide you with a piece of sample data of all GitHub 
 
 <!--truncate-->
 
-## Create a TiDB Developer Tier cluster (Free)
-Once you register an account, you can create a free cluster with TiDB Developer Tier. 
+## Create a TiDB Cloud Serverless Tier cluster (Free Forever)
+Once you register an account, you can create a free cluster with TiDB Cloud Serverless Tier. 
 
 :::info
  A cluster is a database to store data. 
@@ -39,7 +39,7 @@ Once you register an account, you can create a free cluster with TiDB Developer 
 Your TiDB Cloud cluster will be created in approximately 1 to 3 minutes.
 
 :::note
-The Developer Tier is **free** for 1 year.
+The Serverless Tier is **FREE FOREVER**.
 :::
 
 ## Import data to your TiDB Cloud cluster
