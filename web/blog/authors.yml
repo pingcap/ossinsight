@@ -1,3 +1,15 @@
+vita:
+  name: Vita Lu
+  title: Developer Relations Engineer
+  url: https://github.com/ChenlingLu
+  image_url: https://github.com/ChenlingLu.png
+
+cheese:
+  name: Cheese Wong
+  title: Engineer of TiDB Community
+  url: https://github.com/Icemap
+  image_url: https://github.com/Icemap.png
+
 mia:
   name: Mia Zhou
   title: Technical Content Developer
