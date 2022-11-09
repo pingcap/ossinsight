@@ -21,14 +21,14 @@ In this tutorial, we will provide you with a piece of sample data of all GitHub 
 
 <!--truncate-->
 
-## Create a TiDB Cloud Serverless Tier cluster (Free Forever)
-Once you register an account, you can create a free cluster with TiDB Cloud Serverless Tier. 
+## Create a TiDB Cloud Serverless Tier cluster
+Once you register an account, you can create a cluster with TiDB Cloud Serverless Tier. 
 
 :::info
  A cluster is a database to store data. 
 :::
 
-1. Click **Get Started for Free** and start to create a free cluster. 
+1. Click **Get Started for Free** and start to create a cluster.
 
 ![](./dev-tier.png)
 
@@ -38,9 +38,6 @@ Once you register an account, you can create a free cluster with TiDB Cloud Serv
 5. Click **Submit**.
 Your TiDB Cloud cluster will be created in approximately 1 to 3 minutes.
 
-:::note
-The Serverless Tier is **FREE FOREVER**.
-:::
 
 ## Import data to your TiDB Cloud cluster
 
