@@ -42,11 +42,11 @@ export default function Page () {
                 />
                 <StandardCard
                   title='Step 2: Create cluster (Free)'
-                  description='Create cluster with TiDB Cloud Dev Tier, it is free for one year ⏰ !'
+                  description='Create cluster with TiDB Cloud Serverless Tier, it is FREE FOREVER ⏰ !'
                   codeStyleDescription={false}
                   elevation={0}
                   cardSx={{ backgroundColor: 'action.hover' }}
-                  link='/blog/try-it-yourself/#create-a-tidb-developer-tier-cluster-free'
+                  link='/blog/try-it-yourself/#create-a-tidb-cloud-serverless-tier-cluster-free-forever'
                   size='small'
                 />
                 <StandardCard
