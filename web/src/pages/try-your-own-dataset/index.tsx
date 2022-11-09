@@ -32,7 +32,7 @@ export default function Page () {
             >
               <Cards xs={12} md={6} spacing={4}>
                 <StandardCard
-                  title='Step 1: Sign up TiDB Cloud (Free) '
+                  title='Step 1: Sign up TiDB Cloud'
                   description='Sign up a TiDB Cloud account for free, no need to add credit card'
                   codeStyleDescription={false}
                   elevation={0}
@@ -41,12 +41,12 @@ export default function Page () {
                   size='small'
                 />
                 <StandardCard
-                  title='Step 2: Create cluster (Free)'
-                  description='Create cluster with TiDB Cloud Serverless Tier, it is FREE FOREVER ⏰ !'
+                  title='Step 2: Create cluster'
+                  description='Create cluster with TiDB Cloud Serverless Tier ⏰ !'
                   codeStyleDescription={false}
                   elevation={0}
                   cardSx={{ backgroundColor: 'action.hover' }}
-                  link='/blog/try-it-yourself/#create-a-tidb-cloud-serverless-tier-cluster-free-forever'
+                  link='/blog/try-it-yourself/#create-a-tidb-cloud-serverless-tier-cluster'
                   size='small'
                 />
                 <StandardCard
