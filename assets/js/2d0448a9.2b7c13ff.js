@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkweb=self.webpackChunkweb||[]).push([[8695],{5233:e=>{e.exports=JSON.parse('{"permalink":"/blog/tags/insight","page":1,"postsPerPage":10,"totalPages":1,"totalCount":7,"blogDescription":"Helping dev teams adopt OSS technologies and practices. Written by software engineers and community analysts.","blogTitle":"Blog"}')}}]);
