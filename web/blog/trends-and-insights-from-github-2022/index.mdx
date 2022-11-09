@@ -8,16 +8,17 @@ description: We analyzed 5 billion+ GitHub events and got interesting findings a
 keywords: [github annual report, github 2022, github insights, open source, top programming languages, most active developers, most active repositories]
 ---
 
-We analyzed more than 5,000,000,000 rows of GitHub event data and got the results here. In this report, you'll get interesting findings about open source software on GitHub in 2022, including:
+We analyzed more than 5,000,000,000 rows of GitHub event data and got the results here. In this [report](https://ossinsight.io/2022/), you'll get interesting findings about open source software on GitHub in 2022, including:
 
-* Top programming languages
-* Geographic distribution
-* Contribution time allocation
-* Technology trends
-* The most popular repositories
-* The most active repositories
-* Top stargazers
-* The most active developers
+- [Top languages in the open source world over the past four years](#top-languages-in-the-open-source-world-over-the-past-four-years)
+- [Geographic distribution of developer behavior](#geographic-distribution-of-developer-behavior)
+- [Developer behavior distribution on weekdays and weekends](#developer-behavior-distribution-on-weekdays-and-weekends)
+- [Popular open source topics](#popular-open-source-topics)
+- [The most popular repositories in 2022](#the-most-popular-repositories-in-2022)
+- [The most active repositories over the past four years](#the-most-active-repositories-over-the-past-four-years)
+- [Who gave the most stars in 2022](#who-gave-the-most-stars-in-2022)
+- [The most active developers since 2011](#the-most-active-developers-since-2011)
+- [Appendix](#appendix)
 
 ## Top languages in the open source world over the past four years
 
@@ -25,7 +26,9 @@ This chart ranks programming languages yearly from 2019 to 2022 based on the rat
 
 <br />
 
-![Top languages](./top-programming-languages.png)
+<center>
+<img src={require('./top-programming-languages.png').default} width = "80%" alt="top-programming-languages"/>
+</center>
 
 <center><em>Top programming languages</em></center>
 
@@ -43,7 +46,9 @@ The programming languages used in a pull request reflect which languages develop
 
 <br />
 
-![Rankings of back-end programming languages](./top-back-end-programming-languages.png)
+<center>
+<img src={require('./top-back-end-programming-languages.png').default} width = "80%" alt="top-back-end-programming-languages"/>
+</center>
 
 <center><em>Top back-end programming languages</em></center>
 
@@ -60,7 +65,9 @@ We queried the number of various events that occurred throughout the world from 
 
 <br />
 
-![Geographic distribution of developer behavior](./geographic-distribution-of-developer-behavior.png)
+<center>
+<img src={require('./geographic-distribution-of-developer-behavior.png').default} width = "80%" alt="geographic-distribution-of-developer-behavior"/>
+</center>
 
 <center><em>Geographic distribution of developer behavior</em></center>
 
@@ -86,13 +93,23 @@ We queried the distribution of each event type over the seven days of the week.
 
 <br />
 
-![Developer behavior distribution on weekdays and weekends](./developer-behavior-distribution-on-weekdays-and-weekends.png)
+<center>
+<img src={require('./developer-behavior-distribution-on-weekdays-and-weekends.png').default} width = "80%" alt="developer-behavior-distribution-on-weekdays-and-weekends"/>
+</center>
 
 <center><em>Developer behavior distribution on weekdays and weekends</em></center>
 
 <br />
 
-![Developer behavior distribution from Monday to Sunday](./developer-behavior-distribution-from-monday-to-sunday.png)
+Insights:
+
+* Developers are most active on weekdays, with 77.73% of events occurring on weekdays.
+
+### The distribution of specific events
+
+<center>
+<img src={require('./developer-behavior-distribution-from-monday-to-sunday.png').default} width = "80%" alt="developer-behavior-distribution-from-monday-to-sunday"/>
+</center>
 
 <center><em>Developer behavior distribution from Monday to Sunday</em></center>
 
@@ -100,7 +117,6 @@ We queried the distribution of each event type over the seven days of the week.
 
 Insights:
 
-* Developers are most active on weekdays, with 77.73% of events occurring on weekdays.
 * Pull Request Event, Pull Request Review Event, and Issues Event all have the highest percentage on Tuesdays, while the lowest percentage is on the weekends.
 * The amount of Push Event, Watch Event, and Fork Event activities are similar on weekdays and weekends, while the Pull Request Review Event is the most different. Watch Event and Fork Event are more personal behaviors, Pull Request Review Events are more work behaviors, and Push Events are used more in personal projects.
 
@@ -114,7 +130,9 @@ We queried the number of open source repositories associated with each technical
 
 <br />
 
-![Activity levels of popular topics](./activity-levels-of-popular-topics.png)
+<center>
+<img src={require('./activity-levels-of-popular-topics.png').default} width = "80%" alt="activity-levels-of-popular-topics"/>
+</center>
 
 <center><em>Activity levels of popular topics</em></center>
 
@@ -135,7 +153,9 @@ Then, we calculated the growth rate for each year which can reflect new entrants
 
 <br />
 
-![Low code repositories](./low-code-repositories.png)
+<center>
+<img src={require('./low-code-repositories.png').default} width = "80%" alt="low-code-repositories"/>
+</center>
 
 <center><em>Low code repositories</em></center>
 
@@ -147,7 +167,9 @@ We can see that 2020 is the peak period of project development, with a 313.43% i
 
 <br />
 
-![Web3 repositories](./web3-repositories.png)
+<center>
+<img src={require('./web3-repositories.png').default} width = "80%" alt="web3-repositories"/>
+</center>
 
 <center><em>Web3 repositories</em></center>
 
@@ -159,7 +181,9 @@ Whether it is the creation of new repositories, developers, or the interest of t
 
 <br />
 
-![GitHub Actions repositories](./github-actions-repositories.png)
+<center>
+<img src={require('./github-actions-repositories.png').default} width = "80%" alt="github-actions-repositories"/>
+</center>
 
 <center><em>GitHub Actions repositories</em></center>
 
@@ -171,7 +195,9 @@ The annual increase of GitHub Actions repositories has been declining, but devel
 
 <br />
 
-![Database repositories](./database-repositories.png)
+<center>
+<img src={require('./database-repositories.png').default} width = "80%" alt="database-repositories"/>
+</center>
 
 <center><em>Database repositories</em></center>
 
@@ -183,7 +209,9 @@ As an infrastructure project, the Database project's threshold is high. Compared
 
 <br />
 
-![AI repositories](./ai-repositories.png)
+<center>
+<img src={require('./ai-repositories.png').default} width = "80%" alt="ai-repositories"/>
+</center>
 
 <center><em>AI repositories</em></center>
 
@@ -199,7 +227,9 @@ The number of stars is the most visible indication of the popularity of open sou
 
 <br />
 
-![The most popular repositories in 2022](./most-popular-repositories-2022.png)
+<center>
+<img src={require('./most-popular-repositories-2022.png').default} width = "80%" alt="most-popular-repositories-2022"/>
+</center>
 
 <center><em>The most popular repositories in 2022</em></center>
 
@@ -324,7 +354,9 @@ We queried the developers who gave the most stars in 2022, took the top 20, and 
 
 <br />
 
-![Developers who gave the most stars](./developers-most-stars.png)
+<center>
+<img src={require('./developers-most-stars.png').default} width = "80%" alt="developers-most-stars"/>
+</center>
 
 <center><em>Developers who gave the most stars</em></center>
 
@@ -340,7 +372,9 @@ We queried the top 20 most active developers per year since 2011. This time we d
 
 <br />
 
-![The most active developers](./most-active-developers.png)
+<center>
+<img src={require('./most-active-developers.png').default} width = "80%" alt="most-active-developers"/>
+</center>
 
 <center><em>The most active developers</em></center>
 
