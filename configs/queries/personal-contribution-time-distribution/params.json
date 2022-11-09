@@ -1,0 +1,25 @@
+{
+  "cacheHours": 1,
+  "params": [
+    {
+      "name": "userId",
+      "replaces": "5086433",
+      "pattern": "^[1-9]\\d*$"
+    },
+    {
+      "name": "period",
+      "replaces": "AND (created_at BETWEEN DATE_SUB(NOW(), INTERVAL 1 YEAR) AND NOW())",
+      "enums": [
+        "last_1_year",
+        "last_3_year",
+        "all_times"
+      ],
+      "default": "all_times",
+      "template": {
+        "last_1_year": "AND (created_at BETWEEN DATE_SUB(NOW(), INTERVAL 1 YEAR) AND NOW())",
+        "last_3_year": "AND (created_at BETWEEN DATE_SUB(NOW(), INTERVAL 3 YEAR) AND NOW())",
+        "all_times": ""
+      }
+    }
+  ]
+}

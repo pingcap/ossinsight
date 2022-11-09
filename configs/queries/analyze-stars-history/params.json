@@ -1,0 +1,31 @@
+{
+  "public": true,
+  "description": "Star history for repo",
+  "cacheHours": 1,
+  "params": [
+    {
+      "name": "repoId",
+      "replaces": "41986369",
+      "type": "array",
+      "pattern": "^[1-9]\\d*$"
+    }
+  ],
+  "resultSchema": {
+    "type": "object",
+    "properties": {
+      "event_month": {
+        "type": "string",
+        "description": "Event month"
+      },
+      "repo_id": {
+        "type": "number",
+        "description": "GitHub Repo ID"
+      },
+      "total": {
+        "type": "number",
+        "description": "Total stars in the month"
+      }
+    },
+    "required": ["event_month", "repo_id", "total"]
+  }
+}

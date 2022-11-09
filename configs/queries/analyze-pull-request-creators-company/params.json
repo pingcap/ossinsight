@@ -1,0 +1,17 @@
+{
+  "cacheHours": 24,
+  "params": [
+    {
+      "name": "repoId",
+      "replaces": "41986369",
+      "type": "array",
+      "pattern": "^[1-9]\\d*$"
+    },
+    {
+      "name": "limit",
+      "replaces": "9999999999",
+      "pattern": "^(10|20|25|50)$",
+      "default": 50
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "cacheHours": -1,
+  "refreshCron": "0 0 1 1 *",
+  "onlyFromCache": true,
+  "params": [
+    {
+      "name": "repo",
+      "replaces": "db_repos",
+      "enums": "repo_subset"
+    },
+    {
+      "name": "event",
+      "replaces": "WatchEvent",
+      "enums": "event"
+    },
+    {
+      "name": "n",
+      "replaces": "10",
+      "enums": "n"
+    },
+    {
+      "name": "year",
+      "replaces": "2021"
+    }
+  ]
+}

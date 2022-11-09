@@ -1,0 +1,10 @@
+{
+  "cacheHours": 1,
+  "params": [
+    {
+      "name": "keyword",
+      "replaces": "PingCAP",
+      "pattern": "^[^\"%_]+$"
+    }
+  ]
+}

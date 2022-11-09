@@ -1,0 +1,44 @@
+{
+  "cacheHours": 1,
+  "params": [
+    {
+      "name": "userId",
+      "replaces": "5086433",
+      "pattern": "^[1-9]\\d*$"
+    },
+    {
+      "name": "activity_type",
+      "replaces": "AND ((type = 'PullRequestEvent' AND action = 'opened') OR (type = 'IssuesEvent' AND action = 'opened') OR (type = 'IssueCommentEvent' AND action = 'created') OR (type = 'PullRequestReviewEvent' AND action = 'created') OR (type = 'PullRequestReviewCommentEvent' AND action = 'created') OR (type = 'PushEvent' AND action = ''))",
+      "enums": ["all", "pull_requests", "reviews", "review_comments", "issues",  "issue_comments", "pushes"],
+      "template": {
+        "pull_requests": "AND type = 'PullRequestEvent' AND action = 'opened'",
+        "reviews": "AND type = 'PullRequestReviewEvent' AND action = 'created'",
+        "review_comments": "AND type = 'PullRequestReviewCommentEvent' AND action = 'created'",
+        "issues": "AND type = 'IssuesEvent' AND action = 'opened'",
+        "issue_comments": "AND type = 'IssueCommentEvent' AND action = 'created'",
+        "pushes": "AND type = 'PushEvent' AND action = ''",
+        "all": "AND ((type = 'PullRequestEvent' AND action = 'opened') OR (type = 'IssuesEvent' AND action = 'opened') OR (type = 'IssueCommentEvent' AND action = 'created') OR (type = 'PullRequestReviewEvent' AND action = 'created') OR (type = 'PullRequestReviewCommentEvent' AND action = 'created') OR (type = 'PushEvent' AND action = ''))"
+      }
+    },
+    {
+      "name": "period",
+      "replaces": "DATE_FORMAT(created_at, '%Y-%m-%d %k:00:00') AS event_period",
+      "enums": ["hour", "day", "month"],
+      "template": {
+        "hour": "DATE_FORMAT(created_at, '%Y-%m-%d %k:00:00') AS event_period",
+        "day": "DATE_FORMAT(created_at, '%Y-%m-%d 00:00:00') AS event_period",
+        "month": "DATE_FORMAT(created_at, '%Y-%m-01 00:00:00') AS event_period"
+      }
+    },
+    {
+      "name": "time_range",
+      "replaces": "AND (created_at BETWEEN DATE_SUB(NOW(), INTERVAL 28 DAY) AND NOW())",
+      "enums": ["last_72_hours", "last_7_days", "last_28_days"],
+      "template": {
+        "last_72_hours": "AND (created_at BETWEEN DATE_SUB(NOW(), INTERVAL 72 HOUR) AND NOW())",
+        "last_7_days": "AND (created_at BETWEEN DATE_SUB(NOW(), INTERVAL 7 DAY) AND NOW())",
+        "last_28_days": "AND (created_at BETWEEN DATE_SUB(NOW(), INTERVAL 28 DAY) AND NOW())"
+      }
+    }
+  ]
+}
