@@ -23,6 +23,7 @@ import { Contributors } from './sections/6-Contributors';
 import { SQLPlaygroundDrawer } from './sections/99-SQLPlayground';
 import { Repository } from './sections/5-Repository';
 import { isNullish, notNullish } from '@site/src/utils/value';
+import { Milestone } from '@site/src/dynamic-pages/analyze/sections/98-Milestone';
 
 interface AnalyzePageParams {
   owner: string;
@@ -37,6 +38,7 @@ const sections = [
   'issues',
   'repository',
   'contributors',
+  'milestone',
 ];
 
 function AnalyzePage () {
@@ -122,6 +124,7 @@ function AnalyzePage () {
                 <>
                   <Repository ref={sectionRefs[5]} />
                   <Contributors ref={sectionRefs[6]} />
+                  <Milestone ref={sectionRefs[7]} />
                 </>
                   )
                 : undefined}
