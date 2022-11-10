@@ -1,6 +1,6 @@
 {
   "name": "@ossinsight/feeds-server",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "private": true,
   "description": "The feeds server of OSSInsight.",
   "homepage": "https://github.com/pingcap/ossinsight#readme",
@@ -20,7 +20,7 @@
     "lint": "eslint --cache .",
     "lint:ci": "eslint --quiet .",
     "lint:fix": "eslint --cache --fix .",
-    "start": "npm run build:ts && fastify start -p 30001 -l info dist/app.js",
+    "start": "fastify start -p 30001 -l info dist/app.js",
     "test": "npm run build:ts && tsc -p test/tsconfig.json && tap --ts \"test/**/*.test.ts\"",
     "watch:ts": "tsc -w"
   },
