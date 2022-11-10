@@ -1,11 +1,11 @@
-import { test } from 'tap'
-import { build } from '../helper'
+import { build } from '../helper';
+import { test } from 'tap';
 
-test('default root route', async (t) => {
-  const app = await build(t)
+void test('default root route', async (t) => {
+  const app = await build(t);
 
   const res = await app.inject({
-    url: '/'
-  })
-  t.same(JSON.parse(res.payload), { root: true })
-})
+    url: '/',
+  });
+  t.same(JSON.parse(res.payload), { root: true });
+});

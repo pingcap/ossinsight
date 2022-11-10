@@ -1,6 +1,13 @@
-import { MjmlButton } from "mjml-react";
-import { black, gold, grayLight } from "./theme";
-import { leadingTight, textBase, borderBase } from "./theme";
+import {
+  black,
+  borderBase,
+  gold,
+  grayLight,
+  leadingTight,
+  textBase,
+} from './theme';
+
+import { MjmlButton } from 'mjml-react';
 
 type ButtonPrimaryProps = {
   link: string;

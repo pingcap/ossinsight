@@ -1,7 +1,7 @@
-import { MjmlSection, MjmlColumn, MjmlText } from "mjml-react";
-import { grayDark, textSm } from "./theme";
+import { MjmlSection, MjmlColumn, MjmlText } from 'mjml-react';
+import { grayDark, textSm } from './theme';
 
-export default function Footer() {
+export default function Footer () {
   return (
     <MjmlSection cssClass="smooth">
       <MjmlColumn>

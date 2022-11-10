@@ -1,83 +1,148 @@
-import { FastifyServer, RepoMilestoneToSent } from '../../types';
-import { Prisma, PrismaClient } from '@prisma/client';
+import {
+  CronJobDef,
+  FastifyServer,
+  JobName,
+  RepoMilestoneToSent,
+  User,
+} from '../../types';
+import { PoolConnection, ResultSetHeader, RowDataPacket } from 'mysql2/promise';
 
 import { DateTime } from 'luxon';
-import React from "react";
+import { FastifyInstance } from 'fastify';
+import { MySQLPromisePool } from '@fastify/mysql';
+import React from 'react';
 import RepoMilestoneFeeds from '../../emails/RepositoryFeeds';
 import fp from 'fastify-plugin';
 import sendMail from '../../emails';
 
-export default fp(async (fastify) => {
-    fastify.cron.createJob({
-        name: 'send-repo-feeds-emails',
-        cronTime: fastify.config.SEND_REPO_FEEDS_CRON,
-        onTick: async (server) => {
-            try {
-                await sendRepoFeedsToWatchers(server);
-            } catch(err) {
-                server.log.error(err, 'Failed to send watched repo milestones feeds.');
-            }
-        }
-    });
-})
+export const SEND_REPO_FEEDS_EMAILS_JOB_NAME = 'send-repo-feeds-emails';
 
-async function sendRepoFeedsToWatchers(server: FastifyServer) {
+export default fp(async (fastify: FastifyInstance) => {
+  fastify.cron.createJob({
+    name: SEND_REPO_FEEDS_EMAILS_JOB_NAME,
+    cronTime: fastify.config.SEND_REPO_FEEDS_CRON,
+    // Notice: do not use arrow function here, otherwise `this` will be undefined.
+    onTick: async function (server: FastifyServer) {
+      await sendRepoFeedsEmailsJobHandler.bind(this)(this.name!, server);
+    },
+    startWhenReady: true,
+  });
+});
+
+export async function sendRepoFeedsEmailsJobHandler (
+  this: CronJobDef,
+  jobName: JobName,
+  server: FastifyServer,
+) {
+  if (!jobName) {
+    server.log.error(
+      'Skip execution, must provide jobName for the handler.',
+    );
+    return;
+  }
+
+  // Init parameters.
+  const parameters = server.jobParameters.get(jobName);
+  const pageSize = 100;
+  const jobParameters = Object.assign({}, parameters, {
+    pageSize,
+  });
+  server.jobParameters.set(jobName, jobParameters);
+
+  // Init statuses.
+  server.jobStatuses.set(jobName, {
+    page: 0,
+    processEvents: 0,
+  });
+
+  server.log.info(jobParameters, 'Starting execute job %s.', jobName);
+
+  try {
     let pageNum = 1;
-    const pageSize = 100;
-    while(true) {
-        const watchers = await getWatchers(server.prisma, pageNum, pageSize);
-        if (!Array.isArray(watchers) || watchers.length === 0) {
-            break;
-        }
+    while (true) {
+      const watchers = await getWatchers(server.mysql, pageNum, pageSize);
+      if (!Array.isArray(watchers) || watchers.length === 0) {
+        break;
+      }
 
-        for (let watcher of watchers) {
-            sendRepoFeedsToWatcher(server, watcher);
-        }
-        
-        if (watchers.length < pageSize) {
-            break;
-        }
+      for (const watcher of watchers) {
+        await sendRepoFeedsToWatcher(server, watcher);
+      }
 
-        pageNum++;
+      if (watchers.length < pageSize) {
+        break;
+      }
+
+      pageNum++;
     }
+  } catch (err) {
+    server.log.error(err, 'Failed to execute %s job.', jobName);
+  }
 }
 
-async function sendRepoFeedsToWatcher(server: FastifyServer, watcher: Prisma.UserGetPayload<{}>) {
-    const { id: watcherId, emailAddress, githubLogin } = watcher;
-    try {
-        await server.prisma.$transaction(async (prisma) => {
-            const repoMilestones = await getRepoMilestonesForUser(prisma, watcherId);
-            // Skip if there no new repo milestones.
-            if (repoMilestones.length > 0) {
-                const subject = `What happened on my watched repositories on ${DateTime.utc().toLocaleString(DateTime.DATE_FULL)}?`;
-                await sendEmailToWatcher(emailAddress, subject, githubLogin, repoMilestones);
-                await markRepoMilestonesAsSent(prisma, repoMilestones);
-            }
-        });
-    } catch(err) {
-        server.log.error(err, `Failed to send repository feeds to watcher ${watcherId}.`);
+async function sendRepoFeedsToWatcher (server: FastifyServer, watcher: User) {
+  const { id: watcherId, emailAddress, githubLogin } = watcher;
+  let conn: PoolConnection | null = null;
+  try {
+    conn = await server.mysql.getConnection();
+    await conn.beginTransaction();
+    const repoMilestones = await getRepoMilestonesForUser(conn, watcherId);
+    // Skip if there no new repo milestones.
+    if (repoMilestones.length > 0) {
+      const subject = `What happened on my watched repositories on ${DateTime.utc().toLocaleString(
+                DateTime.DATE_FULL,
+            )}?`;
+      await sendEmailToWatcher(
+        emailAddress,
+        subject,
+        githubLogin,
+        repoMilestones,
+      );
+      await markRepoMilestonesAsSent(conn, repoMilestones);
     }
+    await conn.commit();
+  } catch (err) {
+    server.log.error(
+      err,
+            `Failed to send repository feeds to watcher ${watcherId}.`,
+    );
+    if (conn) {
+      await conn.rollback();
+      await conn.end();
+    }
+  }
 }
 
-async function getWatchers(prisma: PrismaClient, page: number = 1, pageSize: number = 10) {
-    const offset = (page - 1) * pageSize;
-    return await prisma.user.findMany({
-        where: {
-            emailGetUpdates: true,
-            watchedRepos: {
-                
-            }
-        },
-        skip: offset,
-        take: pageSize
-    });
+async function getWatchers (
+  dbPool: MySQLPromisePool,
+  page: number = 1,
+  pageSize: number = 10,
+): Promise<User[]> {
+  const offset = (page - 1) * pageSize;
+  const [rows] = await dbPool.query<User[]>(
+        `
+        SELECT id, github_id AS githubId, github_login AS githubLogin, email_address AS emailAddress
+        FROM sys_users su
+        JOIN sys_watched_repos swr ON su.id = swr.user_id
+        WHERE
+            su.email_address IS NOT NULL
+            AND su.email_get_updates = 1
+        OFFSET ? LIMIT ?;
+    `,
+        [offset, pageSize],
+  );
+  return rows;
 }
 
-async function getRepoMilestonesForUser(
-    prisma: Prisma.TransactionClient, userId: number, page: number = 1, pageSize: number = 10
-):Promise<RepoMilestoneToSent[]> {
-    const offset = (page - 1) * pageSize;
-    return await prisma.$queryRaw<RepoMilestoneToSent[]>`
+async function getRepoMilestonesForUser (
+  conn: PoolConnection,
+  userId: number,
+  page: number = 1,
+  pageSize: number = 10,
+): Promise<RepoMilestoneToSent[]> {
+  const offset = (page - 1) * pageSize;
+  const [rows] = await conn.query<RowDataPacket[]>(
+        `
         WITH repo_milestone_will_be_sent AS (
             SELECT
                 srm.id AS milestone_id,
@@ -91,10 +156,10 @@ async function getRepoMilestonesForUser(
             JOIN sys_watched_repos swr ON srm.repo_id = swr.repo_id
             LEFT JOIN sys_sent_repo_milestones ssm ON ssm.repo_milestone_id = srm.id
             WHERE
-                swr.user_id = ${userId}
+                swr.user_id = ?
                 AND ssm.user_id IS NULL     -- Exclude the sent milestones.
             ORDER BY srm.created_at DESC
-            LIMIT ${offset}, ${pageSize}
+            LIMIT ?, ?
         )
         SELECT
             rm.repo_id AS repoId,
@@ -109,28 +174,39 @@ async function getRepoMilestonesForUser(
         FROM repo_milestone_will_be_sent m
         JOIN github_repos gr ON m.repo_id = gr.repo_id
         JOIN sys_repo_milestone_types mt ON m.milestone_type_id = mt.id;
-    `;
+    `,
+        [userId, offset, pageSize],
+  );
+  return rows as RepoMilestoneToSent[];
 }
 
-async function sendEmailToWatcher(emailAddress: string, subject: string, name: string, repoMilestones: RepoMilestoneToSent[]) {
-    await sendMail({
-        subject: subject,
-        to: emailAddress,
-        component: React.createElement(RepoMilestoneFeeds, {
-            name: name,
-            repoMilestones: repoMilestones
-        })
-    });
+async function sendEmailToWatcher (
+  emailAddress: string,
+  subject: string,
+  name: string,
+  repoMilestones: RepoMilestoneToSent[],
+) {
+  await sendMail({
+    subject,
+    to: emailAddress,
+    component: React.createElement(RepoMilestoneFeeds, {
+      name,
+      repoMilestones,
+    }),
+  });
 }
 
-async function markRepoMilestonesAsSent(prisma: Prisma.TransactionClient, repoMilestones: RepoMilestoneToSent[]) {
-    return await prisma.sentRepoMilestone.createMany({
-        data: repoMilestones.map((repoMilestone) => {
-            return {
-                repoMilestoneId: repoMilestone.milestoneId,
-                userId: repoMilestone.watchedUserId
-            }
-        }),
-        skipDuplicates: true
-    });
+async function markRepoMilestonesAsSent (
+  conn: PoolConnection,
+  repoMilestones: RepoMilestoneToSent[],
+) {
+  const [rs] = await conn.query<ResultSetHeader>(
+        `
+        INSERT INTO sys_sent_repo_milestones (user_id, repo_milestone_id)
+        VALUES ?
+        ON DUPLICATE KEY UPDATE user_id = user_id;
+    `,
+        repoMilestones.map((m) => [m.watchedUserId, m.milestoneId]),
+  );
+  return rs.affectedRows;
 }
