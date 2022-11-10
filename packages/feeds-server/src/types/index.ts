@@ -1,14 +1,32 @@
 import { FastifyBaseLogger, FastifyInstance, FastifyTypeProviderDefault, RawServerDefault } from "fastify";
 import { IncomingMessage, ServerResponse } from "http";
 
+import { Params } from 'fastify-cron';
+import { RowDataPacket } from 'mysql2/promise';
+
 export type FastifyServer = FastifyInstance<RawServerDefault, IncomingMessage, ServerResponse<IncomingMessage>, FastifyBaseLogger, FastifyTypeProviderDefault>;
 
-export interface GitHubRepoWithEvents {
+export type JobName = string;
+
+export type CronJobDef = Params;
+
+export type JobHandler = {
+    (this: CronJobDef, jobName: JobName, server: FastifyServer): Promise<void>;
+};
+
+export interface GitHubRepoWithEvents extends RowDataPacket {
     index: number;
     repoId: number;
     repoName: string;
     type: string;
     action: string;
+}
+
+export interface User extends RowDataPacket {
+    id: number;
+    githubId: number;
+    githubLogin: string;
+    emailAddress: string;
 }
 
 export interface RepoMilestoneToSent {
