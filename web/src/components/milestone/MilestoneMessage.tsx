@@ -35,9 +35,7 @@ export default function MilestoneMessage ({ milestone_number, milestone_type_id,
             ? template.render({ milestone_number, milestone_type_id, reached_at }, { findCollectionById })
             : (
               <>
-                {template.icon}
-                {milestone_number}+
-                {template.unit}
+                {template.icon} {milestone_number}+ {template.unit}
               </>
               )
         }
