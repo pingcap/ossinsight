@@ -64,4 +64,8 @@ test/types/index.js
 # compiled app
 dist
 
+# Mailing
 .mailing
+
+# Eslint
+.eslintcache
