@@ -1,4 +1,4 @@
-import { FastifyPluginAsync } from "fastify";
+import { FastifyPluginAsync } from 'fastify';
 
 interface IParams {
   name: string;
@@ -6,15 +6,15 @@ interface IParams {
 
 const stopJobHandler: FastifyPluginAsync = async (
   app,
-  opts
+  opts,
 ): Promise<void> => {
   app.post<{
     Params: IParams;
-  }>("/", async function (req, reply) {
+  }>('/', async function (req, reply) {
     const { name } = req.params;
     const job = app.cron.getJobByName(name);
     if (!job) {
-      reply.status(404).send({
+      void reply.status(404).send({
         message: `Job ${name} not found.`,
       });
       return;
@@ -22,9 +22,9 @@ const stopJobHandler: FastifyPluginAsync = async (
 
     job.stop();
 
-    const parameters = app.jobParameters.get(name) || {};
-    const statuses = app.jobStatuses.get(name) || {};
-    reply.send({
+    const parameters = app.jobParameters.get(name) ?? {};
+    const statuses = app.jobStatuses.get(name) ?? {};
+    void reply.send({
       name: job?.name,
       running: job?.running,
       lastDate: job?.lastDate(),

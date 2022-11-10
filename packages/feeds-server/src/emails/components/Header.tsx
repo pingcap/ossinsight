@@ -1,4 +1,4 @@
-import { MjmlColumn, MjmlImage, MjmlSection } from "mjml-react";
+import { MjmlColumn, MjmlImage, MjmlSection } from 'mjml-react';
 
 type HeaderProps = {
   loose?: boolean;
@@ -6,7 +6,7 @@ type HeaderProps = {
 
 const Header: React.FC<HeaderProps> = ({ loose }) => {
   return (
-    <MjmlSection padding={loose ? "48px 0 40px" : "48px 0 24px"}>
+    <MjmlSection padding={loose ? '48px 0 40px' : '48px 0 24px'}>
       <MjmlColumn>
         <MjmlImage
           padding="0 24px 0"

@@ -5,11 +5,11 @@ export const EmailServerEnvSchema = {
     'SEND_REPO_FEEDS_CRON',
     'CALC_REPO_MILESTONES_CRON',
     'MAX_CONCURRENT',
-    'POSTMARK_API_KEY'
+    'POSTMARK_API_KEY',
   ],
   properties: {
     DATABASE_URL: {
-      type: 'string'
+      type: 'string',
     },
     SEND_REPO_FEEDS_CRON: {
       type: 'string',
@@ -21,10 +21,10 @@ export const EmailServerEnvSchema = {
     },
     MAX_CONCURRENT: {
       type: 'number',
-      default: 10
+      default: 10,
     },
     POSTMARK_API_KEY: {
-      type: 'string'
-    }
+      type: 'string',
+    },
   },
 };

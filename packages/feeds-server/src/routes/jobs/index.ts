@@ -1,4 +1,4 @@
-import { FastifyPluginAsync } from 'fastify'
+import { FastifyPluginAsync } from 'fastify';
 import { Job } from 'fastify-cron';
 
 const jobListHandler: FastifyPluginAsync = async (app, opts): Promise<void> => {
@@ -7,11 +7,11 @@ const jobListHandler: FastifyPluginAsync = async (app, opts): Promise<void> => {
       return {
         name: job.name,
         running: job.running,
-        lastDate: job.lastDate()
-      }
+        lastDate: job.lastDate(),
+      };
     });
-    reply.send(jobs);
-  })
-}
+    void reply.send(jobs);
+  });
+};
 
 export default jobListHandler;
