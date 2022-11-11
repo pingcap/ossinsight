@@ -1,6 +1,5 @@
 import Layout, { Props as LayoutProps } from '@theme/Layout';
 import React, { PropsWithChildren, useLayoutEffect } from 'react';
-import Footer from '../../components/Footer';
 import { notNullish } from '@site/src/utils/value';
 import { Box } from '@mui/material';
 
@@ -9,6 +8,7 @@ declare module '@theme/Layout' {
     header?: JSX.Element;
     side?: JSX.Element;
     sideWidth?: string;
+    customFooter?: boolean;
   }
 }
 
@@ -23,10 +23,10 @@ export interface CustomPageProps extends LayoutProps {
 export default function CustomPage ({
   children,
   header,
-  footer = true,
   dark,
   sideWidth,
   Side,
+  footer: customFooter = true,
   ...props
 }: PropsWithChildren<CustomPageProps>) {
   useLayoutEffect(() => {
@@ -37,6 +37,7 @@ export default function CustomPage ({
   return (
     <Layout
       {...props}
+      customFooter={customFooter}
       header={header}
       sideWidth={sideWidth}
       side={(sideWidth && notNullish(Side))
@@ -57,7 +58,6 @@ export default function CustomPage ({
           }}
         >
           {children}
-          {footer ? <Footer /> : undefined}
         </main>
       </div>
     </Layout>

@@ -9,6 +9,7 @@ export interface SectionProps {
   pt?: number;
   id?: string;
   maxWidth?: Breakpoint | false;
+  sideWidth?: string | undefined;
 }
 
 const dark = {
@@ -16,7 +17,7 @@ const dark = {
   darker: '#1C1E21',
 };
 
-export default function Section ({ id, darker = false, pt, maxWidth = 'xl', children }: PropsWithChildren<SectionProps>) {
+export default function Section ({ id, darker = false, pt, maxWidth = 'xl', sideWidth, children }: PropsWithChildren<SectionProps>) {
   return (
     <Box
       component='section'
@@ -26,6 +27,8 @@ export default function Section ({ id, darker = false, pt, maxWidth = 'xl', chil
         {
           backgroundColor: darker ? dark.darker : dark.default,
           pt,
+          marginLeft: sideWidth,
+          paddingRight: sideWidth,
         },
       ]}
     >
