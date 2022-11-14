@@ -30,7 +30,7 @@ export default function MilestoneTimeline ({ repoId }: MilestoneTimelineProps) {
           <TimelineItem key={id}>
             <TimelineSeparator>
               <TimelineDot sx={{ bgcolor: '#E78F34' }} />
-              {i < arr.length - 1 && <TimelineConnector />}
+              {i < arr.length - 1 && <TimelineConnector sx={{ bgcolor: '#7c7c7c' }} />}
             </TimelineSeparator>
             <TimelineContent>
               <MilestoneMessage milestone_type_id={milestone_type_id} milestone_number={milestone_number} reached_at={reached_at} />
