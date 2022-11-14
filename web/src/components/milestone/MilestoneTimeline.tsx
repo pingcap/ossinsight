@@ -2,6 +2,7 @@ import { useMilestones } from '@site/src/components/milestone/hooks';
 import React from 'react';
 import { Timeline, TimelineConnector, TimelineContent, TimelineDot, TimelineItem, timelineItemClasses, TimelineSeparator } from '@mui/lab';
 import MilestoneMessage from '@site/src/components/milestone/MilestoneMessage';
+import { Skeleton } from '@mui/material';
 
 interface MilestoneTimelineProps {
   repoId?: number;
@@ -11,7 +12,7 @@ export default function MilestoneTimeline ({ repoId }: MilestoneTimelineProps) {
   const { data } = useMilestones(repoId);
 
   if (!data) {
-    return <></>;
+    return renderLoading();
   }
 
   return (
@@ -38,6 +39,33 @@ export default function MilestoneTimeline ({ repoId }: MilestoneTimelineProps) {
           </TimelineItem>
         ))
       }
+    </Timeline>
+  );
+}
+
+function renderLoading () {
+  return (
+    <Timeline
+      sx={{
+        maxWidth: 789,
+        minHeight: '80vh',
+        [`& .${timelineItemClasses.root}:before`]: {
+          flex: 0,
+          padding: 0,
+        },
+      }}
+    >
+      {[1, 2, 3, 4, 5].map(n => (
+        <TimelineItem key={n}>
+          <TimelineSeparator>
+            <TimelineDot sx={{ bgcolor: '#E78F34' }} />
+            {n < 5 && <TimelineConnector sx={{ bgcolor: '#7c7c7c' }} />}
+          </TimelineSeparator>
+          <TimelineContent>
+            <Skeleton />
+          </TimelineContent>
+        </TimelineItem>
+      ))}
     </Timeline>
   );
 }
