@@ -33,6 +33,7 @@ export default class CacheBuilder {
     constructor(readonly log: pino.Logger, enableCache: boolean) {
         this.enableCache = enableCache;
         if (enableCache) {
+            // TODO: getConnectionOptions() should be overridable by tests.
             const normalCacheConn = new ConnectionWrapper(getConnectionOptions());
             this.normalCacheProvider = new NormalTableCacheProvider(normalCacheConn);
 

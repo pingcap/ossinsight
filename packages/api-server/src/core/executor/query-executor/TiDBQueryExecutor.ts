@@ -95,4 +95,8 @@ export class TiDBQueryExecutor implements QueryExecutor {
     }
   }
 
+  async destroy () {
+    await this.connections.end()
+  }
+
 }

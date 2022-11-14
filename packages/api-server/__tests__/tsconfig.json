@@ -4,5 +4,5 @@
     "baseUrl": ".",
     "noEmit": true
   },
-  "include": ["../src/**/*.ts", "**/*.ts"]
+  "include": ["**/*.ts"]
 }

@@ -99,7 +99,7 @@ export class QueryParser {
 
         const targetValue = paramTemplate ? paramTemplate[String(value)] : value;
         if (targetValue === undefined || targetValue === null) {
-            throw new BadParamsError(name, 'require param ' + name)
+            throw new BadParamsError(name, 'require param ' + name + (paramTemplate ? ` template value '${value}' not found` : ''))
         }
 
         return targetValue;
