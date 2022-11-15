@@ -42,7 +42,7 @@ const Milestones = ({ milestones, interval }: { milestones: Milestone[] | undefi
     } else if (milestones.length === 0) {
       return 'no-data';
     } else {
-      return milestones[i].id;
+      return `message-${i}`;
     }
   }, [milestones, i]);
 
@@ -57,7 +57,7 @@ const Milestones = ({ milestones, interval }: { milestones: Milestone[] | undefi
           } else {
             // eslint-disable-next-line @typescript-eslint/naming-convention
             const { milestone_number, milestone_type_id, reached_at } = milestones[i];
-            return <MilestoneMessage key={milestones[i].id} milestone_type_id={milestone_type_id} milestone_number={milestone_number} reached_at={reached_at} />;
+            return <MilestoneMessage key={`message-${i}`} milestone_type_id={milestone_type_id} milestone_number={milestone_number} reached_at={reached_at} />;
           }
         })()}
       </CSSTransition>
