@@ -17,9 +17,7 @@ export function registerThemeDark (bg = true) {
         },
       },
       axisLabel: {
-        textStyle: {
-          color: '#ccc',
-        },
+        color: '#ccc',
       },
       splitLine: {
         lineStyle: {
@@ -91,9 +89,7 @@ export function registerThemeDark (bg = true) {
     },
     toolbox: {
       iconStyle: {
-        normal: {
-          borderColor: contrastColor,
-        },
+        borderColor: contrastColor,
       },
     },
     dataZoom: {
@@ -106,22 +102,14 @@ export function registerThemeDark (bg = true) {
         color: contrastColor,
       },
       itemStyle: {
-        normal: {
-          color: colorPalette[1],
-        },
+        color: colorPalette[1],
       },
       label: {
-        normal: {
-          textStyle: {
-            color: contrastColor,
-          },
-        },
+        color: contrastColor,
       },
       controlStyle: {
-        normal: {
-          color: contrastColor,
-          borderColor: contrastColor,
-        },
+        color: contrastColor,
+        borderColor: contrastColor,
       },
     },
     timeAxis: axisCommon(),
@@ -144,12 +132,10 @@ export function registerThemeDark (bg = true) {
     },
     candlestick: {
       itemStyle: {
-        normal: {
-          color: '#FD1050',
-          color0: '#0CF49B',
-          borderColor: '#FD1050',
-          borderColor0: '#0CF49B',
-        },
+        color: '#FD1050',
+        color0: '#0CF49B',
+        borderColor: '#FD1050',
+        borderColor0: '#0CF49B',
       },
     },
 
