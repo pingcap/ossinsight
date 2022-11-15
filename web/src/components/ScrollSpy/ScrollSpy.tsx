@@ -15,8 +15,8 @@ export type ScrollSpyContext<K extends string | number = string | number> = {
 };
 
 export default function ScrollSpy<K extends string | number = string | number> ({ offset, children }: ScrollSpyProps<K>) {
-  const [elMap] = useMap<K, HTMLElement>();
-  const [keyMap] = useMap<Element, K>();
+  const [elMap, { get: elMapGet, set: elMapSet, remove: elMapDelete }] = useMap<K, HTMLElement>();
+  const [, { get: keyMapGet, set: keyMapSet, remove: keyMapDelete }] = useMap<Element, K>();
   const observerRef = useRef<IntersectionObserver>();
   const [active, setActive] = useState<K>();
 
@@ -29,27 +29,27 @@ export default function ScrollSpy<K extends string | number = string | number> (
 
       // get first matches offset or the top element
       const top = intersections.find(entry => entry.intersectionRect.top + offset > -1) ?? intersections.sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-      setActive(keyMap.get(top?.target));
+      setActive(keyMapGet(top?.target));
     });
   }, []);
 
   const ref: ScrollSpyContext<K>['ref'] = useCallback((el, key) => {
     if (el) {
-      elMap.set(key, el);
-      keyMap.set(el, key);
+      elMapSet(key, el);
+      keyMapSet(el, key);
       observerRef.current?.observe(el);
     } else {
-      const el = elMap.get(key);
-      elMap.delete(key);
+      const el = elMapGet(key);
+      elMapDelete(key);
       if (el) {
-        keyMap.delete(el);
+        keyMapDelete(el);
         observerRef.current?.unobserve(el);
       }
     }
   }, []);
 
   const scrollTo: ScrollSpyContext<K>['scrollTo'] = useCallback((key, behavior = 'smooth') => {
-    const el = elMap.get(key);
+    const el = elMapGet(key);
     if (el) {
       window.scrollTo({ top: findPos(el) + offset, behavior });
     }
