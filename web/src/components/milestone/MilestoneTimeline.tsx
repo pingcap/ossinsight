@@ -1,8 +1,11 @@
-import { useMilestones } from '@site/src/components/milestone/hooks';
+import { useGroupedMilestones, useMilestones } from '@site/src/components/milestone/hooks';
 import React from 'react';
 import { Timeline, TimelineConnector, TimelineContent, TimelineDot, TimelineItem, timelineItemClasses, TimelineSeparator } from '@mui/lab';
 import MilestoneMessage from '@site/src/components/milestone/MilestoneMessage';
-import { Skeleton } from '@mui/material';
+import { Skeleton, styled } from '@mui/material';
+import { H3 } from '@site/src/dynamic-pages/analyze/typography';
+import { Milestone } from '@ossinsight/api';
+import ScrollSpy from '@site/src/components/ScrollSpy';
 
 interface MilestoneTimelineProps {
   repoId?: number;
@@ -11,37 +14,110 @@ interface MilestoneTimelineProps {
 export default function MilestoneTimeline ({ repoId }: MilestoneTimelineProps) {
   const { data } = useMilestones(repoId);
 
+  const groupedData = useGroupedMilestones(data?.data ?? []);
+
   if (!data) {
-    return renderLoading();
+    return (
+      <Group>
+        <H3>
+          <Skeleton sx={{ maxWidth: 16 }} />
+        </H3>
+        {renderLoading()}
+      </Group>
+    );
   }
 
   return (
-    <Timeline
-      sx={{
-        maxWidth: 789,
-        [`& .${timelineItemClasses.root}:before`]: {
-          flex: 0,
-          padding: 0,
-        },
-      }}
-    >
-      {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        data.data.map(({ milestone_type_id, milestone_number, reached_at }, i, arr) => (
-          <TimelineItem key={i}>
-            <TimelineSeparator>
-              <TimelineDot sx={{ bgcolor: '#E78F34' }} />
-              {i < arr.length - 1 && <TimelineConnector sx={{ bgcolor: '#7c7c7c' }} />}
-            </TimelineSeparator>
-            <TimelineContent>
-              <MilestoneMessage milestone_type_id={milestone_type_id} milestone_number={milestone_number} reached_at={reached_at} />
-            </TimelineContent>
-          </TimelineItem>
-        ))
-      }
-    </Timeline>
+    <ScrollSpy<number> offset={-126}>
+      {({ ref, active, scrollTo, keys }) => (
+        <Container>
+          <Timelines>
+            {groupedData.map(({ year, milestones }, index) => (
+              <Group id={`milestone-${year}`} key={year} ref={el => ref(el, year)}>
+                <H3>{year}</H3>
+                {renderMilestones(milestones)}
+              </Group>
+            ))}
+          </Timelines>
+          <TimeTabsContainer>
+            <TimeTabs>
+              {keys.filter(year => year).map((year) => (
+                <Tab
+                  className={year === active ? 'active' : undefined}
+                  key={year}
+                  onClick={() => scrollTo(year)}
+                >
+                  {year}
+                </Tab>
+              ))}
+            </TimeTabs>
+          </TimeTabsContainer>
+        </Container>
+      )}
+    </ScrollSpy>
   );
 }
+
+const Container = styled('div')`
+  display: flex;
+  justify-content: space-between;
+`;
+
+const Timelines = styled('div')`
+  max-width: 789px;
+`;
+
+const Group = styled('div')`
+`;
+
+const TimeTabsContainer = styled('div')`
+  min-width: 120px;
+  max-width: 120px;
+`;
+
+const TimeTabs = styled('div')`
+  position: sticky;
+  top: 160px;
+  border-left: 1px solid #7c7c7c;
+`;
+
+const Tab = styled('div')`
+  position: relative;
+  font-size: 16px;
+  line-height: 1.5;
+  margin-bottom: 8px;
+  padding-left: 12px;
+  color: #7c7c7c;
+  transition: color .2s ease, opacity .2s ease;
+
+  &:before {
+    content: ' ';
+    position: absolute;
+    left: -1px;
+    top: 0;
+    width: 2px;
+    height: 100%;
+    background-color: transparent;
+    transition: background-color .2s ease;
+  }
+
+  &.active {
+    color: ${({ theme }) => theme.palette.primary.main};
+
+    &:before {
+      background-color: ${({ theme }) => theme.palette.primary.main};
+    }
+  }
+
+  &:not(.active) {
+    cursor: pointer;
+
+    &:hover {
+      color: ${({ theme }) => theme.palette.primary.main};
+      opacity: .6;
+    }
+  }
+`;
 
 function renderLoading () {
   return (
@@ -66,6 +142,34 @@ function renderLoading () {
           </TimelineContent>
         </TimelineItem>
       ))}
+    </Timeline>
+  );
+}
+
+function renderMilestones (milestones: Milestone[]) {
+  return (
+    <Timeline
+      sx={{
+        [`& .${timelineItemClasses.root}:before`]: {
+          flex: 0,
+          padding: 0,
+        },
+      }}
+    >
+      {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        milestones.map(({ milestone_type_id, milestone_number, reached_at }, i, arr) => (
+          <TimelineItem key={i}>
+            <TimelineSeparator>
+              <TimelineDot sx={{ bgcolor: '#E78F34' }} />
+              {i < arr.length - 1 && <TimelineConnector sx={{ bgcolor: '#7c7c7c' }} />}
+            </TimelineSeparator>
+            <TimelineContent>
+              <MilestoneMessage milestone_type_id={milestone_type_id} milestone_number={milestone_number} reached_at={reached_at} />
+            </TimelineContent>
+          </TimelineItem>
+        ))
+      }
     </Timeline>
   );
 }
