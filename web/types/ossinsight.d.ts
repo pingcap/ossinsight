@@ -79,8 +79,7 @@ declare module '@ossinsight/api' {
   };
 
   export type Milestone = {
-    id: number;
-    repo_id: number;
+    milestone_id: number;
     // FIXME
     milestone_type_id: number;
     milestone_number: number;

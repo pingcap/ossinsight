@@ -27,8 +27,8 @@ export default function MilestoneTimeline ({ repoId }: MilestoneTimelineProps) {
     >
       {
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        data.data.map(({ id, milestone_type_id, milestone_number, reached_at }, i, arr) => (
-          <TimelineItem key={id}>
+        data.data.map(({ milestone_type_id, milestone_number, reached_at }, i, arr) => (
+          <TimelineItem key={i}>
             <TimelineSeparator>
               <TimelineDot sx={{ bgcolor: '#E78F34' }} />
               {i < arr.length - 1 && <TimelineConnector sx={{ bgcolor: '#7c7c7c' }} />}
