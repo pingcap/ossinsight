@@ -2,7 +2,8 @@ import { useGroupedMilestones, useMilestones } from '@site/src/components/milest
 import React from 'react';
 import { Timeline, TimelineConnector, TimelineContent, TimelineDot, TimelineItem, timelineItemClasses, TimelineSeparator } from '@mui/lab';
 import MilestoneMessage from '@site/src/components/milestone/MilestoneMessage';
-import { Skeleton, styled } from '@mui/material';
+import { Badge, Button, Skeleton, styled, Tooltip } from '@mui/material';
+import { MailOutline as MailOutlineIcon } from '@mui/icons-material';
 import { H3 } from '@site/src/dynamic-pages/analyze/typography';
 import { Milestone } from '@ossinsight/api';
 import ScrollSpy from '@site/src/components/ScrollSpy';
@@ -40,17 +41,28 @@ export default function MilestoneTimeline ({ repoId }: MilestoneTimelineProps) {
             ))}
           </Timelines>
           <TimeTabsContainer>
-            <TimeTabs>
-              {keys.filter(year => year).map((year) => (
-                <Tab
-                  className={year === active ? 'active' : undefined}
-                  key={year}
-                  onClick={() => scrollTo(year)}
-                >
-                  {year}
-                </Tab>
-              ))}
-            </TimeTabs>
+            <Sticky>
+              <Tooltip title="To be the first one who get the emails when this repository archives excellent milestones!">
+                <span>
+                  <Badge color="primary" overlap="circular" badgeContent="COMING SOON" sx={{ '.MuiBadge-badge': { top: 0 } }}>
+                    <Button variant='outlined' disabled sx={{ mb: 2 }} startIcon={<MailOutlineIcon />}>
+                      Get Updates
+                    </Button>
+                  </Badge>
+                </span>
+              </Tooltip>
+              <TimeTabs>
+                {keys.filter(year => year).map((year) => (
+                  <Tab
+                    className={year === active ? 'active' : undefined}
+                    key={year}
+                    onClick={() => scrollTo(year)}
+                  >
+                    {year}
+                  </Tab>
+                ))}
+              </TimeTabs>
+            </Sticky>
           </TimeTabsContainer>
         </Container>
       )}
@@ -71,13 +83,19 @@ const Group = styled('div')`
 `;
 
 const TimeTabsContainer = styled('div')`
-  min-width: 120px;
-  max-width: 120px;
+  min-width: max-content;
+  max-width: max-content;
+`;
+
+const Sticky = styled('div')`
+  position: sticky;
+  top: 160px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
 `;
 
 const TimeTabs = styled('div')`
-  position: sticky;
-  top: 160px;
   border-left: 1px solid #7c7c7c;
 `;
 
