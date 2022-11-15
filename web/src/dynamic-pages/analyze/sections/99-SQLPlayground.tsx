@@ -557,6 +557,7 @@ WHERE
   AND actor_login NOT LIKE '%bot%'
   AND type IN (
     'IssueCommentEvent',
+    'PullRequestReviewEvent',
     'PullRequestReviewCommentEvent'
   )
 GROUP BY
