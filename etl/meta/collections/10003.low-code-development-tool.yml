@@ -28,3 +28,4 @@ items:
   - pocketbase/pocketbase
   - frappe/frappe
   - surrealdb/surrealdb
+  - openblocks-dev/openblocks
