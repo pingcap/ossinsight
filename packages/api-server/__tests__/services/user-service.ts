@@ -9,14 +9,14 @@ afterEach(releaseTestContainer);
 
 const user1 = {
   id: 1,
-  name: 'test1',
-  email_address: 'test1@example.com',
+  login: 'test1',
+  email: 'test1@example.com',
 };
 
 const user2 = {
   id: 2,
-  name: 'test1',
-  email_address: 'test1@example.com',
+  login: 'test1',
+  email: 'test1@example.com',
 };
 
 const COUNT_SQL = 'SELECT count(*) as count from sys_users';

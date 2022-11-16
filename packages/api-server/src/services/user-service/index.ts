@@ -27,7 +27,7 @@ export class UserService {
     async findOrCreateUser(githubUser: any):Promise<number> {
         try {
             const [users] = await this.mysql.query<any[]>(
-                `SELECT id FROM users WHERE github_id = ? LIMIT 1`, [githubUser.id]
+                `SELECT id FROM sys_users WHERE github_id = ? LIMIT 1`, [githubUser.id]
             );
             const user = users[0];
     
@@ -37,7 +37,7 @@ export class UserService {
             // Create a new user if not found.
             if (!user) {
                 const [rs] = await this.mysql.query<ResultSetHeader>(
-                    `INSERT INTO users(github_id, github_login, email) VALUES(?, ?, ?)`,
+                    `INSERT INTO sys_users(github_id, github_login, email_address) VALUES(?, ?, ?)`,
                     [githubUser.id, githubUser.login, githubUser.email]
                 );
                 userId = rs.insertId;
