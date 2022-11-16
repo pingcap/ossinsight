@@ -59,7 +59,9 @@ export function registerStaticData (checkReq: CheckReq, data: any) {
   });
 }
 
-export const socket = io(BASE_URL);
+export const socket = io(BASE_URL, {
+  transports: ['websocket'],
+});
 
 socket.on('connect', () => {
   console.log('socket connect');

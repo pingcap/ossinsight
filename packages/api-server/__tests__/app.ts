@@ -39,17 +39,16 @@ describe('socket.io', () => {
     let data = await getTestApp().ioEmit('q', { query: 'events-total' }, '/q/events-total');
     expect(data.payload.data.length).toBe(1);
 
-    data = await getTestApp().pollingEmit('q', { query: 'events-total' }, '/q/events-total');
-    expect(data.payload.data.length).toBe(1);
+    // data = await getTestApp().pollingEmit('q', { query: 'events-total' }, '/q/events-total');
+    // expect(data.payload.data.length).toBe(1);
   });
 
-  for (const transport of ['websocket', 'polling']) {
+  for (const transport of ['websocket', /*'polling'*/]) {
     describe(transport, () => {
       it('should follow cors rules', async () => {
         await new Promise<void>((resolve, reject) => {
           io(getTestApp().url, {
-            transports: ['websocket'],
-            withCredentials: true,
+            transports: [transport],
             extraHeaders: {
               Origin: 'https://example.com',
             },
@@ -58,7 +57,7 @@ describe('socket.io', () => {
               reject(new Error('should be rejected by CORS'));
             })
             .on('connect_error', (err) => {
-              expect(err.message).toBe('websocket error');
+              expect(err.message).toMatch(/(websocket|xhr poll) error/);
               resolve();
             });
         });
@@ -67,7 +66,6 @@ describe('socket.io', () => {
           await new Promise<void>((resolve, reject) => {
             io(getTestApp().url, {
               transports: [transport],
-              withCredentials: true,
               extraHeaders: {
                 Origin: origin,
               },

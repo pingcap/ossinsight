@@ -39,6 +39,7 @@ async function createApp () {
     JWT_COOKIE_DOMAIN: 'http://testdomain.com/',
     JWT_COOKIE_SECURE: 'false',
     JWT_COOKIE_SAME_SITE: 'false',
+    OPENAI_API_KEY: 'fake',
   };
 
   Object.assign(process.env, env);
@@ -108,20 +109,20 @@ class StartedApp {
     });
   }
 
-  async pollingEmit (event: string, payload: any, bindingEvent = `/q/${payload.query}`): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.polling.once(bindingEvent, (payload) => {
-        resolve(payload);
-      });
-      setTimeout(() => {
-        reject(new Error('io emit timeout'));
-      }, 500);
-      if (!this.polling.connected) {
-        this.polling.connect();
-      }
-      this.polling.emit(event, payload);
-    });
-  }
+  // async pollingEmit (event: string, payload: any, bindingEvent = `/q/${payload.query}`): Promise<any> {
+  //   return new Promise((resolve, reject) => {
+  //     this.polling.once(bindingEvent, (payload) => {
+  //       resolve(payload);
+  //     });
+  //     setTimeout(() => {
+  //       reject(new Error('io emit timeout'));
+  //     }, 500);
+  //     if (!this.polling.connected) {
+  //       this.polling.connect();
+  //     }
+  //     this.polling.emit(event, payload);
+  //   });
+  // }
 
   get (url: string, config?: AxiosRequestConfig) {
     return this.axios.get(url, config)

@@ -45,7 +45,7 @@ const root: FastifyPluginAsync = async (app, opts): Promise<void> => {
         done('cors reject', false)
       }
     },
-    transports: ['websocket', 'polling'],
+    transports: ['websocket'],
   });
 
   app.ready((err) => {
