@@ -1,6 +1,6 @@
-import { Server, Socket } from "socket.io";
+import { Server, Socket } from 'socket.io';
 
-import { FastifyPluginAsync } from "fastify";
+import { FastifyInstance, FastifyPluginAsync } from 'fastify';
 import { QueryRunner } from "../../core/runner/query/QueryRunner";
 import fastifyWebsocket from "fastify-socket.io";
 import { pino } from "pino";
@@ -27,8 +27,25 @@ const root: FastifyPluginAsync = async (app, opts): Promise<void> => {
   await app.register(fastifyWebsocket, {
     path: '/socket.io',
     cors: {
-      origin: "*"
+      origin: (origin, cb) => {
+        cb(null, origin)
+      },
     },
+    allowRequest: (req, done) => {
+      const origin = req.headers.origin;
+      // Allow empty origin
+      if (!origin) {
+        done(undefined, true);
+        return;
+      }
+      const corsOrigin = getCorsOrigin(app, origin);
+      if (corsOrigin) {
+        done(undefined, true)
+      } else {
+        done('cors reject', false)
+      }
+    },
+    transports: ['websocket', 'polling'],
   });
 
   app.ready((err) => {
@@ -45,6 +62,29 @@ const root: FastifyPluginAsync = async (app, opts): Promise<void> => {
     });
   });
 };
+
+function getCorsOrigin (app: FastifyInstance, origin: string | string[]): string | undefined {
+  if (typeof origin === 'string') {
+    let pass = false;
+    for (let allowedOrigin of app.allowedOrigins) {
+      if (typeof allowedOrigin === 'string') {
+        if (allowedOrigin === origin) {
+          pass = true;
+          return origin;
+        }
+      } else {
+        if (allowedOrigin.test(origin)) {
+          pass = true;
+          return origin;
+        }
+      }
+    }
+    // Only allow configured origins
+    if (!pass) {
+      return undefined;
+    }
+  }
+}
 
 export function socketServerRoutes(
   log: pino.Logger,

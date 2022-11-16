@@ -1,4 +1,4 @@
-import { join } from "path";
+import { resolve } from "path";
 
 export const APIServerEnvSchema = {
   type: 'object',
@@ -6,7 +6,7 @@ export const APIServerEnvSchema = {
   properties: {
     CONFIGS_PATH: {
       type: 'string',
-      default: join(__dirname, '..', '..', 'configs')
+      default: resolve(__dirname, '..', '..', '..', 'configs')
     },
     DATABASE_URL: {
       type: 'string'

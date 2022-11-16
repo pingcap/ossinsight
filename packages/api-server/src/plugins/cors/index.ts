@@ -6,9 +6,15 @@ import cors from '@fastify/cors';
 import fp from "fastify-plugin";
 import { parse as parseYAML } from 'yaml';
 
-type OriginType = string | boolean | RegExp;
+type OriginType = string | RegExp;
 
 export const DEFAULT_ALLOWED_ORIGIN = 'https://ossinsight.io';
+
+declare module 'fastify' {
+    interface FastifyInstance {
+        allowedOrigins: OriginType[]
+    }
+}
 
 export default fp(async (app) => {
     let configsPath = app.config.CONFIGS_PATH;
@@ -18,11 +24,11 @@ export default fp(async (app) => {
     app.log.info({}, 'Found configs path: %s', configsPath);
     const allowedOrigins:OriginType[] = getAllowedOrigins(configsPath, true);
     allowedOrigins.push(DEFAULT_ALLOWED_ORIGIN);
-    console.log(allowedOrigins, 'allowedOrigins');
-    
+
     app.register(cors, {
-        origin: "http://localhost:3000",
+        origin: allowedOrigins,
     });
+    app.decorate('allowedOrigins', allowedOrigins);
 }, {
     name: 'cors',
     dependencies: [

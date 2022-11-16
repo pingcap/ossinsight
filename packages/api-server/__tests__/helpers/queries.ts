@@ -2,7 +2,7 @@ import { sync as glob } from 'glob';
 import * as path from 'node:path';
 import * as fs from 'node:fs';
 import { QuerySchema } from '../../src/types/query.schema';
-import * as RandExp from 'randexp';
+import RandExp from 'randexp';
 
 export const QUERIES_PATH = path.resolve(__dirname, '../../../../configs/queries');
 

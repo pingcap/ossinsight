@@ -36,7 +36,7 @@ export interface QueryResponse<T> {
 
 export class ConnectionWrapper {
     public conn: Connection;
-    private log: pino.Logger;;
+    private log: pino.Logger;
 
     constructor(options: PoolOptions) {
         this.log = pino({ level: process.env.LOG_LEVEL || "info" });
