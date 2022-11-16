@@ -13,6 +13,7 @@
     "dev:start": "fastify start -p 3450 --ignore-watch=.ts$ -w -l info -P dist/app.js",
     "start": "npm run build:ts && fastify start -p 3450 -l info dist/app.js",
     "test": "jest",
+    "coverage": "jest --coverage",
     "watch:ts": "tsc -w"
   },
   "dependencies": {

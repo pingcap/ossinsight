@@ -4,6 +4,13 @@ module.exports = {
   testEnvironment: 'node',
   testPathIgnorePatterns: [
     '/node_modules/',
-    '__tests__/helpers',
-  ]
+    '/__tests__/helpers/',
+  ],
+  coverageReporters: ['text', 'html'],
+  coverageProvider: 'v8',
+  collectCoverageFrom: [
+    'src/**/*.ts',
+    '!__tests__'
+  ],
+  testTimeout: 30000,
 };
