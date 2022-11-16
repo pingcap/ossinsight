@@ -49,7 +49,15 @@ export class StartedTiDBContainer extends AbstractStartedContainer {
   async exec ([query]: string[]) {
     const conn = await this.createConnection();
     const [res] = await conn.query({ sql: query });
+    conn.destroy()
     return { output: JSON.stringify(res), exitCode: 0 };
+  }
+
+  async expect (query: string): Promise<jest.JestMatchers<any>> {
+    const conn = await this.createConnection();
+    const [result] = await conn.query({ sql: query })
+    conn.destroy()
+    return expect(result)
   }
 
   async createConnection (database: boolean = true) {

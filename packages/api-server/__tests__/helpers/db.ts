@@ -8,13 +8,20 @@ export async function bootstrapTestContainer () {
   if (container) {
     return container;
   }
-  return (container = await new TiDBContainer('pingcap/tidb:v6.3.0').start());
+  container = await new TiDBContainer('pingcap/tidb:v6.3.0').start();
+  process.env.DATABASE_URL = container.url();
+  return container;
 }
 
 export async function releaseTestContainer () {
+
   await executor?.destroy();
   executor = undefined;
   const c = await container;
+  if (c) {
+    process.env.DATABASE_URL = '';
+  }
+  container = undefined;
   await c?.stop();
 }
 

@@ -49,6 +49,9 @@ const app: FastifyPluginAsync<AppOptions> = async (
   // await fastify.register(fastifyRequestLogger);
 
   // Init MySQL Client.
+  if (process.env.NODE_ENV === 'test' && (/tidb-cloud|gharchive_dev|github_events_api/.test(fastify.config.DATABASE_URL))) {
+    throw new Error('Do not use online database in test env.');
+  }
   await fastify.register(fastifyMySQL, {
     promise: true,
     connectionString: fastify.config.DATABASE_URL

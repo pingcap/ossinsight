@@ -11,6 +11,10 @@ export function getConnectionOptions(options?: PoolOptions) {
         process.exit();
     }
 
+    if (process.env.NODE_ENV === 'test' && (/tidb-cloud|gharchive_dev|github_events_api/.test(process.env.DATABASE_URL))) {
+        throw new Error('Do not use online database in test env.');
+    }
+
     const url = new URL(process.env.DATABASE_URL);
     const dbHost = url.hostname;
     const dbName = url.pathname.replaceAll('/', '');
