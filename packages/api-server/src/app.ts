@@ -1,8 +1,9 @@
 import AutoLoad, { AutoloadPluginOptions } from '@fastify/autoload';
+import { FastifyPluginAsync, RawServerDefault } from 'fastify';
 import fastifyMySQL, { MySQLPromisePool } from '@fastify/mysql';
 
 import { APIServerEnvSchema } from './env';
-import { FastifyPluginAsync } from 'fastify';
+import { JsonSchemaToTsProvider } from '@fastify/type-provider-json-schema-to-ts';
 import fastifyEnv from '@fastify/env';
 // import fastifyRequestLogger from "@mgcrea/fastify-request-logger";
 import { join } from 'path';
@@ -29,24 +30,24 @@ declare module 'fastify' {
       JWT_COOKIE_NAME?: string,
       JWT_COOKIE_DOMAIN?: string,
       JWT_COOKIE_SECURE?: boolean,
-      JWT_COOKIE_SAME_SITE?: boolean
+      JWT_COOKIE_SAME_SITE?: boolean,
+      OPENAI_API_KEY: string
     };
     mysql: MySQLPromisePool
   }
 }
 
-const app: FastifyPluginAsync<AppOptions> = async (
+const app: FastifyPluginAsync<AppOptions, RawServerDefault, JsonSchemaToTsProvider> = async (
     fastify,
     opts
 ): Promise<void> => {
+
   // Load config.
   await fastify.register(fastifyEnv, {
     confKey: 'config',      // You can access environment variables via `fastify.config`.
     dotenv: true,
     schema: APIServerEnvSchema
   });
-
-  // await fastify.register(fastifyRequestLogger);
 
   // Init MySQL Client.
   if (process.env.NODE_ENV === 'test' && (/tidb-cloud|gharchive_dev|github_events_api/.test(fastify.config.DATABASE_URL))) {

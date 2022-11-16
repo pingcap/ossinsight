@@ -28,6 +28,9 @@ export const APIServerEnvSchema = {
       type: 'string',
       separator: ','
     },
+    OPENAI_API_KEY: {
+      type: 'string'
+    },
     JWT_SECRET: {
       type: 'string'
     },
