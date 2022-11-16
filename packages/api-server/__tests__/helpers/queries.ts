@@ -14,7 +14,7 @@ export function findAllQueriesPath () {
 export function eachQuery (cb: (name: string, sql: string, schema: QuerySchema) => void) {
   findAllQueriesPath().forEach(queryPath => {
     const sql = fs.readFileSync(path.join(queryPath, 'template.sql'), { encoding: 'utf-8' });
-    const paramsPath = fs.existsSync(path.join(queryPath, 'params.json')) ? path.join(queryPath, 'params.json') : path.join(queryPath, 'query.json')
+    const paramsPath = fs.existsSync(path.join(queryPath, 'params.json')) ? path.join(queryPath, 'params.json') : path.join(queryPath, 'query.json');
     const params = JSON.parse(fs.readFileSync(paramsPath, { encoding: 'utf-8' }));
     cb(path.relative(QUERIES_PATH, queryPath), sql, params);
   });
@@ -39,14 +39,14 @@ export function buildParams (schema: QuerySchema): Record<string, string>[] {
         }
       } else if (param.pattern) {
         const rand = new RandExp(param.pattern);
-        rand.max = 9
+        rand.max = 9;
         enumKeys.push(param.name);
         enumValues.push([rand.gen()]);
       }
     });
-  }catch (e) {
+  } catch (e) {
     if ((e as any)?.message === 'special param not supported') {
-      return []
+      return [];
     }
   }
 
@@ -68,7 +68,7 @@ export function buildParams (schema: QuerySchema): Record<string, string>[] {
   while (true) {
     while (cursor[i] < enumValues[i].length) {
       build();
-      cursor[i] += 1
+      cursor[i] += 1;
     }
     while (i >= 0 && cursor[i] >= enumValues[i].length - 1) {
       cursor[i] = 0;
@@ -76,7 +76,7 @@ export function buildParams (schema: QuerySchema): Record<string, string>[] {
     }
     if (i >= 0) {
       cursor[i]++;
-      i = enumKeys.length - 1
+      i = enumKeys.length - 1;
     } else {
       break;
     }

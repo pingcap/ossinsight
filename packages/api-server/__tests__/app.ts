@@ -32,6 +32,37 @@ describe('http', () => {
         });
     });
   });
+
+  describe('api', () => {
+    const APIs = [
+      '/q/explain/{query}',
+      '/q/{query}',
+      '/qo/repos/groups/osdb',
+      '/gh/repo/{owner}/{repo}',
+      // TODO: GraphQL needs tokens
+      // // '/gh/repos/search?keyword=fake',
+      // // '/gh/users/search?keyword=fake',
+      '/collections',
+      '/collections/{collectionId}',
+    ];
+
+    // Variable replacements in above URLs
+    const variables = {
+      query: 'events-total',
+      owner: 'pingcap',
+      repo: 'ossinsight',
+      collectionId: '1',
+    };
+
+    APIs.forEach(url => {
+      it(`should success GET ${url}`, async () => {
+        const realUrl = Object.entries(variables).reduce((url, [k, v]) => {
+          return url.replaceAll(`{${k}}`, v);
+        }, url);
+        await getTestApp().expectGet(realUrl).toMatchObject({ status: 200, data: {} });
+      });
+    });
+  });
 });
 
 describe('socket.io', () => {
@@ -43,7 +74,7 @@ describe('socket.io', () => {
     // expect(data.payload.data.length).toBe(1);
   });
 
-  for (const transport of ['websocket', /*'polling'*/]) {
+  for (const transport of ['websocket' /*'polling'*/]) {
     describe(transport, () => {
       it('should follow cors rules', async () => {
         await new Promise<void>((resolve, reject) => {

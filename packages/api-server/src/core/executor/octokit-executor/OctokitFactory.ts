@@ -11,7 +11,7 @@ export function eraseToken (value: string | undefined): string {
 export class OctokitFactory implements Factory<Octokit> {
     private tokens: Set<string | undefined> = new Set()
 
-    constructor(tokens: string[], readonly log: pino.Logger) {
+    constructor(tokens: (string | undefined)[], readonly log: pino.Logger) {
       tokens.forEach(token => this.tokens.add(token))
       this.log.info('create with %s tokens', tokens.length)
     }

@@ -132,6 +132,10 @@ class StartedApp {
     return this.axios.post(url, data, config)
   }
 
+  expectGet (url: string, config?: AxiosRequestConfig) {
+    return expect(this.get(url, config)).resolves
+  }
+
   async close () {
     return this.app.close();
   }
