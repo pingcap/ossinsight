@@ -12,6 +12,7 @@ export default fp(async (fastify) => {
     const cacheBuilder = new CacheBuilder(log, fastify.config.ENABLE_CACHE);
 
     fastify.decorate('queryRunner', new QueryRunner(queryLoader, queryParser, cacheBuilder, fastify.tidbQueryExecutor));
+
 }, {
     name: 'query-runner',
     dependencies: [

@@ -18,6 +18,20 @@ export const APIServerEnvSchema = {
       type: 'boolean',
       default: false
     },
+    WEB_SHELL_CONNECTION_LIMITS: {
+      type: 'number',
+      default: 10
+    },
+    WEB_SHELL_QUEUE_LIMIT: {
+      type: 'number',
+      default: 20
+    },
+    WEB_SHELL_USER: {
+      type: 'string',
+    },
+    WEB_SHELL_PASSWORD: {
+      type: 'string',
+    },
     GITHUB_OAUTH_CLIENT_ID: {
       type: 'string'
     },
@@ -45,6 +59,9 @@ export const APIServerEnvSchema = {
     },
     JWT_COOKIE_SAME_SITE: {
       type: 'boolean'
-    }
+    },
+    // We need additional undocumented env
+    // - for playground:
+    //   - PLAYGROUND_SESSION_<KEY>=<VALUE>
   },
 };

@@ -62,6 +62,14 @@ describe('http', () => {
         await getTestApp().expectGet(realUrl).toMatchObject({ status: 200, data: {} });
       });
     });
+
+    it(`should execute playground SQL`, async () => {
+      await getTestApp().expectPost('/q/playground', {
+        id: '449649595',
+        sql: 'SELECT\n  *\nFROM\n  github_events\nWHERE\n  repo_id = 449649595\n  AND type = \'PullRequestEvent\'\nORDER BY\n  created_at ASC\nLIMIT\n  1\n;',
+        type: 'repo',
+      }).toMatchObject({ status: 200 });
+    });
   });
 });
 
