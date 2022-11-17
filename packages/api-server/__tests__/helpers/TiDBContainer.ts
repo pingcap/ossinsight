@@ -42,8 +42,12 @@ export class StartedTiDBContainer extends AbstractStartedContainer {
     this.port = startedTestContainer.getMappedPort(4000);
   }
 
-  url (database: boolean = true): string {
-    return `mysql://root:${this.rootPassword}@${this.getHost()}:${this.port}${database ? `/${this.database}` : ''}`;
+  rootUrl (): string {
+    return `mysql://root:${this.rootPassword}@${this.getHost()}:${this.port}`;
+  }
+
+  url (): string {
+    return `mysql://executoruser:executorpassword@${this.getHost()}:${this.port}/${this.database}`;
   }
 
   async exec ([query]: string[]) {
@@ -61,7 +65,7 @@ export class StartedTiDBContainer extends AbstractStartedContainer {
   }
 
   async createConnection (database: boolean = true) {
-    const conn = await createConnection(this.url(database))
+    const conn = await createConnection(database ? this.url() : this.rootUrl())
     await conn.execute("SET @@tidb_multi_statement_mode='ON'");
     await conn.execute("set @@sql_mode='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION'")
     return conn;
@@ -82,12 +86,11 @@ export class StartedTiDBContainer extends AbstractStartedContainer {
       if (/\.sql$/.test(name)) {
         const sqlPath = path.join('__tests__/schema', name);
         let sql = await fs.readFile(sqlPath, { encoding: 'utf-8' });
-        if (name.startsWith('0.') /* create schema */) {
+        if (name.startsWith('0.') || name.startsWith('z.')) {
           sql = sql.replaceAll('gharchive_dev', this.database);
           await execute(conn, sql);
-          conn.destroy();
           // Database created
-          conn = await this.createConnection();
+          await execute(conn, `use ${this.database};`)
         } else {
           await execute(conn, sql);
         }
