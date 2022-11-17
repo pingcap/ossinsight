@@ -11,24 +11,34 @@ const allowedOrigins = ['https://ossinsight.io', 'https://pingcap-ossinsight-pre
 
 describe('http', () => {
   it('should start', async () => {
-    const { data } = await getTestApp().get(`/q/events-total`);
-    expect(data.data.length === 1);
+    await getTestApp().expectGet(`/q/events-total`).toMatchObject({
+      statusCode: 200,
+      body: {
+        data: [
+          expect.anything(),
+        ],
+      },
+    });
   });
 
   describe('cors rules', () => {
     it('should accept', async () => {
       for (const origin of allowedOrigins) {
-        await getTestApp().get(`/q/events-total`, { headers: { Origin: origin } })
-          .then(({ headers }) => {
-            expect(headers['access-control-allow-origin']).toBe(origin);
+        await getTestApp().expectGet(`/q/events-total`, { headers: { Origin: origin } })
+          .toMatchObject({
+            headers: {
+              'access-control-allow-origin': origin,
+            },
           });
       }
     });
 
     it('should reject', async () => {
-      await getTestApp().get(`/q/events-total`, { headers: { 'Origin': 'https://example.com' } })
-        .then(({ headers }) => {
-          expect(headers['access-control-allow-origin']).toBeUndefined();
+      await getTestApp().expectGet(`/q/events-total`, { headers: { 'Origin': 'https://example.com' } })
+        .toMatchObject({
+          headers: expect.not.objectContaining({
+            'access-control-allow-origin': expect.anything(),
+          }),
         });
     });
   });
@@ -59,7 +69,7 @@ describe('http', () => {
         const realUrl = Object.entries(variables).reduce((url, [k, v]) => {
           return url.replaceAll(`{${k}}`, v);
         }, url);
-        await getTestApp().expectGet(realUrl).toMatchObject({ status: 200, data: {} });
+        await getTestApp().expectGet(realUrl).toMatchObject({ statusCode: 200, body: {} });
       });
     });
 
@@ -68,7 +78,7 @@ describe('http', () => {
         id: '449649595',
         sql: 'SELECT\n  *\nFROM\n  github_events\nWHERE\n  repo_id = 449649595\n  AND type = \'PullRequestEvent\'\nORDER BY\n  created_at ASC\nLIMIT\n  1\n;',
         type: 'repo',
-      }).toMatchObject({ status: 200 });
+      }).toMatchObject({ statusCode: 200, body: {} });
     });
   });
 });

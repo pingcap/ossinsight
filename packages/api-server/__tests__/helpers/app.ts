@@ -1,14 +1,13 @@
 import { bootstrapTestContainer } from './db';
 import type { APIServerEnvSchema } from '../../src/env';
-import Fastify, { FastifyInstance } from 'fastify';
+import Fastify, { FastifyInstance, LightMyRequestResponse } from 'fastify';
 import fp from 'fastify-plugin';
 import App from '../../src/app';
 import { AddressInfo } from 'net';
 import * as path from 'path';
-import type { AxiosInstance, AxiosRequestConfig } from 'axios';
-import Axios from 'axios';
 import type { Socket } from 'socket.io-client';
 import io from 'socket.io-client';
+import { OutgoingHttpHeaders } from 'http';
 
 type Schema = (typeof APIServerEnvSchema)['properties']
 type Env = {
@@ -79,17 +78,13 @@ export async function releaseApp () {
 }
 
 class StartedApp {
-  readonly axios: AxiosInstance;
   readonly socket: Socket;
-  readonly polling: Socket;
+  // readonly polling: Socket;
 
   constructor (public readonly app: FastifyInstance) {
     const url = this.url;
-    this.axios = Axios.create({
-      baseURL: url,
-    });
     this.socket = io(url, { transports: ['websocket'], autoConnect: false, reconnection: false });
-    this.polling = io(url, { transports: ['polling'], autoConnect: false, reconnection: false });
+    // this.polling = io(url, { transports: ['polling'], autoConnect: false, reconnection: false });
   }
 
   get url () {
@@ -128,20 +123,12 @@ class StartedApp {
   //   });
   // }
 
-  get (url: string, config?: AxiosRequestConfig) {
-    return this.axios.get(url, config)
+  expectGet (url: string, config: Omit<MockRequest, 'method'> = {}) {
+    return expect(buildMockRequest(this.app, url, { ...config, method: 'get' })).resolves;
   }
 
-  post (url: string, data?: any, config?: AxiosRequestConfig) {
-    return this.axios.post(url, data, config)
-  }
-
-  expectGet (url: string, config?: AxiosRequestConfig) {
-    return expect(this.get(url, config)).resolves
-  }
-
-  expectPost (url: string, data?: any, config?: AxiosRequestConfig) {
-    return expect(this.post(url, data, config)).resolves
+  expectPost (url: string, body?: any, config: Omit<MockRequest, 'method'> = {}) {
+    return expect(buildMockRequest(this.app, url, { ...config, method: 'post', body })).resolves;
   }
 
   async close () {
@@ -154,4 +141,41 @@ export function getTestApp (): StartedApp {
     throw new Error('call bootstrapApp first');
   }
   return _app;
+}
+
+export type MockRequest = {
+  method: 'get' | 'post'
+  headers?: OutgoingHttpHeaders
+  cookies?: object
+  body?: any
+  query?: string | { [k: string]: string | string[] }
+  resolveBody?: boolean
+}
+
+function buildMockRequest (app: FastifyInstance, url: string, { method, headers, cookies, query, body, resolveBody = true }: MockRequest) {
+  let chain = app.inject()[method](url);
+  if (headers) {
+    chain = chain.headers(headers);
+  }
+  if (cookies) {
+    chain = chain.cookies(cookies);
+  }
+  if (query) {
+    chain = chain.query(query);
+  }
+  if (body) {
+    chain = chain.body(body);
+  }
+  if (resolveBody) {
+    return chain.end().then(transformBody);
+  } else {
+    return chain.end();
+  }
+}
+
+function transformBody (response: LightMyRequestResponse): Exclude<LightMyRequestResponse, 'body'> & { body: object } {
+  return {
+    ...response,
+    body: response.json(),
+  };
 }
