@@ -13,28 +13,26 @@ describe('query', () => {
     describe(name, () => {
       it('template should be valid sql', async () => {
         const db = await bootstrapTestContainer();
-        const { output } = await db.exec([sql]);
-        expect(output.startsWith('[') && output.endsWith(']')).toBeTruthy();
+        (await db.expect(sql)).toBeInstanceOf(Array);
       });
 
-      const pairs = buildParams(params)
+      const pairs = buildParams(params);
 
       if (!pairs.length) {
-        return
+        return;
       }
 
       // table name could not be auto generated.
       if (name === 'stats-table-ddl') {
-        return
+        return;
       }
 
       it(`transformed template should be valid sql (${pairs.length} group of params)`, async () => {
         const db = await bootstrapTestContainer();
         const parser = new QueryParser(new CollectionService(testLogger, getExecutor(), new CacheBuilder(testLogger, false)));
         for (let pair of pairs) {
-          const parsedSql = await parser.parse(sql, params, pair)
-          const { output } = await db.exec([parsedSql]);
-          expect(output.startsWith('[') && output.endsWith(']')).toBeTruthy();
+          const parsedSql = await parser.parse(sql, params, pair);
+          (await db.expect(parsedSql)).toBeInstanceOf(Array);
         }
       });
     });

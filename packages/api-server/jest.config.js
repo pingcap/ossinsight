@@ -13,4 +13,9 @@ module.exports = {
     '!__tests__'
   ],
   testTimeout: 30000,
+  globalSetup: './__tests__/helpers/hooks/setup.ts',
+  globalTeardown: './__tests__/helpers/hooks/teardown.ts',
+  globals: {
+    chance: chance = require('chance')(Math.random()),
+  }
 };
