@@ -8,7 +8,11 @@ export default fp<FastifyOAuth2Options & FastifyJWTOptions>(async (fastify) => {
     const log = fastify.log as pino.Logger;
     fastify.decorate('ghExecutor', new GhExecutor(log, fastify.config.GITHUB_ACCESS_TOKENS, fastify.cacheBuilder));
 }, {
-    name: 'gh-executor'
+    name: 'gh-executor',
+    dependencies: [
+        '@fastify/env',
+        'cache-builder'
+    ],
 });
 
 declare module 'fastify' {

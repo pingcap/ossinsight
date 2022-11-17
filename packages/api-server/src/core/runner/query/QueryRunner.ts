@@ -10,7 +10,7 @@ import { QuerySchema } from "../../../types/query.schema";
 import { TiDBQueryExecutor } from "../../executor/query-executor/TiDBQueryExecutor";
 
 export const enum QueryType {
-  EXECUTE = 'execute',
+  QUERY = 'query',
   EXPLAIN = 'explain',
 }
 
@@ -35,7 +35,7 @@ export class QueryRunner {
       params: Record<string, any>,
       options?: Options
     ): Promise<CachedData<T>> {
-      return this.run(QueryType.EXECUTE, queryName, params, options);
+      return this.run(QueryType.QUERY, queryName, params, options);
     }
   
     async explain <T> (
