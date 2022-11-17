@@ -32,7 +32,7 @@ async function createApp () {
     ENABLE_CACHE: false,
     GITHUB_OAUTH_CLIENT_ID: 'fake',
     GITHUB_OAUTH_CLIENT_SECRET: 'fake',
-    GITHUB_ACCESS_TOKENS: process.env.GITHUB_ACCESS_TOKENS ?? '',
+    GITHUB_ACCESS_TOKENS: process.env.GITHUB_TOKEN ?? '',
     WEB_SHELL_USER: 'webshelluser',
     WEB_SHELL_PASSWORD: 'webshellpassword',
     WEB_SHELL_QUEUE_LIMIT: 1,

@@ -58,7 +58,7 @@ describe('http', () => {
       '/gh/users/search?keyword=keyword',
     ];
 
-    if (process.env.GITHUB_ACCESS_TOKENS) {
+    if (process.env.GITHUB_TOKEN) {
       APIs.push(...APIs_NEEDS_TOKENS);
     } else {
       APIs_NEEDS_TOKENS.forEach(url => {

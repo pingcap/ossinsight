@@ -10,6 +10,7 @@ module.exports = {
   coverageProvider: 'v8',
   collectCoverageFrom: [
     'src/**/*.ts',
+    '!src/**/*.d.ts',
     '!__tests__'
   ],
   testTimeout: 30000,
