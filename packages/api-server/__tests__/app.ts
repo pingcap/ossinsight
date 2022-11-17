@@ -102,6 +102,20 @@ describe('socket.io', () => {
     // expect(data.payload.data.length).toBe(1);
   });
 
+  it('should be compact format', async () => {
+    expect(getTestApp().ioEmit('q', { query: 'events-total', format: 'compact', excludeMeta: true }, '/q/events-total'))
+      .resolves
+      .toMatchObject({
+        payload: {
+          data: [
+            expect.any(Array)
+          ],
+          fields: expect.any(Array),
+        },
+        compact: true,
+      });
+  });
+
   for (const transport of ['websocket' /*'polling'*/]) {
     describe(transport, () => {
       it('should follow cors rules', async () => {
