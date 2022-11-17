@@ -1,18 +1,15 @@
 import { GenericContainer, StartedTestContainer } from 'testcontainers';
 import { AbstractStartedContainer } from 'testcontainers/dist/modules/abstract-started-container';
-import { RandomUuid } from 'testcontainers/dist/uuid';
 import { Connection, createConnection } from 'mysql2/promise';
 import * as path from 'node:path';
 import * as fs from 'node:fs/promises';
 
-const uuid = new RandomUuid();
+let instance = 0;
 
 export default class TiDBContainer extends GenericContainer {
 
-  private database: string = uuid.nextUuid();
+  private database: string = `gharchive_test_${++instance}`;
   private rootPassword: string = '';
-  private username: string = uuid.nextUuid();
-  private userPassword: string = uuid.nextUuid();
 
   constructor (image: string = 'pingcap/tidb:v6.3.0') {
     super(image);
@@ -28,7 +25,7 @@ export default class TiDBContainer extends GenericContainer {
         MYSQL_PASSWORD: this.rootPassword,
       })
       .withStartupTimeout(120000);
-    const container = new StartedTiDBContainer(await super.start(), this.database, this.username, this.userPassword, this.rootPassword);
+    const container = new StartedTiDBContainer(await super.start(), this.database, this.rootPassword);
     await container.runInitialSchema();
     return container;
   }
@@ -37,7 +34,7 @@ export default class TiDBContainer extends GenericContainer {
 export class StartedTiDBContainer extends AbstractStartedContainer {
   readonly port: number;
 
-  constructor (startedTestContainer: StartedTestContainer, public readonly database: string, public readonly username: string, public readonly userPassword: string, public readonly rootPassword: string) {
+  constructor (startedTestContainer: StartedTestContainer, public readonly database: string, public readonly rootPassword: string) {
     super(startedTestContainer);
     this.port = startedTestContainer.getMappedPort(4000);
   }
