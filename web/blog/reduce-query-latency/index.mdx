@@ -32,17 +32,12 @@ To identify slow SQL statements, we used TiDB Cloud's Diagnosis page to sort SQL
 
 For example, after the API server received a request, it executed the following SQL statement to obtain the number of issues in the [vscode repository](https://ossinsight.io/analyze/microsoft/vscode):
 
-```
+```sql
 SELECT
-
     COUNT(DISTINCT number)
-
 FROM github_events
-
 WHERE
-
     repo_id = 41881900     -- vscode
-
     AND type = 'IssuesEvent';
 ```
 
@@ -54,17 +49,12 @@ In MySQL, when we troubleshoot query performance problems, we usually use the `E
 
 We executed the `EXPLAIN` statement:
 
-```
+```sql
 EXPLAIN ANALYZE SELECT
-
     COUNT(DISTINCT number)
-
 FROM github_events
-
 WHERE
-
     repo_id = 41881900     -- vscode
-
     AND type = 'IssuesEvent';
 ```
 
@@ -151,7 +141,7 @@ When we created the index and ran the SQL statement again, the query speed was s
 
 ![The result of the EXPLAIN query](./explain-query-result.jpg)
 
-<center><em>The result of the EXPLAIN query. This query cost 417.7 ms</em></center>
+<center><em>The result of the `EXPLAIN` query. This query cost 417.7 ms</em></center>
 
 <br />
 
@@ -161,7 +151,7 @@ So we knew that our query could get all the data it needed by doing an `IndexRan
 
 ![`IndexRangeScan` in the non-clustered table](./indexrangescan-non-clustered.jpg)
 
-<center><em>IndexRangeScan in the non-clustered table</em></center>
+<center><em>`IndexRangeScan` in the non-clustered table</em></center>
 
 <br />
 
@@ -178,19 +168,14 @@ In TiDB:
 
 Generally, an SQL statement is split into multiple steps to execute with the cooperation of computing and storage nodes.
 
-When we executed the SQL statement in this article, TiDB obtained the data of the `github_events` table from `tikv-server` and performed the aggregate calculation of the `COUNT` function on `tidb-server`.
+When we executed the SQL statement in this article, TiDB obtained the data of the `github_events` table from `tikv-server` and performed the aggregate calculation of the COUNT function on `tidb-server`.
 
-```
+```sql
 SELECT
-
     COUNT(DISTINCT number)
-
 FROM github_events
-
 WHERE
-
     repo_id = 41881900     -- vscode
-
     AND type = 'IssuesEvent';
 ```
 
@@ -200,7 +185,7 @@ The execution plan indicated that when TiDB was performing `IndexReader`, `tidb-
 
 ![`tidb-server` read 270,000 rows of data from `tikv-server`](./read-270000-rows-from tikv-server.jpg)
 
-<center><em>tidb-server read 270,000 rows of data from tikv-server</em></center>
+<center><em>`tidb-server` read 270,000 rows of data from `tikv-server`</em></center>
 
 <br />
 
@@ -214,17 +199,12 @@ The execution plan indicated that our SQL query did not do this. Why? We checked
 
 This meant that our SQL statement couldn't use computing pushdown.
 
-```
+```sql
 SELECT
-
     COUNT(DISTINCT number)
-
 FROM github_events
-
 WHERE
-
     repo_id = 41881900     -- vscode
-
     AND type = 'IssuesEvent';
 ```
 
@@ -234,17 +214,11 @@ For the `github_events` table, an issue only generated an event with the `Issues
 
 ```
 SELECT
-
     COUNT(number)
-
 FROM github_events
-
 WHERE
-
     repo_id = 41881900     -- vscode
-
     AND type = 'IssuesEvent'
-
     AND action = 'opened';
 ```
 
