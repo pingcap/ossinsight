@@ -100,7 +100,7 @@ This graph shows how `IndexLookup` is executed in the execution plan:
 
 <br />
 
-In the query above, TiDB uses the query condition `repo_id=41881900` to filter out all row numbers `row_id` related to the repository in the secondary index `index_github_events_on_repo_id`. The query needs the number `column` data, but the secondary index doesn't provide it. Therefore, TiDB must execute `IndexLookup` to find the corresponding row in the table based on the obtained `row_id` (the `TableRowIDScan step`).
+In the query above, TiDB uses the query condition `repo_id=41881900` to filter out all row numbers `row_id` related to the repository in the secondary index `index_github_events_on_repo_id`. The query needs the number `column` data, but the secondary index doesn't provide it. Therefore, TiDB must execute `IndexLookup` to find the corresponding row in the table based on the obtained `row_id` (the `TableRowIDScan` step).
 
 The rows are probably scattered in different data blocks and stored on the hard disk. This causes TiDB to perform a large number of I/O operations to read data from different data blocks or even different machine nodes.
 
