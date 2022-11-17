@@ -1,5 +1,6 @@
-# Getting Started with [Fastify-CLI](https://www.npmjs.com/package/fastify-cli)
-This project was bootstrapped with Fastify-CLI.
+# API Server
+
+This project was the API server of OSS Insight.
 
 ## Available Scripts
 
@@ -17,7 +18,3 @@ For production mode
 ### `npm run test`
 
 Run the test cases.
-
-## Learn More
-
-To learn Fastify, check out the [Fastify documentation](https://www.fastify.io/docs/latest/).
