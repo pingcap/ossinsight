@@ -141,7 +141,7 @@ When we created the index and ran the SQL statement again, the query speed was s
 
 ![The result of the EXPLAIN query](./explain-query-result.jpg)
 
-<center><em>The result of the `EXPLAIN` query. This query cost 417.7 ms</em></center>
+<center><em>The result of the EXPLAIN query. This query cost 417.7 ms</em></center>
 
 <br />
 
@@ -151,7 +151,7 @@ So we knew that our query could get all the data it needed by doing an `IndexRan
 
 ![`IndexRangeScan` in the non-clustered table](./indexrangescan-non-clustered.jpg)
 
-<center><em>`IndexRangeScan` in the non-clustered table</em></center>
+<center><em>IndexRangeScan in the non-clustered table</em></center>
 
 <br />
 
@@ -185,7 +185,7 @@ The execution plan indicated that when TiDB was performing `IndexReader`, `tidb-
 
 ![`tidb-server` read 270,000 rows of data from `tikv-server`](./read-270000-rows-from tikv-server.jpg)
 
-<center><em>`tidb-server` read 270,000 rows of data from `tikv-server`</em></center>
+<center><em>tidb-server read 270,000 rows of data from tikv-server</em></center>
 
 <br />
 
