@@ -1,5 +1,5 @@
 {
-  "cacheHours": 24,
+  "cacheHours": 1,
   "params": [
     {
       "name": "repoId",
