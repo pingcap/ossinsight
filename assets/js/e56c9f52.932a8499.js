@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkweb=self.webpackChunkweb||[]).push([[2887],{85143:e=>{e.exports=JSON.parse('{"label":"tidbcloud","permalink":"/blog/tags/tidbcloud","allTagsPath":"/blog/tags","count":4}')}}]);

@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkweb=self.webpackChunkweb||[]).push([[1713],{53457:l=>{l.exports=JSON.parse('[{"label":"tidbcloud","permalink":"/blog/tags/tidbcloud","count":4},{"label":"insight","permalink":"/blog/tags/insight","count":7},{"label":"tidb","permalink":"/blog/tags/tidb","count":2}]')}}]);
