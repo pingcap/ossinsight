@@ -49,12 +49,22 @@ describe('http', () => {
       '/q/{query}',
       '/qo/repos/groups/osdb',
       '/gh/repo/{owner}/{repo}',
-      // TODO: GraphQL needs tokens
-      // // '/gh/repos/search?keyword=fake',
-      // // '/gh/users/search?keyword=fake',
       '/collections',
       '/collections/{collectionId}',
     ];
+
+    const APIs_NEEDS_TOKENS = [
+      '/gh/repos/search?keyword=keyword',
+      '/gh/users/search?keyword=keyword',
+    ];
+
+    if (process.env.GITHUB_ACCESS_TOKENS) {
+      APIs.push(...APIs_NEEDS_TOKENS);
+    } else {
+      APIs_NEEDS_TOKENS.forEach(url => {
+        it.todo(`should success GET ${url} (process.env.GITHUB_TOKEN not provided)`);
+      });
+    }
 
     // Variable replacements in above URLs
     const variables = {

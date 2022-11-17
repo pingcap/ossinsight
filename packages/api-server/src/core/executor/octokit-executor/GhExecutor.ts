@@ -37,22 +37,14 @@ export default class GhExecutor {
 
   constructor(
     log: pino.Logger,
-    tokens: string[] = [],
+    tokens: (string | undefined)[] = [],
     private readonly cacheBuilder: CacheBuilder
   ) {
-    if (process.env.NODE_ENV === 'test') {
-      const octokitFactory = new OctokitFactory([undefined], log.child({ 'component': 'octokit-factory' }));
-      this.octokitPool = createPool(octokitFactory, {
-        min: 0,
-        max: 1,
-      });
-    } else {
-      const octokitFactory = new OctokitFactory(tokens, log.child({ 'component': 'octokit-factory' }));
-      this.octokitPool = createPool(octokitFactory, {
-        min: 0,
-        max: tokens.length,
-      });
-    }
+    const octokitFactory = new OctokitFactory(tokens, log.child({ 'component': 'octokit-factory' }));
+    this.octokitPool = createPool(octokitFactory, {
+      min: 0,
+      max: tokens.length,
+    });
     this.octokitPool
       .on('factoryCreateError', function (err) {
         console.error('factoryCreateError', err)
