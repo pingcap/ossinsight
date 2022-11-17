@@ -1,6 +1,6 @@
-import RepoMilestoneFeeds from "../RepositoryFeeds";
+import RepoMilestoneFeeds from '../RepositoryFeeds';
 
-export function repositoryFeeds() {
+export function repositoryFeeds () {
   return (
     <RepoMilestoneFeeds
       name="Mini256"
@@ -12,8 +12,8 @@ export function repositoryFeeds() {
           milestoneTypeId: 1,
           milestoneTypeName: 'star-earned',
           milestoneNumber: 1,
-          watchedUserId: 1
-        }
+          watchedUserId: 1,
+        },
       ]}
     />
   );

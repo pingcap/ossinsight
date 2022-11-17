@@ -308,7 +308,7 @@ SELECT
 FROM
 github_events
 WHERE
-repo_id = {{repoId}}
+repo_id = ${targetData?.id ?? '{{repoId}}'}
 LIMIT
 1;
 */
@@ -557,6 +557,7 @@ WHERE
   AND actor_login NOT LIKE '%bot%'
   AND type IN (
     'IssueCommentEvent',
+    'PullRequestReviewEvent',
     'PullRequestReviewCommentEvent'
   )
 GROUP BY

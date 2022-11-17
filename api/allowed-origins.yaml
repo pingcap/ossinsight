@@ -9,3 +9,4 @@ private_origins:
 public_origins:
   # External Users.
   - ^https://github1s\.com/$
+  - ^https://github\.com/$

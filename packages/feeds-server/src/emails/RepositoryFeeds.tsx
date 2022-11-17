@@ -7,19 +7,19 @@ import {
   MjmlSection,
   MjmlSpacer,
   MjmlText,
-} from "mjml-react";
+} from 'mjml-react';
 import {
   leadingRelaxed,
   leadingTight,
   textBase,
   textLg,
-} from "./components/theme";
+} from './components/theme';
 
-import Footer from "./components/Footer";
-import Head from "./components/Head";
-import Header from "./components/Header";
-import React from "react";
-import { RepoMilestoneToSent } from '../types'
+import Footer from './components/Footer';
+import Head from './components/Head';
+import Header from './components/Header';
+import React from 'react';
+import { RepoMilestoneToSent } from '../types';
 
 type RepoMilestoneFeedsProps = {
   name: string;
@@ -28,7 +28,7 @@ type RepoMilestoneFeedsProps = {
 
 const RepoMilestoneFeeds: React.FC<RepoMilestoneFeedsProps> = ({
   name,
-  repoMilestones
+  repoMilestones,
 }) => {
   return (
     <Mjml>
@@ -63,16 +63,15 @@ const RepoMilestoneFeeds: React.FC<RepoMilestoneFeedsProps> = ({
           </MjmlColumn>
         </MjmlSection>
         <MjmlSection padding="0 24px" cssClass="smooth">
-          {
-            repoMilestones.map((milestone) => {
-              switch(milestone.milestoneTypeName) {
-                case 'star-earned':
-                  return <StarEarnedMilestone milestone={milestone} />
-                default:
-                  break;
-              }
-            })
-          }
+          {repoMilestones.map((milestone) => {
+            switch (milestone.milestoneTypeName) {
+              case 'star-earned':
+                return <StarEarnedMilestone milestone={milestone} />;
+              default:
+                break;
+            }
+            return null;
+          })}
         </MjmlSection>
         <MjmlSection padding="0 24px" cssClass="smooth">
           <MjmlColumn>
@@ -98,7 +97,11 @@ const RepoMilestoneFeeds: React.FC<RepoMilestoneFeedsProps> = ({
   );
 };
 
-const StarEarnedMilestone = ({ milestone }: { milestone: RepoMilestoneToSent }) => {
+const StarEarnedMilestone = ({
+  milestone,
+}: {
+  milestone: RepoMilestoneToSent;
+}) => {
   return (
     <MjmlGroup>
       <MjmlColumn>
@@ -108,11 +111,12 @@ const StarEarnedMilestone = ({ milestone }: { milestone: RepoMilestoneToSent }) 
           lineHeight={leadingRelaxed}
           cssClass="paragraph"
         >
-          <strong>{milestone.repoName}</strong> has earned {milestone.milestoneNumber}th stars!
+          <strong>{milestone.repoName}</strong> has earned{' '}
+          {milestone.milestoneNumber}th stars!
         </MjmlText>
       </MjmlColumn>
     </MjmlGroup>
-  )
-}
+  );
+};
 
 export default RepoMilestoneFeeds;

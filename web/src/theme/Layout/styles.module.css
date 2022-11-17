@@ -17,3 +17,8 @@ body {
   display: flex;
   flex-direction: column;
 }
+
+footer {
+  /*noinspection CssUnresolvedCustomProperty*/
+  margin-left: var(--layoutMarginLeft);
+}

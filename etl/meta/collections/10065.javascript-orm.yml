@@ -1,0 +1,14 @@
+id: 10065
+name: javascript ORM
+items:
+  - prisma/prisma
+  - sequelize/sequelize
+  - typeorm/typeorm
+  - Automattic/mongoose
+  - bookshelf/bookshelf
+  - Vincit/objection.js
+  - balderdashy/waterline
+  - knex/knex
+  - dmfay/massive-js
+  - mikro-orm/mikro-orm
+  - gajus/slonik

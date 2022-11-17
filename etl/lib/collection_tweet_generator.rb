@@ -8,7 +8,11 @@ class CollectionTweetGenerator
     now = Time.now 
     day_of_month = now.day
     hour = now.hour
-    idx = day_of_month
+    idx = if hour > 12
+      day_of_month
+    else
+      day_of_month + 31
+    end
 
     sql = <<~SQL
     select * from (

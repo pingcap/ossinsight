@@ -1,4 +1,4 @@
-import React, { ReactElement } from "react";
+import React, { ReactElement } from 'react';
 import {
   MjmlHead,
   MjmlFont,
@@ -6,8 +6,8 @@ import {
   MjmlAll,
   MjmlStyle,
   MjmlRaw,
-} from "mjml-react";
-import { black, grayDark } from "./theme";
+} from 'mjml-react';
+import { black, grayDark } from './theme';
 
 type HeadProps = { children?: ReactElement };
 

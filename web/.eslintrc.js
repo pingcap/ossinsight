@@ -54,6 +54,13 @@ module.exports = {
           skipUndeclared: true,
         }],
       }
+    },
+    {
+      files: ['src/theme/**/*.tsx', 'src/theme/**/*.ts'],
+      rules: {
+        '@typescript-eslint/strict-boolean-expressions': 0,
+        '@typescript-eslint/prefer-nullish-coalescing': 0,
+      }
     }
   ],
   parserOptions: {

@@ -149,7 +149,7 @@ const config = {
           id: 'docs',
           path: 'docs',
           routeBasePath: '/docs',
-          editUrl: 'https://github.com/pingcap/ossinsight/tree/main',
+          editUrl: 'https://github.com/pingcap/ossinsight/tree/main/web/',
           sidebarPath: require.resolve('./sidebars.js'),
         },
         blog: {
@@ -159,7 +159,7 @@ const config = {
           blogSidebarCount: 'ALL',
           postsPerPage: 10,
           showReadingTime: true,
-          editUrl: 'https://github.com/pingcap/ossinsight/edit/main/',
+          editUrl: 'https://github.com/pingcap/ossinsight/edit/main/web/',
           feedOptions: {
             type: ['rss'],
             copyright: `Copyright © ${new Date().getFullYear()} PingCAP`,
