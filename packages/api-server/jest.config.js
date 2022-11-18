@@ -10,8 +10,8 @@ module.exports = {
   coverageProvider: 'v8',
   collectCoverageFrom: [
     'src/**/*.ts',
-    '!src/**/*.d.ts',
-    '!__tests__'
+    '!__tests__',
+    '!**/*.d.ts'
   ],
   testTimeout: 30000,
   globalSetup: './__tests__/helpers/hooks/setup.ts',

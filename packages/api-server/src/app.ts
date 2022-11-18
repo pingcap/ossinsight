@@ -5,7 +5,6 @@ import fastifyMySQL, { MySQLPromisePool } from '@fastify/mysql';
 import { APIServerEnvSchema } from './env';
 import { JsonSchemaToTsProvider } from '@fastify/type-provider-json-schema-to-ts';
 import fastifyEnv from '@fastify/env';
-// import fastifyRequestLogger from "@mgcrea/fastify-request-logger";
 import { join } from 'path';
 
 export type AppOptions = {

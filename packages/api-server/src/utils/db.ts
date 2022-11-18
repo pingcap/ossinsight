@@ -1,6 +1,5 @@
-import { Connection, FieldPacket, OkPacket, PoolOptions, QueryError, ResultSetHeader, RowDataPacket, createConnection } from "mysql2";
 
-import { Pool } from "mysql2/promise";
+import {ConnectionOptions, createConnection, Pool, PoolOptions} from "mysql2/promise";
 import pino from "pino";
 
 const DEFAULT_TIDB_SERVER_PORT = '4000';
@@ -33,81 +32,20 @@ export function getConnectionOptions(options?: PoolOptions) {
     return Object.assign(defaultOptions, options);
 }
 
-export interface QueryResponse<T> {
-    result: T;
-    fields: FieldPacket[];
+export async function getConnection(options: ConnectionOptions, log: pino.Logger) {
+    let conn = await createConnection(getConnectionOptions(options));
+    const errorHandler = async (err: any) => {
+        if (!err.fatal) return;
+        if (err.code !== 'PROTOCOL_CONNECTION_LOST') throw err;
+
+        log.warn(`Database server connection lost, trying to reconnect.`);
+        const newConn = await createConnection(options);
+        newConn.connect();
+        await newConn.on('error', errorHandler);
+        conn = newConn;
+    }
+    conn.on('error', errorHandler);
 }
-
-export class ConnectionWrapper {
-    public conn: Connection;
-    private log: pino.Logger;
-
-    constructor(options: PoolOptions) {
-        this.log = pino({ level: process.env.LOG_LEVEL || "info" });
-        this.conn = createConnection(options);
-        const errorHandler = (err: any) => {
-            if (!err.fatal) return;
-            if (err.code !== 'PROTOCOL_CONNECTION_LOST') throw err;
-
-            this.log.warn(`Database server connection lost, trying to reconnect.`);
-            const newConn = createConnection(this.conn.config);
-            newConn.connect();
-            newConn.on('error', errorHandler);
-            this.conn = newConn;
-        }
-        this.conn.on('error', errorHandler);
-    }
-
-    query<T extends RowDataPacket[][] | RowDataPacket[] | OkPacket | OkPacket[] | ResultSetHeader>(
-        sql: string,
-        values: any | any[] | { [param: string]: any }
-    ): Promise<QueryResponse<T>> {
-        return new Promise((resolve, reject) => {
-            this.conn.query<T>(sql, values, (err: QueryError | null, result, fields) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve({
-                        result, fields
-                    });
-                }
-            });
-        });
-    }
-    
-    execute<T extends RowDataPacket[][] | RowDataPacket[] | OkPacket | OkPacket[] | ResultSetHeader>(
-        sql: string,
-    ): Promise<QueryResponse<T>>;
-
-    execute<T extends RowDataPacket[][] | RowDataPacket[] | OkPacket | OkPacket[] | ResultSetHeader>(
-        sql: string,
-        values: any | any[] | { [param: string]: any }
-    ): Promise<QueryResponse<T>>;
-
-    execute<T extends RowDataPacket[][] | RowDataPacket[] | OkPacket | OkPacket[] | ResultSetHeader>(
-        sql: string,
-        values?: any | any[] | { [param: string]: any }
-    ): Promise<QueryResponse<T>> {
-        if (values === undefined) {
-            values = [];
-        }
-
-        return new Promise((resolve, reject) => {
-            this.conn.execute<T>(sql, values, (err: QueryError | null, result, fields) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve({
-                        result, fields
-                    });
-                }
-            });
-        });
-    }
-
-
-}
-
 
 const INITIALIZED = Symbol('connection_initialized')
 

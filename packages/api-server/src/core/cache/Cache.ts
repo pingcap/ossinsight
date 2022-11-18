@@ -81,39 +81,34 @@ export default class Cache<T> {
 
       return cachedData;
     } else {
-      this.log.debug(`No hit cache of ${this.key}.`);
+      this.log.debug('No hit cache of %s.', this.key);
 
       if (this.onlyFromCache && !this.refreshCache) {
         throw new NeedPreFetchError(`Failed to get data, query ${this.key} can only be executed in advance.`)
       }
 
-      this.log.info(`Do query for key: ${this.key}.`);
+      this.log.info('Do query for key: %s.', this.key);
       return await this.fetchDataFromDB(fallback);
     }
   }
 
   private async fetchDataFromDB(fallback: () => Promise<CachedData<T>>):Promise<CachedData<T>> {
-    const result = await fallback()
+    const result = await fallback();
+    result.expiresAt = MAX_CACHE_TIME;
 
-    // Write result to cache.
+    // Write result to cache async.
+    measure(cacheQueryTimer.labels({op: 'set'}), async () => {
+      await this.cacheProvider.set(this.key, JSON.stringify(result), {
+        EX: this.cacheHours ? Math.round(this.cacheHours * 3600) : -1
+      })
+      .catch((err) => {
+        this.log.error(err, 'Failed to write cache for key %s.', this.key);
+      })
+    }).catch((err) => {
+        this.log.error(err, 'Failed to record cache time for key %s.', this.key);
+    });
 
-    try {
-      await measure(cacheQueryTimer.labels({op: 'set'}), async () => {
-        if (this.cacheHours === -1) {
-          result.expiresAt = MAX_CACHE_TIME;
-          await this.cacheProvider.set(this.key, JSON.stringify(result));
-        } else {
-          result.expiresAt = result.finishedAt.plus({ hours: this.cacheHours })
-          await this.cacheProvider.set(this.key, JSON.stringify(result), {
-            EX: Math.round(this.cacheHours * 3600),
-          });
-        }
-      });
-      result.refresh = true;
-    } catch (err) {
-      this.log.error('Failed to write cache for key %s.', this.key, err)
-    }
-
+    result.refresh = true;
     return result;
   }
 
@@ -130,7 +125,7 @@ export default class Cache<T> {
         return json;
       }
     } catch (err) {
-      this.log.error('Cache <%s> data is broken.', this.key, err);
+      this.log.error(err, 'Cache <%s> data is broken.', this.key);
     }
     return null;
   }

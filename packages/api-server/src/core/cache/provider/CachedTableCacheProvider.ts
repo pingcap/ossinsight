@@ -1,43 +1,10 @@
-import { CacheOption, CacheProvider } from "./CacheProvider";
-import { OkPacket, ResultSetHeader, RowDataPacket } from "mysql2";
+import {Connection} from "mysql2/promise";
+import NormalTableCacheProvider from "./NormalTableCacheProvider";
 
-import { ConnectionWrapper } from "../../../utils/db";
+export default class CachedTableCacheProvider extends NormalTableCacheProvider {
 
-export default class CachedTableCacheProvider implements CacheProvider {
-
-    constructor(
-        private readonly conn: ConnectionWrapper
-    ) {}
-    
-    async set<T extends RowDataPacket[][] | RowDataPacket[] | OkPacket | OkPacket[] | ResultSetHeader>(
-        key: string, value: string, options?: CacheOption
-    ) {
-        const EX = options?.EX || -1;
-        const sql = `INSERT INTO cached_table_cache(cache_key, cache_value, expires) 
-        VALUES (?, ?, ?)
-        ON DUPLICATE KEY UPDATE cache_value = VALUES(cache_value), expires = VALUES(expires);`;
-
-        return this.conn.query<T>(sql, [key, value, EX]);
+    constructor(conn: Connection) {
+        super(conn, 'cached_table_cache');
     }
 
-    async get(key: string) {
-        const sql = `SELECT *, DATE_ADD(updated_at, INTERVAL expires SECOND) AS expired_at
-        FROM cached_table_cache
-        WHERE cache_key = ? AND ((expires = -1) OR (DATE_ADD(updated_at, INTERVAL expires SECOND) >= NOW()))
-        LIMIT 1;`;
-
-        return new Promise(async (resolve, reject) => {
-            try {
-                const res = await this.conn.query(sql, [key]);
-                const rows: any = res?.result;
-                if (Array.isArray(rows) && rows.length >= 1) {
-                    resolve(rows[0]?.cache_value);
-                } else {
-                    resolve(null);
-                }
-            } catch (err) {
-                reject(err);
-            }
-        });
-    }
 }

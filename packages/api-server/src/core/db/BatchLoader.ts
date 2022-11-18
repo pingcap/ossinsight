@@ -32,8 +32,8 @@ export interface Option {
 export class BatchLoader {
     private buf: any[];
     private logger = pino().child({ 'component': 'batch-loader' });
-    private batchSize: number;
-    private maxRetries: number;
+    private readonly batchSize: number;
+    private readonly maxRetries: number;
 
     constructor(
         readonly connections: Pool,

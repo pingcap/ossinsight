@@ -1,10 +1,10 @@
 import { CacheOption, CacheProvider } from "./provider/CacheProvider";
-import { ConnectionWrapper, getConnectionOptions } from "../../utils/db";
 
 import Cache from './Cache'
 import CachedTableCacheProvider from "./provider/CachedTableCacheProvider";
 import NormalTableCacheProvider from "./provider/NormalTableCacheProvider";
 import pino from "pino";
+import {Connection} from "mysql2/promise";
 
 export enum CacheProviderTypes {
     NORMAL_TABLE = 'NORMAL_TABLE',
@@ -22,23 +22,20 @@ class NoneCacheProvider implements CacheProvider {
 
 export default class CacheBuilder {
 
-    private normalCacheProvider?: CacheProvider;
+    private readonly normalCacheProvider?: CacheProvider;
 
-    private cachedTableCacheProvider?: CacheProvider;
+    private readonly cachedTableCacheProvider?: CacheProvider;
 
     private noneCacheProvider: CacheProvider = new NoneCacheProvider();
 
-    private enableCache = true;
-
-    constructor(readonly log: pino.Logger, enableCache: boolean) {
-        this.enableCache = enableCache;
-        if (enableCache) {
-            // TODO: getConnectionOptions() should be overridable by tests.
-            const normalCacheConn = new ConnectionWrapper(getConnectionOptions());
-            this.normalCacheProvider = new NormalTableCacheProvider(normalCacheConn);
-
-            const cachedTableCacheConn = new ConnectionWrapper(getConnectionOptions());
-            this.cachedTableCacheProvider = new CachedTableCacheProvider(cachedTableCacheConn);
+    constructor(
+        private readonly log: pino.Logger,
+        private readonly enableCache: boolean = false,
+        conn?: Connection
+    ) {
+        if (this.enableCache && conn !== undefined) {
+            this.normalCacheProvider = new NormalTableCacheProvider(conn);
+            this.cachedTableCacheProvider = new CachedTableCacheProvider(conn);
         }
     }
 

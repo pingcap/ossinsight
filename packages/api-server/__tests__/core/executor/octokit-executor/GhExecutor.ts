@@ -2,7 +2,7 @@ import GhExecutor, { UserType } from '../../../../src/core/executor/octokit-exec
 import { testLogger } from '../../../helpers/log';
 import CacheBuilder from '../../../../src/core/cache/CacheBuilder';
 
-const TOKEN = process.env.GITHUB_TOKEN || undefined
+const TOKEN = process.env.GITHUB_TOKEN || undefined;
 const executor = new GhExecutor(testLogger, [TOKEN], new CacheBuilder(testLogger, false));
 
 describe('getRepo', () => {
@@ -40,7 +40,6 @@ describe('searchRepos', () => {
     it.todo('should search with token (process.env.GITHUB_TOKEN not provided)')
   }
 });
-
 
 describe('searchUsers', () => {
   const repoShape = {

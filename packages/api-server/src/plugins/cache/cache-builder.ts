@@ -3,6 +3,8 @@ import { FastifyJWTOptions } from "@fastify/jwt";
 import { FastifyOAuth2Options } from "@fastify/oauth2";
 import fp from "fastify-plugin";
 import pino from "pino";
+import {createConnection} from "mysql2/promise";
+import {getConnectionOptions} from "../../../dist/utils/db";
 
 declare module 'fastify' {
     interface FastifyInstance {
@@ -12,7 +14,8 @@ declare module 'fastify' {
 
 export default fp<FastifyOAuth2Options & FastifyJWTOptions>(async (fastify) => {
     const log = fastify.log as pino.Logger;
-    fastify.decorate('cacheBuilder', new CacheBuilder(log, fastify.config.ENABLE_CACHE));
+    const conn = await createConnection(getConnectionOptions());
+    fastify.decorate('cacheBuilder', new CacheBuilder(log, fastify.config.ENABLE_CACHE, conn));
 }, {
     name: 'cache-builder',
     dependencies: [
