@@ -96,16 +96,14 @@ export default class Cache<T> {
     const result = await fallback();
     result.expiresAt = MAX_CACHE_TIME;
 
-    // Write result to cache async.
-    measure(cacheQueryTimer.labels({op: 'set'}), async () => {
+    // TODO: Write result to cache async.
+    await measure(cacheQueryTimer.labels({op: 'set'}), async () => {
       await this.cacheProvider.set(this.key, JSON.stringify(result), {
         EX: this.cacheHours ? Math.round(this.cacheHours * 3600) : -1
       })
       .catch((err) => {
         this.log.error(err, 'Failed to write cache for key %s.', this.key);
       })
-    }).catch((err) => {
-        this.log.error(err, 'Failed to record cache time for key %s.', this.key);
     });
 
     result.refresh = true;
