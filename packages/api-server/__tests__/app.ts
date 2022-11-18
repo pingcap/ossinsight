@@ -3,8 +3,8 @@ import { bootstrapTestContainer, releaseTestContainer } from './helpers/db';
 import io from 'socket.io-client';
 
 beforeAll(bootstrapTestContainer);
-beforeEach(bootstrapApp);
-afterEach(releaseApp);
+beforeAll(bootstrapApp);
+afterAll(releaseApp);
 afterAll(releaseTestContainer);
 
 const allowedOrigins = ['https://ossinsight.io', 'https://pingcap-ossinsight-preview-pr-9999.surge.sh', 'https://github1s.com', 'https://github.com'];
@@ -50,7 +50,7 @@ describe('http', () => {
       '/qo/repos/groups/osdb',
       '/gh/repo/{owner}/{repo}',
       '/collections',
-      '/collections/{collectionId}',
+      '/collections/{collectionId}'
     ];
 
     const APIs_NEEDS_TOKENS = [
@@ -89,6 +89,20 @@ describe('http', () => {
         sql: 'SELECT\n  *\nFROM\n  github_events\nWHERE\n  repo_id = 449649595\n  AND type = \'PullRequestEvent\'\nORDER BY\n  created_at ASC\nLIMIT\n  1\n;',
         type: 'repo',
       }).toMatchObject({ statusCode: 200, body: {} });
+    });
+  });
+
+  describe('metrics', () => {
+    const APIs = [
+      '/metrics'
+    ];
+
+    APIs.forEach(url => {
+      it(`should success GET ${url}`, async () => {
+        await getTestApp().expectGet(url, {
+          resolveBody: false,
+        }).toMatchObject({ statusCode: 200 });
+      });
     });
   });
 });
