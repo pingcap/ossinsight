@@ -54,7 +54,7 @@ it('flush after an interval', async () => {
     const pool = createPool(getConnectionOptions());
     const queryMethod = jest.spyOn(pool, 'query').mockImplementation((sql, values) => {
         expect(sql).toBe(insertAccessLogSQL);
-        return Promise.resolve([] as any);
+        return [] as any
     });
     const accessRecorder = new BatchLoader(pool, insertAccessLogSQL, {
         batchSize: batchSize,
@@ -87,7 +87,7 @@ it('flush three times', async () => {
     const pool = createPool(getConnectionOptions());
     const queryMethod = jest.spyOn(pool, 'query').mockImplementation((sql, values) => {
         expect(sql).toBe(insertAccessLogSQL);
-        return Promise.resolve([] as any);
+        return [] as any;
     });
     const accessRecorder = new BatchLoader(pool, insertAccessLogSQL, {
         batchSize: batchSize,
