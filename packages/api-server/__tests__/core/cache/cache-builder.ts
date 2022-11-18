@@ -30,4 +30,6 @@ it('cache can be disabled', async () => {
     const cachedData = await cache.load(loadFunc);
     expect(cachedData.refresh).toEqual(true);
     expect(cachedData.data).toBe(cacheValue);
+
+    conn.destroy()
 });

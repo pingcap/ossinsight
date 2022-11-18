@@ -13,5 +13,6 @@ describe('connection limits', () => {
 
     const [res] = await executor.execute<any>('', 'SELECT @abc as abc;');
     expect(res[0].abc).toBe(1);
+    await executor.destroy();
   });
 });

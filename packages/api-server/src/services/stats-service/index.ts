@@ -1,5 +1,5 @@
 import { BatchLoader } from "../../core/db/BatchLoader";
-import { createPool } from "mysql2/promise";
+import { createPool, Pool } from "mysql2/promise";
 import fp from "fastify-plugin";
 import { getConnectionOptions } from "../../utils/db";
 import pino from "pino";
@@ -13,6 +13,9 @@ declare module 'fastify' {
 export default fp(async (fastify) => {
     const log = fastify.log.child({ service: 'stats-service'}) as pino.Logger;
     fastify.decorate('statsService', new StatsService(log));
+    fastify.addHook('onClose', async (app) => {
+      await app.statsService.destroy()
+    })
 }, {
   name: 'stats-service',
   dependencies: [
@@ -25,11 +28,12 @@ const INSERT_STATS_BATCH_SIZE = 2;
 
 export class StatsService {
     private queryStatsLoader: BatchLoader;
+    private pool: Pool
 
     constructor(
         private readonly log: pino.Logger
     ) {
-        const pool = createPool(getConnectionOptions({
+        const pool = this.pool = createPool(getConnectionOptions({
             connectionLimit: 2
         }));
         this.queryStatsLoader = new BatchLoader(pool, `
@@ -52,7 +56,12 @@ export class StatsService {
         }
     }
 
-    destroy () {
-      this.queryStatsLoader.destroy();
+    async flush () {
+      await this.queryStatsLoader.flush();
+    }
+
+    async destroy () {
+      await this.queryStatsLoader.destroy();
+      await this.pool.end();
     }
 }

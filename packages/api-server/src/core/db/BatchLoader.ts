@@ -35,6 +35,7 @@ export class BatchLoader {
     private readonly batchSize: number;
     private readonly maxRetries: number;
     private readonly intervalHandle: ReturnType<typeof setInterval> | undefined
+    private _lastFlushJob: Promise<void> | undefined;
 
     constructor(
         readonly connections: Pool,
@@ -58,7 +59,7 @@ export class BatchLoader {
             this.intervalHandle = setInterval(async () => {
                 if (this.buf.length > 0) {
                     this.logger.debug(`Batch loader flush after ${flushInterval} seconds interval.`);
-                    await this.flush();
+                    this._lastFlushJob = this.flush();
                 }
             }, flushInterval * 1000);
         }
@@ -72,8 +73,12 @@ export class BatchLoader {
         }
     }
 
+    get dirty (): boolean {
+        return this.buf.length > 0;
+    }
+
     async flush(): Promise<void> {
-        if (this.buf.length < 0) {
+        if (!this.dirty) {
             return;
         }
 
@@ -99,7 +104,9 @@ export class BatchLoader {
         }
     }
 
-    destroy () {
+    async destroy () {
         clearInterval(this.intervalHandle);
+        await this._lastFlushJob;
+        await this.flush();
     }
 }
