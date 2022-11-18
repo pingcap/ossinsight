@@ -29,6 +29,8 @@ async function createApp () {
     // This should be used for oauth redirect only
     API_BASE_URL: 'http://testdomain.com/',
     ENABLE_CACHE: false,
+    QUEUE_LIMIT: 10,
+    CONNECTION_LIMIT: 10,
     GITHUB_OAUTH_CLIENT_ID: 'fake',
     GITHUB_OAUTH_CLIENT_SECRET: 'fake',
     GITHUB_ACCESS_TOKENS: process.env.GITHUB_TOKEN ?? '',
