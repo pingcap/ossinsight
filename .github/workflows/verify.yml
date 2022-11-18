@@ -3,12 +3,12 @@ name: Verify API server
 on:
   pull_request:
     paths:
-      - 'packages/api-server/**'
+      - 'api/**'
 
 defaults:
   run:
     shell: bash
-    working-directory: packages/api-server
+    working-directory: api
 
 jobs:
   validate:
@@ -21,26 +21,26 @@ jobs:
       - name: Install PNPM
         uses: pnpm/action-setup@v2.1.0
         with:
-          version: 7.14.2
+          version: 6.31.0
 
       - name: Install Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: v18.12.0
+          node-version: v16.14.0
           cache: 'pnpm'
-          cache-dependency-path: 'pnpm-lock.yaml'
+          cache-dependency-path: 'api/pnpm-lock.yaml'
 
       - name: Install Dependencies
         run: pnpm i --frozen-lockfile --strict-peer-dependencies
 
       - name: Verify Sources
-        run: pnpm run test
+        run: pnpm run verify
 
-#      - name: Verify Query Definition JSON
-#        run: |
-#          pnpm run gen:schema-ts
-#          pnpm run validate:params
-#          pnpm run gen:api-documentation
+      - name: Verify Query Definition JSON
+        run: |
+          pnpm run gen:schema-ts
+          pnpm run validate:params
+          pnpm run gen:api-documentation
 
       - name: Build Project
-        run: pnpm run build:ts
+        run: pnpm run build
