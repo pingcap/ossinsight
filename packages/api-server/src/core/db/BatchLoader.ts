@@ -90,9 +90,9 @@ export class BatchLoader {
             } catch (err) {
                 const num = records[0].length;
                 if (retries < this.maxRetries) {
-                    this.logger.error(`Failed to batch load ${num} records, retries: ${retries + 1}/${this.maxRetries}: `, err);
+                    this.logger.error(err, `Failed to batch load ${num} records, retries: ${retries + 1}/${this.maxRetries}: `);
                 } else {
-                    this.logger.error(`Failed to batch load ${num} records, they will be lost: `, err);
+                    this.logger.error(err, `Failed to batch load ${num} records, they will be lost: `);
                     break;
                 }
             }
