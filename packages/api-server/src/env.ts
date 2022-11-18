@@ -14,6 +14,14 @@ export const APIServerEnvSchema = {
     API_BASE_URL: {
       type: 'string'
     },
+    QUEUE_LIMIT: {
+      type: 'number',
+      default: 10000
+    },
+    CONNECTION_LIMIT: {
+      type: 'number',
+      default: 100
+    },
     ENABLE_CACHE: {
       type: 'boolean',
       default: false

@@ -21,6 +21,8 @@ declare module 'fastify' {
       CONFIGS_PATH: string;
       DATABASE_URL: string,
       API_BASE_URL: string,
+      QUEUE_LIMIT: number,
+      CONNECTION_LIMIT: number,
       ENABLE_CACHE: boolean,
       WEB_SHELL_CONNECTION_LIMITS: number,
       WEB_SHELL_QUEUE_LIMIT: number,
