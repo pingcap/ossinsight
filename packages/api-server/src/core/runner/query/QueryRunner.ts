@@ -1,4 +1,3 @@
-import { dataQueryTimer, measure } from "../../../utils/metrics";
 
 import CacheBuilder from "../../cache/CacheBuilder";
 import { CachedData } from "../../cache/Cache";
@@ -8,6 +7,7 @@ import { QueryOptions } from "mysql2/promise";
 import { QueryParser } from "./QueryParser";
 import { QuerySchema } from "../../../types/query.schema";
 import { TiDBQueryExecutor } from "../../executor/query-executor/TiDBQueryExecutor";
+import {dataQueryTimer, measure} from "../../../plugins/metrics/metrics";
 
 export const enum QueryType {
   QUERY = 'query',

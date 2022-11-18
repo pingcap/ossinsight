@@ -1,6 +1,6 @@
 import { Conn, Fields, QueryExecutor, Rows, Values } from "./QueryExecutor";
 import { Pool, PoolConnection, PoolOptions, QueryOptions, createPool } from "mysql2/promise";
-import { tidbQueryCounter, tidbQueryTimer, waitTidbConnectionTimer } from "../../../utils/metrics";
+import {tidbQueryCounter, tidbQueryTimer, waitTidbConnectionTimer} from "../../../plugins/metrics/metrics";
 
 export class TiDBQueryExecutor implements QueryExecutor {
   protected connections: Pool;

@@ -1,8 +1,8 @@
-import { cacheHitCounter, cacheQueryTimer, measure } from '../../utils/metrics';
 
 import { CacheProvider } from './provider/CacheProvider';
 import {DateTime} from 'luxon'
 import pino from 'pino';
+import {cacheHitCounter, cacheQueryTimer, measure} from '../../plugins/metrics/metrics';
 
 export const MAX_CACHE_TIME = DateTime.fromISO('2099-12-31T00:00:00')
 

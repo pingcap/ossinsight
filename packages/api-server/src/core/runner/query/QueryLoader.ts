@@ -1,9 +1,9 @@
-import { measure, readConfigTimer } from "../../../utils/metrics";
 
 import { QuerySchema } from "../../../types/query.schema";
 import { join } from "path";
 import pino from "pino";
 import { readFile } from "fs/promises";
+import {measure, readConfigTimer} from "../../../plugins/metrics/metrics";
 
 export const QUERY_TEMPLATE_SQL_FILENAME = 'template.sql';
 export const QUERY_CONFIG_FILENAME = 'params.json';

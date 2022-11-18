@@ -146,6 +146,7 @@ importers:
       concurrently: ^7.0.0
       fastify: ^4.0.0
       fastify-cli: ^5.5.1
+      fastify-metrics: ^10.0.0
       fastify-plugin: ^4.3.0
       fastify-socket.io: ^4.0.0
       fastify-tsconfig: ^1.0.1
@@ -188,6 +189,7 @@ importers:
       '@octokit/rest': 19.0.5
       fastify: 4.9.2
       fastify-cli: 5.5.1
+      fastify-metrics: 10.0.0_fastify@4.9.2
       fastify-plugin: 4.3.0
       fastify-socket.io: 4.0.0_socket.io@4.5.3
       generic-pool: 3.9.0
@@ -5926,6 +5928,16 @@ packages:
       cron: 2.1.0
       fastify: 4.9.2
       fastify-plugin: 3.0.1
+    dev: false
+
+  /fastify-metrics/10.0.0_fastify@4.9.2:
+    resolution: {integrity: sha512-1UmWgBQgwItQPmBd2pranQzaYpc0RltW+CQ871Gka4pzpiadtroPVy+llEVC58pejpqN65vvzCAfIUv9y2voxA==}
+    peerDependencies:
+      fastify: ^4.9.2
+    dependencies:
+      fastify: 4.9.2
+      fastify-plugin: 4.3.0
+      prom-client: 14.1.0
     dev: false
 
   /fastify-plugin/3.0.1:

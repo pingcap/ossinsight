@@ -2,12 +2,12 @@ import CacheBuilder, { CacheProviderTypes } from "../../cache/CacheBuilder";
 import { OctokitFactory, SYMBOL_TOKEN, eraseToken } from "./OctokitFactory";
 import {Pool, createPool} from "generic-pool";
 import { RECOMMEND_REPO_LIST_1_KEYWORD, RECOMMEND_REPO_LIST_2_KEYWORD, RECOMMEND_USER_LIST_KEYWORD, getRecommendRepoList, getRecommendUserList } from "./Recommeneder";
-import { ghQueryCounter, ghQueryTimer, measure } from "../../../utils/metrics";
 
 import {CachedData} from "../../cache/Cache";
 import {DateTime} from "luxon";
 import {Octokit} from "octokit";
 import pino from 'pino';
+import {ghQueryCounter, ghQueryTimer, measure} from "../../../plugins/metrics/metrics";
 
 const GET_REPO_CACHE_HOURS = 1;
 const SEARCH_REPOS_CACHE_HOURS = 24;

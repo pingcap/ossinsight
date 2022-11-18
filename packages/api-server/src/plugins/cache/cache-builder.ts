@@ -4,7 +4,7 @@ import { FastifyOAuth2Options } from "@fastify/oauth2";
 import fp from "fastify-plugin";
 import pino from "pino";
 import {createConnection} from "mysql2/promise";
-import {getConnectionOptions} from "../../../dist/utils/db";
+import {getConnectionOptions} from "../../utils/db";
 
 declare module 'fastify' {
     interface FastifyInstance {

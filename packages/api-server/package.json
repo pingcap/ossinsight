@@ -10,7 +10,7 @@
   "scripts": {
     "build:ts": "tsc",
     "dev": "npm run build:ts && concurrently -k -p \"[{name}]\" -n \"TypeScript,App\" -c \"yellow.bold,cyan.bold\" \"npm:watch:ts\" \"npm:dev:start\"",
-    "dev:start": "fastify start -p 3450 --ignore-watch=.ts$ -w -l info -P dist/app.js",
+    "dev:start": "fastify start -p 3450 -P --ignore-watch=.ts$ -w dist/app.js",
     "start": "npm run build:ts && fastify start -p 3450 -l info dist/app.js",
     "test": "jest",
     "coverage": "jest --coverage",
@@ -34,6 +34,7 @@
     "@octokit/rest": "^19.0.5",
     "fastify": "^4.0.0",
     "fastify-cli": "^5.5.1",
+    "fastify-metrics": "^10.0.0",
     "fastify-plugin": "^4.3.0",
     "fastify-socket.io": "^4.0.0",
     "generic-pool": "^3.9.0",
