@@ -37,6 +37,7 @@ it('flush after reaching the number of batch_size', async () => {
     expect(queryMethod.mock.calls[0][1]).toEqual([recordsWillBeFlush]);
 
     queryMethod.mockRestore();
+    accessRecorder.destroy();
 });
 
 it('flush after an interval', async () => {
@@ -68,6 +69,7 @@ it('flush after an interval', async () => {
     expect(queryMethod).toBeCalled();
 
     queryMethod.mockRestore();
+    accessRecorder.destroy();
 });
 
 it('flush three times', async () => {
@@ -104,6 +106,7 @@ it('flush three times', async () => {
     expect(queryMethod.mock.calls[2][1][0]).toHaveLength(1);
 
     queryMethod.mockRestore();
+    accessRecorder.destroy();
 });
 
 

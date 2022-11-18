@@ -52,4 +52,7 @@ export class StatsService {
         }
     }
 
+    destroy () {
+      this.queryStatsLoader.destroy();
+    }
 }

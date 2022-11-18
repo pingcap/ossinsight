@@ -34,6 +34,7 @@ export class BatchLoader {
     private logger = pino().child({ 'component': 'batch-loader' });
     private readonly batchSize: number;
     private readonly maxRetries: number;
+    private readonly intervalHandle: ReturnType<typeof setInterval> | undefined
 
     constructor(
         readonly connections: Pool,
@@ -54,7 +55,7 @@ export class BatchLoader {
 
         const flushInterval = option.flushInterval || DEFAULT_FLUSH_INTERVAL;
         if (flushInterval > 0) {
-            setInterval(async () => {
+            this.intervalHandle = setInterval(async () => {
                 if (this.buf.length > 0) {
                     this.logger.debug(`Batch loader flush after ${flushInterval} seconds interval.`);
                     await this.flush();
@@ -97,5 +98,9 @@ export class BatchLoader {
                 }
             }
         }
+    }
+
+    destroy () {
+        clearInterval(this.intervalHandle);
     }
 }

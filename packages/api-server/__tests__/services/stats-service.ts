@@ -9,4 +9,6 @@ it('should execute valid sql', async () => {
   const statsService = new StatsService(testLogger)
 
   await statsService.addQueryStatsRecord('test', 'test', new Date(), true)
+
+  statsService.destroy()
 })

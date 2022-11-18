@@ -134,31 +134,39 @@ describe('socket.io', () => {
     describe(transport, () => {
       it('should follow cors rules', async () => {
         await new Promise<void>((resolve, reject) => {
-          io(getTestApp().url, {
+          const socket = io(getTestApp().url, {
             transports: [transport],
             extraHeaders: {
               Origin: 'https://example.com',
             },
           })
-            .on('connect', () => {
-              reject(new Error('should be rejected by CORS'));
-            })
-            .on('connect_error', (err) => {
-              expect(err.message).toMatch(/(websocket|xhr poll) error/);
-              resolve();
-            });
+          socket.on('connect', () => {
+            reject(new Error('should be rejected by CORS'));
+            socket.close();
+          })
+          socket.on('connect_error', (err) => {
+            expect(err.message).toMatch(/(websocket|xhr poll) error/);
+            resolve();
+            socket.close();
+          });
         });
 
         for (const origin of allowedOrigins) {
           await new Promise<void>((resolve, reject) => {
-            io(getTestApp().url, {
+            const socket = io(getTestApp().url, {
               transports: [transport],
               extraHeaders: {
                 Origin: origin,
               },
             })
-              .on('connect', resolve)
-              .on('connect_error', reject);
+            socket.on('connect', () => {
+              resolve();
+              socket.close();
+            })
+            socket.on('connect_error', err => {
+              reject(err);
+              socket.close();
+            });
           });
         }
       });

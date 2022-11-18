@@ -5,7 +5,6 @@ import fp from 'fastify-plugin';
 import App from '../../src/app';
 import { AddressInfo } from 'net';
 import * as path from 'path';
-import type { Socket } from 'socket.io-client';
 import io from 'socket.io-client';
 import { OutgoingHttpHeaders } from 'http';
 
@@ -78,13 +77,9 @@ export async function releaseApp () {
 }
 
 class StartedApp {
-  readonly socket: Socket;
   // readonly polling: Socket;
 
   constructor (public readonly app: FastifyInstance) {
-    const url = this.url;
-    this.socket = io(url, { transports: ['websocket'], autoConnect: false, reconnection: false });
-    // this.polling = io(url, { transports: ['polling'], autoConnect: false, reconnection: false });
   }
 
   get url () {
@@ -95,16 +90,18 @@ class StartedApp {
 
   async ioEmit (event: string, payload: any, bindingEvent = `/q/${payload.query}`): Promise<any> {
     return new Promise((resolve, reject) => {
-      this.socket.once(bindingEvent, (payload) => {
+      const url = this.url;
+      const socket = io(url, { transports: ['websocket'], autoConnect: false, reconnection: false });
+      socket.once(bindingEvent, (payload) => {
         resolve(payload);
+        socket.close();
       });
       setTimeout(() => {
         reject(new Error('io emit timeout'));
+        socket.close();
       }, 500);
-      if (!this.socket.connected) {
-        this.socket.connect();
-      }
-      this.socket.emit(event, payload);
+      socket.connect();
+      socket.emit(event, payload);
     });
   }
 
