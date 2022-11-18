@@ -94,7 +94,6 @@ const app: FastifyPluginAsync<AppOptions, RawServerDefault, JsonSchemaToTsProvid
   fastify.get('/docs/json', (req, reply) => {
     reply.send(fastify.swagger());
   })
-  
 };
 
 export default app;

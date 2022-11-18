@@ -20,14 +20,15 @@ export default fp(async (app) => {
     const accessRecorder = new BatchLoader(pool, insertAccessLogSQL);
     app.decorate('accessRecorder', accessRecorder);
 
-    app.addHook('onSend', async function (request, reply, error) {
-        await this.accessRecorder.insert([
+    app.addHook('onResponse', function (request, reply, done) {
+        void this.accessRecorder.insert([
             request.ip, request.headers.origin, reply.statusCode, request.url, JSON.stringify(request.query)
         ]);
+        done();
     });
 
-    app.addHook('onError', async function (request, reply, error) {
-        await this.accessRecorder.insert([
+    app.addHook('onError', function (request, reply, error) {
+        void this.accessRecorder.insert([
             request.ip, request.headers.origin, reply.statusCode, request.url, JSON.stringify(request.query)
         ]);
     });
