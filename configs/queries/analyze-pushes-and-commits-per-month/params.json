@@ -1,0 +1,10 @@
+{
+  "cacheHours": 24,
+  "params": [
+    {
+      "name": "repoId",
+      "replaces": "41986369",
+      "pattern": "^[1-9]\\d*$"
+    }
+  ]
+}

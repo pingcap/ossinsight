@@ -1,0 +1,19 @@
+{
+  "cacheHours": 744,
+  "params": [
+    {
+      "name": "repoId",
+      "replaces": "41986369",
+      "pattern": "^[1-9]\\d*$"
+    },
+    {
+      "name": "excludeBots",
+      "replaces": "AND actor_login NOT LIKE '%bot' AND actor_login NOT LIKE '%[bot]' AND actor_login NOT IN (SELECT login FROM blacklist_users bu)",
+      "enums": ["true", "false"],
+      "template": {
+        "true": "AND actor_login NOT LIKE '%bot' AND actor_login NOT LIKE '%[bot]' AND actor_login NOT IN (SELECT login FROM blacklist_users bu)",
+        "false": ""
+      }
+    }
+  ]
+}

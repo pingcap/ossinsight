@@ -1,0 +1,192 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "QuerySchema",
+  "type": "object",
+  "properties": {
+    "name": {
+      "description": "Query name, default is generated base on the file path.",
+      "type": "string"
+    },
+    "public": {
+      "description": "Indicating if the query is public.",
+      "type": "boolean",
+      "default": false
+    },
+    "deprecated": {
+      "description": "Indicating if the query is deprecated",
+      "type": "boolean",
+      "default": false
+    },
+    "description": {
+      "description": "Query description for documentation.",
+      "type": "string"
+    },
+    "cacheProvider": {
+      "description": "Specify how to implement caching, NORMAL_TABLE are used by default.",
+      "enum": ["NORMAL_TABLE", "CACHED_TABLE"]
+    },
+    "cacheHours": {
+      "description": "Cache time in hours, -1 indicates that the query cache will not expire.",
+      "type": "number"
+    },
+    "refreshQueue": {
+      "description": "Specify which queue is used to execute prefetch job. The default is MAIN.",
+      "type": "string"
+    },
+    "refreshCron": {
+      "description": "The CRON expressions that control when the refresh cache task is executed.",
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "#/definitions/ConditionalRefreshCrons"
+        }
+      ]
+    },
+    "refreshHours": {
+      "description": "Refresh cache time in hours, -1 indicates not to refresh.",
+      "oneOf": [
+        {
+          "type": "number"
+        },
+        {
+          "$ref": "#/definitions/ConditionalHours"
+        }
+      ]
+    },
+    "onlyFromCache": {
+      "description": "Only return data from the cache.",
+      "type": "boolean"
+    },
+    "params": {
+      "description": "Query params declaration.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Params"
+      }
+    },
+    "resultSchema": {
+      "description": "Result data schema for description.",
+      "$ref": "https://spec.openapis.org/oas/3.0/schema/2021-09-28#/definitions/Schema"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "cacheHours",
+    "params"
+  ],
+  "definitions": {
+    "Params": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "description": "URL Search param name for the query.",
+          "type": "string"
+        },
+        "description": {
+          "description": "Param description for documentation. If undefined, value in param-descriptions.json would be taken as default",
+          "type": "string"
+        },
+        "type": {
+          "description": "Define the parameter type.",
+          "type": "string",
+          "enum": ["array", "date-range", "collection", "employees"]
+        },
+        "column": {
+          "description": "Define the parameter corresponding column name.",
+          "type": "string"
+        },
+        "dateRangeTo": {
+          "description": "Set in date-range should use that moment as `to` time.",
+          "type": "string",
+          "enum": ["now", "last-valid-datetime"],
+          "default": "last-valid-datetime"
+        },
+        "replaces": {
+          "description": "Define substring in the query sql template. Replacing uses `String.replaceAll`, please make sure the replacing substring is not substring of other texts.",
+          "type": "string"
+        },
+        "template": {
+          "description": "Replacing templates, mapped by search value",
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "default": {
+          "description": "Default input value.",
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            }
+          ]
+        },
+        "enums": {
+          "description": "Enums for prefetching and validating, default is no prefetching and validating.",
+          "oneOf": [
+            {
+              "description": "Predefined query params name.",
+              "type": "string"
+            },
+            {
+              "description": "The allowed values and should be prefetched.",
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          ]
+        },
+        "pattern": {
+          "description": "Regular expression for validating parameter value.",
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "replaces"
+      ]
+    },
+    "ConditionalHours": {
+      "type": "object",
+      "properties": {
+        "param": {
+          "type": "string"
+        },
+        "on": {
+          "type": "object",
+          "patternProperties": {
+            ".*": {
+              "type": "number"
+            }
+          }
+        }
+      },
+      "required": ["param", "on"],
+      "additionalProperties": false
+    },
+    "ConditionalRefreshCrons": {
+      "type": "object",
+      "properties": {
+        "param": {
+          "type": "string"
+        },
+        "on": {
+          "type": "object",
+          "patternProperties": {
+            ".*": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "required": ["param", "on"],
+      "additionalProperties": false
+    }
+  }
+}

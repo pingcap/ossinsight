@@ -1,0 +1,17 @@
+{
+  "cacheHours": -1,
+  "refreshCron": "@hourly",
+  "onlyFromCache": true,
+  "params": [
+    {
+      "name": "repo",
+      "replaces": "db_repos",
+      "enums": "repo_subset"
+    },
+    {
+      "name": "n",
+      "replaces": "10",
+      "enums": "n"
+    }
+  ]
+}

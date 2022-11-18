@@ -1,0 +1,26 @@
+{
+  "cacheHours": 1,
+  "params": [
+    {
+      "name": "repoId",
+      "replaces": "41986369",
+      "type": "array",
+      "pattern": "^[1-9]\\d*$"
+    },
+    {
+      "name": "period",
+      "replaces": "AND (created_at BETWEEN DATE_SUB(CURRENT_DATE(), INTERVAL 1 YEAR) AND CURRENT_DATE())",
+      "enums": [
+        "last_1_year",
+        "last_3_year",
+        "all_times"
+      ],
+      "default": "all_times",
+      "template": {
+        "last_1_year": "AND (created_at BETWEEN DATE_SUB(CURRENT_DATE(), INTERVAL 1 YEAR) AND CURRENT_DATE())",
+        "last_3_year": "AND (created_at BETWEEN DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR) AND CURRENT_DATE())",
+        "all_times": ""
+      }
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "cacheHours": 240,
+  "params": [
+    {
+      "name": "companyName",
+      "type": "employees",
+      "replaces": "'Mini256', 'hooopo', 'sykp241095', '634750802', 'ChenlingLu'",
+      "pattern": "^[^\"%_]+$"
+    },
+    {
+      "name": "timeRange",
+      "replaces": "created_at BETWEEN DATE_SUB(NOW(), INTERVAL 3 YEAR) AND NOW()",
+      "enums": ["last_1_year", "last_3_years"],
+      "default": "last_1_year",
+      "template": {
+        "last_1_year": "created_at BETWEEN DATE_SUB(NOW(), INTERVAL 1 YEAR) AND NOW()",
+        "last_3_years": "created_at BETWEEN DATE_SUB(NOW(), INTERVAL 3 YEAR) AND NOW()"
+      }
+    },
+    {
+      "name": "size",
+      "pattern": "^10|20|50|100$",
+      "replaces": "100000",
+      "default": "20"
+    },
+    {
+      "name": "offset",
+      "pattern": "^[1-9]\\d*|0$",
+      "replaces": "200000",
+      "default": "0"
+    }
+  ]
+}
