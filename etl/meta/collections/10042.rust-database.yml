@@ -16,3 +16,4 @@ items:
   - neondatabase/neon
   - cswinter/LocustDB
   - tensorbase/tensorbase
+  - GreptimeTeam/greptimedb
