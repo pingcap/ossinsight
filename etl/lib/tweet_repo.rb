@@ -34,7 +34,10 @@ class TweetRepo
     get_contributors.each do |github_login|
       break if logins.size >= n
       info = user_info(github_login)
-      logins << info['twitter_username'] if info['twitter_username'].present?
+      if info['twitter_username'].present? 
+        logins << info['twitter_username'] 
+        MentionLog.create(actor_login: github_login, mention_type: 'repo')
+      end
     end
     logins
   end
@@ -60,6 +63,7 @@ class TweetRepo
     stars_count_pretty = stars_for_human(stars_count)
     stars_incr = stars_incr_count_last_7_days
     logins = list_twitter_logins
+
     repo_desc = if stars_count > 2000
       repo
     else
@@ -141,7 +145,8 @@ class TweetRepo
       where type = 'PullRequestEvent' 
             and repo_name = '#{repo}' 
             and pr_merged = 1
-            and not creator_user_login like '%bot%'
+            and creator_user_login not like '%bot%'
+            and creator_user_login not in (select actor_login from mention_logs)
       group by 1 
       order by 2 desc   
       limit #{n}
