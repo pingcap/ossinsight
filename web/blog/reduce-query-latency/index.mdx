@@ -1,16 +1,16 @@
 ---
-title: Reducing Online Serving Latency from 1.11s to 123.6ms with a Distributed SQL Database
+title: Reducing Online Serving Latency from 1.11s to 123.6ms on a Distributed SQL Database
 date: 2022-11-17
 authors: [Mini256, caitin]
 tags: [tidbcloud]
 image: ./reduce-online-serving-latency-with-distributed-sql-database.jpg
-description: This post tells how a GitHub data insight website with a distributed database reduced online serving latency from 1.11s to 123.6ms.
+description: This post tells how a GitHub data insight website on a distributed database reduced online serving latency from 1.11s to 123.6ms.
 keywords: [open source, database, distributed sql database]
 ---
 
 **_TL;DR:_**
 
-_This post tells how a website with a distributed database **reduced online serving latency from 1.11 s to 417.7 ms, and then to 123.6 ms**. We found that some lessons learned on MySQL could be applied throughout the optimization process. But when we optimize a **distributed database,** we need to consider more._
+_This post tells how a website on a distributed database **reduced online serving latency from 1.11 s to 417.7 ms, and then to 123.6 ms**. We found that some lessons learned on MySQL could be applied throughout the optimization process. But when we optimize a **distributed database,** we need to consider more._
 
 The [OSS Insight](https://ossinsight.io/) website displays the data changes of GitHub events in real time. It's powered by [TiDB Cloud](https://www.pingcap.com/tidb-cloud/), a MySQL-compatible distributed SQL database for elastic scale and real-time analytics.
 
