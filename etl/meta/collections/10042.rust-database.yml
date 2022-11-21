@@ -18,3 +18,4 @@ items:
   - tensorbase/tensorbase
   - GreptimeTeam/greptimedb
   - surrealdb/surrealdb
+  - cozodb/cozo
