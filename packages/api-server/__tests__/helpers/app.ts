@@ -78,7 +78,7 @@ export async function releaseApp () {
   }
 }
 
-class StartedApp {
+export class StartedApp {
   // readonly polling: Socket;
 
   constructor (public readonly app: FastifyInstance) {

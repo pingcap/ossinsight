@@ -46,7 +46,7 @@ export class StatsService {
                 return;
             }
             digestText = digestText.replaceAll(/\s+/g, ' ');
-            this.queryStatsLoader.insert([queryName, digestText, executedAt]);
+            await this.queryStatsLoader.insert([queryName, digestText, executedAt]);
         } catch(err) {
             this.log.error(`Failed to add query stats record for ${queryName}.`);
         }

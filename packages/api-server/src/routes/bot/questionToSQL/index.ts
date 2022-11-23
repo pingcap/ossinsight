@@ -1,4 +1,4 @@
-import { FastifyRouteAsync } from '../../../types/common';
+import {FastifyPluginAsyncJsonSchemaToTs} from "@fastify/type-provider-json-schema-to-ts";
 
 const options = {
   schema: {
@@ -11,7 +11,7 @@ const options = {
   } as const
 }
 
-const root: FastifyRouteAsync = async (fastify, opts): Promise<void> => {
+const root: FastifyPluginAsyncJsonSchemaToTs = async (fastify, opts): Promise<void> => {
   fastify.post('/', options, async function (request, reply) {
     const sql = await fastify.botService.questionToSQL(request.body.question);
 

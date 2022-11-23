@@ -106,7 +106,7 @@ export class TiDBDatabase {
   }
 
   protected async runInitialSchema () {
-    const names = await fs.readdir('__tests__/schema');
+    const names = await fs.readdir('__tests__/migrations');
     let conn = await this.createRootConnection();
 
     // SET GLOBAL tidb_multi_statement_mode='ON'
@@ -118,7 +118,7 @@ export class TiDBDatabase {
 
     for (let name of names) {
       if (/\.sql$/.test(name)) {
-        const sqlPath = path.join('__tests__/schema', name);
+        const sqlPath = path.join('__tests__/migrations', name);
         let sql = await fs.readFile(sqlPath, { encoding: 'utf-8' });
         if (name.startsWith('0.') || name.startsWith('z.')) {
           sql = sql.replaceAll('gharchive_dev', this.database);

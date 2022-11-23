@@ -6,6 +6,7 @@ import { APIServerEnvSchema } from './env';
 import { JsonSchemaToTsProvider } from '@fastify/type-provider-json-schema-to-ts';
 import fastifyEnv from '@fastify/env';
 import { join } from 'path';
+import {APIError} from "./utils/error";
 
 export type AppOptions = {
   // Place your custom options for app below here.
@@ -67,6 +68,21 @@ const app: FastifyPluginAsync<AppOptions, RawServerDefault, JsonSchemaToTsProvid
       fastify.log.info('Connected to MySQL/TiDB database.');
     } catch(err) {
       fastify.log.error(err, 'Failed to connect to MySQL/TiDB database.');
+    }
+  });
+
+  // Error handler.
+  fastify.setErrorHandler(function (error: Error, request, reply) {
+    this.log.error(error);
+
+    if (error instanceof APIError) {
+      reply.status(error.statusCode).send({
+        message: error.message
+      })
+    } else {
+        reply.status(500).send({
+            message: 'Internal Server Error'
+        });
     }
   });
 
