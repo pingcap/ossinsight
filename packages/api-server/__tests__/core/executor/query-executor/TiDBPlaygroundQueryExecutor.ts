@@ -6,7 +6,7 @@ beforeAll(bootstrapTestContainer);
 afterAll(releaseTestContainer);
 
 describe('connection limits', () => {
-  it('should be executed', async () => {
+  test('should be executed', async () => {
     const executor = new TiDBPlaygroundQueryExecutor(getConnectionOptions(), [
       'set @abc = 1;',
     ]);

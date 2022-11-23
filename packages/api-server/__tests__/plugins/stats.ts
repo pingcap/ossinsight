@@ -8,7 +8,7 @@ beforeAll(bootstrapApp)
 afterAll(releaseApp)
 afterAll(releaseTestContainer)
 
-it('should insert record', async () => {
+test('should insert record', async () => {
   const db = getTestDatabase();
   const app = getTestApp();
   expect(app.app.accessRecorder).not.toBeUndefined();
@@ -19,14 +19,13 @@ it('should insert record', async () => {
     statusCode: 200,
   });
 
-
   (await db.expect('SELECT COUNT(*) as count FROM access_logs')).toMatchObject([
     { count: 0 }
   ]);
 
-  expect(app.app.accessRecorder.dirty).toBeTruthy();
+  expect(app.app.accessRecorder.empty).toBeTruthy();
   await app.app.accessRecorder.flush();
-  expect(app.app.accessRecorder.dirty).toBeFalsy();
+  expect(app.app.accessRecorder.empty).toBeFalsy();
 
   (await db.expect('SELECT COUNT(*) as count FROM access_logs')).toMatchObject([
     { count: 1 }

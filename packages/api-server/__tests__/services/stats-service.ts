@@ -5,7 +5,7 @@ import { testLogger } from '../helpers/log';
 beforeAll(bootstrapTestContainer);
 afterAll(releaseTestContainer);
 
-it('should execute valid sql', async () => {
+test('should execute valid sql', async () => {
   const db = getTestDatabase();
   const statsService = new StatsService(testLogger);
 

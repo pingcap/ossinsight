@@ -7,7 +7,7 @@ import {getConnectionOptions} from "../../../src/utils/db";
 beforeAll(bootstrapTestContainer);
 afterAll(releaseTestContainer);
 
-it('flush after reaching the number of batch_size', async () => {
+test('flush after reaching the number of batch_size', async () => {
     const batchSize = 3;
     const flushInterval = -1;
     const insertAccessLogSQL = `INSERT INTO access_logs (
@@ -40,7 +40,7 @@ it('flush after reaching the number of batch_size', async () => {
     await accessRecorder.destroy();
 });
 
-it('flush after an interval', async () => {
+test('flush after an interval', async () => {
     const batchSize = 10;
     const flushInterval = 1;
     const insertAccessLogSQL = `INSERT INTO access_logs (
@@ -72,7 +72,7 @@ it('flush after an interval', async () => {
     await accessRecorder.destroy();
 });
 
-it('flush three times', async () => {
+test('flush three times', async () => {
     const batchSize = 2;
     const flushInterval = -1;
     const insertAccessLogSQL = `INSERT INTO access_logs (

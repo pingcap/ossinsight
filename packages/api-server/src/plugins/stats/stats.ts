@@ -36,7 +36,7 @@ export default fp(async (app) => {
     app.addHook('onClose',  async function (app) {
         await accessRecorder.destroy();
         await pool.end();
-    })
+    });
 }, {
     name: 'access-recorder',
     dependencies: [

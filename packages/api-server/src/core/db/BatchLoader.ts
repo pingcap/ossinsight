@@ -73,12 +73,15 @@ export class BatchLoader {
         }
     }
 
-    get dirty (): boolean {
+    /**
+     * Whether the buffer used for batch inserting is empty.
+     */
+    get empty (): boolean {
         return this.buf.length > 0;
     }
 
     async flush(): Promise<void> {
-        if (!this.dirty) {
+        if (!this.empty) {
             return;
         }
 

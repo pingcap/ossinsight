@@ -10,7 +10,7 @@ import {getConnectionOptions} from "../../../src/utils/db";
 beforeAll(bootstrapTestContainer);
 afterAll(releaseTestContainer);
 
-it('cache should work', async () => {
+test('cache should work', async () => {
   const log = pino().child({ 'component': 'cache' });
   const conn = await createConnection(getConnectionOptions());
   const normalCacheProvider = new NormalTableCacheProvider(conn);

@@ -1,24 +1,26 @@
 import { TiDBDatabase } from './TiDBContainer';
 import { TiDBQueryExecutor } from '../../src/core/executor/query-executor/TiDBQueryExecutor';
-import Chance from 'chance';
-import path from 'node:path';
-
+import { join, basename, relative } from "path";
+import { Chance } from "chance";
 let container: TiDBDatabase | undefined;
 let executor: TiDBQueryExecutor | undefined;
 
 const chance = Chance();
 
-function relativeDir (name: string | undefined) {
-  if (!name) {
+function getRelativePath (path: string | undefined) {
+  if (!path) {
     return undefined
   }
-  return path.relative(process.cwd(), name);
+  return basename(relative(join(process.cwd(), '__tests__'), path), '.ts');
+}
+
+function underline(original?: string) {
+  return original?.trim().replace(/[\s/\-.]/g, '_').slice(-64);
 }
 
 function genDatabaseName () {
-  return relativeDir(expect.getState().testPath)?.replace(/[\s/\-.]/g, '_').slice(-64)
-    ?? expect.getState().currentTestName?.replace(/[\s/\-.]/g, '_').slice(-64)
-    ?? chance.city().replace(/\s/g, '_').toLowerCase();
+  const { currentTestName, testPath } = expect.getState();
+  return underline(currentTestName) ?? underline(getRelativePath(testPath)) ?? underline(chance.city()) as string;
 }
 
 export async function bootstrapTestContainer () {

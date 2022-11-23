@@ -22,7 +22,7 @@ const user2 = {
 const COUNT_SQL = 'SELECT count(*) as count from sys_users';
 
 describe('findOrCreateUser', () => {
-  it('should create user', async () => {
+  test('should create user', async () => {
     const db = await bootstrapTestContainer();
     const service = getTestApp().app.userService;
 
