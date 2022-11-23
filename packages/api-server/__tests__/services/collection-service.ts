@@ -8,7 +8,7 @@ import {getConnectionOptions} from "../../src/utils/db";
 beforeAll(bootstrapTestContainer);
 afterAll(releaseTestContainer);
 
-it('should execute valid sql', async () => {
+test('should execute valid sql', async () => {
   const conn = await createConnection(getConnectionOptions());
   const collectionService = new CollectionService(testLogger, getExecutor(), new CacheBuilder(testLogger, false, conn));
 

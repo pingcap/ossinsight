@@ -13,7 +13,7 @@ afterAll(releaseTestContainer, 30000);
 describe('query', () => {
   eachQuery((name, sql, params) => {
     describe(name, () => {
-      it('template should be valid sql', async () => {
+      test('template should be valid sql', async () => {
         const db = await bootstrapTestContainer();
         (await db.expect(sql)).toBeInstanceOf(Array);
       });
@@ -29,7 +29,7 @@ describe('query', () => {
         return;
       }
 
-      it(`transformed template should be valid sql (${pairs.length} group of params)`, async () => {
+      test(`transformed template should be valid sql (${pairs.length} group of params)`, async () => {
         const db = await bootstrapTestContainer();
         const conn = await createConnection(getConnectionOptions());
         const parser = new QueryParser(new CollectionService(testLogger, getExecutor(), new CacheBuilder(testLogger, false, conn)));

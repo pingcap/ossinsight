@@ -32,6 +32,11 @@ export default fp(async (app) => {
             request.ip, request.headers.origin ?? '', reply.statusCode, request.url, JSON.stringify(request.query)
         ]);
     });
+
+    app.addHook('onClose',  async function (app) {
+        await accessRecorder.destroy();
+        await pool.end();
+    });
 }, {
     name: 'access-recorder',
     dependencies: [

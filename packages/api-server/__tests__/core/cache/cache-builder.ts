@@ -9,7 +9,7 @@ import {getConnectionOptions} from "../../../src/utils/db";
 beforeAll(bootstrapTestContainer);
 afterAll(releaseTestContainer);
 
-it('cache can be disabled', async () => {
+test('cache can be disabled', async () => {
     const log = pino().child({ 'component': 'cache-builder' });
     const conn = await createConnection(getConnectionOptions());
 
@@ -30,4 +30,6 @@ it('cache can be disabled', async () => {
     const cachedData = await cache.load(loadFunc);
     expect(cachedData.refresh).toEqual(true);
     expect(cachedData.data).toBe(cacheValue);
+
+    conn.destroy()
 });

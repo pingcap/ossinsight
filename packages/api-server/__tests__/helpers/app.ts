@@ -1,4 +1,4 @@
-import { bootstrapTestContainer } from './db';
+import { getTestDatabase } from './db';
 import type { APIServerEnvSchema } from '../../src/env';
 import Fastify, { FastifyInstance, LightMyRequestResponse } from 'fastify';
 import fp from 'fastify-plugin';
@@ -7,6 +7,7 @@ import { AddressInfo } from 'net';
 import * as path from 'path';
 import io from 'socket.io-client';
 import { OutgoingHttpHeaders } from 'http';
+import { register } from 'prom-client';
 
 type Schema = (typeof APIServerEnvSchema)['properties']
 type Env = {
@@ -14,13 +15,10 @@ type Env = {
 }
 
 let _app: StartedApp | undefined;
-let appPromise: Promise<FastifyInstance> | undefined;
+let appPromise: Promise<StartedApp> | undefined;
 
 async function createApp () {
-  if (appPromise) {
-    return appPromise;
-  }
-  const db = await bootstrapTestContainer();
+  const db = getTestDatabase();
 
   // Override process env
   const env: Env = {
@@ -53,6 +51,7 @@ async function createApp () {
       level: 'error',
     },
   });
+  register.clear();
   app.register(fp(App));
   await app.ready();
 
@@ -65,8 +64,11 @@ async function createApp () {
 }
 
 export async function bootstrapApp () {
-  const app = await createApp();
-  return _app = new StartedApp(app);
+  if (appPromise) {
+    return appPromise;
+  }
+  appPromise = createApp().then(fastify => new StartedApp(fastify));
+  return _app = await appPromise;;
 }
 
 export async function releaseApp () {
