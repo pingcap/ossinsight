@@ -32,10 +32,10 @@ const root: FastifyPluginAsyncJsonSchemaToTs = async (app, opts): Promise<void> 
         preHandler: [app.authenticate],
         schema: schema
     }, async function (req, reply) {
-        const userId = req.user.userId;
+        const userId = req.user.id;
         const { owner, repo } = req.params;
         await app.repoService.subscribeRepo(userId, owner, repo);
-        reply.sendSuccess();
+        reply.send();
     })
 }
 

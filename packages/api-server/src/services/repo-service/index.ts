@@ -1,7 +1,7 @@
-import{ FastifyJWTOptions } from "@fastify/jwt";
-import { FastifyOAuth2Options } from "@fastify/oauth2";
-import { MySQLPromisePool } from "@fastify/mysql";
-import { ResultSetHeader } from "mysql2";
+import {FastifyJWTOptions} from "@fastify/jwt";
+import {FastifyOAuth2Options} from "@fastify/oauth2";
+import {MySQLPromisePool} from "@fastify/mysql";
+import {ResultSetHeader} from "mysql2";
 import fp from "fastify-plugin";
 import {APIError} from "../../utils/error";
 import {RowDataPacket} from "mysql2/promise";
@@ -25,7 +25,7 @@ export interface SubscribedRepo extends RowDataPacket{
     userId: number;
     repoId: number;
     repoName: string;
-    subscribed: number;
+    subscribed: boolean;
     subscribedAt: Date;
 }
 
@@ -45,7 +45,10 @@ export class RepoService {
             ON DUPLICATE KEY UPDATE subscribed_at = CURRENT_TIMESTAMP(), subscribed = true;
         `, [userId, repoId]);
 
-        if (rs.affectedRows !== 1) {
+        // Notice: With ON DUPLICATE KEY UPDATE, the affected-rows value per row is 1 if the row is inserted as a
+        // new row, 2 if an existing row is updated, and 0 if an existing row is set to its current values.
+        // Reference: https://dev.mysql.com/doc/refman/8.0/en/insert-on-duplicate.html
+        if (rs.affectedRows !== 2 && rs.affectedRows !== 1) {
             throw new APIError(500, `Failed to subscribe repo ${owner}/${repo} for user ${userId}`);
         }
     }
@@ -58,6 +61,7 @@ export class RepoService {
             SET subscribed = false
             WHERE user_id = ? AND repo_id = ? AND subscribed = true;
         `, [userId, repoId]);
+
         if (rs.affectedRows !== 1) {
             throw new APIError(409, `Repo ${owner}/${repo} has not been subscribed by user ${userId}`);
         }
@@ -68,7 +72,8 @@ export class RepoService {
         const [repos] = await this.mysql.query<RepoOnlyId[]>(`
             SELECT repo_id AS repoId
             FROM github_repos
-            WHERE owner_login = ? AND repo_name = ? AND is_deleted = 0 LIMIT 1;
+            WHERE repo_name = CONCAT(?, '/', ?) AND is_deleted = 0
+            LIMIT 1;
         `, [owner, repo]);
 
         if (repos.length === 0) {
@@ -77,6 +82,7 @@ export class RepoService {
         return repos[0].repoId;
     }
 
+    // TODO: support pagination.
     async getUserSubscribedRepos(userId: number): Promise<SubscribedRepo[]> {
         const [rows] = await this.mysql.query<SubscribedRepo[]>(`
             SELECT
@@ -88,7 +94,10 @@ export class RepoService {
             WHERE user_id = ? AND subscribed = true
             ORDER BY subscribed_at DESC;
         `, [userId]);
-        return rows;
+        return rows.map((row) => {
+            row.subscribed = Boolean(row.subscribed);
+            return row;
+        });
     }
 
 }

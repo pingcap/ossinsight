@@ -20,6 +20,7 @@ declare module 'fastify' {
   interface FastifyInstance {
     config: {
       CONFIGS_PATH: string;
+      ADMIN_EMAIL: string;
       DATABASE_URL: string,
       API_BASE_URL: string,
       QUEUE_LIMIT: number,
@@ -78,11 +79,11 @@ const app: FastifyPluginAsync<AppOptions, RawServerDefault, JsonSchemaToTsProvid
     if (error instanceof APIError) {
       reply.status(error.statusCode).send({
         message: error.message
-      })
+      });
     } else {
-        reply.status(500).send({
-            message: 'Internal Server Error'
-        });
+      reply.status(500).send({
+        message: 'Internal Server Error'
+      });
     }
   });
 

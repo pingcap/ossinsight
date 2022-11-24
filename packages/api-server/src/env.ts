@@ -8,6 +8,10 @@ export const APIServerEnvSchema = {
       type: 'string',
       default: resolve(__dirname, '..', '..', '..', 'configs')
     },
+    ADMIN_EMAIL: {
+      type: 'string',
+      default: 'ossinsight@pingcap.com'
+    },
     DATABASE_URL: {
       type: 'string'
     },

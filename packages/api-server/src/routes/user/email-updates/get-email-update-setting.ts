@@ -7,15 +7,23 @@ const schema = {
         200: {
             type: 'object',
             description: 'OK',
+            properties: {
+                emailGetUpdates: {
+                    type: 'boolean',
+                }
+            }
         }
     }
 }
 
 const root: FastifyPluginAsyncJsonSchemaToTs = async (app, opts): Promise<void> => {
-    app.get('/', { schema }, async function (req, reply) {
-        const userId = req.user.userId;
+    app.get('/', {
+        preHandler: [app.authenticate],
+        schema
+    }, async function (req, reply) {
+        const userId = req.user.id;
         const res = await app.userService.getEmailUpdates(userId);
-        reply.sendSuccess(res);
+        reply.send(res);
     });
 }
 

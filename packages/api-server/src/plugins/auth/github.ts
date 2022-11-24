@@ -97,36 +97,27 @@ export default fp<FastifyOAuth2Options & FastifyJWTOptions>(async (app) => {
             const githubClient = new Octokit({ auth: accessToken });
             const { data: githubUser } = await githubClient.rest.users.getAuthenticated();
 
-            // Try to find existing user in the database.
-            let userProfile: UserProfile;
-            try {
-                userProfile = await app.userService.getUserByGithubId(githubUser.id);
-            } catch (err: any) {
-                if (err instanceof APIError && err.statusCode === 404) {
-                    // Create a new user.
-                    const user = {
-                        name: githubUser.name || githubUser.login,
-                        emailAddress: githubUser.email,
-                        // User is not allowed to get updates by default.
-                        emailGetUpdates: false,
-                        avatarURL: githubUser.avatar_url,
-                        role: UserRole.USER,
-                        createdAt: DateTime.utc().toJSDate(),
-                        enable: true,
-                    };
-                    const account = {
-                        provider: ProviderType.GITHUB,
-                        providerAccountId: githubUser.id.toString(),
-                        providerAccountLogin: githubUser.login,
-                        accessToken: accessToken,
-                    }
-                    const userId = await app.userService.createUserByAccount(user, account);
-                    userProfile = await app.userService.getUserById(userId);
-                } else {
-                    throw err;
-                }
+            // Create or update user.
+            const user = {
+                name: githubUser.name || githubUser.login,
+                emailAddress: githubUser.email,
+                // User is not allowed to get updates by default.
+                emailGetUpdates: false,
+                avatarURL: githubUser.avatar_url,
+                role: UserRole.USER,
+                createdAt: DateTime.utc().toJSDate(),
+                enable: true,
+            };
+            const account = {
+                provider: ProviderType.GITHUB,
+                providerAccountId: githubUser.id.toString(),
+                providerAccountLogin: githubUser.login,
+                accessToken: accessToken,
             }
+            const userId = await app.userService.findOrCreateUserByAccount(user, account);
+            const userProfile = await app.userService.getUserById(userId);
 
+            // Generate JWT token and set it to cookie.
             const signingToken = await reply.jwtSign(
                 {
                     ...userProfile,
@@ -136,7 +127,6 @@ export default fp<FastifyOAuth2Options & FastifyJWTOptions>(async (app) => {
                     expiresIn: "7d",
                 }
             );
-
             reply
                 .setCookie(cookieName, signingToken, {
                     domain: cookieDomainName,

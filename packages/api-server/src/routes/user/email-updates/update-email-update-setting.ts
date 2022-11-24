@@ -4,7 +4,7 @@ export interface IBody {
     enable: boolean;
 }
 
-const settingEmailUpdatesSchema = {
+const schema = {
     description: 'Update email updates setting',
     tags: ['user'],
     body: {
@@ -21,6 +21,11 @@ const settingEmailUpdatesSchema = {
         200: {
             type: 'object',
             description: 'OK',
+            properties: {
+                emailGetUpdates: {
+                    type: 'boolean',
+                }
+            }
         }
     }
 }
@@ -31,12 +36,13 @@ const root: FastifyPluginAsyncJsonSchemaToTs = async (app, opts): Promise<void> 
         Body: IBody;
     }>('/', {
         preHandler: [app.authenticate],
-        schema: settingEmailUpdatesSchema
+        schema
     }, async function (req, reply) {
-        const userId = req.user.userId;
+        const userId = req.user.id;
         const enable = req.body.enable;
         await app.userService.settingEmailUpdates(userId, enable);
-        reply.sendSuccess();
+        const setting = await app.userService.getEmailUpdates(userId);
+        reply.send(setting);
     });
 }
 

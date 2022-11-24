@@ -42,6 +42,8 @@ export interface User {
     enable: boolean;
 }
 
+export interface UserGetUpdatesSetting extends Omit<UserProfile, 'emailGetUpdates'>, RowDataPacket {}
+
 export interface Account {
     id: number;
     userId: number;
@@ -52,10 +54,6 @@ export interface Account {
 }
 
 export enum ProviderType {
-    GITHUB = 'github'
-}
-
-export enum OAuth2Provider {
     GITHUB = 'github'
 }
 
@@ -83,7 +81,7 @@ export class UserService {
             WHERE
                 su.id = ?
             LIMIT 1
-        `, [OAuth2Provider.GITHUB, userId]);
+        `, [ProviderType.GITHUB, userId]);
         if (users.length === 0) {
             throw new APIError(404, 'User not found');
         }
@@ -103,7 +101,7 @@ export class UserService {
             LEFT JOIN sys_accounts sa ON su.id = sa.user_id AND sa.provider = ?
             WHERE sa.provider_account_id = ?
             LIMIT 1
-        `, [OAuth2Provider.GITHUB, `${githubId}`]);
+        `, [ProviderType.GITHUB, `${githubId}`]);
         if (users.length === 0) {
             throw new APIError(404, 'User not found');
         }
@@ -113,22 +111,29 @@ export class UserService {
         return user;
     }
 
-    async createUserByAccount(user: Omit<User, 'id'>, account: Omit<Account, 'id' | 'userId'>):Promise<number> {
+    async findOrCreateUserByAccount(user: Omit<User, 'id'>, account: Omit<Account, 'id' | 'userId'>):Promise<number> {
         let conn: Connection | undefined;
 
         try {
             conn = await this.mysql.getConnection();
             await conn.beginTransaction();
 
-            // Check if account has been bound to other user.
-            const [existedAccounts] = await conn.query<any[]>(`
-                SELECT 1 FROM sys_accounts WHERE provider = ? AND provider_account_id = ? LIMIT 1
-            `, [ProviderType.GITHUB, account.providerAccountId]);
-            if (existedAccounts.length > 0) {
-                throw new APIError(409, 'This account has bound to another user');
-            }
+            // Check if how many users bound to this account.
+            const [existedUserIds] = await this.mysql.query<any[]>(`
+                SELECT su.id
+                FROM sys_users su
+                LEFT JOIN sys_accounts sa ON su.id = sa.user_id AND sa.provider = ?
+                WHERE sa.provider_account_id = ?
+                FOR UPDATE;
+            `, [account.provider, `${account.providerAccountId}`]);
 
-            // Create a new user.
+            if (existedUserIds.length > 1) {
+                throw new APIError(409, 'Failed to login, please contact admin.');
+            } else if (existedUserIds.length === 1) {
+                return existedUserIds[0].id;
+             }
+
+            // Create a new user if didn't exist any user bound to this account.
             const [rs] = await this.mysql.query<ResultSetHeader>(`
                 INSERT INTO sys_users(name, email_address, email_get_updates, avatar_url, role, created_at, enable)
                 VALUES(?, ?, ?, ?, ?, ?, ?)
@@ -143,8 +148,8 @@ export class UserService {
                 INSERT INTO sys_accounts(user_id, provider, provider_account_id, provider_account_login, access_token)
                 VALUES(?, ?, ?, ?, ?)
             `, [newUser.id, account.provider, account.providerAccountId, account.providerAccountLogin, account.accessToken]);
-            await conn.commit();
 
+            await conn.commit();
             return newUser.id;
         } catch (err) {
             if (conn) {
@@ -153,16 +158,18 @@ export class UserService {
             if (err instanceof APIError) {
                 throw err;
             }
-            throw new APIError(500, 'Failed to create new user', err as Error);
+            throw new APIError(500, 'Failed to create new user, please try it again.', err as Error);
         }
     }
 
-    async getEmailUpdates(userId: number): Promise<boolean> {
-        const [users] = await this.mysql.query<any[]>(
-            `SELECT email_get_updates FROM sys_users WHERE id = ? LIMIT 1`, [userId]
+    async getEmailUpdates(userId: number): Promise<UserGetUpdatesSetting> {
+        const [settings] = await this.mysql.query<UserGetUpdatesSetting[]>(
+            `SELECT email_get_updates AS emailGetUpdates FROM sys_users WHERE id = ? LIMIT 1`, [userId]
         );
-        const user = users[0];
-        return user?.email_get_updates === 1;
+        if (settings.length === 0) {
+            throw new APIError(404, 'User not found');
+        }
+        return settings[0];
     }
 
     async settingEmailUpdates(userId: number, enable: boolean): Promise<boolean> {

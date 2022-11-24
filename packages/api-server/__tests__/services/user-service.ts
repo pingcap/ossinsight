@@ -92,14 +92,14 @@ describe('get user by github id', () => {
 
 });
 
-describe('create user by account', () => {
+describe('find or create user by account', () => {
 
   beforeEach(async () => {
     await conn.query(`DELETE FROM sys_users WHERE 1 = 1;`);
     await conn.query(`DELETE FROM sys_accounts WHERE 1 = 1;`);
   });
 
-  test('create a new account', async () => {
+  test('create a new user to bound to the account', async () => {
     const user = {
       name: 'ossinsight',
       emailAddress: 'ossinsight@pingcap.com',
@@ -115,7 +115,7 @@ describe('create user by account', () => {
       providerAccountLogin: 'ossinsight',
       accessToken: 'token'
     };
-    const userId = await userService.createUserByAccount(user, account);
+    const userId = await userService.findOrCreateUserByAccount(user, account);
     const userProfile = await userService.getUserById(userId);
     expect(userProfile).toEqual({
       id: userId,
@@ -131,7 +131,7 @@ describe('create user by account', () => {
     });
   });
 
-  test('bound existed account will be failed', async () => {
+  test('found a existed users bound to the account', async () => {
     const user = {
       name: 'ossinsight',
       emailAddress: 'ossinsight@pingcap.com',
@@ -147,12 +147,27 @@ describe('create user by account', () => {
       providerAccountLogin: 'ossinsight',
       accessToken: 'token'
     };
+
+    // Added a existed user bound to github account.
     await conn.query(`
       INSERT INTO sys_accounts(user_id, provider, provider_account_id, provider_account_login, access_token)
       VALUES (?, ?, ?, ?, ?);
-    `, [2 ,account.provider, account.providerAccountId, account.providerAccountLogin, account.accessToken])
-    await expect(userService.createUserByAccount(user, account)).rejects
-        .toThrowError('This account has bound to another user');
+    `, [9999 ,account.provider, account.providerAccountId, account.providerAccountLogin, account.accessToken]);
+
+    const userId = await userService.findOrCreateUserByAccount(user, account);
+    const userProfile = await userService.getUserById(userId);
+    expect(userProfile).toEqual({
+      id: userId,
+      name: 'ossinsight',
+      emailAddress: 'ossinsight@pingcap.com',
+      emailGetUpdates: false,
+      githubId: 1001,
+      githubLogin: 'ossinsight',
+      avatarURL: 'https://github.com/ossinsight.png',
+      role: UserRole.USER,
+      createdAt: expect.any(Date),
+      enable: true,
+    });
   });
 
   afterEach(async () => {
@@ -175,7 +190,6 @@ describe('get email updates', () => {
       VALUES (?, ?, ?, ?, ?, ?, ?);
     `, ['ossinsight', 'ossinsight@pingcap.com', 1, 'https://github.com/ossinsight.png', UserRole.USER, '2022-01-01 00:00:00', 1]);
     const userId = rs.insertId;
-
     const emailGetUpdates = await userService.getEmailUpdates(userId);
     expect(emailGetUpdates).toBeTruthy();
   });

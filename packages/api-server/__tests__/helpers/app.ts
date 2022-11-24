@@ -23,6 +23,7 @@ async function createApp () {
   // Override process env
   const env: Env = {
     CONFIGS_PATH: path.resolve(__dirname, '../../../../configs'),
+    ADMIN_EMAIL: 'admin@testdomain.com',
     DATABASE_URL: db.url(),
     // This should be used for oauth redirect only
     API_BASE_URL: 'http://testdomain.com/',
