@@ -1,10 +1,9 @@
 import BrowserOnly from '@docusaurus/BrowserOnly';
 import Head from '@docusaurus/Head';
-import { useHistory, useLocation, Redirect } from '@docusaurus/router';
+import { Redirect, useHistory, useLocation } from '@docusaurus/router';
 import { useRouteMatch } from 'react-router';
-import { Scrollspy } from '@makotot/ghostui';
-import { useMediaQuery, Container, Theme } from '@mui/material';
-import React, { useCallback, useRef } from 'react';
+import { Container, Theme, useMediaQuery } from '@mui/material';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { AnalyzeContext } from './charts/context';
 import { useRepo } from '../../api';
 import type { RepoInfo } from '@ossinsight/api';
@@ -24,6 +23,7 @@ import { SQLPlaygroundDrawer } from './sections/99-SQLPlayground';
 import { Repository } from './sections/5-Repository';
 import { isNullish, notNullish } from '@site/src/utils/value';
 import { Milestone } from '@site/src/dynamic-pages/analyze/sections/98-Milestone';
+import ScrollSpy, { ScrollSpyInstance } from '@site/src/components/ScrollSpy';
 
 interface AnalyzePageParams {
   owner: string;
@@ -67,73 +67,85 @@ function AnalyzePage () {
   const isSmall = useMediaQuery<Theme>('(max-width:600px)');
   const sideWidth = isSmall ? '0' : '160px';
 
+  const spyRef = useRef<ScrollSpyInstance | null>(null);
+  const [active, setActive] = useState(0);
+
+  const scrollTo = useCallback((key: string) => {
+    spyRef.current?.scrollTo(sections.indexOf(key));
+  }, []);
+
   if (isNullish(main) && notNullish(error)) {
-    return <Redirect to='/404' />;
+    return <Redirect to="/404" />;
   }
 
+  const content = useMemo(() => {
+    const children = [
+      <OverviewSection ref={sectionRefs[0]} key={sections[0]} />,
+      <PeopleSection ref={sectionRefs[1]} key={sections[1]} />,
+      <CommitsSection ref={sectionRefs[2]} key={sections[2]} />,
+      <PullRequestsSection ref={sectionRefs[3]} key={sections[3]} />,
+      <IssuesSection ref={sectionRefs[4]} key={sections[4]} />,
+    ];
+    if (!comparingRepoName) {
+      children.push(
+        <Repository ref={sectionRefs[5]} key={sections[5]} />,
+        <Contributors ref={sectionRefs[6]} key={sections[6]} />,
+        <Milestone ref={sectionRefs[7]} key={sections[7]} />,
+      );
+    }
+    return (
+      <Container maxWidth="xl">
+        <ScrollSpy ref={spyRef} offset={120} onVisibleElementChange={setActive}>
+          {children}
+        </ScrollSpy>
+      </Container>
+    );
+  }, [comparingRepoName]);
+
   return (
-    <Scrollspy sectionRefs={sectionRefs} offset={-140}>
-      {({ currentElementIndexInViewport }) => (
-        <CustomPage
+    <CustomPage
+      sideWidth={sideWidth}
+      Side={() => !isSmall ? <Navigator comparing={!!comparingRepoName} type="side" value={sections[active]} scrollTo={scrollTo} /> : null}
+      header={(
+        <NewCompareHeader
           sideWidth={sideWidth}
-          Side={() => !isSmall ? <Navigator comparing={!!comparingRepoName} type='side' value={sections[currentElementIndexInViewport]} /> : null}
-          header={(
-            <NewCompareHeader
-              sideWidth={sideWidth}
-              repo1={main?.repo ?? null}
-              repo2={vs?.repo ?? null}
-              onRepo1Change={onRepoChange}
-              onRepo2Change={onComparingRepoChange}
-              onRepo1Valid={allValid}
-              onRepo2Valid={allValid}
-              repo1DisableClearable
-              repo1Placeholder="Select to analyze"
-              repo2Placeholder="Add to compare"
-              endAdornment={
-                isNullish(vs) &&
-                (notNullish(main?.repo)) && (
-                  <SQLPlaygroundDrawer key={name} data={main?.repo} />
-                )
-              }
-            />
-          )}
-        >
-          <Head>
-            <title>
-              {comparingRepoName
-                ? `${name} vs ${comparingRepoName} | OSSInsight`
-                : `Analyze ${name} | OSSInsight`}
-            </title>
-          </Head>
-          <AnalyzeContext.Provider value={{
-            repoId: main?.repo.id,
-            comparingRepoId: vs?.repo.id,
-            repoName: name,
-            comparingRepoName,
-            repoInfo: main?.repoInfo,
-            comparingRepoInfo: vs?.repoInfo,
-          }}>
-            <Container maxWidth="xl">
-              <OverviewSection ref={sectionRefs[0]} />
-              <PeopleSection ref={sectionRefs[1]} />
-              <CommitsSection ref={sectionRefs[2]} />
-              <PullRequestsSection ref={sectionRefs[3]} />
-              <IssuesSection ref={sectionRefs[4]} />
-              {!comparingRepoName
-                ? (
-                <>
-                  <Repository ref={sectionRefs[5]} />
-                  <Contributors ref={sectionRefs[6]} />
-                  <Milestone ref={sectionRefs[7]} />
-                </>
-                  )
-                : undefined}
-            </Container>
-          </AnalyzeContext.Provider>
-          {isSmall ? <Navigator comparing={!!comparingRepoName} value={sections[currentElementIndexInViewport]} type='bottom' /> : undefined}
-        </CustomPage>
+          repo1={main?.repo ?? null}
+          repo2={vs?.repo ?? null}
+          onRepo1Change={onRepoChange}
+          onRepo2Change={onComparingRepoChange}
+          onRepo1Valid={allValid}
+          onRepo2Valid={allValid}
+          repo1DisableClearable
+          repo1Placeholder="Select to analyze"
+          repo2Placeholder="Add to compare"
+          endAdornment={
+            isNullish(vs) &&
+            (notNullish(main?.repo)) && (
+              <SQLPlaygroundDrawer key={name} data={main?.repo} />
+            )
+          }
+        />
       )}
-    </Scrollspy>
+    >
+      <Head>
+        <title>
+          {comparingRepoName
+            ? `${name} vs ${comparingRepoName} | OSSInsight`
+            : `Analyze ${name} | OSSInsight`}
+        </title>
+      </Head>
+      <AnalyzeContext.Provider value={{
+        repoId: main?.repo.id,
+        comparingRepoId: vs?.repo.id,
+        repoName: name,
+        comparingRepoName,
+        repoInfo: main?.repoInfo,
+        comparingRepoInfo: vs?.repoInfo,
+      }}>
+        {content}
+      </AnalyzeContext.Provider>
+      {isSmall ? <Navigator comparing={!!comparingRepoName} value={sections[active]} scrollTo={scrollTo} type="bottom" /> : undefined}
+    </CustomPage>
   );
 }
 

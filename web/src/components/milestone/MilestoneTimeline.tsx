@@ -1,5 +1,5 @@
 import { useGroupedMilestones, useMilestones } from '@site/src/components/milestone/hooks';
-import React from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { Timeline, TimelineConnector, TimelineContent, TimelineDot, TimelineItem, timelineItemClasses, TimelineSeparator } from '@mui/lab';
 import MilestoneMessage from '@site/src/components/milestone/MilestoneMessage';
 import { Badge, Button, Skeleton, styled, Tooltip } from '@mui/material';
@@ -7,6 +7,7 @@ import { MailOutline as MailOutlineIcon } from '@mui/icons-material';
 import { H3 } from '@site/src/dynamic-pages/analyze/typography';
 import { Milestone } from '@ossinsight/api';
 import ScrollSpy from '@site/src/components/ScrollSpy';
+import { ScrollSpyInstance } from '@site/src/components/ScrollSpy/ScrollSpy';
 
 interface MilestoneTimelineProps {
   repoId?: number;
@@ -14,8 +15,21 @@ interface MilestoneTimelineProps {
 
 export default function MilestoneTimeline ({ repoId }: MilestoneTimelineProps) {
   const { data } = useMilestones(repoId);
-
+  const [active, setActive] = useState(0);
   const groupedData = useGroupedMilestones(data?.data ?? []);
+  const spyRef = useRef<ScrollSpyInstance | null>(null);
+
+  const tabs = useMemo(() => {
+    return groupedData.map(({ year }, index) => (
+        <Tab
+          className={index === active ? 'active' : undefined}
+          key={year}
+          onClick={() => spyRef.current?.scrollTo(index, 'smooth')}
+        >
+          {year}
+        </Tab>
+    ));
+  }, [groupedData, active]);
 
   if (!data) {
     return (
@@ -29,44 +43,34 @@ export default function MilestoneTimeline ({ repoId }: MilestoneTimelineProps) {
   }
 
   return (
-    <ScrollSpy<number> offset={-126}>
-      {({ ref, active, scrollTo, keys }) => (
-        <Container>
-          <Timelines>
-            {groupedData.map(({ year, milestones }, index) => (
-              <Group id={`milestone-${year}`} key={year} ref={el => ref(el, year)}>
-                <H3>{year}</H3>
-                {renderMilestones(milestones)}
-              </Group>
-            ))}
-          </Timelines>
-          <TimeTabsContainer>
-            <Sticky>
-              <Tooltip title="To be the first one who get the emails when this repository archives excellent milestones!">
+    <Container>
+      <Timelines>
+        <ScrollSpy offset={126} ref={spyRef} onVisibleElementChange={setActive}>
+          {groupedData.map(({ year, milestones }) => (
+            <Group id={`milestone-${year}`} key={year}>
+              <H3>{year}</H3>
+              {renderMilestones(milestones)}
+            </Group>
+          ))}
+        </ScrollSpy>
+      </Timelines>
+      <TimeTabsContainer>
+        <Sticky>
+          <Tooltip title="To be the first one who get the emails when this repository archives excellent milestones!">
                 <span>
                   <Badge color="primary" overlap="circular" badgeContent="COMING SOON" sx={{ '.MuiBadge-badge': { top: 0 } }}>
-                    <Button variant='outlined' disabled sx={{ mb: 2 }} startIcon={<MailOutlineIcon />}>
+                    <Button variant="outlined" disabled sx={{ mb: 2 }} startIcon={<MailOutlineIcon />}>
                       Get Updates
                     </Button>
                   </Badge>
                 </span>
-              </Tooltip>
-              <TimeTabs>
-                {keys.filter(year => year).map((year) => (
-                  <Tab
-                    className={year === active ? 'active' : undefined}
-                    key={year}
-                    onClick={() => scrollTo(year)}
-                  >
-                    {year}
-                  </Tab>
-                ))}
-              </TimeTabs>
-            </Sticky>
-          </TimeTabsContainer>
-        </Container>
-      )}
-    </ScrollSpy>
+          </Tooltip>
+          <TimeTabs>
+            {tabs}
+          </TimeTabs>
+        </Sticky>
+      </TimeTabsContainer>
+    </Container>
   );
 }
 

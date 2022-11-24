@@ -20,9 +20,10 @@ export interface NavigatorProps {
   value: string;
   type: 'side' | 'bottom';
   comparing: boolean;
+  scrollTo: (index: string) => void;
 }
 
-export function Navigator ({ value, type, comparing }: NavigatorProps) {
+export function Navigator ({ value, type, comparing, scrollTo }: NavigatorProps) {
   const idx = useMemo(() => {
     return tabs.findIndex(el => el.id === value);
   }, [value]);
@@ -50,7 +51,7 @@ export function Navigator ({ value, type, comparing }: NavigatorProps) {
               variant="scrollable"
               scrollButtons="auto"
         >
-          {renderTabs(comparing ? 6 : undefined, idx)}
+          {renderTabs(comparing ? 6 : undefined, idx, scrollTo)}
         </Tabs>
       </SideContainer>
     );
@@ -93,7 +94,7 @@ const matched = (n: number, i: number) => {
   );
 };
 
-const renderTabs = (n: number | undefined, index: number) => {
+const renderTabs = (n: number | undefined, index: number, scrollTo: (index: string) => void) => {
   return tabs.slice(0, n).map((tab, i) => {
     if (tab.id.startsWith('divider-')) {
       return (
@@ -130,9 +131,7 @@ const renderTabs = (n: number | undefined, index: number) => {
           value={tab.id}
           disableRipple
           sx={{ padding: notNullish(tab.icon) ? '0 !important' : undefined }}
-          onClick={() => {
-            document.getElementById(tab.id)?.scrollIntoView();
-          }}
+          onClick={() => scrollTo(tab.id)}
         />
       );
     }
