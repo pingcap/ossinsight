@@ -1,6 +1,6 @@
 # API Server
 
-This project was the API server of OSS Insight.
+This project is the API server of OSS Insight.
 
 ## Available Scripts
 

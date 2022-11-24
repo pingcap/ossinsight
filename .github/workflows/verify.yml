@@ -36,11 +36,5 @@ jobs:
       - name: Verify Sources
         run: pnpm run test
 
-#      - name: Verify Query Definition JSON
-#        run: |
-#          pnpm run gen:schema-ts
-#          pnpm run validate:params
-#          pnpm run gen:api-documentation
-
       - name: Build Project
         run: pnpm run build:ts
