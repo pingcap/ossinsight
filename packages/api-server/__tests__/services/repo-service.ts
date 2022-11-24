@@ -1,20 +1,22 @@
-import { bootstrapTestContainer, releaseTestContainer } from '../helpers/db';
-import {bootstrapApp, releaseApp, StartedApp} from '../helpers/app';
+import {bootstrapTestDatabase, releaseTestDatabase, TiDBDatabase} from '../helpers/db';
+import {bootstrapApp, StartedApp} from '../helpers/app';
 import '../../src/services/repo-service';
 import {RepoService, SubscribedRepo} from "../../src/services/repo-service";
-import {TiDBDatabase} from "../helpers/TiDBContainer";
 import {Connection} from "mysql2/promise";
 import {APIError} from "../../src/utils/error";
 
+let db: TiDBDatabase, app: StartedApp, conn: Connection, repoService: RepoService;
+
+beforeAll(async () => {
+  db = await bootstrapTestDatabase();
+  app = await bootstrapApp();
+  repoService = app.app.repoService;
+  conn = await db.createConnection();
+});
+
 describe('subscribe repo', () => {
-  let db: TiDBDatabase, app: StartedApp, conn: Connection, repoService: RepoService;
 
-  beforeAll(async () => {
-    db = await bootstrapTestContainer();
-    app = await bootstrapApp();
-    repoService = app.app.repoService;
-    conn = await db.createConnection();
-
+  beforeEach(async () => {
     await conn.query('DELETE FROM sys_subscribed_repos WHERE 1 = 1;');
     // Repo pingcap/tidb has been subscribed by user 1.
     await conn.query(`
@@ -38,23 +40,13 @@ describe('subscribe repo', () => {
     await conn.query('DELETE FROM sys_subscribed_repos WHERE user_id = ?;', [userId]);
   });
 
-  afterAll(async () => {
-    await conn.destroy();
-    await db.stop();
-    await releaseApp();
-    await releaseTestContainer();
+  afterEach(async () => {
+    await conn.query('DELETE FROM sys_subscribed_repos WHERE 1 = 1;');
   });
+
 });
 
 describe('unsubscribe repo', () => {
-  let db: TiDBDatabase, app: StartedApp, conn: Connection, repoService: RepoService;
-
-  beforeAll(async () => {
-    db = await bootstrapTestContainer();
-    app = await bootstrapApp();
-    repoService = app.app.repoService;
-    conn = await db.createConnection();
-  });
 
   beforeEach(async () => {
     await conn.query('DELETE FROM sys_subscribed_repos WHERE 1 = 1;');
@@ -85,7 +77,7 @@ describe('unsubscribe repo', () => {
     });
 
     await expect(repoService.unsubscribeRepo(userId, owner, repo)).rejects
-        .toThrowError(new APIError(409, 'Repo tikv/tikv has not been subscribed by user 1.'));
+        .toThrowError(new APIError(409, 'Repo tikv/tikv has not been subscribed by user 1'));
 
     getRepoIdMethod.mockRestore();
   });
@@ -94,23 +86,9 @@ describe('unsubscribe repo', () => {
     await conn.query('DELETE FROM sys_subscribed_repos WHERE 1 = 1;');
   });
 
-  afterAll(async () => {
-    await conn.destroy();
-    await db.stop();
-    await releaseApp();
-    await releaseTestContainer();
-  });
 });
 
 describe('get user subscribed repos', () => {
-  let db: TiDBDatabase, app: StartedApp, conn: Connection, repoService: RepoService;
-
-  beforeAll(async () => {
-    db = await bootstrapTestContainer();
-    app = await bootstrapApp();
-    repoService = app.app.repoService;
-    conn = await db.createConnection();
-  });
 
   beforeEach(async () => {
     await conn.query('DELETE FROM sys_subscribed_repos WHERE 1 = 1;');
@@ -158,12 +136,12 @@ describe('get user subscribed repos', () => {
     await conn.query('DELETE FROM sys_subscribed_repos WHERE 1 = 1;');
   });
 
-  afterAll(async () => {
-    await conn.destroy();
-    await db.stop();
-    await releaseApp();
-    await releaseTestContainer();
-  });
+});
+
+afterAll(async () => {
+  await conn.end();
+  await app.close();
+  await releaseTestDatabase();
 });
 
 async function expectSubscribed(conn: Connection, userId: number, repoId: number, subscribed: number) {

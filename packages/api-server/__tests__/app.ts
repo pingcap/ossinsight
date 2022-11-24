@@ -1,16 +1,16 @@
 import { bootstrapApp, getTestApp, releaseApp } from './helpers/app';
-import { bootstrapTestContainer, releaseTestContainer } from './helpers/db';
+import { bootstrapTestDatabase, releaseTestDatabase } from './helpers/db';
 import io from 'socket.io-client';
 
-beforeAll(bootstrapTestContainer);
+beforeAll(bootstrapTestDatabase);
 beforeAll(bootstrapApp);
 afterAll(releaseApp);
-afterAll(releaseTestContainer);
+afterAll(releaseTestDatabase);
 
 const allowedOrigins = ['https://ossinsight.io', 'https://pingcap-ossinsight-preview-pr-9999.surge.sh', 'https://github1s.com', 'https://github.com'];
 
 describe('http', () => {
-  it('should start', async () => {
+  test('should start', async () => {
     await getTestApp().expectGet(`/q/events-total`).toMatchObject({
       statusCode: 200,
       body: {
@@ -22,7 +22,7 @@ describe('http', () => {
   });
 
   describe('cors rules', () => {
-    it('should accept', async () => {
+    test('should accept', async () => {
       for (const origin of allowedOrigins) {
         await getTestApp().expectGet(`/q/events-total`, { headers: { Origin: origin } })
           .toMatchObject({
@@ -33,7 +33,7 @@ describe('http', () => {
       }
     });
 
-    it('should reject', async () => {
+    test('should reject', async () => {
       await getTestApp().expectGet(`/q/events-total`, { headers: { 'Origin': 'https://example.com' } })
         .toMatchObject({
           headers: expect.not.objectContaining({
@@ -108,15 +108,12 @@ describe('http', () => {
 });
 
 describe('socket.io', () => {
-  it('should start', async () => {
+  test('should start', async () => {
     let data = await getTestApp().ioEmit('q', { query: 'events-total' }, '/q/events-total');
     expect(data.payload.data.length).toBe(1);
-
-    // data = await getTestApp().pollingEmit('q', { query: 'events-total' }, '/q/events-total');
-    // expect(data.payload.data.length).toBe(1);
   });
 
-  it('should be compact format', async () => {
+  test('should be compact format', async () => {
     expect(getTestApp().ioEmit('q', { query: 'events-total', format: 'compact', excludeMeta: true }, '/q/events-total'))
       .resolves
       .toMatchObject({
@@ -130,9 +127,9 @@ describe('socket.io', () => {
       });
   });
 
-  for (const transport of ['websocket' /*'polling'*/]) {
+  for (const transport of ['websocket']) {
     describe(transport, () => {
-      it('should follow cors rules', async () => {
+      test('should follow cors rules', async () => {
         await new Promise<void>((resolve, reject) => {
           const socket = io(getTestApp().url, {
             transports: [transport],

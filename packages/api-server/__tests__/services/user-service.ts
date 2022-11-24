@@ -1,13 +1,12 @@
-import { bootstrapTestContainer, releaseTestContainer } from '../helpers/db';
+import {bootstrapTestDatabase, releaseTestDatabase, TiDBDatabase} from '../helpers/db';
 import {bootstrapApp, releaseApp, StartedApp} from '../helpers/app';
-import {TiDBDatabase} from "../helpers/TiDBContainer";
 import {Connection, ResultSetHeader} from "mysql2/promise";
 import {ProviderType, UserRole, UserService} from "../../src/services/user-service";
 
 let db: TiDBDatabase, app: StartedApp, userService: UserService, conn: Connection;
 
 beforeAll(async () => {
-  db = await bootstrapTestContainer();
+  db = await bootstrapTestDatabase();
   app = await bootstrapApp();
   userService = app.app.userService;
   conn = await db.createConnection();
@@ -217,5 +216,5 @@ afterAll(async () => {
   await conn.destroy();
   await db.stop();
   await releaseApp();
-  await releaseTestContainer();
+  await releaseTestDatabase();
 });

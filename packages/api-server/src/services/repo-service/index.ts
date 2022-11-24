@@ -42,7 +42,7 @@ export class RepoService {
         const repoId = await this.getRepoId(owner, repo);
         const [rs] = await this.mysql.query<ResultSetHeader>(`
             INSERT INTO sys_subscribed_repos (user_id, repo_id) VALUES (?, ?)
-            ON DUPLICATE KEY UPDATE subscribed_at = CURRENT_TIMESTAMP() AND subscribed = true;
+            ON DUPLICATE KEY UPDATE subscribed_at = CURRENT_TIMESTAMP(), subscribed = true;
         `, [userId, repoId]);
 
         if (rs.affectedRows !== 1) {

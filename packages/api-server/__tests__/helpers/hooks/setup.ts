@@ -1,4 +1,4 @@
-import TiDBContainer from '../TiDBContainer';
+import TiDBContainer from '../container/TiDBContainer';
 
 export default async function () {
   const tidb = new TiDBContainer();

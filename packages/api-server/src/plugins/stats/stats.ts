@@ -33,6 +33,11 @@ export default fp(async (app) => {
         ]);
         done();
     });
+
+    app.addHook('onClose',  async function (app) {
+        await accessRecorder.destroy();
+        await pool.end();
+    });
 }, {
     name: 'access-recorder',
     dependencies: [
