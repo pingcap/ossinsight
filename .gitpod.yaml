@@ -1,0 +1,27 @@
+image:
+  file: .gitpod.Dockerfile
+
+tasks:
+  - name: API Server
+    before: |
+      cd packages/api-server
+    init: |
+      pnpm i --frozen-lockfile
+    command: |
+      pnpm dev
+  - name: Frontend
+    before: |
+      cd web
+    init: |
+      npm ci
+    command: |
+      npm run start
+
+ports:
+  - name: Front End
+    port: 3000
+    onOpen: open-browser
+    visibility: public
+  - name: API Server
+    port: 3450
+    visibility: public
