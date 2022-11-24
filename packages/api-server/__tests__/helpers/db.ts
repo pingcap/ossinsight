@@ -2,7 +2,6 @@ import { join, relative } from "path";
 import { Chance } from "chance";
 import { createConnection } from 'mysql2/promise';
 import fs from "node:fs/promises";
-import path from "node:path";
 let db: TiDBDatabase | undefined;
 
 const chance = Chance();
@@ -20,13 +19,12 @@ function getRelativePath (path: string | undefined) {
 }
 
 function underline(original?: string) {
-  return original?.trim()?.replace(/[\s/\-.]/g, '_')?.slice(-64);
+  return original?.trim().replace(/[\s/\-.]/g, '_').slice(-64);
 }
 
-function genDatabaseName() {
+function genDatabaseName () {
   const { currentTestName, testPath } = expect.getState();
-  console.log(underline(getRelativePath(testPath)))
-  return underline(currentTestName) ?? underline(getRelativePath(testPath)) ?? chance.city();
+  return underline(currentTestName) ?? underline(getRelativePath(testPath)) ?? underline(chance.city()) as string;
 }
 
 export async function bootstrapTestDatabase () {
@@ -50,7 +48,7 @@ export async function releaseTestDatabase () {
 
 export function getTestDatabase () {
   if (!db) {
-    throw new Error('TiDB test container not initialized. Call and await "__tests__/helpers/db".bootstrapTestContainer().');
+    throw new Error('TiDB test container not initialized. Call and await "__tests__/helpers/db".bootstrapTestDatabase().');
   }
   return db;
 }
@@ -109,7 +107,7 @@ export class TiDBDatabase {
     const sqls = filenames
         .filter((filename) => /\.sql$/.test(filename))
         .sort()
-        .map((filename) => path.join('__tests__/migrations', filename))
+        .map((filename) => join('__tests__/migrations', filename))
         .map(async (filename) => await fs.readFile(filename, 'utf8'));
 
     for await (const sql of sqls) {

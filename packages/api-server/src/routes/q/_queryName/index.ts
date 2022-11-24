@@ -24,7 +24,7 @@ const queryHandler: FastifyPluginAsyncJsonSchemaToTs = async (app, opts): Promis
 
     const { sql, requestedAt, refresh } = res;
     app.statsService.addQueryStatsRecord(queryName, sql, requestedAt, refresh).catch((err) => {
-      app.log.info(err, 'Failed to add query stats record.');
+      app.log.info(err, `Failed to add query stats record for ${queryName}.`);
     });
 
     reply.send(res);
