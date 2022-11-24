@@ -172,6 +172,9 @@ function renderMilestones (milestones: Milestone[]) {
           flex: 0,
           padding: 0,
         },
+        [`& .${timelineItemClasses.root}`]: {
+          minHeight: 52,
+        },
       }}
     >
       {

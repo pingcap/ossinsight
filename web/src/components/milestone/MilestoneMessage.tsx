@@ -118,12 +118,12 @@ const Container = styled('span')`
 
 const Verb = styled('span')`
   color: #aaa;
-  font-size: 16px;
+  font-size: 14px;
 `;
 
 const Content = styled('span')`
   color: #fff;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: bold;
   flex: 1;
 `;
@@ -131,6 +131,7 @@ const Content = styled('span')`
 const DateTime = styled('span')`
   color: #7c7c7c;
   font-size: 12px;
+  padding-left: 24px;
 `;
 
 const CollectionLink = ({ id, findCollectionById }: { id: number, findCollectionById: ReturnType<typeof useFindCollectionById> }) => {
