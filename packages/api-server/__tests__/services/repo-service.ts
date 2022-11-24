@@ -119,14 +119,14 @@ describe('get user subscribed repos', () => {
         userId: 1,
         repoId: 167499157,
         repoName: 'pingcap/tiflash',
-        subscribed: 1,
+        subscribed: true,
         subscribedAt: expect.any(Date)
       },
       {
         userId: 1,
         repoId: 41986369,
         repoName: 'pingcap/tidb',
-        subscribed: 1,
+        subscribed: true,
         subscribedAt: expect.any(Date)
       }
     ]);
