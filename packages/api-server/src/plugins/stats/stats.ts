@@ -18,6 +18,7 @@ export default fp(async (app) => {
       remote_addr, origin, status_code, request_path, request_params
     ) VALUES ?`;
     const accessRecorder = new BatchLoader(pool, insertAccessLogSQL);
+
     app.decorate('accessRecorder', accessRecorder);
 
     app.addHook('onResponse', function (request, reply, done) {
@@ -27,16 +28,18 @@ export default fp(async (app) => {
         done();
     });
 
-    app.addHook('onError', function (request, reply, error) {
+    app.addHook('onError', function (request, reply, error, done) {
         void this.accessRecorder.insert([
             request.ip, request.headers.origin ?? '', reply.statusCode, request.url, JSON.stringify(request.query)
         ]);
+        done();
     });
 
     app.addHook('onClose',  async function (app) {
         await accessRecorder.destroy();
         await pool.end();
     });
+
 }, {
     name: 'access-recorder',
     dependencies: [

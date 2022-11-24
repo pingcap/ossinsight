@@ -23,6 +23,7 @@ async function createApp () {
   // Override process env
   const env: Env = {
     CONFIGS_PATH: path.resolve(__dirname, '../../../../configs'),
+    ADMIN_EMAIL: 'admin@testdomain.com',
     DATABASE_URL: db.url(),
     // This should be used for oauth redirect only
     API_BASE_URL: 'http://testdomain.com/',
@@ -80,8 +81,7 @@ export async function releaseApp () {
   }
 }
 
-class StartedApp {
-  // readonly polling: Socket;
+export class StartedApp {
 
   constructor (public readonly app: FastifyInstance) {
   }
@@ -108,21 +108,6 @@ class StartedApp {
       socket.emit(event, payload);
     });
   }
-
-  // async pollingEmit (event: string, payload: any, bindingEvent = `/q/${payload.query}`): Promise<any> {
-  //   return new Promise((resolve, reject) => {
-  //     this.polling.once(bindingEvent, (payload) => {
-  //       resolve(payload);
-  //     });
-  //     setTimeout(() => {
-  //       reject(new Error('io emit timeout'));
-  //     }, 500);
-  //     if (!this.polling.connected) {
-  //       this.polling.connect();
-  //     }
-  //     this.polling.emit(event, payload);
-  //   });
-  // }
 
   expectGet (url: string, config: Omit<MockRequest, 'method'> = {}) {
     return expect(buildMockRequest(this.app, url, { ...config, method: 'get' })).resolves;

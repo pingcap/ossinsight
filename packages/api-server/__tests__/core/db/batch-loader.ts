@@ -1,11 +1,11 @@
-import { bootstrapTestContainer, releaseTestContainer } from "../../helpers/db";
+import { bootstrapTestDatabase, releaseTestDatabase } from "../../helpers/db";
 
 import {BatchLoader} from "../../../src/core/db/BatchLoader";
 import {createPool} from "mysql2/promise";
 import {getConnectionOptions} from "../../../src/utils/db";
 
-beforeAll(bootstrapTestContainer);
-afterAll(releaseTestContainer);
+beforeAll(bootstrapTestDatabase);
+afterAll(releaseTestDatabase);
 
 test('flush after reaching the number of batch_size', async () => {
     const batchSize = 3;

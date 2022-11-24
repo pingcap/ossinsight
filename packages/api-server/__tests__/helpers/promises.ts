@@ -18,7 +18,6 @@ export function sleep (ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-
 // If you want some code in promise finally block. (microtask)
 export function nextTick () {
   return new Promise(resolve => process.nextTick(resolve))

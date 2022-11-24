@@ -1,9 +1,9 @@
-import { bootstrapTestContainer, getTestDatabase, releaseTestContainer } from '../helpers/db';
+import { bootstrapTestDatabase, getTestDatabase, releaseTestDatabase } from '../helpers/db';
 import { StatsService } from '../../src/services/stats-service';
 import { testLogger } from '../helpers/log';
 
-beforeAll(bootstrapTestContainer);
-afterAll(releaseTestContainer);
+beforeAll(bootstrapTestDatabase);
+afterAll(releaseTestDatabase);
 
 test('should execute valid sql', async () => {
   const db = getTestDatabase();

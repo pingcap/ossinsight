@@ -1,12 +1,12 @@
 /// <reference path="../../src/plugins/stats/stats.ts" />
 
-import { bootstrapTestContainer, getTestDatabase, releaseTestContainer } from '../helpers/db';
+import { bootstrapTestDatabase, getTestDatabase, releaseTestDatabase } from '../helpers/db';
 import { bootstrapApp, getTestApp, releaseApp } from '../helpers/app';
 
-beforeAll(bootstrapTestContainer)
+beforeAll(bootstrapTestDatabase)
 beforeAll(bootstrapApp)
 afterAll(releaseApp)
-afterAll(releaseTestContainer)
+afterAll(releaseTestDatabase)
 
 test('should insert record', async () => {
   const db = getTestDatabase();

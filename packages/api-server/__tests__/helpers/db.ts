@@ -1,9 +1,8 @@
-import { TiDBDatabase } from './TiDBContainer';
-import { TiDBQueryExecutor } from '../../src/core/executor/query-executor/TiDBQueryExecutor';
-import { join, basename, relative } from "path";
+import { join, relative } from "path";
 import { Chance } from "chance";
-let container: TiDBDatabase | undefined;
-let executor: TiDBQueryExecutor | undefined;
+import { createConnection } from 'mysql2/promise';
+import fs from "node:fs/promises";
+let db: TiDBDatabase | undefined;
 
 const chance = Chance();
 
@@ -11,7 +10,12 @@ function getRelativePath (path: string | undefined) {
   if (!path) {
     return undefined
   }
-  return basename(relative(join(process.cwd(), '__tests__'), path), '.ts');
+
+  const name = relative(join(process.cwd(), '__tests__'), path)
+      .replace(/\.ts$/, '')
+      .replace(/\B([A-Z])/g, '_$1')
+      .toLowerCase();
+  return name.length === 0 ? undefined : name;
 }
 
 function underline(original?: string) {
@@ -23,46 +27,101 @@ function genDatabaseName () {
   return underline(currentTestName) ?? underline(getRelativePath(testPath)) ?? underline(chance.city()) as string;
 }
 
-export async function bootstrapTestContainer () {
-  if (container) {
-    return container;
+export async function bootstrapTestDatabase () {
+  if (db) {
+    return db;
   }
-  const db = new TiDBDatabase(genDatabaseName());
-  await db.ready;
-  process.env.DATABASE_URL = db.url();
-  container = db;
+  const _db = new TiDBDatabase(genDatabaseName());
+  await _db.ready;
+  process.env.DATABASE_URL = _db.url();
+  db = _db;
   return db;
 }
 
-export async function releaseTestContainer () {
-  await executor?.destroy();
-  executor = undefined;
-  const c = await container;
-  if (c) {
+export async function releaseTestDatabase () {
+  if (db) {
+    await db.stop();
     process.env.DATABASE_URL = '';
+    db = undefined;
   }
-  container = undefined;
-  await c?.stop();
 }
 
 export function getTestDatabase () {
-  if (!container) {
-    throw new Error('TiDB test container not initialized. Call and await "__tests__/helpers/db".bootstrapTestContainer().');
+  if (!db) {
+    throw new Error('TiDB test container not initialized. Call and await "__tests__/helpers/db".bootstrapTestDatabase().');
   }
-  return container;
+  return db;
 }
 
-export function getExecutor (): TiDBQueryExecutor {
-  if (!container) {
-    throw new Error('TiDB test container not initialized. Call and await "__tests__/helpers/db".bootstrapTestContainer().');
+export class TiDBDatabase {
+  public readonly host: string;
+  public readonly port: number;
+
+  private readonly initPromise: Promise<void>;
+
+  constructor (public readonly database: string) {
+    const { __TIDB_HOST, __TIDB_PORT } = process.env;
+    if (!__TIDB_PORT || !__TIDB_HOST) {
+      throw new Error('tidb container not started');
+    }
+    this.host = __TIDB_HOST;
+    this.port = parseInt(__TIDB_PORT);
+    this.initPromise = this.runInitialSchema();
   }
-  return new TiDBQueryExecutor({
-    host: container.host,
-    user: 'executoruser',
-    port: container.port,
-    password: 'executorpassword',
-    database: container.database,
-    decimalNumbers: true,
-    timezone: 'Z',
-  }, false);
+
+  get ready (): Promise<void> {
+    return this.initPromise;
+  }
+
+  url (): string {
+    return `mysql://executoruser:executorpassword@${this.host}:${this.port}/${this.database}`;
+  }
+
+  rootUrl (): string {
+    return `mysql://root:@${this.host}:${this.port}`;
+  }
+
+  async expect (query: string): Promise<jest.JestMatchers<any>> {
+    const conn = await this.createConnection();
+    const [result] = await conn.query({ sql: query });
+    await conn.destroy();
+    return expect(result);
+  }
+
+  async createConnection () {
+    const conn = await createConnection(this.url());
+    await conn.execute(`set @@sql_mode='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION'`);
+    return conn;
+  }
+
+  private async createRootConnection () {
+    const conn = await createConnection(this.rootUrl());
+    await conn.execute(`SET @@tidb_multi_statement_mode='ON'`);
+    await conn.execute(`SET @@sql_mode='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION'`);
+    return conn;
+  }
+
+  protected async runInitialSchema () {
+    const conn = await this.createRootConnection();
+    const filenames = await fs.readdir('__tests__/migrations');
+    const sqls = filenames
+        .filter((filename) => /\.sql$/.test(filename))
+        .sort()
+        .map((filename) => join('__tests__/migrations', filename))
+        .map(async (filename) => await fs.readFile(filename, 'utf8'));
+
+    for await (const sql of sqls) {
+      await conn.query(sql.replaceAll('gharchive_dev', this.database));
+    }
+
+    await conn.destroy();
+  }
+
+  async stop () {
+    const conn = await this.createRootConnection();
+    await conn.query(`DROP DATABASE ${this.database};`);
+    await conn.destroy();
+    return this;
+  }
+
 }

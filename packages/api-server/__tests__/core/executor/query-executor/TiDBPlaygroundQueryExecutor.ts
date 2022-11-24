@@ -1,9 +1,9 @@
 import { TiDBPlaygroundQueryExecutor } from '../../../../src/core/executor/query-executor/TiDBPlaygroundQueryExecutor';
 import { getConnectionOptions } from '../../../../src/utils/db';
-import { bootstrapTestContainer, releaseTestContainer } from '../../../helpers/db';
+import { bootstrapTestDatabase, releaseTestDatabase } from '../../../helpers/db';
 
-beforeAll(bootstrapTestContainer);
-afterAll(releaseTestContainer);
+beforeAll(bootstrapTestDatabase);
+afterAll(releaseTestDatabase);
 
 describe('connection limits', () => {
   test('should be executed', async () => {

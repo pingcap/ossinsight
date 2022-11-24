@@ -1,10 +1,10 @@
 import { TiDBQueryExecutor } from '../../../../src/core/executor/query-executor/TiDBQueryExecutor';
 import { getConnectionOptions } from '../../../../src/utils/db';
-import { bootstrapTestContainer, releaseTestContainer } from '../../../helpers/db';
+import { bootstrapTestDatabase, releaseTestDatabase } from '../../../helpers/db';
 import { expectTimeout } from '../../../helpers/timeout';
 
-beforeAll(bootstrapTestContainer);
-afterAll(releaseTestContainer);
+beforeAll(bootstrapTestDatabase);
+afterAll(releaseTestDatabase);
 
 const withQueryExecutor = async (fn: (executor: TiDBQueryExecutor) => Promise<void>, connectionLimit = 0) => {
   const executor = new TiDBQueryExecutor(getConnectionOptions({
