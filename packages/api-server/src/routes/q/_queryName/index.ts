@@ -13,6 +13,8 @@ const schema = {
   },
   querystring: {
     type: 'object',
+    properties: {},
+    additionalProperties: true
   }
 } as const;
 

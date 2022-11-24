@@ -92,6 +92,12 @@ describe('http', () => {
     });
   });
 
+  describe('swagger json', () => {
+    test('should success', async () => {
+      await getTestApp().expectGet('/docs/json').toMatchObject({ statusCode: 200, body: {} });
+    });
+  });
+
   describe('metrics', () => {
     const APIs = [
       '/metrics'
@@ -114,17 +120,21 @@ describe('socket.io', () => {
   });
 
   test('should be compact format', async () => {
-    expect(getTestApp().ioEmit('q', { query: 'events-total', format: 'compact', excludeMeta: true }, '/q/events-total'))
-      .resolves
-      .toMatchObject({
-        payload: {
-          data: [
-            expect.any(Array)
-          ],
-          fields: expect.any(Array),
-        },
-        compact: true,
-      });
+    await expect(getTestApp().ioEmit('q', {
+      query: 'events-total',
+      format: 'compact',
+      excludeMeta: true
+    }, '/q/events-total'))
+        .resolves
+        .toMatchObject({
+          payload: {
+            data: [
+              expect.any(Array)
+            ],
+            fields: expect.any(Array),
+          },
+          compact: true,
+        });
   });
 
   for (const transport of ['websocket']) {

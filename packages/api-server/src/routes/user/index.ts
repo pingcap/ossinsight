@@ -19,7 +19,7 @@ const schema = {
                 emailAddress: {
                     type: 'string',
                 },
-                emailGetUpdate: {
+                emailGetUpdates: {
                     type: 'boolean',
                 },
                 githubId: {
