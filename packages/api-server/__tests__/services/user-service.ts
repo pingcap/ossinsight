@@ -1,5 +1,5 @@
 import {bootstrapTestDatabase, getTestDatabase, releaseTestDatabase} from '../helpers/db';
-import {bootstrapApp, getTestApp, releaseApp, StartedApp} from '../helpers/app';
+import {bootstrapApp, getTestApp, releaseApp} from '../helpers/app';
 import {Connection, ResultSetHeader} from "mysql2/promise";
 import {ProviderType, UserRole, UserService} from "../../src/services/user-service";
 
@@ -95,14 +95,6 @@ describe('get user by github id', () => {
 });
 
 describe('find or create user by account', () => {
-
-  let app: StartedApp, userService: UserService, conn: Connection;
-
-  beforeAll(async () => {
-    app = await getTestApp();
-    userService = app.app.userService;
-    conn = await getTestDatabase().createConnection();
-  });
 
   beforeEach(async () => {
     await conn.query(`DELETE FROM sys_users WHERE 1 = 1;`);
