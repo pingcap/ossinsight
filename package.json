@@ -4,6 +4,7 @@
   "private": true,
   "license": "MIT",
   "workspaces": [
+    "packages/api-server",
     "packages/feeds-server",
     "api"
   ],
