@@ -31,6 +31,7 @@ import { Collection } from '@ossinsight/api';
 import { paramCase } from 'param-case';
 import { MonthlySummaryCard } from '../charts/montly-cards';
 import { isNullish, nonEmptyArray, notNullish } from '@site/src/utils/value';
+import { MilestoneLite } from '@site/src/components/milestone/MilestoneLite';
 
 export const OverviewSection = forwardRef(function (_, ref: ForwardedRef<HTMLElement>) {
   const theme = useTheme();
@@ -85,16 +86,25 @@ export const OverviewSection = forwardRef(function (_, ref: ForwardedRef<HTMLEle
           ? undefined
           : (
           <>
-            <H1 sx={{ mt: 2 }}>
-              <Box component='span' display='inline-flex' bgcolor='white' borderRadius='4px' padding='2px' alignItems='center' justifyContent='center' sx={{ verticalAlign: 'text-bottom' }} mr={1}>
-                <img width="48" height="48" src={`https://github.com/${name.split('/')[0]}.png`} alt={name} />
-              </Box>
-              <a href={`https://github.com/${name}`} target="_blank" rel="noreferrer">
-                {name}
-                &nbsp;
-                <LinkExternalIcon size={28} verticalAlign="middle" />
-              </a>
-            </H1>
+            <Stack direction='row' flexWrap='wrap' justifyContent='space-between' alignItems='center'>
+              <H1 sx={{ mt: 2 }}>
+                <Box component='span' display='inline-flex' bgcolor='white' borderRadius='4px' padding='2px' alignItems='center' justifyContent='center' sx={{ verticalAlign: 'text-bottom' }} mr={1}>
+                  <img width="48" height="48" src={`https://github.com/${name.split('/')[0]}.png`} alt={name} />
+                </Box>
+                <a href={`https://github.com/${name}`} target="_blank" rel="noreferrer">
+                  {name}
+                  &nbsp;
+                  <LinkExternalIcon size={28} verticalAlign="middle" />
+                </a>
+              </H1>
+              {isNullish(vs) && (
+                <>
+                  <span style={{ flex: 1 }}/>
+                  <MilestoneLite repoId={repoId} />
+                  <a style={{ marginLeft: 8 }} href="#milestone">More</a>
+                </>
+              )}
+            </Stack>
             <P2>{repoInfo?.description}</P2>
             {notNullish(collectionData) && nonEmptyArray(collectionData.data)
               ? (

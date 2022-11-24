@@ -41,7 +41,7 @@ export const clientWithoutCache = createClient(false);
 
 type CheckReq = (config: AxiosRequestConfig) => boolean;
 
-export function registerStaticData (checkReq: CheckReq, data: any) {
+export function registerStaticData<T> (checkReq: CheckReq, data: T) {
   client.interceptors.request.use(config => {
     if (!checkReq(config)) {
       return config;

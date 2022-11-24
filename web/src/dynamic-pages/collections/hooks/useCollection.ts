@@ -1,6 +1,6 @@
 import { usePluginData } from '@docusaurus/useGlobalData';
 import { paramCase } from 'param-case';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import useSWR from 'swr';
 import { core } from '../../../api';
 import { RemoteData } from '../../../components/RemoteCharts/hook';
@@ -30,4 +30,12 @@ export function useCollection (slug: string): Collection | undefined {
   return useMemo(() => {
     return collections.find(c => c.slug === slug);
   }, [collections, slug]);
+}
+
+export function useFindCollectionById () {
+  const collections = useCollections();
+
+  return useCallback((id: number) => {
+    return collections.find(c => c.id === id);
+  }, [collections]);
 }
