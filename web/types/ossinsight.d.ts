@@ -77,4 +77,31 @@ declare module '@ossinsight/api' {
     query_name: string;
     ts: number;
   };
+
+  export type Milestone = {
+    milestone_id: number;
+    // FIXME
+    milestone_type_id: number;
+    milestone_number: number;
+    payload: string | null;
+    reached_at: string;
+  };
+
+  // FIXME enum could not used by type import
+  /*
+   INSERT INTO sys_repo_milestone_types(id, name) VALUES(1, 'stars_earned');
+   INSERT INTO sys_repo_milestone_types(id, name) VALUES(2, 'pull_requests_merged');
+   INSERT INTO sys_repo_milestone_types(id, name) VALUES(3, 'pull_request_creators_had');
+   INSERT INTO sys_repo_milestone_types(id, name) VALUES(4, 'issues_received');
+   INSERT INTO sys_repo_milestone_types(id, name) VALUES(5, 'show_in_trending_repos');
+   INSERT INTO sys_repo_milestone_types(id, name) VALUES(6, 'added_in_collections');
+   */
+  export const enum MilestoneType {
+    StarsEarned = 1,
+    PullRequestsMerged,
+    PullRequestCreatorsHad,
+    IssuesReceived,
+    ShowInTrendingRepos,
+    AddedInCollections,
+  }
 }

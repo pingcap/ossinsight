@@ -10,3 +10,4 @@ items:
   - prometheus/prometheus
   - CeresDB/ceresdb
   - apache/iotdb
+  - GreptimeTeam/greptimedb

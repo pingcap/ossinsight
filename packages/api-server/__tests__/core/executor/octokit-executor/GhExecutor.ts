@@ -6,7 +6,7 @@ const TOKEN = process.env.GITHUB_TOKEN || undefined;
 const executor = new GhExecutor(testLogger, [TOKEN], new CacheBuilder(testLogger, false));
 
 describe('getRepo', () => {
-  it('should get repo info', async () => {
+  test('should get repo info', async () => {
     await expect(executor.getRepo('pingcap', 'ossinsight')).resolves.toMatchObject({
       data: {
         name: 'ossinsight',
@@ -28,12 +28,12 @@ describe('searchRepos', () => {
     ]),
   }
 
-  it('should search with special key', async () => {
+  test('should search with special key', async () => {
     await expect(executor.searchRepos('recommend-repo-list-1-keyword')).resolves.toMatchObject(repoShape);
   });
 
   if (TOKEN) {
-    it('should search with token', async () => {
+    test('should search with token', async () => {
       await expect(executor.searchRepos('keyword')).resolves.toMatchObject(repoShape);
     });
   } else {
@@ -51,12 +51,12 @@ describe('searchUsers', () => {
     ]),
   }
 
-  it('should search with special key', async () => {
+  test('should search with special key', async () => {
     await expect(executor.searchUsers('recommend-user-list-keyword')).resolves.toMatchObject(repoShape);
   });
 
   if (TOKEN) {
-    it('should search users with token', async () => {
+    test('should search users with token', async () => {
       const res = executor.searchUsers('keyword', UserType.USER)
       await expect(res).resolves.toMatchObject(repoShape);
     });

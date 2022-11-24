@@ -14,7 +14,6 @@ WITH group_by_area AS (
         AND gu.country_code != 'N/A'
         AND gu.country_code != 'UND'
     GROUP BY country_or_area
-    ORDER BY cnt DESC
 ), summary AS (
     SELECT SUM(cnt) AS total FROM group_by_area
 )
@@ -23,4 +22,5 @@ SELECT
     cnt AS count,
     cnt / summary.total AS percentage
 FROM group_by_area, summary
+ORDER BY cnt DESC
 ;

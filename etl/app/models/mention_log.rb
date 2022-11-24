@@ -1,0 +1,2 @@
+class MentionLog < ApplicationRecord
+end

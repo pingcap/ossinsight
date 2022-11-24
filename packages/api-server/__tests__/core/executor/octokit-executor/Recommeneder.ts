@@ -16,7 +16,7 @@ describe('getRecommendRepoList()', () => {
 });
 
 describe('getRecommendUserList()', () => {
-  it('should returns a user list', () => {
+  test('should returns a user list', () => {
     expect(getRecommendUserList()).toEqual(
       expect.not.arrayContaining([
         expect.not.objectContaining({

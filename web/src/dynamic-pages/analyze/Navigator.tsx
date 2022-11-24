@@ -1,16 +1,9 @@
 import AnalyticsIcon from '@mui/icons-material/Analytics';
 import AutoGraphIcon from '@mui/icons-material/AutoGraph';
-import {
-  BottomNavigation,
-  BottomNavigationAction,
-  Box,
-  Paper,
-  Stack,
-  styled,
-  Tab,
-  Tabs,
-} from '@mui/material';
+import { BottomNavigation, BottomNavigationAction, Box, Paper, Stack, styled, Tab, Tabs } from '@mui/material';
 import React, { useMemo } from 'react';
+import MilestoneIcon from '@site/src/components/milestone/icon.svg';
+import { isNullish, notNullish } from '@site/src/utils/value';
 
 const SideContainer = styled('div')({
   width: '100%',
@@ -73,19 +66,31 @@ export function Navigator ({ value, type, comparing }: NavigatorProps) {
 }
 
 const tabs: Array<{ id: string, label: string, icon?: JSX.Element }> = [
-  { id: 'divider-0', label: 'Analytics', icon: <AnalyticsIcon fontSize='inherit' sx={{ mr: 0.5 }} /> },
+  { id: 'divider-0', label: 'Analytics', icon: <AnalyticsIcon fontSize="inherit" sx={{ mr: 0.5 }} /> },
   { id: 'overview', label: 'Overview' },
   { id: 'people', label: 'People' },
   { id: 'commits', label: 'Commits' },
   { id: 'pull-requests', label: 'Pull Requests' },
   { id: 'issues', label: 'Issues' },
-  { id: 'divider-1', label: 'Monthly Stats', icon: <AutoGraphIcon fontSize='inherit' sx={{ mr: 0.5 }} /> },
+  { id: 'divider-1', label: 'Monthly Stats', icon: <AutoGraphIcon fontSize="inherit" sx={{ mr: 0.5 }} /> },
   { id: 'repository', label: 'Repository' },
   { id: 'contributors', label: 'Contributors' },
+  { id: 'milestone', label: 'Milestone', icon: <MilestoneIcon style={{ marginRight: 4 }} /> },
 ];
 
+// This method indicates whether the group name of the navbar label should be highlighted.
+//
+// FIXME: We should refactor the navigator code base.
 const matched = (n: number, i: number) => {
-  return i > n && i - n <= 5;
+  return (
+    // for any group, current tab index is greater than label index
+    i > n &&
+    // for group 0, i - n lt 5
+    // for group 1, i - n gte 5
+    i - n <= 5 &&
+    // for group 2 (special one, which is both label and tab), i - n === 9
+    i < 9
+  );
 };
 
 const renderTabs = (n: number | undefined, index: number) => {
@@ -95,7 +100,7 @@ const renderTabs = (n: number | undefined, index: number) => {
         <Tab
           key={tab.id}
           label={(
-            <Stack sx={{ fontSize: 16, fontWeight: 'bold', pl: 2, color: matched(i, index) ? 'primary.main' : undefined }} direction="row" alignItems='center'>
+            <Stack sx={{ fontSize: 16, fontWeight: 'bold', pl: 2, color: matched(i, index) ? 'primary.main' : undefined }} direction="row" alignItems="center">
               {tab.icon}
               <span>
                 {tab.label}
@@ -110,10 +115,21 @@ const renderTabs = (n: number | undefined, index: number) => {
       return (
         <Tab
           key={tab.id}
-          label={tab.label}
+          label={
+            isNullish(tab.icon)
+              ? tab.label
+              : (
+                <Stack sx={{ fontSize: 16, fontWeight: 'bold', pl: 2, color: i === index ? 'primary.main' : undefined }} direction="row" alignItems="center">
+                  {tab.icon}
+                  <span>
+                    {tab.label}
+                  </span>
+                </Stack>
+                )
+          }
           value={tab.id}
-          icon={tab.icon}
           disableRipple
+          sx={{ padding: notNullish(tab.icon) ? '0 !important' : undefined }}
           onClick={() => {
             document.getElementById(tab.id)?.scrollIntoView();
           }}

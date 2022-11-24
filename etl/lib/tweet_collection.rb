@@ -31,7 +31,10 @@ class TweetCollection
     get_contributors.each do |github_login|
       break if logins.size >= n
       info = user_info(github_login)
-      logins << info['twitter_username'] if info['twitter_username'].present?
+      if info['twitter_username'].present?
+        logins << info['twitter_username']
+        MentionLog.create(actor_login: github_login, mention_type: 'collection')
+      end
     end
     logins
   end
@@ -105,7 +108,8 @@ class TweetCollection
       where type = 'PullRequestEvent' 
             and repo_id in (select repo_id from collection_items where collection_id = #{collection_id})  
             and pr_merged = 1
-            and not creator_user_login like '%bot%'
+            and creator_user_login not like '%bot%'
+            and creator_user_login not in (select actor_login from mention_logs)
       group by 1 
       order by 2 desc   
       limit #{n}

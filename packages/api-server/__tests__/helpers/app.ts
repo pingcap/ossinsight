@@ -1,4 +1,4 @@
-import { bootstrapTestContainer } from './db';
+import { getTestDatabase } from './db';
 import type { APIServerEnvSchema } from '../../src/env';
 import Fastify, { FastifyInstance, LightMyRequestResponse } from 'fastify';
 import fp from 'fastify-plugin';
@@ -7,6 +7,7 @@ import { AddressInfo } from 'net';
 import * as path from 'path';
 import io from 'socket.io-client';
 import { OutgoingHttpHeaders } from 'http';
+import { register } from 'prom-client';
 
 type Schema = (typeof APIServerEnvSchema)['properties']
 type Env = {
@@ -14,17 +15,15 @@ type Env = {
 }
 
 let _app: StartedApp | undefined;
-let appPromise: Promise<FastifyInstance> | undefined;
+let appPromise: Promise<StartedApp> | undefined;
 
 async function createApp () {
-  if (appPromise) {
-    return appPromise;
-  }
-  const db = await bootstrapTestContainer();
+  const db = getTestDatabase();
 
   // Override process env
   const env: Env = {
     CONFIGS_PATH: path.resolve(__dirname, '../../../../configs'),
+    ADMIN_EMAIL: 'admin@testdomain.com',
     DATABASE_URL: db.url(),
     // This should be used for oauth redirect only
     API_BASE_URL: 'http://testdomain.com/',
@@ -53,6 +52,7 @@ async function createApp () {
       level: 'error',
     },
   });
+  register.clear();
   app.register(fp(App));
   await app.ready();
 
@@ -65,8 +65,11 @@ async function createApp () {
 }
 
 export async function bootstrapApp () {
-  const app = await createApp();
-  return _app = new StartedApp(app);
+  if (appPromise) {
+    return appPromise;
+  }
+  appPromise = createApp().then(fastify => new StartedApp(fastify));
+  return _app = await appPromise;;
 }
 
 export async function releaseApp () {
@@ -78,8 +81,7 @@ export async function releaseApp () {
   }
 }
 
-class StartedApp {
-  // readonly polling: Socket;
+export class StartedApp {
 
   constructor (public readonly app: FastifyInstance) {
   }
@@ -106,21 +108,6 @@ class StartedApp {
       socket.emit(event, payload);
     });
   }
-
-  // async pollingEmit (event: string, payload: any, bindingEvent = `/q/${payload.query}`): Promise<any> {
-  //   return new Promise((resolve, reject) => {
-  //     this.polling.once(bindingEvent, (payload) => {
-  //       resolve(payload);
-  //     });
-  //     setTimeout(() => {
-  //       reject(new Error('io emit timeout'));
-  //     }, 500);
-  //     if (!this.polling.connected) {
-  //       this.polling.connect();
-  //     }
-  //     this.polling.emit(event, payload);
-  //   });
-  // }
 
   expectGet (url: string, config: Omit<MockRequest, 'method'> = {}) {
     return expect(buildMockRequest(this.app, url, { ...config, method: 'get' })).resolves;

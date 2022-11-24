@@ -4,17 +4,22 @@ import pino from "pino";
 
 const DEFAULT_TIDB_SERVER_PORT = '4000';
 
-export function getConnectionOptions(options?: PoolOptions) {
-    if (process.env.DATABASE_URL === undefined || process.env.DATABASE_URL.length === 0) {
+export function getConnectionOptions(options?: PoolOptions | string): ConnectionOptions {
+    let dsn = process.env.DATABASE_URL;
+    if (typeof options === 'string') {
+        dsn = options;
+    }
+
+    if (dsn === undefined || dsn.length === 0) {
         pino().error('Must provide DATABASE_URL in the env variable.');
         process.exit();
     }
 
-    if (process.env.NODE_ENV === 'test' && (/tidb-cloud|gharchive_dev|github_events_api/.test(process.env.DATABASE_URL))) {
+    if (process.env.NODE_ENV === 'test' && (/tidb-cloud|gharchive_dev|github_events_api/.test(dsn))) {
         throw new Error('Do not use online database in test env.');
     }
 
-    const url = new URL(process.env.DATABASE_URL);
+    const url = new URL(dsn);
     const dbHost = url.hostname;
     const dbName = url.pathname.replaceAll('/', '');
     const dbPort = parseInt(url.port || DEFAULT_TIDB_SERVER_PORT);
