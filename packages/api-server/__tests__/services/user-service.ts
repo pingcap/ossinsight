@@ -1,16 +1,18 @@
-import {bootstrapTestDatabase, releaseTestDatabase, TiDBDatabase} from '../helpers/db';
-import {bootstrapApp, releaseApp, StartedApp} from '../helpers/app';
+import {bootstrapTestDatabase, getTestDatabase, releaseTestDatabase} from '../helpers/db';
+import {bootstrapApp, getTestApp, releaseApp, StartedApp} from '../helpers/app';
 import {Connection, ResultSetHeader} from "mysql2/promise";
 import {ProviderType, UserRole, UserService} from "../../src/services/user-service";
 
-let db: TiDBDatabase, app: StartedApp, userService: UserService, conn: Connection;
+let app: StartedApp, userService: UserService, conn: Connection;
 
+beforeAll(bootstrapTestDatabase);
 beforeAll(async () => {
-  db = await bootstrapTestDatabase();
   app = await bootstrapApp();
   userService = app.app.userService;
-  conn = await db.createConnection();
+  conn = await getTestDatabase().createConnection();
 });
+afterAll(releaseApp);
+afterAll(releaseTestDatabase);
 
 describe('get user by id', () => {
 
@@ -93,6 +95,14 @@ describe('get user by github id', () => {
 });
 
 describe('find or create user by account', () => {
+
+  let app: StartedApp, userService: UserService, conn: Connection;
+
+  beforeAll(async () => {
+    app = await getTestApp();
+    userService = app.app.userService;
+    conn = await getTestDatabase().createConnection();
+  });
 
   beforeEach(async () => {
     await conn.query(`DELETE FROM sys_users WHERE 1 = 1;`);
@@ -224,11 +234,4 @@ describe('setting email updates', () => {
     await conn.query(`DELETE FROM sys_accounts WHERE 1 = 1;`);
   });
 
-});
-
-afterAll(async () => {
-  await conn.destroy();
-  await db.stop();
-  await releaseApp();
-  await releaseTestDatabase();
 });
