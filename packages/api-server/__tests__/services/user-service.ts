@@ -3,12 +3,12 @@ import {bootstrapApp, getTestApp, releaseApp, StartedApp} from '../helpers/app';
 import {Connection, ResultSetHeader} from "mysql2/promise";
 import {ProviderType, UserRole, UserService} from "../../src/services/user-service";
 
-let app: StartedApp, userService: UserService, conn: Connection;
+let userService: UserService, conn: Connection;
 
 beforeAll(bootstrapTestDatabase);
+beforeAll(bootstrapApp);
 beforeAll(async () => {
-  app = await bootstrapApp();
-  userService = app.app.userService;
+  userService = getTestApp().app.userService;
   conn = await getTestDatabase().createConnection();
 });
 afterAll(releaseApp);
