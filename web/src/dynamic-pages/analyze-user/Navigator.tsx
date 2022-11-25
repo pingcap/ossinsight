@@ -27,9 +27,10 @@ const ColorBox = styled(Box)({
 export interface NavigatorProps {
   value: string;
   type: 'side' | 'bottom';
+  scrollTo: (key: string) => void;
 }
 
-export function Navigator ({ value, type }: NavigatorProps) {
+export function Navigator ({ value, type, scrollTo }: NavigatorProps) {
   const idx = useMemo(() => {
     return tabs.findIndex(el => el.id === value);
   }, [value]);
@@ -57,7 +58,7 @@ export function Navigator ({ value, type }: NavigatorProps) {
               variant="scrollable"
               scrollButtons="auto"
         >
-          {renderTabs(undefined, idx)}
+          {renderTabs(undefined, idx, scrollTo)}
         </Tabs>
       </SideContainer>
     );
@@ -88,7 +89,7 @@ const matched = (n: number, i: number) => {
   return i > n && i - n <= 5;
 };
 
-const renderTabs = (n: number | undefined, index: number) => {
+const renderTabs = (n: number | undefined, index: number, scrollTo: (key: string) => void) => {
   return tabs.slice(0, n).map((tab, i) => {
     if (tab.id.startsWith('divider-')) {
       return (
@@ -115,7 +116,7 @@ const renderTabs = (n: number | undefined, index: number) => {
           icon={tab.icon}
           disableRipple
           onClick={useEventCallback(() => {
-            document.getElementById(tab.id)?.scrollIntoView();
+            scrollTo(tab.id);
           })}
         />
       );
