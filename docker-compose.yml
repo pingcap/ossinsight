@@ -48,7 +48,7 @@ services:
       - ENABLE_CACHE=0
 
   web:
-    image: hooopo/ossinsight-fe:latest
+    image: hooopo/ossinsight-web:latest
     restart: always
     build:
       context: ./web
