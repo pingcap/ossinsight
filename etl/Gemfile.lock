@@ -287,7 +287,7 @@ DEPENDENCIES
   jbuilder (~> 2.7)
   listen (~> 3.3)
   mdtable (~> 0.0.2)
-  mysql2 (~> 0.5)
+  mysql2 (~> 0.5.4)
   pry-rails (~> 0.3.9)
   puma (~> 5.0)
   rack-mini-profiler (~> 2.0)
