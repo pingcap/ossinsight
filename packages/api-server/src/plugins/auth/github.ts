@@ -45,7 +45,7 @@ export default fp<FastifyOAuth2Options & FastifyJWTOptions>(async (app) => {
               auth: fastifyOauth2.GITHUB_CONFIGURATION
             },
             startRedirectPath: '/login/github',
-            callbackUri: `${baseURL}/login/github/callback`
+            callbackUri: `${baseURL}/login/github/callback`,
         });
 
         const callbackSchema: FastifySchema = {
@@ -84,6 +84,15 @@ export default fp<FastifyOAuth2Options & FastifyJWTOptions>(async (app) => {
                 }
             }
         }
+
+        // Authentication verify handler.
+        app.decorate("authenticate", async function (req: FastifyRequest, reply: FastifyReply) {
+            try {
+                await req.jwtVerify();
+            } catch (err: any) {
+                throw new APIError(401, 'Failed to verify JWT token.', err);
+            }
+        });
 
         // GitHub oauth2 callback.
         app.get('/login/github/callback', {
@@ -127,13 +136,15 @@ export default fp<FastifyOAuth2Options & FastifyJWTOptions>(async (app) => {
                     expiresIn: "7d",
                 }
             );
+
+            const cookieExpires = DateTime.now().plus({ days: 7 }).toJSDate();
             reply
                 .setCookie(cookieName, signingToken, {
                     domain: cookieDomainName,
                     path: '/',
                     secure: cookieSecure, // Send cookie over HTTPS only.
-                    httpOnly: true,
-                    expires: DateTime.now().plus({ days: 7 }).toJSDate(),
+                    httpOnly: false,
+                    expires: cookieExpires,
                     sameSite: cookieSameSite // For CSRF protection.
                 })
                 .code(200)
@@ -143,13 +154,13 @@ export default fp<FastifyOAuth2Options & FastifyJWTOptions>(async (app) => {
                 });
         });
 
-        // Authentication.
-        app.decorate("authenticate", async function (req: FastifyRequest, reply: FastifyReply) {
-            try {
-                await req.jwtVerify();
-            } catch (err: any) {
-                throw new APIError(401, 'Failed to verify JWT token.', err);
-            }
+        app.get('/logout', {
+            preHandler: [app.authenticate]
+        },async function (request, reply) {
+           reply
+               .clearCookie(cookieName)
+               .code(200)
+               .send({ success: true });
         });
     } else {
         // Forbidden all requests need authenticated when oauth login is disabled.

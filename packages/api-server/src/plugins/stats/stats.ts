@@ -22,6 +22,11 @@ export default fp(async (app) => {
     app.decorate('accessRecorder', accessRecorder);
 
     app.addHook('onResponse', function (request, reply, done) {
+        if (/\/login\/.+/.test(request.url)) {
+            done();
+            return;
+        }
+
         void this.accessRecorder.insert([
             request.ip, request.headers.origin ?? '', reply.statusCode, request.url, JSON.stringify(request.query)
         ]);
