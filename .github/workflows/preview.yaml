@@ -1,4 +1,4 @@
-name: Surge PR Preview (Temp for \#917)
+name: Surge PR Preview
 
 on:
   pull_request_target:

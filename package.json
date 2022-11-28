@@ -5,8 +5,7 @@
   "license": "MIT",
   "workspaces": [
     "packages/api-server",
-    "packages/feeds-server",
-    "api"
+    "packages/feeds-server"
   ],
   "scripts": {
     "prepare": "husky install"
