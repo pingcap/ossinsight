@@ -42,5 +42,4 @@ RUN bundle config build.nokogiri --use-system-libraries
 
 RUN bundle check || bundle install --no-cache && rm -rf /usr/local/bundle/cache
 
-
 COPY . ./ 

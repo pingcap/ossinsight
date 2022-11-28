@@ -1,6 +1,9 @@
 name: dockerhub
 
-on: workflow_dispatch
+on: 
+  push:
+    branches: [main]
+  workflow_dispatch:
 
 jobs:
   docker:
@@ -22,14 +25,14 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
-        name: Build and Push FE to dockerhub
+        name: Build and Push Front End
         uses: docker/build-push-action@v3
         with:
-          context: ./web
+          context: "{{defaultContext}}:web"
           push: true
           tags: hooopo/ossinsight-web:latest
       - 
-        name: Build and Push Data to dockerhub
+        name: Build and Push ETL Server
         uses: docker/build-push-action@v3
         with:
           context: "{{defaultContext}}:etl"
@@ -37,9 +40,9 @@ jobs:
           tags: hooopo/ossinsight-etl:latest
 
       - 
-        name: Build and Push API to dockerhub
+        name: Build and Push API Server
         uses: docker/build-push-action@v3
         with:
-          context: "{{defaultContext}}:api"
+          context: "{{defaultContext}}:packages/api-server"
           push: true
           tags: hooopo/ossinsight-api:latest
