@@ -1,8 +1,8 @@
-import { bootstrapTestDatabase, releaseTestDatabase } from "../../helpers/db";
+import {bootstrapTestDatabase, getTestDatabase, releaseTestDatabase} from "../../helpers/db";
 
-import {BatchLoader} from "../../../src/core/db/BatchLoader";
+import {BatchLoader} from "../../../src/core/db/batch-loader";
 import {createPool} from "mysql2/promise";
-import {getConnectionOptions} from "../../../src/utils/db";
+import {getConnectionOptions, getPool} from "../../../src/core/db/new";
 
 beforeAll(bootstrapTestDatabase);
 afterAll(releaseTestDatabase);
@@ -22,7 +22,9 @@ test('flush after reaching the number of batch_size', async () => {
         ['127.0.0.1', 'https://example.com', 200, '/test1', '{"foo": "bar"}']
     ];
 
-    const pool = createPool(getConnectionOptions());
+    const pool = getPool({
+        uri: getTestDatabase().url()
+    });
     const queryMethod = jest.spyOn(pool, 'query');
     const accessRecorder = new BatchLoader(pool, insertAccessLogSQL, {
         batchSize: batchSize,
@@ -52,7 +54,9 @@ test('flush after an interval', async () => {
         ['127.0.0.1', 'https://example.com', 200, '/test3', '{"foo": "bar"}']
     ];
 
-    const pool = createPool(getConnectionOptions());
+    const pool = createPool(getConnectionOptions({
+        uri: getTestDatabase().url()
+    }));
     const queryMethod = jest.spyOn(pool, 'query').mockImplementation((sql, values) => {
         expect(sql).toBe(insertAccessLogSQL);
         return [] as any
@@ -86,7 +90,9 @@ test('flush three times', async () => {
         ['127.0.0.1', 'https://example.com', 200, '/test5', '{"foo": "bar"}']
     ];
 
-    const pool = createPool(getConnectionOptions());
+    const pool = createPool(getConnectionOptions({
+        uri: getTestDatabase().url()
+    }));
     const queryMethod = jest.spyOn(pool, 'query').mockImplementation((sql, values) => {
         expect(sql).toBe(insertAccessLogSQL);
         return [] as any;

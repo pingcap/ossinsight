@@ -1,17 +1,18 @@
-import {bootstrapTestDatabase, releaseTestDatabase} from "../../helpers/db";
+import {bootstrapTestDatabase, getTestDatabase, releaseTestDatabase} from "../../helpers/db";
 
 import {DateTime} from "luxon";
 import CacheBuilder, {CacheProviderTypes} from "../../../src/core/cache/CacheBuilder";
 import {pino} from "pino";
-import {createConnection} from "mysql2/promise";
-import {getConnectionOptions} from "../../../src/utils/db";
+import {getConnection} from "../../../src/core/db/new";
 
 beforeAll(bootstrapTestDatabase);
 afterAll(releaseTestDatabase);
 
 test('cache can be disabled', async () => {
     const log = pino().child({ 'component': 'cache-builder' });
-    const conn = await createConnection(getConnectionOptions());
+    const conn = await getConnection({
+        uri: getTestDatabase().url()
+    });
 
     const builder = new CacheBuilder(log, false, conn);
     const cacheKey = 'test';

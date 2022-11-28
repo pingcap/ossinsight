@@ -1,7 +1,8 @@
-import { join, relative } from "path";
-import { Chance } from "chance";
-import { createConnection } from 'mysql2/promise';
+import {join, relative} from "path";
+import {Chance} from "chance";
+import {createConnection} from 'mysql2/promise';
 import fs from "node:fs/promises";
+
 let db: TiDBDatabase | undefined;
 
 const chance = Chance();
@@ -89,9 +90,7 @@ export class TiDBDatabase {
   }
 
   async createConnection () {
-    const conn = await createConnection(this.url());
-    await conn.execute(`set @@sql_mode='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION'`);
-    return conn;
+    return createConnection(this.url());
   }
 
   private async createRootConnection () {

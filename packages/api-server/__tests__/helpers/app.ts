@@ -21,6 +21,9 @@ async function createApp () {
   const db = getTestDatabase();
 
   // Override process env
+  const playgroundDatabaseURL = db.url()
+      .replace('executoruser', 'webshelluser')
+      .replace('executorpassword', 'webshellpassword');
   const env: Env = {
     CONFIGS_PATH: path.resolve(__dirname, '../../../../configs'),
     ADMIN_EMAIL: 'admin@testdomain.com',
@@ -33,10 +36,7 @@ async function createApp () {
     GITHUB_OAUTH_CLIENT_ID: 'fake',
     GITHUB_OAUTH_CLIENT_SECRET: 'fake',
     GITHUB_ACCESS_TOKENS: process.env.GITHUB_TOKEN ?? '',
-    WEB_SHELL_USER: 'webshelluser',
-    WEB_SHELL_PASSWORD: 'webshellpassword',
-    WEB_SHELL_QUEUE_LIMIT: 1,
-    WEB_SHELL_CONNECTION_LIMITS: 1,
+    PLAYGROUND_DATABASE_URL: playgroundDatabaseURL,
     JWT_SECRET: 'fake',
     JWT_COOKIE_NAME: 'ossinsight_test_t',
     JWT_COOKIE_DOMAIN: 'http://testdomain.com/',

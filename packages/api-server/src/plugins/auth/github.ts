@@ -151,6 +151,13 @@ export default fp<FastifyOAuth2Options & FastifyJWTOptions>(async (app) => {
                 throw new APIError(401, 'Failed to verify JWT token.', err);
             }
         });
+    } else {
+        // Forbidden all requests need authenticated when oauth login is disabled.
+        app.decorate("authenticate", async function (request: FastifyRequest, response: FastifyReply) {
+            await response.status(401).send({
+                message: 'Unauthorized'
+            });
+        });
     }
 });
 

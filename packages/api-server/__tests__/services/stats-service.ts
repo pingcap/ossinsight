@@ -1,13 +1,17 @@
 import { bootstrapTestDatabase, getTestDatabase, releaseTestDatabase } from '../helpers/db';
 import { StatsService } from '../../src/services/stats-service';
 import { testLogger } from '../helpers/log';
+import {getPool} from "../../src/core/db/new";
 
 beforeAll(bootstrapTestDatabase);
 afterAll(releaseTestDatabase);
 
 test('should execute valid sql', async () => {
   const db = getTestDatabase();
-  const statsService = new StatsService(testLogger);
+  const pool = getPool({
+    uri: db.url()
+  });
+  const statsService = new StatsService(pool, testLogger);
 
   await statsService.addQueryStatsRecord('test', 'test', new Date(), true);
 
