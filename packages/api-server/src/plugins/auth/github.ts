@@ -103,6 +103,10 @@ export default fp<FastifyOAuth2Options & FastifyJWTOptions>(async (app) => {
             const accessToken = token.access_token;
             log.debug(`Got access token: ${accessToken}.`);
 
+            if (!accessToken) {
+                throw new APIError(401, 'Failed to get access token, please log in again.');
+            }
+
             const githubClient = new Octokit({ auth: accessToken });
             const { data: githubUser } = await githubClient.rest.users.getAuthenticated();
 

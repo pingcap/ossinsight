@@ -77,7 +77,7 @@ const app: FastifyPluginAsync<AppOptions, RawServerDefault, JsonSchemaToTsProvid
       });
     } else {
       reply.status(500).send({
-        message: 'Internal Server Error'
+        message: error.message || 'Internal Server Error'
       });
     }
   });
