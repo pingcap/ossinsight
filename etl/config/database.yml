@@ -19,6 +19,10 @@ default: &default
   url: <%= ENV['DATABASE_URL'] %>
   timeout: 50000
   reconnect: true
+<% if ENV['DB_FORCE_SSL'].present? %>
+  ssl_mode: :verify_identity
+  sslca: "/etc/ssl/cert.pem"
+<% end %>
 
 development:
   <<: *default
