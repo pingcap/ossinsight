@@ -1,6 +1,7 @@
 import { Conn, Fields, QueryExecutor, Rows, Values } from "./QueryExecutor";
-import { Pool, PoolConnection, PoolOptions, QueryOptions, createPool } from "mysql2/promise";
+import { Pool, PoolConnection, PoolOptions, QueryOptions } from "mysql2/promise";
 import {tidbQueryCounter, tidbQueryTimer, waitTidbConnectionTimer} from "../../../plugins/metrics/metrics";
+import {getPool} from "../../db/new";
 
 export class TiDBQueryExecutor implements QueryExecutor {
   protected connections: Pool;
@@ -9,7 +10,7 @@ export class TiDBQueryExecutor implements QueryExecutor {
     options: PoolOptions,
     readonly enableMetrics: boolean = true
   ) {
-    this.connections = createPool(options)
+    this.connections = getPool(options)
   }
 
   async execute<T extends Rows>(queryKey: string, sql: string): Promise<[T, Fields]>;

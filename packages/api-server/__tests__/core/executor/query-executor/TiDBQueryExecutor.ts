@@ -1,6 +1,6 @@
 import { TiDBQueryExecutor } from '../../../../src/core/executor/query-executor/TiDBQueryExecutor';
-import { getConnectionOptions } from '../../../../src/utils/db';
-import { bootstrapTestDatabase, releaseTestDatabase } from '../../../helpers/db';
+import { getConnectionOptions } from '../../../../src/core/db/new';
+import {bootstrapTestDatabase, getTestDatabase, releaseTestDatabase} from '../../../helpers/db';
 import { expectTimeout } from '../../../helpers/timeout';
 
 beforeAll(bootstrapTestDatabase);
@@ -8,6 +8,7 @@ afterAll(releaseTestDatabase);
 
 const withQueryExecutor = async (fn: (executor: TiDBQueryExecutor) => Promise<void>, connectionLimit = 0) => {
   const executor = new TiDBQueryExecutor(getConnectionOptions({
+    uri: getTestDatabase().url(),
     connectionLimit,
   }), false);
   return fn(executor).finally(() => executor.destroy());

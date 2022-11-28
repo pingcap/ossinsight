@@ -1,13 +1,16 @@
 import { TiDBPlaygroundQueryExecutor } from '../../../../src/core/executor/query-executor/TiDBPlaygroundQueryExecutor';
-import { getConnectionOptions } from '../../../../src/utils/db';
-import { bootstrapTestDatabase, releaseTestDatabase } from '../../../helpers/db';
+import { getConnectionOptions } from '../../../../src/core/db/new';
+import {bootstrapTestDatabase, getTestDatabase, releaseTestDatabase} from '../../../helpers/db';
 
 beforeAll(bootstrapTestDatabase);
 afterAll(releaseTestDatabase);
 
 describe('connection limits', () => {
   test('should be executed', async () => {
-    const executor = new TiDBPlaygroundQueryExecutor(getConnectionOptions(), [
+    const options = getConnectionOptions({
+        uri: getTestDatabase().url()
+    });
+    const executor = new TiDBPlaygroundQueryExecutor(options, [
       'set @abc = 1;',
     ]);
 

@@ -4,7 +4,7 @@
     {
       "name": "keyword",
       "replaces": "PingCAP",
-      "pattern": "^[^\"'%_]+$"
+      "pattern": "^[^()\"'%_]+$"
     }
   ]
 }

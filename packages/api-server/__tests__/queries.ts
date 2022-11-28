@@ -3,10 +3,9 @@ import { QueryParser } from '../src/core/runner/query/QueryParser';
 import { CollectionService } from '../src/services/collection-service';
 import { testLogger } from './helpers/log';
 import CacheBuilder from '../src/core/cache/CacheBuilder';
-import {createConnection} from "mysql2/promise";
-import {getConnectionOptions} from "../src/utils/db";
 import {TiDBQueryExecutor} from "../src/core/executor/query-executor/TiDBQueryExecutor";
 import {bootstrapTestDatabase, releaseTestDatabase, TiDBDatabase} from "./helpers/db";
+import {getConnection, getConnectionOptions} from "../src/core/db/new";
 
 let db: TiDBDatabase;
 
@@ -39,9 +38,13 @@ describe('transformed template should be valid sql', () => {
     }
 
     test(`${queryName} (${pairs.length} group of params)`, async () => {
-      const conn = await createConnection(getConnectionOptions());
+      const conn = await getConnection({
+        uri: db.url(),
+      });
       const cacheBuilder = new CacheBuilder(testLogger, false, conn);
-      const tidbQueryExecutor = new TiDBQueryExecutor(getConnectionOptions(), false);
+      const tidbQueryExecutor = new TiDBQueryExecutor(getConnectionOptions({
+        uri: db.url(),
+      }), false);
       const parser = new QueryParser(new CollectionService(testLogger, tidbQueryExecutor, cacheBuilder));
       for (let pair of pairs) {
         const parsedSql = await parser.parse(sql, params, pair);

@@ -1,7 +1,6 @@
 import fp from "fastify-plugin";
-import {createPool} from "mysql2/promise";
-import {BatchLoader} from "../../core/db/BatchLoader";
-import {getConnectionOptions} from "../../utils/db";
+import {BatchLoader} from "../../core/db/batch-loader";
+import {getPool} from "../../core/db/new";
 
 declare module 'fastify' {
     interface FastifyInstance {
@@ -11,9 +10,10 @@ declare module 'fastify' {
 
 export default fp(async (app) => {
     // Init Access Log Batch Loader.
-    const pool = createPool(getConnectionOptions({
+    const pool = getPool({
+        uri: app.config.DATABASE_URL,
         connectionLimit: 2
-    }));
+    });
     const insertAccessLogSQL = `INSERT INTO access_logs(
       remote_addr, origin, status_code, request_path, request_params
     ) VALUES ?`;

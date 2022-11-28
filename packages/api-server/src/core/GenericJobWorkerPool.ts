@@ -1,11 +1,9 @@
-import { Pool as GenericPool, createPool as createGenericPool } from "generic-pool";
-import { Pool, createPool } from "mysql2/promise";
-
-import { Factory } from "generic-pool"
-import { Octokit } from "@octokit/core";
-import { getConnectionOptions } from "../utils/db";
+import {createPool as createGenericPool, Factory, Pool as GenericPool} from "generic-pool";
+import {Pool} from "mysql2/promise";
+import {Octokit} from "@octokit/core";
+import {getPool} from "./db/new";
 import pino from "pino";
-import  { throttling } from "@octokit/plugin-throttling";
+import {throttling} from "@octokit/plugin-throttling";
 
 export const CustomOctokit = Octokit.plugin(throttling);
 export const SYMBOL_TOKEN = Symbol('PERSONAL_TOKEN');
@@ -78,9 +76,9 @@ export class WorkerFactory<T> implements Factory<JobWorker<T>> {
       });
 
       // Init TiDB client.
-      const connPool = createPool(getConnectionOptions({
+      const connPool =getPool({
         connectionLimit: 2
-      }));
+      });
 
       // Init worker.
       const worker:JobWorker<T> = {
@@ -116,13 +114,12 @@ export function createWorkerPool<T>(
   tokens: string[], logger: pino.Logger, payloadInitializer?: PayloadInitializer<T>, payloadDestroyer?: PayloadDestroyer<T>
 ): GenericPool<JobWorker<T>> {
   // Notice: every worker has one octokit client.
-  const workerPool = createGenericPool(new WorkerFactory<T>(tokens, logger, payloadInitializer, payloadDestroyer), {
-      min: 0,
-      max: tokens.length
+  return createGenericPool(new WorkerFactory<T>(tokens, logger, payloadInitializer, payloadDestroyer), {
+    min: 0,
+    max: tokens.length
   }).on('factoryCreateError', function (err) {
-      logger.error('Failed to create worker: ', err)
+    logger.error('Failed to create worker: ', err)
   }).on('factoryDestroyError', function (err) {
-      logger.error('Failed to destroy worker: ', err)
+    logger.error('Failed to destroy worker: ', err)
   });
-  return workerPool;
 }

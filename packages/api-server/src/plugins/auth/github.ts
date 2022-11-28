@@ -153,7 +153,7 @@ export default fp<FastifyOAuth2Options & FastifyJWTOptions>(async (app) => {
         });
     } else {
         // Forbidden all requests need authenticated when oauth login is disabled.
-        fastify.decorate("authenticate", async function (request: FastifyRequest, response: FastifyReply) {
+        app.decorate("authenticate", async function (request: FastifyRequest, response: FastifyReply) {
             await response.status(401).send({
                 message: 'Unauthorized'
             });
