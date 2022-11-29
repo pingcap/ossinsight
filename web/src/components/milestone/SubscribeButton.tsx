@@ -50,6 +50,10 @@ export default function SubscribeButton ({ repoName, ...props }: SubscribeButton
   }, [userValidated, userValidating, subscribing, subscribed, isValidating]);
 
   const handleClick = useCallback(() => {
+    if (!userValidated) {
+      window.open('https://api.ossinsight.io/login/github', '_blank');
+      return;
+    }
     if (subscribed) {
       unsubscribe()
         .catch(console.error);
@@ -57,7 +61,7 @@ export default function SubscribeButton ({ repoName, ...props }: SubscribeButton
       subscribe()
         .catch(console.error);
     }
-  }, [subscribed, subscribe, unsubscribe]);
+  }, [subscribed, subscribe, unsubscribe, userValidated]);
 
   return (
     <Button

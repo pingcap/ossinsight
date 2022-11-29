@@ -3,16 +3,12 @@ import { useUserInfo } from '@site/src/api/cookie';
 import { Avatar, Backdrop, ButtonBase, CircularProgress, Menu, MenuItem, styled, useEventCallback } from '@mui/material';
 
 export default function LoginItem () {
-  const { userInfo, validating } = useUserInfo();
+  const { userInfo, validating, logout } = useUserInfo();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [open, setOpen] = useState(false);
 
   const handleOpen = useEventCallback(() => {
     setOpen(true);
-  });
-
-  const handleClose = useEventCallback(() => {
-    setOpen(false);
   });
 
   const handleGotoSubscriptionsPage = useEventCallback(() => {
@@ -35,13 +31,13 @@ export default function LoginItem () {
         id="basic-menu"
         anchorEl={anchorEl}
         open={open}
-        onClose={handleClose}
+        onClose={logout}
         MenuListProps={{
           'aria-labelledby': 'basic-button',
         }}
       >
         <MenuItem onClick={handleGotoSubscriptionsPage}>My Subscriptions</MenuItem>
-        <MenuItem onClick={handleClose}>Logout</MenuItem>
+        <MenuItem onClick={logout}>Logout</MenuItem>
       </Menu>
     </span>
   );
