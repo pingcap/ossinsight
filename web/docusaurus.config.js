@@ -304,6 +304,10 @@ const config = {
               { label: 'Database Logs', to: 'http://localhost:2379/dashboard/#/search_logs' },
             ]
           },
+          {
+            type: 'custom-login',
+            position: 'right',
+          }
         ].filter(Boolean),
       },
       footer: {
