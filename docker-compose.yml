@@ -1,6 +1,6 @@
 version: '3.9'
 
-# tiup playground v6.1.0 -T oss --without-monitor --db.host 0.0.0.0 --tiflash 1
+# tiup playground v6.4.0 -T ossinsight --without-monitor --db.host 0.0.0.0 --tiflash 1
 
 services:
   etl:

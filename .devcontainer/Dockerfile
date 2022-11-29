@@ -12,6 +12,9 @@ FROM mcr.microsoft.com/vscode/devcontainers/typescript-node:0-${VARIANT}
 # ARG EXTRA_NODE_VERSION=10
 # RUN su node -c "source /usr/local/share/nvm/nvm.sh && nvm install ${EXTRA_NODE_VERSION}"
 
+# Install Python for jupyter.
+RUN sudo apt update && sudo apt-get install python3-pip python-dev jq
+
 # To install more global node packages.
 RUN su node -c "npm install -g pnpm@7 ts-node typescript"
 
@@ -21,3 +24,6 @@ RUN curl --proto '=https' --tlsv1.2 -sSf https://tiup-mirrors.pingcap.com/instal
 # Install mycli, you can connect to the TiDB cluster.
 RUN sudo apt update && sudo apt install -y mycli
 
+# Install PNPM dependencies in advance.
+RUN wget https://raw.githubusercontent.com/pingcap/ossinsight/main/pnpm-lock.yaml
+RUN pnpm fetch
