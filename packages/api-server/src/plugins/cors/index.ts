@@ -27,6 +27,7 @@ export default fp(async (app) => {
 
     app.register(cors, {
         origin: allowedOrigins,
+        credentials: true,
     });
     app.decorate('allowedOrigins', allowedOrigins);
 }, {
