@@ -160,7 +160,10 @@ export default fp<FastifyOAuth2Options & FastifyJWTOptions>(async (app) => {
             preHandler: [app.authenticate]
         },async function (request, reply) {
            reply
-               .clearCookie(cookieName)
+               .clearCookie(cookieName, {
+                   domain: cookieDomainName,
+                   path: '/'
+               })
                .code(200)
                .send({ success: true });
         });
