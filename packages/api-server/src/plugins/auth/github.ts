@@ -152,10 +152,8 @@ export default fp<FastifyOAuth2Options & FastifyJWTOptions>(async (app) => {
                     sameSite: cookieSameSite // For CSRF protection.
                 })
                 .code(200)
-                .send({
-                    success: true,
-                    profile: userProfile
-                });
+                .header('Content-Type', 'text/html; charset=utf-8')
+                .send('<script>close();</script>');
         });
 
         app.get('/logout', {
