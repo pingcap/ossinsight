@@ -176,7 +176,10 @@ export default fp<FastifyOAuth2Options & FastifyJWTOptions>(async (app) => {
            reply
                .clearCookie(cookieName, {
                    domain: cookieDomainName,
-                   path: '/'
+                   path: '/',
+                   secure: cookieSecure, // Send cookie over HTTPS only.
+                   httpOnly: false,
+                   sameSite: cookieSameSite // For CSRF protection.
                })
                .code(200)
                .send({ success: true });
