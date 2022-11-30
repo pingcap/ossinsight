@@ -1,6 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
-import { useUserInfo } from '@site/src/api/cookie';
-import { useSubscribed } from '@site/src/api/user';
+import { useSubscribed, useUserInfo } from '@site/src/api/user';
 import { Button, CircularProgress } from '@mui/material';
 import { Email, Unsubscribe } from '@mui/icons-material';
 import { ButtonProps } from '@mui/material/Button';
@@ -10,7 +9,7 @@ export interface SubscribeButtonProps extends Omit<ButtonProps, 'onClick' | 'dis
 }
 
 export default function SubscribeButton ({ repoName, ...props }: SubscribeButtonProps) {
-  const { validated: userValidated, validating: userValidating } = useUserInfo();
+  const { validated: userValidated, validating: userValidating, login } = useUserInfo();
   const { subscribed, subscribing, subscribe, unsubscribe, isValidating } = useSubscribed(repoName);
 
   const icon = useMemo(() => {
@@ -51,7 +50,7 @@ export default function SubscribeButton ({ repoName, ...props }: SubscribeButton
 
   const handleClick = useCallback(() => {
     if (!userValidated) {
-      window.open('https://api.ossinsight.io/login/github', '_blank');
+      login();
       return;
     }
     if (subscribed) {

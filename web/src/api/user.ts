@@ -1,8 +1,49 @@
-import { useUserInfo } from '@site/src/api/cookie';
 import useSWR, { mutate } from 'swr';
 import { clientWithoutCache } from '@site/src/api/client';
 import { useCallback, useMemo, useState } from 'react';
-import { isFalsy, isNullish } from '@site/src/utils/value';
+import { isFalsy, isNullish, notNullish } from '@site/src/utils/value';
+
+import { useCookieState } from 'ahooks';
+import { useEventCallback } from '@mui/material';
+
+interface UserInfo {
+  id: number;
+  name: string;
+  emailAddress: string;
+  emailGetUpdates: boolean;
+  githubId: number;
+  githubLogin: string;
+  createdAt: string;
+}
+
+export function useUserInfo () {
+  const [oToken] = useCookieState('o-token');
+
+  const { data, isValidating, mutate } = useSWR('user.info', {
+    fetcher: async () => await clientWithoutCache.get<any, UserInfo>('/user', { withCredentials: true }),
+    shouldRetryOnError: false,
+  });
+
+  const login = useEventCallback(() => {
+    window.open('https://api.ossinsight.io/login/github', '_blank');
+  });
+
+  const logout = useEventCallback(() => {
+    clientWithoutCache.get('/logout', { withCredentials: true })
+      .then(async () => await mutate(undefined, { revalidate: false }))
+      .catch(console.error);
+  });
+
+  return {
+    oToken,
+    userInfo: data,
+    validating: isValidating,
+    validated: !isValidating && notNullish(data),
+    mutate,
+    logout,
+    login,
+  };
+}
 
 export interface Subscription {
   userId: number;

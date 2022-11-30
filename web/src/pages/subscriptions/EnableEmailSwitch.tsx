@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { CircularProgress, FormControlLabel, styled, Switch } from '@mui/material';
-import { useUserInfo } from '@site/src/api/cookie';
+import { useUserInfo } from '@site/src/api/user';
 import { notFalsy } from '@site/src/utils/value';
 import { clientWithoutCache } from '@site/src/api/client';
 

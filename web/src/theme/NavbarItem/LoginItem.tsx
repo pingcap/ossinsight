@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useUserInfo } from '@site/src/api/cookie';
+import { useUserInfo } from '@site/src/api/user';
 import { Avatar, Backdrop, ButtonBase, CircularProgress, Menu, MenuItem, styled, useEventCallback } from '@mui/material';
 
 export default function LoginItem () {
