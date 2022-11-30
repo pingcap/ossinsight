@@ -8,15 +8,18 @@ FROM mcr.microsoft.com/vscode/devcontainers/typescript-node:0-${VARIANT}
 # RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
 #     && apt-get -y install --no-install-recommends <your-package-list-here>
 
+# Install Python for jupyter.
+RUN sudo apt-get update && export DEBIAN_FRONTEND=noninteractive \
+    && sudo apt-get -y install python3-pip python-dev jq direnv
+
 # [Optional] Uncomment if you want to install an additional version of node using nvm
 # ARG EXTRA_NODE_VERSION=10
 # RUN su node -c "source /usr/local/share/nvm/nvm.sh && nvm install ${EXTRA_NODE_VERSION}"
 
-# Install Python for jupyter.
-RUN sudo apt update && sudo apt-get install python3-pip python-dev jq
-
 # To install more global node packages.
 RUN su node -c "npm install -g pnpm@7 ts-node typescript"
+
+RUN sudo pip3 install ipykernel
 
 # Install TiUP cli, you can startup a TiDB cluster by `tiup playground` command.
 RUN curl --proto '=https' --tlsv1.2 -sSf https://tiup-mirrors.pingcap.com/install.sh | sh
