@@ -10,11 +10,11 @@ import fastifyJwt, {
 import fastifyOauth2, {FastifyOAuth2Options, OAuth2Namespace} from '@fastify/oauth2'
 
 import {DateTime} from 'luxon';
-import {Octokit} from 'octokit';
 import fastifyCookie from "@fastify/cookie";
 import fp from 'fastify-plugin';
 import {ProviderType, UserProfile, UserRole} from "../../services/user-service";
 import {APIError} from "../../utils/error";
+import {getOctokit} from "../../utils/loger";
 
 export default fp<FastifyOAuth2Options & FastifyJWTOptions>(async (app) => {
     const enableOauthLogin = app.config.GITHUB_OAUTH_CLIENT_ID && app.config.GITHUB_OAUTH_CLIENT_SECRET;
@@ -107,13 +107,27 @@ export default fp<FastifyOAuth2Options & FastifyJWTOptions>(async (app) => {
                 throw new APIError(401, 'Failed to get access token, please log in again.');
             }
 
-            const githubClient = new Octokit({ auth: accessToken });
+            // Get user profile.
+            const githubClient = getOctokit(accessToken, log);
             const { data: githubUser } = await githubClient.rest.users.getAuthenticated();
+
+            // Get user email.
+            const { data: emails } = await githubClient.rest.users.listEmailsForAuthenticatedUser();
+            const verifiedEmails = emails
+                .filter((email) => email.verified)
+                // Exclude Github's default noreply email address.
+                .filter((email) => !email.email.includes('@users.noreply.github.com'))
+                // Preferred primary email.
+                .sort((email) => email.primary ? -1 : 1);
+            const email = verifiedEmails[0]?.email || null;
+            if (!email) {
+                log.warn('Failed to get email of user %s.', githubUser.login);
+            }
 
             // Create or update user.
             const user = {
                 name: githubUser.name || githubUser.login,
-                emailAddress: githubUser.email,
+                emailAddress: email,
                 // User is not allowed to get updates by default.
                 emailGetUpdates: false,
                 avatarURL: githubUser.avatar_url,
