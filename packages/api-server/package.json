@@ -10,9 +10,9 @@
   "scripts": {
     "build:ts": "tsc",
     "dev": "npm run build:ts && concurrently -k -p \"[{name}]\" -n \"TypeScript,App\" -c \"yellow.bold,cyan.bold\" \"npm:watch:ts\" \"npm:dev:start\"",
-    "dev:start": "fastify start -p 3450 -P --ignore-watch=.ts$ -l info -w dist/app.js",
+    "dev:start": "fastify start -p ${API_SERVER_PORT:-3450} -P --ignore-watch=.ts$ -l info -w dist/app.js",
     "build": "rm -rf dist && npm run build:ts",
-    "start": "fastify start -a 0.0.0.0 -p 3450 -l info dist/app.js",
+    "start": "fastify start -a 0.0.0.0 -p ${API_SERVER_PORT:-3450} -l info dist/app.js",
     "test": "jest",
     "coverage": "jest --coverage",
     "watch:ts": "tsc -w"
