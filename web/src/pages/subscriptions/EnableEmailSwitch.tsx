@@ -37,7 +37,7 @@ export default function EnableEmailSwitch () {
       control={
         <Switch checked={enabled} disabled={switchDisabled} icon={icon} checkedIcon={icon} onChange={handleChange} />
       }
-      label="Email notifications"
+      label="Email Notification"
     />
   );
 }

@@ -1,7 +1,7 @@
 import CustomPage from '@site/src/theme/CustomPage';
 import React, { useCallback } from 'react';
 import { useSubscriptions, useUserInfo } from '@site/src/api/user';
-import { Avatar, Box, Button, CircularProgress, Container, IconButton, List, ListItem, ListItemAvatar, ListItemText, Skeleton, Typography } from '@mui/material';
+import { Avatar, Box, Button, CircularProgress, Container, FormControl, FormHelperText, IconButton, List, ListItem, ListItemAvatar, ListItemText, Skeleton, Typography } from '@mui/material';
 import { clientWithoutCache } from '@site/src/api/client';
 import { Unsubscribe } from '@mui/icons-material';
 import EnableEmailSwitch from '@site/src/pages/subscriptions/EnableEmailSwitch';
@@ -23,7 +23,7 @@ export default function () {
         </Typography>
         {!userValidated && (
           <Button
-            variant='contained'
+            variant="contained"
             disabled={userValidating}
             startIcon={userValidating && <CircularProgress size={12} />}
             onClick={login}
@@ -52,13 +52,24 @@ function Subscriptions () {
 
   return (
     <>
-      <Box>
+      <FormControl>
         <EnableEmailSwitch />
-      </Box>
+        <FormHelperText>
+          Control whether to receive emails from OSS Insight
+        </FormHelperText>
+      </FormControl>
       {!isValidating && data.length === 0 && (
         <Typography variant="h2" sx={{ mt: 4 }} color="text.disabled">You have no subscriptions yet</Typography>
       )}
-      <List>
+      <List
+        sx={{ mt: 4 }}
+        subheader={(
+          <Box>
+            <Typography variant='h3' mb={1}>Manage the subscribed repositories list</Typography>
+            <Typography variant='body2'>If you unsubscribe from a repository, we will no longer send emails related to that repository</Typography>
+          </Box>
+        )}
+      >
         {isValidating && data.length === 0 && [0, 1, 2, 3, 4].map(i => (
           <ListItem
             key={i}
