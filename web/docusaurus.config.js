@@ -78,6 +78,12 @@ const config = {
       },
     ],
     [
+      path.resolve(__dirname, 'plugins/experimental-features'),
+      {
+        defaultEnabled: []
+      }
+    ],
+    [
       path.resolve(__dirname, 'plugins/gtag'),
       {
         trackingID: 'GTM-WBZS43V',
@@ -304,6 +310,10 @@ const config = {
               { label: 'Database Logs', to: 'http://localhost:2379/dashboard/#/search_logs' },
             ]
           },
+          {
+            type: 'custom-login',
+            position: 'right',
+          }
         ].filter(Boolean),
       },
       footer: {

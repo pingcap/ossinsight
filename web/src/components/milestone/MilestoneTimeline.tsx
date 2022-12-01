@@ -2,18 +2,20 @@ import { useGroupedMilestones, useMilestones } from '@site/src/components/milest
 import React, { useMemo, useRef, useState } from 'react';
 import { Timeline, TimelineConnector, TimelineContent, TimelineDot, TimelineItem, timelineItemClasses, TimelineSeparator } from '@mui/lab';
 import MilestoneMessage from '@site/src/components/milestone/MilestoneMessage';
-import { Badge, Button, Skeleton, styled, Tooltip } from '@mui/material';
-import { MailOutline as MailOutlineIcon } from '@mui/icons-material';
+import { Skeleton, styled } from '@mui/material';
 import { H3 } from '@site/src/dynamic-pages/analyze/typography';
 import { Milestone } from '@ossinsight/api';
 import ScrollSpy from '@site/src/components/ScrollSpy';
 import { ScrollSpyInstance } from '@site/src/components/ScrollSpy/ScrollSpy';
+import SubscribeButton from '@site/src/components/milestone/SubscribeButton';
+import { Experimental } from '@site/src/components/Experimental';
 
 interface MilestoneTimelineProps {
   repoId?: number;
+  repoName?: string;
 }
 
-export default function MilestoneTimeline ({ repoId }: MilestoneTimelineProps) {
+export default function MilestoneTimeline ({ repoId, repoName }: MilestoneTimelineProps) {
   const { data } = useMilestones(repoId);
   const [active, setActive] = useState(0);
   const groupedData = useGroupedMilestones(data?.data ?? []);
@@ -21,13 +23,13 @@ export default function MilestoneTimeline ({ repoId }: MilestoneTimelineProps) {
 
   const tabs = useMemo(() => {
     return groupedData.map(({ year }, index) => (
-        <Tab
-          className={index === active ? 'active' : undefined}
-          key={year}
-          onClick={() => spyRef.current?.scrollTo(index, 'smooth')}
-        >
-          {year}
-        </Tab>
+      <Tab
+        className={index === active ? 'active' : undefined}
+        key={year}
+        onClick={() => spyRef.current?.scrollTo(index, 'smooth')}
+      >
+        {year}
+      </Tab>
     ));
   }, [groupedData, active]);
 
@@ -56,16 +58,12 @@ export default function MilestoneTimeline ({ repoId }: MilestoneTimelineProps) {
       </Timelines>
       <TimeTabsContainer>
         <Sticky>
-          <Tooltip title="To be the first one who get the emails when this repository archives excellent milestones!">
-                <span>
-                  <Badge color="primary" overlap="circular" badgeContent="COMING SOON" sx={{ '.MuiBadge-badge': { top: 0 } }}>
-                    <Button variant="outlined" disabled sx={{ mb: 2 }} startIcon={<MailOutlineIcon />}>
-                      Get Updates
-                    </Button>
-                  </Badge>
-                </span>
-          </Tooltip>
-          <TimeTabs>
+          {repoName && (
+            <Experimental feature='milestone-subscription'>
+              <SubscribeButton variant="contained" color="primary" repoName={repoName} />
+            </Experimental>
+          )}
+          <TimeTabs sx={{ mt: 2 }}>
             {tabs}
           </TimeTabs>
         </Sticky>

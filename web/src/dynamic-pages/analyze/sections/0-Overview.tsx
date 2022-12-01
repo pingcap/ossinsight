@@ -7,7 +7,7 @@ import {
   useMediaQuery,
   Chip,
   Typography,
-  Stack,
+  Stack, useEventCallback,
 } from '@mui/material';
 import InfoOutlined from '@mui/icons-material/InfoOutlined';
 import {
@@ -32,12 +32,21 @@ import { paramCase } from 'param-case';
 import { MonthlySummaryCard } from '../charts/montly-cards';
 import { isNullish, nonEmptyArray, notNullish } from '@site/src/utils/value';
 import { MilestoneLite } from '@site/src/components/milestone/MilestoneLite';
+import SubscribeButton from '@site/src/components/milestone/SubscribeButton';
+import { Experimental } from '@site/src/components/Experimental';
 
 export const OverviewSection = forwardRef(function (_, ref: ForwardedRef<HTMLElement>) {
   const theme = useTheme();
   const isSmall = useMediaQuery(theme.breakpoints.down('md'));
   const { repoId, comparingRepoName, repoName: name, repoInfo, comparingRepoId: vs } = useAnalyzeContext();
   const { data: collectionData } = useRemoteData<any, Pick<Collection, 'id' | 'name'>>('get-repo-collections', { repoId }, false, notNullish(repoId) && isNullish(vs));
+
+  const handleClickNotificationIcon = useEventCallback((action: () => void, subscribed: boolean) => {
+    document.getElementById('highlights')?.scrollIntoView();
+    if (!subscribed) {
+      action();
+    }
+  });
 
   const summaries: SummaryProps['items'] = useMemo(() => {
     return [{
@@ -101,7 +110,11 @@ export const OverviewSection = forwardRef(function (_, ref: ForwardedRef<HTMLEle
                 <>
                   <span style={{ flex: 1 }}/>
                   <MilestoneLite repoId={repoId} />
-                  <a style={{ marginLeft: 8 }} href="#milestone">More</a>
+                  <Experimental feature='milestone-subscription'>
+                    <Tooltip title='Click to view more highlights in this repository and get updates vie email.'>
+                      <SubscribeButton sx={{ ml: 1 }} repoName={name} icon onClick={handleClickNotificationIcon} />
+                    </Tooltip>
+                  </Experimental>
                 </>
               )}
             </Stack>

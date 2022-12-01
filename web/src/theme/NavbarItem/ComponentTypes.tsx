@@ -10,7 +10,8 @@ import DocsVersionDropdownNavbarItem from '@theme/NavbarItem/DocsVersionDropdown
 
 import type { ComponentTypesObject } from '@theme/NavbarItem/ComponentTypes';
 import AnalyzeSearchNavbarItem from './AnalyzeSearchNavbarItem';
-import RealtimeSummaryNavbarItem from '@site/src/theme/NavbarItem/RealtimeSummaryNavbarItem';
+import RealtimeSummaryNavbarItem from './RealtimeSummaryNavbarItem';
+import LoginItem from './LoginItem';
 
 const ComponentTypes: ComponentTypesObject = {
   default: DefaultNavbarItem,
@@ -24,6 +25,7 @@ const ComponentTypes: ComponentTypesObject = {
   docsVersionDropdown: DocsVersionDropdownNavbarItem,
   'custom-search': AnalyzeSearchNavbarItem,
   'custom-realtime-summary': RealtimeSummaryNavbarItem,
+  'custom-login': LoginItem,
 };
 
 export default ComponentTypes;
