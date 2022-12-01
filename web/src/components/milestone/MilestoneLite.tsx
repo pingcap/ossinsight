@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useMilestones } from '@site/src/components/milestone/hooks';
 import MilestoneMessage from '@site/src/components/milestone/MilestoneMessage';
 import { isNullish, notNullish } from '@site/src/utils/value';
-import icon from './icon.svg';
 import { styled } from '@mui/material';
 import { Milestone } from '@ossinsight/api';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
@@ -17,7 +16,9 @@ export function MilestoneLite ({ repoId, interval = 2500 }: MilestoneLiteProps) 
 
   return (
     <Container>
-      <Icon />
+      <Icon>
+        🎉
+      </Icon>
       <Milestones milestones={data?.data} interval={interval} />
     </Container>
   );
@@ -53,7 +54,7 @@ const Milestones = ({ milestones, interval }: { milestones: Milestone[] | undefi
           if (isNullish(milestones)) {
             return <DefaultMessage key="loading">Loading</DefaultMessage>;
           } else if (milestones.length === 0) {
-            return <DefaultMessage key="no-data">No Milestone yet</DefaultMessage>;
+            return <DefaultMessage key="no-data">No Highlights yet</DefaultMessage>;
           } else {
             // eslint-disable-next-line @typescript-eslint/naming-convention
             const { milestone_number, milestone_type_id, reached_at } = milestones[i];
@@ -111,11 +112,13 @@ const TransitionsContainer = styled('div')`
 `;
 
 const DefaultMessage = styled('div')`
-  color: #3c3c3c;
-  font-size: 12px;
+  color: #7c7c7c;
+  font-size: 14px;
+  height: 100%;
+  display: flex;
+  align-items: center;
 `;
 
-const Icon = styled(icon)`
+const Icon = styled('span')`
   margin-right: 8px;
-  color: #FFE895;
 `;
