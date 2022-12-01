@@ -78,6 +78,12 @@ const config = {
       },
     ],
     [
+      path.resolve(__dirname, 'plugins/experimental-features'),
+      {
+        defaultEnabled: []
+      }
+    ],
+    [
       path.resolve(__dirname, 'plugins/gtag'),
       {
         trackingID: 'GTM-WBZS43V',

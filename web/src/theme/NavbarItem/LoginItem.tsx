@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useUserInfo } from '@site/src/api/user';
 import { Avatar, ButtonBase, Menu, MenuItem, styled, useEventCallback } from '@mui/material';
+import { Experimental } from '@site/src/components/Experimental';
 
 export default function LoginItem () {
   const { userInfo, logout } = useUserInfo();
@@ -20,23 +21,25 @@ export default function LoginItem () {
   }
 
   return (
-    <span>
-      <StyledButtonBase disableRipple ref={setAnchorEl} onClick={handleOpen}>
-        <StyledAvatar src={`https://github.com/${userInfo.githubLogin}.png`} />
-      </StyledButtonBase>
-      <Menu
-        id="basic-menu"
-        anchorEl={anchorEl}
-        open={open}
-        onClose={logout}
-        MenuListProps={{
-          'aria-labelledby': 'basic-button',
-        }}
-      >
-        <MenuItem onClick={handleGotoSubscriptionsPage}>My Subscriptions</MenuItem>
-        <MenuItem onClick={logout}>Logout</MenuItem>
-      </Menu>
-    </span>
+    <Experimental feature='milestone-subscription'>
+      <span>
+        <StyledButtonBase disableRipple ref={setAnchorEl} onClick={handleOpen}>
+          <StyledAvatar src={`https://github.com/${userInfo.githubLogin}.png`} />
+        </StyledButtonBase>
+        <Menu
+          id="basic-menu"
+          anchorEl={anchorEl}
+          open={open}
+          onClose={logout}
+          MenuListProps={{
+            'aria-labelledby': 'basic-button',
+          }}
+        >
+          <MenuItem onClick={handleGotoSubscriptionsPage}>My Subscriptions</MenuItem>
+          <MenuItem onClick={logout}>Logout</MenuItem>
+        </Menu>
+      </span>
+    </Experimental>
   );
 }
 

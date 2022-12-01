@@ -33,6 +33,7 @@ import { MonthlySummaryCard } from '../charts/montly-cards';
 import { isNullish, nonEmptyArray, notNullish } from '@site/src/utils/value';
 import { MilestoneLite } from '@site/src/components/milestone/MilestoneLite';
 import SubscribeButton from '@site/src/components/milestone/SubscribeButton';
+import { Experimental } from '@site/src/components/Experimental';
 
 export const OverviewSection = forwardRef(function (_, ref: ForwardedRef<HTMLElement>) {
   const theme = useTheme();
@@ -109,9 +110,11 @@ export const OverviewSection = forwardRef(function (_, ref: ForwardedRef<HTMLEle
                 <>
                   <span style={{ flex: 1 }}/>
                   <MilestoneLite repoId={repoId} />
-                  <Tooltip title='Click to view more highlights in this repository and get updates vie email.'>
-                    <SubscribeButton sx={{ ml: 1 }} repoName={name} icon onClick={handleClickNotificationIcon} />
-                  </Tooltip>
+                  <Experimental feature='milestone-subscription'>
+                    <Tooltip title='Click to view more highlights in this repository and get updates vie email.'>
+                      <SubscribeButton sx={{ ml: 1 }} repoName={name} icon onClick={handleClickNotificationIcon} />
+                    </Tooltip>
+                  </Experimental>
                 </>
               )}
             </Stack>

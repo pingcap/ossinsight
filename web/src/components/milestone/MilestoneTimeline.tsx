@@ -8,6 +8,7 @@ import { Milestone } from '@ossinsight/api';
 import ScrollSpy from '@site/src/components/ScrollSpy';
 import { ScrollSpyInstance } from '@site/src/components/ScrollSpy/ScrollSpy';
 import SubscribeButton from '@site/src/components/milestone/SubscribeButton';
+import { Experimental } from '@site/src/components/Experimental';
 
 interface MilestoneTimelineProps {
   repoId?: number;
@@ -57,7 +58,11 @@ export default function MilestoneTimeline ({ repoId, repoName }: MilestoneTimeli
       </Timelines>
       <TimeTabsContainer>
         <Sticky>
-          {repoName && <SubscribeButton variant="contained" color="primary" repoName={repoName} />}
+          {repoName && (
+            <Experimental feature='milestone-subscription'>
+              <SubscribeButton variant="contained" color="primary" repoName={repoName} />
+            </Experimental>
+          )}
           <TimeTabs sx={{ mt: 2 }}>
             {tabs}
           </TimeTabs>
