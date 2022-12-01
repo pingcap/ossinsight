@@ -7,7 +7,8 @@ import {
   useMediaQuery,
   Chip,
   Typography,
-  Stack, useEventCallback,
+  Stack,
+  useEventCallback,
 } from '@mui/material';
 import InfoOutlined from '@mui/icons-material/InfoOutlined';
 import {

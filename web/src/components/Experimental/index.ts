@@ -22,14 +22,15 @@ export function useExperimental (feature: string) {
 
 export interface ExperimentalProps {
   children: JSX.Element;
+  fallback?: JSX.Element | null;
   feature: string;
 }
 
-export function Experimental ({ feature, children }: ExperimentalProps) {
+export function Experimental ({ feature, fallback = null, children }: ExperimentalProps) {
   const enabled = useExperimental(feature);
   if (enabled) {
     return children;
   } else {
-    return null;
+    return fallback;
   }
 }
