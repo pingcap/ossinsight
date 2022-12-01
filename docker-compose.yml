@@ -56,7 +56,7 @@ services:
       - "30000:30000"
     environment:
       - NODE_ENV=development
-      - APP_HOST=http://localhost:3450
+      - APP_HOST=http://localhost:30000
       - APP_API_BASE=http://localhost:3450
     volumes:
       - ./:/app:delegated

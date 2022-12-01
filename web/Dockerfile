@@ -14,6 +14,6 @@ RUN npm ci
 # Bundle app source
 COPY . .
 
-EXPOSE 3000
+EXPOSE 30000
 
-CMD [ "npm", "run", "start"]
+CMD [ "npm", "run", "start-silence"]
