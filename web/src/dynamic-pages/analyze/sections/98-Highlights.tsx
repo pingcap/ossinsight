@@ -4,13 +4,13 @@ import { H2 } from '@site/src/dynamic-pages/analyze/typography';
 import MilestoneTimeline from '@site/src/components/milestone/MilestoneTimeline';
 import { useAnalyzeContext } from '@site/src/dynamic-pages/analyze/charts/context';
 
-export const Milestone = forwardRef((_, ref: ForwardedRef<HTMLElement>) => {
-  const { repoId } = useAnalyzeContext();
+export const Highlights = forwardRef((_, ref: ForwardedRef<HTMLElement>) => {
+  const { repoId, repoName } = useAnalyzeContext();
 
   return (
-    <Section id="milestone" ref={ref}>
-      <H2>Milestones</H2>
-      <MilestoneTimeline repoId={repoId} />
+    <Section id="highlights" ref={ref}>
+      <H2>Highlights</H2>
+      <MilestoneTimeline repoId={repoId} repoName={repoName} />
     </Section>
   );
 });

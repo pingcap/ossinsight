@@ -76,7 +76,7 @@ const tabs: Array<{ id: string, label: string, icon?: JSX.Element }> = [
   { id: 'divider-1', label: 'Monthly Stats', icon: <AutoGraphIcon fontSize="inherit" sx={{ mr: 0.5 }} /> },
   { id: 'repository', label: 'Repository' },
   { id: 'contributors', label: 'Contributors' },
-  { id: 'milestone', label: 'Milestone', icon: <MilestoneIcon style={{ marginRight: 4 }} /> },
+  { id: 'highlights', label: 'Highlights', icon: <MilestoneIcon style={{ marginRight: 4 }} /> },
 ];
 
 // This method indicates whether the group name of the navbar label should be highlighted.
