@@ -1,5 +1,5 @@
 import Layout from '@theme/Layout';
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useMemo, useRef } from 'react';
 import Head from '@docusaurus/Head';
 import { highlights } from './_sections/0-Banner';
 import { paramCase } from 'param-case';
@@ -9,6 +9,7 @@ import { Scrollspy } from '@makotot/ghostui';
 import { AnimatedDownIcon, MrO } from './_components/styled';
 
 import { Container, styled } from '@mui/material';
+import BrowserHash from '@site/src/components/BrowserHash';
 
 const fonts = [
   'https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,600;0,700;1,100;1,400;1,600&display=swap',
@@ -81,13 +82,6 @@ const title = 'Open Source Highlights: Trends and Insights from GitHub 2022';
 const description = 'We analyzed 5 billion+ GitHub events and got interesting findings about open source software, such as top programming languages, geographic distribution behavior by country or region, popular open source topics, and the most active repositories and developers.';
 const keywords = 'GitHub annual report, GitHub 2022, The State of the Octoverse, GitHub insights, Open Source, top programming languages, most active developers, most active repositories';
 const image = '/img/2022/thumbnail.png';
-
-function BrowserHash ({ value }: { value: string | undefined }) {
-  useEffect(() => {
-    history.replaceState(null, '', value ? `#${value}` : location.pathname + location.search);
-  }, [value]);
-  return <></>;
-}
 
 const PageContainer = styled('div', { label: 'PageContainer' })(({ theme }) => ({
   background: 'transparent linear-gradient(180deg, #242526 0%, #0B003B 100%) 0% 0% no-repeat padding-box',

@@ -24,6 +24,7 @@ import { Repository } from './sections/5-Repository';
 import { isNullish, notNullish } from '@site/src/utils/value';
 import { Highlights } from '@site/src/dynamic-pages/analyze/sections/98-Highlights';
 import ScrollSpy, { ScrollSpyInstance } from '@site/src/components/ScrollSpy';
+import BrowserHash from '@site/src/components/BrowserHash';
 
 interface AnalyzePageParams {
   owner: string;
@@ -47,8 +48,6 @@ function AnalyzePage () {
 
   const { data: main, name, error } = useMainRepo();
   const { data: vs, name: comparingRepoName, setName: setComparingRepoName } = useVsRepo();
-
-  const sectionRefs = sections.map(section => useRef<HTMLElement>(null));
 
   const onRepoChange = useCallback((repo: Repo) => {
     history.push({
@@ -80,17 +79,17 @@ function AnalyzePage () {
 
   const content = useMemo(() => {
     const children = [
-      <OverviewSection ref={sectionRefs[0]} key={sections[0]} />,
-      <PeopleSection ref={sectionRefs[1]} key={sections[1]} />,
-      <CommitsSection ref={sectionRefs[2]} key={sections[2]} />,
-      <PullRequestsSection ref={sectionRefs[3]} key={sections[3]} />,
-      <IssuesSection ref={sectionRefs[4]} key={sections[4]} />,
+      <OverviewSection key={sections[0]} />,
+      <PeopleSection key={sections[1]} />,
+      <CommitsSection key={sections[2]} />,
+      <PullRequestsSection key={sections[3]} />,
+      <IssuesSection key={sections[4]} />,
     ];
     if (!comparingRepoName) {
       children.push(
-        <Repository ref={sectionRefs[5]} key={sections[5]} />,
-        <Contributors ref={sectionRefs[6]} key={sections[6]} />,
-        <Highlights ref={sectionRefs[7]} key={sections[7]} />,
+        <Repository key={sections[5]} />,
+        <Contributors key={sections[6]} />,
+        <Highlights key={sections[7]} />,
       );
     }
     return (
@@ -142,6 +141,7 @@ function AnalyzePage () {
         repoInfo: main?.repoInfo,
         comparingRepoInfo: vs?.repoInfo,
       }}>
+        <BrowserHash value={sections[active]}/>
         {content}
       </AnalyzeContext.Provider>
       {isSmall ? <Navigator comparing={!!comparingRepoName} value={sections[active]} scrollTo={scrollTo} type="bottom" /> : undefined}
