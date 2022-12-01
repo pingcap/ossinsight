@@ -5,6 +5,7 @@ import { Avatar, Box, Button, CircularProgress, Container, IconButton, List, Lis
 import { clientWithoutCache } from '@site/src/api/client';
 import { Unsubscribe } from '@mui/icons-material';
 import EnableEmailSwitch from '@site/src/pages/subscriptions/EnableEmailSwitch';
+import { useNotifications } from '@site/src/components/Notifications';
 
 const fmt = new Intl.DateTimeFormat('en', {
   dateStyle: 'medium',
@@ -40,11 +41,13 @@ export default function () {
 
 function Subscriptions () {
   const { data = [], mutate, isValidating } = useSubscriptions();
+  const { success, displayError } = useNotifications();
 
   const unsubscribe = useCallback(function (name: string) {
     clientWithoutCache.put(`/repos/${name}/unsubscribe`, undefined, { withCredentials: true })
       .then(async () => await mutate())
-      .catch(console.error);
+      .then(() => success(`Cancelled getting updates from ${name}`))
+      .catch(displayError);
   }, [mutate]);
 
   return (

@@ -1,61 +1,93 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { ForwardedRef, forwardRef, useCallback, useMemo } from 'react';
 import { useSubscribed, useUserInfo } from '@site/src/api/user';
-import { Button } from '@mui/material';
-import { Email, Unsubscribe } from '@mui/icons-material';
+import { Button, IconButton } from '@mui/material';
+import { Notifications, NotificationsOff } from '@mui/icons-material';
 import { ButtonProps } from '@mui/material/Button';
+import { notFalsy } from '@site/src/utils/value';
+import { useNotifications } from '@site/src/components/Notifications';
 
 export interface SubscribeButtonProps extends Omit<ButtonProps, 'onClick' | 'disabled' | 'startIcon' | 'children'> {
   repoName: string;
+  icon?: boolean;
+
+  onClick?: (action: () => void, subscribed: boolean) => void;
 }
 
-export default function SubscribeButton ({ repoName, ...props }: SubscribeButtonProps) {
+export default forwardRef(function SubscribeButton ({ repoName, variant, onClick, icon: iconProp, ...props }: SubscribeButtonProps, ref: ForwardedRef<HTMLButtonElement>) {
   const { validated: userValidated, validating: userValidating, login } = useUserInfo();
   const { subscribed, subscribing, subscribe, unsubscribe, isValidating } = useSubscribed(repoName);
+  const { success, displayError } = useNotifications();
 
   const icon = useMemo(() => {
     if (!userValidated) {
       return undefined;
     } else if (subscribed) {
-      return <Unsubscribe fontSize="inherit" />;
+      return <NotificationsOff fontSize="inherit" />;
     } else {
-      return <Email fontSize="inherit" />;
+      return <Notifications fontSize="inherit" />;
     }
   }, [userValidated, userValidating, subscribing, subscribed, isValidating]);
 
   const content = useMemo(() => {
     if (userValidated) {
       if (subscribed) {
-        return 'Unsubscribe';
+        return 'Cancel getting updates';
       } else {
-        return 'Subscribe';
+        return 'Get updates';
       }
     } else {
-      return 'Sign in to subscribe';
+      return 'Sign in to get updates';
     }
   }, [userValidated, subscribed]);
 
-  const handleClick = useCallback(() => {
+  const performAction = useCallback(() => {
     if (!userValidated) {
       login();
       return;
     }
     if (subscribed) {
       unsubscribe()
-        .catch(console.error);
+        .then(() => success(`Cancelled getting updates from ${repoName}.`))
+        .catch(displayError);
     } else {
       subscribe()
-        .catch(console.error);
+        .then(() => success(`Started to get updates from ${repoName}.`))
+        .catch(displayError);
     }
-  }, [subscribed, subscribe, unsubscribe, userValidated]);
+  }, [subscribed, subscribe, unsubscribe, userValidated, repoName]);
+
+  const handleClick = useCallback(() => {
+    if (onClick) {
+      onClick(performAction, subscribed);
+    } else {
+      performAction();
+    }
+  }, [onClick, performAction, subscribed]);
+
+  if (notFalsy(iconProp)) {
+    return (
+      <IconButton
+        disabled={subscribing}
+        onClick={handleClick}
+        color="primary"
+        ref={ref}
+        {...props}
+      >
+        {icon}
+      </IconButton>
+    );
+  }
 
   return (
     <Button
       disabled={subscribing}
       startIcon={icon}
       onClick={handleClick}
+      variant={variant}
+      ref={ref}
       {...props}
     >
       {content}
     </Button>
   );
-}
+});

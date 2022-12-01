@@ -13,6 +13,7 @@ import type { Props } from '@theme/Layout';
 import styles from './styles.module.css';
 import VideoAds from '@site/src/components/Ads/VideoAds';
 import CustomFooter from '@site/src/components/Footer';
+import { useNotificationsProvider } from '@site/src/components/Notifications';
 
 declare module '@theme/Layout' {
   interface Props {
@@ -42,6 +43,8 @@ export default function Layout (props: Props): JSX.Element {
 
   useKeyboardNavigation();
 
+  const { el: notificationEl, Provider: NotificationProvider } = useNotificationsProvider();
+
   return (
     <LayoutProvider>
       <PageMetadata title={title} description={description} keywords={keywords} image={image} />
@@ -62,7 +65,10 @@ export default function Layout (props: Props): JSX.Element {
           wrapperClassName,
         )}>
         <ErrorBoundary fallback={(params) => <ErrorPageContent {...params} />}>
-          {children}
+          <NotificationProvider>
+            {notificationEl}
+            {children}
+          </NotificationProvider>
         </ErrorBoundary>
       </div>
 
