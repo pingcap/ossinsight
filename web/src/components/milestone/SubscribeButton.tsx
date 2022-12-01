@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo } from 'react';
 import { useSubscribed, useUserInfo } from '@site/src/api/user';
-import { Button, CircularProgress } from '@mui/material';
+import { Button } from '@mui/material';
 import { Email, Unsubscribe } from '@mui/icons-material';
 import { ButtonProps } from '@mui/material/Button';
 
@@ -13,9 +13,7 @@ export default function SubscribeButton ({ repoName, ...props }: SubscribeButton
   const { subscribed, subscribing, subscribe, unsubscribe, isValidating } = useSubscribed(repoName);
 
   const icon = useMemo(() => {
-    if (isValidating || subscribing || userValidating) {
-      return <CircularProgress size={14} />;
-    } else if (!userValidated) {
+    if (!userValidated) {
       return undefined;
     } else if (subscribed) {
       return <Unsubscribe fontSize="inherit" />;
@@ -25,28 +23,16 @@ export default function SubscribeButton ({ repoName, ...props }: SubscribeButton
   }, [userValidated, userValidating, subscribing, subscribed, isValidating]);
 
   const content = useMemo(() => {
-    if (userValidating) {
-      return 'Waiting...';
-    } else {
-      if (userValidated) {
-        if (subscribing) {
-          if (subscribed) {
-            return 'Unsubscribing...';
-          } else {
-            return 'Subscribing...';
-          }
-        } else {
-          if (subscribed) {
-            return 'Unsubscribe';
-          } else {
-            return 'Subscribe';
-          }
-        }
+    if (userValidated) {
+      if (subscribed) {
+        return 'Unsubscribe';
       } else {
-        return 'Sign in to subscribe';
+        return 'Subscribe';
       }
+    } else {
+      return 'Sign in to subscribe';
     }
-  }, [userValidated, userValidating, subscribing, subscribed, isValidating]);
+  }, [userValidated, subscribed]);
 
   const handleClick = useCallback(() => {
     if (!userValidated) {
@@ -64,7 +50,7 @@ export default function SubscribeButton ({ repoName, ...props }: SubscribeButton
 
   return (
     <Button
-      disabled={subscribing || isValidating}
+      disabled={subscribing}
       startIcon={icon}
       onClick={handleClick}
       {...props}

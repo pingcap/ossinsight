@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useUserInfo } from '@site/src/api/user';
-import { Avatar, Backdrop, ButtonBase, CircularProgress, Menu, MenuItem, styled, useEventCallback } from '@mui/material';
+import { Avatar, ButtonBase, Menu, MenuItem, styled, useEventCallback } from '@mui/material';
 
 export default function LoginItem () {
-  const { userInfo, validating, logout } = useUserInfo();
+  const { userInfo, logout } = useUserInfo();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [open, setOpen] = useState(false);
 
@@ -23,9 +23,6 @@ export default function LoginItem () {
     <span>
       <StyledButtonBase disableRipple ref={setAnchorEl} onClick={handleOpen}>
         <StyledAvatar src={`https://github.com/${userInfo.githubLogin}.png`} />
-        <StyledBackdrop open={validating}>
-          <CircularProgress size={12} />
-        </StyledBackdrop>
       </StyledButtonBase>
       <Menu
         id="basic-menu"
@@ -45,11 +42,6 @@ export default function LoginItem () {
 
 const StyledButtonBase = styled(ButtonBase)`
   position: relative;
-`;
-
-const StyledBackdrop = styled(Backdrop)`
-  position: absolute;
-  border-radius: 50%;
 `;
 
 const StyledAvatar = styled(Avatar)`

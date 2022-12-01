@@ -22,6 +22,9 @@ export function useUserInfo () {
   const { data, isValidating, mutate } = useSWR('user.info', {
     fetcher: async () => await clientWithoutCache.get<any, UserInfo>('/user', { withCredentials: true }),
     shouldRetryOnError: false,
+    onError: () => {
+      mutate(undefined, { revalidate: false }).catch(console.error);
+    },
   });
 
   const login = useEventCallback(() => {
@@ -34,11 +37,13 @@ export function useUserInfo () {
       .catch(console.error);
   });
 
+  window.m = mutate;
+
   return {
     oToken,
     userInfo: data,
     validating: isValidating,
-    validated: !isValidating && notNullish(data),
+    validated: notNullish(data),
     mutate,
     logout,
     login,
