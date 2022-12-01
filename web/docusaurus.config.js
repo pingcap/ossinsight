@@ -65,7 +65,7 @@ const config = {
     [
       path.resolve(__dirname, 'plugins/alias'),
       {
-        '@query': path.resolve(__dirname, '../api/queries/')
+        '@query': path.resolve(__dirname, '../configs/queries/')
       }
     ],
     [
