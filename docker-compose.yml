@@ -16,18 +16,17 @@ services:
     stdin_open: true
     image: hooopo/ossinsight-etl:latest
     restart: always
-
     command: ["./start.sh"]
     environment:
       - NODE_ENV=development
       - RAILS_ENV=development
-      - DATABASE_URL=${DATABASE_URL:-tidb://root:@host.docker.internal:4000/gharchive_dev}
+      - DATABASE_URL=${ETL_DATABASE_URL:?err}
       - GITHUB_TOKEN=${GITHUB_TOKEN:?err}
       - SKIP_REPLICA=1
 
   api:
     build:
-      context: ./api
+      context: ./packages/api-server
       dockerfile: ./Dockerfile
       args:
         NODE_ENV: 'development'
@@ -39,13 +38,11 @@ services:
       etl:
         condition: service_started
     environment:
-      - DATABASE_URL=${DATABASE_URL:-tidb://root:@host.docker.internal:4000/gharchive_dev}
-      - CONNECTION_LIMIT=10
-      - QUEUE_LIMIT=20
+      - DATABASE_URL=${API_DATABASE_URL:?err}
+      - CONFIGS_PATH=${CONFIGS_PATH:-./configs}
       - SERVER_PORT=3450
-      - GH_TOKENS=${GITHUB_TOKEN:?err}
-      - PREFETCH_CONCURRENT=1
-      - ENABLE_CACHE=0
+      - GITHUB_ACCESS_TOKENS=${GITHUB_TOKEN:?err}
+      - ENABLE_CACHE=${ENABLE_CACHE:-false}
 
   web:
     image: hooopo/ossinsight-web:latest

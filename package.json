@@ -5,11 +5,11 @@
   "license": "MIT",
   "workspaces": [
     "packages/api-server",
-    "packages/feeds-server",
-    "api"
+    "packages/feeds-server"
   ],
   "scripts": {
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "postinstall": "cd web && npm install"
   },
   "devDependencies": {
     "husky": "^8.0.1",

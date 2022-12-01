@@ -1,6 +1,7 @@
 import { Factory } from "generic-pool";
 import { Octokit } from "octokit";
 import pino from 'pino';
+import {getOctokit} from "../../../utils/loger";
 
 export const SYMBOL_TOKEN = Symbol('PERSONAL_TOKEN');
 
@@ -25,15 +26,7 @@ export class OctokitFactory implements Factory<Octokit> {
         const erasedToken = eraseToken(value);
         const log = this.log.child({ octokit: erasedToken });
         this.tokens.delete(value)
-        const octokit = new Octokit({
-            auth: value,
-            log: {
-                debug: log.debug.bind(log),
-                info: log.info.bind(log),
-                warn: log.warn.bind(log),
-                error: log.error.bind(log),
-            }
-        });
+        const octokit = getOctokit(value, log);
         Object.defineProperty(octokit, SYMBOL_TOKEN, {value, writable: false, enumerable: false, configurable: false})
         this.log.info('create client with token %s', erasedToken)
         return octokit

@@ -3,9 +3,8 @@ import {Pool} from "mysql2/promise";
 import {Octokit} from "@octokit/core";
 import {getPool} from "./db/new";
 import pino from "pino";
-import {throttling} from "@octokit/plugin-throttling";
+import {getOctokit} from "../utils/loger";
 
-export const CustomOctokit = Octokit.plugin(throttling);
 export const SYMBOL_TOKEN = Symbol('PERSONAL_TOKEN');
 
 export function eraseToken (value: string | undefined): string {
@@ -46,34 +45,7 @@ export class WorkerFactory<T> implements Factory<JobWorker<T>> {
       const log = this.log.child({ worker: erasedToken });
 
       // Init octokit client.
-      const octokit = new CustomOctokit({
-        auth: token,
-        log,
-        throttle: {
-          onRateLimit: (retryAfter: number, options: any, octokit: Octokit) => {
-            octokit.log.warn(
-              `Request quota exhausted for request ${options.method} ${options.url}`
-            );
-      
-            if (options.request.retryCount <= 1) {
-              // only retries once
-              octokit.log.info(`Retrying after ${retryAfter} seconds!`);
-              return true;
-            }
-          },
-          onSecondaryRateLimit: (retryAfter: number, options: any, octokit: Octokit) => {
-            octokit.log.warn(
-              `SecondaryRateLimit detected for request ${options.method} ${options.url}`
-            );
-
-            if (options.request.retryCount <= 1) {
-              // only retries once
-              octokit.log.info(`Retrying after ${retryAfter} seconds!`);
-              return true;
-            }
-          },
-        },
-      });
+      const octokit = getOctokit(token, log);
 
       // Init TiDB client.
       const connPool =getPool({

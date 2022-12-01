@@ -10,11 +10,11 @@ import fastifyJwt, {
 import fastifyOauth2, {FastifyOAuth2Options, OAuth2Namespace} from '@fastify/oauth2'
 
 import {DateTime} from 'luxon';
-import {Octokit} from 'octokit';
 import fastifyCookie from "@fastify/cookie";
 import fp from 'fastify-plugin';
 import {ProviderType, UserProfile, UserRole} from "../../services/user-service";
 import {APIError} from "../../utils/error";
+import {getOctokit} from "../../utils/loger";
 
 export default fp<FastifyOAuth2Options & FastifyJWTOptions>(async (app) => {
     const enableOauthLogin = app.config.GITHUB_OAUTH_CLIENT_ID && app.config.GITHUB_OAUTH_CLIENT_SECRET;
@@ -45,7 +45,7 @@ export default fp<FastifyOAuth2Options & FastifyJWTOptions>(async (app) => {
               auth: fastifyOauth2.GITHUB_CONFIGURATION
             },
             startRedirectPath: '/login/github',
-            callbackUri: `${baseURL}/login/github/callback`
+            callbackUri: `${baseURL}/login/github/callback`,
         });
 
         const callbackSchema: FastifySchema = {
@@ -85,6 +85,15 @@ export default fp<FastifyOAuth2Options & FastifyJWTOptions>(async (app) => {
             }
         }
 
+        // Authentication verify handler.
+        app.decorate("authenticate", async function (req: FastifyRequest, reply: FastifyReply) {
+            try {
+                await req.jwtVerify();
+            } catch (err: any) {
+                throw new APIError(401, 'Failed to verify JWT token.', err);
+            }
+        });
+
         // GitHub oauth2 callback.
         app.get('/login/github/callback', {
             schema: callbackSchema
@@ -94,13 +103,31 @@ export default fp<FastifyOAuth2Options & FastifyJWTOptions>(async (app) => {
             const accessToken = token.access_token;
             log.debug(`Got access token: ${accessToken}.`);
 
-            const githubClient = new Octokit({ auth: accessToken });
+            if (!accessToken) {
+                throw new APIError(401, 'Failed to get access token, please log in again.');
+            }
+
+            // Get user profile.
+            const githubClient = getOctokit(accessToken, log);
             const { data: githubUser } = await githubClient.rest.users.getAuthenticated();
+
+            // Get user email.
+            const { data: emails } = await githubClient.rest.users.listEmailsForAuthenticatedUser();
+            const verifiedEmails = emails
+                .filter((email) => email.verified)
+                // Exclude Github's default noreply email address.
+                .filter((email) => !email.email.includes('@users.noreply.github.com'))
+                // Preferred primary email.
+                .sort((email) => email.primary ? -1 : 1);
+            const email = verifiedEmails[0]?.email || null;
+            if (!email) {
+                log.warn('Failed to get email of user %s.', githubUser.login);
+            }
 
             // Create or update user.
             const user = {
                 name: githubUser.name || githubUser.login,
-                emailAddress: githubUser.email,
+                emailAddress: email,
                 // User is not allowed to get updates by default.
                 emailGetUpdates: false,
                 avatarURL: githubUser.avatar_url,
@@ -127,29 +154,35 @@ export default fp<FastifyOAuth2Options & FastifyJWTOptions>(async (app) => {
                     expiresIn: "7d",
                 }
             );
+
+            const cookieExpires = DateTime.now().plus({ days: 7 }).toJSDate();
             reply
                 .setCookie(cookieName, signingToken, {
                     domain: cookieDomainName,
                     path: '/',
                     secure: cookieSecure, // Send cookie over HTTPS only.
-                    httpOnly: true,
-                    expires: DateTime.now().plus({ days: 7 }).toJSDate(),
+                    httpOnly: false,
+                    expires: cookieExpires,
                     sameSite: cookieSameSite // For CSRF protection.
                 })
                 .code(200)
-                .send({
-                    success: true,
-                    profile: userProfile
-                });
+                .header('Content-Type', 'text/html; charset=utf-8')
+                .send('<script>close();</script>');
         });
 
-        // Authentication.
-        app.decorate("authenticate", async function (req: FastifyRequest, reply: FastifyReply) {
-            try {
-                await req.jwtVerify();
-            } catch (err: any) {
-                throw new APIError(401, 'Failed to verify JWT token.', err);
-            }
+        app.get('/logout', {
+            preHandler: [app.authenticate]
+        },async function (request, reply) {
+           reply
+               .clearCookie(cookieName, {
+                   domain: cookieDomainName,
+                   path: '/',
+                   secure: cookieSecure, // Send cookie over HTTPS only.
+                   httpOnly: false,
+                   sameSite: cookieSameSite // For CSRF protection.
+               })
+               .code(200)
+               .send({ success: true });
         });
     } else {
         // Forbidden all requests need authenticated when oauth login is disabled.
