@@ -37,8 +37,6 @@ export function useUserInfo () {
       .catch(console.error);
   });
 
-  window.m = mutate;
-
   return {
     oToken,
     userInfo: data,
