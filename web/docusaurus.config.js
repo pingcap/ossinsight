@@ -137,8 +137,8 @@ const config = {
       }
     ],
     './plugins/mui',
-    './plugins/analyze',
-  ],
+    process.env.ENABLE_BUNDLE_ANALYZE === 'true' ? './plugins/analyze' : undefined,
+  ].filter(Boolean),
 
   presets: [
     [
