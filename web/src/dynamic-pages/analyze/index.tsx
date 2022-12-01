@@ -22,7 +22,7 @@ import { Contributors } from './sections/6-Contributors';
 import { SQLPlaygroundDrawer } from './sections/99-SQLPlayground';
 import { Repository } from './sections/5-Repository';
 import { isNullish, notNullish } from '@site/src/utils/value';
-import { Milestone } from '@site/src/dynamic-pages/analyze/sections/98-Milestone';
+import { Highlights } from '@site/src/dynamic-pages/analyze/sections/98-Highlights';
 import ScrollSpy, { ScrollSpyInstance } from '@site/src/components/ScrollSpy';
 
 interface AnalyzePageParams {
@@ -38,7 +38,7 @@ const sections = [
   'issues',
   'repository',
   'contributors',
-  'milestone',
+  'highlights',
 ];
 
 function AnalyzePage () {
@@ -90,7 +90,7 @@ function AnalyzePage () {
       children.push(
         <Repository ref={sectionRefs[5]} key={sections[5]} />,
         <Contributors ref={sectionRefs[6]} key={sections[6]} />,
-        <Milestone ref={sectionRefs[7]} key={sections[7]} />,
+        <Highlights ref={sectionRefs[7]} key={sections[7]} />,
       );
     }
     return (
