@@ -2,6 +2,8 @@
 . "$(dirname -- "$0")/_/husky.sh"
 
 cd web
-npm run lint
+if [[ $(git rev-parse --abbrev-ref HEAD) == 'main' ]]; then
+  npm run lint
+fi
 npm run typecheck
 cd ..

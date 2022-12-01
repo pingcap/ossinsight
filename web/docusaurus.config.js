@@ -65,7 +65,7 @@ const config = {
     [
       path.resolve(__dirname, 'plugins/alias'),
       {
-        '@query': path.resolve(__dirname, '../api/queries/')
+        '@query': path.resolve(__dirname, '../configs/queries/')
       }
     ],
     [
@@ -137,8 +137,8 @@ const config = {
       }
     ],
     './plugins/mui',
-    './plugins/analyze',
-  ],
+    process.env.ENABLE_BUNDLE_ANALYZE === 'true' ? './plugins/analyze' : undefined,
+  ].filter(Boolean),
 
   presets: [
     [
