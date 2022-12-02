@@ -3,10 +3,10 @@ import CustomPage from '../../theme/CustomPage';
 import WordCloud from './_components/WordCloud';
 import Collections from './_components/Collections';
 import { useSearch, useSorter } from './_components/filters';
-import AddIcon from '@mui/icons-material/Add';
 import Link from '@docusaurus/Link';
 
-import { Container, Stack, Typography, Button } from '@mui/material';
+import { Container, IconButton, Stack, styled, Tooltip, Typography } from '@mui/material';
+import { AddRounded } from '@mui/icons-material';
 
 const title = 'Explore Collections';
 const description = 'Find insights about the monthly or historical rankings and trends in technical fields with curated repository lists.';
@@ -24,20 +24,24 @@ const Page = () => {
           {description}
         </Typography>
         <WordCloud />
-        <Stack direction="row" justifyContent="space-between" alignItems="center" my={2}>
+        <Stack direction="row" justifyContent="space-between" alignItems="center" my={2} flexWrap="wrap">
           {Sorter}
+          <Spacer />
+          <Tooltip title="Request to add a Collection">
+            <IconButton component={Link} rel="noopener" href="https://github.com/pingcap/ossinsight#how-to-add-collections" sx={{ mr: 1 }} color="primary">
+              <AddRounded />
+            </IconButton>
+          </Tooltip>
           {Search}
         </Stack>
         <Collections sorter={sorter} search={search} />
-        <Typography variant="body1" align="center" mt={2}>
-          Not interested in a collection?
-          <Button component={Link} rel='noopener' href='https://github.com/pingcap/ossinsight#how-to-add-collections' sx={{ ml: 1 }} variant='contained' color="primary" startIcon={<AddIcon />}>
-            Add a Collection
-          </Button>
-        </Typography>
       </Container>
     </CustomPage>
   );
 };
+
+const Spacer = styled('span')`
+  flex: 1;
+`;
 
 export default Page;

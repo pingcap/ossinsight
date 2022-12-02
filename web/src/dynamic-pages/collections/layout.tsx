@@ -18,6 +18,7 @@ import styles from './styles.module.css';
 import { isFalsy, notFalsy } from '@site/src/utils/value';
 
 import { Stack, Typography } from '@mui/material';
+import EditCollection from '@site/src/dynamic-pages/collections/components/EditCollection';
 
 interface CollectionsPageParams {
   slug: string;
@@ -114,7 +115,8 @@ function CollectionsPageLayout ({ title: propTitle, description, keywords, child
                     [styles.collectionsItemWrapperEnhanced]: hiddenSidebarContainer,
                   },
                 )}>
-                <H1>{title}</H1>
+                {collection && <EditCollection collection={collection} />}
+                <H1 mt={2}>{title}</H1>
                 <Sections description={description}>
                   {children}
                 </Sections>
