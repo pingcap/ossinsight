@@ -1,7 +1,7 @@
 ---
 nname: "\U0001F41B Bug Report"
 about: As a User, I want to report a Bug.
-title: "[bug] < the bug you want to report>"
+title: ""
 labels: type/bug
 assignees: ''
 

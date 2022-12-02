@@ -1,7 +1,7 @@
 ---
 name: "\U0001F914 Others"
 about: I wants to report others.
-title: "[others] < the point  you want to report>"
+title: ""
 labels: type/others
 ---
 
