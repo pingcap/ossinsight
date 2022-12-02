@@ -19,11 +19,10 @@ RUN sudo apt-get update && export DEBIAN_FRONTEND=noninteractive \
 # To install more global node packages.
 RUN su node -c "npm install -g pnpm@7 ts-node typescript"
 
-RUN sudo pip3 install ipykernel
+# Install Python depend dependencie.
+RUN sudo pip3 install -U pip setuptools
+RUN sudo pip3 install ipykernel pandas autopep8 Jinja2
 
 # Install TiUP cli, you can startup a TiDB cluster by `tiup playground` command.
 RUN curl --proto '=https' --tlsv1.2 -sSf https://tiup-mirrors.pingcap.com/install.sh | sh
 
-# Install PNPM dependencies in advance.
-RUN wget https://raw.githubusercontent.com/pingcap/ossinsight/main/pnpm-lock.yaml
-RUN pnpm fetch

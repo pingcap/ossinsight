@@ -44,7 +44,7 @@
     }
   },
   // Use 'postCreateCommand' to run commands after the container is created.
-  "updateContentCommand": "pnpm install",
+  // "postCreateCommand": "pnpm install",
   // Comment out connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
   "remoteUser": "node",
   "hostRequirements": {
@@ -55,7 +55,6 @@
   "customizations": {
     "codespaces": {
       "openFiles": [
-        "workshop.ipynb",
         "workshop.cn.ipynb"
       ]
     }
