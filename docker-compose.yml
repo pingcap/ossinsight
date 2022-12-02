@@ -23,7 +23,7 @@ services:
       - DATABASE_URL=${ETL_DATABASE_URL:?err}
       - GITHUB_TOKEN=${GITHUB_TOKEN:?err}
       - SKIP_REPLICA=1
-      - DB_FORCE_SSL=${DB_FORCE_SSL:?err}
+      - DB_FORCE_SSL=${DB_FORCE_SSL:-true}
 
   api:
     build:
