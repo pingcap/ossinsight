@@ -1,17 +1,17 @@
 # Build stage.
 FROM node:18-alpine AS builder
 
-WORKDIR /app
+WORKDIR /app/packages/api-server
 
 # Install dependencies.
 RUN npm install -g pnpm
-COPY pnpm-lock.yaml package.json ./
+COPY ./packages/api-server/pnpm-lock.yaml ./packages/api-server/package.json ./
 RUN pnpm fetch
 RUN pnpm install -r --offline
 
 # Copy source code.
-COPY tsconfig.json .
-COPY src/  ./src
+COPY ./packages/api-server/tsconfig.json .
+COPY ./packages/api-server/src/  ./src
 
 # Build.
 RUN pnpm run build:ts
@@ -24,9 +24,12 @@ FROM node:18-alpine AS runtime
 
 ENV NODE_ENV=production
 
-WORKDIR /app
+WORKDIR /app/packages/api-server
 
-COPY --from=builder /app  .
+COPY --from=builder /app/packages/api-server  .
+
+# Copy the configs dir.
+COPY ./configs /app/configs
 
 EXPOSE 3450
 

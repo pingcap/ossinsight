@@ -29,18 +29,18 @@
   ],
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
   "forwardPorts": [
-    3000,
+    30000,
     3450
   ],
   "portsAttributes": {
-    "3000": {
+    "30000": {
       "label": "Front End",
-      "protocol": "http",
+      "protocol": "https",
       "onAutoForward": "openBrowserOnce"
     },
     "3450": {
       "label": "API Server",
-      "protocol": "http"
+      "protocol": "https"
     }
   },
   // Use 'postCreateCommand' to run commands after the container is created.
@@ -55,12 +55,13 @@
   "customizations": {
     "codespaces": {
       "openFiles": [
-        "README.md",
-        "setup.ipynb"
+        "workshop.ipynb",
+        "workshop.cn.ipynb"
       ]
     }
   },
   "features": {
-    "ghcr.io/devcontainers/features/github-cli:1": {}
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/devcontainers/features/docker-from-docker:1": {}
   }
 }

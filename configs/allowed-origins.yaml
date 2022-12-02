@@ -3,6 +3,7 @@ private_origins:
   - ^http://localhost:\d+$
   # Preview.
   - ^https://pingcap-ossinsight-preview-pr-.+\.surge\.sh$
+  - ^https*://.+\.preview\.app\.github\.dev/*$
   # Production.
   - ^https://ossinsight\.io$
   - ^https://live\.ossinsight\.io$
