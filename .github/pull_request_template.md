@@ -3,10 +3,20 @@
 Thank you for contributing to OSS Insight!
 
 PR Title Format:
-  - [collection] You can add a collection on our website(Please put a note in the title [collection])
-  - [blog] You are welcome to share blogs about using OSS Insight (Please put a note in the title [blog])
-  - [fix] You can make fixes to current issues (Please put a note in the title [fix])
-  - [feat] You are welcome to contribute if you have new feature ideas (Please put a note in the title [feat])
+
+Please add the scope of pull request as the title prefix like:
+
+```
+<scope>: what's changed.
+```
+
+The scope cloud be `config`, `api`, `web`, `blog` and etc.
+
+Suppose you submit a new repository to the collection's configuration, your pull request title could be:
+
+```
+config: add pingcap/tidb repo to open source database collection
+```
 -->
 
 **What problem does this PR solve?**
