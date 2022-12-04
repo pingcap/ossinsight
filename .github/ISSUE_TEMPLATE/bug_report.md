@@ -1,5 +1,5 @@
 ---
-nname: "\U0001F41B Bug Report"
+name: "\U0001F41B Bug Report"
 about: As a User, I want to report a Bug.
 title: ""
 labels: type/bug
