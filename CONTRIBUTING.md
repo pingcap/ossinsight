@@ -43,9 +43,9 @@ If you would like to request a new feature or enhancement but are not yet thinki
 
 ## Development 
 
-Step 1 `cd web`
-Step 2 `npm install`
-Step 3 `npm start`, then your website will run at: http://localhost:3000/
+- Step 1 `cd web`
+- Step 2 `npm install`
+- Step 3 `npm start`, then your website will run at: http://localhost:3000/
 
 ## Pull Request
 
