@@ -27,7 +27,7 @@ const Page = () => {
           {Sorter}
           <Spacer />
           {Search}
-          <Button variant="outlined" sx={{ fontSize: 16, fontWeight: 'regular', verticalAlign: 'baseline', color: 'primary', ml: 1 }} component={Link} href='https://github.com/pingcap/ossinsight#how-to-add-collections'>
+          <Button variant="outlined" sx={{ fontSize: 16, fontWeight: 'regular', verticalAlign: 'baseline', color: 'primary', ml: 1 }} component={Link} href='https://github.com/pingcap/ossinsight/blob/main/CONTRIBUTING.md#add-a-collection'>
           + NEW COLLECTION
         </Button>
         </Stack>
