@@ -31,7 +31,7 @@ export default function Workshop () {
       <Card>
         <Stack justifyContent="space-between" alignItems="start" minHeight={140}>
           <Typography variant="body1">
-          We suggest running your insight tool on a <Link href='https://docs.pingcap.com/tidb/dev/explore-htap?utm_source=ossinsight&utm_medium=referral' target='_blank'>Hybrid Transactional and Analytical Processing (HTAP) </Link> database like <Link href='https://www.pingcap.com/tidb-cloud/?utm_source=ossinsight&utm_medium=referral' target='_blank'> TiDB Cloud</Link>.
+          We suggest running your insight tool on a <Link href='https://docs.pingcap.com/tidb/dev/explore-htap?utm_source=ossinsight&utm_medium=referral' target='_blank'>Hybrid Transactional and Analytical Processing (HTAP)</Link> database like <Link href='https://www.pingcap.com/tidb-cloud/?utm_source=ossinsight&utm_medium=referral' target='_blank'> TiDB Cloud</Link>.
           </Typography>
           <Button variant="contained" color="primary" component={Link} rel='noopener' href="/blog/why-we-choose-tidb-to-support-ossinsight" target='_link'>
           📖 Learn why we chose TiDB to support OSS Insight
