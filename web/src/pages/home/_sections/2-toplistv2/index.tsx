@@ -10,7 +10,7 @@ export function TopListV2Section () {
       <a href="#trending-repos">
       <H2 sx={{ fontSize: 24, mb: 2, color: 'white' }} >🔥 Trending Repos</H2></a>
       <Body sx={{ mb: 4, mt: 2, fontSize: 14 }}>
-        We ranked all repositories with score, <b>Total Score = Stars score + Forks score + Base score</b>, see <Link href='https://github.com/pingcap/ossinsight/issues/778' target='_blank'>details</Link>.
+        We ranked all repositories with score. <b>Total Score = Stars score + Forks score + Base score</b>. See <Link href='https://github.com/pingcap/ossinsight/issues/778' target='_blank'>details</Link>.
       </Body>
       <TopListV2 />
     </Section>

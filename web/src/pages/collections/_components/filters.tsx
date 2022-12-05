@@ -42,7 +42,7 @@ export function useSearch (): readonly [search: string, Search: JSX.Element] {
 }
 
 export function useSorter (): readonly [sort: SortType, Sort: JSX.Element] {
-  const [sort, setSort] = useState<SortType>(SortType.alphabetical);
+  const [sort, setSort] = useState<SortType>(SortType.recent);
 
   const handleSortChange = (
     event: React.MouseEvent<HTMLElement>,
@@ -62,12 +62,12 @@ export function useSorter (): readonly [sort: SortType, Sort: JSX.Element] {
       unselectable="off"
       exclusive
     >
-      <ToggleButton value={SortType.alphabetical}>
-        A - Z
-      </ToggleButton>
-      <Divider flexItem orientation="vertical" sx={{ width: '1px' }} color="#3c3c3c" />
       <ToggleButton value={SortType.recent}>
         NEW <ArrowDownIcon />
+      </ToggleButton>
+      <Divider flexItem orientation="vertical" sx={{ width: '1px' }} color="#3c3c3c" />
+      <ToggleButton value={SortType.alphabetical}>
+        A - Z
       </ToggleButton>
     </StyledToggleButtonGroup>
   ),

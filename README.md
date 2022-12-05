@@ -4,7 +4,7 @@
   <img src="/web/static/img/screenshots/homepage-2.gif"
 </a>
 
-<h3 align="center">
+<h4 align="center">
   <b><a href="https://ossinsight.io/collections/open-source-database">Repo Rankings</a></b>
   •
   <b><a href="https://ossinsight.io/analyze/Ovilia">Developer Analytics</a></b>
@@ -22,104 +22,87 @@
   <a href="https://twitter.com/OSSInsight">Twitter</a>
 </h3>
 
-<p align="center">
+## Introduction
+
 OSS Insight analyzes billions of GitHub events and gets insights from them. It also provides a set of tools which can analyze a single repository or developer and compare any two open source software repositories hosted on GitHub.
-</p>
 
-## Feature 1: Preanalysis of some famous fields of technology 👁️
+### Feature 1: Preanalysis of some famous fields of technology 👁️
 
-### Deep Insight
-* [Deep Insight Into Open Source Databases](https://ossinsight.io/blog/deep-insight-into-open-source-databases)
-* [JavaScript Framework Repos Landscape 2021](https://ossinsight.io/blog/deep-insight-into-js-framework-2021)
-* [Web Framework Repos Landscape 2021](https://ossinsight.io/blog/deep-insight-into-web-framework-2021)
-* [Programming Languages Repos Landscape 2021](https://ossinsight.io/blog/deep-insight-into-programming-languages-2021)
-* [Low-code Development Tool Repos Landscape 2021](https://ossinsight.io/blog/deep-insight-into-lowcode-development-tools-2021)
-* [More](https://ossinsight.io/blog) ...
+* **Deep Insight**
+  * [Deep Insight Into Open Source Databases](https://ossinsight.io/blog/deep-insight-into-open-source-databases)
+  * [JavaScript Framework Repos Landscape 2021](https://ossinsight.io/blog/deep-insight-into-js-framework-2021)
+  * [Web Framework Repos Landscape 2021](https://ossinsight.io/blog/deep-insight-into-web-framework-2021)
+  * [More](https://ossinsight.io/blog) ...
 
-### GitHub Collections Analysis
-* [Collection: Web Framework](https://ossinsight.io/collections/web-framework)
-* [Collection: Artificial Intelligence](https://ossinsight.io/collections/artificial-intelligence)
-* [Collection: Web3](https://ossinsight.io/collections/web3)
-* [More](https://ossinsight.io/collections/open-source-database) ...
+* **GitHub Collections Analysis**
+  * [Collection: Web Framework](https://ossinsight.io/collections/web-framework)
+  * [Collection: Artificial Intelligence](https://ossinsight.io/collections/artificial-intelligence)
+  * [Collection: Web3](https://ossinsight.io/collections/web3)
+  * [More](https://ossinsight.io/collections/open-source-database) ...
 
-If you want to analyze more, please [contact us](https://ossinsight.io/about/#contact) ✉️
-
-### How to add collections
+**Welcome to add collections**
 👏 We welcome your contributions here! You can add a collection on our website by submitting PRs. Please create a `.yml` file under [the collections file path]( https://github.com/pingcap/ossinsight/tree/main/etl/meta/collections).
 
-Here is a file template provides guidance on the information you need to include.
+[Here]() is a file template provides guidance on the information you need to include.We look forward to your PRs！
 
-* File Name
+### Feature 2: Developer Analytics
 
-`<collection_id>.<collection_name>.yml`, For example: `10013.game-engine.yml`
-
-  💡 Tips: Please use `100XX` as your collection's id，and it should be `+1` after the latest submit in [here]( https://github.com/pingcap/ossinsight/tree/main/etl/meta/collections). 
-
-* Content
-
-```yml
-id: <collection_id>
-name: <collection_name>
-items:
-  - <repo_name_1>
-  - <repo_name_2>
-```
-
-We look forward to your PRs！
-
-## Feature 2: Developer Analytics
-  
-* Basic:
+* **Basic**:
   * Stars, behavior, most used languages，and contribution trends
   * Code (commits，pull requests，pull request size and code line changes), code reviews, and issues
-* Advanced:
+* **Advanced**:
   * Contribution time distribution for all kind of contribution activities
   * Monthly stats about contribution activities in all public repositories
-  
-Examples:
-* [Ovilia](https://ossinsight.io/analyze/Ovilia)
-* [midudev](https://ossinsight.io/analyze/midudev)
-* [samswag](https://ossinsight.io/analyze/samswag)
-* [mheap](https://ossinsight.io/analyze/mheap)
-* [levxyca](https://ossinsight.io/analyze/levxyca)
 
-## Feature 3: Repository Analytics
-  
-* Basic:
+### Feature 3: Repository Analytics
+
+* **Basic**:
   * Stars, forks, issues, commits, pull requests, contributors, programming languages, and lines of code modified
   * Historical trends of these metrics
   * Time cost of issues, pull requests
-* Advanced:
+* **Advanced**:
   * Geographical distribution of stargazers, issue creators, and pull request creators
   * Company distribution of stargazers, issue creators, and pull request creators
-  
-Examples:
+
+**Examples**:
 * [React](https://ossinsight.io/analyze/facebook/react)
 * [TiDB](https://ossinsight.io/analyze/pingcap/tidb)
-* [Django](https://ossinsight.io/analyze/django/django)
-* [Go Lang](https://ossinsight.io/analyze/golang/go)
+* [web3.js](https://ossinsight.io/analyze/web3/web3.js)
 * [Ant Design](https://ossinsight.io/analyze/ant-design/ant-design)
 * [Chaos Mesh](https://ossinsight.io/analyze/chaos-mesh/chaos-mesh)
 
-## Feature 4: Compare Projects 🔨
-  
+### Feature 4: Compare Projects 🔨
+
 Compare two projects using the repo metrics mentioned in **Repository Analytics**
 
 Examples:
 * [Compare Vue and React](https://ossinsight.io/analyze/vuejs/vue?vs=facebook/react)
-* [Compare Hugo and Docusaurus](https://ossinsight.io/analyze/gohugoio/hugo?vs=facebook/docusaurus)
 * [Compare CockroachDB and TiDB](https://ossinsight.io/analyze/pingcap/tidb?vs=cockroachdb/cockroach)
 * [Compare PyTorch and TensorFlow](https://ossinsight.io/analyze/pytorch/pytorch?vs=tensorflow/tensorflow)
-* [Compare Django and Flask](https://ossinsight.io/analyze/django/django?vs=pallets/flask)
-* [Compare Visual Studio Code and Atom](https://ossinsight.io/analyze/microsoft/vscode?vs=atom/atom)
-* [Compare Go and Rust](https://ossinsight.io/analyze/golang/go?vs=rust-lang/rust)
-* [Compare Spark and Flink](https://ossinsight.io/analyze/apache/spark?vs=apache/flink)
-* [Compare Ant Design and Material-UI](https://ossinsight.io/analyze/ant-design/ant-design?vs=mui/material-ui)
-* [Compare Chaos Mesh and Chaosblade](https://ossinsight.io/analyze/chaos-mesh/chaos-mesh?vs=chaosblade-io/chaosblade)
+
+## Contribution
+
+We've released OSS Insight because it can do more insights about GitHub.We hope that others can benefit from the project. You are more than welcome to participate in capacity building. We are thankful for any contributions from the community.
+
+* [GitHub Discussion](https://github.com/pingcap/ossinsight/discussions)。Best for: help with building, discussion about OSS Insight best practices.
+* [GitHub Issues](https://github.com/pingcap/ossinsight/issues)。Best for: bugs and errors you encounter using OSS Insight.
+* [GitHub PR](https://github.com/pingcap/ossinsight/pulls)。Best for: pull request the features you wish for OSS Insight.
+  * [collection] You can add a collection on our website.
+  * [blog] You are welcome to share blogs about using OSS Insight.
+  * [fix] You can make fixes to current issues.
+  * [feat] You are welcome to contribute if you have new feature ideas.
+
+## Contact
+
+We have a few channels for contact：
+
+* [GitHub Discussions](https://github.com/pingcap/ossinsight/discussions)：You can ask a question or discuss here.
+* [@OSS Insight](https://twitter.com/OSSInsight) on Twitter
+* [mail](mailto:ossinsight@pingcap.com):If you want to analyze more, please [contact us](mailto:ossinsight@pingcap.com) ✉️
 
 ## Development
 
-* [Step by Step](https://ossinsight.io/docs/workshop/mini-ossinsight/step-by-step/find-data-source)
+* [Step by Step](https://ossinsight.io/docs/workshop/mini-ossinsight/introduction)
 
 ## Sponsors
 

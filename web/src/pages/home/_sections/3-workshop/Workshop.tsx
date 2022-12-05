@@ -21,7 +21,7 @@ export default function Workshop () {
                 {title}
               </Typography>
               <Link href={href} target='_blank' >
-                &gt;&nbsp;Join
+                &gt;&nbsp;Tutorial
               </Link>
             </ListItem>
           ))}
@@ -31,10 +31,13 @@ export default function Workshop () {
       <Card>
         <Stack justifyContent="space-between" alignItems="start" minHeight={140}>
           <Typography variant="body1">
-            If you want a further talk about OSS Insight, please join an offline workshop and get help there.
+          We suggest running your insight tool on a <Link href='https://docs.pingcap.com/tidb/dev/explore-htap?utm_source=ossinsight&utm_medium=referral' target='_blank'>Hybrid Transactional and Analytical Processing (HTAP) </Link> database like <Link href='https://www.pingcap.com/tidb-cloud/?utm_source=ossinsight&utm_medium=referral' target='_blank'> TiDB Cloud</Link>.
           </Typography>
-          <Button variant="contained" color="primary" component={Link} rel='noopener' href="https://share.hsforms.com/1E-qtGQWrTVmctP8kBT34gw2npzm" target='_link'>
-            🗓️ Join an offline workshop
+          <Button variant="contained" color="primary" component={Link} rel='noopener' href="/blog/why-we-choose-tidb-to-support-ossinsight" target='_link'>
+          📖 Learn why we chose TiDB to support OSS Insight
+          </Button>
+          <Button variant="contained" color="primary" component={Link} rel='noopener' href="https://www.pingcap.com/developers/?utm_source=ossinsight&utm_medium=referral" target='_link'>
+          🚀 Check out TiDB demos and tutorials
           </Button>
         </Stack>
       </Card>
