@@ -5,8 +5,7 @@ import Collections from './_components/Collections';
 import { useSearch, useSorter } from './_components/filters';
 import Link from '@docusaurus/Link';
 
-import { Container, Button, Stack, styled, Tooltip, Typography } from '@mui/material';
-import { AddRounded } from '@mui/icons-material';
+import { Container, Button, Stack, styled, Typography } from '@mui/material';
 
 const title = 'Explore Collections';
 const description = 'Find insights about the monthly or historical rankings and trends in technical fields with curated repository lists.';
@@ -28,7 +27,7 @@ const Page = () => {
           {Sorter}
           <Spacer />
           {Search}
-          <Button variant="outlined" sx={{fontSize: 16, fontWeight: 'regular', verticalAlign: 'baseline', color:'primary', ml:1}} component={Link} href='https://github.com/pingcap/ossinsight#how-to-add-collections'>
+          <Button variant="outlined" sx={{fontSize: 16, fontWeight: 'regular', verticalAlign: 'baseline', color: 'primary', ml:1 }} component={Link} href='https://github.com/pingcap/ossinsight#how-to-add-collections'>
           + NEW COLLECTION
         </Button>
         </Stack>
