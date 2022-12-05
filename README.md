@@ -54,10 +54,6 @@ OSS Insight analyzes billions of GitHub events and gets insights from them. It a
   * Contribution time distribution for all kind of contribution activities
   * Monthly stats about contribution activities in all public repositories
 
-**Examples**:
-* [Ovilia](https://ossinsight.io/analyze/Ovilia)
-* [midudev](https://ossinsight.io/analyze/midudev)
-
 ### Feature 3: Repository Analytics
 
 * **Basic**:
@@ -71,7 +67,7 @@ OSS Insight analyzes billions of GitHub events and gets insights from them. It a
 **Examples**:
 * [React](https://ossinsight.io/analyze/facebook/react)
 * [TiDB](https://ossinsight.io/analyze/pingcap/tidb)
-* [Django](https://ossinsight.io/analyze/django/django)
+* [web3.js](https://ossinsight.io/analyze/web3/web3.js)
 * [Ant Design](https://ossinsight.io/analyze/ant-design/ant-design)
 * [Chaos Mesh](https://ossinsight.io/analyze/chaos-mesh/chaos-mesh)
 
@@ -81,10 +77,8 @@ Compare two projects using the repo metrics mentioned in **Repository Analytics*
 
 Examples:
 * [Compare Vue and React](https://ossinsight.io/analyze/vuejs/vue?vs=facebook/react)
-* [Compare Hugo and Docusaurus](https://ossinsight.io/analyze/gohugoio/hugo?vs=facebook/docusaurus)
 * [Compare CockroachDB and TiDB](https://ossinsight.io/analyze/pingcap/tidb?vs=cockroachdb/cockroach)
 * [Compare PyTorch and TensorFlow](https://ossinsight.io/analyze/pytorch/pytorch?vs=tensorflow/tensorflow)
-
 
 ## Contribution
 
