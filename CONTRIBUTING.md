@@ -15,11 +15,11 @@ There are many ways to contribute to OSS Insight, and many of them do not involv
 
 - Simply use OSS Insight. You can analyze any single GitHub repository/developers in depth, compare any two repositories using the same metrics, and provide comprehensive, valuable, and trending open source insights.
   - If you have any questions or want to share ideas when using  OSS Insight, you can make a discussion on [GitHub Discussions](https://github.com/pingcap/ossinsight/discussions).
-  - Does everything work as expected? If not, we're always looking for improvements. Let us know by [**opening an issue**](https://github.com/pingcap/ossinsight/CONTRIBUTING.md#issue).
-- If you want to add a collection on our OSS Insight website, you can also [**add a collection**](https://github.com/pingcap/ossinsight/CONTRIBUTING.md#add-a-collection) by submitting PRs.
-- Look through the [open issues](https://github.com/pingcap/ossinsight/issues). Provide workarounds, ask for clarification, or suggest labels. If you find an issue you would like to fix, [**open a pull request**](https://github.com/pingcap/ossinsight/CONTRIBUTING.md#pull-requests). 
+  - Does everything work as expected? If not, we're always looking for improvements. Let us know by [**opening an issue**](https://github.com/pingcap/ossinsight/blob/main/CONTRIBUTING.md#issue).
+- If you want to add a collection on our OSS Insight website, you can also [**add a collection**](https://github.com/pingcap/ossinsight/blob/main/CONTRIBUTING.md#add-a-collection) by submitting PRs.
+- Look through the [open issues](https://github.com/pingcap/ossinsight/issues). Provide workarounds, ask for clarification, or suggest labels. If you find an issue you would like to fix, [**open a pull request**](https://github.com/pingcap/ossinsight/blob/main/CONTRIBUTING.md#pull-requests). 
 - Read through the [OSS Insight Blogs](https://ossinsight.io/blog/). If you find anything that is confusing or can be improved, you can click "Edit this page" at the bottom of most docs, which takes you to the GitHub interface to make and propose changes.
-- If you have message or experience about using OSS Insight, you are welcome to [**add a new blog**](https://github.com/pingcap/ossinsight/CONTRIBUTING.md#add-a-blog).
+- If you have message or experience about using OSS Insight, you are welcome to [**add a new blog**](https://github.com/pingcap/ossinsight/blob/main/CONTRIBUTING.md#add-a-blog).
 
 
 👏 We welcome your contributions here!  If you think you need help planning your contribution, please ping us on Twitter at [@OSS Insight](https://twitter.com/OSSInsight) and let us know you are looking for a bit of help.
