@@ -1,6 +1,6 @@
 ---
 name: "\U0001F41B Bug Report"
-about: As a User, I want to report a Bug.
+about: As a user, I want to report a bug.
 title: ""
 labels: type/bug
 assignees: ''
@@ -9,7 +9,7 @@ assignees: ''
 
 ## Bug Report
 
-Please answer these questions before submitting your issue. Thanks!
+<!-- Please answer these questions before submitting your issue. Thanks! -->
 
 **Describe the bug**
 <!-- A clear and concise description of what the bug is.-->

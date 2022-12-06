@@ -10,7 +10,7 @@ Please add the scope of pull request as the title prefix like:
 <scope>: what's changed.
 ```
 
-The scope cloud be `config`, `api`, `web`, `blog` and etc.
+The scope could be `config`, `api`, `web`, `blog` and etc.
 
 Suppose you submit a new repository to the collection's configuration, your pull request title could be:
 
