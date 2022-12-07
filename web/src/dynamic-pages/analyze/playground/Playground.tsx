@@ -1,24 +1,27 @@
 import * as React from 'react';
-import { useEffect, useMemo, useState } from 'react';
+import { KeyboardEventHandler, useCallback, useEffect, useMemo, useState } from 'react';
 import { useSQLPlayground } from '@site/src/components/RemoteCharts/hook';
 import { format } from 'sql-formatter';
-import { Alert, AlertTitle, Box, Button, Drawer, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, useEventCallback } from '@mui/material';
-import TerminalIcon from '@mui/icons-material/Terminal';
-import { isFiniteNumber, isNullish, notFalsy, notNullish } from '@site/src/utils/value';
+import { Button, Drawer, TextField, useEventCallback } from '@mui/material';
+import { isNullish } from '@site/src/utils/value';
 import LoadingButton from '@mui/lab/LoadingButton';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import CodeBlock from '@theme/CodeBlock';
 import { useAnalyzeContext } from '../charts/context';
 import SQLEditor from './SQLEditor';
-import { PredefinedQuestion } from '@site/src/dynamic-pages/analyze/playground/predefined';
-import PredefinedGroups from '@site/src/dynamic-pages/analyze/playground/PredefinedGroups';
-import { PlaygroundBody, PlaygroundContainer, PlaygroundHeadline, PlaygroundHeadlineExtra, PlaygroundMain, PlaygroundSide } from '@site/src/dynamic-pages/analyze/playground/styled';
+import { PredefinedQuestion } from './predefined';
+import PredefinedGroups from './PredefinedGroups';
+import { Gap, PlaygroundBody, PlaygroundButton, PlaygroundContainer, PlaygroundDescription, PlaygroundHeadline, PlaygroundMain, PlaygroundSide } from './styled';
+import { Experimental } from '@site/src/components/Experimental';
+import { aiQuestion } from '@site/src/api/core';
+import isHotkey from 'is-hotkey';
+import ResultBlock from './ResultBlock';
 
 function Playground ({ open, onClose }: { open: boolean, onClose: () => void }) {
   const { repoName, repoId } = useAnalyzeContext();
   const [inputValue, setInputValue] = useState('');
   const [currentQuestion, setCurrentQuestion] = useState<PredefinedQuestion>();
   const [sql, setSQL] = useState('');
+  const [customQuestion, setCustomQuestion] = useState('');
 
   const onChange = (newValue: string) => {
     setInputValue(newValue);
@@ -52,6 +55,18 @@ function Playground ({ open, onClose }: { open: boolean, onClose: () => void }) 
     setInputValue(trueSql);
     setCurrentQuestion(question);
   });
+
+  const handleCustomQuestion: KeyboardEventHandler = useCallback((e) => {
+    if (isHotkey('Enter', e)) {
+      aiQuestion(customQuestion)
+        .then(sql => setInputValue(format(sql, {
+          language: 'mysql',
+          uppercase: true,
+          linesBetweenQueries: 2,
+        })))
+        .catch(console.error);
+    }
+  }, [customQuestion]);
 
   const defaultInput = useMemo(() => {
     return `
@@ -87,33 +102,32 @@ LIMIT
       }}
     >
       <PlaygroundContainer id="sql-playground-container">
-        <PlaygroundHeadline>
-          <Typography variant="h2" component="div" sx={{ flexGrow: 1, color: 'orange' }}>
-            Playground: Based on Row-Oriented Storage Engine
-          </Typography>
-          <PlaygroundHeadlineExtra>
-            <Button
-              variant="contained"
-              size="small"
-              disabled={!inputValue || isNullish(repoId)}
-              onClick={handleFormatSQLClick}
-            >
-              Format
-            </Button>
-            <LoadingButton
-              variant="contained"
-              size="small"
-              disabled={!inputValue || isNullish(repoId)}
-              onClick={handleSubmit}
-              endIcon={<PlayArrowIcon fontSize="inherit" />}
-              loading={loading}
-            >
-              Run
-            </LoadingButton>
-          </PlaygroundHeadlineExtra>
-        </PlaygroundHeadline>
         <PlaygroundBody>
           <PlaygroundSide>
+            <PlaygroundHeadline>
+              Playground: Customize your queries with SQL
+              <Experimental feature="ai-playground">
+                <> or AI🤖️</>
+              </Experimental>
+              !
+            </PlaygroundHeadline>
+            <PlaygroundDescription>
+              <li>Choose a question<Experimental feature='ai-playground'><> or create a new one</></Experimental> below</li>
+              <li>Check or edit the generated SQL（Optional）</li>
+              <li>Run your SQL and enjoy your results</li>
+            </PlaygroundDescription>
+            <Experimental feature="ai-playground">
+              <TextField
+                sx={{ mt: 1 }}
+                label="Question"
+                size="small"
+                fullWidth
+                value={customQuestion}
+                onChange={useEventCallback(e => setCustomQuestion(e.target.value))}
+                onKeyDown={handleCustomQuestion}
+                placeholder="How many watch events in this repository?"
+              />
+            </Experimental>
             <PredefinedGroups onSelectQuestion={handleSelectQuestion} question={currentQuestion} />
           </PlaygroundSide>
           <PlaygroundMain>
@@ -122,42 +136,37 @@ LIMIT
               theme="twilight"
               onChange={onChange}
               name="SQL_PLAYGROUND"
-              width="100%"
-              height={data?.data ? '250px' : '350px'}
               showPrintMargin={false}
               value={inputValue || defaultInput}
               fontSize={16}
               setOptions={{
                 enableLiveAutocompletion: true,
               }}
+              extra={
+                <>
+                  <Button
+                    variant="contained"
+                    size="small"
+                    disabled={!inputValue || isNullish(repoId)}
+                    onClick={handleFormatSQLClick}
+                  >
+                    Format
+                  </Button>
+                  <LoadingButton
+                    variant="contained"
+                    size="small"
+                    disabled={!inputValue || isNullish(repoId)}
+                    onClick={handleSubmit}
+                    endIcon={<PlayArrowIcon fontSize="inherit" />}
+                    loading={loading}
+                  >
+                    Run
+                  </LoadingButton>
+                </>
+              }
             />
-
-            {notFalsy(error) && (
-              <Alert severity="error">
-                <AlertTitle>Error</AlertTitle>
-                {`${error}`}
-              </Alert>
-            )}
-            {isFiniteNumber(data?.spent) && notNullish(data) && (
-              <>
-                <Typography variant="body2" sx={{ padding: '1rem' }}>
-                  {`${data.data.length} results in ${data.spent.toFixed(
-                    2,
-                  )}s.`}
-                </Typography>
-              </>
-            )}
-            {data?.data && (
-              <Box>
-                {notNullish((data?.sql?.match(/\bEXPLAIN\b/i)))
-                  ? (
-                    <CodeBlock>{dataListToRawOutput(data.data)}</CodeBlock>
-                    )
-                  : (
-                      renderTable(data.data)
-                    )}
-              </Box>
-            )}
+            <Gap />
+            <ResultBlock data={data} loading={loading} error={error} />
           </PlaygroundMain>
         </PlaygroundBody>
       </PlaygroundContainer>
@@ -173,7 +182,7 @@ export function usePlayground () {
   });
 
   const handleClickTerminalBtn = useEventCallback((event: React.MouseEvent<HTMLElement>) => {
-    setOpen(true);
+    setOpen(open => !open);
   });
 
   useEffect(() => {
@@ -191,9 +200,12 @@ export function usePlayground () {
 
   const button = useMemo(() => {
     return (
-      <IconButton
-        aria-label="Ppen SQL Playground"
+      <PlaygroundButton
+        className={open ? 'opened' : ''}
+        aria-label="Open SQL Playground"
         onClick={handleClickTerminalBtn}
+        disableRipple
+        disableTouchRipple
         sx={{
           display: {
             xs: 'none',
@@ -202,120 +214,12 @@ export function usePlayground () {
           },
         }}
       >
-        <TerminalIcon />
-      </IconButton>
+        <img src={require('./icon.png').default} width="66" height="73" alt="Playground icon" />
+      </PlaygroundButton>
     );
-  }, []);
+  }, [open]);
 
   const drawer = <Playground open={open} onClose={handleClose} />;
 
   return { button, drawer };
 }
-
-const renderTable = (data: Array<{ [x: string]: string | number }>) => {
-  return (
-    <>
-      <TableContainer component={Paper}>
-        <Table
-          sx={{ minWidth: 650, marginBottom: 0 }}
-          aria-label="data table"
-          size="small"
-        >
-          <TableHead>
-            <TableRow>
-              {notNullish(data[0]) &&
-                Object.keys(data[0]).map((key) => (
-                  <TableCell
-                    key={`th=${key}`}
-                    sx={{
-                      whiteSpace: 'nowrap',
-                    }}
-                  >
-                    {key}
-                  </TableCell>
-                ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {data.map((row, idx) => {
-              return (
-                <TableRow
-                  key={`row-${idx}`}
-                  // sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                >
-                  {Object.keys(row).map((key, idx) => {
-                    if (idx === 0) {
-                      return (
-                        <TableCell
-                          key={key}
-                          component="th"
-                          scope="row"
-                          sx={{
-                            whiteSpace: 'nowrap',
-                          }}
-                        >
-                          {`${row[key]}`}
-                        </TableCell>
-                      );
-                    }
-                    return (
-                      <TableCell
-                        key={key}
-                        sx={{
-                          whiteSpace: 'nowrap',
-                        }}
-                      >{`${row[key]}`}</TableCell>
-                    );
-                  })}
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </>
-  );
-};
-
-const dataListToRawOutput = (dataList: Array<{ [key: string]: string }>) => {
-  const results: string[][] = [];
-  const rowsMaxLength = dataList.reduce(
-    (prev: { [key: string]: number }, item) => {
-      Object.keys(item).forEach((itemKey) => {
-        if (!(itemKey in prev)) {
-          prev[itemKey] = item[itemKey].length;
-        } else if (prev[itemKey] < item[itemKey].length) {
-          prev[itemKey] = item[itemKey].length;
-        }
-      });
-      return prev;
-    },
-    {},
-  );
-  let headStr = '';
-  Object.keys(rowsMaxLength).forEach((key) => {
-    const len = rowsMaxLength[key];
-    const headLength = key.length;
-    if (headLength > len) {
-      rowsMaxLength[key] = headLength;
-    }
-    headStr += key.padEnd(rowsMaxLength[key], ' ') + ' | ';
-  });
-  dataList.forEach((item) => {
-    const row: string[] = [];
-    Object.keys(rowsMaxLength).forEach((key) => {
-      const value = item[key];
-      const maxLength = rowsMaxLength[key];
-      row.push(value.padEnd(maxLength, ' '));
-    });
-    results.push(row);
-  });
-
-  let outputStr = '';
-  for (let i = 0; i < results.length; i++) {
-    const rowData = results[i].join(' | ');
-    outputStr += rowData + '\n';
-  }
-
-  return `${headStr}\n${outputStr}`;
-};

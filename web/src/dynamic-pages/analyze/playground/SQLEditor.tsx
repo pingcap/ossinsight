@@ -1,6 +1,7 @@
 import BrowserOnly from '@docusaurus/BrowserOnly';
-import { Box } from '@mui/material';
 import * as React from 'react';
+import { EditorContainer, EditorExtra } from '@site/src/dynamic-pages/analyze/playground/styled';
+import { ReactNode } from 'react';
 
 const SQLEditor = (props: {
   placeholder?: string;
@@ -13,8 +14,6 @@ const SQLEditor = (props: {
   showPrintMargin?: boolean;
   showGutter?: boolean;
   highlightActiveLine?: boolean;
-  width?: string;
-  height?: string;
   setOptions?: {
     useWorker?: boolean;
     enableBasicAutocompletion?: boolean;
@@ -23,6 +22,7 @@ const SQLEditor = (props: {
     showLineNumbers?: boolean;
     tabSize?: number;
   };
+  extra?: ReactNode;
 }) => {
   return (
     <BrowserOnly>
@@ -32,15 +32,7 @@ const SQLEditor = (props: {
         require('ace-builds/src-noconflict/theme-twilight');
         require('ace-builds/src-noconflict/ext-language_tools');
         return (
-          <Box
-            sx={{
-              '& .ace_editor .ace_comment.ace_placeholder': {
-                fontStyle: 'normal',
-                transform: 'none',
-                opacity: 1,
-              },
-            }}
-          >
+          <EditorContainer>
             <AceEditor
               placeholder={props.placeholder}
               mode={props.mode}
@@ -56,11 +48,14 @@ const SQLEditor = (props: {
               showPrintMargin={props.showPrintMargin}
               showGutter={props.showGutter}
               highlightActiveLine={props.highlightActiveLine}
-              width={props.width}
-              height={props.height}
+              width="100%"
+              height="100%"
               setOptions={props.setOptions}
             />
-          </Box>
+            <EditorExtra>
+              {props.extra}
+            </EditorExtra>
+          </EditorContainer>
         );
       }}
     </BrowserOnly>

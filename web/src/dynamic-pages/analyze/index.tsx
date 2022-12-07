@@ -122,7 +122,6 @@ function AnalyzePage () {
           repo1DisableClearable
           repo1Placeholder="Select to analyze"
           repo2Placeholder="Add to compare"
-          endAdornment={showPlayground && playgroundButton}
         />
       )}
     >
@@ -146,6 +145,7 @@ function AnalyzePage () {
         {showPlayground && playgroundDrawer}
       </AnalyzeContext.Provider>
       {isSmall ? <Navigator comparing={!!comparingRepoName} value={sections[active]} scrollTo={scrollTo} type="bottom" /> : undefined}
+      {showPlayground && playgroundButton}
     </CustomPage>
   );
 }

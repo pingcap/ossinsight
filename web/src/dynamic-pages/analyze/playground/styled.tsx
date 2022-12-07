@@ -1,35 +1,33 @@
-import { styled } from '@mui/material';
+import { ButtonBase, styled } from '@mui/material';
 
 export const PlaygroundContainer = styled('section', { name: 'PlaygroundContainer' })`
   height: 80vh;
   overflow: hidden;
   width: 100%;
-  padding: 1rem;
-  border-top: .5px solid grey;
+  padding: 0;
 `;
 
-export const PlaygroundHeadline = styled('div', { name: 'PlaygroundHeadline' })`
-  display: flex;
-  justify-content: space-between;
-  gap: 16px;
-  align-items: center;
-  padding: 0 1rem 1rem 1rem;
+export const PlaygroundHeadline = styled('h2', { name: 'PlaygroundHeadline' })`
+  font-size: 24px;
+  background: linear-gradient(90deg, #FF6B00 0%, #E6A078 49.53%, #FFE895 109.31%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
 `;
 
-export const PlaygroundHeadlineExtra = styled('div', { name: 'PlaygroundHeadlineExtra' })`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 1rem;
-  margin-left: auto;
+export const PlaygroundDescription = styled('ol', { name: 'PlaygroundDescription' })`
+  font-size: 12px;
+  color: #7C7C7C;
+  line-height: 18px;
+  list-style-position: inside;
+  padding: 0;
 `;
 
 export const PlaygroundBody = styled('div', { name: 'PlaygroundBody' })`
   display: flex;
-  gap: 16px;
   margin-bottom: 1rem;
   height: 100%;
-  max-height: calc(100% - 3.5rem);
 `;
 
 export const PlaygroundSide = styled('aside', { name: 'PlaygroundSide' })`
@@ -37,11 +35,71 @@ export const PlaygroundSide = styled('aside', { name: 'PlaygroundSide' })`
   overflow-y: auto;
   width: 40%;
   max-width: 40vw;
+  background: #000;
+  border: 1px solid #565656;
+  padding: 16px;
 `;
 
 export const PlaygroundMain = styled('main', { name: 'PlaygroundMain' })`
   height: 100%;
-  overflow-y: auto;
   width: 100%;
-  padding: 0 1rem;
+  display: flex;
+  flex-direction: column;
+  overflow-y: hidden;
+  padding: 16px;
+  box-sizing: border-box;
+`;
+
+export const PlaygroundButton = styled(ButtonBase, { name: 'PlaygroundButton' })`
+  position: fixed;
+  z-index: 1300;
+  right: 32px;
+  bottom: 32px;
+  transition: transform 225ms cubic-bezier(0, 0, 0.2, 1) 0ms;
+  &.opened {
+    transform: translateY(-80vh);
+  }
+`;
+
+export const EditorContainer = styled('div', { name: 'EditorContainer' })`
+  position: relative;
+  max-height: min(50%, 350px);
+  min-height: min(50%, 350px);
+  border: 1px solid #565656;
+  & .ace_editor .ace_comment.ace_placeholder {
+    font-style: normal;
+    transform: none;
+    opacity: 1;
+  }
+`;
+
+export const EditorExtra = styled('div', { name: 'EditorExtra' })`
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  display: flex;
+  gap: 8px;
+`;
+
+export const ResultBlockContainer = styled('div', { name: 'ResultBlockContainer' })`
+  flex: 1;
+  overflow-y: scroll;
+  background: #141414;
+  border: 1px solid #565656;
+  padding: 12px;
+  box-sizing: border-box;
+`;
+
+export const ResultBlockEmptyContainer = styled(ResultBlockContainer)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: bold;
+  font-family: monospace;
+`;
+
+export const Gap = styled('div', { name: 'Gap' })`
+  min-height: 16px;
+  max-height: 16px;
 `;

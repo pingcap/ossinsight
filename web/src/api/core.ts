@@ -50,3 +50,8 @@ export async function postPlaygroundSQL (params: {
 }): Promise<any> {
   return await clientWithoutCache.post('/q/playground', params).then((data) => data);
 }
+
+export async function aiQuestion (question: string) {
+  const { sql } = await clientWithoutCache.post<any, { sql: string }>('/bot/questionToSQL', { question });
+  return sql;
+}
