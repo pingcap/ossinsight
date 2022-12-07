@@ -1,6 +1,6 @@
 version: '3.9'
 
-# tiup playground v6.1.0 -T oss --without-monitor --db.host 0.0.0.0 --tiflash 1
+# tiup playground v6.4.0 -T ossinsight --without-monitor --db.host 0.0.0.0 --tiflash 1
 
 services:
   etl:
@@ -23,11 +23,12 @@ services:
       - DATABASE_URL=${ETL_DATABASE_URL:?err}
       - GITHUB_TOKEN=${GITHUB_TOKEN:?err}
       - SKIP_REPLICA=1
+      - DB_FORCE_SSL=${DB_FORCE_SSL:-true}
 
   api:
     build:
-      context: ./packages/api-server
-      dockerfile: ./Dockerfile
+      context: .
+      dockerfile: ./packages/api-server/Dockerfile
       args:
         NODE_ENV: 'development'
     image: hooopo/ossinsight-api:latest
@@ -39,7 +40,6 @@ services:
         condition: service_started
     environment:
       - DATABASE_URL=${API_DATABASE_URL:?err}
-      - CONFIGS_PATH=${CONFIGS_PATH:-./configs}
       - SERVER_PORT=3450
       - GITHUB_ACCESS_TOKENS=${GITHUB_TOKEN:?err}
       - ENABLE_CACHE=${ENABLE_CACHE:-false}
@@ -48,29 +48,16 @@ services:
     image: hooopo/ossinsight-web:latest
     restart: always
     build:
-      context: ./web
-      dockerfile: ./Dockerfile
+      context: .
+      dockerfile: ./web/Dockerfile
       args:
         NODE_ENV: 'development'
     ports: 
       - "30000:30000"
     environment:
       - NODE_ENV=development
-      - APP_HOST=http://localhost:30000
-      - APP_API_BASE=http://localhost:3450
-    volumes:
-      - ./:/app:delegated
-      - node_modules:/app/node_modules
-      - prefetch:/app/.prefetch
-      - docusaurus:/app/.docusaurus
+      - APP_HOST=${APP_HOST:-http://localhost:30000}
+      - APP_API_BASE=${APP_API_BASE:-http://localhost:3450}
 
 networks:
   default:
-
-volumes:
-  packs:
-  node_modules:
-  cache:
-  bundle:
-  prefetch:
-  docusaurus:

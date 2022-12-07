@@ -14,7 +14,7 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "@query/*": ["../api/queries/*"],
+      "@query/*": ["../configs/queries/*"],
       "@site/*": ["./*"],
       "@docusaurus/theme-common/*": ["./node_modules/@docusaurus/theme-common/lib/*"]
     }
