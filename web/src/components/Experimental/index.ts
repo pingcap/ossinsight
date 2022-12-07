@@ -4,7 +4,7 @@ import { isNonemptyString } from '@site/src/utils/value';
 
 const { defaultEnabled } = globalData['experimental-features'].default as { defaultEnabled: string[] };
 
-const STORAGE_KEY = 'ossinsight.experimental-features';
+export const STORAGE_KEY = 'ossinsight.experimental-features';
 
 export function useExperimental (feature: string) {
   const [enabled, setEnabled] = useState(() => defaultEnabled.includes(feature));

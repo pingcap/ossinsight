@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import CustomPage from '@site/src/theme/CustomPage';
-import { Alert, Container, FormControlLabel, Switch, Typography } from '@mui/material';
-import { useExperimental } from '@site/src/components/Experimental';
+import { Alert, Box, Container, FormControlLabel, Switch, Typography } from '@mui/material';
+import { STORAGE_KEY, useExperimental } from '@site/src/components/Experimental';
 import NotFound from '@theme/NotFound';
 
 function ExperimentalPage () {
@@ -26,6 +26,11 @@ function ExperimentalPage () {
             label="AI Playground"
             control={<ExperimentalSwitch feature="ai-playground" />}
           />
+          <Box component='pre' mt={2}>
+            <code>
+              {`localStorage.setItem(${JSON.stringify(STORAGE_KEY)}, ${JSON.stringify(localStorage.getItem(STORAGE_KEY))});location.href=location.href`}
+            </code>
+          </Box>
         </div>
       </Container>
     </CustomPage>
