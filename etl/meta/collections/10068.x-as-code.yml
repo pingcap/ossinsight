@@ -1,0 +1,17 @@
+id: 10068
+name: X as Code
+items:
+  - ansible/ansible
+  - puppetlabs/puppet
+  - hashicorp/terraform
+  - pulumi/pulumi
+  - bytebase/bytebase
+  - KusionStack/kusion
+  - dagger/dagger
+  - aws/aws-cdk
+  - crossplane/crossplane
+  - kubevela/kubevela
+  
+# The relationship between X as Code and Configuration management tools is the following:
+# 1. The X as Code is a subset of Configuration Management.
+# 2. X as Code use declarative API to interact with X. X such as the Infrastucture, Application, Database, etc.
