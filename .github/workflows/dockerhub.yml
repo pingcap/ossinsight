@@ -28,6 +28,7 @@ jobs:
         name: Build and Push Front End
         uses: docker/build-push-action@v3
         with:
+          context: "{{defaultContext}}"
           file: "{context}/web/Dockerfile"
           push: true
           tags: hooopo/ossinsight-web:latest
@@ -38,11 +39,11 @@ jobs:
           context: "{{defaultContext}}:etl"
           push: true
           tags: hooopo/ossinsight-etl:latest
-
       - 
         name: Build and Push API Server
         uses: docker/build-push-action@v3
         with:
+          context: "{{defaultContext}}"
           file: "{context}/packages/api-server/Dockerfile"
           push: true
           tags: hooopo/ossinsight-api:latest
