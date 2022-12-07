@@ -46,7 +46,7 @@ class TweetCollection
       url: url, 
       viewport_width: 768,
       viewport_height: 1524,
-      selector: "#__docusaurus > div.main-wrapper > div:nth-child(2) > main > div > div > main > div > div:nth-child(3) > section > div.MuiTableContainer-root > table")
+      selector: "#__docusaurus > div.main-wrapper.mainWrapper_eExm > div:nth-child(2) > main > div > div > main > div > div:nth-child(4) > section > div.MuiTableContainer-root")
     URI.open(img.url, read_timeout: 1000)
   end
 

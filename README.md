@@ -43,7 +43,7 @@ OSS Insight analyzes billions of GitHub events and gets insights from them. It a
 **Welcome to add collections**
 👏 We welcome your contributions here! You can add a collection on our website by submitting PRs. Please create a `.yml` file under [the collections file path]( https://github.com/pingcap/ossinsight/tree/main/etl/meta/collections).
 
-[Here]() is a file template provides guidance on the information you need to include.We look forward to your PRs！
+[Here](https://github.com/pingcap/ossinsight/blob/main/CONTRIBUTING.md#add-a-collection) is a file template provides guidance on the information you need to include. We look forward to your PRs！
 
 ### Feature 2: Developer Analytics
 
@@ -84,9 +84,9 @@ Examples:
 
 We've released OSS Insight because it can do more insights about GitHub.We hope that others can benefit from the project. You are more than welcome to participate in capacity building. We are thankful for any contributions from the community.
 
-* [GitHub Discussion](https://github.com/pingcap/ossinsight/discussions)。Best for: help with building, discussion about OSS Insight best practices.
-* [GitHub Issues](https://github.com/pingcap/ossinsight/issues)。Best for: bugs and errors you encounter using OSS Insight.
-* [GitHub PR](https://github.com/pingcap/ossinsight/pulls)。Best for: pull request the features you wish for OSS Insight.
+* [GitHub Discussion](https://github.com/pingcap/ossinsight/discussions). Best for: help with building, discussion about OSS Insight best practices.
+* [GitHub Issues](https://github.com/pingcap/ossinsight/issues). Best for: bugs and errors you encounter using OSS Insight.
+* [GitHub PR](https://github.com/pingcap/ossinsight/pulls). Best for: pull request the features you wish for OSS Insight.
   * [collection] You can add a collection on our website.
   * [blog] You are welcome to share blogs about using OSS Insight.
   * [fix] You can make fixes to current issues.
@@ -102,7 +102,8 @@ We have a few channels for contact：
 
 ## Development
 
-* [Step by Step](https://ossinsight.io/docs/workshop/mini-ossinsight/introduction)
+* [⚙️ Setup](https://github.com/pingcap/ossinsight/blob/main/CONTRIBUTING.md#development)
+* [💡 How to build your own insight tool](https://ossinsight.io/docs/workshop/mini-ossinsight/introduction)
 
 ## Sponsors
 
