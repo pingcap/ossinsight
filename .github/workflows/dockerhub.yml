@@ -29,7 +29,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: "{{defaultContext}}"
-          file: "{context}/web/Dockerfile"
+          file: "./web/Dockerfile"
           push: true
           tags: hooopo/ossinsight-web:latest
       - 
@@ -44,6 +44,6 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: "{{defaultContext}}"
-          file: "{context}/packages/api-server/Dockerfile"
+          file: "./packages/api-server/Dockerfile"
           push: true
           tags: hooopo/ossinsight-api:latest
