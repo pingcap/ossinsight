@@ -14,6 +14,10 @@ export const PlaygroundHeadline = styled('h2', { name: 'PlaygroundHeadline' })`
   -webkit-text-fill-color: transparent;
   background-clip: text;
   text-fill-color: transparent;
+  .opaque {
+    -webkit-text-fill-color: transparent;
+    text-fill-color: initial;
+  }
 `;
 
 export const PlaygroundDescription = styled('ol', { name: 'PlaygroundDescription' })`

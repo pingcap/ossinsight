@@ -107,7 +107,7 @@ LIMIT
             <PlaygroundHeadline>
               Playground: Customize your queries with SQL
               <Experimental feature="ai-playground">
-                <> or AI🤖️</>
+                <> or AI<span className='opaque'>🤖</span>️</>
               </Experimental>
               !
             </PlaygroundHeadline>
