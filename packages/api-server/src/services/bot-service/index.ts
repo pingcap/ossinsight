@@ -45,8 +45,11 @@ Table github_events, columns = [id, type, created_at, repo_id, repo_name, actor_
 Table github_repos, columns = [repo_id, repo_name, owner_id, owner_login, owner_is_org, description, primary_language, license, size, stars, forks, parent_repo_id, is_fork, is_archived, is_deleted, latest_released_at, pushed_at, created_at, updated_at, last_event_at, refreshed_at]
 Relation github_events.repo_id = github_repos.repo_id
 Define github_events.type = [PushEvent, PullRequestEvent, IssueCommentEvent, IssuesEvent, CreateEvent, DeleteEvent, ForkEvent, PullRequestReviewCommentEvent, PullRequestReviewEvent, ReleaseEvent, WatchEvent]
+Describe: repo, [args:VALUE], repo_id = (SELECT repo_id FROM github_repos WHERE repo_name = '%VALUE%' LIMIT 1)
 # Example: How many issues does the repository pingcap/tidb has?
-SELECT COUNT(DISTINCT number) FROM github_events WHERE type = 'IssuesEvent' AND repo_name = 'pingcap/tidb';
+SELECT COUNT(*) FROM github_events WHERE type = 'IssuesEvent' AND repo_id = (SELECT repo_id FROM github_repos WHERE repo_name = 'pingcap/tidb' LIMIT 1)
+# Example: Who is the person submitted the most pull requests?
+SELECT actor_login, COUNT(*) AS count FROM github_events WHERE type = 'PullRequestEvent' AND action = 'opened' GROUP BY actor_login ORDER BY count DESC LIMIT 1
 ---
 # Question: 
 # ${question}
