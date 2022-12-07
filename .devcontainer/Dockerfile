@@ -21,7 +21,7 @@ RUN su node -c "npm install -g pnpm@7 ts-node typescript"
 
 # Install Python depend dependencie.
 RUN sudo pip3 install -U pip setuptools
-RUN sudo pip3 install ipykernel pandas autopep8 Jinja2
+RUN sudo pip3 install ipykernel pandas autopep8 Jinja2 mysql-connector-python
 
 # Install TiUP cli, you can startup a TiDB cluster by `tiup playground` command.
 RUN curl --proto '=https' --tlsv1.2 -sSf https://tiup-mirrors.pingcap.com/install.sh | sh
