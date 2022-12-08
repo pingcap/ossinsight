@@ -21,25 +21,25 @@ export default function LoginItem () {
   }
 
   return (
-    <Experimental feature='milestone-subscription'>
-      <span>
-        <StyledButtonBase disableRipple ref={setAnchorEl} onClick={handleOpen}>
-          <StyledAvatar src={`https://github.com/${userInfo.githubLogin}.png`} />
-        </StyledButtonBase>
-        <Menu
-          id="basic-menu"
-          anchorEl={anchorEl}
-          open={open}
-          onClose={logout}
-          MenuListProps={{
-            'aria-labelledby': 'basic-button',
-          }}
-        >
+    <span>
+      <StyledButtonBase disableRipple ref={setAnchorEl} onClick={handleOpen}>
+        <StyledAvatar src={`https://github.com/${userInfo.githubLogin}.png`} />
+      </StyledButtonBase>
+      <Menu
+        id="basic-menu"
+        anchorEl={anchorEl}
+        open={open}
+        onClose={logout}
+        MenuListProps={{
+          'aria-labelledby': 'basic-button',
+        }}
+      >
+        <Experimental feature="milestone-subscription">
           <MenuItem onClick={handleGotoSubscriptionsPage}>My Subscriptions</MenuItem>
-          <MenuItem onClick={logout}>Logout</MenuItem>
-        </Menu>
-      </span>
-    </Experimental>
+        </Experimental>
+        <MenuItem onClick={logout}>Logout</MenuItem>
+      </Menu>
+    </span>
   );
 }
 

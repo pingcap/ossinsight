@@ -1,7 +1,7 @@
 import useSWR, { mutate } from 'swr';
 import { clientWithoutCache } from '@site/src/api/client';
 import { useCallback, useMemo, useState } from 'react';
-import { isFalsy, isNullish, notNullish } from '@site/src/utils/value';
+import { isFalsy, isNonemptyString, isNullish, notNullish } from '@site/src/utils/value';
 
 import { useCookieState } from 'ahooks';
 import { useEventCallback } from '@mui/material';
@@ -19,7 +19,7 @@ interface UserInfo {
 export function useUserInfo () {
   const [oToken] = useCookieState('o-token');
 
-  const { data, isValidating, mutate } = useSWR('user.info', {
+  const { data, isValidating, mutate } = useSWR(isNonemptyString(oToken) ? `user.info:${oToken}` : undefined, {
     fetcher: async () => await clientWithoutCache.get<any, UserInfo>('/user', { withCredentials: true }),
     shouldRetryOnError: false,
     onError: () => {

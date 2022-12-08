@@ -6,8 +6,7 @@ import InViewContext from '../InViewContext';
 import { core } from '../../api';
 import { clearPromiseInterval, setPromiseInterval } from '../../lib/promise-interval';
 import { usePluginData } from '@docusaurus/core/lib/client/exports/useGlobalData';
-import { isNonemptyString, isNullish, notNullish } from '@site/src/utils/value';
-import { getErrorMessage, isAxiosError } from '@site/src/utils/error';
+import { isNullish } from '@site/src/utils/value';
 
 export interface AsyncData<T> {
   data: T | undefined;
@@ -241,65 +240,4 @@ export const useTotalEvents = (run: boolean, interval = 1000) => {
   }, [run]);
 
   return total + added;
-};
-
-export const useSQLPlayground = (
-  sql: string,
-  type: 'repo' | 'user',
-  id: string,
-) => {
-  const [data, setData] = useState<Pick<RemoteData<any, any>, 'data' | 'sql' | 'spent'>>();
-  const [error, setError] = useState<string>();
-  const [loading, setLoading] = useState(false);
-  const mounted = useRef(false);
-
-  useEffect(() => {
-    mounted.current = true;
-    return () => {
-      mounted.current = false;
-    };
-  }, []);
-
-  useEffect(() => {
-    setData(undefined);
-    setError(undefined);
-    if (sql && id) {
-      setLoading(true);
-      core
-        .postPlaygroundSQL({ sql, type, id })
-        .then(
-          ({ data, sql, spent }: RemoteData<any, any>) => {
-            if (!mounted.current) {
-              return;
-            }
-            setData({ data, sql, spent });
-            setLoading(false);
-          },
-        )
-        .catch((e) => {
-          if (!mounted.current) {
-            return;
-          }
-          let errorParsed = false;
-          if (isAxiosError(e)) {
-            if (notNullish(e.response)) {
-              const { msg, sqlMessage } = e.response?.data ?? {};
-              if (isNonemptyString(msg)) {
-                setError(msg);
-                errorParsed = true;
-              } else if (isNonemptyString(sqlMessage)) {
-                setError(sqlMessage);
-                errorParsed = true;
-              }
-            }
-          }
-          if (!errorParsed) {
-            setError(getErrorMessage(e));
-          }
-          setLoading(false);
-        });
-    }
-  }, [sql, type, id]);
-
-  return { data, loading, error };
 };

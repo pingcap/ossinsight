@@ -19,12 +19,12 @@ import { CommitsSection } from './sections/2-Commits';
 import { PullRequestsSection } from './sections/3-PullRequests';
 import { IssuesSection } from './sections/4-Issues';
 import { Contributors } from './sections/6-Contributors';
-import { SQLPlaygroundDrawer } from './sections/99-SQLPlayground';
 import { Repository } from './sections/5-Repository';
 import { isNullish, notNullish } from '@site/src/utils/value';
 import { Highlights } from '@site/src/dynamic-pages/analyze/sections/98-Highlights';
 import ScrollSpy, { ScrollSpyInstance } from '@site/src/components/ScrollSpy';
 import BrowserHash from '@site/src/components/BrowserHash';
+import { usePlayground } from '@site/src/dynamic-pages/analyze/playground/Playground';
 
 interface AnalyzePageParams {
   owner: string;
@@ -48,6 +48,11 @@ function AnalyzePage () {
 
   const { data: main, name, error } = useMainRepo();
   const { data: vs, name: comparingRepoName, setName: setComparingRepoName } = useVsRepo();
+  const { button: playgroundButton, drawer: playgroundDrawer } = usePlayground();
+
+  const showPlayground = useMemo(() => {
+    return isNullish(vs) && (notNullish(main?.repo));
+  }, [vs, main]);
 
   const onRepoChange = useCallback((repo: Repo) => {
     history.push({
@@ -117,12 +122,6 @@ function AnalyzePage () {
           repo1DisableClearable
           repo1Placeholder="Select to analyze"
           repo2Placeholder="Add to compare"
-          endAdornment={
-            isNullish(vs) &&
-            (notNullish(main?.repo)) && (
-              <SQLPlaygroundDrawer key={name} data={main?.repo} />
-            )
-          }
         />
       )}
     >
@@ -143,8 +142,10 @@ function AnalyzePage () {
       }}>
         <BrowserHash value={sections[active]}/>
         {content}
+        {showPlayground && playgroundDrawer}
       </AnalyzeContext.Provider>
       {isSmall ? <Navigator comparing={!!comparingRepoName} value={sections[active]} scrollTo={scrollTo} type="bottom" /> : undefined}
+      {showPlayground && playgroundButton}
     </CustomPage>
   );
 }
