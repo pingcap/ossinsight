@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { format } from 'sql-formatter';
 import { Button, Drawer, useEventCallback } from '@mui/material';
 import { isNonemptyString, isNullish } from '@site/src/utils/value';
@@ -26,7 +26,7 @@ function Playground ({ open, onClose }: { open: boolean, onClose: () => void }) 
   const [customQuestion, setCustomQuestion] = useState('');
 
   const { data, loading, error, run } = useAsyncOperation({ sql: inputValue, type: 'repo', id: `${repoId ?? 'undefined'}` }, core.postPlaygroundSQL);
-  const { data: questionSql, loading: questionLoading, error: questionError, run: runQuestion } = useAsyncOperation(customQuestion, useCallback(async (sql: string) => await aiQuestion(sql), []));
+  const { data: questionSql, loading: questionLoading, error: questionError, run: runQuestion } = useAsyncOperation({ question: customQuestion, context: { repo_id: repoId, repo_name: repoName } }, aiQuestion);
 
   const onChange = (newValue: string) => {
     setInputValue(newValue);

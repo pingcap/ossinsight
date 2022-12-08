@@ -51,7 +51,7 @@ export async function postPlaygroundSQL (params: {
   return await clientWithoutCache.post('/q/playground', params, { withCredentials: true }).then((data) => data);
 }
 
-export async function aiQuestion (question: string) {
-  const { sql } = await clientWithoutCache.post<any, { sql: string }>('/bot/questionToSQL', { question }, { withCredentials: true });
+export async function aiQuestion (params: { question: string, context?: { repo_id?: number, repo_name?: string } }) {
+  const { sql } = await clientWithoutCache.post<any, { sql: string }>('/bot/questionToSQL', params, { withCredentials: true });
   return sql;
 }
