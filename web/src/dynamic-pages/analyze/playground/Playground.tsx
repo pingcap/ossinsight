@@ -18,6 +18,7 @@ import { useAsyncOperation } from '@site/src/hooks/operation';
 import { core } from '@site/src/api';
 import { LoginRequired } from '@site/src/components/LoginRequired';
 import { HelpOutline } from '@mui/icons-material';
+import useUrlSearchState, { booleanParam } from '@site/src/hooks/url-search-state';
 
 const DEFAULT_QUESTION = 'Who closed the last issue in this repo?';
 
@@ -182,7 +183,7 @@ LIMIT
 }
 
 export function usePlayground () {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useUrlSearchState('playground', booleanParam(), false);
 
   const handleClose = useEventCallback(() => {
     setOpen(false);
