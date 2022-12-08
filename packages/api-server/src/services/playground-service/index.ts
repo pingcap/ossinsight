@@ -73,7 +73,7 @@ export class PlaygroundService {
     async checkIfUserHasReachedDailyQuestionLimit(userId: number) {
         const count = await this.countTodayQuestionRequests(userId, false);
         if (this.dailyQuestionLimit !== undefined && count >= this.dailyQuestionLimit) {
-            throw new APIError(429, 'You have reached the daily question limit.');
+            throw new APIError(429, `You have reached the daily question limit (${count}/${this.dailyQuestionLimit})`);
         }
     }
 }
