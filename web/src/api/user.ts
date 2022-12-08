@@ -2,9 +2,9 @@ import useSWR, { mutate } from 'swr';
 import { clientWithoutCache } from '@site/src/api/client';
 import { useCallback, useMemo, useState } from 'react';
 import { isFalsy, isNonemptyString, isNullish, notNullish } from '@site/src/utils/value';
-
-import { useCookieState } from 'ahooks';
 import { useEventCallback } from '@mui/material';
+import usePollingCookieState from '@site/src/hooks/useCookie';
+import { useUserInfoContext } from '@site/src/context/user';
 
 interface UserInfo {
   id: number;
@@ -17,7 +17,7 @@ interface UserInfo {
 }
 
 export function useUserInfo () {
-  const [oToken] = useCookieState('o-token');
+  const [oToken] = usePollingCookieState('o-token', { pollInterval: 1000 });
 
   const { data, isValidating, mutate } = useSWR(isNonemptyString(oToken) ? `user.info:${oToken}` : undefined, {
     fetcher: async () => await clientWithoutCache.get<any, UserInfo>('/user', { withCredentials: true }),
@@ -57,7 +57,7 @@ export interface Subscription {
 }
 
 export function useSubscriptions () {
-  const { userInfo } = useUserInfo();
+  const { userInfo } = useUserInfoContext();
 
   return useSWR(userInfo ? `user(${userInfo.id}).milestones` : undefined, {
     fetcher: async () => {
@@ -71,7 +71,7 @@ export function useSubscriptions () {
 export function useSubscribed (repo: string | undefined) {
   const { data = [], isValidating, mutate } = useSubscriptions();
   const [subscribing, setSubscribing] = useState(false);
-  const { validated } = useUserInfo();
+  const { validated } = useUserInfoContext();
 
   const subscribed = useMemo(() => {
     if (isNullish(repo)) {

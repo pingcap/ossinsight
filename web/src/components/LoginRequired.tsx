@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
-import { useUserInfo } from '@site/src/api/user';
 import { Backdrop, Button, styled } from '@mui/material';
 import { SxProps } from '@mui/system';
+import { useUserInfoContext } from '@site/src/context/user';
 
 interface LoginRequiredProps {
   promote: string;
@@ -10,7 +10,7 @@ interface LoginRequiredProps {
 }
 
 export function LoginRequired ({ promote, sx, children }: LoginRequiredProps) {
-  const { validated, login } = useUserInfo();
+  const { validated, login } = useUserInfoContext();
 
   return (
     <LoginRequiredContainer sx={sx}>

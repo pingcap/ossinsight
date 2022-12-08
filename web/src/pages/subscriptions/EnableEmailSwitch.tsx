@@ -1,11 +1,11 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { CircularProgress, FormControlLabel, styled, Switch } from '@mui/material';
-import { useUserInfo } from '@site/src/api/user';
 import { notFalsy } from '@site/src/utils/value';
 import { clientWithoutCache } from '@site/src/api/client';
+import { useUserInfoContext } from '@site/src/context/user';
 
 export default function EnableEmailSwitch () {
-  const { userInfo, validating, validated, mutate } = useUserInfo();
+  const { userInfo, validating, validated, mutate } = useUserInfoContext();
   const [updating, setUpdating] = useState(false);
 
   const enabled = useMemo(() => {

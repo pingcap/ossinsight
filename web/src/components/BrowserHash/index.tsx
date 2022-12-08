@@ -6,7 +6,7 @@ export interface BrowserHashProps {
 
 export default function BrowserHash ({ value }: BrowserHashProps) {
   useEffect(() => {
-    history.replaceState(null, '', (value ? `#${value}` : location.pathname) + location.search);
+    history.replaceState(null, '', location.search + (value ? `#${value}` : location.pathname));
   }, [value]);
   return <></>;
 }

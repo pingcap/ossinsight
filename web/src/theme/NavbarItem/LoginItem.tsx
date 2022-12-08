@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { useUserInfo } from '@site/src/api/user';
 import { Avatar, ButtonBase, Menu, MenuItem, styled, useEventCallback } from '@mui/material';
 import { Experimental } from '@site/src/components/Experimental';
+import { useUserInfoContext } from '@site/src/context/user';
 
 export default function LoginItem () {
-  const { userInfo, logout } = useUserInfo();
+  const { userInfo, logout } = useUserInfoContext();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [open, setOpen] = useState(false);
 

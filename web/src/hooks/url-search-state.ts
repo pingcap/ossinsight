@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
-import { isNullish, notNullish, Nullish } from '@site/src/utils/value';
+import { isNullish, notFalsy, notNullish, Nullish } from '@site/src/utils/value';
 
 export interface UseUrlSearchStateProps<T> {
   defaultValue: T | (() => T);
@@ -7,7 +7,7 @@ export interface UseUrlSearchStateProps<T> {
   deserialize: (string: string) => T;
 }
 
-export type UseUrlSearchStateHook = <T> (key: string, props: UseUrlSearchStateProps<T>) => [T, Dispatch<SetStateAction<T>>];
+export type UseUrlSearchStateHook = <T> (key: string, props: UseUrlSearchStateProps<T>, push?: boolean) => [T, Dispatch<SetStateAction<T>>];
 
 function useUrlSearchStateSSR<T> (key: string, { defaultValue }: UseUrlSearchStateProps<T>): [T, Dispatch<SetStateAction<T>>] {
   return useState<T>(defaultValue);
@@ -59,5 +59,13 @@ export function stringParam (defaultValue?): UseUrlSearchStateProps<string> {
     defaultValue,
     serialize: s => s,
     deserialize: s => s,
+  };
+}
+
+export function booleanParam (trueValue = 'true'): UseUrlSearchStateProps<boolean> {
+  return {
+    defaultValue: () => false,
+    serialize: value => notFalsy(value) ? trueValue : undefined,
+    deserialize: value => Boolean(value === trueValue),
   };
 }
