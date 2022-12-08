@@ -24,6 +24,13 @@ export enum AIModel {
     ADA = 'text-ada-001',
 }
 
+export interface QuestionContext {
+    user_id?: number;
+    user_login?: string;
+    repo_id?: number;
+    repo_name?: string;
+}
+
 export class BotService {
     private readonly openai: OpenAIApi;
 
@@ -38,7 +45,7 @@ export class BotService {
     }
 
     // TODO: store the prompt template to the config file.
-    private getSQLPrompt(question: string): string {
+    private getSQLPrompt(question: string, context: QuestionContext): string {
         return `# MySQL SQL
 ---
 Table github_events, columns = [id, type, created_at, repo_id, repo_name, actor_id, actor_login, language, additions, deletions, action, number, commit_id, comment_id, org_login, org_id, state, closed_at, comments, pr_merged_at, pr_merged, pr_changed_files, pr_review_comments, pr_or_issue_id, push_size, push_distinct_size, creator_user_login, creator_user_id, pr_or_issue_created_at]
@@ -46,10 +53,21 @@ Table github_repos, columns = [repo_id, repo_name, owner_id, owner_login, owner_
 Relation github_events.repo_id = github_repos.repo_id
 Define github_events.type = [PushEvent, PullRequestEvent, IssueCommentEvent, IssuesEvent, CreateEvent, DeleteEvent, ForkEvent, PullRequestReviewCommentEvent, PullRequestReviewEvent, ReleaseEvent, WatchEvent]
 Describe: repo, [args:VALUE], repo_id = (SELECT repo_id FROM github_repos WHERE repo_name = '%VALUE%' LIMIT 1)
+Describe: current_repo_id =  ${context.repo_id}, current_repo_name =  '${context.repo_name}'
+Describe: this_repo_id =  ${context.repo_id}, this_repo_name =  '${context.repo_name}'
+Describe: my_user_id = ${context.user_id},  my_user_login = '${context.user_login}'
+
 # Example: How many issues does the repository pingcap/tidb has?
 SELECT COUNT(*) FROM github_events WHERE type = 'IssuesEvent' AND repo_id = (SELECT repo_id FROM github_repos WHERE repo_name = 'pingcap/tidb' LIMIT 1)
+
 # Example: Who is the person submitted the most pull requests?
 SELECT actor_login, COUNT(*) AS count FROM github_events WHERE type = 'PullRequestEvent' AND action = 'opened' GROUP BY actor_login ORDER BY count DESC LIMIT 1
+
+# Example: Who am I?
+SELECT '${context.user_login}' AS user_login;
+
+# Example: Am I a contributor to this repo?
+SELECT CASE sub.prs > 0 WHEN TRUE THEN 'Yes' ELSE 'No' END AS is_contributor FROM (SELECT COUNT(*) AS prs FROM github_events WHERE type = 'PullRequestEvent' AND action = 'opened' AND repo_id = ${context.repo_id} AND actor_login = ${context.user_login}) AS sub;
 ---
 # Question: 
 # ${question}
@@ -57,9 +75,9 @@ SELECT actor_login, COUNT(*) AS count FROM github_events WHERE type = 'PullReque
 SELECT`;
     }
 
-    async questionToSQL(question?: string): Promise<string | undefined> {
-        if (!question) return undefined;
-        const prompt = this.getSQLPrompt(question);
+    async questionToSQL(question: string, context: QuestionContext): Promise<string | null> {
+        if (!question) return null;
+        const prompt = this.getSQLPrompt(question, context);
         this.log.info(prompt, `Get completion for question: ${question}`);
         const res = await this.openai.createCompletion({
             model: AIModel.DAVINCI,
@@ -79,7 +97,7 @@ SELECT`;
         if (Array.isArray(choices)) {
             return `SELECT ${choices[0]?.text}`;
         } else {
-            return undefined;
+            return null;
         }
     }
 
