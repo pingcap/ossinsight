@@ -90,7 +90,7 @@ export default fp<FastifyOAuth2Options & FastifyJWTOptions>(async (app) => {
             try {
                 await req.jwtVerify();
             } catch (err: any) {
-                throw new APIError(401, 'Failed to verify JWT token.', err);
+                throw new APIError(401, 'Unauthorized', err);
             }
         });
 

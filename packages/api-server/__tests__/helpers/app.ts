@@ -37,6 +37,7 @@ async function createApp () {
     GITHUB_OAUTH_CLIENT_SECRET: 'fake',
     GITHUB_ACCESS_TOKENS: process.env.GITHUB_TOKEN ?? '',
     PLAYGROUND_DATABASE_URL: playgroundDatabaseURL,
+    PLAYGROUND_DAILY_QUESTIONS_LIMIT: 30,
     JWT_SECRET: 'fake',
     JWT_COOKIE_NAME: 'ossinsight_test_t',
     JWT_COOKIE_DOMAIN: 'http://testdomain.com/',

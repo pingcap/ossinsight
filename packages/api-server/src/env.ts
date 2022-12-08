@@ -33,6 +33,10 @@ export const APIServerEnvSchema = {
     PLAYGROUND_DATABASE_URL: {
       type: 'string',
     },
+    PLAYGROUND_DAILY_QUESTIONS_LIMIT: {
+      type: 'number',
+      default: 30
+    },
     GITHUB_OAUTH_CLIENT_ID: {
       type: 'string'
     },
