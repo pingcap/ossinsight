@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { format } from 'sql-formatter';
 import { Button, Drawer, Tooltip, useEventCallback } from '@mui/material';
-import { isNonemptyString, isNullish } from '@site/src/utils/value';
+import { isNonemptyString, isNullish, notNullish } from '@site/src/utils/value';
 import LoadingButton from '@mui/lab/LoadingButton';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import { useAnalyzeContext } from '../charts/context';
@@ -19,6 +19,7 @@ import { core } from '@site/src/api';
 import { LoginRequired } from '@site/src/components/LoginRequired';
 import { HelpOutline } from '@mui/icons-material';
 import useUrlSearchState, { booleanParam } from '@site/src/hooks/url-search-state';
+import { useWhenMounted } from '@site/src/hooks/mounted';
 
 const DEFAULT_QUESTION = 'Who closed the last issue in this repo?';
 const QUESTION_MAX_LENGTH = 200;
@@ -190,6 +191,8 @@ LIMIT
 
 export function usePlayground () {
   const [open, setOpen] = useUrlSearchState('playground', booleanParam('enabled'), false);
+  const ref = useRef<HTMLButtonElement>(null);
+  const whenMounted = useWhenMounted();
 
   const handleClose = useEventCallback(() => {
     setOpen(false);
@@ -212,10 +215,24 @@ export function usePlayground () {
     };
   }, []);
 
+  const onAnimationEnd = useEventCallback(() => {
+    if (notNullish(ref.current)) {
+      // https://stackoverflow.com/questions/4797675/how-do-i-re-trigger-a-webkit-css-animation-via-javascript
+      ref.current.classList.remove('tada');
+      setTimeout(whenMounted(() => {
+        if (notNullish(ref.current)) {
+          ref.current.classList.add('tada');
+        }
+      }), 6000);
+    }
+  });
+
   const button = useMemo(() => {
     return (
       <PlaygroundButton
-        className={open ? 'opened' : ''}
+        ref={ref}
+        className={`tada animated ${open ? ' opened' : ''}`}
+        onAnimationEnd={onAnimationEnd}
         aria-label="Open SQL Playground"
         onClick={handleClickTerminalBtn}
         disableRipple
