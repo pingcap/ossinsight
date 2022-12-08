@@ -12,7 +12,7 @@ import fastifyOauth2, {FastifyOAuth2Options, OAuth2Namespace} from '@fastify/oau
 import {DateTime} from 'luxon';
 import fastifyCookie from "@fastify/cookie";
 import fp from 'fastify-plugin';
-import {ProviderType, UserProfile, UserRole} from "../../services/user-service";
+import {ProviderType, UserProfile, UserRole} from "../services/user-service";
 import {APIError} from "../../utils/error";
 import {getOctokit} from "../../utils/loger";
 

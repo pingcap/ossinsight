@@ -1,5 +1,5 @@
 import {FastifyPluginAsyncJsonSchemaToTs} from "@fastify/type-provider-json-schema-to-ts";
-import {QuestionContext} from "../../../services/bot-service";
+import {QuestionContext} from "../../../plugins/services/bot-service";
 import {APIError} from "../../../utils/error";
 
 export interface IBody {

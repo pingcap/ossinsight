@@ -1,7 +1,7 @@
-import { BatchLoader } from "../../core/db/batch-loader";
+import { BatchLoader } from "../../../core/db/batch-loader";
 import {Pool} from "mysql2/promise";
 import fp from "fastify-plugin";
-import {getPool} from "../../core/db/new";
+import {getPool} from "../../../core/db/new";
 import pino from "pino";
 
 declare module 'fastify' {

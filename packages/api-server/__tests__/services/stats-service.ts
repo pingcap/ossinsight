@@ -1,5 +1,5 @@
 import { bootstrapTestDatabase, getTestDatabase, releaseTestDatabase } from '../helpers/db';
-import { StatsService } from '../../src/services/stats-service';
+import { StatsService } from '../../src/plugins/services/stats-service';
 import { testLogger } from '../helpers/log';
 import {getPool} from "../../src/core/db/new";
 

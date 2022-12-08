@@ -90,12 +90,6 @@ const app: FastifyPluginAsync<AppOptions, RawServerDefault, JsonSchemaToTsProvid
     options: opts
   })
 
-  // This loads all plugins defined in services.
-  void fastify.register(AutoLoad, {
-    dir: join(__dirname, 'services'),
-    options: opts
-  })
-
   // This loads all plugins defined in routes
   // define your routes in one of these.
   await fastify.register(AutoLoad, {

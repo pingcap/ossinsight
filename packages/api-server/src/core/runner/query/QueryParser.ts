@@ -1,4 +1,4 @@
-import { CollectionService } from "../../../services/collection-service";
+import { CollectionService } from "../../../plugins/services/collection-service";
 import { QuerySchema } from "../../../types/query.schema";
 
 export enum ParamType {

@@ -1,12 +1,12 @@
-import CacheBuilder, { CacheProviderTypes } from "../../core/cache/CacheBuilder";
+import CacheBuilder, { CacheProviderTypes } from "../../../core/cache/CacheBuilder";
 
-import { CachedData } from "../../core/cache/Cache";
+import { CachedData } from "../../../core/cache/Cache";
 import { DateTime } from "luxon";
 import { RowDataPacket } from "mysql2/promise";
-import { TiDBQueryExecutor } from "../../core/executor/query-executor/TiDBQueryExecutor";
+import { TiDBQueryExecutor } from "../../../core/executor/query-executor/TiDBQueryExecutor";
 import fp from "fastify-plugin";
 import pino from "pino";
-import {dataQueryTimer, measure, tidbQueryCounter} from "../../plugins/metrics/metrics";
+import {dataQueryTimer, measure, tidbQueryCounter} from "../../metrics/metrics";
 
 declare module 'fastify' {
   interface FastifyInstance {
