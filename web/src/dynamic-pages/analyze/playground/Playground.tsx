@@ -220,7 +220,7 @@ export function usePlayground () {
       // https://stackoverflow.com/questions/4797675/how-do-i-re-trigger-a-webkit-css-animation-via-javascript
       ref.current.classList.remove('tada');
       setTimeout(whenMounted(() => {
-        if (notNullish(ref.current)) {
+        if (notNullish(ref.current) && ref.current.classList.contains('animated')) {
           ref.current.classList.add('tada');
         }
       }), 6000);
@@ -231,7 +231,7 @@ export function usePlayground () {
     return (
       <PlaygroundButton
         ref={ref}
-        className={`tada animated ${open ? ' opened' : ''}`}
+        className={`${open ? ' opened' : 'tada animated'}`}
         onAnimationEnd={onAnimationEnd}
         aria-label="Open SQL Playground"
         onClick={handleClickTerminalBtn}
