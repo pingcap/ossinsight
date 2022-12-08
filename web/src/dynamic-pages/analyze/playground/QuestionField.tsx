@@ -12,9 +12,10 @@ export interface QuestionFieldProps {
   error: unknown;
   onChange: (value: string) => void;
   onAction: () => void;
+  defaultQuestion: string;
 }
 
-export default function QuestionField ({ value, loading, error, onAction, onChange }: QuestionFieldProps) {
+export default function QuestionField ({ defaultQuestion, value, loading, error, onAction, onChange }: QuestionFieldProps) {
   const handleCustomQuestion: KeyboardEventHandler = useCallback((e) => {
     if (isHotkey('Enter', e)) {
       onAction();
@@ -23,20 +24,17 @@ export default function QuestionField ({ value, loading, error, onAction, onChan
 
   return (
     <Container>
-      <Title>
-        Your Question
-      </Title>
       <TextField
         multiline
         minRows={3}
-        label="Question"
+        label="Input"
         size="small"
         fullWidth
         disabled={loading}
         value={value}
         onChange={useEventCallback(e => onChange(e.target.value))}
         onKeyDown={handleCustomQuestion}
-        placeholder="How many watch events in this repository?"
+        placeholder={defaultQuestion}
         helperText={getOptionalErrorMessage(error)}
         error={notFalsy(error)}
         InputLabelProps={{ shrink: true }}
@@ -54,10 +52,7 @@ export default function QuestionField ({ value, loading, error, onAction, onChan
 }
 
 const Container = styled('div', { name: 'QuestionField' })`
-`;
-
-const Title = styled('div', { name: 'QuestionField-Title' })`
-
+  padding-top: 8px;
 `;
 
 const BottomLine = styled('div', { name: 'QuestionField-BottomLine' })`

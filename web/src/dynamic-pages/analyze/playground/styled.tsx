@@ -46,6 +46,11 @@ export const PlaygroundSide = styled('aside', { name: 'PlaygroundSide' })`
   padding: 16px;
 `;
 
+export const QuestionFieldTitle = styled('div', { name: 'QuestionFieldTitle' })`
+  display: inline-flex;
+  align-items: center;
+`;
+
 export const PlaygroundMain = styled('main', { name: 'PlaygroundMain' })`
   height: 100%;
   width: 100%;
