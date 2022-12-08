@@ -36,7 +36,9 @@ export const PlaygroundBody = styled('div', { name: 'PlaygroundBody' })`
 
 export const PlaygroundSide = styled('aside', { name: 'PlaygroundSide' })`
   height: 100%;
-  overflow-y: auto;
+  overflow-y: hidden;
+  display: flex;
+  flex-direction: column;
   width: 40%;
   max-width: 40vw;
   background: #000;

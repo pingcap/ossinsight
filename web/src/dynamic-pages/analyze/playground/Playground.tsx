@@ -170,7 +170,7 @@ LIMIT
 }
 
 export function usePlayground () {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
 
   const handleClose = useEventCallback(() => {
     setOpen(false);

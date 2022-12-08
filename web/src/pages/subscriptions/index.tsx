@@ -1,11 +1,12 @@
 import CustomPage from '@site/src/theme/CustomPage';
 import React, { useCallback } from 'react';
-import { useSubscriptions, useUserInfo } from '@site/src/api/user';
+import { useSubscriptions } from '@site/src/api/user';
 import { Avatar, Box, Button, CircularProgress, Container, FormControl, FormHelperText, IconButton, List, ListItem, ListItemAvatar, ListItemText, Skeleton, Typography } from '@mui/material';
 import { clientWithoutCache } from '@site/src/api/client';
 import { Unsubscribe } from '@mui/icons-material';
 import EnableEmailSwitch from '@site/src/pages/subscriptions/EnableEmailSwitch';
 import { useNotifications } from '@site/src/components/Notifications';
+import { useUserInfoContext } from '@site/src/context/user';
 
 const fmt = new Intl.DateTimeFormat('en', {
   dateStyle: 'medium',
@@ -13,7 +14,7 @@ const fmt = new Intl.DateTimeFormat('en', {
 });
 
 export default function () {
-  const { validating: userValidating, validated: userValidated, login } = useUserInfo();
+  const { validating: userValidating, validated: userValidated, login } = useUserInfoContext();
 
   return (
     <CustomPage>
@@ -65,8 +66,8 @@ function Subscriptions () {
         sx={{ mt: 4 }}
         subheader={(
           <Box>
-            <Typography variant='h3' mb={1}>Manage the subscribed repositories list</Typography>
-            <Typography variant='body2'>If you unsubscribe from a repository, we will no longer send emails related to that repository</Typography>
+            <Typography variant="h3" mb={1}>Manage the subscribed repositories list</Typography>
+            <Typography variant="body2">If you unsubscribe from a repository, we will no longer send emails related to that repository</Typography>
           </Box>
         )}
       >

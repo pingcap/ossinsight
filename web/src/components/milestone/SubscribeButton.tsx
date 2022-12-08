@@ -1,10 +1,11 @@
 import React, { ForwardedRef, forwardRef, useCallback, useMemo } from 'react';
-import { useSubscribed, useUserInfo } from '@site/src/api/user';
+import { useSubscribed } from '@site/src/api/user';
 import { Button, IconButton } from '@mui/material';
 import { Notifications, NotificationsOff } from '@mui/icons-material';
 import { ButtonProps } from '@mui/material/Button';
 import { notFalsy } from '@site/src/utils/value';
 import { useNotifications } from '@site/src/components/Notifications';
+import { useUserInfoContext } from '@site/src/context/user';
 
 export interface SubscribeButtonProps extends Omit<ButtonProps, 'onClick' | 'disabled' | 'startIcon' | 'children'> {
   repoName: string;
@@ -14,7 +15,7 @@ export interface SubscribeButtonProps extends Omit<ButtonProps, 'onClick' | 'dis
 }
 
 export default forwardRef(function SubscribeButton ({ repoName, variant, onClick, icon: iconProp, ...props }: SubscribeButtonProps, ref: ForwardedRef<HTMLButtonElement>) {
-  const { validated: userValidated, validating: userValidating, login } = useUserInfo();
+  const { validated: userValidated, validating: userValidating, login } = useUserInfoContext();
   const { subscribed, subscribing, subscribe, unsubscribe, isValidating } = useSubscribed(repoName);
   const { success, displayError } = useNotifications();
 

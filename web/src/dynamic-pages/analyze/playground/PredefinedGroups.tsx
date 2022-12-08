@@ -1,6 +1,6 @@
-import predefinedGroups, { PredefinedQuestion } from './predefined';
-import { List, ListItem, ListItemButton, ListItemText, styled, Tab, Tabs, useEventCallback } from '@mui/material';
-import React, { useState } from 'react';
+import { PredefinedQuestion, predefinedQuestions } from './predefined';
+import { List, ListItem, ListItemButton, ListItemText, styled } from '@mui/material';
+import React from 'react';
 
 interface PredefinedGroupsProps {
   question: PredefinedQuestion | undefined;
@@ -8,17 +8,10 @@ interface PredefinedGroupsProps {
 }
 
 export default function PredefinedGroups ({ question: currentQuestion, onSelectQuestion }: PredefinedGroupsProps) {
-  const [currentGroup, setCurrentGroup] = useState(predefinedGroups[0]);
-
   return (
     <>
-      <Tabs value={currentGroup} onChange={useEventCallback((_, value) => setCurrentGroup(value))}>
-        {predefinedGroups.map((group) => (
-          <StyledTab key={group.id} label={group.title} value={group} />
-        ))}
-      </Tabs>
-      <List sx={{ mt: 2 }} dense >
-        {currentGroup.questions.map((question) => (
+      <PredefinedGroupsContainer dense>
+        {predefinedQuestions.map((question) => (
           <ListItem key={question.id}>
             <ListItemButton selected={question === currentQuestion} onClick={() => onSelectQuestion?.(question)}>
               <ListItemText>
@@ -27,13 +20,13 @@ export default function PredefinedGroups ({ question: currentQuestion, onSelectQ
             </ListItemButton>
           </ListItem>
         ))}
-      </List>
+      </PredefinedGroupsContainer>
     </>
   );
 }
 
-const StyledTab = styled(Tab)`
-  font-size: 12px;
-  padding-left: 12px;
-  padding-right: 12px;
+const PredefinedGroupsContainer = styled(List, { name: 'PredefinedGroupsContainer' })`
+  margin-top: 16px;
+  flex: 1;
+  overflow-y: scroll;
 `;
