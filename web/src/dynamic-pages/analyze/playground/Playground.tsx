@@ -21,6 +21,7 @@ import { HelpOutline } from '@mui/icons-material';
 import useUrlSearchState, { booleanParam } from '@site/src/hooks/url-search-state';
 
 const DEFAULT_QUESTION = 'Who closed the last issue in this repo?';
+const QUESTION_MAX_LENGTH = 200;
 
 function Playground ({ open, onClose }: { open: boolean, onClose: () => void }) {
   const { repoName, repoId } = useAnalyzeContext();
@@ -28,6 +29,10 @@ function Playground ({ open, onClose }: { open: boolean, onClose: () => void }) 
   const [inputValue, setInputValue] = useState('');
   const [currentQuestion, setCurrentQuestion] = useState<PredefinedQuestion>();
   const [customQuestion, setCustomQuestion] = useState('');
+
+  const setCustomQuestionWithMaxLength = useEventCallback((value: string) => {
+    setCustomQuestion(oldValue => value.length <= QUESTION_MAX_LENGTH ? value : oldValue);
+  });
 
   const { data, loading, error, run } = useAsyncOperation({ sql: inputValue, type: 'repo', id: `${repoId ?? 'undefined'}` }, core.postPlaygroundSQL);
   const { data: questionSql, loading: questionLoading, error: questionError, run: runQuestion } = useAsyncOperation({ question: customQuestion || DEFAULT_QUESTION, context: { repo_id: repoId, repo_name: repoName } }, aiQuestion);
@@ -128,9 +133,10 @@ LIMIT
                     loading={questionLoading}
                     error={questionError}
                     value={customQuestion}
-                    onChange={setCustomQuestion}
+                    onChange={setCustomQuestionWithMaxLength}
                     onAction={runQuestion}
                     defaultQuestion={DEFAULT_QUESTION}
+                    maxLength={QUESTION_MAX_LENGTH}
                   />
                 </LoginRequired>
               </>

@@ -13,9 +13,10 @@ export interface QuestionFieldProps {
   onChange: (value: string) => void;
   onAction: () => void;
   defaultQuestion: string;
+  maxLength: number;
 }
 
-export default function QuestionField ({ defaultQuestion, value, loading, error, onAction, onChange }: QuestionFieldProps) {
+export default function QuestionField ({ defaultQuestion, maxLength, value, loading, error, onAction, onChange }: QuestionFieldProps) {
   const handleCustomQuestion: KeyboardEventHandler = useCallback((e) => {
     if (isHotkey('Enter', e)) {
       onAction();
@@ -41,7 +42,7 @@ export default function QuestionField ({ defaultQuestion, value, loading, error,
       />
       <BottomLine>
         <Counter>
-          {value.length}/200
+          {value.length}/{maxLength}
         </Counter>
         <LoadingButton loading={loading} onClick={onAction}>
           Generate SQL
