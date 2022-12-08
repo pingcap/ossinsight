@@ -52,6 +52,7 @@ export const PlaygroundMain = styled('main', { name: 'PlaygroundMain' })`
   overflow-y: hidden;
   padding: 16px;
   box-sizing: border-box;
+  position: relative;
 `;
 
 export const PlaygroundButton = styled(ButtonBase, { name: 'PlaygroundButton' })`
@@ -101,6 +102,15 @@ export const ResultBlockEmptyContainer = styled(ResultBlockContainer)`
   font-size: 20px;
   font-weight: bold;
   font-family: monospace;
+`;
+
+export const ResultBlockErrorContainer = styled(ResultBlockEmptyContainer)`
+  border: none;
+  padding: 0;
+  > * {
+    width: 100%;
+    height: 100%;
+  }
 `;
 
 export const Gap = styled('div', { name: 'Gap' })`

@@ -1,12 +1,13 @@
 import { Alert, AlertTitle, CircularProgress, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
-import { notFalsy, notNullish } from '@site/src/utils/value';
+import { isNullish, notFalsy, notNullish } from '@site/src/utils/value';
 import CodeBlock from '@theme/CodeBlock';
 import * as React from 'react';
 import { useMemo } from 'react';
-import { useSQLPlayground } from '@site/src/components/RemoteCharts/hook';
-import { ResultBlockContainer, ResultBlockEmptyContainer } from '@site/src/dynamic-pages/analyze/playground/styled';
+import { AsyncData, RemoteData } from '@site/src/components/RemoteCharts/hook';
+import { ResultBlockContainer, ResultBlockEmptyContainer, ResultBlockErrorContainer } from '@site/src/dynamic-pages/analyze/playground/styled';
+import { getErrorMessage } from '@site/src/utils/error';
 
-export interface ResultBlockProps extends ReturnType<typeof useSQLPlayground> {
+export interface ResultBlockProps extends AsyncData<RemoteData<any, any>> {
 }
 
 export default function ResultBlock ({ data, loading, error }: ResultBlockProps) {
@@ -14,7 +15,17 @@ export default function ResultBlock ({ data, loading, error }: ResultBlockProps)
     return notNullish((data?.sql?.match(/\bEXPLAIN\b/i)));
   }, [data]);
 
-  if (!data) {
+  if (notFalsy(error)) {
+    return (
+      <ResultBlockErrorContainer>
+        <Alert severity="error">
+          <AlertTitle>Error</AlertTitle>
+          {`${getErrorMessage(error)}`}
+        </Alert>
+      </ResultBlockErrorContainer>
+    );
+  }
+  if (isNullish(data)) {
     if (!loading) {
       return (
         <ResultBlockEmptyContainer>
@@ -34,12 +45,6 @@ export default function ResultBlock ({ data, loading, error }: ResultBlockProps)
 
   return (
     <ResultBlockContainer>
-      {notFalsy(error) && (
-        <Alert severity="error">
-          <AlertTitle>Error</AlertTitle>
-          {`${error}`}
-        </Alert>
-      )}
       <Typography variant="body2" sx={{ padding: '1rem' }}>
         {`${data.data.length} results in ${data.spent.toFixed(
           2,

@@ -1,9 +1,8 @@
 import * as React from 'react';
-import { KeyboardEventHandler, useCallback, useEffect, useMemo, useState } from 'react';
-import { useSQLPlayground } from '@site/src/components/RemoteCharts/hook';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { format } from 'sql-formatter';
-import { Button, Drawer, TextField, useEventCallback } from '@mui/material';
-import { isNullish } from '@site/src/utils/value';
+import { Button, Drawer, useEventCallback } from '@mui/material';
+import { isNonemptyString, isNullish } from '@site/src/utils/value';
 import LoadingButton from '@mui/lab/LoadingButton';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import { useAnalyzeContext } from '../charts/context';
@@ -13,26 +12,26 @@ import PredefinedGroups from './PredefinedGroups';
 import { Gap, PlaygroundBody, PlaygroundButton, PlaygroundContainer, PlaygroundDescription, PlaygroundHeadline, PlaygroundMain, PlaygroundSide } from './styled';
 import { Experimental } from '@site/src/components/Experimental';
 import { aiQuestion } from '@site/src/api/core';
-import isHotkey from 'is-hotkey';
 import ResultBlock from './ResultBlock';
+import QuestionField from './QuestionField';
+import { useAsyncOperation } from '@site/src/hooks/operation';
+import { core } from '@site/src/api';
+import { LoginRequired } from '@site/src/components/LoginRequired';
 
 function Playground ({ open, onClose }: { open: boolean, onClose: () => void }) {
   const { repoName, repoId } = useAnalyzeContext();
+
   const [inputValue, setInputValue] = useState('');
   const [currentQuestion, setCurrentQuestion] = useState<PredefinedQuestion>();
-  const [sql, setSQL] = useState('');
   const [customQuestion, setCustomQuestion] = useState('');
+
+  const { data, loading, error, run } = useAsyncOperation({ sql: inputValue, type: 'repo', id: `${repoId ?? 'undefined'}` }, core.postPlaygroundSQL);
+  const { data: questionSql, loading: questionLoading, error: questionError, run: runQuestion } = useAsyncOperation(customQuestion, useCallback(async (sql: string) => await aiQuestion(sql), []));
 
   const onChange = (newValue: string) => {
     setInputValue(newValue);
     setCurrentQuestion(undefined);
   };
-
-  const { data, loading, error } = useSQLPlayground(
-    sql,
-    'repo',
-    `${repoId ?? 'undefined'}`,
-  );
 
   const handleFormatSQLClick = () => {
     const formattedSQL = format(inputValue, {
@@ -41,10 +40,6 @@ function Playground ({ open, onClose }: { open: boolean, onClose: () => void }) 
       linesBetweenQueries: 2,
     });
     setInputValue(formattedSQL);
-  };
-
-  const handleSubmit = () => {
-    setSQL(inputValue);
   };
 
   const handleSelectQuestion = useEventCallback((question: PredefinedQuestion) => {
@@ -56,17 +51,15 @@ function Playground ({ open, onClose }: { open: boolean, onClose: () => void }) 
     setCurrentQuestion(question);
   });
 
-  const handleCustomQuestion: KeyboardEventHandler = useCallback((e) => {
-    if (isHotkey('Enter', e)) {
-      aiQuestion(customQuestion)
-        .then(sql => setInputValue(format(sql, {
-          language: 'mysql',
-          uppercase: true,
-          linesBetweenQueries: 2,
-        })))
-        .catch(console.error);
+  useEffect(() => {
+    if (isNonemptyString(questionSql)) {
+      setInputValue(format(questionSql, {
+        language: 'mysql',
+        uppercase: true,
+        linesBetweenQueries: 2,
+      }));
     }
-  }, [customQuestion]);
+  }, [questionSql]);
 
   const defaultInput = useMemo(() => {
     return `
@@ -107,31 +100,33 @@ LIMIT
             <PlaygroundHeadline>
               Playground: Customize your queries with SQL
               <Experimental feature="ai-playground">
-                <> or AI<span className='opaque'>🤖</span>️</>
+                <> or AI<span className="opaque">🤖</span>️</>
               </Experimental>
               !
             </PlaygroundHeadline>
             <PlaygroundDescription>
-              <li>Choose a question<Experimental feature='ai-playground'><> or create a new one</></Experimental> below</li>
+              <li>Choose a question<Experimental feature="ai-playground"><> or create a new one</>
+              </Experimental> below
+              </li>
               <li>Check or edit the generated SQL（Optional）</li>
               <li>Run your SQL and enjoy your results</li>
             </PlaygroundDescription>
             <Experimental feature="ai-playground">
-              <TextField
-                sx={{ mt: 1 }}
-                label="Question"
-                size="small"
-                fullWidth
-                value={customQuestion}
-                onChange={useEventCallback(e => setCustomQuestion(e.target.value))}
-                onKeyDown={handleCustomQuestion}
-                placeholder="How many watch events in this repository?"
-              />
+              <LoginRequired promote='Log in to write question' sx={{ mt: 1 }}>
+                <QuestionField
+                  loading={questionLoading}
+                  error={questionError}
+                  value={customQuestion}
+                  onChange={setCustomQuestion}
+                  onAction={runQuestion}
+                />
+              </LoginRequired>
             </Experimental>
             <PredefinedGroups onSelectQuestion={handleSelectQuestion} question={currentQuestion} />
           </PlaygroundSide>
           <PlaygroundMain>
             <SQLEditor
+              loading={questionLoading || loading}
               mode="sql"
               theme="twilight"
               onChange={onChange}
@@ -156,7 +151,7 @@ LIMIT
                     variant="contained"
                     size="small"
                     disabled={!inputValue || isNullish(repoId)}
-                    onClick={handleSubmit}
+                    onClick={run}
                     endIcon={<PlayArrowIcon fontSize="inherit" />}
                     loading={loading}
                   >
@@ -175,7 +170,7 @@ LIMIT
 }
 
 export function usePlayground () {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
 
   const handleClose = useEventCallback(() => {
     setOpen(false);

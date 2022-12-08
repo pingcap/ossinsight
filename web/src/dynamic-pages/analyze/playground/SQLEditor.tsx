@@ -2,6 +2,7 @@ import BrowserOnly from '@docusaurus/BrowserOnly';
 import * as React from 'react';
 import { EditorContainer, EditorExtra } from '@site/src/dynamic-pages/analyze/playground/styled';
 import { ReactNode } from 'react';
+import Loading from '@site/src/components/Loading';
 
 const SQLEditor = (props: {
   placeholder?: string;
@@ -14,6 +15,7 @@ const SQLEditor = (props: {
   showPrintMargin?: boolean;
   showGutter?: boolean;
   highlightActiveLine?: boolean;
+  loading?: boolean;
   setOptions?: {
     useWorker?: boolean;
     enableBasicAutocompletion?: boolean;
@@ -33,6 +35,7 @@ const SQLEditor = (props: {
         require('ace-builds/src-noconflict/ext-language_tools');
         return (
           <EditorContainer>
+            <Loading loading={props.loading} />
             <AceEditor
               placeholder={props.placeholder}
               mode={props.mode}
