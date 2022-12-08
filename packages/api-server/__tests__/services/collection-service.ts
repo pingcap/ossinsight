@@ -1,5 +1,5 @@
 import {bootstrapTestDatabase, getTestDatabase, releaseTestDatabase} from '../helpers/db';
-import { CollectionService } from '../../src/services/collection-service';
+import { CollectionService } from '../../src/plugins/services/collection-service';
 import { testLogger } from '../helpers/log';
 import CacheBuilder from '../../src/core/cache/CacheBuilder';
 import {getConnection, getConnectionOptions} from "../../src/core/db/new";

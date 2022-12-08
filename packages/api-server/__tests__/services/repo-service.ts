@@ -1,7 +1,7 @@
 import {bootstrapTestDatabase, releaseTestDatabase, TiDBDatabase} from '../helpers/db';
 import {bootstrapApp, StartedApp} from '../helpers/app';
-import '../../src/services/repo-service';
-import {RepoService, SubscribedRepo} from "../../src/services/repo-service";
+import '../../src/plugins/services/repo-service';
+import {RepoService, SubscribedRepo} from "../../src/plugins/services/repo-service";
 import {Connection} from "mysql2/promise";
 import {APIError} from "../../src/utils/error";
 

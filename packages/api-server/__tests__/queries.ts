@@ -1,6 +1,6 @@
 import { buildParams, eachQuery } from './helpers/queries';
 import { QueryParser } from '../src/core/runner/query/QueryParser';
-import { CollectionService } from '../src/services/collection-service';
+import { CollectionService } from '../src/plugins/services/collection-service';
 import { testLogger } from './helpers/log';
 import CacheBuilder from '../src/core/cache/CacheBuilder';
 import {TiDBQueryExecutor} from "../src/core/executor/query-executor/TiDBQueryExecutor";

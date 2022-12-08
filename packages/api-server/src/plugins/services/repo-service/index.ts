@@ -3,7 +3,7 @@ import {FastifyOAuth2Options} from "@fastify/oauth2";
 import {MySQLPromisePool} from "@fastify/mysql";
 import {ResultSetHeader} from "mysql2";
 import fp from "fastify-plugin";
-import {APIError} from "../../utils/error";
+import {APIError} from "../../../utils/error";
 import {RowDataPacket} from "mysql2/promise";
 
 declare module 'fastify' {

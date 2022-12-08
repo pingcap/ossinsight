@@ -1,7 +1,7 @@
 import {bootstrapTestDatabase, getTestDatabase, releaseTestDatabase} from '../helpers/db';
 import {bootstrapApp, getTestApp, releaseApp} from '../helpers/app';
 import {Connection, ResultSetHeader} from "mysql2/promise";
-import {ProviderType, UserRole, UserService} from "../../src/services/user-service";
+import {ProviderType, UserRole, UserService} from "../../src/plugins/services/user-service";
 
 let userService: UserService, conn: Connection;
 

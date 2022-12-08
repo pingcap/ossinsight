@@ -14,7 +14,8 @@ export default fp(async (app) => {
     dependencies: [
         '@fastify/env',
         'tidb-query-executor',
-        'cache-builder'
+        'cache-builder',
+        'collection-service'
     ],
 });
 

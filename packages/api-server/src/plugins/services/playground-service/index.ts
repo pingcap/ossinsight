@@ -1,6 +1,6 @@
 import fp from "fastify-plugin";
 import {MySQLPromisePool} from "@fastify/mysql";
-import {APIError} from "../../utils/error";
+import {APIError} from "../../../utils/error";
 import {QuestionContext} from "../bot-service";
 
 declare module 'fastify' {
