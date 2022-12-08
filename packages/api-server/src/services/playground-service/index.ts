@@ -64,7 +64,7 @@ export class PlaygroundService {
             WHERE
                 user_id = ?
                 AND preset = ?
-                AND DATE(requested_at) = DATE(NOW())
+                AND requested_at BETWEEN DATE_FORMAT(NOW(), '%Y-%m-%d 00:00:00') AND DATE_FORMAT(NOW(), '%Y-%m-%d 23:59:59');
         `, [userId, preset]);
         return result[0].count;
     }
