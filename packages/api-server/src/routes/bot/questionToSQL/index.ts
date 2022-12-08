@@ -44,7 +44,10 @@ const root: FastifyPluginAsyncJsonSchemaToTs = async (app, opts): Promise<void> 
       user_login: githubLogin,
     } as QuestionContext;
 
-    await playgroundService.checkIfUserHasReachedDailyQuestionLimit(userId);
+    const trustedLogins = app.config.PLAYGROUND_TRUSTED_GITHUB_LOGINS;
+    if (!Array.isArray(trustedLogins) || !trustedLogins.includes(githubLogin)) {
+      await playgroundService.checkIfUserHasReachedDailyQuestionLimit(userId);
+    }
 
     let sql;
     try {

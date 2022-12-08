@@ -37,6 +37,10 @@ export const APIServerEnvSchema = {
       type: 'number',
       default: 30
     },
+    PLAYGROUND_TRUSTED_GITHUB_LOGINS: {
+      type: 'string',
+      separator: ','
+    },
     GITHUB_OAUTH_CLIENT_ID: {
       type: 'string'
     },
