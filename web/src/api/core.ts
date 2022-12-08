@@ -48,10 +48,10 @@ export async function postPlaygroundSQL (params: {
   type: 'repo' | 'user';
   id: string;
 }): Promise<any> {
-  return await clientWithoutCache.post('/q/playground', params).then((data) => data);
+  return await clientWithoutCache.post('/q/playground', params, { withCredentials: true }).then((data) => data);
 }
 
 export async function aiQuestion (question: string) {
-  const { sql } = await clientWithoutCache.post<any, { sql: string }>('/bot/questionToSQL', { question });
+  const { sql } = await clientWithoutCache.post<any, { sql: string }>('/bot/questionToSQL', { question }, { withCredentials: true });
   return sql;
 }
