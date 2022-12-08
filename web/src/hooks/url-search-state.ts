@@ -62,10 +62,10 @@ export function stringParam (defaultValue?): UseUrlSearchStateProps<string> {
   };
 }
 
-export function booleanParam (): UseUrlSearchStateProps<boolean> {
+export function booleanParam (trueValue = 'true'): UseUrlSearchStateProps<boolean> {
   return {
     defaultValue: () => false,
-    serialize: value => notFalsy(value) ? 'true' : undefined,
-    deserialize: value => Boolean(value),
+    serialize: value => notFalsy(value) ? trueValue : undefined,
+    deserialize: value => Boolean(value === trueValue),
   };
 }

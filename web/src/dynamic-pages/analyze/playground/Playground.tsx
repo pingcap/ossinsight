@@ -183,7 +183,7 @@ LIMIT
 }
 
 export function usePlayground () {
-  const [open, setOpen] = useUrlSearchState('playground', booleanParam(), false);
+  const [open, setOpen] = useUrlSearchState('playground', booleanParam('enabled'), false);
 
   const handleClose = useEventCallback(() => {
     setOpen(false);
