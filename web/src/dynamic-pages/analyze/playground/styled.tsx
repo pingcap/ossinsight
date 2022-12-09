@@ -1,4 +1,5 @@
 import { ButtonBase, Paper, styled } from '@mui/material';
+import ArrowIcon from './arrow.svg';
 
 export const PlaygroundContainer = styled('section', { name: 'PlaygroundContainer' })`
   height: 80vh;
@@ -95,7 +96,7 @@ export const PlaygroundBody = styled('div', { name: 'PlaygroundBody' })`
 
 export const PlaygroundSide = styled('aside', { name: 'PlaygroundSide' })`
   height: 100%;
-  overflow-y: hidden;
+  position: relative;
   display: flex;
   flex-direction: column;
   width: 40vw;
@@ -218,4 +219,13 @@ export const PlaygroundPopoverContent = styled(Paper, { name: 'PlaygroundPopover
 
 export const Logo = styled('img', { name: 'Logo' })`
   vertical-align: text-bottom;
+`;
+
+export const StyledArrowIcon = styled(ArrowIcon)`
+  position: absolute;
+  right: -26px;
+  top: 80px;
+  z-index: 10;
+  box-shadow: ${({ theme }) => theme.shadows[4]};
+  border-radius: 50%;
 `;

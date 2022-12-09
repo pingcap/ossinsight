@@ -1,4 +1,4 @@
-import { Beta, Gap, Logo, PlaygroundBody, PlaygroundContainer, PlaygroundDescription, PlaygroundHeadline, PlaygroundHeadlineExtra, PlaygroundMain, PlaygroundSide, PlaygroundTips, PlaygroundTipsText, PlaygroundTitle } from './styled';
+import { Beta, Gap, Logo, PlaygroundBody, PlaygroundContainer, PlaygroundDescription, PlaygroundHeadline, PlaygroundHeadlineExtra, PlaygroundMain, PlaygroundSide, PlaygroundTips, PlaygroundTipsText, PlaygroundTitle, StyledArrowIcon } from './styled';
 import { Experimental } from '@site/src/components/Experimental';
 import { Box, Button, useEventCallback } from '@mui/material';
 import QuestionField from './QuestionField';
@@ -35,7 +35,7 @@ export default function PlaygroundContent () {
   });
 
   const { data, loading, error, run } = useAsyncOperation({ sql: inputValue, type: 'repo', id: `${repoId ?? 'undefined'}` }, core.postPlaygroundSQL);
-  const { data: questionSql, loading: questionLoading, error: questionError, run: runQuestion } = useAsyncOperation({ question: customQuestion || DEFAULT_QUESTION, context: { repo_id: repoId, repo_name: repoName } }, aiQuestion, true);
+  const { data: questionSql, loading: questionLoading, error: questionError, run: runQuestion } = useAsyncOperation({ question: `In this repo: ${customQuestion || DEFAULT_QUESTION}`, context: { repo_id: repoId, repo_name: repoName } }, aiQuestion, true);
 
   const onChange = (newValue: string) => {
     setInputValue(newValue);
@@ -114,7 +114,7 @@ LIMIT
           <PlaygroundSide>
             <PlaygroundTips>
               <PlaygroundTipsText>
-                1. Input Your Question
+                1. Input a Question
               </PlaygroundTipsText>
             </PlaygroundTips>
             <QuestionField
@@ -146,6 +146,7 @@ LIMIT
                 Made with <Favorite fontSize="inherit" sx={{ verticalAlign: 'text-bottom' }} /> by <Logo height={20} src="/img/logo.png" alt="OSSInsight Logo" /> and <Logo height={16} src="/img/openai-logo.svg" alt="OpenAI Logo" />
               </p>
             </PlaygroundDescription>
+            <StyledArrowIcon />
           </PlaygroundSide>
         </Experimental>
         <PlaygroundMain>
