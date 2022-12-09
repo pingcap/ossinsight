@@ -9,6 +9,10 @@ export const PlaygroundContainer = styled('section', { name: 'PlaygroundContaine
 
 export const PlaygroundHeadline = styled('h2', { name: 'PlaygroundHeadline' })`
   font-size: 24px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  margin: 0;
   background: linear-gradient(90deg, #FF6B00 0%, #E6A078 49.53%, #FFE895 109.31%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -20,18 +24,37 @@ export const PlaygroundHeadline = styled('h2', { name: 'PlaygroundHeadline' })`
   }
 `;
 
-export const PlaygroundDescription = styled('ol', { name: 'PlaygroundDescription' })`
-  font-size: 12px;
-  color: #7C7C7C;
-  line-height: 18px;
-  list-style-position: inside;
+export const PlaygroundDescription = styled('div', { name: 'PlaygroundDescription' })`
+  font-size: 14px;
   padding: 0;
+  margin-top: 16px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  > p:last-of-type {
+    margin-bottom: 0;
+  }
+`;
+
+export const BaseInputContainer = styled('div', { name: 'BaseInputContainer' })`
+  max-height: min(50%, 350px);
+  min-height: min(50%, 350px);
+  position: relative;
+  border: 1px solid #565656;
+`;
+
+export const BaseInputBottomLine = styled('div', { name: 'BaseInputBottomLine' })`
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  display: flex;
 `;
 
 export const PlaygroundBody = styled('div', { name: 'PlaygroundBody' })`
   display: flex;
   margin-bottom: 1rem;
   height: 100%;
+  max-height: calc(100% - 60px);
 `;
 
 export const PlaygroundSide = styled('aside', { name: 'PlaygroundSide' })`
@@ -39,16 +62,26 @@ export const PlaygroundSide = styled('aside', { name: 'PlaygroundSide' })`
   overflow-y: hidden;
   display: flex;
   flex-direction: column;
-  width: 40%;
-  max-width: 40vw;
-  background: #000;
-  border: 1px solid #565656;
-  padding: 16px;
+  width: 40vw;
+  min-width: 500px;
+  padding: 0 16px 16px;
 `;
 
 export const QuestionFieldTitle = styled('div', { name: 'QuestionFieldTitle' })`
   display: inline-flex;
   align-items: center;
+`;
+
+export const PlaygroundTips = styled('div', { name: 'PlaygroundTips' })`
+  padding: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+export const PlaygroundTipsText = styled('div', { name: 'PlaygroundTips-Text' })`
+  font-size: 16px;
+  font-weight: bold;
 `;
 
 export const PlaygroundMain = styled('main', { name: 'PlaygroundMain' })`
@@ -57,7 +90,7 @@ export const PlaygroundMain = styled('main', { name: 'PlaygroundMain' })`
   display: flex;
   flex-direction: column;
   overflow-y: hidden;
-  padding: 16px;
+  padding: 0 16px 16px;
   box-sizing: border-box;
   position: relative;
 `;
@@ -84,11 +117,7 @@ export const PlaygroundButton = styled(ButtonBase, { name: 'PlaygroundButton' })
   display: block;
 `;
 
-export const EditorContainer = styled('div', { name: 'EditorContainer' })`
-  position: relative;
-  max-height: min(50%, 350px);
-  min-height: min(50%, 350px);
-  border: 1px solid #565656;
+export const EditorContainer = styled(BaseInputContainer, { name: 'EditorContainer' })`
   & .ace_editor .ace_comment.ace_placeholder {
     font-style: normal;
     transform: none;
@@ -96,11 +125,7 @@ export const EditorContainer = styled('div', { name: 'EditorContainer' })`
   }
 `;
 
-export const EditorExtra = styled('div', { name: 'EditorExtra' })`
-  position: absolute;
-  right: 16px;
-  bottom: 16px;
-  display: flex;
+export const EditorExtra = styled(BaseInputBottomLine, { name: 'EditorExtra' })`
   gap: 8px;
 `;
 
@@ -150,4 +175,8 @@ export const PlaygroundPopoverContent = styled(Paper, { name: 'PlaygroundPopover
     font-size: 12px;
     color: #565656;
   }
+`;
+
+export const Logo = styled('img', { name: 'Logo' })`
+  vertical-align: text-bottom;
 `;
