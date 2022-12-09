@@ -29,7 +29,6 @@ export default function LoginItem () {
         id="basic-menu"
         anchorEl={anchorEl}
         open={open}
-        onClose={logout}
         MenuListProps={{
           'aria-labelledby': 'basic-button',
         }}
