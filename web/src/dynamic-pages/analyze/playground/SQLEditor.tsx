@@ -3,7 +3,7 @@ import * as React from 'react';
 import { EditorContainer, EditorExtra } from '@site/src/dynamic-pages/analyze/playground/styled';
 import { ReactNode } from 'react';
 import Loading from '@site/src/components/Loading';
-import { IAceOptions } from 'react-ace/src/types';
+import { IAceOptions } from 'react-ace';
 
 const SQLEditor = (props: {
   placeholder?: string;
