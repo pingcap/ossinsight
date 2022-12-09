@@ -24,6 +24,19 @@ export const PlaygroundHeadline = styled('h2', { name: 'PlaygroundHeadline' })`
   }
 `;
 
+export const Beta = styled('span', { name: 'Beta Tag' })`
+  display: inline-block;
+  -webkit-text-fill-color: transparent;
+  text-fill-color: initial;
+  padding: 2px 8px;
+  border: 1px solid #FF6B00;
+  color: #FF6B00;
+  border-radius: 12px;
+  margin-left: 8px;
+  font-weight: normal;
+  font-size: 14px;
+`;
+
 export const PlaygroundDescription = styled('div', { name: 'PlaygroundDescription' })`
   font-size: 14px;
   padding: 0;
