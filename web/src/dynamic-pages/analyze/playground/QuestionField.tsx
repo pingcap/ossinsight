@@ -5,6 +5,9 @@ import isHotkey from 'is-hotkey';
 import { getOptionalErrorMessage } from '@site/src/utils/error';
 import { LoadingButton } from '@mui/lab';
 import { notFalsy } from '@site/src/utils/value';
+import { GitHub } from '@mui/icons-material';
+import { useUserInfoContext } from '@site/src/context/user';
+import { BaseInputBottomLine, BaseInputContainer } from '@site/src/dynamic-pages/analyze/playground/styled';
 
 export interface QuestionFieldProps {
   loading: boolean;
@@ -17,8 +20,10 @@ export interface QuestionFieldProps {
 }
 
 export default function QuestionField ({ defaultQuestion, maxLength, value, loading, error, onAction, onChange }: QuestionFieldProps) {
+  const { validated } = useUserInfoContext();
   const handleCustomQuestion: KeyboardEventHandler = useCallback((e) => {
     if (isHotkey('Enter', e)) {
+      e.preventDefault();
       onAction();
     }
   }, [onAction]);
@@ -28,8 +33,8 @@ export default function QuestionField ({ defaultQuestion, maxLength, value, load
       <TextField
         multiline
         minRows={3}
-        label="Input"
         size="small"
+        variant="standard"
         fullWidth
         disabled={loading}
         value={value}
@@ -39,12 +44,14 @@ export default function QuestionField ({ defaultQuestion, maxLength, value, load
         helperText={getOptionalErrorMessage(error)}
         error={notFalsy(error)}
         InputLabelProps={{ shrink: true }}
+        InputProps={{ disableUnderline: true }}
       />
       <BottomLine>
         <Counter>
           {value.length}/{maxLength}
         </Counter>
-        <LoadingButton loading={loading} onClick={onAction}>
+        <LoadingButton variant="contained" size="small" loading={loading} onClick={onAction}>
+          {validated ? undefined : <>Login with <GitHub fontSize="inherit" sx={{ mx: 0.5 }} /> and </>}
           Generate SQL
         </LoadingButton>
       </BottomLine>
@@ -52,14 +59,15 @@ export default function QuestionField ({ defaultQuestion, maxLength, value, load
   );
 }
 
-const Container = styled('div', { name: 'QuestionField' })`
-  padding-top: 8px;
+const Container = styled(BaseInputContainer, { name: 'QuestionField-Container' })`
+  padding: 16px 16px 64px;
+  background: #141414;
 `;
 
-const BottomLine = styled('div', { name: 'QuestionField-BottomLine' })`
-  display: flex;
+const BottomLine = styled(BaseInputBottomLine, { name: 'QuestionField-BottomLine' })`
   align-items: center;
   justify-content: space-between;
+  width: calc(100% - 32px);
 `;
 
 const Counter = styled('span', { name: 'QuestionField-Counter' })`

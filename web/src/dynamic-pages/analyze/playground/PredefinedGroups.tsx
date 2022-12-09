@@ -1,32 +1,30 @@
 import { PredefinedQuestion, predefinedQuestions } from './predefined';
-import { List, ListItem, ListItemButton, ListItemText, styled } from '@mui/material';
-import React from 'react';
+import { MenuItem, Select, SelectChangeEvent } from '@mui/material';
+import React, { useCallback } from 'react';
+import { notNullish } from '@site/src/utils/value';
 
 interface PredefinedGroupsProps {
-  question: PredefinedQuestion | undefined;
   onSelectQuestion?: (question: PredefinedQuestion) => void;
 }
 
-export default function PredefinedGroups ({ question: currentQuestion, onSelectQuestion }: PredefinedGroupsProps) {
+export default function PredefinedGroups ({ onSelectQuestion }: PredefinedGroupsProps) {
+  const handleSelectChange = useCallback((event: SelectChangeEvent) => {
+    const question = predefinedQuestions.find(q => q.id === event.target.value);
+    if (notNullish(question)) {
+      onSelectQuestion?.(question);
+    }
+  }, [onSelectQuestion]);
+
   return (
-    <>
-      <PredefinedGroupsContainer dense>
-        {predefinedQuestions.map((question) => (
-          <ListItem key={question.id}>
-            <ListItemButton selected={question === currentQuestion} onClick={() => onSelectQuestion?.(question)}>
-              <ListItemText>
-                {question.title}
-              </ListItemText>
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </PredefinedGroupsContainer>
-    </>
+    <Select sx={{ minWidth: 120, fontSize: 12, '.MuiSelect-select': { py: 0.5 } }} displayEmpty size="small" value="" onChange={handleSelectChange}>
+      <MenuItem key="" value="">
+        🔥 Choose an FAQ …
+      </MenuItem>
+      {predefinedQuestions.map((question) => (
+        <MenuItem key={question.id} value={question.id}>
+          {question.title}
+        </MenuItem>
+      ))}
+    </Select>
   );
 }
-
-const PredefinedGroupsContainer = styled(List, { name: 'PredefinedGroupsContainer' })`
-  margin-top: 16px;
-  flex: 1;
-  overflow-y: scroll;
-`;
