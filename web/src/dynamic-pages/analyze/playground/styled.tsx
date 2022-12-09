@@ -82,7 +82,6 @@ export const PlaygroundButtonContainer = styled('div', { name: 'PlaygroundButton
 
 export const PlaygroundButton = styled(ButtonBase, { name: 'PlaygroundButton' })`
   display: block;
-  animation-delay: 5s;
 `;
 
 export const EditorContainer = styled('div', { name: 'EditorContainer' })`

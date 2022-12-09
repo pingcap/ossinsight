@@ -10,7 +10,7 @@ import SQLEditor from './SQLEditor';
 import { PredefinedQuestion } from './predefined';
 import PredefinedGroups from './PredefinedGroups';
 import { Gap, PlaygroundBody, PlaygroundButton, PlaygroundButtonContainer, PlaygroundContainer, PlaygroundDescription, PlaygroundHeadline, PlaygroundMain, PlaygroundPopoverContent, PlaygroundSide, QuestionFieldTitle } from './styled';
-import { Experimental, useExperimental } from '@site/src/components/Experimental';
+import { Experimental } from '@site/src/components/Experimental';
 import { aiQuestion } from '@site/src/api/core';
 import ResultBlock from './ResultBlock';
 import QuestionField from './QuestionField';
@@ -191,13 +191,12 @@ LIMIT
   );
 }
 
-const DISPLAY_POPPER_TIMEOUT = process.env.NODE_ENV === 'development' ? 1000 : 5000;
+const DISPLAY_POPPER_TIMEOUT = 10000;
 
 export function usePlayground () {
   const [open, setOpen] = useUrlSearchState('playground', booleanParam('enabled'), false);
-  const [popoverIn, setPopoverIn] = useState(false);
+  const [popoverIn, setPopoverIn] = useState(localStorage.getItem('ossinsight.playground.tooltip-closed') !== 'true');
   const whenMounted = useWhenMounted();
-  const [aiEnabled] = useExperimental('ai-playground');
 
   const handleClose = useEventCallback(whenMounted(() => {
     setOpen(false);
@@ -205,23 +204,13 @@ export function usePlayground () {
 
   const handleClickTerminalBtn = useEventCallback(whenMounted((event: React.MouseEvent<HTMLElement>) => {
     setOpen(open => !open);
-    setPopoverIn(shown => {
-      if (aiEnabled && shown) {
-        localStorage.setItem('ossinsight.playground.tooltip-closed', 'true');
-      }
-      return false;
-    });
+    setPopoverIn(false);
+    localStorage.setItem('ossinsight.playground.tooltip-closed', 'true');
   }));
 
-  const clearTimeout = useTimeout(whenMounted(() => {
-    setPopoverIn(true);
+  useTimeout(whenMounted(() => {
+    setPopoverIn(false);
   }), DISPLAY_POPPER_TIMEOUT);
-
-  useEffect(() => {
-    if (localStorage.getItem('ossinsight.playground.tooltip-closed') === 'true') {
-      clearTimeout();
-    }
-  }, []);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
