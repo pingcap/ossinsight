@@ -1,10 +1,8 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
 // https://github.com/microsoft/vscode-dev-containers/tree/v0.187.0/containers/typescript-node
 {
-  "name": "Node.js & TypeScript",
-  "build": {
-    "dockerfile": "Dockerfile"
-  },
+  "name": "OSS Insight Dev Container",
+  "image": "ossinsight/devcontainer:latest",
   // Set *default* container specific settings.json values on container create.
   "settings": {
     "telemetry.enableTelemetry": false,
@@ -54,6 +52,7 @@
   "customizations": {
     "codespaces": {
       "openFiles": [
+        "README.md",
         "workshop.cn.ipynb"
       ]
     }
