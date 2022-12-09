@@ -46,26 +46,27 @@ export class BotService {
 
     // TODO: store the prompt template to the config file.
     private getSQLPrompt(question: string, context: QuestionContext): string {
-        const defineCurrentRepoId = context.repo_id && context.repo_name ? `Describe: this_repo_id =  ${context.repo_id}, this_repo_name =  '${context.repo_name}'` : '';
-        const defineMyUserId = context.user_id && context.user_login ? `Describe: my_user_id = ${context.user_id}, my_user_login = '${context.user_login}'` : '';
-        const createIssueExample = context.user_login ? `
+        const { user_id, user_login, repo_id, repo_name } = context;
+        const defineCurrentRepoId = repo_id && repo_name ? `Describe: this_repo_id =  ${repo_id}, this_repo_name =  '${repo_name}'` : '';
+        const defineMyUserId = user_id && user_login ? `Describe: my_user_id = ${user_id}, my_user_login = '${user_login}'` : '';
+        const createIssueExample = repo_id && user_login ? `
 # Example: How many issues did I created in pingcap/tidb in last three months
 SELECT COUNT(*)
 FROM github_events
 WHERE
     type = 'IssuesEvent'
     AND action = 'opened'
-    AND actor_login = '${context.user_login}'
+    AND actor_login = '${user_login}'
     AND created_at > DATE_SUB(NOW(), INTERVAL 3 MONTH)
-    AND repo_id = (SELECT repo_id FROM github_repos WHERE repo_name = 'pingcap/tidb' LIMIT 1)
+    AND repo_id = ${repo_id}
 `: '';
-        const whoAmIExample = context.user_login ? `
+        const whoAmIExample = user_login ? `
 # Example: Who am I
-SELECT '${context.user_login}' AS user_login;
+SELECT '${user_login}' AS user_login;
 ` : ''
-        const judgementExample = context.repo_id && context.user_login ? `
+        const judgementExample = repo_id && user_login ? `
 # Example: Am I a contributor to this repo?
-SELECT CASE sub.prs > 0 WHEN TRUE THEN 'Yes' ELSE 'No' END AS is_contributor FROM (SELECT COUNT(*) AS prs FROM github_events WHERE type = 'PullRequestEvent' AND action = 'opened' AND repo_id = ${context.repo_id} AND actor_login = ${context.user_login}) AS sub;
+SELECT CASE sub.prs > 0 WHEN TRUE THEN 'Yes' ELSE 'No' END AS is_contributor FROM (SELECT COUNT(*) AS prs FROM github_events WHERE type = 'PullRequestEvent' AND action = 'opened' AND repo_id = ${repo_id} AND actor_login = '${user_login}') AS sub;
 ` : '';
 
         return `# MySQL SQL
@@ -74,7 +75,6 @@ Table github_events, columns = [id, type, created_at, repo_id, repo_name, actor_
 Table github_repos, columns = [repo_id, repo_name, owner_id, owner_login, owner_is_org, description, primary_language, license, size, stars, forks, parent_repo_id, is_fork, is_archived, is_deleted, latest_released_at, pushed_at, created_at, updated_at]
 Relation github_events.repo_id = github_repos.repo_id
 Define github_events.type = [PushEvent, PullRequestEvent, IssueCommentEvent, IssuesEvent, CreateEvent, ForkEvent, PullRequestReviewCommentEvent, PullRequestReviewEvent, ReleaseEvent, WatchEvent]
-Describe: repo, [args:VALUE], repo_id = (SELECT repo_id FROM github_repos WHERE repo_name = '%VALUE%' LIMIT 1)
 ${defineCurrentRepoId}
 ${defineMyUserId}
 ---
