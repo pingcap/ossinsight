@@ -27,7 +27,7 @@ export function usePlayground () {
 
   return useMemo(() => {
     return {
-      button: <PlaygroundButton open={open} onToggleOpen={whenMounted(() => setOpen(() => !open))} />,
+      button: <PlaygroundButton open={open} onToggleOpen={whenMounted(() => setOpen(open => !open))} />,
       drawer: <Playground open={open} onClose={whenMounted(() => setOpen(false))} />,
     };
   }, [open]);

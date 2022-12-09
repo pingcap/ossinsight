@@ -30,7 +30,7 @@ export default function ResultBlock ({ data, loading, error }: ResultBlockProps)
       return (
         <ResultBlockEmptyContainer>
           <Typography variant="body1" color="#565656">
-            Here&lsquo;s where your results will appear
+            Your query result will appear here.
           </Typography>
         </ResultBlockEmptyContainer>
       );

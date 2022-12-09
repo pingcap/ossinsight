@@ -3,6 +3,7 @@ import * as React from 'react';
 import { EditorContainer, EditorExtra } from '@site/src/dynamic-pages/analyze/playground/styled';
 import { ReactNode } from 'react';
 import Loading from '@site/src/components/Loading';
+import { IAceOptions } from 'react-ace';
 
 const SQLEditor = (props: {
   placeholder?: string;
@@ -16,14 +17,7 @@ const SQLEditor = (props: {
   showGutter?: boolean;
   highlightActiveLine?: boolean;
   loading?: boolean;
-  setOptions?: {
-    useWorker?: boolean;
-    enableBasicAutocompletion?: boolean;
-    enableLiveAutocompletion?: boolean;
-    enableSnippets?: boolean;
-    showLineNumbers?: boolean;
-    tabSize?: number;
-  };
+  setOptions?: IAceOptions;
   extra?: ReactNode;
 }) => {
   return (
