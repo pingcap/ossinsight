@@ -1,16 +1,16 @@
 import * as React from 'react';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { MouseEventHandler, useEffect, useMemo, useState } from 'react';
 import { format } from 'sql-formatter';
-import { Button, Drawer, Tooltip, useEventCallback } from '@mui/material';
-import { isNonemptyString, isNullish, notNullish } from '@site/src/utils/value';
+import { Button, createTheme, Drawer, Grow, Tooltip, useEventCallback } from '@mui/material';
+import { isNonemptyString, isNullish } from '@site/src/utils/value';
 import LoadingButton from '@mui/lab/LoadingButton';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import { useAnalyzeContext } from '../charts/context';
 import SQLEditor from './SQLEditor';
 import { PredefinedQuestion } from './predefined';
 import PredefinedGroups from './PredefinedGroups';
-import { Gap, PlaygroundBody, PlaygroundButton, PlaygroundContainer, PlaygroundDescription, PlaygroundHeadline, PlaygroundMain, PlaygroundSide, QuestionFieldTitle } from './styled';
-import { Experimental } from '@site/src/components/Experimental';
+import { Gap, PlaygroundBody, PlaygroundButton, PlaygroundButtonContainer, PlaygroundContainer, PlaygroundDescription, PlaygroundHeadline, PlaygroundMain, PlaygroundPopoverContent, PlaygroundSide, QuestionFieldTitle } from './styled';
+import { Experimental, useExperimental } from '@site/src/components/Experimental';
 import { aiQuestion } from '@site/src/api/core';
 import ResultBlock from './ResultBlock';
 import QuestionField from './QuestionField';
@@ -20,6 +20,8 @@ import { LoginRequired } from '@site/src/components/LoginRequired';
 import { HelpOutline } from '@mui/icons-material';
 import useUrlSearchState, { booleanParam } from '@site/src/hooks/url-search-state';
 import { useWhenMounted } from '@site/src/hooks/mounted';
+import { useTimeout } from 'ahooks';
+import ThemeProvider from '@mui/system/ThemeProvider';
 
 const DEFAULT_QUESTION = 'Who closed the last issue in this repo?';
 const QUESTION_MAX_LENGTH = 200;
@@ -189,24 +191,43 @@ LIMIT
   );
 }
 
+const DISPLAY_POPPER_TIMEOUT = process.env.NODE_ENV === 'development' ? 1000 : 5000;
+
 export function usePlayground () {
   const [open, setOpen] = useUrlSearchState('playground', booleanParam('enabled'), false);
-  const ref = useRef<HTMLButtonElement>(null);
+  const [popoverIn, setPopoverIn] = useState(false);
   const whenMounted = useWhenMounted();
+  const [aiEnabled] = useExperimental('ai-playground');
 
-  const handleClose = useEventCallback(() => {
+  const handleClose = useEventCallback(whenMounted(() => {
     setOpen(false);
-  });
+  }));
 
-  const handleClickTerminalBtn = useEventCallback((event: React.MouseEvent<HTMLElement>) => {
+  const handleClickTerminalBtn = useEventCallback(whenMounted((event: React.MouseEvent<HTMLElement>) => {
     setOpen(open => !open);
-  });
+    setPopoverIn(shown => {
+      if (aiEnabled && shown) {
+        localStorage.setItem('ossinsight.playground.tooltip-closed', 'true');
+      }
+      return false;
+    });
+  }));
+
+  const clearTimeout = useTimeout(whenMounted(() => {
+    setPopoverIn(true);
+  }), DISPLAY_POPPER_TIMEOUT);
+
+  useEffect(() => {
+    if (localStorage.getItem('ossinsight.playground.tooltip-closed') === 'true') {
+      clearTimeout();
+    }
+  }, []);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key.toUpperCase() === 'K' && (event.ctrlKey || event.metaKey)) {
         // it was Ctrl + K (Cmd + K)
-        setOpen(true);
+        setOpen(open => !open);
       }
     };
     window.addEventListener('keydown', handleKeyDown);
@@ -215,42 +236,52 @@ export function usePlayground () {
     };
   }, []);
 
-  const onAnimationEnd = useEventCallback(() => {
-    if (notNullish(ref.current)) {
-      // https://stackoverflow.com/questions/4797675/how-do-i-re-trigger-a-webkit-css-animation-via-javascript
-      ref.current.classList.remove('tada');
-      setTimeout(whenMounted(() => {
-        if (notNullish(ref.current) && ref.current.classList.contains('animated')) {
-          ref.current.classList.add('tada');
-        }
-      }), 6000);
-    }
-  });
-
-  const button = useMemo(() => {
-    return (
+  const button = useMemo(() => (
+    <PlaygroundButtonContainer className={open ? 'opened' : ''}>
+      <Experimental feature="ai-playground">
+        <Grow in={popoverIn}>
+          <div>
+            <PlaygroundPopover onClickButton={handleClickTerminalBtn} />
+          </div>
+        </Grow>
+      </Experimental>
       <PlaygroundButton
-        ref={ref}
-        className={`${open ? ' opened' : 'tada animated'}`}
-        onAnimationEnd={onAnimationEnd}
+        className={`${open ? '' : 'tada animated'}`}
         aria-label="Open SQL Playground"
         onClick={handleClickTerminalBtn}
         disableRipple
         disableTouchRipple
-        sx={{
-          display: {
-            xs: 'none',
-            // Remove next line to show terminal button on desktop
-            md: 'inline-flex',
-          },
-        }}
       >
         <img src={require('./icon.png').default} width="66" height="73" alt="Playground icon" />
       </PlaygroundButton>
-    );
-  }, [open]);
+    </PlaygroundButtonContainer>
+  ), [popoverIn, open]);
 
-  const drawer = <Playground open={open} onClose={handleClose} />;
+  const drawer = useMemo(() => (
+    <Playground open={open} onClose={handleClose} />
+  ), [open]);
 
   return { button, drawer };
 }
+
+const theme = createTheme({
+  palette: {
+    mode: 'light',
+    primary: {
+      main: '#FFE895',
+      contrastText: '#1C1E21',
+    },
+  },
+});
+
+function PlaygroundPopover ({ onClickButton }: { onClickButton: MouseEventHandler }) {
+  return (
+    <ThemeProvider theme={theme}>
+      <PlaygroundPopoverContent>
+        <h2>👀 Want to know more about this repo?</h2>
+        <p>Chat with GitHub data directly and gain your own insights here!</p>
+        <Button fullWidth size="small" variant="contained" onClick={onClickButton}>Ask me a question</Button>
+      </PlaygroundPopoverContent>
+    </ThemeProvider>
+  );
+};

@@ -1,4 +1,4 @@
-import { ButtonBase, styled } from '@mui/material';
+import { ButtonBase, styled, Paper } from '@mui/material';
 
 export const PlaygroundContainer = styled('section', { name: 'PlaygroundContainer' })`
   height: 80vh;
@@ -62,15 +62,27 @@ export const PlaygroundMain = styled('main', { name: 'PlaygroundMain' })`
   position: relative;
 `;
 
-export const PlaygroundButton = styled(ButtonBase, { name: 'PlaygroundButton' })`
+export const PlaygroundButtonContainer = styled('div', { name: 'PlaygroundButtonContainer' })`
   position: fixed;
+  display: none;
   z-index: 1300;
   right: 32px;
   bottom: 32px;
+  flex-direction: column;
+  align-items: end;
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    display: flex;
+  }
+
   transition: transform 225ms cubic-bezier(0, 0, 0.2, 1) 0ms;
   &.opened {
     transform: translateY(-80vh);
   }
+`;
+
+export const PlaygroundButton = styled(ButtonBase, { name: 'PlaygroundButton' })`
+  display: block;
+  animation-delay: 5s;
 `;
 
 export const EditorContainer = styled('div', { name: 'EditorContainer' })`
@@ -123,4 +135,20 @@ export const ResultBlockErrorContainer = styled(ResultBlockEmptyContainer)`
 export const Gap = styled('div', { name: 'Gap' })`
   min-height: 16px;
   max-height: 16px;
+`;
+
+export const PlaygroundPopoverContent = styled(Paper, { name: 'PlaygroundPopoverContent' })`
+  width: 340px;
+  padding: 24px 12px;
+  border-radius: 16px;
+  
+  > h2 {
+    font-size: 16px;
+    font-weight: bold;
+  }
+  
+  > p {
+    font-size: 12px;
+    color: #565656;
+  }
 `;
