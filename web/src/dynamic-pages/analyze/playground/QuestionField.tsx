@@ -64,6 +64,7 @@ export default function QuestionField ({ defaultQuestion, maxLength, value, load
         </BottomLine>
       </Control>
       <PredefinedGroupsContainer>
+        <PredefinedGroupsContainerTitle>or choose a 🔥 trending query  here </PredefinedGroupsContainerTitle>
         <PredefinedGroups question={question} onSelectQuestion={onSelectQuestion} />
       </PredefinedGroupsContainer>
       <Box flex={1} />
@@ -108,7 +109,7 @@ const Counter = styled('span', { name: 'QuestionField-Counter' })`
 `;
 
 const PredefinedGroupsContainer = styled('div', { name: 'PredefinedGroupsContainer' })`
-  max-height: 86px;
+  max-height: 126px;
   margin-top: 8px;
   margin-bottom: 8px;
   background: #2c2c2c;
@@ -129,4 +130,10 @@ const PredefinedGroupsContainer = styled('div', { name: 'PredefinedGroupsContain
     
     transform: scaleX(0.7);
   }
+`;
+
+const PredefinedGroupsContainerTitle = styled('div', { name: 'PredefinedGroupsContainer-Title' })`
+  color: #FFE895;
+  font-size: 12px;
+  margin: 8px 16px;
 `;

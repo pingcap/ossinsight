@@ -2,7 +2,7 @@ import { ButtonBase, Paper, styled } from '@mui/material';
 import ArrowIcon from './arrow.svg';
 
 export const PlaygroundContainer = styled('section', { name: 'PlaygroundContainer' })`
-  height: 80vh;
+  height: 90vh;
   overflow: hidden;
   width: 100%;
   padding: 0;
@@ -74,8 +74,8 @@ export const PlaygroundDescription = styled('div', { name: 'PlaygroundDescriptio
 `;
 
 export const BaseInputContainer = styled('div', { name: 'BaseInputContainer' })`
-  max-height: min(50%, 350px);
-  min-height: min(50%, 350px);
+  max-height: min(60%, 450px);
+  min-height: min(60%, 450px);
   position: relative;
   border: 1px solid #565656;
 `;
@@ -148,7 +148,7 @@ export const PlaygroundButtonContainer = styled('div', { name: 'PlaygroundButton
   transition: transform 225ms cubic-bezier(0, 0, 0.2, 1) 0ms;
 
   &.opened {
-    transform: translateY(-80vh);
+    transform: translateY(-90vh);
   }
 `;
 

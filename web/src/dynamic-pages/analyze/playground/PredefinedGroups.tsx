@@ -27,7 +27,7 @@ export default function PredefinedGroups ({ question: currentQuestion, onSelectQ
 
 const Container = styled(List, { name: 'PredefinedGroups' })`
   overflow-y: scroll;
-  height: 100%;
+  height: calc(100% - 36px);
   padding: 0;
 
   > li {
