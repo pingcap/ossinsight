@@ -24,6 +24,8 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+      # Build and Push with GitHub Action Cache:
+      # https://docs.docker.com/build/building/cache/backends/gha/#using-dockerbuild-push-action
       -
         name: Build and Push Front End
         uses: docker/build-push-action@v3
@@ -32,6 +34,8 @@ jobs:
           file: "./web/Dockerfile"
           push: true
           tags: ossinsight/ossinsight-web:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
       - 
         name: Build and Push ETL Server
         uses: docker/build-push-action@v3
@@ -39,6 +43,8 @@ jobs:
           context: "{{defaultContext}}:etl"
           push: true
           tags: ossinsight/ossinsight-etl:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
       - 
         name: Build and Push API Server
         uses: docker/build-push-action@v3
@@ -47,6 +53,8 @@ jobs:
           file: "./packages/api-server/Dockerfile"
           push: true
           tags: ossinsight/ossinsight-api:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
       -
         name: Build and Push Dev Container
         uses: docker/build-push-action@v3
@@ -55,3 +63,6 @@ jobs:
           file: ".dev.Dockerfile"
           push: true
           tags: ossinsight/devcontainer:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
