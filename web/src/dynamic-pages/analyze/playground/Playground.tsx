@@ -195,7 +195,7 @@ const DISPLAY_POPPER_TIMEOUT = 10000;
 
 export function usePlayground () {
   const [open, setOpen] = useUrlSearchState('playground', booleanParam('enabled'), false);
-  const [popoverIn, setPopoverIn] = useState(localStorage.getItem('ossinsight.playground.tooltip-closed') !== 'true');
+  const [popoverIn, setPopoverIn] = useState(() => localStorage.getItem('ossinsight.playground.tooltip-closed') !== 'true');
   const whenMounted = useWhenMounted();
 
   const handleClose = useEventCallback(whenMounted(() => {
