@@ -14,7 +14,7 @@ services:
         RAILS_SERVE_STATIC_FILES: 'false'
     tty: true
     stdin_open: true
-    image: hooopo/ossinsight-etl:latest
+    image: ossinsight/ossinsight-etl:latest
     restart: always
     command: ["./start.sh"]
     environment:
@@ -31,7 +31,7 @@ services:
       dockerfile: ./packages/api-server/Dockerfile
       args:
         NODE_ENV: 'development'
-    image: hooopo/ossinsight-api:latest
+    image: ossinsight/ossinsight-api:latest
     restart: always
     ports: 
       - "3450:3450"
@@ -45,7 +45,7 @@ services:
       - ENABLE_CACHE=${ENABLE_CACHE:-false}
 
   web:
-    image: hooopo/ossinsight-web:latest
+    image: ossinsight/ossinsight-web:latest
     restart: always
     build:
       context: .

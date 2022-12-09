@@ -31,14 +31,14 @@ jobs:
           context: "{{defaultContext}}"
           file: "./web/Dockerfile"
           push: true
-          tags: hooopo/ossinsight-web:latest
+          tags: ossinsight/ossinsight-web:latest
       - 
         name: Build and Push ETL Server
         uses: docker/build-push-action@v3
         with:
           context: "{{defaultContext}}:etl"
           push: true
-          tags: hooopo/ossinsight-etl:latest
+          tags: ossinsight/ossinsight-etl:latest
       - 
         name: Build and Push API Server
         uses: docker/build-push-action@v3
@@ -46,4 +46,12 @@ jobs:
           context: "{{defaultContext}}"
           file: "./packages/api-server/Dockerfile"
           push: true
-          tags: hooopo/ossinsight-api:latest
+          tags: ossinsight/ossinsight-api:latest
+      -
+        name: Build and Push Dev Container
+        uses: docker/build-push-action@v3
+        with:
+          context: "{{defaultContext}}"
+          file: ".dev.Dockerfile"
+          push: true
+          tags: ossinsight/devcontainer:latest
