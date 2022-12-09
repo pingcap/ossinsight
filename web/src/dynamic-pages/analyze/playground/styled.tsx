@@ -1,4 +1,4 @@
-import { ButtonBase, styled, Paper } from '@mui/material';
+import { ButtonBase, Paper, styled } from '@mui/material';
 
 export const PlaygroundContainer = styled('section', { name: 'PlaygroundContainer' })`
   height: 80vh;
@@ -7,9 +7,15 @@ export const PlaygroundContainer = styled('section', { name: 'PlaygroundContaine
   padding: 0;
 `;
 
-export const PlaygroundHeadline = styled('h2', { name: 'PlaygroundHeadline' })`
+export const PlaygroundHeadline = styled('div', { name: 'PlaygroundHeadline' })`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+`;
+
+export const PlaygroundTitle = styled('h2', { name: 'PlaygroundTitle' })`
   font-size: 24px;
-  padding: 12px;
   display: flex;
   align-items: center;
   margin: 0;
@@ -18,10 +24,26 @@ export const PlaygroundHeadline = styled('h2', { name: 'PlaygroundHeadline' })`
   -webkit-text-fill-color: transparent;
   background-clip: text;
   text-fill-color: transparent;
+
   .opaque {
     -webkit-text-fill-color: transparent;
     text-fill-color: initial;
   }
+`;
+
+export const PlaygroundHeadlineExtra = styled('div', { name: 'PlaygroundHeadlineExtra' })`
+  &:before {
+    content: ' ';
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 6px;
+    background-color: #FF8300;
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+  font-size: 16px;
+  font-weight: bold;
 `;
 
 export const Beta = styled('span', { name: 'Beta Tag' })`
@@ -44,6 +66,7 @@ export const PlaygroundDescription = styled('div', { name: 'PlaygroundDescriptio
   flex: 1;
   display: flex;
   flex-direction: column;
+
   > p:last-of-type {
     margin-bottom: 0;
   }
@@ -116,11 +139,13 @@ export const PlaygroundButtonContainer = styled('div', { name: 'PlaygroundButton
   bottom: 32px;
   flex-direction: column;
   align-items: end;
+
   ${({ theme }) => theme.breakpoints.up('md')} {
     display: flex;
   }
 
   transition: transform 225ms cubic-bezier(0, 0, 0.2, 1) 0ms;
+
   &.opened {
     transform: translateY(-80vh);
   }
@@ -163,6 +188,7 @@ export const ResultBlockEmptyContainer = styled(ResultBlockContainer)`
 export const ResultBlockErrorContainer = styled(ResultBlockEmptyContainer)`
   border: none;
   padding: 0;
+
   > * {
     width: 100%;
     height: 100%;
@@ -178,12 +204,12 @@ export const PlaygroundPopoverContent = styled(Paper, { name: 'PlaygroundPopover
   width: 340px;
   padding: 24px 12px;
   border-radius: 16px;
-  
+
   > h2 {
     font-size: 16px;
     font-weight: bold;
   }
-  
+
   > p {
     font-size: 12px;
     color: #565656;

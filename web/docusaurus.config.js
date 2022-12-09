@@ -80,7 +80,9 @@ const config = {
     [
       path.resolve(__dirname, 'plugins/experimental-features'),
       {
-        defaultEnabled: []
+        defaultEnabled: [
+          'ai-playground',
+        ]
       }
     ],
     [
