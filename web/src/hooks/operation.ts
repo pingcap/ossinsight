@@ -46,7 +46,7 @@ export function useAsyncOperation<P, T> (params: P, fetcher: (params: P) => Prom
         setLoading(false);
         loadingRef.current = false;
       }));
-  }, []);
+  }, [userInfo]);
 
   return {
     data,
