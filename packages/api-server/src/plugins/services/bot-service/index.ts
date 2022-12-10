@@ -2,6 +2,7 @@ import { Configuration, OpenAIApi } from "openai";
 
 import fp from "fastify-plugin";
 import pino from "pino";
+import {DateTime} from "luxon";
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -49,6 +50,7 @@ export class BotService {
         const { user_id, user_login, repo_id, repo_name } = context;
         const defineCurrentRepoId = repo_id && repo_name ? `Describe: this_repo_id =  ${repo_id}, this_repo_name =  '${repo_name}'` : '';
         const defineMyUserId = user_id && user_login ? `Describe: my_user_id = ${user_id}, my_user_login = '${user_login}'` : '';
+        const defineToday = `Describe: today = '${DateTime.utc().toSQLDate()}'`;
         const createIssueExample = repo_id && user_login ? `
 # Example: How many issues did I created in pingcap/tidb in last three months
 SELECT COUNT(*)
@@ -77,6 +79,7 @@ Relation github_events.repo_id = github_repos.repo_id
 Define github_events.type = [PushEvent, PullRequestEvent, IssueCommentEvent, IssuesEvent, CreateEvent, ForkEvent, PullRequestReviewCommentEvent, PullRequestReviewEvent, ReleaseEvent, WatchEvent]
 ${defineCurrentRepoId}
 ${defineMyUserId}
+${defineToday}
 ---
 ${createIssueExample}
 ---
