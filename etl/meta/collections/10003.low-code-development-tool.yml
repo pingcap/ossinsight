@@ -29,3 +29,6 @@ items:
   - frappe/frappe
   - surrealdb/surrealdb
   - openblocks-dev/openblocks
+  - chiselstrike/chiselstrike
+  - grafbase/grafbase
+  - platformatic/platformatic
