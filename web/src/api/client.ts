@@ -3,8 +3,15 @@ import { createSimpleCache, patchCacheInterceptors } from './axios/cache';
 import io from 'socket.io-client';
 import { transformCompactResponseInterceptor } from './axios/compact';
 import { patchAuthInterceptors } from '@site/src/api/axios/auth';
+import { notFalsy } from '@site/src/utils/value';
 
 export const BASE_URL = (process.env.APP_API_BASE ?? '') || 'https://api.ossinsight.io';
+
+declare module 'axios' {
+  interface AxiosRequestConfig {
+    keepResponse?: boolean;
+  }
+}
 
 function createClient (enableCache = true) {
   const client = axios.create({
@@ -33,6 +40,9 @@ function createClient (enableCache = true) {
 
   client.interceptors.response.use(transformCompactResponseInterceptor);
   client.interceptors.response.use((response) => {
+    if (notFalsy(response.config.keepResponse)) {
+      return response;
+    }
     return response.data;
   });
 
