@@ -27,7 +27,32 @@ const schema = {
   }
 } as const;
 
+export const GENERATE_SQL_USED_HEADER = "x-playground-generate-sql-used";
+export const GENERATE_SQL_LIMIT_HEADER = "x-playground-generate-sql-limit";
+export const MAX_DAILY_GENERATE_SQL_LIMIT = 2000;
+
 const root: FastifyPluginAsyncJsonSchemaToTs = async (app, opts): Promise<void> => {
+  app.head('/', {
+    preHandler: [app.authenticate],
+  }, async function (req, reply) {
+    const { playgroundService } = app;
+    const { id: userId, githubLogin } = req.user;
+
+    // Get the limit and used.
+    let limit = app.config.PLAYGROUND_DAILY_QUESTIONS_LIMIT || MAX_DAILY_GENERATE_SQL_LIMIT;
+    let used = await playgroundService.countTodayQuestionRequests(userId, false);
+
+    // Give the trusted users more daily requests.
+    const trustedLogins = app.config.PLAYGROUND_TRUSTED_GITHUB_LOGINS;
+    if (trustedLogins.includes(githubLogin)) {
+      limit = MAX_DAILY_GENERATE_SQL_LIMIT;
+    }
+
+    // Set the headers.
+    reply.header(GENERATE_SQL_LIMIT_HEADER, limit);
+    reply.header(GENERATE_SQL_USED_HEADER, used);
+  });
+
   app.post<{
     Body: IBody;
   }>('/', {
@@ -44,9 +69,23 @@ const root: FastifyPluginAsyncJsonSchemaToTs = async (app, opts): Promise<void> 
       user_login: githubLogin,
     } as QuestionContext;
 
+    // Get the limit and used.
+    let limit = app.config.PLAYGROUND_DAILY_QUESTIONS_LIMIT || MAX_DAILY_GENERATE_SQL_LIMIT;
+    let used = await playgroundService.countTodayQuestionRequests(userId, false);
+
+    // Give the trusted users more daily requests.
     const trustedLogins = app.config.PLAYGROUND_TRUSTED_GITHUB_LOGINS;
-    if (!Array.isArray(trustedLogins) || !trustedLogins.includes(githubLogin)) {
-      await playgroundService.checkIfUserHasReachedDailyQuestionLimit(userId);
+    if (trustedLogins.includes(githubLogin)) {
+      limit = MAX_DAILY_GENERATE_SQL_LIMIT;
+    }
+
+    // Check if the current user reached the daily request limit.
+    reply.header(GENERATE_SQL_LIMIT_HEADER, limit);
+    if (used >= limit) {
+      reply.header(GENERATE_SQL_USED_HEADER, used);
+      throw new APIError(429, `You have reached the daily question limit. Please try again tomorrow.`);
+    } else {
+      reply.header(GENERATE_SQL_USED_HEADER, used + 1);
     }
 
     let sql;
