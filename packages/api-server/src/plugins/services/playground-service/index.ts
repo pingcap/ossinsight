@@ -1,6 +1,5 @@
 import fp from "fastify-plugin";
 import {MySQLPromisePool} from "@fastify/mysql";
-import {APIError} from "../../../utils/error";
 import {QuestionContext} from "../bot-service";
 
 declare module 'fastify' {
@@ -19,9 +18,7 @@ export interface QuestionRecord {
 }
 
 export default fp(async (app) => {
-    app.decorate('playgroundService', new PlaygroundService(app.mysql, {
-        dailyQuestionLimit: app.config.PLAYGROUND_DAILY_QUESTIONS_LIMIT,
-    }));
+    app.decorate('playgroundService', new PlaygroundService(app.mysql));
 }, {
     name: 'playground-service',
     dependencies: [
@@ -29,19 +26,11 @@ export default fp(async (app) => {
     ]
 });
 
-export interface PlaygroundOption {
-  dailyQuestionLimit?: number;
-}
-
 export class PlaygroundService {
 
-    private readonly dailyQuestionLimit: number | undefined;
-
     constructor(
-        private readonly mysql: MySQLPromisePool,
-        options?: PlaygroundOption
+        private readonly mysql: MySQLPromisePool
     ) {
-        this.dailyQuestionLimit = options?.dailyQuestionLimit;
     }
 
     async recordQuestion(questionRecord: QuestionRecord):Promise<void> {
@@ -69,11 +58,4 @@ export class PlaygroundService {
         return result[0].count;
     }
 
-    // Check if the user has reached the daily question limit.
-    async checkIfUserHasReachedDailyQuestionLimit(userId: number) {
-        const count = await this.countTodayQuestionRequests(userId, false);
-        if (this.dailyQuestionLimit !== undefined && count >= this.dailyQuestionLimit) {
-            throw new APIError(429, `You have reached the daily question limit (${count}/${this.dailyQuestionLimit})`);
-        }
-    }
 }
