@@ -21,7 +21,10 @@ jobs:
         with:
           node-version: 18
           cache: 'pnpm'
-          cache-dependency-path: web/package-lock.json
+      - name: Install PNPM
+        run: |
+          corepack enable
+          corepack prepare --activate
       - name: Install
         run: pnpm i --frozen-lockfile --strict-peer-dependencies --shamefully-hoist
       - name: Lint
@@ -44,7 +47,10 @@ jobs:
         with:
           node-version: 18
           cache: 'pnpm'
-          cache-dependency-path: web/package-lock.json
+      - name: Install PNPM
+        run: |
+          corepack enable
+          corepack prepare --activate
       - name: Install
         run: pnpm i --frozen-lockfile --strict-peer-dependencies --shamefully-hoist
       - name: Prefetch
