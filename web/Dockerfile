@@ -9,9 +9,7 @@ COPY ./web/package*.json .
 COPY ./web/plugins ./plugins
 COPY ./web/*.mjs .
 
-RUN corepack enable
-RUN corepack prepare --activate
-RUN pnpm i --frozen-lockfile --strict-peer-dependencies --shamefully-hoist
+RUN npm ci
 
 # Bundle app source
 COPY ./web .

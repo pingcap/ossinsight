@@ -8,11 +8,12 @@
     "packages/feeds-server"
   ],
   "scripts": {
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "postinstall": "cd web && npm install"
   },
   "devDependencies": {
     "husky": "^8.0.1",
     "lint-staged": "^13.0.3"
   },
-  "packageManager": "pnpm@7.14.2"
+  "packageManager": "pnpm@7.3.0"
 }
