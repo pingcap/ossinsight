@@ -39,7 +39,7 @@ export default function QuestionField ({ defaultQuestion, maxLength, value, load
   }, [resource]);
 
   const quota = useMemo(() => {
-    if (isNullish(resource)) {
+    if (isNullish(resource) || !isFinite(resource.used) || !isFinite(resource.limit)) {
       return '';
     } else {
       return ` ${resource.used}/${resource.limit}`;

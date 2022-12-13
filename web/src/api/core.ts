@@ -53,7 +53,7 @@ export async function postPlaygroundSQL (params: {
 
 function getAiQuestionHeaders (headers: AxiosResponseHeaders) {
   const {
-    'x-playground-generate-sql-limit': limit = '20',
+    'x-playground-generate-sql-limit': limit = 'NaN',
     'x-playground-generate-sql-used': used = 'NaN',
   } = headers;
   return {

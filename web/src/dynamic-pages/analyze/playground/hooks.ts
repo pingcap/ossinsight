@@ -20,12 +20,15 @@ function useLatest<T> (value: [T | undefined, T | undefined]) {
   const lastRef = useRef<T | undefined>(value.find(notNullish));
   return useMemo(() => {
     if (isNullish(value[0])) {
+      if (isNullish(value[1])) {
+        return undefined;
+      }
       lastRef.current = value[1];
       return value[1];
     }
     if (isNullish(value[1])) {
-      lastRef.current = undefined;
-      return undefined;
+      lastRef.current = value[0];
+      return value[0];
     }
     if (value[0] === lastRef.current) {
       lastRef.current = value[1];
