@@ -115,7 +115,7 @@ export default withInViewContainer(function MonthRankSection () {
                         <Stack direction="row" spacing={1} alignItems="center">
                           <Avatar
                             src={`https://github.com/${
-                              item.repo_name.split('/')[0]
+                              item.repo_name?.split('/')[0]
                             }.png`}
                             sx={{ width: 20, height: 20 }}
                           />
