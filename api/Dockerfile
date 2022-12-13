@@ -1,7 +1,9 @@
 # Build stage.
 FROM node:18-alpine AS builder
 
-RUN npm install pnpm -g
+# prepare pnpm with corepack
+RUN corepack enable
+RUN corepack prepare --activate
 
 WORKDIR /usr/src/app
 
