@@ -1,6 +1,6 @@
+import {APIError} from "../../../utils/error";
 import {FastifyPluginAsyncJsonSchemaToTs} from "@fastify/type-provider-json-schema-to-ts";
 import {QuestionContext} from "../../../plugins/services/bot-service";
-import {APIError} from "../../../utils/error";
 
 export interface IBody {
   question: string;
@@ -51,7 +51,7 @@ const root: FastifyPluginAsyncJsonSchemaToTs = async (app, opts): Promise<void> 
     // Set the headers.
     reply.header(GENERATE_SQL_LIMIT_HEADER, limit);
     reply.header(GENERATE_SQL_USED_HEADER, used);
-    reply.send();
+    reply.status(200).send();
   });
 
   app.post<{
