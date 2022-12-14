@@ -28,6 +28,7 @@ describe('http', () => {
           .toMatchObject({
             headers: {
               'access-control-allow-origin': origin,
+              'access-control-expose-headers': expect.stringMatching('x-playground-generate-sql-used, x-playground-generate-sql-limit'),
             },
           });
       }

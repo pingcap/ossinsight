@@ -5,6 +5,7 @@ import { existsSync, readFileSync } from 'fs';
 import cors from '@fastify/cors';
 import fp from "fastify-plugin";
 import { parse as parseYAML } from 'yaml';
+import {GENERATE_SQL_LIMIT_HEADER, GENERATE_SQL_USED_HEADER} from "../../routes/bot/questionToSQL";
 
 type OriginType = string | RegExp;
 
@@ -27,6 +28,7 @@ export default fp(async (app) => {
 
     app.register(cors, {
         origin: allowedOrigins,
+        exposedHeaders: [GENERATE_SQL_USED_HEADER, GENERATE_SQL_LIMIT_HEADER],
         credentials: true,
     });
     app.decorate('allowedOrigins', allowedOrigins);
