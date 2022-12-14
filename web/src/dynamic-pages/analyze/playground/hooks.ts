@@ -21,7 +21,7 @@ function useLatest<T> (value: [T | undefined, T | undefined]) {
   return useMemo(() => {
     if (isNullish(value[0])) {
       if (isNullish(value[1])) {
-        return undefined;
+        return lastRef.current;
       }
       lastRef.current = value[1];
       return value[1];
