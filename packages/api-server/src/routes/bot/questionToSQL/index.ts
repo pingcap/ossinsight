@@ -51,6 +51,7 @@ const root: FastifyPluginAsyncJsonSchemaToTs = async (app, opts): Promise<void> 
     // Set the headers.
     reply.header(GENERATE_SQL_LIMIT_HEADER, limit);
     reply.header(GENERATE_SQL_USED_HEADER, used);
+    reply.send();
   });
 
   app.post<{
