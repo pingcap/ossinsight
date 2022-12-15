@@ -1,9 +1,9 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-cd web
 if [[ $(git rev-parse --abbrev-ref HEAD) == 'main' ]]; then
+  cd web
   npm run lint
+  npm run typecheck
+  cd ..
 fi
-npm run typecheck
-cd ..

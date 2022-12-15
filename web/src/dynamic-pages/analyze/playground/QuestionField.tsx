@@ -1,14 +1,15 @@
-import { Box, styled, TextField, useEventCallback } from '@mui/material';
+import { Box, styled, TextField, Tooltip, useEventCallback } from '@mui/material';
 import * as React from 'react';
-import { KeyboardEventHandler, useCallback } from 'react';
+import { KeyboardEventHandler, useCallback, useMemo } from 'react';
 import isHotkey from 'is-hotkey';
 import { getOptionalErrorMessage } from '@site/src/utils/error';
 import { LoadingButton } from '@mui/lab';
-import { notFalsy } from '@site/src/utils/value';
+import { isNullish, notFalsy } from '@site/src/utils/value';
 import { GitHub } from '@mui/icons-material';
 import { useUserInfoContext } from '@site/src/context/user';
 import { BaseInputBottomLine, BaseInputContainer } from '@site/src/dynamic-pages/analyze/playground/styled';
 import PredefinedGroups, { PredefinedGroupsProps } from '@site/src/dynamic-pages/analyze/playground/PredefinedGroups';
+import { AiQuestionResource } from '@site/src/api/core';
 
 export interface QuestionFieldProps extends PredefinedGroupsProps {
   loading: boolean;
@@ -18,9 +19,10 @@ export interface QuestionFieldProps extends PredefinedGroupsProps {
   onAction: () => void;
   defaultQuestion: string;
   maxLength: number;
+  resource?: AiQuestionResource;
 }
 
-export default function QuestionField ({ defaultQuestion, maxLength, value, loading, error, onAction, onChange, question, onSelectQuestion }: QuestionFieldProps) {
+export default function QuestionField ({ defaultQuestion, maxLength, value, loading, error, onAction, onChange, question, onSelectQuestion, resource }: QuestionFieldProps) {
   const { validated } = useUserInfoContext();
   const handleCustomQuestion: KeyboardEventHandler = useCallback((e) => {
     if (isHotkey('Enter', e)) {
@@ -28,6 +30,21 @@ export default function QuestionField ({ defaultQuestion, maxLength, value, load
       onAction();
     }
   }, [onAction]);
+
+  const disabled = useMemo(() => {
+    if (isNullish(resource)) {
+      return false;
+    }
+    return resource.used >= resource.limit;
+  }, [resource]);
+
+  const quota = useMemo(() => {
+    if (isNullish(resource) || !isFinite(resource.used) || !isFinite(resource.limit)) {
+      return '';
+    } else {
+      return ` ${resource.used}/${resource.limit}`;
+    }
+  }, [resource]);
 
   return (
     <Container>
@@ -64,14 +81,17 @@ export default function QuestionField ({ defaultQuestion, maxLength, value, load
         </BottomLine>
       </Control>
       <PredefinedGroupsContainer>
-        <PredefinedGroupsContainerTitle>or choose a 🔥 trending query  here </PredefinedGroupsContainerTitle>
+        <PredefinedGroupsContainerTitle>or choose a 🔥 trending query here </PredefinedGroupsContainerTitle>
         <PredefinedGroups question={question} onSelectQuestion={onSelectQuestion} />
       </PredefinedGroupsContainer>
       <Box flex={1} />
-      <LoadingButton variant="contained" size="small" loading={loading} onClick={onAction}>
-        {validated ? '🤖️' : <>Login with <GitHub fontSize="inherit" sx={{ mx: 0.5 }} /> and </>}
-        Generate SQL
-      </LoadingButton>
+      <Tooltip title={`${resource?.limit ?? ''} requests per day`}>
+        <LoadingButton variant="contained" size="small" loading={loading} onClick={onAction} disabled={disabled}>
+          {validated ? '🤖️' : <>Login with <GitHub fontSize="inherit" sx={{ mx: 0.5 }} /> and </>}
+          Generate SQL
+          {quota}
+        </LoadingButton>
+      </Tooltip>
     </Container>
   );
 }
@@ -114,7 +134,7 @@ const PredefinedGroupsContainer = styled('div', { name: 'PredefinedGroupsContain
   margin-bottom: 8px;
   background: #2c2c2c;
   position: relative;
-  
+
   &:before {
     display: block;
     content: ' ';
@@ -123,11 +143,11 @@ const PredefinedGroupsContainer = styled('div', { name: 'PredefinedGroupsContain
     border-left: 18px solid transparent;
     border-right: 18px solid transparent;
     border-bottom: 18px solid #2c2c2c;
-    
+
     position: absolute;
     top: -18px;
     left: 15%;
-    
+
     transform: scaleX(0.7);
   }
 `;

@@ -32,7 +32,7 @@ export const GENERATE_SQL_LIMIT_HEADER = "x-playground-generate-sql-limit";
 export const MAX_DAILY_GENERATE_SQL_LIMIT = 2000;
 
 const root: FastifyPluginAsyncJsonSchemaToTs = async (app, opts): Promise<void> => {
-  app.head('/', {
+  app.get('/quota', {
     preHandler: [app.authenticate],
   }, async function (req, reply) {
     const { playgroundService } = app;
@@ -49,9 +49,10 @@ const root: FastifyPluginAsyncJsonSchemaToTs = async (app, opts): Promise<void> 
     }
 
     // Set the headers.
-    reply.header(GENERATE_SQL_LIMIT_HEADER, limit);
-    reply.header(GENERATE_SQL_USED_HEADER, used);
-    reply.status(200).send();
+    reply.status(200).send({
+      limit,
+      used,
+    });
   });
 
   app.post<{

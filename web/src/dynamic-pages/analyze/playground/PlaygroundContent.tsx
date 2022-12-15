@@ -13,11 +13,11 @@ import { useEffect, useMemo, useState } from 'react';
 import { useAnalyzeContext } from '@site/src/dynamic-pages/analyze/charts/context';
 import { PredefinedQuestion } from './predefined';
 import { useAsyncOperation } from '@site/src/hooks/operation';
-import { aiQuestion } from '@site/src/api/core';
 import { format } from 'sql-formatter';
 import { core } from '@site/src/api';
 import { Favorite, HelpOutline, Twitter } from '@mui/icons-material';
 import { twitterLink } from '@site/src/utils/share';
+import { useAiQuestion } from './hooks';
 
 const DEFAULT_QUESTION = 'Who closed the last issue in this repo?';
 const QUESTION_MAX_LENGTH = 200;
@@ -35,7 +35,7 @@ export default function PlaygroundContent () {
   });
 
   const { data, loading, error, run } = useAsyncOperation({ sql: inputValue, type: 'repo', id: `${repoId ?? 'undefined'}` }, core.postPlaygroundSQL);
-  const { data: questionSql, loading: questionLoading, error: questionError, run: runQuestion } = useAsyncOperation({ question: `In this repo: ${customQuestion || DEFAULT_QUESTION}`, context: { repo_id: repoId, repo_name: repoName } }, aiQuestion, true);
+  const { sql: questionSql, resource, loading: questionLoading, error: questionError, run: runQuestion } = useAiQuestion(customQuestion || DEFAULT_QUESTION, repoId, repoName);
 
   const onChange = (newValue: string) => {
     setInputValue(newValue);
@@ -127,6 +127,7 @@ LIMIT
               maxLength={QUESTION_MAX_LENGTH}
               question={currentQuestion}
               onSelectQuestion={handleSelectQuestion}
+              resource={resource}
             />
             <PlaygroundDescription>
               <p>

@@ -1,5 +1,5 @@
 import type { Collection, RepoInfo, SearchRepoInfo, UserInfo, UserType } from '@ossinsight/api';
-import { AxiosAdapter, AxiosRequestConfig } from 'axios';
+import { AxiosAdapter, AxiosRequestConfig, AxiosResponse, AxiosResponseHeaders } from 'axios';
 import { RemoteData } from '../components/RemoteCharts/hook';
 import { client, clientWithoutCache } from './client';
 import { wsQueryApiAdapter } from './ws';
@@ -51,7 +51,31 @@ export async function postPlaygroundSQL (params: {
   return await clientWithoutCache.post('/q/playground', params, { withCredentials: true }).then((data) => data);
 }
 
+function getAiQuestionHeaders (headers: AxiosResponseHeaders) {
+  const {
+    'x-playground-generate-sql-limit': limit = 'NaN',
+    'x-playground-generate-sql-used': used = 'NaN',
+  } = headers;
+  return {
+    limit: parseInt(limit),
+    used: parseInt(used),
+  };
+}
+
+export type AiQuestionResource = {
+  limit: number;
+  used: number;
+};
+
+export async function aiQuestionResource (): Promise<AiQuestionResource> {
+  return await clientWithoutCache.get('/bot/questionToSQL/quota', { withCredentials: true });
+}
+
 export async function aiQuestion (params: { question: string, context?: { repo_id?: number, repo_name?: string } }) {
-  const { sql } = await clientWithoutCache.post<any, { sql: string }>('/bot/questionToSQL', params, { withCredentials: true });
-  return sql;
+  const {
+    data: { sql },
+    headers,
+  } = await clientWithoutCache.post<any, AxiosResponse<{ sql: string }>>('/bot/questionToSQL', params, { withCredentials: true, keepResponse: true });
+
+  return { sql, resource: getAiQuestionHeaders(headers) };
 }
