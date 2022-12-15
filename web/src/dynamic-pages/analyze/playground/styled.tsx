@@ -119,6 +119,8 @@ export const PlaygroundTips = styled('div', { name: 'PlaygroundTips' })`
 export const PlaygroundTipsText = styled('div', { name: 'PlaygroundTips-Text' })`
   font-size: 16px;
   font-weight: bold;
+  height: 32px;
+  line-height: 32px;
 `;
 
 export const PlaygroundMain = styled('main', { name: 'PlaygroundMain' })`
