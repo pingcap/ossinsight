@@ -1,4 +1,4 @@
-import { Box, styled, TextField, useEventCallback } from '@mui/material';
+import { Box, styled, TextField, Tooltip, useEventCallback } from '@mui/material';
 import * as React from 'react';
 import { KeyboardEventHandler, useCallback, useMemo } from 'react';
 import isHotkey from 'is-hotkey';
@@ -85,11 +85,13 @@ export default function QuestionField ({ defaultQuestion, maxLength, value, load
         <PredefinedGroups question={question} onSelectQuestion={onSelectQuestion} />
       </PredefinedGroupsContainer>
       <Box flex={1} />
-      <LoadingButton variant="contained" size="small" loading={loading} onClick={onAction} disabled={disabled}>
-        {validated ? '🤖️' : <>Login with <GitHub fontSize="inherit" sx={{ mx: 0.5 }} /> and </>}
-        Generate SQL
-        {quota}
-      </LoadingButton>
+      <Tooltip title={`${resource?.limit ?? ''} requests per day`}>
+        <LoadingButton variant="contained" size="small" loading={loading} onClick={onAction} disabled={disabled}>
+          {validated ? '🤖️' : <>Login with <GitHub fontSize="inherit" sx={{ mx: 0.5 }} /> and </>}
+          Generate SQL
+          {quota}
+        </LoadingButton>
+      </Tooltip>
     </Container>
   );
 }
