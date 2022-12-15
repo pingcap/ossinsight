@@ -67,10 +67,8 @@ export type AiQuestionResource = {
   used: number;
 };
 
-export async function aiQuestionResource () {
-  const { headers } = await clientWithoutCache.head('/bot/questionToSQL', { withCredentials: true, keepResponse: true });
-
-  return getAiQuestionHeaders(headers);
+export async function aiQuestionResource (): Promise<AiQuestionResource> {
+  return await clientWithoutCache.get('/bot/questionToSQL/quota', { withCredentials: true });
 }
 
 export async function aiQuestion (params: { question: string, context?: { repo_id?: number, repo_name?: string } }) {
