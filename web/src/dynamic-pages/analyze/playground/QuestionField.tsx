@@ -4,12 +4,12 @@ import { KeyboardEventHandler, useCallback, useMemo } from 'react';
 import isHotkey from 'is-hotkey';
 import { getOptionalErrorMessage } from '@site/src/utils/error';
 import { LoadingButton } from '@mui/lab';
-import { isNullish, notFalsy } from '@site/src/utils/value';
+import { isNullish, notFalsy, notNullish } from '@site/src/utils/value';
 import { GitHub } from '@mui/icons-material';
-import { useUserInfoContext } from '@site/src/context/user';
 import { BaseInputBottomLine, BaseInputContainer } from '@site/src/dynamic-pages/analyze/playground/styled';
 import PredefinedGroups, { PredefinedGroupsProps } from '@site/src/dynamic-pages/analyze/playground/PredefinedGroups';
 import { AiQuestionResource } from '@site/src/api/core';
+import AuthorizedContent from '@site/src/components/AuthorizedContent';
 
 export interface QuestionFieldProps extends PredefinedGroupsProps {
   loading: boolean;
@@ -23,7 +23,6 @@ export interface QuestionFieldProps extends PredefinedGroupsProps {
 }
 
 export default function QuestionField ({ defaultQuestion, maxLength, value, loading, error, onAction, onChange, question, onSelectQuestion, resource }: QuestionFieldProps) {
-  const { validated } = useUserInfoContext();
   const handleCustomQuestion: KeyboardEventHandler = useCallback((e) => {
     if (isHotkey('Enter', e)) {
       e.preventDefault();
@@ -45,6 +44,26 @@ export default function QuestionField ({ defaultQuestion, maxLength, value, load
       return ` ${resource.used}/${resource.limit}`;
     }
   }, [resource]);
+
+  const button = useMemo(() => (
+    <LoadingButton variant="contained" size="small" loading={loading} onClick={onAction} disabled={disabled}>
+      <AuthorizedContent fallback={<>Login with <GitHub fontSize="inherit" sx={{ mx: 0.5 }} /> and </>}>
+        <>🤖️</>
+      </AuthorizedContent>
+      Generate SQL
+      <AuthorizedContent>
+        <>{quota}</>
+      </AuthorizedContent>
+    </LoadingButton>
+  ), [loading, disabled, quota, onAction]);
+
+  const buttonWithTooltip = useMemo(() => notNullish(resource)
+    ? (
+    <Tooltip arrow title={`${resource.limit ?? ''} requests per day`}>
+      {button}
+    </Tooltip>
+      )
+    : button, [resource, button]);
 
   return (
     <Container>
@@ -85,13 +104,9 @@ export default function QuestionField ({ defaultQuestion, maxLength, value, load
         <PredefinedGroups question={question} onSelectQuestion={onSelectQuestion} />
       </PredefinedGroupsContainer>
       <Box flex={1} />
-      <Tooltip title={`${resource?.limit ?? ''} requests per day`}>
-        <LoadingButton variant="contained" size="small" loading={loading} onClick={onAction} disabled={disabled}>
-          {validated ? '🤖️' : <>Login with <GitHub fontSize="inherit" sx={{ mx: 0.5 }} /> and </>}
-          Generate SQL
-          {quota}
-        </LoadingButton>
-      </Tooltip>
+      <AuthorizedContent fallback={button}>
+        {buttonWithTooltip}
+      </AuthorizedContent>
     </Container>
   );
 }
