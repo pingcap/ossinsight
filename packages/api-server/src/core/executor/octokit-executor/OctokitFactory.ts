@@ -1,7 +1,7 @@
 import { Factory } from "generic-pool";
 import { Octokit } from "octokit";
 import pino from 'pino';
-import {getOctokit} from "../../../utils/loger";
+import {getOctokit} from "../../../utils/octokit";
 
 export const SYMBOL_TOKEN = Symbol('PERSONAL_TOKEN');
 
