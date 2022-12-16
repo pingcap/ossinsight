@@ -44,3 +44,4 @@ items:
   - gamelinux/passivedns
   - lanmaster53/recon-ng
   - jeremylong/DependencyCheck
+  - tenzir/vast
