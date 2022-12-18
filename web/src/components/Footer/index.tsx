@@ -1,9 +1,8 @@
 import { Cards, StandardCard } from '../Cards';
 import React from 'react';
 import Section from '../../pages/home/_components/Section';
-import Link from '@docusaurus/Link';
 import GitHubButton from 'react-github-btn';
-import { Typography, Box, Button } from '@mui/material';
+import { Typography, Box } from '@mui/material';
 
 const icon = (src) => {
   return (
