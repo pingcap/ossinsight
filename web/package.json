@@ -55,6 +55,7 @@
     "react-ace": "^10.1.0",
     "react-aspect-ratio": "^1.1.2",
     "react-dom": "^17.0.2",
+    "react-github-btn": "^1.4.0",
     "socket.io-client": "^4.5.2",
     "sql-formatter": "^4.0.2",
     "use-deep-compare": "^1.1.0"
