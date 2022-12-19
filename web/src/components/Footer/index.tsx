@@ -1,9 +1,8 @@
 import { Cards, StandardCard } from '../Cards';
 import React from 'react';
 import Section from '../../pages/home/_components/Section';
-import Link from '@docusaurus/Link';
-
-import { Typography, Box, Button } from '@mui/material';
+import GitHubButton from 'react-github-btn';
+import { Typography, Box } from '@mui/material';
 
 const icon = (src) => {
   return (
@@ -55,12 +54,6 @@ export default function Footer ({ sideWidth }: { sideWidth?: string }) {
             }}
           />
         </Cards>
-        <Box textAlign='center' sx={{ fontSize: 24, mt: 6 }}>
-        Want to create your own IDEAInsight in a day?&nbsp;<br />
-          <Button sx={{ fontSize: 24, fontWeight: 'bold', verticalAlign: 'baseline', textDecoration: 'underline' }} component={Link} href='https://share.hsforms.com/1E-qtGQWrTVmctP8kBT34gw2npzm' rel='noopener'>
-            Join a workshop!
-          </Button>
-        </Box>
       </Section>
       <Section darker sideWidth={sideWidth}>
         <div className="text--center">
@@ -77,6 +70,7 @@ export default function Footer ({ sideWidth }: { sideWidth?: string }) {
               #TiDBCloud
             </a>
           </h3>
+          <GitHubButton href="https://github.com/pingcap/ossinsight" data-size="large" data-show-count="true" aria-label="Star pingcap/ossinsight on GitHub">Star</GitHubButton>
         </div>
       </Section>
     </>
