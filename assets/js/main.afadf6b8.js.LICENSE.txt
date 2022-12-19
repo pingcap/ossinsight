@@ -15,6 +15,12 @@ object-assign
  * Released under the MIT license
  */
 
+/*!
+ * github-buttons v2.22.1
+ * (c) 2022 なつき
+ * @license BSD-2-Clause
+ */
+
 /*! *****************************************************************************
 Copyright (c) Microsoft Corporation.
 
