@@ -157,3 +157,7 @@ location     | varchar     | [null]         |     |         |
 ### Automatic Tweet for collection
 
 * bundle exec rails runner 'CollectionTweetGenerator.new(1).generate' # every day
+
+
+### Realtime Fetch Hackernews Item
+* bundle exec rails runner 'HnRealtime.new.run'
