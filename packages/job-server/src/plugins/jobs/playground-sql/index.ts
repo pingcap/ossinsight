@@ -3,7 +3,8 @@ import fp from "fastify-plugin";
 import pino from 'pino';
 import {
   TiDBPlaygroundQueryExecutor, QueryExecutionService,
-  getPlaygroundSessionLimits, PlaygroundService
+  getPlaygroundSessionLimits, PlaygroundService,
+  CachedTableCacheProvider
 } from "@ossinsight/api-server";
 
 export const PLAYGROUND_SQL_QUEUE_NAME = "playground-sql";
@@ -22,21 +23,25 @@ export default fp(async (app) => {
     uri: app.config.PLAYGROUND_DATABASE_URL,
   }, getPlaygroundSessionLimits());
   const queryExecutionService = new QueryExecutionService();
-  const playgroundService = new PlaygroundService(app.mysql, queryExecutionService, playgroundExecutor);
+  const { mysql, redis } = app;
+  const playgroundService = new PlaygroundService(mysql, queryExecutionService, playgroundExecutor, redis);
 
   // Executing query in concurrent.
   const connectionParams = new URLSearchParams(app.config.DATABASE_URL);
   const concurrency = parseInt(connectionParams.get("connectionLimit") || "2");
   const worker = new Worker(PLAYGROUND_SQL_QUEUE_NAME, async job => {
-    const { id: executionId, sql, queryKey } = job.data;
-    logger.info({ queryKey, sql }, 'Executing query execution: %d', executionId);
+    const { id: executionId, sql, queryHash } = job.data;
+    const cacheKey = `playground:${queryHash}`;
+    logger.info({ cacheKey, sql }, 'Executing query execution: %d', executionId);
 
-    let conn = await app.mysql.getConnection();
+    const conn = await mysql.getConnection();
+    const cache = new CachedTableCacheProvider(conn);
+
     try {
-      await playgroundService.executeSQLImmediately(conn, job.data);
-      logger.info({ queryKey }, 'Finished executing query execution: %d', executionId);
+      await playgroundService.executeSQLImmediately(conn, cache, cacheKey, job.data);
+      logger.info({ cacheKey }, 'Finished executing query execution: %d', executionId);
     } catch (err) {
-      logger.error({ queryKey, err }, 'Failed to execute query execution: %d.', executionId);
+      logger.error({ cacheKey, err }, 'Failed to execute query execution: %d.', executionId);
     } finally {
       await conn.release();
     }

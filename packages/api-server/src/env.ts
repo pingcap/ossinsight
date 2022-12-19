@@ -15,6 +15,10 @@ export const APIServerEnvSchema = {
     DATABASE_URL: {
       type: 'string'
     },
+    REDIS_URL: {
+      type: 'string',
+      default: 'redis://localhost:6379/0'
+    },
     API_BASE_URL: {
       type: 'string'
     },

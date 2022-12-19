@@ -9,23 +9,23 @@ export interface QueryExecution {
     userId?: number | null;
     ip?: string | null;
     // The SQL statement.
-    sql: string;
+    querySQL: string;
     queryHash: string;
-    queryDigest: string | null;
+    queryDigest?: string | null;
     // Execution info.
-    enqueue?: boolean;
-    useTiFlash: boolean;
     status: QueryStatus;
-    fromCache?: boolean;
+    engines: string[];
+    enqueue: boolean;
+    hitCache: boolean;
+    error?: string;
     // Stats.
-    requestedAt: DateTime;
+    requestedAt?: DateTime | null;
     executedAt?: DateTime | null;
     finishedAt?: DateTime | null;
+    spent?: number | null;
 }
 
-export type CreateQueryExecutionOptions = Pick<QueryExecution, "userId" | "ip" | "queryHash" | "queryDigest" | "sql" | "useTiFlash" | "status" | "requestedAt">;
-
-export type FinishedQueryExecutionOptions = Pick<QueryExecution, "id" | "executedAt" | "finishedAt" | "status">;
+export type FinishedQueryExecutionOptions = Pick<QueryExecution, "id" | "executedAt" | "finishedAt" | "status" | "error" | "spent">;
 
 export enum QueryStatus {
     Waiting = "waiting",
@@ -52,30 +52,43 @@ export default fp(async (app) => {
 
 export class QueryExecutionService {
 
-    async createQueryExecution(conn: Connection, options: CreateQueryExecutionOptions):Promise<QueryExecution> {
-        const { userId = 0, ip = 'N/A', queryHash, queryDigest, sql, useTiFlash, status, requestedAt = DateTime.now() } = options;
+    async createQueryExecution(conn: Connection, execution: QueryExecution):Promise<QueryExecution> {
+        const {
+            userId = 0, ip = 'N/A', querySQL, queryHash, queryDigest,
+            status = QueryStatus.Waiting, engines = [], enqueue = false, hitCache = false, error = null,
+            requestedAt = DateTime.now(), executedAt = null, finishedAt = null, spent = null
+        } = execution;
+        const enginesValue = Array.isArray(engines) ? JSON.stringify(engines) : null;
+        const requestedAtValue = requestedAt ? requestedAt.toSQL() : null;
+        const executedAtValue = executedAt ? executedAt.toSQL() : null;
+        const finishedAtValue = finishedAt ? finishedAt.toSQL() : null;
         const [rs] = await conn.query<ResultSetHeader>(`
-            INSERT INTO playground_query_executions(user_id, ip, query_hash, query_digest, \`sql\`, use_tiflash, status, requested_at)
-            VALUES (
-                ?, ?, ?, ?, ?, ?, ?, ?
+            INSERT INTO playground_query_executions(
+                user_id, ip, query_sql, query_hash, query_digest, 
+                status, engines, enqueue, hit_cache, error, 
+                requested_at, executed_at, finished_at, spent
+            ) VALUES (
+                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
             )
-        `, [userId, ip, queryHash, queryDigest, sql, useTiFlash, status, requestedAt.toSQL()]);
-        return {
-            id: rs.insertId,
-            ...options
-        };
+        `, [
+            userId, ip, querySQL, queryHash, queryDigest,
+            status, enginesValue, enqueue, hitCache, error,
+            requestedAtValue, executedAtValue, finishedAtValue, spent
+        ]);
+        execution.id = rs.insertId;
+        return execution;
     }
 
     async finishQueryExecution(conn: Connection, options: FinishedQueryExecutionOptions):Promise<void> {
-        const { id, status, executedAt, finishedAt } = options;
+        const { id, status, executedAt, finishedAt, spent } = options;
         const executedAtValue = executedAt?.toSQL() || null;
         const finishedAtValue = finishedAt?.toSQL() || null;
 
         await conn.query<ResultSetHeader>(`
             UPDATE playground_query_executions
-            SET status = ?, executed_at = ?, finished_at = ?
+            SET status = ?, executed_at = ?, finished_at = ?, spent = ?
             WHERE id = ?
-        `, [status, executedAtValue, finishedAtValue, id]);
+        `, [status, executedAtValue, finishedAtValue, spent, id]);
     }
 
     async cancelPrevQueryExecution(conn: Connection, existedExecutions: QueryExecution[]) {
@@ -90,9 +103,9 @@ export class QueryExecutionService {
     async getQueryExecution(conn: Connection, executionId: number): Promise<QueryExecution> {
         const [rows] = await conn.query<any[]>(`
             SELECT
-                id, user_id AS userId, ip, query_hash AS queryHash, query_digest AS queryDigest, \`sql\`, 
-                use_tiflash AS useTiFlash, status, requested_at AS requestedAt, executed_at AS executedAt,
-                finished_at AS finishedAt
+                id, user_id AS userId, ip, query_sql AS querySQL, query_hash AS queryHash, query_digest AS queryDigest, 
+                status, engines, enqueue, hit_cache AS hitCache, error,
+                requested_at AS requestedAt, executed_at AS executedAt, finished_at AS finishedAt, spent
              FROM playground_query_executions
              WHERE id = ?
         `, [executionId]);
@@ -115,9 +128,9 @@ export class QueryExecutionService {
     async findUserExistedQueryExecutions(conn: Connection, userId: number, statuses: QueryStatus[]):Promise<QueryExecution[]> {
         const [executions] = await conn.query<any[]>(`
             SELECT
-                id, user_id AS userId, ip, query_hash AS queryHash, query_digest AS queryDigest, \`sql\`, 
-                use_tiflash AS useTiFlash, status, requested_at AS requestedAt, executed_at AS executedAt,
-                finished_at AS finishedAt
+                id, user_id AS userId, ip, query_sql AS querySQL, query_hash AS queryHash, query_digest AS queryDigest, 
+                status, engines, enqueue, hit_cache AS hitCache, error,
+                requested_at AS requestedAt, executed_at AS executedAt, finished_at AS finishedAt, spent
             FROM playground_query_executions pqe
             WHERE
                 pqe.user_id = ?
@@ -129,9 +142,9 @@ export class QueryExecutionService {
     async findIPExistedQueryExecutions(conn: Connection, ip: string, statuses: QueryStatus[]):Promise<QueryExecution[]> {
         const [executions] = await conn.query<any[]>(`
             SELECT
-                id, user_id AS userId, ip, query_hash AS queryHash, query_digest AS queryDigest, \`sql\`, 
-                use_tiflash AS useTiFlash, status, requested_at AS requestedAt, executed_at AS executedAt,
-                finished_at AS finishedAt
+                id, user_id AS userId, ip, query_sql AS querySQL, query_hash AS queryHash, query_digest AS queryDigest, 
+                status, engines, enqueue, hit_cache AS hitCache, error,
+                requested_at AS requestedAt, executed_at AS executedAt, finished_at AS finishedAt, spent
             FROM playground_query_executions pqe
             WHERE
                 pqe.ip = ?

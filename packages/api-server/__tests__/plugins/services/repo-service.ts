@@ -1,14 +1,16 @@
-import {bootstrapTestDatabase, releaseTestDatabase, TiDBDatabase} from '../helpers/db';
-import {bootstrapApp, StartedApp} from '../helpers/app';
-import '../../src/plugins/services/repo-service';
-import {RepoService, SubscribedRepo} from "../../src/plugins/services/repo-service";
+import {bootstrapTestDatabase, releaseTestDatabase, TiDBDatabase} from '../../helpers/db';
+import {bootstrapApp, StartedApp} from '../../helpers/app';
+import '../../../src/plugins/services/repo-service';
+import {RepoService, SubscribedRepo} from "../../../src/plugins/services/repo-service";
 import {Connection} from "mysql2/promise";
-import {APIError} from "../../src/utils/error";
+import {APIError} from "../../../src/utils/error";
+import {bootstrapTestRedis, releaseTestRedis} from "../../helpers/redis";
 
 let db: TiDBDatabase, app: StartedApp, conn: Connection, repoService: RepoService;
 
 beforeAll(async () => {
   db = await bootstrapTestDatabase();
+  await bootstrapTestRedis();
   app = await bootstrapApp();
   repoService = app.app.repoService;
   conn = await db.createConnection();
@@ -141,6 +143,7 @@ describe('get user subscribed repos', () => {
 afterAll(async () => {
   await conn.end();
   await app.close();
+  await releaseTestRedis();
   await releaseTestDatabase();
 });
 

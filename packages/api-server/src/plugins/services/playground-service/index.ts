@@ -3,25 +3,31 @@ import {MySQLPromisePool} from "@fastify/mysql";
 import {QuestionContext} from "../bot-service";
 import {Queue} from "bullmq";
 import {APIError} from "../../../utils/error";
-import {Connection} from "mysql2/promise";
-import {Parser} from "../../../core/playground/parser";
+import {Connection, FieldPacket} from "mysql2/promise";
 import pino from "pino";
 import crypto from "node:crypto";
 import {TiDBPlaygroundQueryExecutor} from "../../../core/executor/query-executor/TiDBPlaygroundQueryExecutor";
 import {DateTime} from "luxon";
 import {QueryExecution, QueryExecutionService, QueryStatus} from "../query-execution-service";
 import CachedTableCacheProvider from "../../../core/cache/provider/CachedTableCacheProvider";
-
-// @ts-ignore
-globalThis.crypto = require('node:crypto').webcrypto;
-const parserWasm = require('tidb-sql-parser');
+import IORedis from "ioredis";
+import {CacheProvider} from "../../../core/cache/provider/CacheProvider";
+import {AST, Parser, Select} from "node-sql-parser";
 
 export const PLAYGROUND_SQL_QUEUE_NAME = "playground-sql";
-export const PLAYGROUND_SQL_CACHE_TTL = 10 * 60 * 1000;     // 10 minutes.
+export const PLAYGROUND_SQL_CACHE_TTL = 5 * 60;     // 5 minutes.
+export const MAX_SELECT_LIMIT = 200;
 
 declare module 'fastify' {
     interface FastifyInstance {
         playgroundService: PlaygroundService;
+    }
+}
+
+declare module "node-sql-parser" {
+    interface Select {
+        _next?: AST;
+        union?: string;
     }
 }
 
@@ -47,23 +53,20 @@ export interface QueryResult {
     params?: Record<string, any>;
     fields?: any[];
     data?: any[];
-    stats?: QueryResultStats;
+    requestedAt?: DateTime | null;
+    executedAt?: DateTime | null;
+    finishedAt?: DateTime | null;
+    spent?: number;
     execution?: QueryResultExecution;
 }
 
-export interface QueryResultStats {
-    requestedAt: DateTime;
-    executedAt: DateTime;
-    finishedAt: DateTime;
-    spent: number;
-}
-
 export interface QueryResultExecution {
+    id: number;
     status: QueryStatus;
-    executionId: number;
     queryHash: string;
     queryDigest?: string | null;
-    useTiFlash: boolean;
+    engines: string[],
+    hitCache: boolean;
     enqueue: boolean;
     queueName?: string;
     queueJobId?: string;
@@ -71,8 +74,16 @@ export interface QueryResultExecution {
     error?: string;
 }
 
+export interface ValidateSQLResult {
+    sql: string;
+    statementType: string;
+}
+
 export default fp(async (app) => {
-    app.decorate('playgroundService', new PlaygroundService(app.mysql, app.queryExecutionService, app.playgroundQueryExecutor));
+    const { mysql, redis, queryExecutionService, playgroundQueryExecutor } = app;
+    app.decorate('playgroundService', new PlaygroundService(
+        mysql, queryExecutionService, playgroundQueryExecutor, redis
+    ));
 }, {
     name: 'playground-service',
     dependencies: [
@@ -85,49 +96,33 @@ export default fp(async (app) => {
 export class PlaygroundService {
     private readonly logger: pino.Logger;
     private readonly playgroundSQLQueue: Queue;
-    private tidbParser: Parser | null = null;
-    private readonly initPromise: Promise<boolean>;
+    // TODO: replace node-sql-parser with tidb-sql-parser.
+    private sqlParser: Parser;
     constructor(
         private readonly dbPool: MySQLPromisePool,
         private readonly queryExecutionService: QueryExecutionService,
         private readonly playgroundQueryExecutor: TiDBPlaygroundQueryExecutor,
+        redisClient: IORedis
     ) {
-        this.playgroundSQLQueue = new Queue(PLAYGROUND_SQL_QUEUE_NAME);
+        this.playgroundSQLQueue = new Queue(PLAYGROUND_SQL_QUEUE_NAME, {
+            connection: redisClient
+        });
         this.logger = pino().child({
             name: 'playground-service',
         });
-        this.initPromise = new Promise(async (resolve, reject) => {
-            try {
-                const parserInstance = await parserWasm.initWasm();
-                this.tidbParser = parserInstance.NewParser();
-                resolve(true);
-            } catch (err) {
-                this.logger.error(err,'failed to initialize playground service: ');
-                reject(err);
-            }
-        });
-    }
-
-    async ready():Promise<boolean> {
-        return this.initPromise;
+        this.sqlParser = new Parser();
     }
 
     async executeSQL(sql: string, cancelPrevious: boolean, userId?: number, ip?: string): Promise<QueryResult> {
-        await this.ready();
-
-        console.time("get-query-hash");
         const queryHash = this.getQueryHash(sql);
-        console.timeEnd("get-query-hash");
-        console.time("get-query-digest");
         const queryDigest = this.getQueryDigest(sql);
-        console.timeEnd("get-query-digest");
-        console.time("get-connection");
+        const cacheKey = `playground:${queryHash}`;
         const conn =  await this.dbPool.getConnection();
-        console.timeEnd("get-connection");
 
         try {
+            const { sql: querySQL, statementType } = this.validateSQL(sql);
+
             // Check if there is a previous query.
-            console.time("get-existed-execution");
             const existedExecutions = await this.queryExecutionService.findExistedQueryExecutions(conn, userId, ip);
             if (existedExecutions.length > 0) {
                 if (cancelPrevious) {
@@ -136,39 +131,168 @@ export class PlaygroundService {
                     throw new APIError(409, 'You have a running query, please wait for it to finish.');
                 }
             }
-            console.timeEnd("get-existed-execution");
 
             // Check if the query uses TiFlash.
-            console.time("explain-sql");
-            const [planLines] = await conn.query<any[]>(`EXPLAIN format = 'brief' ${sql}`);
-            const useTiFlash = await this.willQueryUseTiFlash(planLines);
-            console.timeEnd("explain-sql");
+            let engines: string[] = [];
+            if (statementType === 'select') {
+                const [planSteps] = await conn.query<any[]>(`EXPLAIN format = 'brief' ${querySQL}`);
+                engines = await this.getStorageEnginesFromPlan(planSteps);
+            }
+
+            // If the query uses TiFlash, we need to enqueue it to the queue.
+            const enqueue = engines.includes('tiflash');
+
+            // Try to get the query result from cache.
+            const cache = new CachedTableCacheProvider(conn);
+            if (enqueue) {
+                const cachedValue = await this.getQueryResultFromCache(conn, cache, cacheKey, userId, ip);
+                if (cachedValue) {
+                    return cachedValue;
+                }
+            }
 
             // Create a new query execution.
-            console.time("create-query-execution");
             const execution = await this.queryExecutionService.createQueryExecution(conn, {
+                id: 0,
                 userId: userId,
                 ip: ip,
+                querySQL: querySQL,
                 queryHash: queryHash,
                 queryDigest: queryDigest,
-                sql: sql,
-                status: useTiFlash ? QueryStatus.Waiting : QueryStatus.Running,
-                useTiFlash: useTiFlash,
-                requestedAt: DateTime.now()
+                status: enqueue ? QueryStatus.Waiting : QueryStatus.Running,
+                enqueue: enqueue,
+                engines: engines,
+                hitCache: false,
+                requestedAt: DateTime.now(),
+                executedAt: null,
+                finishedAt: null,
             });
-            console.timeEnd("create-query-execution");
 
             // Execute the query in different ways.
             let res;
-            if (useTiFlash) {
+            if (enqueue) {
                 res = await this.executeSQLInQueue(this.playgroundSQLQueue, execution);
             } else {
-                res = await this.executeSQLImmediately(conn, execution);
+                res = await this.executeSQLImmediately(conn, cache, cacheKey, execution);
             }
             return res;
         } finally {
             await conn.release();
         }
+    }
+
+    validateSQL(sql: string): ValidateSQLResult {
+        // Notice: node-sql-parser doesn't support `SHOW INDEXES FROM` syntax.
+        if (/^show\s+indexes\s+from\s+\S+/igm.test(sql)) {
+            return {
+                sql: sql,
+                statementType: 'show',
+            };
+        }
+
+        try {
+            const ast = this.sqlParser.astify(sql);
+            let rootNode;
+            if (Array.isArray(ast)) {
+                if (ast.length > 1) {
+                    throw new APIError(400, 'SQL playground didn\'t support multiple statements.');
+                } else {
+                    rootNode = ast[0];
+                }
+            } else {
+                rootNode = ast;
+            }
+
+            switch (rootNode.type.toLowerCase()) {
+                case 'select':
+                    const newAst = this.addLimitToSQL(rootNode as Select, MAX_SELECT_LIMIT, 0);
+                    const newSQL = this.sqlParser.sqlify(newAst);
+                    return {
+                        sql: newSQL,
+                        statementType: 'select',
+                    }
+                case 'show':
+                case 'desc':
+                    return {
+                        sql: sql,
+                        statementType: rootNode.type
+                    };
+                default:
+                    throw new APIError(400, 'SQL playground only supports SELECT, SHOW and DESC statements.');
+            }
+        } catch (err) {
+            if (err instanceof APIError) {
+                throw err;
+            }
+
+            throw new APIError(400, 'SQL playground only supports SELECT, SHOW and DESC statements.');
+        }
+    }
+
+    addLimitToSQL(rootNode: Select, maxLimit: number, depth: number): Select {
+        const { limit } = rootNode;
+
+        // Add limit
+        if (limit && Array.isArray(limit.value)) {
+            if (limit.value.length === 1) {
+                if (limit.value[0].value > maxLimit) {
+                    limit.value[0].value = maxLimit;
+                }
+            } else if (limit.value.length === 2) {
+                if (limit.value[1].value > maxLimit) {
+                    limit.value[1].value = maxLimit;
+                }
+            }
+        } else {
+            rootNode.limit = {
+                seperator: "",
+                value: [
+                    {
+                        type: "number",
+                        value: maxLimit,
+                    },
+                ],
+            };
+        }
+
+        return rootNode;
+    }
+
+    async getQueryResultFromCache(conn: Connection, cache: CacheProvider, cacheKey: string, userId?: number, ip?: string): Promise<QueryResult | null> {
+        const cachedValue = await cache.get(cacheKey);
+        if (!cachedValue) {
+            return null;
+        }
+
+        const queryResult = typeof cachedValue === 'string' ? JSON.parse(cachedValue) : cachedValue;
+        const { sql, requestedAt, executedAt, finishedAt, spent, execution } = queryResult;
+        const { engines, queryHash, queryDigest } = execution as QueryResultExecution;
+        const requestedAtValue = typeof requestedAt === 'string' ? DateTime.fromISO(requestedAt) : null;
+        const executedAtValue = typeof executedAt === 'string' ? DateTime.fromISO(executedAt) : null;
+        const finishedAtValue = typeof finishedAt === 'string' ? DateTime.fromISO(finishedAt) : null;
+
+        const newExecution = await this.queryExecutionService.createQueryExecution(conn, {
+            id: 0,
+            userId: userId,
+            ip: ip,
+            querySQL: sql,
+            queryHash: queryHash,
+            queryDigest: queryDigest,
+            status: QueryStatus.Success,
+            enqueue: true,
+            hitCache: true,
+            engines,
+            requestedAt: requestedAtValue,
+            executedAt: executedAtValue,
+            finishedAt: finishedAtValue,
+            spent: spent,
+        });
+
+        queryResult.execution.hitCache = true;
+        queryResult.execution.enqueue = false;
+        queryResult.execution.id = newExecution.id;
+
+        return queryResult;
     }
 
     async executeSQLInQueue(queue: Queue, execution: QueryExecution): Promise<QueryResult> {
@@ -177,87 +301,86 @@ export class PlaygroundService {
             throw new APIError(500, 'Failed to add query job to queue.');
         }
         const waiting = await queue.getWaitingCount();
+        const { id, status, queryHash, queryDigest, engines, hitCache, enqueue } = execution;
 
         return {
-            sql: execution.sql,
+            sql: execution.querySQL,
             execution: {
-                executionId: execution.id,
-                queryHash: execution.queryHash,
-                queryDigest: execution.queryDigest,
-                status: execution.status,
-                useTiFlash: execution.useTiFlash,
-                enqueue: true,
-                queueName: PLAYGROUND_SQL_QUEUE_NAME,
+                id,
+                status,
+                queryHash,
+                queryDigest,
+                engines,
+                hitCache,
+                enqueue,
                 queueWaiting: waiting,
             }
         };
     }
 
-    async executeSQLImmediately(conn: Connection, execution: QueryExecution): Promise<QueryResult> {
-        const { id: executionId, sql, queryHash, queryDigest, requestedAt, useTiFlash, enqueue = false } = execution;
-        const cacheKey = `playground:${queryHash}`;
+    async executeSQLImmediately(conn: Connection, cache: CacheProvider, cacheKey: string, execution: QueryExecution): Promise<QueryResult> {
+        const { id: executionId, querySQL, queryHash, queryDigest, engines, enqueue, requestedAt } = execution;
 
         try {
-            const cache = new CachedTableCacheProvider(conn);
-            const cachedValue = await cache.get(cacheKey);
+            // Get connection.
+            const getConnStart = DateTime.now();
+            const playgroundConn = await this.playgroundQueryExecutor.getConnection();
+            const getConnEnd = DateTime.now();
+            this.logger.info(`get playground connection: ${getConnEnd.diff(getConnStart).as('milliseconds')}ms`);
 
-            if (cachedValue) {
-                // If the query result is cached, return it directly.
-                const queryResult = typeof cachedValue === 'string' ? JSON.parse(cachedValue) : cachedValue;
-                const { stats } = queryResult;
-                const executedAt = DateTime.fromISO(stats?.executedAt);
-                const finishedAt = DateTime.fromISO(stats?.finishedAt);
-                await this.queryExecutionService.finishQueryExecution(conn, {
-                    id: executionId,
-                    status: QueryStatus.Success,
-                    executedAt,
-                    finishedAt,
-                });
-                return queryResult;
-            } else {
-                // If the query result is not cached, execute it and cache the result.
-                console.time("execute-query");
-                const executedAt = DateTime.now();
-                const [rows, fields] = await this.playgroundQueryExecutor.execute<any[]>(cacheKey, sql);
-                const finishedAt = DateTime.now();
-                console.timeEnd("execute-query");
-
-                const res = {
-                    sql,
-                    params: [],
-                    fields,
-                    data: rows,
-                    stats: {
-                        requestedAt: requestedAt,
-                        executedAt: executedAt,
-                        finishedAt: finishedAt,
-                        spent: finishedAt.diff(executedAt).as("seconds"),
-                    },
-                    execution: {
-                        executionId,
-                        status: QueryStatus.Success,
-                        useTiFlash,
-                        queryHash,
-                        queryDigest,
-                        enqueue,
-                    }
-                };
-                await cache.set(cacheKey, JSON.stringify(res), {
-                    EX: PLAYGROUND_SQL_CACHE_TTL,
-                });
-                await this.queryExecutionService.finishQueryExecution(conn, {
-                    id: executionId,
-                    status: QueryStatus.Success,
-                    executedAt: executedAt,
-                    finishedAt: finishedAt
-                });
-
-                return res;
+            // Execute the query.
+            let executedAt, finishedAt, rows: any[] = [], fields: FieldPacket[] = [];
+            try {
+                executedAt = DateTime.now();
+                [rows, fields] = await playgroundConn.execute<any[]>(querySQL);
+                finishedAt = DateTime.now();
+            } finally {
+                playgroundConn.release();
             }
-        } catch (err) {
+            const spent = finishedAt.diff(executedAt).as("seconds");
+
+            const res = {
+                sql: querySQL,
+                params: [],
+                fields: fields.map((field) => {
+                    return {
+                        name: field.name,
+                        columnType: field.type
+                    }
+                }),
+                data: rows,
+                requestedAt,
+                executedAt,
+                finishedAt,
+                spent,
+                execution: {
+                    id: executionId,
+                    status: QueryStatus.Success,
+                    queryHash: queryHash,
+                    queryDigest: queryDigest,
+                    engines: engines,
+                    hitCache: false,
+                    enqueue: enqueue,
+                    queueWaiting: 0
+                }
+            };
+            await cache.set(cacheKey, JSON.stringify(res), {
+                EX: PLAYGROUND_SQL_CACHE_TTL,
+            });
+            await this.queryExecutionService.finishQueryExecution(conn, {
+                id: executionId,
+                status: QueryStatus.Success,
+                executedAt,
+                finishedAt,
+                spent
+            });
+
+            return res;
+        } catch (err: any) {
             await this.queryExecutionService.finishQueryExecution(conn, {
                 id: executionId,
                 status: QueryStatus.Error,
+                error: err.message,
             });
             throw err;
         }
@@ -269,9 +392,6 @@ export class PlaygroundService {
     }
 
     getQueryDigest(sql: string): string | null {
-        if (this.tidbParser) {
-            return this.tidbParser.NormalizeDigest(sql).Digest
-        }
         return null;
     }
 
@@ -283,19 +403,30 @@ export class PlaygroundService {
             if (!queryExecution) {
                 throw new APIError(404, 'Query execution not found.');
             }
-            const { status, queryHash, sql, requestedAt } = queryExecution;
+            const { status, queryHash, querySQL, requestedAt, enqueue, error } = queryExecution;
 
             switch (status) {
-                case QueryStatus.Waiting || QueryStatus.Running:
+                case QueryStatus.Waiting:
                     const waiting = await this.playgroundSQLQueue.getWaitingCount();
                     return {
-                        sql,
+                        sql: querySQL,
                         requestedAt,
                         execution: {
                             executionId,
                             status,
-                            inQueue: true,
+                            enqueue,
                             waiting,
+                        }
+                    }
+                case QueryStatus.Running:
+                    return {
+                        sql: querySQL,
+                        requestedAt,
+                        execution: {
+                            executionId,
+                            status,
+                            enqueue,
+                            queueWaiting: 0,
                         }
                     }
                 case QueryStatus.Success:
@@ -311,13 +442,14 @@ export class PlaygroundService {
                     }
                 case QueryStatus.Error:
                     return {
-                        sql,
+                        sql: querySQL,
                         requestedAt,
                         execution: {
                             executionId,
                             status,
-                            error: 'TODO',
-                            inQueue: false,
+                            error,
+                            enqueue,
+                            queueWaiting: 0
                         }
                     }
                 default:
@@ -328,41 +460,24 @@ export class PlaygroundService {
         }
     }
 
-    async saveQueryResult() {
+    async getStorageEnginesFromPlan(steps: PlanStep[]):Promise<string[]> {
+        if (!Array.isArray(steps)) return [];
 
-    }
-
-    async getQueryExecutionPlan(digest: string) {
-        const conn =  await this.dbPool.getConnection();
-
-        try {
-            const [rows] = await conn.query<any[]>(`
-                SELECT plan
-                FROM information_schema.CLUSTER_STATEMENTS_SUMMARY
-                WHERE digest = ?
-                LIMIT 1;
-            `, digest);
-            if (rows.length === 0) {
-                throw new APIError(404, 'Query execution plan not found.');
-            }
-            return {
-                plan: rows[0].plan
-            };
-        } finally {
-            await conn.release();
-        }
-    }
-
-    async willQueryUseTiFlash(explainResult: PlanStep[]):Promise<boolean> {
-        if (!Array.isArray(explainResult)) return false;
-
-        for (const step of explainResult) {
+        const engines = new Set<string>();
+        for (const step of steps) {
             if (step.task.includes('tiflash')) {
-                return true;
+                engines.add('tiflash');
+            } else if (step.task.includes('tikv')) {
+                engines.add('tikv');
             }
         }
 
-        return false;
+        const engineValues = [];
+        for (const engine of engines) {
+            engineValues.push(engine);
+        }
+
+        return engineValues;
     }
 
     async recordQuestion(questionRecord: QuestionRecord):Promise<void> {

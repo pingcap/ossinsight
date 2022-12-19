@@ -1,17 +1,20 @@
-import {bootstrapTestDatabase, getTestDatabase, releaseTestDatabase} from '../helpers/db';
-import {bootstrapApp, getTestApp, releaseApp} from '../helpers/app';
+import {bootstrapTestDatabase, getTestDatabase, releaseTestDatabase} from '../../helpers/db';
+import {bootstrapApp, getTestApp, releaseApp} from '../../helpers/app';
 import {Connection, ResultSetHeader} from "mysql2/promise";
-import {ProviderType, UserRole, UserService} from "../../src/plugins/services/user-service";
+import {ProviderType, UserRole, UserService} from "../../../src/plugins/services/user-service";
+import {bootstrapTestRedis, releaseTestRedis} from "../../helpers/redis";
 
 let userService: UserService, conn: Connection;
 
 beforeAll(bootstrapTestDatabase);
+beforeAll(bootstrapTestRedis);
 beforeAll(bootstrapApp);
 beforeAll(async () => {
   userService = getTestApp().app.userService;
   conn = await getTestDatabase().createConnection();
 });
 afterAll(releaseApp);
+beforeAll(releaseTestRedis);
 afterAll(releaseTestDatabase);
 
 describe('get user by id', () => {

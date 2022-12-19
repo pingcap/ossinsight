@@ -1,7 +1,7 @@
-import { bootstrapTestDatabase, getTestDatabase, releaseTestDatabase } from '../helpers/db';
-import { StatsService } from '../../src/plugins/services/stats-service';
-import { testLogger } from '../helpers/log';
-import {getPool} from "../../src/core/db/new";
+import { bootstrapTestDatabase, getTestDatabase, releaseTestDatabase } from '../../helpers/db';
+import { StatsService } from '../../../src/plugins/services/stats-service';
+import { testLogger } from '../../helpers/log';
+import {getPool} from "../../../src/core/db/new";
 
 beforeAll(bootstrapTestDatabase);
 afterAll(releaseTestDatabase);

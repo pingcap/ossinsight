@@ -5,6 +5,7 @@ import { QueryRunner } from "../../core/runner/query/QueryRunner";
 import fastifyWebsocket from "fastify-socket.io";
 import { pino } from "pino";
 import { toCompactFormat } from "../../utils/compact";
+import {PlaygroundService} from "../../plugins/services/playground-service";
 
 interface WsQueryRequest {
   qid?: string | number;
@@ -54,7 +55,7 @@ const root: FastifyPluginAsync = async (app, opts): Promise<void> => {
     app.io.on("connection", (socket) => {
       app.log.info("io connected");
       const log = app.log as pino.Logger;
-      socketServerRoutes(log, socket, app.io, app.queryRunner);
+      socketServerRoutes(log, socket, app.io, app.queryRunner, app.playgroundService);
 
       socket.on("disconnect", () => {
         app.log.info("io disconnected");
@@ -90,7 +91,8 @@ export function socketServerRoutes(
   log: pino.Logger,
   socket: Socket,
   io: Server,
-  queryRunner: QueryRunner
+  queryRunner: QueryRunner,
+  playgroundService: PlaygroundService
 ) {
   /*
    * This ws entrypoint provide a method to visit HTTP /q/:query and /q/explain/:query equally.
@@ -165,6 +167,33 @@ export function socketServerRoutes(
     } catch (error) {
       log.error("Failed to request %s[ws]: ", request, error);
       socket.emit("fatal-error/q", {
+        request,
+        error,
+      });
+    }
+  });
+
+  socket.on("playground-result", async (request) => {
+    try {
+      const { executionId } = request;
+      let response: WsQueryResponse;
+      const topic = `/playground/result?executionId=${executionId}`;
+
+      try {
+        const payload = await playgroundService.getQueryResult(executionId);
+        response = {
+            payload,
+        }
+      } catch (err) {
+        response = {
+          error: true,
+          payload: err,
+        };
+      }
+      socket.emit(topic, response);
+    } catch (error) {
+      log.error("Failed to request %s[ws]: ", request, error);
+      socket.emit("fatal-error/playground-result", {
         request,
         error,
       });

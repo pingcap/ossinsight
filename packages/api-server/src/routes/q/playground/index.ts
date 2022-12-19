@@ -1,46 +1,23 @@
 import { FastifyPluginAsync } from 'fastify';
+import { SqlParser } from '../../../core/playground/playground';
 
-export const schema = {
-  body: {
-    type: 'object',
-    required: ['sql'],
-    properties: {
-      sql: {
-        type: 'string',
-      },
-      cancelPrevious: {
-        type: 'boolean',
-        default: true
-      }
-    }
-  }
-};
-
-export interface IBody {
-  sql: string;
-  cancelPrevious: boolean;
-}
-
-// @Deprecated
-const root: FastifyPluginAsync = async (app) => {
+const root: FastifyPluginAsync = async (app, opts) => {
   app.post<{
-    Body: IBody
-  }>('/', {
-    schema,
-    preHandler: [app.authenticateAllowAnonymous]
-  },async (req, reply) => {
-    const { sql, cancelPrevious } = req.body;
-    let userId = req.user?.id;
-    let ip = req.ip;
-    const res = await app.playgroundService.executeSQL(sql, cancelPrevious, userId, ip);
-    reply.status(200).send({
-      data: res.data,
-      fields: res.fields,
-      sql: res.sql,
-      spent: res?.stats?.spent,
-      requestedAt: res?.stats?.requestedAt,
-      finishedAt: res?.stats?.finishedAt,
-    });
+    Body: {
+      sql: string,
+      type: 'repo' | 'user',
+      id: string,
+    }
+  }>('/', async (request, reply) => {
+    const {
+      sql: sqlString,
+      type,
+      id,
+    } = request.body;
+    const sqlParser = new SqlParser(type, id, sqlString);
+    const sql = sqlParser.sqlify();
+    const res = await app.sqlRunner.run(sql);
+    reply.send(res);
   });
 };
 

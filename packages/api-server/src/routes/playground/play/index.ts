@@ -24,6 +24,7 @@ export interface IBody {
   sql: string;
   cancelPrevious: boolean;
 }
+
 const root: FastifyPluginAsync = async (app) => {
   app.post<{
     Body: IBody

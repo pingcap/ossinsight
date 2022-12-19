@@ -17,6 +17,7 @@ declare module 'fastify' {
   interface FastifyInstance {
     config: {
       DATABASE_URL: string;
+      REDIS_URL: string,
       PLAYGROUND_DATABASE_URL: string;
     };
     mysql: MySQLPromisePool;

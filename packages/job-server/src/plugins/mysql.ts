@@ -1,8 +1,6 @@
 import fp from "fastify-plugin";
 import fastifyMySQL from "@fastify/mysql";
 
-export const QUEUE_NAME = "playground-sql";
-
 export default fp(async (app) => {
     await app
         .register(fastifyMySQL, {
