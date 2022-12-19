@@ -31,7 +31,7 @@ class FetchItem
     json = get_response
     if json
       json = Yajl::Parser.parse(json)
-      json.delete("kids")
+      json.merge!(last_fetch_at: Time.now)
       Item.upsert(json)
     else
       puts "No response"
