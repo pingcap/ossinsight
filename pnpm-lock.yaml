@@ -12,6 +12,7 @@ importers:
 
   packages/api-server:
     specifiers:
+      '@fastify/auth': ^4.2.0
       '@fastify/autoload': ^5.0.0
       '@fastify/cookie': ^8.3.0
       '@fastify/cors': ^8.2.0
@@ -19,6 +20,7 @@ importers:
       '@fastify/jwt': 5.0.0
       '@fastify/mysql': ^4.0.0
       '@fastify/oauth2': ^6.1.0
+      '@fastify/redis': ^6.1.0
       '@fastify/sensible': ^5.0.0
       '@fastify/swagger': ^8.1.0
       '@fastify/type-provider-json-schema-to-ts': ^2.1.1
@@ -35,6 +37,7 @@ importers:
       '@types/luxon': ^3.0.2
       '@types/node': ^18.0.0
       '@types/ws': ^8.5.3
+      bullmq: ^3.4.1
       chance: ^1.1.9
       concurrently: ^7.0.0
       fastify: ^4.0.0
@@ -45,6 +48,7 @@ importers:
       fastify-tsconfig: ^1.0.1
       generic-pool: ^3.9.0
       glob: ^8.0.3
+      ioredis: ^5.2.4
       jest: ^29.3.1
       json-schema-to-ts: ^2.6.0
       luxon: ^3.1.0
@@ -65,6 +69,7 @@ importers:
       typescript: ^4.5.4
       yaml: ^2.1.3
     dependencies:
+      '@fastify/auth': 4.2.0
       '@fastify/autoload': 5.6.0
       '@fastify/cookie': 8.3.0
       '@fastify/cors': 8.2.0
@@ -72,6 +77,7 @@ importers:
       '@fastify/jwt': 5.0.0
       '@fastify/mysql': 4.0.0
       '@fastify/oauth2': 6.1.0
+      '@fastify/redis': 6.1.0
       '@fastify/sensible': 5.1.1
       '@fastify/swagger': 8.2.0
       '@fastify/websocket': 7.1.1
@@ -80,12 +86,14 @@ importers:
       '@octokit/graphql': 5.0.4
       '@octokit/plugin-throttling': 4.3.2_@octokit+core@4.1.0
       '@octokit/rest': 19.0.5
+      bullmq: 3.4.1
       fastify: 4.10.2
       fastify-cli: 5.6.0
       fastify-metrics: 10.0.0_fastify@4.10.2
       fastify-plugin: 4.3.0
       fastify-socket.io: 4.0.0_socket.io@4.5.4
       generic-pool: 3.9.0
+      ioredis: 5.2.4
       luxon: 3.1.0
       mysql2: 2.3.3
       node-sql-parser: 4.5.1
@@ -233,6 +241,85 @@ importers:
       eslint-plugin-react: 7.31.11_eslint@8.28.0
       fastify-tsconfig: 1.0.1
       tap: 16.3.2_6oasmw356qmm23djlsjgkwvrtm
+      ts-node: 10.9.1_vq46kxj6zfka4f6ijsosnft3hy
+      typescript: 4.7.4
+
+  packages/job-server:
+    specifiers:
+      '@fastify/autoload': ^5.0.0
+      '@fastify/cookie': ^8.3.0
+      '@fastify/env': ^4.1.0
+      '@fastify/mysql': ^4.0.0
+      '@fastify/redis': ^6.1.0
+      '@fastify/sensible': ^5.0.0
+      '@ossinsight/api-server': workspace:^1.0.0
+      '@types/async': ^3.2.15
+      '@types/cron': ^2.0.0
+      '@types/luxon': ^3.0.2
+      '@types/node': ^18.11.9
+      '@types/react': ^17.0.2
+      '@types/react-dom': ^17.0.2
+      async: ^3.2.4
+      bufferutil: ^4.0.7
+      bullmq: ^3.4.1
+      concurrently: ^7.0.0
+      cron: ^2.1.0
+      dotenv: ^16.0.3
+      encoding: ^0.1.13
+      fastify: ^4.0.0
+      fastify-cli: ^5.5.1
+      fastify-cron: ^1.3.1
+      fastify-plugin: ^4.3.0
+      fastify-tsconfig: ^1.0.1
+      ioredis: ^5.2.4
+      luxon: ^3.1.0
+      mysql2: ^2.3.3
+      next: ^v12.3.2
+      octokit: ^2.0.10
+      pino: ^8.7.0
+      react: ^17.0.2
+      react-dom: ^17.0.2
+      ts-node: ^10.4.0
+      typescript: ~4.7.0
+      uglify-js: ^3.17.4
+      utf-8-validate: ^5.0.10
+    dependencies:
+      '@fastify/autoload': 5.6.0
+      '@fastify/cookie': 8.3.0
+      '@fastify/env': 4.1.0
+      '@fastify/mysql': 4.0.0
+      '@fastify/redis': 6.1.0
+      '@fastify/sensible': 5.1.1
+      '@ossinsight/api-server': link:../api-server
+      '@types/cron': 2.0.0
+      async: 3.2.4
+      bufferutil: 4.0.7
+      bullmq: 3.4.1
+      cron: 2.1.0
+      dotenv: 16.0.3
+      encoding: 0.1.13
+      fastify: 4.10.2
+      fastify-cli: 5.6.0
+      fastify-cron: 1.3.1_fastify@4.10.2
+      fastify-plugin: 4.3.0
+      ioredis: 5.2.4
+      luxon: 3.1.0
+      mysql2: 2.3.3
+      next: 12.3.4_sfoxds7t5ydpegc3knd667wn6m
+      octokit: 2.0.10_encoding@0.1.13
+      pino: 8.7.0
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+      uglify-js: 3.17.4
+      utf-8-validate: 5.0.10
+    devDependencies:
+      '@types/async': 3.2.16
+      '@types/luxon': 3.1.0
+      '@types/node': 18.11.9
+      '@types/react': 17.0.52
+      '@types/react-dom': 17.0.18
+      concurrently: 7.6.0
+      fastify-tsconfig: 1.0.1
       ts-node: 10.9.1_vq46kxj6zfka4f6ijsosnft3hy
       typescript: 4.7.4
 
@@ -631,6 +718,13 @@ packages:
       ajv-formats: 2.1.1
       fast-uri: 2.1.0
 
+  /@fastify/auth/4.2.0:
+    resolution: {integrity: sha512-wcovETbvNHsNQv1fzbjyAeG+ViNYMI0/gTmWUP77hQgbkwPJpYn1iBLAkMmHFKrS6Ap/l9QFZChwV9lJvwRTCA==}
+    dependencies:
+      fastify-plugin: 4.3.0
+      reusify: 1.0.4
+    dev: false
+
   /@fastify/autoload/5.6.0:
     resolution: {integrity: sha512-WvIPDfhpMmWlZxUkIB7ncIw+y0BVrRanFncx/llRnPjDqyHMSPlNEnu48l22biQ/2W02PUS2TLihhH6faBZAQw==}
     dependencies:
@@ -692,6 +786,15 @@ packages:
     dependencies:
       fastify-plugin: 4.3.0
       simple-oauth2: 4.3.0
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
+
+  /@fastify/redis/6.1.0:
+    resolution: {integrity: sha512-i2TwxzfqbdgeAeNP/cHk4+e6S8jeTFmzHZlPwkVCosiUnIi5wFONJ21L5APO4ljU4N+DeyvqE7AbeNTvHnMVGQ==}
+    dependencies:
+      fastify-plugin: 4.3.0
+      ioredis: 5.2.4
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -787,6 +890,10 @@ packages:
   /@humanwhocodes/object-schema/1.2.1:
     resolution: {integrity: sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==}
     dev: true
+
+  /@ioredis/commands/1.2.0:
+    resolution: {integrity: sha512-Sx1pU8EM64o2BrqNpEO1CNLtKQwyhuXuqyfH7oGKCk+1a33d2r5saW8zNwm3j6BTExtjrv2BxTgzzkMwts6vGg==}
+    dev: false
 
   /@istanbuljs/load-nyc-config/1.1.0:
     resolution: {integrity: sha512-VjeHSlIzpv/NyD3N0YuHfXOPDIixcA1q2ZV98wsMqcYlPmv2n3Yb2lYP9XMElnaFVXg5A7YLTeLu6V84uQDjmQ==}
@@ -1101,6 +1208,54 @@ packages:
       chalk: 4.1.2
       fastify-plugin: 3.0.1
     dev: false
+
+  /@msgpackr-extract/msgpackr-extract-darwin-arm64/2.2.0:
+    resolution: {integrity: sha512-Z9LFPzfoJi4mflGWV+rv7o7ZbMU5oAU9VmzCgL240KnqDW65Y2HFCT3MW06/ITJSnbVLacmcEJA8phywK7JinQ==}
+    cpu: [arm64]
+    os: [darwin]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /@msgpackr-extract/msgpackr-extract-darwin-x64/2.2.0:
+    resolution: {integrity: sha512-vq0tT8sjZsy4JdSqmadWVw6f66UXqUCabLmUVHZwUFzMgtgoIIQjT4VVRHKvlof3P/dMCkbMJ5hB1oJ9OWHaaw==}
+    cpu: [x64]
+    os: [darwin]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /@msgpackr-extract/msgpackr-extract-linux-arm/2.2.0:
+    resolution: {integrity: sha512-SaJ3Qq4lX9Syd2xEo9u3qPxi/OB+5JO/ngJKK97XDpa1C587H9EWYO6KD8995DAjSinWvdHKRrCOXVUC5fvGOg==}
+    cpu: [arm]
+    os: [linux]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /@msgpackr-extract/msgpackr-extract-linux-arm64/2.2.0:
+    resolution: {integrity: sha512-hlxxLdRmPyq16QCutUtP8Tm6RDWcyaLsRssaHROatgnkOxdleMTgetf9JsdncL8vLh7FVy/RN9i3XR5dnb9cRA==}
+    cpu: [arm64]
+    os: [linux]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /@msgpackr-extract/msgpackr-extract-linux-x64/2.2.0:
+    resolution: {integrity: sha512-94y5PJrSOqUNcFKmOl7z319FelCLAE0rz/jPCWS+UtdMZvpa4jrQd+cJPQCLp2Fes1yAW/YUQj/Di6YVT3c3Iw==}
+    cpu: [x64]
+    os: [linux]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /@msgpackr-extract/msgpackr-extract-win32-x64/2.2.0:
+    resolution: {integrity: sha512-XrC0JzsqQSvOyM3t04FMLO6z5gCuhPE6k4FXuLK5xf52ZbdvcFe1yBmo7meCew9B8G2f0T9iu9t3kfTYRYROgA==}
+    cpu: [x64]
+    os: [win32]
+    requiresBuild: true
+    dev: false
+    optional: true
 
   /@next/env/12.3.4:
     resolution: {integrity: sha512-H/69Lc5Q02dq3o+dxxy5O/oNxFsZpdL6WREtOOtOM1B/weonIwDXkekr1KV5DPVPr12IHFPrMrcJQ6bgPMfn7A==}
@@ -2935,6 +3090,21 @@ packages:
       semver: 7.3.8
     dev: true
 
+  /bullmq/3.4.1:
+    resolution: {integrity: sha512-8pe6vfwXsr3GK8dxVMfJu8GmxrDWsklL01RoFvI7yvzT8wdspq7tHuWLqkEzpZBUtdZQic/86NIUjGE1N371TA==}
+    dependencies:
+      cron-parser: 4.7.0
+      glob: 8.0.3
+      ioredis: 5.2.4
+      lodash: 4.17.21
+      msgpackr: 1.8.1
+      semver: 7.3.8
+      tslib: 2.4.1
+      uuid: 9.0.0
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
+
   /byline/5.0.0:
     resolution: {integrity: sha512-s6webAy+R4SR8XVuJWt2V2rGvhnrhxN+9S15GNuTK3wKPOXFF6RNc+8ug2XhH+2s4f+uudG4kUVYmYOQWL2g0Q==}
     engines: {node: '>=0.10.0'}
@@ -3165,6 +3335,11 @@ packages:
     resolution: {integrity: sha512-6cCp71Y5tKw1o9sGVBOa9OwY4vJ+YoLpFcWiTt9YCBhYlcQi0z68EiiN9mJ6/401Za6TZ5YOZg012IHHZt15lw==}
     dev: false
 
+  /cluster-key-slot/1.1.2:
+    resolution: {integrity: sha512-RMr0FhtfXemyinomL4hrWcYJxmX6deFdCxpJzhDttxgO1+bcCnkk+9drydLVDmAMG7NE6aN/fl4F7ucU/90gAA==}
+    engines: {node: '>=0.10.0'}
+    dev: false
+
   /co/4.6.0:
     resolution: {integrity: sha512-QVb0dM5HvG+uaxitm8wONl7jltx8dqhfU33DcqtOZcLSVIKSDDLDi7+0LbAKiyI8hD9u42m2YxXSkMGWThaecQ==}
     engines: {iojs: '>= 1.0.0', node: '>= 0.12.0'}
@@ -3344,6 +3519,13 @@ packages:
 
   /create-require/1.1.1:
     resolution: {integrity: sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ==}
+
+  /cron-parser/4.7.0:
+    resolution: {integrity: sha512-BdAELR+MCT2ZWsIBhZKDuUqIUCBjHHulPJnm53OfdRLA4EWBjva3R+KM5NeidJuGsNXdEcZkjC7SCnkW5rAFSA==}
+    engines: {node: '>=12.0.0'}
+    dependencies:
+      luxon: 3.1.0
+    dev: false
 
   /cron/2.1.0:
     resolution: {integrity: sha512-Hq7u3P8y7UWYvsZbSKHHJDVG0VO9O7tp2qljxzTScelcTODBfCme8AIhnZsFwmQ9NchZ3hr2uNr+s3DSms7q6w==}
@@ -5214,6 +5396,23 @@ packages:
       side-channel: 1.0.4
     dev: true
 
+  /ioredis/5.2.4:
+    resolution: {integrity: sha512-qIpuAEt32lZJQ0XyrloCRdlEdUUNGG9i0UOk6zgzK6igyudNWqEBxfH6OlbnOOoBBvr1WB02mm8fR55CnikRng==}
+    engines: {node: '>=12.22.0'}
+    dependencies:
+      '@ioredis/commands': 1.2.0
+      cluster-key-slot: 1.1.2
+      debug: 4.3.4
+      denque: 2.1.0
+      lodash.defaults: 4.2.0
+      lodash.isarguments: 3.1.0
+      redis-errors: 1.2.0
+      redis-parser: 3.0.0
+      standard-as-callback: 2.1.0
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
+
   /ipaddr.js/1.9.1:
     resolution: {integrity: sha512-0KI/607xoxSToH7GjN1FfSbLoU0+btTicjsQSWQlh/hZykN8KpmMf7uYwPW3R+akZ6R/w18ZlXSHBYXiYUPO3g==}
     engines: {node: '>= 0.10'}
@@ -6234,7 +6433,6 @@ packages:
 
   /lodash.defaults/4.2.0:
     resolution: {integrity: sha512-qjxPLHd3r5DnsdGacqOMU6pb/avJzdh9tFX2ymgoZE27BmjXrNy/y4LoaiTeAb+O3gL8AfpJGtqfX/ae2leYYQ==}
-    dev: true
 
   /lodash.difference/4.5.0:
     resolution: {integrity: sha512-dS2j+W26TQ7taQBGN8Lbbq04ssV3emRw4NY58WErlTO29pIqS0HmoT5aJ9+TUQ1N3G+JOZSji4eugsWwGp9yPA==}
@@ -6250,6 +6448,10 @@ packages:
 
   /lodash.includes/4.3.0:
     resolution: {integrity: sha512-W3Bx6mdkRTGtlJISOvVD/lbqjTlPPUDTMnlXZFnVwi9NKJ6tiAk6LVdlhZMm17VZisqhKcgzpO5Wz91PCt5b0w==}
+    dev: false
+
+  /lodash.isarguments/3.1.0:
+    resolution: {integrity: sha512-chi4NHZlZqZD18a0imDHnZPrDeBbTtVN7GXMwuGdRH9qotxAjYs3aVLKc7zNOG9eddR5Ksd8rvFEBc9SsggPpg==}
     dev: false
 
   /lodash.isboolean/3.0.3:
@@ -6949,6 +7151,28 @@ packages:
   /ms/2.1.3:
     resolution: {integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==}
 
+  /msgpackr-extract/2.2.0:
+    resolution: {integrity: sha512-0YcvWSv7ZOGl9Od6Y5iJ3XnPww8O7WLcpYMDwX+PAA/uXLDtyw94PJv9GLQV/nnp3cWlDhMoyKZIQLrx33sWog==}
+    hasBin: true
+    requiresBuild: true
+    dependencies:
+      node-gyp-build-optional-packages: 5.0.3
+    optionalDependencies:
+      '@msgpackr-extract/msgpackr-extract-darwin-arm64': 2.2.0
+      '@msgpackr-extract/msgpackr-extract-darwin-x64': 2.2.0
+      '@msgpackr-extract/msgpackr-extract-linux-arm': 2.2.0
+      '@msgpackr-extract/msgpackr-extract-linux-arm64': 2.2.0
+      '@msgpackr-extract/msgpackr-extract-linux-x64': 2.2.0
+      '@msgpackr-extract/msgpackr-extract-win32-x64': 2.2.0
+    dev: false
+    optional: true
+
+  /msgpackr/1.8.1:
+    resolution: {integrity: sha512-05fT4J8ZqjYlR4QcRDIhLCYKUOHXk7C/xa62GzMKj74l3up9k2QZ3LgFc6qWdsPHl91QA2WLWqWc8b8t7GLNNw==}
+    optionalDependencies:
+      msgpackr-extract: 2.2.0
+    dev: false
+
   /mysql2/2.3.3:
     resolution: {integrity: sha512-wxJUev6LgMSgACDkb/InIFxDprRa6T95+VEoR+xPvtngtccNH2dGjEB/fVZ8yg1gWv1510c9CvXuJHi5zUm0ZA==}
     engines: {node: '>= 8.0'}
@@ -7078,6 +7302,12 @@ packages:
       encoding: 0.1.13
       whatwg-url: 5.0.0
     dev: false
+
+  /node-gyp-build-optional-packages/5.0.3:
+    resolution: {integrity: sha512-k75jcVzk5wnnc/FMxsf4udAoTEUv2jY3ycfdSd3yWu6Cnd1oee6/CfZJApyscA4FJOmdoixWwiwOyf16RzD5JA==}
+    hasBin: true
+    dev: false
+    optional: true
 
   /node-gyp-build/4.5.0:
     resolution: {integrity: sha512-2iGbaQBV+ITgCz76ZEjmhUKAKVf7xfY1sRl4UiKQspfZMH2h06SyhNsnSVy50cwkFQDGLyif6m/6uFXHkOZ6rg==}
@@ -7965,6 +8195,18 @@ packages:
     resolution: {integrity: sha512-57frrGM/OCTLqLOAh0mhVA9VBMHd+9U7Zb2THMGdBUoZVOtGbJzjxsYGDJ3A9AYYCP4hn6y1TVbaOfzWtm5GFg==}
     engines: {node: '>= 12.13.0'}
 
+  /redis-errors/1.2.0:
+    resolution: {integrity: sha512-1qny3OExCf0UvUV/5wpYKf2YwPcOqXzkwKKSmKHiE6ZMQs5heeE/c8eXK+PNllPvmjgAbfnsbpkGZWy8cBpn9w==}
+    engines: {node: '>=4'}
+    dev: false
+
+  /redis-parser/3.0.0:
+    resolution: {integrity: sha512-DJnGAeenTdpMEH6uAJRK/uiyEIH9WVsUmoLwzudwGJUwZPp80PDBWPHXSAGNPwNvIXAbe7MSUB1zQFugFml66A==}
+    engines: {node: '>=4'}
+    dependencies:
+      redis-errors: 1.2.0
+    dev: false
+
   /regenerator-runtime/0.10.5:
     resolution: {integrity: sha512-02YopEIhAgiBHWeoTiA8aitHDt8z6w+rQqNuIftlM+ZtvSl/brTouaU7DW6GO/cHtvxJvS4Hwv2ibKdxIRi24w==}
     dev: false
@@ -8423,6 +8665,10 @@ packages:
     dependencies:
       escape-string-regexp: 2.0.0
     dev: true
+
+  /standard-as-callback/2.1.0:
+    resolution: {integrity: sha512-qoRRSyROncaz1z0mvYqIE4lCd9p2R90i6GxW3uZv5ucSu8tU7B5HXUP1gG8pVZsYNVaXjk8ClXHPttLyxAL48A==}
+    dev: false
 
   /statuses/2.0.1:
     resolution: {integrity: sha512-RwNA9Z/7PrK06rYLIzFMlaF+l73iwpzsqRIFgbMLbTcLD6cOao82TaWefPXQvB2fOC4AjuYSEndS7N/mTCbkdQ==}
@@ -9147,6 +9393,11 @@ packages:
     resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
     hasBin: true
     dev: true
+
+  /uuid/9.0.0:
+    resolution: {integrity: sha512-MXcSTerfPa4uqyzStbRoTgt5XIe3x5+42+q1sDuy3R5MDk66URdLMOZe5aPX/SQd+kuYAh0FdP/pO28IkQyTeg==}
+    hasBin: true
+    dev: false
 
   /v8-compile-cache-lib/3.0.1:
     resolution: {integrity: sha512-wa7YjyUGfNZngI/vtK0UHAN+lgDCxBPCylVXGp0zu59Fz5aiGtNXaq3DhIov063MorB+VfufLh3JlF2KdTK3xg==}

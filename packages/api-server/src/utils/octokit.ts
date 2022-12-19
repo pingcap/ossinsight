@@ -1,15 +1,12 @@
 import {Octokit} from "octokit";
 import pino from "pino";
-import {throttling} from "@octokit/plugin-throttling";
-
-export const CustomOctokit = Octokit.plugin(throttling);
 
 export function getOctokit(token: string | undefined, log: pino.BaseLogger): Octokit {
     if (!token) {
         log.warn('No GitHub personal token provided. Using anonymous GitHub client.');
     }
 
-    return new CustomOctokit({
+    return new Octokit({
         auth: token,
         log: {
             debug: log.debug.bind(log),

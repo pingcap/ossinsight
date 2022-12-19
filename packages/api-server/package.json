@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "The API server of OSSInsight.",
   "license": "MIT",
-  "main": "app.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "directories": {
     "test": "__tests__"
   },
@@ -18,6 +19,7 @@
     "watch:ts": "tsc -w"
   },
   "dependencies": {
+    "@fastify/auth": "^4.2.0",
     "@fastify/autoload": "^5.0.0",
     "@fastify/cookie": "^8.3.0",
     "@fastify/cors": "^8.2.0",
@@ -25,6 +27,7 @@
     "@fastify/jwt": "5.0.0",
     "@fastify/mysql": "^4.0.0",
     "@fastify/oauth2": "^6.1.0",
+    "@fastify/redis": "^6.1.0",
     "@fastify/sensible": "^5.0.0",
     "@fastify/swagger": "^8.1.0",
     "@fastify/websocket": "^7.1.1",
@@ -33,12 +36,14 @@
     "@octokit/graphql": "^5.0.4",
     "@octokit/plugin-throttling": "^4.3.2",
     "@octokit/rest": "^19.0.5",
+    "bullmq": "^3.4.1",
     "fastify": "^4.0.0",
     "fastify-cli": "^5.5.1",
     "fastify-metrics": "^10.0.0",
     "fastify-plugin": "^4.3.0",
     "fastify-socket.io": "^4.0.0",
     "generic-pool": "^3.9.0",
+    "ioredis": "^5.2.4",
     "luxon": "^3.1.0",
     "mysql2": "^2.3.3",
     "node-sql-parser": "4.5.1",

@@ -8,6 +8,7 @@ import * as path from 'path';
 import io from 'socket.io-client';
 import { OutgoingHttpHeaders } from 'http';
 import { register } from 'prom-client';
+import {getTestRedis} from "./redis";
 
 type Schema = (typeof APIServerEnvSchema)['properties']
 type Env = {
@@ -19,6 +20,7 @@ let appPromise: Promise<StartedApp> | undefined;
 
 async function createApp () {
   const db = getTestDatabase();
+  const redis = getTestRedis();
 
   // Override process env
   const playgroundDatabaseURL = db.url()
@@ -28,6 +30,7 @@ async function createApp () {
     CONFIGS_PATH: path.resolve(__dirname, '../../../../configs'),
     ADMIN_EMAIL: 'admin@testdomain.com',
     DATABASE_URL: db.url(),
+    REDIS_URL: redis.url(),
     // This should be used for oauth redirect only
     API_BASE_URL: 'http://testdomain.com/',
     ENABLE_CACHE: false,

@@ -3,7 +3,7 @@ import {Pool} from "mysql2/promise";
 import {Octokit} from "@octokit/core";
 import {getPool} from "./db/new";
 import pino from "pino";
-import {getOctokit} from "../utils/loger";
+import {getOctokit} from "../utils/octokit";
 
 export const SYMBOL_TOKEN = Symbol('PERSONAL_TOKEN');
 
