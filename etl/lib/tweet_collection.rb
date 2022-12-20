@@ -19,7 +19,13 @@ class TweetCollection
     @collection_id = collection_id
     @github_tokens = ENV["GITHUB_TOKEN"].split(",")
     @github_token_size = @github_tokens.size
-    @collection_name_for_url = collection_name.downcase.gsub(/\s+/, '-')
+    @collection_name_for_url = {
+      "UI Framework and UIkit" => "ui-framework-and-u-ikit",
+      "iOS Framework" => "i-os-framework",
+      "MLOps Tools" => "ml-ops-tools",
+      "WebAssembly Runtime" => "web-assembly-runtime",
+      "PaaS" => "paa-s"
+    }[collection_name] || collection_name.downcase.gsub(/\s+/, '-')
   end
 
   def tweet!
