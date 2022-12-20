@@ -9,19 +9,17 @@ export interface PredefinedGroupsProps {
 
 export default function PredefinedGroups ({ question: currentQuestion, onSelectQuestion }: PredefinedGroupsProps) {
   return (
-    <>
-      <Container dense>
-        {predefinedQuestions.map((question) => (
-          <ListItem key={question.id}>
-            <ListItemButton selected={question === currentQuestion} onClick={() => onSelectQuestion?.(question)}>
-              <ListItemText>
-                {question.title}
-              </ListItemText>
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </Container>
-    </>
+    <Container dense>
+      {predefinedQuestions.map((question) => (
+        <ListItem key={question.id}>
+          <ListItemButton selected={question === currentQuestion} onClick={() => onSelectQuestion?.(question)}>
+            <ListItemText>
+              {question.title}
+            </ListItemText>
+          </ListItemButton>
+        </ListItem>
+      ))}
+    </Container>
   );
 }
 
@@ -33,6 +31,7 @@ const Container = styled(List, { name: 'PredefinedGroups' })`
   > li {
     padding: 0;
   }
+
   .MuiListItemButton-root {
     padding-top: 0;
     padding-bottom: 0;

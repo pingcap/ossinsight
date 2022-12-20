@@ -168,3 +168,7 @@ WHERE
               type`,
   },
 ];
+
+export function getTableSchemaQuestion () {
+  return predefinedQuestions.find(question => question.id === 'table_schema');
+}
