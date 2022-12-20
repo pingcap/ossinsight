@@ -22,7 +22,7 @@ class TweetRepo
 
   def tweet!
     return if repo_info["description"].to_s.scan(/\p{Han}+/).join.size >= 10
-    if repo_info["stargazers_count"].to_i > 2000
+    if repo_info["stargazers_count"].to_i > 10000
       client.update_with_media(text, generate_img)
     else
       client.update(text)
@@ -64,7 +64,7 @@ class TweetRepo
     stars_incr = stars_incr_count_last_7_days
     logins = list_twitter_logins
 
-    repo_desc = if stars_count > 2000
+    repo_desc = if stars_count > 10000
       repo
     else
       "https://github.com/#{repo}"
