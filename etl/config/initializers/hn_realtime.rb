@@ -1,4 +1,5 @@
-require_relative './fetch_item'
+require_relative './hn_fetch_item'
+require_relative './hn_fetch_user'
 
 class HnRealtime
   attr_reader :interval, :from
@@ -10,7 +11,7 @@ class HnRealtime
 
   def run
     loop do 
-      last_id_in_db = Item.maximum(:id).to_i
+      last_id_in_db = HnItem.maximum(:id).to_i
       last_id_in_db = from if last_id_in_db == 0
       puts "last_id_in_db -> #{last_id_in_db}"
       last_id_remote = self.class.current_last_id
@@ -19,7 +20,7 @@ class HnRealtime
         if (last_id_in_db != 0 && last_id_remote != 0) && last_id_in_db < last_id_remote
           (last_id_in_db..last_id_remote).each do |item_id|
             puts "fetch item -> #{item_id}"
-            FetchItem.new(item_id).run
+            HnFetchItem.new(item_id).run
           end
         end
       rescue

@@ -2,12 +2,12 @@ require 'uri'
 require 'open-uri'
 require 'yajl'
 
-class FetchItem
-  attr_reader :item_id, :url
+class HnFetchUser
+  attr_reader :user_id, :url
 
-  def initialize(item_id)
-    @item_id = item_id
-    @url = "https://hacker-news.firebaseio.com/v0/item/#{item_id}.json?print=pretty"
+  def initialize(user_id)
+    @user_id = user_id
+    @url = "https://hacker-news.firebaseio.com/v0/user/#{user_id}.json?print=pretty"
   end
 
   def get_response
@@ -31,8 +31,10 @@ class FetchItem
     json = get_response
     if json
       json = Yajl::Parser.parse(json)
+      return if json.nil?
+      json.delete("submitted")
       json.merge!(last_fetch_at: Time.now)
-      Item.upsert(json)
+      HnUser.upsert(json)
     else
       puts "No response"
     end

@@ -25,8 +25,8 @@
 #  push_size              :integer          default(0), not null
 #  repo_name              :string(140)      default(""), not null
 #  state                  :string(6)        default(""), not null
-#  type                   :string(29)       default("WatchEvent"), not null
-#  created_at             :datetime         not null
+#  type                   :string(29)       default("Event"), not null
+#  created_at             :datetime         default(Thu, 01 Jan 1970 00:00:00.000000000 UTC +00:00), not null
 #  actor_id               :bigint           default(0), not null
 #  comment_id             :bigint           default(0), not null
 #  commit_id              :string(40)       default(""), not null
