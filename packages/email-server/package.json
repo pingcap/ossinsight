@@ -1,8 +1,8 @@
 {
-  "name": "@ossinsight/feeds-server",
-  "version": "0.0.0",
+  "name": "@ossinsight/email-server",
+  "version": "0.0.1",
   "private": true,
-  "description": "The feeds server of OSSInsight.",
+  "description": "The email server of OSSInsight.",
   "homepage": "https://github.com/pingcap/ossinsight#readme",
   "bugs": {
     "url": "https://github.com/pingcap/ossinsight/issues"
@@ -11,8 +11,9 @@
     "type": "git",
     "url": "git+https://github.com/pingcap/ossinsight.git"
   },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "license": "MIT",
-  "main": "app.ts",
   "scripts": {
     "build:ts": "tsc",
     "dev": "npm run build:ts && concurrently -k -p \"[{name}]\" -n \"TypeScript,App\" -c \"yellow.bold,cyan.bold\" \"npm:watch:ts\" \"npm:dev:start\"",
@@ -33,6 +34,7 @@
     "@mailchimp/mailchimp_transactional": "^1.0.50",
     "@types/cron": "^2.0.0",
     "async": "^3.2.4",
+    "axios": "^0.27.2",
     "bufferutil": "^4.0.7",
     "canvas": "^2.10.2",
     "cron": "^2.1.0",
