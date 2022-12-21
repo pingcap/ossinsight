@@ -1,5 +1,6 @@
 require_relative './hn_fetch_item'
 require_relative './hn_fetch_user'
+require_relative './hn_update'
 
 class HnRealtime
   attr_reader :interval, :from
@@ -19,10 +20,12 @@ class HnRealtime
       begin
         if (last_id_in_db != 0 && last_id_remote != 0) && last_id_in_db < last_id_remote
           (last_id_in_db..last_id_remote).each do |item_id|
-            puts "fetch item -> #{item_id}"
+            puts "Fetch item -> #{item_id}"
             HnFetchItem.new(item_id).run
           end
         end
+        puts "Update recently changed items and users"
+        HnUpdate.new.run
       rescue
         ActiveRecord::Base.connection.reconnect!
         puts $!
