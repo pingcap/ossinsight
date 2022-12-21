@@ -33,6 +33,7 @@ class HnFetchUser
       json = Yajl::Parser.parse(json)
       return if json.nil?
       json.delete("submitted")
+      json.delete("delay")
       json.merge!(last_fetch_at: Time.now)
       HnUser.upsert(json)
     else
