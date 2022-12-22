@@ -10,7 +10,7 @@ slug: /api
 If you want to use the OSS Insight API in your application, you can do one of the following
 
 * Email us at ossinsight@pingcap.com
-* [Open a pull request](https://github.com/pingcap/ossinsight/edit/main/docs/overview.md)
+* [Open a pull request](https://github.com/pingcap/ossinsight/edit/main/web/docs/api/overview.md)
 
 
 ## API host
