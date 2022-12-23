@@ -19,12 +19,22 @@ import Footer from './components/Footer';
 import Head from './components/Head';
 import Header from './components/Header';
 import React from 'react';
-import { RepoMilestoneToSent } from '../types';
 
-type RepoMilestoneFeedsProps = {
+export type RepoMilestoneFeedsProps = {
   name: string;
   repoMilestones: RepoMilestoneToSent[];
 };
+
+export interface RepoMilestoneToSent {
+  repoId: number;
+  repoName: string;
+  milestoneId: number;
+  milestoneTypeId: number;
+  milestoneTypeName: string;
+  milestoneNumber: number;
+  milestonePayload?: object;
+  watchedUserId: number;
+}
 
 const RepoMilestoneFeeds: React.FC<RepoMilestoneFeedsProps> = ({
   name,

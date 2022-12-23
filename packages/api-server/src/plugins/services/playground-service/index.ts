@@ -14,8 +14,8 @@ import IORedis from "ioredis";
 import {CacheProvider} from "../../../core/cache/provider/CacheProvider";
 import {AST, Parser, Select} from "node-sql-parser";
 
-export const PLAYGROUND_SQL_QUEUE_NAME = "playground-sql";
-export const PLAYGROUND_SQL_CACHE_TTL = 5 * 60;     // 5 minutes.
+export const PLAYGROUND_QUEUE_NAME = "playground";
+export const PLAYGROUND_CACHE_TTL = 5 * 60;     // 5 minutes.
 export const MAX_SELECT_LIMIT = 200;
 
 declare module 'fastify' {
@@ -104,7 +104,7 @@ export class PlaygroundService {
         private readonly playgroundQueryExecutor: TiDBPlaygroundQueryExecutor,
         redisClient: IORedis
     ) {
-        this.playgroundSQLQueue = new Queue(PLAYGROUND_SQL_QUEUE_NAME, {
+        this.playgroundSQLQueue = new Queue(PLAYGROUND_QUEUE_NAME, {
             connection: redisClient
         });
         this.logger = pino().child({
@@ -296,7 +296,7 @@ export class PlaygroundService {
     }
 
     async executeSQLInQueue(queue: Queue, execution: QueryExecution): Promise<QueryResult> {
-        const job = await queue.add(PLAYGROUND_SQL_QUEUE_NAME, execution);
+        const job = await queue.add(PLAYGROUND_QUEUE_NAME, execution);
         if (!job.id) {
             throw new APIError(500, 'Failed to add query job to queue.');
         }
@@ -365,7 +365,7 @@ export class PlaygroundService {
                 }
             };
             await cache.set(cacheKey, JSON.stringify(res), {
-                EX: PLAYGROUND_SQL_CACHE_TTL,
+                EX: PLAYGROUND_CACHE_TTL,
             });
             await this.queryExecutionService.finishQueryExecution(conn, {
                 id: executionId,
