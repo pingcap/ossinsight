@@ -35,6 +35,7 @@ class HnFetchUser
       json.delete("submitted")
       json.delete("delay")
       json.merge!(last_fetch_at: Time.now)
+      json['about'] = json['about'].to_s[0,60000]
       HnUser.upsert(json)
     else
       puts "No response"
