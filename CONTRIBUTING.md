@@ -81,7 +81,7 @@ You can learn more about how to write a good Pull Request title and description 
 
 You can add a collection on OSS Insight website by submitting PRs. 
 
-Here is a file template for a collection provides guidance on the information you need to include.
+The following is a file template for a collection that describes what you need to include.
 
 Please create a `.yml` file under [the collections file path]( https://github.com/pingcap/ossinsight/tree/main/etl/meta/collections).
 
@@ -107,7 +107,7 @@ You can add a blog on OSS Insight website by submitting PRs.
 
 Here is a folder template for a blog provides guidance on the information you need to include.
 
-Please create a folder under [the blog file path]( https://github.com/pingcap/ossinsight/tree/main/web/blog), and creat a `.md` file under the folder.
+Please create a folder under [the blog file path]( https://github.com/pingcap/ossinsight/tree/main/web/blog), and create a `.md` file under the folder.
 
 * Folder Name: describe the text briefly
 
