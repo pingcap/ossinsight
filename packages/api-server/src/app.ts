@@ -1,6 +1,6 @@
 import AutoLoad, { AutoloadPluginOptions } from '@fastify/autoload';
 import { FastifyPluginAsync, RawServerDefault } from 'fastify';
-import fastifyMySQL, { MySQLPromisePool } from '@fastify/mysql';
+import { MySQLPromisePool } from '@fastify/mysql';
 
 import { APIServerEnvSchema } from './env';
 import { JsonSchemaToTsProvider } from '@fastify/type-provider-json-schema-to-ts';
@@ -52,22 +52,6 @@ const app: FastifyPluginAsync<AppOptions, RawServerDefault, JsonSchemaToTsProvid
     confKey: 'config',      // You can access environment variables via `fastify.config`.
     dotenv: true,
     schema: APIServerEnvSchema
-  });
-
-  // Init MySQL Client.
-  if (process.env.NODE_ENV === 'test' && (/tidb-cloud|gharchive_dev|github_events_api/.test(fastify.config.DATABASE_URL))) {
-    throw new Error('Do not use online database in test env.');
-  }
-  await fastify.register(fastifyMySQL, {
-    promise: true,
-    connectionString: fastify.config.DATABASE_URL
-  }).ready(async () => {
-    try {
-      await fastify.mysql.pool.query(`SELECT 1`);
-      fastify.log.info('Connected to MySQL/TiDB database.');
-    } catch(err) {
-      fastify.log.error(err, 'Failed to connect to MySQL/TiDB database.');
-    }
   });
 
   // Error handler.

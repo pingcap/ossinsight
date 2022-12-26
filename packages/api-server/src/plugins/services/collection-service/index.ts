@@ -6,7 +6,7 @@ import { RowDataPacket } from "mysql2/promise";
 import { TiDBQueryExecutor } from "../../../core/executor/query-executor/TiDBQueryExecutor";
 import fp from "fastify-plugin";
 import pino from "pino";
-import {dataQueryTimer, measure, tidbQueryCounter} from "../../metrics/metrics";
+import {dataQueryTimer, measure, tidbQueryCounter} from "../../metrics";
 
 declare module 'fastify' {
   interface FastifyInstance {

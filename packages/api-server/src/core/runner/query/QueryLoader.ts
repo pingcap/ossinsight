@@ -3,7 +3,7 @@ import { QuerySchema } from "../../../types/query.schema";
 import { join } from "path";
 import pino from "pino";
 import { readFile } from "fs/promises";
-import {measure, readConfigTimer} from "../../../plugins/metrics/metrics";
+import {measure, readConfigTimer} from "../../../plugins/metrics";
 
 export const QUERY_TEMPLATE_SQL_FILENAME = 'template.sql';
 export const QUERY_CONFIG_FILENAME = 'params.json';

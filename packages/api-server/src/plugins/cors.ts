@@ -5,9 +5,9 @@ import { existsSync, readFileSync } from 'fs';
 import cors from '@fastify/cors';
 import fp from "fastify-plugin";
 import { parse as parseYAML } from 'yaml';
-import {GENERATE_SQL_LIMIT_HEADER, GENERATE_SQL_USED_HEADER} from "../../routes/bot/questionToSQL";
+import {GENERATE_SQL_LIMIT_HEADER, GENERATE_SQL_USED_HEADER} from "../routes/bot/questionToSQL";
 
-type OriginType = string | RegExp;
+export type OriginType = string | RegExp;
 
 export const DEFAULT_ALLOWED_ORIGIN = 'https://ossinsight.io';
 
