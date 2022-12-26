@@ -97,7 +97,7 @@ export const OverviewSection = forwardRef(function (_, ref: ForwardedRef<HTMLEle
           : (
           <>
             <Stack direction='row' flexWrap='wrap' justifyContent='space-between' alignItems='center'>
-              <H1 sx={{ mt: 2 }}>
+              <H1 sx={{ mt: 2 }} noWrap>
                 <Box component='span' display='inline-flex' bgcolor='white' borderRadius='4px' padding='2px' alignItems='center' justifyContent='center' sx={{ verticalAlign: 'text-bottom' }} mr={1}>
                   <img width="48" height="48" src={`https://github.com/${name.split('/')[0]}.png`} alt={name} />
                 </Box>
