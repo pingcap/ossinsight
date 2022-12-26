@@ -3,6 +3,7 @@ import {Job} from "bullmq";
 import {FastifyServer, User} from "../../types";
 import {PoolConnection, ResultSetHeader, RowDataPacket} from "mysql2/promise";
 import {DateTime} from "luxon";
+import {EmailTemplateNames} from "@ossinsight/email-server";
 
 export default async (
     app: FastifyInstance,
@@ -42,7 +43,7 @@ async function sendRepoFeedsToSubscriber (server: FastifyServer, subscriber: Use
             await server.emailClient.sendEmail({
                 to: emailAddress,
                 subject,
-                templateName: 'repo-feeds',
+                templateName: EmailTemplateNames.REPO_FEEDS,
                 templateData: {
                     githubLogin,
                     repoMilestones,

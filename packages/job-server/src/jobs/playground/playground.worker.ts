@@ -1,14 +1,8 @@
-import {Job, Queue, WorkerOptions} from 'bullmq';
+import {Job, WorkerOptions} from 'bullmq';
 import {
-  CachedTableCacheProvider, QueryExecution
+  NormalTableCacheProvider, QueryExecution, QueryStatus
 } from "@ossinsight/api-server";
 import {FastifyInstance} from "fastify";
-
-declare module 'fastify' {
-  interface FastifyInstance {
-    playgroundSQLQueue: Queue;
-  }
-}
 
 export default async (
     app: FastifyInstance,
@@ -18,18 +12,26 @@ export default async (
     app.log.warn("No job data provided");
     return;
   }
-  const { id: executionId, querySQL, queryHash } = job.data;
+  const { id: executionId, queryHash } = job.data;
   const cacheKey = `playground:${queryHash}`;
-  app.log.info({ cacheKey, querySQL }, 'Executing query execution: %d', executionId);
-
   const conn = await app.mysql.getConnection();
-  const cache = new CachedTableCacheProvider(conn);
+  const cache = new NormalTableCacheProvider(conn);
 
   try {
-    await app.playgroundService.executeSQLImmediately(conn, cache, cacheKey, job.data);
-    app.log.info({ cacheKey }, 'Finished executing query execution: %d', executionId);
-  } catch (err) {
-    app.log.error({ cacheKey, err }, 'Failed to execute query execution: %d.', executionId);
+    const res = await app.playgroundService.executeSQL(cache, cacheKey, job.data);
+    await app.queryExecutionService.finishQueryExecution(conn, {
+      id: executionId,
+      status: QueryStatus.Success,
+      executedAt: res.executedAt,
+      finishedAt: res.finishedAt,
+      spent: res.spent
+    });
+  } catch (err: any) {
+    await app.queryExecutionService.finishQueryExecution(conn, {
+      id: executionId,
+      status: QueryStatus.Error,
+      error: err.message,
+    });
   } finally {
     await conn.release();
   }
