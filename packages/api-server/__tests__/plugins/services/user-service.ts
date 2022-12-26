@@ -14,7 +14,7 @@ beforeAll(async () => {
   conn = await getTestDatabase().createConnection();
 });
 afterAll(releaseApp);
-beforeAll(releaseTestRedis);
+afterAll(releaseTestRedis);
 afterAll(releaseTestDatabase);
 
 describe('get user by id', () => {
