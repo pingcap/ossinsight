@@ -66,6 +66,7 @@ export interface ValidateSQLResult {
 
 export default fp(async (app) => {
     const { mysql, redis, queryExecutionService, playgroundQueryExecutor } = app;
+
     const playgroundQueue = new Queue(PLAYGROUND_QUEUE_NAME, {
         connection: redis,
     });
@@ -73,11 +74,12 @@ export default fp(async (app) => {
         mysql, queryExecutionService, playgroundQueryExecutor, playgroundQueue
     ));
 }, {
-    name: 'playground-service',
+    name: '@ossinsight/playground-service',
     dependencies: [
         '@fastify/env',
         '@fastify/mysql',
-        'query-execution-service'
+        '@fastify/redis',
+        '@ossinsight/query-execution-service'
     ]
 });
 
@@ -297,16 +299,16 @@ export class PlaygroundService {
         const getConnStart = DateTime.now();
         const playgroundConn = await this.playgroundQueryExecutor.getConnection();
         const getConnEnd = DateTime.now();
-        this.logger.info(`get playground connection: ${getConnEnd.diff(getConnStart).as('milliseconds')}ms`);
+        this.logger.info({ cacheKey }, `Got the playground connection, cost: ${getConnEnd.diff(getConnStart).as('milliseconds')} ms`);
 
         // Execute query.
         try {
-            this.logger.info({ cacheKey, querySQL }, 'Executing query execution: %d', executionId);
+            this.logger.info({ cacheKey, querySQL }, 'Executing query execution: %s', executionId);
             const executedAt = DateTime.now();
             const [rows, fields] = await playgroundConn.execute<any[]>(querySQL);
             const finishedAt = DateTime.now();
             const spent = finishedAt.diff(executedAt).as("seconds");
-            this.logger.info({ cacheKey }, 'Finished executing query execution: %d', executionId);
+            this.logger.info({ cacheKey }, 'Finished executing query execution: %s', executionId);
 
             const res = {
                 sql: querySQL,

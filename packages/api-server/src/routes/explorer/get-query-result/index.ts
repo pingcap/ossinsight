@@ -1,8 +1,9 @@
 import { FastifyPluginAsync } from 'fastify';
 
 export const schema = {
+    summary: 'Get Query Result',
     description: 'Get the result of a query',
-    tags: ['playground'],
+    tags: ['explorer'],
     querystring: {
         type: 'object',
         required: ['executionId'],

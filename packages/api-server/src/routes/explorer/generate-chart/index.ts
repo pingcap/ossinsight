@@ -2,9 +2,9 @@ import { FastifyPluginAsync } from 'fastify';
 import {GenerateChartPromptTemplate} from "../../../plugins/services/bot-service/template/GenerateChartPromptTemplate";
 
 export const schema = {
-  description: 'Generate Chart',
-  summary: 'Generate Chart according to the given data',
-  tags: ['playground'],
+  summary: 'Generate Chart',
+  description: 'Generate Chart according to the given data',
+  tags: ['explorer'],
   body: {
     type: 'object',
     required: ['data'],

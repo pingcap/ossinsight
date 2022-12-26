@@ -31,6 +31,12 @@ export const GENERATE_SQL_USED_HEADER = "x-playground-generate-sql-used";
 export const GENERATE_SQL_LIMIT_HEADER = "x-playground-generate-sql-limit";
 export const MAX_DAILY_GENERATE_SQL_LIMIT = 2000;
 
+/**
+ * @Deprecated
+ * Use /playground/generate-sql instead.
+ * @param app
+ * @param opts
+ */
 const root: FastifyPluginAsyncJsonSchemaToTs = async (app, opts): Promise<void> => {
   app.get('/quota', {
     preHandler: [app.authenticate],

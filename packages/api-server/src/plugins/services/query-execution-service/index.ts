@@ -52,7 +52,7 @@ declare module 'fastify' {
 export default fp(async (app) => {
     app.decorate('queryExecutionService', new QueryExecutionService());
 }, {
-    name: 'query-execution-service',
+    name: '@ossinsight/query-execution-service',
     dependencies: [
         '@fastify/env'
     ]

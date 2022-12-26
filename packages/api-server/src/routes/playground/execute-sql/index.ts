@@ -1,7 +1,7 @@
 import { FastifyPluginAsync } from 'fastify';
 
 export const schema = {
-  description: 'Execute SQL',
+  summary: 'Execute SQL',
   tags: ['playground'],
   body: {
     type: 'object',

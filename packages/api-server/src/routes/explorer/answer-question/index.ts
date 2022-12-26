@@ -11,13 +11,16 @@ export interface IBody {
 }
 
 const schema = {
+  summary: 'Answer a question',
+  description: 'Answer a question to the AI bot, he will return a sql query, and execute the query to get the result.',
+  tags: ['explorer'],
   body: {
     type: 'object',
     properties: {
       question: { type: 'string' },
     }
-  }
-} as const;
+  } as const
+};
 
 const root: FastifyPluginAsyncJsonSchemaToTs = async (app, opts): Promise<void> => {
   app.post<{
