@@ -179,7 +179,7 @@ export function socketServerRoutes(
     try {
       const { executionId } = request;
       let response: WsQueryResponse;
-      const topic = `/playground/result?executionId=${executionId}`;
+      const topic = `/explorer/get-query-result?executionId=${executionId}`;
       const conn = await mysql.getConnection();
 
       try {
@@ -198,7 +198,7 @@ export function socketServerRoutes(
       socket.emit(topic, response);
     } catch (error) {
       log.error("Failed to request %s[ws]: ", request, error);
-      socket.emit("fatal-error/playground-result", {
+      socket.emit("fatal-error/get-query-result", {
         request,
         error,
       });
