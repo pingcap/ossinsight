@@ -1,7 +1,7 @@
 ---
 sidebar_position: 1
 title: About OSS Insight
-description: We are a powerful insight tool that can help you analyze any GitHub repository/developer. And you can get insights with the monthly and historical rankings as well.
+description: OSS Insight is a powerful insight tool that can help you analyze any GitHub repository or developer. And you can get insights with the monthly and historical rankings as well.
 hide_title: true
 ---
 
@@ -23,7 +23,7 @@ hide_title: true
   <a href="https://twitter.com/OSSInsight">Twitter</a>
 </h3>
 
-We are a powerful insight tool that can help you analyze in depth any single GitHub repository/developers, compare any two repositories using the same metrics, and provide comprehensive, valuable, and trending open source insights.
+OSS Insight is a powerful tool that provides comprehensive, valuable, and trending insights into the open source world by analyzing billions of GitHub events. It provides in-depth analysis of individual GitHub repositories and developers, as well as the ability to compare two repositories using the same metrics.
 
 <div align="center">
 <iframe width="560" height="315" src="https://www.youtube.com/embed/6ofDBgXh4So?enablejsapi=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
