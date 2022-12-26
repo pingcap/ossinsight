@@ -1,7 +1,7 @@
 import { FastifyPluginAsync } from 'fastify';
 
 export const schema = {
-  description: 'Play SQL',
+  summary: 'Execute SQL',
   tags: ['playground'],
   body: {
     type: 'object',
@@ -9,7 +9,7 @@ export const schema = {
     properties: {
       sql: {
         type: 'string',
-        description: 'The SQL to play',
+        description: 'The SQL to execute',
       },
       cancelPrevious: {
         type: 'boolean',
@@ -35,7 +35,8 @@ const root: FastifyPluginAsync = async (app) => {
     const { sql, cancelPrevious } = req.body;
     let userId = req.user?.id;
     let ip = req.ip;
-    const res = await app.playgroundService.executeSQL(sql, cancelPrevious, userId, ip);
+    // TODO: validate the SQL.
+    const res = await app.playgroundService.submitQueryJob(sql, cancelPrevious, userId, ip);
     reply.status(200).send(res);
   });
 };

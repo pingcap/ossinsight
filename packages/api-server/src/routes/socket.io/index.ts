@@ -6,6 +6,7 @@ import fastifyWebsocket from "fastify-socket.io";
 import { pino } from "pino";
 import { toCompactFormat } from "../../utils/compact";
 import {PlaygroundService} from "../../plugins/services/playground-service";
+import {MySQLPromisePool} from "@fastify/mysql";
 
 interface WsQueryRequest {
   qid?: string | number;
@@ -55,7 +56,7 @@ const root: FastifyPluginAsync = async (app, opts): Promise<void> => {
     app.io.on("connection", (socket) => {
       app.log.info("io connected");
       const log = app.log as pino.Logger;
-      socketServerRoutes(log, socket, app.io, app.queryRunner, app.playgroundService);
+      socketServerRoutes(log, socket, app.io, app.queryRunner, app.playgroundService, app.mysql);
 
       socket.on("disconnect", () => {
         app.log.info("io disconnected");
@@ -92,7 +93,8 @@ export function socketServerRoutes(
   socket: Socket,
   io: Server,
   queryRunner: QueryRunner,
-  playgroundService: PlaygroundService
+  playgroundService: PlaygroundService,
+  mysql: MySQLPromisePool
 ) {
   /*
    * This ws entrypoint provide a method to visit HTTP /q/:query and /q/explain/:query equally.
@@ -177,10 +179,11 @@ export function socketServerRoutes(
     try {
       const { executionId } = request;
       let response: WsQueryResponse;
-      const topic = `/playground/result?executionId=${executionId}`;
+      const topic = `/explorer/get-query-result?executionId=${executionId}`;
+      const conn = await mysql.getConnection();
 
       try {
-        const payload = await playgroundService.getQueryResult(executionId);
+        const payload = await playgroundService.getQueryResult(conn, executionId);
         response = {
             payload,
         }
@@ -189,11 +192,13 @@ export function socketServerRoutes(
           error: true,
           payload: err,
         };
+      } finally {
+        conn.release();
       }
       socket.emit(topic, response);
     } catch (error) {
       log.error("Failed to request %s[ws]: ", request, error);
-      socket.emit("fatal-error/playground-result", {
+      socket.emit("fatal-error/get-query-result", {
         request,
         error,
       });

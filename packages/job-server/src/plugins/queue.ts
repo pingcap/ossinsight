@@ -3,11 +3,11 @@ import { default as fastifyBullMQ, FastifyQueueOptions} from "../lib/bullmq";
 
 export default fp<FastifyQueueOptions>(async (app, opts) => {
     await app.register(fastifyBullMQ, {
-        bullPath: '*/plugins/jobs/**/*.js',
+        bullPath: '*/jobs/**/*.js',
         connection: app.redis,
     });
 }, {
-    name: '@ossinsight/bullmq',
+    name: '@ossinsight/queue',
     dependencies: [
         '@fastify/env',
         'fastify-redis'

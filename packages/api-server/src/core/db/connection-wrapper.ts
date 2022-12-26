@@ -20,6 +20,7 @@ export class ConnectionWrapper implements Omit<Connection, '[INITIALIZED]'> {
 
     private _conn: Connection | undefined;
     private pool: Pool;
+    private _destroyed: boolean = false;
     private readonly initPromise: () => Promise<void>;
     private constructor(extendOptions: ConnectionOptions) {
         this.config = getConnectionOptions(extendOptions);
@@ -60,6 +61,10 @@ export class ConnectionWrapper implements Omit<Connection, '[INITIALIZED]'> {
         const errorHandler = async (err: any) => {
             if (!err.fatal) return;
             if (err.code !== 'PROTOCOL_CONNECTION_LOST') throw err;
+
+            if (this._destroyed) {
+                return;
+            }
 
             logger.warn(`Database server connection lost, trying to reconnect.`);
 
@@ -115,6 +120,7 @@ export class ConnectionWrapper implements Omit<Connection, '[INITIALIZED]'> {
     }
 
     async destroy(): Promise<void> {
+        this._destroyed = true;
         this.conn.destroy();
         await this.pool.end();
     }

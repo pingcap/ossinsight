@@ -4,7 +4,7 @@ import fp from "fastify-plugin";
 import {DateTime} from "luxon";
 
 export interface QueryExecution {
-    id: number;
+    id: string;
     // Identifier of the query requester.
     userId?: number | null;
     ip?: string | null;
@@ -15,7 +15,9 @@ export interface QueryExecution {
     // Execution info.
     status: QueryStatus;
     engines: string[];
-    enqueue: boolean;
+    queueJobId?: string | null;
+    queueInitialRank: number;
+    queueCurrentRank: number;
     hitCache: boolean;
     error?: string;
     // Stats.
@@ -25,7 +27,13 @@ export interface QueryExecution {
     spent?: number | null;
 }
 
-export type FinishedQueryExecutionOptions = Pick<QueryExecution, "id" | "executedAt" | "finishedAt" | "status" | "error" | "spent">;
+export type QueryExecutionVO = Omit<QueryExecution, "userId" | "ip" | "querySQL" | "requestedAt" | "executedAt" | "finishedAt">
+
+export type CreateQueryExecutionDTO = Omit<QueryExecution, "queueJobId">
+
+export type UpdateQueryExecutionDTO = Pick<QueryExecution, "queueJobId" | "queueInitialRank" | "queueCurrentRank">;
+
+export type FinishedQueryExecutionDTO = Pick<QueryExecution, "id" | "executedAt" | "finishedAt" | "status" | "error" | "spent">;
 
 export enum QueryStatus {
     Waiting = "waiting",
@@ -44,7 +52,7 @@ declare module 'fastify' {
 export default fp(async (app) => {
     app.decorate('queryExecutionService', new QueryExecutionService());
 }, {
-    name: 'query-execution-service',
+    name: '@ossinsight/query-execution-service',
     dependencies: [
         '@fastify/env'
     ]
@@ -52,34 +60,46 @@ export default fp(async (app) => {
 
 export class QueryExecutionService {
 
-    async createQueryExecution(conn: Connection, execution: QueryExecution):Promise<QueryExecution> {
+    async createQueryExecution(conn: Connection, executionDTO: CreateQueryExecutionDTO):Promise<QueryExecution> {
         const {
-            userId = 0, ip = 'N/A', querySQL, queryHash, queryDigest,
-            status = QueryStatus.Waiting, engines = [], enqueue = false, hitCache = false, error = null,
-            requestedAt = DateTime.now(), executedAt = null, finishedAt = null, spent = null
-        } = execution;
+            id, userId = 0, ip = 'N/A', querySQL, queryHash, queryDigest,
+            status = QueryStatus.Waiting, engines = [], queueInitialRank = 0, queueCurrentRank = 0,
+            hitCache = false, error = null, requestedAt = DateTime.now(), executedAt = null, finishedAt = null, spent = null
+        } = executionDTO;
         const enginesValue = Array.isArray(engines) ? JSON.stringify(engines) : null;
         const requestedAtValue = requestedAt ? requestedAt.toSQL() : null;
         const executedAtValue = executedAt ? executedAt.toSQL() : null;
         const finishedAtValue = finishedAt ? finishedAt.toSQL() : null;
-        const [rs] = await conn.query<ResultSetHeader>(`
+        await conn.query<ResultSetHeader>(`
             INSERT INTO playground_query_executions(
-                user_id, ip, query_sql, query_hash, query_digest, 
-                status, engines, enqueue, hit_cache, error, 
+                id, user_id, ip, query_sql, query_hash, query_digest, 
+                status, engines, queue_initial_rank, queue_current_rank, hit_cache, error, 
                 requested_at, executed_at, finished_at, spent
             ) VALUES (
-                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+                UUID_TO_BIN(?), ?, ?, ?, ?, ?,
+                ?, ?, ?, ?, ?, ?,
+                ?, ?, ?, ?
             )
         `, [
-            userId, ip, querySQL, queryHash, queryDigest,
-            status, enginesValue, enqueue, hitCache, error,
+            id, userId, ip, querySQL, queryHash, queryDigest,
+            status, enginesValue, queueInitialRank, queueCurrentRank, hitCache, error,
             requestedAtValue, executedAtValue, finishedAtValue, spent
         ]);
-        execution.id = rs.insertId;
-        return execution;
+        return {
+            ...executionDTO,
+        };
     }
 
-    async finishQueryExecution(conn: Connection, options: FinishedQueryExecutionOptions):Promise<void> {
+    async updateQueryExecution(conn: Connection, executionId: string, executionDTO: UpdateQueryExecutionDTO): Promise<void> {
+        const { queueJobId, queueInitialRank, queueCurrentRank } = executionDTO;
+        await conn.query<ResultSetHeader>(`
+            UPDATE playground_query_executions
+            SET queue_job_id = ?, queue_initial_rank = ?, queue_current_rank = ?
+            WHERE id = UUID_TO_BIN(?)
+        `, [queueJobId, queueInitialRank, queueCurrentRank, executionId]);
+    }
+
+    async finishQueryExecution(conn: Connection, options: FinishedQueryExecutionDTO):Promise<void> {
         const { id, status, executedAt, finishedAt, spent } = options;
         const executedAtValue = executedAt?.toSQL() || null;
         const finishedAtValue = finishedAt?.toSQL() || null;
@@ -87,7 +107,7 @@ export class QueryExecutionService {
         await conn.query<ResultSetHeader>(`
             UPDATE playground_query_executions
             SET status = ?, executed_at = ?, finished_at = ?, spent = ?
-            WHERE id = ?
+            WHERE id = UUID_TO_BIN(?)
         `, [status, executedAtValue, finishedAtValue, spent, id]);
     }
 
@@ -100,19 +120,35 @@ export class QueryExecutionService {
         }
     }
 
-    async getQueryExecution(conn: Connection, executionId: number): Promise<QueryExecution> {
+    async getQueryExecution(conn: Connection, executionId: string): Promise<QueryExecution> {
         const [rows] = await conn.query<any[]>(`
             SELECT
-                id, user_id AS userId, ip, query_sql AS querySQL, query_hash AS queryHash, query_digest AS queryDigest, 
-                status, engines, enqueue, hit_cache AS hitCache, error,
+                BIN_TO_UUID(id) AS id, user_id AS userId, ip, query_sql AS querySQL, query_hash AS queryHash, query_digest AS queryDigest, 
+                status, engines, queue_job_id AS queueJobId, queue_initial_rank AS queueInitialRank, 
+                queue_current_rank AS queueCurrentRank, hit_cache AS hitCache, error,
                 requested_at AS requestedAt, executed_at AS executedAt, finished_at AS finishedAt, spent
              FROM playground_query_executions
-             WHERE id = ?
+             WHERE id = UUID_TO_BIN(?)
         `, [executionId]);
         if (rows.length === 0) {
             throw new APIError(404, 'Query execution not found.');
         }
         return rows[0];
+    }
+
+    toQueryExecutionVO(execution: QueryExecution): QueryExecutionVO {
+        return {
+            id: execution.id,
+            queryHash: execution.queryHash,
+            queryDigest: execution.queryDigest,
+            status: execution.status,
+            engines: execution.engines,
+            hitCache: execution.hitCache,
+            queueJobId: execution.queueJobId,
+            queueInitialRank: execution.queueInitialRank,
+            queueCurrentRank: execution.queueCurrentRank,
+            error: execution.error,
+        };
     }
 
     async findExistedQueryExecutions(conn: Connection, userId?: number, ip?: string): Promise<QueryExecution[]> {
@@ -128,8 +164,9 @@ export class QueryExecutionService {
     async findUserExistedQueryExecutions(conn: Connection, userId: number, statuses: QueryStatus[]):Promise<QueryExecution[]> {
         const [executions] = await conn.query<any[]>(`
             SELECT
-                id, user_id AS userId, ip, query_sql AS querySQL, query_hash AS queryHash, query_digest AS queryDigest, 
-                status, engines, enqueue, hit_cache AS hitCache, error,
+                BIN_TO_UUID(id) AS id, user_id AS userId, ip, query_sql AS querySQL, query_hash AS queryHash, query_digest AS queryDigest, 
+                status, engines, queue_job_id AS queueJobId, queue_initial_rank AS queueInitialRank, 
+                queue_current_rank AS queueCurrentRank, hit_cache AS hitCache, error,
                 requested_at AS requestedAt, executed_at AS executedAt, finished_at AS finishedAt, spent
             FROM playground_query_executions pqe
             WHERE
@@ -142,8 +179,9 @@ export class QueryExecutionService {
     async findIPExistedQueryExecutions(conn: Connection, ip: string, statuses: QueryStatus[]):Promise<QueryExecution[]> {
         const [executions] = await conn.query<any[]>(`
             SELECT
-                id, user_id AS userId, ip, query_sql AS querySQL, query_hash AS queryHash, query_digest AS queryDigest, 
-                status, engines, enqueue, hit_cache AS hitCache, error,
+                BIN_TO_UUID(id) AS id, user_id AS userId, ip, query_sql AS querySQL, query_hash AS queryHash, query_digest AS queryDigest, 
+                status, engines, queue_job_id AS queueJobId, queue_initial_rank AS queueInitialRank, 
+                queue_current_rank AS queueCurrentRank, hit_cache AS hitCache, error,
                 requested_at AS requestedAt, executed_at AS executedAt, finished_at AS finishedAt, spent
             FROM playground_query_executions pqe
             WHERE

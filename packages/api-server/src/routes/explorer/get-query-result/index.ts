@@ -1,21 +1,22 @@
 import { FastifyPluginAsync } from 'fastify';
 
 export const schema = {
+    summary: 'Get Query Result',
     description: 'Get the result of a query',
-    tags: ['playground'],
+    tags: ['explorer'],
     querystring: {
         type: 'object',
         required: ['executionId'],
         properties: {
             executionId: {
-                type: 'number',
+                type: 'string',
             },
         }
     }
 };
 
 export interface IQueryString {
-    executionId: number;
+    executionId: string;
 }
 const root: FastifyPluginAsync = async (app) => {
     app.get<{
@@ -25,8 +26,13 @@ const root: FastifyPluginAsync = async (app) => {
         preHandler: [app.authenticate]
     },async (req, reply) => {
         const { executionId } = req.query;
-        const res = await app.playgroundService.getQueryResult(executionId);
-        reply.status(200).send(res);
+        const conn = await app.mysql.getConnection();
+        try {
+            const res = await app.playgroundService.getQueryResult(conn, executionId);
+            reply.status(200).send(res);
+        } finally {
+            conn.release();
+        }
     });
 };
 

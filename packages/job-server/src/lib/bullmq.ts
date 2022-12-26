@@ -1,3 +1,7 @@
+/**
+ * Copy from https://github.com/JonasHiltl/fastify-queue/blob/master/src/index.ts
+ * The original repository was already lacking in maintenance, so I copied the code here.
+ */
 import { FastifyInstance } from 'fastify';
 import fp from 'fastify-plugin';
 import { Queue, Worker, ConnectionOptions } from 'bullmq';
@@ -8,8 +12,6 @@ export declare type FastifyQueueOptions = {
     bullPath: string;
     connection: ConnectionOptions;
 };
-
-// Copy from https://github.com/JonasHiltl/fastify-queue
 
 /**
  * Load every worker function inside a specified directory
