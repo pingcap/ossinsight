@@ -63,7 +63,7 @@ export class BotService {
         }
     }
 
-    async dataToChart(template: GenerateChartPromptTemplate, data: any): Promise<RecommendedChart | null> {
+    async dataToChart(template: GenerateChartPromptTemplate, question: string, data: any): Promise<RecommendedChart | null> {
         if (!data) return null;
 
         // Slice the array data to avoid too long prompt
@@ -71,7 +71,7 @@ export class BotService {
             data = data.slice(0, 2);
         }
 
-        const prompt = template.stringify(data);
+        const prompt = template.stringify(question, data);
         const res = await this.openai.createCompletion({
             model: template.model,
             prompt,
@@ -95,23 +95,6 @@ export class BotService {
             return null;
         }
 
-        // Extract the chart name and options from text into an object.
-        // For example:
-        // - new MapChart({ country_code: 'country_or_area', value: 'count' })
-
-        const chartName = text.match(/new (\w+)Chart/)?.[1];
-        const chartOptions = text.match(/\{(.*)\}/)?.[1];
-        if (!chartName || !chartOptions) {
-            return null;
-        } else {
-            const options = chartOptions.split(',').map((option) => {
-                const [key, value] = option.split(':');
-                return [key.trim(), value.trim()];
-            });
-            return {
-                chartName,
-                chartOptions: Object.fromEntries(options)
-            };
-        }
+        return JSON.parse(text);
     }
 }

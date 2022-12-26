@@ -9,6 +9,9 @@ export const schema = {
     type: 'object',
     required: ['data'],
     properties: {
+      question: {
+        description: 'The question to generate chart',
+      },
       data: {
         description: 'The data to generate chart',
       }
@@ -17,6 +20,7 @@ export const schema = {
 };
 
 export interface IBody {
+  question: string;
   data: any;
 }
 
@@ -26,9 +30,10 @@ const root: FastifyPluginAsync = async (app) => {
     Body: IBody
   }>('/', {
     schema,
+    preHandler: [app.authenticate]
   },async (req, reply) => {
-    const { data } = req.body;
-    const res = await app.botService.dataToChart(generateChartPrompt, data);
+    const { question, data } = req.body;
+    const res = await app.botService.dataToChart(generateChartPrompt, question, data);
     reply.status(200).send(res);
   });
 };

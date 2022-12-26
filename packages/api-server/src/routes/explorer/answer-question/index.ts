@@ -27,7 +27,7 @@ const root: FastifyPluginAsyncJsonSchemaToTs = async (app, opts): Promise<void> 
     Body: IBody;
   }>('/', {
     schema,
-    preHandler: [app.authenticateAllowAnonymous]
+    preHandler: [app.authenticate]
   }, async function (req, reply) {
     const { playgroundService, botService } = app;
     let userId = req.user?.id;

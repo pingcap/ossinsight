@@ -1,6 +1,62 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`prompt template query playground prompt template 1`] = `
+exports[`prompt template generate chart prompt template should work 1`] = `
+"# TypeScript
+interface Chart { title: string}
+interface PieChart extends Chart {value: number}
+interface LineChart  extends Chart {x: any;y: any;}
+interface BarChart extends Chart  {x: any;y: any;}
+interface MapChart extends Chart  {country_code: string;value: any;}
+interface RepoCard extends Chart  {repo_id: number;repo_name: string;}
+interface PersonalCard extends Chart  {repo_id: number;repo_name: string;}
+# Example
+Question: The star history of @pingcap/tidb
+Data: [{event_month: "2015-09-01", repo_id: 41986369, total: 2541}]
+Chart: 
+{
+  "title": "The Star History of @pingcap/tidb",
+  "chartName": "LineChart",
+  "x": "event_month",
+  "y": "total"
+}
+# Example
+Question: Geographic distribution of contributors to @pingcap/tidb  
+Data: [{country_or_area: "CN", count: 8883, percentage: 0.5971}]
+Chart: 
+{
+  "title": "The Geographic Distribution of Contributors to @pingcap/tidb ",
+  "chartName": "MapChart",
+  "country_code": "country_or_area",
+  "value": "count"
+}
+# Example
+Question: The open source projects similar to tidb?
+Data:  [{repo_id: 41986369, repo_name: "pingcap/tidb"}, {repo_id: 48833910, repo_name: "tilv/tikv"}]
+Chart: 
+{
+  "title": "The Repository List Similar to pingcap/tidb",
+  "chartName": "RepoCard",
+  "repo_id": "repo_id",
+  "repo_name": "repo_name"
+}
+# Example
+Question: Who has given the most stars on github?
+Data:  [{id: 5086433, actor_login: "Mini256"}]
+Chart: 
+{
+   "title": "The People Who Given the Most Stars on GitHub",
+  "chartName": "PersonalCard",
+  "id": "id",
+  "login": "actor_login"
+}
+---
+Question: The commits and pushes in @pingcap/tidb across months
+Data: [{"commits":671,"event_month":"2015-09-01","pushes":521},{"commits":561,"event_month":"2015-10-01","pushes":426},{"commits":546,"event_month":"2015-11-01","pushes":399},{"commits":478,"event_month":"2015-12-01","pushes":343}]
+Chart: 
+"
+`;
+
+exports[`prompt template query playground prompt template should work 1`] = `
 "# MySQL SQL
 Table github_events, columns = [id, type, created_at, repo_id, repo_name, actor_id, actor_login, language, additions, deletions, action, number, org_login, org_id, state, closed_at, comments, pr_merged_at, pr_merged, pr_changed_files, pr_review_comments, pr_or_issue_id, push_size, push_distinct_size, creator_user_login, creator_user_id, pr_or_issue_created_at]
 Column type, enums = ['PullRequestEvent', 'PushEvent', 'IssueCommentEvent', 'IssuesEvent', 'PullRequestReviewCommentEvent', 'WatchEvent', 'CreateEvent', 'DeleteEvent', 'ForkEvent', 'ReleaseEvent']When type = 'PullRequestReviewCommentEvent', the action could be 'created'
@@ -48,7 +104,7 @@ SELECT * FROM github_repos, ( SELECT repo_id, SUM(score) AS similarity FROM ( ( 
 "
 `;
 
-exports[`prompt template sql playground prompt template 1`] = `
+exports[`prompt template sql playground prompt template should work 1`] = `
 "# MySQL SQL
 Table github_events, columns = [type, created_at, repo_id, repo_name, actor_id, actor_login, language, additions, deletions, action, number, org_login, org_id, state, closed_at, comments, pr_merged_at, pr_merged, pr_changed_files, pr_review_comments, pr_or_issue_id, push_size, push_distinct_size, creator_user_login, creator_user_id, pr_or_issue_created_at]
 Column type, enums = ['PullRequestEvent', 'PushEvent', 'IssueCommentEvent', 'IssuesEvent', 'PullRequestReviewCommentEvent', 'WatchEvent', 'CreateEvent', 'DeleteEvent', 'ForkEvent', 'ReleaseEvent']
