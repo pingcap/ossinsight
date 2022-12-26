@@ -78,7 +78,7 @@ export default fp(async (app) => {
     dependencies: [
         '@fastify/env',
         '@fastify/mysql',
-        '@fastify/redis',
+        'fastify-redis',
         '@ossinsight/query-execution-service'
     ]
 });

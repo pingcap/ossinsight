@@ -1,6 +1,6 @@
 import fp from "fastify-plugin";
-import {BatchLoader} from "../../core/db/batch-loader";
-import {getPool} from "../../core/db/new";
+import {BatchLoader} from "../core/db/batch-loader";
+import {getPool} from "../core/db/new";
 
 declare module 'fastify' {
     interface FastifyInstance {

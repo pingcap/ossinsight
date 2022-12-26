@@ -7,7 +7,7 @@ import {CachedData} from "../../cache/Cache";
 import {DateTime} from "luxon";
 import {Octokit} from "octokit";
 import pino from 'pino';
-import {ghQueryCounter, ghQueryTimer, measure} from "../../../plugins/metrics/metrics";
+import {ghQueryCounter, ghQueryTimer, measure} from "../../../plugins/metrics";
 
 const GET_REPO_CACHE_HOURS = 1;
 const SEARCH_REPOS_CACHE_HOURS = 24;
