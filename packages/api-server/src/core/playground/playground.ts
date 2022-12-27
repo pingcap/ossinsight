@@ -85,20 +85,6 @@ const LIMIT_AST_NODE = {
   ],
 };
 
-// const WHERE_AST_NODE = (fieldName: string, value: number) => ({
-//   type: "binary_expr",
-//   operator: "=",
-//   left: {
-//     type: "column_ref",
-//     table: null,
-//     column: fieldName,
-//   },
-//   right: {
-//     type: "number",
-//     value,
-//   },
-// });
-
 declare module "node-sql-parser" {
   interface Select {
     _next?: AST;
@@ -112,12 +98,40 @@ function parseSelectAst(
   value: number,
   depth = 0
 ) {
-  // only handle select statement
+  // Only handle select statement.
   if (ast.type !== "select") {
     return;
   }
   const { where, from, limit, with: astWith, union } = ast;
-  // Only add LIMIT to the outermost layer of SQL expression
+
+  // Check FROM clause.
+  if (from && from.length > 0) {
+    from.forEach((fromItem: any) => {
+      const fromItemAst = fromItem?.expr?.ast as Select | undefined;
+      fromItemAst && parseSelectAst(fromItemAst, fieldName, value, depth + 1);
+    });
+  }
+
+  // Check WITH clause.
+  const astWithList = Array.isArray(astWith)
+    ? (astWith as With[])
+    : astWith
+    ? [astWith]
+    : [];
+
+  astWithList.forEach((withItem) => {
+    const stmt = withItem?.stmt as any;
+    const withItemAst = stmt.ast as Select | undefined;
+    withItemAst && parseSelectAst(withItemAst, fieldName, value, depth + 1);
+  });
+
+  // Check UNION clause.
+  if (union) {
+    const unionAst = ast._next as Select;
+    parseSelectAst(unionAst, fieldName, value, depth);
+  }
+
+  // Only add LIMIT to the outermost layer of SQL expression.
   if (depth === 0 && !union) {
     // Add limit
     if (limit?.value && limit.value[0]?.value > 100) {
@@ -126,58 +140,38 @@ function parseSelectAst(
       ast.limit = LIMIT_AST_NODE;
     }
   }
-  // Check FROM clause
-  from &&
-    from.length > 0 &&
-    from.forEach((fromItem: any) => {
-      const fromItemAst = fromItem?.expr?.ast as Select | undefined;
-      fromItemAst && parseSelectAst(fromItemAst, fieldName, value, depth + 1);
-    });
-  // Check WITH clause
-  const astWithList = Array.isArray(astWith)
-    ? (astWith as With[])
-    : astWith
-    ? [astWith]
-    : [];
-  astWithList.forEach((withItem) => {
-    const stmt = withItem?.stmt as any;
-    const withItemAst = stmt.ast as Select | undefined;
-    withItemAst && parseSelectAst(withItemAst, fieldName, value, depth + 1);
-  });
-  // Wrap where clause
-  // 30-Sep-2021: We don't need to add "repo_id = xxx" condition into where clause anymore
-  if (!where) {
-    // ast.where = WHERE_AST_NODE(fieldName, value);
-    if (from && from?.length > 0) {
-      throw new BadParamsError(
-        "playground",
-        `WHERE is required. Please add "WHERE ${fieldName} = ${value}" to your query.`
-      );
-    }
-  } else {
-    // Check if where clause already has the repo_id = xxx or actor_id = xxx
-    const whereLimitExist = isWhereLimitExist(where, fieldName, value);
-    if (whereLimitExist) {
-      // do nothing
+
+  // Check there is no repo_id or actor_id in the WHERE clause.
+  if (isFromContainTable(from, "github_events")) {
+    if (!where) {
+      // ast.where = WHERE_AST_NODE(fieldName, value);
+      if (from && from?.length > 0) {
+        throw new BadParamsError(
+          "playground",
+          `WHERE is required. Please add "WHERE ${fieldName} = ${value}" to your query.`
+        );
+      }
     } else {
-      // where.parentheses = true;
-      // ast.where = {
-      //   type: "binary_expr",
-      //   operator: "AND",
-      //   left: WHERE_AST_NODE(fieldName, value),
-      //   right: where,
-      // };
-      throw new BadParamsError(
-        "playground",
-        `Please add "${fieldName} = ${value}" to your each WHERE clause.`
-      );
+      // Check if where clause already has the repo_id = xxx or actor_id = xxx
+      const whereLimitExist = isWhereLimitExist(where, fieldName, value);
+      if (!whereLimitExist) {
+        throw new BadParamsError(
+          "playground",
+          `Please add "${fieldName} = ${value}" to your each WHERE clause.`
+        );
+      }
     }
   }
-  // Check UNION clause
-  if (union) {
-    const unionAst = ast._next as Select;
-    parseSelectAst(unionAst, fieldName, value, depth);
-  }
+}
+
+function isFromContainTable(from: any, tableName: string) {
+  return from.some((fromItem: any) => {
+    if (fromItem.table && fromItem.table === tableName) {
+      return true;
+    } else {
+      return false;
+    }
+  });
 }
 
 const isWhereLimitExist = (
