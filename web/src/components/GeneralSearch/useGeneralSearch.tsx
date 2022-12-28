@@ -33,3 +33,30 @@ export function useGeneralSearch<T extends SearchType> (type: T, keyword: string
     loading: isValidating,
   };
 }
+
+export function useGeneralSearchWithoutDefaults<T extends SearchType> (type: T, keyword: string) {
+  const searchKey = useDebounced(keyword, 500);
+
+  const { data, isValidating, error } = useSWR(
+    searchKey
+      ? [searchKey, `search:${type}`]
+      : undefined
+    , {
+      fetcher: async (keyword: string): Promise<SearchRepoInfo[] | UserInfo[]> => {
+        if (type === 'repo') {
+          return await searchRepo(keyword);
+        } else {
+          return await searchUser(keyword, 'user');
+        }
+      },
+      revalidateOnMount: true,
+      revalidateOnReconnect: false,
+      shouldRetryOnError: false,
+    });
+
+  return {
+    data: data ?? [] as any,
+    error,
+    loading: isValidating,
+  };
+}
