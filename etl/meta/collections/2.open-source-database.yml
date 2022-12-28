@@ -36,3 +36,4 @@ items:
   - duckdb/duckdb
   - apache/shardingsphere
   - milvus-io/milvus
+  - CUBRID/cubrid
