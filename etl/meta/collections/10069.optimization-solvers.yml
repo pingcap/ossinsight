@@ -1,0 +1,12 @@
+id: 10069
+name: Optimization Solvers
+items:
+  - coin-or/Bonmin
+  - coin-or/Cbc
+  - coin-or/Ipopt
+  - cvxgrp/scs
+  - embotech/ecos
+  - ERGO-Code/HiGHS
+  - google/or-tools
+  - osqp/osqp
+  - scipopt/scip
