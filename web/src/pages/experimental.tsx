@@ -26,6 +26,11 @@ function ExperimentalPage () {
             label="AI Playground"
             control={<ExperimentalSwitch feature="ai-playground" />}
           />
+          <br />
+          <FormControlLabel
+            label="Explore Data"
+            control={<ExperimentalSwitch feature="explore-data" />}
+          />
           <Box component='pre' mt={2}>
             <code>
               {`localStorage.setItem(${JSON.stringify(STORAGE_KEY)}, ${JSON.stringify(localStorage.getItem(STORAGE_KEY))});location.href=location.href`}

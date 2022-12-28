@@ -119,7 +119,7 @@ const AvatarContainer = styled('div')({
   borderRadius: 12,
 });
 
-const renderUser = (props: React.HTMLAttributes<HTMLLIElement>, option: Option, highlight: boolean) => {
+export const renderUser = (props: React.HTMLAttributes<HTMLLIElement>, option: Option, highlight: boolean) => {
   return (
     <ListItem dense {...props}>
       <ListItemAvatar sx={{ minWidth: 32 }}>
@@ -141,7 +141,7 @@ const renderUser = (props: React.HTMLAttributes<HTMLLIElement>, option: Option, 
   );
 };
 
-const renderRepo = (props: ListItemProps, option: Option, highlight: boolean) => {
+export const renderRepo = (props: ListItemProps, option: Option, highlight: boolean) => {
   return (
     <ListItem dense {...props}>
       <ListItemAvatar sx={{ minWidth: 32 }}>
