@@ -18,7 +18,7 @@ export function Charts (props: ChartResult & { data: any[] }) {
     case 'PieChart':
     case 'MapChart':
       // TODO: WIP
-      break;
+      return null;
     default:
       return null;
   }
