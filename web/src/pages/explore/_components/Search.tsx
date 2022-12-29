@@ -1,9 +1,10 @@
 import { InputBase, List, Popper, styled, useEventCallback } from '@mui/material';
 import React, { ChangeEventHandler, Dispatch, KeyboardEventHandler, RefObject, SetStateAction, useCallback, useEffect, useRef, useState } from 'react';
-import { isNullish, notNullish } from '@site/src/utils/value';
+import { isNullish } from '@site/src/utils/value';
 import { useThrottle } from 'ahooks';
 import { useGeneralSearchWithoutDefaults } from '@site/src/components/GeneralSearch/useGeneralSearch';
 import { renderRepo, renderUser } from '@site/src/components/GeneralSearch';
+import { useUserInfoContext } from '@site/src/context/user';
 
 export function useStateRef<T> (initial: T | (() => T)): [T, Dispatch<SetStateAction<T>>, RefObject<T>] {
   const [state, setState] = useState(initial);
@@ -27,6 +28,7 @@ export default function ExploreSearch ({ value, onChange, onAction }: ExploreSea
   const [char, setChar] = useState('');
   const [name, setName] = useState('');
   const elRef = useRef<HTMLInputElement>(null);
+  const { validating, validated } = useUserInfoContext();
 
   const handleChange: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> = useEventCallback((ev) => {
     onChange(ev.target.value);
@@ -61,21 +63,21 @@ export default function ExploreSearch ({ value, onChange, onAction }: ExploreSea
   useEffect(() => {
     switch (state) {
       case InputState.normal:
-        if (char === '@') {
-          setAnchor(position);
-          setState(InputState.user);
-          setName('@');
-          setChar('a');
-        }
-        if (char === '/') {
-          const matched = /(?:\s|^)([a-z\d]+)$/.exec(value.substring(0, position));
-          if (notNullish(matched)) {
-            setAnchor(position - matched[1].length);
-            setState(InputState.repo);
-            setName(matched[1] + '/');
-            setChar('a');
-          }
-        }
+        // if (char === '@') {
+        //   setAnchor(position);
+        //   setState(InputState.user);
+        //   setName('@');
+        //   setChar('a');
+        // }
+        // if (char === '/') {
+        //   const matched = /(?:\s|^)([a-z\d]+)$/.exec(value.substring(0, position));
+        //   if (notNullish(matched)) {
+        //     setAnchor(position - matched[1].length);
+        //     setState(InputState.repo);
+        //     setName(matched[1] + '/');
+        //     setChar('a');
+        //   }
+        // }
         break;
       case InputState.user:
       case InputState.repo: {
@@ -130,7 +132,7 @@ export default function ExploreSearch ({ value, onChange, onAction }: ExploreSea
 
   return (
     <>
-      <StyledInput fullWidth ref={elRef} value={value} onChange={handleChange} onKeyDown={handleKeydown} onBlur={reset} />
+      <StyledInput fullWidth disabled={validating && !validated} ref={elRef} value={value} onChange={handleChange} onKeyDown={handleKeydown} onBlur={reset} />
       <Popper open={state !== InputState.normal} anchorEl={elRef.current}>
         <PopperContainer>
           <List>
