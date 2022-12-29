@@ -20,3 +20,4 @@ items:
   - Strider-CD/strider
   - buildbot/buildbot
   - dagger/dagger
+  - bytebase/bytebase
