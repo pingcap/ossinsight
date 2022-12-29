@@ -91,53 +91,54 @@ export const OverviewSection = forwardRef(function (_, ref: ForwardedRef<HTMLEle
 
   return (
     <Section id='overview' ref={ref}>
-      {
-        comparingRepoName
-          ? undefined
-          : (
-          <>
-            <Stack direction='row' flexWrap='wrap' justifyContent='space-between' alignItems='center'>
-              <H1 sx={{ mt: 2 }} noWrap>
-                <Box component='span' display='inline-flex' bgcolor='white' borderRadius='4px' padding='2px' alignItems='center' justifyContent='center' sx={{ verticalAlign: 'text-bottom' }} mr={1}>
-                  <img width="48" height="48" src={`https://github.com/${name.split('/')[0]}.png`} alt={name} />
-                </Box>
-                <a href={`https://github.com/${name}`} target="_blank" rel="noreferrer">
-                  {name}
-                  &nbsp;
-                  <LinkExternalIcon size={28} verticalAlign="middle" />
-                </a>
-              </H1>
-              {isNullish(vs) && (
-                <>
-                  <span style={{ flex: 1 }}/>
-                  <MilestoneLite repoId={repoId} />
-                  <Experimental feature='milestone-subscription'>
-                    <Tooltip title='Click to view more highlights in this repository and get updates vie email.'>
-                      <SubscribeButton sx={{ ml: 1 }} repoName={name} icon onClick={handleClickNotificationIcon} />
-                    </Tooltip>
-                  </Experimental>
-                </>
-              )}
-            </Stack>
-            <P2>{repoInfo?.description}</P2>
-            {notNullish(collectionData) && nonEmptyArray(collectionData.data)
-              ? (
-                <Box mb={1}>
-                  In Collection:
-                  &nbsp;
-                  {collectionData.data.map(collection => (
-                    <Chip color="primary" variant="outlined" size="small" sx={{ mr: 1 }} key={collection.id}
-                          label={collection.name}
-                          onClick={() => window.open(`/collections/${paramCase(collection.name)}`, '_blank')} />
-                  ))}
-                </Box>
-                )
-              : undefined
-            }
-          </>
-            )
-      }
-      <Grid container spacing={0} alignItems='center' mb={isNullish(vs) ? 2 : 0} mt={2}>
+      <div id='overview-main'>
+        {
+          comparingRepoName
+            ? undefined
+            : (
+            <>
+              <Stack direction='row' flexWrap='wrap' justifyContent='space-between' alignItems='center'>
+                <H1 sx={{ mt: 2 }} noWrap>
+                  <Box component='span' display='inline-flex' bgcolor='white' borderRadius='4px' padding='2px' alignItems='center' justifyContent='center' sx={{ verticalAlign: 'text-bottom' }} mr={1}>
+                    <img width="48" height="48" src={`https://github.com/${name.split('/')[0]}.png`} alt={name} />
+                  </Box>
+                  <a href={`https://github.com/${name}`} target="_blank" rel="noreferrer">
+                    {name}
+                    &nbsp;
+                    <LinkExternalIcon size={28} verticalAlign="middle" />
+                  </a>
+                </H1>
+                {isNullish(vs) && (
+                  <>
+                    <span style={{ flex: 1 }}/>
+                    <MilestoneLite repoId={repoId} />
+                    <Experimental feature='milestone-subscription'>
+                      <Tooltip title='Click to view more highlights in this repository and get updates vie email.'>
+                        <SubscribeButton sx={{ ml: 1 }} repoName={name} icon onClick={handleClickNotificationIcon} />
+                      </Tooltip>
+                    </Experimental>
+                  </>
+                )}
+              </Stack>
+              <P2>{repoInfo?.description}</P2>
+              {notNullish(collectionData) && nonEmptyArray(collectionData.data)
+                ? (
+                  <Box mb={1}>
+                    In Collection:
+                    &nbsp;
+                    {collectionData.data.map(collection => (
+                      <Chip color="primary" variant="outlined" size="small" sx={{ mr: 1 }} key={collection.id}
+                            label={collection.name}
+                            onClick={() => window.open(`/collections/${paramCase(collection.name)}`, '_blank')} />
+                    ))}
+                  </Box>
+                  )
+                : undefined
+              }
+            </>
+              )
+        }
+        <Grid container spacing={0} alignItems='center' mb={isNullish(vs) ? 2 : 0} mt={2}>
         <Grid item xs={12} lg={5}>
           <Summary items={summaries} query='analyze-repo-overview' />
         </Grid>
@@ -165,6 +166,7 @@ export const OverviewSection = forwardRef(function (_, ref: ForwardedRef<HTMLEle
           }
         </Grid>
       </Grid>
+      </div>
       {isNullish(vs) && (
         <Analyze query='analyze-stars-history'>
           <H2 id='stars-history' analyzeTitle display='none'>Stars History</H2>

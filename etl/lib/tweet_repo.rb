@@ -45,7 +45,7 @@ class TweetRepo
   def generate_img 
     url = "https://ossinsight.io/analyze/#{repo}"
     img_client = HTMLCSSToImage.new
-    img = img_client.create_image('', url: url, selector: "#__docusaurus > div.main-wrapper > div:nth-child(2) > main > div > section:nth-child(1) > div:nth-child(2) > div.MuiGrid-root.MuiGrid-container > div.MuiGrid-root.MuiGrid-item.MuiGrid-grid-xs-12.MuiGrid-grid-lg-7.css-c40sdo > div.MuiGrid-root.MuiGrid-container.MuiGrid-spacing-xs-1.MuiGrid-direction-xs-column")
+    img = img_client.create_image('', url: url, selector: "#overview-main")
     URI.open(img.url, read_timeout: 1000)
   end
 
