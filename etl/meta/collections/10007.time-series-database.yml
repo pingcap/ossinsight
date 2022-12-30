@@ -11,3 +11,4 @@ items:
   - CeresDB/ceresdb
   - apache/iotdb
   - GreptimeTeam/greptimedb
+  - cnosdb/cnosdb
