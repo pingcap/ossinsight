@@ -39,6 +39,7 @@ describe('create a new question', () => {
     const question = await explorerService.newQuestion(conn, 1, "How many events are there in TiDB?");
     expect(question).toEqual({
       id: expect.any(String),
+      hash: expect.any(String),
       title: "How many events are there in TiDB?",
       queryHash: expect.any(String),
       querySQL: "SELECT COUNT(*) FROM `github_events` WHERE `repo_name` = 'pingcap/tidb' LIMIT 10",
@@ -47,7 +48,8 @@ describe('create a new question', () => {
       recommended: false,
       status: "waiting",
       userId: 1,
-      createdAt: expect.any(Object)
+      createdAt: expect.any(Object),
+      requestedAt: expect.any(Object)
     });
 
     questionToSQL.mockRestore();
@@ -71,6 +73,7 @@ describe('create a new question', () => {
     const question = await explorerService.newQuestion(conn, 1, "How many events are there?");
     expect(question).toEqual({
       id: expect.any(String),
+      hash: expect.any(String),
       title: "How many events are there?",
       queryHash: expect.any(String),
       querySQL: "SELECT COUNT(*) FROM `github_events` AS `ge` LIMIT 10",
@@ -79,7 +82,8 @@ describe('create a new question', () => {
       recommended: false,
       status: "waiting",
       userId: 1,
-      createdAt: expect.any(Object)
+      createdAt: expect.any(Object),
+      requestedAt: expect.any(Object)
     });
 
     questionToSQL.mockRestore();
