@@ -1,5 +1,6 @@
 CREATE TABLE `explorer_questions` (
   `id` varbinary(16) NOT NULL,
+  `hash` varchar(128) NOT NULL,
   `user_id` int(11) NOT NULL COMMENT 'The user id of system user',
   `status` enum('new','waiting','running','success','error','cancel') NOT NULL,
   `title` varchar(255) NOT NULL,
