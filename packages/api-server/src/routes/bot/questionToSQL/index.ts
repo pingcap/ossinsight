@@ -1,6 +1,9 @@
 import {APIError} from "../../../utils/error";
 import {FastifyPluginAsyncJsonSchemaToTs} from "@fastify/type-provider-json-schema-to-ts";
-import {SQLPlaygroundPromptTemplate} from "../../../plugins/services/bot-service/template/SQLPlaygroundPromptTemplate";
+import {
+  QueryPlaygroundSQLPromptTemplate
+} from "../../../plugins/services/bot-service/template/QueryPlaygroundPromptTemplate";
+import {GENERATE_SQL_LIMIT_HEADER, GENERATE_SQL_USED_HEADER, MAX_DAILY_GENERATE_SQL_LIMIT} from "./quota";
 
 export interface IBody {
   question: string;
@@ -27,110 +30,76 @@ const schema = {
   }
 } as const;
 
-export const GENERATE_SQL_USED_HEADER = "x-playground-generate-sql-used";
-export const GENERATE_SQL_LIMIT_HEADER = "x-playground-generate-sql-limit";
-export const MAX_DAILY_GENERATE_SQL_LIMIT = 2000;
-
-/**
- * @Deprecated
- * Use /playground/generate-sql instead.
- * @param app
- * @param opts
- */
 const root: FastifyPluginAsyncJsonSchemaToTs = async (app, opts): Promise<void> => {
-  app.get('/quota', {
-    preHandler: [app.authenticate],
-  }, async function (req, reply) {
-    const { playgroundService } = app;
-    const { id: userId, githubLogin } = req.user;
-
-    // Get the limit and used.
-    let limit = app.config.PLAYGROUND_DAILY_QUESTIONS_LIMIT || MAX_DAILY_GENERATE_SQL_LIMIT;
-    let used = await playgroundService.countTodayQuestionRequests(userId, false);
-
-    // Give the trusted users more daily requests.
-    const trustedLogins = app.config.PLAYGROUND_TRUSTED_GITHUB_LOGINS;
-    if (trustedLogins.includes(githubLogin)) {
-      limit = MAX_DAILY_GENERATE_SQL_LIMIT;
-    }
-
-    // Set the headers.
-    reply.status(200).send({
-      limit,
-      used,
-    });
-  });
-
   app.post<{
     Body: IBody;
   }>('/', {
-    preHandler: [app.authenticate],
+    preHandler: [app.authenticateAllowAnonymous],
     schema
   }, async function (req, reply) {
     const { playgroundService, botService } = app;
-    const { question, context: questionContext } = req.body;
+    const { question } = req.body;
     const { id: userId, githubId, githubLogin } = req.user;
     const context = {
-      this_repo_id: questionContext?.repo_id,
-      this_repo_name: questionContext?.repo_name,
-      my_user_id: githubId,
-      my_user_login: githubLogin,
+      github_id: githubId,
+      github_login: githubLogin,
     };
+    const conn = await this.mysql.getConnection();
 
-    // Get the limit and used.
-    let limit = app.config.PLAYGROUND_DAILY_QUESTIONS_LIMIT || MAX_DAILY_GENERATE_SQL_LIMIT;
-    let used = await playgroundService.countTodayQuestionRequests(userId, false);
-
-    // Give the trusted users more daily requests.
-    const trustedLogins = app.config.PLAYGROUND_TRUSTED_GITHUB_LOGINS;
-    if (trustedLogins.includes(githubLogin)) {
-      limit = MAX_DAILY_GENERATE_SQL_LIMIT;
-    }
-
-    // Check if the current user reached the daily request limit.
-    reply.header(GENERATE_SQL_LIMIT_HEADER, limit);
-    if (used >= limit) {
-      reply.header(GENERATE_SQL_USED_HEADER, used);
-      throw new APIError(429, `You have reached the daily question limit. Please try again tomorrow.`);
-    } else {
-      reply.header(GENERATE_SQL_USED_HEADER, used + 1);
-    }
-
-    let sql;
     try {
-      const promptTemplate = new SQLPlaygroundPromptTemplate();
-      sql = await botService.questionToSQL(promptTemplate, question, context);
-      if (!sql) {
-        throw new APIError(500, 'No SQL generated');
+      // Check if there are existed SQL
+      const questionRecords = await playgroundService.getExistedQuestion(conn, question);
+      if (questionRecords.length > 0) {
+        const {sql} = questionRecords[0];
+        return reply.status(200).send({sql});
       }
-      await playgroundService.recordQuestion({
-        userId,
-        context,
-        question,
-        sql: sql,
-        success: true,
-        preset: false
-      });
-    } catch (err) {
-      await playgroundService.recordQuestion({
-        userId,
-        context,
-        question,
-        sql: null,
-        success: false,
-        preset: false
-      });
-      throw err;
-    }
 
-    if (sql) {
+      // Get the limit and used.
+      let limit = app.config.PLAYGROUND_DAILY_QUESTIONS_LIMIT || MAX_DAILY_GENERATE_SQL_LIMIT;
+      let used = await playgroundService.countTodayQuestionRequests(conn, userId, false);
+
+      // Give the trusted users more daily requests.
+      const trustedLogins = app.config.PLAYGROUND_TRUSTED_GITHUB_LOGINS;
+      if (trustedLogins.includes(githubLogin)) {
+        limit = MAX_DAILY_GENERATE_SQL_LIMIT;
+      }
+
+      // Check if the current user reached the daily request limit.
+      reply.header(GENERATE_SQL_LIMIT_HEADER, limit);
+      if (used >= limit) {
+        reply.header(GENERATE_SQL_USED_HEADER, used);
+        throw new APIError(429, `You have reached the daily question limit. Please try again tomorrow.`);
+      } else {
+        reply.header(GENERATE_SQL_USED_HEADER, used + 1);
+      }
+
+      // Generate the SQL.
+      let sql = null, success = true;
+      try {
+        const promptTemplate = new QueryPlaygroundSQLPromptTemplate();
+        sql = await botService.questionToSQL(promptTemplate, question, context);
+        if (!sql) {
+          throw new APIError(500, 'No SQL generated');
+        }
+      } catch (err) {
+        success = false;
+        throw err;
+      } finally {
+        await playgroundService.recordQuestion(conn, {
+          userId,
+          context,
+          question,
+          sql,
+          success,
+          preset: false
+        });
+      }
+
       reply.send({
         sql: sql
       });
-    } else {
-      reply.status(404).send({
-        message: 'No SQL found.'
-      });
+    } finally {
+      conn.release();
     }
   });
 }

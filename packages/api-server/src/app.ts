@@ -6,7 +6,7 @@ import { APIServerEnvSchema } from './env';
 import { JsonSchemaToTsProvider } from '@fastify/type-provider-json-schema-to-ts';
 import fastifyEnv from '@fastify/env';
 import { join } from 'path';
-import {APIError} from "./utils/error";
+import {APIError, ValidateSQLError} from "./utils/error";
 
 export type AppOptions = {
   // Place your custom options for app below here.
@@ -60,6 +60,11 @@ const app: FastifyPluginAsync<AppOptions, RawServerDefault, JsonSchemaToTsProvid
 
     if (error instanceof APIError) {
       reply.status(error.statusCode).send({
+        message: error.message
+      });
+    } else if (error instanceof ValidateSQLError) {
+      reply.status(400).send({
+        querySQL: error.sql,
         message: error.message
       });
     } else {

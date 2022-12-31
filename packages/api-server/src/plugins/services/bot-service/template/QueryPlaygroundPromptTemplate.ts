@@ -84,7 +84,6 @@ export class QueryPlaygroundSQLPromptTemplate extends SQLGeneratePromptTemplate 
           name: 'type',
           enums: ['USR', 'ORG']
         },
-        { name: 'is_bot' },
         { name: 'name' },
         { name: 'organization' },
         { name: 'country_code' },

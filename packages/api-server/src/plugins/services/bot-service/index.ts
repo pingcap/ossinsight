@@ -20,7 +20,7 @@ export default fp(async (fastify) => {
     const log = fastify.log.child({ service: 'bot-service'}) as pino.Logger;
     fastify.decorate('botService', new BotService(log, fastify.config.OPENAI_API_KEY));
 }, {
-  name: 'bot-service',
+  name: '@ossinsight/bot-service',
   dependencies: []
 });
 
@@ -28,7 +28,7 @@ export class BotService {
     private readonly openai: OpenAIApi;
 
     constructor(
-        private readonly log: pino.Logger,
+        private readonly log: pino.BaseLogger,
         private readonly apiKey: string
     ) {
         const configuration = new Configuration({
