@@ -8,6 +8,7 @@ WITH user_merged_prs AS (
         AND type = 'PullRequestEvent'
         AND action = 'closed'
         AND pr_merged = true
+        AND (created_at BETWEEN DATE_SUB(NOW(), INTERVAL 1 YEAR) AND NOW())
     GROUP BY 1
     ORDER BY 1
 ), user_open_prs AS (
@@ -20,6 +21,7 @@ WITH user_merged_prs AS (
         AND type = 'PullRequestEvent'
         AND action = 'opened'
         AND pr_merged = false
+        AND (created_at BETWEEN DATE_SUB(NOW(), INTERVAL 1 YEAR) AND NOW())
     GROUP BY 1
     ORDER BY 1
 ), event_months AS (

@@ -7,6 +7,7 @@ WITH reviews AS (
         type = 'PullRequestReviewEvent'
         AND action = 'created'
         AND actor_id = 5086433
+        AND (created_at BETWEEN DATE_SUB(NOW(), INTERVAL 1 YEAR) AND NOW())
     GROUP BY 1
     ORDER BY 1
 ), review_comments AS (
@@ -18,6 +19,7 @@ WITH reviews AS (
         type = 'PullRequestReviewCommentEvent'
         AND action = 'created'
         AND actor_id = 5086433
+        AND (created_at BETWEEN DATE_SUB(NOW(), INTERVAL 1 YEAR) AND NOW())
     GROUP BY 1
     ORDER BY 1
 )

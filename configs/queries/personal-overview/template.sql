@@ -5,11 +5,17 @@ WITH repo_ids AS (
 ), star_repos AS (
     SELECT 5086433 AS user_id, COUNT(DISTINCT repo_id) AS cnt
     FROM github_events ge
-    WHERE actor_id = 5086433 AND type = 'WatchEvent'
+    WHERE 
+        actor_id = 5086433 
+        AND type = 'WatchEvent' 
+        AND (created_at BETWEEN DATE_SUB(NOW(), INTERVAL 1 YEAR) AND NOW())
 ), star_earned AS (
     SELECT 5086433 AS user_id, COUNT(1) AS cnt
     FROM github_events ge
-    WHERE repo_id IN (SELECT repo_id FROM repo_ids) AND type = 'WatchEvent'
+    WHERE 
+        repo_id IN (SELECT repo_id FROM repo_ids) 
+        AND type = 'WatchEvent' 
+        AND (created_at BETWEEN DATE_SUB(NOW(), INTERVAL 1 YEAR) AND NOW())
 ), contribute_repos AS (
     SELECT 5086433 AS user_id, COUNT(DISTINCT repo_id) AS cnt
     FROM github_events ge
@@ -22,22 +28,40 @@ WITH repo_ids AS (
             (type = 'PushEvent' AND action = '')
         )
         AND repo_id NOT IN (SELECT repo_id FROM repo_ids)
+        AND (created_at BETWEEN DATE_SUB(NOW(), INTERVAL 1 YEAR) AND NOW())
 ), issues AS (
     SELECT 5086433 AS user_id, COUNT(1) AS cnt
     FROM github_events ge
-    WHERE actor_id = 5086433 AND type = 'IssuesEvent' AND action = 'opened'
+    WHERE 
+        actor_id = 5086433 
+        AND type = 'IssuesEvent' 
+        AND action = 'opened' 
+        AND (created_at BETWEEN DATE_SUB(NOW(), INTERVAL 1 YEAR) AND NOW())
 ), pull_requests AS (
     SELECT 5086433 AS user_id, COUNT(1) AS cnt
     FROM github_events ge
-    WHERE actor_id = 5086433 AND type = 'PullRequestEvent' AND action = 'opened'
+    WHERE 
+        actor_id = 5086433 
+        AND type = 'PullRequestEvent' 
+        AND action = 'opened' 
+        AND (created_at BETWEEN DATE_SUB(NOW(), INTERVAL 1 YEAR) AND NOW())
 ), code_reviews AS (
     SELECT 5086433 AS user_id, COUNT(1) AS cnt
     FROM github_events ge
-    WHERE actor_id = 5086433 AND type = 'PullRequestReviewEvent' AND action = 'created'
+    WHERE 
+        actor_id = 5086433 
+        AND type = 'PullRequestReviewEvent' 
+        AND action = 'created' 
+        AND (created_at BETWEEN DATE_SUB(NOW(), INTERVAL 1 YEAR) AND NOW())
 ), code_changes AS (
     SELECT 5086433 AS user_id, SUM(additions) AS additions, SUM(deletions) AS deletions
     FROM github_events ge
-    WHERE type = 'PullRequestEvent' AND action = 'closed' AND pr_merged = true AND creator_user_id = 5086433
+    WHERE 
+        type = 'PullRequestEvent' 
+        AND action = 'closed' 
+        AND pr_merged = true 
+        AND creator_user_id = 5086433 
+        AND (created_at BETWEEN DATE_SUB(NOW(), INTERVAL 1 YEAR) AND NOW())
 )
 SELECT
     sub.user_id,
