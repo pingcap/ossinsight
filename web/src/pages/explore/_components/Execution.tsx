@@ -13,11 +13,18 @@ export interface ExecutionContext {
 
 export interface ExecutionProps {
   search: string;
+  onLoading?: (loading: boolean) => void;
+  onResultLoading?: (loading: boolean) => void;
+  onChartLoading?: (loading: boolean) => void;
 }
 
-export default forwardRef<ExecutionContext, ExecutionProps>(function Execution ({ search }, ref: ForwardedRef<ExecutionContext>) {
-  const { data, loading, run, error } = useAsyncOperation(search, ask, true);
-  const { data: resultData, loading: resultLoading, run: resultRun, error: resultError } = useAsyncOperation(data?.execution.id, getResult, true);
+export default forwardRef<ExecutionContext, ExecutionProps>(function Execution ({ search, onLoading, onResultLoading, onChartLoading }, ref: ForwardedRef<ExecutionContext>) {
+  const { data, loading, run, error } = useAsyncOperation(search, ask);
+  const { data: resultData, loading: resultLoading, run: resultRun, error: resultError } = useAsyncOperation(data?.execution.id, getResult);
+
+  useEffect(() => {
+    onLoading?.(loading);
+  }, [loading, onLoading]);
 
   useEffect(() => {
     if (typeof ref === 'function') {
@@ -88,6 +95,10 @@ export default forwardRef<ExecutionContext, ExecutionProps>(function Execution (
     }
   }, [result, data, resultData, loading, resultLoading]);
 
+  useEffect(() => {
+    onResultLoading?.(waitingResult);
+  }, [waitingResult, onResultLoading]);
+
   const resultStatus = useMemo(() => {
     if (waitingResult) {
       return 'loading';
@@ -117,7 +128,11 @@ export default forwardRef<ExecutionContext, ExecutionProps>(function Execution (
     }
   }, [result]);
 
-  const { data: chartData, loading: chartLoading, error: chartError, run: chartRun } = useAsyncOperation({ question: search, data: result?.data }, guessChart, true);
+  const { data: chartData, loading: chartLoading, error: chartError, run: chartRun } = useAsyncOperation({ question: search, data: result?.data }, guessChart);
+  useEffect(() => {
+    onChartLoading?.(chartLoading);
+  }, [chartLoading, onChartLoading]);
+
   useEffect(() => {
     if (notFalsy(search) && notNullish(result?.data)) {
       chartRun();

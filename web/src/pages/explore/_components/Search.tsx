@@ -1,10 +1,11 @@
-import { InputBase, List, Popper, styled, useEventCallback } from '@mui/material';
+import { IconButton, InputBase, List, Popper, Stack, styled, useEventCallback } from '@mui/material';
 import React, { ChangeEventHandler, Dispatch, KeyboardEventHandler, RefObject, SetStateAction, useCallback, useEffect, useRef, useState } from 'react';
 import { isNullish } from '@site/src/utils/value';
 import { useThrottle } from 'ahooks';
 import { useGeneralSearchWithoutDefaults } from '@site/src/components/GeneralSearch/useGeneralSearch';
 import { renderRepo, renderUser } from '@site/src/components/GeneralSearch';
 import { useUserInfoContext } from '@site/src/context/user';
+import { Close, KeyboardReturn, Pause } from '@mui/icons-material';
 
 export function useStateRef<T> (initial: T | (() => T)): [T, Dispatch<SetStateAction<T>>, RefObject<T>] {
   const [state, setState] = useState(initial);
@@ -19,9 +20,14 @@ export interface ExploreSearchProps {
   value: string;
   onChange: (value: string) => void;
   onAction?: () => void;
+  onClear?: () => void;
+  disableInput?: boolean;
+  disableAction?: boolean;
+  disableClear?: boolean;
+  clearState?: 'stop' | undefined;
 }
 
-export default function ExploreSearch ({ value, onChange, onAction }: ExploreSearchProps) {
+export default function ExploreSearch ({ value, onChange, onAction, onClear, disableInput = false, disableAction = false, disableClear = false, clearState }: ExploreSearchProps) {
   const [state, setState, stateRef] = useStateRef(InputState.normal);
   const [anchor, setAnchor] = useState(-1);
   const [position, setPosition] = useState(-1);
@@ -132,7 +138,27 @@ export default function ExploreSearch ({ value, onChange, onAction }: ExploreSea
 
   return (
     <>
-      <StyledInput fullWidth disabled={validating && !validated} ref={elRef} value={value} onChange={handleChange} onKeyDown={handleKeydown} onBlur={reset} />
+      <StyledInput
+        fullWidth
+        disabled={(validating && !validated) || disableInput}
+        ref={elRef}
+        value={value}
+        onChange={handleChange}
+        onKeyDown={handleKeydown}
+        onBlur={reset}
+        endAdornment={
+          <Stack direction="row" gap={1}>
+            <IconButton color="primary" onClick={onAction} disabled={disableAction}>
+              <KeyboardReturn />
+            </IconButton>
+            <IconButton color="error" onClick={onClear} disabled={disableClear}>
+              {clearState === 'stop'
+                ? <Pause />
+                : <Close />}
+            </IconButton>
+          </Stack>
+        }
+      />
       <Popper open={state !== InputState.normal} anchorEl={elRef.current}>
         <PopperContainer>
           <List>
@@ -159,8 +185,8 @@ enum InputState {
 }
 
 const StyledInput = styled(InputBase)`
-  background-color: white;
-  color: black;
+  background-color: #3c3c3c;
+  color: white;
   border-radius: 6px;
   font-size: 20px;
   padding: 14px;
