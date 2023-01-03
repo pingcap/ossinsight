@@ -15,7 +15,7 @@ export default async (
   const conn = await app.mysql.getConnection();
 
   try {
-    await app.explorerService.resolveQuestion(conn, question);
+    await app.explorerService.resolveQuestion(conn, job, question);
   } finally {
     conn.release();
   }

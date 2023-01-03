@@ -23,10 +23,7 @@ describe('prompt template', () => {
 
   it('query playground prompt template should work', () => {
     const promptTemplate = new QueryPlaygroundSQLPromptTemplate();
-    const prompt = promptTemplate.stringify('How many contributors in @pingcap/tidb', {
-      "my_user_id": 5086433,
-      "my_user_login": "Mini256"
-    });
+    const prompt = promptTemplate.stringify('How many contributors in @pingcap/tidb', {});
     expect(prompt).toMatchSnapshot();
   });
 

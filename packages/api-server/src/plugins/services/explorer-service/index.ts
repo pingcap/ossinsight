@@ -1,5 +1,5 @@
 import fp from "fastify-plugin";
-import {Queue} from "bullmq";
+import {Job} from "bullmq";
 import {APIError, ValidateSQLError} from "../../../utils/error";
 import {Connection, ResultSetHeader} from "mysql2/promise";
 import crypto from "node:crypto";
@@ -31,8 +31,12 @@ export default fp(async (app) => {
       app.log.child({service: 'explorer-service'}),
       app.botService,
       app.playgroundQueryExecutor,
-      app.explorerHighConcurrentQueue,
-      app.explorerLowConcurrentQueue,
+      {
+          userMaxQuestionsPerHour: app.config.EXPLORER_USER_MAX_QUESTIONS_PER_HOUR,
+          userMaxQuestionsOnGoing: app.config.EXPLORER_USER_MAX_QUESTIONS_ON_GOING,
+          trustedUsers: app.config.PLAYGROUND_TRUSTED_GITHUB_LOGINS,
+          trustedUsersMaxQuestionsPerHour: 200
+      }
     ));
 }, {
     name: '@ossinsight/explorer-service',
@@ -45,124 +49,139 @@ export default fp(async (app) => {
     ]
 });
 
+export interface ExplorerOption {
+    userMaxQuestionsPerHour: number;
+    userMaxQuestionsOnGoing: number;
+    trustedUsers: string[];
+    trustedUsersMaxQuestionsPerHour: number;
+}
+
 export class ExplorerService {
     // TODO: replace node-sql-parser with tidb-sql-parser.
     private sqlParser: Parser;
     private readonly generateSQLTemplate: QueryPlaygroundSQLPromptTemplate;
     private readonly generateChartTemplate: GenerateChartPromptTemplate;
     private maxSelectLimit = 10;
+    private options: ExplorerOption;
 
     constructor(
         private readonly logger: pino.BaseLogger,
         private readonly botService: BotService,
         private readonly playgroundQueryExecutor: TiDBPlaygroundQueryExecutor,
-        private readonly highConcurrentQueue: Queue,
-        private readonly lowConcurrentQueue: Queue
+        options?: ExplorerOption
     ) {
         this.sqlParser = new Parser();
         this.generateSQLTemplate = new QueryPlaygroundSQLPromptTemplate();
         this.generateChartTemplate = new GenerateChartPromptTemplate();
+        this.options = Object.assign({}, {
+            userMaxQuestionsPerHour: 20,
+            userMaxQuestionsOnGoing: 3,
+            trustedUsers: [],
+            trustedUsersMaxQuestionsPerHour: 100,
+        }, options || {});
     }
 
-    async countUserTodayQuestions(conn: Connection, userId: number): Promise<number> {
-        const [rows] = await conn.query<any[]>(`
-            SELECT COUNT(*) AS count
-            FROM explorer_questions
-            WHERE user_id = ? AND (created_at BETWEEN DATE_SUB(NOW(), INTERVAL 1 DAY) AND NOW()) 
-        `, [userId]);
-        return rows.length;
-    }
-
-    async newQuestion(conn: Connection, userId: number, q: string): Promise<Question> {
-        const normalizedQuestion = this.normalizeQuestion(q);
-        const questionHash = this.getQuestionHash(normalizedQuestion);
-
-        // Check if the question is cached.
-        const cachedQuestion = await this.getQuestionByHash(conn, questionHash);
-        if (cachedQuestion) {
-            return cachedQuestion;
-        }
-
-        // Generate the SQL by OpenAI.
-        const querySQL = await this.botService.questionToSQL(this.generateSQLTemplate, normalizedQuestion, {});
-        if (!querySQL) {
-            throw new APIError(500, 'Failed to generate SQL, please try again later.');
-        }
-
-        // Validate the generated SQL.
-        let sql, statementType;
+    async newQuestion(conn: Connection, userId: number, githubLogin: string, q: string): Promise<Question> {
+        await conn.beginTransaction();
         try {
-            const res = this.validateSQL(querySQL);
-            sql = res.sql;
-            statementType = res.statementType;
-        } catch (err) {
-            if (err instanceof APIError) {
-                throw new ValidateSQLError(500, `Failed to validate the generated SQL: ${err.message}`, querySQL);
-            } else {
-                throw new ValidateSQLError(500, 'Failed to validate the generated SQL', querySQL);
-            }
-        }
+            const normalizedQuestion = this.normalizeQuestion(q);
+            const questionHash = this.getQuestionHash(normalizedQuestion);
 
-        // Get the storage engines that will be used in the SQL execution.
-        let engines: string[] = [];
-        if (statementType === 'select') {
+            // Check if the question is cached.
+            const cachedQuestion = await this.getQuestionByHash(conn, questionHash);
+            if (cachedQuestion) {
+                return cachedQuestion;
+            }
+
+            // Give the trusted users more daily requests.
+            let limit = this.options.userMaxQuestionsPerHour;
+            if (this.options.trustedUsers.includes(githubLogin)) {
+                limit = this.options.trustedUsersMaxQuestionsPerHour;
+            }
+
+            const previousQuestions = await this.getUserPastHourQuestions(conn, userId);
+            if (previousQuestions.length >= limit) {
+                throw new APIError(429, 'Too many questions in the past hour');
+            }
+
+            const onGongQuestions = previousQuestions.filter(q => [QuestionStatus.Waiting, QuestionStatus.Running].includes(q.status));
+            if (onGongQuestions.length >= this.options.userMaxQuestionsOnGoing) {
+                await this.cancelQuestions(conn, onGongQuestions.map(q => q.id));
+            }
+
+            // Generate the SQL by OpenAI.
+            const querySQL = await this.botService.questionToSQL(this.generateSQLTemplate, normalizedQuestion, {});
+            if (!querySQL) {
+                throw new APIError(500, 'Failed to generate SQL, please try again later.');
+            }
+
+            // Validate the generated SQL.
+            let sql, statementType;
             try {
-                const plan = await this.getSQLExecutionPlan(conn, sql);
-                engines = this.getStorageEnginesFromPlan(plan);
-            } catch (err: any) {
-                if (err.sqlMessage) {
-                    throw new ValidateSQLError(500, `Failed to create the execution plan for the generated SQL: ${err.sqlMessage}`, querySQL);
+                const res = this.validateSQL(querySQL);
+                sql = res.sql;
+                statementType = res.statementType;
+            } catch (err) {
+                if (err instanceof APIError) {
+                    throw new ValidateSQLError(500, `Failed to validate the generated SQL: ${err.message}`, querySQL);
                 } else {
-                    throw new ValidateSQLError(500, `Failed to create the execution plan for the generated SQL`, querySQL);
+                    throw new ValidateSQLError(500, 'Failed to validate the generated SQL', querySQL);
                 }
             }
-        }
 
-        // Create a new question.
-        const questionId = randomUUID();
-        const question: Question = {
-            id: questionId,
-            hash: questionHash,
-            userId: userId,
-            status: QuestionStatus.New,
-            title: q,
-            querySQL: sql,
-            queryHash: this.getQueryHash(sql),
-            engines: engines,
-            recommended: false,
-            createdAt: DateTime.utc(),
-            requestedAt: DateTime.utc()
-        }
-        await this.createQuestion(conn, question);
-
-        // Get result from cache.
-        const cachedResult = await this.getCachedSQLResult(conn, question.queryHash);
-        if (cachedResult) {
-            await this.saveQuestionResult(conn, questionId, cachedResult);
-            return {
-                ...question,
-                ...cachedResult,
-                status: QuestionStatus.Success,
+            // Get the storage engines that will be used in the SQL execution.
+            let engines: string[] = [];
+            if (statementType === 'select') {
+                try {
+                    const plan = await this.getSQLExecutionPlan(conn, sql);
+                    engines = this.getStorageEnginesFromPlan(plan);
+                } catch (err: any) {
+                    if (err.sqlMessage) {
+                        throw new ValidateSQLError(500, `Failed to create the execution plan for the generated SQL: ${err.sqlMessage}`, querySQL);
+                    } else {
+                        throw new ValidateSQLError(500, `Failed to create the execution plan for the generated SQL`, querySQL);
+                    }
+                }
             }
-        }
 
-        // Push the question to the queue.
-        const useTiFlash = engines.includes('tiflash');
-        let job;
-        if (useTiFlash) {
-            job = await this.lowConcurrentQueue.add("", question);
-        } else {
-            job = await this.highConcurrentQueue.add("", question);
-        }
+            // Create a new question.
+            const questionId = randomUUID();
+            const jobId = randomUUID();
+            const question: Question = {
+                id: questionId,
+                hash: questionHash,
+                userId: userId,
+                status: QuestionStatus.Waiting,
+                title: q,
+                querySQL: sql,
+                queryHash: this.getQueryHash(sql),
+                engines: engines,
+                recommended: false,
+                createdAt: DateTime.utc(),
+                requestedAt: DateTime.utc(),
+                queueJobId: jobId,
+                hitCache: false,
+            }
+            await this.createQuestion(conn, question);
 
-        // Update the question status.
-        if (job.id) {
-            question.status = QuestionStatus.Waiting;
-            question.queueJobId = job.id;
-            await this.updateQuestionStatusAndJobId(conn, question.id, QuestionStatus.Waiting, job.id);
-        }
+            // Try to get SQL result from cache.
+            const cachedResult = await this.getCachedSQLResult(conn, question.queryHash);
+            if (cachedResult) {
+                await this.saveQuestionResult(conn, questionId, cachedResult);
+                return {
+                    ...question,
+                    ...cachedResult,
+                    status: QuestionStatus.Success,
+                    hitCache: true,
+                }
+            }
 
-        return question;
+            await conn.commit();
+            return question;
+        } catch (err) {
+            await conn.rollback();
+            throw err;
+        }
     }
 
     private normalizeQuestion(question: string): string {
@@ -286,24 +305,33 @@ export class ExplorerService {
     }
 
     private async createQuestion(conn: Connection, question: Question) {
-        const { id, hash, userId, status, title, querySQL, queryHash, engines = [], recommended, createdAt } = question;
+        const { id, hash, userId, status, title, querySQL, queryHash, engines = [], recommended, createdAt, queueJobId } = question;
         const enginesValue = JSON.stringify(engines);
         const [rs] = await conn.query<ResultSetHeader>(`
             INSERT INTO explorer_questions(
-                id, hash, user_id, status, title, query_sql, query_hash, engines, recommended, created_at
-            ) VALUES (UUID_TO_BIN(?), ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                id, hash, user_id, status, title, query_sql, query_hash, engines, recommended, created_at, queue_job_id
+            ) VALUES (UUID_TO_BIN(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `, [
-            id, hash, userId, status, title, querySQL, queryHash, enginesValue, recommended, createdAt.toSQL()
+            id, hash, userId, status, title, querySQL, queryHash, enginesValue, recommended, createdAt.toSQL(), queueJobId
         ]);
         if (rs.affectedRows !== 1) {
             throw new APIError(500, 'Failed to create a new question.');
         }
     }
 
-    private async updateQuestionStatusAndJobId(conn: Connection, questionId: string, status: QuestionStatus, jobId: string) {
+    private async cancelQuestions(conn: Connection, questionIds: string[]) {
         const [rs] = await conn.query<ResultSetHeader>(`
-            UPDATE explorer_questions SET status = ?, queue_job_id = ? WHERE id = UUID_TO_BIN(?)
-        `, [status, jobId, questionId]);
+            UPDATE explorer_questions SET status = ? WHERE id IN (${questionIds.map(() => "UUID_TO_BIN(?)").join(", ")})
+        `, [QuestionStatus.Cancel, ...questionIds]);
+        if (rs.affectedRows === 0) {
+            throw new APIError(500, 'Failed to cancel the question.');
+        }
+    }
+
+    private async updateQuestionStatus(conn: Connection, questionId: string, status: QuestionStatus) {
+        const [rs] = await conn.query<ResultSetHeader>(`
+            UPDATE explorer_questions SET status = ? WHERE id = UUID_TO_BIN(?)
+        `, [status, questionId]);
         if (rs.affectedRows !== 1) {
             throw new APIError(500, 'Failed to update the question status.');
         }
@@ -313,7 +341,7 @@ export class ExplorerService {
         const [rows] = await conn.query<any[]>(`
             SELECT
                 BIN_TO_UUID(id) AS id, hash, user_id AS userId, status, title, query_sql AS querySQL, query_hash AS queryHash, engines, 
-                queue_job_id AS queueJobId, result, chart, recommended, created_at AS createdAt, requested_at AS requestedAt, 
+                queue_job_id AS queueJobId, result, chart, recommended, hit_cache AS hitCache, created_at AS createdAt, requested_at AS requestedAt, 
                 executed_at AS executedAt, finished_at AS finishedAt, spent, error
             FROM explorer_questions
             WHERE id = UUID_TO_BIN(?)
@@ -328,7 +356,7 @@ export class ExplorerService {
         const [rows] = await conn.query<any[]>(`
             SELECT
                 BIN_TO_UUID(id) AS id, hash, user_id AS userId, status, title, query_sql AS querySQL, query_hash AS queryHash, engines, 
-                queue_job_id AS queueJobId, result, chart, recommended, created_at AS createdAt, requested_at AS requestedAt, 
+                queue_job_id AS queueJobId, result, chart, recommended, hit_cache AS hitCache, created_at AS createdAt, requested_at AS requestedAt, 
                 executed_at AS executedAt, finished_at AS finishedAt, spent, error
             FROM explorer_questions
             WHERE hash = ?
@@ -345,7 +373,7 @@ export class ExplorerService {
         const [rows] = await conn.query<any[]>(`
             SELECT
                 BIN_TO_UUID(id) AS id, hash, user_id AS userId, status, title, query_sql AS querySQL, query_hash AS queryHash, engines, 
-                queue_job_id AS queueJobId, result, chart, recommended, created_at AS createdAt, requested_at AS requestedAt, 
+                queue_job_id AS queueJobId, result, chart, recommended, hit_cache AS hitCache, created_at AS createdAt, requested_at AS requestedAt, 
                 executed_at AS executedAt, finished_at AS finishedAt, spent, error
             FROM explorer_questions
             WHERE query_hash = ? AND status = ?
@@ -371,10 +399,24 @@ export class ExplorerService {
         }
     }
 
+    async getUserPastHourQuestions(conn: Connection, userId: number): Promise<Question[]> {
+        const [rows] = await conn.query<any[]>(`
+            SELECT
+                BIN_TO_UUID(id) AS id, hash, user_id AS userId, status, title, query_sql AS querySQL, query_hash AS queryHash, engines, 
+                queue_job_id AS queueJobId, result, chart, recommended, created_at AS createdAt, requested_at AS requestedAt, 
+                executed_at AS executedAt, finished_at AS finishedAt, spent, error
+            FROM explorer_questions
+            WHERE user_id = ? AND created_at > DATE_SUB(NOW(), INTERVAL 1 HOUR)
+            ORDER BY created_at DESC
+        `, [userId]);
+        return rows.map(row => this.mapRecordToQuestion(row));
+    }
+
     mapRecordToQuestion(row: any): Question {
         return {
             ...row,
             recommended: row.recommended === 1,
+            hitCache: row.hitCache === 1,
             createdAt: row.createdAt instanceof Date ? DateTime.fromJSDate(row.createdAt) : undefined,
             requestedAt: row.createdAt instanceof Date ? DateTime.fromJSDate(row.requestedAt) : undefined,
             executedAt: row.createdAt instanceof Date ? DateTime.fromJSDate(row.executedAt) : undefined,
@@ -382,13 +424,15 @@ export class ExplorerService {
         }
     }
 
-    async resolveQuestion(conn: Connection, question: Question) {
+    async resolveQuestion(conn: Connection, job: Job, question: Question) {
         const { id: questionId, querySQL } = question;
         try {
+            await this.updateQuestionStatus(conn, questionId, QuestionStatus.Running);
             const result = await this.executeQuery(questionId, querySQL);
             await this.saveQuestionResult(conn, questionId, result);
         } catch (err: any) {
             await this.saveQuestionError(conn, questionId, err);
+            this.logger.error(err, `Failed to resolve the question ${questionId}: ${err.message}`);
         }
     }
 
@@ -426,11 +470,11 @@ export class ExplorerService {
         }
     }
 
-    private async saveQuestionResult(conn: Connection, questionId: string, questionResult: QuestionQueryResult) {
+    private async saveQuestionResult(conn: Connection, questionId: string, questionResult: QuestionQueryResult, hitCache = false) {
         const { result, executedAt, finishedAt, spent } = questionResult;
         const [rs] = await conn.query<ResultSetHeader>(`
             UPDATE explorer_questions
-            SET status = ?, result = ?, executed_at = ?, finished_at = ?, spent = ?
+            SET status = ?, result = ?, executed_at = ?, finished_at = ?, spent = ?, hit_cache = ?
             WHERE id = UUID_TO_BIN(?)
         `, [
             QuestionStatus.Success,
@@ -438,6 +482,7 @@ export class ExplorerService {
             executedAt.toSQL(),
             finishedAt.toSQL(),
             spent,
+            hitCache,
             questionId
         ]);
         if (rs.affectedRows !== 1) {

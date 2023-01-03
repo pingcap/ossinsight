@@ -28,6 +28,8 @@ declare module 'fastify' {
       PLAYGROUND_DATABASE_URL: string,
       PLAYGROUND_DAILY_QUESTIONS_LIMIT: number;
       PLAYGROUND_TRUSTED_GITHUB_LOGINS: string[];
+      EXPLORER_USER_MAX_QUESTIONS_PER_HOUR: number;
+      EXPLORER_USER_MAX_QUESTIONS_ON_GOING: number;
       GITHUB_OAUTH_CLIENT_ID?: string,
       GITHUB_OAUTH_CLIENT_SECRET?: string,
       GITHUB_ACCESS_TOKENS: string[],

@@ -1,9 +1,4 @@
-import {APIError} from "../../../utils/error";
 import {FastifyPluginAsyncJsonSchemaToTs} from "@fastify/type-provider-json-schema-to-ts";
-
-export interface IBody {
-  question: string;
-}
 
 const schema = {
   summary: 'Answer new a question',
@@ -17,6 +12,10 @@ const schema = {
   } as const
 };
 
+export interface IBody {
+  question: string;
+}
+
 export const newQuestionHandler: FastifyPluginAsyncJsonSchemaToTs = async (app): Promise<void> => {
   app.post<{
     Body: IBody;
@@ -25,26 +24,31 @@ export const newQuestionHandler: FastifyPluginAsyncJsonSchemaToTs = async (app):
     preHandler: [app.authenticate]
   }, async function (req, reply) {
     const { explorerService } = app;
-    let userId = req.user?.id;
+    let { id: userId, githubLogin } = req.user;
     const { question: questionTitle } = req.body;
     const conn = await this.mysql.getConnection();
 
     try {
-      conn.beginTransaction();
+      // Create a new question
+      const question = await explorerService.newQuestion(conn, userId, githubLogin, questionTitle);
 
-      // Limit the number of questions the user can answer one day.
-      const questionTotal = await explorerService.countUserTodayQuestions(conn, userId);
-      if (questionTotal >= 20) {
-        throw new APIError(429, 'Too many questions requested today.');
+      // Push the question to the queue.
+      const { queueJobId, hitCache, engines } = question;
+      if (!hitCache) {
+        const useTiFlash = engines.includes('tiflash');
+        if (useTiFlash) {
+          await app.explorerLowConcurrentQueue.add("low", question, {
+            jobId: queueJobId!
+          });
+        } else {
+          await app.explorerHighConcurrentQueue.add("high", question, {
+            jobId: queueJobId!
+          });
+        }
       }
 
-      // Create a new question
-      const res = await explorerService.newQuestion(conn, userId, questionTitle);
-
-      await conn.commit();
-      reply.status(200).send(res);
+      reply.status(200).send(question);
     } catch (e) {
-      await conn.rollback();
       throw e;
     } finally {
       conn.release();

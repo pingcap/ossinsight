@@ -20,6 +20,7 @@ export interface Question {
   finishedAt?: DateTime | null;
   spent?: number | null;
   error?: string | null;
+  hitCache: boolean;
 }
 
 export interface QuestionSQLResult {

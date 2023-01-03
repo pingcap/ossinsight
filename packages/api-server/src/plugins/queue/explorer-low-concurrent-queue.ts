@@ -7,8 +7,10 @@ declare module 'fastify' {
   }
 }
 
+export const EXPLORER_LOW_CONCURRENT_QUEUE_NAME = "explorer_low_concurrent_queue";
+
 export default fp(async (app) => {
-  const explorerHighConcurrentQueue = new Queue("explorer_low_concurrent_queue", {
+  const explorerHighConcurrentQueue = new Queue(EXPLORER_LOW_CONCURRENT_QUEUE_NAME, {
     connection: app.redis,
   });
   app.decorate('explorerLowConcurrentQueue', explorerHighConcurrentQueue);

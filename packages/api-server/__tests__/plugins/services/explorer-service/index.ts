@@ -2,10 +2,11 @@ import {bootstrapTestDatabase, getTestDatabase, releaseTestDatabase} from '../..
 import {bootstrapApp, getTestApp, releaseApp} from '../../../helpers/app';
 import {Connection} from "mysql2/promise";
 import {bootstrapTestRedis, releaseTestRedis} from "../../../helpers/redis";
-import {ExplorerService} from "../../../../src";
+import {ExplorerService, QuestionStatus} from "../../../../src";
 import "../../../../src/plugins/queue/explorer-high-concurrent-queue";
 import "../../../../src/plugins/queue/explorer-low-concurrent-queue";
 import {Job} from "bullmq";
+import {DateTime} from "luxon";
 
 let explorerService: ExplorerService, conn: Connection;
 
@@ -36,7 +37,7 @@ describe('create a new question', () => {
       return job;
     });
 
-    const question = await explorerService.newQuestion(conn, 1, "How many events are there in TiDB?");
+    const question = await explorerService.newQuestion(conn, 1, "Mini256", "How many events are there in TiDB?");
     expect(question).toEqual({
       id: expect.any(String),
       hash: expect.any(String),
@@ -44,8 +45,9 @@ describe('create a new question', () => {
       queryHash: expect.any(String),
       querySQL: "SELECT COUNT(*) FROM `github_events` WHERE `repo_name` = 'pingcap/tidb' LIMIT 10",
       engines: ['tikv'],
-      queueJobId: "1",
+      queueJobId: expect.any(String),
       recommended: false,
+      hitCache: false,
       status: "waiting",
       userId: 1,
       createdAt: expect.any(Object),
@@ -70,7 +72,7 @@ describe('create a new question', () => {
       return ['tiflash'];
     });
 
-    const question = await explorerService.newQuestion(conn, 1, "How many events are there?");
+    const question = await explorerService.newQuestion(conn, 1, "Mini256", "How many events are there?");
     expect(question).toEqual({
       id: expect.any(String),
       hash: expect.any(String),
@@ -78,8 +80,9 @@ describe('create a new question', () => {
       queryHash: expect.any(String),
       querySQL: "SELECT COUNT(*) FROM `github_events` AS `ge` LIMIT 10",
       engines: ['tiflash'],
-      queueJobId: "2",
+      queueJobId: expect.any(String),
       recommended: false,
+      hitCache: false,
       status: "waiting",
       userId: 1,
       createdAt: expect.any(Object),
@@ -89,6 +92,65 @@ describe('create a new question', () => {
     questionToSQL.mockRestore();
     addToLowQueue.mockRestore();
     getStorageEnginesFromPlan.mockRestore();
+  });
+
+  test('limit too many question in past hour', async () => {
+    const userId = 1;
+    const now = DateTime.now().toSQL();
+    const records = [
+      ["9ca8e457-8986-11ed-990b-029f9ad85623", "hash1", "Question 1", "query_hash1", "SELECT 1", "[\"tikv\"]", "1", 0, QuestionStatus.Success, userId, now, now],
+      ["275ee9f0-8987-11ed-990b-029f9ad85624", "hash2", "Question 2", "query_hash2", "SELECT 2", "[\"tiflash\"]", "2", 0, QuestionStatus.Error, userId, now, now],
+      ["2cfa5a28-8987-11ed-990b-029f9ad85625", "hash3", "Question 3", "query_hash3", "SELECT 3", "[\"tikv\"]", "3", 0, QuestionStatus.Success, userId, now, now],
+    ];
+
+    records.map(async (record) => {
+      await conn.query(`
+        INSERT INTO explorer_questions (
+            id, hash, title, query_hash, query_sql, engines, queue_job_id, recommended, status, user_id, created_at, requested_at
+        ) VALUES (UUID_TO_BIN(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+      `, record);
+    });
+
+    const app = getTestApp().app;
+    const questionToSQL = jest.spyOn(app.botService, 'questionToSQL').mockImplementation(async (template, question, context) => {
+      return "SELECT COUNT(*) FROM github_events WHERE repo_name = 'pingcap/tidb'";
+    });
+
+    expect(() => explorerService.newQuestion(conn, userId, "no-trusted-user", "How many events are there in TiDB?"))
+      .rejects
+      .toThrowError("Too many questions in the past hour");
+    expect(questionToSQL).not.toHaveBeenCalled();
+
+    questionToSQL.mockRestore();
+  });
+
+  test('limit too many question on going', async () => {
+    const userId = 1;
+    const now = DateTime.now().toSQL();
+    const records = [
+      ["9ca8e457-8986-11ed-990b-029f9ad85623", "hash1", "Question 1", "query_hash1", "SELECT 1", "[\"tikv\"]", "1", 0, QuestionStatus.Running, userId, now, now],
+      ["275ee9f0-8987-11ed-990b-029f9ad85624", "hash2", "Question 2", "query_hash2", "SELECT 2", "[\"tiflash\"]", "2", 0, QuestionStatus.Waiting, userId, now, now],
+    ];
+
+    records.map(async (record) => {
+      await conn.query(`
+        INSERT INTO explorer_questions (
+            id, hash, title, query_hash, query_sql, engines, queue_job_id, recommended, status, user_id, created_at, requested_at
+        ) VALUES (UUID_TO_BIN(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+      `, record);
+    });
+
+    const app = getTestApp().app;
+    const questionToSQL = jest.spyOn(app.botService, 'questionToSQL').mockImplementation(async (template, question, context) => {
+      return "SELECT COUNT(*) FROM github_events WHERE repo_name = 'pingcap/tidb'";
+    });
+
+    expect(() => explorerService.newQuestion(conn, 1, "no-trusted-user", "How many events are there in TiDB?"))
+      .rejects
+      .toThrowError("Too many questions in waiting or running");
+    expect(questionToSQL).not.toHaveBeenCalled();
+
+    questionToSQL.mockRestore();
   });
 
   afterEach(async () => {

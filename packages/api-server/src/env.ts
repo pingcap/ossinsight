@@ -45,6 +45,14 @@ export const APIServerEnvSchema = {
       type: 'string',
       separator: ','
     },
+    EXPLORER_USER_MAX_QUESTIONS_PER_HOUR: {
+      type: 'number',
+      default: 15
+    },
+    EXPLORER_USER_MAX_QUESTIONS_ON_GOING: {
+      type: 'number',
+      default: 2
+    },
     GITHUB_OAUTH_CLIENT_ID: {
       type: 'string'
     },
