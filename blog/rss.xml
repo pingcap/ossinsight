@@ -8,7 +8,7 @@
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <language>en</language>
-        <copyright>Copyright © 2022 PingCAP</copyright>
+        <copyright>Copyright © 2023 PingCAP</copyright>
         <item>
             <title><![CDATA[Reducing Online Serving Latency from 1.11s to 123.6ms on a Distributed SQL Database]]></title>
             <link>https://ossinsight.io/blog/reduce-query-latency</link>
