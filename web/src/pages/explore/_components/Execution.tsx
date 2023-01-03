@@ -1,11 +1,14 @@
-import { useAsyncOperation } from '@site/src/hooks/operation';
-import { ask, getResult, guessChart, isWaiting } from '@site/src/api/explorer';
+import { useAsyncOperation, useAsyncState } from '@site/src/hooks/operation';
+import { newQuestion, pollQuestion, Question, QuestionStatus, questionToChart } from '@site/src/api/explorer';
 import React, { ForwardedRef, forwardRef, useEffect, useMemo } from 'react';
 import { isNullish, notFalsy, notNullish } from '@site/src/utils/value';
 import { format } from 'sql-formatter';
 import Section from '@site/src/pages/explore/_components/Section';
 import CodeBlock from '@theme/CodeBlock';
 import { Charts } from '@site/src/pages/explore/_components/charts';
+import { useEventCallback } from '@mui/material';
+import TableChart from './charts/TableChart';
+import { useUserInfoContext } from '@site/src/context/user';
 
 export interface ExecutionContext {
   run: () => void;
@@ -13,11 +16,62 @@ export interface ExecutionContext {
 
 export interface ExecutionProps {
   search: string;
+  onLoading?: (loading: boolean) => void;
+  onResultLoading?: (loading: boolean) => void;
+  onChartLoading?: (loading: boolean) => void;
 }
 
-export default forwardRef<ExecutionContext, ExecutionProps>(function Execution ({ search }, ref: ForwardedRef<ExecutionContext>) {
-  const { data, loading, run, error } = useAsyncOperation(search, ask, true);
-  const { data: resultData, loading: resultLoading, run: resultRun, error: resultError } = useAsyncOperation(data?.execution.id, getResult, true);
+const PENDING_STATE = new Set([QuestionStatus.New, QuestionStatus.Waiting, QuestionStatus.Running]);
+
+export function useQuestion (content: string) {
+  const userInfo = useUserInfoContext();
+  const { data, loading, error, setAsyncData, clearState } = useAsyncState<Question>();
+
+  const run = useEventCallback(() => {
+    if (userInfo.validating && !userInfo.userInfo) {
+      userInfo.login();
+      return;
+    }
+    setAsyncData(newQuestion(content));
+  });
+
+  useEffect(() => {
+    clearState();
+  }, [content]);
+
+  useEffect(() => {
+    if (notNullish(data) && !loading) {
+      switch (data.status) {
+        case QuestionStatus.New:
+        case QuestionStatus.Waiting:
+        case QuestionStatus.Running: {
+          const h = setTimeout(() => {
+            setAsyncData(pollQuestion(data.id));
+          }, 1500);
+          return () => {
+            clearTimeout(h);
+          };
+        }
+        case QuestionStatus.Success:
+        case QuestionStatus.Error:
+        case QuestionStatus.Cancel:
+          break;
+      }
+    }
+  }, [data, loading]);
+
+  const resultPending = isNullish(data) ? false : PENDING_STATE.has(data.status);
+  const resultError = data?.status === QuestionStatus.Cancel ? new Error('Execution was canceled') : (error ?? data?.error);
+
+  return { run, question: data, loading, resultPending, error: resultError };
+}
+
+export default forwardRef<ExecutionContext, ExecutionProps>(function Execution ({ search, onLoading, onResultLoading, onChartLoading }, ref: ForwardedRef<ExecutionContext>) {
+  const { question, run, loading, resultPending, error } = useQuestion(search);
+
+  useEffect(() => {
+    onLoading?.(loading);
+  }, [loading, onLoading]);
 
   useEffect(() => {
     if (typeof ref === 'function') {
@@ -29,103 +83,114 @@ export default forwardRef<ExecutionContext, ExecutionProps>(function Execution (
     }
   }, []);
 
-  useEffect(() => {
-    if (notNullish(data)) {
-      if (isWaiting(data) && isNullish(error)) {
-        resultRun();
-      }
-    }
-  }, [data, error]);
-
-  useEffect(() => {
-    if (notNullish(resultData)) {
-      if (isWaiting(resultData) && isNullish(resultError)) {
-        const h = setTimeout(resultRun, 1000);
-        return () => {
-          clearTimeout(h);
-        };
-      }
-    }
-  }, [resultData, resultError]);
-
-  const sqlSectionStatus = useMemo(() => {
-    if (loading) {
-      return 'loading';
-    } else if (isNullish(data)) {
-      return 'pending';
-    } else {
-      return 'success';
-    }
-  }, [loading, data]);
-
   const formattedSql = useMemo(() => {
-    if (notNullish(data)) {
-      return format(data.sql);
+    if (notNullish(question)) {
+      return format(question.querySQL);
     }
-  }, [data]);
-
-  const result = useMemo(() => {
-    if (notNullish(data) && !isWaiting(data)) {
-      return data;
-    } else if (notNullish(resultData) && !isWaiting(resultData)) {
-      return resultData;
-    } else {
-      return undefined;
-    }
-  }, [data, resultData]);
+  }, [question]);
 
   const waitingResult = useMemo(() => {
-    if (isNullish(data)) {
+    if (isNullish(question)) {
       return false;
     }
     if (loading) {
       return false;
     }
-    if (isWaiting(data)) {
-      return isNullish(resultData) || isWaiting(resultData);
-    } else {
-      return false;
+    return resultPending;
+  }, [question, loading, resultPending]);
+
+  useEffect(() => {
+    onResultLoading?.(waitingResult);
+  }, [waitingResult, onResultLoading]);
+
+  const sqlSectionStatus = useMemo(() => {
+    if (isNullish(question)) {
+      if (loading) {
+        return 'loading';
+      } else {
+        return 'pending';
+      }
     }
-  }, [result, data, resultData, loading, resultLoading]);
+    return 'success';
+  }, [loading, question]);
+
+  const sqlTitle = useMemo(() => {
+    if (isNullish(question)) {
+      if (loading) {
+        return 'Generating SQL...';
+      } else if (isNullish(error)) {
+        return '';
+      } else {
+        return 'Failed to generate SQL';
+      }
+    } else {
+      return 'Show SQL';
+    }
+  }, [question, loading, error]);
+
+  const resultTitle = useMemo(() => {
+    if (notNullish(question)) {
+      switch (question.status) {
+        case QuestionStatus.New:
+          return 'Pending...';
+        case QuestionStatus.Waiting:
+          return 'Waiting execution...';
+        case QuestionStatus.Running:
+          return 'Running SQL...';
+        case QuestionStatus.Success:
+          return `${question.result?.rows.length ?? 'NaN'} rows in ${question.spent ?? 'NaN'} seconds`;
+        case QuestionStatus.Error:
+          return 'Failed to execute SQL';
+        case QuestionStatus.Cancel:
+          return 'Execution canceled';
+        default:
+          return 'Unknown state';
+      }
+    } else {
+      return 'Pending...';
+    }
+  }, [question]);
 
   const resultStatus = useMemo(() => {
-    if (waitingResult) {
+    if (isNullish(question)) {
+      if (loading) {
+        return 'loading';
+      } else {
+        return 'pending';
+      }
+    } else if (resultPending) {
       return 'loading';
-    } else if (isNullish(result)) {
-      return 'pending';
     } else {
       return 'success';
     }
-  }, [result, waitingResult]);
-
-  const resultTitle = useMemo(() => {
-    if (isNullish(result)) {
-      return 'Waiting execution...';
-    } else {
-      return `${result.data.length} results in ${result.spent} seconds`;
-    }
-  }, [result]);
+  }, [question, waitingResult]);
 
   const resultExtra = useMemo(() => {
-    if (isNullish(result)) {
+    if (isNullish(question)) {
       return undefined;
     }
-    if (result.execution.engines.length > 0) {
-      return 'Run with ' + result.execution.engines.join(', ');
+    if (question.engines.length > 0) {
+      return 'Run with ' + question.engines.join(', ');
     } else {
       return undefined;
     }
-  }, [result]);
+  }, [question]);
 
-  const { data: chartData, loading: chartLoading, error: chartError, run: chartRun } = useAsyncOperation({ question: search, data: result?.data }, guessChart, true);
+  const result = question?.result?.rows;
+
+  const { data: chartData, loading: chartLoading, error: chartError, run: chartRun } = useAsyncOperation(question?.id, questionToChart, true);
   useEffect(() => {
-    if (notFalsy(search) && notNullish(result?.data)) {
+    onChartLoading?.(chartLoading);
+  }, [chartLoading, onChartLoading]);
+
+  useEffect(() => {
+    if (notFalsy(search) && notNullish(question?.result)) {
       chartRun();
     }
-  }, [search, result?.data]);
+  }, [search, question?.result]);
 
   const chartTitle = useMemo(() => {
-    return chartLoading ? 'Drawing chart...' : 'Chart view';
+    return chartLoading ? 'Visualizing...' : 'Visualization';
   }, [chartLoading]);
 
   const chartStatus = useMemo(() => {
@@ -139,19 +204,18 @@ export default forwardRef<ExecutionContext, ExecutionProps>(function Execution (
   }, [chartLoading, chartData]);
 
   return (
-      <>
-        <Section status={sqlSectionStatus} title="Your AI generated SQL Query" error={error}>
-          <CodeBlock language="sql">
-            {formattedSql}
-          </CodeBlock>
-        </Section>
-        <Section status={resultStatus} title={resultTitle} extra={resultExtra} error={resultError}>
-          <pre>{JSON.stringify(result?.data, undefined, 2)}</pre>
-        </Section>
-        <Section status={chartStatus} title={chartTitle} error={chartError} defaultExpanded>
-          {notNullish(chartData) && notNullish(result) ? <Charts {...chartData} data={result.data} /> : undefined}
-        </Section>
-      </>
+    <>
+      <Section status={sqlSectionStatus} title={sqlTitle} error={error}>
+        <CodeBlock language="sql">
+          {formattedSql}
+        </CodeBlock>
+      </Section>
+      <Section status={resultStatus} title={resultTitle} extra={resultExtra} error={error}>
+        <TableChart chartName="Table" title="hi" data={result ?? []} fields={question?.result?.fields} />
+      </Section>
+      <Section status={chartStatus} title={chartTitle} error={chartError} defaultExpanded>
+        {notNullish(chartData) && notNullish(result) ? <Charts {...chartData} data={result} fields={question?.result?.fields} /> : undefined}
+      </Section>
+    </>
   );
-},
-);
+});
