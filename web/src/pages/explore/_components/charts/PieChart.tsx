@@ -1,0 +1,42 @@
+import { ChartResult } from '@site/src/api/explorer';
+import EChart from '@site/src/components/ECharts';
+import React, { useMemo } from 'react';
+import { EChartsOption } from 'echarts';
+import { use } from 'echarts/core';
+import { LinesChart as PieChartComponent } from 'echarts/charts';
+import { DatasetComponent, GridComponent, LegendComponent, TitleComponent } from 'echarts/components';
+
+use([
+  PieChartComponent,
+  GridComponent,
+  TitleComponent,
+  DatasetComponent,
+  LegendComponent,
+]);
+
+export default function PieChart ({ chartName, title, value, label, data }: ChartResult & { data: any[] }) {
+  const options: EChartsOption = useMemo(() => ({
+    dataset: {
+      id: 'raw',
+      source: data,
+    },
+    series: {
+      type: 'pie',
+      datasetId: 'raw',
+      encode: {
+        itemName: label,
+        value,
+      },
+    },
+    legend: {},
+    title: {
+      text: title,
+    },
+  }), [chartName, title, value, label]);
+  return (
+    <EChart
+      height={400}
+      option={options}
+    />
+  );
+}
