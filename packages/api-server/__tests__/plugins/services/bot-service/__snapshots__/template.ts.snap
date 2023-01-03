@@ -47,10 +47,7 @@ exports[`prompt template query playground prompt template should work 1`] = `
 "# MySQL SQL
 Table github_events, columns = [id, type, created_at, repo_id, repo_name, actor_id, actor_login, language, additions, deletions, action, number, org_login, org_id, state, closed_at, comments, pr_merged_at, pr_merged, pr_changed_files, pr_review_comments, pr_or_issue_id, push_size, push_distinct_size, creator_user_login, creator_user_id, pr_or_issue_created_at]
 Column type, enums = ['PullRequestEvent', 'PushEvent', 'IssueCommentEvent', 'IssuesEvent', 'PullRequestReviewCommentEvent', 'WatchEvent', 'CreateEvent', 'DeleteEvent', 'ForkEvent', 'ReleaseEvent']
-When type = 'PullRequestReviewCommentEvent' or type = 'IssueCommentEvent', the action could be 'created'
-When type = 'PullRequestEvent' or type = 'IssuesEvent', the action could be 'opened', 'closed'
-When type = 'PullRequestEvent', action = 'closed' and pr_merged = 1, it means the pull request is merged
-Contributor: the person who make pull request to the repo
+Column number, number is issue number
 Table github_repos, columns = [repo_id, repo_name, owner_id, owner_login, owner_is_org, description, primary_language, license, size, stars, forks, parent_repo_id, is_fork, is_archived, is_deleted, latest_released_at, pushed_at, created_at, updated_at]
 Column primary_language, invalid = [null, '']
 Table github_users, columns = [id, login, type, name, organization, country_code, followers, followings, created_at, updated_at]
@@ -71,14 +68,25 @@ Relation github_repos.owner_id = github_users.id
 Relation github_repos.repo_id = github_repo_topics.repo_id
 Relation trending_repos.repo_name = github_repos.repo_name
 
-Select statement limit 20
+Select statement limit 20 by default, if question need more data, please add limit 200
+When type = 'PullRequestReviewCommentEvent' or type = 'IssueCommentEvent', the action could be 'created'
+When type = 'PullRequestEvent' or type = 'IssuesEvent', the action could be 'opened', 'closed'
+When type = 'PullRequestEvent', action = 'closed' and pr_merged = 1, it means the pull request is merged
+PushEvent: trigger when commit has been pushed
+Return the pr_or_issue_link column for PR / issue list: SELECT CONCAT('https://github.com/', repo_name, '/issues/', number) AS pr_or_issue_link
+Exclude bots: WHERE actor_login NOT LIKE "%bot%"
+Contributor: the person who opened pull request to the repo, it will trigger a PullRequestEvent
+The most popular repos has the most stars,
+Similar repositories will have similar topics, or be in the same collection, order by the similarity
+collection is a categorization of some similar repositories, but not all repositories have a corresponding collection
+The trending_repos table contains the most recent and popular repositories
 ---
+-- The repos about ChatGPT
+SELECT gr.repo_id, gr.repo_name FROM github_repos gr WHERE gr.description LIKE '%ChatGPT%';
 -- @pingcap/tidb cumulative stars across months
 SELECT t_month, stars, SUM(stars) OVER(ORDER BY t_month ASC) AS cumulative_stars FROM ( SELECT DATE_FORMAT(created_at, '%Y-%m-01') AS t_month, COUNT(DISTINCT actor_login) AS stars FROM github_events ge WHERE ge.type = 'WatchEvent' AND ge.repo_id = (SELECT repo_id FROM github_repos WHERE repo_name = 'pingcap/tidb') GROUP BY t_month ) star_counts ORDER BY t_month ASC;
--- The open source projects similar to @pingcap/tidb
-SELECT github_repos.*, sub.similarity FROM github_repos INNER JOIN ( SELECT repo_id, SUM(score) AS similarity FROM ( SELECT repo_id, 5 AS score FROM collection_items WHERE collection_id IN ( SELECT collection_id FROM collection_items WHERE repo_name = 'pingcap/tidb' ) UNION ALL SELECT repo_id, 2 AS score FROM github_repo_topics WHERE topic IN ( SELECT topic FROM github_repo_topics WHERE repo_id = (SELECT repo_id FROM github_repos WHERE repo_name = 'pingcap/tidb') ) ) sub GROUP BY repo_id ORDER BY similarity DESC LIMIT 11 ) AS sub ON github_repos.repo_id = sub.repo_id WHERE repo_name != 'pingcap/tidb' ORDER BY sub.similarity DESC LIMIT 10;
 ---
--- Current time: 2023-01-03, no filtering of time unless the question explicitly limits the time frame.
+-- Current time: 2023-01-03, don't add time filters in WHERE clause unless the question explicitly limits the time frame.
 -- Let's think step by step, generate one correct SQL to do query: How many contributors in @pingcap/tidb
 ---
 
@@ -104,7 +112,7 @@ SELECT 'Mini256' AS user_login;
 -- Am I a contributor to this repo
 SELECT CASE sub.prs > 0 WHEN TRUE THEN 'Yes' ELSE 'No' END AS is_contributor FROM ( SELECT COUNT(*) AS prs FROM github_events WHERE type = 'PullRequestEvent' AND action = 'opened' AND repo_id = 41986369 AND actor_login = 'Mini256' ) AS sub;
 ---
--- Current time: 2023-01-03, no filtering of time unless the question explicitly limits the time frame.
+-- Current time: 2023-01-03, don't add time filters in WHERE clause unless the question explicitly limits the time frame.
 -- Let's think step by step, generate one correct SQL to do query: How many contributors in @pingcap/tidb
 ---
 SELECT 

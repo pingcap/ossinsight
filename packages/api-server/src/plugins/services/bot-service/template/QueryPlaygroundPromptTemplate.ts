@@ -2,7 +2,7 @@ import {RelationInfo, SQLExample, SQLGeneratePromptTemplate, TableInfo} from "./
 
 export class QueryPlaygroundSQLPromptTemplate extends SQLGeneratePromptTemplate {
   public stop: string[] = ['#', '---'];
-  public maxTokens: number = 300;
+  public maxTokens: number = 400;
   public temperature: number = 0.3;
   public topP: number = 0.4;
   public resultPrefix: string = '';
@@ -25,7 +25,7 @@ export class QueryPlaygroundSQLPromptTemplate extends SQLGeneratePromptTemplate 
         { name: 'additions' },
         { name: 'deletions' },
         { name: 'action' },
-        { name: 'number' },
+        { name: 'number', comments: ['number is issue number'] },
         { name: 'org_login' },
         { name: 'org_id' },
         { name: 'state' },
@@ -41,12 +41,6 @@ export class QueryPlaygroundSQLPromptTemplate extends SQLGeneratePromptTemplate 
         { name: 'creator_user_login' },
         { name: 'creator_user_id' },
         { name: 'pr_or_issue_created_at' }
-      ],
-      comments: [
-        `When type = 'PullRequestReviewCommentEvent' or type = 'IssueCommentEvent', the action could be 'created'`,
-        `When type = 'PullRequestEvent' or type = 'IssuesEvent', the action could be 'opened', 'closed'`,
-        `When type = 'PullRequestEvent', action = 'closed' and pr_merged = 1, it means the pull request is merged`,
-        `Contributor: the person who make pull request to the repo`,
       ]
     },
     {
@@ -218,15 +212,10 @@ export class QueryPlaygroundSQLPromptTemplate extends SQLGeneratePromptTemplate 
     //     LIMIT 10;
     //   `
     // },
-    // {
-    //   question: 'The most popular repos about ChatGPT',
-    //   sql: `
-    //     SELECT gr.repo_name, gr.stars AS popularity
-    //     FROM github_repos gr
-    //     WHERE gr.description LIKE '%ChatGPT%'
-    //     ORDER BY popularity DESC;
-    //   `
-    // },
+    {
+      question: 'The repos about ChatGPT',
+      sql: `SELECT gr.repo_id, gr.repo_name FROM github_repos gr WHERE gr.description LIKE '%ChatGPT%';`
+    },
     // {
     //   question: 'The hottest open source projects recently',
     //   sql: `
@@ -255,41 +244,52 @@ export class QueryPlaygroundSQLPromptTemplate extends SQLGeneratePromptTemplate 
         ORDER BY t_month ASC;
       `
     },
-    {
-      question: 'The open source projects similar to @pingcap/tidb',
-      sql: `
-        SELECT github_repos.*, sub.similarity
-        FROM github_repos
-        INNER JOIN (
-          SELECT repo_id, SUM(score) AS similarity
-          FROM (
-            SELECT repo_id, 5 AS score
-            FROM collection_items
-            WHERE collection_id IN (
-              SELECT collection_id FROM collection_items WHERE repo_name = 'pingcap/tidb'
-            )
-            UNION ALL
-            SELECT repo_id, 2 AS score
-            FROM github_repo_topics
-            WHERE topic IN (
-              SELECT topic
-              FROM github_repo_topics
-              WHERE repo_id = (SELECT repo_id FROM github_repos WHERE repo_name = 'pingcap/tidb')
-            )
-          ) sub
-          GROUP BY repo_id
-          ORDER BY similarity DESC
-          LIMIT 11
-        ) AS sub
-        ON github_repos.repo_id = sub.repo_id
-        WHERE repo_name != 'pingcap/tidb'
-        ORDER BY sub.similarity DESC
-        LIMIT 10;
-      `
-    }
+    // {
+    //   question: 'The open source projects similar to @pingcap/tidb',
+    //   sql: `
+    //     SELECT github_repos.*, sub.similarity
+    //     FROM github_repos
+    //     INNER JOIN (
+    //       SELECT repo_id, SUM(score) AS similarity
+    //       FROM (
+    //         SELECT repo_id, 5 AS score
+    //         FROM collection_items
+    //         WHERE collection_id IN (
+    //           SELECT collection_id FROM collection_items WHERE repo_name = 'pingcap/tidb'
+    //         )
+    //         UNION ALL
+    //         SELECT repo_id, 2 AS score
+    //         FROM github_repo_topics
+    //         WHERE topic IN (
+    //           SELECT topic
+    //           FROM github_repo_topics
+    //           WHERE repo_id = (SELECT repo_id FROM github_repos WHERE repo_name = 'pingcap/tidb')
+    //         )
+    //       ) sub
+    //       GROUP BY repo_id
+    //       ORDER BY similarity DESC
+    //       LIMIT 11
+    //     ) AS sub
+    //     ON github_repos.repo_id = sub.repo_id
+    //     WHERE repo_name != 'pingcap/tidb'
+    //     ORDER BY sub.similarity DESC
+    //     LIMIT 10;
+    //   `
+    // }
   ];
 
   public comments: string[] = [
-    'Select statement limit 20'
+    'Select statement limit 20 by default, if question need more data, please add limit 200',
+    `When type = 'PullRequestReviewCommentEvent' or type = 'IssueCommentEvent', the action could be 'created'`,
+    `When type = 'PullRequestEvent' or type = 'IssuesEvent', the action could be 'opened', 'closed'`,
+    `When type = 'PullRequestEvent', action = 'closed' and pr_merged = 1, it means the pull request is merged`,
+    'PushEvent: trigger when commit has been pushed',
+    `Return the pr_or_issue_link column for PR / issue list: SELECT CONCAT('https://github.com/', repo_name, '/issues/', number) AS pr_or_issue_link`,
+    'Exclude bots: WHERE actor_login NOT LIKE "%bot%"',
+    `Contributor: the person who opened pull request to the repo, it will trigger a PullRequestEvent`,
+    'The most popular repos has the most stars,',
+    'Similar repositories will have similar topics, or be in the same collection, order by the similarity',
+    'collection is a categorization of some similar repositories, but not all repositories have a corresponding collection',
+    'The trending_repos table contains the most recent and popular repositories'
   ];
 }
