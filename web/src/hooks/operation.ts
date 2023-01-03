@@ -3,9 +3,50 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useWhenMounted } from '@site/src/hooks/mounted';
 import { unstable_serialize } from 'swr';
 import { useUserInfoContext } from '@site/src/context/user';
+import { useEventCallback } from '@mui/material';
+import { notNullish } from '@site/src/utils/value';
 
 interface AsyncOperation<T> extends AsyncData<T> {
   run: () => any;
+}
+
+export function useAsyncState<T> (initial?: T | (() => T)) {
+  const [data, setData] = useState<T | undefined>(initial);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<unknown>();
+
+  const setAsyncData = useEventCallback((dataPromise: Promise<T>, clear: boolean = false) => {
+    if (clear) {
+      setData(undefined);
+    }
+    setLoading(true);
+    setError(undefined);
+    dataPromise
+      .then(setData, setError)
+      .finally(() => {
+        setLoading(false);
+      });
+  });
+
+  const clearState = useEventCallback(() => {
+    if (notNullish(data)) {
+      setData(undefined);
+    }
+    if (loading) {
+      setLoading(false);
+    }
+    if (notNullish(error)) {
+      setError(error);
+    }
+  });
+
+  return {
+    data,
+    loading,
+    error,
+    setAsyncData,
+    clearState,
+  };
 }
 
 export function useAsyncOperation<P, T> (params: P, fetcher: (params: P) => Promise<T>, requireAuth: boolean = false): AsyncOperation<T> {
