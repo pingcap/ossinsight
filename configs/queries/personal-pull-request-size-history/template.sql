@@ -20,6 +20,7 @@ FROM (
             AND type = 'PullRequestEvent'
             AND action = 'closed'
             AND pr_merged = true
+            AND (created_at BETWEEN DATE_SUB(NOW(), INTERVAL 1 YEAR) AND NOW())
     ) sub
 ) AS sub
 WHERE

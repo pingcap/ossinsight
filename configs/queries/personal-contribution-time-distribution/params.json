@@ -10,14 +10,16 @@
       "name": "period",
       "replaces": "AND (created_at BETWEEN DATE_SUB(NOW(), INTERVAL 1 YEAR) AND NOW())",
       "enums": [
-        "last_1_year",
-        "last_3_year",
+        "year_2022",
+        "past_1_year",
+        "past_3_years",
         "all_times"
       ],
       "default": "all_times",
       "template": {
-        "last_1_year": "AND (created_at BETWEEN DATE_SUB(NOW(), INTERVAL 1 YEAR) AND NOW())",
-        "last_3_year": "AND (created_at BETWEEN DATE_SUB(NOW(), INTERVAL 3 YEAR) AND NOW())",
+        "year_2022":"AND (created_at BETWEEN '2022-01-01' AND '2022-12-31')",
+        "past_1_year": "AND (created_at BETWEEN DATE_SUB(NOW(), INTERVAL 1 YEAR) AND NOW())",
+        "past_3_years": "AND (created_at BETWEEN DATE_SUB(NOW(), INTERVAL 3 YEAR) AND NOW())",
         "all_times": ""
       }
     }

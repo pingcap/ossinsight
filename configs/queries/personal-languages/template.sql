@@ -9,6 +9,7 @@ WITH prs_with_language AS (
         AND action = 'opened'
         AND gr.primary_language IS NOT NULL  -- TODO: remove
         AND gr.primary_language != ''
+        AND (ge.created_at BETWEEN DATE_SUB(NOW(), INTERVAL 1 YEAR) AND NOW())
     GROUP BY gr.primary_language
 ), s AS (
     SELECT SUM(cnt) AS total FROM prs_with_language

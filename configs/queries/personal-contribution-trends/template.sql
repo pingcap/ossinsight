@@ -20,6 +20,7 @@ WHERE
         (type = 'PullRequestReviewCommentEvent' AND action = 'created') OR
         (type = 'PushEvent' AND action = '')
     )
+    AND (created_at BETWEEN DATE_SUB(NOW(), INTERVAL 1 YEAR) AND NOW())
 GROUP BY type, 2
 ORDER BY 2
 ;
