@@ -61,7 +61,7 @@ export class ExplorerService {
     private sqlParser: Parser;
     private readonly generateSQLTemplate: QueryPlaygroundSQLPromptTemplate;
     private readonly generateChartTemplate: GenerateChartPromptTemplate;
-    private maxSelectLimit = 10;
+    private maxSelectLimit = 200;
     private options: ExplorerOption;
 
     constructor(

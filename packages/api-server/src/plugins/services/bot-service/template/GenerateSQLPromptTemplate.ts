@@ -68,7 +68,7 @@ ${this.comments.join('\n')}
 ---
 ${this.examples.map(e => this.stringifyExample(e, context)).join('\n')}
 ---
--- Current time: ${DateTime.utc().toSQLDate()}, no filtering of time unless the question explicitly limits the time frame.
+-- Current time: ${DateTime.utc().toSQLDate()}, don't add time filters in WHERE clause unless the question explicitly limits the time frame.
 -- Let's think step by step, generate one correct SQL to do query: ${question}
 ---
 ${this.resultPrefix}
