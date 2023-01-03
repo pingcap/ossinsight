@@ -9,6 +9,8 @@ import { Charts } from '@site/src/pages/explore/_components/charts';
 import { useEventCallback } from '@mui/material';
 import TableChart from './charts/TableChart';
 import { useUserInfoContext } from '@site/src/context/user';
+import { isAxiosError } from '@site/src/utils/error';
+import { AxiosError } from 'axios';
 
 export interface ExecutionContext {
   run: () => void;
@@ -61,13 +63,22 @@ export function useQuestion (content: string) {
   }, [data, loading]);
 
   const resultPending = isNullish(data) ? false : PENDING_STATE.has(data.status);
-  const resultError = data?.status === QuestionStatus.Cancel ? new Error('Execution was canceled') : (error ?? data?.error);
+  const resultError = data?.status === QuestionStatus.Cancel ? new Error('Execution was canceled') : (data?.error);
 
-  return { run, question: data, loading, resultPending, error: resultError };
+  return { run, question: data, loading, resultPending, sqlError: error, resultError };
+}
+
+export function isSqlError (error: unknown): error is AxiosError<{ message: string, querySQL: string }> {
+  if (isAxiosError(error) && notNullish(error.response)) {
+    if (notNullish(error.response.data)) {
+      return typeof error.response.data.message === 'string' && typeof error.response.data.querySQL === 'string';
+    }
+  }
+  return false;
 }
 
 export default forwardRef<ExecutionContext, ExecutionProps>(function Execution ({ search, onLoading, onResultLoading, onChartLoading }, ref: ForwardedRef<ExecutionContext>) {
-  const { question, run, loading, resultPending, error } = useQuestion(search);
+  const { question, run, loading, resultPending, sqlError, resultError } = useQuestion(search);
 
   useEffect(() => {
     onLoading?.(loading);
@@ -87,7 +98,10 @@ export default forwardRef<ExecutionContext, ExecutionProps>(function Execution (
     if (notNullish(question)) {
       return format(question.querySQL);
     }
-  }, [question]);
+    if (isSqlError(sqlError)) {
+      return format(sqlError.response?.data.querySQL ?? '');
+    }
+  }, [question, sqlError]);
 
   const waitingResult = useMemo(() => {
     if (isNullish(question)) {
@@ -118,7 +132,7 @@ export default forwardRef<ExecutionContext, ExecutionProps>(function Execution (
     if (isNullish(question)) {
       if (loading) {
         return 'Generating SQL...';
-      } else if (isNullish(error)) {
+      } else if (isNullish(sqlError)) {
         return '';
       } else {
         return 'Failed to generate SQL';
@@ -126,7 +140,7 @@ export default forwardRef<ExecutionContext, ExecutionProps>(function Execution (
     } else {
       return 'Show SQL';
     }
-  }, [question, loading, error]);
+  }, [question, loading, sqlError]);
 
   const resultTitle = useMemo(() => {
     if (notNullish(question)) {
@@ -178,7 +192,11 @@ export default forwardRef<ExecutionContext, ExecutionProps>(function Execution (
 
   const result = question?.result?.rows;
 
-  const { data: chartData, loading: chartLoading, error: chartError, run: chartRun } = useAsyncOperation(question?.id, questionToChart, true);
+  useEffect(() => {
+    clear();
+  }, [question]);
+
+  const { data: chartData, loading: chartLoading, error: chartError, run: chartRun, clear } = useAsyncOperation(question?.id, questionToChart, true);
   useEffect(() => {
     onChartLoading?.(chartLoading);
   }, [chartLoading, onChartLoading]);
@@ -196,25 +214,25 @@ export default forwardRef<ExecutionContext, ExecutionProps>(function Execution (
   const chartStatus = useMemo(() => {
     if (chartLoading) {
       return 'loading';
-    } else if (notNullish(chartData)) {
+    } else if (notNullish(result) && notNullish(chartData)) {
       return 'success';
     } else {
       return 'pending';
     }
-  }, [chartLoading, chartData]);
+  }, [chartLoading, result, chartData]);
 
   return (
     <>
-      <Section status={sqlSectionStatus} title={sqlTitle} error={error}>
+      <Section status={sqlSectionStatus} title={sqlTitle} error={sqlError} errorWithChildren>
         <CodeBlock language="sql">
           {formattedSql}
         </CodeBlock>
       </Section>
-      <Section status={resultStatus} title={resultTitle} extra={resultExtra} error={error}>
+      <Section status={resultStatus} title={resultTitle} extra={resultExtra} error={resultError}>
         <TableChart chartName="Table" title="hi" data={result ?? []} fields={question?.result?.fields} />
       </Section>
       <Section status={chartStatus} title={chartTitle} error={chartError} defaultExpanded>
-        {notNullish(chartData) && notNullish(result) ? <Charts {...chartData} data={result} fields={question?.result?.fields} /> : undefined}
+        {(notNullish(chartData) && notNullish(result)) ? <Charts {...chartData} data={result} fields={question?.result?.fields} /> : undefined}
       </Section>
     </>
   );

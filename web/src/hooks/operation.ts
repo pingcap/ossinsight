@@ -1,5 +1,5 @@
 import { AsyncData } from '@site/src/components/RemoteCharts/hook';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useWhenMounted } from '@site/src/hooks/mounted';
 import { unstable_serialize } from 'swr';
 import { useUserInfoContext } from '@site/src/context/user';
@@ -8,12 +8,13 @@ import { notNullish } from '@site/src/utils/value';
 
 interface AsyncOperation<T> extends AsyncData<T> {
   run: () => any;
+  clear: () => any;
 }
 
-export function useAsyncState<T> (initial?: T | (() => T)) {
+export function useAsyncState<T, E = unknown> (initial?: T | (() => T)) {
   const [data, setData] = useState<T | undefined>(initial);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<unknown>();
+  const [error, setError] = useState<E>();
 
   const setAsyncData = useEventCallback((dataPromise: Promise<T>, clear: boolean = false) => {
     if (clear) {
@@ -68,7 +69,7 @@ export function useAsyncOperation<P, T> (params: P, fetcher: (params: P) => Prom
     loadingRef.current = false;
   }, [fetcher, unstable_serialize([params])]);
 
-  const run = useCallback(() => {
+  const run = useEventCallback(() => {
     if (requireAuth && !userInfo.validated) {
       userInfo.login();
       return;
@@ -87,12 +88,17 @@ export function useAsyncOperation<P, T> (params: P, fetcher: (params: P) => Prom
         setLoading(false);
         loadingRef.current = false;
       }));
-  }, [userInfo]);
+  });
+
+  const clear = useEventCallback(() => {
+    setData(undefined);
+  });
 
   return {
     data,
     loading,
     error,
     run,
+    clear,
   };
 }

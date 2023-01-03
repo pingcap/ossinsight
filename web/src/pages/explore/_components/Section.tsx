@@ -10,14 +10,16 @@ export interface SectionProps {
   extra?: ReactNode;
   children: ReactNode;
   error: unknown;
+  errorWithChildren?: boolean;
   defaultExpanded?: boolean;
 }
 
-export default function Section ({ status, title, defaultExpanded, extra, error, children }: SectionProps) {
+export default function Section ({ status, title, defaultExpanded, extra, error, errorWithChildren = false, children }: SectionProps) {
   return (
     <SectionContainer className={isNullish(error) ? status : 'error'} defaultExpanded={defaultExpanded}>
       <AccordionSummary
         expandIcon={<ExpandMore />}
+        disabled={status === 'loading'}
       >
         <SectionTitle>
           {status === 'loading'
@@ -41,7 +43,16 @@ export default function Section ({ status, title, defaultExpanded, extra, error,
         </SectionTitle>
       </AccordionSummary>
       <AccordionDetails>
-        {isNullish(error) ? children : <Alert severity="error">{getErrorMessage(error)}</Alert>}
+        {errorWithChildren
+          ? isNullish(error)
+            ? children
+            : (
+            <>
+              <Alert severity="error" sx={{ mb: 1 }}>{getErrorMessage(error)}</Alert>
+              {children}
+            </>
+              )
+          : isNullish(error) ? children : <Alert severity="error">{getErrorMessage(error)}</Alert>}
       </AccordionDetails>
     </SectionContainer>
   );
