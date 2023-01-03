@@ -5,7 +5,6 @@ import {bootstrapTestRedis, releaseTestRedis} from "../../../helpers/redis";
 import {ExplorerService, QuestionStatus} from "../../../../src";
 import "../../../../src/plugins/queue/explorer-high-concurrent-queue";
 import "../../../../src/plugins/queue/explorer-low-concurrent-queue";
-import {Job} from "bullmq";
 import {DateTime} from "luxon";
 
 let explorerService: ExplorerService, conn: Connection;
@@ -32,10 +31,6 @@ describe('create a new question', () => {
     const questionToSQL = jest.spyOn(app.botService, 'questionToSQL').mockImplementation(async (template, question, context) => {
       return "SELECT COUNT(*) FROM github_events WHERE repo_name = 'pingcap/tidb'";
     });
-    const addToHighQueue = jest.spyOn(app.explorerHighConcurrentQueue, 'add').mockImplementation(async (name, data, opts) => {
-      const job = new Job(app.explorerHighConcurrentQueue, name, data, opts, "1");
-      return job;
-    });
 
     const question = await explorerService.newQuestion(conn, 1, "Mini256", "How many events are there in TiDB?");
     expect(question).toEqual({
@@ -55,7 +50,6 @@ describe('create a new question', () => {
     });
 
     questionToSQL.mockRestore();
-    addToHighQueue.mockRestore();
   });
 
   test('tiflash query should push to low concurrent queue', async () => {
@@ -63,11 +57,6 @@ describe('create a new question', () => {
     const questionToSQL = jest.spyOn(app.botService, 'questionToSQL').mockImplementation(async (template, question, context) => {
       return "SELECT /*+ READ_FROM_STORAGE(tiflash[ge]) */ COUNT(*) FROM github_events ge";
     });
-    const addToLowQueue = jest.spyOn(app.explorerLowConcurrentQueue, 'add').mockImplementation(async (name, data, opts) => {
-      const job = new Job(app.explorerLowConcurrentQueue, name, data, opts, "2");
-      return job;
-    });
-
     const getStorageEnginesFromPlan = jest.spyOn(app.explorerService, 'getStorageEnginesFromPlan').mockImplementation((steps) => {
       return ['tiflash'];
     });
@@ -90,7 +79,6 @@ describe('create a new question', () => {
     });
 
     questionToSQL.mockRestore();
-    addToLowQueue.mockRestore();
     getStorageEnginesFromPlan.mockRestore();
   });
 
@@ -98,16 +86,16 @@ describe('create a new question', () => {
     const userId = 1;
     const now = DateTime.now().toSQL();
     const records = [
-      ["9ca8e457-8986-11ed-990b-029f9ad85623", "hash1", "Question 1", "query_hash1", "SELECT 1", "[\"tikv\"]", "1", 0, QuestionStatus.Success, userId, now, now],
-      ["275ee9f0-8987-11ed-990b-029f9ad85624", "hash2", "Question 2", "query_hash2", "SELECT 2", "[\"tiflash\"]", "2", 0, QuestionStatus.Error, userId, now, now],
-      ["2cfa5a28-8987-11ed-990b-029f9ad85625", "hash3", "Question 3", "query_hash3", "SELECT 3", "[\"tikv\"]", "3", 0, QuestionStatus.Success, userId, now, now],
+      ["9ca8e457-8986-11ed-990b-029f9ad85623", "hash1", "Question 1", "query_hash1", "SELECT 1", "[\"tikv\"]", "job_id_1", 0, 0, QuestionStatus.Success, userId, now, now],
+      ["275ee9f0-8987-11ed-990b-029f9ad85624", "hash2", "Question 2", "query_hash2", "SELECT 2", "[\"tiflash\"]", "job_id_2", 0, 0, QuestionStatus.Error, userId, now, now],
+      ["2cfa5a28-8987-11ed-990b-029f9ad85625", "hash3", "Question 3", "query_hash3", "SELECT 3", "[\"tikv\"]", "job_id_3", 0, 0, QuestionStatus.Success, userId, now, now],
     ];
 
     records.map(async (record) => {
       await conn.query(`
         INSERT INTO explorer_questions (
-            id, hash, title, query_hash, query_sql, engines, queue_job_id, recommended, status, user_id, created_at, requested_at
-        ) VALUES (UUID_TO_BIN(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+            id, hash, title, query_hash, query_sql, engines, queue_job_id, recommended, hit_cache, status, user_id, created_at, requested_at
+        ) VALUES (UUID_TO_BIN(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
       `, record);
     });
 
@@ -128,15 +116,15 @@ describe('create a new question', () => {
     const userId = 1;
     const now = DateTime.now().toSQL();
     const records = [
-      ["9ca8e457-8986-11ed-990b-029f9ad85623", "hash1", "Question 1", "query_hash1", "SELECT 1", "[\"tikv\"]", "1", 0, QuestionStatus.Running, userId, now, now],
-      ["275ee9f0-8987-11ed-990b-029f9ad85624", "hash2", "Question 2", "query_hash2", "SELECT 2", "[\"tiflash\"]", "2", 0, QuestionStatus.Waiting, userId, now, now],
+      ["9ca8e457-8986-11ed-990b-029f9ad85623", "hash1", "Question 1", "query_hash1", "SELECT 1", "[\"tikv\"]", "job_id_1", 0, 0, QuestionStatus.Running, userId, now, now],
+      ["275ee9f0-8987-11ed-990b-029f9ad85624", "hash2", "Question 2", "query_hash2", "SELECT 2", "[\"tiflash\"]", "job_id_2", 0, 0, QuestionStatus.Waiting, userId, now, now],
     ];
 
     records.map(async (record) => {
       await conn.query(`
         INSERT INTO explorer_questions (
-            id, hash, title, query_hash, query_sql, engines, queue_job_id, recommended, status, user_id, created_at, requested_at
-        ) VALUES (UUID_TO_BIN(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+            id, hash, title, query_hash, query_sql, engines, queue_job_id, recommended, hit_cache, status, user_id, created_at, requested_at
+        ) VALUES (UUID_TO_BIN(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
       `, record);
     });
 
