@@ -26,5 +26,8 @@ export const JobServerEnvSchema = {
       type: 'string',
       default: '20 * * * *',
     },
+    OPENAI_API_KEY: {
+      type: 'string'
+    },
   },
 };

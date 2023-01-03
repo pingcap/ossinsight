@@ -38,7 +38,7 @@ export class SQLGeneratePromptTemplate implements PromptTemplate {
   // AI Model Parameters.
   public model: AIModel = AIModel.TEXT_DAVINCI_003;
   public stop: string[] = ['#', '---'];
-  public maxTokens: number = 100;
+  public maxTokens: number = 200;
   public temperature: number = 0.3;
   public topP: number = 0.4;
   public n: number = 1;
@@ -68,8 +68,8 @@ ${this.comments.join('\n')}
 ---
 ${this.examples.map(e => this.stringifyExample(e, context)).join('\n')}
 ---
-# Question:
-# ${question}
+-- Current time: ${DateTime.utc().toSQLDate()}, no filtering of time unless the question explicitly limits the time frame.
+-- Let's think step by step, generate one correct SQL to do query: ${question}
 ---
 ${this.resultPrefix}
 `;
@@ -97,7 +97,14 @@ ${this.resultPrefix}
     const tableDefinition = `Table ${table.name}, columns = [${table.columns.map(c => c.name).join(', ')}]`;
     const columnDefinitions = table.columns.map(c => this.stringifyColumn(c)).filter(c => c !== undefined);
     const comments = table.comments || [];
-    return `${tableDefinition}\n${columnDefinitions.join('\n')}${comments.join('\n')}`;
+    const definitions = [tableDefinition];
+    if (columnDefinitions.length > 0) {
+      definitions.push(columnDefinitions.join('\n'));
+    }
+    if (comments.length > 0) {
+      definitions.push(comments.join('\n'));
+    }
+    return definitions.join('\n');
   }
 
   stringifyColumn(column: ColumnInfo): string | undefined {

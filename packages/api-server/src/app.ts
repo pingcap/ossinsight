@@ -6,7 +6,7 @@ import { APIServerEnvSchema } from './env';
 import { JsonSchemaToTsProvider } from '@fastify/type-provider-json-schema-to-ts';
 import fastifyEnv from '@fastify/env';
 import { join } from 'path';
-import {APIError} from "./utils/error";
+import {APIError, ValidateSQLError} from "./utils/error";
 
 export type AppOptions = {
   // Place your custom options for app below here.
@@ -28,6 +28,8 @@ declare module 'fastify' {
       PLAYGROUND_DATABASE_URL: string,
       PLAYGROUND_DAILY_QUESTIONS_LIMIT: number;
       PLAYGROUND_TRUSTED_GITHUB_LOGINS: string[];
+      EXPLORER_USER_MAX_QUESTIONS_PER_HOUR: number;
+      EXPLORER_USER_MAX_QUESTIONS_ON_GOING: number;
       GITHUB_OAUTH_CLIENT_ID?: string,
       GITHUB_OAUTH_CLIENT_SECRET?: string,
       GITHUB_ACCESS_TOKENS: string[],
@@ -60,6 +62,11 @@ const app: FastifyPluginAsync<AppOptions, RawServerDefault, JsonSchemaToTsProvid
 
     if (error instanceof APIError) {
       reply.status(error.statusCode).send({
+        message: error.message
+      });
+    } else if (error instanceof ValidateSQLError) {
+      reply.status(400).send({
+        querySQL: error.sql,
         message: error.message
       });
     } else {

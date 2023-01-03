@@ -6,10 +6,13 @@ import { FastifyPluginAsync } from 'fastify';
 import fastifyEnv from '@fastify/env';
 import { join } from 'path';
 import {Queue, Worker} from "bullmq";
-import {QueryExecution} from "@ossinsight/api-server";
+import {Question} from "@ossinsight/api-server";
 import {EmailClient} from "@ossinsight/email-server";
 import {GitHubRepoWithEvents} from "./types";
 import {CalcMilestonesJobInput} from "./jobs/calc_milestones/index.worker";
+
+// Notice: to hide the MaxListenersExceededWarning, we need to set the max listeners to a larger number.
+require('events').EventEmitter.prototype._maxListeners = 20;
 
 export type AppOptions = {
 } & Partial<AutoloadPluginOptions>;
@@ -27,18 +30,21 @@ declare module 'fastify' {
       PLAYGROUND_DATABASE_URL: string;
       SEND_REPO_FEEDS_CRON: string,
       CALC_REPO_MILESTONES_CRON: string,
+      OPENAI_API_KEY: string
     };
     mysql: MySQLPromisePool;
     emailClient: EmailClient;
     queues: {
-      playground: Queue<QueryExecution, any, string>;
+      explorer_high_concurrent_queue: Queue<Question, any, string>;
+      explorer_low_concurrent_queue: Queue<Question, any, string>;
       calc_milestones: Queue<CalcMilestonesJobInput, any, string>;
       calc_milestones_for_repo_events: Queue<GitHubRepoWithEvents, any, string>;
       send_feeds_emails: Queue<{}, any, string>;
       send_feeds_email: Queue<{}, any, string>;
     };
     workers: {
-      playground: Worker<QueryExecution, any, string>;
+      explorer_high_concurrent_queue: Worker<Question, any, string>;
+      explorer_low_concurrent_queue: Worker<Question, any, string>;
       calc_milestones: Worker<CalcMilestonesJobInput, any, string>;
       send_feeds_emails: Worker<{}, any, string>;
       send_feeds_email: Worker<{}, any, string>;

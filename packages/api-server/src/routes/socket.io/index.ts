@@ -5,7 +5,6 @@ import { QueryRunner } from "../../core/runner/query/QueryRunner";
 import fastifyWebsocket from "fastify-socket.io";
 import { pino } from "pino";
 import { toCompactFormat } from "../../utils/compact";
-import {PlaygroundService} from "../../plugins/services/playground-service";
 import {MySQLPromisePool} from "@fastify/mysql";
 
 interface WsQueryRequest {
@@ -56,8 +55,7 @@ const root: FastifyPluginAsync = async (app, opts): Promise<void> => {
     app.io.on("connection", (socket) => {
       app.log.info("io connected");
       const log = app.log as pino.Logger;
-      socketServerRoutes(log, socket, app.io, app.queryRunner, app.playgroundService, app.mysql);
-
+      socketServerRoutes(log, socket, app.io, app.queryRunner, app.mysql);
       socket.on("disconnect", () => {
         app.log.info("io disconnected");
       });
@@ -93,7 +91,6 @@ export function socketServerRoutes(
   socket: Socket,
   io: Server,
   queryRunner: QueryRunner,
-  playgroundService: PlaygroundService,
   mysql: MySQLPromisePool
 ) {
   /*
@@ -169,36 +166,6 @@ export function socketServerRoutes(
     } catch (error) {
       log.error("Failed to request %s[ws]: ", request, error);
       socket.emit("fatal-error/q", {
-        request,
-        error,
-      });
-    }
-  });
-
-  socket.on("playground-result", async (request) => {
-    try {
-      const { executionId } = request;
-      let response: WsQueryResponse;
-      const topic = `/explorer/get-query-result?executionId=${executionId}`;
-      const conn = await mysql.getConnection();
-
-      try {
-        const payload = await playgroundService.getQueryResult(conn, executionId);
-        response = {
-            payload,
-        }
-      } catch (err) {
-        response = {
-          error: true,
-          payload: err,
-        };
-      } finally {
-        conn.release();
-      }
-      socket.emit(topic, response);
-    } catch (error) {
-      log.error("Failed to request %s[ws]: ", request, error);
-      socket.emit("fatal-error/get-query-result", {
         request,
         error,
       });

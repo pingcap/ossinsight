@@ -20,7 +20,7 @@ export default fp(async (fastify) => {
     const log = fastify.log.child({ service: 'bot-service'}) as pino.Logger;
     fastify.decorate('botService', new BotService(log, fastify.config.OPENAI_API_KEY));
 }, {
-  name: 'bot-service',
+  name: '@ossinsight/bot-service',
   dependencies: []
 });
 
@@ -28,7 +28,7 @@ export class BotService {
     private readonly openai: OpenAIApi;
 
     constructor(
-        private readonly log: pino.Logger,
+        private readonly log: pino.BaseLogger,
         private readonly apiKey: string
     ) {
         const configuration = new Configuration({
@@ -40,7 +40,7 @@ export class BotService {
     async questionToSQL(template: SQLGeneratePromptTemplate, question: string, context: Record<string, any>): Promise<string | null> {
         if (!question) return null;
         const prompt = template.stringify(question, context);
-        this.log.info(prompt, `Get completion for question: ${question}`);
+        this.log.debug(prompt, `Get completion for question: ${question}`);
         const res = await this.openai.createCompletion({
             model: template.model,
             prompt,

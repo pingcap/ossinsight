@@ -2,7 +2,7 @@ import {RelationInfo, SQLExample, SQLGeneratePromptTemplate, TableInfo} from "./
 
 export class QueryPlaygroundSQLPromptTemplate extends SQLGeneratePromptTemplate {
   public stop: string[] = ['#', '---'];
-  public maxTokens: number = 200;
+  public maxTokens: number = 300;
   public temperature: number = 0.3;
   public topP: number = 0.4;
   public resultPrefix: string = '';
@@ -43,9 +43,10 @@ export class QueryPlaygroundSQLPromptTemplate extends SQLGeneratePromptTemplate 
         { name: 'pr_or_issue_created_at' }
       ],
       comments: [
-        `When type = 'PullRequestReviewCommentEvent', the action could be 'created'`,
+        `When type = 'PullRequestReviewCommentEvent' or type = 'IssueCommentEvent', the action could be 'created'`,
         `When type = 'PullRequestEvent' or type = 'IssuesEvent', the action could be 'opened', 'closed'`,
-        `When type = 'PullRequestEvent', action = 'closed' and pr_merged = 1, it means the pull request is merged, and the creator_user_id is a contributor of the repo`,
+        `When type = 'PullRequestEvent', action = 'closed' and pr_merged = 1, it means the pull request is merged`,
+        `Contributor: the person who make pull request to the repo`,
       ]
     },
     {
@@ -84,10 +85,9 @@ export class QueryPlaygroundSQLPromptTemplate extends SQLGeneratePromptTemplate 
           name: 'type',
           enums: ['USR', 'ORG']
         },
-        { name: 'is_bot' },
         { name: 'name' },
         { name: 'organization' },
-        { name: 'country_code' },
+        { name: 'country_code', invalid: ['', 'N/A', 'UND'] },
         { name: 'followers' },
         { name: 'followings' },
         { name: 'created_at' },
@@ -139,28 +139,28 @@ export class QueryPlaygroundSQLPromptTemplate extends SQLGeneratePromptTemplate 
       rightColumnName: 'repo_id'
     },
     {
-      leftTableName: 'trending_repos',
+      leftTableName: 'github_events',
+      leftColumnName: 'repo_id',
+      rightTableName: 'github_repos',
+      rightColumnName: 'repo_id'
+    },
+    {
+      leftTableName: 'github_events',
       leftColumnName: 'repo_name',
       rightTableName: 'github_repos',
       rightColumnName: 'repo_name'
     },
     {
       leftTableName: 'github_events',
-      leftColumnName: 'repo_id',
-      rightTableName: 'github_repos',
-      rightColumnName: 'repo_id'
-    },
-    {
-      leftTableName: 'github_repos',
-      leftColumnName: 'repo_id',
-      rightTableName: 'github_repo_topics',
-      rightColumnName: 'repo_id'
-    },
-    {
-      leftTableName: 'github_events',
       leftColumnName: 'actor_id',
       rightTableName: 'github_users',
       rightColumnName: 'id'
+    },
+    {
+      leftTableName: 'github_events',
+      leftColumnName: 'actor_login',
+      rightTableName: 'github_users',
+      rightColumnName: 'login'
     },
     {
       leftTableName: 'github_events',
@@ -173,43 +173,69 @@ export class QueryPlaygroundSQLPromptTemplate extends SQLGeneratePromptTemplate 
       leftColumnName: 'owner_id',
       rightTableName: 'github_users',
       rightColumnName: 'id'
-    }
+    },
+    {
+      leftTableName: 'github_repos',
+      leftColumnName: 'repo_id',
+      rightTableName: 'github_repo_topics',
+      rightColumnName: 'repo_id'
+    },
+    {
+      leftTableName: 'trending_repos',
+      leftColumnName: 'repo_name',
+      rightTableName: 'github_repos',
+      rightColumnName: 'repo_name'
+    },
   ];
 
   public examples: SQLExample[] = [
-    {
-      question: 'Geographic distribution of contributors to @pingcap/tidb',
-      sql: `
-        SELECT gu.country_code, COUNT(DISTINCT ge.actor_login) AS contributors
-        FROM github_events ge 
-        INNER JOIN github_users gu ON ge.actor_login = gu.login 
-        WHERE
-            ge.repo_name = 'pingcap/tidb'
-            AND ge.type = 'PullRequestEvent'
-            AND ge.action = 'opened'
-            AND gu.country_code NOT IN ('', 'N/A', 'UND')
-        GROUP BY gu.country_code
-        ORDER BY contributors DESC;
-      `
-    },
-    {
-      question: 'The most popular repos about ChatGPT',
-      sql: `
-        SELECT gr.repo_name, gr.stars AS popularity
-        FROM github_repos gr
-        WHERE gr.description LIKE '%ChatGPT%'
-        ORDER BY popularity DESC;
-      `
-    },
-    {
-      question: 'The hottest open source projects recently',
-      sql: `
-        SELECT *
-        FROM github_repos gr
-        WHERE gr.repo_name IN (SELECT repo_name FROM trending_repos tr ORDER BY created_at DESC LIMIT 20)
-        ORDER BY gr.stars DESC;
-      `
-    },
+    // {
+    //   question: 'Geographic distribution of code contributors to @pingcap/tidb',
+    //   sql: `
+    //     SELECT gu.country_code, COUNT(DISTINCT ge.actor_login) AS contributors
+    //     FROM github_events ge
+    //     INNER JOIN github_users gu ON ge.actor_login = gu.login
+    //     WHERE
+    //         ge.repo_name = 'pingcap/tidb'
+    //         AND ge.type = 'PullRequestEvent'
+    //         AND ge.action = 'opened'
+    //         AND gu.country_code NOT IN ('', 'N/A', 'UND')
+    //     GROUP BY gu.country_code
+    //     ORDER BY contributors DESC;
+    //   `
+    // },
+    // {
+    //   question: 'The top 10 code contributors to @pingcap/tidb',
+    //   sql: `
+    //     SELECT actor_login, COUNT(*) AS contributions
+    //     FROM github_events
+    //     WHERE
+    //         repo_name = 'pingcap/tidb'
+    //         AND type = 'PullRequestEvent'
+    //         AND action = 'opened'
+    //     GROUP BY actor_login
+    //     ORDER BY contributions DESC
+    //     LIMIT 10;
+    //   `
+    // },
+    // {
+    //   question: 'The most popular repos about ChatGPT',
+    //   sql: `
+    //     SELECT gr.repo_name, gr.stars AS popularity
+    //     FROM github_repos gr
+    //     WHERE gr.description LIKE '%ChatGPT%'
+    //     ORDER BY popularity DESC;
+    //   `
+    // },
+    // {
+    //   question: 'The hottest open source projects recently',
+    //   sql: `
+    //     SELECT *
+    //     FROM github_repos gr
+    //     WHERE gr.repo_name IN (SELECT repo_name FROM trending_repos tr ORDER BY created_at DESC LIMIT 20)
+    //     ORDER BY gr.stars DESC;
+    //   `
+    // },
     {
       question: '@pingcap/tidb cumulative stars across months',
       sql: `
@@ -232,34 +258,33 @@ export class QueryPlaygroundSQLPromptTemplate extends SQLGeneratePromptTemplate 
     {
       question: 'The open source projects similar to @pingcap/tidb',
       sql: `
-        SELECT *
-        FROM github_repos, (
-            SELECT repo_id, SUM(score) AS similarity
-            FROM (
-                (
-                    SELECT repo_id, 5 AS score
-                    FROM collection_items
-                    WHERE collection_id IN (SELECT collection_id FROM collection_items WHERE repo_name = 'pingcap/tidb')
-                )
-                UNION ALL
-                (
-                    SELECT repo_id, 2 AS score
-                    FROM github_repo_topics 
-                    WHERE
-                        topic IN (
-                            SELECT topic
-                            FROM github_repo_topics
-                            WHERE repo_id = (SELECT repo_id FROM github_repos WHERE repo_name = 'pingcap/tidb')
-                        )
-                )
-            ) sub
-            GROUP BY repo_id
-            ORDER BY similarity DESC
-            LIMIT 21
+        SELECT github_repos.*, sub.similarity
+        FROM github_repos
+        INNER JOIN (
+          SELECT repo_id, SUM(score) AS similarity
+          FROM (
+            SELECT repo_id, 5 AS score
+            FROM collection_items
+            WHERE collection_id IN (
+              SELECT collection_id FROM collection_items WHERE repo_name = 'pingcap/tidb'
+            )
+            UNION ALL
+            SELECT repo_id, 2 AS score
+            FROM github_repo_topics
+            WHERE topic IN (
+              SELECT topic
+              FROM github_repo_topics
+              WHERE repo_id = (SELECT repo_id FROM github_repos WHERE repo_name = 'pingcap/tidb')
+            )
+          ) sub
+          GROUP BY repo_id
+          ORDER BY similarity DESC
+          LIMIT 11
         ) AS sub
-        WHERE github_repos.repo_id = sub.repo_id AND repo_name != 'pingcap/tidb'
-        ORDER BY similarity DESC
-        LIMIT 20;
+        ON github_repos.repo_id = sub.repo_id
+        WHERE repo_name != 'pingcap/tidb'
+        ORDER BY sub.similarity DESC
+        LIMIT 10;
       `
     }
   ];

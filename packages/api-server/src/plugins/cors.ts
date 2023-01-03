@@ -5,7 +5,7 @@ import { existsSync, readFileSync } from 'fs';
 import cors from '@fastify/cors';
 import fp from "fastify-plugin";
 import { parse as parseYAML } from 'yaml';
-import {GENERATE_SQL_LIMIT_HEADER, GENERATE_SQL_USED_HEADER} from "../routes/bot/questionToSQL";
+import {GENERATE_SQL_LIMIT_HEADER, GENERATE_SQL_USED_HEADER} from "../routes/bot/questionToSQL/quota";
 
 export type OriginType = string | RegExp;
 
