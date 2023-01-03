@@ -97,7 +97,7 @@ function toCamel (n) {
 const eventTypesWithoutAll = ['pushes', 'issues', 'issue_comments', 'pull_requests', 'reviews', 'review_comments'];
 const eventTypes = ['all', 'pushes', 'issues', 'issue_comments', 'pull_requests', 'reviews', 'review_comments'];
 const timezones: number[] = [];
-const periods = ['last_1_year', 'last_3_year', 'all_times'];
+const periods = ['past_1_year', 'past_3_year', 'all_times'];
 
 const formatZone = (zone: number) => `UTC ${zone < 0 ? zone : `+${zone}`}`;
 
@@ -106,7 +106,7 @@ for (let i = -11; i <= 14; i++) {
 }
 
 const ContributionTime = ({ userId, show }: ModuleProps) => {
-  const [period, setPeriod] = useState('last_1_year');
+  const [period, setPeriod] = useState('past_1_year');
   const { data } = usePersonalData('personal-contribution-time-distribution', userId, show, { period });
   const [type, setType] = useState('all');
   const [zone, setZone] = useState(0);
