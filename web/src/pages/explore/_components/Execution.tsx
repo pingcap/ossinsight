@@ -235,7 +235,6 @@ export default forwardRef<ExecutionContext, ExecutionProps>(function Execution (
       return 'success';
     }
   }, [question, loading, resultPending || chartLoading]);
-  console.log('status', resultStatus);
 
   return (
     <>

@@ -18,6 +18,22 @@ export default function BarChart ({ chartName, title, x, y, data }: ChartResult 
   const options: EChartsOption = useMemo(() => {
     const isTime = /date|time|year|month/.test(x);
 
+    const makeSeries = function (y: string | string[]) {
+      if (typeof y === 'string') {
+        return {
+          type: 'bar',
+          name: y,
+          datasetId: 'raw',
+          encode: {
+            x,
+            y,
+          },
+        };
+      } else {
+        return y.map(makeSeries);
+      }
+    };
+
     return {
       dataset: {
         id: 'raw',
@@ -36,15 +52,7 @@ export default function BarChart ({ chartName, title, x, y, data }: ChartResult 
         left: 8,
         top: 8,
       },
-      series: {
-        type: 'bar',
-        name: y,
-        datasetId: 'raw',
-        encode: {
-          x,
-          y,
-        },
-      },
+      series: makeSeries(x),
       title: {
         text: title,
       },

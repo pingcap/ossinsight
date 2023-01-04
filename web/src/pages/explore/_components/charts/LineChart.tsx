@@ -19,6 +19,25 @@ export default function LineChart ({ chartName, title, x, y, data }: ChartResult
   const options: EChartsOption = useMemo(() => {
     const isTime = /date|time|year|month/.test(x);
 
+    const makeSeries = function (y: string | string[]) {
+      if (typeof y === 'string') {
+        return {
+          type: 'line',
+          datasetId: 'raw',
+          name: y,
+          encode: {
+            x,
+            y,
+          },
+          itemStyle: {
+            opacity: 0,
+          },
+        };
+      } else {
+        return y.map(makeSeries);
+      }
+    };
+
     return ({
       dataset: {
         id: 'raw',
@@ -35,21 +54,10 @@ export default function LineChart ({ chartName, title, x, y, data }: ChartResult
         trigger: 'axis',
       },
       legend: {
-        left: 8,
-        top: 8,
+        left: 'center',
+        top: 24,
       },
-      series: {
-        type: 'line',
-        datasetId: 'raw',
-        name: y,
-        encode: {
-          x,
-          y,
-        },
-        itemStyle: {
-          opacity: 0,
-        },
-      },
+      series: makeSeries(y),
       title: {
         text: title,
       },
