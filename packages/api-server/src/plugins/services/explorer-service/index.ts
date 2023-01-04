@@ -121,6 +121,7 @@ export class ExplorerService {
             // Check if the question is cached.
             const cachedQuestion = await this.getQuestionByHash(conn, questionHash, this.options.generateSQLCacheTTL);
             if (cachedQuestion) {
+                await conn.commit();
                 return cachedQuestion;
             }
 
@@ -211,7 +212,7 @@ export class ExplorerService {
             };
             await this.createQuestion(conn, question);
             if (err instanceof APIError) {
-                throw new ExplorerQuestionError(err.statusCode, err.message, question);
+                throw new ExplorerQuestionError(err.statusCode, err.message, question, err);
             } else {
                 throw new ExplorerQuestionError(500, 'Failed to create the question', question);
             }

@@ -212,10 +212,10 @@ export class QueryPlaygroundSQLPromptTemplate extends SQLGeneratePromptTemplate 
     //     LIMIT 10;
     //   `
     // },
-    {
-      question: 'The repos about ChatGPT',
-      sql: `SELECT gr.repo_id, gr.repo_name FROM github_repos gr WHERE gr.description LIKE '%ChatGPT%';`
-    },
+    // {
+    //   question: 'The repos about ChatGPT',
+    //   sql: `SELECT gr.repo_id, gr.repo_name FROM github_repos gr WHERE gr.description LIKE '%ChatGPT%';`
+    // },
     // {
     //   question: 'The hottest open source projects recently',
     //   sql: `
@@ -238,7 +238,9 @@ export class QueryPlaygroundSQLPromptTemplate extends SQLGeneratePromptTemplate 
                 COUNT(DISTINCT actor_login) AS stars
             FROM github_events ge
             WHERE
-                ge.type = 'WatchEvent' AND ge.repo_id = (SELECT repo_id FROM github_repos WHERE repo_name = 'pingcap/tidb')
+                ge.type = 'WatchEvent'
+                AND ge.repo_id = (SELECT repo_id FROM github_repos WHERE repo_name = 'pingcap/tidb')
+                AND ge.created_at != '1970-01-01 00:00:00'
             GROUP BY t_month
         ) star_counts
         ORDER BY t_month ASC;
@@ -283,9 +285,10 @@ export class QueryPlaygroundSQLPromptTemplate extends SQLGeneratePromptTemplate 
     `When type = 'PullRequestReviewCommentEvent' or type = 'IssueCommentEvent', the action could be 'created'`,
     `When type = 'PullRequestEvent' or type = 'IssuesEvent', the action could be 'opened', 'closed'`,
     `When type = 'PullRequestEvent', action = 'closed' and pr_merged = 1, it means the pull request is merged`,
-    'PushEvent: trigger when commit has been pushed',
+    `PushEvent: trigger when commit has been pushed`,
     `Return the pr_or_issue_link column for PR / issue list: SELECT CONCAT('https://github.com/', repo_name, '/issues/', number) AS pr_or_issue_link`,
-    `If question require to exclude the robot, please use 'WHERE actor_login NOT LIKE "%bot%"'`,
+    `If question contains words like 'exclude bot': WHERE actor_login NOT LIKE "%bot%"`,
+    `If question contains words like 'related to xxx' or 'about to xxx': WHERE description LIKE '%xxx%'`,
     `Contributor: the person who opened pull request to the repo, it will trigger a PullRequestEvent`,
     'The most popular repos has the most stars,',
     'Similar repositories will have similar topics, or be in the same collection, order by the similarity',

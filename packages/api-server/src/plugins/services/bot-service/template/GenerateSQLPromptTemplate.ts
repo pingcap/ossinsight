@@ -68,7 +68,6 @@ ${this.comments.join('\n')}
 ---
 ${this.examples.map(e => this.stringifyExample(e, context)).join('\n')}
 ---
--- If question require to filter by time range, please use SQL to correctly represent (today is ${DateTime.utc().toSQLDate()}), otherwise do not filter.
 -- Let's think step by step, generate one correct SQL to do query: ${question}
 ---
 ${this.resultPrefix}
