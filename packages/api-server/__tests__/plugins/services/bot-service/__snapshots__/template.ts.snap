@@ -9,34 +9,25 @@ interface LineChart extends Chart { x: Column; y: Column | Column[]; }
 interface BarChart extends Chart  { x: Column; y: Column | Column[]; }
 interface MapChart extends Chart  { country_code: Column; value: Column; }
 interface NumberCard extends Chart  { value: Column;}
-interface RepoCard extends Chart  { repo_id: Column; repo_name: Column; }
-interface PersonalCard extends Chart  { repo_id: Column; repo_name: Column; }
+interface RepoCard extends Chart  { repo_name: Column; }
+interface PersonalCard extends Chart  { user_login: Column; }
 interface Table extends Chart  { columns: Column[]; }
+
+If the result has a column such as country_code, use MapChart
+If the result has multiple number columns, use LineChart or BarChart
+If the result is a numerical distribution, use BarChart
+If the result has a percentage column, use PieChart
+If the result is a repository or project list, use RepoCard
+If the result is a user list, use PersonalCard
+If not sure, use Table
+
 # Example
 Question: How many contributors in @pingcap/tidb
 Data: [{"contributors": 378}]
-Chart: {"type": "NumberCard", "title": "Number of Contributors in @pingcap/tidb", "value": "contributors"}
-# Example
-Question: The star history of @pingcap/tidb
-Data: [{event_month: "2015-09-01", repo_id: 41986369, total: 2541}]
-Chart: {"title": "The Star History of @pingcap/tidb", "chartName": "LineChart", "x": "event_month", "y": "total"}
-# Example
-Question: Geographic distribution of contributors to @pingcap/tidb  
-Data: [{country_or_area: "CN", count: 8883, percentage: 0.5971}]
-Chart: {"title": "The Geographic Distribution of Contributors to @pingcap/tidb ","chartName": "MapChart","country_code": "country_or_area","value": "count"}
-# Example
-Question: The open source projects similar to tidb?
-Data: [{repo_id: 41986369, repo_name: "pingcap/tidb"}, {repo_id: 48833910, repo_name: "tilv/tikv"}]
-Chart: {"title": "The Repository List Similar to pingcap/tidb","chartName": "RepoCard","repo_id": "repo_id","repo_name": "repo_name"}
-# Example
-Question: Who has given the most stars on github?
-Data: [{id: 5086433, actor_login: "Mini256"}]
-Chart: {"title": "The People Who Given the Most Stars on GitHub","chartName": "PersonalCard","id": "id","login": "actor_login"}
-# Example
-Question: The most popular programming languages in @pingcap/tidb
-Data: [{"language": "Go", "percentage": 0.7}, {"language": "Rust", "percentage": 0.3}]
-Chart:{"title": "The Most Popular Programming Languages in @pingcap/tidb","chartName": "PieChart","label": "language","value": "percentage"}
+Chart: {"chartName": "NumberCard", "title": "Number of Contributors in @pingcap/tidb", "value": "contributors"}
+
 ---
+Let's think step by step, generate the chart option json for the following question and data.
 Question: The commits and pushes in @pingcap/tidb across months
 Data: [{"commits":671,"event_month":"2015-09-01","pushes":521},{"commits":561,"event_month":"2015-10-01","pushes":426},{"commits":546,"event_month":"2015-11-01","pushes":399},{"commits":478,"event_month":"2015-12-01","pushes":343}]
 Chart: 
@@ -74,19 +65,17 @@ When type = 'PullRequestEvent' or type = 'IssuesEvent', the action could be 'ope
 When type = 'PullRequestEvent', action = 'closed' and pr_merged = 1, it means the pull request is merged
 PushEvent: trigger when commit has been pushed
 Return the pr_or_issue_link column for PR / issue list: SELECT CONCAT('https://github.com/', repo_name, '/issues/', number) AS pr_or_issue_link
-If question require to exclude the robot, please use 'WHERE actor_login NOT LIKE "%bot%"'
+If question contains words like 'exclude bot': WHERE actor_login NOT LIKE "%bot%"
+If question contains words like 'related to xxx' or 'about to xxx': WHERE description LIKE '%xxx%'
 Contributor: the person who opened pull request to the repo, it will trigger a PullRequestEvent
 The most popular repos has the most stars,
 Similar repositories will have similar topics, or be in the same collection, order by the similarity
 collection is a categorization of some similar repositories, but not all repositories have a corresponding collection
 The trending_repos table contains the most recent and popular repositories
 ---
--- The repos about ChatGPT
-SELECT gr.repo_id, gr.repo_name FROM github_repos gr WHERE gr.description LIKE '%ChatGPT%';
 -- @pingcap/tidb cumulative stars across months
-SELECT t_month, stars, SUM(stars) OVER(ORDER BY t_month ASC) AS cumulative_stars FROM ( SELECT DATE_FORMAT(created_at, '%Y-%m-01') AS t_month, COUNT(DISTINCT actor_login) AS stars FROM github_events ge WHERE ge.type = 'WatchEvent' AND ge.repo_id = (SELECT repo_id FROM github_repos WHERE repo_name = 'pingcap/tidb') GROUP BY t_month ) star_counts ORDER BY t_month ASC;
+SELECT t_month, stars, SUM(stars) OVER(ORDER BY t_month ASC) AS cumulative_stars FROM ( SELECT DATE_FORMAT(created_at, '%Y-%m-01') AS t_month, COUNT(DISTINCT actor_login) AS stars FROM github_events ge WHERE ge.type = 'WatchEvent' AND ge.repo_id = (SELECT repo_id FROM github_repos WHERE repo_name = 'pingcap/tidb') AND ge.created_at != '1970-01-01 00:00:00' GROUP BY t_month ) star_counts ORDER BY t_month ASC;
 ---
--- If question require to filter by time range, please use SQL to correctly represent (today is 2023-01-04), otherwise do not filter.
 -- Let's think step by step, generate one correct SQL to do query: How many contributors in @pingcap/tidb
 ---
 
@@ -112,7 +101,6 @@ SELECT 'Mini256' AS user_login;
 -- Am I a contributor to this repo
 SELECT CASE sub.prs > 0 WHEN TRUE THEN 'Yes' ELSE 'No' END AS is_contributor FROM ( SELECT COUNT(*) AS prs FROM github_events WHERE type = 'PullRequestEvent' AND action = 'opened' AND repo_id = 41986369 AND actor_login = 'Mini256' ) AS sub;
 ---
--- If question require to filter by time range, please use SQL to correctly represent (today is 2023-01-04), otherwise do not filter.
 -- Let's think step by step, generate one correct SQL to do query: How many contributors in @pingcap/tidb
 ---
 SELECT 

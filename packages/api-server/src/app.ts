@@ -62,13 +62,13 @@ const app: FastifyPluginAsync<AppOptions, RawServerDefault, JsonSchemaToTsProvid
   fastify.setErrorHandler(function (error: Error, request, reply) {
     this.log.error(error);
 
-    if (error instanceof APIError) {
-      reply.status(error.statusCode).send({
-        message: error.message
-      });
-    } else if (error instanceof ExplorerQuestionError) {
+    if (error instanceof ExplorerQuestionError) {
       reply.status(error.statusCode).send({
         ...error.question,
+        message: error.message
+      });
+    } else if (error instanceof APIError) {
+      reply.status(error.statusCode).send({
         message: error.message
       });
     } else {
