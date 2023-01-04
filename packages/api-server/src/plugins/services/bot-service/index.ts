@@ -4,11 +4,7 @@ import pino from "pino";
 
 import {SQLGeneratePromptTemplate} from "./template/GenerateSQLPromptTemplate";
 import {GenerateChartPromptTemplate} from "./template/GenerateChartPromptTemplate";
-
-export interface RecommendedChart {
-    chartName: string;
-    chartOptions: Record<string, any>;
-}
+import {RecommendedChart} from "./types";
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -95,6 +91,11 @@ export class BotService {
             return null;
         }
 
-        return JSON.parse(text);
+        try {
+            return JSON.parse(text);
+        } catch (err) {
+            this.log.error(err, `Failed to parse chart: ${text}`);
+            return null;
+        }
     }
 }

@@ -1,5 +1,6 @@
 import {FastifyPluginAsync, FastifySchema} from 'fastify';
 import {APIError} from "../../../../utils/error";
+import {QuestionStatus} from "../../../../plugins/services/explorer-service/types";
 
 export const schema: FastifySchema = {
     summary: 'Get Question Result',
@@ -33,7 +34,18 @@ const root: FastifyPluginAsync = async (app) => {
             if (!question) {
                 throw new APIError(404, 'Question not found');
             }
-            reply.status(200).send(question);
+            if (question.status === QuestionStatus.Waiting) {
+                const preceding = await app.explorerService.countPrecedingQuestions(conn, questionId);
+                reply.status(200).send({
+                    queuePreceding: preceding,
+                    ...question
+                });
+            } else {
+                reply.status(200).send({
+                    queuePreceding: 0,
+                    ...question
+                });
+            }
         } finally {
             conn.release();
         }

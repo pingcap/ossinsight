@@ -285,7 +285,7 @@ export class QueryPlaygroundSQLPromptTemplate extends SQLGeneratePromptTemplate 
     `When type = 'PullRequestEvent', action = 'closed' and pr_merged = 1, it means the pull request is merged`,
     'PushEvent: trigger when commit has been pushed',
     `Return the pr_or_issue_link column for PR / issue list: SELECT CONCAT('https://github.com/', repo_name, '/issues/', number) AS pr_or_issue_link`,
-    'Exclude bots: WHERE actor_login NOT LIKE "%bot%"',
+    `If question require to exclude the robot, please use 'WHERE actor_login NOT LIKE "%bot%"'`,
     `Contributor: the person who opened pull request to the repo, it will trigger a PullRequestEvent`,
     'The most popular repos has the most stars,',
     'Similar repositories will have similar topics, or be in the same collection, order by the similarity',

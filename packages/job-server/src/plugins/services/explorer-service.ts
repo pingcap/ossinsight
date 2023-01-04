@@ -11,7 +11,9 @@ export default fp(async (app) => {
     app.decorate('explorerService', new ExplorerService(
       app.log.child({service: 'explorer-service'}),
       app.botService,
-      executor
+      executor,
+      app.queues.explorer_low_concurrent_queue,
+      app.queues.explorer_high_concurrent_queue,
     ));
 }, {
     name: '@ossinsight/explorer-service',

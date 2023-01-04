@@ -28,7 +28,7 @@ const root: FastifyPluginAsync = async (app) => {
     const { questionId } = req.params;
     const conn = await app.mysql.getConnection();
     try {
-      const chartOptions = await app.explorerService.generateChartForQuestion(conn, questionId);
+      const chartOptions = await app.explorerService.generateChartByQuestionId(conn, questionId);
       reply.status(200).send(chartOptions);
     } finally {
       conn.release();

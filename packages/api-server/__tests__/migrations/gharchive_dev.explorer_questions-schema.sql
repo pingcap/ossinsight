@@ -7,6 +7,7 @@ CREATE TABLE `explorer_questions` (
   `query_sql` text NOT NULL,
   `query_hash` varchar(128) NOT NULL,
   `engines` json NOT NULL,
+  `queue_name` enum('explorer_high_concurrent_queue','explorer_low_concurrent_queue') DEFAULT NULL,
   `queue_job_id` varchar(128) NULL,
   `result` json DEFAULT NULL,
   `chart` json DEFAULT NULL,

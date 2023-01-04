@@ -53,6 +53,14 @@ export const APIServerEnvSchema = {
       type: 'number',
       default: 2
     },
+    EXPLORER_GENERATE_SQL_CACHE_TTL: {
+      type: 'number',
+      default: 60 * 60 * 24 * 7
+    },
+    EXPLORER_QUERY_SQL_CACHE_TTL: {
+      type: 'number',
+      default: 60 * 60 * 24
+    },
     GITHUB_OAUTH_CLIENT_ID: {
       type: 'string'
     },

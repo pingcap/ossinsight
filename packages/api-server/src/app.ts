@@ -6,7 +6,7 @@ import { APIServerEnvSchema } from './env';
 import { JsonSchemaToTsProvider } from '@fastify/type-provider-json-schema-to-ts';
 import fastifyEnv from '@fastify/env';
 import { join } from 'path';
-import {APIError, ValidateSQLError} from "./utils/error";
+import {APIError, ExplorerQuestionError} from "./utils/error";
 
 export type AppOptions = {
   // Place your custom options for app below here.
@@ -30,6 +30,8 @@ declare module 'fastify' {
       PLAYGROUND_TRUSTED_GITHUB_LOGINS: string[];
       EXPLORER_USER_MAX_QUESTIONS_PER_HOUR: number;
       EXPLORER_USER_MAX_QUESTIONS_ON_GOING: number;
+      EXPLORER_GENERATE_SQL_CACHE_TTL: number;
+      EXPLORER_QUERY_SQL_CACHE_TTL: number;
       GITHUB_OAUTH_CLIENT_ID?: string,
       GITHUB_OAUTH_CLIENT_SECRET?: string,
       GITHUB_ACCESS_TOKENS: string[],
@@ -64,9 +66,9 @@ const app: FastifyPluginAsync<AppOptions, RawServerDefault, JsonSchemaToTsProvid
       reply.status(error.statusCode).send({
         message: error.message
       });
-    } else if (error instanceof ValidateSQLError) {
-      reply.status(400).send({
-        querySQL: error.sql,
+    } else if (error instanceof ExplorerQuestionError) {
+      reply.status(error.statusCode).send({
+        ...error.question,
         message: error.message
       });
     } else {
