@@ -38,8 +38,14 @@ function useUrlSearchStateCSR<T> (key: string, {
     const sv = serialize(value);
     const usp = new URLSearchParams(location.search);
     if (isNullish(sv)) {
+      if (!usp.has(key)) {
+        return;
+      }
       usp.delete(key);
     } else {
+      if (usp.get(key) === sv) {
+        return;
+      }
       usp.set(key, sv);
     }
     const uspStr = usp.toString();
