@@ -9,3 +9,63 @@ export enum AIModel {
 export interface PromptTemplate {
   stringify(...arg: any[]): string;
 }
+
+export interface RecommendedChart {
+  chartName: ChartNames;
+  chartOptions: Record<string, any>;
+}
+
+export type Column = string;
+
+export enum ChartNames {
+  PIE_CHART = 'PieChart',
+  BAR_CHART = 'BarChart',
+  LINE_CHART = 'LineChart',
+  TABLE = 'Table',
+  MAP_CHART = 'MapChart',
+  NUMBER_CARD = 'NumberCard',
+  REPO_CARD = 'RepoCard',
+  PERSONAL_CARD = 'PersonalCard',
+}
+
+export interface Chart {
+  title: string
+}
+
+export interface PieChart extends Chart {
+  label: Column;
+  value: Column
+}
+
+export interface LineChart extends Chart {
+  x: Column;
+  y: Column | Column[];
+}
+
+export interface BarChart extends Chart  {
+  x: Column;
+  y: Column | Column[];
+}
+
+export interface MapChart extends Chart  {
+  country_code: Column;
+  value: Column;
+}
+
+export interface NumberCard extends Chart  {
+  value: Column;
+}
+
+export interface RepoCard extends Chart  {
+  repo_id: Column;
+  repo_name: Column;
+}
+
+export interface PersonalCard extends Chart  {
+  repo_id: Column;
+  repo_name: Column;
+}
+
+export interface Table extends Chart  {
+  columns: Column[];
+}

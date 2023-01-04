@@ -12,10 +12,13 @@ export default async (
   }
 
   const question = job.data as Question;
+  const { id: questionId } = question;
   const conn = await app.mysql.getConnection();
 
   try {
     await app.explorerService.resolveQuestion(conn, job, question);
+  } catch (err: any) {
+    app.log.error(err, `Failed to resolve the question ${questionId}: ${err.message}`);
   } finally {
     conn.release();
   }

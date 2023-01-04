@@ -29,25 +29,12 @@ export const newQuestionHandler: FastifyPluginAsyncJsonSchemaToTs = async (app):
     const conn = await this.mysql.getConnection();
 
     try {
-      // Create a new question
       const question = await explorerService.newQuestion(conn, userId, githubLogin, questionTitle);
-
-      // Push the question to the queue.
-      const { queueJobId, hitCache, engines } = question;
-      if (!hitCache) {
-        const useTiFlash = engines.includes('tiflash');
-        if (useTiFlash) {
-          await app.explorerLowConcurrentQueue.add("low", question, {
-            jobId: queueJobId!
-          });
-        } else {
-          await app.explorerHighConcurrentQueue.add("high", question, {
-            jobId: queueJobId!
-          });
-        }
-      }
-
-      reply.status(200).send(question);
+      const preceding = await explorerService.countPrecedingQuestions(conn, question.id);
+      reply.status(200).send({
+        ...question,
+        queuePreceding: preceding,
+      });
     } catch (e) {
       throw e;
     } finally {

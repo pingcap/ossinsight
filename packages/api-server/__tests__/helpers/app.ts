@@ -44,6 +44,8 @@ async function createApp () {
     PLAYGROUND_TRUSTED_GITHUB_LOGINS: 'testuser',
     EXPLORER_USER_MAX_QUESTIONS_PER_HOUR: 3,
     EXPLORER_USER_MAX_QUESTIONS_ON_GOING: 1,
+    EXPLORER_GENERATE_SQL_CACHE_TTL: 60 * 60 * 24 * 7,
+    EXPLORER_QUERY_SQL_CACHE_TTL: 60 * 60 * 24,
     JWT_SECRET: 'fake',
     JWT_COOKIE_NAME: 'ossinsight_test_t',
     JWT_COOKIE_DOMAIN: 'http://testdomain.com/',

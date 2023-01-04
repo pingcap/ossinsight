@@ -1,5 +1,11 @@
 import {DateTime} from "luxon";
 import {Field} from "../../../core/executor/query-executor/QueryExecutor";
+import {RecommendedChart} from "../bot-service/types";
+
+export enum QuestionQueueNames {
+    High = "explorer_high_concurrent_queue",
+    Low = "explorer_low_concurrent_queue",
+}
 
 export interface Question {
   id: string;
@@ -7,12 +13,13 @@ export interface Question {
   userId: number;
   status: QuestionStatus;
   title: string;
-  querySQL: string;
-  queryHash: string;
-  engines: string[];
+  querySQL?: string;
+  queryHash?: string;
+  engines?: string[];
+  queueName?: QuestionQueueNames;
   queueJobId?: string | null;
   result?: QuestionSQLResult;
-  chart?: Record<string, any> | null;
+  chart?: RecommendedChart;
   recommended: boolean;
   createdAt: DateTime;
   requestedAt?: DateTime | null;
@@ -33,6 +40,10 @@ export interface QuestionQueryResult {
   executedAt: DateTime;
   finishedAt: DateTime;
   spent: number;
+}
+
+export interface QuestionQueryResultWithChart extends QuestionQueryResult {
+  chart: RecommendedChart;
 }
 
 export enum QuestionStatus {
