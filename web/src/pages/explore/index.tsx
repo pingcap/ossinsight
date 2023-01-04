@@ -87,12 +87,16 @@ export default function Page () {
 
   return (
     <CustomPage>
-      <Container maxWidth="xl" sx={{ pt: 8 }}>
-        <Typography variant="h1" textAlign="center">
-          Data Explorer
-          <StyledBeta />
-        </Typography>
-        <Typography variant="body2" textAlign="center" mt={1} mb={2} color="#7C7C7C">Analyze 5+ billion GitHub data from natural language, no prerequisite knowledge of SQL or plotting libraries necessary.</Typography>
+      <Container maxWidth="xl" sx={{ pt: 4 }}>
+        {(isNullish(questionId) && !loading) && (
+          <>
+            <Typography variant="h1" textAlign="center" mt={4}>
+              Data Explorer
+              <StyledBeta />
+            </Typography>
+            <Typography variant="body2" textAlign="center" mt={1} mb={2} color="#7C7C7C">Analyze 5+ billion GitHub data from natural language, no prerequisite knowledge of SQL or plotting libraries necessary.</Typography>
+          </>
+        )}
         <ExploreSearch value={value} onChange={setValue} onAction={handleAction} disableInput={loading} disableClear={value === ''} disableAction={loading} onClear={handleClear} clearState={loading ? 'stop' : undefined} />
       </Container>
       <Container maxWidth="xl" sx={{ pb: 8, display: hideExecution ? 'none' : undefined }}>
