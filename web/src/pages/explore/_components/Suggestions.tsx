@@ -40,6 +40,7 @@ const types = {
 };
 
 const questions = [
+  { type: types.location, content: 'Where are @kubernetes/kubernetes contributors come from' },
   { type: types.hotTopics, content: 'Popular repos related to ChatGPT' },
   { type: types.hotTopics, content: 'The most watched Web3 projects' },
   { type: types.programmingLanguage, content: 'Top python projects 2022' },
@@ -51,7 +52,6 @@ const questions = [
   { type: types.similarProjects, content: 'Projects similar to @facebook/react' },
   { type: types.trends, content: 'Top trending TypeScript repositories of the past month' },
   { type: types.location, content: 'The most watched projects by India developers' },
-  { type: types.location, content: 'Where are @kubernetes/kubernetes contributors come from' },
   { type: types.company, content: 'What projects Microsoft developers like to contribute to' },
 ];
 
