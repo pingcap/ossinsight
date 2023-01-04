@@ -260,7 +260,7 @@ function renderEngines (question: Question | undefined) {
   if (notNullish(question) && !isEmptyArray(question.engines)) {
     return (
       <>
-        , Running on
+        , running on
         <EngineTag>{question.engines.join(', ')}</EngineTag>
         <Info>
           <Typography variant='body1'>
