@@ -7,6 +7,7 @@ import PersonalCard from './PersonalCard';
 import RepoCard from './RepoCard';
 import TableChart from './TableChart';
 import NumberCard from './NumberCard';
+import MapChart from './MapChart';
 import { registerThemeDark } from '@site/src/components/BasicCharts';
 
 registerThemeDark();
@@ -28,8 +29,7 @@ export function Charts (props: ChartResult & { data: Array<Record<string, any>>,
     case 'NumberCard':
       return <NumberCard {...props} />;
     case 'MapChart':
-      // TODO: WIP
-      return <>Map chart not implemented</>;
+      return <MapChart {...props} />;
     default:
       return <>{`Unknown chart type '${props.chartName}'`}</>;
   }

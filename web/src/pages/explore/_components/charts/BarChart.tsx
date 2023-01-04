@@ -55,7 +55,6 @@ export default function BarChart ({ chartName, title, x, y, data }: ChartResult 
     };
   }, [chartName, title, x, y, data]);
 
-  console.log(options);
   return (
     <EChartsReact
       theme='dark'
