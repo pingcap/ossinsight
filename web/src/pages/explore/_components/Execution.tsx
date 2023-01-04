@@ -1,17 +1,20 @@
 import { useAsyncOperation, useAsyncState } from '@site/src/hooks/operation';
-import { newQuestion, pollQuestion, Question, QuestionStatus, questionToChart } from '@site/src/api/explorer';
-import React, { ForwardedRef, forwardRef, useEffect, useMemo, useRef } from 'react';
-import { isNullish, notFalsy, notNullish } from '@site/src/utils/value';
+import { ChartResult, newQuestion, pollQuestion, Question, QuestionStatus, questionToChart } from '@site/src/api/explorer';
+import React, { ForwardedRef, forwardRef, useEffect, useMemo, useRef, useState } from 'react';
+import { isEmptyArray, isNullish, notFalsy, notNullish } from '@site/src/utils/value';
 import { format } from 'sql-formatter';
 import Section from '@site/src/pages/explore/_components/Section';
 import CodeBlock from '@theme/CodeBlock';
 import { Charts } from '@site/src/pages/explore/_components/charts';
-import { useEventCallback } from '@mui/material';
-import TableChart from './charts/TableChart';
+import { Alert, Button, Divider, styled, ToggleButton, ToggleButtonGroup, Typography, useEventCallback } from '@mui/material';
 import { useUserInfoContext } from '@site/src/context/user';
-import { isAxiosError } from '@site/src/utils/error';
+import { getErrorMessage, isAxiosError } from '@site/src/utils/error';
 import { AxiosError } from 'axios';
 import { applyForwardedRef } from '@site/src/utils/ref';
+import { TabContext, TabPanel } from '@mui/lab';
+import TableChart from './charts/TableChart';
+import { AutoGraph, TableView } from '@mui/icons-material';
+import Info from './Info';
 
 export interface ExecutionContext {
   run: (question?: string) => void;
@@ -19,14 +22,16 @@ export interface ExecutionContext {
 
 export interface ExecutionProps {
   search: string;
+  questionId?: string;
   onLoading?: (loading: boolean) => void;
   onResultLoading?: (loading: boolean) => void;
   onChartLoading?: (loading: boolean) => void;
+  onQuestionChange?: (question: Question) => void;
 }
 
 const PENDING_STATE = new Set([QuestionStatus.New, QuestionStatus.Waiting, QuestionStatus.Running]);
 
-export function useQuestion (content: string) {
+export function useQuestion (content: string, questionId?: string) {
   const userInfo = useUserInfoContext();
   const { data, loading, error, setAsyncData, clearState } = useAsyncState<Question>();
   const runningQuestion = useRef<string>();
@@ -40,6 +45,23 @@ export function useQuestion (content: string) {
     runningQuestion.current = real;
     setAsyncData(newQuestion(real));
   });
+
+  // only prefetch first question
+  useEffect(() => {
+    if (notNullish(questionId) && isNullish(data) && !loading) {
+      setAsyncData(pollQuestion(questionId).then(question => {
+        runningQuestion.current = question.title;
+        return question;
+      }));
+    }
+  }, []);
+
+  // clear state if question id was deleted
+  useEffect(() => {
+    if (isNullish(questionId)) {
+      clearState();
+    }
+  }, [questionId]);
 
   useEffect(() => {
     if (runningQuestion.current !== content) {
@@ -84,8 +106,8 @@ export function isSqlError (error: unknown): error is AxiosError<{ message: stri
   return false;
 }
 
-export default forwardRef<ExecutionContext, ExecutionProps>(function Execution ({ search, onLoading, onResultLoading, onChartLoading }, ref: ForwardedRef<ExecutionContext>) {
-  const { question, run, loading, resultPending, sqlError, resultError } = useQuestion(search);
+export default forwardRef<ExecutionContext, ExecutionProps>(function Execution ({ search, questionId, onLoading, onResultLoading, onChartLoading, onQuestionChange }, ref: ForwardedRef<ExecutionContext>) {
+  const { question, run, loading, resultPending, sqlError, resultError } = useQuestion(search, questionId);
 
   useEffect(() => {
     onLoading?.(loading);
@@ -94,6 +116,12 @@ export default forwardRef<ExecutionContext, ExecutionProps>(function Execution (
   useEffect(() => {
     applyForwardedRef(ref, { run });
   }, []);
+
+  useEffect(() => {
+    if (notNullish(question)) {
+      onQuestionChange?.(question);
+    }
+  }, [question, onQuestionChange]);
 
   const formattedSql = useMemo(() => {
     if (notNullish(question)) {
@@ -143,6 +171,27 @@ export default forwardRef<ExecutionContext, ExecutionProps>(function Execution (
     }
   }, [question, loading, sqlError]);
 
+  const result = question?.result?.rows;
+
+  useEffect(() => {
+    clear();
+  }, [question]);
+
+  const { data: chartData, setData: setChartData, loading: chartLoading, error: chartError, run: chartRun, clear } = useAsyncOperation(question?.id, questionToChart, true);
+  useEffect(() => {
+    onChartLoading?.(chartLoading);
+  }, [chartLoading, onChartLoading]);
+
+  useEffect(() => {
+    if (notFalsy(search) && notNullish(question)) {
+      if (notNullish(question.chart)) {
+        setChartData(question.chart);
+      } else if (notNullish(question.result)) {
+        chartRun();
+      }
+    }
+  }, [search, question?.result]);
+
   const resultTitle = useMemo(() => {
     if (notNullish(question)) {
       switch (question.status) {
@@ -153,7 +202,11 @@ export default forwardRef<ExecutionContext, ExecutionProps>(function Execution (
         case QuestionStatus.Running:
           return 'Running SQL...';
         case QuestionStatus.Success:
-          return `${question.result?.rows.length ?? 'NaN'} rows in ${question.spent ?? 'NaN'} seconds`;
+          if (chartLoading) {
+            return 'Visualizing...';
+          } else {
+            return <>{`${question.result?.rows.length ?? 'NaN'} rows in ${question.spent ?? 'NaN'} seconds`}{renderEngines(question)}</>;
+          }
         case QuestionStatus.Error:
           return 'Failed to execute SQL';
         case QuestionStatus.Cancel:
@@ -164,7 +217,7 @@ export default forwardRef<ExecutionContext, ExecutionProps>(function Execution (
     } else {
       return 'Pending...';
     }
-  }, [question]);
+  }, [question, chartLoading]);
 
   const resultStatus = useMemo(() => {
     if (isNullish(question)) {
@@ -173,54 +226,12 @@ export default forwardRef<ExecutionContext, ExecutionProps>(function Execution (
       } else {
         return 'pending';
       }
-    } else if (resultPending) {
+    } else if (resultPending || chartLoading) {
       return 'loading';
     } else {
       return 'success';
     }
-  }, [question, waitingResult]);
-
-  const resultExtra = useMemo(() => {
-    if (isNullish(question)) {
-      return undefined;
-    }
-    if (question.engines.length > 0) {
-      return 'Run with ' + question.engines.join(', ');
-    } else {
-      return undefined;
-    }
-  }, [question]);
-
-  const result = question?.result?.rows;
-
-  useEffect(() => {
-    clear();
-  }, [question]);
-
-  const { data: chartData, loading: chartLoading, error: chartError, run: chartRun, clear } = useAsyncOperation(question?.id, questionToChart, true);
-  useEffect(() => {
-    onChartLoading?.(chartLoading);
-  }, [chartLoading, onChartLoading]);
-
-  useEffect(() => {
-    if (notFalsy(search) && notNullish(question?.result)) {
-      chartRun();
-    }
-  }, [search, question?.result]);
-
-  const chartTitle = useMemo(() => {
-    return chartLoading ? 'Visualizing...' : 'Visualization';
-  }, [chartLoading]);
-
-  const chartStatus = useMemo(() => {
-    if (chartLoading) {
-      return 'loading';
-    } else if (notNullish(result) && notNullish(chartData)) {
-      return 'success';
-    } else {
-      return 'pending';
-    }
-  }, [chartLoading, result, chartData]);
+  }, [question, resultPending || chartLoading]);
 
   return (
     <>
@@ -231,12 +242,122 @@ export default forwardRef<ExecutionContext, ExecutionProps>(function Execution (
           </CodeBlock>
         )}
       </Section>
-      <Section status={resultStatus} title={resultTitle} extra={resultExtra} error={resultError}>
-        <TableChart chartName="Table" title="hi" data={result ?? []} fields={question?.result?.fields} />
-      </Section>
-      <Section status={chartStatus} title={chartTitle} error={chartError} defaultExpanded>
-        {(notNullish(chartData) && notNullish(result)) ? <Charts {...chartData} data={result} fields={question?.result?.fields} /> : undefined}
+      <Section
+        status={resultStatus}
+        title={resultTitle}
+        extra={<Button>Play with your own data</Button>}
+        error={resultError}
+        defaultExpanded
+      >
+        <Chart chartData={chartData} chartError={chartError} result={result} fields={question?.result?.fields} />
       </Section>
     </>
   );
 });
+
+function renderEngines (question: Question | undefined) {
+  if (notNullish(question) && !isEmptyArray(question.engines)) {
+    return (
+      <>
+        , Running on
+        <EngineTag>{question.engines.join(', ')}</EngineTag>
+        <Info>
+          <Typography variant='body1'>
+            <b>tikv</b>: row-store engine
+            <br />
+            <b>tiflash</b>: column-store engine
+          </Typography>
+          <Divider orientation='horizontal' sx={{ my: 1.5 }} light />
+          <Typography variant='body2'>
+            Intelligent query processing in <a>TiDB optimizer</a>.
+          </Typography>
+        </Info>
+      </>
+    );
+  }
+  return null;
+}
+
+const EngineTag = styled('span')`
+  color: #5667FF;
+  border: 1px solid #5667FF80;
+  border-radius: 2px;
+  padding: 4px 8px;
+  margin: 0 4px;
+`;
+
+function Chart ({ chartData, chartError, fields, result }: { chartData: ChartResult | undefined, chartError: unknown, result: Array<Record<string, any>> | undefined, fields: Array<{ name: string }> | undefined }) {
+  const [tab, setTab] = useState('visualization');
+
+  useEffect(() => {
+    setTab('visualization');
+  }, [chartData]);
+
+  const handleTabChange = (event: React.SyntheticEvent, newValue: string) => {
+    setTab(newValue);
+  };
+
+  return useMemo(() => {
+    if (isNullish(chartData) || isNullish(result)) {
+      return null;
+    }
+
+    const renderChart = () => {
+      return <Charts {...chartData} data={result} fields={fields} />;
+    };
+
+    const renderTable = () => {
+      return <TableChart chartName="Table" title="hi" data={result} fields={fields} />;
+    };
+
+    if (notNullish(chartError)) {
+      return (
+        <>
+          <Alert severity="error" sx={{ mb: 2 }}>
+            {getErrorMessage(chartError)}
+          </Alert>
+          {renderTable()}
+        </>
+      );
+    }
+
+    if (chartData.chartName === 'Table') {
+      return renderChart();
+    }
+
+    return (
+      <>
+        <Controls>
+          <ToggleButtonGroup size="small" value={tab} onChange={handleTabChange} exclusive color="primary">
+            <ToggleButton value="visualization">
+              <AutoGraph />
+            </ToggleButton>
+            <ToggleButton value="raw">
+              <TableView />
+            </ToggleButton>
+          </ToggleButtonGroup>
+        </Controls>
+        <TabContext value={tab}>
+          <StyledTabPanel value="visualization">
+            {renderChart()}
+          </StyledTabPanel>
+          <StyledTabPanel value="raw">
+            {renderTable()}
+          </StyledTabPanel>
+        </TabContext>
+      </>
+    );
+  }, [tab, chartData, chartError, result, fields]);
+}
+
+const Controls = styled('div')`
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-bottom: 8px;
+`;
+
+const StyledTabPanel = styled(TabPanel)`
+  padding-left: 0;
+  padding-right: 0;
+`;

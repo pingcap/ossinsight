@@ -9,6 +9,7 @@ import { notNullish } from '@site/src/utils/value';
 interface AsyncOperation<T> extends AsyncData<T> {
   run: () => any;
   clear: () => any;
+  setData: (data: T | undefined) => void;
 }
 
 export function useAsyncState<T, E = unknown> (initial?: T | (() => T)) {
@@ -94,11 +95,18 @@ export function useAsyncOperation<P, T> (params: P, fetcher: (params: P) => Prom
     setData(undefined);
   });
 
+  const forceSetData = useEventCallback((data: T | undefined) => {
+    setData(data);
+    setLoading(false);
+    setError(undefined);
+  });
+
   return {
     data,
     loading,
     error,
     run,
     clear,
+    setData: forceSetData,
   };
 }

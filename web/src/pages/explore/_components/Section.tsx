@@ -1,12 +1,12 @@
 import { Accordion, AccordionDetails, AccordionSummary, Alert, CircularProgress, styled } from '@mui/material';
 import React, { ReactNode } from 'react';
 import { CheckCircle, Circle, ExpandMore } from '@mui/icons-material';
-import { isNullish, notFalsy } from '@site/src/utils/value';
+import { isFalsy, isNullish, notFalsy } from '@site/src/utils/value';
 import { getErrorMessage } from '@site/src/utils/error';
 
 export interface SectionProps {
   status: 'pending' | 'loading' | 'success';
-  title: string;
+  title: ReactNode;
   extra?: ReactNode;
   children: ReactNode;
   error: unknown;
@@ -16,9 +16,9 @@ export interface SectionProps {
 
 export default function Section ({ status, title, defaultExpanded, extra, error, errorWithChildren = false, children }: SectionProps) {
   return (
-    <SectionContainer className={isNullish(error) ? status : 'error'} defaultExpanded={defaultExpanded}>
+    <SectionContainer className={isNullish(error) ? status : 'error'} expanded={defaultExpanded === true ? true : undefined} defaultExpanded={defaultExpanded}>
       <AccordionSummary
-        expandIcon={<ExpandMore />}
+        expandIcon={isFalsy(defaultExpanded) && <ExpandMore />}
         disabled={status === 'loading'}
       >
         <SectionTitle>

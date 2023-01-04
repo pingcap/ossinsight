@@ -67,7 +67,7 @@ export interface Question {
   engines: string[];
   queueJobId?: string | null;
   result?: QuestionSQLResult;
-  chart?: Record<string, any> | null;
+  chart?: ChartResult | null;
   recommended: boolean;
   createdAt: string;
   requestedAt?: string | null;
@@ -116,7 +116,7 @@ export async function newQuestion (question: string): Promise<Question> {
 }
 
 export async function pollQuestion (questionId: string): Promise<Question> {
-  return await clientWithoutCache.get(`/explorer/questions/${questionId}`, { withCredentials: true });
+  return await clientWithoutCache.get(`/explorer/questions/${questionId}`);
 }
 
 export async function questionToChart (questionId: string): Promise<ChartResult> {

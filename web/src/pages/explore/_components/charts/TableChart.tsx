@@ -16,26 +16,34 @@ export default function TableChart ({ title, data, fields: propFields }: ChartRe
     }
   }, [data, propFields]);
   return (
-    <Table className="clearTable">
-      <thead>
-      <tr>
-        <th colSpan={fields.length} align="center">{title}</th>
-      </tr>
-      <tr>
-        {fields.map(({ name }) => <th key={name}>{name}</th>)}
-      </tr>
-      </thead>
-      <tbody>
-      {data.map((row, i) => (
-        <tr key={i}>
-          {fields.map(({ name }) => <td key={name}>{row[name]}</td>)}
+    <TableContainer>
+      <Table className="clearTable">
+        <thead>
+        <tr>
+          <th colSpan={fields.length} align="center">{title}</th>
         </tr>
-      ))}
-      </tbody>
-    </Table>
+        <tr>
+          {fields.map(({ name }) => <th key={name}>{name}</th>)}
+        </tr>
+        </thead>
+        <tbody>
+        {data.map((row, i) => (
+          <tr key={i}>
+            {fields.map(({ name }) => <td key={name}>{row[name]}</td>)}
+          </tr>
+        ))}
+        </tbody>
+      </Table>
+    </TableContainer>
   );
 }
 
+const TableContainer = styled('div')`
+  overflow: scroll;
+`;
+
 const Table = styled('table')`
   font-size: 12px;
+  display: table;
+  min-width: 100%;
 `;

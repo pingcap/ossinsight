@@ -146,11 +146,12 @@ export default function ExploreSearch ({ value, onChange, onAction, onClear, dis
         onChange={handleChange}
         onKeyDown={handleKeydown}
         onBlur={reset}
+        placeholder='Type any question here, or choose one below'
         endAdornment={
           <Stack direction="row" gap={1}>
-            <IconButton color="primary" onClick={onAction} disabled={disableAction}>
+            {!disableAction && <IconButton color="primary" onClick={onAction} disabled={disableAction}>
               <KeyboardReturn />
-            </IconButton>
+            </IconButton>}
             <IconButton color="error" onClick={onClear} disabled={disableClear}>
               {clearState === 'stop'
                 ? <Pause />

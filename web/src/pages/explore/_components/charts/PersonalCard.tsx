@@ -7,7 +7,7 @@ export default function PersonalCard ({ chartName, title, id, data }: ChartResul
     <List>
       {data.map((item, index) => (
         <ListItem key={index}>
-          <ListItemButton component='a' href={`https://github.com/${item[id] as string}`}>
+          <ListItemButton component='a' href={`https://github.com/${item[id] as string}`} target='_blank'>
             <ListItemAvatar>
               <Avatar src={`https://github.com/${item[id] as string}.png`} />
             </ListItemAvatar>

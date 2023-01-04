@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
-import { isNullish, notFalsy, notNullish, Nullish } from '@site/src/utils/value';
+import { isNonemptyString, isNullish, notFalsy, notNullish, Nullish } from '@site/src/utils/value';
 
 export interface UseUrlSearchStateProps<T> {
   defaultValue: T | (() => T);
@@ -59,6 +59,14 @@ export function stringParam (defaultValue?): UseUrlSearchStateProps<string> {
     defaultValue,
     serialize: s => s,
     deserialize: s => s,
+  };
+}
+
+export function nullableStringParam (defaultValue?: string): UseUrlSearchStateProps<string | undefined> {
+  return {
+    defaultValue,
+    serialize: value => isNonemptyString(value) ? value : undefined,
+    deserialize: value => isNonemptyString(value) ? value : undefined,
   };
 }
 
