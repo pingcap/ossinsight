@@ -50,7 +50,6 @@ export default function BarChart ({ chartName, title, x, y, data }: ChartResult 
       },
       xAxis: {
         type: isTime ? 'time' : 'category',
-        min: isTime ? '2011-01-01' : undefined,
       },
       yAxis: {
         type: 'value',
