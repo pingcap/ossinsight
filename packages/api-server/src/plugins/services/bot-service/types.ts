@@ -57,13 +57,11 @@ export interface NumberCard extends Chart  {
 }
 
 export interface RepoCard extends Chart  {
-  repo_id: Column;
   repo_name: Column;
 }
 
 export interface PersonalCard extends Chart  {
-  repo_id: Column;
-  repo_name: Column;
+  user_login: Column;
 }
 
 export interface Table extends Chart  {
