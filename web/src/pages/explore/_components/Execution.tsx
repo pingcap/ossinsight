@@ -1,7 +1,7 @@
 import { useAsyncOperation, useAsyncState } from '@site/src/hooks/operation';
 import { ChartResult, newQuestion, pollQuestion, Question, QuestionStatus, questionToChart } from '@site/src/api/explorer';
 import React, { ForwardedRef, forwardRef, useEffect, useMemo, useRef, useState } from 'react';
-import { isEmptyArray, isNullish, notFalsy, notNullish } from '@site/src/utils/value';
+import { isEmptyArray, isNonemptyString, isNullish, notFalsy, notNullish } from '@site/src/utils/value';
 import { format } from 'sql-formatter';
 import Section from '@site/src/pages/explore/_components/Section';
 import CodeBlock from '@theme/CodeBlock';
@@ -293,8 +293,10 @@ function Chart ({ chartData, chartError, fields, result }: { chartData: ChartRes
     setTab('visualization');
   }, [chartData]);
 
-  const handleTabChange = (event: React.SyntheticEvent, newValue: string) => {
-    setTab(newValue);
+  const handleTabChange = (event: React.SyntheticEvent, newValue: string | undefined) => {
+    if (isNonemptyString(newValue)) {
+      setTab(newValue);
+    }
   };
 
   return useMemo(() => {
