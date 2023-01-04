@@ -1,6 +1,6 @@
 import { useAsyncOperation, useAsyncState } from '@site/src/hooks/operation';
 import { newQuestion, pollQuestion, Question, QuestionStatus, questionToChart } from '@site/src/api/explorer';
-import React, { ForwardedRef, forwardRef, useEffect, useMemo } from 'react';
+import React, { ForwardedRef, forwardRef, useEffect, useMemo, useRef } from 'react';
 import { isNullish, notFalsy, notNullish } from '@site/src/utils/value';
 import { format } from 'sql-formatter';
 import Section from '@site/src/pages/explore/_components/Section';
@@ -11,9 +11,10 @@ import TableChart from './charts/TableChart';
 import { useUserInfoContext } from '@site/src/context/user';
 import { isAxiosError } from '@site/src/utils/error';
 import { AxiosError } from 'axios';
+import { applyForwardedRef } from '@site/src/utils/ref';
 
 export interface ExecutionContext {
-  run: () => void;
+  run: (question?: string) => void;
 }
 
 export interface ExecutionProps {
@@ -28,17 +29,23 @@ const PENDING_STATE = new Set([QuestionStatus.New, QuestionStatus.Waiting, Quest
 export function useQuestion (content: string) {
   const userInfo = useUserInfoContext();
   const { data, loading, error, setAsyncData, clearState } = useAsyncState<Question>();
+  const runningQuestion = useRef<string>();
 
-  const run = useEventCallback(() => {
+  const run = useEventCallback((question?: string) => {
     if (userInfo.validating && !userInfo.userInfo) {
       userInfo.login();
       return;
     }
-    setAsyncData(newQuestion(content));
+    const real = question ?? content;
+    runningQuestion.current = real;
+    setAsyncData(newQuestion(real));
   });
 
   useEffect(() => {
-    clearState();
+    if (runningQuestion.current !== content) {
+      clearState();
+      runningQuestion.current = undefined;
+    }
   }, [content]);
 
   useEffect(() => {
@@ -85,13 +92,7 @@ export default forwardRef<ExecutionContext, ExecutionProps>(function Execution (
   }, [loading, onLoading]);
 
   useEffect(() => {
-    if (typeof ref === 'function') {
-      ref({
-        run,
-      });
-    } else if (notNullish(ref)) {
-      ref.current = { run };
-    }
+    applyForwardedRef(ref, { run });
   }, []);
 
   const formattedSql = useMemo(() => {
@@ -224,9 +225,11 @@ export default forwardRef<ExecutionContext, ExecutionProps>(function Execution (
   return (
     <>
       <Section status={sqlSectionStatus} title={sqlTitle} error={sqlError} errorWithChildren>
-        <CodeBlock language="sql">
-          {formattedSql}
-        </CodeBlock>
+        {notFalsy(formattedSql) && (
+          <CodeBlock language="sql">
+            {formattedSql}
+          </CodeBlock>
+        )}
       </Section>
       <Section status={resultStatus} title={resultTitle} extra={resultExtra} error={resultError}>
         <TableChart chartName="Table" title="hi" data={result ?? []} fields={question?.result?.fields} />

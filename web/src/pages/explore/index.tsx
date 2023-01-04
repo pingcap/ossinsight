@@ -1,9 +1,9 @@
 import CustomPage from '@site/src/theme/CustomPage';
-import React, { useRef, useState } from 'react';
-import ExploreSearch from '@site/src/pages/explore/_components/Search';
-import { Box, Container, styled, Typography, useEventCallback } from '@mui/material';
+import React, { useRef } from 'react';
+import ExploreSearch, { useStateRef } from '@site/src/pages/explore/_components/Search';
+import { Container, styled, Typography, useEventCallback } from '@mui/material';
 import Execution, { ExecutionContext } from '@site/src/pages/explore/_components/Execution';
-import { notFalsy } from '@site/src/utils/value';
+import { isFalsy } from '@site/src/utils/value';
 import Suggestions from '@site/src/pages/explore/_components/Suggestions';
 import Faq from '@site/src/pages/explore/_components/Faq';
 import Beta from './_components/beta.svg';
@@ -12,14 +12,19 @@ import NotFound from '@theme/NotFound';
 import useForceUpdate from '@site/src/hooks/force-update';
 
 export default function Page () {
-  const [value, setValue] = useState('');
-  const [ec, setEc] = useState<ExecutionContext | null>(null);
+  const [value, setValue] = useStateRef('');
+  const [ec, setEc, ecRef] = useStateRef<ExecutionContext | null>(null);
   const loadingState = useRef({ loading: false, resultLoading: false, chartLoading: false });
   const forceUpdate = useForceUpdate();
 
   const [enabled] = useExperimental('explore-data');
 
   const actionDisabled = loadingState.current.resultLoading || loadingState.current.loading || loadingState.current.chartLoading;
+
+  const handleSelect = useEventCallback((question: string) => {
+    ecRef.current?.run(question);
+    setValue(question);
+  });
 
   const handleAction = useEventCallback(() => {
     if (loadingState.current.resultLoading || loadingState.current.loading || loadingState.current.chartLoading) {
@@ -67,17 +72,14 @@ export default function Page () {
         <Typography variant="body2" textAlign="center" mt={1} mb={2} color="#7C7C7C">Quickly get insights from your GitHub data with our easy-to-use Query Tool.</Typography>
         <ExploreSearch value={value} onChange={setValue} onAction={handleAction} disableInput={actionDisabled} disableClear={value === ''} disableAction={actionDisabled} onClear={handleClear} clearState={actionDisabled ? 'stop' : undefined} />
       </Container>
-      {notFalsy(value)
-        ? (
-          <Container maxWidth="lg" sx={{ pb: 8 }}>
-            <Execution search={value} ref={setEc} onLoading={handleLoading} onResultLoading={handleResultLoading} onChartLoading={handleChartLoading} />
-          </Container>
-          )
-        : (
-          <Box py={4}>
-            <Suggestions onSelect={setValue} />
-          </Box>
-          )}
+      <Container maxWidth="lg" sx={{ pb: 8, display: isFalsy(value) ? 'none' : undefined }}>
+        <Execution search={value} ref={setEc} onLoading={handleLoading} onResultLoading={handleResultLoading} onChartLoading={handleChartLoading} />
+      </Container>
+      {isFalsy(value) && (
+        <Container maxWidth="xl" sx={{ py: 4 }}>
+          <Suggestions onSelect={handleSelect} />
+        </Container>
+      )}
       <Container maxWidth="lg" sx={{ pb: 8 }}>
         <Faq />
       </Container>

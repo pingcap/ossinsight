@@ -1,19 +1,58 @@
-import { List, ListItem, ListItemButton, ListItemText } from '@mui/material';
+import { ButtonBase, Card, Grid, styled } from '@mui/material';
 import React from 'react';
 
+// 【🎆 Annual review】My year in review 2022【使用关键词 annual report/github year/year in review/repo _name 2022 触发】
+// { type: '🎆 Annual review', content: 'The annual report of @pingcap/tidb 【使用关键词 annual report/github year/year in review/repo _name 2022 触发】' },
+
+const types = {
+  hotTopics: {
+    title: '🔥 Hot topics',
+    color: '#E78F34',
+  },
+  programmingLanguage: {
+    title: '👾 Programming Language',
+    color: '#8253F6',
+  },
+  trends: {
+    title: '🚀 OSS trends',
+    color: '#E78F34',
+  },
+  contributors: {
+    title: '🧑‍💻 Contributors',
+    color: '#C9B4FF',
+  },
+  stars: {
+    title: '🌟 Stars',
+    color: '#519AEB',
+  },
+  similarProjects: {
+    title: '🔍 Similar projects',
+    color: '#34A352',
+  },
+  location: {
+    title: '🌍 Location',
+    color: '#FFD7AD',
+  },
+  company: {
+    title: '🏢 Company',
+    color: '#BCDAFF',
+  },
+};
+
 const questions = [
-  'Similar projects like @facebook/react',
-  'MySQL alternative projects',
-  'Top 10 TypeScript projects this month',
-  'The trending open source projects recently',
-  'The most popular web3 projects',
-  'Star history of @supabase/supabase',
-  'Contributors in @pingcap/tidb',
-  'The most popular programming languages 2022',
-  'Top forked front-end projects',
-  'The most popular repos about ChatGPT',
-  'The most watched projects by Chinese developers',
-  'Geographic distribution of @kubernetes/kubernetes contributors',
+  { type: types.hotTopics, content: 'Popular repos related to ChatGPT' },
+  { type: types.hotTopics, content: 'The most watched Web3 projects' },
+  { type: types.programmingLanguage, content: 'Top python projects 2022' },
+  { type: types.programmingLanguage, content: 'What is the distribution of primary language used in repositories' },
+  { type: types.trends, content: 'The closed PR monthly history of GitHub' },
+  { type: types.trends, content: 'The star history of GitHub all the time' },
+  { type: types.contributors, content: 'Contributor list of @pingcap/tidb' },
+  { type: types.stars, content: 'Star history of @carbon-language/carbon-lang' },
+  { type: types.similarProjects, content: 'Projects similar to @facebook/react' },
+  { type: types.trends, content: 'Top trending HCL repositories of the past month' },
+  { type: types.location, content: 'The most watched projects by India developers' },
+  { type: types.location, content: 'Where are @kubernetes/kubernetes contributors come from' },
+  { type: types.company, content: 'What projects Microsoft developers like to contribute to' },
 ];
 
 export interface SuggestionsProps {
@@ -22,16 +61,25 @@ export interface SuggestionsProps {
 
 export default function Suggestions ({ onSelect }: SuggestionsProps) {
   return (
-    <List dense disablePadding sx={{ mx: 'auto', width: 'max-content' }}>
+    <Grid container mx={2}>
       {questions.map((question, index) => (
-        <ListItem key={index}>
-          <ListItemButton onClick={() => onSelect(question)}>
-            <ListItemText>
-              {question}
-            </ListItemText>
-          </ListItemButton>
-        </ListItem>
+        <Grid item xs={12} md={6} lg={4} xl={3} key={index} display='flex' alignItems='stretch' justifyContent='stretch' p={1}>
+          <Card sx={{ p: 2, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'flex-start', textAlign: 'left', width: '100%' }} component={ButtonBase} onClick={() => onSelect(question.content)}>
+            <Tag color={question.type.color}>{question.type.title}</Tag>
+            <div>{question.content}</div>
+          </Card>
+        </Grid>
       ))}
-    </List>
+    </Grid>
   );
 }
+
+const Tag = styled('div')<{ color: string }>`
+  color: ${({ color }) => color};
+  background-color: ${({ color }) => `${color}40`};
+  border: 1px solid ${({ color }) => color};
+  border-radius: 6px;
+  padding: 2px 6px;
+  margin-bottom: 8px;
+  width: max-content;
+`;
