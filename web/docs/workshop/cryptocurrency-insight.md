@@ -1,6 +1,6 @@
 ---
-title: 'Workshop: Cryptocurrency Insight'
-sidebar_label: Cryptocurrency Insight
+title: 'Workshop: CoinMarketCap Insight'
+sidebar_label: CoinMarketCap Insight
 sidebar_position: 6
 ---
 
