@@ -17,12 +17,12 @@ import { AutoGraph, TableView } from '@mui/icons-material';
 import Info from './Info';
 
 export interface ExecutionContext {
-  run: (question?: string) => void;
+  run: (question: string) => void;
   load: (questionId: string) => void;
+  clear: () => void;
 }
 
 export interface ExecutionProps {
-  search: string;
   questionId?: string;
   onLoading?: (loading: boolean) => void;
   onResultLoading?: (loading: boolean) => void;
@@ -32,19 +32,18 @@ export interface ExecutionProps {
 
 const PENDING_STATE = new Set([QuestionStatus.New, QuestionStatus.Waiting, QuestionStatus.Running]);
 
-export function useQuestion (content: string, questionId?: string) {
+export function useQuestion (questionId?: string) {
   const { validating, userInfo, login } = useUserInfoContext();
   const { data, loading, error, setAsyncData, clearState } = useAsyncState<Question>();
   const runningQuestion = useRef<string>();
 
-  const run = useEventCallback((question?: string) => {
+  const run = useEventCallback((question: string) => {
     if (!validating && !userInfo) {
       login();
       return;
     }
-    const real = question ?? content;
-    runningQuestion.current = real;
-    setAsyncData(newQuestion(real));
+    clearState();
+    setAsyncData(newQuestion(question));
   });
 
   const load = useEventCallback((questionId: string) => {
@@ -53,7 +52,6 @@ export function useQuestion (content: string, questionId?: string) {
     }
     runningQuestion.current = questionId;
     setAsyncData(pollQuestion(questionId).then(question => {
-      runningQuestion.current = question.title;
       return question;
     }));
   });
@@ -71,13 +69,6 @@ export function useQuestion (content: string, questionId?: string) {
       clearState();
     }
   }, [questionId]);
-
-  useEffect(() => {
-    if (runningQuestion.current !== content) {
-      clearState();
-      runningQuestion.current = undefined;
-    }
-  }, [content]);
 
   useEffect(() => {
     if (notNullish(data) && !loading) {
@@ -103,7 +94,7 @@ export function useQuestion (content: string, questionId?: string) {
   const resultPending = isNullish(data) ? false : PENDING_STATE.has(data.status);
   const resultError = data?.status === QuestionStatus.Cancel ? new Error('Execution was canceled') : (data?.error);
 
-  return { run, load, question: data, loading, resultPending, sqlError: error, resultError };
+  return { run, load, question: data, loading, resultPending, sqlError: error, resultError, clear: clearState };
 }
 
 export function isSqlError (error: unknown): error is AxiosError<{ message: string, querySQL: string }> {
@@ -115,15 +106,22 @@ export function isSqlError (error: unknown): error is AxiosError<{ message: stri
   return false;
 }
 
-export default forwardRef<ExecutionContext, ExecutionProps>(function Execution ({ search, questionId, onLoading, onResultLoading, onChartLoading, onQuestionChange }, ref: ForwardedRef<ExecutionContext>) {
-  const { question, run, load, loading, resultPending, sqlError, resultError } = useQuestion(search, questionId);
+export default forwardRef<ExecutionContext, ExecutionProps>(function Execution ({ questionId, onLoading, onResultLoading, onChartLoading, onQuestionChange }, ref: ForwardedRef<ExecutionContext>) {
+  const { question, run, load, clear, loading, resultPending, sqlError, resultError } = useQuestion(questionId);
 
   useEffect(() => {
     onLoading?.(loading);
   }, [loading, onLoading]);
 
   useEffect(() => {
-    applyForwardedRef(ref, { run, load });
+    applyForwardedRef(ref, {
+      run,
+      load,
+      clear () {
+        clear();
+        chartClear();
+      },
+    });
   }, []);
 
   useEffect(() => {
@@ -183,23 +181,23 @@ export default forwardRef<ExecutionContext, ExecutionProps>(function Execution (
   const result = question?.result?.rows;
 
   useEffect(() => {
-    clear();
+    chartClear();
   }, [question]);
 
-  const { data: chartData, setData: setChartData, loading: chartLoading, error: chartError, run: chartRun, clear } = useAsyncOperation(question?.id, questionToChart);
+  const { data: chartData, setData: setChartData, loading: chartLoading, error: chartError, run: chartRun, clear: chartClear } = useAsyncOperation(question?.id, questionToChart);
   useEffect(() => {
     onChartLoading?.(chartLoading);
   }, [chartLoading, onChartLoading]);
 
   useEffect(() => {
-    if (notFalsy(search) && notNullish(question)) {
+    if (notNullish(question)) {
       if (notNullish(question.chart)) {
         setChartData(question.chart);
       } else if (notNullish(question.result)) {
         chartRun();
       }
     }
-  }, [search, question?.result]);
+  }, [question?.result]);
 
   const resultTitle = useMemo(() => {
     if (notNullish(question)) {
@@ -230,17 +228,14 @@ export default forwardRef<ExecutionContext, ExecutionProps>(function Execution (
 
   const resultStatus = useMemo(() => {
     if (isNullish(question)) {
-      if (loading) {
-        return 'loading';
-      } else {
-        return 'pending';
-      }
+      return 'pending';
     } else if (resultPending || chartLoading) {
       return 'loading';
     } else {
       return 'success';
     }
-  }, [question, resultPending || chartLoading]);
+  }, [question, loading, resultPending || chartLoading]);
+  console.log('status', resultStatus);
 
   return (
     <>
@@ -358,8 +353,8 @@ function Chart ({ chartData, chartError, fields, result }: { chartData: ChartRes
     }
 
     return (
-      <>
-        <Controls>
+      <ChartContainer>
+        <Controls className='chart-controls'>
           <ToggleButtonGroup size="small" value={tab} onChange={handleTabChange} exclusive color="primary">
             <ToggleButton value="visualization">
               <AutoGraph />
@@ -377,7 +372,7 @@ function Chart ({ chartData, chartError, fields, result }: { chartData: ChartRes
             {renderTable()}
           </StyledTabPanel>
         </TabContext>
-      </>
+      </ChartContainer>
     );
   }, [tab, chartData, chartError, result, fields]);
 }
@@ -387,9 +382,21 @@ const Controls = styled('div')`
   justify-content: flex-end;
   align-items: center;
   margin-bottom: 8px;
+  opacity: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 1000;
+  transition: opacity .2s ease;
+`;
+
+const ChartContainer = styled('div')`
+  position: relative;
+  &:hover > .chart-controls {
+    opacity: 1;
+  }
 `;
 
 const StyledTabPanel = styled(TabPanel)`
-  padding-left: 0;
-  padding-right: 0;
+  padding: 0;
 `;

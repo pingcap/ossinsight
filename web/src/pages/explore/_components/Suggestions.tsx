@@ -1,4 +1,4 @@
-import { ButtonBase, Card, Grid, styled } from '@mui/material';
+import { Box, ButtonBase, Card, Grid, List, ListItem, ListItemButton, ListItemText, styled } from '@mui/material';
 import React from 'react';
 
 // 【🎆 Annual review】My year in review 2022【使用关键词 annual report/github year/year in review/repo _name 2022 触发】
@@ -56,22 +56,40 @@ const questions = [
 ];
 
 export interface SuggestionsProps {
+  dense?: boolean;
+  disabled?: boolean;
   onSelect: (question: string) => void;
 }
 
-export default function Suggestions ({ onSelect }: SuggestionsProps) {
-  return (
-    <Grid container mx={2}>
-      {questions.map((question, index) => (
-        <Grid item xs={12} md={6} lg={4} xl={3} key={index} display='flex' alignItems='stretch' justifyContent='stretch' p={1}>
-          <Card sx={{ p: 2, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'flex-start', textAlign: 'left', width: '100%' }} component={ButtonBase} onClick={() => onSelect(question.content)}>
-            <Tag color={question.type.color}>{question.type.title}</Tag>
-            <div>{question.content}</div>
-          </Card>
+export default function Suggestions ({ onSelect, disabled = false, dense = false }: SuggestionsProps) {
+  if (dense) {
+    return (
+      <List dense>
+        {questions.map((question, index) => (
+          <ListItem key={index}>
+            <ListItemButton disabled={disabled} onClick={() => onSelect(question.content)}>
+              <ListItemText>{question.content}</ListItemText>
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
+    );
+  } else {
+    return (
+      <Box px={{ xs: 0, sm: 2 }}>
+        <Grid container>
+          {questions.map((question, index) => (
+            <Grid item xs={12} sm={6} lg={4} xl={3} key={index} display="flex" alignItems="stretch" justifyContent="stretch" p={1}>
+              <Card sx={{ p: 2, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'flex-start', textAlign: 'left', width: '100%' }} component={ButtonBase} disabled={disabled} onClick={() => onSelect(question.content)}>
+                <Tag color={question.type.color}>{question.type.title}</Tag>
+                <div>{question.content}</div>
+              </Card>
+            </Grid>
+          ))}
         </Grid>
-      ))}
-    </Grid>
-  );
+      </Box>
+    );
+  }
 }
 
 const Tag = styled('div')<{ color: string }>`

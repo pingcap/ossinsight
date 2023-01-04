@@ -4,7 +4,6 @@ import { useWhenMounted } from '@site/src/hooks/mounted';
 import { unstable_serialize } from 'swr';
 import { useUserInfoContext } from '@site/src/context/user';
 import { useEventCallback } from '@mui/material';
-import { notNullish } from '@site/src/utils/value';
 
 interface AsyncOperation<T> extends AsyncData<T> {
   run: () => any;
@@ -31,15 +30,9 @@ export function useAsyncState<T, E = unknown> (initial?: T | (() => T)) {
   });
 
   const clearState = useEventCallback(() => {
-    if (notNullish(data)) {
-      setData(undefined);
-    }
-    if (loading) {
-      setLoading(false);
-    }
-    if (notNullish(error)) {
-      setError(error);
-    }
+    setData(undefined);
+    setLoading(false);
+    setError(error);
   });
 
   return {
@@ -93,6 +86,8 @@ export function useAsyncOperation<P, T> (params: P, fetcher: (params: P) => Prom
 
   const clear = useEventCallback(() => {
     setData(undefined);
+    setLoading(false);
+    setError(undefined);
   });
 
   const forceSetData = useEventCallback((data: T | undefined) => {

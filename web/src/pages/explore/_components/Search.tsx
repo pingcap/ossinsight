@@ -1,5 +1,5 @@
 import { IconButton, InputBase, List, Popper, Stack, styled, useEventCallback } from '@mui/material';
-import React, { ChangeEventHandler, Dispatch, KeyboardEventHandler, RefObject, SetStateAction, useCallback, useEffect, useRef, useState } from 'react';
+import React, { ChangeEventHandler, Dispatch, KeyboardEventHandler, MutableRefObject, SetStateAction, useCallback, useEffect, useRef, useState } from 'react';
 import { isNullish } from '@site/src/utils/value';
 import { useThrottle } from 'ahooks';
 import { useGeneralSearchWithoutDefaults } from '@site/src/components/GeneralSearch/useGeneralSearch';
@@ -7,7 +7,7 @@ import { renderRepo, renderUser } from '@site/src/components/GeneralSearch';
 import { useUserInfoContext } from '@site/src/context/user';
 import { Close, KeyboardReturn, Pause } from '@mui/icons-material';
 
-export function useStateRef<T> (initial: T | (() => T)): [T, Dispatch<SetStateAction<T>>, RefObject<T>] {
+export function useStateRef<T> (initial: T | (() => T)): [T, Dispatch<SetStateAction<T>>, Readonly<MutableRefObject<T>>] {
   const [state, setState] = useState(initial);
   const ref = useRef<T>(state);
   useEffect(() => {
@@ -146,13 +146,13 @@ export default function ExploreSearch ({ value, onChange, onAction, onClear, dis
         onChange={handleChange}
         onKeyDown={handleKeydown}
         onBlur={reset}
-        placeholder='Type any question here, or choose one below'
+        placeholder="Type any question here, or choose one below"
         endAdornment={
           <Stack direction="row" gap={1}>
             {!disableAction && <IconButton color="primary" onClick={onAction} disabled={disableAction}>
               <KeyboardReturn />
             </IconButton>}
-            <IconButton color="error" onClick={onClear} disabled={disableClear}>
+            <IconButton color={clearState === 'stop' ? 'error' : 'default'} onClick={onClear} disabled={disableClear}>
               {clearState === 'stop'
                 ? <Pause />
                 : <Close />}
