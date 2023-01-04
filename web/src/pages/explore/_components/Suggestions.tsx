@@ -49,7 +49,7 @@ const questions = [
   { type: types.contributors, content: 'Contributor list of @pingcap/tidb' },
   { type: types.stars, content: 'Star history of @carbon-language/carbon-lang' },
   { type: types.similarProjects, content: 'Projects similar to @facebook/react' },
-  { type: types.trends, content: 'Top trending HCL repositories of the past month' },
+  { type: types.trends, content: 'Top trending TypeScript repositories of the past month' },
   { type: types.location, content: 'The most watched projects by India developers' },
   { type: types.location, content: 'Where are @kubernetes/kubernetes contributors come from' },
   { type: types.company, content: 'What projects Microsoft developers like to contribute to' },
