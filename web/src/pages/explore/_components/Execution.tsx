@@ -264,7 +264,7 @@ function renderEngines (question: Question | undefined) {
     return (
       <>
         , Running on
-        <EngineTag>{question.engines.join(', ')}</EngineTag>
+        <EngineTag>{question.engines.map(replaceEngineName).join(', ')}</EngineTag>
         <Info>
           <Typography variant="body1">
             <b>tikv</b>: row-store engine
@@ -280,6 +280,17 @@ function renderEngines (question: Question | undefined) {
     );
   }
   return null;
+}
+
+function replaceEngineName (name: string) {
+  switch (name) {
+    case 'tiflash':
+      return 'column-store';
+    case 'tikv':
+      return 'row-store';
+    default:
+      return name;
+  }
 }
 
 const EngineTag = styled('span')`
