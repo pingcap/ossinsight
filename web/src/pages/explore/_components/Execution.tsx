@@ -36,7 +36,6 @@ export function useQuestion (content: string, questionId?: string) {
   const { data, loading, error, setAsyncData, clearState } = useAsyncState<Question>();
   const runningQuestion = useRef<string>();
 
-  console.log(validating, userInfo);
   const run = useEventCallback((question?: string) => {
     if (!validating && !userInfo) {
       login();
@@ -263,13 +262,13 @@ function renderEngines (question: Question | undefined) {
         , Running on
         <EngineTag>{question.engines.join(', ')}</EngineTag>
         <Info>
-          <Typography variant='body1'>
+          <Typography variant="body1">
             <b>tikv</b>: row-store engine
             <br />
             <b>tiflash</b>: column-store engine
           </Typography>
-          <Divider orientation='horizontal' sx={{ my: 1.5 }} light />
-          <Typography variant='body2'>
+          <Divider orientation="horizontal" sx={{ my: 1.5 }} light />
+          <Typography variant="body2">
             Intelligent query processing in <a>TiDB optimizer</a>.
           </Typography>
         </Info>
@@ -299,9 +298,33 @@ function Chart ({ chartData, chartError, fields, result }: { chartData: ChartRes
   };
 
   return useMemo(() => {
-    if (isNullish(chartData) || isNullish(result)) {
+    const renderError = (margin = false) => {
+      return (
+        <Alert severity="warning" sx={margin ? { mb: 2 } : undefined}>
+          Unable to generate chart: {getErrorMessage(chartError)}
+        </Alert>
+      );
+    };
+
+    if (isNullish(result)) {
       if (notNullish(chartError)) {
-        return <Alert severity='error'>{getErrorMessage(chartError)}</Alert>;
+        return renderError();
+      }
+      return null;
+    }
+
+    const renderTable = () => {
+      return <TableChart chartName="Table" title="hi" data={result} fields={fields} />;
+    };
+
+    if (isNullish(chartData)) {
+      if (notNullish(chartError)) {
+        return (
+          <>
+            {renderError(true)}
+            {renderTable()}
+          </>
+        );
       }
       return null;
     }
@@ -310,16 +333,10 @@ function Chart ({ chartData, chartError, fields, result }: { chartData: ChartRes
       return <Charts {...chartData} data={result} fields={fields} />;
     };
 
-    const renderTable = () => {
-      return <TableChart chartName="Table" title="hi" data={result} fields={fields} />;
-    };
-
     if (notNullish(chartError)) {
       return (
         <>
-          <Alert severity="error" sx={{ mb: 2 }}>
-            {getErrorMessage(chartError)}
-          </Alert>
+          {renderError(true)}
           {renderTable()}
         </>
       );
