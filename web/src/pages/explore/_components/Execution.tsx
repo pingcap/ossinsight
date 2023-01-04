@@ -168,7 +168,7 @@ export default forwardRef<ExecutionContext, ExecutionProps>(function Execution (
         return 'Failed to generate SQL';
       }
     } else {
-      return 'Show SQL';
+      return 'SQL generated';
     }
   }, [question, loading, sqlError]);
 
