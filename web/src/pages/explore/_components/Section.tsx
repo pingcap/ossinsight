@@ -62,7 +62,7 @@ const SectionContainer = styled(Accordion)`
   border-radius: 6px;
   border: 1px solid;
   border-image-source: linear-gradient(116.45deg, rgba(89, 95, 236, 0.5) 0%, rgba(200, 182, 252, 0.1) 96.73%);
-  background: linear-gradient(0deg, #24232C, #24232C), linear-gradient(116.45deg, rgba(89, 95, 236, 0.5) 0%, rgba(200, 182, 252, 0.1) 96.73%);
+  background: rgb(36, 35, 43);
   padding: 12px;
   margin-top: 24px;
   transform: translateY(20px);

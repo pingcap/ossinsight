@@ -20,15 +20,27 @@ export default function PieChart ({ chartName, title, value, label, data }: Char
       id: 'raw',
       source: data,
     },
+    grid: {
+      top: 64,
+      left: 8,
+      right: 8,
+      bottom: 8,
+    },
+    tooltip: {
+    },
+    legend: {
+      left: 8,
+      top: 8,
+    },
     series: {
       type: 'pie',
+      name: label,
       datasetId: 'raw',
       encode: {
         itemName: label,
         value,
       },
     },
-    legend: {},
     title: {
       text: title,
     },

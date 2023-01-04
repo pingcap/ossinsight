@@ -20,16 +20,29 @@ export default function BarChart ({ chartName, title, x, y, data }: ChartResult 
       id: 'raw',
       source: data,
     },
-    grid: {},
+    backgroundColor: 'rgb(36, 35, 43)',
+    grid: {
+      top: 64,
+      left: 8,
+      right: 8,
+      bottom: 8,
+    },
+    tooltip: {
+      trigger: 'axis',
+    },
+    legend: {
+      left: 8,
+      top: 8,
+    },
     series: {
       type: 'bar',
+      name: y,
       datasetId: 'raw',
       encode: {
         x,
         y,
       },
     },
-    legend: {},
     title: {
       text: title,
     },

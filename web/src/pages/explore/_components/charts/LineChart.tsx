@@ -4,7 +4,7 @@ import React, { useMemo } from 'react';
 import { EChartsOption } from 'echarts';
 import { use } from 'echarts/core';
 import { LinesChart } from 'echarts/charts';
-import { DatasetComponent, GridComponent, LegendComponent, TitleComponent } from 'echarts/components';
+import { DatasetComponent, GridComponent, LegendComponent, TitleComponent, TooltipComponent } from 'echarts/components';
 
 use([
   LinesChart,
@@ -12,6 +12,7 @@ use([
   TitleComponent,
   DatasetComponent,
   LegendComponent,
+  TooltipComponent,
 ]);
 
 export default function LineChart ({ chartName, title, x, y, data }: ChartResult & { data: any[] }) {
@@ -20,16 +21,29 @@ export default function LineChart ({ chartName, title, x, y, data }: ChartResult
       id: 'raw',
       source: data,
     },
-    grid: {},
+    backgroundColor: 'rgb(36, 35, 43)',
+    grid: {
+      top: 64,
+      left: 8,
+      right: 8,
+      bottom: 8,
+    },
+    tooltip: {
+      trigger: 'axis',
+    },
+    legend: {
+      left: 8,
+      top: 8,
+    },
     series: {
       type: 'line',
       datasetId: 'raw',
+      name: y,
       encode: {
         x,
         y,
       },
     },
-    legend: {},
     title: {
       text: title,
     },
