@@ -120,5 +120,5 @@ export async function pollQuestion (questionId: string): Promise<Question> {
 }
 
 export async function questionToChart (questionId: string): Promise<ChartResult> {
-  return await clientWithoutCache.post(`/explorer/questions/${questionId}/chart`, undefined, { withCredentials: true });
+  return await clientWithoutCache.post(`/explorer/questions/${questionId}/chart`, undefined);
 }

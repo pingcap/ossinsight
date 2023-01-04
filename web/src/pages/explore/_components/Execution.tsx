@@ -32,13 +32,14 @@ export interface ExecutionProps {
 const PENDING_STATE = new Set([QuestionStatus.New, QuestionStatus.Waiting, QuestionStatus.Running]);
 
 export function useQuestion (content: string, questionId?: string) {
-  const userInfo = useUserInfoContext();
+  const { validating, userInfo, login } = useUserInfoContext();
   const { data, loading, error, setAsyncData, clearState } = useAsyncState<Question>();
   const runningQuestion = useRef<string>();
 
+  console.log(validating, userInfo);
   const run = useEventCallback((question?: string) => {
-    if (userInfo.validating && !userInfo.userInfo) {
-      userInfo.login();
+    if (!validating && !userInfo) {
+      login();
       return;
     }
     const real = question ?? content;
@@ -177,7 +178,7 @@ export default forwardRef<ExecutionContext, ExecutionProps>(function Execution (
     clear();
   }, [question]);
 
-  const { data: chartData, setData: setChartData, loading: chartLoading, error: chartError, run: chartRun, clear } = useAsyncOperation(question?.id, questionToChart, true);
+  const { data: chartData, setData: setChartData, loading: chartLoading, error: chartError, run: chartRun, clear } = useAsyncOperation(question?.id, questionToChart);
   useEffect(() => {
     onChartLoading?.(chartLoading);
   }, [chartLoading, onChartLoading]);
@@ -299,6 +300,9 @@ function Chart ({ chartData, chartError, fields, result }: { chartData: ChartRes
 
   return useMemo(() => {
     if (isNullish(chartData) || isNullish(result)) {
+      if (notNullish(chartError)) {
+        return <Alert severity='error'>{getErrorMessage(chartError)}</Alert>;
+      }
       return null;
     }
 
