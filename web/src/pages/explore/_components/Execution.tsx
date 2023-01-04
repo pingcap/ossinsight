@@ -316,7 +316,7 @@ function Chart ({ chartData, chartError, fields, result }: { chartData: ChartRes
     }
 
     const renderTable = () => {
-      return <TableChart chartName="Table" title="hi" data={result} fields={fields} />;
+      return <TableChart chartName="Table" title="" data={result} fields={fields} />;
     };
 
     if (isNullish(chartData)) {

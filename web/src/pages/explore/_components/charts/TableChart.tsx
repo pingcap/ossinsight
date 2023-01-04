@@ -1,6 +1,6 @@
 import { ChartResult } from '@site/src/api/explorer';
 import React, { useMemo } from 'react';
-import { notNullish } from '@site/src/utils/value';
+import { isNonemptyString, notNullish } from '@site/src/utils/value';
 import { styled } from '@mui/material';
 
 export default function TableChart ({ title, data, fields: propFields }: ChartResult & { data: any[], fields?: Array<{ name: string }> }) {
@@ -19,9 +19,11 @@ export default function TableChart ({ title, data, fields: propFields }: ChartRe
     <TableContainer>
       <Table className="clearTable">
         <thead>
-        <tr>
-          <th colSpan={fields.length} align="center">{title}</th>
-        </tr>
+        {isNonemptyString(title) && (
+          <tr>
+            <th colSpan={fields.length} align="center">{title}</th>
+          </tr>
+        )}
         <tr>
           {fields.map(({ name }) => <th key={name}>{name}</th>)}
         </tr>
