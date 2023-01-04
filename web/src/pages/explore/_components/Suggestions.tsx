@@ -64,9 +64,9 @@ export default function Suggestions ({ onSelect }: SuggestionsProps) {
     <Grid container mx={2}>
       {questions.map((question, index) => (
         <Grid item xs={12} md={6} lg={4} xl={3} key={index} display='flex' alignItems='stretch' justifyContent='stretch' p={1}>
-          <Card sx={{ p: 2, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'flex-start', textAlign: 'left', width: '100%' }} component={ButtonBase} onClick={() => onSelect(question.content)}>
+          <Card sx={{ p: 2, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'flex-start', textAlign: 'left', width: '100%', backgroundColor: '#1C1C1C' }} component={ButtonBase} onClick={() => onSelect(question.content)}>
             <Tag color={question.type.color}>{question.type.title}</Tag>
-            <div>{question.content}</div>
+            <div style={{ fontSize: 16 }}>{question.content}</div>
           </Card>
         </Grid>
       ))}
@@ -76,10 +76,11 @@ export default function Suggestions ({ onSelect }: SuggestionsProps) {
 
 const Tag = styled('div')<{ color: string }>`
   color: ${({ color }) => color};
-  background-color: ${({ color }) => `${color}40`};
-  border: 1px solid ${({ color }) => color};
+  background-color: ${({ color }) => `${color}20`};
+  border: 0.5px solid ${({ color }) => `${color}40`};
   border-radius: 6px;
   padding: 2px 6px;
   margin-bottom: 8px;
   width: max-content;
+  font-size: 6px;
 `;
