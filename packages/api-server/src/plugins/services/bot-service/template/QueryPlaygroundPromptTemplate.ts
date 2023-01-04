@@ -3,7 +3,7 @@ import {RelationInfo, SQLExample, SQLGeneratePromptTemplate, TableInfo} from "./
 export class QueryPlaygroundSQLPromptTemplate extends SQLGeneratePromptTemplate {
   public stop: string[] = ['#', '---'];
   public maxTokens: number = 400;
-  public temperature: number = 0.3;
+  public temperature: number = 0;
   public topP: number = 0.4;
   public resultPrefix: string = '';
 
