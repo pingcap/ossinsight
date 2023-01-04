@@ -13,13 +13,17 @@ interface RepoCard extends Chart  { repo_name: Column; }
 interface PersonalCard extends Chart  { user_login: Column; }
 interface Table extends Chart  { columns: Column[]; }
 
+If the result only has one number, use NumberCard
 If the result has a column such as country_code, use MapChart
 If the result has multiple number columns, use LineChart or BarChart
+If the result has a time column and a number column, use LineChart
 If the result is a numerical distribution, use BarChart
 If the result has a percentage column, use PieChart
 If the result is a repository or project list, use RepoCard
 If the result is a user list, use PersonalCard
 If not sure, use Table
+
+actor_login is the user login of actor
 
 # Example
 Question: How many contributors in @pingcap/tidb
