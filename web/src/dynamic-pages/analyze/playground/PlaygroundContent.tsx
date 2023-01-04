@@ -45,7 +45,6 @@ export default function PlaygroundContent () {
   const handleFormatSQLClick = () => {
     const formattedSQL = format(inputValue, {
       language: 'mysql',
-      uppercase: true,
       linesBetweenQueries: 2,
     });
     setInputValue(formattedSQL);
@@ -72,7 +71,6 @@ export default function PlaygroundContent () {
     if (isNonemptyString(questionSql)) {
       setInputValue(format(questionSql, {
         language: 'mysql',
-        uppercase: true,
         linesBetweenQueries: 2,
       }));
     }

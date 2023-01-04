@@ -135,7 +135,7 @@ export default forwardRef<ExecutionContext, ExecutionProps>(function Execution (
       return format(question.querySQL);
     }
     if (isSqlError(sqlError)) {
-      return format(sqlError.response?.data.querySQL ?? '');
+      return format(sqlError.response?.data.querySQL ?? '', { language: 'mysql' });
     }
   }, [question, sqlError]);
 
