@@ -18,6 +18,7 @@ import Info from './Info';
 
 export interface ExecutionContext {
   run: (question?: string) => void;
+  load: (questionId: string) => void;
 }
 
 export interface ExecutionProps {
@@ -46,13 +47,21 @@ export function useQuestion (content: string, questionId?: string) {
     setAsyncData(newQuestion(real));
   });
 
+  const load = useEventCallback((questionId: string) => {
+    if (runningQuestion.current === questionId) {
+      return;
+    }
+    runningQuestion.current = questionId;
+    setAsyncData(pollQuestion(questionId).then(question => {
+      runningQuestion.current = question.title;
+      return question;
+    }));
+  });
+
   // only prefetch first question
   useEffect(() => {
     if (notNullish(questionId) && isNullish(data) && !loading) {
-      setAsyncData(pollQuestion(questionId).then(question => {
-        runningQuestion.current = question.title;
-        return question;
-      }));
+      load(questionId);
     }
   }, []);
 
@@ -94,7 +103,7 @@ export function useQuestion (content: string, questionId?: string) {
   const resultPending = isNullish(data) ? false : PENDING_STATE.has(data.status);
   const resultError = data?.status === QuestionStatus.Cancel ? new Error('Execution was canceled') : (data?.error);
 
-  return { run, question: data, loading, resultPending, sqlError: error, resultError };
+  return { run, load, question: data, loading, resultPending, sqlError: error, resultError };
 }
 
 export function isSqlError (error: unknown): error is AxiosError<{ message: string, querySQL: string }> {
@@ -107,14 +116,14 @@ export function isSqlError (error: unknown): error is AxiosError<{ message: stri
 }
 
 export default forwardRef<ExecutionContext, ExecutionProps>(function Execution ({ search, questionId, onLoading, onResultLoading, onChartLoading, onQuestionChange }, ref: ForwardedRef<ExecutionContext>) {
-  const { question, run, loading, resultPending, sqlError, resultError } = useQuestion(search, questionId);
+  const { question, run, load, loading, resultPending, sqlError, resultError } = useQuestion(search, questionId);
 
   useEffect(() => {
     onLoading?.(loading);
   }, [loading, onLoading]);
 
   useEffect(() => {
-    applyForwardedRef(ref, { run });
+    applyForwardedRef(ref, { run, load });
   }, []);
 
   useEffect(() => {

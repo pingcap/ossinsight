@@ -1,5 +1,5 @@
 import CustomPage from '@site/src/theme/CustomPage';
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import ExploreSearch, { useStateRef } from '@site/src/pages/explore/_components/Search';
 import { Container, styled, Typography, useEventCallback } from '@mui/material';
 import Execution, { ExecutionContext } from '@site/src/pages/explore/_components/Execution';
@@ -24,6 +24,14 @@ export default function Page () {
 
   const loading = loadingState.current.resultLoading || loadingState.current.loading || loadingState.current.chartLoading;
   const actionDisabled = loading || notNullish(questionId);
+
+  useEffect(() => {
+    if (isNullish(questionId)) {
+      setValue('');
+    } else {
+      ec?.load(questionId);
+    }
+  }, [questionId]);
 
   const handleQuestionChange = useEventCallback((question: Question) => {
     setQuestionId(question.id);

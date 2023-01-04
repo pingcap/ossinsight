@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from 'react';
 import { isNonemptyString, isNullish, notFalsy, notNullish, Nullish } from '@site/src/utils/value';
 
 export interface UseUrlSearchStateProps<T> {
@@ -28,7 +28,13 @@ function useUrlSearchStateCSR<T> (key: string, {
     }
   }, []);
   const [value, setValue] = useState<T>(initialValue);
+  const internalChange = useRef(false);
+
   useEffect(() => {
+    if (internalChange.current) {
+      internalChange.current = false;
+      return;
+    }
     const sv = serialize(value);
     const usp = new URLSearchParams(location.search);
     if (isNullish(sv)) {
@@ -46,6 +52,21 @@ function useUrlSearchStateCSR<T> (key: string, {
       window.history.replaceState(null, '', url);
     }
   }, [value]);
+
+  useEffect(() => {
+    const handlePopstate = () => {
+      internalChange.current = true;
+      const usp = new URLSearchParams(location.search);
+      const value = usp.get(key);
+      if (notNullish(value)) {
+        setValue(deserialize(value));
+      } else {
+        setValue(defaultValue);
+      }
+    };
+    window.addEventListener('popstate', handlePopstate);
+    return () => window.removeEventListener('popstate', handlePopstate);
+  }, []);
 
   return [value, setValue];
 }
