@@ -1,19 +1,7 @@
 import { ChartResult } from '@site/src/api/explorer';
-import EChart from '@site/src/components/ECharts';
 import React, { useMemo } from 'react';
 import { EChartsOption } from 'echarts';
-import { use } from 'echarts/core';
-import { LinesChart } from 'echarts/charts';
-import { DatasetComponent, GridComponent, LegendComponent, TitleComponent, TooltipComponent } from 'echarts/components';
-
-use([
-  LinesChart,
-  GridComponent,
-  TitleComponent,
-  DatasetComponent,
-  LegendComponent,
-  TooltipComponent,
-]);
+import EChartsReact from 'echarts-for-react';
 
 export default function LineChart ({ chartName, title, x, y, data }: ChartResult & { data: any[] }) {
   const options: EChartsOption = useMemo(() => {
@@ -55,7 +43,7 @@ export default function LineChart ({ chartName, title, x, y, data }: ChartResult
       },
       legend: {
         left: 'center',
-        top: 24,
+        top: 28,
       },
       series: makeSeries(y),
       title: {
@@ -67,11 +55,18 @@ export default function LineChart ({ chartName, title, x, y, data }: ChartResult
       yAxis: {
         type: 'value',
       },
+      animationDuration: 2000,
     });
-  }, [chartName, title, x, y]);
+  }, [chartName, title, x, y, data]);
   return (
-    <EChart
-      height={400}
+    <EChartsReact
+      theme="dark"
+      style={{
+        height: 400,
+      }}
+      opts={{
+        height: 400,
+      }}
       option={options}
     />
   );

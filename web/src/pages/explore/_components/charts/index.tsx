@@ -7,6 +7,9 @@ import PersonalCard from './PersonalCard';
 import RepoCard from './RepoCard';
 import TableChart from './TableChart';
 import NumberCard from './NumberCard';
+import { registerThemeDark } from '@site/src/components/BasicCharts';
+
+registerThemeDark();
 
 export function Charts (props: ChartResult & { data: Array<Record<string, any>>, fields?: any[] }) {
   switch (props.chartName) {

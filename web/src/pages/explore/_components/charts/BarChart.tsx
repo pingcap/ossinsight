@@ -1,18 +1,7 @@
 import { ChartResult } from '@site/src/api/explorer';
-import EChart from '@site/src/components/ECharts';
 import React, { useMemo } from 'react';
 import { EChartsOption } from 'echarts';
-import { use } from 'echarts/core';
-import { BarChart as EBarChart } from 'echarts/charts';
-import { DatasetComponent, GridComponent, LegendComponent, TitleComponent } from 'echarts/components';
-
-use([
-  EBarChart,
-  GridComponent,
-  TitleComponent,
-  DatasetComponent,
-  LegendComponent,
-]);
+import EChartsReact from 'echarts-for-react';
 
 export default function BarChart ({ chartName, title, x, y, data }: ChartResult & { data: any[] }) {
   const options: EChartsOption = useMemo(() => {
@@ -49,10 +38,10 @@ export default function BarChart ({ chartName, title, x, y, data }: ChartResult 
       tooltip: {
       },
       legend: {
-        left: 8,
-        top: 8,
+        left: 'center',
+        top: 28,
       },
-      series: makeSeries(x),
+      series: makeSeries(y),
       title: {
         text: title,
       },
@@ -62,11 +51,20 @@ export default function BarChart ({ chartName, title, x, y, data }: ChartResult 
       yAxis: {
         type: 'value',
       },
+      animationDuration: 2000,
     };
-  }, [chartName, title, x, y]);
+  }, [chartName, title, x, y, data]);
+
+  console.log(options);
   return (
-    <EChart
-      height={400}
+    <EChartsReact
+      theme='dark'
+      style={{
+        height: 400,
+      }}
+      opts={{
+        height: 400,
+      }}
       option={options}
     />
   );
