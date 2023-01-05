@@ -35,14 +35,14 @@ export default function Layout ({ children, header, side, showSide, showHeader }
         )}
       </Transition>
       <Container>
-        <Transition nodeRef={mainRef} in={showSide} timeout={400}>
+        <Transition nodeRef={mainRef} in={showSide} timeout={800}>
           {(status) => (
             <Main ref={mainRef} className={`Main-side-${status}`}>
               {children}
             </Main>
           )}
         </Transition>
-        <Transition nodeRef={sideRef} in={showSide} timeout={400} unmountOnExit>
+        <Transition nodeRef={sideRef} in={showSide} timeout={800} unmountOnExit>
           {(status) => (
             <Side ref={sideRef} className={`Side-${status}`}>
               {side}
@@ -93,7 +93,7 @@ const Header = styled('div', { name: 'Header', shouldForwardProp: propName => pr
 const Main = styled('div', { name: 'Main' })`
   min-height: 800px;
   width: 100%;
-  transition: ${({ theme }) => theme.transitions.create('transform')};
+  transition: ${({ theme }) => theme.transitions.create(['transform', 'opacity'], { duration: 800 })};
 
   ${({ theme }) => theme.breakpoints.up('md')} {
     transform: translateX(calc(var(--explore-layout-side-width) / 2));
@@ -119,7 +119,7 @@ const Side = styled('div', { name: 'Side' })`
   width: var(--explore-layout-side-width);
   opacity: 0;
   transform: translateX(calc(var(--explore-layout-side-width) / 2));
-  transition: ${({ theme }) => theme.transitions.create(['transform', 'opacity'])};
+  transition: ${({ theme }) => theme.transitions.create(['transform', 'opacity'], { duration: 800 })};
 
   ${classNames('Side', true)} {
     display: block;

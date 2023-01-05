@@ -1,5 +1,5 @@
 import CustomPage from '@site/src/theme/CustomPage';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import ExploreSearch, { useStateRef } from '@site/src/pages/explore/_components/Search';
 import { Box, Container, Typography, useEventCallback, useMediaQuery, useTheme } from '@mui/material';
 import Execution, { ExecutionContext } from '@site/src/pages/explore/_components/Execution';
@@ -19,6 +19,7 @@ import { Decorators } from '@site/src/pages/explore/_components/Decorators';
 export default function Page () {
   const [questionId, setQuestionId] = useUrlSearchState('id', nullableStringParam(), true);
   const [value, setValue, valueRef] = useStateRef('');
+  const [hasResult, setHasResult] = useState(false);
   const [ec, setEc, ecRef] = useStateRef<ExecutionContext | null>(null);
   const loadingState = useRef({ loading: false, resultLoading: false, chartLoading: false });
   const forceUpdate = useForceUpdate();
@@ -95,7 +96,7 @@ export default function Page () {
         <ExploreContext.Provider value={{ questionId }}>
           <Container maxWidth="xl" sx={{ pt: 4 }}>
             <Layout
-              showSide={!hideExecution}
+              showSide={!hideExecution && hasResult}
               showHeader={hideExecution}
               header={<Header />}
               side={(
@@ -107,7 +108,7 @@ export default function Page () {
             >
               <ExploreSearch value={value} onChange={setValue} onAction={handleAction} disableInput={loading} disableClear={value === ''} disableAction={loading} onClear={handleClear} clearState={loading ? 'stop' : undefined} />
               <Box sx={{ pb: 8, mt: 4, display: hideExecution ? 'none' : undefined }}>
-                <Execution ref={setEc} questionId={questionId} search={value} onLoading={handleLoading} onResultLoading={handleResultLoading} onChartLoading={handleChartLoading} onQuestionChange={handleQuestionChange} />
+                <Execution ref={setEc} questionId={questionId} search={value} onLoading={handleLoading} onResultLoading={handleResultLoading} onChartLoading={handleChartLoading} onQuestionChange={handleQuestionChange} onFinished={setHasResult} />
               </Box>
               {hideExecution && (
                 <Suggestions onSelect={handleSelect} dense={isSm} />

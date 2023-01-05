@@ -17,6 +17,7 @@ import { AutoGraph, TableView } from '@mui/icons-material';
 import Info from './Info';
 import { twitterLink } from '@site/src/utils/share';
 import ShareWithTwitter from '@site/src/pages/explore/_components/ShareWithTwitter';
+import { wait } from '@site/src/utils/promisify';
 
 export interface ExecutionContext {
   run: (question: string) => void;
@@ -31,6 +32,7 @@ export interface ExecutionProps {
   onResultLoading?: (loading: boolean) => void;
   onChartLoading?: (loading: boolean) => void;
   onQuestionChange?: (question: Question) => void;
+  onFinished?: (hasResult: boolean) => void;
 }
 
 const PENDING_STATE = new Set([QuestionStatus.New, QuestionStatus.Waiting, QuestionStatus.Running]);
@@ -46,7 +48,7 @@ export function useQuestion (questionId?: string) {
       return;
     }
     clearState();
-    setAsyncData(newQuestion(question));
+    setAsyncData(newQuestion(question).then(wait(1000), wait(1000)));
   });
 
   const load = useEventCallback((questionId: string) => {
@@ -109,7 +111,7 @@ export function isSqlError (error: unknown): error is AxiosError<{ message: stri
   return false;
 }
 
-export default forwardRef<ExecutionContext, ExecutionProps>(function Execution ({ search, questionId, onLoading, onResultLoading, onChartLoading, onQuestionChange }, ref: ForwardedRef<ExecutionContext>) {
+export default forwardRef<ExecutionContext, ExecutionProps>(function Execution ({ search, questionId, onLoading, onResultLoading, onChartLoading, onQuestionChange, onFinished }, ref: ForwardedRef<ExecutionContext>) {
   const { question, run, load, clear, loading, resultPending, sqlError, resultError } = useQuestion(questionId);
 
   useEffect(() => {
@@ -205,6 +207,10 @@ export default forwardRef<ExecutionContext, ExecutionProps>(function Execution (
       }
     }
   }, [question?.result]);
+
+  useEffect(() => {
+    onFinished?.((result?.length ?? 0) > 0 && notNullish(chartData));
+  }, [chartData, result?.length]);
 
   const resultTitle = useMemo(() => {
     if (notNullish(question)) {
