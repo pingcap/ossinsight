@@ -395,7 +395,7 @@ const Controls = styled('div')`
   opacity: 0;
   position: absolute;
   right: 0;
-  top: 0;
+  top: -16px;
   z-index: 1000;
   transition: opacity .2s ease;
 `;

@@ -12,6 +12,7 @@ import NotFound from '@theme/NotFound';
 import useForceUpdate from '@site/src/hooks/force-update';
 import useUrlSearchState, { nullableStringParam } from '@site/src/hooks/url-search-state';
 import { Question } from '@site/src/api/explorer';
+import ExploreContext from '@site/src/pages/explore/_components/context';
 
 export default function Page () {
   const [questionId, setQuestionId] = useUrlSearchState('id', nullableStringParam(), true);
@@ -87,37 +88,39 @@ export default function Page () {
 
   return (
     <CustomPage>
-      <Container maxWidth="xl" sx={{ pt: 4 }}>
-        {(isNullish(questionId) && !loading) && (
-          <>
-            <Typography variant="h1" textAlign="center" mt={4}>
-              Data Explorer
-              <StyledBeta />
-            </Typography>
-            <Typography variant="body2" textAlign="center" mt={1} mb={2} color="#7C7C7C">Analyze 5+ billion GitHub data from natural language, no prerequisite knowledge of SQL or plotting libraries necessary.</Typography>
-          </>
-        )}
-        <ExploreSearch value={value} onChange={setValue} onAction={handleAction} disableInput={loading} disableClear={value === ''} disableAction={loading} onClear={handleClear} clearState={loading ? 'stop' : undefined} />
-      </Container>
-      <Container maxWidth="xl" sx={{ pb: 8, display: hideExecution ? 'none' : undefined }}>
-        <Grid container>
-          <Grid item xs={12} md={9} lg={8}>
-            <Execution ref={setEc} onLoading={handleLoading} onResultLoading={handleResultLoading} onChartLoading={handleChartLoading} questionId={questionId} onQuestionChange={handleQuestionChange} />
-          </Grid>
-          <Grid item xs={0} md={3} lg={4} sx={theme => ({ [theme.breakpoints.down('sm')]: { display: 'none' } })}>
-            <Typography variant="h5" mx={4} my={2}>🔥 Try other questions</Typography>
-            <Suggestions onSelect={handleSelect} dense disabled={loading} />
-          </Grid>
-        </Grid>
-      </Container>
-      {hideExecution && (
-        <Container maxWidth="xl" sx={{ py: 4 }}>
-          <Suggestions onSelect={handleSelect} dense={isSm} />
+      <ExploreContext.Provider value={{ questionId }}>
+        <Container maxWidth="xl" sx={{ pt: 4 }}>
+          {(isNullish(questionId) && !loading) && (
+            <>
+              <Typography variant="h1" textAlign="center" mt={4}>
+                Data Explorer
+                <StyledBeta />
+              </Typography>
+              <Typography variant="body2" textAlign="center" mt={1} mb={2} color="#7C7C7C">Analyze 5+ billion GitHub data from natural language, no prerequisite knowledge of SQL or plotting libraries necessary.</Typography>
+            </>
+          )}
+          <ExploreSearch value={value} onChange={setValue} onAction={handleAction} disableInput={loading} disableClear={value === ''} disableAction={loading} onClear={handleClear} clearState={loading ? 'stop' : undefined} />
         </Container>
-      )}
-      <Container maxWidth="lg" sx={{ pb: 8 }}>
-        <Faq />
-      </Container>
+        <Container maxWidth="xl" sx={{ pb: 8, display: hideExecution ? 'none' : undefined }}>
+          <Grid container>
+            <Grid item xs={12} md={9} lg={8}>
+              <Execution ref={setEc} onLoading={handleLoading} onResultLoading={handleResultLoading} onChartLoading={handleChartLoading} questionId={questionId} onQuestionChange={handleQuestionChange} />
+            </Grid>
+            <Grid item xs={0} md={3} lg={4} sx={theme => ({ [theme.breakpoints.down('sm')]: { display: 'none' } })}>
+              <Typography variant="h5" mx={4} my={2}>🔥 Try other questions</Typography>
+              <Suggestions onSelect={handleSelect} dense disabled={loading} />
+            </Grid>
+          </Grid>
+        </Container>
+        {hideExecution && (
+          <Container maxWidth="xl" sx={{ py: 4 }}>
+            <Suggestions onSelect={handleSelect} dense={isSm} />
+          </Container>
+        )}
+        <Container maxWidth="lg" sx={{ pb: 8 }}>
+          <Faq />
+        </Container>
+      </ExploreContext.Provider>
     </CustomPage>
   );
 }
