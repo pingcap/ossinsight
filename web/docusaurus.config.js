@@ -255,7 +255,7 @@ const config = {
               {label: '└─ NFT Insight', to: '/docs/workshop/nft-insight'},
               {label: '└─ Twitter Insight - not ready', to: '/docs/workshop/twitter-insight'},
               {label: '└─ Stack Overflow Insight - not ready', to: '/docs/workshop/stackoverflow-insight'},
-              {label: '└─ Cryptocurrency Insight - not ready', to: '/docs/workshop/cryptocurrency-insight'},
+              {label: '└─ CoinMarketCap Insight - not ready', to: '/docs/workshop/coinmarketcap-insight'},
             ]
           }, */
           /*
