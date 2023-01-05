@@ -2,8 +2,8 @@ import { AsyncData } from '@site/src/components/RemoteCharts/hook';
 import { useEffect, useRef, useState } from 'react';
 import { useWhenMounted } from '@site/src/hooks/mounted';
 import { unstable_serialize } from 'swr';
-import { useUserInfoContext } from '@site/src/context/user';
 import { useEventCallback } from '@mui/material';
+import { useAuth0 } from '@auth0/auth0-react';
 
 interface AsyncOperation<T> extends AsyncData<T> {
   run: () => any;
@@ -45,7 +45,7 @@ export function useAsyncState<T, E = unknown> (initial?: T | (() => T)) {
 }
 
 export function useAsyncOperation<P, T> (params: P, fetcher: (params: P) => Promise<T>, requireAuth: boolean = false): AsyncOperation<T> {
-  const userInfo = useUserInfoContext();
+  const { isAuthenticated, loginWithRedirect } = useAuth0();
   const whenMounted = useWhenMounted();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<unknown>();
@@ -63,9 +63,9 @@ export function useAsyncOperation<P, T> (params: P, fetcher: (params: P) => Prom
     loadingRef.current = false;
   }, [fetcher, unstable_serialize([params])]);
 
-  const run = useEventCallback(() => {
-    if (requireAuth && !userInfo.validated) {
-      userInfo.login();
+  const run = useEventCallback(async () => {
+    if (requireAuth && !isAuthenticated) {
+      await loginWithRedirect();
       return;
     }
     if (loadingRef.current) {

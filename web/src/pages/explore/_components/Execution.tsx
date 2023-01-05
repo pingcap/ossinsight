@@ -7,7 +7,6 @@ import Section from '@site/src/pages/explore/_components/Section';
 import CodeBlock from '@theme/CodeBlock';
 import { Charts } from '@site/src/pages/explore/_components/charts';
 import { Alert, Divider, styled, ToggleButton, ToggleButtonGroup, Typography, useEventCallback } from '@mui/material';
-import { useUserInfoContext } from '@site/src/context/user';
 import { getErrorMessage, isAxiosError } from '@site/src/utils/error';
 import { AxiosError } from 'axios';
 import { applyForwardedRef } from '@site/src/utils/ref';
@@ -17,9 +16,10 @@ import { AutoGraph, TableView } from '@mui/icons-material';
 import Info from './Info';
 import { twitterLink } from '@site/src/utils/share';
 import ShareWithTwitter from '@site/src/pages/explore/_components/ShareWithTwitter';
+import { useAuth0 } from '@auth0/auth0-react';
 
 export interface ExecutionContext {
-  run: (question: string) => void;
+  run: (question: string) => Promise<void>;
   load: (questionId: string) => void;
   clear: () => void;
 }
@@ -36,13 +36,17 @@ export interface ExecutionProps {
 const PENDING_STATE = new Set([QuestionStatus.New, QuestionStatus.Waiting, QuestionStatus.Running]);
 
 export function useQuestion (questionId?: string) {
-  const { validating, userInfo, login } = useUserInfoContext();
+  const {
+    isLoading: validating,
+    user: userInfo,
+    loginWithRedirect: login,
+  } = useAuth0();
   const { data, loading, error, setAsyncData, clearState } = useAsyncState<Question>();
   const runningQuestion = useRef<string>();
 
-  const run = useEventCallback((question: string) => {
+  const run = useEventCallback(async (question: string) => {
     if (!validating && !userInfo) {
-      login();
+      await login();
       return;
     }
     clearState();

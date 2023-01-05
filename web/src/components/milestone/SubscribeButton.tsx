@@ -5,17 +5,17 @@ import { Notifications, NotificationsOff } from '@mui/icons-material';
 import { ButtonProps } from '@mui/material/Button';
 import { notFalsy } from '@site/src/utils/value';
 import { useNotifications } from '@site/src/components/Notifications';
-import { useUserInfoContext } from '@site/src/context/user';
+import { useAuth0 } from '@auth0/auth0-react';
 
 export interface SubscribeButtonProps extends Omit<ButtonProps, 'onClick' | 'disabled' | 'startIcon' | 'children'> {
   repoName: string;
   icon?: boolean;
 
-  onClick?: (action: () => void, subscribed: boolean) => void;
+  onClick?: (action: () => Promise<void>, subscribed: boolean) => void;
 }
 
 export default forwardRef(function SubscribeButton ({ repoName, variant, onClick, icon: iconProp, ...props }: SubscribeButtonProps, ref: ForwardedRef<HTMLButtonElement>) {
-  const { validated: userValidated, validating: userValidating, login } = useUserInfoContext();
+  const { isAuthenticated: userValidated, isLoading: userValidating, loginWithRedirect: login } = useAuth0();
   const { subscribed, subscribing, subscribe, unsubscribe, isValidating } = useSubscribed(repoName);
   const { success, displayError } = useNotifications();
 
@@ -41,9 +41,9 @@ export default forwardRef(function SubscribeButton ({ repoName, variant, onClick
     }
   }, [userValidated, subscribed]);
 
-  const performAction = useCallback(() => {
+  const performAction = useCallback(async () => {
     if (!userValidated) {
-      login();
+      await login();
       return;
     }
     if (subscribed) {
@@ -57,11 +57,11 @@ export default forwardRef(function SubscribeButton ({ repoName, variant, onClick
     }
   }, [subscribed, subscribe, unsubscribe, userValidated, repoName]);
 
-  const handleClick = useCallback(() => {
+  const handleClick = useCallback(async () => {
     if (onClick) {
       onClick(performAction, subscribed);
     } else {
-      performAction();
+      await performAction();
     }
   }, [onClick, performAction, subscribed]);
 
@@ -69,6 +69,7 @@ export default forwardRef(function SubscribeButton ({ repoName, variant, onClick
     return (
       <IconButton
         disabled={subscribing}
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onClick={handleClick}
         color="primary"
         ref={ref}
@@ -83,6 +84,7 @@ export default forwardRef(function SubscribeButton ({ repoName, variant, onClick
     <Button
       disabled={subscribing}
       startIcon={icon}
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       onClick={handleClick}
       variant={variant}
       ref={ref}
