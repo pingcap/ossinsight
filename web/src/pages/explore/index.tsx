@@ -104,7 +104,7 @@ export default function Page () {
         <Container maxWidth="xl" sx={{ pb: 8, display: hideExecution ? 'none' : undefined }}>
           <Grid container>
             <Grid item xs={12} md={9} lg={8}>
-              <Execution ref={setEc} onLoading={handleLoading} onResultLoading={handleResultLoading} onChartLoading={handleChartLoading} questionId={questionId} onQuestionChange={handleQuestionChange} />
+              <Execution ref={setEc} questionId={questionId} search={value} onLoading={handleLoading} onResultLoading={handleResultLoading} onChartLoading={handleChartLoading} onQuestionChange={handleQuestionChange} />
             </Grid>
             <Grid item xs={0} md={3} lg={4} sx={theme => ({ [theme.breakpoints.down('sm')]: { display: 'none' } })}>
               <Typography variant="h5" mx={4} my={2}>🔥 Try other questions</Typography>

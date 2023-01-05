@@ -6,7 +6,7 @@ import { format } from 'sql-formatter';
 import Section from '@site/src/pages/explore/_components/Section';
 import CodeBlock from '@theme/CodeBlock';
 import { Charts } from '@site/src/pages/explore/_components/charts';
-import { Alert, Button, Divider, styled, ToggleButton, ToggleButtonGroup, Typography, useEventCallback } from '@mui/material';
+import { Alert, Divider, styled, ToggleButton, ToggleButtonGroup, Typography, useEventCallback } from '@mui/material';
 import { useUserInfoContext } from '@site/src/context/user';
 import { getErrorMessage, isAxiosError } from '@site/src/utils/error';
 import { AxiosError } from 'axios';
@@ -15,6 +15,8 @@ import { TabContext, TabPanel } from '@mui/lab';
 import TableChart from './charts/TableChart';
 import { AutoGraph, TableView } from '@mui/icons-material';
 import Info from './Info';
+import { twitterLink } from '@site/src/utils/share';
+import ShareWithTwitter from '@site/src/pages/explore/_components/ShareWithTwitter';
 
 export interface ExecutionContext {
   run: (question: string) => void;
@@ -23,6 +25,7 @@ export interface ExecutionContext {
 }
 
 export interface ExecutionProps {
+  search: string;
   questionId?: string;
   onLoading?: (loading: boolean) => void;
   onResultLoading?: (loading: boolean) => void;
@@ -106,7 +109,7 @@ export function isSqlError (error: unknown): error is AxiosError<{ message: stri
   return false;
 }
 
-export default forwardRef<ExecutionContext, ExecutionProps>(function Execution ({ questionId, onLoading, onResultLoading, onChartLoading, onQuestionChange }, ref: ForwardedRef<ExecutionContext>) {
+export default forwardRef<ExecutionContext, ExecutionProps>(function Execution ({ search, questionId, onLoading, onResultLoading, onChartLoading, onQuestionChange }, ref: ForwardedRef<ExecutionContext>) {
   const { question, run, load, clear, loading, resultPending, sqlError, resultError } = useQuestion(questionId);
 
   useEffect(() => {
@@ -236,6 +239,20 @@ export default forwardRef<ExecutionContext, ExecutionProps>(function Execution (
     }
   }, [question, loading, resultPending || chartLoading]);
 
+  const twitterShareLink = useMemo(() => {
+    let url;
+    if (typeof location === 'undefined') {
+      if (isNonemptyString(questionId)) {
+        url = `https://ossinsight.io/explore?id=${questionId}`;
+      } else {
+        url = 'https://ossinsight.io/explore';
+      }
+    } else {
+      url = twitterLink(location.href, { title: `${search} | OSSInsight Data Explorer\n`, hashtags: ['OpenSource', 'OpenAI', 'TiDBCloud'] });
+    }
+    return url;
+  }, [search]);
+
   return (
     <>
       <Section status={sqlSectionStatus} title={sqlTitle} error={sqlError} errorWithChildren>
@@ -248,7 +265,7 @@ export default forwardRef<ExecutionContext, ExecutionProps>(function Execution (
       <Section
         status={resultStatus}
         title={resultTitle}
-        extra={<Button>Play with your own data</Button>}
+        extra={<ShareWithTwitter href={twitterShareLink} />}
         error={resultError}
         defaultExpanded
       >
@@ -364,7 +381,7 @@ function Chart ({ chartData, chartError, fields, result }: { chartData: ChartRes
 
     return (
       <ChartContainer>
-        <Controls className='chart-controls'>
+        <Controls className="chart-controls">
           <ToggleButtonGroup size="small" value={tab} onChange={handleTabChange} exclusive color="primary">
             <ToggleButton value="visualization">
               <AutoGraph />
@@ -402,6 +419,7 @@ const Controls = styled('div')`
 
 const ChartContainer = styled('div')`
   position: relative;
+
   &:hover > .chart-controls {
     opacity: 1;
   }
