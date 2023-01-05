@@ -35,7 +35,7 @@ export default function Section ({ status, title, defaultExpanded, extra, error,
           <SectionTitle>
             {status === 'loading'
               ? <CircularProgress size={16} />
-              : status === 'success'
+              : status === 'success' && isNullish(error)
                 ? <CheckCircle color="success" fontSize="inherit" />
                 : <Circle color="disabled" fontSize="inherit" />}
             <SectionTitleContent>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { ButtonBase, styled, useEventCallback } from '@mui/material';
 
 export type QuestionCardVariant = 'recommended-card' | 'card' | 'text';
@@ -6,13 +6,15 @@ export type QuestionCardVariant = 'recommended-card' | 'card' | 'text';
 export interface QuestionCardProps {
   disabled?: boolean;
   variant?: QuestionCardVariant;
-  question: string;
+  question: ReactNode;
   onClick?: (question: string) => void;
 }
 
 export default function QuestionCard ({ question, onClick, variant = 'card', disabled }: QuestionCardProps) {
   const handleClick = useEventCallback(() => {
-    onClick?.(question);
+    if (typeof question === 'string') {
+      onClick?.(question);
+    }
   });
 
   switch (variant) {

@@ -114,8 +114,6 @@ export function isSqlError (error: unknown): error is AxiosError<{ message: stri
 export default forwardRef<ExecutionContext, ExecutionProps>(function Execution ({ search, questionId, onLoading, onResultLoading, onChartLoading, onQuestionChange, onFinished }, ref: ForwardedRef<ExecutionContext>) {
   const { question, run, load, clear, loading, resultPending, sqlError, resultError } = useQuestion(questionId);
 
-  console.log(question, sqlError);
-
   useEffect(() => {
     onLoading?.(loading);
   }, [loading, onLoading]);
@@ -284,7 +282,7 @@ export default forwardRef<ExecutionContext, ExecutionProps>(function Execution (
         status={resultStatus}
         title={resultTitle}
         extra={<ShareWithTwitter href={twitterShareLink} />}
-        error={resultError}
+        error={question?.status === 'error' ? resultError ?? 'Empty error message' : resultError}
         defaultExpanded
       >
         <Chart chartData={chartData} chartError={chartError} result={result} fields={question?.result?.fields} />

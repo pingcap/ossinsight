@@ -69,6 +69,7 @@ export interface Question {
   result?: QuestionSQLResult;
   chart?: ChartResult | null;
   recommended: boolean;
+  recommendedQuestions?: string[];
   createdAt: string;
   requestedAt?: string | null;
   executedAt?: string | null;
@@ -121,4 +122,14 @@ export async function pollQuestion (questionId: string): Promise<Question> {
 
 export async function questionToChart (questionId: string): Promise<ChartResult> {
   return await clientWithoutCache.post(`/explorer/questions/${questionId}/chart`, undefined);
+}
+
+export type QuestionTemplate = {
+  hash: string;
+  title: string;
+  ai_generated: 0 | 1;
+};
+
+export async function generateQuestion (aiGenerated: boolean, n: number): Promise<QuestionTemplate[]> {
+  return await clientWithoutCache.get('/explorer/questions/recommend', { params: { aiGenerated, n } });
 }

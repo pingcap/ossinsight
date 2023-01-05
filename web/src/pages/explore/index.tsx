@@ -1,10 +1,10 @@
 import CustomPage from '@site/src/theme/CustomPage';
 import React, { useEffect, useRef, useState } from 'react';
 import ExploreSearch, { useStateRef } from '@site/src/pages/explore/_components/Search';
-import { Box, Container, Typography, useEventCallback, useMediaQuery, useTheme } from '@mui/material';
+import { Box, Container, Divider, IconButton, Typography, useEventCallback } from '@mui/material';
 import Execution, { ExecutionContext } from '@site/src/pages/explore/_components/Execution';
 import { isBlankString, isNullish } from '@site/src/utils/value';
-import Suggestions from '@site/src/pages/explore/_components/Suggestions';
+import { PresetSuggestions, RecommendedSuggestions } from '@site/src/pages/explore/_components/Suggestions';
 import Faq from '@site/src/pages/explore/_components/Faq';
 import { useExperimental } from '@site/src/components/Experimental';
 import NotFound from '@theme/NotFound';
@@ -15,12 +15,14 @@ import ExploreContext from '@site/src/pages/explore/_components/context';
 import Header from '@site/src/pages/explore/_components/Header';
 import Layout from './_components/Layout';
 import { Decorators } from '@site/src/pages/explore/_components/Decorators';
+import { Cached } from '@mui/icons-material';
 
 export default function Page () {
   const [questionId, setQuestionId] = useUrlSearchState('id', nullableStringParam(), true);
   const [value, setValue, valueRef] = useStateRef('');
   const [hasResult, setHasResult] = useState(false);
   const [ec, setEc, ecRef] = useStateRef<ExecutionContext | null>(null);
+  const [suggestions, setSuggestions] = useState<string[]>([]);
   const loadingState = useRef({ loading: false, resultLoading: false, chartLoading: false });
   const forceUpdate = useForceUpdate();
 
@@ -40,6 +42,7 @@ export default function Page () {
   const handleQuestionChange = useEventCallback((question: Question) => {
     setQuestionId(question.id);
     setValue(question.title);
+    setSuggestions(question.recommendedQuestions ?? []);
   });
 
   const handleSelect = useEventCallback((question: string) => {
@@ -83,9 +86,6 @@ export default function Page () {
 
   const hideExecution = isNullish(questionId) && !loading;
 
-  const theme = useTheme();
-  const isSm = useMediaQuery(theme.breakpoints.down('sm'));
-
   if (!enabled) {
     return <NotFound />;
   }
@@ -102,8 +102,8 @@ export default function Page () {
               header={<Header />}
               side={(
                 <>
-                  <Typography variant="h3" mx={4} mb={2} fontSize={18}>🔥 Try other questions</Typography>
-                  <Suggestions onSelect={handleSelect} dense disabled={loading} />
+                  <Typography variant="h3" m={2} fontSize={18}>🔥 Try other questions</Typography>
+                  <PresetSuggestions onSelect={handleSelect} disabled={loading} questions={suggestions} n={3} variant="text" />
                 </>
               )}
             >
@@ -112,7 +112,28 @@ export default function Page () {
                 <Execution ref={setEc} questionId={questionId} search={value} onLoading={handleLoading} onResultLoading={handleResultLoading} onChartLoading={handleChartLoading} onQuestionChange={handleQuestionChange} onFinished={setHasResult} />
               </Box>
               {hideExecution && (
-                <Suggestions onSelect={handleSelect} dense={isSm} />
+                <>
+                  <RecommendedSuggestions
+                    title={(reload, loading) => (
+                      <Box mt={2} height="40px">
+                        🤖️ AI-generated questions: 3 random ones for you <IconButton onClick={reload} disabled={loading}><Cached /></IconButton>
+                      </Box>
+                    )}
+                    onSelect={handleSelect}
+                    aiGenerated
+                    n={3}
+                  />
+                  <Divider orientation="horizontal" light sx={{ my: 3, backgroundColor: 'transparent' }} />
+                  <RecommendedSuggestions
+                    title={() => (
+                      <Box height="40px">
+                        🔥 Popular queries
+                      </Box>
+                    )}
+                    onSelect={handleSelect}
+                    n={9}
+                  />
+                </>
               )}
             </Layout>
           </Container>

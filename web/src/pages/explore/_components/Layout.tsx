@@ -122,6 +122,8 @@ const Side = styled('div', { name: 'Side' })`
   opacity: 0;
   transform: translateX(calc(var(--explore-layout-side-width) / 2));
   transition: ${({ theme }) => theme.transitions.create(['transform', 'opacity'], { duration: transitionDuration })};
+  padding: 0 12px;
+  box-sizing: border-box;
 
   ${classNames('Side', true)} {
     display: block;
