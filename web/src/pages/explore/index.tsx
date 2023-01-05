@@ -14,6 +14,7 @@ import { Question } from '@site/src/api/explorer';
 import ExploreContext from '@site/src/pages/explore/_components/context';
 import Header from '@site/src/pages/explore/_components/Header';
 import Layout from './_components/Layout';
+import { Decorators } from '@site/src/pages/explore/_components/Decorators';
 
 export default function Page () {
   const [questionId, setQuestionId] = useUrlSearchState('id', nullableStringParam(), true);
@@ -88,33 +89,36 @@ export default function Page () {
   }
 
   return (
-    <CustomPage>
-      <ExploreContext.Provider value={{ questionId }}>
-        <Container maxWidth="xl" sx={{ pt: 4 }}>
-          <Layout
-            showSide={!hideExecution}
-            showHeader={hideExecution}
-            header={<Header />}
-            side={(
-              <>
-                <Typography variant="h3" mx={4} mb={2} fontSize={18}>🔥 Try other questions</Typography>
-                <Suggestions onSelect={handleSelect} dense disabled={loading} />
-              </>
-            )}
-          >
-            <ExploreSearch value={value} onChange={setValue} onAction={handleAction} disableInput={loading} disableClear={value === ''} disableAction={loading} onClear={handleClear} clearState={loading ? 'stop' : undefined} />
-            <Box sx={{ pb: 8, mt: 4, display: hideExecution ? 'none' : undefined }}>
-              <Execution ref={setEc} questionId={questionId} search={value} onLoading={handleLoading} onResultLoading={handleResultLoading} onChartLoading={handleChartLoading} onQuestionChange={handleQuestionChange} />
-            </Box>
-            {hideExecution && (
-              <Suggestions onSelect={handleSelect} dense={isSm} />
-            )}
-          </Layout>
-        </Container>
-        <Container maxWidth="lg" sx={{ pb: 8 }}>
-          <Faq />
-        </Container>
-      </ExploreContext.Provider>
-    </CustomPage>
+    <>
+      <Decorators />
+      <CustomPage>
+        <ExploreContext.Provider value={{ questionId }}>
+          <Container maxWidth="xl" sx={{ pt: 4 }}>
+            <Layout
+              showSide={!hideExecution}
+              showHeader={hideExecution}
+              header={<Header />}
+              side={(
+                <>
+                  <Typography variant="h3" mx={4} mb={2} fontSize={18}>🔥 Try other questions</Typography>
+                  <Suggestions onSelect={handleSelect} dense disabled={loading} />
+                </>
+              )}
+            >
+              <ExploreSearch value={value} onChange={setValue} onAction={handleAction} disableInput={loading} disableClear={value === ''} disableAction={loading} onClear={handleClear} clearState={loading ? 'stop' : undefined} />
+              <Box sx={{ pb: 8, mt: 4, display: hideExecution ? 'none' : undefined }}>
+                <Execution ref={setEc} questionId={questionId} search={value} onLoading={handleLoading} onResultLoading={handleResultLoading} onChartLoading={handleChartLoading} onQuestionChange={handleQuestionChange} />
+              </Box>
+              {hideExecution && (
+                <Suggestions onSelect={handleSelect} dense={isSm} />
+              )}
+            </Layout>
+          </Container>
+          <Container maxWidth="lg" sx={{ pb: 8 }}>
+            <Faq />
+          </Container>
+        </ExploreContext.Provider>
+      </CustomPage>
+    </>
   );
 }

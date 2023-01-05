@@ -1,5 +1,6 @@
-import { ButtonBase, Card, Grid, List, ListItem, ListItemButton, ListItemText, styled } from '@mui/material';
+import { Grid } from '@mui/material';
 import React from 'react';
+import QuestionCard from '@site/src/pages/explore/_components/QuestionCard';
 
 // 【🎆 Annual review】My year in review 2022【使用关键词 annual report/github year/year in review/repo _name 2022 触发】
 // { type: '🎆 Annual review', content: 'The annual report of @pingcap/tidb 【使用关键词 annual report/github year/year in review/repo _name 2022 触发】' },
@@ -64,38 +65,21 @@ export interface SuggestionsProps {
 export default function Suggestions ({ onSelect, disabled = false, dense = false }: SuggestionsProps) {
   if (dense) {
     return (
-      <List dense>
+      <ul>
         {questions.map((question, index) => (
-          <ListItem key={index}>
-            <ListItemButton disabled={disabled} onClick={() => onSelect(question.content)}>
-              <ListItemText>{question.content}</ListItemText>
-            </ListItemButton>
-          </ListItem>
+          <QuestionCard key={index} variant="text" question={question.content} onClick={onSelect} disabled={disabled} />
         ))}
-      </List>
+      </ul>
     );
   } else {
     return (
       <Grid container spacing={2} mt={2}>
         {questions.map((question, index) => (
           <Grid item xs={12} sm={6} lg={4} xl={3} key={index} display="flex" alignItems="stretch" justifyContent="stretch">
-            <Card sx={{ p: 2, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'flex-start', textAlign: 'left', width: '100%' }} component={ButtonBase} disabled={disabled} onClick={() => onSelect(question.content)}>
-              <Tag color={question.type.color}>{question.type.title}</Tag>
-              <div>{question.content}</div>
-            </Card>
+            <QuestionCard variant="recommended-card" key={index} question={question.content} onClick={onSelect} disabled={disabled} />
           </Grid>
         ))}
       </Grid>
     );
   }
 }
-
-const Tag = styled('div')<{ color: string }>`
-  color: ${({ color }) => color};
-  background-color: ${({ color }) => `${color}40`};
-  border: 1px solid ${({ color }) => color};
-  border-radius: 6px;
-  padding: 2px 6px;
-  margin-bottom: 8px;
-  width: max-content;
-`;
