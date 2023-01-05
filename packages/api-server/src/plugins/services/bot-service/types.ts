@@ -10,9 +10,8 @@ export interface PromptTemplate {
   stringify(...arg: any[]): string;
 }
 
-export interface RecommendedChart {
+export type RecommendedChart = Record<string, any> & {
   chartName: ChartNames;
-  chartOptions: Record<string, any>;
 }
 
 export type Column = string;
