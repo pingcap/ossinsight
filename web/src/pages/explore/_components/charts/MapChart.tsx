@@ -1,12 +1,12 @@
 import { ChartResult } from '@site/src/api/explorer';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { EChartsOption } from 'echarts';
 import EChartsReact from 'echarts-for-react';
 import { alpha2ToGeo, alpha2ToTitle } from '@site/src/lib/areacode';
 import { worldMapGeo } from '@site/src/dynamic-pages/analyze/charts/options';
 import AspectRatio from 'react-aspect-ratio';
 import { styled } from '@mui/material';
-import { isNonemptyString } from '@site/src/utils/value';
+import { isNonemptyString, isNullish } from '@site/src/utils/value';
 
 function transformData (data: Array<Record<string, any>>, code: string, value: string): Array<[string, number, number, number]> {
   return data.map(item => {
@@ -23,6 +23,7 @@ function transformData (data: Array<Record<string, any>>, code: string, value: s
 
 export default function MapChart ({ chartName, title, country_code: countryCode, value, data }: ChartResult & { data: any[] }) {
   const [ref, setRef] = useState<HTMLDivElement | null>(null);
+  const chartRef = useRef<EChartsReact>(null);
 
   const transformedData = useMemo(() => {
     return transformData(data, countryCode, value);
@@ -88,8 +89,25 @@ export default function MapChart ({ chartName, title, country_code: countryCode,
     };
   }, [chartName, title, value, transformedData]);
 
+  useEffect(() => {
+    if (isNullish(ref)) {
+      return;
+    }
+    const so = new ResizeObserver(([entry]) => {
+      chartRef.current?.getEchartsInstance()?.resize({
+        height: entry.contentRect.height,
+      });
+    });
+
+    so.observe(ref);
+
+    return () => {
+      so.disconnect();
+    };
+  }, [ref]);
+
   return (
-    <AspectRatio ratio={4 / 3}>
+    <AspectRatio ratio={4 / 3} style={{ maxWidth: 600, margin: 'auto' }}>
       <MapContainer ref={setRef}>
         <EChartsReact
           theme="dark"
@@ -97,6 +115,7 @@ export default function MapChart ({ chartName, title, country_code: countryCode,
             height: ref?.clientHeight ?? 'auto',
           }}
           option={options}
+          ref={chartRef}
         />
       </MapContainer>
     </AspectRatio>
