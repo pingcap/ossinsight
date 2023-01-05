@@ -4,7 +4,9 @@ import pino from "pino";
 
 import {SQLGeneratePromptTemplate} from "./template/GenerateSQLPromptTemplate";
 import {GenerateChartPromptTemplate} from "./template/GenerateChartPromptTemplate";
-import {RecommendedChart} from "./types";
+import {Answer, RecommendedChart, RecommendQuestion} from "./types";
+import {GenerateAnswerPromptTemplate} from "./template/GenerateAnswerPromptTemplate";
+import {GenerateQuestionsPromptTemplate} from "./template/GenerateQuestionsPromptTemplate";
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -96,6 +98,79 @@ export class BotService {
         } catch (err) {
             this.log.error(err, `Failed to parse chart: ${text}`);
             return null;
+        }
+    }
+
+    async questionToAnswer(template: GenerateAnswerPromptTemplate, question: string): Promise<Answer> {
+        const prompt = template.stringify(question);
+
+        let answer = null;
+        try {
+            const res = await this.openai.createCompletion({
+                model: template.model,
+                prompt,
+                stream: false,
+                stop: template.stop,
+                temperature: template.temperature,
+                max_tokens: template.maxTokens,
+                top_p: template.topP,
+                n: template.n,
+                logprobs: template.logprobs,
+            });
+            const {choices, usage} = res.data;
+            this.log.info({ usage }, 'Got answer of question "%s" from OpenAI API', question);
+
+            if (Array.isArray(choices) && choices[0].text) {
+                answer = JSON.parse(choices[0].text);
+                return answer
+            } else {
+                this.log.warn({ response: res.data }, 'Got empty answer for question: %s', question);
+                return {
+                    questions: []
+                };
+            }
+        } catch (err) {
+            this.log.error({ err, answer }, 'Failed to get answer for question: %s', question);
+            return {
+                questions: []
+            };
+        }
+    }
+
+    async generateRecommendQuestions(template: GenerateQuestionsPromptTemplate, n: number): Promise<RecommendQuestion[]> {
+        const prompt = template.stringify(n);
+
+        let questions = null;
+        try {
+            const res = await this.openai.createCompletion({
+                model: template.model,
+                prompt,
+                stream: false,
+                stop: template.stop,
+                temperature: template.temperature,
+                max_tokens: template.maxTokens,
+                top_p: template.topP,
+                n: template.n,
+                logprobs: template.logprobs,
+            });
+            const {choices, usage} = res.data;
+            this.log.info({ usage }, 'Request to generate %d questions from OpenAI API', n);
+
+            if (Array.isArray(choices) && choices[0].text) {
+                questions = JSON.parse(choices[0].text);
+                return questions.map((q: any) => {
+                    return {
+                        title: q.title,
+                        aiGenerated: true
+                    }
+                });
+            } else {
+                this.log.warn({ response: res.data }, 'Got empty questions');
+                return [];
+            }
+        } catch (err) {
+            this.log.error({ err }, 'Failed to generate recommend questions.');
+            return [];
         }
     }
 }
