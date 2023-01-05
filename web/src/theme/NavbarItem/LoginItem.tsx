@@ -14,50 +14,6 @@ import { Experimental } from '@site/src/components/Experimental';
 import { useBoolean } from 'ahooks';
 import { useAuth0 } from '@auth0/auth0-react';
 
-// ! to be removed
-// const TestCallButton = () => {
-//   const domain = "";
-//   const { getAccessTokenSilently, getIdTokenClaims, user } = useAuth0();
-
-//   const fetchTest = async () => {
-//     // const token = await getAccessTokenSilently();
-//     const accessToken = await getAccessTokenSilently({
-//       audience: `https://${domain}/api/v2/`,
-//       scope: "read:current_user",
-//     });
-//     // const claims = await getIdTokenClaims();
-//     // console.log(accessToken, claims);
-//     const response = await fetch("http://localhost:3450/cz", {
-//       method: "GET",
-//       credentials: "include",
-//       headers: {
-//         Authorization: `Bearer ${accessToken}`,
-//       },
-//     });
-//     const data = await response.json();
-//     console.log(data);
-//   };
-
-//   const fetchUserMetadata = async () => {
-//     const accessToken = await getAccessTokenSilently({
-//       audience: `https://${domain}/api/v2/`,
-//       scope: "read:current_user",
-//     });
-//     const userDetailsByIdUrl = `https://${domain}/api/v2/users/${user.sub}`;
-
-//     const metadataResponse = await fetch(userDetailsByIdUrl, {
-//       headers: {
-//         Authorization: `Bearer ${accessToken}`,
-//       },
-//     });
-
-//     const { user_metadata } = await metadataResponse.json();
-//     console.log(`user_metadata`, user_metadata);
-//   };
-
-//   return <button onClick={() => fetchTest()}>Test Call</button>;
-// };
-
 const StyledButtonBase = styled(ButtonBase)`
   position: relative;
 `;
