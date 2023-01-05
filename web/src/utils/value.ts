@@ -32,6 +32,10 @@ export function isNonemptyString (v: unknown): v is string {
   return isString(v) && v !== '';
 }
 
+export function isBlankString (v: unknown): v is string {
+  return isString(v) && v.trim() === '';
+}
+
 export function isPositiveNumber (v: unknown): v is number {
   return isNumber(v) && v > 0;
 }

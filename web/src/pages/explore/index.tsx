@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import ExploreSearch, { useStateRef } from '@site/src/pages/explore/_components/Search';
 import { Box, Container, Typography, useEventCallback, useMediaQuery, useTheme } from '@mui/material';
 import Execution, { ExecutionContext } from '@site/src/pages/explore/_components/Execution';
-import { isFalsy, isNullish } from '@site/src/utils/value';
+import { isBlankString, isNullish } from '@site/src/utils/value';
 import Suggestions from '@site/src/pages/explore/_components/Suggestions';
 import Faq from '@site/src/pages/explore/_components/Faq';
 import { useExperimental } from '@site/src/components/Experimental';
@@ -27,6 +27,7 @@ export default function Page () {
   const [enabled] = useExperimental('explore-data');
 
   const loading = loadingState.current.resultLoading || loadingState.current.loading || loadingState.current.chartLoading;
+  const disableAction = loading || isBlankString(value);
 
   useEffect(() => {
     if (isNullish(questionId)) {
@@ -80,7 +81,7 @@ export default function Page () {
     }
   });
 
-  const hideExecution = isFalsy(value) && !isNullish(value) && isNullish(questionId);
+  const hideExecution = isNullish(questionId) && !loading;
 
   const theme = useTheme();
   const isSm = useMediaQuery(theme.breakpoints.down('sm'));
@@ -106,7 +107,7 @@ export default function Page () {
                 </>
               )}
             >
-              <ExploreSearch value={value} onChange={setValue} onAction={handleAction} disableInput={loading} disableClear={value === ''} disableAction={loading} onClear={handleClear} clearState={loading ? 'stop' : undefined} />
+              <ExploreSearch value={value} onChange={setValue} onAction={handleAction} disableInput={loading} disableClear={value === ''} disableAction={disableAction} onClear={handleClear} clearState={loading ? 'stop' : undefined} />
               <Box sx={{ pb: 8, mt: 4, display: hideExecution ? 'none' : undefined }}>
                 <Execution ref={setEc} questionId={questionId} search={value} onLoading={handleLoading} onResultLoading={handleResultLoading} onChartLoading={handleChartLoading} onQuestionChange={handleQuestionChange} onFinished={setHasResult} />
               </Box>
