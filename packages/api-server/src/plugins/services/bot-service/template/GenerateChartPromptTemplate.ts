@@ -31,7 +31,6 @@ If the result is a numerical distribution, use BarChart
 If the result has a percentage column, use PieChart
 If the result is a repository or project list, use RepoCard
 If the result is a user list, use PersonalCard
-If not sure, use Table
 
 actor_login is the user login of actor
 

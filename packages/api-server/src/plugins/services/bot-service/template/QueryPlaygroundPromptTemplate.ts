@@ -293,6 +293,7 @@ export class QueryPlaygroundSQLPromptTemplate extends SQLGeneratePromptTemplate 
     'The most popular repos has the most stars,',
     'Similar repositories will have similar topics, or be in the same collection, order by the similarity',
     'collection is a categorization of some similar repositories, but not all repositories have a corresponding collection',
-    'The trending_repos table contains the most recent and popular repositories'
+    'The trending_repos table contains the most recent and popular repositories',
+    'notice: avoid non-existent and ambiguous column'
   ];
 }
