@@ -2,10 +2,12 @@ import { ChartResult } from '@site/src/api/explorer';
 import React, { useMemo } from 'react';
 import { EChartsOption } from 'echarts';
 import EChartsReact from 'echarts-for-react';
+import { transformTimeData } from '@site/src/pages/explore/_components/charts/utils';
 
 export default function BarChart ({ chartName, title, x, y, data }: ChartResult & { data: any[] }) {
   const options: EChartsOption = useMemo(() => {
     const isTime = /date|time|year|month/.test(x);
+    data = isTime ? transformTimeData(data, x) : data;
 
     const makeSeries = function (y: string | string[]) {
       if (typeof y === 'string') {
