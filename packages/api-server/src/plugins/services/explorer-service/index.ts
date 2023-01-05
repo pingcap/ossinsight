@@ -587,9 +587,7 @@ export class ExplorerService {
             if (!chart) {
                 chart = {
                     chartName: ChartNames.TABLE,
-                    chartOptions: {
-                        columns: sampleData.keys()
-                    }
+                    columns: sampleData[0] ? sampleData[0].keys() : []
                 }
             }
         }
