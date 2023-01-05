@@ -1,7 +1,7 @@
 import CustomPage from '@site/src/theme/CustomPage';
 import React, { useEffect, useRef } from 'react';
 import ExploreSearch, { useStateRef } from '@site/src/pages/explore/_components/Search';
-import { Container, Grid, styled, Typography, useEventCallback, useMediaQuery, useTheme } from '@mui/material';
+import { Box, Container, Grid, styled, Typography, useEventCallback, useMediaQuery, useTheme } from '@mui/material';
 import Execution, { ExecutionContext } from '@site/src/pages/explore/_components/Execution';
 import { isFalsy, isNullish } from '@site/src/utils/value';
 import Suggestions from '@site/src/pages/explore/_components/Suggestions';
@@ -89,34 +89,36 @@ export default function Page () {
   return (
     <CustomPage>
       <ExploreContext.Provider value={{ questionId }}>
-        <Container maxWidth="xl" sx={{ pt: 4 }}>
-          {(isNullish(questionId) && !loading) && (
-            <>
-              <Typography variant="h1" textAlign="center" mt={4}>
-                Data Explorer
-                <StyledBeta />
-              </Typography>
-              <Typography variant="body2" textAlign="center" mt={1} mb={2} color="#7C7C7C">Analyze 5+ billion GitHub data from natural language, no prerequisite knowledge of SQL or plotting libraries necessary.</Typography>
-            </>
-          )}
-          <ExploreSearch value={value} onChange={setValue} onAction={handleAction} disableInput={loading} disableClear={value === ''} disableAction={loading} onClear={handleClear} clearState={loading ? 'stop' : undefined} />
-        </Container>
-        <Container maxWidth="xl" sx={{ pb: 8, display: hideExecution ? 'none' : undefined }}>
+        <Container maxWidth='xl' sx={{ pt: 4 }}>
           <Grid container>
-            <Grid item xs={12} md={9} lg={8}>
-              <Execution ref={setEc} questionId={questionId} search={value} onLoading={handleLoading} onResultLoading={handleResultLoading} onChartLoading={handleChartLoading} onQuestionChange={handleQuestionChange} />
+            <Grid item xs={12} md={hideExecution ? 12 : 9} lg={hideExecution ? 12 : 8}>
+              {(isNullish(questionId) && !loading) && (
+                <>
+                  <Typography variant="h1" textAlign="center" mt={4}>
+                    Data Explorer
+                    <StyledBeta />
+                  </Typography>
+                  <Typography variant="body2" textAlign="center" mt={1} mb={2} color="#7C7C7C">Analyze 5+ billion GitHub data from natural language, no prerequisite knowledge of SQL or plotting libraries necessary.</Typography>
+                </>
+              )}
+              <ExploreSearch value={value} onChange={setValue} onAction={handleAction} disableInput={loading} disableClear={value === ''} disableAction={loading} onClear={handleClear} clearState={loading ? 'stop' : undefined} />
+              <Box sx={{ pb: 8, mt: 4, display: hideExecution ? 'none' : undefined }}>
+                <Execution ref={setEc} questionId={questionId} search={value} onLoading={handleLoading} onResultLoading={handleResultLoading} onChartLoading={handleChartLoading} onQuestionChange={handleQuestionChange} />
+              </Box>
+              {hideExecution && (
+                <Container maxWidth="xl" sx={{ py: 4 }}>
+                  <Suggestions onSelect={handleSelect} dense={isSm} />
+                </Container>
+              )}
             </Grid>
-            <Grid item xs={0} md={3} lg={4} sx={theme => ({ [theme.breakpoints.down('sm')]: { display: 'none' } })}>
-              <Typography variant="h5" mx={4} my={2}>🔥 Try other questions</Typography>
-              <Suggestions onSelect={handleSelect} dense disabled={loading} />
-            </Grid>
+            {!hideExecution && (
+              <Grid item xs={0} md={3} lg={4} sx={theme => ({ [theme.breakpoints.down('sm')]: { display: 'none' } })}>
+                <Typography variant="h3" mx={4} mb={2}>🔥 Try other questions</Typography>
+                <Suggestions onSelect={handleSelect} dense disabled={loading} />
+              </Grid>
+            )}
           </Grid>
         </Container>
-        {hideExecution && (
-          <Container maxWidth="xl" sx={{ py: 4 }}>
-            <Suggestions onSelect={handleSelect} dense={isSm} />
-          </Container>
-        )}
         <Container maxWidth="lg" sx={{ pb: 8 }}>
           <Faq />
         </Container>
