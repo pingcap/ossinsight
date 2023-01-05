@@ -63,7 +63,7 @@ const app: FastifyPluginAsync<AppOptions, RawServerDefault, JsonSchemaToTsProvid
     this.log.error(error);
 
     if (error instanceof ExplorerQuestionError) {
-      reply.status(error.statusCode).send({
+      reply.status(200).send({
         ...error.question,
         message: error.message
       });

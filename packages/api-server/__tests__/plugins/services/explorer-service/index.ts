@@ -5,6 +5,7 @@ import {bootstrapTestRedis, releaseTestRedis} from "../../../helpers/redis";
 import {ExplorerService} from "../../../../src";
 import "../../../../src/plugins/queue/explorer-high-concurrent-queue";
 import "../../../../src/plugins/queue/explorer-low-concurrent-queue";
+import {ChartNames} from "../../../../src/plugins/services/bot-service/types";
 
 let explorerService: ExplorerService, conn: Connection;
 
@@ -27,8 +28,15 @@ describe('create a new question', () => {
 
   test('tikv only query should push to high concurrent queue', async () => {
     const app = getTestApp().app;
-    const questionToSQL = jest.spyOn(app.botService, 'questionToSQL').mockImplementation(async (template, question, context) => {
-      return "SELECT COUNT(*) FROM github_events WHERE repo_name = 'pingcap/tidb'";
+    const questionToAnswer = jest.spyOn(app.botService, 'questionToAnswer').mockImplementation(async (template, question) => {
+      return {
+        sql: "SELECT COUNT(*) FROM github_events WHERE repo_name = 'pingcap/tidb'",
+        chart: {
+          chartName: ChartNames.TABLE,
+          columns: ['COUNT(*)']
+        },
+        questions: []
+      }
     });
 
     const question = await explorerService.newQuestion(conn, 1, "Mini256", "How many events are there in TiDB?");
@@ -45,17 +53,29 @@ describe('create a new question', () => {
       hitCache: false,
       status: "waiting",
       userId: 1,
+      chart: {
+        chartName: "Table",
+        columns: ["COUNT(*)"]
+      },
       createdAt: expect.any(Object),
-      requestedAt: expect.any(Object)
+      requestedAt: expect.any(Object),
+      recommendedQuestions: []
     });
 
-    questionToSQL.mockRestore();
+    questionToAnswer.mockRestore();
   });
 
   test('tiflash query should push to low concurrent queue', async () => {
     const app = getTestApp().app;
-    const questionToSQL = jest.spyOn(app.botService, 'questionToSQL').mockImplementation(async (template, question, context) => {
-      return "SELECT /*+ READ_FROM_STORAGE(tiflash[ge]) */ COUNT(*) FROM github_events ge";
+    const questionToAnswer = jest.spyOn(app.botService, 'questionToAnswer').mockImplementation(async (template, question) => {
+      return {
+        sql: "SELECT /*+ READ_FROM_STORAGE(tiflash[ge]) */ COUNT(*) FROM github_events ge",
+        chart: {
+          chartName: ChartNames.TABLE,
+          columns: ['COUNT(*)']
+        },
+        questions: []
+      }
     });
     const getStorageEnginesFromPlan = jest.spyOn(app.explorerService, 'getStorageEnginesFromPlan').mockImplementation((steps) => {
       return ['tiflash'];
@@ -75,11 +95,16 @@ describe('create a new question', () => {
       hitCache: false,
       status: "waiting",
       userId: 1,
+      chart: {
+        chartName: "Table",
+        columns: ["COUNT(*)"]
+      },
       createdAt: expect.any(Object),
-      requestedAt: expect.any(Object)
+      requestedAt: expect.any(Object),
+      recommendedQuestions: []
     });
 
-    questionToSQL.mockRestore();
+    questionToAnswer.mockRestore();
     getStorageEnginesFromPlan.mockRestore();
   });
 

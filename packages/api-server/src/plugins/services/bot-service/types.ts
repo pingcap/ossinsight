@@ -10,6 +10,18 @@ export interface PromptTemplate {
   stringify(...arg: any[]): string;
 }
 
+export interface RecommendQuestion {
+  hash: string;
+  title: string;
+  aiGenerated: boolean;
+}
+
+export interface Answer {
+  sql?: string;
+  chart?: RecommendedChart;
+  questions: string[];
+}
+
 export type RecommendedChart = Record<string, any> & {
   chartName: ChartNames;
 }

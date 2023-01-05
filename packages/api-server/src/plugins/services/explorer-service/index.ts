@@ -15,12 +15,12 @@ import {
     QuestionStatus,
     ValidateSQLResult
 } from "./types";
-import {QueryPlaygroundSQLPromptTemplate} from "../bot-service/template/QueryPlaygroundPromptTemplate";
 import {pino} from "pino";
 import {TiDBPlaygroundQueryExecutor} from "../../../core/executor/query-executor/TiDBPlaygroundQueryExecutor";
 import {GenerateChartPromptTemplate} from "../bot-service/template/GenerateChartPromptTemplate";
 import {randomUUID} from "crypto";
-import {ChartNames, RecommendedChart} from "../bot-service/types";
+import {ChartNames, RecommendedChart, RecommendQuestion} from "../bot-service/types";
+import {GenerateAnswerPromptTemplate} from "../bot-service/template/GenerateAnswerPromptTemplate";
 
 declare module 'fastify' {
     interface FastifyInstance {
@@ -74,7 +74,7 @@ export interface ExplorerOption {
 export class ExplorerService {
     // TODO: replace node-sql-parser with tidb-sql-parser.
     private sqlParser: Parser;
-    private readonly generateSQLTemplate: QueryPlaygroundSQLPromptTemplate;
+    private readonly generateAnswerTemplate: GenerateAnswerPromptTemplate;
     private readonly generateChartTemplate: GenerateChartPromptTemplate;
     private maxSelectLimit = 200;
     private options: ExplorerOption;
@@ -88,8 +88,8 @@ export class ExplorerService {
       options?: ExplorerOption
     ) {
         this.sqlParser = new Parser();
-        this.generateSQLTemplate = new QueryPlaygroundSQLPromptTemplate();
         this.generateChartTemplate = new GenerateChartPromptTemplate();
+        this.generateAnswerTemplate = new GenerateAnswerPromptTemplate();
         this.options = Object.assign({}, {
             userMaxQuestionsPerHour: 20,
             userMaxQuestionsOnGoing: 3,
@@ -110,6 +110,7 @@ export class ExplorerService {
             userId: userId,
             status: QuestionStatus.New,
             title: q,
+            recommendedQuestions: [],
             recommended: false,
             createdAt: DateTime.utc(),
             hitCache: false,
@@ -119,7 +120,7 @@ export class ExplorerService {
             await conn.beginTransaction();
 
             // Check if the question is cached.
-            const cachedQuestion = await this.getQuestionByHash(conn, questionHash, this.options.generateSQLCacheTTL);
+            const cachedQuestion = await this.getQuestionByHash(conn, questionHash);
             if (cachedQuestion) {
                 await conn.commit();
                 return cachedQuestion;
@@ -143,11 +144,17 @@ export class ExplorerService {
             }
 
             // Generate the SQL by OpenAI.
-            let querySQL = await this.botService.questionToSQL(this.generateSQLTemplate, normalizedQuestion, {});
+            const answer = await this.botService.questionToAnswer(this.generateAnswerTemplate, normalizedQuestion);
+            const templateQuestions = await this.getRecommendQuestions(conn, 3, false);
+            answer.questions.push(...templateQuestions.map(q => q.title));
+            question.recommendedQuestions = answer.questions;
+
+            let querySQL = answer.sql;
             if (!querySQL) {
                 throw new APIError(500, 'Failed to generate SQL, please try again later.');
             }
             question.querySQL = querySQL;
+            question.chart = answer.chart;
 
             // Validate the generated SQL.
             let statementType;
@@ -191,9 +198,9 @@ export class ExplorerService {
             await this.createQuestion(conn, question);
 
             // Try to get SQL result from cache.
-            const cachedResult = await this.getCachedSQLResultAndChart(conn, question.queryHash, this.options.querySQLCacheTTL);
+            const cachedResult = await this.getCachedSQLResult(conn, question.queryHash, this.options.querySQLCacheTTL);
             if (cachedResult) {
-                await this.saveQuestionResultAndChart(conn, questionId, cachedResult);
+                await this.saveQuestionResult(conn, questionId, cachedResult);
                 question = {
                     ...question,
                     ...cachedResult,
@@ -211,6 +218,8 @@ export class ExplorerService {
                 error: err.message,
             };
             await this.createQuestion(conn, question);
+
+            this.logger.info(err, `Failed to create a new question: ${err.message}`);
             if (err instanceof APIError) {
                 throw new ExplorerQuestionError(err.statusCode, err.message, question, err);
             } else {
@@ -356,14 +365,21 @@ export class ExplorerService {
     }
 
     private async createQuestion(conn: Connection, question: Question) {
-        const { id, hash, userId, status, title, querySQL, queryHash, engines = [], recommended, createdAt, queueName, queueJobId } = question;
+        const {
+            id, hash, userId, status, title, querySQL, queryHash, engines = [],
+            recommended, createdAt, queueName, queueJobId, chart, recommendedQuestions
+        } = question;
         const enginesValue = JSON.stringify(engines);
+        const chartValue = JSON.stringify(chart);
+        const recommendedQuestionsValue = JSON.stringify(recommendedQuestions);
         const [rs] = await conn.query<ResultSetHeader>(`
             INSERT INTO explorer_questions(
-                id, hash, user_id, status, title, query_sql, query_hash, engines, recommended, created_at, queue_name, queue_job_id
-            ) VALUES (UUID_TO_BIN(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                id, hash, user_id, status, title, query_sql, query_hash, engines, 
+                recommended, created_at, queue_name, queue_job_id, chart, recommended_questions
+            ) VALUES (UUID_TO_BIN(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `, [
-            id, hash, userId, status, title, querySQL, queryHash, enginesValue, recommended, createdAt.toSQL(), queueName, queueJobId
+            id, hash, userId, status, title, querySQL, queryHash, enginesValue,
+            recommended, createdAt.toSQL(), queueName, queueJobId, chartValue, recommendedQuestionsValue
         ]);
         if (rs.affectedRows !== 1) {
             throw new APIError(500, 'Failed to create a new question.');
@@ -392,7 +408,8 @@ export class ExplorerService {
         const [rows] = await conn.query<any[]>(`
             SELECT
                 BIN_TO_UUID(id) AS id, hash, user_id AS userId, status, title, query_sql AS querySQL, query_hash AS queryHash, engines, 
-                queue_name AS queueName, queue_job_id AS queueJobId, result, chart, recommended, hit_cache AS hitCache, created_at AS createdAt, requested_at AS requestedAt, 
+                queue_name AS queueName, queue_job_id AS queueJobId, recommended_questions AS recommendedQuestions, result, chart, recommended,
+                hit_cache AS hitCache, created_at AS createdAt, requested_at AS requestedAt, 
                 executed_at AS executedAt, finished_at AS finishedAt, spent, error
             FROM explorer_questions
             WHERE id = UUID_TO_BIN(?)
@@ -403,20 +420,20 @@ export class ExplorerService {
         return this.mapRecordToQuestion(rows[0]);
     }
 
-    async getQuestionByHash(conn: Connection, questionHash: string, ttl: number): Promise<Question | null> {
+    async getQuestionByHash(conn: Connection, questionHash: string): Promise<Question | null> {
         const [rows] = await conn.query<any[]>(`
             SELECT
                 BIN_TO_UUID(id) AS id, hash, user_id AS userId, status, title, query_sql AS querySQL, query_hash AS queryHash, engines,
-                queue_name AS queueName, queue_job_id AS queueJobId, result, chart, recommended, hit_cache AS hitCache, created_at AS createdAt, requested_at AS requestedAt, 
+                queue_name AS queueName, queue_job_id AS queueJobId, recommended_questions AS recommendedQuestions, result, chart, recommended, 
+                hit_cache AS hitCache, created_at AS createdAt, requested_at AS requestedAt,
                 executed_at AS executedAt, finished_at AS finishedAt, spent, error
             FROM explorer_questions
             WHERE
                 hash = ?
                 AND status IN (?)
-                AND created_at > DATE_SUB(NOW(), INTERVAL ? SECOND)
             ORDER BY created_at DESC
             LIMIT 1
-        `, [questionHash, QuestionStatus.Success, ttl]);
+        `, [questionHash, QuestionStatus.Success]);
         if (rows.length !== 1) {
             return null;
         }
@@ -427,7 +444,8 @@ export class ExplorerService {
         const [rows] = await conn.query<any[]>(`
             SELECT
                 BIN_TO_UUID(id) AS id, hash, user_id AS userId, status, title, query_sql AS querySQL, query_hash AS queryHash, engines,
-                queue_name AS queueName, queue_job_id AS queueJobId, result, chart, recommended, hit_cache AS hitCache, created_at AS createdAt, requested_at AS requestedAt, 
+                queue_name AS queueName, queue_job_id AS queueJobId, recommended_questions AS recommendedQuestions, result, chart, recommended, 
+                hit_cache AS hitCache, created_at AS createdAt, requested_at AS requestedAt,
                 executed_at AS executedAt, finished_at AS finishedAt, spent, error
             FROM explorer_questions
             WHERE query_hash = ? AND status = ? AND created_at > DATE_SUB(NOW(), INTERVAL ? SECOND)
@@ -440,7 +458,7 @@ export class ExplorerService {
         return this.mapRecordToQuestion(rows[0]);
     }
 
-    async getCachedSQLResultAndChart(conn: Connection, queryHash: string, ttl: number): Promise<QuestionQueryResultWithChart | null> {
+    async getCachedSQLResult(conn: Connection, queryHash: string, ttl: number): Promise<QuestionQueryResultWithChart | null> {
         const question = await this.getLatestQuestionByQueryHash(conn, queryHash, ttl);
         if (!question) {
             return null;
@@ -458,7 +476,8 @@ export class ExplorerService {
         const [rows] = await conn.query<any[]>(`
             SELECT
                 BIN_TO_UUID(id) AS id, hash, user_id AS userId, status, title, query_sql AS querySQL, query_hash AS queryHash, engines,
-                queue_name AS queueName, queue_job_id AS queueJobId, result, chart, recommended, created_at AS createdAt, requested_at AS requestedAt, 
+                queue_name AS queueName, queue_job_id AS queueJobId, recommended_questions AS recommendedQuestions, result, chart, recommended, 
+                hit_cache AS hitCache, created_at AS createdAt, requested_at AS requestedAt,
                 executed_at AS executedAt, finished_at AS finishedAt, spent, error
             FROM explorer_questions
             WHERE user_id = ? AND created_at > DATE_SUB(NOW(), INTERVAL 1 HOUR)
@@ -493,14 +512,12 @@ export class ExplorerService {
     }
 
     async resolveQuestion(conn: Connection, job: Job, question: Question): Promise<QuestionQueryResult> {
-        const { id: questionId, title, querySQL } = question;
+        const { id: questionId, querySQL } = question;
         try {
             await this.updateQuestionStatus(conn, questionId, QuestionStatus.Running);
             const questionResult = await this.executeQuery(questionId, querySQL!);
-            const chart = await this.generateChart(conn, questionId, title, questionResult.result);
-            await this.saveQuestionResultAndChart(conn, questionId, {
+            await this.saveQuestionResult(conn, questionId, {
                 ...questionResult,
-                chart
             });
             return questionResult;
         } catch (err: any) {
@@ -543,16 +560,15 @@ export class ExplorerService {
         }
     }
 
-    private async saveQuestionResultAndChart(conn: Connection, questionId: string, questionResult: QuestionQueryResultWithChart, hitCache = false) {
-        const { result, executedAt, finishedAt, spent, chart } = questionResult;
+    private async saveQuestionResult(conn: Connection, questionId: string, questionResult: QuestionQueryResult, hitCache = false) {
+        const { result, executedAt, finishedAt, spent } = questionResult;
         const [rs] = await conn.query<ResultSetHeader>(`
             UPDATE explorer_questions
-            SET status = ?, result = ?, chart = ?, executed_at = ?, finished_at = ?, spent = ?, hit_cache = ?
+            SET status = ?, result = ?, executed_at = ?, finished_at = ?, spent = ?, hit_cache = ?
             WHERE id = UUID_TO_BIN(?)
         `, [
             QuestionStatus.Success,
             JSON.stringify(result),
-            JSON.stringify(chart),
             executedAt.toSQL(),
             finishedAt.toSQL(),
             spent,
@@ -587,7 +603,7 @@ export class ExplorerService {
             if (!chart) {
                 chart = {
                     chartName: ChartNames.TABLE,
-                    columns: sampleData[0] ? sampleData[0].keys() : []
+                    columns: sampleData[0] ? Object.keys(sampleData[0]) : []
                 }
             }
         }
@@ -615,6 +631,49 @@ export class ExplorerService {
         `, [JSON.stringify(chart), questionId]);
         if (rs.affectedRows !== 1) {
             throw new APIError(500, 'Failed to update the question chart.');
+        }
+    }
+
+    async getRecommendQuestions(conn: Connection, n: number, aiGenerated?: boolean): Promise<RecommendQuestion[]> {
+        let questions = [];
+        try {
+            if (aiGenerated !== undefined) {
+                [questions] = await conn.query<any[]>(`
+                SELECT hash, title, ai_generated
+                FROM explorer_recommend_questions
+                WHERE ai_generated = ?
+                ORDER BY RAND()
+                LIMIT ?
+            `, [aiGenerated, n]);
+            } else {
+                [questions] = await conn.query<any[]>(`
+                SELECT hash, title, ai_generated
+                FROM explorer_recommend_questions
+                ORDER BY RAND()
+                LIMIT ?
+            `, [n]);
+            }
+        } catch (err: any) {
+            this.logger.error(`Failed to get recommend questions: ${err.message}`);
+        }
+
+        return questions;
+    }
+
+    async saveRecommendQuestions(conn: Connection, questions: RecommendQuestion[]): Promise<void> {
+        const questionValues = questions.filter((q) => {
+            return q.title != ''
+        }).map(({ hash, title, aiGenerated }) => {
+            const hashValue = hash ? hash : this.getQuestionHash(title);
+            const aiGeneratedValue = aiGenerated || false;
+            return [hashValue, title, aiGeneratedValue];
+        })
+        const [rs] = await conn.query<ResultSetHeader>(`
+            INSERT INTO explorer_recommend_questions(hash, title, ai_generated)
+            VALUES ?
+        `, [questionValues]);
+        if (rs.affectedRows !== questions.length) {
+            throw new APIError(500, 'Failed to save the recommend questions.');
         }
     }
 
