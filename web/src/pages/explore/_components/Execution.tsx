@@ -48,7 +48,7 @@ export function useQuestion (questionId?: string) {
       return;
     }
     clearState();
-    setAsyncData(newQuestion(question).then(wait(1000), wait(1000)));
+    setAsyncData(newQuestion(question).then(wait(1000), wait(1000, true)));
   });
 
   const load = useEventCallback((questionId: string) => {
@@ -113,6 +113,8 @@ export function isSqlError (error: unknown): error is AxiosError<{ message: stri
 
 export default forwardRef<ExecutionContext, ExecutionProps>(function Execution ({ search, questionId, onLoading, onResultLoading, onChartLoading, onQuestionChange, onFinished }, ref: ForwardedRef<ExecutionContext>) {
   const { question, run, load, clear, loading, resultPending, sqlError, resultError } = useQuestion(questionId);
+
+  console.log(question, sqlError);
 
   useEffect(() => {
     onLoading?.(loading);
