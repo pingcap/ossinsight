@@ -134,11 +134,15 @@ export default forwardRef<ExecutionContext, ExecutionProps>(function Execution (
   }, [question, onQuestionChange]);
 
   const formattedSql = useMemo(() => {
-    if (notNullish(question)) {
-      return format(question.querySQL);
-    }
-    if (isSqlError(sqlError)) {
-      return format(sqlError.response?.data.querySQL ?? '', { language: 'mysql' });
+    try {
+      if (notNullish(question)) {
+        return format(question.querySQL, { language: 'mysql' });
+      }
+      if (isSqlError(sqlError)) {
+        return format(sqlError.response?.data.querySQL ?? '', { language: 'mysql' });
+      }
+    } catch (e) {
+      return question?.querySQL ?? '';
     }
   }, [question, sqlError]);
 
