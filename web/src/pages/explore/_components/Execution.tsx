@@ -177,7 +177,7 @@ export default forwardRef<ExecutionContext, ExecutionProps>(function Execution (
         return 'Failed to generate SQL';
       }
     } else {
-      return 'Show SQL';
+      return 'Generated SQL';
     }
   }, [question, loading, sqlError]);
 
@@ -255,7 +255,13 @@ export default forwardRef<ExecutionContext, ExecutionProps>(function Execution (
 
   return (
     <>
-      <Section status={sqlSectionStatus} title={sqlTitle} error={sqlError} errorWithChildren>
+      <Section
+        status={sqlSectionStatus}
+        title={sqlTitle}
+        extra="auto"
+        error={sqlError}
+        errorWithChildren
+      >
         {notFalsy(formattedSql) && (
           <CodeBlock language="sql">
             {formattedSql}

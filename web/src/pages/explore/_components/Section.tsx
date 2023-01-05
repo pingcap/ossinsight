@@ -1,5 +1,5 @@
-import { Accordion, AccordionDetails, AccordionSummary, Alert, CircularProgress, Paper, styled } from '@mui/material';
-import React, { ReactNode } from 'react';
+import { Accordion, AccordionDetails, AccordionSummary, Alert, CircularProgress, Paper, styled, useEventCallback } from '@mui/material';
+import React, { ReactNode, useState } from 'react';
 import { CheckCircle, Circle, ExpandMore } from '@mui/icons-material';
 import { isFalsy, isNullish, notFalsy } from '@site/src/utils/value';
 import { getErrorMessage } from '@site/src/utils/error';
@@ -15,10 +15,18 @@ export interface SectionProps {
 }
 
 export default function Section ({ status, title, defaultExpanded, extra, error, errorWithChildren = false, children }: SectionProps) {
+  const [open, setOpen] = useState(false);
   const alwaysOpen = defaultExpanded === true;
+
+  const handleOpenChange = useEventCallback((_, open: boolean) => {
+    if (!alwaysOpen) {
+      setOpen(open);
+    }
+  });
+
   return (
     <SectionContainer className={isNullish(error) ? status : 'error'} elevation={1}>
-      <SectionAccordion expanded={alwaysOpen ? true : undefined} defaultExpanded={defaultExpanded} elevation={0}>
+      <SectionAccordion expanded={alwaysOpen ? true : open} defaultExpanded={defaultExpanded} elevation={0} onChange={handleOpenChange}>
         <SectionAccordionSummary
           alwaysOpen={alwaysOpen}
           expandIcon={isFalsy(defaultExpanded) && <ExpandMore />}
@@ -38,7 +46,7 @@ export default function Section ({ status, title, defaultExpanded, extra, error,
                 <>
                   <Spacer />
                   <SectionTitleExtra>
-                    {extra}
+                    {extra === 'auto' ? open ? 'Hide' : 'Show' : extra}
                   </SectionTitleExtra>
                 </>
                 )
@@ -96,10 +104,15 @@ const SectionAccordion = styled(Accordion)`
   border: none;
   background: rgb(36, 35, 43);
   border-radius: 5px !important;
-  padding: 12px;
+  padding: 4px 8px;
 `;
 
-const SectionAccordionSummary = styled(AccordionSummary)<{ alwaysOpen: boolean }>`
+const SectionAccordionSummary = styled(AccordionSummary, { shouldForwardProp: propName => propName !== 'alwaysOpen' })<{ alwaysOpen: boolean }>`
+  .MuiAccordionSummary-content {
+    margin-top: 4px;
+    margin-bottom: 4px;
+  }
+
   ${({ alwaysOpen }) => alwaysOpen ? 'cursor: default !important;' : ''}
 `;
 
