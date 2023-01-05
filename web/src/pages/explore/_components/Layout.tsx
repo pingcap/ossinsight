@@ -5,6 +5,7 @@ import { useSize } from 'ahooks';
 
 const sideWidth = 270;
 const headerMarginBottom = 32;
+const transitionDuration = 600;
 
 export interface LayoutProps {
   showHeader: boolean;
@@ -27,7 +28,7 @@ export default function Layout ({ children, header, side, showSide, showHeader }
 
   return (
     <>
-      <Transition nodeRef={headerRef} in={showHeader} timeout={400}>
+      <Transition nodeRef={headerRef} in={showHeader} timeout={transitionDuration * 2}>
         {(status) => (
           <Header ref={headerRef} className={`Header-${status}`} height={headerOffsetHeight}>
             {header}
@@ -35,14 +36,14 @@ export default function Layout ({ children, header, side, showSide, showHeader }
         )}
       </Transition>
       <Container>
-        <Transition nodeRef={mainRef} in={showSide} timeout={800}>
+        <Transition nodeRef={mainRef} in={showSide} timeout={transitionDuration}>
           {(status) => (
             <Main ref={mainRef} className={`Main-side-${status}`}>
               {children}
             </Main>
           )}
         </Transition>
-        <Transition nodeRef={sideRef} in={showSide} timeout={800} unmountOnExit>
+        <Transition nodeRef={sideRef} in={showSide} timeout={transitionDuration} unmountOnExit>
           {(status) => (
             <Side ref={sideRef} className={`Side-${status}`}>
               {side}
@@ -82,7 +83,8 @@ const Header = styled('div', { name: 'Header', shouldForwardProp: propName => pr
   opacity: 0;
   margin-top: -${({ height }) => height + headerMarginBottom}px;
   margin-bottom: ${headerMarginBottom}px;
-  transition: ${({ theme }) => theme.transitions.create(['margin', 'opacity'])};
+  transition: ${({ theme }) => theme.transitions.create(['margin', 'opacity'], { duration: transitionDuration })};
+  transition-delay: ${transitionDuration}ms;
 
   ${classNames('Header', true)} {
     opacity: 1;
@@ -93,7 +95,7 @@ const Header = styled('div', { name: 'Header', shouldForwardProp: propName => pr
 const Main = styled('div', { name: 'Main' })`
   min-height: 800px;
   width: 100%;
-  transition: ${({ theme }) => theme.transitions.create(['transform', 'opacity'], { duration: 800 })};
+  transition: ${({ theme }) => theme.transitions.create(['transform', 'opacity'], { duration: transitionDuration })};
 
   ${({ theme }) => theme.breakpoints.up('md')} {
     transform: translateX(calc(var(--explore-layout-side-width) / 2));
@@ -119,7 +121,7 @@ const Side = styled('div', { name: 'Side' })`
   width: var(--explore-layout-side-width);
   opacity: 0;
   transform: translateX(calc(var(--explore-layout-side-width) / 2));
-  transition: ${({ theme }) => theme.transitions.create(['transform', 'opacity'], { duration: 800 })};
+  transition: ${({ theme }) => theme.transitions.create(['transform', 'opacity'], { duration: transitionDuration })};
 
   ${classNames('Side', true)} {
     display: block;
