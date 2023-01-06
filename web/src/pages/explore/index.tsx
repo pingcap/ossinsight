@@ -95,6 +95,7 @@ export default function Page () {
         title='Data Explorer: Open Source Explorer powered by TiDB Cloud'
         description='The ultimate query tool for accessing and analyzing data on GitHub. Analyze 5+ billion GitHub data from natural language, no prerequisite knowledge of SQL or plotting libraries necessary.'
         keywords='GitHub data,text to SQL,query tool,Data Explorer'
+        image='/img/data-thumbnail.png'
       >
         <ExploreContext.Provider value={{ questionId, question, executionContext: ec, setQuestion: setValue }}>
           <Container maxWidth="xl" sx={{ pt: 4 }}>
