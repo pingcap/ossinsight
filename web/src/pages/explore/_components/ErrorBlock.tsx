@@ -39,7 +39,7 @@ ${safeFormat(question?.querySQL)}
 
   return (
     <AlertBlock severity={severity} sx={sx} createIssueUrl={createIssueUrl} showSuggestions={showSuggestions}>
-      ${title}: {error}
+      {title}: {error}
     </AlertBlock>
   );
 }

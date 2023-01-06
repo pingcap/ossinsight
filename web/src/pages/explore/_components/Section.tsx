@@ -77,7 +77,7 @@ export default function Section ({ status, title, defaultExpanded, extra, error,
               <ErrorBlock
                 title="Failed to execute question"
                 prompt="Hi, it's failed to execute question"
-                error="Empty error message"
+                error={getErrorMessage(error)}
                 severity="error"
                 sx={{ mb: 1 }}
                 showSuggestions
