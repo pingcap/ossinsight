@@ -46,9 +46,11 @@ export default function SubscribePage () {
 function Subscriptions () {
   const { data = [], mutate, isValidating } = useSubscriptions();
   const { success, displayError } = useNotifications();
+  const { getAccessTokenSilently } = useAuth0();
 
-  const unsubscribe = useCallback(function (name: string) {
-    clientWithoutCache.put(`/repos/${name}/unsubscribe`, undefined, { withCredentials: true })
+  const unsubscribe = useCallback(async function (name: string) {
+    const accessToken = await getAccessTokenSilently();
+    clientWithoutCache.put(`/repos/${name}/unsubscribe`, undefined, { withCredentials: true, oToken: accessToken })
       .then(async () => await mutate())
       .then(() => success(`Cancelled getting updates from ${name}`))
       .catch(displayError);
@@ -91,7 +93,8 @@ function Subscriptions () {
           <ListItem
             key={sub.repoId}
             secondaryAction={
-              <IconButton onClick={() => unsubscribe(sub.repoName)}>
+              // eslint-disable-next-line @typescript-eslint/no-misused-promises
+              <IconButton onClick={async () => await unsubscribe(sub.repoName)}>
                 <Unsubscribe />
               </IconButton>
             }

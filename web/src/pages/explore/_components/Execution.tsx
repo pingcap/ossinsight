@@ -40,6 +40,7 @@ export function useQuestion (questionId?: string) {
     isLoading: validating,
     user: userInfo,
     loginWithRedirect: login,
+    getAccessTokenSilently,
   } = useAuth0();
   const { data, loading, error, setAsyncData, clearState } = useAsyncState<Question>();
   const runningQuestion = useRef<string>();
@@ -50,7 +51,8 @@ export function useQuestion (questionId?: string) {
       return;
     }
     clearState();
-    setAsyncData(newQuestion(question));
+    const accessToken = await getAccessTokenSilently();
+    setAsyncData(newQuestion(question, { accessToken }));
   });
 
   const load = useEventCallback((questionId: string) => {

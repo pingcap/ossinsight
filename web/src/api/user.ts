@@ -58,12 +58,14 @@ export interface Subscription {
 }
 
 export function useSubscriptions () {
-  const { user: userInfo } = useAuth0();
+  const { user: userInfo, getAccessTokenSilently } = useAuth0();
 
   return useSWR(userInfo ? `user(${userInfo.sub as string}).milestones` : undefined, {
     fetcher: async () => {
+      const accessToken = await getAccessTokenSilently();
       return await clientWithoutCache.get<any, Subscription[]>('/user/subscriptions', {
         withCredentials: true,
+        oToken: accessToken,
       });
     },
   });
@@ -72,7 +74,7 @@ export function useSubscriptions () {
 export function useSubscribed (repo: string | undefined) {
   const { data = [], isValidating, mutate } = useSubscriptions();
   const [subscribing, setSubscribing] = useState(false);
-  const { isAuthenticated } = useAuth0();
+  const { isAuthenticated, getAccessTokenSilently } = useAuth0();
 
   const subscribed = useMemo(() => {
     if (isNullish(repo)) {
@@ -88,7 +90,8 @@ export function useSubscribed (repo: string | undefined) {
     }
     try {
       setSubscribing(true);
-      await clientWithoutCache.put(`/repos/${repo}/subscribe`, undefined, { withCredentials: true });
+      const accessToken = await getAccessTokenSilently();
+      await clientWithoutCache.put(`/repos/${repo}/subscribe`, undefined, { withCredentials: true, oToken: accessToken });
       await mutate();
     } finally {
       setSubscribing(false);
@@ -101,7 +104,8 @@ export function useSubscribed (repo: string | undefined) {
     }
     try {
       setSubscribing(true);
-      await clientWithoutCache.put(`/repos/${repo}/unsubscribe`, undefined, { withCredentials: true });
+      const accessToken = await getAccessTokenSilently();
+      await clientWithoutCache.put(`/repos/${repo}/unsubscribe`, undefined, { withCredentials: true, oToken: accessToken });
       await mutate();
     } finally {
       setSubscribing(false);
@@ -112,11 +116,11 @@ export function useSubscribed (repo: string | undefined) {
 }
 
 export async function subscribe (repo: string, oToken?: string) {
-  await clientWithoutCache.put(`/repos/${repo}/subscribe`, undefined, { withCredentials: true });
+  await clientWithoutCache.put(`/repos/${repo}/subscribe`, undefined, { withCredentials: true, oToken });
   await mutate('user.milestones', undefined, { revalidate: true });
 }
 
 export async function unsubscribe (repo: string, oToken?: string) {
-  await clientWithoutCache.put(`/repos/${repo}/unsubscribe`, undefined, { withCredentials: true });
+  await clientWithoutCache.put(`/repos/${repo}/unsubscribe`, undefined, { withCredentials: true, oToken });
   await mutate('user.milestones', undefined, { revalidate: true });
 }
