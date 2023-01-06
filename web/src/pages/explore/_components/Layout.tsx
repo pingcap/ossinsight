@@ -3,9 +3,9 @@ import { styled } from '@mui/material';
 import { Transition } from 'react-transition-group';
 import { useSize } from 'ahooks';
 
-const sideWidth = 270;
+const sideWidth = 250;
 const headerMarginBottom = 32;
-const transitionDuration = 600;
+const transitionDuration = 400;
 
 export interface LayoutProps {
   showHeader: boolean;
@@ -28,7 +28,7 @@ export default function Layout ({ children, header, side, showSide, showHeader }
 
   return (
     <>
-      <Transition nodeRef={headerRef} in={showHeader} timeout={transitionDuration * 2}>
+      <Transition nodeRef={headerRef} in={showHeader} timeout={transitionDuration}>
         {(status) => (
           <Header ref={headerRef} className={`Header-${status}`} height={headerOffsetHeight}>
             {header}
@@ -59,11 +59,11 @@ const Container = styled('div', { name: 'Container' })`
   --explore-layout-side-width: ${sideWidth}px;
 
   ${({ theme }) => theme.breakpoints.up('lg')} {
-    --explore-layout-side-width: ${sideWidth + 100}px;
+    --explore-layout-side-width: ${sideWidth + 25}px;
   }
 
   ${({ theme }) => theme.breakpoints.up('xl')} {
-    --explore-layout-side-width: ${sideWidth + 200}px;
+    --explore-layout-side-width: ${sideWidth + 50}px;
   }
 
   ${({ theme }) => theme.breakpoints.up('md')} {
@@ -84,7 +84,6 @@ const Header = styled('div', { name: 'Header', shouldForwardProp: propName => pr
   margin-top: -${({ height }) => height + headerMarginBottom}px;
   margin-bottom: ${headerMarginBottom}px;
   transition: ${({ theme }) => theme.transitions.create(['margin', 'opacity'], { duration: transitionDuration })};
-  transition-delay: ${transitionDuration}ms;
 
   ${classNames('Header', true)} {
     opacity: 1;

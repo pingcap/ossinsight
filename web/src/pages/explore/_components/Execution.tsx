@@ -6,7 +6,7 @@ import { format } from 'sql-formatter';
 import Section from '@site/src/pages/explore/_components/Section';
 import CodeBlock from '@theme/CodeBlock';
 import { Charts } from '@site/src/pages/explore/_components/charts';
-import { Divider, styled, ToggleButton, ToggleButtonGroup, Typography, useEventCallback } from '@mui/material';
+import { Divider, Portal, styled, ToggleButton, ToggleButtonGroup, Typography, useEventCallback } from '@mui/material';
 import { useUserInfoContext } from '@site/src/context/user';
 import { getErrorMessage, isAxiosError } from '@site/src/utils/error';
 import { AxiosError } from 'axios';
@@ -114,6 +114,7 @@ export function isSqlError (error: unknown): error is AxiosError<{ message: stri
 
 export default forwardRef<ExecutionContext, ExecutionProps>(function Execution ({ search, questionId, onLoading, onResultLoading, onChartLoading, onQuestionChange, onFinished }, ref: ForwardedRef<ExecutionContext>) {
   const { question, run, load, clear, loading, resultPending, sqlError, resultError } = useQuestion(questionId);
+  const [controlsContainerRef, setControlsContainerRef] = useState<HTMLSpanElement | null>(null);
 
   useEffect(() => {
     onLoading?.(loading);
@@ -282,11 +283,16 @@ export default forwardRef<ExecutionContext, ExecutionProps>(function Execution (
       <Section
         status={resultStatus}
         title={resultTitle}
-        extra={<ShareWithTwitter href={twitterShareLink} />}
+        extra={
+          <ControlsContainer>
+            <span ref={setControlsContainerRef} />
+            <ShareWithTwitter href={twitterShareLink} />
+          </ControlsContainer>
+        }
         error={question?.status === 'error' ? resultError ?? 'Empty error message' : resultError}
         defaultExpanded
       >
-        <Chart chartData={chartData} chartError={chartError} result={result} fields={question?.result?.fields} />
+        <Chart chartData={chartData} chartError={chartError} result={result} fields={question?.result?.fields} controlsContainer={controlsContainerRef} />
       </Section>
     </>
   );
@@ -334,7 +340,7 @@ const EngineTag = styled('span')`
   margin: 0 4px;
 `;
 
-function Chart ({ chartData, chartError, fields, result }: { chartData: ChartResult | undefined, chartError: unknown, result: Array<Record<string, any>> | undefined, fields: Array<{ name: string }> | undefined }) {
+function Chart ({ chartData, chartError, fields, result, controlsContainer }: { chartData: ChartResult | undefined, chartError: unknown, result: Array<Record<string, any>> | undefined, fields: Array<{ name: string }> | undefined, controlsContainer: HTMLSpanElement | null }) {
   const [tab, setTab] = useState('visualization');
 
   useEffect(() => {
@@ -369,8 +375,21 @@ function Chart ({ chartData, chartError, fields, result }: { chartData: ChartRes
       return null;
     }
 
+    const renderTips = () => {
+      return (
+        <Typography variant='body2' color='#D1D1D1' mt={2}>
+          🤔 Confused with this answer?  Try to tiny your words and help the AI identify your question, for example, you can try to use ‘@repo_name/user_name’ to narrow down your query. If you have more questions about the accuracy of the answers, see FAQ here.
+        </Typography>
+      );
+    };
+
     const renderTable = () => {
-      return <TableChart chartName="Table" title="" data={result} fields={fields} />;
+      return (
+        <>
+          <TableChart chartName="Table" title="" data={result} fields={fields} />
+          {renderTips()}
+        </>
+      );
     };
 
     if (isNullish(chartData)) {
@@ -386,7 +405,12 @@ function Chart ({ chartData, chartError, fields, result }: { chartData: ChartRes
     }
 
     const renderChart = () => {
-      return <Charts {...chartData} data={result} fields={fields} />;
+      return (
+        <>
+          <Charts {...chartData} data={result} fields={fields} />
+          {renderTips()}
+        </>
+      );
     };
 
     if (notNullish(chartError)) {
@@ -403,17 +427,19 @@ function Chart ({ chartData, chartError, fields, result }: { chartData: ChartRes
     }
 
     return (
-      <ChartContainer>
-        <Controls className="chart-controls">
-          <ToggleButtonGroup size="small" value={tab} onChange={handleTabChange} exclusive color="primary">
-            <ToggleButton value="visualization">
-              <AutoGraph />
-            </ToggleButton>
-            <ToggleButton value="raw">
-              <TableView />
-            </ToggleButton>
-          </ToggleButtonGroup>
-        </Controls>
+      <>
+        <Portal container={controlsContainer}>
+          <Controls className="chart-controls">
+            <ToggleButtonGroup size="small" value={tab} onChange={handleTabChange} exclusive color="primary">
+              <ToggleButton value="visualization" size='small' sx={{ padding: '5px' }}>
+                <AutoGraph fontSize='small' />
+              </ToggleButton>
+              <ToggleButton value="raw" size='small' sx={{ padding: '5px' }}>
+                <TableView fontSize='small' />
+              </ToggleButton>
+            </ToggleButtonGroup>
+          </Controls>
+        </Portal>
         <TabContext value={tab}>
           <StyledTabPanel value="visualization">
             {renderChart()}
@@ -422,30 +448,25 @@ function Chart ({ chartData, chartError, fields, result }: { chartData: ChartRes
             {renderTable()}
           </StyledTabPanel>
         </TabContext>
-      </ChartContainer>
+      </>
     );
   }, [tab, chartData, chartError, result, fields]);
 }
 
 const Controls = styled('div')`
-  display: flex;
+  display: inline-flex;
   justify-content: flex-end;
   align-items: center;
-  margin-bottom: 8px;
-  opacity: 0;
-  position: absolute;
-  right: 0;
-  top: -16px;
-  z-index: 1000;
+  margin-bottom: 0;
   transition: opacity .2s ease;
+  margin-right: 12px;
+  padding-right: 12px;
+  border-right: 1px solid #3c3c3c;
 `;
 
-const ChartContainer = styled('div')`
-  position: relative;
-
-  &:hover > .chart-controls {
-    opacity: 1;
-  }
+const ControlsContainer = styled('span')`
+  display: inline-flex;
+  align-items: center;
 `;
 
 const StyledTabPanel = styled(TabPanel)`

@@ -31,6 +31,9 @@ export default function PieChart ({ chartName, title, value, label, data }: Char
     legend: {
       left: 8,
       top: 8,
+      height: '90%',
+      type: 'scroll',
+      orient: 'vertical',
     },
     series: {
       type: 'pie',

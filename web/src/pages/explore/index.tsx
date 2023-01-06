@@ -104,7 +104,7 @@ export default function Page () {
               )}
             >
               <ExploreSearch value={value} onChange={setValue} onAction={handleAction} disableInput={loading} disableClear={value === ''} disableAction={disableAction} onClear={handleClear} clearState={loading ? 'stop' : undefined} />
-              <Box sx={{ pb: 8, mt: 4, display: hideExecution ? 'none' : undefined }}>
+              <Box sx={{ pb: 8, mt: 1.5, display: hideExecution ? 'none' : undefined }}>
                 <Execution ref={setEc} questionId={questionId} search={value} onLoading={handleLoading} onResultLoading={handleResultLoading} onChartLoading={handleChartLoading} onQuestionChange={handleQuestionChange} onFinished={setHasResult} />
               </Box>
               {hideExecution && (

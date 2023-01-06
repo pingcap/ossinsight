@@ -14,6 +14,12 @@ interface AlertBlockProps {
 }
 
 export default function AlertBlock ({ severity, sx, children, createIssueUrl = () => createIssueLink('pingcap/ossinsight'), showSuggestions }: AlertBlockProps) {
+  const handleJumpFaq = useEventCallback(() => {
+    document.getElementById('data-explorer-faq')?.scrollIntoView({
+      behavior: 'smooth',
+    });
+  });
+
   const report = useEventCallback(() => {
     window.open(createIssueUrl(), '_blank');
   });
@@ -29,7 +35,7 @@ export default function AlertBlock ({ severity, sx, children, createIssueUrl = (
           {children}
         </Typography>
         <Stack direction="row" spacing={2} mt={2}>
-          <Button variant="outlined" size="small" color='inherit'>See faq</Button>
+          <Button variant="outlined" size="small" color='inherit' onClick={handleJumpFaq}>See faq</Button>
           <Button variant="outlined" size="small" startIcon={<GitHub />} onClick={report} color='inherit'>Feedback</Button>
         </Stack>
       </StyledAlert>
@@ -58,18 +64,4 @@ const StyledAlert = styled(Alert)`
 
 const SuggestionsContainer = styled('div')`
   margin-top: 16px;
-
-  & > div {
-    display: flex;
-
-    > * {
-      flex: 1;
-    }
-  }
-
-  ${({ theme }) => theme.breakpoints.down('md')} {
-    & > div {
-      flex-direction: column;
-    }
-  }
 `;

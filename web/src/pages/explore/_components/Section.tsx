@@ -93,7 +93,7 @@ const SectionContainer = styled(Paper)`
   background: linear-gradient(116.45deg, rgba(89, 95, 236, 0.5) 0%, rgba(200, 182, 252, 0.1) 96.73%);
   padding: 1px;
   border-radius: 6px;
-  margin-top: 24px;
+  margin-top: 12px;
 
   transform: translateY(20px);
   opacity: 0;

@@ -1,9 +1,9 @@
 import React from 'react';
-import { styled, Typography } from '@mui/material';
+import { Box, styled, Typography } from '@mui/material';
 
 export default function Faq () {
   return (
-    <>
+    <Box id='data-explorer-faq' pt={8}>
       <Typography variant='h2' textAlign='center'>FAQ</Typography>
       <Q>How do I use this tool?</Q>
       <A>You can start with selecting a popular query from the query wall or directly input a short text query statement to the search box. OpenAI will translate your question into Structured Query Language (SQL), and we will use the generated SQL to query in the database and return the results.</A>
@@ -19,7 +19,7 @@ export default function Faq () {
         </ol>
         <br />
         The potential solution for 1,2 is describe your question with short, specific and normal words, then try again.</A>
-    </>
+    </Box>
   );
 }
 
