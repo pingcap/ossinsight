@@ -306,9 +306,9 @@ function renderEngines (question: Question | undefined) {
         <EngineTag>{question.engines.map(replaceEngineName).join(', ')}</EngineTag>
         <Info>
           <Typography variant="body1">
-            <b>tikv</b>: row-store engine
+            <b>tikv</b>: row storage engine
             <br />
-            <b>tiflash</b>: column-store engine
+            <b>tiflash</b>: columnar storage engine
           </Typography>
           <Divider orientation="horizontal" sx={{ my: 1.5 }} light />
           <Typography variant="body2">
@@ -324,9 +324,9 @@ function renderEngines (question: Question | undefined) {
 function replaceEngineName (name: string) {
   switch (name) {
     case 'tiflash':
-      return 'column-store';
+      return 'columnar storage';
     case 'tikv':
-      return 'row-store';
+      return 'row storage';
     default:
       return name;
   }
