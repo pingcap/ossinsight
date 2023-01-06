@@ -16,6 +16,7 @@ use([
 
 export default function PieChart ({ chartName, title, value, label, data }: ChartResult & { data: any[] }) {
   const options: EChartsOption = useMemo(() => ({
+    backgroundColor: 'rgb(36, 35, 43)',
     dataset: {
       id: 'raw',
       source: data,
