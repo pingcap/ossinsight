@@ -5,6 +5,7 @@ import { SxProps } from '@mui/system';
 import { createIssueLink } from '@site/src/utils/gh';
 import { AlertColor } from '@mui/material';
 import { safeFormat } from '@site/src/pages/explore/_components/charts/EmptyDataAlert';
+import { notNullish } from '@site/src/utils/value';
 
 interface ErrorBlockProps {
   title: string;
@@ -24,14 +25,27 @@ export default function ErrorBlock ({ severity, title, prompt, sx, error, showSu
       body: `
 ${prompt} [question](https://ossinsight.io/explore?id=${questionId ?? ''})
 
-The question title is: **${question?.title ?? ''}**
+## Question title
+**${question?.title ?? ''}**
 
-The error message is: ${error}
-
-The question SQL is:
+## Error message
+${error}
+${notNullish(question?.querySQL)
+? `
+## Generated SQL
 \`\`\`mysql
 ${safeFormat(question?.querySQL)}
 \`\`\`
+`
+: ''}
+${notNullish(question?.chart)
+? `
+## Chart info
+\`\`\`json
+${JSON.stringify(question?.chart, undefined, 2)}
+\`\`\`
+`
+: ''}
 `,
       labels: 'area/data-explorer,type/bug',
     });

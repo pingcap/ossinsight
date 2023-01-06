@@ -13,9 +13,11 @@ export interface SectionProps {
   error: unknown;
   errorWithChildren?: boolean;
   defaultExpanded?: boolean;
+  errorTitle: string;
+  errorPrompt: string;
 }
 
-export default function Section ({ status, title, defaultExpanded, extra, error, errorWithChildren = false, children }: SectionProps) {
+export default function Section ({ status, title, defaultExpanded, extra, error, errorWithChildren = false, children, errorPrompt, errorTitle }: SectionProps) {
   const [open, setOpen] = useState(false);
   const alwaysOpen = defaultExpanded === true;
 
@@ -26,7 +28,7 @@ export default function Section ({ status, title, defaultExpanded, extra, error,
   });
 
   return (
-    <SectionContainer className={isNullish(error) ? status : 'error'} elevation={1}>
+    <SectionContainer className={status === 'pending' ? 'pending' : isNullish(error) ? status : 'error'} elevation={1}>
       <SectionAccordion expanded={alwaysOpen ? true : open} defaultExpanded={defaultExpanded} elevation={0} onChange={handleOpenChange}>
         <SectionAccordionSummary
           alwaysOpen={alwaysOpen}
@@ -61,8 +63,8 @@ export default function Section ({ status, title, defaultExpanded, extra, error,
               : (
                 <>
                   <ErrorBlock
-                    title="Failed to execute question"
-                    prompt="Hi, it's failed to execute question"
+                    title={errorTitle}
+                    prompt={errorPrompt}
                     error={getErrorMessage(error)}
                     severity="error"
                     sx={{ mb: 1 }}
@@ -75,8 +77,8 @@ export default function Section ({ status, title, defaultExpanded, extra, error,
               ? children
               : (
               <ErrorBlock
-                title="Failed to execute question"
-                prompt="Hi, it's failed to execute question"
+                title={errorTitle}
+                prompt={errorPrompt}
                 error={getErrorMessage(error)}
                 severity="error"
                 sx={{ mb: 1 }}
@@ -117,6 +119,12 @@ const SectionContainer = styled(Paper)`
     transform: initial;
     opacity: 1;
   }
+
+  &.pending {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  
 `;
 
 const SectionAccordion = styled(Accordion)`

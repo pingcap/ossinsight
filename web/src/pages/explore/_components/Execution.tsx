@@ -185,7 +185,11 @@ export default forwardRef<ExecutionContext, ExecutionProps>(function Execution (
         return 'Failed to generate SQL';
       }
     } else {
-      return 'Generated SQL';
+      if (isNullish(question.querySQL)) {
+        return 'Failed to generate SQL';
+      } else {
+        return 'Generated SQL';
+      }
     }
   }, [question, loading, sqlError]);
 
@@ -247,7 +251,7 @@ export default forwardRef<ExecutionContext, ExecutionProps>(function Execution (
     } else if (resultPending || chartLoading) {
       return 'loading';
     } else {
-      return 'success';
+      return notNullish(question.querySQL) ? 'success' : 'pending';
     }
   }, [question, loading, resultPending || chartLoading]);
 
@@ -265,14 +269,29 @@ export default forwardRef<ExecutionContext, ExecutionProps>(function Execution (
     return url;
   }, [search]);
 
+  const realSqlError = useMemo(() => {
+    if (sqlSectionStatus === 'success') {
+      if (isNullish(question?.querySQL)) {
+        if (notNullish(question?.error)) {
+          return question?.error;
+        } else {
+          return 'Empty error message';
+        }
+      }
+    }
+    return sqlError;
+  }, [question, sqlSectionStatus, sqlError]);
+
   return (
     <>
       <Section
         status={sqlSectionStatus}
         title={sqlTitle}
         extra="auto"
-        error={sqlError}
+        error={realSqlError}
         errorWithChildren
+        errorTitle="Failed to generate SQL"
+        errorPrompt="Hi, it's failed to generate SQL for"
       >
         {notFalsy(formattedSql) && (
           <CodeBlock language="sql">
@@ -291,6 +310,8 @@ export default forwardRef<ExecutionContext, ExecutionProps>(function Execution (
         }
         error={question?.status === 'error' ? resultError ?? 'Empty error message' : resultError}
         defaultExpanded
+        errorTitle="Failed to execute question"
+        errorPrompt="Hi, it's failed to execute"
       >
         <Chart chartData={chartData} chartError={chartError} result={result} fields={question?.result?.fields} controlsContainer={controlsContainerRef} />
       </Section>
