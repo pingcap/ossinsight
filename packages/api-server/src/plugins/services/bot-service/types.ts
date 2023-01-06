@@ -64,6 +64,7 @@ export interface MapChart extends Chart  {
 }
 
 export interface NumberCard extends Chart  {
+  label?: Column;
   value: Column;
 }
 

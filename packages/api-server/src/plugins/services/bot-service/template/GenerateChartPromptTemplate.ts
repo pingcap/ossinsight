@@ -18,7 +18,7 @@ interface PieChart extends Chart { label: Column; value: Column }
 interface LineChart extends Chart { x: Column; y: Column | Column[]; }
 interface BarChart extends Chart  { x: Column; y: Column | Column[]; }
 interface MapChart extends Chart  { country_code: Column; value: Column; }
-interface NumberCard extends Chart  { value: Column;}
+interface NumberCard extends Chart  { label?: Column; value: Column; }
 interface RepoCard extends Chart  { repo_name: Column; }
 interface PersonalCard extends Chart  { user_login: Column; }
 interface Table extends Chart  { columns: Column[]; }

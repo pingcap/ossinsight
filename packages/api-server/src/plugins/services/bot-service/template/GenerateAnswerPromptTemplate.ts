@@ -6,7 +6,7 @@ export class GenerateAnswerPromptTemplate implements PromptTemplate {
   public stop: string[] = ['#', '---'];
   public maxTokens: number = 400;
   public temperature: number = 0;
-  public topP: number = 0.4;
+  public topP: number = 1;
   public n: number = 1;
   public logprobs: number = 2;
 
@@ -56,14 +56,14 @@ Notice: don't use reserved word as alias name in sql
 SELECT t_month, stars, SUM(stars) OVER(ORDER BY t_month ASC) AS cumulative_stars FROM ( SELECT DATE_FORMAT(created_at, '%Y-%m-01') AS t_month, COUNT(*) AS stars FROM github_events ge WHERE ge.type = 'WatchEvent' AND ge.repo_id = (SELECT repo_id FROM github_repos WHERE repo_name = 'pingcap/tidb') AND ge.created_at != '1970-01-01 00:00:00' GROUP BY t_month ) star_counts ORDER BY t_month ASC;
 
 # ChartOptions
-PieChart { label: Column; value: Column }
-LineChart { x: Column; y: Column | Column[]; }
-BarChart { x: Column; y: Column | Column[]; }
-MapChart { country_code: Column; value: Column; }
-NumberCard { value: Column;}
-RepoCard { repo_name: Column; }
-PersonalCard { user_login: Column; }
-Table { columns: Column[]; }
+PieChart {label: Column; value: Column;}
+LineChart {x: Column; y: Column | Column[];}
+BarChart {x: Column; y: Column | Column[];}
+MapChart {country_code: Column; value: Column;}
+NumberCard {label?: Column; value: Column;}
+RepoCard {repo_name: Column;}
+PersonalCard {user_login: Column;}
+Table {columns: Column[];}
 
 Answer {
   // MySQL SQL
@@ -74,7 +74,7 @@ Answer {
 }
 
 ---
-Let's think step by step, generate a answer.json file to answer the question: ${question}?
+Let's think step by step, use best practice of writing SQL, generate a answer.json file to answer the question: ${question}?
 ---
 answer.json
 ---
