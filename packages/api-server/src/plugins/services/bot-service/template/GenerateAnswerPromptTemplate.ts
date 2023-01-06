@@ -16,7 +16,7 @@ Table github_events, columns = [id, type, created_at, repo_id, repo_name, actor_
 Column type, enums = ['PullRequestEvent', 'PushEvent', 'IssueCommentEvent', 'IssuesEvent', 'PullRequestReviewCommentEvent', 'WatchEvent', 'CreateEvent', 'DeleteEvent', 'ForkEvent', 'ReleaseEvent']
 Column number, number is issue number
 Table github_repos, columns = [repo_id, repo_name, owner_id, owner_login, owner_is_org, description, primary_language, license, size, stars, forks, parent_repo_id, is_fork, is_archived, is_deleted, latest_released_at, pushed_at, created_at, updated_at]
-Column primary_language, invalid = [null, '']
+Column primary_language means programming language, invalid = [null, '']
 Table github_users, columns = [id, login, type, name, organization, country_code, followers, followings, created_at, updated_at]
 Column type, enums = ['USR', 'ORG']
 Column country_code, invalid = ['', 'N/A', 'UND']
@@ -49,8 +49,6 @@ The most popular repos has the most stars,
 Similar repositories will have similar topics, or be in the same collection, order by the similarity
 collection is a categorization of some similar repositories, but not all repositories have a corresponding collection
 The trending_repos table contains the most recent and popular repositories
-Notice: avoid non-existent and ambiguous column
-Notice: don't use reserved word as alias name in sql
 
 -- @pingcap/tidb cumulative stars across months
 SELECT t_month, stars, SUM(stars) OVER(ORDER BY t_month ASC) AS cumulative_stars FROM ( SELECT DATE_FORMAT(created_at, '%Y-%m-01') AS t_month, COUNT(*) AS stars FROM github_events ge WHERE ge.type = 'WatchEvent' AND ge.repo_id = (SELECT repo_id FROM github_repos WHERE repo_name = 'pingcap/tidb') AND ge.created_at != '1970-01-01 00:00:00' GROUP BY t_month ) star_counts ORDER BY t_month ASC;
