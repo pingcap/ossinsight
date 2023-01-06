@@ -4,7 +4,7 @@ export class GenerateAnswerPromptTemplate implements PromptTemplate {
   // AI Model Parameters.
   public model: AIModel = AIModel.TEXT_DAVINCI_003;
   public stop: string[] = ['#', '---'];
-  public maxTokens: number = 400;
+  public maxTokens: number = 800;
   public temperature: number = 0;
   public topP: number = 1;
   public n: number = 1;
@@ -53,6 +53,10 @@ The trending_repos table contains the most recent and popular repositories
 -- @pingcap/tidb cumulative stars across months
 SELECT t_month, stars, SUM(stars) OVER(ORDER BY t_month ASC) AS cumulative_stars FROM ( SELECT DATE_FORMAT(created_at, '%Y-%m-01') AS t_month, COUNT(*) AS stars FROM github_events ge WHERE ge.type = 'WatchEvent' AND ge.repo_id = (SELECT repo_id FROM github_repos WHERE repo_name = 'pingcap/tidb') AND ge.created_at != '1970-01-01 00:00:00' GROUP BY t_month ) star_counts ORDER BY t_month ASC;
 
+# Format
+@org_or_user_login
+@org_or_user_login/repo_name
+
 # ChartOptions
 PieChart {label: Column; value: Column;}
 LineChart {x: Column; y: Column | Column[];}
@@ -64,11 +68,10 @@ PersonalCard {user_login: Column;}
 Table {columns: Column[];}
 
 Answer {
-  // MySQL SQL
   sql: string;
   chart: { chartName: string; title: string; } & ChartOptions;
-  // Give 2 questions, a similar question and a creative and different question
-  questions?: string[];
+  // Generate 2 distinct questions based on the given information, including 1 related to the provided one and 1 is random.
+  questions: string[];
 }
 
 ---

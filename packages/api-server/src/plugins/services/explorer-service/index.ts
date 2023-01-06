@@ -683,11 +683,15 @@ export class ExplorerService {
             const aiGeneratedValue = aiGenerated || false;
             return [hashValue, title, aiGeneratedValue];
         })
+        if (questionValues.length === 0) {
+            return;
+        }
         const [rs] = await conn.query<ResultSetHeader>(`
             INSERT INTO explorer_recommend_questions(hash, title, ai_generated)
             VALUES ?
+            ON DUPLICATE KEY UPDATE title = VALUES(title), ai_generated = VALUES(ai_generated)
         `, [questionValues]);
-        if (rs.affectedRows !== questions.length) {
+        if (rs.affectedRows === 0) {
             throw new APIError(500, 'Failed to save the recommend questions.');
         }
     }
