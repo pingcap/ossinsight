@@ -23,6 +23,7 @@ export default function Page () {
   const [hasResult, setHasResult] = useState(false);
   const [ec, setEc, ecRef] = useStateRef<ExecutionContext | null>(null);
   const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [question, setQuestion] = useState<Question>();
   const loadingState = useRef({ loading: false, resultLoading: false, chartLoading: false });
   const forceUpdate = useForceUpdate();
 
@@ -43,6 +44,7 @@ export default function Page () {
     setQuestionId(question.id);
     setValue(question.title);
     setSuggestions(question.recommendedQuestions ?? []);
+    setQuestion(question);
   });
 
   const handleSelect = useEventCallback((question: string) => {
@@ -94,7 +96,7 @@ export default function Page () {
     <>
       <Decorators />
       <CustomPage>
-        <ExploreContext.Provider value={{ questionId }}>
+        <ExploreContext.Provider value={{ questionId, question }}>
           <Container maxWidth="xl" sx={{ pt: 4 }}>
             <Layout
               showSide={!hideExecution && hasResult}
