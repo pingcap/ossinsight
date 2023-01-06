@@ -1,6 +1,7 @@
-import React, { ReactNode, useContext } from 'react';
+import React, { HTMLAttributes, ReactNode, useContext } from 'react';
 import { ButtonBase, styled, useEventCallback } from '@mui/material';
 import ExploreContext from '@site/src/pages/explore/_components/context';
+import { Cached } from '@mui/icons-material';
 
 export type QuestionCardVariant = 'recommended-card' | 'card' | 'text';
 
@@ -40,6 +41,17 @@ export default function QuestionCard ({ question, variant = 'card', disabled }: 
     default:
       return <Link disableRipple disableTouchRipple onClick={handleClick} disabled={disabled}>{question}</Link>;
   }
+}
+
+export function HighlightCard (props: Exclude<HTMLAttributes<HTMLDivElement>, 'children'>) {
+  return (
+    <HighlightBackground {...props} sx={{ borderRadius: '17px', maxWidth: 'max-content', mt: 2 }}>
+      <Content sx={{ display: 'flex', p: 1, borderRadius: '16px', maxWidth: 'max-content', alignItems: 'center' }}>
+        🤖️  Stuck for ideas? Let AI generate 3 questions for you.
+        <Cached fontSize='inherit' sx={{ ml: 1 }} />
+      </Content>
+    </HighlightBackground>
+  );
 }
 
 const HighlightBackground = styled('div', { name: 'QuestionCard-HighlightBackground' })`

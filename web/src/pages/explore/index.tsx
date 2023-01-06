@@ -16,6 +16,7 @@ import Header from '@site/src/pages/explore/_components/Header';
 import Layout from './_components/Layout';
 import { Decorators } from '@site/src/pages/explore/_components/Decorators';
 import { Cached } from '@mui/icons-material';
+import { HighlightCard } from '@site/src/pages/explore/_components/QuestionCard';
 
 export default function Page () {
   const [questionId, setQuestionId] = useUrlSearchState('id', nullableStringParam(), true);
@@ -24,6 +25,7 @@ export default function Page () {
   const [ec, setEc] = useState<ExecutionContext | null>(null);
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [question, setQuestion] = useState<Question>();
+  const [recommend, setRecommend] = useState(false);
   const loadingState = useRef({ loading: false, resultLoading: false, chartLoading: false });
   const forceUpdate = useForceUpdate();
 
@@ -109,15 +111,19 @@ export default function Page () {
               </Box>
               {hideExecution && (
                 <>
-                  <RecommendedSuggestions
-                    title={(reload, loading) => (
-                      <Box mt={2} height="40px">
-                        🤖️ AI-generated questions: 3 random ones for you <IconButton onClick={reload} disabled={loading}><Cached /></IconButton>
-                      </Box>
-                    )}
-                    aiGenerated
-                    n={3}
-                  />
+                  {recommend
+                    ? (
+                    <RecommendedSuggestions
+                      title={(reload, loading) => (
+                        <Box mt={2} height="40px">
+                          🤖️ AI-generated questions: 3 random ones for you <IconButton onClick={reload} disabled={loading}><Cached /></IconButton>
+                        </Box>
+                      )}
+                      aiGenerated
+                      n={3}
+                    />
+                      )
+                    : <HighlightCard onClick={() => setRecommend(true)} />}
                   <Divider orientation="horizontal" light sx={{ my: 3, backgroundColor: 'transparent' }} />
                   <RecommendedSuggestions
                     title={() => (
