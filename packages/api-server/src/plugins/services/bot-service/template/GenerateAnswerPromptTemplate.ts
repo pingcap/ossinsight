@@ -4,7 +4,7 @@ export class GenerateAnswerPromptTemplate implements PromptTemplate {
   // AI Model Parameters.
   public model: AIModel = AIModel.TEXT_DAVINCI_003;
   public stop: string[] = ['#', '---'];
-  public maxTokens: number = 400;
+  public maxTokens: number = 800;
   public temperature: number = 0;
   public topP: number = 1;
   public n: number = 1;
