@@ -4,7 +4,7 @@ import ExploreContext from '@site/src/pages/explore/_components/context';
 import { createIssueLink as createIssueLinkInternal } from '@site/src/utils/gh';
 import { format } from 'sql-formatter';
 
-function safeFormat (sql: string | undefined = '') {
+export function safeFormat (sql: string | undefined = '') {
   try {
     return format(sql, { language: 'mysql' });
   } catch {

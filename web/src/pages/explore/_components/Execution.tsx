@@ -6,7 +6,7 @@ import { format } from 'sql-formatter';
 import Section from '@site/src/pages/explore/_components/Section';
 import CodeBlock from '@theme/CodeBlock';
 import { Charts } from '@site/src/pages/explore/_components/charts';
-import { Alert, Divider, styled, ToggleButton, ToggleButtonGroup, Typography, useEventCallback } from '@mui/material';
+import { Divider, styled, ToggleButton, ToggleButtonGroup, Typography, useEventCallback } from '@mui/material';
 import { useUserInfoContext } from '@site/src/context/user';
 import { getErrorMessage, isAxiosError } from '@site/src/utils/error';
 import { AxiosError } from 'axios';
@@ -18,6 +18,7 @@ import Info from './Info';
 import { twitterLink } from '@site/src/utils/share';
 import ShareWithTwitter from '@site/src/pages/explore/_components/ShareWithTwitter';
 import { wait } from '@site/src/utils/promisify';
+import ErrorBlock from '@site/src/pages/explore/_components/ErrorBlock';
 
 export interface ExecutionContext {
   run: (question: string) => void;
@@ -347,17 +348,23 @@ function Chart ({ chartData, chartError, fields, result }: { chartData: ChartRes
   };
 
   return useMemo(() => {
-    const renderError = (margin = false) => {
+    const errMsg = getErrorMessage(chartError);
+    const renderError = (margin = false, recommend = false) => {
       return (
-        <Alert severity="warning" sx={margin ? { mb: 2 } : undefined}>
-          Unable to generate chart: {getErrorMessage(chartError)}
-        </Alert>
+        <ErrorBlock
+          title="Unable to generate chart"
+          prompt="Hi, it's failed to generate chart for"
+          error={errMsg}
+          severity="warning"
+          sx={margin ? { mb: 2 } : undefined}
+          showSuggestions={recommend}
+        />
       );
     };
 
     if (isNullish(result)) {
       if (notNullish(chartError)) {
-        return renderError();
+        return renderError(false, true);
       }
       return null;
     }

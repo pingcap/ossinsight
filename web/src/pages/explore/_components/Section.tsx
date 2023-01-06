@@ -1,8 +1,9 @@
-import { Accordion, AccordionDetails, AccordionSummary, Alert, CircularProgress, Paper, styled, useEventCallback } from '@mui/material';
+import { Accordion, AccordionDetails, AccordionSummary, CircularProgress, Paper, styled, useEventCallback } from '@mui/material';
 import React, { ReactNode, useState } from 'react';
 import { CheckCircle, Circle, ExpandMore } from '@mui/icons-material';
 import { isFalsy, isNullish, notFalsy } from '@site/src/utils/value';
 import { getErrorMessage } from '@site/src/utils/error';
+import ErrorBlock from '@site/src/pages/explore/_components/ErrorBlock';
 
 export interface SectionProps {
   status: 'pending' | 'loading' | 'success';
@@ -59,11 +60,29 @@ export default function Section ({ status, title, defaultExpanded, extra, error,
               ? children
               : (
                 <>
-                  <Alert severity="error" sx={{ mb: 1 }}>{getErrorMessage(error)}</Alert>
+                  <ErrorBlock
+                    title="Failed to execute question"
+                    prompt="Hi, it's failed to execute question"
+                    error={getErrorMessage(error)}
+                    severity="error"
+                    sx={{ mb: 1 }}
+                    showSuggestions
+                  />
                   {children}
                 </>
                 )
-            : isNullish(error) ? children : <Alert severity="error">{getErrorMessage(error)}</Alert>}
+            : isNullish(error)
+              ? children
+              : (
+              <ErrorBlock
+                title="Failed to execute question"
+                prompt="Hi, it's failed to execute question"
+                error="Empty error message"
+                severity="error"
+                sx={{ mb: 1 }}
+                showSuggestions
+              />
+                )}
         </AccordionDetails>
       </SectionAccordion>
     </SectionContainer>
