@@ -45,7 +45,7 @@ export function useAsyncState<T, E = unknown> (initial?: T | (() => T)) {
 }
 
 export function useAsyncOperation<P, T> (params: P, fetcher: (params: P) => Promise<T>, requireAuth: boolean = false): AsyncOperation<T> {
-  const { isAuthenticated, loginWithRedirect } = useAuth0();
+  const { isAuthenticated, loginWithRedirect, getAccessTokenSilently } = useAuth0();
   const whenMounted = useWhenMounted();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<unknown>();
@@ -71,17 +71,21 @@ export function useAsyncOperation<P, T> (params: P, fetcher: (params: P) => Prom
     if (loadingRef.current) {
       return;
     }
+    const accessToken = await getAccessTokenSilently();
     setLoading(true);
     setData(undefined);
     setError(undefined);
     loadingRef.current = true;
-    fetcherRef.current(paramsRef.current)
+    fetcherRef
+      .current({ ...paramsRef.current, accessToken })
       .then(whenMounted(setData))
       .catch(whenMounted(setError))
-      .finally(whenMounted(() => {
-        setLoading(false);
-        loadingRef.current = false;
-      }));
+      .finally(
+        whenMounted(() => {
+          setLoading(false);
+          loadingRef.current = false;
+        }),
+      );
   });
 
   const clear = useEventCallback(() => {

@@ -1,4 +1,5 @@
 import {FastifyPluginAsyncJsonSchemaToTs} from "@fastify/type-provider-json-schema-to-ts";
+import { generateUserIdBySub, RequsetUserProps } from "../../../../utils/auth";
 
 export const GENERATE_SQL_USED_HEADER = "x-playground-generate-sql-used";
 export const GENERATE_SQL_LIMIT_HEADER = "x-playground-generate-sql-limit";
@@ -6,10 +7,15 @@ export const MAX_DAILY_GENERATE_SQL_LIMIT = 2000;
 
 const root: FastifyPluginAsyncJsonSchemaToTs = async (app): Promise<void> => {
   app.get('/quota', {
-    preHandler: [app.authenticate],
+    // preHandler: [app.authenticate],
+    // @ts-ignore
+    preValidation: app.authenticate
   }, async function (req, reply) {
-    const {playgroundService} = app;
-    const {id: userId, githubLogin} = req.user;
+    await req.jwtVerify();
+    console.log(req.user);
+    const { playgroundService } = app;
+    const { sub } = (req.user as RequsetUserProps) || {};
+    const userId = generateUserIdBySub(sub)
 
     const conn = await this.mysql.getConnection();
     try {
@@ -19,7 +25,7 @@ const root: FastifyPluginAsyncJsonSchemaToTs = async (app): Promise<void> => {
 
       // Give the trusted users more daily requests.
       const trustedLogins = app.config.PLAYGROUND_TRUSTED_GITHUB_LOGINS;
-      if (trustedLogins.includes(githubLogin)) {
+      if (trustedLogins.includes(sub)) {
         limit = MAX_DAILY_GENERATE_SQL_LIMIT;
       }
 

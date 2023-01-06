@@ -4,6 +4,7 @@ import {
   QueryPlaygroundSQLPromptTemplate
 } from "../../../plugins/services/bot-service/template/QueryPlaygroundPromptTemplate";
 import {GENERATE_SQL_LIMIT_HEADER, GENERATE_SQL_USED_HEADER, MAX_DAILY_GENERATE_SQL_LIMIT} from "./quota";
+import { generateUserIdBySub, RequsetUserProps } from "../../../utils/auth";
 
 export interface IBody {
   question: string;
@@ -34,15 +35,18 @@ const root: FastifyPluginAsyncJsonSchemaToTs = async (app, opts): Promise<void> 
   app.post<{
     Body: IBody;
   }>('/', {
-    preHandler: [app.authenticateAllowAnonymous],
+    // preHandler: [app.authenticateAllowAnonymous],
+    // @ts-ignore
+    preValidation: app.authenticate,
     schema
   }, async function (req, reply) {
     const { playgroundService, botService } = app;
     const { question } = req.body;
-    const { id: userId, githubId, githubLogin } = req.user;
+    const { sub } = (req.user as RequsetUserProps) || {};
+    const userId = generateUserIdBySub(sub)
     const context = {
-      github_id: githubId,
-      github_login: githubLogin,
+      user_id: userId,
+      auth0_sub: sub,
     };
     const conn = await this.mysql.getConnection();
 
@@ -60,7 +64,7 @@ const root: FastifyPluginAsyncJsonSchemaToTs = async (app, opts): Promise<void> 
 
       // Give the trusted users more daily requests.
       const trustedLogins = app.config.PLAYGROUND_TRUSTED_GITHUB_LOGINS;
-      if (trustedLogins.includes(githubLogin)) {
+      if (trustedLogins.includes(sub)) {
         limit = MAX_DAILY_GENERATE_SQL_LIMIT;
       }
 
