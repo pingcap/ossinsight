@@ -220,7 +220,7 @@ export default forwardRef<ExecutionContext, ExecutionProps>(function Execution (
         case QuestionStatus.New:
           return 'Pending...';
         case QuestionStatus.Waiting:
-          return 'Waiting execution...';
+          return `Waiting execution in queue (currently in position ${question.queuePreceding})...`;
         case QuestionStatus.Running:
           return 'Running SQL...';
         case QuestionStatus.Success:

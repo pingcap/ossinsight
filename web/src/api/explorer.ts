@@ -70,6 +70,7 @@ export interface Question {
   chart?: ChartResult | null;
   recommended: boolean;
   recommendedQuestions?: string[];
+  queuePreceding: number;
   createdAt: string;
   requestedAt?: string | null;
   executedAt?: string | null;
