@@ -9,10 +9,15 @@ import TableChart from './TableChart';
 import NumberCard from './NumberCard';
 import MapChart from './MapChart';
 import { registerThemeDark } from '@site/src/components/BasicCharts';
+import EmptyDataAlert from '@site/src/pages/explore/_components/charts/EmptyDataAlert';
 
 registerThemeDark();
 
 export function Charts (props: ChartResult & { data: Array<Record<string, any>>, fields?: any[] }) {
+  if (props.data.length === 0) {
+    return <EmptyDataAlert />;
+  }
+
   switch (props.chartName) {
     case 'LineChart':
       return <LineChart {...props} />;

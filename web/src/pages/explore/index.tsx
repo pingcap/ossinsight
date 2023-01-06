@@ -21,7 +21,7 @@ export default function Page () {
   const [questionId, setQuestionId] = useUrlSearchState('id', nullableStringParam(), true);
   const [value, setValue, valueRef] = useStateRef('');
   const [hasResult, setHasResult] = useState(false);
-  const [ec, setEc, ecRef] = useStateRef<ExecutionContext | null>(null);
+  const [ec, setEc] = useState<ExecutionContext | null>(null);
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [question, setQuestion] = useState<Question>();
   const loadingState = useRef({ loading: false, resultLoading: false, chartLoading: false });
@@ -45,12 +45,6 @@ export default function Page () {
     setValue(question.title);
     setSuggestions(question.recommendedQuestions ?? []);
     setQuestion(question);
-  });
-
-  const handleSelect = useEventCallback((question: string) => {
-    ecRef.current?.clear();
-    ecRef.current?.run(question);
-    setValue(question);
   });
 
   const handleAction = useEventCallback(() => {
@@ -96,7 +90,7 @@ export default function Page () {
     <>
       <Decorators />
       <CustomPage>
-        <ExploreContext.Provider value={{ questionId, question }}>
+        <ExploreContext.Provider value={{ questionId, question, executionContext: ec, setQuestion: setValue }}>
           <Container maxWidth="xl" sx={{ pt: 4 }}>
             <Layout
               showSide={!hideExecution && hasResult}
@@ -104,8 +98,8 @@ export default function Page () {
               header={<Header />}
               side={(
                 <>
-                  <Typography variant="h3" m={2} fontSize={18}>🔥 Try other questions</Typography>
-                  <PresetSuggestions onSelect={handleSelect} disabled={loading} questions={suggestions} n={5} variant="text" />
+                  <Typography variant="h3" mb={2} fontSize={18}>🔥 Try other questions</Typography>
+                  <PresetSuggestions disabled={loading} questions={suggestions} n={5} variant="text" />
                 </>
               )}
             >
@@ -121,7 +115,6 @@ export default function Page () {
                         🤖️ AI-generated questions: 3 random ones for you <IconButton onClick={reload} disabled={loading}><Cached /></IconButton>
                       </Box>
                     )}
-                    onSelect={handleSelect}
                     aiGenerated
                     n={3}
                   />
@@ -132,7 +125,6 @@ export default function Page () {
                         🔥 Popular queries
                       </Box>
                     )}
-                    onSelect={handleSelect}
                     n={9}
                   />
                 </>

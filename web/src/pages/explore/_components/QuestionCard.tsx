@@ -1,5 +1,6 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useContext } from 'react';
 import { ButtonBase, styled, useEventCallback } from '@mui/material';
+import ExploreContext from '@site/src/pages/explore/_components/context';
 
 export type QuestionCardVariant = 'recommended-card' | 'card' | 'text';
 
@@ -7,13 +8,16 @@ export interface QuestionCardProps {
   disabled?: boolean;
   variant?: QuestionCardVariant;
   question: ReactNode;
-  onClick?: (question: string) => void;
 }
 
-export default function QuestionCard ({ question, onClick, variant = 'card', disabled }: QuestionCardProps) {
+export default function QuestionCard ({ question, variant = 'card', disabled }: QuestionCardProps) {
+  const { executionContext, setQuestion } = useContext(ExploreContext);
+
   const handleClick = useEventCallback(() => {
     if (typeof question === 'string') {
-      onClick?.(question);
+      executionContext?.clear();
+      executionContext?.run(question);
+      setQuestion(question);
     }
   });
 
@@ -58,7 +62,7 @@ const Content = styled(ButtonBase, { name: 'QuestionCard-Content' })`
   width: 100%;
   height: 100%;
   vertical-align: top;
-  
+
   &:hover {
     background-color: rgba(44, 44, 44, 0.5);
   }
@@ -70,6 +74,12 @@ const Link = styled(ButtonBase, { name: 'QuestionCard-Link' })`
   padding: 8px 0;
   font-size: 16px;
   line-height: 1.5;
+  color: #8F8F8F;
+  transition: ${({ theme }) => theme.transitions.create('color')};
+
+  &:hover {
+    color: white;
+  }
 `;
 
 const Marker = styled('span')`

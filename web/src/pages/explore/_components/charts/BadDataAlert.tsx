@@ -1,13 +1,13 @@
-import React, { useContext } from 'react';
+import React, { useContext, useMemo } from 'react';
 import ExploreContext from '@site/src/pages/explore/_components/context';
-import { Alert, Button, useEventCallback } from '@mui/material';
-import { createIssueLink } from '@site/src/utils/gh';
+import { createIssueLink as createIssueLinkInternal } from '@site/src/utils/gh';
+import AlertBlock from '@site/src/pages/explore/_components/AlertBlock';
 
 export default function BadDataAlert ({ title = 'AI has generated invalid chart info' }: { title?: string }) {
   const { questionId, question } = useContext(ExploreContext);
 
-  const report = useEventCallback(() => {
-    const url = createIssueLink('pingcap/ossinsight', {
+  const createIssueLink = useMemo(() => {
+    return () => createIssueLinkInternal('pingcap/ossinsight', {
       title: `${title} in question ${questionId ?? ''}`,
       labels: 'area/data-explorer,type/bug',
       assignee: 'Mini256',
@@ -30,16 +30,15 @@ ${JSON.stringify(question?.result?.rows?.[0], undefined, 2)}
       `,
 
     });
-    window.open(url, '_blank');
-  });
+  }, [questionId, question]);
 
   return (
-    <Alert
+    <AlertBlock
       severity="warning"
       sx={{ mb: 2 }}
-      action={<Button onClick={report}>Report</Button>}
+      createIssueUrl={createIssueLink}
     >
       {title}
-    </Alert>
+    </AlertBlock>
   );
 }

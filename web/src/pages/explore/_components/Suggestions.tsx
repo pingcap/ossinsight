@@ -7,7 +7,6 @@ import { array } from '@site/src/utils/generate';
 
 export interface SuggestionsProps {
   disabled?: boolean;
-  onSelect: (question: string) => void;
   variant?: QuestionCardVariant;
   title?: (reload: () => void, loading: boolean) => ReactNode;
   n: number;
@@ -41,7 +40,7 @@ export function useRecommended (aiGenerated: boolean, n: number) {
   };
 }
 
-export function Suggestions ({ variant, onSelect, disabled, questions, n }: SuggestionsProps & { questions: QuestionTemplate[] }) {
+export function Suggestions ({ variant, disabled, questions, n }: SuggestionsProps & { questions: QuestionTemplate[] }) {
   const renderLoading = () => {
     const renderCard = (i: number) => (
       <QuestionCard
@@ -74,7 +73,7 @@ export function Suggestions ({ variant, onSelect, disabled, questions, n }: Sugg
 
   const renderData = () => {
     const renderCard = (question: QuestionTemplate, i: number) => (
-      <QuestionCard key={i} variant={variant} question={question.title} onClick={onSelect} disabled={disabled} />
+      <QuestionCard key={i} variant={variant} question={question.title} disabled={disabled} />
     );
     if (variant === 'text') {
       return questions.map(renderCard);
@@ -89,7 +88,7 @@ export function Suggestions ({ variant, onSelect, disabled, questions, n }: Sugg
   const content = questions.length === 0 ? renderLoading() : renderData();
   if (variant === 'text') {
     return (
-      <Box px={2}>
+      <Box>
         {content}
       </Box>
     );
@@ -102,16 +101,16 @@ export function Suggestions ({ variant, onSelect, disabled, questions, n }: Sugg
   }
 }
 
-export function PresetSuggestions ({ n, disabled, onSelect, questions, variant }: PresetSuggestionsProps) {
-  return <Suggestions questions={useMemo(() => questions.map(question => ({ title: question, hash: question, ai_generated: 0 })), [questions])} onSelect={onSelect} n={n} disabled={disabled} variant={variant} />;
+export function PresetSuggestions ({ n, disabled, questions, variant }: PresetSuggestionsProps) {
+  return <Suggestions questions={useMemo(() => questions.map(question => ({ title: question, hash: question, ai_generated: 0 })), [questions])} n={n} disabled={disabled} variant={variant} />;
 }
 
-export function RecommendedSuggestions ({ aiGenerated = false, n, disabled = false, onSelect, title }: RecommendedSuggestionsProps) {
+export function RecommendedSuggestions ({ aiGenerated = false, n, disabled = false, title, variant }: RecommendedSuggestionsProps) {
   const { data = [], reload, loading } = useRecommended(aiGenerated, n);
   return (
     <>
       {title?.(reload, loading) ?? null}
-      <Suggestions onSelect={onSelect} n={n} questions={data} disabled={disabled} variant={aiGenerated ? 'recommended-card' : 'card'} />
+      <Suggestions n={n} questions={data} disabled={disabled} variant={variant ?? (aiGenerated ? 'recommended-card' : 'card')} />
     </>
   );
 }
