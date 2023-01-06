@@ -88,9 +88,7 @@ export async function postPlaygroundSQL (params: {
   return await clientWithoutCache
     .post('/q/playground', rest, {
       withCredentials: true,
-      headers: {
-        ...generateAuthorizationHeader(accessToken),
-      },
+      oToken: accessToken,
     })
     .then((data) => data);
 }
@@ -117,9 +115,7 @@ export async function aiQuestionResource (params: {
   const { accessToken } = params;
   return await clientWithoutCache.get('/bot/questionToSQL/quota', {
     withCredentials: true,
-    headers: {
-      ...generateAuthorizationHeader(accessToken),
-    },
+    oToken: accessToken,
   });
 }
 
@@ -138,22 +134,9 @@ export async function aiQuestion (params: {
     {
       withCredentials: true,
       keepResponse: true,
-      headers: {
-        ...generateAuthorizationHeader(accessToken),
-      },
+      oToken: accessToken,
     },
   );
 
   return { sql, resource: getAiQuestionHeaders(headers) };
-}
-
-function generateAuthorizationHeader (
-  accessToken?: string,
-): {} | { Authorization: string } {
-  if (!accessToken) {
-    return {};
-  }
-  return {
-    Authorization: `Bearer ${accessToken}`,
-  };
 }
