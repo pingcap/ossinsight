@@ -692,4 +692,18 @@ export class ExplorerService {
         }
     }
 
+    async wrapperTheErrorMessage(question: Question) {
+        if (typeof question.error !== 'string') {
+            return;
+        }
+
+        if (question.error.includes('denied for user')) {
+            question.error = 'Failed to execute SQL: commend access denied';
+        } else if (question.error.includes('connect ECONNREFUSED')) {
+            question.error = 'Failed to connect database, please try again later.';
+        } else if (question.error.includes('rpc error: code = Unavailable')) {
+            question.error = 'Failed to execute SQL, some of TiFlash nodes are unavailable, please try again later.';
+        }
+    }
+
 }
