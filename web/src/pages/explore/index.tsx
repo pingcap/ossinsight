@@ -105,7 +105,7 @@ export default function Page () {
               header={<Header />}
               side={(
                 <>
-                  <Typography variant="h3" mb={2} fontSize={18}>🔥 Try other questions</Typography>
+                  <Typography variant="h3" mb={2} fontSize={18}>💡 Get inspired</Typography>
                   <PresetSuggestions disabled={loading} questions={suggestions} n={5} variant="text" />
                 </>
               )}
