@@ -15,12 +15,12 @@ import {
     QuestionStatus,
     ValidateSQLResult
 } from "./types";
-import {pino} from "pino";
 import {TiDBPlaygroundQueryExecutor} from "../../../core/executor/query-executor/TiDBPlaygroundQueryExecutor";
 import {GenerateChartPromptTemplate} from "../bot-service/template/GenerateChartPromptTemplate";
 import {randomUUID} from "crypto";
 import {ChartNames, RecommendedChart, RecommendQuestion} from "../bot-service/types";
 import {GenerateAnswerPromptTemplate} from "../bot-service/template/GenerateAnswerPromptTemplate";
+import {FastifyBaseLogger} from "fastify";
 
 declare module 'fastify' {
     interface FastifyInstance {
@@ -80,7 +80,7 @@ export class ExplorerService {
     private options: ExplorerOption;
 
     constructor(
-      private readonly logger: pino.BaseLogger,
+      private readonly logger: FastifyBaseLogger,
       private readonly botService: BotService,
       private readonly playgroundQueryExecutor: TiDBPlaygroundQueryExecutor,
       private readonly lowConcurrentQueue: Queue,
@@ -102,7 +102,9 @@ export class ExplorerService {
 
     async newQuestion(conn: Connection, userId: number, githubLogin: string, q: string): Promise<Question> {
         const questionId = randomUUID();
+        const logger = this.logger.child({ questionId: questionId });
         const normalizedQuestion = this.normalizeQuestion(q);
+        logger.info("Creating a new question: %s", normalizedQuestion);
         const questionHash = this.getQuestionHash(normalizedQuestion);
         let question: Question = {
             id: questionId,
@@ -123,6 +125,7 @@ export class ExplorerService {
             const cachedQuestion = await this.getQuestionByHash(conn, questionHash);
             if (cachedQuestion) {
                 await conn.commit();
+                logger.info("Question is cached, returning cached question (hash: %s).", questionHash);
                 return cachedQuestion;
             }
 
@@ -140,25 +143,30 @@ export class ExplorerService {
 
             const onGongQuestions = previousQuestions.filter(q => [QuestionStatus.Waiting, QuestionStatus.Running].includes(q.status));
             if (onGongQuestions.length >= this.options.userMaxQuestionsOnGoing) {
+                logger.info("There are %d previous question on going, cancel them.", onGongQuestions.length);
                 await this.cancelQuestions(conn, onGongQuestions.map(q => q.id));
             }
 
             // Generate the SQL by OpenAI.
             const answer = await this.botService.questionToAnswer(this.generateAnswerTemplate, normalizedQuestion);
-            const templateQuestions = await this.getRecommendQuestions(conn, 3, false);
-            answer.questions.push(...templateQuestions.map(q => q.title));
-            question.recommendedQuestions = answer.questions;
+            let { sql: querySQL, chart, questions: recommendedQuestions } = answer;
 
-            let querySQL = answer.sql;
+            // Prepare the recommended questions.
+            const templateQuestions = await this.getRecommendQuestions(conn, 3, false);
+            recommendedQuestions.push(...templateQuestions.map(q => q.title));
+            question.recommendedQuestions = recommendedQuestions;
+
+            // Check if the SQL is generated.
             if (!querySQL) {
                 throw new APIError(500, 'Failed to generate SQL, please try again later.');
             }
             question.querySQL = querySQL;
-            question.chart = answer.chart;
+            question.chart = chart;
 
             // Validate the generated SQL.
             let statementType;
             try {
+                logger.info("Validating the generated SQL: %s", querySQL);
                 const res = this.validateSQL(querySQL);
                 querySQL = res.sql;
                 statementType = res.statementType;
@@ -176,6 +184,7 @@ export class ExplorerService {
             let engines: string[] = [];
             if (statementType === 'select') {
                 try {
+                    logger.info("Getting the storage engines for the SQL: %s", querySQL);
                     const plan = await this.getSQLExecutionPlan(conn, querySQL);
                     engines = this.getStorageEnginesFromPlan(plan);
                 } catch (err: any) {
@@ -200,6 +209,7 @@ export class ExplorerService {
             // Try to get SQL result from cache.
             const cachedResult = await this.getCachedSQLResult(conn, question.queryHash, this.options.querySQLCacheTTL);
             if (cachedResult) {
+                logger.info("SQL result is cached, returning cached result (hash: %s).", question.queryHash);
                 await this.saveQuestionResult(conn, questionId, cachedResult);
                 question = {
                     ...question,
@@ -212,6 +222,8 @@ export class ExplorerService {
             await conn.commit();
         } catch (err: any) {
             await conn.rollback();
+
+            // Record the error.
             question = {
                 ...question,
                 status: QuestionStatus.Error,
@@ -219,6 +231,7 @@ export class ExplorerService {
             };
             await this.createQuestion(conn, question);
 
+            // Wrap the error.
             this.logger.info(err, `Failed to create a new question: ${err.message}`);
             if (err instanceof APIError) {
                 throw new ExplorerQuestionError(err.statusCode, err.message, question, err);
@@ -231,10 +244,12 @@ export class ExplorerService {
         const { queueJobId, hitCache, queueName } = question;
         if (!hitCache) {
             if (queueName === QuestionQueueNames.Low) {
+                logger.info("Pushing the question to the low concurrent queue (jobId: %s).", queueJobId);
                 await this.lowConcurrentQueue.add(QuestionQueueNames.Low, question, {
                     jobId: queueJobId!
                 });
             } else {
+                logger.info("Pushing the question to the high concurrent queue (jobId: %s).", queueJobId);
                 await this.highConcurrentQueue.add(QuestionQueueNames.High, question, {
                     jobId: queueJobId!
                 });
@@ -367,19 +382,19 @@ export class ExplorerService {
     private async createQuestion(conn: Connection, question: Question) {
         const {
             id, hash, userId, status, title, querySQL, queryHash, engines = [],
-            recommended, createdAt, queueName, queueJobId, chart, recommendedQuestions
+            recommended, createdAt, queueName, queueJobId = null, chart, recommendedQuestions = [], error = null
         } = question;
         const enginesValue = JSON.stringify(engines);
-        const chartValue = JSON.stringify(chart);
+        const chartValue = chart !== undefined ? JSON.stringify(chart) : null;
         const recommendedQuestionsValue = JSON.stringify(recommendedQuestions);
         const [rs] = await conn.query<ResultSetHeader>(`
             INSERT INTO explorer_questions(
                 id, hash, user_id, status, title, query_sql, query_hash, engines, 
-                recommended, created_at, queue_name, queue_job_id, chart, recommended_questions
-            ) VALUES (UUID_TO_BIN(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                recommended, created_at, queue_name, queue_job_id, chart, recommended_questions, error
+            ) VALUES (UUID_TO_BIN(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `, [
             id, hash, userId, status, title, querySQL, queryHash, enginesValue,
-            recommended, createdAt.toSQL(), queueName, queueJobId, chartValue, recommendedQuestionsValue
+            recommended, createdAt.toSQL(), queueName, queueJobId, chartValue, recommendedQuestionsValue, error
         ]);
         if (rs.affectedRows !== 1) {
             throw new APIError(500, 'Failed to create a new question.');
