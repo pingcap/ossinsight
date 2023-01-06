@@ -37,7 +37,9 @@ const root: FastifyPluginAsync = async (app) => {
 
             if (question.status === QuestionStatus.Error) {
                 app.explorerService.wrapperTheErrorMessage(question);
-            } else if (question.status === QuestionStatus.Waiting) {
+            }
+
+            if (question.status === QuestionStatus.Waiting) {
                 const preceding = await app.explorerService.countPrecedingQuestions(conn, questionId);
                 reply.status(200).send({
                     queuePreceding: preceding,
