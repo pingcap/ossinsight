@@ -521,7 +521,7 @@ export class ExplorerService {
             WHERE
                 status IN (?)
                 AND created_at < (SELECT created_at FROM explorer_questions WHERE id = UUID_TO_BIN(?))
-                AND queue_name = (SELECT created_at FROM explorer_questions WHERE id = UUID_TO_BIN(?))
+                AND queue_name = (SELECT queue_name FROM explorer_questions WHERE id = UUID_TO_BIN(?))
         `, [[QuestionStatus.Running, QuestionStatus.Waiting], questionId, questionId]);
         return rows[0].count;
     }
