@@ -521,7 +521,7 @@ export class ExplorerService {
             WHERE
                 status IN (?)
                 AND created_at < (SELECT created_at FROM explorer_questions WHERE id = UUID_TO_BIN(?))
-                AND queue_name = (SELECT created_at FROM explorer_questions WHERE id = UUID_TO_BIN(?))
+                AND queue_name = (SELECT queue_name FROM explorer_questions WHERE id = UUID_TO_BIN(?))
         `, [[QuestionStatus.Running, QuestionStatus.Waiting], questionId, questionId]);
         return rows[0].count;
     }
@@ -689,6 +689,20 @@ export class ExplorerService {
         `, [questionValues]);
         if (rs.affectedRows !== questions.length) {
             throw new APIError(500, 'Failed to save the recommend questions.');
+        }
+    }
+
+    async wrapperTheErrorMessage(question: Question) {
+        if (typeof question.error !== 'string') {
+            return;
+        }
+
+        if (question.error.includes('denied for user')) {
+            question.error = 'Failed to execute SQL: commend access denied';
+        } else if (question.error.includes('connect ECONNREFUSED')) {
+            question.error = 'Failed to connect database, please try again later.';
+        } else if (question.error.includes('rpc error: code = Unavailable')) {
+            question.error = 'Failed to execute SQL, some of TiFlash nodes are unavailable, please try again later.';
         }
     }
 
