@@ -73,15 +73,15 @@ export function Suggestions ({ variant, onSelect, disabled, questions, n }: Sugg
   };
 
   const renderData = () => {
-    const renderCard = (question: QuestionTemplate) => (
-      <QuestionCard variant={variant} question={question.title} onClick={onSelect} disabled={disabled} />
+    const renderCard = (question: QuestionTemplate, i: number) => (
+      <QuestionCard key={i} variant={variant} question={question.title} onClick={onSelect} disabled={disabled} />
     );
     if (variant === 'text') {
       return questions.map(renderCard);
     }
-    return questions.map((question) => (
+    return questions.map((question, i) => (
       <Grid item xs={12} md={4} key={question.hash} display="flex" alignItems="stretch" justifyContent="stretch">
-        {renderCard(question)}
+        {renderCard(question, i)}
       </Grid>
     ));
   };
