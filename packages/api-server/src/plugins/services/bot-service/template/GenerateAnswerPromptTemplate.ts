@@ -72,7 +72,7 @@ Answer {
 }
 
 ---
-Let's think step by step, use best practice of writing SQL, generate a answer.json file to answer the question: ${question}?
+Let's think step by step, use best practice of writing SQL, use CTE if necessary, if there is no specific repo, scan all repos, generate a answer.json file to answer the question: ${question}?
 ---
 answer.json
 ---
