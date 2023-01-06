@@ -7,6 +7,7 @@ import { worldMapGeo } from '@site/src/dynamic-pages/analyze/charts/options';
 import AspectRatio from 'react-aspect-ratio';
 import { styled } from '@mui/material';
 import { isNonemptyString, isNullish } from '@site/src/utils/value';
+import BadDataAlert from '@site/src/pages/explore/_components/charts/BadDataAlert';
 
 function transformData (data: Array<Record<string, any>>, code: string, value: string): Array<[string, number, number, number]> {
   return data.map(item => {
@@ -30,7 +31,7 @@ export default function MapChart ({ chartName, title, country_code: countryCode,
   }, [data, countryCode, value]);
 
   const options: EChartsOption = useMemo(() => {
-    const max = transformedData[0][3];
+    const max = transformedData[0]?.[3] ?? 0;
 
     return {
       backgroundColor: 'rgb(36, 35, 43)',
@@ -55,7 +56,7 @@ export default function MapChart ({ chartName, title, country_code: countryCode,
         type: 'effectScatter',
         datasetId: 'top1',
         coordinateSystem: 'geo',
-        name: `Top 1 (${transformedData[0][0]})`,
+        name: `Top 1 (${transformedData[0]?.[0]})`,
         encode: {
           lng: 1,
           lat: 2,
@@ -105,6 +106,10 @@ export default function MapChart ({ chartName, title, country_code: countryCode,
       so.disconnect();
     };
   }, [ref]);
+
+  if (transformedData.length !== data.length && transformedData.length === 0) {
+    return <BadDataAlert />;
+  }
 
   return (
     <AspectRatio ratio={4 / 3} style={{ maxWidth: 600, margin: 'auto' }}>
