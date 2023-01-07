@@ -75,7 +75,7 @@ Answer {
 }
 
 ---
-Let's think step by step, use best practice of writing SQL, use common table expression if necessary, if there is no specific repo, scan all repos, generate a answer.json file to answer the question: ${question}?
+Let's think step by step, use best practice of writing SQL, use common table expression, window function if necessary, if there is no specific repo, scan all repos, generate a answer.json file to answer the question: ${question}?
 ---
 answer.json
 ---
