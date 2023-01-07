@@ -1,152 +1,115 @@
 import CustomPage from '@site/src/theme/CustomPage';
-import React, { useEffect, useRef, useState } from 'react';
-import ExploreSearch, { useStateRef } from '@site/src/pages/explore/_components/Search';
-import { Box, Container, Divider, IconButton, Typography, useEventCallback } from '@mui/material';
-import Execution, { ExecutionContext } from '@site/src/pages/explore/_components/Execution';
-import { isBlankString, isNullish } from '@site/src/utils/value';
-import { PresetSuggestions, RecommendedSuggestions } from '@site/src/pages/explore/_components/Suggestions';
+import React, { useEffect, useState } from 'react';
+import ExploreSearch from '@site/src/pages/explore/_components/Search';
+import { Box, Container, Typography, useEventCallback } from '@mui/material';
+import Execution from '@site/src/pages/explore/_components/Execution';
+import { isBlankString, isNullish, notNullish } from '@site/src/utils/value';
+import { PresetSuggestions } from '@site/src/pages/explore/_components/Suggestions';
 import Faq from '@site/src/pages/explore/_components/Faq';
 import { useExperimental } from '@site/src/components/Experimental';
 import NotFound from '@theme/NotFound';
-import useForceUpdate from '@site/src/hooks/force-update';
 import useUrlSearchState, { nullableStringParam } from '@site/src/hooks/url-search-state';
-import { Question } from '@site/src/api/explorer';
-import ExploreContext from '@site/src/pages/explore/_components/context';
 import Header from '@site/src/pages/explore/_components/Header';
 import Layout from './_components/Layout';
 import { Decorators } from '@site/src/pages/explore/_components/Decorators';
-import { Cached } from '@mui/icons-material';
-import { HighlightCard } from '@site/src/pages/explore/_components/QuestionCard';
+import { FINAL_PHASES, QuestionLoadingPhase, QuestionManagementContext, useQuestionManagementValues } from '@site/src/pages/explore/_components/useQuestion';
+import { SuggestionsContext } from '@site/src/pages/explore/_components/context';
+import Recommends from '@site/src/pages/explore/_components/Recommends';
+import SwitchLayout from '@site/src/pages/explore/_components/SwitchLayout';
 
 export default function Page () {
-  const [questionId, setQuestionId] = useUrlSearchState('id', nullableStringParam(), true);
-  const [value, setValue, valueRef] = useStateRef('');
-  const [hasResult, setHasResult] = useState(false);
-  const [ec, setEc] = useState<ExecutionContext | null>(null);
-  const [suggestions, setSuggestions] = useState<string[]>([]);
-  const [question, setQuestion] = useState<Question>();
-  const [recommend, setRecommend] = useState(false);
-  const loadingState = useRef({ loading: false, resultLoading: false, chartLoading: false });
-  const forceUpdate = useForceUpdate();
+  const { question, loading, load, error, phase, reset, create } = useQuestionManagementValues({ pollInterval: 2000 });
+  const [questionId, setQuestionId, historyChangedRef] = useUrlSearchState('id', nullableStringParam(), true);
+  const [value, setValue] = useState('');
 
   const [enabled] = useExperimental('explore-data');
 
-  const loading = loadingState.current.resultLoading || loadingState.current.loading || loadingState.current.chartLoading;
-  const disableAction = loading || isBlankString(value);
+  const isPending = !FINAL_PHASES.has(phase);
+  const disableAction = isPending || isBlankString(value);
+  const hideExecution = isNullish(question?.id) && !loading;
+  const hasResult = (question?.result?.rows.length ?? 0) > 0;
 
   useEffect(() => {
-    if (isNullish(questionId)) {
-      setValue('');
-    } else {
-      ec?.load(questionId);
+    if (notNullish(question)) {
+      setValue(question.title);
+    }
+  }, [question?.title]);
+
+  // reload or clear only if browser history changed the question id.
+  useEffect(() => {
+    if (historyChangedRef.current) {
+      if (notNullish(questionId)) {
+        load(questionId);
+      } else {
+        handleClear();
+      }
     }
   }, [questionId]);
 
-  const handleQuestionChange = useEventCallback((question: Question) => {
-    setQuestionId(question.id);
-    setValue(question.title);
-    setSuggestions(question.recommendedQuestions ?? []);
-    setQuestion(question);
-  });
+  // when question API was finished, set new question id
+  useEffect(() => {
+    if (!loading) {
+      setQuestionId(question?.id);
+    }
+  }, [loading, question?.id]);
 
   const handleAction = useEventCallback(() => {
-    if (loadingState.current.resultLoading || loadingState.current.loading || loadingState.current.chartLoading) {
+    if (isPending) {
       return;
     }
-    ec?.run(valueRef.current);
+    create(value);
   });
 
   const handleClear = useEventCallback(() => {
-    setQuestionId(undefined);
+    reset();
     setValue('');
   });
 
-  const handleLoading = useEventCallback((loading: boolean) => {
-    if (loadingState.current.loading !== loading) {
-      loadingState.current.loading = loading;
-      forceUpdate();
-    }
+  const handleSelect = useEventCallback((title: string) => {
+    setValue(title);
+    create(title);
   });
-
-  const handleResultLoading = useEventCallback((loading: boolean) => {
-    if (loadingState.current.resultLoading !== loading) {
-      loadingState.current.resultLoading = loading;
-      forceUpdate();
-    }
-  });
-
-  const handleChartLoading = useEventCallback((loading: boolean) => {
-    if (loadingState.current.chartLoading !== loading) {
-      loadingState.current.chartLoading = loading;
-      forceUpdate();
-    }
-  });
-
-  const hideExecution = isNullish(questionId) && !loading;
 
   if (!enabled) {
     return <NotFound />;
   }
 
   return (
-    <>
-      <Decorators />
-      <CustomPage
-        title='Data Explorer: Open Source Explorer powered by TiDB Cloud'
-        description='The ultimate query tool for accessing and analyzing data on GitHub. Analyze 5+ billion GitHub data from natural language, no prerequisite knowledge of SQL or plotting libraries necessary.'
-        keywords='GitHub data,text to SQL,query tool,Data Explorer'
-        image='/img/data-thumbnail.png'
-      >
-        <ExploreContext.Provider value={{ questionId, question, executionContext: ec, setQuestion: setValue }}>
+    <QuestionManagementContext.Provider value={{ phase, question, loading, error, create, load, reset }}>
+      <SuggestionsContext.Provider value={{ handleSelect }}>
+        <Decorators />
+        <CustomPage
+          title="Data Explorer: Open Source Explorer powered by TiDB Cloud"
+          description="The ultimate query tool for accessing and analyzing data on GitHub. Analyze 5+ billion GitHub data from natural language, no prerequisite knowledge of SQL or plotting libraries necessary."
+          keywords="GitHub data,text to SQL,query tool,Data Explorer"
+          image="/img/data-thumbnail.png"
+        >
           <Container maxWidth="xl" sx={{ pt: 4 }}>
             <Layout
-              showSide={!hideExecution && hasResult}
+              showSide={!hideExecution && phase === QuestionLoadingPhase.READY && hasResult}
               showHeader={hideExecution}
               header={<Header />}
               side={(
                 <>
                   <Typography variant="h3" mb={2} fontSize={18}>💡 Get inspired</Typography>
-                  <PresetSuggestions disabled={loading} questions={suggestions} n={5} variant="text" />
+                  <PresetSuggestions disabled={isPending} questions={question?.recommendedQuestions ?? []} n={5} variant="text" />
                 </>
               )}
             >
-              <ExploreSearch value={value} onChange={setValue} onAction={handleAction} disableInput={loading} disableClear={value === ''} disableAction={disableAction} onClear={handleClear} clearState={loading ? 'stop' : undefined} />
-              <Box sx={{ pb: 8, mt: 1.5, display: hideExecution ? 'none' : undefined }}>
-                <Execution ref={setEc} questionId={questionId} search={value} onLoading={handleLoading} onResultLoading={handleResultLoading} onChartLoading={handleChartLoading} onQuestionChange={handleQuestionChange} onFinished={setHasResult} />
-              </Box>
-              {hideExecution && (
-                <>
-                  {recommend
-                    ? (
-                    <RecommendedSuggestions
-                      title={(reload, loading) => (
-                        <Box mt={2} height="40px">
-                          🤖️ AI-generated questions: 3 random ones for you <IconButton onClick={reload} disabled={loading}><Cached /></IconButton>
-                        </Box>
-                      )}
-                      aiGenerated
-                      n={3}
-                    />
-                      )
-                    : <HighlightCard onClick={() => setRecommend(true)} />}
-                  <Divider orientation="horizontal" light sx={{ my: 3, backgroundColor: 'transparent' }} />
-                  <RecommendedSuggestions
-                    title={() => (
-                      <Box height="40px">
-                        🔥 Popular queries
-                      </Box>
-                    )}
-                    n={9}
-                  />
-                </>
-              )}
+              <ExploreSearch value={value} onChange={setValue} onAction={handleAction} disableInput={isPending} disableClear={value === ''} disableAction={disableAction} onClear={handleClear} clearState={isPending ? 'stop' : undefined} />
+              <SwitchLayout state={hideExecution ? 'recommend' : 'execution'} direction={hideExecution ? 'down' : 'up'}>
+                <Box key="execution" sx={{ pb: 8, mt: 1.5 }}>
+                  <Execution search={value} />
+                </Box>
+                <Recommends key="recommend" />
+              </SwitchLayout>
             </Layout>
           </Container>
           <Container maxWidth="lg" sx={{ pb: 8 }}>
             <Faq />
           </Container>
-        </ExploreContext.Provider>
-      </CustomPage>
-    </>
+        </CustomPage>
+      </SuggestionsContext.Provider>
+    </QuestionManagementContext.Provider>
   );
 }

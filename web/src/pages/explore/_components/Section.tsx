@@ -6,7 +6,7 @@ import { getErrorMessage } from '@site/src/utils/error';
 import ErrorBlock from '@site/src/pages/explore/_components/ErrorBlock';
 
 export interface SectionProps {
-  status: 'pending' | 'loading' | 'success';
+  status: 'pending' | 'loading' | 'success' | 'error';
   title: ReactNode;
   extra?: ReactNode;
   children: ReactNode;

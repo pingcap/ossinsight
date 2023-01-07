@@ -1,7 +1,7 @@
 import React, { HTMLAttributes, ReactNode, useContext } from 'react';
 import { ButtonBase, styled, useEventCallback } from '@mui/material';
-import ExploreContext from '@site/src/pages/explore/_components/context';
 import { Cached } from '@mui/icons-material';
+import { SuggestionsContext } from '@site/src/pages/explore/_components/context';
 
 export type QuestionCardVariant = 'recommended-card' | 'card' | 'text';
 
@@ -12,13 +12,11 @@ export interface QuestionCardProps {
 }
 
 export default function QuestionCard ({ question, variant = 'card', disabled }: QuestionCardProps) {
-  const { executionContext, setQuestion } = useContext(ExploreContext);
+  const { handleSelect } = useContext(SuggestionsContext);
 
   const handleClick = useEventCallback(() => {
     if (typeof question === 'string') {
-      executionContext?.clear();
-      executionContext?.run(question);
-      setQuestion(question);
+      handleSelect(question);
     }
   });
 
@@ -47,8 +45,8 @@ export function HighlightCard (props: Exclude<HTMLAttributes<HTMLDivElement>, 'c
   return (
     <HighlightBackground {...props} sx={{ borderRadius: '17px', maxWidth: 'max-content', mt: 2 }}>
       <Content sx={{ display: 'flex', p: 1, borderRadius: '16px', maxWidth: 'max-content', alignItems: 'center' }}>
-        🤖️  Stuck for ideas? Let AI generate 3 questions for you.
-        <Cached fontSize='inherit' sx={{ ml: 1 }} />
+        🤖️ Stuck for ideas? Let AI generate 3 questions for you.
+        <Cached fontSize="inherit" sx={{ ml: 1 }} />
       </Content>
     </HighlightBackground>
   );

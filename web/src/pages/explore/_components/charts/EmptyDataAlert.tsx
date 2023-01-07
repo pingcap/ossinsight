@@ -1,8 +1,8 @@
 import AlertBlock from '@site/src/pages/explore/_components/AlertBlock';
-import React, { useContext, useMemo } from 'react';
-import ExploreContext from '@site/src/pages/explore/_components/context';
+import React, { useMemo } from 'react';
 import { createIssueLink as createIssueLinkInternal } from '@site/src/utils/gh';
 import { format } from 'sql-formatter';
+import useQuestionManagement from '@site/src/pages/explore/_components/useQuestion';
 
 export function safeFormat (sql: string | undefined = '') {
   try {
@@ -13,14 +13,14 @@ export function safeFormat (sql: string | undefined = '') {
 }
 
 export default function EmptyDataAlert () {
-  const { questionId, question } = useContext(ExploreContext);
+  const { question } = useQuestionManagement();
 
   const createIssueLink = useMemo(() => {
     return () => createIssueLinkInternal('pingcap/ossinsight', {
-      title: `Empty result from question ${questionId ?? ''}`,
+      title: `Empty result from question ${question?.id ?? ''}`,
       labels: 'area/data-explorer',
       body: `
-Hi, The result of [question](https://ossinsight/explore/?id=${questionId ?? ''}) is empty
+Hi, The result of [question](https://ossinsight/explore/?id=${question?.id ?? ''}) is empty
 The title is: **${question?.title ?? ''}**
 
 Generated SQL is:
@@ -29,7 +29,7 @@ ${safeFormat(question?.querySQL)}
 \`\`\` 
       `,
     });
-  }, [question, questionId],
+  }, [question],
   );
 
   return (

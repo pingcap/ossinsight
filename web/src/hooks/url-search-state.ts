@@ -7,17 +7,17 @@ export interface UseUrlSearchStateProps<T> {
   deserialize: (string: string) => T;
 }
 
-export type UseUrlSearchStateHook = <T> (key: string, props: UseUrlSearchStateProps<T>, push?: boolean) => [T, Dispatch<SetStateAction<T>>];
+export type UseUrlSearchStateHook = <T> (key: string, props: UseUrlSearchStateProps<T>, push?: boolean) => [T, Dispatch<SetStateAction<T>>, { readonly current: boolean }];
 
-function useUrlSearchStateSSR<T> (key: string, { defaultValue }: UseUrlSearchStateProps<T>): [T, Dispatch<SetStateAction<T>>] {
-  return useState<T>(defaultValue);
+function useUrlSearchStateSSR<T> (key: string, { defaultValue }: UseUrlSearchStateProps<T>): [T, Dispatch<SetStateAction<T>>, { readonly current: boolean }] {
+  return [...useState<T>(defaultValue), { current: true }];
 }
 
 function useUrlSearchStateCSR<T> (key: string, {
   defaultValue,
   deserialize,
   serialize,
-}: UseUrlSearchStateProps<T>, push: boolean = false): [T, Dispatch<SetStateAction<T>>] {
+}: UseUrlSearchStateProps<T>, push: boolean = false): [T, Dispatch<SetStateAction<T>>, { readonly current: boolean }] {
   const initialValue = useMemo(() => {
     const usp = new URLSearchParams(location.search);
     const v = usp.get(key);
@@ -28,7 +28,12 @@ function useUrlSearchStateCSR<T> (key: string, {
     }
   }, []);
   const [value, setValue] = useState<T>(initialValue);
+  const historyChangeRef = useRef(true);
   const internalChange = useRef(false);
+
+  useEffect(() => {
+    historyChangeRef.current = false;
+  }, []);
 
   useEffect(() => {
     if (internalChange.current) {
@@ -64,17 +69,21 @@ function useUrlSearchStateCSR<T> (key: string, {
       internalChange.current = true;
       const usp = new URLSearchParams(location.search);
       const value = usp.get(key);
+      historyChangeRef.current = true;
       if (notNullish(value)) {
         setValue(deserialize(value));
       } else {
         setValue(defaultValue);
       }
+      setTimeout(() => {
+        historyChangeRef.current = false;
+      }, 0);
     };
     window.addEventListener('popstate', handlePopstate);
     return () => window.removeEventListener('popstate', handlePopstate);
   }, []);
 
-  return [value, setValue];
+  return [value, setValue, historyChangeRef];
 }
 
 const useUrlSearchState: UseUrlSearchStateHook = typeof window === 'undefined' ? useUrlSearchStateSSR : useUrlSearchStateCSR;

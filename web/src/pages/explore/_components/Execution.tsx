@@ -1,107 +1,21 @@
-import { useAsyncOperation, useAsyncState } from '@site/src/hooks/operation';
-import { ChartResult, newQuestion, pollQuestion, Question, QuestionStatus, questionToChart } from '@site/src/api/explorer';
-import React, { ForwardedRef, forwardRef, useEffect, useMemo, useRef, useState } from 'react';
+import { ChartResult, Question } from '@site/src/api/explorer';
+import React, { useEffect, useMemo, useState } from 'react';
 import { isEmptyArray, isNonemptyString, isNullish, notFalsy, notNullish } from '@site/src/utils/value';
 import { format } from 'sql-formatter';
 import Section from '@site/src/pages/explore/_components/Section';
 import CodeBlock from '@theme/CodeBlock';
 import { Charts } from '@site/src/pages/explore/_components/charts';
-import { Divider, Portal, styled, ToggleButton, ToggleButtonGroup, Typography, useEventCallback } from '@mui/material';
-import { useUserInfoContext } from '@site/src/context/user';
+import { Divider, Portal, styled, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
 import { getErrorMessage, isAxiosError } from '@site/src/utils/error';
 import { AxiosError } from 'axios';
-import { applyForwardedRef } from '@site/src/utils/ref';
 import { TabContext, TabPanel } from '@mui/lab';
 import TableChart from './charts/TableChart';
 import { AutoGraph, TableView } from '@mui/icons-material';
 import Info from './Info';
 import { twitterLink } from '@site/src/utils/share';
 import ShareWithTwitter from '@site/src/pages/explore/_components/ShareWithTwitter';
-import { wait } from '@site/src/utils/promisify';
 import ErrorBlock from '@site/src/pages/explore/_components/ErrorBlock';
-
-export interface ExecutionContext {
-  run: (question: string) => void;
-  load: (questionId: string) => void;
-  clear: () => void;
-}
-
-export interface ExecutionProps {
-  search: string;
-  questionId?: string;
-  onLoading?: (loading: boolean) => void;
-  onResultLoading?: (loading: boolean) => void;
-  onChartLoading?: (loading: boolean) => void;
-  onQuestionChange?: (question: Question) => void;
-  onFinished?: (hasResult: boolean) => void;
-}
-
-const PENDING_STATE = new Set([QuestionStatus.New, QuestionStatus.Waiting, QuestionStatus.Running]);
-
-export function useQuestion (questionId?: string) {
-  const { validating, userInfo, login } = useUserInfoContext();
-  const { data, loading, error, setAsyncData, clearState } = useAsyncState<Question>();
-  const runningQuestion = useRef<string>();
-
-  const run = useEventCallback((question: string) => {
-    if (!validating && !userInfo) {
-      login();
-      return;
-    }
-    clearState();
-    setAsyncData(newQuestion(question).then(wait(1000), wait(1000, true)));
-  });
-
-  const load = useEventCallback((questionId: string) => {
-    if (runningQuestion.current === questionId) {
-      return;
-    }
-    runningQuestion.current = questionId;
-    setAsyncData(pollQuestion(questionId).then(question => {
-      return question;
-    }));
-  });
-
-  // only prefetch first question
-  useEffect(() => {
-    if (notNullish(questionId) && isNullish(data) && !loading) {
-      load(questionId);
-    }
-  }, []);
-
-  // clear state if question id was deleted
-  useEffect(() => {
-    if (isNullish(questionId)) {
-      clearState();
-    }
-  }, [questionId]);
-
-  useEffect(() => {
-    if (notNullish(data) && !loading) {
-      switch (data.status) {
-        case QuestionStatus.New:
-        case QuestionStatus.Waiting:
-        case QuestionStatus.Running: {
-          const h = setTimeout(() => {
-            setAsyncData(pollQuestion(data.id));
-          }, 1500);
-          return () => {
-            clearTimeout(h);
-          };
-        }
-        case QuestionStatus.Success:
-        case QuestionStatus.Error:
-        case QuestionStatus.Cancel:
-          break;
-      }
-    }
-  }, [data, loading]);
-
-  const resultPending = isNullish(data) ? false : PENDING_STATE.has(data.status);
-  const resultError = data?.status === QuestionStatus.Cancel ? new Error('Execution was canceled') : (data?.error);
-
-  return { run, load, question: data, loading, resultPending, sqlError: error, resultError, clear: clearState };
-}
+import useQuestionManagement, { QuestionLoadingPhase } from '@site/src/pages/explore/_components/useQuestion';
 
 export function isSqlError (error: unknown): error is AxiosError<{ message: string, querySQL: string }> {
   if (isAxiosError(error) && notNullish(error.response)) {
@@ -112,154 +26,107 @@ export function isSqlError (error: unknown): error is AxiosError<{ message: stri
   return false;
 }
 
-export default forwardRef<ExecutionContext, ExecutionProps>(function Execution ({ search, questionId, onLoading, onResultLoading, onChartLoading, onQuestionChange, onFinished }, ref: ForwardedRef<ExecutionContext>) {
-  const { question, run, load, clear, loading, resultPending, sqlError, resultError } = useQuestion(questionId);
+export default function Execution ({ search }: { search: string }) {
+  const { question, error, phase } = useQuestionManagement();
   const [controlsContainerRef, setControlsContainerRef] = useState<HTMLSpanElement | null>(null);
-
-  useEffect(() => {
-    onLoading?.(loading);
-  }, [loading, onLoading]);
-
-  useEffect(() => {
-    applyForwardedRef(ref, {
-      run,
-      load,
-      clear () {
-        clear();
-        chartClear();
-      },
-    });
-  }, []);
-
-  useEffect(() => {
-    if (notNullish(question)) {
-      onQuestionChange?.(question);
-    }
-  }, [question, onQuestionChange]);
 
   const formattedSql = useMemo(() => {
     try {
       if (notNullish(question)) {
         return format(question.querySQL, { language: 'mysql' });
       }
-      if (isSqlError(sqlError)) {
-        return format(sqlError.response?.data.querySQL ?? '', { language: 'mysql' });
+      if (isSqlError(error)) {
+        return format(error.response?.data.querySQL ?? '', { language: 'mysql' });
       }
     } catch (e) {
       return question?.querySQL ?? '';
     }
-  }, [question, sqlError]);
-
-  const waitingResult = useMemo(() => {
-    if (isNullish(question)) {
-      return false;
-    }
-    if (loading) {
-      return false;
-    }
-    return resultPending;
-  }, [question, loading, resultPending]);
-
-  useEffect(() => {
-    onResultLoading?.(waitingResult);
-  }, [waitingResult, onResultLoading]);
+  }, [question, error]);
 
   const sqlSectionStatus = useMemo(() => {
-    if (isNullish(question)) {
-      if (loading) {
-        return 'loading';
-      } else {
+    switch (phase) {
+      case QuestionLoadingPhase.NONE:
         return 'pending';
-      }
+      case QuestionLoadingPhase.LOADING:
+      case QuestionLoadingPhase.CREATING:
+        return 'loading';
+      case QuestionLoadingPhase.GENERATE_SQL_FAILED:
+      case QuestionLoadingPhase.LOAD_FAILED:
+      case QuestionLoadingPhase.CREATE_FAILED:
+        return 'error';
+      default:
+        return 'success';
     }
-    return 'success';
-  }, [loading, question]);
+  }, [phase]);
 
   const sqlTitle = useMemo(() => {
-    if (isNullish(question)) {
-      if (loading) {
-        return 'Generating SQL...';
-      } else if (isNullish(sqlError)) {
+    switch (phase) {
+      case QuestionLoadingPhase.NONE:
         return '';
-      } else {
+      case QuestionLoadingPhase.LOADING:
+        return 'Loading question...';
+      case QuestionLoadingPhase.CREATING:
+        return 'Generating SQL...';
+      case QuestionLoadingPhase.LOAD_FAILED:
+        return 'Question not found';
+      case QuestionLoadingPhase.GENERATE_SQL_FAILED:
+      case QuestionLoadingPhase.CREATE_FAILED:
         return 'Failed to generate SQL';
-      }
-    } else {
-      if (isNullish(question.querySQL)) {
-        return 'Failed to generate SQL';
-      } else {
+      default:
         return 'Generated SQL';
-      }
     }
-  }, [question, loading, sqlError]);
+  }, [phase]);
 
   const result = question?.result?.rows;
 
-  useEffect(() => {
-    chartClear();
-  }, [question]);
-
-  const { data: chartData, setData: setChartData, loading: chartLoading, error: chartError, run: chartRun, clear: chartClear } = useAsyncOperation(question?.id, questionToChart);
-  useEffect(() => {
-    onChartLoading?.(chartLoading);
-  }, [chartLoading, onChartLoading]);
-
-  useEffect(() => {
-    if (notNullish(question)) {
-      if (notNullish(question.chart)) {
-        setChartData(question.chart);
-      } else if (notNullish(question.result)) {
-        chartRun();
-      }
+  const resultStatus = useMemo(() => {
+    switch (phase) {
+      case QuestionLoadingPhase.CREATED:
+      case QuestionLoadingPhase.QUEUEING:
+      case QuestionLoadingPhase.EXECUTING:
+      case QuestionLoadingPhase.VISUALIZING:
+        return 'loading';
+      case QuestionLoadingPhase.EXECUTE_FAILED:
+      case QuestionLoadingPhase.VISUALIZE_FAILED:
+      case QuestionLoadingPhase.UNKNOWN_ERROR:
+        return 'error';
+      case QuestionLoadingPhase.READY:
+        return 'success';
+      default:
+        return 'pending';
     }
-  }, [question?.result]);
-
-  useEffect(() => {
-    onFinished?.((result?.length ?? 0) > 0 && notNullish(chartData));
-  }, [chartData, result?.length]);
+  }, [phase]);
 
   const resultTitle = useMemo(() => {
-    if (notNullish(question)) {
-      switch (question.status) {
-        case QuestionStatus.New:
-          return 'Pending...';
-        case QuestionStatus.Waiting:
-          return `Waiting execution in queue (currently in position ${question.queuePreceding})...`;
-        case QuestionStatus.Running:
-          return 'Running SQL...';
-        case QuestionStatus.Success:
-          if (chartLoading) {
-            return 'Visualizing...';
-          } else {
-            return <>{`${question.result?.rows.length ?? 'NaN'} rows in ${question.spent ?? 'NaN'} seconds`}{renderEngines(question)}</>;
-          }
-        case QuestionStatus.Error:
-          return 'Failed to execute SQL';
-        case QuestionStatus.Cancel:
-          return 'Execution canceled';
-        default:
-          return 'Unknown state';
-      }
-    } else {
-      return 'Pending...';
+    switch (phase) {
+      case QuestionLoadingPhase.CREATED:
+        return 'Pending...';
+      case QuestionLoadingPhase.QUEUEING:
+        return `Waiting execution in queue (currently in position ${question?.queuePreceding ?? NaN})...`;
+      case QuestionLoadingPhase.EXECUTING:
+        return 'Running SQL...';
+      case QuestionLoadingPhase.VISUALIZING:
+        return 'Visualizing...';
+      case QuestionLoadingPhase.EXECUTE_FAILED:
+        return 'Failed to execute SQL';
+      case QuestionLoadingPhase.UNKNOWN_ERROR:
+        return 'Unknown error';
+      case QuestionLoadingPhase.VISUALIZE_FAILED:
+      case QuestionLoadingPhase.READY:
+        return <>{`${question?.result?.rows.length ?? 'NaN'} rows in ${question?.spent ?? 'NaN'} seconds`}{renderEngines(question)}</>;
+      default:
+        return 'pending';
     }
-  }, [question, chartLoading]);
-
-  const resultStatus = useMemo(() => {
-    if (isNullish(question)) {
-      return 'pending';
-    } else if (resultPending || chartLoading) {
-      return 'loading';
-    } else {
-      return notNullish(question.querySQL) ? 'success' : 'pending';
-    }
-  }, [question, loading, resultPending || chartLoading]);
+  }, [question, phase]);
 
   const twitterShareLink = useMemo(() => {
+    if (isNullish(question)) {
+      return twitterLink(location.href, { title: 'OSSInsight Data Explorer', hashtags: ['OpenSource', 'OpenAI', 'TiDBCloud'] });
+    }
     let url;
     if (typeof location === 'undefined') {
-      if (isNonemptyString(questionId)) {
-        url = `https://ossinsight.io/explore?id=${questionId}`;
+      if (isNonemptyString(question.id)) {
+        url = `https://ossinsight.io/explore?id=${question.id}`;
       } else {
         url = 'https://ossinsight.io/explore';
       }
@@ -267,20 +134,25 @@ export default forwardRef<ExecutionContext, ExecutionProps>(function Execution (
       url = twitterLink(location.href, { title: `${search} | OSSInsight Data Explorer\n`, hashtags: ['OpenSource', 'OpenAI', 'TiDBCloud'] });
     }
     return url;
-  }, [search]);
+  }, [question, search]);
 
-  const realSqlError = useMemo(() => {
-    if (sqlSectionStatus === 'success') {
-      if (isNullish(question?.querySQL)) {
-        if (notNullish(question?.error)) {
-          return question?.error;
-        } else {
-          return 'Empty error message';
-        }
-      }
+  const sqlSectionError = useMemo(() => {
+    if (sqlSectionStatus === 'error') {
+      return error;
     }
-    return sqlError;
-  }, [question, sqlSectionStatus, sqlError]);
+  }, [sqlSectionStatus, error]);
+
+  const resultSectionError = useMemo(() => {
+    if (resultStatus === 'error') {
+      return error;
+    }
+  }, [resultStatus, error]);
+
+  const chartError = useMemo(() => {
+    if (phase === QuestionLoadingPhase.VISUALIZE_FAILED) {
+      return error;
+    }
+  }, [phase, error]);
 
   return (
     <>
@@ -288,7 +160,7 @@ export default forwardRef<ExecutionContext, ExecutionProps>(function Execution (
         status={sqlSectionStatus}
         title={sqlTitle}
         extra="auto"
-        error={realSqlError}
+        error={sqlSectionError}
         errorWithChildren
         errorTitle="Failed to generate SQL"
         errorPrompt="Hi, it's failed to generate SQL for"
@@ -308,16 +180,16 @@ export default forwardRef<ExecutionContext, ExecutionProps>(function Execution (
             <ShareWithTwitter href={twitterShareLink} />
           </ControlsContainer>
         }
-        error={question?.status === 'error' ? resultError ?? 'Empty error message' : resultError}
+        error={resultSectionError}
         defaultExpanded
         errorTitle="Failed to execute question"
         errorPrompt="Hi, it's failed to execute"
       >
-        <Chart chartData={chartData} chartError={chartError} result={result} fields={question?.result?.fields} controlsContainer={controlsContainerRef} />
+        <Chart chartData={question?.chart ?? undefined} chartError={chartError} result={result} fields={question?.result?.fields} controlsContainer={controlsContainerRef} />
       </Section>
     </>
   );
-});
+};
 
 function renderEngines (question: Question | undefined) {
   if (notNullish(question) && !isEmptyArray(question.engines)) {
@@ -398,8 +270,8 @@ function Chart ({ chartData, chartError, fields, result, controlsContainer }: { 
 
     const renderTips = () => {
       return (
-        <Typography variant='body2' color='#D1D1D1' mt={2}>
-          🤔 Confused with this answer?  Try to tiny your words and help the AI identify your question, for example, you can try to use ‘@repo_name’ to narrow down your query. If you have more questions about the accuracy of the answers, see FAQ below.
+        <Typography variant="body2" color="#D1D1D1" mt={2}>
+          🤔 Confused with this answer? Try to tiny your words and help the AI identify your question, for example, you can try to use ‘@repo_name/user_name’ to narrow down your query. If you have more questions about the accuracy of the answers, see FAQ here.
         </Typography>
       );
     };
@@ -452,11 +324,11 @@ function Chart ({ chartData, chartError, fields, result, controlsContainer }: { 
         <Portal container={controlsContainer}>
           <Controls className="chart-controls">
             <ToggleButtonGroup size="small" value={tab} onChange={handleTabChange} exclusive color="primary">
-              <ToggleButton value="visualization" size='small' sx={{ padding: '5px' }}>
-                <AutoGraph fontSize='small' />
+              <ToggleButton value="visualization" size="small" sx={{ padding: '5px' }}>
+                <AutoGraph fontSize="small" />
               </ToggleButton>
-              <ToggleButton value="raw" size='small' sx={{ padding: '5px' }}>
-                <TableView fontSize='small' />
+              <ToggleButton value="raw" size="small" sx={{ padding: '5px' }}>
+                <TableView fontSize="small" />
               </ToggleButton>
             </ToggleButtonGroup>
           </Controls>

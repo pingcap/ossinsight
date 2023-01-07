@@ -1,18 +1,18 @@
-import React, { useContext, useMemo } from 'react';
-import ExploreContext from '@site/src/pages/explore/_components/context';
+import React, { useMemo } from 'react';
 import { createIssueLink as createIssueLinkInternal } from '@site/src/utils/gh';
 import AlertBlock from '@site/src/pages/explore/_components/AlertBlock';
+import useQuestionManagement from '@site/src/pages/explore/_components/useQuestion';
 
 export default function BadDataAlert ({ title = 'AI has generated invalid chart info' }: { title?: string }) {
-  const { questionId, question } = useContext(ExploreContext);
+  const { question } = useQuestionManagement();
 
   const createIssueLink = useMemo(() => {
     return () => createIssueLinkInternal('pingcap/ossinsight', {
-      title: `${title} in question ${questionId ?? ''}`,
+      title: `${title} in question ${question?.id ?? ''}`,
       labels: 'area/data-explorer,type/bug',
       assignee: 'Mini256',
       body: `
-Hi, ${title} in [question](https://ossinsight/explore/?id=${questionId ?? ''})
+Hi, ${title} in [question](https://ossinsight/explore/?id=${question?.id ?? ''})
       
 ## Chart info:
 \`\`\`json
@@ -28,9 +28,8 @@ ${JSON.stringify(question?.result?.fields, undefined, 2)}
 ${JSON.stringify(question?.result?.rows?.[0], undefined, 2)}
 \`\`\`
       `,
-
     });
-  }, [questionId, question]);
+  }, [question]);
 
   return (
     <AlertBlock
