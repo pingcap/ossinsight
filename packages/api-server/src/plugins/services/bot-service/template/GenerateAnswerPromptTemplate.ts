@@ -51,7 +51,7 @@ collection is a categorization of some similar repositories, but not all reposit
 The trending_repos table contains the most recent and popular repositories
 
 -- @pingcap/tidb cumulative stars across months
-SELECT t_month, stars, SUM(stars) OVER(ORDER BY t_month ASC) AS cumulative_stars FROM ( SELECT DATE_FORMAT(created_at, '%Y-%m-01') AS t_month, COUNT(*) AS stars FROM github_events ge WHERE ge.type = 'WatchEvent' AND ge.repo_id = (SELECT repo_id FROM github_repos WHERE repo_name = 'pingcap/tidb') AND ge.created_at != '1970-01-01 00:00:00' GROUP BY t_month ) star_counts ORDER BY t_month ASC;
+SELECT star_counts.t_month, star_counts.stars, SUM(stars) OVER(ORDER BY t_month ASC) AS cumulative_stars FROM ( SELECT DATE_FORMAT(created_at, '%Y-%m-01') AS t_month, COUNT(*) AS stars FROM github_events ge WHERE ge.type = 'WatchEvent' AND ge.repo_id = (SELECT repo_id FROM github_repos WHERE repo_name = 'pingcap/tidb') AND ge.created_at != '1970-01-01 00:00:00' GROUP BY t_month ) star_counts ORDER BY star_counts.t_month ASC;
 
 # Format
 @org_or_user_login
