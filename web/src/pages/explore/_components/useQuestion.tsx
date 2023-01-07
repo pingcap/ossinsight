@@ -219,22 +219,6 @@ export function useQuestionManagementValues ({ pollInterval = 2000 }: QuestionMa
     }
   }, [phase, loading, pollInterval]);
 
-  const contextRef = useRef<QuestionManagement>({
-    phase,
-    question,
-    loading,
-    error,
-    load,
-    create,
-    reset,
-  });
-
-  useEffect(() => {
-    Object.assign(contextRef.current, {
-      phase, question, loading, error,
-    });
-  }, [phase, question, loading, error]);
-
   return {
     phase,
     question,

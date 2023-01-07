@@ -19,7 +19,7 @@ import SwitchLayout from '@site/src/pages/explore/_components/SwitchLayout';
 
 export default function Page () {
   const { question, loading, load, error, phase, reset, create } = useQuestionManagementValues({ pollInterval: 2000 });
-  const [questionId, setQuestionId, historyChangedRef] = useUrlSearchState('id', nullableStringParam(), true);
+  const [questionId, setQuestionId] = useUrlSearchState('id', nullableStringParam(), true);
   const [value, setValue] = useState('');
 
   const [enabled] = useExperimental('explore-data');
@@ -37,18 +37,16 @@ export default function Page () {
 
   // reload or clear only if browser history changed the question id.
   useEffect(() => {
-    if (historyChangedRef.current) {
-      if (notNullish(questionId)) {
-        load(questionId);
-      } else {
-        handleClear();
-      }
+    if (notNullish(questionId)) {
+      load(questionId);
+    } else {
+      handleClear();
     }
   }, [questionId]);
 
   // when question API was finished, set new question id
   useEffect(() => {
-    if (!loading) {
+    if (notNullish(question?.id)) {
       setQuestionId(question?.id);
     }
   }, [loading, question?.id]);
@@ -63,6 +61,7 @@ export default function Page () {
   const handleClear = useEventCallback(() => {
     reset();
     setValue('');
+    setQuestionId(undefined);
   });
 
   const handleSelect = useEventCallback((title: string) => {

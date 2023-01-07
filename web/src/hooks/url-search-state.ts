@@ -7,17 +7,17 @@ export interface UseUrlSearchStateProps<T> {
   deserialize: (string: string) => T;
 }
 
-export type UseUrlSearchStateHook = <T> (key: string, props: UseUrlSearchStateProps<T>, push?: boolean) => [T, Dispatch<SetStateAction<T>>, { readonly current: boolean }];
+export type UseUrlSearchStateHook = <T> (key: string, props: UseUrlSearchStateProps<T>, push?: boolean) => [T, Dispatch<SetStateAction<T>>];
 
-function useUrlSearchStateSSR<T> (key: string, { defaultValue }: UseUrlSearchStateProps<T>): [T, Dispatch<SetStateAction<T>>, { readonly current: boolean }] {
-  return [...useState<T>(defaultValue), { current: true }];
+function useUrlSearchStateSSR<T> (key: string, { defaultValue }: UseUrlSearchStateProps<T>): [T, Dispatch<SetStateAction<T>>] {
+  return [...useState<T>(defaultValue)];
 }
 
 function useUrlSearchStateCSR<T> (key: string, {
   defaultValue,
   deserialize,
   serialize,
-}: UseUrlSearchStateProps<T>, push: boolean = false): [T, Dispatch<SetStateAction<T>>, { readonly current: boolean }] {
+}: UseUrlSearchStateProps<T>, push: boolean = false): [T, Dispatch<SetStateAction<T>>] {
   const initialValue = useMemo(() => {
     const usp = new URLSearchParams(location.search);
     const v = usp.get(key);
@@ -83,7 +83,7 @@ function useUrlSearchStateCSR<T> (key: string, {
     return () => window.removeEventListener('popstate', handlePopstate);
   }, []);
 
-  return [value, setValue, historyChangeRef];
+  return [value, setValue];
 }
 
 const useUrlSearchState: UseUrlSearchStateHook = typeof window === 'undefined' ? useUrlSearchStateSSR : useUrlSearchStateCSR;
