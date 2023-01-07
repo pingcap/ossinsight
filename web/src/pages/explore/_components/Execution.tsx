@@ -399,7 +399,7 @@ function Chart ({ chartData, chartError, fields, result, controlsContainer }: { 
     const renderTips = () => {
       return (
         <Typography variant='body2' color='#D1D1D1' mt={2}>
-          🤔 Confused with this answer?  Try to tiny your words and help the AI identify your question, for example, you can try to use ‘@repo_name/user_name’ to narrow down your query. If you have more questions about the accuracy of the answers, see FAQ here.
+          🤔 Confused with this answer?  Try to tiny your words and help the AI identify your question, for example, you can try to use ‘@repo_name’ to narrow down your query. If you have more questions about the accuracy of the answers, see FAQ below.
         </Typography>
       );
     };

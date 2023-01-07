@@ -15,7 +15,7 @@ export default function Faq () {
         <ol>
           <li>AI unrecognized/misunderstand your text and generated wrong/bad SQLs, the query mission failed.</li>
           <li>Data restrictions. All the data we use here on this website sources from&nbsp;
-            <a href='https://github.com/kubernetes/kubernetes/labels?q=size' target='_blank' rel="noreferrer">
+            <a href='http://www.gharchive.org/' target='_blank' rel="noreferrer">
             GH Archive
           </a>, a non-profit project that records and archives all GitHub events data since 2011. We can not offer you more insights if you are looking for answers about other topics.</li>
         </ol>
