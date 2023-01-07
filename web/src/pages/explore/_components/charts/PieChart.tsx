@@ -27,8 +27,7 @@ export default function PieChart ({ chartName, title, value, label, data }: Char
       right: 8,
       bottom: 8,
     },
-    tooltip: {
-    },
+    tooltip: {},
     legend: {
       left: 8,
       top: 8,
@@ -48,7 +47,7 @@ export default function PieChart ({ chartName, title, value, label, data }: Char
     title: {
       text: title,
     },
-  }), [chartName, title, value, label]);
+  }), [chartName, title, value, label, data]);
   return (
     <EChart
       height={400}

@@ -7,7 +7,6 @@ import { worldMapGeo } from '@site/src/dynamic-pages/analyze/charts/options';
 import AspectRatio from 'react-aspect-ratio';
 import { styled } from '@mui/material';
 import { isNonemptyString, isNullish } from '@site/src/utils/value';
-import BadDataAlert from '@site/src/pages/explore/_components/charts/BadDataAlert';
 
 function transformData (data: Array<Record<string, any>>, code: string, value: string): Array<[string, number, number, number]> {
   return data.map(item => {
@@ -106,10 +105,6 @@ export default function MapChart ({ chartName, title, country_code: countryCode,
       so.disconnect();
     };
   }, [ref]);
-
-  if (transformedData.length !== data.length && transformedData.length === 0) {
-    return <BadDataAlert />;
-  }
 
   return (
     <AspectRatio ratio={4 / 3} style={{ maxWidth: 600, margin: 'auto' }}>

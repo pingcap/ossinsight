@@ -81,3 +81,7 @@ export function nonEmptyArray<T> (value: T[] | Nullish): value is T[] {
     return false;
   }
 }
+
+export function allSatisfy<T, Condition extends (value: T) => boolean> (arr: T[], condition: Condition): boolean {
+  return arr.reduce((previousValue, currentValue) => previousValue && condition(currentValue), true);
+}
