@@ -85,7 +85,9 @@ export default function Questions () {
               <Box key="execution" sx={{ pb: 8, mt: 1.5 }}>
                 <Execution search={value} />
               </Box>
-              <Recommends key="recommend" />
+              <Box key="recommend" sx={{ mt: 4 }}>
+                <Recommends />
+              </Box>
             </SwitchLayout>
           </Layout>
         </Container>
