@@ -276,3 +276,7 @@ html[data-theme='dark'] img[src$='#gh-light-mode-only'] {
     opacity: 0;
   }
 }
+
+hr.MuiDivider-root {
+  background-color: unset;
+}

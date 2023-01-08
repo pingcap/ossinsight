@@ -82,9 +82,9 @@ const Link = styled(ButtonBase, { name: 'QuestionCard-Link' })`
   display: block;
   text-align: left;
   padding: 8px 0;
-  font-size: 16px;
+  font-size: 14px;
   line-height: 1.5;
-  color: #8F8F8F;
+  color: #c1c1c1;
   transition: ${({ theme }) => theme.transitions.create('color')};
 
   &:hover {

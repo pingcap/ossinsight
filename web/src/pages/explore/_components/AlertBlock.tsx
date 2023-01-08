@@ -1,8 +1,8 @@
 import React, { ReactNode } from 'react';
-import { Alert, AlertColor, Box, Button, IconButton, Stack, styled, Typography, useEventCallback } from '@mui/material';
+import { Alert, AlertColor, Box, IconButton, Stack, styled, Typography, useEventCallback } from '@mui/material';
 import { SxProps } from '@mui/system';
 import { createIssueLink } from '@site/src/utils/gh';
-import { Cached, GitHub } from '@mui/icons-material';
+import { Cached, ContactSupport, GitHub } from '@mui/icons-material';
 import { RecommendedSuggestions } from '@site/src/pages/explore/_components/Suggestions';
 
 interface AlertBlockProps {
@@ -35,20 +35,25 @@ export default function AlertBlock ({ severity, sx, children, createIssueUrl = (
           {children}
         </Typography>
         <Stack direction="row" spacing={2} mt={2}>
-          <Button variant="outlined" size="small" color='inherit' onClick={handleJumpFaq}>See faq</Button>
-          <Button variant="outlined" size="small" startIcon={<GitHub />} onClick={report} color='inherit'>Feedback</Button>
+          <AlertButton onClick={handleJumpFaq}>
+            <ContactSupport fontSize="inherit" sx={{ mr: 0.5 }} />
+            <span>See faq</span>
+          </AlertButton>
+          <AlertButton onClick={report}>
+            <GitHub fontSize="inherit" sx={{ mr: 0.5 }} />
+            <span>Feedback</span>
+          </AlertButton>
         </Stack>
       </StyledAlert>
       {showSuggestions && (
         <SuggestionsContainer>
           <RecommendedSuggestions
             title={(reload, loading) => (
-              <Box component='p' m={0} mt={2} height="40px">
+              <Box component="p" m={0} mt={2} height="40px">
                 How about try other questions? <IconButton onClick={reload} disabled={loading}><Cached /></IconButton>
               </Box>
             )}
-            n={3}
-            aiGenerated
+            n={5}
             variant="text"
           />
         </SuggestionsContainer>
@@ -64,4 +69,28 @@ const StyledAlert = styled(Alert)`
 
 const SuggestionsContainer = styled('div')`
   margin-top: 16px;
+`;
+
+const AlertButton = styled('button')`
+  appearance: none;
+  border: none;
+  outline: none;
+  background: none;
+  color: #fff;
+  opacity: 0.5;
+  font-size: inherit;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 8px 0;
+  margin-left: 16px;
+  transition: ${({ theme }) => theme.transitions.create('opacity')};
+
+  &:hover, &:focus {
+    opacity: 0.7;
+  }
+  
+  &:first-of-type {
+    margin-left: 0;
+  }
 `;

@@ -2,17 +2,17 @@ import { FINAL_PHASES, QuestionLoadingPhase, QuestionManagementContext, useQuest
 import useUrlSearchState, { nullableStringParam } from '@site/src/hooks/url-search-state';
 import React, { useEffect, useState } from 'react';
 import { isBlankString, isNullish, notNullish } from '@site/src/utils/value';
-import { Box, Container, Typography, useEventCallback } from '@mui/material';
+import { Box, Container, useEventCallback } from '@mui/material';
 import { SuggestionsContext } from '@site/src/pages/explore/_components/context';
 import { Decorators } from '@site/src/pages/explore/_components/Decorators';
 import Layout from '@site/src/pages/explore/_components/Layout';
 import Header from '@site/src/pages/explore/_components/Header';
-import { PresetSuggestions } from '@site/src/pages/explore/_components/Suggestions';
 import ExploreSearch from '@site/src/pages/explore/_components/Search';
 import SwitchLayout from '@site/src/pages/explore/_components/SwitchLayout';
 import Execution from '@site/src/pages/explore/_components/Execution';
 import Recommends from '@site/src/pages/explore/_components/Recommends';
 import Faq from '@site/src/pages/explore/_components/Faq';
+import Side from '@site/src/pages/explore/_components/Side';
 
 export default function Questions () {
   const { question, loading, load, error, phase, reset, create } = useQuestionManagementValues({ pollInterval: 2000 });
@@ -73,12 +73,7 @@ export default function Questions () {
             showSide={!hideExecution && phase === QuestionLoadingPhase.READY && hasResult}
             showHeader={hideExecution}
             header={<Header />}
-            side={(
-              <>
-                <Typography variant="h3" mb={2} fontSize={18}>💡 Get inspired</Typography>
-                <PresetSuggestions disabled={isPending} questions={question?.recommendedQuestions ?? []} n={5} variant="text" />
-              </>
-            )}
+            side={<Side />}
           >
             <ExploreSearch value={value} onChange={setValue} onAction={handleAction} disableInput={isPending} disableClear={value === ''} disableAction={disableAction} onClear={handleClear} clearState={isPending ? 'stop' : undefined} />
             <SwitchLayout state={hideExecution ? 'recommend' : 'execution'} direction={hideExecution ? 'down' : 'up'}>
