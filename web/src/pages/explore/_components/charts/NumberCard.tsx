@@ -1,10 +1,28 @@
 import { ChartResult } from '@site/src/api/explorer';
-import { Card, Grid, List, ListItem, ListItemText, Typography } from '@mui/material';
+import { Card, CardContent, Grid, List, ListItem, ListItemText, Typography } from '@mui/material';
 import React from 'react';
-import { notFalsy } from '@site/src/utils/value';
+import { isFiniteNumber, isNullish, notFalsy } from '@site/src/utils/value';
+import AnimatedNumber from 'react-awesome-animated-number';
 
 export default function NumberCard ({ chartName, title, label, value, data }: ChartResult & { data: any[] }) {
   if (notFalsy(label)) {
+    if (data.length === 1 && isNullish(data[0][label])) {
+      const val = data[0][value];
+      return (
+        <Card>
+          <CardContent sx={{ textAlign: 'center', fontSize: 36 }}>
+            <Typography sx={{ fontSize: 24 }} color="text.secondary" gutterBottom align="center">
+              {title}
+            </Typography>
+            {isFiniteNumber(val)
+              ? (
+              <AnimatedNumber value={data[0][value]} hasComma duration={800} size={36} />
+                )
+              : String(val)}
+          </CardContent>
+        </Card>
+      );
+    }
     return (
       <>
         <Typography variant="h4">{title}</Typography>
@@ -15,7 +33,7 @@ export default function NumberCard ({ chartName, title, label, value, data }: Ch
                 <Typography variant="subtitle1">
                   {(item[label as string] as string)}
                 </Typography>
-                <Typography variant="body2" color='#7c7c7c'>
+                <Typography variant="body2" color="#7c7c7c">
                   {(item[value as string] as string)}
                 </Typography>
               </Card>
