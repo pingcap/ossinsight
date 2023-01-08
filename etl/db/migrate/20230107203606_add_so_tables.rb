@@ -85,9 +85,20 @@ class AddSoTables < ActiveRecord::Migration[6.1]
         view_count INTEGER
       )
     ANSWER
+
+    tags =<<~TAG
+      CREATE TABLE stackoverflow.tags (
+        id INTEGER NOT NULL PRIMARY KEY,
+        tag_name VARCHAR(35) NOT NULL,
+        count INTEGER NOT NULL default 0,
+        excerpt_post_id INTEGER NOT NULL,
+        wiki_post_id INTEGER NOT NULL
+      )
+    TAG
     execute(sql)
     execute(users)
     execute(votes)
     execute(answers)
+    execute(tags)
   end
 end
