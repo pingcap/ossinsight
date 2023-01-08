@@ -27,7 +27,7 @@ class AddSoTables < ActiveRecord::Migration[6.1]
         last_editor_user_id INTEGER,
         owner_display_name VARCHAR(255),
         owner_user_id INTEGER NOT NULL,
-        parent_id VARCHAR(255),
+        parent_id integer,
         post_type_id INTEGER NOT NULL,
         score INTEGER NOT NULL,
         tags VARCHAR(255),
@@ -60,8 +60,34 @@ class AddSoTables < ActiveRecord::Migration[6.1]
         vote_type_id INTEGER NOT NULL
       )
     VOTE
+
+    answers = <<~ANSWER
+      CREATE TABLE if not exists stackoverflow.answers (
+        id integer NOT NULL PRIMARY KEY,
+        title VARCHAR(255),
+        body LONGTEXT NOT NULL,
+        accepted_answer_id INTEGER,
+        answer_count INTEGER,
+        comment_count INTEGER NOT NULL,
+        community_owned_date datetime,
+        creation_date datetime NOT NULL,
+        favorite_count INTEGER default 0,
+        last_activity_date datetime,
+        last_edit_date datetime,
+        last_editor_display_name VARCHAR(255),
+        last_editor_user_id INTEGER,
+        owner_display_name VARCHAR(255),
+        owner_user_id INTEGER,
+        parent_id integer not null,
+        post_type_id INTEGER NOT NULL,
+        score INTEGER NOT NULL,
+        tags VARCHAR(255),
+        view_count INTEGER
+      )
+    ANSWER
     execute(sql)
     execute(users)
     execute(votes)
+    execute(answers)
   end
 end
