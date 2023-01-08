@@ -19,6 +19,7 @@ export interface Auth0UserInfo {
 export async function fetchAuth0UserInfo(
   token: string
 ): Promise<Auth0UserInfo> {
+  // https://auth0.com/docs/api/authentication#get-user-info
   const URL = `https://${process.env.AUTH0_DOMAIN}/userinfo`;
   const bearerToken = token.startsWith("Bearer ") ? token : `Bearer ${token}`;
   const response = await Axios.get(URL, {
