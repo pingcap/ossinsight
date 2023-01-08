@@ -77,7 +77,7 @@ export default function Questions () {
           >
             <ExploreSearch value={value} onChange={setValue} onAction={handleAction} disableInput={isPending} disableClear={value === ''} disableAction={disableAction} onClear={handleClear} clearState={isPending ? 'stop' : undefined} />
             <SwitchLayout state={hideExecution ? 'recommend' : 'execution'} direction={hideExecution ? 'down' : 'up'}>
-              <Box key="execution" sx={{ pb: 8, mt: 1.5 }}>
+              <Box key="execution" sx={{ mt: 1.5 }}>
                 <Execution search={value} />
               </Box>
               <Box key="recommend" sx={{ mt: 4 }}>

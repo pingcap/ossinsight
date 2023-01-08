@@ -7,7 +7,7 @@ import Link from '@docusaurus/Link';
 
 export default function Side () {
   return (
-    <>
+    <SideRoot>
       <RecommendedSuggestions
         variant="text" n={4}
         title={(reload, loading) => (
@@ -29,7 +29,7 @@ export default function Side () {
           Get hands-on with your data Get hands-on with your data
         </Details>
       </Box>
-    </>
+    </SideRoot>
   );
 }
 
@@ -42,6 +42,11 @@ function Arrows () {
     </>
   );
 }
+
+const SideRoot = styled('div')`
+  position: sticky;
+  top: 92px;
+`;
 
 const StyledArrow = styled(ArrowLeft)`
   vertical-align: text-bottom;
