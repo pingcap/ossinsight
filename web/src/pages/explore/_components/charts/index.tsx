@@ -73,6 +73,8 @@ export function Charts (props: ChartsProps) {
 
   const validData = useValidData(props.data, fields);
 
+  console.log(validData);
+
   let alertNode: ReactNode;
   let chartNode: ReactNode;
 
@@ -86,6 +88,8 @@ export function Charts (props: ChartsProps) {
     if (notNullish(config)) {
       chartNode = createElement(config.Chart, { ...props, data: validData });
     }
+  } else {
+    alertNode = <BadDataAlert title="AI has generated invalid chart info" />;
   }
 
   return (
