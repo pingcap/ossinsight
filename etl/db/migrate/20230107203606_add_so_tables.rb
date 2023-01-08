@@ -10,8 +10,8 @@ class AddSoTables < ActiveRecord::Migration[6.1]
     # 7 WikiPlaceholder
     # 8 PrivilegeWiki
     execute("CREATE DATABASE IF NOT EXISTS stackoverflow")
-    sql = <<~SQL
-      CREATE TABLE if not exists stackoverflow.posts_questions (
+    questions = <<~SQL
+      CREATE TABLE if not exists stackoverflow.questions (
         id integer NOT NULL PRIMARY KEY,
         title VARCHAR(255) NOT NULL,
         body LONGTEXT NOT NULL,
@@ -35,7 +35,7 @@ class AddSoTables < ActiveRecord::Migration[6.1]
       )
     SQL
     users = <<~USER
-      CREATE TABLE stackoverflow.users (
+      CREATE TABLE if not exists stackoverflow.users (
         id INTEGER NOT NULL PRIMARY KEY,
         display_name VARCHAR(36) NOT NULL,
         about_me VARCHAR(5999),
@@ -53,7 +53,7 @@ class AddSoTables < ActiveRecord::Migration[6.1]
     USER
 
     votes = <<~VOTE
-      CREATE TABLE stackoverflow.votes (
+      CREATE TABLE if not exists stackoverflow.votes (
         id INTEGER NOT NULL PRIMARY KEY,
         creation_date datetime NOT NULL,
         post_id INTEGER NOT NULL,
@@ -87,7 +87,7 @@ class AddSoTables < ActiveRecord::Migration[6.1]
     ANSWER
 
     tags =<<~TAG
-      CREATE TABLE stackoverflow.tags (
+      CREATE TABLE if not exists stackoverflow.tags (
         id INTEGER NOT NULL PRIMARY KEY,
         tag_name VARCHAR(35) NOT NULL,
         count INTEGER NOT NULL default 0,
@@ -95,10 +95,36 @@ class AddSoTables < ActiveRecord::Migration[6.1]
         wiki_post_id INTEGER NOT NULL
       )
     TAG
-    execute(sql)
+
+    comments =<<~COMMENT
+      CREATE TABLE if not exists stackoverflow.comments (
+        id INTEGER NOT NULL PRIMARY KEY,
+        text VARCHAR(600) NOT NULL,
+        creation_date datetime NOT NULL,
+        post_id INTEGER NOT NULL,
+        user_id INTEGER NOT NULL,
+        user_display_name VARCHAR(255),
+        score INTEGER NOT NULL default 0
+      )
+    COMMENT
+
+    badges =<<~BADGE
+    CREATE TABLE if not exists stackoverflow.badges (
+      id INTEGER NOT NULL PRIMARY KEY,
+      name VARCHAR(32) NOT NULL,
+      date datetime NOT NULL,
+      user_id INTEGER NOT NULL,
+      class INTEGER NOT NULL,
+      tag_based BOOLEAN NOT NULL
+    )
+    BADGE
+
+    execute(questions)
     execute(users)
     execute(votes)
     execute(answers)
     execute(tags)
+    execute(comments)
+    execute(badges)
   end
 end
