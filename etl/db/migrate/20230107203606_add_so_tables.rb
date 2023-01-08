@@ -34,7 +34,25 @@ class AddSoTables < ActiveRecord::Migration[6.1]
         view_count INTEGER NOT NULL
       )
     SQL
+    users = <<~USER
+      CREATE TABLE stackoverflow.users (
+        id INTEGER NOT NULL PRIMARY KEY,
+        display_name VARCHAR(36) NOT NULL,
+        about_me VARCHAR(5999),
+        age integer,
+        creation_date datetime NOT NULL,
+        last_access_date datetime NOT NULL,
+        location VARCHAR(100),
+        reputation INTEGER NOT NULL default 0,
+        up_votes INTEGER NOT NULL default 0,
+        down_votes INTEGER NOT NULL default 0,
+        views INTEGER NOT NULL default 0,
+        profile_image_url VARCHAR(200),
+        website_url VARCHAR(200)
+      )
+    USER
     execute(sql)
+    execute(users)
   end
 end
 
