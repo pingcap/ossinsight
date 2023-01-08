@@ -3,6 +3,7 @@ import { newQuestion, pollQuestion, Question, QuestionStatus, questionToChart } 
 import { useMemoizedFn } from 'ahooks';
 import { isFalsy, isFiniteNumber, isNonemptyString, isNullish, notNullish } from '@site/src/utils/value';
 import { timeout } from '@site/src/utils/promisify';
+import { useAuth0 } from '@auth0/auth0-react';
 
 export const enum QuestionLoadingPhase {
   /** There is no question */
@@ -110,6 +111,8 @@ export function useQuestionManagementValues ({ pollInterval = 2000 }: QuestionMa
   const [error, setError] = useState<unknown>();
   const idRef = useRef<string>();
 
+  const { getAccessTokenSilently } = useAuth0();
+
   const loadInternal = useMemoizedFn(async function (id: string, clear: boolean) {
     // Prevent reload when loading same question
     if (idRef.current === id && loading) {
@@ -148,7 +151,8 @@ export function useQuestionManagementValues ({ pollInterval = 2000 }: QuestionMa
         setQuestion(undefined);
         setLoading(true);
         setPhase(QuestionLoadingPhase.CREATING);
-        const result = await newQuestion(title);
+        const accessToken = await getAccessTokenSilently();
+        const result = await newQuestion(title, { accessToken });
         await timeout(600);
         idRef.current = result.id;
         setPhase(computePhase(result, setError));
