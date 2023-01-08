@@ -22,7 +22,7 @@ export default async (
     const start = DateTime.now();
     await app.explorerService.resolveQuestion(conn, job, question);
     const end = DateTime.now();
-    logger.info({ questionId }, "Resolved question: %s, cost: %s", title, end.diff(start).toFormat("hh:mm:ss.SSS"));
+    logger.info({ questionId }, "Resolved question: %s, cost: %d s", title, end.diff(start).as("seconds"));
   } catch (err: any) {
     logger.error(err, `Failed to resolve the question ${questionId}: ${err.message}`);
   } finally {

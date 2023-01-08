@@ -9,6 +9,18 @@ export class APIError extends Error {
     }
 }
 
+export class BotResponseGenerateError extends Error {
+    constructor(message: string, error?: Error) {
+        super(message, error);
+    }
+}
+
+export class BotResponseParseError extends Error {
+    constructor(message: string, readonly responseText?: string, error?: Error) {
+        super(message, error);
+    }
+}
+
 export class ExplorerQuestionError extends APIError {
     constructor(readonly statusCode: number, readonly message: string, readonly question: Question, error?: Error) {
         super(statusCode, message, error);

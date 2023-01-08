@@ -101,9 +101,15 @@ export class ExplorerService {
     }
 
     async newQuestion(conn: Connection, userId: number, githubLogin: string, q: string): Promise<Question> {
+        // Init logger.
         const questionId = randomUUID();
         const logger = this.logger.child({ questionId: questionId });
         const normalizedQuestion = this.normalizeQuestion(q);
+        if (normalizedQuestion.length > 255) {
+            throw new APIError(400, 'The question too long, please shorten it.');
+        }
+
+        // Prepare the new question.
         logger.info("Creating a new question: %s", normalizedQuestion);
         const questionHash = this.getQuestionHash(normalizedQuestion);
         let question: Question = {
@@ -147,27 +153,33 @@ export class ExplorerService {
                 await this.cancelQuestions(conn, onGongQuestions.map(q => q.id));
             }
 
-            // Generate the SQL by OpenAI.
-            const answer = await this.botService.questionToAnswer(this.generateAnswerTemplate, normalizedQuestion);
-            let { sql: querySQL, chart, questions: recommendedQuestions } = answer;
-
             // Prepare the recommended questions.
-            const templateQuestions = await this.getRecommendQuestions(conn, 3, false);
-            recommendedQuestions.push(...templateQuestions.map(q => q.title));
-            question.recommendedQuestions = recommendedQuestions;
+            const popularQuestions = await this.getRecommendQuestions(conn, 3, false);
+            question.recommendedQuestions?.push(...popularQuestions.map(q => q.title));
 
-            // Check if the SQL is generated.
-            if (!querySQL) {
+            // Generate the SQL by OpenAI.
+            let answer = null;
+            try {
+                answer = await this.botService.questionToAnswer(this.generateAnswerTemplate, normalizedQuestion);
+            } catch (e: any) {
+                throw new APIError(500, 'Failed to generate SQL, please try again later: ' + e.message);
+            }
+
+            // Check if there are an answer been returned.
+            if (!answer) {
                 throw new APIError(500, 'Failed to generate SQL, please try again later.');
             }
+
+            let { sql: querySQL, chart, questions: aiGeneratedQuestions } = answer;
             question.querySQL = querySQL;
             question.chart = chart;
+            question.recommendedQuestions?.unshift(...aiGeneratedQuestions);
 
             // Validate the generated SQL.
             let statementType;
             try {
                 logger.info("Validating the generated SQL: %s", querySQL);
-                const res = this.validateSQL(querySQL);
+                const res = this.validateSQL(querySQL!);
                 querySQL = res.sql;
                 statementType = res.statementType;
             } catch (err) {
