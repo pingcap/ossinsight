@@ -12,7 +12,7 @@ export default function BadDataAlert ({ title }: { title: string }) {
       labels: 'area/data-explorer,type/bug',
       assignee: 'Mini256',
       body: `
-Hi, ${title} in [question](https://ossinsight/explore/?id=${question?.id ?? ''})
+Hi, ${title} in [question](https://ossinsight.io/explore/?id=${question?.id ?? ''})
       
 ## Chart info:
 \`\`\`json
