@@ -71,6 +71,7 @@ winkyao:
   image_url: https://github.com/winkyao.png
 
 chatgpt:
-  name: Written with help of ChatGPT
-  title: From OpenAI
+  name: ChatGPT
+  title: Robot from OpenAI
   url: https://chat.openai.com/
+  image_url: https://github.com/openai.png
