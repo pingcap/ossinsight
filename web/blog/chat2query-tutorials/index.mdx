@@ -15,40 +15,13 @@ To get insight of your own dataset without writing sql is easy, follow these ste
 
 2. Create a free Serverless Tier cluster in the TiDB Cloud web console.
 
-3. Connect to your cluster using a MySQL client, such as the MySQL command-line client. Use the following command to connect:
-
-  ```sql
-  mysql -h <endpoint> -P 4000 -u <username> -p
-  ```
-
-  Replace `<endpoint>` with the endpoint for your cluster, and `<username>` with the username for your cluster. When prompted, enter the password for your cluster.
-
-4. Create a database and table schema using MySQL commands. For example:
-
-  ```sql
-  # Create database:
-  CREATE DATABASE mydatabase;
-  USE mydatabase;
-  ```
-
-  ```sql
-  # Create table schema:
-  mysql -h <endpoint> -P 4000 -u <username> -p mydatabase < /path/to/schema.sql
-  ```
-
-
-5. In the TiDB Cloud web console, click the "Import" button and follow the prompts to load a CSV file into your cluster from a local file or from Amazon S3.
+3. In the TiDB Cloud web console, click the "Import" button and follow the prompts to load a CSV file into your cluster from a local file or from Amazon S3.
 
   ![Import Data](./import.png)
 
+4. Use the web console's SQL editor(Chat2Query) to get insights from your data. But no worry, you don't need to write SQL, you could ask questions about your data in natural language.
 
-6. Use the web console's SQL editor to get insights from your data. But no worry, you don't need to write SQL, because we ask OpenAI for help translate your "Natural Language Question" to sql automatically, what you need is just like talking!
+  The magic is typing `-- your question` and press Enter, here is an example:
 
-  The magic is:
-  ```
-  -- Your question (then press Enter)
-  ```
-
-  Then press the blue run button(on top-right) to execute it. The query results will be displayed in the bottom, here is an example:
   <video src={mp4URLL} width="100%" autoplay controls></video>
 
