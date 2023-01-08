@@ -3,6 +3,7 @@ import { newQuestion, pollQuestion, Question, QuestionStatus, questionToChart } 
 import { useMemoizedFn } from 'ahooks';
 import { isFalsy, isFiniteNumber, isNonemptyString, isNullish, notNullish } from '@site/src/utils/value';
 import { timeout } from '@site/src/utils/promisify';
+import { useRequireLogin } from '@site/src/context/user';
 
 export const enum QuestionLoadingPhase {
   /** There is no question */
@@ -104,6 +105,7 @@ export interface QuestionManagement {
 }
 
 export function useQuestionManagementValues ({ pollInterval = 2000 }: QuestionManagementOptions): QuestionManagement {
+  const requireLogin = useRequireLogin();
   const [phase, setPhase] = useState<QuestionLoadingPhase>(QuestionLoadingPhase.NONE);
   const [question, setQuestion] = useState<Question>();
   const [loading, setLoading] = useState(false);
@@ -162,6 +164,9 @@ export function useQuestionManagementValues ({ pollInterval = 2000 }: QuestionMa
       }
     }
 
+    if (requireLogin()) {
+      return;
+    }
     void createInternal(title);
   });
 
