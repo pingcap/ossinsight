@@ -73,8 +73,6 @@ export function Charts (props: ChartsProps) {
 
   const validData = useValidData(props.data, fields);
 
-  console.log(validData);
-
   let alertNode: ReactNode;
   let chartNode: ReactNode;
 

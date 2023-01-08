@@ -121,10 +121,6 @@ export async function pollQuestion (questionId: string): Promise<Question> {
   return await clientWithoutCache.get(`/explorer/questions/${questionId}`);
 }
 
-export async function questionToChart (questionId: string): Promise<ChartResult> {
-  return await clientWithoutCache.post(`/explorer/questions/${questionId}/chart`, undefined);
-}
-
 export type QuestionTemplate = {
   hash: string;
   title: string;
