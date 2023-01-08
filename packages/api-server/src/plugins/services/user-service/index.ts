@@ -5,11 +5,12 @@ import { MySQLPromisePool } from "@fastify/mysql";
 import { ResultSetHeader } from "mysql2";
 import fp from "fastify-plugin";
 import {APIError} from "../../../utils/error";
-import {Connection, RowDataPacket} from "mysql2/promise";
+import { Connection, RowDataPacket } from "mysql2/promise";
+import { Auth0UserService } from "../../auth/auth0";
 
 declare module 'fastify' {
     interface FastifyInstance {
-        userService: UserService;
+        userService: Auth0UserService;
     }
 }
 
@@ -58,7 +59,7 @@ export enum ProviderType {
 }
 
 export default fp<FastifyOAuth2Options & FastifyJWTOptions>(async (fastify) => {
-    fastify.decorate('userService', new UserService(fastify.log, fastify.mysql));
+    fastify.decorate('userService', new Auth0UserService(fastify.log, fastify.mysql));
 }, {
     name: 'user-service',
     dependencies: [

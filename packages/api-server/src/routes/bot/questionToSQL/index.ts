@@ -4,7 +4,6 @@ import {
   QueryPlaygroundSQLPromptTemplate
 } from "../../../plugins/services/bot-service/template/QueryPlaygroundPromptTemplate";
 import {GENERATE_SQL_LIMIT_HEADER, GENERATE_SQL_USED_HEADER, MAX_DAILY_GENERATE_SQL_LIMIT} from "./quota";
-import { generateUserIdBySub, RequsetUserProps } from "../../../utils/auth";
 
 export interface IBody {
   question: string;
@@ -35,15 +34,16 @@ const root: FastifyPluginAsyncJsonSchemaToTs = async (app, opts): Promise<void> 
   app.post<{
     Body: IBody;
   }>('/', {
-    // preHandler: [app.authenticateAllowAnonymous],
     // @ts-ignore
     preValidation: app.authenticate,
     schema
   }, async function (req, reply) {
     const { playgroundService, botService } = app;
     const { question } = req.body;
-    const { sub } = (req.user as RequsetUserProps) || {};
-    const userId = generateUserIdBySub(sub)
+    const { sub } = req.user as {
+      sub: string;
+    };
+    const userId = await app.userService.findOrCreateUserByAuth0Sub(sub, req.headers.authorization);
     const context = {
       user_id: userId,
       auth0_sub: sub,

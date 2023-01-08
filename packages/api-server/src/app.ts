@@ -51,6 +51,12 @@ const app: FastifyPluginAsync<AppOptions, RawServerDefault, JsonSchemaToTsProvid
     opts
 ): Promise<void> => {
 
+  // Load Auth0
+  fastify.register(require("fastify-auth0-verify"), {
+    domain: process.env.AUTH0_DOMAIN,
+    secret: process.env.AUTH0_SECRET,
+  });
+
   // Load config.
   await fastify.register(fastifyEnv, {
     confKey: 'config',      // You can access environment variables via `fastify.config`.

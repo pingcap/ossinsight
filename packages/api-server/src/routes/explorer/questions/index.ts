@@ -21,15 +21,19 @@ export const newQuestionHandler: FastifyPluginAsyncJsonSchemaToTs = async (app):
     Body: IBody;
   }>('/', {
     schema,
-    preHandler: [app.authenticate]
+    // @ts-ignore
+    preValidation: app.authenticate
   }, async function (req, reply) {
     const { explorerService } = app;
-    let { id: userId, githubLogin } = req.user;
+    const { sub } = req.user as {
+      sub: string;
+    };
+    const userId = await app.userService.findOrCreateUserByAuth0Sub(sub, req.headers.authorization);
     const { question: questionTitle } = req.body;
     const conn = await this.mysql.getConnection();
 
     try {
-      const question = await explorerService.newQuestion(conn, userId, githubLogin, questionTitle);
+      const question = await explorerService.newQuestion(conn, userId, sub, questionTitle);
       const preceding = await explorerService.countPrecedingQuestions(conn, question.id);
       reply.status(200).send({
         ...question,
