@@ -164,7 +164,7 @@ export function useQuestionManagementValues ({ pollInterval = 2000 }: QuestionMa
       }
     }
 
-    if (requireLogin()) {
+    if (!requireLogin()) {
       return;
     }
     void createInternal(title);
