@@ -22,7 +22,7 @@ export default function Side () {
       />
       <Divider orientation="horizontal" sx={{ my: 2 }} />
       <Box>
-        <ColoredLink to="/">
+        <ColoredLink to="/blog/chat2query-tutorials">
           Get hands-on with your data <ArrowRightAlt color="inherit" />
         </ColoredLink>
         <Details>
