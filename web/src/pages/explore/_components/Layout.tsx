@@ -3,8 +3,9 @@ import { styled } from '@mui/material';
 import { Transition } from 'react-transition-group';
 import { useSize } from 'ahooks';
 
-const sideWidth = 270;
+const sideWidth = 250;
 const headerMarginBottom = 32;
+const transitionDuration = 400;
 
 export interface LayoutProps {
   showHeader: boolean;
@@ -27,7 +28,7 @@ export default function Layout ({ children, header, side, showSide, showHeader }
 
   return (
     <>
-      <Transition nodeRef={headerRef} in={showHeader} timeout={400}>
+      <Transition nodeRef={headerRef} in={showHeader} timeout={transitionDuration}>
         {(status) => (
           <Header ref={headerRef} className={`Header-${status}`} height={headerOffsetHeight}>
             {header}
@@ -35,14 +36,14 @@ export default function Layout ({ children, header, side, showSide, showHeader }
         )}
       </Transition>
       <Container>
-        <Transition nodeRef={mainRef} in={showSide} timeout={400}>
+        <Transition nodeRef={mainRef} in={showSide} timeout={transitionDuration}>
           {(status) => (
             <Main ref={mainRef} className={`Main-side-${status}`}>
               {children}
             </Main>
           )}
         </Transition>
-        <Transition nodeRef={sideRef} in={showSide} timeout={400}>
+        <Transition nodeRef={sideRef} in={showSide} timeout={transitionDuration} unmountOnExit>
           {(status) => (
             <Side ref={sideRef} className={`Side-${status}`}>
               {side}
@@ -55,17 +56,26 @@ export default function Layout ({ children, header, side, showSide, showHeader }
 }
 
 const Container = styled('div', { name: 'Container' })`
-  position: relative;
-  margin: auto;
-  padding-left: ${sideWidth};
-  max-width: 100%;
+  --explore-layout-side-width: ${sideWidth}px;
 
   ${({ theme }) => theme.breakpoints.up('lg')} {
-    max-width: ${({ theme }) => theme.breakpoints.values.md + sideWidth}px;
+    --explore-layout-side-width: ${sideWidth + 25}px;
   }
 
   ${({ theme }) => theme.breakpoints.up('xl')} {
-    max-width: ${({ theme }) => theme.breakpoints.values.lg + sideWidth}px;
+    --explore-layout-side-width: ${sideWidth + 50}px;
+  }
+
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    padding-right: var(--explore-layout-side-width);
+  }
+  
+  position: relative;
+  margin: auto;
+  max-width: 100%;
+
+  ${({ theme }) => theme.breakpoints.up('xl')} {
+    max-width: ${({ theme }) => `calc(${theme.breakpoints.values.lg}px + var(--explore-layout-side-width))`};
   }
 `;
 
@@ -73,12 +83,9 @@ const Header = styled('div', { name: 'Header', shouldForwardProp: propName => pr
   opacity: 0;
   margin-top: -${({ height }) => height + headerMarginBottom}px;
   margin-bottom: ${headerMarginBottom}px;
+  transition: ${({ theme }) => theme.transitions.create(['margin', 'opacity'], { duration: transitionDuration })};
 
   ${classNames('Header', true)} {
-    transition: ${({ theme }) => theme.transitions.create(['margin', 'opacity'])};
-  }
-
-  ${classNames('Header', false)} {
     opacity: 1;
     margin-top: 0;
   }
@@ -87,17 +94,14 @@ const Header = styled('div', { name: 'Header', shouldForwardProp: propName => pr
 const Main = styled('div', { name: 'Main' })`
   min-height: 800px;
   width: 100%;
+  transition: ${({ theme }) => theme.transitions.create(['transform', 'opacity'], { duration: transitionDuration })};
 
   ${({ theme }) => theme.breakpoints.up('md')} {
-    transform: translateX(${sideWidth / 2}px);
+    transform: translateX(calc(var(--explore-layout-side-width) / 2));
   }
 
   ${({ theme }) => theme.breakpoints.up('md')} {
-    max-width: calc(100% - ${sideWidth}px);
-  }
-
-  ${({ theme }) => theme.breakpoints.up('lg')} {
-    max-width: ${({ theme }) => theme.breakpoints.values.md}px;
+    max-width: calc(100%);
   }
 
   ${({ theme }) => theme.breakpoints.up('xl')} {
@@ -105,10 +109,6 @@ const Main = styled('div', { name: 'Main' })`
   }
 
   ${classNames('Main-side', true)} {
-    transition: ${({ theme }) => theme.transitions.create('transform')};
-  }
-
-  ${classNames('Main-side', false)} {
     transform: initial;
   }
 `;
@@ -117,28 +117,28 @@ const Side = styled('div', { name: 'Side' })`
   position: absolute;
   right: 0;
   top: 0;
-  width: ${sideWidth}px;
+  width: var(--explore-layout-side-width);
   opacity: 0;
-  transform: translateX(${sideWidth / 2}px);
-
-  ${({ theme }) => theme.breakpoints.down('md')} {
-    display: none;
-  }
+  transform: translateX(calc(var(--explore-layout-side-width) / 2));
+  transition: ${({ theme }) => theme.transitions.create(['transform', 'opacity'], { duration: transitionDuration })};
+  padding: 0 24px;
+  box-sizing: border-box;
 
   ${classNames('Side', true)} {
-    transition: ${({ theme }) => theme.transitions.create(['transform', 'opacity'])};
-  }
-
-  ${classNames('Side', false)} {
+    display: block;
     transform: initial;
     opacity: 1;
+  }
+
+  ${({ theme }) => theme.breakpoints.down('md')} {
+    display: none !important;
   }
 `;
 
 function classNames (prefix: string, enter: boolean) {
   if (enter) {
-    return `&.${prefix}-entering, &.${prefix}-exiting`;
+    return `&.${prefix}-entering, &.${prefix}-entered`;
   } else {
-    return `&.${prefix}-entered, &.${prefix}-entering`;
+    return `&.${prefix}-exiting, &.${prefix}-exited`;
   }
 }

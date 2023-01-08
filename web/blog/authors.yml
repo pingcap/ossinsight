@@ -69,3 +69,9 @@ winkyao:
   title: Head of Community & Developer Ecosystem Team at PingCAP.
   url: https://twitter.com/golangwink
   image_url: https://github.com/winkyao.png
+
+chatgpt:
+  name: ChatGPT
+  title: Robot from OpenAI
+  url: https://chat.openai.com/
+  image_url: https://github.com/openai.png

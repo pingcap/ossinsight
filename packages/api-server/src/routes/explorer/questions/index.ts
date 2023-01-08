@@ -34,6 +34,9 @@ export const newQuestionHandler: FastifyPluginAsyncJsonSchemaToTs = async (app):
 
     try {
       const question = await explorerService.newQuestion(conn, userId, sub, questionTitle);
+
+      explorerService.wrapperTheErrorMessage(question);
+
       const preceding = await explorerService.countPrecedingQuestions(conn, question.id);
       reply.status(200).send({
         ...question,

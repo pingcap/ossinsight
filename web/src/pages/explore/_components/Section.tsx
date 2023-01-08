@@ -1,20 +1,23 @@
-import { Accordion, AccordionDetails, AccordionSummary, Alert, CircularProgress, Paper, styled, useEventCallback } from '@mui/material';
+import { Accordion, AccordionDetails, AccordionSummary, CircularProgress, Paper, styled, useEventCallback } from '@mui/material';
 import React, { ReactNode, useState } from 'react';
 import { CheckCircle, Circle, ExpandMore } from '@mui/icons-material';
 import { isFalsy, isNullish, notFalsy } from '@site/src/utils/value';
 import { getErrorMessage } from '@site/src/utils/error';
+import ErrorBlock from '@site/src/pages/explore/_components/ErrorBlock';
 
 export interface SectionProps {
-  status: 'pending' | 'loading' | 'success';
+  status: 'pending' | 'loading' | 'success' | 'error';
   title: ReactNode;
   extra?: ReactNode;
   children: ReactNode;
   error: unknown;
   errorWithChildren?: boolean;
   defaultExpanded?: boolean;
+  errorTitle: string;
+  errorPrompt: string;
 }
 
-export default function Section ({ status, title, defaultExpanded, extra, error, errorWithChildren = false, children }: SectionProps) {
+export default function Section ({ status, title, defaultExpanded, extra, error, errorWithChildren = false, children, errorPrompt, errorTitle }: SectionProps) {
   const [open, setOpen] = useState(false);
   const alwaysOpen = defaultExpanded === true;
 
@@ -25,7 +28,7 @@ export default function Section ({ status, title, defaultExpanded, extra, error,
   });
 
   return (
-    <SectionContainer className={isNullish(error) ? status : 'error'} elevation={1}>
+    <SectionContainer className={status === 'pending' ? 'pending' : isNullish(error) ? status : 'error'} elevation={1}>
       <SectionAccordion expanded={alwaysOpen ? true : open} defaultExpanded={defaultExpanded} elevation={0} onChange={handleOpenChange}>
         <SectionAccordionSummary
           alwaysOpen={alwaysOpen}
@@ -35,7 +38,7 @@ export default function Section ({ status, title, defaultExpanded, extra, error,
           <SectionTitle>
             {status === 'loading'
               ? <CircularProgress size={16} />
-              : status === 'success'
+              : status === 'success' && isNullish(error)
                 ? <CheckCircle color="success" fontSize="inherit" />
                 : <Circle color="disabled" fontSize="inherit" />}
             <SectionTitleContent>
@@ -59,11 +62,29 @@ export default function Section ({ status, title, defaultExpanded, extra, error,
               ? children
               : (
                 <>
-                  <Alert severity="error" sx={{ mb: 1 }}>{getErrorMessage(error)}</Alert>
+                  <ErrorBlock
+                    title={errorTitle}
+                    prompt={errorPrompt}
+                    error={getErrorMessage(error)}
+                    severity="error"
+                    sx={{ mb: 1 }}
+                    showSuggestions
+                  />
                   {children}
                 </>
                 )
-            : isNullish(error) ? children : <Alert severity="error">{getErrorMessage(error)}</Alert>}
+            : isNullish(error)
+              ? children
+              : (
+              <ErrorBlock
+                title={errorTitle}
+                prompt={errorPrompt}
+                error={getErrorMessage(error)}
+                severity="error"
+                sx={{ mb: 1 }}
+                showSuggestions
+              />
+                )}
         </AccordionDetails>
       </SectionAccordion>
     </SectionContainer>
@@ -74,7 +95,7 @@ const SectionContainer = styled(Paper)`
   background: linear-gradient(116.45deg, rgba(89, 95, 236, 0.5) 0%, rgba(200, 182, 252, 0.1) 96.73%);
   padding: 1px;
   border-radius: 6px;
-  margin-top: 24px;
+  margin-top: 12px;
 
   transform: translateY(20px);
   opacity: 0;
@@ -98,6 +119,12 @@ const SectionContainer = styled(Paper)`
     transform: initial;
     opacity: 1;
   }
+
+  &.pending {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  
 `;
 
 const SectionAccordion = styled(Accordion)`

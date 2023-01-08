@@ -10,7 +10,7 @@ export interface UseUrlSearchStateProps<T> {
 export type UseUrlSearchStateHook = <T> (key: string, props: UseUrlSearchStateProps<T>, push?: boolean) => [T, Dispatch<SetStateAction<T>>];
 
 function useUrlSearchStateSSR<T> (key: string, { defaultValue }: UseUrlSearchStateProps<T>): [T, Dispatch<SetStateAction<T>>] {
-  return useState<T>(defaultValue);
+  return [...useState<T>(defaultValue)];
 }
 
 function useUrlSearchStateCSR<T> (key: string, {
@@ -28,7 +28,12 @@ function useUrlSearchStateCSR<T> (key: string, {
     }
   }, []);
   const [value, setValue] = useState<T>(initialValue);
+  const historyChangeRef = useRef(true);
   const internalChange = useRef(false);
+
+  useEffect(() => {
+    historyChangeRef.current = false;
+  }, []);
 
   useEffect(() => {
     if (internalChange.current) {
@@ -64,11 +69,15 @@ function useUrlSearchStateCSR<T> (key: string, {
       internalChange.current = true;
       const usp = new URLSearchParams(location.search);
       const value = usp.get(key);
+      historyChangeRef.current = true;
       if (notNullish(value)) {
         setValue(deserialize(value));
       } else {
         setValue(defaultValue);
       }
+      setTimeout(() => {
+        historyChangeRef.current = false;
+      }, 0);
     };
     window.addEventListener('popstate', handlePopstate);
     return () => window.removeEventListener('popstate', handlePopstate);

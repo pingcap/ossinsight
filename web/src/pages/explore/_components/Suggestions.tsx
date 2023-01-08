@@ -1,101 +1,116 @@
-import { ButtonBase, Card, Grid, List, ListItem, ListItemButton, ListItemText, styled } from '@mui/material';
-import React from 'react';
-
-// 【🎆 Annual review】My year in review 2022【使用关键词 annual report/github year/year in review/repo _name 2022 触发】
-// { type: '🎆 Annual review', content: 'The annual report of @pingcap/tidb 【使用关键词 annual report/github year/year in review/repo _name 2022 触发】' },
-
-const types = {
-  hotTopics: {
-    title: '🔥 Hot topics',
-    color: '#E78F34',
-  },
-  programmingLanguage: {
-    title: '👾 Programming Language',
-    color: '#8253F6',
-  },
-  trends: {
-    title: '🚀 OSS trends',
-    color: '#E78F34',
-  },
-  contributors: {
-    title: '🧑‍💻 Contributors',
-    color: '#C9B4FF',
-  },
-  stars: {
-    title: '🌟 Stars',
-    color: '#519AEB',
-  },
-  similarProjects: {
-    title: '🔍 Similar projects',
-    color: '#34A352',
-  },
-  location: {
-    title: '🌍 Location',
-    color: '#FFD7AD',
-  },
-  company: {
-    title: '🏢 Company',
-    color: '#BCDAFF',
-  },
-};
-
-const questions = [
-  { type: types.location, content: 'Where are @kubernetes/kubernetes contributors come from' },
-  { type: types.hotTopics, content: 'Popular repos related to ChatGPT' },
-  { type: types.hotTopics, content: 'The most watched Web3 projects' },
-  { type: types.programmingLanguage, content: 'Top python projects 2022' },
-  { type: types.programmingLanguage, content: 'What is the distribution of primary language used in repositories' },
-  { type: types.trends, content: 'The closed PR monthly history of GitHub' },
-  { type: types.trends, content: 'The star history of GitHub all the time' },
-  { type: types.contributors, content: 'Contributor list of @pingcap/tidb' },
-  { type: types.stars, content: 'Star history of @carbon-language/carbon-lang' },
-  { type: types.similarProjects, content: 'Projects similar to @facebook/react' },
-  { type: types.trends, content: 'Top trending TypeScript repositories of the past month' },
-  { type: types.location, content: 'The most watched projects by India developers' },
-  { type: types.company, content: 'What projects Microsoft developers like to contribute to' },
-];
+import { Box, Grid, Skeleton } from '@mui/material';
+import React, { ReactNode, useMemo } from 'react';
+import QuestionCard, { QuestionCardVariant } from '@site/src/pages/explore/_components/QuestionCard';
+import { generateQuestion, QuestionTemplate } from '@site/src/api/explorer';
+import useSWR from 'swr';
+import { array } from '@site/src/utils/generate';
 
 export interface SuggestionsProps {
-  dense?: boolean;
   disabled?: boolean;
-  onSelect: (question: string) => void;
+  variant?: QuestionCardVariant;
+  title?: (reload: () => void, loading: boolean) => ReactNode;
+  n: number;
 }
 
-export default function Suggestions ({ onSelect, disabled = false, dense = false }: SuggestionsProps) {
-  if (dense) {
+export interface RecommendedSuggestionsProps extends SuggestionsProps {
+  aiGenerated?: boolean;
+}
+
+export interface PresetSuggestionsProps extends SuggestionsProps {
+  questions: string[];
+}
+
+export function useRecommended (aiGenerated: boolean, n: number) {
+  const { data, isValidating, mutate } = useSWR([aiGenerated, n, 'data-explorer-recommend-question'], {
+    fetcher: async (aiGenerated, n) => await generateQuestion(aiGenerated, n),
+    shouldRetryOnError: false,
+    revalidateIfStale: false,
+    revalidateOnReconnect: false,
+    revalidateOnFocus: false,
+  });
+
+  return {
+    data,
+    loading: isValidating,
+    reload: useMemo(() => {
+      return () => {
+        mutate(undefined, { revalidate: true }).catch(console.error);
+      };
+    }, []),
+  };
+}
+
+export function Suggestions ({ variant, disabled, questions, n }: SuggestionsProps & { questions: QuestionTemplate[] }) {
+  const renderLoading = () => {
+    const renderCard = (i: number) => (
+      <QuestionCard
+        key={i}
+        variant={variant}
+        question={(
+          variant === 'text'
+            ? <Skeleton width="230px" />
+            : (
+              <>
+                <Skeleton width="100%" />
+                <Skeleton width="61%" />
+              </>
+              )
+
+        )}
+        disabled
+      />
+    );
+    if (variant === 'text') {
+      return array(n).map(renderCard);
+    } else {
+      return array(n).map(i => (
+        <Grid item xs={12} md={4} key={i} display="flex" alignItems="stretch" justifyContent="stretch">
+          {renderCard(i)}
+        </Grid>
+      ));
+    }
+  };
+
+  const renderData = () => {
+    const renderCard = (question: QuestionTemplate, i: number) => (
+      <QuestionCard key={i} variant={variant} question={question.title} disabled={disabled} />
+    );
+    if (variant === 'text') {
+      return questions.map(renderCard);
+    }
+    return questions.map((question, i) => (
+      <Grid item xs={12} md={4} key={question.hash} display="flex" alignItems="stretch" justifyContent="stretch">
+        {renderCard(question, i)}
+      </Grid>
+    ));
+  };
+
+  const content = questions.length === 0 ? renderLoading() : renderData();
+  if (variant === 'text') {
     return (
-      <List dense>
-        {questions.map((question, index) => (
-          <ListItem key={index}>
-            <ListItemButton disabled={disabled} onClick={() => onSelect(question.content)}>
-              <ListItemText>{question.content}</ListItemText>
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
+      <Box>
+        {content}
+      </Box>
     );
   } else {
     return (
-      <Grid container spacing={2} mt={2}>
-        {questions.map((question, index) => (
-          <Grid item xs={12} sm={6} lg={4} xl={3} key={index} display="flex" alignItems="stretch" justifyContent="stretch">
-            <Card sx={{ p: 2, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'flex-start', textAlign: 'left', width: '100%' }} component={ButtonBase} disabled={disabled} onClick={() => onSelect(question.content)}>
-              <Tag color={question.type.color}>{question.type.title}</Tag>
-              <div>{question.content}</div>
-            </Card>
-          </Grid>
-        ))}
+      <Grid container spacing={2}>
+        {content}
       </Grid>
     );
   }
 }
 
-const Tag = styled('div')<{ color: string }>`
-  color: ${({ color }) => color};
-  background-color: ${({ color }) => `${color}40`};
-  border: 1px solid ${({ color }) => color};
-  border-radius: 6px;
-  padding: 2px 6px;
-  margin-bottom: 8px;
-  width: max-content;
-`;
+export function PresetSuggestions ({ n, disabled, questions, variant }: PresetSuggestionsProps) {
+  return <Suggestions questions={useMemo(() => questions.map(question => ({ title: question, hash: question, ai_generated: 0 })), [questions])} n={n} disabled={disabled} variant={variant} />;
+}
+
+export function RecommendedSuggestions ({ aiGenerated = false, n, disabled = false, title, variant }: RecommendedSuggestionsProps) {
+  const { data = [], reload, loading } = useRecommended(aiGenerated, n);
+  return (
+    <>
+      {title?.(reload, loading) ?? null}
+      <Suggestions n={n} questions={data} disabled={disabled} variant={variant ?? (aiGenerated ? 'recommended-card' : 'card')} />
+    </>
+  );
+}

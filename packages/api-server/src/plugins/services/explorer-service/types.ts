@@ -18,6 +18,7 @@ export interface Question {
   engines?: string[];
   queueName?: QuestionQueueNames;
   queueJobId?: string | null;
+  recommendedQuestions?: string[];
   result?: QuestionSQLResult;
   chart?: RecommendedChart;
   recommended: boolean;

@@ -2,8 +2,12 @@ import { styled } from '@mui/material';
 import React from 'react';
 import Beta from './beta.svg';
 
+const Highlight = styled('b', { shouldForwardProp: propName => propName !== 'color' })<{ color: string }>`
+  color: ${({ color }) => color};
+`;
+
 const title = 'Data Explorer';
-const subtitleFull = 'Analyze 5+ billion GitHub data from natural language, no prerequisite knowledge of SQL or plotting libraries necessary.';
+const subtitleFull = <>Explore <Highlight color='#9197D0'>5 billion</Highlight> GitHub data with no SQL or plotting skills. Unleash your <Highlight color='#5C6AE0'>imagination</Highlight> and discover new <Highlight color='#7D71C7'>insights</Highlight> NOW!</>;
 
 export default function () {
   return (

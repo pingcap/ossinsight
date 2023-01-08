@@ -1,11 +1,13 @@
 import { ChartResult } from '@site/src/api/explorer';
 import React, { useMemo } from 'react';
-import { isNonemptyString, notNullish } from '@site/src/utils/value';
+import { isNonemptyString, nonEmptyArray, notNullish } from '@site/src/utils/value';
 import { styled } from '@mui/material';
 
-export default function TableChart ({ title, data, fields: propFields }: ChartResult & { data: any[], fields?: Array<{ name: string }> }) {
+export default function TableChart ({ title, data, columns, fields: propFields }: ChartResult & { data: any[], fields?: Array<{ name: string }> }) {
   const fields = useMemo(() => {
-    if (notNullish(propFields)) {
+    if (nonEmptyArray(columns)) {
+      return columns.map((name: string) => ({ name }));
+    } else if (notNullish(propFields)) {
       return propFields;
     } else {
       if (data.length > 0) {
@@ -14,7 +16,7 @@ export default function TableChart ({ title, data, fields: propFields }: ChartRe
         return [{ name: '' }];
       }
     }
-  }, [data, propFields]);
+  }, [data, columns, propFields]);
   return (
     <TableContainer>
       <Table className="clearTable">

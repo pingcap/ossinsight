@@ -1,4 +1,7 @@
 import {Pool} from "mysql2/promise";
+import {pino} from "pino";
+
+const logger = pino();
 
 /**
  * Mysql2 pool decorator.
@@ -23,9 +26,11 @@ export function decoratePoolConnections(pool: Pool, { initialSql }: DecoratePool
     pool.getConnection = async () => {
         const conn = await originalGetConnection();
         if (!conn[INITIALIZED]) {
+            logger.info({ initialSql }, "Init the connection", )
             for (const sql of initialSql) {
                 await conn.execute(sql);
             }
+            logger.info("Init the connection successfully")
 
             Object.defineProperty(conn, INITIALIZED, {
                 value: true,

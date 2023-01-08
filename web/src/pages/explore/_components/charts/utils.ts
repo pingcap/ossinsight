@@ -1,3 +1,5 @@
+import { allSatisfy, isNonemptyString, isNullish, notNullish } from '@site/src/utils/value';
+
 export function isTimeField (name: string) {
   return /date|time|year|month/.test(name);
 }
@@ -18,4 +20,33 @@ export function transformTimeData (data: any[], field: string) {
     }
     return { ...item, [field]: value };
   });
+}
+
+export function useValidData (data: any[], fields: Array<string | string[] | undefined>) {
+  // Ensure all provided fields are non-empty string or non-empty string array.
+  const satisfy = (field: string | string[] | undefined) => {
+    if (isNullish(field)) {
+      return false;
+    }
+    if (field instanceof Array) {
+      return field.length > 0 && allSatisfy(field, isNonemptyString);
+    } else {
+      return isNonemptyString(field);
+    }
+  };
+
+  // Ensure all fields of an item are non-nullish
+  const itemFieldSatisfy = (item: any) => (field: string | string[]) => {
+    if (typeof field === 'string') {
+      return notNullish(item[field]);
+    } else {
+      return allSatisfy(field, f => notNullish(item[f]));
+    }
+  };
+
+  if (allSatisfy(fields, satisfy)) {
+    return data.filter((item) => allSatisfy(fields as Array<string | string[]>, itemFieldSatisfy(item)));
+  } else {
+    return [];
+  }
 }

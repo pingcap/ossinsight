@@ -1,22 +1,43 @@
-import React, { useContext } from 'react';
-import ExploreContext from '@site/src/pages/explore/_components/context';
-import { Alert, Button, useEventCallback } from '@mui/material';
+import React, { useMemo } from 'react';
+import { createIssueLink as createIssueLinkInternal } from '@site/src/utils/gh';
+import AlertBlock from '@site/src/pages/explore/_components/AlertBlock';
+import useQuestionManagement from '@site/src/pages/explore/_components/useQuestion';
 
-export default function BadDataAlert ({ title = 'AI has generated invalid data' }: { title?: string }) {
-  const { questionId } = useContext(ExploreContext);
+export default function BadDataAlert ({ title = 'AI has generated invalid chart info' }: { title?: string }) {
+  const { question } = useQuestionManagement();
 
-  const report = useEventCallback(() => {
-    const q = `is:open label:area/data-explorer AI has generated invalid data in question ${questionId ?? ''}`;
-    window.open(`https://github.com/pingcap/ossinsight/issues?q=${encodeURIComponent(q)}`, '_blank');
-  });
+  const createIssueLink = useMemo(() => {
+    return () => createIssueLinkInternal('pingcap/ossinsight', {
+      title: `${title} in question ${question?.id ?? ''}`,
+      labels: 'area/data-explorer,type/bug',
+      assignee: 'Mini256',
+      body: `
+Hi, ${title} in [question](https://ossinsight/explore/?id=${question?.id ?? ''})
+      
+## Chart info:
+\`\`\`json
+${JSON.stringify(question?.chart, undefined, 2)}
+\`\`\`
+
+## Result info:
+\`\`\`json
+// Fields
+${JSON.stringify(question?.result?.fields, undefined, 2)}
+
+// First result (Totally ${question?.result?.rows.length ?? 0} rows)
+${JSON.stringify(question?.result?.rows?.[0], undefined, 2)}
+\`\`\`
+      `,
+    });
+  }, [question]);
 
   return (
-    <Alert
+    <AlertBlock
       severity="warning"
       sx={{ mb: 2 }}
-      action={<Button onClick={report}>Report</Button>}
+      createIssueUrl={createIssueLink}
     >
-      AI has generated invalid data
-    </Alert>
+      {title}
+    </AlertBlock>
   );
 }
