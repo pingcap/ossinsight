@@ -51,8 +51,17 @@ class AddSoTables < ActiveRecord::Migration[6.1]
         website_url VARCHAR(200)
       )
     USER
+
+    votes = <<~VOTE
+      CREATE TABLE stackoverflow.votes (
+        id INTEGER NOT NULL PRIMARY KEY,
+        creation_date datetime NOT NULL,
+        post_id INTEGER NOT NULL,
+        vote_type_id INTEGER NOT NULL
+      )
+    VOTE
     execute(sql)
     execute(users)
+    execute(votes)
   end
 end
-
