@@ -1,10 +1,15 @@
 import React from 'react';
 import { Box, styled, Typography } from '@mui/material';
+import ExploreSteps from '@site/src/pages/explore/_components/ExploreSteps';
 
 export default function Faq () {
   return (
-    <Box id='data-explorer-faq' pt={8}>
-      <Typography variant='h2' textAlign='center'>FAQ</Typography>
+    <Box id="data-explorer-faq" pt={8}>
+      <Typography variant="h2" textAlign="center">FAQ</Typography>
+      <Q>How it works?</Q>
+      <A>
+        <ExploreSteps steps={steps} sx={{ my: 2 }} />
+      </A>
       <Q>How do I use this tool?</Q>
       <A>You can start with selecting a popular query from the query wall or directly input a short text query statement to the search box. OpenAI will translate your question into Structured Query Language (SQL), and we will use the generated SQL to query in the database and return the results.</A>
       <Q>Why the answer do not turn out to my intended?</Q>
@@ -15,15 +20,22 @@ export default function Faq () {
         <ol>
           <li>AI unrecognized/misunderstand your text and generated wrong/bad SQLs, the query mission failed.</li>
           <li>Data restrictions. All the data we use here on this website sources from&nbsp;
-            <a href='http://www.gharchive.org/' target='_blank' rel="noreferrer">
-            GH Archive
-          </a>, a non-profit project that records and archives all GitHub events data since 2011. We can not offer you more insights if you are looking for answers about other topics.</li>
+            <a href="http://www.gharchive.org/" target="_blank" rel="noreferrer">
+              GH Archive
+            </a>, a non-profit project that records and archives all GitHub events data since 2011. We can not offer you more insights if you are looking for answers about other topics.
+          </li>
         </ol>
         <br />
         The potential solution is phrase your question which is related GitHub with short, specific words , then try again. And we strongly recommend you use our query templates near the search box to start your exploring.</A>
     </Box>
   );
 }
+
+const steps = [
+  'Input your question',
+  'Translate your question to SQL with OpenAI',
+  'Visualize and output your results',
+];
 
 const Q = styled('h3')`
   font-size: 16px;
@@ -37,6 +49,6 @@ const A = styled('div')`
   font-weight: 400;
   line-height: 21px;
   text-align: left;
-  color: #929292;
+  color: #C1C1C1;
   margin-bottom: 48px;
 `;
