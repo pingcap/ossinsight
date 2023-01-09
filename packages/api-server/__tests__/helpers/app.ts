@@ -52,6 +52,8 @@ async function createApp () {
     JWT_COOKIE_SECURE: 'false',
     JWT_COOKIE_SAME_SITE: 'false',
     OPENAI_API_KEY: 'fake',
+    AUTH0_DOMAIN: 'auth0',
+    AUTH0_SECRET: 'auth0',
   };
 
   Object.assign(process.env, env);
