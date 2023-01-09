@@ -50,8 +50,11 @@ const root: FastifyPluginAsyncJsonSchemaToTs = async (app, opts): Promise<void> 
         preValidation: app.authenticate,
         schema
     }, async function (req, reply) {
-        const { sub } = parseAuth0User(req.user as Auth0User);
-        const userId = await app.userService.findOrCreateUserByAccount(sub, req.headers.authorization);
+        const { sub, metadata } = parseAuth0User(req.user as Auth0User);
+        const userId = await app.userService.findOrCreateUserByAccount(
+          { ...metadata, sub },
+          req.headers.authorization
+        );
         const res = await app.userService.getUserById(userId);
         reply.send(res);
     });

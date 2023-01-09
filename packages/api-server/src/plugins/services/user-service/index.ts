@@ -6,7 +6,7 @@ import { ResultSetHeader } from "mysql2";
 import fp from "fastify-plugin";
 import { APIError } from "../../../utils/error";
 import { Connection, RowDataPacket, PoolConnection } from "mysql2/promise";
-import { Auth0UserInfo } from "./auth0";
+import { Auth0UserInfo, Auth0UserMetadata } from "./auth0";
 import { DateTime } from "luxon";
 import Axios from "axios";
 
@@ -130,7 +130,7 @@ export class UserService {
   }
 
   async findOrCreateUserByAccount(
-    sub: string,
+    user: Auth0UserMetadata & { sub: string },
     token?: string,
     connection?: PoolConnection
   ): Promise<number> {
@@ -138,7 +138,8 @@ export class UserService {
 
     let conn: Connection | undefined;
 
-    const [provider, idString] = sub.split("|");
+    const [provider, idString] = user.sub.split("|");
+    const githubLogin = user?.github_login || null;
 
     try {
       conn = connection || (await this.mysql.getConnection());
@@ -187,10 +188,10 @@ export class UserService {
       // Create a new account link to the new user.
       await conn.query<ResultSetHeader>(
         `
-                INSERT INTO sys_accounts(user_id, provider, provider_account_id)
-                VALUES(?, ?, ?)
+                INSERT INTO sys_accounts(user_id, provider, provider_account_id, provider_account_login)
+                VALUES(?, ?, ?, ?)
             `,
-        [rs.insertId, provider, idString]
+        [rs.insertId, provider, idString, githubLogin]
       );
 
       await conn.commit();

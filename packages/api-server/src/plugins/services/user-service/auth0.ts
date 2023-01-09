@@ -1,5 +1,3 @@
-import Axios from "axios";
-
 export interface Auth0UserInfo {
   sub: string;
   nickname: string;
