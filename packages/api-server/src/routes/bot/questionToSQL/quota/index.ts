@@ -6,7 +6,7 @@ export const GENERATE_SQL_LIMIT_HEADER = "x-playground-generate-sql-limit";
 export const MAX_DAILY_GENERATE_SQL_LIMIT = 2000;
 
 const root: FastifyPluginAsyncJsonSchemaToTs = async (app): Promise<void> => {
-  app.get('/quota', {
+  app.get('/', {
     // @ts-ignore
     preValidation: app.authenticate
   }, async function (req, reply) {
