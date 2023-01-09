@@ -190,7 +190,7 @@ export class ExplorerService {
         const conn = await this.mysql.getConnection();
         try {
             question.status = QuestionStatus.AnswerGenerating;
-            await this.updateQuestion(conn, question);
+            await this.updateQuestion(question);
 
             // Prepare the recommended questions.
             const popularQuestions = await this.getRecommendQuestions(conn, 3, false);
@@ -230,7 +230,7 @@ export class ExplorerService {
 
             // Validate the generated SQL.
             question.status = QuestionStatus.SQLValidating;
-            await this.updateQuestion(conn, question);
+            await this.updateQuestion(question);
             let statementType;
             try {
                 logger.info("Validating the generated SQL: %s", querySQL);
@@ -254,7 +254,7 @@ export class ExplorerService {
             question.queryHash = this.getQueryHash(querySQL);
 
             // Try to get SQL result from cache.
-            const cachedResult = await this.getCachedSQLResult(conn, question.queryHash, this.options.querySQLCacheTTL);
+            const cachedResult = await this.getCachedSQLResult(question.queryHash, this.options.querySQLCacheTTL);
             if (cachedResult) {
                 logger.info("SQL result is cached, returning cached result (hash: %s).", question.queryHash);
                 await this.saveQuestionResult(conn, questionId, cachedResult);
@@ -264,7 +264,7 @@ export class ExplorerService {
                     status: QuestionStatus.Success,
                     hitCache: true,
                 }
-                await this.updateQuestion(conn, question);
+                await this.updateQuestion(question);
                 return question;
             }
 
@@ -300,7 +300,7 @@ export class ExplorerService {
             question.queueJobId = queueJobId;
             question.requestedAt = DateTime.utc();
             question.status = QuestionStatus.Waiting;
-            await this.updateQuestion(conn, question);
+            await this.updateQuestion(question);
 
             // Push the question to the queue.
             if (queueName === QuestionQueueNames.Low) {
@@ -316,14 +316,14 @@ export class ExplorerService {
             }
         } catch (err: any) {
             if (err instanceof ExplorerPrepareQuestionError) {
-                await this.updateQuestion(conn, {
+                await this.updateQuestion({
                     ...question,
                     status: QuestionStatus.Error,
                     error: err.message,
                 });
                 await this.addSystemQuestionFeedback(conn, questionId, err.feedbackType, JSON.stringify(err.feedbackPayload));
             } else {
-                await this.updateQuestion(conn, {
+                await this.updateQuestion({
                     ...question,
                     status: QuestionStatus.Error,
                     error: err.message,
@@ -504,7 +504,7 @@ export class ExplorerService {
         }
     }
 
-    private async updateQuestion(conn: Connection, question: Question) {
+    private async updateQuestion(question: Question) {
         const {
             id, status, recommended, querySQL, queryHash, engines = [], result = null, chart = null, recommendedQuestions = [],
             queueName = null, queueJobId = null, requestedAt, executedAt, finishedAt, spent, error = null
@@ -518,7 +518,7 @@ export class ExplorerService {
         const executedAtValue = executedAt ? executedAt.toSQL() : null;
         const finishedAtValue = finishedAt ? finishedAt.toSQL() : null;
 
-        const [rs] = await conn.query<ResultSetHeader>(`
+        const [rs] = await this.mysql.query<ResultSetHeader>(`
             UPDATE explorer_questions
             SET 
                 status = ?, recommended = ?, query_sql = ?, query_hash = ?, engines = ?, result = ?, chart = ?, recommended_questions = ?, 
@@ -598,8 +598,8 @@ export class ExplorerService {
         return this.mapRecordToQuestion(rows[0]);
     }
 
-    async getLatestQuestionByQueryHash(conn: Connection, queryHash: string, ttl: number): Promise<Question | null> {
-        const [rows] = await conn.query<any[]>(`
+    async getLatestQuestionByQueryHash(queryHash: string, ttl: number): Promise<Question | null> {
+        const [rows] = await this.mysql.query<any[]>(`
             SELECT
                 BIN_TO_UUID(id) AS id, hash, user_id AS userId, status, title, query_sql AS querySQL, query_hash AS queryHash, engines,
                 queue_name AS queueName, queue_job_id AS queueJobId, recommended_questions AS recommendedQuestions, result, chart, recommended, 
@@ -616,8 +616,8 @@ export class ExplorerService {
         return this.mapRecordToQuestion(rows[0]);
     }
 
-    async getCachedSQLResult(conn: Connection, queryHash: string, ttl: number): Promise<QuestionQueryResultWithChart | null> {
-        const question = await this.getLatestQuestionByQueryHash(conn, queryHash, ttl);
+    async getCachedSQLResult(queryHash: string, ttl: number): Promise<QuestionQueryResultWithChart | null> {
+        const question = await this.getLatestQuestionByQueryHash(queryHash, ttl);
         if (!question) {
             return null;
         }

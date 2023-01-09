@@ -13,6 +13,12 @@ export const schema: FastifySchema = {
       questionId: {
         type: 'string',
       },
+    }
+  },
+  body: {
+    type: 'object',
+    required: ['satisfied'],
+    properties: {
       satisfied: {
         type: 'boolean',
       },
@@ -24,21 +30,26 @@ export const schema: FastifySchema = {
   }
 };
 
-export interface IBody {
+export interface IParam {
   questionId: string;
+}
+
+export interface IBody {
   satisfied: boolean;
   feedbackContent: string;
 }
 
 const root: FastifyPluginAsync = async (app) => {
   app.post<{
+    Params: IParam,
     Body: IBody
   }>('/', {
     schema,
     // @ts-ignore
     preValidation: app.authenticate
   },async (req, reply) => {
-    const { questionId, satisfied, feedbackContent } = req.body;
+    const { questionId } = req.params;
+    const { satisfied, feedbackContent } = req.body;
     const conn = await app.mysql.getConnection();
     const { sub, metadata } = parseAuth0User(req.user as Auth0User);
     const userId = await app.userService.findOrCreateUserByAccount(
@@ -50,7 +61,7 @@ const root: FastifyPluginAsync = async (app) => {
     try {
       const feedbacks = await app.explorerService.getUserQuestionFeedbacks(conn, userId);
       if (feedbacks > 0) {
-        throw new APIError(400, 'You have already given feedback for this question');
+        throw new APIError(429, 'You have already given feedback for this question');
       }
       await app.explorerService.addQuestionFeedback(conn, {
         questionId,
