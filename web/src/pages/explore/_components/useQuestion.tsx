@@ -1,9 +1,9 @@
 import { createContext, useContext, useEffect, useRef, useState } from 'react';
-import { newQuestion, pollQuestion, Question, QuestionStatus, questionToChart } from '@site/src/api/explorer';
+import { newQuestion, pollQuestion, Question, QuestionStatus } from '@site/src/api/explorer';
 import { useMemoizedFn } from 'ahooks';
-import { isFalsy, isFiniteNumber, isNonemptyString, isNullish, notNullish } from '@site/src/utils/value';
+import { isFalsy, isFiniteNumber, isNonemptyString, notNullish } from '@site/src/utils/value';
 import { timeout } from '@site/src/utils/promisify';
-import { useRequireLogin } from '@site/src/context/user';
+import { useAuth0 } from '@auth0/auth0-react';
 
 export const enum QuestionLoadingPhase {
   /** There is no question */
@@ -26,8 +26,6 @@ export const enum QuestionLoadingPhase {
   EXECUTING,
   /** SQL execution was failed */
   EXECUTE_FAILED,
-  /** Generating chart info (deprecated, chart and sql was returned in same AI query) */
-  VISUALIZING,
   /** Visualize failed (only if `question.chart` in nullish) */
   VISUALIZE_FAILED,
   UNKNOWN_ERROR,
@@ -59,7 +57,7 @@ function computePhase (question: Question, whenError: (error: unknown) => void):
       if (notNullish(question.chart)) {
         return QuestionLoadingPhase.READY;
       } else {
-        return QuestionLoadingPhase.VISUALIZING;
+        return QuestionLoadingPhase.VISUALIZE_FAILED;
       }
     case QuestionStatus.Error:
       if (notNullish(question.error)) {
@@ -105,12 +103,13 @@ export interface QuestionManagement {
 }
 
 export function useQuestionManagementValues ({ pollInterval = 2000 }: QuestionManagementOptions): QuestionManagement {
-  const requireLogin = useRequireLogin();
   const [phase, setPhase] = useState<QuestionLoadingPhase>(QuestionLoadingPhase.NONE);
   const [question, setQuestion] = useState<Question>();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<unknown>();
   const idRef = useRef<string>();
+
+  const { isLoading, user, getAccessTokenSilently, loginWithPopup } = useAuth0();
 
   const loadInternal = useMemoizedFn(async function (id: string, clear: boolean) {
     // Prevent reload when loading same question
@@ -146,11 +145,15 @@ export function useQuestionManagementValues ({ pollInterval = 2000 }: QuestionMa
   const create = useMemoizedFn((title: string) => {
     async function createInternal (title: string) {
       try {
+        if (!isLoading && !user) {
+          return await loginWithPopup();
+        }
         setError(undefined);
         setQuestion(undefined);
         setLoading(true);
         setPhase(QuestionLoadingPhase.CREATING);
-        const result = await newQuestion(title);
+        const accessToken = await getAccessTokenSilently();
+        const result = await newQuestion(title, { accessToken });
         await timeout(600);
         idRef.current = result.id;
         setPhase(computePhase(result, setError));
@@ -164,9 +167,6 @@ export function useQuestionManagementValues ({ pollInterval = 2000 }: QuestionMa
       }
     }
 
-    if (!requireLogin()) {
-      return;
-    }
     void createInternal(title);
   });
 
@@ -178,25 +178,6 @@ export function useQuestionManagementValues ({ pollInterval = 2000 }: QuestionMa
     idRef.current = undefined;
   });
 
-  const loadChartInternal = useMemoizedFn(async (id: string) => {
-    try {
-      const chart = await questionToChart(id);
-      setQuestion(question => {
-        if (isNullish(question)) {
-          return undefined;
-        }
-        return {
-          ...question,
-          chart,
-        };
-      });
-      setPhase(QuestionLoadingPhase.READY);
-    } catch (e) {
-      setPhase(QuestionLoadingPhase.VISUALIZE_FAILED);
-      setError(e);
-    }
-  });
-
   useEffect(() => {
     if (isFiniteNumber(pollInterval) && pollInterval < 1000) {
       pollInterval = 1000;
@@ -204,7 +185,9 @@ export function useQuestionManagementValues ({ pollInterval = 2000 }: QuestionMa
     // Poll question if question was not finished
     switch (phase) {
       case QuestionLoadingPhase.EXECUTING:
-      case QuestionLoadingPhase.QUEUEING: {
+      case QuestionLoadingPhase.QUEUEING:
+      // case QuestionLoadingPhase.VISUALIZING:
+      {
         const h = setTimeout(() => {
           if (isNonemptyString(idRef.current)) {
             void loadInternal(idRef.current, false);
@@ -214,11 +197,6 @@ export function useQuestionManagementValues ({ pollInterval = 2000 }: QuestionMa
           clearTimeout(h);
         };
       }
-      case QuestionLoadingPhase.VISUALIZING:
-        if (isNonemptyString(idRef.current)) {
-          void loadChartInternal(idRef.current);
-        }
-        break;
       default:
         break;
     }

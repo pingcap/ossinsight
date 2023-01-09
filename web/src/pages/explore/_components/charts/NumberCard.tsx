@@ -11,7 +11,7 @@ export default function NumberCard ({ chartName, title, label, value, data }: Ch
       return (
         <Card>
           <CardContent sx={{ textAlign: 'center', fontSize: 36 }}>
-            <Typography sx={{ fontSize: 24 }} color="text.secondary" gutterBottom align="center">
+            <Typography sx={{ opacity: 0.4 }} fontSize={22} mt={2} mb={0} color="text.secondary" gutterBottom align="center">
               {title}
             </Typography>
             {isFiniteNumber(val)

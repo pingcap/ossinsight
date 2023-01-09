@@ -5,7 +5,6 @@ import isHotkey from 'is-hotkey';
 import { getOptionalErrorMessage } from '@site/src/utils/error';
 import { LoadingButton } from '@mui/lab';
 import { isNullish, notFalsy, notNullish } from '@site/src/utils/value';
-import { GitHub } from '@mui/icons-material';
 import { BaseInputBottomLine, BaseInputContainer } from '@site/src/dynamic-pages/analyze/playground/styled';
 import PredefinedGroups, { PredefinedGroupsProps } from '@site/src/dynamic-pages/analyze/playground/PredefinedGroups';
 import { AiQuestionResource } from '@site/src/api/core';
@@ -47,7 +46,7 @@ export default function QuestionField ({ defaultQuestion, maxLength, value, load
 
   const button = useMemo(() => (
     <LoadingButton variant="contained" size="small" loading={loading} onClick={onAction} disabled={disabled}>
-      <AuthorizedContent fallback={<>Login with <GitHub fontSize="inherit" sx={{ mx: 0.5 }} /> and </>}>
+      <AuthorizedContent fallback={<>Login and </>}>
         <>🤖️</>
       </AuthorizedContent>
       Generate SQL

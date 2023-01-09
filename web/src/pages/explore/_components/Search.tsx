@@ -1,7 +1,7 @@
 import { IconButton, InputBase, Stack, styled, useEventCallback } from '@mui/material';
 import React, { ChangeEventHandler, Dispatch, KeyboardEventHandler, MutableRefObject, SetStateAction, useEffect, useRef, useState } from 'react';
-import { useUserInfoContext } from '@site/src/context/user';
 import { Close, KeyboardReturn, Pause } from '@mui/icons-material';
+import { useAuth0 } from '@auth0/auth0-react';
 
 export function useStateRef<T> (initial: T | (() => T)): [T, Dispatch<SetStateAction<T>>, Readonly<MutableRefObject<T>>] {
   const [state, setState] = useState(initial);
@@ -25,7 +25,7 @@ export interface ExploreSearchProps {
 
 export default function ExploreSearch ({ value, onChange, onAction, onClear, disableInput = false, disableAction = false, disableClear = false, clearState }: ExploreSearchProps) {
   const elRef = useRef<HTMLInputElement>(null);
-  const { validating, validated } = useUserInfoContext();
+  const { isLoading: validating, isAuthenticated: validated } = useAuth0();
 
   const handleChange: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> = useEventCallback((ev) => {
     onChange(ev.target.value);
@@ -51,14 +51,14 @@ export default function ExploreSearch ({ value, onChange, onAction, onClear, dis
         placeholder="Type any question here, or choose one below"
         endAdornment={
           <Stack direction="row" gap={1}>
-            {!disableAction && <IconButton color="primary" onClick={onAction} disabled={disableAction}>
+            {!disableAction && <StyledIconButton color="inherit" onClick={onAction} disabled={disableAction}>
               <KeyboardReturn />
-            </IconButton>}
-            <IconButton color={clearState === 'stop' ? 'error' : 'default'} onClick={onClear} disabled={disableClear}>
+            </StyledIconButton>}
+            <StyledIconButton color={clearState === 'stop' ? 'error' : 'inherit'} onClick={onClear} disabled={disableClear}>
               {clearState === 'stop'
                 ? <Pause />
                 : <Close />}
-            </IconButton>
+            </StyledIconButton>
           </Stack>
         }
       />
@@ -67,10 +67,24 @@ export default function ExploreSearch ({ value, onChange, onAction, onClear, dis
 }
 
 const StyledInput = styled(InputBase)`
-  background-color: #3c3c3c;
-  color: white;
+  background-color: #eaeaea;
+  color: #3c3c3c;
   border-radius: 6px;
   font-size: 20px;
   padding: 14px;
   line-height: 1;
+
+  &.Mui-disabled {
+    color: rgb(60, 60, 60, 0.7);
+    
+    & > input {
+      -webkit-text-fill-color: unset;
+    }
+  }
+`;
+
+const StyledIconButton = styled(IconButton)`
+  &.Mui-disabled {
+    color: rgb(60, 60, 60, 0.3);
+  }
 `;

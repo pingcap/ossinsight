@@ -71,7 +71,7 @@ const Container = styled('div', { name: 'Container' })`
   }
   
   position: relative;
-  margin: auto;
+  margin: 0 auto;
   max-width: 100%;
 
   ${({ theme }) => theme.breakpoints.up('xl')} {
@@ -92,7 +92,7 @@ const Header = styled('div', { name: 'Header', shouldForwardProp: propName => pr
 `;
 
 const Main = styled('div', { name: 'Main' })`
-  min-height: 800px;
+  min-height: calc(100vh - 92px);
   width: 100%;
   transition: ${({ theme }) => theme.transitions.create(['transform', 'opacity'], { duration: transitionDuration })};
 
@@ -118,6 +118,7 @@ const Side = styled('div', { name: 'Side' })`
   right: 0;
   top: 0;
   width: var(--explore-layout-side-width);
+  height: 100%;
   opacity: 0;
   transform: translateX(calc(var(--explore-layout-side-width) / 2));
   transition: ${({ theme }) => theme.transitions.create(['transform', 'opacity'], { duration: transitionDuration })};

@@ -4,9 +4,12 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { isNullish, notNullish } from '@site/src/utils/value';
 import useSWR from 'swr';
 
-export function useAiQuestion (question: string, repoId: number | undefined, repoName: string | undefined) {
+export function useAiQuestion (question: string, repoId: number | undefined, repoName: string | undefined, options: { getAccessToken: () => Promise<string> }) {
   const { data: resource } = useSWR('ai-question-usage', {
-    fetcher: async () => await aiQuestionResource(),
+    fetcher: async () => {
+      const accessToken = await options.getAccessToken();
+      return await aiQuestionResource({ accessToken });
+    },
     shouldRetryOnError: false,
   });
   const { data: result, loading, error, run } = useAsyncOperation({ question: `In this repo: ${question}`, context: { repo_id: repoId, repo_name: repoName } }, aiQuestion, true);

@@ -1,7 +1,8 @@
 import {bootstrapTestDatabase, getTestDatabase, releaseTestDatabase} from '../../helpers/db';
 import {bootstrapApp, getTestApp, releaseApp} from '../../helpers/app';
 import {Connection, ResultSetHeader} from "mysql2/promise";
-import {ProviderType, UserRole, UserService} from "../../../src/plugins/services/user-service";
+import { ProviderType, UserRole, UserService } from "../../../src/plugins/services/user-service";
+import { Auth0UserInfo } from "../../../src/plugins/services/user-service/auth0";
 import {bootstrapTestRedis, releaseTestRedis} from "../../helpers/redis";
 
 let userService: UserService, conn: Connection;
@@ -105,14 +106,36 @@ describe('find or create user by account', () => {
   });
 
   test('create a new user to bound to the account', async () => {
-    const user = {
-      name: 'ossinsight',
-      emailAddress: 'ossinsight@pingcap.com',
-      emailGetUpdates: false,
-      avatarURL: 'https://github.com/ossinsight.png',
-      role: UserRole.USER,
-      createdAt: new Date(),
-      enable: true,
+    const fetchAuth0UserInfoMock = jest
+    .spyOn(userService, "fetchAuth0UserInfo")
+    .mockImplementation(
+      async (domain: string, token: string): Promise<Auth0UserInfo> => {
+        return {
+          sub: "github|1001",
+          nickname: "ossinsight",
+          name: "ossinsight",
+          picture: "https://github.com/ossinsight.png",
+          updated_at: new Date().toUTCString(),
+          email: "ossinsight@pingcap.com",
+          email_verified: true,
+        };
+      }
+    );
+    // const user = {
+    //   name: 'ossinsight',
+    //   emailAddress: 'ossinsight@pingcap.com',
+    //   emailGetUpdates: false,
+    //   avatarURL: 'https://github.com/ossinsight.png',
+    //   role: UserRole.USER,
+    //   createdAt: new Date(),
+    //   enable: true,
+    // };
+    const auth0user = {
+      email: "ossinsight@pingcap.com",
+      github_id: `1001`,
+      github_login: "ossinsight",
+      provider: "github",
+      sub: "github|1001",
     };
     const account = {
       provider: ProviderType.GITHUB,
@@ -120,8 +143,9 @@ describe('find or create user by account', () => {
       providerAccountLogin: 'ossinsight',
       accessToken: 'token'
     };
-    const userId = await userService.findOrCreateUserByAccount(user, account);
+    const userId = await userService.findOrCreateUserByAccount(auth0user, account.accessToken);
     const userProfile = await userService.getUserById(userId);
+    fetchAuth0UserInfoMock.mockRestore();
     expect(userProfile).toEqual({
       id: userId,
       name: 'ossinsight',
@@ -137,14 +161,36 @@ describe('find or create user by account', () => {
   });
 
   test('found a existed users bound to the account', async () => {
-    const user = {
-      name: 'ossinsight',
-      emailAddress: 'ossinsight@pingcap.com',
-      emailGetUpdates: false,
-      avatarURL: 'https://github.com/ossinsight.png',
-      role: UserRole.USER,
-      createdAt: new Date(),
-      enable: true,
+    const fetchAuth0UserInfoMock = jest
+    .spyOn(userService, "fetchAuth0UserInfo")
+    .mockImplementation(
+      async (domain: string, token: string): Promise<Auth0UserInfo> => {
+        return {
+          sub: "github|1001",
+          nickname: "ossinsight",
+          name: "ossinsight",
+          picture: "https://github.com/ossinsight.png",
+          updated_at: new Date().toUTCString(),
+          email: "ossinsight@pingcap.com",
+          email_verified: true,
+        };
+      }
+    );
+    // const user = {
+    //   name: 'ossinsight',
+    //   emailAddress: 'ossinsight@pingcap.com',
+    //   emailGetUpdates: false,
+    //   avatarURL: 'https://github.com/ossinsight.png',
+    //   role: UserRole.USER,
+    //   createdAt: new Date(),
+    //   enable: true,
+    // };
+    const auth0user = {
+      email: "ossinsight@pingcap.com",
+      github_id: `1001`,
+      github_login: "ossinsight",
+      provider: "github",
+      sub: "github|1001",
     };
     const account = {
       provider: ProviderType.GITHUB,
@@ -159,8 +205,9 @@ describe('find or create user by account', () => {
       VALUES (?, ?, ?, ?, ?);
     `, [9999 ,account.provider, account.providerAccountId, account.providerAccountLogin, account.accessToken]);
 
-    const userId = await userService.findOrCreateUserByAccount(user, account);
+    const userId = await userService.findOrCreateUserByAccount(auth0user, account.accessToken);
     const userProfile = await userService.getUserById(userId);
+    fetchAuth0UserInfoMock.mockRestore();
     expect(userProfile).toEqual({
       id: userId,
       name: 'ossinsight',

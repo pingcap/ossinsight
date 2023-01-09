@@ -3,9 +3,11 @@ import { CircularProgress, FormControlLabel, styled, Switch } from '@mui/materia
 import { notFalsy } from '@site/src/utils/value';
 import { clientWithoutCache } from '@site/src/api/client';
 import { useUserInfoContext } from '@site/src/context/user';
+// import { useAuth0 } from '@auth0/auth0-react';
 
 export default function EnableEmailSwitch () {
   const { userInfo, validating, validated, mutate } = useUserInfoContext();
+  // const { user: userInfo, isAuthenticated: validated, isLoading: validating } = useAuth0();
   const [updating, setUpdating] = useState(false);
 
   const enabled = useMemo(() => {

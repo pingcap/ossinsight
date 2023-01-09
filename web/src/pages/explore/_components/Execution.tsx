@@ -84,7 +84,6 @@ export default function Execution ({ search }: { search: string }) {
       case QuestionLoadingPhase.CREATED:
       case QuestionLoadingPhase.QUEUEING:
       case QuestionLoadingPhase.EXECUTING:
-      case QuestionLoadingPhase.VISUALIZING:
         return 'loading';
       case QuestionLoadingPhase.EXECUTE_FAILED:
       case QuestionLoadingPhase.VISUALIZE_FAILED:
@@ -105,8 +104,6 @@ export default function Execution ({ search }: { search: string }) {
         return `Waiting execution in queue (currently in position ${question?.queuePreceding ?? NaN})...`;
       case QuestionLoadingPhase.EXECUTING:
         return 'Running SQL...';
-      case QuestionLoadingPhase.VISUALIZING:
-        return 'Visualizing...';
       case QuestionLoadingPhase.EXECUTE_FAILED:
         return 'Failed to execute SQL';
       case QuestionLoadingPhase.UNKNOWN_ERROR:

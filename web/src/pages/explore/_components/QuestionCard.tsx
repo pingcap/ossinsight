@@ -1,7 +1,7 @@
-import React, { HTMLAttributes, ReactNode, useContext } from 'react';
+import React, { ReactNode, useContext } from 'react';
 import { ButtonBase, styled, useEventCallback } from '@mui/material';
-import { Cached } from '@mui/icons-material';
 import { SuggestionsContext } from '@site/src/pages/explore/_components/context';
+import { HighlightBackground, HighlightContent } from '@site/src/pages/explore/_components/highlighted';
 
 export type QuestionCardVariant = 'recommended-card' | 'card' | 'text';
 
@@ -24,59 +24,22 @@ export default function QuestionCard ({ question, variant = 'card', disabled }: 
     case 'recommended-card':
       return (
         <HighlightBackground>
-          <Content onClick={handleClick} disabled={disabled}>
+          <HighlightContent onClick={handleClick} disabled={disabled}>
             {question}
-          </Content>
+          </HighlightContent>
           <Marker>✨</Marker>
         </HighlightBackground>
       );
     case 'card':
       return (
-        <Content onClick={handleClick} disabled={disabled}>
+        <HighlightContent onClick={handleClick} disabled={disabled}>
           {question}
-        </Content>
+        </HighlightContent>
       );
     default:
       return <Link disableRipple disableTouchRipple onClick={handleClick} disabled={disabled}>{question}</Link>;
   }
 }
-
-export function HighlightCard (props: Exclude<HTMLAttributes<HTMLDivElement>, 'children'>) {
-  return (
-    <HighlightBackground {...props} sx={{ borderRadius: '17px', maxWidth: 'max-content', mt: 2 }}>
-      <Content sx={{ display: 'flex', p: 1, borderRadius: '16px', maxWidth: 'max-content', alignItems: 'center' }}>
-        🤖️ Stuck for ideas? Let AI generate 3 questions for you.
-        <Cached fontSize="inherit" sx={{ ml: 1 }} />
-      </Content>
-    </HighlightBackground>
-  );
-}
-
-const HighlightBackground = styled('div', { name: 'QuestionCard-HighlightBackground' })`
-  position: relative;
-  background: linear-gradient(116.45deg, #595FEC 0%, rgba(200, 182, 252, 0.2) 96.73%);
-  padding: 1px;
-  border-radius: 7px;
-  width: 100%;
-`;
-
-const Content = styled(ButtonBase, { name: 'QuestionCard-Content' })`
-  display: block;
-  font-size: 14px;
-  line-height: 1.25;
-  background-color: rgba(44, 44, 44, 0.8);
-  border-radius: 6px;
-  transition: ${({ theme }) => theme.transitions.create('background-color')};
-  padding: 18px;
-  text-align: left;
-  width: 100%;
-  height: 100%;
-  vertical-align: top;
-
-  &:hover {
-    background-color: rgba(44, 44, 44, 0.5);
-  }
-`;
 
 const Link = styled(ButtonBase, { name: 'QuestionCard-Link' })`
   display: block;

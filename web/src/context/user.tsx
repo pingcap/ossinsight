@@ -1,5 +1,7 @@
-import { createContext, createElement, PropsWithChildren, useContext } from 'react';
+import React, { createContext, createElement, PropsWithChildren, useContext } from 'react';
 import { useUserInfo } from '@site/src/api/user';
+import { Auth0Provider, useAuth0 } from '@auth0/auth0-react';
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import { useMemoizedFn } from 'ahooks';
 import { isNullish } from '@site/src/utils/value';
 
@@ -21,16 +23,32 @@ export function useUserInfoContext () {
   return useContext(UserContext);
 }
 
-export function useRequireLogin () {
-  const { validating, userInfo, login } = useUserInfoContext();
+export function AuthProvider ({ children }: PropsWithChildren): JSX.Element {
+  const {
+    siteConfig: { customFields },
+  } = useDocusaurusContext();
 
-  return useMemoizedFn(() => {
-    if (validating) {
+  return (
+    <Auth0Provider
+      domain={customFields?.auth0_domain as string}
+      clientId={customFields?.auth0_client_id as string}
+      audience={`https://${customFields?.auth0_domain as string}/api/v2/`}
+      scope="read:current_user"
+    >
+      {children}
+    </Auth0Provider>
+  );
+}
+
+export function useRequireLogin () {
+  const { isLoading, user, loginWithPopup } = useAuth0();
+
+  return useMemoizedFn(async () => {
+    if (isLoading) {
       return false;
     }
-    if (isNullish(userInfo)) {
-      console.log(login);
-      login();
+    if (isNullish(user)) {
+      await loginWithPopup();
       return false;
     }
     return true;

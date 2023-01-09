@@ -7,7 +7,7 @@ import Link from '@docusaurus/Link';
 
 export default function Side () {
   return (
-    <>
+    <SideRoot>
       <RecommendedSuggestions
         variant="text" n={4}
         title={(reload, loading) => (
@@ -22,14 +22,14 @@ export default function Side () {
       />
       <Divider orientation="horizontal" sx={{ my: 2 }} />
       <Box>
-        <ColoredLink to="/">
+        <ColoredLink to="/blog/chat2query-tutorials">
           Get hands-on with your data <ArrowRightAlt color="inherit" />
         </ColoredLink>
         <Details>
           Get hands-on with your data Get hands-on with your data
         </Details>
       </Box>
-    </>
+    </SideRoot>
   );
 }
 
@@ -42,6 +42,11 @@ function Arrows () {
     </>
   );
 }
+
+const SideRoot = styled('div')`
+  position: sticky;
+  top: 92px;
+`;
 
 const StyledArrow = styled(ArrowLeft)`
   vertical-align: text-bottom;
