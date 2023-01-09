@@ -45,7 +45,7 @@ export class SQLUnsupportedStatementTypeError extends ValidateSQLError {
     }
 }
 
-export class ExplorerQuestionError extends APIError {
+export class ExplorerCreateQuestionError extends APIError {
     constructor(readonly statusCode: number, readonly message: string, readonly question: Question, error?: Error) {
         super(statusCode, message, error);
         if (error) {

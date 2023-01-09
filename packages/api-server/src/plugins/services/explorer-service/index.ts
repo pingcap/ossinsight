@@ -4,7 +4,7 @@ import {
     APIError,
     BotResponseParseError,
     ExplorerPrepareQuestionError,
-    ExplorerQuestionError,
+    ExplorerCreateQuestionError,
     SQLUnsupportedFunctionError,
     SQLUnsupportedMultipleStatementsError,
     SQLUnsupportedStatementTypeError,
@@ -174,9 +174,9 @@ export class ExplorerService {
             await conn.rollback();
             logger.info(err, `Failed to create a new question: ${err.message}`);
             if (err instanceof APIError) {
-                throw new ExplorerQuestionError(err.statusCode, err.message, question, err);
+                throw new ExplorerCreateQuestionError(err.statusCode, err.message, question, err);
             } else {
-                throw new ExplorerQuestionError(500, 'Failed to create the question', question);
+                throw new ExplorerCreateQuestionError(500, 'Failed to create the question', question);
             }
         }
 
