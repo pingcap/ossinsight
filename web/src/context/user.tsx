@@ -29,7 +29,6 @@ export function useRequireLogin () {
       return false;
     }
     if (isNullish(userInfo)) {
-      console.log(login);
       login();
       return false;
     }
