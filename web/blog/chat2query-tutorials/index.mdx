@@ -1,0 +1,29 @@
+---
+title: 'Get insight from your own data by asking questions without SQL skills'
+description: Get insight of your own dataset by asking questions without writing sql with ease!
+date: 2023-01-08
+authors: [pingcap, chatgpt]
+tags: [openai, chatgpt]
+---
+import mp4URLL from './how-to-use-chat2query.mp4';
+
+> This blog is written with help of ChatGPT.
+
+<br />
+
+To get insight of your own dataset without writing sql is easy, follow these steps:
+
+1. Sign up for a TiDB Cloud account at [https://tidbcloud.com/free-trial](https://tidbcloud.com/free-trial?utm_source=ossinsight&utm_medium=referral) using your email, Google account, or GitHub account.
+
+2. Create a free Serverless Tier cluster in the TiDB Cloud web console.
+
+3. In the TiDB Cloud web console, click the "Import" button and follow the prompts to load a CSV file into your cluster from a local file or from Amazon S3.
+
+  ![Import Data](./import.png)
+
+4. Use the web console's SQL editor(Chat2Query) to get insights from your data. But no worry, you don't need to write SQL, you could ask questions about your data in natural language.
+
+  The magic is typing `-- your question` and press Enter, here is an example:
+
+  <video src={mp4URLL} width="100%" autoplay controls></video>
+

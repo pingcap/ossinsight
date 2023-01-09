@@ -3,7 +3,7 @@ import { createIssueLink as createIssueLinkInternal } from '@site/src/utils/gh';
 import AlertBlock from '@site/src/pages/explore/_components/AlertBlock';
 import useQuestionManagement from '@site/src/pages/explore/_components/useQuestion';
 
-export default function BadDataAlert ({ title = 'AI has generated invalid chart info' }: { title?: string }) {
+export default function BadDataAlert ({ title }: { title: string }) {
   const { question } = useQuestionManagement();
 
   const createIssueLink = useMemo(() => {
@@ -12,7 +12,7 @@ export default function BadDataAlert ({ title = 'AI has generated invalid chart 
       labels: 'area/data-explorer,type/bug',
       assignee: 'Mini256',
       body: `
-Hi, ${title} in [question](https://ossinsight/explore/?id=${question?.id ?? ''})
+Hi, ${title} in [question](https://ossinsight.io/explore/?id=${question?.id ?? ''})
       
 ## Chart info:
 \`\`\`json

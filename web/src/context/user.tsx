@@ -1,5 +1,7 @@
 import { createContext, createElement, PropsWithChildren, useContext } from 'react';
 import { useUserInfo } from '@site/src/api/user';
+import { useMemoizedFn } from 'ahooks';
+import { isNullish } from '@site/src/utils/value';
 
 const UserContext = createContext<ReturnType<typeof useUserInfo>>({
   validated: false,
@@ -17,4 +19,20 @@ export function UserInfoProvider ({ children }: PropsWithChildren) {
 
 export function useUserInfoContext () {
   return useContext(UserContext);
+}
+
+export function useRequireLogin () {
+  const { validating, userInfo, login } = useUserInfoContext();
+
+  return useMemoizedFn(() => {
+    if (validating) {
+      return false;
+    }
+    if (isNullish(userInfo)) {
+      console.log(login);
+      login();
+      return false;
+    }
+    return true;
+  });
 }

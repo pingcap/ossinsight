@@ -20,7 +20,7 @@ export default function EmptyDataAlert () {
       title: `Empty result from question ${question?.id ?? ''}`,
       labels: 'area/data-explorer',
       body: `
-Hi, The result of [question](https://ossinsight/explore/?id=${question?.id ?? ''}) is empty
+Hi, The result of [question](https://ossinsight.io/explore/?id=${question?.id ?? ''}) is empty
 The title is: **${question?.title ?? ''}**
 
 Generated SQL is:

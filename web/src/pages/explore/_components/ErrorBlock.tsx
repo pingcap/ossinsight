@@ -6,6 +6,7 @@ import { AlertColor } from '@mui/material';
 import { safeFormat } from '@site/src/pages/explore/_components/charts/EmptyDataAlert';
 import { notNullish } from '@site/src/utils/value';
 import useQuestionManagement from '@site/src/pages/explore/_components/useQuestion';
+import { isAxiosHttpStatusError } from '@site/src/utils/error';
 
 interface ErrorBlockProps {
   title: string;
@@ -52,7 +53,7 @@ ${JSON.stringify(question?.chart, undefined, 2)}
   };
 
   return (
-    <AlertBlock severity={severity} sx={sx} createIssueUrl={createIssueUrl} showSuggestions={showSuggestions}>
+    <AlertBlock severity={severity} sx={sx} createIssueUrl={createIssueUrl} showSuggestions={showSuggestions && !isAxiosHttpStatusError(error, 429)}>
       {title}: {error}
     </AlertBlock>
   );

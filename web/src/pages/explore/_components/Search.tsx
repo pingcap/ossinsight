@@ -51,14 +51,14 @@ export default function ExploreSearch ({ value, onChange, onAction, onClear, dis
         placeholder="Type any question here, or choose one below"
         endAdornment={
           <Stack direction="row" gap={1}>
-            {!disableAction && <IconButton color="primary" onClick={onAction} disabled={disableAction}>
+            {!disableAction && <StyledIconButton color="inherit" onClick={onAction} disabled={disableAction}>
               <KeyboardReturn />
-            </IconButton>}
-            <IconButton color={clearState === 'stop' ? 'error' : 'default'} onClick={onClear} disabled={disableClear}>
+            </StyledIconButton>}
+            <StyledIconButton color={clearState === 'stop' ? 'error' : 'inherit'} onClick={onClear} disabled={disableClear}>
               {clearState === 'stop'
                 ? <Pause />
                 : <Close />}
-            </IconButton>
+            </StyledIconButton>
           </Stack>
         }
       />
@@ -67,10 +67,24 @@ export default function ExploreSearch ({ value, onChange, onAction, onClear, dis
 }
 
 const StyledInput = styled(InputBase)`
-  background-color: #3c3c3c;
-  color: white;
+  background-color: #eaeaea;
+  color: #3c3c3c;
   border-radius: 6px;
   font-size: 20px;
   padding: 14px;
   line-height: 1;
+
+  &.Mui-disabled {
+    color: rgb(60, 60, 60, 0.7);
+    
+    & > input {
+      -webkit-text-fill-color: unset;
+    }
+  }
+`;
+
+const StyledIconButton = styled(IconButton)`
+  &.Mui-disabled {
+    color: rgb(60, 60, 60, 0.3);
+  }
 `;

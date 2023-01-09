@@ -72,5 +72,6 @@ winkyao:
 
 chatgpt:
   name: ChatGPT
-  title: From OpenAI
+  title: Robot from OpenAI
   url: https://chat.openai.com/
+  image_url: https://github.com/openai.png
