@@ -6,8 +6,9 @@ import { ResultSetHeader } from "mysql2";
 import fp from "fastify-plugin";
 import { APIError } from "../../../utils/error";
 import { Connection, RowDataPacket, PoolConnection } from "mysql2/promise";
-import { fetchAuth0UserInfo } from "./auth0";
+import { Auth0UserInfo } from "./auth0";
 import { DateTime } from "luxon";
+import Axios from "axios";
 
 declare module "fastify" {
   interface FastifyInstance {
@@ -144,7 +145,7 @@ export class UserService {
       await conn.beginTransaction();
 
       // Check if how many users bound to this account.
-      const [existedUserIds] = await this.mysql.query<any[]>(
+      const [existedUserIds] = await conn.query<any[]>(
         `
                 SELECT su.id
                 FROM sys_users su
@@ -163,11 +164,11 @@ export class UserService {
       }
 
       // Create a new user if didn't exist any user bound to this account.
-      const userInfo = await fetchAuth0UserInfo(
+      const userInfo = await this.fetchAuth0UserInfo(
         this.config.AUTH0_DOMAIN,
         token
       );
-      const [rs] = await this.mysql.query<ResultSetHeader>(
+      const [rs] = await conn.query<ResultSetHeader>(
         `
                 INSERT INTO sys_users(name, email_address, email_get_updates, avatar_url, role, created_at, enable)
                 VALUES(?, ?, ?, ?, ?, ?, ?)
@@ -184,7 +185,7 @@ export class UserService {
       );
 
       // Create a new account link to the new user.
-      await this.mysql.query<ResultSetHeader>(
+      await conn.query<ResultSetHeader>(
         `
                 INSERT INTO sys_accounts(user_id, provider, provider_account_id)
                 VALUES(?, ?, ?)
@@ -207,6 +208,21 @@ export class UserService {
         err as Error
       );
     }
+  }
+
+  async fetchAuth0UserInfo(
+    domain: string,
+    token: string
+  ): Promise<Auth0UserInfo> {
+    // https://auth0.com/docs/api/authentication#get-user-info
+    const URL = `https://${domain}/userinfo`;
+    const bearerToken = token.startsWith("Bearer ") ? token : `Bearer ${token}`;
+    const response = await Axios.get(URL, {
+      headers: {
+        Authorization: bearerToken,
+      },
+    }).then((res) => res.data);
+    return response as Auth0UserInfo;
   }
 
   async getEmailUpdates(userId: number): Promise<UserGetUpdatesSetting> {

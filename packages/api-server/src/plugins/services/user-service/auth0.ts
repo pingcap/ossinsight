@@ -38,18 +38,3 @@ export function parseAuth0User(user: Auth0User) {
     metadata,
   };
 }
-
-export async function fetchAuth0UserInfo(
-  domain: string,
-  token: string
-): Promise<Auth0UserInfo> {
-  // https://auth0.com/docs/api/authentication#get-user-info
-  const URL = `https://${domain}/userinfo`;
-  const bearerToken = token.startsWith("Bearer ") ? token : `Bearer ${token}`;
-  const response = await Axios.get(URL, {
-    headers: {
-      Authorization: bearerToken,
-    },
-  }).then((res) => res.data);
-  return response as Auth0UserInfo;
-}
