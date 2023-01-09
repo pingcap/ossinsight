@@ -11,7 +11,7 @@ export interface PoweredByProps {
 export default function PoweredBy ({ align = 'left', sx }: PoweredByProps) {
   return (
     <PoweredByContainer align={align} sx={sx}>
-      Powered by <a href='https://openai.com/' target='_blank' rel="noreferrer">OpenAI</a> & <a href='https://www.pingcap.com/tidb-cloud/' target='_blank' rel="noreferrer">TiDB Cloud</a>
+      Powered by <a href='https://www.pingcap.com/tidb-cloud/' target='_blank' rel="noreferrer">TiDB Cloud</a>
     </PoweredByContainer>
   );
 }
