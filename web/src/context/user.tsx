@@ -1,6 +1,6 @@
 import React, { createContext, createElement, PropsWithChildren, useContext } from 'react';
 import { useUserInfo } from '@site/src/api/user';
-import { Auth0Provider } from '@auth0/auth0-react';
+import { Auth0Provider, useAuth0 } from '@auth0/auth0-react';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import { useMemoizedFn } from 'ahooks';
 import { isNullish } from '@site/src/utils/value';
@@ -42,14 +42,14 @@ export function AuthProvider ({ children }: PropsWithChildren): JSX.Element {
 }
 
 export function useRequireLogin () {
-  const { validating, userInfo, login } = useUserInfoContext();
+  const { isLoading, user, loginWithRedirect } = useAuth0();
 
-  return useMemoizedFn(() => {
-    if (validating) {
+  return useMemoizedFn(async () => {
+    if (isLoading) {
       return false;
     }
-    if (isNullish(userInfo)) {
-      login();
+    if (isNullish(user)) {
+      await loginWithRedirect();
       return false;
     }
     return true;
