@@ -46,7 +46,7 @@ const root: FastifyPluginAsyncJsonSchemaToTs = async (app, opts): Promise<void> 
     const conn = await this.mysql.getConnection();
 
     const userId = await app.userService.findOrCreateUserByAccount(
-      sub,
+      { ...metadata, sub },
       req.headers.authorization,
       conn
     );
