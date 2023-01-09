@@ -10,6 +10,7 @@ export default fp(async (app) => {
     }, getPlaygroundSessionLimits());
     app.decorate('explorerService', new ExplorerService(
       app.log.child({service: 'explorer-service'}),
+      app.mysql,
       app.botService,
       executor,
       app.queues.explorer_low_concurrent_queue,

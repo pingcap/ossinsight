@@ -1,6 +1,15 @@
 import fp from "fastify-plugin";
 import {Job, Queue} from "bullmq";
-import {APIError, ExplorerQuestionError} from "../../../utils/error";
+import {
+    APIError,
+    BotResponseParseError,
+    ExplorerPrepareQuestionError,
+    ExplorerQuestionError,
+    SQLUnsupportedFunctionError,
+    SQLUnsupportedMultipleStatementsError,
+    SQLUnsupportedStatementTypeError,
+    ValidateSQLError
+} from "../../../utils/error";
 import {Connection, ResultSetHeader} from "mysql2/promise";
 import crypto from "node:crypto";
 import {DateTime} from "luxon";
@@ -9,7 +18,10 @@ import {BotService} from "../bot-service";
 import {
     PlanStep,
     Question,
-    QuestionQueryResult, QuestionQueryResultWithChart,
+    QuestionFeedback,
+    QuestionFeedbackType,
+    QuestionQueryResult,
+    QuestionQueryResultWithChart,
     QuestionQueueNames,
     QuestionSQLResult,
     QuestionStatus,
@@ -21,6 +33,7 @@ import {randomUUID} from "crypto";
 import {ChartNames, RecommendedChart, RecommendQuestion} from "../bot-service/types";
 import {GenerateAnswerPromptTemplate} from "../bot-service/template/GenerateAnswerPromptTemplate";
 import {FastifyBaseLogger} from "fastify";
+import {MySQLPromisePool} from "@fastify/mysql";
 
 declare module 'fastify' {
     interface FastifyInstance {
@@ -38,6 +51,7 @@ declare module "node-sql-parser" {
 export default fp(async (app: any) => {
     app.decorate('explorerService', new ExplorerService(
       app.log.child({service: 'explorer-service'}),
+      app.mysql,
       app.botService,
       app.playgroundQueryExecutor,
       app.explorerLowConcurrentQueue,
@@ -81,6 +95,7 @@ export class ExplorerService {
 
     constructor(
       private readonly logger: FastifyBaseLogger,
+      private readonly mysql: MySQLPromisePool,
       private readonly botService: BotService,
       private readonly playgroundQueryExecutor: TiDBPlaygroundQueryExecutor,
       private readonly lowConcurrentQueue: Queue,
@@ -153,6 +168,30 @@ export class ExplorerService {
                 await this.cancelQuestions(conn, onGongQuestions.map(q => q.id));
             }
 
+            await this.createQuestion(conn, question);
+            await conn.commit();
+        } catch (err: any) {
+            await conn.rollback();
+            logger.info(err, `Failed to create a new question: ${err.message}`);
+            if (err instanceof APIError) {
+                throw new ExplorerQuestionError(err.statusCode, err.message, question, err);
+            } else {
+                throw new ExplorerQuestionError(500, 'Failed to create the question', question);
+            }
+        }
+
+        return question;
+    }
+
+    async prepareQuestion(question: Question) {
+        const { id: questionId, title } = question;
+        const logger = this.logger.child({ questionId: questionId });
+
+        const conn = await this.mysql.getConnection();
+        try {
+            question.status = QuestionStatus.AnswerGenerating;
+            await this.updateQuestion(conn, question);
+
             // Prepare the recommended questions.
             const popularQuestions = await this.getRecommendQuestions(conn, 3, false);
             question.recommendedQuestions?.push(...popularQuestions.map(q => q.title));
@@ -160,14 +199,28 @@ export class ExplorerService {
             // Generate the SQL by OpenAI.
             let answer = null;
             try {
-                answer = await this.botService.questionToAnswer(this.generateAnswerTemplate, normalizedQuestion);
+                answer = await this.botService.questionToAnswer(this.generateAnswerTemplate, title);
             } catch (e: any) {
-                throw new APIError(500, 'Failed to generate SQL, please try again later: ' + e.message);
+                if (e instanceof BotResponseParseError) {
+                    const message = 'Failed to generate SQL, please try again later: ' + e.message;
+                    throw new ExplorerPrepareQuestionError(message, QuestionFeedbackType.ErrorAnswerParse, {
+                        message: e.message,
+                        response: e.responseText,
+                    }, e);
+                } else {
+                    const message = 'Failed to generate SQL, please try again later.';
+                    throw new ExplorerPrepareQuestionError(message, QuestionFeedbackType.ErrorAnswerGenerate, {
+                        message: e.message
+                    }, e);
+                }
             }
 
             // Check if there are an answer been returned.
             if (!answer) {
-                throw new APIError(500, 'Failed to generate SQL, please try again later.');
+                const message = 'Failed to generate SQL, please try again later.';
+                throw new ExplorerPrepareQuestionError(message, QuestionFeedbackType.ErrorAnswerGenerate, {
+                    message: 'No answer provided.'
+                });
             }
 
             let { sql: querySQL, chart, questions: aiGeneratedQuestions } = answer;
@@ -176,47 +229,29 @@ export class ExplorerService {
             question.recommendedQuestions?.unshift(...aiGeneratedQuestions);
 
             // Validate the generated SQL.
+            question.status = QuestionStatus.SQLValidating;
+            await this.updateQuestion(conn, question);
             let statementType;
             try {
                 logger.info("Validating the generated SQL: %s", querySQL);
                 const res = this.validateSQL(querySQL!);
                 querySQL = res.sql;
                 statementType = res.statementType;
-            } catch (err) {
-                if (err instanceof APIError) {
-                    throw new APIError(500, `Failed to validate the generated SQL: ${err.message}`);
+            } catch (err: any) {
+                if (err instanceof ValidateSQLError) {
+                    const message = 'Failed to validate the generated SQL: ' + err.message;
+                    throw new ExplorerPrepareQuestionError(message, QuestionFeedbackType.ErrorValidateSQL, {
+                        message: err.message
+                    });
                 } else {
-                    throw new APIError(500, 'Failed to validate the generated SQL');
+                    const message = 'Failed to validate the generated SQL.';
+                    throw new ExplorerPrepareQuestionError(message, QuestionFeedbackType.ErrorValidateSQL, {
+                        message: err.message
+                    });
                 }
             }
             question.querySQL = querySQL;
             question.queryHash = this.getQueryHash(querySQL);
-
-            // Get the storage engines that will be used in the SQL execution.
-            let engines: string[] = [];
-            if (statementType === 'select') {
-                try {
-                    logger.info("Getting the storage engines for the SQL: %s", querySQL);
-                    const plan = await this.getSQLExecutionPlan(conn, querySQL);
-                    engines = this.getStorageEnginesFromPlan(plan);
-                } catch (err: any) {
-                    if (err.sqlMessage) {
-                        throw new APIError(500, `Failed to create the execution plan for the generated SQL: ${err.sqlMessage}`);
-                    } else {
-                        throw new APIError(500, `Failed to create the execution plan for the generated SQL`);
-                    }
-                }
-            }
-            question.engines = engines;
-
-            // Create a new question.
-            const jobId = randomUUID();
-            const useTiFlash = engines.includes('tiflash');
-            question.queueName = useTiFlash ? QuestionQueueNames.Low : QuestionQueueNames.High;
-            question.queueJobId = jobId;
-            question.requestedAt = DateTime.utc();
-            question.status = QuestionStatus.Waiting;
-            await this.createQuestion(conn, question);
 
             // Try to get SQL result from cache.
             const cachedResult = await this.getCachedSQLResult(conn, question.queryHash, this.options.querySQLCacheTTL);
@@ -229,32 +264,45 @@ export class ExplorerService {
                     status: QuestionStatus.Success,
                     hitCache: true,
                 }
+                await this.updateQuestion(conn, question);
+                return question;
             }
 
-            await conn.commit();
-        } catch (err: any) {
-            await conn.rollback();
-
-            // Record the error.
-            question = {
-                ...question,
-                status: QuestionStatus.Error,
-                error: err.message,
-            };
-            await this.createQuestion(conn, question);
-
-            // Wrap the error.
-            this.logger.info(err, `Failed to create a new question: ${err.message}`);
-            if (err instanceof APIError) {
-                throw new ExplorerQuestionError(err.statusCode, err.message, question, err);
-            } else {
-                throw new ExplorerQuestionError(500, 'Failed to create the question', question);
+            // Get the storage engines that will be used in the SQL execution.
+            let engines: string[] = [];
+            if (statementType === 'select') {
+                try {
+                    logger.info("Getting the storage engines for the SQL: %s", querySQL);
+                    const plan = await this.getSQLExecutionPlan(conn, querySQL);
+                    engines = this.getStorageEnginesFromPlan(plan);
+                } catch (err: any) {
+                    if (err.sqlMessage) {
+                        const message = `Failed to create the execution plan for the generated SQL: ${err.sqlMessage}`;
+                        throw new ExplorerPrepareQuestionError(message, QuestionFeedbackType.ErrorValidateSQL, {
+                            sqlMessage: err.sqlMessage,
+                            message: err.message,
+                            sql: querySQL
+                        });
+                    } else {
+                        const message = `Failed to create the execution plan for the generated SQL.`;
+                        throw new ExplorerPrepareQuestionError(message, QuestionFeedbackType.ErrorValidateSQL, {
+                            message: err.message,
+                            sql: querySQL
+                        });
+                    }
+                }
             }
-        }
 
-        // Push the question to the queue.
-        const { queueJobId, hitCache, queueName } = question;
-        if (!hitCache) {
+            const queueName = engines.includes('tiflash') ? QuestionQueueNames.Low : QuestionQueueNames.High;
+            const queueJobId = randomUUID();
+            question.engines = engines;
+            question.queueName = queueName;
+            question.queueJobId = queueJobId;
+            question.requestedAt = DateTime.utc();
+            question.status = QuestionStatus.Waiting;
+            await this.updateQuestion(conn, question);
+
+            // Push the question to the queue.
             if (queueName === QuestionQueueNames.Low) {
                 logger.info("Pushing the question to the low concurrent queue (jobId: %s).", queueJobId);
                 await this.lowConcurrentQueue.add(QuestionQueueNames.Low, question, {
@@ -266,9 +314,28 @@ export class ExplorerService {
                     jobId: queueJobId!
                 });
             }
+        } catch (err: any) {
+            if (err instanceof ExplorerPrepareQuestionError) {
+                await this.updateQuestion(conn, {
+                    ...question,
+                    status: QuestionStatus.Error,
+                    error: err.message,
+                });
+                await this.addSystemQuestionFeedback(conn, questionId, err.feedbackType, JSON.stringify(err.feedbackPayload));
+            } else {
+                await this.updateQuestion(conn, {
+                    ...question,
+                    status: QuestionStatus.Error,
+                    error: err.message,
+                });
+                await this.addSystemQuestionFeedback(conn, questionId, QuestionFeedbackType.ErrorUnknown, JSON.stringify({
+                    message: err.message
+                }));
+            }
+            throw err;
+        } finally {
+            await conn.release();
         }
-
-        return question;
     }
 
     private normalizeQuestion(question: string): string {
@@ -285,7 +352,11 @@ export class ExplorerService {
         }
 
         if (/rand\(.*\)/ig.test(sql)) {
-            throw new APIError(400, 'didn\'t support SQL contains `rand()` function');
+            throw new SQLUnsupportedFunctionError( 'didn\'t support SQL contains `rand()` function');
+        }
+
+        if (/sleep\(.*\)/ig.test(sql)) {
+            throw new SQLUnsupportedFunctionError( 'didn\'t support SQL contains `sleep()` function');
         }
 
         try {
@@ -293,7 +364,7 @@ export class ExplorerService {
             let rootNode;
             if (Array.isArray(ast)) {
                 if (ast.length > 1) {
-                    throw new APIError(400, 'didn\'t support multiple statements');
+                    throw new SQLUnsupportedMultipleStatementsError('didn\'t support multiple statements');
                 } else {
                     rootNode = ast[0];
                 }
@@ -316,14 +387,14 @@ export class ExplorerService {
                         statementType: rootNode.type
                     };
                 default:
-                    throw new APIError(400, 'only supports SELECT, SHOW and DESC statements');
+                    throw new SQLUnsupportedStatementTypeError('only supports SELECT, SHOW and DESC statements');
             }
         } catch (err: any) {
-            if (err instanceof APIError) {
+            if (err instanceof ValidateSQLError) {
                 throw err;
             }
 
-            throw new APIError(400, err.message);
+            throw new ValidateSQLError(err.message, sql);
         }
     }
 
@@ -391,6 +462,8 @@ export class ExplorerService {
         return crypto.createHash('sha256').update(sql, 'binary').digest('hex');
     }
 
+    // CRUD.
+
     private async createQuestion(conn: Connection, question: Question) {
         const {
             id, hash, userId, status, title, querySQL, queryHash, engines = [],
@@ -428,6 +501,64 @@ export class ExplorerService {
         `, [status, questionId]);
         if (rs.affectedRows !== 1) {
             throw new APIError(500, 'Failed to update the question status.');
+        }
+    }
+
+    private async updateQuestion(conn: Connection, question: Question) {
+        const {
+            id, status, recommended, querySQL, queryHash, engines = [], result = null, chart = null, recommendedQuestions = [],
+            queueName = null, queueJobId = null, requestedAt, executedAt, finishedAt, spent, error = null
+        } = question;
+
+        const enginesValue = JSON.stringify(engines);
+        const resultValue = result !== undefined ? JSON.stringify(result) : null;
+        const chartValue = chart !== undefined ? JSON.stringify(chart) : null;
+        const recommendedQuestionsValue = JSON.stringify(recommendedQuestions);
+        const requestedAtValue = requestedAt ? requestedAt.toSQL() : null;
+        const executedAtValue = executedAt ? executedAt.toSQL() : null;
+        const finishedAtValue = finishedAt ? finishedAt.toSQL() : null;
+
+        const [rs] = await conn.query<ResultSetHeader>(`
+            UPDATE explorer_questions
+            SET 
+                status = ?, recommended = ?, query_sql = ?, query_hash = ?, engines = ?, result = ?, chart = ?, recommended_questions = ?, 
+                queue_name = ?, queue_job_id = ?, requested_at = ?, executed_at = ?, finished_at = ?, spent = ?, error = ?
+            WHERE id = UUID_TO_BIN(?)
+        `, [
+            status, recommended, querySQL, queryHash, enginesValue, resultValue, chartValue, recommendedQuestionsValue,
+            queueName, queueJobId, requestedAtValue, executedAtValue, finishedAtValue, spent, error, id
+        ]);
+        if (rs.affectedRows !== 1) {
+            throw new APIError(500, 'Failed to update the question.');
+        }
+    }
+
+    private async saveQuestionResult(conn: Connection, questionId: string, questionResult: QuestionQueryResult, hitCache = false) {
+        const { result, executedAt, finishedAt, spent } = questionResult;
+        const [rs] = await conn.query<ResultSetHeader>(`
+            UPDATE explorer_questions
+            SET status = ?, result = ?, executed_at = ?, finished_at = ?, spent = ?, hit_cache = ?
+            WHERE id = UUID_TO_BIN(?)
+        `, [
+            QuestionStatus.Success,
+            JSON.stringify(result),
+            executedAt.toSQL(),
+            finishedAt.toSQL(),
+            spent,
+            hitCache,
+            questionId
+        ]);
+        if (rs.affectedRows !== 1) {
+            throw new APIError(500, 'Failed to save the question result.');
+        }
+    }
+
+    private async saveQuestionError(conn: Connection, questionId: string, message: string) {
+        const [rs] = await conn.query<ResultSetHeader>(`
+            UPDATE explorer_questions SET status = ?, error = ? WHERE id = UUID_TO_BIN(?)
+        `, [QuestionStatus.Error, message, questionId]);
+        if (rs.affectedRows !== 1) {
+            throw new APIError(500, 'Failed to update the question error.');
         }
     }
 
@@ -538,11 +669,14 @@ export class ExplorerService {
         return rows[0].count;
     }
 
+    // Resolve questions.
+
     async resolveQuestion(conn: Connection, job: Job, question: Question): Promise<QuestionQueryResult> {
         const { id: questionId, querySQL } = question;
         try {
             await this.updateQuestionStatus(conn, questionId, QuestionStatus.Running);
             const questionResult = await this.executeQuery(questionId, querySQL!);
+            // TODO: Validate result.
             await this.saveQuestionResult(conn, questionId, {
                 ...questionResult,
             });
@@ -587,34 +721,23 @@ export class ExplorerService {
         }
     }
 
-    private async saveQuestionResult(conn: Connection, questionId: string, questionResult: QuestionQueryResult, hitCache = false) {
-        const { result, executedAt, finishedAt, spent } = questionResult;
-        const [rs] = await conn.query<ResultSetHeader>(`
-            UPDATE explorer_questions
-            SET status = ?, result = ?, executed_at = ?, finished_at = ?, spent = ?, hit_cache = ?
-            WHERE id = UUID_TO_BIN(?)
-        `, [
-            QuestionStatus.Success,
-            JSON.stringify(result),
-            executedAt.toSQL(),
-            finishedAt.toSQL(),
-            spent,
-            hitCache,
-            questionId
-        ]);
-        if (rs.affectedRows !== 1) {
-            throw new APIError(500, 'Failed to save the question result.');
+    // Error handling.
+
+    async wrapperTheErrorMessage(question: Question) {
+        if (typeof question.error !== 'string') {
+            return;
+        }
+
+        if (question.error.includes('denied for user')) {
+            question.error = 'Failed to execute SQL: commend access denied';
+        } else if (question.error.includes('connect ECONNREFUSED')) {
+            question.error = 'Failed to connect database, please try again later.';
+        } else if (question.error.includes('rpc error: code = Unavailable')) {
+            question.error = 'Failed to execute SQL, some of TiFlash nodes are unavailable, please try again later.';
         }
     }
 
-    private async saveQuestionError(conn: Connection, questionId: string, err: Error) {
-        const [rs] = await conn.query<ResultSetHeader>(`
-            UPDATE explorer_questions SET status = ?, error = ? WHERE id = UUID_TO_BIN(?)
-        `, [QuestionStatus.Error, err.message, questionId]);
-        if (rs.affectedRows !== 1) {
-            throw new APIError(500, 'Failed to update the question error.');
-        }
-    }
+    // Chart.
 
     async generateChart(conn: Connection, questionId: string, title: string, result: QuestionSQLResult): Promise<RecommendedChart> {
         const { rows } = result;
@@ -660,6 +783,8 @@ export class ExplorerService {
             throw new APIError(500, 'Failed to update the question chart.');
         }
     }
+
+    // Recommend questions.
 
     async getRecommendQuestions(conn: Connection, n: number, aiGenerated?: boolean): Promise<RecommendQuestion[]> {
         let questions = [];
@@ -708,17 +833,35 @@ export class ExplorerService {
         }
     }
 
-    async wrapperTheErrorMessage(question: Question) {
-        if (typeof question.error !== 'string') {
-            return;
-        }
+    // Question feedback.
 
-        if (question.error.includes('denied for user')) {
-            question.error = 'Failed to execute SQL: commend access denied';
-        } else if (question.error.includes('connect ECONNREFUSED')) {
-            question.error = 'Failed to connect database, please try again later.';
-        } else if (question.error.includes('rpc error: code = Unavailable')) {
-            question.error = 'Failed to execute SQL, some of TiFlash nodes are unavailable, please try again later.';
+    async addSystemQuestionFeedback(conn: Connection, questionId: string, feedbackType: QuestionFeedbackType, feedbackContent?: string) {
+        await this.addQuestionFeedback(conn, {
+            userId: 0,
+            questionId,
+            satisfied: false,
+            feedbackType,
+            feedbackContent,
+        });
+    }
+
+    async getUserQuestionFeedbacks(conn: Connection, userId: number) {
+        const [rows] = await conn.query<any[]>(`
+            SELECT COUNT(*) AS cnt
+            FROM explorer_question_feedbacks
+            WHERE user_id = ?
+        `, [userId]);
+        return rows[0].cnt;
+    }
+
+    async addQuestionFeedback(conn: Connection, feedback: Omit<QuestionFeedback, "id" | "createdAt">) {
+        const { userId = 0, questionId, satisfied = false, feedbackType, feedbackContent = null } = feedback;
+        const [rs] = await conn.query<ResultSetHeader>(`
+            INSERT INTO explorer_question_feedbacks(user_id, question_id, satisfied, feedback_type, feedback_content)
+            VALUES (?, UUID_TO_BIN(?), ?, ?, ?)
+        `, [userId, questionId, satisfied, feedbackType, feedbackContent]);
+        if (rs.affectedRows !== 1) {
+            throw new APIError(500, 'Failed to add the question feedback.');
         }
     }
 
