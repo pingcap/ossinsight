@@ -2,6 +2,8 @@ import React, { createContext, createElement, PropsWithChildren, useContext } fr
 import { useUserInfo } from '@site/src/api/user';
 import { Auth0Provider } from '@auth0/auth0-react';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+import { useMemoizedFn } from 'ahooks';
+import { isNullish } from '@site/src/utils/value';
 
 const UserContext = createContext<ReturnType<typeof useUserInfo>>({
   validated: false,
@@ -37,4 +39,19 @@ export function AuthProvider ({ children }: PropsWithChildren): JSX.Element {
       {children}
     </Auth0Provider>
   );
+}
+
+export function useRequireLogin () {
+  const { validating, userInfo, login } = useUserInfoContext();
+
+  return useMemoizedFn(() => {
+    if (validating) {
+      return false;
+    }
+    if (isNullish(userInfo)) {
+      login();
+      return false;
+    }
+    return true;
+  });
 }

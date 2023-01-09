@@ -51,7 +51,7 @@ collection is a categorization of some similar repositories, but not all reposit
 The trending_repos table contains the most recent and popular repositories
 
 -- @pingcap/tidb cumulative stars across months
-SELECT star_counts.t_month, star_counts.stars, SUM(stars) OVER(ORDER BY t_month ASC) AS cumulative_stars FROM ( SELECT DATE_FORMAT(created_at, '%Y-%m-01') AS t_month, COUNT(*) AS stars FROM github_events ge WHERE ge.type = 'WatchEvent' AND ge.repo_id = (SELECT repo_id FROM github_repos WHERE repo_name = 'pingcap/tidb') AND ge.created_at != '1970-01-01 00:00:00' GROUP BY t_month ) star_counts ORDER BY star_counts.t_month ASC;
+SELECT t_month, stars, SUM(stars) OVER(ORDER BY t_month ASC) AS cumulative_stars FROM ( SELECT DATE_FORMAT(created_at, '%Y-%m-01') AS t_month, COUNT(*) AS stars FROM github_events ge WHERE ge.type = 'WatchEvent' AND ge.repo_id = (SELECT repo_id FROM github_repos WHERE repo_name = 'pingcap/tidb') AND ge.created_at != '1970-01-01 00:00:00' GROUP BY t_month ) star_counts ORDER BY t_month ASC;
 
 # Format
 @org_or_user_login
@@ -75,7 +75,7 @@ Answer {
 }
 
 ---
-Let's think step by step, use best practice of writing SQL, use common table expression, window function if necessary, if there is no specific repo, scan all repos, generate a answer.json file to answer the question: ${question}?
+Let's think step by step, use best practice of writing SQL(add table name as prefix to column if necessary), use common table expression, window function if necessary, scan all repos if there is no specific repo, generate a answer.json file to answer the question: ${question}?
 ---
 answer.json
 ---

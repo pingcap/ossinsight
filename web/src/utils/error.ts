@@ -13,6 +13,10 @@ export function isAxiosError (e: unknown): e is AxiosError {
   }
 }
 
+export function isAxiosHttpStatusError (e: unknown, status: number): e is AxiosError {
+  return isAxiosError(e) && notNullish(e.response) && e.response.status === status;
+}
+
 export function hasMessage (e: unknown): e is HaveMessage {
   return e != null && typeof e === 'object' && typeof (e as HaveMessage)?.message === 'string';
 }

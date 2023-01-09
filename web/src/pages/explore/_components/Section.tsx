@@ -1,5 +1,5 @@
 import { Accordion, AccordionDetails, AccordionSummary, CircularProgress, Paper, styled, useEventCallback } from '@mui/material';
-import React, { ReactNode, useState } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import { CheckCircle, Circle, ExpandMore } from '@mui/icons-material';
 import { isFalsy, isNullish, notFalsy } from '@site/src/utils/value';
 import { getErrorMessage } from '@site/src/utils/error';
@@ -19,6 +19,20 @@ export interface SectionProps {
 
 export default function Section ({ status, title, defaultExpanded, extra, error, errorWithChildren = false, children, errorPrompt, errorTitle }: SectionProps) {
   const [open, setOpen] = useState(false);
+  useEffect(() => {
+    switch (status) {
+      case 'loading':
+        // Close section when loading
+        setOpen(false);
+        break;
+      case 'error':
+        // Auto open section when error
+        setOpen(true);
+        break;
+      default:
+        break;
+    }
+  }, [status]);
   const alwaysOpen = defaultExpanded === true;
 
   const handleOpenChange = useEventCallback((_, open: boolean) => {
@@ -76,14 +90,14 @@ export default function Section ({ status, title, defaultExpanded, extra, error,
             : isNullish(error)
               ? children
               : (
-              <ErrorBlock
-                title={errorTitle}
-                prompt={errorPrompt}
-                error={getErrorMessage(error)}
-                severity="error"
-                sx={{ mb: 1 }}
-                showSuggestions
-              />
+                <ErrorBlock
+                  title={errorTitle}
+                  prompt={errorPrompt}
+                  error={getErrorMessage(error)}
+                  severity="error"
+                  sx={{ mb: 1 }}
+                  showSuggestions
+                />
                 )}
         </AccordionDetails>
       </SectionAccordion>
@@ -124,7 +138,7 @@ const SectionContainer = styled(Paper)`
     transform: translateY(20px);
     opacity: 0;
   }
-  
+
 `;
 
 const SectionAccordion = styled(Accordion)`
