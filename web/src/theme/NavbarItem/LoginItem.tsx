@@ -52,8 +52,6 @@ export default function UserMenu () {
 
   const { user, isAuthenticated, isLoading, logout } = useAuth0();
 
-  console.log('header user ==', user);
-
   const handleGotoSubscriptionsPage = useEventCallback(() => {
     window.open('/subscriptions', '_blank');
   });
@@ -67,30 +65,35 @@ export default function UserMenu () {
   }
 
   return (
-    isAuthenticated &&
-    user && (
-      <Box component="span">
-        <StyledButtonBase disableRipple ref={setAnchorEl} onClick={handleOpen}>
-          <StyledAvatar src={user?.picture} {...stringAvatar(user?.name)} />
-        </StyledButtonBase>
-        <Menu
-          id="basic-menu"
-          anchorEl={anchorEl}
-          open={open}
-          onClose={handleClose}
-          MenuListProps={{
-            'aria-labelledby': 'basic-button',
-          }}
-        >
-          <Experimental feature="milestone-subscription">
-            <MenuItem onClick={handleGotoSubscriptionsPage}>
-              My Subscriptions
-            </MenuItem>
-          </Experimental>
-          <MenuItem onClick={() => logout()}>Logout</MenuItem>
-        </Menu>
-      </Box>
-    )
+    <>
+      {isAuthenticated && user && (
+        <Box component="span">
+          <StyledButtonBase
+            disableRipple
+            ref={setAnchorEl}
+            onClick={handleOpen}
+          >
+            <StyledAvatar src={user?.picture} {...stringAvatar(user?.name)} />
+          </StyledButtonBase>
+          <Menu
+            id="basic-menu"
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+            MenuListProps={{
+              'aria-labelledby': 'basic-button',
+            }}
+          >
+            <Experimental feature="milestone-subscription">
+              <MenuItem onClick={handleGotoSubscriptionsPage}>
+                My Subscriptions
+              </MenuItem>
+            </Experimental>
+            <MenuItem onClick={() => logout()}>Logout</MenuItem>
+          </Menu>
+        </Box>
+      )}
+    </>
   );
 }
 
