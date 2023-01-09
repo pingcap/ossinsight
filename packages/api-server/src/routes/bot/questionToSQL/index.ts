@@ -3,7 +3,8 @@ import {FastifyPluginAsyncJsonSchemaToTs} from "@fastify/type-provider-json-sche
 import {
   QueryPlaygroundSQLPromptTemplate
 } from "../../../plugins/services/bot-service/template/QueryPlaygroundPromptTemplate";
-import {GENERATE_SQL_LIMIT_HEADER, GENERATE_SQL_USED_HEADER, MAX_DAILY_GENERATE_SQL_LIMIT} from "./quota";
+import { GENERATE_SQL_LIMIT_HEADER, GENERATE_SQL_USED_HEADER, MAX_DAILY_GENERATE_SQL_LIMIT } from "./quota";
+import { Auth0User, parseAuth0User } from "../../../plugins/services/user-service/auth0";
 
 export interface IBody {
   question: string;
@@ -34,17 +35,29 @@ const root: FastifyPluginAsyncJsonSchemaToTs = async (app, opts): Promise<void> 
   app.post<{
     Body: IBody;
   }>('/', {
-    preHandler: [app.authenticateAllowAnonymous],
+    // @ts-ignore
+    preValidation: app.authenticate,
     schema
   }, async function (req, reply) {
     const { playgroundService, botService } = app;
     const { question } = req.body;
-    const { id: userId, githubId, githubLogin } = req.user;
-    const context = {
-      github_id: githubId,
-      github_login: githubLogin,
-    };
+    const { sub, metadata } = parseAuth0User(req.user as Auth0User);
+
     const conn = await this.mysql.getConnection();
+
+    const userId = await app.userService.findOrCreateUserByAccount(
+      { ...metadata, sub },
+      req.headers.authorization,
+      conn
+    );
+    const context: {
+      github_id?: number;
+      github_login?: string;
+    } = {};
+    if (metadata.provider === "github" && metadata.github_id) {
+      context.github_id = parseInt(metadata.github_id, 10);
+      context.github_login = metadata.github_login;
+    }
 
     try {
       // Check if there are existed SQL
@@ -60,7 +73,7 @@ const root: FastifyPluginAsyncJsonSchemaToTs = async (app, opts): Promise<void> 
 
       // Give the trusted users more daily requests.
       const trustedLogins = app.config.PLAYGROUND_TRUSTED_GITHUB_LOGINS;
-      if (trustedLogins.includes(githubLogin)) {
+      if (trustedLogins.includes(metadata.github_login || '')) {
         limit = MAX_DAILY_GENERATE_SQL_LIMIT;
       }
 

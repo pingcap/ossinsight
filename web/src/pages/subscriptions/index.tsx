@@ -6,15 +6,19 @@ import { clientWithoutCache } from '@site/src/api/client';
 import { Unsubscribe } from '@mui/icons-material';
 import EnableEmailSwitch from '@site/src/pages/subscriptions/EnableEmailSwitch';
 import { useNotifications } from '@site/src/components/Notifications';
-import { useUserInfoContext } from '@site/src/context/user';
+import { useAuth0 } from '@auth0/auth0-react';
 
 const fmt = new Intl.DateTimeFormat('en', {
   dateStyle: 'medium',
   timeStyle: 'medium',
 });
 
-export default function () {
-  const { validating: userValidating, validated: userValidated, login } = useUserInfoContext();
+export default function SubscribePage () {
+  const {
+    isAuthenticated: userValidated,
+    isLoading: userValidating,
+    loginWithRedirect: login,
+  } = useAuth0();
 
   return (
     <CustomPage>
@@ -27,14 +31,13 @@ export default function () {
             variant="contained"
             disabled={userValidating}
             startIcon={userValidating && <CircularProgress size={12} />}
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
             onClick={login}
           >
             Sign in
           </Button>
         )}
-        {userValidated && (
-          <Subscriptions />
-        )}
+        {userValidated && <Subscriptions />}
       </Container>
     </CustomPage>
   );
@@ -43,9 +46,11 @@ export default function () {
 function Subscriptions () {
   const { data = [], mutate, isValidating } = useSubscriptions();
   const { success, displayError } = useNotifications();
+  const { getAccessTokenSilently } = useAuth0();
 
-  const unsubscribe = useCallback(function (name: string) {
-    clientWithoutCache.put(`/repos/${name}/unsubscribe`, undefined, { withCredentials: true })
+  const unsubscribe = useCallback(async function (name: string) {
+    const accessToken = await getAccessTokenSilently();
+    clientWithoutCache.put(`/repos/${name}/unsubscribe`, undefined, { withCredentials: true, oToken: accessToken })
       .then(async () => await mutate())
       .then(() => success(`Cancelled getting updates from ${name}`))
       .catch(displayError);
@@ -88,7 +93,8 @@ function Subscriptions () {
           <ListItem
             key={sub.repoId}
             secondaryAction={
-              <IconButton onClick={() => unsubscribe(sub.repoName)}>
+              // eslint-disable-next-line @typescript-eslint/no-misused-promises
+              <IconButton onClick={async () => await unsubscribe(sub.repoName)}>
                 <Unsubscribe />
               </IconButton>
             }

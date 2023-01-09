@@ -3,7 +3,7 @@ import { newQuestion, pollQuestion, Question, QuestionStatus } from '@site/src/a
 import { useMemoizedFn } from 'ahooks';
 import { isFalsy, isFiniteNumber, isNonemptyString, notNullish } from '@site/src/utils/value';
 import { timeout } from '@site/src/utils/promisify';
-import { useRequireLogin } from '@site/src/context/user';
+import { useAuth0 } from '@auth0/auth0-react';
 
 export const enum QuestionLoadingPhase {
   /** There is no question */
@@ -103,12 +103,13 @@ export interface QuestionManagement {
 }
 
 export function useQuestionManagementValues ({ pollInterval = 2000 }: QuestionManagementOptions): QuestionManagement {
-  const requireLogin = useRequireLogin();
   const [phase, setPhase] = useState<QuestionLoadingPhase>(QuestionLoadingPhase.NONE);
   const [question, setQuestion] = useState<Question>();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<unknown>();
   const idRef = useRef<string>();
+
+  const { isLoading, user, getAccessTokenSilently, loginWithRedirect } = useAuth0();
 
   const loadInternal = useMemoizedFn(async function (id: string, clear: boolean) {
     // Prevent reload when loading same question
@@ -144,11 +145,15 @@ export function useQuestionManagementValues ({ pollInterval = 2000 }: QuestionMa
   const create = useMemoizedFn((title: string) => {
     async function createInternal (title: string) {
       try {
+        if (!isLoading && !user) {
+          return await loginWithRedirect();
+        }
         setError(undefined);
         setQuestion(undefined);
         setLoading(true);
         setPhase(QuestionLoadingPhase.CREATING);
-        const result = await newQuestion(title);
+        const accessToken = await getAccessTokenSilently();
+        const result = await newQuestion(title, { accessToken });
         await timeout(600);
         idRef.current = result.id;
         setPhase(computePhase(result, setError));
@@ -162,9 +167,6 @@ export function useQuestionManagementValues ({ pollInterval = 2000 }: QuestionMa
       }
     }
 
-    if (!requireLogin()) {
-      return;
-    }
     void createInternal(title);
   });
 

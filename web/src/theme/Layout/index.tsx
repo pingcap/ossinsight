@@ -1,7 +1,7 @@
 import React from 'react';
 import clsx from 'clsx';
 import ErrorBoundary from '@docusaurus/ErrorBoundary';
-import { PageMetadata, ThemeClassNames } from '@docusaurus/theme-common';
+import { PageMetadata, ThemeClassNames, composeProviders } from '@docusaurus/theme-common';
 import { useKeyboardNavigation } from '@docusaurus/theme-common/internal';
 import SkipToContent from '@theme/SkipToContent';
 import AnnouncementBar from '@theme/AnnouncementBar';
@@ -13,6 +13,7 @@ import type { Props } from '@theme/Layout';
 import styles from './styles.module.css';
 import CustomFooter from '@site/src/components/Footer';
 import { useNotificationsProvider } from '@site/src/components/Notifications';
+import { AuthProvider } from '@site/src/context/user';
 
 declare module '@theme/Layout' {
   interface Props {
@@ -21,6 +22,7 @@ declare module '@theme/Layout' {
     header?: JSX.Element;
     side?: JSX.Element;
     sideWidth?: string;
+    disableAuth?: boolean;
   }
 }
 
@@ -38,14 +40,20 @@ export default function Layout (props: Props): JSX.Element {
     side,
     sideWidth,
     customFooter,
+    disableAuth,
   } = props;
 
   useKeyboardNavigation();
 
   const { el: notificationEl, Provider: NotificationProvider } = useNotificationsProvider();
 
+  const LayoutMemo = React.useMemo(() => {
+    if (disableAuth) return LayoutProvider;
+    return composeProviders([LayoutProvider, AuthProvider]);
+  }, [disableAuth]);
+
   return (
-    <LayoutProvider>
+    <LayoutMemo>
       <PageMetadata title={title} description={description} keywords={keywords} image={image} />
 
       <SkipToContent />
@@ -73,6 +81,6 @@ export default function Layout (props: Props): JSX.Element {
 
       {!noFooter && customFooter && <CustomFooter sideWidth={sideWidth} />}
       {!noFooter && <Footer sideWidth={sideWidth} />}
-    </LayoutProvider>
+    </LayoutMemo>
   );
 }

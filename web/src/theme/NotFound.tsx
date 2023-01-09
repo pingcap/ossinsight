@@ -41,7 +41,7 @@ export default function NotFound (): JSX.Element {
         description="The comprehensive Open Source Software insight tool by analyzing massive events from GitHub, powered by TiDB, the best insight building database of data agility."
         image="/img/screenshots/homepage.png"
       />
-      <Layout>
+      <Layout disableAuth>
         {display ? renderNotFound() : renderRedirect()}
       </Layout>
     </>

@@ -1,7 +1,7 @@
 import { IconButton, InputBase, Stack, styled, useEventCallback } from '@mui/material';
 import React, { ChangeEventHandler, Dispatch, KeyboardEventHandler, MutableRefObject, SetStateAction, useEffect, useRef, useState } from 'react';
-import { useUserInfoContext } from '@site/src/context/user';
 import { Close, KeyboardReturn, Pause } from '@mui/icons-material';
+import { useAuth0 } from '@auth0/auth0-react';
 
 export function useStateRef<T> (initial: T | (() => T)): [T, Dispatch<SetStateAction<T>>, Readonly<MutableRefObject<T>>] {
   const [state, setState] = useState(initial);
@@ -25,7 +25,7 @@ export interface ExploreSearchProps {
 
 export default function ExploreSearch ({ value, onChange, onAction, onClear, disableInput = false, disableAction = false, disableClear = false, clearState }: ExploreSearchProps) {
   const elRef = useRef<HTMLInputElement>(null);
-  const { validating, validated } = useUserInfoContext();
+  const { isLoading: validating, isAuthenticated: validated } = useAuth0();
 
   const handleChange: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> = useEventCallback((ev) => {
     onChange(ev.target.value);

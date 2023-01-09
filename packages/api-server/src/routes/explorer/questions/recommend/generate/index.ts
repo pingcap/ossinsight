@@ -3,6 +3,7 @@ import {APIError} from "../../../../../utils/error";
 import {
   GenerateQuestionsPromptTemplate
 } from "../../../../../plugins/services/bot-service/template/GenerateQuestionsPromptTemplate";
+import { Auth0User, parseAuth0User } from "../../../../../plugins/services/user-service/auth0";
 
 const schema = {
   summary: 'Generate recommend questions',
@@ -32,15 +33,16 @@ export const recommendQuestionHandler: FastifyPluginAsyncJsonSchemaToTs = async 
     Body: IBody;
   }>('/', {
     schema,
-    preHandler: [app.authenticate]
+    // @ts-ignore
+    preValidation: app.authenticate,
   }, async function (req, reply) {
     const { botService, explorerService } = app;
-    let { githubLogin } = req.user;
+    const { metadata } = parseAuth0User(req.user as Auth0User);
     const { n } = req.body;
 
     // Only admin can generate recommend questions.
     const trusted = app.config.PLAYGROUND_TRUSTED_GITHUB_LOGINS;
-    if (!Array.isArray(trusted) || !trusted.includes(githubLogin)) {
+    if (!Array.isArray(trusted) || !trusted.includes(metadata.github_login || '')) {
       throw new APIError(403, 'Forbidden');
     }
 

@@ -113,8 +113,18 @@ export interface ValidateSQLResult {
   statementType: string;
 }
 
-export async function newQuestion (question: string): Promise<Question> {
-  return await clientWithoutCache.post('/explorer/questions/', { question }, { withCredentials: true });
+export async function newQuestion (
+  question: string,
+  options: {
+    accessToken?: string;
+  },
+): Promise<Question> {
+  const { accessToken } = options;
+  return await clientWithoutCache.post(
+    '/explorer/questions/',
+    { question },
+    { withCredentials: true, oToken: accessToken },
+  );
 }
 
 export async function pollQuestion (questionId: string): Promise<Question> {

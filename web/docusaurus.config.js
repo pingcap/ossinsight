@@ -37,6 +37,11 @@ const config = {
   organizationName: 'pingcap',
   projectName: 'ossinsight',
 
+  customFields: {
+    auth0_domain: process.env.AUTH0_DOMAIN || '',
+    auth0_client_id: process.env.AUTH0_CLIENT_ID || ''
+  },
+
   // Even if you don't use internalization, you can use this field to set useful
   // metadata like html lang. For example, if your site is Chinese, you may want
   // to replace "en" with "zh-Hans".

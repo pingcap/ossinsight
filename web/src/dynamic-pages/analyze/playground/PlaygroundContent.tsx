@@ -18,6 +18,7 @@ import { core } from '@site/src/api';
 import { Favorite, HelpOutline, Twitter } from '@mui/icons-material';
 import { twitterLink } from '@site/src/utils/share';
 import { useAiQuestion } from './hooks';
+import { useAuth0 } from '@auth0/auth0-react';
 
 const DEFAULT_QUESTION = 'Who closed the last issue in this repo?';
 const QUESTION_MAX_LENGTH = 200;
@@ -34,8 +35,18 @@ export default function PlaygroundContent () {
     setCurrentQuestion(undefined);
   });
 
+  const { getAccessTokenSilently } = useAuth0();
+
   const { data, loading, error, run } = useAsyncOperation({ sql: inputValue, type: 'repo', id: `${repoId ?? 'undefined'}` }, core.postPlaygroundSQL);
-  const { sql: questionSql, resource, loading: questionLoading, error: questionError, run: runQuestion } = useAiQuestion(customQuestion || DEFAULT_QUESTION, repoId, repoName);
+  const {
+    sql: questionSql,
+    resource,
+    loading: questionLoading,
+    error: questionError,
+    run: runQuestion,
+  } = useAiQuestion(customQuestion || DEFAULT_QUESTION, repoId, repoName, {
+    getAccessToken: getAccessTokenSilently,
+  });
 
   const onChange = (newValue: string) => {
     setInputValue(newValue);

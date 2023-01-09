@@ -1,4 +1,5 @@
 import {FastifyPluginAsyncJsonSchemaToTs} from "@fastify/type-provider-json-schema-to-ts";
+import { Auth0User, parseAuth0User } from "../../../plugins/services/user-service/auth0";
 
 const schema = {
   summary: 'Answer new a question',
@@ -21,15 +22,23 @@ export const newQuestionHandler: FastifyPluginAsyncJsonSchemaToTs = async (app):
     Body: IBody;
   }>('/', {
     schema,
-    preHandler: [app.authenticate]
+    // @ts-ignore
+    preValidation: app.authenticate
   }, async function (req, reply) {
     const { explorerService } = app;
-    let { id: userId, githubLogin } = req.user;
-    const { question: questionTitle } = req.body;
+
     const conn = await this.mysql.getConnection();
 
+    const { sub, metadata } = parseAuth0User(req.user as Auth0User);
+    const userId = await app.userService.findOrCreateUserByAccount(
+      { ...metadata, sub },
+      req.headers.authorization,
+      conn
+    );
+    const { question: questionTitle } = req.body;
+
     try {
-      const question = await explorerService.newQuestion(conn, userId, githubLogin, questionTitle);
+      const question = await explorerService.newQuestion(conn, userId, metadata?.github_login, questionTitle);
 
       explorerService.wrapperTheErrorMessage(question);
 

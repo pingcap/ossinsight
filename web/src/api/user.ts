@@ -4,7 +4,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { isFalsy, isNonemptyString, isNullish, notNullish } from '@site/src/utils/value';
 import { useEventCallback } from '@mui/material';
 import usePollingCookieState from '@site/src/hooks/useCookie';
-import { useUserInfoContext } from '@site/src/context/user';
+import { useAuth0 } from '@auth0/auth0-react';
 
 interface UserInfo {
   id: number;
@@ -16,6 +16,7 @@ interface UserInfo {
   createdAt: string;
 }
 
+// ! to be removed
 export function useUserInfo () {
   const [oToken] = usePollingCookieState('o-token', { pollInterval: 1000 });
 
@@ -57,12 +58,14 @@ export interface Subscription {
 }
 
 export function useSubscriptions () {
-  const { userInfo } = useUserInfoContext();
+  const { user: userInfo, getAccessTokenSilently } = useAuth0();
 
-  return useSWR(userInfo ? `user(${userInfo.id}).milestones` : undefined, {
+  return useSWR(userInfo ? `user(${userInfo.sub as string}).milestones` : undefined, {
     fetcher: async () => {
+      const accessToken = await getAccessTokenSilently();
       return await clientWithoutCache.get<any, Subscription[]>('/user/subscriptions', {
         withCredentials: true,
+        oToken: accessToken,
       });
     },
   });
@@ -71,7 +74,7 @@ export function useSubscriptions () {
 export function useSubscribed (repo: string | undefined) {
   const { data = [], isValidating, mutate } = useSubscriptions();
   const [subscribing, setSubscribing] = useState(false);
-  const { validated } = useUserInfoContext();
+  const { isAuthenticated, getAccessTokenSilently } = useAuth0();
 
   const subscribed = useMemo(() => {
     if (isNullish(repo)) {
@@ -82,40 +85,42 @@ export function useSubscribed (repo: string | undefined) {
   }, [data, repo]);
 
   const subscribe = useCallback(async () => {
-    if (isValidating || !validated || subscribed || isFalsy(repo)) {
+    if (isValidating || !isAuthenticated || subscribed || isFalsy(repo)) {
       return;
     }
     try {
       setSubscribing(true);
-      await clientWithoutCache.put(`/repos/${repo}/subscribe`, undefined, { withCredentials: true });
+      const accessToken = await getAccessTokenSilently();
+      await clientWithoutCache.put(`/repos/${repo}/subscribe`, undefined, { withCredentials: true, oToken: accessToken });
       await mutate();
     } finally {
       setSubscribing(false);
     }
-  }, [repo, isValidating, validated, subscribed]);
+  }, [repo, isValidating, isAuthenticated, subscribed]);
 
   const unsubscribe = useCallback(async () => {
-    if (isValidating || !validated || !subscribed || isFalsy(repo)) {
+    if (isValidating || !isAuthenticated || !subscribed || isFalsy(repo)) {
       return;
     }
     try {
       setSubscribing(true);
-      await clientWithoutCache.put(`/repos/${repo}/unsubscribe`, undefined, { withCredentials: true });
+      const accessToken = await getAccessTokenSilently();
+      await clientWithoutCache.put(`/repos/${repo}/unsubscribe`, undefined, { withCredentials: true, oToken: accessToken });
       await mutate();
     } finally {
       setSubscribing(false);
     }
-  }, [repo, isValidating, validated, subscribed]);
+  }, [repo, isValidating, isAuthenticated, subscribed]);
 
   return { subscribed, isValidating, subscribing, subscribe, unsubscribe };
 }
 
 export async function subscribe (repo: string, oToken?: string) {
-  await clientWithoutCache.put(`/repos/${repo}/subscribe`, undefined, { withCredentials: true });
+  await clientWithoutCache.put(`/repos/${repo}/subscribe`, undefined, { withCredentials: true, oToken });
   await mutate('user.milestones', undefined, { revalidate: true });
 }
 
 export async function unsubscribe (repo: string, oToken?: string) {
-  await clientWithoutCache.put(`/repos/${repo}/unsubscribe`, undefined, { withCredentials: true });
+  await clientWithoutCache.put(`/repos/${repo}/unsubscribe`, undefined, { withCredentials: true, oToken });
   await mutate('user.milestones', undefined, { revalidate: true });
 }

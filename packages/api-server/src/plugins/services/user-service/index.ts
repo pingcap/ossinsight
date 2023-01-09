@@ -1,77 +1,90 @@
-import { FastifyBaseLogger } from "fastify";
-import{ FastifyJWTOptions } from "@fastify/jwt";
+import { FastifyBaseLogger, FastifyInstance } from "fastify";
+import { FastifyJWTOptions } from "@fastify/jwt";
 import { FastifyOAuth2Options } from "@fastify/oauth2";
 import { MySQLPromisePool } from "@fastify/mysql";
 import { ResultSetHeader } from "mysql2";
 import fp from "fastify-plugin";
-import {APIError} from "../../../utils/error";
-import {Connection, RowDataPacket} from "mysql2/promise";
+import { APIError } from "../../../utils/error";
+import { Connection, RowDataPacket, PoolConnection } from "mysql2/promise";
+import { Auth0UserInfo, Auth0UserMetadata } from "./auth0";
+import { DateTime } from "luxon";
+import Axios from "axios";
 
-declare module 'fastify' {
-    interface FastifyInstance {
-        userService: UserService;
-    }
+declare module "fastify" {
+  interface FastifyInstance {
+    userService: UserService;
+  }
 }
 
-export interface UserProfile extends RowDataPacket{
-    id: number;
-    name: string;
-    emailAddress: string;
-    emailGetUpdates: boolean;
-    githubId: number;
-    githubLogin: string;
-    avatarURL: string;
-    role: UserRole;
-    createdAt: Date;
-    enable: boolean;
+export interface UserProfile extends RowDataPacket {
+  id: number;
+  name: string;
+  emailAddress: string;
+  emailGetUpdates: boolean;
+  githubId: number;
+  githubLogin: string;
+  avatarURL: string;
+  role: UserRole;
+  createdAt: Date;
+  enable: boolean;
 }
 
 export enum UserRole {
-    USER = 'user',
-    ADMIN = 'admin'
+  USER = "user",
+  ADMIN = "admin",
 }
 
 export interface User {
-    id: number;
-    name: string;
-    emailAddress: string | null;
-    emailGetUpdates: boolean;
-    avatarURL: string;
-    role: UserRole;
-    createdAt: Date;
-    enable: boolean;
+  id: number;
+  name: string;
+  emailAddress: string | null;
+  emailGetUpdates: boolean;
+  avatarURL: string;
+  role: UserRole;
+  createdAt: Date;
+  enable: boolean;
 }
 
-export interface UserGetUpdatesSetting extends Omit<UserProfile, 'emailGetUpdates'>, RowDataPacket {}
+export interface UserGetUpdatesSetting
+  extends Omit<UserProfile, "emailGetUpdates">,
+    RowDataPacket {}
 
 export interface Account {
-    id: number;
-    userId: number;
-    provider: ProviderType;
-    providerAccountId: string;
-    providerAccountLogin: string;
-    accessToken: string;
+  id: number;
+  userId: number;
+  provider: ProviderType;
+  providerAccountId: string;
+  providerAccountLogin: string;
+  accessToken: string;
 }
 
 export enum ProviderType {
-    GITHUB = 'github'
+  GITHUB = "github",
 }
 
-export default fp<FastifyOAuth2Options & FastifyJWTOptions>(async (fastify) => {
-    fastify.decorate('userService', new UserService(fastify.log, fastify.mysql));
-}, {
-    name: 'user-service',
-    dependencies: [
-        '@fastify/mysql'
-    ]
-});
+export default fp<FastifyOAuth2Options & FastifyJWTOptions>(
+  async (fastify) => {
+    fastify.decorate(
+      "userService",
+      new UserService(fastify.config, fastify.log, fastify.mysql)
+    );
+  },
+  {
+    name: "user-service",
+    dependencies: ["@fastify/mysql"],
+  }
+);
 
 export class UserService {
+  constructor(
+    readonly config: FastifyInstance["config"],
+    readonly log: FastifyBaseLogger,
+    readonly mysql: MySQLPromisePool
+  ) {}
 
-    constructor(readonly log: FastifyBaseLogger, readonly mysql: MySQLPromisePool) {}
-
-    async getUserById(userId: number): Promise<UserProfile> {
-        const [users] = await this.mysql.query<any[]>(`
+  async getUserById(userId: number): Promise<UserProfile> {
+    const [users] = await this.mysql.query<any[]>(
+      `
             SELECT
                 su.id, su.name, su.role, su.avatar_url AS avatarURL, su.created_at AS createdAt, su.enable,
                 su.email_address AS emailAddress, su.email_get_updates AS emailGetUpdates,
@@ -81,18 +94,21 @@ export class UserService {
             WHERE
                 su.id = ?
             LIMIT 1
-        `, [ProviderType.GITHUB, userId]);
-        if (users.length === 0) {
-            throw new APIError(404, 'User not found');
-        }
-        const user = users[0];
-        user.enable = Boolean(user.enable);
-        user.emailGetUpdates = Boolean(user.emailGetUpdates);
-        return users[0];
+        `,
+      [ProviderType.GITHUB, userId]
+    );
+    if (users.length === 0) {
+      throw new APIError(404, "User not found");
     }
+    const user = users[0];
+    user.enable = Boolean(user.enable);
+    user.emailGetUpdates = Boolean(user.emailGetUpdates);
+    return users[0];
+  }
 
-    async getUserByGithubId(githubId: number): Promise<UserProfile> {
-        const [users] = await this.mysql.query<UserProfile[]>(`
+  async getUserByGithubId(githubId: number): Promise<UserProfile> {
+    const [users] = await this.mysql.query<UserProfile[]>(
+      `
             SELECT
                 su.id, su.name, su.role, su.avatar_url AS avatarURL, su.created_at AS createdAt, su.enable,
                 su.email_address AS emailAddress, su.email_get_updates AS emailGetUpdates,
@@ -101,83 +117,131 @@ export class UserService {
             LEFT JOIN sys_accounts sa ON su.id = sa.user_id AND sa.provider = ?
             WHERE sa.provider_account_id = ?
             LIMIT 1
-        `, [ProviderType.GITHUB, `${githubId}`]);
-        if (users.length === 0) {
-            throw new APIError(404, 'User not found');
-        }
-        const user = users[0];
-        user.enable = Boolean(user.enable);
-        user.emailGetUpdates = Boolean(user.emailGetUpdates);
-        return user;
+        `,
+      [ProviderType.GITHUB, `${githubId}`]
+    );
+    if (users.length === 0) {
+      throw new APIError(404, "User not found");
     }
+    const user = users[0];
+    user.enable = Boolean(user.enable);
+    user.emailGetUpdates = Boolean(user.emailGetUpdates);
+    return user;
+  }
 
-    async findOrCreateUserByAccount(user: Omit<User, 'id'>, account: Omit<Account, 'id' | 'userId'>):Promise<number> {
-        let conn: Connection | undefined;
+  async findOrCreateUserByAccount(
+    user: Auth0UserMetadata & { sub: string },
+    token?: string,
+    connection?: PoolConnection
+  ): Promise<number> {
+    if (!token) throw new Error("token is required");
 
-        try {
-            conn = await this.mysql.getConnection();
-            await conn.beginTransaction();
+    let conn: Connection | undefined;
 
-            // Check if how many users bound to this account.
-            const [existedUserIds] = await this.mysql.query<any[]>(`
+    const [provider, idString] = user.sub.split("|");
+    const githubLogin = user?.github_login || null;
+
+    try {
+      conn = connection || (await this.mysql.getConnection());
+      await conn.beginTransaction();
+
+      // Check if how many users bound to this account.
+      const [existedUserIds] = await conn.query<any[]>(
+        `
                 SELECT su.id
                 FROM sys_users su
                 LEFT JOIN sys_accounts sa ON su.id = sa.user_id AND sa.provider = ?
                 WHERE sa.provider_account_id = ?
                 FOR UPDATE;
-            `, [account.provider, `${account.providerAccountId}`]);
+            `,
+        [provider, idString]
+      );
 
-            if (existedUserIds.length > 1) {
-                throw new APIError(409, 'Failed to login, please contact admin.');
-            } else if (existedUserIds.length === 1) {
-                return existedUserIds[0].id;
-             }
+      if (existedUserIds.length > 1) {
+        throw new APIError(409, "Failed to login, please contact admin.");
+      } else if (existedUserIds.length === 1) {
+        await conn.commit();
+        return existedUserIds[0].id;
+      }
 
-            // Create a new user if didn't exist any user bound to this account.
-            const [rs] = await this.mysql.query<ResultSetHeader>(`
+      // Create a new user if didn't exist any user bound to this account.
+      const userInfo = await this.fetchAuth0UserInfo(
+        this.config.AUTH0_DOMAIN,
+        token
+      );
+      const [rs] = await conn.query<ResultSetHeader>(
+        `
                 INSERT INTO sys_users(name, email_address, email_get_updates, avatar_url, role, created_at, enable)
                 VALUES(?, ?, ?, ?, ?, ?, ?)
-            `, [user.name, user.emailAddress, user.emailGetUpdates, user.avatarURL, user.role, user.createdAt, user.enable]);
-            const newUser: User = {
-                id: rs.insertId,
-                ...user,
-            };
+            `,
+        [
+          userInfo.name,
+          userInfo.email,
+          0,
+          userInfo.picture,
+          UserRole.USER,
+          DateTime.utc().toJSDate(),
+          true,
+        ]
+      );
 
-            // Create a new account link to the new user.
-            await this.mysql.query<ResultSetHeader>(`
-                INSERT INTO sys_accounts(user_id, provider, provider_account_id, provider_account_login, access_token)
-                VALUES(?, ?, ?, ?, ?)
-            `, [newUser.id, account.provider, account.providerAccountId, account.providerAccountLogin, account.accessToken]);
+      // Create a new account link to the new user.
+      await conn.query<ResultSetHeader>(
+        `
+                INSERT INTO sys_accounts(user_id, provider, provider_account_id, provider_account_login)
+                VALUES(?, ?, ?, ?)
+            `,
+        [rs.insertId, provider, idString, githubLogin]
+      );
 
-            await conn.commit();
-            return newUser.id;
-        } catch (err) {
-            if (conn) {
-                await conn.rollback();
-            }
-            if (err instanceof APIError) {
-                throw err;
-            }
-            throw new APIError(500, 'Failed to create new user, please try it again.', err as Error);
-        }
+      await conn.commit();
+      return rs.insertId;
+    } catch (err) {
+      if (conn) {
+        await conn.rollback();
+      }
+      if (err instanceof APIError) {
+        throw err;
+      }
+      throw new APIError(
+        500,
+        "Failed to create new user, please try it again.",
+        err as Error
+      );
     }
+  }
 
-    async getEmailUpdates(userId: number): Promise<UserGetUpdatesSetting> {
-        const [settings] = await this.mysql.query<UserGetUpdatesSetting[]>(
-            `SELECT email_get_updates AS emailGetUpdates FROM sys_users WHERE id = ? LIMIT 1`, [userId]
-        );
-        if (settings.length === 0) {
-            throw new APIError(404, 'User not found');
-        }
-        return settings[0];
+  async fetchAuth0UserInfo(
+    domain: string,
+    token: string
+  ): Promise<Auth0UserInfo> {
+    // https://auth0.com/docs/api/authentication#get-user-info
+    const URL = `https://${domain}/userinfo`;
+    const bearerToken = token.startsWith("Bearer ") ? token : `Bearer ${token}`;
+    const response = await Axios.get(URL, {
+      headers: {
+        Authorization: bearerToken,
+      },
+    }).then((res) => res.data);
+    return response as Auth0UserInfo;
+  }
+
+  async getEmailUpdates(userId: number): Promise<UserGetUpdatesSetting> {
+    const [settings] = await this.mysql.query<UserGetUpdatesSetting[]>(
+      `SELECT email_get_updates AS emailGetUpdates FROM sys_users WHERE id = ? LIMIT 1`,
+      [userId]
+    );
+    if (settings.length === 0) {
+      throw new APIError(404, "User not found");
     }
+    return settings[0];
+  }
 
-    async settingEmailUpdates(userId: number, enable: boolean): Promise<boolean> {
-        await this.mysql.query<ResultSetHeader>(
-            `UPDATE sys_users SET email_get_updates = ? WHERE id = ?`,
-            [enable, userId]
-        );
-        return enable;
-    }
-
+  async settingEmailUpdates(userId: number, enable: boolean): Promise<boolean> {
+    await this.mysql.query<ResultSetHeader>(
+      `UPDATE sys_users SET email_get_updates = ? WHERE id = ?`,
+      [enable, userId]
+    );
+    return enable;
+  }
 }

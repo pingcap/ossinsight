@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import { Backdrop, Button, styled } from '@mui/material';
 import { SxProps } from '@mui/system';
-import { useUserInfoContext } from '@site/src/context/user';
+import { useAuth0 } from '@auth0/auth0-react';
 
 interface LoginRequiredProps {
   promote: string;
@@ -10,13 +10,21 @@ interface LoginRequiredProps {
 }
 
 export function LoginRequired ({ promote, sx, children }: LoginRequiredProps) {
-  const { validated, login } = useUserInfoContext();
+  const { isAuthenticated, loginWithRedirect } = useAuth0();
 
   return (
     <LoginRequiredContainer sx={sx}>
       {children}
-      <Backdrop open={!validated} sx={{ position: 'absolute', backdropFilter: 'blur(2px)', zIndex: 2 }}>
-        <Button onClick={login}>{promote}</Button>
+      <Backdrop
+        open={!isAuthenticated}
+        sx={{ position: 'absolute', backdropFilter: 'blur(2px)', zIndex: 2 }}
+      >
+        <Button
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
+          onClick={loginWithRedirect}
+        >
+          {promote}
+        </Button>
       </Backdrop>
     </LoginRequiredContainer>
   );

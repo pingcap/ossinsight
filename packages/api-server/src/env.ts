@@ -89,6 +89,12 @@ export const APIServerEnvSchema = {
     JWT_COOKIE_SAME_SITE: {
       type: 'boolean'
     },
+    AUTH0_DOMAIN: {
+      type: 'string'
+    },
+    AUTH0_SECRET: {
+      type: 'string'
+    }
     // We need additional undocumented env
     // - for playground:
     //   - PLAYGROUND_SESSION_<KEY>=<VALUE>
