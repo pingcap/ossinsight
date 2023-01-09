@@ -1,6 +1,7 @@
 import {FastifyPluginAsync, FastifySchema} from 'fastify';
 import {QuestionFeedbackType} from "../../../../../plugins/services/explorer-service/types";
 import {APIError} from "../../../../../utils/error";
+import {Auth0User, parseAuth0User} from "../../../../../plugins/services/user-service/auth0";
 
 export const schema: FastifySchema = {
   summary: 'Add feedback for answer',
@@ -34,11 +35,18 @@ const root: FastifyPluginAsync = async (app) => {
     Body: IBody
   }>('/', {
     schema,
-    preHandler: [app.authenticate]
+    // @ts-ignore
+    preValidation: app.authenticate
   },async (req, reply) => {
-    let { id: userId } = req.user;
     const { questionId, satisfied, feedbackContent } = req.body;
     const conn = await app.mysql.getConnection();
+    const { sub, metadata } = parseAuth0User(req.user as Auth0User);
+    const userId = await app.userService.findOrCreateUserByAccount(
+      { ...metadata, sub },
+      req.headers.authorization,
+      conn
+    );
+
     try {
       const feedbacks = await app.explorerService.getUserQuestionFeedbacks(conn, userId);
       if (feedbacks > 0) {
