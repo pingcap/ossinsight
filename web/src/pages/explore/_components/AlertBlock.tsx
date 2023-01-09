@@ -39,6 +39,8 @@ export default function AlertBlock ({ severity, sx, children, createIssueUrl = (
             <ContactSupport fontSize="inherit" sx={{ mr: 0.5 }} />
             <span>See faq</span>
           </AlertButton>
+          &nbsp;
+          &nbsp;
           <AlertButton onClick={report}>
             <GitHub fontSize="inherit" sx={{ mr: 0.5 }} />
             <span>Feedback</span>
@@ -49,8 +51,8 @@ export default function AlertBlock ({ severity, sx, children, createIssueUrl = (
         <SuggestionsContainer>
           <RecommendedSuggestions
             title={(reload, loading) => (
-              <Box component="p" m={0} mt={2} height="40px">
-                How about try other questions? <IconButton onClick={reload} disabled={loading}><Cached /></IconButton>
+              <Box component="p" m={0} mt={3} height="40px">
+                👀 How about try other questions? <IconButton onClick={reload} disabled={loading}><Cached /></IconButton>
               </Box>
             )}
             n={5}

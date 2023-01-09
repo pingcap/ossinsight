@@ -270,7 +270,7 @@ function Chart ({ chartData, chartError, fields, result, controlsContainer }: { 
     const renderTips = () => {
       return (
         <Typography variant="body2" color="#D1D1D1" mt={2}>
-          🤔 Confused with this answer? Try to tiny your words and help the AI identify your question, for example, you can try to use ‘@repo_name/user_name’ to narrow down your query. If you have more questions about the accuracy of the answers, see FAQ here.
+          🤔 Not exactly what you are looking for? Try specifying the repository or user names to help AI understand your question better. For more tips on getting the expected answer, check out our FAQ below.
         </Typography>
       );
     };

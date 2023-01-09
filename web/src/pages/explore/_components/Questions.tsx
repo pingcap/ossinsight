@@ -15,7 +15,7 @@ import Faq from '@site/src/pages/explore/_components/Faq';
 import Side from '@site/src/pages/explore/_components/Side';
 import PoweredBy from '@site/src/pages/explore/_components/PoweredBy';
 import Link from '@docusaurus/Link';
-import { ArrowRightAlt } from '@mui/icons-material';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 export default function Questions () {
   const { question, loading, load, error, phase, reset, create } = useQuestionManagementValues({ pollInterval: 2000 });
@@ -82,8 +82,8 @@ export default function Questions () {
               <Box mt={2}>
                 <PoweredBy align="center" />
                 <StyledLink to="/blog/chat2query-tutorials" target='_blank'>
-                  🧐 GitHub data is just the beginning. Uncover hidden insights in your OWN data!
-                  <ArrowRightAlt fontSize='inherit' sx={{ verticalAlign: 'text-bottom', ml: 0.5 }} />
+                  🧐 GitHub data is just the beginning. Uncover hidden insights in your <b>OWN</b> data!
+                  <ArrowForwardIcon fontSize='inherit' sx={{ verticalAlign: 'text-bottom', ml: 0.5 }} />
                 </StyledLink>
               </Box>
             )}

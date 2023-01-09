@@ -5,7 +5,7 @@ import { GitHub, Twitter } from '@mui/icons-material';
 
 export default function Faq () {
   return (
-    <Box component="section" id="data-explorer-faq" pt={8}>
+    <Box component="section" id="data-explorer-faq" pt={8} px={12}>
       <Typography variant="h2" textAlign="center">FAQ</Typography>
       {qa.map(({ q, a }, i) => (
         <QAItem key={i}>
@@ -14,7 +14,7 @@ export default function Faq () {
         </QAItem>
       ))}
       <Typography variant="body1" textAlign='center' color='#929292' fontSize={16} mt={8}>
-        Still have problems? please feel free to contact us {githubLink} {twitterLink}
+        Still have problems? please feel free to contact us {githubLink} &nbsp;{twitterLink}
       </Typography>
     </Box>
   );
@@ -26,9 +26,9 @@ type QA = {
 };
 
 const steps = [
-  'Input your question',
-  'Translate your question to SQL with OpenAI',
-  'Visualize and output your results',
+  'Enter your question',
+  'Translate the question into SQL',
+  'Visualize and output results',
 ];
 
 const qa: QA[] = [
@@ -37,28 +37,63 @@ const qa: QA[] = [
     a: <ExploreSteps steps={steps} />,
   },
   {
-    q: 'How do I use this tool?',
-    a: 'You can start with selecting a popular query from the query wall or directly input a short text query statement to the search box. OpenAI will translate your question into Structured Query Language (SQL), and we will use the generated SQL to query in the database and return the results.',
-  },
-  {
-    q: 'Why the answer do not turn out to my intended?',
-    a: 'We use the text completion provided by OpenAI to translate the text into Structured Query Language (SQL), and the final output depends on the accuracy of the generated SQL. If the final query result does not meet your expectation, please shorten your input statement and using more concise and clear short words for AI recognition.',
-  }, {
-    q: 'Why is the output report an error or show 0 results?',
+    q: 'What is Data Explorer?',
     a: (
       <>
-        Unfortunately, we do not have useful GitHub insights for you. Usually, there are two situations that cause the answer not to be found:
+        Data Explorer is a tool powered by large language models (OpenAI API) and&nbsp;
+        <a href='https://www.pingcap.com/tidb-cloud/' target='_blank' rel="noreferrer">TiDB Cloud</a>, a cloud-native, distributed, hybrid transactional/analytical processing database. You can use it to explore and get insights from 5+ billion rows of GitHub data.
+           </>
+    ),
+  }, {
+    q: 'What are the limitations of Data Explorer?',
+    a: (
+      <>
+        AI&apos;s ability to generate SQL from natural language is pretty amazing!
+        <br />
+        However, please keep in mind that it is still a work in progress and may have limitations, including:
         <ol>
-          <li>AI unrecognized/misunderstand your text and generated wrong/bad SQLs, the query mission failed.</li>
-          <li>Data restrictions. All the data we use here on this website sources from&nbsp;
+          <li>AI understanding</li>
+          <li>AI-generated SQL syntax</li>
+          <li>AI service stability</li>
+        </ol>
+        We&apos;re constantly working on improving and optimizing it, so any feedback you have is greatly appreciated. Thanks for using!
+        <br />
+        Also, the dataset itself can also be a limitation for our tool. All the data we use on this website is sourced from&nbsp;
             <a href="http://www.gharchive.org/" target="_blank" rel="noreferrer">
               GH Archive
-            </a>, a non-profit project that records and archives all GitHub events data since 2011. We can not offer you more insights if you are looking for answers about other topics.
-          </li>
-        </ol>
-        <br />
-        The potential solution is phrase your question which is related GitHub with short, specific words , then try again. And we strongly recommend you use our query templates near the search box to start your exploring.
+            </a>, a non-profit project that records and archives all GitHub event data since 2011 (public data only). If a question falls outside of the scope of the available data, it may be difficult for our tool to provide a satisfactory answer.
       </>
+    ),
+  }, {
+    q: 'Why did it fail to generate an SQL query?',
+    a: (
+      <>
+        Potential reasons:
+        <ol>
+          <li>The AI was unable to understand or misunderstood your question, resulting in an inability to generate SQL. We already mentioned AI&apos;s limitations in the previous question.</li>
+          <li>You had network issues.</li>
+          <li>You had excessive requests. Note that you can ask up to 15 questions per hour.</li>
+        </ol>
+      </>
+    ),
+  }, {
+    q: 'Why did it fail to generate a chart?',
+    a: (
+      <>
+        Potential reasons:
+        <ol>
+          <li>You had network issues.The SQL query was incorrect or could not be generated, so the answer could not be found in the database, and the chart could not be generated.</li>
+          <li>The answer was found, but the AI did not choose the correct chart template, so the chart could not be generated.</li>
+          <li>The SQL query was correct, but no answer was found, so the chart could not be displayed.</li>
+        </ol>
+      </>
+    ),
+  }, {
+    q: 'Can I use the data exploration feature with my own dataset?',
+    a: (
+      <>
+        Yes! Even if you are not a GitHub expert, you can still play around with your own data at <b>NO COST</b>. Just keep in mind that we take privacy seriously. Our model only needs access to your database schema, not any actual data about your customers.
+        </>
     ),
   },
 ];

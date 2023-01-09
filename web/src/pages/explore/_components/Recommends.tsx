@@ -6,7 +6,7 @@ interface RecommendsProps {
   title?: string;
 }
 
-export default function Recommends ({ title = '🔥 Popular queries' }: RecommendsProps) {
+export default function Recommends ({ title = '💡 Popular questions' }: RecommendsProps) {
   return (
     <>
       <RecommendedSuggestions
