@@ -1,6 +1,5 @@
 import {FastifyPluginAsync, FastifySchema} from 'fastify';
 import {QuestionFeedbackType} from "../../../../../plugins/services/explorer-service/types";
-import {APIError} from "../../../../../utils/error";
 import {Auth0User, parseAuth0User} from "../../../../../plugins/services/user-service/auth0";
 
 export const schema: FastifySchema = {
@@ -59,10 +58,8 @@ const root: FastifyPluginAsync = async (app) => {
     );
 
     try {
-      const feedbacks = await app.explorerService.getUserQuestionFeedbacks(conn, userId);
-      if (feedbacks > 0) {
-        throw new APIError(429, 'You have already given feedback for this question');
-      }
+      await conn.beginTransaction();
+      await app.explorerService.removeUserQuestionFeedbacks(conn, userId, questionId);
       await app.explorerService.addQuestionFeedback(conn, {
         questionId,
         userId,
@@ -70,9 +67,13 @@ const root: FastifyPluginAsync = async (app) => {
         feedbackType: satisfied ? QuestionFeedbackType.AnswerSatisfied : QuestionFeedbackType.AnswerUnsatisfied,
         feedbackContent
       });
+      await conn.commit();
       reply.status(200).send({
         message: 'ok'
       });
+    } catch (err) {
+      await conn.commit();
+      throw err;
     } finally {
       conn.release();
     }

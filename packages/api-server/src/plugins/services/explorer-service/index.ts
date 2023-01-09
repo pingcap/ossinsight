@@ -854,6 +854,13 @@ export class ExplorerService {
         return rows[0].cnt;
     }
 
+    async removeUserQuestionFeedbacks(conn: Connection, userId: number, questionId: string) {
+        await conn.query<ResultSetHeader>(`
+            DELETE FROM explorer_question_feedbacks
+            WHERE user_id = ? AND question_id = UUID_TO_BIN(?)
+        `, [userId, questionId]);
+    }
+
     async addQuestionFeedback(conn: Connection, feedback: Omit<QuestionFeedback, "id" | "createdAt">) {
         const { userId = 0, questionId, satisfied = false, feedbackType, feedbackContent = null } = feedback;
         const [rs] = await conn.query<ResultSetHeader>(`
