@@ -158,6 +158,7 @@ export class UserService {
       if (existedUserIds.length > 1) {
         throw new APIError(409, "Failed to login, please contact admin.");
       } else if (existedUserIds.length === 1) {
+        await conn.commit();
         return existedUserIds[0].id;
       }
 
