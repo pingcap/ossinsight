@@ -100,7 +100,7 @@ export class ExplorerService {
         }, options || {});
     }
 
-    async newQuestion(conn: Connection, userId: number, githubLogin: string, q: string): Promise<Question> {
+    async newQuestion(conn: Connection, userId: number, githubLogin: string | undefined, q: string): Promise<Question> {
         const questionId = randomUUID();
         const logger = this.logger.child({ questionId: questionId });
         const normalizedQuestion = this.normalizeQuestion(q);
@@ -131,7 +131,7 @@ export class ExplorerService {
 
             // Give the trusted users more daily requests.
             let limit = this.options.userMaxQuestionsPerHour;
-            if (this.options.trustedUsers.includes(githubLogin)) {
+            if (this.options.trustedUsers.includes(githubLogin || '')) {
                 limit = this.options.trustedUsersMaxQuestionsPerHour;
             }
 

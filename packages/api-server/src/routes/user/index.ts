@@ -1,4 +1,5 @@
 import {FastifyPluginAsyncJsonSchemaToTs} from "@fastify/type-provider-json-schema-to-ts/index";
+import { Auth0User, parseAuth0User } from "../../plugins/services/user-service/auth0";
 
 const schema = {
     description: 'Get the authenticated user',
@@ -49,10 +50,8 @@ const root: FastifyPluginAsyncJsonSchemaToTs = async (app, opts): Promise<void> 
         preValidation: app.authenticate,
         schema
     }, async function (req, reply) {
-        const { sub } = req.user as {
-          sub: string;
-        };
-        const userId = await app.userService.findOrCreateUserByAuth0Sub(sub, req.headers.authorization);
+        const { sub } = parseAuth0User(req.user as Auth0User);
+        const userId = await app.userService.findOrCreateUserByAccount(sub, req.headers.authorization);
         const res = await app.userService.getUserById(userId);
         reply.send(res);
     });
