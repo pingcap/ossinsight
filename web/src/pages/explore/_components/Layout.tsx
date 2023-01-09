@@ -10,12 +10,14 @@ const transitionDuration = 400;
 export interface LayoutProps {
   showHeader: boolean;
   showSide: boolean;
+  showFooter: boolean;
   header?: ReactNode;
   side?: ReactNode;
+  footer?: ReactNode;
   children?: ReactNode;
 }
 
-export default function Layout ({ children, header, side, showSide, showHeader }: LayoutProps) {
+export default function Layout ({ children, header, side, footer, showFooter, showSide, showHeader }: LayoutProps) {
   const headerRef = useRef<HTMLDivElement>(null);
   const mainRef = useRef<HTMLDivElement>(null);
   const sideRef = useRef<HTMLDivElement>(null);
@@ -51,6 +53,9 @@ export default function Layout ({ children, header, side, showSide, showHeader }
           )}
         </Transition>
       </Container>
+      <Footer>
+        {showFooter && footer}
+      </Footer>
     </>
   );
 }
@@ -69,7 +74,7 @@ const Container = styled('div', { name: 'Container' })`
   ${({ theme }) => theme.breakpoints.up('md')} {
     padding-right: var(--explore-layout-side-width);
   }
-  
+
   position: relative;
   margin: 0 auto;
   max-width: 100%;
@@ -92,7 +97,7 @@ const Header = styled('div', { name: 'Header', shouldForwardProp: propName => pr
 `;
 
 const Main = styled('div', { name: 'Main' })`
-  min-height: calc(100vh - 92px);
+  min-height: calc(100vh - 92px - 230px);
   width: 100%;
   transition: ${({ theme }) => theme.transitions.create(['transform', 'opacity'], { duration: transitionDuration })};
 
@@ -134,6 +139,10 @@ const Side = styled('div', { name: 'Side' })`
   ${({ theme }) => theme.breakpoints.down('md')} {
     display: none !important;
   }
+`;
+
+const Footer = styled('div', { name: 'Footer' })`
+  
 `;
 
 function classNames (prefix: string, enter: boolean) {

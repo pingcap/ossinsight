@@ -16,6 +16,7 @@ import { twitterLink } from '@site/src/utils/share';
 import ShareWithTwitter from '@site/src/pages/explore/_components/ShareWithTwitter';
 import ErrorBlock from '@site/src/pages/explore/_components/ErrorBlock';
 import useQuestionManagement, { QuestionLoadingPhase } from '@site/src/pages/explore/_components/useQuestion';
+import PoweredBy from '@site/src/pages/explore/_components/PoweredBy';
 
 export function isSqlError (error: unknown): error is AxiosError<{ message: string, querySQL: string }> {
   if (isAxiosError(error) && notNullish(error.response)) {
@@ -184,6 +185,7 @@ export default function Execution ({ search }: { search: string }) {
       >
         <Chart chartData={question?.chart ?? undefined} chartError={chartError} result={result} fields={question?.result?.fields} controlsContainer={controlsContainerRef} />
       </Section>
+      {phase === QuestionLoadingPhase.READY && <PoweredBy sx={{ mt: 2 }} />}
     </>
   );
 };
