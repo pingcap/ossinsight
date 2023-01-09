@@ -109,7 +109,7 @@ export function useQuestionManagementValues ({ pollInterval = 2000 }: QuestionMa
   const [error, setError] = useState<unknown>();
   const idRef = useRef<string>();
 
-  const { isLoading, user, getAccessTokenSilently, loginWithRedirect } = useAuth0();
+  const { isLoading, user, getAccessTokenSilently, loginWithPopup } = useAuth0();
 
   const loadInternal = useMemoizedFn(async function (id: string, clear: boolean) {
     // Prevent reload when loading same question
@@ -146,7 +146,7 @@ export function useQuestionManagementValues ({ pollInterval = 2000 }: QuestionMa
     async function createInternal (title: string) {
       try {
         if (!isLoading && !user) {
-          return await loginWithRedirect();
+          return await loginWithPopup();
         }
         setError(undefined);
         setQuestion(undefined);

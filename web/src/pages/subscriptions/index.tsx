@@ -17,7 +17,7 @@ export default function SubscribePage () {
   const {
     isAuthenticated: userValidated,
     isLoading: userValidating,
-    loginWithRedirect: login,
+    loginWithPopup: login,
   } = useAuth0();
 
   return (

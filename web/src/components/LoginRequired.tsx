@@ -10,7 +10,7 @@ interface LoginRequiredProps {
 }
 
 export function LoginRequired ({ promote, sx, children }: LoginRequiredProps) {
-  const { isAuthenticated, loginWithRedirect } = useAuth0();
+  const { isAuthenticated, loginWithPopup } = useAuth0();
 
   return (
     <LoginRequiredContainer sx={sx}>
@@ -21,7 +21,7 @@ export function LoginRequired ({ promote, sx, children }: LoginRequiredProps) {
       >
         <Button
           // eslint-disable-next-line @typescript-eslint/no-misused-promises
-          onClick={loginWithRedirect}
+          onClick={loginWithPopup}
         >
           {promote}
         </Button>

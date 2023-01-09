@@ -24,14 +24,14 @@ const StyledAvatar = styled(Avatar)`
 `;
 
 function LoginButton () {
-  const { loginWithRedirect } = useAuth0();
+  const { loginWithPopup } = useAuth0();
 
   return (
     <StyledButtonBase
       disableRipple
       aria-label="login"
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      onClick={loginWithRedirect}
+      onClick={loginWithPopup}
     >
       <StyledAvatar
         sx={{
