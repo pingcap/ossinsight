@@ -113,6 +113,7 @@ describe('find or create user by account', () => {
       role: UserRole.USER,
       createdAt: new Date(),
       enable: true,
+      sub: "github|1001"
     };
     const account = {
       provider: ProviderType.GITHUB,
@@ -120,7 +121,7 @@ describe('find or create user by account', () => {
       providerAccountLogin: 'ossinsight',
       accessToken: 'token'
     };
-    const userId = await userService.findOrCreateUserByAccount(user, account);
+    const userId = await userService.findOrCreateUserByAccount(user.sub, account.accessToken);
     const userProfile = await userService.getUserById(userId);
     expect(userProfile).toEqual({
       id: userId,
@@ -145,6 +146,7 @@ describe('find or create user by account', () => {
       role: UserRole.USER,
       createdAt: new Date(),
       enable: true,
+      sub: "github|1001"
     };
     const account = {
       provider: ProviderType.GITHUB,
@@ -159,7 +161,7 @@ describe('find or create user by account', () => {
       VALUES (?, ?, ?, ?, ?);
     `, [9999 ,account.provider, account.providerAccountId, account.providerAccountLogin, account.accessToken]);
 
-    const userId = await userService.findOrCreateUserByAccount(user, account);
+    const userId = await userService.findOrCreateUserByAccount(user.sub, account.accessToken);
     const userProfile = await userService.getUserById(userId);
     expect(userProfile).toEqual({
       id: userId,
