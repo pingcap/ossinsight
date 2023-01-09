@@ -23,11 +23,8 @@ export default function Side () {
       <Divider orientation="horizontal" sx={{ my: 2 }} />
       <Box>
         <ColoredLink to="/blog/chat2query-tutorials">
-          Get hands-on with your data <ArrowRightAlt color="inherit" />
+        🧐 GitHub data is just the beginning, uncover hidden insights in your OWN data!<ArrowRightAlt color="inherit" />
         </ColoredLink>
-        <Details>
-          Get hands-on with your data Get hands-on with your data
-        </Details>
       </Box>
     </SideRoot>
   );
@@ -70,9 +67,4 @@ const ColoredLink = styled(Link)`
   &, &:hover, &:visited, &:active {
     color: #DAC4FF;
   }
-`;
-
-const Details = styled('p')`
-  margin-top: 8px;
-  font-size: 12px;
 `;
