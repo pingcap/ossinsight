@@ -45,7 +45,7 @@ export function useAsyncState<T, E = unknown> (initial?: T | (() => T)) {
 }
 
 export function useAsyncOperation<P, T> (params: P, fetcher: (params: P) => Promise<T>, requireAuth: boolean = false): AsyncOperation<T> {
-  const { isAuthenticated, loginWithRedirect, getAccessTokenSilently } = useAuth0();
+  const { isAuthenticated, loginWithPopup, getAccessTokenSilently } = useAuth0();
   const whenMounted = useWhenMounted();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<unknown>();
@@ -65,7 +65,7 @@ export function useAsyncOperation<P, T> (params: P, fetcher: (params: P) => Prom
 
   const run = useEventCallback(async () => {
     if (requireAuth && !isAuthenticated) {
-      await loginWithRedirect();
+      await loginWithPopup();
       return;
     }
     if (loadingRef.current) {

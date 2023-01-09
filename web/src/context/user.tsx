@@ -25,14 +25,13 @@ export function useUserInfoContext () {
 
 export function AuthProvider ({ children }: PropsWithChildren): JSX.Element {
   const {
-    siteConfig: { customFields, url },
+    siteConfig: { customFields },
   } = useDocusaurusContext();
 
   return (
     <Auth0Provider
       domain={customFields?.auth0_domain as string}
       clientId={customFields?.auth0_client_id as string}
-      redirectUri={url}
       audience={`https://${customFields?.auth0_domain as string}/api/v2/`}
       scope="read:current_user"
     >
@@ -42,14 +41,14 @@ export function AuthProvider ({ children }: PropsWithChildren): JSX.Element {
 }
 
 export function useRequireLogin () {
-  const { isLoading, user, loginWithRedirect } = useAuth0();
+  const { isLoading, user, loginWithPopup } = useAuth0();
 
   return useMemoizedFn(async () => {
     if (isLoading) {
       return false;
     }
     if (isNullish(user)) {
-      await loginWithRedirect();
+      await loginWithPopup();
       return false;
     }
     return true;

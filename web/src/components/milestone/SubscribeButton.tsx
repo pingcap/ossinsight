@@ -15,7 +15,7 @@ export interface SubscribeButtonProps extends Omit<ButtonProps, 'onClick' | 'dis
 }
 
 export default forwardRef(function SubscribeButton ({ repoName, variant, onClick, icon: iconProp, ...props }: SubscribeButtonProps, ref: ForwardedRef<HTMLButtonElement>) {
-  const { isAuthenticated: userValidated, isLoading: userValidating, loginWithRedirect: login } = useAuth0();
+  const { isAuthenticated: userValidated, isLoading: userValidating, loginWithPopup: login } = useAuth0();
   const { subscribed, subscribing, subscribe, unsubscribe, isValidating } = useSubscribed(repoName);
   const { success, displayError } = useNotifications();
 
