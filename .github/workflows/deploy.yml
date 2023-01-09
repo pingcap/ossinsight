@@ -29,6 +29,8 @@ jobs:
         run: npm run build
         env:
           SENTRY_DSN: https://ea6017f8ee534468b308a2a6c949895a@o226447.ingest.sentry.io/6588620
+          AUTH0_DOMAIN: ${{ secrets.AUTH0_DOMAIN }}
+          AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
       - name: Deploy to ossinsight.io 🚀
         uses: JamesIves/github-pages-deploy-action@releases/v3
         with:
