@@ -25,34 +25,36 @@ export default function Layout ({ children, header, side, footer, showFooter, sh
   const size = useSize(headerRef);
 
   const headerOffsetHeight = useMemo(() => {
-    return (size?.height) ?? headerMarginBottom;
+    return (size?.height) ?? 0;
   }, [size?.height]);
 
   return (
     <Root maxWidth="xl">
       <Transition nodeRef={headerRef} in={showHeader} timeout={transitionDuration}>
         {(status) => (
-          <Header ref={headerRef} className={`Header-${status}`} height={headerOffsetHeight}>
-            {header}
-          </Header>
+          <>
+            <Header ref={headerRef} className={`Header-${status}`} height={headerOffsetHeight}>
+              {header}
+            </Header>
+            <Body className={`Body-header-${status}`} headerHeight={headerOffsetHeight}>
+              <Transition nodeRef={mainRef} in={showSide} timeout={transitionDuration}>
+                {(status) => (
+                  <Main ref={mainRef} className={`Main-side-${status}`}>
+                    {children}
+                  </Main>
+                )}
+              </Transition>
+              <Transition nodeRef={sideRef} in={showSide} timeout={transitionDuration} unmountOnExit>
+                {(status) => (
+                  <Side ref={sideRef} className={`Side-${status}`}>
+                    {side}
+                  </Side>
+                )}
+              </Transition>
+            </Body>
+          </>
         )}
       </Transition>
-      <Body>
-        <Transition nodeRef={mainRef} in={showSide} timeout={transitionDuration}>
-          {(status) => (
-            <Main ref={mainRef} className={`Main-side-${status}`}>
-              {children}
-            </Main>
-          )}
-        </Transition>
-        <Transition nodeRef={sideRef} in={showSide} timeout={transitionDuration} unmountOnExit>
-          {(status) => (
-            <Side ref={sideRef} className={`Side-${status}`}>
-              {side}
-            </Side>
-          )}
-        </Transition>
-      </Body>
       <Footer>
         {showFooter && footer}
       </Footer>
@@ -62,9 +64,11 @@ export default function Layout ({ children, header, side, footer, showFooter, sh
 
 const Root = styled(MuiContainer, { name: 'Layout-Root' })`
   padding-top: 64px;
+
   ${({ theme }) => theme.breakpoints.down('md')} {
     padding-top: 16px;
   }
+
   min-height: calc(100vh - 92px);
   box-sizing: border-box;
   position: relative;
@@ -73,7 +77,7 @@ const Root = styled(MuiContainer, { name: 'Layout-Root' })`
   align-items: stretch;
 `;
 
-const Body = styled('div', { name: 'Layout-Body' })`
+const Body = styled('div', { name: 'Layout-Body', shouldForwardProp: propName => propName !== 'headerHeight' })<{ headerHeight: number }>`
   --explore-layout-side-width: ${sideWidth}px;
 
   ${({ theme }) => theme.breakpoints.up('lg')} {
@@ -95,17 +99,33 @@ const Body = styled('div', { name: 'Layout-Body' })`
   ${({ theme }) => theme.breakpoints.up('xl')} {
     max-width: ${({ theme }) => `calc(${theme.breakpoints.values.lg}px + var(--explore-layout-side-width))`};
   }
+
+  transform: translate3d(0, -${({ headerHeight }) => headerHeight + headerMarginBottom + 40}px, 0);
+  transition: ${({ theme }) => theme.transitions.create('transform', { duration: transitionDuration })};
+
+  ${({ theme }) => theme.breakpoints.down('md')} {
+    transform: translate3d(0, -${({ headerHeight }) => headerHeight + headerMarginBottom - 8}px, 0);
+  }
+
+  ${classNames('Body-header', true)} {
+    opacity: 1;
+    transform: initial;
+  }
 `;
 
 const Header = styled('div', { name: 'Layout-Header', shouldForwardProp: propName => propName !== 'height' })<{ height: number }>`
-  opacity: 0;
-  margin-top: -${({ height }) => height + headerMarginBottom}px;
+  opacity: 0.1;
+  transform: translate3d(0, -${({ height }) => height + headerMarginBottom + 40}px, 0);
   margin-bottom: ${headerMarginBottom}px;
-  transition: ${({ theme }) => theme.transitions.create(['margin', 'opacity'], { duration: transitionDuration })};
+  transition: ${({ theme }) => theme.transitions.create(['transform', 'opacity'], { duration: transitionDuration })};
+
+  ${({ theme }) => theme.breakpoints.down('md')} {
+    transform: translate3d(0, -${({ height }) => height + headerMarginBottom}px, 0);
+  }
 
   ${classNames('Header', true)} {
     opacity: 1;
-    margin-top: 0;
+    transform: initial;
   }
 `;
 
