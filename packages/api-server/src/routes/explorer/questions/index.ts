@@ -41,15 +41,13 @@ export const newQuestionHandler: FastifyPluginAsyncJsonSchemaToTs = async (app):
       const question = await explorerService.newQuestion(conn, userId, metadata?.github_login, questionTitle);
 
       // Prepare question async.
-      explorerService.prepareQuestion(question).catch(err => {
-        app.log.error(err, `Failed to prepare question ${question.id}: ${err.message}`);
-      });
+      if (!question.hitCache) {
+        explorerService.prepareQuestion(question).catch(err => {
+          app.log.error(err, `Failed to prepare question ${question.id}: ${err.message}`);
+        });
+      }
 
-      const preceding = await explorerService.countPrecedingQuestions(question.id, conn);
-      reply.status(200).send({
-        ...question,
-        queuePreceding: preceding,
-      });
+      reply.status(200).send(question);
     } catch (e) {
       throw e;
     } finally {

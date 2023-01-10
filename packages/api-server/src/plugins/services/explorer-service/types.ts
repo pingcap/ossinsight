@@ -29,6 +29,7 @@ export interface Question {
   spent?: number | null;
   error?: string | null;
   hitCache: boolean;
+  preceding: number;
 }
 
 export interface QuestionSQLResult {

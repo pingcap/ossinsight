@@ -149,6 +149,7 @@ export class ExplorerService {
             recommended: false,
             createdAt: DateTime.utc(),
             hitCache: false,
+            preceding: 0
         }
 
         try {
@@ -157,9 +158,13 @@ export class ExplorerService {
             // Check if the question is cached.
             const cachedQuestion = await this.getQuestionByHash(questionHash, this.options.generateSQLCacheTTL, conn);
             if (cachedQuestion) {
-                await conn.commit();
                 logger.info("Question is cached, returning cached question (hash: %s).", questionHash);
-                return cachedQuestion;
+
+                await conn.commit();
+                return {
+                    ...cachedQuestion,
+                    hitCache: true
+                };
             }
 
             // Give the trusted users more daily requests.
@@ -184,6 +189,8 @@ export class ExplorerService {
                 await this.cancelQuestions(conn, onGongQuestions.map(q => q.id));
             }
 
+            question.preceding = await this.countPrecedingQuestions(question.id, conn);
+
             await this.createQuestion(question, conn);
             await conn.commit();
         } catch (err: any) {
@@ -202,6 +209,7 @@ export class ExplorerService {
     async prepareQuestion(question: Question) {
         const { id: questionId, title } = question;
         const logger = this.logger.child({ questionId: questionId });
+        let queueName = null, queueJobId = null;
 
         try {
             question.status = QuestionStatus.AnswerGenerating;
@@ -308,27 +316,14 @@ export class ExplorerService {
                 }
             }
 
-            const queueName = engines.includes('tiflash') ? QuestionQueueNames.Low : QuestionQueueNames.High;
-            const queueJobId = randomUUID();
+            queueName = engines.includes('tiflash') ? QuestionQueueNames.Low : QuestionQueueNames.High;
+            queueJobId = randomUUID();
             question.engines = engines;
             question.queueName = queueName;
             question.queueJobId = queueJobId;
             question.requestedAt = DateTime.utc();
             question.status = QuestionStatus.Waiting;
             await this.updateQuestion(question);
-
-            // Push the question to the queue.
-            if (queueName === QuestionQueueNames.Low) {
-                logger.info("Pushing the question to the low concurrent queue (jobId: %s).", queueJobId);
-                await this.lowConcurrentQueue.add(QuestionQueueNames.Low, question, {
-                    jobId: queueJobId!
-                });
-            } else {
-                logger.info("Pushing the question to the high concurrent queue (jobId: %s).", queueJobId);
-                await this.highConcurrentQueue.add(QuestionQueueNames.High, question, {
-                    jobId: queueJobId!
-                });
-            }
         } catch (err: any) {
             if (err instanceof ExplorerPrepareQuestionError) {
                 await this.updateQuestion({
@@ -348,6 +343,19 @@ export class ExplorerService {
                 }));
             }
             throw err;
+        }
+
+        // Push the question to the queue.
+        if (queueName === QuestionQueueNames.Low && queueJobId) {
+            logger.info("Pushing the question to the low concurrent queue (jobId: %s).", queueJobId);
+            await this.lowConcurrentQueue.add(QuestionQueueNames.Low, question, {
+                jobId: queueJobId
+            });
+        } else if (queueName === QuestionQueueNames.High && queueJobId) {
+            logger.info("Pushing the question to the high concurrent queue (jobId: %s).", queueJobId);
+            await this.highConcurrentQueue.add(QuestionQueueNames.High, question, {
+                jobId: queueJobId
+            });
         }
     }
 
@@ -569,7 +577,7 @@ export class ExplorerService {
         }
     }
 
-    private async saveQuestionError(questionId: string, message: string, conn?: Connection) {
+    private async saveQuestionError(questionId: string, message: string = 'unknown', conn?: Connection) {
         const connection = conn || this.mysql;
         const [rs] = await connection.query<ResultSetHeader>(`
             UPDATE explorer_questions SET status = ?, error = ? WHERE id = UUID_TO_BIN(?)
