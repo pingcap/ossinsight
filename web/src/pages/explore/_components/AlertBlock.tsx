@@ -43,7 +43,7 @@ export default function AlertBlock ({ severity, sx, children, createIssueUrl = (
           &nbsp;
           <AlertButton onClick={report}>
             <GitHub fontSize="inherit" sx={{ mr: 0.5 }} />
-            <span>Feedback</span>
+            <span>Report an issue</span>
           </AlertButton>
         </Stack>
       </StyledAlert>
@@ -55,7 +55,7 @@ export default function AlertBlock ({ severity, sx, children, createIssueUrl = (
                 👀 How about try other questions? <IconButton onClick={reload} disabled={loading}><Cached /></IconButton>
               </Box>
             )}
-            n={5}
+            n={4}
             variant="text"
           />
         </SuggestionsContainer>
