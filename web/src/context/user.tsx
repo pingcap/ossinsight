@@ -1,9 +1,10 @@
 import React, { createContext, createElement, PropsWithChildren, useContext } from 'react';
 import { useUserInfo } from '@site/src/api/user';
-import { Auth0Provider, useAuth0 } from '@auth0/auth0-react';
+import { Auth0Provider } from '@auth0/auth0-react';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import { useMemoizedFn } from 'ahooks';
 import { isNullish } from '@site/src/utils/value';
+import { useMediaQueryAuth0 } from '@site/src/theme/NavbarItem/useMediaQueryAuth0';
 
 const UserContext = createContext<ReturnType<typeof useUserInfo>>({
   validated: false,
@@ -41,14 +42,14 @@ export function AuthProvider ({ children }: PropsWithChildren): JSX.Element {
 }
 
 export function useRequireLogin () {
-  const { isLoading, user, loginWithPopup } = useAuth0();
+  const { isLoading, user, login } = useMediaQueryAuth0();
 
   return useMemoizedFn(async () => {
     if (isLoading) {
       return false;
     }
     if (isNullish(user)) {
-      await loginWithPopup();
+      await login();
       return false;
     }
     return true;
