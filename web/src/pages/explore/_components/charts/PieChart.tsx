@@ -26,6 +26,7 @@ export default function PieChart ({ chartName, title, value, label, data }: Char
     },
     series: {
       type: 'pie',
+      top: 36,
       name: label,
       datasetId: 'raw',
       encode: {
