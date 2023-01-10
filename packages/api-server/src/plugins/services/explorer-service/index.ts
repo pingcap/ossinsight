@@ -40,12 +40,13 @@ import {
     PieChart,
     RecommendedChart,
     RecommendQuestion,
-    RepoCard,
+    RepoCard, AnswerSummary,
     Table
 } from "../bot-service/types";
 import {GenerateAnswerPromptTemplate} from "../bot-service/template/GenerateAnswerPromptTemplate";
 import {FastifyBaseLogger} from "fastify";
 import {MySQLPromisePool} from "@fastify/mysql";
+import {GenerateSummaryPromptTemplate} from "../bot-service/template/GenerateSummaryPromptTemplate";
 
 declare module 'fastify' {
     interface FastifyInstance {
@@ -102,6 +103,7 @@ export class ExplorerService {
     private sqlParser: Parser;
     private readonly generateAnswerTemplate: GenerateAnswerPromptTemplate;
     private readonly generateChartTemplate: GenerateChartPromptTemplate;
+    private readonly generteAnswerSummaryTemplate: GenerateSummaryPromptTemplate;
     private maxSelectLimit = 200;
     private options: ExplorerOption;
 
@@ -117,6 +119,7 @@ export class ExplorerService {
         this.sqlParser = new Parser();
         this.generateChartTemplate = new GenerateChartPromptTemplate();
         this.generateAnswerTemplate = new GenerateAnswerPromptTemplate();
+        this.generteAnswerSummaryTemplate = new GenerateSummaryPromptTemplate();
         this.options = Object.assign({}, {
             userMaxQuestionsPerHour: 20,
             userMaxQuestionsOnGoing: 3,
@@ -588,6 +591,19 @@ export class ExplorerService {
         }
     }
 
+    private async saveAnswerSummary(questionId: string, summary: AnswerSummary, conn?: Connection) {
+        const connection = conn || this.mysql;
+        const summaryValue = JSON.stringify(summary);
+        const [rs] = await connection.query<ResultSetHeader>(`
+            UPDATE explorer_questions
+            SET answer_summary = ?
+            WHERE id = UUID_TO_BIN(?)
+        `, [summaryValue, questionId]);
+        if (rs.affectedRows === 0) {
+            throw new APIError(500, 'Failed to save the answer summary.');
+        }
+    }
+
     async getQuestionById(questionId: string, conn?: Connection): Promise<Question | null> {
         const connection = conn || this.mysql;
         const [rows] = await connection.query<any[]>(`
@@ -967,6 +983,27 @@ export class ExplorerService {
         if (rs.affectedRows !== 1) {
             throw new APIError(500, 'Failed to add the question feedback.');
         }
+    }
+
+    // Question answer summary.
+
+    async getQuestionAnswerSummary(questionId: string): Promise<AnswerSummary> {
+        const question = await this.getQuestionById(questionId);
+        if (!question) {
+            throw new APIError(404, 'Question not found.');
+        }
+        const { title, result } = question;
+        if (!result || !Array.isArray(result.rows) || result.rows.length === 0) {
+            throw new APIError(429, 'The question has no result.');
+        }
+
+        const summary = await this.botService.summaryAnswer(this.generteAnswerSummaryTemplate, title, result.rows);
+        if (!summary) {
+            throw new APIError(500, 'Failed to generate the answer summary.');
+        }
+
+        await this.saveAnswerSummary(questionId, summary);
+        return summary;
     }
 
 }
