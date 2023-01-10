@@ -43,10 +43,14 @@ export default async (
     }
 }
 
-export const workerConfig: WorkerOptions = {
-    autorun: true,
-    concurrency: 10,
-};
+export const workerConfig =  (
+  app: FastifyInstance,
+) => {
+    return {
+        autorun: true,
+        concurrency: 10,
+    } as WorkerOptions;
+}
 
 async function checkIssueReceivedMilestones (
     conn: PoolConnection,

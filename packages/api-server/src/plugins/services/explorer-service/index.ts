@@ -3,8 +3,8 @@ import {Job, Queue} from "bullmq";
 import {
     APIError,
     BotResponseParseError,
-    ExplorerPrepareQuestionError,
     ExplorerCreateQuestionError,
+    ExplorerPrepareQuestionError,
     SQLUnsupportedFunctionError,
     SQLUnsupportedMultipleStatementsError,
     SQLUnsupportedStatementTypeError,
@@ -30,7 +30,19 @@ import {
 import {TiDBPlaygroundQueryExecutor} from "../../../core/executor/query-executor/TiDBPlaygroundQueryExecutor";
 import {GenerateChartPromptTemplate} from "../bot-service/template/GenerateChartPromptTemplate";
 import {randomUUID} from "crypto";
-import {ChartNames, RecommendedChart, RecommendQuestion} from "../bot-service/types";
+import {
+    BarChart,
+    ChartNames,
+    LineChart,
+    MapChart,
+    NumberCard,
+    PersonalCard,
+    PieChart,
+    RecommendedChart,
+    RecommendQuestion,
+    RepoCard,
+    Table
+} from "../bot-service/types";
 import {GenerateAnswerPromptTemplate} from "../bot-service/template/GenerateAnswerPromptTemplate";
 import {FastifyBaseLogger} from "fastify";
 import {MySQLPromisePool} from "@fastify/mysql";
@@ -143,7 +155,7 @@ export class ExplorerService {
             await conn.beginTransaction();
 
             // Check if the question is cached.
-            const cachedQuestion = await this.getQuestionByHash(conn, questionHash);
+            const cachedQuestion = await this.getQuestionByHash(questionHash, this.options.generateSQLCacheTTL, conn);
             if (cachedQuestion) {
                 await conn.commit();
                 logger.info("Question is cached, returning cached question (hash: %s).", questionHash);
@@ -157,22 +169,26 @@ export class ExplorerService {
             }
 
             // Notice: Using FOR UPDATE, pessimistic locking controls a single user to request question serially.
-            const previousQuestions = await this.getUserPastHourQuestionsWithLock(conn, userId);
+            const previousQuestions = await this.getUserPastHourQuestionsWithLock(userId, conn);
             if (previousQuestions.length >= limit) {
-                throw new APIError(429, 'Too many questions request in the past hour');
+                const oldestQuestion = previousQuestions.reduce((prev, current) => (prev.createdAt < current.createdAt) ? prev : current);
+                const now = DateTime.utc();
+                const waitMinutes = oldestQuestion.createdAt.diff(now.minus({ hour: 1 }), ["minutes", "seconds"]).toHuman();
+                throw new APIError(429, `Too many questions request in the past hour, please wait ${waitMinutes}.`);
             }
 
-            const onGongQuestions = previousQuestions.filter(q => [QuestionStatus.Waiting, QuestionStatus.Running].includes(q.status));
+            const onGongStatuses = [QuestionStatus.AnswerGenerating, QuestionStatus.SQLValidating, QuestionStatus.Waiting, QuestionStatus.Running];
+            const onGongQuestions = previousQuestions.filter(q => onGongStatuses.includes(q.status));
             if (onGongQuestions.length >= this.options.userMaxQuestionsOnGoing) {
                 logger.info("There are %d previous question on going, cancel them.", onGongQuestions.length);
                 await this.cancelQuestions(conn, onGongQuestions.map(q => q.id));
             }
 
-            await this.createQuestion(conn, question);
+            await this.createQuestion(question, conn);
             await conn.commit();
         } catch (err: any) {
             await conn.rollback();
-            logger.info(err, `Failed to create a new question: ${err.message}`);
+            logger.error(err, `Failed to create a new question: ${err.message}`);
             if (err instanceof APIError) {
                 throw new ExplorerCreateQuestionError(err.statusCode, err.message, question, err);
             } else {
@@ -187,13 +203,12 @@ export class ExplorerService {
         const { id: questionId, title } = question;
         const logger = this.logger.child({ questionId: questionId });
 
-        const conn = await this.mysql.getConnection();
         try {
             question.status = QuestionStatus.AnswerGenerating;
             await this.updateQuestion(question);
 
             // Prepare the recommended questions.
-            const popularQuestions = await this.getRecommendQuestions(conn, 3, false);
+            const popularQuestions = await this.getRecommendQuestions(3, false);
             question.recommendedQuestions?.push(...popularQuestions.map(q => q.title));
 
             // Generate the SQL by OpenAI.
@@ -257,7 +272,7 @@ export class ExplorerService {
             const cachedResult = await this.getCachedSQLResult(question.queryHash, this.options.querySQLCacheTTL);
             if (cachedResult) {
                 logger.info("SQL result is cached, returning cached result (hash: %s).", question.queryHash);
-                await this.saveQuestionResult(conn, questionId, cachedResult);
+                await this.saveQuestionResult(questionId, cachedResult);
                 question = {
                     ...question,
                     ...cachedResult,
@@ -273,7 +288,7 @@ export class ExplorerService {
             if (statementType === 'select') {
                 try {
                     logger.info("Getting the storage engines for the SQL: %s", querySQL);
-                    const plan = await this.getSQLExecutionPlan(conn, querySQL);
+                    const plan = await this.getSQLExecutionPlan(querySQL);
                     engines = this.getStorageEnginesFromPlan(plan);
                 } catch (err: any) {
                     if (err.sqlMessage) {
@@ -321,20 +336,18 @@ export class ExplorerService {
                     status: QuestionStatus.Error,
                     error: err.message,
                 });
-                await this.addSystemQuestionFeedback(conn, questionId, err.feedbackType, JSON.stringify(err.feedbackPayload));
+                await this.addSystemQuestionFeedback(questionId, err.feedbackType, JSON.stringify(err.feedbackPayload));
             } else {
                 await this.updateQuestion({
                     ...question,
                     status: QuestionStatus.Error,
                     error: err.message,
                 });
-                await this.addSystemQuestionFeedback(conn, questionId, QuestionFeedbackType.ErrorUnknown, JSON.stringify({
+                await this.addSystemQuestionFeedback(questionId, QuestionFeedbackType.ErrorUnknown, JSON.stringify({
                     message: err.message
                 }));
             }
             throw err;
-        } finally {
-            await conn.release();
         }
     }
 
@@ -427,8 +440,9 @@ export class ExplorerService {
         return rootNode;
     }
 
-    async getSQLExecutionPlan(conn: Connection, sql: string) {
-        const [rows] = await conn.query<any[]>('explain format = "brief" ' + sql);
+    async getSQLExecutionPlan(sql: string, conn?: Connection) {
+        const connection = conn || this.mysql;
+        const [rows] = await connection.query<any[]>('explain format = "brief" ' + sql);
         return rows;
     }
 
@@ -464,7 +478,8 @@ export class ExplorerService {
 
     // CRUD.
 
-    private async createQuestion(conn: Connection, question: Question) {
+    private async createQuestion(question: Question, conn?: Connection) {
+        const connection = conn || this.mysql;
         const {
             id, hash, userId, status, title, querySQL, queryHash, engines = [],
             recommended, createdAt, queueName, queueJobId = null, chart, recommendedQuestions = [], error = null
@@ -472,7 +487,7 @@ export class ExplorerService {
         const enginesValue = JSON.stringify(engines);
         const chartValue = chart !== undefined ? JSON.stringify(chart) : null;
         const recommendedQuestionsValue = JSON.stringify(recommendedQuestions);
-        const [rs] = await conn.query<ResultSetHeader>(`
+        const [rs] = await connection.query<ResultSetHeader>(`
             INSERT INTO explorer_questions(
                 id, hash, user_id, status, title, query_sql, query_hash, engines, 
                 recommended, created_at, queue_name, queue_job_id, chart, recommended_questions, error
@@ -495,8 +510,8 @@ export class ExplorerService {
         }
     }
 
-    private async updateQuestionStatus(conn: Connection, questionId: string, status: QuestionStatus) {
-        const [rs] = await conn.query<ResultSetHeader>(`
+    private async updateQuestionStatus(questionId: string, status: QuestionStatus) {
+        const [rs] = await this.mysql.query<ResultSetHeader>(`
             UPDATE explorer_questions SET status = ? WHERE id = UUID_TO_BIN(?)
         `, [status, questionId]);
         if (rs.affectedRows !== 1) {
@@ -533,9 +548,10 @@ export class ExplorerService {
         }
     }
 
-    private async saveQuestionResult(conn: Connection, questionId: string, questionResult: QuestionQueryResult, hitCache = false) {
+    private async saveQuestionResult(questionId: string, questionResult: QuestionQueryResult, hitCache = false, conn?: Connection) {
+        const connection = conn || this.mysql;
         const { result, executedAt, finishedAt, spent } = questionResult;
-        const [rs] = await conn.query<ResultSetHeader>(`
+        const [rs] = await connection.query<ResultSetHeader>(`
             UPDATE explorer_questions
             SET status = ?, result = ?, executed_at = ?, finished_at = ?, spent = ?, hit_cache = ?
             WHERE id = UUID_TO_BIN(?)
@@ -553,8 +569,9 @@ export class ExplorerService {
         }
     }
 
-    private async saveQuestionError(conn: Connection, questionId: string, message: string) {
-        const [rs] = await conn.query<ResultSetHeader>(`
+    private async saveQuestionError(questionId: string, message: string, conn?: Connection) {
+        const connection = conn || this.mysql;
+        const [rs] = await connection.query<ResultSetHeader>(`
             UPDATE explorer_questions SET status = ?, error = ? WHERE id = UUID_TO_BIN(?)
         `, [QuestionStatus.Error, message, questionId]);
         if (rs.affectedRows !== 1) {
@@ -562,8 +579,9 @@ export class ExplorerService {
         }
     }
 
-    async getQuestionById(conn: Connection, questionId: string): Promise<Question | null> {
-        const [rows] = await conn.query<any[]>(`
+    async getQuestionById(questionId: string, conn?: Connection): Promise<Question | null> {
+        const connection = conn || this.mysql;
+        const [rows] = await connection.query<any[]>(`
             SELECT
                 BIN_TO_UUID(id) AS id, hash, user_id AS userId, status, title, query_sql AS querySQL, query_hash AS queryHash, engines, 
                 queue_name AS queueName, queue_job_id AS queueJobId, recommended_questions AS recommendedQuestions, result, chart, recommended,
@@ -578,8 +596,9 @@ export class ExplorerService {
         return this.mapRecordToQuestion(rows[0]);
     }
 
-    async getQuestionByHash(conn: Connection, questionHash: string): Promise<Question | null> {
-        const [rows] = await conn.query<any[]>(`
+    async getQuestionByHash(questionHash: string, ttl: number, conn?: Connection): Promise<Question | null> {
+        const connection = conn || this.mysql;;
+        const [rows] = await connection.query<any[]>(`
             SELECT
                 BIN_TO_UUID(id) AS id, hash, user_id AS userId, status, title, query_sql AS querySQL, query_hash AS queryHash, engines,
                 queue_name AS queueName, queue_job_id AS queueJobId, recommended_questions AS recommendedQuestions, result, chart, recommended, 
@@ -589,9 +608,10 @@ export class ExplorerService {
             WHERE
                 hash = ?
                 AND status IN (?)
+                AND created_at > DATE_SUB(NOW(), INTERVAL ? SECOND)
             ORDER BY created_at DESC
             LIMIT 1
-        `, [questionHash, QuestionStatus.Success]);
+        `, [questionHash, QuestionStatus.Success, ttl]);
         if (rows.length !== 1) {
             return null;
         }
@@ -630,8 +650,9 @@ export class ExplorerService {
         }
     }
 
-    async getUserPastHourQuestionsWithLock(conn: Connection, userId: number): Promise<Question[]> {
-        const [rows] = await conn.query<any[]>(`
+    async getUserPastHourQuestionsWithLock(userId: number, conn?: Connection): Promise<Question[]> {
+        const connection = conn || this.mysql;
+        const [rows] = await connection.query<any[]>(`
             SELECT
                 BIN_TO_UUID(id) AS id, hash, user_id AS userId, status, title, query_sql AS querySQL, query_hash AS queryHash, engines,
                 queue_name AS queueName, queue_job_id AS queueJobId, recommended_questions AS recommendedQuestions, result, chart, recommended, 
@@ -657,8 +678,9 @@ export class ExplorerService {
         }
     }
 
-    async countPrecedingQuestions(conn: Connection, questionId: string): Promise<number> {
-        const [rows] = await conn.query<any[]>(`
+    async countPrecedingQuestions(questionId: string, conn?: Connection): Promise<number> {
+        const connection = conn || this.mysql;
+        const [rows] = await connection.query<any[]>(`
             SELECT COUNT(*) AS count
             FROM explorer_questions eq
             WHERE
@@ -671,18 +693,22 @@ export class ExplorerService {
 
     // Resolve questions.
 
-    async resolveQuestion(conn: Connection, job: Job, question: Question): Promise<QuestionQueryResult> {
+    async resolveQuestion(job: Job, question: Question): Promise<QuestionQueryResult> {
         const { id: questionId, querySQL } = question;
         try {
-            await this.updateQuestionStatus(conn, questionId, QuestionStatus.Running);
+            await this.updateQuestionStatus(questionId, QuestionStatus.Running);
             const questionResult = await this.executeQuery(questionId, querySQL!);
-            // TODO: Validate result.
-            await this.saveQuestionResult(conn, questionId, {
+
+            if (this.checkChart(question.chart, questionResult.result)) {
+                await this.addSystemQuestionFeedback(questionId, QuestionFeedbackType.ErrorValidateChart, JSON.stringify(question.chart));
+            }
+
+            await this.saveQuestionResult(questionId, {
                 ...questionResult,
-            });
+            }, false);
             return questionResult;
         } catch (err: any) {
-            await this.saveQuestionError(conn, questionId, err);
+            await this.saveQuestionError(questionId, err);
             throw err;
         }
     }
@@ -719,6 +745,73 @@ export class ExplorerService {
         } finally {
             playgroundConn.release();
         }
+    }
+
+    private checkChart(chart: RecommendedChart | undefined, result: QuestionSQLResult): boolean {
+        if (chart === null || chart === undefined) {
+            return false;
+        }
+
+        const columnNames = result.fields.map((f) => f.name);
+
+        switch (chart.chartName) {
+            case ChartNames.TABLE:
+                const table: Table = chart as any;
+                if (Array.isArray(table.columns) && table.columns.length > 0) {
+                    return table.columns.every((column) => this.isValidColumn(column, columnNames));
+                } else {
+                    return false;
+                }
+            case ChartNames.NUMBER_CARD:
+                const numberCard: NumberCard = chart as any;
+                return this.isValidColumn(numberCard.label, columnNames) && this.isValidColumn(numberCard.value, columnNames);
+            case ChartNames.BAR_CHART:
+                const barChart: BarChart = chart as any;
+
+                if (!this.isValidColumn(barChart.x, columnNames)) {
+                    return false;
+                }
+
+                if (Array.isArray(barChart.y) && barChart.y.length > 0) {
+                    return barChart.y.every((column) => this.isValidColumn(column, columnNames));
+                } else if (typeof barChart.y === 'string') {
+                    return this.isValidColumn(barChart.y, columnNames);
+                } else {
+                    return false;
+                }
+            case ChartNames.LINE_CHART:
+                const lineChart: LineChart = chart as any;
+
+                if (!this.isValidColumn(lineChart.x, columnNames)) {
+                    return false;
+                }
+
+                if (Array.isArray(lineChart.y) && lineChart.y.length > 0) {
+                    return lineChart.y.every((column) => this.isValidColumn(column, columnNames));
+                } else if (typeof lineChart.y === 'string') {
+                    return this.isValidColumn(lineChart.y, columnNames);
+                } else {
+                    return false;
+                }
+            case ChartNames.PIE_CHART:
+                const pieChart: PieChart = chart as any;
+                return this.isValidColumn(pieChart.label, columnNames) && this.isValidColumn(pieChart.value, columnNames);
+            case ChartNames.MAP_CHART:
+                const mapChart: MapChart = chart as any;
+                return this.isValidColumn(mapChart.country_code, columnNames) && this.isValidColumn(mapChart.value, columnNames);
+            case ChartNames.PERSONAL_CARD:
+                const personalCard: PersonalCard = chart as any;
+                return this.isValidColumn(personalCard.user_login, columnNames);
+            case ChartNames.REPO_CARD:
+                const repoCard: RepoCard = chart as any;
+                return this.isValidColumn(repoCard.repo_name, columnNames);
+            default:
+                return false;
+        }
+    }
+
+    private isValidColumn(column: any, columns: string[]): boolean {
+        return typeof column === 'string' && columns.includes(column);
     }
 
     // Error handling.
@@ -758,12 +851,12 @@ export class ExplorerService {
             }
         }
 
-        await this.saveQuestionChart(conn, questionId, chart);
+        await this.saveQuestionChart(questionId, chart, conn);
         return chart;
     }
 
     async generateChartByQuestionId(conn: Connection, questionId: string) {
-        const question = await this.getQuestionById(conn, questionId);
+        const question = await this.getQuestionById(questionId, conn);
         if (!question) {
             throw new APIError(404, 'Question not found.');
         }
@@ -775,8 +868,9 @@ export class ExplorerService {
         return this.generateChart(conn, id, title, result);
     }
 
-    private async saveQuestionChart(conn: Connection, questionId: string, chart: RecommendedChart) {
-        const [rs] = await conn.query<ResultSetHeader>(`
+    private async saveQuestionChart(questionId: string, chart: RecommendedChart, conn?: Connection) {
+        const connection = conn || this.mysql;
+        const [rs] = await connection.query<ResultSetHeader>(`
             UPDATE explorer_questions SET chart = ? WHERE id = UUID_TO_BIN(?)
         `, [JSON.stringify(chart), questionId]);
         if (rs.affectedRows !== 1) {
@@ -786,11 +880,12 @@ export class ExplorerService {
 
     // Recommend questions.
 
-    async getRecommendQuestions(conn: Connection, n: number, aiGenerated?: boolean): Promise<RecommendQuestion[]> {
+    async getRecommendQuestions(n: number, aiGenerated?: boolean, conn?: Connection): Promise<RecommendQuestion[]> {
+        const connection = conn || this.mysql;
         let questions = [];
         try {
             if (aiGenerated !== undefined) {
-                [questions] = await conn.query<any[]>(`
+                [questions] = await connection.query<any[]>(`
                 SELECT hash, title, ai_generated
                 FROM explorer_recommend_questions
                 WHERE ai_generated = ?
@@ -798,7 +893,7 @@ export class ExplorerService {
                 LIMIT ?
             `, [aiGenerated, n]);
             } else {
-                [questions] = await conn.query<any[]>(`
+                [questions] = await connection.query<any[]>(`
                 SELECT hash, title, ai_generated
                 FROM explorer_recommend_questions
                 ORDER BY RAND()
@@ -835,35 +930,28 @@ export class ExplorerService {
 
     // Question feedback.
 
-    async addSystemQuestionFeedback(conn: Connection, questionId: string, feedbackType: QuestionFeedbackType, feedbackContent?: string) {
-        await this.addQuestionFeedback(conn, {
+    async addSystemQuestionFeedback(questionId: string, feedbackType: QuestionFeedbackType, feedbackContent?: string, conn?: Connection) {
+        await this.addQuestionFeedback({
             userId: 0,
             questionId,
             satisfied: false,
             feedbackType,
             feedbackContent,
-        });
+        }, conn);
     }
 
-    async getUserQuestionFeedbacks(conn: Connection, userId: number) {
-        const [rows] = await conn.query<any[]>(`
-            SELECT COUNT(*) AS cnt
-            FROM explorer_question_feedbacks
-            WHERE user_id = ?
-        `, [userId]);
-        return rows[0].cnt;
-    }
-
-    async removeUserQuestionFeedbacks(conn: Connection, userId: number, questionId: string) {
-        await conn.query<ResultSetHeader>(`
+    async removeUserQuestionFeedbacks(userId: number, questionId: string, conn?: Connection) {
+        const connection = conn || this.mysql;
+        await connection.query<ResultSetHeader>(`
             DELETE FROM explorer_question_feedbacks
             WHERE user_id = ? AND question_id = UUID_TO_BIN(?)
         `, [userId, questionId]);
     }
 
-    async addQuestionFeedback(conn: Connection, feedback: Omit<QuestionFeedback, "id" | "createdAt">) {
+    async addQuestionFeedback(feedback: Omit<QuestionFeedback, "id" | "createdAt">, conn?: Connection) {
+        const connection = conn || this.mysql;
         const { userId = 0, questionId, satisfied = false, feedbackType, feedbackContent = null } = feedback;
-        const [rs] = await conn.query<ResultSetHeader>(`
+        const [rs] = await connection.query<ResultSetHeader>(`
             INSERT INTO explorer_question_feedbacks(user_id, question_id, satisfied, feedback_type, feedback_content)
             VALUES (?, UUID_TO_BIN(?), ?, ?, ?)
         `, [userId, questionId, satisfied, feedbackType, feedbackContent]);

@@ -30,7 +30,7 @@ const root: FastifyPluginAsync = async (app) => {
         const { questionId } = req.params;
         const conn = await app.mysql.getConnection();
         try {
-            const question = await app.explorerService.getQuestionById(conn, questionId);
+            const question = await app.explorerService.getQuestionById(questionId, conn);
             if (!question) {
                 throw new APIError(404, 'Question not found');
             }
@@ -40,7 +40,7 @@ const root: FastifyPluginAsync = async (app) => {
             }
 
             if (question.status === QuestionStatus.Waiting) {
-                const preceding = await app.explorerService.countPrecedingQuestions(conn, questionId);
+                const preceding = await app.explorerService.countPrecedingQuestions(questionId, conn);
                 reply.status(200).send({
                     queuePreceding: preceding,
                     ...question

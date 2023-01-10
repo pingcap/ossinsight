@@ -59,23 +59,23 @@ const root: FastifyPluginAsync = async (app) => {
 
     try {
       await conn.beginTransaction();
-      await app.explorerService.removeUserQuestionFeedbacks(conn, userId, questionId);
-      await app.explorerService.addQuestionFeedback(conn, {
+      await app.explorerService.removeUserQuestionFeedbacks(userId, questionId, conn);
+      await app.explorerService.addQuestionFeedback({
         questionId,
         userId,
         satisfied,
         feedbackType: satisfied ? QuestionFeedbackType.AnswerSatisfied : QuestionFeedbackType.AnswerUnsatisfied,
         feedbackContent
-      });
+      }, conn);
       await conn.commit();
       reply.status(200).send({
         message: 'ok'
       });
     } catch (err) {
-      await conn.commit();
+      await conn.rollback();
       throw err;
     } finally {
-      conn.release();
+      await conn.release();
     }
   });
 };

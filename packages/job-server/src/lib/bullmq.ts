@@ -54,7 +54,7 @@ const fastifyBullMQ = async (
                 (job) => worker(fastify, job),
                 {
                     connection: opts.connection,
-                    ...(workerConfig && workerConfig),
+                    ...(workerConfig && workerConfig(fastify)),
                 }
             );
             fastify.log.info(`Created a worker for the queue ${queueName}`);

@@ -45,7 +45,7 @@ export const newQuestionHandler: FastifyPluginAsyncJsonSchemaToTs = async (app):
         app.log.error(err, `Failed to prepare question ${question.id}: ${err.message}`);
       });
 
-      const preceding = await explorerService.countPrecedingQuestions(conn, question.id);
+      const preceding = await explorerService.countPrecedingQuestions(question.id, conn);
       reply.status(200).send({
         ...question,
         queuePreceding: preceding,
