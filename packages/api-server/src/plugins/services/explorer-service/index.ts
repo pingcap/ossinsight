@@ -149,6 +149,7 @@ export class ExplorerService {
             recommended: false,
             createdAt: DateTime.utc(),
             hitCache: false,
+            preceding: 0
         }
 
         try {
@@ -157,9 +158,13 @@ export class ExplorerService {
             // Check if the question is cached.
             const cachedQuestion = await this.getQuestionByHash(questionHash, this.options.generateSQLCacheTTL, conn);
             if (cachedQuestion) {
-                await conn.commit();
                 logger.info("Question is cached, returning cached question (hash: %s).", questionHash);
-                return cachedQuestion;
+
+                await conn.commit();
+                return {
+                    ...cachedQuestion,
+                    hitCache: true
+                };
             }
 
             // Give the trusted users more daily requests.
@@ -183,6 +188,8 @@ export class ExplorerService {
                 logger.info("There are %d previous question on going, cancel them.", onGongQuestions.length);
                 await this.cancelQuestions(conn, onGongQuestions.map(q => q.id));
             }
+
+            question.preceding = await this.countPrecedingQuestions(question.id, conn);
 
             await this.createQuestion(question, conn);
             await conn.commit();
@@ -318,16 +325,18 @@ export class ExplorerService {
             await this.updateQuestion(question);
 
             // Push the question to the queue.
-            if (queueName === QuestionQueueNames.Low) {
+            if (queueName === QuestionQueueNames.Low && queueJobId) {
                 logger.info("Pushing the question to the low concurrent queue (jobId: %s).", queueJobId);
                 await this.lowConcurrentQueue.add(QuestionQueueNames.Low, question, {
-                    jobId: queueJobId!
+                    jobId: queueJobId
                 });
-            } else {
+            } else if (queueName === QuestionQueueNames.High && queueJobId) {
                 logger.info("Pushing the question to the high concurrent queue (jobId: %s).", queueJobId);
                 await this.highConcurrentQueue.add(QuestionQueueNames.High, question, {
-                    jobId: queueJobId!
+                    jobId: queueJobId
                 });
+            } else {
+                logger.warn("No queue name or job id provided, the question will not be executed.");
             }
         } catch (err: any) {
             if (err instanceof ExplorerPrepareQuestionError) {
@@ -569,7 +578,7 @@ export class ExplorerService {
         }
     }
 
-    private async saveQuestionError(questionId: string, message: string, conn?: Connection) {
+    private async saveQuestionError(questionId: string, message: string = 'unknown', conn?: Connection) {
         const connection = conn || this.mysql;
         const [rs] = await connection.query<ResultSetHeader>(`
             UPDATE explorer_questions SET status = ?, error = ? WHERE id = UUID_TO_BIN(?)
