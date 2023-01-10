@@ -1,7 +1,7 @@
-import { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { newQuestion, pollQuestion, Question, QuestionStatus } from '@site/src/api/explorer';
 import { useMemoizedFn } from 'ahooks';
-import { isFalsy, isFiniteNumber, isNonemptyString, isNullish, notNullish } from '@site/src/utils/value';
+import { isFalsy, isFiniteNumber, isNonemptyString, notNullish } from '@site/src/utils/value';
 import { timeout } from '@site/src/utils/promisify';
 import { useAuth0 } from '@auth0/auth0-react';
 
@@ -236,35 +236,4 @@ QuestionManagementContext.displayName = 'QuestionManagementContext';
 
 export default function useQuestionManagement () {
   return useContext(QuestionManagementContext);
-}
-
-export type PromptGroups = { groups: string[][], repeatFrom: number };
-
-const PROMPTS: Partial<Record<QuestionLoadingPhase, PromptGroups>> = {
-  [QuestionLoadingPhase.CREATING]: {
-    groups: [
-      ['creating 1.1 ...', 'creating 1.2 ...', 'creating 1.3 ...'],
-      ['creating 2.1 ...', 'creating 2.2 ...', 'creating 2.3 ...'],
-      ['creating 3.1 ...', 'creating 3.2 ...', 'creating 3.3 ...'],
-      ['creating 4.1 ...', 'creating 4.2 ...', 'creating 4.3 ...'],
-      ['creating 5.1 ...', 'creating 5.2 ...', 'creating 5.3 ...'],
-      ['creating 6.1 ...', 'creating 6.2 ...', 'creating 6.3 ...'],
-    ],
-    repeatFrom: 4,
-  },
-};
-
-export function useLoadingPrompts (phases?: QuestionLoadingPhase[]): PromptGroups | undefined {
-  const { phase } = useQuestionManagement();
-
-  return useMemo(() => {
-    if (isNullish(phases) || !phases.includes(phase)) {
-      return undefined;
-    }
-    const prompts = PROMPTS[phase];
-    if (isNullish(prompts)) {
-      return;
-    }
-    return prompts;
-  }, [phases, phase]);
 }
