@@ -733,7 +733,7 @@ export class ExplorerService {
             const questionResult = await this.executeQuery(questionId, querySQL!);
 
             // Check chart if match the result.
-            if (this.checkChart(question.chart, questionResult.result)) {
+            if (!this.checkChart(question.chart, questionResult.result)) {
                 await this.addSystemQuestionFeedback(questionId, QuestionFeedbackType.ErrorValidateChart, JSON.stringify(question.chart));
             }
 
