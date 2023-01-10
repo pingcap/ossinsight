@@ -3,7 +3,7 @@ import useUrlSearchState, { nullableStringParam } from '@site/src/hooks/url-sear
 import React, { useEffect, useState } from 'react';
 import { isBlankString, isNullish, notNullish } from '@site/src/utils/value';
 import { Box, Container, styled, useEventCallback } from '@mui/material';
-import { SuggestionsContext } from '@site/src/pages/explore/_components/context';
+import { ExploreContext } from '@site/src/pages/explore/_components/context';
 import { Decorators } from '@site/src/pages/explore/_components/Decorators';
 import Layout from '@site/src/pages/explore/_components/Layout';
 import Header from '@site/src/pages/explore/_components/Header';
@@ -69,7 +69,7 @@ export default function Questions () {
 
   return (
     <QuestionManagementContext.Provider value={{ phase, question, loading, error, create, load, reset }}>
-      <SuggestionsContext.Provider value={{ handleSelect }}>
+      <ExploreContext.Provider value={{ search: value, handleSelect }}>
         <Decorators />
         <Layout
           showSide={!hideExecution && phase === QuestionLoadingPhase.READY && hasResult}
@@ -100,7 +100,7 @@ export default function Questions () {
         <Container maxWidth="lg" sx={{ pb: 8 }}>
           <Faq />
         </Container>
-      </SuggestionsContext.Provider>
+      </ExploreContext.Provider>
     </QuestionManagementContext.Provider>
   );
 }

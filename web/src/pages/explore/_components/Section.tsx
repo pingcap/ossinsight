@@ -1,9 +1,11 @@
-import { Accordion, AccordionDetails, AccordionSummary, CircularProgress, Paper, styled, useEventCallback } from '@mui/material';
+import { Accordion, AccordionDetails, AccordionSummary, accordionSummaryClasses, Paper, styled, useEventCallback } from '@mui/material';
 import React, { ReactNode, useEffect, useState } from 'react';
 import { CheckCircle, Circle, ExpandMore } from '@mui/icons-material';
 import { isFalsy, isNullish, notFalsy } from '@site/src/utils/value';
 import { getErrorMessage } from '@site/src/utils/error';
 import ErrorBlock from '@site/src/pages/explore/_components/ErrorBlock';
+import BotIcon from '@site/src/pages/explore/_components/BotIcon';
+import RippleDot from '@site/src/components/RippleDot';
 
 export interface SectionProps {
   status: 'pending' | 'loading' | 'success' | 'error';
@@ -15,9 +17,10 @@ export interface SectionProps {
   defaultExpanded?: boolean;
   errorTitle: string;
   errorPrompt: string;
+  icon?: 'default' | 'bot';
 }
 
-export default function Section ({ status, title, defaultExpanded, extra, error, errorWithChildren = false, children, errorPrompt, errorTitle }: SectionProps) {
+export default function Section ({ status, title, defaultExpanded, extra, error, errorWithChildren = false, children, errorPrompt, errorTitle, icon = 'default' }: SectionProps) {
   const [open, setOpen] = useState(false);
   useEffect(() => {
     switch (status) {
@@ -33,7 +36,6 @@ export default function Section ({ status, title, defaultExpanded, extra, error,
         break;
     }
   }, [status]);
-  const alwaysOpen = defaultExpanded === true;
 
   const handleOpenChange = useEventCallback((_, open: boolean) => {
     if (!alwaysOpen) {
@@ -41,33 +43,36 @@ export default function Section ({ status, title, defaultExpanded, extra, error,
     }
   });
 
+  const alwaysOpen = defaultExpanded === true;
+  const showExtra = notFalsy(extra) && (status === 'success');
+
   return (
     <SectionContainer className={status === 'pending' ? 'pending' : isNullish(error) ? status : 'error'} elevation={1}>
       <SectionAccordion expanded={alwaysOpen ? true : open} defaultExpanded={defaultExpanded} elevation={0} onChange={handleOpenChange}>
         <SectionAccordionSummary
           alwaysOpen={alwaysOpen}
-          expandIcon={isFalsy(defaultExpanded) && <ExpandMore />}
+          expandIcon={isFalsy(defaultExpanded) && status === 'success' && <ExpandMore />}
           disabled={status === 'loading'}
         >
           <SectionTitle>
             {status === 'loading'
-              ? <CircularProgress size={16} />
+              ? icon === 'bot'
+                ? <BotIcon />
+                : <RippleDot size={12} />
               : status === 'success' && isNullish(error)
                 ? <CheckCircle color="success" fontSize="inherit" />
                 : <Circle color="disabled" fontSize="inherit" />}
             <SectionTitleContent>
               {title}
             </SectionTitleContent>
-            {notFalsy(extra)
-              ? (
-                <>
-                  <Spacer />
-                  <SectionTitleExtra>
-                    {extra === 'auto' ? open ? 'Hide' : 'Show' : extra}
-                  </SectionTitleExtra>
-                </>
-                )
-              : undefined}
+            {showExtra && (
+              <>
+                <Spacer />
+                <SectionTitleExtra>
+                  {extra === 'auto' ? open ? 'Hide' : 'Show' : extra}
+                </SectionTitleExtra>
+              </>
+            )}
           </SectionTitle>
         </SectionAccordionSummary>
         <AccordionDetails>
@@ -121,7 +126,7 @@ const SectionContainer = styled(Paper)`
 
   &.loading {
     transform: initial;
-    opacity: 0.4;
+    opacity: 1;
   }
 
   &.success {
@@ -149,9 +154,13 @@ const SectionAccordion = styled(Accordion)`
 `;
 
 const SectionAccordionSummary = styled(AccordionSummary, { shouldForwardProp: propName => propName !== 'alwaysOpen' })<{ alwaysOpen: boolean }>`
-  .MuiAccordionSummary-content {
+  &.${accordionSummaryClasses.content} {
     margin-top: 4px;
     margin-bottom: 4px;
+  }
+
+  &.${accordionSummaryClasses.disabled} {
+    opacity: 1;
   }
 
   ${({ alwaysOpen }) => alwaysOpen ? 'cursor: default !important;' : ''}

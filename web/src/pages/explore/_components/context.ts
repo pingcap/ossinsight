@@ -1,9 +1,15 @@
-import { createContext } from 'react';
+import { createContext, useContext } from 'react';
 
 type SuggestionsContextValues = {
+  search: string;
   handleSelect: (title: string) => void;
 };
 
-export const SuggestionsContext = createContext<SuggestionsContextValues>({
+export const ExploreContext = createContext<SuggestionsContextValues>({
+  search: '',
   handleSelect () {},
 });
+
+export function useExploreContext () {
+  return useContext(ExploreContext);
+}

@@ -1,6 +1,6 @@
 import React, { ReactNode, useContext } from 'react';
 import { ButtonBase, styled, useEventCallback } from '@mui/material';
-import { SuggestionsContext } from '@site/src/pages/explore/_components/context';
+import { ExploreContext } from '@site/src/pages/explore/_components/context';
 import { HighlightBackground, HighlightContent } from '@site/src/pages/explore/_components/highlighted';
 
 export type QuestionCardVariant = 'recommended-card' | 'card' | 'text';
@@ -12,7 +12,7 @@ export interface QuestionCardProps {
 }
 
 export default function QuestionCard ({ question, variant = 'card', disabled }: QuestionCardProps) {
-  const { handleSelect } = useContext(SuggestionsContext);
+  const { handleSelect } = useContext(ExploreContext);
 
   const handleClick = useEventCallback(() => {
     if (typeof question === 'string') {
