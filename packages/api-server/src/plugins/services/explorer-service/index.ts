@@ -40,12 +40,13 @@ import {
     PieChart,
     RecommendedChart,
     RecommendQuestion,
-    RepoCard,
+    RepoCard, AnswerSummary,
     Table
 } from "../bot-service/types";
 import {GenerateAnswerPromptTemplate} from "../bot-service/template/GenerateAnswerPromptTemplate";
 import {FastifyBaseLogger} from "fastify";
 import {MySQLPromisePool} from "@fastify/mysql";
+import {GenerateSummaryPromptTemplate} from "../bot-service/template/GenerateSummaryPromptTemplate";
 
 declare module 'fastify' {
     interface FastifyInstance {
@@ -102,6 +103,7 @@ export class ExplorerService {
     private sqlParser: Parser;
     private readonly generateAnswerTemplate: GenerateAnswerPromptTemplate;
     private readonly generateChartTemplate: GenerateChartPromptTemplate;
+    private readonly generteAnswerSummaryTemplate: GenerateSummaryPromptTemplate;
     private maxSelectLimit = 200;
     private options: ExplorerOption;
 
@@ -117,6 +119,7 @@ export class ExplorerService {
         this.sqlParser = new Parser();
         this.generateChartTemplate = new GenerateChartPromptTemplate();
         this.generateAnswerTemplate = new GenerateAnswerPromptTemplate();
+        this.generteAnswerSummaryTemplate = new GenerateSummaryPromptTemplate();
         this.options = Object.assign({}, {
             userMaxQuestionsPerHour: 20,
             userMaxQuestionsOnGoing: 3,
@@ -528,6 +531,15 @@ export class ExplorerService {
         }
     }
 
+    private async markQuestionRunning(questionId: string, executedAt?: DateTime) {
+        const [rs] = await this.mysql.query<ResultSetHeader>(`
+            UPDATE explorer_questions SET status = ?, executed_at = ? WHERE id = UUID_TO_BIN(?)
+        `, [QuestionStatus.Running, executedAt?.toSQL() || null, questionId]);
+        if (rs.affectedRows !== 1) {
+            throw new APIError(500, 'Failed to update the question status.');
+        }
+    }
+
     private async updateQuestion(question: Question) {
         const {
             id, status, recommended, querySQL, queryHash, engines = [], result = null, chart = null, recommendedQuestions = [],
@@ -588,12 +600,25 @@ export class ExplorerService {
         }
     }
 
+    private async saveAnswerSummary(questionId: string, summary: AnswerSummary, conn?: Connection) {
+        const connection = conn || this.mysql;
+        const summaryValue = JSON.stringify(summary);
+        const [rs] = await connection.query<ResultSetHeader>(`
+            UPDATE explorer_questions
+            SET answer_summary = ?
+            WHERE id = UUID_TO_BIN(?)
+        `, [summaryValue, questionId]);
+        if (rs.affectedRows === 0) {
+            throw new APIError(500, 'Failed to save the answer summary.');
+        }
+    }
+
     async getQuestionById(questionId: string, conn?: Connection): Promise<Question | null> {
         const connection = conn || this.mysql;
         const [rows] = await connection.query<any[]>(`
             SELECT
                 BIN_TO_UUID(id) AS id, hash, user_id AS userId, status, title, query_sql AS querySQL, query_hash AS queryHash, engines, 
-                queue_name AS queueName, queue_job_id AS queueJobId, recommended_questions AS recommendedQuestions, result, chart, recommended,
+                queue_name AS queueName, queue_job_id AS queueJobId, recommended_questions AS recommendedQuestions, result, chart, answer_summary AS answerSummary, recommended,
                 hit_cache AS hitCache, created_at AS createdAt, requested_at AS requestedAt, 
                 executed_at AS executedAt, finished_at AS finishedAt, spent, error
             FROM explorer_questions
@@ -610,7 +635,7 @@ export class ExplorerService {
         const [rows] = await connection.query<any[]>(`
             SELECT
                 BIN_TO_UUID(id) AS id, hash, user_id AS userId, status, title, query_sql AS querySQL, query_hash AS queryHash, engines,
-                queue_name AS queueName, queue_job_id AS queueJobId, recommended_questions AS recommendedQuestions, result, chart, recommended, 
+                queue_name AS queueName, queue_job_id AS queueJobId, recommended_questions AS recommendedQuestions, result, chart, answer_summary AS answerSummary, recommended, 
                 hit_cache AS hitCache, created_at AS createdAt, requested_at AS requestedAt,
                 executed_at AS executedAt, finished_at AS finishedAt, spent, error
             FROM explorer_questions
@@ -631,7 +656,7 @@ export class ExplorerService {
         const [rows] = await this.mysql.query<any[]>(`
             SELECT
                 BIN_TO_UUID(id) AS id, hash, user_id AS userId, status, title, query_sql AS querySQL, query_hash AS queryHash, engines,
-                queue_name AS queueName, queue_job_id AS queueJobId, recommended_questions AS recommendedQuestions, result, chart, recommended, 
+                queue_name AS queueName, queue_job_id AS queueJobId, recommended_questions AS recommendedQuestions, result, chart, answer_summary AS answerSummary, recommended, 
                 hit_cache AS hitCache, created_at AS createdAt, requested_at AS requestedAt,
                 executed_at AS executedAt, finished_at AS finishedAt, spent, error
             FROM explorer_questions
@@ -664,7 +689,7 @@ export class ExplorerService {
         const [rows] = await connection.query<any[]>(`
             SELECT
                 BIN_TO_UUID(id) AS id, hash, user_id AS userId, status, title, query_sql AS querySQL, query_hash AS queryHash, engines,
-                queue_name AS queueName, queue_job_id AS queueJobId, recommended_questions AS recommendedQuestions, result, chart, recommended, 
+                queue_name AS queueName, queue_job_id AS queueJobId, recommended_questions AS recommendedQuestions, result, answer_summary AS answerSummary, chart, recommended, 
                 hit_cache AS hitCache, created_at AS createdAt, requested_at AS requestedAt,
                 executed_at AS executedAt, finished_at AS finishedAt, spent, error
             FROM explorer_questions
@@ -705,9 +730,9 @@ export class ExplorerService {
     async resolveQuestion(job: Job, question: Question): Promise<QuestionQueryResult> {
         const { id: questionId, querySQL } = question;
         try {
-            await this.updateQuestionStatus(questionId, QuestionStatus.Running);
             const questionResult = await this.executeQuery(questionId, querySQL!);
 
+            // Check chart if match the result.
             if (this.checkChart(question.chart, questionResult.result)) {
                 await this.addSystemQuestionFeedback(questionId, QuestionFeedbackType.ErrorValidateChart, JSON.stringify(question.chart));
             }
@@ -715,6 +740,18 @@ export class ExplorerService {
             await this.saveQuestionResult(questionId, {
                 ...questionResult,
             }, false);
+
+            // Answer summary.
+            if (Array.isArray(questionResult.result.rows) && questionResult.result.rows.length > 0) {
+                try {
+                    await this.updateQuestionStatus(questionId, QuestionStatus.Summarizing);
+                    await this.generateAnswerSummary(questionId, question.title, questionResult.result);
+                } catch (err: any) {
+                    this.logger.warn(`Failed to generate answer summary for question ${questionId}: ${err.message}`);
+                }
+            }
+
+            await this.updateQuestionStatus(questionId, QuestionStatus.Success);
             return questionResult;
         } catch (err: any) {
             await this.saveQuestionError(questionId, err);
@@ -732,6 +769,7 @@ export class ExplorerService {
         try {
             this.logger.info({ questionId }, 'Start executing query.');
             const executedAt = DateTime.now();
+            await this.markQuestionRunning(questionId, executedAt);
             const [rows, fields] = await playgroundConn.execute<any[]>(querySQL);
             const finishedAt = DateTime.now();
             const spent = finishedAt.diff(executedAt).as("seconds");
@@ -957,6 +995,18 @@ export class ExplorerService {
         `, [userId, questionId]);
     }
 
+    async getUserQuestionFeedbacks(userId: number, questionId: string, conn?: Connection): Promise<QuestionFeedback[]> {
+        const connection = conn || this.mysql;
+        const [rows] = await connection.query<any[]>(`
+            SELECT
+                id, user_id AS userId, BIN_TO_UUID(question_id) AS questionId, satisfied, feedback_type AS feedbackType,
+                feedback_content AS feedbackContent, created_at AS createdAt
+            FROM explorer_question_feedbacks
+            WHERE user_id = ? AND question_id = UUID_TO_BIN(?)
+        `, [userId, questionId]);
+        return rows;
+    }
+
     async addQuestionFeedback(feedback: Omit<QuestionFeedback, "id" | "createdAt">, conn?: Connection) {
         const connection = conn || this.mysql;
         const { userId = 0, questionId, satisfied = false, feedbackType, feedbackContent = null } = feedback;
@@ -967,6 +1017,37 @@ export class ExplorerService {
         if (rs.affectedRows !== 1) {
             throw new APIError(500, 'Failed to add the question feedback.');
         }
+    }
+
+    // Question answer summary.
+
+    async generateAnswerSummaryByQuestionId(questionId: string): Promise<AnswerSummary> {
+        const question = await this.getQuestionById(questionId);
+        if (!question) {
+            throw new APIError(404, 'Question not found.');
+        }
+        const { title, result } = question;
+        if (!result || !Array.isArray(result.rows) || result.rows.length === 0) {
+            throw new APIError(429, 'The question has no result.');
+        }
+
+        return this.generateAnswerSummary(questionId, title, result);
+    }
+
+    async generateAnswerSummary(questionId: string, title: string, result: QuestionSQLResult): Promise<AnswerSummary> {
+        const summary = await this.botService.summaryAnswer(this.generteAnswerSummaryTemplate, title, result.rows);
+        if (!summary) {
+            throw new APIError(500, 'Failed to generate the answer summary.');
+        }
+
+        // Notice: Sometime AI will generate the summary content ends with hashtags, remove them.
+        if (Array.isArray(summary.hashtags) && summary.hashtags.length > 0) {
+            const hashtagsText = summary.hashtags.map((ht) => `#${ht}`).join(' ');
+            summary.content = summary.content?.replace(hashtagsText, '');
+        }
+
+        await this.saveAnswerSummary(questionId, summary);
+        return summary;
     }
 
 }

@@ -2,7 +2,7 @@ import {FastifyPluginAsync, FastifySchema} from 'fastify';
 import {QuestionFeedbackType} from "../../../../../plugins/services/explorer-service/types";
 import {Auth0User, parseAuth0User} from "../../../../../plugins/services/user-service/auth0";
 
-export const schema: FastifySchema = {
+export const addFeedbackSchema: FastifySchema = {
   summary: 'Add feedback for answer',
   tags: ['explorer'],
   params: {
@@ -29,6 +29,20 @@ export const schema: FastifySchema = {
   }
 };
 
+export const getFeedbacksSchema: FastifySchema = {
+  summary: 'Get feedbacks for answer',
+  tags: ['explorer'],
+  params: {
+    type: 'object',
+    required: ['questionId'],
+    properties: {
+      questionId: {
+        type: 'string',
+      },
+    }
+  }
+};
+
 export interface IParam {
   questionId: string;
 }
@@ -39,11 +53,31 @@ export interface IBody {
 }
 
 const root: FastifyPluginAsync = async (app) => {
+  // Get feedbacks.
+  app.get<{
+    Params: IParam
+  }>('/', {
+    schema: getFeedbacksSchema,
+    // @ts-ignore
+    preValidation: app.authenticate
+  },async (req, reply) => {
+    const { questionId } = req.params;
+    const { sub, metadata } = parseAuth0User(req.user as Auth0User);
+    const userId = await app.userService.findOrCreateUserByAccount(
+      { ...metadata, sub },
+      req.headers.authorization
+    );
+
+    const feedbacks = await app.explorerService.getUserQuestionFeedbacks(userId, questionId);
+    reply.status(200).send(feedbacks);
+  });
+
+  // Add feedback.
   app.post<{
     Params: IParam,
     Body: IBody
   }>('/', {
-    schema,
+    schema: addFeedbackSchema,
     // @ts-ignore
     preValidation: app.authenticate
   },async (req, reply) => {

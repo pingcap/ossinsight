@@ -22,6 +22,11 @@ export interface Answer {
   questions: string[];
 }
 
+export interface AnswerSummary {
+  content?: string;
+  hashtags?: string[];
+}
+
 export type RecommendedChart = Record<string, any> & {
   chartName: ChartNames;
 }

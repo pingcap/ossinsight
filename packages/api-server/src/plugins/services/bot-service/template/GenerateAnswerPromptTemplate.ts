@@ -8,7 +8,6 @@ export class GenerateAnswerPromptTemplate implements PromptTemplate {
   public temperature: number = 0;
   public topP: number = 1;
   public n: number = 1;
-  public logprobs: number = 2;
 
   stringify(question: string): string {
     return `# MySQL SQL
@@ -20,14 +19,10 @@ Column primary_language means programming language, invalid = [null, '']
 Table github_users, columns = [id, login, type, name, organization, country_code, followers, followings, created_at, updated_at]
 Column type, enums = ['USR', 'ORG']
 Column country_code, invalid = ['', 'N/A', 'UND']
-Table collections, columns = [id, name]
-Table collection_items, columns = [collection_id, repo_id, repo_name]
 Table trending_repos, columns = [repo_name, created_at]
 Table github_repo_topics, columns = [repo_id, topic]
 
 # Relations
-collections.id = collection_items.collection_id
-collection_items.repo_id = github_repos.repo_id
 github_events.repo_id = github_repos.repo_id
 github_events.repo_name = github_repos.repo_name
 github_events.actor_id = github_users.id
@@ -44,17 +39,12 @@ When type = 'PullRequestEvent', action = 'closed' and pr_merged = 1, it means th
 PushEvent: trigger when commit has been pushed
 Return the link column for PR / issue list: SELECT CONCAT('https://github.com/', repo_name, '/issues/', number) AS link
 Exclude bots: WHERE actor_login NOT LIKE "%bot%"
+Database repos: WHERE github_repos.description LIKE '%database%'
 Contributor: the person who opened pull request to the repo, it will trigger a PullRequestEvent
-The most popular repos has the most stars,
-Similar repositories will have similar topics, or be in the same collection, order by the similarity
-collection is a categorization of some similar repositories, but not all repositories have a corresponding collection
+The most popular repos has the most stars
+Similar repositories will have similar topics
 The trending_repos table contains the most recent and popular repositories
 Notice: avoid ambiguous and non-existed column
-
--- @pingcap/tidb cumulative stars across months
-SELECT t_month, stars, SUM(stars) OVER(ORDER BY t_month ASC) AS cumulative_stars FROM ( SELECT DATE_FORMAT(created_at, '%Y-%m-01') AS t_month, COUNT(*) AS stars FROM github_events ge WHERE ge.type = 'WatchEvent' AND ge.repo_id = (SELECT repo_id FROM github_repos WHERE repo_name = 'pingcap/tidb') AND ge.created_at != '1970-01-01 00:00:00' GROUP BY t_month ) star_counts ORDER BY t_month ASC;
--- most popular database
-SELECT repo_name, MAX(stars) FROM github_repos WHERE description LIKE '%database%';
 
 # Format
 @org_or_user_login
@@ -78,7 +68,7 @@ Answer {
 }
 
 ---
-Let's think step by step, use best practice of writing SQL(add table name as prefix to column if necessary), use common table expression, window function if necessary, scan all repos if there is no specific repo, generate a answer.json file to answer the question: ${question}?
+Let's think step by step, use best practice of writing SQL (add table name as prefix to column if necessary), use common table expression, window function if necessary, scan all repos if there is no specific repo, generate a answer.json file to answer the question: ${question}?
 ---
 answer.json
 ---
