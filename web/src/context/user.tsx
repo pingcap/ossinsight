@@ -33,7 +33,9 @@ export function AuthProvider ({ children }: PropsWithChildren): JSX.Element {
     <Auth0Provider
       domain={customFields?.auth0_domain as string}
       clientId={customFields?.auth0_client_id as string}
-      redirectUri={window.location.origin || url}
+      redirectUri={
+        typeof window === 'undefined' ? url : window.location.origin || url
+      }
       audience={`https://${customFields?.auth0_domain as string}/api/v2/`}
       scope="read:current_user"
     >
