@@ -44,7 +44,7 @@ Contributor: the person who opened pull request to the repo, it will trigger a P
 The most popular repos has the most stars
 Similar repositories will have similar topics
 The trending_repos table contains the most recent and popular repositories
-Notice: avoid ambiguous and non-existed column
+Make sure to avoid ambiguous column references and non-existent columns by using table aliases and double-checking column names before running the query.
 
 # Format
 @org_or_user_login
