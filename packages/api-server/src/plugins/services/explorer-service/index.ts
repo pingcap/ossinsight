@@ -531,6 +531,15 @@ export class ExplorerService {
         }
     }
 
+    private async markQuestionRunning(questionId: string, executedAt?: DateTime) {
+        const [rs] = await this.mysql.query<ResultSetHeader>(`
+            UPDATE explorer_questions SET status = ?, executed_at = ? WHERE id = UUID_TO_BIN(?)
+        `, [QuestionStatus.Running, executedAt?.toSQL() || null, questionId]);
+        if (rs.affectedRows !== 1) {
+            throw new APIError(500, 'Failed to update the question status.');
+        }
+    }
+
     private async updateQuestion(question: Question) {
         const {
             id, status, recommended, querySQL, queryHash, engines = [], result = null, chart = null, recommendedQuestions = [],
@@ -721,7 +730,6 @@ export class ExplorerService {
     async resolveQuestion(job: Job, question: Question): Promise<QuestionQueryResult> {
         const { id: questionId, querySQL } = question;
         try {
-            await this.updateQuestionStatus(questionId, QuestionStatus.Running);
             const questionResult = await this.executeQuery(questionId, querySQL!);
 
             // Check chart if match the result.
@@ -729,19 +737,21 @@ export class ExplorerService {
                 await this.addSystemQuestionFeedback(questionId, QuestionFeedbackType.ErrorValidateChart, JSON.stringify(question.chart));
             }
 
-            // Answer summary.
-            try {
-                if (Array.isArray(questionResult.result.rows) && questionResult.result.rows.length > 0) {
-                    await this.updateQuestionStatus(questionId, QuestionStatus.Summarizing);
-                    await this.generateAnswerSummary(questionId, question.title, questionResult.result);
-                }
-            } catch (err:any) {
-                this.logger.warn(`Failed to generate answer summary for question ${questionId}: ${err.message}`);
-            }
-
             await this.saveQuestionResult(questionId, {
                 ...questionResult,
             }, false);
+
+            // Answer summary.
+            if (Array.isArray(questionResult.result.rows) && questionResult.result.rows.length > 0) {
+                try {
+                    await this.updateQuestionStatus(questionId, QuestionStatus.Summarizing);
+                    await this.generateAnswerSummary(questionId, question.title, questionResult.result);
+                } catch (err: any) {
+                    this.logger.warn(`Failed to generate answer summary for question ${questionId}: ${err.message}`);
+                }
+            }
+
+            await this.updateQuestionStatus(questionId, QuestionStatus.Success);
             return questionResult;
         } catch (err: any) {
             await this.saveQuestionError(questionId, err);
@@ -759,6 +769,7 @@ export class ExplorerService {
         try {
             this.logger.info({ questionId }, 'Start executing query.');
             const executedAt = DateTime.now();
+            await this.markQuestionRunning(questionId, executedAt);
             const [rows, fields] = await playgroundConn.execute<any[]>(querySQL);
             const finishedAt = DateTime.now();
             const spent = finishedAt.diff(executedAt).as("seconds");
@@ -1027,6 +1038,12 @@ export class ExplorerService {
         const summary = await this.botService.summaryAnswer(this.generteAnswerSummaryTemplate, title, result.rows);
         if (!summary) {
             throw new APIError(500, 'Failed to generate the answer summary.');
+        }
+
+        // Notice: Sometime AI will generate the summary content ends with hashtags, remove them.
+        if (Array.isArray(summary.hashtags) && summary.hashtags.length > 0) {
+            const hashtagsText = summary.hashtags.map((ht) => `#${ht}`).join(' ');
+            summary.content = summary.content?.replace(hashtagsText, '');
         }
 
         await this.saveAnswerSummary(questionId, summary);
