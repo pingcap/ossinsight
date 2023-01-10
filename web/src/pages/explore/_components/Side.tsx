@@ -1,8 +1,7 @@
 import { RecommendedSuggestions } from '@site/src/pages/explore/_components/Suggestions';
 import { Box, Divider, IconButton, styled, Typography } from '@mui/material';
 import { Cached } from '@mui/icons-material';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
+import { ArrowForward, KeyboardDoubleArrowLeft } from '@mui/icons-material';
 import React from 'react';
 import Link from '@docusaurus/Link';
 
@@ -13,7 +12,7 @@ export default function Side () {
         variant="text" n={4}
         title={(reload, loading) => (
           <Typography variant="h3" mb={0} fontSize={16}>
-            <KeyboardDoubleArrowLeftIcon fontSize="medium" sx={{ verticalAlign: 'middle' }} />
+            <KeyboardDoubleArrowLeft fontSize="medium" sx={{ verticalAlign: 'middle' }} />
             Get inspired
             <IconButton onClick={reload} disabled={loading}>
               <Cached fontSize="inherit" />
@@ -25,7 +24,7 @@ export default function Side () {
       <Box>
         <StyledLink to="/blog/chat2query-tutorials" target='_blank'>
           🧐 GitHub data is just the beginning. Uncover hidden insights in your <b>OWN</b> data!
-          <ArrowForwardIcon fontSize='inherit' sx={{
+          <ArrowForward fontSize='inherit' sx={{
             verticalAlign: 'text-bottom',
             ml: 0.5,
           }} />
