@@ -1,14 +1,5 @@
-import React from 'react';
-import {
-  Avatar,
-  ButtonBase,
-  Menu,
-  MenuItem,
-  styled,
-  useEventCallback,
-  Skeleton,
-  Box,
-} from '@mui/material';
+import React, { useEffect } from 'react';
+import { Avatar, Box, ButtonBase, Menu, MenuItem, Skeleton, styled, useEventCallback } from '@mui/material';
 import LoginRoundedIcon from '@mui/icons-material/LoginRounded';
 import { Experimental } from '@site/src/components/Experimental';
 import { useBoolean } from 'ahooks';
@@ -51,6 +42,10 @@ export default function UserMenu () {
     useBoolean(false);
 
   const { user, isAuthenticated, isLoading, logout } = useAuth0();
+
+  useEffect(() => {
+    (window as any).gtag('set', { user_id: user?.sub });
+  }, [user?.sub]);
 
   const handleGotoSubscriptionsPage = useEventCallback(() => {
     window.open('/subscriptions', '_blank');
