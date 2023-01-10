@@ -2,12 +2,13 @@ import { ChartResult } from '@site/src/api/explorer';
 import React, { useMemo } from 'react';
 import { EChartsOption } from 'echarts';
 import EChartsReact from 'echarts-for-react';
-import { transformTimeData } from '@site/src/pages/explore/_components/charts/utils';
+import { isTimeField, transformTimeData } from '@site/src/pages/explore/_components/charts/utils';
 
 export default function BarChart ({ chartName, title, x, y, data }: ChartResult & { data: any[] }) {
-  const options: EChartsOption = useMemo(() => {
-    const isTime = /date|time|year|month/.test(x);
+  const { options, height }: { options: EChartsOption, height: number } = useMemo(() => {
+    const isTime = isTimeField(x);
     data = isTime ? transformTimeData(data, x) : data;
+    const isNotTime = !isTime;
 
     const makeSeries = function (y: string | string[]) {
       if (typeof y === 'string') {
@@ -16,8 +17,8 @@ export default function BarChart ({ chartName, title, x, y, data }: ChartResult 
           name: y,
           datasetId: 'raw',
           encode: {
-            x,
-            y,
+            x: isNotTime ? y : x,
+            y: isNotTime ? x : y,
           },
         };
       } else {
@@ -26,45 +27,47 @@ export default function BarChart ({ chartName, title, x, y, data }: ChartResult 
     };
 
     return {
-      dataset: {
-        id: 'raw',
-        source: data,
+      options: {
+        dataset: {
+          id: 'raw',
+          source: data,
+        },
+        backgroundColor: 'rgb(36, 35, 43)',
+        grid: {
+          top: 64,
+          left: 8,
+          right: 8,
+          bottom: 8,
+        },
+        tooltip: {},
+        legend: {
+          left: 'center',
+          top: 28,
+        },
+        series: makeSeries(y),
+        title: {
+          text: title,
+        },
+        [isNotTime ? 'yAxis' : 'xAxis']: {
+          type: isTime ? 'time' : 'category',
+        },
+        [isNotTime ? 'xAxis' : 'yAxis']: {
+          type: 'value',
+        },
+        animationDuration: 2000,
       },
-      backgroundColor: 'rgb(36, 35, 43)',
-      grid: {
-        top: 64,
-        left: 8,
-        right: 8,
-        bottom: 8,
-      },
-      tooltip: {
-      },
-      legend: {
-        left: 'center',
-        top: 28,
-      },
-      series: makeSeries(y),
-      title: {
-        text: title,
-      },
-      xAxis: {
-        type: isTime ? 'time' : 'category',
-      },
-      yAxis: {
-        type: 'value',
-      },
-      animationDuration: 2000,
+      height: isNotTime ? 40 * data.length : 400,
     };
   }, [chartName, title, x, y, data]);
 
   return (
     <EChartsReact
-      theme='dark'
+      theme="dark"
       style={{
-        height: 400,
+        height,
       }}
       opts={{
-        height: 400,
+        height,
       }}
       option={options}
     />

@@ -12,6 +12,14 @@ export function isYearLike (value: string | number): boolean {
   }
 }
 
+export function isRepoNameLike (value: string | number): boolean {
+  if (typeof value === 'string') {
+    return value.includes('/');
+  } else {
+    return false;
+  }
+}
+
 export function transformTimeData (data: any[], field: string) {
   return data.map((item) => {
     let value = item[field];
@@ -20,6 +28,10 @@ export function transformTimeData (data: any[], field: string) {
     }
     return { ...item, [field]: value };
   });
+}
+
+export function isRepoNameField (data: any[], field: string) {
+  return allSatisfy(data.map(item => item[field]), isRepoNameLike);
 }
 
 export function useValidData (data: any[], fields: Array<string | string[] | undefined>) {
