@@ -1,5 +1,5 @@
 import React, { ReactNode, useMemo, useRef } from 'react';
-import { styled } from '@mui/material';
+import { Container as MuiContainer, styled } from '@mui/material';
 import { Transition } from 'react-transition-group';
 import { useSize } from 'ahooks';
 
@@ -25,42 +25,59 @@ export default function Layout ({ children, header, side, footer, showFooter, sh
   const size = useSize(headerRef);
 
   const headerOffsetHeight = useMemo(() => {
-    return (size?.height) ?? headerMarginBottom;
+    return (size?.height) ?? 0;
   }, [size?.height]);
 
   return (
-    <>
+    <Root maxWidth="xl">
       <Transition nodeRef={headerRef} in={showHeader} timeout={transitionDuration}>
         {(status) => (
-          <Header ref={headerRef} className={`Header-${status}`} height={headerOffsetHeight}>
-            {header}
-          </Header>
+          <>
+            <Header ref={headerRef} className={`Header-${status}`} height={headerOffsetHeight}>
+              {header}
+            </Header>
+            <Body className={`Body-header-${status}`} headerHeight={headerOffsetHeight}>
+              <Transition nodeRef={mainRef} in={showSide} timeout={transitionDuration}>
+                {(status) => (
+                  <Main ref={mainRef} className={`Main-side-${status}`}>
+                    {children}
+                  </Main>
+                )}
+              </Transition>
+              <Transition nodeRef={sideRef} in={showSide} timeout={transitionDuration} unmountOnExit>
+                {(status) => (
+                  <Side ref={sideRef} className={`Side-${status}`}>
+                    {side}
+                  </Side>
+                )}
+              </Transition>
+            </Body>
+          </>
         )}
       </Transition>
-      <Container>
-        <Transition nodeRef={mainRef} in={showSide} timeout={transitionDuration}>
-          {(status) => (
-            <Main ref={mainRef} className={`Main-side-${status}`}>
-              {children}
-            </Main>
-          )}
-        </Transition>
-        <Transition nodeRef={sideRef} in={showSide} timeout={transitionDuration} unmountOnExit>
-          {(status) => (
-            <Side ref={sideRef} className={`Side-${status}`}>
-              {side}
-            </Side>
-          )}
-        </Transition>
-      </Container>
       <Footer>
         {showFooter && footer}
       </Footer>
-    </>
+    </Root>
   );
 }
 
-const Container = styled('div', { name: 'Container' })`
+const Root = styled(MuiContainer, { name: 'Layout-Root' })`
+  padding-top: 64px;
+
+  ${({ theme }) => theme.breakpoints.down('md')} {
+    padding-top: 16px;
+  }
+
+  min-height: calc(100vh - 92px);
+  box-sizing: border-box;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+`;
+
+const Body = styled('div', { name: 'Layout-Body', shouldForwardProp: propName => propName !== 'headerHeight' })<{ headerHeight: number }>`
   --explore-layout-side-width: ${sideWidth}px;
 
   ${({ theme }) => theme.breakpoints.up('lg')} {
@@ -77,27 +94,42 @@ const Container = styled('div', { name: 'Container' })`
 
   position: relative;
   margin: 0 auto;
-  max-width: 100%;
+  width: 100%;
 
   ${({ theme }) => theme.breakpoints.up('xl')} {
     max-width: ${({ theme }) => `calc(${theme.breakpoints.values.lg}px + var(--explore-layout-side-width))`};
   }
-`;
 
-const Header = styled('div', { name: 'Header', shouldForwardProp: propName => propName !== 'height' })<{ height: number }>`
-  opacity: 0;
-  margin-top: -${({ height }) => height + headerMarginBottom}px;
-  margin-bottom: ${headerMarginBottom}px;
-  transition: ${({ theme }) => theme.transitions.create(['margin', 'opacity'], { duration: transitionDuration })};
+  transform: translate3d(0, -${({ headerHeight }) => headerHeight + headerMarginBottom + 40}px, 0);
+  transition: ${({ theme }) => theme.transitions.create('transform', { duration: transitionDuration })};
 
-  ${classNames('Header', true)} {
+  ${({ theme }) => theme.breakpoints.down('md')} {
+    transform: translate3d(0, -${({ headerHeight }) => headerHeight + headerMarginBottom - 8}px, 0);
+  }
+
+  ${classNames('Body-header', true)} {
     opacity: 1;
-    margin-top: 0;
+    transform: initial;
   }
 `;
 
-const Main = styled('div', { name: 'Main' })`
-  min-height: calc(100vh - 92px - 230px);
+const Header = styled('div', { name: 'Layout-Header', shouldForwardProp: propName => propName !== 'height' })<{ height: number }>`
+  opacity: 0.1;
+  transform: translate3d(0, -${({ height }) => height + headerMarginBottom + 40}px, 0);
+  margin-bottom: ${headerMarginBottom}px;
+  transition: ${({ theme }) => theme.transitions.create(['transform', 'opacity'], { duration: transitionDuration })};
+
+  ${({ theme }) => theme.breakpoints.down('md')} {
+    transform: translate3d(0, -${({ height }) => height + headerMarginBottom}px, 0);
+  }
+
+  ${classNames('Header', true)} {
+    opacity: 1;
+    transform: initial;
+  }
+`;
+
+const Main = styled('div', { name: 'Layout-Main' })`
   width: 100%;
   transition: ${({ theme }) => theme.transitions.create(['transform', 'opacity'], { duration: transitionDuration })};
 
@@ -118,7 +150,7 @@ const Main = styled('div', { name: 'Main' })`
   }
 `;
 
-const Side = styled('div', { name: 'Side' })`
+const Side = styled('div', { name: 'Layout-Side' })`
   position: absolute;
   right: 0;
   top: 0;
@@ -141,8 +173,14 @@ const Side = styled('div', { name: 'Side' })`
   }
 `;
 
-const Footer = styled('div', { name: 'Footer' })`
-  
+const Footer = styled('div', { name: 'Layout-Footer' })`
+  position: relative;
+  display: flex;
+  align-self: stretch;
+  flex: 1;
+  min-height: 160px;
+  align-items: center;
+  justify-content: center;
 `;
 
 function classNames (prefix: string, enter: boolean) {

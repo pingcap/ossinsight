@@ -15,7 +15,7 @@ import Faq from '@site/src/pages/explore/_components/Faq';
 import Side from '@site/src/pages/explore/_components/Side';
 import PoweredBy from '@site/src/pages/explore/_components/PoweredBy';
 import Link from '@docusaurus/Link';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import { ArrowForward } from '@mui/icons-material';
 
 export default function Questions () {
   const { question, loading, load, error, phase, reset, create } = useQuestionManagementValues({ pollInterval: 2000 });
@@ -71,34 +71,32 @@ export default function Questions () {
     <QuestionManagementContext.Provider value={{ phase, question, loading, error, create, load, reset }}>
       <SuggestionsContext.Provider value={{ handleSelect }}>
         <Decorators />
-        <Container maxWidth="xl" sx={{ pt: 4 }}>
-          <Layout
-            showSide={!hideExecution && phase === QuestionLoadingPhase.READY && hasResult}
-            showHeader={hideExecution}
-            showFooter={hideExecution}
-            header={<Header />}
-            side={<Side />}
-            footer={(
-              <Box mt={2}>
-                <PoweredBy align="center" />
-                <StyledLink to="/blog/chat2query-tutorials" target='_blank'>
-                  🧐 GitHub data is just the beginning. Uncover hidden insights in your <b>OWN</b> data!
-                  <ArrowForwardIcon fontSize='inherit' sx={{ verticalAlign: 'text-bottom', ml: 0.5 }} />
-                </StyledLink>
-              </Box>
-            )}
-          >
-            <ExploreSearch value={value} onChange={setValue} onAction={handleAction} disableInput={isPending} disableClear={value === ''} disableAction={disableAction} onClear={handleClear} clearState={isPending ? 'stop' : undefined} />
-            <SwitchLayout state={hideExecution ? 'recommend' : 'execution'} direction={hideExecution ? 'down' : 'up'}>
-              <Box key="execution" sx={{ mt: 1.5 }}>
-                <Execution search={value} />
-              </Box>
-              <Box key="recommend" sx={{ mt: 4 }}>
-                <Recommends />
-              </Box>
-            </SwitchLayout>
-          </Layout>
-        </Container>
+        <Layout
+          showSide={!hideExecution && phase === QuestionLoadingPhase.READY && hasResult}
+          showHeader={hideExecution}
+          showFooter={hideExecution}
+          header={<Header />}
+          side={<Side />}
+          footer={(
+            <Box mt={2}>
+              <PoweredBy align="center" />
+              <StyledLink to="/blog/chat2query-tutorials" target="_blank">
+                🧐 GitHub data is just the beginning. Uncover hidden insights in your <b>OWN</b> data!
+                <ArrowForward fontSize="inherit" sx={{ verticalAlign: 'text-bottom', ml: 0.5 }} />
+              </StyledLink>
+            </Box>
+          )}
+        >
+          <ExploreSearch value={value} onChange={setValue} onAction={handleAction} disableInput={isPending} disableClear={value === ''} disableAction={disableAction} onClear={handleClear} clearState={isPending ? 'stop' : undefined} />
+          <SwitchLayout state={hideExecution ? 'recommend' : 'execution'} direction={hideExecution ? 'down' : 'up'}>
+            <Box key="execution" sx={{ mt: 1.5 }}>
+              <Execution search={value} />
+            </Box>
+            <Box key="recommend" sx={{ mt: 4 }}>
+              <Recommends />
+            </Box>
+          </SwitchLayout>
+        </Layout>
         <Container maxWidth="lg" sx={{ pb: 8 }}>
           <Faq />
         </Container>
