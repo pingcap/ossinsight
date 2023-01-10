@@ -609,7 +609,7 @@ export class ExplorerService {
         const [rows] = await connection.query<any[]>(`
             SELECT
                 BIN_TO_UUID(id) AS id, hash, user_id AS userId, status, title, query_sql AS querySQL, query_hash AS queryHash, engines, 
-                queue_name AS queueName, queue_job_id AS queueJobId, recommended_questions AS recommendedQuestions, result, chart, recommended,
+                queue_name AS queueName, queue_job_id AS queueJobId, recommended_questions AS recommendedQuestions, result, chart, answer_summary AS answerSummary, recommended,
                 hit_cache AS hitCache, created_at AS createdAt, requested_at AS requestedAt, 
                 executed_at AS executedAt, finished_at AS finishedAt, spent, error
             FROM explorer_questions
@@ -626,7 +626,7 @@ export class ExplorerService {
         const [rows] = await connection.query<any[]>(`
             SELECT
                 BIN_TO_UUID(id) AS id, hash, user_id AS userId, status, title, query_sql AS querySQL, query_hash AS queryHash, engines,
-                queue_name AS queueName, queue_job_id AS queueJobId, recommended_questions AS recommendedQuestions, result, chart, recommended, 
+                queue_name AS queueName, queue_job_id AS queueJobId, recommended_questions AS recommendedQuestions, result, chart, answer_summary AS answerSummary, recommended, 
                 hit_cache AS hitCache, created_at AS createdAt, requested_at AS requestedAt,
                 executed_at AS executedAt, finished_at AS finishedAt, spent, error
             FROM explorer_questions
@@ -647,7 +647,7 @@ export class ExplorerService {
         const [rows] = await this.mysql.query<any[]>(`
             SELECT
                 BIN_TO_UUID(id) AS id, hash, user_id AS userId, status, title, query_sql AS querySQL, query_hash AS queryHash, engines,
-                queue_name AS queueName, queue_job_id AS queueJobId, recommended_questions AS recommendedQuestions, result, chart, recommended, 
+                queue_name AS queueName, queue_job_id AS queueJobId, recommended_questions AS recommendedQuestions, result, chart, answer_summary AS answerSummary, recommended, 
                 hit_cache AS hitCache, created_at AS createdAt, requested_at AS requestedAt,
                 executed_at AS executedAt, finished_at AS finishedAt, spent, error
             FROM explorer_questions
@@ -680,7 +680,7 @@ export class ExplorerService {
         const [rows] = await connection.query<any[]>(`
             SELECT
                 BIN_TO_UUID(id) AS id, hash, user_id AS userId, status, title, query_sql AS querySQL, query_hash AS queryHash, engines,
-                queue_name AS queueName, queue_job_id AS queueJobId, recommended_questions AS recommendedQuestions, result, chart, recommended, 
+                queue_name AS queueName, queue_job_id AS queueJobId, recommended_questions AS recommendedQuestions, result, answer_summary AS answerSummary, chart, recommended, 
                 hit_cache AS hitCache, created_at AS createdAt, requested_at AS requestedAt,
                 executed_at AS executedAt, finished_at AS finishedAt, spent, error
             FROM explorer_questions
@@ -724,8 +724,19 @@ export class ExplorerService {
             await this.updateQuestionStatus(questionId, QuestionStatus.Running);
             const questionResult = await this.executeQuery(questionId, querySQL!);
 
+            // Check chart if match the result.
             if (this.checkChart(question.chart, questionResult.result)) {
                 await this.addSystemQuestionFeedback(questionId, QuestionFeedbackType.ErrorValidateChart, JSON.stringify(question.chart));
+            }
+
+            // Answer summary.
+            try {
+                if (Array.isArray(questionResult.result.rows) && questionResult.result.rows.length > 0) {
+                    await this.updateQuestionStatus(questionId, QuestionStatus.Summarizing);
+                    await this.generateAnswerSummary(questionId, question.title, questionResult.result);
+                }
+            } catch (err:any) {
+                this.logger.warn(`Failed to generate answer summary for question ${questionId}: ${err.message}`);
             }
 
             await this.saveQuestionResult(questionId, {
@@ -973,6 +984,18 @@ export class ExplorerService {
         `, [userId, questionId]);
     }
 
+    async getUserQuestionFeedbacks(userId: number, questionId: string, conn?: Connection): Promise<QuestionFeedback[]> {
+        const connection = conn || this.mysql;
+        const [rows] = await connection.query<any[]>(`
+            SELECT
+                id, user_id AS userId, BIN_TO_UUID(question_id) AS questionId, satisfied, feedback_type AS feedbackType,
+                feedback_content AS feedbackContent, created_at AS createdAt
+            FROM explorer_question_feedbacks
+            WHERE user_id = ? AND question_id = UUID_TO_BIN(?)
+        `, [userId, questionId]);
+        return rows;
+    }
+
     async addQuestionFeedback(feedback: Omit<QuestionFeedback, "id" | "createdAt">, conn?: Connection) {
         const connection = conn || this.mysql;
         const { userId = 0, questionId, satisfied = false, feedbackType, feedbackContent = null } = feedback;
@@ -987,7 +1010,7 @@ export class ExplorerService {
 
     // Question answer summary.
 
-    async getQuestionAnswerSummary(questionId: string): Promise<AnswerSummary> {
+    async generateAnswerSummaryByQuestionId(questionId: string): Promise<AnswerSummary> {
         const question = await this.getQuestionById(questionId);
         if (!question) {
             throw new APIError(404, 'Question not found.');
@@ -997,6 +1020,10 @@ export class ExplorerService {
             throw new APIError(429, 'The question has no result.');
         }
 
+        return this.generateAnswerSummary(questionId, title, result);
+    }
+
+    async generateAnswerSummary(questionId: string, title: string, result: QuestionSQLResult): Promise<AnswerSummary> {
         const summary = await this.botService.summaryAnswer(this.generteAnswerSummaryTemplate, title, result.rows);
         if (!summary) {
             throw new APIError(500, 'Failed to generate the answer summary.');
