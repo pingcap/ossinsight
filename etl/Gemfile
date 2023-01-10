@@ -71,3 +71,5 @@ gem "mdtable", "~> 0.0.2"
 gem "twitter", "~> 7.0"
 
 gem "htmlcsstoimage-api", "~> 0.1.2"
+
+gem "se-api", "~> 0.0.1"

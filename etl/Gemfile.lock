@@ -214,6 +214,7 @@ GEM
       sprockets (> 3.0)
       sprockets-rails
       tilt
+    se-api (0.0.1)
     selenium-webdriver (4.0.3)
       childprocess (>= 0.5, < 5.0)
       rexml (~> 3.2, >= 3.2.5)
@@ -294,6 +295,7 @@ DEPENDENCIES
   rails (~> 6.1.4, >= 6.1.4.1)
   retryable (~> 3.0)
   sass-rails (>= 6)
+  se-api (~> 0.0.1)
   selenium-webdriver
   turbolinks (~> 5)
   twitter (~> 7.0)
