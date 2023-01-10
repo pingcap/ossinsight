@@ -32,7 +32,7 @@ github_repos.owner_id = github_users.id
 github_repos.repo_id = github_repo_topics.repo_id
 trending_repos.repo_name = github_repos.repo_name
 
-Select statement limit 20 by default, if question need more data, please add limit 200
+Select statement limit 20 by default, if question need more data, please add limit 50
 When type = 'PullRequestReviewCommentEvent' or type = 'IssueCommentEvent', the action could be 'created'
 When type = 'PullRequestEvent' or type = 'IssuesEvent', the action could be 'opened', 'closed'
 When type = 'PullRequestEvent', action = 'closed' and pr_merged = 1, it means the pull request is merged
@@ -68,7 +68,7 @@ Answer {
 }
 
 ---
-Let's think step by step, use best practice of writing SQL (add table name as prefix to column if necessary), use common table expression, window function if necessary, scan all repos if there is no specific repo, generate a answer.json file to answer the question: ${question}?
+Let's think step by step, use best practice of writing SQL, use common table expression, window function if necessary, scan all repos if there is no specific repo, generate a answer.json file to answer the question: ${question}?
 ---
 answer.json
 ---
