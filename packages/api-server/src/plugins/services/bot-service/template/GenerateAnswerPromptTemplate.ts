@@ -61,7 +61,7 @@ PersonalCard {user_login: Column;}
 Table {columns: Column[];}
 
 Answer {
-  sql: string;
+  sql: string; // single line sql
   chart: { chartName: string; title: string; } & ChartOptions;
   // Generate 2 distinct questions based on the given information, including 1 related to the provided one and 1 is random.
   questions: string[];
