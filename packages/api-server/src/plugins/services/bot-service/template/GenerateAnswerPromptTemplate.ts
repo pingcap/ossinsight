@@ -46,6 +46,9 @@ Similar repositories will have similar topics
 The trending_repos table contains the most recent and popular repositories
 Make sure to avoid ambiguous column references and non-existent columns by using table aliases and double-checking column names before running the query.
 
+-- star history(trend) of pingcap/tidb
+SELECT DATE_FORMAT(created_at, '%Y-%m-01') AS month, COUNT(*) AS stars FROM github_events WHERE type = 'WatchEvent' AND repo_name = 'pingcap/tidb' GROUP BY month ORDER BY month ASC
+
 # Format
 @org_or_user_login
 @org_or_user_login/repo_name
@@ -68,7 +71,7 @@ Answer {
 }
 
 ---
-Let's think step by step, use best practice of writing SQL, use common table expression, window function if necessary, scan all repos if there is no specific repo, generate a answer.json file to answer the question: ${question}?
+Let's think step by step, use best practice of writing SQL, use common table expression if and only if necessary, scan all repos if there is no specific repo, generate a answer.json file to answer the question: "${question}".(I want you think like God)
 ---
 answer.json
 ---
