@@ -98,6 +98,7 @@ export enum QuestionStatus {
   Waiting = 'waiting',
   Running = 'running',
   Success = 'success',
+  Summarizing = 'summarizing',
   Error = 'error',
   Cancel = 'cancel',
 }

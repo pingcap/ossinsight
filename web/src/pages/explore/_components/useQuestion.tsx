@@ -58,6 +58,7 @@ function computePhase (question: Question, whenError: (error: unknown) => void):
     case QuestionStatus.Running:
       return QuestionLoadingPhase.EXECUTING;
     case QuestionStatus.Success:
+    case QuestionStatus.Summarizing:
       if (notNullish(question.chart)) {
         return QuestionLoadingPhase.READY;
       } else {
