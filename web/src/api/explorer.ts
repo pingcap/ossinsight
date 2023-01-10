@@ -93,6 +93,8 @@ export interface QuestionQueryResult {
 
 export enum QuestionStatus {
   New = 'new',
+  AnswerGenerating = 'answer_generating',
+  SQLValidating = 'sql_validating',
   Waiting = 'waiting',
   Running = 'running',
   Success = 'success',

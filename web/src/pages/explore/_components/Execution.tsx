@@ -50,6 +50,8 @@ export default function Execution ({ search }: { search: string }) {
         return 'pending';
       case QuestionLoadingPhase.LOADING:
       case QuestionLoadingPhase.CREATING:
+      case QuestionLoadingPhase.GENERATING_SQL:
+      case QuestionLoadingPhase.VALIDATING_SQL:
         return 'loading';
       case QuestionLoadingPhase.GENERATE_SQL_FAILED:
       case QuestionLoadingPhase.LOAD_FAILED:
@@ -67,6 +69,8 @@ export default function Execution ({ search }: { search: string }) {
       case QuestionLoadingPhase.LOADING:
         return 'Loading question...';
       case QuestionLoadingPhase.CREATING:
+      case QuestionLoadingPhase.GENERATING_SQL:
+      case QuestionLoadingPhase.VALIDATING_SQL:
         return 'Generating SQL...';
       case QuestionLoadingPhase.LOAD_FAILED:
         return 'Question not found';

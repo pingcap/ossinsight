@@ -16,6 +16,8 @@ export const enum QuestionLoadingPhase {
   CREATING,
   /** Recently created, generating SQL */
   CREATED,
+  GENERATING_SQL,
+  VALIDATING_SQL,
   /** Creation failed, question would not be exists */
   CREATE_FAILED,
   /** Generate SQL failed, question exists */
@@ -49,6 +51,9 @@ function computePhase (question: Question, whenError: (error: unknown) => void):
   switch (question.status) {
     case QuestionStatus.New:
       return QuestionLoadingPhase.CREATED;
+    case QuestionStatus.AnswerGenerating:
+    case QuestionStatus.SQLValidating:
+      return QuestionLoadingPhase.GENERATING_SQL;
     case QuestionStatus.Waiting:
       return QuestionLoadingPhase.QUEUEING;
     case QuestionStatus.Running:
@@ -184,6 +189,7 @@ export function useQuestionManagementValues ({ pollInterval = 2000 }: QuestionMa
     }
     // Poll question if question was not finished
     switch (phase) {
+      case QuestionLoadingPhase.GENERATING_SQL:
       case QuestionLoadingPhase.EXECUTING:
       case QuestionLoadingPhase.QUEUEING:
       // case QuestionLoadingPhase.VISUALIZING:
