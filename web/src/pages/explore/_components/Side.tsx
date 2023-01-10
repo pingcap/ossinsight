@@ -1,7 +1,6 @@
 import { RecommendedSuggestions } from '@site/src/pages/explore/_components/Suggestions';
 import { Box, Divider, IconButton, styled, Typography } from '@mui/material';
-import { Cached } from '@mui/icons-material';
-import { ArrowForward, KeyboardDoubleArrowLeft } from '@mui/icons-material';
+import { Cached, ArrowForward, KeyboardDoubleArrowLeft  } from '@mui/icons-material';
 import React from 'react';
 import Link from '@docusaurus/Link';
 
