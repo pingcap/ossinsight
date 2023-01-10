@@ -6,9 +6,10 @@ import { isEmptyArray, isNonemptyString, isNullish, notNullish } from '@site/src
 import { twitterLink } from '@site/src/utils/share';
 import { ChartResult, Question } from '@site/src/api/explorer';
 import Info from '@site/src/pages/explore/_components/Info';
-import { Divider, Portal, styled, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
+import { Divider, Portal, Stack, styled, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
 import { getErrorMessage } from '@site/src/utils/error';
 import ErrorBlock from '@site/src/pages/explore/_components/ErrorBlock';
+import Feedback from '@site/src/pages/explore/_components/Feedback';
 import TableChart from '@site/src/pages/explore/_components/charts/TableChart';
 import { Charts } from '@site/src/pages/explore/_components/charts';
 import { AutoGraph, TableView } from '@mui/icons-material';
@@ -191,9 +192,12 @@ function Chart ({ chartData, chartError, fields, result, controlsContainer }: { 
 
     const renderTips = () => {
       return (
-        <Typography variant="body2" color="#D1D1D1" mt={2}>
-          🤔 Confused with this answer? Try to tiny your words and help the AI identify your question, for example, you can try to use ‘@repo_name/user_name’ to narrow down your query. If you have more questions about the accuracy of the answers, see FAQ here.
-        </Typography>
+        <Stack direction='row' justifyContent='space-between' spacing='2' alignItems='center'>
+          <Typography variant="body2" color="#D1D1D1" mt={2}>
+            🤔 Confused with this answer? Try to tiny your words and help the AI identify your question, for example, you can try to use ‘@repo_name/user_name’ to narrow down your query. If you have more questions about the accuracy of the answers, see FAQ here.
+          </Typography>
+          <Feedback />
+        </Stack>
       );
     };
 

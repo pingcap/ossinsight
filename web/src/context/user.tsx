@@ -40,17 +40,17 @@ export function AuthProvider ({ children }: PropsWithChildren): JSX.Element {
   );
 }
 
-export function useRequireLogin () {
-  const { isLoading, user, loginWithPopup } = useAuth0();
+export function useRequireLogin (): () => Promise<string> {
+  const { isLoading, user, loginWithPopup, getAccessTokenSilently } = useAuth0();
 
   return useMemoizedFn(async () => {
     if (isLoading) {
-      return false;
+      return await Promise.reject(new Error('Unauthorized'));
     }
     if (isNullish(user)) {
       await loginWithPopup();
-      return false;
+      return await Promise.reject(new Error('Authorizing'));
     }
-    return true;
+    return await getAccessTokenSilently();
   });
 }
