@@ -5,7 +5,7 @@ import { MySQLPromisePool } from "@fastify/mysql";
 import { ResultSetHeader } from "mysql2";
 import fp from "fastify-plugin";
 import { APIError } from "../../../utils/error";
-import { Connection, RowDataPacket, PoolConnection } from "mysql2/promise";
+import { RowDataPacket, PoolConnection } from "mysql2/promise";
 import { Auth0UserInfo, Auth0UserMetadata } from "./auth0";
 import { DateTime } from "luxon";
 import Axios from "axios";
@@ -136,13 +136,11 @@ export class UserService {
   ): Promise<number> {
     if (!token) throw new Error("token is required");
 
-    let conn: Connection | undefined;
-
     const [provider, idString] = user.sub.split("|");
     const githubLogin = user?.github_login || null;
+    const conn = connection || (await this.mysql.getConnection());
 
     try {
-      conn = connection || (await this.mysql.getConnection());
       await conn.beginTransaction();
 
       // Check if how many users bound to this account.
@@ -161,6 +159,7 @@ export class UserService {
         throw new APIError(409, "Failed to login, please contact admin.");
       } else if (existedUserIds.length === 1) {
         await conn.commit();
+        await conn.release();
         return existedUserIds[0].id;
       }
 
@@ -208,6 +207,8 @@ export class UserService {
         "Failed to create new user, please try it again.",
         err as Error
       );
+    } finally {
+        await conn.release();
     }
   }
 
