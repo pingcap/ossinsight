@@ -737,10 +737,6 @@ export class ExplorerService {
                 await this.addSystemQuestionFeedback(questionId, QuestionFeedbackType.ErrorValidateChart, JSON.stringify(question.chart));
             }
 
-            await this.saveQuestionResult(questionId, {
-                ...questionResult,
-            }, false);
-
             // Answer summary.
             if (Array.isArray(questionResult.result.rows) && questionResult.result.rows.length > 0) {
                 try {
@@ -751,7 +747,10 @@ export class ExplorerService {
                 }
             }
 
-            await this.updateQuestionStatus(questionId, QuestionStatus.Success);
+            await this.saveQuestionResult(questionId, {
+                ...questionResult,
+            }, false);
+
             return questionResult;
         } catch (err: any) {
             await this.saveQuestionError(questionId, err);
