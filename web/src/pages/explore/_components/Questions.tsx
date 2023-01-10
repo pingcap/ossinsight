@@ -73,12 +73,14 @@ export default function Questions () {
     tipsRef.current?.show();
   });
 
+  const showSide = !hideExecution && (phase === QuestionLoadingPhase.READY || phase === QuestionLoadingPhase.SUMMARIZING) && hasResult;
+
   return (
     <QuestionManagementContext.Provider value={{ phase, question, loading, error, create, load, reset }}>
       <ExploreContext.Provider value={{ search: value, handleSelect, showTips }}>
         <Decorators />
         <Layout
-          showSide={!hideExecution && phase === QuestionLoadingPhase.READY && hasResult}
+          showSide={showSide}
           showHeader={hideExecution}
           showFooter={hideExecution}
           header={<Header />}

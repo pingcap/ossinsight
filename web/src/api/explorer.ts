@@ -76,6 +76,7 @@ export interface Question {
   executedAt?: string | null;
   finishedAt?: string | null;
   spent?: number | null;
+  answerSummary?: { content: string, hashtags: string[] };
   error?: string | null;
 }
 

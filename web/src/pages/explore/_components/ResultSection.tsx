@@ -4,7 +4,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import useQuestionManagement, { QuestionLoadingPhase } from '@site/src/pages/explore/_components/useQuestion';
 import { isEmptyArray, isNonemptyString, isNullish, notNullish } from '@site/src/utils/value';
 import { twitterLink } from '@site/src/utils/share';
-import { ChartResult, Question } from '@site/src/api/explorer';
+import { ChartResult, Question, QuestionStatus } from '@site/src/api/explorer';
 import Info from '@site/src/pages/explore/_components/Info';
 import { Divider, Portal, Stack, styled, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
 import { getErrorMessage } from '@site/src/utils/error';
@@ -17,6 +17,8 @@ import { TabContext, TabPanel } from '@mui/lab';
 import { useExploreContext } from '@site/src/pages/explore/_components/context';
 import { useInterval } from 'ahooks';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import SummaryCard from '@site/src/pages/explore/_components/SummaryCard';
+import { uniqueItems } from '@site/src/utils/generate';
 
 export default function ResultSection () {
   const { question, error, phase } = useQuestionManagement();
@@ -36,6 +38,7 @@ export default function ResultSection () {
       case QuestionLoadingPhase.UNKNOWN_ERROR:
         return 'error';
       case QuestionLoadingPhase.READY:
+      case QuestionLoadingPhase.SUMMARIZING:
         return 'success';
       default:
         return 'pending';
@@ -56,6 +59,7 @@ export default function ResultSection () {
         return 'Unknown error';
       case QuestionLoadingPhase.VISUALIZE_FAILED:
       case QuestionLoadingPhase.READY:
+      case QuestionLoadingPhase.SUMMARIZING:
         return <>{`${question?.result?.rows.length ?? 'NaN'} rows in ${question?.spent ?? 'NaN'} seconds`}{renderEngines(question)}</>;
       default:
         return 'pending';
@@ -67,6 +71,8 @@ export default function ResultSection () {
       return twitterLink(location.href, { title: 'OSSInsight Data Explorer', hashtags: ['OpenSource', 'OpenAI', 'TiDBCloud'] });
     }
     let url;
+    const title = question.answerSummary?.content ?? search;
+    const hashtags = uniqueItems(question.answerSummary?.hashtags ?? [], ['OpenSource', 'OpenAI', 'TiDBCloud']);
     if (typeof location === 'undefined') {
       if (isNonemptyString(question.id)) {
         url = `https://ossinsight.io/explore?id=${question.id}`;
@@ -74,7 +80,7 @@ export default function ResultSection () {
         url = 'https://ossinsight.io/explore';
       }
     } else {
-      url = twitterLink(location.href, { title: `${search} | OSSInsight Data Explorer\n`, hashtags: ['OpenSource', 'OpenAI', 'TiDBCloud'] });
+      url = twitterLink(location.href, { title: `${title} | OSSInsight Data Explorer\n`, hashtags });
     }
     return url;
   }, [question, search]);
@@ -106,6 +112,9 @@ export default function ResultSection () {
       errorTitle="Failed to execute question"
       errorPrompt="Hi, it's failed to execute"
     >
+      {(notNullish(question?.answerSummary) || question?.status === QuestionStatus.Summarizing) && (
+        <SummaryCard loading={question?.status === QuestionStatus.Summarizing}>{question?.answerSummary?.content}</SummaryCard>
+      )}
       {phase === QuestionLoadingPhase.QUEUEING && <PromptTitle source={question?.queuePreceding === 0 ? QUEUE_ALMOST_PROMPT_TITLES : QUEUE_PROMPT_TITLES} interval={3000} />}
       {phase === QuestionLoadingPhase.EXECUTING && <PromptTitle source={RUNNING_PROMPT_TITLES} interval={2000} />}
       <Chart chartData={question?.chart ?? undefined} chartError={chartError} result={result} fields={question?.result?.fields} controlsContainer={controlsContainerRef} />
@@ -192,7 +201,7 @@ function Chart ({ chartData, chartError, fields, result, controlsContainer }: { 
 
     const renderTips = () => {
       return (
-        <Stack direction='row' justifyContent='space-between' spacing='2' alignItems='center'>
+        <Stack direction="row" justifyContent="space-between" spacing="2" alignItems="center">
           <Typography variant="body2" color="#D1D1D1" mt={2}>
             🤔 Confused with this answer? Try to tiny your words and help the AI identify your question, for example, you can try to use ‘@repo_name/user_name’ to narrow down your query. If you have more questions about the accuracy of the answers, see FAQ here.
           </Typography>

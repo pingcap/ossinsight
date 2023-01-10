@@ -56,7 +56,7 @@ export default function BarChart ({ chartName, title, x, y, data }: ChartResult 
         },
         animationDuration: 2000,
       },
-      height: isNotTime ? 40 * data.length : 400,
+      height: Math.max(isNotTime ? 40 * data.length : 400, 400),
     };
   }, [chartName, title, x, y, data]);
 

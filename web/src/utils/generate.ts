@@ -25,3 +25,17 @@ export function randomOf<T> (source: T[], excludeIndex?: number): T | undefined 
     return source[rand];
   }
 }
+
+export function uniqueItems<T> (...items: Array<Iterable<T>>): T[] {
+  const set = new Set<T>();
+  const res: T[] = [];
+  items.forEach(arr => {
+    for (const item of arr) {
+      if (!set.has(item)) {
+        set.add(item);
+        res.push(item);
+      }
+    }
+  });
+  return res;
+}

@@ -31,6 +31,7 @@ export const enum QuestionLoadingPhase {
   VISUALIZE_FAILED,
   UNKNOWN_ERROR,
   /** Question is ready to render */
+  SUMMARIZING,
   READY,
   /** Question is ready to render but has no result */
 }
@@ -38,6 +39,7 @@ export const enum QuestionLoadingPhase {
 export const FINAL_PHASES = new Set([
   QuestionLoadingPhase.NONE,
   QuestionLoadingPhase.READY,
+  QuestionLoadingPhase.SUMMARIZING,
   QuestionLoadingPhase.UNKNOWN_ERROR,
   QuestionLoadingPhase.GENERATE_SQL_FAILED,
   QuestionLoadingPhase.VISUALIZE_FAILED,
@@ -57,8 +59,9 @@ function computePhase (question: Question, whenError: (error: unknown) => void):
       return QuestionLoadingPhase.QUEUEING;
     case QuestionStatus.Running:
       return QuestionLoadingPhase.EXECUTING;
-    case QuestionStatus.Success:
     case QuestionStatus.Summarizing:
+      return QuestionLoadingPhase.SUMMARIZING;
+    case QuestionStatus.Success:
       if (notNullish(question.chart)) {
         return QuestionLoadingPhase.READY;
       } else {
@@ -195,6 +198,7 @@ export function useQuestionManagementValues ({ pollInterval = 2000 }: QuestionMa
       case QuestionLoadingPhase.GENERATING_SQL:
       case QuestionLoadingPhase.EXECUTING:
       case QuestionLoadingPhase.QUEUEING:
+      case QuestionLoadingPhase.SUMMARIZING:
       // case QuestionLoadingPhase.VISUALIZING:
       {
         const h = setTimeout(() => {

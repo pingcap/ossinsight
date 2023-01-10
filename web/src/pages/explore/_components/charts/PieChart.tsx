@@ -1,18 +1,7 @@
 import { ChartResult } from '@site/src/api/explorer';
-import EChart from '@site/src/components/ECharts';
 import React, { useMemo } from 'react';
 import { EChartsOption } from 'echarts';
-import { use } from 'echarts/core';
-import { LinesChart as PieChartComponent } from 'echarts/charts';
-import { DatasetComponent, GridComponent, LegendComponent, TitleComponent } from 'echarts/components';
-
-use([
-  PieChartComponent,
-  GridComponent,
-  TitleComponent,
-  DatasetComponent,
-  LegendComponent,
-]);
+import EChartsReact from 'echarts-for-react';
 
 export default function PieChart ({ chartName, title, value, label, data }: ChartResult & { data: any[] }) {
   const options: EChartsOption = useMemo(() => ({
@@ -49,8 +38,14 @@ export default function PieChart ({ chartName, title, value, label, data }: Char
     },
   }), [chartName, title, value, label, data]);
   return (
-    <EChart
-      height={400}
+    <EChartsReact
+      theme="dark"
+      style={{
+        height: 400,
+      }}
+      opts={{
+        height: 400,
+      }}
       option={options}
     />
   );
