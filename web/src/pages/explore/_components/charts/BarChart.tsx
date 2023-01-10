@@ -50,9 +50,11 @@ export default function BarChart ({ chartName, title, x, y, data }: ChartResult 
         },
         [isNotTime ? 'yAxis' : 'xAxis']: {
           type: isTime ? 'time' : 'category',
+          inverse: isNotTime,
         },
         [isNotTime ? 'xAxis' : 'yAxis']: {
           type: 'value',
+          position: isNotTime ? 'top' : undefined,
         },
         animationDuration: 2000,
       },
