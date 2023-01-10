@@ -64,7 +64,7 @@ export function useAsyncOperation<P, T> (params: P, fetcher: (params: P) => Prom
   }, [fetcher, unstable_serialize([params])]);
 
   const run = useEventCallback(async () => {
-    if (requireAuth && isAuthenticated) {
+    if (requireAuth && !isAuthenticated) {
       await loginWithPopup();
       return;
     }

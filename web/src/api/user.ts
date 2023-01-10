@@ -60,7 +60,7 @@ export interface Subscription {
 export function useSubscriptions () {
   const { user: userInfo, getAccessTokenSilently } = useAuth0();
 
-  return useSWR(notNullish(userInfo) ? `user(${userInfo.sub as string}).milestones` : undefined, {
+  return useSWR(userInfo ? `user(${userInfo.sub as string}).milestones` : undefined, {
     fetcher: async () => {
       const accessToken = await getAccessTokenSilently();
       return await clientWithoutCache.get<any, Subscription[]>('/user/subscriptions', {
