@@ -43,7 +43,8 @@ export const APIServerEnvSchema = {
     },
     PLAYGROUND_TRUSTED_GITHUB_LOGINS: {
       type: 'string',
-      separator: ','
+      separator: ',',
+      default: ''
     },
     EXPLORER_USER_MAX_QUESTIONS_PER_HOUR: {
       type: 'number',

@@ -49,6 +49,8 @@ export interface QuestionQueryResultWithChart extends QuestionQueryResult {
 
 export enum QuestionStatus {
   New = "new",
+  AnswerGenerating = "answer_generating",
+  SQLValidating = "sql_validating",
   Waiting = "waiting",
   Running = "running",
   Success = "success",
@@ -67,4 +69,25 @@ export interface PlanStep {
 export interface ValidateSQLResult {
   sql: string;
   statementType: string;
+}
+
+export interface QuestionFeedback {
+  id: number;
+  userId: number;
+  questionId: string;
+  satisfied: boolean;
+  feedbackType: QuestionFeedbackType;
+  feedbackContent?: string;
+  createdAt: DateTime;
+}
+
+export enum QuestionFeedbackType {
+  AnswerSatisfied = "answer-satisfied",
+  AnswerUnsatisfied = "answer-unsatisfied",
+  ErrorAnswerGenerate = "error-answer-generate",
+  ErrorAnswerParse = "error-answer-parse",
+  ErrorValidateSQL = "error-validate-sql",
+  ErrorValidateChart = "error-validate-chart",
+  ErrorQueryTimeout = "error-query-timeout",
+  ErrorUnknown = "error-unknown",
 }

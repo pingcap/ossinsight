@@ -18,6 +18,14 @@ export const JobServerEnvSchema = {
     PLAYGROUND_DATABASE_URL: {
       type: 'string',
     },
+    EXPLORER_HIGH_QUEUE_CONCURRENT: {
+      type: 'number',
+      default: 20,
+    },
+    EXPLORER_LOW_QUEUE_CONCURRENT: {
+      type: 'number',
+      default: 5,
+    },
     SEND_REPO_FEEDS_CRON: {
       type: 'string',
       default: '50 * * * *',

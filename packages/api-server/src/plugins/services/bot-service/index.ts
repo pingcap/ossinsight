@@ -7,6 +7,8 @@ import {GenerateChartPromptTemplate} from "./template/GenerateChartPromptTemplat
 import {Answer, RecommendedChart, RecommendQuestion} from "./types";
 import {GenerateAnswerPromptTemplate} from "./template/GenerateAnswerPromptTemplate";
 import {GenerateQuestionsPromptTemplate} from "./template/GenerateQuestionsPromptTemplate";
+import {DateTime} from "luxon";
+import {BotResponseGenerateError, BotResponseParseError} from "../../../utils/error";
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -101,11 +103,14 @@ export class BotService {
         }
     }
 
-    async questionToAnswer(template: GenerateAnswerPromptTemplate, question: string): Promise<Answer> {
+    async questionToAnswer(template: GenerateAnswerPromptTemplate, question: string): Promise<Answer | null> {
         const prompt = template.stringify(question);
 
+        let choice = undefined;
         let answer = null;
         try {
+            this.log.info("Requesting answer for question: %s", question);
+            const start = DateTime.now();
             const res = await this.openai.createCompletion({
                 model: template.model,
                 prompt,
@@ -115,25 +120,26 @@ export class BotService {
                 max_tokens: template.maxTokens,
                 top_p: template.topP,
                 n: template.n,
-                logprobs: template.logprobs,
             });
             const {choices, usage} = res.data;
-            this.log.info({ usage }, 'Got answer of question "%s" from OpenAI API', question);
+            const end = DateTime.now();
+            this.log.info({ usage }, 'Got answer of question "%s" from OpenAI API, cost: %d s', question, end.diff(start).as('seconds'));
 
             if (Array.isArray(choices) && choices[0].text) {
-                answer = JSON.parse(choices[0].text);
+                choice = choices[0].text;
+                answer = JSON.parse(choice);
                 return answer
             } else {
-                this.log.warn({ response: res.data }, 'Got empty answer for question: %s', question);
-                return {
-                    questions: []
-                };
+                return null;
             }
-        } catch (err) {
-            this.log.error({ err, answer }, 'Failed to get answer for question: %s', question);
-            return {
-                questions: []
-            };
+        } catch (err: any) {
+            if (err instanceof SyntaxError) {
+                this.log.error({ err, choice }, `Failed to parse the answer for question: ${question}`);
+                throw new BotResponseParseError('failed to parse the answer', choice, err);
+            } else {
+                this.log.error({ err }, `Failed to get answer for question: ${question}`);
+                throw new BotResponseGenerateError(`failed to generate the answer`, err);
+            }
         }
     }
 
@@ -150,8 +156,7 @@ export class BotService {
                 temperature: template.temperature,
                 max_tokens: template.maxTokens,
                 top_p: template.topP,
-                n: template.n,
-                logprobs: template.logprobs,
+                n: template.n
             });
             const {choices, usage} = res.data;
             this.log.info({ usage }, 'Request to generate %d questions from OpenAI API', n);

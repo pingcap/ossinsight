@@ -31,18 +31,9 @@ export const recommendQuestionHandler: FastifyPluginAsyncJsonSchemaToTs = async 
   }>('/', {
     schema
   }, async function (req, reply) {
-    const { explorerService } = app;
     const { aiGenerated, n } = req.query;
-    const conn = await this.mysql.getConnection();
-
-    try {
-      const questions = await explorerService.getRecommendQuestions(conn, n, aiGenerated);
-      reply.status(200).send(questions);
-    } catch (e) {
-      throw e;
-    } finally {
-      conn.release();
-    }
+    const questions = await app.explorerService.getRecommendQuestions(n, aiGenerated);
+    reply.status(200).send(questions);
   });
 }
 

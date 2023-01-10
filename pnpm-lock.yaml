@@ -19,9 +19,9 @@ importers:
       '@types/async': ^3.2.15
       '@types/jest': ^28.1.6
       '@types/koa': ^2.13.4
-      '@types/koa__cors': ^3.1.1
       '@types/koa-router': ^7.4.4
       '@types/koa-static': ^4.0.2
+      '@types/koa__cors': ^3.1.1
       '@types/luxon': ^2.0.9
       '@types/mysql': ^2.15.21
       '@types/node': ^18.0.0
@@ -99,9 +99,9 @@ importers:
       '@types/async': 3.2.16
       '@types/jest': 28.1.8
       '@types/koa': 2.13.5
-      '@types/koa__cors': 3.3.0
       '@types/koa-router': 7.4.4
       '@types/koa-static': 4.0.2
+      '@types/koa__cors': 3.3.0
       '@types/luxon': 2.4.0
       '@types/mysql': 2.15.21
       '@types/node': 18.11.9
@@ -2442,7 +2442,7 @@ packages:
     peerDependencies:
       '@octokit/core': '>=4'
     dependencies:
-      '@octokit/core': 4.1.0
+      '@octokit/core': 4.1.0_encoding@0.1.13
       '@octokit/types': 8.0.0
     dev: false
 
@@ -2470,7 +2470,7 @@ packages:
     peerDependencies:
       '@octokit/core': '>=3'
     dependencies:
-      '@octokit/core': 4.1.0
+      '@octokit/core': 4.1.0_encoding@0.1.13
       '@octokit/types': 8.0.0
       deprecation: 2.3.1
     dev: false
@@ -2488,7 +2488,7 @@ packages:
     peerDependencies:
       '@octokit/core': '>=3'
     dependencies:
-      '@octokit/core': 4.1.0
+      '@octokit/core': 4.1.0_encoding@0.1.13
       '@octokit/types': 8.0.0
       bottleneck: 2.19.5
     dev: false
@@ -2509,7 +2509,7 @@ packages:
     peerDependencies:
       '@octokit/core': ^4.0.0
     dependencies:
-      '@octokit/core': 4.1.0
+      '@octokit/core': 4.1.0_encoding@0.1.13
       '@octokit/types': 8.0.0
       bottleneck: 2.19.5
     dev: false

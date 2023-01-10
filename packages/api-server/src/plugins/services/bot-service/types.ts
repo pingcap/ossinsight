@@ -44,38 +44,38 @@ export interface Chart {
 }
 
 export interface PieChart extends Chart {
-  label: Column;
-  value: Column
+  label?: Column;
+  value?: Column
 }
 
 export interface LineChart extends Chart {
-  x: Column;
-  y: Column | Column[];
+  x?: Column;
+  y?: Column | Column[];
 }
 
 export interface BarChart extends Chart  {
-  x: Column;
-  y: Column | Column[];
+  x?: Column;
+  y?: Column | Column[];
 }
 
 export interface MapChart extends Chart  {
-  country_code: Column;
-  value: Column;
+  country_code?: Column;
+  value?: Column;
 }
 
 export interface NumberCard extends Chart  {
   label?: Column;
-  value: Column;
+  value?: Column;
 }
 
 export interface RepoCard extends Chart  {
-  repo_name: Column;
+  repo_name?: Column;
 }
 
 export interface PersonalCard extends Chart  {
-  user_login: Column;
+  user_login?: Column;
 }
 
 export interface Table extends Chart  {
-  columns: Column[];
+  columns?: Column[];
 }

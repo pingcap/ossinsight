@@ -15,22 +15,23 @@ export default async (
 
   const question = job.data as Question;
   const { id: questionId, title, querySQL } = question;
-  const conn = await app.mysql.getConnection();
 
   try {
     logger.info({ questionId, querySQL }, "Resolving question: %s", title);
     const start = DateTime.now();
-    await app.explorerService.resolveQuestion(conn, job, question);
+    await app.explorerService.resolveQuestion(job, question);
     const end = DateTime.now();
-    logger.info({ questionId }, "Resolved question: %s, cost: %s", title, end.diff(start).toFormat("hh:mm:ss.SSS"));
+    logger.info({ questionId }, "Resolved question: %s, cost: %d s", title, end.diff(start).as("seconds"));
   } catch (err: any) {
     logger.error(err, `Failed to resolve the question ${questionId}: ${err.message}`);
-  } finally {
-    await conn.release();
   }
 };
 
-export const workerConfig: WorkerOptions = {
-  autorun: true,
-  concurrency: 2,
-};
+export const workerConfig =  (
+  app: FastifyInstance,
+) => {
+  return {
+    autorun: true,
+    concurrency: app.config.EXPLORER_LOW_QUEUE_CONCURRENT
+  } as WorkerOptions;
+}

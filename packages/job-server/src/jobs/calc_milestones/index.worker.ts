@@ -32,10 +32,14 @@ export default async (
     }
 }
 
-export const workerConfig: WorkerOptions = {
-    autorun: true,
-    concurrency: 1,
-};
+export const workerConfig =  (
+  app: FastifyInstance,
+) => {
+    return {
+        autorun: true,
+        concurrency: 1,
+    } as WorkerOptions;
+}
 
 export async function calcRepoMilestonesInConcurrent (
     app: FastifyServer,

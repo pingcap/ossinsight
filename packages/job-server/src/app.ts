@@ -28,6 +28,8 @@ declare module 'fastify' {
       REDIS_URL: string,
       EMAIL_SERVER_URL: string,
       PLAYGROUND_DATABASE_URL: string;
+      EXPLORER_HIGH_QUEUE_CONCURRENT: number;
+      EXPLORER_LOW_QUEUE_CONCURRENT: number;
       SEND_REPO_FEEDS_CRON: string,
       CALC_REPO_MILESTONES_CRON: string,
       OPENAI_API_KEY: string
