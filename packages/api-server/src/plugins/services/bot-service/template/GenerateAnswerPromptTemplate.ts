@@ -32,7 +32,7 @@ github_repos.owner_id = github_users.id
 github_repos.repo_id = github_repo_topics.repo_id
 trending_repos.repo_name = github_repos.repo_name
 
-Select statement limit 20 by default, if question need more data, please add limit 200
+Select statement limit 20 by default, if question need more data, please add limit 50
 When type = 'PullRequestReviewCommentEvent' or type = 'IssueCommentEvent', the action could be 'created'
 When type = 'PullRequestEvent' or type = 'IssuesEvent', the action could be 'opened', 'closed'
 When type = 'PullRequestEvent', action = 'closed' and pr_merged = 1, it means the pull request is merged
@@ -44,7 +44,7 @@ Contributor: the person who opened pull request to the repo, it will trigger a P
 The most popular repos has the most stars
 Similar repositories will have similar topics
 The trending_repos table contains the most recent and popular repositories
-Notice: avoid ambiguous and non-existed column
+Make sure to avoid ambiguous column references and non-existent columns by using table aliases and double-checking column names before running the query.
 
 # Format
 @org_or_user_login
@@ -68,7 +68,7 @@ Answer {
 }
 
 ---
-Let's think step by step, use best practice of writing SQL (add table name as prefix to column if necessary), use common table expression, window function if necessary, scan all repos if there is no specific repo, generate a answer.json file to answer the question: ${question}?
+Let's think step by step, use best practice of writing SQL, use common table expression, window function if necessary, scan all repos if there is no specific repo, generate a answer.json file to answer the question: ${question}?
 ---
 answer.json
 ---
