@@ -26,13 +26,14 @@ export function useUserInfoContext () {
 
 export function AuthProvider ({ children }: PropsWithChildren): JSX.Element {
   const {
-    siteConfig: { customFields },
+    siteConfig: { customFields, url },
   } = useDocusaurusContext();
 
   return (
     <Auth0Provider
       domain={customFields?.auth0_domain as string}
       clientId={customFields?.auth0_client_id as string}
+      redirectUri={window.location.origin || url}
       audience={`https://${customFields?.auth0_domain as string}/api/v2/`}
       scope="read:current_user"
     >
