@@ -76,7 +76,7 @@
     "@types/luxon": "^2.0.9",
     "@types/react-copy-to-clipboard": "^5.0.2",
     "@types/webpack-env": "^1.16.3",
-    "@typescript-eslint/eslint-plugin": "^5.42.0",
+    "@typescript-eslint/eslint-plugin": "^5.48.1",
     "ahooks": "^3.7.1",
     "animate.css": "^4.1.1",
     "babel-plugin-direct-import": "^1.0.0",
@@ -106,7 +106,7 @@
     "react-transition-group": "^4.4.2",
     "sql-highlight": "^4.2.1",
     "swr": "^1.2.2",
-    "typescript": "^4.8.4",
+    "typescript": "^4.9.4",
     "xss": "^1.0.11"
   },
   "browserslist": {
