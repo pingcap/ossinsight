@@ -8,8 +8,10 @@ import useQuestionManagement from '@site/src/pages/explore/_components/useQuesti
 import { isNullish, nonEmptyArray, notNullish } from '@site/src/utils/value';
 import useSWR from 'swr';
 import { useAuth0 } from '@auth0/auth0-react';
+import { useExploreContext } from '@site/src/pages/explore/_components/context';
 
 export default function Feedback () {
+  const { showTips } = useExploreContext();
   const { question } = useQuestionManagement();
   const { loading, setAsyncData } = useAsyncState<boolean>(undefined);
   const requireLogin = useRequireLogin();
@@ -31,6 +33,7 @@ export default function Feedback () {
           void mutate(true);
         }),
     ));
+    showTips();
   });
 
   const handleDown = useEventCallback(() => {

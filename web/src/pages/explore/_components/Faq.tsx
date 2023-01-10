@@ -13,7 +13,7 @@ export default function Faq () {
           <A>{a}</A>
         </QAItem>
       ))}
-      <Typography variant="body1" textAlign='center' color='#929292' fontSize={16} mt={8}>
+      <Typography variant="body1" textAlign="center" color="#929292" fontSize={16} mt={8}>
         Still have problems? please feel free to contact us {githubLink} {twitterLink}
       </Typography>
     </Box>

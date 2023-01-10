@@ -2,10 +2,13 @@ import { styled } from '@mui/material';
 import { Twitter } from '@mui/icons-material';
 import React from 'react';
 import { PropsOf } from '@emotion/react';
+import { useExploreContext } from '@site/src/pages/explore/_components/context';
 
 export default function (props: Omit<PropsOf<'a'>, 'children'>) {
+  const { showTips } = useExploreContext();
+
   return (
-    <Link target="_blank" {...props}>
+    <Link target="_blank" onClick={showTips} {...props}>
       Share
       <StyledTwitter />
     </Link>
