@@ -209,7 +209,6 @@ export class ExplorerService {
     async prepareQuestion(question: Question) {
         const { id: questionId, title } = question;
         const logger = this.logger.child({ questionId: questionId });
-        let queueName = null, queueJobId = null;
 
         try {
             question.status = QuestionStatus.AnswerGenerating;
@@ -316,14 +315,29 @@ export class ExplorerService {
                 }
             }
 
-            queueName = engines.includes('tiflash') ? QuestionQueueNames.Low : QuestionQueueNames.High;
-            queueJobId = randomUUID();
+            const queueName = engines.includes('tiflash') ? QuestionQueueNames.Low : QuestionQueueNames.High;
+            const queueJobId = randomUUID();
             question.engines = engines;
             question.queueName = queueName;
             question.queueJobId = queueJobId;
             question.requestedAt = DateTime.utc();
             question.status = QuestionStatus.Waiting;
             await this.updateQuestion(question);
+
+            // Push the question to the queue.
+            if (queueName === QuestionQueueNames.Low && queueJobId) {
+                logger.info("Pushing the question to the low concurrent queue (jobId: %s).", queueJobId);
+                await this.lowConcurrentQueue.add(QuestionQueueNames.Low, question, {
+                    jobId: queueJobId
+                });
+            } else if (queueName === QuestionQueueNames.High && queueJobId) {
+                logger.info("Pushing the question to the high concurrent queue (jobId: %s).", queueJobId);
+                await this.highConcurrentQueue.add(QuestionQueueNames.High, question, {
+                    jobId: queueJobId
+                });
+            } else {
+                logger.warn("No queue name or job id provided, the question will not be executed.");
+            }
         } catch (err: any) {
             if (err instanceof ExplorerPrepareQuestionError) {
                 await this.updateQuestion({
@@ -343,19 +357,6 @@ export class ExplorerService {
                 }));
             }
             throw err;
-        }
-
-        // Push the question to the queue.
-        if (queueName === QuestionQueueNames.Low && queueJobId) {
-            logger.info("Pushing the question to the low concurrent queue (jobId: %s).", queueJobId);
-            await this.lowConcurrentQueue.add(QuestionQueueNames.Low, question, {
-                jobId: queueJobId
-            });
-        } else if (queueName === QuestionQueueNames.High && queueJobId) {
-            logger.info("Pushing the question to the high concurrent queue (jobId: %s).", queueJobId);
-            await this.highConcurrentQueue.add(QuestionQueueNames.High, question, {
-                jobId: queueJobId
-            });
         }
     }
 
