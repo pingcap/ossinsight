@@ -54,8 +54,8 @@ export default forwardRef<TipsRef>(function Tips (_, forwardedRef: ForwardedRef<
           <Spacer />
           <StyledCard>
             <CardContent>
-              💗 Thank you for enjoying our answers.
-              How about continue to <Link to="/blog/chat2query-tutorials" target="_blank">explore with your own dataset?</Link>
+            Glad you enjoy the exploration 😃
+            Check out our <Link to="/blog/chat2query-tutorials" target="_blank">tutorial</Link>, if you want to try AI-generated SQL for any other dataset.
             </CardContent>
             <CloseButton size="small" onClick={handleClose}>
               <Close />
