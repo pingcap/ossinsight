@@ -46,7 +46,7 @@ The most popular repos has the most stars
 Similar repositories will have similar topics
 The trending_repos table contains the most recent and popular repositories
 
--- star history(trend) of pingcap/tidb
+-- star history(trend) of @pingcap/tidb
 SELECT DATE_FORMAT(ge.created_at, '%Y-%m-01') AS month, COUNT(*) AS stars FROM github_events ge WHERE ge.type = 'WatchEvent' AND ge.repo_name = 'pingcap/tidb' GROUP BY month ORDER BY month ASC
 
 # Format
