@@ -1,7 +1,7 @@
 import Section from '@site/src/pages/explore/_components/Section';
 import React, { useEffect, useMemo, useState } from 'react';
 import useQuestionManagement, { QuestionLoadingPhase } from '@site/src/pages/explore/_components/useQuestion';
-import { isEmptyArray, isNonemptyString, isNullish, notNullish } from '@site/src/utils/value';
+import { isEmptyArray, isNonemptyString, isNullish, nonEmptyArray, notNullish } from '@site/src/utils/value';
 import { ChartResult, Question, QuestionStatus } from '@site/src/api/explorer';
 import Info from '@site/src/pages/explore/_components/Info';
 import { Portal, styled, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
@@ -19,6 +19,7 @@ import SummaryCard from '@site/src/pages/explore/_components/SummaryCard';
 import { uniqueItems } from '@site/src/utils/generate';
 import BotIcon from '@site/src/pages/explore/_components/BotIcon';
 import ShareButtons from './ShareButtons';
+import TypewriterEffect from '@site/src/pages/explore/_components/TypewriterEffect';
 
 export default function ResultSection () {
   const { question, error, phase } = useQuestionManagement();
@@ -101,6 +102,17 @@ export default function ResultSection () {
     }
   }, [phase, error]);
 
+  const summaryContent = useMemo(() => {
+    if (notNullish(question) && notNullish(question.answerSummary)) {
+      if (nonEmptyArray(question.answerSummary.hashtags)) {
+        return `${question.answerSummary.content}\n${question.answerSummary.hashtags.map(item => `#${item}`).join(' ')}`;
+      } else {
+        return question.answerSummary.content;
+      }
+    }
+    return '';
+  }, [question?.answerSummary]);
+
   return (
     <Section
       status={resultStatus}
@@ -117,7 +129,9 @@ export default function ResultSection () {
       errorPrompt="Hi, it's failed to execute"
     >
       {(notNullish(question?.answerSummary) || question?.status === QuestionStatus.Summarizing) && (
-        <SummaryCard loading={question?.status === QuestionStatus.Summarizing}>{question?.answerSummary?.content}</SummaryCard>
+        <SummaryCard loading={question?.status === QuestionStatus.Summarizing}>
+          <TypewriterEffect content={summaryContent} maxContinuous={2} avgInterval={40} />
+        </SummaryCard>
       )}
       {phase === QuestionLoadingPhase.QUEUEING && <PromptTitle source={question?.queuePreceding === 0 ? QUEUE_ALMOST_PROMPT_TITLES : QUEUE_PROMPT_TITLES} interval={5000} />}
       {phase === QuestionLoadingPhase.EXECUTING && <PromptTitle source={RUNNING_PROMPT_TITLES} interval={3000} />}

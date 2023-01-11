@@ -1,6 +1,6 @@
 import { notNullish } from '@site/src/utils/value';
 
-export function array (n: number) {
+export function array (n: number): number[] {
   const arr = new Array(n);
   for (let i = 0; i < n; i++) {
     arr[i] = i;

@@ -1,14 +1,14 @@
 import { notFalsy, notNullish } from '@site/src/utils/value';
 import CodeBlock from '@theme/CodeBlock';
 import Section from '@site/src/pages/explore/_components/Section';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { format } from 'sql-formatter';
 import useQuestionManagement, { QuestionLoadingPhase } from '@site/src/pages/explore/_components/useQuestion';
 import { AxiosError } from 'axios';
 import { isAxiosError } from '@site/src/utils/error';
-import { useStateRef } from '@site/src/pages/explore/_components/Search';
 import { useInterval } from 'ahooks';
 import { randomOf } from '@site/src/utils/generate';
+import TypewriterEffect from '@site/src/pages/explore/_components/TypewriterEffect';
 
 export default function SqlSection () {
   const { question, error, phase } = useQuestionManagement();
@@ -125,37 +125,8 @@ function GeneratingSqlPrompts () {
   }, 3000);
 
   if (notNullish(current)) {
-    return <Prompt prompt={current} />;
+    return <TypewriterEffect content={current} />;
   } else {
     return <>Generating SQL...</>;
   }
-}
-
-function Prompt ({ prompt, avgInterval = 80, maxDiff = 50 }: { prompt: string, avgInterval?: number, maxDiff?: number }) {
-  const [len, setLen, lenRef] = useStateRef(0);
-
-  useEffect(() => {
-    setLen(0);
-
-    let h: ReturnType<typeof setTimeout>;
-
-    function runNext () {
-      h = setTimeout(() => {
-        if (lenRef.current >= prompt.length) {
-          clearTimeout(h);
-        } else {
-          setLen(len => len + 1);
-          runNext();
-        }
-      }, avgInterval + (0.5 - Math.random()) * maxDiff);
-    }
-
-    runNext();
-
-    return () => {
-      clearTimeout(h);
-    };
-  }, [prompt]);
-
-  return <>{prompt.slice(0, len)}{prompt.length !== len}</>;
 }
