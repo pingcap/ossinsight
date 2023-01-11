@@ -73,7 +73,7 @@ Answer {
 ---
 Let's think step by step, use best practice of writing SQL, use common table expression if and only if necessary, scan all repos if there is no specific repo, generate a answer.json file to answer the question: "${question}".(I want you think like God)
 ---
-answer.json
+answer.json // must be json!!!
 ---
 `;
   }
