@@ -59,7 +59,7 @@ PieChart {label: Column; value: Column;}
 LineChart {x: Column; y: Column | Column[];}
 BarChart {x: Column; y: Column | Column[];}
 MapChart {country_code: Column; value: Column;}
-NumberCard {label?: Column; value: Column;}
+NumberCard {label: Column | null; value: Column;}
 RepoCard {repo_name: Column;}
 PersonalCard {user_login: Column;}
 Table {columns: Column[];}
