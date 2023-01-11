@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import { Backdrop, Button, styled } from '@mui/material';
 import { SxProps } from '@mui/system';
-import { useMediaQueryAuth0 } from '@site/src/theme/NavbarItem/useMediaQueryAuth0';
+import { useResponsiveAuth0 } from '@site/src/theme/NavbarItem/useResponsiveAuth0';
 
 interface LoginRequiredProps {
   promote: string;
@@ -10,7 +10,7 @@ interface LoginRequiredProps {
 }
 
 export function LoginRequired ({ promote, sx, children }: LoginRequiredProps) {
-  const { isAuthenticated, login } = useMediaQueryAuth0();
+  const { isAuthenticated, login } = useResponsiveAuth0();
 
   return (
     <LoginRequiredContainer sx={sx}>

@@ -7,7 +7,7 @@ import { Unsubscribe } from '@mui/icons-material';
 import EnableEmailSwitch from '@site/src/pages/subscriptions/EnableEmailSwitch';
 import { useNotifications } from '@site/src/components/Notifications';
 import { useAuth0 } from '@auth0/auth0-react';
-import { useMediaQueryAuth0 } from '@site/src/theme/NavbarItem/useMediaQueryAuth0';
+import { useResponsiveAuth0 } from '@site/src/theme/NavbarItem/useResponsiveAuth0';
 
 const fmt = new Intl.DateTimeFormat('en', {
   dateStyle: 'medium',
@@ -19,7 +19,7 @@ export default function SubscribePage () {
     isAuthenticated: userValidated,
     isLoading: userValidating,
     login,
-  } = useMediaQueryAuth0();
+  } = useResponsiveAuth0();
 
   return (
     <CustomPage>

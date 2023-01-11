@@ -13,7 +13,7 @@ import LoginRoundedIcon from '@mui/icons-material/LoginRounded';
 import { Experimental } from '@site/src/components/Experimental';
 import { useBoolean } from 'ahooks';
 import { useAuth0 } from '@auth0/auth0-react';
-import { useMediaQueryAuth0 } from '@site/src/theme/NavbarItem/useMediaQueryAuth0';
+import { useResponsiveAuth0 } from '@site/src/theme/NavbarItem/useResponsiveAuth0';
 
 const StyledButtonBase = styled(ButtonBase)`
   position: relative;
@@ -25,7 +25,7 @@ const StyledAvatar = styled(Avatar)`
 `;
 
 function LoginButton () {
-  const { login } = useMediaQueryAuth0();
+  const { login } = useResponsiveAuth0();
 
   return (
     <StyledButtonBase

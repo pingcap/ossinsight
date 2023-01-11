@@ -1,10 +1,10 @@
 import React, { createContext, createElement, PropsWithChildren, useContext } from 'react';
 import { useUserInfo } from '@site/src/api/user';
-import { Auth0Provider } from '@auth0/auth0-react';
+import { Auth0Provider, AppState } from '@auth0/auth0-react';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import { useMemoizedFn } from 'ahooks';
 import { isNullish } from '@site/src/utils/value';
-import { useMediaQueryAuth0 } from '@site/src/theme/NavbarItem/useMediaQueryAuth0';
+import { useResponsiveAuth0 } from '@site/src/theme/NavbarItem/useResponsiveAuth0';
 
 const UserContext = createContext<ReturnType<typeof useUserInfo>>({
   validated: false,
@@ -29,6 +29,12 @@ export function AuthProvider ({ children }: PropsWithChildren): JSX.Element {
     siteConfig: { customFields, url },
   } = useDocusaurusContext();
 
+  const onRedirectCallback = (appState: AppState) => {
+    if (appState?.returnTo && typeof window !== 'undefined') {
+      window.location.replace(appState.returnTo);
+    }
+  };
+
   return (
     <Auth0Provider
       domain={customFields?.auth0_domain as string}
@@ -36,6 +42,7 @@ export function AuthProvider ({ children }: PropsWithChildren): JSX.Element {
       redirectUri={
         typeof window === 'undefined' ? url : window.location.origin || url
       }
+      onRedirectCallback={onRedirectCallback}
       audience={`https://${customFields?.auth0_domain as string}/api/v2/`}
       scope="read:current_user"
     >
@@ -45,7 +52,7 @@ export function AuthProvider ({ children }: PropsWithChildren): JSX.Element {
 }
 
 export function useRequireLogin () {
-  const { isLoading, user, login } = useMediaQueryAuth0();
+  const { isLoading, user, login } = useResponsiveAuth0();
 
   return useMemoizedFn(async () => {
     if (isLoading) {
