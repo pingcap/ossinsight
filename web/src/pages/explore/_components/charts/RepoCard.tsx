@@ -1,6 +1,7 @@
 import { ChartResult } from '@site/src/api/explorer';
-import { Avatar, List, ListItem, ListItemAvatar, ListItemButton, ListItemText } from '@mui/material';
+import { List, ListItem, ListItemAvatar, ListItemButton, ListItemText } from '@mui/material';
 import React from 'react';
+import GhAvatar from '@site/src/pages/explore/_components/GhAvatar';
 
 export default function RepoCards ({ chartName, title, repo_name: repoName, data }: ChartResult & { data: any[] }) {
   return (
@@ -9,7 +10,7 @@ export default function RepoCards ({ chartName, title, repo_name: repoName, data
         <ListItem key={index}>
           <ListItemButton component="a" href={`https://github.com/${item[repoName] as string}`} target="_blank">
             <ListItemAvatar>
-              <Avatar src={`https://github.com/${item[repoName].split('/')[0] as string}.png`} />
+              <GhAvatar name={item[repoName].split('/')[0]} />
             </ListItemAvatar>
             <ListItemText>
               {item[repoName]}
