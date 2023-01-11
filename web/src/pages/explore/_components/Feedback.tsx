@@ -48,20 +48,30 @@ export default function Feedback () {
   });
 
   return (
-    <FeedbackContainer>
-      <FeedbackButton disabled={checked === true || loading} onClick={handleUp}>
-        {checked === true ? <ThumbUpAlt color="primary" fontSize="inherit" /> : <ThumbUpOffAlt fontSize="inherit" />}
-      </FeedbackButton>
-      <Divider orientation="vertical" flexItem sx={{ my: 0.5 }} />
-      <FeedbackButton disabled={checked === false || loading} onClick={handleDown}>
-        {checked === false ? <ThumbDownAlt color="primary" fontSize="inherit" /> : <ThumbDownOffAlt fontSize="inherit" />}
-      </FeedbackButton>
-    </FeedbackContainer>
+    <Absolute>
+      <FeedbackContainer>
+        <FeedbackButton disabled={checked === true || loading} onClick={handleUp}>
+          {checked === true ? <ThumbUpAlt color="primary" fontSize="inherit" /> : <ThumbUpOffAlt fontSize="inherit" />}
+        </FeedbackButton>
+        <Divider orientation="vertical" flexItem sx={{ my: 0.5 }} />
+        <FeedbackButton disabled={checked === false || loading} onClick={handleDown}>
+          {checked === false ? <ThumbDownAlt color="primary" fontSize="inherit" /> : <ThumbDownOffAlt fontSize="inherit" />}
+        </FeedbackButton>
+      </FeedbackContainer>
+    </Absolute>
   );
 }
 
+const Absolute = styled('div')`
+  position: absolute;
+  pointer-events: none;
+  right: 8px;
+  bottom: 8px;
+`;
+
 const FeedbackContainer = styled('div')`
   display: inline-flex;
+  pointer-events: auto;
   height: 32px;
   width: 65px;
   min-width: 65px;
@@ -69,6 +79,12 @@ const FeedbackContainer = styled('div')`
   background: #333333;
   align-items: center;
   justify-content: center;
+  opacity: 0.4;
+  transition: ${({ theme }) => theme.transitions.create('opacity')};
+  
+  &:hover {
+    opacity: 1;
+  }
 `;
 
 interface FeedbackButtonProps {

@@ -6,7 +6,7 @@ import { isEmptyArray, isNonemptyString, isNullish, notNullish } from '@site/src
 import { twitterLink } from '@site/src/utils/share';
 import { ChartResult, Question, QuestionStatus } from '@site/src/api/explorer';
 import Info from '@site/src/pages/explore/_components/Info';
-import { Portal, Stack, styled, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
+import { Portal, styled, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
 import { getErrorMessage } from '@site/src/utils/error';
 import ErrorBlock from '@site/src/pages/explore/_components/ErrorBlock';
 import Feedback from '@site/src/pages/explore/_components/Feedback';
@@ -195,24 +195,24 @@ function Chart ({ chartData, chartError, fields, result, controlsContainer }: { 
 
     const renderTips = () => {
       return (
-        <Stack direction="row" justifyContent="space-between" spacing="2" alignItems="center">
-          <Typography component="div" variant="body2" color="#D1D1D1" mt={2}>
-            🤔 Not exactly what you&apos;re looking for?
-            <ul>
-              <li>Try specifying the repo path or user id(NOT name) to help AI understand your question better. For more tips, check out our FAQ.</li>
-              <li>AI-generated SQL is still a work in progress and may have limitations</li>
-              <li>If you Find answers in your own data using natural language.</li>
-            </ul>
-          </Typography>
-          <Feedback />
-        </Stack>
+        <Typography component="div" variant="body2" color="#D1D1D1" mt={2}>
+          🤔 Not exactly what you&apos;re looking for?
+          <ul>
+            <li>Try specifying the repo path or user id(NOT name) to help AI understand your question better. For more tips, check out our FAQ.</li>
+            <li>AI-generated SQL is still a work in progress and may have limitations</li>
+            <li>If you Find answers in your own data using natural language.</li>
+          </ul>
+        </Typography>
       );
     };
 
     const renderTable = () => {
       return (
         <>
-          <TableChart chartName="Table" title="" data={result} fields={fields} />
+          <VisualizationContainer>
+            <TableChart chartName="Table" title="" data={result} fields={fields} />
+            <Feedback />
+          </VisualizationContainer>
           {renderTips()}
         </>
       );
@@ -233,7 +233,10 @@ function Chart ({ chartData, chartError, fields, result, controlsContainer }: { 
     const renderChart = () => {
       return (
         <>
-          <Charts {...chartData} data={result} fields={fields} />
+          <VisualizationContainer>
+            <Charts {...chartData} data={result} fields={fields} />
+            <Feedback />
+          </VisualizationContainer>
           {renderTips()}
         </>
       );
@@ -368,4 +371,8 @@ const ControlsContainer = styled('span')`
 
 const StyledTabPanel = styled(TabPanel)`
   padding: 0;
+`;
+
+const VisualizationContainer = styled('div')`
+  position: relative;
 `;
