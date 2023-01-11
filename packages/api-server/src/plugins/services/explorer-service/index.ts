@@ -998,16 +998,16 @@ export class ExplorerService {
         try {
             if (aiGenerated !== undefined) {
                 [questions] = await connection.query<any[]>(`
-                SELECT hash, title, ai_generated
-                FROM explorer_recommend_questions
+                SELECT hash, title, ai_generated AS aiGenerated, BIN_TO_UUID(question_id) AS questionId, created_at AS createdAt
+                FROM explorer_recommend_questions erq
                 WHERE ai_generated = ?
                 ORDER BY RAND()
                 LIMIT ?
             `, [aiGenerated, n]);
             } else {
                 [questions] = await connection.query<any[]>(`
-                SELECT hash, title, ai_generated
-                FROM explorer_recommend_questions
+                SELECT hash, title, ai_generated AS aiGenerated, BIN_TO_UUID(question_id) AS questionId, created_at AS createdAt
+                FROM explorer_recommend_questions erq
                 ORDER BY RAND()
                 LIMIT ?
             `, [n]);
@@ -1016,7 +1016,17 @@ export class ExplorerService {
             this.logger.error(`Failed to get recommend questions: ${err.message}`);
         }
 
-        return questions;
+        return this.mapToRecommendQuestions(questions);
+    }
+
+    async mapToRecommendQuestions(rows: any[]): Promise<RecommendQuestion[]> {
+        return rows.map((row) => ({
+            hash: row.hash,
+            title: row.title,
+            aiGenerated: row.aiGenerated === 1,
+            questionId: row.questionId,
+            createdAt: DateTime.fromJSDate(row.createdAt)
+        }));
     }
 
     async saveRecommendQuestions(conn: Connection, questions: RecommendQuestion[]): Promise<void> {
