@@ -7,6 +7,7 @@ import { JsonSchemaToTsProvider } from '@fastify/type-provider-json-schema-to-ts
 import fastifyEnv from '@fastify/env';
 import { join } from 'path';
 import { APIError } from "./utils/error";
+import fastifyEtag from '@fastify/etag';
 
 export type AppOptions = {
   // Place your custom options for app below here.
@@ -65,6 +66,9 @@ const app: FastifyPluginAsync<AppOptions, RawServerDefault, JsonSchemaToTsProvid
     domain: fastify.config.AUTH0_DOMAIN,
     secret: fastify.config.AUTH0_SECRET,
   });
+
+  // Load Etag.
+  fastify.register(fastifyEtag);
 
   // Error handler.
   fastify.setErrorHandler(function (error: Error, request, reply) {

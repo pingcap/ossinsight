@@ -124,6 +124,7 @@ importers:
       '@fastify/cookie': ^8.3.0
       '@fastify/cors': ^8.2.0
       '@fastify/env': ^4.1.0
+      '@fastify/etag': ^4.2.0
       '@fastify/jwt': 5.0.0
       '@fastify/mysql': ^4.0.0
       '@fastify/oauth2': ^6.1.0
@@ -183,6 +184,7 @@ importers:
       '@fastify/cookie': 8.3.0
       '@fastify/cors': 8.2.0
       '@fastify/env': 4.1.0
+      '@fastify/etag': 4.2.0
       '@fastify/jwt': 5.0.0
       '@fastify/mysql': 4.0.0
       '@fastify/oauth2': 6.1.0
@@ -914,6 +916,12 @@ packages:
 
   /@fastify/error/3.0.0:
     resolution: {integrity: sha512-dPRyT40GiHRzSCll3/Jn2nPe25+E1VXc9tDwRAIKwFCxd5Np5wzgz1tmooWG3sV0qKgrBibihVoCna2ru4SEFg==}
+
+  /@fastify/etag/4.2.0:
+    resolution: {integrity: sha512-stvRYricpLAAcDsLFi6gUvFtU8sK+EnygajcgAVhvjw4MabTINNIuh35wu3r4x5JmfD1unh4YCQAFPK2H9vuVQ==}
+    dependencies:
+      fastify-plugin: 4.3.0
+    dev: false
 
   /@fastify/fast-json-stringify-compiler/4.1.0:
     resolution: {integrity: sha512-cTKBV2J9+u6VaKDhX7HepSfPSzw+F+TSd+k0wzifj4rG+4E5PjSFJCk19P8R6tr/72cuzgGd+mbB3jFT6lvAgw==}
@@ -2442,7 +2450,7 @@ packages:
     peerDependencies:
       '@octokit/core': '>=4'
     dependencies:
-      '@octokit/core': 4.1.0_encoding@0.1.13
+      '@octokit/core': 4.1.0
       '@octokit/types': 8.0.0
     dev: false
 
@@ -2470,7 +2478,7 @@ packages:
     peerDependencies:
       '@octokit/core': '>=3'
     dependencies:
-      '@octokit/core': 4.1.0_encoding@0.1.13
+      '@octokit/core': 4.1.0
       '@octokit/types': 8.0.0
       deprecation: 2.3.1
     dev: false
@@ -2488,7 +2496,7 @@ packages:
     peerDependencies:
       '@octokit/core': '>=3'
     dependencies:
-      '@octokit/core': 4.1.0_encoding@0.1.13
+      '@octokit/core': 4.1.0
       '@octokit/types': 8.0.0
       bottleneck: 2.19.5
     dev: false
@@ -2509,7 +2517,7 @@ packages:
     peerDependencies:
       '@octokit/core': ^4.0.0
     dependencies:
-      '@octokit/core': 4.1.0_encoding@0.1.13
+      '@octokit/core': 4.1.0
       '@octokit/types': 8.0.0
       bottleneck: 2.19.5
     dev: false
