@@ -45,7 +45,6 @@ Contributor: the person who opened pull request to the repo, it will trigger a P
 The most popular repos has the most stars
 Similar repositories will have similar topics
 The trending_repos table contains the most recent and popular repositories
-Make sure to avoid ambiguous column references and non-existent columns by using table aliases and double-checking column names before running the query.
 
 -- star history(trend) of pingcap/tidb
 SELECT DATE_FORMAT(ge.created_at, '%Y-%m-01') AS month, COUNT(*) AS stars FROM github_events ge WHERE ge.type = 'WatchEvent' AND ge.repo_name = 'pingcap/tidb' GROUP BY month ORDER BY month ASC
@@ -74,6 +73,7 @@ Answer {
 }
 
 ---
+Make sure to avoid ambiguous column references and non-existent columns by using table aliases and double-checking column names before running the query.
 Let's think step by step, use best practice of writing SQL, use common table expression if and only if necessary, scan all repos if there is no specific repo, generate a answer.json file to answer the question: "${question}".
 ---
 answer.json // must be json!!!
