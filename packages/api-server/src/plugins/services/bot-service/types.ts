@@ -1,3 +1,5 @@
+import {DateTime} from "luxon";
+
 export enum AIModel {
   TEXT_DAVINCI_002 = 'text-davinci-002',
   TEXT_DAVINCI_003 = 'text-davinci-003',
@@ -14,6 +16,8 @@ export interface RecommendQuestion {
   hash: string;
   title: string;
   aiGenerated: boolean;
+  questionId: string;
+  createdAt: DateTime;
 }
 
 export interface Answer {
