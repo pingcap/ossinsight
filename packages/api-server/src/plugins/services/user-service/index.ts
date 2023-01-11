@@ -144,61 +144,45 @@ export class UserService {
       await conn.beginTransaction();
 
       // Check if how many users bound to this account.
-      const [existedUserIds] = await conn.query<any[]>(
-        `
-                SELECT su.id
-                FROM sys_users su
-                LEFT JOIN sys_accounts sa ON su.id = sa.user_id AND sa.provider = ?
-                WHERE sa.provider_account_id = ?
-                FOR UPDATE;
-            `,
-        [provider, idString]
-      );
+      const [existedUserIds] = await conn.query<any[]>(`
+        SELECT su.id
+        FROM sys_users su
+        LEFT JOIN sys_accounts sa ON su.id = sa.user_id AND sa.provider = ?
+        WHERE sa.provider_account_id = ?
+        FOR UPDATE;
+      `, [provider, idString]);
 
       if (existedUserIds.length > 1) {
         throw new APIError(409, "Failed to login, please contact admin.");
       } else if (existedUserIds.length === 1) {
         await conn.commit();
-        await conn.release();
         return existedUserIds[0].id;
       }
 
       // Create a new user if didn't exist any user bound to this account.
-      const userInfo = await this.fetchAuth0UserInfo(
-        this.config.AUTH0_DOMAIN,
-        token
-      );
-      const [rs] = await conn.query<ResultSetHeader>(
-        `
-                INSERT INTO sys_users(name, email_address, email_get_updates, avatar_url, role, created_at, enable)
-                VALUES(?, ?, ?, ?, ?, ?, ?)
-            `,
-        [
-          userInfo.name,
-          userInfo.email,
-          0,
-          userInfo.picture,
-          UserRole.USER,
-          DateTime.utc().toJSDate(),
-          true,
-        ]
-      );
+      const userInfo = await this.fetchAuth0UserInfo(this.config.AUTH0_DOMAIN, token);
+      const [rs] = await conn.query<ResultSetHeader>(`
+        INSERT INTO sys_users(name, email_address, email_get_updates, avatar_url, role, created_at, enable)
+        VALUES(?, ?, ?, ?, ?, ?, ?)
+      `, [
+        userInfo.name,
+        userInfo.email,
+        0,
+        userInfo.picture,
+        UserRole.USER,
+        DateTime.utc().toSQL(),
+        true,
+      ]);
 
       // Create a new account link to the new user.
-      await conn.query<ResultSetHeader>(
-        `
-                INSERT INTO sys_accounts(user_id, provider, provider_account_id, provider_account_login)
-                VALUES(?, ?, ?, ?)
-            `,
-        [rs.insertId, provider, idString, githubLogin]
-      );
+      await conn.query<ResultSetHeader>(`
+        INSERT INTO sys_accounts(user_id, provider, provider_account_id, provider_account_login)
+        VALUES(?, ?, ?, ?)
+       `, [rs.insertId, provider, idString, githubLogin]);
 
-      await conn.commit();
       return rs.insertId;
     } catch (err) {
-      if (conn) {
-        await conn.rollback();
-      }
+      await conn.commit();
       if (err instanceof APIError) {
         throw err;
       }

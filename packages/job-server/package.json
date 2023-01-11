@@ -15,6 +15,7 @@
   "main": "app.ts",
   "scripts": {
     "build:ts": "tsc",
+    "build": "rm -rf dist && npm run build:ts",
     "dev": "npm run build:ts && concurrently -k -p \"[{name}]\" -n \"TypeScript,App\" -c \"yellow.bold,cyan.bold\" \"npm:watch:ts\" \"npm:dev:start\"",
     "dev:start": "fastify start --ignore-watch=.ts$ -w -p 30001 -l debug -P dist/app.js",
     "start": "fastify start -p 30001 -l info dist/app.js",

@@ -771,76 +771,86 @@ export class ExplorerService {
         const timeout = this.options.querySQLTimeout;
         const preparedSQL = `/* questionId: ${questionId} */ ${querySQL}`;
 
-        let playgroundConn: PoolConnection | null = null, timer = null;
-        try {
-            // Get playground connection.
-            const getConnStart = DateTime.now();
-            playgroundConn = await this.playgroundQueryExecutor.getConnection();
-            const getConnEnd = DateTime.now();
-            logger.info({questionId}, `Got the playground connection, cost: ${getConnEnd.diff(getConnStart).as('milliseconds')} ms`);
+        return new Promise<QuestionQueryResult>(async (resolve, reject) => {
+            let playgroundConn: PoolConnection | null = null, timer = null;
 
-            // Mark question as running.
-            const connectionId = await this.getConnectionID(playgroundConn);
-            logger.info({ questionId }, 'Start executing query with connection ID: %s.', connectionId);
-            const executedAt = DateTime.now();
-            await this.markQuestionRunning(questionId, executedAt);
+            try {
+                // Get playground connection.
+                const getConnStart = DateTime.now();
+                playgroundConn = await this.playgroundQueryExecutor.getConnection();
+                const getConnEnd = DateTime.now();
+                logger.info({questionId}, `Got the playground connection, cost: ${getConnEnd.diff(getConnStart).as('milliseconds')} ms`);
 
-            // Cancel the query if timeout.
-            timer = setTimeout(async () => {
-                logger.warn({ questionId, querySQL }, 'Query execution timeout after %d ms.', timeout);
+                // Mark question as running.
+                const connectionId = await this.getConnectionID(playgroundConn);
+                logger.info({ questionId }, 'Start executing query with connection ID: %s.', connectionId);
+                const executedAt = DateTime.now();
+                await this.markQuestionRunning(questionId, executedAt);
 
-                if (playgroundConn) {
-                    // Close the connection from client side.
-                    await playgroundConn.destroy();
-                    logger.info('Move the connection from %s the pool.', connectionId);
+                // Cancel the query if timeout.
+                timer = setTimeout(async () => {
+                    logger.warn({ questionId, querySQL }, 'Query execution timeout after %d ms.', timeout);
 
-                    // Terminate the connection from server side.
-                    if (connectionId) {
-                        await this.killConnection(connectionId);
-                        logger.info('Killed the connection %s on server.', connectionId);
-                    }
-                }
-                await this.addSystemQuestionFeedback(questionId, QuestionFeedbackType.ErrorQueryTimeout, JSON.stringify({
-                    timeout: timeout,
-                    querySQL,
-                }));
-                throw new Error('Query execution timeout.');
-            }, timeout);
+                    try {
+                        if (playgroundConn) {
+                            // Close the connection from client side.
+                            await playgroundConn.destroy();
+                            logger.info('Move the connection from %s the pool.', connectionId);
 
-            // Executing query.
-            const [rows, fields] = await playgroundConn.execute<any[]>(preparedSQL);
-
-            // Finish the query.
-            clearTimeout(timer);
-            const finishedAt = DateTime.now();
-            const spent = finishedAt.diff(executedAt).as("seconds");
-            logger.info({questionId}, 'Finished query executing, cost: %d s', spent);
-
-            return {
-                result: {
-                    fields: fields.map((field) => {
-                        return {
-                            name: field.name,
-                            columnType: field.type,
+                            // Terminate the connection from server side.
+                            if (connectionId) {
+                                await this.killConnection(connectionId);
+                                logger.info('Killed the connection %s on server.', connectionId);
+                            }
                         }
-                    }),
-                    rows
-                },
-                executedAt,
-                finishedAt,
-                spent,
-            };
-        } catch (err) {
-            if (timer) {
+
+                        await this.addSystemQuestionFeedback(questionId, QuestionFeedbackType.ErrorQueryTimeout, JSON.stringify({
+                            timeout: timeout,
+                            querySQL,
+                        }));
+
+                        reject(new Error('Query execution timeout.'));
+                    } catch (err) {
+                        logger.error({ err }, 'Failed to kill the connection %s.', connectionId);
+                        reject(new Error('Query execution timeout.'));
+                    }
+                }, timeout);
+
+                // Executing query.
+                const [rows, fields] = await playgroundConn.execute<any[]>(preparedSQL);
+
+                // Finish the query.
                 clearTimeout(timer);
-                timer = null;
+                const finishedAt = DateTime.now();
+                const spent = finishedAt.diff(executedAt).as("seconds");
+                logger.info({questionId}, 'Finished query executing, cost: %d s', spent);
+
+                resolve({
+                    result: {
+                        fields: fields.map((field) => {
+                            return {
+                                name: field.name,
+                                columnType: field.type,
+                            }
+                        }),
+                        rows
+                    },
+                    executedAt,
+                    finishedAt,
+                    spent,
+                });
+            } catch (err) {
+                if (timer) {
+                    clearTimeout(timer);
+                    timer = null;
+                }
+                reject(err);
+            } finally {
+                if (playgroundConn) {
+                    await playgroundConn.release();
+                }
             }
-            throw err;
-        } finally {
-            if (playgroundConn) {
-                await playgroundConn.release();
-            }
-        }
+        });
     }
 
     private async getConnectionID(conn: Connection): Promise<string | null> {
