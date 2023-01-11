@@ -15,6 +15,9 @@ export default fp(async (app) => {
       executor,
       app.queues.explorer_low_concurrent_queue,
       app.queues.explorer_high_concurrent_queue,
+      {
+        querySQLTimeout: app.config.EXPLORER_QUERY_SQL_TIMEOUT,
+      }
     ));
 }, {
     name: '@ossinsight/explorer-service',
