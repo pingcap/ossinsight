@@ -9,9 +9,10 @@ export interface QuestionCardProps {
   disabled?: boolean;
   variant?: QuestionCardVariant;
   question: ReactNode;
+  prefix?: string;
 }
 
-export default function QuestionCard ({ question, variant = 'card', disabled }: QuestionCardProps) {
+export default function QuestionCard ({ question, variant = 'card', prefix, disabled }: QuestionCardProps) {
   const { handleSelect } = useContext(ExploreContext);
 
   const handleClick = useEventCallback(() => {
@@ -37,7 +38,7 @@ export default function QuestionCard ({ question, variant = 'card', disabled }: 
         </HighlightContent>
       );
     default:
-      return <Link disableRipple disableTouchRipple onClick={handleClick} disabled={disabled}>{question}</Link>;
+      return <Link disableRipple disableTouchRipple onClick={handleClick} disabled={disabled}>{prefix}{question}</Link>;
   }
 }
 

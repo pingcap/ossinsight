@@ -1,11 +1,25 @@
 import { RecommendedSuggestions } from '@site/src/pages/explore/_components/Suggestions';
 import { Box, Divider, IconButton, styled, Typography } from '@mui/material';
-import { ArrowLeft, ArrowRightAlt, Cached } from '@mui/icons-material';
-import React from 'react';
+import { ArrowForward, ArrowLeft, Cached } from '@mui/icons-material';
+import React, { useEffect, useState } from 'react';
 import { array } from '@site/src/utils/generate';
 import Link from '@docusaurus/Link';
+import useQuestionManagement from '@site/src/pages/explore/_components/useQuestion';
+import { useMemoizedFn } from 'ahooks';
 
 export default function Side () {
+  const { question } = useQuestionManagement();
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    setShow(false);
+  }, [question?.id]);
+
+  const wrapHandleClick = useMemoizedFn((handle: () => void) => () => {
+    handle();
+    setShow(true);
+  });
+
   return (
     <SideRoot>
       <RecommendedSuggestions
@@ -14,21 +28,22 @@ export default function Side () {
           <Typography variant="h3" mb={0} fontSize={16}>
             <Arrows />
             Get inspired
-            <IconButton onClick={reload} disabled={loading}>
+            <IconButton onClick={wrapHandleClick(reload)} disabled={loading}>
               <Cached fontSize="inherit" />
             </IconButton>
           </Typography>
         )}
       />
-      <Divider orientation="horizontal" sx={{ my: 2 }} />
-      <Box>
-        <ColoredLink to="/blog/chat2query-tutorials">
-          Get hands-on with your data <ArrowRightAlt color="inherit" />
-        </ColoredLink>
-        <Details>
-          Get hands-on with your data Get hands-on with your data
-        </Details>
-      </Box>
+      {show && (
+        <>
+          <Divider orientation="horizontal" sx={{ my: 2 }} />
+          <Box>
+            <ColoredLink to="/blog/chat2query-tutorials">
+              Get hands-on with your data <ArrowForward color="inherit" />
+            </ColoredLink>
+          </Box>
+        </>
+      )}
     </SideRoot>
   );
 }
@@ -70,9 +85,4 @@ const ColoredLink = styled(Link)`
   &, &:hover, &:visited, &:active {
     color: #DAC4FF;
   }
-`;
-
-const Details = styled('p')`
-  margin-top: 8px;
-  font-size: 12px;
 `;

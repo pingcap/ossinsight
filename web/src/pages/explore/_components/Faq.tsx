@@ -1,11 +1,11 @@
 import React, { ReactNode } from 'react';
-import { Box, styled, Typography } from '@mui/material';
+import { Container, styled, Typography } from '@mui/material';
 import ExploreSteps from '@site/src/pages/explore/_components/ExploreSteps';
 import { GitHub, Twitter } from '@mui/icons-material';
 
 export default function Faq () {
   return (
-    <Box component="section" id="data-explorer-faq" pt={8}>
+    <Container component="section" maxWidth="md" id="data-explorer-faq" sx={{ py: 8 }}>
       <Typography variant="h2" textAlign="center">FAQ</Typography>
       {qa.map(({ q, a }, i) => (
         <QAItem key={i}>
@@ -14,9 +14,9 @@ export default function Faq () {
         </QAItem>
       ))}
       <Typography variant="body1" textAlign="center" color="#929292" fontSize={16} mt={8}>
-        Still have problems? please feel free to contact us {githubLink} {twitterLink}
+        Still having trouble? Contact us, we&apos;re happy to help! {githubLink} {twitterLink}
       </Typography>
-    </Box>
+    </Container>
   );
 }
 
@@ -94,6 +94,7 @@ const IconLink = styled('a')`
   align-items: center;
   justify-content: center;
   transition: ${({ theme }) => theme.transitions.create(['color', 'background-color'])};
+  margin-left: 8px;
 `;
 
 const GithubLink = styled(IconLink)`

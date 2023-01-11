@@ -6,7 +6,7 @@ import { isEmptyArray, isNonemptyString, isNullish, notNullish } from '@site/src
 import { twitterLink } from '@site/src/utils/share';
 import { ChartResult, Question, QuestionStatus } from '@site/src/api/explorer';
 import Info from '@site/src/pages/explore/_components/Info';
-import { Divider, Portal, Stack, styled, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
+import { Portal, Stack, styled, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
 import { getErrorMessage } from '@site/src/utils/error';
 import ErrorBlock from '@site/src/pages/explore/_components/ErrorBlock';
 import Feedback from '@site/src/pages/explore/_components/Feedback';
@@ -129,15 +129,9 @@ function renderEngines (question: Question | undefined) {
         , Running on
         <EngineTag>{question.engines.map(replaceEngineName).join(', ')}</EngineTag>
         <Info>
-          <Typography variant="body1">
-            <b>tikv</b>: row storage engine
-            <br />
-            <b>tiflash</b>: columnar storage engine
-          </Typography>
-          <Divider orientation="horizontal" sx={{ my: 1.5 }} light />
-          <Typography variant="body2">
-            Intelligent query processing in <a>TiDB optimizer</a>.
-          </Typography>
+          All queries to 5 billion rows of GitHub event data are running on ONE TiDB server.
+          <br />
+          <a href="https://docs.pingcap.com/tidb/stable/dev-guide-hybrid-oltp-and-olap-queries" target="_blank" rel="noreferrer">TiDB optimizer</a> intelligently determines whether to use a row-based (OLTP-friendly) or columnar (OLAP-friendly) storage engine.
         </Info>
       </>
     );
@@ -202,8 +196,13 @@ function Chart ({ chartData, chartError, fields, result, controlsContainer }: { 
     const renderTips = () => {
       return (
         <Stack direction="row" justifyContent="space-between" spacing="2" alignItems="center">
-          <Typography variant="body2" color="#D1D1D1" mt={2}>
-            🤔 Confused with this answer? Try to tiny your words and help the AI identify your question, for example, you can try to use ‘@repo_name/user_name’ to narrow down your query. If you have more questions about the accuracy of the answers, see FAQ here.
+          <Typography component="div" variant="body2" color="#D1D1D1" mt={2}>
+            🤔 Not exactly what you&apos;re looking for?
+            <ul>
+              <li>Try specifying the repo path or user id(NOT name) to help AI understand your question better. For more tips, check out our FAQ.</li>
+              <li>AI-generated SQL is still a work in progress and may have limitations</li>
+              <li>If you Find answers in your own data using natural language.</li>
+            </ul>
           </Typography>
           <Feedback />
         </Stack>

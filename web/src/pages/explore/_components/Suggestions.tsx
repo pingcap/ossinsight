@@ -10,6 +10,7 @@ export interface SuggestionsProps {
   variant?: QuestionCardVariant;
   title?: (reload: () => void, loading: boolean) => ReactNode;
   n: number;
+  questionPrefix?: string;
 }
 
 export interface RecommendedSuggestionsProps extends SuggestionsProps {
@@ -40,7 +41,7 @@ export function useRecommended (aiGenerated: boolean, n: number) {
   };
 }
 
-export function Suggestions ({ variant, disabled, questions, n }: SuggestionsProps & { questions: QuestionTemplate[] }) {
+export function Suggestions ({ variant, disabled, questions, n, questionPrefix }: SuggestionsProps & { questions: QuestionTemplate[] }) {
   const renderLoading = () => {
     const renderCard = (i: number) => (
       <QuestionCard
@@ -73,7 +74,7 @@ export function Suggestions ({ variant, disabled, questions, n }: SuggestionsPro
 
   const renderData = () => {
     const renderCard = (question: QuestionTemplate, i: number) => (
-      <QuestionCard key={i} variant={variant} question={question.title} disabled={disabled} />
+      <QuestionCard key={i} variant={variant} question={question.title} prefix={questionPrefix} disabled={disabled} />
     );
     if (variant === 'text') {
       return questions.map(renderCard);
@@ -105,12 +106,14 @@ export function PresetSuggestions ({ n, disabled, questions, variant }: PresetSu
   return <Suggestions questions={useMemo(() => questions.map(question => ({ title: question, hash: question, ai_generated: 0 })), [questions])} n={n} disabled={disabled} variant={variant} />;
 }
 
-export function RecommendedSuggestions ({ aiGenerated = false, n, disabled = false, title, variant }: RecommendedSuggestionsProps) {
+export function RecommendedSuggestions ({ aiGenerated = false, n, disabled = false, title, questionPrefix, variant }: RecommendedSuggestionsProps) {
   const { data = [], reload, loading } = useRecommended(aiGenerated, n);
   return (
     <>
-      {title?.(reload, loading) ?? null}
-      <Suggestions n={n} questions={data} disabled={disabled} variant={variant ?? (aiGenerated ? 'recommended-card' : 'card')} />
+      <Box mb={0.5}>
+        {title?.(reload, loading) ?? null}
+      </Box>
+      <Suggestions n={n} questions={data} disabled={disabled} questionPrefix={questionPrefix} variant={variant ?? (aiGenerated ? 'recommended-card' : 'card')} />
     </>
   );
 }

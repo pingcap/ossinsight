@@ -2,7 +2,7 @@ import { FINAL_PHASES, QuestionLoadingPhase, QuestionManagementContext, useQuest
 import useUrlSearchState, { nullableStringParam } from '@site/src/hooks/url-search-state';
 import React, { useEffect, useRef, useState } from 'react';
 import { isBlankString, isNullish, notNullish } from '@site/src/utils/value';
-import { Box, Container, styled, useEventCallback } from '@mui/material';
+import { Box, styled, useEventCallback } from '@mui/material';
 import { ExploreContext } from '@site/src/pages/explore/_components/context';
 import { Decorators } from '@site/src/pages/explore/_components/Decorators';
 import Layout from '@site/src/pages/explore/_components/Layout';
@@ -105,9 +105,7 @@ export default function Questions () {
             </Box>
           </SwitchLayout>
         </Layout>
-        <Container maxWidth="lg" sx={{ pb: 8 }}>
-          <Faq />
-        </Container>
+        <Faq />
         <Tips ref={tipsRef} />
       </ExploreContext.Provider>
     </QuestionManagementContext.Provider>

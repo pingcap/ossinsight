@@ -49,12 +49,13 @@ export default function AlertBlock ({ severity, sx, children, createIssueUrl = (
         <SuggestionsContainer>
           <RecommendedSuggestions
             title={(reload, loading) => (
-              <Box component="p" m={0} mt={2} height="40px">
-                How about try other questions? <IconButton onClick={reload} disabled={loading}><Cached /></IconButton>
+              <Box component="p" m={0} mt={3} height="40px">
+                👀 How about try other questions? <IconButton onClick={reload} disabled={loading}><Cached /></IconButton>
               </Box>
             )}
-            n={5}
+            n={4}
             variant="text"
+            questionPrefix='> '
           />
         </SuggestionsContainer>
       )}
@@ -73,7 +74,8 @@ const SuggestionsContainer = styled('div')`
 
 const AlertButton = styled('button')`
   appearance: none;
-  border: none;
+  border: 1px solid #7c7c7c;
+  border-radius: 6px;
   outline: none;
   background: none;
   color: #fff;
@@ -82,15 +84,14 @@ const AlertButton = styled('button')`
   display: inline-flex;
   align-items: center;
   cursor: pointer;
-  padding: 8px 0;
-  margin-left: 16px;
-  transition: ${({ theme }) => theme.transitions.create('opacity')};
+  padding: 8px 12px;
+  transition: ${({ theme }) => theme.transitions.create(['opacity'])};
 
   &:hover, &:focus {
     opacity: 0.7;
   }
   
-  &:first-of-type {
-    margin-left: 0;
+  &:not(:first-of-type) {
+    margin-left: 16px;
   }
 `;
