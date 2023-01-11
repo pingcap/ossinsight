@@ -20,9 +20,6 @@ some data:
 
 ${sampleDataValue}
 
-PingCAP
-TiDB
-
 ---
 Let's think step by step, summarize them and generate a tweet to fill in the following tweet.json file:
 ---
@@ -33,7 +30,7 @@ Let's think step by step, summarize them and generate a tweet to fill in the fol
 "hashtags": []
 }
 ---
-tweet.json
+tweet.json // must be json!!!
 ---`;
   }
 

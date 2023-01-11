@@ -31,6 +31,7 @@ import {TiDBPlaygroundQueryExecutor} from "../../../core/executor/query-executor
 import {GenerateChartPromptTemplate} from "../bot-service/template/GenerateChartPromptTemplate";
 import {randomUUID} from "crypto";
 import {
+    AnswerSummary,
     BarChart,
     ChartNames,
     LineChart,
@@ -40,7 +41,7 @@ import {
     PieChart,
     RecommendedChart,
     RecommendQuestion,
-    RepoCard, AnswerSummary,
+    RepoCard,
     Table
 } from "../bot-service/types";
 import {GenerateAnswerPromptTemplate} from "../bot-service/template/GenerateAnswerPromptTemplate";
@@ -284,7 +285,7 @@ export class ExplorerService {
             const cachedResult = await this.getCachedSQLResult(question.queryHash, this.options.querySQLCacheTTL);
             if (cachedResult) {
                 logger.info("SQL result is cached, returning cached result (hash: %s).", question.queryHash);
-                await this.saveQuestionResult(questionId, cachedResult);
+                await this.saveQuestionResult(questionId, QuestionStatus.Success, cachedResult);
                 question = {
                     ...question,
                     ...cachedResult,
@@ -571,7 +572,7 @@ export class ExplorerService {
         }
     }
 
-    private async saveQuestionResult(questionId: string, questionResult: QuestionQueryResult, hitCache = false, conn?: Connection) {
+    private async saveQuestionResult(questionId: string, status: QuestionStatus, questionResult: QuestionQueryResult, hitCache = false, conn?: Connection) {
         const connection = conn || this.mysql;
         const { result, executedAt, finishedAt, spent } = questionResult;
         const [rs] = await connection.query<ResultSetHeader>(`
@@ -579,7 +580,7 @@ export class ExplorerService {
             SET status = ?, result = ?, executed_at = ?, finished_at = ?, spent = ?, hit_cache = ?
             WHERE id = UUID_TO_BIN(?)
         `, [
-            QuestionStatus.Success,
+            status,
             JSON.stringify(result),
             executedAt.toSQL(),
             finishedAt.toSQL(),
@@ -741,17 +742,22 @@ export class ExplorerService {
 
             // Answer summary.
             if (Array.isArray(questionResult.result.rows) && questionResult.result.rows.length > 0) {
+                await this.saveQuestionResult(questionId, QuestionStatus.Summarizing, {
+                    ...questionResult,
+                }, false);
+
                 try {
-                    await this.updateQuestionStatus(questionId, QuestionStatus.Summarizing);
                     await this.generateAnswerSummary(questionId, question.title, questionResult.result);
                 } catch (err: any) {
                     this.logger.warn(`Failed to generate answer summary for question ${questionId}: ${err.message}`);
                 }
-            }
 
-            await this.saveQuestionResult(questionId, {
-                ...questionResult,
-            }, false);
+                await this.updateQuestionStatus(questionId, QuestionStatus.Success);
+            } else {
+                await this.saveQuestionResult(questionId, QuestionStatus.Success, {
+                    ...questionResult,
+                }, false);
+            }
 
             return questionResult;
         } catch (err: any) {
