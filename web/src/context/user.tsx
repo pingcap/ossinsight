@@ -5,6 +5,7 @@ import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import { useMemoizedFn } from 'ahooks';
 import { isNullish } from '@site/src/utils/value';
 import { useResponsiveAuth0 } from '@site/src/theme/NavbarItem/useResponsiveAuth0';
+import { useHistory } from '@docusaurus/router';
 
 const UserContext = createContext<ReturnType<typeof useUserInfo>>({
   validated: false,
@@ -28,10 +29,11 @@ export function AuthProvider ({ children }: PropsWithChildren): JSX.Element {
   const {
     siteConfig: { customFields, url },
   } = useDocusaurusContext();
+  const history = useHistory();
 
   const onRedirectCallback = (appState: AppState) => {
-    if (appState?.returnTo && typeof window !== 'undefined') {
-      window.location.replace(appState.returnTo);
+    if (appState?.returnTo) {
+      history.push(appState.returnTo);
     }
   };
 
