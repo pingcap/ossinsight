@@ -9,6 +9,7 @@ import { isAxiosError } from '@site/src/utils/error';
 import { useInterval } from 'ahooks';
 import { randomOf } from '@site/src/utils/generate';
 import TypewriterEffect from '@site/src/pages/explore/_components/TypewriterEffect';
+import { gotoAnchor } from '@site/src/utils/dom';
 
 export default function SqlSection () {
   const { question, error, phase } = useQuestionManagement();
@@ -81,6 +82,12 @@ export default function SqlSection () {
       errorWithChildren
       errorTitle="Failed to generate SQL"
       errorPrompt="Hi, it's failed to generate SQL for"
+      errorMessage={
+        <>
+          Whoops! No SQL query is generated.
+          Check out <a href="javascript:void(0)" onClick={gotoAnchor('faq-failed-to-generate-sql')}>potential reasons</a> and try again later.
+        </>
+      }
     >
       {notFalsy(formattedSql) && (
         <CodeBlock language="sql">

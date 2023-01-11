@@ -8,8 +8,8 @@ export default function Faq () {
   return (
     <Container component="section" maxWidth="md" id="data-explorer-faq" sx={{ py: 8 }}>
       <Typography variant="h2" textAlign="center">FAQ</Typography>
-      {qa.map(({ q, a }, i) => (
-        <QAItem key={i}>
+      {qa.map(({ q, a, id }, i) => (
+        <QAItem key={i} id={id}>
           <Q>{q}</Q>
           <A>{a}</A>
         </QAItem>
@@ -22,6 +22,7 @@ export default function Faq () {
 }
 
 type QA = {
+  id?: string;
   q: ReactNode;
   a: ReactNode;
 };
@@ -63,6 +64,7 @@ We&apos;re constantly working on improving and optimizing it, so any feedback yo
     ),
   },
   {
+    id: 'faq-failed-to-generate-sql',
     q: 'Why did it fail to generate an SQL query?',
     a: (
       <>
@@ -77,6 +79,7 @@ We&apos;re constantly working on improving and optimizing it, so any feedback yo
       </>
     ),
   }, {
+    id: 'faq-empty-result',
     q: 'The query result is not satisfactory. How can I optimize my question?',
     a: (
       <>
@@ -141,6 +144,7 @@ We&apos;re constantly working on improving and optimizing it, so any feedback yo
 ];
 
 const QAItem = styled('div')`
+  scroll-margin: 100px;
   &:not(:first-of-type) {
     margin-top: 48px;
   }

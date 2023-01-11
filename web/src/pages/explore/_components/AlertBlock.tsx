@@ -66,6 +66,11 @@ export default function AlertBlock ({ severity, sx, children, createIssueUrl = (
 const StyledAlert = styled(Alert)`
   background: #18191A;
   border-color: transparent;
+
+  a {
+    color: currentColor !important;
+    text-decoration: underline !important;
+  }
 `;
 
 const SuggestionsContainer = styled('div')`

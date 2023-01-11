@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import AlertBlock from '@site/src/pages/explore/_components/AlertBlock';
 import { SxProps } from '@mui/system';
 import { createIssueLink } from '@site/src/utils/gh';
@@ -15,9 +15,10 @@ interface ErrorBlockProps {
   severity: AlertColor;
   sx?: SxProps;
   showSuggestions?: boolean;
+  children?: ReactNode;
 }
 
-export default function ErrorBlock ({ severity, title, prompt, sx, error, showSuggestions }: ErrorBlockProps) {
+export default function ErrorBlock ({ severity, title, prompt, sx, error, showSuggestions, children }: ErrorBlockProps) {
   const { question } = useQuestionManagement();
 
   const createIssueUrl = () => {
@@ -54,7 +55,7 @@ ${JSON.stringify(question?.chart, undefined, 2)}
 
   return (
     <AlertBlock severity={severity} sx={sx} createIssueUrl={createIssueUrl} showSuggestions={showSuggestions && !isAxiosHttpStatusError(error, 429)}>
-      {title}: {error}
+      {children}
     </AlertBlock>
   );
 }

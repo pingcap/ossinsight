@@ -13,6 +13,7 @@ export interface SectionProps {
   extra?: ReactNode;
   children: ReactNode;
   error: unknown;
+  errorMessage?: ReactNode;
   errorWithChildren?: boolean;
   defaultExpanded?: boolean;
   errorTitle: string;
@@ -20,7 +21,7 @@ export interface SectionProps {
   icon?: 'default' | 'bot';
 }
 
-export default function Section ({ status, title, defaultExpanded, extra, error, errorWithChildren = false, children, errorPrompt, errorTitle, icon = 'default' }: SectionProps) {
+export default function Section ({ status, title, defaultExpanded, extra, error, errorWithChildren = false, errorMessage, children, errorPrompt, errorTitle, icon = 'default' }: SectionProps) {
   const [open, setOpen] = useState(false);
   useEffect(() => {
     switch (status) {
@@ -88,7 +89,9 @@ export default function Section ({ status, title, defaultExpanded, extra, error,
                     severity="error"
                     sx={{ mb: 1 }}
                     showSuggestions
-                  />
+                  >
+                    {errorMessage}
+                  </ErrorBlock>
                   {children}
                 </>
                 )
@@ -102,7 +105,9 @@ export default function Section ({ status, title, defaultExpanded, extra, error,
                   severity="error"
                   sx={{ mb: 1 }}
                   showSuggestions
-                />
+                >
+                  {errorMessage}
+                </ErrorBlock>
                 )}
         </AccordionDetails>
       </SectionAccordion>

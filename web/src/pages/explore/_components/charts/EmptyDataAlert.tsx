@@ -3,6 +3,7 @@ import React, { useMemo } from 'react';
 import { createIssueLink as createIssueLinkInternal } from '@site/src/utils/gh';
 import { format } from 'sql-formatter';
 import useQuestionManagement from '@site/src/pages/explore/_components/useQuestion';
+import { gotoAnchor } from '@site/src/utils/dom';
 
 export function safeFormat (sql: string | undefined = '') {
   try {
@@ -34,7 +35,7 @@ ${safeFormat(question?.querySQL)}
 
   return (
     <AlertBlock severity="info" createIssueUrl={createIssueLink} showSuggestions>
-      This question has no results.
+      Oops! Your query yielded no results. Try our <a href='javascript:void(0)' onClick={gotoAnchor('faq-empty-result')}>tips</a> for crafting effective queries and give it another go.
     </AlertBlock>
   );
 }
