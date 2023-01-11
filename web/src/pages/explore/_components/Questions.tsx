@@ -69,6 +69,11 @@ export default function Questions () {
     create(title);
   });
 
+  const handleSelectId = useEventCallback((id: string, title?: string) => {
+    setValue(title ?? '');
+    load(id);
+  });
+
   const showTips = useEventCallback(() => {
     tipsRef.current?.show();
   });
@@ -77,7 +82,7 @@ export default function Questions () {
 
   return (
     <QuestionManagementContext.Provider value={{ phase, question, loading, error, create, load, reset }}>
-      <ExploreContext.Provider value={{ search: value, handleSelect, showTips }}>
+      <ExploreContext.Provider value={{ search: value, handleSelect, handleSelectId, showTips }}>
         <Decorators />
         <Layout
           showSide={showSide}

@@ -138,7 +138,8 @@ export async function pollQuestion (questionId: string): Promise<Question> {
 export type QuestionTemplate = {
   hash: string;
   title: string;
-  ai_generated: 0 | 1;
+  aiGenerated: 0 | 1;
+  questionId: string | null;
 };
 
 export async function generateQuestion (aiGenerated: boolean, n: number): Promise<QuestionTemplate[]> {

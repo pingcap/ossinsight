@@ -75,7 +75,7 @@ const Root = styled(MuiContainer, { name: 'Layout-Root' })`
   display: flex;
   flex-direction: column;
   align-items: stretch;
-`.withComponent('section');
+`;
 
 const Body = styled('div', { name: 'Layout-Body', shouldForwardProp: propName => propName !== 'headerHeight' })<{ headerHeight: number }>`
   --explore-layout-side-width: ${sideWidth}px;

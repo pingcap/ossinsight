@@ -74,7 +74,7 @@ export function Suggestions ({ variant, disabled, questions, n, questionPrefix }
 
   const renderData = () => {
     const renderCard = (question: QuestionTemplate, i: number) => (
-      <QuestionCard key={i} variant={variant} question={question.title} prefix={questionPrefix} disabled={disabled} />
+      <QuestionCard key={i} variant={variant} question={question.title} questionId={question.questionId} prefix={questionPrefix} disabled={disabled} />
     );
     if (variant === 'text') {
       return questions.map(renderCard);
@@ -101,11 +101,6 @@ export function Suggestions ({ variant, disabled, questions, n, questionPrefix }
     );
   }
 }
-
-export function PresetSuggestions ({ n, disabled, questions, variant }: PresetSuggestionsProps) {
-  return <Suggestions questions={useMemo(() => questions.map(question => ({ title: question, hash: question, ai_generated: 0 })), [questions])} n={n} disabled={disabled} variant={variant} />;
-}
-
 export function RecommendedSuggestions ({ aiGenerated = false, n, disabled = false, title, questionPrefix, variant }: RecommendedSuggestionsProps) {
   const { data = [], reload, loading } = useRecommended(aiGenerated, n);
   return (
