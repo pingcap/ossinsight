@@ -5,24 +5,27 @@ import { isFiniteNumber, isNullish, notFalsy } from '@site/src/utils/value';
 import AnimatedNumber from 'react-awesome-animated-number';
 
 export default function NumberCard ({ chartName, title, label, value, data }: ChartResult & { data: any[] }) {
-  if (notFalsy(label)) {
+  if (data.length === 1) {
     if (data.length === 1 && isNullish(data[0][label])) {
       const val = data[0][value];
       return (
         <Card>
           <CardContent sx={{ textAlign: 'center', fontSize: 36 }}>
             <Typography sx={{ opacity: 0.4 }} fontSize={22} mt={2} mb={0} color="text.secondary" gutterBottom align="center">
-              {title}
+              {data[0][label] ?? title}
             </Typography>
             {isFiniteNumber(val)
               ? (
-              <AnimatedNumber value={data[0][value]} hasComma duration={800} size={36} />
+                <AnimatedNumber value={data[0][value]} hasComma duration={800} size={36} />
                 )
               : String(val)}
           </CardContent>
         </Card>
       );
     }
+  }
+
+  if (notFalsy(label)) {
     return (
       <>
         <Typography variant="h4">{title}</Typography>
