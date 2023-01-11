@@ -25,7 +25,7 @@ export default function ExploreGlobalAds () {
 
   useEffect(() => {
     setAnchorEl(document.body);
-    if (!enabled || hasClosed || location.pathname === '/explore/') {
+    if (!enabled || hasClosed || /^\/explore\/?$/.test(location.pathname)) {
       return;
     }
     safeSetTimeout(() => {
