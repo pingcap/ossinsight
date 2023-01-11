@@ -16,14 +16,9 @@ export default function SummaryCard ({ loading = false, children }: SummaryCardP
             Instant insights
           </TitleContent>
         </Typography>
-        <Typography variant="body1" fontSize={14} fontFamily="monospace" mt={2}>
+        <Typography variant="body1" fontSize={14} fontFamily="monospace" mt={2} whiteSpace='pre-wrap'>
           {loading
-            ? (
-            <>
-              <Skeleton variant="text" width="61%" />
-              <Skeleton variant="text" width="31%" />
-            </>
-              )
+            ? <Skeleton variant="text" width="61%" />
             : children}
         </Typography>
       </CardContent>
