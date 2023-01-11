@@ -24,6 +24,7 @@
     "@fastify/cookie": "^8.3.0",
     "@fastify/cors": "^8.2.0",
     "@fastify/env": "^4.1.0",
+    "@fastify/etag": "^4.2.0",
     "@fastify/jwt": "5.0.0",
     "@fastify/mysql": "^4.0.0",
     "@fastify/oauth2": "^6.1.0",
