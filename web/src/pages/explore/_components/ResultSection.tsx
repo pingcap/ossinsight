@@ -178,6 +178,11 @@ const EngineTag = styled('span')`
 
 function Chart ({ chartData, chartError, fields, result, controlsContainer }: { chartData: ChartResult | undefined, chartError: unknown, result: Array<Record<string, any>> | undefined, fields: Array<{ name: string }> | undefined, controlsContainer: HTMLSpanElement | null }) {
   const [tab, setTab] = useState('visualization');
+  const goto = useMemo(() => {
+    return (id: string) => () => {
+      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+    };
+  }, []);
 
   useEffect(() => {
     setTab('visualization');
@@ -216,7 +221,7 @@ function Chart ({ chartData, chartError, fields, result, controlsContainer }: { 
         <Typography component="div" variant="body2" color="#D1D1D1" mt={2}>
           🤔 Not exactly what you&apos;re looking for?
           <ul>
-            <li>Try specifying the repo path or user id(NOT name) to help AI understand your question better. For more tips, check out our FAQ.</li>
+            <li>Try specifying the repo path or user id(NOT name) to help AI understand your question better. For more tips, check out our <a href='javascript:void(0)' onClick={goto('data-explorer-faq')}>FAQ</a>.</li>
             <li>AI-generated SQL is still a work in progress and may have limitations</li>
             <li>If you Find answers in your own data using natural language.</li>
           </ul>
