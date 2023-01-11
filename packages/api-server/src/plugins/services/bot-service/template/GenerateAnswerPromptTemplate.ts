@@ -33,6 +33,7 @@ github_repos.repo_id = github_repo_topics.repo_id
 trending_repos.repo_name = github_repos.repo_name
 
 Select statement limit 20 by default, if question need more data, please add limit 50
+Use column alias for all columns: SELECT ge.repo_name AS repo_name
 When type = 'PullRequestReviewCommentEvent' or type = 'IssueCommentEvent', the action could be 'created'
 When type = 'PullRequestEvent' or type = 'IssuesEvent', the action could be 'opened', 'closed'
 When type = 'PullRequestEvent', action = 'closed' and pr_merged = 1, it means the pull request is merged
