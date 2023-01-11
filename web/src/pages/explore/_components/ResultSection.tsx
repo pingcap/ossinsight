@@ -135,7 +135,7 @@ function renderEngines (question: Question | undefined) {
         <Info>
           All queries to 5 billion rows of GitHub event data are running on ONE TiDB server.
           <br />
-          <a href="https://docs.pingcap.com/tidb/stable/dev-guide-hybrid-oltp-and-olap-queries" target="_blank" rel="noreferrer">TiDB optimizer</a> intelligently determines whether to use a row-based (OLTP-friendly) or columnar (OLAP-friendly) storage engine.
+          <a href="https://docs.pingcap.com/tidb/stable/dev-guide-hybrid-oltp-and-olap-queries?utm_source=ossinsight&utm_medium=referral&utm_campaign=dataexplore" target="_blank" rel="noopener noreferrer">TiDB optimizer</a> intelligently determines whether to use a row-based (OLTP-friendly) or columnar (OLAP-friendly) storage engine.
         </Info>
       </>
     );
