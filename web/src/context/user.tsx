@@ -51,17 +51,17 @@ export function AuthProvider ({ children }: PropsWithChildren): JSX.Element {
   );
 }
 
-export function useRequireLogin () {
-  const { isLoading, user, login } = useResponsiveAuth0();
+export function useRequireLogin (): () => Promise<string> {
+  const { isLoading, user, login, getAccessTokenSilently } = useResponsiveAuth0();
 
   return useMemoizedFn(async () => {
     if (isLoading) {
-      return false;
+      return await Promise.reject(new Error('Unauthorized'));
     }
     if (isNullish(user)) {
       await login();
-      return false;
+      return await Promise.reject(new Error('Authorizing'));
     }
-    return true;
+    return await getAccessTokenSilently();
   });
 }

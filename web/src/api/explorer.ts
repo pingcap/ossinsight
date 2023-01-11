@@ -76,6 +76,7 @@ export interface Question {
   executedAt?: string | null;
   finishedAt?: string | null;
   spent?: number | null;
+  answerSummary?: { content: string, hashtags: string[] };
   error?: string | null;
 }
 
@@ -98,6 +99,7 @@ export enum QuestionStatus {
   Waiting = 'waiting',
   Running = 'running',
   Success = 'success',
+  Summarizing = 'summarizing',
   Error = 'error',
   Cancel = 'cancel',
 }
@@ -136,9 +138,34 @@ export async function pollQuestion (questionId: string): Promise<Question> {
 export type QuestionTemplate = {
   hash: string;
   title: string;
-  ai_generated: 0 | 1;
+  aiGenerated: 0 | 1;
+  questionId: string | null;
 };
 
 export async function generateQuestion (aiGenerated: boolean, n: number): Promise<QuestionTemplate[]> {
   return await clientWithoutCache.get('/explorer/questions/recommend', { params: { aiGenerated, n } });
+}
+
+interface FeedbackMessage {
+  satisfied: boolean;
+  feedbackContent?: string;
+}
+
+export async function feedback (questionId: string, { satisfied, feedbackContent = '' }: FeedbackMessage, oToken: string) {
+  await clientWithoutCache.post(`/explorer/questions/${questionId}/feedback`, { satisfied, feedbackContent: '' }, { withCredentials: true, oToken });
+  return satisfied;
+}
+
+interface Feedback {
+  createdAt: string;
+  feedbackContent: string;
+  feedbackType: string;
+  id: number;
+  questionId: string;
+  satisfied: 0 | 1;
+  userId: number;
+}
+
+export async function pollFeedback (questionId: string, oToken: string): Promise<Feedback[]> {
+  return await clientWithoutCache.get(`/explorer/questions/${questionId}/feedback`, { oToken });
 }

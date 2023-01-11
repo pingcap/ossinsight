@@ -1,7 +1,8 @@
 import React, { ReactNode, useContext } from 'react';
 import { ButtonBase, styled, useEventCallback } from '@mui/material';
-import { SuggestionsContext } from '@site/src/pages/explore/_components/context';
+import { ExploreContext } from '@site/src/pages/explore/_components/context';
 import { HighlightBackground, HighlightContent } from '@site/src/pages/explore/_components/highlighted';
+import { isNonemptyString } from '@site/src/utils/value';
 
 export type QuestionCardVariant = 'recommended-card' | 'card' | 'text';
 
@@ -9,13 +10,17 @@ export interface QuestionCardProps {
   disabled?: boolean;
   variant?: QuestionCardVariant;
   question: ReactNode;
+  questionId?: string | null;
+  prefix?: string;
 }
 
-export default function QuestionCard ({ question, variant = 'card', disabled }: QuestionCardProps) {
-  const { handleSelect } = useContext(SuggestionsContext);
+export default function QuestionCard ({ question, questionId, variant = 'card', prefix, disabled }: QuestionCardProps) {
+  const { handleSelect, handleSelectId } = useContext(ExploreContext);
 
   const handleClick = useEventCallback(() => {
-    if (typeof question === 'string') {
+    if (isNonemptyString(questionId)) {
+      handleSelectId(questionId);
+    } else if (typeof question === 'string') {
       handleSelect(question);
     }
   });
@@ -37,7 +42,7 @@ export default function QuestionCard ({ question, variant = 'card', disabled }: 
         </HighlightContent>
       );
     default:
-      return <Link disableRipple disableTouchRipple onClick={handleClick} disabled={disabled}>{question}</Link>;
+      return <Link disableRipple disableTouchRipple onClick={handleClick} disabled={disabled}>{prefix}{question}</Link>;
   }
 }
 

@@ -26,6 +26,10 @@ export const JobServerEnvSchema = {
       type: 'number',
       default: 5,
     },
+    EXPLORER_QUERY_SQL_TIMEOUT: {
+      type: 'number',
+      default: 30000,
+    },
     SEND_REPO_FEEDS_CRON: {
       type: 'string',
       default: '50 * * * *',

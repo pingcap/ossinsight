@@ -3,8 +3,7 @@ import {Auth0User, parseAuth0User} from "../../../../../plugins/services/user-se
 import {APIError} from "../../../../../utils/error";
 
 export const schema: FastifySchema = {
-  summary: 'Generate chart for answer',
-  description: 'Return the chart options to display the answer of the question',
+  summary: 'Get a summary for the answer',
   tags: ['explorer'],
   params: {
     type: 'object',
@@ -17,13 +16,13 @@ export const schema: FastifySchema = {
   }
 };
 
-export interface IParams {
+export interface IParam {
   questionId: string;
 }
 
 const root: FastifyPluginAsync = async (app) => {
   app.post<{
-    Params: IParams
+    Params: IParam,
   }>('/', {
     schema,
     // @ts-ignore
@@ -36,13 +35,8 @@ const root: FastifyPluginAsync = async (app) => {
       throw new APIError(401, 'Only trusted users can access this endpoint');
     }
 
-    const conn = await app.mysql.getConnection();
-    try {
-      const chartOptions = await app.explorerService.generateChartByQuestionId(conn, questionId);
-      reply.status(200).send(chartOptions);
-    } finally {
-      conn.release();
-    }
+    const summary = await app.explorerService.generateAnswerSummaryByQuestionId(questionId);
+    reply.status(200).send(summary);
   });
 };
 

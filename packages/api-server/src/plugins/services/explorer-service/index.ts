@@ -10,7 +10,7 @@ import {
     SQLUnsupportedStatementTypeError,
     ValidateSQLError
 } from "../../../utils/error";
-import {Connection, ResultSetHeader} from "mysql2/promise";
+import {Connection, PoolConnection, ResultSetHeader} from "mysql2/promise";
 import crypto from "node:crypto";
 import {DateTime} from "luxon";
 import {AST, Parser, Select} from "node-sql-parser";
@@ -31,6 +31,7 @@ import {TiDBPlaygroundQueryExecutor} from "../../../core/executor/query-executor
 import {GenerateChartPromptTemplate} from "../bot-service/template/GenerateChartPromptTemplate";
 import {randomUUID} from "crypto";
 import {
+    AnswerSummary,
     BarChart,
     ChartNames,
     LineChart,
@@ -46,6 +47,7 @@ import {
 import {GenerateAnswerPromptTemplate} from "../bot-service/template/GenerateAnswerPromptTemplate";
 import {FastifyBaseLogger} from "fastify";
 import {MySQLPromisePool} from "@fastify/mysql";
+import {GenerateSummaryPromptTemplate} from "../bot-service/template/GenerateSummaryPromptTemplate";
 
 declare module 'fastify' {
     interface FastifyInstance {
@@ -74,7 +76,7 @@ export default fp(async (app: any) => {
           trustedUsers: app.config.PLAYGROUND_TRUSTED_GITHUB_LOGINS,
           trustedUsersMaxQuestionsPerHour: 200,
           generateSQLCacheTTL: app.config.EXPLORER_GENERATE_SQL_CACHE_TTL,
-          querySQLCacheTTL: app.config.EXPLORER_QUERY_SQL_CACHE_TTL
+          querySQLCacheTTL: app.config.EXPLORER_QUERY_SQL_CACHE_TTL,
       }
     ));
 }, {
@@ -95,6 +97,7 @@ export interface ExplorerOption {
     trustedUsersMaxQuestionsPerHour: number;
     generateSQLCacheTTL: number;
     querySQLCacheTTL: number;
+    querySQLTimeout: number;
 }
 
 export class ExplorerService {
@@ -102,6 +105,7 @@ export class ExplorerService {
     private sqlParser: Parser;
     private readonly generateAnswerTemplate: GenerateAnswerPromptTemplate;
     private readonly generateChartTemplate: GenerateChartPromptTemplate;
+    private readonly generateAnswerSummaryTemplate: GenerateSummaryPromptTemplate;
     private maxSelectLimit = 200;
     private options: ExplorerOption;
 
@@ -112,11 +116,12 @@ export class ExplorerService {
       private readonly playgroundQueryExecutor: TiDBPlaygroundQueryExecutor,
       private readonly lowConcurrentQueue: Queue,
       private readonly highConcurrentQueue: Queue,
-      options?: ExplorerOption
+      options?: Partial<ExplorerOption>
     ) {
         this.sqlParser = new Parser();
         this.generateChartTemplate = new GenerateChartPromptTemplate();
         this.generateAnswerTemplate = new GenerateAnswerPromptTemplate();
+        this.generateAnswerSummaryTemplate = new GenerateSummaryPromptTemplate();
         this.options = Object.assign({}, {
             userMaxQuestionsPerHour: 20,
             userMaxQuestionsOnGoing: 3,
@@ -124,6 +129,7 @@ export class ExplorerService {
             trustedUsersMaxQuestionsPerHour: 100,
             generateSQLCacheTTL: 60 * 60 * 24 * 7,
             querySQLCacheTTL: 60 * 60 * 24,
+            querySQLTimeout: 30 * 1000,
         }, options || {});
     }
 
@@ -279,7 +285,7 @@ export class ExplorerService {
             const cachedResult = await this.getCachedSQLResult(question.queryHash, this.options.querySQLCacheTTL);
             if (cachedResult) {
                 logger.info("SQL result is cached, returning cached result (hash: %s).", question.queryHash);
-                await this.saveQuestionResult(questionId, cachedResult);
+                await this.saveQuestionResult(questionId, QuestionStatus.Success, cachedResult);
                 question = {
                     ...question,
                     ...cachedResult,
@@ -528,6 +534,15 @@ export class ExplorerService {
         }
     }
 
+    private async markQuestionRunning(questionId: string, executedAt?: DateTime) {
+        const [rs] = await this.mysql.query<ResultSetHeader>(`
+            UPDATE explorer_questions SET status = ?, executed_at = ? WHERE id = UUID_TO_BIN(?)
+        `, [QuestionStatus.Running, executedAt?.toSQL() || null, questionId]);
+        if (rs.affectedRows !== 1) {
+            throw new APIError(500, 'Failed to update the question status.');
+        }
+    }
+
     private async updateQuestion(question: Question) {
         const {
             id, status, recommended, querySQL, queryHash, engines = [], result = null, chart = null, recommendedQuestions = [],
@@ -557,7 +572,7 @@ export class ExplorerService {
         }
     }
 
-    private async saveQuestionResult(questionId: string, questionResult: QuestionQueryResult, hitCache = false, conn?: Connection) {
+    private async saveQuestionResult(questionId: string, status: QuestionStatus, questionResult: QuestionQueryResult, hitCache = false, conn?: Connection) {
         const connection = conn || this.mysql;
         const { result, executedAt, finishedAt, spent } = questionResult;
         const [rs] = await connection.query<ResultSetHeader>(`
@@ -565,7 +580,7 @@ export class ExplorerService {
             SET status = ?, result = ?, executed_at = ?, finished_at = ?, spent = ?, hit_cache = ?
             WHERE id = UUID_TO_BIN(?)
         `, [
-            QuestionStatus.Success,
+            status,
             JSON.stringify(result),
             executedAt.toSQL(),
             finishedAt.toSQL(),
@@ -588,12 +603,25 @@ export class ExplorerService {
         }
     }
 
+    private async saveAnswerSummary(questionId: string, summary: AnswerSummary, conn?: Connection) {
+        const connection = conn || this.mysql;
+        const summaryValue = JSON.stringify(summary);
+        const [rs] = await connection.query<ResultSetHeader>(`
+            UPDATE explorer_questions
+            SET answer_summary = ?
+            WHERE id = UUID_TO_BIN(?)
+        `, [summaryValue, questionId]);
+        if (rs.affectedRows === 0) {
+            throw new APIError(500, 'Failed to save the answer summary.');
+        }
+    }
+
     async getQuestionById(questionId: string, conn?: Connection): Promise<Question | null> {
         const connection = conn || this.mysql;
         const [rows] = await connection.query<any[]>(`
             SELECT
                 BIN_TO_UUID(id) AS id, hash, user_id AS userId, status, title, query_sql AS querySQL, query_hash AS queryHash, engines, 
-                queue_name AS queueName, queue_job_id AS queueJobId, recommended_questions AS recommendedQuestions, result, chart, recommended,
+                queue_name AS queueName, queue_job_id AS queueJobId, recommended_questions AS recommendedQuestions, result, chart, answer_summary AS answerSummary, recommended,
                 hit_cache AS hitCache, created_at AS createdAt, requested_at AS requestedAt, 
                 executed_at AS executedAt, finished_at AS finishedAt, spent, error
             FROM explorer_questions
@@ -610,7 +638,7 @@ export class ExplorerService {
         const [rows] = await connection.query<any[]>(`
             SELECT
                 BIN_TO_UUID(id) AS id, hash, user_id AS userId, status, title, query_sql AS querySQL, query_hash AS queryHash, engines,
-                queue_name AS queueName, queue_job_id AS queueJobId, recommended_questions AS recommendedQuestions, result, chart, recommended, 
+                queue_name AS queueName, queue_job_id AS queueJobId, recommended_questions AS recommendedQuestions, result, chart, answer_summary AS answerSummary, recommended, 
                 hit_cache AS hitCache, created_at AS createdAt, requested_at AS requestedAt,
                 executed_at AS executedAt, finished_at AS finishedAt, spent, error
             FROM explorer_questions
@@ -631,7 +659,7 @@ export class ExplorerService {
         const [rows] = await this.mysql.query<any[]>(`
             SELECT
                 BIN_TO_UUID(id) AS id, hash, user_id AS userId, status, title, query_sql AS querySQL, query_hash AS queryHash, engines,
-                queue_name AS queueName, queue_job_id AS queueJobId, recommended_questions AS recommendedQuestions, result, chart, recommended, 
+                queue_name AS queueName, queue_job_id AS queueJobId, recommended_questions AS recommendedQuestions, result, chart, answer_summary AS answerSummary, recommended, 
                 hit_cache AS hitCache, created_at AS createdAt, requested_at AS requestedAt,
                 executed_at AS executedAt, finished_at AS finishedAt, spent, error
             FROM explorer_questions
@@ -664,7 +692,7 @@ export class ExplorerService {
         const [rows] = await connection.query<any[]>(`
             SELECT
                 BIN_TO_UUID(id) AS id, hash, user_id AS userId, status, title, query_sql AS querySQL, query_hash AS queryHash, engines,
-                queue_name AS queueName, queue_job_id AS queueJobId, recommended_questions AS recommendedQuestions, result, chart, recommended, 
+                queue_name AS queueName, queue_job_id AS queueJobId, recommended_questions AS recommendedQuestions, result, answer_summary AS answerSummary, chart, recommended, 
                 hit_cache AS hitCache, created_at AS createdAt, requested_at AS requestedAt,
                 executed_at AS executedAt, finished_at AS finishedAt, spent, error
             FROM explorer_questions
@@ -705,37 +733,88 @@ export class ExplorerService {
     async resolveQuestion(job: Job, question: Question): Promise<QuestionQueryResult> {
         const { id: questionId, querySQL } = question;
         try {
-            await this.updateQuestionStatus(questionId, QuestionStatus.Running);
             const questionResult = await this.executeQuery(questionId, querySQL!);
 
-            if (this.checkChart(question.chart, questionResult.result)) {
+            // Check chart if match the result.
+            if (!this.checkChart(question.chart, questionResult.result)) {
                 await this.addSystemQuestionFeedback(questionId, QuestionFeedbackType.ErrorValidateChart, JSON.stringify(question.chart));
             }
 
-            await this.saveQuestionResult(questionId, {
-                ...questionResult,
-            }, false);
+            // Answer summary.
+            if (Array.isArray(questionResult.result.rows) && questionResult.result.rows.length > 0) {
+                await this.saveQuestionResult(questionId, QuestionStatus.Summarizing, {
+                    ...questionResult,
+                }, false);
+
+                try {
+                    await this.generateAnswerSummary(questionId, question.title, questionResult.result);
+                } catch (err: any) {
+                    this.logger.warn(`Failed to generate answer summary for question ${questionId}: ${err.message}`);
+                }
+
+                await this.updateQuestionStatus(questionId, QuestionStatus.Success);
+            } else {
+                await this.saveQuestionResult(questionId, QuestionStatus.Success, {
+                    ...questionResult,
+                }, false);
+            }
+
             return questionResult;
         } catch (err: any) {
-            await this.saveQuestionError(questionId, err);
+            await this.saveQuestionError(questionId, err.message);
             throw err;
         }
     }
 
     private async executeQuery(questionId: string, querySQL: string): Promise<QuestionQueryResult> {
-        // Get playground connection.
-        const getConnStart = DateTime.now();
-        const playgroundConn = await this.playgroundQueryExecutor.getConnection();
-        const getConnEnd = DateTime.now();
-        this.logger.info({ questionId }, `Got the playground connection, cost: ${getConnEnd.diff(getConnStart).as('milliseconds')} ms`);
+        const logger = this.logger.child({ questionId });
+        const timeout = this.options.querySQLTimeout;
+        const preparedSQL = `/* questionId: ${questionId} */ ${querySQL}`;
 
+        let playgroundConn: PoolConnection | null = null, timer = null;
         try {
-            this.logger.info({ questionId }, 'Start executing query.');
+            // Get playground connection.
+            const getConnStart = DateTime.now();
+            playgroundConn = await this.playgroundQueryExecutor.getConnection();
+            const getConnEnd = DateTime.now();
+            logger.info({questionId}, `Got the playground connection, cost: ${getConnEnd.diff(getConnStart).as('milliseconds')} ms`);
+
+            // Mark question as running.
+            const connectionId = await this.getConnectionID(playgroundConn);
+            logger.info({ questionId }, 'Start executing query with connection ID: %s.', connectionId);
             const executedAt = DateTime.now();
-            const [rows, fields] = await playgroundConn.execute<any[]>(querySQL);
+            await this.markQuestionRunning(questionId, executedAt);
+
+            // Cancel the query if timeout.
+            timer = setTimeout(async () => {
+                logger.warn({ questionId, querySQL }, 'Query execution timeout after %d ms.', timeout);
+
+                if (playgroundConn) {
+                    // Close the connection from client side.
+                    await playgroundConn.destroy();
+                    logger.info('Move the connection from %s the pool.', connectionId);
+
+                    // Terminate the connection from server side.
+                    if (connectionId) {
+                        await this.killConnection(connectionId);
+                        logger.info('Killed the connection %s on server.', connectionId);
+                    }
+                }
+                await this.addSystemQuestionFeedback(questionId, QuestionFeedbackType.ErrorQueryTimeout, JSON.stringify({
+                    timeout: timeout,
+                    querySQL,
+                }));
+                throw new Error('Query execution timeout.');
+            }, timeout);
+
+            // Executing query.
+            const [rows, fields] = await playgroundConn.execute<any[]>(preparedSQL);
+
+            // Finish the query.
+            clearTimeout(timer);
             const finishedAt = DateTime.now();
             const spent = finishedAt.diff(executedAt).as("seconds");
-            this.logger.info({ questionId }, 'Finished query executing, cost: %d s', spent);
+            logger.info({questionId}, 'Finished query executing, cost: %d s', spent);
 
             return {
                 result: {
@@ -750,10 +829,40 @@ export class ExplorerService {
                 executedAt,
                 finishedAt,
                 spent,
+            };
+        } catch (err) {
+            if (timer) {
+                clearTimeout(timer);
+                timer = null;
             }
+            throw err;
         } finally {
-            playgroundConn.release();
+            if (playgroundConn) {
+                await playgroundConn.release();
+            }
         }
+    }
+
+    private async getConnectionID(conn: Connection): Promise<string | null> {
+        const [rows] = await conn.query<any[]>(`SELECT CAST(CONNECTION_ID() AS CHAR) AS connectionId`);
+
+        if (rows.length === 0) {
+            return null;
+        }
+
+        return rows[0].connectionId;
+    }
+
+    private async killConnection(taskId: string): Promise<boolean> {
+        for (let i = 0; i < 3; i++) {
+            try {
+                await this.mysql.query(`KILL ${taskId}`);
+                return true;
+            } catch (e: any) {
+                this.logger.warn(`Failed to kill query ${taskId}: ${e.message}, retrying...`);
+            }
+        }
+        return false;
     }
 
     private checkChart(chart: RecommendedChart | undefined, result: QuestionSQLResult): boolean {
@@ -895,16 +1004,16 @@ export class ExplorerService {
         try {
             if (aiGenerated !== undefined) {
                 [questions] = await connection.query<any[]>(`
-                SELECT hash, title, ai_generated
-                FROM explorer_recommend_questions
+                SELECT hash, title, ai_generated AS aiGenerated, BIN_TO_UUID(question_id) AS questionId, created_at AS createdAt
+                FROM explorer_recommend_questions erq
                 WHERE ai_generated = ?
                 ORDER BY RAND()
                 LIMIT ?
             `, [aiGenerated, n]);
             } else {
                 [questions] = await connection.query<any[]>(`
-                SELECT hash, title, ai_generated
-                FROM explorer_recommend_questions
+                SELECT hash, title, ai_generated AS aiGenerated, BIN_TO_UUID(question_id) AS questionId, created_at AS createdAt
+                FROM explorer_recommend_questions erq
                 ORDER BY RAND()
                 LIMIT ?
             `, [n]);
@@ -913,7 +1022,17 @@ export class ExplorerService {
             this.logger.error(`Failed to get recommend questions: ${err.message}`);
         }
 
-        return questions;
+        return this.mapToRecommendQuestions(questions);
+    }
+
+    async mapToRecommendQuestions(rows: any[]): Promise<RecommendQuestion[]> {
+        return rows.map((row) => ({
+            hash: row.hash,
+            title: row.title,
+            aiGenerated: row.aiGenerated === 1,
+            questionId: row.questionId,
+            createdAt: DateTime.fromJSDate(row.createdAt)
+        }));
     }
 
     async saveRecommendQuestions(conn: Connection, questions: RecommendQuestion[]): Promise<void> {
@@ -957,6 +1076,18 @@ export class ExplorerService {
         `, [userId, questionId]);
     }
 
+    async getUserQuestionFeedbacks(userId: number, questionId: string, conn?: Connection): Promise<QuestionFeedback[]> {
+        const connection = conn || this.mysql;
+        const [rows] = await connection.query<any[]>(`
+            SELECT
+                id, user_id AS userId, BIN_TO_UUID(question_id) AS questionId, satisfied, feedback_type AS feedbackType,
+                feedback_content AS feedbackContent, created_at AS createdAt
+            FROM explorer_question_feedbacks
+            WHERE user_id = ? AND question_id = UUID_TO_BIN(?)
+        `, [userId, questionId]);
+        return rows;
+    }
+
     async addQuestionFeedback(feedback: Omit<QuestionFeedback, "id" | "createdAt">, conn?: Connection) {
         const connection = conn || this.mysql;
         const { userId = 0, questionId, satisfied = false, feedbackType, feedbackContent = null } = feedback;
@@ -967,6 +1098,37 @@ export class ExplorerService {
         if (rs.affectedRows !== 1) {
             throw new APIError(500, 'Failed to add the question feedback.');
         }
+    }
+
+    // Question answer summary.
+
+    async generateAnswerSummaryByQuestionId(questionId: string): Promise<AnswerSummary> {
+        const question = await this.getQuestionById(questionId);
+        if (!question) {
+            throw new APIError(404, 'Question not found.');
+        }
+        const { title, result } = question;
+        if (!result || !Array.isArray(result.rows) || result.rows.length === 0) {
+            throw new APIError(429, 'The question has no result.');
+        }
+
+        return this.generateAnswerSummary(questionId, title, result);
+    }
+
+    async generateAnswerSummary(questionId: string, title: string, result: QuestionSQLResult): Promise<AnswerSummary> {
+        const summary = await this.botService.summaryAnswer(this.generateAnswerSummaryTemplate, title, result.rows);
+        if (!summary) {
+            throw new APIError(500, 'Failed to generate the answer summary.');
+        }
+
+        // Notice: Sometime AI will generate the summary content ends with hashtags, remove them.
+        if (Array.isArray(summary.hashtags) && summary.hashtags.length > 0) {
+            const hashtagsText = summary.hashtags.map((ht) => `#${ht}`).join(' ');
+            summary.content = summary.content?.replace(hashtagsText, '');
+        }
+
+        await this.saveAnswerSummary(questionId, summary);
+        return summary;
     }
 
 }

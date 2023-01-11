@@ -14,8 +14,8 @@ export default function ExploreSteps ({ startColor = '#794BC5', stopColor = '#3D
   const isSmall = useMediaQuery<Theme>(theme => theme.breakpoints.down('md'));
 
   const colorSequences = useMemo(() => {
-    const colorStart = decomposeColor('#794BC5').values as RGBColor;
-    const colorStop = decomposeColor('#3D44FF').values as RGBColor;
+    const colorStart = decomposeColor(startColor).values as RGBColor;
+    const colorStop = decomposeColor(stopColor).values as RGBColor;
     return array(steps.length + 1).map((i) => mixColor(colorStart, colorStop, i / steps.length));
   }, [startColor, stopColor, steps.length]);
 

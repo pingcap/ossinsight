@@ -11,7 +11,6 @@ import {
 } from '@docusaurus/theme-common/internal';
 import type { Props } from '@theme/Layout/Provider';
 import ThemeAdaptor from '@site/src/components/ThemeAdaptor';
-import { UserInfoProvider } from '@site/src/context/user';
 
 const Provider = composeProviders([
   ColorModeProvider,
@@ -22,7 +21,6 @@ const Provider = composeProviders([
   PluginHtmlClassNameProvider,
   NavbarProvider,
   ThemeAdaptor,
-  UserInfoProvider,
 ]);
 
 export default function LayoutProvider ({ children }: Props): JSX.Element {

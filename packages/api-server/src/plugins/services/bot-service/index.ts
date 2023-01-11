@@ -4,11 +4,12 @@ import pino from "pino";
 
 import {SQLGeneratePromptTemplate} from "./template/GenerateSQLPromptTemplate";
 import {GenerateChartPromptTemplate} from "./template/GenerateChartPromptTemplate";
-import {Answer, RecommendedChart, RecommendQuestion} from "./types";
+import {Answer, RecommendedChart, RecommendQuestion, AnswerSummary} from "./types";
 import {GenerateAnswerPromptTemplate} from "./template/GenerateAnswerPromptTemplate";
 import {GenerateQuestionsPromptTemplate} from "./template/GenerateQuestionsPromptTemplate";
 import {DateTime} from "luxon";
 import {BotResponseGenerateError, BotResponseParseError} from "../../../utils/error";
+import {GenerateSummaryPromptTemplate} from "./template/GenerateSummaryPromptTemplate";
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -178,4 +179,45 @@ export class BotService {
             return [];
         }
     }
+
+    async summaryAnswer(template: GenerateSummaryPromptTemplate, question: string, result: any[]): Promise<AnswerSummary | null> {
+        const prompt = template.stringify(question, result, result.length);
+
+        let choice = undefined;
+        let summary = null;
+        try {
+            this.log.info("Requesting answer summary for question: %s", question);
+            const start = DateTime.now();
+            const res = await this.openai.createCompletion({
+                model: template.model,
+                prompt,
+                stream: false,
+                stop: template.stop,
+                temperature: template.temperature,
+                max_tokens: template.maxTokens,
+                top_p: template.topP,
+                n: template.n,
+            });
+            const {choices, usage} = res.data;
+            const end = DateTime.now();
+            this.log.info({ usage }, 'Got summary of question "%s" from OpenAI API, cost: %d s', question, end.diff(start).as('seconds'));
+
+            if (Array.isArray(choices) && choices[0].text) {
+                choice = choices[0].text;
+                summary = JSON.parse(choice);
+                return summary
+            } else {
+                return null;
+            }
+        } catch (err: any) {
+            if (err instanceof SyntaxError) {
+                this.log.error({ err, choice }, `Failed to parse the summary for question: ${question}`);
+                throw new BotResponseParseError('failed to parse the summary', choice, err);
+            } else {
+                this.log.error({ err }, `Failed to get summary for question: ${question}`);
+                throw new BotResponseGenerateError(`failed to generate the summary`, err);
+            }
+        }
+    }
+
 }

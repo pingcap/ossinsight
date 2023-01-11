@@ -1,9 +1,9 @@
 import { FINAL_PHASES, QuestionLoadingPhase, QuestionManagementContext, useQuestionManagementValues } from '@site/src/pages/explore/_components/useQuestion';
 import useUrlSearchState, { nullableStringParam } from '@site/src/hooks/url-search-state';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { isBlankString, isNullish, notNullish } from '@site/src/utils/value';
-import { Box, Container, styled, useEventCallback } from '@mui/material';
-import { SuggestionsContext } from '@site/src/pages/explore/_components/context';
+import { Box, styled, useEventCallback } from '@mui/material';
+import { ExploreContext } from '@site/src/pages/explore/_components/context';
 import { Decorators } from '@site/src/pages/explore/_components/Decorators';
 import Layout from '@site/src/pages/explore/_components/Layout';
 import Header from '@site/src/pages/explore/_components/Header';
@@ -16,11 +16,13 @@ import Side from '@site/src/pages/explore/_components/Side';
 import PoweredBy from '@site/src/pages/explore/_components/PoweredBy';
 import Link from '@docusaurus/Link';
 import { ArrowRightAlt } from '@mui/icons-material';
+import Tips, { TipsRef } from '@site/src/pages/explore/_components/Tips';
 
 export default function Questions () {
   const { question, loading, load, error, phase, reset, create } = useQuestionManagementValues({ pollInterval: 2000 });
   const [questionId, setQuestionId] = useUrlSearchState('id', nullableStringParam(), true);
   const [value, setValue] = useState('');
+  const tipsRef = useRef<TipsRef>(null);
 
   const isPending = !FINAL_PHASES.has(phase);
   const disableAction = isPending || isBlankString(value);
@@ -67,12 +69,23 @@ export default function Questions () {
     create(title);
   });
 
+  const handleSelectId = useEventCallback((id: string, title?: string) => {
+    setValue(title ?? '');
+    load(id);
+  });
+
+  const showTips = useEventCallback(() => {
+    tipsRef.current?.show();
+  });
+
+  const showSide = !hideExecution && (phase === QuestionLoadingPhase.READY || phase === QuestionLoadingPhase.SUMMARIZING) && hasResult;
+
   return (
     <QuestionManagementContext.Provider value={{ phase, question, loading, error, create, load, reset }}>
-      <SuggestionsContext.Provider value={{ handleSelect }}>
+      <ExploreContext.Provider value={{ search: value, handleSelect, handleSelectId, showTips }}>
         <Decorators />
         <Layout
-          showSide={!hideExecution && phase === QuestionLoadingPhase.READY && hasResult}
+          showSide={showSide}
           showHeader={hideExecution}
           showFooter={hideExecution}
           header={<Header />}
@@ -97,10 +110,9 @@ export default function Questions () {
             </Box>
           </SwitchLayout>
         </Layout>
-        <Container maxWidth="lg" sx={{ pb: 8 }}>
-          <Faq />
-        </Container>
-      </SuggestionsContext.Provider>
+        <Faq />
+        <Tips ref={tipsRef} />
+      </ExploreContext.Provider>
     </QuestionManagementContext.Provider>
   );
 }
