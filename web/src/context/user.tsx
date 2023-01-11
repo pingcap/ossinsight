@@ -48,6 +48,8 @@ export function AuthProvider ({ children }: PropsWithChildren): JSX.Element {
       // onRedirectCallback={onRedirectCallback}
       audience={`https://${customFields?.auth0_domain as string}/api/v2/`}
       scope="read:current_user"
+      // https://auth0.com/docs/troubleshoot/authentication-issues/renew-tokens-when-using-safari
+      useRefreshTokens
     >
       {children}
     </Auth0Provider>
