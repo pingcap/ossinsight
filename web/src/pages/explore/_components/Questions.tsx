@@ -96,7 +96,7 @@ export default function Questions () {
             <Box mt={2}>
               <PoweredBy align="center" />
               <StyledLink to="/blog/chat2query-tutorials" target="_blank">
-                🧐 GitHub data is just the beginning. Uncover hidden insights in your OWN data!
+                🧐 GitHub data is just the beginning. Uncover hidden insights in any data!
                 <ArrowRightAlt fontSize="inherit" sx={{ verticalAlign: 'text-bottom', ml: 0.5 }} />
               </StyledLink>
             </Box>

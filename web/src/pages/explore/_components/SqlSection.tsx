@@ -50,7 +50,7 @@ export default function SqlSection () {
       case QuestionLoadingPhase.LOADING:
         return 'Loading question...';
       case QuestionLoadingPhase.CREATING:
-        return 'Creating question...';
+        return 'Generating SQL...';
       case QuestionLoadingPhase.GENERATING_SQL:
         return <GeneratingSqlPrompts />;
       case QuestionLoadingPhase.LOAD_FAILED:
