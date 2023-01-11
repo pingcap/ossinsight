@@ -25,6 +25,8 @@ export function getContentGroup ({ pathname, search }: GetContentGroupOptions): 
     return 'blog';
   } else if (pathname.includes('/workshop/')) {
     return 'workshop';
+  } else if (pathname.startsWith('/explore')) {
+    return 'data explorer';
   } else {
     return undefined;
   }
