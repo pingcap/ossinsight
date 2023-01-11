@@ -1,9 +1,7 @@
 import Section from '@site/src/pages/explore/_components/Section';
-import ShareWithTwitter from '@site/src/pages/explore/_components/ShareWithTwitter';
 import React, { useEffect, useMemo, useState } from 'react';
 import useQuestionManagement, { QuestionLoadingPhase } from '@site/src/pages/explore/_components/useQuestion';
 import { isEmptyArray, isNonemptyString, isNullish, notNullish } from '@site/src/utils/value';
-import { twitterLink } from '@site/src/utils/share';
 import { ChartResult, Question, QuestionStatus } from '@site/src/api/explorer';
 import Info from '@site/src/pages/explore/_components/Info';
 import { Portal, styled, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
@@ -19,6 +17,8 @@ import { useInterval } from 'ahooks';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import SummaryCard from '@site/src/pages/explore/_components/SummaryCard';
 import { uniqueItems } from '@site/src/utils/generate';
+import BotIcon from '@site/src/pages/explore/_components/BotIcon';
+import ShareButtons from './ShareButtons';
 
 export default function ResultSection () {
   const { question, error, phase } = useQuestionManagement();
@@ -66,12 +66,16 @@ export default function ResultSection () {
     }
   }, [question, phase]);
 
-  const twitterShareLink = useMemo(() => {
+  const { url, title, hashtags } = useMemo(() => {
     if (isNullish(question)) {
-      return twitterLink(location.href, { title: 'OSSInsight Data Explorer', hashtags: ['OpenSource', 'OpenAI', 'TiDBCloud'] });
+      return {
+        url: 'https://ossinsight.io/explore',
+        title: 'Data Explorer',
+        hashtags: [],
+      };
     }
     let url;
-    const title = question.answerSummary?.content ?? search;
+    const title = `${search} | OSSInsight Data Explorer`;
     const hashtags = uniqueItems(question.answerSummary?.hashtags ?? [], ['OpenSource', 'OpenAI', 'TiDBCloud']);
     if (typeof location === 'undefined') {
       if (isNonemptyString(question.id)) {
@@ -80,9 +84,9 @@ export default function ResultSection () {
         url = 'https://ossinsight.io/explore';
       }
     } else {
-      url = twitterLink(location.href, { title: `${title} | OSSInsight Data Explorer\n`, hashtags });
+      url = location.href;
     }
-    return url;
+    return { url, title, hashtags };
   }, [question, search]);
 
   const resultSectionError = useMemo(() => {
@@ -104,7 +108,7 @@ export default function ResultSection () {
       extra={
         <ControlsContainer>
           <span ref={setControlsContainerRef} />
-          <ShareWithTwitter href={twitterShareLink} />
+          <ShareButtons url={url} title={title} summary={question?.answerSummary?.content} hashtags={hashtags} />
         </ControlsContainer>
       }
       error={resultSectionError}
@@ -115,8 +119,8 @@ export default function ResultSection () {
       {(notNullish(question?.answerSummary) || question?.status === QuestionStatus.Summarizing) && (
         <SummaryCard loading={question?.status === QuestionStatus.Summarizing}>{question?.answerSummary?.content}</SummaryCard>
       )}
-      {phase === QuestionLoadingPhase.QUEUEING && <PromptTitle source={question?.queuePreceding === 0 ? QUEUE_ALMOST_PROMPT_TITLES : QUEUE_PROMPT_TITLES} interval={3000} />}
-      {phase === QuestionLoadingPhase.EXECUTING && <PromptTitle source={RUNNING_PROMPT_TITLES} interval={2000} />}
+      {phase === QuestionLoadingPhase.QUEUEING && <PromptTitle source={question?.queuePreceding === 0 ? QUEUE_ALMOST_PROMPT_TITLES : QUEUE_PROMPT_TITLES} interval={5000} />}
+      {phase === QuestionLoadingPhase.EXECUTING && <PromptTitle source={RUNNING_PROMPT_TITLES} interval={3000} />}
       <Chart chartData={question?.chart ?? undefined} chartError={chartError} result={result} fields={question?.result?.fields} controlsContainer={controlsContainerRef} />
     </Section>
   );
@@ -309,6 +313,7 @@ const PromptTitle = ({ source, interval }: { source: string[], interval: number 
 
   return (
     <TransitionGroup component={PromptTitleContainer}>
+      <BotIcon animated={false} />
       <CSSTransition key={index} timeout={400} classNames="item">
         <Prompt>
           {source[index]}
@@ -328,6 +333,7 @@ const PromptTitleContainer = styled('span')`
 const Prompt = styled('span')`
   display: inline-block;
   width: max-content;
+  padding-left: 8px;
   transition: ${({ theme }) => theme.transitions.create(['opacity', 'transform'], { duration: 400 })};
 
   &.item-enter {

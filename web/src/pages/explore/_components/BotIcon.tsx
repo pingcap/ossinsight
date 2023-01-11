@@ -1,9 +1,13 @@
 import { keyframes, styled } from '@mui/material';
 import React from 'react';
 
-export default function BotIcon () {
+interface BotIconProps {
+  animated?: boolean;
+}
+
+export default function BotIcon ({ animated = true }: BotIconProps) {
   return (
-    <Img size={16} />
+    <Img className={animated ? 'animated' : ''} size={16} />
   );
 }
 
@@ -27,5 +31,8 @@ const Img = styled('span')<{ size?: number }>`
   display: inline-block;
   background: url("/img/bot.png") no-repeat center center;
   background-size: contain;
-  animation: ${animation} 0.8s infinite;
+
+  &.animated {
+    animation: ${animation} 0.8s infinite;
+  }
 `;

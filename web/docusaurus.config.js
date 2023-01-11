@@ -232,6 +232,7 @@ const config = {
             to: '/2022',
             position: 'left',
             label: '📜 GitHub 2022',
+            // html: 'Data Explorer <span class="nav-explore-icon"></span>'
           },
           {
             to: '/collections',
