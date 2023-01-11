@@ -10,7 +10,7 @@ import {
     SQLUnsupportedStatementTypeError,
     ValidateSQLError
 } from "../../../utils/error";
-import {Connection, ResultSetHeader} from "mysql2/promise";
+import {Connection, PoolConnection, ResultSetHeader} from "mysql2/promise";
 import crypto from "node:crypto";
 import {DateTime} from "luxon";
 import {AST, Parser, Select} from "node-sql-parser";
@@ -75,7 +75,7 @@ export default fp(async (app: any) => {
           trustedUsers: app.config.PLAYGROUND_TRUSTED_GITHUB_LOGINS,
           trustedUsersMaxQuestionsPerHour: 200,
           generateSQLCacheTTL: app.config.EXPLORER_GENERATE_SQL_CACHE_TTL,
-          querySQLCacheTTL: app.config.EXPLORER_QUERY_SQL_CACHE_TTL
+          querySQLCacheTTL: app.config.EXPLORER_QUERY_SQL_CACHE_TTL,
       }
     ));
 }, {
@@ -96,6 +96,7 @@ export interface ExplorerOption {
     trustedUsersMaxQuestionsPerHour: number;
     generateSQLCacheTTL: number;
     querySQLCacheTTL: number;
+    querySQLTimeout: number;
 }
 
 export class ExplorerService {
@@ -103,7 +104,7 @@ export class ExplorerService {
     private sqlParser: Parser;
     private readonly generateAnswerTemplate: GenerateAnswerPromptTemplate;
     private readonly generateChartTemplate: GenerateChartPromptTemplate;
-    private readonly generteAnswerSummaryTemplate: GenerateSummaryPromptTemplate;
+    private readonly generateAnswerSummaryTemplate: GenerateSummaryPromptTemplate;
     private maxSelectLimit = 200;
     private options: ExplorerOption;
 
@@ -114,12 +115,12 @@ export class ExplorerService {
       private readonly playgroundQueryExecutor: TiDBPlaygroundQueryExecutor,
       private readonly lowConcurrentQueue: Queue,
       private readonly highConcurrentQueue: Queue,
-      options?: ExplorerOption
+      options?: Partial<ExplorerOption>
     ) {
         this.sqlParser = new Parser();
         this.generateChartTemplate = new GenerateChartPromptTemplate();
         this.generateAnswerTemplate = new GenerateAnswerPromptTemplate();
-        this.generteAnswerSummaryTemplate = new GenerateSummaryPromptTemplate();
+        this.generateAnswerSummaryTemplate = new GenerateSummaryPromptTemplate();
         this.options = Object.assign({}, {
             userMaxQuestionsPerHour: 20,
             userMaxQuestionsOnGoing: 3,
@@ -127,6 +128,7 @@ export class ExplorerService {
             trustedUsersMaxQuestionsPerHour: 100,
             generateSQLCacheTTL: 60 * 60 * 24 * 7,
             querySQLCacheTTL: 60 * 60 * 24,
+            querySQLTimeout: 30 * 1000,
         }, options || {});
     }
 
@@ -753,26 +755,60 @@ export class ExplorerService {
 
             return questionResult;
         } catch (err: any) {
-            await this.saveQuestionError(questionId, err);
+            await this.saveQuestionError(questionId, err.message);
             throw err;
         }
     }
 
     private async executeQuery(questionId: string, querySQL: string): Promise<QuestionQueryResult> {
-        // Get playground connection.
-        const getConnStart = DateTime.now();
-        const playgroundConn = await this.playgroundQueryExecutor.getConnection();
-        const getConnEnd = DateTime.now();
-        this.logger.info({ questionId }, `Got the playground connection, cost: ${getConnEnd.diff(getConnStart).as('milliseconds')} ms`);
+        const logger = this.logger.child({ questionId });
+        const timeout = this.options.querySQLTimeout;
+        const preparedSQL = `/* questionId: ${questionId} */ ${querySQL}`;
 
+        let playgroundConn: PoolConnection | null = null, timer = null;
         try {
-            this.logger.info({ questionId }, 'Start executing query.');
+            // Get playground connection.
+            const getConnStart = DateTime.now();
+            playgroundConn = await this.playgroundQueryExecutor.getConnection();
+            const getConnEnd = DateTime.now();
+            logger.info({questionId}, `Got the playground connection, cost: ${getConnEnd.diff(getConnStart).as('milliseconds')} ms`);
+
+            // Mark question as running.
+            const connectionId = await this.getConnectionID(playgroundConn);
+            logger.info({ questionId }, 'Start executing query with connection ID: %s.', connectionId);
             const executedAt = DateTime.now();
             await this.markQuestionRunning(questionId, executedAt);
-            const [rows, fields] = await playgroundConn.execute<any[]>(querySQL);
+
+            // Cancel the query if timeout.
+            timer = setTimeout(async () => {
+                logger.warn({ questionId, querySQL }, 'Query execution timeout after %d ms.', timeout);
+
+                if (playgroundConn) {
+                    // Close the connection from client side.
+                    await playgroundConn.destroy();
+                    logger.info('Move the connection from %s the pool.', connectionId);
+
+                    // Terminate the connection from server side.
+                    if (connectionId) {
+                        await this.killConnection(connectionId);
+                        logger.info('Killed the connection %s on server.', connectionId);
+                    }
+                }
+                await this.addSystemQuestionFeedback(questionId, QuestionFeedbackType.ErrorQueryTimeout, JSON.stringify({
+                    timeout: timeout,
+                    querySQL,
+                }));
+                throw new Error('Query execution timeout.');
+            }, timeout);
+
+            // Executing query.
+            const [rows, fields] = await playgroundConn.execute<any[]>(preparedSQL);
+
+            // Finish the query.
+            clearTimeout(timer);
             const finishedAt = DateTime.now();
             const spent = finishedAt.diff(executedAt).as("seconds");
-            this.logger.info({ questionId }, 'Finished query executing, cost: %d s', spent);
+            logger.info({questionId}, 'Finished query executing, cost: %d s', spent);
 
             return {
                 result: {
@@ -787,10 +823,40 @@ export class ExplorerService {
                 executedAt,
                 finishedAt,
                 spent,
+            };
+        } catch (err) {
+            if (timer) {
+                clearTimeout(timer);
+                timer = null;
             }
+            throw err;
         } finally {
-            playgroundConn.release();
+            if (playgroundConn) {
+                await playgroundConn.release();
+            }
         }
+    }
+
+    private async getConnectionID(conn: Connection): Promise<string | null> {
+        const [rows] = await conn.query<any[]>(`SELECT CAST(CONNECTION_ID() AS CHAR) AS connectionId`);
+
+        if (rows.length === 0) {
+            return null;
+        }
+
+        return rows[0].connectionId;
+    }
+
+    private async killConnection(taskId: string): Promise<boolean> {
+        for (let i = 0; i < 3; i++) {
+            try {
+                await this.mysql.query(`KILL ${taskId}`);
+                return true;
+            } catch (e: any) {
+                this.logger.warn(`Failed to kill query ${taskId}: ${e.message}, retrying...`);
+            }
+        }
+        return false;
     }
 
     private checkChart(chart: RecommendedChart | undefined, result: QuestionSQLResult): boolean {
@@ -1034,7 +1100,7 @@ export class ExplorerService {
     }
 
     async generateAnswerSummary(questionId: string, title: string, result: QuestionSQLResult): Promise<AnswerSummary> {
-        const summary = await this.botService.summaryAnswer(this.generteAnswerSummaryTemplate, title, result.rows);
+        const summary = await this.botService.summaryAnswer(this.generateAnswerSummaryTemplate, title, result.rows);
         if (!summary) {
             throw new APIError(500, 'Failed to generate the answer summary.');
         }

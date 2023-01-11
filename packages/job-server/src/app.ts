@@ -30,6 +30,7 @@ declare module 'fastify' {
       PLAYGROUND_DATABASE_URL: string;
       EXPLORER_HIGH_QUEUE_CONCURRENT: number;
       EXPLORER_LOW_QUEUE_CONCURRENT: number;
+      EXPLORER_QUERY_SQL_TIMEOUT: number;
       SEND_REPO_FEEDS_CRON: string,
       CALC_REPO_MILESTONES_CRON: string,
       OPENAI_API_KEY: string
