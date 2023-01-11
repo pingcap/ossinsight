@@ -1,11 +1,11 @@
 import React, { createContext, createElement, PropsWithChildren, useContext } from 'react';
 import { useUserInfo } from '@site/src/api/user';
-import { Auth0Provider } from '@auth0/auth0-react';
+import { Auth0Provider, AppState } from '@auth0/auth0-react';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import { useMemoizedFn } from 'ahooks';
 import { isNullish } from '@site/src/utils/value';
 import { useResponsiveAuth0 } from '@site/src/theme/NavbarItem/useResponsiveAuth0';
-// import { useHistory } from '@docusaurus/router';
+import { useHistory } from '@docusaurus/router';
 
 const UserContext = createContext<ReturnType<typeof useUserInfo>>({
   validated: false,
@@ -29,14 +29,13 @@ export function AuthProvider ({ children }: PropsWithChildren): JSX.Element {
   const {
     siteConfig: { customFields, url },
   } = useDocusaurusContext();
-  // const history = useHistory();
+  const history = useHistory();
 
-  // TODO: history.push will cause login status missing
-  // const onRedirectCallback = (appState: AppState) => {
-  //   if (appState?.returnTo) {
-  //     history.push(appState.returnTo);
-  //   }
-  // };
+  const onRedirectCallback = (appState: AppState) => {
+    if (appState?.returnTo) {
+      history.push(appState.returnTo);
+    }
+  };
 
   return (
     <Auth0Provider
@@ -45,7 +44,7 @@ export function AuthProvider ({ children }: PropsWithChildren): JSX.Element {
       redirectUri={
         typeof window === 'undefined' ? url : window.location.origin || url
       }
-      // onRedirectCallback={onRedirectCallback}
+      onRedirectCallback={onRedirectCallback}
       audience={`https://${customFields?.auth0_domain as string}/api/v2/`}
       scope="read:current_user"
       // https://auth0.com/docs/troubleshoot/authentication-issues/renew-tokens-when-using-safari
