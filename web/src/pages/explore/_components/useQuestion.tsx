@@ -3,7 +3,7 @@ import { newQuestion, pollQuestion, Question, QuestionStatus } from '@site/src/a
 import { useMemoizedFn } from 'ahooks';
 import { isFalsy, isFiniteNumber, isNonemptyString, notNullish } from '@site/src/utils/value';
 import { timeout } from '@site/src/utils/promisify';
-import { useAuth0 } from '@auth0/auth0-react';
+import { useResponsiveAuth0 } from '@site/src/theme/NavbarItem/useResponsiveAuth0';
 
 export const enum QuestionLoadingPhase {
   /** There is no question */
@@ -117,7 +117,7 @@ export function useQuestionManagementValues ({ pollInterval = 2000 }: QuestionMa
   const [error, setError] = useState<unknown>();
   const idRef = useRef<string>();
 
-  const { isLoading, user, getAccessTokenSilently, loginWithPopup } = useAuth0();
+  const { isLoading, user, getAccessTokenSilently, login } = useResponsiveAuth0();
 
   const loadInternal = useMemoizedFn(async function (id: string, clear: boolean) {
     // Prevent reload when loading same question
@@ -156,7 +156,7 @@ export function useQuestionManagementValues ({ pollInterval = 2000 }: QuestionMa
     async function createInternal (title: string) {
       try {
         if (!isLoading && !user) {
-          return await loginWithPopup();
+          return await login();
         }
         setError(undefined);
         setQuestion(undefined);

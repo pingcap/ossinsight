@@ -4,6 +4,7 @@ import LoginRoundedIcon from '@mui/icons-material/LoginRounded';
 import { Experimental } from '@site/src/components/Experimental';
 import { useBoolean } from 'ahooks';
 import { useAuth0 } from '@auth0/auth0-react';
+import { useResponsiveAuth0 } from '@site/src/theme/NavbarItem/useResponsiveAuth0';
 
 const StyledButtonBase = styled(ButtonBase)`
   position: relative;
@@ -15,14 +16,14 @@ const StyledAvatar = styled(Avatar)`
 `;
 
 function LoginButton () {
-  const { loginWithPopup } = useAuth0();
+  const { login } = useResponsiveAuth0();
 
   return (
     <StyledButtonBase
       disableRipple
       aria-label="login"
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      onClick={loginWithPopup}
+      onClick={login}
     >
       <StyledAvatar
         sx={{

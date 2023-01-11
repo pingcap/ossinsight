@@ -5,7 +5,7 @@ import { Notifications, NotificationsOff } from '@mui/icons-material';
 import { ButtonProps } from '@mui/material/Button';
 import { notFalsy } from '@site/src/utils/value';
 import { useNotifications } from '@site/src/components/Notifications';
-import { useAuth0 } from '@auth0/auth0-react';
+import { useResponsiveAuth0 } from '@site/src/theme/NavbarItem/useResponsiveAuth0';
 
 export interface SubscribeButtonProps extends Omit<ButtonProps, 'onClick' | 'disabled' | 'startIcon' | 'children'> {
   repoName: string;
@@ -15,7 +15,7 @@ export interface SubscribeButtonProps extends Omit<ButtonProps, 'onClick' | 'dis
 }
 
 export default forwardRef(function SubscribeButton ({ repoName, variant, onClick, icon: iconProp, ...props }: SubscribeButtonProps, ref: ForwardedRef<HTMLButtonElement>) {
-  const { isAuthenticated: userValidated, isLoading: userValidating, loginWithPopup: login } = useAuth0();
+  const { isAuthenticated: userValidated, isLoading: userValidating, login } = useResponsiveAuth0();
   const { subscribed, subscribing, subscribe, unsubscribe, isValidating } = useSubscribed(repoName);
   const { success, displayError } = useNotifications();
 

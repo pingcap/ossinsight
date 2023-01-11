@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import { Backdrop, Button, styled } from '@mui/material';
 import { SxProps } from '@mui/system';
-import { useAuth0 } from '@auth0/auth0-react';
+import { useResponsiveAuth0 } from '@site/src/theme/NavbarItem/useResponsiveAuth0';
 
 interface LoginRequiredProps {
   promote: string;
@@ -10,7 +10,7 @@ interface LoginRequiredProps {
 }
 
 export function LoginRequired ({ promote, sx, children }: LoginRequiredProps) {
-  const { isAuthenticated, loginWithPopup } = useAuth0();
+  const { isAuthenticated, login } = useResponsiveAuth0();
 
   return (
     <LoginRequiredContainer sx={sx}>
@@ -21,7 +21,7 @@ export function LoginRequired ({ promote, sx, children }: LoginRequiredProps) {
       >
         <Button
           // eslint-disable-next-line @typescript-eslint/no-misused-promises
-          onClick={loginWithPopup}
+          onClick={login}
         >
           {promote}
         </Button>

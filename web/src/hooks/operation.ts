@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useWhenMounted } from '@site/src/hooks/mounted';
 import { unstable_serialize } from 'swr';
 import { useEventCallback } from '@mui/material';
-import { useAuth0 } from '@auth0/auth0-react';
+import { useResponsiveAuth0 } from '@site/src/theme/NavbarItem/useResponsiveAuth0';
 
 interface AsyncOperation<T> extends AsyncData<T> {
   run: () => any;
@@ -45,7 +45,7 @@ export function useAsyncState<T, E = unknown> (initial?: T | (() => T)) {
 }
 
 export function useAsyncOperation<P, T> (params: P, fetcher: (params: P) => Promise<T>, requireAuth: boolean = false): AsyncOperation<T> {
-  const { isAuthenticated, loginWithPopup, getAccessTokenSilently } = useAuth0();
+  const { isAuthenticated, login, getAccessTokenSilently } = useResponsiveAuth0();
   const whenMounted = useWhenMounted();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<unknown>();
@@ -65,7 +65,7 @@ export function useAsyncOperation<P, T> (params: P, fetcher: (params: P) => Prom
 
   const run = useEventCallback(async () => {
     if (requireAuth && !isAuthenticated) {
-      await loginWithPopup();
+      await login();
       return;
     }
     if (loadingRef.current) {

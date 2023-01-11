@@ -7,6 +7,7 @@ import { Unsubscribe } from '@mui/icons-material';
 import EnableEmailSwitch from '@site/src/pages/subscriptions/EnableEmailSwitch';
 import { useNotifications } from '@site/src/components/Notifications';
 import { useAuth0 } from '@auth0/auth0-react';
+import { useResponsiveAuth0 } from '@site/src/theme/NavbarItem/useResponsiveAuth0';
 
 const fmt = new Intl.DateTimeFormat('en', {
   dateStyle: 'medium',
@@ -17,8 +18,8 @@ export default function SubscribePage () {
   const {
     isAuthenticated: userValidated,
     isLoading: userValidating,
-    loginWithPopup: login,
-  } = useAuth0();
+    login,
+  } = useResponsiveAuth0();
 
   return (
     <CustomPage>
