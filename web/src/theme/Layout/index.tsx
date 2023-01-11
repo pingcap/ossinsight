@@ -14,6 +14,7 @@ import styles from './styles.module.css';
 import CustomFooter from '@site/src/components/Footer';
 import { useNotificationsProvider } from '@site/src/components/Notifications';
 import { AuthProvider } from '@site/src/context/user';
+import ExploreGlobalAds from '@site/src/pages/explore/_components/ExploreGlobalAds';
 
 declare module '@theme/Layout' {
   interface Props {
@@ -64,6 +65,8 @@ export default function Layout (props: Props): JSX.Element {
 
       {header}
       {side}
+
+      <ExploreGlobalAds />
 
       <div
         className={clsx(

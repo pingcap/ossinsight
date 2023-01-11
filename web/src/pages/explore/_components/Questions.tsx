@@ -70,8 +70,10 @@ export default function Questions () {
   });
 
   const handleSelectId = useEventCallback((id: string, title?: string) => {
-    setValue(title ?? '');
-    load(id);
+    if (questionId !== id) {
+      setValue(title ?? '');
+      load(id);
+    }
   });
 
   const showTips = useEventCallback(() => {

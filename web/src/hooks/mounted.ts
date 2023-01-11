@@ -1,4 +1,5 @@
 import { RefObject, useCallback, useEffect, useRef } from 'react';
+import { useMemoizedFn } from 'ahooks';
 
 export function useMounted (): RefObject<boolean> {
   const mountedRef = useRef(false);
@@ -26,4 +27,32 @@ export function useWhenMounted (): <T extends (...args: any[]) => void>(fn: T) =
       }
     } as T;
   }, []);
+}
+
+/**
+ * will clear previous setTimeout
+ */
+export function useSafeSetTimeout (): typeof setTimeout {
+  const mountedRef = useRef(false);
+  const handleRef = useRef<ReturnType<typeof setTimeout>>();
+
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+      clearTimeout(handleRef.current);
+    };
+  }, []);
+
+  return useMemoizedFn(<TArgs extends any[]> (func: (...args: TArgs) => any, timeout?: number, ...args: TArgs) => {
+    clearTimeout(handleRef.current);
+    const h = setTimeout((...args) => {
+      if (mountedRef.current) {
+        func(...args);
+      }
+    }, timeout, ...args);
+
+    handleRef.current = h;
+    return h;
+  }) as typeof setTimeout;
 }
