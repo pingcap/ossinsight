@@ -54,6 +54,7 @@ SELECT DATE_FORMAT(ge.created_at, '%Y-%m-01') AS month, COUNT(*) AS stars FROM g
 @org_or_user_login/repo_name
 
 # ChartOptions
+type Column = string; // must be the column name in the SQL result!!!
 PieChart {label: Column; value: Column;}
 LineChart {x: Column; y: Column | Column[];}
 BarChart {x: Column; y: Column | Column[];}
