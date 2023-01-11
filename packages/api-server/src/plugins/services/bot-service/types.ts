@@ -16,7 +16,7 @@ export interface RecommendQuestion {
   hash: string;
   title: string;
   aiGenerated: boolean;
-  questionId: string;
+  questionId: string | null;
   createdAt: DateTime;
 }
 
