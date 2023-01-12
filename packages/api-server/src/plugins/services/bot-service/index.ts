@@ -129,6 +129,11 @@ export class BotService {
             if (Array.isArray(choices) && choices[0].text) {
                 choice = choices[0].text;
                 answer = JSON.parse(choice);
+                answer.chart = {
+                    chartName: answer.chart.chartName,
+                    title: answer.chart.title,
+                    ...answer.chart.options
+                }
                 return answer
             } else {
                 return null;
