@@ -89,6 +89,25 @@ function computePhase (question: Question, whenError: (error: unknown) => void):
         whenError('Execution was cancelled');
       }
       return QuestionLoadingPhase.EXECUTE_FAILED;
+    default:
+      // Guess phase
+      if (notNullish(question.querySQL)) {
+        if (notNullish(question.result)) {
+          return QuestionLoadingPhase.READY;
+        } else if (notNullish(question.error)) {
+          whenError(question.error);
+          return QuestionLoadingPhase.EXECUTE_FAILED;
+        } else {
+          return QuestionLoadingPhase.EXECUTING;
+        }
+      } else {
+        if (notNullish(question.error)) {
+          whenError(question.error);
+          return QuestionLoadingPhase.GENERATE_SQL_FAILED;
+        } else {
+          return QuestionLoadingPhase.GENERATING_SQL;
+        }
+      }
   }
 }
 
