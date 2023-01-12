@@ -4,7 +4,7 @@ import {
     APIError,
     BotResponseParseError,
     ExplorerCreateQuestionError,
-    ExplorerPrepareQuestionError,
+    ExplorerPrepareQuestionError, ExplorerTooManyRequestError,
     SQLUnsupportedFunctionError,
     SQLUnsupportedMultipleStatementsError,
     SQLUnsupportedStatementTypeError,
@@ -189,8 +189,9 @@ export class ExplorerService {
             if (previousQuestions.length >= limit) {
                 const oldestQuestion = previousQuestions.reduce((prev, current) => (prev.createdAt < current.createdAt) ? prev : current);
                 const now = DateTime.utc();
-                const waitMinutes = oldestQuestion.createdAt.diff(now.minus({ hour: 1 }), ["minutes", "seconds"]).toHuman();
-                throw new APIError(429, `Too many questions request in the past hour, please wait ${waitMinutes}.`);
+                const waitMinutes = oldestQuestion.createdAt.diff(now.minus({ hour: 1 }), ["minutes", "seconds"]);
+                const waitMinutesText = waitMinutes.toHuman();
+                throw new ExplorerTooManyRequestError(`Too many questions request in the past hour, please wait ${waitMinutesText}.`, waitMinutes.minutes);
             }
 
             const onGongStatuses = [QuestionStatus.AnswerGenerating, QuestionStatus.SQLValidating, QuestionStatus.Waiting, QuestionStatus.Running];
@@ -207,7 +208,9 @@ export class ExplorerService {
         } catch (err: any) {
             await conn.rollback();
             logger.error(err, `Failed to create a new question: ${err.message}`);
-            if (err instanceof APIError) {
+            if (err instanceof ExplorerTooManyRequestError) {
+                throw err;
+            } else if (err instanceof APIError) {
                 throw new ExplorerCreateQuestionError(err.statusCode, err.message, question, err);
             } else {
                 throw new ExplorerCreateQuestionError(500, 'Failed to create the question', question);
@@ -354,14 +357,14 @@ export class ExplorerService {
                 await this.updateQuestion({
                     ...question,
                     status: QuestionStatus.Error,
-                    error: err.message,
+                    error: this.wrapperTheErrorMessage(err.message),
                 });
                 await this.addSystemQuestionFeedback(questionId, err.feedbackType, JSON.stringify(err.feedbackPayload));
             } else {
                 await this.updateQuestion({
                     ...question,
                     status: QuestionStatus.Error,
-                    error: err.message,
+                    error: this.wrapperTheErrorMessage(err.message),
                 });
                 await this.addSystemQuestionFeedback(questionId, QuestionFeedbackType.ErrorUnknown, JSON.stringify({
                     message: err.message
@@ -949,18 +952,20 @@ export class ExplorerService {
 
     // Error handling.
 
-    async wrapperTheErrorMessage(question: Question) {
-        if (typeof question.error !== 'string') {
-            return;
+    wrapperTheErrorMessage(message?: string | null): string {
+        if (typeof message !== 'string') {
+            return '';
         }
 
-        if (question.error.includes('denied for user')) {
-            question.error = 'Failed to execute SQL: commend access denied';
-        } else if (question.error.includes('connect ECONNREFUSED')) {
-            question.error = 'Failed to connect database, please try again later.';
-        } else if (question.error.includes('rpc error: code = Unavailable')) {
-            question.error = 'Failed to execute SQL, some of TiFlash nodes are unavailable, please try again later.';
+        if (message.includes('denied for user')) {
+            message = 'Failed to execute SQL: commend access denied';
+        } else if (message.includes('connect ECONNREFUSED')) {
+            message = 'Failed to connect database, please try again later.';
+        } else if (message.includes('rpc error: code = Unavailable')) {
+            message= 'Failed to execute SQL, some of TiFlash nodes are unavailable, please try again later.';
         }
+
+        return message;
     }
 
     // Chart.
