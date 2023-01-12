@@ -28,7 +28,7 @@ export default function ErrorBlock ({ severity, title, prompt, sx, error, showSu
 ${prompt} [question](https://ossinsight.io/explore?id=${question?.id ?? ''})
 
 ## Question title
-**${question?.title ?? ''}**
+**${question?.title?.replaceAll('@', '') ?? ''}**
 
 ## Error message
 ${error}
