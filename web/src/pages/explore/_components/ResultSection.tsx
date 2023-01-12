@@ -244,7 +244,7 @@ function Chart ({ chartData, chartError, fields, result, controlsContainer }: { 
           <ul>
             <li>AI can write SQL effectively, but remember that it&apos;s still a work in progress with limitations. </li>
             <li>Clear and specific language will help the AI understand your needs. Check out <a href='javascript:void(0)' onClick={goto('data-explorer-faq')}>FAQ</a> for more tips.</li>
-            <li>GitHub data is not your focus? Explore any other dataset with our capabilities.</li>
+            <li>GitHub data is not your focus? <Link href='https://ossinsight.io/blog/chat2query-tutorials/' target='_blank' rel='noopener'>Explore any other dataset </Link> with our capabilities.</li>
           </ul>
         </Typography>
       );
