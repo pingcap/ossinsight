@@ -40,6 +40,19 @@ export function getErrorMessage (e: unknown): string {
   }
 }
 
+export function getAxiosErrorPayload (e: AxiosError): unknown {
+  if (notNullish(e.response)) {
+    if (notNullish(e.response.data)) {
+      if (notNullish(e.response.data.payload)) {
+        return e.response.data.payload;
+      } else {
+        return e.response.data;
+      }
+    }
+  }
+  return undefined;
+}
+
 export function getOptionalErrorMessage (e: unknown): string | undefined {
   if (isFalsy(e)) {
     return undefined;

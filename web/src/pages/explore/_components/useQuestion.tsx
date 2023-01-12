@@ -198,9 +198,7 @@ export function useQuestionManagementValues ({ pollInterval = 2000 }: QuestionMa
       case QuestionLoadingPhase.GENERATING_SQL:
       case QuestionLoadingPhase.EXECUTING:
       case QuestionLoadingPhase.QUEUEING:
-      case QuestionLoadingPhase.SUMMARIZING:
-      // case QuestionLoadingPhase.VISUALIZING:
-      {
+      case QuestionLoadingPhase.SUMMARIZING: {
         const h = setTimeout(() => {
           if (isNonemptyString(idRef.current)) {
             void loadInternal(idRef.current, false);

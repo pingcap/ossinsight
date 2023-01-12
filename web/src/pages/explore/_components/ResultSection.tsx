@@ -5,7 +5,7 @@ import { isEmptyArray, isNonemptyString, isNullish, nonEmptyArray, notNullish } 
 import { ChartResult, Question, QuestionStatus } from '@site/src/api/explorer';
 import Info from '@site/src/pages/explore/_components/Info';
 import { Portal, styled, ToggleButton, ToggleButtonGroup, Typography, useEventCallback } from '@mui/material';
-import { getErrorMessage, isAxiosError } from '@site/src/utils/error';
+import { getErrorMessage } from '@site/src/utils/error';
 import ErrorBlock from '@site/src/pages/explore/_components/ErrorBlock';
 import Feedback from '@site/src/pages/explore/_components/Feedback';
 import TableChart from '@site/src/pages/explore/_components/charts/TableChart';
@@ -20,7 +20,6 @@ import { uniqueItems } from '@site/src/utils/generate';
 import BotIcon from '@site/src/pages/explore/_components/BotIcon';
 import ShareButtons from './ShareButtons';
 import TypewriterEffect from '@site/src/pages/explore/_components/TypewriterEffect';
-import Link from '@docusaurus/Link';
 import { gotoAnchor } from '@site/src/utils/dom';
 
 export default function ResultSection () {
@@ -130,21 +129,10 @@ export default function ResultSection () {
       errorTitle="Failed to execute question"
       errorPrompt="Hi, it's failed to execute"
       errorMessage={
-        isAxiosError(resultSectionError) && resultSectionError.response?.status === 429
-          ? (
-            <>
-              Wow, you&apos;re a natural explorer! But it&apos;s a little tough to keep up!
-              <br />
-              Take a break and try again in [time] minutes.
-              <br />
-              Check out the <Link to="/blog/chat2query-tutorials" target="_blank">tutorial</Link>, if you want to try AI-generated SQL in any other dataset <b>within 5 minutes</b>.
-            </>
-            )
-          : (
-            <>
-              Oops! Your query yielded no results. Try our <a href="javascript:void(0)" onClick={gotoAnchor('faq-optimize-sql')}>tips</a> for crafting effective queries and give it another go.
-            </>
-            )
+        <>
+          Oops, something went wrong while executing your SQL query. Please try again.
+          If the problem persists, check out <a href="javascript:void(0)" onClick={gotoAnchor('data-explorer-faq')}>FAQ</a>
+        </>
       }
     >
       {(notNullish(question?.answerSummary) || question?.status === QuestionStatus.Summarizing) && (
@@ -200,11 +188,6 @@ const EngineTag = styled('span')`
 function Chart ({ chartData, chartError, fields, result, controlsContainer }: { chartData: ChartResult | undefined, chartError: unknown, result: Array<Record<string, any>> | undefined, fields: Array<{ name: string }> | undefined, controlsContainer: HTMLSpanElement | null }) {
   const [tab, setTab] = useState('visualization');
   const defaultTabRef = useRef('visualization');
-  const goto = useMemo(() => {
-    return (id: string) => () => {
-      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
-    };
-  }, []);
 
   useEffect(() => {
     setTab(defaultTabRef.current);
@@ -256,7 +239,7 @@ function Chart ({ chartData, chartError, fields, result, controlsContainer }: { 
           🤔 Not exactly what you&apos;re looking for?
           <ul>
             <li>AI can write SQL effectively, but remember that it&apos;s still a work in progress with limitations. </li>
-            <li>Clear and specific language will help the AI understand your needs. Check out <a href='javascript:void(0)' onClick={goto('data-explorer-faq')}>FAQ</a> for more tips.</li>
+            <li>Clear and specific language will help the AI understand your needs. Check out <a href='javascript:void(0)' onClick={gotoAnchor('data-explorer-faq')}>FAQ</a> for more tips.</li>
             <li>GitHub data is not your focus? <Link href='https://ossinsight.io/blog/chat2query-tutorials/' target='_blank' rel='noopener'>Explore any other dataset </Link> with our capabilities.</li>
           </ul>
         </Typography>
