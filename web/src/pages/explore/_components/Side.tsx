@@ -1,8 +1,7 @@
 import { RecommendedSuggestions } from '@site/src/pages/explore/_components/Suggestions';
 import { Box, Divider, IconButton, styled, Typography } from '@mui/material';
-import { ArrowForward, ArrowLeft, Cached } from '@mui/icons-material';
+import { ArrowForward, Cached } from '@mui/icons-material';
 import React, { useEffect, useState } from 'react';
-import { array } from '@site/src/utils/generate';
 import Link from '@docusaurus/Link';
 import useQuestionManagement from '@site/src/pages/explore/_components/useQuestion';
 import { useMemoizedFn } from 'ahooks';
@@ -26,8 +25,7 @@ export default function Side () {
         variant="text" n={4}
         title={(reload, loading) => (
           <Typography variant="h3" mb={0} fontSize={16}>
-            <Arrows />
-            Get inspired
+            💡 Get inspired
             <IconButton onClick={wrapHandleClick(reload)} disabled={loading}>
               <Cached fontSize="inherit" />
             </IconButton>
@@ -48,28 +46,9 @@ export default function Side () {
   );
 }
 
-function Arrows () {
-  return (
-    <>
-      {array(3).map(i => (
-        <StyledArrow key={i} color="primary" fontSize="inherit" sx={{ verticalAlign: 'text-bottom' }} />
-      ))}
-    </>
-  );
-}
-
 const SideRoot = styled('div')`
   position: sticky;
   top: 92px;
-`;
-
-const StyledArrow = styled(ArrowLeft)`
-  vertical-align: text-bottom;
-  margin-left: -12px;
-
-  &:first-of-type {
-    margin-left: -6px;
-  }
 `;
 
 const ColoredLink = styled(Link)`

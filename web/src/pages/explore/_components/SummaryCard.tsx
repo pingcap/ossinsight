@@ -13,7 +13,7 @@ export default function SummaryCard ({ loading = false, children }: SummaryCardP
         <Typography variant="h4" display="flex" alignItems="center" fontSize={16} fontFamily="monospace">
           <BotIcon />
           <TitleContent>
-            Instant insights
+           Insight robot:
           </TitleContent>
         </Typography>
         <Typography variant="body1" fontSize={14} fontFamily="monospace" mt={2} whiteSpace='pre-wrap'>
