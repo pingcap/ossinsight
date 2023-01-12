@@ -68,7 +68,7 @@ When result has country_code and a number column, use MapChart
 
 Answer {
   sql: string; // single line sql
-  chart: {chartName: string; title: string; options: ChartOptions;};
+  chart: {chartName: string; title: string; options: ChartOptions;}; // must generate chart!!!
   // Generate 2 distinct questions based on the given information, including 1 related to the provided one and 1 is random.
   questions: string[];
 }

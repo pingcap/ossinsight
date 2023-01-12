@@ -130,9 +130,9 @@ export class BotService {
                 choice = choices[0].text;
                 answer = JSON.parse(choice);
                 answer.chart = {
-                    chartName: answer.chartName,
-                    title: answer.title,
-                    ...answer.options
+                    chartName: answer.chart.chartName,
+                    title: answer.chart.title,
+                    ...answer.chart.options
                 }
                 return answer
             } else {
