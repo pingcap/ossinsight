@@ -1,7 +1,7 @@
 import {Question, QuestionFeedbackType} from "../plugins/services/explorer-service/types";
 
 export class APIError extends Error {
-    constructor(readonly statusCode: number, readonly message: string, error?: Error) {
+    constructor(readonly statusCode: number, readonly message: string, public error?: Error, public payload?: Record<string, any>) {
         super();
         if (error) {
             this.cause = error;
@@ -51,6 +51,14 @@ export class ExplorerCreateQuestionError extends APIError {
         if (error) {
             this.cause = error;
         }
+    }
+}
+
+export class ExplorerTooManyRequestError extends APIError {
+    constructor(readonly message: string, waitMinutes: number) {
+        super(429, message, undefined, {
+            waitMinutes: waitMinutes
+        });
     }
 }
 

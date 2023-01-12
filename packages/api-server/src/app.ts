@@ -6,7 +6,7 @@ import { APIServerEnvSchema } from './env';
 import { JsonSchemaToTsProvider } from '@fastify/type-provider-json-schema-to-ts';
 import fastifyEnv from '@fastify/env';
 import { join } from 'path';
-import { APIError } from "./utils/error";
+import {APIError} from "./utils/error";
 import fastifyEtag from '@fastify/etag';
 
 export type AppOptions = {
@@ -76,7 +76,8 @@ const app: FastifyPluginAsync<AppOptions, RawServerDefault, JsonSchemaToTsProvid
 
     if (error instanceof APIError) {
       reply.status(error.statusCode).send({
-        message: error.message
+        message: error.message,
+        payload: error.payload
       });
     } else {
       reply.status(500).send({

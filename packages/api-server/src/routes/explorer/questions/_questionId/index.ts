@@ -36,7 +36,7 @@ const root: FastifyPluginAsync = async (app) => {
             }
 
             if (question.status === QuestionStatus.Error) {
-                app.explorerService.wrapperTheErrorMessage(question);
+                question.error = app.explorerService.wrapperTheErrorMessage(question.error!);
             }
 
             if (question.status === QuestionStatus.Waiting) {
