@@ -749,7 +749,7 @@ export class ExplorerService {
             }
 
             // Answer summary.
-            if (Array.isArray(questionResult.result.rows) && questionResult.result.rows.length > 0) {
+            if (Array.isArray(questionResult.result.rows) && questionResult.result.rows.length > 0 && this.shouldSummary()) {
                 await this.saveQuestionResult(questionId, QuestionStatus.Summarizing, {
                     ...questionResult,
                 }, false);
@@ -772,6 +772,10 @@ export class ExplorerService {
             await this.saveQuestionError(questionId, err.message);
             throw err;
         }
+    }
+
+    private shouldSummary(): boolean {
+        return Math.ceil(Math.random() * 100) % 5 === 3;
     }
 
     private async executeQuery(questionId: string, querySQL: string): Promise<QuestionQueryResult> {
