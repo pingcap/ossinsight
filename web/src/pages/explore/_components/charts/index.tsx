@@ -1,5 +1,5 @@
 import { ChartResult } from '@site/src/api/explorer';
-import React, { createElement, FC, ReactNode, useMemo } from 'react';
+import React, { createElement, FC, ReactNode, useEffect, useMemo } from 'react';
 import LineChart from './LineChart';
 import BarChart from './BarChart';
 import PieChart from './PieChart';
@@ -26,6 +26,8 @@ type ChartConfig = {
 interface ChartsProps extends ChartResult {
   data: Array<Record<string, any>>;
   fields?: any[];
+  onPrepared?: (error: boolean) => void;
+  onExit?: () => void;
 }
 
 const CHARTS_CONFIG: Record<string, ChartConfig> = {
@@ -64,7 +66,7 @@ const CHARTS_CONFIG: Record<string, ChartConfig> = {
   },
 };
 
-export function Charts (props: ChartsProps) {
+export function Charts ({ onPrepared, onExit, ...props }: ChartsProps) {
   const { config, fields } = useMemo(() => {
     const config = CHARTS_CONFIG[props.chartName];
     const fields = (config?.requiredFields ?? []).map(f => props[f]);
@@ -89,6 +91,17 @@ export function Charts (props: ChartsProps) {
   } else {
     alertNode = <BadDataAlert title="AI has generated invalid chart info" />;
   }
+
+  useEffect(() => {
+    if (props.data.length !== 0 && validData.length === 0) {
+      onPrepared?.(true);
+    } else {
+      onPrepared?.(false);
+    }
+    return () => {
+      onExit?.();
+    };
+  }, [validData.length, props.data.length, onPrepared, onExit]);
 
   return (
     <>

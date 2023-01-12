@@ -1,10 +1,10 @@
 import Section from '@site/src/pages/explore/_components/Section';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import useQuestionManagement, { QuestionLoadingPhase } from '@site/src/pages/explore/_components/useQuestion';
 import { isEmptyArray, isNonemptyString, isNullish, nonEmptyArray, notNullish } from '@site/src/utils/value';
 import { ChartResult, Question, QuestionStatus } from '@site/src/api/explorer';
 import Info from '@site/src/pages/explore/_components/Info';
-import { Portal, styled, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
+import { Portal, styled, ToggleButton, ToggleButtonGroup, Typography, useEventCallback } from '@mui/material';
 import { getErrorMessage, isAxiosError } from '@site/src/utils/error';
 import ErrorBlock from '@site/src/pages/explore/_components/ErrorBlock';
 import Feedback from '@site/src/pages/explore/_components/Feedback';
@@ -137,12 +137,12 @@ export default function ResultSection () {
               <br />
               Take a break and try again in [time] minutes.
               <br />
-              Check out the <Link to='/blog/chat2query-tutorials' target='_blank'>tutorial</Link>, if you want to try AI-generated SQL in any other dataset <b>within 5 minutes</b>.
+              Check out the <Link to="/blog/chat2query-tutorials" target="_blank">tutorial</Link>, if you want to try AI-generated SQL in any other dataset <b>within 5 minutes</b>.
             </>
             )
           : (
             <>
-              Oops! Your query yielded no results. Try our <a href='javascript:void(0)' onClick={gotoAnchor('faq-optimize-sql')}>tips</a> for crafting effective queries and give it another go.
+              Oops! Your query yielded no results. Try our <a href="javascript:void(0)" onClick={gotoAnchor('faq-optimize-sql')}>tips</a> for crafting effective queries and give it another go.
             </>
             )
       }
@@ -166,8 +166,8 @@ function renderEngines (question: Question | undefined) {
         . Running on
         <EngineTag>{question.engines.map(replaceEngineName).join(', ')}</EngineTag>
         <Info>
-        All queries run on <b>ONE</b> TiDB service. The TiDB SQL optimizer decides which engine to use for executing queries:
-        <ul>
+          All queries run on <b>ONE</b> TiDB service. The TiDB SQL optimizer decides which engine to use for executing queries:
+          <ul>
             <li>Complex and heavy OLAP queries are executed by the columnar engine.</li>
             <li>Low-latency high-concurrency OLTP queries are executed by the row-based engine.</li>
           </ul>
@@ -199,6 +199,7 @@ const EngineTag = styled('span')`
 
 function Chart ({ chartData, chartError, fields, result, controlsContainer }: { chartData: ChartResult | undefined, chartError: unknown, result: Array<Record<string, any>> | undefined, fields: Array<{ name: string }> | undefined, controlsContainer: HTMLSpanElement | null }) {
   const [tab, setTab] = useState('visualization');
+  const defaultTabRef = useRef('visualization');
   const goto = useMemo(() => {
     return (id: string) => () => {
       document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
@@ -206,7 +207,7 @@ function Chart ({ chartData, chartError, fields, result, controlsContainer }: { 
   }, []);
 
   useEffect(() => {
-    setTab('visualization');
+    setTab(defaultTabRef.current);
   }, [chartData]);
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: string | undefined) => {
@@ -214,6 +215,18 @@ function Chart ({ chartData, chartError, fields, result, controlsContainer }: { 
       setTab(newValue);
     }
   };
+
+  const handleChartPrepared = useEventCallback((error: boolean) => {
+    if (error) {
+      defaultTabRef.current = 'raw';
+    } else {
+      defaultTabRef.current = 'visualization';
+    }
+  });
+
+  const handleChartExit = useEventCallback(() => {
+    defaultTabRef.current = 'visualization';
+  });
 
   return useMemo(() => {
     const errMsg = getErrorMessage(chartError);
@@ -242,8 +255,8 @@ function Chart ({ chartData, chartError, fields, result, controlsContainer }: { 
         <Typography component="div" variant="body2" color="#D1D1D1" mt={2}>
           🤔 Not exactly what you&apos;re looking for?
           <ul>
-            <li>AI can write SQL effectively, but remember that it&apos;s still a work in progress with limitations. </li>
-            <li>Clear and specific language will help the AI understand your needs. Check out <a href='javascript:void(0)' onClick={goto('data-explorer-faq')}>FAQ</a> for more tips.</li>
+            <li>AI can write SQL effectively, but remember that it&apos;s still a work in progress with limitations.</li>
+            <li>Clear and specific language will help the AI understand your needs. Check out <a href="javascript:void(0)" onClick={goto('data-explorer-faq')}>FAQ</a> for more tips.</li>
             <li>GitHub data is not your focus? Explore any other dataset with our capabilities.</li>
           </ul>
         </Typography>
@@ -278,7 +291,7 @@ function Chart ({ chartData, chartError, fields, result, controlsContainer }: { 
       return (
         <>
           <VisualizationContainer>
-            <Charts {...chartData} data={result} fields={fields} />
+            <Charts {...chartData} data={result} fields={fields} onPrepared={handleChartPrepared} onExit={handleChartExit} />
             <Feedback />
           </VisualizationContainer>
           {renderTips()}
