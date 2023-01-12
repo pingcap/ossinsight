@@ -10,7 +10,7 @@ export class GenerateSummaryPromptTemplate implements PromptTemplate {
   public n: number = 1;
 
   stringify(question: string, result: any[], length: number, maxWords: number = 30): string {
-    const sampleData = result.slice(0, 20);
+    const sampleData = result.slice(0, 50);
     const sampleDataValue = JSON.stringify(sampleData);
 
     return `Question: ${question}}?
