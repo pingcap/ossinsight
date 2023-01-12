@@ -133,7 +133,10 @@ export class ExplorerService {
         }, options || {});
     }
 
-    async newQuestion(conn: Connection, userId: number, githubLogin: string | undefined, q: string): Promise<Question> {
+    async newQuestion(
+      conn: Connection, userId: number, githubLogin: string | undefined, q: string,
+      ignoreCache: boolean = false
+    ): Promise<Question> {
         // Init logger.
         const questionId = randomUUID();
         const logger = this.logger.child({ questionId: questionId });
@@ -162,15 +165,17 @@ export class ExplorerService {
             await conn.beginTransaction();
 
             // Check if the question is cached.
-            const cachedQuestion = await this.getQuestionByHash(questionHash, this.options.generateSQLCacheTTL, conn);
-            if (cachedQuestion) {
-                logger.info("Question is cached, returning cached question (hash: %s).", questionHash);
+            if (!ignoreCache) {
+                const cachedQuestion = await this.getQuestionByHash(questionHash, this.options.generateSQLCacheTTL, conn);
+                if (cachedQuestion) {
+                    logger.info("Question is cached, returning cached question (hash: %s).", questionHash);
 
-                await conn.commit();
-                return {
-                    ...cachedQuestion,
-                    hitCache: true
-                };
+                    await conn.commit();
+                    return {
+                        ...cachedQuestion,
+                        hitCache: true
+                    };
+                }
             }
 
             // Give the trusted users more daily requests.
@@ -543,7 +548,7 @@ export class ExplorerService {
         }
     }
 
-    private async updateQuestion(question: Question) {
+    async updateQuestion(question: Question) {
         const {
             id, status, recommended, querySQL, queryHash, engines = [], result = null, chart = null, recommendedQuestions = [],
             queueName = null, queueJobId = null, requestedAt, executedAt, finishedAt, spent, error = null
