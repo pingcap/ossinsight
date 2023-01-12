@@ -44,8 +44,17 @@ class TweetRepo
 
   def generate_img 
     url = "https://ossinsight.io/analyze/#{repo}"
+    css = <<~CSS
+      div[role="tooltip"] {
+        display: none;
+      }
+
+      #__docusaurus > div.main-wrapper.mainWrapper_eExm > div:nth-child(2) > main > div.css-19v2478 > div > div {
+        display: none;
+      }
+    CSS
     img_client = HTMLCSSToImage.new
-    img = img_client.create_image('', url: url, selector: "#overview-main")
+    img = img_client.create_image('', url: url, selector: "#overview-main", css: css)
     URI.open(img.url, read_timeout: 1000)
   end
 
