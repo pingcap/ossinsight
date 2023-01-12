@@ -5,7 +5,7 @@ import { isEmptyArray, isNonemptyString, isNullish, nonEmptyArray, notNullish } 
 import { ChartResult, Question, QuestionStatus } from '@site/src/api/explorer';
 import Info from '@site/src/pages/explore/_components/Info';
 import { Portal, styled, ToggleButton, ToggleButtonGroup, Typography, useEventCallback } from '@mui/material';
-import { getErrorMessage, isAxiosError } from '@site/src/utils/error';
+import { getErrorMessage } from '@site/src/utils/error';
 import ErrorBlock from '@site/src/pages/explore/_components/ErrorBlock';
 import Feedback from '@site/src/pages/explore/_components/Feedback';
 import TableChart from '@site/src/pages/explore/_components/charts/TableChart';
@@ -20,7 +20,6 @@ import { uniqueItems } from '@site/src/utils/generate';
 import BotIcon from '@site/src/pages/explore/_components/BotIcon';
 import ShareButtons from './ShareButtons';
 import TypewriterEffect from '@site/src/pages/explore/_components/TypewriterEffect';
-import Link from '@docusaurus/Link';
 
 export default function ResultSection () {
   const { question, error, phase } = useQuestionManagement();
@@ -128,19 +127,7 @@ export default function ResultSection () {
       defaultExpanded
       errorTitle="Failed to execute question"
       errorPrompt="Hi, it's failed to execute"
-      errorMessage={
-        isAxiosError(resultSectionError) && resultSectionError.response?.status === 429
-          ? (
-            <>
-              Wow, you&apos;re a natural explorer! But it&apos;s a little tough to keep up!
-              <br />
-              Take a break and try again in [time] minutes.
-              <br />
-              Check out the <Link to="/blog/chat2query-tutorials" target="_blank">tutorial</Link>, if you want to try AI-generated SQL in any other dataset <b>within 5 minutes</b>.
-            </>
-            )
-          : getErrorMessage(resultSectionError)
-      }
+      errorMessage={getErrorMessage(resultSectionError)}
     >
       {(notNullish(question?.answerSummary) || question?.status === QuestionStatus.Summarizing) && (
         <SummaryCard loading={question?.status === QuestionStatus.Summarizing}>

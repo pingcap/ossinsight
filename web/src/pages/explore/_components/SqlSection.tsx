@@ -5,11 +5,12 @@ import React, { useMemo, useRef, useState } from 'react';
 import { format } from 'sql-formatter';
 import useQuestionManagement, { QuestionLoadingPhase } from '@site/src/pages/explore/_components/useQuestion';
 import { AxiosError } from 'axios';
-import { isAxiosError } from '@site/src/utils/error';
+import { getErrorMessage, isAxiosError } from '@site/src/utils/error';
 import { useInterval } from 'ahooks';
 import { randomOf } from '@site/src/utils/generate';
 import TypewriterEffect from '@site/src/pages/explore/_components/TypewriterEffect';
 import { gotoAnchor } from '@site/src/utils/dom';
+import Link from '@docusaurus/Link';
 
 export default function SqlSection () {
   const { question, error, phase } = useQuestionManagement();
@@ -83,10 +84,22 @@ export default function SqlSection () {
       errorTitle="Failed to generate SQL"
       errorPrompt="Hi, it's failed to generate SQL for"
       errorMessage={
-        <>
-          Whoops! No SQL query is generated.
-          Check out <a href="javascript:void(0)" onClick={gotoAnchor('faq-failed-to-generate-sql')}>potential reasons</a> and try again later.
-        </>
+        isAxiosError(sqlSectionError) && sqlSectionError.response?.status === 429
+          ? (
+            <>
+              Wow, you&apos;re a natural explorer! But it&apos;s a little tough to keep up!
+              <br />
+              Take a break and try again in {extractTime(sqlSectionError)}.
+              <br />
+              Check out the <Link to="/blog/chat2query-tutorials" target="_blank">tutorial</Link>, if you want to try AI-generated SQL in any other dataset <b>within 5 minutes</b>.
+            </>
+            )
+          : (
+            <>
+              Whoops! No SQL query is generated.
+              Check out <a href="javascript:void(0)" onClick={gotoAnchor('faq-failed-to-generate-sql')}>potential reasons</a> and try again later.
+            </>
+            )
       }
     >
       {notFalsy(formattedSql) && (
@@ -136,4 +149,9 @@ function GeneratingSqlPrompts () {
   } else {
     return <>Generating SQL...</>;
   }
+}
+
+export function extractTime (error: AxiosError) {
+  const res = getErrorMessage(error).match(/please wait (.+)\./);
+  return res?.[1] ?? '30 minutes';
 }

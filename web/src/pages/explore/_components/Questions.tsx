@@ -26,7 +26,7 @@ export default function Questions () {
 
   const isPending = !FINAL_PHASES.has(phase);
   const disableAction = isPending || isBlankString(value);
-  const hideExecution = isNullish(question?.id) && !loading;
+  const hideExecution = isNullish(question?.id) && !loading && phase !== QuestionLoadingPhase.CREATE_FAILED;
   const hasResult = (question?.result?.rows.length ?? 0) > 0;
 
   useEffect(() => {
