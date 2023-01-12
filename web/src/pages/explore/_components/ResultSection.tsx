@@ -21,6 +21,7 @@ import BotIcon from '@site/src/pages/explore/_components/BotIcon';
 import ShareButtons from './ShareButtons';
 import TypewriterEffect from '@site/src/pages/explore/_components/TypewriterEffect';
 import { gotoAnchor } from '@site/src/utils/dom';
+import Link from '@docusaurus/Link';
 
 export default function ResultSection () {
   const { question, error, phase } = useQuestionManagement();
