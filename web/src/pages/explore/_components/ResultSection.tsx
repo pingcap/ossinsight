@@ -21,7 +21,6 @@ import BotIcon from '@site/src/pages/explore/_components/BotIcon';
 import ShareButtons from './ShareButtons';
 import TypewriterEffect from '@site/src/pages/explore/_components/TypewriterEffect';
 import Link from '@docusaurus/Link';
-import { gotoAnchor } from '@site/src/utils/dom';
 
 export default function ResultSection () {
   const { question, error, phase } = useQuestionManagement();
@@ -140,11 +139,7 @@ export default function ResultSection () {
               Check out the <Link to="/blog/chat2query-tutorials" target="_blank">tutorial</Link>, if you want to try AI-generated SQL in any other dataset <b>within 5 minutes</b>.
             </>
             )
-          : (
-            <>
-              Oops! Your query yielded no results. Try our <a href="javascript:void(0)" onClick={gotoAnchor('faq-optimize-sql')}>tips</a> for crafting effective queries and give it another go.
-            </>
-            )
+          : getErrorMessage(resultSectionError)
       }
     >
       {(notNullish(question?.answerSummary) || question?.status === QuestionStatus.Summarizing) && (

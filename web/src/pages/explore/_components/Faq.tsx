@@ -79,7 +79,7 @@ We&apos;re constantly working on improving and optimizing it, so any feedback yo
       </>
     ),
   }, {
-    id: 'faq-empty-result',
+    id: 'faq-optimize-sql',
     q: 'The query result is not satisfactory. How can I optimize my question?',
     a: (
       <>
