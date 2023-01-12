@@ -231,15 +231,10 @@ const config = {
         style: 'dark',
         items: [
           {
-            to: '/2022',
+            to: '/explore',
             position: 'left',
-            label: '📜 GitHub 2022',
+            html: '<span id="nav-data-explorer"><span class="nav-explore-icon"></span> Data Explorer</span>'
           },
-          // {
-          //   to: '/explore',
-          //   position: 'left',
-          //   html: '<span id="nav-data-explorer">Data Explorer <span class="nav-explore-icon"></span></span>'
-          // },
           {
             to: '/collections',
             position: 'left',
