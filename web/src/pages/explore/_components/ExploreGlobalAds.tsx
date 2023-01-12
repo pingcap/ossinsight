@@ -25,7 +25,7 @@ export default function ExploreGlobalAds () {
 
   useEffect(() => {
     setAnchorEl(document.body);
-    if (!enabled || hasClosed || /^\/explore\/?$/.test(location.pathname)) {
+    if (!enabled || hasClosed || /^\/explore\/?$/.test(location.pathname) || location.pathname.startsWith('/blog/chat2query-tutorials')) {
       return;
     }
     safeSetTimeout(() => {
