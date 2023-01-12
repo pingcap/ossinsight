@@ -9,12 +9,14 @@ const schema = {
     type: 'object',
     properties: {
       question: { type: 'string' },
+      ignoreCache: { type: 'boolean', default: false }
     }
   } as const
 };
 
 export interface IBody {
   question: string;
+  ignoreCache: boolean;
 }
 
 export const newQuestionHandler: FastifyPluginAsyncJsonSchemaToTs = async (app): Promise<void> => {
@@ -35,10 +37,10 @@ export const newQuestionHandler: FastifyPluginAsyncJsonSchemaToTs = async (app):
       req.headers.authorization,
       conn
     );
-    const { question: questionTitle } = req.body;
+    const { question: questionTitle, ignoreCache } = req.body;
 
     try {
-      const question = await explorerService.newQuestion(conn, userId, metadata?.github_login, questionTitle);
+      const question = await explorerService.newQuestion(conn, userId, metadata?.github_login, questionTitle, ignoreCache);
 
       // Prepare question async.
       if (!question.hitCache) {
