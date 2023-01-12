@@ -1,16 +1,8 @@
 import CustomPage from '@site/src/theme/CustomPage';
 import React from 'react';
-import { useExperimental } from '@site/src/components/Experimental';
-import NotFound from '@theme/NotFound';
 import Questions from '@site/src/pages/explore/_components/Questions';
 
 export default function Page () {
-  const [enabled] = useExperimental('explore-data');
-
-  if (!enabled) {
-    return <NotFound />;
-  }
-
   return (
     <CustomPage
       title="Data Explorer: Discover insights in GitHub event data with AI-generated SQL"

@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { VirtualElement } from '@popperjs/core';
 import { ArrowForward, HighlightOff } from '@mui/icons-material';
 import { useLocalStorageState } from 'ahooks';
-import { useExperimental } from '@site/src/components/Experimental';
 import Link from '@docusaurus/Link';
 import { useLocation } from '@docusaurus/router';
 import { useSafeSetTimeout } from '@site/src/hooks/mounted';
@@ -17,7 +16,6 @@ export default function ExploreGlobalAds () {
     defaultValue: false,
   });
   const [anchorEl, setAnchorEl] = useState<VirtualElement | null>(null);
-  const [enabled] = useExperimental('explore-data');
   const location = useLocation();
   const safeSetTimeout = useSafeSetTimeout();
 
@@ -25,7 +23,7 @@ export default function ExploreGlobalAds () {
 
   useEffect(() => {
     setAnchorEl(document.body);
-    if (!enabled || hasClosed || /^\/(?:explore|blog)\/?$/.test(location.pathname) || location.pathname.startsWith('/blog/chat2query-tutorials')) {
+    if (hasClosed || /^\/(?:explore|blog)\/?$/.test(location.pathname) || location.pathname.startsWith('/blog/chat2query-tutorials')) {
       return;
     }
     safeSetTimeout(() => {
@@ -33,7 +31,7 @@ export default function ExploreGlobalAds () {
       setOpen(true);
       setAnchorEl(document.querySelector('nav.navbar') ?? null);
     }, 2000);
-  }, [enabled, hasClosed, location]);
+  }, [hasClosed, location]);
 
   const handleClose = useEventCallback(() => {
     setOpen(false);
