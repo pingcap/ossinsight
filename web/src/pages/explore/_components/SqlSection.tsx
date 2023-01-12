@@ -5,7 +5,7 @@ import React, { useMemo, useRef, useState } from 'react';
 import { format } from 'sql-formatter';
 import useQuestionManagement, { QuestionLoadingPhase } from '@site/src/pages/explore/_components/useQuestion';
 import { AxiosError } from 'axios';
-import { getErrorMessage, isAxiosError } from '@site/src/utils/error';
+import { getAxiosErrorPayload, getErrorMessage, isAxiosError } from '@site/src/utils/error';
 import { useInterval } from 'ahooks';
 import { randomOf } from '@site/src/utils/generate';
 import TypewriterEffect from '@site/src/pages/explore/_components/TypewriterEffect';
@@ -152,6 +152,13 @@ function GeneratingSqlPrompts () {
 }
 
 export function extractTime (error: AxiosError) {
+  const payload = getAxiosErrorPayload(error) as any;
+  if (notNullish(payload?.waitMinutes)) {
+    return `${payload?.waitMinutes as string} minutes`;
+  }
   const res = getErrorMessage(error).match(/please wait (.+)\./);
-  return res?.[1] ?? '30 minutes';
+  if (notNullish(res)) {
+    return res[1];
+  }
+  return '30 minutes';
 }
