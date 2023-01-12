@@ -47,11 +47,20 @@ class TweetCollection
 
   def generate_img 
     url = "https://ossinsight.io/collections/#{collection_name_for_url}"
+    css = <<~CSS
+      div[role="tooltip"] {
+        display: none;
+      }
+      #__docusaurus > div.main-wrapper.mainWrapper_eExm > div:nth-child(2) > main > div.css-19v2478 > div > div {
+        display: none;
+      }
+    CSS
     img_client = HTMLCSSToImage.new
     img = img_client.create_image('', 
       url: url, 
       viewport_width: 768,
       viewport_height: 1524,
+      css: css,
       selector: "#__docusaurus > div.main-wrapper.mainWrapper_eExm > div:nth-child(2) > main > div > div > main > div > div:nth-child(4) > section > div.MuiTableContainer-root")
     URI.open(img.url, read_timeout: 1000)
   end
