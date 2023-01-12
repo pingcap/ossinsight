@@ -80,14 +80,10 @@ export default function ResultSection () {
     let url;
     const title = `${search} | OSSInsight Data Explorer`;
     const hashtags = uniqueItems(question.answerSummary?.hashtags ?? [], ['OpenSource', 'OpenAI', 'TiDBCloud']);
-    if (typeof location === 'undefined') {
-      if (isNonemptyString(question.id)) {
-        url = `https://ossinsight.io/explore?id=${question.id}`;
-      } else {
-        url = 'https://ossinsight.io/explore';
-      }
+    if (isNonemptyString(question.id)) {
+      url = `https://ossinsight.io/explore?id=${question.id}`;
     } else {
-      url = location.href;
+      url = 'https://ossinsight.io/explore';
     }
     return { url, title, hashtags };
   }, [question, search]);
