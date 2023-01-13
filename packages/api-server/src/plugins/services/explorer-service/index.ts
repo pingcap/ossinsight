@@ -782,7 +782,8 @@ export class ExplorerService {
     }
 
     private shouldSummary(): boolean {
-        return Math.ceil(Math.random() * 100) % 5 === 3;
+        // Control the summary probability to 2 / 5.
+        return Math.ceil(Math.random() * 100) % 5 >= 3;
     }
 
     private async executeQuery(questionId: string, querySQL: string): Promise<QuestionQueryResult> {
