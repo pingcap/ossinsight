@@ -748,8 +748,14 @@ export class ExplorerService {
                 await this.addSystemQuestionFeedback(questionId, QuestionFeedbackType.ErrorValidateChart, JSON.stringify(question.chart));
             }
 
+            // Check if the result is empty.
+            const hasQueryResult = Array.isArray(questionResult.result.rows) && questionResult.result.rows.length > 0;
+            if (!hasQueryResult) {
+                await this.addSystemQuestionFeedback(questionId, QuestionFeedbackType.ErrorEmptyResult, JSON.stringify(questionResult.result));
+            }
+
             // Answer summary.
-            if (Array.isArray(questionResult.result.rows) && questionResult.result.rows.length > 0 && this.shouldSummary()) {
+            if (hasQueryResult && this.shouldSummary()) {
                 await this.saveQuestionResult(questionId, QuestionStatus.Summarizing, {
                     ...questionResult,
                 }, false);
@@ -758,6 +764,7 @@ export class ExplorerService {
                     await this.generateAnswerSummary(questionId, question.title, questionResult.result);
                 } catch (err: any) {
                     this.logger.warn(`Failed to generate answer summary for question ${questionId}: ${err.message}`);
+                    await this.addSystemQuestionFeedback(questionId, QuestionFeedbackType.ErrorSummaryGenerate, JSON.stringify(questionResult.result));
                 }
 
                 await this.updateQuestionStatus(questionId, QuestionStatus.Success);
@@ -775,7 +782,8 @@ export class ExplorerService {
     }
 
     private shouldSummary(): boolean {
-        return Math.ceil(Math.random() * 100) % 5 === 3;
+        // Control the summary probability to 2 / 5.
+        return Math.ceil(Math.random() * 100) % 5 >= 3;
     }
 
     private async executeQuery(questionId: string, querySQL: string): Promise<QuestionQueryResult> {
@@ -904,7 +912,13 @@ export class ExplorerService {
                 }
             case ChartNames.NUMBER_CARD:
                 const numberCard: NumberCard = chart as any;
-                return this.isValidColumn(numberCard.label, columnNames) && this.isValidColumn(numberCard.value, columnNames);
+
+                // Notice: the label column is optional.
+                if (numberCard.label && !this.isValidColumn(numberCard.label, columnNames)) {
+                    return false;
+                }
+
+                return this.isValidColumn(numberCard.value, columnNames);
             case ChartNames.BAR_CHART:
                 const barChart: BarChart = chart as any;
 
