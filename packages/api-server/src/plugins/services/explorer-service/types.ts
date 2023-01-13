@@ -92,5 +92,7 @@ export enum QuestionFeedbackType {
   ErrorValidateSQL = "error-validate-sql",
   ErrorValidateChart = "error-validate-chart",
   ErrorQueryTimeout = "error-query-timeout",
+  ErrorEmptyResult = "error-empty-result",
+  ErrorSummaryGenerate = "error-summary-generate",
   ErrorUnknown = "error-unknown",
 }
