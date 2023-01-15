@@ -23,7 +23,7 @@ class SoRealtime
     puts "https://stackoverflow.com/oauth?client_id=#{ENV['SO_CLIENT_ID']}&scope=no_expiry&redirect_uri=https://ossinsight.io"
     authorization_code = nil # from above url to get authorization_code
     HTTParty.post("https://stackexchange.com/oauth/access_token", body: {
-      client_id: ENV['SO_CLIENT_SECRET'],
+      client_id: ENV['SO_CLIENT_ID'],
       client_secret: ENV['SO_CLIENT_SECRET'],
       code: authorization_code,
       redirect_uri: "https://ossinsight.io"

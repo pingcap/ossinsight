@@ -7,7 +7,7 @@ class SoFetchQuestion
 
   def initialize(ids)
     @ids = Array(ids)
-    @url = "https://api.stackexchange.com/2.3/questions/#{ids.join(";")}?key=#{ENV['SO_KEY']}&site=stackoverflow&access_token=#{ENV['SO_ACCESS_TOKEN']}&pagesize=100&page=1&filter=withbody"
+    @url = "https://api.stackexchange.com/2.3/questions/#{ids.join(";")}?key=#{ENV['SO_KEY']}&site=stackoverflow&access_token=#{ENV['SO_ACCESS_TOKEN2']}&pagesize=100&page=1&filter=withbody"
   end
 
   def get_response
