@@ -48,7 +48,7 @@ export default function ExploreSearch ({ value, onChange, onAction, onClear, dis
         value={value}
         onChange={handleChange}
         onKeyDown={handleKeydown}
-        placeholder="Type any question here, or choose one below"
+        placeholder="Questions about repos, users, orgs, languages..."
         endAdornment={
           <Stack direction="row" gap={1}>
             {!disableAction && <StyledIconButton color="inherit" onClick={onAction} disabled={disableAction}>

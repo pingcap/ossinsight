@@ -7,7 +7,7 @@ const Highlight = styled('b', { shouldForwardProp: propName => propName !== 'col
 `;
 
 const title = 'Data Explorer';
-const subtitleFull = <>Explore <Highlight color='#9197D0'>5 billion</Highlight> GitHub data with no SQL or plotting skills. Unleash your <Highlight color='#5C6AE0'>imagination</Highlight> and discover new <Highlight color='#7D71C7'>insights</Highlight> NOW!</>;
+const subtitleFull = <>Explore <Highlight color='#9197D0'>5 billion</Highlight> GitHub data with no SQL or plotting skills. Reveal fascinating discoveries <Highlight color='#7D71C7'>RIGHT NOW</Highlight>!</>;
 
 export default function () {
   return (
