@@ -8,3 +8,4 @@ items:
   - DTStack/chunjun
   - tapdata/tapdata
   - airbytehq/airbyte
+  - ververica/flink-cdc-connectors
