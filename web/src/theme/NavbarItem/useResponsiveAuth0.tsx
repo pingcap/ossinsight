@@ -38,6 +38,7 @@ export function useResponsiveAuth0 () {
     if (typeof gtag !== 'undefined') {
       gtag('event', 'trigger_login', {
         trigger_login_by: triggerBy,
+        send_to: 'G-KW4FDPBLLJ',
       });
     }
     if (matches) {
