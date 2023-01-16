@@ -43,7 +43,7 @@ export default forwardRef(function SubscribeButton ({ repoName, variant, onClick
 
   const performAction = useCallback(async () => {
     if (!userValidated) {
-      await login();
+      await login({ triggerBy: 'subscribe' });
       return;
     }
     if (subscribed) {

@@ -33,7 +33,7 @@ export default function SubscribePage () {
             disabled={userValidating}
             startIcon={userValidating && <CircularProgress size={12} />}
             // eslint-disable-next-line @typescript-eslint/no-misused-promises
-            onClick={login}
+            onClick={async () => await login({ triggerBy: 'subscriptions' })}
           >
             Sign in
           </Button>

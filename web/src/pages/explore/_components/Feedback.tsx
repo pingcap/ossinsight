@@ -14,7 +14,7 @@ export default function Feedback () {
   const { showTips } = useExploreContext();
   const { question } = useQuestionManagement();
   const { loading, setAsyncData } = useAsyncState<boolean>(undefined);
-  const requireLogin = useRequireLogin();
+  const requireLogin = useRequireLogin('explorer-feedback-button');
   const { isAuthenticated } = useAuth0();
   const { data: checked, mutate } = useSWR(isAuthenticated && notNullish(question) ? [question.id, 'question-feedback'] : undefined, {
     fetcher: async (id) => await requireLogin()

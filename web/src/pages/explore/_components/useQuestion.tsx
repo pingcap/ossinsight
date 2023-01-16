@@ -175,7 +175,7 @@ export function useQuestionManagementValues ({ pollInterval = 2000 }: QuestionMa
     async function createInternal (title: string) {
       try {
         if (!isLoading && !user) {
-          return await login();
+          return await login({ triggerBy: 'explorer-search' });
         }
         setError(undefined);
         setQuestion(undefined);
