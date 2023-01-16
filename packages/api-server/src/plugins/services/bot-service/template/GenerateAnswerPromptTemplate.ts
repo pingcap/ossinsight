@@ -12,13 +12,14 @@ export class GenerateAnswerPromptTemplate implements PromptTemplate {
   stringify(question: string): string {
     return `# MySQL SQL
 Table github_events, columns = [id, type, created_at, repo_id, repo_name, actor_id, actor_login, additions, deletions, action, number, org_login, org_id, state, closed_at, comments, pr_merged_at, pr_merged, pr_changed_files, pr_review_comments, pr_or_issue_id, push_size, push_distinct_size, creator_user_login, creator_user_id, pr_or_issue_created_at]
-Column type, enums = ['PullRequestEvent', 'PushEvent', 'IssueCommentEvent', 'IssuesEvent', 'PullRequestReviewCommentEvent', 'WatchEvent', 'CreateEvent', 'DeleteEvent', 'ForkEvent', 'ReleaseEvent']
-Column number, number is issue number
+- Column type, enums = ['PullRequestEvent', 'PushEvent', 'IssueCommentEvent', 'IssuesEvent', 'PullRequestReviewCommentEvent', 'WatchEvent', 'CreateEvent', 'DeleteEvent', 'ForkEvent', 'ReleaseEvent']
+- Column number, number is issue number
+- Column created_at, closed_at, pr_merged_at, pr_or_issue_created_at DEFAULT '1970-01-01 00:00:00'
 Table github_repos, columns = [repo_id, repo_name, owner_id, owner_login, owner_is_org, description, primary_language, license, stars, forks, parent_repo_id, is_archived, is_deleted, latest_released_at, pushed_at, created_at, updated_at]
-Column primary_language means programming language, invalid = [null, '']
+- Column primary_language means programming language, invalid = [null, '']
 Table github_users, columns = [id, login, type, name, organization, country_code, followers, followings, created_at, updated_at]
-Column type, enums = ['USR', 'ORG']
-Column country_code, invalid = ['', 'N/A', 'UND']
+- Column type, enums = ['USR', 'ORG']
+- Column country_code, invalid = ['', 'N/A', 'UND']
 Table trending_repos, columns = [repo_name, created_at]
 Table github_repo_topics, columns = [repo_id, topic]
 
@@ -59,7 +60,7 @@ PieChart {label: Column; value: Column;}
 LineChart {x: Column; y: Column | Column[];}
 BarChart {x: Column; y: Column | Column[];}
 MapChart {country_code: Column; value: Column;}
-NumberCard {label: Column | null; value: Column;}
+NumberCard {value: Column;}
 RepoCard {repo_name: Column;}
 PersonalCard {user_login: Column;}
 Table {columns: Column[];}
