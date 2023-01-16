@@ -1106,6 +1106,18 @@ export class ExplorerService {
         }, conn);
     }
 
+    async cancelUserQuestionFeedback(userId: number, questionId: string, satisfied: boolean, conn?: Connection) {
+        const connection = conn || this.mysql;
+        const [rs] = await connection.query<ResultSetHeader>(`
+            DELETE FROM explorer_question_feedbacks
+            WHERE question_id = UUID_TO_BIN(?) AND user_id = ? AND satisfied = ?
+            LIMIT 1
+        `, [questionId, userId, satisfied]);
+        if (rs.affectedRows !== 1) {
+            throw new APIError(500, 'Failed to cancel the question feedback.');
+        }
+    }
+
     async removeUserQuestionFeedbacks(userId: number, questionId: string, conn?: Connection) {
         const connection = conn || this.mysql;
         await connection.query<ResultSetHeader>(`
