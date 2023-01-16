@@ -122,7 +122,7 @@ function isSqlError (error: unknown): error is AxiosError<{ message: string, que
 
 const generatingSQLPrompts: string[][] = [
   ['Great question!', 'Interesting question!', 'Awesome question!', 'You asked a winner!'],
-  ['Thinking...', 'Brain busting!', 'Creating SQL...'],
+  ['Sometimes I\'m not smart enough...', 'Sometimes it\'s difficult for me...', 'Not always generate perfect SQL...', 'Struggling with SQL accuracy...'],
   ['Tough, but still trying...', 'Hard, but persevering.', 'Tough, but forging ahead...', 'Challenging, but still striving...', 'Struggling, but pushing on...'],
   ['Mastering the art of turning words into SQL magic…', 'Gaining knowledge from your input...', 'Learning from your question...', 'Getting smarter with your input...'],
   ['Making every effort!', 'Working my hardest', 'Trying my best...', 'Striving for greatness...', 'Trying my best...'],
