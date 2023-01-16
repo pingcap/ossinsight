@@ -4,6 +4,7 @@ import { useWhenMounted } from '@site/src/hooks/mounted';
 import { unstable_serialize } from 'swr';
 import { useEventCallback } from '@mui/material';
 import { useResponsiveAuth0 } from '@site/src/theme/NavbarItem/useResponsiveAuth0';
+import { isNonemptyString } from '@site/src/utils/value';
 
 interface AsyncOperation<T> extends AsyncData<T> {
   run: () => any;
@@ -44,7 +45,7 @@ export function useAsyncState<T, E = unknown> (initial?: T | (() => T)) {
   };
 }
 
-export function useAsyncOperation<P, T> (params: P, fetcher: (params: P) => Promise<T>, requireAuth: boolean = false): AsyncOperation<T> {
+export function useAsyncOperation<P, T> (params: P, fetcher: (params: P) => Promise<T>, authTriggeredByLabel?: string): AsyncOperation<T> {
   const { isAuthenticated, login, getAccessTokenSilently } = useResponsiveAuth0();
   const whenMounted = useWhenMounted();
   const [loading, setLoading] = useState(false);
@@ -64,8 +65,8 @@ export function useAsyncOperation<P, T> (params: P, fetcher: (params: P) => Prom
   }, [fetcher, unstable_serialize([params])]);
 
   const run = useEventCallback(async () => {
-    if (requireAuth && !isAuthenticated) {
-      await login();
+    if (isNonemptyString(authTriggeredByLabel) && !isAuthenticated) {
+      await login({ triggerBy: authTriggeredByLabel });
       return;
     }
     if (loadingRef.current) {

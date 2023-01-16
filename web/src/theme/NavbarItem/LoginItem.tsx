@@ -23,7 +23,7 @@ function LoginButton () {
       disableRipple
       aria-label="login"
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      onClick={login}
+      onClick={useEventCallback(async () => await login({ triggerBy: 'navbar-item' }))}
     >
       <StyledAvatar
         sx={{

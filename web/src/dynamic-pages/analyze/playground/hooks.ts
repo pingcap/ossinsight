@@ -12,7 +12,7 @@ export function useAiQuestion (question: string, repoId: number | undefined, rep
     },
     shouldRetryOnError: false,
   });
-  const { data: result, loading, error, run } = useAsyncOperation({ question: `In this repo: ${question}`, context: { repo_id: repoId, repo_name: repoName } }, aiQuestion, true);
+  const { data: result, loading, error, run } = useAsyncOperation({ question: `In this repo: ${question}`, context: { repo_id: repoId, repo_name: repoName } }, aiQuestion, 'analyze-playground-question');
 
   const latestResource = useLatest<AiQuestionResource>([
     useLastNonNullish(resource),

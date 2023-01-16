@@ -56,7 +56,7 @@ export function AuthProvider ({ children }: PropsWithChildren): JSX.Element {
   );
 }
 
-export function useRequireLogin (): () => Promise<string> {
+export function useRequireLogin (triggerByLabel: string): () => Promise<string> {
   const { isLoading, user, login, getAccessTokenSilently } = useResponsiveAuth0();
 
   return useMemoizedFn(async () => {
@@ -64,7 +64,7 @@ export function useRequireLogin (): () => Promise<string> {
       return await Promise.reject(new Error('Unauthorized'));
     }
     if (isNullish(user)) {
-      await login();
+      await login({ triggerBy: triggerByLabel });
       return await Promise.reject(new Error('Authorizing'));
     }
     return await getAccessTokenSilently();
