@@ -13,14 +13,20 @@ export class GenerateAnswerPromptTemplate implements PromptTemplate {
     return `# MySQL SQL
 Table github_events, columns = [id, type, created_at, repo_id, repo_name, actor_id, actor_login, additions, deletions, action, number, org_login, org_id, state, closed_at, comments, pr_merged_at, pr_merged, pr_changed_files, pr_review_comments, pr_or_issue_id, push_size, push_distinct_size, creator_user_login, creator_user_id, pr_or_issue_created_at]
 - Column type, enums = ['PullRequestEvent', 'PushEvent', 'IssueCommentEvent', 'IssuesEvent', 'PullRequestReviewCommentEvent', 'WatchEvent', 'CreateEvent', 'DeleteEvent', 'ForkEvent', 'ReleaseEvent']
+- Column action:
+* type in [PullRequestReviewCommentEvent, IssueCommentEvent, ReviewEvent]: created
+* type in [PullRequestEvent, IssuesEvent]: opened, closed, reopened
 - Column number, number is issue number
 - Column created_at, closed_at, pr_merged_at, pr_or_issue_created_at DEFAULT '1970-01-01 00:00:00'
+
 Table github_repos, columns = [repo_id, repo_name, owner_id, owner_login, owner_is_org, description, primary_language, license, stars, forks, parent_repo_id, is_archived, is_deleted, latest_released_at, pushed_at, created_at, updated_at]
 - Column primary_language means programming language, invalid = [null, '']
+
 Table github_users, columns = [id, login, type, name, organization, country_code, followers, followings, created_at, updated_at]
 - Column type, enums = ['USR', 'ORG']
 - Column country_code, invalid = ['', 'N/A', 'UND']
-Table trending_repos, columns = [repo_name, created_at]
+
+Table trending_repos, contains the most popular repositories recently, columns = [repo_name, created_at]
 Table github_repo_topics, columns = [repo_id, topic]
 
 # Relations
@@ -35,24 +41,20 @@ trending_repos.repo_name = github_repos.repo_name
 
 Select statement limit 20 by default, if question need more data, please add limit 50
 Use column alias for all columns: SELECT ge.repo_name AS repo_name
-When type = 'PullRequestReviewCommentEvent' or type = 'IssueCommentEvent', the action could be 'created'
-When type = 'PullRequestEvent' or type = 'IssuesEvent', the action could be 'opened', 'closed'
-When type = 'PullRequestEvent', action = 'closed' and pr_merged = 1, it means the pull request is merged
-PushEvent: trigger when commit has been pushed
-Return the link column for PR / issue list: SELECT CONCAT('https://github.com/', repo_name, '/issues/', number) AS link
-Exclude bots: WHERE actor_login NOT LIKE "%bot%"
-Database repos: WHERE github_repos.description LIKE '%database%'
+Trends across months: DATE_FORMAT('%Y-%m-01') AS t_month
+Open to merged time: TIMESTAMPDIFF(SECOND, ge.pr_or_issue_created_at, ge.pr_merged_at)
+Issue link: CONCAT('https://github.com/', repo_name, '/issues/', number) AS link
+Exclude bots: actor_login NOT LIKE "%bot%"
+Database repos: description LIKE '%database%'
+Star in 2022: WHERE type = 'WatchEvent' AND action = 'started' AND YEAR(created_at) = 2022
+Filter by @org_or_user_login/repo_name: repo_name = 'org_or_user_login/repo_name'
+Filter by @org_or_user_login: owner_login = 'org_or_user_login'
+Merged PR: type = 'PullRequestEvent' AND action = 'closed' AND pr_merged = 1
+Create issue comment: type = 'IssueCommentEvent' AND action = 'created'
+Close PR: type = 'PullRequestEvent' AND action = 'closed'
 Contributor: the person who opened pull request to the repo, it will trigger a PullRequestEvent
 The most popular repos has the most stars
 Similar repositories will have similar topics
-The trending_repos table contains the most recent and popular repositories
-
--- star history(trend) of @pingcap/tidb
-SELECT DATE_FORMAT(ge.created_at, '%Y-%m-01') AS month, COUNT(*) AS stars FROM github_events ge WHERE ge.type = 'WatchEvent' AND ge.repo_name = 'pingcap/tidb' GROUP BY month ORDER BY month ASC
-
-# Format
-@org_or_user_login
-@org_or_user_login/repo_name
 
 # ChartOptions
 type Column = string; // must be the column name in the SQL result!!!
