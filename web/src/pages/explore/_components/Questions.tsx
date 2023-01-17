@@ -17,6 +17,7 @@ import PoweredBy from '@site/src/pages/explore/_components/PoweredBy';
 import Link from '@docusaurus/Link';
 import { ArrowRightAlt } from '@mui/icons-material';
 import Tips, { TipsRef } from '@site/src/pages/explore/_components/Tips';
+import TiDBCloudLink from '@site/src/components/TiDBCloudLink';
 
 export default function Questions () {
   const { question, loading, load, error, phase, reset, create } = useQuestionManagementValues({ pollInterval: 2000 });
@@ -95,10 +96,10 @@ export default function Questions () {
           footer={(
             <Box mt={2}>
               <PoweredBy align="center" />
-              <StyledLink to="/blog/chat2query-tutorials" target="_blank">
+              <TiDBCloudLink as={StyledLink}>
                 🧐 GitHub data is just the beginning. Uncover hidden insights in any data!
                 <ArrowRightAlt fontSize="inherit" sx={{ verticalAlign: 'text-bottom', ml: 0.5 }} />
-              </StyledLink>
+              </TiDBCloudLink>
             </Box>
           )}
         >

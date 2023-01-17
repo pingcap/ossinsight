@@ -6,6 +6,7 @@ import Link from '@docusaurus/Link';
 import useQuestionManagement from '@site/src/pages/explore/_components/useQuestion';
 import Feedback from './Feedback';
 import { useMemoizedFn } from 'ahooks';
+import TiDBCloudLink from '@site/src/components/TiDBCloudLink';
 
 export default function Side () {
   const { question } = useQuestionManagement();
@@ -41,9 +42,9 @@ export default function Side () {
       {show && (
         <>
           <Box>
-            <ColoredLink to="/blog/chat2query-tutorials">
+            <TiDBCloudLink as={ColoredLink}>
               Get hands-on with your data <ArrowForward color="inherit" />
-            </ColoredLink>
+            </TiDBCloudLink>
           </Box>
         </>
       )}
