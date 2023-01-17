@@ -1,9 +1,10 @@
 import { RecommendedSuggestions } from '@site/src/pages/explore/_components/Suggestions';
-import { Box, Divider, IconButton, styled, Typography } from '@mui/material';
+import { Box, Divider, IconButton, Stack, styled, Typography } from '@mui/material';
 import { ArrowForward, Cached } from '@mui/icons-material';
 import React, { useEffect, useState } from 'react';
 import Link from '@docusaurus/Link';
 import useQuestionManagement from '@site/src/pages/explore/_components/useQuestion';
+import Feedback from './Feedback';
 import { useMemoizedFn } from 'ahooks';
 
 export default function Side () {
@@ -32,9 +33,13 @@ export default function Side () {
           </Typography>
         )}
       />
+      <Divider orientation="horizontal" sx={{ my: 2 }} />
+      <Stack direction='row' alignItems='center' flexWrap='wrap' spacing={0.5} fontSize={14} lineHeight={2}>
+        <span>Do you like the result?</span>
+        <Feedback />
+      </Stack>
       {show && (
         <>
-          <Divider orientation="horizontal" sx={{ my: 2 }} />
           <Box>
             <ColoredLink to="/blog/chat2query-tutorials">
               Get hands-on with your data <ArrowForward color="inherit" />
