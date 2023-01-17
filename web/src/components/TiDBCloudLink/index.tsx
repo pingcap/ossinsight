@@ -49,9 +49,24 @@ export default function TiDBCloudLink ({ as = 'a', campaign: propCampaign, trial
 
 function getUserInfo (user: User | undefined): { email: string, connection: string } | undefined {
   if (notNullish(user) && isNonemptyString(user.email) && isNonemptyString(user.sub)) {
+    let connection: string;
+    switch (user.sub.split('|')[0]) {
+      case 'github':
+        connection = 'github';
+        break;
+      case 'google-oauth2':
+        connection = 'google';
+        break;
+      case 'windowslive':
+        connection = 'microsoft';
+        break;
+      default:
+        return undefined;
+    }
+
     return {
       email: user.email,
-      connection: user.sub.split('|')[0],
+      connection,
     };
   }
   return undefined;
