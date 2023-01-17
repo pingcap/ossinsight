@@ -46,15 +46,18 @@ Open to merged time: TIMESTAMPDIFF(SECOND, ge.pr_or_issue_created_at, ge.closed_
 Issue link: CONCAT('https://github.com/', repo_name, '/issues/', number) AS link
 Exclude bots: actor_login NOT LIKE "%bot%"
 Database repos: description LIKE '%database%'
-Star in 2022: WHERE ge.type = 'WatchEvent' AND ge.action = 'started' AND YEAR(ge.created_at) = 2022
 Filter by @org_or_user_login/repo_name: repo_name = 'org_or_user_login/repo_name'
 Filter by @org_or_user_login: owner_login = 'org_or_user_login'
+Star in 2022: WHERE ge.type = 'WatchEvent' AND ge.action = 'started' AND YEAR(ge.created_at) = 2022
 Merged PR: type = 'PullRequestEvent' AND action = 'closed' AND pr_merged = 1
 Create issue comment: type = 'IssueCommentEvent' AND action = 'created'
-Close PR: type = 'PullRequestEvent' AND action = 'closed'
+The number of PR: type = 'PullRequestEvent' AND action = 'opened'
 Contributor: the person who opened pull request to the repo, it will trigger a PullRequestEvent
 The most popular repos has the most stars
 Similar repositories will have similar topics
+
+A template for calculating trend by star history
+SELECT DATE_FORMAT(ge.created_at, '%Y-%m-01') AS month, COUNT(*) AS stars FROM github_events ge WHERE ge.type = 'WatchEvent' AND ge.repo_id = (SELECT repo_id FROM github_repos WHERE repo_name = {fill with repo_name in question and remove @ !!!} LIMIT 1) GROUP BY month ORDER BY month ASC
 
 # ChartOptions
 type Column = string; // must be the column name in the SQL result!!!
@@ -70,8 +73,8 @@ Table {columns: Column[];}
 When result has country_code and a number column, use MapChart
 
 Answer {
-  sql: string; // single line sql
   chart: {chartName: string; title: string; options: ChartOptions;}; // must generate chart!!!
+  sql: string; // must single line sql, remove breaklines in sql!!
   // Generate 2 distinct questions based on the given information, including 1 related to the provided one and 1 is random.
   questions: string[];
 }
