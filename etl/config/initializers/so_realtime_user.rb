@@ -6,7 +6,7 @@ class SoRealtimeUser
   def initialize(access_token, interval = 20)
     @interval = interval
     @access_token = access_token
-    @url = "https://api.stackexchange.com/2.3/users?page=1&pagesize=100&order=asc&sort=modified&site=stackoverflow&filter=!BUZG3axOonf1h10m3H9HiN0b39P.fr&access_token=#{ENV['SO_ACCESS_TOKEN2']}&key=#{ENV['SO_KEY']}"
+    @url = "https://api.stackexchange.com/2.3/users?page=1&pagesize=100&order=asc&sort=modified&site=stackoverflow&filter=!BUZG3axOonf1h10m3H9HiN0b39P.fr&access_token=#{ENV['SO_ACCESS_TOKEN']}&key=#{ENV['SO_KEY']}"
   end
 
   def run

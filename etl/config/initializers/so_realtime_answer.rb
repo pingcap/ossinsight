@@ -6,7 +6,7 @@ class SoRealtimeAnswer
   def initialize(access_token, interval = 20)
     @interval = interval
     @access_token = access_token
-    @url = "https://api.stackexchange.com/2.3/answers?page=1&pagesize=100&order=asc&sort=activity&site=stackoverflow&filter=!-Kxz9BoGM*4Vr29i*MiEKSIL-ka9s2XWT&access_token=#{ENV['SO_ACCESS_TOKEN2']}&key=#{ENV['SO_KEY']}"
+    @url = "https://api.stackexchange.com/2.3/answers?page=1&pagesize=100&order=asc&sort=activity&site=stackoverflow&filter=!-Kxz9BoGM*4Vr29i*MiEKSIL-ka9s2XWT&access_token=#{ENV['SO_ACCESS_TOKEN']}&key=#{ENV['SO_KEY']}"
   end
 
   def run

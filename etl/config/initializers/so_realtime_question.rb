@@ -1,12 +1,12 @@
 require_relative './so_fetch_question'
 
-class SoRealtime
+class SoRealtimeQuestion
   attr_reader :interval, :access_token, :url
 
   def initialize(access_token, interval = 20)
     @interval = interval
     @access_token = access_token
-    @url = "https://api.stackexchange.com/2.3/questions?page=1&pagesize=100&order=asc&sort=activity&site=stackoverflow&filter=!)5esRy)TSO9H7Qhh6n-YJ7jtcNBf&access_token=#{ENV['SO_ACCESS_TOKEN2']}&key=#{ENV['SO_KEY']}"
+    @url = "https://api.stackexchange.com/2.3/questions?page=1&pagesize=100&order=asc&sort=activity&site=stackoverflow&filter=!)5esRy)TSO9H7Qhh6n-YJ7jtcNBf&access_token=#{ENV['SO_ACCESS_TOKEN']}&key=#{ENV['SO_KEY']}"
   end
 
   def run
