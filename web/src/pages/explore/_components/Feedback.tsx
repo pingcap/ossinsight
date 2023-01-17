@@ -9,8 +9,9 @@ import { isNullish, nonEmptyArray, notNullish } from '@site/src/utils/value';
 import useSWR from 'swr';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useExploreContext } from '@site/src/pages/explore/_components/context';
+import { SxProps } from '@mui/system';
 
-export default function Feedback () {
+export default function Feedback ({ sx }: { sx?: SxProps }) {
   const { showTips } = useExploreContext();
   const { question } = useQuestionManagement();
   const { setAsyncData } = useAsyncState<boolean | undefined>(undefined);
@@ -67,26 +68,17 @@ export default function Feedback () {
   });
 
   return (
-    <Absolute>
-      <FeedbackContainer>
-        <FeedbackButton onClick={handleUp}>
-          {checked === true ? <ThumbUpAlt color="primary" fontSize="inherit" /> : <ThumbUpOffAlt fontSize="inherit" />}
-        </FeedbackButton>
-        <Divider orientation="vertical" flexItem sx={{ my: 0.5 }} />
-        <FeedbackButton onClick={handleDown}>
-          {checked === false ? <ThumbDownAlt color="primary" fontSize="inherit" /> : <ThumbDownOffAlt fontSize="inherit" />}
-        </FeedbackButton>
-      </FeedbackContainer>
-    </Absolute>
+    <FeedbackContainer sx={sx}>
+      <FeedbackButton onClick={handleUp}>
+        {checked === true ? <ThumbUpAlt color="primary" fontSize="inherit" /> : <ThumbUpOffAlt fontSize="inherit" />}
+      </FeedbackButton>
+      <Divider orientation="vertical" flexItem sx={{ my: 0.5 }} />
+      <FeedbackButton onClick={handleDown}>
+        {checked === false ? <ThumbDownAlt color="primary" fontSize="inherit" /> : <ThumbDownOffAlt fontSize="inherit" />}
+      </FeedbackButton>
+    </FeedbackContainer>
   );
 }
-
-const Absolute = styled('div')`
-  position: absolute;
-  pointer-events: none;
-  right: 8px;
-  bottom: 8px;
-`;
 
 const FeedbackContainer = styled('div')`
   display: inline-flex;
@@ -98,12 +90,6 @@ const FeedbackContainer = styled('div')`
   background: #333333;
   align-items: center;
   justify-content: center;
-  opacity: 0.4;
-  transition: ${({ theme }) => theme.transitions.create('opacity')};
-
-  &:hover {
-    opacity: 1;
-  }
 `;
 
 const FeedbackButton = styled('button')`

@@ -7,7 +7,6 @@ import Info from '@site/src/pages/explore/_components/Info';
 import { Portal, styled, ToggleButton, ToggleButtonGroup, Typography, useEventCallback } from '@mui/material';
 import { getErrorMessage } from '@site/src/utils/error';
 import ErrorBlock from '@site/src/pages/explore/_components/ErrorBlock';
-import Feedback from '@site/src/pages/explore/_components/Feedback';
 import TableChart from '@site/src/pages/explore/_components/charts/TableChart';
 import { Charts } from '@site/src/pages/explore/_components/charts';
 import { AutoGraph, TableView } from '@mui/icons-material';
@@ -248,7 +247,6 @@ function Chart ({ chartData, chartError, fields, result, controlsContainer }: { 
         <>
           <VisualizationContainer>
             <TableChart chartName="Table" title="" data={result} fields={fields} />
-            <Feedback />
           </VisualizationContainer>
           {renderTips()}
         </>
@@ -272,7 +270,6 @@ function Chart ({ chartData, chartError, fields, result, controlsContainer }: { 
         <>
           <VisualizationContainer>
             <Charts {...chartData} data={result} fields={fields} onPrepared={handleChartPrepared} onExit={handleChartExit} />
-            <Feedback />
           </VisualizationContainer>
           {renderTips()}
         </>
