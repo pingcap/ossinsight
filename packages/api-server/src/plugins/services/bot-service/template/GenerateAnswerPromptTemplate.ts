@@ -55,6 +55,7 @@ The number of PR: type = 'PullRequestEvent' AND action = 'opened'
 Contributor: the person who opened pull request to the repo, it will trigger a PullRequestEvent
 The most popular repos has the most stars
 Similar repositories will have similar topics
+When calculating country, inner join actor_id and github_users.id, then use github_users.country_code.
 
 A template for calculating trend by star history
 SELECT DATE_FORMAT(ge.created_at, '%Y-%m-01') AS month, COUNT(*) AS stars FROM github_events ge WHERE ge.type = 'WatchEvent' AND ge.repo_id = (SELECT repo_id FROM github_repos WHERE repo_name = {fill with repo_name and remove @ !!!} LIMIT 1) GROUP BY month ORDER BY month ASC
