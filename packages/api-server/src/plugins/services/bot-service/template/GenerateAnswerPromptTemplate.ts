@@ -74,7 +74,7 @@ When result has country_code and a number column, use MapChart
 
 Answer {
   chart: {chartName: string; title: string; options: ChartOptions;}; // must generate chart!!!
-  sql: string; // must single line sql, remove breaklines in sql!!
+  sql: string; // must single line sql, remove line break in sql!!
   // Generate 2 distinct questions based on the given information, including 1 related to the provided one and 1 is random.
   questions: string[];
 }
