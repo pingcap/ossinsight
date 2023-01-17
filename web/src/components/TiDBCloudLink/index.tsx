@@ -8,6 +8,9 @@ export interface TiDBCloudLinkProps extends TiDBCloudLinkContextValues, Omit<Anc
   as?: 'a' | FC<AnchorHTMLAttributes<HTMLAnchorElement>>;
 }
 
+// const TIDB_CLOUD_HOST = 'tidbcloud.com';
+const TIDB_CLOUD_HOST = 'feat-microsoft-login--staging-tidbcloud.netlify.app';
+
 export default function TiDBCloudLink ({ as = 'a', campaign: propCampaign, trial: propTrial, ...props }: TiDBCloudLinkProps) {
   const { user } = useResponsiveAuth0();
   const { campaign: ctxCampaign, trial: ctxTrail } = useContext(TiDBCloudLinkContext);
@@ -20,7 +23,7 @@ export default function TiDBCloudLink ({ as = 'a', campaign: propCampaign, trial
   }, [propCampaign, ctxCampaign, propTrial, ctxTrail]);
 
   const href = useMemo(() => {
-    const url = new URL('https://tidbcloud.com/channel');
+    const url = new URL(`https://${TIDB_CLOUD_HOST}/channel`);
     if (isNonemptyString(campaign)) {
       url.searchParams.set('utm_source', 'ossinsight');
       url.searchParams.set('utm_medium', 'referral');
