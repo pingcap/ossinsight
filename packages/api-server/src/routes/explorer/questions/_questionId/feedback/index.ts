@@ -43,6 +43,29 @@ export const getFeedbacksSchema: FastifySchema = {
   }
 };
 
+export const cancelFeedbacksSchema: FastifySchema = {
+  summary: 'Cancel feedback for answer',
+  tags: ['explorer'],
+  params: {
+    type: 'object',
+    required: ['questionId'],
+    properties: {
+      questionId: {
+        type: 'string',
+      },
+    }
+  },
+  querystring: {
+    type: 'object',
+    required: ['satisfied'],
+    properties: {
+      satisfied: {
+        type: 'boolean',
+      },
+    }
+  }
+};
+
 export interface IParam {
   questionId: string;
 }
@@ -50,6 +73,10 @@ export interface IParam {
 export interface IBody {
   satisfied: boolean;
   feedbackContent: string;
+}
+
+export interface IQueryString {
+  satisfied: boolean;
 }
 
 const root: FastifyPluginAsync = async (app) => {
@@ -110,6 +137,33 @@ const root: FastifyPluginAsync = async (app) => {
       throw err;
     } finally {
       await conn.release();
+    }
+  });
+
+  // Cancel feedback.
+  app.delete<{
+    Params: IParam,
+    Querystring: IQueryString
+  }>('/', {
+    schema: cancelFeedbacksSchema,
+    // @ts-ignore
+    preValidation: app.authenticate
+  },async (req, reply) => {
+    const { questionId } = req.params;
+    const { satisfied } = req.query;
+    const { sub, metadata } = parseAuth0User(req.user as Auth0User);
+    const userId = await app.userService.findOrCreateUserByAccount(
+      { ...metadata, sub },
+      req.headers.authorization,
+    );
+
+    try {
+      await app.explorerService.cancelUserQuestionFeedback(userId, questionId, satisfied);
+      reply.status(200).send({
+        message: 'ok'
+      });
+    } catch (err) {
+      throw err;
     }
   });
 };
