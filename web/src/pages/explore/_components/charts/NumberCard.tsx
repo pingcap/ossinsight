@@ -1,5 +1,5 @@
 import { ChartResult } from '@site/src/api/explorer';
-import { Card, CardContent, Grid, List, ListItem, ListItemText, Typography } from '@mui/material';
+import { Card, CardContent, Grid, List, ListItem, ListItemText, styled, Typography } from '@mui/material';
 import React, { useMemo } from 'react';
 import { isFiniteNumber, isNonemptyString, nonEmptyArray, notFalsy, notNullish } from '@site/src/utils/value';
 import AnimatedNumber from 'react-awesome-animated-number';
@@ -40,6 +40,7 @@ export default function NumberCard ({ chartName, title, label: propLabel, value,
               <AnimatedNumber value={data[0][value]} hasComma duration={800} size={36} />
               )
             : String(val)}
+          <Unit>{value}</Unit>
         </CardContent>
       </Card>
     );
@@ -78,3 +79,9 @@ export default function NumberCard ({ chartName, title, label: propLabel, value,
     </List>
   );
 }
+
+const Unit = styled('span')`
+  font-size: 16px;
+  opacity: 0.3;
+  margin-left: 4px;
+`;
