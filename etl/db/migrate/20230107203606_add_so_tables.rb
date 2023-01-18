@@ -99,9 +99,10 @@ class AddSoTables < ActiveRecord::Migration[6.1]
     comments =<<~COMMENT
       CREATE TABLE if not exists stackoverflow.comments (
         id INTEGER NOT NULL PRIMARY KEY,
-        text VARCHAR(600) NOT NULL,
+        text text NOT NULL,
         creation_date datetime NOT NULL,
         post_id INTEGER NOT NULL,
+        post_type VARCHAR(20),
         user_id INTEGER NOT NULL,
         user_display_name VARCHAR(255),
         score INTEGER NOT NULL default 0
