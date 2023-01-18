@@ -112,7 +112,7 @@ const qa: QA[] = [
     q: 'Can I use the AI-powered feature with my own dataset?',
     a: (
       <>
-        Yes! Even if you&apos;re not a GitHub expert, you can follow our <Link to="/blog/chat2query-tutorials" target="_blank">tutorial</Link> to play around with any dataset at <b>NO COST</b>. Just keep in mind that we take privacy seriously. Our model only needs access to your database schema, not any actual data about your customers.
+      Yes! Even if you&apos;re not a GitHub expert, you can explore any dataset with <Link to='https://tidbcloud.com/channel?utm_source=ossinsight&utm_medium=referral&utm_campaign=chat2query_202301' target='_blank'>Chat2Query</Link> at <b>NO COST</b>. Just keep in mind that we take privacy seriously.
       </>
     ),
   }, {
@@ -125,15 +125,15 @@ const qa: QA[] = [
             <br />
             GH Archive collects and archives all GitHub data since 2011 and updates it hourly. <b>By combining the GH Archive data and the GitHub event API, we can gain streaming, real-time data updates.</b>
           </li>
-          <li>One database for all workloads: <Link href="https://www.pingcap.com/tidb-cloud/?utm_source=ossinsight&utm_medium=referral&utm_campaign=dataexplore" target="_blank" rel="noopener"> TiDB Cloud</Link>
-            <br />
-            Facing continuously growing large-volume data (currently 5+ billion GitHub events), we need a database that can:
-            <ul>
-              <li>Store massive data</li>
-              <li>Handle complex analytical queries</li>
-              <li>Serve online traffic</li>
-            </ul>
-            <Link href="https://docs.pingcap.com/tidb/stable/overview/?utm_source=ossinsight&utm_medium=referral&utm_campaign=dataexplore" target="_blank" rel="noopener"> TiDB </Link> is an ideal solution. TiDB Cloud is its fully managed cloud Database as a Service. It lets users launch TiDB in seconds and offers the pay-as-you-go pricing model. Therefore, we choose TiDB Cloud as our backend database.
+          <li>One database for all workloads:  <Link href='https://tidbcloud.com/channel?utm_source=ossinsight&utm_medium=referral&utm_campaign=chat2query_202301' target='_blank' rel='noopener'> TiDB Cloud</Link>
+          <br />
+          Facing continuously growing large-volume data (currently 5+ billion GitHub events), we need a database that can:
+          <ul>
+            <li>Store massive data</li>
+            <li>Handle complex analytical queries</li>
+            <li>Serve online traffic</li>
+          </ul>
+          <Link href='https://docs.pingcap.com/tidb/stable/overview/?utm_source=ossinsight&utm_medium=referral&utm_campaign=dataexplore' target='_blank' rel='noopener'> TiDB </Link> is an ideal solution. TiDB Cloud is its fully managed cloud Database as a Service. It lets users launch TiDB in seconds and offers the pay-as-you-go pricing model. Therefore, we choose TiDB Cloud as our backend database.
           </li>
           <li>AI engine: OpenAI</li>
           To enable users without SQL knowledge to query with this tool, <b>we use OpenAI to translate the natural language to SQL.</b>

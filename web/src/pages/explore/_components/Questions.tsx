@@ -13,7 +13,6 @@ import Execution from '@site/src/pages/explore/_components/Execution';
 import Recommends from '@site/src/pages/explore/_components/Recommends';
 import Faq from '@site/src/pages/explore/_components/Faq';
 import Side from '@site/src/pages/explore/_components/Side';
-import PoweredBy from '@site/src/pages/explore/_components/PoweredBy';
 import Link from '@docusaurus/Link';
 import { ArrowRightAlt } from '@mui/icons-material';
 import Tips, { TipsRef } from '@site/src/pages/explore/_components/Tips';
@@ -95,11 +94,13 @@ export default function Questions () {
           side={<Side />}
           footer={(
             <Box mt={2}>
-              <PoweredBy align="center" />
               <TiDBCloudLink as={StyledLink}>
-                🧐 GitHub data is just the beginning. Uncover hidden insights in any data!
+              GitHub data is just the beginning. Try Chat2Query to maximize your data value with AI-generated SQL.
                 <ArrowRightAlt fontSize="inherit" sx={{ verticalAlign: 'text-bottom', ml: 0.5 }} />
               </TiDBCloudLink>
+              <Details>
+        *Chat2Query: an AI-powered querying tool in TiDB Cloud that generates SQL for your queries.
+        </Details>
             </Box>
           )}
         >
@@ -122,9 +123,22 @@ export default function Questions () {
 
 const StyledLink = styled(Link)`
   display: block;
-  text-align: center;
   color: white !important;
   text-decoration: none !important;
-  margin-top: 20px;
-  font-size: 16px;
+  margin-top: 72px;
+  font-size: 14px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, rgba(67, 142, 255, 0.3) 0%, rgba(132, 56, 255, 0.3) 106.06%);
+  &:hover {
+    background-color: #3c3c3c;    
+}
+`;
+
+const Details = styled('p')`
+  margin-top: 8px;
+  font-size: 12px;
+  color: #7c7c7c;
+  display: block;
+  text-align: center;
 `;
