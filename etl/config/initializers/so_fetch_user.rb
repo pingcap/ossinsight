@@ -34,7 +34,7 @@ class SoFetchUser
       puts quota_remaining
       items = json["items"]
       attrs = items.map { |item| json_to_attrs(item) }
-      SoUser.upsert_all(attrs) rescue binding.pry
+      SoUser.upsert_all(attrs)
     else
       puts "No response"
     end

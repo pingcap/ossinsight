@@ -35,9 +35,6 @@ class SoFetchQuestion
       items = json["items"]
       attrs = items.map { |item| json_to_attrs(item) }
       SoQuestion.upsert_all(attrs)
-      #attrs.each do |x|
-      #  SoQuestion.upsert(x) rescue binding.pry
-      #end
     else
       puts "No response"
     end

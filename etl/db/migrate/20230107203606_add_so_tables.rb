@@ -42,7 +42,7 @@ class AddSoTables < ActiveRecord::Migration[6.1]
         age integer,
         creation_date datetime NOT NULL,
         last_access_date datetime NOT NULL,
-        location VARCHAR(100),
+        location VARCHAR(296),
         reputation INTEGER NOT NULL default 0,
         up_votes INTEGER NOT NULL default 0,
         down_votes INTEGER NOT NULL default 0,
