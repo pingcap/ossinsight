@@ -42,13 +42,13 @@ export default function Side () {
       {show && (
         <>
           <Box>
-          <StyledLink to="https://tidbcloud.com/channel?utm_source=ossinsight&utm_medium=referral&utm_campaign=chat2query_202301" target='_blank'>
+          <TiDBCloudLink as={StyledLink}>
           Check out <b>Chat2Query</b> to empower any dataset you want.
           <ArrowForward fontSize='inherit' sx={{
             verticalAlign: 'text-bottom',
             ml: 0.5,
           }} />
-        </StyledLink>
+        </TiDBCloudLink>
         <Details>
         *Chat2Query: an AI-powered querying tool in TiDB Cloud that generates SQL for your queries.
         </Details>
