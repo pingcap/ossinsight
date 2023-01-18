@@ -20,7 +20,7 @@ import BotIcon from '@site/src/pages/explore/_components/BotIcon';
 import ShareButtons from './ShareButtons';
 import TypewriterEffect from '@site/src/pages/explore/_components/TypewriterEffect';
 import { gotoAnchor } from '@site/src/utils/dom';
-import Link from '@docusaurus/Link';
+import TiDBCloudLink from '@site/src/components/TiDBCloudLink';
 
 export default function ResultSection () {
   const { question, error, phase } = useQuestionManagement();
@@ -234,9 +234,9 @@ function Chart ({ chartData, chartError, fields, result, controlsContainer }: { 
         <Typography component="div" variant="body2" color="#D1D1D1" mt={2}>
           🤔 Not exactly what you&apos;re looking for?
           <ul>
-            <li>AI can write SQL effectively, but remember that it&apos;s still a work in progress with limitations. </li>
-            <li>Clear and specific language will help the AI understand your needs. Eg. use &apos;@facebook/react&apos; instead of &apos;react&apos;. Check out <a href='javascript:void(0)' onClick={gotoAnchor('data-explorer-faq')}>FAQ</a> for more tips.</li>
-            <li>GitHub data is not your focus? <Link href='https://ossinsight.io/blog/chat2query-tutorials/' target='_blank' rel='noopener'>Explore any other dataset </Link> with our capabilities.</li>
+            <li>AI can write SQL effectively, but remember that it&apos;s still a work in progress with limitations.</li>
+            <li>Clear and specific language will help the AI understand your needs. Eg. use &apos;@facebook/react&apos; instead of &apos;react&apos;. Check out <a href="javascript:void(0)" onClick={gotoAnchor('data-explorer-faq')}>FAQ</a> for more tips.</li>
+            <li>GitHub data is not your focus? <TiDBCloudLink>Explore any other dataset</TiDBCloudLink> with our capabilities.</li>
           </ul>
         </Typography>
       );
