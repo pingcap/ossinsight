@@ -3,17 +3,16 @@ import { coalesce, isNonemptyString, notNullish } from '@site/src/utils/value';
 import { useResponsiveAuth0 } from '@site/src/theme/NavbarItem/useResponsiveAuth0';
 import { User } from '@auth0/auth0-react';
 import TiDBCloudLinkContext, { TiDBCloudLinkContextValues } from './context';
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 
 export interface TiDBCloudLinkProps extends TiDBCloudLinkContextValues, Omit<AnchorHTMLAttributes<HTMLAnchorElement>, 'href' | 'rel'> {
   as?: 'a' | FC<AnchorHTMLAttributes<HTMLAnchorElement>>;
 }
 
-// const TIDB_CLOUD_HOST = 'tidbcloud.com';
-const TIDB_CLOUD_HOST = 'staging.tidbcloud.com';
-
 export default function TiDBCloudLink ({ as = 'a', campaign: propCampaign, trial: propTrial, ...props }: TiDBCloudLinkProps) {
   const { user } = useResponsiveAuth0();
   const { campaign: ctxCampaign, trial: ctxTrail } = useContext(TiDBCloudLinkContext);
+  const { siteConfig: { customFields } } = useDocusaurusContext();
 
   const { campaign, trial } = useMemo(() => {
     return {
@@ -23,7 +22,7 @@ export default function TiDBCloudLink ({ as = 'a', campaign: propCampaign, trial
   }, [propCampaign, ctxCampaign, propTrial, ctxTrail]);
 
   const href = useMemo(() => {
-    const url = new URL(`https://${TIDB_CLOUD_HOST}/channel`);
+    const url = new URL(`https://${customFields?.tidbcloud_host as string}/channel`);
     if (isNonemptyString(campaign)) {
       url.searchParams.set('utm_source', 'ossinsight');
       url.searchParams.set('utm_medium', 'referral');
