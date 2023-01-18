@@ -44,6 +44,10 @@ export function isFiniteNumber (v: unknown): v is number {
   return isNumber(v) && isFinite(v);
 }
 
+export function isBoolean (v: unknown): v is boolean {
+  return typeof v === 'boolean';
+}
+
 export function coalescePositiveNumber (a: number | Nullish, fallback: number): number {
   if (isPositiveNumber(a)) {
     return a;

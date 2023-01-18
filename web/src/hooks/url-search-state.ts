@@ -1,5 +1,6 @@
 import { Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from 'react';
 import { isNonemptyString, isNullish, notFalsy, notNullish, Nullish } from '@site/src/utils/value';
+import { useHistory, useLocation } from '@docusaurus/router';
 
 export interface UseUrlSearchStateProps<T> {
   defaultValue: T | (() => T);
@@ -18,6 +19,8 @@ function useUrlSearchStateCSR<T> (key: string, {
   deserialize,
   serialize,
 }: UseUrlSearchStateProps<T>, push: boolean = false): [T, Dispatch<SetStateAction<T>>] {
+  const history = useHistory();
+  const location = useLocation();
   const initialValue = useMemo(() => {
     const usp = new URLSearchParams(location.search);
     const v = usp.get(key);
@@ -58,30 +61,22 @@ function useUrlSearchStateCSR<T> (key: string, {
     const hash = location.hash ? `${location.hash}` : '';
     const url = location.pathname + search + hash;
     if (push) {
-      window.history.pushState(null, '', url);
+      history.push(url);
     } else {
+      history.replace(url);
       window.history.replaceState(null, '', url);
     }
   }, [value]);
 
   useEffect(() => {
-    const handlePopstate = () => {
-      internalChange.current = true;
-      const usp = new URLSearchParams(location.search);
-      const value = usp.get(key);
-      historyChangeRef.current = true;
-      if (notNullish(value)) {
-        setValue(deserialize(value));
-      } else {
-        setValue(defaultValue);
-      }
-      setTimeout(() => {
-        historyChangeRef.current = false;
-      }, 0);
-    };
-    window.addEventListener('popstate', handlePopstate);
-    return () => window.removeEventListener('popstate', handlePopstate);
-  }, []);
+    const usp = new URLSearchParams(location.search);
+    const value = usp.get(key);
+    if (notNullish(value)) {
+      setValue(deserialize(value));
+    } else {
+      setValue(defaultValue);
+    }
+  }, [location]);
 
   return [value, setValue];
 }

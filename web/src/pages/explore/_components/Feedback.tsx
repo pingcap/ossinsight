@@ -3,17 +3,18 @@ import React from 'react';
 import { ThumbDownAlt, ThumbDownOffAlt, ThumbUpAlt, ThumbUpOffAlt } from '@mui/icons-material';
 import { useAsyncState } from '@site/src/hooks/operation';
 import { useRequireLogin } from '@site/src/context/user';
-import { feedback, pollFeedback } from '@site/src/api/explorer';
+import { cancelFeedback, feedback, pollFeedback } from '@site/src/api/explorer';
 import useQuestionManagement from '@site/src/pages/explore/_components/useQuestion';
 import { isNullish, nonEmptyArray, notNullish } from '@site/src/utils/value';
 import useSWR from 'swr';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useExploreContext } from '@site/src/pages/explore/_components/context';
+import { SxProps } from '@mui/system';
 
-export default function Feedback () {
+export default function Feedback ({ sx }: { sx?: SxProps }) {
   const { showTips } = useExploreContext();
   const { question } = useQuestionManagement();
-  const { loading, setAsyncData } = useAsyncState<boolean>(undefined);
+  const { setAsyncData } = useAsyncState<boolean | undefined>(undefined);
   const requireLogin = useRequireLogin('explorer-feedback-button');
   const { isAuthenticated } = useAuth0();
   const { data: checked, mutate } = useSWR(isAuthenticated && notNullish(question) ? [question.id, 'question-feedback'] : undefined, {
@@ -27,12 +28,21 @@ export default function Feedback () {
     if (isNullish(question)) {
       return;
     }
-    setAsyncData(requireLogin().then(async oToken =>
-      await feedback(question.id, { satisfied: true }, oToken)
-        .finally(() => {
-          void mutate(true);
-        }),
-    ));
+    if (checked === true) {
+      setAsyncData(requireLogin().then(async oToken =>
+        await cancelFeedback(question.id, true, oToken)
+          .finally(() => {
+            void mutate(undefined);
+          }),
+      ));
+    } else {
+      setAsyncData(requireLogin().then(async oToken =>
+        await feedback(question.id, { satisfied: true }, oToken)
+          .finally(() => {
+            void mutate(true);
+          }),
+      ));
+    }
     showTips();
   });
 
@@ -40,34 +50,35 @@ export default function Feedback () {
     if (isNullish(question)) {
       return;
     }
-    setAsyncData(requireLogin().then(async oToken => await feedback(question.id, { satisfied: false }, oToken)
-      .finally(() => {
-        void mutate(true);
-      })),
-    );
+    if (checked === false) {
+      setAsyncData(requireLogin().then(async oToken =>
+        await cancelFeedback(question.id, false, oToken)
+          .finally(() => {
+            void mutate(undefined);
+          }),
+      ));
+    } else {
+      setAsyncData(requireLogin().then(async oToken =>
+        await feedback(question.id, { satisfied: false }, oToken)
+          .finally(() => {
+            void mutate(false);
+          })),
+      );
+    }
   });
 
   return (
-    <Absolute>
-      <FeedbackContainer>
-        <FeedbackButton disabled={checked === true || loading} onClick={handleUp}>
-          {checked === true ? <ThumbUpAlt color="primary" fontSize="inherit" /> : <ThumbUpOffAlt fontSize="inherit" />}
-        </FeedbackButton>
-        <Divider orientation="vertical" flexItem sx={{ my: 0.5 }} />
-        <FeedbackButton disabled={checked === false || loading} onClick={handleDown}>
-          {checked === false ? <ThumbDownAlt color="primary" fontSize="inherit" /> : <ThumbDownOffAlt fontSize="inherit" />}
-        </FeedbackButton>
-      </FeedbackContainer>
-    </Absolute>
+    <FeedbackContainer sx={sx}>
+      <FeedbackButton onClick={handleUp}>
+        {checked === true ? <ThumbUpAlt color="primary" fontSize="inherit" /> : <ThumbUpOffAlt fontSize="inherit" />}
+      </FeedbackButton>
+      <Divider orientation="vertical" flexItem sx={{ my: 0.5 }} />
+      <FeedbackButton onClick={handleDown}>
+        {checked === false ? <ThumbDownAlt color="primary" fontSize="inherit" /> : <ThumbDownOffAlt fontSize="inherit" />}
+      </FeedbackButton>
+    </FeedbackContainer>
   );
 }
-
-const Absolute = styled('div')`
-  position: absolute;
-  pointer-events: none;
-  right: 8px;
-  bottom: 8px;
-`;
 
 const FeedbackContainer = styled('div')`
   display: inline-flex;
@@ -79,19 +90,9 @@ const FeedbackContainer = styled('div')`
   background: #333333;
   align-items: center;
   justify-content: center;
-  opacity: 0.4;
-  transition: ${({ theme }) => theme.transitions.create('opacity')};
-  
-  &:hover {
-    opacity: 1;
-  }
 `;
 
-interface FeedbackButtonProps {
-  disabled: boolean;
-}
-
-const FeedbackButton = styled('button')<FeedbackButtonProps>`
+const FeedbackButton = styled('button')`
   width: 28px;
   height: 28px;
   appearance: none;

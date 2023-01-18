@@ -7,7 +7,6 @@ import Info from '@site/src/pages/explore/_components/Info';
 import { Portal, styled, ToggleButton, ToggleButtonGroup, Typography, useEventCallback } from '@mui/material';
 import { getErrorMessage } from '@site/src/utils/error';
 import ErrorBlock from '@site/src/pages/explore/_components/ErrorBlock';
-import Feedback from '@site/src/pages/explore/_components/Feedback';
 import TableChart from '@site/src/pages/explore/_components/charts/TableChart';
 import { Charts } from '@site/src/pages/explore/_components/charts';
 import { AutoGraph, TableView } from '@mui/icons-material';
@@ -72,7 +71,7 @@ export default function ResultSection () {
   const { url, title, hashtags } = useMemo(() => {
     if (isNullish(question)) {
       return {
-        url: 'https://ossinsight.io/explore',
+        url: 'https://ossinsight.io/explore/',
         title: 'Data Explorer',
         hashtags: [],
       };
@@ -83,7 +82,7 @@ export default function ResultSection () {
     if (isNonemptyString(question.id)) {
       url = `https://ossinsight.io/explore?id=${question.id}`;
     } else {
-      url = 'https://ossinsight.io/explore';
+      url = 'https://ossinsight.io/explore/';
     }
     return { url, title, hashtags };
   }, [question, search]);
@@ -249,7 +248,6 @@ function Chart ({ chartData, chartError, fields, result, controlsContainer }: { 
         <>
           <VisualizationContainer>
             <TableChart chartName="Table" title="" data={result} fields={fields} />
-            <Feedback />
           </VisualizationContainer>
           {renderTips()}
         </>
@@ -273,7 +271,6 @@ function Chart ({ chartData, chartError, fields, result, controlsContainer }: { 
         <>
           <VisualizationContainer>
             <Charts {...chartData} data={result} fields={fields} onPrepared={handleChartPrepared} onExit={handleChartExit} />
-            <Feedback />
           </VisualizationContainer>
           {renderTips()}
         </>

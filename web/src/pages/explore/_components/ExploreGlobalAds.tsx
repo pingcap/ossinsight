@@ -44,7 +44,7 @@ export default function ExploreGlobalAds () {
   const content = (
     <CardContent sx={{ maxWidth: 402, mx: 'auto' }}>
       <Typography variant="body1" mb={1}>
-        <StyledLink to="/explore" onClick={handleClose}>
+        <StyledLink to="/explore/" onClick={handleClose}>
           Data Explorer <StyledArrowForward fontSize="inherit" />
         </StyledLink>
         A game-changing way to explore 5B rows of data
