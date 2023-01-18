@@ -9,7 +9,7 @@ export interface TiDBCloudLinkProps extends TiDBCloudLinkContextValues, Omit<Anc
 }
 
 // const TIDB_CLOUD_HOST = 'tidbcloud.com';
-const TIDB_CLOUD_HOST = 'feat-microsoft-login--staging-tidbcloud.netlify.app';
+const TIDB_CLOUD_HOST = 'staging.tidbcloud.com';
 
 export default function TiDBCloudLink ({ as = 'a', campaign: propCampaign, trial: propTrial, ...props }: TiDBCloudLinkProps) {
   const { user } = useResponsiveAuth0();
