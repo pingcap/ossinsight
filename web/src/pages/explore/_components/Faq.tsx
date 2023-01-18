@@ -7,7 +7,7 @@ import Link from '@docusaurus/Link';
 export default function Faq () {
   return (
     <Container component="section" maxWidth="md" id="data-explorer-faq" sx={{ py: 8 }}>
-      <Typography variant="h2" textAlign="center">FAQ</Typography>
+      <Typography variant="h2" textAlign="center" mb={8}>FAQ</Typography>
       {qa.map(({ q, a, id }, i) => (
         <QAItem key={i} id={id}>
           <Q>{q}</Q>
@@ -35,6 +35,13 @@ const steps = [
 
 const qa: QA[] = [
   {
+    q: 'Can I use the AI-powered feature with my own dataset?',
+    a: (
+      <>
+      Yes! Even if you&apos;re not a GitHub expert, you can explore any dataset with <Link to='https://tidbcloud.com/channel?utm_source=ossinsight&utm_medium=referral&utm_campaign=chat2query_202301' target='_blank'>Chat2Query</Link> at <b>NO COST</b>. Just keep in mind that we take privacy seriously.
+      </>
+    ),
+  }, {
     q: 'How it works',
     a: <ExploreSteps steps={steps} />,
   },
@@ -106,13 +113,6 @@ const qa: QA[] = [
           <li>The answer was found, but the AI did not choose the correct chart template, so the chart could not be generated.</li>
           <li>The SQL query was correct, but no answer was found, so the chart could not be displayed.</li>
         </ul>
-      </>
-    ),
-  }, {
-    q: 'Can I use the AI-powered feature with my own dataset?',
-    a: (
-      <>
-      Yes! Even if you&apos;re not a GitHub expert, you can explore any dataset with <Link to='https://tidbcloud.com/channel?utm_source=ossinsight&utm_medium=referral&utm_campaign=chat2query_202301' target='_blank'>Chat2Query</Link> at <b>NO COST</b>. Just keep in mind that we take privacy seriously.
       </>
     ),
   }, {
