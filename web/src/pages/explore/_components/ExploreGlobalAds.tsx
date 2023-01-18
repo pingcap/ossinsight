@@ -23,7 +23,7 @@ export default function ExploreGlobalAds () {
 
   useEffect(() => {
     setAnchorEl(document.body);
-    if (hasClosed || /^\/(?:explore|blog)\/?$/.test(location.pathname) || location.pathname.startsWith('https://tidbcloud.com/channel?utm_source=ossinsight&utm_medium=referral&utm_campaign=chat2query_202301s')) {
+    if (hasClosed || /^\/(?:explore|blog)\/?$/.test(location.pathname) || location.pathname.startsWith('/blog/chat2query-tutorials')) {
       return;
     }
     safeSetTimeout(() => {
