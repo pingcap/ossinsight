@@ -55,7 +55,7 @@ jobs:
           AUTH0_DOMAIN: ${{ secrets.AUTH0_DOMAIN }}
           AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
           OSSINSIGHT_PREVIEW: true
-          TIDBCLOUD_HOST: stage.tidbcloud.com
+          TIDBCLOUD_HOST: staging.tidbcloud.com
         run: npm run build
       - name: Deploy to ossinsight.surge.sh 🚀
         uses: afc163/surge-preview@v1
