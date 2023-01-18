@@ -34,7 +34,7 @@ class SoFetchUser
       puts quota_remaining
       items = json["items"]
       attrs = items.map { |item| json_to_attrs(item) }
-      SoUser.upsert_all(attrs)
+      SoUser.upsert_all(attrs) rescue binding.pry
     else
       puts "No response"
     end
@@ -57,6 +57,7 @@ class SoFetchUser
       "profile_image_url"=> json["profile_image"],
       "website_url"=>json["website_url"]
     }
+    puts attr
     attr
   end
 end

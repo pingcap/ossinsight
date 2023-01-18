@@ -37,7 +37,7 @@ class AddSoTables < ActiveRecord::Migration[6.1]
     users = <<~USER
       CREATE TABLE if not exists stackoverflow.users (
         id INTEGER NOT NULL PRIMARY KEY,
-        display_name VARCHAR(36) NOT NULL,
+        display_name VARCHAR(90) NOT NULL,
         about_me VARCHAR(5999),
         age integer,
         creation_date datetime NOT NULL,
