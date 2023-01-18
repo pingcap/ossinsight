@@ -94,10 +94,10 @@ export default function Questions () {
           side={<Side />}
           footer={(
             <Box mt={2}>
-              <StyledLink to="https://tidbcloud.com/channel?utm_source=ossinsight&utm_medium=referral&utm_campaign=chat2query_202301" target="_blank">
+              <TiDBCloudLink as={StyledLink}>
               GitHub data is just the beginning. Try Chat2Query to maximize your data value with AI-generated SQL.
                 <ArrowRightAlt fontSize="inherit" sx={{ verticalAlign: 'text-bottom', ml: 0.5 }} />
-              </StyledLink>
+              </TiDBCloudLink>
               <Details>
         *Chat2Query: an AI-powered querying tool in TiDB Cloud that generates SQL for your queries.
         </Details>
