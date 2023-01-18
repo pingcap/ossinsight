@@ -16,6 +16,7 @@ import Side from '@site/src/pages/explore/_components/Side';
 import Link from '@docusaurus/Link';
 import { ArrowRightAlt } from '@mui/icons-material';
 import Tips, { TipsRef } from '@site/src/pages/explore/_components/Tips';
+import TiDBCloudLink from '@site/src/components/TiDBCloudLink';
 
 export default function Questions () {
   const { question, loading, load, error, phase, reset, create } = useQuestionManagementValues({ pollInterval: 2000 });

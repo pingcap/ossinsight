@@ -15,6 +15,7 @@ import CustomFooter from '@site/src/components/Footer';
 import { useNotificationsProvider } from '@site/src/components/Notifications';
 import { AuthProvider } from '@site/src/context/user';
 import ExploreGlobalAds from '@site/src/pages/explore/_components/ExploreGlobalAds';
+import TiDBCloudLinkContext from '@site/src/components/TiDBCloudLink/context';
 
 declare module '@theme/Layout' {
   interface Props {
@@ -24,6 +25,9 @@ declare module '@theme/Layout' {
     side?: JSX.Element;
     sideWidth?: string;
     disableAuth?: boolean;
+
+    tidbCloudLinkCampaign?: string;
+    tidbCloudLinkTrial?: boolean;
   }
 }
 
@@ -42,6 +46,8 @@ export default function Layout (props: Props): JSX.Element {
     sideWidth,
     customFooter,
     disableAuth,
+    tidbCloudLinkTrial,
+    tidbCloudLinkCampaign,
   } = props;
 
   useKeyboardNavigation();
@@ -76,8 +82,10 @@ export default function Layout (props: Props): JSX.Element {
         )}>
         <ErrorBoundary fallback={(params) => <ErrorPageContent {...params} />}>
           <NotificationProvider>
-            {notificationEl}
-            {children}
+            <TiDBCloudLinkContext.Provider value={{ campaign: tidbCloudLinkCampaign, trial: tidbCloudLinkTrial }}>
+              {notificationEl}
+              {children}
+            </TiDBCloudLinkContext.Provider>
           </NotificationProvider>
         </ErrorBoundary>
       </div>

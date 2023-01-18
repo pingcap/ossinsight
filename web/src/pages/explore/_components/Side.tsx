@@ -6,6 +6,7 @@ import Link from '@docusaurus/Link';
 import useQuestionManagement from '@site/src/pages/explore/_components/useQuestion';
 import Feedback from './Feedback';
 import { useMemoizedFn } from 'ahooks';
+import TiDBCloudLink from '@site/src/components/TiDBCloudLink';
 
 export default function Side () {
   const { question } = useQuestionManagement();

@@ -42,24 +42,24 @@ const qa: QA[] = [
     q: 'What are the limitations of Data Explorer?',
     a: (
       <>
-       <ol>
-         <li>AI is still a work in progress with limitations
-           <br />
-         Its limitations include:
-          <ul>
-            <li>A lack of context and knowledge of the specific database structure</li>
-            <li>A lack of domain knowledgestructure</li>
-            <li>Inability to produce the most efficient SQL statement for large and complex queries</li>
-            <li>Sometimes service instability</li>
-          </ul>
+        <ol>
+          <li>AI is still a work in progress with limitations
+            <br />
+            Its limitations include:
+            <ul>
+              <li>A lack of context and knowledge of the specific database structure</li>
+              <li>A lack of domain knowledgestructure</li>
+              <li>Inability to produce the most efficient SQL statement for large and complex queries</li>
+              <li>Sometimes service instability</li>
+            </ul>
+            <br />
+            To help AI understand your query intention, please use clear, specific phrases in your question. Check out our question optimization tips.
+            We&apos;re constantly working on improving and optimizing it, so any feedback you have is greatly appreciated. Thanks for using!
+          </li>
           <br />
-          To help AI understand your query intention, please use clear, specific phrases in your question. Check out our question optimization tips.
-We&apos;re constantly working on improving and optimizing it, so any feedback you have is greatly appreciated. Thanks for using!
-         </li>
-         <br />
-         <li>The dataset itself is a limitation for our tool</li>
-         All the data we use on this website is sourced from GH Archive, a non-profit project that records and archives all GitHub event data since 2011 (public data only). If a question falls outside of the scope of the available data, it may be difficult for our tool to provide a satisfactory answer.
-       </ol>
+          <li>The dataset itself is a limitation for our tool</li>
+          All the data we use on this website is sourced from GH Archive, a non-profit project that records and archives all GitHub event data since 2011 (public data only). If a question falls outside of the scope of the available data, it may be difficult for our tool to provide a satisfactory answer.
+        </ol>
       </>
     ),
   },
@@ -100,7 +100,7 @@ We&apos;re constantly working on improving and optimizing it, so any feedback yo
     q: 'Why did it fail to generate a chart?',
     a: (
       <>
-       Potential reasons:
+        Potential reasons:
         <ul>
           <li>The SQL query was incorrect or could not be generated, so the answer could not be found in the database, and the chart could not be generated.</li>
           <li>The answer was found, but the AI did not choose the correct chart template, so the chart could not be generated.</li>
@@ -145,6 +145,7 @@ We&apos;re constantly working on improving and optimizing it, so any feedback yo
 
 const QAItem = styled('div')`
   scroll-margin: 100px;
+
   &:not(:first-of-type) {
     margin-top: 48px;
   }
