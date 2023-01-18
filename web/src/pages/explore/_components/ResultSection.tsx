@@ -71,7 +71,7 @@ export default function ResultSection () {
   const { url, title, hashtags } = useMemo(() => {
     if (isNullish(question)) {
       return {
-        url: 'https://ossinsight.io/explore',
+        url: 'https://ossinsight.io/explore/',
         title: 'Data Explorer',
         hashtags: [],
       };
@@ -82,7 +82,7 @@ export default function ResultSection () {
     if (isNonemptyString(question.id)) {
       url = `https://ossinsight.io/explore?id=${question.id}`;
     } else {
-      url = 'https://ossinsight.io/explore';
+      url = 'https://ossinsight.io/explore/';
     }
     return { url, title, hashtags };
   }, [question, search]);

@@ -232,7 +232,7 @@ const config = {
         style: 'dark',
         items: [
           {
-            to: '/explore',
+            to: '/explore/',
             position: 'left',
             html: '<span id="nav-data-explorer"><span class="nav-explore-icon"></span> Data Explorer</span>'
           },
