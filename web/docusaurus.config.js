@@ -39,7 +39,8 @@ const config = {
 
   customFields: {
     auth0_domain: process.env.AUTH0_DOMAIN || '',
-    auth0_client_id: process.env.AUTH0_CLIENT_ID || ''
+    auth0_client_id: process.env.AUTH0_CLIENT_ID || '',
+    tidbcloud_host: process.env.TIDBCLOUD_HOST || 'tidbcloud.com',
   },
 
   // Even if you don't use internalization, you can use this field to set useful
