@@ -11,7 +11,7 @@ export interface PoweredByProps {
 export default function PoweredBy ({ align = 'left', sx }: PoweredByProps) {
   return (
     <PoweredByContainer align={align} sx={sx}>
-      Powered by <a href='https://www.pingcap.com/tidb-cloud/?utm_source=ossinsight&utm_medium=referral&utm_campaign=dataexplore' target='_blank' rel="noopener noreferrer">TiDB Cloud</a>
+      Powered by <a href='https://tidbcloud.com/channel?utm_source=ossinsight&utm_medium=referral&utm_campaign=chat2query_202301' target='_blank' rel="noopener noreferrer">TiDB Cloud</a>
     </PoweredByContainer>
   );
 }

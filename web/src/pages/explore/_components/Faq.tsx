@@ -112,7 +112,7 @@ We&apos;re constantly working on improving and optimizing it, so any feedback yo
     q: 'Can I use the AI-powered feature with my own dataset?',
     a: (
       <>
-        Yes! Even if you&apos;re not a GitHub expert, you can follow our <Link to='/blog/chat2query-tutorials' target='_blank'>tutorial</Link> to play around with any dataset at <b>NO COST</b>. Just keep in mind that we take privacy seriously. Our model only needs access to your database schema, not any actual data about your customers.
+      Yes! Even if you&apos;re not a GitHub expert, you can explore any dataset with <Link to='https://tidbcloud.com/channel?utm_source=ossinsight&utm_medium=referral&utm_campaign=chat2query_202301' target='_blank'>Chat2Query</Link> at <b>NO COST</b>. Just keep in mind that we take privacy seriously.
       </>
     ),
   }, {
@@ -125,7 +125,7 @@ We&apos;re constantly working on improving and optimizing it, so any feedback yo
             <br />
             GH Archive collects and archives all GitHub data since 2011 and updates it hourly. <b>By combining the GH Archive data and the GitHub event API, we can gain streaming, real-time data updates.</b>
           </li>
-          <li>One database for all workloads:  <Link href='https://www.pingcap.com/tidb-cloud/?utm_source=ossinsight&utm_medium=referral&utm_campaign=dataexplore' target='_blank' rel='noopener'> TiDB Cloud</Link>
+          <li>One database for all workloads:  <Link href='https://tidbcloud.com/channel?utm_source=ossinsight&utm_medium=referral&utm_campaign=chat2query_202301' target='_blank' rel='noopener'> TiDB Cloud</Link>
           <br />
           Facing continuously growing large-volume data (currently 5+ billion GitHub events), we need a database that can:
           <ul>

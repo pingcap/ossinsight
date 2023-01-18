@@ -91,7 +91,7 @@ export default function SqlSection () {
               <br />
               Take a break and try again in {extractTime(sqlSectionError)}.
               <br />
-              Check out the <Link to="/blog/chat2query-tutorials" target="_blank">tutorial</Link>, if you want to try AI-generated SQL in any other dataset <b>within 5 minutes</b>.
+              Check out <Link to="https://tidbcloud.com/channel?utm_source=ossinsight&utm_medium=referral&utm_campaign=chat2query_202301" target="_blank">Chat2Query</Link> if you want to try AI-generated SQL in any other dataset <b>within 5 minutes</b>.
             </>
             )
           : (

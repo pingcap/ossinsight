@@ -55,7 +55,7 @@ export default forwardRef<TipsRef>(function Tips (_, forwardedRef: ForwardedRef<
           <StyledCard>
             <CardContent>
             Glad you enjoy the exploration 😃
-            Check out our <Link to="/blog/chat2query-tutorials" target="_blank">tutorial</Link>, if you want to try AI-generated SQL for any other dataset.
+            Try <Link to="https://tidbcloud.com/channel?utm_source=ossinsight&utm_medium=referral&utm_campaign=chat2query_202301" target="_blank">Chat2Query</Link> to empower your own data exploration.
             </CardContent>
             <CloseButton size="small" onClick={handleClose}>
               <Close />

@@ -36,9 +36,16 @@ export default function Side () {
         <>
           <Divider orientation="horizontal" sx={{ my: 2 }} />
           <Box>
-            <ColoredLink to="/blog/chat2query-tutorials">
-              Get hands-on with your data <ArrowForward color="inherit" />
-            </ColoredLink>
+          <StyledLink to="https://tidbcloud.com/channel?utm_source=ossinsight&utm_medium=referral&utm_campaign=chat2query_202301" target='_blank'>
+          Check out <b>Chat2Query</b> to empower any dataset you want.
+          <ArrowForward fontSize='inherit' sx={{
+            verticalAlign: 'text-bottom',
+            ml: 0.5,
+          }} />
+        </StyledLink>
+        <Details>
+        *Chat2Query: an AI-powered querying tool in TiDB Cloud that generates SQL for your queries.
+        </Details>
           </Box>
         </>
       )}
@@ -51,17 +58,22 @@ const SideRoot = styled('div')`
   top: 92px;
 `;
 
-const ColoredLink = styled(Link)`
-  display: inline-flex;
-  align-items: center;
+const StyledLink = styled(Link)`
+  display: block;
+  color: white !important;
+  text-decoration: none !important;
+  margin-top: 20px;
   font-size: 14px;
-  background: linear-gradient(90deg, #BAC1FD 0%, #DAC4FF 106.06%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  text-fill-color: transparent;
+  padding: 8px 12px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, rgba(67, 142, 255, 0.15) 0%, rgba(132, 56, 255, 0.15) 106.06%);
+  &:hover {
+    background-color: #3c3c3c;    
+}
+`;
 
-  &, &:hover, &:visited, &:active {
-    color: #DAC4FF;
-  }
+const Details = styled('p')`
+  margin-top: 8px;
+  font-size: 12px;
+  color: #7c7c7c;
 `;
