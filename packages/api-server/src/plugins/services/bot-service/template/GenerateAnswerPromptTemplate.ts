@@ -41,7 +41,6 @@ trending_repos.repo_name = github_repos.repo_name
 
 Select statement limit 20 by default, if question need more data, please add limit 50
 Use column alias for all columns: SELECT ge.repo_name AS repo_name
-Trends across months: DATE_FORMAT(ge.created_at, '%Y-%m-01') AS t_month
 Open to merged time: TIMESTAMPDIFF(SECOND, ge.pr_or_issue_created_at, ge.closed_at)
 Issue link: CONCAT('https://github.com/', repo_name, '/issues/', number) AS link
 Exclude bots: actor_login NOT LIKE "%bot%"
@@ -57,8 +56,8 @@ The most popular repos has the most stars
 Similar repositories will have similar topics
 When calculating country, inner join actor_id and github_users.id, then use github_users.country_code.
 
-A template for calculating trend by star history
-SELECT DATE_FORMAT(ge.created_at, '%Y-%m-01') AS month, COUNT(*) AS stars FROM github_events ge WHERE ge.type = 'WatchEvent' AND ge.repo_id = (SELECT repo_id FROM github_repos WHERE repo_name = {fill with repo_name and remove @ !!!} LIMIT 1) GROUP BY month ORDER BY month ASC
+A template for calculating trend by star history across months
+SELECT DATE_FORMAT(ge.created_at, '%Y-%m-01') AS t_month, COUNT(*) AS stars FROM github_events ge WHERE ge.type = 'WatchEvent' AND ge.repo_id = (SELECT repo_id FROM github_repos WHERE repo_name = {fill with repo_name and remove @ !!!} LIMIT 1) GROUP BY t_month ORDER BY t_month ASC
 
 # ChartOptions
 type Column = string; // must be the column name in the SQL result!!!
