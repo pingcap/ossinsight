@@ -13,6 +13,7 @@ export interface TipsRef {
 export default forwardRef<TipsRef>(function Tips (_, forwardedRef: ForwardedRef<TipsRef>) {
   const [open, setOpen] = useState(false);
 
+  /* eslint-disable @typescript-eslint/no-unused-vars */
   const [tipsHistory, setTipsHistory] = useLocalStorageState<DateTime[]>('ossinsight.explore.tips-history', {
     serializer: dates => {
       return JSON.stringify(dates.map(date => date.toJSON()));
@@ -33,7 +34,7 @@ export default forwardRef<TipsRef>(function Tips (_, forwardedRef: ForwardedRef<
   });
 
   const show = useMemoizedFn(() => {
-    const couldShow = tipsHistory.length < 2;
+    const couldShow = false; // tipsHistory.length < 2;
     if (couldShow) {
       setOpen(true);
       setTipsHistory(tipsHistory => tipsHistory?.concat(DateTime.now()) ?? [DateTime.now()]);

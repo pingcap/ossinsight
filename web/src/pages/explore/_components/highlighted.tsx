@@ -57,7 +57,7 @@ interface HighlightedButtonConfig<V extends keyof typeof HighlightButtonVariants
   props: PropsOf<typeof HighlightButtonVariants[V]>;
 }
 
-export function HighlightButton<V extends keyof typeof HighlightButtonVariants = 'button'> ({ variant, children, ...props }: { variant: V } & HighlightedButtonConfig<V>['props']) {
+export function HighlightButton<V extends keyof typeof HighlightButtonVariants = 'link'> ({ variant, children, ...props }: { variant: V } & HighlightedButtonConfig<V>['props']) {
   return (
     <HighlightButtonBackground as={HighlightButtonVariants[variant]} {...props}>
       <HighlightButtonContent as='div'>
