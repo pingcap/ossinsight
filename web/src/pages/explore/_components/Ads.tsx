@@ -82,10 +82,10 @@ const AdsContent = styled('div')`
 const AdsButton = styled('a')`
   background: linear-gradient(90deg, #5667FF 0%, #A168FF 106.06%);
   box-shadow: ${({ theme }) => theme.shadows[4]};
-  border-radius: 29px;
+  border-radius: 48px;
   display: flex;
   align-items: center;
-  padding: 8px !important;
+  padding: 12px !important;
   font-weight: 600;
   font-size: 16px;
   color: white !important;

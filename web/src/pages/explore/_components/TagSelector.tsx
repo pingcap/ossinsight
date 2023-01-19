@@ -18,7 +18,7 @@ export default function TagSelector ({ onChange, value }: TagSelectorProps) {
 
   return (
     <TagsContainer>
-      <Stack direction="row" spacing={2} flexWrap="nowrap" width='max-content'>
+      <Stack direction="row" spacing={1} flexWrap="nowrap" width='max-content'>
         <TagItem
           color="#ccc"
           className={clsx({
