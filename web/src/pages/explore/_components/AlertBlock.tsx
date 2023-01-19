@@ -37,11 +37,11 @@ export default function AlertBlock ({ severity, sx, children, createIssueUrl = (
         <Stack direction="row" spacing={2} mt={2}>
           <AlertButton onClick={handleJumpFaq}>
             <ContactSupport fontSize="inherit" sx={{ mr: 0.5 }} />
-            <span>See faq</span>
+            <span>See FAQ</span>
           </AlertButton>
           <AlertButton onClick={report}>
             <GitHub fontSize="inherit" sx={{ mr: 0.5 }} />
-            <span>Feedback</span>
+            <span>Report an issue</span>
           </AlertButton>
         </Stack>
       </StyledAlert>
@@ -50,7 +50,7 @@ export default function AlertBlock ({ severity, sx, children, createIssueUrl = (
           <RecommendedSuggestions
             title={(reload, loading) => (
               <Box component="p" m={0} mt={3} height="40px">
-                👀 How about try other questions? <IconButton onClick={reload} disabled={loading}><Cached /></IconButton>
+                Try other questions? <IconButton onClick={reload} disabled={loading}><Cached /></IconButton>
               </Box>
             )}
             n={4}

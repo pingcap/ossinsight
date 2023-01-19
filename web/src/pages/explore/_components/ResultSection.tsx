@@ -125,8 +125,7 @@ export default function ResultSection () {
       errorPrompt="Hi, it's failed to execute"
       errorMessage={
         <>
-          Oops, something went wrong while executing your SQL query. Please try again.
-          If the problem persists, check out <a href="javascript:void(0)" onClick={gotoAnchor('data-explorer-faq')}>FAQ</a>
+          Oops, it seems AI misunderstood your question, resulting in a wrong SQL. Try our <a href="javascript:void(0)" onClick={gotoAnchor('data-explorer-faq')}>tips</a> for crafting effective SQL and give it another go.
         </>
       }
     >
