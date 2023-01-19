@@ -2,7 +2,7 @@ import { FINAL_PHASES, QuestionLoadingPhase, QuestionManagementContext, useQuest
 import useUrlSearchState, { nullableStringParam } from '@site/src/hooks/url-search-state';
 import React, { useEffect, useRef, useState } from 'react';
 import { isBlankString, isNullish, notNullish } from '@site/src/utils/value';
-import { Box, useEventCallback } from '@mui/material';
+import { Box, styled, useEventCallback } from '@mui/material';
 import { ExploreContext } from '@site/src/pages/explore/_components/context';
 import { Decorators } from '@site/src/pages/explore/_components/Decorators';
 import Layout from '@site/src/pages/explore/_components/Layout';
@@ -14,6 +14,7 @@ import Faq from '@site/src/pages/explore/_components/Faq';
 import Side from '@site/src/pages/explore/_components/Side';
 import Tips, { TipsRef } from '@site/src/pages/explore/_components/Tips';
 import RecommendList from '@site/src/pages/explore/_components/RecommendList';
+import { Prompts } from '@site/src/pages/explore/_components/Prompt';
 
 export default function Questions () {
   const { question, loading, load, error, phase, reset, create } = useQuestionManagementValues({ pollInterval: 2000 });
@@ -90,6 +91,10 @@ export default function Questions () {
           header={<Header />}
           side={<Side />}
         >
+          <SwitchLayout state={hideExecution ? 'recommend' : 'execution'} direction={hideExecution ? 'down' : 'up'}>
+            <Box key="recommend" />
+            <PromptsTitle key="execution" source={prompts} interval={4000} prefix={<span>📌 Tips:</span>} />
+          </SwitchLayout>
           <ExploreSearch value={value} onChange={setValue} onAction={handleAction} disableInput={isPending} disableClear={value === ''} disableAction={disableAction} onClear={handleClear} clearState={isPending ? 'stop' : undefined} />
           <SwitchLayout state={hideExecution ? 'recommend' : 'execution'} direction={hideExecution ? 'down' : 'up'}>
             <Box key="execution" sx={{ mt: 1.5 }}>
@@ -106,3 +111,18 @@ export default function Questions () {
     </QuestionManagementContext.Provider>
   );
 }
+
+const prompts = [
+  'Use a GitHub username instead of a nickname.',
+  'Use a GitHub repository\'s full name. For example, change "react" to "facebook/react."',
+  'Use GitHub terms like fork, star, and watch.',
+  'Use specific phrases. For example, use "by star" or "by fork" to measure repo popularity.',
+  'Add your requirement for the result. For example, "group by language."',
+];
+
+const PromptsTitle = styled(Prompts)`
+  color: #9B9B9B;
+  font-style: italic;
+  font-size: 12px;
+  margin-bottom: 8px;
+`;

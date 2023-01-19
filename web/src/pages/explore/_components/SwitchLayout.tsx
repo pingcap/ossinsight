@@ -110,7 +110,7 @@ const SwitchLayoutContainer = styled('div', { name: 'SwitchLayoutContainer', sho
 `;
 
 const SwitchItem = styled('div', { name: 'SwitchItem', shouldForwardProp: propName => !['offset', 'duration', 'delay'].includes(String(propName)) })<SwitchLayoutContainerProps>`
-  transition: ${({ theme, duration, delay }) => theme.transitions.create(['opacity', 'transform'], { duration, delay })};
+  transition: ${({ theme, duration, delay }) => theme.transitions.create('opacity', { duration, delay })};
   opacity: 0;
   padding: 0.1px;
 
@@ -123,26 +123,6 @@ const SwitchItem = styled('div', { name: 'SwitchItem', shouldForwardProp: propNa
 
   &.SwitchItem-enter, &.SwitchItem-exiting, &.SwitchItem-exited {
     opacity: 0;
-  }
-
-  &.SwitchItem-up {
-    &.SwitchItem-enter {
-      transform: translate3d(0, ${({ offset }) => offset}px, 0);
-    }
-
-    &.SwitchItem-exiting, &.SwitchItem-exited {
-      transform: translate3d(0, -${({ offset }) => offset}px, 0);
-    }
-  }
-
-  &.SwitchItem-down {
-    &.SwitchItem-enter {
-      transform: translate3d(0, -${({ offset }) => offset}px, 0);
-    }
-
-    &.SwitchItem-exiting, &.SwitchItem-exited {
-      transform: translate3d(0, ${({ offset }) => offset}px, 0);
-    }
   }
 
   &.SwitchItem-exit, &.SwitchItem-entering, &.SwitchItem-entered {
