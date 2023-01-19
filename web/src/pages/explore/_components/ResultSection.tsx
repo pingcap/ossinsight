@@ -233,7 +233,7 @@ function Chart ({ chartData, chartError, fields, result, controlsContainer }: { 
     const renderTips = () => {
       return (
         <>
-          <Stack direction="row" justifyContent='center' alignItems="center" flexWrap="wrap" spacing={0.5} py={1} mt={2} fontSize='inherit' bgcolor='#373D4E'>
+          <Stack direction="row" justifyContent='center' alignItems="center" flexWrap="wrap" spacing={0.5} py={1} mt={2} fontSize='inherit' bgcolor='#323140'>
             <Typography variant='body1' mr={2}>Do you like the result?</Typography>
             <Feedback />
           </Stack>
