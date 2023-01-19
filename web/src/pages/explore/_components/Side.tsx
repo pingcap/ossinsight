@@ -1,25 +1,11 @@
 import { RecommendedSuggestions } from '@site/src/pages/explore/_components/Suggestions';
-import { Box, Divider, IconButton, styled, Typography } from '@mui/material';
+import { Divider, IconButton, styled, Typography } from '@mui/material';
 import { ArrowForward, Cached } from '@mui/icons-material';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Link from '@docusaurus/Link';
-import useQuestionManagement from '@site/src/pages/explore/_components/useQuestion';
-import { useMemoizedFn } from 'ahooks';
 import TiDBCloudLink from '@site/src/components/TiDBCloudLink';
 
 export default function Side () {
-  const { question } = useQuestionManagement();
-  const [show, setShow] = useState(false);
-
-  useEffect(() => {
-    setShow(false);
-  }, [question?.id]);
-
-  const wrapHandleClick = useMemoizedFn((handle: () => void) => () => {
-    handle();
-    setShow(true);
-  });
-
   return (
     <SideRoot>
       <RecommendedSuggestions
@@ -27,29 +13,23 @@ export default function Side () {
         title={(reload, loading) => (
           <Typography variant="h3" mb={0} fontSize={16}>
             💡 Get inspired
-            <IconButton onClick={wrapHandleClick(reload)} disabled={loading}>
+            <IconButton onClick={reload} disabled={loading}>
               <Cached fontSize="inherit" />
             </IconButton>
           </Typography>
         )}
       />
-      {show && (
-        <>
-          <Divider orientation="horizontal" sx={{ my: 2 }} />
-          <Box>
-            <TiDBCloudLink as={StyledLink}>
-              Check out <b>Chat2Query</b> to empower any dataset you want.
-              <ArrowForward fontSize="inherit" sx={{
-                verticalAlign: 'text-bottom',
-                ml: 0.5,
-              }} />
-            </TiDBCloudLink>
-            <Details>
-              *Chat2Query: an AI-powered querying tool in TiDB Cloud that generates SQL for your queries.
-            </Details>
-          </Box>
-        </>
-      )}
+      <Divider orientation="horizontal" sx={{ my: 2 }} />
+      <TiDBCloudLink as={StyledLink}>
+        Check out <b>Chat2Query</b> to empower any dataset you want.
+        <ArrowForward fontSize="inherit" sx={{
+          verticalAlign: 'text-bottom',
+          ml: 0.5,
+        }} />
+      </TiDBCloudLink>
+      <Details>
+        *Chat2Query: an AI-powered querying tool in TiDB Cloud that generates SQL for your queries.
+      </Details>
     </SideRoot>
   );
 }
@@ -68,10 +48,15 @@ const StyledLink = styled(Link)`
   padding: 8px 12px;
   border-radius: 6px;
   background: linear-gradient(90deg, rgba(67, 142, 255, 0.15) 0%, rgba(132, 56, 255, 0.15) 106.06%);
+  opacity: 0.8;
+  box-shadow: ${({ theme }) => theme.shadows[0]};
 
   &:hover {
-    background-color: #3c3c3c;
+    opacity: 1;
+    box-shadow: ${({ theme }) => theme.shadows[6]};
   }
+
+  transition: ${({ theme }) => theme.transitions.create(['opacity', 'box-shadow'])};
 `;
 
 const Details = styled('p')`
