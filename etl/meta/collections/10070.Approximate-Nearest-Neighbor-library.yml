@@ -1,0 +1,21 @@
+id: 10070
+name: approximate nearest neighbor library
+items:
+  - spotify/annoy
+  - ryanrhymes/panns
+  - vioshyvo/mrpt
+  - pixelogik/NearPy
+  - aaalgo/kgraph
+  - nmslib/nmslib
+  - nmslib/hnswlib
+  - lyst/rpforest
+  - facebookresearch/faiss
+  - ekzhu/datasketch
+  - lmcinnes/pynndescent
+  - yahoojapan/NGT
+  - microsoft/SPTAG
+  - kakao/n2
+  - google-research/google-research/tree/master/scann
+  - alexklibisz/elastiknn
+  - opensearch-project/k-NN
+  - microsoft/diskann
