@@ -20,7 +20,7 @@ export default function TagSelector ({ onChange, value }: TagSelectorProps) {
     <TagsContainer>
       <Stack direction="row" spacing={2} flexWrap="nowrap" width='max-content'>
         <TagItem
-          color="#ffffff"
+          color="#ccc"
           className={clsx({
             [tagClasses.active]: value == null,
           })}

@@ -35,6 +35,7 @@ export default function QuestionList ({ n, tagId }: QuestionListProps) {
         questionPrefix={
           <ArrowRight sx={{ color: '#959595', verticalAlign: 'text-bottom' }} color="inherit" fontSize="inherit" />
         }
+        showTags
       />
       {!expand && canExpand && (
         <Divider>

@@ -11,6 +11,7 @@ export interface SuggestionsProps {
   title?: (reload: () => void, loading: boolean) => ReactNode;
   n?: number;
   questionPrefix?: ReactNode;
+  showTags?: boolean;
 }
 
 export interface RecommendedSuggestionsProps extends SuggestionsProps {
@@ -41,7 +42,7 @@ export function useRecommended (aiGenerated: boolean, n?: number, tagId?: number
   };
 }
 
-export function Suggestions ({ variant, disabled, questions, n, questionPrefix }: SuggestionsProps & { questions: QuestionTemplate[] }) {
+export function Suggestions ({ variant, disabled, questions, n, questionPrefix, showTags = false }: SuggestionsProps & { questions: QuestionTemplate[] }) {
   const renderLoading = () => {
     const renderCard = (i: number) => (
       <QuestionCard
@@ -74,7 +75,7 @@ export function Suggestions ({ variant, disabled, questions, n, questionPrefix }
 
   const renderData = () => {
     const renderCard = (question: QuestionTemplate, i: number) => (
-      <QuestionCard key={i} variant={variant} question={question.title} questionId={question.questionId} tags={question.tags} prefix={questionPrefix} disabled={disabled} />
+      <QuestionCard key={i} variant={variant} question={question.title} questionId={question.questionId} tags={showTags ? question.tags : []} prefix={questionPrefix} disabled={disabled} />
     );
     if (variant === 'text') {
       return questions.map(renderCard);

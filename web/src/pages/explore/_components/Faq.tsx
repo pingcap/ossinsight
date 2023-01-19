@@ -36,15 +36,16 @@ const steps = [
 
 const qa: QA[] = [
   {
+    q: 'How it works',
+    a: <ExploreSteps steps={steps} />,
+  },
+  {
     q: 'Can I use the AI-powered feature with my own dataset?',
     a: (
       <>
       Yes! Even if you&apos;re not a GitHub expert, you can explore any dataset with <TiDBCloudLink>Chat2Query</TiDBCloudLink> at <b>NO COST</b>. Just keep in mind that we take privacy seriously.
       </>
     ),
-  }, {
-    q: 'How it works',
-    a: <ExploreSteps steps={steps} />,
   },
   {
     q: 'What are the limitations of Data Explorer?',

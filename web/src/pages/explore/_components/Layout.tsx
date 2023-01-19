@@ -88,7 +88,7 @@ const Body = styled('div', { name: 'Layout-Body', shouldForwardProp: propName =>
     --explore-layout-side-width: ${sideWidth + 50}px;
   }
 
-  ${({ theme }) => theme.breakpoints.up('lg')} {
+  ${({ theme }) => theme.breakpoints.up('md')} {
     padding-right: var(--explore-layout-side-width);
   }
 
@@ -133,12 +133,12 @@ const Main = styled('div', { name: 'Layout-Main' })`
   width: 100%;
   transition: ${({ theme }) => theme.transitions.create(['transform', 'opacity'], { duration: transitionDuration })};
 
-  ${({ theme }) => theme.breakpoints.up('lg')} {
+  ${({ theme }) => theme.breakpoints.up('md')} {
     transform: translateX(calc(var(--explore-layout-side-width) / 2));
   }
 
   ${({ theme }) => theme.breakpoints.up('md')} {
-    max-width: 100%;
+    max-width: calc(100%);
   }
 
   ${({ theme }) => theme.breakpoints.up('xl')} {
