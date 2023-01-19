@@ -49,6 +49,12 @@ export default function RecommendList () {
         </Typography>
         {presetQuestions.map((props, index) => <QuestionCard key={index} {...props} />)}
         <Ads />
+        <AdsFootnote>
+          <span>
+            🤖️ Chat2Query on
+          </span>
+          <img src="/img/tidb-cloud-logo-o.png" height="18" alt="TiDB Cloud Logo" />
+        </AdsFootnote>
       </Grid>
       <Grid item xs={12} md={7} lg={8}>
         <TagSelector value={tag} onChange={handleTagChange} />
@@ -69,9 +75,9 @@ const Ads = () => {
             GitHub data is not your focus?
           </Typography>
           <TiDBCloudLink as={AdsButton}>
-            <IconContainer>
+            <AdsButtonIconContainer>
               <SaveAlt />
-            </IconContainer>
+            </AdsButtonIconContainer>
             Import any dataset
           </TiDBCloudLink>
           <img width="228" src={require('./img/ads-prompts.png').default} alt="image" />
@@ -126,7 +132,7 @@ const AdsButton = styled('a')`
   }
 `;
 
-const IconContainer = styled('span')`
+const AdsButtonIconContainer = styled('span')`
   display: inline-flex;
   width: 32px;
   height: 32px;
@@ -136,4 +142,18 @@ const IconContainer = styled('span')`
   background: white;
   color: #5667FF;
   margin-right: 16px;
+`;
+
+const AdsFootnote = styled('div')`
+  font-size: 14px;
+  color: white;
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 8px;
+
+  > :first-child {
+    margin-right: 8px;
+  }
 `;
