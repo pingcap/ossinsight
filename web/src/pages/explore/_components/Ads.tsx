@@ -11,22 +11,22 @@ export interface AdsProps {
 const Ads = ({ size }: AdsProps) => {
   return (
     <>
-      <AdsContainer>
+      <TiDBCloudLink as={AdsContainer}>
         <AdsDashedContainer>
           <AdsContent className={clsx({ [classes.small]: size === 'small' })}>
             <Typography variant="body2" fontSize={12} color="#A0A0A0">
               GitHub data is not your focus?
             </Typography>
-            <TiDBCloudLink as={AdsButton} className={clsx({ [classes.small]: size === 'small' })}>
+            <AdsButton className={clsx({ [classes.small]: size === 'small' })}>
               <AdsButtonIconContainer className={clsx({ [classes.small]: size === 'small' })}>
                 <UploadIcon />
               </AdsButtonIconContainer>
               Import any dataset
-            </TiDBCloudLink>
+            </AdsButton>
             <AdsImage className={clsx({ [classes.small]: size === 'small' })} width="228" src={require('./img/ads-prompts.png').default} alt="image" />
           </AdsContent>
         </AdsDashedContainer>
-      </AdsContainer>
+      </TiDBCloudLink>
       <AdsFootnote>
           <span>
             🤖️ Chat2Query on
@@ -41,10 +41,22 @@ export default Ads;
 
 const classes = generateUtilityClasses('Ads', ['small']);
 
-const AdsContainer = styled('div')`
+const AdsContainer = styled('a')`
+  display: block;
+  text-decoration: none !important;
   background: linear-gradient(90deg, #FFBCA7 2.21%, #DAA3D8 30.93%, #B587FF 67.95%, #6B7AFF 103.3%);
   border-radius: 6px;
   margin-top: 16px;
+
+  opacity: 1;
+  cursor: pointer;
+  user-select: none;
+  transition: ${({ theme }) => theme.transitions.create(['box-shadow', 'transform'])};
+
+  &:hover {
+    box-shadow: ${({ theme }) => theme.shadows[10]};
+    transform: scale3d(1.02, 1.02, 1.02);
+  }
 `;
 
 const AdsDashedContainer = styled('div')`
@@ -78,16 +90,7 @@ const AdsButton = styled('a')`
   font-size: 16px;
   color: white !important;
   text-decoration: none !important;
-  opacity: 1;
-  cursor: pointer;
-  user-select: none;
   margin-top: 8px;
-  transition: ${({ theme }) => theme.transitions.create(['box-shadow', 'transform'])};
-
-  &:hover {
-    box-shadow: ${({ theme }) => theme.shadows[10]};
-    transform: scale3d(1.02, 1.02, 1.02);
-  }
 
   &.${classes.small} {
     font-size: 14px;
