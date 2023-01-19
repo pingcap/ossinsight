@@ -2,7 +2,7 @@ import { Configuration, OpenAIApi } from "openai";
 import fp from "fastify-plugin";
 import pino from "pino";
 
-import {SQLGeneratePromptTemplate} from "./template/GenerateSQLPromptTemplate";
+import {GenerateSQLPromptTemplate} from "./template/GenerateSQLPromptTemplate";
 import {GenerateChartPromptTemplate} from "./template/GenerateChartPromptTemplate";
 import {Answer, RecommendedChart, RecommendQuestion, AnswerSummary} from "./types";
 import {GenerateAnswerPromptTemplate} from "./template/GenerateAnswerPromptTemplate";
@@ -38,10 +38,12 @@ export class BotService {
         this.openai = new OpenAIApi(configuration);
     }
 
-    async questionToSQL(template: SQLGeneratePromptTemplate, question: string, context: Record<string, any>): Promise<string | null> {
+    async questionToSQL(template: GenerateSQLPromptTemplate, question: string, context: Record<string, any>): Promise<string | null> {
         if (!question) return null;
         const prompt = template.stringify(question, context);
-        this.log.debug(prompt, `Get completion for question: ${question}`);
+        this.log.info("Requesting SQL for question: %s", question);
+
+        const start = DateTime.now();
         const res = await this.openai.createCompletion({
             model: template.model,
             prompt,
@@ -50,15 +52,14 @@ export class BotService {
             temperature: template.temperature,
             max_tokens: template.maxTokens,
             top_p: template.topP,
-            n: template.n,
-            logprobs: template.logprobs,
+            n: template.n
         });
-
+        const end = DateTime.now();
         const { choices, usage } = res.data;
-        this.log.info(usage, 'OpenAI API usage');
+        this.log.info({ usage }, 'Got SQL of question "%s" from OpenAI API, cost: %d s', question, end.diff(start).as('seconds'));
 
         if (Array.isArray(choices)) {
-            return `${template.resultPrefix}${choices[0]?.text}`;
+            return choices[0]?.text || null;
         } else {
             return null;
         }

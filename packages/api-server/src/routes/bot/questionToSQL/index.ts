@@ -1,10 +1,8 @@
 import {APIError} from "../../../utils/error";
 import {FastifyPluginAsyncJsonSchemaToTs} from "@fastify/type-provider-json-schema-to-ts";
-import {
-  QueryPlaygroundSQLPromptTemplate
-} from "../../../plugins/services/bot-service/template/QueryPlaygroundPromptTemplate";
 import { GENERATE_SQL_LIMIT_HEADER, GENERATE_SQL_USED_HEADER, MAX_DAILY_GENERATE_SQL_LIMIT } from "./quota";
 import { Auth0User, parseAuth0User } from "../../../plugins/services/user-service/auth0";
+import {GenerateSQLPromptTemplate} from "../../../plugins/services/bot-service/template/GenerateSQLPromptTemplate";
 
 export interface IBody {
   question: string;
@@ -51,9 +49,13 @@ const root: FastifyPluginAsyncJsonSchemaToTs = async (app, opts): Promise<void> 
       conn
     );
     const context: {
+      repo_id?: number;
+      repo_name?: string;
       github_id?: number;
       github_login?: string;
-    } = {};
+    } = {
+      ...req.body.context,
+    };
     if (metadata.provider === "github" && metadata.github_id) {
       context.github_id = parseInt(metadata.github_id, 10);
       context.github_login = metadata.github_login;
@@ -61,11 +63,11 @@ const root: FastifyPluginAsyncJsonSchemaToTs = async (app, opts): Promise<void> 
 
     try {
       // Check if there are existed SQL
-      const questionRecords = await playgroundService.getExistedQuestion(conn, question);
-      if (questionRecords.length > 0) {
-        const {sql} = questionRecords[0];
-        return reply.status(200).send({sql});
-      }
+      // const questionRecords = await playgroundService.getExistedQuestion(conn, question);
+      // if (questionRecords.length > 0) {
+      //   const {sql} = questionRecords[0];
+      //   return reply.status(200).send({sql});
+      // }
 
       // Get the limit and used.
       let limit = app.config.PLAYGROUND_DAILY_QUESTIONS_LIMIT || MAX_DAILY_GENERATE_SQL_LIMIT;
@@ -89,7 +91,7 @@ const root: FastifyPluginAsyncJsonSchemaToTs = async (app, opts): Promise<void> 
       // Generate the SQL.
       let sql = null, success = true;
       try {
-        const promptTemplate = new QueryPlaygroundSQLPromptTemplate();
+        const promptTemplate = new GenerateSQLPromptTemplate();
         sql = await botService.questionToSQL(promptTemplate, question, context);
         if (!sql) {
           throw new APIError(500, 'No SQL generated');

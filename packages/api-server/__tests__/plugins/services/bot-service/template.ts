@@ -1,9 +1,6 @@
 import {
-  SQLPlaygroundPromptTemplate
-} from "../../../../src/plugins/services/bot-service/template/SQLPlaygroundPromptTemplate";
-import {
-  QueryPlaygroundSQLPromptTemplate
-} from "../../../../src/plugins/services/bot-service/template/QueryPlaygroundPromptTemplate";
+  GenerateSQLPromptTemplate
+} from "../../../../src/plugins/services/bot-service/template/GenerateSQLPromptTemplate";
 import {
   GenerateChartPromptTemplate
 } from "../../../../src/plugins/services/bot-service/template/GenerateChartPromptTemplate";
@@ -11,19 +8,13 @@ import {
 describe('prompt template', () => {
 
   it('sql playground prompt template should work', () => {
-    const promptTemplate = new SQLPlaygroundPromptTemplate();
+    const promptTemplate = new GenerateSQLPromptTemplate();
     const prompt = promptTemplate.stringify('How many contributors in @pingcap/tidb', {
       "my_user_id": 5086433,
       "my_user_login": "Mini256",
       "this_repo_name": "pingcap/tidb",
       "this_repo_id": 41986369,
     });
-    expect(prompt).toMatchSnapshot();
-  });
-
-  it('query playground prompt template should work', () => {
-    const promptTemplate = new QueryPlaygroundSQLPromptTemplate();
-    const prompt = promptTemplate.stringify('How many contributors in @pingcap/tidb', {});
     expect(prompt).toMatchSnapshot();
   });
 

@@ -38,76 +38,43 @@ Chart:
 "
 `;
 
-exports[`prompt template query playground prompt template should work 1`] = `
-"# MySQL SQL
-Table github_events, columns = [id, type, created_at, repo_id, repo_name, actor_id, actor_login, language, additions, deletions, action, number, org_login, org_id, state, closed_at, comments, pr_merged_at, pr_merged, pr_changed_files, pr_review_comments, pr_or_issue_id, push_size, push_distinct_size, creator_user_login, creator_user_id, pr_or_issue_created_at]
-Column type, enums = ['PullRequestEvent', 'PushEvent', 'IssueCommentEvent', 'IssuesEvent', 'PullRequestReviewCommentEvent', 'WatchEvent', 'CreateEvent', 'DeleteEvent', 'ForkEvent', 'ReleaseEvent']
-Column number, number is issue number
-Table github_repos, columns = [repo_id, repo_name, owner_id, owner_login, owner_is_org, description, primary_language, license, size, stars, forks, parent_repo_id, is_fork, is_archived, is_deleted, latest_released_at, pushed_at, created_at, updated_at]
-Column primary_language, invalid = [null, '']
-Table github_users, columns = [id, login, type, name, organization, country_code, followers, followings, created_at, updated_at]
-Column type, enums = ['USR', 'ORG']
-Column country_code, invalid = ['', 'N/A', 'UND']
-Table collections, columns = [id, name]
-Table collection_items, columns = [collection_id, repo_id, repo_name]
-Table trending_repos, columns = [repo_name, created_at]
-Table github_repo_topics, columns = [repo_id, topic]
-Relation collections.id = collection_items.collection_id
-Relation collection_items.repo_id = github_repos.repo_id
-Relation github_events.repo_id = github_repos.repo_id
-Relation github_events.repo_name = github_repos.repo_name
-Relation github_events.actor_id = github_users.id
-Relation github_events.actor_login = github_users.login
-Relation github_events.creator_user_id = github_users.id
-Relation github_repos.owner_id = github_users.id
-Relation github_repos.repo_id = github_repo_topics.repo_id
-Relation trending_repos.repo_name = github_repos.repo_name
-
-Select statement limit 20 by default, if question need more data, please add limit 200
-When type = 'PullRequestReviewCommentEvent' or type = 'IssueCommentEvent', the action could be 'created'
-When type = 'PullRequestEvent' or type = 'IssuesEvent', the action could be 'opened', 'closed'
-When type = 'PullRequestEvent', action = 'closed' and pr_merged = 1, it means the pull request is merged
-PushEvent: trigger when commit has been pushed
-Return the pr_or_issue_link column for PR / issue list: SELECT CONCAT('https://github.com/', repo_name, '/issues/', number) AS pr_or_issue_link
-If question contains words like 'exclude bot': WHERE actor_login NOT LIKE "%bot%"
-If question contains words like 'related to xxx' or 'about to xxx': WHERE description LIKE '%xxx%'
-Contributor: the person who opened pull request to the repo, it will trigger a PullRequestEvent
-The most popular repos has the most stars,
-Similar repositories will have similar topics, or be in the same collection, order by the similarity
-collection is a categorization of some similar repositories, but not all repositories have a corresponding collection
-The trending_repos table contains the most recent and popular repositories
-notice: avoid non-existent and ambiguous column
----
--- @pingcap/tidb cumulative stars across months
-SELECT t_month, stars, SUM(stars) OVER(ORDER BY t_month ASC) AS cumulative_stars FROM ( SELECT DATE_FORMAT(created_at, '%Y-%m-01') AS t_month, COUNT(DISTINCT actor_login) AS stars FROM github_events ge WHERE ge.type = 'WatchEvent' AND ge.repo_id = (SELECT repo_id FROM github_repos WHERE repo_name = 'pingcap/tidb') AND ge.created_at != '1970-01-01 00:00:00' GROUP BY t_month ) star_counts ORDER BY t_month ASC;
----
--- Let's think step by step, generate one correct SQL to do query: How many contributors in @pingcap/tidb
----
-
-"
-`;
-
 exports[`prompt template sql playground prompt template should work 1`] = `
-"# MySQL SQL
-Table github_events, columns = [type, created_at, repo_id, repo_name, actor_id, actor_login, language, additions, deletions, action, number, org_login, org_id, state, closed_at, comments, pr_merged_at, pr_merged, pr_changed_files, pr_review_comments, pr_or_issue_id, push_size, push_distinct_size, creator_user_login, creator_user_id, pr_or_issue_created_at]
-Column type, enums = ['PullRequestEvent', 'PushEvent', 'IssueCommentEvent', 'IssuesEvent', 'PullRequestReviewCommentEvent', 'WatchEvent', 'CreateEvent', 'DeleteEvent', 'ForkEvent', 'ReleaseEvent']
-Table github_repos, columns = [repo_id, repo_name, owner_id, owner_login, owner_is_org, description, primary_language, license, size, stars, forks, parent_repo_id, is_fork, is_archived, is_deleted, latest_released_at, pushed_at, created_at, updated_at]
-Relation github_events.repo_id = github_repos.repo_id
-Define my_user_id = 5086433
-Define my_user_login = 'Mini256'
-Define this_repo_name = 'pingcap/tidb'
-Define this_repo_id = 41986369
+" MySQL SQL
+Table github_events, columns = [id, type, created_at, repo_id, repo_name, actor_id, actor_login, additions, deletions, action, number, org_login, org_id, state, closed_at, comments, pr_merged_at, pr_merged, pr_changed_files, pr_review_comments, pr_or_issue_id, push_size, push_distinct_size, creator_user_login, creator_user_id, pr_or_issue_created_at]
+- Column type, enums = ['PullRequestEvent', 'PushEvent', 'IssueCommentEvent', 'IssuesEvent', 'PullRequestReviewCommentEvent', 'WatchEvent', 'CreateEvent', 'DeleteEvent', 'ForkEvent', 'ReleaseEvent']
+- Column action:
+* type in [PullRequestReviewCommentEvent, IssueCommentEvent, ReviewEvent]: created
+* type in [PullRequestEvent, IssuesEvent]: opened, closed, reopened
+- Column number, number is issue number
+- Column created_at, closed_at, pr_merged_at, pr_or_issue_created_at DEFAULT '1970-01-01 00:00:00'
+
+# Rules
+Select statement limit 20 by default, if question need more data, please add limit 200
+Use column alias for all columns: SELECT ge.repo_name AS repo_name
+use common table expression if and only if necessary
+
+# Snippet
+Trends across months: DATE_FORMAT(ge.created_at, '%Y-%m-01') AS t_month
+Open to merged time: TIMESTAMPDIFF(SECOND, ge.pr_or_issue_created_at, ge.closed_at)
+Exclude bots: actor_login NOT LIKE "%bot%"
+When access github_events table, must add 'repo_id = {fill with repo_id!!!}' in WHERE
+Star in 2022: WHERE ge.type = 'WatchEvent' AND ge.action = 'started' AND YEAR(ge.created_at) = 2022
+Merged PR: type = 'PullRequestEvent' AND action = 'closed' AND pr_merged = 1
+The number of PR: type = 'PullRequestEvent' AND action = 'opened'
+Contributor: who opened pull request to the repo
+
+# Context
+
+
+
+
+
+# Example Template
+-- A template for calculating trend by star history
+SELECT DATE_FORMAT(ge.created_at, '%Y-%m-01') AS month, COUNT(*) AS stars FROM github_events ge WHERE ge.type = 'WatchEvent' AND ge.repo_id = undefined GROUP BY month ORDER BY month ASC
 
 ---
--- How many contributors in @pingcap/tidb
-SELECT COUNT(DISTINCT creator_user_login) AS contributors FROM github_events WHERE repo_name = 'pingcap/tidb' AND type = 'PullRequestEvent' AND action = 'closed' AND pr_merged = true
--- Who am I
-SELECT 'Mini256' AS user_login;
--- Am I a contributor to this repo
-SELECT CASE sub.prs > 0 WHEN TRUE THEN 'Yes' ELSE 'No' END AS is_contributor FROM ( SELECT COUNT(*) AS prs FROM github_events WHERE type = 'PullRequestEvent' AND action = 'opened' AND repo_id = 41986369 AND actor_login = 'Mini256' ) AS sub;
+Let's think step by step, use best practice of writing SQL, generate a single line SQL (without line break) to answer the question: "How many contributors in @pingcap/tidb".
 ---
--- Let's think step by step, generate one correct SQL to do query: How many contributors in @pingcap/tidb
----
-SELECT 
 "
 `;
