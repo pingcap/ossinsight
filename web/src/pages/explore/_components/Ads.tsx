@@ -1,24 +1,29 @@
-import { styled, Typography } from '@mui/material';
+import { generateUtilityClasses, styled, Typography } from '@mui/material';
 import TiDBCloudLink from '@site/src/components/TiDBCloudLink';
 import { SaveAlt } from '@mui/icons-material';
 import React from 'react';
+import clsx from 'clsx';
 
-const Ads = () => {
+export interface AdsProps {
+  size?: 'small';
+}
+
+const Ads = ({ size }: AdsProps) => {
   return (
     <>
       <AdsContainer>
         <AdsDashedContainer>
-          <AdsContent>
+          <AdsContent className={clsx({ [classes.small]: size === 'small' })}>
             <Typography variant="body2" fontSize={12} color="#A0A0A0">
               GitHub data is not your focus?
             </Typography>
-            <TiDBCloudLink as={AdsButton}>
-              <AdsButtonIconContainer>
-                <SaveAlt />
+            <TiDBCloudLink as={AdsButton} className={clsx({ [classes.small]: size === 'small' })}>
+              <AdsButtonIconContainer className={clsx({ [classes.small]: size === 'small' })}>
+                <SaveAlt fontSize='inherit' />
               </AdsButtonIconContainer>
               Import any dataset
             </TiDBCloudLink>
-            <AdsImage width="228" src={require('./img/ads-prompts.png').default} alt="image" />
+            <AdsImage className={clsx({ [classes.small]: size === 'small' })} width="228" src={require('./img/ads-prompts.png').default} alt="image" />
           </AdsContent>
         </AdsDashedContainer>
       </AdsContainer>
@@ -33,6 +38,8 @@ const Ads = () => {
 };
 
 export default Ads;
+
+const classes = generateUtilityClasses('Ads', ['small']);
 
 const AdsContainer = styled('div')`
   background: linear-gradient(90deg, #FFBCA7 2.21%, #DAA3D8 30.93%, #B587FF 67.95%, #6B7AFF 103.3%);
@@ -54,6 +61,10 @@ const AdsContent = styled('div')`
   align-items: center;
   justify-content: center;
   padding: 24px 12px;
+
+  &.${classes.small} {
+    padding: 12px;
+  }
 `;
 
 const AdsButton = styled('a')`
@@ -77,6 +88,10 @@ const AdsButton = styled('a')`
     box-shadow: ${({ theme }) => theme.shadows[10]};
     transform: scale3d(1.02, 1.02, 1.02);
   }
+
+  &.${classes.small} {
+    font-size: 14px;
+  }
 `;
 
 const AdsButtonIconContainer = styled('span')`
@@ -90,6 +105,15 @@ const AdsButtonIconContainer = styled('span')`
   color: #5667FF;
   margin-right: 16px;
   min-width: 32px;
+  font-size: 20px;
+
+  &.${classes.small} {
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    font-size: 16px;
+    margin-right: 8px;
+  }
 `;
 
 const AdsFootnote = styled('div')`
@@ -109,4 +133,7 @@ const AdsFootnote = styled('div')`
 
 const AdsImage = styled('img')`
   max-width: 100%;
+  &.${classes.small} {
+    max-width: 90%;
+  }
 `;

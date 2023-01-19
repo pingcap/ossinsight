@@ -21,7 +21,7 @@ export default function Side () {
       />
       <StyledLink to='/explore/'>&gt; See more</StyledLink>
       <Divider orientation="horizontal" sx={{ my: 2 }} />
-      <Ads />
+      <Ads size='small' />
     </SideRoot>
   );
 }
