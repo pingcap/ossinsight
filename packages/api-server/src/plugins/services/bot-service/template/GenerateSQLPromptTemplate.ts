@@ -1,150 +1,55 @@
-import {DateTime} from "luxon";
 import {AIModel, PromptTemplate} from "../types";
 
-export interface SQLExample {
-  question: string;
-  sql: string;
-}
-
-export interface TableInfo {
-  name: string;
-  columns: ColumnInfo[];
-  comments?: string[];
-}
-
-export interface RelationInfo {
-  leftTableName: string;
-  leftColumnName: string;
-  rightTableName: string;
-  rightColumnName: string;
-}
-
-export interface ColumnInfo {
-  name: string;
-  type?: string;
-  enums?: string[];
-  invalid?: any[];
-  comments?: string[];
-}
-
-export class SQLGeneratePromptTemplate implements PromptTemplate {
-  public readonly SQLDialect: string = 'MySQL';
-
-  public comments: string[];
-  public tables: TableInfo[];
-  public relations: RelationInfo[];
-  public examples: SQLExample[];
+export class GenerateSQLPromptTemplate implements PromptTemplate {
 
   // AI Model Parameters.
   public model: AIModel = AIModel.TEXT_DAVINCI_003;
-  public stop: string[] = ['#', '---'];
-  public maxTokens: number = 200;
-  public temperature: number = 0.3;
-  public topP: number = 0.4;
+  public stop: string[] = ['---'];
+  public maxTokens: number = 300;
+  public temperature: number = 0.8;
+  public topP: number = 1;
   public n: number = 1;
-  public logprobs: number = 2;
-  public resultPrefix: string = 'SELECT ';
-
-  constructor(
-    sqlDialect: string = 'MySQL',
-    tables: TableInfo[] = [],
-    relations: RelationInfo[] = [],
-    examples: SQLExample[] = [],
-    comments: string[] = [],
-  ) {
-    this.SQLDialect = sqlDialect;
-    this.tables = tables;
-    this.relations = relations;
-    this.examples = examples;
-    this.comments = comments;
-  }
 
   stringify(question: string, context: Record<string, any>): string {
-    return `# ${this.SQLDialect} SQL
-${this.tables.map(t => this.stringifyTable(t)).join('\n')}
-${this.relations.map(r => this.stringifyRelation(r)).join('\n')}
-${context ? Object.entries(context).map(([k, v]) => this.stringifyContext(k, v)).join('\n') : ''}
-${this.comments.join('\n')}
+
+    return ` MySQL SQL
+Table github_events, columns = [id, type, created_at, repo_id, repo_name, actor_id, actor_login, additions, deletions, action, number, org_login, org_id, state, closed_at, comments, pr_merged_at, pr_merged, pr_changed_files, pr_review_comments, pr_or_issue_id, push_size, push_distinct_size, creator_user_login, creator_user_id, pr_or_issue_created_at]
+- Column type, enums = ['PullRequestEvent', 'PushEvent', 'IssueCommentEvent', 'IssuesEvent', 'PullRequestReviewCommentEvent', 'WatchEvent', 'CreateEvent', 'DeleteEvent', 'ForkEvent', 'ReleaseEvent']
+- Column action:
+* type in [PullRequestReviewCommentEvent, IssueCommentEvent, ReviewEvent]: created
+* type in [PullRequestEvent, IssuesEvent]: opened, closed, reopened
+- Column number, number is issue number
+- Column created_at, closed_at, pr_merged_at, pr_or_issue_created_at DEFAULT '1970-01-01 00:00:00'
+
+# Rules
+Select statement limit 20 by default, if question need more data, please add limit 200
+Use column alias for all columns: SELECT ge.repo_name AS repo_name
+use common table expression if and only if necessary
+
+# Snippet
+Trends across months: DATE_FORMAT(ge.created_at, '%Y-%m-01') AS t_month
+Open to merged time: TIMESTAMPDIFF(SECOND, ge.pr_or_issue_created_at, ge.closed_at)
+Exclude bots: actor_login NOT LIKE "%bot%"
+When access github_events table, must add 'repo_id = {fill with repo_id!!!}' in WHERE
+Star in 2022: WHERE ge.type = 'WatchEvent' AND ge.action = 'started' AND YEAR(ge.created_at) = 2022
+Merged PR: type = 'PullRequestEvent' AND action = 'closed' AND pr_merged = 1
+The number of PR: type = 'PullRequestEvent' AND action = 'opened'
+Contributor: who opened pull request to the repo
+
+# Context
+${context.repo_id ? `this_repo_id = ${context.repo_id}` : ''}
+${context.repo_name ? `this_repo_name = ${context.repo_name}` : ''}
+${context.github_id ? `my_github_id = ${context.github_id}` : ''}
+${context.github_login ? `my_github_login = ${context.github_login}` : ''}
+
+# Example Template
+-- A template for calculating trend by star history
+SELECT DATE_FORMAT(ge.created_at, '%Y-%m-01') AS month, COUNT(*) AS stars FROM github_events ge WHERE ge.type = 'WatchEvent' AND ge.repo_id = ${context.repo_id} GROUP BY month ORDER BY month ASC
+
 ---
-${this.examples.map(e => this.stringifyExample(e, context)).join('\n')}
+Let's think step by step, use best practice of writing SQL, generate a single line SQL (without line break) to answer the question: "${question}".
 ---
--- Let's think step by step, generate one correct SQL to do query: ${question}
----
-${this.resultPrefix}
-`;
-  }
-
-  stringifyContext(key: string, value: any): string {
-    return `Define ${key} = ${this.stringifyValue(value)}`;
-  }
-
-  stringifyValue(value: any): string {
-    if (typeof value === 'string') {
-      return `'${value}'`;
-    } else if (Array.isArray(value)) {
-      return `[${value.map(v => this.stringifyValue(v)).join(', ')}]`;
-    } else if (value instanceof Date) {
-      return DateTime.fromJSDate(value).toSQL();
-    } else if (value === null) {
-      return 'null';
-    } else {
-      return value;
-    }
-  }
-
-  stringifyTable(table: TableInfo): string {
-    const tableDefinition = `Table ${table.name}, columns = [${table.columns.map(c => c.name).join(', ')}]`;
-    const columnDefinitions = table.columns.map(c => this.stringifyColumn(c)).filter(c => c !== undefined);
-    const comments = table.comments || [];
-    const definitions = [tableDefinition];
-    if (columnDefinitions.length > 0) {
-      definitions.push(columnDefinitions.join('\n'));
-    }
-    if (comments.length > 0) {
-      definitions.push(comments.join('\n'));
-    }
-    return definitions.join('\n');
-  }
-
-  stringifyColumn(column: ColumnInfo): string | undefined {
-    const definitions = [];
-    if (column.type) {
-      definitions.push(`type = ${column.type}`);
-    }
-    if (column.enums) {
-      definitions.push(`enums = [${column.enums.map(e => `'${e}'`).join(', ')}]`);
-    }
-    if (column.invalid) {
-      definitions.push(`invalid = [${column.invalid.map(v => this.stringifyValue(v)).join(', ')}]`);
-    }
-    if (column.comments) {
-      definitions.push(column.comments.join(', '));
-    }
-    if (definitions.length > 0) {
-      return `Column ${column.name}, ${definitions.join(', ')}`;
-    } else {
-      return undefined;
-    }
-  }
-
-  stringifyRelation(relations: RelationInfo): string {
-    return `Relation ${relations.leftTableName}.${relations.leftColumnName} = ${relations.rightTableName}.${relations.rightColumnName}`;
-  }
-
-  stringifyExample(example: SQLExample, context: Record<string, any> = {}): string {
-    let sql = example.sql;
-
-    // Replace multiple spaces outside string literals with a single space
-    sql = sql.replace(/\s+(?=(?:[^']*'[^']*')*[^']*$)/g, ' ');
-    // Remove leading and trailing whitespace from each line.
-    sql = sql.replace(/^\s+|\s+$/gm, '');
-
-    // Replace context variables with their values, {{key}}.
-    for (const [k, v] of Object.entries(context)) {
-      sql = sql.replace(new RegExp(`{{${k}}}`, 'g'), this.stringifyValue(v));
-    }
-
-    return `-- ${example.question}\n${sql}`;
+`
   }
 
 }
