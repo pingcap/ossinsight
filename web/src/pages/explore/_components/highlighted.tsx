@@ -16,7 +16,7 @@ export const HighlightContent = styled(ButtonBase, { name: 'Highlight-Content' }
   font-size: 14px;
   line-height: 1.5;
   color: white;
-  background-color: rgba(44, 44, 44, 0.8);
+  background-color: rgba(44, 44, 44, 0.5);
   border-radius: 6px;
   transition: ${({ theme }) => theme.transitions.create('background-color')};
   padding: 18px;
@@ -25,7 +25,7 @@ export const HighlightContent = styled(ButtonBase, { name: 'Highlight-Content' }
   vertical-align: top;
 
   &:hover {
-    background-color: rgba(44, 44, 44, 0.5);
+    background-color: rgba(44, 44, 44, 0.8);
   }
   
   &:not(:first-of-type) {
