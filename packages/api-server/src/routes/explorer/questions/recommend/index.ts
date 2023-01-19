@@ -14,7 +14,7 @@ const schema = {
         type: 'number',
         default: '10',
         minimum: 1,
-        maximum: 30
+        maximum: 100
       },
       tagId: {
         type: 'number',
