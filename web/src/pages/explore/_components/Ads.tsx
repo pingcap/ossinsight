@@ -1,6 +1,6 @@
 import { generateUtilityClasses, styled, Typography } from '@mui/material';
 import TiDBCloudLink from '@site/src/components/TiDBCloudLink';
-import { SaveAlt } from '@mui/icons-material';
+import UploadIcon from './img/upload.svg';
 import React from 'react';
 import clsx from 'clsx';
 
@@ -19,7 +19,7 @@ const Ads = ({ size }: AdsProps) => {
             </Typography>
             <TiDBCloudLink as={AdsButton} className={clsx({ [classes.small]: size === 'small' })}>
               <AdsButtonIconContainer className={clsx({ [classes.small]: size === 'small' })}>
-                <SaveAlt fontSize='inherit' />
+                <UploadIcon />
               </AdsButtonIconContainer>
               Import any dataset
             </TiDBCloudLink>
@@ -133,6 +133,7 @@ const AdsFootnote = styled('div')`
 
 const AdsImage = styled('img')`
   max-width: 100%;
+
   &.${classes.small} {
     max-width: 90%;
   }
