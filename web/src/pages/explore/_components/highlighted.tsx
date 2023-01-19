@@ -14,18 +14,22 @@ export const HighlightBackground = styled('div', { name: 'Highlight-Background' 
 export const HighlightContent = styled(ButtonBase, { name: 'Highlight-Content' })`
   display: block;
   font-size: 14px;
-  line-height: 1.25;
+  line-height: 1.5;
+  color: white;
   background-color: rgba(44, 44, 44, 0.8);
   border-radius: 6px;
   transition: ${({ theme }) => theme.transitions.create('background-color')};
   padding: 18px;
   text-align: left;
   width: 100%;
-  height: 100%;
   vertical-align: top;
 
   &:hover {
     background-color: rgba(44, 44, 44, 0.5);
+  }
+  
+  &:not(:first-of-type) {
+    margin-top: 16px;
   }
 `;
 

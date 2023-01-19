@@ -9,8 +9,8 @@ export interface SuggestionsProps {
   disabled?: boolean;
   variant?: QuestionCardVariant;
   title?: (reload: () => void, loading: boolean) => ReactNode;
-  n: number;
-  questionPrefix?: string;
+  n?: number;
+  questionPrefix?: ReactNode;
 }
 
 export interface RecommendedSuggestionsProps extends SuggestionsProps {
@@ -21,9 +21,9 @@ export interface PresetSuggestionsProps extends SuggestionsProps {
   questions: string[];
 }
 
-export function useRecommended (aiGenerated: boolean, n: number) {
-  const { data, isValidating, mutate } = useSWR([aiGenerated, n, 'data-explorer-recommend-question'], {
-    fetcher: async (aiGenerated, n) => await generateQuestion(aiGenerated, n),
+export function useRecommended (aiGenerated: boolean, n?: number, tagId?: number) {
+  const { data, isValidating, mutate } = useSWR([aiGenerated, n, tagId, 'data-explorer-recommend-question'], {
+    fetcher: async (aiGenerated, n) => await generateQuestion(aiGenerated, n, tagId),
     shouldRetryOnError: false,
     revalidateIfStale: false,
     revalidateOnReconnect: false,
@@ -49,7 +49,7 @@ export function Suggestions ({ variant, disabled, questions, n, questionPrefix }
         variant={variant}
         question={(
           variant === 'text'
-            ? <Skeleton width="230px" />
+            ? <Skeleton width="70%" />
             : (
               <>
                 <Skeleton width="100%" />
@@ -62,9 +62,9 @@ export function Suggestions ({ variant, disabled, questions, n, questionPrefix }
       />
     );
     if (variant === 'text') {
-      return array(n).map(renderCard);
+      return array(3).map(renderCard);
     } else {
-      return array(n).map(i => (
+      return array(3).map(i => (
         <Grid item xs={12} md={4} key={i} display="flex" alignItems="stretch" justifyContent="stretch">
           {renderCard(i)}
         </Grid>
@@ -74,7 +74,7 @@ export function Suggestions ({ variant, disabled, questions, n, questionPrefix }
 
   const renderData = () => {
     const renderCard = (question: QuestionTemplate, i: number) => (
-      <QuestionCard key={i} variant={variant} question={question.title} questionId={question.questionId} prefix={questionPrefix} disabled={disabled} />
+      <QuestionCard key={i} variant={variant} question={question.title} questionId={question.questionId} tags={question.tags} prefix={questionPrefix} disabled={disabled} />
     );
     if (variant === 'text') {
       return questions.map(renderCard);

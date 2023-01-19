@@ -1,4 +1,5 @@
 import { clientWithoutCache } from '@site/src/api/client';
+import { isFiniteNumber, notNullish } from '@site/src/utils/value';
 
 export type ChartResult = {
   chartName: string;
@@ -90,10 +91,19 @@ export type QuestionTemplate = {
   title: string;
   aiGenerated: 0 | 1;
   questionId: string | null;
+  tags: QuestionTag[];
 };
 
-export async function generateQuestion (aiGenerated: boolean, n: number): Promise<QuestionTemplate[]> {
-  return await clientWithoutCache.get('/explorer/questions/recommend', { params: { aiGenerated, n } });
+export async function generateQuestion (aiGenerated: boolean, n?: number, tagId?: number): Promise<QuestionTemplate[]> {
+  const params = {} as any;
+  if (isFiniteNumber(n)) {
+    params.n = n;
+  }
+  if (notNullish(tagId)) {
+    params.tagId = tagId;
+  }
+
+  return await clientWithoutCache.get('/explorer/questions/recommend', { params });
 }
 
 type FeedbackMessage = {
@@ -123,4 +133,16 @@ interface Feedback {
 
 export async function pollFeedback (questionId: string, oToken: string): Promise<Feedback[]> {
   return await clientWithoutCache.get(`/explorer/questions/${questionId}/feedback`, { oToken });
+}
+
+export interface QuestionTag {
+  id: number;
+  label: string;
+  color: string;
+  sort: number;
+  createdAt: string;
+}
+
+export async function getTags (): Promise<QuestionTag[]> {
+  return await clientWithoutCache.get('/explorer/tags');
 }
