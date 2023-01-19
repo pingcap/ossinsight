@@ -148,8 +148,7 @@ function renderEngines (question: Question | undefined) {
   if (notNullish(question) && !isEmptyArray(question.engines)) {
     return (
       <>
-        . Running on
-        <EngineTag>{question.engines.map(replaceEngineName).join(', ')}</EngineTag>
+        . Running on <EngineTag>{question.engines.map(replaceEngineName).join(', ')}</EngineTag>
         <Info>
           All queries run on <b>ONE</b> TiDB service. The TiDB SQL optimizer decides which engine to use for executing queries:
           <ul>
@@ -175,11 +174,7 @@ function replaceEngineName (name: string) {
 }
 
 const EngineTag = styled('span')`
-  color: #5667FF;
-  border: 1px solid #5667FF80;
-  border-radius: 2px;
-  padding: 4px 8px;
-  margin: 0 4px;
+  color: #B0B8FF;
 `;
 
 function Chart ({ chartData, chartError, fields, result, controlsContainer }: { chartData: ChartResult | undefined, chartError: unknown, result: Array<Record<string, any>> | undefined, fields: Array<{ name: string }> | undefined, controlsContainer: HTMLSpanElement | null }) {
@@ -233,16 +228,16 @@ function Chart ({ chartData, chartError, fields, result, controlsContainer }: { 
     const renderTips = () => {
       return (
         <>
-          <Stack direction="row" justifyContent='center' alignItems="center" flexWrap="wrap" spacing={0.5} py={1} mt={2} fontSize='inherit' bgcolor='#323140'>
-            <Typography variant='body1' mr={2}>Do you like the result?</Typography>
+          <Stack direction="row" justifyContent="center" alignItems="center" flexWrap="wrap" spacing={0.5} py={1} mt={2} fontSize="inherit" bgcolor="#323140">
+            <Typography variant="body1" mr={2}>Do you like the result?</Typography>
             <Feedback />
           </Stack>
           <Divider sx={{ my: 2 }} />
           <Typography component="div" variant="body2" color="#D1D1D1">
             🤔 Not exactly what you&apos;re looking for?
             <ul>
-              <li>AI can write SQL effectively, but remember that it&apos;s still a work in progress with limitations. </li>
-              <li>Clear and specific language will help the AI understand your needs. Eg. use &apos;@facebook/react&apos; instead of &apos;react&apos;. Check out <a href='javascript:void(0)' onClick={gotoAnchor('data-explorer-faq')}>FAQ</a> for more tips.</li>
+              <li>AI can write SQL effectively, but remember that it&apos;s still a work in progress with limitations.</li>
+              <li>Clear and specific language will help the AI understand your needs. Eg. use &apos;@facebook/react&apos; instead of &apos;react&apos;. Check out <a href="javascript:void(0)" onClick={gotoAnchor('data-explorer-faq')}>FAQ</a> for more tips.</li>
               <li>GitHub data is not your focus? <TiDBCloudLink>Use Chat2Query to empower your data exploration</TiDBCloudLink> on any dataset.
               </li>
             </ul>
