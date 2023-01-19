@@ -1,4 +1,4 @@
-import { Divider, styled, useEventCallback } from '@mui/material';
+import { IconButton, Stack, useEventCallback } from '@mui/material';
 import React from 'react';
 import { ThumbDownAlt, ThumbDownOffAlt, ThumbUpAlt, ThumbUpOffAlt } from '@mui/icons-material';
 import { useAsyncState } from '@site/src/hooks/operation';
@@ -68,44 +68,13 @@ export default function Feedback ({ sx }: { sx?: SxProps }) {
   });
 
   return (
-    <FeedbackContainer sx={sx}>
-      <FeedbackButton onClick={handleUp}>
+    <Stack sx={sx} direction="row" spacing={2}>
+      <IconButton onClick={handleUp} color={checked === true ? 'primary' : undefined} size="small">
         {checked === true ? <ThumbUpAlt color="primary" fontSize="inherit" /> : <ThumbUpOffAlt fontSize="inherit" />}
-      </FeedbackButton>
-      <Divider orientation="vertical" flexItem sx={{ my: 0.5 }} />
-      <FeedbackButton onClick={handleDown}>
+      </IconButton>
+      <IconButton onClick={handleDown} color={checked === false ? 'primary' : undefined} size="small">
         {checked === false ? <ThumbDownAlt color="primary" fontSize="inherit" /> : <ThumbDownOffAlt fontSize="inherit" />}
-      </FeedbackButton>
-    </FeedbackContainer>
+      </IconButton>
+    </Stack>
   );
 }
-
-const FeedbackContainer = styled('div')`
-  display: inline-flex;
-  pointer-events: auto;
-  height: 32px;
-  width: 65px;
-  min-width: 65px;
-  border-radius: 16px;
-  background: #333333;
-  align-items: center;
-  justify-content: center;
-`;
-
-const FeedbackButton = styled('button')`
-  width: 28px;
-  height: 28px;
-  appearance: none;
-  outline: none;
-  border: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: transparent;
-  font-size: 20px;
-  transition: ${({ theme }) => theme.transitions.create('color')};
-
-  &:not(:disabled) {
-    cursor: pointer;
-  }
-`;

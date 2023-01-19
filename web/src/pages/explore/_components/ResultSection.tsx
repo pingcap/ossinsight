@@ -4,7 +4,7 @@ import useQuestionManagement, { QuestionLoadingPhase } from '@site/src/pages/exp
 import { isEmptyArray, isNonemptyString, isNullish, nonEmptyArray, notNullish } from '@site/src/utils/value';
 import { ChartResult, Question, QuestionStatus } from '@site/src/api/explorer';
 import Info from '@site/src/pages/explore/_components/Info';
-import { Portal, styled, ToggleButton, ToggleButtonGroup, Typography, useEventCallback } from '@mui/material';
+import { Divider, Portal, Stack, styled, ToggleButton, ToggleButtonGroup, Typography, useEventCallback } from '@mui/material';
 import { getErrorMessage } from '@site/src/utils/error';
 import ErrorBlock from '@site/src/pages/explore/_components/ErrorBlock';
 import TableChart from '@site/src/pages/explore/_components/charts/TableChart';
@@ -21,6 +21,7 @@ import ShareButtons from './ShareButtons';
 import TypewriterEffect from '@site/src/pages/explore/_components/TypewriterEffect';
 import { gotoAnchor } from '@site/src/utils/dom';
 import TiDBCloudLink from '@site/src/components/TiDBCloudLink';
+import Feedback from '@site/src/pages/explore/_components/Feedback';
 
 export default function ResultSection () {
   const { question, error, phase } = useQuestionManagement();
@@ -231,15 +232,22 @@ function Chart ({ chartData, chartError, fields, result, controlsContainer }: { 
 
     const renderTips = () => {
       return (
-        <Typography component="div" variant="body2" color="#D1D1D1" mt={2}>
-          🤔 Not exactly what you&apos;re looking for?
-          <ul>
-            <li>AI can write SQL effectively, but remember that it&apos;s still a work in progress with limitations. </li>
-            <li>Clear and specific language will help the AI understand your needs. Eg. use &apos;@facebook/react&apos; instead of &apos;react&apos;. Check out <a href='javascript:void(0)' onClick={gotoAnchor('data-explorer-faq')}>FAQ</a> for more tips.</li>
-            <li>GitHub data is not your focus? <TiDBCloudLink>Use Chat2Query to empower your data exploration</TiDBCloudLink> on any dataset.
-            </li>
-          </ul>
-        </Typography>
+        <>
+          <Stack direction="row" justifyContent='center' alignItems="center" flexWrap="wrap" spacing={0.5} py={1} mt={2} fontSize='inherit' bgcolor='#323140'>
+            <Typography variant='body1' mr={2}>Do you like the result?</Typography>
+            <Feedback />
+          </Stack>
+          <Divider sx={{ my: 2 }} />
+          <Typography component="div" variant="body2" color="#D1D1D1">
+            🤔 Not exactly what you&apos;re looking for?
+            <ul>
+              <li>AI can write SQL effectively, but remember that it&apos;s still a work in progress with limitations. </li>
+              <li>Clear and specific language will help the AI understand your needs. Eg. use &apos;@facebook/react&apos; instead of &apos;react&apos;. Check out <a href='javascript:void(0)' onClick={gotoAnchor('data-explorer-faq')}>FAQ</a> for more tips.</li>
+              <li>GitHub data is not your focus? <TiDBCloudLink>Use Chat2Query to empower your data exploration</TiDBCloudLink> on any dataset.
+              </li>
+            </ul>
+          </Typography>
+        </>
       );
     };
 

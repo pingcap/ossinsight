@@ -1,10 +1,9 @@
 import { RecommendedSuggestions } from '@site/src/pages/explore/_components/Suggestions';
-import { Box, Divider, IconButton, Stack, styled, Typography } from '@mui/material';
+import { Box, Divider, IconButton, styled, Typography } from '@mui/material';
 import { ArrowForward, Cached } from '@mui/icons-material';
 import React, { useEffect, useState } from 'react';
 import Link from '@docusaurus/Link';
 import useQuestionManagement from '@site/src/pages/explore/_components/useQuestion';
-import Feedback from './Feedback';
 import { useMemoizedFn } from 'ahooks';
 import TiDBCloudLink from '@site/src/components/TiDBCloudLink';
 
@@ -34,24 +33,20 @@ export default function Side () {
           </Typography>
         )}
       />
-      <Divider orientation="horizontal" sx={{ my: 2 }} />
-      <Stack direction='row' alignItems='center' flexWrap='wrap' spacing={0.5} fontSize={14} lineHeight={2}>
-        <span>Do you like the result?</span>
-        <Feedback />
-      </Stack>
       {show && (
         <>
+          <Divider orientation="horizontal" sx={{ my: 2 }} />
           <Box>
-          <TiDBCloudLink as={StyledLink}>
-          Check out <b>Chat2Query</b> to empower any dataset you want.
-          <ArrowForward fontSize='inherit' sx={{
-            verticalAlign: 'text-bottom',
-            ml: 0.5,
-          }} />
-        </TiDBCloudLink>
-        <Details>
-        *Chat2Query: an AI-powered querying tool in TiDB Cloud that generates SQL for your queries.
-        </Details>
+            <TiDBCloudLink as={StyledLink}>
+              Check out <b>Chat2Query</b> to empower any dataset you want.
+              <ArrowForward fontSize="inherit" sx={{
+                verticalAlign: 'text-bottom',
+                ml: 0.5,
+              }} />
+            </TiDBCloudLink>
+            <Details>
+              *Chat2Query: an AI-powered querying tool in TiDB Cloud that generates SQL for your queries.
+            </Details>
           </Box>
         </>
       )}
@@ -73,9 +68,10 @@ const StyledLink = styled(Link)`
   padding: 8px 12px;
   border-radius: 6px;
   background: linear-gradient(90deg, rgba(67, 142, 255, 0.15) 0%, rgba(132, 56, 255, 0.15) 106.06%);
+
   &:hover {
-    background-color: #3c3c3c;    
-}
+    background-color: #3c3c3c;
+  }
 `;
 
 const Details = styled('p')`
