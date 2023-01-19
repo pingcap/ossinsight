@@ -12,6 +12,14 @@ export interface PromptTemplate {
   stringify(...arg: any[]): string;
 }
 
+export interface QuestionTag {
+  id: number;
+  label: string;
+  color: string;
+  sort: number;
+  createdAt: DateTime;
+}
+
 export interface RecommendQuestion {
   hash: string;
   title: string;

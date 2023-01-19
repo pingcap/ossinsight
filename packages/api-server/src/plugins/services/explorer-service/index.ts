@@ -38,7 +38,7 @@ import {
     MapChart,
     NumberCard,
     PersonalCard,
-    PieChart,
+    PieChart, QuestionTag,
     RecommendedChart,
     RecommendQuestion,
     RepoCard,
@@ -101,6 +101,7 @@ export interface ExplorerOption {
 }
 
 export class ExplorerService {
+    [x: string]: any;
     // TODO: replace node-sql-parser with tidb-sql-parser.
     private sqlParser: Parser;
     private readonly generateAnswerTemplate: GenerateAnswerPromptTemplate;
@@ -229,7 +230,7 @@ export class ExplorerService {
             await this.updateQuestion(question);
 
             // Prepare the recommended questions.
-            const popularQuestions = await this.getRecommendQuestions(3, false);
+            const popularQuestions = await this.getRecommendQuestionsByRandom(3, false);
             question.recommendedQuestions?.push(...popularQuestions.map(q => q.title));
 
             // Generate the SQL by OpenAI.
@@ -1036,7 +1037,22 @@ export class ExplorerService {
 
     // Recommend questions.
 
-    async getRecommendQuestions(n: number, aiGenerated?: boolean, conn?: Connection): Promise<RecommendQuestion[]> {
+    async getQuestionTags(conn?: Connection): Promise<QuestionTag[]> {
+        const connection = conn || this.mysql;
+        const [rows] = await connection.query<any[]>(`
+            SELECT id, label, color, sort, created_at AS createdAt
+            FROM explorer_question_tags eqt
+            ORDER BY eqt.sort
+        `);
+        return rows.map((r) => {
+            return {
+                ...r,
+                createdAt: r.createdAt instanceof Date ? DateTime.fromJSDate(r.createdAt) : null,
+            }
+        });
+    }
+
+    async getRecommendQuestionsByRandom(n: number, aiGenerated?: boolean, conn?: Connection): Promise<RecommendQuestion[]> {
         const connection = conn || this.mysql;
         let questions = [];
         try {
@@ -1063,13 +1079,65 @@ export class ExplorerService {
         return this.mapToRecommendQuestions(questions);
     }
 
+    async getRecommendQuestionsByTag(n: number = 40, tagId?: number | null, conn?: Connection): Promise<RecommendQuestion[]> {
+        const connection = conn || this.mysql;
+
+        let questions = [];
+        if (tagId) {
+            [questions] = await connection.query<any[]>(`
+                SELECT eq.hash, eq.title, false AS aiGenerated, BIN_TO_UUID(eq.id) AS questionId, eq.created_at AS createdAt
+                FROM explorer_questions eq
+                JOIN explorer_question_tag_rel eqtr ON eqtr.question_id = eq.id
+                WHERE
+                    recommended = 1
+                    AND tag_id = ?
+                ORDER BY RAND()
+                LIMIT ?
+            `, [tagId, n])
+        } else {
+            [questions] = await connection.query<any[]>(`
+                SELECT eq.hash, eq.title, false AS aiGenerated, BIN_TO_UUID(eq.id) AS questionId, eq.created_at AS createdAt
+                FROM explorer_questions eq
+                WHERE
+                    recommended = 1
+                ORDER BY RAND()
+                LIMIT ?
+            `, [n])
+        }
+
+        const questionIds = questions.map((q) => q.questionId);
+        if (questionIds.length > 0) {
+            const [questionTags] = await connection.query<any[]>(`
+                SELECT BIN_TO_UUID(question_id) AS questionId, eqt.id, eqt.label, eqt.color
+                FROM explorer_question_tag_rel eqtr
+                JOIN explorer_question_tags eqt ON eqt.id = eqtr.tag_id
+                WHERE question_id IN (${
+                  questionIds.map((id) => `UUID_TO_BIN('${id}')`).join(',')
+                })
+            `);
+
+            questions.forEach((q) => {
+                q.tags = questionTags.filter((qt) => qt.questionId === q.questionId).map((qt) => {
+                    return {
+                        id: qt.id,
+                        label: qt.label,
+                        color: qt.color,
+                    }
+                });
+            });
+        }
+
+        return this.mapToRecommendQuestions(questions);
+    }
+
     async mapToRecommendQuestions(rows: any[]): Promise<RecommendQuestion[]> {
         return rows.map((row) => ({
             hash: row.hash,
             title: row.title,
             aiGenerated: row.aiGenerated === 1,
             questionId: row.questionId,
-            createdAt: DateTime.fromJSDate(row.createdAt)
+            createdAt: DateTime.fromJSDate(row.createdAt),
+            tags: row.tags || [],
         }));
     }
 
