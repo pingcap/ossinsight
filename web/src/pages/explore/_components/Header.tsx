@@ -13,6 +13,9 @@ export default function () {
   return (
     <HeaderContainer>
       <Title>
+        <StyledExploreIconContainer>
+          <span className="nav-explore-icon" />
+        </StyledExploreIconContainer>
         <TitleContent>
           {title}
         </TitleContent>
@@ -27,6 +30,19 @@ export default function () {
 
 const StyledBeta = styled(Beta)`
   margin-left: 8px;
+`;
+
+const StyledExploreIconContainer = styled('span')`
+  display: inline-flex;
+  width: 36px;
+  height: 36px;
+  vertical-align: middle;
+  align-items: center;
+  justify-content: center;
+  margin-right: 16px;
+  > span {
+    scale: 2;
+  }
 `;
 
 const HeaderContainer = styled('div', { shouldForwardProp: propName => propName !== 'display' })`
