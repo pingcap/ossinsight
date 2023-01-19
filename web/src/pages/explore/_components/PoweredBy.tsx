@@ -2,6 +2,7 @@ import { styled } from '@mui/material';
 import React, { CSSProperties } from 'react';
 import { Nullish } from '@site/src/utils/value';
 import { SxProps } from '@mui/system';
+import TiDBCloudLink from '@site/src/components/TiDBCloudLink';
 
 export interface PoweredByProps {
   align?: CSSProperties['textAlign'];
@@ -11,7 +12,7 @@ export interface PoweredByProps {
 export default function PoweredBy ({ align = 'left', sx }: PoweredByProps) {
   return (
     <PoweredByContainer align={align} sx={sx}>
-      Powered by <a href='https://tidbcloud.com/channel?utm_source=ossinsight&utm_medium=referral&utm_campaign=chat2query_202301' target='_blank' rel="noopener noreferrer">TiDB Cloud</a>
+      Powered by <TiDBCloudLink>TiDB Cloud</TiDBCloudLink>
     </PoweredByContainer>
   );
 }
