@@ -1136,7 +1136,8 @@ export class ExplorerService {
             title: row.title,
             aiGenerated: row.aiGenerated === 1,
             questionId: row.questionId,
-            createdAt: DateTime.fromJSDate(row.createdAt)
+            createdAt: DateTime.fromJSDate(row.createdAt),
+            tags: row.tags || [],
         }));
     }
 
