@@ -15,6 +15,9 @@ const schema = {
         default: '10',
         minimum: 1,
         maximum: 30
+      },
+      tagId: {
+        type: 'number',
       }
     }
   } as const
@@ -23,6 +26,7 @@ const schema = {
 export interface IQuerystring {
   aiGenerated?: boolean;
   n: number;
+  tagId: number;
 }
 
 export const recommendQuestionHandler: FastifyPluginAsyncJsonSchemaToTs = async (app): Promise<void> => {
@@ -31,8 +35,15 @@ export const recommendQuestionHandler: FastifyPluginAsyncJsonSchemaToTs = async 
   }>('/', {
     schema
   }, async function (req, reply) {
-    const { aiGenerated, n } = req.query;
-    const questions = await app.explorerService.getRecommendQuestions(n, aiGenerated);
+    const { aiGenerated, n, tagId } = req.query;
+
+    let questions: any[] = [];
+    if (aiGenerated) {
+      questions = await app.explorerService.getRecommendQuestionsByRandom(n, aiGenerated);
+    } else {
+      questions = await app.explorerService.getRecommendQuestionsByTag(n, tagId);
+    }
+
     reply.status(200).send(questions);
   });
 }
