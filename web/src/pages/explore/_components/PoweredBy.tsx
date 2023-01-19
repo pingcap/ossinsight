@@ -12,7 +12,7 @@ export interface PoweredByProps {
 export default function PoweredBy ({ align = 'left', sx }: PoweredByProps) {
   return (
     <PoweredByContainer align={align} sx={sx}>
-      Powered by <TiDBCloudLink>TiDB Cloud</TiDBCloudLink>
+      <TiDBCloudLink>Build with Chat2Query on TiDB Cloud</TiDBCloudLink>
     </PoweredByContainer>
   );
 }
@@ -24,6 +24,6 @@ const PoweredByContainer = styled('div', { shouldForwardProp: name => name !== '
 
   > a {
     color: #C1C1C1 !important;
-    text-decoration: underline;
+    text-decoration: none !important;
   }
 `;

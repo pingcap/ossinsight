@@ -1,5 +1,5 @@
 import Section from '@site/src/pages/explore/_components/Section';
-import React, { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import useQuestionManagement, { QuestionLoadingPhase } from '@site/src/pages/explore/_components/useQuestion';
 import { isEmptyArray, isNonemptyString, isNullish, nonEmptyArray, notNullish } from '@site/src/utils/value';
 import { ChartResult, Question, QuestionStatus } from '@site/src/api/explorer';
@@ -12,16 +12,14 @@ import { Charts } from '@site/src/pages/explore/_components/charts';
 import { AutoGraph, TableView } from '@mui/icons-material';
 import { TabContext, TabPanel } from '@mui/lab';
 import { useExploreContext } from '@site/src/pages/explore/_components/context';
-import { useInterval } from 'ahooks';
-import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import SummaryCard from '@site/src/pages/explore/_components/SummaryCard';
 import { uniqueItems } from '@site/src/utils/generate';
-import BotIcon from '@site/src/pages/explore/_components/BotIcon';
 import ShareButtons from './ShareButtons';
 import TypewriterEffect from '@site/src/pages/explore/_components/TypewriterEffect';
 import { gotoAnchor } from '@site/src/utils/dom';
 import TiDBCloudLink from '@site/src/components/TiDBCloudLink';
 import Feedback from '@site/src/pages/explore/_components/Feedback';
+import { Prompts } from '@site/src/pages/explore/_components/Prompt';
 
 export default function ResultSection () {
   const { question, error, phase } = useQuestionManagement();
@@ -137,8 +135,8 @@ export default function ResultSection () {
           <TypewriterEffect content={summaryContent} maxContinuous={2} avgInterval={40} />
         </SummaryCard>
       )}
-      {phase === QuestionLoadingPhase.QUEUEING && <PromptTitle source={question?.queuePreceding === 0 ? QUEUE_ALMOST_PROMPT_TITLES : QUEUE_PROMPT_TITLES} interval={5000} />}
-      {phase === QuestionLoadingPhase.EXECUTING && <PromptTitle source={RUNNING_PROMPT_TITLES} interval={3000} />}
+      {phase === QuestionLoadingPhase.QUEUEING && <PromptsTitle source={question?.queuePreceding === 0 ? QUEUE_ALMOST_PROMPT_TITLES : QUEUE_PROMPT_TITLES} interval={5000} />}
+      {phase === QuestionLoadingPhase.EXECUTING && <PromptsTitle source={RUNNING_PROMPT_TITLES} interval={3000} />}
       <Chart chartData={question?.chart ?? undefined} chartError={chartError} result={result} fields={question?.result?.fields} controlsContainer={controlsContainerRef} />
     </Section>
   );
@@ -148,8 +146,7 @@ function renderEngines (question: Question | undefined) {
   if (notNullish(question) && !isEmptyArray(question.engines)) {
     return (
       <>
-        . Running on
-        <EngineTag>{question.engines.map(replaceEngineName).join(', ')}</EngineTag>
+        . Running on <EngineTag>{question.engines.map(replaceEngineName).join(', ')}</EngineTag>
         <Info>
           All queries run on <b>ONE</b> TiDB service. The TiDB SQL optimizer decides which engine to use for executing queries:
           <ul>
@@ -175,11 +172,7 @@ function replaceEngineName (name: string) {
 }
 
 const EngineTag = styled('span')`
-  color: #5667FF;
-  border: 1px solid #5667FF80;
-  border-radius: 2px;
-  padding: 4px 8px;
-  margin: 0 4px;
+  color: #B0B8FF;
 `;
 
 function Chart ({ chartData, chartError, fields, result, controlsContainer }: { chartData: ChartResult | undefined, chartError: unknown, result: Array<Record<string, any>> | undefined, fields: Array<{ name: string }> | undefined, controlsContainer: HTMLSpanElement | null }) {
@@ -233,16 +226,16 @@ function Chart ({ chartData, chartError, fields, result, controlsContainer }: { 
     const renderTips = () => {
       return (
         <>
-          <Stack direction="row" justifyContent='center' alignItems="center" flexWrap="wrap" spacing={0.5} py={1} mt={2} fontSize='inherit' bgcolor='#323140'>
-            <Typography variant='body1' mr={2}>Do you like the result?</Typography>
+          <Stack direction="row" justifyContent="center" alignItems="center" flexWrap="wrap" spacing={0.5} py={1} mt={2} fontSize="inherit" bgcolor="#323140">
+            <Typography variant="body1" mr={2}>Do you like the result?</Typography>
             <Feedback />
           </Stack>
           <Divider sx={{ my: 2 }} />
           <Typography component="div" variant="body2" color="#D1D1D1">
             🤔 Not exactly what you&apos;re looking for?
             <ul>
-              <li>AI can write SQL effectively, but remember that it&apos;s still a work in progress with limitations. </li>
-              <li>Clear and specific language will help the AI understand your needs. Eg. use &apos;@facebook/react&apos; instead of &apos;react&apos;. Check out <a href='javascript:void(0)' onClick={gotoAnchor('data-explorer-faq')}>FAQ</a> for more tips.</li>
+              <li>AI can write SQL effectively, but remember that it&apos;s still a work in progress with limitations.</li>
+              <li>Clear and specific language will help the AI understand your needs. Eg. use &apos;@facebook/react&apos; instead of &apos;react&apos;. Check out <a href="javascript:void(0)" onClick={gotoAnchor('data-explorer-faq')}>FAQ</a> for more tips.</li>
               <li>GitHub data is not your focus? <TiDBCloudLink>Use Chat2Query to empower your data exploration</TiDBCloudLink> on any dataset.
               </li>
             </ul>
@@ -344,59 +337,9 @@ const RUNNING_PROMPT_TITLES = [
   <><b>👀 Tips</b>: Click <b>Show</b> in the upper right corner to check the SQL query generated by AI.</>,
 ];
 
-const PromptTitle = ({ source, interval }: { source: ReactNode[], interval: number }) => {
-  const [index, setIndex] = useState(0);
-
-  useInterval(() => {
-    setIndex(index => (index + 1) % source.length);
-  }, interval);
-
-  return (
-    <TransitionGroup component={PromptTitleContainer}>
-      <BotIcon animated={false} />
-      <CSSTransition key={index} timeout={400} classNames="item">
-        <Prompt>
-          {source[index]}
-        </Prompt>
-      </CSSTransition>
-    </TransitionGroup>
-  );
-};
-
-const PromptTitleContainer = styled('span')`
-  position: relative;
-  display: block;
+const PromptsTitle = styled(Prompts)`
   min-height: 42px;
   min-width: 1px;
-`;
-
-const Prompt = styled('span')`
-  display: inline-block;
-  width: max-content;
-  padding-left: 8px;
-  transition: ${({ theme }) => theme.transitions.create(['opacity', 'transform'], { duration: 400 })};
-
-  &.item-enter {
-    opacity: 0;
-    transform: translate3d(-10%, 0, 0) scale(0.85);
-  }
-
-  &.item-enter-active {
-    position: absolute;
-    opacity: 1;
-    transform: none;
-  }
-
-  &.item-exit {
-    opacity: 1;
-    transform: none;
-  }
-
-  &.item-exit-active {
-    position: absolute;
-    opacity: 0;
-    transform: translate3d(10%, 0, 0) scale(0.85);
-  }
 `;
 
 const Controls = styled('div')`
