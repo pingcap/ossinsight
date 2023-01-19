@@ -3,8 +3,8 @@ import { DateTime } from 'luxon';
 import { Card, CardContent, IconButton, Portal, Slide, styled, useEventCallback } from '@mui/material';
 import React, { ForwardedRef, forwardRef, useState } from 'react';
 import { Close } from '@mui/icons-material';
-import Link from '@docusaurus/Link';
 import { applyForwardedRef } from '@site/src/utils/ref';
+import TiDBCloudLink from '@site/src/components/TiDBCloudLink';
 
 export interface TipsRef {
   show: () => void;
@@ -55,7 +55,7 @@ export default forwardRef<TipsRef>(function Tips (_, forwardedRef: ForwardedRef<
           <StyledCard>
             <CardContent>
             Glad you enjoy the exploration 😃
-            Try <Link to="https://tidbcloud.com/channel?utm_source=ossinsight&utm_medium=referral&utm_campaign=chat2query_202301" target="_blank">Chat2Query</Link> to empower your own data exploration.
+            Try <TiDBCloudLink>Chat2Query</TiDBCloudLink> to empower your own data exploration.
             </CardContent>
             <CloseButton size="small" onClick={handleClose}>
               <Close />

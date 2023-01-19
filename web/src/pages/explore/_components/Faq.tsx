@@ -3,6 +3,7 @@ import { Container, styled, Typography } from '@mui/material';
 import ExploreSteps from '@site/src/pages/explore/_components/ExploreSteps';
 import { GitHub, Twitter } from '@mui/icons-material';
 import Link from '@docusaurus/Link';
+import TiDBCloudLink from '@site/src/components/TiDBCloudLink';
 
 export default function Faq () {
   return (
@@ -38,7 +39,7 @@ const qa: QA[] = [
     q: 'Can I use the AI-powered feature with my own dataset?',
     a: (
       <>
-      Yes! Even if you&apos;re not a GitHub expert, you can explore any dataset with <Link to='https://tidbcloud.com/channel?utm_source=ossinsight&utm_medium=referral&utm_campaign=chat2query_202301' target='_blank'>Chat2Query</Link> at <b>NO COST</b>. Just keep in mind that we take privacy seriously.
+      Yes! Even if you&apos;re not a GitHub expert, you can explore any dataset with <TiDBCloudLink>Chat2Query</TiDBCloudLink> at <b>NO COST</b>. Just keep in mind that we take privacy seriously.
       </>
     ),
   }, {
@@ -125,7 +126,7 @@ const qa: QA[] = [
             <br />
             GH Archive collects and archives all GitHub data since 2011 and updates it hourly. <b>By combining the GH Archive data and the GitHub event API, we can gain streaming, real-time data updates.</b>
           </li>
-          <li>One database for all workloads:  <Link href='https://tidbcloud.com/channel?utm_source=ossinsight&utm_medium=referral&utm_campaign=chat2query_202301' target='_blank' rel='noopener'> TiDB Cloud</Link>
+          <li>One database for all workloads:  <TiDBCloudLink>TiDB Cloud</TiDBCloudLink>
           <br />
           Facing continuously growing large-volume data (currently 5+ billion GitHub events), we need a database that can:
           <ul>

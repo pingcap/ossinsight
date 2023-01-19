@@ -10,7 +10,7 @@ import { useInterval } from 'ahooks';
 import { randomOf } from '@site/src/utils/generate';
 import TypewriterEffect from '@site/src/pages/explore/_components/TypewriterEffect';
 import { gotoAnchor } from '@site/src/utils/dom';
-import Link from '@docusaurus/Link';
+import TiDBCloudLink from '@site/src/components/TiDBCloudLink';
 
 export default function SqlSection () {
   const { question, error, phase } = useQuestionManagement();
@@ -91,7 +91,7 @@ export default function SqlSection () {
               <br />
               Take a break and try again in {extractTime(sqlSectionError)}.
               <br />
-              Check out <Link to="https://tidbcloud.com/channel?utm_source=ossinsight&utm_medium=referral&utm_campaign=chat2query_202301" target="_blank">Chat2Query</Link> if you want to try AI-generated SQL in any other dataset <b>within 5 minutes</b>.
+              Check out <TiDBCloudLink>Chat2Query</TiDBCloudLink> if you want to try AI-generated SQL in any other dataset <b>within 5 minutes</b>.
             </>
             )
           : (
