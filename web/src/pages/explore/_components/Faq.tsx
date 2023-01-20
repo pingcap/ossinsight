@@ -135,7 +135,7 @@ const qa: QA[] = [
             <li>Handle complex analytical queries</li>
             <li>Serve online traffic</li>
           </ul>
-          <Link href='https://docs.pingcap.com/tidb/stable/overview/?utm_source=ossinsight&utm_medium=referral&utm_campaign=dataexplore' target='_blank' rel='noopener'> TiDB </Link> is an ideal solution. TiDB Cloud is its fully managed cloud Database as a Service. It lets users launch TiDB in seconds and offers the pay-as-you-go pricing model. Therefore, <b>we choose TiDB Cloud as our backend database.</b>
+          <Link href='https://docs.pingcap.com/tidb/stable/overview/?utm_source=ossinsight&utm_medium=referral&utm_campaign=chat2query_202301' target='_blank' rel='noopener'> TiDB </Link> is an ideal solution. TiDB Cloud is its fully managed cloud Database as a Service. It lets users launch TiDB in seconds and offers the pay-as-you-go pricing model. Therefore, <b>we choose TiDB Cloud as our backend database.</b>
           </li>
           <li>SQL generator: Chat2Query</li>
           <TiDBCloudLink>Chat2Query</TiDBCloudLink> is an AI-powered SQL editor in the TiDB Cloud console. We use it to generate SQL for your queries.
