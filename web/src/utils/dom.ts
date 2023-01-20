@@ -1,5 +1,5 @@
-export function gotoAnchor (anchor: string) {
+export function gotoAnchor (anchor: string, smooth: boolean = true) {
   return () => {
-    document.getElementById(anchor)?.scrollIntoView({ behavior: 'smooth' });
+    document.getElementById(anchor)?.scrollIntoView(smooth ? { behavior: 'smooth' } : undefined);
   };
 }
