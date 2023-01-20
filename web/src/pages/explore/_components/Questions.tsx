@@ -2,7 +2,7 @@ import { FINAL_PHASES, QuestionLoadingPhase, QuestionManagementContext, useQuest
 import useUrlSearchState, { nullableStringParam } from '@site/src/hooks/url-search-state';
 import React, { useEffect, useRef, useState } from 'react';
 import { isBlankString, isNullish, notNullish } from '@site/src/utils/value';
-import { Box, styled, useEventCallback } from '@mui/material';
+import { Box, NoSsr, styled, useEventCallback } from '@mui/material';
 import { ExploreContext } from '@site/src/pages/explore/_components/context';
 import { Decorators } from '@site/src/pages/explore/_components/Decorators';
 import Layout from '@site/src/pages/explore/_components/Layout';
@@ -98,7 +98,9 @@ export default function Questions () {
           <ExploreSearch value={value} onChange={setValue} onAction={handleAction} disableInput={isPending} disableClear={value === ''} disableAction={disableAction} onClear={handleClear} clearState={isPending ? 'stop' : undefined} />
           <SwitchLayout state={hideExecution ? 'recommend' : 'execution'} direction={hideExecution ? 'down' : 'up'}>
             <Box key="execution" sx={{ mt: 1.5 }}>
-              <Execution search={value} />
+              <NoSsr>
+                <Execution search={value} />
+              </NoSsr>
             </Box>
             <Box key="recommend" sx={{ mt: 4 }}>
               <RecommendList />

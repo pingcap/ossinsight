@@ -74,7 +74,7 @@ const AdsContent = styled('div')`
   }
 `;
 
-const AdsButton = styled('a')`
+const AdsButton = styled('span')`
   background: linear-gradient(90deg, #5667FF 0%, #A168FF 106.06%);
   box-shadow: ${({ theme }) => theme.shadows[4]};
   border-radius: 48px;
