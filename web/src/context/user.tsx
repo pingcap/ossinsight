@@ -1,6 +1,6 @@
 import React, { createContext, createElement, PropsWithChildren, useContext } from 'react';
 import { useUserInfo } from '@site/src/api/user';
-import { Auth0Provider, AppState } from '@auth0/auth0-react';
+import { AppState, Auth0Provider } from '@auth0/auth0-react';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import { useMemoizedFn } from 'ahooks';
 import { isNullish } from '@site/src/utils/value';

@@ -1,7 +1,8 @@
 import { Suggestions, useRecommended } from '@site/src/pages/explore/_components/Suggestions';
 import React, { useEffect, useMemo, useState } from 'react';
-import { ArrowRight } from '@mui/icons-material';
-import { Button, Divider } from '@mui/material';
+import { ArrowRight, ExpandLess } from '@mui/icons-material';
+import { Button, Divider, IconButton, styled, useEventCallback } from '@mui/material';
+import { gotoAnchor } from '@site/src/utils/dom';
 
 interface QuestionListProps {
   n?: number;
@@ -25,8 +26,17 @@ export default function QuestionList ({ n, tagId }: QuestionListProps) {
     }
   }, [data, expand]);
 
+  const handleExpandMore = useEventCallback(() => {
+    setExpand(true);
+  });
+
+  const handleExpandLess = useEventCallback(() => {
+    gotoAnchor('explore-questions-list', false)();
+    setExpand(false);
+  });
+
   return (
-    <>
+    <QuestionListRoot id="explore-questions-list">
       <Suggestions
         n={n}
         disabled={loading}
@@ -39,9 +49,22 @@ export default function QuestionList ({ n, tagId }: QuestionListProps) {
       />
       {!expand && canExpand && (
         <Divider>
-          <Button variant="text" color='inherit' onClick={() => setExpand(true)}>See More</Button>
+          <Button variant="text" color="inherit" onClick={handleExpandMore}>See More</Button>
         </Divider>
       )}
-    </>
+      {
+        expand && canExpand && (
+          <Divider>
+            <IconButton color="inherit" onClick={handleExpandLess}>
+              <ExpandLess />
+            </IconButton>
+          </Divider>
+        )
+      }
+    </QuestionListRoot>
   );
 }
+
+const QuestionListRoot = styled('div')`
+  scroll-margin: 140px;
+`;
