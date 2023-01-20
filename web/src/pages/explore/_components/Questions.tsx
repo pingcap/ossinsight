@@ -93,7 +93,7 @@ export default function Questions () {
         >
           <SwitchLayout state={hideExecution ? 'recommend' : 'execution'} direction={hideExecution ? 'down' : 'up'}>
             <Box key="recommend" />
-            <PromptsTitle key="execution" source={prompts} interval={4000} prefix={<span>📌 Tips:</span>} />
+            <PromptsTitle key="execution" source={prompts} interval={4000} prefix={<span><b>📌 Tips:</b></span>} />
           </SwitchLayout>
           <ExploreSearch value={value} onChange={setValue} onAction={handleAction} disableInput={isPending} disableClear={value === ''} disableAction={disableAction} onClear={handleClear} clearState={isPending ? 'stop' : undefined} />
           <SwitchLayout state={hideExecution ? 'recommend' : 'execution'} direction={hideExecution ? 'down' : 'up'}>

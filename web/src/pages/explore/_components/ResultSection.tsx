@@ -17,9 +17,9 @@ import { uniqueItems } from '@site/src/utils/generate';
 import ShareButtons from './ShareButtons';
 import TypewriterEffect from '@site/src/pages/explore/_components/TypewriterEffect';
 import { gotoAnchor } from '@site/src/utils/dom';
-import TiDBCloudLink from '@site/src/components/TiDBCloudLink';
 import Feedback from '@site/src/pages/explore/_components/Feedback';
 import { Prompts } from '@site/src/pages/explore/_components/Prompt';
+import Link from '@docusaurus/Link';
 
 export default function ResultSection () {
   const { question, error, phase } = useQuestionManagement();
@@ -147,10 +147,10 @@ function renderEngines (question: Question | undefined) {
       <>
         . Running on <EngineTag>{question.engines.map(replaceEngineName).join(', ')}</EngineTag>
         <Info>
-          All queries run on <b>ONE</b> TiDB service. The TiDB SQL optimizer decides which engine to use for executing queries:
+        TiDB&apos;s optimizer selects the engine for all queries on its single service:
           <ul>
-            <li>Complex and heavy OLAP queries are executed by the columnar engine.</li>
-            <li>Low-latency high-concurrency OLTP queries are executed by the row-based engine.</li>
+            <li><Link href='https://docs.pingcap.com/tidb/stable/tiflash-overview/?utm_source=ossinsight&utm_medium=referral&utm_campaign=chat2query_202301' target='_blank' rel='noopener'> The columnar engine </Link>for complex and heavy OLAP queries.</li>
+            <li><Link href='https://docs.pingcap.com/tidb/stable/tikv-overview/?utm_source=ossinsight&utm_medium=referral&utm_campaign=chat2query_202301' target='_blank' rel='noopener'> The row-based engine </Link>for low-latency high-concurrency OLTP queries.</li>
           </ul>
         </Info>
       </>
@@ -231,13 +231,7 @@ function Chart ({ chartData, chartError, fields, result, controlsContainer }: { 
           </Stack>
           <Divider sx={{ my: 2 }} />
           <Typography component="div" variant="body2" color="#D1D1D1">
-            🤔 Not exactly what you&apos;re looking for?
-            <ul>
-              <li>AI can write SQL effectively, but remember that it&apos;s still a work in progress with limitations.</li>
-              <li>Clear and specific language will help the AI understand your needs. Eg. use &apos;@facebook/react&apos; instead of &apos;react&apos;. Check out <a href="javascript:void(0)" onClick={gotoAnchor('data-explorer-faq')}>FAQ</a> for more tips.</li>
-              <li>GitHub data is not your focus? <TiDBCloudLink>Use Chat2Query to empower your data exploration</TiDBCloudLink> on any dataset.
-              </li>
-            </ul>
+            🤔 Not exactly what you&apos;re looking for? Check out our <a href="javascript:void(0)" onClick={gotoAnchor('data-explorer-faq')}>FAQ</a> for help. If the problem persists, please <Link href='https://github.com/pingcap/ossinsight/issues/new/choose' target='_blank' rel='noopener'>report an issue</Link> to us.
           </Typography>
         </>
       );

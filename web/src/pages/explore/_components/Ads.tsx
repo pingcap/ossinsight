@@ -27,12 +27,7 @@ const Ads = ({ size }: AdsProps) => {
           </AdsContent>
         </AdsDashedContainer>
       </TiDBCloudLink>
-      <AdsFootnote>
-          <span>
-            🤖️ Chat2Query on
-          </span>
-        <img src="/img/tidb-cloud-logo-o.png" height="18" alt="TiDB Cloud Logo" />
-      </AdsFootnote>
+
     </>
   );
 };
@@ -82,10 +77,10 @@ const AdsContent = styled('div')`
 const AdsButton = styled('span')`
   background: linear-gradient(90deg, #5667FF 0%, #A168FF 106.06%);
   box-shadow: ${({ theme }) => theme.shadows[4]};
-  border-radius: 29px;
+  border-radius: 48px;
   display: flex;
   align-items: center;
-  padding: 8px !important;
+  padding: 12px !important;
   font-weight: 600;
   font-size: 16px;
   color: white !important;
@@ -115,21 +110,6 @@ const AdsButtonIconContainer = styled('span')`
     height: 24px;
     min-width: 24px;
     font-size: 16px;
-    margin-right: 8px;
-  }
-`;
-
-const AdsFootnote = styled('div')`
-  font-size: 14px;
-  color: white;
-  font-weight: 400;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 8px;
-  flex-wrap: wrap;
-
-  > span:first-of-type {
     margin-right: 8px;
   }
 `;
