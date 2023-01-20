@@ -149,8 +149,8 @@ function renderEngines (question: Question | undefined) {
         <Info>
         TiDB&apos;s optimizer selects the engine for all queries on its single service:
           <ul>
-            <li>The columnar engine for complex and heavy OLAP queries.</li>
-            <li>The row-based engine for low-latency high-concurrency OLTP queries.</li>
+            <li><Link href='https://docs.pingcap.com/tidb/stable/tiflash-overview/?utm_source=ossinsight&utm_medium=referral&utm_campaign=chat2query_202301' target='_blank' rel='noopener'> The columnar engine </Link>for complex and heavy OLAP queries.</li>
+            <li><Link href='https://docs.pingcap.com/tidb/stable/tikv-overview/?utm_source=ossinsight&utm_medium=referral&utm_campaign=chat2query_202301' target='_blank' rel='noopener'> The row-based engine </Link>for low-latency high-concurrency OLTP queries.</li>
           </ul>
         </Info>
       </>
