@@ -263,7 +263,9 @@ export class ExplorerService {
             let { sql: querySQL, chart, questions: aiGeneratedQuestions } = answer;
             question.querySQL = querySQL;
             question.chart = chart;
-            question.recommendedQuestions?.unshift(...aiGeneratedQuestions);
+            if (Array.isArray(aiGeneratedQuestions) && aiGeneratedQuestions.length > 0) {
+                question.recommendedQuestions?.unshift(...aiGeneratedQuestions);
+            }
 
             // Validate the generated SQL.
             question.status = QuestionStatus.SQLValidating;
