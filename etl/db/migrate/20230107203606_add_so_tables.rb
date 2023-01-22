@@ -91,8 +91,7 @@ class AddSoTables < ActiveRecord::Migration[6.1]
         id INTEGER NOT NULL PRIMARY KEY,
         tag_name VARCHAR(35) NOT NULL,
         count INTEGER NOT NULL default 0,
-        excerpt_post_id INTEGER NOT NULL,
-        wiki_post_id INTEGER NOT NULL
+        last_activity_date datetime default '1970-01-01 00:00:00'
       )
     TAG
 
