@@ -81,7 +81,7 @@ Answer {
 ---
 Make sure to avoid ambiguous column references and non-existent columns by using table aliases and double-checking column names before running the query.
 If the question is talking about repos like [a, b, c], use the format:org_or_user/repo.
-Let's think step by step, use best practice of writing SQL, use common table expression if and only if necessary, scan all repos if there is no specific repo, generate a answer.json file to answer the question: "${question}".
+Let's think step by step, use best practice of writing SQL, use common table expression if and only if necessary, scan all repos if there is no specific repo, generate a answer.json file to answer the question: "in github, ${question}".
 ---
 answer.json // must be json!!!
 ---
