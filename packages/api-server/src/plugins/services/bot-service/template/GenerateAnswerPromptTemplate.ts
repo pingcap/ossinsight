@@ -53,6 +53,7 @@ Merged PR: type = 'PullRequestEvent' AND action = 'closed' AND pr_merged = 1
 Create issue comment: type = 'IssueCommentEvent' AND action = 'created'
 The number of PR: type = 'PullRequestEvent' AND action = 'opened'
 Contributor: the person who opened pull request to the repo, it will trigger a PullRequestEvent
+Commit to some repo: type in ('PullRequestEvent', 'PushEvent')
 The most popular repos has the most stars
 Similar repositories will have similar topics
 When calculating country, inner join actor_id and github_users.id, then use github_users.country_code.
