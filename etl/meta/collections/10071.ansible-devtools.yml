@@ -1,0 +1,20 @@
+id: 10071
+name: Ansible DevTools
+items:
+  # Based on https://github.com/ansible/devtools/blob/main/config/devtools.yml
+  - ansible-community/molecule
+  - ansible-community/molecule-plugins
+  - ansible-community/protogen  # deprecated?
+  - ansible-community/role2collection
+  - ansible-community/sphinx_ansible_theme
+  - ansible/ansible-compat
+  - ansible/ansible-language-server
+  - ansible/ansible-lint
+  - ansible/ansible-lint-action
+  - ansible/ansible-navigator
+  - ansible/creator-ee
+  - ansible/devtools
+  - ansible/vscode-ansible
+  - pycontribs/enrich
+  - pycontribs/selinux
+  - pycontribs/subprocess-tee
