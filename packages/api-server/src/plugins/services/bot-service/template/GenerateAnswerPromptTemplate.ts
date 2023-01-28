@@ -46,6 +46,7 @@ Open to merged time: TIMESTAMPDIFF(SECOND, ge.pr_or_issue_created_at, ge.closed_
 Issue link: CONCAT('https://github.com/', repo_name, '/issues/', number) AS link
 Exclude bots: actor_login NOT LIKE "%bot%"
 Database repos: description LIKE '%database%'
+React repos: github_repo_topics.topic = 'react'
 Filter by @org_or_user_login/repo_name: repo_name = 'org_or_user_login/repo_name'
 Filter by @org_or_user_login: owner_login = 'org_or_user_login'
 Star in 2022: WHERE ge.type = 'WatchEvent' AND ge.action = 'started' AND YEAR(ge.created_at) = 2022
