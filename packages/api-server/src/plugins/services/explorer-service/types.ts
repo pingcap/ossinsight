@@ -13,6 +13,10 @@ export interface Question {
   userId: number;
   status: QuestionStatus;
   title: string;
+  revisedTitle?: string;
+  sqlCanAnswer?: boolean;
+  notClear?: string;
+  assumption?: string;
   querySQL?: string;
   queryHash?: string;
   engines?: string[];
@@ -20,7 +24,7 @@ export interface Question {
   queueJobId?: string | null;
   recommendedQuestions?: string[];
   result?: QuestionSQLResult;
-  chart?: RecommendedChart;
+  chart?: RecommendedChart | null;
   answerSummary?: AnswerSummary;
   recommended: boolean;
   createdAt: DateTime;
@@ -87,6 +91,7 @@ export interface QuestionFeedback {
 export enum QuestionFeedbackType {
   AnswerSatisfied = "answer-satisfied",
   AnswerUnsatisfied = "answer-unsatisfied",
+  ErrorSQLCanNotAnswer = "error-sql-can-not-answer",
   ErrorAnswerGenerate = "error-answer-generate",
   ErrorAnswerParse = "error-answer-parse",
   ErrorValidateSQL = "error-validate-sql",

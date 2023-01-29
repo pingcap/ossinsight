@@ -1,15 +1,16 @@
+import {Answer, AnswerSummary, RecommendQuestion, RecommendedChart} from "./types";
+import {BotResponseGenerateError, BotResponseParseError} from "../../../utils/error";
 import { Configuration, OpenAIApi } from "openai";
+
+import {DateTime} from "luxon";
+import {GenerateAnswerPromptTemplate} from "./template/GenerateAnswerPromptTemplate";
+import {GenerateChartPromptTemplate} from "./template/GenerateChartPromptTemplate";
+import {GenerateQuestionsPromptTemplate} from "./template/GenerateQuestionsPromptTemplate";
+import {GenerateSQLPromptTemplate} from "./template/GenerateSQLPromptTemplate";
+import {GenerateSummaryPromptTemplate} from "./template/GenerateSummaryPromptTemplate";
+import { PromptTemplateManager } from './../../config/prompt-template-manager';
 import fp from "fastify-plugin";
 import pino from "pino";
-
-import {GenerateSQLPromptTemplate} from "./template/GenerateSQLPromptTemplate";
-import {GenerateChartPromptTemplate} from "./template/GenerateChartPromptTemplate";
-import {Answer, RecommendedChart, RecommendQuestion, AnswerSummary} from "./types";
-import {GenerateAnswerPromptTemplate} from "./template/GenerateAnswerPromptTemplate";
-import {GenerateQuestionsPromptTemplate} from "./template/GenerateQuestionsPromptTemplate";
-import {DateTime} from "luxon";
-import {BotResponseGenerateError, BotResponseParseError} from "../../../utils/error";
-import {GenerateSummaryPromptTemplate} from "./template/GenerateSummaryPromptTemplate";
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -19,18 +20,21 @@ declare module 'fastify' {
 
 export default fp(async (fastify) => {
     const log = fastify.log.child({ service: 'bot-service'}) as pino.Logger;
-    fastify.decorate('botService', new BotService(log, fastify.config.OPENAI_API_KEY));
+    fastify.decorate('botService', new BotService(log, fastify.config.OPENAI_API_KEY, fastify.promptTemplateManager));
 }, {
   name: '@ossinsight/bot-service',
   dependencies: []
 });
+
+const GENERATE_ANSWER_PROMPT_TEMPLATE_NAME = 'explorer-generate-answer';
 
 export class BotService {
     private readonly openai: OpenAIApi;
 
     constructor(
         private readonly log: pino.BaseLogger,
-        private readonly apiKey: string
+        private readonly apiKey: string,
+        private readonly promptTemplateManager: PromptTemplateManager
     ) {
         const configuration = new Configuration({
             apiKey: this.apiKey
@@ -106,7 +110,14 @@ export class BotService {
     }
 
     async questionToAnswer(template: GenerateAnswerPromptTemplate, question: string): Promise<Answer | null> {
-        const prompt = template.stringify(question);
+        let prompt = await this.promptTemplateManager.getTemplate(GENERATE_ANSWER_PROMPT_TEMPLATE_NAME, {
+            question: question
+        });
+
+        // If the prompt is not found, use the default template.
+        if (prompt == null) {
+            prompt = template.stringify(question);
+        }
 
         let choice = undefined;
         let answer = null;
@@ -130,12 +141,19 @@ export class BotService {
             if (Array.isArray(choices) && choices[0].text) {
                 choice = choices[0].text;
                 answer = JSON.parse(choice);
-                answer.chart = {
-                    chartName: answer.chart.chartName,
-                    title: answer.chart.title,
-                    ...answer.chart.options
+                return {
+                    revisedTitle: answer.RQ || question,
+                    sqlCanAnswer: answer.sqlCanAnswer == null ? true : answer.sqlCanAnswer,
+                    notClear: answer.notClear,
+                    assumption: answer.assumption,
+                    sql: answer.sql,
+                    chart: answer.chart ? {
+                        chartName: answer.chart.chartName,
+                        title: answer.chart.title,
+                        ...answer.chart.options
+                    } : null,
+                    questions: answer.questions || [],
                 }
-                return answer
             } else {
                 return null;
             }
