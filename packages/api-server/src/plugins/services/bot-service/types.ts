@@ -32,7 +32,7 @@ export interface Answer {
   revisedTitle: string;
   sqlCanAnswer: boolean;
   notClear: string;
-  assumptions: string[];
+  assumption: string;
   sql?: string;
   chart?: RecommendedChart | null;
   questions: string[];

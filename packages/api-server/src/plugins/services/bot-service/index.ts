@@ -144,8 +144,8 @@ export class BotService {
                 return {
                     revisedTitle: answer.RQ || question,
                     sqlCanAnswer: answer.sqlCanAnswer == null ? true : answer.sqlCanAnswer,
-                    notClear: answer.notClear || "",
-                    assumptions: answer.assumptions || [],
+                    notClear: answer.notClear,
+                    assumption: answer.assumption,
                     sql: answer.sql,
                     chart: answer.chart ? {
                         chartName: answer.chart.chartName,
