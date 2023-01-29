@@ -4,6 +4,7 @@
 # Production
 /build
 /sql
+/configs/prompts/*/*.*
 
 # Generated files
 .docusaurus

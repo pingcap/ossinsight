@@ -24,6 +24,7 @@ const options: AppOptions = {
 declare module 'fastify' {
   interface FastifyInstance {
     config: {
+      CONFIGS_PATH: string;
       DATABASE_URL: string;
       REDIS_URL: string,
       EMAIL_SERVER_URL: string,

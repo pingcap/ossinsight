@@ -260,11 +260,17 @@ export class ExplorerService {
                 });
             }
 
-            let { sql: querySQL, chart, questions: aiGeneratedQuestions } = answer;
+            let { sql: querySQL, chart, questions: aiGeneratedQuestions, sqlCanAnswer, revisedTitle } = answer;
             question.querySQL = querySQL;
             question.chart = chart;
+            question.sqlCanAnswer = sqlCanAnswer;
+            question.revisedTitle = revisedTitle;
             if (Array.isArray(aiGeneratedQuestions) && aiGeneratedQuestions.length > 0) {
                 question.recommendedQuestions?.unshift(...aiGeneratedQuestions);
+            }
+
+            if (!question.sqlCanAnswer) {
+                await this.addSystemQuestionFeedback(questionId, QuestionFeedbackType.ErrorSQLCanNotAnswer)
             }
 
             // Validate the generated SQL.
@@ -414,6 +420,7 @@ export class ExplorerService {
             switch (rootNode.type.toLowerCase()) {
                 case 'select':
                     const newAst = this.addLimitToSQL(rootNode as Select, this.maxSelectLimit, 0);
+                    // @ts-ignore
                     const newSQL = this.sqlParser.sqlify(newAst);
                     return {
                         sql: newSQL,
@@ -438,6 +445,7 @@ export class ExplorerService {
     }
 
     private addLimitToSQL(rootNode: Select, maxLimit: number, depth: number): Select {
+        // @ts-ignore
         const { limit } = rootNode;
 
         // Add limit
@@ -452,6 +460,7 @@ export class ExplorerService {
                 }
             }
         } else {
+            // @ts-ignore
             rootNode.limit = {
                 seperator: "",
                 value: [
@@ -556,7 +565,7 @@ export class ExplorerService {
 
     async updateQuestion(question: Question) {
         const {
-            id, status, recommended, querySQL, queryHash, engines = [], result = null, chart = null, recommendedQuestions = [],
+            id, revisedTitle = null, status, recommended, sqlCanAnswer = true, querySQL, queryHash, engines = [], result = null, chart = null, recommendedQuestions = [],
             queueName = null, queueJobId = null, requestedAt, executedAt, finishedAt, spent, error = null
         } = question;
 
@@ -570,12 +579,12 @@ export class ExplorerService {
 
         const [rs] = await this.mysql.query<ResultSetHeader>(`
             UPDATE explorer_questions
-            SET 
-                status = ?, recommended = ?, query_sql = ?, query_hash = ?, engines = ?, result = ?, chart = ?, recommended_questions = ?, 
+            SET
+                revised_title = ?, status = ?, recommended = ?, sql_can_answer = ?, query_sql = ?, query_hash = ?, engines = ?, result = ?, chart = ?, recommended_questions = ?, 
                 queue_name = ?, queue_job_id = ?, requested_at = ?, executed_at = ?, finished_at = ?, spent = ?, error = ?
             WHERE id = UUID_TO_BIN(?)
         `, [
-            status, recommended, querySQL, queryHash, enginesValue, resultValue, chartValue, recommendedQuestionsValue,
+            revisedTitle, status, recommended, sqlCanAnswer, querySQL, queryHash, enginesValue, resultValue, chartValue, recommendedQuestionsValue,
             queueName, queueJobId, requestedAtValue, executedAtValue, finishedAtValue, spent, error, id
         ]);
         if (rs.affectedRows !== 1) {
@@ -898,7 +907,7 @@ export class ExplorerService {
         return false;
     }
 
-    private checkChart(chart: RecommendedChart | undefined, result: QuestionSQLResult): boolean {
+    private checkChart(chart: RecommendedChart | undefined | null, result: QuestionSQLResult): boolean {
         if (chart === null || chart === undefined) {
             return false;
         }
