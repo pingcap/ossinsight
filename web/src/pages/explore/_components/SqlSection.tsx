@@ -63,7 +63,7 @@ export default function SqlSection () {
       case QuestionLoadingPhase.CREATE_FAILED:
         return 'Failed to generate SQL';
       default:
-        return 'Finished writing SQL';
+        return 'Ta-da! SQL is written,';
     }
   }, [phase]);
 
@@ -92,13 +92,13 @@ export default function SqlSection () {
       status={sqlSectionStatus}
       title={(open, toggle) => (
         <StyledTitle>
-          {notNone(question?.revisedTitle) && <Line prefix="- Are you looking for the answer of ">
+          {notNone(question?.revisedTitle) && <Line prefix="- Seems like you are asking about ">
             <Tag>
               {question?.revisedTitle}
             </Tag>
             <CopyButton content={question?.revisedTitle} />
           </Line>}
-          <Line prefix="- I am not very clear with: ">{question?.notClear}</Line>
+          <Line prefix="- But I’m not sure that: ">{question?.notClear}</Line>
           <Line prefix="- I guess: ">{question?.assumption}</Line>
           {showSqlTitle && (
             <Line prefix={hasPrompt ? '- ' : undefined} mt={hasPrompt ? 2 : undefined}>
