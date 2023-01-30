@@ -1,7 +1,7 @@
-import { isFalsy, notFalsy, notNullish } from '@site/src/utils/value';
+import { isFalsy, isNonemptyString, notFalsy, notNullish } from '@site/src/utils/value';
 import CodeBlock from '@theme/CodeBlock';
 import Section from '@site/src/pages/explore/_components/Section';
-import React, { ReactNode, useMemo, useRef, useState } from 'react';
+import React, { ReactNode, SyntheticEvent, useMemo, useRef, useState } from 'react';
 import { format } from 'sql-formatter';
 import useQuestionManagement, { QuestionLoadingPhase } from '@site/src/pages/explore/_components/useQuestion';
 import { AxiosError } from 'axios';
@@ -11,8 +11,9 @@ import { randomOf } from '@site/src/utils/generate';
 import TypewriterEffect from '@site/src/pages/explore/_components/TypewriterEffect';
 import { gotoAnchor } from '@site/src/utils/dom';
 import TiDBCloudLink from '@site/src/components/TiDBCloudLink';
-import { Box, styled } from '@mui/material';
+import { Alert, Box, Button, IconButton, Snackbar, styled, useEventCallback } from '@mui/material';
 import { BoxProps } from '@mui/material/Box';
+import { ContentCopy, ExpandMore } from '@mui/icons-material';
 
 export default function SqlSection () {
   const { question, error, phase } = useQuestionManagement();
@@ -20,14 +21,7 @@ export default function SqlSection () {
   const formattedSql = useMemo(() => {
     try {
       if (notNullish(question)) {
-        return format(`
-        -- AI Prompts
-        --
-        -- Assumption: ${question.assumption ?? 'N/A'}
-        -- Not Clear: ${question.notClear ?? 'N/A'}
-        -- Revised Title: ${question.revisedTitle ?? 'N/A'}
-        ----------------------------------------------------------------------------------------
-        ${question.querySQL}`, { language: 'mysql' });
+        return format(question.querySQL, { language: 'mysql' });
       }
       if (isSqlError(error)) {
         return format(error.response?.data.querySQL ?? '', { language: 'mysql' });
@@ -84,22 +78,37 @@ export default function SqlSection () {
   }, [sqlSectionStatus, phase, error]);
 
   const showBot = phase !== QuestionLoadingPhase.CREATING && phase !== QuestionLoadingPhase.LOADING;
+  const hasPrompt = useMemo(() => {
+    return notNullish(question) && (
+      notNone(question.revisedTitle) ||
+      notNone(question.notClear) ||
+      notNone(question.assumption)
+    );
+  }, [question]);
 
   return (
     <Section
       status={sqlSectionStatus}
-      title={
+      title={(open, toggle) => (
         <StyledTitle>
-          {notFalsy(question?.revisedTitle) && <Line prefix="- Are you looking for the answer of ">
+          {notNone(question?.revisedTitle) && <Line prefix="- Are you looking for the answer of ">
             <Tag>
               {question?.revisedTitle}
             </Tag>
+            <CopyButton content={question?.revisedTitle} />
           </Line>}
           <Line prefix="- I am not very clear with: ">{question?.notClear}</Line>
           <Line prefix="- I guess: ">{question?.assumption}</Line>
-          <Line prefix="- " mt={notFalsy(question?.revisedTitle ?? question?.notClear ?? question?.assumption) ? 2 : undefined}>{sqlTitle}</Line>
+          <Line prefix={hasPrompt ? '- ' : undefined} mt={hasPrompt ? 2 : undefined}>
+            {sqlTitle}
+            {sqlSectionStatus === 'success' && (
+              <Button size="small" endIcon={<ExpandMore sx={{ rotate: open ? '180deg' : 0, transition: theme => theme.transitions.create('rotate') }} />} sx={{ ml: 1, pointerEvents: 'auto' }}>
+                {open ? 'Hide' : 'Check it out'}
+              </Button>
+            )}
+          </Line>
         </StyledTitle>
-      }
+      )}
       icon={showBot ? 'bot' : 'default'}
       extra="auto"
       error={sqlSectionError}
@@ -173,18 +182,52 @@ function GeneratingSqlPrompts () {
   }
 }
 
-const FALSY_VALUES: any[] = ['none', 'n/a'];
-
 function Line ({ prefix, children, ...props }: { mt?: number, prefix?: ReactNode, children: ReactNode } & BoxProps<'span'>) {
-  if (notFalsy(children) && !FALSY_VALUES.includes(String(children).toLowerCase())) {
+  if (notNone(children)) {
     return (
-      <Box component="span" display="block" lineHeight='26px' {...props}>
+      <Box component="span" display="block" lineHeight="26px" {...props}>
         {prefix}{children}
       </Box>
     );
   } else {
     return <></>;
   }
+}
+
+function CopyButton ({ content }: { content: string | undefined }) {
+  const [show, setShow] = useState(false);
+
+  const handleHide = useEventCallback((event: SyntheticEvent) => {
+    event.stopPropagation();
+    setShow(false);
+  });
+
+  const handleClick = useEventCallback((event: SyntheticEvent) => {
+    event.stopPropagation();
+    if (content) {
+      navigator.clipboard.writeText(content).catch(console.error);
+      setShow(true);
+    }
+  });
+
+  return (
+    <>
+      <IconButton size="small" onClick={handleClick} sx={{ pointerEvents: 'auto', ml: 0.5 }}>
+        <ContentCopy fontSize="inherit" />
+      </IconButton>
+      <Snackbar
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        open={show}
+        onClose={handleHide}
+        autoHideDuration={3000}
+        sx={{ pointerEvents: 'auto' }}
+      >
+        <Alert severity="info" onClose={handleHide} sx={{ width: '100%' }}>
+          Copied!
+        </Alert>
+      </Snackbar>
+    </>
+  );
 }
 
 const StyledTitle = styled('div')`
@@ -211,4 +254,11 @@ export function extractTime (error: AxiosError) {
     return res[1];
   }
   return '30 minutes';
+}
+
+function notNone (value: any): boolean {
+  if (isNonemptyString(value)) {
+    return !['none', 'n/a'].includes(value.toLowerCase());
+  }
+  return notFalsy(value);
 }
