@@ -14,6 +14,7 @@ class TrendingRepoGenerator
              and github_events.repo_name not like '%GBStudios%'
              and github_events.repo_name not like '%mamadfar%'
              and github_events.repo_name not like '%berny1122%'
+             and github_events.repo_name not like '%ks13141ye%'
       group by 1
       having count(distinct actor_login) >= 100
       order by 2 desc
