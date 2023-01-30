@@ -148,7 +148,7 @@ class TweetRepo
     json
   end
 
-  def get_contributors(n = 30)
+  def get_contributors(n = 100)
     sql = <<~SQL
       select creator_user_login as login, count(*) as count 
       from github_events 
