@@ -1,4 +1,4 @@
-import { notFalsy, notNullish } from '@site/src/utils/value';
+import { isFalsy, notFalsy, notNullish } from '@site/src/utils/value';
 import CodeBlock from '@theme/CodeBlock';
 import Section from '@site/src/pages/explore/_components/Section';
 import React, { ReactNode, useMemo, useRef, useState } from 'react';
@@ -76,9 +76,12 @@ export default function SqlSection () {
 
   const sqlSectionError = useMemo(() => {
     if (sqlSectionStatus === 'error') {
+      if (phase === QuestionLoadingPhase.GENERATE_SQL_FAILED) {
+        return 'Failed to generate SQL';
+      }
       return error;
     }
-  }, [sqlSectionStatus, error]);
+  }, [sqlSectionStatus, phase, error]);
 
   const showBot = phase !== QuestionLoadingPhase.CREATING && phase !== QuestionLoadingPhase.LOADING;
 
@@ -94,13 +97,12 @@ export default function SqlSection () {
           </Line>}
           <Line prefix="- I am not very clear with: ">{question?.notClear}</Line>
           <Line prefix="- I guess: ">{question?.assumption}</Line>
-          <Line prefix="- " mt={2}>{sqlTitle}</Line>
+          <Line prefix="- " mt={notFalsy(question?.revisedTitle ?? question?.notClear ?? question?.assumption) ? 2 : undefined}>{sqlTitle}</Line>
         </StyledTitle>
       }
       icon={showBot ? 'bot' : 'default'}
       extra="auto"
       error={sqlSectionError}
-      errorWithChildren
       errorTitle="Failed to generate SQL"
       errorPrompt="Hi, it's failed to generate SQL for"
       errorMessage={
@@ -122,7 +124,7 @@ export default function SqlSection () {
             )
       }
     >
-      {notFalsy(formattedSql) && (
+      {notFalsy(formattedSql) && isFalsy(sqlSectionError) && (
         <CodeBlock language="sql">
           {formattedSql}
         </CodeBlock>
