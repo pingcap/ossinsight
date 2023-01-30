@@ -21,6 +21,8 @@ import Feedback from '@site/src/pages/explore/_components/Feedback';
 import { Prompts } from '@site/src/pages/explore/_components/Prompt';
 import Link from '@docusaurus/Link';
 
+const ENABLE_SUMMARY = false;
+
 export default function ResultSection () {
   const { question, error, phase } = useQuestionManagement();
   const { search } = useExploreContext();
@@ -129,7 +131,7 @@ export default function ResultSection () {
         </>
       }
     >
-      {(notNullish(question?.answerSummary) || question?.status === QuestionStatus.Summarizing) && (
+      {ENABLE_SUMMARY && (notNullish(question?.answerSummary) || question?.status === QuestionStatus.Summarizing) && (
         <SummaryCard loading={question?.status === QuestionStatus.Summarizing}>
           <TypewriterEffect content={summaryContent} maxContinuous={2} avgInterval={40} />
         </SummaryCard>
