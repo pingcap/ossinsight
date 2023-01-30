@@ -1,7 +1,7 @@
 import { notFalsy, notNullish } from '@site/src/utils/value';
 import CodeBlock from '@theme/CodeBlock';
 import Section from '@site/src/pages/explore/_components/Section';
-import React, { useMemo, useRef, useState } from 'react';
+import React, { ReactNode, useMemo, useRef, useState } from 'react';
 import { format } from 'sql-formatter';
 import useQuestionManagement, { QuestionLoadingPhase } from '@site/src/pages/explore/_components/useQuestion';
 import { AxiosError } from 'axios';
@@ -11,6 +11,8 @@ import { randomOf } from '@site/src/utils/generate';
 import TypewriterEffect from '@site/src/pages/explore/_components/TypewriterEffect';
 import { gotoAnchor } from '@site/src/utils/dom';
 import TiDBCloudLink from '@site/src/components/TiDBCloudLink';
+import { Box, styled } from '@mui/material';
+import { BoxProps } from '@mui/material/Box';
 
 export default function SqlSection () {
   const { question, error, phase } = useQuestionManagement();
@@ -68,7 +70,7 @@ export default function SqlSection () {
       case QuestionLoadingPhase.CREATE_FAILED:
         return 'Failed to generate SQL';
       default:
-        return 'Generated SQL';
+        return 'Finished writing SQL';
     }
   }, [phase]);
 
@@ -78,12 +80,23 @@ export default function SqlSection () {
     }
   }, [sqlSectionStatus, error]);
 
-  const showBot = phase === QuestionLoadingPhase.CREATED || phase === QuestionLoadingPhase.GENERATING_SQL;
+  const showBot = phase !== QuestionLoadingPhase.CREATING && phase !== QuestionLoadingPhase.LOADING;
 
   return (
     <Section
       status={sqlSectionStatus}
-      title={sqlTitle}
+      title={
+        <StyledTitle>
+          {notFalsy(question?.revisedTitle) && <Line prefix="- Are you looking for the answer of ">
+            <Tag>
+              {question?.revisedTitle}
+            </Tag>
+          </Line>}
+          <Line prefix="- I am not very clear with: ">{question?.notClear}</Line>
+          <Line prefix="- I guess: ">{question?.assumption}</Line>
+          <Line prefix="- " mt={2}>{sqlTitle}</Line>
+        </StyledTitle>
+      }
       icon={showBot ? 'bot' : 'default'}
       extra="auto"
       error={sqlSectionError}
@@ -157,6 +170,34 @@ function GeneratingSqlPrompts () {
     return <>Generating SQL...</>;
   }
 }
+
+const FALSY_VALUES: any[] = ['none', 'n/a'];
+
+function Line ({ prefix, children, ...props }: { mt?: number, prefix?: ReactNode, children: ReactNode } & BoxProps<'span'>) {
+  if (notFalsy(children) && !FALSY_VALUES.includes(String(children).toLowerCase())) {
+    return (
+      <Box component="span" display="block" lineHeight='26px' {...props}>
+        {prefix}{children}
+      </Box>
+    );
+  } else {
+    return <></>;
+  }
+}
+
+const StyledTitle = styled('div')`
+  font-weight: normal;
+  font-size: 14px;
+  color: #D1D1D1;
+`;
+
+const Tag = styled('span')`
+  display: inline-block;
+  background: #383744;
+  border-radius: 6px;
+  padding: 6px;
+  line-height: 1;
+`;
 
 export function extractTime (error: AxiosError) {
   const payload = getAxiosErrorPayload(error) as any;

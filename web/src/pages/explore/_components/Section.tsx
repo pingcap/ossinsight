@@ -61,7 +61,9 @@ export default function Section ({ status, title, defaultExpanded, extra, error,
                 ? <BotIcon />
                 : <RippleDot size={12} />
               : status === 'success' && isNullish(error)
-                ? <CheckCircle color="success" fontSize="inherit" />
+                ? icon === 'bot'
+                  ? <BotIcon sx={{ alignSelf: 'flex-start', mt: 0.25 }} animated={false} />
+                  : <CheckCircle color="success" fontSize="inherit" />
                 : <Circle color="disabled" fontSize="inherit" />}
             <SectionTitleContent>
               {title}
