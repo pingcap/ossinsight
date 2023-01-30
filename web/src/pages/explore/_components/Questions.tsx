@@ -16,6 +16,8 @@ import Tips, { TipsRef } from '@site/src/pages/explore/_components/Tips';
 import RecommendList from '@site/src/pages/explore/_components/RecommendList';
 import { Prompts } from '@site/src/pages/explore/_components/Prompt';
 
+const SHOW_PROMPTS = false;
+
 export default function Questions () {
   const { question, loading, load, error, phase, reset, create } = useQuestionManagementValues({ pollInterval: 2000 });
   const [questionId, setQuestionId] = useUrlSearchState('id', nullableStringParam(), true);
@@ -91,10 +93,10 @@ export default function Questions () {
           header={<Header />}
           side={<Side />}
         >
-          <SwitchLayout state={hideExecution ? 'recommend' : 'execution'} direction={hideExecution ? 'down' : 'up'}>
+          {SHOW_PROMPTS && <SwitchLayout state={hideExecution ? 'recommend' : 'execution'} direction={hideExecution ? 'down' : 'up'}>
             <Box key="recommend" />
             <PromptsTitle key="execution" source={prompts} interval={4000} prefix={<span><b>📌 Tips:</b></span>} />
-          </SwitchLayout>
+          </SwitchLayout>}
           <ExploreSearch value={value} onChange={setValue} onAction={handleAction} disableInput={isPending} disableClear={value === ''} disableAction={disableAction} onClear={handleClear} clearState={isPending ? 'stop' : undefined} />
           <SwitchLayout state={hideExecution ? 'recommend' : 'execution'} direction={hideExecution ? 'down' : 'up'}>
             <Box key="execution" sx={{ mt: 1.5 }}>

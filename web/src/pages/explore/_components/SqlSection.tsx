@@ -55,7 +55,6 @@ export default function SqlSection () {
       case QuestionLoadingPhase.LOADING:
         return 'Loading question...';
       case QuestionLoadingPhase.CREATING:
-        return 'Generating SQL...';
       case QuestionLoadingPhase.GENERATING_SQL:
         return <GeneratingSqlPrompts />;
       case QuestionLoadingPhase.LOAD_FAILED:
@@ -77,7 +76,7 @@ export default function SqlSection () {
     }
   }, [sqlSectionStatus, phase, error]);
 
-  const showBot = phase !== QuestionLoadingPhase.CREATING && phase !== QuestionLoadingPhase.LOADING;
+  const showBot = phase !== QuestionLoadingPhase.LOADING;
   const hasPrompt = useMemo(() => {
     return notNullish(question) && (
       notNone(question.revisedTitle) ||
@@ -85,6 +84,8 @@ export default function SqlSection () {
       notNone(question.assumption)
     );
   }, [question]);
+
+  const showSqlTitle = sqlSectionStatus !== 'error' || !hasPrompt;
 
   return (
     <Section
@@ -99,14 +100,16 @@ export default function SqlSection () {
           </Line>}
           <Line prefix="- I am not very clear with: ">{question?.notClear}</Line>
           <Line prefix="- I guess: ">{question?.assumption}</Line>
-          <Line prefix={hasPrompt ? '- ' : undefined} mt={hasPrompt ? 2 : undefined}>
-            {sqlTitle}
-            {sqlSectionStatus === 'success' && (
-              <Button size="small" endIcon={<ExpandMore sx={{ rotate: open ? '180deg' : 0, transition: theme => theme.transitions.create('rotate') }} />} sx={{ ml: 1, pointerEvents: 'auto' }}>
-                {open ? 'Hide' : 'Check it out'}
-              </Button>
-            )}
-          </Line>
+          {showSqlTitle && (
+            <Line prefix={hasPrompt ? '- ' : undefined} mt={hasPrompt ? 2 : undefined}>
+              {sqlTitle}
+              {sqlSectionStatus === 'success' && (
+                <Button size="small" endIcon={<ExpandMore sx={{ rotate: open ? '180deg' : 0, transition: theme => theme.transitions.create('rotate') }} />} sx={{ ml: 1, pointerEvents: 'auto' }}>
+                  {open ? 'Hide' : 'Check it out'}
+                </Button>
+              )}
+            </Line>
+          )}
         </StyledTitle>
       )}
       icon={showBot ? 'bot' : 'default'}

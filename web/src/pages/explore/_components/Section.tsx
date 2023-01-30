@@ -76,7 +76,9 @@ export default function Section ({ status, title, defaultExpanded, extra, error,
                 ? icon === 'bot'
                   ? <BotIcon sx={{ alignSelf: 'flex-start', mt: 0.25 }} animated={false} />
                   : <CheckCircle color="success" fontSize="inherit" />
-                : <Circle color="disabled" fontSize="inherit" />}
+                : icon === 'bot'
+                  ? <BotIcon sx={{ alignSelf: 'flex-start', mt: 0.25 }} animated={false} />
+                  : <Circle color="disabled" fontSize="inherit" />}
             <SectionTitleContent>
               {renderTitle()}
             </SectionTitleContent>
