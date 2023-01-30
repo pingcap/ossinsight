@@ -29,6 +29,12 @@ export interface Question {
   spent?: number | null;
   answerSummary?: { content: string, hashtags: string[] };
   error?: string | null;
+  hitCache?: boolean;
+
+  assumption?: string;
+  notClear?: string;
+  revisedTitle?: string;
+  sqlCanAnswer?: boolean;
 }
 
 export interface QuestionSQLResult {

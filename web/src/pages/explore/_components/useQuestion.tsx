@@ -134,6 +134,7 @@ export function useQuestionManagementValues ({ pollInterval = 2000 }: QuestionMa
   const [question, setQuestion] = useState<Question>();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<unknown>();
+  const waitTimeRef = useRef<number>(0);
   const idRef = useRef<string>();
 
   const { isLoading, user, getAccessTokenSilently, login } = useResponsiveAuth0();
@@ -149,6 +150,7 @@ export function useQuestionManagementValues ({ pollInterval = 2000 }: QuestionMa
 
     try {
       if (clear) {
+        waitTimeRef.current = performance.now();
         setError(undefined);
         setQuestion(undefined);
         setPhase(QuestionLoadingPhase.LOADING);
@@ -177,6 +179,7 @@ export function useQuestionManagementValues ({ pollInterval = 2000 }: QuestionMa
         if (!isLoading && !user) {
           return await login({ triggerBy: 'explorer-search' });
         }
+        waitTimeRef.current = performance.now();
         setError(undefined);
         setQuestion(undefined);
         setLoading(true);
@@ -185,9 +188,19 @@ export function useQuestionManagementValues ({ pollInterval = 2000 }: QuestionMa
         const result = await newQuestion(title, { accessToken });
         await timeout(600);
         idRef.current = result.id;
+        gtag('event', 'create_question', {
+          questionId: result.id,
+          questionHitCache: result.hitCache,
+          // Seconds used from trigger create to question created (not answered or executed).
+          spent: (performance.now() - waitTimeRef.current) / 1000,
+          send_to: 'G-KW4FDPBLLJ',
+        });
         setPhase(computePhase(result, setError));
         setQuestion(result);
       } catch (e) {
+        gtag('event', 'create_question_failed', {
+          send_to: 'G-KW4FDPBLLJ',
+        });
         setPhase(QuestionLoadingPhase.CREATE_FAILED);
         setError(e);
         return await Promise.reject(e);
@@ -232,6 +245,24 @@ export function useQuestionManagementValues ({ pollInterval = 2000 }: QuestionMa
     }
   }, [phase, loading, pollInterval]);
 
+  // send gtag events when question id changes and the question is fully ready.
+  useEffect(() => {
+    if (notNullish(question) && FINAL_PHASES.has(phase) && phase !== QuestionLoadingPhase.SUMMARIZING) {
+      gtag('event', 'explore_question', {
+        questionId: question.id,
+        questionHitCache: question.hitCache,
+        questionRecommended: question.recommended,
+        questionStatus: question.status,
+        questionNotClear: isNone(question.notClear),
+        questionHasAssumption: !isNone(question.assumption),
+        questionSqlCanAnswer: question.sqlCanAnswer,
+        // Seconds used from load start to ready (or error).
+        spent: (performance.now() - waitTimeRef.current) / 1000,
+        send_to: 'G-KW4FDPBLLJ',
+      });
+    }
+  }, [question?.id, FINAL_PHASES.has(phase) && phase !== QuestionLoadingPhase.SUMMARIZING]);
+
   return {
     phase,
     question,
@@ -257,4 +288,15 @@ QuestionManagementContext.displayName = 'QuestionManagementContext';
 
 export default function useQuestionManagement () {
   return useContext(QuestionManagementContext);
+}
+
+/**
+ * Returns if value is string and string is not 'None' or empty
+ * @param string
+ */
+function isNone (string?: string) {
+  if (isNonemptyString(string)) {
+    return string.toLowerCase() !== 'none';
+  }
+  return true;
 }
