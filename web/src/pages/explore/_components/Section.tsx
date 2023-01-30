@@ -1,15 +1,16 @@
 import { Accordion, AccordionDetails, AccordionSummary, accordionSummaryClasses, Paper, styled, useEventCallback } from '@mui/material';
 import React, { ReactNode, useEffect, useState } from 'react';
-import { CheckCircle, Circle, ExpandMore } from '@mui/icons-material';
-import { isFalsy, isNullish, notFalsy } from '@site/src/utils/value';
+import { CheckCircle, Circle } from '@mui/icons-material';
+import { isNullish, notFalsy } from '@site/src/utils/value';
 import { getErrorMessage } from '@site/src/utils/error';
 import ErrorBlock from '@site/src/pages/explore/_components/ErrorBlock';
 import BotIcon from '@site/src/pages/explore/_components/BotIcon';
 import RippleDot from '@site/src/components/RippleDot';
+import { useMemoizedFn } from 'ahooks';
 
 export interface SectionProps {
   status: 'pending' | 'loading' | 'success' | 'error';
-  title: ReactNode;
+  title: ReactNode | ((expand: boolean, toggle: () => void) => ReactNode);
   extra?: ReactNode;
   children: ReactNode;
   error: unknown;
@@ -47,13 +48,24 @@ export default function Section ({ status, title, defaultExpanded, extra, error,
   const alwaysOpen = defaultExpanded === true;
   const showExtra = notFalsy(extra) && (status === 'success');
 
+  const toggleOpen = useMemoizedFn(() => {
+    setOpen(open => !open);
+  });
+
+  const renderTitle = () => {
+    if (typeof title === 'function') {
+      return title(open, toggleOpen);
+    } else {
+      return title;
+    }
+  };
+
   return (
     <SectionContainer className={status === 'pending' ? 'pending' : isNullish(error) ? status : 'error'} elevation={1}>
       <SectionAccordion expanded={alwaysOpen ? true : open} defaultExpanded={defaultExpanded} elevation={0} onChange={handleOpenChange}>
         <SectionAccordionSummary
           alwaysOpen={alwaysOpen}
-          expandIcon={isFalsy(defaultExpanded) && status === 'success' && <ExpandMore />}
-          disabled={status === 'loading'}
+          disabled
         >
           <SectionTitle>
             {status === 'loading'
@@ -61,16 +73,20 @@ export default function Section ({ status, title, defaultExpanded, extra, error,
                 ? <BotIcon />
                 : <RippleDot size={12} />
               : status === 'success' && isNullish(error)
-                ? <CheckCircle color="success" fontSize="inherit" />
-                : <Circle color="disabled" fontSize="inherit" />}
+                ? icon === 'bot'
+                  ? <BotIcon sx={{ alignSelf: 'flex-start', mt: 0.25 }} animated={false} />
+                  : <CheckCircle color="success" fontSize="inherit" />
+                : icon === 'bot'
+                  ? <BotIcon sx={{ alignSelf: 'flex-start', mt: 0.25 }} animated={false} />
+                  : <Circle color="disabled" fontSize="inherit" />}
             <SectionTitleContent>
-              {title}
+              {renderTitle()}
             </SectionTitleContent>
             {showExtra && (
               <>
                 <Spacer />
                 <SectionTitleExtra>
-                  {extra === 'auto' ? open ? 'Hide' : 'Show' : extra}
+                  {extra === 'auto' ? undefined : extra}
                 </SectionTitleExtra>
               </>
             )}

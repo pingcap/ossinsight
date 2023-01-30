@@ -1,7 +1,7 @@
-import { notFalsy, notNullish } from '@site/src/utils/value';
+import { isFalsy, isNonemptyString, notFalsy, notNullish } from '@site/src/utils/value';
 import CodeBlock from '@theme/CodeBlock';
 import Section from '@site/src/pages/explore/_components/Section';
-import React, { useMemo, useRef, useState } from 'react';
+import React, { ReactNode, SyntheticEvent, useMemo, useRef, useState } from 'react';
 import { format } from 'sql-formatter';
 import useQuestionManagement, { QuestionLoadingPhase } from '@site/src/pages/explore/_components/useQuestion';
 import { AxiosError } from 'axios';
@@ -11,6 +11,9 @@ import { randomOf } from '@site/src/utils/generate';
 import TypewriterEffect from '@site/src/pages/explore/_components/TypewriterEffect';
 import { gotoAnchor } from '@site/src/utils/dom';
 import TiDBCloudLink from '@site/src/components/TiDBCloudLink';
+import { Alert, Box, Button, IconButton, Snackbar, styled, useEventCallback } from '@mui/material';
+import { BoxProps } from '@mui/material/Box';
+import { ContentCopy, ExpandMore } from '@mui/icons-material';
 
 export default function SqlSection () {
   const { question, error, phase } = useQuestionManagement();
@@ -52,7 +55,6 @@ export default function SqlSection () {
       case QuestionLoadingPhase.LOADING:
         return 'Loading question...';
       case QuestionLoadingPhase.CREATING:
-        return 'Generating SQL...';
       case QuestionLoadingPhase.GENERATING_SQL:
         return <GeneratingSqlPrompts />;
       case QuestionLoadingPhase.LOAD_FAILED:
@@ -61,26 +63,58 @@ export default function SqlSection () {
       case QuestionLoadingPhase.CREATE_FAILED:
         return 'Failed to generate SQL';
       default:
-        return 'Generated SQL';
+        return 'Ta-da! SQL is written,';
     }
   }, [phase]);
 
   const sqlSectionError = useMemo(() => {
     if (sqlSectionStatus === 'error') {
+      if (phase === QuestionLoadingPhase.GENERATE_SQL_FAILED) {
+        return 'Failed to generate SQL';
+      }
       return error;
     }
-  }, [sqlSectionStatus, error]);
+  }, [sqlSectionStatus, phase, error]);
 
-  const showBot = phase === QuestionLoadingPhase.CREATED || phase === QuestionLoadingPhase.GENERATING_SQL;
+  const showBot = phase !== QuestionLoadingPhase.LOADING;
+  const hasPrompt = useMemo(() => {
+    return notNullish(question) && (
+      notNone(question.revisedTitle) ||
+      notNone(question.notClear) ||
+      notNone(question.assumption)
+    );
+  }, [question]);
+
+  const showSqlTitle = sqlSectionStatus !== 'error' || !hasPrompt;
 
   return (
     <Section
       status={sqlSectionStatus}
-      title={sqlTitle}
+      title={(open, toggle) => (
+        <StyledTitle>
+          {notNone(question?.revisedTitle) && <Line prefix="- Seems like you are asking about ">
+            <Tag>
+              {question?.revisedTitle}
+            </Tag>
+            <CopyButton content={question?.revisedTitle} />
+          </Line>}
+          <Line prefix="- But I’m not sure that: ">{question?.notClear}</Line>
+          <Line prefix="- I guess: ">{question?.assumption}</Line>
+          {showSqlTitle && (
+            <Line prefix={hasPrompt ? '- ' : undefined} mt={hasPrompt ? 2 : undefined}>
+              {sqlTitle}
+              {sqlSectionStatus === 'success' && (
+                <Button size="small" endIcon={<ExpandMore sx={{ rotate: open ? '180deg' : 0, transition: theme => theme.transitions.create('rotate') }} />} sx={{ ml: 1, pointerEvents: 'auto' }}>
+                  {open ? 'Hide' : 'Check it out'}
+                </Button>
+              )}
+            </Line>
+          )}
+        </StyledTitle>
+      )}
       icon={showBot ? 'bot' : 'default'}
       extra="auto"
       error={sqlSectionError}
-      errorWithChildren
       errorTitle="Failed to generate SQL"
       errorPrompt="Hi, it's failed to generate SQL for"
       errorMessage={
@@ -102,7 +136,7 @@ export default function SqlSection () {
             )
       }
     >
-      {notFalsy(formattedSql) && (
+      {notFalsy(formattedSql) && isFalsy(sqlSectionError) && (
         <CodeBlock language="sql">
           {formattedSql}
         </CodeBlock>
@@ -151,6 +185,68 @@ function GeneratingSqlPrompts () {
   }
 }
 
+function Line ({ prefix, children, ...props }: { mt?: number, prefix?: ReactNode, children: ReactNode } & BoxProps<'span'>) {
+  if (notNone(children)) {
+    return (
+      <Box component="span" display="block" lineHeight="26px" {...props}>
+        {prefix}{children}
+      </Box>
+    );
+  } else {
+    return <></>;
+  }
+}
+
+function CopyButton ({ content }: { content: string | undefined }) {
+  const [show, setShow] = useState(false);
+
+  const handleHide = useEventCallback((event: SyntheticEvent) => {
+    event.stopPropagation();
+    setShow(false);
+  });
+
+  const handleClick = useEventCallback((event: SyntheticEvent) => {
+    event.stopPropagation();
+    if (content) {
+      navigator.clipboard.writeText(content).catch(console.error);
+      setShow(true);
+    }
+  });
+
+  return (
+    <>
+      <IconButton size="small" onClick={handleClick} sx={{ pointerEvents: 'auto', ml: 0.5 }}>
+        <ContentCopy fontSize="inherit" />
+      </IconButton>
+      <Snackbar
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        open={show}
+        onClose={handleHide}
+        autoHideDuration={3000}
+        sx={{ pointerEvents: 'auto' }}
+      >
+        <Alert severity="info" onClose={handleHide} sx={{ width: '100%' }}>
+          Copied!
+        </Alert>
+      </Snackbar>
+    </>
+  );
+}
+
+const StyledTitle = styled('div')`
+  font-weight: normal;
+  font-size: 14px;
+  color: #D1D1D1;
+`;
+
+const Tag = styled('span')`
+  display: inline-block;
+  background: #383744;
+  border-radius: 6px;
+  padding: 6px;
+  line-height: 1;
+`;
+
 export function extractTime (error: AxiosError) {
   const payload = getAxiosErrorPayload(error) as any;
   if (notNullish(payload?.waitMinutes)) {
@@ -161,4 +257,11 @@ export function extractTime (error: AxiosError) {
     return res[1];
   }
   return '30 minutes';
+}
+
+function notNone (value: any): boolean {
+  if (isNonemptyString(value)) {
+    return !['none', 'n/a'].includes(value.toLowerCase());
+  }
+  return notFalsy(value);
 }

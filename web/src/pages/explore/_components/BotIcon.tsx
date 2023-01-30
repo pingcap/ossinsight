@@ -1,13 +1,15 @@
 import { keyframes, styled } from '@mui/material';
 import React from 'react';
+import { SxProps } from '@mui/system';
 
 interface BotIconProps {
   animated?: boolean;
+  sx?: SxProps;
 }
 
-export default function BotIcon ({ animated = true }: BotIconProps) {
+export default function BotIcon ({ animated = true, sx }: BotIconProps) {
   return (
-    <Img className={animated ? 'animated' : ''} size={16} />
+    <Img className={animated ? 'animated' : ''} size={16} sx={sx} />
   );
 }
 
