@@ -90,6 +90,7 @@ class TweetRepo
     txt << "\n" + contributors_txt if logins.present? 
     txt << "\n" + " https://ossinsight.io/analyze/#{repo}"
     txt << "\n" + "##{language}" if language.present? 
+    txt << " #ChatGPT" if repo.to_s =~ /chatgpt/i 
 
     puts txt
     puts txt.size
