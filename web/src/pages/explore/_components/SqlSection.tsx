@@ -18,7 +18,14 @@ export default function SqlSection () {
   const formattedSql = useMemo(() => {
     try {
       if (notNullish(question)) {
-        return format(question.querySQL, { language: 'mysql' });
+        return format(`
+        -- AI Prompts
+        --
+        -- Assumption: ${question.assumption ?? 'N/A'}
+        -- Not Clear: ${question.notClear ?? 'N/A'}
+        -- Revised Title: ${question.revisedTitle ?? 'N/A'}
+        ----------------------------------------------------------------------------------------
+        ${question.querySQL}`, { language: 'mysql' });
       }
       if (isSqlError(error)) {
         return format(error.response?.data.querySQL ?? '', { language: 'mysql' });
