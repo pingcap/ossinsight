@@ -19,7 +19,6 @@
     "dev:sync-users": "ts-node scripts/sync-users/index.ts",
     "gen:api-documentation": "ts-node scripts/gen-openapi/index.ts",
     "gen:schema-ts": "json2ts params.schema.json params.schema.d.ts",
-    "postinstall": "npm run gen:schema-ts && npm run gen:api-documentation",
     "server": "node ./dist/index.js",
     "server:cache-gc": "node ./dist/scripts/cache-gc/index.js",
     "server:calc-hot-collections": "node ./dist/scripts/calc-hot-collections/index.js",

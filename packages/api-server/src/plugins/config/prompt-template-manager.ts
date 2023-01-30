@@ -54,7 +54,7 @@ export class PromptTemplateManager {
     }
 
     public async loadTemplateFile(promptTemplateDir: string, promptPath: string) {
-        this.logger.info(`Loading prompt template from ${promptPath}`);
+        this.logger.info(`Loading prompt template from ${promptPath} for ${promptTemplateDir}`);
         const promptTemplate = fs.readFileSync(promptPath, "utf-8");
         this.promptTemplates.set(promptTemplateDir, promptTemplate);
     }
@@ -65,6 +65,8 @@ export class PromptTemplateManager {
         if (!promptTemplate) {
             return null;
         }
-        return mustache.render(promptTemplate, context);
+        return mustache.render(promptTemplate, context, {}, {
+            escape: (text) => text
+        });
     }
 }
