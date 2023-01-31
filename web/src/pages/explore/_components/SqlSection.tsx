@@ -119,8 +119,9 @@ export default function SqlSection () {
             </Tag>
             <CopyButton content={fullRevisedTitle} />
           </Line>}
+          {hasPrompt && (<Line prefix="- " fontSize='14px' fontWeight='normal'>You can copy and revise it based on the question above 👆.</Line>)}
           {showSqlTitle && (
-            <Line prefix={hasPrompt ? '- ' : undefined} mt={hasPrompt ? 2 : undefined}>
+            <Line mt={hasPrompt ? 2 : undefined}>
               {sqlTitle}
               {sqlSectionStatus === 'success' && (
                 <Button size="small" endIcon={<ExpandMore sx={{ rotate: open ? '180deg' : 0, transition: theme => theme.transitions.create('rotate') }} />} sx={{ ml: 1, pointerEvents: 'auto' }}>
@@ -206,7 +207,7 @@ function GeneratingSqlPrompts () {
 
 function Line ({ prefix, children, ...props }: { mt?: number, prefix?: ReactNode, children: ReactNode } & BoxProps<'span'>) {
   return (
-    <Box component="span" display="block" lineHeight="30px" {...props}>
+    <Box component="span" display="block" lineHeight="40px" {...props}>
       {prefix}{children}
     </Box>
   );
@@ -249,9 +250,6 @@ function CopyButton ({ content }: { content: string | undefined }) {
 }
 
 const StyledTitle = styled('div')`
-  font-weight: normal;
-  font-size: 14px;
-  color: #D1D1D1;
 `;
 
 const NotClear = styled('span')`
@@ -259,7 +257,7 @@ const NotClear = styled('span')`
 `;
 
 const Tag = styled('span')`
-  display: inline-block;
+  display: inline;
   background: #383744;
   font-weight: bold;
   color: #CBE0FF;
