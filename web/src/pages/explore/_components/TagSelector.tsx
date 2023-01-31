@@ -1,6 +1,6 @@
 import useSWR from 'swr';
 import { getTags, QuestionTag } from '@site/src/api/explorer';
-import { alpha, darken, Divider, generateUtilityClasses, Stack, styled } from '@mui/material';
+import { alpha, darken, Divider, generateUtilityClasses, styled } from '@mui/material';
 import React, { MouseEvent } from 'react';
 import clsx from 'clsx';
 
@@ -17,8 +17,8 @@ export default function TagSelector ({ onChange, value }: TagSelectorProps) {
   });
 
   return (
-    <TagsContainer>
-      <Stack direction="row" spacing={1} flexWrap="nowrap" width='max-content'>
+    <TagsRoot>
+      <Tags>
         <TagItem
           color="#ccc"
           className={clsx({
@@ -30,7 +30,7 @@ export default function TagSelector ({ onChange, value }: TagSelectorProps) {
         >
           All
         </TagItem>
-        <Divider orientation="vertical" flexItem />
+        <TagsDivider orientation="vertical" flexItem />
         {tags.map((tag) => (
           <TagItem
             key={tag.id}
@@ -45,12 +45,24 @@ export default function TagSelector ({ onChange, value }: TagSelectorProps) {
             {tag.label}
           </TagItem>
         ))}
-      </Stack>
-    </TagsContainer>
+      </Tags>
+    </TagsRoot>
   );
 }
 
 const tagClasses = generateUtilityClasses('TagItem', ['active']);
+
+const Tags = styled('div')`
+  display: flex;
+  flex-wrap: wrap;
+  margin-right: -16px;
+  margin-bottom: -12px;
+`;
+
+const TagsDivider = styled(Divider)`
+  margin-bottom: 12px;
+  margin-right: 16px;
+`;
 
 const TagItem = styled('span', { shouldForwardProp: propName => propName !== 'color' })<{ color: string }>`
   display: inline-block;
@@ -67,6 +79,8 @@ const TagItem = styled('span', { shouldForwardProp: propName => propName !== 'co
   text-align: center;
   white-space: nowrap;
   justify-self: stretch;
+  margin-right: 16px;
+  margin-bottom: 12px;
 
   &:hover {
     color: ${({ color }) => darken(color, 0.6)};
@@ -82,7 +96,6 @@ const TagItem = styled('span', { shouldForwardProp: propName => propName !== 'co
   }
 `;
 
-const TagsContainer = styled('div')`
-  overflow-x: auto;
-  padding-bottom: 12px;
+const TagsRoot = styled('div')`
+  margin-bottom: 16px;
 `;
