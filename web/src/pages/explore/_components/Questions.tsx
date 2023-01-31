@@ -51,11 +51,11 @@ export default function Questions () {
     }
   }, [loading, question?.id]);
 
-  const handleAction = useEventCallback(() => {
+  const handleAction = useEventCallback((ignoreCache: boolean) => {
     if (isPending) {
       return;
     }
-    create(value);
+    create(value, ignoreCache);
   });
 
   const handleClear = useEventCallback(() => {
@@ -66,7 +66,7 @@ export default function Questions () {
 
   const handleSelect = useEventCallback((title: string) => {
     setValue(title);
-    create(title);
+    create(title, false);
   });
 
   const handleSelectId = useEventCallback((id: string, title?: string) => {

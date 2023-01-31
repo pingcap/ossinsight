@@ -1,5 +1,5 @@
 import { IconButton, InputBase, Stack, styled, useEventCallback } from '@mui/material';
-import React, { ChangeEventHandler, Dispatch, KeyboardEventHandler, MutableRefObject, SetStateAction, useEffect, useRef, useState } from 'react';
+import React, { ChangeEventHandler, Dispatch, KeyboardEventHandler, MouseEventHandler, MutableRefObject, SetStateAction, useEffect, useRef, useState } from 'react';
 import { Close, KeyboardReturn, Pause } from '@mui/icons-material';
 import { useAuth0 } from '@auth0/auth0-react';
 
@@ -15,7 +15,7 @@ export function useStateRef<T> (initial: T | (() => T)): [T, Dispatch<SetStateAc
 export interface ExploreSearchProps {
   value: string;
   onChange: (value: string) => void;
-  onAction?: () => void;
+  onAction?: (ignoreCache: boolean) => void;
   onClear?: () => void;
   disableInput?: boolean;
   disableAction?: boolean;
@@ -34,9 +34,13 @@ export default function ExploreSearch ({ value, onChange, onAction, onClear, dis
   const handleKeydown: KeyboardEventHandler = useEventCallback((ev) => {
     if (ev.key === 'Enter') {
       if (!disableAction) {
-        onAction?.();
+        onAction?.(ev.altKey);
       }
     }
+  });
+
+  const handleClick: MouseEventHandler = useEventCallback((ev) => {
+    onAction?.(ev.altKey);
   });
 
   return (
@@ -51,7 +55,7 @@ export default function ExploreSearch ({ value, onChange, onAction, onClear, dis
         placeholder="Questions about repos, users, orgs, languages..."
         endAdornment={
           <Stack direction="row" gap={1}>
-            {!disableAction && <StyledIconButton color="inherit" onClick={onAction} disabled={disableAction}>
+            {!disableAction && <StyledIconButton color="inherit" onClick={handleClick} disabled={disableAction}>
               <KeyboardReturn />
             </StyledIconButton>}
             <StyledIconButton color={clearState === 'stop' ? 'error' : 'inherit'} onClick={onClear} disabled={disableClear}>
@@ -76,7 +80,7 @@ const StyledInput = styled(InputBase)`
 
   &.Mui-disabled {
     color: rgb(60, 60, 60, 0.7);
-    
+
     & > input {
       -webkit-text-fill-color: unset;
     }
