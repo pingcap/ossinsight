@@ -1,4 +1,4 @@
-import { isFalsy, isNonemptyString, notFalsy, notNullish } from '@site/src/utils/value';
+import { isFalsy, isNonemptyString, isNullish, notFalsy, notNullish } from '@site/src/utils/value';
 import CodeBlock from '@theme/CodeBlock';
 import Section from '@site/src/pages/explore/_components/Section';
 import React, { ReactNode, SyntheticEvent, useMemo, useRef, useState } from 'react';
@@ -86,22 +86,42 @@ export default function SqlSection () {
   }, [question]);
 
   const showSqlTitle = sqlSectionStatus !== 'error' || !hasPrompt;
+  const fullRevisedTitle = useMemo(() => {
+    if (isNullish(question)) {
+      return '';
+    }
+    if (!notNone(question.revisedTitle)) {
+      return '';
+    }
+    let result = question.revisedTitle as string;
+    if (notNone(question.assumption)) {
+      result += ` (${question.assumption as string})`;
+    }
+    return result;
+  }, [question?.revisedTitle, question?.assumption]);
 
   return (
     <Section
       status={sqlSectionStatus}
       title={(open, toggle) => (
         <StyledTitle>
-          {notNone(question?.revisedTitle) && <Line prefix="- Seems like you are asking about ">
-            <Tag>
-              {question?.revisedTitle}
-            </Tag>
-            <CopyButton content={question?.revisedTitle} />
+          {notNone(question?.notClear) && <Line prefix="- But I’m not sure that: ">
+            <NotClear>
+              {question?.notClear}
+            </NotClear>
           </Line>}
-          <Line prefix="- But I’m not sure that: ">{question?.notClear}</Line>
-          <Line prefix="- I guess: ">{question?.assumption}</Line>
+          {notNone(question?.revisedTitle) && <Line prefix="- Seems like you are asking about ">
+            <Tag onClick={preventPropagation}>
+              {question?.revisedTitle}
+              {notNone(question?.assumption) && (
+                <i> ({question?.assumption})</i>
+              )}
+            </Tag>
+            <CopyButton content={fullRevisedTitle} />
+          </Line>}
+          {hasPrompt && (<Line prefix="- " fontSize='14px' fontWeight='normal'>You can copy and revise it based on the question above 👆.</Line>)}
           {showSqlTitle && (
-            <Line prefix={hasPrompt ? '- ' : undefined} mt={hasPrompt ? 2 : undefined}>
+            <Line mt={hasPrompt ? 2 : undefined}>
               {sqlTitle}
               {sqlSectionStatus === 'success' && (
                 <Button size="small" endIcon={<ExpandMore sx={{ rotate: open ? '180deg' : 0, transition: theme => theme.transitions.create('rotate') }} />} sx={{ ml: 1, pointerEvents: 'auto' }}>
@@ -186,15 +206,11 @@ function GeneratingSqlPrompts () {
 }
 
 function Line ({ prefix, children, ...props }: { mt?: number, prefix?: ReactNode, children: ReactNode } & BoxProps<'span'>) {
-  if (notNone(children)) {
-    return (
-      <Box component="span" display="block" lineHeight="26px" {...props}>
-        {prefix}{children}
-      </Box>
-    );
-  } else {
-    return <></>;
-  }
+  return (
+    <Box component="span" display="block" lineHeight="40px" {...props}>
+      {prefix}{children}
+    </Box>
+  );
 }
 
 function CopyButton ({ content }: { content: string | undefined }) {
@@ -234,17 +250,27 @@ function CopyButton ({ content }: { content: string | undefined }) {
 }
 
 const StyledTitle = styled('div')`
-  font-weight: normal;
-  font-size: 14px;
-  color: #D1D1D1;
+`;
+
+const NotClear = styled('span')`
+  color: #ECBAAA;
 `;
 
 const Tag = styled('span')`
-  display: inline-block;
+  display: inline;
   background: #383744;
+  font-weight: bold;
+  color: #CBE0FF;
   border-radius: 6px;
   padding: 6px;
-  line-height: 1;
+  line-height: 1.25;
+  pointer-events: auto;
+  user-select: text !important;
+  cursor: text;
+
+  > i {
+    color: #E7D9A8;
+  }
 `;
 
 export function extractTime (error: AxiosError) {
@@ -264,4 +290,8 @@ function notNone (value: any): boolean {
     return !['none', 'n/a'].includes(value.toLowerCase());
   }
   return notFalsy(value);
+}
+
+function preventPropagation (event: SyntheticEvent) {
+  event.stopPropagation();
 }

@@ -53,6 +53,7 @@ export default function ExploreSearch ({ value, onChange, onAction, onClear, dis
         onChange={handleChange}
         onKeyDown={handleKeydown}
         placeholder="Questions about repos, users, orgs, languages..."
+        multiline
         endAdornment={
           <Stack direction="row" gap={1}>
             {!disableAction && <StyledIconButton color="inherit" onClick={handleClick} disabled={disableAction}>
@@ -76,12 +77,12 @@ const StyledInput = styled(InputBase)`
   border-radius: 6px;
   font-size: 20px;
   padding: 14px;
-  line-height: 1;
+  line-height: 1.5;
 
   &.Mui-disabled {
     color: rgb(60, 60, 60, 0.7);
 
-    & > input {
+    & > input, & > textarea {
       -webkit-text-fill-color: unset;
     }
   }
