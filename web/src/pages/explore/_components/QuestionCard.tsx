@@ -24,7 +24,7 @@ export default function QuestionCard ({ question, questionId, variant = 'card', 
 
   const handleClick = useEventCallback(() => {
     gtagEvent('click_template_question', {
-      questionId: questionId ?? undefined,
+      questionId: questionId ?? '',
       questionTitle: reactNodeToString(question),
     });
     if (isNonemptyString(questionId)) {
