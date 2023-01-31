@@ -9,11 +9,11 @@ import { getAxiosErrorPayload, getErrorMessage, isAxiosError } from '@site/src/u
 import { useInterval } from 'ahooks';
 import { randomOf } from '@site/src/utils/generate';
 import TypewriterEffect from '@site/src/pages/explore/_components/TypewriterEffect';
-import { gotoAnchor } from '@site/src/utils/dom';
 import TiDBCloudLink from '@site/src/components/TiDBCloudLink';
 import { Alert, Box, Button, IconButton, Snackbar, styled, useEventCallback } from '@mui/material';
 import { BoxProps } from '@mui/material/Box';
 import { ContentCopy, ExpandMore } from '@mui/icons-material';
+import Anchor from '@site/src/components/Anchor';
 
 export default function SqlSection () {
   const { question, error, phase } = useQuestionManagement();
@@ -131,7 +131,7 @@ export default function SqlSection () {
           : (
             <>
               Whoops! No SQL query is generated.
-              Check out <a href="javascript:void(0)" onClick={gotoAnchor('faq-failed-to-generate-sql')}>potential reasons</a> and try again later.
+              Check out <Anchor anchor="faq-failed-to-generate-sql">potential reasons</Anchor> and try again later.
             </>
             )
       }

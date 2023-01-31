@@ -15,7 +15,7 @@ export default function ExploreGlobalAds () {
     deserializer: Boolean,
     defaultValue: false,
   });
-  const [anchorEl, setAnchorEl] = useState<VirtualElement | null>(null);
+  const [anchorEl, setAnchorEl] = useState<VirtualElement | null>(typeof window === 'undefined' ? null : document.body);
   const location = useLocation();
   const safeSetTimeout = useSafeSetTimeout();
 

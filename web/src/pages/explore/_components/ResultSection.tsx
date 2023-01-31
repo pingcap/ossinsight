@@ -16,10 +16,10 @@ import SummaryCard from '@site/src/pages/explore/_components/SummaryCard';
 import { uniqueItems } from '@site/src/utils/generate';
 import ShareButtons from './ShareButtons';
 import TypewriterEffect from '@site/src/pages/explore/_components/TypewriterEffect';
-import { gotoAnchor } from '@site/src/utils/dom';
 import Feedback from '@site/src/pages/explore/_components/Feedback';
 import { Prompts } from '@site/src/pages/explore/_components/Prompt';
 import Link from '@docusaurus/Link';
+import Anchor from '@site/src/components/Anchor';
 
 const ENABLE_SUMMARY = false;
 
@@ -127,7 +127,7 @@ export default function ResultSection () {
       errorPrompt="Hi, it's failed to execute"
       errorMessage={
         <>
-          Oops, it seems AI misunderstood your question, resulting in a wrong SQL. Try our <a href="javascript:void(0)" onClick={gotoAnchor('data-explorer-faq')}>tips</a> for crafting effective SQL and give it another go.
+          Oops, it seems AI misunderstood your question, resulting in a wrong SQL. Try our <Anchor anchor="data-explorer-faq">tips</Anchor> for crafting effective SQL and give it another go.
         </>
       }
     >
@@ -149,10 +149,10 @@ function renderEngines (question: Question | undefined) {
       <>
         . Running on <EngineTag>{question.engines.map(replaceEngineName).join(', ')}</EngineTag>
         <Info>
-        TiDB&apos;s optimizer selects the engine for all queries on its single service:
+          TiDB&apos;s optimizer selects the engine for all queries on its single service:
           <ul>
-            <li><Link href='https://docs.pingcap.com/tidb/stable/tiflash-overview/?utm_source=ossinsight&utm_medium=referral&utm_campaign=chat2query_202301' target='_blank' rel='noopener'> The columnar engine </Link>for complex and heavy OLAP queries.</li>
-            <li><Link href='https://docs.pingcap.com/tidb/stable/tikv-overview/?utm_source=ossinsight&utm_medium=referral&utm_campaign=chat2query_202301' target='_blank' rel='noopener'> The row-based engine </Link>for low-latency high-concurrency OLTP queries.</li>
+            <li><Link href="https://docs.pingcap.com/tidb/stable/tiflash-overview/?utm_source=ossinsight&utm_medium=referral&utm_campaign=chat2query_202301" target="_blank" rel="noopener"> The columnar engine </Link>for complex and heavy OLAP queries.</li>
+            <li><Link href="https://docs.pingcap.com/tidb/stable/tikv-overview/?utm_source=ossinsight&utm_medium=referral&utm_campaign=chat2query_202301" target="_blank" rel="noopener"> The row-based engine </Link>for low-latency high-concurrency OLTP queries.</li>
           </ul>
         </Info>
       </>
@@ -233,7 +233,7 @@ function Chart ({ chartData, chartError, fields, result, controlsContainer }: { 
           </Stack>
           <Divider sx={{ my: 2 }} />
           <Typography component="div" variant="body2" color="#D1D1D1">
-            🤔 Not exactly what you&apos;re looking for? Check out our <a href="javascript:void(0)" onClick={gotoAnchor('data-explorer-faq')}>FAQ</a> for help. If the problem persists, please <Link href='https://github.com/pingcap/ossinsight/issues/new/choose' target='_blank' rel='noopener'>report an issue</Link> to us.
+            🤔 Not exactly what you&apos;re looking for? Check out our <Anchor anchor='data-explorer-faq'>FAQ</Anchor> for help. If the problem persists, please <Link href="https://github.com/pingcap/ossinsight/issues/new/choose" target="_blank" rel="noopener">report an issue</Link> to us.
           </Typography>
         </>
       );

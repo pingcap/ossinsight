@@ -1,9 +1,10 @@
-import React, { ReactNode, useContext } from 'react';
+import React, { isValidElement, ReactNode, useContext } from 'react';
 import { alpha, ButtonBase, styled, useEventCallback } from '@mui/material';
 import { ExploreContext } from '@site/src/pages/explore/_components/context';
 import { HighlightBackground, HighlightContent } from '@site/src/pages/explore/_components/highlighted';
 import { isNonemptyString } from '@site/src/utils/value';
 import { QuestionTag } from '@site/src/api/explorer';
+import { useGtag } from '@site/src/utils/ga';
 
 export type QuestionCardVariant = 'recommended-card' | 'card' | 'text';
 
@@ -18,9 +19,14 @@ export interface QuestionCardProps {
 }
 
 export default function QuestionCard ({ question, questionId, variant = 'card', imageUrl, prefix, tags, disabled }: QuestionCardProps) {
+  const { gtagEvent } = useGtag();
   const { handleSelect, handleSelectId } = useContext(ExploreContext);
 
   const handleClick = useEventCallback(() => {
+    gtagEvent('click_template_question', {
+      questionId: questionId ?? '',
+      questionTitle: reactNodeToString(question),
+    });
     if (isNonemptyString(questionId)) {
       handleSelectId(questionId);
     } else if (typeof question === 'string') {
@@ -46,7 +52,7 @@ export default function QuestionCard ({ question, questionId, variant = 'card', 
             <Tag key={tag.id} color={tag.color}>{tag.label}</Tag>
           ))}
           {imageUrl && (
-            <Image src={imageUrl} alt='preview image' />
+            <Image src={imageUrl} alt="preview image" />
           )}
         </HighlightContent>
       );
@@ -101,3 +107,26 @@ const Image = styled('img')`
   width: 100%;
   margin-top: 12px;
 `;
+
+const reactNodeToString = function (reactNode: React.ReactNode): string {
+  if (reactNode == null) {
+    return '';
+  }
+  let string = '';
+  if (typeof reactNode === 'string') {
+    string = reactNode;
+  } else if (typeof reactNode === 'number') {
+    string = reactNode.toString();
+  } else if (typeof reactNode === 'object' && isIterable(reactNode)) {
+    for (const child of reactNode) {
+      string += reactNodeToString(child);
+    }
+  } else if (isValidElement(reactNode)) {
+    string += reactNodeToString(reactNode.props.children);
+  }
+  return string;
+};
+
+function isIterable (value: object): value is Iterable<any> {
+  return Symbol.iterator in value;
+}

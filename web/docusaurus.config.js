@@ -41,6 +41,7 @@ const config = {
     auth0_domain: process.env.AUTH0_DOMAIN || '',
     auth0_client_id: process.env.AUTH0_CLIENT_ID || '',
     tidbcloud_host: process.env.TIDBCLOUD_HOST || (process.env.NODE_ENV === 'production' ? 'tidbcloud.com' : 'staging.tidbcloud.com'),
+    ga_measure_id: process.env.GA_MEASURE_ID || 'G-KW4FDPBLLJ',
   },
 
   // Even if you don't use internalization, you can use this field to set useful

@@ -4,6 +4,8 @@ import { useMemoizedFn } from 'ahooks';
 import { isFalsy, isFiniteNumber, isNonemptyString, notNullish } from '@site/src/utils/value';
 import { timeout } from '@site/src/utils/promisify';
 import { useResponsiveAuth0 } from '@site/src/theme/NavbarItem/useResponsiveAuth0';
+import { useGtag } from '@site/src/utils/ga';
+import { getErrorMessage } from '@site/src/utils/error';
 
 export const enum QuestionLoadingPhase {
   /** There is no question */
@@ -136,7 +138,10 @@ export function useQuestionManagementValues ({ pollInterval = 2000 }: QuestionMa
   const [question, setQuestion] = useState<Question>();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<unknown>();
+  const waitTimeRef = useRef<number>(0);
   const idRef = useRef<string>();
+
+  const { gtagEvent } = useGtag();
 
   const { isLoading, user, getAccessTokenSilently, login } = useResponsiveAuth0();
 
@@ -151,6 +156,7 @@ export function useQuestionManagementValues ({ pollInterval = 2000 }: QuestionMa
 
     try {
       if (clear) {
+        waitTimeRef.current = performance.now();
         setError(undefined);
         setQuestion(undefined);
         setPhase(QuestionLoadingPhase.LOADING);
@@ -179,6 +185,7 @@ export function useQuestionManagementValues ({ pollInterval = 2000 }: QuestionMa
         if (!isLoading && !user) {
           return await login({ triggerBy: 'explorer-search' });
         }
+        waitTimeRef.current = performance.now();
         setError(undefined);
         setQuestion(undefined);
         setLoading(true);
@@ -187,9 +194,18 @@ export function useQuestionManagementValues ({ pollInterval = 2000 }: QuestionMa
         const result = await newQuestion({ question: title, ignoreCache }, { accessToken });
         await timeout(600);
         idRef.current = result.id;
+        gtagEvent('create_question', {
+          questionId: result.id,
+          questionHitCache: result.hitCache,
+          spent: (performance.now() - waitTimeRef.current) / 1000,
+        });
         setPhase(computePhase(result, setError));
         setQuestion(result);
       } catch (e) {
+        gtagEvent('create_question_failed', {
+          errorMessage: getErrorMessage(e),
+          spent: (performance.now() - waitTimeRef.current) / 1000,
+        });
         setPhase(QuestionLoadingPhase.CREATE_FAILED);
         setError(e);
         return await Promise.reject(e);
@@ -234,6 +250,24 @@ export function useQuestionManagementValues ({ pollInterval = 2000 }: QuestionMa
     }
   }, [phase, loading, pollInterval]);
 
+  // send gtag events when question id changes and the question is fully ready.
+  useEffect(() => {
+    if (notNullish(question) && FINAL_PHASES.has(phase) && phase !== QuestionLoadingPhase.SUMMARIZING) {
+      gtagEvent('explore_question', {
+        questionId: question.id,
+        questionTitle: question.title,
+        questionHitCache: question.hitCache,
+        questionRecommended: question.recommended,
+        questionStatus: question.status,
+        questionNotClear: isNone(question.notClear),
+        questionHasAssumption: !isNone(question.assumption),
+        questionSqlCanAnswer: question.sqlCanAnswer,
+        // Seconds used from load start to ready (or error).
+        spent: (performance.now() - waitTimeRef.current) / 1000,
+      });
+    }
+  }, [question?.id, FINAL_PHASES.has(phase) && phase !== QuestionLoadingPhase.SUMMARIZING]);
+
   return {
     phase,
     question,
@@ -259,4 +293,15 @@ QuestionManagementContext.displayName = 'QuestionManagementContext';
 
 export default function useQuestionManagement () {
   return useContext(QuestionManagementContext);
+}
+
+/**
+ * Returns if value is string and string is not 'None' or empty
+ * @param string
+ */
+function isNone (string?: string) {
+  if (isNonemptyString(string)) {
+    return string.toLowerCase() !== 'none';
+  }
+  return true;
 }
