@@ -201,6 +201,7 @@ const SectionTitle = styled('h2')`
 const SectionTitleExtra = styled('span')`
   color: #d7d7d7;
   font-weight: normal;
+  pointer-events: auto;
 `;
 
 export const SectionTitleContent = styled('span')`
