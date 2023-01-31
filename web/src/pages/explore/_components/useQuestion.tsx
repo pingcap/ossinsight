@@ -64,6 +64,8 @@ function computePhase (question: Question, whenError: (error: unknown) => void):
     case QuestionStatus.Success:
       if (notNullish(question.chart)) {
         return QuestionLoadingPhase.READY;
+      } else if (question.sqlCanAnswer === false) {
+        return QuestionLoadingPhase.GENERATE_SQL_FAILED;
       } else {
         return QuestionLoadingPhase.VISUALIZE_FAILED;
       }
