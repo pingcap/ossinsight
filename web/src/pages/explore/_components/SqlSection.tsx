@@ -1,4 +1,4 @@
-import { isFalsy, isNonemptyString, notFalsy, notNullish } from '@site/src/utils/value';
+import { isFalsy, isNonemptyString, isNullish, notFalsy, notNullish } from '@site/src/utils/value';
 import CodeBlock from '@theme/CodeBlock';
 import Section from '@site/src/pages/explore/_components/Section';
 import React, { ReactNode, SyntheticEvent, useMemo, useRef, useState } from 'react';
@@ -86,6 +86,19 @@ export default function SqlSection () {
   }, [question]);
 
   const showSqlTitle = sqlSectionStatus !== 'error' || !hasPrompt;
+  const fullRevisedTitle = useMemo(() => {
+    if (isNullish(question)) {
+      return '';
+    }
+    if (!notNone(question.revisedTitle)) {
+      return '';
+    }
+    let result = question.revisedTitle as string;
+    if (notNone(question.assumption)) {
+      result += ` (${question.assumption as string})`;
+    }
+    return result;
+  }, [question?.revisedTitle, question?.assumption]);
 
   return (
     <Section
@@ -104,7 +117,7 @@ export default function SqlSection () {
                 <i> ({question?.assumption})</i>
               )}
             </Tag>
-            <CopyButton content={question?.revisedTitle} />
+            <CopyButton content={fullRevisedTitle} />
           </Line>}
           {showSqlTitle && (
             <Line prefix={hasPrompt ? '- ' : undefined} mt={hasPrompt ? 2 : undefined}>
@@ -193,7 +206,7 @@ function GeneratingSqlPrompts () {
 
 function Line ({ prefix, children, ...props }: { mt?: number, prefix?: ReactNode, children: ReactNode } & BoxProps<'span'>) {
   return (
-    <Box component="span" display="block" lineHeight="26px" {...props}>
+    <Box component="span" display="block" lineHeight="30px" {...props}>
       {prefix}{children}
     </Box>
   );
@@ -252,7 +265,7 @@ const Tag = styled('span')`
   color: #CBE0FF;
   border-radius: 6px;
   padding: 6px;
-  line-height: 1;
+  line-height: 1.25;
   pointer-events: auto;
   user-select: text !important;
   cursor: text;
