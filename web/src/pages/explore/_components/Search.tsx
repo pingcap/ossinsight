@@ -82,7 +82,7 @@ const StyledInput = styled(InputBase)`
   &.Mui-disabled {
     color: rgb(60, 60, 60, 0.7);
 
-    & > input {
+    & > input, & > textarea {
       -webkit-text-fill-color: unset;
     }
   }
