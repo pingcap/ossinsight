@@ -196,6 +196,7 @@ export function useQuestionManagementValues ({ pollInterval = 2000 }: QuestionMa
         idRef.current = result.id;
         gtagEvent('create_question', {
           questionId: result.id,
+          questionTitle: result.title,
           questionHitCache: result.hitCache,
           spent: (performance.now() - waitTimeRef.current) / 1000,
         });
@@ -301,7 +302,7 @@ export default function useQuestionManagement () {
  */
 function isNone (string?: string) {
   if (isNonemptyString(string)) {
-    return string.toLowerCase() !== 'none';
+    return ['none', 'n/a'].includes(string.toLowerCase());
   }
   return true;
 }

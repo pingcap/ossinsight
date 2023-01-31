@@ -29,6 +29,7 @@ type CustomEventMap = {
   create_question: GaEvent<
   'questionId' |
   'questionHitCache' |
+  'questionTitle' |
   'spent'
   >;
 
