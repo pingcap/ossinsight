@@ -92,14 +92,20 @@ export default function SqlSection () {
       status={sqlSectionStatus}
       title={(open, toggle) => (
         <StyledTitle>
+          {notNone(question?.notClear) && <Line prefix="- But I’m not sure that: ">
+            <NotClear>
+              {question?.notClear}
+            </NotClear>
+          </Line>}
           {notNone(question?.revisedTitle) && <Line prefix="- Seems like you are asking about ">
-            <Tag>
+            <Tag onClick={preventPropagation}>
               {question?.revisedTitle}
+              {notNone(question?.assumption) && (
+                <i> ({question?.assumption})</i>
+              )}
             </Tag>
             <CopyButton content={question?.revisedTitle} />
           </Line>}
-          <Line prefix="- But I’m not sure that: ">{question?.notClear}</Line>
-          <Line prefix="- I guess: ">{question?.assumption}</Line>
           {showSqlTitle && (
             <Line prefix={hasPrompt ? '- ' : undefined} mt={hasPrompt ? 2 : undefined}>
               {sqlTitle}
@@ -186,15 +192,11 @@ function GeneratingSqlPrompts () {
 }
 
 function Line ({ prefix, children, ...props }: { mt?: number, prefix?: ReactNode, children: ReactNode } & BoxProps<'span'>) {
-  if (notNone(children)) {
-    return (
-      <Box component="span" display="block" lineHeight="26px" {...props}>
-        {prefix}{children}
-      </Box>
-    );
-  } else {
-    return <></>;
-  }
+  return (
+    <Box component="span" display="block" lineHeight="26px" {...props}>
+      {prefix}{children}
+    </Box>
+  );
 }
 
 function CopyButton ({ content }: { content: string | undefined }) {
@@ -239,12 +241,25 @@ const StyledTitle = styled('div')`
   color: #D1D1D1;
 `;
 
+const NotClear = styled('span')`
+  color: #ECBAAA;
+`;
+
 const Tag = styled('span')`
   display: inline-block;
   background: #383744;
+  font-weight: bold;
+  color: #CBE0FF;
   border-radius: 6px;
   padding: 6px;
   line-height: 1;
+  pointer-events: auto;
+  user-select: text !important;
+  cursor: text;
+
+  > i {
+    color: #E7D9A8;
+  }
 `;
 
 export function extractTime (error: AxiosError) {
@@ -264,4 +279,8 @@ function notNone (value: any): boolean {
     return !['none', 'n/a'].includes(value.toLowerCase());
   }
   return notFalsy(value);
+}
+
+function preventPropagation (event: SyntheticEvent) {
+  event.stopPropagation();
 }
