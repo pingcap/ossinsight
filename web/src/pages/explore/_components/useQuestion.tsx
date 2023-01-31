@@ -4,6 +4,8 @@ import { useMemoizedFn } from 'ahooks';
 import { isFalsy, isFiniteNumber, isNonemptyString, notNullish } from '@site/src/utils/value';
 import { timeout } from '@site/src/utils/promisify';
 import { useResponsiveAuth0 } from '@site/src/theme/NavbarItem/useResponsiveAuth0';
+import { useGtag } from '@site/src/utils/ga';
+import { getErrorMessage } from '@site/src/utils/error';
 
 export const enum QuestionLoadingPhase {
   /** There is no question */
@@ -139,6 +141,8 @@ export function useQuestionManagementValues ({ pollInterval = 2000 }: QuestionMa
   const waitTimeRef = useRef<number>(0);
   const idRef = useRef<string>();
 
+  const { gtagEvent } = useGtag();
+
   const { isLoading, user, getAccessTokenSilently, login } = useResponsiveAuth0();
 
   const loadInternal = useMemoizedFn(async function (id: string, clear: boolean) {
@@ -190,18 +194,17 @@ export function useQuestionManagementValues ({ pollInterval = 2000 }: QuestionMa
         const result = await newQuestion(title, { accessToken });
         await timeout(600);
         idRef.current = result.id;
-        gtag('event', 'create_question', {
+        gtagEvent('create_question', {
           questionId: result.id,
           questionHitCache: result.hitCache,
-          // Seconds used from trigger create to question created (not answered or executed).
           spent: (performance.now() - waitTimeRef.current) / 1000,
-          send_to: 'G-KW4FDPBLLJ',
         });
         setPhase(computePhase(result, setError));
         setQuestion(result);
       } catch (e) {
-        gtag('event', 'create_question_failed', {
-          send_to: 'G-KW4FDPBLLJ',
+        gtagEvent('create_question_failed', {
+          errorMessage: getErrorMessage(e),
+          spent: (performance.now() - waitTimeRef.current) / 1000,
         });
         setPhase(QuestionLoadingPhase.CREATE_FAILED);
         setError(e);
@@ -250,8 +253,9 @@ export function useQuestionManagementValues ({ pollInterval = 2000 }: QuestionMa
   // send gtag events when question id changes and the question is fully ready.
   useEffect(() => {
     if (notNullish(question) && FINAL_PHASES.has(phase) && phase !== QuestionLoadingPhase.SUMMARIZING) {
-      gtag('event', 'explore_question', {
+      gtagEvent('explore_question', {
         questionId: question.id,
+        questionTitle: question.title,
         questionHitCache: question.hitCache,
         questionRecommended: question.recommended,
         questionStatus: question.status,
@@ -260,7 +264,6 @@ export function useQuestionManagementValues ({ pollInterval = 2000 }: QuestionMa
         questionSqlCanAnswer: question.sqlCanAnswer,
         // Seconds used from load start to ready (or error).
         spent: (performance.now() - waitTimeRef.current) / 1000,
-        send_to: 'G-KW4FDPBLLJ',
       });
     }
   }, [question?.id, FINAL_PHASES.has(phase) && phase !== QuestionLoadingPhase.SUMMARIZING]);
