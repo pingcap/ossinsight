@@ -33,6 +33,7 @@ export interface Question {
   finishedAt?: DateTime | null;
   spent?: number | null;
   error?: string | null;
+  errorType?: QuestionFeedbackType | null;
   hitCache: boolean;
   preceding: number;
 }
@@ -96,6 +97,7 @@ export enum QuestionFeedbackType {
   ErrorAnswerParse = "error-answer-parse",
   ErrorValidateSQL = "error-validate-sql",
   ErrorValidateChart = "error-validate-chart",
+  ErrorQueryExecute = "error-query-execute",
   ErrorQueryTimeout = "error-query-timeout",
   ErrorEmptyResult = "error-empty-result",
   ErrorSummaryGenerate = "error-summary-generate",

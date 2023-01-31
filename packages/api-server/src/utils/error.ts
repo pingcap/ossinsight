@@ -72,3 +72,14 @@ export class ExplorerPrepareQuestionError extends Error {
         super(message, cause);
     }
 }
+
+export class ExplorerResolveQuestionError extends Error {
+    constructor(
+      readonly message: string,
+      readonly feedbackType: QuestionFeedbackType,
+      readonly feedbackPayload: Record<string, any>,
+      cause?: Error
+    ) {
+        super(message, cause);
+    }
+}
