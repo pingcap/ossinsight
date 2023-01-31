@@ -4,7 +4,9 @@ import {
     APIError,
     BotResponseParseError,
     ExplorerCreateQuestionError,
-    ExplorerPrepareQuestionError, ExplorerTooManyRequestError,
+    ExplorerPrepareQuestionError,
+    ExplorerResolveQuestionError,
+    ExplorerTooManyRequestError,
     SQLUnsupportedFunctionError,
     SQLUnsupportedMultipleStatementsError,
     SQLUnsupportedStatementTypeError,
@@ -38,7 +40,8 @@ import {
     MapChart,
     NumberCard,
     PersonalCard,
-    PieChart, QuestionTag,
+    PieChart,
+    QuestionTag,
     RecommendedChart,
     RecommendQuestion,
     RepoCard,
@@ -230,8 +233,8 @@ export class ExplorerService {
             await this.updateQuestion(question);
 
             // Prepare the recommended questions.
-            const popularQuestions = await this.getRecommendQuestionsByRandom(3, false);
-            question.recommendedQuestions?.push(...popularQuestions.map(q => q.title));
+            // const popularQuestions = await this.getRecommendQuestionsByRandom(3, false);
+            // question.recommendedQuestions?.push(...popularQuestions.map(q => q.title));
 
             // Generate the SQL by OpenAI.
             let answer = null;
@@ -239,40 +242,43 @@ export class ExplorerService {
                 answer = await this.botService.questionToAnswer(this.generateAnswerTemplate, title);
             } catch (e: any) {
                 if (e instanceof BotResponseParseError) {
-                    const message = 'Failed to generate SQL, please try again later: ' + e.message;
-                    throw new ExplorerPrepareQuestionError(message, QuestionFeedbackType.ErrorAnswerParse, {
+                    throw new ExplorerPrepareQuestionError(e.message, QuestionFeedbackType.ErrorAnswerParse, {
                         message: e.message,
                         response: e.responseText,
                     }, e);
                 } else {
-                    const message = 'Failed to generate SQL, please try again later.';
+                    const message = 'Failed to generate answer, please try again later.';
                     throw new ExplorerPrepareQuestionError(message, QuestionFeedbackType.ErrorAnswerGenerate, {
-                        message: e.message
+                        message: message
                     }, e);
                 }
             }
 
             // Check if there are an answer been returned.
             if (!answer) {
-                const message = 'Failed to generate SQL, please try again later.';
+                const message = 'Generated an empty answer.';
                 throw new ExplorerPrepareQuestionError(message, QuestionFeedbackType.ErrorAnswerGenerate, {
-                    message: 'No answer provided.'
+                    message: message
                 });
             }
 
-            let { sql: querySQL, chart, questions: aiGeneratedQuestions, sqlCanAnswer, revisedTitle, notClear, assumption } = answer;
+            let { sql: querySQL, chart, sqlCanAnswer, revisedTitle, notClear, assumption } = answer;
             question.querySQL = querySQL;
             question.chart = chart;
             question.sqlCanAnswer = sqlCanAnswer;
             question.revisedTitle = revisedTitle;
             question.notClear = notClear;
             question.assumption = assumption;
-            if (Array.isArray(aiGeneratedQuestions) && aiGeneratedQuestions.length > 0) {
-                question.recommendedQuestions?.unshift(...aiGeneratedQuestions);
-            }
 
-            if (!question.sqlCanAnswer) {
-                await this.addSystemQuestionFeedback(questionId, QuestionFeedbackType.ErrorSQLCanNotAnswer)
+            // if (Array.isArray(aiGeneratedQuestions) && aiGeneratedQuestions.length > 0) {
+            //     question.recommendedQuestions?.unshift(...aiGeneratedQuestions);
+            // }
+
+            if (!question.sqlCanAnswer || querySQL === null || querySQL === undefined || querySQL.length === 0) {
+                const message = 'Failed to generate SQL, the question may exceed the scope of what can be answered.';
+                throw new ExplorerPrepareQuestionError(message, QuestionFeedbackType.ErrorSQLCanNotAnswer, {
+                    message: message
+                });
             }
 
             // Validate the generated SQL.
@@ -286,8 +292,7 @@ export class ExplorerService {
                 statementType = res.statementType;
             } catch (err: any) {
                 if (err instanceof ValidateSQLError) {
-                    const message = 'Failed to validate the generated SQL: ' + err.message;
-                    throw new ExplorerPrepareQuestionError(message, QuestionFeedbackType.ErrorValidateSQL, {
+                    throw new ExplorerPrepareQuestionError(err.message, QuestionFeedbackType.ErrorValidateSQL, {
                         message: err.message
                     });
                 } else {
@@ -324,14 +329,13 @@ export class ExplorerService {
                     engines = this.getStorageEnginesFromPlan(plan);
                 } catch (err: any) {
                     if (err.sqlMessage) {
-                        const message = `Failed to create the execution plan for the generated SQL: ${err.sqlMessage}`;
-                        throw new ExplorerPrepareQuestionError(message, QuestionFeedbackType.ErrorValidateSQL, {
+                        throw new ExplorerPrepareQuestionError(err.sqlMessage, QuestionFeedbackType.ErrorValidateSQL, {
                             sqlMessage: err.sqlMessage,
                             message: err.message,
                             sql: querySQL
                         });
                     } else {
-                        const message = `Failed to create the execution plan for the generated SQL.`;
+                        const message = 'Failed to validate the generated SQL.';
                         throw new ExplorerPrepareQuestionError(message, QuestionFeedbackType.ErrorValidateSQL, {
                             message: err.message,
                             sql: querySQL
@@ -367,6 +371,7 @@ export class ExplorerService {
             if (err instanceof ExplorerPrepareQuestionError) {
                 await this.updateQuestion({
                     ...question,
+                    errorType: err.feedbackType,
                     status: QuestionStatus.Error,
                     error: this.wrapperTheErrorMessage(err.message),
                 });
@@ -374,6 +379,7 @@ export class ExplorerService {
             } else {
                 await this.updateQuestion({
                     ...question,
+                    errorType: err.ErrorUnknown,
                     status: QuestionStatus.Error,
                     error: this.wrapperTheErrorMessage(err.message),
                 });
@@ -399,11 +405,11 @@ export class ExplorerService {
         }
 
         if (/rand\(.*\)/ig.test(sql)) {
-            throw new SQLUnsupportedFunctionError( 'didn\'t support SQL contains `rand()` function');
+            throw new SQLUnsupportedFunctionError( 'Didn\'t support SQL contains `rand()` function');
         }
 
         if (/sleep\(.*\)/ig.test(sql)) {
-            throw new SQLUnsupportedFunctionError( 'didn\'t support SQL contains `sleep()` function');
+            throw new SQLUnsupportedFunctionError( 'Didn\'t support SQL contains `sleep()` function');
         }
 
         try {
@@ -411,7 +417,7 @@ export class ExplorerService {
             let rootNode;
             if (Array.isArray(ast)) {
                 if (ast.length > 1) {
-                    throw new SQLUnsupportedMultipleStatementsError('didn\'t support multiple statements');
+                    throw new SQLUnsupportedMultipleStatementsError('Didn\'t support multiple statements');
                 } else {
                     rootNode = ast[0];
                 }
@@ -435,7 +441,7 @@ export class ExplorerService {
                         statementType: rootNode.type
                     };
                 default:
-                    throw new SQLUnsupportedStatementTypeError('only supports SELECT, SHOW and DESC statements');
+                    throw new SQLUnsupportedStatementTypeError('Only supports SELECT, SHOW and DESC statements');
             }
         } catch (err: any) {
             if (err instanceof ValidateSQLError) {
@@ -569,7 +575,7 @@ export class ExplorerService {
         const {
             id, revisedTitle = null, notClear = null, assumption = null, status, recommended, sqlCanAnswer = true,
             querySQL, queryHash, engines = [], result = null, chart = null, recommendedQuestions = [],
-            queueName = null, queueJobId = null, requestedAt, executedAt, finishedAt, spent, error = null
+            queueName = null, queueJobId = null, requestedAt, executedAt, finishedAt, spent, errorType = null, error = null
         } = question;
 
         const enginesValue = JSON.stringify(engines);
@@ -585,12 +591,12 @@ export class ExplorerService {
             SET
                 revised_title = ?, not_clear = ?, assumption = ?, status = ?, recommended = ?, sql_can_answer = ?, 
                 query_sql = ?, query_hash = ?, engines = ?, result = ?, chart = ?, recommended_questions = ?, 
-                queue_name = ?, queue_job_id = ?, requested_at = ?, executed_at = ?, finished_at = ?, spent = ?, error = ?
+                queue_name = ?, queue_job_id = ?, requested_at = ?, executed_at = ?, finished_at = ?, spent = ?, error_type = ?, error = ?
             WHERE id = UUID_TO_BIN(?)
         `, [
             revisedTitle, notClear, assumption, status, recommended, sqlCanAnswer,
             querySQL, queryHash, enginesValue, resultValue, chartValue, recommendedQuestionsValue,
-            queueName, queueJobId, requestedAtValue, executedAtValue, finishedAtValue, spent, error, id
+            queueName, queueJobId, requestedAtValue, executedAtValue, finishedAtValue, spent, errorType, error, id
         ]);
         if (rs.affectedRows !== 1) {
             throw new APIError(500, 'Failed to update the question.');
@@ -618,11 +624,14 @@ export class ExplorerService {
         }
     }
 
-    private async saveQuestionError(questionId: string, message: string = 'unknown', conn?: Connection) {
+    private async saveQuestionError(
+      questionId: string, errorType: QuestionFeedbackType = QuestionFeedbackType.ErrorUnknown,
+      message: string = 'unknown', conn?: Connection
+    ) {
         const connection = conn || this.mysql;
         const [rs] = await connection.query<ResultSetHeader>(`
-            UPDATE explorer_questions SET status = ?, error = ? WHERE id = UUID_TO_BIN(?)
-        `, [QuestionStatus.Error, message, questionId]);
+            UPDATE explorer_questions SET status = ?, error_type = ?, error = ? WHERE id = UUID_TO_BIN(?)
+        `, [QuestionStatus.Error, errorType, message, questionId]);
         if (rs.affectedRows !== 1) {
             throw new APIError(500, 'Failed to update the question error.');
         }
@@ -650,7 +659,7 @@ export class ExplorerService {
                 queue_name AS queueName, queue_job_id AS queueJobId, recommended_questions AS recommendedQuestions, 
                 result, chart, answer_summary AS answerSummary, recommended, hit_cache AS hitCache, 
                 created_at AS createdAt, requested_at AS requestedAt, executed_at AS executedAt, finished_at AS finishedAt, 
-                spent, error
+                spent, error_type AS errorType, error
             FROM explorer_questions
             WHERE id = UUID_TO_BIN(?)
         `, [questionId]);
@@ -669,7 +678,7 @@ export class ExplorerService {
                 queue_name AS queueName, queue_job_id AS queueJobId, recommended_questions AS recommendedQuestions,
                 result, chart, answer_summary AS answerSummary, recommended, hit_cache AS hitCache,
                 created_at AS createdAt, requested_at AS requestedAt, executed_at AS executedAt, finished_at AS finishedAt,
-                spent, error
+                spent, error_type AS errorType, error
             FROM explorer_questions
             WHERE
                 hash = ?
@@ -692,7 +701,7 @@ export class ExplorerService {
                 queue_name AS queueName, queue_job_id AS queueJobId, recommended_questions AS recommendedQuestions,
                 result, chart, answer_summary AS answerSummary, recommended, hit_cache AS hitCache,
                 created_at AS createdAt, requested_at AS requestedAt, executed_at AS executedAt, finished_at AS finishedAt,
-                spent, error
+                spent, error_type AS errorType, error
             FROM explorer_questions
             WHERE query_hash = ? AND status = ? AND created_at > DATE_SUB(NOW(), INTERVAL ? SECOND)
             ORDER BY created_at DESC
@@ -727,7 +736,7 @@ export class ExplorerService {
                 queue_name AS queueName, queue_job_id AS queueJobId, recommended_questions AS recommendedQuestions,
                 result, chart, answer_summary AS answerSummary, recommended, hit_cache AS hitCache,
                 created_at AS createdAt, requested_at AS requestedAt, executed_at AS executedAt, finished_at AS finishedAt,
-                spent, error
+                spent, error_type AS errorType, error
             FROM explorer_questions
             WHERE user_id = ? AND created_at > DATE_SUB(NOW(), INTERVAL 1 HOUR)
             ORDER BY created_at DESC
@@ -802,7 +811,16 @@ export class ExplorerService {
 
             return questionResult;
         } catch (err: any) {
-            await this.saveQuestionError(questionId, err.message);
+            if (err instanceof ExplorerResolveQuestionError) {
+                await this.addSystemQuestionFeedback(questionId, err.feedbackType, JSON.stringify(err.feedbackPayload));
+                await this.saveQuestionError(questionId, err.feedbackType, err.message);
+            } else {
+                const userMessage = "Failed to resolve question, please try again later.";
+                await this.addSystemQuestionFeedback(questionId, QuestionFeedbackType.ErrorUnknown, JSON.stringify({
+                    message: err.message,
+                }));
+                await this.saveQuestionError(questionId, QuestionFeedbackType.ErrorUnknown, userMessage);
+            }
             throw err;
         }
     }
@@ -818,7 +836,7 @@ export class ExplorerService {
         const preparedSQL = `/* questionId: ${questionId} */ ${querySQL}`;
 
         return new Promise<QuestionQueryResult>(async (resolve, reject) => {
-            let playgroundConn: PoolConnection | null = null, timer = null;
+            let playgroundConn: PoolConnection | null = null, timer: NodeJS.Timeout | null = null;
 
             try {
                 // Get playground connection.
@@ -850,23 +868,48 @@ export class ExplorerService {
                             }
                         }
 
-                        await this.addSystemQuestionFeedback(questionId, QuestionFeedbackType.ErrorQueryTimeout, JSON.stringify({
+                        reject(new ExplorerResolveQuestionError('Query execution timeout.', QuestionFeedbackType.ErrorQueryTimeout,{
                             timeout: timeout,
                             querySQL,
                         }));
-
-                        reject(new Error('Query execution timeout.'));
                     } catch (err) {
                         logger.error({ err }, 'Failed to kill the connection %s.', connectionId);
-                        reject(new Error('Query execution timeout.'));
+                        reject(new ExplorerResolveQuestionError('Query execution timeout.', QuestionFeedbackType.ErrorQueryTimeout,{
+                            timeout: timeout,
+                            querySQL,
+                        }));
+                    } finally {
+                        if (timer) {
+                            clearTimeout(timer);
+                            timer = null;
+                        }
+
+                        if (playgroundConn) {
+                            await playgroundConn.release();
+                        }
                     }
                 }, timeout);
 
                 // Executing query.
-                const [rows, fields] = await playgroundConn.execute<any[]>(preparedSQL);
+                let rows: any[] = [], fields: any[] = [];
+                try {
+                    [rows, fields] = await playgroundConn.execute<any[]>(preparedSQL);
+                } catch (err: any) {
+                    if (err.sqlMessage) {
+                        throw new ExplorerResolveQuestionError(err.sqlMessage, QuestionFeedbackType.ErrorQueryExecute,{
+                            querySQL,
+                            sqlMessage: err.sqlMessage,
+                            message: err.message
+                        });
+                    } else {
+                        throw new ExplorerResolveQuestionError(err.message, QuestionFeedbackType.ErrorQueryExecute,{
+                            querySQL,
+                            message: err.message
+                        });
+                    }
+                }
 
                 // Finish the query.
-                clearTimeout(timer);
                 const finishedAt = DateTime.now();
                 const spent = finishedAt.diff(executedAt).as("seconds");
                 logger.info({questionId}, 'Finished query executing, cost: %d s', spent);
@@ -886,12 +929,13 @@ export class ExplorerService {
                     spent,
                 });
             } catch (err) {
+                reject(err);
+            } finally {
                 if (timer) {
                     clearTimeout(timer);
                     timer = null;
                 }
-                reject(err);
-            } finally {
+
                 if (playgroundConn) {
                     await playgroundConn.release();
                 }
