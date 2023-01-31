@@ -464,6 +464,7 @@
 `,kt=(0,S.ZP)("span")`
   color: #d7d7d7;
   font-weight: normal;
+  pointer-events: auto;
 `,Nt=(0,S.ZP)("span")`
   margin-left: 8px;
 `,Pt=(0,S.ZP)("span")`
