@@ -18,6 +18,7 @@ Table github_events, columns = [id, type, created_at, repo_id, repo_name, actor_
 * type in [PullRequestEvent, IssuesEvent]: opened, closed, reopened
 - Column number, number is issue number
 - Column created_at, closed_at, pr_merged_at, pr_or_issue_created_at DEFAULT '1970-01-01 00:00:00'
+- Column additions, deletions are invalid and must not be used when type is PushEvent!!!
 
 Table github_repos, columns = [repo_id, repo_name, owner_id, owner_login, owner_is_org, description, primary_language, license, stars, forks, parent_repo_id, is_archived, is_deleted, latest_released_at, pushed_at, created_at, updated_at]
 - Column primary_language means programming language, invalid = [null, '']
@@ -75,14 +76,12 @@ When result has country_code and a number column, use MapChart
 Answer {
   chart: {chartName: string; title: string; options: ChartOptions;}; // must generate chart!!!
   sql: string; // must single line sql, remove line break in sql!!
-  // Generate 2 distinct questions based on the given information, including 1 related to the provided one and 1 is random.
-  questions: string[];
 }
 
 ---
 Make sure to avoid ambiguous column references and non-existent columns by using table aliases and double-checking column names before running the query.
 If the question is talking about repos like [a, b, c], use the format:org_or_user/repo.
-Let's think step by step, use best practice of writing SQL, use common table expression if and only if necessary, scan all repos if there is no specific repo, generate a answer.json file to answer the question: "${question}".
+If the time period is not specified, assume a duration of 3 months.Let's think step by step, use best practice of writing SQL, use common table expression if and only if necessary, scan all repos if there is no specific repo, generate a answer.json file to answer the question: "in github, ${question}".
 ---
 answer.json // must be json!!!
 ---

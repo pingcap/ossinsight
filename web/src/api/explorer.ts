@@ -29,6 +29,12 @@ export interface Question {
   spent?: number | null;
   answerSummary?: { content: string, hashtags: string[] };
   error?: string | null;
+  hitCache?: boolean;
+
+  assumption?: string;
+  notClear?: string;
+  revisedTitle?: string;
+  sqlCanAnswer?: boolean;
 }
 
 export interface QuestionSQLResult {
@@ -69,7 +75,7 @@ export interface ValidateSQLResult {
 }
 
 export async function newQuestion (
-  question: string,
+  { question, ignoreCache = false }: { question: string, ignoreCache?: boolean },
   options: {
     accessToken?: string;
   },
@@ -77,7 +83,7 @@ export async function newQuestion (
   const { accessToken } = options;
   return await clientWithoutCache.post(
     '/explorer/questions/',
-    { question },
+    { question, ignoreCache },
     { withCredentials: true, oToken: accessToken },
   );
 }

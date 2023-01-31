@@ -2,7 +2,7 @@ import { FINAL_PHASES, QuestionLoadingPhase, QuestionManagementContext, useQuest
 import useUrlSearchState, { nullableStringParam } from '@site/src/hooks/url-search-state';
 import React, { useEffect, useRef, useState } from 'react';
 import { isBlankString, isNullish, notNullish } from '@site/src/utils/value';
-import { Box, styled, useEventCallback } from '@mui/material';
+import { Box, NoSsr, styled, useEventCallback } from '@mui/material';
 import { ExploreContext } from '@site/src/pages/explore/_components/context';
 import { Decorators } from '@site/src/pages/explore/_components/Decorators';
 import Layout from '@site/src/pages/explore/_components/Layout';
@@ -15,6 +15,8 @@ import Side from '@site/src/pages/explore/_components/Side';
 import Tips, { TipsRef } from '@site/src/pages/explore/_components/Tips';
 import RecommendList from '@site/src/pages/explore/_components/RecommendList';
 import { Prompts } from '@site/src/pages/explore/_components/Prompt';
+
+const SHOW_PROMPTS = false;
 
 export default function Questions () {
   const { question, loading, load, error, phase, reset, create } = useQuestionManagementValues({ pollInterval: 2000 });
@@ -49,11 +51,11 @@ export default function Questions () {
     }
   }, [loading, question?.id]);
 
-  const handleAction = useEventCallback(() => {
+  const handleAction = useEventCallback((ignoreCache: boolean) => {
     if (isPending) {
       return;
     }
-    create(value);
+    create(value, ignoreCache);
   });
 
   const handleClear = useEventCallback(() => {
@@ -64,7 +66,7 @@ export default function Questions () {
 
   const handleSelect = useEventCallback((title: string) => {
     setValue(title);
-    create(title);
+    create(title, false);
   });
 
   const handleSelectId = useEventCallback((id: string, title?: string) => {
@@ -91,14 +93,16 @@ export default function Questions () {
           header={<Header />}
           side={<Side />}
         >
-          <SwitchLayout state={hideExecution ? 'recommend' : 'execution'} direction={hideExecution ? 'down' : 'up'}>
+          {SHOW_PROMPTS && <SwitchLayout state={hideExecution ? 'recommend' : 'execution'} direction={hideExecution ? 'down' : 'up'}>
             <Box key="recommend" />
-            <PromptsTitle key="execution" source={prompts} interval={4000} prefix={<span>📌 Tips:</span>} />
-          </SwitchLayout>
+            <PromptsTitle key="execution" source={prompts} interval={4000} prefix={<span><b>📌 Tips:</b></span>} />
+          </SwitchLayout>}
           <ExploreSearch value={value} onChange={setValue} onAction={handleAction} disableInput={isPending} disableClear={value === ''} disableAction={disableAction} onClear={handleClear} clearState={isPending ? 'stop' : undefined} />
           <SwitchLayout state={hideExecution ? 'recommend' : 'execution'} direction={hideExecution ? 'down' : 'up'}>
             <Box key="execution" sx={{ mt: 1.5 }}>
-              <Execution search={value} />
+              <NoSsr>
+                <Execution search={value} />
+              </NoSsr>
             </Box>
             <Box key="recommend" sx={{ mt: 4 }}>
               <RecommendList />

@@ -28,16 +28,16 @@ class HnUpdate
       return if json.nil?
       json["items"].each do |item_id|
         i = HnItem.where(id: item_id).first
-        if i && i.last_fetch_at >= 1.hour.ago
-          puts "The item has updated within an hour, ignore #{item_id}"
+        if i && i.last_fetch_at >= 50.seconds.ago
+          puts "The item has updated within 50 seconds, ignore #{item_id}"
           next
         end
         HnFetchItem.new(item_id).run
       end
       json["profiles"].each do |user_id|
         u = HnUser.where(id: user_id).first
-        if u && u.last_fetch_at >= 1.hour.ago
-          puts "The user has updated within an hour, ignore #{user_id}"
+        if u && u.last_fetch_at >= 50.seconds.ago
+          puts "The user has updated within 50 seconds, ignore #{user_id}"
           next
         end
         HnFetchUser.new(user_id).run

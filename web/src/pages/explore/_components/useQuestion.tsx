@@ -64,6 +64,8 @@ function computePhase (question: Question, whenError: (error: unknown) => void):
     case QuestionStatus.Success:
       if (notNullish(question.chart)) {
         return QuestionLoadingPhase.READY;
+      } else if (question.sqlCanAnswer === false) {
+        return QuestionLoadingPhase.GENERATE_SQL_FAILED;
       } else {
         return QuestionLoadingPhase.VISUALIZE_FAILED;
       }
@@ -124,7 +126,7 @@ export interface QuestionManagement {
 
   load: (id: string) => void;
 
-  create: (title: string) => void;
+  create: (title: string, ignoreCache: boolean) => void;
 
   reset: () => void;
 }
@@ -171,8 +173,8 @@ export function useQuestionManagementValues ({ pollInterval = 2000 }: QuestionMa
     void loadInternal(id, true);
   });
 
-  const create = useMemoizedFn((title: string) => {
-    async function createInternal (title: string) {
+  const create = useMemoizedFn((title: string, ignoreCache: boolean) => {
+    async function createInternal (title: string, ignoreCache: boolean) {
       try {
         if (!isLoading && !user) {
           return await login({ triggerBy: 'explorer-search' });
@@ -182,7 +184,7 @@ export function useQuestionManagementValues ({ pollInterval = 2000 }: QuestionMa
         setLoading(true);
         setPhase(QuestionLoadingPhase.CREATING);
         const accessToken = await getAccessTokenSilently();
-        const result = await newQuestion(title, { accessToken });
+        const result = await newQuestion({ question: title, ignoreCache }, { accessToken });
         await timeout(600);
         idRef.current = result.id;
         setPhase(computePhase(result, setError));
@@ -196,7 +198,7 @@ export function useQuestionManagementValues ({ pollInterval = 2000 }: QuestionMa
       }
     }
 
-    void createInternal(title);
+    void createInternal(title, ignoreCache);
   });
 
   const reset = useMemoizedFn(() => {

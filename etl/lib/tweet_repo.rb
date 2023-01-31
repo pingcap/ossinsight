@@ -90,6 +90,7 @@ class TweetRepo
     txt << "\n" + contributors_txt if logins.present? 
     txt << "\n" + " https://ossinsight.io/analyze/#{repo}"
     txt << "\n" + "##{language}" if language.present? 
+    txt << " #ChatGPT" if repo.to_s =~ /chatgpt/i 
 
     puts txt
     puts txt.size
@@ -147,7 +148,7 @@ class TweetRepo
     json
   end
 
-  def get_contributors(n = 30)
+  def get_contributors(n = 100)
     sql = <<~SQL
       select creator_user_login as login, count(*) as count 
       from github_events 

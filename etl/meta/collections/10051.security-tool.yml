@@ -46,3 +46,4 @@ items:
   - jeremylong/DependencyCheck
   - tenzir/vast
   - matanolabs/matano
+  - chipsec/chipsec

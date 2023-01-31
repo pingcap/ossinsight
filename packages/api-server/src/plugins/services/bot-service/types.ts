@@ -29,8 +29,12 @@ export interface RecommendQuestion {
 }
 
 export interface Answer {
+  revisedTitle: string;
+  sqlCanAnswer: boolean;
+  notClear: string;
+  assumption: string;
   sql?: string;
-  chart?: RecommendedChart;
+  chart?: RecommendedChart | null;
   questions: string[];
 }
 
