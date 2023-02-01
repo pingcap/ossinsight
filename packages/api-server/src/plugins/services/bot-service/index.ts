@@ -152,10 +152,7 @@ export class BotService {
                     chart: answer.chart ? {
                         chartName: answer.chart.chartName,
                         title: answer.chart.title,
-                        ...this.removeTableNameForColumn({
-                            country_code: "gr.country_code",
-                            actor_login: "gu.actor_login"
-                        })
+                        ...this.removeTableNameForColumn(answer.chart.options)
                     } : null,
                     questions: answer.questions || [],
                 }
