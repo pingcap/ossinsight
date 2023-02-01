@@ -28,6 +28,8 @@ export default fp(async (fastify) => {
 
 const GENERATE_ANSWER_PROMPT_TEMPLATE_NAME = 'explorer-generate-answer';
 
+const tableColumnRegexp = /(?<table_name>.+)\.(?<column_name>.+)/;
+
 export class BotService {
     private readonly openai: OpenAIApi;
 
@@ -150,7 +152,10 @@ export class BotService {
                     chart: answer.chart ? {
                         chartName: answer.chart.chartName,
                         title: answer.chart.title,
-                        ...answer.chart.options
+                        ...this.removeTableNameForColumn({
+                            country_code: "gr.country_code",
+                            actor_login: "gu.actor_login"
+                        })
                     } : null,
                     questions: answer.questions || [],
                 }
@@ -166,6 +171,17 @@ export class BotService {
                 throw new BotResponseGenerateError(`Failed to generate the answer.`, err);
             }
         }
+    }
+
+    removeTableNameForColumn(chartOptions: Record<string, string>) {
+        Object.entries(chartOptions).forEach(([key, value]) => {
+            const match = tableColumnRegexp.exec(value);
+            if (match) {
+                const groups = match.groups as any;
+                chartOptions[key] = groups.column_name;
+            }
+        });
+        return chartOptions;
     }
 
     async generateRecommendQuestions(template: GenerateQuestionsPromptTemplate, n: number): Promise<RecommendQuestion[]> {
