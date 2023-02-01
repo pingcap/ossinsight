@@ -1,21 +1,26 @@
 import { isFalsy, isNonemptyString, isNullish, notFalsy, notNullish } from '@site/src/utils/value';
 import CodeBlock from '@theme/CodeBlock';
-import Section from '@site/src/pages/explore/_components/Section';
-import React, { ReactNode, SyntheticEvent, useMemo, useRef, useState } from 'react';
+import Section, { SectionStatus, SectionStatusIcon } from '@site/src/pages/explore/_components/Section';
+import React, { cloneElement, forwardRef, ReactNode, SyntheticEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { format } from 'sql-formatter';
 import useQuestionManagement, { QuestionLoadingPhase } from '@site/src/pages/explore/_components/useQuestion';
 import { AxiosError } from 'axios';
 import { getAxiosErrorPayload, getErrorMessage, isAxiosError } from '@site/src/utils/error';
-import { useInterval } from 'ahooks';
+import { useBoolean, useInterval } from 'ahooks';
 import { randomOf } from '@site/src/utils/generate';
 import TypewriterEffect from '@site/src/pages/explore/_components/TypewriterEffect';
 import TiDBCloudLink from '@site/src/components/TiDBCloudLink';
-import { Alert, Box, Button, IconButton, Snackbar, styled, useEventCallback } from '@mui/material';
+import { Alert, Box, Button, Collapse, IconButton, Snackbar, styled, useEventCallback } from '@mui/material';
 import { BoxProps } from '@mui/material/Box';
 import { ContentCopy, ExpandMore } from '@mui/icons-material';
 import Anchor from '@site/src/components/Anchor';
+import BotMessage from '@site/src/pages/explore/_components/BotMessage';
+import { TransitionGroup } from 'react-transition-group';
+import { Question } from '@site/src/api/explorer';
+import BotIcon from '@site/src/pages/explore/_components/BotIcon';
 
 export default function SqlSection () {
+  const [open, { toggle: toggleOpen }] = useBoolean(false);
   const { question, error, phase } = useQuestionManagement();
 
   const formattedSql = useMemo(() => {
@@ -31,20 +36,20 @@ export default function SqlSection () {
     }
   }, [question, error]);
 
-  const sqlSectionStatus = useMemo(() => {
+  const sqlSectionStatus: SectionStatus = useMemo(() => {
     switch (phase) {
       case QuestionLoadingPhase.NONE:
-        return 'pending';
+        return SectionStatus.pending;
       case QuestionLoadingPhase.LOADING:
       case QuestionLoadingPhase.CREATING:
       case QuestionLoadingPhase.GENERATING_SQL:
-        return 'loading';
+        return SectionStatus.loading;
       case QuestionLoadingPhase.GENERATE_SQL_FAILED:
       case QuestionLoadingPhase.LOAD_FAILED:
       case QuestionLoadingPhase.CREATE_FAILED:
-        return 'error';
+        return SectionStatus.error;
       default:
-        return 'success';
+        return SectionStatus.success;
     }
   }, [phase]);
 
@@ -76,7 +81,6 @@ export default function SqlSection () {
     }
   }, [sqlSectionStatus, phase, error]);
 
-  const showBot = phase !== QuestionLoadingPhase.LOADING;
   const hasPrompt = useMemo(() => {
     return notNullish(question) && (
       notNone(question.revisedTitle) ||
@@ -86,54 +90,45 @@ export default function SqlSection () {
   }, [question]);
 
   const showSqlTitle = sqlSectionStatus !== 'error' || !hasPrompt;
-  const fullRevisedTitle = useMemo(() => {
-    if (isNullish(question)) {
-      return '';
-    }
-    if (!notNone(question.revisedTitle)) {
-      return '';
-    }
-    let result = question.revisedTitle as string;
-    if (notNone(question.assumption)) {
-      result += ` (${question.assumption as string})`;
-    }
-    return result;
-  }, [question?.revisedTitle, question?.assumption]);
+
+  const rawTitleStyle = useMemo(() => {
+    return sqlSectionStatus === SectionStatus.success || phase === QuestionLoadingPhase.LOADING;
+  }, [sqlSectionStatus, phase]);
+
+  const titleLine = (
+    <>
+      <SectionStatusIcon status={sqlSectionStatus} />
+      {sqlTitle}
+      {sqlSectionStatus === 'success' && (
+        <Button size="small" onClick={toggleOpen} endIcon={<ExpandMore sx={{ rotate: open ? '180deg' : 0, transition: theme => theme.transitions.create('rotate') }} />} sx={{ ml: 1, pointerEvents: 'auto' }}>
+          {open ? 'Hide' : 'Check it out'}
+        </Button>
+      )}
+    </>
+  );
 
   return (
     <Section
       status={sqlSectionStatus}
-      title={(open, toggle) => (
+      header={(
         <StyledTitle>
-          {notNone(question?.notClear) && <Line prefix="- But I’m not sure that: ">
-            <NotClear>
-              {question?.notClear}
-            </NotClear>
-          </Line>}
-          {notNone(question?.revisedTitle) && <Line prefix="- Seems like you are asking about ">
-            <Tag onClick={preventPropagation}>
-              {question?.revisedTitle}
-              {notNone(question?.assumption) && (
-                <i> ({question?.assumption})</i>
-              )}
-            </Tag>
-            <CopyButton content={fullRevisedTitle} />
-          </Line>}
-          {hasPrompt && (<Line prefix="- " fontSize='14px' fontWeight='normal'>You can copy and revise it based on the question above 👆.</Line>)}
-          {showSqlTitle && (
-            <Line mt={hasPrompt ? 2 : undefined}>
+          {hasPrompt && (
+            <AIMessages
+              question={question}
+              hasPrompt={hasPrompt}
+              titleLine={titleLine}
+            />
+          )}
+          {!hasPrompt && showSqlTitle && !rawTitleStyle && (
+            <BotMessage animated botMt={0.5}>
               {sqlTitle}
-              {sqlSectionStatus === 'success' && (
-                <Button size="small" endIcon={<ExpandMore sx={{ rotate: open ? '180deg' : 0, transition: theme => theme.transitions.create('rotate') }} />} sx={{ ml: 1, pointerEvents: 'auto' }}>
-                  {open ? 'Hide' : 'Check it out'}
-                </Button>
-              )}
-            </Line>
+            </BotMessage>
+          )}
+          {!hasPrompt && showSqlTitle && rawTitleStyle && (
+            <Line>{titleLine}</Line>
           )}
         </StyledTitle>
       )}
-      icon={showBot ? 'bot' : 'default'}
-      extra="auto"
       error={sqlSectionError}
       errorTitle="Failed to generate SQL"
       errorPrompt="Hi, it's failed to generate SQL for"
@@ -156,14 +151,128 @@ export default function SqlSection () {
             )
       }
     >
-      {notFalsy(formattedSql) && isFalsy(sqlSectionError) && (
-        <CodeBlock language="sql">
-          {formattedSql}
-        </CodeBlock>
-      )}
+      <Collapse in={open}>
+        {notFalsy(formattedSql) && isFalsy(sqlSectionError) && (
+          <CodeBlock language="sql">
+            {formattedSql}
+          </CodeBlock>
+        )}
+      </Collapse>
     </Section>
   );
 }
+
+function AIMessages ({ question, hasPrompt, titleLine }: { question: Question | undefined, hasPrompt: boolean, titleLine: ReactNode }) {
+  const [index, setIndex] = useState(0);
+
+  const fullRevisedTitle = useMemo(() => {
+    if (isNullish(question)) {
+      return '';
+    }
+    if (!notNone(question.revisedTitle)) {
+      return '';
+    }
+    let result = question.revisedTitle as string;
+    if (notNone(question.assumption)) {
+      result += ` (${question.assumption as string})`;
+    }
+    return result;
+  }, [question?.revisedTitle, question?.assumption]);
+
+  const messages = useMemo(() => [
+    {
+      key: 'not-sure',
+      show: notNone(question?.notClear),
+      content: (
+        <Line prefix="- But I’m not sure that: ">
+          <NotClear>
+            {question?.notClear}
+          </NotClear>
+        </Line>
+      ),
+    },
+    {
+      key: 'rq',
+      show: notNone(question?.revisedTitle),
+      content: (
+        <Line prefix="- Seems like you are asking about ">
+          <Tag onClick={preventPropagation}>
+            {question?.revisedTitle}
+            {notNone(question?.assumption) && (
+              <i> ({question?.assumption})</i>
+            )}
+          </Tag>
+          <CopyButton content={fullRevisedTitle} />
+        </Line>
+      ),
+    },
+    {
+      key: 'tips',
+      show: true,
+      content: (
+        <Line prefix="- " fontSize="14px" fontWeight="normal">You can copy and revise it based on the question above 👆.</Line>
+      ),
+    },
+    {
+      key: 'status',
+      show: true,
+      content: (
+        <Line mt={2} ml={-3}>
+          {titleLine}
+        </Line>
+      ),
+    },
+  ], [question]);
+
+  useEffect(() => {
+    if (!hasPrompt) {
+      return;
+    }
+    setIndex(1);
+    const h = setInterval(() => {
+      setIndex(index => {
+        if (index >= messages.length - 1) {
+          clearInterval(h);
+        }
+        return index + 1;
+      });
+    }, 400);
+    return () => {
+      clearInterval(h);
+    };
+  }, [messages, hasPrompt]);
+
+  const botMessages = useMemo(() => {
+    if (hasPrompt) {
+      return messages.filter(i => i.show).map(({ key, show, content }, i) => (
+        <Collapse key={key} timeout={400} style={{ transformOrigin: 'left center' }}>
+          {cloneElement(content, {
+            prefix: (
+              <>
+                {i === 0
+                  ? <BotIcon animated={index < messages.length} sx={{ mr: 1 }} />
+                  : <Box component="span" display="inline-block" width="24px" height="1px" />}
+                {content.props.prefix}
+              </>
+            ),
+          })}
+        </Collapse>
+      )).slice(0, index);
+    } else {
+      return [];
+    }
+  }, [messages, hasPrompt, index]);
+
+  return (
+    <TransitionGroup component={AIMessagesRoot}>
+      {botMessages}
+    </TransitionGroup>
+  );
+}
+
+const AIMessagesRoot = styled('div')`
+  min-height: 40px;
+`;
 
 function isSqlError (error: unknown): error is AxiosError<{ message: string, querySQL: string }> {
   if (isAxiosError(error) && notNullish(error.response)) {
@@ -205,13 +314,13 @@ function GeneratingSqlPrompts () {
   }
 }
 
-function Line ({ prefix, children, ...props }: { mt?: number, prefix?: ReactNode, children: ReactNode } & BoxProps<'span'>) {
+const Line = forwardRef(({ prefix, children, ...props }: { mt?: number, prefix?: ReactNode, children: ReactNode } & BoxProps<'span'>, ref) => {
   return (
-    <Box component="span" display="block" lineHeight="40px" {...props}>
+    <Box component="span" display="block" lineHeight="40px" {...props} ref={ref}>
       {prefix}{children}
     </Box>
   );
-}
+});
 
 function CopyButton ({ content }: { content: string | undefined }) {
   const [show, setShow] = useState(false);

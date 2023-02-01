@@ -1,6 +1,6 @@
-import Section from '@site/src/pages/explore/_components/Section';
+import Section, { SectionStatus, SectionStatusIcon } from '@site/src/pages/explore/_components/Section';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import useQuestionManagement, { QuestionLoadingPhase } from '@site/src/pages/explore/_components/useQuestion';
+import useQuestionManagement, { promptsCount, QuestionLoadingPhase } from '@site/src/pages/explore/_components/useQuestion';
 import { isEmptyArray, isNonemptyString, isNullish, nonEmptyArray, notNullish } from '@site/src/utils/value';
 import { ChartResult, Question, QuestionStatus } from '@site/src/api/explorer';
 import Info from '@site/src/pages/explore/_components/Info';
@@ -27,24 +27,26 @@ export default function ResultSection () {
   const { question, error, phase } = useQuestionManagement();
   const { search } = useExploreContext();
   const [controlsContainerRef, setControlsContainerRef] = useState<HTMLSpanElement | null>(null);
+  const [status, setStatus] = useState<SectionStatus>(SectionStatus.pending);
+  const timeoutHandler = useRef<ReturnType<typeof setTimeout>>();
 
   const result = question?.result?.rows;
 
-  const resultStatus = useMemo(() => {
+  const resultStatus: SectionStatus = useMemo(() => {
     switch (phase) {
       case QuestionLoadingPhase.CREATED:
       case QuestionLoadingPhase.QUEUEING:
       case QuestionLoadingPhase.EXECUTING:
-        return 'loading';
+        return SectionStatus.loading;
       case QuestionLoadingPhase.EXECUTE_FAILED:
       case QuestionLoadingPhase.VISUALIZE_FAILED:
       case QuestionLoadingPhase.UNKNOWN_ERROR:
-        return 'error';
+        return SectionStatus.error;
       case QuestionLoadingPhase.READY:
       case QuestionLoadingPhase.SUMMARIZING:
-        return 'success';
+        return SectionStatus.success;
       default:
-        return 'pending';
+        return SectionStatus.pending;
     }
   }, [phase]);
 
@@ -111,23 +113,43 @@ export default function ResultSection () {
     return '';
   }, [question?.answerSummary]);
 
+  const pc = useMemo(() => promptsCount(question), [question]);
+
+  useEffect(() => {
+    clearTimeout(timeoutHandler.current);
+    if (resultStatus === 'success') {
+      const h = timeoutHandler.current = setTimeout(() => {
+        setStatus(resultStatus);
+      }, (pc + 1) * 400);
+      return () => {
+        clearTimeout(h);
+      };
+    } else {
+      setStatus(resultStatus);
+    }
+  }, [resultStatus, pc]);
+
   return (
     <Section
-      status={resultStatus}
-      title={resultTitle}
-      extra={
-        <ControlsContainer>
-          <span ref={setControlsContainerRef} />
-          <ShareButtons url={url} title={title} summary={question?.answerSummary?.content} hashtags={hashtags} />
-        </ControlsContainer>
+      status={status}
+      header={
+        <Stack direction="row" justifyContent="space-between" alignItems="center" flexWrap="wrap">
+          <span>
+            <SectionStatusIcon status={status} />
+            {resultTitle}
+          </span>
+          <ControlsContainer>
+            <span ref={setControlsContainerRef} />
+            <ShareButtons url={url} title={title} summary={question?.answerSummary?.content} hashtags={hashtags} />
+          </ControlsContainer>
+        </Stack>
       }
       error={resultSectionError}
-      defaultExpanded
       errorTitle="Failed to execute question"
       errorPrompt="Hi, it's failed to execute"
       errorMessage={
         <>
-          Oops, it seems AI misunderstood your question, resulting in a wrong SQL. Try our <Anchor anchor="data-explorer-faq">tips</Anchor> for crafting effective SQL and give it another go.
+          Oops, {question?.error ?? 'it seems AI misunderstood your question, resulting in a wrong SQL'}. Try our <Anchor anchor="data-explorer-faq">tips</Anchor> for crafting effective SQL and give it another go.
         </>
       }
     >
@@ -233,7 +255,7 @@ function Chart ({ chartData, chartError, fields, result, controlsContainer }: { 
           </Stack>
           <Divider sx={{ my: 2 }} />
           <Typography component="div" variant="body2" color="#D1D1D1">
-            🤔 Not exactly what you&apos;re looking for? Check out our <Anchor anchor='data-explorer-faq'>FAQ</Anchor> for help. If the problem persists, please <Link href="https://github.com/pingcap/ossinsight/issues/new/choose" target="_blank" rel="noopener">report an issue</Link> to us.
+            🤔 Not exactly what you&apos;re looking for? Check out our <Anchor anchor="data-explorer-faq">FAQ</Anchor> for help. If the problem persists, please <Link href="https://github.com/pingcap/ossinsight/issues/new/choose" target="_blank" rel="noopener">report an issue</Link> to us.
           </Typography>
         </>
       );

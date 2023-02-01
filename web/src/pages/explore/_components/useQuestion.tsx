@@ -306,3 +306,7 @@ function isNone (string?: string) {
   }
   return true;
 }
+
+export function promptsCount (question?: Question) {
+  return ['revisedTitle', 'notClear'].filter(k => !isNone(question?.[k])).length;
+}
