@@ -70,7 +70,7 @@ export default function AIMessages ({ question, hasPrompt, titleLine }: { questi
         </Line>
       ),
     },
-  ], [question]);
+  ], [question?.revisedTitle, question?.notClear, question?.assumption]);
 
   useEffect(() => {
     if (!hasPrompt) {
