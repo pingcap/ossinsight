@@ -120,7 +120,7 @@ export default function ResultSection () {
     if (resultStatus === 'success') {
       const h = timeoutHandler.current = setTimeout(() => {
         setStatus(resultStatus);
-      }, (pc + 1) * 400);
+      }, (pc + 2) * 600);
       return () => {
         clearTimeout(h);
       };
