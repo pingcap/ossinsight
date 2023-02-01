@@ -4,7 +4,7 @@ import useQuestionManagement, { promptsCount, QuestionLoadingPhase } from '@site
 import { isEmptyArray, isNonemptyString, isNullish, nonEmptyArray, notNullish } from '@site/src/utils/value';
 import { ChartResult, Question, QuestionStatus } from '@site/src/api/explorer';
 import Info from '@site/src/pages/explore/_components/Info';
-import { Divider, Portal, Stack, styled, ToggleButton, ToggleButtonGroup, Typography, useEventCallback } from '@mui/material';
+import { Box, Divider, Portal, Stack, styled, ToggleButton, ToggleButtonGroup, Typography, useEventCallback } from '@mui/material';
 import { getErrorMessage } from '@site/src/utils/error';
 import ErrorBlock from '@site/src/pages/explore/_components/ErrorBlock';
 import TableChart from '@site/src/pages/explore/_components/charts/TableChart';
@@ -117,10 +117,10 @@ export default function ResultSection () {
 
   useEffect(() => {
     clearTimeout(timeoutHandler.current);
-    if (resultStatus === 'success') {
+    if (status === SectionStatus.pending) {
       const h = timeoutHandler.current = setTimeout(() => {
         setStatus(resultStatus);
-      }, (pc + 2) * 600);
+      }, (pc === 0 ? 1 : (pc + 2)) * 600);
       return () => {
         clearTimeout(h);
       };
@@ -161,6 +161,7 @@ export default function ResultSection () {
       {phase === QuestionLoadingPhase.QUEUEING && <PromptsTitle source={question?.queuePreceding === 0 ? QUEUE_ALMOST_PROMPT_TITLES : QUEUE_PROMPT_TITLES} interval={5000} />}
       {phase === QuestionLoadingPhase.EXECUTING && <PromptsTitle source={RUNNING_PROMPT_TITLES} interval={3000} />}
       <Chart chartData={question?.chart ?? undefined} chartError={chartError} result={result} fields={question?.result?.fields} controlsContainer={controlsContainerRef} />
+      <Box height='16px' />
     </Section>
   );
 }

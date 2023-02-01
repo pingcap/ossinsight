@@ -2,7 +2,7 @@ import AIMessages from '@site/src/pages/explore/_components/SqlSection/AIMessage
 import BotMessage from '@site/src/pages/explore/_components/BotMessage';
 import { Line, StyledTitle } from '@site/src/pages/explore/_components/SqlSection/styled';
 import React, { useMemo, useRef, useState } from 'react';
-import useQuestionManagement, { QuestionLoadingPhase } from '@site/src/pages/explore/_components/useQuestion';
+import useQuestionManagement, { GENERATE_SQL_NON_FINAL_PHASES, QuestionLoadingPhase } from '@site/src/pages/explore/_components/useQuestion';
 import { notNullish } from '@site/src/utils/value';
 import { notNone } from '@site/src/pages/explore/_components/SqlSection/utils';
 import { SectionStatus, SectionStatusIcon } from '@site/src/pages/explore/_components/Section';
@@ -42,11 +42,9 @@ export default function Header ({ sqlSectionStatus, open, toggleOpen }: { sqlSec
     );
   }, [question]);
 
-  const showSqlTitle = sqlSectionStatus !== 'error' || !hasPrompt;
-
-  const rawTitleStyle = useMemo(() => {
-    return sqlSectionStatus === SectionStatus.success || phase === QuestionLoadingPhase.LOADING;
-  }, [sqlSectionStatus, phase]);
+  const isFinalPhase = useMemo(() => {
+    return !GENERATE_SQL_NON_FINAL_PHASES.has(phase);
+  }, [phase]);
 
   const titleLine = (
     <>
@@ -62,21 +60,25 @@ export default function Header ({ sqlSectionStatus, open, toggleOpen }: { sqlSec
 
   return (
     <StyledTitle>
-      {hasPrompt && (
-        <AIMessages
-          question={question}
-          hasPrompt={hasPrompt}
-          titleLine={titleLine}
-        />
-      )}
-      {!hasPrompt && showSqlTitle && !rawTitleStyle && (
-        <BotMessage animated botMt={0.5}>
-          {sqlTitle}
-        </BotMessage>
-      )}
-      {!hasPrompt && showSqlTitle && rawTitleStyle && (
-        <Line>{titleLine}</Line>
-      )}
+      {hasPrompt
+        ? (
+          <AIMessages
+            question={question}
+            hasPrompt={hasPrompt}
+            titleLine={titleLine}
+          />
+          )
+        : <>
+          {!isFinalPhase && (
+            <BotMessage animated botMt={0.5}>
+              {sqlTitle}
+            </BotMessage>
+          )}
+          {isFinalPhase && (
+            <Line>{titleLine}</Line>
+          )}
+        </>
+      }
     </StyledTitle>
   );
 }

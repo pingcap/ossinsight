@@ -38,6 +38,14 @@ export const enum QuestionLoadingPhase {
   /** Question is ready to render but has no result */
 }
 
+export const GENERATE_SQL_NON_FINAL_PHASES = new Set([
+  QuestionLoadingPhase.NONE,
+  QuestionLoadingPhase.LOADING,
+  QuestionLoadingPhase.CREATING,
+  QuestionLoadingPhase.CREATED,
+  QuestionLoadingPhase.GENERATING_SQL,
+]);
+
 export const FINAL_PHASES = new Set([
   QuestionLoadingPhase.NONE,
   QuestionLoadingPhase.READY,
