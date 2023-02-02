@@ -17,6 +17,7 @@ export interface Question {
   sqlCanAnswer?: boolean;
   notClear?: string;
   assumption?: string;
+  combinedTitle?: string;
   querySQL?: string;
   queryHash?: string;
   engines?: string[];
