@@ -111,18 +111,23 @@ export default function SqlSection () {
             </NotClear>
           </Line>}
           {notNone(question?.combinedTitle)
-            ? <Line prefix="- Guess you are asking: ">
-              <Tag onClick={preventPropagation} dangerouslySetInnerHTML={{ __html: question?.combinedTitle ?? '' }} />
-            </Line>
-            : notNone(question?.revisedTitle) && (<Line prefix="- Seems like you are asking about ">
-            <Tag onClick={preventPropagation}>
-              {question?.revisedTitle}
-              {notNone(question?.assumption) && (
-                <i> ({question?.assumption})</i>
-              )}
-            </Tag>
-            <CopyButton content={fullRevisedTitle} />
-          </Line>)}
+            ? (
+              <Line prefix="- Guess you are asking: ">
+                <Tag onClick={preventPropagation} dangerouslySetInnerHTML={{ __html: question?.combinedTitle ?? '' }} />
+                <CopyButton content={question?.combinedTitle} />
+              </Line>
+              )
+            : notNone(question?.revisedTitle) && (
+              <Line prefix="- Seems like you are asking about ">
+                <Tag onClick={preventPropagation}>
+                  {question?.revisedTitle}
+                  {notNone(question?.assumption) && (
+                    <i> ({question?.assumption})</i>
+                  )}
+                </Tag>
+                <CopyButton content={fullRevisedTitle} />
+              </Line>
+            )}
           {hasPrompt && (<Line prefix="- " fontSize="14px" fontWeight="normal">You can copy and revise it based on the question above 👆.</Line>)}
           {showSqlTitle && (
             <Line mt={hasPrompt ? 2 : undefined}>
@@ -227,7 +232,12 @@ function CopyButton ({ content }: { content: string | undefined }) {
 
   const handleClick = useEventCallback((event: SyntheticEvent) => {
     event.stopPropagation();
-    if (content) {
+    if (notFalsy(content)) {
+      if (content.includes('<b>')) {
+        const fake = document.createElement('div');
+        fake.innerHTML = content;
+        content = fake.innerText;
+      }
       navigator.clipboard.writeText(content).catch(console.error);
       setShow(true);
     }
@@ -272,7 +282,7 @@ const Tag = styled('span')`
   user-select: text !important;
   cursor: text;
 
-  
+
   > i, b {
     background-color: #6B40B1;
   }
