@@ -1,4 +1,4 @@
-import Section, { SectionStatus, SectionStatusIcon } from '@site/src/pages/explore/_components/Section';
+import Section, { SectionProps, SectionStatus, SectionStatusIcon } from '@site/src/pages/explore/_components/Section';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import useQuestionManagement, { promptsCount, QuestionLoadingPhase } from '@site/src/pages/explore/_components/useQuestion';
 import { isEmptyArray, isNonemptyString, isNullish, nonEmptyArray, notNullish } from '@site/src/utils/value';
@@ -23,16 +23,14 @@ import Anchor from '@site/src/components/Anchor';
 
 const ENABLE_SUMMARY = false;
 
-export default function ResultSection () {
+export default function ResultSection (props: Pick<SectionProps, 'onVisible' | 'onInvisible' | 'onFullyVisible' | 'onFullyInvisible'>) {
   const { question, error, phase } = useQuestionManagement();
   const { search } = useExploreContext();
   const [controlsContainerRef, setControlsContainerRef] = useState<HTMLSpanElement | null>(null);
-  const [status, setStatus] = useState<SectionStatus>(SectionStatus.pending);
-  const timeoutHandler = useRef<ReturnType<typeof setTimeout>>();
 
   const result = question?.result?.rows;
 
-  const resultStatus: SectionStatus = useMemo(() => {
+  const status: SectionStatus = useMemo(() => {
     switch (phase) {
       case QuestionLoadingPhase.CREATED:
       case QuestionLoadingPhase.QUEUEING:
@@ -91,10 +89,10 @@ export default function ResultSection () {
   }, [question, search]);
 
   const resultSectionError = useMemo(() => {
-    if (resultStatus === 'error') {
+    if (status === 'error') {
       return error;
     }
-  }, [resultStatus, error]);
+  }, [status, error]);
 
   const chartError = useMemo(() => {
     if (phase === QuestionLoadingPhase.VISUALIZE_FAILED) {
@@ -115,23 +113,13 @@ export default function ResultSection () {
 
   const pc = useMemo(() => promptsCount(question), [question]);
 
-  useEffect(() => {
-    clearTimeout(timeoutHandler.current);
-    if (status === SectionStatus.pending) {
-      const h = timeoutHandler.current = setTimeout(() => {
-        setStatus(resultStatus);
-      }, (pc === 0 ? 1 : (pc + 2)) * 600);
-      return () => {
-        clearTimeout(h);
-      };
-    } else {
-      setStatus(resultStatus);
-    }
-  }, [resultStatus, pc]);
+  const visibleDelay = (pc === 0 ? 1 : (pc + 2)) * 600;
 
   return (
     <Section
-      status={status}
+      visible={status !== SectionStatus.pending}
+      visibleDelay={visibleDelay}
+      {...props}
       header={
         <Stack direction="row" justifyContent="space-between" alignItems="center" flexWrap="wrap">
           <span>

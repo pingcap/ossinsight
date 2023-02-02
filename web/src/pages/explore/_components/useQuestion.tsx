@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useRef, useState } from 'react';
+import { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { newQuestion, pollQuestion, Question, QuestionStatus } from '@site/src/api/explorer';
 import { useMemoizedFn } from 'ahooks';
 import { isFalsy, isFiniteNumber, isNonemptyString, notNullish } from '@site/src/utils/value';
@@ -134,6 +134,9 @@ export interface QuestionManagement {
   loading: boolean;
   error: unknown;
 
+  isSqlPending: boolean;
+  isResultPending: boolean;
+
   load: (id: string) => void;
 
   create: (title: string, ignoreCache: boolean) => void;
@@ -234,6 +237,14 @@ export function useQuestionManagementValues ({ pollInterval = 2000 }: QuestionMa
     idRef.current = undefined;
   });
 
+  const isSqlPending = useMemo(() => {
+    return GENERATE_SQL_NON_FINAL_PHASES.has(phase);
+  }, [phase]);
+
+  const isResultPending = useMemo(() => {
+    return !FINAL_PHASES.has(phase);
+  }, [phase]);
+
   useEffect(() => {
     if (isFiniteNumber(pollInterval) && pollInterval < 1000) {
       pollInterval = 1000;
@@ -285,6 +296,8 @@ export function useQuestionManagementValues ({ pollInterval = 2000 }: QuestionMa
     load,
     create,
     reset,
+    isSqlPending,
+    isResultPending,
   };
 }
 
@@ -293,6 +306,8 @@ export const QuestionManagementContext = createContext<QuestionManagement>({
   question: undefined,
   loading: false,
   error: undefined,
+  isSqlPending: true,
+  isResultPending: true,
   load () {},
   create () {},
   reset () {},

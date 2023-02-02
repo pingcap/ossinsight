@@ -1,6 +1,6 @@
 import { generateUtilityClasses, styled } from '@mui/material';
 
-export const sectionClasses = generateUtilityClasses('Section', ['pending', 'loading', 'success', 'error']);
+export const sectionClasses = generateUtilityClasses('Section', ['visible']);
 
 export const SectionRoot = styled('section', { name: 'Section', slot: 'root' })`
   background: linear-gradient(116.45deg, rgba(89, 95, 236, 0.5) 0%, rgba(200, 182, 252, 0.1) 96.73%);
@@ -16,14 +16,9 @@ export const SectionRoot = styled('section', { name: 'Section', slot: 'root' })`
     display: none;
   }
 
-  &.${sectionClasses.success}, &.${sectionClasses.loading}, &.${sectionClasses.error} {
+  &.${sectionClasses.visible} {
     transform: initial;
     opacity: 1;
-  }
-
-  &.pending {
-    transform: translateY(20px);
-    opacity: 0;
   }
 `;
 

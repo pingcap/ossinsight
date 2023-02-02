@@ -57,7 +57,7 @@ export default function SqlSection () {
 
   return (
     <Section
-      status={sqlSectionStatus}
+      visible={sqlSectionStatus !== SectionStatus.pending}
       header={<Header sqlSectionStatus={sqlSectionStatus} open={open} toggleOpen={toggleOpen} />}
       error={sqlSectionError}
       errorTitle="Failed to generate SQL"

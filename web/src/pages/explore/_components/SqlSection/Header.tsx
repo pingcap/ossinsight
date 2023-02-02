@@ -1,5 +1,4 @@
 import AIMessages from '@site/src/pages/explore/_components/SqlSection/AIMessages';
-import BotMessage from '@site/src/pages/explore/_components/BotMessage';
 import { Line, StyledTitle } from '@site/src/pages/explore/_components/SqlSection/styled';
 import React, { useMemo, useRef, useState } from 'react';
 import useQuestionManagement, { GENERATE_SQL_NON_FINAL_PHASES, QuestionLoadingPhase } from '@site/src/pages/explore/_components/useQuestion';
@@ -11,6 +10,7 @@ import { ExpandMore } from '@mui/icons-material';
 import { useInterval } from 'ahooks';
 import { randomOf } from '@site/src/utils/generate';
 import TypewriterEffect from '@site/src/pages/explore/_components/TypewriterEffect';
+import BotIcon from '@site/src/pages/explore/_components/BotIcon';
 
 export default function Header ({ sqlSectionStatus, open, toggleOpen }: { sqlSectionStatus: SectionStatus, open: boolean, toggleOpen: () => void }) {
   const { question, phase } = useQuestionManagement();
@@ -70,9 +70,10 @@ export default function Header ({ sqlSectionStatus, open, toggleOpen }: { sqlSec
           )
         : <>
           {!isFinalPhase && (
-            <BotMessage animated botMt={0.5}>
+            <Line>
+              <BotIcon animated sx={{ mr: 1, mt: 0.5 }} />
               {sqlTitle}
-            </BotMessage>
+            </Line>
           )}
           {isFinalPhase && (
             <Line>{titleLine}</Line>
