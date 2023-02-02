@@ -81,7 +81,7 @@ export default function SqlSection () {
     return notNullish(question) && (
       notNone(question.revisedTitle) ||
       notNone(question.notClear) ||
-      notNone(question.assumption)
+      notNone(question.combinedTitle)
     );
   }, [question]);
 
@@ -110,16 +110,25 @@ export default function SqlSection () {
               {question?.notClear}
             </NotClear>
           </Line>}
-          {notNone(question?.revisedTitle) && <Line prefix="- Seems like you are asking about ">
-            <Tag onClick={preventPropagation}>
-              {question?.revisedTitle}
-              {notNone(question?.assumption) && (
-                <i> ({question?.assumption})</i>
-              )}
-            </Tag>
-            <CopyButton content={fullRevisedTitle} />
-          </Line>}
-          {hasPrompt && (<Line prefix="- " fontSize='14px' fontWeight='normal'>You can copy and revise it based on the question above 👆.</Line>)}
+          {notNone(question?.combinedTitle)
+            ? (
+              <Line prefix="- Guess you are asking: ">
+                <Tag onClick={preventPropagation} dangerouslySetInnerHTML={{ __html: question?.combinedTitle ?? '' }} />
+                <CopyButton content={question?.combinedTitle} />
+              </Line>
+              )
+            : notNone(question?.revisedTitle) && (
+              <Line prefix="- Seems like you are asking about ">
+                <Tag onClick={preventPropagation}>
+                  {question?.revisedTitle}
+                  {notNone(question?.assumption) && (
+                    <i> ({question?.assumption})</i>
+                  )}
+                </Tag>
+                <CopyButton content={fullRevisedTitle} />
+              </Line>
+            )}
+          {hasPrompt && (<Line prefix="- " fontSize="14px" fontWeight="normal">You can copy and revise it based on the question above 👆.</Line>)}
           {showSqlTitle && (
             <Line mt={hasPrompt ? 2 : undefined}>
               {sqlTitle}
@@ -223,7 +232,12 @@ function CopyButton ({ content }: { content: string | undefined }) {
 
   const handleClick = useEventCallback((event: SyntheticEvent) => {
     event.stopPropagation();
-    if (content) {
+    if (notFalsy(content)) {
+      if (content.includes('<b>')) {
+        const fake = document.createElement('div');
+        fake.innerHTML = content;
+        content = fake.innerText;
+      }
       navigator.clipboard.writeText(content).catch(console.error);
       setShow(true);
     }
@@ -258,18 +272,19 @@ const NotClear = styled('span')`
 
 const Tag = styled('span')`
   display: inline;
-  background: #383744;
   font-weight: bold;
-  color: #CBE0FF;
+  color: #BDDBFF;
   border-radius: 6px;
+  border: 1px dashed #656565;
   padding: 6px;
   line-height: 1.25;
   pointer-events: auto;
   user-select: text !important;
   cursor: text;
 
-  > i {
-    color: #E7D9A8;
+
+  > i, b {
+    background-color: #6B40B1;
   }
 `;
 
