@@ -249,7 +249,7 @@ export class ExplorerService {
                 } else {
                     const message = 'Failed to generate answer, please try again later.';
                     throw new ExplorerPrepareQuestionError(message, QuestionFeedbackType.ErrorAnswerGenerate, {
-                        message: message
+                        message: e.message
                     }, e);
                 }
             }

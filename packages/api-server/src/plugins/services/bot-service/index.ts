@@ -163,10 +163,10 @@ export class BotService {
         } catch (err: any) {
             if (err instanceof SyntaxError) {
                 this.log.error({ err, choice }, `Failed to parse the answer for question: ${question}`);
-                throw new BotResponseParseError('Failed to parse the answer.', choice, err);
+                throw new BotResponseParseError(err.message, choice, err);
             } else {
                 this.log.error({ err }, `Failed to get answer for question: ${question}`);
-                throw new BotResponseGenerateError(`Failed to generate the answer.`, err);
+                throw new BotResponseGenerateError(err.message, err);
             }
         }
     }
