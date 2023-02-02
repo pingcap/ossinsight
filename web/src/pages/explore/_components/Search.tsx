@@ -52,7 +52,7 @@ export default function ExploreSearch ({ value, onChange, onAction, onClear, dis
         value={value}
         onChange={handleChange}
         onKeyDown={handleKeydown}
-        placeholder="Questions about repos, users, orgs, languages..."
+        placeholder="Questions about GitHub repos, users, orgs, languages..."
         multiline
         endAdornment={
           <Stack direction="row" gap={1}>

@@ -12,7 +12,7 @@ export default function Side () {
         variant="text" n={4}
         title={(reload, loading) => (
           <Typography variant="h3" mb={0} fontSize={16}>
-            💡 Get inspired
+            💡 Popular questions
             <IconButton onClick={reload} disabled={loading}>
               <Cached fontSize="inherit" />
             </IconButton>
