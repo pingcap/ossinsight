@@ -148,6 +148,7 @@ export class BotService {
                     sqlCanAnswer: answer.sqlCanAnswer == null ? true : answer.sqlCanAnswer,
                     notClear: answer.notClear,
                     assumption: answer.assumption,
+                    combinedTitle: answer.CQ || question,
                     sql: answer.sql,
                     chart: answer.chart ? {
                         chartName: answer.chart.chartName,
