@@ -45,8 +45,7 @@ Examples:
 - [Projects similar to @facebook/react](https://ossinsight.io/explore?id=ba186a53-b2ab-4cad-a46f-e2c36566cacd)
 - [The most interesting Web3 projects](https://ossinsight.io/explore?id=f829026d-491c-44e0-937a-287f97a3cba7)
 - [Where are @kubernetes/kubernetes contributors from?](https://ossinsight.io/explore?id=754a681e-913f-4333-b55d-dbd8598bd84d)
-
-Check out more [popular questions](https://ossinsight.io/explore/).
+- [More popular questions](https://ossinsight.io/explore/)
 
 <div align="center">
 <iframe width="560" height="315" src="https://www.youtube.com/embed/rZZfgOJ-quI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
@@ -59,37 +58,37 @@ Check out more [popular questions](https://ossinsight.io/explore/).
 
 - **GitHub Collections Analytics**
 
-- Find insights about the monthly or historical rankings and trends in technical fields with curated repository lists.
+  Find insights about the monthly or historical rankings and trends in technical fields with curated repository lists.
 
-<div align="center">
+  <div align="center">
     <img src="/img/screenshots/homepage-collection.png" alt="GitHub Collections Analytics" height="500" />
-</div>
+  </div>
 
-Examples：
+  Examples：
 
-- [Collection: Web Framework](https://ossinsight.io/collections/web-framework)
-- [Collection: Artificial Intelligence](https://ossinsight.io/collections/artificial-intelligence)
-- [Collection: Web3](https://ossinsight.io/collections/web3)
-- [More](https://ossinsight.io/collections/open-source-database) ...
+  - [Collection: Web Framework](https://ossinsight.io/collections/web-framework)
+  - [Collection: Artificial Intelligence](https://ossinsight.io/collections/artificial-intelligence)
+  - [Collection: Web3](https://ossinsight.io/collections/web3)
+  - [More](https://ossinsight.io/collections/open-source-database) ...
 
-**Welcome to add collections**
+  **Welcome to add collections**
 
-👏 We welcome your contributions here! You can add a collection on our website by submitting PRs. Please create a `.yml` file under [the collections file path](https://github.com/pingcap/ossinsight/tree/main/etl/meta/collections).
+  👏 We welcome your contributions here! You can add a collection on our website by submitting PRs. Please create a `.yml` file under [the collections file path](https://github.com/pingcap/ossinsight/tree/main/etl/meta/collections).
 
-[Here](https://github.com/pingcap/ossinsight/blob/main/CONTRIBUTING.md#add-a-collection) is a file template that describes what you need to include. We look forward to your PRs！
+  [Here](https://github.com/pingcap/ossinsight/blob/main/CONTRIBUTING.md#add-a-collection) is a file template that describes what you need to include. We look forward to your PRs！
 
 - **Deep Insight into some popular fields of technology**
 
-Share with you many deep insights into some popular fields of technology, such as open source Databases, JavaScript Framework, Low-code Development Tools and so on.
+  Share with you many deep insights into some popular fields of technology, such as open source Databases, JavaScript Framework, Low-code Development Tools and so on.
 
-Examples：
+  Examples：
 
-- [Deep Insight Into Open Source Databases](https://ossinsight.io/blog/deep-insight-into-open-source-databases)
-- [JavaScript Framework Repos Landscape 2021](https://ossinsight.io/blog/deep-insight-into-js-framework-2021)
-- [Web Framework Repos Landscape 2021](https://ossinsight.io/blog/deep-insight-into-web-framework-2021)
-- [More](https://ossinsight.io/blog) ...
+  - [Deep Insight Into Open Source Databases](https://ossinsight.io/blog/deep-insight-into-open-source-databases)
+  - [JavaScript Framework Repos Landscape 2021](https://ossinsight.io/blog/deep-insight-into-js-framework-2021)
+  - [Web Framework Repos Landscape 2021](https://ossinsight.io/blog/deep-insight-into-web-framework-2021)
+  - [More](https://ossinsight.io/blog) ...
 
-We’ll also share the SQL commands that generate all these analytical results above each chart, so you can use them on your own on TiDB Cloud following this [10-minute tutorial](https://ossinsight.io/blog/try-it-yourself/).
+  We’ll also share the SQL commands that generate all these analytical results above each chart, so you can use them on your own on TiDB Cloud following this [10-minute tutorial](https://ossinsight.io/blog/try-it-yourself/).
 
 <br />
 <br />
