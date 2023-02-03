@@ -32,7 +32,7 @@ OSS Insight also provides in-depth analysis of individual GitHub repositories an
   
 [Video - OSS Insight: Easiest New Way to Analyze Open Source Software](https://www.youtube.com/watch?v=6ofDBgXh4So&t=1s)
 
-### Feature 1: GPT-Powered Data Exploration
+### **Feature 1: GPT-Powered Data Exploration**
   
 Data Explorer provides a new way to discover trends and insights into 5+ billion rows of GitHub data.
 
@@ -47,13 +47,17 @@ Examples:
 
 [Video - Data Explorer: Discover insights in GitHub data with GPT-generated SQL](https://www.youtube.com/watch?v=rZZfgOJ-quI)
 
-### Feature 2: Technical Fields Analytics 👁️
+### **Feature 2: Technical Fields Analytics 👁️**
 
 * **GitHub Collections Analysis**
   
   Find insights about the monthly or historical rankings and trends in technical fields with curated repository lists.
   
-  Examples:
+<div align="center">
+    <img src="/img/screenshots/homepage-collection.png" alt="GitHub Collections Analytics" height="500" />
+</div>
+
+  **Examples**:
   
   * [Collection: Web Framework](https://ossinsight.io/collections/web-framework)
   * [Collection: Artificial Intelligence](https://ossinsight.io/collections/artificial-intelligence)
@@ -64,18 +68,21 @@ Examples:
 
   👏 We welcome your contributions here! You can add a collection on our website by submitting PRs. Please create a `.yml` file under [the collections file path]( https://github.com/pingcap/ossinsight/tree/main/etl/meta/collections).
 
-[Here](https://github.com/pingcap/ossinsight/blob/main/CONTRIBUTING.md#add-a-collection) is a file template that describes what you need to include. We look forward to your PRs！
+  [Here](https://github.com/pingcap/ossinsight/blob/main/CONTRIBUTING.md#add-a-collection) is a file template that describes what you need to include. We look forward to your PRs！
 
-* **Deep Insight**
+* **Deep Insight into some popular fields of technology**
   
-   Examples:
-  
+  Share with you many deep insights into some popular fields of technology, such as open source Databases, JavaScript Framework, Low-code Development Tools and so on.
+
+   **Examples**:
   * [Deep Insight Into Open Source Databases](https://ossinsight.io/blog/deep-insight-into-open-source-databases)
   * [JavaScript Framework Repos Landscape 2021](https://ossinsight.io/blog/deep-insight-into-js-framework-2021)
   * [Web Framework Repos Landscape 2021](https://ossinsight.io/blog/deep-insight-into-web-framework-2021)
   * [More](https://ossinsight.io/blog) ...
+  
+  We’ll also share the SQL commands that generate all these analytical results above each chart, so you can use them on your own on TiDB Cloud following this [10-minute tutorial](https://ossinsight.io/blog/try-it-yourself/).
 
-### Feature 3: Developer Analytics
+### **Feature 3: Developer Analytics**
 
 Insights about **developer productivity**, **work cadence**, and **collaboration** from developers' contribution behavior.
 
@@ -86,7 +93,11 @@ Insights about **developer productivity**, **work cadence**, and **collaboration
   * Contribution time distribution for all kind of contribution activities
   * Monthly stats about contribution activities in all public repositories
 
-### Feature 4: Repository Analytics
+<div align="center">
+    <img src="/img/screenshots/homepage-developer.png" alt="Developer Analytics" height="500" />
+</div>
+
+### **Feature 4: Repository Analytics**
 
 Insights about the **code update frequency & degree of popularity** from repositories' status.
 
@@ -98,6 +109,10 @@ Insights about the **code update frequency & degree of popularity** from reposit
   * Geographical distribution of stargazers, issue creators, and pull request creators
   * Company distribution of stargazers, issue creators, and pull request creators
 
+<div align="center">
+    <img src="/img/screenshots/homepage-repository.png" alt="Repository Analytics" height="500" />
+</div>
+
 **Examples**:
 * [React](https://ossinsight.io/analyze/facebook/react)
 * [TiDB](https://ossinsight.io/analyze/pingcap/tidb)
@@ -105,11 +120,11 @@ Insights about the **code update frequency & degree of popularity** from reposit
 * [Ant Design](https://ossinsight.io/analyze/ant-design/ant-design)
 * [Chaos Mesh](https://ossinsight.io/analyze/chaos-mesh/chaos-mesh)
 
-### Feature 5: Compare Projects 🔨
+### **Feature 5: Compare Projects 🔨**
 
-Compare two projects using the repo metrics mentioned in **Repository Analytics**
+Compare two projects using the repo metrics mentioned in **Repository Analytics**.
 
-Examples:
+**Examples**:
 * [Compare Vue and React](https://ossinsight.io/analyze/vuejs/vue?vs=facebook/react)
 * [Compare CockroachDB and TiDB](https://ossinsight.io/analyze/pingcap/tidb?vs=cockroachdb/cockroach)
 * [Compare PyTorch and TensorFlow](https://ossinsight.io/analyze/pytorch/pytorch?vs=tensorflow/tensorflow)
