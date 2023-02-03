@@ -34,7 +34,6 @@ OSS Insight also provides in-depth analysis of individual GitHub repositories an
 </div>
 
 <br />
-<br />
 
 ## Feature 1: GPT-Powered Data Exploration
 
@@ -51,7 +50,6 @@ Examples:
 <iframe width="560" height="315" src="https://www.youtube.com/embed/rZZfgOJ-quI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 </div>
 
-<br />
 <br />
 
 ## Feature 2: Technical Fields Analytics
@@ -91,7 +89,6 @@ Examples:
   We’ll also share the SQL commands that generate all these analytical results above each chart, so you can use them on your own on TiDB Cloud following this [10-minute tutorial](https://ossinsight.io/blog/try-it-yourself/).
 
 <br />
-<br />
 
 ## **Feature 3: Developer Analytics**
 
@@ -108,7 +105,6 @@ Insights about **developer productivity**, **work cadence**, and **collaboration
     <img src="/img/screenshots/homepage-developer.png" alt="Developer Analytics" height="500" />
 </div>
 
-<br />
 <br />
 
 ## Feature 4: Repository Analytics
@@ -136,7 +132,6 @@ Examples:
 * [Chaos Mesh](https://ossinsight.io/analyze/chaos-mesh/chaos-mesh)
 
 <br />
-<br />
 
 ## Feature 5: Compare Projects
 
@@ -149,12 +144,11 @@ Examples:
 - [Compare PyTorch and TensorFlow](https://ossinsight.io/analyze/pytorch/pytorch?vs=tensorflow/tensorflow)
 
 <br />
-<br />
 
 ## Sponsors
 
 <div align="center">
   <a href="https://en.pingcap.com/tidb-cloud/?utm_source=ossinsight&utm_medium=referral">
-    <img src="/img/tidb-cloud-logo-w.png" alt="tidb cloud logo" height="50" />
+    <img src="/img/tidb-cloud-logo-w.png" alt="tidb cloud logo" height="20" />
   </a>
 </div>
