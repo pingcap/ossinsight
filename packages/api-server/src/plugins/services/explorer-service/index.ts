@@ -232,14 +232,17 @@ export class ExplorerService {
             question.status = QuestionStatus.AnswerGenerating;
             await this.updateQuestion(question);
 
-            // Prepare the recommended questions.
-            // const popularQuestions = await this.getRecommendQuestionsByRandom(3, false);
-            // question.recommendedQuestions?.push(...popularQuestions.map(q => q.title));
-
             // Generate the SQL by OpenAI.
             let answer = null;
             try {
-                answer = await this.botService.questionToAnswer(this.generateAnswerTemplate, title);
+                answer = await this.botService.questionToAnswer(this.generateAnswerTemplate, title, async (answer, key, value) => {
+                    // @ts-ignore
+                    question[key] = value;
+
+                    if (['revisedTitle', 'notClear', 'assumption', 'combinedTitle', 'querySQL'].includes(key)) {
+                        await this.updateQuestion(question);
+                    }
+                });
             } catch (e: any) {
                 if (e instanceof BotResponseParseError) {
                     throw new ExplorerPrepareQuestionError(e.message, QuestionFeedbackType.ErrorAnswerParse, {
@@ -262,7 +265,7 @@ export class ExplorerService {
                 });
             }
 
-            let { sql: querySQL, chart, sqlCanAnswer, revisedTitle, notClear, assumption, combinedTitle } = answer;
+            let { querySQL, chart, sqlCanAnswer, revisedTitle, notClear, assumption, combinedTitle } = answer;
             question.querySQL = querySQL;
             question.chart = chart;
             question.sqlCanAnswer = sqlCanAnswer;
@@ -270,10 +273,6 @@ export class ExplorerService {
             question.notClear = notClear;
             question.assumption = assumption;
             question.combinedTitle = combinedTitle;
-
-            // if (Array.isArray(aiGeneratedQuestions) && aiGeneratedQuestions.length > 0) {
-            //     question.recommendedQuestions?.unshift(...aiGeneratedQuestions);
-            // }
 
             if (!question.sqlCanAnswer || querySQL === null || querySQL === undefined || querySQL.length === 0) {
                 const message = 'Failed to generate SQL, the question may exceed the scope of what can be answered.';
