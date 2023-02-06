@@ -1,5 +1,5 @@
 import { Question } from '@site/src/api/explorer';
-import React, { cloneElement, ReactNode, useEffect, useMemo, useState } from 'react';
+import React, { cloneElement, ReactElement, ReactNode, useEffect, useMemo, useState } from 'react';
 import { isNullish, notFalsy } from '@site/src/utils/value';
 import { notNone } from '@site/src/pages/explore/_components/SqlSection/utils';
 import { Line, NotClear, Tag } from '@site/src/pages/explore/_components/SqlSection/styled';
@@ -8,16 +8,24 @@ import BotIcon from '@site/src/pages/explore/_components/BotIcon';
 import { TransitionGroup } from 'react-transition-group';
 import { ContentCopy } from '@mui/icons-material';
 import { useWhenMounted } from '@site/src/hooks/mounted';
+import { reactNodeOrFunction } from '@site/src/utils/react';
 
-export interface AIMessagesProps {
+export interface AIMessagesProps<TitleLineArgs extends any[]> {
   question: Question | undefined;
   hasPrompt: boolean;
-  titleLine: ReactNode;
+  titleLine: (...args: TitleLineArgs) => ReactNode;
+  titleLineDeps: TitleLineArgs;
   onStart?: () => void;
   onReady?: () => void;
 }
 
-export default function AIMessages ({ question, hasPrompt, titleLine, onStart, onReady }: AIMessagesProps) {
+type Message<TitleLineArgs extends any[]> = {
+  key: string;
+  show: boolean;
+  content: ReactElement | ((...args: TitleLineArgs) => ReactElement);
+};
+
+export default function AIMessages<TitleLineArgs extends any[]> ({ question, hasPrompt, titleLine, titleLineDeps, onStart, onReady }: AIMessagesProps<TitleLineArgs>) {
   const [index, setIndex] = useState(0);
 
   const fullRevisedTitle = useMemo(() => {
@@ -34,7 +42,7 @@ export default function AIMessages ({ question, hasPrompt, titleLine, onStart, o
     return result;
   }, [question?.revisedTitle, question?.assumption]);
 
-  const messages = useMemo(() => [
+  const messages: Array<Message<TitleLineArgs>> = useMemo(() => [
     {
       key: 'not-sure',
       show: notNone(question?.notClear),
@@ -84,9 +92,9 @@ export default function AIMessages ({ question, hasPrompt, titleLine, onStart, o
     {
       key: 'status',
       show: true,
-      content: (
+      content: (...titleLineDeps: TitleLineArgs) => (
         <Line mt={2}>
-          {titleLine}
+          {titleLine(...titleLineDeps)}
         </Line>
       ),
     },
@@ -119,26 +127,26 @@ export default function AIMessages ({ question, hasPrompt, titleLine, onStart, o
 
   const botMessages = useMemo(() => {
     if (hasPrompt) {
-      return messages.filter(i => i.show).map(({ key, show, content }, i, total) => (
-        <Collapse key={key} timeout={600}>
-          {cloneElement(content, {
-            children: (
-              <>
-                {i === 0
-                  ? <BotIcon animated={index < messages.length} sx={{ mr: 1 }} />
-                  : i < total.length - 1
-                    ? <Box component="span" display="inline-block" width="24px" height="1px" />
-                    : undefined}
-                {content.props.children}
-              </>
-            ),
-          })}
-        </Collapse>
-      )).slice(0, index);
+      return messages.slice(0, index).map(({ key, show, content }, i) => {
+        const el = reactNodeOrFunction(content, ...titleLineDeps);
+        const childContent = cloneElement(el, {
+          children: (
+            <>
+              <Indicator bot={i === 0} animated={index < messages.length} show={i < messages.length - 1} />
+              {el.props.children}
+            </>
+          ),
+        });
+        return (
+          <Collapse key={key} timeout={600}>
+            {childContent}
+          </Collapse>
+        );
+      });
     } else {
       return [];
     }
-  }, [messages, hasPrompt, index]);
+  }, [messages, hasPrompt, index, ...titleLineDeps]);
 
   return (
     <TransitionGroup component={AIMessagesRoot}>
@@ -150,6 +158,16 @@ export default function AIMessages ({ question, hasPrompt, titleLine, onStart, o
 const AIMessagesRoot = styled('div')`
   min-height: 40px;
 `;
+
+function Indicator ({ bot, show, animated }: { show: boolean, bot: boolean, animated: boolean }) {
+  if (bot) {
+    return <BotIcon animated={animated} sx={{ mr: 1 }} />;
+  } else if (show) {
+    return <Box component="span" display="inline-block" width="24px" height="1px" />;
+  } else {
+    return null;
+  }
+}
 
 function CopyButton ({ content }: { content: string | undefined }) {
   const [show, setShow] = useState(false);

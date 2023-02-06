@@ -55,26 +55,32 @@ export default function Header ({ sqlSectionStatus, open, toggleOpen, onMessages
     return !GENERATE_SQL_NON_FINAL_PHASES.has(phase);
   }, [phase]);
 
-  const titleLine = (
-    <>
-      <SectionStatusIcon status={sqlSectionStatus} />
-      {sqlTitle}
-      {sqlSectionStatus === 'success' && (
-        <Button size="small" onClick={toggleOpen} endIcon={<ExpandMore sx={{ rotate: open ? '180deg' : 0, transition: theme => theme.transitions.create('rotate') }} />} sx={{ ml: 1 }}>
-          {open ? 'Hide' : 'Check it out'}
-        </Button>
-      )}
-    </>
-  );
+  const renderTitleLine = (title: typeof sqlTitle, status: SectionStatus, open: boolean) => {
+    console.log('render', open);
+    return (
+      <>
+        <SectionStatusIcon status={status} />
+        {title}
+        {status === 'success' && (
+          <Button size="small" onClick={toggleOpen} endIcon={<ExpandMore sx={{ rotate: open ? '180deg' : 0, transition: theme => theme.transitions.create('rotate') }} />} sx={{ ml: 1 }}>
+            {open ? 'Hide' : 'Check it out'}
+          </Button>
+        )}
+      </>
+    );
+  };
+
+  const titleLineDeps = [sqlTitle, sqlSectionStatus, open] as const;
 
   return (
     <StyledTitle>
       {hasPrompt
         ? (
-          <AIMessages
+          <AIMessages<typeof titleLineDeps>
             question={question}
             hasPrompt={hasPrompt}
-            titleLine={titleLine}
+            titleLine={renderTitleLine}
+            titleLineDeps={titleLineDeps}
             onStart={onMessagesStart}
             onReady={onMessagesReady}
           />
@@ -87,7 +93,7 @@ export default function Header ({ sqlSectionStatus, open, toggleOpen, onMessages
             </Line>
           )}
           {isFinalPhase && (
-            <Line>{titleLine}</Line>
+            <Line>{renderTitleLine(sqlTitle, sqlSectionStatus, open)}</Line>
           )}
         </>
       }
