@@ -1,0 +1,15 @@
+id: 10072
+name: Business Management
+items:
+  - akaunting/akaunting
+  - Gnucash/gnucash
+  - frappe/frappe
+  - frappe/erpnext
+  - frappe/books
+  - crater-invoice/crater
+  - invoiceninja/invoiceninja
+  - InvoicePlane/InvoicePlane
+  - Dolibarr/dolibarr
+  - ledger/ledger
+  - odoo/odoo
+  - FrontAccountingERP/FA
