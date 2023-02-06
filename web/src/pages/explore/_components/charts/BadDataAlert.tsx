@@ -1,11 +1,11 @@
-import React, { useMemo } from 'react';
+import React, { ReactNode, useMemo } from 'react';
 import AlertBlock from '@site/src/pages/explore/_components/AlertBlock';
 import useQuestionManagement from '@site/src/pages/explore/_components/useQuestion';
 import { makeIssueTemplate } from '@site/src/pages/explore/_components/issueTemplates';
 import { QuestionErrorType } from '@site/src/api/explorer';
 import { isNullish } from '@site/src/utils/value';
 
-export default function BadDataAlert ({ title }: { title: string }) {
+export default function BadDataAlert ({ title }: { title: ReactNode }) {
   const { question } = useQuestionManagement();
 
   const createIssueUrl = useMemo(() => {

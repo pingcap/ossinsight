@@ -89,7 +89,15 @@ export function Charts ({ onPrepared, onExit, ...props }: ChartsProps) {
       chartNode = createElement(config.Chart, { ...props, data: validData });
     }
   } else {
-    alertNode = <BadDataAlert title="AI has generated invalid chart info" />;
+    alertNode = <BadDataAlert
+      title={
+      <>
+        Oh no, visualization didn&apos;t work.
+        <br />
+        You can still check your results using the table.
+      </>
+      }
+    />;
   }
 
   useEffect(() => {

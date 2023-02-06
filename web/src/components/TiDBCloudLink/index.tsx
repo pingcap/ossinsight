@@ -9,7 +9,7 @@ export interface TiDBCloudLinkProps extends TiDBCloudLinkContextValues, Omit<Anc
   as?: 'a' | FC<AnchorHTMLAttributes<HTMLAnchorElement>>;
 }
 
-export default function TiDBCloudLink ({ as = 'a', campaign: propCampaign, trial: propTrial, ...props }: TiDBCloudLinkProps) {
+export default function TiDBCloudLink<P> ({ as = 'a', campaign: propCampaign, trial: propTrial, ...props }: TiDBCloudLinkProps & P) {
   const { user } = useResponsiveAuth0();
   const { campaign: ctxCampaign, trial: ctxTrail } = useContext(TiDBCloudLinkContext);
   const { siteConfig: { customFields } } = useDocusaurusContext();

@@ -343,6 +343,9 @@ function isNone (string?: string) {
   return true;
 }
 
-export function promptsCount (question?: Question) {
-  return ['revisedTitle', 'notClear'].filter(k => !isNone(question?.[k])).length;
+export function isEmptyResult (question: Question) {
+  if (question.status === QuestionStatus.Success || question.status === QuestionStatus.Summarizing) {
+    return (question.result?.rows.length ?? NaN) === 0;
+  }
+  return false;
 }

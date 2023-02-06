@@ -1,7 +1,7 @@
-import { QuestionLoadingPhase, QuestionManagementContext, useQuestionManagementValues } from '@site/src/pages/explore/_components/useQuestion';
+import { isEmptyResult, QuestionLoadingPhase, QuestionManagementContext, useQuestionManagementValues } from '@site/src/pages/explore/_components/useQuestion';
 import useUrlSearchState, { nullableStringParam } from '@site/src/hooks/url-search-state';
-import React, { SetStateAction, useEffect, useState } from 'react';
-import { isBlankString, isNullish, notFalsy, notNullish } from '@site/src/utils/value';
+import React, { SetStateAction, useEffect, useMemo, useState } from 'react';
+import { isBlankString, isNullish, notNullish } from '@site/src/utils/value';
 import { useEventCallback } from '@mui/material';
 import { ExploreContext } from '@site/src/pages/explore/_components/context';
 import { Decorators } from '@site/src/pages/explore/_components/Decorators';
@@ -17,30 +17,20 @@ export default function Questions () {
   const { questionId, handleClear, handleAction, handleSelect, handleSelectId, questionValues } = useAutoRouteQuestion([search, setSearch]);
   const { question, loading, phase, isResultPending } = questionValues;
 
-  const [resultShown, setResultShown] = useState(false);
-
-  const handleResultEntered = useEventCallback((questionId?: string) => {
-    if (notFalsy(questionId)) {
-      setResultShown(true);
-    }
-  });
-
-  const handleResultExit = useEventCallback((questionId?: string) => {
-    if (notFalsy(questionId)) {
-      setResultShown(false);
-    }
-  });
-
-  useEffect(() => {
-    setResultShown(false);
-  }, [questionId]);
-
   // computed status
   const disableAction = isResultPending || isBlankString(search);
   const disableClear = search === '';
   const hideExecution = isNullish(question?.id) && isNullish(questionId) && !loading && phase !== QuestionLoadingPhase.CREATE_FAILED;
-  const showSide = !hideExecution && resultShown && (phase !== QuestionLoadingPhase.CREATING && phase !== QuestionLoadingPhase.LOADING);
-  const showSideAds = (phase === QuestionLoadingPhase.READY || phase === QuestionLoadingPhase.SUMMARIZING);
+  const showSide = !hideExecution;
+  const showSideAds = useMemo(() => {
+    if (phase === QuestionLoadingPhase.LOADING) {
+      return false;
+    }
+    if (notNullish(question)) {
+      return !isEmptyResult(question);
+    }
+    return true;
+  }, [phase, question]);
 
   return (
     <QuestionManagementContext.Provider value={questionValues}>
@@ -65,8 +55,6 @@ export default function Questions () {
           />
           <ExploreMain
             state={hideExecution ? 'recommend' : 'execution'}
-            onResultExit={handleResultExit}
-            onResultEntered={handleResultEntered}
           />
         </Layout>
         <Faq />

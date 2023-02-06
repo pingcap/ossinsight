@@ -25,7 +25,6 @@ const AlertBlock = forwardRef<HTMLDivElement, AlertBlockProps>(function ({ creat
         ref={ref}
       >
         {children}
-        <br />
         <Stack direction="row" spacing={2} mt={2}>
           <AlertButton onClick={gotoAnchor('data-explorer-faq')}>
             <ContactSupport fontSize="inherit" sx={{ mr: 0.5 }} />

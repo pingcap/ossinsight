@@ -1,11 +1,11 @@
 import AlertBlock from '@site/src/pages/explore/_components/AlertBlock';
 import React, { useMemo } from 'react';
 import { format } from 'sql-formatter';
-import Anchor from '@site/src/components/Anchor';
 import useQuestionManagement from '@site/src/pages/explore/_components/useQuestion';
 import { isNullish } from '@site/src/utils/value';
 import { makeIssueTemplate } from '@site/src/pages/explore/_components/issueTemplates';
 import { QuestionErrorType } from '@site/src/api/explorer';
+import { styled, Typography } from '@mui/material';
 
 export function safeFormat (sql: string | undefined = '') {
   try {
@@ -27,7 +27,22 @@ export default function EmptyDataAlert () {
 
   return (
     <AlertBlock severity="info" createIssueUrl={createIssueUrl}>
-      Oops! Your query yielded no results. Try our <Anchor anchor="faq-optimize-sql">tips</Anchor> for crafting effective queries and give it another go.
+      <Typography variant="body1">
+        Query returned no result.
+      </Typography>
+      <UL>
+        <Typography variant='body1' component='li'>
+          Click &quot;check it out&quot; above to verify the SQL.
+        </Typography>
+        <Typography variant='body1' component='li'>
+          Or check out the popular questions for inspiration.
+        </Typography>
+      </UL>
     </AlertBlock>
   );
 }
+
+const UL = styled('ul')`
+  padding-left: 0;
+  list-style-position: inside;
+`;

@@ -1,5 +1,5 @@
 import { RecommendedSuggestions } from '@site/src/pages/explore/_components/Suggestions';
-import { Divider, IconButton, styled, Typography } from '@mui/material';
+import { Divider, Grow, IconButton, styled, Typography } from '@mui/material';
 import { Cached } from '@mui/icons-material';
 import React from 'react';
 import Ads from '@site/src/pages/explore/_components/Ads';
@@ -21,10 +21,12 @@ export default function Side ({ headerHeight = 0, showAds }: { headerHeight?: nu
       />
       <StyledLink to="/explore/">&gt; See more</StyledLink>
       {showAds && (
-        <>
-          <Divider orientation="horizontal" sx={{ my: 2 }} />
-          <Ads size="small" />
-        </>
+        <Grow in={showAds}>
+          <div>
+            <Divider orientation="horizontal" sx={{ my: 2 }} />
+            <Ads size="small" />
+          </div>
+        </Grow>
       )}
     </SideRoot>
   );
