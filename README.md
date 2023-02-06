@@ -1,8 +1,10 @@
 <h1 align="center">Open Source Software Insight!</h1>
 
+<div align="center">
 <a href="https://ossinsight.io">
   <img src="/web/static/img/screenshots/homepage.gif"
 </a>
+</div>
 
 <h4 align="center">
   <b><a href="https://ossinsight.io/explore/">Data Explorer</a></b>
@@ -32,7 +34,7 @@ OSS Insight's <a href="https://ossinsight.io/explore/">Data Explorer</a> provide
 
 OSS Insight also provides in-depth analysis of individual GitHub repositories and developers, as well as the ability to compare two repositories using the same metrics.
   
-[Video - OSS Insight: Easiest New Way to Analyze Open Source Software](https://www.youtube.com/watch?v=6ofDBgXh4So&t=1s)
+[🎦 Video - OSS Insight: Easiest New Way to Analyze Open Source Software](https://www.youtube.com/watch?v=6ofDBgXh4So&t=1s)
 
 ### **Feature 1: GPT-Powered Data Exploration**
   
@@ -47,17 +49,20 @@ Examples:
 * [Where are @kubernetes/kubernetes contributors from?](https://ossinsight.io/explore?id=754a681e-913f-4333-b55d-dbd8598bd84d)
 * [More popular questions](https://ossinsight.io/explore/)
 
-[Video - Data Explorer: Discover insights in GitHub data with GPT-generated SQL](https://www.youtube.com/watch?v=rZZfgOJ-quI)
+[🎦 Video - Data Explorer: Discover insights in GitHub data with GPT-generated SQL](https://www.youtube.com/watch?v=rZZfgOJ-quI)
 
 ### **Feature 2: Technical Fields Analytics 👁️**
 
 * **GitHub Collections Analysis**
   
   Find insights about the monthly or historical rankings and trends in technical fields with curated repository lists.
-  
+
 <div align="center">
-    <img src="/img/screenshots/homepage-collection.png" alt="GitHub Collections Analytics" height="500" />
+  <a href="https://en.pingcap.com/tidb-cloud/?utm_source=ossinsight&utm_medium=referral">
+     <img src="/web/static/img/screenshots/homepage-collection.png" alt="GitHub Collections Analytics" height="500" />
+  </a>
 </div>
+
 
   **Examples**:
   
@@ -96,7 +101,7 @@ Insights about **developer productivity**, **work cadence**, and **collaboration
   * Monthly stats about contribution activities in all public repositories
 
 <div align="center">
-    <img src="/img/screenshots/homepage-developer.png" alt="Developer Analytics" height="500" />
+    <img src="/web/static/img/screenshots/homepage-developer.png" alt="Developer Analytics" height="500" />
 </div>
 
 ### **Feature 4: Repository Analytics**
@@ -112,7 +117,7 @@ Insights about the **code update frequency & degree of popularity** from reposit
   * Company distribution of stargazers, issue creators, and pull request creators
 
 <div align="center">
-    <img src="/img/screenshots/homepage-repository.png" alt="Repository Analytics" height="500" />
+    <img src="/web/static/img/screenshots/homepage-repository.png" alt="Repository Analytics" height="500" />
 </div>
 
 **Examples**:
