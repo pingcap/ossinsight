@@ -11,7 +11,7 @@ interface RippleDotProps {
   sx?: SxProps<Theme>;
 }
 
-export default function RippleDot ({ active = true, color = 'info', size = 8 }: RippleDotProps) {
+export default function RippleDot ({ active = true, color = 'info', size = 8, sx }: RippleDotProps) {
   return (
     <DotRoot
       size={size}
@@ -20,6 +20,7 @@ export default function RippleDot ({ active = true, color = 'info', size = 8 }: 
         [rippleDotClasses.active]: active,
         [rippleDotClasses[color]]: true,
       })}
+      sx={sx}
     />
   );
 }

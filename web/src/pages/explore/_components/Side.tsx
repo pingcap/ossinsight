@@ -5,9 +5,9 @@ import React from 'react';
 import Ads from '@site/src/pages/explore/_components/Ads';
 import Link from '@docusaurus/Link';
 
-export default function Side () {
+export default function Side ({ headerHeight = 0 }: { headerHeight?: number }) {
   return (
-    <SideRoot>
+    <SideRoot headerHeight={headerHeight}>
       <RecommendedSuggestions
         variant="text" n={4}
         title={(reload, loading) => (
@@ -26,9 +26,9 @@ export default function Side () {
   );
 }
 
-const SideRoot = styled('div')`
+const SideRoot = styled('div', { shouldForwardProp: propName => propName !== 'headerHeight' })<{ headerHeight: number }>`
   position: sticky;
-  top: 92px;
+  top: ${({ headerHeight }) => 92 + 64 + headerHeight}px;
 `;
 
 const StyledLink = styled(Link)`

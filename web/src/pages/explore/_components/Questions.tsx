@@ -1,37 +1,89 @@
-import { FINAL_PHASES, QuestionLoadingPhase, QuestionManagementContext, useQuestionManagementValues } from '@site/src/pages/explore/_components/useQuestion';
+import { QuestionLoadingPhase, QuestionManagementContext, useQuestionManagementValues } from '@site/src/pages/explore/_components/useQuestion';
 import useUrlSearchState, { nullableStringParam } from '@site/src/hooks/url-search-state';
-import React, { useEffect, useRef, useState } from 'react';
-import { isBlankString, isNullish, notNullish } from '@site/src/utils/value';
-import { Box, NoSsr, styled, useEventCallback } from '@mui/material';
+import React, { SetStateAction, useEffect, useState } from 'react';
+import { isBlankString, isNullish, notFalsy, notNullish } from '@site/src/utils/value';
+import { useEventCallback } from '@mui/material';
 import { ExploreContext } from '@site/src/pages/explore/_components/context';
 import { Decorators } from '@site/src/pages/explore/_components/Decorators';
 import Layout from '@site/src/pages/explore/_components/Layout';
 import Header from '@site/src/pages/explore/_components/Header';
 import ExploreSearch from '@site/src/pages/explore/_components/Search';
-import SwitchLayout from '@site/src/pages/explore/_components/SwitchLayout';
-import Execution from '@site/src/pages/explore/_components/Execution';
 import Faq from '@site/src/pages/explore/_components/Faq';
 import Side from '@site/src/pages/explore/_components/Side';
-import Tips, { TipsRef } from '@site/src/pages/explore/_components/Tips';
-import RecommendList from '@site/src/pages/explore/_components/RecommendList';
-import { Prompts } from '@site/src/pages/explore/_components/Prompt';
-
-const SHOW_PROMPTS = false;
+import ExploreMain from '@site/src/pages/explore/_components/ExploreMain';
 
 export default function Questions () {
-  const { question, loading, load, error, phase, reset, create } = useQuestionManagementValues({ pollInterval: 2000 });
-  const [questionId, setQuestionId] = useUrlSearchState('id', nullableStringParam(), true);
-  const [value, setValue] = useState('');
-  const tipsRef = useRef<TipsRef>(null);
+  const [search, setSearch] = useState('');
+  const { questionId, handleClear, handleAction, handleSelect, handleSelectId, questionValues } = useAutoRouteQuestion([search, setSearch]);
+  const { question, loading, phase, isResultPending } = questionValues;
 
-  const isPending = !FINAL_PHASES.has(phase);
-  const disableAction = isPending || isBlankString(value);
-  const hideExecution = isNullish(question?.id) && !loading && phase !== QuestionLoadingPhase.CREATE_FAILED && isNullish(questionId);
+  const [resultShown, setResultShown] = useState(false);
+
+  const handleResultEntered = useEventCallback((questionId?: string) => {
+    if (notFalsy(questionId)) {
+      setResultShown(true);
+    }
+  });
+
+  const handleResultExit = useEventCallback((questionId?: string) => {
+    if (notFalsy(questionId)) {
+      setResultShown(false);
+    }
+  });
+
+  useEffect(() => {
+    setResultShown(false);
+  }, [questionId]);
+
+  // computed status
+  const disableAction = isResultPending || isBlankString(search);
+  const disableClear = search === '';
+  const hideExecution = isNullish(question?.id) && isNullish(questionId) && !loading && phase !== QuestionLoadingPhase.CREATE_FAILED;
   const hasResult = (question?.result?.rows.length ?? 0) > 0;
+  const showSide = !hideExecution && resultShown && (phase === QuestionLoadingPhase.READY || phase === QuestionLoadingPhase.SUMMARIZING) && hasResult;
+
+  return (
+    <QuestionManagementContext.Provider value={questionValues}>
+      <ExploreContext.Provider value={{ search, handleSelect, handleSelectId }}>
+        <Decorators />
+        <Layout
+          showSide={showSide}
+          showHeader={hideExecution}
+          showFooter={hideExecution}
+          header={<Header />}
+          side={(headerHeight) => <Side headerHeight={headerHeight} />}
+        >
+          <ExploreSearch
+            value={search}
+            onChange={setSearch}
+            onAction={handleAction}
+            disableInput={isResultPending}
+            disableClear={disableClear}
+            disableAction={disableAction}
+            onClear={handleClear}
+            clearState={isResultPending ? 'stop' : undefined}
+          />
+          <ExploreMain
+            state={hideExecution ? 'recommend' : 'execution'}
+            onResultExit={handleResultExit}
+            onResultEntered={handleResultEntered}
+          />
+        </Layout>
+        <Faq />
+      </ExploreContext.Provider>
+    </QuestionManagementContext.Provider>
+  );
+}
+
+function useAutoRouteQuestion ([search, setSearch]: [search: string, setSearch: (search: SetStateAction<string>) => void]) {
+  const questionValues = useQuestionManagementValues({ pollInterval: 2000 });
+  const [questionId, setQuestionId] = useUrlSearchState('id', nullableStringParam(), true);
+
+  const { question, loading, load, reset, create, isResultPending } = questionValues;
 
   useEffect(() => {
     if (notNullish(question)) {
-      setValue(question.title);
+      setSearch(question.title);
     }
   }, [question?.title]);
 
@@ -52,81 +104,36 @@ export default function Questions () {
   }, [loading, question?.id]);
 
   const handleAction = useEventCallback((ignoreCache: boolean) => {
-    if (isPending) {
+    if (isResultPending) {
       return;
     }
-    create(value, ignoreCache);
+    create(search, ignoreCache);
   });
 
   const handleClear = useEventCallback(() => {
     reset();
-    setValue('');
+    setSearch('');
     setQuestionId(undefined);
   });
 
   const handleSelect = useEventCallback((title: string) => {
-    setValue(title);
+    setSearch(title);
     create(title, false);
   });
 
   const handleSelectId = useEventCallback((id: string, title?: string) => {
     if (questionId !== id) {
-      setValue(title ?? '');
+      setSearch(title ?? '');
       load(id);
     }
   });
 
-  const showTips = useEventCallback(() => {
-    tipsRef.current?.show();
-  });
-
-  const showSide = !hideExecution && (phase === QuestionLoadingPhase.READY || phase === QuestionLoadingPhase.SUMMARIZING) && hasResult;
-
-  return (
-    <QuestionManagementContext.Provider value={{ phase, question, loading, error, create, load, reset }}>
-      <ExploreContext.Provider value={{ search: value, handleSelect, handleSelectId, showTips }}>
-        <Decorators />
-        <Layout
-          showSide={showSide}
-          showHeader={hideExecution}
-          showFooter={hideExecution}
-          header={<Header />}
-          side={<Side />}
-        >
-          {SHOW_PROMPTS && <SwitchLayout state={hideExecution ? 'recommend' : 'execution'} direction={hideExecution ? 'down' : 'up'}>
-            <Box key="recommend" />
-            <PromptsTitle key="execution" source={prompts} interval={4000} prefix={<span><b>📌 Tips:</b></span>} />
-          </SwitchLayout>}
-          <ExploreSearch value={value} onChange={setValue} onAction={handleAction} disableInput={isPending} disableClear={value === ''} disableAction={disableAction} onClear={handleClear} clearState={isPending ? 'stop' : undefined} />
-          <SwitchLayout state={hideExecution ? 'recommend' : 'execution'} direction={hideExecution ? 'down' : 'up'}>
-            <Box key="execution" sx={{ mt: 1.5 }}>
-              <NoSsr>
-                <Execution search={value} />
-              </NoSsr>
-            </Box>
-            <Box key="recommend" sx={{ mt: 4 }}>
-              <RecommendList />
-            </Box>
-          </SwitchLayout>
-        </Layout>
-        <Faq />
-        <Tips ref={tipsRef} />
-      </ExploreContext.Provider>
-    </QuestionManagementContext.Provider>
-  );
+  return {
+    questionValues,
+    handleClear,
+    handleAction,
+    handleSelect,
+    handleSelectId,
+    questionId,
+  };
 }
-
-const prompts = [
-  'Use a GitHub username instead of a nickname.',
-  'Use a GitHub repository\'s full name. For example, change "react" to "facebook/react."',
-  'Use GitHub terms like fork, star, and watch.',
-  'Use specific phrases. For example, use "by star" or "by fork" to measure repo popularity.',
-  'Add your requirement for the result. For example, "group by language."',
-];
-
-const PromptsTitle = styled(Prompts)`
-  color: #9B9B9B;
-  font-style: italic;
-  font-size: 12px;
-  margin-bottom: 8px;
-`;

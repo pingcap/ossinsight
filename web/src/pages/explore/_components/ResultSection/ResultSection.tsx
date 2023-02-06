@@ -1,10 +1,10 @@
-import Section from '@site/src/pages/explore/_components/Section';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import useQuestionManagement, { QuestionLoadingPhase } from '@site/src/pages/explore/_components/useQuestion';
+import Section, { SectionProps, SectionStatus, SectionStatusIcon } from '@site/src/pages/explore/_components/Section';
+import React, { forwardRef, useEffect, useMemo, useRef, useState } from 'react';
+import { QuestionLoadingPhase } from '@site/src/pages/explore/_components/useQuestion';
 import { isEmptyArray, isNonemptyString, isNullish, nonEmptyArray, notNullish } from '@site/src/utils/value';
 import { ChartResult, Question, QuestionStatus } from '@site/src/api/explorer';
 import Info from '@site/src/pages/explore/_components/Info';
-import { Divider, Portal, Stack, styled, ToggleButton, ToggleButtonGroup, Typography, useEventCallback } from '@mui/material';
+import { Box, Divider, Portal, Stack, styled, ToggleButton, ToggleButtonGroup, Typography, useEventCallback } from '@mui/material';
 import { getErrorMessage } from '@site/src/utils/error';
 import ErrorBlock from '@site/src/pages/explore/_components/ErrorBlock';
 import TableChart from '@site/src/pages/explore/_components/charts/TableChart';
@@ -14,7 +14,7 @@ import { TabContext, TabPanel } from '@mui/lab';
 import { useExploreContext } from '@site/src/pages/explore/_components/context';
 import SummaryCard from '@site/src/pages/explore/_components/SummaryCard';
 import { uniqueItems } from '@site/src/utils/generate';
-import ShareButtons from './ShareButtons';
+import ShareButtons from '../ShareButtons';
 import TypewriterEffect from '@site/src/pages/explore/_components/TypewriterEffect';
 import Feedback from '@site/src/pages/explore/_components/Feedback';
 import { Prompts } from '@site/src/pages/explore/_components/Prompt';
@@ -23,28 +23,33 @@ import Anchor from '@site/src/components/Anchor';
 
 const ENABLE_SUMMARY = false;
 
-export default function ResultSection () {
-  const { question, error, phase } = useQuestionManagement();
+interface ResultSectionProps extends Pick<SectionProps, 'style' | 'className'> {
+  question: Question | undefined;
+  phase: QuestionLoadingPhase;
+  error: unknown;
+}
+
+const ResultSection = forwardRef<HTMLElement, ResultSectionProps>(({ question, phase, error, ...props }, ref) => {
   const { search } = useExploreContext();
   const [controlsContainerRef, setControlsContainerRef] = useState<HTMLSpanElement | null>(null);
 
   const result = question?.result?.rows;
 
-  const resultStatus = useMemo(() => {
+  const status: SectionStatus = useMemo(() => {
     switch (phase) {
       case QuestionLoadingPhase.CREATED:
       case QuestionLoadingPhase.QUEUEING:
       case QuestionLoadingPhase.EXECUTING:
-        return 'loading';
+        return SectionStatus.loading;
       case QuestionLoadingPhase.EXECUTE_FAILED:
       case QuestionLoadingPhase.VISUALIZE_FAILED:
       case QuestionLoadingPhase.UNKNOWN_ERROR:
-        return 'error';
+        return SectionStatus.error;
       case QuestionLoadingPhase.READY:
       case QuestionLoadingPhase.SUMMARIZING:
-        return 'success';
+        return SectionStatus.success;
       default:
-        return 'pending';
+        return SectionStatus.pending;
     }
   }, [phase]);
 
@@ -89,10 +94,10 @@ export default function ResultSection () {
   }, [question, search]);
 
   const resultSectionError = useMemo(() => {
-    if (resultStatus === 'error') {
+    if (status === 'error') {
       return error;
     }
-  }, [resultStatus, error]);
+  }, [status, error]);
 
   const chartError = useMemo(() => {
     if (phase === QuestionLoadingPhase.VISUALIZE_FAILED) {
@@ -111,23 +116,32 @@ export default function ResultSection () {
     return '';
   }, [question?.answerSummary]);
 
+  if (isNullish(question)) {
+    return <section ref={ref} hidden />;
+  }
+
   return (
     <Section
-      status={resultStatus}
-      title={resultTitle}
-      extra={
-        <ControlsContainer>
-          <span ref={setControlsContainerRef} />
-          <ShareButtons url={url} title={title} summary={question?.answerSummary?.content} hashtags={hashtags} />
-        </ControlsContainer>
+      ref={ref}
+      {...props}
+      header={
+        <Stack direction="row" justifyContent="space-between" alignItems="center" flexWrap="wrap">
+          <span>
+            <SectionStatusIcon status={status} />
+            {resultTitle}
+          </span>
+          <ControlsContainer>
+            <span ref={setControlsContainerRef} />
+            <ShareButtons url={url} title={title} summary={question?.answerSummary?.content} hashtags={hashtags} />
+          </ControlsContainer>
+        </Stack>
       }
       error={resultSectionError}
-      defaultExpanded
       errorTitle="Failed to execute question"
       errorPrompt="Hi, it's failed to execute"
       errorMessage={
         <>
-          Oops, it seems AI misunderstood your question, resulting in a wrong SQL. Try our <Anchor anchor="data-explorer-faq">tips</Anchor> for crafting effective SQL and give it another go.
+          Oops, {question?.error ?? 'it seems AI misunderstood your question, resulting in a wrong SQL'}. Try our <Anchor anchor="data-explorer-faq">tips</Anchor> for crafting effective SQL and give it another go.
         </>
       }
     >
@@ -139,9 +153,12 @@ export default function ResultSection () {
       {phase === QuestionLoadingPhase.QUEUEING && <PromptsTitle source={question?.queuePreceding === 0 ? QUEUE_ALMOST_PROMPT_TITLES : QUEUE_PROMPT_TITLES} interval={5000} />}
       {phase === QuestionLoadingPhase.EXECUTING && <PromptsTitle source={RUNNING_PROMPT_TITLES} interval={3000} />}
       <Chart chartData={question?.chart ?? undefined} chartError={chartError} result={result} fields={question?.result?.fields} controlsContainer={controlsContainerRef} />
+      <Box height="16px" />
     </Section>
   );
-}
+});
+
+export default ResultSection;
 
 function renderEngines (question: Question | undefined) {
   if (notNullish(question) && !isEmptyArray(question.engines)) {
@@ -233,7 +250,7 @@ function Chart ({ chartData, chartError, fields, result, controlsContainer }: { 
           </Stack>
           <Divider sx={{ my: 2 }} />
           <Typography component="div" variant="body2" color="#D1D1D1">
-            🤔 Not exactly what you&apos;re looking for? Check out our <Anchor anchor='data-explorer-faq'>FAQ</Anchor> for help. If the problem persists, please <Link href="https://github.com/pingcap/ossinsight/issues/new/choose" target="_blank" rel="noopener">report an issue</Link> to us.
+            🤔 Not exactly what you&apos;re looking for? Check out our <Anchor anchor="data-explorer-faq">FAQ</Anchor> for help. If the problem persists, please <Link href="https://github.com/pingcap/ossinsight/issues/new/choose" target="_blank" rel="noopener">report an issue</Link> to us.
           </Typography>
         </>
       );
@@ -310,7 +327,7 @@ function Chart ({ chartData, chartError, fields, result, controlsContainer }: { 
         </TabContext>
       </>
     );
-  }, [tab, chartData, chartError, result, fields]);
+  }, [tab, chartData, chartError, result, fields, controlsContainer]);
 }
 
 const QUEUE_PROMPT_TITLES = [

@@ -8,11 +8,9 @@ import useQuestionManagement from '@site/src/pages/explore/_components/useQuesti
 import { isNullish, nonEmptyArray, notNullish } from '@site/src/utils/value';
 import useSWR from 'swr';
 import { useAuth0 } from '@auth0/auth0-react';
-import { useExploreContext } from '@site/src/pages/explore/_components/context';
 import { SxProps } from '@mui/system';
 
 export default function Feedback ({ sx }: { sx?: SxProps }) {
-  const { showTips } = useExploreContext();
   const { question } = useQuestionManagement();
   const { setAsyncData } = useAsyncState<boolean | undefined>(undefined);
   const requireLogin = useRequireLogin('explorer-feedback-button');
@@ -43,7 +41,6 @@ export default function Feedback ({ sx }: { sx?: SxProps }) {
           }),
       ));
     }
-    showTips();
   });
 
   const handleDown = useEventCallback(() => {
