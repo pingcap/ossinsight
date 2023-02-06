@@ -11,6 +11,7 @@ import { useInterval } from 'ahooks';
 import { randomOf } from '@site/src/utils/generate';
 import TypewriterEffect from '@site/src/pages/explore/_components/TypewriterEffect';
 import BotIcon from '@site/src/pages/explore/_components/BotIcon';
+import { QuestionErrorType } from '@site/src/api/explorer';
 
 export interface HeaderProps {
   sqlSectionStatus: SectionStatus;
@@ -37,6 +38,8 @@ export default function Header ({ sqlSectionStatus, open, toggleOpen, onMessages
       case QuestionLoadingPhase.GENERATE_SQL_FAILED:
       case QuestionLoadingPhase.CREATE_FAILED:
         return 'Failed to generate SQL';
+      case QuestionLoadingPhase.VALIDATE_SQL_FAILED:
+        return 'Failed to validate SQL';
       default:
         return 'Ta-da! SQL is written,';
     }
@@ -47,7 +50,8 @@ export default function Header ({ sqlSectionStatus, open, toggleOpen, onMessages
       notNone(question.revisedTitle) ||
       notNone(question.combinedTitle) ||
       notNone(question.notClear) ||
-      notNone(question.assumption)
+      notNone(question.assumption) ||
+      question.errorType === QuestionErrorType.SQL_CAN_NOT_ANSWER
     );
   }, [question]);
 

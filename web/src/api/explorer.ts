@@ -29,6 +29,7 @@ export interface Question {
   spent?: number | null;
   answerSummary?: { content: string, hashtags: string[] };
   error?: string | null;
+  errorType?: QuestionErrorType | null;
   hitCache?: boolean;
 
   assumption?: string;
@@ -60,6 +61,19 @@ export enum QuestionStatus {
   Summarizing = 'summarizing',
   Error = 'error',
   Cancel = 'cancel',
+}
+
+export enum QuestionErrorType {
+  ANSWER_GENERATE = 'error-answer-generate',
+  ANSWER_PARSE = 'error-answer-parse',
+  SQL_CAN_NOT_ANSWER = 'error-sql-can-not-answer',
+  VALIDATE_SQL = 'error-validate-sql',
+  VALIDATE_CHART = 'error-validate-chart',
+  QUERY_TIMEOUT = 'error-query-timeout',
+  QUERY_EXECUTE = 'error-query-execute',
+  EMPTY_RESULT = 'error-empty-result',
+  SUMMARY_GENERATE = 'error-summary-generate',
+  UNKNOWN = 'error-unknown',
 }
 
 export interface PlanStep {

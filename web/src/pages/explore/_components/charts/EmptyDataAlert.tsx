@@ -1,9 +1,11 @@
 import AlertBlock from '@site/src/pages/explore/_components/AlertBlock';
 import React, { useMemo } from 'react';
-import { createIssueLink as createIssueLinkInternal } from '@site/src/utils/gh';
 import { format } from 'sql-formatter';
-import useQuestionManagement from '@site/src/pages/explore/_components/useQuestion';
 import Anchor from '@site/src/components/Anchor';
+import useQuestionManagement from '@site/src/pages/explore/_components/useQuestion';
+import { isNullish } from '@site/src/utils/value';
+import { makeIssueTemplate } from '@site/src/pages/explore/_components/issueTemplates';
+import { QuestionErrorType } from '@site/src/api/explorer';
 
 export function safeFormat (sql: string | undefined = '') {
   try {
@@ -16,25 +18,15 @@ export function safeFormat (sql: string | undefined = '') {
 export default function EmptyDataAlert () {
   const { question } = useQuestionManagement();
 
-  const createIssueLink = useMemo(() => {
-    return () => createIssueLinkInternal('pingcap/ossinsight', {
-      title: `Empty result from question ${question?.id ?? ''}`,
-      labels: 'area/data-explorer',
-      body: `
-Hi, The result of [question](https://ossinsight.io/explore/?id=${question?.id ?? ''}) is empty
-The title is: **${question?.title?.replaceAll('@', '') ?? ''}**
-
-Generated SQL is:
-\`\`\`mysql
-${safeFormat(question?.querySQL)}
-\`\`\` 
-      `,
-    });
-  }, [question],
-  );
+  const createIssueUrl = useMemo(() => {
+    if (isNullish(question)) {
+      return () => '';
+    }
+    return makeIssueTemplate(question, QuestionErrorType.EMPTY_RESULT);
+  }, [question]);
 
   return (
-    <AlertBlock severity="info" createIssueUrl={createIssueLink} showSuggestions>
+    <AlertBlock severity="info" createIssueUrl={createIssueUrl}>
       Oops! Your query yielded no results. Try our <Anchor anchor="faq-optimize-sql">tips</Anchor> for crafting effective queries and give it another go.
     </AlertBlock>
   );

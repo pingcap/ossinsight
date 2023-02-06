@@ -2,7 +2,8 @@ import React, { CSSProperties, forwardRef, ReactNode } from 'react';
 import { SectionBody, SectionContainer, SectionHeader, SectionRoot } from '@site/src/pages/explore/_components/Section/styled';
 import { notFalsy } from '@site/src/utils/value';
 import ErrorBlock from '@site/src/pages/explore/_components/ErrorBlock';
-import { getErrorMessage } from '@site/src/utils/error';
+import { Collapse } from '@mui/material';
+import { QuestionErrorType } from '@site/src/api/explorer';
 
 export const enum SectionStatus {
   pending = 'pending',
@@ -17,9 +18,9 @@ export interface SectionProps {
   header?: ReactNode;
   children?: ReactNode;
   error: unknown;
+  errorIn?: boolean;
   errorMessage?: ReactNode;
-  errorTitle: string;
-  errorPrompt: string;
+  issueTemplate?: QuestionErrorType;
   errorWithChildren?: boolean;
 }
 
@@ -28,29 +29,11 @@ const Section = forwardRef<HTMLElement, SectionProps>(({
   style,
   header,
   error,
-  errorPrompt,
-  errorTitle,
+  errorIn = true,
   errorMessage,
   errorWithChildren = false,
   children,
 }: SectionProps, ref) => {
-  const renderErrorBlock = () => {
-    if (notFalsy(error)) {
-      return (
-        <ErrorBlock
-          title={errorTitle}
-          prompt={errorPrompt}
-          error={getErrorMessage(error)}
-          severity="error"
-          sx={{ mb: 1 }}
-          showSuggestions
-        >
-          {errorMessage}
-        </ErrorBlock>
-      );
-    }
-  };
-
   const renderChildren = () => {
     if (notFalsy(error)) {
       if (errorWithChildren) {
@@ -72,7 +55,14 @@ const Section = forwardRef<HTMLElement, SectionProps>(({
           {header}
         </SectionHeader>
         <SectionBody>
-          {renderErrorBlock()}
+          <Collapse in={errorIn} timeout="auto" unmountOnExit>
+            <ErrorBlock
+              severity="error"
+              sx={{ mb: 2 }}
+            >
+              {errorMessage}
+            </ErrorBlock>
+          </Collapse>
           {renderChildren()}
         </SectionBody>
       </SectionContainer>

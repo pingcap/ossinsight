@@ -5,7 +5,7 @@ import React from 'react';
 import Ads from '@site/src/pages/explore/_components/Ads';
 import Link from '@docusaurus/Link';
 
-export default function Side ({ headerHeight = 0 }: { headerHeight?: number }) {
+export default function Side ({ headerHeight = 0, showAds }: { headerHeight?: number, showAds: boolean }) {
   return (
     <SideRoot headerHeight={headerHeight}>
       <RecommendedSuggestions
@@ -19,9 +19,13 @@ export default function Side ({ headerHeight = 0 }: { headerHeight?: number }) {
           </Typography>
         )}
       />
-      <StyledLink to='/explore/'>&gt; See more</StyledLink>
-      <Divider orientation="horizontal" sx={{ my: 2 }} />
-      <Ads size='small' />
+      <StyledLink to="/explore/">&gt; See more</StyledLink>
+      {showAds && (
+        <>
+          <Divider orientation="horizontal" sx={{ my: 2 }} />
+          <Ads size="small" />
+        </>
+      )}
     </SideRoot>
   );
 }

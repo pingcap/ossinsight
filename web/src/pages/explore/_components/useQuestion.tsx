@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { newQuestion, pollQuestion, Question, QuestionStatus } from '@site/src/api/explorer';
+import { newQuestion, pollQuestion, Question, QuestionErrorType, QuestionStatus } from '@site/src/api/explorer';
 import { useMemoizedFn } from 'ahooks';
 import { isFalsy, isFiniteNumber, isNonemptyString, notNullish } from '@site/src/utils/value';
 import { timeout } from '@site/src/utils/promisify';
@@ -23,6 +23,7 @@ export const enum QuestionLoadingPhase {
   CREATE_FAILED,
   /** Generate SQL failed, question exists */
   GENERATE_SQL_FAILED,
+  VALIDATE_SQL_FAILED,
   /** SQL is waiting for execution */
   QUEUEING,
   /** SQL is executing */
@@ -52,6 +53,7 @@ export const FINAL_PHASES = new Set([
   QuestionLoadingPhase.SUMMARIZING,
   QuestionLoadingPhase.UNKNOWN_ERROR,
   QuestionLoadingPhase.GENERATE_SQL_FAILED,
+  QuestionLoadingPhase.VALIDATE_SQL_FAILED,
   QuestionLoadingPhase.VISUALIZE_FAILED,
   QuestionLoadingPhase.CREATE_FAILED,
   QuestionLoadingPhase.LOAD_FAILED,
@@ -84,6 +86,17 @@ function computePhase (question: Question, whenError: (error: unknown) => void):
         whenError(question.error);
       } else {
         whenError('Empty error message');
+      }
+      switch (question.errorType) {
+        case QuestionErrorType.ANSWER_GENERATE:
+        case QuestionErrorType.ANSWER_PARSE:
+        case QuestionErrorType.SQL_CAN_NOT_ANSWER:
+          return QuestionLoadingPhase.GENERATE_SQL_FAILED;
+        case QuestionErrorType.VALIDATE_SQL:
+          return QuestionLoadingPhase.VALIDATE_SQL_FAILED;
+        case QuestionErrorType.QUERY_TIMEOUT:
+        case QuestionErrorType.QUERY_EXECUTE:
+          return QuestionLoadingPhase.EXECUTE_FAILED;
       }
       if (isFalsy(question.querySQL)) {
         return QuestionLoadingPhase.GENERATE_SQL_FAILED;

@@ -39,8 +39,8 @@ export default function Questions () {
   const disableAction = isResultPending || isBlankString(search);
   const disableClear = search === '';
   const hideExecution = isNullish(question?.id) && isNullish(questionId) && !loading && phase !== QuestionLoadingPhase.CREATE_FAILED;
-  const hasResult = (question?.result?.rows.length ?? 0) > 0;
-  const showSide = !hideExecution && resultShown && (phase === QuestionLoadingPhase.READY || phase === QuestionLoadingPhase.SUMMARIZING) && hasResult;
+  const showSide = !hideExecution && resultShown && (phase !== QuestionLoadingPhase.CREATING && phase !== QuestionLoadingPhase.LOADING);
+  const showSideAds = (phase === QuestionLoadingPhase.READY || phase === QuestionLoadingPhase.SUMMARIZING);
 
   return (
     <QuestionManagementContext.Provider value={questionValues}>
@@ -51,7 +51,7 @@ export default function Questions () {
           showHeader={hideExecution}
           showFooter={hideExecution}
           header={<Header />}
-          side={(headerHeight) => <Side headerHeight={headerHeight} />}
+          side={(headerHeight) => <Side headerHeight={headerHeight} showAds={showSideAds} />}
         >
           <ExploreSearch
             value={search}
