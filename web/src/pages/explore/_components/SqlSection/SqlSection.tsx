@@ -79,6 +79,8 @@ const SqlSection = forwardRef<HTMLElement, SqlSectionProps>(({ question, phase, 
     onPromptsStart?.();
   });
 
+  const hasSql = notFalsy(formattedSql) && isFalsy(sqlSectionError);
+
   return (
     <Section
       ref={ref}
@@ -116,12 +118,12 @@ const SqlSection = forwardRef<HTMLElement, SqlSectionProps>(({ question, phase, 
     >
       <Collapse in={sqlSectionStatus !== SectionStatus.loading && !messagesTransition} timeout={400}>
         <Collapse in={open} collapsedSize={36}>
-          {notFalsy(formattedSql) && isFalsy(sqlSectionError) && (
+          {hasSql && (
             <CodeBlock language="sql">
               {formattedSql}
             </CodeBlock>
           )}
-          <Fade in={!open} unmountOnExit>
+          <Fade in={!open && hasSql && sqlSectionStatus === SectionStatus.success && !messagesTransition} unmountOnExit>
             <Box position='absolute' bottom='-1px' left='0' width='100%' height='1px' boxShadow='0 0 15px 12px #1c1c1c' />
           </Fade>
           {sqlSectionStatus === SectionStatus.loading && (

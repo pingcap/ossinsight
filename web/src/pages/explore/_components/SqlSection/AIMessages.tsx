@@ -7,6 +7,7 @@ import { Alert, Box, Collapse, IconButton, Snackbar, styled, useEventCallback } 
 import BotIcon from '@site/src/pages/explore/_components/BotIcon';
 import { TransitionGroup } from 'react-transition-group';
 import { ContentCopy } from '@mui/icons-material';
+import { useWhenMounted } from '@site/src/hooks/mounted';
 
 export interface AIMessagesProps {
   question: Question | undefined;
@@ -91,6 +92,8 @@ export default function AIMessages ({ question, hasPrompt, titleLine, onStart, o
     },
   ].filter(item => item.show), [question?.revisedTitle, question?.combinedTitle, question?.notClear, question?.assumption]);
 
+  const whenMounted = useWhenMounted();
+
   useEffect(() => {
     if (!hasPrompt) {
       onReady?.();
@@ -99,12 +102,14 @@ export default function AIMessages ({ question, hasPrompt, titleLine, onStart, o
     let index = 1;
     setIndex(1);
     const h = setInterval(() => {
-      if (index >= messages.length - 1) {
-        onReady?.();
-        clearInterval(h);
-      }
       setIndex(index + 1);
       index += 1;
+      if (index >= messages.length) {
+        setTimeout(whenMounted(() => {
+          onReady?.();
+        }), 600);
+        clearInterval(h);
+      }
     }, 600);
     onStart?.();
     return () => {

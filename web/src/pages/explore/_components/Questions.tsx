@@ -1,7 +1,7 @@
 import { QuestionLoadingPhase, QuestionManagementContext, useQuestionManagementValues } from '@site/src/pages/explore/_components/useQuestion';
 import useUrlSearchState, { nullableStringParam } from '@site/src/hooks/url-search-state';
 import React, { SetStateAction, useEffect, useState } from 'react';
-import { isBlankString, isNullish, notNullish } from '@site/src/utils/value';
+import { isBlankString, isNullish, notFalsy, notNullish } from '@site/src/utils/value';
 import { useEventCallback } from '@mui/material';
 import { ExploreContext } from '@site/src/pages/explore/_components/context';
 import { Decorators } from '@site/src/pages/explore/_components/Decorators';
@@ -17,15 +17,23 @@ export default function Questions () {
   const { questionId, handleClear, handleAction, handleSelect, handleSelectId, questionValues } = useAutoRouteQuestion([search, setSearch]);
   const { question, loading, phase, isResultPending } = questionValues;
 
-  const [resultShown, setResultShown] = useState(true);
+  const [resultShown, setResultShown] = useState(false);
 
-  const handleResultEntered = useEventCallback(() => {
-    setResultShown(true);
+  const handleResultEntered = useEventCallback((questionId?: string) => {
+    if (notFalsy(questionId)) {
+      setResultShown(true);
+    }
   });
 
-  const handleResultExit = useEventCallback(() => {
+  const handleResultExit = useEventCallback((questionId?: string) => {
+    if (notFalsy(questionId)) {
+      setResultShown(false);
+    }
+  });
+
+  useEffect(() => {
     setResultShown(false);
-  });
+  }, [questionId]);
 
   // computed status
   const disableAction = isResultPending || isBlankString(search);
