@@ -41,8 +41,20 @@ export function useResponsiveAuth0 () {
         send_to: 'G-KW4FDPBLLJ',
       });
     }
+    const width = 856;
+    const height = 600;
+    const left = window.screenX + (window.innerWidth - width) / 2;
+    const top = window.screenY + (window.innerHeight - height) / 2;
+    const popup = window.open(
+      // @ts-expect-error
+      {},
+      'auth0:authorize:popup',
+      `left=${left},top=${top},width=${width},height=${height},resizable,scrollbars=yes,status=1`,
+    );
     if (matches) {
-      return await loginWithPopup(options);
+      return await loginWithPopup(options, {
+        popup,
+      });
     } else {
       return await redirectLoginWithState(options);
     }
