@@ -5,6 +5,8 @@
 </a>
 
 <h4 align="center">
+  <b><a href="https://ossinsight.io/explore/">Data Explorer</a></b>
+  •
   <b><a href="https://ossinsight.io/collections/open-source-database">Repo Rankings</a></b>
   •
   <b><a href="https://ossinsight.io/analyze/Ovilia">Developer Analytics</a></b>
@@ -26,7 +28,7 @@
 
 OSS Insight is a powerful tool that provides comprehensive, valuable, and trending insights into the open source world by analyzing 5+ billion rows of GitHub events data.
 
-OSS Insight's Data Explorer provides a new way to explore GitHub data. Simply ask your question in natural language and Data Explorer will generate SQL, query the data, and present the results visually.
+OSS Insight's <a href="https://ossinsight.io/explore/">Data Explorer</a> provides a new way to explore GitHub data. Simply ask your question in natural language and Data Explorer will generate SQL, query the data, and present the results visually.
 
 OSS Insight also provides in-depth analysis of individual GitHub repositories and developers, as well as the ability to compare two repositories using the same metrics.
   
@@ -36,7 +38,7 @@ OSS Insight also provides in-depth analysis of individual GitHub repositories an
   
 Data Explorer provides a new way to discover trends and insights into 5+ billion rows of GitHub data.
 
-Simply ask your question in natural language and Data Explorer will generate SQL, query the data, and present the results visually. It's built with Chat2Query, a GPT-powered SQL generator in TiDB Cloud. 
+Simply ask your question in natural language and Data Explorer will generate SQL, query the data, and present the results visually. It's built with <a href="https://tidbcloud.com/channel?utm_source=ossinsight&utm_medium=referral&utm_campaign=chat2query_202301&utm_content=github_readme">Chat2Query</a>, a GPT-powered SQL generator in TiDB Cloud. 
 
 Examples:
 
