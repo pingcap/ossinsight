@@ -36,9 +36,10 @@ export default function Layout ({ children, header, side, footer, showFooter, sh
               {header}
             </Header>
             <Body className={`Body-header-${status}`} headerHeight={headerOffsetHeight}>
-              {/* If remove <NoSsr>, SSG page style would crash.
-               while `in` props is true, but the transition state would not change.
-               */}
+              {
+                // TODO: If remove <NoSsr>, SSG page style would crash.
+                // While `in` props is true, but the transition state would not change.
+              }
               <NoSsr>
                 <Transition in={showSide} timeout={transitionDuration}>
                   {(status) => (
