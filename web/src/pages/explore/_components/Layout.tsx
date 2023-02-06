@@ -1,5 +1,5 @@
 import React, { ReactNode, useMemo, useRef } from 'react';
-import { Container as MuiContainer, styled } from '@mui/material';
+import { Container as MuiContainer, NoSsr, styled } from '@mui/material';
 import { Transition } from 'react-transition-group';
 import { useSize } from 'ahooks';
 import { reactNodeOrFunction } from '@site/src/utils/react';
@@ -20,8 +20,6 @@ export interface LayoutProps {
 
 export default function Layout ({ children, header, side, footer, showFooter, showSide, showHeader }: LayoutProps) {
   const headerRef = useRef<HTMLDivElement>(null);
-  const mainRef = useRef<HTMLDivElement>(null);
-  const sideRef = useRef<HTMLDivElement>(null);
 
   const size = useSize(headerRef);
 
@@ -31,23 +29,28 @@ export default function Layout ({ children, header, side, footer, showFooter, sh
 
   return (
     <Root maxWidth="xl">
-      <Transition nodeRef={headerRef} in={showHeader} timeout={transitionDuration}>
+      <Transition in={showHeader} timeout={transitionDuration}>
         {(status) => (
           <>
             <Header ref={headerRef} className={`Header-${status}`} height={headerOffsetHeight}>
               {header}
             </Header>
             <Body className={`Body-header-${status}`} headerHeight={headerOffsetHeight}>
-              <Transition nodeRef={mainRef} in={showSide} timeout={transitionDuration}>
+              {/* If remove <NoSsr>, SSG page style would crash.
+               while `in` props is true, but the transition state would not change.
+               */}
+              <NoSsr>
+                <Transition in={showSide} timeout={transitionDuration}>
+                  {(status) => (
+                    <Main className={`Main-side-${status}`}>
+                      {children}
+                    </Main>
+                  )}
+                </Transition>
+              </NoSsr>
+              <Transition in={showSide} timeout={transitionDuration} unmountOnExit>
                 {(status) => (
-                  <Main ref={mainRef} className={`Main-side-${status}`}>
-                    {children}
-                  </Main>
-                )}
-              </Transition>
-              <Transition nodeRef={sideRef} in={showSide} timeout={transitionDuration} unmountOnExit>
-                {(status) => (
-                  <Side ref={sideRef} className={`Side-${status}`}>
+                  <Side className={`Side-${status}`}>
                     {reactNodeOrFunction(side, size?.height ?? 0)}
                   </Side>
                 )}
