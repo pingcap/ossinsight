@@ -27,15 +27,19 @@ export default fp(async (app) => {
             return;
         }
 
+        const ip = request.headers['x-real-ip'] ?? request.ip;
+        const origin = request.headers.origin ?? '';
         void this.accessRecorder.insert([
-            request.ip, request.headers.origin ?? '', reply.statusCode, request.url, JSON.stringify(request.query)
+            ip, origin, reply.statusCode, request.url, JSON.stringify(request.query)
         ]);
         done();
     });
 
     app.addHook('onError', function (request, reply, error, done) {
+        const ip = request.headers['x-real-ip'] ?? request.ip;
+        const origin = request.headers.origin ?? '';
         void this.accessRecorder.insert([
-            request.ip, request.headers.origin ?? '', reply.statusCode, request.url, JSON.stringify(request.query)
+            ip, origin, reply.statusCode, request.url, JSON.stringify(request.query)
         ]);
         done();
     });

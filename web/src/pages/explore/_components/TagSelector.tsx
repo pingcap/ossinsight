@@ -79,7 +79,7 @@ const TagItem = styled('span', { shouldForwardProp: propName => propName !== 'co
   text-align: center;
   white-space: nowrap;
   justify-self: stretch;
-  margin-right: 16px;
+  margin-right: 8px;
   margin-bottom: 12px;
 
   &:hover {

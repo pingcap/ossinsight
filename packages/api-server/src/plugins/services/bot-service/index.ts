@@ -28,6 +28,8 @@ export default fp(async (fastify) => {
 
 const GENERATE_ANSWER_PROMPT_TEMPLATE_NAME = 'explorer-generate-answer';
 
+const tableColumnRegexp = /(?<table_name>.+)\.(?<column_name>.+)/;
+
 export class BotService {
     private readonly openai: OpenAIApi;
 
@@ -146,11 +148,12 @@ export class BotService {
                     sqlCanAnswer: answer.sqlCanAnswer == null ? true : answer.sqlCanAnswer,
                     notClear: answer.notClear,
                     assumption: answer.assumption,
+                    combinedTitle: answer.CQ || question,
                     sql: answer.sql,
                     chart: answer.chart ? {
                         chartName: answer.chart.chartName,
                         title: answer.chart.title,
-                        ...answer.chart.options
+                        ...this.removeTableNameForColumn(answer.chart.options)
                     } : null,
                     questions: answer.questions || [],
                 }
@@ -160,12 +163,23 @@ export class BotService {
         } catch (err: any) {
             if (err instanceof SyntaxError) {
                 this.log.error({ err, choice }, `Failed to parse the answer for question: ${question}`);
-                throw new BotResponseParseError('Failed to parse the answer.', choice, err);
+                throw new BotResponseParseError(err.message, choice, err);
             } else {
                 this.log.error({ err }, `Failed to get answer for question: ${question}`);
-                throw new BotResponseGenerateError(`Failed to generate the answer.`, err);
+                throw new BotResponseGenerateError(err.message, err);
             }
         }
+    }
+
+    removeTableNameForColumn(chartOptions: Record<string, string>) {
+        Object.entries(chartOptions).forEach(([key, value]) => {
+            const match = tableColumnRegexp.exec(value);
+            if (match) {
+                const groups = match.groups as any;
+                chartOptions[key] = groups.column_name;
+            }
+        });
+        return chartOptions;
     }
 
     async generateRecommendQuestions(template: GenerateQuestionsPromptTemplate, n: number): Promise<RecommendQuestion[]> {

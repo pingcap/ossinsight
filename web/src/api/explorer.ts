@@ -34,6 +34,7 @@ export interface Question {
   assumption?: string;
   notClear?: string;
   revisedTitle?: string;
+  combinedTitle?: string;
   sqlCanAnswer?: boolean;
 }
 

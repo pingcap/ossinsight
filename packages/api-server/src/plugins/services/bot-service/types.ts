@@ -33,6 +33,7 @@ export interface Answer {
   sqlCanAnswer: boolean;
   notClear: string;
   assumption: string;
+  combinedTitle: string;
   sql?: string;
   chart?: RecommendedChart | null;
   questions: string[];
