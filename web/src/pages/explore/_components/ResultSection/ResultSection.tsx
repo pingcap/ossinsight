@@ -33,8 +33,6 @@ const ResultSection = forwardRef<HTMLElement, ResultSectionProps>(({ question, p
   const { search } = useExploreContext();
   const [controlsContainerRef, setControlsContainerRef] = useState<HTMLSpanElement | null>(null);
 
-  console.log(controlsContainerRef);
-
   const result = question?.result?.rows;
 
   const status: SectionStatus = useMemo(() => {
