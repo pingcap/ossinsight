@@ -1,7 +1,6 @@
 import { FabProps, SpeedDial, SpeedDialAction, speedDialClasses, styled, useEventCallback } from '@mui/material';
 import { Share } from '@mui/icons-material';
 import React from 'react';
-import { useExploreContext } from '@site/src/pages/explore/_components/context';
 import { LinkedinIcon, RedditIcon, TelegramIcon, TwitterIcon } from 'react-share';
 import { linkedinLink, redditLink, telegramLink, twitterLink } from '@site/src/utils/share';
 import { useMemoizedFn } from 'ahooks';
@@ -16,10 +15,7 @@ interface ShareButtonsProps {
 }
 
 export default function ShareButtons ({ url, title, summary, hashtags }: ShareButtonsProps) {
-  const { showTips } = useExploreContext();
-
   const jump = useMemoizedFn((url: string) => {
-    showTips();
     window.open(url, '_blank');
   });
 
