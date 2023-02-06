@@ -33,6 +33,8 @@ const ResultSection = forwardRef<HTMLElement, ResultSectionProps>(({ question, p
   const { search } = useExploreContext();
   const [controlsContainerRef, setControlsContainerRef] = useState<HTMLSpanElement | null>(null);
 
+  console.log(controlsContainerRef);
+
   const result = question?.result?.rows;
 
   const status: SectionStatus = useMemo(() => {
@@ -327,7 +329,7 @@ function Chart ({ chartData, chartError, fields, result, controlsContainer }: { 
         </TabContext>
       </>
     );
-  }, [tab, chartData, chartError, result, fields]);
+  }, [tab, chartData, chartError, result, fields, controlsContainer]);
 }
 
 const QUEUE_PROMPT_TITLES = [
