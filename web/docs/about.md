@@ -8,22 +8,28 @@ hide_title: true
 <h1 align="center"> About OSS Insight 👁️</h1>
 
 <h3 align="center">
-  <b><a href="https://ossinsight.io/collections/open-source-database">Rankings</a></b>
+  <b><a href="/explore">Data Explorer</a></b>
   •
-  <b><a href="https://ossinsight.io/analyze/Ovilia">Developer Analytics</a></b>
+  <b><a href="/collections/open-source-database">Rankings</a></b>
   •
-  <a href="https://ossinsight.io/analyze/pingcap/tidb">Repository Analytics</a>
+  <b><a href="/analyze/Ovilia">Developer Analytics</a></b>
   •
-  <a href="https://ossinsight.io/collections/open-source-database">Collections</a>
+  <a href="/analyze/pingcap/tidb">Repository Analytics</a>
   •
-  <a href="https://ossinsight.io/docs/workshop">Workshop</a>
+  <a href="/collections/open-source-database">Collections</a>
   •
-  <a href="https://ossinsight.io/blog">Blogs</a>
+  <a href="/docs/workshop">Workshop</a>
+  •
+  <a href="/blog">Blogs</a>
   •
   <a href="https://twitter.com/OSSInsight">Twitter</a>
 </h3>
 
-OSS Insight is a powerful tool that provides comprehensive, valuable, and trending insights into the open source world by analyzing billions of GitHub events. It provides in-depth analysis of individual GitHub repositories and developers, as well as the ability to compare two repositories using the same metrics.
+OSS Insight is a powerful tool that provides comprehensive, valuable, and trending insights into the open source world by analyzing 5+ billion rows of GitHub events data.
+
+OSS Insight's <a href="/explore">Data Explorer</a> provides a new way to explore GitHub data. Simply ask your question in natural language and Data Explorer will generate SQL, query the data, and present the results visually.
+
+OSS Insight also provides in-depth analysis of individual GitHub repositories and developers, as well as the ability to compare two repositories using the same metrics.
 
 <div align="center">
 <iframe width="560" height="315" src="https://www.youtube.com/embed/6ofDBgXh4So?enablejsapi=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
@@ -31,36 +37,79 @@ OSS Insight is a powerful tool that provides comprehensive, valuable, and trendi
 
 <br />
 
-## Feature 1: Visible & Unique Developer Analytics
+## Feature 1: GPT-Powered Data Exploration
 
-Insights about **developer productivity**, **work cadence**, and **collaboration** from developer’s contribution behaviour.
-
-* Basic:
-  * star, behaviour, most used lLanguages, contribution trends
-  * code (commits/pull requests/pull request size/code line changes), code reviews, issues
-
-
-* Advanced:
-  * contribution time distribution for all kind of contribution activities
-  * monthly stats about contribution activities in all public repositories
-
-
-<div align="center">
-    <img src="/img/screenshots/homepage-developer.png" alt="Visible & Unique Developer Analytics" height="500" />
-</div>
+Data Explorer provides a new way to discover trends and insights into 5+ billion rows of GitHub data.
+Simply ask your question in natural language and Data Explorer will generate SQL, query the data, and present the results visually. It's built with <a href ="https://tidbcloud.com/channel?utm_source=ossinsight&utm_medium=referral&utm_campaign=chat2query_202301&utm_content=about">Chat2Query</a>, a GPT-powered SQL generator in TiDB Cloud. 
 
 Examples:
-* [Ovilia](https://ossinsight.io/analyze/Ovilia)
-* [midudev](https://ossinsight.io/analyze/midudev)
-* [samswag](https://ossinsight.io/analyze/samswag)
-* [mheap](https://ossinsight.io/analyze/mheap)
-* [levxyca](https://ossinsight.io/analyze/levxyca)
-* [🧑‍💻 Search by other developers](https://ossinsight.io) 
+- [Projects similar to @facebook/react](https://ossinsight.io/explore?id=ba186a53-b2ab-4cad-a46f-e2c36566cacd)
+- [The most interesting Web3 projects](https://ossinsight.io/explore?id=f829026d-491c-44e0-937a-287f97a3cba7)
+- [Where are @kubernetes/kubernetes contributors from?](https://ossinsight.io/explore?id=754a681e-913f-4333-b55d-dbd8598bd84d)
+- [More popular questions](https://ossinsight.io/explore/)
+
+<div align="center">
+<iframe width="560" height="315" src="https://www.youtube.com/embed/rZZfgOJ-quI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
 
 <br />
+
+## Feature 2: Technical Fields Analytics
+
+- **GitHub Collections Analytics**
+
+  Find insights about the monthly or historical rankings and trends in technical fields with curated repository lists.
+
+  <div align="center">
+    <img src="/img/screenshots/homepage-collection.png" alt="GitHub Collections Analytics" height="500" />
+  </div>
+
+  Examples：
+
+  - [Collection: Web Framework](https://ossinsight.io/collections/web-framework)
+  - [Collection: Artificial Intelligence](https://ossinsight.io/collections/artificial-intelligence)
+  - [Collection: Web3](https://ossinsight.io/collections/web3)
+  - [More](https://ossinsight.io/collections/open-source-database) ...
+
+  **Welcome to add collections**
+
+  👏 We welcome your contributions here! You can add a collection on our website by submitting PRs. Please create a `.yml` file under [the collections file path](https://github.com/pingcap/ossinsight/tree/main/etl/meta/collections).
+
+  [Here](https://github.com/pingcap/ossinsight/blob/main/CONTRIBUTING.md#add-a-collection) is a file template that describes what you need to include. We look forward to your PRs！
+
+- **Deep Insight into some popular fields of technology**
+
+  Share with you many deep insights into some popular fields of technology, such as open source Databases, JavaScript Framework, Low-code Development Tools and so on.
+
+  Examples：
+
+  - [Deep Insight Into Open Source Databases](https://ossinsight.io/blog/deep-insight-into-open-source-databases)
+  - [JavaScript Framework Repos Landscape 2021](https://ossinsight.io/blog/deep-insight-into-js-framework-2021)
+  - [Web Framework Repos Landscape 2021](https://ossinsight.io/blog/deep-insight-into-web-framework-2021)
+  - [More](https://ossinsight.io/blog) ...
+
+  We’ll also share the SQL commands that generate all these analytical results above each chart, so you can use them on your own on TiDB Cloud following this [10-minute tutorial](https://ossinsight.io/blog/try-it-yourself/).
+
 <br />
 
-## Feature 2: Visual & Comprehensive Repository Analytics
+## **Feature 3: Developer Analytics**
+
+Insights about **developer productivity**, **work cadence**, and **collaboration** from developers' contribution behavior.
+
+- Basic:
+  - Stars, behavior, most used languages，and contribution trends
+  - Code (commits, pull requests, pull request size and code line changes), code reviews, and issues
+- Advanced:
+  - Contribution time distribution for all kind of contribution activities
+  - Monthly stats about contribution activities in all public repositories
+
+<div align="center">
+    <img src="/img/screenshots/homepage-developer.png" alt="Developer Analytics" height="500" />
+</div>
+
+<br />
+
+## Feature 4: Repository Analytics
 
 Insights about the **code update frequency & degree of popularity** from repository’s status.
 
@@ -69,63 +118,39 @@ Insights about the **code update frequency & degree of popularity** from reposit
   * Historical Trends of these metrics 
   * Time Cost of issues, pull requests
 
-
 * Advanced:
   * Geographical Distribution of stargazers, issue creators, pull requests creators
   * Company Distribution of stargazers, issue creators, pull requests creators
 
-<br />
-
 <div align="center">
-    <img src="/img/screenshots/homepage-repository.png" alt="Visual & Comprehensive Repository Analytics" height="500" />
+    <img src="/img/screenshots/homepage-repository.png" alt="Repository Analytics" height="500" />
 </div>
 
 Examples:
 * [React](https://ossinsight.io/analyze/facebook/react)
 * [TiDB](https://ossinsight.io/analyze/pingcap/tidb)
-* [Django](https://ossinsight.io/analyze/django/django)
-* [Go Lang](https://ossinsight.io/analyze/golang/go)
+* [web3.js](https://ossinsight.io/analyze/web3/web3.js)
 * [Ant Design](https://ossinsight.io/analyze/ant-design/ant-design)
 * [Chaos Mesh](https://ossinsight.io/analyze/chaos-mesh/chaos-mesh)
-* [🔍 Search by more interesting repos](https://ossinsight.io)
-
-You can also **compare any two repositories** using the same metrics mentioned above in Repository Analytics.
-
-Examples:
-* [Compare Vue and React](https://ossinsight.io/analyze/vuejs/vue?vs=facebook/react)
-* [Compare Hugo and Docusaurus](https://ossinsight.io/analyze/gohugoio/hugo?vs=facebook/docusaurus)
-* [Compare CockroachDB and TiDB](https://ossinsight.io/analyze/pingcap/tidb?vs=cockroachdb/cockroach)
-* [Compare PyTorch and TensorFlow](https://ossinsight.io/analyze/pytorch/pytorch?vs=tensorflow/tensorflow)
-* [Compare Django and Flask](https://ossinsight.io/analyze/django/django?vs=pallets/flask)
-* [Compare Visual Studio Code and Atom](https://ossinsight.io/analyze/microsoft/vscode?vs=atom/atom)
-* [Compare Go and Rust](https://ossinsight.io/analyze/golang/go?vs=rust-lang/rust)
-* [Compare Spark and Flink](https://ossinsight.io/analyze/apache/spark?vs=apache/flink)
-* [Compare Ant Design and Material-UI](https://ossinsight.io/analyze/ant-design/ant-design?vs=mui/material-ui)
-* [Compare Chaos Mesh and Chaosblade](https://ossinsight.io/analyze/chaos-mesh/chaos-mesh?vs=chaosblade-io/chaosblade)
 
 <br />
-<br />
 
-## Feature 3: Ranked & Dynamic Collections
+## Feature 5: Compare Projects
 
-Insights about **developer productivity**, **work cadence**, and **collaboration** from developer’s contribution behaviour.
-
-<div align="center">
-    <img src="/img/screenshots/homepage-collection.png" alt="Ranked & Dynamic Collections" height="500" />
-</div>
+Compare two projects using the repo metrics mentioned in **Repository Analytics**.
 
 Examples:
-* [Collection: Web Framework](https://ossinsight.io/collections/web-framework)
-* [Collection: Artificial Intelligence](https://ossinsight.io/collections/artificial-intelligence)
-* [Collection: Web3](https://ossinsight.io/collections/web3)
-* [🔥 Find more popular collections](https://ossinsight.io/collections/open-source-database) 
 
-If you want to analyze more, please [contact us](https://ossinsight.io/about/#contact) ✉️ or [+ add a collection](https://github.com/pingcap/ossinsight#how-to-add-collections) here.
+- [Compare Vue and React](https://ossinsight.io/analyze/vuejs/vue?vs=facebook/react)
+- [Compare CockroachDB and TiDB](https://ossinsight.io/analyze/pingcap/tidb?vs=cockroachdb/cockroach)
+- [Compare PyTorch and TensorFlow](https://ossinsight.io/analyze/pytorch/pytorch?vs=tensorflow/tensorflow)
+
+<br />
 
 ## Sponsors
 
 <div align="center">
   <a href="https://en.pingcap.com/tidb-cloud/?utm_source=ossinsight&utm_medium=referral">
-    <img src="/img/tidb-cloud-logo-w.png" alt="tidb cloud logo" height="50" />
+    <img src="/img/tidb-cloud-logo-w.png" alt="tidb cloud logo" height="20" />
   </a>
 </div>
