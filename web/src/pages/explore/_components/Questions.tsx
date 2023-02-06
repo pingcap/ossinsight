@@ -23,7 +23,12 @@ export default function Questions () {
   const hideExecution = isNullish(question?.id) && isNullish(questionId) && !loading && phase !== QuestionLoadingPhase.CREATE_FAILED;
   const showSide = !hideExecution;
   const showSideAds = useMemo(() => {
-    if (phase === QuestionLoadingPhase.LOADING) {
+    if (phase === QuestionLoadingPhase.LOADING ||
+      phase === QuestionLoadingPhase.CREATE_FAILED ||
+      phase === QuestionLoadingPhase.EXECUTE_FAILED ||
+      phase === QuestionLoadingPhase.VALIDATE_SQL_FAILED ||
+      phase === QuestionLoadingPhase.GENERATE_SQL_FAILED
+    ) {
       return false;
     }
     if (notNullish(question)) {
