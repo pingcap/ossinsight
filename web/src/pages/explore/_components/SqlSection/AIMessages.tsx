@@ -89,7 +89,7 @@ export default function AIMessages ({ question, hasPrompt, titleLine, onStart, o
         </Line>
       ),
     },
-  ], [question?.revisedTitle, question?.combinedTitle, question?.notClear, question?.assumption]);
+  ].filter(item => item.show), [question?.revisedTitle, question?.combinedTitle, question?.notClear, question?.assumption]);
 
   useEffect(() => {
     if (!hasPrompt) {
@@ -99,10 +99,9 @@ export default function AIMessages ({ question, hasPrompt, titleLine, onStart, o
     let index = 1;
     setIndex(1);
     const h = setInterval(() => {
-      if (index >= messages.length - 2) {
+      if (index >= messages.length - 1) {
         onReady?.();
         clearInterval(h);
-        return;
       }
       setIndex(index + 1);
       index += 1;
