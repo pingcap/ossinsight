@@ -1,17 +1,18 @@
 import { isFalsy, notFalsy, notNullish } from '@site/src/utils/value';
 import CodeBlock from '@theme/CodeBlock';
 import Section, { SectionProps, SectionStatus } from '@site/src/pages/explore/_components/Section';
-import React, { forwardRef, useMemo } from 'react';
+import React, { forwardRef, useMemo, useState } from 'react';
 import { format } from 'sql-formatter';
 import { QuestionLoadingPhase } from '@site/src/pages/explore/_components/useQuestion';
 import { isAxiosError } from '@site/src/utils/error';
-import { useBoolean } from 'ahooks';
+import { useBoolean, useMemoizedFn } from 'ahooks';
 import TiDBCloudLink from '@site/src/components/TiDBCloudLink';
-import { Collapse } from '@mui/material';
+import { Box, Collapse, Fade, Skeleton } from '@mui/material';
 import Anchor from '@site/src/components/Anchor';
 import { extractTime, isSqlError } from './utils';
 import Header from './Header';
 import { Question } from '@site/src/api/explorer';
+import { useWhenMounted } from '@site/src/hooks/mounted';
 
 export interface SqlSectionProps extends Pick<SectionProps, 'style' | 'className'> {
   question: Question | undefined;
@@ -23,6 +24,7 @@ export interface SqlSectionProps extends Pick<SectionProps, 'style' | 'className
 
 const SqlSection = forwardRef<HTMLElement, SqlSectionProps>(({ question, phase, error, onPromptsReady, onPromptsStart, ...props }, ref) => {
   const [open, { toggle: toggleOpen }] = useBoolean(false);
+  const [messagesTransition, setMessagesTransition] = useState(false);
 
   const formattedSql = useMemo(() => {
     try {
@@ -63,6 +65,20 @@ const SqlSection = forwardRef<HTMLElement, SqlSectionProps>(({ question, phase, 
     }
   }, [sqlSectionStatus, phase, error]);
 
+  const whenMounted = useWhenMounted();
+
+  const handleMessagesReady = useMemoizedFn(() => {
+    setMessagesTransition(false);
+    setTimeout(whenMounted(() => {
+      onPromptsReady?.();
+    }), 400);
+  });
+
+  const handleMessagesStart = useMemoizedFn(() => {
+    setMessagesTransition(true);
+    onPromptsStart?.();
+  });
+
   return (
     <Section
       ref={ref}
@@ -72,8 +88,8 @@ const SqlSection = forwardRef<HTMLElement, SqlSectionProps>(({ question, phase, 
           sqlSectionStatus={sqlSectionStatus}
           open={open}
           toggleOpen={toggleOpen}
-          onMessagesReady={onPromptsReady}
-          onMessagesStart={onPromptsStart}
+          onMessagesReady={handleMessagesReady}
+          onMessagesStart={handleMessagesStart}
         />
       }
       error={sqlSectionError}
@@ -98,12 +114,20 @@ const SqlSection = forwardRef<HTMLElement, SqlSectionProps>(({ question, phase, 
             )
       }
     >
-      <Collapse in={open}>
-        {notFalsy(formattedSql) && isFalsy(sqlSectionError) && (
-          <CodeBlock language="sql">
-            {formattedSql}
-          </CodeBlock>
-        )}
+      <Collapse in={sqlSectionStatus !== SectionStatus.loading && !messagesTransition} timeout={400}>
+        <Collapse in={open} collapsedSize={36}>
+          {notFalsy(formattedSql) && isFalsy(sqlSectionError) && (
+            <CodeBlock language="sql">
+              {formattedSql}
+            </CodeBlock>
+          )}
+          <Fade in={!open} unmountOnExit>
+            <Box position='absolute' bottom='-1px' left='0' width='100%' height='1px' boxShadow='0 0 15px 12px #1c1c1c' />
+          </Fade>
+          {sqlSectionStatus === SectionStatus.loading && (
+            <Skeleton />
+          )}
+        </Collapse>
       </Collapse>
     </Section>
   );

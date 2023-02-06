@@ -11,7 +11,9 @@ export const SectionContainer = styled('div', { name: 'Section', slot: 'containe
   border: none;
   background: rgb(36, 35, 43);
   border-radius: 5px !important;
-  padding: 4px 8px;
+  padding: 0 8px;
+  overflow: hidden;
+  position: relative;
 `;
 
 export const SectionHeader = styled('div', { name: 'Section', slot: 'header' })`

@@ -96,19 +96,16 @@ export default function AIMessages ({ question, hasPrompt, titleLine, onStart, o
       onReady?.();
       return;
     }
+    let index = 1;
     setIndex(1);
     const h = setInterval(() => {
-      let ready = false;
-      setIndex(index => {
-        if (index >= messages.length - 1) {
-          ready = true;
-          clearInterval(h);
-        }
-        return index + 1;
-      });
-      if (ready) {
+      if (index >= messages.length - 2) {
         onReady?.();
+        clearInterval(h);
+        return;
       }
+      setIndex(index + 1);
+      index += 1;
     }, 600);
     onStart?.();
     return () => {
