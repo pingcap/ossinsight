@@ -1,6 +1,6 @@
 import { Question } from '@site/src/api/explorer';
 import React, { cloneElement, ReactNode, useEffect, useMemo, useState } from 'react';
-import { isNullish } from '@site/src/utils/value';
+import { isNullish, notFalsy } from '@site/src/utils/value';
 import { notNone } from '@site/src/pages/explore/_components/SqlSection/utils';
 import { Line, NotClear, Tag } from '@site/src/pages/explore/_components/SqlSection/styled';
 import { Alert, Box, Collapse, IconButton, Snackbar, styled, useEventCallback } from '@mui/material';
@@ -48,7 +48,7 @@ export default function AIMessages ({ question, hasPrompt, titleLine, onStart, o
     },
     {
       key: 'rq',
-      show: notNone(question?.revisedTitle),
+      show: !notNone(question?.combinedTitle) && notNone(question?.revisedTitle),
       content: (
         <Line>
           - Seems like you are asking about&nbsp;
@@ -59,6 +59,17 @@ export default function AIMessages ({ question, hasPrompt, titleLine, onStart, o
             )}
           </Tag>
           <CopyButton content={fullRevisedTitle} />
+        </Line>
+      ),
+    },
+    {
+      key: 'cq',
+      show: notNone(question?.combinedTitle),
+      content: (
+        <Line>
+          - Seems like you are asking about&nbsp;
+          <Tag dangerouslySetInnerHTML={{ __html: `${question?.combinedTitle ?? ''}` }} />
+          <CopyButton content={question?.combinedTitle} />
         </Line>
       ),
     },
@@ -78,7 +89,7 @@ export default function AIMessages ({ question, hasPrompt, titleLine, onStart, o
         </Line>
       ),
     },
-  ], [question?.revisedTitle, question?.notClear, question?.assumption]);
+  ], [question?.revisedTitle, question?.combinedTitle, question?.notClear, question?.assumption]);
 
   useEffect(() => {
     if (!hasPrompt) {
@@ -147,7 +158,12 @@ function CopyButton ({ content }: { content: string | undefined }) {
   });
 
   const handleClick = useEventCallback(() => {
-    if (content) {
+    if (notFalsy(content)) {
+      if (content.includes('<b>')) {
+        const fake = document.createElement('div');
+        fake.innerHTML = content;
+        content = fake.innerText;
+      }
       navigator.clipboard.writeText(content).catch(console.error);
       setShow(true);
     }

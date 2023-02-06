@@ -45,6 +45,7 @@ export default function Header ({ sqlSectionStatus, open, toggleOpen, onMessages
   const hasPrompt = useMemo(() => {
     return notNullish(question) && (
       notNone(question.revisedTitle) ||
+      notNone(question.combinedTitle) ||
       notNone(question.notClear) ||
       notNone(question.assumption)
     );
