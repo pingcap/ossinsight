@@ -8,17 +8,19 @@ hide_title: true
 <h1 align="center"> About OSS Insight 👁️</h1>
 
 <h3 align="center">
-  <b><a href="https://ossinsight.io/collections/open-source-database">Rankings</a></b>
+  <b><a href="/explore">Data Explorer</a></b>
   •
-  <b><a href="https://ossinsight.io/analyze/Ovilia">Developer Analytics</a></b>
+  <b><a href="/collections/open-source-database">Rankings</a></b>
   •
-  <a href="https://ossinsight.io/analyze/pingcap/tidb">Repository Analytics</a>
+  <b><a href="/analyze/Ovilia">Developer Analytics</a></b>
   •
-  <a href="https://ossinsight.io/collections/open-source-database">Collections</a>
+  <a href="/analyze/pingcap/tidb">Repository Analytics</a>
   •
-  <a href="https://ossinsight.io/docs/workshop">Workshop</a>
+  <a href="/collections/open-source-database">Collections</a>
   •
-  <a href="https://ossinsight.io/blog">Blogs</a>
+  <a href="/docs/workshop">Workshop</a>
+  •
+  <a href="/blog">Blogs</a>
   •
   <a href="https://twitter.com/OSSInsight">Twitter</a>
 </h3>
