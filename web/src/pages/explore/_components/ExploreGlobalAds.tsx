@@ -47,8 +47,7 @@ export default function ExploreGlobalAds () {
         <StyledLink to="/explore/" onClick={handleClose}>
           Data Explorer <StyledArrowForward fontSize="inherit" />
         </StyledLink>
-        A game-changing way to explore <b>5B+ rows of GitHub data</b>
-        <br />
+        A game-changing way to explore <b>5B+ rows of GitHub data</b>.
         Try our <b>AI-powered</b> querying tool—no SQL required!
       </Typography>
       <img src="/img/data-explorer-showcase.gif" width="370" height="231.5" alt="data-explorer-showcase" />
