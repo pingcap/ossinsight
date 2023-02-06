@@ -56,7 +56,6 @@ export default function Header ({ sqlSectionStatus, open, toggleOpen, onMessages
   }, [phase]);
 
   const renderTitleLine = (title: typeof sqlTitle, status: SectionStatus, open: boolean) => {
-    console.log('render', open);
     return (
       <>
         <SectionStatusIcon status={status} />
@@ -70,7 +69,7 @@ export default function Header ({ sqlSectionStatus, open, toggleOpen, onMessages
     );
   };
 
-  const titleLineDeps = [sqlTitle, sqlSectionStatus, open] as const;
+  const titleLineDeps = [sqlTitle, sqlSectionStatus, open];
 
   return (
     <StyledTitle>
