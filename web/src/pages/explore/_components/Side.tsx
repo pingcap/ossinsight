@@ -28,7 +28,7 @@ export default function Side () {
 
 const SideRoot = styled('div')`
   position: sticky;
-  top: 92px;
+  top: 222px;
 `;
 
 const StyledLink = styled(Link)`
