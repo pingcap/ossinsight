@@ -6,6 +6,7 @@ import { isNullish } from '@site/src/utils/value';
 import { makeIssueTemplate } from '@site/src/pages/explore/_components/issueTemplates';
 import { QuestionErrorType } from '@site/src/api/explorer';
 import { styled, Typography } from '@mui/material';
+import Link from '@docusaurus/Link';
 
 export function safeFormat (sql: string | undefined = '') {
   try {
@@ -35,7 +36,7 @@ export default function EmptyDataAlert () {
           Click &quot;check it out&quot; above to verify the SQL.
         </Typography>
         <Typography variant='body1' component='li'>
-          Or check out the popular questions for inspiration.
+          Or check out the <Link to='/explore/'>popular questions</Link> for inspiration.
         </Typography>
       </UL>
     </AlertBlock>

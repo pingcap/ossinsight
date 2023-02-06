@@ -7,6 +7,7 @@ import { isAxiosError } from '@site/src/utils/error';
 import { extractTime } from '@site/src/pages/explore/_components/SqlSection/utils';
 import TiDBCloudLink from '@site/src/components/TiDBCloudLink';
 import Anchor from '@site/src/components/Anchor';
+import Link from '@docusaurus/Link';
 
 export default function ErrorMessage ({ error }: { error: unknown }) {
   const { question } = useQuestionManagement();
@@ -28,7 +29,7 @@ export default function ErrorMessage ({ error }: { error: unknown }) {
           <Typography variant="body1">
             SQL syntax error or invalid field. <Button variant="text" size="small" onClick={toggle}>DETAIL</Button>
             <br />
-            Optimize your question for effective SQL, or get ideas from popular questions.
+            Optimize your question for effective SQL, or get ideas from <Link to='/explore/'>popular questions</Link>.
           </Typography>
           <Collapse in={open}>
             <Divider orientation="horizontal" sx={{ my: 2 }} />
