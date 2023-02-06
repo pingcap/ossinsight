@@ -51,7 +51,7 @@ export default function Questions () {
           showHeader={hideExecution}
           showFooter={hideExecution}
           header={<Header />}
-          side={<Side />}
+          side={(headerHeight) => <Side headerHeight={headerHeight} />}
         >
           <ExploreSearch
             value={search}

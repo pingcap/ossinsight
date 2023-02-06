@@ -2,6 +2,7 @@ import React, { ReactNode, useMemo, useRef } from 'react';
 import { Container as MuiContainer, styled } from '@mui/material';
 import { Transition } from 'react-transition-group';
 import { useSize } from 'ahooks';
+import { reactNodeOrFunction } from '@site/src/utils/react';
 
 const sideWidth = 250;
 const headerMarginBottom = 32;
@@ -12,7 +13,7 @@ export interface LayoutProps {
   showSide: boolean;
   showFooter: boolean;
   header?: ReactNode;
-  side?: ReactNode;
+  side?: ReactNode | ((headerHeight: number) => ReactNode);
   footer?: ReactNode;
   children?: ReactNode;
 }
@@ -47,7 +48,7 @@ export default function Layout ({ children, header, side, footer, showFooter, sh
               <Transition nodeRef={sideRef} in={showSide} timeout={transitionDuration} unmountOnExit>
                 {(status) => (
                   <Side ref={sideRef} className={`Side-${status}`}>
-                    {side}
+                    {reactNodeOrFunction(side, size?.height ?? 0)}
                   </Side>
                 )}
               </Transition>
