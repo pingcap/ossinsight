@@ -8,7 +8,15 @@ import BotIcon from '@site/src/pages/explore/_components/BotIcon';
 import { TransitionGroup } from 'react-transition-group';
 import { ContentCopy } from '@mui/icons-material';
 
-export default function AIMessages ({ question, hasPrompt, titleLine }: { question: Question | undefined, hasPrompt: boolean, titleLine: ReactNode }) {
+export interface AIMessagesProps {
+  question: Question | undefined;
+  hasPrompt: boolean;
+  titleLine: ReactNode;
+  onStart?: () => void;
+  onReady?: () => void;
+}
+
+export default function AIMessages ({ question, hasPrompt, titleLine, onStart, onReady }: AIMessagesProps) {
   const [index, setIndex] = useState(0);
 
   const fullRevisedTitle = useMemo(() => {
@@ -74,17 +82,24 @@ export default function AIMessages ({ question, hasPrompt, titleLine }: { questi
 
   useEffect(() => {
     if (!hasPrompt) {
+      onReady?.();
       return;
     }
     setIndex(1);
     const h = setInterval(() => {
+      let ready = false;
       setIndex(index => {
         if (index >= messages.length - 1) {
+          ready = true;
           clearInterval(h);
         }
         return index + 1;
       });
+      if (ready) {
+        onReady?.();
+      }
     }, 600);
+    onStart?.();
     return () => {
       clearInterval(h);
     };

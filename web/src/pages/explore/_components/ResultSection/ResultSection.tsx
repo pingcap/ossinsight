@@ -1,6 +1,6 @@
 import Section, { SectionProps, SectionStatus, SectionStatusIcon } from '@site/src/pages/explore/_components/Section';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import useQuestionManagement, { promptsCount, QuestionLoadingPhase } from '@site/src/pages/explore/_components/useQuestion';
+import React, { forwardRef, useEffect, useMemo, useRef, useState } from 'react';
+import { QuestionLoadingPhase } from '@site/src/pages/explore/_components/useQuestion';
 import { isEmptyArray, isNonemptyString, isNullish, nonEmptyArray, notNullish } from '@site/src/utils/value';
 import { ChartResult, Question, QuestionStatus } from '@site/src/api/explorer';
 import Info from '@site/src/pages/explore/_components/Info';
@@ -14,7 +14,7 @@ import { TabContext, TabPanel } from '@mui/lab';
 import { useExploreContext } from '@site/src/pages/explore/_components/context';
 import SummaryCard from '@site/src/pages/explore/_components/SummaryCard';
 import { uniqueItems } from '@site/src/utils/generate';
-import ShareButtons from './ShareButtons';
+import ShareButtons from '../ShareButtons';
 import TypewriterEffect from '@site/src/pages/explore/_components/TypewriterEffect';
 import Feedback from '@site/src/pages/explore/_components/Feedback';
 import { Prompts } from '@site/src/pages/explore/_components/Prompt';
@@ -23,8 +23,13 @@ import Anchor from '@site/src/components/Anchor';
 
 const ENABLE_SUMMARY = false;
 
-export default function ResultSection (props: Pick<SectionProps, 'onVisible' | 'onInvisible' | 'onFullyVisible' | 'onFullyInvisible'>) {
-  const { question, error, phase } = useQuestionManagement();
+interface ResultSectionProps extends Pick<SectionProps, 'style' | 'className'> {
+  question: Question | undefined;
+  phase: QuestionLoadingPhase;
+  error: unknown;
+}
+
+const ResultSection = forwardRef<HTMLElement, ResultSectionProps>(({ question, phase, error, ...props }, ref) => {
   const { search } = useExploreContext();
   const [controlsContainerRef, setControlsContainerRef] = useState<HTMLSpanElement | null>(null);
 
@@ -111,14 +116,13 @@ export default function ResultSection (props: Pick<SectionProps, 'onVisible' | '
     return '';
   }, [question?.answerSummary]);
 
-  const pc = useMemo(() => promptsCount(question), [question]);
-
-  const visibleDelay = (pc === 0 ? 1 : (pc + 2)) * 600;
+  if (isNullish(question)) {
+    return <section ref={ref} hidden />;
+  }
 
   return (
     <Section
-      visible={status !== SectionStatus.pending}
-      visibleDelay={visibleDelay}
+      ref={ref}
       {...props}
       header={
         <Stack direction="row" justifyContent="space-between" alignItems="center" flexWrap="wrap">
@@ -149,10 +153,12 @@ export default function ResultSection (props: Pick<SectionProps, 'onVisible' | '
       {phase === QuestionLoadingPhase.QUEUEING && <PromptsTitle source={question?.queuePreceding === 0 ? QUEUE_ALMOST_PROMPT_TITLES : QUEUE_PROMPT_TITLES} interval={5000} />}
       {phase === QuestionLoadingPhase.EXECUTING && <PromptsTitle source={RUNNING_PROMPT_TITLES} interval={3000} />}
       <Chart chartData={question?.chart ?? undefined} chartError={chartError} result={result} fields={question?.result?.fields} controlsContainer={controlsContainerRef} />
-      <Box height='16px' />
+      <Box height="16px" />
     </Section>
   );
-}
+});
+
+export default ResultSection;
 
 function renderEngines (question: Question | undefined) {
   if (notNullish(question) && !isEmptyArray(question.engines)) {

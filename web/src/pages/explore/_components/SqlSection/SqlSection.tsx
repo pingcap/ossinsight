@@ -1,9 +1,9 @@
 import { isFalsy, notFalsy, notNullish } from '@site/src/utils/value';
 import CodeBlock from '@theme/CodeBlock';
-import Section, { SectionStatus } from '@site/src/pages/explore/_components/Section';
-import React, { useMemo } from 'react';
+import Section, { SectionProps, SectionStatus } from '@site/src/pages/explore/_components/Section';
+import React, { forwardRef, useMemo } from 'react';
 import { format } from 'sql-formatter';
-import useQuestionManagement, { QuestionLoadingPhase } from '@site/src/pages/explore/_components/useQuestion';
+import { QuestionLoadingPhase } from '@site/src/pages/explore/_components/useQuestion';
 import { isAxiosError } from '@site/src/utils/error';
 import { useBoolean } from 'ahooks';
 import TiDBCloudLink from '@site/src/components/TiDBCloudLink';
@@ -11,10 +11,18 @@ import { Collapse } from '@mui/material';
 import Anchor from '@site/src/components/Anchor';
 import { extractTime, isSqlError } from './utils';
 import Header from './Header';
+import { Question } from '@site/src/api/explorer';
 
-export default function SqlSection () {
+export interface SqlSectionProps extends Pick<SectionProps, 'style' | 'className'> {
+  question: Question | undefined;
+  phase: QuestionLoadingPhase;
+  error: unknown;
+  onPromptsStart?: () => void;
+  onPromptsReady?: () => void;
+}
+
+const SqlSection = forwardRef<HTMLElement, SqlSectionProps>(({ question, phase, error, onPromptsReady, onPromptsStart, ...props }, ref) => {
   const [open, { toggle: toggleOpen }] = useBoolean(false);
-  const { question, error, phase } = useQuestionManagement();
 
   const formattedSql = useMemo(() => {
     try {
@@ -57,8 +65,17 @@ export default function SqlSection () {
 
   return (
     <Section
-      visible={sqlSectionStatus !== SectionStatus.pending}
-      header={<Header sqlSectionStatus={sqlSectionStatus} open={open} toggleOpen={toggleOpen} />}
+      ref={ref}
+      {...props}
+      header={
+        <Header
+          sqlSectionStatus={sqlSectionStatus}
+          open={open}
+          toggleOpen={toggleOpen}
+          onMessagesReady={onPromptsReady}
+          onMessagesStart={onPromptsStart}
+        />
+      }
       error={sqlSectionError}
       errorTitle="Failed to generate SQL"
       errorPrompt="Hi, it's failed to generate SQL for"
@@ -90,4 +107,6 @@ export default function SqlSection () {
       </Collapse>
     </Section>
   );
-}
+});
+
+export default SqlSection;

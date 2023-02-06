@@ -12,7 +12,15 @@ import { randomOf } from '@site/src/utils/generate';
 import TypewriterEffect from '@site/src/pages/explore/_components/TypewriterEffect';
 import BotIcon from '@site/src/pages/explore/_components/BotIcon';
 
-export default function Header ({ sqlSectionStatus, open, toggleOpen }: { sqlSectionStatus: SectionStatus, open: boolean, toggleOpen: () => void }) {
+export interface HeaderProps {
+  sqlSectionStatus: SectionStatus;
+  open: boolean;
+  toggleOpen: () => void;
+  onMessagesStart?: () => void;
+  onMessagesReady?: () => void;
+}
+
+export default function Header ({ sqlSectionStatus, open, toggleOpen, onMessagesStart, onMessagesReady }: HeaderProps) {
   const { question, phase } = useQuestionManagement();
 
   const sqlTitle = useMemo(() => {
@@ -66,6 +74,8 @@ export default function Header ({ sqlSectionStatus, open, toggleOpen }: { sqlSec
             question={question}
             hasPrompt={hasPrompt}
             titleLine={titleLine}
+            onStart={onMessagesStart}
+            onReady={onMessagesReady}
           />
           )
         : <>

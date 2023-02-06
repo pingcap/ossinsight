@@ -17,14 +17,14 @@ export default function Questions () {
   const { questionId, handleClear, handleAction, handleSelect, handleSelectId, questionValues } = useAutoRouteQuestion([search, setSearch]);
   const { question, loading, phase, isResultPending } = questionValues;
 
-  const [resultShown, setResultShown] = useState(false);
+  const [resultShown, setResultShown] = useState(true);
 
-  const handleResultStartHide = useEventCallback(() => {
-    setResultShown(false);
+  const handleResultEntered = useEventCallback(() => {
+    setResultShown(true);
   });
 
-  const handleResultShown = useEventCallback(() => {
-    setResultShown(true);
+  const handleResultExit = useEventCallback(() => {
+    setResultShown(false);
   });
 
   // computed status
@@ -57,8 +57,8 @@ export default function Questions () {
           />
           <ExploreMain
             state={hideExecution ? 'recommend' : 'execution'}
-            onResultInvisible={handleResultStartHide}
-            onResultFullyVisible={handleResultShown}
+            onResultExit={handleResultExit}
+            onResultEntered={handleResultEntered}
           />
         </Layout>
         <Faq />
