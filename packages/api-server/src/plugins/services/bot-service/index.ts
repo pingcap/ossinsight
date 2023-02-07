@@ -1,6 +1,6 @@
-import {Answer, AnswerSummary, RecommendQuestion, RecommendedChart} from "./types";
+import {Answer, AnswerSummary, RecommendedChart, RecommendQuestion} from "./types";
 import {BotResponseGenerateError, BotResponseParseError} from "../../../utils/error";
-import { Configuration, OpenAIApi } from "openai";
+import {Configuration, OpenAIApi} from "openai";
 
 import {DateTime} from "luxon";
 import {GenerateAnswerPromptTemplate} from "./template/GenerateAnswerPromptTemplate";
@@ -8,9 +8,12 @@ import {GenerateChartPromptTemplate} from "./template/GenerateChartPromptTemplat
 import {GenerateQuestionsPromptTemplate} from "./template/GenerateQuestionsPromptTemplate";
 import {GenerateSQLPromptTemplate} from "./template/GenerateSQLPromptTemplate";
 import {GenerateSummaryPromptTemplate} from "./template/GenerateSummaryPromptTemplate";
-import { PromptTemplateManager } from '../../config/prompt-template-manager';
+import {PromptTemplateManager} from '../../config/prompt-template-manager';
 import fp from "fastify-plugin";
 import pino from "pino";
+import stream from "node:stream";
+// @ts-ignore
+import JSONStream from 'JSONStream';
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -111,7 +114,7 @@ export class BotService {
         }
     }
 
-    async questionToAnswer(template: GenerateAnswerPromptTemplate, question: string): Promise<Answer | null> {
+    async questionToAnswer(template: GenerateAnswerPromptTemplate, question: string, callback: (answer: Answer, key: string, value: any) => void): Promise<Answer | null> {
         let prompt = await this.promptTemplateManager.getTemplate(GENERATE_ANSWER_PROMPT_TEMPLATE_NAME, {
             question: question
         });
@@ -121,54 +124,127 @@ export class BotService {
             prompt = template.stringify(question);
         }
 
-        let choice = undefined;
-        let answer = null;
-        try {
-            this.log.info("Requesting answer for question: %s", question);
-            const start = DateTime.now();
-            const res = await this.openai.createCompletion({
-                model: template.model,
-                prompt,
-                stream: false,
-                stop: template.stop,
-                temperature: template.temperature,
-                max_tokens: template.maxTokens,
-                top_p: template.topP,
-                n: template.n,
-            });
-            const {choices, usage} = res.data;
-            const end = DateTime.now();
-            this.log.info({ usage }, 'Got answer of question "%s" from OpenAI API, cost: %d s', question, end.diff(start).as('seconds'));
+        this.log.info("Requesting answer for question: %s", question);
+        let answer: any = {};
+        let tokens: any[] = [];
 
-            if (Array.isArray(choices) && choices[0].text) {
-                choice = choices[0].text;
-                answer = JSON.parse(choice);
-                return {
-                    revisedTitle: answer.RQ || question,
-                    sqlCanAnswer: answer.sqlCanAnswer == null ? true : answer.sqlCanAnswer,
-                    notClear: answer.notClear,
-                    assumption: answer.assumption,
-                    combinedTitle: answer.CQ || question,
-                    sql: answer.sql,
-                    chart: answer.chart ? {
-                        chartName: answer.chart.chartName,
-                        title: answer.chart.title,
-                        ...this.removeTableNameForColumn(answer.chart.options)
-                    } : null,
-                    questions: answer.questions || [],
-                }
-            } else {
-                return null;
-            }
-        } catch (err: any) {
-            if (err instanceof SyntaxError) {
-                this.log.error({ err, choice }, `Failed to parse the answer for question: ${question}`);
-                throw new BotResponseParseError(err.message, choice, err);
-            } else {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const res = await this.openai.createCompletion({
+                    model: template.model,
+                    prompt,
+                    stream: true,
+                    stop: template.stop,
+                    temperature: template.temperature,
+                    max_tokens: template.maxTokens,
+                    top_p: template.topP,
+                    n: template.n,
+                }, {
+                    responseType: 'stream'
+                });
+
+                // Convert only-data-event stream to token stream.
+                const tokenStream = new stream.Transform({
+                    transform(chunk, encoding, callback) {
+                        this.push(chunk);
+                        tokens.push(chunk);
+                        callback();
+                    },
+                });
+
+                // @ts-ignore
+                res.data.on("data", (data) => {
+                    // Notice:
+                    // The data is start with "data: " prefix, we need to remove it to get a JSON string.
+                    // In same times, there are multiple JSONs return in one response.
+                    const tokenJSONs = data?.toString().slice(6).split("\n\ndata: ");
+                    if (tokenJSONs.length === 0) {
+                        return;
+                    }
+
+                    try {
+                        for (const tokenJSON of tokenJSONs) {
+                            if (tokenJSON === "[DONE]\n\n") {
+                                tokenStream.end();
+                            } else {
+                                const token = JSON.parse(tokenJSON)?.choices?.[0]?.text;
+                                tokenStream.write(token);
+                            }
+                        }
+                    } catch (err: any) {
+                        if (err instanceof SyntaxError) {
+                            const responseText = JSON.stringify(tokenJSONs);
+                            this.log.error({ err, responseText }, `Failed to parse the token stream of answer for question: ${question}`);
+                            reject(new BotResponseParseError(err.message, responseText, err));
+                        } else {
+                            reject(new BotResponseGenerateError(err.message, err));
+                        }
+                    }
+                });
+
+                // @ts-ignore
+                res.data.on("error", (err) => {
+                    reject(new BotResponseGenerateError(err.message, err));
+                });
+
+                // Convert token stream to object field stream.
+                const fieldStream = tokenStream.pipe(JSONStream.parse([{
+                    emitKey: true
+                }]));
+
+                fieldStream.on('data', ({key, value}: any) => {
+                    switch (key) {
+                        case 'RQ':
+                            key = "revisedTitle";
+                            answer.revisedTitle = value || question;
+                            break;
+                        case 'sqlCanAnswer':
+                            answer.sqlCanAnswer = value == null ? true : value;
+                            break;
+                        case 'notClear':
+                            answer.notClear = value;
+                            break;
+                        case 'assumption':
+                            answer.assumption = value;
+                            break;
+                        case 'CQ':
+                            key = "combinedTitle";
+                            answer.combinedTitle = value || question;
+                            break;
+                        case 'sql':
+                            key = "querySQL";
+                            answer.querySQL = value;
+                            break;
+                        case 'chart':
+                            answer.chart = value ? {
+                                chartName: value.chartName,
+                                title: value.title,
+                                ...this.removeTableNameForColumn(value.options)
+                            } : null;
+                            break;
+                        default:
+                            answer[key] = value;
+                            break;
+                    }
+
+                    callback(answer, key, value);
+                });
+
+                fieldStream.on('error', (err: any) => {
+                    const answerJSON = tokens.join('');
+                    this.log.error({ err, answerJSON }, `Failed to parse the answer for question: ${question}`);
+                    reject(new BotResponseParseError(err.message, answerJSON, err));
+                });
+
+                fieldStream.on('end', () => {
+                    fieldStream.destroy();
+                    resolve(answer);
+                });
+            } catch (err: any) {
                 this.log.error({ err }, `Failed to get answer for question: ${question}`);
-                throw new BotResponseGenerateError(err.message, err);
+                reject(new BotResponseGenerateError(err.message, err));
             }
-        }
+        });
     }
 
     removeTableNameForColumn(chartOptions: Record<string, string>) {

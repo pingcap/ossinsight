@@ -34,9 +34,8 @@ export interface Answer {
   notClear: string;
   assumption: string;
   combinedTitle: string;
-  sql?: string;
+  querySQL?: string;
   chart?: RecommendedChart | null;
-  questions: string[];
 }
 
 export interface AnswerSummary {
