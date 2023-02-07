@@ -11,14 +11,12 @@ const transitionDuration = 400;
 export interface LayoutProps {
   showHeader: boolean;
   showSide: boolean;
-  showFooter: boolean;
   header?: ReactNode;
   side?: ReactNode | ((headerHeight: number) => ReactNode);
-  footer?: ReactNode;
   children?: ReactNode;
 }
 
-export default function Layout ({ children, header, side, footer, showFooter, showSide, showHeader }: LayoutProps) {
+export default function Layout ({ children, header, side, showSide, showHeader }: LayoutProps) {
   const headerRef = useRef<HTMLDivElement>(null);
 
   const size = useSize(headerRef);
@@ -60,9 +58,6 @@ export default function Layout ({ children, header, side, footer, showFooter, sh
           </>
         )}
       </Transition>
-      <Footer>
-        {showFooter && footer}
-      </Footer>
     </Root>
   );
 }
@@ -74,7 +69,7 @@ const Root = styled(MuiContainer, { name: 'Layout-Root' })`
     padding-top: 16px;
   }
 
-  min-height: calc(100vh - 92px);
+  min-height: 600px;
   box-sizing: border-box;
   position: relative;
   display: flex;
@@ -176,16 +171,6 @@ const Side = styled('div', { name: 'Layout-Side' })`
   ${({ theme }) => theme.breakpoints.down('md')} {
     display: none !important;
   }
-`;
-
-const Footer = styled('div', { name: 'Layout-Footer' })`
-  position: relative;
-  display: flex;
-  align-self: stretch;
-  flex: 1;
-  min-height: 160px;
-  align-items: center;
-  justify-content: center;
 `;
 
 function classNames (prefix: string, enter: boolean) {

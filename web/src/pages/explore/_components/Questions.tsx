@@ -43,7 +43,6 @@ export default function Questions () {
         <Layout
           showSide={showSide}
           showHeader={hideExecution}
-          showFooter={hideExecution}
           header={<Header />}
           side={(headerHeight) => <Side headerHeight={headerHeight} showAds={showSideAds} />}
         >
