@@ -21,6 +21,7 @@ type ChartConfig = {
   Chart: FC<ChartsProps>;
   requiredFields: string[];
   optionalFields?: string[];
+  nullableFields?: string[];
 };
 
 interface ChartsProps extends ChartResult {
@@ -34,10 +35,12 @@ const CHARTS_CONFIG: Record<string, ChartConfig> = {
   LineChart: {
     Chart: LineChart,
     requiredFields: ['x', 'y'],
+    nullableFields: ['y'],
   },
   BarChart: {
     Chart: BarChart,
     requiredFields: ['x', 'y'],
+    nullableFields: ['y'],
   },
   PieChart: {
     Chart: PieChart,
@@ -67,13 +70,15 @@ const CHARTS_CONFIG: Record<string, ChartConfig> = {
 };
 
 export function Charts ({ onPrepared, onExit, ...props }: ChartsProps) {
-  const { config, fields } = useMemo(() => {
+  const { config, fields, nullableFields } = useMemo(() => {
     const config = CHARTS_CONFIG[props.chartName];
     const fields = (config?.requiredFields ?? []).map(f => props[f]);
-    return { config, fields };
+    const nullableFieldsArray = (config?.nullableFields ?? []).map(f => props[f]);
+    const nullableFields = new Set<string>([].concat(...nullableFieldsArray));
+    return { config, fields, nullableFields };
   }, [unstable_serialize(props)]);
 
-  const validData = useValidData(props.data, fields);
+  const validData = useValidData(props.data, fields, nullableFields);
 
   let alertNode: ReactNode;
   let chartNode: ReactNode;

@@ -34,7 +34,7 @@ export function isRepoNameField (data: any[], field: string) {
   return allSatisfy(data.map(item => item[field]), isRepoNameLike);
 }
 
-export function useValidData (data: any[], fields: Array<string | string[] | undefined>) {
+export function useValidData (data: any[], fields: Array<string | string[] | undefined>, nullableFields = new Set<string>()) {
   // Ensure all provided fields are non-empty string or non-empty string array.
   const satisfy = (field: string | string[] | undefined) => {
     if (isNullish(field)) {
@@ -52,7 +52,7 @@ export function useValidData (data: any[], fields: Array<string | string[] | und
     if (typeof field === 'string') {
       return notNullish(item[field]);
     } else {
-      return allSatisfy(field, f => notNullish(item[f]));
+      return allSatisfy(field, f => nullableFields.has(f) || notNullish(item[f]));
     }
   };
 
