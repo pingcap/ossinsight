@@ -1,4 +1,4 @@
-import { Question } from '@site/src/api/explorer';
+import { Question, QuestionErrorType } from '@site/src/api/explorer';
 import React, { cloneElement, ReactElement, ReactNode, useEffect, useMemo, useState } from 'react';
 import { isNullish, notFalsy } from '@site/src/utils/value';
 import { notNone } from '@site/src/pages/explore/_components/SqlSection/utils';
@@ -45,7 +45,7 @@ export default function AIMessages<TitleLineArgs extends any[]> ({ question, has
   const messages: Array<Message<TitleLineArgs>> = useMemo(() => [
     {
       key: 'not-sure',
-      show: notNone(question?.notClear),
+      show: notNone(question?.notClear) && question?.errorType !== QuestionErrorType.SQL_CAN_NOT_ANSWER,
       content: (
         <Line>
           - But I’m not sure that:&nbsp;
@@ -84,7 +84,7 @@ export default function AIMessages<TitleLineArgs extends any[]> ({ question, has
     },
     {
       key: 'tips',
-      show: true,
+      show: question?.errorType !== QuestionErrorType.SQL_CAN_NOT_ANSWER,
       content: (
         <Line fontSize="14px" fontWeight="normal">- You can copy and revise it based on the question above 👆.</Line>
       ),
@@ -98,7 +98,7 @@ export default function AIMessages<TitleLineArgs extends any[]> ({ question, has
         </Line>
       ),
     },
-  ].filter(item => item.show), [question?.revisedTitle, question?.combinedTitle, question?.notClear, question?.assumption]);
+  ].filter(item => item.show), [question?.revisedTitle, question?.combinedTitle, question?.notClear, question?.assumption, question?.errorType]);
 
   const whenMounted = useWhenMounted();
 

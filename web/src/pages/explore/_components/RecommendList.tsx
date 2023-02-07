@@ -47,7 +47,7 @@ export default function RecommendList () {
           💡 Popular questions
         </Typography>
         {presetQuestions.map((props, index) => <QuestionCard key={index} {...props} />)}
-        <Ads />
+        <Ads sx={{ mt: 2 }} utmContent='home_left' />
       </Grid>
       <Grid item xs={12} md={7} lg={8}>
         <TagSelector value={tag} onChange={handleTagChange} />

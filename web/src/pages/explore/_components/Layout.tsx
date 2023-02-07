@@ -1,5 +1,5 @@
 import React, { ReactNode, useMemo, useRef } from 'react';
-import { Container as MuiContainer, styled } from '@mui/material';
+import { Container as MuiContainer, NoSsr, styled } from '@mui/material';
 import { Transition } from 'react-transition-group';
 import { useSize } from 'ahooks';
 import { reactNodeOrFunction } from '@site/src/utils/react';
@@ -11,17 +11,13 @@ const transitionDuration = 400;
 export interface LayoutProps {
   showHeader: boolean;
   showSide: boolean;
-  showFooter: boolean;
   header?: ReactNode;
   side?: ReactNode | ((headerHeight: number) => ReactNode);
-  footer?: ReactNode;
   children?: ReactNode;
 }
 
-export default function Layout ({ children, header, side, footer, showFooter, showSide, showHeader }: LayoutProps) {
+export default function Layout ({ children, header, side, showSide, showHeader }: LayoutProps) {
   const headerRef = useRef<HTMLDivElement>(null);
-  const mainRef = useRef<HTMLDivElement>(null);
-  const sideRef = useRef<HTMLDivElement>(null);
 
   const size = useSize(headerRef);
 
@@ -31,23 +27,29 @@ export default function Layout ({ children, header, side, footer, showFooter, sh
 
   return (
     <Root maxWidth="xl">
-      <Transition nodeRef={headerRef} in={showHeader} timeout={transitionDuration}>
+      <Transition in={showHeader} timeout={transitionDuration}>
         {(status) => (
           <>
             <Header ref={headerRef} className={`Header-${status}`} height={headerOffsetHeight}>
               {header}
             </Header>
             <Body className={`Body-header-${status}`} headerHeight={headerOffsetHeight}>
-              <Transition nodeRef={mainRef} in={showSide} timeout={transitionDuration}>
+              {
+                // TODO: If remove <NoSsr>, SSG page style would crash.
+                // While `in` props is true, but the transition state would not change.
+              }
+              <NoSsr>
+                <Transition in={showSide} timeout={transitionDuration}>
+                  {(status) => (
+                    <Main className={`Main-side-${status}`}>
+                      {children}
+                    </Main>
+                  )}
+                </Transition>
+              </NoSsr>
+              <Transition in={showSide} timeout={transitionDuration} unmountOnExit>
                 {(status) => (
-                  <Main ref={mainRef} className={`Main-side-${status}`}>
-                    {children}
-                  </Main>
-                )}
-              </Transition>
-              <Transition nodeRef={sideRef} in={showSide} timeout={transitionDuration} unmountOnExit>
-                {(status) => (
-                  <Side ref={sideRef} className={`Side-${status}`}>
+                  <Side className={`Side-${status}`}>
                     {reactNodeOrFunction(side, size?.height ?? 0)}
                   </Side>
                 )}
@@ -56,9 +58,6 @@ export default function Layout ({ children, header, side, footer, showFooter, sh
           </>
         )}
       </Transition>
-      <Footer>
-        {showFooter && footer}
-      </Footer>
     </Root>
   );
 }
@@ -70,7 +69,7 @@ const Root = styled(MuiContainer, { name: 'Layout-Root' })`
     padding-top: 16px;
   }
 
-  min-height: calc(100vh - 92px);
+  min-height: 600px;
   box-sizing: border-box;
   position: relative;
   display: flex;
@@ -172,16 +171,6 @@ const Side = styled('div', { name: 'Layout-Side' })`
   ${({ theme }) => theme.breakpoints.down('md')} {
     display: none !important;
   }
-`;
-
-const Footer = styled('div', { name: 'Layout-Footer' })`
-  position: relative;
-  display: flex;
-  align-self: stretch;
-  flex: 1;
-  min-height: 160px;
-  align-items: center;
-  justify-content: center;
 `;
 
 function classNames (prefix: string, enter: boolean) {

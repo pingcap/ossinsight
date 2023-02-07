@@ -1,25 +1,17 @@
-import React, { ReactNode } from 'react';
-import { Alert, AlertColor, Box, IconButton, Stack, styled, Typography, useEventCallback } from '@mui/material';
+import React, { forwardRef, ReactNode } from 'react';
+import { Alert, AlertColor, Stack, styled, useEventCallback } from '@mui/material';
 import { SxProps } from '@mui/system';
-import { createIssueLink } from '@site/src/utils/gh';
-import { Cached, ContactSupport, GitHub } from '@mui/icons-material';
-import { RecommendedSuggestions } from '@site/src/pages/explore/_components/Suggestions';
+import { gotoAnchor } from '@site/src/utils/dom';
+import { ContactSupport, GitHub } from '@mui/icons-material';
 
 interface AlertBlockProps {
   severity: AlertColor;
   sx?: SxProps;
-  createIssueUrl?: () => string;
-  showSuggestions?: boolean;
+  createIssueUrl: () => string;
   children: ReactNode;
 }
 
-export default function AlertBlock ({ severity, sx, children, createIssueUrl = () => createIssueLink('pingcap/ossinsight'), showSuggestions }: AlertBlockProps) {
-  const handleJumpFaq = useEventCallback(() => {
-    document.getElementById('data-explorer-faq')?.scrollIntoView({
-      behavior: 'smooth',
-    });
-  });
-
+const AlertBlock = forwardRef<HTMLDivElement, AlertBlockProps>(function ({ createIssueUrl, severity, sx, children }, ref) {
   const report = useEventCallback(() => {
     window.open(createIssueUrl(), '_blank');
   });
@@ -30,12 +22,11 @@ export default function AlertBlock ({ severity, sx, children, createIssueUrl = (
         sx={sx}
         variant="outlined"
         severity={severity}
+        ref={ref}
       >
-        <Typography variant="body1">
-          {children}
-        </Typography>
+        {children}
         <Stack direction="row" spacing={2} mt={2}>
-          <AlertButton onClick={handleJumpFaq}>
+          <AlertButton onClick={gotoAnchor('data-explorer-faq')}>
             <ContactSupport fontSize="inherit" sx={{ mr: 0.5 }} />
             <span>See FAQ</span>
           </AlertButton>
@@ -45,23 +36,11 @@ export default function AlertBlock ({ severity, sx, children, createIssueUrl = (
           </AlertButton>
         </Stack>
       </StyledAlert>
-      {showSuggestions && (
-        <SuggestionsContainer>
-          <RecommendedSuggestions
-            title={(reload, loading) => (
-              <Box component="p" m={0} mt={3} height="40px">
-                Try other questions? <IconButton onClick={reload} disabled={loading}><Cached /></IconButton>
-              </Box>
-            )}
-            n={4}
-            variant="text"
-            questionPrefix='> '
-          />
-        </SuggestionsContainer>
-      )}
     </>
   );
-}
+});
+
+export default AlertBlock;
 
 const StyledAlert = styled(Alert)`
   background: #18191A;
@@ -71,10 +50,6 @@ const StyledAlert = styled(Alert)`
     color: currentColor !important;
     text-decoration: underline !important;
   }
-`;
-
-const SuggestionsContainer = styled('div')`
-  margin-top: 16px;
 `;
 
 const AlertButton = styled('button')`
@@ -95,7 +70,7 @@ const AlertButton = styled('button')`
   &:hover, &:focus {
     opacity: 0.7;
   }
-  
+
   &:not(:first-of-type) {
     margin-left: 16px;
   }

@@ -1,10 +1,12 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import SqlSection from '@site/src/pages/explore/_components/SqlSection';
 import ResultSection from '@site/src/pages/explore/_components/ResultSection';
-import useQuestionManagement, { QuestionLoadingPhase } from '@site/src/pages/explore/_components/useQuestion';
+import useQuestionManagement, { isEmptyResult, QuestionLoadingPhase } from '@site/src/pages/explore/_components/useQuestion';
 import { SwitchTransition } from 'react-transition-group';
-import { useBoolean, useMemoizedFn } from 'ahooks';
+import { useMemoizedFn } from 'ahooks';
 import { Grow } from '@mui/material';
+import { notNullish } from '@site/src/utils/value';
+import AdsSection from '@site/src/pages/explore/_components/AdsSection';
 
 export interface ExecutionProps {
   onResultEntered?: (id?: string) => void;
@@ -20,7 +22,12 @@ export default function Execution ({
   onResultExited,
 }: ExecutionProps) {
   const { question, phase, error } = useQuestionManagement();
-  const [promptsPending, { setTrue: handlePromptsStart, setFalse: handlePromptsReady }] = useBoolean(false);
+  const [promptsPending, setPromptsPending] = useState(false);
+  const [showAds, setShowAds] = useState(false);
+
+  useEffect(() => {
+    setShowAds(false);
+  }, [question?.id]);
 
   const resultQuestion = useMemo(() => {
     const shouldShowResult = RESULT_VISIBLE_PHASES.has(phase);
@@ -31,20 +38,57 @@ export default function Execution ({
     }
   }, [promptsPending, phase, question]);
 
+  const shouldShowAds = useMemo(() => {
+    if (!showAds) {
+      return false;
+    }
+    if (ADS_VISIBLE_PHASES.has(phase)) {
+      return true;
+    } else {
+      return notNullish(question) && isEmptyResult(question);
+    }
+  }, [showAds, phase, question]);
+
   const handleEnter = useMemoizedFn(() => {
     onResultEnter?.(resultQuestion?.id);
   });
 
   const handleEntered = useMemoizedFn(() => {
     onResultEntered?.(resultQuestion?.id);
+    if (notNullish(resultQuestion)) {
+      setShowAds(true);
+    }
   });
 
   const handleExit = useMemoizedFn(() => {
     onResultExit?.(resultQuestion?.id);
+    if (notNullish(resultQuestion)) {
+      setShowAds(false);
+    }
   });
 
   const handleExited = useMemoizedFn(() => {
     onResultExited?.(resultQuestion?.id);
+  });
+
+  const handlePromptsStart = useMemoizedFn(() => {
+    setPromptsPending(true);
+  });
+
+  const handlePromptsReady = useMemoizedFn(() => {
+    setPromptsPending(false);
+  });
+
+  const handleSqlErrorMessageStart = useMemoizedFn(() => {
+    if (phase !== QuestionLoadingPhase.EXECUTE_FAILED) {
+      setShowAds(false);
+    }
+  });
+
+  const handleSqlErrorMessageReady = useMemoizedFn(() => {
+    if (phase !== QuestionLoadingPhase.EXECUTE_FAILED) {
+      setShowAds(true);
+    }
   });
 
   return (
@@ -55,6 +99,8 @@ export default function Execution ({
         error={error}
         onPromptsStart={handlePromptsStart}
         onPromptsReady={handlePromptsReady}
+        onErrorMessageStart={handleSqlErrorMessageStart}
+        onErrorMessageReady={handleSqlErrorMessageReady}
       />
       <SwitchTransition
         mode="out-in"
@@ -74,6 +120,9 @@ export default function Execution ({
           />
         </Grow>
       </SwitchTransition>
+      <Grow in={shouldShowAds} unmountOnExit>
+        <AdsSection />
+      </Grow>
     </>
   );
 };
@@ -87,4 +136,11 @@ const RESULT_VISIBLE_PHASES = new Set<QuestionLoadingPhase>([
   QuestionLoadingPhase.UNKNOWN_ERROR,
   QuestionLoadingPhase.READY,
   QuestionLoadingPhase.SUMMARIZING,
+]);
+
+const ADS_VISIBLE_PHASES = new Set<QuestionLoadingPhase>([
+  QuestionLoadingPhase.VALIDATE_SQL_FAILED,
+  QuestionLoadingPhase.GENERATE_SQL_FAILED,
+  QuestionLoadingPhase.EXECUTE_FAILED,
+  QuestionLoadingPhase.CREATE_FAILED,
 ]);

@@ -1,11 +1,10 @@
 import Section, { SectionProps, SectionStatus, SectionStatusIcon } from '@site/src/pages/explore/_components/Section';
 import React, { forwardRef, useEffect, useMemo, useRef, useState } from 'react';
 import { QuestionLoadingPhase } from '@site/src/pages/explore/_components/useQuestion';
-import { isEmptyArray, isNonemptyString, isNullish, nonEmptyArray, notNullish } from '@site/src/utils/value';
+import { isEmptyArray, isNonemptyString, isNullish, nonEmptyArray, notFalsy, notNullish } from '@site/src/utils/value';
 import { ChartResult, Question, QuestionStatus } from '@site/src/api/explorer';
 import Info from '@site/src/pages/explore/_components/Info';
 import { Box, Divider, Portal, Stack, styled, ToggleButton, ToggleButtonGroup, Typography, useEventCallback } from '@mui/material';
-import { getErrorMessage } from '@site/src/utils/error';
 import ErrorBlock from '@site/src/pages/explore/_components/ErrorBlock';
 import TableChart from '@site/src/pages/explore/_components/charts/TableChart';
 import { Charts } from '@site/src/pages/explore/_components/charts';
@@ -20,6 +19,7 @@ import Feedback from '@site/src/pages/explore/_components/Feedback';
 import { Prompts } from '@site/src/pages/explore/_components/Prompt';
 import Link from '@docusaurus/Link';
 import Anchor from '@site/src/components/Anchor';
+import ErrorMessage from '@site/src/pages/explore/_components/ResultSection/ErrorMessage';
 
 const ENABLE_SUMMARY = false;
 
@@ -130,20 +130,16 @@ const ResultSection = forwardRef<HTMLElement, ResultSectionProps>(({ question, p
             <SectionStatusIcon status={status} />
             {resultTitle}
           </span>
-          <ControlsContainer>
+          {status !== SectionStatus.error && <ControlsContainer>
             <span ref={setControlsContainerRef} />
             <ShareButtons url={url} title={title} summary={question?.answerSummary?.content} hashtags={hashtags} />
-          </ControlsContainer>
+          </ControlsContainer>}
         </Stack>
       }
       error={resultSectionError}
-      errorTitle="Failed to execute question"
-      errorPrompt="Hi, it's failed to execute"
-      errorMessage={
-        <>
-          Oops, {question?.error ?? 'it seems AI misunderstood your question, resulting in a wrong SQL'}. Try our <Anchor anchor="data-explorer-faq">tips</Anchor> for crafting effective SQL and give it another go.
-        </>
-      }
+      errorIn={notFalsy(resultSectionError)}
+      errorMessage={<ErrorMessage />}
+      issueTemplate={question?.errorType ?? undefined}
     >
       {ENABLE_SUMMARY && (notNullish(question?.answerSummary) || question?.status === QuestionStatus.Summarizing) && (
         <SummaryCard loading={question?.status === QuestionStatus.Summarizing}>
@@ -220,17 +216,18 @@ function Chart ({ chartData, chartError, fields, result, controlsContainer }: { 
   });
 
   return useMemo(() => {
-    const errMsg = getErrorMessage(chartError);
     const renderError = (margin = false, recommend = false) => {
       return (
         <ErrorBlock
-          title="Unable to generate chart"
-          prompt="Hi, it's failed to generate chart for"
-          error={errMsg}
           severity="warning"
           sx={margin ? { mb: 2 } : undefined}
-          showSuggestions={recommend}
-        />
+        >
+          <Typography variant="body1">
+            Oh no, visualization didn&apos;t work.
+            <br />
+            You can still check your results using the table.
+          </Typography>
+        </ErrorBlock>
       );
     };
 

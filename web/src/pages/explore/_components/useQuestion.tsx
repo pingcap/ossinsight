@@ -1,11 +1,13 @@
 import { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { newQuestion, pollQuestion, Question, QuestionStatus } from '@site/src/api/explorer';
+import { newQuestion, pollQuestion, Question, QuestionErrorType, QuestionStatus } from '@site/src/api/explorer';
 import { useMemoizedFn } from 'ahooks';
 import { isFalsy, isFiniteNumber, isNonemptyString, notNullish } from '@site/src/utils/value';
 import { timeout } from '@site/src/utils/promisify';
 import { useResponsiveAuth0 } from '@site/src/theme/NavbarItem/useResponsiveAuth0';
 import { useGtag } from '@site/src/utils/ga';
 import { getErrorMessage } from '@site/src/utils/error';
+import { notNone } from '@site/src/pages/explore/_components/SqlSection/utils';
+import { useIfMounted } from '@site/src/hooks/mounted';
 
 export const enum QuestionLoadingPhase {
   /** There is no question */
@@ -23,6 +25,7 @@ export const enum QuestionLoadingPhase {
   CREATE_FAILED,
   /** Generate SQL failed, question exists */
   GENERATE_SQL_FAILED,
+  VALIDATE_SQL_FAILED,
   /** SQL is waiting for execution */
   QUEUEING,
   /** SQL is executing */
@@ -52,6 +55,7 @@ export const FINAL_PHASES = new Set([
   QuestionLoadingPhase.SUMMARIZING,
   QuestionLoadingPhase.UNKNOWN_ERROR,
   QuestionLoadingPhase.GENERATE_SQL_FAILED,
+  QuestionLoadingPhase.VALIDATE_SQL_FAILED,
   QuestionLoadingPhase.VISUALIZE_FAILED,
   QuestionLoadingPhase.CREATE_FAILED,
   QuestionLoadingPhase.LOAD_FAILED,
@@ -84,6 +88,17 @@ function computePhase (question: Question, whenError: (error: unknown) => void):
         whenError(question.error);
       } else {
         whenError('Empty error message');
+      }
+      switch (question.errorType) {
+        case QuestionErrorType.ANSWER_GENERATE:
+        case QuestionErrorType.ANSWER_PARSE:
+        case QuestionErrorType.SQL_CAN_NOT_ANSWER:
+          return QuestionLoadingPhase.GENERATE_SQL_FAILED;
+        case QuestionErrorType.VALIDATE_SQL:
+          return QuestionLoadingPhase.VALIDATE_SQL_FAILED;
+        case QuestionErrorType.QUERY_TIMEOUT:
+        case QuestionErrorType.QUERY_EXECUTE:
+          return QuestionLoadingPhase.EXECUTE_FAILED;
       }
       if (isFalsy(question.querySQL)) {
         return QuestionLoadingPhase.GENERATE_SQL_FAILED;
@@ -151,11 +166,13 @@ export function useQuestionManagementValues ({ pollInterval = 2000 }: QuestionMa
   const [error, setError] = useState<unknown>();
   const waitTimeRef = useRef<number>(0);
   const idRef = useRef<string>();
+  const ifMounted = useIfMounted();
 
   const { gtagEvent } = useGtag();
 
   const { isLoading, user, getAccessTokenSilently, login } = useResponsiveAuth0();
 
+  // TODO: support cancel
   const loadInternal = useMemoizedFn(async function (id: string, clear: boolean) {
     // Prevent reload when loading same question
     if (idRef.current === id) {
@@ -175,14 +192,20 @@ export function useQuestionManagementValues ({ pollInterval = 2000 }: QuestionMa
       setLoading(true);
       const result = await pollQuestion(id);
       idRef.current = result.id;
-      setPhase(computePhase(result, setError));
-      setQuestion(result);
+      ifMounted(() => {
+        setPhase(computePhase(result, setError));
+        setQuestion(result);
+      });
     } catch (e) {
-      setPhase(QuestionLoadingPhase.LOAD_FAILED);
-      setError(e);
+      ifMounted(() => {
+        setPhase(QuestionLoadingPhase.LOAD_FAILED);
+        setError(e);
+      });
       return await Promise.reject(e);
     } finally {
-      setLoading(false);
+      ifMounted(() => {
+        setLoading(false);
+      });
     }
   });
 
@@ -194,6 +217,7 @@ export function useQuestionManagementValues ({ pollInterval = 2000 }: QuestionMa
     async function createInternal (title: string, ignoreCache: boolean) {
       try {
         if (!isLoading && !user) {
+          // TODO: Auto search after login
           return await login({ triggerBy: 'explorer-search' });
         }
         waitTimeRef.current = performance.now();
@@ -211,18 +235,24 @@ export function useQuestionManagementValues ({ pollInterval = 2000 }: QuestionMa
           questionHitCache: result.hitCache,
           spent: (performance.now() - waitTimeRef.current) / 1000,
         });
-        setPhase(computePhase(result, setError));
-        setQuestion(result);
+        ifMounted(() => {
+          setPhase(computePhase(result, setError));
+          setQuestion(result);
+        });
       } catch (e) {
         gtagEvent('create_question_failed', {
           errorMessage: getErrorMessage(e),
           spent: (performance.now() - waitTimeRef.current) / 1000,
         });
-        setPhase(QuestionLoadingPhase.CREATE_FAILED);
-        setError(e);
+        ifMounted(() => {
+          setPhase(QuestionLoadingPhase.CREATE_FAILED);
+          setError(e);
+        });
         return await Promise.reject(e);
       } finally {
-        setLoading(false);
+        ifMounted(() => {
+          setLoading(false);
+        });
       }
     }
 
@@ -330,6 +360,17 @@ function isNone (string?: string) {
   return true;
 }
 
-export function promptsCount (question?: Question) {
-  return ['revisedTitle', 'notClear'].filter(k => !isNone(question?.[k])).length;
+export function isEmptyResult (question: Question) {
+  if (question.status === QuestionStatus.Success || question.status === QuestionStatus.Summarizing) {
+    return (question.result?.rows.length ?? NaN) === 0;
+  }
+  return false;
+}
+
+export function hasAIPrompts (question: Question) {
+  return (
+    notNone(question.revisedTitle) ||
+    notNone(question.combinedTitle) ||
+    notNone(question.notClear)
+  );
 }

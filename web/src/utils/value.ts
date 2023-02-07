@@ -28,8 +28,13 @@ export function isString (v: unknown): v is string {
   return typeof v === 'string';
 }
 
+// TODO: rename
 export function isNonemptyString (v: unknown): v is string {
   return isString(v) && v !== '';
+}
+
+export function notBlankString (v: unknown): v is string {
+  return isString(v) && v.trim() !== '';
 }
 
 export function isBlankString (v: unknown): v is string {

@@ -1,15 +1,13 @@
-import { generateUtilityClasses, styled, Typography } from '@mui/material';
+import { styled } from '@mui/material';
 import TiDBCloudLink from '@site/src/components/TiDBCloudLink';
-import UploadIcon from './img/upload.svg';
+import UploadIcon from '../img/upload.svg';
 import React from 'react';
-import clsx from 'clsx';
 import GradientDashedBox, { gradientDashedBoxClasses, GradientDashedBoxProps } from '@site/src/components/GradientDashedBox';
 import { SxProps } from '@mui/system';
 
 export interface AdsProps {
   size?: 'small';
   sx?: SxProps;
-  utmContent?: string;
 }
 
 const COLOR_STOPS: Array<[string, number]> = [
@@ -19,7 +17,7 @@ const COLOR_STOPS: Array<[string, number]> = [
   ['#6B7AFF', 103.3],
 ];
 
-const Ads = ({ size, sx, utmContent }: AdsProps) => {
+const Ads = ({ size, sx }: AdsProps) => {
   return (
     <>
       <TiDBCloudLink<GradientDashedBoxProps>
@@ -27,21 +25,23 @@ const Ads = ({ size, sx, utmContent }: AdsProps) => {
         sx={sx}
         stops={COLOR_STOPS}
         deg={90}
-        content={utmContent}
-        components={{
-          content: clsx({ [classes.small]: size === 'small' }),
-        }}
+        content='result_bottom'
       >
-        <Typography variant="body2" fontSize={12} color="#A0A0A0">
-          GitHub data is not your focus?
-        </Typography>
-        <AdsButton className={clsx({ [classes.small]: size === 'small' })}>
-          <AdsButtonIconContainer className={clsx({ [classes.small]: size === 'small' })}>
+        <Title>
+          Try other dataset
+        </Title>
+        <AdsButton>
+          <AdsButtonIconContainer>
             <UploadIcon />
           </AdsButtonIconContainer>
-          Import any dataset
+          Import NOW!
         </AdsButton>
-        <AdsImage className={clsx({ [classes.small]: size === 'small' })} width="228" src={require('./img/ads-prompts.png').default} alt="image" />
+        <AdsImage width="304" src={require('../img/ads-2.png').default} alt="image" />
+        <Spacer />
+        <Line>
+          Chat2Query on
+          <Logo src="/img/tidb-cloud-logo-o.png" alt="TiDB Cloud Logo" />
+        </Line>
       </TiDBCloudLink>
     </>
   );
@@ -49,7 +49,13 @@ const Ads = ({ size, sx, utmContent }: AdsProps) => {
 
 export default Ads;
 
-const classes = generateUtilityClasses('Ads', ['small']);
+const Title = styled('div')`
+  font-style: normal;
+  font-weight: 600;
+  font-size: 32px;
+  line-height: 150.02%;
+  color: #FFFFFF;
+`;
 
 const AdsContainer = styled(GradientDashedBox)`
   opacity: 1;
@@ -62,16 +68,17 @@ const AdsContainer = styled(GradientDashedBox)`
     transform: scale3d(1.02, 1.02, 1.02);
   }
 
+  .${gradientDashedBoxClasses.container} {
+    height: 100%;
+  }
+
   .${gradientDashedBoxClasses.content} {
+    height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     padding: 24px 12px;
-
-    &.${classes.small} {
-      padding: 12px;
-    }
   }
 `;
 
@@ -81,44 +88,52 @@ const AdsButton = styled('span')`
   border-radius: 48px;
   display: flex;
   align-items: center;
-  padding: 12px !important;
-  font-weight: 600;
-  font-size: 16px;
   color: white !important;
   text-decoration: none !important;
   margin-top: 8px;
-
-  &.${classes.small} {
-    font-size: 14px;
-  }
+  font-style: normal;
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 150.02%;
+  padding: 12px 48px 12px 12px;
 `;
 
 const AdsButtonIconContainer = styled('span')`
   display: inline-flex;
-  width: 32px;
-  height: 32px;
-  border-radius: 16px;
+  width: 42px;
+  height: 42px;
+  border-radius: 21px;
   align-items: center;
   justify-content: center;
   background: white;
   color: #5667FF;
-  margin-right: 16px;
   min-width: 32px;
-  font-size: 20px;
-
-  &.${classes.small} {
-    width: 24px;
-    height: 24px;
-    min-width: 24px;
-    font-size: 16px;
-    margin-right: 8px;
-  }
+  font-size: 26px;
+  margin-right: 32px;
 `;
 
 const AdsImage = styled('img')`
   max-width: 100%;
+`;
 
-  &.${classes.small} {
-    max-width: 90%;
-  }
+const Spacer = styled('span')`
+  display: block;
+  flex: 1;
+`;
+
+const Logo = styled('img')`
+  height: 24px;
+  margin: 0 8px;
+  vertical-align: text-bottom;
+`;
+
+const Line = styled('div')`
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 180%;
+  /* or 29px */
+  color: #FFFFFF;
+  margin-top: 12px;
+  vertical-align: middle;
 `;

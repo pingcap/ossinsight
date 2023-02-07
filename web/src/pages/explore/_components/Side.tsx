@@ -1,11 +1,11 @@
 import { RecommendedSuggestions } from '@site/src/pages/explore/_components/Suggestions';
-import { Divider, IconButton, styled, Typography } from '@mui/material';
+import { Divider, Grow, IconButton, styled, Typography } from '@mui/material';
 import { Cached } from '@mui/icons-material';
 import React from 'react';
 import Ads from '@site/src/pages/explore/_components/Ads';
 import Link from '@docusaurus/Link';
 
-export default function Side ({ headerHeight = 0 }: { headerHeight?: number }) {
+export default function Side ({ headerHeight = 0, showAds }: { headerHeight?: number, showAds: boolean }) {
   return (
     <SideRoot headerHeight={headerHeight}>
       <RecommendedSuggestions
@@ -19,9 +19,15 @@ export default function Side ({ headerHeight = 0 }: { headerHeight?: number }) {
           </Typography>
         )}
       />
-      <StyledLink to='/explore/'>&gt; See more</StyledLink>
-      <Divider orientation="horizontal" sx={{ my: 2 }} />
-      <Ads size='small' />
+      <StyledLink to="/explore/">&gt; See more</StyledLink>
+      {showAds && (
+        <Grow in={showAds}>
+          <div>
+            <Divider orientation="horizontal" sx={{ my: 2 }} />
+            <Ads size="small" utmContent='result_right' />
+          </div>
+        </Grow>
+      )}
     </SideRoot>
   );
 }
