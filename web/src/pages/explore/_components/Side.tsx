@@ -24,7 +24,7 @@ export default function Side ({ headerHeight = 0, showAds }: { headerHeight?: nu
         <Grow in={showAds}>
           <div>
             <Divider orientation="horizontal" sx={{ my: 2 }} />
-            <Ads size="small" />
+            <Ads size="small" utmContent='result_right' />
           </div>
         </Grow>
       )}

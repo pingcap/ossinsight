@@ -9,6 +9,7 @@ import { SxProps } from '@mui/system';
 export interface AdsProps {
   size?: 'small';
   sx?: SxProps;
+  utmContent?: string;
 }
 
 const COLOR_STOPS: Array<[string, number]> = [
@@ -18,7 +19,7 @@ const COLOR_STOPS: Array<[string, number]> = [
   ['#6B7AFF', 103.3],
 ];
 
-const Ads = ({ size, sx }: AdsProps) => {
+const Ads = ({ size, sx, utmContent }: AdsProps) => {
   return (
     <>
       <TiDBCloudLink<GradientDashedBoxProps>
@@ -26,6 +27,7 @@ const Ads = ({ size, sx }: AdsProps) => {
         sx={sx}
         stops={COLOR_STOPS}
         deg={90}
+        content={utmContent}
         components={{
           content: clsx({ [classes.small]: size === 'small' }),
         }}

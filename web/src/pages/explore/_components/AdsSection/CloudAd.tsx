@@ -25,6 +25,7 @@ const Ads = ({ size, sx }: AdsProps) => {
         sx={sx}
         stops={COLOR_STOPS}
         deg={90}
+        content='result_bottom'
       >
         <Title>
           Try other dataset
