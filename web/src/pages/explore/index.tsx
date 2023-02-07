@@ -5,9 +5,9 @@ import Questions from '@site/src/pages/explore/_components/Questions';
 export default function Page () {
   return (
     <CustomPage
-      title="Data Explorer: Discover insights in GitHub event data with AI-generated SQL"
+      title="GitHub Data Explorer: Discover insights in GitHub event data with AI-generated SQL"
       description="Simply ask your question in natural language and Data Explore will generate SQL, query the data, and present the results visually."
-      keywords="GitHub data, text to SQL, query tool, Data Explorer, GPT-3, AI-generated SQL"
+      keywords="GitHub data, text to SQL, query tool, GitHub Data Explorer, GPT-3, AI-generated SQL"
       image="/img/data-explorer-thumbnail.png"
       tidbCloudLinkCampaign='chat2query_202301'
       tidbCloudLinkTrial

@@ -8,7 +8,7 @@ hide_title: true
 <h1 align="center"> About OSS Insight 👁️</h1>
 
 <h3 align="center">
-  <b><a href="/explore">Data Explorer</a></b>
+  <b><a href="/explore">GitHub Data Explorer</a></b>
   •
   <b><a href="/collections/open-source-database">Rankings</a></b>
   •
@@ -27,7 +27,7 @@ hide_title: true
 
 OSS Insight is a powerful tool that provides comprehensive, valuable, and trending insights into the open source world by analyzing 5+ billion rows of GitHub events data.
 
-OSS Insight's <a href="/explore">Data Explorer</a> provides a new way to explore GitHub data. Simply ask your question in natural language and Data Explorer will generate SQL, query the data, and present the results visually.
+OSS Insight's <a href="/explore">GitHub Data Explorer</a> provides a new way to explore GitHub data. Simply ask your question in natural language and GitHub Data Explorer will generate SQL, query the data, and present the results visually.
 
 OSS Insight also provides in-depth analysis of individual GitHub repositories and developers, as well as the ability to compare two repositories using the same metrics.
 
@@ -39,8 +39,8 @@ OSS Insight also provides in-depth analysis of individual GitHub repositories an
 
 ## Feature 1: GPT-Powered Data Exploration
 
-Data Explorer provides a new way to discover trends and insights into 5+ billion rows of GitHub data.
-Simply ask your question in natural language and Data Explorer will generate SQL, query the data, and present the results visually. It's built with <a href ="https://tidbcloud.com/channel?utm_source=ossinsight&utm_medium=referral&utm_campaign=chat2query_202301&utm_content=about">Chat2Query</a>, a GPT-powered SQL generator in TiDB Cloud. 
+GitHub Data Explorer provides a new way to discover trends and insights into 5+ billion rows of GitHub data.
+Simply ask your question in natural language and GitHub Data Explorer will generate SQL, query the data, and present the results visually. It's built with <a href ="https://tidbcloud.com/channel?utm_source=ossinsight&utm_medium=referral&utm_campaign=chat2query_202301&utm_content=about">Chat2Query</a>, a GPT-powered SQL generator in TiDB Cloud. 
 
 Examples:
 - [Projects similar to @facebook/react](https://ossinsight.io/explore?id=ba186a53-b2ab-4cad-a46f-e2c36566cacd)
