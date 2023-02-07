@@ -38,7 +38,7 @@ export default function Header ({ question, phase, sqlSectionStatus, open, toggl
       case QuestionLoadingPhase.CREATE_FAILED:
         return 'Failed to generate SQL';
       case QuestionLoadingPhase.VALIDATE_SQL_FAILED:
-        return 'Failed to validate SQL';
+        return 'Invalid SQL generated';
       default:
         return 'Ta-da! SQL is written,';
     }
