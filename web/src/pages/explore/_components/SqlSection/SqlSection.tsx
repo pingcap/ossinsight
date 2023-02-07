@@ -1,4 +1,4 @@
-import { isFalsy, notFalsy, notNullish } from '@site/src/utils/value';
+import { isFalsy, notBlankString, notFalsy, notNullish } from '@site/src/utils/value';
 import CodeBlock from '@theme/CodeBlock';
 import Section, { SectionProps, SectionStatus } from '@site/src/pages/explore/_components/Section';
 import React, { forwardRef, useEffect, useMemo, useState } from 'react';
@@ -12,7 +12,7 @@ import { Question } from '@site/src/api/explorer';
 import { useWhenMounted } from '@site/src/hooks/mounted';
 import ErrorMessage from '@site/src/pages/explore/_components/SqlSection/ErrorMessage';
 
-export interface SqlSectionProps extends Pick<SectionProps, 'style' | 'className'> {
+export interface SqlSectionProps extends Pick<SectionProps, 'style' | 'className' | 'onErrorMessageReady' | 'onErrorMessageStart'> {
   question: Question | undefined;
   phase: QuestionLoadingPhase;
   error: unknown;
@@ -95,6 +95,8 @@ const SqlSection = forwardRef<HTMLElement, SqlSectionProps>(({ question, phase, 
       {...props}
       header={
         <Header
+          question={question}
+          phase={phase}
           sqlSectionStatus={sqlSectionStatus}
           open={open}
           toggleOpen={toggleOpen}
@@ -105,10 +107,15 @@ const SqlSection = forwardRef<HTMLElement, SqlSectionProps>(({ question, phase, 
       error={messagesTransitionDone ? sqlSectionError : undefined}
       errorIn={messagesTransitionDone && notFalsy(sqlSectionError)}
       errorMessage={<ErrorMessage error={sqlSectionError} />}
+      afterErrorBlock={notBlankString(formattedSql) && (
+        <CodeBlock language="sql">
+          {formattedSql}
+        </CodeBlock>
+      )}
       issueTemplate={question?.errorType ?? undefined}
     >
       <Collapse in={sqlSectionStatus !== SectionStatus.loading && !messagesTransition} timeout={400}>
-        <Collapse in={open} collapsedSize={36}>
+        <Collapse in={open} collapsedSize={52}>
           {hasSql && (
             <CodeBlock language="sql">
               {formattedSql}

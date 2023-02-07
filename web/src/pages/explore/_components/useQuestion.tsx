@@ -7,6 +7,7 @@ import { useResponsiveAuth0 } from '@site/src/theme/NavbarItem/useResponsiveAuth
 import { useGtag } from '@site/src/utils/ga';
 import { getErrorMessage } from '@site/src/utils/error';
 import { notNone } from '@site/src/pages/explore/_components/SqlSection/utils';
+import { useIfMounted } from '@site/src/hooks/mounted';
 
 export const enum QuestionLoadingPhase {
   /** There is no question */
@@ -165,11 +166,13 @@ export function useQuestionManagementValues ({ pollInterval = 2000 }: QuestionMa
   const [error, setError] = useState<unknown>();
   const waitTimeRef = useRef<number>(0);
   const idRef = useRef<string>();
+  const ifMounted = useIfMounted();
 
   const { gtagEvent } = useGtag();
 
   const { isLoading, user, getAccessTokenSilently, login } = useResponsiveAuth0();
 
+  // TODO: support cancel
   const loadInternal = useMemoizedFn(async function (id: string, clear: boolean) {
     // Prevent reload when loading same question
     if (idRef.current === id) {
@@ -189,14 +192,20 @@ export function useQuestionManagementValues ({ pollInterval = 2000 }: QuestionMa
       setLoading(true);
       const result = await pollQuestion(id);
       idRef.current = result.id;
-      setPhase(computePhase(result, setError));
-      setQuestion(result);
+      ifMounted(() => {
+        setPhase(computePhase(result, setError));
+        setQuestion(result);
+      });
     } catch (e) {
-      setPhase(QuestionLoadingPhase.LOAD_FAILED);
-      setError(e);
+      ifMounted(() => {
+        setPhase(QuestionLoadingPhase.LOAD_FAILED);
+        setError(e);
+      });
       return await Promise.reject(e);
     } finally {
-      setLoading(false);
+      ifMounted(() => {
+        setLoading(false);
+      });
     }
   });
 
@@ -208,6 +217,7 @@ export function useQuestionManagementValues ({ pollInterval = 2000 }: QuestionMa
     async function createInternal (title: string, ignoreCache: boolean) {
       try {
         if (!isLoading && !user) {
+          // TODO: Auto search after login
           return await login({ triggerBy: 'explorer-search' });
         }
         waitTimeRef.current = performance.now();
@@ -225,18 +235,24 @@ export function useQuestionManagementValues ({ pollInterval = 2000 }: QuestionMa
           questionHitCache: result.hitCache,
           spent: (performance.now() - waitTimeRef.current) / 1000,
         });
-        setPhase(computePhase(result, setError));
-        setQuestion(result);
+        ifMounted(() => {
+          setPhase(computePhase(result, setError));
+          setQuestion(result);
+        });
       } catch (e) {
         gtagEvent('create_question_failed', {
           errorMessage: getErrorMessage(e),
           spent: (performance.now() - waitTimeRef.current) / 1000,
         });
-        setPhase(QuestionLoadingPhase.CREATE_FAILED);
-        setError(e);
+        ifMounted(() => {
+          setPhase(QuestionLoadingPhase.CREATE_FAILED);
+          setError(e);
+        });
         return await Promise.reject(e);
       } finally {
-        setLoading(false);
+        ifMounted(() => {
+          setLoading(false);
+        });
       }
     }
 
@@ -355,7 +371,6 @@ export function hasAIPrompts (question: Question) {
   return (
     notNone(question.revisedTitle) ||
     notNone(question.combinedTitle) ||
-    notNone(question.notClear) ||
-    question.errorType === QuestionErrorType.SQL_CAN_NOT_ANSWER
+    notNone(question.notClear)
   );
 }

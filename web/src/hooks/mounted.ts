@@ -29,6 +29,16 @@ export function useWhenMounted (): <T extends (...args: any[]) => void>(fn: T) =
   }, []);
 }
 
+export function useIfMounted (): (fn: () => void) => void {
+  const mounted = useMounted();
+
+  return useCallback((fn: () => void) => {
+    if (mounted.current) {
+      fn();
+    }
+  }, []);
+}
+
 /**
  * will clear previous setTimeout
  */

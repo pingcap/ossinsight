@@ -9,7 +9,6 @@ import { TransitionGroup } from 'react-transition-group';
 import { ContentCopy } from '@mui/icons-material';
 import { useWhenMounted } from '@site/src/hooks/mounted';
 import { reactNodeOrFunction } from '@site/src/utils/react';
-import Link from '@docusaurus/Link';
 
 export interface AIMessagesProps<TitleLineArgs extends any[]> {
   question: Question | undefined;
@@ -88,13 +87,6 @@ export default function AIMessages<TitleLineArgs extends any[]> ({ question, has
       show: question?.errorType !== QuestionErrorType.SQL_CAN_NOT_ANSWER,
       content: (
         <Line fontSize="14px" fontWeight="normal">- You can copy and revise it based on the question above 👆.</Line>
-      ),
-    },
-    {
-      key: 'can-not-answer',
-      show: question?.errorType === QuestionErrorType.SQL_CAN_NOT_ANSWER,
-      content: (
-        <Line>- Sorry, I can only translate GitHub-related questions into SQL. Want to get more insights into GitHub? Get inspired by <Link to='/explore/'>popular questions</Link>.</Line>
       ),
     },
     {

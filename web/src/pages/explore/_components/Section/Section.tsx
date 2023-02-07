@@ -20,6 +20,9 @@ export interface SectionProps {
   error: unknown;
   errorIn?: boolean;
   errorMessage?: ReactNode;
+  onErrorMessageStart?: () => void;
+  onErrorMessageReady?: () => void;
+  afterErrorBlock?: ReactNode;
   issueTemplate?: QuestionErrorType;
   errorWithChildren?: boolean;
 }
@@ -31,6 +34,9 @@ const Section = forwardRef<HTMLElement, SectionProps>(({
   error,
   errorIn = true,
   errorMessage,
+  afterErrorBlock,
+  onErrorMessageStart,
+  onErrorMessageReady,
   errorWithChildren = false,
   children,
 }: SectionProps, ref) => {
@@ -55,13 +61,16 @@ const Section = forwardRef<HTMLElement, SectionProps>(({
           {header}
         </SectionHeader>
         <SectionBody>
-          <Collapse in={errorIn} timeout="auto" unmountOnExit>
-            <ErrorBlock
-              severity="error"
-              sx={{ mb: 2 }}
-            >
-              {errorMessage}
-            </ErrorBlock>
+          <Collapse in={errorIn} timeout="auto" unmountOnExit onEnter={onErrorMessageStart} onEntered={onErrorMessageReady}>
+            <div>
+              <ErrorBlock
+                severity="error"
+                sx={{ mb: 2 }}
+              >
+                {errorMessage}
+              </ErrorBlock>
+              {afterErrorBlock}
+            </div>
           </Collapse>
           {renderChildren()}
         </SectionBody>

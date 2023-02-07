@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import SqlSection from '@site/src/pages/explore/_components/SqlSection';
 import ResultSection from '@site/src/pages/explore/_components/ResultSection';
 import useQuestionManagement, { isEmptyResult, QuestionLoadingPhase } from '@site/src/pages/explore/_components/useQuestion';
@@ -24,6 +24,10 @@ export default function Execution ({
   const { question, phase, error } = useQuestionManagement();
   const [promptsPending, setPromptsPending] = useState(false);
   const [showAds, setShowAds] = useState(false);
+
+  useEffect(() => {
+    setShowAds(false);
+  }, [question?.id]);
 
   const resultQuestion = useMemo(() => {
     const shouldShowResult = RESULT_VISIBLE_PHASES.has(phase);
@@ -69,12 +73,22 @@ export default function Execution ({
 
   const handlePromptsStart = useMemoizedFn(() => {
     setPromptsPending(true);
-    setShowAds(false);
   });
 
   const handlePromptsReady = useMemoizedFn(() => {
     setPromptsPending(false);
-    setShowAds(true);
+  });
+
+  const handleSqlErrorMessageStart = useMemoizedFn(() => {
+    if (phase !== QuestionLoadingPhase.EXECUTE_FAILED) {
+      setShowAds(false);
+    }
+  });
+
+  const handleSqlErrorMessageReady = useMemoizedFn(() => {
+    if (phase !== QuestionLoadingPhase.EXECUTE_FAILED) {
+      setShowAds(true);
+    }
   });
 
   return (
@@ -85,6 +99,8 @@ export default function Execution ({
         error={error}
         onPromptsStart={handlePromptsStart}
         onPromptsReady={handlePromptsReady}
+        onErrorMessageStart={handleSqlErrorMessageStart}
+        onErrorMessageReady={handleSqlErrorMessageReady}
       />
       <SwitchTransition
         mode="out-in"

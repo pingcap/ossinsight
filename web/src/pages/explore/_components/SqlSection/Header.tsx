@@ -1,7 +1,7 @@
 import AIMessages from '@site/src/pages/explore/_components/SqlSection/AIMessages';
 import { Line, StyledTitle } from '@site/src/pages/explore/_components/SqlSection/styled';
 import React, { useMemo, useRef, useState } from 'react';
-import useQuestionManagement, { GENERATE_SQL_NON_FINAL_PHASES, hasAIPrompts, QuestionLoadingPhase } from '@site/src/pages/explore/_components/useQuestion';
+import { GENERATE_SQL_NON_FINAL_PHASES, hasAIPrompts, QuestionLoadingPhase } from '@site/src/pages/explore/_components/useQuestion';
 import { notNullish } from '@site/src/utils/value';
 import { SectionStatus, SectionStatusIcon } from '@site/src/pages/explore/_components/Section';
 import { Button } from '@mui/material';
@@ -10,8 +10,11 @@ import { useInterval } from 'ahooks';
 import { randomOf } from '@site/src/utils/generate';
 import TypewriterEffect from '@site/src/pages/explore/_components/TypewriterEffect';
 import BotIcon from '@site/src/pages/explore/_components/BotIcon';
+import { Question } from '@site/src/api/explorer';
 
 export interface HeaderProps {
+  question: Question | undefined;
+  phase: QuestionLoadingPhase;
   sqlSectionStatus: SectionStatus;
   open: boolean;
   toggleOpen: () => void;
@@ -19,9 +22,7 @@ export interface HeaderProps {
   onMessagesReady?: () => void;
 }
 
-export default function Header ({ sqlSectionStatus, open, toggleOpen, onMessagesStart, onMessagesReady }: HeaderProps) {
-  const { question, phase } = useQuestionManagement();
-
+export default function Header ({ question, phase, sqlSectionStatus, open, toggleOpen, onMessagesStart, onMessagesReady }: HeaderProps) {
   const sqlTitle = useMemo(() => {
     switch (phase) {
       case QuestionLoadingPhase.NONE:
