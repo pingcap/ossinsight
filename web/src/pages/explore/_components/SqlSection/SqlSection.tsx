@@ -3,7 +3,7 @@ import CodeBlock from '@theme/CodeBlock';
 import Section, { SectionProps, SectionStatus } from '@site/src/pages/explore/_components/Section';
 import React, { forwardRef, useEffect, useMemo, useState } from 'react';
 import { format } from 'sql-formatter';
-import { QuestionLoadingPhase } from '@site/src/pages/explore/_components/useQuestion';
+import { hasAIPrompts, QuestionLoadingPhase } from '@site/src/pages/explore/_components/useQuestion';
 import { useBoolean, useMemoizedFn } from 'ahooks';
 import { Box, Collapse, Fade, Skeleton } from '@mui/material';
 import { isSqlError } from './utils';
@@ -39,7 +39,8 @@ const SqlSection = forwardRef<HTMLElement, SqlSectionProps>(({ question, phase, 
   }, [question, error]);
 
   useEffect(() => {
-    setMessagesTransitionDone(false);
+    const hasPrompts = notNullish(question) && hasAIPrompts(question);
+    setMessagesTransitionDone(!hasPrompts);
   }, [question?.status]);
 
   const sqlSectionStatus: SectionStatus = useMemo(() => {

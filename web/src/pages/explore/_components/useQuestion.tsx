@@ -6,6 +6,7 @@ import { timeout } from '@site/src/utils/promisify';
 import { useResponsiveAuth0 } from '@site/src/theme/NavbarItem/useResponsiveAuth0';
 import { useGtag } from '@site/src/utils/ga';
 import { getErrorMessage } from '@site/src/utils/error';
+import { notNone } from '@site/src/pages/explore/_components/SqlSection/utils';
 
 export const enum QuestionLoadingPhase {
   /** There is no question */
@@ -348,4 +349,13 @@ export function isEmptyResult (question: Question) {
     return (question.result?.rows.length ?? NaN) === 0;
   }
   return false;
+}
+
+export function hasAIPrompts (question: Question) {
+  return (
+    notNone(question.revisedTitle) ||
+    notNone(question.combinedTitle) ||
+    notNone(question.notClear) ||
+    question.errorType === QuestionErrorType.SQL_CAN_NOT_ANSWER
+  );
 }

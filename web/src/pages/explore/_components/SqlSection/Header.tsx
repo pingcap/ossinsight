@@ -1,9 +1,8 @@
 import AIMessages from '@site/src/pages/explore/_components/SqlSection/AIMessages';
 import { Line, StyledTitle } from '@site/src/pages/explore/_components/SqlSection/styled';
 import React, { useMemo, useRef, useState } from 'react';
-import useQuestionManagement, { GENERATE_SQL_NON_FINAL_PHASES, QuestionLoadingPhase } from '@site/src/pages/explore/_components/useQuestion';
+import useQuestionManagement, { GENERATE_SQL_NON_FINAL_PHASES, hasAIPrompts, QuestionLoadingPhase } from '@site/src/pages/explore/_components/useQuestion';
 import { notNullish } from '@site/src/utils/value';
-import { notNone } from '@site/src/pages/explore/_components/SqlSection/utils';
 import { SectionStatus, SectionStatusIcon } from '@site/src/pages/explore/_components/Section';
 import { Button } from '@mui/material';
 import { ExpandMore } from '@mui/icons-material';
@@ -11,7 +10,6 @@ import { useInterval } from 'ahooks';
 import { randomOf } from '@site/src/utils/generate';
 import TypewriterEffect from '@site/src/pages/explore/_components/TypewriterEffect';
 import BotIcon from '@site/src/pages/explore/_components/BotIcon';
-import { QuestionErrorType } from '@site/src/api/explorer';
 
 export interface HeaderProps {
   sqlSectionStatus: SectionStatus;
@@ -46,13 +44,7 @@ export default function Header ({ sqlSectionStatus, open, toggleOpen, onMessages
   }, [phase]);
 
   const hasPrompt = useMemo(() => {
-    return notNullish(question) && (
-      notNone(question.revisedTitle) ||
-      notNone(question.combinedTitle) ||
-      notNone(question.notClear) ||
-      notNone(question.assumption) ||
-      question.errorType === QuestionErrorType.SQL_CAN_NOT_ANSWER
-    );
+    return notNullish(question) && hasAIPrompts(question);
   }, [question]);
 
   const isFinalPhase = useMemo(() => {
