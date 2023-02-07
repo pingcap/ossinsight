@@ -11,10 +11,7 @@ class TrendingRepoGenerator
           left join (select repo_name from trending_repos where created_at >= '#{50.days.ago.to_s(:db)}' and repo_name is not null) t on t.repo_name = github_events.repo_name
       where type = 'WatchEvent' and created_at >= '#{7.days.ago.to_s(:db)}' 
              and t.repo_name is null
-             and github_events.repo_name not like '%GBStudios%'
-             and github_events.repo_name not like '%mamadfar%'
-             and github_events.repo_name not like '%berny1122%'
-             and github_events.repo_name not like '%ks13141ye%'
+             and lower(github_events.repo_name) not regexp lower('DONG0920|Glow|Misc|MDT3CH|taoclav|Crack|Aimbot|Atmosphere|WALLHACK|Warzone|berny1122|VALORANT|NoRecoil|EKZO|GBStudios|mamadfar|Nizqn|AlexisMaubert|KeroAutishima|Lineblack|ESP|SPoofer|ks13141ye|ROBLOX|GENSHIN|n34t7|Sandstorm|Mannybaklanov')
       group by 1
       having count(distinct actor_login) >= 100
       order by 2 desc
