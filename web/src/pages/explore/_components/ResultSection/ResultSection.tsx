@@ -78,12 +78,12 @@ const ResultSection = forwardRef<HTMLElement, ResultSectionProps>(({ question, p
     if (isNullish(question)) {
       return {
         url: 'https://ossinsight.io/explore/',
-        title: 'Data Explorer',
+        title: 'GitHub Data Explorer',
         hashtags: [],
       };
     }
     let url;
-    const title = `${search} | OSSInsight Data Explorer`;
+    const title = `${search} | OSSInsight GitHub Data Explorer`;
     const hashtags = uniqueItems(question.answerSummary?.hashtags ?? [], ['OpenSource', 'OpenAI', 'TiDBCloud']);
     if (isNonemptyString(question.id)) {
       url = `https://ossinsight.io/explore?id=${question.id}`;

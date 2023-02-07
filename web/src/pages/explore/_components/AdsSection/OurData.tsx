@@ -19,7 +19,7 @@ export default function OurData () {
       <Icon />
       <Line>
         <Logo src='/img/explore-logo-layer-0.png' alt='OSSInsight Explore Logo' />
-        Data Explorer for
+        GitHub Data Explorer for
         <Logo src='/img/logo-small.png' alt='OSSInsight Logo' />
         Open Source Software Insight
       </Line>

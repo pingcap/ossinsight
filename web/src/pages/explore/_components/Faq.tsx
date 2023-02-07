@@ -48,7 +48,7 @@ const qa: QA[] = [
     ),
   },
   {
-    q: 'What are the limitations of Data Explorer?',
+    q: 'What are the limitations of GitHub Data Explorer?',
     a: (
       <>
         <ol>
@@ -118,7 +118,7 @@ const qa: QA[] = [
       </>
     ),
   }, {
-    q: 'What technology is Data Explorer built on?',
+    q: 'What technology is GitHub Data Explorer built on?',
     a: (
       <>
         Its major technologies include:
