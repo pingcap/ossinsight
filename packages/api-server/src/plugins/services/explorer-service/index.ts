@@ -670,7 +670,7 @@ export class ExplorerService {
     }
 
     async getQuestionByHash(questionHash: string, ttl: number, conn?: Connection): Promise<Question | null> {
-        const connection = conn || this.mysql;;
+        const connection = conn || this.mysql;
         const [rows] = await connection.query<any[]>(`
             SELECT
                 BIN_TO_UUID(id) AS id, hash, user_id AS userId, status, title, revised_title AS revisedTitle, not_clear AS notClear,

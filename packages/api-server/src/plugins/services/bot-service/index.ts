@@ -154,17 +154,23 @@ export class BotService {
 
                 // @ts-ignore
                 res.data.on("data", (data) => {
+                    // Remove the "data: " prefix.
+                    const tokenJSON = data?.toString()?.slice(6);
+
                     try {
-                        // Remove the "data: " prefix.
-                        const json = data?.toString()?.slice(6);
-                        if (json !== "[DONE]\n\n") {
-                            const token = JSON.parse(json)?.choices?.[0]?.text;
-                            tokenStream.write(token);
-                        } else {
+                        if (tokenJSON === "[DONE]\n\n") {
                             tokenStream.end();
+                        } else {
+                            const token = JSON.parse(tokenJSON)?.choices?.[0]?.text;
+                            tokenStream.write(token);
                         }
                     } catch (err: any) {
-                        reject(new BotResponseGenerateError(err.message, err));
+                        if (err instanceof SyntaxError) {
+                            this.log.error({ err, tokenJSON }, `Failed to parse the token stream of answer for question: ${question}`);
+                            reject(new BotResponseParseError(err.message, tokenJSON, err));
+                        } else {
+                            reject(new BotResponseGenerateError(err.message, err));
+                        }
                     }
                 });
 
@@ -214,21 +220,17 @@ export class BotService {
                 });
 
                 fieldStream.on('error', (err: any) => {
-                    reject(new BotResponseParseError(err.message, err));
+                    const answerJSON = tokens.join('');
+                    this.log.error({ err, answerJSON }, `Failed to parse the answer for question: ${question}`);
+                    reject(new BotResponseParseError(err.message, answerJSON, err));
                 });
 
                 fieldStream.on('end', () => {
                     resolve(answer);
                 });
             } catch (err: any) {
-                if (err instanceof SyntaxError) {
-                    const choice = tokens.join('');
-                    this.log.error({ err, choice }, `Failed to parse the answer for question: ${question}`);
-                    reject(new BotResponseParseError(err.message, choice, err));
-                } else {
-                    this.log.error({ err }, `Failed to get answer for question: ${question}`);
-                    reject(new BotResponseGenerateError(err.message, err));
-                }
+                this.log.error({ err }, `Failed to get answer for question: ${question}`);
+                reject(new BotResponseGenerateError(err.message, err));
             }
         });
     }
