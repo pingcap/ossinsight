@@ -21,7 +21,7 @@ export default function ErrorMessage ({ error }: { error: unknown }) {
     case QuestionErrorType.ANSWER_GENERATE:
       return <Typography variant="body1">Failed to generate SQL due to network error. Please try again later.</Typography>;
     case QuestionErrorType.ANSWER_PARSE:
-      return <Typography variant="body1">Failed to generate SQL. Optimize your question for effective SQL, or get ideas from popular questions.</Typography>;
+      return <Typography variant="body1">Failed to generate SQL. Optimize your question for effective SQL, or get ideas from <Link to='/explore/'>popular questions</Link>.</Typography>;
     case QuestionErrorType.SQL_CAN_NOT_ANSWER:
       return <Typography variant="body1">Sorry, I can&apos;t generate SQL as your question is not GitHub-related or beyond our data source.</Typography>;
     case QuestionErrorType.VALIDATE_SQL:
