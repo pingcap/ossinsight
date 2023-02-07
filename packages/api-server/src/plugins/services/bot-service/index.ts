@@ -154,20 +154,28 @@ export class BotService {
 
                 // @ts-ignore
                 res.data.on("data", (data) => {
-                    // Remove the "data: " prefix.
-                    const tokenJSON = data?.toString()?.slice(6);
+                    // Notice:
+                    // The data is start with "data: " prefix, we need to remove it to get a JSON string.
+                    // In same times, there are multiple JSONs return in one response.
+                    const tokenJSONs = data?.toString().slice(6).split("\n\ndata: ");
+                    if (tokenJSONs.length === 0) {
+                        return;
+                    }
 
                     try {
-                        if (tokenJSON === "[DONE]\n\n") {
-                            tokenStream.end();
-                        } else {
-                            const token = JSON.parse(tokenJSON)?.choices?.[0]?.text;
-                            tokenStream.write(token);
+                        for (const tokenJSON of tokenJSONs) {
+                            if (tokenJSON === "[DONE]\n\n") {
+                                tokenStream.end();
+                            } else {
+                                const token = JSON.parse(tokenJSON)?.choices?.[0]?.text;
+                                tokenStream.write(token);
+                            }
                         }
                     } catch (err: any) {
                         if (err instanceof SyntaxError) {
-                            this.log.error({ err, tokenJSON }, `Failed to parse the token stream of answer for question: ${question}`);
-                            reject(new BotResponseParseError(err.message, tokenJSON, err));
+                            const responseText = JSON.stringify(tokenJSONs);
+                            this.log.error({ err, responseText }, `Failed to parse the token stream of answer for question: ${question}`);
+                            reject(new BotResponseParseError(err.message, responseText, err));
                         } else {
                             reject(new BotResponseGenerateError(err.message, err));
                         }
@@ -187,6 +195,7 @@ export class BotService {
                 fieldStream.on('data', ({key, value}: any) => {
                     switch (key) {
                         case 'RQ':
+                            key = "revisedTitle";
                             answer.revisedTitle = value || question;
                             break;
                         case 'sqlCanAnswer':
@@ -198,10 +207,12 @@ export class BotService {
                         case 'assumption':
                             answer.assumption = value;
                             break;
-                        case 'combinedTitle':
-                            answer.combinedTitle = value;
+                        case 'CQ':
+                            key = "combinedTitle";
+                            answer.combinedTitle = value || question;
                             break;
                         case 'sql':
+                            key = "querySQL";
                             answer.querySQL = value;
                             break;
                         case 'chart':
@@ -226,6 +237,7 @@ export class BotService {
                 });
 
                 fieldStream.on('end', () => {
+                    fieldStream.destroy();
                     resolve(answer);
                 });
             } catch (err: any) {
