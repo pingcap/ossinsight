@@ -20,6 +20,7 @@ import { Prompts } from '@site/src/pages/explore/_components/Prompt';
 import Link from '@docusaurus/Link';
 import Anchor from '@site/src/components/Anchor';
 import ErrorMessage from '@site/src/pages/explore/_components/ResultSection/ErrorMessage';
+import { makeIssueTemplate } from '../issueTemplates';
 
 const ENABLE_SUMMARY = false;
 
@@ -148,7 +149,7 @@ const ResultSection = forwardRef<HTMLElement, ResultSectionProps>(({ question, p
       )}
       {phase === QuestionLoadingPhase.QUEUEING && <PromptsTitle source={question?.queuePreceding === 0 ? QUEUE_ALMOST_PROMPT_TITLES : QUEUE_PROMPT_TITLES} interval={5000} />}
       {phase === QuestionLoadingPhase.EXECUTING && <PromptsTitle source={RUNNING_PROMPT_TITLES} interval={3000} />}
-      <Chart chartData={question?.chart ?? undefined} chartError={chartError} result={result} fields={question?.result?.fields} controlsContainer={controlsContainerRef} />
+      <Chart question={question} chartData={question?.chart ?? undefined} chartError={chartError} result={result} fields={question?.result?.fields} controlsContainer={controlsContainerRef} />
       <Box height="16px" />
     </Section>
   );
@@ -189,7 +190,7 @@ const EngineTag = styled('span')`
   color: #B0B8FF;
 `;
 
-function Chart ({ chartData, chartError, fields, result, controlsContainer }: { chartData: ChartResult | undefined, chartError: unknown, result: Array<Record<string, any>> | undefined, fields: Array<{ name: string }> | undefined, controlsContainer: HTMLSpanElement | null }) {
+function Chart ({ question, chartData, chartError, fields, result, controlsContainer }: { question: Question | undefined, chartData: ChartResult | undefined, chartError: unknown, result: Array<Record<string, any>> | undefined, fields: Array<{ name: string }> | undefined, controlsContainer: HTMLSpanElement | null }) {
   const [tab, setTab] = useState('visualization');
   const defaultTabRef = useRef('visualization');
 
@@ -231,6 +232,12 @@ function Chart ({ chartData, chartError, fields, result, controlsContainer }: { 
       );
     };
 
+    if (isNullish(question)) {
+      return null;
+    }
+
+    const issueTemplate = makeIssueTemplate(question);
+
     if (isNullish(result)) {
       if (notNullish(chartError)) {
         return renderError(false, true);
@@ -247,7 +254,7 @@ function Chart ({ chartData, chartError, fields, result, controlsContainer }: { 
           </Stack>
           <Divider sx={{ my: 2 }} />
           <Typography component="div" variant="body2" color="#D1D1D1">
-            🤔 Not exactly what you&apos;re looking for? Check out our <Anchor anchor="data-explorer-faq">FAQ</Anchor> for help. If the problem persists, please <Link href="https://github.com/pingcap/ossinsight/issues/new/choose" target="_blank" rel="noopener">report an issue</Link> to us.
+            🤔 Not exactly what you&apos;re looking for? Check out our <Anchor anchor="data-explorer-faq">FAQ</Anchor> for help. If the problem persists, please <Link href={issueTemplate()} target="_blank" rel="noopener">report an issue</Link> to us.
           </Typography>
         </>
       );
