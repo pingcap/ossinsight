@@ -1,4 +1,4 @@
-import { Question, QuestionErrorType } from '@site/src/api/explorer';
+import { Question, QuestionErrorType, QuestionStatus } from '@site/src/api/explorer';
 import React, { cloneElement, ReactElement, ReactNode, useEffect, useMemo, useState } from 'react';
 import { isNullish, notFalsy } from '@site/src/utils/value';
 import { notNone } from '@site/src/pages/explore/_components/SqlSection/utils';
@@ -57,7 +57,7 @@ export default function AIMessages<TitleLineArgs extends any[]> ({ question, has
     },
     {
       key: 'rq',
-      show: !notNone(question?.combinedTitle) && notNone(question?.revisedTitle),
+      show: question?.status !== QuestionStatus.AnswerGenerating && !notNone(question?.combinedTitle) && notNone(question?.revisedTitle),
       content: (
         <Line>
           - Seems like you are asking about&nbsp;
@@ -84,21 +84,21 @@ export default function AIMessages<TitleLineArgs extends any[]> ({ question, has
     },
     {
       key: 'tips',
-      show: question?.errorType !== QuestionErrorType.SQL_CAN_NOT_ANSWER,
+      show: notNone(question?.combinedTitle) && question?.errorType !== QuestionErrorType.SQL_CAN_NOT_ANSWER,
       content: (
         <Line fontSize="14px" fontWeight="normal">- You can copy and revise it based on the question above 👆.</Line>
       ),
     },
     {
       key: 'status',
-      show: true,
+      show: hasPrompt,
       content: (...titleLineDeps: TitleLineArgs) => (
         <Line mt={2}>
           {titleLine(...titleLineDeps)}
         </Line>
       ),
     },
-  ].filter(item => item.show), [question?.revisedTitle, question?.combinedTitle, question?.notClear, question?.assumption, question?.errorType]);
+  ].filter(item => item.show), [question?.status, question?.revisedTitle, question?.combinedTitle, question?.notClear, question?.assumption, question?.errorType]);
 
   const whenMounted = useWhenMounted();
 
@@ -107,23 +107,23 @@ export default function AIMessages<TitleLineArgs extends any[]> ({ question, has
       onReady?.();
       return;
     }
-    let index = 1;
-    setIndex(1);
-    const h = setInterval(() => {
-      setIndex(index + 1);
-      index += 1;
-      if (index >= messages.length) {
+    let internalIndex = index + 1;
+    setIndex(internalIndex);
+    const h = setInterval(whenMounted(() => {
+      setIndex(internalIndex + 1);
+      internalIndex += 1;
+      if (internalIndex >= messages.length) {
         setTimeout(whenMounted(() => {
           onReady?.();
         }), 600);
         clearInterval(h);
       }
-    }, 600);
+    }), 600);
     onStart?.();
     return () => {
       clearInterval(h);
     };
-  }, [messages, hasPrompt]);
+  }, [messages.length, hasPrompt]);
 
   const botMessages = useMemo(() => {
     if (hasPrompt) {
@@ -132,7 +132,7 @@ export default function AIMessages<TitleLineArgs extends any[]> ({ question, has
         const childContent = cloneElement(el, {
           children: (
             <>
-              <Indicator bot={i === 0} animated={index < messages.length} show={i < messages.length - 1} />
+              <Indicator bot={i === 0} animated={question?.status === QuestionStatus.AnswerGenerating || index < messages.length} show={i < messages.length - 1} />
               {el.props.children}
             </>
           ),
@@ -146,7 +146,7 @@ export default function AIMessages<TitleLineArgs extends any[]> ({ question, has
     } else {
       return [];
     }
-  }, [messages, hasPrompt, index, ...titleLineDeps]);
+  }, [messages.length, question?.status, hasPrompt, index, ...titleLineDeps]);
 
   return (
     <TransitionGroup component={AIMessagesRoot}>

@@ -368,9 +368,15 @@ export function isEmptyResult (question: Question) {
 }
 
 export function hasAIPrompts (question: Question) {
-  return (
-    notNone(question.revisedTitle) ||
-    notNone(question.combinedTitle) ||
-    notNone(question.notClear)
-  );
+  if (question.status === QuestionStatus.AnswerGenerating) {
+    // RQ are generate first
+    return notNone(question.combinedTitle) || notNone(question.notClear);
+  } else {
+    // For previous questions without CQ
+    return (
+      notNone(question.revisedTitle) ||
+      notNone(question.combinedTitle) ||
+      notNone(question.notClear)
+    );
+  }
 }
