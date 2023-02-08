@@ -157,8 +157,9 @@ export class BotService {
                     // Notice:
                     // The data is start with "data: " prefix, we need to remove it to get a JSON string.
                     // In same times, there are multiple JSONs return in one response.
-                    const tokenJSONs = data?.toString().slice(6).split("\n\ndata: ");
-                    if (tokenJSONs.length === 0) {
+                    const responseText = data?.toString();
+                    const tokenJSONs = responseText?.slice(6)?.split("\n\ndata: ");
+                    if (!Array.isArray(tokenJSONs) || tokenJSONs.length === 0) {
                         return;
                     }
 
@@ -173,7 +174,6 @@ export class BotService {
                         }
                     } catch (err: any) {
                         if (err instanceof SyntaxError) {
-                            const responseText = JSON.stringify(tokenJSONs);
                             this.log.error({ err, responseText }, `Failed to parse the token stream of answer for question: ${question}`);
                             reject(new BotResponseParseError(err.message, responseText, err));
                         } else {

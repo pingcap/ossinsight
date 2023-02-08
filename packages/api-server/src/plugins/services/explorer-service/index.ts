@@ -15,7 +15,7 @@ import {
 import {Connection, PoolConnection, ResultSetHeader} from "mysql2/promise";
 import crypto from "node:crypto";
 import {DateTime} from "luxon";
-import {AST, Parser, Select} from "node-sql-parser";
+import {Parser, Select} from "node-sql-parser";
 import {BotService} from "../bot-service";
 import {
     PlanStep,
