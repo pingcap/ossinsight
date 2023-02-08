@@ -30,14 +30,16 @@ export default function ErrorMessage ({ error }: { error: unknown }) {
           <Typography variant="body1">
             SQL syntax error or invalid field. <Button variant="text" size="small" onClick={toggle}>DETAIL</Button>
             <br />
-            Optimize your question for effective SQL, or get ideas from <Link to='/explore/'>popular questions</Link>.
-          </Typography>
-          <Collapse in={open}>
+            <Collapse in={open}>
             <Divider orientation="horizontal" sx={{ my: 2 }} />
             <Typography variant="body2">
               {question.error ?? 'Empty message'}
             </Typography>
+            <Divider orientation="horizontal" sx={{ my: 2 }} />
           </Collapse>
+            Optimize your question for effective SQL, or get ideas from <Link to='/explore/'>popular questions</Link>.
+          </Typography>
+
         </>
       );
   }
