@@ -23,27 +23,56 @@ export default function NumberCard ({ chartName, title, label: propLabel, value,
     if (isNonemptyString(propLabel)) {
       return propLabel;
     }
-    return propFields?.find(f => /repo|name|user|login/.test(f.name) && f.name !== value)?.name ?? '';
+    return propFields?.find(f => /repo.*(id|name)|user.*(?:id|login|name)/.test(f.name) && f.name !== value)?.name ?? '';
   }, [fields, propLabel]);
 
   if (data.length === 1) {
     const lab = data[0][label] ?? title;
-    const val = data[0][value];
-    return (
-      <Card>
-        <CardContent sx={{ textAlign: 'center', fontSize: 36 }}>
-          <Typography sx={{ opacity: 0.4 }} fontSize={22} mt={2} mb={0} color="text.secondary" gutterBottom align="center">
-            {lab}
-          </Typography>
-          {isFiniteNumber(val)
-            ? (
-              <AnimatedNumber value={data[0][value]} hasComma duration={800} size={36} />
-              )
-            : String(val)}
-          <Unit>{value}</Unit>
-        </CardContent>
-      </Card>
-    );
+
+    if (typeof value === 'string') {
+      const val = data[0][value];
+      return (
+        <Card>
+          <CardContent sx={{ textAlign: 'center', fontSize: 36 }}>
+            <Typography sx={{ opacity: 0.4 }} fontSize={22} mt={2} mb={0} color="text.secondary" gutterBottom align="center">
+              {lab}
+            </Typography>
+            {isFiniteNumber(val)
+              ? (
+                <AnimatedNumber value={data[0][value]} hasComma duration={800} size={36} />
+                )
+              : String(val)}
+            <Unit>{value}</Unit>
+          </CardContent>
+        </Card>
+      );
+    } else if (value instanceof Array) {
+      return (
+        <Card>
+          <CardContent sx={{ textAlign: 'center', fontSize: 36 }}>
+            <Typography sx={{ opacity: 0.4 }} fontSize={22} mt={2} mb={0} color="text.secondary" gutterBottom align="center">
+              {lab}
+            </Typography>
+            <StyledTable className='clearTable'>
+              <tbody>
+              {value.map(value => (
+                <tr key={value}>
+                  <td>{value}</td>
+                  <td>
+                    {isFiniteNumber(data[0][value])
+                      ? (
+                        <AnimatedNumber value={data[0][value]} hasComma duration={800} size={16} />
+                        )
+                      : String(data[0][value])}
+                  </td>
+                </tr>
+              ))}
+              </tbody>
+            </StyledTable>
+          </CardContent>
+        </Card>
+      );
+    }
   }
 
   if (notFalsy(label)) {
@@ -84,4 +113,10 @@ const Unit = styled('span')`
   font-size: 16px;
   opacity: 0.3;
   margin-left: 4px;
+`;
+
+const StyledTable = styled('table')`
+  font-size: 14px;
+  margin: auto;
+  width: max-content;
 `;
