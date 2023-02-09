@@ -14,6 +14,7 @@ import pino from "pino";
 import stream from "node:stream";
 // @ts-ignore
 import JSONStream from 'JSONStream';
+import {jsonrepair} from "jsonrepair";
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -231,7 +232,6 @@ export class BotService {
         }
 
         let choice = undefined;
-        let answer = null;
         try {
             this.log.info("Requesting answer for question: %s", question);
             const start = DateTime.now();
@@ -251,12 +251,13 @@ export class BotService {
 
             if (Array.isArray(choices) && choices[0].text) {
                 choice = choices[0].text;
-                answer = JSON.parse(choice);
-                const result: any = {};
-                for (const [key, value] of Object.entries(answer)) {
-                    this.setAnswerValue(question, result, key, value);
+                const repaired = jsonrepair(choice);
+                const obj = JSON.parse(repaired);
+                const answer: any = {};
+                for (const [key, value] of Object.entries(obj)) {
+                    this.setAnswerValue(question, answer, key, value);
                 }
-                return result;
+                return answer;
             } else {
                 return null;
             }
