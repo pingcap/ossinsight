@@ -24,7 +24,7 @@ dotenv.config({ path: path.resolve(__dirname, '../../.env'), override: true });
 const concurrent = parseInt(process.env.CALC_HOT_COLLECTIONS_CONCURRENT || '5');
 
 if (process.env.CALC_HOT_COLLECTIONS_EXECUTE_ONCE === '1') {
-    calcHotCollectionsInConcurrent(concurrent);
+    void calcHotCollectionsInConcurrent(concurrent);
 } else {
     const cron = process.env.CALC_HOT_COLLECTIONS_CRON;
     if (cron === undefined || cron === '') {
@@ -33,7 +33,7 @@ if (process.env.CALC_HOT_COLLECTIONS_EXECUTE_ONCE === '1') {
     }
     logger.info(`Execute calc hot collections job according cron expression: ${cron}`);
     schedule.scheduleJob(cron, async () => {
-        calcHotCollectionsInConcurrent(concurrent);
+        void calcHotCollectionsInConcurrent(concurrent);
     });
 }
 
@@ -43,10 +43,24 @@ async function calcHotCollectionsInConcurrent(concurrent: number) {
         connectionLimit: concurrent
     }));
 
+    const [rows] = await pool.query('SELECT 1');
+    if (Array.isArray(rows) && rows.length > 0) {
+        logger.info('Connected to TiDB database.');
+    } else {
+        throw new Error('Failed to connect to TiDB database.');
+    }
+
     // Init TiDB Query Executor.
     const queryExecutor = new TiDBQueryExecutor(getConnectionOptions({
         connectionLimit: concurrent
     }));
+
+    const [rows2] = await queryExecutor.execute("ping", "SELECT 1");
+    if (Array.isArray(rows2) && rows2.length > 0) {
+        logger.info('Connected to TiDB database.');
+    } else {
+        throw new Error('Failed to connect to TiDB database.');
+    }
 
     // Init Cache Builder; 
     const enableCache = process.env.ENABLE_CACHE === '1' ? true : false;
@@ -95,7 +109,7 @@ async function calcHotCollectionsInConcurrent(concurrent: number) {
         if (queue.started) {
             await queue.unsaturated();
         }
-        queue.push(collection);
+        void queue.push(collection);
     }
 
     await queue.drain();
