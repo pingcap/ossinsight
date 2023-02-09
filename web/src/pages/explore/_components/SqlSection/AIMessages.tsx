@@ -2,7 +2,7 @@ import { Question, QuestionErrorType, QuestionStatus } from '@site/src/api/explo
 import React, { cloneElement, ReactElement, ReactNode, useEffect, useMemo, useState } from 'react';
 import { isNullish, notFalsy } from '@site/src/utils/value';
 import { notNone } from '@site/src/pages/explore/_components/SqlSection/utils';
-import { Line, NotClear, Tag } from '@site/src/pages/explore/_components/SqlSection/styled';
+import { Line, NotClear, CombinedTitle } from '@site/src/pages/explore/_components/SqlSection/styled';
 import { Alert, Box, Collapse, IconButton, Snackbar, styled, useEventCallback } from '@mui/material';
 import BotIcon from '@site/src/pages/explore/_components/BotIcon';
 import { TransitionGroup } from 'react-transition-group';
@@ -35,9 +35,9 @@ export default function AIMessages<TitleLineArgs extends any[]> ({ question, has
     if (!notNone(question.revisedTitle)) {
       return '';
     }
-    let result = question.revisedTitle as string;
+    let result = question.revisedTitle;
     if (notNone(question.assumption)) {
-      result += ` (${question.assumption as string})`;
+      result += ` (${question.assumption})`;
     }
     return result;
   }, [question?.revisedTitle, question?.assumption]);
@@ -61,12 +61,12 @@ export default function AIMessages<TitleLineArgs extends any[]> ({ question, has
       content: (
         <Line>
           - Seems like you are asking about&nbsp;
-          <Tag>
+          <CombinedTitle>
             {question?.revisedTitle}
             {notNone(question?.assumption) && (
               <i> ({question?.assumption})</i>
             )}
-          </Tag>
+          </CombinedTitle>
           <CopyButton content={fullRevisedTitle} />
         </Line>
       ),
@@ -77,7 +77,7 @@ export default function AIMessages<TitleLineArgs extends any[]> ({ question, has
       content: (
         <Line>
           - Seems like you are asking about&nbsp;
-          <Tag dangerouslySetInnerHTML={{ __html: `${question?.combinedTitle ?? ''}` }} />
+          <CombinedTitle dangerouslySetInnerHTML={{ __html: `${question?.combinedTitle ?? ''}` }} />
           <CopyButton content={question?.combinedTitle} />
         </Line>
       ),

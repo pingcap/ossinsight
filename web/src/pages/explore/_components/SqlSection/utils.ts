@@ -11,7 +11,7 @@ export function isSqlError (error: unknown): error is AxiosError<{ message: stri
   return false;
 }
 
-export function notNone (value: any): boolean {
+export function notNone<T> (value: T): value is Exclude<T, undefined | null> {
   if (isNonemptyString(value)) {
     return !['none', 'n/a'].includes(value.toLowerCase());
   }
