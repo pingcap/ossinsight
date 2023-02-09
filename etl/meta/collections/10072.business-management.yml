@@ -13,3 +13,4 @@ items:
   - ledger/ledger
   - odoo/odoo
   - FrontAccountingERP/FA
+  - calcom/cal.com
