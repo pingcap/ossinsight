@@ -46,6 +46,7 @@ async function createApp () {
     EXPLORER_USER_MAX_QUESTIONS_ON_GOING: 1,
     EXPLORER_GENERATE_SQL_CACHE_TTL: 60 * 60 * 24 * 7,
     EXPLORER_QUERY_SQL_CACHE_TTL: 60 * 60 * 24,
+    EXPLORER_OUTPUT_ANSWER_IN_STREAM: false,
     JWT_SECRET: 'fake',
     JWT_COOKIE_NAME: 'ossinsight_test_t',
     JWT_COOKIE_DOMAIN: 'http://testdomain.com/',

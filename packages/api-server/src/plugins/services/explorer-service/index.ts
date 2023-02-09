@@ -81,6 +81,7 @@ export default fp(async (app: any) => {
           trustedUsersMaxQuestionsPerHour: 200,
           generateSQLCacheTTL: app.config.EXPLORER_GENERATE_SQL_CACHE_TTL,
           querySQLCacheTTL: app.config.EXPLORER_QUERY_SQL_CACHE_TTL,
+          outputAnswerInStream: app.config.EXPLORER_OUTPUT_ANSWER_IN_STREAM
       }
     ));
 }, {
@@ -102,6 +103,7 @@ export interface ExplorerOption {
     generateSQLCacheTTL: number;
     querySQLCacheTTL: number;
     querySQLTimeout: number;
+    outputAnswerInStream: boolean;
 }
 
 export class ExplorerService {
@@ -135,6 +137,7 @@ export class ExplorerService {
             generateSQLCacheTTL: 60 * 60 * 24 * 7,
             querySQLCacheTTL: 60 * 60 * 24,
             querySQLTimeout: 30 * 1000,
+            outputAnswerInStream: false
         }, options || {});
     }
 
@@ -237,14 +240,18 @@ export class ExplorerService {
             let answer = null;
             for (let i = 1; i <= 3; i++) {
                 try {
-                    answer = await this.botService.questionToAnswer(this.generateAnswerTemplate, title, async (answer, key, value) => {
-                        // @ts-ignore
-                        question[key] = value;
+                    if (this.options.outputAnswerInStream) {
+                        answer = await this.botService.questionToAnswerInStream(this.generateAnswerTemplate, title, async (answer, key, value) => {
+                            // @ts-ignore
+                            question[key] = value;
 
-                        if (['revisedTitle', 'notClear', 'assumption', 'combinedTitle', 'querySQL'].includes(key)) {
-                            await this.updateQuestion(question);
-                        }
-                    });
+                            if (['revisedTitle', 'notClear', 'assumption', 'combinedTitle', 'querySQL'].includes(key)) {
+                                await this.updateQuestion(question);
+                            }
+                        });
+                    } else {
+                        answer = await this.botService.questionToAnswer(this.generateAnswerTemplate, title);
+                    }
                     break;
                 } catch (e: any) {
                     // Reset the question and answer, and try again.
