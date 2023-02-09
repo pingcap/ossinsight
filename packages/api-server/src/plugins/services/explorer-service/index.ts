@@ -51,6 +51,7 @@ import {GenerateAnswerPromptTemplate} from "../bot-service/template/GenerateAnsw
 import {FastifyBaseLogger} from "fastify";
 import {MySQLPromisePool} from "@fastify/mysql";
 import {GenerateSummaryPromptTemplate} from "../bot-service/template/GenerateSummaryPromptTemplate";
+import sleep from "../../../utils/sleep";
 
 declare module 'fastify' {
     interface FastifyInstance {
@@ -234,31 +235,48 @@ export class ExplorerService {
 
             // Generate the SQL by OpenAI.
             let answer = null;
-            try {
-                answer = await this.botService.questionToAnswer(this.generateAnswerTemplate, title, async (answer, key, value) => {
-                    // @ts-ignore
-                    question[key] = value;
+            for (let i = 1; i <= 3; i++) {
+                try {
+                    answer = await this.botService.questionToAnswer(this.generateAnswerTemplate, title, async (answer, key, value) => {
+                        // @ts-ignore
+                        question[key] = value;
 
-                    if (['revisedTitle', 'notClear', 'assumption', 'combinedTitle', 'querySQL'].includes(key)) {
-                        await this.updateQuestion(question);
+                        if (['revisedTitle', 'notClear', 'assumption', 'combinedTitle', 'querySQL'].includes(key)) {
+                            await this.updateQuestion(question);
+                        }
+                    });
+                    break;
+                } catch (e: any) {
+                    // Reset the question and answer, and try again.
+                    const errorShouldRetry = ['Request failed with status code 429', 'aborted'].includes(e?.message);
+                    if (errorShouldRetry && i < 3) {
+                        logger.warn(e, `Failed to generate answer for question ${questionId}, retrying (${i}/3)...`);
+                        question.revisedTitle = undefined;
+                        question.notClear = undefined;
+                        question.assumption = undefined;
+                        question.combinedTitle = undefined;
+                        question.querySQL = undefined;
+                        answer = null;
+                        await sleep(1000 * i);
+                        continue;
                     }
-                });
-            } catch (e: any) {
-                if (e instanceof BotResponseParseError) {
-                    throw new ExplorerPrepareQuestionError(e.message, QuestionFeedbackType.ErrorAnswerParse, {
-                        message: e.message,
-                        response: e.responseText,
-                    }, e);
-                } else {
-                    const message = 'Failed to generate answer, please try again later.';
-                    throw new ExplorerPrepareQuestionError(message, QuestionFeedbackType.ErrorAnswerGenerate, {
-                        message: e.message
-                    }, e);
+
+                    if (e instanceof BotResponseParseError) {
+                        throw new ExplorerPrepareQuestionError(e.message, QuestionFeedbackType.ErrorAnswerParse, {
+                            message: e.message,
+                            response: e.responseText,
+                        }, e);
+                    } else {
+                        const message = 'Failed to generate answer, please try again later.';
+                        throw new ExplorerPrepareQuestionError(message, QuestionFeedbackType.ErrorAnswerGenerate, {
+                            message: e.message
+                        }, e);
+                    }
                 }
             }
 
             // Check if there are an answer been returned.
-            if (!answer) {
+            if (!answer || Object.keys(answer).length === 0) {
                 const message = 'Generated an empty answer.';
                 throw new ExplorerPrepareQuestionError(message, QuestionFeedbackType.ErrorAnswerGenerate, {
                     message: message

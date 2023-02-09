@@ -146,8 +146,11 @@ export class BotService {
                 // Convert only-data-event stream to token stream.
                 const tokenStream = new stream.Transform({
                     transform(chunk, encoding, callback) {
-                        this.push(chunk);
-                        tokens.push(chunk);
+                        // Notice: Skip undefined chunk.
+                        if (chunk) {
+                            this.push(chunk);
+                            tokens.push(chunk);
+                        }
                         callback();
                     },
                 });
@@ -158,7 +161,7 @@ export class BotService {
                     // The data is start with "data: " prefix, we need to remove it to get a JSON string.
                     // In same times, there are multiple JSONs return in one response.
                     const responseText = data?.toString();
-                    const tokenJSONs = responseText?.slice(6)?.split("\n\ndata: ");
+                    const tokenJSONs = responseText?.slice(6)?.split("\n\ndata: ").filter(Boolean);
                     if (!Array.isArray(tokenJSONs) || tokenJSONs.length === 0) {
                         return;
                     }
@@ -168,8 +171,11 @@ export class BotService {
                             if (tokenJSON === "[DONE]\n\n") {
                                 tokenStream.end();
                             } else {
+                                // Notice: Skip undefined token.
                                 const token = JSON.parse(tokenJSON)?.choices?.[0]?.text;
-                                tokenStream.write(token);
+                                if (token) {
+                                    tokenStream.write(token);
+                                }
                             }
                         }
                     } catch (err: any) {
