@@ -48,6 +48,7 @@
     "fastify-socket.io": "^4.0.0",
     "generic-pool": "^3.9.0",
     "ioredis": "^5.2.4",
+    "jsonrepair": "^3.0.2",
     "luxon": "^3.1.0",
     "mustache": "^4.2.0",
     "mysql2": "^2.3.3",

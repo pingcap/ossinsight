@@ -257,7 +257,7 @@ export class ExplorerService {
                     // Reset the question and answer, and try again.
                     const errorShouldRetry = ['Request failed with status code 429', 'aborted'].includes(e?.message);
                     if (errorShouldRetry && i < 3) {
-                        logger.warn(e, `Failed to generate answer for question ${questionId}, retrying (${i}/3)...`);
+                        logger.warn(e, `Failed to generate answer for question ${questionId}, retrying (${i + 1}/3)...`);
                         question.revisedTitle = undefined;
                         question.notClear = undefined;
                         question.assumption = undefined;
