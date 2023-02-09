@@ -33,6 +33,7 @@ declare module 'fastify' {
       EXPLORER_USER_MAX_QUESTIONS_ON_GOING: number;
       EXPLORER_GENERATE_SQL_CACHE_TTL: number;
       EXPLORER_QUERY_SQL_CACHE_TTL: number;
+      EXPLORER_OUTPUT_ANSWER_IN_STREAM: boolean;
       GITHUB_OAUTH_CLIENT_ID?: string;
       GITHUB_OAUTH_CLIENT_SECRET?: string;
       GITHUB_ACCESS_TOKENS: string[];

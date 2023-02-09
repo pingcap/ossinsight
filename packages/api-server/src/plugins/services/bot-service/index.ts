@@ -114,7 +114,7 @@ export class BotService {
         }
     }
 
-    async questionToAnswer(template: GenerateAnswerPromptTemplate, question: string, callback: (answer: Answer, key: string, value: any) => void): Promise<Answer | null> {
+    async questionToAnswerInStream(template: GenerateAnswerPromptTemplate, question: string, callback: (answer: Answer, key: string, value: any) => void): Promise<Answer | null> {
         let prompt = await this.promptTemplateManager.getTemplate(GENERATE_ANSWER_PROMPT_TEMPLATE_NAME, {
             question: question
         });
@@ -124,7 +124,7 @@ export class BotService {
             prompt = template.stringify(question);
         }
 
-        this.log.info("Requesting answer for question: %s", question);
+        this.log.info("Requesting answer for question (in stream): %s", question);
         let answer: any = {};
         let tokens: any[] = [];
 
@@ -199,40 +199,7 @@ export class BotService {
                 }]));
 
                 fieldStream.on('data', ({key, value}: any) => {
-                    switch (key) {
-                        case 'RQ':
-                            key = "revisedTitle";
-                            answer.revisedTitle = value || question;
-                            break;
-                        case 'sqlCanAnswer':
-                            answer.sqlCanAnswer = value == null ? true : value;
-                            break;
-                        case 'notClear':
-                            answer.notClear = value;
-                            break;
-                        case 'assumption':
-                            answer.assumption = value;
-                            break;
-                        case 'CQ':
-                            key = "combinedTitle";
-                            answer.combinedTitle = value || question;
-                            break;
-                        case 'sql':
-                            key = "querySQL";
-                            answer.querySQL = value;
-                            break;
-                        case 'chart':
-                            answer.chart = value ? {
-                                chartName: value.chartName,
-                                title: value.title,
-                                ...this.removeTableNameForColumn(value.options)
-                            } : null;
-                            break;
-                        default:
-                            answer[key] = value;
-                            break;
-                    }
-
+                    this.setAnswerValue(question, answer, key, value);
                     callback(answer, key, value);
                 });
 
@@ -251,6 +218,93 @@ export class BotService {
                 reject(new BotResponseGenerateError(err.message, err));
             }
         });
+    }
+
+    async questionToAnswer(template: GenerateAnswerPromptTemplate, question: string): Promise<Answer | null> {
+        let prompt = await this.promptTemplateManager.getTemplate(GENERATE_ANSWER_PROMPT_TEMPLATE_NAME, {
+            question: question
+        });
+
+        // If the prompt is not found, use the default template.
+        if (prompt == null) {
+            prompt = template.stringify(question);
+        }
+
+        let choice = undefined;
+        let answer = null;
+        try {
+            this.log.info("Requesting answer for question: %s", question);
+            const start = DateTime.now();
+            const res = await this.openai.createCompletion({
+                model: template.model,
+                prompt,
+                stream: false,
+                stop: template.stop,
+                temperature: template.temperature,
+                max_tokens: template.maxTokens,
+                top_p: template.topP,
+                n: template.n,
+            });
+            const {choices, usage} = res.data;
+            const end = DateTime.now();
+            this.log.info({ usage }, 'Got answer of question "%s" from OpenAI API, cost: %d s', question, end.diff(start).as('seconds'));
+
+            if (Array.isArray(choices) && choices[0].text) {
+                choice = choices[0].text;
+                answer = JSON.parse(choice);
+                const result: any = {};
+                for (const [key, value] of Object.entries(answer)) {
+                    this.setAnswerValue(question, result, key, value);
+                }
+                return result;
+            } else {
+                return null;
+            }
+        } catch (err: any) {
+            if (err instanceof SyntaxError) {
+                this.log.error({ err, choice }, `Failed to parse the answer for question: ${question}`);
+                throw new BotResponseParseError(err.message, choice, err);
+            } else {
+                this.log.error({ err }, `Failed to get answer for question: ${question}`);
+                throw new BotResponseGenerateError(err.message, err);
+            }
+        }
+    }
+
+    setAnswerValue(question: string, answer: Record<string, any>, key: string, value: any) {
+        switch (key) {
+            case 'RQ':
+                key = "revisedTitle";
+                answer.revisedTitle = value || question;
+                break;
+            case 'sqlCanAnswer':
+                answer.sqlCanAnswer = value == null ? true : value;
+                break;
+            case 'notClear':
+                answer.notClear = value;
+                break;
+            case 'assumption':
+                answer.assumption = value;
+                break;
+            case 'CQ':
+                key = "combinedTitle";
+                answer.combinedTitle = value || question;
+                break;
+            case 'sql':
+                key = "querySQL";
+                answer.querySQL = value;
+                break;
+            case 'chart':
+                answer.chart = value ? {
+                    chartName: value.chartName,
+                    title: value.title,
+                    ...this.removeTableNameForColumn(value.options)
+                } : null;
+                break;
+            default:
+                answer[key] = value;
+                break;
+        }
     }
 
     removeTableNameForColumn(chartOptions: Record<string, string>) {

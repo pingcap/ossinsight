@@ -62,6 +62,10 @@ export const APIServerEnvSchema = {
       type: 'number',
       default: 60 * 60 * 24
     },
+    EXPLORER_OUTPUT_ANSWER_IN_STREAM: {
+      type: 'boolean',
+      default: false
+    },
     GITHUB_OAUTH_CLIENT_ID: {
       type: 'string'
     },
