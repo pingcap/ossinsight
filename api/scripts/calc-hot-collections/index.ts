@@ -56,7 +56,7 @@ async function calcHotCollectionsInConcurrent(concurrent: number) {
     }));
 
     const [rows2] = await queryExecutor.execute("ping", "SELECT 1");
-    if (Array.isArray(rows2) && rows.length > 0) {
+    if (Array.isArray(rows2) && rows2.length > 0) {
         logger.info('Connected to TiDB database.');
     } else {
         throw new Error('Failed to connect to TiDB database.');
