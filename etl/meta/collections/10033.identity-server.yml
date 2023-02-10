@@ -10,3 +10,4 @@ items:
   - IdentityServer/IdentityServer4
   - nextauthjs/next-auth
   - logto-io/logto
+  - zitadel/zitadel
