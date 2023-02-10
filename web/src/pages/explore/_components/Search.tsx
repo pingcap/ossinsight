@@ -34,6 +34,7 @@ export default function ExploreSearch ({ value, onChange, onAction, onClear, dis
   const handleKeydown: KeyboardEventHandler = useEventCallback((ev) => {
     if (ev.key === 'Enter') {
       if (!disableAction) {
+        ev.preventDefault();
         onAction?.(ev.altKey);
       }
     }

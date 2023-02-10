@@ -3,11 +3,14 @@ import { aiQuestion, AiQuestionResource, aiQuestionResource } from '@site/src/ap
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { isNullish, notNullish } from '@site/src/utils/value';
 import useSWR from 'swr';
+import { useResponsiveAuth0 } from '@site/src/theme/NavbarItem/useResponsiveAuth0';
 
-export function useAiQuestion (question: string, repoId: number | undefined, repoName: string | undefined, options: { getAccessToken: () => Promise<string> }) {
+export function useAiQuestion (question: string, repoId: number | undefined, repoName: string | undefined) {
+  const { getAccessTokenSilently } = useResponsiveAuth0();
+
   const { data: resource } = useSWR('ai-question-usage', {
     fetcher: async () => {
-      const accessToken = await options.getAccessToken();
+      const accessToken = await getAccessTokenSilently();
       return await aiQuestionResource({ accessToken });
     },
     shouldRetryOnError: false,

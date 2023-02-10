@@ -3,11 +3,11 @@ import { newQuestion, pollQuestion, Question, QuestionErrorType, QuestionStatus 
 import { useMemoizedFn } from 'ahooks';
 import { isFalsy, isFiniteNumber, isNonemptyString, notNullish } from '@site/src/utils/value';
 import { timeout } from '@site/src/utils/promisify';
-import { useResponsiveAuth0 } from '@site/src/theme/NavbarItem/useResponsiveAuth0';
 import { useGtag } from '@site/src/utils/ga';
 import { getErrorMessage } from '@site/src/utils/error';
 import { notNone } from '@site/src/pages/explore/_components/SqlSection/utils';
 import { useIfMounted } from '@site/src/hooks/mounted';
+import { useRequireLogin } from '@site/src/context/user';
 
 export const enum QuestionLoadingPhase {
   /** There is no question */
@@ -170,7 +170,7 @@ export function useQuestionManagementValues ({ pollInterval = 2000 }: QuestionMa
 
   const { gtagEvent } = useGtag();
 
-  const { isLoading, user, getAccessTokenSilently, login } = useResponsiveAuth0();
+  const requireLogin = useRequireLogin();
 
   // TODO: support cancel
   const loadInternal = useMemoizedFn(async function (id: string, clear: boolean) {
@@ -216,16 +216,18 @@ export function useQuestionManagementValues ({ pollInterval = 2000 }: QuestionMa
   const create = useMemoizedFn((title: string, ignoreCache: boolean) => {
     async function createInternal (title: string, ignoreCache: boolean) {
       try {
-        if (!isLoading && !user) {
-          // TODO: Auto search after login
-          return await login({ triggerBy: 'explorer-search' });
+        let accessToken;
+        try {
+          accessToken = await requireLogin('explorer-search');
+        } catch {
+          return;
         }
         waitTimeRef.current = performance.now();
         setError(undefined);
         setQuestion(undefined);
         setLoading(true);
         setPhase(QuestionLoadingPhase.CREATING);
-        const accessToken = await getAccessTokenSilently();
+
         const result = await newQuestion({ question: title, ignoreCache }, { accessToken });
         await timeout(600);
         idRef.current = result.id;

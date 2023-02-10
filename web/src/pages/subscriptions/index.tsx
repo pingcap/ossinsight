@@ -15,6 +15,7 @@ const fmt = new Intl.DateTimeFormat('en', {
 });
 
 export default function SubscribePage () {
+  // TODO: use useRequireLogin()
   const {
     isAuthenticated: userValidated,
     isLoading: userValidating,
