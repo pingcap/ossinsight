@@ -52,7 +52,7 @@ type CustomEventMap = {
   'spent'
   >;
 
-  login_failed: GaEvent<'trigger_login_by'>;
+  login_fail: GaEvent<'trigger_login_by'>;
   login_success: GaEvent<'trigger_login_by'>;
   trigger_login: GaEvent<'trigger_login_by'>;
 };

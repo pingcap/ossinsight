@@ -68,7 +68,7 @@ export function useRequireLogin (): (triggerByLabel?: string) => Promise<string>
         gtagEvent('login_success', { trigger_login_by: triggerByLabel });
         return token;
       } catch {
-        gtagEvent('login_failed', { trigger_login_by: triggerByLabel });
+        gtagEvent('login_fail', { trigger_login_by: triggerByLabel });
         throw new Error('reject login');
       }
     } else {
