@@ -47,3 +47,4 @@ items:
   - tenzir/vast
   - matanolabs/matano
   - chipsec/chipsec
+  - kyverno/kyverno
