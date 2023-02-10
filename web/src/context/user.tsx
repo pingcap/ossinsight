@@ -3,9 +3,9 @@ import { useUserInfo } from '@site/src/api/user';
 import { AppState, Auth0Provider } from '@auth0/auth0-react';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import { useMemoizedFn } from 'ahooks';
-import { isNullish } from '@site/src/utils/value';
 import { useResponsiveAuth0 } from '@site/src/theme/NavbarItem/useResponsiveAuth0';
 import { useHistory } from '@docusaurus/router';
+import { useGtag } from '@site/src/utils/ga';
 
 const UserContext = createContext<ReturnType<typeof useUserInfo>>({
   validated: false,
@@ -56,17 +56,23 @@ export function AuthProvider ({ children }: PropsWithChildren): JSX.Element {
   );
 }
 
-export function useRequireLogin (triggerByLabel: string): () => Promise<string> {
+export function useRequireLogin (): (triggerByLabel?: string) => Promise<string> {
   const { isLoading, user, login, getAccessTokenSilently } = useResponsiveAuth0();
+  const { gtagEvent } = useGtag();
 
-  return useMemoizedFn(async () => {
-    if (isLoading) {
-      return await Promise.reject(new Error('Unauthorized'));
-    }
-    if (isNullish(user)) {
+  return useMemoizedFn(async (triggerByLabel) => {
+    if (!isLoading && !user) {
       await login({ triggerBy: triggerByLabel });
-      return await Promise.reject(new Error('Authorizing'));
+      try {
+        const token = await getAccessTokenSilently();
+        gtagEvent('login_success', { trigger_login_by: triggerByLabel });
+        return token;
+      } catch {
+        gtagEvent('login_fail', { trigger_login_by: triggerByLabel });
+        throw new Error('reject login');
+      }
+    } else {
+      return await getAccessTokenSilently();
     }
-    return await getAccessTokenSilently();
   });
 }

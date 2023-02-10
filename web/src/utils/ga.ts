@@ -15,6 +15,8 @@ type GAConfiguredDimensions = {
   questionHasAssumption: boolean;
   questionSqlCanAnswer: boolean | undefined;
   errorMessage: string;
+  // trigger-login, login-failed, login-success
+  trigger_login_by: string | undefined;
 };
 
 type GAConfiguredOptions = GAConfiguredDimensions & GAConfiguredMetrics;
@@ -49,19 +51,25 @@ type CustomEventMap = {
   'questionSqlCanAnswer' |
   'spent'
   >;
+
+  login_fail: GaEvent<'trigger_login_by'>;
+  login_success: GaEvent<'trigger_login_by'>;
+  trigger_login: GaEvent<'trigger_login_by'>;
 };
 
-export function useGtag () {
+interface GtagEventApi {
+  gtagEvent: (<T extends keyof CustomEventMap>(name: CustomEventMap[T] extends void ? never : T, props: CustomEventMap[T]) => void) & (<T extends keyof CustomEventMap>(name: CustomEventMap[T] extends void ? T : never) => void);
+}
+
+export function useGtag (): GtagEventApi {
   const { siteConfig } = useDocusaurusContext();
 
-  const event = useMemoizedFn(<T extends keyof CustomEventMap> (name: T, props: CustomEventMap[T]) => {
-    gtag('event', name, {
-      ...props,
-      send_to: siteConfig.customFields?.ga_measure_id,
-    });
-  });
-
   return {
-    gtagEvent: event,
+    gtagEvent: useMemoizedFn(<T extends keyof CustomEventMap> (name: T, props?: CustomEventMap[T]) => {
+      gtag('event', name, {
+        ...props,
+        send_to: siteConfig.customFields?.ga_measure_id,
+      });
+    }) as GtagEventApi['gtagEvent'],
   };
 }

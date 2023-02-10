@@ -13,10 +13,10 @@ import { SxProps } from '@mui/system';
 export default function Feedback ({ sx }: { sx?: SxProps }) {
   const { question } = useQuestionManagement();
   const { setAsyncData } = useAsyncState<boolean | undefined>(undefined);
-  const requireLogin = useRequireLogin('explorer-feedback-button');
+  const requireLogin = useRequireLogin();
   const { isAuthenticated } = useAuth0();
   const { data: checked, mutate } = useSWR(isAuthenticated && notNullish(question) ? [question.id, 'question-feedback'] : undefined, {
-    fetcher: async (id) => await requireLogin()
+    fetcher: async (id) => await requireLogin('explorer-feedback-button')
       .then(async oToken => await pollFeedback(id, oToken))
       .then(feedbacks => nonEmptyArray(feedbacks) ? Boolean(feedbacks[0].satisfied) : undefined),
     errorRetryCount: 0,
@@ -27,14 +27,14 @@ export default function Feedback ({ sx }: { sx?: SxProps }) {
       return;
     }
     if (checked === true) {
-      setAsyncData(requireLogin().then(async oToken =>
+      setAsyncData(requireLogin('explorer-feedback-button').then(async oToken =>
         await cancelFeedback(question.id, true, oToken)
           .finally(() => {
             void mutate(undefined);
           }),
       ));
     } else {
-      setAsyncData(requireLogin().then(async oToken =>
+      setAsyncData(requireLogin('explorer-feedback-button').then(async oToken =>
         await feedback(question.id, { satisfied: true }, oToken)
           .finally(() => {
             void mutate(true);
@@ -48,14 +48,14 @@ export default function Feedback ({ sx }: { sx?: SxProps }) {
       return;
     }
     if (checked === false) {
-      setAsyncData(requireLogin().then(async oToken =>
+      setAsyncData(requireLogin('explorer-feedback-button').then(async oToken =>
         await cancelFeedback(question.id, false, oToken)
           .finally(() => {
             void mutate(undefined);
           }),
       ));
     } else {
-      setAsyncData(requireLogin().then(async oToken =>
+      setAsyncData(requireLogin('explorer-feedback-button').then(async oToken =>
         await feedback(question.id, { satisfied: false }, oToken)
           .finally(() => {
             void mutate(false);

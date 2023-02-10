@@ -3,8 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useWhenMounted } from '@site/src/hooks/mounted';
 import { unstable_serialize } from 'swr';
 import { useEventCallback } from '@mui/material';
-import { useResponsiveAuth0 } from '@site/src/theme/NavbarItem/useResponsiveAuth0';
-import { isNonemptyString } from '@site/src/utils/value';
+import { useRequireLogin } from '@site/src/context/user';
 
 interface AsyncOperation<T> extends AsyncData<T> {
   run: () => any;
@@ -46,7 +45,7 @@ export function useAsyncState<T, E = unknown> (initial?: T | (() => T)) {
 }
 
 export function useAsyncOperation<P, T> (params: P, fetcher: (params: P) => Promise<T>, authTriggeredByLabel?: string): AsyncOperation<T> {
-  const { isAuthenticated, login, getAccessTokenSilently } = useResponsiveAuth0();
+  const requireLogin = useRequireLogin();
   const whenMounted = useWhenMounted();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<unknown>();
@@ -65,14 +64,15 @@ export function useAsyncOperation<P, T> (params: P, fetcher: (params: P) => Prom
   }, [fetcher, unstable_serialize([params])]);
 
   const run = useEventCallback(async () => {
-    if (isNonemptyString(authTriggeredByLabel) && !isAuthenticated) {
-      await login({ triggerBy: authTriggeredByLabel });
+    let accessToken;
+    try {
+      accessToken = await requireLogin(authTriggeredByLabel);
+    } catch {
       return;
     }
     if (loadingRef.current) {
       return;
     }
-    const accessToken = await getAccessTokenSilently();
     setLoading(true);
     setData(undefined);
     setError(undefined);
