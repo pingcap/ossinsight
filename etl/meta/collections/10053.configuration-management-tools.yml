@@ -13,3 +13,4 @@ items:
   - aws/copilot-cli
   - puppetlabs/puppet
   - chef/chef
+  - meshery/meshery
