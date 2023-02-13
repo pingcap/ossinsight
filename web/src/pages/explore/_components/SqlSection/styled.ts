@@ -2,6 +2,11 @@ import { Box, styled } from '@mui/material';
 
 export const Line = styled(Box)`
   line-height: 40px;
+  
+  &.light {
+    font-size: 14px;
+    font-weight: normal;
+  }
 `;
 
 export const StyledTitle = styled('div')`

@@ -24,6 +24,7 @@ export interface HeaderProps {
 
 export default function Header ({ question, phase, sqlSectionStatus, open, toggleOpen, onMessagesStart, onMessagesReady }: HeaderProps) {
   const [ready, setReady] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
 
   const sqlTitle = useMemo(() => {
     switch (phase) {
@@ -101,6 +102,8 @@ export default function Header ({ question, phase, sqlSectionStatus, open, toggl
         onStop={handleMessagesReady}
         onStart={handleMessagesStart}
         prompts={<Line>{ready ? renderTitleLine(sqlTitle, sqlSectionStatus, open) : renderTitleLine('Generating SQL...', SectionStatus.loading, false)}</Line>}
+        collapsed={collapsed}
+        onCollapsedChange={setCollapsed}
       />
     </StyledTitle>
   );

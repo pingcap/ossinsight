@@ -6,6 +6,8 @@ import { applyForwardedRef } from '@site/src/utils/ref';
 export interface ChatMessagesInstance {
   addMessage: (message: MessageElement) => void;
 
+  insertMessage: (message: MessageElement, index?: number) => void;
+
   keepMessages: (filter: (el: Key) => boolean) => void;
 
   setPrompts: (message: MessageElement | undefined) => void;
@@ -22,7 +24,7 @@ const ChatMessages = forwardRef<ChatMessagesInstance, ChatMessagesProps>(({
 },
 ref,
 ) => {
-  const { transitioning, messages, addMessage, keepMessages, setPrompts } = useChatMessages();
+  const { transitioning, messages, addMessage, insertMessage, keepMessages, setPrompts } = useChatMessages();
   const initRef = useRef(false);
 
   useEffect(() => {
@@ -40,6 +42,7 @@ ref,
   useEffect(() => {
     applyForwardedRef(ref, {
       addMessage,
+      insertMessage,
       keepMessages,
       setPrompts,
     });

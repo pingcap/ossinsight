@@ -32,6 +32,29 @@ export default function useChatMessages () {
     }
   });
 
+  const insertMessage = useMemoizedFn((message: MessageElement, index: number = 0) => {
+    if (isNullish(message.key)) {
+      throw new Error('ChatMessage requires key');
+    }
+    if (existingMessages.has(message.key)) {
+      const updater = ([...messages]: MessageElement[]) => {
+        const index = messages.findIndex(({ key }) => key === message.key);
+        if (index !== -1) {
+          messages.splice(index, 1, message);
+        }
+        return messages;
+      };
+      setBufferMessages(updater);
+      setMessages(updater);
+    } else {
+      setMessages(([...messages]) => {
+        messages.splice(index, 0, message);
+        return messages;
+      });
+      existingMessages.add(message.key);
+    }
+  });
+
   const keepMessages = useMemoizedFn((filter: (el: Key) => boolean) => {
     setBufferMessages(messages => messages.filter(el => filter(el.key as Key)));
     setMessages(messages => messages.filter(el => filter(el.key as Key)));
@@ -71,6 +94,7 @@ export default function useChatMessages () {
   return {
     transitioning,
     addMessage,
+    insertMessage,
     keepMessages,
     setPrompts,
     messages: rewroteMessages,
