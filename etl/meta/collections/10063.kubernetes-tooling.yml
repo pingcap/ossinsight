@@ -21,3 +21,4 @@ items:
   - kyverno/kyverno
   - helm/helm
   - opencost/opencost
+  - kubeshop/monokle
