@@ -1,16 +1,16 @@
-import AIMessages from '@site/src/pages/explore/_components/SqlSection/AIMessages';
 import { Line, StyledTitle } from '@site/src/pages/explore/_components/SqlSection/styled';
-import React, { useMemo, useRef, useState } from 'react';
+import React, { ReactElement, useMemo, useRef, useState } from 'react';
 import { GENERATE_SQL_NON_FINAL_PHASES, hasAIPrompts, QuestionLoadingPhase } from '@site/src/pages/explore/_components/useQuestion';
-import { notNullish } from '@site/src/utils/value';
+import { isNullish, notNullish } from '@site/src/utils/value';
 import { SectionStatus, SectionStatusIcon } from '@site/src/pages/explore/_components/Section';
 import { Button } from '@mui/material';
 import { ExpandMore } from '@mui/icons-material';
-import { useInterval } from 'ahooks';
+import { useInterval, useMemoizedFn } from 'ahooks';
 import { randomOf } from '@site/src/utils/generate';
 import TypewriterEffect from '@site/src/pages/explore/_components/TypewriterEffect';
 import BotIcon from '@site/src/pages/explore/_components/BotIcon';
 import { Question } from '@site/src/api/explorer';
+import AIMessagesV2 from '@site/src/pages/explore/_components/SqlSection/AIMessagesV2';
 
 export interface HeaderProps {
   question: Question | undefined;
@@ -23,6 +23,9 @@ export interface HeaderProps {
 }
 
 export default function Header ({ question, phase, sqlSectionStatus, open, toggleOpen, onMessagesStart, onMessagesReady }: HeaderProps) {
+  const [ready, setReady] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
+
   const sqlTitle = useMemo(() => {
     switch (phase) {
       case QuestionLoadingPhase.NONE:
@@ -52,7 +55,17 @@ export default function Header ({ question, phase, sqlSectionStatus, open, toggl
     return !GENERATE_SQL_NON_FINAL_PHASES.has(phase);
   }, [phase]);
 
-  const renderTitleLine = (title: typeof sqlTitle, status: SectionStatus, open: boolean) => {
+  const handleMessagesReady = useMemoizedFn(() => {
+    onMessagesReady?.();
+    setReady(true);
+  });
+
+  const handleMessagesStart = useMemoizedFn(() => {
+    onMessagesStart?.();
+    setReady(false);
+  });
+
+  const renderTitleLine = (title: string | ReactElement, status: SectionStatus, open: boolean) => {
     return (
       <>
         <SectionStatusIcon status={status} />
@@ -66,33 +79,32 @@ export default function Header ({ question, phase, sqlSectionStatus, open, toggl
     );
   };
 
-  const titleLineDeps = [sqlTitle, sqlSectionStatus, open];
+  if (isNullish(question) || !hasPrompt) {
+    return (
+      <StyledTitle>
+        {!isFinalPhase && (
+          <Line>
+            <BotIcon animated sx={{ mr: 1, mt: 0.5 }} />
+            {sqlTitle}
+          </Line>
+        )}
+        {isFinalPhase && (
+          <Line>{renderTitleLine(sqlTitle, sqlSectionStatus, open)}</Line>
+        )}
+      </StyledTitle>
+    );
+  }
 
   return (
     <StyledTitle>
-      {hasPrompt
-        ? (
-          <AIMessages<typeof titleLineDeps>
-            question={question}
-            hasPrompt={hasPrompt}
-            titleLine={renderTitleLine}
-            titleLineDeps={titleLineDeps}
-            onStart={onMessagesStart}
-            onReady={onMessagesReady}
-          />
-          )
-        : <>
-          {!isFinalPhase && (
-            <Line>
-              <BotIcon animated sx={{ mr: 1, mt: 0.5 }} />
-              {sqlTitle}
-            </Line>
-          )}
-          {isFinalPhase && (
-            <Line>{renderTitleLine(sqlTitle, sqlSectionStatus, open)}</Line>
-          )}
-        </>
-      }
+      <AIMessagesV2
+        question={question}
+        onStop={handleMessagesReady}
+        onStart={handleMessagesStart}
+        prompts={<Line>{ready ? renderTitleLine(sqlTitle, sqlSectionStatus, open) : renderTitleLine('Generating SQL...', SectionStatus.loading, false)}</Line>}
+        collapsed={collapsed}
+        onCollapsedChange={setCollapsed}
+      />
     </StyledTitle>
   );
 }
