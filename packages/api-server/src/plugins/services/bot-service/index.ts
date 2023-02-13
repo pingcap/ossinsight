@@ -200,7 +200,7 @@ export class BotService {
                 }]));
 
                 fieldStream.on('data', ({key, value}: any) => {
-                    this.setAnswerValue(question, answer, key, value);
+                    [answer, key, value] = this.setAnswerValue(question, answer, key, value);
                     callback(answer, key, value);
                 });
 
@@ -306,6 +306,8 @@ export class BotService {
                 answer[key] = value;
                 break;
         }
+
+        return [answer, key, value];
     }
 
     removeTableNameForColumn(chartOptions: Record<string, string>) {
