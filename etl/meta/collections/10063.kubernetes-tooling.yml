@@ -20,3 +20,4 @@ items:
   - lensapp/lens
   - kyverno/kyverno
   - helm/helm
+  - opencost/opencost
