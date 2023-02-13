@@ -149,7 +149,7 @@ export class ExplorerService {
         const questionId = randomUUID();
         const logger = this.logger.child({ questionId: questionId });
         const normalizedQuestion = this.normalizeQuestion(q);
-        if (normalizedQuestion.length > 255) {
+        if (normalizedQuestion.length > 512) {
             throw new APIError(400, 'The question too long, please shorten it.');
         }
 
