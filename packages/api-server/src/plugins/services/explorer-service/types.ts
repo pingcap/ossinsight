@@ -1,6 +1,6 @@
 import {DateTime} from "luxon";
 import {Field} from "../../../core/executor/query-executor/QueryExecutor";
-import {AnswerSummary, RecommendedChart} from "../bot-service/types";
+import {Answer, AnswerSummary, RecommendedChart} from "../bot-service/types";
 
 export enum QuestionQueueNames {
     High = "explorer_high_concurrent_queue",
@@ -26,6 +26,7 @@ export interface Question {
   recommendedQuestions?: string[];
   result?: QuestionSQLResult;
   chart?: RecommendedChart | null;
+  answer?: Answer | null;
   answerSummary?: AnswerSummary;
   recommended: boolean;
   createdAt: DateTime;
