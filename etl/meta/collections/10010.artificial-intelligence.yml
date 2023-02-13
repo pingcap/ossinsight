@@ -34,3 +34,5 @@ items:
   - Angel-ML/angel
   - XiaoMi/mace
   - towhee-io/towhee
+  - SeldonIO/seldon-core
+  - SeldonIO/MLServer
