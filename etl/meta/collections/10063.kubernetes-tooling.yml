@@ -19,3 +19,4 @@ items:
   - keyval-dev/odigos
   - lensapp/lens
   - kyverno/kyverno
+  - helm/helm
