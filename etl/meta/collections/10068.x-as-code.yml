@@ -11,6 +11,7 @@ items:
   - aws/aws-cdk
   - crossplane/crossplane
   - kubevela/kubevela
+  - meshery/meshery
   
 # The relationship between X as Code and Configuration management tools is the following:
 # 1. The X as Code is a subset of Configuration Management.
