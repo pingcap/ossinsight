@@ -150,7 +150,7 @@ export class BotService {
                         // Notice: Skip undefined chunk.
                         if (chunk) {
                             this.push(chunk);
-                            tokens.push(chunk);
+                            tokens.push(chunk.toString());
                         }
                         callback();
                     },
@@ -176,7 +176,7 @@ export class BotService {
                                 // Notice: Skip undefined token.
                                 const tokenObj = JSON.parse(tokenJSON);
                                 const token = tokenObj.choices?.[0]?.text;
-                                if (token) {
+                                if (typeof token === "string") {
                                     tokenStream.write(token);
                                 } else {
                                     this.log.warn({ tokenObj }, `Got an empty token from stream: ${question}.`);
