@@ -10,14 +10,18 @@ export class APIError extends Error {
 }
 
 export class BotResponseGenerateError extends Error {
-    constructor(message: string, error?: Error) {
-        super(message, error);
+    constructor(readonly message: string, readonly responseText: string | null, readonly cause?: Error) {
+        super(message, {
+            cause
+        });
     }
 }
 
 export class BotResponseParseError extends Error {
-    constructor(message: string, readonly responseText?: string, error?: Error) {
-        super(message, error);
+    constructor(readonly message: string, readonly responseText: string | null, readonly cause?: Error) {
+        super(message, {
+            cause
+        });
     }
 }
 

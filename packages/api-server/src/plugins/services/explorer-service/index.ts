@@ -1,21 +1,18 @@
 import fp from "fastify-plugin";
 import {Job, Queue} from "bullmq";
 import {
-    APIError,
+    APIError, BotResponseGenerateError,
     BotResponseParseError,
     ExplorerCreateQuestionError,
     ExplorerPrepareQuestionError,
     ExplorerResolveQuestionError,
     ExplorerTooManyRequestError,
     SQLUnsupportedFunctionError,
-    SQLUnsupportedMultipleStatementsError,
-    SQLUnsupportedStatementTypeError,
     ValidateSQLError
 } from "../../../utils/error";
 import {Connection, PoolConnection, ResultSetHeader} from "mysql2/promise";
 import crypto from "node:crypto";
 import {DateTime} from "luxon";
-import {Parser, Select} from "node-sql-parser";
 import {BotService} from "../bot-service";
 import {
     PlanStep,
@@ -33,6 +30,7 @@ import {TiDBPlaygroundQueryExecutor} from "../../../core/executor/query-executor
 import {GenerateChartPromptTemplate} from "../bot-service/template/GenerateChartPromptTemplate";
 import {randomUUID} from "crypto";
 import {
+    Answer,
     AnswerSummary,
     BarChart,
     ChartNames,
@@ -56,13 +54,6 @@ import sleep from "../../../utils/sleep";
 declare module 'fastify' {
     interface FastifyInstance {
         explorerService: ExplorerService;
-    }
-}
-
-declare module "node-sql-parser" {
-    interface Select {
-        _next?: AST;
-        union?: string;
     }
 }
 
@@ -109,11 +100,10 @@ export interface ExplorerOption {
 export class ExplorerService {
     [x: string]: any;
     // TODO: replace node-sql-parser with tidb-sql-parser.
-    private sqlParser: Parser;
+    // private sqlParser: Parser;
     private readonly generateAnswerTemplate: GenerateAnswerPromptTemplate;
     private readonly generateChartTemplate: GenerateChartPromptTemplate;
     private readonly generateAnswerSummaryTemplate: GenerateSummaryPromptTemplate;
-    private maxSelectLimit = 200;
     private options: ExplorerOption;
 
     constructor(
@@ -125,7 +115,6 @@ export class ExplorerService {
       private readonly highConcurrentQueue: Queue,
       options?: Partial<ExplorerOption>
     ) {
-        this.sqlParser = new Parser();
         this.generateChartTemplate = new GenerateChartPromptTemplate();
         this.generateAnswerTemplate = new GenerateAnswerPromptTemplate();
         this.generateAnswerSummaryTemplate = new GenerateSummaryPromptTemplate();
@@ -237,26 +226,35 @@ export class ExplorerService {
             await this.updateQuestion(question);
 
             // Generate the SQL by OpenAI.
-            let answer = null;
+            let outputInStream = this.options.outputAnswerInStream;
+            let answer: Answer | null = null;
+            let responseText: string | null = null;
             for (let i = 1; i <= 3; i++) {
                 try {
-                    if (this.options.outputAnswerInStream) {
-                        answer = await this.botService.questionToAnswerInStream(this.generateAnswerTemplate, title, async (answer, key, value) => {
+                    if (outputInStream) {
+                        [answer, responseText] = await this.botService.questionToAnswerInStream(this.generateAnswerTemplate, title, async (answer, key, value) => {
                             // @ts-ignore
                             question[key] = value;
 
                             if (['revisedTitle', 'notClear', 'assumption', 'combinedTitle', 'querySQL'].includes(key)) {
+                                logger.info(`Updating question with ${key} = ${value}.`)
                                 await this.updateQuestion(question);
                             }
                         });
                     } else {
-                        answer = await this.botService.questionToAnswer(this.generateAnswerTemplate, title);
+                        [answer, responseText] = await this.botService.questionToAnswer(this.generateAnswerTemplate, title);
                     }
+
+                    // Check if there are an answer been returned.
+                    if (!answer || Object.keys(answer).length === 0) {
+                        const message = 'Generated an empty answer.';
+                        throw new BotResponseGenerateError(message, responseText);
+                    }
+
                     break;
                 } catch (e: any) {
                     // Reset the question and answer, and try again.
-                    const errorShouldRetry = ['Request failed with status code 429', 'aborted'].includes(e?.message);
-                    if (errorShouldRetry && i < 3) {
+                    if (i < 3) {
                         logger.warn(e, `Failed to generate answer for question ${questionId}, retrying (${i + 1}/3)...`);
                         question.revisedTitle = undefined;
                         question.notClear = undefined;
@@ -264,6 +262,7 @@ export class ExplorerService {
                         question.combinedTitle = undefined;
                         question.querySQL = undefined;
                         answer = null;
+                        outputInStream = false; // Disable the output in stream mode if it failed.
                         await sleep(1000 * i);
                         continue;
                     }
@@ -271,10 +270,15 @@ export class ExplorerService {
                     if (e instanceof BotResponseParseError) {
                         throw new ExplorerPrepareQuestionError(e.message, QuestionFeedbackType.ErrorAnswerParse, {
                             message: e.message,
-                            response: e.responseText,
+                            responseText: e.responseText,
+                        }, e);
+                    } else if (e instanceof BotResponseGenerateError) {
+                        throw new ExplorerPrepareQuestionError(e.message, QuestionFeedbackType.ErrorAnswerGenerate, {
+                            message: e.message,
+                            responseText: e.responseText,
                         }, e);
                     } else {
-                        const message = 'Failed to generate answer, please try again later.';
+                        const message = 'Failed to generate answer, please try again later';
                         throw new ExplorerPrepareQuestionError(message, QuestionFeedbackType.ErrorAnswerGenerate, {
                             message: e.message
                         }, e);
@@ -282,15 +286,8 @@ export class ExplorerService {
                 }
             }
 
-            // Check if there are an answer been returned.
-            if (!answer || Object.keys(answer).length === 0) {
-                const message = 'Generated an empty answer.';
-                throw new ExplorerPrepareQuestionError(message, QuestionFeedbackType.ErrorAnswerGenerate, {
-                    message: message
-                });
-            }
-
-            let { querySQL, chart, sqlCanAnswer, revisedTitle, notClear, assumption, combinedTitle } = answer;
+            let { querySQL, chart, sqlCanAnswer, revisedTitle, notClear, assumption, combinedTitle } = answer!;
+            question.answer = answer;
             question.querySQL = querySQL;
             question.chart = chart;
             question.sqlCanAnswer = sqlCanAnswer;
@@ -437,75 +434,10 @@ export class ExplorerService {
             throw new SQLUnsupportedFunctionError( 'Didn\'t support SQL contains `sleep()` function');
         }
 
-        try {
-            const ast = this.sqlParser.astify(sql);
-            let rootNode;
-            if (Array.isArray(ast)) {
-                if (ast.length > 1) {
-                    throw new SQLUnsupportedMultipleStatementsError('Didn\'t support multiple statements');
-                } else {
-                    rootNode = ast[0];
-                }
-            } else {
-                rootNode = ast;
-            }
-
-            switch (rootNode.type.toLowerCase()) {
-                case 'select':
-                    const newAst = this.addLimitToSQL(rootNode as Select, this.maxSelectLimit, 0);
-                    // @ts-ignore
-                    const newSQL = this.sqlParser.sqlify(newAst);
-                    return {
-                        sql: newSQL,
-                        statementType: 'select',
-                    }
-                case 'show':
-                case 'desc':
-                    return {
-                        sql: sql,
-                        statementType: rootNode.type
-                    };
-                default:
-                    throw new SQLUnsupportedStatementTypeError('Only supports SELECT, SHOW and DESC statements');
-            }
-        } catch (err: any) {
-            if (err instanceof ValidateSQLError) {
-                throw err;
-            }
-
-            throw new ValidateSQLError(err.message, sql);
-        }
-    }
-
-    private addLimitToSQL(rootNode: Select, maxLimit: number, depth: number): Select {
-        // @ts-ignore
-        const { limit } = rootNode;
-
-        // Add limit
-        if (limit && Array.isArray(limit.value)) {
-            if (limit.value.length === 1) {
-                if (limit.value[0].value > maxLimit) {
-                    limit.value[0].value = maxLimit;
-                }
-            } else if (limit.value.length === 2) {
-                if (limit.value[1].value > maxLimit) {
-                    limit.value[1].value = maxLimit;
-                }
-            }
-        } else {
-            // @ts-ignore
-            rootNode.limit = {
-                seperator: "",
-                value: [
-                    {
-                        type: "number",
-                        value: maxLimit,
-                    },
-                ],
-            };
-        }
-
-        return rootNode;
+        return {
+            sql: sql,
+            statementType: 'select'
+        };
     }
 
     async getSQLExecutionPlan(sql: string, conn?: Connection) {
@@ -598,11 +530,12 @@ export class ExplorerService {
 
     async updateQuestion(question: Question) {
         const {
-            id, revisedTitle = null, notClear = null, assumption = null, combinedTitle = null, status, recommended, sqlCanAnswer = true,
+            id, answer = null, revisedTitle = null, notClear = null, assumption = null, combinedTitle = null, status, recommended, sqlCanAnswer = true,
             querySQL, queryHash, engines = [], result = null, chart = null, recommendedQuestions = [],
             queueName = null, queueJobId = null, requestedAt, executedAt, finishedAt, spent, errorType = null, error = null
         } = question;
 
+        const answerValue = answer !== undefined ? JSON.stringify(answer) : null;
         const enginesValue = JSON.stringify(engines);
         const resultValue = result !== undefined ? JSON.stringify(result) : null;
         const chartValue = chart !== undefined ? JSON.stringify(chart) : null;
@@ -614,12 +547,12 @@ export class ExplorerService {
         const [rs] = await this.mysql.query<ResultSetHeader>(`
             UPDATE explorer_questions
             SET
-                revised_title = ?, not_clear = ?, assumption = ?, combined_title = ?, status = ?, recommended = ?, sql_can_answer = ?, 
+                answer = ?, revised_title = ?, not_clear = ?, assumption = ?, combined_title = ?, status = ?, recommended = ?, sql_can_answer = ?, 
                 query_sql = ?, query_hash = ?, engines = ?, result = ?, chart = ?, recommended_questions = ?, 
                 queue_name = ?, queue_job_id = ?, requested_at = ?, executed_at = ?, finished_at = ?, spent = ?, error_type = ?, error = ?
             WHERE id = UUID_TO_BIN(?)
         `, [
-            revisedTitle, notClear, assumption, combinedTitle, status, recommended, sqlCanAnswer,
+            answerValue, revisedTitle, notClear, assumption, combinedTitle, status, recommended, sqlCanAnswer,
             querySQL, queryHash, enginesValue, resultValue, chartValue, recommendedQuestionsValue,
             queueName, queueJobId, requestedAtValue, executedAtValue, finishedAtValue, spent, errorType, error, id
         ]);

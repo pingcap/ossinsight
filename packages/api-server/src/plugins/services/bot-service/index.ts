@@ -115,7 +115,7 @@ export class BotService {
         }
     }
 
-    async questionToAnswerInStream(template: GenerateAnswerPromptTemplate, question: string, callback: (answer: Answer, key: string, value: any) => void): Promise<Answer | null> {
+    async questionToAnswerInStream(template: GenerateAnswerPromptTemplate, question: string, callback: (answer: Answer, key: string, value: any) => void): Promise<[Answer | null, string | null]> {
         let prompt = await this.promptTemplateManager.getTemplate(GENERATE_ANSWER_PROMPT_TEMPLATE_NAME, {
             question: question
         });
@@ -125,7 +125,7 @@ export class BotService {
             prompt = template.stringify(question);
         }
 
-        this.log.info("Requesting answer for question (in stream): %s", question);
+        this.log.info("Requesting answer for question (in stream mode): %s", question);
         let answer: any = {};
         let tokens: any[] = [];
 
@@ -150,7 +150,7 @@ export class BotService {
                         // Notice: Skip undefined chunk.
                         if (chunk) {
                             this.push(chunk);
-                            tokens.push(chunk);
+                            tokens.push(chunk.toString());
                         }
                         callback();
                     },
@@ -161,9 +161,10 @@ export class BotService {
                     // Notice:
                     // The data is start with "data: " prefix, we need to remove it to get a JSON string.
                     // In same times, there are multiple JSONs return in one response.
-                    const responseText = data?.toString();
-                    const tokenJSONs = responseText?.slice(6)?.split("\n\ndata: ").filter(Boolean);
+                    const streamResponseText = data?.toString();
+                    const tokenJSONs = streamResponseText?.slice(6)?.split("\n\ndata: ").filter(Boolean);
                     if (!Array.isArray(tokenJSONs) || tokenJSONs.length === 0) {
+                        this.log.warn(`Got an empty token response from stream: ${question}`);
                         return;
                     }
 
@@ -173,25 +174,27 @@ export class BotService {
                                 tokenStream.end();
                             } else {
                                 // Notice: Skip undefined token.
-                                const token = JSON.parse(tokenJSON)?.choices?.[0]?.text;
-                                if (token) {
+                                const tokenObj = JSON.parse(tokenJSON);
+                                const token = tokenObj.choices?.[0]?.text;
+                                if (typeof token === "string") {
                                     tokenStream.write(token);
+                                } else {
+                                    this.log.warn({ tokenObj }, `Got an empty token from stream: ${question}.`);
                                 }
                             }
                         }
                     } catch (err: any) {
                         if (err instanceof SyntaxError) {
-                            this.log.error({ err, responseText }, `Failed to parse the token stream of answer for question: ${question}`);
-                            reject(new BotResponseParseError(err.message, responseText, err));
+                            reject(new BotResponseParseError(`Failed to parse the answer (in stream mode): ${err.message}`, streamResponseText, err));
                         } else {
-                            reject(new BotResponseGenerateError(err.message, err));
+                            reject(new BotResponseGenerateError(`Failed to generate the answer (in stream mode): ${err.message}`, streamResponseText, err));
                         }
                     }
                 });
 
                 // @ts-ignore
                 res.data.on("error", (err) => {
-                    reject(new BotResponseGenerateError(err.message, err));
+                    reject(new BotResponseGenerateError(`Failed to process the answer (in stream mode): ${err.message}`, tokens.join(''), err));
                 });
 
                 // Convert token stream to object field stream.
@@ -205,23 +208,20 @@ export class BotService {
                 });
 
                 fieldStream.on('error', (err: any) => {
-                    const answerJSON = tokens.join('');
-                    this.log.error({ err, answerJSON }, `Failed to parse the answer for question: ${question}`);
-                    reject(new BotResponseParseError(err.message, answerJSON, err));
+                    reject(new BotResponseParseError(`Failed to extract the fields of the answer (in stream mode): ${err.message}`, tokens.join(''), err));
                 });
 
                 fieldStream.on('end', () => {
                     fieldStream.destroy();
-                    resolve(answer);
+                    resolve([answer, tokens.join('')]);
                 });
             } catch (err: any) {
-                this.log.error({ err }, `Failed to get answer for question: ${question}`);
-                reject(new BotResponseGenerateError(err.message, err));
+                reject(new BotResponseGenerateError(`Failed to complete the answer (in stream mode): ${err.message}`, tokens.join(''), err));
             }
         });
     }
 
-    async questionToAnswer(template: GenerateAnswerPromptTemplate, question: string): Promise<Answer | null> {
+    async questionToAnswer(template: GenerateAnswerPromptTemplate, question: string): Promise<[Answer | null, string | null]> {
         let prompt = await this.promptTemplateManager.getTemplate(GENERATE_ANSWER_PROMPT_TEMPLATE_NAME, {
             question: question
         });
@@ -231,9 +231,9 @@ export class BotService {
             prompt = template.stringify(question);
         }
 
-        let choice = undefined;
+        let responseText = null;
         try {
-            this.log.info("Requesting answer for question: %s", question);
+            this.log.info("Requesting answer for question (in non-steam mode): %s", question);
             const start = DateTime.now();
             const res = await this.openai.createCompletion({
                 model: template.model,
@@ -250,24 +250,22 @@ export class BotService {
             this.log.info({ usage }, 'Got answer of question "%s" from OpenAI API, cost: %d s', question, end.diff(start).as('seconds'));
 
             if (Array.isArray(choices) && choices[0].text) {
-                choice = choices[0].text;
-                const repaired = jsonrepair(choice);
+                responseText = choices[0].text;
+                const repaired = jsonrepair(responseText);
                 const obj = JSON.parse(repaired);
                 const answer: any = {};
                 for (const [key, value] of Object.entries(obj)) {
                     this.setAnswerValue(question, answer, key, value);
                 }
-                return answer;
+                return [answer, responseText]
             } else {
-                return null;
+                return [null, responseText]
             }
         } catch (err: any) {
             if (err instanceof SyntaxError) {
-                this.log.error({ err, choice }, `Failed to parse the answer for question: ${question}`);
-                throw new BotResponseParseError(err.message, choice, err);
+                throw new BotResponseParseError(`Failed to parse the answer (in non-stream mode): ${err.message}`, responseText, err);
             } else {
-                this.log.error({ err }, `Failed to get answer for question: ${question}`);
-                throw new BotResponseGenerateError(err.message, err);
+                throw new BotResponseGenerateError(`Failed to generate the answer (in non-stream mode): ${err.message}`, responseText, err);
             }
         }
     }
@@ -360,7 +358,7 @@ export class BotService {
     async summaryAnswer(template: GenerateSummaryPromptTemplate, question: string, result: any[]): Promise<AnswerSummary | null> {
         const prompt = template.stringify(question, result, result.length);
 
-        let choice = undefined;
+        let responseText = null;
         let summary = null;
         try {
             this.log.info("Requesting answer summary for question: %s", question);
@@ -380,16 +378,16 @@ export class BotService {
             this.log.info({ usage }, 'Got summary of question "%s" from OpenAI API, cost: %d s', question, end.diff(start).as('seconds'));
 
             if (Array.isArray(choices) && choices[0].text) {
-                choice = choices[0].text;
-                summary = JSON.parse(choice);
+                responseText = choices[0].text;
+                summary = JSON.parse(responseText);
                 return summary
             } else {
                 return null;
             }
         } catch (err: any) {
             if (err instanceof SyntaxError) {
-                this.log.error({ err, choice }, `Failed to parse the summary for question: ${question}`);
-                throw new BotResponseParseError('failed to parse the summary', choice, err);
+                this.log.error({ err, responseText }, `Failed to parse the summary for question: ${question}`);
+                throw new BotResponseParseError('failed to parse the summary', responseText, err);
             } else {
                 this.log.error({ err }, `Failed to get summary for question: ${question}`);
                 throw new BotResponseGenerateError(`failed to generate the summary`, err);
