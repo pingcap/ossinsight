@@ -1,10 +1,10 @@
 import { Question, QuestionStatus } from '@site/src/api/explorer';
 import ChatMessages, { ChatMessagesInstance } from '@site/src/pages/explore/_components/ChatMessages';
 import React, { ReactElement, useEffect, useRef, useState } from 'react';
-import { isNullish, notNullish } from '@site/src/utils/value';
+import { isNullish, nonEmptyArray, notNullish } from '@site/src/utils/value';
 import { notNone } from '@site/src/pages/explore/_components/SqlSection/utils';
 import { Box, Collapse, IconButton } from '@mui/material';
-import { Assumption, CombinedTitle, Line, RevisedTitle } from '@site/src/pages/explore/_components/SqlSection/styled';
+import { Assumption, CombinedTitle, Line, RevisedTitle, Strong } from '@site/src/pages/explore/_components/SqlSection/styled';
 import { useMemoizedFn } from 'ahooks';
 import BotIcon from '@site/src/pages/explore/_components/BotIcon';
 import CopyButton from './CopyButton';
@@ -21,12 +21,56 @@ interface AIMessagesV2Props {
 
 const spacer = <Box component="span" display="inline-block" width="24px" height="1px" />;
 
+function joinComma<T> (arr: T[]): Array<T | string> {
+  return arr.flatMap(i => [', ', i]).slice(1);
+}
+
 const renderRevisedTitle = (revisedTitle: string, animating: boolean) => {
   return (
     <Line>
       {<BotIcon animated={animating} sx={{ mr: 1 }} />}
       Are you curious about:
       <RevisedTitle>{revisedTitle}</RevisedTitle>
+    </Line>
+  );
+};
+
+const renderKeywords = (keywords: string[]) => {
+  return (
+    <Line className="light">
+      {spacer}
+      Extracting key words: {joinComma(keywords.map(keyword => <Strong key={keyword}>{keyword}</Strong>))}
+    </Line>
+  );
+};
+
+const renderLinks = (links: string[]) => {
+  return (
+    <Line className="light">
+      {spacer}
+      Might be the key player: {joinComma(links.map(link => <a key={link} href={link} target="_blank" rel="noreferrer">{link}</a>))}
+    </Line>
+  );
+};
+
+const renderSubQuestionsTitle = () => {
+  return (
+    <Line className="light">
+      {spacer}
+      Thinking about the details:
+    </Line>
+  );
+};
+
+const renderSubQuestion = (question: string) => {
+  return (
+    <Line className='light'>
+      {spacer}
+      {spacer}
+      •&nbsp;
+      <Strong>
+        {question}
+      </Strong>
     </Line>
   );
 };
@@ -93,6 +137,37 @@ export default function AIMessagesV2 ({ question, prompts, onStop, onStart, coll
           </Collapse>,
         );
       }
+      const answer = question.answer;
+      if (notNullish(answer)) {
+        if (nonEmptyArray(answer.keywords)) {
+          messages.addMessage(
+            <Collapse key="keywords" timeout={600}>
+              {renderKeywords(answer.keywords)}
+            </Collapse>,
+          );
+        }
+        if (nonEmptyArray(answer.links)) {
+          messages.addMessage(
+            <Collapse key="links" timeout={600}>
+              {renderLinks(answer.links)}
+            </Collapse>,
+          );
+        }
+        if (nonEmptyArray(answer.subQuestions)) {
+          messages.addMessage(
+            <Collapse key="subQuestionsTitle" timeout={600}>
+              {renderSubQuestionsTitle()}
+            </Collapse>,
+          );
+          answer.subQuestions.forEach((question, index) => {
+            messages.addMessage(
+              <Collapse key={`sub-${index}`} timeout={600}>
+                {renderSubQuestion(question)}
+              </Collapse>,
+            );
+          });
+        }
+      }
       if (notNone(question.assumption)) {
         messages.addMessage(
           <Collapse key="assumption" timeout={600}>
@@ -126,11 +201,24 @@ export default function AIMessagesV2 ({ question, prompts, onStop, onStart, coll
           </Collapse>,
         );
       } else {
+        const answer = question.answer;
         messages.keepMessages(key => key === 'CQ' || key === 'append');
         messages.insertMessage(
           <Collapse key="above" timeout={600}>
             <div>
               {notNone(question.revisedTitle) && renderRevisedTitle(question.revisedTitle, false)}
+              {notNullish(answer) && (
+                <>
+                  {nonEmptyArray(answer.keywords) && renderKeywords(answer.keywords)}
+                  {nonEmptyArray(answer.links) && renderLinks(answer.links)}
+                  {nonEmptyArray(answer.subQuestions) && (
+                    <>
+                      {renderSubQuestionsTitle()}
+                      {answer.subQuestions.map(renderSubQuestion)}
+                    </>
+                  )}
+                </>
+              )}
               {notNone(question.assumption) && renderAssumption(question.assumption)}
             </div>
           </Collapse>,
@@ -147,7 +235,7 @@ export default function AIMessagesV2 ({ question, prompts, onStop, onStart, coll
         );
       }
     }
-  }, [finished, animating, collapsed, question.revisedTitle, question.assumption, question.combinedTitle, question.status]);
+  }, [finished, animating, collapsed, question.revisedTitle, question.assumption, question.combinedTitle, question.status, JSON.stringify(question.answer)]);
 
   useEffect(() => {
     if (isNullish(messagesRef.current)) {

@@ -9,6 +9,9 @@ export const Line = styled(Box)`
   }
 `;
 
+export const Strong = styled('strong')`
+`;
+
 export const StyledTitle = styled('div')`
 `;
 
