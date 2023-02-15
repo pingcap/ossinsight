@@ -25,7 +25,7 @@ builder.addInfo({
   },
   version: '1.0.0',
   'x-logo': {
-    url: 'https://ossinsight.io/img/logo.png',
+    url: 'https://ossinsight.io/img/logo.svg',
     alt: 'OSSInsight Logo',
   },
 });

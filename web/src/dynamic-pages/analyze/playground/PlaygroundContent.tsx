@@ -155,7 +155,7 @@ LIMIT
               </p>
               <Box flex={1} />
               <p>
-                Made with <Favorite fontSize="inherit" sx={{ verticalAlign: 'text-bottom' }} /> by <Logo height={20} src="/img/logo.png" alt="OSSInsight Logo" /> and <Logo height={16} src="/img/openai-logo.svg" alt="OpenAI Logo" />
+                Made with <Favorite fontSize="inherit" sx={{ verticalAlign: 'text-bottom' }} /> by <Logo height={20} src="/img/logo.svg" alt="OSSInsight Logo" /> and <Logo height={16} src="/img/openai-logo.svg" alt="OpenAI Logo" />
               </p>
             </PlaygroundDescription>
             <StyledArrowIcon />
