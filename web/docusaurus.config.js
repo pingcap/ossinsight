@@ -228,7 +228,7 @@ const config = {
       navbar: {
         logo: {
           alt: 'OSS Insight Logo',
-          src: 'img/logo.png',
+          src: 'img/logo.svg',
         },
         style: 'dark',
         items: [
