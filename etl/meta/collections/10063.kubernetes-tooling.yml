@@ -22,3 +22,4 @@ items:
   - helm/helm
   - opencost/opencost
   - kubeshop/monokle
+  - komodorio/helm-dashboard
