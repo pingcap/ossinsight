@@ -235,11 +235,9 @@ export class ExplorerService {
                         [answer, responseText] = await this.botService.questionToAnswerInStream(this.generateAnswerTemplate, title, async (answer, key, value) => {
                             // @ts-ignore
                             question[key] = value;
-
-                            if (['revisedTitle', 'notClear', 'assumption', 'combinedTitle', 'querySQL'].includes(key)) {
-                                logger.info(`Updating question with ${key} = ${value}.`)
-                                await this.updateQuestion(question);
-                            }
+                            question.answer = answer;
+                            logger.info(`Updating question with ${key} = ${value}.`)
+                            await this.updateQuestion(question);
                         });
                     } else {
                         [answer, responseText] = await this.botService.questionToAnswer(this.generateAnswerTemplate, title);
@@ -261,6 +259,7 @@ export class ExplorerService {
                         question.assumption = undefined;
                         question.combinedTitle = undefined;
                         question.querySQL = undefined;
+                        question.answer = undefined;
                         answer = null;
                         outputInStream = false; // Disable the output in stream mode if it failed.
                         await sleep(1000 * i);
@@ -612,7 +611,7 @@ export class ExplorerService {
         const connection = conn || this.mysql;
         const [rows] = await connection.query<any[]>(`
             SELECT
-                BIN_TO_UUID(id) AS id, hash, user_id AS userId, status, title, revised_title AS revisedTitle, not_clear AS notClear, 
+                BIN_TO_UUID(id) AS id, hash, user_id AS userId, status, title, answer, revised_title AS revisedTitle, not_clear AS notClear, 
                 assumption, combined_title AS combinedTitle, sql_can_answer AS sqlCanAnswer, query_sql AS querySQL, query_hash AS queryHash, engines, 
                 queue_name AS queueName, queue_job_id AS queueJobId, recommended_questions AS recommendedQuestions, 
                 result, chart, answer_summary AS answerSummary, recommended, hit_cache AS hitCache, 
@@ -631,7 +630,7 @@ export class ExplorerService {
         const connection = conn || this.mysql;
         const [rows] = await connection.query<any[]>(`
             SELECT
-                BIN_TO_UUID(id) AS id, hash, user_id AS userId, status, title, revised_title AS revisedTitle, not_clear AS notClear,
+                BIN_TO_UUID(id) AS id, hash, user_id AS userId, status, title, answer, revised_title AS revisedTitle, not_clear AS notClear,
                 assumption, combined_title AS combinedTitle, sql_can_answer AS sqlCanAnswer, query_sql AS querySQL, query_hash AS queryHash, engines,
                 queue_name AS queueName, queue_job_id AS queueJobId, recommended_questions AS recommendedQuestions,
                 result, chart, answer_summary AS answerSummary, recommended, hit_cache AS hitCache,
@@ -654,7 +653,7 @@ export class ExplorerService {
     async getLatestQuestionByQueryHash(queryHash: string, ttl: number): Promise<Question | null> {
         const [rows] = await this.mysql.query<any[]>(`
             SELECT
-                BIN_TO_UUID(id) AS id, hash, user_id AS userId, status, title, revised_title AS revisedTitle, not_clear AS notClear,
+                BIN_TO_UUID(id) AS id, hash, user_id AS userId, status, title, answer, revised_title AS revisedTitle, not_clear AS notClear,
                 assumption, combined_title AS combinedTitle, sql_can_answer AS sqlCanAnswer, query_sql AS querySQL, query_hash AS queryHash, engines,
                 queue_name AS queueName, queue_job_id AS queueJobId, recommended_questions AS recommendedQuestions,
                 result, chart, answer_summary AS answerSummary, recommended, hit_cache AS hitCache,
@@ -689,7 +688,7 @@ export class ExplorerService {
         const connection = conn || this.mysql;
         const [rows] = await connection.query<any[]>(`
             SELECT
-                BIN_TO_UUID(id) AS id, hash, user_id AS userId, status, title, revised_title AS revisedTitle, not_clear AS notClear,
+                BIN_TO_UUID(id) AS id, hash, user_id AS userId, status, title, answer, revised_title AS revisedTitle, not_clear AS notClear,
                 assumption, combined_title AS combinedTitle, sql_can_answer AS sqlCanAnswer, query_sql AS querySQL, query_hash AS queryHash, engines,
                 queue_name AS queueName, queue_job_id AS queueJobId, recommended_questions AS recommendedQuestions,
                 result, chart, answer_summary AS answerSummary, recommended, hit_cache AS hitCache,
