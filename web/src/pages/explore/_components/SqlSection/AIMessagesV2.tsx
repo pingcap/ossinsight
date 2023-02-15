@@ -25,6 +25,14 @@ function joinComma<T> (arr: T[]): Array<T | string> {
   return arr.flatMap(i => [', ', i]).slice(1);
 }
 
+function trimGithub (link: string) {
+  return link.replace(/^https:\/\/github\.com\//, '');
+}
+
+function trimNo (question: string) {
+  return question.replace(/^No\s*\d+:?\s*/i, '');
+}
+
 const renderRevisedTitle = (revisedTitle: string, animating: boolean) => {
   return (
     <Line>
@@ -48,7 +56,7 @@ const renderLinks = (links: string[]) => {
   return (
     <Line className="light">
       {spacer}
-      Might be the key player: {joinComma(links.map(link => <a key={link} href={link} target="_blank" rel="noreferrer">{link}</a>))}
+      Might be the key player: {joinComma(links.map(link => <a key={link} href={link} target="_blank" rel="noreferrer">{trimGithub(link)}</a>))}
     </Line>
   );
 };
@@ -68,7 +76,7 @@ const renderSubQuestion = (question: string) => {
       {spacer}
       {spacer}
       •&nbsp;
-      {question}
+      {trimNo(question)}
     </ListItem>
   );
 };
