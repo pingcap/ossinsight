@@ -1,0 +1,37 @@
+{
+  "name": "@ossinsight/github-client",
+  "version": "0.0.0",
+  "description": "A GitHub client.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "directories": {
+    "test": "__tests__"
+  },
+  "private": true,
+  "scripts": {
+    "build:ts": "tsc",
+    "build": "rm -rf dist && npm run build:ts",
+    "start": "npm run build:ts && node dist/index.js",
+    "test": "jest",
+    "coverage": "jest --coverage",
+    "watch:ts": "tsc -w"
+  },
+  "keywords": [],
+  "author": "Mini256",
+  "license": "MIT",
+  "dependencies": {
+    "fastify-tsconfig": "^1.0.1",
+    "generic-pool": "^3.9.0",
+    "jest": "^29.4.2",
+    "node-jest": "^0.2.0",
+    "octokit": "^2.0.14",
+    "pino": "^8.7.0"
+  },
+  "devDependencies": {
+    "@types/generic-pool": "^3.1.11",
+    "@types/jest": "^29.4.0",
+    "@types/nock": "^11.1.0",
+    "@types/node": "^18.13.0",
+    "nock": "^13.3.0"
+  }
+}
