@@ -9,6 +9,15 @@ export const Line = styled(Box)`
   }
 `;
 
+export const ListItem = styled(Box)`
+  line-height: 24px;
+  font-size: 14px;
+  font-weight: normal;
+`;
+
+export const Strong = styled('strong')`
+`;
+
 export const StyledTitle = styled('div')`
 `;
 

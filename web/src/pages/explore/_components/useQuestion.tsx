@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { newQuestion, pollQuestion, Question, QuestionErrorType, QuestionStatus } from '@site/src/api/explorer';
 import { useMemoizedFn } from 'ahooks';
-import { isFalsy, isFiniteNumber, isNonemptyString, notNullish } from '@site/src/utils/value';
+import { isFalsy, isFiniteNumber, isNonemptyString, nonEmptyArray, notNullish } from '@site/src/utils/value';
 import { timeout } from '@site/src/utils/promisify';
 import { useGtag } from '@site/src/utils/ga';
 import { getErrorMessage } from '@site/src/utils/error';
@@ -371,8 +371,22 @@ export function isEmptyResult (question: Question) {
 
 export function hasAIPrompts (question: Question) {
   if (question.status === QuestionStatus.AnswerGenerating) {
+    let hasPrompts = false;
+    const answer = question.answer;
+    if (notNullish(answer)) {
+      hasPrompts ||= (
+        nonEmptyArray(answer.keywords) ||
+        nonEmptyArray(answer.links) ||
+        nonEmptyArray(answer.subQuestions)
+      );
+    }
     // RQ are generate first
-    return notNone(question.combinedTitle);
+    hasPrompts ||= (
+      notNone(question.revisedTitle) ||
+      notNone(question.assumption) ||
+      notNone(question.combinedTitle)
+    );
+    return hasPrompts;
   } else {
     // For previous questions without CQ
     return (

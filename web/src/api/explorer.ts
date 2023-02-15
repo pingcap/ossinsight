@@ -32,11 +32,27 @@ export interface Question {
   errorType?: QuestionErrorType | null;
   hitCache?: boolean;
 
+  answer?: QuestionAnswer | null;
+
   assumption?: string;
   notClear?: string;
   revisedTitle?: string;
   combinedTitle?: string;
   sqlCanAnswer?: boolean;
+}
+
+export interface QuestionAnswer {
+  assumption?: string;
+  chart?: ChartResult;
+  combinedTitle?: string;
+  deps?: string;
+  keywords?: string[];
+  links?: string[];
+  notClear?: string;
+  querySQL?: string;
+  revisedTitle?: string;
+  sqlCanAnswer?: boolean;
+  subQuestions?: string[];
 }
 
 export interface QuestionSQLResult {
