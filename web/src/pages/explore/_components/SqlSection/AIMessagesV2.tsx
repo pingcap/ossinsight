@@ -4,7 +4,7 @@ import React, { ReactElement, useEffect, useRef, useState } from 'react';
 import { isNullish, nonEmptyArray, notNullish } from '@site/src/utils/value';
 import { notNone } from '@site/src/pages/explore/_components/SqlSection/utils';
 import { Box, Collapse, IconButton } from '@mui/material';
-import { Assumption, CombinedTitle, Line, RevisedTitle, Strong } from '@site/src/pages/explore/_components/SqlSection/styled';
+import { Assumption, CombinedTitle, Line, ListItem, RevisedTitle, Strong } from '@site/src/pages/explore/_components/SqlSection/styled';
 import { useMemoizedFn } from 'ahooks';
 import BotIcon from '@site/src/pages/explore/_components/BotIcon';
 import CopyButton from './CopyButton';
@@ -64,14 +64,12 @@ const renderSubQuestionsTitle = () => {
 
 const renderSubQuestion = (question: string) => {
   return (
-    <Line className='light'>
+    <ListItem className="light">
       {spacer}
       {spacer}
       •&nbsp;
-      <Strong>
-        {question}
-      </Strong>
-    </Line>
+      {question}
+    </ListItem>
   );
 };
 
