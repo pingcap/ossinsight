@@ -3,12 +3,17 @@ import ChatMessages, { ChatMessagesInstance } from '@site/src/pages/explore/_com
 import React, { ReactElement, useEffect, useRef, useState } from 'react';
 import { isNullish, nonEmptyArray, notNullish } from '@site/src/utils/value';
 import { notNone } from '@site/src/pages/explore/_components/SqlSection/utils';
-import { Box, Collapse, IconButton } from '@mui/material';
+import { Box, Collapse, IconButton, styled } from '@mui/material';
 import { Assumption, CombinedTitle, Line, ListItem, RevisedTitle, Strong } from '@site/src/pages/explore/_components/SqlSection/styled';
 import { useMemoizedFn } from 'ahooks';
 import BotIcon from '@site/src/pages/explore/_components/BotIcon';
 import CopyButton from './CopyButton';
 import { ExpandMore } from '@mui/icons-material';
+
+const DURATION = 600;
+const DELAY = 1500;
+const DELAYED_DURATION = DURATION + DELAY;
+const FINISH_STATUSES = [QuestionStatus.Error, QuestionStatus.Cancel, QuestionStatus.Success, QuestionStatus.Summarizing];
 
 interface AIMessagesV2Props {
   collapsed?: boolean;
@@ -131,7 +136,7 @@ export default function AIMessagesV2 ({ question, prompts, onStop, onStart, coll
       return;
     }
     // if (question.status === QuestionStatus.AnswerGenerating) {
-    if (!finished) {
+    if (!finished || !FINISH_STATUSES.includes(question.status)) {
       if (notNone(question.revisedTitle)) {
         messages.addMessage(
           <Collapse key="RQ" timeout={600}>
@@ -143,70 +148,70 @@ export default function AIMessagesV2 ({ question, prompts, onStop, onStart, coll
       if (notNullish(answer)) {
         if (nonEmptyArray(answer.keywords)) {
           messages.addMessage(
-            <Collapse key="keywords" timeout={600}>
+            <DelayedCollapse key="keywords" timeout={DELAYED_DURATION} delay={DELAY}>
               {renderKeywords(answer.keywords)}
-            </Collapse>,
+            </DelayedCollapse>,
           );
         }
         if (nonEmptyArray(answer.links)) {
           messages.addMessage(
-            <Collapse key="links" timeout={600}>
+            <DelayedCollapse key="links" timeout={DELAYED_DURATION} delay={DELAY}>
               {renderLinks(answer.links)}
-            </Collapse>,
+            </DelayedCollapse>,
           );
         }
         if (nonEmptyArray(answer.subQuestions)) {
           messages.addMessage(
-            <Collapse key="subQuestionsTitle" timeout={600}>
+            <DelayedCollapse key="subQuestionsTitle" timeout={DELAYED_DURATION} delay={DELAY}>
               {renderSubQuestionsTitle()}
-            </Collapse>,
+            </DelayedCollapse>,
           );
           answer.subQuestions.forEach((question, index) => {
             messages.addMessage(
-              <Collapse key={`sub-${index}`} timeout={600}>
+              <DelayedCollapse key={`sub-${index}`} timeout={DELAYED_DURATION} delay={DELAY}>
                 {renderSubQuestion(question)}
-              </Collapse>,
+              </DelayedCollapse>,
             );
           });
         }
       }
       if (notNone(question.assumption)) {
         messages.addMessage(
-          <Collapse key="assumption" timeout={600}>
+          <DelayedCollapse key="assumption" timeout={DELAYED_DURATION} delay={DELAY}>
             {renderAssumption(question.assumption)}
-          </Collapse>,
+          </DelayedCollapse>,
         );
       }
       if (notNone(question.combinedTitle)) {
         messages.addMessage(
-          <Collapse key="CQ" timeout={600}>
+          <DelayedCollapse key="CQ" timeout={DELAYED_DURATION} delay={DELAY}>
             {renderCombinedTitle(question.combinedTitle, false)}
-          </Collapse>,
+          </DelayedCollapse>,
         );
         messages.addMessage(
-          <Collapse key="append" timeout={600}>
+          <DelayedCollapse key="append" timeout={DELAYED_DURATION} delay={DELAY}>
             {renderAppends()}
-          </Collapse>,
+          </DelayedCollapse>,
         );
       }
     } else if (notNone(question.combinedTitle)) {
       if (collapsed) {
         messages.keepMessages(key => key === 'CQ' || key === 'append');
         messages.addMessage(
-          <Collapse key="CQ" timeout={600}>
+          <DelayedCollapse key="CQ" timeout={DELAYED_DURATION} delay={DELAY}>
             {renderCombinedTitle(question.combinedTitle, true, collapsed, onCollapsedChange)}
-          </Collapse>,
+          </DelayedCollapse>,
         );
         messages.addMessage(
-          <Collapse key="append" timeout={600}>
+          <DelayedCollapse key="append" timeout={DELAYED_DURATION} delay={DELAY}>
             {renderAppends()}
-          </Collapse>,
+          </DelayedCollapse>,
         );
       } else {
         const answer = question.answer;
         messages.keepMessages(key => key === 'CQ' || key === 'append');
         messages.insertMessage(
-          <Collapse key="above" timeout={600}>
+          <Collapse key="above" timeout={DURATION}>
             <div>
               {notNone(question.revisedTitle) && renderRevisedTitle(question.revisedTitle, false)}
               {notNullish(answer) && (
@@ -226,14 +231,14 @@ export default function AIMessagesV2 ({ question, prompts, onStop, onStart, coll
           </Collapse>,
         );
         messages.addMessage(
-          <Collapse key="CQ" timeout={600}>
+          <DelayedCollapse key="CQ" timeout={DURATION} delay={0}>
             {renderCombinedTitle(question.combinedTitle, false, collapsed, onCollapsedChange)}
-          </Collapse>,
+          </DelayedCollapse>,
         );
         messages.addMessage(
-          <Collapse key="append" timeout={600}>
+          <DelayedCollapse key="append" timeout={DURATION} delay={0}>
             {renderAppends()}
-          </Collapse>,
+          </DelayedCollapse>,
         );
       }
     }
@@ -289,3 +294,8 @@ export default function AIMessagesV2 ({ question, prompts, onStop, onStart, coll
     />
   );
 }
+
+const DelayedCollapse = styled(Collapse, { shouldForwardProp: key => key !== 'delay' })<{ timeout: number, delay: number }>`
+  transition-delay: ${({ delay }) => delay}ms;
+  transition-duration: ${({ timeout, delay }) => timeout - delay}ms !important;
+`;
