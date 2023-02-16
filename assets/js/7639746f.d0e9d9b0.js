@@ -567,6 +567,7 @@
   font-size: 12px;
   display: table;
   min-width: 100%;
+  text-align: center;
 `;var ga=n(66284);function pa(e){return/date|time|year|month/.test(e)}function Ea(e){return"number"==typeof e?e>=1970&&e<2100:Ea(Number(e))}function fa(e,t){return e.map((e=>{let n=e[t];return Ea(n)&&(n=new Date(String(n))),{...e,[t]:n}}))}function va(e,t,n){void 0===n&&(n=new Set);return(0,l.YN)(t,(e=>!(0,l.Rw)(e)&&(e instanceof Array?e.length>0&&(0,l.YN)(e,l.GC):(0,l.GC)(e))))?e.filter((e=>(0,l.YN)(t,(e=>t=>"string"==typeof t?(0,l.nf)(e[t]):(0,l.YN)(t,(t=>n.has(t)||(0,l.nf)(e[t]))))(e)))):[]}var ya=n(85214),ba=n(81284),xa=n(19594),Za=n(95309),wa=n(61702),Sa=n(44731);function Aa(e){let{name:t}=e;const n=(0,r.useMemo)((()=>/\[bot]/i.test(t)?"/img/github-bot-icon.svg":`https://github.com/${t}.png`),[t]);return r.createElement(Sa.Z,{src:n})}var Ia=n(49837),Ca=n(91359),ka=n(45344);const Ta=(0,N.ZP)("span")`
   font-size: 16px;
   opacity: 0.3;
