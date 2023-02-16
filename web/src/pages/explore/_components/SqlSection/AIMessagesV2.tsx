@@ -1,7 +1,7 @@
 import { Question, QuestionStatus } from '@site/src/api/explorer';
 import ChatMessages, { ChatMessagesInstance } from '@site/src/pages/explore/_components/ChatMessages';
 import React, { ReactElement, useEffect, useRef, useState } from 'react';
-import { isNullish, nonEmptyArray, notNullish } from '@site/src/utils/value';
+import { isNullish, nonEmptyArray, notFalsy, notNullish } from '@site/src/utils/value';
 import { notNone } from '@site/src/pages/explore/_components/SqlSection/utils';
 import { Box, Collapse, IconButton, styled } from '@mui/material';
 import { Assumption, CombinedTitle, Line, ListItem, RevisedTitle, Strong } from '@site/src/pages/explore/_components/SqlSection/styled';
@@ -99,11 +99,9 @@ const renderCombinedTitle = (combinedTitle: string, bot: boolean, collapsed?: bo
       Seems like you are asking about:
       <CombinedTitle dangerouslySetInnerHTML={{ __html: combinedTitle }} />
       <CopyButton content={combinedTitle} />
-      {notNullish(collapsed) && (
-        <IconButton size="small" onClick={() => onCollapsedChange?.(!collapsed)}>
-          <ExpandMore sx={{ rotate: collapsed ? 0 : '180deg', transition: theme => theme.transitions.create('rotate') }} />
-        </IconButton>
-      )}
+      <IconButton disabled={isNullish(collapsed)} size="small" onClick={() => onCollapsedChange?.(!collapsed)}>
+        <ExpandMore sx={{ rotate: notFalsy(collapsed) ? 0 : '180deg', transition: theme => theme.transitions.create('rotate') }} />
+      </IconButton>
     </Line>
   );
 };
@@ -135,8 +133,9 @@ export default function AIMessagesV2 ({ question, prompts, onStop, onStart, coll
     if (isNullish(messages)) {
       return;
     }
+    const notDone = !finished || !FINISH_STATUSES.includes(question.status);
     // if (question.status === QuestionStatus.AnswerGenerating) {
-    if (!finished || !FINISH_STATUSES.includes(question.status)) {
+    if (notDone) {
       if (notNone(question.revisedTitle)) {
         messages.addMessage(
           <DelayedCollapse key="RQ" timeout={DELAYED_DURATION} delay={DELAY}>
