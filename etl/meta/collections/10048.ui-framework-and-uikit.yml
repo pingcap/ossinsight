@@ -34,3 +34,14 @@ items:
   - radix-ui/primitives
   - mantinedev/mantine
   - chakra-ui/chakra-ui
+  - nextui-org/nextui
+  - microsoft/fast
+  - microsoft/fluentui
+  - tailwindlabs/headlessui
+  - mdbootstrap/Tailwind-Elements
+  - adobe/react-spectrum
+  - GeekyAnts/NativeBase
+  - segmentio/evergreen
+  - tusen-ai/naive-ui
+  - uber/baseweb
+  - element-plus/element-plus
