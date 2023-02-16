@@ -50,4 +50,5 @@ const Table = styled('table')`
   font-size: 12px;
   display: table;
   min-width: 100%;
+  text-align: center;
 `;
