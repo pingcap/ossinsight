@@ -139,9 +139,9 @@ export default function AIMessagesV2 ({ question, prompts, onStop, onStart, coll
     if (!finished || !FINISH_STATUSES.includes(question.status)) {
       if (notNone(question.revisedTitle)) {
         messages.addMessage(
-          <Collapse key="RQ" timeout={600}>
+          <DelayedCollapse key="RQ" timeout={DELAYED_DURATION} delay={DELAY}>
             {renderRevisedTitle(question.revisedTitle, animating)}
-          </Collapse>,
+          </DelayedCollapse>,
         );
       }
       const answer = question.answer;
@@ -198,12 +198,12 @@ export default function AIMessagesV2 ({ question, prompts, onStop, onStart, coll
       if (collapsed) {
         messages.keepMessages(key => key === 'CQ' || key === 'append');
         messages.addMessage(
-          <DelayedCollapse key="CQ" timeout={DELAYED_DURATION} delay={DELAY}>
+          <DelayedCollapse key="CQ" timeout={DURATION} delay={0}>
             {renderCombinedTitle(question.combinedTitle, true, collapsed, onCollapsedChange)}
           </DelayedCollapse>,
         );
         messages.addMessage(
-          <DelayedCollapse key="append" timeout={DELAYED_DURATION} delay={DELAY}>
+          <DelayedCollapse key="append" timeout={DURATION} delay={0}>
             {renderAppends()}
           </DelayedCollapse>,
         );
