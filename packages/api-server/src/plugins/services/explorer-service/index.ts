@@ -658,7 +658,7 @@ export class ExplorerService {
         return this.mapRecordToQuestion(rows[0]);
     }
 
-    async getQuestionsByHash(questionHash: string, conn?: Connection): Promise<Question[]> {
+    async getRecommendedQuestionsByHash(questionHash: string, conn?: Connection): Promise<Question[]> {
         const connection = conn || this.mysql;
         const [rows] = await connection.query<any[]>(`
             SELECT
@@ -669,8 +669,7 @@ export class ExplorerService {
                 created_at AS createdAt, requested_at AS requestedAt, executed_at AS executedAt, finished_at AS finishedAt,
                 spent, error_type AS errorType, error
             FROM explorer_questions
-            WHERE
-                hash = ?
+            WHERE hash = ? AND recommended = 1
         `, [questionHash]);
         return rows.map(this.mapRecordToQuestion);
     }
@@ -1193,7 +1192,7 @@ export class ExplorerService {
     async getRecommendQuestionsByTag(n: number = 40, tagId?: number | null, conn?: Connection): Promise<RecommendQuestion[]> {
         const connection = conn || this.mysql;
 
-        let questions = [];
+        let questions: any[];
         if (tagId) {
             [questions] = await connection.query<any[]>(`
                 SELECT eq.hash, eq.title, false AS aiGenerated, BIN_TO_UUID(eq.id) AS questionId, eq.created_at AS createdAt
@@ -1275,11 +1274,12 @@ export class ExplorerService {
 
     async recommendQuestion(questionId: string, conn?: Connection): Promise<void> {
         const connection: Connection | PoolConnection = conn || await this.mysql.getConnection();
+        const question = await this.getQuestionByIdOrError(questionId, connection);
+
         await connection.beginTransaction();
         try {
-            const question = await this.getQuestionByIdOrError(questionId, connection);
             const hash = question?.hash;
-            const oldQuestions = await this.getQuestionsByHash(hash, connection);
+            const oldQuestions = await this.getRecommendedQuestionsByHash(hash, connection);
             const oldQuestionIds = oldQuestions.map((q) => q.id);
 
             let oldTagIds: number[] = [];
@@ -1363,6 +1363,14 @@ export class ExplorerService {
                 const message = `Failed to cancel recommended question.`;
                 this.logger.error({questionId, err}, message);
                 throw new ExplorerCancelRecommendQuestionError(500, message, err);
+            }
+        } finally {
+            // @ts-ignore
+            if (typeof connection.release) {
+                // @ts-ignore
+                await connection.release();
+            } else {
+                await connection.end();
             }
         }
     }
