@@ -1,7 +1,7 @@
 import {FastifyPluginAsyncJsonSchemaToTs} from "@fastify/type-provider-json-schema-to-ts";
 
 const schema = {
-  summary: 'Get question tags list',
+  summary: 'Get tags list',
   tags: ['explorer']
 };
 
@@ -9,7 +9,7 @@ export const getTagsHandler: FastifyPluginAsyncJsonSchemaToTs = async (app): Pro
   app.get('/', {
     schema
   }, async function (req, reply) {
-    const questionTags = await app.explorerService.getQuestionTags();
+    const questionTags = await app.explorerService.getTags();
     reply.status(200).send(questionTags);
   });
 }

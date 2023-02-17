@@ -87,3 +87,31 @@ export class ExplorerResolveQuestionError extends Error {
         super(message, cause);
     }
 }
+
+export class ExplorerSetQuestionTagsError extends APIError {
+    constructor(readonly statusCode: number, readonly message: string, error?: Error) {
+        super(statusCode, message, error);
+        if (error) {
+            this.cause = error;
+        }
+    }
+}
+
+
+export class ExplorerRecommendQuestionError extends APIError {
+    constructor(readonly statusCode: number, readonly message: string, error?: Error) {
+        super(statusCode, message, error);
+        if (error) {
+            this.cause = error;
+        }
+    }
+}
+
+export class ExplorerCancelRecommendQuestionError extends APIError {
+    constructor(readonly statusCode: number, readonly message: string, error?: Error) {
+        super(statusCode, message, error);
+        if (error) {
+            this.cause = error;
+        }
+    }
+}
