@@ -1157,6 +1157,14 @@ export class ExplorerService {
                 err,
             }, message);
             throw new ExplorerSetQuestionTagsError(500, message,err);
+        } finally {
+            // @ts-ignore
+            if (connection.release) {
+                // @ts-ignore
+                await connection.release();
+            } else {
+                await connection.end();
+            }
         }
     }
 
