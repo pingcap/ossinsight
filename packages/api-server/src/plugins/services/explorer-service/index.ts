@@ -4,9 +4,9 @@ import {
     APIError, BotResponseGenerateError,
     BotResponseParseError,
     ExplorerCreateQuestionError,
-    ExplorerPrepareQuestionError,
-    ExplorerResolveQuestionError,
-    ExplorerTooManyRequestError,
+    ExplorerPrepareQuestionError, ExplorerRecommendQuestionError,
+    ExplorerResolveQuestionError, ExplorerSetQuestionTagsError,
+    ExplorerTooManyRequestError, ExplorerCancelRecommendQuestionError,
     SQLUnsupportedFunctionError,
     ValidateSQLError
 } from "../../../utils/error";
@@ -163,7 +163,7 @@ export class ExplorerService {
 
             // Check if the question is cached.
             if (!ignoreCache) {
-                const cachedQuestion = await this.getQuestionByHash(questionHash, this.options.generateSQLCacheTTL, conn);
+                const cachedQuestion = await this.getLatestQuestionByHash(questionHash, this.options.generateSQLCacheTTL, conn);
                 if (cachedQuestion) {
                     logger.info("Question is cached, returning cached question (hash: %s).", questionHash);
 
@@ -626,7 +626,15 @@ export class ExplorerService {
         return this.mapRecordToQuestion(rows[0]);
     }
 
-    async getQuestionByHash(questionHash: string, ttl: number, conn?: Connection): Promise<Question | null> {
+    async getQuestionByIdOrError(questionId: string, conn?: Connection): Promise<Question> {
+        const question = await this.getQuestionById(questionId, conn);
+        if (question === null) {
+            throw new APIError(404, 'Question not found.');
+        }
+        return question;
+    }
+
+    async getLatestQuestionByHash(questionHash: string, ttl: number, conn?: Connection): Promise<Question | null> {
         const connection = conn || this.mysql;
         const [rows] = await connection.query<any[]>(`
             SELECT
@@ -648,6 +656,23 @@ export class ExplorerService {
             return null;
         }
         return this.mapRecordToQuestion(rows[0]);
+    }
+
+    async getQuestionsByHash(questionHash: string, conn?: Connection): Promise<Question[]> {
+        const connection = conn || this.mysql;
+        const [rows] = await connection.query<any[]>(`
+            SELECT
+                BIN_TO_UUID(id) AS id, hash, user_id AS userId, status, title, revised_title AS revisedTitle, not_clear AS notClear,
+                assumption, combined_title AS combinedTitle, sql_can_answer AS sqlCanAnswer, query_sql AS querySQL, query_hash AS queryHash, engines,
+                queue_name AS queueName, queue_job_id AS queueJobId, recommended_questions AS recommendedQuestions,
+                result, chart, answer_summary AS answerSummary, recommended, hit_cache AS hitCache,
+                created_at AS createdAt, requested_at AS requestedAt, executed_at AS executedAt, finished_at AS finishedAt,
+                spent, error_type AS errorType, error
+            FROM explorer_questions
+            WHERE
+                hash = ?
+        `, [questionHash]);
+        return rows.map(this.mapRecordToQuestion);
     }
 
     async getLatestQuestionByQueryHash(queryHash: string, ttl: number): Promise<Question | null> {
@@ -1063,13 +1088,28 @@ export class ExplorerService {
 
     // Recommend questions.
 
-    async getQuestionTags(conn?: Connection): Promise<QuestionTag[]> {
+    async getTags(conn?: Connection): Promise<QuestionTag[]> {
         const connection = conn || this.mysql;
         const [rows] = await connection.query<any[]>(`
             SELECT id, label, color, sort, created_at AS createdAt
             FROM explorer_question_tags eqt
             ORDER BY eqt.sort
         `);
+        return this.mapQuestionTags(rows);
+    }
+
+    async getQuestionTags(questionId: string, conn?: Connection): Promise<QuestionTag[]> {
+        const connection = conn || this.mysql;
+        const [rows] = await connection.query<any[]>(`
+            SELECT id, label, color, sort, created_at AS createdAt
+            FROM explorer_question_tags eqt
+            JOIN explorer_question_tag_rel eqtr ON eqtr.tag_id = eqt.id
+            WHERE eqtr.question_id = UUID_TO_BIN(?)
+        `, [questionId]);
+        return this.mapQuestionTags(rows);
+    }
+
+    mapQuestionTags(rows: any[]): QuestionTag[] {
         return rows.map((r) => {
             return {
                 ...r,
@@ -1077,6 +1117,51 @@ export class ExplorerService {
             }
         });
     }
+
+    async setQuestionTags(questionId: string, newTagIds: number[], conn?: Connection): Promise<void> {
+        const connection = conn || await this.mysql.getConnection();
+        await connection.beginTransaction();
+
+        try {
+            const existedTags = await this.getQuestionTags(questionId, connection);
+            const existedTagIds = existedTags.map((t) => t.id);
+
+            // Remove tags didn't exist in newTagIds.
+            const needRemoveTagIds = existedTagIds.filter((id) => !newTagIds.includes(id));
+            if (Array.isArray(needRemoveTagIds) && needRemoveTagIds.length > 0) {
+                await connection.query(`
+                    DELETE FROM explorer_question_tag_rel eqtr
+                    WHERE
+                        eqtr.question_id = UUID_TO_BIN(?)
+                        AND eqtr.tag_id IN (?)
+                `, [questionId, needRemoveTagIds]);
+            }
+
+            // Add tags didn't exist in existedTagIds.
+            const needAddTags = newTagIds.filter((id) => !existedTagIds.includes(id));
+            if (Array.isArray(needAddTags) && needAddTags.length > 0) {
+                await connection.query(`
+                    INSERT INTO explorer_question_tag_rel (question_id, tag_id)
+                    VALUES ${needAddTags.map(() => '(UUID_TO_BIN(?), ?)').join(',')}
+                `, needAddTags.map((id) => {
+                    return [questionId, id];
+                }).flat());
+            }
+
+            await connection.commit();
+        } catch (err: any) {
+            await connection.rollback();
+            const message = 'Failed to set question tags.';
+            this.logger.error({
+                questionId: questionId,
+                tagIds: newTagIds,
+                err,
+            }, message);
+            throw new ExplorerSetQuestionTagsError(500, message,err);
+        }
+    }
+
+    // Recommend questions.
 
     async getRecommendQuestionsByRandom(n: number, aiGenerated?: boolean, conn?: Connection): Promise<RecommendQuestion[]> {
         const connection = conn || this.mysql;
@@ -1188,6 +1273,100 @@ export class ExplorerService {
         }
     }
 
+    async recommendQuestion(questionId: string, conn?: Connection): Promise<void> {
+        const connection: Connection | PoolConnection = conn || await this.mysql.getConnection();
+        await connection.beginTransaction();
+        try {
+            const question = await this.getQuestionByIdOrError(questionId, connection);
+            const hash = question?.hash;
+            const oldQuestions = await this.getQuestionsByHash(hash, connection);
+            const oldQuestionIds = oldQuestions.map((q) => q.id);
+
+            let oldTagIds: number[] = [];
+            if (Array.isArray(oldQuestions) && oldQuestions.length > 0) {
+                // Get the old question tags.
+                const [oldTagRows] = await connection.query<any[]>(`
+                    SELECT DISTINCT eqtr.tag_id AS tagId
+                    FROM explorer_question_tag_rel eqtr
+                    JOIN explorer_questions eq ON eq.id = eqtr.question_id
+                    WHERE eq.recommended = 1 AND eqtr.question_id IN (
+                        ${oldQuestionIds.map(() => `UUID_TO_BIN(?)`).join(',')}
+                    )
+                `, oldQuestionIds);
+                oldTagIds = oldTagRows.map((row) => row.tagId);
+                this.logger.info({questionId, hash, oldTagIds}, 'Get the %d old question tags.', oldTagIds.length);
+
+                // Unrecommended the old questions.
+                const [rs] = await connection.query<ResultSetHeader>(`
+                    UPDATE explorer_questions eq
+                    SET recommended = 0
+                    WHERE recommended = 1 AND eq.id IN (
+                        ${oldQuestionIds.map(() => `UUID_TO_BIN(?)`).join(',')}
+                    )
+                `, oldQuestionIds);
+                this.logger.info({questionId, hash}, 'Unrecommended the %d / %d old questions.', rs.affectedRows, oldQuestions.length);
+            } else {
+                throw new ExplorerRecommendQuestionError(401, 'Question hash is empty.');
+            }
+
+            // Recommended the new question.
+            await connection.query(`
+                UPDATE explorer_questions eq
+                SET recommended = 1
+                WHERE eq.id = UUID_TO_BIN(?)
+            `, [questionId]);
+            this.logger.info({questionId}, 'Recommended the new question.');
+
+            // Migration the question tags.
+            const questionTags = await this.getQuestionTags(questionId, connection);
+            const existedTagIds = questionTags.map((qt) => qt.id);
+            if (existedTagIds.length === 0 && oldTagIds.length > 0) {
+                await this.setQuestionTags(questionId, oldTagIds, connection);
+                this.logger.info({questionId, oldTagIds}, 'Migration the question tags.');
+            }
+
+            await connection.commit();
+        } catch (err: any) {
+            await connection.rollback();
+            if (err instanceof ExplorerRecommendQuestionError) {
+                throw err;
+            } else {
+                const message = `Failed to recommended question.`;
+                this.logger.error({questionId, err}, message);
+                throw new ExplorerRecommendQuestionError(500, message, err);
+            }
+        } finally {
+            // @ts-ignore
+            if (connection.release) {
+                // @ts-ignore
+                await connection.release();
+            } else {
+                await connection.end();
+            }
+        }
+    }
+
+    async cancelRecommendQuestion(questionId: string, conn?: Connection): Promise<void> {
+        const connection = conn || await this.mysql.getConnection();
+
+        try {
+            const question = await this.getQuestionByIdOrError(questionId, connection);
+            await connection.query(`
+                UPDATE explorer_questions eq
+                SET recommended = 0
+                WHERE eq.id = UUID_TO_BIN(?)
+            `, question.id);
+        } catch (err: any) {
+            if (err instanceof ExplorerCancelRecommendQuestionError) {
+                throw err;
+            } else {
+                const message = `Failed to cancel recommended question.`;
+                this.logger.error({questionId, err}, message);
+                throw new ExplorerCancelRecommendQuestionError(500, message, err);
+            }
+        }
+    }
+
     // Question feedback.
 
     async addSystemQuestionFeedback(questionId: string, feedbackType: QuestionFeedbackType, feedbackContent?: string, conn?: Connection) {
@@ -1275,4 +1454,20 @@ export class ExplorerService {
         return summary;
     }
 
+    // Trusted users.
+    async checkIfTrustedUser(userId: number, conn?: Connection): Promise<boolean> {
+        const connection = conn || this.mysql;
+        const [rows] = await connection.query<any[]>(`
+            SELECT user_id AS userId FROM explorer_trusted_users
+            WHERE user_id = ?
+        `, [userId]);
+        return rows.length > 0;
+    }
+
+    async checkIfTrustedUsersOrError(userId: number, conn?: Connection) {
+        const isTrustedUser = await this.checkIfTrustedUser(userId, conn);
+        if (isTrustedUser) {
+            throw new APIError(403, 'Has no permission to do this operation.');
+        }
+    }
 }

@@ -113,4 +113,5 @@ async function calcHotCollectionsInConcurrent(concurrent: number) {
     }
 
     await queue.drain();
+    pool.end();
 }
