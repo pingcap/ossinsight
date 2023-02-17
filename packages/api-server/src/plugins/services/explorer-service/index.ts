@@ -1287,34 +1287,37 @@ export class ExplorerService {
         await connection.beginTransaction();
         try {
             const hash = question?.hash;
+            if (!hash) {
+                throw new ExplorerRecommendQuestionError(401, 'Question hash is empty.');
+            }
+
             const oldQuestions = await this.getRecommendedQuestionsByHash(hash, connection);
             const oldQuestionIds = oldQuestions.map((q) => q.id);
-
             let oldTagIds: number[] = [];
-            if (Array.isArray(oldQuestions) && oldQuestions.length > 0) {
+            if (Array.isArray(oldQuestionIds) && oldQuestionIds.length > 0) {
                 // Get the old question tags.
                 const [oldTagRows] = await connection.query<any[]>(`
                     SELECT DISTINCT eqtr.tag_id AS tagId
                     FROM explorer_question_tag_rel eqtr
-                    JOIN explorer_questions eq ON eq.id = eqtr.question_id
-                    WHERE eq.recommended = 1 AND eqtr.question_id IN (
+                             JOIN explorer_questions eq ON eq.id = eqtr.question_id
+                    WHERE eq.recommended = 1
+                      AND eqtr.question_id IN (
                         ${oldQuestionIds.map(() => `UUID_TO_BIN(?)`).join(',')}
-                    )
+                        )
                 `, oldQuestionIds);
                 oldTagIds = oldTagRows.map((row) => row.tagId);
-                this.logger.info({questionId, hash, oldTagIds}, 'Get the %d old question tags.', oldTagIds.length);
+                this.logger.info({questionId, hash, oldTagIds}, 'Get %d old question tags.', oldTagIds.length);
 
                 // Unrecommended the old questions.
                 const [rs] = await connection.query<ResultSetHeader>(`
                     UPDATE explorer_questions eq
                     SET recommended = 0
-                    WHERE recommended = 1 AND eq.id IN (
+                    WHERE recommended = 1
+                      AND eq.id IN (
                         ${oldQuestionIds.map(() => `UUID_TO_BIN(?)`).join(',')}
-                    )
+                        )
                 `, oldQuestionIds);
                 this.logger.info({questionId, hash}, 'Unrecommended the %d / %d old questions.', rs.affectedRows, oldQuestions.length);
-            } else {
-                throw new ExplorerRecommendQuestionError(401, 'Question hash is empty.');
             }
 
             // Recommended the new question.
