@@ -28,7 +28,7 @@ export default function useChatMessages () {
       setMessages(updater);
     } else {
       setBufferMessages(messages => [...messages, message]);
-      existingMessages.add(message.key);
+      setExistingMessages(set => add(set, message.key));
     }
   });
 
@@ -51,7 +51,7 @@ export default function useChatMessages () {
         messages.splice(index, 0, message);
         return messages;
       });
-      existingMessages.add(message.key);
+      setExistingMessages(set => add(set, message.key));
     }
   });
 
@@ -106,4 +106,11 @@ function combineCallback<F extends (...args: any[]) => void> (f1: F | undefined,
     f1?.(...args);
     f2?.(...args);
   }) as F;
+}
+
+function add<T> (set: Set<T>, value: T | null): Set<T> {
+  if (isNullish(value)) {
+    return set;
+  }
+  return (new Set<T>(set)).add(value);
 }

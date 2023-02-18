@@ -1,28 +1,36 @@
 import { styled } from '@mui/material';
 import React from 'react';
 import Beta from './beta.svg';
+import { useTotalEvents } from '@site/src/components/RemoteCharts/hook';
+import useVisibility from '@site/src/hooks/visibility';
+import { useInView } from 'react-intersection-observer';
+import AnimatedNumber from 'react-awesome-animated-number';
 
 const Highlight = styled('b', { shouldForwardProp: propName => propName !== 'color' })<{ color: string }>`
   color: ${({ color }) => color};
 `;
 
 const title = 'GitHub Data Explorer';
-const subtitleFull = <>Explore <Highlight color='#9197D0'>5+ billion</Highlight> GitHub data with no SQL or plotting skills. Reveal fascinating discoveries <Highlight color='#7D71C7'>RIGHT NOW</Highlight>!</>;
+const subtitleFull = (total: number) => <>Explore <Highlight color='#9197D0'><AnimatedNumber value={total} hasComma size={16}/></Highlight> GitHub data with no SQL or plotting skills. Reveal fascinating discoveries <Highlight color='#7D71C7'>RIGHT NOW</Highlight>!</>;
 
 export default function () {
+  const visible = useVisibility();
+  const { inView, ref } = useInView();
+  const total = useTotalEvents(inView && visible);
+
   return (
     <HeaderContainer>
       <Title>
         <StyledExploreIconContainer>
           <span className="nav-explore-icon" />
         </StyledExploreIconContainer>
-        <TitleContent>
+        <TitleContent >
           {title}
         </TitleContent>
         <StyledBeta />
       </Title>
-      <SubTitle>
-        {subtitleFull}
+      <SubTitle ref={ref}>
+        {subtitleFull(total)}
       </SubTitle>
     </HeaderContainer>
   );
