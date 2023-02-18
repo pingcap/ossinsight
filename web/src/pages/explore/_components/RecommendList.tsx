@@ -9,7 +9,7 @@ import Ads from '@site/src/pages/explore/_components/Ads';
 const presetQuestions = [
   {
     question: 'How diverse is django\'s community (by coders\' distribution)',
-    questionId: 'd4ba4997-80a9-413e-bf01-ba3e513fc9e3',
+    questionId: '75404c1b-790f-421c-b530-49b6d336290d',
     imageUrl: require('./img/img1.png').default,
     tags: [{
       id: 2,
