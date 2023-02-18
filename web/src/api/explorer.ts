@@ -123,6 +123,18 @@ export async function pollQuestion (questionId: string): Promise<Question> {
   return await clientWithoutCache.get(`/explorer/questions/${questionId}`);
 }
 
+export async function recommendQuestion (questionId: string, value: boolean, { accessToken }: { accessToken: string }): Promise<void> {
+  await clientWithoutCache.post(`/explorer/questions/${questionId}/recommend${value ? '' : '/cancel'}`, {}, { withCredentials: true, oToken: accessToken });
+}
+
+export async function getQuestionTags (questionId: string): Promise<QuestionTag[]> {
+  return await clientWithoutCache.get(`/explorer/questions/${questionId}/tags`);
+}
+
+export async function updateQuestionTags (questionId: string, tags: number[], { accessToken }: { accessToken: string }): Promise<void> {
+  await clientWithoutCache.post(`/explorer/questions/${questionId}/tags`, tags, { withCredentials: true, oToken: accessToken });
+}
+
 export type QuestionTemplate = {
   hash: string;
   title: string;

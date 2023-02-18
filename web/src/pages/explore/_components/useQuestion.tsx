@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { newQuestion, pollQuestion, Question, QuestionErrorType, QuestionStatus } from '@site/src/api/explorer';
+import { newQuestion, pollQuestion, Question, QuestionErrorType, QuestionStatus, recommendQuestion, updateQuestionTags } from '@site/src/api/explorer';
 import { useMemoizedFn } from 'ahooks';
 import { isFalsy, isFiniteNumber, isNonemptyString, nonEmptyArray, notNullish } from '@site/src/utils/value';
 import { timeout } from '@site/src/utils/promisify';
@@ -157,6 +157,10 @@ export interface QuestionManagement {
   create: (title: string, ignoreCache: boolean) => void;
 
   reset: () => void;
+
+  recommend: (value: boolean) => Promise<void>;
+
+  updateTags: (ids: number[]) => Promise<void>;
 }
 
 export function useQuestionManagementValues ({ pollInterval = 2000 }: QuestionManagementOptions): QuestionManagement {
@@ -261,6 +265,31 @@ export function useQuestionManagementValues ({ pollInterval = 2000 }: QuestionMa
     void createInternal(title, ignoreCache);
   });
 
+  const recommend = useMemoizedFn(async (value: boolean) => {
+    if (notNullish(question)) {
+      const id = question.id;
+      await recommendQuestion(question.id, value, { accessToken: await requireLogin() });
+      ifMounted(() => {
+        setQuestion(question => {
+          if (question?.id === id) {
+            return {
+              ...question,
+              recommended: value,
+            };
+          } else {
+            return question;
+          }
+        });
+      });
+    }
+  });
+
+  const updateTags = useMemoizedFn(async (ids: number[]) => {
+    if (notNullish(question)) {
+      await updateQuestionTags(question.id, ids, { accessToken: await requireLogin() });
+    }
+  });
+
   const reset = useMemoizedFn(() => {
     setPhase(QuestionLoadingPhase.NONE);
     setQuestion(undefined);
@@ -328,6 +357,8 @@ export function useQuestionManagementValues ({ pollInterval = 2000 }: QuestionMa
     load,
     create,
     reset,
+    recommend,
+    updateTags,
     isSqlPending,
     isResultPending,
   };
@@ -343,6 +374,8 @@ export const QuestionManagementContext = createContext<QuestionManagement>({
   load () {},
   create () {},
   reset () {},
+  recommend: async () => {},
+  updateTags: async () => {},
 });
 
 QuestionManagementContext.displayName = 'QuestionManagementContext';
