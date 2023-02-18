@@ -21,7 +21,7 @@ const presetQuestions = [
   },
   {
     question: 'Summary of @gvanrossum\'s contribution by event type in 2022',
-    questionId: '293d799b-f480-4f8f-bf9d-20be52d95884',
+    questionId: '8ff46822-4637-4632-8306-81e3e28333d2',
     imageUrl: require('./img/img2.png').default,
     tags: [{
       id: 1,
