@@ -1485,7 +1485,7 @@ export class ExplorerService {
 
     async checkIfTrustedUsersOrError(userId: number, conn?: Connection) {
         const isTrustedUser = await this.checkIfTrustedUser(userId, conn);
-        if (isTrustedUser) {
+        if (!isTrustedUser) {
             throw new APIError(403, 'Has no permission to do this operation.');
         }
     }
