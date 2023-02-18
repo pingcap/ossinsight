@@ -61,7 +61,7 @@ export const questionTagsHandler: FastifyPluginAsyncJsonSchemaToTs = async (app)
     preValidation: app.authenticate
   }, async function (req, reply) {
     const { questionId } = req.params;
-    const { tagIds } = req.body;
+    const { tagIds = [] } = req.body;
 
     // Only trusted users can set tags.
     const { sub, metadata } = parseAuth0User(req.user as Auth0User);
