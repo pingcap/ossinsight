@@ -44,6 +44,7 @@ export function useAsyncState<T, E = unknown> (initial?: T | (() => T)) {
   };
 }
 
+// TODO: refine to prevent auto inject accessToken
 export function useAsyncOperation<P, T> (params: P, fetcher: (params: P) => Promise<T>, authTriggeredByLabel?: string): AsyncOperation<T> {
   const requireLogin = useRequireLogin();
   const whenMounted = useWhenMounted();
