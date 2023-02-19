@@ -18,12 +18,12 @@ export default function QuestionSettings () {
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
   });
-  const { data: questionTags, isValidating: questionTagsLoading } = useSWR(notNullish(question) ? [question.id, 'question:tags'] : undefined, {
+  const { data: questionTags, isValidating: questionTagsLoading, mutate } = useSWR(notNullish(question) ? [question.id, 'question:tags'] : undefined, {
     fetcher: async (id: string) => await getQuestionTags(id),
   });
 
   const [localTags, setLocalTags] = useState(questionTags ?? []);
-  const { run: handleUpdateTags, loading: updatingTags } = useAsyncOperation(localTags.map(tag => tag.id), updateTags, 'admin-settings');
+  const { run: handleUpdateTags, loading: updatingTags } = useAsyncOperation({ ids: localTags.map(tag => tag.id) }, updateTags, 'admin-settings');
   useEffect(() => {
     setLocalTags((questionTags ?? []).map(tag => tags.find(t => t.id === tag.id) ?? tag));
   }, [questionTags]);
@@ -47,6 +47,10 @@ export default function QuestionSettings () {
     }
   }, [question]);
 
+  const handleRecommend = useMemoizedFn((ev: unknown, checked: boolean) => {
+    void recommend(checked).then(async () => await mutate());
+  });
+
   if (!question) {
     return <></>;
   }
@@ -61,7 +65,7 @@ export default function QuestionSettings () {
           <FormControlLabel
             disabled={isNullish(question.recommended)}
             control={
-              <Switch size="small" checked={question.recommended} onChange={(_, checked) => { void recommend(checked); }} name="Recommend" />
+              <Switch size="small" checked={question.recommended} onChange={handleRecommend} name="Recommend" />
             }
             label="Recommend"
           />

@@ -160,7 +160,7 @@ export interface QuestionManagement {
 
   recommend: (value: boolean) => Promise<void>;
 
-  updateTags: (ids: number[]) => Promise<void>;
+  updateTags: (options: { ids: number[], accessToken?: string }) => Promise<void>;
 }
 
 export function useQuestionManagementValues ({ pollInterval = 2000 }: QuestionManagementOptions): QuestionManagement {
@@ -284,9 +284,9 @@ export function useQuestionManagementValues ({ pollInterval = 2000 }: QuestionMa
     }
   });
 
-  const updateTags = useMemoizedFn(async (ids: number[]) => {
+  const updateTags = useMemoizedFn(async ({ ids, accessToken }: { ids: number[], accessToken?: string }) => {
     if (notNullish(question)) {
-      await updateQuestionTags(question.id, ids, { accessToken: await requireLogin() });
+      await updateQuestionTags(question.id, ids, { accessToken: accessToken ?? await requireLogin() });
     }
   });
 

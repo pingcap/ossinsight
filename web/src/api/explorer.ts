@@ -132,7 +132,7 @@ export async function getQuestionTags (questionId: string): Promise<QuestionTag[
 }
 
 export async function updateQuestionTags (questionId: string, tags: number[], { accessToken }: { accessToken: string }): Promise<void> {
-  await clientWithoutCache.post(`/explorer/questions/${questionId}/tags`, tags, { withCredentials: true, oToken: accessToken });
+  await clientWithoutCache.post(`/explorer/questions/${questionId}/tags`, { tagIds: tags }, { withCredentials: true, oToken: accessToken });
 }
 
 export type QuestionTemplate = {

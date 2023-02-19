@@ -11,7 +11,7 @@ const Highlight = styled('b', { shouldForwardProp: propName => propName !== 'col
 `;
 
 const title = 'GitHub Data Explorer';
-const subtitleFull = (total: number) => <>Explore <Highlight color='#9197D0'><AnimatedNumber value={total} hasComma size={16}/></Highlight> GitHub data with no SQL or plotting skills. Reveal fascinating discoveries <Highlight color='#7D71C7'>RIGHT NOW</Highlight>!</>;
+const subtitleFull = (total: number) => <>Explore <Highlight color='#9197D0'><StyledAnimatedNumber value={total} hasComma size={16}/></Highlight> GitHub data with no SQL or plotting skills. Reveal fascinating discoveries <Highlight color='#7D71C7'>RIGHT NOW</Highlight>!</>;
 
 export default function () {
   const visible = useVisibility();
@@ -70,7 +70,11 @@ const Title = styled('h1')`
 const TitleContent = styled('span')`
 `;
 
-const SubTitle = styled('p')`
+const SubTitle = styled('div')`
   color: #7C7C7C;
   margin: 0;
+`;
+
+const StyledAnimatedNumber = styled(AnimatedNumber)`
+  display: inline-flex;
 `;

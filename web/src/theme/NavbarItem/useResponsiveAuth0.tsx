@@ -42,17 +42,17 @@ export function useResponsiveAuth0 () {
         trigger_login_by: triggerBy,
       });
     }
-    const width = 856;
-    const height = 600;
-    const left = window.screenX + (window.innerWidth - width) / 2;
-    const top = window.screenY + (window.innerHeight - height) / 2;
-    const popup = window.open(
-      // @ts-expect-error
-      {},
-      'auth0:authorize:popup',
-      `left=${left},top=${top},width=${width},height=${height},resizable,scrollbars=yes,status=1`,
-    );
     if (matches) {
+      const width = 856;
+      const height = 600;
+      const left = window.screenX + (window.innerWidth - width) / 2;
+      const top = window.screenY + (window.innerHeight - height) / 2;
+      const popup = window.open(
+        // @ts-expect-error
+        {},
+        'auth0:authorize:popup',
+        `left=${left},top=${top},width=${width},height=${height},resizable,scrollbars=yes,status=1`,
+      );
       return await loginWithPopup(options, {
         popup,
       });

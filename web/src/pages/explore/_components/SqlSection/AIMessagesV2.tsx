@@ -1,6 +1,6 @@
 import { Question, QuestionStatus } from '@site/src/api/explorer';
 import ChatMessages, { ChatMessagesInstance } from '@site/src/pages/explore/_components/ChatMessages';
-import React, { ReactElement, useEffect, useRef, useState } from 'react';
+import React, { ReactElement, useDebugValue, useEffect, useRef, useState } from 'react';
 import { isNullish, nonEmptyArray, notFalsy, notNullish } from '@site/src/utils/value';
 import { notNone } from '@site/src/pages/explore/_components/SqlSection/utils';
 import { Box, Collapse, IconButton, styled } from '@mui/material';
@@ -120,6 +120,7 @@ export default function AIMessagesV2 ({ question, prompts, onStop, onStart, coll
   const [finished, setFinished] = useState(false);
   const [waiting, setWaiting] = useState(false);
   const messagesRef = useRef<ChatMessagesInstance>(null);
+  useDebugValue({ animating, finished, waiting });
 
   useEffect(() => {
     setAnimating(false);
@@ -280,6 +281,7 @@ export default function AIMessagesV2 ({ question, prompts, onStop, onStart, coll
   useEffect(() => {
     if (waiting && question.status !== QuestionStatus.AnswerGenerating) {
       onStop?.();
+      setAnimating(false);
       setFinished(true);
       setWaiting(false);
     }
