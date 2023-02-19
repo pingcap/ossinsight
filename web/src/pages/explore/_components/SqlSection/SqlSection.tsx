@@ -8,7 +8,7 @@ import { useBoolean, useMemoizedFn } from 'ahooks';
 import { Box, Collapse, Fade, Skeleton } from '@mui/material';
 import { isSqlError } from './utils';
 import Header from './Header';
-import { Question } from '@site/src/api/explorer';
+import { Question, QuestionStatus } from '@site/src/api/explorer';
 import { useWhenMounted } from '@site/src/hooks/mounted';
 import ErrorMessage from '@site/src/pages/explore/_components/SqlSection/ErrorMessage';
 
@@ -39,9 +39,18 @@ const SqlSection = forwardRef<HTMLElement, SqlSectionProps>(({ question, phase, 
   }, [question, error]);
 
   useEffect(() => {
-    const hasPrompts = notNullish(question) && hasAIPrompts(question);
-    setMessagesTransitionDone(!hasPrompts);
-  }, [question?.status]);
+    if (notNullish(question)) {
+      if (question.status === QuestionStatus.AnswerGenerating) {
+        // still in generating progress
+        setMessagesTransitionDone(false);
+      } else if (hasAIPrompts(question)) {
+        // sql generated and has any prompts
+        setMessagesTransitionDone(!hasAIPrompts(question));
+      } else {
+        setMessagesTransitionDone(true);
+      }
+    }
+  }, [question?.id]);
 
   const sqlSectionStatus: SectionStatus = useMemo(() => {
     switch (phase) {
