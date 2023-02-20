@@ -28,6 +28,8 @@ export interface Question {
   chart?: RecommendedChart | null;
   answer?: Answer | null;
   answerSummary?: AnswerSummary;
+  batchJobId: string | null;
+  needReview: boolean;
   recommended: boolean;
   createdAt: DateTime;
   requestedAt?: DateTime | null;

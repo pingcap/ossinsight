@@ -28,9 +28,9 @@ export const newQuestionHandler: FastifyPluginAsyncJsonSchemaToTs = async (app):
     preValidation: app.authenticate
   }, async function (req, reply) {
     const { explorerService } = app;
-
     const conn = await this.mysql.getConnection();
 
+    // Get user id from auth0.
     const { sub, metadata } = parseAuth0User(req.user as Auth0User);
     const userId = await app.userService.findOrCreateUserByAccount(
       { ...metadata, sub },
@@ -40,7 +40,7 @@ export const newQuestionHandler: FastifyPluginAsyncJsonSchemaToTs = async (app):
     const { question: questionTitle, ignoreCache } = req.body;
 
     try {
-      const question = await explorerService.newQuestion(conn, userId, metadata?.github_login, questionTitle, ignoreCache);
+      const question = await explorerService.newQuestion(userId, questionTitle, ignoreCache, false, false, null, conn);
 
       // Prepare question async.
       if (!question.hitCache) {
