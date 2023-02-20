@@ -1,5 +1,5 @@
 id: 10070
-name: approximate nearest neighbor library
+name: Approximate Nearest Neighbor Library
 items:
   - spotify/annoy
   - ryanrhymes/panns
