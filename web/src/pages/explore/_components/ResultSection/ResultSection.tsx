@@ -157,11 +157,21 @@ const ResultSection = forwardRef<HTMLElement, ResultSectionProps>(({ question, p
 
 export default ResultSection;
 
+const TidbLogo = styled('img')`
+  height: 18px;
+  vertical-align: text-bottom;
+  margin-right: 4px;
+`;
+
 function renderEngines (question: Question | undefined) {
   if (notNullish(question) && !isEmptyArray(question.engines)) {
     return (
       <>
-        . Running on <EngineTag>{question.engines.map(replaceEngineName).join(', ')}</EngineTag>
+        . Running on&nbsp;
+        <EngineTag>
+          <TidbLogo src='/img/tidb-logo.svg' alt='TiDB' />
+          {question.engines.map(replaceEngineName).join(', ')}
+        </EngineTag>
         <Info>
           TiDB&apos;s optimizer selects the engine for all queries on its single service:
           <ul>

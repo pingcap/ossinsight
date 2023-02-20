@@ -9,10 +9,23 @@ import { useMemoizedFn } from 'ahooks';
 import BotIcon from '@site/src/pages/explore/_components/BotIcon';
 import CopyButton from './CopyButton';
 import { ExpandMore } from '@mui/icons-material';
+import { useWhenMounted } from '@site/src/hooks/mounted';
 
-const DURATION = 600;
-const DELAY = 1800;
-const DELAYED_DURATION = DURATION + DELAY;
+function getTime (name: string, fallback: number): number {
+  if (typeof localStorage === 'undefined') {
+    return fallback;
+  }
+  const i = localStorage.getItem(`ossinsight.explore.ai-message.${name}`);
+  if (i) {
+    return parseInt(i);
+  } else {
+    return fallback;
+  }
+}
+
+const DURATION = getTime('duration', 600);
+const DELAY = getTime('delay', 1800);
+const SUB_DELAY = getTime('sub-extra-delay', 1200);
 const FINISH_STATUSES = [QuestionStatus.Error, QuestionStatus.Cancel, QuestionStatus.Success, QuestionStatus.Summarizing];
 
 interface AIMessagesV2Props {
@@ -38,7 +51,7 @@ const renderRevisedTitle = (revisedTitle: string, animating: boolean) => {
   return (
     <Line>
       {<BotIcon animated={animating} sx={{ mr: 1 }} />}
-      Are you curious about:
+      You seem curious about:
       <RevisedTitle>{revisedTitle}</RevisedTitle>
     </Line>
   );
@@ -66,7 +79,7 @@ const renderSubQuestionsTitle = () => {
   return (
     <Line className="light">
       {spacer}
-      Thinking about the details:
+      Thinking about the details...
     </Line>
   );
 };
@@ -96,7 +109,7 @@ const renderCombinedTitle = (combinedTitle: string, bot: boolean, collapsed?: bo
   return (
     <Line>
       {bot ? <BotIcon animated={false} sx={{ mr: 1 }} /> : spacer}
-      Seems like you are asking about:
+      And your question becomes:
       <CombinedTitle dangerouslySetInnerHTML={{ __html: combinedTitle }} />
       <CopyButton content={combinedTitle} />
       <IconButton disabled={isNullish(collapsed)} size="small" onClick={() => onCollapsedChange?.(!collapsed)}>
@@ -115,14 +128,37 @@ const renderAppends = () => {
   );
 };
 
+const NORMAL_DELAYED_TIMEOUT = {
+  enter: DELAY + DURATION,
+  exit: DURATION,
+};
+
+const NORMAL_DELAY = {
+  enter: DELAY,
+  exit: 0,
+};
+
+const SUB_QUESTION_DELAYED_TIMEOUT = {
+  enter: NORMAL_DELAYED_TIMEOUT.enter + SUB_DELAY,
+  exit: DURATION,
+};
+
+const SUB_QUESTION_DELAY = {
+  enter: NORMAL_DELAY.enter + SUB_DELAY,
+  exit: 0,
+};
+
 export default function AIMessagesV2 ({ question, prompts, onStop, onStart, collapsed = true, onCollapsedChange }: AIMessagesV2Props) {
   const [animating, setAnimating] = useState(false);
   const [finished, setFinished] = useState(false);
   const [waiting, setWaiting] = useState(false);
   const messagesRef = useRef<ChatMessagesInstance>(null);
+  const whenMounted = useWhenMounted();
+  const stopTimeoutHandler = useRef<ReturnType<typeof setTimeout>>();
   useDebugValue({ animating, finished, waiting });
 
   useEffect(() => {
+    clearTimeout(stopTimeoutHandler.current);
     setAnimating(false);
     setFinished(false);
     setWaiting(false);
@@ -139,7 +175,7 @@ export default function AIMessagesV2 ({ question, prompts, onStop, onStart, coll
     if (notDone) {
       if (notNone(question.revisedTitle)) {
         messages.addMessage(
-          <DelayedCollapse key="RQ" timeout={DELAYED_DURATION} delay={DELAY}>
+          <DelayedCollapse key="RQ" timeout={NORMAL_DELAYED_TIMEOUT} delay={NORMAL_DELAY}>
             {renderRevisedTitle(question.revisedTitle, animating)}
           </DelayedCollapse>,
         );
@@ -148,48 +184,51 @@ export default function AIMessagesV2 ({ question, prompts, onStop, onStart, coll
       if (notNullish(answer)) {
         if (nonEmptyArray(answer.keywords)) {
           messages.addMessage(
-            <DelayedCollapse key="keywords" timeout={DELAYED_DURATION} delay={DELAY}>
+            <DelayedCollapse key="keywords" timeout={NORMAL_DELAYED_TIMEOUT} delay={NORMAL_DELAY}>
               {renderKeywords(answer.keywords)}
             </DelayedCollapse>,
           );
         }
         if (nonEmptyArray(answer.links)) {
           messages.addMessage(
-            <DelayedCollapse key="links" timeout={DELAYED_DURATION} delay={DELAY}>
+            <DelayedCollapse key="links" timeout={NORMAL_DELAYED_TIMEOUT} delay={NORMAL_DELAY}>
               {renderLinks(answer.links)}
             </DelayedCollapse>,
           );
         }
         if (nonEmptyArray(answer.subQuestions)) {
           messages.addMessage(
-            <DelayedCollapse key="subQuestionsTitle" timeout={DELAYED_DURATION} delay={DELAY}>
+            <DelayedCollapse key="subQuestionsTitle" timeout={NORMAL_DELAYED_TIMEOUT} delay={NORMAL_DELAY}>
               {renderSubQuestionsTitle()}
             </DelayedCollapse>,
           );
           answer.subQuestions.forEach((question, index) => {
             messages.addMessage(
-              <DelayedCollapse key={`sub-${index}`} timeout={DELAYED_DURATION} delay={DELAY}>
+              <DelayedCollapse key={`sub-${index}`} timeout={index > 0 ? SUB_QUESTION_DELAYED_TIMEOUT : NORMAL_DELAYED_TIMEOUT} delay={index > 0 ? SUB_QUESTION_DELAY : NORMAL_DELAY}>
                 {renderSubQuestion(question)}
               </DelayedCollapse>,
             );
           });
         }
       }
+      // if any sub questions, make next question delayed.
+      let shouldDelayNext = nonEmptyArray(answer?.subQuestions);
       if (notNone(question.assumption)) {
         messages.addMessage(
-          <DelayedCollapse key="assumption" timeout={DELAYED_DURATION} delay={DELAY}>
+          <DelayedCollapse key="assumption" timeout={shouldDelayNext ? NORMAL_DELAYED_TIMEOUT : SUB_QUESTION_DELAYED_TIMEOUT} delay={shouldDelayNext ? NORMAL_DELAY : SUB_QUESTION_DELAY}>
             {renderAssumption(question.assumption)}
           </DelayedCollapse>,
         );
+        shouldDelayNext = false;
       }
       if (notNone(question.combinedTitle)) {
         messages.addMessage(
-          <DelayedCollapse key="CQ" timeout={DELAYED_DURATION} delay={DELAY}>
+          <DelayedCollapse key="CQ" timeout={shouldDelayNext ? NORMAL_DELAYED_TIMEOUT : SUB_QUESTION_DELAYED_TIMEOUT} delay={shouldDelayNext ? NORMAL_DELAY : SUB_QUESTION_DELAY}>
             {renderCombinedTitle(question.combinedTitle, false)}
           </DelayedCollapse>,
         );
         messages.addMessage(
-          <DelayedCollapse key="append" timeout={DELAYED_DURATION} delay={DELAY}>
+          <DelayedCollapse key="append" timeout={NORMAL_DELAYED_TIMEOUT} delay={NORMAL_DELAY}>
             {renderAppends()}
           </DelayedCollapse>,
         );
@@ -259,6 +298,14 @@ export default function AIMessagesV2 ({ question, prompts, onStop, onStart, coll
     }
   }, [prompts]);
 
+  const handleStop = useMemoizedFn(() => {
+    onStop?.();
+    stopTimeoutHandler.current = setTimeout(whenMounted(() => {
+      setAnimating(false);
+      setFinished(true);
+    }), DELAY * 2);
+  });
+
   const handleTransitionStart = useMemoizedFn(() => {
     if (!finished) {
       onStart?.();
@@ -269,9 +316,7 @@ export default function AIMessagesV2 ({ question, prompts, onStop, onStart, coll
   const handleTransitionEnd = useMemoizedFn(() => {
     if (!finished) {
       if (question.status !== QuestionStatus.AnswerGenerating) {
-        onStop?.();
-        setAnimating(false);
-        setFinished(true);
+        handleStop();
       } else {
         setWaiting(true);
       }
@@ -280,9 +325,7 @@ export default function AIMessagesV2 ({ question, prompts, onStop, onStart, coll
 
   useEffect(() => {
     if (waiting && question.status !== QuestionStatus.AnswerGenerating) {
-      onStop?.();
-      setAnimating(false);
-      setFinished(true);
+      handleStop();
       setWaiting(false);
     }
   }, [waiting, question.status]);
@@ -296,7 +339,17 @@ export default function AIMessagesV2 ({ question, prompts, onStop, onStart, coll
   );
 }
 
-const DelayedCollapse = styled(Collapse, { shouldForwardProp: key => key !== 'delay' })<{ timeout: number, delay: number }>`
-  transition-delay: ${({ delay }) => delay}ms;
-  transition-duration: ${({ timeout, delay }) => timeout - delay}ms !important;
+function toTimeout (inProp: boolean | undefined, ts: number | { enter?: number, exit?: number }) {
+  if (typeof ts === 'number') {
+    return ts;
+  } else if (inProp === true) {
+    return ts.enter ?? 0;
+  } else {
+    return ts.exit ?? 0;
+  }
+}
+
+const DelayedCollapse = styled(Collapse, { shouldForwardProp: key => key !== 'delay' })<{ timeout: number | { enter: number, exit: number }, delay: number | { enter: number, exit: number } }>`
+  transition-delay: ${({ in: inProp, delay }) => toTimeout(inProp, delay)}ms;
+  transition-duration: ${({ in: inProp, timeout, delay }) => toTimeout(inProp, timeout) - toTimeout(inProp, delay)}ms !important;
 `;

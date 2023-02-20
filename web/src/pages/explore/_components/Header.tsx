@@ -10,8 +10,14 @@ const Highlight = styled('b', { shouldForwardProp: propName => propName !== 'col
   color: ${({ color }) => color};
 `;
 
+const TidbCloudLogoImg = styled('img')`
+  vertical-align: middle;
+  position: relative;
+  top: -2px;
+`;
+
 const title = 'GitHub Data Explorer';
-const subtitleFull = (total: number) => <>Explore <Highlight color='#9197D0'><StyledAnimatedNumber value={total} hasComma size={16}/></Highlight> GitHub data with no SQL or plotting skills. Reveal fascinating discoveries <Highlight color='#7D71C7'>RIGHT NOW</Highlight>!</>;
+const subtitleFull = (total: number) => <>Explore <Highlight color='#9197D0'><StyledAnimatedNumber value={total} hasComma size={18}/></Highlight> GitHub data with no SQL or plotting skills. Powered by <TidbCloudLogoImg height='16' alt='tidb cloud logo' src='/img/tidb-cloud-logo-t.svg' /></>;
 
 export default function () {
   const visible = useVisibility();
