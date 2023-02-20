@@ -11,7 +11,7 @@ import CopyButton from './CopyButton';
 import { ExpandMore } from '@mui/icons-material';
 
 const DURATION = 600;
-const DELAY = 1500;
+const DELAY = 1800;
 const DELAYED_DURATION = DURATION + DELAY;
 const FINISH_STATUSES = [QuestionStatus.Error, QuestionStatus.Cancel, QuestionStatus.Success, QuestionStatus.Summarizing];
 
