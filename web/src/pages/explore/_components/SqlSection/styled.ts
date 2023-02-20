@@ -2,6 +2,7 @@ import { Box, styled } from '@mui/material';
 
 export const Line = styled(Box)`
   line-height: 40px;
+  font-weight: normal;
   
   &.light {
     font-size: 14px;
@@ -27,12 +28,14 @@ export const NotClear = styled('span')`
 
 export const Assumption = styled('span')`
   margin-left: 0.5em;
-  color: #F4EFDA
+  color: #F4EFDA;
+  font-weight: bold;
 `;
 
 export const RevisedTitle = styled('span')`
   margin-left: 0.5em;
   color: #ECBAAA;
+  font-weight: bold;
 `;
 
 export const CombinedTitle = styled('span')`
