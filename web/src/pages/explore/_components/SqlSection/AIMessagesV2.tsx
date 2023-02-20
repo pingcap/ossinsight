@@ -10,6 +10,7 @@ import BotIcon from '@site/src/pages/explore/_components/BotIcon';
 import CopyButton from './CopyButton';
 import { ExpandMore } from '@mui/icons-material';
 import { useWhenMounted } from '@site/src/hooks/mounted';
+import { parseKeywords } from '@site/src/pages/explore/_components/SqlSection/AIMessagesV3';
 
 function getTime (name: string, fallback: number): number {
   if (typeof localStorage === 'undefined') {
@@ -28,7 +29,7 @@ const DELAY = getTime('delay', 1800);
 const SUB_DELAY = getTime('sub-extra-delay', 1200);
 const FINISH_STATUSES = [QuestionStatus.Error, QuestionStatus.Cancel, QuestionStatus.Success, QuestionStatus.Summarizing];
 
-interface AIMessagesV2Props {
+export interface AIMessagesV2Props {
   collapsed?: boolean;
   onCollapsedChange?: (collapsed: boolean) => void;
   question: Question;
@@ -39,7 +40,7 @@ interface AIMessagesV2Props {
 
 const spacer = <Box component="span" display="inline-block" width="24px" height="1px" />;
 
-function joinComma<T> (arr: T[]): Array<T | string> {
+export function joinComma<T> (arr: T[]): Array<T | string> {
   return arr.flatMap(i => [', ', i]).slice(1);
 }
 
@@ -182,17 +183,19 @@ export default function AIMessagesV2 ({ question, prompts, onStop, onStart, coll
       }
       const answer = question.answer;
       if (notNullish(answer)) {
-        if (nonEmptyArray(answer.keywords)) {
+        const keywords = parseKeywords(answer.keywords);
+        const links = parseKeywords(answer.links);
+        if (nonEmptyArray(keywords)) {
           messages.addMessage(
             <DelayedCollapse key="keywords" timeout={NORMAL_DELAYED_TIMEOUT} delay={NORMAL_DELAY}>
-              {renderKeywords(answer.keywords)}
+              {renderKeywords(keywords)}
             </DelayedCollapse>,
           );
         }
-        if (nonEmptyArray(answer.links)) {
+        if (nonEmptyArray(links)) {
           messages.addMessage(
             <DelayedCollapse key="links" timeout={NORMAL_DELAYED_TIMEOUT} delay={NORMAL_DELAY}>
-              {renderLinks(answer.links)}
+              {renderLinks(links)}
             </DelayedCollapse>,
           );
         }
@@ -248,6 +251,9 @@ export default function AIMessagesV2 ({ question, prompts, onStop, onStart, coll
         );
       } else {
         const answer = question.answer;
+        const keywords = parseKeywords(answer?.keywords);
+        const links = parseKeywords(answer?.links);
+
         messages.keepMessages(key => key === 'CQ' || key === 'append');
         messages.insertMessage(
           <Collapse key="above" timeout={DURATION}>
@@ -255,8 +261,8 @@ export default function AIMessagesV2 ({ question, prompts, onStop, onStart, coll
               {notNone(question.revisedTitle) && renderRevisedTitle(question.revisedTitle, false)}
               {notNullish(answer) && (
                 <>
-                  {nonEmptyArray(answer.keywords) && renderKeywords(answer.keywords)}
-                  {nonEmptyArray(answer.links) && renderLinks(answer.links)}
+                  {nonEmptyArray(keywords) && renderKeywords(keywords)}
+                  {nonEmptyArray(links) && renderLinks(links)}
                   {nonEmptyArray(answer.subQuestions) && (
                     <>
                       {renderSubQuestionsTitle()}
