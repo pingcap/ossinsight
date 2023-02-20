@@ -12,6 +12,9 @@ import { ExpandMore } from '@mui/icons-material';
 import { useWhenMounted } from '@site/src/hooks/mounted';
 
 function getTime (name: string, fallback: number): number {
+  if (typeof localStorage === 'undefined') {
+    return fallback;
+  }
   const i = localStorage.getItem(`ossinsight.explore.ai-message.${name}`);
   if (i) {
     return parseInt(i);
