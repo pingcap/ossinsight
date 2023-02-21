@@ -8,6 +8,7 @@ import { getErrorMessage } from '@site/src/utils/error';
 import { notNone } from '@site/src/pages/explore/_components/SqlSection/utils';
 import { useIfMounted } from '@site/src/hooks/mounted';
 import { useRequireLogin } from '@site/src/context/user';
+import { parseKeywords } from '@site/src/pages/explore/_components/SqlSection/AIMessagesV3';
 
 export const enum QuestionLoadingPhase {
   /** There is no question */
@@ -408,8 +409,8 @@ export function hasAIPrompts (question: Question) {
     const answer = question.answer;
     if (notNullish(answer)) {
       hasPrompts ||= (
-        nonEmptyArray(answer.keywords) ||
-        nonEmptyArray(answer.links) ||
+        nonEmptyArray(parseKeywords(answer.keywords)) ||
+        nonEmptyArray(parseKeywords(answer.links)) ||
         nonEmptyArray(answer.subQuestions)
       );
     }
