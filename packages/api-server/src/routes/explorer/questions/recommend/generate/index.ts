@@ -3,7 +3,7 @@ import {APIError} from "../../../../../utils/error";
 import {
   GenerateQuestionsPromptTemplate
 } from "../../../../../plugins/services/bot-service/template/GenerateQuestionsPromptTemplate";
-import { Auth0User, parseAuth0User } from "../../../../../plugins/services/user-service/auth0";
+import { Auth0User, parseAuth0User } from "../../../../../plugins/auth/auth0";
 
 const schema = {
   summary: 'Generate recommend questions',
@@ -33,7 +33,6 @@ export const recommendQuestionHandler: FastifyPluginAsyncJsonSchemaToTs = async 
     Body: IBody;
   }>('/', {
     schema,
-    // @ts-ignore
     preValidation: app.authenticate,
   }, async function (req, reply) {
     const { botService, explorerService } = app;

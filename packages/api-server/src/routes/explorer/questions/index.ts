@@ -1,5 +1,5 @@
 import {FastifyPluginAsyncJsonSchemaToTs} from "@fastify/type-provider-json-schema-to-ts";
-import { Auth0User, parseAuth0User } from "../../../plugins/services/user-service/auth0";
+import { Auth0User, parseAuth0User } from "../../../plugins/auth/auth0";
 
 const schema = {
   summary: 'Answer new a question',
@@ -24,7 +24,6 @@ export const newQuestionHandler: FastifyPluginAsyncJsonSchemaToTs = async (app):
     Body: IBody;
   }>('/', {
     schema,
-    // @ts-ignore
     preValidation: app.authenticate
   }, async function (req, reply) {
     const { explorerService } = app;

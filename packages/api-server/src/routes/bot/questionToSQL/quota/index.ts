@@ -1,5 +1,5 @@
 import {FastifyPluginAsyncJsonSchemaToTs} from "@fastify/type-provider-json-schema-to-ts";
-import { Auth0User, parseAuth0User } from "../../../../plugins/services/user-service/auth0";
+import { Auth0User, parseAuth0User } from "../../../../plugins/auth/auth0";
 
 export const GENERATE_SQL_USED_HEADER = "x-playground-generate-sql-used";
 export const GENERATE_SQL_LIMIT_HEADER = "x-playground-generate-sql-limit";
@@ -7,7 +7,6 @@ export const MAX_DAILY_GENERATE_SQL_LIMIT = 2000;
 
 const root: FastifyPluginAsyncJsonSchemaToTs = async (app): Promise<void> => {
   app.get('/', {
-    // @ts-ignore
     preValidation: app.authenticate
   }, async function (req, reply) {
     const { playgroundService } = app;

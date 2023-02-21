@@ -1,5 +1,5 @@
 import {FastifyPluginAsyncJsonSchemaToTs} from "@fastify/type-provider-json-schema-to-ts/index";
-import { Auth0User, parseAuth0User } from "../../../plugins/services/user-service/auth0";
+import { Auth0User, parseAuth0User } from "../../../plugins/auth/auth0";
 
 export interface IBody {
     enable: boolean;
@@ -36,7 +36,6 @@ const root: FastifyPluginAsyncJsonSchemaToTs = async (app, opts): Promise<void> 
     app.put<{
         Body: IBody;
     }>('/', {
-        // @ts-ignore
         preValidation: app.authenticate,
         schema
     }, async function (req, reply) {
