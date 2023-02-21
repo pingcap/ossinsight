@@ -62,12 +62,6 @@ const app: FastifyPluginAsync<AppOptions, RawServerDefault, JsonSchemaToTsProvid
     schema: APIServerEnvSchema
   });
 
-  // Load Auth0
-  fastify.register(require("fastify-auth0-verify"), {
-    domain: fastify.config.AUTH0_DOMAIN,
-    secret: fastify.config.AUTH0_SECRET,
-  });
-
   // Load Etag.
   fastify.register(fastifyEtag);
 

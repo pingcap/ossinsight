@@ -8,8 +8,7 @@
     "packages/feeds-server"
   ],
   "scripts": {
-    "prepare": "husky install",
-    "postinstall": "cd web && npm install"
+    "prepare": "husky install"
   },
   "devDependencies": {
     "husky": "^8.0.1",

@@ -1,14 +1,12 @@
 import { FastifyBaseLogger, FastifyInstance } from "fastify";
-import { FastifyJWTOptions } from "@fastify/jwt";
-import { FastifyOAuth2Options } from "@fastify/oauth2";
 import { MySQLPromisePool } from "@fastify/mysql";
 import { ResultSetHeader } from "mysql2";
 import fp from "fastify-plugin";
 import { APIError } from "../../../utils/error";
 import { RowDataPacket, PoolConnection } from "mysql2/promise";
-import { Auth0UserInfo, Auth0UserMetadata } from "./auth0";
 import { DateTime } from "luxon";
 import Axios from "axios";
+import {Auth0UserInfo, Auth0UserMetadata} from "../../auth/auth0";
 
 declare module "fastify" {
   interface FastifyInstance {
@@ -62,7 +60,7 @@ export enum ProviderType {
   GITHUB = "github",
 }
 
-export default fp<FastifyOAuth2Options & FastifyJWTOptions>(
+export default fp(
   async (fastify) => {
     fastify.decorate(
       "userService",

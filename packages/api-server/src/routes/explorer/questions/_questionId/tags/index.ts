@@ -1,5 +1,5 @@
 import {FastifyPluginAsyncJsonSchemaToTs} from "@fastify/type-provider-json-schema-to-ts";
-import {Auth0User, parseAuth0User} from "../../../../../plugins/services/user-service/auth0";
+import {Auth0User, parseAuth0User} from "../../../../../plugins/auth/auth0";
 
 const getQuestionTagsSchema = {
   summary: 'Get tags of question',
@@ -57,7 +57,6 @@ export const questionTagsHandler: FastifyPluginAsyncJsonSchemaToTs = async (app)
     Body: setTagsBody;
   }>('/', {
     schema: setQuestionTagsSchema,
-    // @ts-ignore
     preValidation: app.authenticate
   }, async function (req, reply) {
     const { questionId } = req.params;

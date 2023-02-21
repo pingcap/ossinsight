@@ -1,7 +1,7 @@
 import {APIError} from "../../../utils/error";
 import {FastifyPluginAsyncJsonSchemaToTs} from "@fastify/type-provider-json-schema-to-ts";
 import { GENERATE_SQL_LIMIT_HEADER, GENERATE_SQL_USED_HEADER, MAX_DAILY_GENERATE_SQL_LIMIT } from "./quota";
-import { Auth0User, parseAuth0User } from "../../../plugins/services/user-service/auth0";
+import { Auth0User, parseAuth0User } from "../../../plugins/auth/auth0";
 import {GenerateSQLPromptTemplate} from "../../../plugins/services/bot-service/template/GenerateSQLPromptTemplate";
 
 export interface IBody {
@@ -33,7 +33,6 @@ const root: FastifyPluginAsyncJsonSchemaToTs = async (app, opts): Promise<void> 
   app.post<{
     Body: IBody;
   }>('/', {
-    // @ts-ignore
     preValidation: app.authenticate,
     schema
   }, async function (req, reply) {

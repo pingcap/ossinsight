@@ -48,6 +48,7 @@ import {
 import {GenerateAnswerPromptTemplate} from "../bot-service/template/GenerateAnswerPromptTemplate";
 import {FastifyBaseLogger} from "fastify";
 import {MySQLPromisePool} from "@fastify/mysql";
+import async from "async";
 import {GenerateSummaryPromptTemplate} from "../bot-service/template/GenerateSummaryPromptTemplate";
 import sleep from "../../../utils/sleep";
 
@@ -68,7 +69,6 @@ export default fp(async (app: any) => {
       {
           userMaxQuestionsPerHour: app.config.EXPLORER_USER_MAX_QUESTIONS_PER_HOUR,
           userMaxQuestionsOnGoing: app.config.EXPLORER_USER_MAX_QUESTIONS_ON_GOING,
-          trustedUsers: app.config.PLAYGROUND_TRUSTED_GITHUB_LOGINS,
           trustedUsersMaxQuestionsPerHour: 200,
           generateSQLCacheTTL: app.config.EXPLORER_GENERATE_SQL_CACHE_TTL,
           querySQLCacheTTL: app.config.EXPLORER_QUERY_SQL_CACHE_TTL,
@@ -89,7 +89,6 @@ export default fp(async (app: any) => {
 export interface ExplorerOption {
     userMaxQuestionsPerHour: number;
     userMaxQuestionsOnGoing: number;
-    trustedUsers: string[];
     trustedUsersMaxQuestionsPerHour: number;
     generateSQLCacheTTL: number;
     querySQLCacheTTL: number;
@@ -121,8 +120,7 @@ export class ExplorerService {
         this.options = Object.assign({}, {
             userMaxQuestionsPerHour: 20,
             userMaxQuestionsOnGoing: 3,
-            trustedUsers: [],
-            trustedUsersMaxQuestionsPerHour: 100,
+            trustedUsersMaxQuestionsPerHour: 200,
             generateSQLCacheTTL: 60 * 60 * 24 * 7,
             querySQLCacheTTL: 60 * 60 * 24,
             querySQLTimeout: 30 * 1000,
@@ -131,9 +129,8 @@ export class ExplorerService {
     }
 
     async newQuestion(
-      conn: Connection, userId: number, githubLogin: string | undefined, q: string,
-      ignoreCache: boolean = false
-    ): Promise<Question> {
+      userId: number, q: string, ignoreCache: boolean = false, ignoreRateLimit: boolean = false, needReview: boolean = false,
+      batchJobId: string | null = null, conn: Connection): Promise<Question> {
         // Init logger.
         const questionId = randomUUID();
         const logger = this.logger.child({ questionId: questionId });
@@ -152,6 +149,8 @@ export class ExplorerService {
             status: QuestionStatus.New,
             title: q,
             recommendedQuestions: [],
+            batchJobId: batchJobId,
+            needReview: needReview,
             recommended: false,
             createdAt: DateTime.utc(),
             hitCache: false,
@@ -177,25 +176,27 @@ export class ExplorerService {
 
             // Give the trusted users more daily requests.
             let limit = this.options.userMaxQuestionsPerHour;
-            if (this.options.trustedUsers.includes(githubLogin || '')) {
+            if (await this.checkIfTrustedUser(userId, conn)) {
                 limit = this.options.trustedUsersMaxQuestionsPerHour;
             }
 
-            // Notice: Using FOR UPDATE, pessimistic locking controls a single user to request question serially.
-            const previousQuestions = await this.getUserPastHourQuestionsWithLock(userId, conn);
-            if (previousQuestions.length >= limit) {
-                const oldestQuestion = previousQuestions.reduce((prev, current) => (prev.createdAt < current.createdAt) ? prev : current);
-                const now = DateTime.utc();
-                const waitMinutes = oldestQuestion.createdAt.diff(now.minus({ hour: 1 }), ["minutes", "seconds"]);
-                const waitMinutesText = waitMinutes.toHuman();
-                throw new ExplorerTooManyRequestError(`Too many questions request in the past hour, please wait ${waitMinutesText}.`, waitMinutes.minutes);
-            }
+            if (!ignoreRateLimit) {
+                // Notice: Using FOR UPDATE, pessimistic locking controls a single user to request question serially.
+                const previousQuestions = await this.getUserPastHourQuestionsWithLock(userId, conn);
+                if (previousQuestions.length >= limit) {
+                    const oldestQuestion = previousQuestions.reduce((prev, current) => (prev.createdAt < current.createdAt) ? prev : current);
+                    const now = DateTime.utc();
+                    const waitMinutes = oldestQuestion.createdAt.diff(now.minus({ hour: 1 }), ["minutes", "seconds"]);
+                    const waitMinutesText = waitMinutes.toHuman();
+                    throw new ExplorerTooManyRequestError(`Too many questions request in the past hour, please wait ${waitMinutesText}.`, waitMinutes.minutes);
+                }
 
-            const onGongStatuses = [QuestionStatus.AnswerGenerating, QuestionStatus.SQLValidating, QuestionStatus.Waiting, QuestionStatus.Running];
-            const onGongQuestions = previousQuestions.filter(q => onGongStatuses.includes(q.status));
-            if (onGongQuestions.length >= this.options.userMaxQuestionsOnGoing) {
-                logger.info("There are %d previous question on going, cancel them.", onGongQuestions.length);
-                await this.cancelQuestions(conn, onGongQuestions.map(q => q.id));
+                const onGongStatuses = [QuestionStatus.AnswerGenerating, QuestionStatus.SQLValidating, QuestionStatus.Waiting, QuestionStatus.Running];
+                const onGongQuestions = previousQuestions.filter(q => onGongStatuses.includes(q.status));
+                if (onGongQuestions.length >= this.options.userMaxQuestionsOnGoing) {
+                    logger.info("There are %d previous question on going, cancel them.", onGongQuestions.length);
+                    await this.cancelQuestions(conn, onGongQuestions.map(q => q.id));
+                }
             }
 
             question.preceding = await this.countPrecedingQuestions(question.id, conn);
@@ -481,19 +482,19 @@ export class ExplorerService {
         const connection = conn || this.mysql;
         const {
             id, hash, userId, status, title, querySQL, queryHash, engines = [],
-            recommended, createdAt, queueName, queueJobId = null, chart, recommendedQuestions = [], error = null
+            batchJobId = null, needReview, recommended, createdAt, queueName, queueJobId = null, chart, recommendedQuestions = [], error = null
         } = question;
         const enginesValue = JSON.stringify(engines);
         const chartValue = chart !== undefined ? JSON.stringify(chart) : null;
         const recommendedQuestionsValue = JSON.stringify(recommendedQuestions);
         const [rs] = await connection.query<ResultSetHeader>(`
             INSERT INTO explorer_questions(
-                id, hash, user_id, status, title, query_sql, query_hash, engines, 
-                recommended, created_at, queue_name, queue_job_id, chart, recommended_questions, error
-            ) VALUES (UUID_TO_BIN(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                id, hash, user_id, status, title, query_sql, query_hash, engines,
+                batch_job_id, need_review, recommended, created_at, queue_name, queue_job_id, chart, recommended_questions, error
+            ) VALUES (UUID_TO_BIN(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `, [
             id, hash, userId, status, title, querySQL, queryHash, enginesValue,
-            recommended, createdAt.toSQL(), queueName, queueJobId, chartValue, recommendedQuestionsValue, error
+            batchJobId, needReview, recommended, createdAt.toSQL(), queueName, queueJobId, chartValue, recommendedQuestionsValue, error
         ]);
         if (rs.affectedRows !== 1) {
             throw new APIError(500, 'Failed to create a new question.');
@@ -1383,6 +1384,50 @@ export class ExplorerService {
             } else {
                 await connection.end();
             }
+        }
+    }
+
+    async refreshRecommendQuestions(): Promise<void> {
+        try {
+            // TODO: remove the hard code 1000.
+            const recommendQuestions = await this.getRecommendQuestionsByTag(1000);
+            const batchJobId = randomUUID();
+            const queue = async.queue<RecommendQuestion>((oldQuestion, callback) => {
+                this.refreshRecommendQuestion(oldQuestion, batchJobId).then(() => {
+                    callback();
+                }).catch((err: any) => {
+                    callback(err);
+                });
+            }, 3);
+
+            await queue.push(recommendQuestions);
+            await queue.drain();
+
+            this.logger.info("Refresh %d recommended questions done.", recommendQuestions.length);
+        } catch (err: any) {
+            const message = `Failed to refresh recommended questions.`;
+            this.logger.error({err}, message);
+        }
+    }
+
+    async refreshRecommendQuestion(oldQuestion: RecommendQuestion, batchJobID: string): Promise<void> {
+        try {
+            const conn = await this.mysql.getConnection();
+            this.logger.info({ questionId: oldQuestion.questionId }, "Refresh recommended question: %s.", oldQuestion.title);
+            const newQuestion = await this.newQuestion(0, oldQuestion.title, true, true, true, batchJobID, conn);
+            await conn.release();
+
+            // Prepare question async.
+            if (!newQuestion.hitCache) {
+                try {
+                    await this.prepareQuestion(newQuestion);
+                } catch (err: any) {
+                    this.logger.error(err, `Failed to prepare question ${newQuestion.id}: ${err.message}`);
+                }
+            }
+        } catch (err: any) {
+            const message = `Failed to refresh recommended question: ${oldQuestion.title}`;
+            this.logger.error({questionId: oldQuestion.questionId, err}, message);
         }
     }
 
