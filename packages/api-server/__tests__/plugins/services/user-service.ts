@@ -2,7 +2,7 @@ import {bootstrapTestDatabase, getTestDatabase, releaseTestDatabase} from '../..
 import {bootstrapApp, getTestApp, releaseApp} from '../../helpers/app';
 import {Connection, ResultSetHeader} from "mysql2/promise";
 import { ProviderType, UserRole, UserService } from "../../../src/plugins/services/user-service";
-import { Auth0UserInfo } from "../../../src/plugins/services/user-service/auth0";
+import { Auth0UserInfo } from "../../../src/plugins/auth/auth0";
 import {bootstrapTestRedis, releaseTestRedis} from "../../helpers/redis";
 
 let userService: UserService, conn: Connection;
