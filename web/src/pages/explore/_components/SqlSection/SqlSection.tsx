@@ -1,4 +1,4 @@
-import { isFalsy, notBlankString, notFalsy, notNullish } from '@site/src/utils/value';
+import { isFalsy, isNullish, notBlankString, notFalsy, notNullish } from '@site/src/utils/value';
 import CodeBlock from '@theme/CodeBlock';
 import Section, { SectionProps, SectionStatus } from '@site/src/pages/explore/_components/Section';
 import React, { forwardRef, useEffect, useMemo, useState } from 'react';
@@ -97,6 +97,12 @@ const SqlSection = forwardRef<HTMLElement, SqlSectionProps>(({ question, phase, 
   });
 
   const hasSql = notFalsy(formattedSql) && isFalsy(sqlSectionError);
+
+  useEffect(() => {
+    if (sqlSectionStatus === SectionStatus.error && isNullish(question?.answer)) {
+      setMessagesTransitionDone(true);
+    }
+  }, [sqlSectionStatus, question]);
 
   return (
     <Section
