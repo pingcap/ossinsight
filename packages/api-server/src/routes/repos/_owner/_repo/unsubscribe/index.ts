@@ -1,6 +1,6 @@
 import {FastifyPluginAsyncJsonSchemaToTs} from "@fastify/type-provider-json-schema-to-ts/index";
 import {IParams, params} from "../subscribe";
-import { Auth0User, parseAuth0User } from "../../../../../plugins/services/user-service/auth0";
+import { Auth0User, parseAuth0User } from "../../../../../plugins/auth/auth0";
 
 const schema = {
     description: 'Unsubscribe the repository updates',
@@ -11,7 +11,6 @@ const root: FastifyPluginAsyncJsonSchemaToTs = async (app, opts): Promise<void> 
     app.put<{
         Params: IParams;
     }>('/', {
-        // @ts-ignore
         preValidation: app.authenticate,
         schema
     }, async function (req, reply) {

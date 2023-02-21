@@ -1,5 +1,5 @@
 import {FastifyPluginAsyncJsonSchemaToTs} from "@fastify/type-provider-json-schema-to-ts";
-import {Auth0User, parseAuth0User} from "../../../../../../plugins/services/user-service/auth0";
+import {Auth0User, parseAuth0User} from "../../../../../../plugins/auth/auth0";
 
 const cancelRecommendQuestionSchema = {
   summary: 'Cancel recommend question',
@@ -21,7 +21,6 @@ export const cancelRecommendQuestionHandler: FastifyPluginAsyncJsonSchemaToTs = 
     Params: cancelRecommendQuestionParams;
   }>('/', {
     schema: cancelRecommendQuestionSchema,
-    // @ts-ignore
     preValidation: app.authenticate
   }, async function (req, reply) {
     const { questionId } = req.params;

@@ -1,6 +1,6 @@
 import {FastifyPluginAsync, FastifySchema} from 'fastify';
 import {QuestionFeedbackType} from "../../../../../plugins/services/explorer-service/types";
-import {Auth0User, parseAuth0User} from "../../../../../plugins/services/user-service/auth0";
+import {Auth0User, parseAuth0User} from "../../../../../plugins/auth/auth0";
 
 export const addFeedbackSchema: FastifySchema = {
   summary: 'Add feedback for answer',
@@ -85,7 +85,6 @@ const root: FastifyPluginAsync = async (app) => {
     Params: IParam
   }>('/', {
     schema: getFeedbacksSchema,
-    // @ts-ignore
     preValidation: app.authenticate
   },async (req, reply) => {
     const { questionId } = req.params;
@@ -105,7 +104,6 @@ const root: FastifyPluginAsync = async (app) => {
     Body: IBody
   }>('/', {
     schema: addFeedbackSchema,
-    // @ts-ignore
     preValidation: app.authenticate
   },async (req, reply) => {
     const { questionId } = req.params;
@@ -146,7 +144,6 @@ const root: FastifyPluginAsync = async (app) => {
     Querystring: IQueryString
   }>('/', {
     schema: cancelFeedbacksSchema,
-    // @ts-ignore
     preValidation: app.authenticate
   },async (req, reply) => {
     const { questionId } = req.params;

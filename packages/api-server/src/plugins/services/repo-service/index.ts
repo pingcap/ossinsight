@@ -1,5 +1,3 @@
-import {FastifyJWTOptions} from "@fastify/jwt";
-import {FastifyOAuth2Options} from "@fastify/oauth2";
 import {MySQLPromisePool} from "@fastify/mysql";
 import {ResultSetHeader} from "mysql2";
 import fp from "fastify-plugin";
@@ -12,7 +10,7 @@ declare module 'fastify' {
     }
 }
 
-export default fp<FastifyOAuth2Options & FastifyJWTOptions>(async (app) => {
+export default fp(async (app) => {
     app.decorate('repoService', new RepoService(app.mysql));
 }, {
     name: 'repo-service',

@@ -1,5 +1,5 @@
 import {FastifyPluginAsyncJsonSchemaToTs} from "@fastify/type-provider-json-schema-to-ts";
-import {Auth0User, parseAuth0User} from "../../../../../plugins/services/user-service/auth0";
+import {Auth0User, parseAuth0User} from "../../../../../plugins/auth/auth0";
 
 const schema = {
   summary: 'Refresh recommend questions',
@@ -10,7 +10,6 @@ const schema = {
 export const refreshRecommendQuestionsHandler: FastifyPluginAsyncJsonSchemaToTs = async (app): Promise<void> => {
   app.post('/', {
     schema,
-    // @ts-ignore
     preValidation: app.authenticate
   }, async function (req, reply) {
     // Only trusted users can trigger this.

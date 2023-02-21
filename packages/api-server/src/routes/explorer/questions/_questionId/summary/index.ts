@@ -1,5 +1,5 @@
 import {FastifyPluginAsync, FastifySchema} from 'fastify';
-import {Auth0User, parseAuth0User} from "../../../../../plugins/services/user-service/auth0";
+import {Auth0User, parseAuth0User} from "../../../../../plugins/auth/auth0";
 import {APIError} from "../../../../../utils/error";
 
 export const schema: FastifySchema = {
@@ -25,7 +25,6 @@ const root: FastifyPluginAsync = async (app) => {
     Params: IParam,
   }>('/', {
     schema,
-    // @ts-ignore
     preValidation: app.authenticate
   },async (req, reply) => {
     const { questionId } = req.params;
