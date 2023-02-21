@@ -44,7 +44,7 @@ export function joinComma<T> (arr: T[]): Array<T | string> {
   return arr.flatMap(i => [', ', i]).slice(1);
 }
 
-function trimNo (question: string) {
+export function trimNo (question: string) {
   return question.replace(/^No\s*\d+(:|.)?\s*/i, '');
 }
 

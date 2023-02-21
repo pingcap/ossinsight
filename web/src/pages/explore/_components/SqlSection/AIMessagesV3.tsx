@@ -1,5 +1,5 @@
-import { AIMessagesV2Props, joinComma } from '@site/src/pages/explore/_components/SqlSection/AIMessagesV2';
-import React, { createContext, createElement, ReactElement, useEffect, useRef, useState } from 'react';
+import { AIMessagesV2Props, joinComma, trimNo } from '@site/src/pages/explore/_components/SqlSection/AIMessagesV2';
+import React, { cloneElement, createContext, createElement, ReactElement, useEffect, useRef, useState } from 'react';
 import { Pace, WindupChildren } from 'windups';
 import { Question, QuestionStatus } from '@site/src/api/explorer';
 import { notNone } from '@site/src/pages/explore/_components/SqlSection/utils';
@@ -162,7 +162,7 @@ class QuestionModel {
           <ul>
             {subQuestions.map((question, index) => (
               <Pace key={index} getPace={c => defaultGetPace(c, undefined)}>
-                <li>{question}</li>
+                <li>{trimNo(question)}</li>
               </Pace>
             ))}
           </ul>
@@ -211,17 +211,18 @@ class QuestionModel {
 
   private renderMessage () {
     return (
-      <Line key="message" className="message light">
-        <WindupChildren onFinished={() => this.next()}>
-          You can copy and revise it based on the question above 👆.
-        </WindupChildren>
-      </Line>
+      <AutoEnter key="message">
+        <Collapse onEntered={() => this.next()} timeout={1000}>
+          <Line className="message light">
+            You can copy and revise it based on the question above 👆.
+          </Line>
+        </Collapse>
+      </AutoEnter>
     );
   }
 
   private run<T> (get: (question: Question) => T, validate: (value: T) => boolean, renderer: (value: NonNullable<T>) => ReactElement, collapsable = false) {
     const value = get(this.question);
-    console.log('currentValue: %s %o', String(get), value);
     if (validate(value)) {
       (collapsable ? this.collapsableChildren : this.children).push(renderer.call(this, value));
       this.startTyping();
@@ -309,6 +310,9 @@ const ChatRoot = styled('div', { name: 'Chat-root' })`
 
   li {
     margin-left: 2em;
+    line-height: 24px;
+    font-size: 14px;
+    font-weight: normal;
   }
 
   p {
@@ -368,8 +372,16 @@ export function defaultGetPace (
 ): number {
   switch (lastChar) {
     case ' ':
-      return 150;
+      return 80 + Math.random() * 50;
     default:
       return 50 + Math.random() * 50;
   }
+}
+
+function AutoEnter ({ children }: { children: ReactElement }) {
+  const [inProp, setInProp] = useState(false);
+  useEffect(() => {
+    setInProp(true);
+  }, []);
+  return cloneElement(children, { in: inProp });
 }
