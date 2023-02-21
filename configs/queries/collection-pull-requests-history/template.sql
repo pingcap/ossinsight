@@ -1,15 +1,26 @@
-WITH count_per_month AS (
+WITH acc AS (
     SELECT
-        DATE_FORMAT(created_at, '%Y-%m-01') AS t_month,
-        COUNT(*) as month_pr_count
-    FROM github_events
-    WHERE
-        type = 'PullRequestEvent' AND repo_id = 41986369 AND action = 'opened'
-    GROUP BY t_month
-    ORDER BY t_month
+        event_month,
+        repo_name,
+        COUNT(number) OVER(PARTITION BY repo_name ORDER BY event_month ASC) AS total
+    FROM (
+        SELECT
+            event_month,
+            number,
+            FIRST_VALUE(repo_name) OVER (PARTITION BY repo_id ORDER BY created_at DESC) AS repo_name,
+            ROW_NUMBER() OVER(PARTITION BY number) AS row_num
+        FROM github_events
+        WHERE
+            type = 'PullRequestEvent' AND repo_id IN (41986369, 16563587, 105944401)
+            -- Exclude Bots
+            AND actor_login NOT LIKE '%bot%'
+            AND actor_login NOT IN (SELECT login FROM blacklist_users bu)
+    ) prs_with_latest_repo_name
+    WHERE row_num = 1
+    ORDER BY 1
 )
-SELECT
-    t_month,
-    SUM(month_pr_count) OVER(ORDER BY t_month ASC) AS total
-FROM count_per_month
-ORDER BY t_month ASC;
+SELECT event_month, repo_name, ANY_VALUE(total) AS total
+FROM acc
+GROUP BY 1, 2
+ORDER BY 1
+;
