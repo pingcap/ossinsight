@@ -117,7 +117,9 @@ class QuestionModel {
         <WindupChildren onFinished={() => this.next()}>
           {'You seem curious about: '}
           <span className="rq">
-            {rq}
+            <Pace getPace={c => defaultGetPace(c, undefined)}>
+              {rq}
+            </Pace>
           </span>
         </WindupChildren>
       </Line>
@@ -129,9 +131,11 @@ class QuestionModel {
       <Line key="keywords">
         <WindupChildren onFinished={() => this.next()}>
           {'Extracting key words: '}
-          {joinComma(keywords.map(keyword => (
-            <strong key={keyword}>{keyword}</strong>
-          )))}
+          <Pace getPace={c => defaultGetPace(c, undefined)}>
+            {joinComma(keywords.map(keyword => (
+              <strong key={keyword}>{keyword}</strong>
+            )))}
+          </Pace>
         </WindupChildren>
       </Line>
     );
@@ -157,7 +161,7 @@ class QuestionModel {
           <p>Thinking about the details...</p>
           <ul>
             {subQuestions.map((question, index) => (
-              <Pace key={index} ms={50}>
+              <Pace key={index} getPace={c => defaultGetPace(c, undefined)}>
                 <li>{question}</li>
               </Pace>
             ))}
@@ -173,7 +177,9 @@ class QuestionModel {
         <WindupChildren onFinished={() => this.next()}>
           {'I suppose: '}
           <span className="assumption">
-            {assumption}
+            <Pace getPace={c => defaultGetPace(c, undefined)}>
+              {assumption}
+            </Pace>
           </span>
         </WindupChildren>
       </Line>
@@ -185,7 +191,11 @@ class QuestionModel {
       <Line key="cq">
         <WindupChildren onFinished={() => this.next()}>
           {'And your question becomes: '}
-          <span className="cq">{parseHtmlString(combinedTitle)}</span>
+          <span className="cq">
+            <Pace getPace={c => defaultGetPace(c, undefined)}>
+              {parseHtmlString(combinedTitle)}
+            </Pace>
+          </span>
           <CopyButton content={combinedTitle} />
         </WindupChildren>
         <CollapsedContext.Consumer>
@@ -201,7 +211,7 @@ class QuestionModel {
 
   private renderMessage () {
     return (
-      <Line key='message' className="message light">
+      <Line key="message" className="message light">
         <WindupChildren onFinished={() => this.next()}>
           You can copy and revise it based on the question above 👆.
         </WindupChildren>
@@ -350,4 +360,16 @@ function parseHtmlString (text: string): Array<ReactElement | string> {
   });
 
   return res;
+}
+
+export function defaultGetPace (
+  lastChar: string,
+  nextChar?: string,
+): number {
+  switch (lastChar) {
+    case ' ':
+      return 150;
+    default:
+      return 50 + Math.random() * 50;
+  }
 }
