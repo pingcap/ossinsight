@@ -1,14 +1,15 @@
 import { AIMessagesV2Props, joinComma } from '@site/src/pages/explore/_components/SqlSection/AIMessagesV2';
 import React, { createContext, createElement, ReactElement, useEffect, useRef, useState } from 'react';
 import { Pace, WindupChildren } from 'windups';
-import { Question } from '@site/src/api/explorer';
+import { Question, QuestionStatus } from '@site/src/api/explorer';
 import { notNone } from '@site/src/pages/explore/_components/SqlSection/utils';
 import { Collapse, IconButton, styled } from '@mui/material';
-import { isNullish, nonEmptyArray, notFalsy } from '@site/src/utils/value';
+import { isEmptyArray, isNullish, nonEmptyArray, notFalsy, notNullish } from '@site/src/utils/value';
 import { Line } from '@site/src/pages/explore/_components/SqlSection/styled';
 import CopyButton from '@site/src/pages/explore/_components/SqlSection/CopyButton';
 import { ExpandMore } from '@mui/icons-material';
 import { useSafeSetTimeout } from '@site/src/hooks/mounted';
+import BotIcon from '@site/src/pages/explore/_components/BotIcon';
 
 export interface AIMessagesV3Props extends AIMessagesV2Props {
 
@@ -39,21 +40,28 @@ export default function AIMessagesV3 ({ question, onStart, collapsed, onCollapse
   }, [question.id]);
 
   useEffect(() => {
-    modelRef.current?.accept(question);
+    modelRef.current?.accept(question, false);
   }, [question]);
 
   return (
-    <ChatWrapper>
-      <Collapse in={!collapsed}>
-        {modelRef.current?.collapsableChildren}
-      </Collapse>
-      <CollapsedContext.Provider value={{ collapsed, onCollapsedChange }}>
-        {modelRef.current?.children}
-      </CollapsedContext.Provider>
+    <>
+      <ChatRoot>
+        <div className="Chat-avatars">
+          <BotIcon animated={modelRef.current?.stage !== QuestionModelStage.finished} />
+        </div>
+        <div className="Chat-content">
+          <Collapse in={!collapsed}>
+            {modelRef.current?.collapsableChildren}
+          </Collapse>
+          <CollapsedContext.Provider value={{ show: modelRef.current?.stage === QuestionModelStage.finished, collapsed, onCollapsedChange }}>
+            {modelRef.current?.children}
+          </CollapsedContext.Provider>
+        </div>
+      </ChatRoot>
       <Line>
         {prompts}
       </Line>
-    </ChatWrapper>
+    </>
   );
 }
 
@@ -69,13 +77,15 @@ const enum QuestionModelStage {
 }
 
 const CollapsedContext = createContext({
+  show: false,
   collapsed: undefined as boolean | undefined,
   onCollapsedChange: undefined as ((value: boolean) => void) | undefined,
 });
 
 class QuestionModel {
   private typing = false;
-  private stage = QuestionModelStage.init;
+  private waitingNext = false;
+  stage = QuestionModelStage.init;
   children: ReactElement[] = [];
   collapsableChildren: ReactElement[] = [];
   finishedHandlers: Array<() => void> = [];
@@ -85,6 +95,7 @@ class QuestionModel {
 
   private next () {
     this.typing = false;
+    this.waitingNext = false;
 
     if (this.stage === QuestionModelStage.finished) {
       this.finishedHandlers.forEach(cb => cb());
@@ -178,8 +189,8 @@ class QuestionModel {
           <CopyButton content={combinedTitle} />
         </WindupChildren>
         <CollapsedContext.Consumer>
-          {({ collapsed, onCollapsedChange }) => (
-            <IconButton disabled={isNullish(collapsed)} size="small" onClick={() => onCollapsedChange?.(!collapsed)}>
+          {({ show, collapsed, onCollapsedChange }) => (
+            show && <IconButton disabled={isNullish(collapsed)} size="small" onClick={() => onCollapsedChange?.(!collapsed)}>
               <ExpandMore sx={{ rotate: notFalsy(collapsed) ? 0 : '180deg', transition: theme => theme.transitions.create('rotate') }} />
             </IconButton>
           )}
@@ -190,7 +201,7 @@ class QuestionModel {
 
   private renderMessage () {
     return (
-      <Line className="message light">
+      <Line key='message' className="message light">
         <WindupChildren onFinished={() => this.next()}>
           You can copy and revise it based on the question above 👆.
         </WindupChildren>
@@ -199,19 +210,29 @@ class QuestionModel {
   }
 
   private run<T> (get: (question: Question) => T, validate: (value: T) => boolean, renderer: (value: NonNullable<T>) => ReactElement, collapsable = false) {
-    console.log('run', this.stage);
     const value = get(this.question);
+    console.log('currentValue: %s %o', String(get), value);
     if (validate(value)) {
       (collapsable ? this.collapsableChildren : this.children).push(renderer.call(this, value));
       this.startTyping();
-    } else {
+    } else if (notNullish(value) || isEmptyArray(value as never)) {
       this.next();
+    } else {
+      if (this.question.status === QuestionStatus.AnswerGenerating) {
+        this.waitingNext = true;
+      } else {
+        this.waitingNext = false;
+        this.next();
+      }
     }
   }
 
-  accept (question: Question) {
+  accept (question: Question, fromInner = true) {
     this.question = question;
     if (this.typing) {
+      return;
+    }
+    if (this.waitingNext && fromInner) {
       return;
     }
     switch (this.stage) {
@@ -234,7 +255,7 @@ class QuestionModel {
         this.run(q => q.answer?.combinedTitle ?? q.combinedTitle, notNone, this.renderCombinedTitle);
         break;
       case QuestionModelStage.cq:
-        this.run(() => undefined, () => true, this.renderMessage);
+        this.run(() => true, () => true, this.renderMessage);
         break;
       case QuestionModelStage.finished:
         this.next();
@@ -253,8 +274,36 @@ export function parseKeywords (keywords: string[] | string | null | undefined): 
   }
 }
 
-const ChatWrapper = styled('div')`
+const ChatRoot = styled('div', { name: 'Chat-root' })`
   font-weight: normal;
+  display: flex;
+
+  .Chat-avatars {
+    width: 16px;
+    max-width: 16px;
+    min-width: 16px;
+    line-height: 40px;
+    vertical-align: text-bottom;
+  }
+
+  .Chat-content {
+    flex: 1;
+    margin-left: 4px;
+  }
+
+  ul, ol {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  li {
+    margin-left: 2em;
+  }
+
+  p {
+    margin: 0;
+  }
 
   .rq {
     font-weight: bold;
@@ -277,7 +326,6 @@ const ChatWrapper = styled('div')`
     pointer-events: auto;
     user-select: text !important;
     cursor: text;
-
 
     > i, b {
       background-color: #6B40B1;
