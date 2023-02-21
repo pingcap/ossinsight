@@ -20,7 +20,6 @@ items:
   - keyval-dev/odigos
   - lensapp/lens
   - kyverno/kyverno
-  - helm/helm
   - opencost/opencost
   - kubeshop/monokle
   - komodorio/helm-dashboard
