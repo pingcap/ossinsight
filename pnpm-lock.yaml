@@ -375,7 +375,6 @@ importers:
     specifiers:
       '@types/generic-pool': ^3.1.11
       '@types/jest': ^29.4.0
-      '@types/nock': ^11.1.0
       '@types/node': ^18.13.0
       fastify-tsconfig: ^1.0.1
       generic-pool: ^3.9.0
@@ -394,7 +393,6 @@ importers:
     devDependencies:
       '@types/generic-pool': 3.1.11
       '@types/jest': 29.4.0
-      '@types/nock': 11.1.0
       '@types/node': 18.13.0
       nock: 13.3.0
 
@@ -484,47 +482,6 @@ importers:
       fastify-tsconfig: 1.0.1
       ts-node: 10.9.1_vq46kxj6zfka4f6ijsosnft3hy
       typescript: 4.7.4
-
-  packages/sync-repos:
-    specifiers:
-      '@types/async': ^3.2.15
-      '@types/jest': ^29.2.2
-      '@types/luxon': ^3.2.0
-      '@types/node': ^18.0.0
-      async: ^3.2.4
-      commander: ^9.4.0
-      consola: ^2.15.3
-      dotenv: ^16.0.3
-      fastify-tsconfig: ^1.0.1
-      generic-pool: ^3.9.0
-      glob: ^8.0.3
-      jest: ^29.3.1
-      luxon: ^3.2.1
-      mysql2: ^2.3.3
-      octokit: ^2.0.14
-      ts-jest: ^29.0.3
-      ts-node: ^10.4.0
-      typescript: ^4.5.4
-    dependencies:
-      async: 3.2.4
-      commander: 9.4.1
-      consola: 2.15.3
-      dotenv: 16.0.3
-      generic-pool: 3.9.0
-      luxon: 3.2.1
-      mysql2: 2.3.3
-      octokit: 2.0.14
-    devDependencies:
-      '@types/async': 3.2.16
-      '@types/jest': 29.2.3
-      '@types/luxon': 3.2.0
-      '@types/node': 18.11.9
-      fastify-tsconfig: 1.0.1
-      glob: 8.0.3
-      jest: 29.3.1_odkjkoia5xunhxkdrka32ib6vi
-      ts-jest: 29.0.3_4f6uxrzmuwipl5rr3bcogf6k74
-      ts-node: 10.9.1_wup25etrarvlqkprac7h35hj7u
-      typescript: 4.9.3
 
 packages:
 
@@ -2295,9 +2252,9 @@ packages:
     dependencies:
       '@octokit/auth-app': 4.0.9
       '@octokit/auth-unauthenticated': 3.0.3
-      '@octokit/core': 4.1.0
+      '@octokit/core': 4.2.0
       '@octokit/oauth-app': 4.1.0
-      '@octokit/plugin-paginate-rest': 6.0.0_@octokit+core@4.1.0
+      '@octokit/plugin-paginate-rest': 6.0.0_@octokit+core@4.2.0
       '@octokit/types': 9.0.0
       '@octokit/webhooks': 10.3.1
     transitivePeerDependencies:
@@ -2567,6 +2524,36 @@ packages:
       - encoding
     dev: false
 
+  /@octokit/core/4.2.0:
+    resolution: {integrity: sha512-AgvDRUg3COpR82P7PBdGZF/NNqGmtMq2NiPqeSsDIeCfYFOZ9gddqWNQHnFdEUf+YwOj4aZYmJnlPp7OXmDIDg==}
+    engines: {node: '>= 14'}
+    dependencies:
+      '@octokit/auth-token': 3.0.2
+      '@octokit/graphql': 5.0.4
+      '@octokit/request': 6.2.2
+      '@octokit/request-error': 3.0.2
+      '@octokit/types': 9.0.0
+      before-after-hook: 2.2.3
+      universal-user-agent: 6.0.0
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+
+  /@octokit/core/4.2.0_encoding@0.1.13:
+    resolution: {integrity: sha512-AgvDRUg3COpR82P7PBdGZF/NNqGmtMq2NiPqeSsDIeCfYFOZ9gddqWNQHnFdEUf+YwOj4aZYmJnlPp7OXmDIDg==}
+    engines: {node: '>= 14'}
+    dependencies:
+      '@octokit/auth-token': 3.0.2
+      '@octokit/graphql': 5.0.4_encoding@0.1.13
+      '@octokit/request': 6.2.2_encoding@0.1.13
+      '@octokit/request-error': 3.0.2
+      '@octokit/types': 9.0.0
+      before-after-hook: 2.2.3
+      universal-user-agent: 6.0.0
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+
   /@octokit/endpoint/6.0.12:
     resolution: {integrity: sha512-lF3puPwkQWGfkMClXb4k/eUT/nZKQfxinRWJrdZaJO85Dqwo/G0yOC434Jr2ojwafWJMYqFGFa5ms4jJUgujdA==}
     dependencies:
@@ -2641,7 +2628,7 @@ packages:
       '@octokit/auth-oauth-app': 5.0.4
       '@octokit/auth-oauth-user': 2.0.4
       '@octokit/auth-unauthenticated': 3.0.3
-      '@octokit/core': 4.1.0
+      '@octokit/core': 4.2.0
       '@octokit/oauth-authorization-url': 5.0.0
       '@octokit/oauth-methods': 2.0.4
       '@types/aws-lambda': 8.10.109
@@ -2658,7 +2645,7 @@ packages:
       '@octokit/auth-oauth-app': 5.0.4_encoding@0.1.13
       '@octokit/auth-oauth-user': 2.0.4_encoding@0.1.13
       '@octokit/auth-unauthenticated': 3.0.3
-      '@octokit/core': 4.1.0_encoding@0.1.13
+      '@octokit/core': 4.2.0_encoding@0.1.13
       '@octokit/oauth-authorization-url': 5.0.0
       '@octokit/oauth-methods': 2.0.4_encoding@0.1.13
       '@types/aws-lambda': 8.10.109
@@ -2746,13 +2733,13 @@ packages:
       '@octokit/types': 8.0.0
     dev: false
 
-  /@octokit/plugin-paginate-rest/6.0.0_@octokit+core@4.1.0:
+  /@octokit/plugin-paginate-rest/6.0.0_@octokit+core@4.2.0:
     resolution: {integrity: sha512-Sq5VU1PfT6/JyuXPyt04KZNVsFOSBaYOAq2QRZUwzVlI10KFvcbUo8lR258AAQL1Et60b0WuVik+zOWKLuDZxw==}
     engines: {node: '>= 14'}
     peerDependencies:
       '@octokit/core': '>=4'
     dependencies:
-      '@octokit/core': 4.1.0
+      '@octokit/core': 4.2.0
       '@octokit/types': 9.0.0
     dev: false
 
@@ -2785,13 +2772,13 @@ packages:
       deprecation: 2.3.1
     dev: false
 
-  /@octokit/plugin-rest-endpoint-methods/7.0.1_@octokit+core@4.1.0:
+  /@octokit/plugin-rest-endpoint-methods/7.0.1_@octokit+core@4.2.0:
     resolution: {integrity: sha512-pnCaLwZBudK5xCdrR823xHGNgqOzRnJ/mpC/76YPpNP7DybdsJtP7mdOwh+wYZxK5jqeQuhu59ogMI4NRlBUvA==}
     engines: {node: '>= 14'}
     peerDependencies:
       '@octokit/core': '>=3'
     dependencies:
-      '@octokit/core': 4.1.0
+      '@octokit/core': 4.2.0
       '@octokit/types': 9.0.0
       deprecation: 2.3.1
     dev: false
@@ -2810,6 +2797,17 @@ packages:
       '@octokit/core': '>=3'
     dependencies:
       '@octokit/core': 4.1.0
+      '@octokit/types': 8.0.0
+      bottleneck: 2.19.5
+    dev: false
+
+  /@octokit/plugin-retry/4.0.3_@octokit+core@4.2.0:
+    resolution: {integrity: sha512-tDR+4Cs9GPPNJ7/RjTEq5ty2wqjKe1hRUV7/hch+nORow5LshlHXTT1qfYNsFPw3S9szvFFAfDEFq/xwrEpL7g==}
+    engines: {node: '>= 14'}
+    peerDependencies:
+      '@octokit/core': '>=3'
+    dependencies:
+      '@octokit/core': 4.2.0
       '@octokit/types': 8.0.0
       bottleneck: 2.19.5
     dev: false
@@ -2835,13 +2833,13 @@ packages:
       bottleneck: 2.19.5
     dev: false
 
-  /@octokit/plugin-throttling/5.0.1_@octokit+core@4.1.0:
+  /@octokit/plugin-throttling/5.0.1_@octokit+core@4.2.0:
     resolution: {integrity: sha512-I4qxs7wYvYlFuY3PAUGWAVPhFXG3RwnvTiSr5Fu/Auz7bYhDLnzS2MjwV8nGLq/FPrWwYiweeZrI5yjs1YG4tQ==}
     engines: {node: '>= 14'}
     peerDependencies:
       '@octokit/core': ^4.0.0
     dependencies:
-      '@octokit/core': 4.1.0
+      '@octokit/core': 4.2.0
       '@octokit/types': 9.0.0
       bottleneck: 2.19.5
     dev: false
@@ -3408,10 +3406,6 @@ packages:
   /@types/luxon/3.1.0:
     resolution: {integrity: sha512-gCd/HcCgjqSxfMrgtqxCgYk/22NBQfypwFUG7ZAyG/4pqs51WLTcUzVp1hqTbieDYeHS3WoVEh2Yv/2l+7B0Vg==}
 
-  /@types/luxon/3.2.0:
-    resolution: {integrity: sha512-lGmaGFoaXHuOLXFvuju2bfvZRqxAqkHPx9Y9IQdQABrinJJshJwfNCKV+u7rR3kJbiqfTF/NhOkcxxAFrObyaA==}
-    dev: true
-
   /@types/mime/3.0.1:
     resolution: {integrity: sha512-Y4XFY5VJAuw0FgAqPNd6NNoV44jbq9Bz2L7Rh/J6jLTiHBSBJa9fxqQIvkIld4GsoDOcCbvzOUAbLPsSKKg+uA==}
 
@@ -3440,15 +3434,6 @@ packages:
     resolution: {integrity: sha512-NPotx5CVful7yB+qZbWtXL2fA4e7aEHkihHLjklc6ID8aq7bhguHgeIoC1EmSNTAuCgI6ZXrjt2ZSaXnYX0EUg==}
     dependencies:
       '@types/node': 18.11.9
-    dev: true
-
-  /@types/nock/11.1.0:
-    resolution: {integrity: sha512-jI/ewavBQ7X5178262JQR0ewicPAcJhXS/iFaNJl0VHLfyosZ/kwSrsa6VNQNSO8i9d8SqdRgOtZSOKJ/+iNMw==}
-    deprecated: This is a stub types definition. nock provides its own type definitions, so you do not need this installed.
-    dependencies:
-      nock: 13.3.0
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /@types/node-fetch/2.6.2:
@@ -9360,11 +9345,6 @@ packages:
     engines: {node: '>=12'}
     dev: false
 
-  /luxon/3.2.1:
-    resolution: {integrity: sha512-QrwPArQCNLAKGO/C+ZIilgIuDnEnKx5QYODdDtbFaxzsbZcc/a7WFq7MhsVYgRlwawLtvOUESTlfJ+hc/USqPg==}
-    engines: {node: '>=12'}
-    dev: false
-
   /mailing-core/0.8.19_igddrdkifliihum6z4iui45wkq:
     resolution: {integrity: sha512-QhAT0SU4NUCppsyPxxmjTCEEauu09GDpJewSuOjdcI9iWTNGFJcV36XHKtGVEBULIx2LZKsheC6Qnq2HnHvImg==}
     dependencies:
@@ -10507,12 +10487,12 @@ packages:
     engines: {node: '>= 14'}
     dependencies:
       '@octokit/app': 13.1.2
-      '@octokit/core': 4.1.0
+      '@octokit/core': 4.2.0
       '@octokit/oauth-app': 4.1.0
-      '@octokit/plugin-paginate-rest': 6.0.0_@octokit+core@4.1.0
-      '@octokit/plugin-rest-endpoint-methods': 7.0.1_@octokit+core@4.1.0
-      '@octokit/plugin-retry': 4.0.3_@octokit+core@4.1.0
-      '@octokit/plugin-throttling': 5.0.1_@octokit+core@4.1.0
+      '@octokit/plugin-paginate-rest': 6.0.0_@octokit+core@4.2.0
+      '@octokit/plugin-rest-endpoint-methods': 7.0.1_@octokit+core@4.2.0
+      '@octokit/plugin-retry': 4.0.3_@octokit+core@4.2.0
+      '@octokit/plugin-throttling': 5.0.1_@octokit+core@4.2.0
       '@octokit/types': 9.0.0
     transitivePeerDependencies:
       - encoding

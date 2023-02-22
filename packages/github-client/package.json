@@ -30,7 +30,6 @@
   "devDependencies": {
     "@types/generic-pool": "^3.1.11",
     "@types/jest": "^29.4.0",
-    "@types/nock": "^11.1.0",
     "@types/node": "^18.13.0",
     "nock": "^13.3.0"
   }
