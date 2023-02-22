@@ -1,7 +1,7 @@
 import {createPool, Factory, Pool} from "generic-pool";
-import {Octokit} from "octokit";
 import pino, {Logger} from "pino";
 import {eraseGitHubToken} from "./utils";
+import {Octokit} from "octokit";
 
 export const TOKEN_SYMBOL = Symbol('PERSONAL_TOKEN');
 
@@ -17,31 +17,8 @@ export const initOctokit = (baseLogger: pino.Logger, token: string | undefined):
       warn: logger.warn.bind(logger),
       error: logger.error.bind(logger),
     },
-    throttle: {
-      onRateLimit: (retryAfter: number, options: any, octokit: Octokit) => {
-        octokit.log.warn(
-          `Request quota exhausted for request ${options.method} ${options.url}`
-        );
-
-        if (options.request.retryCount <= 1) {
-          // Only retries once.
-          octokit.log.info(`Retrying after ${retryAfter} seconds!`);
-          return true;
-        }
-      },
-      onSecondaryRateLimit: (retryAfter: number, options: any, octokit: Octokit) => {
-        octokit.log.warn(
-          `SecondaryRateLimit detected for request ${options.method} ${options.url}.`
-        );
-
-        if (options.request.retryCount <= 1) {
-          // Only retries once.
-          octokit.log.info(`Retrying after ${retryAfter} seconds!`);
-          return true;
-        }
-      },
-    }
   });
+
   Object.defineProperty(octokit, TOKEN_SYMBOL, {
     value: token,
     writable: false,
@@ -123,32 +100,3 @@ export const createOctokitPool = (baseLogger: pino.Logger, tokens: string[], req
 
   return octokitPool;
 }
-
-export class OctokitBalancer {
-  private readonly logger: Logger;
-  private readonly clients: Octokit[] = [];
-  private currentIndex: number = 0;
-
-  constructor(baseLogger: Logger, tokens: string[] = [], requiredScopes: string[]) {
-    this.logger = baseLogger.child({'component': 'octokit-balancer'});
-    this.logger.info('Create octokit balancer with %d tokens.', tokens.length);
-    tokens.forEach(async (token) => {
-      const octokit = initOctokit(baseLogger, token);
-
-      if (Array.isArray(requiredScopes) && requiredScopes.length > 0) {
-        await validateOctokit(baseLogger, octokit, requiredScopes);
-      }
-
-      this.clients.push(octokit);
-    });
-  }
-
-  async getOctokit(): Promise<Octokit> {
-    const instance = this.clients[this.currentIndex];
-    this.currentIndex = (this.currentIndex + 1) % this.clients.length;
-    return instance;
-  }
-
-}
-
-

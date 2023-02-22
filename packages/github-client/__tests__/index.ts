@@ -1,5 +1,6 @@
-import {createOctokitPool, OctokitBalancer, TOKEN_SYMBOL} from "../src";
+import {createOctokitPool, initOctokit, TOKEN_SYMBOL} from "../src";
 import pino from "pino";
+import * as process from "process";
 
 describe('octokit pool', () => {
 
@@ -23,10 +24,9 @@ describe('octokit pool', () => {
 describe('octokit balancer', () => {
 
   test('acquire and release should work', async () => {
-    const balancer = new OctokitBalancer(pino(), ["xxx"], [])
-    const octokit = await balancer.getOctokit();
-    const res = await octokit.rest.users.getAuthenticated();
-    console.log(res)
+    const octokit = initOctokit(pino(), process.env.GITHUB_TOKEN!);
+    const {data} = await octokit.rest.users.getAuthenticated();
+    console.log(data)
   });
 
 });
