@@ -3,6 +3,7 @@ name: CICD
 items:
   - jenkinsci/jenkins
   - argoproj/argo-cd
+  - argoproj/argo-rollouts
   - jenkins-x/jx
   - gradle/gradle
   - gocd/gocd
