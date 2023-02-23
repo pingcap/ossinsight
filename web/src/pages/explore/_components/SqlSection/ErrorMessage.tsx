@@ -22,7 +22,7 @@ export default function ErrorMessage ({ error }: { error: unknown }) {
   switch (question.errorType) {
     case QuestionErrorType.ANSWER_GENERATE:
       if ((question.error?.indexOf('code 500') ?? -1) >= 0) {
-        return <Typography variant="body1">OpenAI failed to respond to your question. Please try again later.</Typography>;
+        return <Typography variant="body1">OpenAI failed to respond. Please try again later.</Typography>;
       } else {
         return <Typography variant="body1">Failed to generate SQL due to network error. Please try again later.</Typography>;
       }

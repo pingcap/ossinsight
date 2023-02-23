@@ -37,3 +37,4 @@ items:
   - apache/shardingsphere
   - milvus-io/milvus
   - CUBRID/cubrid
+  - GreptimeTeam/greptimedb

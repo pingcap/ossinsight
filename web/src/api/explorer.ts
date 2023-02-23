@@ -46,8 +46,8 @@ export interface QuestionAnswer {
   chart?: ChartResult;
   combinedTitle?: string;
   deps?: string;
-  keywords?: string[];
-  links?: string[];
+  keywords?: string[] | string;
+  links?: string[] | string;
   notClear?: string;
   querySQL?: string;
   revisedTitle?: string;

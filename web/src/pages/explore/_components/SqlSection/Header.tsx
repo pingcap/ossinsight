@@ -10,7 +10,7 @@ import { randomOf } from '@site/src/utils/generate';
 import TypewriterEffect from '@site/src/pages/explore/_components/TypewriterEffect';
 import BotIcon from '@site/src/pages/explore/_components/BotIcon';
 import { Question } from '@site/src/api/explorer';
-import AIMessagesV2 from '@site/src/pages/explore/_components/SqlSection/AIMessagesV2';
+import AIMessagesV3 from '@site/src/pages/explore/_components/SqlSection/AIMessagesV3';
 
 export interface HeaderProps {
   question: Question | undefined;
@@ -97,7 +97,7 @@ export default function Header ({ question, phase, sqlSectionStatus, open, toggl
 
   return (
     <StyledTitle>
-      <AIMessagesV2
+      <AIMessagesV3
         question={question}
         onStop={handleMessagesReady}
         onStart={handleMessagesStart}
