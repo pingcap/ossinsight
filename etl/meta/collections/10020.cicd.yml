@@ -16,6 +16,7 @@ items:
   - travis-ci/travis-ci
   - fluxcd/flagger
   - fluxcd/flux
+  - fluxcd/flux2
   - werf/werf
   - Strider-CD/strider
   - buildbot/buildbot
