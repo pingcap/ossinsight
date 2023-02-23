@@ -8,6 +8,8 @@ import { extractTime } from '@site/src/pages/explore/_components/SqlSection/util
 import TiDBCloudLink from '@site/src/components/TiDBCloudLink';
 import Anchor from '@site/src/components/Anchor';
 import Link from '@docusaurus/Link';
+import { getErrorDetails } from '@site/src/pages/explore/_components/errorOverride';
+import { notNullish } from '@site/src/utils/value';
 
 export default function ErrorMessage ({ error }: { error: unknown }) {
   const { question } = useQuestionManagement();
@@ -28,24 +30,37 @@ export default function ErrorMessage ({ error }: { error: unknown }) {
       return <Typography variant="body1">Failed to generate SQL. Optimize your question for effective SQL, or get ideas from <Link to='/explore/'>popular questions</Link>.</Typography>;
     case QuestionErrorType.SQL_CAN_NOT_ANSWER:
       return <Typography variant="body1">Sorry, I can&apos;t generate SQL as your question is not GitHub-related or beyond our data source.</Typography>;
-    case QuestionErrorType.VALIDATE_SQL:
+    case QuestionErrorType.VALIDATE_SQL: {
+      const errorDetails = getErrorDetails(QuestionErrorType.VALIDATE_SQL, question.error);
+      if (notNullish(errorDetails)) {
+        return (
+          <>
+            <Typography variant="body1">
+              {errorDetails}
+              <br />
+              Optimize your question for effective SQL, or get ideas from <Link to="/explore/">popular questions</Link>.
+            </Typography>
+          </>
+        );
+      }
       return (
         <>
           <Typography variant="body1">
-            SQL syntax error or invalid field. <Button variant="text" size="small" onClick={toggle}>DETAIL</Button>
+            {'SQL syntax error or invalid field. '}
+            <Button variant="text" size="small" onClick={toggle}>DETAIL</Button>
             <br />
             <Collapse in={open}>
-            <Divider orientation="horizontal" sx={{ my: 2 }} />
-            <Typography variant="body2">
-              {question.error ?? 'Empty message'}
-            </Typography>
-            <Divider orientation="horizontal" sx={{ my: 2 }} />
-          </Collapse>
-            Optimize your question for effective SQL, or get ideas from <Link to='/explore/'>popular questions</Link>.
+              <Divider orientation="horizontal" sx={{ my: 2 }} />
+              <Typography variant="body2">
+                {question.error ?? 'Empty message'}
+              </Typography>
+              <Divider orientation="horizontal" sx={{ my: 2 }} />
+            </Collapse>
+            Optimize your question for effective SQL, or get ideas from <Link to="/explore/">popular questions</Link>.
           </Typography>
-
         </>
       );
+    }
   }
 
   // Legacy error
