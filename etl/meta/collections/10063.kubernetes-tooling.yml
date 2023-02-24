@@ -23,3 +23,4 @@ items:
   - opencost/opencost
   - kubeshop/monokle
   - komodorio/helm-dashboard
+  - clastix/capsule
