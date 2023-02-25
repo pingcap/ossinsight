@@ -17,3 +17,4 @@ items:
   - gobuffalo/pop
   - src-d/go-kallax
   - huandu/go-sqlbuilder
+  - latolukasz/beeorm
