@@ -1,7 +1,7 @@
 import {readFile} from 'fs/promises'
 import path from 'path'
 import {DateTime, Duration} from "luxon";
-import type { QuerySchema } from '../../params.schema'
+import type { QuerySchema } from '../../params.schema';
 import {
   TiDBQueryExecutor,
   Rows,

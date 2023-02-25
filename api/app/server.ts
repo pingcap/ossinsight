@@ -28,10 +28,11 @@ export default async function httpServerRoutes(
   userService: UserService,
   ghEventService: GHEventService,
   statsService: StatsService,
-  accessRecorder: BatchLoader
+  accessRecorder: BatchLoader,
+  shadowAccessRecord: BatchLoader | null,
 ) {
 
-  router.get('/q/explain/:query(.*)', measureRequests(URLType.PATH, accessRecorder), async ctx => {
+  router.get('/q/explain/:query(.*)', measureRequests(URLType.PATH, accessRecorder, shadowAccessRecord), async ctx => {
     try {
       const query = new Query(ctx.params.query, cacheBuilder, queryExecutor, ghEventService, collectionService, userService)
       const res = await query.explain(ctx.query)
@@ -44,7 +45,7 @@ export default async function httpServerRoutes(
     }
   })
 
-  router.get('/q/:query(.*)', measureRequests(URLType.PATH, accessRecorder), async ctx => {
+  router.get('/q/:query(.*)', measureRequests(URLType.PATH, accessRecorder, shadowAccessRecord), async ctx => {
     try {
       const queryName = ctx.params.query;
       const query = new Query(
@@ -64,7 +65,7 @@ export default async function httpServerRoutes(
     }
   })
 
-  router.get('/collections', measureRequests(URLType.PATH, accessRecorder), async ctx => {
+  router.get('/collections', measureRequests(URLType.PATH, accessRecorder, shadowAccessRecord), async ctx => {
     try {
       const res = await collectionService.getCollections();
       ctx.response.status = 200
@@ -76,7 +77,7 @@ export default async function httpServerRoutes(
     }
   })
 
-  router.get('/collections/:collectionId', measureRequests(URLType.PATH, accessRecorder), async ctx => {
+  router.get('/collections/:collectionId', measureRequests(URLType.PATH, accessRecorder, shadowAccessRecord), async ctx => {
     const { collectionId } = ctx.params
     try {
       const res = await collectionService.getCollectionRepos(parseInt(collectionId));
@@ -108,7 +109,7 @@ export default async function httpServerRoutes(
     }
   })
 
-  router.get('/gh/repo/:owner/:repo', measureRequests(URLType.ROUTE, accessRecorder), async ctx => {
+  router.get('/gh/repo/:owner/:repo', measureRequests(URLType.ROUTE, accessRecorder, shadowAccessRecord), async ctx => {
     const { owner, repo } = ctx.params
     try {
       const res = await ghExecutor.getRepo(owner, repo)
@@ -123,7 +124,7 @@ export default async function httpServerRoutes(
     }
   })
 
-  router.get('/gh/repos/search', measureRequests(URLType.PATH, accessRecorder), async ctx => {
+  router.get('/gh/repos/search', measureRequests(URLType.PATH, accessRecorder, shadowAccessRecord), async ctx => {
     const { keyword } = ctx.query;
 
     try {
@@ -144,7 +145,7 @@ export default async function httpServerRoutes(
     }
   })
 
-  router.get('/gh/users/search', measureRequests(URLType.PATH, accessRecorder), async ctx => {
+  router.get('/gh/users/search', measureRequests(URLType.PATH, accessRecorder, shadowAccessRecord), async ctx => {
     const { keyword, type } = ctx.query as any;
 
     try {
@@ -176,7 +177,7 @@ export default async function httpServerRoutes(
   router.post(
     "/q/playground",
     koaBody(),
-    measureRequests(URLType.PATH, accessRecorder),
+    measureRequests(URLType.PATH, accessRecorder, shadowAccessRecord),
     async (ctx) => {
       try {
         const {
