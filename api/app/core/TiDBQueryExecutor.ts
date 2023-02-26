@@ -29,10 +29,8 @@ export class TiDBQueryExecutor implements QueryExecutor {
     shadowOptions: PoolOptions | null,
   ) {
     this.connections = createPool(options)
+    this.shadowConnections = shadowOptions ? createPool(shadowOptions) : null;
     this.logger = consola.withTag('tidb-query-executor')
-    if (shadowOptions != null) {
-      this.shadowConnections = createPool(shadowOptions);
-    }
   }
 
   async execute<T extends Rows>(queryKey: string, sql: string): Promise<[T, Fields]>;
@@ -50,6 +48,14 @@ export class TiDBQueryExecutor implements QueryExecutor {
     } finally {
       conn.release();
     }
+  }
+
+  async executeWithConn<T extends Rows>(conn: Conn, queryKey: string, sql: string): Promise<[T, Fields]>;
+  async executeWithConn<T extends Rows>(conn: Conn, queryKey: string, sql: string, values: Values): Promise<[T, Fields]>;
+  async executeWithConn<T extends Rows>(conn: Conn, queryKey: string, options: QueryOptions): Promise<[T, Fields]>;
+  async executeWithConn<T extends Rows>(conn: Conn, queryKey: string, sqlOrOptions: string | QueryOptions, values?: Values): Promise<[T, Fields]> {
+    this.executeWithConnShadow(queryKey, sqlOrOptions, values);
+    return this.executeWithConnInternal(tidbQueryTimer, tidbQueryCounter, conn, queryKey, sqlOrOptions, values);
   }
 
   async executeWithConnShadow(queryKey: string, sqlOrOptions: string | QueryOptions, values?: Values) {
@@ -100,14 +106,6 @@ export class TiDBQueryExecutor implements QueryExecutor {
       throw err;
     }
   };
-
-  async executeWithConn<T extends Rows>(conn: Conn, queryKey: string, sql: string): Promise<[T, Fields]>;
-  async executeWithConn<T extends Rows>(conn: Conn, queryKey: string, sql: string, values: Values): Promise<[T, Fields]>;
-  async executeWithConn<T extends Rows>(conn: Conn, queryKey: string, options: QueryOptions): Promise<[T, Fields]>;
-  async executeWithConn<T extends Rows>(conn: Conn, queryKey: string, sqlOrOptions: string | QueryOptions, values?: Values): Promise<[T, Fields]> {
-    this.executeWithConnShadow(queryKey, sqlOrOptions, values);
-    return this.executeWithConnInternal(tidbQueryTimer, tidbQueryCounter, conn, queryKey, sqlOrOptions, values);
-  }
 
   async getConnectionInternal(pool: Pool, timer: Summary): Promise<PoolConnection> {
     let end = () => {};

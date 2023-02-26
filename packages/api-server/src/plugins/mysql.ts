@@ -2,7 +2,8 @@ import fp from "fastify-plugin";
 import fastifyMySQL from "@fastify/mysql";
 
 export default fp(async (app) => {
-    if (process.env.NODE_ENV === 'test' && (/tidb-cloud|gharchive_dev|github_events_api/.test(app.config.DATABASE_URL))) {
+    let isProd = (s: string): boolean => { return /tidb-cloud|gharchive_dev|github_events_api/.test(s); }
+    if (process.env.NODE_ENV === 'test' && (isProd(app.config.DATABASE_URL) || isProd(app.config.SHADOW_DATABASE_URL))) {
         throw new Error('Do not use online database in test env.');
     }
     await app.register(fastifyMySQL, {

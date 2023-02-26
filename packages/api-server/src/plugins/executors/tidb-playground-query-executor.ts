@@ -5,7 +5,9 @@ import { getPlaygroundSessionLimits } from '../../core/playground/limitation';
 export default fp(async (app) => {
   app.decorate('playgroundQueryExecutor', new TiDBPlaygroundQueryExecutor({
     uri: app.config.PLAYGROUND_DATABASE_URL,
-  }, getPlaygroundSessionLimits()));
+  }, getPlaygroundSessionLimits(), !!app.config.SHADOW_PLAYGROUND_DATABASE_URL ? {
+    uri: app.config.SHADOW_PLAYGROUND_DATABASE_URL,
+  } : null));
 }, {
   name: 'playground-query-executor',
 });
