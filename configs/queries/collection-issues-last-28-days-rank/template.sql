@@ -3,9 +3,11 @@ WITH issues_group_by_repo AS (
         repo_id,
         COUNT(DISTINCT number) AS issues
     FROM github_events
+    -- TODO: remove
+    USE INDEX(index_ge_on_repo_id_type_action_created_at_number_pdsize_psize)
     WHERE
         type = 'IssuesEvent'
-        AND repo_id IN (41986369, 16563587, 105944401)
+        AND repo_id IN (SELECT repo_id FROM collection_items ci WHERE collection_id = 10001 LIMIT 200)
         AND action = 'opened'
     GROUP BY repo_id
 ), issues_group_by_period AS (
@@ -18,8 +20,7 @@ WITH issues_group_by_repo AS (
     WHERE
         type = 'IssuesEvent'
         AND action = 'opened'
-        AND repo_id IN (41986369, 16563587, 105944401)
-        AND (event_month BETWEEN DATE_FORMAT(DATE_SUB(CURRENT_DATE(), INTERVAL 56 DAY), '%Y-%m-01') AND DATE_FORMAT(CURRENT_DATE(), '%Y-%m-01'))
+        AND repo_id IN (SELECT repo_id FROM collection_items ci WHERE collection_id = 10001 LIMIT 200)
         AND created_at > DATE_SUB(CURRENT_DATE(), INTERVAL 56 DAY)
     GROUP BY period, repo_id
 ), issues_last_period AS (

@@ -6,7 +6,6 @@
     {
       "name": "repoId",
       "replaces": "41986369",
-      "type": "array",
       "pattern": "^[1-9]\\d*$"
     }
   ],
@@ -26,6 +25,6 @@
         "description": "Total stars in the month"
       }
     },
-    "required": ["event_month", "repo_id", "total"]
+    "required": ["event_month", "total"]
   }
 }
