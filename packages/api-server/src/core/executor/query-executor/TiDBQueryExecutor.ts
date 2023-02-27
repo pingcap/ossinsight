@@ -52,7 +52,11 @@ export class TiDBQueryExecutor implements QueryExecutor {
       return;
     }
     const conn = await this.getConnectionInternal(this.shadowConnections, waitShadowTidbConnectionTimer);
-    await this.executeWithConnInternal(shadowTidbQueryTimer, shadowTidbQueryCounter, conn, queryKey, sqlOrOptions, values);
+    try {
+      await this.executeWithConnInternal(shadowTidbQueryTimer, shadowTidbQueryCounter, conn, queryKey, sqlOrOptions, values);
+    } finally {
+      await conn.release();
+    }
   }
 
   async executeWithConnInternal<T extends Rows>(timer: Summary, counter: Counter, conn: Connection,
