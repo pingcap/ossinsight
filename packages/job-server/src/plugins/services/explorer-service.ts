@@ -6,8 +6,8 @@ import fp from "fastify-plugin";
 
 export default fp(async (app) => {
     const executor = new TiDBPlaygroundQueryExecutor({
-        uri: app.config.PLAYGROUND_DATABASE_URL,
-    }, getPlaygroundSessionLimits());
+      uri: app.config.PLAYGROUND_DATABASE_URL,
+    }, null, getPlaygroundSessionLimits());
     app.decorate('explorerService', new ExplorerService(
       app.log.child({service: 'explorer-service'}),
       app.mysql,

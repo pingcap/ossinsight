@@ -15,9 +15,12 @@ export default fp(async (fastify) => {
     const pool = await getPool({
         uri: fastify.config.DATABASE_URL,
     });
-    fastify.decorate('statsService', new StatsService(pool, log));
+    const shadowPool = !!fastify.config.SHADOW_DATABASE_URL ? await getPool({
+        uri: fastify.config.SHADOW_DATABASE_URL,
+    }) : null;
+    fastify.decorate('statsService', new StatsService(pool, shadowPool, log));
     fastify.addHook('onClose', async (app) => {
-      await app.statsService.destroy()
+      await app.statsService.destroy();
     })
 }, {
   name: 'stats-service',
@@ -29,18 +32,23 @@ export default fp(async (fastify) => {
 const STATS_QUERY_PREFIX = 'stats-';
 const INSERT_STATS_BATCH_SIZE = 2;
 
+function newStatsLoader(pool: Pool): BatchLoader {
+  return new BatchLoader(pool, `INSERT INTO stats_query_summary(query_name, digest_text, executed_at) VALUES ?`, {
+    batchSize: INSERT_STATS_BATCH_SIZE
+  });
+}
+
 export class StatsService {
     private queryStatsLoader: BatchLoader;
+    private shadowQueryStatsLoader: BatchLoader | null;
 
-    constructor(
-        readonly pool: Pool,
-        private readonly log: pino.Logger
-    ) {
-        this.queryStatsLoader = new BatchLoader(this.pool, `
-            INSERT INTO stats_query_summary(query_name, digest_text, executed_at) VALUES ?
-        `, {
-            batchSize: INSERT_STATS_BATCH_SIZE
-        });
+  constructor(
+    readonly pool: Pool,
+    readonly shadowPool: Pool | null,
+    private readonly log: pino.Logger,
+  ) {
+        this.queryStatsLoader = newStatsLoader(this.pool);
+        this.shadowQueryStatsLoader = this.shadowPool ? newStatsLoader(this.shadowPool) : null;
     }
 
     async addQueryStatsRecord(queryName: string, digestText: string, executedAt: Date, refresh?: boolean) {
@@ -51,6 +59,10 @@ export class StatsService {
             }
             digestText = digestText.replaceAll(/\s+/g, ' ');
             await this.queryStatsLoader.insert([queryName, digestText, executedAt]);
+
+            if (this.shadowQueryStatsLoader) {
+              await this.shadowQueryStatsLoader.insert([queryName, digestText, executedAt]);
+            }
         } catch(err) {
             this.log.error(`Failed to add query stats record for ${queryName}.`);
         }
@@ -58,10 +70,18 @@ export class StatsService {
 
     async flush () {
       await this.queryStatsLoader.flush();
+      if (this.shadowQueryStatsLoader) {
+        await this.shadowQueryStatsLoader.flush();
+      }
     }
 
     async destroy () {
       await this.queryStatsLoader.destroy();
       await this.pool.end();
+
+      if (this.shadowQueryStatsLoader) {
+        await this.shadowQueryStatsLoader.destroy();
+        await this.shadowPool?.end();
+      }
     }
 }

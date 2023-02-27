@@ -15,6 +15,9 @@ export const APIServerEnvSchema = {
     DATABASE_URL: {
       type: 'string'
     },
+    SHADOW_DATABASE_URL: {
+      type: 'string'
+    },
     REDIS_URL: {
       type: 'string',
       default: 'redis://localhost:6379/0'
@@ -35,6 +38,9 @@ export const APIServerEnvSchema = {
       default: false
     },
     PLAYGROUND_DATABASE_URL: {
+      type: 'string',
+    },
+    PLAYGROUND_SHADOW_DATABASE_URL: {
       type: 'string',
     },
     PLAYGROUND_DAILY_QUESTIONS_LIMIT: {

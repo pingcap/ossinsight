@@ -23,10 +23,12 @@ declare module 'fastify' {
       CONFIGS_PATH: string;
       ADMIN_EMAIL: string;
       DATABASE_URL: string;
+      SHADOW_DATABASE_URL: string;
       REDIS_URL: string;
       API_BASE_URL: string;
       ENABLE_CACHE: boolean;
       PLAYGROUND_DATABASE_URL: string;
+      PLAYGROUND_SHADOW_DATABASE_URL: string;
       PLAYGROUND_DAILY_QUESTIONS_LIMIT: number;
       PLAYGROUND_TRUSTED_GITHUB_LOGINS: string[];
       EXPLORER_USER_MAX_QUESTIONS_PER_HOUR: number;
@@ -47,6 +49,7 @@ declare module 'fastify' {
       AUTH0_SECRET: string;
     };
     mysql: MySQLPromisePool;
+    shadowMySQL?: MySQLPromisePool;
   }
 }
 

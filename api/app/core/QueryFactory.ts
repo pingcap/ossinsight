@@ -26,7 +26,7 @@ export class QueryTemplateNotFoundError extends Error {
 //   });
 // }
 
-export const QUERY_DEF_DIR = path.join(process.cwd(), 'queries');
+export const QUERY_DEF_DIR = path.join(process.cwd(), '../configs/queries');
 export const TEMPLATE_FILENAME = 'template.sql';
 export const DEFINITION_FILENAME = 'params.json';
 

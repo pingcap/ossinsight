@@ -14,7 +14,13 @@ export default fp(async (fastify) => {
     const wrapper = await ConnectionWrapper.new({
         uri: fastify.config.DATABASE_URL
     });
-    fastify.decorate('cacheBuilder', new CacheBuilder(log, fastify.config.ENABLE_CACHE, wrapper));
+    let shadowWrapper: ConnectionWrapper | undefined;
+    if (fastify.config.SHADOW_DATABASE_URL) {
+        shadowWrapper = await ConnectionWrapper.new({
+            uri: fastify.config.SHADOW_DATABASE_URL
+        });
+    }
+    fastify.decorate('cacheBuilder', new CacheBuilder(log, fastify.config.ENABLE_CACHE, wrapper, shadowWrapper));
 }, {
     name: 'cache-builder',
     dependencies: [

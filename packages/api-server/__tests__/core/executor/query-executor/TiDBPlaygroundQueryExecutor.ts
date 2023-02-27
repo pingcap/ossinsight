@@ -10,7 +10,7 @@ describe('connection limits', () => {
     const options = getConnectionOptions({
         uri: getTestDatabase().url()
     });
-    const executor = new TiDBPlaygroundQueryExecutor(options, [
+    const executor = new TiDBPlaygroundQueryExecutor(options, null, [
       'set @abc = 1;',
     ]);
 
