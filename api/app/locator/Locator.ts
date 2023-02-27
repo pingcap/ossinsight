@@ -5,8 +5,8 @@ import consola, { Consola } from "consola";
 import LRUCache from 'lru-cache';
 import pinyin from 'pinyin';
 import { NominatimProvider } from './provider/nominatim';
-import { getConnectionOptions, getShadowConnectionOptions } from '../utils/db';
-import { createPool, Pool, PoolOptions} from 'mysql2/promise';
+import { getConnectionOptions } from '../utils/db';
+import { createPool, Pool } from 'mysql2/promise';
 
 const ADDRESS_MIN_LENGTH = 5;
 const ADDRESS_MAX_LENGTH = 50;
@@ -84,7 +84,7 @@ export class Locator {
         }
 
         // First, try to get location info from cache.
-        // Notice: The address must be preprocessed first, otherwise it may be directly
+        // Notice: The address must be preprocessed first, otherwise it may be directly 
         // considered as an invalid Location due to insufficient length.
         address = this.processAddress(address);
         const cacheAddress = await this.addressCache.get(address)
@@ -92,7 +92,7 @@ export class Locator {
             return cacheAddress;
         }
 
-        // Second, try to judge it by validator.
+        // Second, try to judge it by validator. 
         if (!Locator.isAddressValid(address)) {
             return this.recordInvalidAddress(address);
         }
@@ -149,7 +149,7 @@ export class Locator {
             address = address.replaceAll(t, ' ');
         }
 
-        // Process for issue goparrot/geocoder#115, first convert chinese place names into pinyin,
+        // Process for issue goparrot/geocoder#115, first convert chinese place names into pinyin, 
         // and then make a request through the API.
         // Link: https://github.com/goparrot/geocoder/issues/115
         if (CONTAIN_CHINESE_REGEXP.test(address)) {
@@ -159,7 +159,7 @@ export class Locator {
                 }).join('');
             }).join(' ');
         }
-
+        
         return address.trim();
     }
 
@@ -189,22 +189,16 @@ export class Locator {
 export class LocationCache {
     private logger: Consola;
     private pool: Pool;
-    private shadowPool: Pool | null;
     private memoryCache: LRUCache<string, LocationData>;
 
     constructor() {
         // Init logger.
         this.logger = consola.withTag('locator-cache');
 
-        let options: PoolOptions = {
-            connectionLimit: 3
-        };
         // Init TiDB client.
-        this.pool = createPool(getConnectionOptions(options));
-
-        // Init Shadow TiDB client.
-        let shadowOptions = getShadowConnectionOptions(options);
-        this.shadowPool = shadowOptions ? createPool(shadowOptions) : null;
+        this.pool = createPool(getConnectionOptions({
+            connectionLimit: 3
+        }));
 
         // Init Cache.
         this.memoryCache = new LRUCache<string, any>({
@@ -222,17 +216,15 @@ export class LocationCache {
         }
 
         try {
-            let query = `
+            const [rows] = await this.pool.query<any[]>(`
                 SELECT
-                    address, valid, formatted_address AS formattedAddress, country_code AS countryCode,
+                    address, valid, formatted_address AS formattedAddress, country_code AS countryCode, 
                     region_code AS regionCode, state, city, longitude, latitude, provider
                 FROM
                     location_cache
                 WHERE
                     address = ?
-            `;
-            const [rows] = await this.pool.query<any[]>(query, address);
-            this.shadowPool?.query<any[]>(query, address);
+            `, address);
             if (Array.isArray(rows) && rows.length === 1) {
                 this.memoryCache.set(address, rows[0]);
                 return rows[0];
@@ -244,22 +236,20 @@ export class LocationCache {
 
     async set(location: LocationData):Promise<boolean> {
         const {
-            address, valid = 0, formattedAddress = '', countryCode = DEFAULT_COUNTRY_CODE, regionCode = DEFAULT_REGION_CODE,
+            address, valid = 0, formattedAddress = '', countryCode = DEFAULT_COUNTRY_CODE, regionCode = DEFAULT_REGION_CODE, 
             state = '', city = '', longitude = null, latitude = null, provider = LocationProvider.UNKNOWN
         } = location;
         this.memoryCache.set(address, location);
 
         try {
-            let query = `
+            await this.pool.query(`
                 INSERT IGNORE INTO location_cache (
-                    address, valid, formatted_address, country_code, region_code, state, city,
+                    address, valid, formatted_address, country_code, region_code, state, city, 
                     longitude, latitude, provider
                 ) VALUES (
                     ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
                 )
-            `;
-            await this.pool.query(query, [address, valid, formattedAddress, countryCode, regionCode, state, city, longitude, latitude, provider]);
-            this.shadowPool?.query<any[]>(query, address);
+            `, [address, valid, formattedAddress, countryCode, regionCode, state, city, longitude, latitude, provider]);
             return false;
         } catch (err) {
             this.logger.error(`Failed to save location '${address}' to database: `, err);

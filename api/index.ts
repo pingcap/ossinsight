@@ -16,7 +16,7 @@ import { getPlaygroundSessionLimits } from "./app/utils/playground";
 import CollectionService from "./app/services/CollectionService";
 import GHEventService from "./app/services/GHEventService";
 import UserService from "./app/services/UserService";
-import { ConnectionWrapper, getConnectionOptions, getShadowConnectionOptions } from "./app/utils/db";
+import { ConnectionWrapper, getConnectionOptions } from "./app/utils/db";
 import StatsService from "./app/services/StatsService";
 import { getAllowedOrigins, getCorsOrigin } from "./app/origins";
 import { BatchLoader } from "./app/core/BatchLoader";
@@ -24,7 +24,6 @@ import koaStatic from "koa-static";
 import path from "path";
 import { configEnv } from "./app/utils/env";
 import { createPool } from "mysql2/promise";
-import { PoolOptions } from "mysql2";
 
 const logger = consola.withTag("app");
 
@@ -61,14 +60,11 @@ app.use(cors({
 }));
 
 // Init MySQL Executor.
-let tidbOptions: PoolOptions = {
-  connectionLimit: parseInt(process.env.CONNECTION_LIMIT || "10"),
-  queueLimit: parseInt(process.env.QUEUE_LIMIT || "20"),
-};
 const queryExecutor = new TiDBQueryExecutor(
-  getConnectionOptions(tidbOptions),
-  /* default value of enableMetrics is true */ true,
-  getShadowConnectionOptions(tidbOptions),
+  getConnectionOptions({
+    connectionLimit: parseInt(process.env.CONNECTION_LIMIT || "10"),
+    queueLimit: parseInt(process.env.QUEUE_LIMIT || "20"),
+  })
 );
 
 const playgroundQueryExecutor = new TiDBPlaygroundQueryExecutor(
@@ -79,12 +75,6 @@ const playgroundQueryExecutor = new TiDBPlaygroundQueryExecutor(
     password: process.env.WEB_SHELL_PASSWORD,
   }),
   getPlaygroundSessionLimits(),
-  getShadowConnectionOptions({
-    connectionLimit: parseInt(process.env.CONNECTION_LIMIT || "10"),
-    queueLimit: parseInt(process.env.QUEUE_LIMIT || "20"),
-    user: process.env.SHADOW_WEB_SHELL_USER,
-    password: process.env.SHADOW_WEB_SHELL_PASSWORD,
-  }),
 );
 
 // Init Cache Builder;
@@ -99,18 +89,10 @@ const ghExecutor = new GhExecutor(tokens, cacheBuilder);
 const pool = createPool(getConnectionOptions({
   connectionLimit: 2
 }));
-let shadowOptions = getShadowConnectionOptions({
-  connectionLimit: 2
-});
-
 const insertAccessLogSQL = `INSERT INTO access_logs(
   remote_addr, origin, status_code, request_path, request_params
 ) VALUES ?`;
 const accessRecorder = new BatchLoader(pool, insertAccessLogSQL);
-let shadowAccessRecorder: BatchLoader | null = null;
-if (shadowOptions != null) {
-  shadowAccessRecorder = new BatchLoader(createPool(shadowOptions), insertAccessLogSQL);
-}
 
 // Init Services.
 const collectionService = new CollectionService(queryExecutor, cacheBuilder);
@@ -130,8 +112,7 @@ httpServerRoutes(
   userService,
   ghEventService,
   statsService,
-  accessRecorder,
-  shadowAccessRecorder,
+  accessRecorder
 );
 app.use(router.routes()).use(router.allowedMethods());
 

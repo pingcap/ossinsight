@@ -1,7 +1,6 @@
 import consola, { Consola } from "consola";
 import { PoolConnection, QueryOptions, Connection, PoolOptions, ResultSetHeader, FieldPacket, OkPacket, RowDataPacket, createPool, Pool } from "mysql2/promise";
-import { Counter, Summary } from "prom-client";
-import {shadowTidbQueryCounter, tidbQueryCounter, shadowTidbQueryTimer, tidbQueryTimer, waitTidbConnectionTimer, waitShadowTidbConnectionTimer} from "../metrics";
+import {tidbQueryCounter, tidbQueryTimer, waitTidbConnectionTimer} from "../metrics";
 import { decoratePoolConnections } from "../utils/db";
 
 export type Rows = RowDataPacket[] | RowDataPacket[][] | OkPacket | OkPacket[] | ResultSetHeader;
@@ -20,16 +19,13 @@ export interface QueryExecutor {
 
 export class TiDBQueryExecutor implements QueryExecutor {
   protected connections: Pool;
-  protected shadowConnections?: Pool | null;
   protected logger: Consola
 
   constructor(
     options: PoolOptions,
-    readonly enableMetrics: boolean = true,
-    shadowOptions: PoolOptions | null,
+    readonly enableMetrics: boolean = true
   ) {
     this.connections = createPool(options)
-    this.shadowConnections = shadowOptions ? createPool(shadowOptions) : null;
     this.logger = consola.withTag('tidb-query-executor')
   }
 
@@ -54,25 +50,18 @@ export class TiDBQueryExecutor implements QueryExecutor {
   async executeWithConn<T extends Rows>(conn: Conn, queryKey: string, sql: string, values: Values): Promise<[T, Fields]>;
   async executeWithConn<T extends Rows>(conn: Conn, queryKey: string, options: QueryOptions): Promise<[T, Fields]>;
   async executeWithConn<T extends Rows>(conn: Conn, queryKey: string, sqlOrOptions: string | QueryOptions, values?: Values): Promise<[T, Fields]> {
-    this.executeWithConnShadow(queryKey, sqlOrOptions, values);
-    return this.executeWithConnInternal(tidbQueryTimer, tidbQueryCounter, conn, queryKey, sqlOrOptions, values);
-  }
-
-  async executeWithConnShadow(queryKey: string, sqlOrOptions: string | QueryOptions, values?: Values) {
-    if (this.shadowConnections == null) {
-      return;
-    }
-    this.executeWithConnInternal(shadowTidbQueryTimer, shadowTidbQueryCounter,
-      await this.getConnectionInternal(this.shadowConnections, waitShadowTidbConnectionTimer),
-      queryKey, sqlOrOptions, values);
-  }
-
-  async executeWithConnInternal<T extends Rows>(timer: Summary, counter: Counter, conn: Connection,
-    queryKey: string, sqlOrOptions: string | QueryOptions, values?: Values): Promise<[T, Fields]> {
     let end = () => {};
     if (this.enableMetrics) {
-      end = timer.startTimer();
-      counter.labels({query: queryKey, phase: 'start'}).inc();
+      end = tidbQueryTimer.startTimer();
+      tidbQueryCounter.labels({ query: queryKey, phase: 'start' }).inc();
+    }
+
+    if (queryKey.startsWith('explain:')) {
+      if (typeof sqlOrOptions === 'string') {
+        sqlOrOptions = `EXPLAIN ${sqlOrOptions}`;
+      } else {
+        sqlOrOptions.sql = `EXPLAIN ${sqlOrOptions.sql}`;
+      }
     }
 
     try {
@@ -85,7 +74,7 @@ export class TiDBQueryExecutor implements QueryExecutor {
 
       end();
       if (this.enableMetrics) {
-        counter.labels({ query: queryKey, phase: 'success' }).inc();
+        tidbQueryCounter.labels({ query: queryKey, phase: 'success' }).inc();
       }
 
       return [
@@ -100,21 +89,21 @@ export class TiDBQueryExecutor implements QueryExecutor {
     } catch (err) {
       end();
       if (this.enableMetrics) {
-        counter.labels({ query: queryKey, phase: 'error' }).inc();
+        tidbQueryCounter.labels({ query: queryKey, phase: 'error' }).inc();
       }
 
       throw err;
     }
-  };
+  }
 
-  async getConnectionInternal(pool: Pool, timer: Summary): Promise<PoolConnection> {
+  async getConnection(): Promise<PoolConnection> {
     let end = () => {};
     if (this.enableMetrics) {
-      end = timer.startTimer();
+      end = waitTidbConnectionTimer.startTimer();
     }
 
     try {
-      const conn = await pool.getConnection();
+      const conn = await this.connections.getConnection();
       end();
       return conn;
     } catch(err: any) {
@@ -123,15 +112,12 @@ export class TiDBQueryExecutor implements QueryExecutor {
     }
   }
 
-  async getConnection(): Promise<PoolConnection> {
-    return this.getConnectionInternal(this.connections, waitTidbConnectionTimer);
-  }
 }
 
 export class TiDBPlaygroundQueryExecutor extends TiDBQueryExecutor {
 
-  constructor(options: PoolOptions, connectionLimits: string[], shadowOptions: PoolOptions | null) {
-    super(options, /* default value for enableMetrics is true */ true, shadowOptions);
+  constructor(options: PoolOptions, connectionLimits: string[]) {
+    super(options);
     this.logger = consola.withTag('playground-query-executor')
     decoratePoolConnections(this.connections, { initialSql: connectionLimits })
   }

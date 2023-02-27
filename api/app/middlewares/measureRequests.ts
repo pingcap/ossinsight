@@ -17,7 +17,7 @@ export enum Phase {
   ERROR = 'error'
 }
 
-export function measureRequests(urlType?: URLType, accessRecorder?: BatchLoader, shadowAccessRecorder?: BatchLoader | null): IMiddleware {
+export function measureRequests(urlType?: URLType, accessRecorder?: BatchLoader): IMiddleware {
   return async (ctx, next) => {
     let url: string;
     switch (urlType) {
@@ -43,7 +43,6 @@ export function measureRequests(urlType?: URLType, accessRecorder?: BatchLoader,
         if (accessRecorder) {
             accessRecorder.insert([ip, header.origin || '', status, path, JSON.stringify(query)]);
         }
-        shadowAccessRecorder?.insert([ip, header.origin || '', status, path, JSON.stringify(query)]);
 
         if (status < 400) {
           requestCounter.labels({ url, status, origin: header.origin, phase: Phase.SUCCESS }).inc();

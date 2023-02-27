@@ -21,12 +21,6 @@ export const tidbQueryCounter = new Counter({
   labelNames: ['query', 'phase'] as const,
 })
 
-export const shadowTidbQueryCounter = new Counter({
-  name: metricsPrefix + 'shadow_tidb_query_count',
-  help: 'Shadow TiDB query count',
-  labelNames: ['query', 'phase'] as const,
-})
-
 export const cacheHitCounter = new Counter({
   name: metricsPrefix + 'cache_hit_count',
   help: 'Cache hit count'
@@ -51,12 +45,6 @@ export const waitTidbConnectionTimer = new Summary({
   percentiles: [0.999, 0.99, 0.95, 0.80, 0.50],
 })
 
-export const waitShadowTidbConnectionTimer = new Summary({
-  name: metricsPrefix + 'wait_shadow_tidb_connection_time',
-  help: 'Wait shadow tidb connection time',
-  percentiles: [0.999, 0.99, 0.95, 0.80, 0.50],
-})
-
 export const dataQueryTimer = new Summary({
   name: metricsPrefix + 'data_query_time',
   help: 'Data query time',
@@ -66,12 +54,6 @@ export const dataQueryTimer = new Summary({
 export const tidbQueryTimer = new Summary({
   name: metricsPrefix + 'tidb_query_time',
   help: 'TiDB query time',
-  percentiles: [0.999, 0.99, 0.95, 0.80, 0.50],
-})
-
-export const shadowTidbQueryTimer = new Summary({
-  name: metricsPrefix + 'shadow_tidb_query_time',
-  help: 'Shadow TiDB query time',
   percentiles: [0.999, 0.99, 0.95, 0.80, 0.50],
 })
 
