@@ -44,7 +44,7 @@ describe('transformed template should be valid sql', () => {
       const cacheBuilder = new CacheBuilder(testLogger, false, conn);
       const tidbQueryExecutor = new TiDBQueryExecutor(getConnectionOptions({
         uri: db.url(),
-      }), false);
+      }), null, false);
       const parser = new QueryParser(new CollectionService(testLogger, tidbQueryExecutor, cacheBuilder));
       for (let pair of pairs) {
         const parsedSql = await parser.parse(sql, params, pair);

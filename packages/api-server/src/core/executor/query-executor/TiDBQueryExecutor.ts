@@ -6,12 +6,12 @@ import { Counter, Summary } from "prom-client";
 
 export class TiDBQueryExecutor implements QueryExecutor {
   protected connections: Pool;
-  protected shadowConnections: Pool | null;
+  protected shadowConnections?: Pool | null
 
   constructor(
     options: PoolOptions,
+    shadowOptions?: PoolOptions | null,
     readonly enableMetrics: boolean = true,
-    shadowOptions: PoolOptions | null,
   ) {
     this.connections = getPool(options)
     this.shadowConnections = shadowOptions ? getPool(shadowOptions) : null;

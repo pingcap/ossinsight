@@ -20,7 +20,7 @@ export default fp(async (fastify) => {
     }) : null;
     fastify.decorate('statsService', new StatsService(pool, log, shadowPool));
     fastify.addHook('onClose', async (app) => {
-      await fastify.statsService.destroy()
+      await app.statsService.destroy()
     })
 }, {
   name: 'stats-service',

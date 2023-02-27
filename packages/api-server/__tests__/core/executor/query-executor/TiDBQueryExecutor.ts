@@ -10,7 +10,7 @@ const withQueryExecutor = async (fn: (executor: TiDBQueryExecutor) => Promise<vo
   const executor = new TiDBQueryExecutor(getConnectionOptions({
     uri: getTestDatabase().url(),
     connectionLimit,
-  }), false);
+  }), null, false);
   return fn(executor).finally(() => executor.destroy());
 };
 

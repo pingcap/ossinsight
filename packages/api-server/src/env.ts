@@ -40,7 +40,7 @@ export const APIServerEnvSchema = {
     PLAYGROUND_DATABASE_URL: {
       type: 'string',
     },
-    SHADOW_PLAYGROUND_DATABASE_URL: {
+    PLAYGROUND_SHADOW__DATABASE_URL: {
       type: 'string',
     },
     PLAYGROUND_DAILY_QUESTIONS_LIMIT: {

@@ -15,7 +15,7 @@ test('collection service should work', async () => {
   const cacheBuilder = new CacheBuilder(testLogger, false, conn);
   const executor = new TiDBQueryExecutor(getConnectionOptions({
     uri: getTestDatabase().url()
-  }), false)
+  }), null, false)
   const collectionService = new CollectionService(testLogger, executor, cacheBuilder);
 
   expect((await collectionService.getCollections()).data).toBeInstanceOf(Array);
