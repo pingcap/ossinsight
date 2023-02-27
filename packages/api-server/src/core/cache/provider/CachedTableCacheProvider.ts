@@ -3,8 +3,8 @@ import NormalTableCacheProvider from "./NormalTableCacheProvider";
 
 export default class CachedTableCacheProvider extends NormalTableCacheProvider {
 
-    constructor(conn: Connection) {
-        super(conn, 'cached_table_cache');
+    constructor(conn: Connection, shadowConn?: Connection) {
+        super(conn, shadowConn, 'cached_table_cache');
     }
 
 }

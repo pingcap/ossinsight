@@ -31,11 +31,12 @@ export default class CacheBuilder {
     constructor(
         private readonly log: pino.Logger,
         private readonly enableCache: boolean = false,
-        conn?: Connection
+        conn?: Connection,
+        shadowConn?: Connection
     ) {
         if (this.enableCache && conn !== undefined) {
-            this.normalCacheProvider = new NormalTableCacheProvider(conn);
-            this.cachedTableCacheProvider = new CachedTableCacheProvider(conn);
+            this.normalCacheProvider = new NormalTableCacheProvider(conn, shadowConn);
+            this.cachedTableCacheProvider = new CachedTableCacheProvider(conn, shadowConn);
         }
     }
 

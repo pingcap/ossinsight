@@ -2,6 +2,7 @@ import { CacheOption, CacheProvider } from "./CacheProvider";
 import { OkPacket, ResultSetHeader, RowDataPacket } from "mysql2";
 
 import {Connection} from "mysql2/promise";
+import pino from "pino";
 
 // Table schema:
 //
@@ -16,11 +17,15 @@ import {Connection} from "mysql2/promise";
 //
 
 export default class NormalTableCacheProvider implements CacheProvider {
+    private readonly logger = pino().child({ component: 'cache-provider' })
 
     constructor(
-        private readonly conn: Connection,
-        private readonly tableName: string = 'cache'
-    ) {}
+      private readonly conn: Connection,
+      private readonly shadowConn?: Connection,
+      private readonly tableName: string = 'cache'
+    ) {
+
+    }
 
     async set<T extends RowDataPacket[][] | RowDataPacket[] | OkPacket | OkPacket[] | ResultSetHeader>(
         key: string, value: string, options?: CacheOption
@@ -30,6 +35,12 @@ export default class NormalTableCacheProvider implements CacheProvider {
         VALUES (?, ?, ?)
         ON DUPLICATE KEY UPDATE cache_value = VALUES(cache_value), expires = VALUES(expires);`;
 
+        if (this.shadowConn) {
+            this.conn.query<T>(sql, [key, value, EX]).then(null).catch((err) => {
+                this.logger.error(err, 'Failed to set cache with key %s to shadow database.', key);
+            });
+        }
+
         return this.conn.query<T>(sql, [key, value, EX]);
     }
 
@@ -38,6 +49,12 @@ export default class NormalTableCacheProvider implements CacheProvider {
         FROM ${this.tableName}
         WHERE cache_key = ? AND ((expires = -1) OR (DATE_ADD(updated_at, INTERVAL expires SECOND) >= NOW()))
         LIMIT 1;`;
+
+        if (this.shadowConn) {
+            this.conn.query<any[]>(sql, [key]).then(null).catch((err) => {
+                this.logger.error(err, 'Failed to get cache with key %s to shadow database.', key);
+            });
+        }
 
         return new Promise(async (resolve, reject) => {
             try {
