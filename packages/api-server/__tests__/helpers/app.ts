@@ -26,7 +26,7 @@ async function createApp () {
   const playgroundDatabaseURL = db.url()
       .replace('executoruser', 'webshelluser')
       .replace('executorpassword', 'webshellpassword');
-  const env: Env = {
+  const env: Partial<Env> = {
     CONFIGS_PATH: path.resolve(__dirname, '../../../../configs'),
     ADMIN_EMAIL: 'admin@testdomain.com',
     DATABASE_URL: db.url(),

@@ -18,9 +18,9 @@ export default fp(async (fastify) => {
     const shadowPool = !!fastify.config.SHADOW_DATABASE_URL ? await getPool({
         uri: fastify.config.SHADOW_DATABASE_URL,
     }) : null;
-    fastify.decorate('statsService', new StatsService(pool, log, shadowPool));
+    fastify.decorate('statsService', new StatsService(pool, shadowPool, log));
     fastify.addHook('onClose', async (app) => {
-      await app.statsService.destroy()
+      await app.statsService.destroy();
     })
 }, {
   name: 'stats-service',
@@ -42,13 +42,13 @@ export class StatsService {
     private queryStatsLoader: BatchLoader;
     private shadowQueryStatsLoader: BatchLoader | null;
 
-    constructor(
-        readonly pool: Pool,
-        private readonly log: pino.Logger,
-        readonly shadowPool: Pool | null,
-    ) {
+  constructor(
+    readonly pool: Pool,
+    readonly shadowPool: Pool | null,
+    private readonly log: pino.Logger,
+  ) {
         this.queryStatsLoader = newStatsLoader(this.pool);
-        this.shadowQueryStatsLoader = this.shadowPool != null ? newStatsLoader(this.shadowPool) : null;
+        this.shadowQueryStatsLoader = this.shadowPool ? newStatsLoader(this.shadowPool) : null;
     }
 
     async addQueryStatsRecord(queryName: string, digestText: string, executedAt: Date, refresh?: boolean) {
@@ -59,7 +59,10 @@ export class StatsService {
             }
             digestText = digestText.replaceAll(/\s+/g, ' ');
             await this.queryStatsLoader.insert([queryName, digestText, executedAt]);
-            await this.shadowQueryStatsLoader?.insert([queryName, digestText, executedAt]);
+
+            if (this.shadowQueryStatsLoader) {
+              await this.shadowQueryStatsLoader.insert([queryName, digestText, executedAt]);
+            }
         } catch(err) {
             this.log.error(`Failed to add query stats record for ${queryName}.`);
         }
@@ -67,10 +70,18 @@ export class StatsService {
 
     async flush () {
       await this.queryStatsLoader.flush();
+      if (this.shadowQueryStatsLoader) {
+        await this.shadowQueryStatsLoader.flush();
+      }
     }
 
     async destroy () {
       await this.queryStatsLoader.destroy();
       await this.pool.end();
+
+      if (this.shadowQueryStatsLoader) {
+        await this.shadowQueryStatsLoader.destroy();
+        await this.shadowPool?.end();
+      }
     }
 }

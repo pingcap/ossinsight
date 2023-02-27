@@ -3,10 +3,12 @@ import { Connection, Pool, PoolConnection, PoolOptions, QueryOptions } from "mys
 import {shadowTidbQueryCounter, shadowTidbQueryTimer, tidbQueryCounter, tidbQueryTimer, waitShadowTidbConnectionTimer, waitTidbConnectionTimer} from "../../../plugins/metrics";
 import {getPool} from "../../db/new";
 import { Counter, Summary } from "prom-client";
+import pino from "pino";
 
 export class TiDBQueryExecutor implements QueryExecutor {
   protected connections: Pool;
-  protected shadowConnections?: Pool | null
+  protected shadowConnections?: Pool | null;
+  protected logger = pino().child({ component: 'tidb-query-executor' });
 
   constructor(
     options: PoolOptions,
@@ -38,17 +40,19 @@ export class TiDBQueryExecutor implements QueryExecutor {
   async executeWithConn<T extends Rows>(conn: Conn, queryKey: string, sql: string, values: Values): Promise<[T, Fields]>;
   async executeWithConn<T extends Rows>(conn: Conn, queryKey: string, options: QueryOptions): Promise<[T, Fields]>;
   async executeWithConn<T extends Rows>(conn: Conn, queryKey: string, sqlOrOptions: string | QueryOptions, values?: Values): Promise<[T, Fields]> {
-    this.executeWithConnShadow(queryKey, sqlOrOptions, values);
+    this.executeWithConnShadow(queryKey, sqlOrOptions, values).then(null).catch((err) => {
+      this.logger.error(err, 'Failed to execute query with shadow conn.');
+    });
+
     return this.executeWithConnInternal(tidbQueryTimer, tidbQueryCounter, conn, queryKey, sqlOrOptions, values);
   }
 
   async executeWithConnShadow(queryKey: string, sqlOrOptions: string | QueryOptions, values?: Values) {
-    if (this.shadowConnections == null) {
+    if (!this.shadowConnections) {
       return;
     }
-    this.executeWithConnInternal(shadowTidbQueryTimer, shadowTidbQueryCounter,
-      await this.getConnectionInternal(this.shadowConnections, waitShadowTidbConnectionTimer),
-      queryKey, sqlOrOptions, values);
+    const conn = await this.getConnectionInternal(this.shadowConnections, waitShadowTidbConnectionTimer);
+    await this.executeWithConnInternal(shadowTidbQueryTimer, shadowTidbQueryCounter, conn, queryKey, sqlOrOptions, values);
   }
 
   async executeWithConnInternal<T extends Rows>(timer: Summary, counter: Counter, conn: Connection,
