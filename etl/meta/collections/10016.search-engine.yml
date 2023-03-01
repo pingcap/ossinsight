@@ -14,3 +14,4 @@ items:
   - zinclabs/zinc
   - manticoresoftware/manticoresearch
   - semi-technologies/weaviate
+  - mosuka/bayard
