@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkweb=self.webpackChunkweb||[]).push([[6012],{40090:a=>{a.exports=JSON.parse('{"label":"ImageMagick","permalink":"/blog/tags/image-magick","allTagsPath":"/blog/tags","count":1}')}}]);

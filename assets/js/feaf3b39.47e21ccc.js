@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkweb=self.webpackChunkweb||[]).push([[8108],{22912:e=>{e.exports=JSON.parse('{"label":"MyCLI","permalink":"/blog/tags/my-cli","allTagsPath":"/blog/tags","count":1}')}}]);
