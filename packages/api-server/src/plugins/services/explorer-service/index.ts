@@ -286,6 +286,7 @@ export class ExplorerService {
                 }
             }
 
+            logger.info("Got generated answer.")
             let { querySQL, chart, sqlCanAnswer, revisedTitle, notClear, assumption, combinedTitle } = answer!;
             question.answer = answer;
             question.querySQL = querySQL;

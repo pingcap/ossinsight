@@ -121,7 +121,7 @@ export class BotService {
         });
 
         // If the prompt is not found, use the default template.
-        if (prompt == null) {
+        if (!prompt) {
             prompt = template.stringify(question);
         }
 
@@ -131,9 +131,14 @@ export class BotService {
 
         return new Promise(async (resolve, reject) => {
             try {
-                const res = await this.openai.createCompletion({
+                const res = await this.openai.createChatCompletion({
                     model: template.model,
-                    prompt,
+                    messages: [
+                        {
+                            role: 'user',
+                            content: prompt!,
+                        }
+                    ],
                     stream: true,
                     stop: template.stop,
                     temperature: template.temperature,
@@ -175,7 +180,7 @@ export class BotService {
                             } else {
                                 // Notice: Skip undefined token.
                                 const tokenObj = JSON.parse(tokenJSON);
-                                const token = tokenObj.choices?.[0]?.text;
+                                const token = tokenObj.choices?.[0]?.delta?.content;
                                 if (typeof token === "string") {
                                     tokenStream.write(token);
                                 } else {
@@ -235,9 +240,14 @@ export class BotService {
         try {
             this.log.info("Requesting answer for question (in non-steam mode): %s", question);
             const start = DateTime.now();
-            const res = await this.openai.createCompletion({
+            const res = await this.openai.createChatCompletion({
                 model: template.model,
-                prompt,
+                messages: [
+                    {
+                        role: 'user',
+                        content: prompt!,
+                    }
+                ],
                 stream: false,
                 stop: template.stop,
                 temperature: template.temperature,
@@ -249,8 +259,8 @@ export class BotService {
             const end = DateTime.now();
             this.log.info({ usage }, 'Got answer of question "%s" from OpenAI API, cost: %d s', question, end.diff(start).as('seconds'));
 
-            if (Array.isArray(choices) && choices[0].text) {
-                responseText = choices[0].text;
+            if (Array.isArray(choices) && choices[0]?.message?.content) {
+                responseText = choices[0]?.message?.content;
                 const repaired = jsonrepair(responseText);
                 const obj = JSON.parse(repaired);
                 const answer: any = {};
