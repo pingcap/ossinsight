@@ -210,16 +210,14 @@ const config = {
         disableSwitch: true,
         respectPrefersColorScheme: false,
       },
-      /*
       announcementBar: {
-        id: 'announcement-20221101',
+        id: 'announcement-20230303',
         content:
-          '<a target="_blank" href="/2022" style="font-weight:bold">🎉 Check out highlights from GitHub 2022!</a>',
+          '<a target="_blank" href="/explore" style="font-weight:bold">OpenAI + Database!</a>',
         backgroundColor: '#6F6290',
         textColor: '#ffffff',
         isCloseable: true,
       },
-      */
       docs: {
         sidebar: {
           hideable: true,
