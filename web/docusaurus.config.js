@@ -210,14 +210,16 @@ const config = {
         disableSwitch: true,
         respectPrefersColorScheme: false,
       },
+      /*
       announcementBar: {
         id: 'announcement-20230303',
         content:
-          '<a target="_blank" href="/explore" style="font-weight:bold">OpenAI + Database!</a>',
+          '<a target="_blank" href="/explore" style="font-weight:bold">How about OpenAI + Database!</a>',
         backgroundColor: '#6F6290',
         textColor: '#ffffff',
         isCloseable: true,
       },
+      */
       docs: {
         sidebar: {
           hideable: true,
