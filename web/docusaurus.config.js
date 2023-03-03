@@ -210,6 +210,7 @@ const config = {
         disableSwitch: true,
         respectPrefersColorScheme: false,
       },
+      /*
       announcementBar: {
         id: 'announcement-20230303',
         content:
@@ -218,6 +219,7 @@ const config = {
         textColor: '#ffffff',
         isCloseable: true,
       },
+      */
       docs: {
         sidebar: {
           hideable: true,
