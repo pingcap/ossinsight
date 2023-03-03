@@ -213,8 +213,8 @@ const config = {
       announcementBar: {
         id: 'announcement-20230303',
         content:
-          '<a target="_blank" href="/explore" style="font-weight:bold">OpenAI + Database!</a>',
-        backgroundColor: '#6F6290',
+          '<a target="_blank" href="/explore" style="font-weight:bold"> New! &nbsp OpenAI + Database + GitHub = {🤩🤩🤩} </a>',
+        backgroundColor: '#4C33B1',
         textColor: '#ffffff',
         isCloseable: true,
       },
