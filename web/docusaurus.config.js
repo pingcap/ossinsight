@@ -384,10 +384,6 @@ const config = {
                 href: 'http://www.gharchive.org/',
               },
               {
-                label: 'GHTorrent',
-                href: 'https://ghtorrent.org/',
-              },
-              {
                 label: 'Docusaurus',
                 href: 'https://github.com/facebook/docusaurus',
               },
