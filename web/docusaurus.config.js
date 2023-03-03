@@ -395,6 +395,10 @@ const config = {
                 label: 'React',
                 href: 'https://github.com/facebook/react',
               },
+              {
+                label: 'TypeScript',
+                href: 'https://www.typescriptlang.org/',
+              },
             ],
           },
           {
