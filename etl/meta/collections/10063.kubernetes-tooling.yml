@@ -24,3 +24,4 @@ items:
   - kubeshop/monokle
   - komodorio/helm-dashboard
   - clastix/capsule
+  - kubeshark/kubeshark
