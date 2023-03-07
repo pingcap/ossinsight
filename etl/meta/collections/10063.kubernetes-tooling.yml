@@ -25,3 +25,4 @@ items:
   - komodorio/helm-dashboard
   - clastix/capsule
   - bridgecrewio/checkov
+  - kubeshark/kubeshark
