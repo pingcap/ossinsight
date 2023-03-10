@@ -5,6 +5,7 @@ items:
   - webpack/webpack
   - vitejs/vite
   - parcel-bundler/parcel
+  - web-infra-dev/rspack
   - nrwl/nx
   - vercel/turbo
   - FredKSchott/snowpack
