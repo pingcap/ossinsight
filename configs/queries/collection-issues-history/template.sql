@@ -1,33 +1,32 @@
-WITH acc AS (
-    SELECT
-        DATE_FORMAT(created_at, '%Y-%m-01') AS t_month,
-        repo_id,
-        COUNT(*) OVER (PARTITION BY repo_id ORDER BY DATE_FORMAT(created_at, '%Y-%m-01')) AS total,
-        ROW_NUMBER() OVER (PARTITION BY repo_id, DATE_FORMAT(created_at, '%Y-%m-01')) AS row_num
-    FROM github_events ge
-    USE INDEX(index_ge_on_repo_id_type_action_created_at_actor_login)
-    WHERE
-        type = 'IssuesEvent'
-        AND action = 'opened'
-        AND repo_id IN (SELECT repo_id FROM collection_items ci WHERE collection_id = 10001)
-        -- Exclude Bots
-        AND actor_login NOT LIKE '%bot%'
-        AND actor_login NOT IN (SELECT login FROM blacklist_users bu)
-), acc_group_by_month AS (
+WITH accumulative_issues_by_month AS (
     SELECT
         t_month,
         repo_id,
-        total
-    FROM acc
-    WHERE row_num = 1
+        COUNT(*) OVER (PARTITION BY repo_id ORDER BY t_month) AS total,
+        -- De-duplicate by `t_month` column, keeping only the first accumulative value of each month.
+        ROW_NUMBER() OVER (PARTITION BY repo_id, t_month) AS row_num_by_month
+    FROM (
+        SELECT
+            repo_id,
+            DATE_FORMAT(created_at, '%Y-%m-01') AS t_month,
+            -- De-duplicate by `number` column, keeping only the first event of each issue.
+            ROW_NUMBER() OVER (PARTITION BY repo_id, number ORDER BY created_at) AS row_num_by_number
+        FROM github_events ge
+        WHERE
+            type = 'IssuesEvent'
+            AND repo_id IN (SELECT repo_id FROM collection_items ci WHERE collection_id = 10001)
+    ) sub
+    WHERE
+        row_num_by_number = 1
 )
 SELECT
+    ci.repo_id AS repo_id,
+    ci.repo_name AS repo_name,
     acc.t_month AS event_month,
-    gr.repo_name AS repo_name,
+    -- The accumulative issues of each month.
     acc.total
-FROM acc_group_by_month acc
-LEFT JOIN github_repos gr ON gr.repo_id = acc.repo_id
-WHERE
-    gr.repo_id IN (SELECT repo_id FROM collection_items ci WHERE collection_id = 10001)
+FROM accumulative_issues_by_month acc
+JOIN collection_items ci ON ci.collection_id = 10001 AND ci.repo_id = acc.repo_id
+WHERE row_num_by_month = 1
 ORDER BY t_month
 ;
