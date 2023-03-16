@@ -19,3 +19,4 @@ items:
   - GreptimeTeam/greptimedb
   - surrealdb/surrealdb
   - cozodb/cozo
+  - influxdata/influxdb_iox
