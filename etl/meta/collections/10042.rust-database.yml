@@ -20,3 +20,4 @@ items:
   - surrealdb/surrealdb
   - cozodb/cozo
   - influxdata/influxdb_iox
+  - qdrant/qdrant
