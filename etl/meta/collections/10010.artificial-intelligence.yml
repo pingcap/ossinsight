@@ -36,3 +36,4 @@ items:
   - towhee-io/towhee
   - SeldonIO/seldon-core
   - SeldonIO/MLServer
+  - qdrant/qdrant
