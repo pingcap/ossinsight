@@ -2,7 +2,7 @@ import {AIModel, PromptTemplate} from "../types";
 
 export class GenerateAnswerPromptTemplate implements PromptTemplate {
   // AI Model Parameters.
-  public model: AIModel = AIModel.GPT_3_5_TURBO_0301;
+  public model: AIModel = AIModel.GPT_4;
   public stop: string[] = ['#', '---'];
   public maxTokens: number = 1400;
   public temperature: number = 0;
