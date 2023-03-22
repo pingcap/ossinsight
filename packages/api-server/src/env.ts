@@ -105,6 +105,13 @@ export const APIServerEnvSchema = {
     },
     AUTH0_SECRET: {
       type: 'string'
+    },
+    EMBEDDING_SERVICE_ENDPOINT: {
+      type: 'string'
+    },
+    PROMPT_TEMPLATE_NAME: {
+      type: 'string',
+      default: 'explorer-generate-answer',
     }
     // We need additional undocumented env
     // - for playground:
