@@ -15,6 +15,7 @@ import stream from "node:stream";
 // @ts-ignore
 import JSONStream from 'JSONStream';
 import {jsonrepair} from "jsonrepair";
+import {DEFAULT_ANSWER_PROMPT_TEMPLATE} from "../../../env";
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -24,12 +25,7 @@ declare module 'fastify' {
 
 export default fp(async (fastify) => {
     const log = fastify.log.child({ service: 'bot-service'}) as pino.Logger;
-    fastify.decorate('botService', new BotService(
-        log, 
-        fastify.config.OPENAI_API_KEY, 
-        fastify.config.PROMPT_TEMPLATE_NAME, 
-        fastify.promptTemplateManager,
-    ));
+    fastify.decorate('botService', new BotService(log, fastify.config.OPENAI_API_KEY, fastify.promptTemplateManager, fastify.config.PROMPT_TEMPLATE_NAME));
 }, {
   name: '@ossinsight/bot-service',
   dependencies: []
@@ -41,10 +37,10 @@ export class BotService {
     private readonly openai: OpenAIApi;
 
     constructor(
-        private readonly log: pino.BaseLogger,
-        private readonly apiKey: string,
-        private readonly promptTemplateName: string,
-        private readonly promptTemplateManager: PromptTemplateManager
+      private readonly log: pino.BaseLogger,
+      private readonly apiKey: string,
+      private readonly promptTemplateManager: PromptTemplateManager,
+      private readonly promptTemplateName: string = DEFAULT_ANSWER_PROMPT_TEMPLATE
     ) {
         const configuration = new Configuration({
             apiKey: this.apiKey
