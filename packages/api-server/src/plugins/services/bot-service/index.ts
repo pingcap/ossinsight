@@ -24,13 +24,16 @@ declare module 'fastify' {
 
 export default fp(async (fastify) => {
     const log = fastify.log.child({ service: 'bot-service'}) as pino.Logger;
-    fastify.decorate('botService', new BotService(log, fastify.config.OPENAI_API_KEY, fastify.promptTemplateManager));
+    fastify.decorate('botService', new BotService(
+        log, 
+        fastify.config.OPENAI_API_KEY, 
+        fastify.config.PROMPT_TEMPLATE_NAME, 
+        fastify.promptTemplateManager,
+    ));
 }, {
   name: '@ossinsight/bot-service',
   dependencies: []
 });
-
-const GENERATE_ANSWER_PROMPT_TEMPLATE_NAME = 'explorer-generate-answer';
 
 const tableColumnRegexp = /(?<table_name>.+)\.(?<column_name>.+)/;
 
@@ -40,6 +43,7 @@ export class BotService {
     constructor(
         private readonly log: pino.BaseLogger,
         private readonly apiKey: string,
+        private readonly promptTemplateName: string,
         private readonly promptTemplateManager: PromptTemplateManager
     ) {
         const configuration = new Configuration({
@@ -116,7 +120,7 @@ export class BotService {
     }
 
     async questionToAnswerInStream(template: GenerateAnswerPromptTemplate, question: string, callback: (answer: Answer, key: string, value: any) => void): Promise<[Answer | null, string | null]> {
-        let prompt = await this.promptTemplateManager.getTemplate(GENERATE_ANSWER_PROMPT_TEMPLATE_NAME, {
+        let prompt = await this.promptTemplateManager.getTemplate(this.promptTemplateName, {
             question: question
         });
 
@@ -227,7 +231,7 @@ export class BotService {
     }
 
     async questionToAnswer(template: GenerateAnswerPromptTemplate, question: string): Promise<[Answer | null, string | null]> {
-        let prompt = await this.promptTemplateManager.getTemplate(GENERATE_ANSWER_PROMPT_TEMPLATE_NAME, {
+        let prompt = await this.promptTemplateManager.getTemplate(this.promptTemplateName, {
             question: question
         });
 
