@@ -1,5 +1,7 @@
 import { resolve } from "path";
 
+export const DEFAULT_ANSWER_PROMPT_TEMPLATE = 'explorer-generate-answer';
+
 export const APIServerEnvSchema = {
   type: 'object',
   required: [ 'DATABASE_URL', 'GITHUB_ACCESS_TOKENS' ],
@@ -111,7 +113,7 @@ export const APIServerEnvSchema = {
     },
     PROMPT_TEMPLATE_NAME: {
       type: 'string',
-      default: 'explorer-generate-answer',
+      default: DEFAULT_ANSWER_PROMPT_TEMPLATE,
     }
     // We need additional undocumented env
     // - for playground:
