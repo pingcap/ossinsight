@@ -37,3 +37,5 @@ items:
   - SeldonIO/seldon-core
   - SeldonIO/MLServer
   - qdrant/qdrant
+  - roboflow/notebooks
+  - roboflow/supervision
