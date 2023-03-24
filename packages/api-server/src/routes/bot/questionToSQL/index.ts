@@ -44,8 +44,7 @@ const root: FastifyPluginAsyncJsonSchemaToTs = async (app, opts): Promise<void> 
 
     const userId = await app.userService.findOrCreateUserByAccount(
       { ...metadata, sub },
-      req.headers.authorization,
-      conn
+      req.headers.authorization
     );
     const context: {
       repo_id?: number;
