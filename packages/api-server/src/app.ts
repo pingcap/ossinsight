@@ -47,6 +47,8 @@ declare module 'fastify' {
       OPENAI_API_KEY: string;
       AUTH0_DOMAIN: string;
       AUTH0_SECRET: string;
+      EMBEDDING_SERVICE_ENDPOINT: string;
+      PROMPT_TEMPLATE_NAME: string;
     };
     mysql: MySQLPromisePool;
     shadowMySQL?: MySQLPromisePool;

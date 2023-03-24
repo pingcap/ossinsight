@@ -15,6 +15,7 @@ import stream from "node:stream";
 // @ts-ignore
 import JSONStream from 'JSONStream';
 import {jsonrepair} from "jsonrepair";
+import {DEFAULT_ANSWER_PROMPT_TEMPLATE} from "../../../env";
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -24,13 +25,11 @@ declare module 'fastify' {
 
 export default fp(async (fastify) => {
     const log = fastify.log.child({ service: 'bot-service'}) as pino.Logger;
-    fastify.decorate('botService', new BotService(log, fastify.config.OPENAI_API_KEY, fastify.promptTemplateManager));
+    fastify.decorate('botService', new BotService(log, fastify.config.OPENAI_API_KEY, fastify.promptTemplateManager, fastify.config.PROMPT_TEMPLATE_NAME));
 }, {
   name: '@ossinsight/bot-service',
   dependencies: []
 });
-
-const GENERATE_ANSWER_PROMPT_TEMPLATE_NAME = 'explorer-generate-answer';
 
 const tableColumnRegexp = /(?<table_name>.+)\.(?<column_name>.+)/;
 
@@ -38,9 +37,10 @@ export class BotService {
     private readonly openai: OpenAIApi;
 
     constructor(
-        private readonly log: pino.BaseLogger,
-        private readonly apiKey: string,
-        private readonly promptTemplateManager: PromptTemplateManager
+      private readonly log: pino.BaseLogger,
+      private readonly apiKey: string,
+      private readonly promptTemplateManager: PromptTemplateManager,
+      private readonly promptTemplateName: string = DEFAULT_ANSWER_PROMPT_TEMPLATE
     ) {
         const configuration = new Configuration({
             apiKey: this.apiKey
@@ -116,12 +116,12 @@ export class BotService {
     }
 
     async questionToAnswerInStream(template: GenerateAnswerPromptTemplate, question: string, callback: (answer: Answer, key: string, value: any) => void): Promise<[Answer | null, string | null]> {
-        let prompt = await this.promptTemplateManager.getTemplate(GENERATE_ANSWER_PROMPT_TEMPLATE_NAME, {
+        let prompt = await this.promptTemplateManager.getTemplate(this.promptTemplateName, {
             question: question
         });
 
         // If the prompt is not found, use the default template.
-        if (prompt == null) {
+        if (!prompt) {
             prompt = template.stringify(question);
         }
 
@@ -131,9 +131,14 @@ export class BotService {
 
         return new Promise(async (resolve, reject) => {
             try {
-                const res = await this.openai.createCompletion({
+                const res = await this.openai.createChatCompletion({
                     model: template.model,
-                    prompt,
+                    messages: [
+                        {
+                            role: 'user',
+                            content: prompt!,
+                        }
+                    ],
                     stream: true,
                     stop: template.stop,
                     temperature: template.temperature,
@@ -175,7 +180,7 @@ export class BotService {
                             } else {
                                 // Notice: Skip undefined token.
                                 const tokenObj = JSON.parse(tokenJSON);
-                                const token = tokenObj.choices?.[0]?.text;
+                                const token = tokenObj.choices?.[0]?.delta?.content;
                                 if (typeof token === "string") {
                                     tokenStream.write(token);
                                 } else {
@@ -222,7 +227,7 @@ export class BotService {
     }
 
     async questionToAnswer(template: GenerateAnswerPromptTemplate, question: string): Promise<[Answer | null, string | null]> {
-        let prompt = await this.promptTemplateManager.getTemplate(GENERATE_ANSWER_PROMPT_TEMPLATE_NAME, {
+        let prompt = await this.promptTemplateManager.getTemplate(this.promptTemplateName, {
             question: question
         });
 
@@ -235,9 +240,14 @@ export class BotService {
         try {
             this.log.info("Requesting answer for question (in non-steam mode): %s", question);
             const start = DateTime.now();
-            const res = await this.openai.createCompletion({
+            const res = await this.openai.createChatCompletion({
                 model: template.model,
-                prompt,
+                messages: [
+                    {
+                        role: 'user',
+                        content: prompt!,
+                    }
+                ],
                 stream: false,
                 stop: template.stop,
                 temperature: template.temperature,
@@ -249,8 +259,8 @@ export class BotService {
             const end = DateTime.now();
             this.log.info({ usage }, 'Got answer of question "%s" from OpenAI API, cost: %d s', question, end.diff(start).as('seconds'));
 
-            if (Array.isArray(choices) && choices[0].text) {
-                responseText = choices[0].text;
+            if (Array.isArray(choices) && choices[0]?.message?.content) {
+                responseText = choices[0]?.message?.content;
                 const repaired = jsonrepair(responseText);
                 const obj = JSON.parse(repaired);
                 const answer: any = {};

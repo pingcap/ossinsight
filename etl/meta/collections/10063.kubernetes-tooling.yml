@@ -24,3 +24,6 @@ items:
   - kubeshop/monokle
   - komodorio/helm-dashboard
   - clastix/capsule
+  - bridgecrewio/checkov
+  - kubeshark/kubeshark
+  - robusta-dev/kubernetes-chatgpt-bot

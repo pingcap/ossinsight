@@ -3,7 +3,7 @@ import { MySQLPromisePool } from "@fastify/mysql";
 import { ResultSetHeader } from "mysql2";
 import fp from "fastify-plugin";
 import { APIError } from "../../../utils/error";
-import { RowDataPacket, PoolConnection } from "mysql2/promise";
+import { RowDataPacket } from "mysql2/promise";
 import { DateTime } from "luxon";
 import Axios from "axios";
 import {Auth0UserInfo, Auth0UserMetadata} from "../../auth/auth0";
@@ -127,16 +127,12 @@ export class UserService {
     return user;
   }
 
-  async findOrCreateUserByAccount(
-    user: Auth0UserMetadata & { sub: string },
-    token?: string,
-    connection?: PoolConnection
-  ): Promise<number> {
+  async findOrCreateUserByAccount(user: Auth0UserMetadata & { sub: string }, token?: string): Promise<number> {
     if (!token) throw new Error("token is required");
 
     const [provider, idString] = user.sub.split("|");
     const githubLogin = user?.github_login || null;
-    const conn = connection || (await this.mysql.getConnection());
+    const conn = await this.mysql.getConnection();
 
     try {
       await conn.beginTransaction();
@@ -179,18 +175,18 @@ export class UserService {
        `, [rs.insertId, provider, idString, githubLogin]);
 
       return rs.insertId;
-    } catch (err) {
-      await conn.commit();
+    } catch (err: any) {
+      await conn.rollback();
       if (err instanceof APIError) {
         throw err;
       }
       throw new APIError(
         500,
         "Failed to create new user, please try it again.",
-        err as Error
+        err
       );
     } finally {
-        await conn.release();
+      await conn.release();
     }
   }
 

@@ -15,6 +15,7 @@ items:
   - duckdb/duckdb
   - datafuselabs/databend
   - apache/spark
+  - surrealdb/surrealdb
   
   # Data analytics
   - metabase/metabase

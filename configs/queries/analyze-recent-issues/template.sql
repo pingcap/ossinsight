@@ -6,8 +6,8 @@ WITH RECURSIVE seq(idx, current_period_day, last_period_day) AS (
       UNION ALL
       SELECT
         idx + 1 AS idx,
-        DATE_SUB(CURRENT_DATE(), INTERVAL idx + 1 day) AS current_period_day,
-        DATE_SUB(CURRENT_DATE(), INTERVAL idx + 1 + 28 day) AS last_period_day
+        DATE_SUB(CURRENT_DATE(), INTERVAL idx day) AS current_period_day,
+        DATE_SUB(CURRENT_DATE(), INTERVAL idx + 28 day) AS last_period_day
       FROM seq
       WHERE idx < 28
 ), opened_issues_group_by_day AS (
