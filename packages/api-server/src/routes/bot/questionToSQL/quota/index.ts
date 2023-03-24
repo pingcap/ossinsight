@@ -16,8 +16,7 @@ const root: FastifyPluginAsyncJsonSchemaToTs = async (app): Promise<void> => {
     const { sub, metadata } = parseAuth0User(req.user as Auth0User);
     const userId = await app.userService.findOrCreateUserByAccount(
       { ...metadata, sub },
-      req.headers.authorization,
-      conn
+      req.headers.authorization
     );
     
     try {
