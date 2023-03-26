@@ -13,3 +13,4 @@ items:
   - openai/gpt-2
   - karpathy/nanogpt
   - jaymody/picoGPT
+  - togethercomputer/OpenChatKit
