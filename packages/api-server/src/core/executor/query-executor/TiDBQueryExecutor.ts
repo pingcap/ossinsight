@@ -7,7 +7,7 @@ import pino from "pino";
 
 export class TiDBQueryExecutor implements QueryExecutor {
   protected connections: Pool;
-  protected shadowConnections?: Pool | null;
+  public shadowConnections?: Pool | null;
   protected logger = pino().child({ component: 'tidb-query-executor' });
 
   constructor(
@@ -125,6 +125,13 @@ export class TiDBQueryExecutor implements QueryExecutor {
 
   async getConnection(): Promise<PoolConnection> {
     return this.getConnectionInternal(this.connections, waitTidbConnectionTimer);
+  }
+
+  async getShadowConnection(): Promise<PoolConnection> {
+    if (!this.shadowConnections) {
+      throw new Error('No shadow connections provided.');
+    }
+    return this.getConnectionInternal(this.shadowConnections, waitShadowTidbConnectionTimer);
   }
 
   async destroy () {

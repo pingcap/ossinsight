@@ -29,6 +29,7 @@ declare module 'fastify' {
       REDIS_URL: string,
       EMAIL_SERVER_URL: string,
       PLAYGROUND_DATABASE_URL: string;
+      PLAYGROUND_SHADOW_DATABASE_URL: string;
       EXPLORER_HIGH_QUEUE_CONCURRENT: number;
       EXPLORER_LOW_QUEUE_CONCURRENT: number;
       EXPLORER_QUERY_SQL_TIMEOUT: number;
