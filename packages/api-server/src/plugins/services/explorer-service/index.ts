@@ -760,6 +760,13 @@ export class ExplorerService {
         const { id: questionId, querySQL } = question;
         try {
             const questionResult = await this.executeQuery(questionId, querySQL!);
+            if (this.playgroundQueryExecutor.shadow) {
+                this.executeQuery(questionId, querySQL!).catch(err => {
+                    this.logger.error(`Failed to execute shadow query for question ${questionId}.`)
+                }).then(() => {
+                    this.logger.info(`Shadow query for question ${questionId} finished.`)
+                });
+            }
 
             // Check chart if match the result.
             if (!this.checkChart(question.chart, questionResult.result)) {
@@ -813,18 +820,23 @@ export class ExplorerService {
         return Math.ceil(Math.random() * 100) % 5 >= 3;
     }
 
-    private async executeQuery(questionId: string, querySQL: string): Promise<QuestionQueryResult> {
+    private async executeQuery(questionId: string, querySQL: string, shadow: boolean = false): Promise<QuestionQueryResult> {
         const logger = this.logger.child({ questionId });
         const timeout = this.options.querySQLTimeout;
         const preparedSQL = `/* questionId: ${questionId} */ ${querySQL}`;
 
         return new Promise<QuestionQueryResult>(async (resolve, reject) => {
-            let playgroundConn: PoolConnection | null = null, timer: NodeJS.Timeout | null = null;
+            let playgroundConn: PoolConnection | null = null;
+            let timer: NodeJS.Timeout | null = null;
 
             try {
                 // Get playground connection.
                 const getConnStart = DateTime.now();
-                playgroundConn = await this.playgroundQueryExecutor.getConnection();
+                if (shadow) {
+                    playgroundConn = await this.playgroundQueryExecutor.getShadowConnection();
+                } else {
+                    playgroundConn = await this.playgroundQueryExecutor.getConnection();
+                }
                 const getConnEnd = DateTime.now();
                 logger.info({questionId}, `Got the playground connection, cost: ${getConnEnd.diff(getConnStart).as('milliseconds')} ms`);
 
@@ -832,7 +844,10 @@ export class ExplorerService {
                 const connectionId = await this.getConnectionID(playgroundConn);
                 logger.info({ questionId }, 'Start executing query with connection ID: %s.', connectionId);
                 const executedAt = DateTime.now();
-                await this.markQuestionRunning(questionId, executedAt);
+
+                if (!shadow) {
+                    await this.markQuestionRunning(questionId, executedAt);
+                }
 
                 // Cancel the query if timeout.
                 timer = setTimeout(async () => {
