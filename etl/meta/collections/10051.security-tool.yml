@@ -48,3 +48,4 @@ items:
   - matanolabs/matano
   - chipsec/chipsec
   - kyverno/kyverno
+  - cloudquery/cloudquery
