@@ -3,11 +3,21 @@ import {
     getPlaygroundSessionLimits, ExplorerService
 } from "@ossinsight/api-server";
 import fp from "fastify-plugin";
+import {ConnectionOptions} from "mysql2";
 
 export default fp(async (app) => {
-    const executor = new TiDBPlaygroundQueryExecutor({
-      uri: app.config.PLAYGROUND_DATABASE_URL,
-    }, null, getPlaygroundSessionLimits());
+    const dbOptions = {
+        uri: app.config.PLAYGROUND_DATABASE_URL,
+    };
+
+    let shadowDbOptions: ConnectionOptions | null = null;
+    if (app.config.PLAYGROUND_SHADOW_DATABASE_URL) {
+        shadowDbOptions = {
+            uri: app.config.PLAYGROUND_SHADOW_DATABASE_URL,
+        }
+    }
+
+    const executor = new TiDBPlaygroundQueryExecutor(dbOptions, shadowDbOptions, getPlaygroundSessionLimits());
     app.decorate('explorerService', new ExplorerService(
       app.log.child({service: 'explorer-service'}),
       app.mysql,

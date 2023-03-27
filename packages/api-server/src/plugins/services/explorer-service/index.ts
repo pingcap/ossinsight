@@ -762,7 +762,7 @@ export class ExplorerService {
             const questionResult = await this.executeQuery(questionId, querySQL!);
             if (this.playgroundQueryExecutor.shadow) {
                 this.executeQuery(questionId, querySQL!).catch(err => {
-                    this.logger.error(`Failed to execute shadow query for question ${questionId}.`)
+                    this.logger.error(err, `Failed to execute shadow query for question ${questionId}.`)
                 }).then(() => {
                     this.logger.info(`Shadow query for question ${questionId} finished.`)
                 });
