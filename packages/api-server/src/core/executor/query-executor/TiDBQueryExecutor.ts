@@ -7,8 +7,7 @@ import pino from "pino";
 
 export class TiDBQueryExecutor implements QueryExecutor {
   protected connections: Pool;
-  protected shadowConnections?: Pool | null;
-  public readonly shadow: boolean = false;
+  public shadowConnections?: Pool | null;
   protected logger = pino().child({ component: 'tidb-query-executor' });
 
   constructor(
@@ -18,7 +17,6 @@ export class TiDBQueryExecutor implements QueryExecutor {
   ) {
     this.connections = getPool(options)
     this.shadowConnections = shadowOptions ? getPool(shadowOptions) : null;
-    this.shadow = !!shadowOptions;
   }
 
   async execute<T extends Rows>(queryKey: string, sql: string): Promise<[T, Fields]>;
