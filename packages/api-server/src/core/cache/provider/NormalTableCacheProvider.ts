@@ -35,12 +35,6 @@ export default class NormalTableCacheProvider implements CacheProvider {
         VALUES (?, ?, ?)
         ON DUPLICATE KEY UPDATE cache_value = VALUES(cache_value), expires = VALUES(expires);`;
 
-        // if (this.shadowConn) {
-        //     this.conn.query<T>(sql, [key, value, EX]).then(null).catch((err) => {
-        //         this.logger.error(err, 'Failed to set cache with key %s to shadow database.', key);
-        //     });
-        // }
-
         return this.conn.query<T>(sql, [key, value, EX]);
     }
 
@@ -51,7 +45,7 @@ export default class NormalTableCacheProvider implements CacheProvider {
         LIMIT 1;`;
 
         if (this.shadowConn) {
-            this.conn.query<any[]>(sql, [key]).then(null).catch((err) => {
+            this.shadowConn.query<any[]>(sql, [key]).then(null).catch((err) => {
                 this.logger.error(err, 'Failed to get cache with key %s to shadow database.', key);
             });
         }
