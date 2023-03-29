@@ -16,3 +16,4 @@ items:
   - togethercomputer/OpenChatKit
   - nomic-ai/gpt4all
   - Lightning-AI/lit-llama
+  - hpcaitech/ColossalAI
