@@ -19,6 +19,10 @@ export default class NormalTableCacheProvider implements CacheProvider {
         VALUES (?, ?, ?)
         ON DUPLICATE KEY UPDATE cache_value = VALUES(cache_value), expires = VALUES(expires);`;
 
+        if (process.env.IGNORE_WRITE_CACHE) {
+            return Promise.resolve();
+        }
+
         return this.conn.query<T>(sql, [key, value, EX]);
     }
 
