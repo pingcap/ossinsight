@@ -51,6 +51,7 @@ import {MySQLPromisePool} from "@fastify/mysql";
 import async from "async";
 import {GenerateSummaryPromptTemplate} from "../bot-service/template/GenerateSummaryPromptTemplate";
 import sleep from "../../../utils/sleep";
+import { withConnection } from '../../../utils/connection';
 
 declare module 'fastify' {
     interface FastifyInstance {
@@ -1428,10 +1429,13 @@ export class ExplorerService {
 
     async refreshRecommendQuestion(oldQuestion: RecommendQuestion, batchJobID: string): Promise<void> {
         try {
-            const conn = await this.mysql.getConnection();
-            this.logger.info({ questionId: oldQuestion.questionId }, "Refresh recommended question: %s.", oldQuestion.title);
-            const newQuestion = await this.newQuestion(0, oldQuestion.title, true, true, true, batchJobID, conn);
-            await conn.release();
+            const newQuestion = await withConnection(
+              this.mysql,
+              async conn => {
+                  this.logger.info({ questionId: oldQuestion.questionId }, "Refresh recommended question: %s.", oldQuestion.title);
+                  return await this.newQuestion(0, oldQuestion.title, true, true, true, batchJobID, conn);
+              }
+            )
 
             // Prepare question async.
             if (!newQuestion.hitCache) {
