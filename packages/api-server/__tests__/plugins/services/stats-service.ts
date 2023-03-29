@@ -11,7 +11,7 @@ test('should execute valid sql', async () => {
   const pool = getPool({
     uri: db.url()
   });
-  const statsService = new StatsService(pool, null, testLogger);
+  const statsService = new StatsService(pool, testLogger);
 
   await statsService.addQueryStatsRecord('test', 'test', new Date(), true);
 
