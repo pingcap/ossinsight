@@ -53,6 +53,7 @@ items:
   - meltano/meltano
   - kestra-io/kestra
   - apache/dolphinscheduler
+  - cloudquery/cloudquery
   
   # Data testing
   - great-expectations/great_expectations
