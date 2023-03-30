@@ -232,7 +232,7 @@ export class ExplorerService {
             // Generate the SQL by OpenAI.
             let outputInStream = this.options.outputAnswerInStream;
             await this.generateAnswer(logger, question, outputInStream);
-            if (!question.sqlCanAnswer || typeof question.querySQL !== 'string') {
+            if (!question.sqlCanAnswer || typeof question.querySQL !== 'string' || question.querySQL.length === 0) {
                 const message = 'Failed to generate SQL, the question may exceed the scope of what can be answered.';
                 throw new ExplorerPrepareQuestionError(message, QuestionFeedbackType.ErrorSQLCanNotAnswer, {
                     message: message
@@ -357,8 +357,9 @@ export class ExplorerService {
                     question.notClear = undefined;
                     question.assumption = undefined;
                     question.combinedTitle = undefined;
+                    question.sqlCanAnswer = undefined;
                     question.querySQL = undefined;
-                    question.answer = undefined;
+                    question.chart = undefined;
 
                     // Wait for a while before retrying.
                     await sleep(1000 * i);
