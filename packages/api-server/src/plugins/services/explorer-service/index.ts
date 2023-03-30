@@ -30,7 +30,6 @@ import {TiDBPlaygroundQueryExecutor} from "../../../core/executor/query-executor
 import {GenerateChartPromptTemplate} from "../bot-service/template/GenerateChartPromptTemplate";
 import {randomUUID} from "crypto";
 import {
-    Answer,
     AnswerSummary,
     BarChart,
     ChartNames,
@@ -52,6 +51,8 @@ import async from "async";
 import {GenerateSummaryPromptTemplate} from "../bot-service/template/GenerateSummaryPromptTemplate";
 import sleep from "../../../utils/sleep";
 import { withConnection } from '../../../utils/connection';
+import {pino} from "pino";
+import BaseLogger = pino.BaseLogger;
 
 declare module 'fastify' {
     interface FastifyInstance {
@@ -220,99 +221,34 @@ export class ExplorerService {
     }
 
     async prepareQuestion(question: Question) {
-        const { id: questionId, title } = question;
+        const { id: questionId } = question;
         const logger = this.logger.child({ questionId: questionId });
 
         try {
+            // Update question status.
             question.status = QuestionStatus.AnswerGenerating;
             await this.updateQuestion(question);
 
             // Generate the SQL by OpenAI.
             let outputInStream = this.options.outputAnswerInStream;
-            let answer: Answer | null = null;
-            let responseText: string | null = null;
-            for (let i = 1; i <= 3; i++) {
-                try {
-                    if (outputInStream) {
-                        [answer, responseText] = await this.botService.questionToAnswerInStream(this.generateAnswerTemplate, title, async (answer, key, value) => {
-                            // @ts-ignore
-                            question[key] = value;
-                            question.answer = answer;
-                            logger.info(`Updating question with ${key} = ${value}.`)
-                            await this.updateQuestion(question);
-                        });
-                    } else {
-                        [answer, responseText] = await this.botService.questionToAnswer(this.generateAnswerTemplate, title);
-                    }
-
-                    // Check if there are an answer been returned.
-                    if (!answer || Object.keys(answer).length === 0) {
-                        const message = 'Generated an empty answer.';
-                        throw new BotResponseGenerateError(message, responseText);
-                    }
-
-                    break;
-                } catch (e: any) {
-                    // Reset the question and answer, and try again.
-                    if (i < 3) {
-                        logger.warn(e, `Failed to generate answer for question ${questionId}, retrying (${i + 1}/3)...`);
-                        question.revisedTitle = undefined;
-                        question.notClear = undefined;
-                        question.assumption = undefined;
-                        question.combinedTitle = undefined;
-                        question.querySQL = undefined;
-                        question.answer = undefined;
-                        answer = null;
-                        outputInStream = false; // Disable the output in stream mode if it failed.
-                        await sleep(1000 * i);
-                        continue;
-                    }
-
-                    if (e instanceof BotResponseParseError) {
-                        throw new ExplorerPrepareQuestionError(e.message, QuestionFeedbackType.ErrorAnswerParse, {
-                            message: e.message,
-                            responseText: e.responseText,
-                        }, e);
-                    } else if (e instanceof BotResponseGenerateError) {
-                        throw new ExplorerPrepareQuestionError(e.message, QuestionFeedbackType.ErrorAnswerGenerate, {
-                            message: e.message,
-                            responseText: e.responseText,
-                        }, e);
-                    } else {
-                        const message = 'Failed to generate answer, please try again later';
-                        throw new ExplorerPrepareQuestionError(message, QuestionFeedbackType.ErrorAnswerGenerate, {
-                            message: e.message
-                        }, e);
-                    }
-                }
-            }
-
-            logger.info("Got generated answer.")
-            let { querySQL, chart, sqlCanAnswer, revisedTitle, notClear, assumption, combinedTitle } = answer!;
-            question.answer = answer;
-            question.querySQL = querySQL;
-            question.chart = chart;
-            question.sqlCanAnswer = sqlCanAnswer;
-            question.revisedTitle = revisedTitle;
-            question.notClear = notClear;
-            question.assumption = assumption;
-            question.combinedTitle = combinedTitle;
-
-            if (!question.sqlCanAnswer || querySQL === null || querySQL === undefined || querySQL.length === 0) {
+            await this.generateAnswer(logger, question, outputInStream);
+            if (!question.sqlCanAnswer || typeof question.querySQL !== 'string' || question.querySQL.length === 0) {
                 const message = 'Failed to generate SQL, the question may exceed the scope of what can be answered.';
                 throw new ExplorerPrepareQuestionError(message, QuestionFeedbackType.ErrorSQLCanNotAnswer, {
                     message: message
                 });
             }
 
-            // Validate the generated SQL.
+            // Update question status.
             question.status = QuestionStatus.SQLValidating;
+            question.queryHash = this.getQueryHash(question.querySQL);
             await this.updateQuestion(question);
+
+            // Validate the generated SQL.
             let statementType;
             try {
-                logger.info("Validating the generated SQL: %s", querySQL);
-                const res = this.validateSQL(querySQL!);
-                querySQL = res.sql;
+                logger.info("Validating the generated SQL: %s", question.querySQL);
+                const res = this.validateSQL(question.querySQL!);
                 statementType = res.statementType;
             } catch (err: any) {
                 if (err instanceof ValidateSQLError) {
@@ -326,8 +262,6 @@ export class ExplorerService {
                     });
                 }
             }
-            question.querySQL = querySQL;
-            question.queryHash = this.getQueryHash(querySQL);
 
             // Try to get SQL result from cache.
             const cachedResult = await this.getCachedSQLResult(question.queryHash, this.options.querySQLCacheTTL);
@@ -345,52 +279,15 @@ export class ExplorerService {
             }
 
             // Get the storage engines that will be used in the SQL execution.
-            let engines: string[] = [];
-            if (statementType === 'select') {
-                try {
-                    logger.info("Getting the storage engines for the SQL: %s", querySQL);
-                    const plan = await this.getSQLExecutionPlan(querySQL);
-                    engines = this.getStorageEnginesFromPlan(plan);
-                } catch (err: any) {
-                    if (err.sqlMessage) {
-                        throw new ExplorerPrepareQuestionError(err.sqlMessage, QuestionFeedbackType.ErrorValidateSQL, {
-                            sqlMessage: err.sqlMessage,
-                            message: err.message,
-                            sql: querySQL
-                        });
-                    } else {
-                        const message = 'Failed to validate the generated SQL.';
-                        throw new ExplorerPrepareQuestionError(message, QuestionFeedbackType.ErrorValidateSQL, {
-                            message: err.message,
-                            sql: querySQL
-                        });
-                    }
-                }
-            }
-
-            const queueName = engines.includes('tiflash') ? QuestionQueueNames.Low : QuestionQueueNames.High;
-            const queueJobId = randomUUID();
-            question.engines = engines;
-            question.queueName = queueName;
-            question.queueJobId = queueJobId;
+            question.engines = statementType === 'select' ? await this.getStorageEngines(logger, question.querySQL) : [];
+            question.queueName = question.engines.includes('tiflash') ? QuestionQueueNames.Low : QuestionQueueNames.High;
+            question.queueJobId = randomUUID();
             question.requestedAt = DateTime.utc();
             question.status = QuestionStatus.Waiting;
             await this.updateQuestion(question);
 
             // Push the question to the queue.
-            if (queueName === QuestionQueueNames.Low && queueJobId) {
-                logger.info("Pushing the question to the low concurrent queue (jobId: %s).", queueJobId);
-                await this.lowConcurrentQueue.add(QuestionQueueNames.Low, question, {
-                    jobId: queueJobId
-                });
-            } else if (queueName === QuestionQueueNames.High && queueJobId) {
-                logger.info("Pushing the question to the high concurrent queue (jobId: %s).", queueJobId);
-                await this.highConcurrentQueue.add(QuestionQueueNames.High, question, {
-                    jobId: queueJobId
-                });
-            } else {
-                logger.warn("No queue name or job id provided, the question will not be executed.");
-            }
+            await this.pushJobToQueue(logger, question);
         } catch (err: any) {
             if (err instanceof ExplorerPrepareQuestionError) {
                 await this.updateQuestion({
@@ -412,6 +309,138 @@ export class ExplorerService {
                 }));
             }
             throw err;
+        }
+    }
+
+    async generateAnswer(logger: BaseLogger, question: Question, outputInStream: boolean): Promise<string | null> {
+        let responseText: string | null = null;
+        const { id: questionId, title } = question;
+        const promptTemplate = this.generateAnswerTemplate;
+        for (let i = 1; i <= 3; i++) {
+            try {
+                if (outputInStream) {
+                    // Update the field one by one.
+                    [question.answer, responseText] = await this.botService.questionToAnswerInStream(promptTemplate, title, async (answer, key, value) => {
+                        // @ts-ignore
+                        question[key] = value;
+                        question.answer = answer;
+                        await this.updateQuestion(question);
+                        logger.info(`Updating question with field ${key} = ${value}.`)
+                    });
+                } else {
+                    // Update all the fields at once.
+                    [question.answer, responseText] = await this.botService.questionToAnswer(promptTemplate, title);
+                    question.revisedTitle = question.answer?.revisedTitle;
+                    question.notClear = question.answer?.notClear;
+                    question.assumption = question.answer?.assumption;
+                    question.combinedTitle = question.answer?.combinedTitle;
+                    question.sqlCanAnswer = question.answer?.sqlCanAnswer;
+                    question.querySQL = question.answer?.querySQL;
+                    question.chart = question.answer?.chart;
+                    await this.updateQuestion(question);
+                    logger.info(`Updating question with all field.`)
+                }
+
+                // Check if there are an answer been returned.
+                if (!question.answer || Object.keys(question.answer).length === 0) {
+                    const message = 'Generated an empty answer.';
+                    throw new BotResponseGenerateError(message, responseText);
+                }
+
+                return responseText;
+            } catch (e: any) {
+                // Reset the question and answer, and try again.
+                if (i < 3) {
+                    logger.warn(e, `Failed to generate answer for question ${questionId}, retrying (${i + 1}/3)...`);
+
+                    question.revisedTitle = undefined;
+                    question.notClear = undefined;
+                    question.assumption = undefined;
+                    question.combinedTitle = undefined;
+                    question.sqlCanAnswer = undefined;
+                    question.querySQL = undefined;
+                    question.chart = undefined;
+
+                    // Wait for a while before retrying.
+                    await sleep(1000 * i);
+
+                    // Notice: Disable the output in stream mode if it failed.
+                    outputInStream = false;
+                    continue;
+                }
+
+                if (e instanceof BotResponseParseError) {
+                    throw new ExplorerPrepareQuestionError(e.message, QuestionFeedbackType.ErrorAnswerParse, {
+                        message: e.message,
+                        responseText: e.responseText,
+                    }, e);
+                } else if (e instanceof BotResponseGenerateError) {
+                    throw new ExplorerPrepareQuestionError(e.message, QuestionFeedbackType.ErrorAnswerGenerate, {
+                        message: e.message,
+                        responseText: e.responseText,
+                    }, e);
+                } else {
+                    const message = 'Failed to generate answer, please try again later';
+                    throw new ExplorerPrepareQuestionError(message, QuestionFeedbackType.ErrorAnswerGenerate, {
+                        message: e.message
+                    }, e);
+                }
+            }
+        }
+        return responseText;
+    }
+
+    async getStorageEngines(logger: BaseLogger, querySQL: string): Promise<string[]> {
+        try {
+            logger.info("Getting the storage engines for the SQL: %s", querySQL);
+            const plan = await this.getSQLExecutionPlan(querySQL);
+            return this.getStorageEnginesFromPlan(plan);
+        } catch (err: any) {
+            if (err.sqlMessage) {
+                throw new ExplorerPrepareQuestionError(err.sqlMessage, QuestionFeedbackType.ErrorValidateSQL, {
+                    sqlMessage: err.sqlMessage,
+                    message: err.message,
+                    sql: querySQL
+                });
+            } else {
+                const message = 'Failed to validate the generated SQL.';
+                throw new ExplorerPrepareQuestionError(message, QuestionFeedbackType.ErrorValidateSQL, {
+                    message: err.message,
+                    sql: querySQL
+                });
+            }
+        }
+    }
+
+    async pushJobToQueue(logger: BaseLogger, question: Question) {
+        if (!question.queueJobId) {
+            logger.warn("No job id provided, the question will not be executed.");
+            return;
+        }
+
+        const log = this.logger.child({ jobId: question.queueJobId });
+        if (!question.queueName) {
+            log.warn("No queue name provided, the question will not be executed.");
+            return;
+        }
+
+
+        switch (question.queueName) {
+            case QuestionQueueNames.Low:
+                log.info("Pushing the question to the low concurrent queue.");
+                await this.lowConcurrentQueue.add(QuestionQueueNames.Low, question, {
+                    jobId: question.queueJobId
+                });
+                break;
+            case QuestionQueueNames.High:
+                log.info("Pushing the question to the high concurrent queue.");
+                await this.highConcurrentQueue.add(QuestionQueueNames.High, question, {
+                    jobId: question.queueJobId
+                });
+                break;
+            default:
+                log.warn("No queue name provided, the question will not be executed.");
+                break;
         }
     }
 
@@ -698,6 +727,9 @@ export class ExplorerService {
     }
 
     async getCachedSQLResult(queryHash: string, ttl: number): Promise<QuestionQueryResultWithChart | null> {
+        if (!queryHash) {
+            return null;
+        }
         const question = await this.getLatestQuestionByQueryHash(queryHash, ttl);
         if (!question) {
             return null;
