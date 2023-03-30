@@ -135,7 +135,7 @@ export class BotService {
                     model: template.model,
                     messages: [
                         {
-                            role: 'user',
+                            role: 'system',
                             content: prompt!,
                         }
                     ],
@@ -182,7 +182,7 @@ export class BotService {
                                 const tokenObj = JSON.parse(tokenJSON);
                                 const choice = tokenObj.choices?.[0];
 
-                                if (choice?.delta.role) {
+                                if (choice?.delta?.role) {
                                     continue;
                                 }
                                 if (choice?.finish_reason === 'stop' && !choice?.content) {
