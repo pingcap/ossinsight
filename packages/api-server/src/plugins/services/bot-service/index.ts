@@ -180,7 +180,16 @@ export class BotService {
                             } else {
                                 // Notice: Skip undefined token.
                                 const tokenObj = JSON.parse(tokenJSON);
-                                const token = tokenObj.choices?.[0]?.delta?.content;
+                                const choice = tokenObj.choices?.[0];
+
+                                if (choice?.delta.role) {
+                                    continue;
+                                }
+                                if (choice?.finish_reason === 'stop' && !choice?.content) {
+                                    continue;
+                                }
+
+                                const token = choice?.delta?.content;
                                 if (typeof token === "string") {
                                     tokenStream.write(token);
                                 } else {
