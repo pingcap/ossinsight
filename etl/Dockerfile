@@ -1,4 +1,4 @@
-FROM ruby:2.7.2-alpine
+FROM ruby:2.7.8-alpine
 
 ENV BUNDLER_VERSION=2.2.3
 
