@@ -216,9 +216,9 @@ export class BotService {
                     emitKey: true
                 }]));
 
-                fieldStream.on('data', ({key, value}: any) => {
+                fieldStream.on('data', async ({key, value}: any) => {
                     [answer, key, value] = this.setAnswerValue(question, answer, key, value);
-                    callback(answer, key, value);
+                    await callback(answer, key, value);
                 });
 
                 fieldStream.on('error', (err: any) => {
@@ -306,18 +306,20 @@ export class BotService {
                 break;
             case 'CQ':
                 key = "combinedTitle";
-                answer.combinedTitle = value || question;
+                value = value || question;
+                answer.combinedTitle = value;
                 break;
             case 'sql':
                 key = "querySQL";
                 answer.querySQL = value;
                 break;
             case 'chart':
-                answer.chart = value ? {
+                value = value ? {
                     chartName: value.chartName,
                     title: value.title,
                     ...this.removeTableNameForColumn(value.options)
                 } : null;
+                answer.chart = value;
                 break;
             default:
                 answer[key] = value;

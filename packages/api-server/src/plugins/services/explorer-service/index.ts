@@ -324,8 +324,12 @@ export class ExplorerService {
                         // @ts-ignore
                         question[key] = value;
                         question.answer = answer;
-                        await this.updateQuestion(question);
-                        logger.info(`Updating question with field ${key} = ${value}.`)
+                        try {
+                            await this.updateQuestion(question);
+                            logger.info(`Updating question with field ${key} = ${value}.`)
+                        } catch (e) {
+                            logger.error(e, `Failed to update question with field ${key} = ${value}.`)
+                        }
                     });
                 } else {
                     // Update all the fields at once.
