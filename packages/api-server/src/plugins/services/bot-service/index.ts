@@ -216,9 +216,9 @@ export class BotService {
                     emitKey: true
                 }]));
 
-                fieldStream.on('data', ({key, value}: any) => {
+                fieldStream.on('data', async ({key, value}: any) => {
                     [answer, key, value] = this.setAnswerValue(question, answer, key, value);
-                    callback(answer, key, value);
+                    await callback(answer, key, value);
                 });
 
                 fieldStream.on('error', (err: any) => {
