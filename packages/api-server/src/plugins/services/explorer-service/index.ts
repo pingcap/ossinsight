@@ -50,7 +50,7 @@ import {MySQLPromisePool} from "@fastify/mysql";
 import async from "async";
 import {GenerateSummaryPromptTemplate} from "../bot-service/template/GenerateSummaryPromptTemplate";
 import sleep from "../../../utils/sleep";
-import { withConnection } from '../../../utils/connection';
+import {withConnection, withTransaction} from '../../../utils/connection';
 import {pino} from "pino";
 import BaseLogger = pino.BaseLogger;
 
@@ -579,21 +579,24 @@ export class ExplorerService {
         const executedAtValue = executedAt ? executedAt.toSQL() : null;
         const finishedAtValue = finishedAt ? finishedAt.toSQL() : null;
 
-        const [rs] = await this.mysql.query<ResultSetHeader>(`
-            UPDATE explorer_questions
-            SET
-                answer = ?, revised_title = ?, not_clear = ?, assumption = ?, combined_title = ?, status = ?, recommended = ?, sql_can_answer = ?, 
-                query_sql = ?, query_hash = ?, engines = ?, result = ?, chart = ?, recommended_questions = ?, 
-                queue_name = ?, queue_job_id = ?, requested_at = ?, executed_at = ?, finished_at = ?, spent = ?, error_type = ?, error = ?
-            WHERE id = UUID_TO_BIN(?)
-        `, [
-            answerValue, revisedTitle, notClear, assumption, combinedTitle, status, recommended, sqlCanAnswer,
-            querySQL, queryHash, enginesValue, resultValue, chartValue, recommendedQuestionsValue,
-            queueName, queueJobId, requestedAtValue, executedAtValue, finishedAtValue, spent, errorType, error, id
-        ]);
-        if (rs.affectedRows !== 1) {
-            throw new APIError(500, 'Failed to update the question.');
-        }
+        await withTransaction(this.mysql, async (conn) => {
+            const [rs] = await conn.query<ResultSetHeader>(`
+                UPDATE explorer_questions
+                SET
+                    answer = ?, revised_title = ?, not_clear = ?, assumption = ?, combined_title = ?, status = ?, recommended = ?, sql_can_answer = ?, 
+                    query_sql = ?, query_hash = ?, engines = ?, result = ?, chart = ?, recommended_questions = ?, 
+                    queue_name = ?, queue_job_id = ?, requested_at = ?, executed_at = ?, finished_at = ?, spent = ?, error_type = ?, error = ?
+                WHERE id = UUID_TO_BIN(?)
+            `, [
+                answerValue, revisedTitle, notClear, assumption, combinedTitle, status, recommended, sqlCanAnswer,
+                querySQL, queryHash, enginesValue, resultValue, chartValue, recommendedQuestionsValue,
+                queueName, queueJobId, requestedAtValue, executedAtValue, finishedAtValue, spent, errorType, error, id
+            ]);
+
+            if (rs.affectedRows !== 1) {
+                throw new APIError(500, 'Failed to update the question.');
+            }
+        });
     }
 
     private async saveQuestionResult(questionId: string, status: QuestionStatus, questionResult: QuestionQueryResult, hitCache = false, conn?: Connection) {
