@@ -317,7 +317,7 @@ export class BotService {
                 value = value ? {
                     chartName: value.chartName,
                     title: value.title,
-                    ...this.removeTableNameForColumn(value.options)
+                    ...value.options ? this.removeTableNameForColumn(value.options) : {}
                 } : null;
                 answer.chart = value;
                 break;
