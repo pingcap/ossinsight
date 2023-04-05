@@ -50,3 +50,4 @@ items:
   - chipsec/chipsec
   - kyverno/kyverno
   - cloudquery/cloudquery
+  - slimtoolkit/slim
