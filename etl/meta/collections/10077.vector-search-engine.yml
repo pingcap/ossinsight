@@ -16,3 +16,4 @@ items:
   - pixelogik/NearPy
   - neuml/txtai
   - RelevanceAI/vectorhub
+  - chroma-core/chroma
