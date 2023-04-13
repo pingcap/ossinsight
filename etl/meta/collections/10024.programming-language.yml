@@ -63,3 +63,6 @@ items:
   - google/starlark-go
   - winglang/wing
   - diku-dk/futhark
+  - flix/flix
+  - koka-lang/koka
+  - effekt-lang/effekt
