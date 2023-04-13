@@ -61,3 +61,4 @@ items:
   - facebookexperimental/starlark-rust
   - google/starlark-go
   - winglang/wing
+  - diku-dk/futhark
