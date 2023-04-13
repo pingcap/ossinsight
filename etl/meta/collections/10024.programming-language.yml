@@ -15,6 +15,7 @@ items:
   - crystal-lang/crystal
   - PowerShell/PowerShell
   - scala/scala
+  - lampepfl/dotty
   - dotnet/roslyn
   - clojure/clojure
   - micropython/micropython
