@@ -38,7 +38,7 @@
     "@mui/lab": "^5.0.0-alpha.68",
     "@mui/material": "^5.4.1",
     "@sentry/react": "^7.12.1",
-    "@sentry/tracing": "^7.12.1",
+    "@sentry/tracing": "^7.45.0",
     "@stackql/docusaurus-plugin-hubspot": "^1.0.1",
     "@tidb-community/tracking-script": "^0.1.0",
     "ace-builds": "^1.10.1",
