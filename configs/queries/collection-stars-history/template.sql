@@ -9,7 +9,7 @@ WITH accumulative_stars_by_month AS (
         SELECT
             repo_id,
             DATE_FORMAT(created_at, '%Y-%m-01') AS t_month,
-            -- De-duplicate by number column, keeping only the first event of each issue.
+            -- De-duplicate by actor_login column, keeping only the first event of each star.
             ROW_NUMBER() OVER (PARTITION BY ge.repo_id, actor_login ORDER BY created_at) AS row_num_by_actor_login
         FROM github_events ge
         WHERE
