@@ -2,7 +2,7 @@ import fp from 'fastify-plugin';
 import { TiDBPlaygroundQueryExecutor } from '../../core/executor/query-executor/TiDBPlaygroundQueryExecutor';
 import { getPlaygroundSessionLimits } from '../../core/playground/limitation';
 
-export default fp(async (app) => {
+export default fp(async (app: any) => {
   const poolOptions = {
     uri: app.config.DATABASE_URL
   };

@@ -4,10 +4,10 @@ import { QueryRunner } from "../../../core/runner/query/QueryRunner";
 import fp from "fastify-plugin";
 import pino from "pino";
 
-export default fp(async (app) => {
+export default fp(async (app: any) => {
     const log = app.log as pino.Logger;
     const queryLoader = new QueryLoader(log);
-    const queryParser = new QueryParser(app.collectionService);
+    const queryParser = new QueryParser();
     app.decorate('queryRunner', new QueryRunner(queryLoader, queryParser, app.cacheBuilder, app.tidbQueryExecutor));
 }, {
     name: 'query-runner',

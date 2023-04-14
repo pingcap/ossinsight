@@ -114,6 +114,17 @@ export const APIServerEnvSchema = {
     PROMPT_TEMPLATE_NAME: {
       type: 'string',
       default: DEFAULT_ANSWER_PROMPT_TEMPLATE,
+    },
+    PREFETCH_ONLY_QUERY: {
+      type: 'string',
+    },
+    PREFETCH_ONLY_PARAMS: {
+      type: 'object',
+      default: {},
+    },
+    PREFETCH_EXECUTE_IMMEDIATELY: {
+      type: 'boolean',
+      default: false,
     }
     // We need additional undocumented env
     // - for playground:

@@ -1,9 +1,7 @@
-import { CollectionService } from "../../../plugins/services/collection-service";
-import { QuerySchema } from "../../../types/query.schema";
+import {ConditionalRefreshCrons, QuerySchema} from "../../../types/query.schema";
 
 export enum ParamType {
     ARRAY = 'array',
-    COLLECTION = 'collection'
 }
 
 export enum ParamDateRange {
@@ -27,9 +25,7 @@ export class BadParamsError extends Error {
 
 export class QueryParser {
 
-    constructor(
-        private readonly collectionService: CollectionService
-    ) {}
+    constructor() {}
 
     async parse(templateSQL: string, queryConfig: QuerySchema, values: Record<string, any>) {
         for (const param of queryConfig.params) {
@@ -42,9 +38,6 @@ export class QueryParser {
             switch (type) {
                 case ParamType.ARRAY:
                     targetValue = this.handleArrayValue(name, value, column, pattern, paramTemplate)
-                    break;
-                case ParamType.COLLECTION:
-                    targetValue = await this.handleCollectionValue(name, value, column, pattern, paramTemplate)
                     break;
                 default:
                     targetValue = this.verifyParam(name, value, pattern, paramTemplate);
@@ -70,25 +63,6 @@ export class QueryParser {
         return arrValues.join(', ');
     }
 
-    private async handleCollectionValue(
-        name: string, collectionId: number, column?: string, pattern?: string, 
-        paramTemplate?: Record<string, string>,
-    ): Promise<string> {
-        const arrValues = [];
-        const res = await this.collectionService.getCollectionRepos(collectionId)
-    
-        if (Array.isArray(res.data) && res.data.length > 0) {
-            for (let item of res.data) {
-            const targetValue = this.verifyParam(name, item.repo_id, pattern, paramTemplate);
-            arrValues.push(targetValue);
-            }
-        } else {
-            throw new BadParamsError(name, `can not get repo for collection ${collectionId}`)
-        }
-    
-        return arrValues.join(', ');
-    }
-
     private verifyParam(name: string, value: any, pattern?: string, paramTemplate?: Record<string, string>) {
         if (pattern) {
             const regexp = new RegExp(pattern);
@@ -104,5 +78,26 @@ export class QueryParser {
 
         return targetValue;
     }
+
+    resolveCrons(params: any, crons: string | ConditionalRefreshCrons | undefined): (string | undefined) {
+        if (typeof crons === "string") {
+            return crons;
+        }
+        if (!crons) {
+            return undefined;
+        }
+        if (!params || !params[crons.param]) {
+            return undefined;
+        }
+        const param = params[crons.param];
+        for (const key in crons.on) {
+            // equals or matches
+            if (param === key || (new RegExp(key)).test(param)) {
+                return crons.on[key];
+            }
+        }
+        return undefined;
+    }
+
 
 }

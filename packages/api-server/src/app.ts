@@ -17,39 +17,44 @@ export type AppOptions = {
 const options: AppOptions = {
 }
 
+export interface AppConfig {
+  CONFIGS_PATH: string;
+  ADMIN_EMAIL: string;
+  DATABASE_URL: string;
+  SHADOW_DATABASE_URL: string;
+  REDIS_URL: string;
+  API_BASE_URL: string;
+  ENABLE_CACHE: boolean;
+  PLAYGROUND_DATABASE_URL: string;
+  PLAYGROUND_SHADOW_DATABASE_URL: string;
+  PLAYGROUND_DAILY_QUESTIONS_LIMIT: number;
+  PLAYGROUND_TRUSTED_GITHUB_LOGINS: string[];
+  EXPLORER_USER_MAX_QUESTIONS_PER_HOUR: number;
+  EXPLORER_USER_MAX_QUESTIONS_ON_GOING: number;
+  EXPLORER_GENERATE_SQL_CACHE_TTL: number;
+  EXPLORER_QUERY_SQL_CACHE_TTL: number;
+  EXPLORER_OUTPUT_ANSWER_IN_STREAM: boolean;
+  GITHUB_OAUTH_CLIENT_ID?: string;
+  GITHUB_OAUTH_CLIENT_SECRET?: string;
+  GITHUB_ACCESS_TOKENS: string[];
+  JWT_SECRET?: string;
+  JWT_COOKIE_NAME?: string;
+  JWT_COOKIE_DOMAIN?: string;
+  JWT_COOKIE_SECURE?: boolean;
+  JWT_COOKIE_SAME_SITE?: boolean;
+  OPENAI_API_KEY: string;
+  AUTH0_DOMAIN: string;
+  AUTH0_SECRET: string;
+  EMBEDDING_SERVICE_ENDPOINT: string;
+  PROMPT_TEMPLATE_NAME: string;
+  PREFETCH_ONLY_QUERY?: string;
+  PREFETCH_ONLY_PARAMS: Record<string, any>;
+  PREFETCH_EXECUTE_IMMEDIATELY: boolean;
+}
+
 declare module 'fastify' {
   interface FastifyInstance {
-    config: {
-      CONFIGS_PATH: string;
-      ADMIN_EMAIL: string;
-      DATABASE_URL: string;
-      SHADOW_DATABASE_URL: string;
-      REDIS_URL: string;
-      API_BASE_URL: string;
-      ENABLE_CACHE: boolean;
-      PLAYGROUND_DATABASE_URL: string;
-      PLAYGROUND_SHADOW_DATABASE_URL: string;
-      PLAYGROUND_DAILY_QUESTIONS_LIMIT: number;
-      PLAYGROUND_TRUSTED_GITHUB_LOGINS: string[];
-      EXPLORER_USER_MAX_QUESTIONS_PER_HOUR: number;
-      EXPLORER_USER_MAX_QUESTIONS_ON_GOING: number;
-      EXPLORER_GENERATE_SQL_CACHE_TTL: number;
-      EXPLORER_QUERY_SQL_CACHE_TTL: number;
-      EXPLORER_OUTPUT_ANSWER_IN_STREAM: boolean;
-      GITHUB_OAUTH_CLIENT_ID?: string;
-      GITHUB_OAUTH_CLIENT_SECRET?: string;
-      GITHUB_ACCESS_TOKENS: string[];
-      JWT_SECRET?: string;
-      JWT_COOKIE_NAME?: string;
-      JWT_COOKIE_DOMAIN?: string;
-      JWT_COOKIE_SECURE?: boolean;
-      JWT_COOKIE_SAME_SITE?: boolean;
-      OPENAI_API_KEY: string;
-      AUTH0_DOMAIN: string;
-      AUTH0_SECRET: string;
-      EMBEDDING_SERVICE_ENDPOINT: string;
-      PROMPT_TEMPLATE_NAME: string;
-    };
+    config: AppConfig;
     mysql: MySQLPromisePool;
     shadowMySQL?: MySQLPromisePool;
   }
