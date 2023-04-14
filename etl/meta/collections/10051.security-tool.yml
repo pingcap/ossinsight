@@ -51,3 +51,4 @@ items:
   - kyverno/kyverno
   - cloudquery/cloudquery
   - slimtoolkit/slim
+  - akto-api-security/akto
