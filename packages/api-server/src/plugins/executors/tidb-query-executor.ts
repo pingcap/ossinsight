@@ -1,7 +1,7 @@
 import {TiDBQueryExecutor} from "../../core/executor/query-executor/TiDBQueryExecutor";
 import fp from "fastify-plugin";
 
-export default fp(async (app) => {
+export default fp(async (app: any) => {
   const poolOptions = {
     uri: app.config.DATABASE_URL
   };

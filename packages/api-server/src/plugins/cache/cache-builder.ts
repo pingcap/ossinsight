@@ -9,7 +9,7 @@ declare module 'fastify' {
     }
 }
 
-export default fp(async (fastify) => {
+export default fp(async (fastify: any) => {
     const log = fastify.log as pino.Logger;
     const wrapper = await ConnectionWrapper.new({
         uri: fastify.config.DATABASE_URL

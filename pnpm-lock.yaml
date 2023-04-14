@@ -146,6 +146,7 @@ importers:
       '@types/luxon': ^3.0.2
       '@types/mustache': ^4.2.2
       '@types/node': ^18.0.0
+      '@types/node-schedule': ^2.1.0
       '@types/ws': ^8.5.3
       JSONStream: ^1.3.5
       async: ^3.2.4
@@ -153,6 +154,8 @@ importers:
       bullmq: ^3.4.1
       chance: ^1.1.9
       concurrently: ^7.0.0
+      cron-parser: ^4.6.0
+      env-schema: ^5.2.0
       fastify: ^4.0.0
       fastify-auth0-verify: ^1.0.0
       fastify-cli: ^5.5.1
@@ -169,6 +172,7 @@ importers:
       luxon: ^3.1.0
       mustache: ^4.2.0
       mysql2: ^2.3.3
+      node-schedule: ^2.1.1
       node-sql-parser: 4.6.5
       octokit: ^2.0.10
       openai: ^3.2.1
@@ -207,6 +211,8 @@ importers:
       async: 3.2.4
       axios: 0.27.2
       bullmq: 3.4.1
+      cron-parser: 4.7.0
+      env-schema: 5.2.0
       fastify: 4.10.2
       fastify-auth0-verify: 1.0.0
       fastify-cli: 5.6.0
@@ -219,6 +225,7 @@ importers:
       luxon: 3.1.0
       mustache: 4.2.0
       mysql2: 2.3.3
+      node-schedule: 2.1.1
       node-sql-parser: 4.6.5
       octokit: 2.0.10
       openai: 3.2.1
@@ -237,6 +244,7 @@ importers:
       '@types/luxon': 3.1.0
       '@types/mustache': 4.2.2
       '@types/node': 18.11.9
+      '@types/node-schedule': 2.1.0
       '@types/ws': 8.5.3
       chance: 1.1.9
       concurrently: 7.6.0
@@ -923,7 +931,7 @@ packages:
   /@fastify/env/4.1.0:
     resolution: {integrity: sha512-9l+JTUiFWSwb9dGSeR46aDWBjrAg8lJeqMjbotG5/8Ho90+qzRbt8kdSnVhLm5k6HcqXcBaBAT/6cImRhRq0VQ==}
     dependencies:
-      env-schema: 5.1.1
+      env-schema: 5.2.0
       fastify-plugin: 4.3.0
     dev: false
 
@@ -5195,8 +5203,8 @@ packages:
     engines: {node: '>=0.12'}
     dev: false
 
-  /env-schema/5.1.1:
-    resolution: {integrity: sha512-3jftabBd44XEYFCZjLg5Ris/7DKz09AJClvJEJXh8eciBPbKXSzdgwLZqpqA1lKmNkHFiAqr7JAqTToU80mDew==}
+  /env-schema/5.2.0:
+    resolution: {integrity: sha512-36/6cZ+zIbcPA2ANrzp7vTz2bS8/zdZaq2RPFqJVtCGJ4P55EakgJ1BeKP8RMvEmM7ndrnHdJXzL3J1dHrEm1w==}
     dependencies:
       ajv: 8.11.2
       dotenv: 16.0.3
