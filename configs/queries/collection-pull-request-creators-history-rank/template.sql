@@ -9,7 +9,7 @@ WITH accumulative_prs_by_year AS (
         SELECT
             repo_id,
             YEAR(created_at) AS t_year,
-            -- De-duplicate by `actor_login` column, keeping only the first event of each PR.
+            -- De-duplicate by `actor_login` column, keeping only the first PR of each PR creator.
             ROW_NUMBER() OVER (PARTITION BY repo_id, actor_login ORDER BY created_at) AS row_num_by_actor_login
         FROM github_events ge
         WHERE
