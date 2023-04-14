@@ -44,8 +44,8 @@ WITH stars_group_by_repo AS (
 SELECT
     ci.repo_id,
     ci.repo_name,
-    DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH), '%Y-%m-01') AS current_month,
-    DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 2 MONTH), '%Y-%m-01') AS last_month,
+    DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH), '%Y-%m') AS current_month,
+    DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 2 MONTH), '%Y-%m') AS last_month,
     -- Stars.
     ilm.stars AS current_month_total,
     ilm.`rank` AS current_month_rank,
