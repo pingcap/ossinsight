@@ -1,6 +1,6 @@
 WITH reviews AS (
     SELECT
-        DATE_FORMAT(created_at, '%Y-%m-01') AS event_month,
+        DATE_FORMAT(created_at, '%Y-%m-01') AS t_month,
         COUNT(*) AS cnt
     FROM github_events ge
     WHERE
@@ -12,7 +12,7 @@ WITH reviews AS (
     ORDER BY 1
 ), review_comments AS (
     SELECT
-        DATE_FORMAT(created_at, '%Y-%m-01') AS event_month,
+        DATE_FORMAT(created_at, '%Y-%m-01') AS t_month,
         COUNT(*) AS cnt
     FROM github_events ge
     WHERE
@@ -24,8 +24,8 @@ WITH reviews AS (
     ORDER BY 1
 )
 SELECT
-    r.event_month,
+    r.t_month AS event_month,
     IFNULL(r.cnt, 0) AS reviews,
     IFNULL(rc.cnt, 0) AS review_comments
 FROM reviews r
-JOIN review_comments rc ON r.event_month = rc.event_month
+JOIN review_comments rc ON r.t_month = rc.t_month

@@ -13,7 +13,7 @@ WITH user_merged_prs AS (
     ORDER BY 1
 ), user_open_prs AS (
     SELECT
-        DATE_FORMAT(created_at, '%Y-%m-01') AS event_month,
+        DATE_FORMAT(created_at, '%Y-%m-01') AS t_month,
         COUNT(*) AS cnt
     FROM github_events ge
     WHERE
@@ -26,9 +26,9 @@ WITH user_merged_prs AS (
     ORDER BY 1
 ), event_months AS (
     SELECT
-        DISTINCT event_month
+        DISTINCT t_month
     FROM (
-        SELECT event_month
+        SELECT t_month
         FROM user_open_prs
         UNION
         SELECT event_month
@@ -36,10 +36,10 @@ WITH user_merged_prs AS (
     ) sub
 )
 SELECT
-    m.event_month,
+    m.t_month AS event_month,
     IFNULL(opr.cnt, 0) AS opened_prs,
     IFNULL(mpr.cnt, 0) AS merged_prs
 FROM event_months m
-LEFT JOIN user_open_prs opr ON m.event_month = opr.event_month
-LEFT JOIN user_merged_prs mpr ON m.event_month = mpr.event_month
-ORDER BY event_month
+LEFT JOIN user_open_prs opr ON m.t_month = opr.t_month
+LEFT JOIN user_merged_prs mpr ON m.t_month = mpr.event_month
+ORDER BY m.t_month
