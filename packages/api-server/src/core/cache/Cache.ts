@@ -99,7 +99,7 @@ export default class Cache<T> {
     // TODO: Write result to cache async.
     await measure(cacheQueryTimer.labels({op: 'set'}), async () => {
       await this.cacheProvider.set(this.key, JSON.stringify(result), {
-        EX: this.cacheHours ? Math.round(this.cacheHours * 3600) : -1
+        EX: this.cacheHours > 0 ? Math.round(this.cacheHours * 3600) : -1
       })
       .catch((err) => {
         this.log.error(err, 'Failed to write cache for key %s.', this.key);

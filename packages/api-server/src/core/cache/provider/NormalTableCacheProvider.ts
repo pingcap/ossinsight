@@ -41,7 +41,11 @@ export default class NormalTableCacheProvider implements CacheProvider {
     async get(key: string): Promise<any> {
         const sql = `SELECT *, DATE_ADD(updated_at, INTERVAL expires SECOND) AS expired_at
         FROM ${this.tableName}
-        WHERE cache_key = ? AND ((expires = -1) OR (DATE_ADD(updated_at, INTERVAL expires SECOND) >= NOW()))
+        WHERE
+            cache_key = ? AND (
+                (expires = -1) OR
+                (DATE_ADD(updated_at, INTERVAL expires SECOND) >= NOW())
+            )
         LIMIT 1;`;
 
         if (this.shadowConn) {

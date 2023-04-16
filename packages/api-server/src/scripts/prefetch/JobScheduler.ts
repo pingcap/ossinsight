@@ -50,7 +50,9 @@ export class JobScheduler {
                 // Execute the query.
                 const qStart = DateTime.utc();
                 try {
-                    await this.queryRunner.query(queryName, params)
+                    await this.queryRunner.query(queryName, params, {
+                        refreshCache: true,
+                    });
                 } catch (err) {
                     const sql = (err as any)?.rawSql?.replace(/\n/g, ' ');
                     logger.error({ sql },'Failed to prefetch query %s.', queryName)
@@ -58,7 +60,7 @@ export class JobScheduler {
                 const qEnd = DateTime.utc();
               
                 // Output the statistics info.
-                const qCostTime = qEnd.diff(qStart).toHuman();
+                const qCostTime = qEnd.diff(qStart, ['seconds']).toHuman();
                 this.logger.info("Finish prefetch <%s>, start at: %s, end at: %s, cost: %s", queryName, qStart, qEnd, qCostTime);
             }, concurrent));
         }
