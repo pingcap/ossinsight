@@ -288,7 +288,7 @@ const config = {
                 to: 'https://en.pingcap.com/tidb-cloud?utm_source=ossinsight&utm_medium=referral'
               },
               { label: 'How do we implement OSS Insight?', to: '/blog/why-we-choose-tidb-to-support-ossinsight' },
-              { label: 'Database Stats', to: '/stats' },
+              /* { label: 'Database Stats', to: '/stats' }, */
               { label: 'Report an Issue', to: 'https://github.com/pingcap/ossinsight/issues' },
             ]
           },
