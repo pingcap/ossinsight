@@ -11,3 +11,4 @@ items:
   - openai/chatgpt-retrieval-plugin
   - cfortuner/promptable
   - microsoft/prompt-engine
+  - zilliztech/GPTCache
