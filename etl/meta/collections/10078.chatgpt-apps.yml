@@ -33,5 +33,6 @@ items:
   - sqlchat/sqlchat
   - Torantulino/Auto-GPT
   - reworkd/AgentGPT
+  - Vision-CAIR/MiniGPT-4
   - yoheinakajima/babyagi
   - nat/openplayground
