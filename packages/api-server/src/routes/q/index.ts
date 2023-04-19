@@ -1,16 +1,6 @@
 import {FastifyPluginAsyncJsonSchemaToTs} from "@fastify/type-provider-json-schema-to-ts/index";
 
 const schema = {
-  params: {
-    type: 'object',
-    required: ['queryName'],
-    properties: {
-      queryName: {
-        type: 'string',
-        description: 'The name of query you want to get'
-      }
-    }
-  },
   querystring: {
     type: 'object',
     properties: {},
@@ -19,8 +9,17 @@ const schema = {
 } as const;
 
 const queryHandler: FastifyPluginAsyncJsonSchemaToTs = async (app, opts): Promise<void> => {
-  app.get('/', { schema }, async function (req, reply) {
-    const { queryName } = req.params;
+  app.get('/*', { schema }, async function (req, reply) {
+    const url = new URL(req.url, 'http://localhost');
+    const queryName = url.pathname?.replace('/q/', '');
+    if (!queryName) {
+      reply.code(400).send({
+        error: 'Bad Request',
+        message: 'Invalid query name.',
+        statusCode: 400
+      });
+      return;
+    }
     const query = req.query;
     const res = await app.queryRunner.query<any>(queryName, query);
 
