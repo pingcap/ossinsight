@@ -90,10 +90,10 @@ export class TiDBQueryExecutor implements QueryExecutor {
 
       return [
         rows,
-        fields.map((field) => {
+        fields.map((field: any) => {
           return {
             name: field.name,
-            columnType: field.type
+            columnType: field.columnType
           }
         })
       ];
