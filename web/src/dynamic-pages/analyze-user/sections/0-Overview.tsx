@@ -326,7 +326,9 @@ const DotText = ({ color, label, percent }: { color: string, label: string, perc
       <Box component="span" display="block" bgcolor={color} width={6} height={6} borderRadius={3} mr={1} />
       <Typography component="span" variant="body2" color="#F9F9F9" fontWeight='bold'>{label}</Typography>
       &nbsp;
-      <Typography component="span" variant="body2" color="#C4C4C4">{(percent * 100).toPrecision(2)}%</Typography>
+      <Typography component="span" variant="body2" color="#C4C4C4">
+        {percent === 1 ? '100' : (percent * 100).toPrecision(2)}%
+      </Typography>
     </Stack>
   );
 };
