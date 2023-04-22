@@ -9,3 +9,4 @@ items:
   - kestra-io/kestra
   - temporalio/temporal
   - PowerJob/PowerJob
+  - PrefectHQ/prefect
