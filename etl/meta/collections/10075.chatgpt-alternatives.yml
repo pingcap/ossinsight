@@ -18,3 +18,4 @@ items:
   - Lightning-AI/lit-llama
   - hpcaitech/ColossalAI
   - rustformers/llama-rs
+  - lm-sys/FastChat
