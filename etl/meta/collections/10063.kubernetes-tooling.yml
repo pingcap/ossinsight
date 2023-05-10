@@ -28,3 +28,4 @@ items:
   - kubeshark/kubeshark
   - robusta-dev/kubernetes-chatgpt-bot
   - robusta-dev/krr
+  - gimlet-io/gimlet
