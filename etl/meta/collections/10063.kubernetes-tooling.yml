@@ -30,3 +30,4 @@ items:
   - robusta-dev/krr
   - kubernetes-sigs/kwok
   - gimlet-io/gimlet
+  - berops/claudie
