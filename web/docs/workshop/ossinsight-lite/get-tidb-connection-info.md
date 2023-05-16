@@ -1,6 +1,6 @@
 ---
 title: 'Step 1: Get TiDB connection info'
-sidebar_position: 1
+sidebar_position: 2
 ---
 
 1. Register for a TiDB Cloud account at https://tidbcloud.com/signup.

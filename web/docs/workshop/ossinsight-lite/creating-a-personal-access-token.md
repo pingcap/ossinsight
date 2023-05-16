@@ -1,6 +1,6 @@
 ---
 title: 'Step 2: Creating a personal access token'
-sidebar_position: 2
+sidebar_position: 3
 ---
 
 1. Sign in to your GitHub account and navigate to Settings -> Developer settings.

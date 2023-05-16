@@ -1,6 +1,6 @@
 ---
 title: 'Step 3: Setting GitHub Action'
-sidebar_position: 3
+sidebar_position: 4
 ---
 
 1. Fork the repo-track-pipeline repository to your GitHub account.
