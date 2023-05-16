@@ -12,7 +12,6 @@ export default function Home () {
       <SummarySection />
       <TopListV2Section />
       <CollectionsSection />
-      <WorkshopSection />
     </CustomPage>
   );
 }
