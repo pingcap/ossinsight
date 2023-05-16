@@ -25,7 +25,7 @@ Live Demo: http://ossinsight-lite.vercel.app/
 
 It will take about 1 hour to build your own dashboard.
 
-- [Step 1: Get TiDB connection info](/docs/workshop/repo-track/step-by-step/get-tidb-connection-info) (10 min)
-- [Step 2: Creating a personal access token](/docs/workshop/repo-track/step-by-step/creating-a-personal-access-token) (5 min)
-- [Step 3: Setting GitHub Action](/docs/workshop/repo-track/step-by-step/setting-github-action) (20 min)
-- [Step 4: Get Insights with SQL](/docs/workshop/repo-track/step-by-step/get-insights-with-sql) (10 min)
+- [Step 1: Get TiDB connection info](/docs/workshop/ossinsight-lite/get-tidb-connection-info) (10 min)
+- [Step 2: Creating a personal access token](/docs/workshop/ossinsight-lite/creating-a-personal-access-token) (5 min)
+- [Step 3: Setting GitHub Action](/docs/workshop/ossinsight-lite/setting-github-action) (20 min)
+- [Step 4: Get Insights with SQL](/docs/workshop/ossinsight-lite/get-insights-with-sql) (10 min)
