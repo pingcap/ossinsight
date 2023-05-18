@@ -28,4 +28,6 @@ It will take about 1 hour to build your own dashboard.
 - [Step 1: Setup TiDB Serverless](/docs/workshop/ossinsight-lite/setup-tidb-serverless) (10 min)
 - [Step 2: Setup GitHub Action](/docs/workshop/ossinsight-lite/setup-github-action) (5 min)
 - [Step 3: Setting Dashboard with Vercel](/docs/workshop/ossinsight-lite/setup-vercel) (20 min)
-- [Step 4: Advanced Features - Optional](/docs/workshop/ossinsight-lite/advanced-features) (10 min)
+- [Advanced Features - Optional](/docs/workshop/ossinsight-lite/advanced-features) (10 min)
+  - Private Repos
+  - Embed widget to README.md
