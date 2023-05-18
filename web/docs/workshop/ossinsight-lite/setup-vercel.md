@@ -1,5 +1,5 @@
 ---
-title: 'Step 4: Setup Dashboard with Vercel'
+title: 'Step 3: Setup Dashboard with Vercel'
 sidebar_position: 4
 ---
 

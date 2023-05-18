@@ -1,5 +1,5 @@
 ---
-title: 'Step 3: Setup GitHub Action'
+title: 'Step 2: Setup GitHub Action'
 sidebar_position: 3
 ---
 
