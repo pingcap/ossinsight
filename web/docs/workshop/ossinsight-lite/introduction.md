@@ -25,7 +25,7 @@ Live Demo: http://ossinsight-lite.vercel.app/
 
 It will take about 1 hour to build your own dashboard.
 
-- [Step 1: Get TiDB connection info](/docs/workshop/ossinsight-lite/get-tidb-connection-info) (10 min)
-- [Step 2: Creating a personal access token](/docs/workshop/ossinsight-lite/creating-a-personal-access-token) (5 min)
-- [Step 3: Setting GitHub Action](/docs/workshop/ossinsight-lite/setting-github-action) (20 min)
-- [Step 4: Get Insights with SQL](/docs/workshop/ossinsight-lite/get-insights-with-sql) (10 min)
+- [Step 1: Setup TiDB Serverless](/docs/workshop/ossinsight-lite/setup-tidb-serverless) (10 min)
+- [Step 2: Setup GitHub Action](/docs/workshop/ossinsight-lite/setup-github-action) (5 min)
+- [Step 3: Setting Dashboard with Vercel](/docs/workshop/ossinsight-lite/setup-vercel) (20 min)
+- [Step 4: Advanced Features - Optional](/docs/workshop/ossinsight-lite/advanced-features) (10 min)
