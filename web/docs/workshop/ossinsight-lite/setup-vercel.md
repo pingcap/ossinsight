@@ -1,6 +1,6 @@
 ---
-title: 'Step 4: Get Insights with SQL'
-sidebar_position: 5
+title: 'Step 4: Setup Dashboard with Vercel'
+sidebar_position: 4
 ---
 
 1. With the data synced to TiDB Cloud, use your preferred SQL client to connect to the TiDB database using the connection information provided in Step 2.

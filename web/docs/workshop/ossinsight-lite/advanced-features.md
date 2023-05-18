@@ -1,7 +1,9 @@
 ---
-title: 'Step 2: Creating a personal access token'
-sidebar_position: 3
+title: 'Advanced Features'
+sidebar_position: 5
 ---
+
+## Private Repos
 
 1. Sign in to your GitHub account and navigate to Settings -> Developer settings.
 ![](/img/workshop/personal-access-token.png)
