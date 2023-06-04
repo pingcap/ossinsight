@@ -69,7 +69,7 @@ WITH stars AS (
         -- Filter rule: The repository must have at least 5 forks.
         AND forks > 5
         -- Filter rule: The repository must have pushed new code within the last three months.
-        AND pushed_at > DATE_SUB(NOW(), INTERVAL 6 MONTH)
+        AND pushed_at > DATE_SUB(NOW(), INTERVAL 3 MONTH)
         -- Filter rule: Exclude some malicious new repositories.
         AND created_at < DATE_SUB(NOW(), INTERVAL 1 DAY)
         -- Filter rule: There should be no uncivilized words in the name of the repository.
