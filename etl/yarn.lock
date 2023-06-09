@@ -2748,11 +2748,9 @@ events@^3.0.0:
   integrity sha1-Mala0Kkk4tLEGagTrrLE6HjqdAA=
 
 eventsource@^1.0.7:
-  version "1.1.0"
-  resolved "https://registry.nlark.com/eventsource/download/eventsource-1.1.0.tgz#00e8ca7c92109e94b0ddf32dac677d841028cfaf"
-  integrity sha1-AOjKfJIQnpSw3fMtrGd9hBAoz68=
-  dependencies:
-    original "^1.0.0"
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/eventsource/-/eventsource-1.1.2.tgz#bc75ae1c60209e7cb1541231980460343eaea7c2"
+  integrity sha512-xAH3zWhgO2/3KIniEKYPr8plNSzlGINOUqYj0m0u7AB81iRw8b/3E73W6AuU+6klLbaSFmZnaETQ2lXPfAydrA==
 
 evp_bytestokey@^1.0.0, evp_bytestokey@^1.0.3:
   version "1.0.3"
@@ -4590,13 +4588,6 @@ optimize-css-assets-webpack-plugin@^5.0.8:
   dependencies:
     cssnano "^4.1.10"
     last-call-webpack-plugin "^3.0.0"
-
-original@^1.0.0:
-  version "1.0.2"
-  resolved "https://registry.npm.taobao.org/original/download/original-1.0.2.tgz#e442a61cffe1c5fd20a65f3261c26663b303f25f"
-  integrity sha1-5EKmHP/hxf0gpl8yYcJmY7MD8l8=
-  dependencies:
-    url-parse "^1.4.3"
 
 os-browserify@^0.3.0:
   version "0.3.0"
@@ -6760,7 +6751,7 @@ urix@^0.1.0:
   resolved "https://registry.npmmirror.com/urix/download/urix-0.1.0.tgz#da937f7a62e21fec1fd18d49b35c2935067a6c72"
   integrity sha1-2pN/emLiH+wf0Y1Js1wpNQZ6bHI=
 
-url-parse@^1.4.3, url-parse@^1.5.3:
+url-parse@^1.5.3:
   version "1.5.3"
   resolved "https://registry.nlark.com/url-parse/download/url-parse-1.5.3.tgz?cache=0&sync_timestamp=1627251248997&other_urls=https%3A%2F%2Fregistry.nlark.com%2Furl-parse%2Fdownload%2Furl-parse-1.5.3.tgz#71c1303d38fb6639ade183c2992c8cc0686df862"
   integrity sha1-ccEwPTj7Zjmt4YPCmSyMwGht+GI=
