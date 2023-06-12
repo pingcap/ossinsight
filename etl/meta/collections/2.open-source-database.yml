@@ -38,3 +38,4 @@ items:
   - milvus-io/milvus
   - CUBRID/cubrid
   - GreptimeTeam/greptimedb
+  - surrealdb/surrealdb
