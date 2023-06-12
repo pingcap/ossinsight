@@ -1,5 +1,6 @@
 import fp from "fastify-plugin";
 import {Job, Queue} from "bullmq";
+import {withConnection, withTransaction} from "../../../utils/db";
 import {
     APIError, BotResponseGenerateError,
     BotResponseParseError,
@@ -50,7 +51,6 @@ import {MySQLPromisePool} from "@fastify/mysql";
 import async from "async";
 import {GenerateSummaryPromptTemplate} from "../bot-service/template/GenerateSummaryPromptTemplate";
 import sleep from "../../../utils/sleep";
-import {withConnection, withTransaction} from '../../../utils/connection';
 import {pino} from "pino";
 import BaseLogger = pino.BaseLogger;
 
@@ -81,7 +81,7 @@ export default fp(async (app: any) => {
     name: '@ossinsight/explorer-service',
     dependencies: [
         '@fastify/env',
-        'fastify-redis',
+        '@ossinsight/redis',
         '@ossinsight/bot-service',
         '@ossinsight/explorer-high-concurrent-queue',
         '@ossinsight/explorer-low-concurrent-queue'
@@ -800,7 +800,7 @@ export class ExplorerService {
         const { id: questionId, querySQL } = question;
         try {
             const questionResult = await this.executeQuery(questionId, querySQL!);
-            if (this.playgroundQueryExecutor.shadowConnections) {
+            if (this.playgroundQueryExecutor.shadowPool) {
                 this.executeQuery(questionId, querySQL!, true).catch(err => {
                     this.logger.error(err, `Failed to execute shadow query for question ${questionId}.`)
                 }).then(() => {

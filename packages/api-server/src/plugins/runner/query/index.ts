@@ -10,12 +10,12 @@ export default fp(async (app: any) => {
     const queryParser = new QueryParser();
     app.decorate('queryRunner', new QueryRunner(queryLoader, queryParser, app.cacheBuilder, app.tidbQueryExecutor));
 }, {
-    name: 'query-runner',
+    name: '@ossinsight/query-runner',
     dependencies: [
         '@fastify/env',
-        'tidb-query-executor',
-        'cache-builder',
-        'collection-service'
+        '@ossinsight/tidb-query-executor',
+        '@ossinsight/cache-builder',
+        '@ossinsight/collection-service'
     ],
 });
 

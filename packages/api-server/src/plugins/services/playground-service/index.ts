@@ -13,8 +13,8 @@ export default fp(async (app) => {
   name: '@ossinsight/playground-service',
   dependencies: [
     '@fastify/env',
-    '@fastify/mysql',
-    'fastify-redis',
+    '@ossinsight/tidb',
+    '@ossinsight/redis',
   ]
 });
 

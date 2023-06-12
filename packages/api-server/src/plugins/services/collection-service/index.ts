@@ -18,10 +18,10 @@ export default fp(async (fastify) => {
     const log = fastify.log.child({ service: 'collection-service'}) as pino.Logger;
     fastify.decorate('collectionService', new CollectionService(log, fastify.tidbQueryExecutor, fastify.cacheBuilder));
 }, {
-  name: 'collection-service',
+  name: '@ossinsight/collection-service',
   dependencies: [
-    'tidb-query-executor',
-    'cache-builder'
+    '@ossinsight/tidb-query-executor',
+    '@ossinsight/cache-builder'
   ]
 });
 

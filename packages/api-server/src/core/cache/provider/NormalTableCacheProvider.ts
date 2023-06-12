@@ -1,7 +1,7 @@
 import { CacheOption, CacheProvider } from "./CacheProvider";
 import { OkPacket, ResultSetHeader, RowDataPacket } from "mysql2";
 
-import {Connection} from "mysql2/promise";
+import {Pool} from "mysql2/promise";
 import pino from "pino";
 
 // Table schema:
@@ -20,8 +20,8 @@ export default class NormalTableCacheProvider implements CacheProvider {
     private readonly logger = pino().child({ component: 'cache-provider' })
 
     constructor(
-      private readonly conn: Connection,
-      private readonly shadowConn?: Connection,
+      private readonly pool: Pool,
+      private readonly shadowPool?: Pool,
       private readonly tableName: string = 'cache'
     ) {
 
@@ -35,7 +35,7 @@ export default class NormalTableCacheProvider implements CacheProvider {
         VALUES (?, ?, ?)
         ON DUPLICATE KEY UPDATE cache_value = VALUES(cache_value), expires = VALUES(expires);`;
 
-        return this.conn.query<T>(sql, [key, value, EX]);
+        return this.pool.query<T>(sql, [key, value, EX]);
     }
 
     async get(key: string): Promise<any> {
@@ -48,24 +48,18 @@ export default class NormalTableCacheProvider implements CacheProvider {
             )
         LIMIT 1;`;
 
-        if (this.shadowConn) {
-            this.shadowConn.query<any[]>(sql, [key]).then(null).catch((err) => {
+        if (this.shadowPool) {
+            this.shadowPool.query<any[]>(sql, [key]).then(null).catch((err) => {
                 this.logger.error(err, 'Failed to get cache with key %s to shadow database.', key);
             });
         }
 
-        return new Promise(async (resolve, reject) => {
-            try {
-                const [rows] = await this.conn.query<any[]>(sql, [key]);
-                if (Array.isArray(rows) && rows.length >= 1) {
-                    resolve(rows[0]?.cache_value);
-                } else {
-                    resolve(null);
-                }
-            } catch (err) {
-                reject(err);
-            }
-        });
+        const [rows] = await this.pool.query<any[]>(sql, [key]);
+        if (Array.isArray(rows) && rows.length >= 1) {
+            return rows[0]?.cache_value;
+        } else {
+            return null;
+        }
     }
 
 }

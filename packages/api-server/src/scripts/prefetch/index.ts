@@ -1,3 +1,4 @@
+import {createPool, Pool} from "mysql2/promise";
 import schedule from 'node-schedule';
 import cronParser from 'cron-parser';
 import {Params, QuerySchema} from "../../types/query.schema";
@@ -6,7 +7,6 @@ import envSchema from "env-schema";
 import {APIServerEnvSchema} from "../../env";
 import {TiDBQueryExecutor} from "../../core/executor/query-executor/TiDBQueryExecutor";
 import {AppConfig} from "../../app";
-import {ConnectionWrapper} from "../../core/db/connection-wrapper";
 import CacheBuilder from "../../core/cache/CacheBuilder";
 import {DEFAULT_QUEUE_NAME, JobScheduler, QueryJob} from "./JobScheduler";
 import {QueryLoader} from "../../core/runner/query/QueryLoader";
@@ -21,7 +21,11 @@ const config: AppConfig = envSchema({
 });
 
 // Init logger.
-const logger = pino().child({ component: 'prefetch' });
+const logger = pino({
+  transport: {
+    target: 'pino-pretty',
+  }
+}).child({ module: 'prefetch' });
 
 // Generate a prefetch query job with passed parameters according to the query definition.
 function getQueryJobs(queryParer: QueryParser, queryName: string, queryDef: QuerySchema, presets: Record<string, string[]>, onlyParams: Record<string, any>): QueryJob[] {
@@ -91,27 +95,24 @@ function getParamCombines(params: Params[], presets: Record<string, string[]>, o
 }
 
 async function main () {
-  // Init mysql client.
-  const poolOptions = {
+  // Init tidb connection pool.
+  const pool = await createPool({
     uri: config.DATABASE_URL
-  };
-  const conn = await ConnectionWrapper.new(poolOptions);
-  await conn.query('SELECT 1');
+  })
 
-  const shadowPoolOptions = config.SHADOW_DATABASE_URL ? {
-    uri: config.SHADOW_DATABASE_URL
-  } : null;
-  let shadowConn: ConnectionWrapper | undefined;
-  if (shadowPoolOptions) {
-    shadowConn = await ConnectionWrapper.new(shadowPoolOptions);
-    await shadowConn.query('SELECT 1');
+  // Init shadow tidb connection pool.
+  let shadowPool: Pool | undefined;
+  if (config.SHADOW_DATABASE_URL) {
+    shadowPool = await createPool({
+      uri: config.SHADOW_DATABASE_URL
+    });
   }
 
   // Init query executor.
-  const tidbQueryExecutor = new TiDBQueryExecutor(poolOptions, shadowPoolOptions, true);
+  const tidbQueryExecutor = new TiDBQueryExecutor(pool, shadowPool, logger, true);
 
   // Init Cache Builder.
-  const cacheBuilder = new CacheBuilder(logger, config.ENABLE_CACHE, conn, shadowConn);
+  const cacheBuilder = new CacheBuilder(logger, config.ENABLE_CACHE, pool, shadowPool);
 
   // Init collection service.
   const collectionService = new CollectionService(logger, tidbQueryExecutor, cacheBuilder);

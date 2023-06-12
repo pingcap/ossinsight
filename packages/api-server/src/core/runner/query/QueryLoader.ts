@@ -15,11 +15,11 @@ export class QueryLoader {
 
     private readonly basePath: string;
 
-    constructor(private readonly log: pino.Logger, queryConfigsPath?: string) {
+    constructor(private readonly pLogger: pino.Logger, queryConfigsPath?: string) {
         if (!queryConfigsPath) {
             queryConfigsPath = join(__dirname, '..', '..', '..', '..', '..', '..', 'configs', 'queries');
         }
-        this.log.info('Loading queries from %s.', queryConfigsPath);
+        this.pLogger.info('Loading queries from %s.', queryConfigsPath);
         this.basePath = queryConfigsPath;
     }
 

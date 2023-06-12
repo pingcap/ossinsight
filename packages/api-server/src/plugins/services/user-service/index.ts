@@ -61,15 +61,15 @@ export enum ProviderType {
 }
 
 export default fp(
-  async (fastify) => {
-    fastify.decorate(
+  async (app) => {
+    app.decorate(
       "userService",
-      new UserService(fastify.config, fastify.log, fastify.mysql)
+      new UserService(app.config, app.log, app.mysql)
     );
   },
   {
-    name: "user-service",
-    dependencies: ["@fastify/mysql"],
+    name: "@ossinsight/user-service",
+    dependencies: ["@ossinsight/tidb"],
   }
 );
 

@@ -1,22 +1,18 @@
 import { Conn, Fields, QueryExecutor, Rows, Values } from "./QueryExecutor";
-import { Connection, Pool, PoolConnection, PoolOptions, QueryOptions } from "mysql2/promise";
+import { Connection, Pool, PoolConnection, QueryOptions } from "mysql2/promise";
 import {shadowTidbQueryCounter, shadowTidbQueryTimer, tidbQueryCounter, tidbQueryTimer, waitShadowTidbConnectionTimer, waitTidbConnectionTimer} from "../../../plugins/metrics";
-import {getPool} from "../../db/new";
 import { Counter, Summary } from "prom-client";
 import pino from "pino";
 
 export class TiDBQueryExecutor implements QueryExecutor {
-  protected connections: Pool;
-  public shadowConnections?: Pool | null;
-  protected logger = pino().child({ component: 'tidb-query-executor' });
+  protected readonly logger: pino.Logger = this.pLogger.child({ module: 'tidb-query-executor' });
 
   constructor(
-    options: PoolOptions,
-    shadowOptions?: PoolOptions | null,
+    readonly pool: Pool,
+    readonly shadowPool?: Pool | null,
+    readonly pLogger: pino.Logger = pino(),
     readonly enableMetrics: boolean = true,
   ) {
-    this.connections = getPool(options)
-    this.shadowConnections = shadowOptions ? getPool(shadowOptions) : null;
   }
 
   async execute<T extends Rows>(queryKey: string, sql: string): Promise<[T, Fields]>;
@@ -48,10 +44,11 @@ export class TiDBQueryExecutor implements QueryExecutor {
   }
 
   async executeWithConnShadow(queryKey: string, sqlOrOptions: string | QueryOptions, values?: Values) {
-    if (!this.shadowConnections) {
+    if (!this.shadowPool) {
       return;
     }
-    const conn = await this.getConnectionInternal(this.shadowConnections, waitShadowTidbConnectionTimer);
+
+    const conn = await this.getConnectionInternal(this.shadowPool, waitShadowTidbConnectionTimer);
     try {
       await this.executeWithConnInternal(shadowTidbQueryTimer, shadowTidbQueryCounter, conn, queryKey, sqlOrOptions, values);
     } finally {
@@ -124,18 +121,14 @@ export class TiDBQueryExecutor implements QueryExecutor {
   }
 
   async getConnection(): Promise<PoolConnection> {
-    return this.getConnectionInternal(this.connections, waitTidbConnectionTimer);
+    return this.getConnectionInternal(this.pool, waitTidbConnectionTimer);
   }
 
   async getShadowConnection(): Promise<PoolConnection> {
-    if (!this.shadowConnections) {
+    if (!this.shadowPool) {
       throw new Error('No shadow connections provided.');
     }
-    return this.getConnectionInternal(this.shadowConnections, waitShadowTidbConnectionTimer);
-  }
-
-  async destroy () {
-    await this.connections.end()
+    return this.getConnectionInternal(this.shadowPool, waitShadowTidbConnectionTimer);
   }
 
 }

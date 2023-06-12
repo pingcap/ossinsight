@@ -13,9 +13,9 @@ declare module 'fastify' {
 export default fp(async (app) => {
     app.decorate('repoService', new RepoService(app.mysql));
 }, {
-    name: 'repo-service',
+    name: '@ossinsight/repo-service',
     dependencies: [
-        '@fastify/mysql'
+        '@ossinsight/tidb'
     ]
 });
 

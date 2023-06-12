@@ -16,7 +16,7 @@ export default fp(async (fastify) => {
     const promptTemplateDir = fastify.config.CONFIGS_PATH + "/prompts";
     fastify.decorate('promptTemplateManager', new PromptTemplateManager(log, promptTemplateDir, fastify.embeddingContextProvider));
 }, {
-    name: 'prompt-template-manager',
+    name: '@ossinsight/prompt-template-manager',
     dependencies: [
         '@fastify/env',
         '@ossinsight/embedding-context-provider',
