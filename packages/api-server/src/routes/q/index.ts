@@ -1,15 +1,17 @@
-import {FastifyPluginAsyncJsonSchemaToTs} from "@fastify/type-provider-json-schema-to-ts/index";
+import {FastifyPluginAsync} from "fastify";
 
 const schema = {
   querystring: {
     type: 'object',
     properties: {},
     additionalProperties: true
-  }
-} as const;
+  } as const
+};
 
-const queryHandler: FastifyPluginAsyncJsonSchemaToTs = async (app, opts): Promise<void> => {
-  app.get('/*', { schema }, async function (req, reply) {
+const queryHandler: FastifyPluginAsync = async (app, opts): Promise<void> => {
+  app.get<{
+    Querystring: Record<string, any>
+  }>('/*', { schema }, async function (req, reply) {
     const url = new URL(req.url, 'http://localhost');
     const queryName = url.pathname?.replace('/q/', '');
     if (!queryName) {
@@ -20,8 +22,7 @@ const queryHandler: FastifyPluginAsyncJsonSchemaToTs = async (app, opts): Promis
       });
       return;
     }
-    const query = req.query;
-    const res = await app.queryRunner.query<any>(queryName, query);
+    const res = await app.queryRunner.query<any>(queryName, req.query);
 
     const { sql, requestedAt, refresh } = res;
     app.statsService.addQueryStatsRecord(queryName, sql, requestedAt, refresh).catch((err) => {

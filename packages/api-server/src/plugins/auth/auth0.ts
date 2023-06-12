@@ -46,7 +46,7 @@ export default fp(async (app) => {
         secret: app.config.AUTH0_SECRET,
     });
 }, {
-    name: 'auth0',
+    name: '@ossinsight/auth0',
     dependencies: [
         '@fastify/env'
     ],

@@ -1,5 +1,4 @@
-import { GenericContainer, StartedTestContainer } from 'testcontainers';
-import { AbstractStartedContainer } from 'testcontainers/dist/modules/abstract-started-container';
+import {AbstractStartedContainer, GenericContainer, StartedTestContainer} from 'testcontainers'
 
 const DEFAULT_IMAGE_NAME = 'redis:6.2.6';
 

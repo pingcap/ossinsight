@@ -10,7 +10,7 @@ export default fp(async (app) => {
         name: process.env.NODE_APP_INSTANCE!,
     });
 }, {
-    name: 'metrics',
+    name: '@ossinsight/metrics',
     dependencies: [
         '@fastify/env'
     ],

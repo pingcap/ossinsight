@@ -1,13 +1,11 @@
 import AutoLoad, { AutoloadPluginOptions } from '@fastify/autoload';
 import { FastifyPluginAsync, RawServerDefault } from 'fastify';
-import { MySQLPromisePool } from '@fastify/mysql';
-
 import { APIServerEnvSchema } from './env';
 import { JsonSchemaToTsProvider } from '@fastify/type-provider-json-schema-to-ts';
 import fastifyEnv from '@fastify/env';
 import { join } from 'path';
+import {isProdDatabaseURL} from "./utils/db";
 import {APIError} from "./utils/error";
-import fastifyEtag from '@fastify/etag';
 
 export type AppOptions = {
   // Place your custom options for app below here.
@@ -55,8 +53,6 @@ export interface AppConfig {
 declare module 'fastify' {
   interface FastifyInstance {
     config: AppConfig;
-    mysql: MySQLPromisePool;
-    shadowMySQL?: MySQLPromisePool;
   }
 }
 
@@ -72,10 +68,17 @@ const app: FastifyPluginAsync<AppOptions, RawServerDefault, JsonSchemaToTsProvid
     schema: APIServerEnvSchema
   });
 
-  // Load Etag.
-  fastify.register(fastifyEtag);
+  // Avoid using prod database in test env.
+  if (process.env.NODE_ENV === 'test' && (
+    isProdDatabaseURL(fastify.config.DATABASE_URL) ||
+    isProdDatabaseURL(fastify.config.SHADOW_DATABASE_URL) ||
+    isProdDatabaseURL(fastify.config.PLAYGROUND_DATABASE_URL) ||
+    isProdDatabaseURL(fastify.config.PLAYGROUND_SHADOW_DATABASE_URL)
+  )) {
+    throw new Error('DO NOT use production database in test env.');
+  }
 
-  // Error handler.
+  // Init error handler.
   fastify.setErrorHandler(function (error: Error, request, reply) {
     this.log.error(error);
 
@@ -91,14 +94,13 @@ const app: FastifyPluginAsync<AppOptions, RawServerDefault, JsonSchemaToTsProvid
     }
   });
 
-  // This loads all plugins defined in plugins.
+  // Loads all plugins defined in ./plugins directory.
   void fastify.register(AutoLoad, {
     dir: join(__dirname, 'plugins'),
     options: opts
-  })
+  });
 
-  // This loads all plugins defined in routes
-  // define your routes in one of these.
+  // Loads all routes defined in ./routes directory.
   await fastify.register(AutoLoad, {
     dir: join(__dirname, 'routes'),
     routeParams: true,
@@ -106,6 +108,7 @@ const app: FastifyPluginAsync<AppOptions, RawServerDefault, JsonSchemaToTsProvid
   });
 
   // Expose Swagger JSON.
+  // Notice: Swagger docs SHOULD be initialized after all routes are registered.
   fastify.get('/docs/json', (req, reply) => {
     reply.send(fastify.swagger());
   })
@@ -113,4 +116,3 @@ const app: FastifyPluginAsync<AppOptions, RawServerDefault, JsonSchemaToTsProvid
 
 export default app;
 export { app, options };
-

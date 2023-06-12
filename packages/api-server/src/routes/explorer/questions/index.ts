@@ -1,6 +1,6 @@
 import {FastifyPluginAsyncJsonSchemaToTs} from "@fastify/type-provider-json-schema-to-ts";
 import { Auth0User, parseAuth0User } from "../../../plugins/auth/auth0";
-import {withConnection} from "../../../utils/connection";
+import {withConnection} from "../../../utils/db";
 
 const schema = {
   summary: 'Answer new a question',
