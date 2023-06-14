@@ -3,21 +3,15 @@ import {
     getPlaygroundSessionLimits, ExplorerService
 } from "@ossinsight/api-server";
 import fp from "fastify-plugin";
-import {ConnectionOptions} from "mysql2";
+import {Pool} from "mysql2/promise";
+import pino from "pino";
+import Logger = pino.Logger;
 
 export default fp(async (app) => {
-    const dbOptions = {
-        uri: app.config.PLAYGROUND_DATABASE_URL,
-    };
-
-    let shadowDbOptions: ConnectionOptions | null = null;
-    if (app.config.PLAYGROUND_SHADOW_DATABASE_URL) {
-        shadowDbOptions = {
-            uri: app.config.PLAYGROUND_SHADOW_DATABASE_URL,
-        }
-    }
-
-    const executor = new TiDBPlaygroundQueryExecutor(dbOptions, shadowDbOptions, getPlaygroundSessionLimits());
+    const log = app.log as unknown as Logger;
+    const playgroundPool = app.mysql.playground as unknown as Pool;
+    const playgroundShadowPool = app.mysql.playgroundShadow as unknown as Pool;
+    const executor = new TiDBPlaygroundQueryExecutor(playgroundPool, playgroundShadowPool, log, getPlaygroundSessionLimits());
     app.decorate('explorerService', new ExplorerService(
       app.log.child({service: 'explorer-service'}),
       app.mysql,
