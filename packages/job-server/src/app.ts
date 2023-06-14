@@ -1,5 +1,4 @@
 import AutoLoad, { AutoloadPluginOptions } from '@fastify/autoload';
-import { MySQLPromisePool } from '@fastify/mysql';
 
 import { JobServerEnvSchema } from './env';
 import { FastifyPluginAsync } from 'fastify';
@@ -37,7 +36,6 @@ declare module 'fastify' {
       CALC_REPO_MILESTONES_CRON: string,
       OPENAI_API_KEY: string
     };
-    mysql: MySQLPromisePool;
     emailClient: EmailClient;
     queues: {
       explorer_high_concurrent_queue: Queue<Question, any, string>;
