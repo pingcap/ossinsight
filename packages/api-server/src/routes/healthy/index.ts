@@ -55,11 +55,11 @@ const root: FastifyPluginAsync = async (app, opts): Promise<void> => {
     } else {
       const latency = DateTime.utc().diff(DateTime.fromISO(res.requestedAt), ['minutes']).minutes;
       healthInfo.prefetchLatency = latency;
-      if (latency > 5) {
-        app.log.warn(`📋 Check the latency of prefetch, found it more than 5 minutes (latency = ${latency} minutes).`);
-      } else if (latency > 30) {
+      if (latency > 30) {
         app.log.error(`📋 Check the latency of prefetch, found it more than 30 minutes (latency = ${latency} minutes).`);
         healthy = false;
+      } else if (latency > 5) {
+        app.log.warn(`📋 Check the latency of prefetch, found it more than 5 minutes (latency = ${latency} minutes).`);
       }
     }
 
