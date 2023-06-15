@@ -3,7 +3,9 @@ import {DateTime} from "luxon";
 export enum AIModel {
   TEXT_DAVINCI_002 = 'text-davinci-002',
   TEXT_DAVINCI_003 = 'text-davinci-003',
+  GPT_3_5_TURBO = 'gpt-3.5-turbo',
   GPT_3_5_TURBO_0301 = 'gpt-3.5-turbo-0301',
+  GPT_3_5_TURBO_0613 = 'gpt-3.5-turbo-0613',
   GPT_4 = 'gpt-4',
   TEXT_CURIE_001 = 'text-curie-001',
   TEXT_BABBAGE_001 = 'text-babbage-001',
