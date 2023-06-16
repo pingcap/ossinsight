@@ -26,7 +26,7 @@ export const newQuestionHandler: FastifyPluginAsyncJsonSchemaToTs = async (app):
     preValidation: app.authenticate
   }, async function (req, reply) {
     const { question: questionTitle, ignoreCache } = req.body;
-    const userId = await app.userService.getUserIdOrCreate(app, req);
+    const userId = await app.userService.getUserIdOrCreate(req);
     const question = await app.explorerService.newQuestion(userId, questionTitle, ignoreCache);
 
     if (!question) {

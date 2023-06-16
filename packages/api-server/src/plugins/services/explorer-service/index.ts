@@ -1382,8 +1382,8 @@ export class ExplorerService {
           `, question.id);
         }, {
           onError: (con, err) => {
-            if (err instanceof ExplorerCancelRecommendQuestionError) {
-              throw err;
+            if (err instanceof APIError) {
+              throw new ExplorerCancelRecommendQuestionError(err.statusCode, err.message, err.cause);
             } else {
               const message = `Failed to cancel recommended question.`;
               this.logger.error({questionId, err}, message);

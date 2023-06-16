@@ -88,7 +88,7 @@ const root: FastifyPluginAsync = async (app) => {
     preValidation: app.authenticate
   },async (req, reply) => {
     const { questionId } = req.params;
-    const userId = await app.userService.getUserIdOrCreate(app, req);
+    const userId = await app.userService.getUserIdOrCreate(req);
 
     const feedbacks = await app.explorerService.getUserQuestionFeedbacks(userId, questionId);
     reply.status(200).send(feedbacks);
@@ -104,7 +104,7 @@ const root: FastifyPluginAsync = async (app) => {
   },async (req, reply) => {
     const { questionId } = req.params;
     const { satisfied, feedbackContent } = req.body;
-    const userId = await app.userService.getUserIdOrCreate(app, req);
+    const userId = await app.userService.getUserIdOrCreate(req);
 
     // Add or replace feedback.
     await withTransaction(app.mysql, async (conn) => {
@@ -133,7 +133,7 @@ const root: FastifyPluginAsync = async (app) => {
   },async (req, reply) => {
     const { questionId } = req.params;
     const { satisfied } = req.query;
-    const userId = await app.userService.getUserIdOrCreate(app, req);
+    const userId = await app.userService.getUserIdOrCreate(req);
 
     try {
       await app.explorerService.cancelUserQuestionFeedback(userId, questionId, satisfied);

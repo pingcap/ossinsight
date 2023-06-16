@@ -1,9 +1,7 @@
 import {
   FastifyBaseLogger,
   FastifyInstance,
-  FastifyRequest, FastifyTypeProviderDefault, RawReplyDefaultExpression,
-  RawRequestDefaultExpression,
-  RawServerDefault
+  FastifyRequest
 } from "fastify";
 import { MySQLPromisePool } from "@fastify/mysql";
 import { ResultSetHeader } from "mysql2";
@@ -136,12 +134,9 @@ export class UserService {
     return user;
   }
 
-  async getUserIdOrCreate(
-    app: FastifyInstance<RawServerDefault, RawRequestDefaultExpression, RawReplyDefaultExpression, FastifyBaseLogger, FastifyTypeProviderDefault>,
-    req: FastifyRequest<any>
-  ): Promise<number> {
+  async getUserIdOrCreate(req: FastifyRequest<any>): Promise<number> {
     const { sub, metadata } = parseAuth0User(req.user as Auth0User);
-    return await app.userService.findOrCreateUserByAccount(
+    return await this.findOrCreateUserByAccount(
       { ...metadata, sub },
       req.headers.authorization,
     );

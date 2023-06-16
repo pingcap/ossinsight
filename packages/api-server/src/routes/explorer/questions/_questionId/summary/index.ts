@@ -27,8 +27,8 @@ const root: FastifyPluginAsync = async (app) => {
   },async (req, reply) => {
     const { questionId } = req.params;
 
-    // Only trusted users can recommend questions.
-    const userId = await app.userService.getUserIdOrCreate(app, req);
+    // Only trusted users can generate summary manually.
+    const userId = await app.userService.getUserIdOrCreate(req);
     await app.explorerService.checkIfTrustedUsersOrError(userId);
 
     const summary = await app.explorerService.generateAnswerSummaryByQuestionId(questionId);

@@ -9,7 +9,7 @@ const root: FastifyPluginAsyncJsonSchemaToTs = async (app): Promise<void> => {
     preValidation: app.authenticate
   }, async function (req, reply) {
     const { playgroundService } = app;
-    const userId = await app.userService.getUserIdOrCreate(app, req);
+    const userId = await app.userService.getUserIdOrCreate(req);
 
     // Get the limit and used.
     const used = await playgroundService.countTodayQuestionRequests(userId, false);

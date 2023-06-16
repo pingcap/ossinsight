@@ -30,7 +30,7 @@ const schema = {
   }
 } as const;
 
-const root: FastifyPluginAsyncJsonSchemaToTs = async (app, opts): Promise<void> => {
+const root: FastifyPluginAsyncJsonSchemaToTs = async (app): Promise<void> => {
   app.post<{
     Body: IBody;
   }>('/', {
@@ -40,7 +40,7 @@ const root: FastifyPluginAsyncJsonSchemaToTs = async (app, opts): Promise<void> 
     const { playgroundService, botService } = app;
     const { question } = req.body;
     const { metadata } = parseAuth0User(req.user as Auth0User);
-    const userId = await app.userService.getUserIdOrCreate(app, req);
+    const userId = await app.userService.getUserIdOrCreate(req);
 
     // Prepare Context.
     const context: {

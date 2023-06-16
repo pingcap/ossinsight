@@ -1,11 +1,10 @@
 import {Question, QuestionFeedbackType} from "../plugins/services/explorer-service/types";
 
 export class APIError extends Error {
-    constructor(readonly statusCode: number, readonly message: string, public error?: Error, public payload?: Record<string, any>) {
-        super();
-        if (error) {
-            this.cause = error;
-        }
+    constructor(readonly statusCode: number, readonly message: string, public cause?: Error, public payload?: Record<string, any>) {
+        super(message, {
+            cause
+        });
     }
 }
 
@@ -108,10 +107,7 @@ export class ExplorerRecommendQuestionError extends APIError {
 }
 
 export class ExplorerCancelRecommendQuestionError extends APIError {
-    constructor(readonly statusCode: number, readonly message: string, error?: Error) {
-        super(statusCode, message, error);
-        if (error) {
-            this.cause = error;
-        }
+    constructor(readonly statusCode: number, readonly message: string, cause?: Error) {
+        super(statusCode, message, cause);
     }
 }
