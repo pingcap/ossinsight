@@ -29,7 +29,7 @@ export interface QuestionRecord {
 
 export class PlaygroundService {
 
-  constructor(readonly mysql: MySQLPromisePool) {
+  constructor(readonly tidb: MySQLPromisePool) {
   }
 
   normalizeQuestion(question: string): string {
@@ -39,7 +39,7 @@ export class PlaygroundService {
   async getExistedQuestion(question: string): Promise<QuestionRecord[]> {
     question = this.normalizeQuestion(question);
     // Notice: sql is a reserved word in TiDB.
-    const [records] = await this.mysql.query<any[]>(`
+    const [records] = await this.tidb.query<any[]>(`
             SELECT id, user_id AS userId, context, question, \`sql\`, success, preset, requested_at AS requestedAt
             FROM playground_question_records pqr
             WHERE success = true AND question = ?
@@ -54,14 +54,14 @@ export class PlaygroundService {
       contextJSON = JSON.stringify(context);
     }
     // Notice: sql is a reserved word in TiDB.
-    await this.mysql.query(`
+    await this.tidb.query(`
       INSERT INTO playground_question_records (user_id, context, question, \`sql\`, success, preset)
       VALUES (?, ?, ?, ?, ?, ?)
     `, [userId, contextJSON, question, sql, success, preset]);
   }
 
   async countTodayQuestionRequests(userId: number, preset: boolean): Promise<number> {
-    const [result] = await this.mysql.query<any[]>(`
+    const [result] = await this.tidb.query<any[]>(`
       SELECT COUNT(*) AS count
       FROM playground_question_records pqr
       WHERE
@@ -76,7 +76,7 @@ export class PlaygroundService {
   // TODO: save the trusted users in playground_trusted_users table.
 
   async checkIfTrustedUser(userId: number): Promise<boolean> {
-    const [rows] = await this.mysql.query<any[]>(`
+    const [rows] = await this.tidb.query<any[]>(`
         SELECT user_id AS userId FROM explorer_trusted_users
         WHERE user_id = ?
     `, [userId]);

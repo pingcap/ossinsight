@@ -84,11 +84,11 @@ export class UserService {
   constructor(
     readonly config: FastifyInstance["config"],
     readonly log: FastifyBaseLogger,
-    readonly mysql: MySQLPromisePool
+    readonly tidb: MySQLPromisePool
   ) {}
 
   async getUserById(userId: number): Promise<UserProfile> {
-    const [users] = await this.mysql.query<any[]>(
+    const [users] = await this.tidb.query<any[]>(
       `
             SELECT
                 su.id, su.name, su.role, su.avatar_url AS avatarURL, su.created_at AS createdAt, su.enable,
@@ -112,7 +112,7 @@ export class UserService {
   }
 
   async getUserByGithubId(githubId: number): Promise<UserProfile> {
-    const [users] = await this.mysql.query<UserProfile[]>(
+    const [users] = await this.tidb.query<UserProfile[]>(
       `
             SELECT
                 su.id, su.name, su.role, su.avatar_url AS avatarURL, su.created_at AS createdAt, su.enable,
@@ -148,7 +148,7 @@ export class UserService {
     const [provider, idString] = user.sub.split("|");
     const githubLogin = user?.github_login || null;
 
-    return await withTransaction(this.mysql, async (conn) => {
+    return await withTransaction(this.tidb, async (conn) => {
       // Check if how many users bound to this account.
       const [existedUserIds] = await conn.query<any[]>(`
         SELECT su.id
@@ -212,7 +212,7 @@ export class UserService {
   }
 
   async getEmailUpdates(userId: number): Promise<UserGetUpdatesSetting> {
-    const [settings] = await this.mysql.query<UserGetUpdatesSetting[]>(
+    const [settings] = await this.tidb.query<UserGetUpdatesSetting[]>(
       `SELECT email_get_updates AS emailGetUpdates FROM sys_users WHERE id = ? LIMIT 1`,
       [userId]
     );
@@ -223,7 +223,7 @@ export class UserService {
   }
 
   async settingEmailUpdates(userId: number, enable: boolean): Promise<boolean> {
-    await this.mysql.query<ResultSetHeader>(
+    await this.tidb.query<ResultSetHeader>(
       `UPDATE sys_users SET email_get_updates = ? WHERE id = ?`,
       [enable, userId]
     );

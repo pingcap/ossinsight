@@ -110,7 +110,7 @@ export class ExplorerService {
 
     constructor(
       private readonly logger: FastifyBaseLogger,
-      private readonly mysql: MySQLPromisePool,
+      private readonly tidb: MySQLPromisePool,
       private readonly botService: BotService,
       private readonly playgroundQueryExecutor: TiDBPlaygroundQueryExecutor,
       private readonly lowConcurrentQueue: Queue,
@@ -180,7 +180,7 @@ export class ExplorerService {
           hitCache: false,
           preceding: 0
         }
-        await withTransaction(this.mysql, async (conn: Connection) => {
+        await withTransaction(this.tidb, async (conn: Connection) => {
           if (!ignoreRateLimit) {
             // Notice: Using FOR UPDATE, pessimistic locking controls a single user to request question serially.
             const previousQuestions = await this.getUserPastHourQuestionsWithLock(conn, userId);
@@ -474,7 +474,7 @@ export class ExplorerService {
     }
 
     async getSQLExecutionPlan(sql: string) {
-        const [rows] = await this.mysql.query<any[]>('explain format = "brief" ' + sql);
+        const [rows] = await this.tidb.query<any[]>('explain format = "brief" ' + sql);
         return rows;
     }
 
@@ -542,7 +542,7 @@ export class ExplorerService {
     }
 
     private async updateQuestionStatus(questionId: string, status: QuestionStatus) {
-        const [rs] = await this.mysql.query<ResultSetHeader>(`
+        const [rs] = await this.tidb.query<ResultSetHeader>(`
             UPDATE explorer_questions SET status = ? WHERE id = UUID_TO_BIN(?)
         `, [status, questionId]);
         if (rs.affectedRows !== 1) {
@@ -551,7 +551,7 @@ export class ExplorerService {
     }
 
     private async markQuestionRunning(questionId: string, executedAt?: DateTime) {
-        const [rs] = await this.mysql.query<ResultSetHeader>(`
+        const [rs] = await this.tidb.query<ResultSetHeader>(`
             UPDATE explorer_questions SET status = ?, executed_at = ? WHERE id = UUID_TO_BIN(?)
         `, [QuestionStatus.Running, executedAt?.toSQL() || null, questionId]);
         if (rs.affectedRows !== 1) {
@@ -575,7 +575,7 @@ export class ExplorerService {
         const executedAtValue = executedAt ? executedAt.toSQL() : null;
         const finishedAtValue = finishedAt ? finishedAt.toSQL() : null;
 
-        await withTransaction(this.mysql, async (conn) => {
+        await withTransaction(this.tidb, async (conn) => {
             const [rs] = await conn.query<ResultSetHeader>(`
                 UPDATE explorer_questions
                 SET
@@ -597,7 +597,7 @@ export class ExplorerService {
 
     private async saveQuestionResult(questionId: string, status: QuestionStatus, questionResult: QuestionQueryResult, hitCache = false) {
         const { result, executedAt, finishedAt, spent } = questionResult;
-        const [rs] = await this.mysql.query<ResultSetHeader>(`
+        const [rs] = await this.tidb.query<ResultSetHeader>(`
             UPDATE explorer_questions
             SET status = ?, result = ?, executed_at = ?, finished_at = ?, spent = ?, hit_cache = ?
             WHERE id = UUID_TO_BIN(?)
@@ -619,7 +619,7 @@ export class ExplorerService {
       questionId: string, errorType: QuestionFeedbackType = QuestionFeedbackType.ErrorUnknown,
       message: string = 'unknown'
     ) {
-        const [rs] = await this.mysql.query<ResultSetHeader>(`
+        const [rs] = await this.tidb.query<ResultSetHeader>(`
             UPDATE explorer_questions SET status = ?, error_type = ?, error = ? WHERE id = UUID_TO_BIN(?)
         `, [QuestionStatus.Error, errorType, message, questionId]);
         if (rs.affectedRows !== 1) {
@@ -629,7 +629,7 @@ export class ExplorerService {
 
     private async saveAnswerSummary(questionId: string, summary: AnswerSummary) {
         const summaryValue = JSON.stringify(summary);
-        const [rs] = await this.mysql.query<ResultSetHeader>(`
+        const [rs] = await this.tidb.query<ResultSetHeader>(`
             UPDATE explorer_questions
             SET answer_summary = ?
             WHERE id = UUID_TO_BIN(?)
@@ -640,7 +640,7 @@ export class ExplorerService {
     }
 
     async getQuestionById(questionId: string): Promise<Question | null> {
-        const [rows] = await this.mysql.query<any[]>(`
+        const [rows] = await this.tidb.query<any[]>(`
             SELECT
                 BIN_TO_UUID(id) AS id, hash, user_id AS userId, status, title, answer, revised_title AS revisedTitle, not_clear AS notClear, 
                 assumption, combined_title AS combinedTitle, sql_can_answer AS sqlCanAnswer, query_sql AS querySQL, query_hash AS queryHash, engines, 
@@ -666,7 +666,7 @@ export class ExplorerService {
     }
 
     async getLatestQuestionByHash(questionHash: string, ttl: number): Promise<Question | null> {
-        const [rows] = await this.mysql.query<any[]>(`
+        const [rows] = await this.tidb.query<any[]>(`
             SELECT
                 BIN_TO_UUID(id) AS id, hash, user_id AS userId, status, title, answer, revised_title AS revisedTitle, not_clear AS notClear,
                 assumption, combined_title AS combinedTitle, sql_can_answer AS sqlCanAnswer, query_sql AS querySQL, query_hash AS queryHash, engines,
@@ -704,7 +704,7 @@ export class ExplorerService {
     }
 
     async getLatestQuestionByQueryHash(queryHash: string, ttl: number): Promise<Question | null> {
-        const [rows] = await this.mysql.query<any[]>(`
+        const [rows] = await this.tidb.query<any[]>(`
             SELECT
                 BIN_TO_UUID(id) AS id, hash, user_id AS userId, status, title, answer, revised_title AS revisedTitle, not_clear AS notClear,
                 assumption, combined_title AS combinedTitle, sql_can_answer AS sqlCanAnswer, query_sql AS querySQL, query_hash AS queryHash, engines,
@@ -741,7 +741,7 @@ export class ExplorerService {
     }
 
     async getUserPastHourQuestionsWithLock(conn: Connection, userId: number): Promise<Question[]> {
-        const connection = conn || this.mysql;
+        const connection = conn || this.tidb;
         const [rows] = await connection.query<any[]>(`
             SELECT
                 BIN_TO_UUID(id) AS id, hash, user_id AS userId, status, title, answer, revised_title AS revisedTitle, not_clear AS notClear,
@@ -772,7 +772,7 @@ export class ExplorerService {
     }
 
     async countPrecedingQuestions(questionId: string, conn?: Connection): Promise<number> {
-        const connection = conn || this.mysql;
+        const connection = conn || this.tidb;
         const [rows] = await connection.query<any[]>(`
             SELECT COUNT(*) AS count
             FROM explorer_questions eq
@@ -984,7 +984,7 @@ export class ExplorerService {
     private async killConnection(taskId: string): Promise<boolean> {
         for (let i = 0; i < 3; i++) {
             try {
-                await this.mysql.query(`KILL ${taskId}`);
+                await this.tidb.query(`KILL ${taskId}`);
                 return true;
             } catch (e: any) {
                 this.logger.warn(`Failed to kill query ${taskId}: ${e.message}, retrying...`);
@@ -1123,7 +1123,7 @@ export class ExplorerService {
     }
 
     private async saveQuestionChart(questionId: string, chart: RecommendedChart) {
-        const [rs] = await this.mysql.query<ResultSetHeader>(`
+        const [rs] = await this.tidb.query<ResultSetHeader>(`
             UPDATE explorer_questions SET chart = ? WHERE id = UUID_TO_BIN(?)
         `, [JSON.stringify(chart), questionId]);
         if (rs.affectedRows !== 1) {
@@ -1134,7 +1134,7 @@ export class ExplorerService {
     // Recommend questions.
 
     async getTags(): Promise<QuestionTag[]> {
-        const [rows] = await this.mysql.query<any[]>(`
+        const [rows] = await this.tidb.query<any[]>(`
             SELECT id, label, color, sort, created_at AS createdAt
             FROM explorer_question_tags eqt
             ORDER BY eqt.sort
@@ -1205,7 +1205,7 @@ export class ExplorerService {
         let questions = [];
         try {
             if (aiGenerated !== undefined) {
-                [questions] = await this.mysql.query<any[]>(`
+                [questions] = await this.tidb.query<any[]>(`
                 SELECT hash, title, ai_generated AS aiGenerated, BIN_TO_UUID(question_id) AS questionId, created_at AS createdAt
                 FROM explorer_recommend_questions erq
                 WHERE ai_generated = ?
@@ -1213,7 +1213,7 @@ export class ExplorerService {
                 LIMIT ?
             `, [aiGenerated, n]);
             } else {
-                [questions] = await this.mysql.query<any[]>(`
+                [questions] = await this.tidb.query<any[]>(`
                 SELECT hash, title, ai_generated AS aiGenerated, BIN_TO_UUID(question_id) AS questionId, created_at AS createdAt
                 FROM explorer_recommend_questions erq
                 ORDER BY RAND()
@@ -1230,7 +1230,7 @@ export class ExplorerService {
     async getRecommendQuestionsByTag(n: number = 40, tagId: number | null = null): Promise<RecommendQuestion[]> {
         let questions: any[];
         if (tagId) {
-            [questions] = await this.mysql.query<any[]>(`
+            [questions] = await this.tidb.query<any[]>(`
                 SELECT eq.hash, eq.title, false AS aiGenerated, BIN_TO_UUID(eq.id) AS questionId, eq.created_at AS createdAt
                 FROM explorer_questions eq
                 JOIN explorer_question_tag_rel eqtr ON eqtr.question_id = eq.id
@@ -1241,7 +1241,7 @@ export class ExplorerService {
                 LIMIT ?
             `, [tagId, n])
         } else {
-            [questions] = await this.mysql.query<any[]>(`
+            [questions] = await this.tidb.query<any[]>(`
                 SELECT eq.hash, eq.title, false AS aiGenerated, BIN_TO_UUID(eq.id) AS questionId, eq.created_at AS createdAt
                 FROM explorer_questions eq
                 WHERE
@@ -1253,7 +1253,7 @@ export class ExplorerService {
 
         const questionIds = questions.map((q) => q.questionId);
         if (questionIds.length > 0) {
-            const [questionTags] = await this.mysql.query<any[]>(`
+            const [questionTags] = await this.tidb.query<any[]>(`
                 SELECT BIN_TO_UUID(question_id) AS questionId, eqt.id, eqt.label, eqt.color
                 FROM explorer_question_tag_rel eqtr
                 JOIN explorer_question_tags eqt ON eqt.id = eqtr.tag_id
@@ -1298,7 +1298,7 @@ export class ExplorerService {
         if (questionValues.length === 0) {
             return;
         }
-        const [rs] = await this.mysql.query<ResultSetHeader>(`
+        const [rs] = await this.tidb.query<ResultSetHeader>(`
             INSERT INTO explorer_recommend_questions(hash, title, ai_generated)
             VALUES ?
             ON DUPLICATE KEY UPDATE title = VALUES(title), ai_generated = VALUES(ai_generated)
@@ -1311,7 +1311,7 @@ export class ExplorerService {
     async recommendQuestion(questionId: string): Promise<void> {
         const question = await this.getQuestionByIdOrError(questionId);
 
-        await withTransaction(this.mysql, async (conn) => {
+        await withTransaction(this.tidb, async (conn) => {
           const hash = question?.hash;
           if (!hash) {
             throw new ExplorerRecommendQuestionError(401, 'Question hash is empty.');
@@ -1373,7 +1373,7 @@ export class ExplorerService {
     }
 
     async cancelRecommendQuestion(questionId: string): Promise<void> {
-        await withConnection(this.mysql, async (conn) => {
+        await withConnection(this.tidb, async (conn) => {
           const question = await this.getQuestionByIdOrError(questionId);
           await conn.query(`
               UPDATE explorer_questions eq
@@ -1438,7 +1438,7 @@ export class ExplorerService {
     // Question feedback.
 
     async addSystemQuestionFeedback(questionId: string, feedbackType: QuestionFeedbackType, feedbackContent?: string) {
-        await withConnection(this.mysql, async (conn) => {
+        await withConnection(this.tidb, async (conn) => {
           await this.addQuestionFeedback(conn, {
             userId: SYSTEM_USER_ID,
             questionId,
@@ -1450,7 +1450,7 @@ export class ExplorerService {
     }
 
     async cancelUserQuestionFeedback(userId: number, questionId: string, satisfied: boolean) {
-        const [rs] = await this.mysql.query<ResultSetHeader>(`
+        const [rs] = await this.tidb.query<ResultSetHeader>(`
             DELETE FROM explorer_question_feedbacks
             WHERE question_id = UUID_TO_BIN(?) AND user_id = ? AND satisfied = ?
             LIMIT 1
@@ -1468,7 +1468,7 @@ export class ExplorerService {
     }
 
     async getUserQuestionFeedbacks(userId: number, questionId: string): Promise<QuestionFeedback[]> {
-        const [rows] = await this.mysql.query<any[]>(`
+        const [rows] = await this.tidb.query<any[]>(`
             SELECT
                 id, user_id AS userId, BIN_TO_UUID(question_id) AS questionId, satisfied, feedback_type AS feedbackType,
                 feedback_content AS feedbackContent, created_at AS createdAt
@@ -1522,7 +1522,7 @@ export class ExplorerService {
 
     // Trusted users.
     async checkIfTrustedUser(userId: number): Promise<boolean> {
-        const [rows] = await this.mysql.query<any[]>(`
+        const [rows] = await this.tidb.query<any[]>(`
             SELECT user_id AS userId FROM explorer_trusted_users
             WHERE user_id = ?
         `, [userId]);
