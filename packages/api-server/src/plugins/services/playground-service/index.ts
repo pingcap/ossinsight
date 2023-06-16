@@ -72,4 +72,15 @@ export class PlaygroundService {
     return result[0].count;
   }
 
+  // Trusted users.
+  // TODO: save the trusted users in playground_trusted_users table.
+
+  async checkIfTrustedUser(userId: number): Promise<boolean> {
+    const [rows] = await this.mysql.query<any[]>(`
+        SELECT user_id AS userId FROM explorer_trusted_users
+        WHERE user_id = ?
+    `, [userId]);
+    return rows.length > 0;
+  }
+
 }

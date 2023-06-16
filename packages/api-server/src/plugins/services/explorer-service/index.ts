@@ -60,6 +60,8 @@ declare module 'fastify' {
     }
 }
 
+export const SYSTEM_USER_ID = 0;
+
 export default fp(async (app: any) => {
     app.decorate('explorerService', new ExplorerService(
       app.log.child({service: 'explorer-service'}),
@@ -471,9 +473,8 @@ export class ExplorerService {
         };
     }
 
-    async getSQLExecutionPlan(sql: string, conn?: Connection) {
-        const connection = conn || this.mysql;
-        const [rows] = await connection.query<any[]>('explain format = "brief" ' + sql);
+    async getSQLExecutionPlan(sql: string) {
+        const [rows] = await this.mysql.query<any[]>('explain format = "brief" ' + sql);
         return rows;
     }
 
@@ -509,8 +510,7 @@ export class ExplorerService {
 
     // CRUD.
 
-    private async createQuestion(question: Question, conn?: Connection) {
-        const connection = conn || this.mysql;
+    private async createQuestion(conn: Connection, question: Question) {
         const {
             id, hash, userId, status, title, querySQL, queryHash, engines = [],
             batchJobId = null, needReview, recommended, createdAt, queueName, queueJobId = null, chart, recommendedQuestions = [], error = null
@@ -518,7 +518,7 @@ export class ExplorerService {
         const enginesValue = JSON.stringify(engines);
         const chartValue = chart !== undefined ? JSON.stringify(chart) : null;
         const recommendedQuestionsValue = JSON.stringify(recommendedQuestions);
-        const [rs] = await connection.query<ResultSetHeader>(`
+        const [rs] = await conn.query<ResultSetHeader>(`
             INSERT INTO explorer_questions(
                 id, hash, user_id, status, title, query_sql, query_hash, engines,
                 batch_job_id, need_review, recommended, created_at, queue_name, queue_job_id, chart, recommended_questions, error
@@ -595,10 +595,9 @@ export class ExplorerService {
         });
     }
 
-    private async saveQuestionResult(questionId: string, status: QuestionStatus, questionResult: QuestionQueryResult, hitCache = false, conn?: Connection) {
-        const connection = conn || this.mysql;
+    private async saveQuestionResult(questionId: string, status: QuestionStatus, questionResult: QuestionQueryResult, hitCache = false) {
         const { result, executedAt, finishedAt, spent } = questionResult;
-        const [rs] = await connection.query<ResultSetHeader>(`
+        const [rs] = await this.mysql.query<ResultSetHeader>(`
             UPDATE explorer_questions
             SET status = ?, result = ?, executed_at = ?, finished_at = ?, spent = ?, hit_cache = ?
             WHERE id = UUID_TO_BIN(?)
@@ -618,10 +617,9 @@ export class ExplorerService {
 
     private async saveQuestionError(
       questionId: string, errorType: QuestionFeedbackType = QuestionFeedbackType.ErrorUnknown,
-      message: string = 'unknown', conn?: Connection
+      message: string = 'unknown'
     ) {
-        const connection = conn || this.mysql;
-        const [rs] = await connection.query<ResultSetHeader>(`
+        const [rs] = await this.mysql.query<ResultSetHeader>(`
             UPDATE explorer_questions SET status = ?, error_type = ?, error = ? WHERE id = UUID_TO_BIN(?)
         `, [QuestionStatus.Error, errorType, message, questionId]);
         if (rs.affectedRows !== 1) {
@@ -629,10 +627,9 @@ export class ExplorerService {
         }
     }
 
-    private async saveAnswerSummary(questionId: string, summary: AnswerSummary, conn?: Connection) {
-        const connection = conn || this.mysql;
+    private async saveAnswerSummary(questionId: string, summary: AnswerSummary) {
         const summaryValue = JSON.stringify(summary);
-        const [rs] = await connection.query<ResultSetHeader>(`
+        const [rs] = await this.mysql.query<ResultSetHeader>(`
             UPDATE explorer_questions
             SET answer_summary = ?
             WHERE id = UUID_TO_BIN(?)
@@ -668,9 +665,8 @@ export class ExplorerService {
         return question;
     }
 
-    async getLatestQuestionByHash(questionHash: string, ttl: number, conn?: Connection): Promise<Question | null> {
-        const connection = conn || this.mysql;
-        const [rows] = await connection.query<any[]>(`
+    async getLatestQuestionByHash(questionHash: string, ttl: number): Promise<Question | null> {
+        const [rows] = await this.mysql.query<any[]>(`
             SELECT
                 BIN_TO_UUID(id) AS id, hash, user_id AS userId, status, title, answer, revised_title AS revisedTitle, not_clear AS notClear,
                 assumption, combined_title AS combinedTitle, sql_can_answer AS sqlCanAnswer, query_sql AS querySQL, query_hash AS queryHash, engines,
@@ -692,9 +688,8 @@ export class ExplorerService {
         return this.mapRecordToQuestion(rows[0]);
     }
 
-    async getRecommendedQuestionsByHash(questionHash: string, conn?: Connection): Promise<Question[]> {
-        const connection = conn || this.mysql;
-        const [rows] = await connection.query<any[]>(`
+    async getRecommendedQuestionsByHash(conn: Connection, questionHash: string): Promise<Question[]> {
+        const [rows] = await conn.query<any[]>(`
             SELECT
                 BIN_TO_UUID(id) AS id, hash, user_id AS userId, status, title, revised_title AS revisedTitle, not_clear AS notClear,
                 assumption, combined_title AS combinedTitle, sql_can_answer AS sqlCanAnswer, query_sql AS querySQL, query_hash AS queryHash, engines,
@@ -745,7 +740,7 @@ export class ExplorerService {
         }
     }
 
-    async getUserPastHourQuestionsWithLock(userId: number, conn?: Connection): Promise<Question[]> {
+    async getUserPastHourQuestionsWithLock(conn: Connection, userId: number): Promise<Question[]> {
         const connection = conn || this.mysql;
         const [rows] = await connection.query<any[]>(`
             SELECT
@@ -1206,12 +1201,11 @@ export class ExplorerService {
 
     // Recommend questions.
 
-    async getRecommendQuestionsByRandom(n: number, aiGenerated?: boolean, conn?: Connection): Promise<RecommendQuestion[]> {
-        const connection = conn || this.mysql;
+    async getRecommendQuestionsByRandom(n: number, aiGenerated?: boolean): Promise<RecommendQuestion[]> {
         let questions = [];
         try {
             if (aiGenerated !== undefined) {
-                [questions] = await connection.query<any[]>(`
+                [questions] = await this.mysql.query<any[]>(`
                 SELECT hash, title, ai_generated AS aiGenerated, BIN_TO_UUID(question_id) AS questionId, created_at AS createdAt
                 FROM explorer_recommend_questions erq
                 WHERE ai_generated = ?
@@ -1219,7 +1213,7 @@ export class ExplorerService {
                 LIMIT ?
             `, [aiGenerated, n]);
             } else {
-                [questions] = await connection.query<any[]>(`
+                [questions] = await this.mysql.query<any[]>(`
                 SELECT hash, title, ai_generated AS aiGenerated, BIN_TO_UUID(question_id) AS questionId, created_at AS createdAt
                 FROM explorer_recommend_questions erq
                 ORDER BY RAND()
@@ -1233,12 +1227,10 @@ export class ExplorerService {
         return this.mapToRecommendQuestions(questions);
     }
 
-    async getRecommendQuestionsByTag(n: number = 40, tagId?: number | null, conn?: Connection): Promise<RecommendQuestion[]> {
-        const connection = conn || this.mysql;
-
+    async getRecommendQuestionsByTag(n: number = 40, tagId: number | null = null): Promise<RecommendQuestion[]> {
         let questions: any[];
         if (tagId) {
-            [questions] = await connection.query<any[]>(`
+            [questions] = await this.mysql.query<any[]>(`
                 SELECT eq.hash, eq.title, false AS aiGenerated, BIN_TO_UUID(eq.id) AS questionId, eq.created_at AS createdAt
                 FROM explorer_questions eq
                 JOIN explorer_question_tag_rel eqtr ON eqtr.question_id = eq.id
@@ -1249,7 +1241,7 @@ export class ExplorerService {
                 LIMIT ?
             `, [tagId, n])
         } else {
-            [questions] = await connection.query<any[]>(`
+            [questions] = await this.mysql.query<any[]>(`
                 SELECT eq.hash, eq.title, false AS aiGenerated, BIN_TO_UUID(eq.id) AS questionId, eq.created_at AS createdAt
                 FROM explorer_questions eq
                 WHERE
@@ -1261,7 +1253,7 @@ export class ExplorerService {
 
         const questionIds = questions.map((q) => q.questionId);
         if (questionIds.length > 0) {
-            const [questionTags] = await connection.query<any[]>(`
+            const [questionTags] = await this.mysql.query<any[]>(`
                 SELECT BIN_TO_UUID(question_id) AS questionId, eqt.id, eqt.label, eqt.color
                 FROM explorer_question_tag_rel eqtr
                 JOIN explorer_question_tags eqt ON eqt.id = eqtr.tag_id
@@ -1295,7 +1287,7 @@ export class ExplorerService {
         }));
     }
 
-    async saveRecommendQuestions(conn: Connection, questions: RecommendQuestion[]): Promise<void> {
+    async saveRecommendQuestions(questions: RecommendQuestion[]): Promise<void> {
         const questionValues = questions.filter((q) => {
             return q.title != ''
         }).map(({ hash, title, aiGenerated }) => {
@@ -1306,7 +1298,7 @@ export class ExplorerService {
         if (questionValues.length === 0) {
             return;
         }
-        const [rs] = await conn.query<ResultSetHeader>(`
+        const [rs] = await this.mysql.query<ResultSetHeader>(`
             INSERT INTO explorer_recommend_questions(hash, title, ai_generated)
             VALUES ?
             ON DUPLICATE KEY UPDATE title = VALUES(title), ai_generated = VALUES(ai_generated)
@@ -1325,7 +1317,7 @@ export class ExplorerService {
             throw new ExplorerRecommendQuestionError(401, 'Question hash is empty.');
           }
 
-          const oldQuestions = await this.getRecommendedQuestionsByHash(hash, conn);
+          const oldQuestions = await this.getRecommendedQuestionsByHash(conn, hash);
           const oldQuestionIds = oldQuestions.map((q) => q.id);
           let oldTagIds: number[] = [];
           if (Array.isArray(oldQuestionIds) && oldQuestionIds.length > 0) {
@@ -1426,10 +1418,8 @@ export class ExplorerService {
 
     async refreshRecommendQuestion(oldQuestion: RecommendQuestion, batchJobID: string): Promise<void> {
         try {
-            const newQuestion = await withConnection(this.mysql, async conn => {
-                this.logger.info({ questionId: oldQuestion.questionId }, "Refresh recommended question: %s.", oldQuestion.title);
-                return await this.newQuestion(0, oldQuestion.title, true, true, true, batchJobID, conn);
-            });
+            this.logger.info({ questionId: oldQuestion.questionId }, "Refresh recommended question: %s.", oldQuestion.title);
+            const newQuestion = await this.newQuestion(0, oldQuestion.title, true, true, true, batchJobID);
 
             // Prepare question async.
             if (newQuestion && !newQuestion.hitCache) {
@@ -1447,19 +1437,20 @@ export class ExplorerService {
 
     // Question feedback.
 
-    async addSystemQuestionFeedback(questionId: string, feedbackType: QuestionFeedbackType, feedbackContent?: string, conn?: Connection) {
-        await this.addQuestionFeedback({
-            userId: 0,
+    async addSystemQuestionFeedback(questionId: string, feedbackType: QuestionFeedbackType, feedbackContent?: string) {
+        await withConnection(this.mysql, async (conn) => {
+          await this.addQuestionFeedback(conn, {
+            userId: SYSTEM_USER_ID,
             questionId,
             satisfied: false,
             feedbackType,
             feedbackContent,
-        }, conn);
+          });
+        });
     }
 
-    async cancelUserQuestionFeedback(userId: number, questionId: string, satisfied: boolean, conn?: Connection) {
-        const connection = conn || this.mysql;
-        const [rs] = await connection.query<ResultSetHeader>(`
+    async cancelUserQuestionFeedback(userId: number, questionId: string, satisfied: boolean) {
+        const [rs] = await this.mysql.query<ResultSetHeader>(`
             DELETE FROM explorer_question_feedbacks
             WHERE question_id = UUID_TO_BIN(?) AND user_id = ? AND satisfied = ?
             LIMIT 1
@@ -1469,17 +1460,15 @@ export class ExplorerService {
         }
     }
 
-    async removeUserQuestionFeedbacks(userId: number, questionId: string, conn?: Connection) {
-        const connection = conn || this.mysql;
-        await connection.query<ResultSetHeader>(`
+    async removeUserQuestionFeedbacks(conn: Connection, userId: number, questionId: string) {
+        await conn.query<ResultSetHeader>(`
             DELETE FROM explorer_question_feedbacks
             WHERE user_id = ? AND question_id = UUID_TO_BIN(?)
         `, [userId, questionId]);
     }
 
-    async getUserQuestionFeedbacks(userId: number, questionId: string, conn?: Connection): Promise<QuestionFeedback[]> {
-        const connection = conn || this.mysql;
-        const [rows] = await connection.query<any[]>(`
+    async getUserQuestionFeedbacks(userId: number, questionId: string): Promise<QuestionFeedback[]> {
+        const [rows] = await this.mysql.query<any[]>(`
             SELECT
                 id, user_id AS userId, BIN_TO_UUID(question_id) AS questionId, satisfied, feedback_type AS feedbackType,
                 feedback_content AS feedbackContent, created_at AS createdAt
@@ -1489,10 +1478,9 @@ export class ExplorerService {
         return rows;
     }
 
-    async addQuestionFeedback(feedback: Omit<QuestionFeedback, "id" | "createdAt">, conn?: Connection) {
-        const connection = conn || this.mysql;
+    async addQuestionFeedback(conn: Connection, feedback: Omit<QuestionFeedback, "id" | "createdAt">) {
         const { userId = 0, questionId, satisfied = false, feedbackType, feedbackContent = null } = feedback;
-        const [rs] = await connection.query<ResultSetHeader>(`
+        const [rs] = await conn.query<ResultSetHeader>(`
             INSERT INTO explorer_question_feedbacks(user_id, question_id, satisfied, feedback_type, feedback_content)
             VALUES (?, UUID_TO_BIN(?), ?, ?, ?)
         `, [userId, questionId, satisfied, feedbackType, feedbackContent]);
@@ -1533,17 +1521,16 @@ export class ExplorerService {
     }
 
     // Trusted users.
-    async checkIfTrustedUser(userId: number, conn?: Connection): Promise<boolean> {
-        const connection = conn || this.mysql;
-        const [rows] = await connection.query<any[]>(`
+    async checkIfTrustedUser(userId: number): Promise<boolean> {
+        const [rows] = await this.mysql.query<any[]>(`
             SELECT user_id AS userId FROM explorer_trusted_users
             WHERE user_id = ?
         `, [userId]);
         return rows.length > 0;
     }
 
-    async checkIfTrustedUsersOrError(userId: number, conn?: Connection) {
-        const isTrustedUser = await this.checkIfTrustedUser(userId, conn);
+    async checkIfTrustedUsersOrError(userId: number) {
+        const isTrustedUser = await this.checkIfTrustedUser(userId);
         if (!isTrustedUser) {
             throw new APIError(403, 'Has no permission to do this operation.');
         }

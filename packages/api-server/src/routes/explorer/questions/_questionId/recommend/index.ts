@@ -1,5 +1,4 @@
 import {FastifyPluginAsyncJsonSchemaToTs} from "@fastify/type-provider-json-schema-to-ts";
-import {Auth0User, parseAuth0User} from "../../../../../plugins/auth/auth0";
 
 const recommendQuestionSchema = {
   summary: 'Recommend question',
@@ -26,11 +25,7 @@ export const recommendQuestionHandler: FastifyPluginAsyncJsonSchemaToTs = async 
     const { questionId } = req.params;
 
     // Only trusted users can recommend questions.
-    const { sub, metadata } = parseAuth0User(req.user as Auth0User);
-    const userId = await app.userService.findOrCreateUserByAccount(
-      { ...metadata, sub },
-      req.headers.authorization
-    );
+    const userId = await app.userService.getUserIdOrCreate(app, req);
     await app.explorerService.checkIfTrustedUsersOrError(userId);
 
     // Recommend question.

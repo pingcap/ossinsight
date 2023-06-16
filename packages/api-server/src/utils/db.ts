@@ -93,7 +93,7 @@ export async function withConnection<R> (
   pool: AnyConnectionPool,
   action: (conn: PoolConnection) => Promise<R>,
   options?: WithConnectionOptions<R>
-): Promise<R> {
+): Promise<R | undefined> {
   const conn = await pool.getConnection();
 
   try {
@@ -105,8 +105,9 @@ export async function withConnection<R> (
   } catch (err: any) {
     if (options?.onError) {
       await options?.onError(conn, err);
+    } else {
+      throw err;
     }
-    throw err;
   } finally {
     conn.release();
     if (options?.onFinally) {
@@ -119,14 +120,15 @@ export function withTransaction<R> (
   pool: AnyConnectionPool,
   action: (conn: Connection) => Promise<R>,
   options?: WithConnectionOptions<R>
-): Promise<R> {
+): Promise<R | undefined> {
   return withConnection(pool, action, {
     onError: async (conn, err) => {
       await conn.rollback();
       if (options?.onError) {
         await options?.onError(conn, err);
+      } else {
+        throw err;
       }
-      throw err;
     },
     onFinished: async (conn, result) => {
       await conn.commit();
