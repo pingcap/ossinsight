@@ -15,7 +15,7 @@ export default fp(async (fastify) => {
     if (fastify.config.EMBEDDING_SERVICE_ENDPOINT) {
         provider = new EmbeddingContextProvider(fastify.config.EMBEDDING_SERVICE_ENDPOINT)
     } else {
-        log.info('env EMBEDDING_SERVICE_ENDPOINT not set, embedding context provider will not work.')
+        log.warn('env EMBEDDING_SERVICE_ENDPOINT not set, embedding context provider will not work.')
     }
     fastify.decorate('embeddingContextProvider', provider);
 }, {

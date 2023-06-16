@@ -1,5 +1,5 @@
 import {FastifyPluginAsyncJsonSchemaToTs} from "@fastify/type-provider-json-schema-to-ts";
-import {Auth0User, parseAuth0User} from "../../../../../plugins/auth/auth0";
+import {withConnection, withTransaction} from "../../../../../utils/db";
 
 const getQuestionTagsSchema = {
   summary: 'Get tags of question',
@@ -48,7 +48,9 @@ export const questionTagsHandler: FastifyPluginAsyncJsonSchemaToTs = async (app)
     schema: getQuestionTagsSchema
   }, async function (req, reply) {
     const { questionId } = req.params;
-    const questionTags = await app.explorerService.getQuestionTags(questionId);
+    const questionTags = await withConnection(this.mysql, async (conn) => {
+      return await app.explorerService.getQuestionTags(conn, questionId);
+    });
     reply.status(200).send(questionTags);
   });
 
@@ -63,15 +65,14 @@ export const questionTagsHandler: FastifyPluginAsyncJsonSchemaToTs = async (app)
     const { tagIds = [] } = req.body;
 
     // Only trusted users can set tags.
-    const { sub, metadata } = parseAuth0User(req.user as Auth0User);
-    const userId = await app.userService.findOrCreateUserByAccount(
-      { ...metadata, sub },
-      req.headers.authorization
-    );
+    const userId = await app.userService.getUserIdOrCreate(req);
     await app.explorerService.checkIfTrustedUsersOrError(userId);
 
     // Set tags.
-    await app.explorerService.setQuestionTags(questionId, tagIds);
+    await withTransaction(app.mysql, async (conn) => {
+      return await app.explorerService.setQuestionTags(conn, questionId, tagIds);
+    });
+
     reply.status(200).send({
       message: "OK"
     });

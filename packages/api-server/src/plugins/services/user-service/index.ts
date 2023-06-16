@@ -1,12 +1,17 @@
-import { FastifyBaseLogger, FastifyInstance } from "fastify";
+import {
+  FastifyBaseLogger,
+  FastifyInstance,
+  FastifyRequest
+} from "fastify";
 import { MySQLPromisePool } from "@fastify/mysql";
 import { ResultSetHeader } from "mysql2";
 import fp from "fastify-plugin";
+import {withTransaction} from "../../../utils/db";
 import { APIError } from "../../../utils/error";
 import { RowDataPacket } from "mysql2/promise";
 import { DateTime } from "luxon";
 import Axios from "axios";
-import {Auth0UserInfo, Auth0UserMetadata} from "../../auth/auth0";
+import {Auth0User, Auth0UserInfo, Auth0UserMetadata, parseAuth0User} from "../../auth/auth0";
 
 declare module "fastify" {
   interface FastifyInstance {
@@ -31,6 +36,8 @@ export enum UserRole {
   USER = "user",
   ADMIN = "admin",
 }
+
+export const GET_EMAIL_UPDATES_DEFAULT = false;
 
 export interface User {
   id: number;
@@ -77,11 +84,11 @@ export class UserService {
   constructor(
     readonly config: FastifyInstance["config"],
     readonly log: FastifyBaseLogger,
-    readonly mysql: MySQLPromisePool
+    readonly tidb: MySQLPromisePool
   ) {}
 
   async getUserById(userId: number): Promise<UserProfile> {
-    const [users] = await this.mysql.query<any[]>(
+    const [users] = await this.tidb.query<any[]>(
       `
             SELECT
                 su.id, su.name, su.role, su.avatar_url AS avatarURL, su.created_at AS createdAt, su.enable,
@@ -105,7 +112,7 @@ export class UserService {
   }
 
   async getUserByGithubId(githubId: number): Promise<UserProfile> {
-    const [users] = await this.mysql.query<UserProfile[]>(
+    const [users] = await this.tidb.query<UserProfile[]>(
       `
             SELECT
                 su.id, su.name, su.role, su.avatar_url AS avatarURL, su.created_at AS createdAt, su.enable,
@@ -127,16 +134,21 @@ export class UserService {
     return user;
   }
 
+  async getUserIdOrCreate(req: FastifyRequest<any>): Promise<number> {
+    const { sub, metadata } = parseAuth0User(req.user as Auth0User);
+    return await this.findOrCreateUserByAccount(
+      { ...metadata, sub },
+      req.headers.authorization,
+    );
+  }
+
   async findOrCreateUserByAccount(user: Auth0UserMetadata & { sub: string }, token?: string): Promise<number> {
     if (!token) throw new Error("token is required");
 
     const [provider, idString] = user.sub.split("|");
     const githubLogin = user?.github_login || null;
-    const conn = await this.mysql.getConnection();
 
-    try {
-      await conn.beginTransaction();
-
+    return await withTransaction(this.tidb, async (conn) => {
       // Check if how many users bound to this account.
       const [existedUserIds] = await conn.query<any[]>(`
         SELECT su.id
@@ -149,7 +161,6 @@ export class UserService {
       if (existedUserIds.length > 1) {
         throw new APIError(409, "Failed to login, please contact admin.");
       } else if (existedUserIds.length === 1) {
-        await conn.commit();
         return existedUserIds[0].id;
       }
 
@@ -161,7 +172,7 @@ export class UserService {
       `, [
         userInfo.name,
         userInfo.email,
-        0,
+        GET_EMAIL_UPDATES_DEFAULT,
         userInfo.picture,
         UserRole.USER,
         DateTime.utc().toSQL(),
@@ -175,19 +186,14 @@ export class UserService {
        `, [rs.insertId, provider, idString, githubLogin]);
 
       return rs.insertId;
-    } catch (err: any) {
-      await conn.rollback();
-      if (err instanceof APIError) {
-        throw err;
+    }, {
+      onError: (conn, err) => {
+        if (err instanceof APIError) {
+          throw err;
+        }
+        throw new APIError(500, "Failed to create new user, please try it again.", err);
       }
-      throw new APIError(
-        500,
-        "Failed to create new user, please try it again.",
-        err
-      );
-    } finally {
-      await conn.release();
-    }
+    });
   }
 
   async fetchAuth0UserInfo(
@@ -206,7 +212,7 @@ export class UserService {
   }
 
   async getEmailUpdates(userId: number): Promise<UserGetUpdatesSetting> {
-    const [settings] = await this.mysql.query<UserGetUpdatesSetting[]>(
+    const [settings] = await this.tidb.query<UserGetUpdatesSetting[]>(
       `SELECT email_get_updates AS emailGetUpdates FROM sys_users WHERE id = ? LIMIT 1`,
       [userId]
     );
@@ -217,7 +223,7 @@ export class UserService {
   }
 
   async settingEmailUpdates(userId: number, enable: boolean): Promise<boolean> {
-    await this.mysql.query<ResultSetHeader>(
+    await this.tidb.query<ResultSetHeader>(
       `UPDATE sys_users SET email_get_updates = ? WHERE id = ?`,
       [enable, userId]
     );

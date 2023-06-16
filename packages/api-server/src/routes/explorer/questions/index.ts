@@ -1,6 +1,4 @@
 import {FastifyPluginAsyncJsonSchemaToTs} from "@fastify/type-provider-json-schema-to-ts";
-import { Auth0User, parseAuth0User } from "../../../plugins/auth/auth0";
-import {withConnection} from "../../../utils/db";
 
 const schema = {
   summary: 'Answer new a question',
@@ -27,22 +25,17 @@ export const newQuestionHandler: FastifyPluginAsyncJsonSchemaToTs = async (app):
     schema,
     preValidation: app.authenticate
   }, async function (req, reply) {
-    const { explorerService } = app;
-
-    // Get user id from auth0.
-    const { sub, metadata } = parseAuth0User(req.user as Auth0User);
-    const userId = await app.userService.findOrCreateUserByAccount(
-      { ...metadata, sub },
-      req.headers.authorization
-    );
     const { question: questionTitle, ignoreCache } = req.body;
-    const question = await withConnection(this.mysql, async (conn) => {
-      return await explorerService.newQuestion(userId, questionTitle, ignoreCache, false, false, null, conn);
-    });
+    const userId = await app.userService.getUserIdOrCreate(req);
+    const question = await app.explorerService.newQuestion(userId, questionTitle, ignoreCache);
+
+    if (!question) {
+      throw new Error('Failed to create question.');
+    }
 
     // Prepare question async.
     if (!question.hitCache) {
-      explorerService.prepareQuestion(question).catch(err => {
+      app.explorerService.prepareQuestion(question).catch(err => {
         app.log.error(err, `Failed to prepare question ${question.id}: ${err.message}`);
       });
     }
