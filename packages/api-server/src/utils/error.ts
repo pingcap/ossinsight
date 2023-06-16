@@ -25,35 +25,34 @@ export class BotResponseParseError extends Error {
 }
 
 export class ValidateSQLError extends Error {
-    constructor(message: string, readonly sql?: string, error?: Error) {
-        super(message, error);
+    constructor(message: string, readonly sql?: string, cause?: Error) {
+        super(message, {
+            cause
+        });
     }
 }
 
 export class SQLUnsupportedFunctionError extends ValidateSQLError {
-    constructor(message: string, sql?: string, error?: Error) {
-        super(message, sql, error);
+    constructor(message: string, sql?: string, cause?: Error) {
+        super(message, sql, cause);
     }
 }
 
 export class SQLUnsupportedMultipleStatementsError extends ValidateSQLError {
-    constructor(message: string, readonly sql?: string, error?: Error) {
-        super(message, sql, error);
+    constructor(message: string, readonly sql?: string, cause?: Error) {
+        super(message, sql, cause);
     }
 }
 
 export class SQLUnsupportedStatementTypeError extends ValidateSQLError {
-    constructor(message: string, readonly sql?: string, error?: Error) {
-        super(message, sql, error);
+    constructor(message: string, readonly sql?: string, cause?: Error) {
+        super(message, sql, cause);
     }
 }
 
 export class ExplorerCreateQuestionError extends APIError {
-    constructor(readonly statusCode: number, readonly message: string, readonly question: Question, error?: Error) {
-        super(statusCode, message, error);
-        if (error) {
-            this.cause = error;
-        }
+    constructor(readonly statusCode: number, readonly message: string, readonly question: Question, cause?: Error) {
+        super(statusCode, message, cause);
     }
 }
 
@@ -72,7 +71,9 @@ export class ExplorerPrepareQuestionError extends Error {
       readonly feedbackPayload: Record<string, any>,
       cause?: Error
     ) {
-        super(message, cause);
+        super(message, {
+            cause
+        });
     }
 }
 
@@ -83,26 +84,21 @@ export class ExplorerResolveQuestionError extends Error {
       readonly feedbackPayload: Record<string, any>,
       cause?: Error
     ) {
-        super(message, cause);
+        super(message, {
+            cause
+        });
     }
 }
 
 export class ExplorerSetQuestionTagsError extends APIError {
-    constructor(readonly statusCode: number, readonly message: string, error?: Error) {
-        super(statusCode, message, error);
-        if (error) {
-            this.cause = error;
-        }
+    constructor(readonly statusCode: number, readonly message: string, cause?: Error) {
+        super(statusCode, message, cause);
     }
 }
 
-
 export class ExplorerRecommendQuestionError extends APIError {
-    constructor(readonly statusCode: number, readonly message: string, error?: Error) {
-        super(statusCode, message, error);
-        if (error) {
-            this.cause = error;
-        }
+    constructor(readonly statusCode: number, readonly message: string, cause?: Error) {
+        super(statusCode, message, cause);
     }
 }
 
