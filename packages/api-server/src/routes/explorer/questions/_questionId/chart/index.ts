@@ -35,13 +35,8 @@ const root: FastifyPluginAsync = async (app) => {
       throw new APIError(401, 'Only trusted users can access this endpoint');
     }
 
-    const conn = await app.mysql.getConnection();
-    try {
-      const chartOptions = await app.explorerService.generateChartByQuestionId(conn, questionId);
-      reply.status(200).send(chartOptions);
-    } finally {
-      conn.release();
-    }
+    const chartOptions = await app.explorerService.generateChartByQuestionId(questionId);
+    reply.status(200).send(chartOptions);
   });
 };
 

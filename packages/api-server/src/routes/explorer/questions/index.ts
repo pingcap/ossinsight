@@ -1,6 +1,5 @@
 import {FastifyPluginAsyncJsonSchemaToTs} from "@fastify/type-provider-json-schema-to-ts";
 import { Auth0User, parseAuth0User } from "../../../plugins/auth/auth0";
-import {withConnection} from "../../../utils/db";
 
 const schema = {
   summary: 'Answer new a question',
@@ -36,9 +35,11 @@ export const newQuestionHandler: FastifyPluginAsyncJsonSchemaToTs = async (app):
       req.headers.authorization
     );
     const { question: questionTitle, ignoreCache } = req.body;
-    const question = await withConnection(this.mysql, async (conn) => {
-      return await explorerService.newQuestion(userId, questionTitle, ignoreCache, false, false, null, conn);
-    });
+    const question = await explorerService.newQuestion(userId, questionTitle, ignoreCache);
+
+    if (!question) {
+      throw new Error('Failed to create question.');
+    }
 
     // Prepare question async.
     if (!question.hitCache) {

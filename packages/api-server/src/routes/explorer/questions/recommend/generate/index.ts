@@ -45,16 +45,9 @@ export const recommendQuestionHandler: FastifyPluginAsyncJsonSchemaToTs = async 
       throw new APIError(403, 'Forbidden');
     }
 
-    const conn = await this.mysql.getConnection();
-    try {
-      const questions = await botService.generateRecommendQuestions(promptTemplate, n);
-      await explorerService.saveRecommendQuestions(conn, questions);
-      reply.status(200).send(questions);
-    } catch (e) {
-      throw e;
-    } finally {
-      conn.release();
-    }
+    const questions = await botService.generateRecommendQuestions(promptTemplate, n);
+    await explorerService.saveRecommendQuestions(questions);
+    reply.status(200).send(questions);
   });
 }
 

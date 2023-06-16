@@ -60,16 +60,9 @@ const root: FastifyPluginAsyncJsonSchemaToTs = async (app, opts): Promise<void> 
     }
 
     try {
-      // Check if there are existed SQL
-      // const questionRecords = await playgroundService.getExistedQuestion(conn, question);
-      // if (questionRecords.length > 0) {
-      //   const {sql} = questionRecords[0];
-      //   return reply.status(200).send({sql});
-      // }
-
       // Get the limit and used.
       let limit = app.config.PLAYGROUND_DAILY_QUESTIONS_LIMIT || MAX_DAILY_GENERATE_SQL_LIMIT;
-      let used = await playgroundService.countTodayQuestionRequests(conn, userId, false);
+      let used = await playgroundService.countTodayQuestionRequests(userId, false);
 
       // Give the trusted users more daily requests.
       const trustedLogins = app.config.PLAYGROUND_TRUSTED_GITHUB_LOGINS;
@@ -98,7 +91,7 @@ const root: FastifyPluginAsyncJsonSchemaToTs = async (app, opts): Promise<void> 
         success = false;
         throw err;
       } finally {
-        await playgroundService.recordQuestion(conn, {
+        await playgroundService.recordQuestion({
           userId,
           context,
           question,

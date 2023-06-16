@@ -9,10 +9,12 @@ import {APIError} from "./utils/error";
 
 export type AppOptions = {
   // Place your custom options for app below here.
+
 } & Partial<AutoloadPluginOptions>;
 
 // Pass --options via CLI arguments in command to enable these options.
 const options: AppOptions = {
+
 }
 
 export interface AppConfig {
@@ -60,7 +62,6 @@ const app: FastifyPluginAsync<AppOptions, RawServerDefault, JsonSchemaToTsProvid
     fastify,
     opts
 ): Promise<void> => {
-
   // Load config.
   await fastify.register(fastifyEnv, {
     confKey: 'config',      // You can access environment variables via `fastify.config`.
