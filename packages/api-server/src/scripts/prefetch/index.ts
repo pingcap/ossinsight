@@ -25,7 +25,7 @@ const logger = pino({
   transport: {
     target: 'pino-pretty',
   }
-}).child({ module: 'prefetch' });
+});
 
 // Generate a prefetch query job with passed parameters according to the query definition.
 function getQueryJobs(queryParer: QueryParser, queryName: string, queryDef: QuerySchema, presets: Record<string, string[]>, onlyParams: Record<string, any>): QueryJob[] {
