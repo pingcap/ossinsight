@@ -1,4 +1,4 @@
-EXPLAIN WITH repos_with_prs_24h AS (
+WITH repos_with_prs_24h AS (
     SELECT
 
         ge.repo_id,
