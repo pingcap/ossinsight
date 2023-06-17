@@ -1,6 +1,6 @@
 {
   "cacheHours": -1,
-  "refreshCron": "0 30 */6 * * *",
+  "refreshCron": "@hourly",
   "onlyFromCache": true,
   "params": []
 }
