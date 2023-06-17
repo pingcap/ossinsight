@@ -1,4 +1,4 @@
-EXPLAIN WITH developers_with_prs_24h AS (
+WITH developers_with_prs_24h AS (
     SELECT
         /*+ READ_FROM_STORAGE(tiflash[ge]) */
         ge.actor_id,
