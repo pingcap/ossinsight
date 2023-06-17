@@ -1,10 +1,10 @@
 WITH developers_with_prs_24h AS (
     SELECT
-        /*+ MERGE() */
+        /*+ READ_FROM_STORAGE(tiflash[ge, gu]) */
         ge.actor_id,
-        COUNT(DISTINCT CASE WHEN action = 'opened' THEN ge.pr_or_issue_id ELSE NULL END) AS opened_prs,
-        COUNT(DISTINCT CASE WHEN action = 'closed' AND ge.pr_merged = false THEN ge.pr_or_issue_id ELSE NULL END) AS closed_prs,
-        COUNT(DISTINCT CASE WHEN action = 'closed' AND ge.pr_merged = true THEN ge.pr_or_issue_id ELSE NULL END) AS merged_prs
+        COUNT(DISTINCT CASE WHEN action = 'opened' THEN ge.pr_or_issue_id END)                                   AS opened_prs,
+        COUNT(DISTINCT CASE WHEN action = 'closed' AND ge.pr_merged = false THEN ge.pr_or_issue_id END)          AS closed_prs,
+        COUNT(DISTINCT CASE WHEN action = 'closed' AND ge.pr_merged = true THEN ge.pr_or_issue_id END) AS merged_prs
     FROM
         github_events ge
         JOIN github_users gu ON gu.id = ge.actor_id

@@ -1,6 +1,6 @@
 WITH repos_with_prs_24h AS (
     SELECT
-        /*+ read_from_storage(tiflash[ge, gr, gu]) */
+
         ge.repo_id,
         COUNT(DISTINCT CASE WHEN action = 'opened' THEN ge.pr_or_issue_id ELSE NULL END) AS opened_prs,
         COUNT(DISTINCT CASE WHEN action = 'closed' AND ge.pr_merged = false THEN ge.pr_or_issue_id ELSE NULL END) AS closed_prs,

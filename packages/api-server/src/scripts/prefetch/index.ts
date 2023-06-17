@@ -140,7 +140,7 @@ async function main () {
     }
 
     if(!queryDef.refreshCron) {
-      logger.debug(`Skip prefetching query ${queryName}.`)
+      logger.trace(`Skip prefetching query ${queryName}.`)
       continue;
     }
 
@@ -156,7 +156,7 @@ async function main () {
       // Verify cron.
       const cronOrErrors = verifyCron(refreshCron);
       if (cronOrErrors === null) {
-        logger.info(`Skip prefetching query ${queryName} cause refreshCron is empty.`);
+        logger.trace(`Skip prefetching query ${queryName} cause refreshCron is empty.`);
         continue;
       } else if (typeof cronOrErrors === 'object') {
         logger.error({ errors: cronOrErrors }, `Skip prefetching query ${queryName} cause refreshCron is invalid.`);
@@ -168,7 +168,9 @@ async function main () {
         rule: cronOrErrors,
         tz: 'UTC'
       }, async () => {
-        await jobScheduler.scheduleJob(queryJob);
+        jobScheduler.scheduleJob(queryJob).then(null).catch((err) => {
+          logger.error(err, `❌ Failed to schedule prefetch job for query ${queryName}.`);
+        });
       });
     }
   }

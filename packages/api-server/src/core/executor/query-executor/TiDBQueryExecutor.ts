@@ -56,8 +56,10 @@ export class TiDBQueryExecutor implements QueryExecutor {
     }
   }
 
-  async executeWithConnInternal<T extends Rows>(timer: Summary, counter: Counter, conn: Connection,
-    queryKey: string, sqlOrOptions: string | QueryOptions, values?: Values): Promise<[T, Fields]> {
+  async executeWithConnInternal<T extends Rows>(
+    timer: Summary, counter: Counter, conn: Connection,
+    queryKey: string, sqlOrOptions: string | QueryOptions, values?: Values
+  ): Promise<[T, Fields]> {
     let end = () => {};
     if (this.enableMetrics) {
       end = timer.startTimer();
