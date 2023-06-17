@@ -30,6 +30,10 @@ export const QUEUE_DEFS: PrefetchQueue[] = [
     {
         name: "REALTIME",
         concurrent: 1,
+    },
+    {
+        name: "EVENTS_TOTAL",
+        concurrent: 1,
     }
 ]
 
@@ -43,25 +47,30 @@ export class JobScheduler {
         this.queueMap = new Map();
         for(const { name, concurrent } of QUEUE_DEFS) {
             this.queueMap.set(name, async.queue(async (job) => {
-                const { queryName = DEFAULT_QUEUE_NAME, params, refreshQueue: queueName } = job;
-                const logger = this.logger.child({ queueName, queryName, params });
-                logger.info("Prefetching query <%s> in queue <%s>.", queryName, queueName);
+                const { queryName , params, refreshQueue } = job;
+                this.logger.info(params, `🚀 Prefetching query <%s> in queue <%s>.`, queryName, refreshQueue);
 
                 // Execute the query.
                 const qStart = DateTime.utc();
                 try {
                     await this.queryRunner.query(queryName, params, {
                         refreshCache: true,
+                        ignoreCache: true,
+                        ignoreOnlyFromCache: true,
                     });
                 } catch (err) {
                     const sql = (err as any)?.rawSql?.replace(/\n/g, ' ');
-                    logger.error({ sql },'Failed to prefetch query %s.', queryName)
+                    this.logger.error({ sql },'❌ Failed to prefetch query <%s>.', queryName)
                 }
                 const qEnd = DateTime.utc();
               
                 // Output the statistics info.
-                const qCostTime = qEnd.diff(qStart, ['seconds']).toHuman();
-                this.logger.info("Finish prefetch <%s>, start at: %s, end at: %s, cost: %s", queryName, qStart, qEnd, qCostTime);
+                const costTime = qEnd.diff(qStart, ['seconds']);
+                const costTimeStr = costTime.toHuman();
+                this.logger.info("✅ Finish prefetch <%s>, start at: %s, end at: %s, cost: %s", queryName, qStart, qEnd, costTimeStr);
+                if (costTime.seconds > 180) {
+                    this.logger.warn("Prefetch query <%s> cost too much time: %s", queryName, costTimeStr);
+                }
             }, concurrent));
         }
     }
@@ -69,12 +78,17 @@ export class JobScheduler {
     async scheduleJob(job: QueryJob):Promise<boolean> {
         let { queryName, refreshQueue } = job;
         const queue = this.queueMap.get(refreshQueue);
-        if (queue === undefined) {
-            this.logger.error(`Failed to schedule job for query <${queryName}>, because can not found the queue named: ${refreshQueue}`);
+        if (!queue) {
             return false;
         }
 
-        await queue?.pushAsync(job);
+        this.logger.info(`🚶‍Pushing query <%s> into queue <%s> (wait: %d).`, queryName, refreshQueue, queue.length());
+        queue.push(job, (error: any)=> {
+            if (error) {
+                this.logger.error(error, 'Failed to execute job for query <%s> in queue <%s>.', queryName, refreshQueue);
+            }
+        });
+
         return true;
     }
 
