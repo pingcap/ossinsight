@@ -1,4 +1,5 @@
 SELECT
+    /*+ MAX_EXECUTION_TIME(15000) */
     COUNT(1) AS cnt,
     MAX(created_at) AS latest_created_at,
     UNIX_TIMESTAMP(MAX(created_at)) AS latest_timestamp

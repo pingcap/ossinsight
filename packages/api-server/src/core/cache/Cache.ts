@@ -72,10 +72,10 @@ export default class Cache<T> {
 
     if (cachedData != null) {
       this.log.info(`Hit cache of ${this.key}.`);
-      cacheHitCounter.inc()
+      cacheHitCounter.inc();
 
       if (this.refreshCache) {
-        this.log.info(`Initiative refresh for key: ${this.key}.`);
+        this.log.info(`🔄 Initiative refresh query for key: ${this.key}.`);
         return await this.fetchDataFromDB(fallback);
       }
 
@@ -87,7 +87,7 @@ export default class Cache<T> {
         throw new NeedPreFetchError(`Failed to get data, query ${this.key} can only be executed in advance.`)
       }
 
-      this.log.info('Do query for key: %s.', this.key);
+      this.log.info('⚡️ Executing query for key: %s.', this.key);
       return await this.fetchDataFromDB(fallback);
     }
   }

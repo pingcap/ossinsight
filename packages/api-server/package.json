@@ -2,7 +2,7 @@
   "name": "@ossinsight/api-server",
   "version": "1.0.0",
   "description": "The API server of OSSInsight.",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "directories": {
