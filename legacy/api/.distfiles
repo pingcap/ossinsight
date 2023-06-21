@@ -1,9 +1,0 @@
-queries
-.env
-.env.template
-params-preset.json
-params.schema.json
-static
-allowed-origins.yaml
-organizations.yaml
-region-code-mappings.yaml
