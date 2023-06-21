@@ -5,8 +5,10 @@
   "main": "index.js",
   "scripts": {
     "build:ts": "tsc",
+    "build": "rm -rf dist && pnpm run build:ts",
     "dev": "node dist/index.js",
     "start": "node dist/index.js",
+    "deploy": "pm2 start --cwd $(pwd) 'pnpm run start' --name 'ossinsight-prefetch'",
     "watch:ts": "tsc -w"
   },
   "keywords": [],

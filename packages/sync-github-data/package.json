@@ -5,7 +5,6 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "npm run build:ts",
     "build:ts": "tsc",
     "watch:ts": "tsc -w",
     "start": "node dist/index.js",
