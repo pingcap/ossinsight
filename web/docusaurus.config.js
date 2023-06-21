@@ -213,7 +213,7 @@ const config = {
       announcementBar: {
         id: 'announcement-20230621',
         content:
-          '📢 Setup your own Free & Customizable dashboard in 10 minutes, see <a target="_blank" href="https://ossinsight-lite.vercel.app/" style="font-weight:bold">Demo!</a>',
+          '📢 Customize your own dashboard and embeddable hand-drawn style widgets in 10 minutes, see <a target="_blank" href="https://ossinsight-lite.vercel.app/" style="font-weight:bold">Demo!</a>',
         backgroundColor: '#4C33B1',
         textColor: '#ffffff',
         isCloseable: true,
