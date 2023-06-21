@@ -210,16 +210,14 @@ const config = {
         disableSwitch: true,
         respectPrefersColorScheme: false,
       },
-      /*
       announcementBar: {
-        id: 'announcement-20230303',
+        id: 'announcement-20230621',
         content:
-          '<a target="_blank" href="/explore" style="font-weight:bold"> New! &nbsp OpenAI + Database + GitHub = {🤩🤩🤩} </a>',
+          '📢 Setup your own Free & Customizable dashboard in 10 minutes, see <a target="_blank" href="https://ossinsight-lite.vercel.app/" style="font-weight:bold">Demo!</a>',
         backgroundColor: '#4C33B1',
         textColor: '#ffffff',
         isCloseable: true,
       },
-      */
       docs: {
         sidebar: {
           hideable: true,
