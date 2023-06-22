@@ -109,7 +109,7 @@ async function main () {
   }
 
   // Init query executor.
-  const tidbQueryExecutor = new TiDBQueryExecutor(pool, shadowPool, logger, true);
+  const tidbQueryExecutor = new TiDBQueryExecutor(pool, shadowPool, logger);
 
   // Init Cache Builder.
   const cacheBuilder = new CacheBuilder(logger, config.ENABLE_CACHE, pool, shadowPool);

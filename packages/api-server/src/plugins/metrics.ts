@@ -60,12 +60,14 @@ export const dataQueryTimer = new Summary({
 export const tidbQueryTimer = new Summary({
     name: metricsPrefix + 'tidb_query_time',
     help: 'TiDB query time',
+    labelNames: ['query'] as const,
     percentiles: [0.999, 0.99, 0.95, 0.80, 0.50],
 })
 
 export const shadowTidbQueryTimer = new Summary({
   name: metricsPrefix + 'shadow_tidb_query_time',
   help: 'Shadow TiDB query time',
+  labelNames: ['query'] as const,
   percentiles: [0.999, 0.99, 0.95, 0.80, 0.50],
 })
 

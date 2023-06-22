@@ -39,7 +39,7 @@ importers:
         specifier: 5.0.0
         version: 5.0.0
       '@fastify/mysql':
-        specifier: ^4.0.0
+        specifier: ^4.1.0
         version: 4.1.0
       '@fastify/oauth2':
         specifier: ^6.1.0

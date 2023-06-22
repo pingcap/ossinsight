@@ -130,8 +130,8 @@ async function prefetch(options: Options) {
     .filter(([queryName, queryDef]) => {
       return options.onlyPrefetch ? queryName === options.onlyPrefetch : true;
     }).filter(([queryName, queryDef]) => {
-    return queryDef.refreshCron || options.once;
-  })
+      return queryDef.refreshCron || options.once;
+    })
     .map(([queryName, queryDef]) => {
       return jobGenerator.generate(queryName, options.onlyParams);
     })
