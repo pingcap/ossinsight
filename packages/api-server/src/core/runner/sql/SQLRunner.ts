@@ -1,11 +1,9 @@
 import { DateTime } from "luxon";
-import { QueryExecutor } from "../../executor/query-executor/QueryExecutor";
+import {TiDBPlaygroundQueryExecutor} from "../../executor/query-executor/TiDBPlaygroundQueryExecutor";
 
 export class SQLRunner {
 
-    constructor(
-        public readonly executor: QueryExecutor
-    ) {}
+    constructor(private readonly executor: TiDBPlaygroundQueryExecutor) {}
   
     async run(sql: string) {
         try {

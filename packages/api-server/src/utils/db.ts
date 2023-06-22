@@ -80,7 +80,7 @@ export async function checkTiDBIfConnected(logger: FastifyBaseLogger, pool?: MyS
 // Managed connection creation and release.
 
 interface AnyConnectionPool {
-  getConnection (): Promise<PoolConnection>;
+  getConnection(): Promise<PoolConnection>;
 }
 
 interface WithConnectionOptions<R> {

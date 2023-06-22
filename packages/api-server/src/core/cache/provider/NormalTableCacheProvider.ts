@@ -1,8 +1,10 @@
-import { CacheOption, CacheProvider } from "./CacheProvider";
-import { OkPacket, ResultSetHeader, RowDataPacket } from "mysql2";
+import {OkPacket, ResultSetHeader, RowDataPacket} from "mysql2";
 
 import {Pool} from "mysql2/promise";
 import pino from "pino";
+import {clearTimeout} from "timers";
+import {withConnection} from "../../../utils/db";
+import {CacheOption, CacheProvider} from "./CacheProvider";
 
 // Table schema:
 //
@@ -17,15 +19,13 @@ import pino from "pino";
 //
 
 export default class NormalTableCacheProvider implements CacheProvider {
-    private readonly logger = pino().child({ component: 'cache-provider' })
 
     constructor(
+      private readonly logger: pino.Logger,
       private readonly pool: Pool,
       private readonly shadowPool?: Pool,
       private readonly tableName: string = 'cache'
-    ) {
-
-    }
+    ) {}
 
     async set<T extends RowDataPacket[][] | RowDataPacket[] | OkPacket | OkPacket[] | ResultSetHeader>(
         key: string, value: string, options?: CacheOption
@@ -35,7 +35,21 @@ export default class NormalTableCacheProvider implements CacheProvider {
         VALUES (?, ?, ?)
         ON DUPLICATE KEY UPDATE cache_value = VALUES(cache_value), expires = VALUES(expires);`;
 
-        return this.pool.query<T>(sql, [key, value, EX]);
+        return await withConnection(this.pool, async (conn) => {
+            const timeout = setTimeout(() => {
+                this.logger.warn('⚠️ Set cache <%s> cost more than 10s.', key)
+            }, 10_000);
+
+            try {
+                return await conn.query({
+                    sql,
+                    values: [key, value, EX],
+                    timeout: 10_000,
+                });
+            } finally {
+                clearTimeout(timeout);
+            }
+        });
     }
 
     async get(key: string): Promise<any> {
@@ -54,11 +68,23 @@ export default class NormalTableCacheProvider implements CacheProvider {
             });
         }
 
-        const [rows] = await this.pool.query<any[]>(sql, [key]);
-        if (Array.isArray(rows) && rows.length >= 1) {
-            return rows[0]?.cache_value;
-        } else {
-            return null;
+        const timeout = setTimeout(() => {
+            this.logger.warn('⚠️ Get cache <%s> cost more than 10s.', key)
+        }, 10_000);
+        try {
+            const [rows] = await this.pool.query<any[]>({
+                sql,
+                values: [key],
+                timeout: 10_000,
+            });
+
+            if (Array.isArray(rows) && rows.length >= 1) {
+                return rows[0]?.cache_value;
+            } else {
+                return null;
+            }
+        } finally {
+            clearTimeout(timeout);
         }
     }
 

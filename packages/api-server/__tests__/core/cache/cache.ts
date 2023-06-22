@@ -12,7 +12,7 @@ afterAll(releaseTestDatabase);
 test('cache should work', async () => {
   const log = pino().child({ 'component': 'cache' });
   const pool = await createTiDBPool(getTestDatabase().url());
-  const normalCacheProvider = new NormalTableCacheProvider(pool);
+  const normalCacheProvider = new NormalTableCacheProvider(log, pool);
   const cacheKey = 'test2';
   const cacheHour = 1;
   const cacheValue = 'foo';

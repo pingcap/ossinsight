@@ -10,10 +10,9 @@ export class TiDBPlaygroundQueryExecutor extends TiDBQueryExecutor {
     pool: Pool,
     shadowPool?: Pool | null,
     pLogger: pino.Logger = pino(),
-    connectionLimits: string[] = [],
-    enableMetrics: boolean = true,
+    connectionLimits: string[] = []
   ) {
-    super(pool, shadowPool, pLogger, enableMetrics);
+    super(pool, shadowPool, pLogger);
     decoratePoolConnections(this.logger,  this.pool, { initialSql: connectionLimits });
     if (this.shadowPool) {
       decoratePoolConnections(this.logger,  this.pool,  { initialSql: connectionLimits });

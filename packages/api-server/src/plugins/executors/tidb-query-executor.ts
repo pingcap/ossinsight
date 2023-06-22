@@ -7,8 +7,7 @@ export default fp(async (app) => {
   app.decorate('tidbQueryExecutor', new TiDBQueryExecutor(
     app.mysql as unknown as Pool,
     app.mysql.shadow as unknown as Pool,
-    app.log as pino.Logger,
-    true
+    app.log as pino.Logger
   ));
 }, {
   name: '@ossinsight/tidb-query-executor',

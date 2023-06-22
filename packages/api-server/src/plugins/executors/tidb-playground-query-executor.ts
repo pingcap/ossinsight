@@ -10,8 +10,7 @@ export default fp(async (app) => {
     app.mysql.playground as unknown as Pool,
     app.mysql.playgroundShadow as unknown as Pool,
     app.log as pino.Logger,
-    getPlaygroundSessionLimits(),
-    true
+    getPlaygroundSessionLimits()
   );
   app.decorate('playgroundQueryExecutor', playgroundQueryExecutor);
 }, {

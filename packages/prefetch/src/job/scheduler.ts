@@ -56,7 +56,7 @@ export class JobScheduler {
                 const qStart = DateTime.utc();
                 const end = await prefetchQueryTimer.startTimer({ query: queryName, queue: refreshQueue });
                 try {
-                    await this.queryRunner.query(queryName, params, {
+                    const res = await this.queryRunner.query<any>(queryName, params, {
                         refreshCache: true,
                         ignoreCache: true,
                         ignoreOnlyFromCache: true,
@@ -69,7 +69,10 @@ export class JobScheduler {
                     const costTimeStr = costTime.toHuman();
 
                     prefetchQueryCounter.inc({ query: queryName, phase: 'success' });
-                    this.logger.info(params, "✅  Finish prefetch <%s>, start at: %s, end at: %s, cost: %s", queryName, qStart, qEnd, costTimeStr);
+                    this.logger.info({
+                        params,
+                        spent: res.spent
+                    }, "✅ Finish prefetch <%s>, start at: %s, end at: %s, cost: %s", queryName, qStart, qEnd, costTimeStr);
                     if (costTime.seconds > 180) {
                         this.logger.warn(params, "⚠️ Prefetch query <%s> cost too much time: %s", queryName, costTimeStr);
                     }

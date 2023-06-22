@@ -30,14 +30,14 @@ export default class CacheBuilder {
     private noneCacheProvider: CacheProvider = new NoneCacheProvider();
 
     constructor(
-        private readonly pLogger: pino.Logger,
-        private readonly enableCache: boolean = false,
-        pool?: Pool,
-        shadowPool?: Pool
+      private readonly logger: pino.Logger,
+      private readonly enableCache: boolean = false,
+      pool?: Pool,
+      shadowPool?: Pool
     ) {
         if (this.enableCache && pool !== undefined) {
-            this.normalCacheProvider = new NormalTableCacheProvider(pool, shadowPool);
-            this.cachedTableCacheProvider = new CachedTableCacheProvider(pool, shadowPool);
+            this.normalCacheProvider = new NormalTableCacheProvider(logger, pool, shadowPool);
+            this.cachedTableCacheProvider = new CachedTableCacheProvider(logger, pool, shadowPool);
         }
     }
 
@@ -47,7 +47,7 @@ export default class CacheBuilder {
         onlyFromCache?: boolean, refreshCache?: boolean
     ): Cache<any> {
         if (!this.enableCache) {
-            const log = this.pLogger.child({ 'cache-provider': 'none' });
+            const log = this.logger.child({ 'cache-provider': 'none' });
             return new Cache<any>(log, this.noneCacheProvider, key, -1, false, false);
         }
 
@@ -56,12 +56,12 @@ export default class CacheBuilder {
                 if (this.normalCacheProvider === undefined) {
                     throw new Error('Normal cache provider has not initialed.');
                 }
-                return new Cache<any>(this.pLogger.child({ 'cache-provider': 'normal-table' }), this.normalCacheProvider, key, cacheHours, onlyFromCache, refreshCache);
+                return new Cache<any>(this.logger.child({ 'cache-provider': 'normal-table' }), this.normalCacheProvider, key, cacheHours, onlyFromCache, refreshCache);
             case CacheProviderTypes.CACHED_TABLE:
                 if (this.cachedTableCacheProvider === undefined) {
                     throw new Error('Cached table cache provider has not initialed.');
                 }
-                return new Cache<any>(this.pLogger.child({ 'cache-provider': 'cached-table' }), this.cachedTableCacheProvider, key, cacheHours, onlyFromCache, refreshCache);
+                return new Cache<any>(this.logger.child({ 'cache-provider': 'cached-table' }), this.cachedTableCacheProvider, key, cacheHours, onlyFromCache, refreshCache);
             default:
                 throw new Error(`Invalid cache provider type ${cacheProvider}.`);
         }

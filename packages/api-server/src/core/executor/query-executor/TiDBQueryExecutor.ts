@@ -1,8 +1,16 @@
-import { Conn, Fields, QueryExecutor, Rows, Values } from "./QueryExecutor";
-import { Connection, Pool, PoolConnection, QueryOptions } from "mysql2/promise";
-import {shadowTidbQueryCounter, shadowTidbQueryTimer, tidbQueryCounter, tidbQueryTimer, waitShadowTidbConnectionTimer, waitTidbConnectionTimer} from "../../../plugins/metrics";
-import { Counter, Summary } from "prom-client";
+import {Connection, Pool, PoolConnection, QueryOptions} from "mysql2/promise";
 import pino from "pino";
+import {Counter, Summary} from "prom-client";
+import {clearTimeout} from "timers";
+import {
+  shadowTidbQueryCounter,
+  shadowTidbQueryTimer,
+  tidbQueryCounter,
+  tidbQueryTimer,
+  waitShadowTidbConnectionTimer,
+  waitTidbConnectionTimer
+} from "../../../plugins/metrics";
+import {Conn, Fields, QueryExecutor, Rows, Values} from "./QueryExecutor";
 
 export class TiDBQueryExecutor implements QueryExecutor {
   protected readonly logger: pino.Logger = this.pLogger.child({ module: 'tidb-query-executor' });
@@ -10,8 +18,7 @@ export class TiDBQueryExecutor implements QueryExecutor {
   constructor(
     readonly pool: Pool,
     readonly shadowPool?: Pool | null,
-    readonly pLogger: pino.Logger = pino(),
-    readonly enableMetrics: boolean = true,
+    readonly pLogger: pino.Logger = pino()
   ) {
   }
 
@@ -60,11 +67,14 @@ export class TiDBQueryExecutor implements QueryExecutor {
     timer: Summary, counter: Counter, conn: Connection,
     queryKey: string, sqlOrOptions: string | QueryOptions, values?: Values
   ): Promise<[T, Fields]> {
-    let end = () => {};
-    if (this.enableMetrics) {
-      end = timer.startTimer();
-      counter.labels({ query: queryKey, phase: 'start' }).inc();
-    }
+    const end = timer.startTimer({ query: queryKey });
+    const timeout = setTimeout(() => {
+      console.error(`⚠️ Query <${queryKey}> executed more than 20 s:`, JSON.stringify({
+        sqlOrOptions,
+        values,
+      }));
+    }, 20_000);
+    counter.labels({ query: queryKey, phase: 'start' }).inc();
 
     if (queryKey.startsWith('explain:')) {
       if (typeof sqlOrOptions === 'string') {
@@ -82,10 +92,7 @@ export class TiDBQueryExecutor implements QueryExecutor {
         [rows, fields] = await conn.execute<T>(sqlOrOptions);
       }
 
-      end();
-      if (this.enableMetrics) {
-        counter.labels({ query: queryKey, phase: 'success' }).inc();
-      }
+      counter.labels({ query: queryKey, phase: 'success' }).inc();
 
       return [
         rows,
@@ -97,40 +104,33 @@ export class TiDBQueryExecutor implements QueryExecutor {
         })
       ];
     } catch (err) {
-      end();
-      if (this.enableMetrics) {
-        counter.labels({ query: queryKey, phase: 'error' }).inc();
-      }
-
+      counter.labels({ query: queryKey, phase: 'error' }).inc();
       throw err;
+    } finally {
+      clearTimeout(timeout);
+      end();
     }
   }
 
   async getConnectionInternal(pool: Pool, timer: Summary): Promise<PoolConnection> {
-    let end = () => {};
-    if (this.enableMetrics) {
-      end = timer.startTimer();
-    }
+    const end = timer.startTimer();
 
     try {
-      const conn = await pool.getConnection();
+      return await pool.getConnection();
+    } finally {
       end();
-      return conn;
-    } catch(err: any) {
-      end();
-      throw err;
     }
   }
 
   async getConnection(): Promise<PoolConnection> {
-    return this.getConnectionInternal(this.pool, waitTidbConnectionTimer);
+    return await this.getConnectionInternal(this.pool, waitTidbConnectionTimer);
   }
 
   async getShadowConnection(): Promise<PoolConnection> {
     if (!this.shadowPool) {
       throw new Error('No shadow connections provided.');
     }
-    return this.getConnectionInternal(this.shadowPool, waitShadowTidbConnectionTimer);
+    return await this.getConnectionInternal(this.shadowPool, waitShadowTidbConnectionTimer);
   }
 
 }
