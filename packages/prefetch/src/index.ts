@@ -98,7 +98,7 @@ async function prefetch(options: Options) {
   }).listen(30002);
 
   // Init query executor.
-  const tidbQueryExecutor = new TiDBQueryExecutor(pool, shadowPool, logger, true);
+  const tidbQueryExecutor = new TiDBQueryExecutor(pool, shadowPool, logger);
 
   // Init Cache Builder.
   const cacheBuilder = new CacheBuilder(logger, true, pool, shadowPool);
