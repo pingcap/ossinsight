@@ -1,7 +1,6 @@
 import {Connection, Pool, PoolConnection, QueryOptions} from "mysql2/promise";
 import pino from "pino";
 import {Counter, Summary} from "prom-client";
-import {clearTimeout} from "timers";
 import {
   shadowTidbQueryCounter,
   shadowTidbQueryTimer,
@@ -68,12 +67,6 @@ export class TiDBQueryExecutor implements QueryExecutor {
     queryKey: string, sqlOrOptions: string | QueryOptions, values?: Values
   ): Promise<[T, Fields]> {
     const end = timer.startTimer({ query: queryKey });
-    const timeout = setTimeout(() => {
-      console.error(`⚠️ Query <${queryKey}> executed more than 20 s:`, JSON.stringify({
-        sqlOrOptions,
-        values,
-      }));
-    }, 20_000);
     counter.labels({ query: queryKey, phase: 'start' }).inc();
 
     if (queryKey.startsWith('explain:')) {
@@ -107,7 +100,6 @@ export class TiDBQueryExecutor implements QueryExecutor {
       counter.labels({ query: queryKey, phase: 'error' }).inc();
       throw err;
     } finally {
-      clearTimeout(timeout);
       end();
     }
   }
@@ -128,7 +120,7 @@ export class TiDBQueryExecutor implements QueryExecutor {
 
   async getShadowConnection(): Promise<PoolConnection> {
     if (!this.shadowPool) {
-      throw new Error('No shadow connections provided.');
+      throw new Error('No shadow connection pool provided.');
     }
     return await this.getConnectionInternal(this.shadowPool, waitShadowTidbConnectionTimer);
   }

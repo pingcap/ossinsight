@@ -18,7 +18,7 @@ export const DEFAULT_QUEUE_NAME = 'MAIN';
 export const QueueRegister: PrefetchQueue[] = [
     {
         name: "MAIN",
-        concurrent: 1,
+        concurrent: 2,
         timeout: 180_000
     },
     {
@@ -28,12 +28,12 @@ export const QueueRegister: PrefetchQueue[] = [
     },
     {
         name: "REALTIME",
-        concurrent: 1,
+        concurrent: 2,
         timeout: 10_000
     },
     {
         name: "EVENTS_TOTAL",
-        concurrent: 1,
+        concurrent: 2,
         timeout: 45_000
     }
 ]
@@ -98,7 +98,7 @@ export class JobScheduler {
             return false;
         }
 
-        this.logger.info({ job }, `🚶‍Pushing query <%s> into queue <%s> (wait: %d).`, queryName, refreshQueue, queue.length());
+        this.logger.info({ job }, `🚶‍ Pushing query <%s> into queue <%s> (wait: %d).`, queryName, refreshQueue, queue.length());
         queueWaitsGauge.set({ queue: refreshQueue }, queue.length());
         prefetchQueryCounter.inc({ query: queryName, phase: 'queued' });
 
