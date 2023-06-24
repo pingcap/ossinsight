@@ -56,7 +56,7 @@ export class TiDBQueryExecutor implements QueryExecutor {
 
     const conn = await this.getConnectionInternal(this.shadowPool, waitShadowTidbConnectionTimer);
     try {
-      await this.executeWithConnInternal(shadowTidbQueryTimer, shadowTidbQueryCounter, conn, queryKey, sqlOrOptions, values, true);
+      await this.executeWithConnInternal(shadowTidbQueryTimer, shadowTidbQueryCounter, conn, queryKey, sqlOrOptions, values);
     } finally {
       await conn.release();
     }
@@ -64,8 +64,7 @@ export class TiDBQueryExecutor implements QueryExecutor {
 
   async executeWithConnInternal<T extends Rows>(
     timer: Summary, counter: Counter, conn: Connection,
-    queryKey: string, sqlOrOptions: string | QueryOptions, values?: Values,
-    shadow: boolean = false
+    queryKey: string, sqlOrOptions: string | QueryOptions, values?: Values
   ): Promise<[T, Fields]> {
     const end = timer.startTimer({ query: queryKey });
     counter.labels({ query: queryKey, phase: 'start' }).inc();
