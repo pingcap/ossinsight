@@ -1,7 +1,6 @@
 import {Connection, Pool, PoolConnection, QueryOptions} from "mysql2/promise";
 import pino from "pino";
 import {Counter, Summary} from "prom-client";
-import {clearTimeout} from "timers";
 import {
   shadowTidbQueryCounter,
   shadowTidbQueryTimer,
@@ -57,7 +56,7 @@ export class TiDBQueryExecutor implements QueryExecutor {
 
     const conn = await this.getConnectionInternal(this.shadowPool, waitShadowTidbConnectionTimer);
     try {
-      await this.executeWithConnInternal(shadowTidbQueryTimer, shadowTidbQueryCounter, conn, queryKey, sqlOrOptions, values);
+      await this.executeWithConnInternal(shadowTidbQueryTimer, shadowTidbQueryCounter, conn, queryKey, sqlOrOptions, values, true);
     } finally {
       await conn.release();
     }
@@ -65,15 +64,10 @@ export class TiDBQueryExecutor implements QueryExecutor {
 
   async executeWithConnInternal<T extends Rows>(
     timer: Summary, counter: Counter, conn: Connection,
-    queryKey: string, sqlOrOptions: string | QueryOptions, values?: Values
+    queryKey: string, sqlOrOptions: string | QueryOptions, values?: Values,
+    shadow: boolean = false
   ): Promise<[T, Fields]> {
     const end = timer.startTimer({ query: queryKey });
-    const timeout = setTimeout(() => {
-      console.error(`⚠️ Query <${queryKey}> executed more than 20 s:`, JSON.stringify({
-        sqlOrOptions,
-        values,
-      }));
-    }, 20_000);
     counter.labels({ query: queryKey, phase: 'start' }).inc();
 
     if (queryKey.startsWith('explain:')) {
@@ -107,7 +101,6 @@ export class TiDBQueryExecutor implements QueryExecutor {
       counter.labels({ query: queryKey, phase: 'error' }).inc();
       throw err;
     } finally {
-      clearTimeout(timeout);
       end();
     }
   }
@@ -128,7 +121,7 @@ export class TiDBQueryExecutor implements QueryExecutor {
 
   async getShadowConnection(): Promise<PoolConnection> {
     if (!this.shadowPool) {
-      throw new Error('No shadow connections provided.');
+      throw new Error('No shadow connection pool provided.');
     }
     return await this.getConnectionInternal(this.shadowPool, waitShadowTidbConnectionTimer);
   }
