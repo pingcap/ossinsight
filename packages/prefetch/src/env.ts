@@ -4,6 +4,7 @@ export interface AppConfig {
   CONFIGS_PATH: string;
   DATABASE_URL: string;
   SHADOW_DATABASE_URL: string;
+  SERVER_PORT: number;
 }
 
 export const PrefetchEnvSchema = {
@@ -19,6 +20,10 @@ export const PrefetchEnvSchema = {
     },
     SHADOW_DATABASE_URL: {
       type: 'string'
-    }
+    },
+    SERVER_PORT: {
+      type: 'number',
+      default: 30002
+    },
   },
 };

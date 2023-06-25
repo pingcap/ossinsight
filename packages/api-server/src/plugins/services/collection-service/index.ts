@@ -6,7 +6,7 @@ import { RowDataPacket } from "mysql2/promise";
 import { TiDBQueryExecutor } from "../../../core/executor/query-executor/TiDBQueryExecutor";
 import fp from "fastify-plugin";
 import pino from "pino";
-import {dataQueryTimer, measure, tidbQueryCounter} from "../../metrics";
+import {presetQueryTimer, measure, tidbQueryCounter} from "../../metrics";
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -97,7 +97,7 @@ export class CollectionService {
     );
 
     return cache.load(async () => {
-      return await measure(dataQueryTimer, async () => {
+      return await measure(presetQueryTimer, async () => {
         const sql = "select id, name, public from collections;";
 
         try {
@@ -134,7 +134,7 @@ export class CollectionService {
     }
 
     return cache.load(async () => {
-      return await measure(dataQueryTimer, async () => {
+      return await measure(presetQueryTimer, async () => {
         const sql = `
           select id, collection_id, repo_id, repo_name 
           from collection_items

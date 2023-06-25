@@ -1,14 +1,14 @@
+import {measure, openaiAPICounter, openaiAPITimer} from "../../metrics";
 import {Answer, AnswerSummary, RecommendedChart, RecommendQuestion} from "./types";
 import {BotResponseGenerateError, BotResponseParseError} from "../../../utils/error";
 import {Configuration, OpenAIApi} from "openai";
-
 import {DateTime} from "luxon";
 import {GenerateAnswerPromptTemplate} from "./template/GenerateAnswerPromptTemplate";
 import {GenerateChartPromptTemplate} from "./template/GenerateChartPromptTemplate";
 import {GenerateQuestionsPromptTemplate} from "./template/GenerateQuestionsPromptTemplate";
 import {GenerateSQLPromptTemplate} from "./template/GenerateSQLPromptTemplate";
 import {GenerateSummaryPromptTemplate} from "./template/GenerateSummaryPromptTemplate";
-import {PromptTemplateManager} from '../../config/prompt-template-manager';
+import {PromptTemplateManager} from './prompt/prompt-template-manager';
 import fp from "fastify-plugin";
 import pino from "pino";
 import stream from "node:stream";
@@ -53,20 +53,32 @@ export class BotService {
         const prompt = template.stringify(question, context);
         this.log.info("Requesting SQL for question: %s", question);
 
-        const start = DateTime.now();
-        const res = await this.openai.createCompletion({
-            model: template.model,
-            prompt,
-            stream: false,
-            stop: template.stop,
-            temperature: template.temperature,
-            max_tokens: template.maxTokens,
-            top_p: template.topP,
-            n: template.n
-        });
-        const end = DateTime.now();
+        let res: any, costTime: number = 0;
+        try {
+            openaiAPICounter.inc({ query: 'question-to-sql', phase: 'start' });
+            const start = DateTime.now();
+            res = await measure(openaiAPITimer.labels({ query: 'question-to-sql' }), () => {
+                return this.openai.createCompletion({
+                    model: template.model,
+                    prompt,
+                    stream: false,
+                    stop: template.stop,
+                    temperature: template.temperature,
+                    max_tokens: template.maxTokens,
+                    top_p: template.topP,
+                    n: template.n
+                });
+            });
+            const end = DateTime.now();
+            costTime = end.diff(start).as('seconds');
+            openaiAPICounter.inc({ query: 'question-to-sql', phase: 'success' });
+        } catch (err) {
+            openaiAPICounter.inc({ query: 'question-to-sql', phase: 'error' });
+            throw err;
+        }
+
         const { choices, usage } = res.data;
-        this.log.info({ usage }, 'Got SQL of question "%s" from OpenAI API, cost: %d s', question, end.diff(start).as('seconds'));
+        this.log.info({ usage }, 'Got SQL of question "%s" from OpenAI API, cost: %d s', question, costTime);
 
         if (Array.isArray(choices)) {
             return choices[0]?.text || null;
@@ -84,17 +96,20 @@ export class BotService {
         }
 
         const prompt = template.stringify(question, data);
-        const res = await this.openai.createCompletion({
-            model: template.model,
-            prompt,
-            stream: false,
-            stop: template.stop,
-            temperature: template.temperature,
-            max_tokens: template.maxTokens,
-            top_p: template.topP,
-            n: template.n,
-            logprobs: template.logprobs,
+        const res = await measure(openaiAPITimer.labels({ query: 'data-to-chart' }), () => {
+            return this.openai.createCompletion({
+                model: template.model,
+                prompt,
+                stream: false,
+                stop: template.stop,
+                temperature: template.temperature,
+                max_tokens: template.maxTokens,
+                top_p: template.topP,
+                n: template.n,
+                logprobs: template.logprobs,
+            });
         });
+
         const {choices, usage} = res.data;
         this.log.info(usage, 'OpenAI API usage');
 
@@ -130,8 +145,9 @@ export class BotService {
         let tokens: any[] = [];
 
         return new Promise(async (resolve, reject) => {
+            const end = openaiAPITimer.startTimer({query: 'question-to-answer-in-stream'});
             try {
-                const res = await this.openai.createChatCompletion({
+                 await this.openai.createChatCompletion({
                     model: template.model,
                     messages: [
                         {
@@ -208,6 +224,7 @@ export class BotService {
 
                 // @ts-ignore
                 res.data.on("error", (err) => {
+                    end();
                     reject(new BotResponseGenerateError(`Failed to process the answer (in stream mode): ${err.message}`, tokens.join(''), err));
                 });
 
@@ -222,20 +239,23 @@ export class BotService {
                 });
 
                 fieldStream.on('error', (err: any) => {
+                    end();
                     reject(new BotResponseParseError(`Failed to extract the fields of the answer (in stream mode): ${err.message}`, tokens.join(''), err));
                 });
 
                 fieldStream.on('end', () => {
+                    end();
                     fieldStream.destroy();
                     resolve([answer, tokens.join('')]);
                 });
             } catch (err: any) {
+                end();
                 reject(new BotResponseGenerateError(`Failed to complete the answer (in stream mode): ${err.message}`, tokens.join(''), err));
             }
         });
     }
 
-    async questionToAnswer(template: GenerateAnswerPromptTemplate, question: string): Promise<[Answer | null, string | null]> {
+    async questionToAnswerInNonStream(template: GenerateAnswerPromptTemplate, question: string): Promise<[Answer | null, string | null]> {
         let prompt = await this.promptTemplateManager.getTemplate(this.promptTemplateName, {
             question: question
         });
@@ -249,20 +269,22 @@ export class BotService {
         try {
             this.log.info("Requesting answer for question (in non-steam mode): %s", question);
             const start = DateTime.now();
-            const res = await this.openai.createChatCompletion({
-                model: template.model,
-                messages: [
-                    {
-                        role: 'user',
-                        content: prompt!,
-                    }
-                ],
-                stream: false,
-                stop: template.stop,
-                temperature: template.temperature,
-                max_tokens: template.maxTokens,
-                top_p: template.topP,
-                n: template.n,
+            const res = await measure(openaiAPITimer.labels({query: 'question-to-answer-in-non-stream'}), () => {
+               return this.openai.createChatCompletion({
+                   model: template.model,
+                   messages: [
+                       {
+                           role: 'user',
+                           content: prompt!,
+                       }
+                   ],
+                   stream: false,
+                   stop: template.stop,
+                   temperature: template.temperature,
+                   max_tokens: template.maxTokens,
+                   top_p: template.topP,
+                   n: template.n,
+               });
             });
             const {choices, usage} = res.data;
             const end = DateTime.now();
@@ -345,15 +367,17 @@ export class BotService {
 
         let questions = null;
         try {
-            const res = await this.openai.createCompletion({
-                model: template.model,
-                prompt,
-                stream: false,
-                stop: template.stop,
-                temperature: template.temperature,
-                max_tokens: template.maxTokens,
-                top_p: template.topP,
-                n: template.n
+            const res = await measure(openaiAPITimer.labels({ query: 'recommend-questions' }), () => {
+                return this.openai.createCompletion({
+                    model: template.model,
+                    prompt,
+                    stream: false,
+                    stop: template.stop,
+                    temperature: template.temperature,
+                    max_tokens: template.maxTokens,
+                    top_p: template.topP,
+                    n: template.n
+                });
             });
             const {choices, usage} = res.data;
             this.log.info({ usage }, 'Request to generate %d questions from OpenAI API', n);
@@ -384,15 +408,17 @@ export class BotService {
         try {
             this.log.info("Requesting answer summary for question: %s", question);
             const start = DateTime.now();
-            const res = await this.openai.createCompletion({
-                model: template.model,
-                prompt,
-                stream: false,
-                stop: template.stop,
-                temperature: template.temperature,
-                max_tokens: template.maxTokens,
-                top_p: template.topP,
-                n: template.n,
+            const res = await measure(openaiAPITimer.labels({ query: 'summary-answer' }), () => {
+                return this.openai.createCompletion({
+                    model: template.model,
+                    prompt,
+                    stream: false,
+                    stop: template.stop,
+                    temperature: template.temperature,
+                    max_tokens: template.maxTokens,
+                    top_p: template.topP,
+                    n: template.n,
+                });
             });
             const {choices, usage} = res.data;
             const end = DateTime.now();

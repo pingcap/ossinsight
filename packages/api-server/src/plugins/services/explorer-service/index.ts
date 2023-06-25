@@ -310,6 +310,7 @@ export class ExplorerService {
         }
     }
 
+    // TODO: refactor it, make it more readable.
     async generateAnswer(logger: BaseLogger, question: Question, outputInStream: boolean): Promise<string | null> {
         let responseText: string | null = null;
         const { id: questionId, title } = question;
@@ -331,7 +332,7 @@ export class ExplorerService {
                     });
                 } else {
                     // Update all the fields at once.
-                    [question.answer, responseText] = await this.botService.questionToAnswer(promptTemplate, title);
+                    [question.answer, responseText] = await this.botService.questionToAnswerInNonStream(promptTemplate, title);
                     question.revisedTitle = question.answer?.revisedTitle;
                     question.notClear = question.answer?.notClear;
                     question.assumption = question.answer?.assumption;

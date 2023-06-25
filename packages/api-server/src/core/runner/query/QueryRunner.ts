@@ -7,7 +7,7 @@ import { QueryOptions } from "mysql2/promise";
 import { QueryParser } from "./QueryParser";
 import { QuerySchema } from "../../../types/query.schema";
 import { TiDBQueryExecutor } from "../../executor/query-executor/TiDBQueryExecutor";
-import {dataQueryTimer, measure} from "../../../plugins/metrics";
+import {presetQueryTimer, measure, presetQueryCounter} from "../../../plugins/metrics";
 
 export const enum QueryType {
   QUERY = 'query',
@@ -58,6 +58,8 @@ export class QueryRunner {
           throw new Error(`Query config ${queryName} not found.`);
         }
 
+        presetQueryCounter.inc();
+
         const { cacheHours = -1, onlyFromCache = false, cacheProvider } = queryConfig;
         const queryKey = this.buildQueryKey(type, queryName);
         const cacheKey = this.buildCacheKey(type, queryName, queryConfig, params);
@@ -70,7 +72,7 @@ export class QueryRunner {
         );
     
         return cache.load(async () => {
-          return await measure(dataQueryTimer, async () => {
+          return await measure(presetQueryTimer, async () => {
             const sql = await this.queryParser.parse(templateSQL, queryConfig, params);
     
             try {

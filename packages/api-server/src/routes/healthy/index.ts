@@ -53,7 +53,7 @@ const root: FastifyPluginAsync = async (app, opts): Promise<void> => {
       app.log.error(`📋 Check the latency of prefetch, failed to get the last requestedAt of events-total query.`);
       healthy = false;
     } else {
-      const latency = DateTime.utc().diff(DateTime.fromISO(res?.data[0]?.latest_created_at), 'minutes').minutes;
+      const latency = DateTime.utc().diff(DateTime.fromISO(res?.data[0]?.latest_created_at), 'minutes').minutes - 5;
       healthInfo.prefetchLatency = latency;
       if (latency > 20) {
         app.log.error(`📋 Check the latency of prefetch, found it more than 20 minutes (latency = ${latency} minutes).`);

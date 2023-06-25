@@ -2,7 +2,7 @@ import async, {QueueObject} from "async";
 import pino from "pino";
 import {QueryRunner} from "@ossinsight/api-server";
 import {DateTime} from "luxon";
-import {prefetchQueryCounter, prefetchQueryTimer, queueWaitsGauge} from "../metrics";
+import {prefetchQueryCounter, prefetchQueryHistogram, queueWaitsGauge} from "../metrics";
 import {PrefetchJob} from "./generator";
 
 export interface PrefetchQueue {
@@ -54,9 +54,10 @@ export class JobScheduler {
 
                 // Execute the query.
                 const qStart = DateTime.utc();
-                const end = await prefetchQueryTimer.startTimer({ query: queryName, queue: refreshQueue });
+
+                const histogram = await prefetchQueryHistogram.labels({ query: queryName, queue: refreshQueue });
                 try {
-                    const res = await this.queryRunner.query<any>(queryName, params, {
+                    const { spent } = await this.queryRunner.query<any>(queryName, params, {
                         refreshCache: true,
                         ignoreCache: true,
                         ignoreOnlyFromCache: true,
@@ -66,26 +67,20 @@ export class JobScheduler {
                     });
                     const qEnd = DateTime.utc();
                     const costTime = qEnd.diff(qStart, ['seconds']);
-                    const costTimeStr = costTime.toHuman();
+                    histogram.observe(costTime.seconds);
 
                     prefetchQueryCounter.inc({ query: queryName, phase: 'success' });
-                    this.logger.info({
-                        params,
-                        spent: res.spent
-                    }, "✅ Finish prefetch <%s>, start at: %s, end at: %s, cost: %s", queryName, qStart, qEnd, costTimeStr);
+                    this.logger.info({ params, spent }, "✅ Finish prefetch <%s>, start at: %s, end at: %s, cost: %d s.", queryName, qStart, qEnd, costTime.seconds);
                     if (costTime.seconds > 180) {
-                        this.logger.warn(params, "⚠️ Prefetch query <%s> cost too much time: %s", queryName, costTimeStr);
+                        this.logger.warn(params, "⚠️ Prefetch query <%s> cost too much time: %d s", queryName, costTime.seconds);
                     }
                 } catch (err) {
                     const qEnd = DateTime.utc();
                     const costTime = qEnd.diff(qStart, ['seconds']);
-                    const costTimeStr = costTime.toHuman();
-                    const sql = (err as any)?.rawSql?.replace(/\n/g, ' ');
+                    histogram.observe(costTime.seconds);
 
                     prefetchQueryCounter.inc({ query: queryName, phase: 'fail' });
-                    this.logger.error({ params, sql, err },'❌ Failed to prefetch query <%s> (cost: %s).', queryName, costTimeStr);
-                } finally {
-                    end();
+                    this.logger.error({ params, err },'❌ Failed to prefetch query <%s>, start at: %s, end at: %s, cost: %d s.', qStart, qEnd, queryName, costTime.seconds);
                 }
             }, concurrent));
         }

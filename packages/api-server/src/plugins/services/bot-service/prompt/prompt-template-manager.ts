@@ -3,7 +3,7 @@ import fs from "node:fs";
 import mustache from "mustache";
 import path from "node:path";
 import pino from "pino";
-import { ContextProvider } from "./context-provider";
+import { ContextProvider } from "./context/context-provider";
 
 declare module 'fastify' {
     interface FastifyInstance {
