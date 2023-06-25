@@ -66,8 +66,7 @@ main().catch((err) => {
 async function prefetch(options: Options) {
   // Init tidb connection pool.
   const pool = await createPool({
-    uri: config.DATABASE_URL,
-    debug: true
+    uri: config.DATABASE_URL
   });
 
   // Init shadow tidb connection pool.
