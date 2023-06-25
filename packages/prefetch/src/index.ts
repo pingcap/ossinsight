@@ -1,10 +1,10 @@
 import {
-  CacheBuilder,
+  CacheBuilder, cacheHitCounter, cacheQueryHistogram,
   CollectionService,
   QueryLoader,
   QueryParser,
-  QueryRunner,
-  TiDBQueryExecutor
+  QueryRunner, shadowTidbQueryCounter, shadowTidbQueryHistogram, shadowTidbWaitConnectionHistogram, tidbQueryCounter,
+  TiDBQueryExecutor, tidbQueryHistogram, tidbWaitConnectionHistogram
 } from "@ossinsight/api-server";
 import {Command} from "commander";
 import {CronJob} from 'cron';
@@ -16,7 +16,7 @@ import {collectDefaultMetrics, Registry} from "prom-client";
 import {AppConfig, PrefetchEnvSchema} from "./env";
 import {JobGenerator} from "./job/generator";
 import {JobScheduler} from "./job/scheduler";
-import {prefetchQueryCounter, prefetchQueryTimer, queueWaitsGauge} from "./metrics";
+import {prefetchQueryCounter, prefetchQueryHistogram, queueWaitsGauge} from "./metrics";
 
 // Load environments.
 const config: AppConfig = envSchema({
@@ -66,8 +66,9 @@ main().catch((err) => {
 async function prefetch(options: Options) {
   // Init tidb connection pool.
   const pool = await createPool({
-    uri: config.DATABASE_URL
-  })
+    uri: config.DATABASE_URL,
+    debug: true
+  });
 
   // Init shadow tidb connection pool.
   let shadowPool: Pool | undefined;
@@ -81,10 +82,20 @@ async function prefetch(options: Options) {
   const register = new Registry();
   register.registerMetric(queueWaitsGauge);
   register.registerMetric(prefetchQueryCounter);
-  register.registerMetric(prefetchQueryTimer);
+  register.registerMetric(prefetchQueryHistogram);
+  register.registerMetric(tidbWaitConnectionHistogram);
+  register.registerMetric(tidbQueryHistogram);
+  register.registerMetric(tidbQueryCounter);
+  register.registerMetric(shadowTidbWaitConnectionHistogram);
+  register.registerMetric(shadowTidbQueryHistogram);
+  register.registerMetric(shadowTidbQueryCounter);
+  register.registerMetric(cacheQueryHistogram);
+  register.registerMetric(cacheHitCounter);
   collectDefaultMetrics({
     register,
-    labels: {NODE_APP_INSTANCE: process.env.NODE_APP_INSTANCE}
+    labels: {
+      NODE_APP_INSTANCE: process.env.NODE_APP_INSTANCE || 'ossinsight-prefetch'
+    }
   });
 
   http.createServer(async (req, res) => {
@@ -95,7 +106,7 @@ async function prefetch(options: Options) {
       res.writeHead(404);
       res.end();
     }
-  }).listen(30002);
+  }).listen(config.SERVER_PORT);
 
   // Init query executor.
   const tidbQueryExecutor = new TiDBQueryExecutor(pool, shadowPool, logger);

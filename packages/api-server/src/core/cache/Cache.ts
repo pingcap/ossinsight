@@ -2,7 +2,7 @@
 import { CacheProvider } from './provider/CacheProvider';
 import {DateTime} from 'luxon'
 import pino from 'pino';
-import {cacheHitCounter, cacheQueryTimer, measure} from '../../plugins/metrics';
+import {cacheHitCounter, cacheQueryHistogram, measure} from '../../plugins/metrics';
 
 export const MAX_CACHE_TIME = DateTime.fromISO('2099-12-31T00:00:00')
 
@@ -71,23 +71,23 @@ export default class Cache<T> {
     }
 
     if (cachedData != null) {
-      this.log.info(`Hit cache of ${this.key}.`);
+      this.log.info(`Hit cache of <${this.key}>.`);
       cacheHitCounter.inc();
 
       if (this.refreshCache) {
-        this.log.info(`🔄 Initiative refresh query for key: ${this.key}.`);
+        this.log.info(`🔄 Initiative refresh query for key: <${this.key}>.`);
         return await this.fetchDataFromDB(fallback);
       }
 
       return cachedData;
     } else {
-      this.log.debug('No hit cache of %s.', this.key);
+      this.log.debug(`No hit cache of <${this.key}>.`);
 
       if (this.onlyFromCache && !this.refreshCache) {
-        throw new NeedPreFetchError(`Failed to get data, query ${this.key} can only be executed in advance.`)
+        throw new NeedPreFetchError(`Failed to get data, query <${this.key}> can only be executed in advance.`)
       }
 
-      this.log.info('⚡️ Executing query for key: %s.', this.key);
+      this.log.info(`⚡️ Executing query for key: <${this.key}>.`);
       return await this.fetchDataFromDB(fallback);
     }
   }
@@ -96,13 +96,13 @@ export default class Cache<T> {
     const result = await fallback();
     result.expiresAt = MAX_CACHE_TIME;
 
-    measure(cacheQueryTimer.labels({op: 'set'}), async () => {
+    measure(cacheQueryHistogram.labels({op: 'set'}), async () => {
       await this.cacheProvider.set(this.key, JSON.stringify(result), {
         EX: this.cacheHours > 0 ? Math.round(this.cacheHours * 3600) : -1
       });
     }).then(null).catch((err) => {
-      console.error(`Failed to write cache for key ${this.key}.`, err);
-      this.log.error(err, 'Failed to write cache for key %s.', this.key);
+      console.error(`Failed to write cache for key <${this.key}>:`, err)
+      this.log.error(err, `Failed to write cache for key <${this.key}>.`);
     });
 
     result.refresh = true;
@@ -112,7 +112,7 @@ export default class Cache<T> {
   private async fetchDataFromCache():Promise<CachedData<T> | null> {
     try {
       const json = await measure(
-        cacheQueryTimer.labels({op: 'get'}),
+        cacheQueryHistogram.labels({op: 'get'}),
         () => this.cacheProvider.get(this.key)
       ) as any;
 
@@ -123,7 +123,7 @@ export default class Cache<T> {
       }
     } catch (err) {
       console.error(`Cache ${this.key} data is broken:`, err);
-      this.log.error(err, 'Cache <%s> data is broken.', this.key);
+      this.log.error(err, `Cache <${this.key}> data is broken.`);
     }
     return null;
   }

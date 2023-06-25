@@ -1,13 +1,13 @@
 import {Connection, Pool, PoolConnection, QueryOptions} from "mysql2/promise";
 import pino from "pino";
-import {Counter, Summary} from "prom-client";
+import {Counter, Histogram} from "prom-client";
 import {
   shadowTidbQueryCounter,
-  shadowTidbQueryTimer,
+  shadowTidbQueryHistogram,
   tidbQueryCounter,
-  tidbQueryTimer,
-  waitShadowTidbConnectionTimer,
-  waitTidbConnectionTimer
+  tidbQueryHistogram,
+  shadowTidbWaitConnectionHistogram,
+  tidbWaitConnectionHistogram
 } from "../../../plugins/metrics";
 import {Conn, Fields, QueryExecutor, Rows, Values} from "./QueryExecutor";
 
@@ -46,7 +46,7 @@ export class TiDBQueryExecutor implements QueryExecutor {
       this.logger.error(err, 'Failed to execute query with shadow conn.');
     });
 
-    return this.executeWithConnInternal(tidbQueryTimer, tidbQueryCounter, conn, queryKey, sqlOrOptions, values);
+    return this.executeWithConnInternal(tidbQueryHistogram, tidbQueryCounter, conn, queryKey, sqlOrOptions, values);
   }
 
   async executeWithConnShadow(queryKey: string, sqlOrOptions: string | QueryOptions, values?: Values) {
@@ -54,16 +54,16 @@ export class TiDBQueryExecutor implements QueryExecutor {
       return;
     }
 
-    const conn = await this.getConnectionInternal(this.shadowPool, waitShadowTidbConnectionTimer);
+    const conn = await this.getConnectionInternal(this.shadowPool, shadowTidbWaitConnectionHistogram);
     try {
-      await this.executeWithConnInternal(shadowTidbQueryTimer, shadowTidbQueryCounter, conn, queryKey, sqlOrOptions, values);
+      await this.executeWithConnInternal(shadowTidbQueryHistogram, shadowTidbQueryCounter, conn, queryKey, sqlOrOptions, values);
     } finally {
       await conn.release();
     }
   }
 
   async executeWithConnInternal<T extends Rows>(
-    timer: Summary, counter: Counter, conn: Connection,
+    timer: Histogram, counter: Counter, conn: Connection,
     queryKey: string, sqlOrOptions: string | QueryOptions, values?: Values
   ): Promise<[T, Fields]> {
     const end = timer.startTimer({ query: queryKey });
@@ -104,7 +104,7 @@ export class TiDBQueryExecutor implements QueryExecutor {
     }
   }
 
-  async getConnectionInternal(pool: Pool, timer: Summary): Promise<PoolConnection> {
+  async getConnectionInternal(pool: Pool, timer: Histogram): Promise<PoolConnection> {
     const end = timer.startTimer();
 
     try {
@@ -115,14 +115,14 @@ export class TiDBQueryExecutor implements QueryExecutor {
   }
 
   async getConnection(): Promise<PoolConnection> {
-    return await this.getConnectionInternal(this.pool, waitTidbConnectionTimer);
+    return await this.getConnectionInternal(this.pool, tidbWaitConnectionHistogram);
   }
 
   async getShadowConnection(): Promise<PoolConnection> {
     if (!this.shadowPool) {
       throw new Error('No shadow connection pool provided.');
     }
-    return await this.getConnectionInternal(this.shadowPool, waitShadowTidbConnectionTimer);
+    return await this.getConnectionInternal(this.shadowPool, shadowTidbWaitConnectionHistogram);
   }
 
 }
