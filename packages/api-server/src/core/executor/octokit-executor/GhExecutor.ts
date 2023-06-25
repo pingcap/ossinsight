@@ -68,7 +68,7 @@ export default class GhExecutor {
           const start = DateTime.now();
           const {data} = await measure(
             githubAPITimer.labels({api: 'getRepo'}),
-            () => octokit.rest.repos.get({repo, owner})
+            async () => await octokit.rest.repos.get({repo, owner})
           )
           const end = DateTime.now();
           githubAPICounter.labels({api: 'getRepo', phase: 'success'}).inc();
@@ -135,7 +135,7 @@ export default class GhExecutor {
         try {
           const data: any = await measure(
             githubAPITimer.labels({api: 'searchRepos'}),
-            () => octokit.graphql(query, variables)
+            async () => await octokit.graphql(query, variables)
           )
           githubAPICounter.labels({api: 'searchRepos', phase: 'success'}).inc()
 
@@ -213,7 +213,7 @@ export default class GhExecutor {
         try {
           const data: any = await measure(
               githubAPITimer.labels({api: 'searchUsers'}),
-              () => octokit.graphql(query, variables)
+              async () => await octokit.graphql(query, variables)
           )
           githubAPICounter.labels({api: 'searchUsers', phase: 'success'}).inc()
 
