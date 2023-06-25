@@ -57,8 +57,8 @@ export class BotService {
         try {
             openaiAPICounter.inc({ query: 'question-to-sql', phase: 'start' });
             const start = DateTime.now();
-            res = await measure(openaiAPITimer.labels({ query: 'question-to-sql' }), () => {
-                return this.openai.createCompletion({
+            res = await measure(openaiAPITimer.labels({ query: 'question-to-sql' }), async () => {
+                return await this.openai.createCompletion({
                     model: template.model,
                     prompt,
                     stream: false,
@@ -96,8 +96,8 @@ export class BotService {
         }
 
         const prompt = template.stringify(question, data);
-        const res = await measure(openaiAPITimer.labels({ query: 'data-to-chart' }), () => {
-            return this.openai.createCompletion({
+        const res = await measure(openaiAPITimer.labels({ query: 'data-to-chart' }), async () => {
+            return await this.openai.createCompletion({
                 model: template.model,
                 prompt,
                 stream: false,
@@ -269,8 +269,8 @@ export class BotService {
         try {
             this.log.info("Requesting answer for question (in non-steam mode): %s", question);
             const start = DateTime.now();
-            const res = await measure(openaiAPITimer.labels({query: 'question-to-answer-in-non-stream'}), () => {
-               return this.openai.createChatCompletion({
+            const res = await measure(openaiAPITimer.labels({query: 'question-to-answer-in-non-stream'}), async () => {
+               return await this.openai.createChatCompletion({
                    model: template.model,
                    messages: [
                        {
@@ -367,8 +367,8 @@ export class BotService {
 
         let questions = null;
         try {
-            const res = await measure(openaiAPITimer.labels({ query: 'recommend-questions' }), () => {
-                return this.openai.createCompletion({
+            const res = await measure(openaiAPITimer.labels({ query: 'recommend-questions' }), async () => {
+                return await this.openai.createCompletion({
                     model: template.model,
                     prompt,
                     stream: false,
@@ -408,8 +408,8 @@ export class BotService {
         try {
             this.log.info("Requesting answer summary for question: %s", question);
             const start = DateTime.now();
-            const res = await measure(openaiAPITimer.labels({ query: 'summary-answer' }), () => {
-                return this.openai.createCompletion({
+            const res = await measure(openaiAPITimer.labels({ query: 'summary-answer' }), async () => {
+                return await this.openai.createCompletion({
                     model: template.model,
                     prompt,
                     stream: false,
