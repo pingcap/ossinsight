@@ -23,12 +23,14 @@ declare module 'fastify' {
   }
 }
 
-export default fp(async (fastify) => {
-    const log = fastify.log.child({ service: 'bot-service'}) as pino.Logger;
-    fastify.decorate('botService', new BotService(log, fastify.config.OPENAI_API_KEY, fastify.promptTemplateManager, fastify.config.PROMPT_TEMPLATE_NAME));
+export default fp(async (app) => {
+    const log = app.log.child({ service: 'bot-service'}) as pino.Logger;
+    app.decorate('botService', new BotService(log, app.config.OPENAI_API_KEY, app.promptTemplateManager, app.config.PROMPT_TEMPLATE_NAME));
 }, {
   name: '@ossinsight/bot-service',
-  dependencies: []
+  dependencies: [
+      '@ossinsight/prompt-template-manager'
+  ]
 });
 
 const tableColumnRegexp = /(?<table_name>.+)\.(?<column_name>.+)/;
