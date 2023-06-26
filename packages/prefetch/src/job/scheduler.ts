@@ -79,8 +79,8 @@ export class JobScheduler {
                     const costTime = qEnd.diff(qStart, ['seconds']);
                     histogram.observe(costTime.seconds);
 
-                    prefetchQueryCounter.inc({ query: queryName, phase: 'fail' });
-                    this.logger.error({ params, err },'❌ Failed to prefetch query <%s>, start at: %s, end at: %s, cost: %d s.', qStart, qEnd, queryName, costTime.seconds);
+                    prefetchQueryCounter.inc({ query: queryName, phase: 'error' });
+                    this.logger.error({ params, err },'❌ Failed to prefetch query <%s>, start at: %s, end at: %s, cost: %d s.', queryName, qStart, qEnd, costTime.seconds);
                 }
             }, concurrent));
         }
