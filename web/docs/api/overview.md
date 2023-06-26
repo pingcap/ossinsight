@@ -6,7 +6,7 @@ sidebar_label: API Overview
 slug: /api
 ---
 
-:::info
+:::info Good News!
 
 If you want to get your own data or some repos' data, you can setup our new repo that could crawl you GitHub activities data into a free database, and customize your insight with SQL!
 
