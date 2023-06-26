@@ -18,6 +18,9 @@ import {CacheOption, CacheProvider} from "./CacheProvider";
 // ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 //
 
+export const MAX_WAIT_CONNECTION_TIME = 3;  // 3 seconds.
+export const MAX_CACHE_OPERATION_TIME = 10; // 10 seconds.
+
 export default class NormalTableCacheProvider implements CacheProvider {
 
     constructor(
@@ -37,31 +40,40 @@ export default class NormalTableCacheProvider implements CacheProvider {
 
         // Execute SQL to set cache item.
         const waitConnStart = DateTime.now();
-        return await withConnection(this.pool, async (conn) => {
+        const resultPromise = withConnection(this.pool, async (conn) => {
             const waitConnEnd = DateTime.now();
             const waitConnDuration = waitConnEnd.diff(waitConnStart).as('seconds');
-            if (waitConnDuration > 3) {
-                this.logger.warn('⚠️ Wait connection for set cache <%s> cost %d s, more then 3 s.', key, waitConnDuration);
+            if (waitConnDuration > MAX_WAIT_CONNECTION_TIME) {
+                this.logger.warn('⚠️  Wait connection for set cache <%s> cost %d s, more then %d s.', key, waitConnDuration, MAX_WAIT_CONNECTION_TIME);
             }
 
-            const start = DateTime.now();
-            try {
-                return await conn.query({
-                    sql,
-                    values: [key, value, EX],
-                    timeout: 10000,
-                });
-            } finally {
-                const end = DateTime.now();
-                const duration = end.diff(start).as('seconds');
-                if (duration > 10) {
-                    this.logger.warn('⚠️ Set cache <%s> cost %d s, more then 10 s.', key, duration);
-                }
-            }
+            return await conn.query({
+                sql,
+                values: [key, value, EX],
+                timeout: MAX_CACHE_OPERATION_TIME * 1000
+            });
         });
+
+        // Set timeout for set cache operation.
+        let timeout: NodeJS.Timeout | null = null;
+        const timeoutPromise = new Promise((resolve, reject) => {
+            timeout = setTimeout(() => {
+                this.logger.warn('⚠️  Set cache <%s> operation timed out.', key);
+                reject(new Error(`Set cache <${key}> operation timed out, more than ${MAX_CACHE_OPERATION_TIME} s.`));
+            }, MAX_CACHE_OPERATION_TIME * 1000);
+        });
+
+        try {
+            return Promise.race([resultPromise, timeoutPromise]);
+        } finally {
+            if (timeout) {
+                clearTimeout(timeout);
+                timeout = null;
+            }
+        }
     }
 
-    async get(key: string): Promise<any> {
+    async get(key: string) {
         const sql = `SELECT *, DATE_ADD(updated_at, INTERVAL expires SECOND) AS expired_at
         FROM ${this.tableName}
         WHERE
@@ -80,34 +92,43 @@ export default class NormalTableCacheProvider implements CacheProvider {
 
         // Execute SQL to get cache item.
         const waitConnStart = DateTime.now();
-        return await withConnection(this.pool, async (conn) => {
+        const resultPromise = withConnection(this.pool, async (conn) => {
             const waitConnEnd = DateTime.now();
             const waitConnDuration = waitConnEnd.diff(waitConnStart).as('seconds');
-            if (waitConnDuration > 3) {
-                this.logger.warn('⚠️ Wait connection for get cache <%s> cost %d s, more then 3 s.', key, waitConnDuration);
+            if (waitConnDuration > MAX_WAIT_CONNECTION_TIME) {
+                this.logger.warn('⚠️  Wait connection for get cache <%s> cost %d s, more then %d s.', key, waitConnDuration, MAX_WAIT_CONNECTION_TIME);
             }
 
-            const start = DateTime.now();
-            try {
-                const [rows] = await conn.query<any[]>({
-                    sql,
-                    values: [key],
-                    timeout: 10000,
-                });
+            const [rows] = await conn.query<any[]>({
+                sql,
+                values: [key],
+                timeout: MAX_CACHE_OPERATION_TIME * 1000,
+            });
 
-                if (Array.isArray(rows) && rows.length >= 1) {
-                    return rows[0]?.cache_value;
-                } else {
-                    return null;
-                }
-            } finally {
-                const end = DateTime.now();
-                const duration = end.diff(start).as('seconds');
-                if (duration > 10) {
-                    this.logger.warn('⚠️ Get cache <%s> cost %d s, more then 10 s.', key, duration);
-                }
+            if (Array.isArray(rows) && rows.length >= 1) {
+                return rows[0]?.cache_value;
+            } else {
+                return null;
             }
         });
+
+        // Set timeout for get cache operation.
+        let timeout: NodeJS.Timeout | null = null;
+        const timeoutPromise = new Promise((resolve, reject) => {
+            timeout = setTimeout(() => {
+               this.logger.warn('⚠️  Get cache <%s> operation timed out, more than %d s.', key, MAX_CACHE_OPERATION_TIME);
+               reject(new Error(`Get cache <${key}> operation timed out.`));
+           }, MAX_CACHE_OPERATION_TIME * 1000);
+        });
+
+        try {
+            return Promise.race([resultPromise, timeoutPromise]);
+        } finally {
+            if (timeout) {
+                clearTimeout(timeout);
+                timeout = null;
+            }
+        }
     }
 
 }

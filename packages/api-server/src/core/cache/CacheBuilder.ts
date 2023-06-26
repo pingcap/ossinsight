@@ -47,8 +47,7 @@ export default class CacheBuilder {
         onlyFromCache?: boolean, refreshCache?: boolean
     ): Cache<any> {
         if (!this.enableCache) {
-            const log = this.logger.child({ 'cache-provider': 'none' });
-            return new Cache<any>(log, this.noneCacheProvider, key, -1, false, false);
+            return new Cache<any>(this.logger, this.noneCacheProvider, key, -1, false, false);
         }
 
         switch(cacheProvider) {
@@ -56,12 +55,12 @@ export default class CacheBuilder {
                 if (this.normalCacheProvider === undefined) {
                     throw new Error('Normal cache provider has not initialed.');
                 }
-                return new Cache<any>(this.logger.child({ 'cache-provider': 'normal-table' }), this.normalCacheProvider, key, cacheHours, onlyFromCache, refreshCache);
+                return new Cache<any>(this.logger, this.normalCacheProvider, key, cacheHours, onlyFromCache, refreshCache);
             case CacheProviderTypes.CACHED_TABLE:
                 if (this.cachedTableCacheProvider === undefined) {
                     throw new Error('Cached table cache provider has not initialed.');
                 }
-                return new Cache<any>(this.logger.child({ 'cache-provider': 'cached-table' }), this.cachedTableCacheProvider, key, cacheHours, onlyFromCache, refreshCache);
+                return new Cache<any>(this.logger, this.cachedTableCacheProvider, key, cacheHours, onlyFromCache, refreshCache);
             default:
                 throw new Error(`Invalid cache provider type ${cacheProvider}.`);
         }
