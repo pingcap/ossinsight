@@ -1,6 +1,7 @@
 import AnalyticsIcon from '@mui/icons-material/Analytics';
 import AutoGraphIcon from '@mui/icons-material/AutoGraph';
 import { BottomNavigation, BottomNavigationAction, Box, Paper, Stack, styled, Tab, Tabs } from '@mui/material';
+import OSSInsightLiteAds from '@site/src/components/Ads/OSSInsightLiteAds';
 import React, { useMemo } from 'react';
 import MilestoneIcon from '@site/src/components/milestone/icon.svg';
 import { isNullish, notNullish } from '@site/src/utils/value';
@@ -53,6 +54,7 @@ export function Navigator ({ value, type, comparing, scrollTo }: NavigatorProps)
         >
           {renderTabs(comparing ? 6 : undefined, idx, scrollTo)}
         </Tabs>
+        <OSSInsightLiteAds />
       </SideContainer>
     );
   } else {

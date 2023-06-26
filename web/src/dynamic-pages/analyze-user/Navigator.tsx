@@ -11,6 +11,7 @@ import {
   Tab,
   Tabs,
 } from '@mui/material';
+import OSSInsightLiteAds from '@site/src/components/Ads/OSSInsightLiteAds';
 import React, { useMemo } from 'react';
 
 const SideContainer = styled('div')({
@@ -60,6 +61,7 @@ export function Navigator ({ value, type, scrollTo }: NavigatorProps) {
         >
           {renderTabs(undefined, idx, scrollTo)}
         </Tabs>
+        <OSSInsightLiteAds />
       </SideContainer>
     );
   } else {
