@@ -5,6 +5,12 @@ import pino from "pino";
 import {checkTiDBIfConnected} from "../../utils/db";
 import Logger = pino.Logger;
 
+interface EventsTotalQueryResult {
+  cnt: number;
+  latest_created_at: string;
+  latest_timestamp: string;
+}
+
 const schema = {
   description: 'Check if the API server is healthy.',
   tags: ['system'],
@@ -27,7 +33,7 @@ const schema = {
         },
         prefetchLatency: {
           type: 'number',
-        }
+        },
       }
     }
   }
@@ -48,18 +54,17 @@ const root: FastifyPluginAsync = async (app, opts): Promise<void> => {
     ]);
 
     // Check if the latency of prefetch.
-    const res = await app.queryRunner.query<any>('events-total', {});
-    if (!Array.isArray(res?.data) || !res?.data[0]?.latest_created_at) {
-      app.log.error(`📋 Check the latency of prefetch, failed to get the last requestedAt of events-total query.`);
+    const totalRes = await app.queryRunner.query<EventsTotalQueryResult[]>('events-total', {});
+    const latestEventAt = totalRes?.data?.[0]?.latest_created_at;
+    if (!latestEventAt) {
+      app.log.error(`📋 Check the latency of prefetch, failed to get the last event at from events-total query.`);
       healthy = false;
     } else {
-      const latency = DateTime.utc().diff(DateTime.fromISO(res?.data[0]?.latest_created_at), 'minutes').minutes - 5;
+      const latency = DateTime.utc().diff(DateTime.fromISO(latestEventAt), 'minutes').minutes - 5;
       healthInfo.prefetchLatency = latency;
       if (latency > 20) {
         app.log.error(`📋 Check the latency of prefetch, found it more than 20 minutes (latency = ${latency} minutes).`);
         healthy = false;
-      } else if (latency > 10) {
-        app.log.warn(`📋 Check the latency of prefetch, found it more than 10 minutes (latency = ${latency} minutes).`);
       }
     }
 

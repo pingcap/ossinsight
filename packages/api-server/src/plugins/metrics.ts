@@ -112,14 +112,14 @@ export const githubAPICounter = new Counter({
 export const openaiAPITimer = new Summary({
     name: metricsPrefix + 'openai_api_req_summary_seconds',
     help: 'The summary of the duration of OpenAI API requesting.',
-    labelNames: ['query'],
+    labelNames: ['api'],
     percentiles: [0.999, 0.99, 0.95, 0.80, 0.50],
 });
 
 export const openaiAPICounter = new Counter({
     name: metricsPrefix + 'openai_api_req_total',
     help: 'The total number to OpenAI API requesting.',
-    labelNames: ['query', 'phase'] as const
+    labelNames: ['api', 'statusCode'] as const
 });
 
 export async function measure<T>(metrics: Summary<any> | Summary.Internal<any> | Histogram<any> | Histogram.Internal<any>, fn: () => Promise<T>) {

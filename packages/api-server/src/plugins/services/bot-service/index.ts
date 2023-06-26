@@ -57,9 +57,8 @@ export class BotService {
 
         let res: any, costTime: number = 0;
         try {
-            openaiAPICounter.inc({ query: 'question-to-sql', phase: 'start' });
             const start = DateTime.now();
-            res = await measure(openaiAPITimer.labels({ query: 'question-to-sql' }), async () => {
+            res = await measure(openaiAPITimer.labels({ api: 'question-to-sql' }), async () => {
                 return await this.openai.createCompletion({
                     model: template.model,
                     prompt,
@@ -71,11 +70,10 @@ export class BotService {
                     n: template.n
                 });
             });
+            openaiAPICounter.inc({ api: 'question-to-sql', statusCode: res.status });
             const end = DateTime.now();
             costTime = end.diff(start).as('seconds');
-            openaiAPICounter.inc({ query: 'question-to-sql', phase: 'success' });
         } catch (err) {
-            openaiAPICounter.inc({ query: 'question-to-sql', phase: 'error' });
             throw err;
         }
 
@@ -98,7 +96,7 @@ export class BotService {
         }
 
         const prompt = template.stringify(question, data);
-        const res = await measure(openaiAPITimer.labels({ query: 'data-to-chart' }), async () => {
+        const res = await measure(openaiAPITimer.labels({ api: 'data-to-chart' }), async () => {
             return await this.openai.createCompletion({
                 model: template.model,
                 prompt,
@@ -111,6 +109,7 @@ export class BotService {
                 logprobs: template.logprobs,
             });
         });
+        openaiAPICounter.inc({ api: 'data-to-chart', statusCode: res.status });
 
         const {choices, usage} = res.data;
         this.log.info(usage, 'OpenAI API usage');
@@ -147,9 +146,9 @@ export class BotService {
         let tokens: any[] = [];
 
         return new Promise(async (resolve, reject) => {
-            const end = openaiAPITimer.startTimer({query: 'question-to-answer-in-stream'});
+            const end = openaiAPITimer.startTimer({api: 'question-to-answer-in-stream'});
             try {
-                 await this.openai.createChatCompletion({
+                 const res = await this.openai.createChatCompletion({
                     model: template.model,
                     messages: [
                         {
@@ -271,7 +270,7 @@ export class BotService {
         try {
             this.log.info("Requesting answer for question (in non-steam mode): %s", question);
             const start = DateTime.now();
-            const res = await measure(openaiAPITimer.labels({query: 'question-to-answer-in-non-stream'}), async () => {
+            const res = await measure(openaiAPITimer.labels({api: 'question-to-answer-in-non-stream'}), async () => {
                return await this.openai.createChatCompletion({
                    model: template.model,
                    messages: [
@@ -288,6 +287,7 @@ export class BotService {
                    n: template.n,
                });
             });
+            openaiAPICounter.inc({ api: 'question-to-answer-in-non-stream', statusCode: res.status });
             const {choices, usage} = res.data;
             const end = DateTime.now();
             this.log.info({ usage }, 'Got answer of question "%s" from OpenAI API, cost: %d s', question, end.diff(start).as('seconds'));
@@ -369,7 +369,7 @@ export class BotService {
 
         let questions = null;
         try {
-            const res = await measure(openaiAPITimer.labels({ query: 'recommend-questions' }), async () => {
+            const res = await measure(openaiAPITimer.labels({ api: 'recommend-questions' }), async () => {
                 return await this.openai.createCompletion({
                     model: template.model,
                     prompt,
@@ -381,6 +381,7 @@ export class BotService {
                     n: template.n
                 });
             });
+            openaiAPICounter.inc({ api: 'recommend-questions', statusCode: res.status });
             const {choices, usage} = res.data;
             this.log.info({ usage }, 'Request to generate %d questions from OpenAI API', n);
 
@@ -410,7 +411,7 @@ export class BotService {
         try {
             this.log.info("Requesting answer summary for question: %s", question);
             const start = DateTime.now();
-            const res = await measure(openaiAPITimer.labels({ query: 'summary-answer' }), async () => {
+            const res = await measure(openaiAPITimer.labels({ api: 'summary-answer' }), async () => {
                 return await this.openai.createCompletion({
                     model: template.model,
                     prompt,
@@ -422,6 +423,7 @@ export class BotService {
                     n: template.n,
                 });
             });
+            openaiAPICounter.inc({ api: 'summary-answer', statusCode: res.status });
             const {choices, usage} = res.data;
             const end = DateTime.now();
             this.log.info({ usage }, 'Got summary of question "%s" from OpenAI API, cost: %d s', question, end.diff(start).as('seconds'));
