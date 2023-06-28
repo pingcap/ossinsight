@@ -271,6 +271,7 @@ export class BotService {
     }
 
     async questionToAnswerInNonStream(template: GenerateAnswerPromptTemplate, question: string): Promise<[Answer | null, string | null]> {
+        const api = 'question-to-answer-in-non-stream';
         let prompt = await this.promptTemplateManager.getTemplate(this.promptTemplateName, {
             question: question
         });
@@ -284,7 +285,6 @@ export class BotService {
         try {
             this.log.info("Requesting answer for question (in non-steam mode): %s", question);
             const start = DateTime.now();
-            const api = 'question-to-answer-in-non-stream';
             const timer = openaiAPITimer.labels({api});
             const res = await countAPIRequest(counter, api, async () => {
                 return await measure(timer, async () => {
