@@ -12,3 +12,4 @@ items:
   - cfortuner/promptable
   - microsoft/prompt-engine
   - zilliztech/GPTCache
+  - embedchain/embedchain
