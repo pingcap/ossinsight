@@ -1,11 +1,10 @@
 import AutoLoad, { AutoloadPluginOptions } from '@fastify/autoload';
-
 import { JobServerEnvSchema } from './env';
 import { FastifyPluginAsync } from 'fastify';
 import fastifyEnv from '@fastify/env';
 import { join } from 'path';
 import {Queue, Worker} from "bullmq";
-import {Question} from "@ossinsight/api-server";
+import { Question,} from "@ossinsight/api-server";
 import {EmailClient} from "@ossinsight/email-server";
 import {GitHubRepoWithEvents} from "./types";
 import {CalcMilestonesJobInput} from "./jobs/calc_milestones/index.worker";
@@ -68,6 +67,12 @@ const app: FastifyPluginAsync<AppOptions> = async (
   // Load plugins.
   await fastify.register(AutoLoad, {
     dir: join(__dirname, "plugins"),
+    options: opts,
+  });
+
+  // Load routes.
+  await fastify.register(AutoLoad, {
+    dir: join(__dirname, "routes"),
     options: opts,
   });
 };

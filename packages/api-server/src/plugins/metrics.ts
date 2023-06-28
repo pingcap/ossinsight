@@ -1,3 +1,4 @@
+import {AxiosResponse} from "axios";
 import fp from "fastify-plugin";
 import fastifyMetrics from 'fastify-metrics';
 import {Counter, exponentialBuckets, Histogram, Summary} from "prom-client";
@@ -128,6 +129,17 @@ export async function measure<T>(metrics: Summary<any> | Summary.Internal<any> |
         return await fn()
     } finally {
         end()
+    }
+}
+
+export async function countAPIRequest<T extends AxiosResponse<any, any>>(counter: Counter, api: string, fn: () => Promise<T>) {
+    try {
+        const res = await fn();
+        counter.inc({ api, statusCode: res.status});
+        return res;
+    } catch (err: any) {
+        counter.inc({ api, statusCode: err?.response?.status || 500 });
+        throw err;
     }
 }
 
