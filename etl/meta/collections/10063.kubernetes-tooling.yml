@@ -27,3 +27,7 @@ items:
   - bridgecrewio/checkov
   - kubeshark/kubeshark
   - robusta-dev/kubernetes-chatgpt-bot
+  - robusta-dev/krr
+  - kubernetes-sigs/kwok
+  - gimlet-io/gimlet
+  - berops/claudie

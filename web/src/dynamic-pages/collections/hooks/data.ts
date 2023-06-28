@@ -57,6 +57,7 @@ export function useCollectionHistory (collectionId: number | undefined, dimensio
         return [];
       }
       const result: CollectionHistoryData[] = [];
+      const fmt = data[0]?.event_month?.includes('T') ? 'iso' : 'ymd';
       const min = data[0]?.event_month ?? '2011-01-01';
       // MARK: should we use current instead of data max?
       const max = data[data.length - 1].event_month;
@@ -68,8 +69,8 @@ export function useCollectionHistory (collectionId: number | undefined, dimensio
 
       while (year < maxYear || (year === maxYear && month <= maxMonth)) {
         // mock server returned time format
-        const ts = new Date(`${year}-${String(month).padStart(2, '0')}-01`);
-        const current = new Date(ts.getTime()).toISOString();
+        const ymd = `${year}-${String(month).padStart(2, '0')}-01`;
+        const current = fmt === 'iso' ? new Date(ymd).toISOString() : ymd;
 
         // stores name was not provided in current month
         const nameSet = new Set<string>(Object.keys(latestValues));

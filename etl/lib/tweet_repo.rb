@@ -22,10 +22,12 @@ class TweetRepo
 
   def tweet!
     return if repo_info["description"].to_s.scan(/\p{Han}+/).join.size >= 10
+    tweet_text = text
+    return if tweet_text.blank?
     if repo_info["stargazers_count"].to_i > 10000
-      client.update_with_media(text, generate_img)
+      client.update_with_media(tweet_text, generate_img)
     else
-      client.update(text)
+      client.update(tweet_text)
     end
   end
 
@@ -71,6 +73,7 @@ class TweetRepo
     stars_count = info["stargazers_count"].to_i
     stars_count_pretty = stars_for_human(stars_count)
     stars_incr = stars_incr_count_last_7_days
+    return if [stars_incr, stars_count].min == 0
     logins = list_twitter_logins
 
     repo_desc = if stars_count > 10000

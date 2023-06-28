@@ -1,13 +1,14 @@
 import { SQLRunner } from "../../../core/runner/sql/SQLRunner";
 import fp from "fastify-plugin";
 
+// Should be playground query executor.
 export default fp(async (fastify) => {
     fastify.decorate('sqlRunner', new SQLRunner(fastify.playgroundQueryExecutor));
 }, {
-    name: 'sql-runner',
+    name: '@ossinsight/sql-runner',
     dependencies: [
         '@fastify/env',
-        'playground-query-executor'
+        '@ossinsight/playground-query-executor'
     ],
 });
 

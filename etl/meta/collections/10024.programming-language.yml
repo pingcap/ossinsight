@@ -15,6 +15,7 @@ items:
   - crystal-lang/crystal
   - PowerShell/PowerShell
   - scala/scala
+  - lampepfl/dotty
   - dotnet/roslyn
   - clojure/clojure
   - micropython/micropython
@@ -60,3 +61,9 @@ items:
   - bazelbuild/starlark
   - facebookexperimental/starlark-rust
   - google/starlark-go
+  - winglang/wing
+  - diku-dk/futhark
+  - flix/flix
+  - koka-lang/koka
+  - effekt-lang/effekt
+  - denoland/deno

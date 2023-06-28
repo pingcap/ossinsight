@@ -40,6 +40,7 @@ export interface Question {
   errorType?: QuestionFeedbackType | null;
   hitCache: boolean;
   preceding: number;
+  [key: string]: any
 }
 
 export interface QuestionSQLResult {

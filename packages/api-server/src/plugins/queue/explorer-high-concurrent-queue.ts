@@ -9,6 +9,7 @@ declare module 'fastify' {
 
 export const EXPLORER_HIGH_CONCURRENT_QUEUE_NAME = "explorer_high_concurrent_queue";
 
+// TODO: remove the redis queue.
 export default fp(async (app) => {
   const explorerHighConcurrentQueue = new Queue(EXPLORER_HIGH_CONCURRENT_QUEUE_NAME, {
     connection: app.redis,
@@ -18,6 +19,6 @@ export default fp(async (app) => {
   name: '@ossinsight/explorer-high-concurrent-queue',
   dependencies: [
     '@fastify/env',
-    'fastify-redis',
+    '@ossinsight/redis',
   ]
 });

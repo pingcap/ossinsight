@@ -1,8 +1,10 @@
-import { CacheOption, CacheProvider } from "./CacheProvider";
-import { OkPacket, ResultSetHeader, RowDataPacket } from "mysql2";
+import {DateTime} from "luxon";
+import {OkPacket, ResultSetHeader, RowDataPacket} from "mysql2";
 
-import {Connection} from "mysql2/promise";
+import {Pool} from "mysql2/promise";
 import pino from "pino";
+import {withConnection} from "../../../utils/db";
+import {CacheOption, CacheProvider} from "./CacheProvider";
 
 // Table schema:
 //
@@ -16,16 +18,17 @@ import pino from "pino";
 // ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 //
 
+export const MAX_WAIT_CONNECTION_TIME = 3;  // 3 seconds.
+export const MAX_CACHE_OPERATION_TIME = 10; // 10 seconds.
+
 export default class NormalTableCacheProvider implements CacheProvider {
-    private readonly logger = pino().child({ component: 'cache-provider' })
 
     constructor(
-      private readonly conn: Connection,
-      private readonly shadowConn?: Connection,
+      private readonly logger: pino.Logger,
+      private readonly pool: Pool,
+      private readonly shadowPool?: Pool,
       private readonly tableName: string = 'cache'
-    ) {
-
-    }
+    ) {}
 
     async set<T extends RowDataPacket[][] | RowDataPacket[] | OkPacket | OkPacket[] | ResultSetHeader>(
         key: string, value: string, options?: CacheOption
@@ -35,39 +38,97 @@ export default class NormalTableCacheProvider implements CacheProvider {
         VALUES (?, ?, ?)
         ON DUPLICATE KEY UPDATE cache_value = VALUES(cache_value), expires = VALUES(expires);`;
 
-        if (this.shadowConn) {
-            this.conn.query<T>(sql, [key, value, EX]).then(null).catch((err) => {
-                this.logger.error(err, 'Failed to set cache with key %s to shadow database.', key);
-            });
-        }
+        // Execute SQL to set cache item.
+        const waitConnStart = DateTime.now();
+        const resultPromise = withConnection(this.pool, async (conn) => {
+            const waitConnEnd = DateTime.now();
+            const waitConnDuration = waitConnEnd.diff(waitConnStart).as('seconds');
+            if (waitConnDuration > MAX_WAIT_CONNECTION_TIME) {
+                this.logger.warn('⚠️  Wait connection for set cache <%s> cost %d s, more then %d s.', key, waitConnDuration, MAX_WAIT_CONNECTION_TIME);
+            }
 
-        return this.conn.query<T>(sql, [key, value, EX]);
+            return await conn.query({
+                sql,
+                values: [key, value, EX],
+                timeout: MAX_CACHE_OPERATION_TIME * 1000
+            });
+        });
+
+        // Set timeout for set cache operation.
+        let timeout: NodeJS.Timeout | null = null;
+        const timeoutPromise = new Promise((resolve, reject) => {
+            timeout = setTimeout(() => {
+                this.logger.warn('⚠️  Set cache <%s> operation timed out.', key);
+                reject(new Error(`Set cache <${key}> operation timed out, more than ${MAX_CACHE_OPERATION_TIME} s.`));
+            }, MAX_CACHE_OPERATION_TIME * 1000);
+        });
+
+        try {
+            return Promise.race([resultPromise, timeoutPromise]);
+        } finally {
+            if (timeout) {
+                clearTimeout(timeout);
+                timeout = null;
+            }
+        }
     }
 
-    async get(key: string): Promise<any> {
+    async get(key: string) {
         const sql = `SELECT *, DATE_ADD(updated_at, INTERVAL expires SECOND) AS expired_at
         FROM ${this.tableName}
-        WHERE cache_key = ? AND ((expires = -1) OR (DATE_ADD(updated_at, INTERVAL expires SECOND) >= NOW()))
+        WHERE
+            cache_key = ? AND (
+                (expires = -1) OR
+                (DATE_ADD(updated_at, INTERVAL expires SECOND) >= NOW())
+            )
         LIMIT 1;`;
 
-        if (this.shadowConn) {
-            this.conn.query<any[]>(sql, [key]).then(null).catch((err) => {
-                this.logger.error(err, 'Failed to get cache with key %s to shadow database.', key);
+        // Execute query in shadow database.
+        if (this.shadowPool) {
+            this.shadowPool.query<any[]>(sql, [key]).then(null).catch((err) => {
+                this.logger.error(err, 'Failed to get cache with key %s from shadow database.', key);
             });
         }
 
-        return new Promise(async (resolve, reject) => {
-            try {
-                const [rows] = await this.conn.query<any[]>(sql, [key]);
-                if (Array.isArray(rows) && rows.length >= 1) {
-                    resolve(rows[0]?.cache_value);
-                } else {
-                    resolve(null);
-                }
-            } catch (err) {
-                reject(err);
+        // Execute SQL to get cache item.
+        const waitConnStart = DateTime.now();
+        const resultPromise = withConnection(this.pool, async (conn) => {
+            const waitConnEnd = DateTime.now();
+            const waitConnDuration = waitConnEnd.diff(waitConnStart).as('seconds');
+            if (waitConnDuration > MAX_WAIT_CONNECTION_TIME) {
+                this.logger.warn('⚠️  Wait connection for get cache <%s> cost %d s, more then %d s.', key, waitConnDuration, MAX_WAIT_CONNECTION_TIME);
+            }
+
+            const [rows] = await conn.query<any[]>({
+                sql,
+                values: [key],
+                timeout: MAX_CACHE_OPERATION_TIME * 1000,
+            });
+
+            if (Array.isArray(rows) && rows.length >= 1) {
+                return rows[0]?.cache_value;
+            } else {
+                return null;
             }
         });
+
+        // Set timeout for get cache operation.
+        let timeout: NodeJS.Timeout | null = null;
+        const timeoutPromise = new Promise((resolve, reject) => {
+            timeout = setTimeout(() => {
+               this.logger.warn('⚠️  Get cache <%s> operation timed out, more than %d s.', key, MAX_CACHE_OPERATION_TIME);
+               reject(new Error(`Get cache <${key}> operation timed out.`));
+           }, MAX_CACHE_OPERATION_TIME * 1000);
+        });
+
+        try {
+            return Promise.race([resultPromise, timeoutPromise]);
+        } finally {
+            if (timeout) {
+                clearTimeout(timeout);
+                timeout = null;
+            }
+        }
     }
 
 }

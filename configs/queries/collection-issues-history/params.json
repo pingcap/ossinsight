@@ -5,9 +5,7 @@
   "params": [
     {
       "name": "collectionId",
-      "type": "collection",
-      "replaces": "41986369, 16563587, 105944401",
-      "enums": "collectionIds",
+      "replaces": "10001",
       "pattern": "^[1-9]\\d*$"
     }
   ]

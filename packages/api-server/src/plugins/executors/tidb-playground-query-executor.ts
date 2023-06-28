@@ -1,17 +1,23 @@
 import fp from 'fastify-plugin';
+import {Pool} from "mysql2/promise";
+import {pino} from "pino";
 import { TiDBPlaygroundQueryExecutor } from '../../core/executor/query-executor/TiDBPlaygroundQueryExecutor';
 import { getPlaygroundSessionLimits } from '../../core/playground/limitation';
 
 export default fp(async (app) => {
-  const poolOptions = {
-    uri: app.config.DATABASE_URL
-  };
-  const shadowPoolOptions = app.config.SHADOW_DATABASE_URL ? {
-    uri: app.config.SHADOW_DATABASE_URL
-  } : null;
-  app.decorate('playgroundQueryExecutor', new TiDBPlaygroundQueryExecutor(poolOptions, shadowPoolOptions, getPlaygroundSessionLimits()));
+  // TODO: make playground connection config is optional.
+  const playgroundQueryExecutor = new TiDBPlaygroundQueryExecutor(
+    app.mysql.playground as unknown as Pool,
+    app.mysql.playgroundShadow as unknown as Pool,
+    app.log as pino.Logger,
+    getPlaygroundSessionLimits()
+  );
+  app.decorate('playgroundQueryExecutor', playgroundQueryExecutor);
 }, {
-  name: 'playground-query-executor',
+  name: '@ossinsight/playground-query-executor',
+  dependencies: [
+    '@ossinsight/tidb',
+  ]
 });
 
 declare module 'fastify' {

@@ -210,16 +210,14 @@ const config = {
         disableSwitch: true,
         respectPrefersColorScheme: false,
       },
-      /*
       announcementBar: {
-        id: 'announcement-20230303',
+        id: 'announcement-20230621',
         content:
-          '<a target="_blank" href="/explore" style="font-weight:bold"> New! &nbsp OpenAI + Database + GitHub = {🤩🤩🤩} </a>',
+          '📢 Customize your own dashboard and embeddable hand-drawn style widgets in 10 minutes, see <a target="_blank" href="https://ossinsight-lite.vercel.app/" style="font-weight:bold">Demo!</a>',
         backgroundColor: '#4C33B1',
         textColor: '#ffffff',
         isCloseable: true,
       },
-      */
       docs: {
         sidebar: {
           hideable: true,
@@ -288,7 +286,7 @@ const config = {
                 to: 'https://en.pingcap.com/tidb-cloud?utm_source=ossinsight&utm_medium=referral'
               },
               { label: 'How do we implement OSS Insight?', to: '/blog/why-we-choose-tidb-to-support-ossinsight' },
-              { label: 'Database Stats', to: '/stats' },
+              /* { label: 'Database Stats', to: '/stats' }, */
               { label: 'Report an Issue', to: 'https://github.com/pingcap/ossinsight/issues' },
             ]
           },

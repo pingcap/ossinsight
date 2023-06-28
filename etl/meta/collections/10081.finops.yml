@@ -1,0 +1,8 @@
+id: 10081
+name: Cloud Financial Management and Resource Optimization
+items:
+- robusta-dev/krr
+- kubecost/kubectl-cost
+- kubecost/cost-analyzer-helm-chart
+- infracost/infracost
+- opencost/opencost

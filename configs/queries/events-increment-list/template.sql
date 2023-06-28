@@ -1,4 +1,6 @@
-SELECT id, type, action, actor_id, actor_login, repo_id, repo_name, number, pr_merged, created_at
+SELECT
+    /*+ MAX_EXECUTION_TIME(15000) */
+    id, type, action, actor_id, actor_login, repo_id, repo_name, number, pr_merged, created_at
 FROM github_events 
 WHERE
     created_at BETWEEN (

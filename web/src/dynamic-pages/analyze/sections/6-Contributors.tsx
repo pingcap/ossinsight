@@ -162,7 +162,9 @@ function renderBasic (item: Result & ChangedEvents & { is_new_contributor?: 0 | 
         <Bar sx={{ width: `${item.last_month_events / first.last_month_events * 100}%` }} />
         {percentage
           ? (
-            <Number>{(item.proportion * 100).toPrecision(2)}%</Number>
+            <Number>
+              {item.proportion === 1 ? '100' : (item.proportion * 100).toPrecision(2)}%
+            </Number>
             )
           : (
             <Number>{item.last_month_events} ({item.changes >= 0 ? `+${item.changes}` : item.changes})</Number>

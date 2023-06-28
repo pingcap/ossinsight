@@ -1,12 +1,10 @@
 import AutoLoad, { AutoloadPluginOptions } from '@fastify/autoload';
-import { MySQLPromisePool } from '@fastify/mysql';
-
 import { JobServerEnvSchema } from './env';
 import { FastifyPluginAsync } from 'fastify';
 import fastifyEnv from '@fastify/env';
 import { join } from 'path';
 import {Queue, Worker} from "bullmq";
-import {Question} from "@ossinsight/api-server";
+import { Question,} from "@ossinsight/api-server";
 import {EmailClient} from "@ossinsight/email-server";
 import {GitHubRepoWithEvents} from "./types";
 import {CalcMilestonesJobInput} from "./jobs/calc_milestones/index.worker";
@@ -29,6 +27,7 @@ declare module 'fastify' {
       REDIS_URL: string,
       EMAIL_SERVER_URL: string,
       PLAYGROUND_DATABASE_URL: string;
+      PLAYGROUND_SHADOW_DATABASE_URL: string;
       EXPLORER_HIGH_QUEUE_CONCURRENT: number;
       EXPLORER_LOW_QUEUE_CONCURRENT: number;
       EXPLORER_QUERY_SQL_TIMEOUT: number;
@@ -36,7 +35,6 @@ declare module 'fastify' {
       CALC_REPO_MILESTONES_CRON: string,
       OPENAI_API_KEY: string
     };
-    mysql: MySQLPromisePool;
     emailClient: EmailClient;
     queues: {
       explorer_high_concurrent_queue: Queue<Question, any, string>;
@@ -69,6 +67,12 @@ const app: FastifyPluginAsync<AppOptions> = async (
   // Load plugins.
   await fastify.register(AutoLoad, {
     dir: join(__dirname, "plugins"),
+    options: opts,
+  });
+
+  // Load routes.
+  await fastify.register(AutoLoad, {
+    dir: join(__dirname, "routes"),
     options: opts,
   });
 };

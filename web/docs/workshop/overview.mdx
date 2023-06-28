@@ -1,61 +1,15 @@
 ---
 sidebar_position: 0
-title: Workshop Overview
-description: This workshop tells you how to get insights from NFT, Twitter or Stackoverflow, which has big data with realtime insert/update.
+title: Overview
+description: OSS Insight Workshop
 image: img/workshop-thumbnail.png
-sidebar_label: Workshop Overview
+sidebar_label: Overview
 slug: /workshop
 ---
-import Button from "@mui/material/Button";
 
-If you want to build **Another Insight** tool that analyzes data from a source rather than GitHub, then you're in the right place. This workshop will teach you that it's not too hard to get insights from big data expecially **big data with real-time inserts and updates**.
 
-## What you will learn
+Welcome to the OSS Insight workshop. Here, you can:
+1. Learn a new MySQL-Compatible but scalable and built-in analytical engine database;
+2. Build interesting small applications.
 
-### 1. Methodology to setup an insight system
-
-Usually, with enough abstraction, there will be 3 steps to setup an insight system like OSS Insight:
-
-1. Find the data source (both historical and real-time data).
-2. Load data to TiDB (or any other HTAP database).
-3. Get insights with SQL.
-
-### 2. Knowledge about HTAP database
-
-It’s best to run your insight tool on a [Hybrid Transactional and Analytical Processing(HTAP)](https://docs.pingcap.com/tidb/dev/explore-htap) database. It is **SUPER EASY** to handle both:
-* Acting as a **primary** RDBMS to _<u>serve requests in high concurrency</u>_ and _<u>insert/update in realtime</u>_
-* Provide _<u>analytical ability to get insights</u>_
-
-We have a 10-minute blog post that explains [why we choose TiDB to support OSSInsight](/blog/why-we-choose-tidb-to-support-ossinsight). But to save you some time, the following diagram shows the architectural differences "before" and "after" we use TiDB:
-<center>
-  <img width="70%" src={require('@site/blog/why-we-choose-tidb-to-support-ossinsight/how-different-db-handle-github-data.png').default} alt='Simplified architecture after we use TiDB' />
-</center>
-<center><i>Before and after we use TiDB</i></center>
-
-Using this architecture means that we don’t need to learn  traditional `big data` skills such as: MySQL+sharding technologies -> industrial etl tools -> olap databases->MySQL(write back), and then setup/manage these infrastructures, but just get a `T+1` analysis result finally.
-
-<br />
-
-:::info
-You can load data to MySQL instead of TiDB; however, you will have performance issues.
-:::
-
-<br />
-
-Ready to learn more? Click the link below and join a workshop. Each one will follow the 3 steps above!  🏃🏃🏃
-
-## Join a Workshop!
-
-We have implemented the `mini OSS Insights` workshop and are thinking about creating three other workshops. You can try them by yourself with their historical and real-time API (a bit of a challenge, but not too hard :-).
-
-* [Mini OSS Insight](/docs/workshop/mini-ossinsight/introduction)
-* [NFT Insight](/docs/workshop/nft-insight)
-* [Hacker News Insight](https://hackernews-insight.vercel.app/)
-* [Twitter Insight](/docs/workshop/twitter-insight) _Not ready_
-* [Stack Overflow Insight](/docs/workshop/stackoverflow-insight) _Not ready_
-
-If you want a further talk about OSS Insight, please join our offline workshop, you may get help there:
-
-<Button component='a' variant='contained' sx={{':hover': {color: '#ffffff'}}} href="https://share.hsforms.com/1E-qtGQWrTVmctP8kBT34gw2npzm" target="_blank">
-  Apply !
-</Button>
+In addition, you can also get a FREE quota for database usage FOREVER.
