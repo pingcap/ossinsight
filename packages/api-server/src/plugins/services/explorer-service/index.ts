@@ -11,7 +11,7 @@ import {
     SQLUnsupportedFunctionError,
     ValidateSQLError
 } from "../../../utils/error";
-import {Connection, PoolConnection, ResultSetHeader} from "mysql2/promise";
+import {Connection, ResultSetHeader} from "mysql2/promise";
 import crypto from "node:crypto";
 import {DateTime} from "luxon";
 import {BotService} from "../bot-service";
@@ -791,13 +791,6 @@ export class ExplorerService {
         const { id: questionId, querySQL } = question;
         try {
             const questionResult = await this.executeQuery(questionId, querySQL!);
-            if (this.playgroundQueryExecutor.shadowPool) {
-                this.executeQuery(questionId, querySQL!, true).catch(err => {
-                    this.logger.error(err, `Failed to execute shadow query for question ${questionId}.`)
-                }).then(() => {
-                    this.logger.info(`Shadow query for question ${questionId} finished.`)
-                });
-            }
 
             // Check chart if match the result.
             if (!this.checkChart(question.chart, questionResult.result)) {
@@ -851,147 +844,53 @@ export class ExplorerService {
         return Math.ceil(Math.random() * 100) % 5 >= 3;
     }
 
-    private async executeQuery(questionId: string, querySQL: string, shadow: boolean = false): Promise<QuestionQueryResult> {
-        const logger = this.logger.child({ questionId });
-        const timeout = this.options.querySQLTimeout;
-        const preparedSQL = `/* questionId: ${questionId} */ ${querySQL}`;
+    private async executeQuery(questionId: string, querySQL: string): Promise<QuestionQueryResult> {
+        try {
+            const executedAt = DateTime.now();
+            await this.markQuestionRunning(questionId, executedAt);
+            this.logger.info('⏳ Start query executing for question <%s>, start: %s', questionId, executedAt.toISO());
 
-        return new Promise<QuestionQueryResult>(async (resolve, reject) => {
-            let playgroundConn: PoolConnection | null = null;
-            let timer: NodeJS.Timeout | null = null;
+            const markedSQL = `/* questionId: ${questionId} */ ${querySQL}`;
+            const [rows, fields] = await this.playgroundQueryExecutor.execute(`explorer-sql-${questionId}`, {
+                sql: markedSQL,
+                timeout: this.options.querySQLTimeout,
+            }) as [any[], any[]];
 
-            try {
-                // Get playground connection.
-                const getConnStart = DateTime.now();
-                if (shadow) {
-                    playgroundConn = await this.playgroundQueryExecutor.getShadowConnection();
-                } else {
-                    playgroundConn = await this.playgroundQueryExecutor.getConnection();
-                }
-                const getConnEnd = DateTime.now();
-                logger.info({questionId}, `Got the playground connection, cost: ${getConnEnd.diff(getConnStart).as('milliseconds')} ms`);
+            const finishedAt = DateTime.now();
+            const spent = finishedAt.diff(executedAt).as("seconds");
+            this.logger.info(
+              '✅ Finished query executing for question <%s>, start: %s, end: %s, cost: %d s',
+              questionId, executedAt.toISO(), finishedAt.toISO(), spent
+            );
 
-                // Mark question as running.
-                const connectionId = await this.getConnectionID(playgroundConn);
-                logger.info({ questionId }, 'Start executing query with connection ID: %s.', connectionId);
-                const executedAt = DateTime.now();
-
-                if (!shadow) {
-                    await this.markQuestionRunning(questionId, executedAt);
-                }
-
-                // Cancel the query if timeout.
-                timer = setTimeout(async () => {
-                    logger.warn({ questionId, querySQL }, 'Query execution timeout after %d ms.', timeout);
-
-                    try {
-                        if (playgroundConn) {
-                            // Close the connection from client side.
-                            await playgroundConn.destroy();
-                            logger.info('Move the connection from %s the pool.', connectionId);
-
-                            // Terminate the connection from server side.
-                            if (connectionId) {
-                                await this.killConnection(connectionId);
-                                logger.info('Killed the connection %s on server.', connectionId);
-                            }
-                        }
-
-                        reject(new ExplorerResolveQuestionError('Query execution timeout.', QuestionFeedbackType.ErrorQueryTimeout,{
-                            timeout: timeout,
-                            querySQL,
-                        }));
-                    } catch (err) {
-                        logger.error({ err }, 'Failed to kill the connection %s.', connectionId);
-                        reject(new ExplorerResolveQuestionError('Query execution timeout.', QuestionFeedbackType.ErrorQueryTimeout,{
-                            timeout: timeout,
-                            querySQL,
-                        }));
-                    } finally {
-                        if (timer) {
-                            clearTimeout(timer);
-                            timer = null;
-                        }
-
-                        if (playgroundConn) {
-                            await playgroundConn.release();
-                        }
-                    }
-                }, timeout);
-
-                // Executing query.
-                let rows: any[] = [], fields: any[] = [];
-                try {
-                    [rows, fields] = await playgroundConn.execute<any[]>(preparedSQL);
-                } catch (err: any) {
-                    if (err.sqlMessage) {
-                        throw new ExplorerResolveQuestionError(err.sqlMessage, QuestionFeedbackType.ErrorQueryExecute,{
-                            querySQL,
-                            sqlMessage: err.sqlMessage,
-                            message: err.message
-                        });
-                    } else {
-                        throw new ExplorerResolveQuestionError(err.message, QuestionFeedbackType.ErrorQueryExecute,{
-                            querySQL,
-                            message: err.message
-                        });
-                    }
-                }
-
-                // Finish the query.
-                const finishedAt = DateTime.now();
-                const spent = finishedAt.diff(executedAt).as("seconds");
-                logger.info({questionId}, 'Finished query executing, cost: %d s', spent);
-
-                resolve({
-                    result: {
-                        fields: fields.map((field) => {
-                            return {
-                                name: field.name,
-                                columnType: field.type,
-                            }
-                        }),
-                        rows
-                    },
-                    executedAt,
-                    finishedAt,
-                    spent,
+            return {
+                result: {
+                    fields,
+                    rows
+                },
+                executedAt,
+                finishedAt,
+                spent,
+            }
+        } catch (err: any) {
+            if (err.code === 'PROTOCOL_SEQUENCE_TIMEOUT') {
+                throw new ExplorerResolveQuestionError(err.sqlMessage, QuestionFeedbackType.ErrorQueryTimeout,{
+                    querySQL,
+                    message: err.message
                 });
-            } catch (err) {
-                reject(err);
-            } finally {
-                if (timer) {
-                    clearTimeout(timer);
-                    timer = null;
-                }
-
-                if (playgroundConn) {
-                    await playgroundConn.release();
-                }
-            }
-        });
-    }
-
-    private async getConnectionID(conn: Connection): Promise<string | null> {
-        const [rows] = await conn.query<any[]>(`SELECT CAST(CONNECTION_ID() AS CHAR) AS connectionId`);
-
-        if (rows.length === 0) {
-            return null;
-        }
-
-        return rows[0].connectionId;
-    }
-
-    private async killConnection(taskId: string): Promise<boolean> {
-        for (let i = 0; i < 3; i++) {
-            try {
-                await this.tidb.query(`KILL ${taskId}`);
-                return true;
-            } catch (e: any) {
-                this.logger.warn(`Failed to kill query ${taskId}: ${e.message}, retrying...`);
+            } else if (err.sqlMessage) {
+                throw new ExplorerResolveQuestionError(err.sqlMessage, QuestionFeedbackType.ErrorQueryExecute,{
+                    querySQL,
+                    sqlMessage: err.sqlMessage,
+                    message: err.message
+                });
+            } else {
+                throw new ExplorerResolveQuestionError(err.message, QuestionFeedbackType.ErrorQueryExecute,{
+                    querySQL,
+                    message: err.message
+                });
             }
         }
-        return false;
     }
 
     private checkChart(chart: RecommendedChart | undefined | null, result: QuestionSQLResult): boolean {
