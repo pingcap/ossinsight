@@ -45,7 +45,7 @@ export interface Question {
 
 export interface QuestionSQLResult {
   fields: Field[];
-  rows: Record<string, any>[];
+  rows: any[];
 }
 
 export interface QuestionQueryResult {
