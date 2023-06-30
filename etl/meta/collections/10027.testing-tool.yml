@@ -21,3 +21,6 @@ items:
   - microsoft/playwright
   - webdriverio/webdriverio
   - selenide/selenide
+  - nightwatchjs/nightwatch
+  - ddosify/ddosify
+  - puppeteer/puppeteer

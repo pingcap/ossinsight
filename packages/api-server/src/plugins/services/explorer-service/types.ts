@@ -40,11 +40,12 @@ export interface Question {
   errorType?: QuestionFeedbackType | null;
   hitCache: boolean;
   preceding: number;
+  [key: string]: any
 }
 
 export interface QuestionSQLResult {
   fields: Field[];
-  rows: Record<string, any>[];
+  rows: any[];
 }
 
 export interface QuestionQueryResult {

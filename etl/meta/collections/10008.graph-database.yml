@@ -14,3 +14,4 @@ items:
   - memgraph/memgraph
   - bitnine-oss/agensgraph
   - indradb/indradb
+  - surrealdb/surrealdb

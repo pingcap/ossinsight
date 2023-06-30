@@ -12,7 +12,7 @@ export default fp(async (fastify) => {
         }
     });
 }, {
-    name: 'swagger',
+    name: '@ossinsight/swagger',
     dependencies: [
         '@fastify/env'
     ],

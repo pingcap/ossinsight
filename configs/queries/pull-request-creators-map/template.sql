@@ -8,10 +8,7 @@ WITH group_by_area AS (
         ge.repo_id IN (41986369)
         AND ge.type = 'PullRequestEvent'
         AND ge.action = 'opened'
-        AND gu.country_code IS NOT NULL  -- TODO: remove
-        AND gu.country_code != ''
-        AND gu.country_code != 'N/A'
-        AND gu.country_code != 'UND'
+        AND gu.country_code NOT IN ('', 'N/A', 'UND')
     GROUP BY country_or_area
 ), summary AS (
     SELECT SUM(cnt) AS total FROM group_by_area

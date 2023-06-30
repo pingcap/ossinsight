@@ -1,6 +1,6 @@
 {
   "cacheHours": -1,
-  "refreshCron": "*/30 * * * * *",
+  "refreshCron": "30 */2 * * * *",
   "refreshQueue": "REALTIME",
   "onlyFromCache": true,
   "params": []

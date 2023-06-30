@@ -1,34 +1,44 @@
 WITH repos_with_prs_24h AS (
     SELECT
-        /*+ MERGE() */
+        /*+ READ_FROM_STORAGE(tiflash[ge]) */
         ge.repo_id,
-        COUNT(DISTINCT CASE WHEN action = 'opened' THEN ge.pr_or_issue_id ELSE NULL END) AS opened_prs,
-        COUNT(DISTINCT CASE WHEN action = 'closed' AND ge.pr_merged = false THEN ge.pr_or_issue_id ELSE NULL END) AS closed_prs,
-        COUNT(DISTINCT CASE WHEN action = 'closed' AND ge.pr_merged = true THEN ge.pr_or_issue_id ELSE NULL END) AS merged_prs,
-        COUNT(DISTINCT actor_id) AS developers
+        COUNT(DISTINCT IF(action = 'opened', ge.pr_or_issue_id, NULL))                          AS opened_prs,
+        COUNT(DISTINCT IF(action = 'closed' AND ge.pr_merged = false, ge.pr_or_issue_id, NULL)) AS closed_prs,
+        COUNT(DISTINCT IF(action = 'closed' AND ge.pr_merged = true, ge.pr_or_issue_id, NULL))  AS merged_prs,
+        COUNT(*)                                                                                AS total_pr_events,
+        COUNT(DISTINCT actor_id)                                                                AS developers
     FROM
         github_events ge
-        JOIN github_repos gr ON ge.repo_id = gr.repo_id
-        JOIN github_users gu ON ge.actor_id = gu.id
     WHERE
         ge.type = 'PullRequestEvent'
         AND (ge.action = 'opened' OR ge.action = 'closed')
+        AND ge.additions > 10
         AND ge.created_at > DATE_SUB(NOW(), INTERVAL 1 DAY)
-        AND ge.actor_login NOT REGEXP '^(bot-.+|.+bot|.+\\[bot\\]|.+-bot-.+|robot-.+|.+-ci-.+|.+-ci|.+-testing|.+clabot.+|.+-gerrit|k8s-.+|.+-machine|.+-automation|github-.+|.+-github|.+-service|.+-builds|codecov-.+|.+teamcity.+|jenkins-.+|.+-jira-.+|witness.+|.+witness|signcla.+|.+signcla|.+-cicd-.+|.+autotester.+)$'
-        AND gr.stars > 5
-        AND gu.is_bot = 0
+        AND ge.repo_name NOT IN(
+            'NixOS/nixpkgs',
+            'firstcontributions/first-contributions',
+            'Homebrew/homebrew-cask',
+            'microsoft/winget-pkgs',
+            'microsoft/vcpkg'
+        )
+        AND ge.actor_login NOT IN(
+            'robodoo',
+            'r-ryantm',
+            'scala-steward'
+        )
+        AND LOWER(ge.actor_login) NOT REGEXP '^(bot-.+|.+bot|.+\\[bot\\]|.*-bot-.*|robot-.+|.+-ci-.+|.+-ci|.+-testing|.*clabot.*|.+-gerrit|k8s-.+|.+-machine|.+-automation|github-.+|.+-github|.+-service|.+-builds|codecov-.+|.*teamcity.*|jenkins-.+|.+-jira-.+|witness.+|.+witness|signcla.+|.+signcla|.+-cicd-.+|.*autotester.*)$'
     GROUP BY
         ge.repo_id
     HAVING developers > 5
-), top_5_repos AS (
-    SELECT
-        repo_id , developers, (opened_prs + closed_prs + merged_prs) as total_pr_events,
-        opened_prs, closed_prs, merged_prs
-    FROM repos_with_prs_24h rwpr
     ORDER BY total_pr_events DESC
-    LIMIT 5
+    LIMIT 100
 )
-SELECT gr.repo_id, gr.repo_name, tr.developers, tr.total_pr_events, tr.opened_prs, tr.closed_prs, tr.merged_prs
-FROM top_5_repos tr
-JOIN github_repos gr ON tr.repo_id = gr.repo_id
+SELECT
+    gr.repo_id, gr.repo_name,
+    developers, total_pr_events,
+    opened_prs, closed_prs, merged_prs
+FROM repos_with_prs_24h r
+JOIN github_repos gr ON r.repo_id = gr.repo_id
+WHERE gr.stars > 100
 ORDER BY total_pr_events DESC
+LIMIT 5;

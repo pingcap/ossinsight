@@ -1,0 +1,274 @@
+---
+title: "The Unsung Heroes of Open Source: The Dedicated Maintainers Behind Lesser-Known Projects"
+description: This article will take a closer look at a few of these unsung heroes of the open source world.
+image: ./core-js-maintainer.png
+date: 2023-03-01
+authors: [mia, notionai]
+tags: [Maintainer, Open Source, GitHub, Core-js, cURL, ImageMagick, MyCLI, Homebrew, Apche Log4j, OpenSSL]
+---
+
+A few days ago, I read [a blog post by the author of Core-js](https://github.com/zloirock/core-js/blob/master/docs/2023-02-14-so-whats-next.md). To be honest, it was my first time hearing about Core-js. As someone who has written some front-end code and has been keeping up with open source projects, I feel a bit ashamed.
+
+However, there are many open source projects that are widely used but not well-known. In this blog post, I will take a closer look at a few of these unsung heroes of the open source world. I do not want to give them a business model or financial advice in this article. This largely depends on the author's personal experience and values. I just want to raise more awareness about these open source projects.
+
+## Core-js
+
+- GitHub repo: [https://github.com/zloirock/core-js](https://github.com/zloirock/core-js)
+
+[Core-js](https://github.com/zloirock/core-js) is a modular standard library for JavaScript. It provides polyfills for many ECMAScript features, as well as some additional features that are not included in the standard library. It's used by many popular JavaScript libraries and frameworks, including React, Vue.js, and Angular.
+
+Core-js has been downloaded more than 2.5 billion times from the npm package registry, making it one of the most widely used JavaScript libraries in the world. Despite its widespread use, the project does not receive much attention, and its star growth is very slow.
+
+Core-js is maintained by [Denis Pushkarev](https://github.com/zloirock), who started the project as a hobby in 2012 and open-sourced it in 2014.
+
+<br />
+
+<center>
+<a href="https://ossinsight.io/explore/?id=b21fdc02-c9dc-4dcf-abc4-f74110e784dc" target="_blank">
+<img src={require('./core-js-contributors.png').default} width = "90%" alt="core-js-contributors"/>
+</a>
+</center>
+
+<center><a href="https://ossinsight.io/explore/?id=b21fdc02-c9dc-4dcf-abc4-f74110e784dc" target="_blank"><em>Core-js' top contributors</em></a></center>
+
+<br />
+
+Based on the distribution of contributions to the project, it seems that Denis has provided more than 95% of the project's code. And as he said in the [blog post](https://github.com/zloirock/core-js/blob/master/docs/2023-02-14-so-whats-next.md) I read, the project occupies almost all of his time—more than a full working day.
+
+<br />
+
+<center>
+    <a href="https://ossinsight.io/analyze/zloirock" target="_blank">
+        <img src={require('./core-js-maintainer.png').default} width = "80%" alt="core-js-maintainer"/>
+    </a>
+</center>
+
+<center>
+    <a href="https://ossinsight.io/analyze/zloirock" target="_blank"><em>Denis' contribution time distribution</em></a>
+</center>
+
+<br />
+
+
+<br />
+
+<center>
+    <a href="https://ossinsight.io/analyze/zloirock/core-js#overview" target="_blank">
+        <img src={require('./core-js-star.png').default} width = "90%" alt="core-js-star"/>
+    </a>
+</center>
+
+<center>
+    <a href="https://ossinsight.io/analyze/zloirock/core-js#overview" target="_blank"><em>Core-js' star history</em></a>
+</center>
+
+<br />
+
+On February 14th, Denis’s blog brought significant attention to the Core-js project. Now he has opened multiple donation channels, including through [Open Collective](https://opencollective.com/core-js), [Patreon](https://www.patreon.com/zloirock), and [boosty](https://boosty.to/zloirock). He is actively exploring ways to ensure that Core-js can be maintained in the long term.
+
+## cURL
+
+- GitHub repo: [https://github.com/curl/curl](https://github.com/curl/curl)
+
+[cURL](https://github.com/curl/curl) is a command-line tool and library for transferring data over a wide range of network protocols, including HTTP, FTP, SMTP, and many others. It is used by millions of developers to download and upload files, test APIs, and automate tasks.
+
+<br />
+
+<center>
+    <a href="https://ossinsight.io/explore/?id=12cbe933-d371-435c-83e6-3fe8d46abf76" target="_blank">
+        <img src={require('./curl-contributor.png').default} width = "90%" alt="curl-contributor"/>
+    </a>
+</center>
+
+<center>
+    <a href="https://ossinsight.io/explore/?id=12cbe933-d371-435c-83e6-3fe8d46abf76" target="_blank"><em>cURL's top contributors</em></a>
+</center>
+
+<br />
+
+cURL is primarily maintained by Daniel Stenberg alone, who started working on the project in 1998. Fortunately, there are occasionally new contributors joining in as mentioned in this[ tweet](https://twitter.com/bagder/status/1628421123586109440). This allows Daniel to maintain a more normal schedule and a full time job, and even[ leave work early on Wednesdays to play floorball](https://twitter.com/bagder/status/1546857830866722817).
+
+<br />
+
+<center>
+    <a href="https://ossinsight.io/analyze/bagder" target="_blank">
+        <img src={require('./curl-maintainer.png').default} width = "80%" alt="curl-maintainer"/>
+    </a>
+</center>
+
+<center>
+    <a href="https://ossinsight.io/analyze/bagder" target="_blank"><em>Daniel's contribution time distribution</em></a>
+</center>
+
+<br />
+
+cURL has received sponsorship from various [organizations](https://curl.se/sponsors.html) and [individuals](https://github.com/sponsors/curl#sponsors), including wolfSSL. WolfSSL employs [Daniel](https://daniel.haxx.se/) and allows him to spend paid work hours on cURL.
+
+## ImageMagick
+
+- GitHub repo: [https://github.com/ImageMagick/ImageMagick](https://github.com/ImageMagick/ImageMagick)
+
+ImageMagick is a free and open-source software suite for displaying, converting, and editing raster image and vector image files. ImageMagick is used by millions of websites and applications to manipulate and display images, including popular content management systems like WordPress and Drupal.
+
+<br />
+
+<center>
+    <a href="https://ossinsight.io/explore/?id=eda659c3-8dfb-41b6-a79e-6ad126797ac1" target="_blank">
+    <img src={require('./imagemagick-contributor.png').default} width = "90%" alt="imagemagick-contributor"/>
+    </a>
+</center>
+
+<center>
+    <a href="https://ossinsight.io/explore/?id=eda659c3-8dfb-41b6-a79e-6ad126797ac1" target="_blank"><em>ImageMagick's top contributors</em></a>
+</center>
+
+<br />
+
+ImageMagick is maintained by a small group of developers, including its founder, [John Cristy](https://github.com/urban-warrior). Cristy started the project at DuPont in 1987 and released it in 1990. It is said that John Cristy has a full-time job and only maintains the project in his spare time.
+
+<br />
+
+<center>
+    <a href="https://ossinsight.io/analyze/ImageMagick/ImageMagick#contributors" target="_blank">
+    <img src={require('./imagemagick-lastmonth.png').default} width = "90%" alt="imagemagick-lastmonth"/>
+    </a>
+</center>
+
+<center>
+    <a href="https://ossinsight.io/analyze/ImageMagick/ImageMagick#contributors" target="_blank"><em>ImageMagick's top contributors last month</em></a>
+</center>
+
+<br />
+
+[Dirk Lemstra](https://ossinsight.io/analyze/dlemstra) is another primary maintainer of ImageMagick, currently working as a consultant for a company and maintaining the project in his spare time.
+
+Currently, the project is sustained by the support of[ various organizations and individuals](https://imagemagick.org/script/support.php).
+
+## MyCLI
+
+- GitHub repo:[ https://github.com/dbcli/mycli](https://github.com/dbcli/mycli)
+
+MyCLI is a command line interface for MySQL, MariaDB, and Percona with auto-completion and syntax highlighting.
+
+<br />
+
+<center>
+    <a href="https://ossinsight.io/explore/?id=2ec42ec5-b54b-4103-a01a-90fa72af5137" target="_blank">
+        <img src={require('./mycli-contributor.png').default} width = "90%" alt="mycli-contributor"/>
+    </a>
+</center>
+
+<center>
+    <a href="https://ossinsight.io/explore/?id=2ec42ec5-b54b-4103-a01a-90fa72af5137" target="_blank"><em>MyCLI's top contributors</em></a>
+</center>
+
+<br />
+
+The project is maintained by its creator, Amjith Ramanujam, and contributions from the open source community. Based on the distribution of contributions, a relatively stable community of contributors has formed around MyCLI. Moreover, there are some[ organizations and individuals sponsoring this project](https://www.mycli.net/sponsors).
+
+<br />
+
+<center>
+    <a href="https://ossinsight.io/analyze/dbcli/mycli#overview" target="_blank">
+        <img src={require('./mycli-commit.png').default} width = "90%" alt="mycli-commit"/>
+    </a>
+</center>
+
+<center>
+    <a href="https://ossinsight.io/analyze/dbcli/mycli#overview" target="_blank"><em>MyCLI's commit history</em></a>
+</center>
+
+<br />
+
+However, with the popularity of cloud databases, such projects have fallen behind the times, so the updates for the project have been very slow.
+
+## Homebrew
+
+- GitHub repo:[ https://github.com/Homebrew/brew](https://github.com/Homebrew/brew)
+
+Homebrew is a popular package manager for macOS that allows users to easily install and manage a wide variety of software packages. Homebrew is a nonprofit project run entirely by unpaid volunteer developers, with the lead maintainer being Mike McQuaid.
+
+<br />
+
+<center>
+    <a href="https://ossinsight.io/explore/?id=791c5932-ceba-44b0-8a34-d5328a177783" target="_blank">
+        <img src={require('./homebrew-contributor.png').default} width = "90%" alt="homebrew-contributor"/>
+    </a>
+</center>
+
+<center>
+    <a href="https://ossinsight.io/explore/?id=791c5932-ceba-44b0-8a34-d5328a177783" target="_blank"><em>Homebrew's top contributors</em></a>
+</center>
+
+<br />
+
+[McQuaid](https://github.com/MikeMcQuaid) has been involved with the Homebrew project since its inception and has been the lead maintainer since 2012—and he has full-time work on GitHub as a principal engineer.
+
+Homebrew’s financial operations are managed by the[ Open Source Collective](https://opencollective.com/opensource), and accepts donations through[ GitHub Sponsors](https://github.com/sponsors/Homebrew),[ Open Collective](https://opencollective.com/homebrew) or[ Patreon](https://www.patreon.com/homebrew). Homebrew is also sponsoring some projects, including cURL mentioned earlier.
+
+## Apache Log4j
+
+- GitHub repo:[ https://github.com/apache/logging-log4j2](https://github.com/apache/logging-log4j2)
+
+Apache Log4j is a powerful logging framework for Java that allows developers to log messages from their applications with fine-grained control over where and how those messages are recorded. This library has been widely adopted by Java developers and is used by many popular Java-based applications, including Apache Kafka and Apache Spark.
+
+<br />
+
+<center>
+    <a href="https://ossinsight.io/analyze/apache/logging-log4j2#overview" target="_blank">
+        <img src={require('./log4j2-stars.png').default} width = "90%" alt="log4j2-stars"/>
+    </a>
+</center>
+
+<center>
+    <a href="https://ossinsight.io/analyze/apache/logging-log4j2#overview" target="_blank"><em>Apache Log4j's star history</em></a>
+</center>
+
+<br />
+
+Interestingly, the project did not receive much attention until November 2021, when a security vulnerability was reported. This incident doubled its star count and gained attention from the industry.
+
+<br />
+
+<center>
+    <a href="https://ossinsight.io/explore/?id=63ea8bae-8155-41d2-864c-795978524a60" target="_blank">
+        <img src={require('./log4j2-contributor.png').default} width = "90%" alt="log4j2-contributor"/>
+    </a>
+</center>
+
+<center>
+    <a href="https://ossinsight.io/explore/?id=63ea8bae-8155-41d2-864c-795978524a60" target="_blank"><em>Apache Log4j's top contributors</em></a>
+</center>
+
+<br />
+
+
+[Ralph Goers](https://github.com/rgoers) is the original author of Log4j 2. He worked on the initial design and development of Log4j 2, which was released in 2014. Now he is working on Nextiva as a Fellow Architect.Now the core maintainer of logging-log4j2 is[ Gary Gregory](https://github.com/garydgregory), who is a member of the Apache Software Foundation and has been working on the project for over a decade.
+
+Because the Log4j 2 project is under the Apache Foundation, the maintainers can focus more on project maintenance without worrying about financial issues.
+
+## OpenSSL
+
+- GitHub repo:[ https://github.com/openssl/openssl](https://github.com/openssl/openssl)
+
+OpenSSL is an open source library that provides cryptographic functions for many different applications, including web servers, email clients, and virtual private networks. OpenSSL is used by millions of websites and applications to secure communications over the internet, including popular web servers like Apache and Nginx, as well as popular programming languages like Python and Ruby.
+
+<br />
+
+<center>
+    <a href="https://ossinsight.io/explore/?id=143a8231-bd81-42c7-bb52-d1e85c61c6a9" target="_blank">
+    <img src={require('./openssl-contributor.png').default} width = "90%" alt="openssl-contributor"/>
+    </a>
+</center>
+
+<center>
+    <a href="https://ossinsight.io/explore/?id=143a8231-bd81-42c7-bb52-d1e85c61c6a9" target="_blank"><em>OpenSSL's top contributors</em></a>
+</center>
+
+<br />
+
+The project is developed by a distributed team, mostly consisting of volunteers with some project funded resources. The team is led by[ Matt Caswell](https://github.com/mattcaswell), who has been working on OpenSSL since 2010 and became one of the maintainers in 2013.
+
+Apart from volunteer developers, OpenSSL also depends on financial support from the community, which can be given in various forms. These include[ a support contract](https://www.openssl.org/support/contracts.html),[ a sponsorship donation](https://www.openssl.org/support/acks.html), or a smaller donation via[ GitHub Sponsors](https://github.com/sponsors/openssl).
+
+Maintaining an open source project is no easy feat. It's a labor of love, built by passionate developers who sacrifice their time to create something that makes a difference. As users, we owe them our gratitude for the tools and technologies they provide. As Mike McQuaid suggested on the blog[ Open Source Maintainers Owe You Nothing](https://mikemcquaid.com/open-source-maintainers-owe-you-nothing/), "Remember when filing an issue, opening a pull request, or making a comment on a project, to be grateful that people spend their free time to build software you get to use for free."

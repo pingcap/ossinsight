@@ -26,9 +26,6 @@ export function buildParams (schema: QuerySchema): Record<string, string>[] {
 
   try {
     schema.params.forEach(param => {
-      if (param.type === 'employees') {
-        throw new Error('special param not supported');
-      }
       if (param.enums) {
         if (typeof param.enums === 'string') {
           // TODO: implement this

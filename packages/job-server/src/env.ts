@@ -24,6 +24,9 @@ export const JobServerEnvSchema = {
     PLAYGROUND_DATABASE_URL: {
       type: 'string',
     },
+    PLAYGROUND_SHADOW_DATABASE_URL: {
+      type: 'string',
+    },
     EXPLORER_HIGH_QUEUE_CONCURRENT: {
       type: 'number',
       default: 20,

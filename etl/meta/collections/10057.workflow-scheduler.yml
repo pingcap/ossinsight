@@ -7,3 +7,6 @@ items:
   - apache/oozie
   - xuxueli/xxl-job
   - kestra-io/kestra
+  - temporalio/temporal
+  - PowerJob/PowerJob
+  - PrefectHQ/prefect

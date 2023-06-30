@@ -18,3 +18,4 @@ items:
   - src-d/go-kallax
   - huandu/go-sqlbuilder
   - latolukasz/beeorm
+  - stephenafamo/bob

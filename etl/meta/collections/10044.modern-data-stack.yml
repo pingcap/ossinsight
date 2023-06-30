@@ -15,6 +15,7 @@ items:
   - duckdb/duckdb
   - datafuselabs/databend
   - apache/spark
+  - surrealdb/surrealdb
   
   # Data analytics
   - metabase/metabase
@@ -52,6 +53,7 @@ items:
   - meltano/meltano
   - kestra-io/kestra
   - apache/dolphinscheduler
+  - cloudquery/cloudquery
   
   # Data testing
   - great-expectations/great_expectations

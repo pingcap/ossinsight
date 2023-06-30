@@ -31,14 +31,15 @@ export interface Option {
 
 export class BatchLoader {
     private buf: any[];
-    private logger = pino().child({ 'component': 'batch-loader' });
+    private logger = this.pLogger.child({ 'module': 'batch-loader' });
     private readonly batchSize: number;
     private readonly maxRetries: number;
     private readonly intervalHandle: ReturnType<typeof setInterval> | undefined
     private _lastFlushJob: Promise<void> | undefined;
 
     constructor(
-        readonly connections: Pool,
+        readonly pLogger: pino.Logger = pino(),
+        readonly pool: Pool,
         readonly sql: string,
         readonly option: Option = {}
     ) {
@@ -85,7 +86,7 @@ export class BatchLoader {
             return;
         }
 
-        // Notice: During batch insertion phase as follow, data may still be written to buffer. 
+        // Notice: During batch insertion phase as follows, data may still be written to buffer.
         // If we clean up the buffer array after the batch insertion is completed, that will result in data loss.
         // So we can copy it to a temporary memory and clear the buffer so that it can continue to store new data.
         const records = [[...this.buf]];
@@ -93,7 +94,7 @@ export class BatchLoader {
         
         for (let retries = 0; retries <= this.maxRetries; retries++) {
             try {                
-                await this.connections.query<ResultSetHeader>(this.sql, records);
+                await this.pool.query<ResultSetHeader>(this.sql, records);
                 return;
             } catch (err) {
                 const num = records[0].length;

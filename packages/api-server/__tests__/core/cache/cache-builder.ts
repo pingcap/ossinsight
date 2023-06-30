@@ -1,20 +1,17 @@
+import {createTiDBPool} from "../../../src/utils/db";
 import {bootstrapTestDatabase, getTestDatabase, releaseTestDatabase} from "../../helpers/db";
 
 import {DateTime} from "luxon";
 import CacheBuilder, {CacheProviderTypes} from "../../../src/core/cache/CacheBuilder";
 import {pino} from "pino";
-import {getConnection} from "../../../src/core/db/new";
 
 beforeAll(bootstrapTestDatabase);
 afterAll(releaseTestDatabase);
 
 test('cache can be disabled', async () => {
     const log = pino().child({ 'component': 'cache-builder' });
-    const conn = await getConnection({
-        uri: getTestDatabase().url()
-    });
-
-    const builder = new CacheBuilder(log, false, conn);
+    const pool = await createTiDBPool(getTestDatabase().url());
+    const builder = new CacheBuilder(log, false, pool);
     const cacheKey = 'test';
     const cacheValue = 'foo';
     const cache = builder.build(CacheProviderTypes.NORMAL_TABLE, cacheKey, 1);
@@ -32,5 +29,5 @@ test('cache can be disabled', async () => {
     expect(cachedData.refresh).toEqual(true);
     expect(cachedData.data).toBe(cacheValue);
 
-    conn.destroy()
+    await pool.end()
 });

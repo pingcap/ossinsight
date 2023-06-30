@@ -1,1 +1,0 @@
-SHOW CREATE TABLE github_events;

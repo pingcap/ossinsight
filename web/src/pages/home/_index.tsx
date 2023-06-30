@@ -1,6 +1,6 @@
 import React from 'react';
 import CustomPage from '../../theme/CustomPage';
-import { CollectionsSection, SummarySection, TopListV2Section, WorkshopSection } from './_sections';
+import { CollectionsSection, SummarySection, TopListV2Section } from './_sections';
 
 export default function Home () {
   return (
@@ -12,7 +12,6 @@ export default function Home () {
       <SummarySection />
       <TopListV2Section />
       <CollectionsSection />
-      <WorkshopSection />
     </CustomPage>
   );
 }

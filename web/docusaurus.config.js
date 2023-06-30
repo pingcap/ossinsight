@@ -210,16 +210,14 @@ const config = {
         disableSwitch: true,
         respectPrefersColorScheme: false,
       },
-      /*
       announcementBar: {
-        id: 'announcement-20221101',
+        id: 'announcement-20230621',
         content:
-          '<a target="_blank" href="/2022" style="font-weight:bold">🎉 Check out highlights from GitHub 2022!</a>',
-        backgroundColor: '#6F6290',
+          '📢 Customize your own dashboard and embeddable hand-drawn style widgets in 10 minutes, see <a target="_blank" href="https://ossinsight-lite.vercel.app/" style="font-weight:bold">Demo!</a>',
+        backgroundColor: '#4C33B1',
         textColor: '#ffffff',
         isCloseable: true,
       },
-      */
       docs: {
         sidebar: {
           hideable: true,
@@ -288,7 +286,7 @@ const config = {
                 to: 'https://en.pingcap.com/tidb-cloud?utm_source=ossinsight&utm_medium=referral'
               },
               { label: 'How do we implement OSS Insight?', to: '/blog/why-we-choose-tidb-to-support-ossinsight' },
-              { label: 'Database Stats', to: '/stats' },
+              /* { label: 'Database Stats', to: '/stats' }, */
               { label: 'Report an Issue', to: 'https://github.com/pingcap/ossinsight/issues' },
             ]
           },
@@ -384,10 +382,6 @@ const config = {
                 href: 'http://www.gharchive.org/',
               },
               {
-                label: 'GHTorrent',
-                href: 'https://ghtorrent.org/',
-              },
-              {
                 label: 'Docusaurus',
                 href: 'https://github.com/facebook/docusaurus',
               },
@@ -398,6 +392,10 @@ const config = {
               {
                 label: 'React',
                 href: 'https://github.com/facebook/react',
+              },
+              {
+                label: 'TypeScript',
+                href: 'https://www.typescriptlang.org/',
               },
             ],
           },

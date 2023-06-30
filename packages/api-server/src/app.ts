@@ -1,13 +1,11 @@
 import AutoLoad, { AutoloadPluginOptions } from '@fastify/autoload';
 import { FastifyPluginAsync, RawServerDefault } from 'fastify';
-import { MySQLPromisePool } from '@fastify/mysql';
-
 import { APIServerEnvSchema } from './env';
 import { JsonSchemaToTsProvider } from '@fastify/type-provider-json-schema-to-ts';
 import fastifyEnv from '@fastify/env';
 import { join } from 'path';
+import {isProdDatabaseURL} from "./utils/db";
 import {APIError} from "./utils/error";
-import fastifyEtag from '@fastify/etag';
 
 export type AppOptions = {
   // Place your custom options for app below here.
@@ -17,39 +15,44 @@ export type AppOptions = {
 const options: AppOptions = {
 }
 
+export interface AppConfig {
+  CONFIGS_PATH: string;
+  ADMIN_EMAIL: string;
+  DATABASE_URL: string;
+  SHADOW_DATABASE_URL: string;
+  REDIS_URL: string;
+  API_BASE_URL: string;
+  ENABLE_CACHE: boolean;
+  PLAYGROUND_DATABASE_URL: string;
+  PLAYGROUND_SHADOW_DATABASE_URL: string;
+  PLAYGROUND_DAILY_QUESTIONS_LIMIT: number;
+  PLAYGROUND_TRUSTED_GITHUB_LOGINS: string[];
+  EXPLORER_USER_MAX_QUESTIONS_PER_HOUR: number;
+  EXPLORER_USER_MAX_QUESTIONS_ON_GOING: number;
+  EXPLORER_GENERATE_SQL_CACHE_TTL: number;
+  EXPLORER_QUERY_SQL_CACHE_TTL: number;
+  EXPLORER_OUTPUT_ANSWER_IN_STREAM: boolean;
+  GITHUB_OAUTH_CLIENT_ID?: string;
+  GITHUB_OAUTH_CLIENT_SECRET?: string;
+  GITHUB_ACCESS_TOKENS: string[];
+  JWT_SECRET?: string;
+  JWT_COOKIE_NAME?: string;
+  JWT_COOKIE_DOMAIN?: string;
+  JWT_COOKIE_SECURE?: boolean;
+  JWT_COOKIE_SAME_SITE?: boolean;
+  OPENAI_API_KEY: string;
+  AUTH0_DOMAIN: string;
+  AUTH0_SECRET: string;
+  EMBEDDING_SERVICE_ENDPOINT: string;
+  PROMPT_TEMPLATE_NAME: string;
+  PREFETCH_ONLY_QUERY?: string;
+  PREFETCH_ONLY_PARAMS: Record<string, any>;
+  PREFETCH_EXECUTE_IMMEDIATELY: boolean;
+}
+
 declare module 'fastify' {
   interface FastifyInstance {
-    config: {
-      CONFIGS_PATH: string;
-      ADMIN_EMAIL: string;
-      DATABASE_URL: string;
-      SHADOW_DATABASE_URL: string;
-      REDIS_URL: string;
-      API_BASE_URL: string;
-      ENABLE_CACHE: boolean;
-      PLAYGROUND_DATABASE_URL: string;
-      PLAYGROUND_SHADOW_DATABASE_URL: string;
-      PLAYGROUND_DAILY_QUESTIONS_LIMIT: number;
-      PLAYGROUND_TRUSTED_GITHUB_LOGINS: string[];
-      EXPLORER_USER_MAX_QUESTIONS_PER_HOUR: number;
-      EXPLORER_USER_MAX_QUESTIONS_ON_GOING: number;
-      EXPLORER_GENERATE_SQL_CACHE_TTL: number;
-      EXPLORER_QUERY_SQL_CACHE_TTL: number;
-      EXPLORER_OUTPUT_ANSWER_IN_STREAM: boolean;
-      GITHUB_OAUTH_CLIENT_ID?: string;
-      GITHUB_OAUTH_CLIENT_SECRET?: string;
-      GITHUB_ACCESS_TOKENS: string[];
-      JWT_SECRET?: string;
-      JWT_COOKIE_NAME?: string;
-      JWT_COOKIE_DOMAIN?: string;
-      JWT_COOKIE_SECURE?: boolean;
-      JWT_COOKIE_SAME_SITE?: boolean;
-      OPENAI_API_KEY: string;
-      AUTH0_DOMAIN: string;
-      AUTH0_SECRET: string;
-    };
-    mysql: MySQLPromisePool;
-    shadowMySQL?: MySQLPromisePool;
+    config: AppConfig;
   }
 }
 
@@ -65,10 +68,17 @@ const app: FastifyPluginAsync<AppOptions, RawServerDefault, JsonSchemaToTsProvid
     schema: APIServerEnvSchema
   });
 
-  // Load Etag.
-  fastify.register(fastifyEtag);
+  // Avoid using prod database in test env.
+  if (process.env.NODE_ENV === 'test' && (
+    isProdDatabaseURL(fastify.config.DATABASE_URL) ||
+    isProdDatabaseURL(fastify.config.SHADOW_DATABASE_URL) ||
+    isProdDatabaseURL(fastify.config.PLAYGROUND_DATABASE_URL) ||
+    isProdDatabaseURL(fastify.config.PLAYGROUND_SHADOW_DATABASE_URL)
+  )) {
+    throw new Error('DO NOT use production database in test env.');
+  }
 
-  // Error handler.
+  // Init error handler.
   fastify.setErrorHandler(function (error: Error, request, reply) {
     this.log.error(error);
 
@@ -84,14 +94,13 @@ const app: FastifyPluginAsync<AppOptions, RawServerDefault, JsonSchemaToTsProvid
     }
   });
 
-  // This loads all plugins defined in plugins.
+  // Loads all plugins defined in ./plugins directory.
   void fastify.register(AutoLoad, {
     dir: join(__dirname, 'plugins'),
     options: opts
-  })
+  });
 
-  // This loads all plugins defined in routes
-  // define your routes in one of these.
+  // Loads all routes defined in ./routes directory.
   await fastify.register(AutoLoad, {
     dir: join(__dirname, 'routes'),
     routeParams: true,
@@ -99,6 +108,7 @@ const app: FastifyPluginAsync<AppOptions, RawServerDefault, JsonSchemaToTsProvid
   });
 
   // Expose Swagger JSON.
+  // Notice: Swagger docs SHOULD be initialized after all routes are registered.
   fastify.get('/docs/json', (req, reply) => {
     reply.send(fastify.swagger());
   })
@@ -106,4 +116,3 @@ const app: FastifyPluginAsync<AppOptions, RawServerDefault, JsonSchemaToTsProvid
 
 export default app;
 export { app, options };
-

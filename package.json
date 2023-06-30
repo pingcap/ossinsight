@@ -2,10 +2,12 @@
   "name": "ossinsight",
   "version": "0.0.0",
   "private": true,
-  "license": "MIT",
+  "license": "Apache-2.0",
   "workspaces": [
     "packages/api-server",
-    "packages/feeds-server"
+    "packages/job-server",
+    "packages/prefetch",
+    "packages/sync-github-data"
   ],
   "scripts": {
     "prepare": "husky install"

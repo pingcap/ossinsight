@@ -76,7 +76,7 @@ export function Navigator ({ value, type, scrollTo }: NavigatorProps) {
 const tabs: Array<{ id: string, label: string, icon?: JSX.Element }> = [
   { id: 'divider-0', label: 'Analytics', icon: <AnalyticsIcon fontSize='inherit' sx={{ mr: 0.5 }} /> },
   { id: 'overview', label: 'Overview' },
-  { id: 'behaviour', label: 'Behaviour' },
+  { id: 'behaviour', label: 'Behavior' },
   { id: 'star', label: 'Star' },
   { id: 'code', label: 'Code' },
   { id: 'code-review', label: 'Code Review' },

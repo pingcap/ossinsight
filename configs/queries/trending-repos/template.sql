@@ -1,22 +1,17 @@
 WITH stars AS (
   SELECT
+      /*+ READ_FROM_STORAGE(tiflash[ge]) */
       ge.repo_id AS repo_id,
       COUNT(1) AS total,
       COUNT(DISTINCT actor_id) AS actors,
-      -- Calculate the score of each star according to the time of the star, the closer to the 
+      -- Calculate the score of each star according to the time of the star, the closer to the
       -- current time, the higher the score got, the score range is between 2-5. Then sum the
       -- scores of all stars to get the total score obtained from the stars for the repository.
       SUM(
-          GREATEST (
-              LEAST (
-                  (
-                      (
-                          TIMESTAMPDIFF(SECOND, DATE_SUB(NOW(), INTERVAL 1 MONTH), ge.created_at) / 
-                          TIMESTAMPDIFF(SECOND, DATE_SUB(NOW(), INTERVAL 1 MONTH), NOW())
-                      ) * (5 - 2)
-                  ), 5
-              ), 2
-          )
+          (
+              TIMESTAMPDIFF(SECOND, DATE_SUB(NOW(), INTERVAL 1 MONTH), ge.created_at) /
+              TIMESTAMPDIFF(SECOND, DATE_SUB(NOW(), INTERVAL 1 MONTH), NOW())
+          ) * (5 - 2) + 2
       ) AS score
   FROM github_events ge
   WHERE
@@ -28,30 +23,25 @@ WITH stars AS (
   HAVING actors > 0.9 * total
 ), forks AS (
   SELECT
+      /*+ READ_FROM_STORAGE(tiflash[ge]) */
       ge.repo_id AS repo_id,
       COUNT(1) AS total,
       COUNT(DISTINCT actor_id) AS actors,
-      -- Calculate the score of each fork according to the time of the fork, the closer to the 
+      -- Calculate the score of each fork according to the time of the fork, the closer to the
       -- current time, the higher the score got, the score range is between 1-4. Then sum the
       -- scores of all forks to get the total score obtained from the forks for the repository.
       SUM(
-          GREATEST (
-              LEAST (
-                  (
-                      (
-                          TIMESTAMPDIFF(SECOND, DATE_SUB(NOW(), INTERVAL 1 MONTH), ge.created_at) / 
-                          TIMESTAMPDIFF(SECOND, DATE_SUB(NOW(), INTERVAL 1 MONTH), NOW())
-                      ) * (4 - 1)
-                  ), 4
-              ), 1
-          )
+          (
+              TIMESTAMPDIFF(SECOND, DATE_SUB(NOW(), INTERVAL 1 MONTH), ge.created_at) /
+              TIMESTAMPDIFF(SECOND, DATE_SUB(NOW(), INTERVAL 1 MONTH), NOW())
+          ) * (4 - 1) + 1
       ) AS score
   FROM github_events ge
   WHERE
       type = 'ForkEvent'
       AND (ge.created_at >= DATE_SUB(NOW(), INTERVAL 1 MONTH) AND ge.created_at <= NOW())
   GROUP BY ge.repo_id
-  -- Exclude code repositories that use the same user to duplicate froks.
+  -- Exclude code repositories that use the same user to duplicate forks.
   HAVING actors > 0.9 * total
 ), topRepos AS (
     SELECT
@@ -63,18 +53,21 @@ WITH stars AS (
         IFNULL(f.total, 0) AS forks_inc,
         -- Calculate the composite score for the repository.
         SUM(
-            s.score + 
+            s.score +
             IFNULL(f.score, 0) +
             -- Give the new repository a higher score base.
-            ABS(1 /  (1 + TIMESTAMPDIFF(YEAR, r.created_at, NOW()))) * 200
+            (1 /  (1 + TIMESTAMPDIFF(YEAR, r.created_at, NOW()))) * 200
         ) AS total_score
     FROM github_repos r
-        JOIN stars s ON r.repo_id = s.repo_id
-        LEFT JOIN forks f ON r.repo_id = f.repo_id
+    JOIN stars s ON r.repo_id = s.repo_id
+    LEFT JOIN forks f ON r.repo_id = f.repo_id
     WHERE
         -- Filter rule: The repository must have at least 5 stars.
         stars > 5
-        AND stars < 50000
+        AND (
+            r.stars < 50000
+            OR (s.total / r.stars) > 0.01
+        )
         -- Filter rule: The repository must have at least 5 forks.
         AND forks > 5
         -- Filter rule: The repository must have pushed new code within the last three months.
@@ -85,7 +78,7 @@ WITH stars AS (
         AND LOWER(repo_name) NOT LIKE '%fuck%'
         -- Filter by repository language.
         AND primary_language = 'Java'
-        AND repo_name NOT IN (SELECT name FROM blacklist_repos)
+        AND repo_name NOT IN (SELECT /*+ READ_FROM_STORAGE(tikv[br]) */ name FROM blacklist_repos br)
         AND is_deleted = 0
     GROUP BY r.repo_id
     ORDER BY total_score DESC
@@ -131,14 +124,14 @@ WITH stars AS (
             )
             AND (ge.created_at >= DATE_SUB(NOW(), INTERVAL 1 MONTH) AND ge.created_at <= NOW())
             AND ge.repo_id IN (SELECT tr.repo_id FROM topRepos tr)
-            AND ge.actor_login NOT IN (SELECT bu.login FROM blacklist_users bu)
+            AND ge.actor_login NOT IN (SELECT /*+ READ_FROM_STORAGE(tikv[bu]) */ bu.login FROM blacklist_users bu)
             AND ge.actor_login NOT LIKE '%bot%'
         GROUP BY ge.repo_id, ge.actor_login
-        ORDER BY ge.repo_id, cnt DESC
     ) sub
     GROUP BY repo_id
 ), repo_with_collections AS (
     SELECT
+        /*+ READ_FROM_STORAGE(tikv[ci, c]) */
         tr.repo_id, GROUP_CONCAT(DISTINCT c.name) AS collection_names
     FROM topRepos tr
     JOIN collection_items ci ON ci.repo_name = tr.repo_name
@@ -165,3 +158,4 @@ FROM
     LEFT JOIN pull_requests pr ON tr.repo_id = pr.repo_id
     LEFT JOIN pushes pu ON tr.repo_id = pu.repo_id
 ORDER BY total_score DESC
+;

@@ -1,75 +1,76 @@
-with issue_with_first_responed_at as (
-    select
-        number, min(date_format(created_at, '%Y-%m-01')) as event_month, min(created_at) as first_responed_at
-    from
+WITH issue_with_first_responded_at AS (
+    SELECT
+        number, MIN(DATE_FORMAT(created_at, '%Y-%m-01')) AS t_month, MIN(created_at) AS first_responded_at
+    FROM
         github_events ge
-    where
+    WHERE
         repo_id = 41986369
-        and ((type = 'IssueCommentEvent' and action = 'created') or (type = 'IssuesEvent' and action = 'closed'))
+        AND ((type = 'IssueCommentEvent' AND action = 'created') OR (type = 'IssuesEvent' AND action = 'closed'))
         -- Exclude Bots
-        -- and actor_login not like '%bot%'
-        -- and actor_login not in (select login from blacklist_users bu)
-    group by 1
-), issue_with_opened_at as (
-    select
-        number, created_at as opened_at
-    from
+        -- AND actor_login NOT LIKE '%bot%'
+        -- AND actor_login NOT IN (SELECT login FROM blacklist_users bu)
+    GROUP BY 1
+), issue_with_opened_at AS (
+    SELECT
+        number, created_at AS opened_at
+    FROM
         github_events ge
-    where
+    WHERE
         repo_id = 41986369
-        and type = 'IssuesEvent'
-        and action = 'opened'
+        AND type = 'IssuesEvent'
+        AND action = 'opened'
         -- Exclude Bots
-        -- and actor_login not like '%bot%'
-        -- and actor_login not in (select login from blacklist_users bu)
-), tdiff as (
-    select
-        event_month,
-        (UNIX_TIMESTAMP(iwfr.first_responed_at) - UNIX_TIMESTAMP(iwo.opened_at)) as diff
-    from
+        -- AND actor_login NOT LIKE '%bot%'
+        -- AND actor_login NOT IN (SELECT login FROM blacklist_users bu)
+), tdiff AS (
+    SELECT
+        t_month,
+        (UNIX_TIMESTAMP(iwfr.first_responded_at) - UNIX_TIMESTAMP(iwo.opened_at)) AS diff
+    FROM
         issue_with_opened_at iwo
-        join issue_with_first_responed_at iwfr on iwo.number = iwfr.number and iwfr.first_responed_at > iwo.opened_at
-), tdiff_with_rank as (
-    select
-        tdiff.event_month,
-        diff  / 60 / 60 as diff,
-        ROW_NUMBER() over (partition by tdiff.event_month order by diff) as r,
-        count(*) over (partition by tdiff.event_month) as cnt,
-        first_value(diff / 60 / 60) over (partition by tdiff.event_month order by diff) as p0,
-        first_value(diff / 60 / 60)  over (partition by tdiff.event_month order by diff desc) as p100
-    from tdiff
-), tdiff_p25 as (
-    select
-        event_month, diff as p25
-    from
+        JOIN issue_with_first_responded_at iwfr ON iwo.number = iwfr.number AND iwfr.first_responded_at > iwo.opened_at
+), tdiff_with_rank AS (
+    SELECT
+        tdiff.t_month,
+        diff  / 60 / 60 AS diff,
+        ROW_NUMBER() OVER (PARTITION BY tdiff.t_month ORDER BY diff) AS r,
+        COUNT(*) OVER (PARTITION BY tdiff.t_month) AS cnt,
+        FIRST_VALUE(diff / 60 / 60) OVER (PARTITION BY tdiff.t_month ORDER BY diff) AS p0,
+        FIRST_VALUE(diff / 60 / 60)  OVER (PARTITION BY tdiff.t_month ORDER BY diff DESC) AS p100
+    FROM tdiff
+), tdiff_p25 AS (
+    SELECT
+        t_month, diff AS p25
+    FROM
         tdiff_with_rank tr
-    where
-        r = round(cnt * 0.25)
-), tdiff_p50 as (
-    select
-        event_month, diff as p50
-    from
+    WHERE
+        r = ROUND(cnt * 0.25)
+), tdiff_p50 AS (
+    SELECT
+        t_month, diff AS p50
+    FROM
         tdiff_with_rank tr
-    where
-        r = round(cnt * 0.5)
-), tdiff_p75 as (
-    select
-        event_month, diff as p75
-    from
+    WHERE
+        r = ROUND(cnt * 0.5)
+), tdiff_p75 AS (
+    SELECT
+        t_month, diff AS p75
+    FROM
         tdiff_with_rank tr
-    where
-        r = round(cnt * 0.75)
+    WHERE
+        r = ROUND(cnt * 0.75)
 )
-select
-    distinct tr.event_month,
+SELECT
+    tr.t_month AS event_month,
     p0,
     p25,
     p50,
     p75,
     p100
-from tdiff_with_rank tr
-left join tdiff_p25 p25 on tr.event_month = p25.event_month
-left join tdiff_p50 p50 on tr.event_month = p50.event_month
-left join tdiff_p75 p75 on tr.event_month = p75.event_month
-order by 1
+FROM tdiff_with_rank tr
+LEFT JOIN tdiff_p25 p25 ON tr.t_month = p25.t_month
+LEFT JOIN tdiff_p50 p50 ON tr.t_month = p50.t_month
+LEFT JOIN tdiff_p75 p75 ON tr.t_month = p75.t_month
+WHERE r = 1
+ORDER BY event_month
 ;

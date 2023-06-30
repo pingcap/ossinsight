@@ -11,7 +11,7 @@
     "type": "git",
     "url": "git+https://github.com/pingcap/ossinsight.git"
   },
-  "license": "MIT",
+  "license": "Apache-2.0",
   "main": "app.ts",
   "scripts": {
     "build:ts": "tsc",
@@ -34,7 +34,7 @@
     "@ossinsight/email-server": "workspace:^0.0.1",
     "@types/cron": "^2.0.0",
     "async": "^3.2.4",
-    "axios": "^0.27.2",
+    "axios": "^0.26.1",
     "bufferutil": "^4.0.7",
     "bullmq": "^3.4.1",
     "cron": "^2.1.0",
@@ -51,6 +51,7 @@
     "next": "^v12.3.2",
     "octokit": "^2.0.10",
     "pino": "^8.7.0",
+    "prom-client": "^14.2.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "uglify-js": "^3.17.4",

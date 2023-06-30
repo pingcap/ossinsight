@@ -75,3 +75,9 @@ chatgpt:
   title: Robot from OpenAI
   url: https://chat.openai.com/
   image_url: https://github.com/openai.png
+
+notionai:
+  name: Notion AI
+  title: AI assistant from Notion
+  url: https://www.notion.so/product/ai
+  image_url: https://upload.wikimedia.org/wikipedia/commons/4/45/Notion_app_logo.png
