@@ -213,7 +213,7 @@ const config = {
       announcementBar: {
         id: 'announcement-20230703',
         content:
-          '📢 Own your data and get embeddable hand-drawn style widgets in 10 minutes, <a target="_blank" href="https://github.com/pingcap/ossinsight-lite" style="font-weight:bold">Go to build!</a>',
+          '📢 Own your data and get embeddable hand-drawn style widgets in 10 minutes, <a target="_blank" href="https://github.com/pingcap/ossinsight-lite" style="font-weight:bold">Go to build !</a>',
         backgroundColor: '#4C33B1',
         textColor: '#ffffff',
         isCloseable: true,
