@@ -1,1 +1,19 @@
-[]
+[
+  {
+    "name": "/xxxxx/star_history",
+    "description": "",
+    "method": "GET",
+    "endpoint": "/xxxxx/star_history",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [],
+    "settings": {
+      "timeout": 5000,
+      "row_limit": 50
+    },
+    "sql_file": "sql/GET-xxxxx-star_history.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  }
+]
