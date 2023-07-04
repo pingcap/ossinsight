@@ -13,11 +13,11 @@ export default fp(async (fastify) => {
     const log = fastify.log as pino.Logger;
     let provider: ContextProvider | null = null
     if (fastify.config.EMBEDDING_SERVICE_ENDPOINT) {
-        provider = new EmbeddingContextProvider(fastify.config.EMBEDDING_SERVICE_ENDPOINT)
+        provider = new EmbeddingContextProvider(fastify.config.EMBEDDING_SERVICE_ENDPOINT);
+        fastify.decorate('embeddingContextProvider', provider);
     } else {
         log.warn('env EMBEDDING_SERVICE_ENDPOINT not set, embedding context provider will not work.')
     }
-    fastify.decorate('embeddingContextProvider', provider);
 }, {
   name: '@ossinsight/embedding-context-provider',
   dependencies: [
