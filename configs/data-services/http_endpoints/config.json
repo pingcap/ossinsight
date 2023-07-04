@@ -1,31 +1,18 @@
 [
   {
-    "name": "/collections",
+    "name": "/events",
     "description": "",
     "method": "GET",
-    "endpoint": "/collections",
+    "endpoint": "/events",
     "data_source": {
       "cluster_id": 1379661944642684098
     },
-    "params": [
-      {
-        "name": "offset",
-        "type": "number",
-        "required": 1,
-        "default": "1"
-      },
-      {
-        "name": "page_size",
-        "type": "number",
-        "required": 1,
-        "default": "10"
-      }
-    ],
+    "params": [],
     "settings": {
       "timeout": 5000,
       "row_limit": 100
     },
-    "sql_file": "sql/GET-collections.sql",
+    "sql_file": "sql/GET-events.sql",
     "type": "sql_endpoint",
     "return_type": "json"
   }
