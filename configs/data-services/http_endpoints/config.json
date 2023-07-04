@@ -1,18 +1,31 @@
 [
   {
-    "name": "/xxxxx/star_history",
+    "name": "/collections",
     "description": "",
     "method": "GET",
-    "endpoint": "/xxxxx/star_history",
+    "endpoint": "/collections",
     "data_source": {
       "cluster_id": 1379661944642684098
     },
-    "params": [],
+    "params": [
+      {
+        "name": "offset",
+        "type": "number",
+        "required": 1,
+        "default": "1"
+      },
+      {
+        "name": "page_size",
+        "type": "number",
+        "required": 1,
+        "default": "10"
+      }
+    ],
     "settings": {
       "timeout": 5000,
-      "row_limit": 50
+      "row_limit": 100
     },
-    "sql_file": "sql/GET-xxxxx-star_history.sql",
+    "sql_file": "sql/GET-collections.sql",
     "type": "sql_endpoint",
     "return_type": "json"
   }
