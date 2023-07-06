@@ -12,9 +12,9 @@
     "gen:schema-ts": "json2ts ./schema/query.schema.json ./src/types/query.schema.d.ts",
     "validate:query": "ajv -s ./schema/query.schema.json -r ./schema/openapi-2021-09-28.schema.json -c ajv-formats -d \"../../configs/queries/*/params.json\"",
     "build:ts": "tsc",
-    "dev": "fastify start -p ${API_SERVER_PORT:-3450} -P --ignore-watch=.ts$ -l info -w dist/app.js",
+    "dev": "NODE_ENV=development fastify start -p ${API_SERVER_PORT:-3450} -P --ignore-watch=.ts$ -L dist/logger.js -l info -w dist/app.js",
     "build": "rm -rf dist && npm run build:ts",
-    "start": "fastify start -a 0.0.0.0 -p ${API_SERVER_PORT:-3450} -l info dist/app.js",
+    "start": "fastify start -a 0.0.0.0 -p ${API_SERVER_PORT:-3450} -L dist/logger.js -l info dist/app.js",
     "test": "jest",
     "coverage": "jest --coverage",
     "watch:ts": "tsc -w"
@@ -31,6 +31,7 @@
     "@fastify/websocket": "^7.1.1",
     "@lukesthl/ts-axios-digest-auth": "^1.0.5",
     "@mgcrea/fastify-request-logger": "^0.6.1",
+    "@sentry/node": "^7.57.0",
     "JSONStream": "^1.3.5",
     "async": "^3.2.4",
     "axios": "^0.26.1",
@@ -54,6 +55,7 @@
     "openai": "^3.2.1",
     "pino": "^8.7.0",
     "pino-pretty": "^9.1.1",
+    "pino-sentry-transport": "^1.0.4",
     "prom-client": "^14.1.0",
     "socket.io": "^4.5.3",
     "yaml": "^2.1.3"

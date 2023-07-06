@@ -22,8 +22,8 @@ const fastifyBullMQ = async (
     fastify: FastifyInstance,
     opts: FastifyQueueOptions
 ) => {
-    const queues = {};
-    const workers = {};
+    const queues: any = {};
+    const workers: any = {};
 
     const files = fg.sync(opts.bullPath);
 

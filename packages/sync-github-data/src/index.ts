@@ -4,23 +4,12 @@ import {initSyncUsersInBatchCommand} from "@commands/users/sync-in-batch";
 import {AppConfig, SyncGitHubDataEnvSchema} from "@env";
 import {Command} from "commander";
 import envSchema from "env-schema";
-import pino from "pino";
+export const logger = require('./logger');
 
 // Load environments.
 const config: AppConfig = envSchema({
   schema: SyncGitHubDataEnvSchema,
   dotenv: true,
-});
-
-// Init Logger
-export const logger = pino({
-  transport: {
-    target: 'pino-pretty',
-    options: {
-      colorize: true,
-    },
-  },
-  level: config.LOG_LEVEL,
 });
 
 async function main() {
