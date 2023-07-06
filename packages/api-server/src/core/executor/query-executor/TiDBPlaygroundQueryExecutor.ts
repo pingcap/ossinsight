@@ -13,9 +13,9 @@ export class TiDBPlaygroundQueryExecutor extends TiDBQueryExecutor {
     connectionLimits: string[] = []
   ) {
     super(pool, shadowPool, pLogger);
-    decoratePoolConnections(this.logger,  this.pool, { initialSql: connectionLimits });
+    decoratePoolConnections(this.logger, this.pool, { initialSql: connectionLimits });
     if (this.shadowPool) {
-      decoratePoolConnections(this.logger,  this.pool,  { initialSql: connectionLimits });
+      decoratePoolConnections(this.logger, this.shadowPool,  { initialSql: connectionLimits });
     }
   }
 }
