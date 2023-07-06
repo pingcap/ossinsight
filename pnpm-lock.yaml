@@ -622,8 +622,8 @@ importers:
         specifier: ^2.3.3
         version: 2.3.3
       octokit:
-        specifier: ^2.0.14
-        version: 2.1.0(encoding@0.1.13)
+        specifier: ^2.0.10
+        version: 2.0.10
       pino:
         specifier: ^8.7.0
         version: 8.14.1
@@ -662,8 +662,8 @@ importers:
         specifier: ^4.2.0
         version: 4.2.0
       typescript:
-        specifier: ^5.0.4
-        version: 5.1.6
+        specifier: ^4.5.4
+        version: 4.7.4
 
 packages:
 
@@ -2107,8 +2107,22 @@ packages:
       - encoding
     dev: false
 
+  /@octokit/openapi-types@14.0.0:
+    resolution: {integrity: sha512-HNWisMYlR8VCnNurDU6os2ikx0s0VyEjDYHNS/h4cgb8DeOxQ0n72HyinUtdDVxJhFy3FWLGl0DJhfEWk3P5Iw==}
+    dev: false
+
   /@octokit/openapi-types@18.0.0:
     resolution: {integrity: sha512-V8GImKs3TeQRxRtXFpG2wl19V7444NIOTDF24AWuIbmNaNYOQMWRbjcGDXV5B+0n887fgDcuMNOmlul+k+oJtw==}
+    dev: false
+
+  /@octokit/plugin-paginate-rest@5.0.1(@octokit/core@4.2.4):
+    resolution: {integrity: sha512-7A+rEkS70pH36Z6JivSlR7Zqepz3KVucEFVDnSrgHXzG7WLAzYwcHZbKdfTXHwuTHbkT1vKvz7dHl1+HNf6Qyw==}
+    engines: {node: '>= 14'}
+    peerDependencies:
+      '@octokit/core': '>=4'
+    dependencies:
+      '@octokit/core': 4.2.4(encoding@0.1.13)
+      '@octokit/types': 8.2.1
     dev: false
 
   /@octokit/plugin-paginate-rest@6.1.2(@octokit/core@4.2.4):
@@ -2120,6 +2134,17 @@ packages:
       '@octokit/core': 4.2.4(encoding@0.1.13)
       '@octokit/tsconfig': 1.0.2
       '@octokit/types': 9.3.2
+    dev: false
+
+  /@octokit/plugin-rest-endpoint-methods@6.8.1(@octokit/core@4.2.4):
+    resolution: {integrity: sha512-QrlaTm8Lyc/TbU7BL/8bO49vp+RZ6W3McxxmmQTgYxf2sWkO8ZKuj4dLhPNJD6VCUW1hetCmeIM0m6FTVpDiEg==}
+    engines: {node: '>= 14'}
+    peerDependencies:
+      '@octokit/core': '>=3'
+    dependencies:
+      '@octokit/core': 4.2.4(encoding@0.1.13)
+      '@octokit/types': 8.2.1
+      deprecation: 2.3.1
     dev: false
 
   /@octokit/plugin-rest-endpoint-methods@7.2.3(@octokit/core@4.2.4):
@@ -2140,6 +2165,17 @@ packages:
     dependencies:
       '@octokit/core': 4.2.4(encoding@0.1.13)
       '@octokit/types': 9.3.2
+      bottleneck: 2.19.5
+    dev: false
+
+  /@octokit/plugin-throttling@4.3.2(@octokit/core@4.2.4):
+    resolution: {integrity: sha512-ZaCK599h3tzcoy0Jtdab95jgmD7X9iAk59E2E7hYKCAmnURaI4WpzwL9vckImilybUGrjY1JOWJapDs2N2D3vw==}
+    engines: {node: '>= 14'}
+    peerDependencies:
+      '@octokit/core': ^4.0.0
+    dependencies:
+      '@octokit/core': 4.2.4(encoding@0.1.13)
+      '@octokit/types': 8.2.1
       bottleneck: 2.19.5
     dev: false
 
@@ -2185,6 +2221,12 @@ packages:
     resolution: {integrity: sha512-Vm8IddVmhCgU1fxC1eyinpwqzXPEYu0NrYzD3YZjlGjyftdLBTeqNblRC0jmJmgxbJIsQlyogVeGnrNaaMVzIg==}
     dependencies:
       '@octokit/openapi-types': 18.0.0
+    dev: false
+
+  /@octokit/types@8.2.1:
+    resolution: {integrity: sha512-8oWMUji8be66q2B9PmEIUyQm00VPDPun07umUWSaCwxmeaquFBro4Hcc3ruVoDo3zkQyZBlRvhIMEYS3pBhanw==}
+    dependencies:
+      '@octokit/openapi-types': 14.0.0
     dev: false
 
   /@octokit/types@9.3.2:
@@ -8405,6 +8447,22 @@ packages:
     resolution: {integrity: sha512-lgHwxlxV1qIg1Eap7LgIeoBWIMFibOjbrYPIPJZcI1mmGAI2m3lNYpK12Y+GBdPQ0U1hRwSord7GIaawz962qQ==}
     dev: false
 
+  /octokit@2.0.10:
+    resolution: {integrity: sha512-sI15RZVaV9iyqLLEky4i++tMM48Fo9a80zrpOXMdAtbomznBLDi/moi9mAjJg7Ii+EaSEyaWOVIh3M/Vk/a5mw==}
+    engines: {node: '>= 14'}
+    dependencies:
+      '@octokit/app': 13.1.8(encoding@0.1.13)
+      '@octokit/core': 4.2.4(encoding@0.1.13)
+      '@octokit/oauth-app': 4.2.4(encoding@0.1.13)
+      '@octokit/plugin-paginate-rest': 5.0.1(@octokit/core@4.2.4)
+      '@octokit/plugin-rest-endpoint-methods': 6.8.1(@octokit/core@4.2.4)
+      '@octokit/plugin-retry': 4.1.6(@octokit/core@4.2.4)
+      '@octokit/plugin-throttling': 4.3.2(@octokit/core@4.2.4)
+      '@octokit/types': 8.2.1
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+
   /octokit@2.1.0(encoding@0.1.13):
     resolution: {integrity: sha512-Pxi6uKTjBRZWgAwsw1NgHdRlL+QASCN35OYS7X79o7PtBME0CLXEroZmPtEwlWZbPTP+iDbEy2wCbSOgm0uGIQ==}
     engines: {node: '>= 14'}
@@ -10255,12 +10313,6 @@ packages:
   /typescript@4.9.5:
     resolution: {integrity: sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==}
     engines: {node: '>=4.2.0'}
-    hasBin: true
-    dev: true
-
-  /typescript@5.1.6:
-    resolution: {integrity: sha512-zaWCozRZ6DLEWAWFrVDz1H6FVXzUSfTy5FUMWsQlU8Ym5JP9eO4xkTIROFCQvhQf61z6O/G6ugw3SgAnvvm+HA==}
-    engines: {node: '>=14.17'}
     hasBin: true
     dev: true
 

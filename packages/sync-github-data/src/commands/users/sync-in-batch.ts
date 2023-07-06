@@ -46,12 +46,7 @@ export function initSyncUsersInBatchCommand(pCommand: Command, config: AppConfig
       (value) => DateTime.fromSQL(value),
       DateTime.utc()
     )
-    .requiredOption<boolean>(
-      '--desc',
-      'Whether to process time ranges in descending order. Default: false.',
-      (value) => Boolean(value),
-      false
-    )
+    .option('-d, --desc', 'Whether to process time ranges in descending order. Default: false.')
     .requiredOption<Duration>(
       '--chunk-size <duration>',
       `The chunk size is used to spilt the large task to many small subtask, so that we can process them 

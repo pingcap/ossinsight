@@ -22,7 +22,7 @@
     "pino-pretty": "^9.4.0",
     "prisma": "^4.14.0",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.0.4"
+    "typescript": "^4.5.4"
   },
   "dependencies": {
     "@goparrot/geocoder": "^4.4.0",
@@ -37,7 +37,7 @@
     "lru-cache": "^7.13.1",
     "luxon": "^3.3.0",
     "mysql2": "^2.3.3",
-    "octokit": "^2.0.14",
+    "octokit": "^2.0.10",
     "pino": "^8.7.0",
     "pino-sentry-transport": "^1.0.4",
     "pinyin": "3.0.0-alpha.4",
