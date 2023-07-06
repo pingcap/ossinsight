@@ -1,11 +1,9 @@
 import { Server, Socket } from 'socket.io';
 
-import { FastifyInstance, FastifyPluginAsync } from 'fastify';
+import {FastifyBaseLogger, FastifyInstance, FastifyPluginAsync} from 'fastify';
 import { QueryRunner } from "../../core/runner/query/QueryRunner";
 import fastifyWebsocket from "fastify-socket.io";
-import { pino } from "pino";
 import { toCompactFormat } from "../../utils/compact";
-import {MySQLPromisePool} from "@fastify/mysql";
 
 interface WsQueryRequest {
   qid?: string | number;
@@ -50,14 +48,17 @@ const root: FastifyPluginAsync = async (app, opts): Promise<void> => {
   });
 
   app.ready((err) => {
-    if (err) throw err;
+    if (err) {
+      throw new Error(`[ws] Failed to init socket.io.`, {
+        cause: err
+      });
+    }
 
     app.io.on("connection", (socket) => {
-      app.log.info("io connected");
-      const log = app.log as pino.Logger;
-      socketServerRoutes(log, socket, app.io, app.queryRunner, app.mysql);
+      app.log.info(`[ws] Establish a websocket connection <${socket.id}>.`);
+      socketServerRoutes(app.log, socket, app.io, app.queryRunner);
       socket.on("disconnect", () => {
-        app.log.info("io disconnected");
+        app.log.info(`[ws] Disconnect a websocket connection <${socket.id}>.`);
       });
     });
   });
@@ -87,11 +88,10 @@ function getCorsOrigin (app: FastifyInstance, origin: string | string[]): string
 }
 
 export function socketServerRoutes(
-  log: pino.Logger,
+  log: FastifyBaseLogger,
   socket: Socket,
   io: Server,
-  queryRunner: QueryRunner,
-  mysql: MySQLPromisePool
+  queryRunner: QueryRunner
 ) {
   /*
    * This ws entrypoint provide a method to visit HTTP /q/:query and /q/explain/:query equally.
@@ -121,8 +121,10 @@ export function socketServerRoutes(
    * will be the error data.
    */
   socket.on("q", async (request: WsQueryRequest) => {
+    const { explain, query, qid, params, format, excludeMeta } = request;
+    const logger = log.child({ query: query });
+
     try {
-      const { explain, query, qid, params, format, excludeMeta } = request;
       const isCompact = format === "compact";
       const topic = `/q/${explain ? "explain/" : ""}${query}${
         qid ? `?qid=${qid}` : ""
@@ -135,6 +137,14 @@ export function socketServerRoutes(
           res = await queryRunner.explain(query, params);
         } else {
           res = await queryRunner.query(query, params);
+        }
+
+        // Check if events-increment return data.
+        if (query === 'events-increment') {
+          const cnt = Array.isArray(res?.data) ? res?.data?.[0]?.cnt : null;
+          if (cnt === undefined || cnt === null || cnt === 0) {
+            logger.error(new Error('[ws] Query events-increment return empty data.'));
+          }
         }
 
         if (isCompact) {
@@ -154,17 +164,18 @@ export function socketServerRoutes(
           payload: res,
           compact: explain ? undefined : isCompact,
         };
-      } catch (e) {
+      } catch (err: any) {
+        logger.error({ err }, "[ws] Failed to execute query %s.", query);
         response = {
           error: true,
           qid: request.qid,
           explain: request.explain,
-          payload: e,
+          payload: err,
         };
       }
       socket.emit(topic, response);
     } catch (error) {
-      log.error("Failed to request %s[ws]: ", request, error);
+      logger.error({error, request}, "[ws] Failed to request.");
       socket.emit("fatal-error/q", {
         request,
         error,
@@ -173,7 +184,7 @@ export function socketServerRoutes(
   });
 
   socket.on("close", () => {
-    log.info("io disconnected");
+    log.info(`[ws] Disconnect a websocket connection ${socket.id};`);
   });
 }
 
