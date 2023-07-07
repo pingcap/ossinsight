@@ -1,4 +1,4 @@
-import {countAPIRequest, measure, openaiAPICounter as counter, openaiAPITimer} from "../../metrics";
+import {countAPIRequest, measure, openaiAPICounter as counter, openaiAPITimer} from "../../../metrics";
 import {Answer, AnswerSummary, RecommendedChart, RecommendQuestion} from "./types";
 import {BotResponseGenerateError, BotResponseParseError} from "../../../utils/error";
 import {Configuration, OpenAIApi} from "openai";

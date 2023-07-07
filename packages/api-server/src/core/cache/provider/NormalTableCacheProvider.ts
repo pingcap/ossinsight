@@ -35,8 +35,8 @@ export default class NormalTableCacheProvider implements CacheProvider {
     ) {
         const EX = options?.EX || -1;
         const sql = `INSERT INTO ${this.tableName} (cache_key, cache_value, expires) 
-        VALUES (?, ?, ?) AS new
-        ON DUPLICATE KEY UPDATE cache_value = new.cache_value, expires = new.expires;`;
+        VALUES (?, ?, ?)
+        ON DUPLICATE KEY UPDATE cache_value = VALUES(cache_value), expires = VALUES(expires);`;
 
         // Execute SQL to set cache item.
         const waitConnStart = DateTime.now();
