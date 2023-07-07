@@ -26,11 +26,11 @@ export function decoratePoolConnections(logger: pino.Logger, pool: Pool, { initi
         const internalConn = poolConn.connection as unknown as Connection;
 
         if (!internalConn[INITIALIZED]) {
-            logger.info({ initialSql }, "Started to init session variables for the connection.", )
+            logger.info({ initialSql }, "⏳ Initializing session variables for the connection.", )
             for (const sql of initialSql) {
                 await poolConn.execute(sql);
             }
-            logger.info("Finished to init session variables successfully.")
+            logger.info("✅ Finished to init session variables successfully.")
 
             Object.defineProperty(internalConn, INITIALIZED, {
                 value: true,
@@ -38,8 +38,6 @@ export function decoratePoolConnections(logger: pino.Logger, pool: Pool, { initi
                 configurable: false,
                 enumerable: false,
             });
-        } else {
-            logger.info("The connection has been initialized, skip the initialization process.")
         }
 
         return poolConn;
