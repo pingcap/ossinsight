@@ -32,4 +32,4 @@ export {
   githubAPICounter,
   openaiAPITimer,
   openaiAPICounter
-} from './plugins/metrics';
+} from './metrics';

@@ -143,7 +143,7 @@ export function socketServerRoutes(
         if (query === 'events-increment') {
           const cnt = Array.isArray(res?.data) ? res?.data?.[0]?.cnt : null;
           if (cnt === undefined || cnt === null || cnt === 0) {
-            logger.error(new Error('[ws] Query events-increment return empty data.'));
+            logger.error({ query, params, cnt }, 'Query events-increment return empty data.');
           }
         }
 
