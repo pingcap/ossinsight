@@ -23,7 +23,8 @@ const opts: LoggerOptions = {
             environment: process.env.NODE_ENV || 'production',
             tracesSampleRate: 1.0,
           },
-          tags: ['service']
+          tags: ['service'],
+          withLogRecord: true,
         }
       }
     ]

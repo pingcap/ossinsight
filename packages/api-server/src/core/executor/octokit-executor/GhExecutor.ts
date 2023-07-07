@@ -2,7 +2,7 @@ import CacheBuilder, { CacheProviderTypes } from "../../cache/CacheBuilder";
 import { OctokitFactory, SYMBOL_TOKEN, eraseToken } from "./OctokitFactory";
 import {Pool, createPool} from "generic-pool";
 import { RECOMMEND_REPO_LIST_1_KEYWORD, RECOMMEND_REPO_LIST_2_KEYWORD, RECOMMEND_USER_LIST_KEYWORD, getRecommendRepoList, getRecommendUserList } from "./Recommeneder";
-import {githubAPICounter, githubAPITimer, measure} from "../../../plugins/metrics";
+import {githubAPICounter, githubAPITimer, measure} from "../../../metrics";
 import {CachedData} from "../../cache/Cache";
 import {DateTime} from "luxon";
 import {Octokit} from "octokit";

@@ -2,7 +2,7 @@ import { QuerySchema } from "../../../types/query.schema";
 import { join } from "path";
 import pino from "pino";
 import { readFile } from "fs/promises";
-import {measure, readConfigTimer} from "../../../plugins/metrics";
+import {measure, readConfigTimer} from "../../../metrics";
 import fsp from "fs/promises";
 import path from "path";
 import fs from "fs";
