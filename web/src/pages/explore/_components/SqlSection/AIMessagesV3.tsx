@@ -372,9 +372,9 @@ export function defaultGetPace (
 ): number {
   switch (lastChar) {
     case ' ':
-      return 80 + Math.random() * 50;
+      return 40 + Math.random() * 25;
     default:
-      return 50 + Math.random() * 50;
+      return 25 + Math.random() * 25;
   }
 }
 

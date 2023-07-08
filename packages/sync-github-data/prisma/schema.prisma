@@ -1,0 +1,139 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model GitHubRepo {
+  repoId           Int     @id @map("repo_id")
+  repoName         String  @map("repo_name")
+  ownerId          Int     @map("owner_id")
+  ownerLogin       String  @map("owner_login")
+  ownerIsOrg       Boolean @map("owner_is_org")
+  description      String
+  primaryLanguage  String  @map("primary_language")
+  languages        GitHubRepoLanguage[]
+  topics           GitHubRepoTopic[]
+  license          String
+  size             Int
+  stars            Int
+  forks            Int
+  parentRepoId     Int?    @map("parent_repo_id")
+  isFork           Boolean @map("is_fork")
+  isArchived       Boolean @map("is_archived")
+  isDeleted        Boolean @map("is_deleted")
+  latestReleasedAt DateTime? @db.Timestamp() @map("latest_released_at")
+  pushedAt         DateTime? @db.Timestamp() @map("pushed_at")
+  createdAt        DateTime @db.Timestamp() @map("created_at")
+  updatedAt        DateTime @db.Timestamp() @map("updated_at")
+  lastEventAt      DateTime? @db.Timestamp() @map("last_event_at")
+  refreshedAt      DateTime? @db.Timestamp() @map("refreshed_at")
+
+  @@map("github_repos")
+}
+
+model GitHubRepoTopic {
+  repoId Int @map("repo_id")
+  topic  String
+  repo     GitHubRepo @relation(fields: [repoId], references: [repoId])
+  @@id([repoId, topic])
+
+  @@map("github_repo_topics")
+}
+
+model GitHubRepoLanguage {
+  repoId   Int @map("repo_id")
+  language String
+  size     Int
+  repo     GitHubRepo @relation(fields: [repoId], references: [repoId])
+  @@id([repoId, language])
+
+  @@map("github_repo_languages")
+}
+
+model GitHubUser {
+  id                   Int      @id
+  login                String
+  type                 String
+  isBot                Boolean  @map("is_bot")
+  name                 String
+  email                String?
+  organization         String?
+  organizationFormatted String?   @map("organization_formatted")
+  address              String?
+  countryCode          String?   @map("country_code")
+  regionCode           String?   @map("region_code")
+  state                String?
+  city                 String?
+  longitude            Decimal?
+  latitude             Decimal?
+  publicRepos          Int      @map("public_repos")
+  followers            Int
+  followings           Int
+  createdAt            DateTime @map("created_at")
+  updatedAt            DateTime @map("updated_at")
+  isDeleted            Boolean  @map("is_deleted")
+  refreshedAt          DateTime @map("refreshed_at")
+
+  @@map("github_users")
+}
+
+model GitHubEvent {
+  id                 Int      @id
+  type               String
+  createdAt          DateTime @map("created_at")
+  repoId             Int      @map("repo_id")
+  repoName           String   @map("repo_name")
+  actorId            Int      @map("actor_id")
+  actorLogin         String   @map("actor_login")
+  language           String
+  additions          Int
+  deletions          Int
+  action             String
+  number             Int
+  commitId           String   @map("commit_id")
+  commentId          Int      @map("comment_id")
+  orgLogin           String   @map("org_login")
+  orgId              Int      @map("org_id")
+  state              String
+  closedAt           DateTime @map("closed_at")
+  comments           Int
+  prMergedAt         DateTime @map("pr_merged_at")
+  prMerged           Boolean  @map("pr_merged")
+  prChangedFiles     Int      @map("pr_changed_files")
+  prReviewComments   Int      @map("pr_review_comments")
+  prOrIssueId        Int      @map("pr_or_issue_id")
+  eventDay           DateTime @map("event_day")
+  eventMonth         DateTime @map("event_month")
+  eventYear          Int      @map("event_year")
+  pushSize           Int      @map("push_size")
+  pushDistinctSize   Int      @map("push_distinct_size")
+  creatorUserLogin   String   @map("creator_user_login")
+  creatorUserId      Int      @map("creator_user_id")
+  prOrIssueCreatedAt DateTime @map("pr_or_issue_created_at")
+
+  @@map("github_events")
+}
+
+model LocationCacheItem {
+  address          String   @id
+  valid            Boolean
+  formattedAddress String   @map("formatted_address")
+  countryCode      String   @map("country_code") @default("UND")
+  regionCode       String   @map("region_code") @default("UND")
+  state            String?
+  city             String?
+  longitude        Decimal?
+  latitude         Decimal?
+  provider         String   @default("UNKNOWN")
+  createdAt        DateTime @map("created_at") @default(now())
+  updatedAt        DateTime @map("updated_at") @default(now()) @updatedAt
+
+  @@map("location_cache")
+}

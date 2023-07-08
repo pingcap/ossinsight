@@ -6,7 +6,7 @@ import { RowDataPacket } from "mysql2/promise";
 import { TiDBQueryExecutor } from "../../../core/executor/query-executor/TiDBQueryExecutor";
 import fp from "fastify-plugin";
 import pino from "pino";
-import {dataQueryTimer, measure, tidbQueryCounter} from "../../metrics";
+import {presetQueryTimer, measure, tidbQueryCounter} from "../../../metrics";
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -18,10 +18,10 @@ export default fp(async (fastify) => {
     const log = fastify.log.child({ service: 'collection-service'}) as pino.Logger;
     fastify.decorate('collectionService', new CollectionService(log, fastify.tidbQueryExecutor, fastify.cacheBuilder));
 }, {
-  name: 'collection-service',
+  name: '@ossinsight/collection-service',
   dependencies: [
-    'tidb-query-executor',
-    'cache-builder'
+    '@ossinsight/tidb-query-executor',
+    '@ossinsight/cache-builder'
   ]
 });
 
@@ -93,11 +93,11 @@ export class CollectionService {
   async getCollections(): Promise<CachedData<Collection[]>> {
     const cacheKey = 'collection:list';
     const cache = this.cacheBuilder.build(
-      CacheProviderTypes.CACHED_TABLE, cacheKey, 1, false, true
+      CacheProviderTypes.NORMAL_TABLE, cacheKey, 0.1
     );
 
     return cache.load(async () => {
-      return await measure(dataQueryTimer, async () => {
+      return await measure(presetQueryTimer, async () => {
         const sql = "select id, name, public from collections;";
 
         try {
@@ -125,7 +125,7 @@ export class CollectionService {
   async getCollectionRepos(collectionId: number): Promise<CachedData<CollectionItem[]>> {
     const cacheKey = `collection:items:${collectionId}`;
     const cache = this.cacheBuilder.build(
-      CacheProviderTypes.CACHED_TABLE, cacheKey, 1, false, true
+      CacheProviderTypes.NORMAL_TABLE, cacheKey, 0.1
     );
 
     const collectionKey = collectionId.toString()
@@ -134,7 +134,7 @@ export class CollectionService {
     }
 
     return cache.load(async () => {
-      return await measure(dataQueryTimer, async () => {
+      return await measure(presetQueryTimer, async () => {
         const sql = `
           select id, collection_id, repo_id, repo_name 
           from collection_items

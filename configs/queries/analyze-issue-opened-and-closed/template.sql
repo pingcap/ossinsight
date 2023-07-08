@@ -1,28 +1,30 @@
-with issue_closed as (
-    select
-        date_format(created_at, '%Y-%m-01') as event_month, count(number) as closed
-    from
+WITH issue_closed AS (
+    SELECT
+        DATE_FORMAT(created_at, '%Y-%m-01') AS t_month,COUNT(number) AS closed
+    FROM
         github_events ge
-    where
+    WHERE
         type = 'IssuesEvent'
-        and action = 'closed'
-        and repo_id = 41986369
-    group by 1
-), issue_opened as (
-    select
-        date_format(created_at, '%Y-%m-01') as event_month, count(number) as opened
-    from
+        AND action = 'closed'
+        AND repo_id = 41986369
+    GROUP BY 1
+), issue_opened AS (
+    SELECT
+        DATE_FORMAT(created_at, '%Y-%m-01') AS t_month, COUNT(number) AS opened
+    FROM
         github_events ge
-    where
+    WHERE
         type = 'IssuesEvent'
-        and action = 'opened'
-        and repo_id = 41986369
-    group by 1
+        AND action = 'opened'
+        AND repo_id = 41986369
+    GROUP BY 1
 )
-select
-    io.event_month, opened, coalesce(closed, 0) as closed
-from
+SELECT
+    io.t_month AS event_month,
+    opened,
+    COALESCE(closed, 0) AS closed
+FROM
     issue_opened io
-    join issue_closed ic on io.event_month = ic.event_month
-order by event_month
+    JOIN issue_closed ic ON io.t_month = ic.t_month
+ORDER BY event_month
 ;

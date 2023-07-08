@@ -4,7 +4,7 @@ WITH former_contributors AS (
     WHERE
         repo_id = 41986369
         AND type = 'IssuesEvent' AND action = 'opened'
-        AND event_month < DATE_FORMAT(DATE_SUB(NOW(), INTERVAL DAYOFMONTH(NOW()) DAY), '%Y-%m-01')
+        AND created_at < DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH), '%Y-%m-01')
         AND actor_login NOT LIKE '%bot' AND actor_login NOT LIKE '%[bot]' AND actor_login NOT IN (SELECT login FROM blacklist_users bu)
 ), issue_contribution_last_month AS (
     SELECT actor_login, COUNT(*) AS events

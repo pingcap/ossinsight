@@ -2,7 +2,7 @@
 import { CacheProvider } from './provider/CacheProvider';
 import {DateTime} from 'luxon'
 import pino from 'pino';
-import {cacheHitCounter, cacheQueryTimer, measure} from '../../plugins/metrics';
+import {cacheHitCounter, cacheQueryHistogram, measure} from '../../metrics';
 
 export const MAX_CACHE_TIME = DateTime.fromISO('2099-12-31T00:00:00')
 
@@ -41,6 +41,8 @@ export default class Cache<T> {
     if (runningCaches.has(this.key)) {
       this.log.info(`Wait for previous same cache query <${this.key}>.`, )
       return await runningCaches.get(this.key)!._data as never
+    } else {
+      this.log.info(`Start cache query <${this.key}>.`, )
     }
 
     let _resolve: (data: CachedData<T>) => void
@@ -65,56 +67,69 @@ export default class Cache<T> {
   }
 
   private async loadInternal(fallback: () => Promise<CachedData<T>>) {
-    let cachedData = null;
-    if (this.cacheHours !== 0) {
-      cachedData = await this.fetchDataFromCache();
-    }
-
-    if (cachedData != null) {
-      this.log.info(`Hit cache of ${this.key}.`);
-      cacheHitCounter.inc()
-
-      if (this.refreshCache) {
-        this.log.info(`Initiative refresh for key: ${this.key}.`);
-        return await this.fetchDataFromDB(fallback);
-      }
-
-      return cachedData;
-    } else {
-      this.log.debug('No hit cache of %s.', this.key);
-
-      if (this.onlyFromCache && !this.refreshCache) {
-        throw new NeedPreFetchError(`Failed to get data, query ${this.key} can only be executed in advance.`)
-      }
-
-      this.log.info('Do query for key: %s.', this.key);
+    // Initiative refresh query will ignore cache.
+    if (this.refreshCache) {
+      this.log.info(`🔄 Initiative refresh query for key: <${this.key}>.`);
       return await this.fetchDataFromDB(fallback);
     }
+
+    // If cacheHours is 0, it means disable cache for this query.
+    if (this.cacheHours === 0) {
+      this.log.info(`🔄 No cache for key: <${this.key}>.`);
+      return await this.fetchDataFromDB(fallback);
+    }
+
+    // Try to get data from cache.
+    const cachedData = await this.fetchDataFromCache();
+    if (cachedData !== null && cachedData !== undefined) {
+      this.log.info(`Hit cache of <${this.key}>.`);
+      cacheHitCounter.inc();
+      return cachedData;
+    }
+
+    // Fallback to fetch data from DB.
+    this.log.debug(`No hit cache of query <${this.key}>.`);
+    if (this.onlyFromCache && !this.refreshCache) {
+      throw new NeedPreFetchError(`Failed to get data from cache and query <${this.key}> can only be executed in advance.`)
+    }
+
+    return await this.fetchDataFromDB(fallback);
   }
 
   private async fetchDataFromDB(fallback: () => Promise<CachedData<T>>):Promise<CachedData<T>> {
+    // Execute query.
+    this.log.info(`⚡️ Executing query <${this.key}>.`);
+    const start = DateTime.now();
     const result = await fallback();
-    result.expiresAt = MAX_CACHE_TIME;
+    const end = DateTime.now();
+    const duration = end.diff(start, 'seconds').seconds;
+    this.log.info(`✅️ Finished executing query <${this.key}> in ${duration} seconds.`);
 
-    // TODO: Write result to cache async.
-    await measure(cacheQueryTimer.labels({op: 'set'}), async () => {
+    // Update cache async.
+    const ttl = this.cacheHours > 0 ? Math.round(this.cacheHours * 3600) : -1;
+    result.expiresAt = ttl > 0 ? DateTime.now().plus({seconds: ttl}) : MAX_CACHE_TIME;
+    measure(cacheQueryHistogram.labels({op: 'set'}), async () => {
+      const start = DateTime.now();
       await this.cacheProvider.set(this.key, JSON.stringify(result), {
-        EX: this.cacheHours ? Math.round(this.cacheHours * 3600) : -1
-      })
-      .catch((err) => {
-        this.log.error(err, 'Failed to write cache for key %s.', this.key);
-      })
+        EX: ttl
+      });
+      const end = DateTime.now();
+      const duration = end.diff(start, 'seconds').seconds;
+      this.log.info(`✅️ Finished cache setting for query <${this.key}> in ${duration} seconds.`);
+    }).catch((err) => {
+      this.log.error(err, `❌ Failed to write cache for query <${this.key}>.`);
     });
 
     result.refresh = true;
     return result;
   }
 
+  // TODO: make the error more clear.
   private async fetchDataFromCache():Promise<CachedData<T> | null> {
     try {
       const json = await measure(
-        cacheQueryTimer.labels({op: 'get'}),
-        () => this.cacheProvider.get(this.key)
+        cacheQueryHistogram.labels({op: 'get'}),
+        async () => await this.cacheProvider.get(this.key)
       ) as any;
 
       if (typeof json === 'string') {
@@ -123,7 +138,7 @@ export default class Cache<T> {
         return json;
       }
     } catch (err) {
-      this.log.error(err, 'Cache <%s> data is broken.', this.key);
+      this.log.error(err, `❌ Cache of query ${this.key} is broken.`);
     }
     return null;
   }

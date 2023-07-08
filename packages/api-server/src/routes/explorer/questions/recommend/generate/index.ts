@@ -1,9 +1,7 @@
 import {FastifyPluginAsyncJsonSchemaToTs} from "@fastify/type-provider-json-schema-to-ts";
-import {APIError} from "../../../../../utils/error";
 import {
   GenerateQuestionsPromptTemplate
 } from "../../../../../plugins/services/bot-service/template/GenerateQuestionsPromptTemplate";
-import { Auth0User, parseAuth0User } from "../../../../../plugins/auth/auth0";
 
 const schema = {
   summary: 'Generate recommend questions',
@@ -36,25 +34,15 @@ export const recommendQuestionHandler: FastifyPluginAsyncJsonSchemaToTs = async 
     preValidation: app.authenticate,
   }, async function (req, reply) {
     const { botService, explorerService } = app;
-    const { metadata } = parseAuth0User(req.user as Auth0User);
     const { n } = req.body;
 
-    // Only admin can generate recommend questions.
-    const trusted = app.config.PLAYGROUND_TRUSTED_GITHUB_LOGINS;
-    if (!Array.isArray(trusted) || !trusted.includes(metadata.github_login || '')) {
-      throw new APIError(403, 'Forbidden');
-    }
+    // Only trusted users can recommend questions.
+    const userId = await app.userService.getUserIdOrCreate(req);
+    await app.explorerService.checkIfTrustedUsersOrError(userId);
 
-    const conn = await this.mysql.getConnection();
-    try {
-      const questions = await botService.generateRecommendQuestions(promptTemplate, n);
-      await explorerService.saveRecommendQuestions(conn, questions);
-      reply.status(200).send(questions);
-    } catch (e) {
-      throw e;
-    } finally {
-      conn.release();
-    }
+    const questions = await botService.generateRecommendQuestions(promptTemplate, n);
+    await explorerService.saveRecommendQuestions(questions);
+    reply.status(200).send(questions);
   });
 }
 

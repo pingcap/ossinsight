@@ -8,7 +8,7 @@ items:
   - remix-run/remix
   - remix-run/react-router
   - blitz-js/blitz
-  - pankod/refine
+  - refinedev/refine
   - Shopify/hydrogen
   - redwoodjs/redwood
   - facebook/docusaurus

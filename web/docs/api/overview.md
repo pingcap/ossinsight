@@ -6,6 +6,15 @@ sidebar_label: API Overview
 slug: /api
 ---
 
+:::info Good News!
+
+If you want to get your own data or some repos' data, you can setup our new repo that could crawl you GitHub activities data into a free database, and customize your insight with SQL!
+
+👉 [Click Here!](https://github.com/pingcap/ossinsight-lite).
+
+<img width="1440" alt="Default dashboard" src="https://github.com/pingcap/ossinsight-lite/assets/55385323/0eb143bb-abfb-4d31-8bbc-36da87355f2d" />
+
+:::
 
 If you want to use the OSS Insight API in your application, you can do one of the following
 

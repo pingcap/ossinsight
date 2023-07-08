@@ -91,7 +91,18 @@
         "type": {
           "description": "Define the parameter type.",
           "type": "string",
-          "enum": ["array", "date-range", "collection", "employees"]
+          "enum": ["array", "string", "number", "boolean"]
+        },
+        "itemType": {
+          "description": "Define the array item type.",
+          "type": "string",
+          "enum": ["string", "number", "boolean"]
+        },
+        "maxArrayLength": {
+            "description": "Define the max array length.",
+            "type": "number",
+            "default": 10,
+            "minimum": 0
         },
         "column": {
           "description": "Define the parameter corresponding column name.",

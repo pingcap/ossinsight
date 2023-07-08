@@ -33,7 +33,7 @@ export default fp(async (app) => {
     });
     app.decorate('allowedOrigins', allowedOrigins);
 }, {
-    name: 'cors',
+    name: '@ossinsight/cors',
     dependencies: [
         '@fastify/env'
     ],

@@ -13,9 +13,9 @@ declare module 'fastify' {
 export default fp(async (app) => {
     app.decorate('repoService', new RepoService(app.mysql));
 }, {
-    name: 'repo-service',
+    name: '@ossinsight/repo-service',
     dependencies: [
-        '@fastify/mysql'
+        '@ossinsight/tidb'
     ]
 });
 
@@ -33,12 +33,12 @@ export interface RepoOnlyId extends RowDataPacket {
 
 export class RepoService {
 
-    constructor(readonly mysql: MySQLPromisePool) {}
+    constructor(readonly tidb: MySQLPromisePool) {}
 
     // Add repo into subscribed repo list.
     async subscribeRepo(userId: number, owner: string, repo: string): Promise<void> {
         const repoId = await this.getRepoId(owner, repo);
-        const [rs] = await this.mysql.query<ResultSetHeader>(`
+        const [rs] = await this.tidb.query<ResultSetHeader>(`
             INSERT INTO sys_subscribed_repos (user_id, repo_id) VALUES (?, ?)
             ON DUPLICATE KEY UPDATE subscribed_at = CURRENT_TIMESTAMP(), subscribed = true;
         `, [userId, repoId]);
@@ -54,7 +54,7 @@ export class RepoService {
     // Mark repo as unsubscribed.
     async unsubscribeRepo(userId: number, owner: string, repo: string): Promise<void> {
         const repoId = await this.getRepoId(owner, repo);
-        const [rs] = await this.mysql.query<ResultSetHeader>(`
+        const [rs] = await this.tidb.query<ResultSetHeader>(`
             UPDATE sys_subscribed_repos
             SET subscribed = false
             WHERE user_id = ? AND repo_id = ? AND subscribed = true;
@@ -67,7 +67,7 @@ export class RepoService {
 
     // Get repository id by owner and repo name.
     async getRepoId(owner: string, repo: string): Promise<number> {
-        const [repos] = await this.mysql.query<RepoOnlyId[]>(`
+        const [repos] = await this.tidb.query<RepoOnlyId[]>(`
             SELECT repo_id AS repoId
             FROM github_repos
             WHERE repo_name = CONCAT(?, '/', ?) AND is_deleted = 0
@@ -82,7 +82,7 @@ export class RepoService {
 
     // TODO: support pagination.
     async getUserSubscribedRepos(userId: number): Promise<SubscribedRepo[]> {
-        const [rows] = await this.mysql.query<SubscribedRepo[]>(`
+        const [rows] = await this.tidb.query<SubscribedRepo[]>(`
             SELECT
                 user_id AS userId,
                 gr.repo_id AS repoId, gr.repo_name AS repoName,

@@ -1,6 +1,7 @@
 id: 10051
 name: Security Tool
 items:
+  - turbot/steampipe
   - prowler-cloud/prowler
   - aquasecurity/trivy
   - CISOfy/lynis
@@ -48,3 +49,6 @@ items:
   - matanolabs/matano
   - chipsec/chipsec
   - kyverno/kyverno
+  - cloudquery/cloudquery
+  - slimtoolkit/slim
+  - akto-api-security/akto

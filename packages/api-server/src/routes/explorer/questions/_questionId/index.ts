@@ -28,31 +28,26 @@ const root: FastifyPluginAsync = async (app) => {
         schema
     },async (req, reply) => {
         const { questionId } = req.params;
-        const conn = await app.mysql.getConnection();
-        try {
-            const question = await app.explorerService.getQuestionById(questionId, conn);
-            if (!question) {
-                throw new APIError(404, 'Question not found');
-            }
+        const question = await app.explorerService.getQuestionById(questionId);
+        if (!question) {
+            throw new APIError(404, 'Question not found');
+        }
 
-            if (question.status === QuestionStatus.Error) {
-                question.error = app.explorerService.wrapperTheErrorMessage(question.error!);
-            }
+        if (question.status === QuestionStatus.Error) {
+            question.error = app.explorerService.wrapperTheErrorMessage(question.error!);
+        }
 
-            if (question.status === QuestionStatus.Waiting) {
-                const preceding = await app.explorerService.countPrecedingQuestions(questionId, conn);
-                reply.status(200).send({
-                    queuePreceding: preceding,
-                    ...question
-                });
-            } else {
-                reply.status(200).send({
-                    queuePreceding: 0,
-                    ...question
-                });
-            }
-        } finally {
-            conn.release();
+        if (question.status === QuestionStatus.Waiting) {
+            const preceding = await app.explorerService.countPrecedingQuestions(questionId);
+            reply.status(200).send({
+                queuePreceding: preceding,
+                ...question
+            });
+        } else {
+            reply.status(200).send({
+                queuePreceding: 0,
+                ...question
+            });
         }
     });
 };

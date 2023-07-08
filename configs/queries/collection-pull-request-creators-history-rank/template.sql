@@ -1,52 +1,34 @@
-WITH pr_opened AS (
+WITH accumulative_prs_by_year AS (
     SELECT
-        event_year,
-        actor_login,
+        t_year,
         repo_id,
-        repo_name,
-        number,
-        created_at
-    FROM github_events
+        COUNT(*) OVER (PARTITION BY repo_id ORDER BY t_year) AS total,
+        -- De-duplicate by `t_month` column, keeping only the first accumulative value of each year.
+        ROW_NUMBER() OVER (PARTITION BY repo_id, t_year) AS row_num_by_year
+    FROM (
+        SELECT
+            repo_id,
+            YEAR(created_at) AS t_year,
+            -- De-duplicate by `actor_login` column, keeping only the first PR of each PR creator.
+            ROW_NUMBER() OVER (PARTITION BY repo_id, actor_login ORDER BY created_at) AS row_num_by_actor_login
+        FROM github_events ge
+        WHERE
+            type = 'PullRequestEvent'
+            AND action = 'opened'
+            AND repo_id IN (SELECT repo_id FROM collection_items ci WHERE collection_id = 10001)
+    ) sub
     WHERE
-        type = 'PullRequestEvent'
-        AND state = 'open'
-        AND repo_id IN (41986369, 16563587, 105944401)
-), pr_merged AS (
-    SELECT
-        number
-    FROM github_events
-    WHERE
-        type = 'PullRequestEvent'
-        AND state = 'closed'
-        AND pr_merged = true
-        AND repo_id IN (41986369, 16563587, 105944401)
-), pr_creators_with_latest_repo_name AS (
-    SELECT
-        event_year,
-        actor_login,
-        FIRST_VALUE(repo_name) OVER (PARTITION BY repo_id ORDER BY created_at DESC) AS repo_name,
-        ROW_NUMBER() OVER(PARTITION BY actor_login) AS row_num
-    FROM pr_opened po
-    JOIN pr_merged pm ON po.number = pm.number
-), acc AS (
-    SELECT
-        event_year,
-        repo_name,
-        COUNT(actor_login) OVER(PARTITION BY repo_name ORDER BY event_year ASC) AS total
-    FROM pr_creators_with_latest_repo_name
-    WHERE row_num = 1
-    ORDER BY 1
-), acc_dist AS (
-    SELECT event_year, repo_name, ANY_VALUE(total) AS total
-    FROM acc
-    GROUP BY 1, 2
-    ORDER BY 1
+        row_num_by_actor_login = 1
 )
 SELECT
-    event_year,
-    repo_name,
-    total,
-    ROW_NUMBER() OVER (PARTITION BY event_year ORDER BY total DESC) AS `rank`
-FROM acc_dist
-ORDER BY event_year, total DESC
+    ROW_NUMBER() OVER (PARTITION BY t_year ORDER BY total DESC) AS `rank`,
+    ci.repo_id AS repo_id,
+    ci.repo_name AS repo_name,
+    acc.t_year AS event_year,
+    -- The accumulative PR creators of repo.
+    acc.total
+FROM accumulative_prs_by_year acc
+JOIN collection_items ci ON collection_id = 10001 AND ci.repo_id = acc.repo_id
+WHERE row_num_by_year = 1
+ORDER BY t_year
 ;

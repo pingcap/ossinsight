@@ -1,8 +1,8 @@
+import {createTiDBPool} from "../../../src/utils/db";
 import {bootstrapTestDatabase, getTestDatabase, releaseTestDatabase} from "../../helpers/db";
 
 import {BatchLoader} from "../../../src/core/db/batch-loader";
-import {createPool} from "mysql2/promise";
-import {getConnectionOptions, getPool} from "../../../src/core/db/new";
+import {testLogger} from "../../helpers/log";
 
 beforeAll(bootstrapTestDatabase);
 afterAll(releaseTestDatabase);
@@ -22,11 +22,9 @@ test('flush after reaching the number of batch_size', async () => {
         ['127.0.0.1', 'https://example.com', 200, '/test1', '{"foo": "bar"}']
     ];
 
-    const pool = getPool({
-        uri: getTestDatabase().url()
-    });
+    const pool = createTiDBPool(getTestDatabase().url());
     const queryMethod = jest.spyOn(pool, 'query');
-    const accessRecorder = new BatchLoader(pool, insertAccessLogSQL, {
+    const accessRecorder = new BatchLoader(testLogger, pool, insertAccessLogSQL, {
         batchSize: batchSize,
         flushInterval: flushInterval
     });
@@ -54,14 +52,12 @@ test('flush after an interval', async () => {
         ['127.0.0.1', 'https://example.com', 200, '/test3', '{"foo": "bar"}']
     ];
 
-    const pool = createPool(getConnectionOptions({
-        uri: getTestDatabase().url()
-    }));
+    const pool = createTiDBPool(getTestDatabase().url());
     const queryMethod = jest.spyOn(pool, 'query').mockImplementation((sql, values) => {
         expect(sql).toBe(insertAccessLogSQL);
         return [] as any
     });
-    const accessRecorder = new BatchLoader(pool, insertAccessLogSQL, {
+    const accessRecorder = new BatchLoader(testLogger, pool, insertAccessLogSQL, {
         batchSize: batchSize,
         flushInterval: flushInterval
     });
@@ -90,14 +86,12 @@ test('flush three times', async () => {
         ['127.0.0.1', 'https://example.com', 200, '/test5', '{"foo": "bar"}']
     ];
 
-    const pool = createPool(getConnectionOptions({
-        uri: getTestDatabase().url()
-    }));
+    const pool = createTiDBPool(getTestDatabase().url());
     const queryMethod = jest.spyOn(pool, 'query').mockImplementation((sql, values) => {
         expect(sql).toBe(insertAccessLogSQL);
         return [] as any;
     });
-    const accessRecorder = new BatchLoader(pool, insertAccessLogSQL, {
+    const accessRecorder = new BatchLoader(testLogger, pool, insertAccessLogSQL, {
         batchSize: batchSize,
         flushInterval: flushInterval
     });

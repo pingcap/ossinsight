@@ -1,5 +1,4 @@
-import { GenericContainer, StartedTestContainer } from 'testcontainers';
-import { AbstractStartedContainer } from 'testcontainers/dist/modules/abstract-started-container';
+import {AbstractStartedContainer, GenericContainer, StartedTestContainer} from 'testcontainers';
 import { createConnection } from 'mysql2/promise';
 
 const DEFAULT_IMAGE_NAME = 'pingcap/tidb:v6.4.0';

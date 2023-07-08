@@ -1,5 +1,6 @@
 import fp from "fastify-plugin";
 import {Job, Queue} from "bullmq";
+import {withConnection, withTransaction} from "../../../utils/db";
 import {
     APIError, BotResponseGenerateError,
     BotResponseParseError,
@@ -10,7 +11,7 @@ import {
     SQLUnsupportedFunctionError,
     ValidateSQLError
 } from "../../../utils/error";
-import {Connection, PoolConnection, ResultSetHeader} from "mysql2/promise";
+import {Connection, ResultSetHeader} from "mysql2/promise";
 import crypto from "node:crypto";
 import {DateTime} from "luxon";
 import {BotService} from "../bot-service";
@@ -30,7 +31,6 @@ import {TiDBPlaygroundQueryExecutor} from "../../../core/executor/query-executor
 import {GenerateChartPromptTemplate} from "../bot-service/template/GenerateChartPromptTemplate";
 import {randomUUID} from "crypto";
 import {
-    Answer,
     AnswerSummary,
     BarChart,
     ChartNames,
@@ -51,12 +51,16 @@ import {MySQLPromisePool} from "@fastify/mysql";
 import async from "async";
 import {GenerateSummaryPromptTemplate} from "../bot-service/template/GenerateSummaryPromptTemplate";
 import sleep from "../../../utils/sleep";
+import {pino} from "pino";
+import BaseLogger = pino.BaseLogger;
 
 declare module 'fastify' {
     interface FastifyInstance {
         explorerService: ExplorerService;
     }
 }
+
+export const SYSTEM_USER_ID = 0;
 
 export default fp(async (app: any) => {
     app.decorate('explorerService', new ExplorerService(
@@ -79,7 +83,7 @@ export default fp(async (app: any) => {
     name: '@ossinsight/explorer-service',
     dependencies: [
         '@fastify/env',
-        'fastify-redis',
+        '@ossinsight/redis',
         '@ossinsight/bot-service',
         '@ossinsight/explorer-high-concurrent-queue',
         '@ossinsight/explorer-low-concurrent-queue'
@@ -98,8 +102,7 @@ export interface ExplorerOption {
 
 export class ExplorerService {
     [x: string]: any;
-    // TODO: replace node-sql-parser with tidb-sql-parser.
-    // private sqlParser: Parser;
+
     private readonly generateAnswerTemplate: GenerateAnswerPromptTemplate;
     private readonly generateChartTemplate: GenerateChartPromptTemplate;
     private readonly generateAnswerSummaryTemplate: GenerateSummaryPromptTemplate;
@@ -107,7 +110,7 @@ export class ExplorerService {
 
     constructor(
       private readonly logger: FastifyBaseLogger,
-      private readonly mysql: MySQLPromisePool,
+      private readonly tidb: MySQLPromisePool,
       private readonly botService: BotService,
       private readonly playgroundQueryExecutor: TiDBPlaygroundQueryExecutor,
       private readonly lowConcurrentQueue: Queue,
@@ -129,189 +132,121 @@ export class ExplorerService {
     }
 
     async newQuestion(
-      userId: number, q: string, ignoreCache: boolean = false, ignoreRateLimit: boolean = false, needReview: boolean = false,
-      batchJobId: string | null = null, conn: Connection): Promise<Question> {
-        // Init logger.
+      userId: number, q: string, ignoreCache: boolean = false, ignoreRateLimit: boolean = false,
+      needReview: boolean = false, batchJobId: string | null = null
+    ): Promise<Question> {
         const questionId = randomUUID();
         const logger = this.logger.child({ questionId: questionId });
         const normalizedQuestion = this.normalizeQuestion(q);
         if (normalizedQuestion.length > 512) {
-            throw new APIError(400, 'The question too long, please shorten it.');
+            throw new APIError(400, 'The question is too long, please shorten it.');
         }
 
         // Prepare the new question.
         logger.info("Creating a new question: %s", normalizedQuestion);
         const questionHash = this.getQuestionHash(normalizedQuestion);
-        let question: Question = {
-            id: questionId,
-            hash: questionHash,
-            userId: userId,
-            status: QuestionStatus.New,
-            title: q,
-            recommendedQuestions: [],
-            batchJobId: batchJobId,
-            needReview: needReview,
-            recommended: false,
-            createdAt: DateTime.utc(),
-            hitCache: false,
-            preceding: 0
+
+        // Check if the question is cached.
+        if (!ignoreCache) {
+          const cachedQuestion = await this.getLatestQuestionByHash(questionHash, this.options.generateSQLCacheTTL);
+          if (cachedQuestion) {
+            logger.info("Question is cached, returning cached question (hash: %s).", questionHash);
+
+            return {
+              ...cachedQuestion,
+              hitCache: true
+            };
+          }
         }
 
-        try {
-            await conn.beginTransaction();
+        // Give the trusted users more daily requests.
+        let limit = this.options.userMaxQuestionsPerHour;
+        if (await this.checkIfTrustedUser(userId)) {
+          limit = this.options.trustedUsersMaxQuestionsPerHour;
+        }
 
-            // Check if the question is cached.
-            if (!ignoreCache) {
-                const cachedQuestion = await this.getLatestQuestionByHash(questionHash, this.options.generateSQLCacheTTL, conn);
-                if (cachedQuestion) {
-                    logger.info("Question is cached, returning cached question (hash: %s).", questionHash);
-
-                    await conn.commit();
-                    return {
-                        ...cachedQuestion,
-                        hitCache: true
-                    };
-                }
+        // Create the new question.
+        const question: Question = {
+          id: questionId,
+          hash: questionHash,
+          userId: userId,
+          status: QuestionStatus.New,
+          title: q,
+          recommendedQuestions: [],
+          batchJobId: batchJobId,
+          needReview: needReview,
+          recommended: false,
+          createdAt: DateTime.utc(),
+          hitCache: false,
+          preceding: 0
+        }
+        await withTransaction(this.tidb, async (conn: Connection) => {
+          if (!ignoreRateLimit) {
+            // Notice: Using FOR UPDATE, pessimistic locking controls a single user to request question serially.
+            const previousQuestions = await this.getUserPastHourQuestionsWithLock(conn, userId);
+            if (previousQuestions.length >= limit) {
+              const oldestQuestion = previousQuestions.reduce((prev, current) => (prev.createdAt < current.createdAt) ? prev : current);
+              const now = DateTime.utc();
+              const waitMinutes = oldestQuestion.createdAt.diff(now.minus({ hour: 1 }), ["minutes", "seconds"]);
+              const waitMinutesText = waitMinutes.toHuman();
+              throw new ExplorerTooManyRequestError(`Too many questions request in the past hour, please wait ${waitMinutesText}.`, waitMinutes.minutes);
             }
 
-            // Give the trusted users more daily requests.
-            let limit = this.options.userMaxQuestionsPerHour;
-            if (await this.checkIfTrustedUser(userId, conn)) {
-                limit = this.options.trustedUsersMaxQuestionsPerHour;
+            const onGongStatuses = [QuestionStatus.AnswerGenerating, QuestionStatus.SQLValidating, QuestionStatus.Waiting, QuestionStatus.Running];
+            const onGongQuestions = previousQuestions.filter(q => onGongStatuses.includes(q.status));
+            if (onGongQuestions.length >= this.options.userMaxQuestionsOnGoing) {
+              logger.info("There are %d previous question on going, cancel them.", onGongQuestions.length);
+              await this.cancelQuestions(conn, onGongQuestions.map(q => q.id));
             }
+          }
 
-            if (!ignoreRateLimit) {
-                // Notice: Using FOR UPDATE, pessimistic locking controls a single user to request question serially.
-                const previousQuestions = await this.getUserPastHourQuestionsWithLock(userId, conn);
-                if (previousQuestions.length >= limit) {
-                    const oldestQuestion = previousQuestions.reduce((prev, current) => (prev.createdAt < current.createdAt) ? prev : current);
-                    const now = DateTime.utc();
-                    const waitMinutes = oldestQuestion.createdAt.diff(now.minus({ hour: 1 }), ["minutes", "seconds"]);
-                    const waitMinutesText = waitMinutes.toHuman();
-                    throw new ExplorerTooManyRequestError(`Too many questions request in the past hour, please wait ${waitMinutesText}.`, waitMinutes.minutes);
-                }
-
-                const onGongStatuses = [QuestionStatus.AnswerGenerating, QuestionStatus.SQLValidating, QuestionStatus.Waiting, QuestionStatus.Running];
-                const onGongQuestions = previousQuestions.filter(q => onGongStatuses.includes(q.status));
-                if (onGongQuestions.length >= this.options.userMaxQuestionsOnGoing) {
-                    logger.info("There are %d previous question on going, cancel them.", onGongQuestions.length);
-                    await this.cancelQuestions(conn, onGongQuestions.map(q => q.id));
-                }
-            }
-
-            question.preceding = await this.countPrecedingQuestions(question.id, conn);
-
-            await this.createQuestion(question, conn);
-            await conn.commit();
-        } catch (err: any) {
-            await conn.rollback();
+          question.preceding = await this.countPrecedingQuestions(question.id);
+          await this.createQuestion(conn, question);
+        }, {
+          onError: (conn, err) => {
             logger.error(err, `Failed to create a new question: ${err.message}`);
             if (err instanceof ExplorerTooManyRequestError) {
-                throw err;
+              throw err;
             } else if (err instanceof APIError) {
-                throw new ExplorerCreateQuestionError(err.statusCode, err.message, question, err);
+              throw new ExplorerCreateQuestionError(err.statusCode, err.message, question, err);
             } else {
-                throw new ExplorerCreateQuestionError(500, 'Failed to create the question', question);
+              throw new ExplorerCreateQuestionError(500, 'Failed to create the question', question);
             }
-        }
+          }
+        });
 
         return question;
     }
 
     async prepareQuestion(question: Question) {
-        const { id: questionId, title } = question;
+        const { id: questionId } = question;
         const logger = this.logger.child({ questionId: questionId });
 
         try {
+            // Update question status.
             question.status = QuestionStatus.AnswerGenerating;
             await this.updateQuestion(question);
 
             // Generate the SQL by OpenAI.
             let outputInStream = this.options.outputAnswerInStream;
-            let answer: Answer | null = null;
-            let responseText: string | null = null;
-            for (let i = 1; i <= 3; i++) {
-                try {
-                    if (outputInStream) {
-                        [answer, responseText] = await this.botService.questionToAnswerInStream(this.generateAnswerTemplate, title, async (answer, key, value) => {
-                            // @ts-ignore
-                            question[key] = value;
-                            question.answer = answer;
-                            logger.info(`Updating question with ${key} = ${value}.`)
-                            await this.updateQuestion(question);
-                        });
-                    } else {
-                        [answer, responseText] = await this.botService.questionToAnswer(this.generateAnswerTemplate, title);
-                    }
-
-                    // Check if there are an answer been returned.
-                    if (!answer || Object.keys(answer).length === 0) {
-                        const message = 'Generated an empty answer.';
-                        throw new BotResponseGenerateError(message, responseText);
-                    }
-
-                    break;
-                } catch (e: any) {
-                    // Reset the question and answer, and try again.
-                    if (i < 3) {
-                        logger.warn(e, `Failed to generate answer for question ${questionId}, retrying (${i + 1}/3)...`);
-                        question.revisedTitle = undefined;
-                        question.notClear = undefined;
-                        question.assumption = undefined;
-                        question.combinedTitle = undefined;
-                        question.querySQL = undefined;
-                        question.answer = undefined;
-                        answer = null;
-                        outputInStream = false; // Disable the output in stream mode if it failed.
-                        await sleep(1000 * i);
-                        continue;
-                    }
-
-                    if (e instanceof BotResponseParseError) {
-                        throw new ExplorerPrepareQuestionError(e.message, QuestionFeedbackType.ErrorAnswerParse, {
-                            message: e.message,
-                            responseText: e.responseText,
-                        }, e);
-                    } else if (e instanceof BotResponseGenerateError) {
-                        throw new ExplorerPrepareQuestionError(e.message, QuestionFeedbackType.ErrorAnswerGenerate, {
-                            message: e.message,
-                            responseText: e.responseText,
-                        }, e);
-                    } else {
-                        const message = 'Failed to generate answer, please try again later';
-                        throw new ExplorerPrepareQuestionError(message, QuestionFeedbackType.ErrorAnswerGenerate, {
-                            message: e.message
-                        }, e);
-                    }
-                }
-            }
-
-            logger.info("Got generated answer.")
-            let { querySQL, chart, sqlCanAnswer, revisedTitle, notClear, assumption, combinedTitle } = answer!;
-            question.answer = answer;
-            question.querySQL = querySQL;
-            question.chart = chart;
-            question.sqlCanAnswer = sqlCanAnswer;
-            question.revisedTitle = revisedTitle;
-            question.notClear = notClear;
-            question.assumption = assumption;
-            question.combinedTitle = combinedTitle;
-
-            if (!question.sqlCanAnswer || querySQL === null || querySQL === undefined || querySQL.length === 0) {
+            await this.generateAnswer(logger, question, outputInStream);
+            if (!question.sqlCanAnswer || typeof question.querySQL !== 'string' || question.querySQL.length === 0) {
                 const message = 'Failed to generate SQL, the question may exceed the scope of what can be answered.';
                 throw new ExplorerPrepareQuestionError(message, QuestionFeedbackType.ErrorSQLCanNotAnswer, {
                     message: message
                 });
             }
 
-            // Validate the generated SQL.
+            // Update question status.
             question.status = QuestionStatus.SQLValidating;
+            question.queryHash = this.getQueryHash(question.querySQL);
             await this.updateQuestion(question);
+
+            // Validate the generated SQL.
             let statementType;
             try {
-                logger.info("Validating the generated SQL: %s", querySQL);
-                const res = this.validateSQL(querySQL!);
-                querySQL = res.sql;
+                logger.info("Validating the generated SQL: %s", question.querySQL);
+                const res = this.validateSQL(question.querySQL!);
                 statementType = res.statementType;
             } catch (err: any) {
                 if (err instanceof ValidateSQLError) {
@@ -325,8 +260,6 @@ export class ExplorerService {
                     });
                 }
             }
-            question.querySQL = querySQL;
-            question.queryHash = this.getQueryHash(querySQL);
 
             // Try to get SQL result from cache.
             const cachedResult = await this.getCachedSQLResult(question.queryHash, this.options.querySQLCacheTTL);
@@ -344,52 +277,15 @@ export class ExplorerService {
             }
 
             // Get the storage engines that will be used in the SQL execution.
-            let engines: string[] = [];
-            if (statementType === 'select') {
-                try {
-                    logger.info("Getting the storage engines for the SQL: %s", querySQL);
-                    const plan = await this.getSQLExecutionPlan(querySQL);
-                    engines = this.getStorageEnginesFromPlan(plan);
-                } catch (err: any) {
-                    if (err.sqlMessage) {
-                        throw new ExplorerPrepareQuestionError(err.sqlMessage, QuestionFeedbackType.ErrorValidateSQL, {
-                            sqlMessage: err.sqlMessage,
-                            message: err.message,
-                            sql: querySQL
-                        });
-                    } else {
-                        const message = 'Failed to validate the generated SQL.';
-                        throw new ExplorerPrepareQuestionError(message, QuestionFeedbackType.ErrorValidateSQL, {
-                            message: err.message,
-                            sql: querySQL
-                        });
-                    }
-                }
-            }
-
-            const queueName = engines.includes('tiflash') ? QuestionQueueNames.Low : QuestionQueueNames.High;
-            const queueJobId = randomUUID();
-            question.engines = engines;
-            question.queueName = queueName;
-            question.queueJobId = queueJobId;
+            question.engines = statementType === 'select' ? await this.getStorageEngines(logger, question.querySQL) : [];
+            question.queueName = question.engines.includes('tiflash') ? QuestionQueueNames.Low : QuestionQueueNames.High;
+            question.queueJobId = randomUUID();
             question.requestedAt = DateTime.utc();
             question.status = QuestionStatus.Waiting;
             await this.updateQuestion(question);
 
             // Push the question to the queue.
-            if (queueName === QuestionQueueNames.Low && queueJobId) {
-                logger.info("Pushing the question to the low concurrent queue (jobId: %s).", queueJobId);
-                await this.lowConcurrentQueue.add(QuestionQueueNames.Low, question, {
-                    jobId: queueJobId
-                });
-            } else if (queueName === QuestionQueueNames.High && queueJobId) {
-                logger.info("Pushing the question to the high concurrent queue (jobId: %s).", queueJobId);
-                await this.highConcurrentQueue.add(QuestionQueueNames.High, question, {
-                    jobId: queueJobId
-                });
-            } else {
-                logger.warn("No queue name or job id provided, the question will not be executed.");
-            }
+            await this.pushJobToQueue(logger, question);
         } catch (err: any) {
             if (err instanceof ExplorerPrepareQuestionError) {
                 await this.updateQuestion({
@@ -411,6 +307,143 @@ export class ExplorerService {
                 }));
             }
             throw err;
+        }
+    }
+
+    // TODO: refactor it, make it more readable.
+    async generateAnswer(logger: BaseLogger, question: Question, outputInStream: boolean): Promise<string | null> {
+        let responseText: string | null = null;
+        const { id: questionId, title } = question;
+        const promptTemplate = this.generateAnswerTemplate;
+        for (let i = 1; i <= 3; i++) {
+            try {
+                if (outputInStream) {
+                    // Update the field one by one.
+                    [question.answer, responseText] = await this.botService.questionToAnswerInStream(promptTemplate, title, async (answer, key, value) => {
+                        // @ts-ignore
+                        question[key] = value;
+                        question.answer = answer;
+                        try {
+                            await this.updateQuestion(question);
+                            logger.info(`Updating question with field ${key} = ${value}.`)
+                        } catch (e) {
+                            logger.error(e, `Failed to update question with field ${key} = ${value}.`)
+                        }
+                    });
+                } else {
+                    // Update all the fields at once.
+                    [question.answer, responseText] = await this.botService.questionToAnswerInNonStream(promptTemplate, title);
+                    question.revisedTitle = question.answer?.revisedTitle;
+                    question.notClear = question.answer?.notClear;
+                    question.assumption = question.answer?.assumption;
+                    question.combinedTitle = question.answer?.combinedTitle;
+                    question.sqlCanAnswer = question.answer?.sqlCanAnswer;
+                    question.querySQL = question.answer?.querySQL;
+                    question.chart = question.answer?.chart;
+                    await this.updateQuestion(question);
+                    logger.info(`Updating question with all field.`)
+                }
+
+                // Check if there are an answer been returned.
+                if (!question.answer || Object.keys(question.answer).length === 0) {
+                    const message = 'Generated an empty answer.';
+                    throw new BotResponseGenerateError(message, responseText);
+                }
+
+                return responseText;
+            } catch (e: any) {
+                // Reset the question and answer, and try again.
+                if (i < 3) {
+                    logger.warn(e, `Failed to generate answer for question ${questionId}, retrying (${i + 1}/3)...`);
+
+                    question.revisedTitle = undefined;
+                    question.notClear = undefined;
+                    question.assumption = undefined;
+                    question.combinedTitle = undefined;
+                    question.sqlCanAnswer = undefined;
+                    question.querySQL = undefined;
+                    question.chart = undefined;
+
+                    // Wait for a while before retrying.
+                    await sleep(1000 * i);
+
+                    // Notice: Disable the output in stream mode if it failed.
+                    outputInStream = false;
+                    continue;
+                }
+
+                if (e instanceof BotResponseParseError) {
+                    throw new ExplorerPrepareQuestionError(e.message, QuestionFeedbackType.ErrorAnswerParse, {
+                        message: e.message,
+                        responseText: e.responseText,
+                    }, e);
+                } else if (e instanceof BotResponseGenerateError) {
+                    throw new ExplorerPrepareQuestionError(e.message, QuestionFeedbackType.ErrorAnswerGenerate, {
+                        message: e.message,
+                        responseText: e.responseText,
+                    }, e);
+                } else {
+                    const message = 'Failed to generate answer, please try again later';
+                    throw new ExplorerPrepareQuestionError(message, QuestionFeedbackType.ErrorAnswerGenerate, {
+                        message: e.message
+                    }, e);
+                }
+            }
+        }
+        return responseText;
+    }
+
+    async getStorageEngines(logger: BaseLogger, querySQL: string): Promise<string[]> {
+        try {
+            logger.info("Getting the storage engines for the SQL: %s", querySQL);
+            const plan = await this.getSQLExecutionPlan(querySQL);
+            return this.getStorageEnginesFromPlan(plan);
+        } catch (err: any) {
+            if (err.sqlMessage) {
+                throw new ExplorerPrepareQuestionError(err.sqlMessage, QuestionFeedbackType.ErrorValidateSQL, {
+                    sqlMessage: err.sqlMessage,
+                    message: err.message,
+                    sql: querySQL
+                });
+            } else {
+                const message = 'Failed to validate the generated SQL.';
+                throw new ExplorerPrepareQuestionError(message, QuestionFeedbackType.ErrorValidateSQL, {
+                    message: err.message,
+                    sql: querySQL
+                });
+            }
+        }
+    }
+
+    async pushJobToQueue(logger: BaseLogger, question: Question) {
+        if (!question.queueJobId) {
+            logger.warn("No job id provided, the question will not be executed.");
+            return;
+        }
+
+        const log = this.logger.child({ jobId: question.queueJobId });
+        if (!question.queueName) {
+            log.warn("No queue name provided, the question will not be executed.");
+            return;
+        }
+
+
+        switch (question.queueName) {
+            case QuestionQueueNames.Low:
+                log.info("Pushing the question to the low concurrent queue.");
+                await this.lowConcurrentQueue.add(QuestionQueueNames.Low, question, {
+                    jobId: question.queueJobId
+                });
+                break;
+            case QuestionQueueNames.High:
+                log.info("Pushing the question to the high concurrent queue.");
+                await this.highConcurrentQueue.add(QuestionQueueNames.High, question, {
+                    jobId: question.queueJobId
+                });
+                break;
+            default:
+                log.warn("No queue name provided, the question will not be executed.");
+                break;
         }
     }
 
@@ -441,9 +474,8 @@ export class ExplorerService {
         };
     }
 
-    async getSQLExecutionPlan(sql: string, conn?: Connection) {
-        const connection = conn || this.mysql;
-        const [rows] = await connection.query<any[]>('explain format = "brief" ' + sql);
+    async getSQLExecutionPlan(sql: string) {
+        const [rows] = await this.tidb.query<any[]>('explain format = "brief" ' + sql);
         return rows;
     }
 
@@ -479,8 +511,7 @@ export class ExplorerService {
 
     // CRUD.
 
-    private async createQuestion(question: Question, conn?: Connection) {
-        const connection = conn || this.mysql;
+    private async createQuestion(conn: Connection, question: Question) {
         const {
             id, hash, userId, status, title, querySQL, queryHash, engines = [],
             batchJobId = null, needReview, recommended, createdAt, queueName, queueJobId = null, chart, recommendedQuestions = [], error = null
@@ -488,7 +519,7 @@ export class ExplorerService {
         const enginesValue = JSON.stringify(engines);
         const chartValue = chart !== undefined ? JSON.stringify(chart) : null;
         const recommendedQuestionsValue = JSON.stringify(recommendedQuestions);
-        const [rs] = await connection.query<ResultSetHeader>(`
+        const [rs] = await conn.query<ResultSetHeader>(`
             INSERT INTO explorer_questions(
                 id, hash, user_id, status, title, query_sql, query_hash, engines,
                 batch_job_id, need_review, recommended, created_at, queue_name, queue_job_id, chart, recommended_questions, error
@@ -512,7 +543,7 @@ export class ExplorerService {
     }
 
     private async updateQuestionStatus(questionId: string, status: QuestionStatus) {
-        const [rs] = await this.mysql.query<ResultSetHeader>(`
+        const [rs] = await this.tidb.query<ResultSetHeader>(`
             UPDATE explorer_questions SET status = ? WHERE id = UUID_TO_BIN(?)
         `, [status, questionId]);
         if (rs.affectedRows !== 1) {
@@ -521,7 +552,7 @@ export class ExplorerService {
     }
 
     private async markQuestionRunning(questionId: string, executedAt?: DateTime) {
-        const [rs] = await this.mysql.query<ResultSetHeader>(`
+        const [rs] = await this.tidb.query<ResultSetHeader>(`
             UPDATE explorer_questions SET status = ?, executed_at = ? WHERE id = UUID_TO_BIN(?)
         `, [QuestionStatus.Running, executedAt?.toSQL() || null, questionId]);
         if (rs.affectedRows !== 1) {
@@ -545,27 +576,29 @@ export class ExplorerService {
         const executedAtValue = executedAt ? executedAt.toSQL() : null;
         const finishedAtValue = finishedAt ? finishedAt.toSQL() : null;
 
-        const [rs] = await this.mysql.query<ResultSetHeader>(`
-            UPDATE explorer_questions
-            SET
-                answer = ?, revised_title = ?, not_clear = ?, assumption = ?, combined_title = ?, status = ?, recommended = ?, sql_can_answer = ?, 
-                query_sql = ?, query_hash = ?, engines = ?, result = ?, chart = ?, recommended_questions = ?, 
-                queue_name = ?, queue_job_id = ?, requested_at = ?, executed_at = ?, finished_at = ?, spent = ?, error_type = ?, error = ?
-            WHERE id = UUID_TO_BIN(?)
-        `, [
-            answerValue, revisedTitle, notClear, assumption, combinedTitle, status, recommended, sqlCanAnswer,
-            querySQL, queryHash, enginesValue, resultValue, chartValue, recommendedQuestionsValue,
-            queueName, queueJobId, requestedAtValue, executedAtValue, finishedAtValue, spent, errorType, error, id
-        ]);
-        if (rs.affectedRows !== 1) {
-            throw new APIError(500, 'Failed to update the question.');
-        }
+        await withTransaction(this.tidb, async (conn) => {
+            const [rs] = await conn.query<ResultSetHeader>(`
+                UPDATE explorer_questions
+                SET
+                    answer = ?, revised_title = ?, not_clear = ?, assumption = ?, combined_title = ?, status = ?, recommended = ?, sql_can_answer = ?, 
+                    query_sql = ?, query_hash = ?, engines = ?, result = ?, chart = ?, recommended_questions = ?, 
+                    queue_name = ?, queue_job_id = ?, requested_at = ?, executed_at = ?, finished_at = ?, spent = ?, error_type = ?, error = ?
+                WHERE id = UUID_TO_BIN(?)
+            `, [
+                answerValue, revisedTitle, notClear, assumption, combinedTitle, status, recommended, sqlCanAnswer,
+                querySQL, queryHash, enginesValue, resultValue, chartValue, recommendedQuestionsValue,
+                queueName, queueJobId, requestedAtValue, executedAtValue, finishedAtValue, spent, errorType, error, id
+            ]);
+
+            if (rs.affectedRows !== 1) {
+                throw new APIError(500, 'Failed to update the question.');
+            }
+        });
     }
 
-    private async saveQuestionResult(questionId: string, status: QuestionStatus, questionResult: QuestionQueryResult, hitCache = false, conn?: Connection) {
-        const connection = conn || this.mysql;
+    private async saveQuestionResult(questionId: string, status: QuestionStatus, questionResult: QuestionQueryResult, hitCache = false) {
         const { result, executedAt, finishedAt, spent } = questionResult;
-        const [rs] = await connection.query<ResultSetHeader>(`
+        const [rs] = await this.tidb.query<ResultSetHeader>(`
             UPDATE explorer_questions
             SET status = ?, result = ?, executed_at = ?, finished_at = ?, spent = ?, hit_cache = ?
             WHERE id = UUID_TO_BIN(?)
@@ -585,10 +618,9 @@ export class ExplorerService {
 
     private async saveQuestionError(
       questionId: string, errorType: QuestionFeedbackType = QuestionFeedbackType.ErrorUnknown,
-      message: string = 'unknown', conn?: Connection
+      message: string = 'unknown'
     ) {
-        const connection = conn || this.mysql;
-        const [rs] = await connection.query<ResultSetHeader>(`
+        const [rs] = await this.tidb.query<ResultSetHeader>(`
             UPDATE explorer_questions SET status = ?, error_type = ?, error = ? WHERE id = UUID_TO_BIN(?)
         `, [QuestionStatus.Error, errorType, message, questionId]);
         if (rs.affectedRows !== 1) {
@@ -596,10 +628,9 @@ export class ExplorerService {
         }
     }
 
-    private async saveAnswerSummary(questionId: string, summary: AnswerSummary, conn?: Connection) {
-        const connection = conn || this.mysql;
+    private async saveAnswerSummary(questionId: string, summary: AnswerSummary) {
         const summaryValue = JSON.stringify(summary);
-        const [rs] = await connection.query<ResultSetHeader>(`
+        const [rs] = await this.tidb.query<ResultSetHeader>(`
             UPDATE explorer_questions
             SET answer_summary = ?
             WHERE id = UUID_TO_BIN(?)
@@ -609,9 +640,8 @@ export class ExplorerService {
         }
     }
 
-    async getQuestionById(questionId: string, conn?: Connection): Promise<Question | null> {
-        const connection = conn || this.mysql;
-        const [rows] = await connection.query<any[]>(`
+    async getQuestionById(questionId: string): Promise<Question | null> {
+        const [rows] = await this.tidb.query<any[]>(`
             SELECT
                 BIN_TO_UUID(id) AS id, hash, user_id AS userId, status, title, answer, revised_title AS revisedTitle, not_clear AS notClear, 
                 assumption, combined_title AS combinedTitle, sql_can_answer AS sqlCanAnswer, query_sql AS querySQL, query_hash AS queryHash, engines, 
@@ -628,17 +658,16 @@ export class ExplorerService {
         return this.mapRecordToQuestion(rows[0]);
     }
 
-    async getQuestionByIdOrError(questionId: string, conn?: Connection): Promise<Question> {
-        const question = await this.getQuestionById(questionId, conn);
+    async getQuestionByIdOrError(questionId: string): Promise<Question> {
+        const question = await this.getQuestionById(questionId);
         if (question === null) {
             throw new APIError(404, 'Question not found.');
         }
         return question;
     }
 
-    async getLatestQuestionByHash(questionHash: string, ttl: number, conn?: Connection): Promise<Question | null> {
-        const connection = conn || this.mysql;
-        const [rows] = await connection.query<any[]>(`
+    async getLatestQuestionByHash(questionHash: string, ttl: number): Promise<Question | null> {
+        const [rows] = await this.tidb.query<any[]>(`
             SELECT
                 BIN_TO_UUID(id) AS id, hash, user_id AS userId, status, title, answer, revised_title AS revisedTitle, not_clear AS notClear,
                 assumption, combined_title AS combinedTitle, sql_can_answer AS sqlCanAnswer, query_sql AS querySQL, query_hash AS queryHash, engines,
@@ -660,9 +689,8 @@ export class ExplorerService {
         return this.mapRecordToQuestion(rows[0]);
     }
 
-    async getRecommendedQuestionsByHash(questionHash: string, conn?: Connection): Promise<Question[]> {
-        const connection = conn || this.mysql;
-        const [rows] = await connection.query<any[]>(`
+    async getRecommendedQuestionsByHash(conn: Connection, questionHash: string): Promise<Question[]> {
+        const [rows] = await conn.query<any[]>(`
             SELECT
                 BIN_TO_UUID(id) AS id, hash, user_id AS userId, status, title, revised_title AS revisedTitle, not_clear AS notClear,
                 assumption, combined_title AS combinedTitle, sql_can_answer AS sqlCanAnswer, query_sql AS querySQL, query_hash AS queryHash, engines,
@@ -677,7 +705,7 @@ export class ExplorerService {
     }
 
     async getLatestQuestionByQueryHash(queryHash: string, ttl: number): Promise<Question | null> {
-        const [rows] = await this.mysql.query<any[]>(`
+        const [rows] = await this.tidb.query<any[]>(`
             SELECT
                 BIN_TO_UUID(id) AS id, hash, user_id AS userId, status, title, answer, revised_title AS revisedTitle, not_clear AS notClear,
                 assumption, combined_title AS combinedTitle, sql_can_answer AS sqlCanAnswer, query_sql AS querySQL, query_hash AS queryHash, engines,
@@ -697,6 +725,9 @@ export class ExplorerService {
     }
 
     async getCachedSQLResult(queryHash: string, ttl: number): Promise<QuestionQueryResultWithChart | null> {
+        if (!queryHash) {
+            return null;
+        }
         const question = await this.getLatestQuestionByQueryHash(queryHash, ttl);
         if (!question) {
             return null;
@@ -710,8 +741,8 @@ export class ExplorerService {
         }
     }
 
-    async getUserPastHourQuestionsWithLock(userId: number, conn?: Connection): Promise<Question[]> {
-        const connection = conn || this.mysql;
+    async getUserPastHourQuestionsWithLock(conn: Connection, userId: number): Promise<Question[]> {
+        const connection = conn || this.tidb;
         const [rows] = await connection.query<any[]>(`
             SELECT
                 BIN_TO_UUID(id) AS id, hash, user_id AS userId, status, title, answer, revised_title AS revisedTitle, not_clear AS notClear,
@@ -742,7 +773,7 @@ export class ExplorerService {
     }
 
     async countPrecedingQuestions(questionId: string, conn?: Connection): Promise<number> {
-        const connection = conn || this.mysql;
+        const connection = conn || this.tidb;
         const [rows] = await connection.query<any[]>(`
             SELECT COUNT(*) AS count
             FROM explorer_questions eq
@@ -810,142 +841,58 @@ export class ExplorerService {
 
     private shouldSummary(): boolean {
         // Control the summary probability to 2 / 5.
-        return Math.ceil(Math.random() * 100) % 5 >= 3;
+        // return Math.ceil(Math.random() * 100) % 5 >= 3;
+        // Disable summary for now.
+        return false;
     }
 
     private async executeQuery(questionId: string, querySQL: string): Promise<QuestionQueryResult> {
-        const logger = this.logger.child({ questionId });
-        const timeout = this.options.querySQLTimeout;
-        const preparedSQL = `/* questionId: ${questionId} */ ${querySQL}`;
+        try {
+            const executedAt = DateTime.now();
+            await this.markQuestionRunning(questionId, executedAt);
+            this.logger.info('⏳ Start query executing for question <%s>, start: %s', questionId, executedAt.toISO());
 
-        return new Promise<QuestionQueryResult>(async (resolve, reject) => {
-            let playgroundConn: PoolConnection | null = null, timer: NodeJS.Timeout | null = null;
+            const markedSQL = `/* questionId: ${questionId} */ ${querySQL}`;
+            const [rows, fields] = await this.playgroundQueryExecutor.execute(`explorer-sql-${questionId}`, {
+                sql: markedSQL,
+                timeout: this.options.querySQLTimeout,
+            }) as [any[], any[]];
 
-            try {
-                // Get playground connection.
-                const getConnStart = DateTime.now();
-                playgroundConn = await this.playgroundQueryExecutor.getConnection();
-                const getConnEnd = DateTime.now();
-                logger.info({questionId}, `Got the playground connection, cost: ${getConnEnd.diff(getConnStart).as('milliseconds')} ms`);
+            const finishedAt = DateTime.now();
+            const spent = finishedAt.diff(executedAt).as("seconds");
+            this.logger.info(
+              '✅ Finished query executing for question <%s>, start: %s, end: %s, cost: %d s',
+              questionId, executedAt.toISO(), finishedAt.toISO(), spent
+            );
 
-                // Mark question as running.
-                const connectionId = await this.getConnectionID(playgroundConn);
-                logger.info({ questionId }, 'Start executing query with connection ID: %s.', connectionId);
-                const executedAt = DateTime.now();
-                await this.markQuestionRunning(questionId, executedAt);
-
-                // Cancel the query if timeout.
-                timer = setTimeout(async () => {
-                    logger.warn({ questionId, querySQL }, 'Query execution timeout after %d ms.', timeout);
-
-                    try {
-                        if (playgroundConn) {
-                            // Close the connection from client side.
-                            await playgroundConn.destroy();
-                            logger.info('Move the connection from %s the pool.', connectionId);
-
-                            // Terminate the connection from server side.
-                            if (connectionId) {
-                                await this.killConnection(connectionId);
-                                logger.info('Killed the connection %s on server.', connectionId);
-                            }
-                        }
-
-                        reject(new ExplorerResolveQuestionError('Query execution timeout.', QuestionFeedbackType.ErrorQueryTimeout,{
-                            timeout: timeout,
-                            querySQL,
-                        }));
-                    } catch (err) {
-                        logger.error({ err }, 'Failed to kill the connection %s.', connectionId);
-                        reject(new ExplorerResolveQuestionError('Query execution timeout.', QuestionFeedbackType.ErrorQueryTimeout,{
-                            timeout: timeout,
-                            querySQL,
-                        }));
-                    } finally {
-                        if (timer) {
-                            clearTimeout(timer);
-                            timer = null;
-                        }
-
-                        if (playgroundConn) {
-                            await playgroundConn.release();
-                        }
-                    }
-                }, timeout);
-
-                // Executing query.
-                let rows: any[] = [], fields: any[] = [];
-                try {
-                    [rows, fields] = await playgroundConn.execute<any[]>(preparedSQL);
-                } catch (err: any) {
-                    if (err.sqlMessage) {
-                        throw new ExplorerResolveQuestionError(err.sqlMessage, QuestionFeedbackType.ErrorQueryExecute,{
-                            querySQL,
-                            sqlMessage: err.sqlMessage,
-                            message: err.message
-                        });
-                    } else {
-                        throw new ExplorerResolveQuestionError(err.message, QuestionFeedbackType.ErrorQueryExecute,{
-                            querySQL,
-                            message: err.message
-                        });
-                    }
-                }
-
-                // Finish the query.
-                const finishedAt = DateTime.now();
-                const spent = finishedAt.diff(executedAt).as("seconds");
-                logger.info({questionId}, 'Finished query executing, cost: %d s', spent);
-
-                resolve({
-                    result: {
-                        fields: fields.map((field) => {
-                            return {
-                                name: field.name,
-                                columnType: field.type,
-                            }
-                        }),
-                        rows
-                    },
-                    executedAt,
-                    finishedAt,
-                    spent,
+            return {
+                result: {
+                    fields,
+                    rows
+                },
+                executedAt,
+                finishedAt,
+                spent,
+            }
+        } catch (err: any) {
+            if (err.code === 'PROTOCOL_SEQUENCE_TIMEOUT') {
+                throw new ExplorerResolveQuestionError(err.sqlMessage, QuestionFeedbackType.ErrorQueryTimeout,{
+                    querySQL,
+                    message: err.message
                 });
-            } catch (err) {
-                reject(err);
-            } finally {
-                if (timer) {
-                    clearTimeout(timer);
-                    timer = null;
-                }
-
-                if (playgroundConn) {
-                    await playgroundConn.release();
-                }
-            }
-        });
-    }
-
-    private async getConnectionID(conn: Connection): Promise<string | null> {
-        const [rows] = await conn.query<any[]>(`SELECT CAST(CONNECTION_ID() AS CHAR) AS connectionId`);
-
-        if (rows.length === 0) {
-            return null;
-        }
-
-        return rows[0].connectionId;
-    }
-
-    private async killConnection(taskId: string): Promise<boolean> {
-        for (let i = 0; i < 3; i++) {
-            try {
-                await this.mysql.query(`KILL ${taskId}`);
-                return true;
-            } catch (e: any) {
-                this.logger.warn(`Failed to kill query ${taskId}: ${e.message}, retrying...`);
+            } else if (err.sqlMessage) {
+                throw new ExplorerResolveQuestionError(err.sqlMessage, QuestionFeedbackType.ErrorQueryExecute,{
+                    querySQL,
+                    sqlMessage: err.sqlMessage,
+                    message: err.message
+                });
+            } else {
+                throw new ExplorerResolveQuestionError(err.message, QuestionFeedbackType.ErrorQueryExecute,{
+                    querySQL,
+                    message: err.message
+                });
             }
         }
-        return false;
     }
 
     private checkChart(chart: RecommendedChart | undefined | null, result: QuestionSQLResult): boolean {
@@ -1041,7 +988,7 @@ export class ExplorerService {
 
     // Chart.
 
-    async generateChart(conn: Connection, questionId: string, title: string, result: QuestionSQLResult): Promise<RecommendedChart> {
+    async generateChart(questionId: string, title: string, result: QuestionSQLResult): Promise<RecommendedChart> {
         const { rows } = result;
         const sampleData = rows.slice(0, 2);
 
@@ -1060,12 +1007,12 @@ export class ExplorerService {
             }
         }
 
-        await this.saveQuestionChart(questionId, chart, conn);
+        await this.saveQuestionChart(questionId, chart);
         return chart;
     }
 
-    async generateChartByQuestionId(conn: Connection, questionId: string) {
-        const question = await this.getQuestionById(questionId, conn);
+    async generateChartByQuestionId(questionId: string) {
+        const question = await this.getQuestionById(questionId);
         if (!question) {
             throw new APIError(404, 'Question not found.');
         }
@@ -1074,12 +1021,11 @@ export class ExplorerService {
         }
 
         const { id, title, result } = question;
-        return this.generateChart(conn, id, title, result);
+        return this.generateChart(id, title, result);
     }
 
-    private async saveQuestionChart(questionId: string, chart: RecommendedChart, conn?: Connection) {
-        const connection = conn || this.mysql;
-        const [rs] = await connection.query<ResultSetHeader>(`
+    private async saveQuestionChart(questionId: string, chart: RecommendedChart) {
+        const [rs] = await this.tidb.query<ResultSetHeader>(`
             UPDATE explorer_questions SET chart = ? WHERE id = UUID_TO_BIN(?)
         `, [JSON.stringify(chart), questionId]);
         if (rs.affectedRows !== 1) {
@@ -1089,9 +1035,8 @@ export class ExplorerService {
 
     // Recommend questions.
 
-    async getTags(conn?: Connection): Promise<QuestionTag[]> {
-        const connection = conn || this.mysql;
-        const [rows] = await connection.query<any[]>(`
+    async getTags(): Promise<QuestionTag[]> {
+        const [rows] = await this.tidb.query<any[]>(`
             SELECT id, label, color, sort, created_at AS createdAt
             FROM explorer_question_tags eqt
             ORDER BY eqt.sort
@@ -1099,9 +1044,8 @@ export class ExplorerService {
         return this.mapQuestionTags(rows);
     }
 
-    async getQuestionTags(questionId: string, conn?: Connection): Promise<QuestionTag[]> {
-        const connection = conn || this.mysql;
-        const [rows] = await connection.query<any[]>(`
+    async getQuestionTags(conn: Connection, questionId: string): Promise<QuestionTag[]> {
+        const [rows] = await conn.query<any[]>(`
             SELECT id, label, color, sort, created_at AS createdAt
             FROM explorer_question_tags eqt
             JOIN explorer_question_tag_rel eqtr ON eqtr.tag_id = eqt.id
@@ -1119,65 +1063,51 @@ export class ExplorerService {
         });
     }
 
-    async setQuestionTags(questionId: string, newTagIds: number[], conn?: Connection): Promise<void> {
-        const connection = conn || await this.mysql.getConnection();
-        await connection.beginTransaction();
+    async setQuestionTags(conn: Connection, questionId: string, newTagIds: number[]): Promise<void> {
+      try {
+        // Got existed tags.
+        const existedTags = await this.getQuestionTags(conn, questionId);
+        const existedTagIds = existedTags.map((t) => t.id);
 
-        try {
-            const existedTags = await this.getQuestionTags(questionId, connection);
-            const existedTagIds = existedTags.map((t) => t.id);
-
-            // Remove tags didn't exist in newTagIds.
-            const needRemoveTagIds = existedTagIds.filter((id) => !newTagIds.includes(id));
-            if (Array.isArray(needRemoveTagIds) && needRemoveTagIds.length > 0) {
-                await connection.query(`
-                    DELETE FROM explorer_question_tag_rel eqtr
-                    WHERE
-                        eqtr.question_id = UUID_TO_BIN(?)
-                        AND eqtr.tag_id IN (?)
-                `, [questionId, needRemoveTagIds]);
-            }
-
-            // Add tags didn't exist in existedTagIds.
-            const needAddTags = newTagIds.filter((id) => !existedTagIds.includes(id));
-            if (Array.isArray(needAddTags) && needAddTags.length > 0) {
-                await connection.query(`
-                    INSERT INTO explorer_question_tag_rel (question_id, tag_id)
-                    VALUES ${needAddTags.map(() => '(UUID_TO_BIN(?), ?)').join(',')}
-                `, needAddTags.map((id) => {
-                    return [questionId, id];
-                }).flat());
-            }
-
-            await connection.commit();
-        } catch (err: any) {
-            await connection.rollback();
-            const message = 'Failed to set question tags.';
-            this.logger.error({
-                questionId: questionId,
-                tagIds: newTagIds,
-                err,
-            }, message);
-            throw new ExplorerSetQuestionTagsError(500, message,err);
-        } finally {
-            // @ts-ignore
-            if (connection.release) {
-                // @ts-ignore
-                await connection.release();
-            } else {
-                await connection.end();
-            }
+        // Remove tags didn't exist in newTagIds.
+        const needRemoveTagIds = existedTagIds.filter((id) => !newTagIds.includes(id));
+        if (Array.isArray(needRemoveTagIds) && needRemoveTagIds.length > 0) {
+          await conn.query(`
+              DELETE
+              FROM explorer_question_tag_rel eqtr
+              WHERE eqtr.question_id = UUID_TO_BIN(?)
+                AND eqtr.tag_id IN (?)
+          `, [questionId, needRemoveTagIds]);
         }
+
+        // Add tags didn't exist in existedTagIds.
+        const needAddTags = newTagIds.filter((id) => !existedTagIds.includes(id));
+        if (Array.isArray(needAddTags) && needAddTags.length > 0) {
+          await conn.query(`
+              INSERT INTO explorer_question_tag_rel (question_id, tag_id)
+              VALUES ${needAddTags.map(() => '(UUID_TO_BIN(?), ?)').join(',')}
+          `, needAddTags.map((id) => {
+            return [questionId, id];
+          }).flat());
+        }
+      } catch (err: any) {
+        const message = 'Failed to set question tags.';
+        this.logger.error({
+          questionId: questionId,
+          tagIds: newTagIds,
+          err,
+        }, message);
+        throw new ExplorerSetQuestionTagsError(500, message, err);
+      }
     }
 
     // Recommend questions.
 
-    async getRecommendQuestionsByRandom(n: number, aiGenerated?: boolean, conn?: Connection): Promise<RecommendQuestion[]> {
-        const connection = conn || this.mysql;
+    async getRecommendQuestionsByRandom(n: number, aiGenerated?: boolean): Promise<RecommendQuestion[]> {
         let questions = [];
         try {
             if (aiGenerated !== undefined) {
-                [questions] = await connection.query<any[]>(`
+                [questions] = await this.tidb.query<any[]>(`
                 SELECT hash, title, ai_generated AS aiGenerated, BIN_TO_UUID(question_id) AS questionId, created_at AS createdAt
                 FROM explorer_recommend_questions erq
                 WHERE ai_generated = ?
@@ -1185,7 +1115,7 @@ export class ExplorerService {
                 LIMIT ?
             `, [aiGenerated, n]);
             } else {
-                [questions] = await connection.query<any[]>(`
+                [questions] = await this.tidb.query<any[]>(`
                 SELECT hash, title, ai_generated AS aiGenerated, BIN_TO_UUID(question_id) AS questionId, created_at AS createdAt
                 FROM explorer_recommend_questions erq
                 ORDER BY RAND()
@@ -1199,12 +1129,10 @@ export class ExplorerService {
         return this.mapToRecommendQuestions(questions);
     }
 
-    async getRecommendQuestionsByTag(n: number = 40, tagId?: number | null, conn?: Connection): Promise<RecommendQuestion[]> {
-        const connection = conn || this.mysql;
-
+    async getRecommendQuestionsByTag(n: number = 40, tagId: number | null = null): Promise<RecommendQuestion[]> {
         let questions: any[];
         if (tagId) {
-            [questions] = await connection.query<any[]>(`
+            [questions] = await this.tidb.query<any[]>(`
                 SELECT eq.hash, eq.title, false AS aiGenerated, BIN_TO_UUID(eq.id) AS questionId, eq.created_at AS createdAt
                 FROM explorer_questions eq
                 JOIN explorer_question_tag_rel eqtr ON eqtr.question_id = eq.id
@@ -1215,7 +1143,7 @@ export class ExplorerService {
                 LIMIT ?
             `, [tagId, n])
         } else {
-            [questions] = await connection.query<any[]>(`
+            [questions] = await this.tidb.query<any[]>(`
                 SELECT eq.hash, eq.title, false AS aiGenerated, BIN_TO_UUID(eq.id) AS questionId, eq.created_at AS createdAt
                 FROM explorer_questions eq
                 WHERE
@@ -1227,7 +1155,7 @@ export class ExplorerService {
 
         const questionIds = questions.map((q) => q.questionId);
         if (questionIds.length > 0) {
-            const [questionTags] = await connection.query<any[]>(`
+            const [questionTags] = await this.tidb.query<any[]>(`
                 SELECT BIN_TO_UUID(question_id) AS questionId, eqt.id, eqt.label, eqt.color
                 FROM explorer_question_tag_rel eqtr
                 JOIN explorer_question_tags eqt ON eqt.id = eqtr.tag_id
@@ -1261,7 +1189,7 @@ export class ExplorerService {
         }));
     }
 
-    async saveRecommendQuestions(conn: Connection, questions: RecommendQuestion[]): Promise<void> {
+    async saveRecommendQuestions(questions: RecommendQuestion[]): Promise<void> {
         const questionValues = questions.filter((q) => {
             return q.title != ''
         }).map(({ hash, title, aiGenerated }) => {
@@ -1272,7 +1200,7 @@ export class ExplorerService {
         if (questionValues.length === 0) {
             return;
         }
-        const [rs] = await conn.query<ResultSetHeader>(`
+        const [rs] = await this.tidb.query<ResultSetHeader>(`
             INSERT INTO explorer_recommend_questions(hash, title, ai_generated)
             VALUES ?
             ON DUPLICATE KEY UPDATE title = VALUES(title), ai_generated = VALUES(ai_generated)
@@ -1282,110 +1210,89 @@ export class ExplorerService {
         }
     }
 
-    async recommendQuestion(questionId: string, conn?: Connection): Promise<void> {
-        const connection: Connection | PoolConnection = conn || await this.mysql.getConnection();
-        const question = await this.getQuestionByIdOrError(questionId, connection);
+    async recommendQuestion(questionId: string): Promise<void> {
+        const question = await this.getQuestionByIdOrError(questionId);
 
-        await connection.beginTransaction();
-        try {
-            const hash = question?.hash;
-            if (!hash) {
-                throw new ExplorerRecommendQuestionError(401, 'Question hash is empty.');
-            }
+        await withTransaction(this.tidb, async (conn) => {
+          const hash = question?.hash;
+          if (!hash) {
+            throw new ExplorerRecommendQuestionError(401, 'Question hash is empty.');
+          }
 
-            const oldQuestions = await this.getRecommendedQuestionsByHash(hash, connection);
-            const oldQuestionIds = oldQuestions.map((q) => q.id);
-            let oldTagIds: number[] = [];
-            if (Array.isArray(oldQuestionIds) && oldQuestionIds.length > 0) {
-                // Get the old question tags.
-                const [oldTagRows] = await connection.query<any[]>(`
-                    SELECT DISTINCT eqtr.tag_id AS tagId
-                    FROM explorer_question_tag_rel eqtr
-                             JOIN explorer_questions eq ON eq.id = eqtr.question_id
-                    WHERE eq.recommended = 1
-                      AND eqtr.question_id IN (
-                        ${oldQuestionIds.map(() => `UUID_TO_BIN(?)`).join(',')}
-                        )
-                `, oldQuestionIds);
-                oldTagIds = oldTagRows.map((row) => row.tagId);
-                this.logger.info({questionId, hash, oldTagIds}, 'Get %d old question tags.', oldTagIds.length);
+          const oldQuestions = await this.getRecommendedQuestionsByHash(conn, hash);
+          const oldQuestionIds = oldQuestions.map((q) => q.id);
+          let oldTagIds: number[] = [];
+          if (Array.isArray(oldQuestionIds) && oldQuestionIds.length > 0) {
+            // Get the old question tags.
+            const [oldTagRows] = await conn.query<any[]>(`
+              SELECT DISTINCT eqtr.tag_id AS tagId
+              FROM explorer_question_tag_rel eqtr
+              JOIN explorer_questions eq ON eq.id = eqtr.question_id
+              WHERE
+                eq.recommended = 1
+                AND eqtr.question_id IN (${oldQuestionIds.map(() => `UUID_TO_BIN(?)`).join(',')})
+            `, oldQuestionIds);
+            oldTagIds = oldTagRows.map((row) => row.tagId);
+            this.logger.info({questionId, hash, oldTagIds}, 'Get %d old question tags.', oldTagIds.length);
 
-                // Unrecommended the old questions.
-                const [rs] = await connection.query<ResultSetHeader>(`
-                    UPDATE explorer_questions eq
-                    SET recommended = 0
-                    WHERE recommended = 1
-                      AND eq.id IN (
-                        ${oldQuestionIds.map(() => `UUID_TO_BIN(?)`).join(',')}
-                        )
-                `, oldQuestionIds);
-                this.logger.info({questionId, hash}, 'Unrecommended the %d / %d old questions.', rs.affectedRows, oldQuestions.length);
-            }
+            // Unrecommended the old questions.
+            const [rs] = await conn.query<ResultSetHeader>(`
+              UPDATE explorer_questions eq
+              SET recommended = 0
+              WHERE
+                recommended = 1
+                AND eq.id IN (${oldQuestionIds.map(() => `UUID_TO_BIN(?)`).join(',')})
+            `, oldQuestionIds);
+            this.logger.info({questionId, hash}, 'Unrecommended the %d / %d old questions.', rs.affectedRows, oldQuestions.length);
+          }
 
-            // Recommended the new question.
-            await connection.query(`
+          // Recommended the new question.
+          await conn.query(`
                 UPDATE explorer_questions eq
                 SET recommended = 1
                 WHERE eq.id = UUID_TO_BIN(?)
             `, [questionId]);
-            this.logger.info({questionId}, 'Recommended the new question.');
+          this.logger.info({questionId}, 'Recommended the new question.');
 
-            // Migration the question tags.
-            const questionTags = await this.getQuestionTags(questionId, connection);
-            const existedTagIds = questionTags.map((qt) => qt.id);
-            if (existedTagIds.length === 0 && oldTagIds.length > 0) {
-                await this.setQuestionTags(questionId, oldTagIds, connection);
-                this.logger.info({questionId, oldTagIds}, 'Migration the question tags.');
-            }
-
-            await connection.commit();
-        } catch (err: any) {
-            await connection.rollback();
+          // Migration the question tags.
+          const questionTags = await this.getQuestionTags(conn, questionId);
+          const existedTagIds = questionTags.map((qt) => qt.id);
+          if (existedTagIds.length === 0 && oldTagIds.length > 0) {
+            await this.setQuestionTags(conn, questionId, oldTagIds);
+            this.logger.info({questionId, oldTagIds}, 'Migration the question tags.');
+          }
+        }, {
+          onError: (con, err) => {
             if (err instanceof ExplorerRecommendQuestionError) {
-                throw err;
+              throw err;
             } else {
-                const message = `Failed to recommended question.`;
-                this.logger.error({questionId, err}, message);
-                throw new ExplorerRecommendQuestionError(500, message, err);
+              const message = `Failed to recommended question.`;
+              this.logger.error({questionId, err}, message);
+              throw new ExplorerRecommendQuestionError(500, message, err);
             }
-        } finally {
-            // @ts-ignore
-            if (connection.release) {
-                // @ts-ignore
-                await connection.release();
-            } else {
-                await connection.end();
-            }
-        }
+          }
+        });
     }
 
-    async cancelRecommendQuestion(questionId: string, conn?: Connection): Promise<void> {
-        const connection = conn || await this.mysql.getConnection();
-
-        try {
-            const question = await this.getQuestionByIdOrError(questionId, connection);
-            await connection.query(`
-                UPDATE explorer_questions eq
-                SET recommended = 0
-                WHERE eq.id = UUID_TO_BIN(?)
-            `, question.id);
-        } catch (err: any) {
-            if (err instanceof ExplorerCancelRecommendQuestionError) {
-                throw err;
+    async cancelRecommendQuestion(questionId: string): Promise<void> {
+        await withConnection(this.tidb, async (conn) => {
+          const question = await this.getQuestionByIdOrError(questionId);
+          await conn.query(`
+              UPDATE explorer_questions eq
+              SET recommended = 0
+              WHERE eq.id = UUID_TO_BIN(?)
+          `, question.id);
+        }, {
+          onError: (con, err) => {
+            if (err instanceof APIError) {
+              throw new ExplorerCancelRecommendQuestionError(err.statusCode, err.message, err.cause);
             } else {
-                const message = `Failed to cancel recommended question.`;
-                this.logger.error({questionId, err}, message);
-                throw new ExplorerCancelRecommendQuestionError(500, message, err);
+              const message = `Failed to cancel recommended question.`;
+              this.logger.error({questionId, err}, message);
+              throw new ExplorerCancelRecommendQuestionError(500, message, err);
             }
-        } finally {
-            // @ts-ignore
-            if (typeof connection.release) {
-                // @ts-ignore
-                await connection.release();
-            } else {
-                await connection.end();
-            }
-        }
+          }
+        });
     }
 
     async refreshRecommendQuestions(): Promise<void> {
@@ -1413,13 +1320,11 @@ export class ExplorerService {
 
     async refreshRecommendQuestion(oldQuestion: RecommendQuestion, batchJobID: string): Promise<void> {
         try {
-            const conn = await this.mysql.getConnection();
             this.logger.info({ questionId: oldQuestion.questionId }, "Refresh recommended question: %s.", oldQuestion.title);
-            const newQuestion = await this.newQuestion(0, oldQuestion.title, true, true, true, batchJobID, conn);
-            await conn.release();
+            const newQuestion = await this.newQuestion(0, oldQuestion.title, true, true, true, batchJobID);
 
             // Prepare question async.
-            if (!newQuestion.hitCache) {
+            if (newQuestion && !newQuestion.hitCache) {
                 try {
                     await this.prepareQuestion(newQuestion);
                 } catch (err: any) {
@@ -1434,19 +1339,20 @@ export class ExplorerService {
 
     // Question feedback.
 
-    async addSystemQuestionFeedback(questionId: string, feedbackType: QuestionFeedbackType, feedbackContent?: string, conn?: Connection) {
-        await this.addQuestionFeedback({
-            userId: 0,
+    async addSystemQuestionFeedback(questionId: string, feedbackType: QuestionFeedbackType, feedbackContent?: string) {
+        await withConnection(this.tidb, async (conn) => {
+          await this.addQuestionFeedback(conn, {
+            userId: SYSTEM_USER_ID,
             questionId,
             satisfied: false,
             feedbackType,
             feedbackContent,
-        }, conn);
+          });
+        });
     }
 
-    async cancelUserQuestionFeedback(userId: number, questionId: string, satisfied: boolean, conn?: Connection) {
-        const connection = conn || this.mysql;
-        const [rs] = await connection.query<ResultSetHeader>(`
+    async cancelUserQuestionFeedback(userId: number, questionId: string, satisfied: boolean) {
+        const [rs] = await this.tidb.query<ResultSetHeader>(`
             DELETE FROM explorer_question_feedbacks
             WHERE question_id = UUID_TO_BIN(?) AND user_id = ? AND satisfied = ?
             LIMIT 1
@@ -1456,17 +1362,15 @@ export class ExplorerService {
         }
     }
 
-    async removeUserQuestionFeedbacks(userId: number, questionId: string, conn?: Connection) {
-        const connection = conn || this.mysql;
-        await connection.query<ResultSetHeader>(`
+    async removeUserQuestionFeedbacks(conn: Connection, userId: number, questionId: string) {
+        await conn.query<ResultSetHeader>(`
             DELETE FROM explorer_question_feedbacks
             WHERE user_id = ? AND question_id = UUID_TO_BIN(?)
         `, [userId, questionId]);
     }
 
-    async getUserQuestionFeedbacks(userId: number, questionId: string, conn?: Connection): Promise<QuestionFeedback[]> {
-        const connection = conn || this.mysql;
-        const [rows] = await connection.query<any[]>(`
+    async getUserQuestionFeedbacks(userId: number, questionId: string): Promise<QuestionFeedback[]> {
+        const [rows] = await this.tidb.query<any[]>(`
             SELECT
                 id, user_id AS userId, BIN_TO_UUID(question_id) AS questionId, satisfied, feedback_type AS feedbackType,
                 feedback_content AS feedbackContent, created_at AS createdAt
@@ -1476,10 +1380,9 @@ export class ExplorerService {
         return rows;
     }
 
-    async addQuestionFeedback(feedback: Omit<QuestionFeedback, "id" | "createdAt">, conn?: Connection) {
-        const connection = conn || this.mysql;
+    async addQuestionFeedback(conn: Connection, feedback: Omit<QuestionFeedback, "id" | "createdAt">) {
         const { userId = 0, questionId, satisfied = false, feedbackType, feedbackContent = null } = feedback;
-        const [rs] = await connection.query<ResultSetHeader>(`
+        const [rs] = await conn.query<ResultSetHeader>(`
             INSERT INTO explorer_question_feedbacks(user_id, question_id, satisfied, feedback_type, feedback_content)
             VALUES (?, UUID_TO_BIN(?), ?, ?, ?)
         `, [userId, questionId, satisfied, feedbackType, feedbackContent]);
@@ -1520,17 +1423,16 @@ export class ExplorerService {
     }
 
     // Trusted users.
-    async checkIfTrustedUser(userId: number, conn?: Connection): Promise<boolean> {
-        const connection = conn || this.mysql;
-        const [rows] = await connection.query<any[]>(`
+    async checkIfTrustedUser(userId: number): Promise<boolean> {
+        const [rows] = await this.tidb.query<any[]>(`
             SELECT user_id AS userId FROM explorer_trusted_users
             WHERE user_id = ?
         `, [userId]);
         return rows.length > 0;
     }
 
-    async checkIfTrustedUsersOrError(userId: number, conn?: Connection) {
-        const isTrustedUser = await this.checkIfTrustedUser(userId, conn);
+    async checkIfTrustedUsersOrError(userId: number) {
+        const isTrustedUser = await this.checkIfTrustedUser(userId);
         if (!isTrustedUser) {
             throw new APIError(403, 'Has no permission to do this operation.');
         }

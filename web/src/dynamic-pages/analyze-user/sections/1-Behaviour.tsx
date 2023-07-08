@@ -97,7 +97,7 @@ function toCamel (n) {
 const eventTypesWithoutAll = ['pushes', 'issues', 'issue_comments', 'pull_requests', 'reviews', 'review_comments'];
 const eventTypes = ['all', 'pushes', 'issues', 'issue_comments', 'pull_requests', 'reviews', 'review_comments'];
 const timezones: number[] = [];
-const periods = ['past_1_year', 'past_3_year', 'all_times'];
+const periods = ['past_1_year', 'past_3_years', 'all_times'];
 
 const formatZone = (zone: number) => `UTC ${zone < 0 ? zone : `+${zone}`}`;
 
