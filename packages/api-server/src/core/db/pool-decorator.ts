@@ -1,4 +1,4 @@
-import {Pool} from "mysql2/promise";
+import {Connection, Pool} from "mysql2/promise";
 import {pino} from "pino";
 
 /**
@@ -22,21 +22,26 @@ type DecoratePoolConnectionsOptions = {
 export function decoratePoolConnections(logger: pino.Logger, pool: Pool, { initialSql }: DecoratePoolConnectionsOptions) {
     const originalGetConnection = pool.getConnection.bind(pool);
     pool.getConnection = async () => {
-        const conn = await originalGetConnection();
-        if (!conn[INITIALIZED]) {
+        const poolConn = await originalGetConnection() as any;
+        const internalConn = poolConn.connection as unknown as Connection;
+
+        if (!internalConn[INITIALIZED]) {
             logger.info({ initialSql }, "Started to init session variables for the connection.", )
             for (const sql of initialSql) {
-                await conn.execute(sql);
+                await poolConn.execute(sql);
             }
             logger.info("Finished to init session variables successfully.")
 
-            Object.defineProperty(conn, INITIALIZED, {
+            Object.defineProperty(internalConn, INITIALIZED, {
                 value: true,
                 writable: false,
                 configurable: false,
                 enumerable: false,
             });
+        } else {
+            logger.info("The connection has been initialized, skip the initialization process.")
         }
-        return conn;
+
+        return poolConn;
     };
 }

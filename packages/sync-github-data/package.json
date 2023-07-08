@@ -22,11 +22,12 @@
     "pino-pretty": "^9.4.0",
     "prisma": "^4.14.0",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.0.4"
+    "typescript": "^4.5.4"
   },
   "dependencies": {
     "@goparrot/geocoder": "^4.4.0",
     "@prisma/client": "4.13.0",
+    "@sentry/node": "^7.57.0",
     "async": "^3.2.4",
     "axios": "^0.27.2",
     "commander": "^9.4.0",
@@ -36,8 +37,9 @@
     "lru-cache": "^7.13.1",
     "luxon": "^3.3.0",
     "mysql2": "^2.3.3",
-    "octokit": "^2.0.14",
+    "octokit": "^2.0.10",
     "pino": "^8.7.0",
+    "pino-sentry-transport": "^1.0.4",
     "pinyin": "3.0.0-alpha.4",
     "reflect-metadata": "^0.1.13",
     "yaml": "^2.2.2"

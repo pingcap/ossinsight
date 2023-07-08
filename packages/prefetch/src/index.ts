@@ -11,24 +11,18 @@ import {CronJob} from 'cron';
 import envSchema from "env-schema";
 import * as http from "http";
 import {createPool, Pool} from "mysql2/promise";
-import pino from "pino";
 import {collectDefaultMetrics, Registry} from "prom-client";
 import {AppConfig, PrefetchEnvSchema} from "./env";
 import {JobGenerator} from "./job/generator";
 import {JobScheduler} from "./job/scheduler";
 import {prefetchQueryCounter, prefetchQueryHistogram, queueWaitsGauge} from "./metrics";
 
+const logger = require('./logger');
+
 // Load environments.
 const config: AppConfig = envSchema({
   schema: PrefetchEnvSchema,
   dotenv: true,
-});
-
-// Init logger.
-const logger = pino({
-  transport: {
-    target: 'pino-pretty',
-  }
 });
 
 export interface Options {

@@ -32,22 +32,15 @@ export interface AppConfig {
   EXPLORER_GENERATE_SQL_CACHE_TTL: number;
   EXPLORER_QUERY_SQL_CACHE_TTL: number;
   EXPLORER_OUTPUT_ANSWER_IN_STREAM: boolean;
-  GITHUB_OAUTH_CLIENT_ID?: string;
-  GITHUB_OAUTH_CLIENT_SECRET?: string;
   GITHUB_ACCESS_TOKENS: string[];
-  JWT_SECRET?: string;
-  JWT_COOKIE_NAME?: string;
-  JWT_COOKIE_DOMAIN?: string;
-  JWT_COOKIE_SECURE?: boolean;
-  JWT_COOKIE_SAME_SITE?: boolean;
   OPENAI_API_KEY: string;
   AUTH0_DOMAIN: string;
   AUTH0_SECRET: string;
   EMBEDDING_SERVICE_ENDPOINT: string;
   PROMPT_TEMPLATE_NAME: string;
-  PREFETCH_ONLY_QUERY?: string;
-  PREFETCH_ONLY_PARAMS: Record<string, any>;
-  PREFETCH_EXECUTE_IMMEDIATELY: boolean;
+  TIDB_CLOUD_DATA_SERVICE_APP_ID: string;
+  TIDB_CLOUD_DATA_SERVICE_PUBLIC_KEY: string;
+  TIDB_CLOUD_DATA_SERVICE_PRIVATE_KEY: string;
 }
 
 declare module 'fastify' {

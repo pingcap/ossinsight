@@ -8,7 +8,7 @@ import {
   tidbQueryHistogram,
   shadowTidbWaitConnectionHistogram,
   tidbWaitConnectionHistogram
-} from "../../../plugins/metrics";
+} from "../../../metrics";
 import {Conn, Fields, QueryExecutor, Rows, Values} from "./QueryExecutor";
 
 export class TiDBQueryExecutor implements QueryExecutor {

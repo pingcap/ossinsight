@@ -2,7 +2,7 @@
 import { CacheProvider } from './provider/CacheProvider';
 import {DateTime} from 'luxon'
 import pino from 'pino';
-import {cacheHitCounter, cacheQueryHistogram, measure} from '../../plugins/metrics';
+import {cacheHitCounter, cacheQueryHistogram, measure} from '../../metrics';
 
 export const MAX_CACHE_TIME = DateTime.fromISO('2099-12-31T00:00:00')
 
@@ -106,19 +106,18 @@ export default class Cache<T> {
     this.log.info(`✅️ Finished executing query <${this.key}> in ${duration} seconds.`);
 
     // Update cache async.
-    const expire = this.cacheHours > 0 ? Math.round(this.cacheHours * 3600) : -1;
-    result.expiresAt = expire > 0 ? DateTime.now().plus({hours: expire}) : MAX_CACHE_TIME;
+    const ttl = this.cacheHours > 0 ? Math.round(this.cacheHours * 3600) : -1;
+    result.expiresAt = ttl > 0 ? DateTime.now().plus({seconds: ttl}) : MAX_CACHE_TIME;
     measure(cacheQueryHistogram.labels({op: 'set'}), async () => {
       const start = DateTime.now();
       await this.cacheProvider.set(this.key, JSON.stringify(result), {
-        EX: expire
+        EX: ttl
       });
       const end = DateTime.now();
       const duration = end.diff(start, 'seconds').seconds;
       this.log.info(`✅️ Finished cache setting for query <${this.key}> in ${duration} seconds.`);
     }).catch((err) => {
-      console.error(`Failed to write cache for query <${this.key}>:`, err)
-      this.log.error(err, `Failed to write cache for query <${this.key}>.`);
+      this.log.error(err, `❌ Failed to write cache for query <${this.key}>.`);
     });
 
     result.refresh = true;
@@ -139,8 +138,7 @@ export default class Cache<T> {
         return json;
       }
     } catch (err) {
-      console.error(`Cache of query ${this.key} is broken.`, err);
-      this.log.error(err, `Cache of query ${this.key} is broken.`);
+      this.log.error(err, `❌ Cache of query ${this.key} is broken.`);
     }
     return null;
   }

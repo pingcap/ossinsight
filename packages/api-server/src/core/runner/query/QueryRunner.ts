@@ -7,7 +7,7 @@ import { QueryOptions } from "mysql2/promise";
 import { QueryParser } from "./QueryParser";
 import { QuerySchema } from "../../../types/query.schema";
 import { TiDBQueryExecutor } from "../../executor/query-executor/TiDBQueryExecutor";
-import {presetQueryTimer, measure, presetQueryCounter} from "../../../plugins/metrics";
+import {presetQueryTimer, measure, presetQueryCounter} from "../../../metrics";
 
 export const enum QueryType {
   QUERY = 'query',
