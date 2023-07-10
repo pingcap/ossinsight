@@ -16,7 +16,6 @@ export const enum QueryType {
 
 export interface Options {
   refreshCache?: boolean;
-  ignoreCache?: boolean;
   ignoreOnlyFromCache?: boolean;
   queryOptions?: Partial<QueryOptions>;
 }
@@ -52,7 +51,7 @@ export class QueryRunner {
       params: Record<string, any>,
       options: Options = {}
     ) {
-        const { ignoreCache = false, ignoreOnlyFromCache = false, refreshCache = false, queryOptions } = options;
+        const { ignoreOnlyFromCache = false, refreshCache = false, queryOptions } = options;
         const [queryConfig, templateSQL] = await this.queryLoader.load(queryName);
         if (!queryConfig || !templateSQL) {
           throw new Error(`Query config ${queryName} not found.`);
@@ -66,7 +65,7 @@ export class QueryRunner {
         const cache = this.cacheBuilder.build(
           cacheProvider,
           cacheKey,
-          ignoreCache ? 0 : cacheHours,
+          cacheHours,
           ignoreOnlyFromCache ? false : onlyFromCache,
           refreshCache
         );

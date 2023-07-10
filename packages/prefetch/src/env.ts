@@ -5,6 +5,7 @@ export interface AppConfig {
   DATABASE_URL: string;
   SHADOW_DATABASE_URL: string;
   SERVER_PORT: number;
+  QUERY_CACHE_KEY_PREFIX: string;
 }
 
 export const PrefetchEnvSchema = {
@@ -25,5 +26,8 @@ export const PrefetchEnvSchema = {
       type: 'number',
       default: 30002
     },
+    QUERY_CACHE_KEY_PREFIX: {
+      type: 'string',
+    }
   },
 };

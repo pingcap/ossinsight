@@ -33,7 +33,8 @@ export default class CacheBuilder {
       private readonly logger: pino.Logger,
       private readonly enableCache: boolean = false,
       pool?: Pool,
-      shadowPool?: Pool
+      shadowPool?: Pool,
+      private readonly keyPrefix: string = '',
     ) {
         if (this.enableCache && pool !== undefined) {
             this.normalCacheProvider = new NormalTableCacheProvider(logger, pool, shadowPool);
@@ -46,8 +47,9 @@ export default class CacheBuilder {
         cacheProvider: string = CacheProviderTypes.CACHED_TABLE, key: string, cacheHours: number,
         onlyFromCache?: boolean, refreshCache?: boolean
     ): Cache<any> {
+        const keyWithPrefix = this.keyPrefix ? `${this.keyPrefix}:${key}` : key;
         if (!this.enableCache) {
-            return new Cache<any>(this.logger, this.noneCacheProvider, key, -1, false, false);
+            return new Cache<any>(this.logger, this.noneCacheProvider, keyWithPrefix, -1, false, false);
         }
 
         switch(cacheProvider) {
@@ -55,12 +57,12 @@ export default class CacheBuilder {
                 if (this.normalCacheProvider === undefined) {
                     throw new Error('Normal cache provider has not initialed.');
                 }
-                return new Cache<any>(this.logger, this.normalCacheProvider, key, cacheHours, onlyFromCache, refreshCache);
+                return new Cache<any>(this.logger, this.normalCacheProvider, keyWithPrefix, cacheHours, onlyFromCache, refreshCache);
             case CacheProviderTypes.CACHED_TABLE:
                 if (this.cachedTableCacheProvider === undefined) {
                     throw new Error('Cached table cache provider has not initialed.');
                 }
-                return new Cache<any>(this.logger, this.cachedTableCacheProvider, key, cacheHours, onlyFromCache, refreshCache);
+                return new Cache<any>(this.logger, this.cachedTableCacheProvider, keyWithPrefix, cacheHours, onlyFromCache, refreshCache);
             default:
                 throw new Error(`Invalid cache provider type ${cacheProvider}.`);
         }
