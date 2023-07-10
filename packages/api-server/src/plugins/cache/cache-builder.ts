@@ -10,7 +10,14 @@ declare module 'fastify' {
 }
 
 export default fp(async (app) => {
-    app.decorate('cacheBuilder', new CacheBuilder(app.log as pino.Logger, app.config.ENABLE_CACHE, app.mysql as unknown as Pool, app.mysql.shadow as unknown as Pool));
+    const cacheBuilder = new CacheBuilder(
+      app.log as pino.Logger,
+      app.config.ENABLE_CACHE,
+      app.mysql as unknown as Pool,
+      app.mysql.shadow as unknown as Pool,
+      app.config.QUERY_CACHE_KEY_PREFIX,
+    );
+    app.decorate('cacheBuilder', cacheBuilder);
 }, {
     name: '@ossinsight/cache-builder',
     dependencies: [

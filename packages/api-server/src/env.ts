@@ -31,6 +31,9 @@ export const APIServerEnvSchema = {
       type: 'boolean',
       default: false
     },
+    QUERY_CACHE_KEY_PREFIX: {
+      type: 'string',
+    },
     PLAYGROUND_DATABASE_URL: {
       type: 'string',
     },

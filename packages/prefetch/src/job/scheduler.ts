@@ -59,7 +59,6 @@ export class JobScheduler {
                 try {
                     const { spent } = await this.queryRunner.query<any>(queryName, params, {
                         refreshCache: true,
-                        ignoreCache: true,
                         ignoreOnlyFromCache: true,
                         queryOptions: {
                             timeout: timeout,
@@ -70,7 +69,7 @@ export class JobScheduler {
                     histogram.observe(costTime.seconds);
 
                     prefetchQueryCounter.inc({ query: queryName, phase: 'success' });
-                    this.logger.info({ params, spent }, "✅ Finish prefetch <%s>, start at: %s, end at: %s, cost: %d s.", queryName, qStart, qEnd, costTime.seconds);
+                    this.logger.info({ params, spent }, "✅  Finish prefetch <%s>, start at: %s, end at: %s, cost: %d s.", queryName, qStart, qEnd, costTime.seconds);
                     if (costTime.seconds > 180) {
                         this.logger.warn(params, "⚠️ Prefetch query <%s> cost too much time: %d s", queryName, costTime.seconds);
                     }

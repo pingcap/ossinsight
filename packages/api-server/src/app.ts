@@ -23,6 +23,7 @@ export interface AppConfig {
   REDIS_URL: string;
   API_BASE_URL: string;
   ENABLE_CACHE: boolean;
+  QUERY_CACHE_KEY_PREFIX?: string;
   PLAYGROUND_DATABASE_URL: string;
   PLAYGROUND_SHADOW_DATABASE_URL: string;
   PLAYGROUND_DAILY_QUESTIONS_LIMIT: number;
