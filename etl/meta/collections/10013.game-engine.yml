@@ -45,7 +45,6 @@ items:
   - orx/orx
   - nCine/nCine
   - cocos-creator/engine
-  - love2d/love
   - coronalabs/corona
   - hajimehoshi/ebiten
   - HaxeFoundation/haxe
