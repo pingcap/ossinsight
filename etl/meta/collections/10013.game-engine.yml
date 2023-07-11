@@ -47,6 +47,7 @@ items:
   - cocos-creator/engine
   - coronalabs/corona
   - hajimehoshi/ebiten
+  - hexops/mach
   - HaxeFoundation/haxe
   - Esenthel/EsenthelEngine
   - aws/lumberyard
