@@ -16,6 +16,7 @@ items:
   - datafuselabs/databend
   - apache/spark
   - surrealdb/surrealdb
+  - MaterializeInc/materialize
   
   # Data analytics
   - metabase/metabase
@@ -31,6 +32,7 @@ items:
   - apache/Kafka
   - apache/flink
   - apache/beam
+  - redpanda-data/redpanda
 
   # Data transformation
   - dbt-labs/dbt-core
