@@ -415,7 +415,7 @@ const config = {
                 href: 'https://github.com/pingcap/ossinsight',
               },
               {
-                html: '<br /><b>Location</b><p style="color:grey">PingCAP<br />1250 Borregas Ave, Office 131<br />Sunnyvale, CA 94089<br />USA<br />☎️  +1 650 382 9973</p>',
+                html: '<br /><b>Location</b><p style="color:grey">PingCAP<br />440 N Wolfe Rd<br /> Sunnyvale, CA 94085<br />USA<br />☎️  +1 650 382 9973</p>',
               },
             ],
           },
