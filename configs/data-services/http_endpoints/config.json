@@ -15,5 +15,22 @@
     "sql_file": "sql/GET-events.sql",
     "type": "sql_endpoint",
     "return_type": "json"
+  },
+  {
+    "name": "/test",
+    "description": "",
+    "method": "GET",
+    "endpoint": "/test",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [],
+    "settings": {
+      "timeout": 5000,
+      "row_limit": 50
+    },
+    "sql_file": "sql/GET-test.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
   }
 ]
