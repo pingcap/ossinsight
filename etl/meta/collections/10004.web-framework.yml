@@ -59,3 +59,4 @@ items:
   - lucacasonato/fresh
   - honojs/hono
   - refinedev/refine
+  - unjs/nitro
