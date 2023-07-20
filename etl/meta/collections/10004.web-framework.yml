@@ -60,3 +60,4 @@ items:
   - honojs/hono
   - refinedev/refine
   - unjs/nitro
+  - payloadcms/payload
