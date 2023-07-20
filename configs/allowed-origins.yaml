@@ -7,6 +7,9 @@ private_origins:
   # Production.
   - ^https://ossinsight\.io$
   - ^https://live\.ossinsight\.io$
+  # Next
+  - ossinsight-next.vercel.app
+  - ossinsight-next-ui.vercel.app
 public_origins:
   # External Users.
   - ^https://github1s\.com$
