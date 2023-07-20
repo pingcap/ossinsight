@@ -14,3 +14,8 @@ items:
   - zilliztech/GPTCache
   - embedchain/embedchain
   - langgenius/dify
+  - TransformerOptimus/SuperAGI
+  - ShishirPatil/gorilla
+  - rustformers/llm
+  - sobelio/llm-chain
+  - Chainlit/chainlit
