@@ -13,3 +13,4 @@ items:
   - microsoft/prompt-engine
   - zilliztech/GPTCache
   - embedchain/embedchain
+  - langgenius/dify
