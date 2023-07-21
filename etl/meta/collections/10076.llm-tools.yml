@@ -19,3 +19,4 @@ items:
   - rustformers/llm
   - sobelio/llm-chain
   - Chainlit/chainlit
+  - FlowiseAI/Flowise
