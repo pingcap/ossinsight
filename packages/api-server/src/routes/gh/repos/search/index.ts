@@ -4,11 +4,24 @@ interface IQueryString {
   keyword: string;
 }
 
-const root: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
-  fastify.get<{
+export const schema = {
+  querystring: {
+    type: 'object',
+    required: ['keyword'],
+    properties: {
+      keyword: {
+        type: 'string',
+        description: 'The keyword to search repos.',
+      }
+    }
+  }
+}
+
+const root: FastifyPluginAsync = async (app, opts): Promise<void> => {
+  app.get<{
     Querystring: IQueryString;
-  }>('/', async function (req, reply) {
-    const res = await fastify.ghExecutor.searchRepos(req.query.keyword);
+  }>('/', { schema }, async function (req, reply) {
+    const res = await app.githubService.searchRepos(req.query.keyword);
     reply.send(res);
   })
 }

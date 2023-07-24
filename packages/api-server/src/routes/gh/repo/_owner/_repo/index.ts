@@ -1,15 +1,32 @@
 import { FastifyPluginAsync } from 'fastify';
 
 interface IParams {
-    owner: string;
-    repo: string;
+  owner: string;
+  repo: string;
 }
 
-const root: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
-  fastify.get<{
+export const schema = {
+  params: {
+    type: 'object',
+    required: ['owner', 'repo'],
+    properties: {
+      owner: {
+        type: 'string',
+        description: 'The owner of the repo.',
+      },
+      repo: {
+        type: 'string',
+        description: 'The name of the repo.',
+      }
+    }
+  }
+}
+
+const root: FastifyPluginAsync = async (app, opts): Promise<void> => {
+  app.get<{
     Params: IParams;
-  }>('/', async function (req, reply) {
-    const res = await fastify.ghExecutor.getRepo(req.params.owner, req.params.repo);
+  }>('/', { schema }, async function (req, reply) {
+    const res = await app.githubService.getRepoByName(req.params.owner, req.params.repo);
     reply.send(res);
   })
 }
