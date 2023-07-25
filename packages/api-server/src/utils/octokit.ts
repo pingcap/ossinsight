@@ -1,12 +1,21 @@
 import {Octokit} from "octokit";
 import pino from "pino";
 
-export function getOctokit(token: string | undefined, log: pino.BaseLogger): Octokit {
+export const SYMBOL_TOKEN = Symbol('GITHUB_ACCESS_TOKEN');
+
+export function eraseToken (value: string | undefined): string {
+    return value ? `****${value.substring(value.length - 8)}` : 'anonymous';
+}
+
+export function createOctokitClient(parentLogger: pino.Logger, token: string | undefined): Octokit {
     if (!token) {
-        log.warn('No GitHub personal token provided. Using anonymous GitHub client.');
+        parentLogger.warn('No GitHub personal token provided, using anonymous GitHub client.');
     }
 
-    return new Octokit({
+    const erasedToken = eraseToken(token);
+    const log = parentLogger.child({ octokit: erasedToken });
+
+    const octokit = new Octokit({
         auth: token,
         log: {
             debug: log.debug.bind(log),
@@ -38,5 +47,19 @@ export function getOctokit(token: string | undefined, log: pino.BaseLogger): Oct
                 }
             },
         }
-    })
+    });
+
+    Object.defineProperty(octokit, SYMBOL_TOKEN, {
+        value: token,
+        writable: false,
+        enumerable: false,
+        configurable: false
+    });
+
+    return octokit;
+}
+
+export function getOctokitToken(octokit: Octokit): string {
+    const { value: token } = Object.getOwnPropertyDescriptor(octokit, SYMBOL_TOKEN)!;
+    return token;
 }

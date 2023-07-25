@@ -48,7 +48,7 @@ export const shadowTidbQueryHistogram = new Histogram({
 export const dataServiceRequestCounter = new Counter({
   name: metricsPrefix + 'data_service_request_total',
   help: 'The total number of requests to data service.',
-  labelNames: ['api', 'phase'] as const,
+  labelNames: ['api', 'statusCode'] as const,
 });
 
 export const dataServiceRequestTimer = new Summary({
@@ -104,7 +104,7 @@ export const githubAPITimer = new Summary({
 export const githubAPICounter = new Counter({
   name: metricsPrefix + 'gh_api_req_total',
   help: 'The total number of GitHub API requesting.',
-  labelNames: ['api', 'phase'] as const
+  labelNames: ['api', 'statusCode'] as const
 });
 
 // The metrics related to OpenAI API.

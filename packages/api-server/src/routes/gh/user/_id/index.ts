@@ -1,17 +1,17 @@
 import { FastifyPluginAsync } from 'fastify';
 
-interface IQueryString {
-  keyword: string;
+interface IParams {
+  id: number;
 }
 
 export const schema = {
-  querystring: {
+  params: {
     type: 'object',
-    required: ['keyword'],
+    required: ['id'],
     properties: {
-      keyword: {
-        type: 'string',
-        description: 'The keyword to search users.',
+      id: {
+        type: 'number',
+        description: 'The id of the user.',
       }
     }
   }
@@ -19,9 +19,9 @@ export const schema = {
 
 const root: FastifyPluginAsync = async (app, opts): Promise<void> => {
   app.get<{
-    Querystring: IQueryString;
+    Params: IParams;
   }>('/', { schema }, async function (req, reply) {
-    const res = await app.githubService.searchUsers(req.query.keyword);
+    const res = await app.githubService.getUserByID(req.params.id);
     reply.send(res);
   })
 }

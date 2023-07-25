@@ -1,14 +1,7 @@
-import { eraseToken, OctokitFactory, SYMBOL_TOKEN } from '../../../../src/core/executor/octokit-executor/OctokitFactory';
+import { OctokitFactory } from '../../../../src/core/executor/octokit-executor/OctokitFactory';
 import { Octokit } from 'octokit';
+import {SYMBOL_TOKEN} from "../../../../src/utils/octokit";
 import { testLogger } from '../../../helpers/log';
-
-describe('eraseToken()', () => {
-  test('should erase token', () => {
-    expect(eraseToken('1234567890')).toBe('****34567890');
-    expect(eraseToken('xxxewaiofn32n1234567890')).toBe('****34567890');
-    expect(eraseToken(undefined)).toBe('anonymous');
-  });
-});
 
 describe('class OctokitFactory', () => {
   const tokens = ['fake1'];
@@ -24,7 +17,7 @@ describe('class OctokitFactory', () => {
   });
 
   test('should failed to create object when tokens empty', async () => {
-    await expect(factory.create()).rejects.toBe('Out of personal tokens');
+    await expect(factory.create()).rejects.toBe('Out of use of GitHub personal access tokens.');
   });
 
   test('should reuse tokens', async () => {
