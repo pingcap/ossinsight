@@ -21,20 +21,9 @@ const queryHandler: FastifyPluginAsync = async (app, opts): Promise<void> => {
       return;
     }
 
-    // Extract query name from URL.
-    const url = new URL(req.url, 'http://localhost');
-    const queryName = url.pathname?.replace('/public/', '');
-    if (!queryName) {
-      reply.code(400).send({
-        error: 'Bad Request',
-        message: 'Invalid query name.',
-        statusCode: 400
-      });
-      return;
-    }
-
     // Retrieve query result from TiDB data service.
-    const res = await app.tidbDataService.query(queryName, req.query);
+    const url = req.url.replace(/^\/public/, '');
+    const res = await app.tidbDataService.request(url);
     const json = await res.json();
     reply
       .code(res.status)
