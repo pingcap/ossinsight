@@ -23,7 +23,7 @@ const queryHandler: FastifyPluginAsync = async (app, opts): Promise<void> => {
 
     // Extract query name from URL.
     const url = new URL(req.url, 'http://localhost');
-    const queryName = url.pathname?.replace('/queries/', '');
+    const queryName = url.pathname?.replace('/public/', '');
     if (!queryName) {
       reply.code(400).send({
         error: 'Bad Request',
