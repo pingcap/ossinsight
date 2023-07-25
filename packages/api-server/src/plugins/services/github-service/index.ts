@@ -65,8 +65,8 @@ export class GithubService {
         search(query: $q, first: 10, type: REPOSITORY) {
             nodes {
                 ...on Repository {
-                    databaseId: id
-                    nameWithOwner: fullName
+                    id: databaseId 
+                    fullName: nameWithOwner 
                 }
             }
         }
@@ -81,7 +81,7 @@ export class GithubService {
         search(query: $q, first: 10, type: USER) {
             nodes {
                 ...on User {
-                    databaseId: id,
+                    id: databaseId,
                     login
                 }
             }
@@ -155,7 +155,7 @@ export class GithubService {
         return await octokit.rest.repos.get({
           owner,
           repo
-        })
+        });
       });
     });
   }
@@ -224,9 +224,9 @@ export class GithubService {
         q: keyword,
       };
 
-      return await this.octokitExecutor.request(apiLabel, async (octokit) => {
-        return await octokit.graphql(this.SEARCH_REPOS_GQL, variables);
-      }) || [];
+      return await this.octokitExecutor.graphql(apiLabel, this.SEARCH_REPOS_GQL, variables, (res) => {
+        return res?.search?.nodes || [];
+      });
     });
   }
 
@@ -252,9 +252,9 @@ export class GithubService {
         q: `${keyword} ${type === UserType.ORG ? 'type:org' : 'type:user'}`,
       };
 
-      return await this.octokitExecutor.request(apiLabel, async (octokit) => {
-        return await octokit.graphql(this.SEARCH_USERS_GQL, variables);
-      }) || [];
+      return await this.octokitExecutor.graphql(apiLabel, this.SEARCH_USERS_GQL, variables, (res) => {
+        return res?.search?.nodes || [];
+      });
     });
   }
 

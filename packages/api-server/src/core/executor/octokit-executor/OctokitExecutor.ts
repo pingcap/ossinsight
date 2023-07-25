@@ -1,4 +1,5 @@
-import {getOctokitToken} from "../../../utils/octokit";
+import {eraseToken, getOctokitToken} from "../../../utils/octokit";
+import {CachedData} from "../../cache/Cache";
 import { OctokitFactory } from "./OctokitFactory";
 import {Pool, createPool} from "generic-pool";
 import {countAPIRequest, githubAPICounter, githubAPITimer, measure} from "../../../metrics";
@@ -27,25 +28,53 @@ export default class OctokitExecutor {
       });
   }
 
-  async request(label: string, action: (octokit: Octokit) => Promise<any>) {
+  async request<R>(label: string, action: (octokit: Octokit) => Promise<any>): Promise<CachedData<R>> {
     const octokit = await this.octokitPool.acquire();
     try {
       const start = DateTime.now();
-      const {data} = await countAPIRequest(githubAPICounter, label, async () => {
-        return await measure(githubAPITimer.labels({api: label}), async () => await action(octokit));
+      const { data } = await countAPIRequest(githubAPICounter, label, async () => {
+        return await measure(githubAPITimer.labels({api: label}), async () => await action(octokit))
       });
       const end = DateTime.now();
       const duration = end.diff(start).as('seconds');
-      octokit.log.info(`Finished GitHub request (api: ${label}) in ${duration}s.`)
+
+      octokit.log.info(`Finished request GitHub API (api: ${label}) in ${duration}s.`)
 
       return {
         requestedAt: start,
         finishedAt: end,
         data: data,
-        with: getOctokitToken(octokit)
+        with: eraseToken(getOctokitToken(octokit))
       }
     } catch (err: any) {
-      throw new Error(`Failed to execute GitHub request (api: ${label}): ${err.message}`, {
+      throw new Error(`Failed to request GitHub API (api: ${label}): ${err.message}`, {
+        cause: err,
+      });
+    } finally {
+      await this.octokitPool.release(octokit);
+    }
+  }
+
+  async graphql<R>(label: string, gql: string, parameters: Record<string, any>, getter: (data: any) => R = (data) => data): Promise<any> {
+    const octokit = await this.octokitPool.acquire();
+    try {
+      const start = DateTime.now();
+      const res = await measure(githubAPITimer.labels({api: label}), async () => await octokit.graphql(gql, parameters));
+      const end = DateTime.now();
+      const duration = end.diff(start).as('seconds');
+
+      githubAPICounter.inc({ api: label, statusCode: 200 });
+      octokit.log.info(`Finished request GitHub API (graphql: ${label}) in ${duration}s.`)
+
+      return {
+        requestedAt: start,
+        finishedAt: end,
+        data: getter(res),
+        with: eraseToken(getOctokitToken(octokit))
+      }
+    } catch (err: any) {
+      githubAPICounter.inc({ api: label, statusCode: err?.response?.statusCode || 500 });
+      throw new Error(`Failed to request GitHub API (graphql: ${label}): ${err.message}`, {
         cause: err,
       });
     } finally {
