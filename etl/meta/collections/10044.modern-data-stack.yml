@@ -17,6 +17,7 @@ items:
   - apache/spark
   - surrealdb/surrealdb
   - MaterializeInc/materialize
+  - risingwavelabs/risingwave
   
   # Data analytics
   - metabase/metabase
