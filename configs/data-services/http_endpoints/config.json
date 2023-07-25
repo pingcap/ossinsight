@@ -1,6 +1,6 @@
 [
   {
-    "name": "/stargazer/locations",
+    "name": "/repos/stargazer/locations",
     "description": "",
     "method": "GET",
     "endpoint": "/repos/stargazer/locations",
