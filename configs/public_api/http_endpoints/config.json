@@ -1,5 +1,22 @@
 [
   {
+    "name": "Hello World",
+    "description": "",
+    "method": "GET",
+    "endpoint": "/hello",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [],
+    "settings": {
+      "timeout": 5000,
+      "row_limit": 50
+    },
+    "sql_file": "sql/GET-hello.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
     "name": "List 10 repos",
     "description": "",
     "method": "GET",
@@ -13,90 +30,6 @@
       "row_limit": 50
     },
     "sql_file": "sql/GET-list_10repos.sql",
-    "type": "sql_endpoint",
-    "return_type": "json"
-  },
-  {
-    "name": "List PR creator organizations",
-    "description": "",
-    "method": "GET",
-    "endpoint": "/repos/stargazer/organizations",
-    "data_source": {
-      "cluster_id": 1379661944642684098
-    },
-    "params": [
-      {
-        "name": "owner",
-        "type": "string",
-        "required": 1,
-        "default": ""
-      },
-      {
-        "name": "repo",
-        "type": "string",
-        "required": 1,
-        "default": ""
-      },
-      {
-        "name": "from",
-        "type": "string",
-        "required": 0,
-        "default": "2000-01-01"
-      },
-      {
-        "name": "to",
-        "type": "string",
-        "required": 0,
-        "default": "2099-12-31"
-      }
-    ],
-    "settings": {
-      "timeout": 10000,
-      "row_limit": 300
-    },
-    "sql_file": "sql/GET-repos-stargazer-organizations.sql",
-    "type": "sql_endpoint",
-    "return_type": "json"
-  },
-  {
-    "name": "List PR creator locations",
-    "description": "",
-    "method": "GET",
-    "endpoint": "/repos/stargazer/locations_dump_EHWabX",
-    "data_source": {
-      "cluster_id": 1379661944642684098
-    },
-    "params": [
-      {
-        "name": "owner",
-        "type": "string",
-        "required": 1,
-        "default": ""
-      },
-      {
-        "name": "repo",
-        "type": "string",
-        "required": 1,
-        "default": ""
-      },
-      {
-        "name": "from",
-        "type": "string",
-        "required": 1,
-        "default": "2000-01-01"
-      },
-      {
-        "name": "to",
-        "type": "string",
-        "required": 1,
-        "default": "2099-12-31"
-      }
-    ],
-    "settings": {
-      "timeout": 10000,
-      "row_limit": 300
-    },
-    "sql_file": "sql/GET-repos-stargazer-locations_dump_EHWabX.sql",
     "type": "sql_endpoint",
     "return_type": "json"
   },
@@ -185,19 +118,86 @@
     "return_type": "json"
   },
   {
-    "name": "Hello World",
+    "name": "List PR creator locations",
     "description": "",
     "method": "GET",
-    "endpoint": "/hello",
+    "endpoint": "/repos/stargazer/locations_dump_EHWabX",
     "data_source": {
       "cluster_id": 1379661944642684098
     },
-    "params": [],
+    "params": [
+      {
+        "name": "owner",
+        "type": "string",
+        "required": 1,
+        "default": ""
+      },
+      {
+        "name": "repo",
+        "type": "string",
+        "required": 1,
+        "default": ""
+      },
+      {
+        "name": "from",
+        "type": "string",
+        "required": 1,
+        "default": "2000-01-01"
+      },
+      {
+        "name": "to",
+        "type": "string",
+        "required": 1,
+        "default": "2099-12-31"
+      }
+    ],
     "settings": {
-      "timeout": 5000,
-      "row_limit": 50
+      "timeout": 10000,
+      "row_limit": 300
     },
-    "sql_file": "sql/GET-hello.sql",
+    "sql_file": "sql/GET-repos-stargazer-locations_dump_EHWabX.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "List PR creator organizations",
+    "description": "",
+    "method": "GET",
+    "endpoint": "/repos/stargazer/organizations",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "owner",
+        "type": "string",
+        "required": 1,
+        "default": ""
+      },
+      {
+        "name": "repo",
+        "type": "string",
+        "required": 1,
+        "default": ""
+      },
+      {
+        "name": "from",
+        "type": "string",
+        "required": 0,
+        "default": "2000-01-01"
+      },
+      {
+        "name": "to",
+        "type": "string",
+        "required": 0,
+        "default": "2099-12-31"
+      }
+    ],
+    "settings": {
+      "timeout": 10000,
+      "row_limit": 300
+    },
+    "sql_file": "sql/GET-repos-stargazer-organizations.sql",
     "type": "sql_endpoint",
     "return_type": "json"
   }
