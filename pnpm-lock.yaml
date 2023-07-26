@@ -39,7 +39,7 @@ importers:
         specifier: ^5.0.0
         version: 5.2.0
       '@fastify/swagger':
-        specifier: ^8.1.0
+        specifier: ^8.7.0
         version: 8.7.0
       '@fastify/websocket':
         specifier: ^7.1.1
