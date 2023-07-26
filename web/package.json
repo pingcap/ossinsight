@@ -19,9 +19,9 @@
     "typecheck:plugins": "tsc --noEmit -p ./plugins/tsconfig.json",
     "build:plugins": "tsc -p plugins/tsconfig.json",
     "prefetch": "node prefetch.mjs",
-    "prebuild": "npm run build:plugins && npm run prefetch && npm run gen-api-docs",
+    "prebuild": "npm run build:plugins && npm run prefetch && npm run regen-api-docs",
     "postinstall": "npm run build:plugins",
-    "prestart": "npm run build:plugins && npm run prefetch && npm run gen-api-docs",
+    "prestart": "npm run build:plugins && npm run prefetch && npm run regen-api-docs",
     "lint": "eslint --cache .",
     "lint:ci": "eslint --quiet .",
     "lint:fix": "eslint --cache --fix ."
