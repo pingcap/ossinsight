@@ -18,7 +18,7 @@ WITH group_by_area AS (
 )
 SELECT 
     country_or_area,
-    CAST(cnt AS UNSIGNED) AS count,
+    cnt AS count,
     cnt / summary.total AS percentage
 FROM group_by_area, summary
 ORDER BY cnt DESC
