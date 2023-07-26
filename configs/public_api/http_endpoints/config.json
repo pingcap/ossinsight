@@ -20,7 +20,7 @@
     "name": "List 10 repos",
     "description": "",
     "method": "GET",
-    "endpoint": "/list_10repos",
+    "endpoint": "/list_10_repos",
     "data_source": {
       "cluster_id": 1379661944642684098
     },
@@ -29,7 +29,7 @@
       "timeout": 5000,
       "row_limit": 50
     },
-    "sql_file": "sql/GET-list_10repos.sql",
+    "sql_file": "sql/GET-list_10_repos.sql",
     "type": "sql_endpoint",
     "return_type": "json"
   },
