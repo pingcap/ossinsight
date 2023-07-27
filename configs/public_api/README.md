@@ -2,7 +2,11 @@
 
 Here are documentation about the OSSInsight Public APIs (beta) which help developers integrate OSSInsight data into their applications easily and quickly.
 
-## API Base URL
+## Usage
+
+The OSSInsight Public API is designed to follow the OpenAPI specification and can be accessed by initiating HTTP requests using the command line `curl` or web request libraries in different programming languages.
+
+### Base URL
 
 All API requests are based on the following URL:
 
@@ -10,18 +14,18 @@ All API requests are based on the following URL:
 https://api.ossinsight.io/public
 ```
 
-## Authentication
+### Authentication
 
 No authentication is required for beta version of public APIs, but there are [rate limits](#rate-limit) for API requests.
 
 > Note:
 > We will add authentication way for larger API requests in future releases.
 
-## Rate Limit
+### Rate Limit
 
 For each IP address, the rate limit allows for up to **600 requests per hour**.
 
-## Examples
+### Example
 
 For example, if you want to know what countries the stargazers in the `pingcap/tidb` repository are located in, you can make a request using the curl command as follows:
 
@@ -90,7 +94,19 @@ curl https://api.ossinsight.io/public/repos/pingcap/tidb/stargazer/locations
 
 </details>
 
-## New API Request
+## Categories
+
+```mdx-code-block
+import DocCardList from '@theme/DocCardList';
+import {useCurrentSidebarCategory} from '@docusaurus/theme-common';
+
+<DocCardList items={useCurrentSidebarCategory().items.filter((item) => {
+    // Exclude Introduction and Showcase pages
+    return item.docId !== 'api/showcase' && item.docId !== 'api/ossinsight-public-api';
+})}/>
+```
+
+## Request New API 
 
 If the API in the documentation does not meet your query requirements, please contact us as follows:
 

@@ -157,7 +157,10 @@ const config = {
             outputDir: 'docs/api', // output directory for generated *.mdx and sidebar.js files
             sidebarOptions: {
               groupPathsBy: 'tag', // generate a sidebar.js slice that groups operations by tag
+              categoryLinkSource: 'tag',
+              sidebarCollapsed: false
             },
+            template: path.resolve(__dirname, '../configs/public_api/doc.template.mustache'),
           }
         }
       },
@@ -183,7 +186,7 @@ const config = {
           routeBasePath: '/docs',
           editUrl: 'https://github.com/pingcap/ossinsight/tree/main/web/',
           sidebarPath: require.resolve('./sidebars.js'),
-          docItemComponent: '@theme/ApiItem'
+          docItemComponent: '@theme/ApiItem',
         },
         blog: {
           blogTitle: 'Blog',

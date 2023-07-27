@@ -4,8 +4,9 @@ import {proxyGet, successResponse} from "../../../../../../../utils/endpoint";
 const schema = {
   operationId: 'list-repo-stargazer-locations',
   summary: 'List countries/regions of repo stargazers',
+  method: 'GET',
   description: 'List countries/regions of stargazers for the specified repository.',
-  tags: ['Repository'],
+  tags: ['Repositories'],
   querystring: {
     type: 'object',
     properties: {
