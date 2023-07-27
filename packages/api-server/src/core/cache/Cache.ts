@@ -41,8 +41,6 @@ export default class Cache<T> {
     if (runningCaches.has(this.key)) {
       this.log.info(`Wait for previous same cache query <${this.key}>.`, )
       return await runningCaches.get(this.key)!._data as never
-    } else {
-      this.log.info(`Start cache query <${this.key}>.`, )
     }
 
     let _resolve: (data: CachedData<T>) => void

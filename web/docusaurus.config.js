@@ -145,6 +145,26 @@ const config = {
         ]
       }
     ],
+    [
+      'docusaurus-plugin-openapi-docs',
+      {
+        id: 'openapi',
+        docsPluginId: 'classic', // e.g. "classic" or the plugin-content-docs id
+        config: {
+          public_api: { // "public" is considered the <id> that you will reference in the CLI
+            specPath: '../configs/public_api/openapi.yaml', // path or URL to the OpenAPI spec
+            baseUrl: `${API_BASE}/public`,
+            outputDir: 'docs/api', // output directory for generated *.mdx and sidebar.js files
+            sidebarOptions: {
+              groupPathsBy: 'tag', // generate a sidebar.js slice that groups operations by tag
+              categoryLinkSource: 'tag',
+              sidebarCollapsed: false
+            },
+            template: path.resolve(__dirname, '../configs/public_api/doc.template.mustache'),
+          }
+        }
+      },
+    ],
     './plugins/mui',
     process.env.ENABLE_BUNDLE_ANALYZE === 'true' ? './plugins/analyze' : undefined,
   ].filter(Boolean),
@@ -166,6 +186,7 @@ const config = {
           routeBasePath: '/docs',
           editUrl: 'https://github.com/pingcap/ossinsight/tree/main/web/',
           sidebarPath: require.resolve('./sidebars.js'),
+          docItemComponent: '@theme/ApiItem',
         },
         blog: {
           blogTitle: 'Blog',
@@ -193,7 +214,7 @@ const config = {
       }),
     ],
   ],
-
+  themes: ['docusaurus-theme-openapi-docs'],
   themeConfig:
   /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({

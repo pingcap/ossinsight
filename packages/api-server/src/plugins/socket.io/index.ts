@@ -49,6 +49,7 @@ const root: FastifyPluginAsync = async (app, opts): Promise<void> => {
 
   app.ready((err) => {
     if (err) {
+      app.log.error(err, '[ws] Failed to init socket.io.');
       throw new Error(`[ws] Failed to init socket.io.`, {
         cause: err
       });

@@ -1,6 +1,9 @@
 import {FastifyPluginAsync} from "fastify";
+import {APIError} from "../../utils/error";
 
 const schema = {
+  operationId: 'other-api',
+  summary: 'Other Query API',
   querystring: {
     type: 'object',
     properties: {},
@@ -13,12 +16,7 @@ const queryHandler: FastifyPluginAsync = async (app, opts): Promise<void> => {
     Querystring: Record<string, any>
   }>('/*', { schema }, async function (req, reply) {
     if (!app.tidbDataService) {
-      reply.code(500).send({
-        error: 'Internal Server Error',
-        message: 'TiDB data service is not initialized.',
-        statusCode: 500
-      });
-      return;
+      throw new APIError(500, 'TiDB data service is not initialized.');
     }
 
     // Retrieve query result from TiDB data service.

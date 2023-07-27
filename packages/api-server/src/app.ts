@@ -105,7 +105,7 @@ const app: FastifyPluginAsync<AppOptions, RawServerDefault, JsonSchemaToTsProvid
   // Notice: Swagger docs SHOULD be initialized after all routes are registered.
   fastify.get('/docs/json', (req, reply) => {
     reply.send(fastify.swagger());
-  })
+  });
 };
 
 export default app;

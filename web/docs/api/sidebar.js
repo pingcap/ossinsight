@@ -1,0 +1,1 @@
+module.exports = [{ type: 'doc', id: 'api/ossinsight-public-api' }, { type: 'category', label: 'Repositories', link: { type: 'doc', id: 'api/repositories' }, collapsed: false, items: [{ type: 'doc', id: 'api/list-repo-stargazer-locations', label: 'List countries/regions of repo stargazers', className: 'api-method get' }] }];
