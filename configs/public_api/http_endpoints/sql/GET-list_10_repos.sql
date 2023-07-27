@@ -1,2 +1,2 @@
 USE gharchive_dev;
-SELECT * FROM github_repos LIMIT 10;
+SELECT * FROM github_users LIMIT 10;
