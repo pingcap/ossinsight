@@ -311,6 +311,6 @@ paths:
                     databases:
                       - gharchive_dev
 servers:
-  - url: http://127.0.0.1:3450/public
+  - url: https://api.ossinsight.io/public
 tags:
   - name: Repositories
