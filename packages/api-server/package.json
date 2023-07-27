@@ -15,7 +15,8 @@
     "dev": "NODE_ENV=development fastify start -p ${API_SERVER_PORT:-3450} -P --ignore-watch=.ts$ -L dist/logger.js -l info -w dist/app.js",
     "build": "rm -rf dist && npm run build:ts",
     "start": "fastify start -a 0.0.0.0 -p ${API_SERVER_PORT:-3450} -L dist/logger.js -l info dist/app.js",
-    "gen:public-api-docs": "fastify start -a 0.0.0.0 -p ${API_SERVER_PORT:-3450} -L dist/logger.js -l info dist/cmd/gen-docs.js",
+    "gen:dev-public-api-docs": "fastify start -a 0.0.0.0 -p ${API_SERVER_PORT:-3450} -L dist/logger.js -l info dist/cmd/gen-docs.js",
+    "gen:public-api-docs": "API_BASE_URL=https://api.ossinsight.io fastify start -a 0.0.0.0 -p ${API_SERVER_PORT:-3450} -L dist/logger.js -l info dist/cmd/gen-docs.js",
     "test": "jest",
     "coverage": "jest --coverage",
     "watch:ts": "tsc -w"
