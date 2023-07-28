@@ -1,7 +1,26 @@
 [
   {
-    "name": "List Collection Items",
-    "description": "List Repository Collections",
+    "name": "",
+    "description": "",
+    "method": "GET",
+    "endpoint": "/collections",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [],
+    "settings": {
+      "timeout": 5000,
+      "row_limit": 50
+    },
+    "tag": "collections",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-collections.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "",
+    "description": "",
     "method": "GET",
     "endpoint": "/collections_dump_kuceqV",
     "data_source": {
@@ -26,26 +45,7 @@
     "return_type": "json"
   },
   {
-    "name": "List Collections",
-    "description": "List Repository Collections",
-    "method": "GET",
-    "endpoint": "/collections",
-    "data_source": {
-      "cluster_id": 1379661944642684098
-    },
-    "params": [],
-    "settings": {
-      "timeout": 5000,
-      "row_limit": 50
-    },
-    "tag": "collections",
-    "batch_operation": 0,
-    "sql_file": "sql/GET-collections.sql",
-    "type": "sql_endpoint",
-    "return_type": "json"
-  },
-  {
-    "name": "Hello World",
+    "name": "",
     "description": "",
     "method": "GET",
     "endpoint": "/hello",
@@ -64,26 +64,7 @@
     "return_type": "json"
   },
   {
-    "name": "List 10 repos",
-    "description": "",
-    "method": "GET",
-    "endpoint": "/list_10_repos",
-    "data_source": {
-      "cluster_id": 1379661944642684098
-    },
-    "params": [],
-    "settings": {
-      "timeout": 5000,
-      "row_limit": 50
-    },
-    "tag": "",
-    "batch_operation": 0,
-    "sql_file": "sql/GET-list_10_repos.sql",
-    "type": "sql_endpoint",
-    "return_type": "json"
-  },
-  {
-    "name": "List issue creator locations",
+    "name": "",
     "description": "",
     "method": "GET",
     "endpoint": "/repos/issue_creator/locations",
@@ -127,7 +108,7 @@
     "return_type": "json"
   },
   {
-    "name": "List stargazers locations",
+    "name": "",
     "description": "",
     "method": "GET",
     "endpoint": "/repos/stargazer/locations",
@@ -171,7 +152,7 @@
     "return_type": "json"
   },
   {
-    "name": "List PR creator locations",
+    "name": "",
     "description": "",
     "method": "GET",
     "endpoint": "/repos/stargazer/locations_dump_EHWabX",
@@ -215,7 +196,7 @@
     "return_type": "json"
   },
   {
-    "name": "List PR creator organizations",
+    "name": "",
     "description": "",
     "method": "GET",
     "endpoint": "/repos/stargazer/organizations",
