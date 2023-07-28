@@ -1,5 +1,24 @@
 [
   {
+    "name": "List Collections",
+    "description": "List Repository Collections",
+    "method": "GET",
+    "endpoint": "/collections",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [],
+    "settings": {
+      "timeout": 5000,
+      "row_limit": 50
+    },
+    "tag": "collections",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-collections.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
     "name": "List 10 repos",
     "description": "",
     "method": "GET",
@@ -188,7 +207,7 @@
       "timeout": 10000,
       "row_limit": 300
     },
-    "tag": "",
+    "tag": "repositories",
     "batch_operation": 0,
     "sql_file": "sql/GET-repos-stargazer-locations.sql",
     "type": "sql_endpoint",
