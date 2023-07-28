@@ -42,7 +42,10 @@ export class QueryRunner {
       params: Record<string, any>,
       options?: Options
     ): Promise<CachedData<T>> {
-      return this.run(QueryType.EXPLAIN, queryName, params, options);
+      return this.run(QueryType.EXPLAIN, queryName, params, {
+        ...options,
+        ignoreOnlyFromCache: true
+      });
     }
 
     async run(
