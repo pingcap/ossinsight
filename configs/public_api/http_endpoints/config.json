@@ -1,5 +1,31 @@
 [
   {
+    "name": "List Collection Items",
+    "description": "List Repository Collections",
+    "method": "GET",
+    "endpoint": "/collections_dump_kuceqV",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "collection_id",
+        "type": "number",
+        "required": 1,
+        "default": ""
+      }
+    ],
+    "settings": {
+      "timeout": 5000,
+      "row_limit": 50
+    },
+    "tag": "collections",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-collections_dump_kuceqV.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
     "name": "List Collections",
     "description": "List Repository Collections",
     "method": "GET",
