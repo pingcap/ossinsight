@@ -5,7 +5,8 @@ import { readFile } from "fs/promises";
 import {measure, readConfigTimer} from "../../../metrics";
 import fsp from "fs/promises";
 import path from "path";
-import fs from "fs";
+import fs, {existsSync} from "fs";
+import {APIError} from "../../../utils/error";
 
 export const QUERY_TEMPLATE_SQL_FILENAME = 'template.sql';
 export const QUERY_CONFIG_FILENAME = 'params.json';
@@ -27,14 +28,27 @@ export class QueryLoader {
         const queryDir = join(this.basePath, queryName);
         const templateFilePath = join(queryDir, QUERY_TEMPLATE_SQL_FILENAME);
         const queryConfigFilePath = join(queryDir, QUERY_CONFIG_FILENAME);
-        
-        let queryConfig, templateSQL;
-        await measure(readConfigTimer.labels({ type: QUERY_CONFIG_FILENAME }), async () => {
-            queryConfig = JSON.parse(await readFile(queryConfigFilePath, {encoding: 'utf-8'})) as QuerySchema;
-        });
-        await measure(readConfigTimer.labels({ type: QUERY_TEMPLATE_SQL_FILENAME }), async () => {
-            templateSQL = await readFile(templateFilePath, {encoding: "utf-8"});
-        });
+
+        // Load query config file.
+        let queryConfig;
+        if (existsSync(queryConfigFilePath)) {
+            await measure(readConfigTimer.labels({ type: QUERY_CONFIG_FILENAME }), async () => {
+                queryConfig = JSON.parse(await readFile(queryConfigFilePath, {encoding: 'utf-8'})) as QuerySchema;
+            });
+        } else {
+            throw new APIError(404, `The config file of query <${queryName}> can not be found.`)
+        }
+
+        // Load query template file.
+        let templateSQL;
+        if (existsSync(templateFilePath)) {
+            await measure(readConfigTimer.labels({type: QUERY_TEMPLATE_SQL_FILENAME}), async () => {
+                templateSQL = await readFile(templateFilePath, {encoding: "utf-8"});
+            });
+        } else {
+            throw new APIError(404, `The template sql file of query <${queryName}> can not be found.`)
+        }
+
         return [queryConfig, templateSQL];
     }
 
