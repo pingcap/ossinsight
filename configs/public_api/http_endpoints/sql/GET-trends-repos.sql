@@ -14,9 +14,12 @@ WITH repos AS (
   FROM mv_trending_repos tr
   JOIN github_repos gr ON tr.repo_id = gr.repo_id
   WHERE
+    -- Filter by the primary language of repository.
     language = ${language}
+    -- Filter by the period of trend querying.
     AND period = ${period}
     AND dt = (
+      -- Get the latest querying datetime.
       SELECT dt
       FROM mv_trending_repos
       WHERE language = ${language} AND period = ${period}
