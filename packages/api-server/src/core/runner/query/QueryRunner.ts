@@ -1,11 +1,12 @@
-
+import mustache from "mustache";
+import {Logger} from "pino";
 import CacheBuilder from "../../cache/CacheBuilder";
 import { CachedData } from "../../cache/Cache";
 import { DateTime } from "luxon";
 import { QueryLoader } from "./QueryLoader";
-import { QueryOptions } from "mysql2/promise";
+import {Pool, QueryOptions} from "mysql2/promise";
 import { QueryParser } from "./QueryParser";
-import { QuerySchema } from "../../../types/query.schema";
+import {PersistConfig, QuerySchema} from "../../../types/query.schema";
 import { TiDBQueryExecutor } from "../../executor/query-executor/TiDBQueryExecutor";
 import {presetQueryTimer, measure, presetQueryCounter} from "../../../metrics";
 
@@ -23,10 +24,12 @@ export interface Options {
 export class QueryRunner {
 
     constructor(
+      private readonly logger: Logger,
       private readonly queryLoader: QueryLoader,
       private readonly queryParser: QueryParser,
       private readonly cacheBuilder: CacheBuilder,
-      private readonly queryExecutor: TiDBQueryExecutor
+      private readonly queryExecutor: TiDBQueryExecutor,
+      private readonly tidb: Pool
     ) {}
 
     async query <T> (
@@ -76,30 +79,66 @@ export class QueryRunner {
         return cache.load(async () => {
           return await measure(presetQueryTimer, async () => {
             const sql = await this.queryParser.parse(templateSQL, queryConfig, params);
-    
-            try {
-              const start = DateTime.now();
-              let [rows, fields] = await this.queryExecutor.execute(queryKey, {
-                sql: sql,
-                ...queryOptions
-              });
-              const end = DateTime.now();
-    
-              return {
-                params: params,
-                requestedAt: start,
-                finishedAt: end,
-                spent: end.diff(start).as('seconds'),
-                sql,
-                fields: fields,
-                data: rows,
-              }
-            } catch (e: any) {
-              e.sql = sql
-              throw e
+
+            // Execute query.
+            const start = DateTime.now();
+            const [rows, fields] = await this.queryExecutor.execute<any[]>(queryKey, {
+              sql: sql,
+              ...queryOptions
+            });
+            const end = DateTime.now();
+
+            // Persist the query result.
+            if (type === QueryType.QUERY && queryConfig.persist) {
+              await this.persistResult(`persist:${queryKey}`, queryConfig.persist, params, rows);
             }
+
+            return {
+              params: params,
+              requestedAt: start,
+              finishedAt: end,
+              spent: end.diff(start).as('seconds'),
+              sql,
+              fields: fields,
+              data: rows,
+            };
           })
         });
+    }
+
+    async persistResult(key: string, cfg: PersistConfig, params: Record<string, any>, rows: any[]) {
+      const { series = [], fields = [] } = cfg;
+      const commonCtx: Record<string, any> = {
+        $params: params,
+        $now: function () {
+          return function (format: string, render: any) {
+            return render(DateTime.now().toFormat(format))
+          }
+        }
+      };
+      const columns = [
+        ...series,
+        ...fields
+      ];
+      const values = rows.map((row) => {
+        const ctx = {
+          ...commonCtx,
+          $row: row,
+        };
+        return columns
+          .filter((s) => Boolean(s.name))
+          .map(s => {
+            return s.expression ?
+              mustache.render(s.expression, ctx) :
+              ctx.$row[s.name]
+          })
+      });
+      const insertSQL = `
+        INSERT INTO ${cfg.tableName} (${columns.map(s => s.name).join(',')}) VALUES ?
+        ON DUPLICATE KEY UPDATE ${columns.map(c => `${c.name} = VALUES(${c.name})`).join(',')};
+      `;
+      await this.tidb.query(insertSQL, [values]);
+      this.logger.info(`Persisted query result <${key}> to table <${cfg.tableName}>.`);
     }
 
     private buildQueryKey (type: QueryType, queryName: string): string {

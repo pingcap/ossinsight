@@ -1,48 +1,74 @@
 WITH stars AS (
-  SELECT
-      /*+ READ_FROM_STORAGE(tiflash[ge]) */
-      ge.repo_id AS repo_id,
-      COUNT(1) AS total,
-      COUNT(DISTINCT actor_id) AS actors,
-      -- Calculate the score of each star according to the time of the star, the closer to the
-      -- current time, the higher the score got, the score range is between 2-5. Then sum the
-      -- scores of all stars to get the total score obtained from the stars for the repository.
-      SUM(
-          (
-              TIMESTAMPDIFF(SECOND, DATE_SUB(NOW(), INTERVAL 1 MONTH), ge.created_at) /
-              TIMESTAMPDIFF(SECOND, DATE_SUB(NOW(), INTERVAL 1 MONTH), NOW())
-          ) * (5 - 2) + 2
-      ) AS score
-  FROM github_events ge
-  WHERE
-      -- Notice: In the GitHub events, WatchEvent means star, not watch.
-      type = 'WatchEvent'
-      AND (ge.created_at >= DATE_SUB(NOW(), INTERVAL 1 MONTH) AND ge.created_at <= NOW())
-  GROUP BY ge.repo_id
-  -- Exclude code repositories that use the same user to duplicate stars.
-  HAVING actors > 0.9 * total
+    SELECT
+        /*+ READ_FROM_STORAGE(tiflash[ge]) */
+        ge.repo_id AS repo_id,
+        COUNT(1) AS total,
+        COUNT(DISTINCT actor_id) AS actors,
+        -- Calculate the score of each star according to the time of the star, the closer to the
+        -- current time, the higher the score got, the score range is between 2-5. Then sum the
+        -- scores of all stars to get the total score obtained from the stars for the repository.
+        CASE
+            WHEN '${period}' = 'past_3_months' THEN SUM(
+                TIMESTAMPDIFF(SECOND, DATE_SUB(NOW(), INTERVAL 3 MONTH), ge.created_at) / TIMESTAMPDIFF(SECOND, DATE_SUB(NOW(), INTERVAL 3 MONTH), NOW()) * 3 + 2
+            )
+            WHEN '${period}' = 'past_month' THEN SUM(
+                TIMESTAMPDIFF(SECOND, DATE_SUB(NOW(), INTERVAL 1 MONTH), ge.created_at) / TIMESTAMPDIFF(SECOND, DATE_SUB(NOW(), INTERVAL 1 MONTH), NOW()) * 3 + 2
+            )
+            WHEN '${period}' = 'past_week' THEN SUM(
+                TIMESTAMPDIFF(SECOND, DATE_SUB(NOW(), INTERVAL 1 WEEK), ge.created_at) / TIMESTAMPDIFF(SECOND, DATE_SUB(NOW(), INTERVAL 1 WEEK), NOW()) * 3 + 2
+            )
+            ELSE SUM(
+                TIMESTAMPDIFF(SECOND, DATE_SUB(NOW(), INTERVAL 24 HOUR), ge.created_at) / TIMESTAMPDIFF(SECOND, DATE_SUB(NOW(), INTERVAL 24 HOUR), NOW()) * 3 + 2
+            )
+        END AS score
+    FROM github_events ge
+    WHERE
+        -- Notice: In the GitHub events, WatchEvent means star, not watch.
+        type = 'WatchEvent'
+        AND CASE
+            WHEN '${period}' = 'past_3_months' THEN ge.created_at >= DATE_SUB(NOW(), INTERVAL 3 MONTH) AND ge.created_at <= NOW()
+            WHEN '${period}' = 'past_month' THEN ge.created_at >= DATE_SUB(NOW(), INTERVAL 1 MONTH) AND ge.created_at <= NOW()
+            WHEN '${period}' = 'past_week' THEN ge.created_at >= DATE_SUB(NOW(), INTERVAL 1 WEEK) AND ge.created_at <= NOW()
+            ELSE ge.created_at >= DATE_SUB(NOW(), INTERVAL 24 HOUR) AND ge.created_at <= NOW()
+        END
+    GROUP BY ge.repo_id
+    -- Exclude code repositories that use the same user to duplicate stars.
+    HAVING actors > 0.9 * total
 ), forks AS (
-  SELECT
-      /*+ READ_FROM_STORAGE(tiflash[ge]) */
-      ge.repo_id AS repo_id,
-      COUNT(1) AS total,
-      COUNT(DISTINCT actor_id) AS actors,
-      -- Calculate the score of each fork according to the time of the fork, the closer to the
-      -- current time, the higher the score got, the score range is between 1-4. Then sum the
-      -- scores of all forks to get the total score obtained from the forks for the repository.
-      SUM(
-          (
-              TIMESTAMPDIFF(SECOND, DATE_SUB(NOW(), INTERVAL 1 MONTH), ge.created_at) /
-              TIMESTAMPDIFF(SECOND, DATE_SUB(NOW(), INTERVAL 1 MONTH), NOW())
-          ) * (4 - 1) + 1
-      ) AS score
-  FROM github_events ge
-  WHERE
-      type = 'ForkEvent'
-      AND (ge.created_at >= DATE_SUB(NOW(), INTERVAL 1 MONTH) AND ge.created_at <= NOW())
-  GROUP BY ge.repo_id
-  -- Exclude code repositories that use the same user to duplicate forks.
-  HAVING actors > 0.9 * total
+    SELECT
+        /*+ READ_FROM_STORAGE(tiflash[ge]) */
+        ge.repo_id AS repo_id,
+        COUNT(1) AS total,
+        COUNT(DISTINCT actor_id) AS actors,
+        -- Calculate the score of each fork according to the time of the fork, the closer to the
+        -- current time, the higher the score got, the score range is between 1-4. Then sum the
+        -- scores of all forks to get the total score obtained from the forks for the repository.
+        CASE
+            WHEN '${period}' = 'past_3_months' THEN SUM(
+                TIMESTAMPDIFF(SECOND, DATE_SUB(NOW(), INTERVAL 3 MONTH), ge.created_at) / TIMESTAMPDIFF(SECOND, DATE_SUB(NOW(), INTERVAL 3 MONTH), NOW()) * 3 + 1
+            )
+            WHEN '${period}' = 'past_month' THEN SUM(
+                TIMESTAMPDIFF(SECOND, DATE_SUB(NOW(), INTERVAL 1 MONTH), ge.created_at) / TIMESTAMPDIFF(SECOND, DATE_SUB(NOW(), INTERVAL 1 MONTH), NOW()) * 3 + 1
+            )
+            WHEN '${period}' = 'past_week' THEN SUM(
+                TIMESTAMPDIFF(SECOND, DATE_SUB(NOW(), INTERVAL 1 WEEK), ge.created_at) / TIMESTAMPDIFF(SECOND, DATE_SUB(NOW(), INTERVAL 1 WEEK), NOW()) * 3 + 1
+            )
+            ELSE SUM(
+                TIMESTAMPDIFF(SECOND, DATE_SUB(NOW(), INTERVAL 24 HOUR), ge.created_at) / TIMESTAMPDIFF(SECOND, DATE_SUB(NOW(), INTERVAL 24 HOUR), NOW()) * 3 + 1
+            )
+        END AS score
+    FROM github_events ge
+    WHERE
+        type = 'ForkEvent'
+        AND CASE
+            WHEN '${period}' = 'past_3_months' THEN ge.created_at >= DATE_SUB(NOW(), INTERVAL 3 MONTH) AND ge.created_at <= NOW()
+            WHEN '${period}' = 'past_month' THEN ge.created_at >= DATE_SUB(NOW(), INTERVAL 1 MONTH) AND ge.created_at <= NOW()
+            WHEN '${period}' = 'past_week' THEN ge.created_at >= DATE_SUB(NOW(), INTERVAL 1 WEEK) AND ge.created_at <= NOW()
+            ELSE ge.created_at >= DATE_SUB(NOW(), INTERVAL 24 HOUR) AND ge.created_at <= NOW()
+        END
+    GROUP BY ge.repo_id
+    -- Exclude code repositories that use the same user to duplicate forks.
+    HAVING actors > 0.9 * total
 ), topRepos AS (
     SELECT
         r.repo_id,
@@ -77,35 +103,35 @@ WITH stars AS (
         -- Filter rule: There should be no uncivilized words in the name of the repository.
         AND LOWER(repo_name) NOT LIKE '%fuck%'
         -- Filter by repository language.
-        AND primary_language = 'Java'
+        AND IF('${language}' = 'All', TRUE, primary_language = '${language}')
         AND repo_name NOT IN (SELECT /*+ READ_FROM_STORAGE(tikv[br]) */ name FROM blacklist_repos br)
         AND is_deleted = 0
     GROUP BY r.repo_id
     ORDER BY total_score DESC
     LIMIT 100
 ), pull_requests AS (
-  SELECT
-      ge.repo_id AS repo_id,
-      COUNT(1) AS total
-  FROM github_events ge
-  JOIN topRepos tr ON ge.repo_id = tr.repo_id
-  WHERE
-      type = 'PullRequestEvent'
-      AND action = 'opened'
-      AND (ge.created_at >= DATE_SUB(NOW(), INTERVAL 1 MONTH) AND ge.created_at <= NOW())
-      AND actor_login NOT LIKE '%[bot]'
-  GROUP BY ge.repo_id
+    SELECT
+        ge.repo_id AS repo_id,
+        COUNT(1) AS total
+    FROM github_events ge
+    JOIN topRepos tr ON ge.repo_id = tr.repo_id
+    WHERE
+        type = 'PullRequestEvent'
+        AND action = 'opened'
+        AND (ge.created_at >= DATE_SUB(NOW(), INTERVAL 1 MONTH) AND ge.created_at <= NOW())
+        AND actor_login NOT LIKE '%[bot]'
+    GROUP BY ge.repo_id
 ), pushes AS (
-  SELECT
-      ge.repo_id AS repo_id,
-      COUNT(1) AS total
-  FROM github_events ge
-  JOIN topRepos tr ON ge.repo_id = tr.repo_id
-  WHERE
-      type = 'PushEvent'
-      AND (ge.created_at >= DATE_SUB(NOW(), INTERVAL 1 MONTH) AND ge.created_at <= NOW())
-  	  AND actor_login NOT LIKE '%[bot]'
-  GROUP BY ge.repo_id
+    SELECT
+        ge.repo_id AS repo_id,
+        COUNT(1) AS total
+    FROM github_events ge
+    JOIN topRepos tr ON ge.repo_id = tr.repo_id
+    WHERE
+        type = 'PushEvent'
+        AND (ge.created_at >= DATE_SUB(NOW(), INTERVAL 1 MONTH) AND ge.created_at <= NOW())
+        AND actor_login NOT LIKE '%[bot]'
+    GROUP BY ge.repo_id
 ), repo_with_top_contributors AS (
     SELECT
         repo_id, SUBSTRING_INDEX(GROUP_CONCAT(DISTINCT actor_login ORDER BY cnt DESC SEPARATOR ','), ',', 5) AS actor_logins
