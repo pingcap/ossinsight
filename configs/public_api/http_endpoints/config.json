@@ -3,7 +3,7 @@
     "name": "Trending Repos",
     "description": "",
     "method": "GET",
-    "endpoint": "/trending_repos",
+    "endpoint": "/trends/repos",
     "data_source": {
       "cluster_id": 1379661944642684098
     },
@@ -27,7 +27,7 @@
     },
     "tag": "Default",
     "batch_operation": 0,
-    "sql_file": "sql/GET-trending_repos.sql",
+    "sql_file": "sql/GET-trends-repos.sql",
     "type": "sql_endpoint",
     "return_type": "json"
   },
