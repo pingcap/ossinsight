@@ -1,26 +1,39 @@
 [
   {
-    "name": "",
+    "name": "Trending Repos",
     "description": "",
     "method": "GET",
-    "endpoint": "/collections",
+    "endpoint": "/trending_repos",
     "data_source": {
       "cluster_id": 1379661944642684098
     },
-    "params": [],
+    "params": [
+      {
+        "name": "language",
+        "type": "string",
+        "required": 0,
+        "default": "All"
+      },
+      {
+        "name": "period",
+        "type": "string",
+        "required": 0,
+        "default": "past_24_hours"
+      }
+    ],
     "settings": {
       "timeout": 5000,
       "row_limit": 50
     },
-    "tag": "collections",
+    "tag": "Default",
     "batch_operation": 0,
-    "sql_file": "sql/GET-collections.sql",
+    "sql_file": "sql/GET-trending_repos.sql",
     "type": "sql_endpoint",
     "return_type": "json"
   },
   {
-    "name": "",
-    "description": "",
+    "name": "List Collection Items",
+    "description": "List Repository Collections",
     "method": "GET",
     "endpoint": "/collections_dump_kuceqV",
     "data_source": {
@@ -45,10 +58,10 @@
     "return_type": "json"
   },
   {
-    "name": "",
-    "description": "",
+    "name": "List Collections",
+    "description": "List Repository Collections",
     "method": "GET",
-    "endpoint": "/hello",
+    "endpoint": "/collections",
     "data_source": {
       "cluster_id": 1379661944642684098
     },
@@ -57,61 +70,17 @@
       "timeout": 5000,
       "row_limit": 50
     },
-    "tag": "",
+    "tag": "collections",
     "batch_operation": 0,
-    "sql_file": "sql/GET-hello.sql",
+    "sql_file": "sql/GET-collections.sql",
     "type": "sql_endpoint",
     "return_type": "json"
   },
   {
-    "name": "",
+    "name": "List PR creator organizations",
     "description": "",
     "method": "GET",
-    "endpoint": "/repos/issue_creator/locations",
-    "data_source": {
-      "cluster_id": 1379661944642684098
-    },
-    "params": [
-      {
-        "name": "owner",
-        "type": "string",
-        "required": 1,
-        "default": ""
-      },
-      {
-        "name": "repo",
-        "type": "string",
-        "required": 1,
-        "default": ""
-      },
-      {
-        "name": "from",
-        "type": "string",
-        "required": 1,
-        "default": "2000-01-01"
-      },
-      {
-        "name": "to",
-        "type": "string",
-        "required": 1,
-        "default": "2099-12-31"
-      }
-    ],
-    "settings": {
-      "timeout": 10000,
-      "row_limit": 300
-    },
-    "tag": "",
-    "batch_operation": 0,
-    "sql_file": "sql/GET-repos-issue_creator-locations.sql",
-    "type": "sql_endpoint",
-    "return_type": "json"
-  },
-  {
-    "name": "",
-    "description": "",
-    "method": "GET",
-    "endpoint": "/repos/stargazer/locations",
+    "endpoint": "/repos/stargazer/organizations",
     "data_source": {
       "cluster_id": 1379661944642684098
     },
@@ -145,14 +114,14 @@
       "timeout": 10000,
       "row_limit": 300
     },
-    "tag": "repositories",
+    "tag": "",
     "batch_operation": 0,
-    "sql_file": "sql/GET-repos-stargazer-locations.sql",
+    "sql_file": "sql/GET-repos-stargazer-organizations.sql",
     "type": "sql_endpoint",
     "return_type": "json"
   },
   {
-    "name": "",
+    "name": "List PR creator locations",
     "description": "",
     "method": "GET",
     "endpoint": "/repos/stargazer/locations_dump_EHWabX",
@@ -196,10 +165,54 @@
     "return_type": "json"
   },
   {
-    "name": "",
+    "name": "List issue creator locations",
     "description": "",
     "method": "GET",
-    "endpoint": "/repos/stargazer/organizations",
+    "endpoint": "/repos/issue_creator/locations",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "owner",
+        "type": "string",
+        "required": 1,
+        "default": ""
+      },
+      {
+        "name": "repo",
+        "type": "string",
+        "required": 1,
+        "default": ""
+      },
+      {
+        "name": "from",
+        "type": "string",
+        "required": 1,
+        "default": "2000-01-01"
+      },
+      {
+        "name": "to",
+        "type": "string",
+        "required": 1,
+        "default": "2099-12-31"
+      }
+    ],
+    "settings": {
+      "timeout": 10000,
+      "row_limit": 300
+    },
+    "tag": "",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-repos-issue_creator-locations.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "List stargazers locations",
+    "description": "",
+    "method": "GET",
+    "endpoint": "/repos/stargazer/locations",
     "data_source": {
       "cluster_id": 1379661944642684098
     },
@@ -233,9 +246,28 @@
       "timeout": 10000,
       "row_limit": 300
     },
+    "tag": "repositories",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-repos-stargazer-locations.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "Hello World",
+    "description": "",
+    "method": "GET",
+    "endpoint": "/hello",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [],
+    "settings": {
+      "timeout": 5000,
+      "row_limit": 50
+    },
     "tag": "",
     "batch_operation": 0,
-    "sql_file": "sql/GET-repos-stargazer-organizations.sql",
+    "sql_file": "sql/GET-hello.sql",
     "type": "sql_endpoint",
     "return_type": "json"
   }
