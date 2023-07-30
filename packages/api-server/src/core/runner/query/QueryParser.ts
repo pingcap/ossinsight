@@ -1,4 +1,4 @@
-import {ConditionalRefreshCrons, QuerySchema} from "../../../types/query.schema";
+import {QuerySchema} from "../../../types/query.schema";
 
 export enum ParamTypes {
     ARRAY = 'array',
@@ -42,6 +42,7 @@ export class QueryParser {
                 maxArrayLength
             } = param;
             const value = values[name] ?? defaultValue;
+            values[name] = value;
     
             let replaceValue;
             if (type === ParamTypes.ARRAY) {
@@ -52,7 +53,7 @@ export class QueryParser {
 
             templateSQL = templateSQL.replaceAll(replaces, replaceValue);
         }
-        return templateSQL
+        return templateSQL;
     }
 
     private processArrayValue(
@@ -77,20 +78,27 @@ export class QueryParser {
     private verifyParamValue(name: string, value: any, pattern?: string, paramTemplate?: Record<string, string>) {
         // All parameters are required by default.
         if (!value) {
-            throw new BadParamsError(name, `The parameter ${name} is undefined.`);
+            throw new BadParamsError(name, `The parameter <${name}> is undefined.`);
         }
 
         if (pattern) {
             const regexp = new RegExp(pattern);
             if (!regexp.test(String(value))) {
-                throw new BadParamsError(name, `The data format of the parameter ${name} is incorrect (value: ${value}).`);
+                throw new BadParamsError(name, `The data format of the parameter <${name}> is incorrect (value: ${value}).`);
             }
         }
 
-        // TODO: extract it to a function named `mappingParamValue`
-        const targetValue = paramTemplate ? paramTemplate[String(value)] : value;
-        if (targetValue === undefined || targetValue === null) {
-            throw new BadParamsError(name, 'require param ' + name + (paramTemplate ? ` template value '${value}' not found` : ''))
+        let targetValue;
+        if (paramTemplate) {
+            targetValue = paramTemplate[String(value)];
+            if (targetValue === undefined || targetValue === null) {
+                throw new BadParamsError(name, `Parameter value <${value}> doesn't have matching template.`);
+            }
+        } else {
+            targetValue = value;
+            if (targetValue === undefined || targetValue === null) {
+                throw new BadParamsError(name, `Require parameter <${name}> not found.`);
+            }
         }
 
         return targetValue;
@@ -107,26 +115,6 @@ export class QueryParser {
             default:
                 throw new Error('unknown param type ' + type);
         }
-    }
-
-    resolveCrons(params: any, crons: string | ConditionalRefreshCrons | undefined): (string | undefined) {
-        if (typeof crons === "string") {
-            return crons;
-        }
-        if (!crons) {
-            return undefined;
-        }
-        if (!params || !params[crons.param]) {
-            return undefined;
-        }
-        const param = params[crons.param];
-        for (const key in crons.on) {
-            // equals or matches
-            if (param === key || (new RegExp(key)).test(param)) {
-                return crons.on[key];
-            }
-        }
-        return undefined;
     }
 
 }

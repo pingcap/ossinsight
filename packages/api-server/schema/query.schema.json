@@ -44,17 +44,6 @@
         }
       ]
     },
-    "refreshHours": {
-      "description": "Refresh cache time in hours, -1 indicates not to refresh.",
-      "oneOf": [
-        {
-          "type": "number"
-        },
-        {
-          "$ref": "#/definitions/ConditionalHours"
-        }
-      ]
-    },
     "onlyFromCache": {
       "description": "Only return data from the cache.",
       "type": "boolean"
@@ -65,6 +54,10 @@
       "items": {
         "$ref": "#/definitions/Params"
       }
+    },
+    "persist": {
+      "description": "The configuration related to query result persisting.",
+      "$ref": "#/definitions/PersistConfig"
     },
     "resultSchema": {
       "description": "Result data schema for description.",
@@ -197,6 +190,53 @@
         }
       },
       "required": ["param", "on"],
+      "additionalProperties": false
+    },
+    "PersistConfig": {
+      "type": "object",
+      "required": ["tableName", "series", "fields"],
+      "properties": {
+        "tableName": {
+          "description": "The table name of table to persist query result.",
+          "type": "string"
+        },
+        "series": {
+          "description": "The series, which is used to identify the item of query result item.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name"],
+            "properties": {
+              "name": {
+                "description": "The name of the series.",
+                "type": "string"
+              },
+              "expression": {
+                "description": "The expression of the series value.",
+                "type": "string"
+              }
+            }
+          }
+        },
+        "fields": {
+          "description": "The fields, which store the data part of query result item.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name"],
+            "properties": {
+              "name": {
+                "description": "The name of the column.",
+                "type": "string"
+              },
+              "expression": {
+                "description": "The expression of the series value.",
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
       "additionalProperties": false
     }
   }

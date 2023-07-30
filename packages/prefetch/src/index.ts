@@ -13,6 +13,7 @@ import * as http from "http";
 import {createPool, Pool} from "mysql2/promise";
 import {collectDefaultMetrics, Registry} from "prom-client";
 import {AppConfig, PrefetchEnvSchema} from "./env";
+import {JobExecutor} from "./job/executor";
 import {JobGenerator} from "./job/generator";
 import {JobScheduler} from "./job/scheduler";
 import {prefetchQueryCounter, prefetchQueryHistogram, queueWaitsGauge} from "./metrics";
@@ -113,21 +114,24 @@ async function prefetch(options: Options) {
   // Init query runner.
   const queryLoader = new QueryLoader(logger);
   const queryParser = new QueryParser();
-  const queryRunner = new QueryRunner(queryLoader, queryParser, cacheBuilder, tidbQueryExecutor);
+  const queryRunner = new QueryRunner(logger, queryLoader, queryParser, cacheBuilder, tidbQueryExecutor, pool);
 
   // Load metadata.
   const queries = await queryLoader.loadQueries();
   const presets = await queryLoader.loadPresets();
   const collections = await collectionService.getCollections();
-  presets.collectionIds = collections.data.map((c) => {
+  presets.collectionIds = collections.data.map((c: any) => {
     return c.id;
   });
 
   // Init job generator.
   const jobGenerator = new JobGenerator(logger, presets, queries);
 
+  // Init job executor.
+  const jobExecutor = new JobExecutor(logger, queryRunner)
+
   // Init job scheduler.
-  const jobScheduler = new JobScheduler(logger, queryRunner);
+  const jobScheduler = new JobScheduler(logger, jobExecutor);
 
   // Convert queries to prefetch jobs.
   Object.entries(queries)

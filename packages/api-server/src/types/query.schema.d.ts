@@ -39,10 +39,6 @@ export interface QuerySchema {
    */
   refreshCron?: string | ConditionalRefreshCrons;
   /**
-   * Refresh cache time in hours, -1 indicates not to refresh.
-   */
-  refreshHours?: number | ConditionalHours;
-  /**
    * Only return data from the cache.
    */
   onlyFromCache?: boolean;
@@ -50,6 +46,7 @@ export interface QuerySchema {
    * Query params declaration.
    */
   params: Params[];
+  persist?: PersistConfig;
   resultSchema?: Schema;
 }
 export interface ConditionalRefreshCrons {
@@ -60,16 +57,6 @@ export interface ConditionalRefreshCrons {
      * via the `patternProperty` ".*".
      */
     [k: string]: string;
-  };
-}
-export interface ConditionalHours {
-  param: string;
-  on: {
-    /**
-     * This interface was referenced by `undefined`'s JSON-Schema definition
-     * via the `patternProperty` ".*".
-     */
-    [k: string]: number;
   };
 }
 export interface Params {
@@ -123,6 +110,43 @@ export interface Params {
    * Regular expression for validating parameter value.
    */
   pattern?: string;
+}
+/**
+ * The configuration related to query result persisting.
+ */
+export interface PersistConfig {
+  /**
+   * The table name of table to persist query result.
+   */
+  tableName: string;
+  /**
+   * The series, which is used to identify the item of query result item.
+   */
+  series: {
+    /**
+     * The name of the series.
+     */
+    name: string;
+    /**
+     * The expression of the series value.
+     */
+    expression?: string;
+    [k: string]: unknown;
+  }[];
+  /**
+   * The fields, which store the data part of query result item.
+   */
+  fields: {
+    /**
+     * The name of the column.
+     */
+    name: string;
+    /**
+     * The expression of the series value.
+     */
+    expression?: string;
+    [k: string]: unknown;
+  }[];
 }
 /**
  * Result data schema for description.

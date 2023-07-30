@@ -8,7 +8,7 @@ export default fp(async (app: any) => {
     const log = app.log as pino.Logger;
     const queryLoader = new QueryLoader(log);
     const queryParser = new QueryParser();
-    app.decorate('queryRunner', new QueryRunner(queryLoader, queryParser, app.cacheBuilder, app.tidbQueryExecutor));
+    app.decorate('queryRunner', new QueryRunner(log, queryLoader, queryParser, app.cacheBuilder, app.tidbQueryExecutor, app.mysql));
 }, {
     name: '@ossinsight/query-runner',
     dependencies: [
