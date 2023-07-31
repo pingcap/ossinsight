@@ -38,39 +38,42 @@ export default class NormalTableCacheProvider implements CacheProvider {
         VALUES (?, ?, ?)
         ON DUPLICATE KEY UPDATE cache_value = VALUES(cache_value), expires = VALUES(expires);`;
 
+        // Set timeout for set cache operation.
+        let timeout: NodeJS.Timeout | null = null;
+        const timeoutPromise = new Promise((resolve, reject) => {
+            timeout = setTimeout(() => {
+                reject(new Error(`Set cache <${key}> operation timed out, more than ${MAX_CACHE_OPERATION_TIME} s.`));
+                if (timeout) {
+                    clearTimeout(timeout);
+                    timeout = null;
+                }
+            }, MAX_CACHE_OPERATION_TIME * 1000);
+        });
+
         // Execute SQL to set cache item.
         const waitConnStart = DateTime.now();
         const resultPromise = withConnection(this.pool, async (conn) => {
             const waitConnEnd = DateTime.now();
             const waitConnDuration = waitConnEnd.diff(waitConnStart).as('seconds');
             if (waitConnDuration > MAX_WAIT_CONNECTION_TIME) {
-                this.logger.warn('⚠️  Wait connection for set cache <%s> cost %d s, more then %d s.', key, waitConnDuration, MAX_WAIT_CONNECTION_TIME);
+                this.logger.warn('⚠️  Wait connection for set cache <%s> cost %d s, more than %d s.', key, waitConnDuration, MAX_WAIT_CONNECTION_TIME);
             }
 
-            return await conn.query({
+            const res = await conn.query({
                 sql,
                 values: [key, value, EX],
                 timeout: MAX_CACHE_OPERATION_TIME * 1000
             });
-        });
 
-        // Set timeout for set cache operation.
-        let timeout: NodeJS.Timeout | null = null;
-        const timeoutPromise = new Promise((resolve, reject) => {
-            timeout = setTimeout(() => {
-                this.logger.warn('⚠️  Set cache <%s> operation timed out.', key);
-                reject(new Error(`Set cache <${key}> operation timed out, more than ${MAX_CACHE_OPERATION_TIME} s.`));
-            }, MAX_CACHE_OPERATION_TIME * 1000);
-        });
-
-        try {
-            return Promise.race([resultPromise, timeoutPromise]);
-        } finally {
             if (timeout) {
                 clearTimeout(timeout);
                 timeout = null;
             }
-        }
+
+            return res;
+        });
+
+        return await Promise.race([resultPromise, timeoutPromise]);
     }
 
     async get(key: string) {
@@ -85,10 +88,26 @@ export default class NormalTableCacheProvider implements CacheProvider {
 
         // Execute query in shadow database.
         if (this.shadowPool) {
-            this.shadowPool.query<any[]>(sql, [key]).then(null).catch((err) => {
+            this.shadowPool.query<any[]>({
+                sql,
+                values: [key],
+                timeout: MAX_CACHE_OPERATION_TIME * 1000
+            }).then(null).catch((err) => {
                 this.logger.error(err, 'Failed to get cache with key %s from shadow database.', key);
             });
         }
+
+        // Set timeout for get cache operation.
+        let timeout: NodeJS.Timeout | null = null;
+        const timeoutPromise = new Promise((resolve, reject) => {
+            timeout = setTimeout(() => {
+                reject(new Error(`Get cache <${key}> operation timed out, more than ${MAX_CACHE_OPERATION_TIME} s.`));
+                if (timeout) {
+                    clearTimeout(timeout);
+                    timeout = null;
+                }
+            }, MAX_CACHE_OPERATION_TIME * 1000);
+        });
 
         // Execute SQL to get cache item.
         const waitConnStart = DateTime.now();
@@ -105,6 +124,11 @@ export default class NormalTableCacheProvider implements CacheProvider {
                 timeout: MAX_CACHE_OPERATION_TIME * 1000,
             });
 
+            if (timeout) {
+                clearTimeout(timeout);
+                timeout = null;
+            }
+
             if (Array.isArray(rows) && rows.length >= 1) {
                 return rows[0]?.cache_value;
             } else {
@@ -112,23 +136,7 @@ export default class NormalTableCacheProvider implements CacheProvider {
             }
         });
 
-        // Set timeout for get cache operation.
-        let timeout: NodeJS.Timeout | null = null;
-        const timeoutPromise = new Promise((resolve, reject) => {
-            timeout = setTimeout(() => {
-               this.logger.warn('⚠️  Get cache <%s> operation timed out, more than %d s.', key, MAX_CACHE_OPERATION_TIME);
-               reject(new Error(`Get cache <${key}> operation timed out.`));
-           }, MAX_CACHE_OPERATION_TIME * 1000);
-        });
-
-        try {
-            return Promise.race([resultPromise, timeoutPromise]);
-        } finally {
-            if (timeout) {
-                clearTimeout(timeout);
-                timeout = null;
-            }
-        }
+        return Promise.race([resultPromise, timeoutPromise]);
     }
 
 }
