@@ -64,7 +64,7 @@ const ResultSection = forwardRef<HTMLElement, ResultSectionProps>(({ question, p
       case QuestionLoadingPhase.EXECUTING:
         return 'Running SQL...';
       case QuestionLoadingPhase.EXECUTE_FAILED:
-        return 'Failed to execute SQL';
+        return question?.status === 'cancel' ? 'Execution canceled' : 'Failed to execute SQL';
       case QuestionLoadingPhase.UNKNOWN_ERROR:
         return 'Unknown error';
       case QuestionLoadingPhase.VISUALIZE_FAILED:
