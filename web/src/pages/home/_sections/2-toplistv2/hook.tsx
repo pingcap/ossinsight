@@ -1,4 +1,4 @@
-import { params } from '@query/trending-repos/params.json';
+import { params as _params } from '@query/trending-repos/params.json';
 import { AsyncData, RemoteData, useRemoteData } from '@site/src/components/RemoteCharts/hook';
 import React, { DependencyList, useCallback, useEffect, useMemo, useState } from 'react';
 import { useSelectParam } from '@site/src/components/params';
@@ -9,6 +9,8 @@ import { isNullish } from '@site/src/utils/value';
 
 export type Language = string;
 export type Period = string;
+
+const params = _params as any;
 
 export const periods: Period[] = params.find(param => param.name === 'period')?.enums ?? [];
 export const languages: Language[] = params.find(param => param.name === 'language')?.enums ?? [];
