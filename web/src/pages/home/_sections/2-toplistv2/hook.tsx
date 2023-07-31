@@ -11,7 +11,7 @@ export type Language = string;
 export type Period = string;
 
 export const periods: Period[] = params.find(param => param.name === 'period')?.enums ?? [];
-export const languages: Language[] = Object.keys(params.find(param => param.name === 'language')?.template ?? {});
+export const languages: Language[] = params.find(param => param.name === 'language')?.enums ?? [];
 
 const periodOptions = periods.map(period => ({ key: period, title: snakeToCamel(period) }));
 const languageOptions = languages.map(language => ({ key: language, label: language }));
