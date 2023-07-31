@@ -11,7 +11,7 @@ export interface ExecutionInfoDialogProps {
 }
 
 export default function ExecutionInfoDialog ({ question, open, onOpenChange }: ExecutionInfoDialogProps) {
-  const [type, setType] = useState<'sql' | 'plan'>('sql');
+  const [type, setType] = useState<'sql' | 'plan'>('plan');
 
   const handleClose = useEventCallback(() => {
     onOpenChange?.(false);
@@ -72,8 +72,8 @@ export default function ExecutionInfoDialog ({ question, open, onOpenChange }: E
       fullWidth={true}
     >
       <Tabs onChange={handleTypeChange} value={type} sx={{ mb: 2 }}>
-        <Tab label="SQL" value="sql" />
         <Tab label="Execution Plan" value="plan" />
+        <Tab label="SQL" value="sql" />
       </Tabs>
       <Box px={2}>
         {renderChild()}
