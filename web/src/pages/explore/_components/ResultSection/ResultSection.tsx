@@ -195,7 +195,7 @@ function renderExecutionPlan (question: Question | undefined) {
   if (notNullish(question) && !isEmptyArray(question.plan)) {
     return (
       <ShowExecutionInfoButton question={question}>
-        Show execution plan <ArrowRightAlt />
+        Explain SQL <ArrowRightAlt />
       </ShowExecutionInfoButton>
     );
   }
