@@ -277,8 +277,11 @@ export class ExplorerService {
             }
 
             // Get the storage engines that will be used in the SQL execution.
-            question.engines = statementType === 'select' ? await this.getStorageEngines(logger, question.querySQL) : [];
-            question.queueName = question.engines.includes('tiflash') ? QuestionQueueNames.Low : QuestionQueueNames.High;
+            question.engines = [];
+            if (statementType === 'select') {
+                [question.engines, question.plan] = await this.getSQLExecutionPlanAndEngines(logger, question.querySQL);
+            }
+            question.queueName = question.engines?.includes('tiflash') ? QuestionQueueNames.Low : QuestionQueueNames.High;
             question.queueJobId = randomUUID();
             question.requestedAt = DateTime.utc();
             question.status = QuestionStatus.Waiting;
@@ -393,11 +396,11 @@ export class ExplorerService {
         return responseText;
     }
 
-    async getStorageEngines(logger: BaseLogger, querySQL: string): Promise<string[]> {
+    async getSQLExecutionPlanAndEngines(logger: BaseLogger, querySQL: string): Promise<[string[], Record<string, string>[]]> {
         try {
-            logger.info("Getting the storage engines for the SQL: %s", querySQL);
+            logger.info({ querySQL }, "Getting the execution plan and storage engines for the SQL.");
             const plan = await this.getSQLExecutionPlan(querySQL);
-            return this.getStorageEnginesFromPlan(plan);
+            return [this.getStorageEnginesFromPlan(plan), plan];
         } catch (err: any) {
             if (err.sqlMessage) {
                 throw new ExplorerPrepareQuestionError(err.sqlMessage, QuestionFeedbackType.ErrorValidateSQL, {
@@ -563,11 +566,12 @@ export class ExplorerService {
     async updateQuestion(question: Question) {
         const {
             id, answer = null, revisedTitle = null, notClear = null, assumption = null, combinedTitle = null, status, recommended, sqlCanAnswer = true,
-            querySQL, queryHash, engines = [], result = null, chart = null, recommendedQuestions = [],
+            querySQL, queryHash, engines = [], plan , result = null, chart = null, recommendedQuestions = [],
             queueName = null, queueJobId = null, requestedAt, executedAt, finishedAt, spent, errorType = null, error = null
         } = question;
 
         const answerValue = answer !== undefined ? JSON.stringify(answer) : null;
+        const planValue = result !== undefined ? JSON.stringify(plan) : null;
         const enginesValue = JSON.stringify(engines);
         const resultValue = result !== undefined ? JSON.stringify(result) : null;
         const chartValue = chart !== undefined ? JSON.stringify(chart) : null;
@@ -581,12 +585,12 @@ export class ExplorerService {
                 UPDATE explorer_questions
                 SET
                     answer = ?, revised_title = ?, not_clear = ?, assumption = ?, combined_title = ?, status = ?, recommended = ?, sql_can_answer = ?, 
-                    query_sql = ?, query_hash = ?, engines = ?, result = ?, chart = ?, recommended_questions = ?, 
+                    query_sql = ?, query_hash = ?, engines = ?, plan = ?, result = ?, chart = ?, recommended_questions = ?, 
                     queue_name = ?, queue_job_id = ?, requested_at = ?, executed_at = ?, finished_at = ?, spent = ?, error_type = ?, error = ?
                 WHERE id = UUID_TO_BIN(?)
             `, [
                 answerValue, revisedTitle, notClear, assumption, combinedTitle, status, recommended, sqlCanAnswer,
-                querySQL, queryHash, enginesValue, resultValue, chartValue, recommendedQuestionsValue,
+                querySQL, queryHash, enginesValue, planValue, resultValue, chartValue, recommendedQuestionsValue,
                 queueName, queueJobId, requestedAtValue, executedAtValue, finishedAtValue, spent, errorType, error, id
             ]);
 
@@ -644,7 +648,7 @@ export class ExplorerService {
         const [rows] = await this.tidb.query<any[]>(`
             SELECT
                 BIN_TO_UUID(id) AS id, hash, user_id AS userId, status, title, answer, revised_title AS revisedTitle, not_clear AS notClear, 
-                assumption, combined_title AS combinedTitle, sql_can_answer AS sqlCanAnswer, query_sql AS querySQL, query_hash AS queryHash, engines, 
+                assumption, combined_title AS combinedTitle, sql_can_answer AS sqlCanAnswer, query_sql AS querySQL, query_hash AS queryHash, engines, plan,
                 queue_name AS queueName, queue_job_id AS queueJobId, recommended_questions AS recommendedQuestions, 
                 result, chart, answer_summary AS answerSummary, recommended, hit_cache AS hitCache, 
                 created_at AS createdAt, requested_at AS requestedAt, executed_at AS executedAt, finished_at AS finishedAt, 
@@ -670,7 +674,7 @@ export class ExplorerService {
         const [rows] = await this.tidb.query<any[]>(`
             SELECT
                 BIN_TO_UUID(id) AS id, hash, user_id AS userId, status, title, answer, revised_title AS revisedTitle, not_clear AS notClear,
-                assumption, combined_title AS combinedTitle, sql_can_answer AS sqlCanAnswer, query_sql AS querySQL, query_hash AS queryHash, engines,
+                assumption, combined_title AS combinedTitle, sql_can_answer AS sqlCanAnswer, query_sql AS querySQL, query_hash AS queryHash, engines, plan,
                 queue_name AS queueName, queue_job_id AS queueJobId, recommended_questions AS recommendedQuestions,
                 result, chart, answer_summary AS answerSummary, recommended, hit_cache AS hitCache,
                 created_at AS createdAt, requested_at AS requestedAt, executed_at AS executedAt, finished_at AS finishedAt,
@@ -692,8 +696,8 @@ export class ExplorerService {
     async getRecommendedQuestionsByHash(conn: Connection, questionHash: string): Promise<Question[]> {
         const [rows] = await conn.query<any[]>(`
             SELECT
-                BIN_TO_UUID(id) AS id, hash, user_id AS userId, status, title, revised_title AS revisedTitle, not_clear AS notClear,
-                assumption, combined_title AS combinedTitle, sql_can_answer AS sqlCanAnswer, query_sql AS querySQL, query_hash AS queryHash, engines,
+                BIN_TO_UUID(id) AS id, hash, user_id AS userId, status, title, answer, revised_title AS revisedTitle, not_clear AS notClear,
+                assumption, combined_title AS combinedTitle, sql_can_answer AS sqlCanAnswer, query_sql AS querySQL, query_hash AS queryHash, engines, plan,
                 queue_name AS queueName, queue_job_id AS queueJobId, recommended_questions AS recommendedQuestions,
                 result, chart, answer_summary AS answerSummary, recommended, hit_cache AS hitCache,
                 created_at AS createdAt, requested_at AS requestedAt, executed_at AS executedAt, finished_at AS finishedAt,
@@ -708,7 +712,7 @@ export class ExplorerService {
         const [rows] = await this.tidb.query<any[]>(`
             SELECT
                 BIN_TO_UUID(id) AS id, hash, user_id AS userId, status, title, answer, revised_title AS revisedTitle, not_clear AS notClear,
-                assumption, combined_title AS combinedTitle, sql_can_answer AS sqlCanAnswer, query_sql AS querySQL, query_hash AS queryHash, engines,
+                assumption, combined_title AS combinedTitle, sql_can_answer AS sqlCanAnswer, query_sql AS querySQL, query_hash AS queryHash, engines, plan,
                 queue_name AS queueName, queue_job_id AS queueJobId, recommended_questions AS recommendedQuestions,
                 result, chart, answer_summary AS answerSummary, recommended, hit_cache AS hitCache,
                 created_at AS createdAt, requested_at AS requestedAt, executed_at AS executedAt, finished_at AS finishedAt,
@@ -746,7 +750,7 @@ export class ExplorerService {
         const [rows] = await connection.query<any[]>(`
             SELECT
                 BIN_TO_UUID(id) AS id, hash, user_id AS userId, status, title, answer, revised_title AS revisedTitle, not_clear AS notClear,
-                assumption, combined_title AS combinedTitle, sql_can_answer AS sqlCanAnswer, query_sql AS querySQL, query_hash AS queryHash, engines,
+                assumption, combined_title AS combinedTitle, sql_can_answer AS sqlCanAnswer, query_sql AS querySQL, query_hash AS queryHash, engines, plan,
                 queue_name AS queueName, queue_job_id AS queueJobId, recommended_questions AS recommendedQuestions,
                 result, chart, answer_summary AS answerSummary, recommended, hit_cache AS hitCache,
                 created_at AS createdAt, requested_at AS requestedAt, executed_at AS executedAt, finished_at AS finishedAt,

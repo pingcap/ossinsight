@@ -404,7 +404,7 @@ importers:
         specifier: ^5.0.0
         version: 5.2.0
       '@ossinsight/api-server':
-        specifier: workspace:^1.0.0
+        specifier: workspace:^
         version: link:../api-server
       '@ossinsight/email-server':
         specifier: workspace:^0.0.1
