@@ -212,7 +212,7 @@
     "name": "List PR Creators Countries",
     "description": "",
     "method": "GET",
-    "endpoint": "/repos/pull_request_creators/locations",
+    "endpoint": "/repos/pull_request_creators/countries",
     "data_source": {
       "cluster_id": 1379661944642684098
     },
@@ -248,7 +248,7 @@
     },
     "tag": "",
     "batch_operation": 0,
-    "sql_file": "sql/GET-repos-pull_request_creators-locations.sql",
+    "sql_file": "sql/GET-repos-pull_request_creators-countries.sql",
     "type": "sql_endpoint",
     "return_type": "json"
   },
