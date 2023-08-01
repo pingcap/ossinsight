@@ -1,9 +1,9 @@
 [
   {
-    "name": "List Stargazers Countries",
+    "name": "List Stargazers Orgs",
     "description": "",
     "method": "GET",
-    "endpoint": "/repos/stargazer/countries",
+    "endpoint": "/repos/stargazers/organizations",
     "data_source": {
       "cluster_id": 1379661944642684098
     },
@@ -39,115 +39,7 @@
     },
     "tag": "stargazers",
     "batch_operation": 0,
-    "sql_file": "sql/GET-repos-stargazer-countries.sql",
-    "type": "sql_endpoint",
-    "return_type": "json"
-  },
-  {
-    "name": "List Collections",
-    "description": "List Repository Collections",
-    "method": "GET",
-    "endpoint": "/collections",
-    "data_source": {
-      "cluster_id": 1379661944642684098
-    },
-    "params": [],
-    "settings": {
-      "timeout": 5000,
-      "row_limit": 50
-    },
-    "tag": "collections",
-    "batch_operation": 0,
-    "sql_file": "sql/GET-collections.sql",
-    "type": "sql_endpoint",
-    "return_type": "json"
-  },
-  {
-    "name": "List Collection Items",
-    "description": "List Repositories of Specified Collection",
-    "method": "GET",
-    "endpoint": "/collections/__collection_id",
-    "data_source": {
-      "cluster_id": 1379661944642684098
-    },
-    "params": [
-      {
-        "name": "collection_id",
-        "type": "number",
-        "required": 1,
-        "default": ""
-      }
-    ],
-    "settings": {
-      "timeout": 5000,
-      "row_limit": 50
-    },
-    "tag": "collections",
-    "batch_operation": 0,
-    "sql_file": "sql/GET-collections-__collection_id.sql",
-    "type": "sql_endpoint",
-    "return_type": "json"
-  },
-  {
-    "name": "Hello World",
-    "description": "",
-    "method": "GET",
-    "endpoint": "/hello",
-    "data_source": {
-      "cluster_id": 1379661944642684098
-    },
-    "params": [],
-    "settings": {
-      "timeout": 5000,
-      "row_limit": 50
-    },
-    "tag": "",
-    "batch_operation": 0,
-    "sql_file": "sql/GET-hello.sql",
-    "type": "sql_endpoint",
-    "return_type": "json"
-  },
-  {
-    "name": "List Issue Creators Countries",
-    "description": "",
-    "method": "GET",
-    "endpoint": "/repos/issue_creator/locations",
-    "data_source": {
-      "cluster_id": 1379661944642684098
-    },
-    "params": [
-      {
-        "name": "owner",
-        "type": "string",
-        "required": 1,
-        "default": ""
-      },
-      {
-        "name": "repo",
-        "type": "string",
-        "required": 1,
-        "default": ""
-      },
-      {
-        "name": "from",
-        "type": "string",
-        "required": 0,
-        "default": "2000-01-01"
-      },
-      {
-        "name": "to",
-        "type": "string",
-        "required": 0,
-        "default": "2099-12-31"
-      }
-    ],
-    "settings": {
-      "timeout": 10000,
-      "row_limit": 300
-    },
-    "tag": "",
-    "batch_operation": 0,
-    "sql_file": "sql/GET-repos-issue_creator-locations.sql",
+    "sql_file": "sql/GET-repos-stargazers-organizations.sql",
     "type": "sql_endpoint",
     "return_type": "json"
   },
@@ -196,46 +88,79 @@
     "return_type": "json"
   },
   {
-    "name": "List PR Creators Countries",
+    "name": "Trending Repos",
     "description": "",
     "method": "GET",
-    "endpoint": "/repos/pull_request_creators/locations",
+    "endpoint": "/trends/repos",
     "data_source": {
       "cluster_id": 1379661944642684098
     },
     "params": [
       {
-        "name": "owner",
+        "name": "language",
         "type": "string",
-        "required": 1,
-        "default": ""
+        "required": 0,
+        "default": "All"
       },
       {
-        "name": "repo",
+        "name": "period",
         "type": "string",
-        "required": 1,
-        "default": ""
-      },
-      {
-        "name": "from",
-        "type": "string",
-        "required": 1,
-        "default": "2000-01-01"
-      },
-      {
-        "name": "to",
-        "type": "string",
-        "required": 1,
-        "default": "2099-12-31"
+        "required": 0,
+        "default": "past_24_hours"
       }
     ],
     "settings": {
-      "timeout": 10000,
-      "row_limit": 300
+      "timeout": 5000,
+      "row_limit": 50
     },
-    "tag": "",
+    "tag": "Default",
     "batch_operation": 0,
-    "sql_file": "sql/GET-repos-pull_request_creators-locations.sql",
+    "sql_file": "sql/GET-trends-repos.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "List Collection Items",
+    "description": "List Repositories of Specified Collection",
+    "method": "GET",
+    "endpoint": "/collections/__collection_id",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "collection_id",
+        "type": "number",
+        "required": 1,
+        "default": ""
+      }
+    ],
+    "settings": {
+      "timeout": 5000,
+      "row_limit": 50
+    },
+    "tag": "collections",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-collections-__collection_id.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "List Collections",
+    "description": "List Repository Collections",
+    "method": "GET",
+    "endpoint": "/collections",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [],
+    "settings": {
+      "timeout": 5000,
+      "row_limit": 50
+    },
+    "tag": "collections",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-collections.sql",
     "type": "sql_endpoint",
     "return_type": "json"
   },
@@ -284,10 +209,98 @@
     "return_type": "json"
   },
   {
-    "name": "List Stargazers Orgs",
+    "name": "List PR Creators Countries",
     "description": "",
     "method": "GET",
-    "endpoint": "/repos/stargazers/organizations",
+    "endpoint": "/repos/pull_request_creators/locations",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "owner",
+        "type": "string",
+        "required": 1,
+        "default": ""
+      },
+      {
+        "name": "repo",
+        "type": "string",
+        "required": 1,
+        "default": ""
+      },
+      {
+        "name": "from",
+        "type": "string",
+        "required": 1,
+        "default": "2000-01-01"
+      },
+      {
+        "name": "to",
+        "type": "string",
+        "required": 1,
+        "default": "2099-12-31"
+      }
+    ],
+    "settings": {
+      "timeout": 10000,
+      "row_limit": 300
+    },
+    "tag": "",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-repos-pull_request_creators-locations.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "List Issue Creators Countries",
+    "description": "",
+    "method": "GET",
+    "endpoint": "/repos/issue_creator/countries",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "owner",
+        "type": "string",
+        "required": 1,
+        "default": ""
+      },
+      {
+        "name": "repo",
+        "type": "string",
+        "required": 1,
+        "default": ""
+      },
+      {
+        "name": "from",
+        "type": "string",
+        "required": 0,
+        "default": "2000-01-01"
+      },
+      {
+        "name": "to",
+        "type": "string",
+        "required": 0,
+        "default": "2099-12-31"
+      }
+    ],
+    "settings": {
+      "timeout": 10000,
+      "row_limit": 300
+    },
+    "tag": "",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-repos-issue_creator-countries.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "List Stargazers Countries",
+    "description": "",
+    "method": "GET",
+    "endpoint": "/repos/stargazers/countries",
     "data_source": {
       "cluster_id": 1379661944642684098
     },
@@ -323,39 +336,26 @@
     },
     "tag": "stargazers",
     "batch_operation": 0,
-    "sql_file": "sql/GET-repos-stargazers-organizations.sql",
+    "sql_file": "sql/GET-repos-stargazers-countries.sql",
     "type": "sql_endpoint",
     "return_type": "json"
   },
   {
-    "name": "Trending Repos",
+    "name": "Hello World",
     "description": "",
     "method": "GET",
-    "endpoint": "/trends/repos",
+    "endpoint": "/hello",
     "data_source": {
       "cluster_id": 1379661944642684098
     },
-    "params": [
-      {
-        "name": "language",
-        "type": "string",
-        "required": 0,
-        "default": "All"
-      },
-      {
-        "name": "period",
-        "type": "string",
-        "required": 0,
-        "default": "past_24_hours"
-      }
-    ],
+    "params": [],
     "settings": {
       "timeout": 5000,
       "row_limit": 50
     },
-    "tag": "Default",
+    "tag": "",
     "batch_operation": 0,
-    "sql_file": "sql/GET-trends-repos.sql",
+    "sql_file": "sql/GET-hello.sql",
     "type": "sql_endpoint",
     "return_type": "json"
   }
