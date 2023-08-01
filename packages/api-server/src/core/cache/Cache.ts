@@ -106,15 +106,11 @@ export default class Cache<T> {
     // Update cache async.
     const ttl = this.cacheHours > 0 ? Math.round(this.cacheHours * 3600) : -1;
     result.expiresAt = ttl > 0 ? DateTime.now().plus({seconds: ttl}) : MAX_CACHE_TIME;
-    measure(cacheQueryHistogram.labels({op: 'set'}), async () => {
-      const start = DateTime.now();
+    measure(cacheQueryHistogram.labels({op: 'set'}), async () =>
       await this.cacheProvider.set(this.key, JSON.stringify(result), {
         EX: ttl
-      });
-      const end = DateTime.now();
-      const duration = end.diff(start, 'seconds').seconds;
-      this.log.info(`✅️ Finished cache setting for query <${this.key}> in ${duration} seconds.`);
-    }).catch((err) => {
+      })
+    ).catch((err) => {
       this.log.error(err, `❌ Failed to write cache for query <${this.key}>.`);
     });
 
