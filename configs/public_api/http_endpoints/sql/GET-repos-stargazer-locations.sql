@@ -1,8 +1,8 @@
 USE gharchive_dev;
 
-WITH group_by_region AS (
+WITH group_by_countries AS (
     SELECT
-        gu.country_code AS region_code,
+        gu.country_code,
         COUNT(1) as stargazers
     FROM github_events ge
     LEFT JOIN github_users gu ON ge.actor_login = gu.login
@@ -13,14 +13,14 @@ WITH group_by_region AS (
         AND gu.country_code NOT IN ('', 'N/A', 'UND')
         AND ge.created_at >= ${from}
         AND ge.created_at <= ${to}
-    GROUP BY region_code
+    GROUP BY country_code
 ), summary AS (
-    SELECT SUM(stargazers) AS total FROM group_by_region
+    SELECT SUM(stargazers) AS total FROM group_by_countries
 )
 SELECT 
-    region_code,
+    country_code,
     stargazers,
     stargazers / total AS percentage
-FROM group_by_region, summary
+FROM group_by_countries, summary
 ORDER BY stargazers DESC
 ;

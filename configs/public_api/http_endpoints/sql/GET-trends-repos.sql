@@ -1,4 +1,5 @@
 USE gharchive_dev;
+
 WITH repos AS (
   SELECT
     tr.repo_id,
