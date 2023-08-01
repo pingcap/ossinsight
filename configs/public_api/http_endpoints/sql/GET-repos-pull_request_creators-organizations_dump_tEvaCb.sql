@@ -1,8 +1,7 @@
 USE gharchive_dev;
-
 WITH group_by_org AS (
   SELECT
-      LOWER(REPLACE(gu.organization, '@', '')) AS org_name,
+      gu.organization AS org_name,
       COUNT(DISTINCT ge.actor_login) AS pull_request_creators
   FROM github_events ge
   LEFT JOIN github_users gu ON ge.actor_login = gu.login
