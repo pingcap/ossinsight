@@ -70,6 +70,8 @@ export default class NormalTableCacheProvider implements CacheProvider {
                     return res;
                 });
                 resolve(res);
+            } catch (err) {
+                reject(err);
             } finally {
                 if (timeout) {
                     clearTimeout(timeout);
@@ -136,6 +138,8 @@ export default class NormalTableCacheProvider implements CacheProvider {
                     }
                 });
                 resolve(res);
+            } catch (err) {
+                reject(err);
             } finally {
                 if (timeout) {
                     clearTimeout(timeout);
