@@ -1,5 +1,60 @@
 [
   {
+    "name": "Trends of Pull Request Creators",
+    "description": "",
+    "method": "GET",
+    "endpoint": "/repos/pull_request_creators/trends",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "per",
+        "type": "string",
+        "required": 0,
+        "default": "month",
+        "description": ""
+      },
+      {
+        "name": "owner",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "repo",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "from",
+        "type": "string",
+        "required": 0,
+        "default": "2000-01-01",
+        "description": ""
+      },
+      {
+        "name": "to",
+        "type": "string",
+        "required": 0,
+        "default": "2099-12-31",
+        "description": ""
+      }
+    ],
+    "settings": {
+      "timeout": 5000,
+      "row_limit": 50
+    },
+    "tag": "Default",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-repos-pull_request_creators-trends.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
     "name": "Trends of Stargazers",
     "description": "",
     "method": "GET",
@@ -55,75 +110,10 @@
     "return_type": "json"
   },
   {
-    "name": "List Collections",
-    "description": "List Repository Collections",
-    "method": "GET",
-    "endpoint": "/collections",
-    "data_source": {
-      "cluster_id": 1379661944642684098
-    },
-    "params": [],
-    "settings": {
-      "timeout": 5000,
-      "row_limit": 50
-    },
-    "tag": "collections",
-    "batch_operation": 0,
-    "sql_file": "sql/GET-collections.sql",
-    "type": "sql_endpoint",
-    "return_type": "json"
-  },
-  {
-    "name": "List Collection Items",
-    "description": "List Repositories of Specified Collection",
-    "method": "GET",
-    "endpoint": "/collections/__collection_id",
-    "data_source": {
-      "cluster_id": 1379661944642684098
-    },
-    "params": [
-      {
-        "name": "collection_id",
-        "type": "number",
-        "required": 1,
-        "default": "",
-        "description": ""
-      }
-    ],
-    "settings": {
-      "timeout": 5000,
-      "row_limit": 50
-    },
-    "tag": "collections",
-    "batch_operation": 0,
-    "sql_file": "sql/GET-collections-__collection_id.sql",
-    "type": "sql_endpoint",
-    "return_type": "json"
-  },
-  {
-    "name": "Hello World",
+    "name": "List Stargazers Orgs",
     "description": "",
     "method": "GET",
-    "endpoint": "/hello",
-    "data_source": {
-      "cluster_id": 1379661944642684098
-    },
-    "params": [],
-    "settings": {
-      "timeout": 5000,
-      "row_limit": 50
-    },
-    "tag": "",
-    "batch_operation": 0,
-    "sql_file": "sql/GET-hello.sql",
-    "type": "sql_endpoint",
-    "return_type": "json"
-  },
-  {
-    "name": "List Issue Creators Countries",
-    "description": "",
-    "method": "GET",
-    "endpoint": "/repos/issue_creators/countries",
+    "endpoint": "/repos/stargazers/organizations",
     "data_source": {
       "cluster_id": 1379661944642684098
     },
@@ -161,9 +151,9 @@
       "timeout": 10000,
       "row_limit": 300
     },
-    "tag": "",
+    "tag": "stargazers",
     "batch_operation": 0,
-    "sql_file": "sql/GET-repos-issue_creators-countries.sql",
+    "sql_file": "sql/GET-repos-stargazers-organizations.sql",
     "type": "sql_endpoint",
     "return_type": "json"
   },
@@ -216,50 +206,82 @@
     "return_type": "json"
   },
   {
-    "name": "List PR Creators Countries",
-    "description": "",
+    "name": "Trending Repos",
+    "description": "Trending repos is an open source alternative to GitHub trends, which showcases recently popular open source projects in the GitHub community.\n\n☁️ Daily run on [TiDB Cloud](https://tidbcloud.com/?utm_source=ossinsight\u0026utm_medium=ossinsight_api), analyze upon dataset that has over 6 billion GitHub events.",
     "method": "GET",
-    "endpoint": "/repos/pull_request_creators/countries",
+    "endpoint": "/trends/repos",
     "data_source": {
       "cluster_id": 1379661944642684098
     },
     "params": [
       {
-        "name": "owner",
+        "name": "language",
         "type": "string",
+        "required": 0,
+        "default": "All",
+        "description": "Specify the period of time to calculate trending repos."
+      },
+      {
+        "name": "period",
+        "type": "string",
+        "required": 0,
+        "default": "past_24_hours",
+        "description": "Specify using which programming language to filter trending repos. If not specified, all languages will be included."
+      }
+    ],
+    "settings": {
+      "timeout": 5000,
+      "row_limit": 50
+    },
+    "tag": "Trends",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-trends-repos.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "List Collection Items",
+    "description": "List Repositories of Specified Collection",
+    "method": "GET",
+    "endpoint": "/collections/__collection_id",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "collection_id",
+        "type": "number",
         "required": 1,
         "default": "",
-        "description": ""
-      },
-      {
-        "name": "repo",
-        "type": "string",
-        "required": 1,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "from",
-        "type": "string",
-        "required": 1,
-        "default": "2000-01-01",
-        "description": ""
-      },
-      {
-        "name": "to",
-        "type": "string",
-        "required": 1,
-        "default": "2099-12-31",
         "description": ""
       }
     ],
     "settings": {
-      "timeout": 10000,
-      "row_limit": 300
+      "timeout": 5000,
+      "row_limit": 50
     },
-    "tag": "",
+    "tag": "collections",
     "batch_operation": 0,
-    "sql_file": "sql/GET-repos-pull_request_creators-countries.sql",
+    "sql_file": "sql/GET-collections-__collection_id.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "List Collections",
+    "description": "List Repository Collections",
+    "method": "GET",
+    "endpoint": "/collections",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [],
+    "settings": {
+      "timeout": 5000,
+      "row_limit": 50
+    },
+    "tag": "collections",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-collections.sql",
     "type": "sql_endpoint",
     "return_type": "json"
   },
@@ -312,6 +334,102 @@
     "return_type": "json"
   },
   {
+    "name": "List PR Creators Countries",
+    "description": "",
+    "method": "GET",
+    "endpoint": "/repos/pull_request_creators/countries",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "owner",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "repo",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "from",
+        "type": "string",
+        "required": 1,
+        "default": "2000-01-01",
+        "description": ""
+      },
+      {
+        "name": "to",
+        "type": "string",
+        "required": 1,
+        "default": "2099-12-31",
+        "description": ""
+      }
+    ],
+    "settings": {
+      "timeout": 10000,
+      "row_limit": 300
+    },
+    "tag": "",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-repos-pull_request_creators-countries.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "List Issue Creators Countries",
+    "description": "",
+    "method": "GET",
+    "endpoint": "/repos/issue_creators/countries",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "owner",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "repo",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "from",
+        "type": "string",
+        "required": 0,
+        "default": "2000-01-01",
+        "description": ""
+      },
+      {
+        "name": "to",
+        "type": "string",
+        "required": 0,
+        "default": "2099-12-31",
+        "description": ""
+      }
+    ],
+    "settings": {
+      "timeout": 10000,
+      "row_limit": 300
+    },
+    "tag": "",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-repos-issue_creators-countries.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
     "name": "List Stargazers Countries",
     "description": "",
     "method": "GET",
@@ -360,84 +478,21 @@
     "return_type": "json"
   },
   {
-    "name": "List Stargazers Orgs",
+    "name": "Hello World",
     "description": "",
     "method": "GET",
-    "endpoint": "/repos/stargazers/organizations",
+    "endpoint": "/hello",
     "data_source": {
       "cluster_id": 1379661944642684098
     },
-    "params": [
-      {
-        "name": "owner",
-        "type": "string",
-        "required": 1,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "repo",
-        "type": "string",
-        "required": 1,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "from",
-        "type": "string",
-        "required": 0,
-        "default": "2000-01-01",
-        "description": ""
-      },
-      {
-        "name": "to",
-        "type": "string",
-        "required": 0,
-        "default": "2099-12-31",
-        "description": ""
-      }
-    ],
-    "settings": {
-      "timeout": 10000,
-      "row_limit": 300
-    },
-    "tag": "stargazers",
-    "batch_operation": 0,
-    "sql_file": "sql/GET-repos-stargazers-organizations.sql",
-    "type": "sql_endpoint",
-    "return_type": "json"
-  },
-  {
-    "name": "Trending Repos",
-    "description": "Trending repos is an open source alternative to GitHub trends, which showcases recently popular open source projects in the GitHub community.\n\n☁️ Daily run on [TiDB Cloud](https://tidbcloud.com/?utm_source=ossinsight\u0026utm_medium=ossinsight_api), analyze upon dataset that has over 6 billion GitHub events.",
-    "method": "GET",
-    "endpoint": "/trends/repos",
-    "data_source": {
-      "cluster_id": 1379661944642684098
-    },
-    "params": [
-      {
-        "name": "language",
-        "type": "string",
-        "required": 0,
-        "default": "All",
-        "description": ""
-      },
-      {
-        "name": "period",
-        "type": "string",
-        "required": 0,
-        "default": "past_24_hours",
-        "description": ""
-      }
-    ],
+    "params": [],
     "settings": {
       "timeout": 5000,
       "row_limit": 50
     },
-    "tag": "Default",
+    "tag": "",
     "batch_operation": 0,
-    "sql_file": "sql/GET-trends-repos.sql",
+    "sql_file": "sql/GET-hello.sql",
     "type": "sql_endpoint",
     "return_type": "json"
   }
