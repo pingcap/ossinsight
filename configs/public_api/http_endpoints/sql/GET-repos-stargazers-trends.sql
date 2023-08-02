@@ -6,7 +6,7 @@ WITH stars AS (
             WHEN ${per} = 'day' THEN DATE_FORMAT(created_at, '%Y-%m-%d')
             WHEN ${per} = 'week' THEN DATE_FORMAT(DATE_SUB(created_at, INTERVAL WEEKDAY(created_at) DAY), '%Y-%m-%d')
             ELSE DATE_FORMAT(created_at, '%Y-%m-01')
-        END AS timestamp,
+        END AS date,
         ROW_NUMBER() OVER (PARTITION BY actor_login) AS row_num
     FROM github_events ge
     WHERE
@@ -15,27 +15,30 @@ WITH stars AS (
         AND ge.repo_id = (SELECT repo_id FROM github_repos WHERE repo_name = CONCAT(${owner}, '/', ${repo}) LIMIT 1)
         AND ge.created_at >= ${from}
         AND ge.created_at <= ${to}
-), group_by_dt AS (
+), group_by_date AS (
     SELECT
-        timestamp,
+        date,
         COUNT(*) AS stargazers
     FROM stars
     WHERE
         row_num = 1
     GROUP BY
-        timestamp
-), cumulative_by_dt AS (
+        date
+), cumulative_by_date AS (
     SELECT
-        timestamp,
-        SUM(stargazers) OVER (ORDER BY timestamp) AS stargazers,
-        ROW_NUMBER() OVER(PARTITION BY timestamp) AS row_num
+        date,
+        SUM(stargazers) OVER (ORDER BY date) AS stargazers,
+        ROW_NUMBER() OVER(PARTITION BY date) AS row_num
     FROM
-        group_by_dt
+        group_by_date
 )
 SELECT
-    timestamp,
+    date,
     stargazers
-FROM cumulative_by_dt
-WHERE row_num = 1
-ORDER BY timestamp
+FROM cumulative_by_date
+WHERE
+    row_num = 1
+    AND date >= ${from}
+    AND date <= ${to}
+ORDER BY date
 ;

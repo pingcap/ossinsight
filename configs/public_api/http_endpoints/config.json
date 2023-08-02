@@ -46,7 +46,7 @@
     ],
     "settings": {
       "timeout": 5000,
-      "row_limit": 50
+      "row_limit": 2000
     },
     "tag": "Issue Creators",
     "batch_operation": 0,
@@ -101,7 +101,7 @@
     ],
     "settings": {
       "timeout": 5000,
-      "row_limit": 50
+      "row_limit": 2000
     },
     "tag": "Pull Request Creators",
     "batch_operation": 0,
@@ -156,7 +156,7 @@
     ],
     "settings": {
       "timeout": 5000,
-      "row_limit": 50
+      "row_limit": 2000
     },
     "tag": "Stargazers",
     "batch_operation": 0,
@@ -380,7 +380,7 @@
     ],
     "settings": {
       "timeout": 10000,
-      "row_limit": 300
+      "row_limit": 2000
     },
     "tag": "Pull Request Creators",
     "batch_operation": 0,
