@@ -50,83 +50,141 @@ export function proxyGet(
     })
 }
 
-export function successResponse(examples: any[] = []) {
+export interface DataServiceResponseColumn {
+  col: string;
+  data_type: string;
+  nullable: boolean
+}
+
+export interface DataServiceResponseRowsDefinition {
+  type: string;
+  items: Record<any, any>,
+  example?: any[]
+}
+
+export interface DataServiceResponseResult {
+  code: number;
+  message: string;
+  start_ms: number;
+  end_ms: number;
+  latency: string;
+  row_count: number;
+  row_affect: number;
+  limit: number;
+  databases: string[];
+}
+
+export function getSuccessResponse(
+  columnsExample: DataServiceResponseColumn[] = [],
+  rowsDefinition: DataServiceResponseRowsDefinition = {
+    type: 'array',
+    items:  {
+      type: 'object',
+        additionalProperties: {
+        type: 'string'
+      }
+    }
+  },
+  resultExampleOverride: Partial<DataServiceResponseResult> = {}
+) {
+  const resultExample = {
+    code: 200,
+    message: 'Query OK!',
+    start_ms: 1690957407469,
+    end_ms: 1690957407499,
+    latency: '30ms',
+    row_count: 10,
+    row_affect: 0,
+    limit: 50,
+    databases: ['gharchive_dev'],
+    ...resultExampleOverride
+  };
+
   return {
     type: 'object',
+    required: ['type', 'data'],
     properties: {
       type: {
         type: 'string',
         description: 'The type of the endpoint.',
         enum: ['sql_endpoint'],
+        example: 'sql_endpoint',
       },
       data: {
         type: 'object',
+        required: ['columns', 'rows', 'result'],
         properties: {
           columns: {
             type: 'array',
             items: {
               type: 'object',
+              required: ['col', 'data_type', 'nullable'],
               properties: {
                 col: {
-                  type: 'string'
+                  type: 'string',
+                  description: 'The name of the column in the query result.',
                 },
                 data_type: {
                   type: 'string',
-                  enum: ['CHAR', 'BIGINT', 'DECIMAL', 'INT', 'UNSIGNED BIGINT', 'TINYINT', 'TIMESTAMP', 'TEXT', 'VARCHAR', 'DATETIME', 'DOUBLE', 'FLOAT', 'DATE', 'TIME', 'YEAR', 'MEDIUMINT', 'SMALLINT', 'BIT', 'BINARY', 'VARBINARY', 'JSON', 'ENUM', 'SET', 'TINYTEXT', 'MEDIUMTEXT', 'LONGTEXT', 'TINYBLOB', 'MEDIUMBLOB', 'BLOB', 'LONGBLOB']
+                  enum: ['CHAR', 'BIGINT', 'DECIMAL', 'INT', 'UNSIGNED BIGINT', 'TINYINT', 'TIMESTAMP', 'TEXT', 'VARCHAR', 'DATETIME', 'DOUBLE', 'FLOAT', 'DATE', 'TIME', 'YEAR', 'MEDIUMINT', 'SMALLINT', 'BIT', 'BINARY', 'VARBINARY', 'JSON', 'ENUM', 'SET', 'TINYTEXT', 'MEDIUMTEXT', 'LONGTEXT', 'TINYBLOB', 'MEDIUMBLOB', 'BLOB', 'LONGBLOB'],
+                  description: 'The data type of the column.',
                 },
                 nullable: {
-                  type: 'boolean'
+                  type: 'boolean',
+                  description: 'Whether the column is nullable.',
                 }
-              }
-            }
+              },
+            },
+            example: columnsExample
           },
-          rows: {
-            type: 'array',
-            items: {
-              type: 'object',
-              additionalProperties: {
-                type: 'string'
-              }
-            }
-          },
+          rows: rowsDefinition,
           result: {
             type: 'object',
             properties: {
               code: {
-                type: 'number'
+                type: 'number',
+                description: 'The code of the response.',
               },
               message: {
-                type: 'string'
+                type: 'string',
+                description: 'The message of the response.',
               },
               start_ms: {
-                type: 'number'
+                type: 'number',
+                description: 'The start time of the query in milliseconds.',
               },
               end_ms: {
-                type: 'number'
+                type: 'number',
+                description: 'The end time of the query in milliseconds.',
               },
               latency: {
-                type: 'string'
+                type: 'string',
+                description: 'The latency of the query.',
               },
               row_count: {
-                type: 'number'
+                type: 'number',
+                description: 'The number of rows in the query result.',
               },
               row_affect: {
-                type: 'number'
+                type: 'number',
+                description: 'The number of rows affected by the query.',
               },
               limit: {
-                type: 'number'
+                type: 'number',
+                description: 'The maximum number of rows in the query result.',
               },
               databases: {
                 type: 'array',
+                description: 'The databases used in the query.',
                 items: {
-                  type: 'string'
-                }
+                  type: 'string',
+                },
               }
-            }
+            },
+            example: resultExample
           }
         }
       }
-    },
-    examples: examples
+    }
   }
 }
