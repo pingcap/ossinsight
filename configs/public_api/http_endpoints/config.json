@@ -1,9 +1,9 @@
 [
   {
-    "name": "Trends of Issue Creators",
+    "name": "Issue Creators History",
     "description": "",
     "method": "GET",
-    "endpoint": "/repos/issue_creators/trends",
+    "endpoint": "/repos/issue_creators/growth",
     "data_source": {
       "cluster_id": 1379661944642684098
     },
@@ -50,12 +50,12 @@
     },
     "tag": "Issue Creators",
     "batch_operation": 0,
-    "sql_file": "sql/GET-repos-issue_creators-trends.sql",
+    "sql_file": "sql/GET-repos-issue_creators-growth.sql",
     "type": "sql_endpoint",
     "return_type": "json"
   },
   {
-    "name": "Trends of Pull Request Creators",
+    "name": "Pull Request Creators History",
     "description": "",
     "method": "GET",
     "endpoint": "/repos/pull_request_creators/trends",
@@ -110,7 +110,7 @@
     "return_type": "json"
   },
   {
-    "name": "Trends of Stargazers",
+    "name": "Stargazers History",
     "description": "",
     "method": "GET",
     "endpoint": "/repos/stargazers/trends",
