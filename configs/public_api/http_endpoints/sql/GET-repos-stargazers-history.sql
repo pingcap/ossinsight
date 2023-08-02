@@ -13,8 +13,6 @@ WITH stars AS (
         ge.type = 'WatchEvent'
         AND ge.action = 'started'
         AND ge.repo_id = (SELECT repo_id FROM github_repos WHERE repo_name = CONCAT(${owner}, '/', ${repo}) LIMIT 1)
-        AND ge.created_at >= ${from}
-        AND ge.created_at <= ${to}
 ), group_by_date AS (
     SELECT
         date,
