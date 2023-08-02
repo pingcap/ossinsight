@@ -10,13 +10,14 @@ import {Command} from "commander";
 import {CronJob} from 'cron';
 import envSchema from "env-schema";
 import * as http from "http";
-import {createPool, Pool} from "mysql2/promise";
+import {Pool} from "mysql2/promise";
 import {collectDefaultMetrics, Registry} from "prom-client";
 import {AppConfig, PrefetchEnvSchema} from "./env";
 import {JobExecutor} from "./job/executor";
 import {JobGenerator} from "./job/generator";
 import {JobScheduler} from "./job/scheduler";
 import {prefetchQueryCounter, prefetchQueryHistogram, queueWaitsGauge} from "./metrics";
+import {createTiDBPool} from "./utils/db";
 
 const logger = require('./logger');
 
@@ -60,16 +61,12 @@ main().catch((err) => {
 
 async function prefetch(options: Options) {
   // Init tidb connection pool.
-  const pool = await createPool({
-    uri: config.DATABASE_URL
-  });
+  const pool = await createTiDBPool(config.DATABASE_URL);
 
   // Init shadow tidb connection pool.
   let shadowPool: Pool | undefined;
   if (config.SHADOW_DATABASE_URL) {
-    shadowPool = await createPool({
-      uri: config.SHADOW_DATABASE_URL
-    });
+    shadowPool = await createTiDBPool(config.SHADOW_DATABASE_URL);
   }
 
   // Init metrics server.
