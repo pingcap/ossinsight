@@ -58,7 +58,7 @@
     "name": "Pull Request Creators History",
     "description": "",
     "method": "GET",
-    "endpoint": "/repos/pull_request_creators/trends",
+    "endpoint": "/repos/pull_request_creators/history",
     "data_source": {
       "cluster_id": 1379661944642684098
     },
@@ -105,7 +105,7 @@
     },
     "tag": "Pull Request Creators",
     "batch_operation": 0,
-    "sql_file": "sql/GET-repos-pull_request_creators-trends.sql",
+    "sql_file": "sql/GET-repos-pull_request_creators-history.sql",
     "type": "sql_endpoint",
     "return_type": "json"
   },
@@ -113,7 +113,7 @@
     "name": "Stargazers History",
     "description": "",
     "method": "GET",
-    "endpoint": "/repos/stargazers/trends",
+    "endpoint": "/repos/stargazers/histo",
     "data_source": {
       "cluster_id": 1379661944642684098
     },
@@ -160,7 +160,7 @@
     },
     "tag": "Stargazers",
     "batch_operation": 0,
-    "sql_file": "sql/GET-repos-stargazers-trends.sql",
+    "sql_file": "sql/GET-repos-stargazers-histo.sql",
     "type": "sql_endpoint",
     "return_type": "json"
   },
