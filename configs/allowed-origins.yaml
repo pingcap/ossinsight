@@ -6,6 +6,7 @@ private_origins:
   - ^https*://.+\.preview\.app\.github\.dev/*$
   # Production.
   - ^https://ossinsight\.io$
+  - ^https://*\.ossinsight\.io$
   - ^https://live\.ossinsight\.io$
   # Next
   - ossinsight-next.vercel.app
