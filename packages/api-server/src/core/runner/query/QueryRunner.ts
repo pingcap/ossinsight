@@ -6,7 +6,7 @@ import { DateTime } from "luxon";
 import { QueryLoader } from "./QueryLoader";
 import {Pool, QueryOptions} from "mysql2/promise";
 import { QueryParser } from "./QueryParser";
-import {PersistConfig, QuerySchema} from "../../../types/query.schema";
+import {PersistConfig, QuerySchema} from "@ossinsight/types";
 import { TiDBQueryExecutor } from "../../executor/query-executor/TiDBQueryExecutor";
 import {presetQueryTimer, measure, presetQueryCounter} from "../../../metrics";
 
@@ -150,7 +150,7 @@ export class QueryRunner {
     }
     
     private serializeParams (queryConfig: QuerySchema, params: Record<string, any>): string {
-        return queryConfig.params.map(p => params[p.name]).join('_');
+        return queryConfig.params.map((p: any) => params[p.name]).join('_');
     }
 
 }

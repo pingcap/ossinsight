@@ -1,0 +1,43 @@
+{
+  "name": "@ossinsight/pipeline",
+  "version": "0.0.1",
+  "description": "The data pipelines for OSSInsight",
+  "license": "Apache-2.0",
+  "author": "Mini256",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "directories": {
+    "test": "__tests__"
+  },
+  "scripts": {
+    "build": "tsc",
+    "build:watch": "tsc -w",
+    "dev": "NODE_ENV=development fastify start -p ${PIPELINE_SERVER_PORT:-30003} -P --ignore-watch=.ts$ -L dist/logger.js -l info -w dist/app.js",
+    "start": "fastify start -a 0.0.0.0 -p ${PIPELINE_SERVER_PORT:-30003} -L dist/logger.js -l info dist/app.js"
+  },
+  "dependencies": {
+    "@fastify/autoload": "^5.0.0",
+    "@fastify/env": "^4.1.0",
+    "@fastify/mysql": "^4.1.0",
+    "@fastify/schedule": "^4.1.1",
+    "croner": "^6.0.7",
+    "fastify": "^4.0.0",
+    "fastify-cli": "^5.5.1",
+    "fastify-metrics": "^10.0.0",
+    "fastify-plugin": "^4.3.0",
+    "luxon": "^3.3.0",
+    "mysql2": "^2.3.3",
+    "node-schedule": "^2.1.1",
+    "pino": "^8.7.0",
+    "pino-pretty": "^9.1.1",
+    "toad-scheduler": "^3.0.0"
+  },
+  "devDependencies": {
+    "@fastify/type-provider-json-schema-to-ts": "^2.1.1",
+    "@types/luxon": "^3.3.1",
+    "@types/node": "^18.0.0",
+    "@types/node-schedule": "^2.1.0",
+    "fastify-tsconfig": "^1.0.1",
+    "typescript": "^4.5.4"
+  }
+}

@@ -1,4 +1,4 @@
-import {QuerySchema} from "../../../types/query.schema";
+import {QuerySchema} from "@ossinsight/types";
 
 export enum ParamTypes {
     ARRAY = 'array',

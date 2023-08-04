@@ -1,4 +1,4 @@
-import { QuerySchema } from "../../../types/query.schema";
+import { QuerySchema } from "@ossinsight/types";
 import { join } from "path";
 import pino from "pino";
 import { readFile } from "fs/promises";
