@@ -72,7 +72,8 @@ const schema = {
             type: 'string',
             description: 'Percentage of issue creators from the organization'
           },
-        }
+        },
+        additionalProperties: true,
       },
       example: [
         {
