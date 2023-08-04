@@ -33,7 +33,7 @@ const sidebars = {
     },
     {
       type: 'category',
-      label: 'API',
+      label: 'API (beta)',
       // @ts-ignore
       items: [
         ...require('./docs/api/sidebar.js'),

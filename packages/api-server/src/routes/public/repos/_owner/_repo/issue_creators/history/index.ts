@@ -69,7 +69,8 @@ const schema = {
             type: 'string',
             description: 'The number of issue creators on the date point'
           },
-        }
+        },
+        additionalProperties: true,
       },
       example: [
         {

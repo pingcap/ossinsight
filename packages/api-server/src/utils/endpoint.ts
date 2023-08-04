@@ -11,21 +11,46 @@ export function proxyGet(
         throw new APIError(500, 'TiDB data service is not initialized.');
       }
 
-      // Remove prefix from url.
-      let url = req.url.replace(/^\/public/, '');
+      // Remove prefix and query string from url.
+      const url = new URL(req.url, 'http://localhost');
+      let pathname = url.pathname.replace(/^\/public/, '');
 
       // Map query params to query strings.
       const query = req.query as any;
       const queryKeys = Object.keys(query);
+
+      let limit = 30;
+      if (queryKeys.find((queryKey) => queryKey === 'page_size')) {
+        try {
+          limit = Number(query['page_size']);
+        } catch (e) {
+          throw new APIError(400, 'Invalid page_size number.');
+        }
+      }
+
       const queryStrings = queryKeys.map((queryKey) => {
-        return `${queryKey}=${query[queryKey]}`;
+        // Mapping the page and page_size to offset and limit.
+        // TODO: remove it after TiDB data service supports page and page_size.
+        if (queryKey === 'page') {
+          let offset = 0;
+          try {
+            offset = (Math.max(1, Number(query['page'])) - 1) * limit;
+          } catch (e) {
+            throw new APIError(400, 'Invalid page number.');
+          }
+          return `offset=${offset}`;
+        } else if (queryKey === 'page_size') {
+          return `limit=${limit}`;
+        } else {
+          return `${queryKey}=${query[queryKey]}`;
+        }
       });
 
       // Remove path params from url.
       const params = req.params as any;
       const paramKeys = Object.keys(params);
       for (const paramKey of paramKeys) {
-        url = url.replace(`/${params[paramKey]}`, '');
+        pathname = pathname.replace(`/${params[paramKey]}`, '');
       }
 
       // TODO: remove it after TiDB data service supports path params.
@@ -35,12 +60,15 @@ export function proxyGet(
       }));
 
       // Remove trailing slash from url.
-      if (url.endsWith('/')) {
-        url = url.slice(0, -1);
+      //
+      // Notice: Data Service is strict in path routing.
+      // If there is / at the end of the path, the route cannot be matched correctly.
+      if (pathname.endsWith('/')) {
+        pathname = pathname.slice(0, -1);
       }
 
       // Retrieve query result from TiDB data service.
-      const targetURL = `${url}?${queryStrings.join('&')}`;
+      const targetURL = `${pathname}?${queryStrings.join('&')}`;
       const res = await app.tidbDataService.request(targetURL);
       const json = await res.json();
       reply
@@ -134,6 +162,7 @@ export function getSuccessResponse(
                   description: 'Whether the column is nullable.',
                 }
               },
+              additionalProperties: true,
             },
             example: columnsExample
           },
@@ -181,6 +210,7 @@ export function getSuccessResponse(
                 },
               }
             },
+            additionalProperties: true,
             example: resultExample
           }
         }
