@@ -15,7 +15,7 @@ WHERE
 ORDER BY
     CAST((CASE
         WHEN ${sort} = 'prs' THEN prs 
-        WHEN ${sort} = 'prs-asc' THEN -prs
+        WHEN ${sort} = 'prs-desc' THEN -prs
         WHEN ${sort} = 'first_pr_opened_at' THEN first_pr_opened_at
         WHEN ${sort} = 'first_pr_opened_at-desc' THEN -first_pr_opened_at
         WHEN ${sort} = 'first_pr_merged_at' THEN first_pr_merged_at
