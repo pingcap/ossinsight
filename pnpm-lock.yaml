@@ -51,7 +51,7 @@ importers:
         specifier: ^0.6.1
         version: 0.6.1
       '@ossinsight/types':
-        specifier: workspace:^
+        specifier: workspace:^1.0.0
         version: link:../types
       '@sentry/node':
         specifier: ^7.57.0
