@@ -44,6 +44,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
 
+      - name: Install OSSInsight Types Dependencies
+        run: pnpm --filter "@ossinsight/types" install && pnpm --filter "@ossinsight/types" build
+
       - name: Install Dependencies
         run: pnpm i --frozen-lockfile --strict-peer-dependencies
 
