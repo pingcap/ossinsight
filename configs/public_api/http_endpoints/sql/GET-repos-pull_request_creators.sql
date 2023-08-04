@@ -17,10 +17,9 @@ ORDER BY
         WHEN ${sort} = 'prs' THEN prs 
         WHEN ${sort} = 'prs-asc' THEN -prs
         WHEN ${sort} = 'first_pr_opened_at' THEN first_pr_opened_at
-        WHEN ${sort} = 'first_pr_opened_at-asc' THEN -first_pr_opened_at
+        WHEN ${sort} = 'first_pr_opened_at-desc' THEN -first_pr_opened_at
         WHEN ${sort} = 'first_pr_merged_at' THEN first_pr_merged_at
-        WHEN ${sort} = 'first_pr_merged_at-asc' THEN -first_pr_merged_at
+        WHEN ${sort} = 'first_pr_merged_at-desc' THEN -first_pr_merged_at
         ELSE login
     END) AS SIGNED)
-DESC
 LIMIT ${offset}, ${limit}

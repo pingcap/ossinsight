@@ -14,10 +14,9 @@ WHERE
 ORDER BY
     CAST((CASE
         WHEN ${sort} = 'issues' THEN issues 
-        WHEN ${sort} = 'issues-asc' THEN -issues
+        WHEN ${sort} = 'issues-desc' THEN -issues
         WHEN ${sort} = 'first_issue_opened_at' THEN first_issue_opened_at
-        WHEN ${sort} = 'first_issue_opened_at-asc' THEN -first_issue_opened_at
+        WHEN ${sort} = 'first_issue_opened_at-desc' THEN -first_issue_opened_at
         ELSE login
     END) AS SIGNED)
-DESC
 LIMIT ${offset}, ${limit}

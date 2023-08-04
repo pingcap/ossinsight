@@ -40,7 +40,7 @@
         "name": "offset",
         "type": "integer",
         "required": 0,
-        "default": "1",
+        "default": "0",
         "description": ""
       },
       {
@@ -53,7 +53,7 @@
     ],
     "settings": {
       "timeout": 5000,
-      "row_limit": 50
+      "row_limit": 2000
     },
     "tag": "Default",
     "batch_operation": 0,
