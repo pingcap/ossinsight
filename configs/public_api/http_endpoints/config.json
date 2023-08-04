@@ -1,5 +1,67 @@
 [
   {
+    "name": "List Issue Creators",
+    "description": "",
+    "method": "GET",
+    "endpoint": "/repos/issue_creators",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "owner",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "repo",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "exclude_bots",
+        "type": "boolean",
+        "required": 0,
+        "default": "true",
+        "description": ""
+      },
+      {
+        "name": "sort",
+        "type": "string",
+        "required": 0,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "offset",
+        "type": "integer",
+        "required": 0,
+        "default": "1",
+        "description": ""
+      },
+      {
+        "name": "limit",
+        "type": "integer",
+        "required": 0,
+        "default": "30",
+        "description": ""
+      }
+    ],
+    "settings": {
+      "timeout": 5000,
+      "row_limit": 50
+    },
+    "tag": "Default",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-repos-issue_creators.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
     "name": "List Pull Request Creators",
     "description": "",
     "method": "GET",
@@ -47,7 +109,7 @@
         "name": "limit",
         "type": "integer",
         "required": 0,
-        "default": "10",
+        "default": "30",
         "description": ""
       }
     ],
