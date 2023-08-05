@@ -15,7 +15,8 @@ export const APIServerEnvSchema = {
       default: 'ossinsight@pingcap.com'
     },
     DATABASE_URL: {
-      type: 'string'
+      type: 'string',
+      default: 'mysql://root@localhost:4000/gharchive_dev?timezone=Z&decimalNumbers=true'
     },
     SHADOW_DATABASE_URL: {
       type: 'string'
@@ -29,7 +30,10 @@ export const APIServerEnvSchema = {
     },
     ENABLE_CACHE: {
       type: 'boolean',
-      default: false
+      default: true
+    },
+    QUERY_CACHE_KEY_PREFIX: {
+      type: 'string',
     },
     PLAYGROUND_DATABASE_URL: {
       type: 'string',

@@ -20,6 +20,7 @@ export interface Question {
   combinedTitle?: string;
   querySQL?: string;
   queryHash?: string;
+  plan?: Record<string, string>[] | null;
   engines?: string[];
   queueName?: QuestionQueueNames;
   queueJobId?: string | null;

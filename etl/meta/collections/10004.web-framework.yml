@@ -59,3 +59,5 @@ items:
   - lucacasonato/fresh
   - honojs/hono
   - refinedev/refine
+  - unjs/nitro
+  - payloadcms/payload

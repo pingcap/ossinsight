@@ -16,6 +16,8 @@ items:
   - datafuselabs/databend
   - apache/spark
   - surrealdb/surrealdb
+  - MaterializeInc/materialize
+  - risingwavelabs/risingwave
   
   # Data analytics
   - metabase/metabase
@@ -31,6 +33,11 @@ items:
   - apache/Kafka
   - apache/flink
   - apache/beam
+  - redpanda-data/redpanda
+
+  # Stream Processing
+  - bytewax/bytewax
+  - benthosdev/benthos
 
   # Data transformation
   - dbt-labs/dbt-core

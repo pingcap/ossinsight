@@ -2,7 +2,9 @@ import DigestClient from "digest-fetch";
 import {FastifyBaseLogger} from "fastify";
 import fp from "fastify-plugin";
 import {DateTime} from "luxon";
+import {URLSearchParams} from "url";
 import {countAPIRequest, dataServiceRequestCounter, dataServiceRequestTimer, measure} from "../../../metrics";
+import {APIError} from "../../../utils/error";
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -38,20 +40,23 @@ export class TiDBDataService {
     this.baseURL = `https://data.tidbcloud.com/api/v1beta/app/${appId}/endpoint`;
   }
 
-  async query(endpointPath: string, params: Record<string, any>) {
-    const counter = dataServiceRequestCounter;
-    const timer = dataServiceRequestTimer.labels({ api: endpointPath });
+  async request(originalPath: string) {
+    new URLSearchParams()
+    const endpointName = new URL(originalPath, 'https://example.org').pathname;
+    if (!endpointName) {
+      throw new APIError(400, 'Invalid query name.');
+    }
 
-    return await countAPIRequest(counter, endpointPath, async () => {
+    const counter = dataServiceRequestCounter;
+    const timer = dataServiceRequestTimer.labels({ api: endpointName });
+
+    return await countAPIRequest(counter, endpointName, async () => {
       return await measure(timer, async () => {
         const startTime = DateTime.now();
-        const res = await this.client.fetch(`${this.baseURL}/${endpointPath}`, {
-          params
-        });
-
+        const res = await this.client.fetch(`${this.baseURL}${originalPath}`);
         const endTime = DateTime.now();
         const duration = endTime.diff(startTime, 'seconds').seconds;
-        this.logger.info(`✅ Finished querying ${endpointPath} on TiDB Data Service, cost: ${duration} s.`);
+        this.logger.info(`✅ Finished request TiDB Data Service (endpoint: ${endpointName}), cost: ${duration} s.`);
         return res;
       });
     });

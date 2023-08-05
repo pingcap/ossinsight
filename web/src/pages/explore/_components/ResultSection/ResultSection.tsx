@@ -1,26 +1,27 @@
-import Section, { SectionProps, SectionStatus, SectionStatusIcon } from '@site/src/pages/explore/_components/Section';
-import React, { forwardRef, useEffect, useMemo, useRef, useState } from 'react';
-import { QuestionLoadingPhase } from '@site/src/pages/explore/_components/useQuestion';
-import { isEmptyArray, isNonemptyString, isNullish, nonEmptyArray, notFalsy, notNullish } from '@site/src/utils/value';
-import { ChartResult, Question, QuestionStatus } from '@site/src/api/explorer';
-import Info from '@site/src/pages/explore/_components/Info';
-import { Box, Divider, Portal, Stack, styled, ToggleButton, ToggleButtonGroup, Typography, useEventCallback } from '@mui/material';
-import ErrorBlock from '@site/src/pages/explore/_components/ErrorBlock';
-import TableChart from '@site/src/pages/explore/_components/charts/TableChart';
-import { Charts } from '@site/src/pages/explore/_components/charts';
-import { AutoGraph, TableView } from '@mui/icons-material';
-import { TabContext, TabPanel } from '@mui/lab';
-import { useExploreContext } from '@site/src/pages/explore/_components/context';
-import SummaryCard from '@site/src/pages/explore/_components/SummaryCard';
-import { uniqueItems } from '@site/src/utils/generate';
-import ShareButtons from '../ShareButtons';
-import TypewriterEffect from '@site/src/pages/explore/_components/TypewriterEffect';
-import Feedback from '@site/src/pages/explore/_components/Feedback';
-import { Prompts } from '@site/src/pages/explore/_components/Prompt';
 import Link from '@docusaurus/Link';
+import { ArrowRightAlt, AutoGraph, TableView } from '@mui/icons-material';
+import { TabContext, TabPanel } from '@mui/lab';
+import { Box, Divider, Portal, Stack, styled, ToggleButton, ToggleButtonGroup, Typography, useEventCallback } from '@mui/material';
+import { ChartResult, Question, QuestionStatus } from '@site/src/api/explorer';
 import Anchor from '@site/src/components/Anchor';
+import { Charts } from '@site/src/pages/explore/_components/charts';
+import TableChart from '@site/src/pages/explore/_components/charts/TableChart';
+import { useExploreContext } from '@site/src/pages/explore/_components/context';
+import ErrorBlock from '@site/src/pages/explore/_components/ErrorBlock';
+import Feedback from '@site/src/pages/explore/_components/Feedback';
+import Info from '@site/src/pages/explore/_components/Info';
+import { Prompts } from '@site/src/pages/explore/_components/Prompt';
 import ErrorMessage from '@site/src/pages/explore/_components/ResultSection/ErrorMessage';
+import ShowExecutionInfoButton from '@site/src/pages/explore/_components/ResultSection/ShowExecutionInfoButton';
+import Section, { SectionProps, SectionStatus, SectionStatusIcon } from '@site/src/pages/explore/_components/Section';
+import SummaryCard from '@site/src/pages/explore/_components/SummaryCard';
+import TypewriterEffect from '@site/src/pages/explore/_components/TypewriterEffect';
+import { QuestionLoadingPhase } from '@site/src/pages/explore/_components/useQuestion';
+import { uniqueItems } from '@site/src/utils/generate';
+import { isEmptyArray, isNonemptyString, isNullish, nonEmptyArray, notFalsy, notNullish } from '@site/src/utils/value';
+import React, { forwardRef, useEffect, useMemo, useRef, useState } from 'react';
 import { makeIssueTemplate } from '../issueTemplates';
+import ShareButtons from '../ShareButtons';
 
 const ENABLE_SUMMARY = false;
 
@@ -63,13 +64,18 @@ const ResultSection = forwardRef<HTMLElement, ResultSectionProps>(({ question, p
       case QuestionLoadingPhase.EXECUTING:
         return 'Running SQL...';
       case QuestionLoadingPhase.EXECUTE_FAILED:
-        return 'Failed to execute SQL';
+        return question?.status === 'cancel' ? 'Execution canceled' : 'Failed to execute SQL';
       case QuestionLoadingPhase.UNKNOWN_ERROR:
         return 'Unknown error';
       case QuestionLoadingPhase.VISUALIZE_FAILED:
       case QuestionLoadingPhase.READY:
       case QuestionLoadingPhase.SUMMARIZING:
-        return <>{`${question?.result?.rows.length ?? 'NaN'} rows in ${question?.spent ?? 'NaN'} seconds`}{renderEngines(question)}</>;
+        return (
+          <>
+            {`${question?.result?.rows.length ?? 'NaN'} rows in ${question?.spent ?? 'NaN'} seconds`}
+            {renderEngines(question)}
+            {renderExecutionPlan(question)}
+          </>);
       default:
         return 'pending';
     }
@@ -169,7 +175,7 @@ function renderEngines (question: Question | undefined) {
       <>
         . Running on&nbsp;
         <EngineTag>
-          <TidbLogo src='/img/tidb-cloud-logo-t.svg' alt='TiDB' />
+          <TidbLogo src="/img/tidb-cloud-logo-t.svg" alt="TiDB" />
           {question.engines.map(replaceEngineName).join(', ')}
         </EngineTag>
         <Info>
@@ -183,6 +189,16 @@ function renderEngines (question: Question | undefined) {
     );
   }
   return null;
+}
+
+function renderExecutionPlan (question: Question | undefined) {
+  if (notNullish(question) && !isEmptyArray(question.plan)) {
+    return (
+      <ShowExecutionInfoButton question={question}>
+        Explain SQL <ArrowRightAlt />
+      </ShowExecutionInfoButton>
+    );
+  }
 }
 
 function replaceEngineName (name: string) {
