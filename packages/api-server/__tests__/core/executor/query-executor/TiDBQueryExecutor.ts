@@ -1,4 +1,4 @@
-import { TiDBQueryExecutor } from '../../../../src/core/executor/query-executor/TiDBQueryExecutor';
+import { TiDBQueryExecutor } from '../../../../src';
 import {createTiDBPool} from "../../../../src/utils/db";
 import {bootstrapTestDatabase, getTestDatabase, releaseTestDatabase} from '../../../helpers/db';
 import { expectTimeout } from '../../../helpers/timeout';

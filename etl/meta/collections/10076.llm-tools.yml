@@ -13,3 +13,10 @@ items:
   - microsoft/prompt-engine
   - zilliztech/GPTCache
   - embedchain/embedchain
+  - langgenius/dify
+  - TransformerOptimus/SuperAGI
+  - ShishirPatil/gorilla
+  - rustformers/llm
+  - sobelio/llm-chain
+  - Chainlit/chainlit
+  - FlowiseAI/Flowise

@@ -23,6 +23,7 @@ export interface AppConfig {
   REDIS_URL: string;
   API_BASE_URL: string;
   ENABLE_CACHE: boolean;
+  QUERY_CACHE_KEY_PREFIX?: string;
   PLAYGROUND_DATABASE_URL: string;
   PLAYGROUND_SHADOW_DATABASE_URL: string;
   PLAYGROUND_DAILY_QUESTIONS_LIMIT: number;
@@ -104,7 +105,7 @@ const app: FastifyPluginAsync<AppOptions, RawServerDefault, JsonSchemaToTsProvid
   // Notice: Swagger docs SHOULD be initialized after all routes are registered.
   fastify.get('/docs/json', (req, reply) => {
     reply.send(fastify.swagger());
-  })
+  });
 };
 
 export default app;

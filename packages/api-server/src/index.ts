@@ -6,7 +6,7 @@ export { QueryRunner } from './core/runner/query/QueryRunner';
 export { QueryLoader } from './core/runner/query/QueryLoader';
 export { QueryParser } from './core/runner/query/QueryParser';
 
-export { Params, ConditionalRefreshCrons, QuerySchema } from './types/query.schema';
+export { Params, ConditionalRefreshCrons, QuerySchema } from '@ossinsight/types';
 
 export * from './plugins/services/explorer-service/types';
 export { getPlaygroundSessionLimits } from './core/playground/limitation';

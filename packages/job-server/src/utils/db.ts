@@ -34,6 +34,11 @@ export function completeDatabaseURL(originalURL: string, usedInPool: boolean = t
     url.searchParams.append('timezone', 'Z');
   }
 
+  // Default enableKeepAlive to true.
+  if (!url.searchParams.has('enableKeepAlive')) {
+    url.searchParams.append('enableKeepAlive', 'true');
+  }
+
   return url.toString();
 }
 

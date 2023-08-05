@@ -39,7 +39,7 @@ importers:
         specifier: ^5.0.0
         version: 5.2.0
       '@fastify/swagger':
-        specifier: ^8.1.0
+        specifier: ^8.7.0
         version: 8.7.0
       '@fastify/websocket':
         specifier: ^7.1.1
@@ -50,6 +50,9 @@ importers:
       '@mgcrea/fastify-request-logger':
         specifier: ^0.6.1
         version: 0.6.1
+      '@ossinsight/types':
+        specifier: workspace:^1.0.0
+        version: link:../types
       '@sentry/node':
         specifier: ^7.57.0
         version: 7.57.0
@@ -404,7 +407,7 @@ importers:
         specifier: ^5.0.0
         version: 5.2.0
       '@ossinsight/api-server':
-        specifier: workspace:^1.0.0
+        specifier: workspace:^
         version: link:../api-server
       '@ossinsight/email-server':
         specifier: workspace:^0.0.1
@@ -514,6 +517,73 @@ importers:
         version: 10.9.1(@types/node@18.16.19)(typescript@4.7.4)
       typescript:
         specifier: ~4.7.0
+        version: 4.7.4
+
+  packages/pipeline:
+    dependencies:
+      '@fastify/autoload':
+        specifier: ^5.0.0
+        version: 5.7.1
+      '@fastify/env':
+        specifier: ^4.1.0
+        version: 4.2.0
+      '@fastify/mysql':
+        specifier: ^4.1.0
+        version: 4.1.0
+      '@fastify/schedule':
+        specifier: ^4.1.1
+        version: 4.1.1(fastify@4.19.2)(toad-scheduler@3.0.0)
+      croner:
+        specifier: ^6.0.7
+        version: 6.0.7
+      fastify:
+        specifier: ^4.0.0
+        version: 4.19.2
+      fastify-cli:
+        specifier: ^5.5.1
+        version: 5.7.1
+      fastify-metrics:
+        specifier: ^10.0.0
+        version: 10.3.0(fastify@4.19.2)
+      fastify-plugin:
+        specifier: ^4.3.0
+        version: 4.5.0
+      luxon:
+        specifier: ^3.3.0
+        version: 3.3.0
+      mysql2:
+        specifier: ^2.3.3
+        version: 2.3.3
+      node-schedule:
+        specifier: ^2.1.1
+        version: 2.1.1
+      pino:
+        specifier: ^8.7.0
+        version: 8.14.1
+      pino-pretty:
+        specifier: ^9.1.1
+        version: 9.4.1
+      toad-scheduler:
+        specifier: ^3.0.0
+        version: 3.0.0
+    devDependencies:
+      '@fastify/type-provider-json-schema-to-ts':
+        specifier: ^2.1.1
+        version: 2.2.2(fastify@4.19.2)(json-schema-to-ts@2.9.1)
+      '@types/luxon':
+        specifier: ^3.3.1
+        version: 3.3.1
+      '@types/node':
+        specifier: ^18.0.0
+        version: 18.16.19
+      '@types/node-schedule':
+        specifier: ^2.1.0
+        version: 2.1.0
+      fastify-tsconfig:
+        specifier: ^1.0.1
+        version: 1.0.1
+      typescript:
+        specifier: ^4.5.4
         version: 4.7.4
 
   packages/prefetch:
@@ -661,6 +731,30 @@ importers:
       tsconfig-paths:
         specifier: ^4.2.0
         version: 4.2.0
+      typescript:
+        specifier: ^4.5.4
+        version: 4.7.4
+
+  packages/types:
+    devDependencies:
+      '@types/node':
+        specifier: ^18.0.0
+        version: 18.16.19
+      ajv-cli:
+        specifier: ^5.0.0
+        version: 5.0.0(ts-node@10.9.1)
+      ajv-formats:
+        specifier: ^2.1.1
+        version: 2.1.1(ajv@8.12.0)
+      fastify-tsconfig:
+        specifier: ^1.0.1
+        version: 1.0.1
+      json-schema-to-ts:
+        specifier: ^2.6.0
+        version: 2.9.1
+      json-schema-to-typescript:
+        specifier: ^11.0.2
+        version: 11.0.5
       typescript:
         specifier: ^4.5.4
         version: 4.7.4
@@ -1184,6 +1278,17 @@ packages:
       ioredis: 5.3.2
     transitivePeerDependencies:
       - supports-color
+    dev: false
+
+  /@fastify/schedule@4.1.1(fastify@4.19.2)(toad-scheduler@3.0.0):
+    resolution: {integrity: sha512-riIh+eumfpoDDpNqMqzHdzYofWVhaHJYxH69OMQyVzGUJikF5luvr4LMx/uxedE1VJfmHJCUjBuMVcPLB7KsZg==}
+    peerDependencies:
+      fastify: ^4.0.0
+      toad-scheduler: '>= 2.0.0 < 4'
+    dependencies:
+      fastify: 4.19.2
+      fastify-plugin: 4.5.0
+      toad-scheduler: 3.0.0
     dev: false
 
   /@fastify/send@2.1.0:
@@ -2685,6 +2790,10 @@ packages:
   /@types/luxon@3.3.0:
     resolution: {integrity: sha512-uKRI5QORDnrGFYgcdAVnHvEIvEZ8noTpP/Bg+HeUzZghwinDlIS87DEenV5r1YoOF9G4x600YsUXLWZ19rmTmg==}
 
+  /@types/luxon@3.3.1:
+    resolution: {integrity: sha512-XOS5nBcgEeP2PpcqJHjCWhUCAzGfXIU8ILOSLpx2FhxqMW9KdxgCGXNOEKGVBfveKtIpztHzKK5vSRVLyW/NqA==}
+    dev: true
+
   /@types/mime@1.3.2:
     resolution: {integrity: sha512-YATxVxgRqNH6nHEIsvg6k2Boc1JHI9ZbH5iWFFv/MTkchz3b1ieGDa5T0a9RznNdI0KhVbdbWSN+KWWrQZRxTw==}
     dev: false
@@ -2745,6 +2854,7 @@ packages:
 
   /@types/parse-json@4.0.0:
     resolution: {integrity: sha512-//oorEZjL6sbPcKUaCdIGlIUeH26mgzimjBB77G6XRgnDl/L5wOnpyBGRe/Mmf5CVW3PwEBE1NjiMZ/ssFh4wA==}
+    requiresBuild: true
     dev: false
     optional: true
 
@@ -3435,6 +3545,7 @@ packages:
 
   /babel-plugin-macros@2.8.0:
     resolution: {integrity: sha512-SEP5kJpfGYqYKpBrj5XU3ahw5p5GOHJ0U5ssOSQ/WBVdwkD2Dzlce95exQTs3jOVWPPKLBN2rlEWkCK7dSmLvg==}
+    requiresBuild: true
     dependencies:
       '@babel/runtime': 7.22.6
       cosmiconfig: 6.0.0
@@ -3445,6 +3556,7 @@ packages:
   /babel-plugin-preval@4.0.0:
     resolution: {integrity: sha512-fZI/4cYneinlj2k/FsXw0/lTWSC5KKoepUueS1g25Gb5vx3GrRyaVwxWCshYqx11GEU4mZnbbFhee8vpquFS2w==}
     engines: {node: '>=8', npm: '>=6'}
+    requiresBuild: true
     dependencies:
       '@babel/runtime': 7.22.6
       babel-plugin-macros: 2.8.0
@@ -3664,6 +3776,7 @@ packages:
   /buildcheck@0.0.6:
     resolution: {integrity: sha512-8f9ZJCUXyT1M35Jx7MkBgmBMo3oHTTBIPLiY9xyL0pl3T5RwcPEY8cUHr5LBNfu/fk6c2T4DJZuVM/8ZZT2D2A==}
     engines: {node: '>=10.0.0'}
+    requiresBuild: true
     dev: true
     optional: true
 
@@ -4147,6 +4260,7 @@ packages:
   /cosmiconfig@6.0.0:
     resolution: {integrity: sha512-xb3ZL6+L8b9JLLCx3ZdoZy4+2ECphCMo2PwqgP1tlfVq6M6YReyzBJtvWWtbDSpNr9hn96pkCiZqUcFEc+54Qg==}
     engines: {node: '>=8'}
+    requiresBuild: true
     dependencies:
       '@types/parse-json': 4.0.0
       import-fresh: 3.3.0
@@ -4194,6 +4308,11 @@ packages:
     resolution: {integrity: sha512-1eRRlIT0UfIqauwbG9pkg3J6CX9A6My2ytJWqAXoK0T9oJnUZTzGBNPxao0zjodIbPgf8UQWjE62BMb9eVllSQ==}
     dependencies:
       luxon: 3.3.0
+    dev: false
+
+  /croner@6.0.7:
+    resolution: {integrity: sha512-k3Xx3Rcclfr60Yx4TmvsF3Yscuiql8LSvYLaphTsaq5Hk8La4Z/udmUANMOTKpgGGroI2F6/XOr9cU9OFkYluQ==}
+    engines: {node: '>=6.0'}
     dev: false
 
   /cross-spawn@7.0.3:
@@ -8167,6 +8286,7 @@ packages:
 
   /node-addon-api@3.2.1:
     resolution: {integrity: sha512-mmcei9JghVNDYydghQmeDX8KoAm0FAiYyIcUt/N4nhyAipB17pllZQDOJD2fotxABnt4Mdz+dKTO7eftLg4d0A==}
+    requiresBuild: true
     dev: false
     optional: true
 
@@ -8196,6 +8316,7 @@ packages:
   /node-gyp-build-optional-packages@5.0.7:
     resolution: {integrity: sha512-YlCCc6Wffkx0kHkmam79GKvDQ6x+QZkMjFGrIMxgFNILFvGSbCp2fCBC55pGTT9gVaz8Na5CLmxt/urtzRv36w==}
     hasBin: true
+    requiresBuild: true
     dev: false
     optional: true
 
@@ -8944,6 +9065,7 @@ packages:
 
   /preval.macro@4.0.0:
     resolution: {integrity: sha512-sJJnE71X+MPr64CVD2AurmUj4JEDqbudYbStav3L9Xjcqm4AR0ymMm6sugw1mUmfI/7gw4JWA4JXo/k6w34crw==}
+    requiresBuild: true
     dependencies:
       babel-plugin-preval: 4.0.0
     dev: false
@@ -10070,6 +10192,10 @@ packages:
     engines: {node: '>=8.0'}
     dependencies:
       is-number: 7.0.0
+
+  /toad-scheduler@3.0.0:
+    resolution: {integrity: sha512-BYmrORvaGmjziir/ra8qD3qAKczJveqK5ZOO/wn7oS5qLI4iibOza3DBGgu+EwNp9zdlBTKSeZPmxZxzGy1dxw==}
+    dev: false
 
   /toidentifier@1.0.1:
     resolution: {integrity: sha512-o5sSPKEkg/DIQNmH43V0/uerLrpzVedkUh8tGNvaeXpfpuwjKenlSox/2O/BTlZUtEe+JG7s5YhEz608PlAHRA==}

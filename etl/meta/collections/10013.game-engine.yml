@@ -45,11 +45,10 @@ items:
   - orx/orx
   - nCine/nCine
   - cocos-creator/engine
-  - love2d/love
   - coronalabs/corona
   - hajimehoshi/ebiten
+  - hexops/mach
   - HaxeFoundation/haxe
-  - bevyengine/bevy
   - Esenthel/EsenthelEngine
   - aws/lumberyard
   - FlaxEngine/FlaxEngine

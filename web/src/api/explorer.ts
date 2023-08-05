@@ -18,6 +18,7 @@ export interface Question {
   engines: string[];
   queueJobId?: string | null;
   result?: QuestionSQLResult;
+  plan?: QuestionSQLPlan[];
   chart?: ChartResult | null;
   recommended: boolean;
   recommendedQuestions?: string[];
@@ -58,6 +59,14 @@ export interface QuestionAnswer {
 export interface QuestionSQLResult {
   fields: Array<{ name: string, columnType: number }>;
   rows: Array<Record<string, any>>;
+}
+
+export interface QuestionSQLPlan {
+  'id': string;
+  'estRows': string;
+  'task': string;
+  'access object': string;
+  'operator info': string;
 }
 
 export interface QuestionQueryResult {

@@ -30,7 +30,7 @@
     "@fastify/mysql": "^4.0.0",
     "@fastify/redis": "^6.1.0",
     "@fastify/sensible": "^5.0.0",
-    "@ossinsight/api-server": "workspace:^1.0.0",
+    "@ossinsight/api-server": "workspace:^",
     "@ossinsight/email-server": "workspace:^0.0.1",
     "@sentry/node": "^7.57.0",
     "@types/cron": "^2.0.0",
