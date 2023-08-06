@@ -1,7 +1,5 @@
-import {
-    TiDBPlaygroundQueryExecutor,
-    getPlaygroundSessionLimits, ExplorerService
-} from "@ossinsight/api-server";
+
+import {ExplorerService, getPlaygroundSessionLimits, TiDBPlaygroundQueryExecutor} from "@ossinsight/api-server";
 import fp from "fastify-plugin";
 import {Pool} from "mysql2/promise";
 import pino from "pino";
@@ -13,7 +11,7 @@ export default fp(async (app) => {
     const playgroundShadowPool = app.mysql.playgroundShadow as unknown as Pool;
     const executor = new TiDBPlaygroundQueryExecutor(playgroundPool, playgroundShadowPool, log, getPlaygroundSessionLimits());
     app.decorate('explorerService', new ExplorerService(
-      app.log.child({service: 'explorer-service'}),
+      app.log.child({module: 'explorer-service'}),
       app.mysql,
       app.botService,
       executor,

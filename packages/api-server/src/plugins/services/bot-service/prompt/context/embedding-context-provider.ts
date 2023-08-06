@@ -56,14 +56,14 @@ class EmbeddingContextProvider implements ContextProvider {
 
     async provide(context: Record<string, any>): Promise<Record<string, string>> {
         let question = context['question']
-        let r = await axios.post<EmbeddingSearchResult>(this.endpoint + '/prompts', {
+        let res = await axios.post<EmbeddingSearchResult>(this.endpoint + '/prompts', {
             'question': question,
-        })
+        });
 
         return {
-            'columns': r.data.columns.map(c => c['table'] + '.' + c['column'] + ': ' + c['desc']).join('\n\n'),
-            'entities': r.data.entities.map(e => e['desc']).join('\n\n'),
-            'examples': r.data.examples.map(e => 'Q: ' + e['Q'] + '\nA: ' + e['A']).join('\n\n'),
+            'columns': res.data.columns.map(c => c['table'] + '.' + c['column'] + ': ' + c['desc']).join('\n\n'),
+            'entities': res.data.entities.map(e => e['desc']).join('\n\n'),
+            'examples': res.data.examples.map(e => 'Q: ' + e['Q'] + '\nA: ' + e['A']).join('\n\n'),
             ...context,
         };
     }
