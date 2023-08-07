@@ -11,7 +11,7 @@ declare module 'fastify' {
 }
 
 export default fp(async (app) => {
-  // Init Access Log Batch Loader.
+  // Init API Request Stats Batch Loader.
   const insertSQL = `INSERT INTO stats_api_requests(client_ip, client_origin, method, path, query, error, status_code, duration, is_dev) VALUES ?`;
   const apiRequestRecorder = new BatchLoader(app.log as Logger, app.mysql as unknown as Pool, insertSQL);
 
