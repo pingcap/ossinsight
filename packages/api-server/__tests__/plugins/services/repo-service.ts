@@ -20,6 +20,13 @@ describe('subscribe repo', () => {
 
   beforeEach(async () => {
     await conn.query('DELETE FROM sys_subscribed_repos WHERE 1 = 1;');
+    await conn.query('DELETE FROM sys_users WHERE 1 = 1;');
+    await conn.query('DELETE FROM github_repos WHERE repo_id IN (?);', [[41986369, 48833910]]);
+    await conn.query(`INSERT INTO sys_users(id, name, email_address, role) VALUES (?, ?, ?, ?)`, [1, 'foo', 'test@example.com', 'USER']);
+    await conn.query(`INSERT INTO github_repos(repo_id, repo_name, owner_id, owner_login, owner_is_org) VALUES ?;`, [[
+      [41986369, 'pingcap/tidb', 1, 'pingcap', 1],
+      [48833910, 'tikv/tikv', 1, 'tikv', 1]
+    ]]);
     // Repo pingcap/tidb has been subscribed by user 1.
     await conn.query(`
         INSERT INTO sys_subscribed_repos(user_id, repo_id, subscribed, subscribed_at)
@@ -52,6 +59,12 @@ describe('unsubscribe repo', () => {
 
   beforeEach(async () => {
     await conn.query('DELETE FROM sys_subscribed_repos WHERE 1 = 1;');
+    await conn.query('DELETE FROM github_repos WHERE 1 = 1;');
+    await conn.query('DELETE FROM sys_users WHERE 1 = 1;');
+    await conn.query(`INSERT INTO sys_users(id, name, email_address, role) VALUES (?, ?, ?, ?)`, [1, 'foo', 'test@example.com', 'USER']);
+    await conn.query(`INSERT INTO github_repos(repo_id, repo_name, owner_id, owner_login, owner_is_org) VALUES ?;`, [[
+      [41986369, 'pingcap/tidb', 1, 'pingcap', 1]
+    ]]);
     // Repo pingcap/tidb has been subscribed by user 1.
     await conn.query(`
         INSERT INTO sys_subscribed_repos(user_id, repo_id, subscribed, subscribed_at)
@@ -94,6 +107,16 @@ describe('get user subscribed repos', () => {
 
   beforeEach(async () => {
     await conn.query('DELETE FROM sys_subscribed_repos WHERE 1 = 1;');
+    await conn.query('DELETE FROM github_repos WHERE repo_id IN (?)', [[41986369, 167499157, 48833910]]);
+    await conn.query(`DELETE FROM sys_users WHERE 1 = 1;`);
+    await conn.query(`DELETE FROM sys_accounts WHERE 1 = 1;`);
+    await conn.query(
+      `INSERT INTO sys_users(id, name, email_address, avatar_url, role) VALUES ?`,
+      [[
+        [1, 'foo', 'foo@example.com', 'https://github.com/ossinsight.png', 'user'],
+        [2, 'bar', 'bar@example.com', 'https://github.com/ossinsight.png', 'user']
+      ]]
+    );
     await conn.query(`
         INSERT INTO github_repos(repo_id, repo_name, owner_id, owner_login, owner_is_org)
         VALUES ?;

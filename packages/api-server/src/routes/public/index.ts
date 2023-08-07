@@ -22,11 +22,11 @@ const queryHandler: FastifyPluginAsync = async (app, opts): Promise<void> => {
     // Retrieve query result from TiDB data service.
     const url = req.url.replace(/^\/public/, '');
     const res = await app.tidbDataService.request(url);
-    const json = await res.json();
+
     reply
       .code(res.status)
       .headers(res.headers)
-      .send(json);
+      .send(res.data);
   })
 }
 

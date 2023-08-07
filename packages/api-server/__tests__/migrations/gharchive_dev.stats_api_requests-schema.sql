@@ -1,9 +1,8 @@
-/*!40101 SET NAMES binary*/;
 CREATE TABLE stats_api_requests (
     client_ip      VARCHAR(128) DEFAULT ''                NOT NULL,
     client_origin  VARCHAR(255) DEFAULT ''                NOT NULL,
     method         ENUM('GET', 'POST', 'HEAD', 'PUT', 'PATCH', 'DELETE') NOT NULL,
-    path           VARCHAR(255)                          NULL,
+    path           VARCHAR(255)                           NULL,
     query          JSON                                   NULL,
     status_code    INT                                    NULL,
     error          TINYINT(1)   DEFAULT 0                 NOT NULL,
