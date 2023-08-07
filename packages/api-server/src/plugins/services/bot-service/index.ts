@@ -1,7 +1,8 @@
+import {FastifyBaseLogger} from "fastify";
 import {countAPIRequest, measureAPIRequest, openaiAPICounter, openaiAPITimer} from "../../../metrics";
 import {ContextProvider} from "./prompt/context/context-provider";
 import {Answer} from "./types";
-import {BotResponseGenerateError, BotResponseParseError} from "../../../utils/error";
+import {APIError, BotResponseGenerateError, BotResponseParseError} from "../../../utils/error";
 import {Configuration, OpenAIApi} from "openai";
 import {DateTime} from "luxon";
 import {PromptConfig, PromptManager} from './prompt/prompt-manager';
@@ -50,7 +51,51 @@ export class BotService {
         this.openai = new OpenAIApi(configuration);
     }
 
-    async loadGenerateAnswerPromptTemplate(question: string): Promise<[string, PromptConfig]> {
+    async questionToSQL(logger: FastifyBaseLogger, question: string, context: Record<string, any>): Promise<Answer | null> {
+        if (!question) return null;
+
+        const api = 'question-to-sql';
+        const promptName = 'playground-generate-sql';
+
+        // Prepare prompt.
+        logger.info("Preparing question to sql prompt question: %s", question);
+        const [prompt, promptConfig] = await this.promptTemplateManager.getPrompt(promptName, {
+            question,
+            ...context
+        });
+
+        // Request answer.
+        logger.info(promptConfig, "Generating SQL to answer question: %s", question);
+        let res: any;
+        const start = DateTime.now();
+        res = await countAPIRequest(openaiAPICounter, api, async () => {
+            return await measureAPIRequest(openaiAPITimer, api, async () => {
+                return await this.openai.createChatCompletion({
+                    messages: [
+                        {
+                            role: 'system',
+                            content: prompt!,
+                        }
+                    ],
+                    stream: false,
+                    ...promptConfig
+                });
+            });
+        });
+        const end = DateTime.now();
+        const costTime = end.diff(start).as('seconds');
+
+        const { choices, usage } = res.data;
+        logger.info({ usage }, 'Got SQL of question "%s" from OpenAI API, cost: %d s', question, costTime);
+
+        if (Array.isArray(choices)) {
+            return choices?.[0]?.message?.content || null;
+        } else {
+            throw new APIError(500, 'No SQL generated');
+        }
+    }
+
+    private async loadGenerateAnswerPromptTemplate(question: string): Promise<[string, PromptConfig]> {
         let promptName = 'explorer-generate-answer';
         let context: Record<string, any> = { question: question };
         if (this.contextProvider) {
@@ -60,7 +105,7 @@ export class BotService {
         return await this.promptTemplateManager.getPrompt(promptName, context);
     }
 
-    async questionToAnswerInStream(question: string, callback: (answer: Answer, key: string, value: any) => void): Promise<[Answer | null, string | null]> {
+    public async questionToAnswerInStream(question: string, callback: (answer: Answer, key: string, value: any) => void): Promise<[Answer | null, string | null]> {
         const api = 'question-to-answer-in-stream';
 
         // Prepare prompt.
@@ -185,7 +230,7 @@ export class BotService {
         });
     }
 
-    async questionToAnswerInNonStream(question: string): Promise<[Answer | null, string | null]> {
+    public async questionToAnswerInNonStream(question: string): Promise<[Answer | null, string | null]> {
         const api = 'question-to-answer-in-non-stream';
 
         // Prepare prompt.
@@ -236,7 +281,7 @@ export class BotService {
         }
     }
 
-    setAnswerValue(question: string, answer: Record<string, any>, key: string, value: any) {
+    private setAnswerValue(question: string, answer: Record<string, any>, key: string, value: any) {
         switch (key) {
             case 'RQ':
                 key = "revisedTitle";
@@ -276,7 +321,7 @@ export class BotService {
         return [answer, key, value];
     }
 
-    removeTableNameForColumn(chartOptions: Record<string, string>) {
+    private removeTableNameForColumn(chartOptions: Record<string, string>) {
         Object.entries(chartOptions).forEach(([key, value]) => {
             const match = tableColumnRegexp.exec(value);
             if (match) {

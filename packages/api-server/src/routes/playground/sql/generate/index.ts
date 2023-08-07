@@ -1,8 +1,8 @@
-import {ProviderType} from "../../../plugins/services/user-service";
-import {APIError} from "../../../utils/error";
+import {ProviderType} from "../../../../plugins/services/user-service";
+import {APIError} from "../../../../utils/error";
 import {FastifyPluginAsyncJsonSchemaToTs} from "@fastify/type-provider-json-schema-to-ts";
 import { GENERATE_SQL_LIMIT_HEADER, GENERATE_SQL_USED_HEADER, MAX_DAILY_GENERATE_SQL_LIMIT } from "./quota";
-import { Auth0User, parseAuth0User } from "../../../plugins/auth/auth0";
+import { Auth0User, parseAuth0User } from "../../../../plugins/auth/auth0";
 
 export interface IBody {
   question: string;
@@ -76,6 +76,9 @@ const root: FastifyPluginAsyncJsonSchemaToTs = async (app): Promise<void> => {
     let sql = null, success = true;
     try {
       sql = await app.botService.questionToSQL(app.log, question, context);
+      if (!sql) {
+        throw new APIError(500, 'No SQL generated');
+      }
     } catch (err) {
       success = false;
       throw err;
