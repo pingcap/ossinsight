@@ -131,6 +131,15 @@ export async function measure<T>(metrics: Summary<any> | Summary.Internal<any> |
   }
 }
 
+export async function measureAPIRequest<T>(metrics: Summary<any> | Summary.Internal<any> | Histogram<any> | Histogram.Internal<any>, api: string, fn: () => Promise<T>) {
+  const end = metrics.startTimer({ api })
+  try {
+    return await fn()
+  } finally {
+    end()
+  }
+}
+
 export async function countAPIRequest<T extends AxiosResponse<any, any>>(counter: Counter, api: string, fn: () => Promise<T>) {
   try {
     const res = await fn();

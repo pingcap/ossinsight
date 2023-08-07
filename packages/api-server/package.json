@@ -55,7 +55,7 @@
     "node-fetch": "v2",
     "node-sql-parser": "4.6.5",
     "octokit": "^2.0.10",
-    "openai": "^3.2.1",
+    "openai": "^3.3.0",
     "pino": "^8.7.0",
     "pino-pretty": "^9.1.1",
     "pino-sentry-transport": "^1.0.4",

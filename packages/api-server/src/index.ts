@@ -13,7 +13,7 @@ export { getPlaygroundSessionLimits } from './core/playground/limitation';
 export { TiDBQueryExecutor } from './core/executor/query-executor/TiDBQueryExecutor';
 export { TiDBPlaygroundQueryExecutor } from './core/executor/query-executor/TiDBPlaygroundQueryExecutor';
 export { CacheProviderTypes, default as CacheBuilder } from './core/cache/CacheBuilder';
-export { PromptTemplateManager } from './plugins/services/bot-service/prompt/prompt-template-manager';
+export { PromptManager } from './plugins/services/bot-service/prompt/prompt-manager';
 
 export {
   tidbWaitConnectionHistogram,
