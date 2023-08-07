@@ -70,11 +70,10 @@ export function proxyGet(
       // Retrieve query result from TiDB data service.
       const targetURL = `${pathname}?${queryStrings.join('&')}`;
       const res = await app.tidbDataService.request(targetURL);
-      const json = await res.json();
       reply
         .code(res.status)
         .headers(res.headers)
-        .send(json);
+        .send(res.data);
     })
 }
 
