@@ -42,7 +42,7 @@ export class BotService {
     constructor(
       private readonly log: pino.BaseLogger,
       private readonly apiKey: string,
-      private readonly promptTemplateManager: PromptManager,
+      private readonly promptManager: PromptManager,
       private readonly contextProvider?: ContextProvider,
     ) {
         const configuration = new Configuration({
@@ -59,7 +59,7 @@ export class BotService {
 
         // Prepare prompt.
         logger.info("Preparing question to sql prompt question: %s", question);
-        const [prompt, promptConfig] = await this.promptTemplateManager.getPrompt(promptName, {
+        const [prompt, promptConfig] = await this.promptManager.getPrompt(promptName, {
             question,
             ...context
         });
@@ -102,7 +102,7 @@ export class BotService {
             promptName = 'explorer-generate-answer-with-context';
             context = await this.contextProvider.provide(context);
         }
-        return await this.promptTemplateManager.getPrompt(promptName, context);
+        return await this.promptManager.getPrompt(promptName, context);
     }
 
     public async questionToAnswerInStream(question: string, callback: (answer: Answer, key: string, value: any) => void): Promise<[Answer | null, string | null]> {
