@@ -26,6 +26,7 @@
     "@fastify/cors": "^8.2.0",
     "@fastify/env": "^4.1.0",
     "@fastify/etag": "^4.2.0",
+    "@fastify/forwarded": "^2.2.0",
     "@fastify/mysql": "^4.1.0",
     "@fastify/redis": "^6.1.0",
     "@fastify/sensible": "^5.0.0",
