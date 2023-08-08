@@ -40,4 +40,4 @@ SELECT
   r.*,
   rc.collection_names
 FROM repos r
-JOIN repo_with_collections rc ON r.repo_id = rc.repo_id
+LEFT JOIN repo_with_collections rc ON r.repo_id = rc.repo_id
