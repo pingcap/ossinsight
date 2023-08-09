@@ -2,7 +2,10 @@ USE gharchive_dev;
 
 WITH group_by_org AS (
   SELECT
-      LOWER(REPLACE(gu.organization, '@', '')) AS org_name,
+      CASE
+        WHEN (TRIM(gu.organization) IN ('', 'n/a') OR gu.organization IS NULL) THEN 'UNKNOWN'
+        ELSE LOWER(REPLACE(gu.organization, '@', ''))
+      END AS org_name,
       COUNT(DISTINCT ge.actor_login) AS pull_request_creators
   FROM github_events ge
   LEFT JOIN github_users gu ON ge.actor_login = gu.login
@@ -12,7 +15,7 @@ WITH group_by_org AS (
       AND ge.action = 'opened'
       AND ge.created_at >= ${from}
       AND ge.created_at <= ${to}
-      AND gu.organization != ''
+      AND IF(${exclude_unknown} = TRUE, gu.organization != '', TRUE)
   GROUP BY org_name
 ), summary AS (
   SELECT SUM(pull_request_creators) AS total FROM group_by_org
