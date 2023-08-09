@@ -2,6 +2,7 @@
 
 OSSInsight Public APIs (beta) provide a convenient way to access insight data for open source projects on GitHub, supplementing the existing GitHub API.
 
+It provides data query in different dimensions, including:
 
 ```mdx-code-block
 import DocCardList from '@theme/DocCardList';
