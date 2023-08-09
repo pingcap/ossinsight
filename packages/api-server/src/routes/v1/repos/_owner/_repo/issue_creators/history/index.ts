@@ -2,22 +2,28 @@ import {FastifyPluginAsync} from "fastify";
 import {proxyGet, getSuccessResponse} from "../../../../../../../utils/endpoint";
 
 const schema = {
-  operationId: 'list-organizations-of-stargazers',
-  summary: 'List organizations of stargazers',
+  operationId: 'issue-creators-history',
+  summary: 'Issue creators history',
   method: 'GET',
-  description: 'List organizations of stargazers for the specified repository.',
-  tags: ['Stargazers'],
+  description: 'Querying the historical trend of the number of issue creators in a given repository.',
+  tags: ['Issue Creators'],
   querystring: {
     type: 'object',
     properties: {
+      per: {
+        type: 'string',
+        description: 'The time interval of the data points.',
+        enum: ['day', 'week', 'month'],
+        default: 'month',
+      },
       from: {
         type: 'string',
-        description: 'The start date of the range.',
+        description: 'The start date of the time range.',
         default: '2000-01-01',
       },
       to: {
         type: 'string',
-        description: 'The end date of the range.',
+        description: 'The end date of the time range.',
         default: '2099-01-01',
       }
     }
@@ -41,17 +47,12 @@ const schema = {
   response: {
     200: getSuccessResponse([
       {
-        col: "org_name",
+        col: "date",
         data_type: "VARCHAR",
         nullable: true
       },
       {
-        col: "stargazers",
-        data_type: "BIGINT",
-        nullable: true
-      },
-      {
-        col: "percentage",
+        col: "issue_creators",
         data_type: "DECIMAL",
         nullable: true
       }
@@ -60,45 +61,42 @@ const schema = {
       items: {
         type: 'object',
         properties: {
-          org_name: {
+          date: {
             type: 'string',
-            description: 'Name of the organization'
+            description: 'The date of the data point'
           },
-          percentage: {
+          issue_creators: {
             type: 'string',
-            description: 'Percentage of stargazers from the organization'
+            description: 'The number of issue creators on the date point'
           },
-          stargazers: {
-            type: 'string',
-            description: 'Number of stargazers from the organization'
-          },
-        }
+        },
+        additionalProperties: true,
       },
       example: [
         {
-          "org_name": "tencent",
-          "percentage": "0.0217",
-          "stargazers": "199"
+          "date": "2023-04-01",
+          "issue_creators": "1546"
         },
         {
-          "org_name": "bytedance",
-          "percentage": "0.0192",
-          "stargazers": "176"
+          "date": "2023-05-01",
+          "issue_creators": "1560"
         },
         {
-          "org_name": "alibaba",
-          "percentage": "0.0162",
-          "stargazers": "148"
+          "date": "2023-06-01",
+          "issue_creators": "1568"
         },
         {
-          "org_name": "pingcap",
-          "percentage": "0.0119",
-          "stargazers": "109"
+          "date": "2023-07-01",
+          "issue_creators": "1579"
         },
+        {
+          "date": "2023-08-01",
+          "issue_creators": "1580"
+        }
       ]
     }, {
-      row_count: 4
-    })
+      row_count: 5
+    }),
   }
 };
 

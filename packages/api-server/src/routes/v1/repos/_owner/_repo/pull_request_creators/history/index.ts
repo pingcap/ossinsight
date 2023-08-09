@@ -5,7 +5,7 @@ const schema = {
   operationId: 'pull-request-creators-history',
   summary: 'Pull request creators history',
   method: 'GET',
-  description: 'Querying the historical trend of the number of pull request creators in a given repository',
+  description: 'Querying the historical trend of the number of pull request creators in a given repository.',
   tags: ['Pull Request Creators'],
   querystring: {
     type: 'object',

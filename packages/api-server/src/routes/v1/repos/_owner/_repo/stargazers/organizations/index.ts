@@ -2,14 +2,27 @@ import {FastifyPluginAsync} from "fastify";
 import {proxyGet, getSuccessResponse} from "../../../../../../../utils/endpoint";
 
 const schema = {
-  operationId: 'list-countries-of-pr-creators',
-  summary: 'List countries/regions of PR creators',
+  operationId: 'list-organizations-of-stargazers',
+  summary: 'List organizations of stargazers',
   method: 'GET',
-  description: 'List countries/regions of pull request creators for the specified repository.',
-  tags: ['Pull Request Creators'],
+  description: `List organizations of stargazers for the specified repository. 
+
+> **Notice**:
+> In the overall data, about **5.62%** of GitHub users provided valid organization information.
+
+> **Note**: 
+> By default, the API does not count users without valid organization information. 
+> If you need to count these users, you can set the \`exclude_unknown\` parameter to \`false\`.
+`,
+  tags: ['Stargazers'],
   querystring: {
     type: 'object',
     properties: {
+      exclude_unknown: {
+        type: 'boolean',
+        description: 'Whether to exclude stargazers with unknown organization information',
+        default: true,
+      },
       from: {
         type: 'string',
         description: 'The start date of the range.',
@@ -41,12 +54,12 @@ const schema = {
   response: {
     200: getSuccessResponse([
       {
-        col: "country_code",
-        data_type: "CHAR",
+        col: "org_name",
+        data_type: "VARCHAR",
         nullable: true
       },
       {
-        col: "pull_request_creators",
+        col: "stargazers",
         data_type: "BIGINT",
         nullable: true
       },
@@ -60,39 +73,44 @@ const schema = {
       items: {
         type: 'object',
         properties: {
-          country_code: {
+          org_name: {
             type: 'string',
-            description: 'Country/region code'
+            description: 'Name of the organization'
           },
           percentage: {
             type: 'string',
-            description: 'Percentage of pull request creators from the country/region'
+            description: 'Percentage of stargazers from the organization'
           },
-          pull_request_creators: {
+          stargazers: {
             type: 'string',
-            description: 'Number of pull request creators from the country/region'
+            description: 'Number of stargazers from the organization'
           },
         }
       },
       example: [
         {
-          "country_code": "CN",
-          "percentage": "0.8802",
-          "pull_request_creators": "13619"
+          "org_name": "tencent",
+          "percentage": "0.0217",
+          "stargazers": "199"
         },
         {
-          "country_code": "NL",
-          "percentage": "0.0508",
-          "pull_request_creators": "786"
+          "org_name": "bytedance",
+          "percentage": "0.0192",
+          "stargazers": "176"
         },
         {
-          "country_code": "US",
-          "percentage": "0.0400",
-          "pull_request_creators": "619"
+          "org_name": "alibaba",
+          "percentage": "0.0162",
+          "stargazers": "148"
+        },
+        {
+          "org_name": "pingcap",
+          "percentage": "0.0119",
+          "stargazers": "109"
         },
       ]
     }, {
-      row_count: 3
+      row_count: 4
     })
   }
 };

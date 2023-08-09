@@ -11,7 +11,7 @@ The OSSInsight Public API is designed to follow the OpenAPI specification and ca
 All API requests are based on the following URL:
 
 ```shell
-https://api.ossinsight.io/public
+https://api.ossinsight.io/v1
 ```
 
 ### Authentication
@@ -30,7 +30,7 @@ For each IP address, the rate limit allows for up to **600 requests per hour**.
 For example, if you want to know what countries the stargazers in the `pingcap/tidb` repository are located in, you can make a request using the curl command as follows:
 
 ```shell
-curl https://api.ossinsight.io/public/repos/pingcap/tidb/stargazers/countries
+curl https://api.ossinsight.io/v1/repos/pingcap/tidb/stargazers/countries
 ```
 
 <details>

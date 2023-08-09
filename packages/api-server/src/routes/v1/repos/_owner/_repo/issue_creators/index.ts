@@ -5,7 +5,7 @@ const schema = {
   operationId: 'list-issue-creators',
   summary: 'List issue creators',
   method: 'GET',
-  description: 'Querying the issue creators for a given repository',
+  description: 'Querying the issue creators for a given repository.',
   tags: ['Issue Creators'],
   querystring: {
     type: 'object',
