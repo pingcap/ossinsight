@@ -35,7 +35,7 @@ const app: FastifyPluginAsync<AppOptions, RawServerDefault, JsonSchemaToTsProvid
       info: {
         title: 'OSSInsight Public API',
         description: description.replace(/^# OSSInsight Public API\n$/m, ''),
-        version: '0.0.1'
+        version: 'v1beta'
       },
       servers: [{
         url: `${app.config.API_BASE_URL || 'https://api.ossinsight.io'}/v1`

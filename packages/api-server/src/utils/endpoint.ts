@@ -6,7 +6,15 @@ export function proxyGet(
   opts: Record<any, any>,
   schema: Record<any, any>
 ) {
-    app.get('/', { schema }, async function (req, reply) {
+    app.get('/', {
+      config: {
+        rateLimit: {
+          max: app.config.PUBLIC_API_HOURLY_RATE_LIMIT,
+          timeWindow: '1 hour'
+        }
+      },
+      schema
+    }, async function (req, reply) {
       if (!app.tidbDataService) {
         throw new APIError(500, 'TiDB data service is not initialized.');
       }

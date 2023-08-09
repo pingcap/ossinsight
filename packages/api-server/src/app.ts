@@ -42,6 +42,7 @@ export interface AppConfig {
   TIDB_CLOUD_DATA_SERVICE_APP_ID: string;
   TIDB_CLOUD_DATA_SERVICE_PUBLIC_KEY: string;
   TIDB_CLOUD_DATA_SERVICE_PRIVATE_KEY: string;
+  PUBLIC_API_HOURLY_RATE_LIMIT: number;
 }
 
 declare module 'fastify' {

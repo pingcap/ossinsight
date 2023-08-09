@@ -3,7 +3,23 @@ info:
   title: OSSInsight Public API
   description: >
     
-    Here are documentation about the OSSInsight Public APIs (beta) which help developers integrate OSSInsight data into their applications easily and quickly.
+    OSSInsight Public APIs (beta) provide a convenient way to access insight data for open source projects on GitHub, supplementing the existing GitHub API.
+
+
+
+    ```mdx-code-block
+
+    import DocCardList from '@theme/DocCardList';
+
+    import {useCurrentSidebarCategory} from '@docusaurus/theme-common';
+
+
+    <DocCardList items={useCurrentSidebarCategory().items.filter((item) => {
+        // Exclude Introduction and Showcase pages
+        return item.docId !== 'api/showcase' && item.docId !== 'api/ossinsight-public-api';
+    })}/>
+
+    ```
 
 
     ## Usage
@@ -39,7 +55,28 @@ info:
     ### Rate Limit
 
 
-    For each IP address, the rate limit allows for up to **600 requests per hour**.
+    For each IP address, the rate limit allows for up to **600 requests per hour**, which can be checked by the following fields in the Response Header to see the current usage:
+
+
+    ```
+
+    x-ratelimit-limit: 600
+
+    x-ratelimit-remaining: 599
+
+    ```
+
+
+    In addition, we have also set up a global rate limit of up to **1000 requests per minute**, which can be checked by the following fields in the Response Header to see the current usage:
+
+
+    ```
+
+    x-ratelimit-limit-minute: 1000
+
+    x-ratelimit-remaining-minute: 97
+
+    ```
 
 
     ### Example
@@ -122,24 +159,6 @@ info:
     </details>
 
 
-    ## Categories
-
-
-    ```mdx-code-block
-
-    import DocCardList from '@theme/DocCardList';
-
-    import {useCurrentSidebarCategory} from '@docusaurus/theme-common';
-
-
-    <DocCardList items={useCurrentSidebarCategory().items.filter((item) => {
-        // Exclude Introduction and Showcase pages
-        return item.docId !== 'api/showcase' && item.docId !== 'api/ossinsight-public-api';
-    })}/>
-
-    ```
-
-
     ## Request New API 
 
 
@@ -149,7 +168,7 @@ info:
     - Email us at ossinsight@pingcap.com
 
     - Open an issue in the [OSSInsight GitHub repository](https://github.com/pingcap/ossinsight/issues/new?assignees=&labels=type%2Ffeature&projects=&template=feature_request.md&title=New%20API)
-  version: 0.0.1
+  version: v1beta
 components:
   schemas: {}
 paths:
@@ -974,24 +993,23 @@ paths:
                           limit: 50
                           databases:
                             - gharchive_dev
-  "/repos/{owner}/{repo}/stargazers/organizations/":
+  "/repos/{owner}/{repo}/issue_creators/countries/":
     get:
-      operationId: list-organizations-of-stargazers
-      summary: List organizations of stargazers
+      operationId: list-countries-of-issue-creators
+      summary: List countries/regions of issue creators
       tags:
-        - Stargazers
+        - Issue Creators
       description: >
-        List organizations of stargazers for the specified repository. 
-
-
+        List countries/regions of stargazers for the specified repository.
+          
         > **Notice**:
 
-        > In the overall data, about **5.62%** of GitHub users provided valid organization information.
+        > In the overall data, about **3.5%** of GitHub users provided valid country/region information.
 
 
         > **Note**: 
 
-        > By default, the API does not count users without valid organization information. 
+        > By default, the API does not count users without valid country/region information. 
 
         > If you need to count these users, you can set the `exclude_unknown` parameter to `false`.
       parameters:
@@ -1001,7 +1019,8 @@ paths:
           in: query
           name: exclude_unknown
           required: false
-          description: Whether to exclude stargazers with unknown organization information
+          description: Whether to exclude issue creators with unknown country/region
+            information
         - schema:
             type: string
             default: 2000-01-01
@@ -1105,42 +1124,43 @@ paths:
                               description: Whether the column is nullable.
                           additionalProperties: true
                         example:
-                          - col: org_name
-                            data_type: VARCHAR
-                            nullable: true
-                          - col: stargazers
-                            data_type: BIGINT
+                          - col: country_code
+                            data_type: CHAR
                             nullable: true
                           - col: percentage
                             data_type: DECIMAL
+                            nullable: true
+                          - col: issue_creators
+                            data_type: BIGINT
                             nullable: true
                       rows:
                         type: array
                         items:
                           type: object
                           properties:
-                            org_name:
+                            country_code:
                               type: string
-                              description: Name of the organization
+                              description: Country/region code
+                            issue_creators:
+                              type: string
+                              description: Number of issue creators from the country/region
                             percentage:
                               type: string
-                              description: Percentage of stargazers from the organization
-                            stargazers:
-                              type: string
-                              description: Number of stargazers from the organization
+                              description: Percentage of issue creators from the country/region
+                          additionalProperties: true
                         example:
-                          - org_name: tencent
-                            percentage: "0.0217"
-                            stargazers: "199"
-                          - org_name: bytedance
-                            percentage: "0.0192"
-                            stargazers: "176"
-                          - org_name: alibaba
-                            percentage: "0.0162"
-                            stargazers: "148"
-                          - org_name: pingcap
-                            percentage: "0.0119"
-                            stargazers: "109"
+                          - country_code: CN
+                            issue_creators: "7131"
+                            percentage: "0.8749"
+                          - country_code: US
+                            issue_creators: "316"
+                            percentage: "0.0388"
+                          - country_code: CA
+                            issue_creators: "243"
+                            percentage: "0.0298"
+                          - country_code: NL
+                            issue_creators: "223"
+                            percentage: "0.0274"
                       result:
                         type: object
                         properties:
@@ -1381,15 +1401,17 @@ paths:
                           limit: 50
                           databases:
                             - gharchive_dev
-  "/repos/{owner}/{repo}/issue_creators/countries/":
+  "/repos/{owner}/{repo}/pull_request_creators/countries/":
     get:
-      operationId: list-countries-of-issue-creators
-      summary: List countries/regions of issue creators
+      operationId: list-countries-of-pr-creators
+      summary: List countries/regions of PR creators
       tags:
-        - Issue Creators
+        - Pull Request Creators
       description: >
-        List countries/regions of stargazers for the specified repository.
-          
+        List countries/regions of pull request creators for the specified
+        repository.
+
+
         > **Notice**:
 
         > In the overall data, about **3.5%** of GitHub users provided valid country/region information.
@@ -1515,11 +1537,11 @@ paths:
                           - col: country_code
                             data_type: CHAR
                             nullable: true
+                          - col: pull_request_creators
+                            data_type: BIGINT
+                            nullable: true
                           - col: percentage
                             data_type: DECIMAL
-                            nullable: true
-                          - col: issue_creators
-                            data_type: BIGINT
                             nullable: true
                       rows:
                         type: array
@@ -1529,26 +1551,22 @@ paths:
                             country_code:
                               type: string
                               description: Country/region code
-                            issue_creators:
-                              type: string
-                              description: Number of issue creators from the country/region
                             percentage:
                               type: string
-                              description: Percentage of issue creators from the country/region
-                          additionalProperties: true
+                              description: Percentage of pull request creators from the country/region
+                            pull_request_creators:
+                              type: string
+                              description: Number of pull request creators from the country/region
                         example:
                           - country_code: CN
-                            issue_creators: "7131"
-                            percentage: "0.8749"
-                          - country_code: US
-                            issue_creators: "316"
-                            percentage: "0.0388"
-                          - country_code: CA
-                            issue_creators: "243"
-                            percentage: "0.0298"
+                            percentage: "0.8802"
+                            pull_request_creators: "13619"
                           - country_code: NL
-                            issue_creators: "223"
-                            percentage: "0.0274"
+                            percentage: "0.0508"
+                            pull_request_creators: "786"
+                          - country_code: US
+                            percentage: "0.0400"
+                            pull_request_creators: "619"
                       result:
                         type: object
                         properties:
@@ -1588,19 +1606,19 @@ paths:
                           start_ms: 1690957407469
                           end_ms: 1690957407499
                           latency: 30ms
-                          row_count: 4
+                          row_count: 3
                           row_affect: 0
                           limit: 50
                           databases:
                             - gharchive_dev
-  "/repos/{owner}/{repo}/stargazers/history/":
+  "/repos/{owner}/{repo}/pull_request_creators/history/":
     get:
-      operationId: stargazers-history
-      summary: Stargazers history
+      operationId: pull-request-creators-history
+      summary: Pull request creators history
       tags:
-        - Stargazers
-      description: Querying the historical trend of the number of stargazers in a
-        given repository.
+        - Pull Request Creators
+      description: Querying the historical trend of the number of pull request
+        creators in a given repository.
       parameters:
         - schema:
             type: string
@@ -1730,20 +1748,20 @@ paths:
                             date:
                               type: string
                               description: The date of the data point
-                            stargazers:
+                            pull_request_creators:
                               type: string
-                              description: The cumulative number of stargazers
+                              description: The cumulative number of pull request creators
                         example:
+                          - date: 2023-03-01
+                            pull_request_creators: "912"
                           - date: 2023-04-01
-                            stargazers: "35389"
+                            pull_request_creators: "915"
                           - date: 2023-05-01
-                            stargazers: "35593"
+                            pull_request_creators: "924"
                           - date: 2023-06-01
-                            stargazers: "35805"
-                          - date: 2023-07-01
-                            stargazers: "36019"
+                            pull_request_creators: "932"
                           - date: 2023-08-01
-                            stargazers: "36026"
+                            pull_request_creators: "933"
                       result:
                         type: object
                         properties:
@@ -1784,6 +1802,218 @@ paths:
                           end_ms: 1690957407499
                           latency: 30ms
                           row_count: 5
+                          row_affect: 0
+                          limit: 50
+                          databases:
+                            - gharchive_dev
+  "/repos/{owner}/{repo}/pull_request_creators/organizations/":
+    get:
+      operationId: list-organizations-of-pr-creators
+      summary: List organizations of PR creators
+      tags:
+        - Pull Request Creators
+      description: >
+        List organizations of pull request creators for the specified
+        repository.
+
+
+        > **Notice**:
+
+        > In the overall data, about **5.62%** of GitHub users has valid organization information.
+
+
+        > **Note**: 
+
+        > By default, the API does not count users without valid organization information. 
+
+        > If you need to count these users, you can set the `exclude_unknown` parameter to `false`.
+      parameters:
+        - schema:
+            type: boolean
+            default: true
+          in: query
+          name: exclude_unknown
+          required: false
+          description: Whether to exclude PR creators with unknown organization information
+        - schema:
+            type: string
+            default: 2000-01-01
+          in: query
+          name: from
+          required: false
+          description: The start date of the range.
+        - schema:
+            type: string
+            default: 2099-01-01
+          in: query
+          name: to
+          required: false
+          description: The end date of the range.
+        - schema:
+            type: string
+          example: pingcap
+          in: path
+          name: owner
+          required: true
+          description: The owner of the repo.
+        - schema:
+            type: string
+          example: tidb
+          in: path
+          name: repo
+          required: true
+          description: The name of the repo.
+      responses:
+        "200":
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - type
+                  - data
+                properties:
+                  type:
+                    type: string
+                    description: The type of the endpoint.
+                    enum:
+                      - sql_endpoint
+                    example: sql_endpoint
+                  data:
+                    type: object
+                    required:
+                      - columns
+                      - rows
+                      - result
+                    properties:
+                      columns:
+                        type: array
+                        items:
+                          type: object
+                          required:
+                            - col
+                            - data_type
+                            - nullable
+                          properties:
+                            col:
+                              type: string
+                              description: The name of the column in the query result.
+                            data_type:
+                              type: string
+                              enum:
+                                - CHAR
+                                - BIGINT
+                                - DECIMAL
+                                - INT
+                                - UNSIGNED BIGINT
+                                - TINYINT
+                                - TIMESTAMP
+                                - TEXT
+                                - VARCHAR
+                                - DATETIME
+                                - DOUBLE
+                                - FLOAT
+                                - DATE
+                                - TIME
+                                - YEAR
+                                - MEDIUMINT
+                                - SMALLINT
+                                - BIT
+                                - BINARY
+                                - VARBINARY
+                                - JSON
+                                - ENUM
+                                - SET
+                                - TINYTEXT
+                                - MEDIUMTEXT
+                                - LONGTEXT
+                                - TINYBLOB
+                                - MEDIUMBLOB
+                                - BLOB
+                                - LONGBLOB
+                              description: The data type of the column.
+                            nullable:
+                              type: boolean
+                              description: Whether the column is nullable.
+                          additionalProperties: true
+                        example:
+                          - col: org_name
+                            data_type: VARCHAR
+                            nullable: true
+                          - col: pull_request_creators
+                            data_type: BIGINT
+                            nullable: true
+                          - col: percentage
+                            data_type: DECIMAL
+                            nullable: true
+                      rows:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            org_name:
+                              type: string
+                              description: Name of the organization
+                            percentage:
+                              type: string
+                              description: Percentage of pull request creators from the organization
+                            pull_request_creators:
+                              type: string
+                              description: Number of pull request creators from the organization
+                        example:
+                          - org_name: pingcap
+                            percentage: "0.3064"
+                            pull_request_creators: "106"
+                          - org_name: bytedance
+                            percentage: "0.0318"
+                            pull_request_creators: "11"
+                          - org_name: alibaba
+                            percentage: "0.0260"
+                            pull_request_creators: "9"
+                          - org_name: tencent
+                            percentage: "0.0173"
+                            pull_request_creators: "6"
+                      result:
+                        type: object
+                        properties:
+                          code:
+                            type: number
+                            description: The code of the response.
+                          message:
+                            type: string
+                            description: The message of the response.
+                          start_ms:
+                            type: number
+                            description: The start time of the query in milliseconds.
+                          end_ms:
+                            type: number
+                            description: The end time of the query in milliseconds.
+                          latency:
+                            type: string
+                            description: The latency of the query.
+                          row_count:
+                            type: number
+                            description: The number of rows in the query result.
+                          row_affect:
+                            type: number
+                            description: The number of rows affected by the query.
+                          limit:
+                            type: number
+                            description: The maximum number of rows in the query result.
+                          databases:
+                            type: array
+                            description: The databases used in the query.
+                            items:
+                              type: string
+                        additionalProperties: true
+                        example:
+                          code: 200
+                          message: Query OK!
+                          start_ms: 1690957407469
+                          end_ms: 1690957407499
+                          latency: 30ms
+                          row_count: 4
                           row_affect: 0
                           limit: 50
                           databases:
@@ -2212,230 +2442,19 @@ paths:
                           limit: 50
                           databases:
                             - gharchive_dev
-  "/repos/{owner}/{repo}/pull_request_creators/countries/":
+  "/repos/{owner}/{repo}/stargazers/organizations/":
     get:
-      operationId: list-countries-of-pr-creators
-      summary: List countries/regions of PR creators
+      operationId: list-organizations-of-stargazers
+      summary: List organizations of stargazers
       tags:
-        - Pull Request Creators
+        - Stargazers
       description: >
-        List countries/regions of pull request creators for the specified
-        repository.
+        List organizations of stargazers for the specified repository. 
 
 
         > **Notice**:
 
-        > In the overall data, about **3.5%** of GitHub users provided valid country/region information.
-
-
-        > **Note**: 
-
-        > By default, the API does not count users without valid country/region information. 
-
-        > If you need to count these users, you can set the `exclude_unknown` parameter to `false`.
-      parameters:
-        - schema:
-            type: boolean
-            default: true
-          in: query
-          name: exclude_unknown
-          required: false
-          description: Whether to exclude issue creators with unknown country/region
-            information
-        - schema:
-            type: string
-            default: 2000-01-01
-          in: query
-          name: from
-          required: false
-          description: The start date of the range.
-        - schema:
-            type: string
-            default: 2099-01-01
-          in: query
-          name: to
-          required: false
-          description: The end date of the range.
-        - schema:
-            type: string
-          example: pingcap
-          in: path
-          name: owner
-          required: true
-          description: The owner of the repo.
-        - schema:
-            type: string
-          example: tidb
-          in: path
-          name: repo
-          required: true
-          description: The name of the repo.
-      responses:
-        "200":
-          description: Default Response
-          content:
-            application/json:
-              schema:
-                type: object
-                required:
-                  - type
-                  - data
-                properties:
-                  type:
-                    type: string
-                    description: The type of the endpoint.
-                    enum:
-                      - sql_endpoint
-                    example: sql_endpoint
-                  data:
-                    type: object
-                    required:
-                      - columns
-                      - rows
-                      - result
-                    properties:
-                      columns:
-                        type: array
-                        items:
-                          type: object
-                          required:
-                            - col
-                            - data_type
-                            - nullable
-                          properties:
-                            col:
-                              type: string
-                              description: The name of the column in the query result.
-                            data_type:
-                              type: string
-                              enum:
-                                - CHAR
-                                - BIGINT
-                                - DECIMAL
-                                - INT
-                                - UNSIGNED BIGINT
-                                - TINYINT
-                                - TIMESTAMP
-                                - TEXT
-                                - VARCHAR
-                                - DATETIME
-                                - DOUBLE
-                                - FLOAT
-                                - DATE
-                                - TIME
-                                - YEAR
-                                - MEDIUMINT
-                                - SMALLINT
-                                - BIT
-                                - BINARY
-                                - VARBINARY
-                                - JSON
-                                - ENUM
-                                - SET
-                                - TINYTEXT
-                                - MEDIUMTEXT
-                                - LONGTEXT
-                                - TINYBLOB
-                                - MEDIUMBLOB
-                                - BLOB
-                                - LONGBLOB
-                              description: The data type of the column.
-                            nullable:
-                              type: boolean
-                              description: Whether the column is nullable.
-                          additionalProperties: true
-                        example:
-                          - col: country_code
-                            data_type: CHAR
-                            nullable: true
-                          - col: pull_request_creators
-                            data_type: BIGINT
-                            nullable: true
-                          - col: percentage
-                            data_type: DECIMAL
-                            nullable: true
-                      rows:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            country_code:
-                              type: string
-                              description: Country/region code
-                            percentage:
-                              type: string
-                              description: Percentage of pull request creators from the country/region
-                            pull_request_creators:
-                              type: string
-                              description: Number of pull request creators from the country/region
-                        example:
-                          - country_code: CN
-                            percentage: "0.8802"
-                            pull_request_creators: "13619"
-                          - country_code: NL
-                            percentage: "0.0508"
-                            pull_request_creators: "786"
-                          - country_code: US
-                            percentage: "0.0400"
-                            pull_request_creators: "619"
-                      result:
-                        type: object
-                        properties:
-                          code:
-                            type: number
-                            description: The code of the response.
-                          message:
-                            type: string
-                            description: The message of the response.
-                          start_ms:
-                            type: number
-                            description: The start time of the query in milliseconds.
-                          end_ms:
-                            type: number
-                            description: The end time of the query in milliseconds.
-                          latency:
-                            type: string
-                            description: The latency of the query.
-                          row_count:
-                            type: number
-                            description: The number of rows in the query result.
-                          row_affect:
-                            type: number
-                            description: The number of rows affected by the query.
-                          limit:
-                            type: number
-                            description: The maximum number of rows in the query result.
-                          databases:
-                            type: array
-                            description: The databases used in the query.
-                            items:
-                              type: string
-                        additionalProperties: true
-                        example:
-                          code: 200
-                          message: Query OK!
-                          start_ms: 1690957407469
-                          end_ms: 1690957407499
-                          latency: 30ms
-                          row_count: 3
-                          row_affect: 0
-                          limit: 50
-                          databases:
-                            - gharchive_dev
-  "/repos/{owner}/{repo}/pull_request_creators/organizations/":
-    get:
-      operationId: list-organizations-of-pr-creators
-      summary: List organizations of PR creators
-      tags:
-        - Pull Request Creators
-      description: >
-        List organizations of pull request creators for the specified
-        repository.
-
-
-        > **Notice**:
-
-        > In the overall data, about **5.62%** of GitHub users has valid organization information.
+        > In the overall data, about **5.62%** of GitHub users provided valid organization information.
 
 
         > **Note**: 
@@ -2450,7 +2469,7 @@ paths:
           in: query
           name: exclude_unknown
           required: false
-          description: Whether to exclude PR creators with unknown organization information
+          description: Whether to exclude stargazers with unknown organization information
         - schema:
             type: string
             default: 2000-01-01
@@ -2557,7 +2576,7 @@ paths:
                           - col: org_name
                             data_type: VARCHAR
                             nullable: true
-                          - col: pull_request_creators
+                          - col: stargazers
                             data_type: BIGINT
                             nullable: true
                           - col: percentage
@@ -2573,23 +2592,23 @@ paths:
                               description: Name of the organization
                             percentage:
                               type: string
-                              description: Percentage of pull request creators from the organization
-                            pull_request_creators:
+                              description: Percentage of stargazers from the organization
+                            stargazers:
                               type: string
-                              description: Number of pull request creators from the organization
+                              description: Number of stargazers from the organization
                         example:
-                          - org_name: pingcap
-                            percentage: "0.3064"
-                            pull_request_creators: "106"
-                          - org_name: bytedance
-                            percentage: "0.0318"
-                            pull_request_creators: "11"
-                          - org_name: alibaba
-                            percentage: "0.0260"
-                            pull_request_creators: "9"
                           - org_name: tencent
-                            percentage: "0.0173"
-                            pull_request_creators: "6"
+                            percentage: "0.0217"
+                            stargazers: "199"
+                          - org_name: bytedance
+                            percentage: "0.0192"
+                            stargazers: "176"
+                          - org_name: alibaba
+                            percentage: "0.0162"
+                            stargazers: "148"
+                          - org_name: pingcap
+                            percentage: "0.0119"
+                            stargazers: "109"
                       result:
                         type: object
                         properties:
@@ -2634,14 +2653,14 @@ paths:
                           limit: 50
                           databases:
                             - gharchive_dev
-  "/repos/{owner}/{repo}/pull_request_creators/history/":
+  "/repos/{owner}/{repo}/stargazers/history/":
     get:
-      operationId: pull-request-creators-history
-      summary: Pull request creators history
+      operationId: stargazers-history
+      summary: Stargazers history
       tags:
-        - Pull Request Creators
-      description: Querying the historical trend of the number of pull request
-        creators in a given repository.
+        - Stargazers
+      description: Querying the historical trend of the number of stargazers in a
+        given repository.
       parameters:
         - schema:
             type: string
@@ -2771,20 +2790,20 @@ paths:
                             date:
                               type: string
                               description: The date of the data point
-                            pull_request_creators:
+                            stargazers:
                               type: string
-                              description: The cumulative number of pull request creators
+                              description: The cumulative number of stargazers
                         example:
-                          - date: 2023-03-01
-                            pull_request_creators: "912"
                           - date: 2023-04-01
-                            pull_request_creators: "915"
+                            stargazers: "35389"
                           - date: 2023-05-01
-                            pull_request_creators: "924"
+                            stargazers: "35593"
                           - date: 2023-06-01
-                            pull_request_creators: "932"
+                            stargazers: "35805"
+                          - date: 2023-07-01
+                            stargazers: "36019"
                           - date: 2023-08-01
-                            pull_request_creators: "933"
+                            stargazers: "36026"
                       result:
                         type: object
                         properties:
