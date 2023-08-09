@@ -411,14 +411,14 @@
         "name": "language",
         "type": "string",
         "required": 0,
-        "default": "",
+        "default": "All",
         "description": ""
       },
       {
         "name": "period",
         "type": "string",
         "required": 0,
-        "default": "",
+        "default": "past_24_hours",
         "description": ""
       }
     ],
