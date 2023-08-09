@@ -5,7 +5,9 @@ const schema = {
   operationId: 'list-trending-repos',
   summary: 'List trending repos',
   method: 'GET',
-  description: 'Trending repos is an open source alternative to GitHub trends, which showcases recently popular open source projects in the GitHub community.\n\n☁️ Daily run on [TiDB Cloud](https://tidbcloud.com/?utm_source=ossinsight&utm_medium=ossinsight_api), analyze upon dataset that has over 6 billion GitHub events.',
+  description: `Trending repos is an open source alternative to GitHub trends, which showcases recently popular open source projects in the GitHub community.
+
+☁️ Daily run on [TiDB Cloud](https://tidbcloud.com/?utm_source=ossinsight&utm_medium=ossinsight_api), analyze upon dataset that has over 6 billion GitHub events.`,
   tags: ['Trends'],
   querystring: {
     type: 'object',

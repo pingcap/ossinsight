@@ -13,7 +13,7 @@ export function proxyGet(
 
       // Remove prefix and query string from url.
       const url = new URL(req.url, 'http://localhost');
-      let pathname = url.pathname.replace(/^\/public/, '');
+      let pathname = url.pathname.replace(/^\/(public|v1)/, '');
 
       // Map query params to query strings.
       const query = req.query as any;

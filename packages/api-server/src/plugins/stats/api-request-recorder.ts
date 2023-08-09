@@ -27,6 +27,7 @@ export default fp(async (app) => {
 
     // Save the success request.
     const clientIP = getRealClientIP(req);
+    this.log.info(`x-real-ip: ${req.headers['x-real-ip']}, x-forwarded-for: ${req.headers['x-forwarded-for']}, Client IP: ${clientIP}`);
     const clientOrigin = req.headers.origin ?? '';
     const { method, query } = req;
     const { path } = req.urlData();
@@ -67,7 +68,7 @@ export default fp(async (app) => {
  * @description Get the real client IP from the request.
  *
  * **Note**: By default, ELB appends the client's IP to the end of the `X-Forwarded-For` Header value, separated by commas. However,
- * when the `forwarded` module parses the `X-Forwarded-For` Header, it is stored in the addresses array in reverse order,so the
+ * when the `forwarded` module parses the `X-Forwarded-For` Header, it is stored in the addresses array in reverse order, so the
  * element with index 0 is the real client IP.
  *
  * **Reference**:
@@ -81,5 +82,11 @@ export function getRealClientIP(req: FastifyRequest): string {
   }
 
   const addresses = forwarded(req as any);
-  return addresses[0] ?? req.ip;
+  if (addresses.length === 0) {
+    return req.ip;
+  } else if (addresses.length === 1) {
+    return addresses[0];
+  } else {
+    return addresses[1];
+  }
 }

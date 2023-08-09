@@ -5,7 +5,7 @@ const schema = {
   operationId: 'stargazers-history',
   summary: 'Stargazers history',
   method: 'GET',
-  description: 'Querying the historical trend of the number of stargazers in a given repository',
+  description: 'Querying the historical trend of the number of stargazers in a given repository.',
   tags: ['Stargazers'],
   querystring: {
     type: 'object',

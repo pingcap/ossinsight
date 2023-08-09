@@ -2,18 +2,27 @@ import {FastifyPluginAsync} from "fastify";
 import {proxyGet, getSuccessResponse} from "../../../../../../../utils/endpoint";
 
 const schema = {
-  operationId: 'list-organizations-of-pr-creators',
-  summary: 'List organizations of PR creators',
+  operationId: 'list-organizations-of-issue-creators',
+  summary: 'List organizations of stargazers',
   method: 'GET',
-  description: `List organizations of pull request creators for the specified repository.
+  description: `List organizations of stargazers for the specified repository. 
+
+> **Notice**:
+> In the overall data, about **5.62%** of GitHub users provided valid organization information.
 
 > **Note**: 
-> The API does not consider users without the company information when counting the organization percentage.
-  `,
-  tags: ['Pull Request Creators'],
+> By default, the API does not count users without valid organization information. 
+> If you need to count these users, you can set the \`exclude_unknown\` parameter to \`false\`.
+`,
+  tags: ['Issue Creators'],
   querystring: {
     type: 'object',
     properties: {
+      exclude_unknown: {
+        type: 'boolean',
+        description: 'Whether to exclude issue creators with unknown organization information',
+        default: true,
+      },
       from: {
         type: 'string',
         description: 'The start date of the range.',
@@ -50,7 +59,7 @@ const schema = {
         nullable: true
       },
       {
-        col: "pull_request_creators",
+        col: "issue_creators",
         data_type: "BIGINT",
         nullable: true
       },
@@ -64,41 +73,42 @@ const schema = {
       items: {
         type: 'object',
         properties: {
+          issue_creators: {
+            type: 'string',
+            description: 'Number of issue creators from the organization'
+          },
           org_name: {
             type: 'string',
             description: 'Name of the organization'
           },
           percentage: {
             type: 'string',
-            description: 'Percentage of pull request creators from the organization'
+            description: 'Percentage of issue creators from the organization'
           },
-          pull_request_creators: {
-            type: 'string',
-            description: 'Number of pull request creators from the organization'
-          },
-        }
+        },
+        additionalProperties: true,
       },
       example: [
         {
+          "issue_creators": "117",
           "org_name": "pingcap",
-          "percentage": "0.3064",
-          "pull_request_creators": "106"
+          "percentage": "0.2833"
         },
         {
-          "org_name": "bytedance",
-          "percentage": "0.0318",
-          "pull_request_creators": "11"
-        },
-        {
-          "org_name": "alibaba",
-          "percentage": "0.0260",
-          "pull_request_creators": "9"
-        },
-        {
+          "issue_creators": "9",
           "org_name": "tencent",
-          "percentage": "0.0173",
-          "pull_request_creators": "6"
+          "percentage": "0.0218"
         },
+        {
+          "issue_creators": "7",
+          "org_name": "alibaba",
+          "percentage": "0.0169"
+        },
+        {
+          "issue_creators": "6",
+          "org_name": "bytedance",
+          "percentage": "0.0145"
+        }
       ]
     }, {
       row_count: 4
