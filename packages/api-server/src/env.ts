@@ -98,6 +98,10 @@ export const APIServerEnvSchema = {
     },
     TIDB_CLOUD_DATA_SERVICE_PRIVATE_KEY: {
       type: 'string'
+    },
+    PUBLIC_API_HOURLY_RATE_LIMIT: {
+      type: 'number',
+      default: 600
     }
   },
   // We need additional undocumented env

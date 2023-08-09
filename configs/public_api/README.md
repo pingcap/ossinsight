@@ -1,6 +1,18 @@
 # OSSInsight Public API
 
-Here are documentation about the OSSInsight Public APIs (beta) which help developers integrate OSSInsight data into their applications easily and quickly.
+OSSInsight Public APIs (beta) provide a convenient way to access insight data for open source projects on GitHub, supplementing the existing GitHub API.
+
+It provides data query in different dimensions, including:
+
+```mdx-code-block
+import DocCardList from '@theme/DocCardList';
+import {useCurrentSidebarCategory} from '@docusaurus/theme-common';
+
+<DocCardList items={useCurrentSidebarCategory().items.filter((item) => {
+    // Exclude Introduction and Showcase pages
+    return item.docId !== 'api/showcase' && item.docId !== 'api/ossinsight-public-api';
+})}/>
+```
 
 ## Usage
 
@@ -23,7 +35,19 @@ No authentication is required for beta version of public APIs, but there are [ra
 
 ### Rate Limit
 
-For each IP address, the rate limit allows for up to **600 requests per hour**.
+For each IP address, the rate limit allows for up to **600 requests per hour**, which can be checked by the following fields in the Response Header to see the current usage:
+
+```
+x-ratelimit-limit: 600
+x-ratelimit-remaining: 599
+```
+
+In addition, we have also set up a global rate limit of up to **1000 requests per minute**, which can be checked by the following fields in the Response Header to see the current usage:
+
+```
+x-ratelimit-limit-minute: 1000
+x-ratelimit-remaining-minute: 97
+```
 
 ### Example
 
@@ -93,18 +117,6 @@ curl https://api.ossinsight.io/v1/repos/pingcap/tidb/stargazers/countries
 ```
 
 </details>
-
-## Categories
-
-```mdx-code-block
-import DocCardList from '@theme/DocCardList';
-import {useCurrentSidebarCategory} from '@docusaurus/theme-common';
-
-<DocCardList items={useCurrentSidebarCategory().items.filter((item) => {
-    // Exclude Introduction and Showcase pages
-    return item.docId !== 'api/showcase' && item.docId !== 'api/ossinsight-public-api';
-})}/>
-```
 
 ## Request New API 
 
