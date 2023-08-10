@@ -33,7 +33,8 @@ const queryHandler: FastifyPluginAsync = async (app, opts): Promise<void> => {
     // Add expires header if result was cached.
     if (res.expiresAt) {
       const expireAtDate = DateTime.fromISO(res.expiresAt);
-      if (expireAtDate.isValid) {
+      // Notice: Only cache on client if the result will expire in 7 days.
+      if (expireAtDate.isValid && expireAtDate.diff(DateTime.utc(), 'day').days < 7) {
         reply.header('Expires', expireAtDate.toHTTP());
       }
     }

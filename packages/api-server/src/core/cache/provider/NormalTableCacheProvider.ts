@@ -131,8 +131,8 @@ export default class NormalTableCacheProvider implements CacheProvider {
                         this.logger.warn(`⚠️ Cache getting for query <%s> is slow, took %d s, more than %d s.`, key, getDuration, MAX_CACHE_OPERATION_TIME);
                     }
 
-                    if (Array.isArray(rows) && rows.length >= 1) {
-                        return rows[0]?.cache_value;
+                    if (Array.isArray(rows) && typeof rows?.[0]?.cache_value === 'object') {
+                        return rows[0].cache_value;
                     } else {
                         return null;
                     }
