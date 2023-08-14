@@ -3,7 +3,6 @@ WITH stars_group_by_repo AS (
         repo_id,
         COUNT(DISTINCT actor_login) AS prs
     FROM github_events
-    USE INDEX (index_ge_on_repo_id_type_action_created_at_actor_login)
     WHERE
         type = 'WatchEvent'
         AND action = 'started'
@@ -15,7 +14,6 @@ WITH stars_group_by_repo AS (
         repo_id,
         COUNT(DISTINCT actor_login) AS stars
     FROM github_events
-    USE INDEX (index_ge_on_repo_id_type_action_created_at_actor_login)
     WHERE
         type = 'WatchEvent'
         AND action = 'started'

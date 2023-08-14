@@ -3,7 +3,6 @@ WITH issues_group_by_repo AS (
         repo_id,
         COUNT(DISTINCT number) AS issues
     FROM github_events
-    USE INDEX (index_ge_on_repo_id_type_action_created_at_number_pdsize_psize)
     WHERE
         type = 'IssuesEvent'
         AND repo_id IN (SELECT repo_id FROM collection_items ci WHERE collection_id = 10001)
@@ -14,7 +13,6 @@ WITH issues_group_by_repo AS (
         repo_id,
         COUNT(DISTINCT number) AS issues
     FROM github_events
-    USE INDEX (index_ge_on_repo_id_type_action_created_at_number_pdsize_psize)
     WHERE
         type = 'IssuesEvent'
         AND action = 'opened'
