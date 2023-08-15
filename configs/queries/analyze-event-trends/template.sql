@@ -6,6 +6,6 @@ WHERE
     repo_id = ${repoId}
     AND created_at >= '${from}'
     AND created_at < '${to}'
-GROUP BY event_month
-ORDER BY event_month
+GROUP BY 1
+ORDER BY 1
 ;
