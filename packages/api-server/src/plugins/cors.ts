@@ -1,8 +1,9 @@
+import {FastifyInstance, FastifyRequest} from "fastify";
 import * as path from 'path'
 
 import { existsSync, readFileSync } from 'fs';
 
-import cors from '@fastify/cors';
+import cors, {FastifyCorsOptions} from '@fastify/cors';
 import fp from "fastify-plugin";
 import { parse as parseYAML } from 'yaml';
 import {GENERATE_SQL_LIMIT_HEADER, GENERATE_SQL_USED_HEADER} from "../routes/bot/questionToSQL/quota";
@@ -26,10 +27,22 @@ export default fp(async (app) => {
     const allowedOrigins:OriginType[] = getAllowedOrigins(configsPath, true);
     allowedOrigins.push(DEFAULT_ALLOWED_ORIGIN);
 
-    app.register(cors, {
-        origin: allowedOrigins,
-        exposedHeaders: [GENERATE_SQL_USED_HEADER, GENERATE_SQL_LIMIT_HEADER],
-        credentials: true,
+    app.register(cors, (app: FastifyInstance) => {
+        return (req: FastifyRequest, callback: any) => {
+            const corsOptions: FastifyCorsOptions = {
+                origin: allowedOrigins,
+                exposedHeaders: [GENERATE_SQL_USED_HEADER, GENERATE_SQL_LIMIT_HEADER],
+                credentials: true,
+            }
+
+            if (req.routerPath.startsWith('/v1')) {
+                corsOptions.origin = false;
+                corsOptions.exposedHeaders = [];
+                corsOptions.credentials = false;
+            }
+
+            callback(null, corsOptions)
+        }
     });
     app.decorate('allowedOrigins', allowedOrigins);
 }, {
