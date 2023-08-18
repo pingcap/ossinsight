@@ -26,13 +26,6 @@
   <a href="https://twitter.com/OSSInsight">Twitter</a>
 </h3>
 
-<a href="https://next.ossinsight.io/widgets/official/compose-activity-trends?repo_id=449649595" target="_blank" style="display: block" align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://next.ossinsight.io/widgets/official/compose-activity-trends/thumbnail.png?repo_id=449649595&image_size=auto&color_scheme=dark" width="546.5" height="auto">
-    <img alt="Activity trends for pingcap/ossinsight" src="https://next.ossinsight.io/widgets/official/compose-activity-trends/thumbnail.png?repo_id=449649595&image_size=auto&color_scheme=light" width="546.5" height="auto">
-  </picture>
-</a>
-
 ## Introduction
 
 OSS Insight is a powerful tool that provides comprehensive, valuable, and trending insights into the open source world by analyzing 5+ billion rows of GitHub events data.
