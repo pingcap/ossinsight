@@ -232,9 +232,9 @@ const config = {
         respectPrefersColorScheme: false,
       },
       announcementBar: {
-        id: 'announcement-20230703',
+        id: 'announcement-20230821',
         content:
-          '📢 Own your data and get embeddable hand-drawn style widgets in 10 minutes, <a target="_blank" href="https://github.com/pingcap/ossinsight-lite" style="font-weight:bold">Go to build !</a>',
+          '<a target="_blank" href="https://next.ossinsight.io/widgets" style="font-weight:bold">✨ Spark Your GitHub Magic: Customize and Share with Your Personalized Widgets!</a>',
         backgroundColor: '#4C33B1',
         textColor: '#ffffff',
         isCloseable: true,
@@ -273,6 +273,7 @@ const config = {
           },
           { to: '/blog', label: 'Blog', position: 'left' },
           { to: '/docs/api', label: 'API', position: 'left' },
+          { to: 'https://next.ossinsight.io/widgets', label: 'Widgets', position: 'left' },
           /* {
             type: 'dropdown',
             label: 'Workshop',
