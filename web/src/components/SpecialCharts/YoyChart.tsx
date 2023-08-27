@@ -4,7 +4,8 @@ import ECharts from '../ECharts';
 
 interface YoyChartProps {
   data: Array<{
-    name: string;
+    repo_id: number;
+    repo_name: string;
     stars2020: number;
     stars2021: number;
     yoy: number;
@@ -28,7 +29,7 @@ export default function YoyChart ({ data, aspectRatio = 6 / 5, loading }: YoyCha
       },
       yAxis: {
         type: 'category',
-        data: data.map(data => data.name),
+        data: data.map(data => data.repo_name),
         inverse: true,
       },
       xAxis: [{
@@ -50,11 +51,11 @@ export default function YoyChart ({ data, aspectRatio = 6 / 5, loading }: YoyCha
         name: 'yoy',
         max: value => {
           const { max, min } = value;
-          return Math.max(Math.abs(max), Math.abs(min)) * 1.2;
+          return Number((Math.max(Math.abs(max), Math.abs(min)) * 1.2).toFixed(3));
         },
         min: value => {
           const { max, min } = value;
-          return -Math.max(Math.abs(max), Math.abs(min)) * 1.2;
+          return -Number((Math.max(Math.abs(max), Math.abs(min)) * 1.2).toFixed(3));
         },
         axisLabel: {
           show: true,

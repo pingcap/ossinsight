@@ -4,7 +4,7 @@ import ECharts from '../ECharts';
 
 interface ZScoreChartProps {
   data: Array<{
-    name: string;
+    repo_name: string;
     z_score: number;
     z_score_star: number;
     z_score_user: number;
@@ -28,7 +28,7 @@ export default function ZScoreChart ({ data, loading }: ZScoreChartProps) {
       },
       yAxis: {
         type: 'category',
-        data: data.map(data => data.name),
+        data: data.map(data => data.repo_name),
         inverse: true,
       },
       xAxis: [{

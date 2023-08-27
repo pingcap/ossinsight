@@ -109,7 +109,7 @@ export class QueryParser {
             case ParamItemTypes.STRING:
                 return `'${value}'`;
             case ParamItemTypes.NUMBER:
-                return `${value}`;
+                return `${ typeof value === 'string' ? Number(value) : value}`;
             case ParamItemTypes.BOOLEAN:
                 return value ? '1' : '0';
             default:

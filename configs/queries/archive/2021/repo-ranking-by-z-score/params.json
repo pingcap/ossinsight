@@ -1,0 +1,17 @@
+{
+  "cacheHours": -1,
+  "refreshCron": "@once",
+  "params": [
+    {
+      "name": "field",
+      "replaces": "${field}",
+      "enums": ["database", "nocode", "js_framework", "programming_language", "web_framework"]
+    },
+    {
+      "name": "n",
+      "type": "number",
+      "default": 15,
+      "replaces": "2000"
+    }
+  ]
+}
