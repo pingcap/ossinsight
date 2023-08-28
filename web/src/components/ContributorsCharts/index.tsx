@@ -54,7 +54,7 @@ interface ChartsProps {
   loading: boolean;
   size: number;
   field: string;
-  n: number;
+  n?: number;
 }
 
 function Charts ({ data: rawData, type, field, percent, loading, size, n }: ChartsProps) {
