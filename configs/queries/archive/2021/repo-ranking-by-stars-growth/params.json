@@ -10,6 +10,7 @@
     {
       "name": "n",
       "type": "number",
+      "default": 10,
       "replaces": "2000"
     }
   ]
