@@ -29,4 +29,4 @@ FROM (
 JOIN github_repos gr ON gr.repo_id = sub.repo_id
 GROUP BY sub.repo_id
 ORDER BY sub.stars DESC
-LIMIT ${limit}
+LIMIT 2000

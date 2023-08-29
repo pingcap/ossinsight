@@ -8,9 +8,9 @@
       "enums": ["database", "nocode", "js_framework", "programming_language", "web_framework"]
     },
     {
-      "name": "limit",
+      "name": "n",
       "type": "number",
-      "replaces": "${limit}"
+      "replaces": "2000"
     }
   ]
 }
