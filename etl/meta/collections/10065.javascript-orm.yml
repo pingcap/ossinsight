@@ -13,3 +13,5 @@ items:
   - mikro-orm/mikro-orm
   - gajus/slonik
   - drizzle-team/drizzle-orm
+  - kysely-org/kysely
+  - jawj/zapatos
