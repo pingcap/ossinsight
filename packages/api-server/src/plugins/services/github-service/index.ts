@@ -67,6 +67,9 @@ export class GithubService {
                 ...on Repository {
                     id: databaseId 
                     fullName: nameWithOwner 
+                    defaultBranchRef {
+                      name
+                    }
                 }
             }
         }
