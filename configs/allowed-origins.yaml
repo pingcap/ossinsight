@@ -9,9 +9,9 @@ private_origins:
   - ^https://next\.ossinsight\.io$
   - ^https://live\.ossinsight\.io$
   # Next
-  - ossinsight-next.vercel.app
+  - ^https://ossinsight-next\.vercel\.app$
   - ^https://ossinsight-next-.+-pingcap\.vercel\.app$
-  - ossinsight-next-ui.vercel.app
+  - ^https://ossinsight-next-ui\.vercel\.app$
 public_origins:
   # External Users.
   - ^https://github1s\.com$
