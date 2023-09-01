@@ -273,7 +273,7 @@ const config = {
           },
           { to: '/blog', label: 'Blog', position: 'left' },
           { to: '/docs/api', label: 'API', position: 'left' },
-          { to: 'https://next.ossinsight.io/widgets', label: 'Widgets', position: 'left' },
+          { to: 'https://next.ossinsight.io/widgets', label: 'Widgets', position: 'left', target: '_self' },
           /* {
             type: 'dropdown',
             label: 'Workshop',
