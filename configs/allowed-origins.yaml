@@ -10,6 +10,7 @@ private_origins:
   - ^https://live\.ossinsight\.io$
   # Next
   - ossinsight-next.vercel.app
+  - ^https://ossinsight-next-.+-pingcap\.vercel\.app$
   - ossinsight-next-ui.vercel.app
 public_origins:
   # External Users.
