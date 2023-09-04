@@ -1,5 +1,35 @@
 [
   {
+    "name": "Collection ranking by prs 28d",
+    "description": "",
+    "method": "GET",
+    "endpoint": "/collections/ranking_by_stars",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "collectionId",
+        "type": "integer",
+        "required": 1,
+        "default": "",
+        "description": ""
+      }
+    ],
+    "settings": {
+      "timeout": 30000,
+      "row_limit": 1000,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
+      "enable_pagination": 0
+    },
+    "tag": "Default",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-collections-ranking_by_stars.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
     "name": "Collection 28 ranking by stars",
     "description": "",
     "method": "GET",
