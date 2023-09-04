@@ -1,9 +1,9 @@
 [
   {
-    "name": "Collection ranking by prs 28d",
+    "name": "Collection ranking by issues",
     "description": "",
     "method": "GET",
-    "endpoint": "/collections/ranking_by_stars",
+    "endpoint": "/collections/ranking_by_issues",
     "data_source": {
       "cluster_id": 1379661944642684098
     },
@@ -25,15 +25,45 @@
     },
     "tag": "Default",
     "batch_operation": 0,
-    "sql_file": "sql/GET-collections-ranking_by_stars.sql",
+    "sql_file": "sql/GET-collections-ranking_by_issues.sql",
     "type": "sql_endpoint",
     "return_type": "json"
   },
   {
-    "name": "Collection 28 ranking by stars",
+    "name": "Collection ranking by prs",
     "description": "",
     "method": "GET",
-    "endpoint": "/collections/past_28_days/ranking_by_stars",
+    "endpoint": "/collections/ranking_by_prs",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "collectionId",
+        "type": "integer",
+        "required": 1,
+        "default": "",
+        "description": ""
+      }
+    ],
+    "settings": {
+      "timeout": 30000,
+      "row_limit": 1000,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
+      "enable_pagination": 0
+    },
+    "tag": "Default",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-collections-ranking_by_prs.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "Collection ranking by stars",
+    "description": "",
+    "method": "GET",
+    "endpoint": "/collections/ranking_by_stars",
     "data_source": {
       "cluster_id": 1379661944642684098
     },
@@ -55,7 +85,7 @@
     },
     "tag": "Default",
     "batch_operation": 0,
-    "sql_file": "sql/GET-collections-past_28_days-ranking_by_stars.sql",
+    "sql_file": "sql/GET-collections-ranking_by_stars.sql",
     "type": "sql_endpoint",
     "return_type": "json"
   },
