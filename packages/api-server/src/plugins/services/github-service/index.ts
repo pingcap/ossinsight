@@ -12,6 +12,7 @@ import Logger = pino.Logger;
 export const RECOMMEND_REPO_LIST_1_KEYWORD = 'recommend-repo-list-1-keyword';
 export const RECOMMEND_REPO_LIST_2_KEYWORD = 'recommend-repo-list-2-keyword';
 export const RECOMMEND_USER_LIST_KEYWORD = 'recommend-user-list-keyword';
+export const RECOMMEND_ORG_LIST_KEYWORD = 'recommend-org-list-keyword';
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -52,6 +53,7 @@ export default fp(async (app) => {
 
 export class GithubService {
   private readonly DEFAULT_RECOMMEND_USER_LIST: UserSearchItem[];
+  private readonly DEFAULT_RECOMMEND_ORG_LIST: UserSearchItem[];
   private readonly DEFAULT_RECOMMEND_REPO_LIST_1: RepoSearchItem[];
   private readonly DEFAULT_RECOMMEND_REPO_LIST_2: RepoSearchItem[];
   private readonly GET_NODE_CACHE_HOURS = 1;
@@ -87,6 +89,10 @@ export class GithubService {
                     id: databaseId,
                     login
                 }
+                ...on Organization {
+                    id: databaseId,
+                    login
+                }
             }
         }
     }
@@ -106,6 +112,9 @@ export class GithubService {
 
     const recommendUsersFile = path.join(this.configsPath, 'search/recommend/users/list.json');
     this.DEFAULT_RECOMMEND_USER_LIST = this.loadRecommendUsersFromFile(recommendUsersFile);
+
+    const recommendOrgsFile = path.join(this.configsPath, 'search/recommend/orgs/list.json');
+    this.DEFAULT_RECOMMEND_ORG_LIST = this.loadRecommendOrgsFromFile(recommendOrgsFile);
   }
 
   private loadRecommendReposFromFile(filePath: string): RepoSearchItem[] {
@@ -125,6 +134,17 @@ export class GithubService {
       return JSON.parse(content);
     } catch (err) {
       throw new Error(`Failed to parse the recommend users from file (path: ${filePath}).`, {
+        cause: err
+      });
+    }
+  }
+
+  private loadRecommendOrgsFromFile(filePath: string): UserSearchItem[] {
+    const content = fs.readFileSync(filePath, 'utf-8');
+    try {
+      return JSON.parse(content);
+    } catch (err) {
+      throw new Error(`Failed to parse the recommend orgs from file (path: ${filePath}).`, {
         cause: err
       });
     }
@@ -212,6 +232,7 @@ export class GithubService {
   }
 
   async searchRepos(keyword: string) {
+    keyword = keyword.replaceAll('  ', ' ');
     if ([RECOMMEND_REPO_LIST_1_KEYWORD, RECOMMEND_REPO_LIST_2_KEYWORD].includes(keyword)) {
       return this.getRecommendRepos(keyword);
     }
@@ -224,7 +245,7 @@ export class GithubService {
 
     return cache.load(async () => {
       const variables = {
-        q: keyword,
+        q: keyword
       };
 
       return await this.octokitExecutor.graphql(apiLabel, this.SEARCH_REPOS_GQL, variables, (res) => {
@@ -233,10 +254,10 @@ export class GithubService {
     });
   }
 
-  async searchUsers(keyword: string, type: UserType = UserType.USER) {
+  async searchUsers(keyword: string, type: UserType) {
     // By default, select from GitHub stars:
     // https://stars.github.com/profiles/?contributionType=OPEN_SOURCE_PROJECT
-    if (keyword === RECOMMEND_USER_LIST_KEYWORD) {
+    if (type === UserType.USER && keyword === RECOMMEND_USER_LIST_KEYWORD) {
       return {
         requestedAt: DateTime.now(),
         finishedAt: DateTime.now(),
@@ -244,7 +265,15 @@ export class GithubService {
       };
     }
 
-    const apiLabel = "search_users";
+    if (type === UserType.ORG && keyword === RECOMMEND_ORG_LIST_KEYWORD) {
+      return {
+        requestedAt: DateTime.now(),
+        finishedAt: DateTime.now(),
+        data: this.randomSelectFromList(this.DEFAULT_RECOMMEND_ORG_LIST, 10)
+      };
+    }
+
+    const apiLabel = `search_${type}s`;
     const cacheKey = `gh:${apiLabel}:${keyword}`;
     const cache = this.cacheBuilder.build(
       CacheProviderTypes.NORMAL_TABLE, cacheKey, this.SEARCH_NODES_CACHE_HOURS
@@ -252,7 +281,7 @@ export class GithubService {
 
     return cache.load(async () => {
       const variables = {
-        q: `${keyword} ${type === UserType.ORG ? 'type:org' : 'type:user'}`,
+        q: `${keyword} ${type ? `type:${type}` : ''}`,
       };
 
       return await this.octokitExecutor.graphql(apiLabel, this.SEARCH_USERS_GQL, variables, (res) => {
