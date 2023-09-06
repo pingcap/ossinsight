@@ -3,6 +3,7 @@ import { sync as glob } from 'glob';
 import * as path from 'node:path';
 import * as fs from 'node:fs';
 import RandExp from 'randexp';
+import {ParamTypes} from "../../src/core/runner/query/QueryParser";
 
 export const QUERIES_PATH = path.resolve(__dirname, '../../../../configs/queries');
 
@@ -14,9 +15,9 @@ export function findAllQueriesPath () {
 export function eachQuery (cb: (name: string, sql: string, schema: QuerySchema) => void) {
   findAllQueriesPath().forEach(queryPath => {
     const sql = fs.readFileSync(path.join(queryPath, 'template.sql'), { encoding: 'utf-8' });
-    const paramsPath = fs.existsSync(path.join(queryPath, 'params.json')) ? path.join(queryPath, 'params.json') : path.join(queryPath, 'query.json');
-    const params = JSON.parse(fs.readFileSync(paramsPath, { encoding: 'utf-8' }));
-    cb(path.relative(QUERIES_PATH, queryPath), sql, params);
+    const queryConfigPath = fs.existsSync(path.join(queryPath, 'params.json')) ? path.join(queryPath, 'params.json') : path.join(queryPath, 'query.json');
+    const queryConfig = JSON.parse(fs.readFileSync(queryConfigPath, { encoding: 'utf-8' }));
+    cb(path.relative(QUERIES_PATH, queryPath), sql, queryConfig);
   });
 }
 
@@ -34,6 +35,10 @@ export function buildParams (schema: QuerySchema): Record<string, string>[] {
           enumKeys.push(param.name);
           enumValues.push(param.enums);
         }
+      } else if (param.type === ParamTypes.INTEGER || param.type === ParamTypes.NUMBER) {
+        const val = 1000 + Math.floor(Math.random() * 2000);
+        enumKeys.push(param.name);
+        enumValues.push([val.toString()]);
       } else if (param.pattern) {
         const rand = new RandExp(param.pattern);
         rand.max = 9;

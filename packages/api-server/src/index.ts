@@ -4,7 +4,7 @@ export { CollectionService } from './plugins/services/collection-service';
 
 export { QueryRunner } from './core/runner/query/QueryRunner';
 export { QueryLoader } from './core/runner/query/QueryLoader';
-export { QueryParser } from './core/runner/query/QueryParser';
+export { QueryLegacyParser } from './core/runner/query/QueryLegacyParser';
 
 export { Params, ConditionalRefreshCrons, QuerySchema } from '@ossinsight/types';
 

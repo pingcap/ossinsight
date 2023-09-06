@@ -3,9 +3,10 @@ import {Logger} from "pino";
 import CacheBuilder from "../../cache/CacheBuilder";
 import { CachedData } from "../../cache/Cache";
 import { DateTime } from "luxon";
+import {QueryLegacyParser} from "./QueryLegacyParser";
+import {QueryLiquidParser} from "./QueryLiquidParser";
 import { QueryLoader } from "./QueryLoader";
 import {Pool, QueryOptions} from "mysql2/promise";
-import { QueryParser } from "./QueryParser";
 import {PersistConfig, QuerySchema} from "@ossinsight/types";
 import { TiDBQueryExecutor } from "../../executor/query-executor/TiDBQueryExecutor";
 import {presetQueryTimer, measure, presetQueryCounter} from "../../../metrics";
@@ -22,15 +23,19 @@ export interface Options {
 }
 
 export class QueryRunner {
+    private readonly liquidQueryParser: QueryLiquidParser;
+    private readonly legacyQueryParser: QueryLegacyParser;
 
     constructor(
       private readonly logger: Logger,
-      private readonly queryLoader: QueryLoader,
-      private readonly queryParser: QueryParser,
       private readonly cacheBuilder: CacheBuilder,
+      private readonly queryLoader: QueryLoader,
       private readonly queryExecutor: TiDBQueryExecutor,
       private readonly tidb: Pool
-    ) {}
+    ) {
+      this.liquidQueryParser = new QueryLiquidParser();
+      this.legacyQueryParser = new QueryLegacyParser();
+    }
 
     async query <T> (
       queryName: string,
@@ -78,7 +83,12 @@ export class QueryRunner {
     
         return cache.load(async () => {
           return await measure(presetQueryTimer, async () => {
-            const sql = await this.queryParser.parse(templateSQL, queryConfig, params);
+            let sql;
+            if (queryConfig.engine === 'liquid') {
+              sql = await this.liquidQueryParser.parse(templateSQL, queryConfig, params);
+            } else {
+              sql = await this.legacyQueryParser.parse(templateSQL, queryConfig, params);
+            }
 
             // Execute query.
             const start = DateTime.now();

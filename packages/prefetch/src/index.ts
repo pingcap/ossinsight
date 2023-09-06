@@ -2,7 +2,6 @@ import {
   CacheBuilder, cacheHitCounter, cacheQueryHistogram,
   CollectionService,
   QueryLoader,
-  QueryParser,
   QueryRunner, shadowTidbQueryCounter, shadowTidbQueryHistogram, shadowTidbWaitConnectionHistogram, tidbQueryCounter,
   TiDBQueryExecutor, tidbQueryHistogram, tidbWaitConnectionHistogram
 } from "@ossinsight/api-server";
@@ -110,8 +109,7 @@ async function prefetch(options: Options) {
 
   // Init query runner.
   const queryLoader = new QueryLoader(logger);
-  const queryParser = new QueryParser();
-  const queryRunner = new QueryRunner(logger, queryLoader, queryParser, cacheBuilder, tidbQueryExecutor, pool);
+  const queryRunner = new QueryRunner(logger, cacheBuilder, tidbQueryExecutor, pool);
 
   // Load metadata.
   const queries = await queryLoader.loadQueries();
