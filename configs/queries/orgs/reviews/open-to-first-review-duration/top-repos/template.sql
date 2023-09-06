@@ -40,12 +40,9 @@ WITH repos AS (
         FROM github_events ge
         WHERE
             ge.repo_id IN (SELECT repo_id FROM repos)
-            -- Events that are considered as first response.
-            AND (
-                (ge.type = 'PullRequestEvent' AND ge.action = 'closed') OR
-                (ge.type = 'PullRequestReviewEvent' AND ge.action = 'created') OR
-                (ge.type = 'IssueCommentEvent' AND ge.action = 'created')
-            )
+            -- Events that are considered as first review.
+            AND ge.type = 'PullRequestReviewEvent'
+            AND ge.action = 'created'
             -- Exclude bot users.
             AND ge.actor_login NOT LIKE '%bot%'
             {% case period %}

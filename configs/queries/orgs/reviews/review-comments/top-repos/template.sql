@@ -21,9 +21,10 @@ WITH repos AS (
             {% when 'past_90_days' %} AND created_at > (NOW() - INTERVAL 90 DAY)
             {% when 'past_12_months' %} AND created_at > (NOW() - INTERVAL 12 MONTH)
         {% endcase %}
+    GROUP BY repo_id
 ), review_comments_by_repo AS (
     SELECT
-        repo_id, COUNT(*) AS reviews
+        repo_id, COUNT(*) AS review_comments
     FROM github_events ge
     WHERE
         ge.repo_id IN (SELECT repo_id FROM repos)
@@ -35,6 +36,7 @@ WITH repos AS (
             {% when 'past_90_days' %} AND created_at > (NOW() - INTERVAL 90 DAY)
             {% when 'past_12_months' %} AND created_at > (NOW() - INTERVAL 12 MONTH)
         {% endcase %}
+    GROUP BY repo_id
 )
 SELECT
     r.repo_id,
@@ -43,7 +45,7 @@ SELECT
     rcbr.review_comments AS review_comments,
     ROUND(rcbr.review_comments / rbr.reviews, 2) AS comments_per_review
 FROM repos r
-LEFT JOIN reviews_by_repo rbr ON rbr.repo_id = r.repo_id
-LEFT JOIN review_comments_by_repo rcbr ON rcbr.repo_id = r.repo_id
+JOIN reviews_by_repo rbr ON rbr.repo_id = r.repo_id
+JOIN review_comments_by_repo rcbr ON rcbr.repo_id = r.repo_id
 ORDER BY comments_per_review DESC
 LIMIT {{ n }}
