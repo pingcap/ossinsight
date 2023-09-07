@@ -68,10 +68,10 @@ WITH repos AS (
                 {% when 'past_12_months' %} AND ge.created_at > (NOW() - INTERVAL 24 MONTH)
             {% endcase %}
     ) sub
-    # Only consider merged issues that were opened in the last 28 days.
+    # Only consider closed issues that were opened in the last 28 days.
     JOIN opened_issues op USING (repo_id, number)
     WHERE
-        # Only consider the first merged event.
+        # Only consider the first closed event.
         sub.times = 1
 ), opened_issues_per_period AS (
     SELECT op.period, COUNT(*) AS opened_issues
