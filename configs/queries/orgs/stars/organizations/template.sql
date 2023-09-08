@@ -10,7 +10,6 @@ WITH repos AS (
 )
 SELECT
     TRIM(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(gu.organization, ',', ''), '-', ''), '@', ''), 'www.', ''), 'inc', ''), '.com', ''), '.cn', ''), '.', '')) AS organization_name,
-    CASE WHEN
     COUNT(DISTINCT actor_login) AS stars
 FROM github_events ge
 JOIN github_users gu ON ge.actor_login = gu.login
