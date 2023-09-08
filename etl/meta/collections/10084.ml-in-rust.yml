@@ -1,0 +1,14 @@
+id: 10084
+name: ML in Rust
+items:
+  - burn-rs/burn
+  - coreylowman/cudarc
+  - coreylowman/dfdx
+  - guillaume-be/rust-bert
+  - huggingface/candle
+  - LaurentMazare/tch-rs
+  - pykeio/diffusers
+  - pykeio/ort
+  - rust-ml/linfa
+  - sonos/tract
+  - tensorflow/rust
