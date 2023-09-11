@@ -21,7 +21,6 @@ WITH repos AS (
             {% when 'past_90_days' %} AND created_at > (NOW() - INTERVAL 90 DAY)
             {% when 'past_12_months' %} AND created_at > (NOW() - INTERVAL 12 MONTH)
         {% endcase %}
-    GROUP BY ge.repo_id
 ), issues_by_repo AS (
     SELECT repo_id, COUNT(*) AS issues
     FROM opened_issues oi
