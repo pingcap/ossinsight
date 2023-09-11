@@ -6,7 +6,7 @@ WITH issues_group_by_repo AS (
     FROM github_events
     WHERE
         type = 'IssuesEvent'
-        AND repo_id IN (SELECT repo_id FROM collection_items ci WHERE collection_id = ${collectionId})
+        AND repo_id IN (SELECT repo_id FROM collection_items ci WHERE collection_id = ${collection_id})
     GROUP BY repo_id
 ), issues_group_by_period AS (
     SELECT
@@ -20,7 +20,7 @@ WITH issues_group_by_repo AS (
     WHERE
         type = 'IssuesEvent'
         AND action = 'opened'
-        AND repo_id IN (SELECT repo_id FROM collection_items ci WHERE collection_id = ${collectionId})
+        AND repo_id IN (SELECT repo_id FROM collection_items ci WHERE collection_id = ${collection_id})
         AND CASE
           WHEN ${period} = 'past_month' THEN created_at > DATE_SUB(CURRENT_DATE(), INTERVAL 2 MONTH)
           ELSE created_at > DATE_SUB(CURRENT_DATE(), INTERVAL 56 DAY)
@@ -60,7 +60,7 @@ SELECT
     -- The total issues of repo.
     IFNULL(igr.issues, 0)                                  AS total
 FROM issues_group_by_repo igr
-JOIN collection_items ci ON ci.collection_id = ${collectionId} AND igr.repo_id = ci.repo_id
+JOIN collection_items ci ON ci.collection_id = ${collection_id} AND igr.repo_id = ci.repo_id
 JOIN current_period_issues cpi ON igr.repo_id = cpi.repo_id
 LEFT JOIN past_period_issues ppi ON igr.repo_id = ppi.repo_id
 ORDER BY current_period_rank;

@@ -7,7 +7,7 @@ WITH stars_group_by_repo AS (
     WHERE
         type = 'WatchEvent'
         AND action = 'started'
-        AND repo_id IN (SELECT repo_id FROM collection_items ci WHERE collection_id = ${collectionId})
+        AND repo_id IN (SELECT repo_id FROM collection_items ci WHERE collection_id = ${collection_id})
     GROUP BY repo_id
 ), stars_group_by_period AS (
     SELECT
@@ -21,7 +21,7 @@ WITH stars_group_by_repo AS (
     WHERE
         type = 'WatchEvent'
         AND action = 'started'
-        AND repo_id IN (SELECT repo_id FROM collection_items ci WHERE collection_id = ${collectionId})
+        AND repo_id IN (SELECT repo_id FROM collection_items ci WHERE collection_id = ${collection_id})
         AND CASE
           WHEN ${period} = 'past_month' THEN created_at > DATE_SUB(CURRENT_DATE(), INTERVAL 2 MONTH)
           ELSE created_at > DATE_SUB(CURRENT_DATE(), INTERVAL 56 DAY)
@@ -62,7 +62,7 @@ SELECT
     -- The total stars of repo.
     IFNULL(sgr.prs, 0)                                     AS total
 FROM stars_group_by_repo sgr
-JOIN collection_items ci ON ci.collection_id = ${collectionId} AND sgr.repo_id = ci.repo_id
+JOIN collection_items ci ON ci.collection_id = ${collection_id} AND sgr.repo_id = ci.repo_id
 JOIN current_period_stars cps ON sgr.repo_id = cps.repo_id
 LEFT JOIN past_period_stars pps ON sgr.repo_id = pps.repo_id
 ORDER BY current_period_rank;

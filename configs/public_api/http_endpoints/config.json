@@ -31,7 +31,7 @@
     },
     "params": [
       {
-        "name": "collectionId",
+        "name": "collection_id",
         "type": "integer",
         "required": 1,
         "default": "",
@@ -68,7 +68,7 @@
     },
     "params": [
       {
-        "name": "collectionId",
+        "name": "collection_id",
         "type": "integer",
         "required": 1,
         "default": "",
@@ -105,7 +105,7 @@
     },
     "params": [
       {
-        "name": "collectionId",
+        "name": "collection_id",
         "type": "integer",
         "required": 1,
         "default": "",
@@ -600,7 +600,7 @@
     "params": [
       {
         "name": "collection_id",
-        "type": "number",
+        "type": "integer",
         "required": 1,
         "default": "",
         "description": ""
