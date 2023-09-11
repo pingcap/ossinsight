@@ -9,7 +9,6 @@ const schema = {
   tags: ['Collections'],
   querystring: {
     type: 'object',
-    required: ['period'],
     properties: {
       period: {
         type: 'string',
