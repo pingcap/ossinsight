@@ -10,7 +10,7 @@ const Logo = styled('img')(({ theme }) => ({
 const FooterLine = () => {
   return (
     <Body sx={aligns.heading}>
-      <a href="https://en.pingcap.com/tidb-cloud/?utm_source=ossinsight&utm_medium=referral" target="_blank" rel="noreferrer">
+      <a href="https://www.pingcap.com/tidb-serverless/?utm_source=ossinsight&utm_medium=referral" target="_blank" rel="noreferrer">
         <Logo src='/img/tidb-cloud-logo-o.png' height={20} alt='TiDB' />
       </a>
     </Body>
