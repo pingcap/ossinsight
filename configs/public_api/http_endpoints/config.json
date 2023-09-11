@@ -14,6 +14,13 @@
         "required": 1,
         "default": "",
         "description": ""
+      },
+      {
+        "name": "period",
+        "type": "string",
+        "required": 0,
+        "default": "past_28_days",
+        "description": ""
       }
     ],
     "settings": {
@@ -44,6 +51,13 @@
         "required": 1,
         "default": "",
         "description": ""
+      },
+      {
+        "name": "period",
+        "type": "string",
+        "required": 0,
+        "default": "past_28_days",
+        "description": ""
       }
     ],
     "settings": {
@@ -73,6 +87,13 @@
         "type": "integer",
         "required": 1,
         "default": "",
+        "description": ""
+      },
+      {
+        "name": "period",
+        "type": "string",
+        "required": 0,
+        "default": "past_28_days",
         "description": ""
       }
     ],

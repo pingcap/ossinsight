@@ -10,7 +10,10 @@ WITH issues_group_by_repo AS (
     GROUP BY repo_id
 ), issues_group_by_period AS (
     SELECT
-        (DATEDIFF(CURRENT_DATE(), DATE(created_at))) DIV 28 AS period,
+        CASE
+          WHEN ${period} = 'past_month' THEN TIMESTAMPDIFF(MONTH, DATE(created_at), CURRENT_DATE())
+          ELSE DATEDIFF(CURRENT_DATE(), DATE(created_at)) DIV 28
+        END AS period,
         repo_id,
         COUNT(DISTINCT number) AS issues
     FROM github_events
@@ -18,7 +21,10 @@ WITH issues_group_by_repo AS (
         type = 'IssuesEvent'
         AND action = 'opened'
         AND repo_id IN (SELECT repo_id FROM collection_items ci WHERE collection_id = ${collectionId})
-        AND created_at > DATE_SUB(CURRENT_DATE(), INTERVAL 56 DAY)
+        AND CASE
+          WHEN ${period} = 'past_month' THEN created_at > DATE_SUB(CURRENT_DATE(), INTERVAL 2 MONTH)
+          ELSE created_at > DATE_SUB(CURRENT_DATE(), INTERVAL 56 DAY)
+        END
     GROUP BY period, repo_id
 ), current_period_issues AS (
     SELECT

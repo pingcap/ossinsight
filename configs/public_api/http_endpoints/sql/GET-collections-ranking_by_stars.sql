@@ -11,7 +11,10 @@ WITH stars_group_by_repo AS (
     GROUP BY repo_id
 ), stars_group_by_period AS (
     SELECT
-        (DATEDIFF(CURRENT_DATE(), DATE(created_at))) DIV 28 AS period,
+        CASE
+          WHEN ${period} = 'past_month' THEN TIMESTAMPDIFF(MONTH, DATE(created_at), CURRENT_DATE())
+          ELSE DATEDIFF(CURRENT_DATE(), DATE(created_at)) DIV 28
+        END AS period,
         repo_id,
         COUNT(DISTINCT actor_login) AS stars
     FROM github_events
@@ -19,7 +22,10 @@ WITH stars_group_by_repo AS (
         type = 'WatchEvent'
         AND action = 'started'
         AND repo_id IN (SELECT repo_id FROM collection_items ci WHERE collection_id = ${collectionId})
-        AND created_at > DATE_SUB(CURRENT_DATE(), INTERVAL 56 DAY)
+        AND CASE
+          WHEN ${period} = 'past_month' THEN created_at > DATE_SUB(CURRENT_DATE(), INTERVAL 2 MONTH)
+          ELSE created_at > DATE_SUB(CURRENT_DATE(), INTERVAL 56 DAY)
+        END
     GROUP BY period, repo_id
 ), current_period_stars AS (
     SELECT
