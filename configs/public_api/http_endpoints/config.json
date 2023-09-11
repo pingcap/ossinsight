@@ -3,7 +3,7 @@
     "name": "Collection ranking by issues",
     "description": "",
     "method": "GET",
-    "endpoint": "/collections/ranking_by_prs_dump_WwZaeN",
+    "endpoint": "/collections/ranking_by_issues",
     "data_source": {
       "cluster_id": 1379661944642684098
     },
@@ -25,7 +25,7 @@
     },
     "tag": "Default",
     "batch_operation": 0,
-    "sql_file": "sql/GET-collections-ranking_by_prs_dump_WwZaeN.sql",
+    "sql_file": "sql/GET-collections-ranking_by_issues.sql",
     "type": "sql_endpoint",
     "return_type": "json"
   },
