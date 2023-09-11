@@ -60,19 +60,19 @@ const sidebars = {
           items: [
             {
               type: 'doc',
-              id: 'api/collections/ranking-by-stars',
+              id: 'api/collection-repo-ranking-by-stars',
               label: 'Repository ranking by stars',
               className: 'api-method get'
             },
             {
               type: 'doc',
-              id: 'api/collections/ranking-by-issues',
+              id: 'api/collection-repo-ranking-by-issues',
               label: 'Repository ranking by issues',
               className: 'api-method get'
             },
             {
               type: 'doc',
-              id: 'api/collections/ranking-by-prs',
+              id: 'api/collection-repo-ranking-by-prs',
               label: 'Repository ranking by prs',
               className: 'api-method get'
             }
