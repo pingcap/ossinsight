@@ -1,5 +1,27 @@
 [
   {
+    "name": "List Hot Collections",
+    "description": "List Repository Collections",
+    "method": "GET",
+    "endpoint": "/collections/hot",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [],
+    "settings": {
+      "timeout": 5000,
+      "row_limit": 200,
+      "cache_enabled": 0,
+      "cache_ttl": 0,
+      "enable_pagination": 1
+    },
+    "tag": "Collections",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-collections-hot.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
     "name": "Collection ranking by issues",
     "description": "",
     "method": "GET",
@@ -571,7 +593,7 @@
     "name": "List Collection Items",
     "description": "List Repositories of Specified Collection",
     "method": "GET",
-    "endpoint": "/collections/__collection_id",
+    "endpoint": "/collections/repos",
     "data_source": {
       "cluster_id": 1379661944642684098
     },
@@ -593,7 +615,7 @@
     },
     "tag": "Collections",
     "batch_operation": 0,
-    "sql_file": "sql/GET-collections-__collection_id.sql",
+    "sql_file": "sql/GET-collections-repos.sql",
     "type": "sql_endpoint",
     "return_type": "json"
   },
