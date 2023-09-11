@@ -49,12 +49,12 @@ SELECT
     ci.repo_id,
     ci.repo_name,
     -- Pull Requests
-    IFNULL(cpp.prs, 0)                                     AS current_period_total,
+    IFNULL(cpp.prs, 0)                                     AS current_period_growth,
     IFNULL(cpp.`rank`, 0)                                  AS current_period_rank,
-    IFNULL(ppp.prs, 0)                                     AS past_period_total,
+    IFNULL(ppp.prs, 0)                                     AS past_period_growth,
     IFNULL(ppp.`rank`, 0)                                  AS past_period_rank,
     -- The changes of total pull requests between two periods.
-    IFNULL(ROUND((cpp.prs - ppp.prs) / ppp.prs * 100, 2), 0) AS total_pop,
+    IFNULL(ROUND((cpp.prs - ppp.prs) / ppp.prs * 100, 2), 0) AS growth_pop,
     -- The rank changes between two periods.
     IFNULL((cpp.`rank` - ppp.`rank`), 0)                   AS rank_pop,
     -- The total pull requests of repo.

@@ -49,12 +49,12 @@ SELECT
     ci.repo_id,
     ci.repo_name,
     -- Issues
-    IFNULL(cpi.issues, 0)                                  AS current_period_total,
+    IFNULL(cpi.issues, 0)                                  AS current_period_growth,
     IFNULL(cpi.`rank`, 0)                                  AS current_period_rank,
-    IFNULL(ppi.issues, 0)                                  AS past_period_total,
+    IFNULL(ppi.issues, 0)                                  AS past_period_growth,
     IFNULL(ppi.`rank`, 0)                                  AS past_period_rank,
     -- The changes of total issues between two periods.
-    IFNULL(ROUND((cpi.issues - ppi.issues) / ppi.issues * 100, 2), 0) AS total_pop,
+    IFNULL(ROUND((cpi.issues - ppi.issues) / ppi.issues * 100, 2), 0) AS growth_pop,
     -- The rank changes between two periods.
     IFNULL((cpi.`rank` - ppi.`rank`), 0)                   AS rank_pop,
     -- The total issues of repo.
