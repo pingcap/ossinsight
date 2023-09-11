@@ -174,6 +174,1196 @@ info:
 components:
   schemas: {}
 paths:
+  "/collections/{collection_id}/ranking_by_issues/":
+    get:
+      operationId: collection-repo-ranking-by-issues
+      summary: Repository ranking by issues
+      tags:
+        - Collections
+      description: Rank the GitHub repositories in the specified collection according
+        to the number of issues.
+      parameters:
+        - schema:
+            type: string
+            enum:
+              - past_28_days
+              - past_month
+            default: past_28_days
+          in: query
+          name: period
+          required: true
+          description: The period of the range.
+        - schema:
+            type: number
+          in: path
+          name: collectionId
+          required: true
+          description: The ID of collection
+      responses:
+        "200":
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - type
+                  - data
+                properties:
+                  type:
+                    type: string
+                    description: The type of the endpoint.
+                    enum:
+                      - sql_endpoint
+                    example: sql_endpoint
+                  data:
+                    type: object
+                    required:
+                      - columns
+                      - rows
+                      - result
+                    properties:
+                      columns:
+                        type: array
+                        items:
+                          type: object
+                          required:
+                            - col
+                            - data_type
+                            - nullable
+                          properties:
+                            col:
+                              type: string
+                              description: The name of the column in the query result.
+                            data_type:
+                              type: string
+                              enum:
+                                - CHAR
+                                - BIGINT
+                                - DECIMAL
+                                - INT
+                                - UNSIGNED BIGINT
+                                - TINYINT
+                                - TIMESTAMP
+                                - TEXT
+                                - VARCHAR
+                                - DATETIME
+                                - DOUBLE
+                                - FLOAT
+                                - DATE
+                                - TIME
+                                - YEAR
+                                - MEDIUMINT
+                                - SMALLINT
+                                - BIT
+                                - BINARY
+                                - VARBINARY
+                                - JSON
+                                - ENUM
+                                - SET
+                                - TINYTEXT
+                                - MEDIUMTEXT
+                                - LONGTEXT
+                                - TINYBLOB
+                                - MEDIUMBLOB
+                                - BLOB
+                                - LONGBLOB
+                              description: The data type of the column.
+                            nullable:
+                              type: boolean
+                              description: Whether the column is nullable.
+                          additionalProperties: true
+                        example:
+                          - col: repo_id
+                            data_type: BIGINT
+                            nullable: false
+                          - col: repo_name
+                            data_type: VARCHAR
+                            nullable: false
+                          - col: current_period_growth
+                            data_type: BIGINT
+                            nullable: false
+                          - col: current_period_rank
+                            data_type: BIGINT
+                            nullable: false
+                          - col: past_period_growth
+                            data_type: BIGINT
+                            nullable: false
+                          - col: past_period_rank
+                            data_type: BIGINT
+                            nullable: false
+                          - col: growth_pop
+                            data_type: DECIMAL
+                            nullable: false
+                          - col: rank_pop
+                            data_type: BIGINT
+                            nullable: false
+                          - col: total
+                            data_type: BIGINT
+                            nullable: false
+                      rows:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            repo_id:
+                              type: string
+                              description: The repository ID
+                            repo_name:
+                              type: string
+                              description: The repository name
+                            current_period_growth:
+                              type: string
+                              description: issues growth in the current period (past 28 days / current month)
+                            past_period_growth:
+                              type: string
+                              description: issues growth in the past period (The 28 days before the past 28
+                                days / past month)
+                            growth_pop:
+                              type: string
+                              description: The period-over-period growth of issues
+                            rank_pop:
+                              type: string
+                              description: The period-over-period rank changes of issues
+                            total:
+                              type: string
+                              description: The current total issues of repository
+                          additionalProperties: true
+                        example:
+                          - repo_id: "16563587"
+                            repo_name: cockroachdb/cockroach
+                            current_period_growth: "677"
+                            past_period_growth: "729"
+                            growth_pop: "-7.13"
+                            rank_pop: "0"
+                            total: "54541"
+                            current_period_rank: "1"
+                            past_period_rank: "1"
+                          - repo_id: "60246359"
+                            repo_name: clickhouse/clickhouse
+                            current_period_growth: "268"
+                            past_period_growth: "296"
+                            growth_pop: "-9.46"
+                            rank_pop: "-1"
+                            total: "16732"
+                            current_period_rank: "2"
+                            past_period_rank: "3"
+                          - repo_id: "41986369"
+                            repo_name: pingcap/tidb
+                            current_period_growth: "263"
+                            past_period_growth: "214"
+                            growth_pop: "22.90"
+                            rank_pop: "-3"
+                            total: "15622"
+                            current_period_rank: "3"
+                            past_period_rank: "6"
+                          - repo_id: "105944401"
+                            repo_name: yugabyte/yugabyte-db
+                            current_period_growth: "246"
+                            past_period_growth: "298"
+                            growth_pop: "-17.45"
+                            rank_pop: "2"
+                            total: "15079"
+                            current_period_rank: "4"
+                            past_period_rank: "2"
+                          - repo_id: "208728772"
+                            repo_name: milvus-io/milvus
+                            current_period_growth: "234"
+                            past_period_growth: "237"
+                            growth_pop: "-1.27"
+                            rank_pop: "0"
+                            total: "8675"
+                            current_period_rank: "5"
+                            past_period_rank: "5"
+                          - repo_id: "507775"
+                            repo_name: elastic/elasticsearch
+                            current_period_growth: "214"
+                            past_period_growth: "144"
+                            growth_pop: "48.61"
+                            rank_pop: "-3"
+                            total: "31578"
+                            current_period_rank: "6"
+                            past_period_rank: "9"
+                      result:
+                        type: object
+                        properties:
+                          code:
+                            type: number
+                            description: The code of the response.
+                          message:
+                            type: string
+                            description: The message of the response.
+                          start_ms:
+                            type: number
+                            description: The start time of the query in milliseconds.
+                          end_ms:
+                            type: number
+                            description: The end time of the query in milliseconds.
+                          latency:
+                            type: string
+                            description: The latency of the query.
+                          row_count:
+                            type: number
+                            description: The number of rows in the query result.
+                          row_affect:
+                            type: number
+                            description: The number of rows affected by the query.
+                          limit:
+                            type: number
+                            description: The maximum number of rows in the query result.
+                          databases:
+                            type: array
+                            description: The databases used in the query.
+                            items:
+                              type: string
+                        additionalProperties: true
+                        example:
+                          code: 200
+                          message: Query OK!
+                          start_ms: 1690957407469
+                          end_ms: 1690957407499
+                          latency: 30ms
+                          row_count: 7
+                          row_affect: 0
+                          limit: 50
+                          databases:
+                            - gharchive_dev
+  "/collections/{collection_id}/ranking_by_prs/":
+    get:
+      operationId: collection-repo-ranking-by-prs
+      summary: Repository ranking by prs
+      tags:
+        - Collections
+      description: Rank the GitHub repositories in the specified collection according
+        to the number of pull requests.
+      parameters:
+        - schema:
+            type: string
+            enum:
+              - past_28_days
+              - past_month
+            default: past_28_days
+          in: query
+          name: period
+          required: true
+          description: The period of the range.
+        - schema:
+            type: number
+          in: path
+          name: collectionId
+          required: true
+          description: The ID of collection
+      responses:
+        "200":
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - type
+                  - data
+                properties:
+                  type:
+                    type: string
+                    description: The type of the endpoint.
+                    enum:
+                      - sql_endpoint
+                    example: sql_endpoint
+                  data:
+                    type: object
+                    required:
+                      - columns
+                      - rows
+                      - result
+                    properties:
+                      columns:
+                        type: array
+                        items:
+                          type: object
+                          required:
+                            - col
+                            - data_type
+                            - nullable
+                          properties:
+                            col:
+                              type: string
+                              description: The name of the column in the query result.
+                            data_type:
+                              type: string
+                              enum:
+                                - CHAR
+                                - BIGINT
+                                - DECIMAL
+                                - INT
+                                - UNSIGNED BIGINT
+                                - TINYINT
+                                - TIMESTAMP
+                                - TEXT
+                                - VARCHAR
+                                - DATETIME
+                                - DOUBLE
+                                - FLOAT
+                                - DATE
+                                - TIME
+                                - YEAR
+                                - MEDIUMINT
+                                - SMALLINT
+                                - BIT
+                                - BINARY
+                                - VARBINARY
+                                - JSON
+                                - ENUM
+                                - SET
+                                - TINYTEXT
+                                - MEDIUMTEXT
+                                - LONGTEXT
+                                - TINYBLOB
+                                - MEDIUMBLOB
+                                - BLOB
+                                - LONGBLOB
+                              description: The data type of the column.
+                            nullable:
+                              type: boolean
+                              description: Whether the column is nullable.
+                          additionalProperties: true
+                        example:
+                          - col: repo_id
+                            data_type: BIGINT
+                            nullable: false
+                          - col: repo_name
+                            data_type: VARCHAR
+                            nullable: false
+                          - col: current_period_growth
+                            data_type: BIGINT
+                            nullable: false
+                          - col: current_period_rank
+                            data_type: BIGINT
+                            nullable: false
+                          - col: past_period_growth
+                            data_type: BIGINT
+                            nullable: false
+                          - col: past_period_rank
+                            data_type: BIGINT
+                            nullable: false
+                          - col: growth_pop
+                            data_type: DECIMAL
+                            nullable: false
+                          - col: rank_pop
+                            data_type: BIGINT
+                            nullable: false
+                          - col: total
+                            data_type: BIGINT
+                            nullable: false
+                      rows:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            repo_id:
+                              type: string
+                              description: The repository ID
+                            repo_name:
+                              type: string
+                              description: The repository name
+                            current_period_growth:
+                              type: string
+                              description: prs growth in the current period (past 28 days / current month)
+                            past_period_growth:
+                              type: string
+                              description: prs growth in the past period (The 28 days before the past 28 days
+                                / past month)
+                            growth_pop:
+                              type: string
+                              description: The period-over-period growth of prs
+                            rank_pop:
+                              type: string
+                              description: The period-over-period rank changes of prs
+                            total:
+                              type: string
+                              description: The current total prs of repository
+                          additionalProperties: true
+                        example:
+                          - repo_id: "16563587"
+                            repo_name: cockroachdb/cockroach
+                            current_period_growth: "677"
+                            past_period_growth: "729"
+                            growth_pop: "-7.13"
+                            rank_pop: "0"
+                            total: "54541"
+                            current_period_rank: "1"
+                            past_period_rank: "1"
+                          - repo_id: "60246359"
+                            repo_name: clickhouse/clickhouse
+                            current_period_growth: "268"
+                            past_period_growth: "296"
+                            growth_pop: "-9.46"
+                            rank_pop: "-1"
+                            total: "16732"
+                            current_period_rank: "2"
+                            past_period_rank: "3"
+                          - repo_id: "41986369"
+                            repo_name: pingcap/tidb
+                            current_period_growth: "263"
+                            past_period_growth: "214"
+                            growth_pop: "22.90"
+                            rank_pop: "-3"
+                            total: "15622"
+                            current_period_rank: "3"
+                            past_period_rank: "6"
+                          - repo_id: "105944401"
+                            repo_name: yugabyte/yugabyte-db
+                            current_period_growth: "246"
+                            past_period_growth: "298"
+                            growth_pop: "-17.45"
+                            rank_pop: "2"
+                            total: "15079"
+                            current_period_rank: "4"
+                            past_period_rank: "2"
+                          - repo_id: "208728772"
+                            repo_name: milvus-io/milvus
+                            current_period_growth: "234"
+                            past_period_growth: "237"
+                            growth_pop: "-1.27"
+                            rank_pop: "0"
+                            total: "8675"
+                            current_period_rank: "5"
+                            past_period_rank: "5"
+                          - repo_id: "507775"
+                            repo_name: elastic/elasticsearch
+                            current_period_growth: "214"
+                            past_period_growth: "144"
+                            growth_pop: "48.61"
+                            rank_pop: "-3"
+                            total: "31578"
+                            current_period_rank: "6"
+                            past_period_rank: "9"
+                      result:
+                        type: object
+                        properties:
+                          code:
+                            type: number
+                            description: The code of the response.
+                          message:
+                            type: string
+                            description: The message of the response.
+                          start_ms:
+                            type: number
+                            description: The start time of the query in milliseconds.
+                          end_ms:
+                            type: number
+                            description: The end time of the query in milliseconds.
+                          latency:
+                            type: string
+                            description: The latency of the query.
+                          row_count:
+                            type: number
+                            description: The number of rows in the query result.
+                          row_affect:
+                            type: number
+                            description: The number of rows affected by the query.
+                          limit:
+                            type: number
+                            description: The maximum number of rows in the query result.
+                          databases:
+                            type: array
+                            description: The databases used in the query.
+                            items:
+                              type: string
+                        additionalProperties: true
+                        example:
+                          code: 200
+                          message: Query OK!
+                          start_ms: 1690957407469
+                          end_ms: 1690957407499
+                          latency: 30ms
+                          row_count: 7
+                          row_affect: 0
+                          limit: 50
+                          databases:
+                            - gharchive_dev
+  "/collections/{collection_id}/ranking_by_stars/":
+    get:
+      operationId: collection-repo-ranking-by-stars
+      summary: Repository ranking by stars
+      tags:
+        - Collections
+      description: Rank the GitHub repositories in the specified collection according
+        to the number of stars.
+      parameters:
+        - schema:
+            type: string
+            enum:
+              - past_28_days
+              - past_month
+            default: past_28_days
+          in: query
+          name: period
+          required: true
+          description: The period of the range.
+        - schema:
+            type: number
+          in: path
+          name: collectionId
+          required: true
+          description: The ID of collection
+      responses:
+        "200":
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - type
+                  - data
+                properties:
+                  type:
+                    type: string
+                    description: The type of the endpoint.
+                    enum:
+                      - sql_endpoint
+                    example: sql_endpoint
+                  data:
+                    type: object
+                    required:
+                      - columns
+                      - rows
+                      - result
+                    properties:
+                      columns:
+                        type: array
+                        items:
+                          type: object
+                          required:
+                            - col
+                            - data_type
+                            - nullable
+                          properties:
+                            col:
+                              type: string
+                              description: The name of the column in the query result.
+                            data_type:
+                              type: string
+                              enum:
+                                - CHAR
+                                - BIGINT
+                                - DECIMAL
+                                - INT
+                                - UNSIGNED BIGINT
+                                - TINYINT
+                                - TIMESTAMP
+                                - TEXT
+                                - VARCHAR
+                                - DATETIME
+                                - DOUBLE
+                                - FLOAT
+                                - DATE
+                                - TIME
+                                - YEAR
+                                - MEDIUMINT
+                                - SMALLINT
+                                - BIT
+                                - BINARY
+                                - VARBINARY
+                                - JSON
+                                - ENUM
+                                - SET
+                                - TINYTEXT
+                                - MEDIUMTEXT
+                                - LONGTEXT
+                                - TINYBLOB
+                                - MEDIUMBLOB
+                                - BLOB
+                                - LONGBLOB
+                              description: The data type of the column.
+                            nullable:
+                              type: boolean
+                              description: Whether the column is nullable.
+                          additionalProperties: true
+                        example:
+                          - col: repo_id
+                            data_type: BIGINT
+                            nullable: false
+                          - col: repo_name
+                            data_type: VARCHAR
+                            nullable: false
+                          - col: current_period_growth
+                            data_type: BIGINT
+                            nullable: false
+                          - col: current_period_rank
+                            data_type: BIGINT
+                            nullable: false
+                          - col: past_period_growth
+                            data_type: BIGINT
+                            nullable: false
+                          - col: past_period_rank
+                            data_type: BIGINT
+                            nullable: false
+                          - col: growth_pop
+                            data_type: DECIMAL
+                            nullable: false
+                          - col: rank_pop
+                            data_type: BIGINT
+                            nullable: false
+                          - col: total
+                            data_type: BIGINT
+                            nullable: false
+                      rows:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            repo_id:
+                              type: string
+                              description: The repository ID
+                            repo_name:
+                              type: string
+                              description: The repository name
+                            current_period_growth:
+                              type: string
+                              description: Stars growth in the current period (past 28 days / current month)
+                            past_period_growth:
+                              type: string
+                              description: Stars growth in the past period (The 28 days before the past 28
+                                days / past month)
+                            growth_pop:
+                              type: string
+                              description: The period-over-period growth of stars
+                            rank_pop:
+                              type: string
+                              description: The period-over-period rank changes of stars
+                            total:
+                              type: string
+                              description: The current total stars of repository
+                          additionalProperties: true
+                        example:
+                          - repo_id: "208728772"
+                            repo_name: milvus-io/milvus
+                            current_period_growth: "612"
+                            current_period_rank: "1"
+                            growth_pop: "-20.31"
+                            past_period_growth: "768"
+                            past_period_rank: "1"
+                            rank_pop: "0"
+                            total: "23803"
+                          - repo_id: "60246359"
+                            repo_name: clickhouse/clickhouse
+                            current_period_growth: "418"
+                            current_period_rank: "2"
+                            growth_pop: "-9.72"
+                            past_period_growth: "463"
+                            past_period_rank: "2"
+                            rank_pop: "0"
+                            total: "30935"
+                          - repo_id: "507775"
+                            repo_name: elastic/elasticsearch
+                            current_period_growth: "377"
+                            current_period_rank: "3"
+                            growth_pop: "2.45"
+                            past_period_growth: "368"
+                            past_period_rank: "4"
+                            rank_pop: "-1"
+                            total: "69228"
+                          - repo_id: "138754790"
+                            repo_name: duckdb/duckdb
+                            current_period_growth: "335"
+                            current_period_rank: "4"
+                            growth_pop: "-15.83"
+                            past_period_growth: "398"
+                            past_period_rank: "3"
+                            rank_pop: "1"
+                            total: "11408"
+                          - repo_id: "99919302"
+                            repo_name: apache/incubator-doris
+                            current_period_growth: "329"
+                            current_period_rank: "5"
+                            growth_pop: "28.02"
+                            past_period_growth: "257"
+                            past_period_rank: "6"
+                            rank_pop: "-1"
+                            total: "9310"
+                          - repo_id: "927442"
+                            repo_name: postgres/postgres
+                            current_period_growth: "210"
+                            current_period_rank: "6"
+                            growth_pop: "4.48"
+                            past_period_growth: "201"
+                            past_period_rank: "10"
+                            rank_pop: "-4"
+                            total: "13731"
+                          - repo_id: "41986369"
+                            repo_name: pingcap/tidb
+                            current_period_growth: "202"
+                            current_period_rank: "7"
+                            growth_pop: "-3.81"
+                            past_period_growth: "210"
+                            past_period_rank: "8"
+                            rank_pop: "-1"
+                            total: "36325"
+                      result:
+                        type: object
+                        properties:
+                          code:
+                            type: number
+                            description: The code of the response.
+                          message:
+                            type: string
+                            description: The message of the response.
+                          start_ms:
+                            type: number
+                            description: The start time of the query in milliseconds.
+                          end_ms:
+                            type: number
+                            description: The end time of the query in milliseconds.
+                          latency:
+                            type: string
+                            description: The latency of the query.
+                          row_count:
+                            type: number
+                            description: The number of rows in the query result.
+                          row_affect:
+                            type: number
+                            description: The number of rows affected by the query.
+                          limit:
+                            type: number
+                            description: The maximum number of rows in the query result.
+                          databases:
+                            type: array
+                            description: The databases used in the query.
+                            items:
+                              type: string
+                        additionalProperties: true
+                        example:
+                          code: 200
+                          message: Query OK!
+                          start_ms: 1690957407469
+                          end_ms: 1690957407499
+                          latency: 30ms
+                          row_count: 7
+                          row_affect: 0
+                          limit: 50
+                          databases:
+                            - gharchive_dev
+  /collections/hot/:
+    get:
+      operationId: list-hot-collection
+      summary: List hot collection
+      tags:
+        - Collections
+      description: List hot collection.
+      parameters:
+        - schema:
+            type: string
+            enum:
+              - past_28_days
+              - past_month
+            default: past_28_days
+          in: query
+          name: period
+          required: true
+          description: The period of the range.
+      responses:
+        "200":
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - type
+                  - data
+                properties:
+                  type:
+                    type: string
+                    description: The type of the endpoint.
+                    enum:
+                      - sql_endpoint
+                    example: sql_endpoint
+                  data:
+                    type: object
+                    required:
+                      - columns
+                      - rows
+                      - result
+                    properties:
+                      columns:
+                        type: array
+                        items:
+                          type: object
+                          required:
+                            - col
+                            - data_type
+                            - nullable
+                          properties:
+                            col:
+                              type: string
+                              description: The name of the column in the query result.
+                            data_type:
+                              type: string
+                              enum:
+                                - CHAR
+                                - BIGINT
+                                - DECIMAL
+                                - INT
+                                - UNSIGNED BIGINT
+                                - TINYINT
+                                - TIMESTAMP
+                                - TEXT
+                                - VARCHAR
+                                - DATETIME
+                                - DOUBLE
+                                - FLOAT
+                                - DATE
+                                - TIME
+                                - YEAR
+                                - MEDIUMINT
+                                - SMALLINT
+                                - BIT
+                                - BINARY
+                                - VARBINARY
+                                - JSON
+                                - ENUM
+                                - SET
+                                - TINYTEXT
+                                - MEDIUMTEXT
+                                - LONGTEXT
+                                - TINYBLOB
+                                - MEDIUMBLOB
+                                - BLOB
+                                - LONGBLOB
+                              description: The data type of the column.
+                            nullable:
+                              type: boolean
+                              description: Whether the column is nullable.
+                          additionalProperties: true
+                        example:
+                          - col: id
+                            data_type: BIGINT
+                            nullable: false
+                          - col: name
+                            data_type: VARCHAR
+                            nullable: false
+                          - col: visits
+                            data_type: BIGINT
+                            nullable: false
+                          - col: repo_id
+                            data_type: BIGINT
+                            nullable: false
+                          - col: repo_name
+                            data_type: VARCHAR
+                            nullable: false
+                          - col: rank
+                            data_type: BIGINT
+                            nullable: true
+                          - col: last_month_rank
+                            data_type: INT
+                            nullable: true
+                          - col: last_2nd_month_rank
+                            data_type: INT
+                            nullable: true
+                          - col: rank_changes
+                            data_type: BIGINT
+                            nullable: true
+                          - col: repos
+                            data_type: BIGINT
+                            nullable: false
+                      rows:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                              description: Collection ID
+                            name:
+                              type: string
+                              description: Collection name
+                            visits:
+                              type: string
+                              description: Number of visits
+                            repo_id:
+                              type: string
+                              description: Repository ID
+                            repo_name:
+                              type: string
+                              description: Repository name
+                            rank:
+                              type: string
+                              description: The rank of the repository in the collection
+                          additionalProperties: true
+                        example:
+                          - id: "10010"
+                            last_2nd_month_rank: "4"
+                            last_month_rank: "3"
+                            name: Artificial Intelligence
+                            rank: "3"
+                            rank_changes: "1"
+                            repo_id: "65600975"
+                            repo_name: pytorch/pytorch
+                            repos: "36"
+                            visits: "20100"
+                          - id: "10010"
+                            last_2nd_month_rank: "1"
+                            last_month_rank: "1"
+                            name: Artificial Intelligence
+                            rank: "1"
+                            rank_changes: "0"
+                            repo_id: "155220641"
+                            repo_name: huggingface/transformers
+                            repos: "36"
+                            visits: "20100"
+                          - id: "10010"
+                            last_2nd_month_rank: "2"
+                            last_month_rank: "2"
+                            name: Artificial Intelligence
+                            rank: "2"
+                            rank_changes: "0"
+                            repo_id: "458588993"
+                            repo_name: nebuly-ai/nebullvm
+                            repos: "36"
+                            visits: "20100"
+                          - id: "10078"
+                            last_2nd_month_rank: ""
+                            last_month_rank: "1"
+                            name: ChatGPT Apps
+                            rank: "1"
+                            rank_changes: ""
+                            repo_id: "608555244"
+                            repo_name: microsoft/visual-chatgpt
+                            repos: "36"
+                            visits: "2723"
+                          - id: "10078"
+                            last_2nd_month_rank: "6"
+                            last_month_rank: "3"
+                            name: ChatGPT Apps
+                            rank: "3"
+                            rank_changes: "3"
+                            repo_id: "599394820"
+                            repo_name: Chanzhaoyu/chatgpt-web
+                            repos: "36"
+                            visits: "2723"
+                          - id: "10078"
+                            last_2nd_month_rank: ""
+                            last_month_rank: "2"
+                            name: ChatGPT Apps
+                            rank: "2"
+                            rank_changes: ""
+                            repo_id: "609416865"
+                            repo_name: yetone/openai-translator
+                            repos: "36"
+                            visits: "2723"
+                      result:
+                        type: object
+                        properties:
+                          code:
+                            type: number
+                            description: The code of the response.
+                          message:
+                            type: string
+                            description: The message of the response.
+                          start_ms:
+                            type: number
+                            description: The start time of the query in milliseconds.
+                          end_ms:
+                            type: number
+                            description: The end time of the query in milliseconds.
+                          latency:
+                            type: string
+                            description: The latency of the query.
+                          row_count:
+                            type: number
+                            description: The number of rows in the query result.
+                          row_affect:
+                            type: number
+                            description: The number of rows affected by the query.
+                          limit:
+                            type: number
+                            description: The maximum number of rows in the query result.
+                          databases:
+                            type: array
+                            description: The databases used in the query.
+                            items:
+                              type: string
+                        additionalProperties: true
+                        example:
+                          code: 200
+                          message: Query OK!
+                          start_ms: 1690957407469
+                          end_ms: 1690957407499
+                          latency: 30ms
+                          row_count: 6
+                          row_affect: 0
+                          limit: 50
+                          databases:
+                            - gharchive_dev
+  "/collections/{collection_id}/repos/":
+    get:
+      operationId: list-repos-of-collection
+      summary: List collection repositories
+      tags:
+        - Collections
+      description: List the repositories of collection.
+      responses:
+        "200":
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - type
+                  - data
+                properties:
+                  type:
+                    type: string
+                    description: The type of the endpoint.
+                    enum:
+                      - sql_endpoint
+                    example: sql_endpoint
+                  data:
+                    type: object
+                    required:
+                      - columns
+                      - rows
+                      - result
+                    properties:
+                      columns:
+                        type: array
+                        items:
+                          type: object
+                          required:
+                            - col
+                            - data_type
+                            - nullable
+                          properties:
+                            col:
+                              type: string
+                              description: The name of the column in the query result.
+                            data_type:
+                              type: string
+                              enum:
+                                - CHAR
+                                - BIGINT
+                                - DECIMAL
+                                - INT
+                                - UNSIGNED BIGINT
+                                - TINYINT
+                                - TIMESTAMP
+                                - TEXT
+                                - VARCHAR
+                                - DATETIME
+                                - DOUBLE
+                                - FLOAT
+                                - DATE
+                                - TIME
+                                - YEAR
+                                - MEDIUMINT
+                                - SMALLINT
+                                - BIT
+                                - BINARY
+                                - VARBINARY
+                                - JSON
+                                - ENUM
+                                - SET
+                                - TINYTEXT
+                                - MEDIUMTEXT
+                                - LONGTEXT
+                                - TINYBLOB
+                                - MEDIUMBLOB
+                                - BLOB
+                                - LONGBLOB
+                              description: The data type of the column.
+                            nullable:
+                              type: boolean
+                              description: Whether the column is nullable.
+                          additionalProperties: true
+                        example:
+                          - col: repo_id
+                            data_type: BIGINT
+                            nullable: false
+                          - col: repo_name
+                            data_type: VARCHAR
+                            nullable: false
+                      rows:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                              description: Collection ID
+                            name:
+                              type: string
+                              description: Collection name
+                            visits:
+                              type: string
+                              description: Number of visits
+                            repo_id:
+                              type: string
+                              description: Repository ID
+                            repo_name:
+                              type: string
+                              description: Repository name
+                            rank:
+                              type: string
+                              description: The rank of the repository in the collection
+                          additionalProperties: true
+                        example:
+                          - repo_id: "507775"
+                            repo_name: elastic/elasticsearch
+                          - repo_id: "41986369"
+                            repo_name: pingcap/tidb
+                          - repo_id: "60246359"
+                            repo_name: clickhouse/clickhouse
+                          - repo_id: "108110"
+                            repo_name: mongodb/mongo
+                          - repo_id: "48833910"
+                            repo_name: tikv/tikv
+                      result:
+                        type: object
+                        properties:
+                          code:
+                            type: number
+                            description: The code of the response.
+                          message:
+                            type: string
+                            description: The message of the response.
+                          start_ms:
+                            type: number
+                            description: The start time of the query in milliseconds.
+                          end_ms:
+                            type: number
+                            description: The end time of the query in milliseconds.
+                          latency:
+                            type: string
+                            description: The latency of the query.
+                          row_count:
+                            type: number
+                            description: The number of rows in the query result.
+                          row_affect:
+                            type: number
+                            description: The number of rows affected by the query.
+                          limit:
+                            type: number
+                            description: The maximum number of rows in the query result.
+                          databases:
+                            type: array
+                            description: The databases used in the query.
+                            items:
+                              type: string
+                        additionalProperties: true
+                        example:
+                          code: 200
+                          message: Query OK!
+                          start_ms: 1690957407469
+                          end_ms: 1690957407499
+                          latency: 30ms
+                          row_count: 5
+                          row_affect: 0
+                          limit: 50
+                          databases:
+                            - gharchive_dev
   "/repos/{owner}/{repo}/issue_creators/":
     get:
       operationId: list-issue-creators
@@ -370,277 +1560,6 @@ paths:
                             name: ""
                             issues: "29"
                             first_issue_opened_at: 2020-07-30 08:12:09
-                      result:
-                        type: object
-                        properties:
-                          code:
-                            type: number
-                            description: The code of the response.
-                          message:
-                            type: string
-                            description: The message of the response.
-                          start_ms:
-                            type: number
-                            description: The start time of the query in milliseconds.
-                          end_ms:
-                            type: number
-                            description: The end time of the query in milliseconds.
-                          latency:
-                            type: string
-                            description: The latency of the query.
-                          row_count:
-                            type: number
-                            description: The number of rows in the query result.
-                          row_affect:
-                            type: number
-                            description: The number of rows affected by the query.
-                          limit:
-                            type: number
-                            description: The maximum number of rows in the query result.
-                          databases:
-                            type: array
-                            description: The databases used in the query.
-                            items:
-                              type: string
-                        additionalProperties: true
-                        example:
-                          code: 200
-                          message: Query OK!
-                          start_ms: 1690957407469
-                          end_ms: 1690957407499
-                          latency: 30ms
-                          row_count: 5
-                          row_affect: 0
-                          limit: 50
-                          databases:
-                            - gharchive_dev
-  "/repos/{owner}/{repo}/pull_request_creators/":
-    get:
-      operationId: list-pull-request-creators
-      summary: List pull request creators
-      tags:
-        - Pull Request Creators
-      description: "Querying the pull request creators list in a given repository.
-
-
-        This API provides multiple ways to sort the query results, for
-        example:
-
-
-        - `sort=prs-desc` (Default): Sorted in descending order based on
-        `prs` field (the number of PRs they have contributed), meaning that the
-        contributor with the most PRs is at the top.
-
-        - `sort=first_pr_merged_at-desc`: Sorted in descending order
-        based on `first_pr_merged_at` field (the time of their first merged PR),
-        which means you can got a list of new code contributors of the
-        repository.
-
-        \  "
-      parameters:
-        - schema:
-            type: string
-            enum:
-              - login
-              - prs
-              - prs-desc
-              - first_pr_opened_at
-              - first_pr_opened_at-desc
-              - first_pr_merged_at
-              - first_pr_merged_at-desc
-            default: prs-desc
-          in: query
-          name: sort
-          required: false
-          description: Specify the field by which to sort the pull request creators list
-            (values with a `-desc` suffix indicate descending sorting)
-        - schema:
-            type: boolean
-            default: true
-          in: query
-          name: exclude_bots
-          required: false
-          description: "Whether to exclude robot accounts (includes GitHub App and normal
-            users whose username matches the pattern, for example:
-            `ti-chi-bot`)."
-        - schema:
-            type: integer
-            default: 1
-          in: query
-          name: page
-          required: false
-          description: Page number of the results to fetch.
-        - schema:
-            type: integer
-            default: 30
-          in: query
-          name: page_size
-          required: false
-          description: The number of results per page (max 100).
-        - schema:
-            type: string
-          example: pingcap
-          in: path
-          name: owner
-          required: true
-          description: The owner of the repo.
-        - schema:
-            type: string
-          example: tidb
-          in: path
-          name: repo
-          required: true
-          description: The name of the repo.
-      responses:
-        "200":
-          description: Default Response
-          content:
-            application/json:
-              schema:
-                type: object
-                required:
-                  - type
-                  - data
-                properties:
-                  type:
-                    type: string
-                    description: The type of the endpoint.
-                    enum:
-                      - sql_endpoint
-                    example: sql_endpoint
-                  data:
-                    type: object
-                    required:
-                      - columns
-                      - rows
-                      - result
-                    properties:
-                      columns:
-                        type: array
-                        items:
-                          type: object
-                          required:
-                            - col
-                            - data_type
-                            - nullable
-                          properties:
-                            col:
-                              type: string
-                              description: The name of the column in the query result.
-                            data_type:
-                              type: string
-                              enum:
-                                - CHAR
-                                - BIGINT
-                                - DECIMAL
-                                - INT
-                                - UNSIGNED BIGINT
-                                - TINYINT
-                                - TIMESTAMP
-                                - TEXT
-                                - VARCHAR
-                                - DATETIME
-                                - DOUBLE
-                                - FLOAT
-                                - DATE
-                                - TIME
-                                - YEAR
-                                - MEDIUMINT
-                                - SMALLINT
-                                - BIT
-                                - BINARY
-                                - VARBINARY
-                                - JSON
-                                - ENUM
-                                - SET
-                                - TINYTEXT
-                                - MEDIUMTEXT
-                                - LONGTEXT
-                                - TINYBLOB
-                                - MEDIUMBLOB
-                                - BLOB
-                                - LONGBLOB
-                              description: The data type of the column.
-                            nullable:
-                              type: boolean
-                              description: Whether the column is nullable.
-                          additionalProperties: true
-                        example:
-                          - col: id
-                            data_type: INT
-                            nullable: false
-                          - col: login
-                            data_type: VARCHAR
-                            nullable: false
-                          - col: name
-                            data_type: VARCHAR
-                            nullable: false
-                          - col: prs
-                            data_type: INT
-                            nullable: true
-                          - col: first_pr_opened_at
-                            data_type: DATETIME
-                            nullable: true
-                          - col: first_pr_merged_at
-                            data_type: DATETIME
-                            nullable: true
-                      rows:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            id:
-                              type: string
-                              description: The ID of the pull request creator
-                            login:
-                              type: string
-                              description: The login (username) of the pull request creator
-                            name:
-                              type: string
-                              description: The name of the pull request creator
-                            prs:
-                              type: string
-                              description: The number of pull requests created by the pull request creator
-                            first_pr_opened_at:
-                              type: string
-                              description: The date of the first pull request created by the pull request
-                                creator
-                            first_pr_merged_at:
-                              type: string
-                              description: The date of the first merged pull request be merged into the
-                                repository
-                          additionalProperties: true
-                        example:
-                          - id: "1420062"
-                            login: tiancaiamao
-                            name: ""
-                            prs: "1300"
-                            first_pr_opened_at: 2016-06-20 14:08:39
-                            first_pr_merged_at: 2016-06-21 07:45:27
-                          - id: "3427324"
-                            login: hawkingrei
-                            name: Weizhen Wang
-                            prs: "927"
-                            first_pr_opened_at: 2017-05-17 15:00:50
-                            first_pr_merged_at: 2017-05-22 04:47:11
-                          - id: "26020263"
-                            login: crazycs520
-                            name: crazycs
-                            prs: "788"
-                            first_pr_opened_at: 2018-06-12 05:02:07
-                            first_pr_merged_at: 2018-06-29 03:01:35
-                          - id: "891222"
-                            login: coocood
-                            name: Evan Zhou
-                            prs: "779"
-                            first_pr_opened_at: 2015-09-06 05:58:15
-                            first_pr_merged_at: 2015-09-06 07:10:13
-                          - id: "4242506"
-                            login: zimulala
-                            name: Lynn
-                            prs: "774"
-                            first_pr_opened_at: 2015-09-06 10:51:19
-                            first_pr_merged_at: 2015-09-06 12:32:33
                       result:
                         type: object
                         properties:
@@ -995,48 +1914,69 @@ paths:
                           limit: 50
                           databases:
                             - gharchive_dev
-  "/repos/{owner}/{repo}/issue_creators/countries/":
+  "/repos/{owner}/{repo}/pull_request_creators/":
     get:
-      operationId: list-countries-of-issue-creators
-      summary: List countries/regions of issue creators
+      operationId: list-pull-request-creators
+      summary: List pull request creators
       tags:
-        - Issue Creators
-      description: >
-        List countries/regions of stargazers for the specified repository.
-          
-        > **Notice**:
-
-        > In the overall data, about **3.5%** of GitHub users provided valid country/region information.
+        - Pull Request Creators
+      description: "Querying the pull request creators list in a given repository.
 
 
-        > **Note**: 
+        This API provides multiple ways to sort the query results, for
+        example:
 
-        > By default, the API does not count users without valid country/region information. 
 
-        > If you need to count these users, you can set the `exclude_unknown` parameter to `false`.
+        - `sort=prs-desc` (Default): Sorted in descending order based on
+        `prs` field (the number of PRs they have contributed), meaning that the
+        contributor with the most PRs is at the top.
+
+        - `sort=first_pr_merged_at-desc`: Sorted in descending order
+        based on `first_pr_merged_at` field (the time of their first merged PR),
+        which means you can got a list of new code contributors of the
+        repository.
+
+        \  "
       parameters:
+        - schema:
+            type: string
+            enum:
+              - login
+              - prs
+              - prs-desc
+              - first_pr_opened_at
+              - first_pr_opened_at-desc
+              - first_pr_merged_at
+              - first_pr_merged_at-desc
+            default: prs-desc
+          in: query
+          name: sort
+          required: false
+          description: Specify the field by which to sort the pull request creators list
+            (values with a `-desc` suffix indicate descending sorting)
         - schema:
             type: boolean
             default: true
           in: query
-          name: exclude_unknown
+          name: exclude_bots
           required: false
-          description: Whether to exclude issue creators with unknown country/region
-            information
+          description: "Whether to exclude robot accounts (includes GitHub App and normal
+            users whose username matches the pattern, for example:
+            `ti-chi-bot`)."
         - schema:
-            type: string
-            default: 2000-01-01
+            type: integer
+            default: 1
           in: query
-          name: from
+          name: page
           required: false
-          description: The start date of the range.
+          description: Page number of the results to fetch.
         - schema:
-            type: string
-            default: 2099-01-01
+            type: integer
+            default: 30
           in: query
-          name: to
+          name: page_size
           required: false
-          description: The end date of the range.
+          description: The number of results per page (max 100).
         - schema:
             type: string
           example: pingcap
@@ -1126,43 +2066,81 @@ paths:
                               description: Whether the column is nullable.
                           additionalProperties: true
                         example:
-                          - col: country_code
-                            data_type: CHAR
+                          - col: id
+                            data_type: INT
+                            nullable: false
+                          - col: login
+                            data_type: VARCHAR
+                            nullable: false
+                          - col: name
+                            data_type: VARCHAR
+                            nullable: false
+                          - col: prs
+                            data_type: INT
                             nullable: true
-                          - col: percentage
-                            data_type: DECIMAL
+                          - col: first_pr_opened_at
+                            data_type: DATETIME
                             nullable: true
-                          - col: issue_creators
-                            data_type: BIGINT
+                          - col: first_pr_merged_at
+                            data_type: DATETIME
                             nullable: true
                       rows:
                         type: array
                         items:
                           type: object
                           properties:
-                            country_code:
+                            id:
                               type: string
-                              description: Country/region code
-                            issue_creators:
+                              description: The ID of the pull request creator
+                            login:
                               type: string
-                              description: Number of issue creators from the country/region
-                            percentage:
+                              description: The login (username) of the pull request creator
+                            name:
                               type: string
-                              description: Percentage of issue creators from the country/region
+                              description: The name of the pull request creator
+                            prs:
+                              type: string
+                              description: The number of pull requests created by the pull request creator
+                            first_pr_opened_at:
+                              type: string
+                              description: The date of the first pull request created by the pull request
+                                creator
+                            first_pr_merged_at:
+                              type: string
+                              description: The date of the first merged pull request be merged into the
+                                repository
                           additionalProperties: true
                         example:
-                          - country_code: CN
-                            issue_creators: "7131"
-                            percentage: "0.8749"
-                          - country_code: US
-                            issue_creators: "316"
-                            percentage: "0.0388"
-                          - country_code: CA
-                            issue_creators: "243"
-                            percentage: "0.0298"
-                          - country_code: NL
-                            issue_creators: "223"
-                            percentage: "0.0274"
+                          - id: "1420062"
+                            login: tiancaiamao
+                            name: ""
+                            prs: "1300"
+                            first_pr_opened_at: 2016-06-20 14:08:39
+                            first_pr_merged_at: 2016-06-21 07:45:27
+                          - id: "3427324"
+                            login: hawkingrei
+                            name: Weizhen Wang
+                            prs: "927"
+                            first_pr_opened_at: 2017-05-17 15:00:50
+                            first_pr_merged_at: 2017-05-22 04:47:11
+                          - id: "26020263"
+                            login: crazycs520
+                            name: crazycs
+                            prs: "788"
+                            first_pr_opened_at: 2018-06-12 05:02:07
+                            first_pr_merged_at: 2018-06-29 03:01:35
+                          - id: "891222"
+                            login: coocood
+                            name: Evan Zhou
+                            prs: "779"
+                            first_pr_opened_at: 2015-09-06 05:58:15
+                            first_pr_merged_at: 2015-09-06 07:10:13
+                          - id: "4242506"
+                            login: zimulala
+                            name: Lynn
+                            prs: "774"
+                            first_pr_opened_at: 2015-09-06 10:51:19
+                            first_pr_merged_at: 2015-09-06 12:32:33
                       result:
                         type: object
                         properties:
@@ -1202,7 +2180,7 @@ paths:
                           start_ms: 1690957407469
                           end_ms: 1690957407499
                           latency: 30ms
-                          row_count: 4
+                          row_count: 5
                           row_affect: 0
                           limit: 50
                           databases:
@@ -1572,6 +2550,218 @@ paths:
                           - issue_creators: "6"
                             org_name: bytedance
                             percentage: "0.0145"
+                      result:
+                        type: object
+                        properties:
+                          code:
+                            type: number
+                            description: The code of the response.
+                          message:
+                            type: string
+                            description: The message of the response.
+                          start_ms:
+                            type: number
+                            description: The start time of the query in milliseconds.
+                          end_ms:
+                            type: number
+                            description: The end time of the query in milliseconds.
+                          latency:
+                            type: string
+                            description: The latency of the query.
+                          row_count:
+                            type: number
+                            description: The number of rows in the query result.
+                          row_affect:
+                            type: number
+                            description: The number of rows affected by the query.
+                          limit:
+                            type: number
+                            description: The maximum number of rows in the query result.
+                          databases:
+                            type: array
+                            description: The databases used in the query.
+                            items:
+                              type: string
+                        additionalProperties: true
+                        example:
+                          code: 200
+                          message: Query OK!
+                          start_ms: 1690957407469
+                          end_ms: 1690957407499
+                          latency: 30ms
+                          row_count: 4
+                          row_affect: 0
+                          limit: 50
+                          databases:
+                            - gharchive_dev
+  "/repos/{owner}/{repo}/issue_creators/countries/":
+    get:
+      operationId: list-countries-of-issue-creators
+      summary: List countries/regions of issue creators
+      tags:
+        - Issue Creators
+      description: >
+        List countries/regions of stargazers for the specified repository.
+          
+        > **Notice**:
+
+        > In the overall data, about **3.5%** of GitHub users provided valid country/region information.
+
+
+        > **Note**: 
+
+        > By default, the API does not count users without valid country/region information. 
+
+        > If you need to count these users, you can set the `exclude_unknown` parameter to `false`.
+      parameters:
+        - schema:
+            type: boolean
+            default: true
+          in: query
+          name: exclude_unknown
+          required: false
+          description: Whether to exclude issue creators with unknown country/region
+            information
+        - schema:
+            type: string
+            default: 2000-01-01
+          in: query
+          name: from
+          required: false
+          description: The start date of the range.
+        - schema:
+            type: string
+            default: 2099-01-01
+          in: query
+          name: to
+          required: false
+          description: The end date of the range.
+        - schema:
+            type: string
+          example: pingcap
+          in: path
+          name: owner
+          required: true
+          description: The owner of the repo.
+        - schema:
+            type: string
+          example: tidb
+          in: path
+          name: repo
+          required: true
+          description: The name of the repo.
+      responses:
+        "200":
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - type
+                  - data
+                properties:
+                  type:
+                    type: string
+                    description: The type of the endpoint.
+                    enum:
+                      - sql_endpoint
+                    example: sql_endpoint
+                  data:
+                    type: object
+                    required:
+                      - columns
+                      - rows
+                      - result
+                    properties:
+                      columns:
+                        type: array
+                        items:
+                          type: object
+                          required:
+                            - col
+                            - data_type
+                            - nullable
+                          properties:
+                            col:
+                              type: string
+                              description: The name of the column in the query result.
+                            data_type:
+                              type: string
+                              enum:
+                                - CHAR
+                                - BIGINT
+                                - DECIMAL
+                                - INT
+                                - UNSIGNED BIGINT
+                                - TINYINT
+                                - TIMESTAMP
+                                - TEXT
+                                - VARCHAR
+                                - DATETIME
+                                - DOUBLE
+                                - FLOAT
+                                - DATE
+                                - TIME
+                                - YEAR
+                                - MEDIUMINT
+                                - SMALLINT
+                                - BIT
+                                - BINARY
+                                - VARBINARY
+                                - JSON
+                                - ENUM
+                                - SET
+                                - TINYTEXT
+                                - MEDIUMTEXT
+                                - LONGTEXT
+                                - TINYBLOB
+                                - MEDIUMBLOB
+                                - BLOB
+                                - LONGBLOB
+                              description: The data type of the column.
+                            nullable:
+                              type: boolean
+                              description: Whether the column is nullable.
+                          additionalProperties: true
+                        example:
+                          - col: country_code
+                            data_type: CHAR
+                            nullable: true
+                          - col: percentage
+                            data_type: DECIMAL
+                            nullable: true
+                          - col: issue_creators
+                            data_type: BIGINT
+                            nullable: true
+                      rows:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            country_code:
+                              type: string
+                              description: Country/region code
+                            issue_creators:
+                              type: string
+                              description: Number of issue creators from the country/region
+                            percentage:
+                              type: string
+                              description: Percentage of issue creators from the country/region
+                          additionalProperties: true
+                        example:
+                          - country_code: CN
+                            issue_creators: "7131"
+                            percentage: "0.8749"
+                          - country_code: US
+                            issue_creators: "316"
+                            percentage: "0.0388"
+                          - country_code: CA
+                            issue_creators: "243"
+                            percentage: "0.0298"
+                          - country_code: NL
+                            issue_creators: "223"
+                            percentage: "0.0274"
                       result:
                         type: object
                         properties:
@@ -2018,6 +3208,217 @@ paths:
                           end_ms: 1690957407499
                           latency: 30ms
                           row_count: 5
+                          row_affect: 0
+                          limit: 50
+                          databases:
+                            - gharchive_dev
+  "/repos/{owner}/{repo}/stargazers/organizations/":
+    get:
+      operationId: list-organizations-of-stargazers
+      summary: List organizations of stargazers
+      tags:
+        - Stargazers
+      description: >
+        List organizations of stargazers for the specified repository. 
+
+
+        > **Notice**:
+
+        > In the overall data, about **5.62%** of GitHub users provided valid organization information.
+
+
+        > **Note**: 
+
+        > By default, the API does not count users without valid organization information. 
+
+        > If you need to count these users, you can set the `exclude_unknown` parameter to `false`.
+      parameters:
+        - schema:
+            type: boolean
+            default: true
+          in: query
+          name: exclude_unknown
+          required: false
+          description: Whether to exclude stargazers with unknown organization information
+        - schema:
+            type: string
+            default: 2000-01-01
+          in: query
+          name: from
+          required: false
+          description: The start date of the range.
+        - schema:
+            type: string
+            default: 2099-01-01
+          in: query
+          name: to
+          required: false
+          description: The end date of the range.
+        - schema:
+            type: string
+          example: pingcap
+          in: path
+          name: owner
+          required: true
+          description: The owner of the repo.
+        - schema:
+            type: string
+          example: tidb
+          in: path
+          name: repo
+          required: true
+          description: The name of the repo.
+      responses:
+        "200":
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - type
+                  - data
+                properties:
+                  type:
+                    type: string
+                    description: The type of the endpoint.
+                    enum:
+                      - sql_endpoint
+                    example: sql_endpoint
+                  data:
+                    type: object
+                    required:
+                      - columns
+                      - rows
+                      - result
+                    properties:
+                      columns:
+                        type: array
+                        items:
+                          type: object
+                          required:
+                            - col
+                            - data_type
+                            - nullable
+                          properties:
+                            col:
+                              type: string
+                              description: The name of the column in the query result.
+                            data_type:
+                              type: string
+                              enum:
+                                - CHAR
+                                - BIGINT
+                                - DECIMAL
+                                - INT
+                                - UNSIGNED BIGINT
+                                - TINYINT
+                                - TIMESTAMP
+                                - TEXT
+                                - VARCHAR
+                                - DATETIME
+                                - DOUBLE
+                                - FLOAT
+                                - DATE
+                                - TIME
+                                - YEAR
+                                - MEDIUMINT
+                                - SMALLINT
+                                - BIT
+                                - BINARY
+                                - VARBINARY
+                                - JSON
+                                - ENUM
+                                - SET
+                                - TINYTEXT
+                                - MEDIUMTEXT
+                                - LONGTEXT
+                                - TINYBLOB
+                                - MEDIUMBLOB
+                                - BLOB
+                                - LONGBLOB
+                              description: The data type of the column.
+                            nullable:
+                              type: boolean
+                              description: Whether the column is nullable.
+                          additionalProperties: true
+                        example:
+                          - col: org_name
+                            data_type: VARCHAR
+                            nullable: true
+                          - col: stargazers
+                            data_type: BIGINT
+                            nullable: true
+                          - col: percentage
+                            data_type: DECIMAL
+                            nullable: true
+                      rows:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            org_name:
+                              type: string
+                              description: Name of the organization
+                            percentage:
+                              type: string
+                              description: Percentage of stargazers from the organization
+                            stargazers:
+                              type: string
+                              description: Number of stargazers from the organization
+                        example:
+                          - org_name: tencent
+                            percentage: "0.0217"
+                            stargazers: "199"
+                          - org_name: bytedance
+                            percentage: "0.0192"
+                            stargazers: "176"
+                          - org_name: alibaba
+                            percentage: "0.0162"
+                            stargazers: "148"
+                          - org_name: pingcap
+                            percentage: "0.0119"
+                            stargazers: "109"
+                      result:
+                        type: object
+                        properties:
+                          code:
+                            type: number
+                            description: The code of the response.
+                          message:
+                            type: string
+                            description: The message of the response.
+                          start_ms:
+                            type: number
+                            description: The start time of the query in milliseconds.
+                          end_ms:
+                            type: number
+                            description: The end time of the query in milliseconds.
+                          latency:
+                            type: string
+                            description: The latency of the query.
+                          row_count:
+                            type: number
+                            description: The number of rows in the query result.
+                          row_affect:
+                            type: number
+                            description: The number of rows affected by the query.
+                          limit:
+                            type: number
+                            description: The maximum number of rows in the query result.
+                          databases:
+                            type: array
+                            description: The databases used in the query.
+                            items:
+                              type: string
+                        additionalProperties: true
+                        example:
+                          code: 200
+                          message: Query OK!
+                          start_ms: 1690957407469
+                          end_ms: 1690957407499
+                          latency: 30ms
+                          row_count: 4
                           row_affect: 0
                           limit: 50
                           databases:
@@ -2595,217 +3996,6 @@ paths:
                           - org_name: tencent
                             percentage: "0.0173"
                             pull_request_creators: "6"
-                      result:
-                        type: object
-                        properties:
-                          code:
-                            type: number
-                            description: The code of the response.
-                          message:
-                            type: string
-                            description: The message of the response.
-                          start_ms:
-                            type: number
-                            description: The start time of the query in milliseconds.
-                          end_ms:
-                            type: number
-                            description: The end time of the query in milliseconds.
-                          latency:
-                            type: string
-                            description: The latency of the query.
-                          row_count:
-                            type: number
-                            description: The number of rows in the query result.
-                          row_affect:
-                            type: number
-                            description: The number of rows affected by the query.
-                          limit:
-                            type: number
-                            description: The maximum number of rows in the query result.
-                          databases:
-                            type: array
-                            description: The databases used in the query.
-                            items:
-                              type: string
-                        additionalProperties: true
-                        example:
-                          code: 200
-                          message: Query OK!
-                          start_ms: 1690957407469
-                          end_ms: 1690957407499
-                          latency: 30ms
-                          row_count: 4
-                          row_affect: 0
-                          limit: 50
-                          databases:
-                            - gharchive_dev
-  "/repos/{owner}/{repo}/stargazers/organizations/":
-    get:
-      operationId: list-organizations-of-stargazers
-      summary: List organizations of stargazers
-      tags:
-        - Stargazers
-      description: >
-        List organizations of stargazers for the specified repository. 
-
-
-        > **Notice**:
-
-        > In the overall data, about **5.62%** of GitHub users provided valid organization information.
-
-
-        > **Note**: 
-
-        > By default, the API does not count users without valid organization information. 
-
-        > If you need to count these users, you can set the `exclude_unknown` parameter to `false`.
-      parameters:
-        - schema:
-            type: boolean
-            default: true
-          in: query
-          name: exclude_unknown
-          required: false
-          description: Whether to exclude stargazers with unknown organization information
-        - schema:
-            type: string
-            default: 2000-01-01
-          in: query
-          name: from
-          required: false
-          description: The start date of the range.
-        - schema:
-            type: string
-            default: 2099-01-01
-          in: query
-          name: to
-          required: false
-          description: The end date of the range.
-        - schema:
-            type: string
-          example: pingcap
-          in: path
-          name: owner
-          required: true
-          description: The owner of the repo.
-        - schema:
-            type: string
-          example: tidb
-          in: path
-          name: repo
-          required: true
-          description: The name of the repo.
-      responses:
-        "200":
-          description: Default Response
-          content:
-            application/json:
-              schema:
-                type: object
-                required:
-                  - type
-                  - data
-                properties:
-                  type:
-                    type: string
-                    description: The type of the endpoint.
-                    enum:
-                      - sql_endpoint
-                    example: sql_endpoint
-                  data:
-                    type: object
-                    required:
-                      - columns
-                      - rows
-                      - result
-                    properties:
-                      columns:
-                        type: array
-                        items:
-                          type: object
-                          required:
-                            - col
-                            - data_type
-                            - nullable
-                          properties:
-                            col:
-                              type: string
-                              description: The name of the column in the query result.
-                            data_type:
-                              type: string
-                              enum:
-                                - CHAR
-                                - BIGINT
-                                - DECIMAL
-                                - INT
-                                - UNSIGNED BIGINT
-                                - TINYINT
-                                - TIMESTAMP
-                                - TEXT
-                                - VARCHAR
-                                - DATETIME
-                                - DOUBLE
-                                - FLOAT
-                                - DATE
-                                - TIME
-                                - YEAR
-                                - MEDIUMINT
-                                - SMALLINT
-                                - BIT
-                                - BINARY
-                                - VARBINARY
-                                - JSON
-                                - ENUM
-                                - SET
-                                - TINYTEXT
-                                - MEDIUMTEXT
-                                - LONGTEXT
-                                - TINYBLOB
-                                - MEDIUMBLOB
-                                - BLOB
-                                - LONGBLOB
-                              description: The data type of the column.
-                            nullable:
-                              type: boolean
-                              description: Whether the column is nullable.
-                          additionalProperties: true
-                        example:
-                          - col: org_name
-                            data_type: VARCHAR
-                            nullable: true
-                          - col: stargazers
-                            data_type: BIGINT
-                            nullable: true
-                          - col: percentage
-                            data_type: DECIMAL
-                            nullable: true
-                      rows:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            org_name:
-                              type: string
-                              description: Name of the organization
-                            percentage:
-                              type: string
-                              description: Percentage of stargazers from the organization
-                            stargazers:
-                              type: string
-                              description: Number of stargazers from the organization
-                        example:
-                          - org_name: tencent
-                            percentage: "0.0217"
-                            stargazers: "199"
-                          - org_name: bytedance
-                            percentage: "0.0192"
-                            stargazers: "176"
-                          - org_name: alibaba
-                            percentage: "0.0162"
-                            stargazers: "148"
-                          - org_name: pingcap
-                            percentage: "0.0119"
-                            stargazers: "109"
                       result:
                         type: object
                         properties:
