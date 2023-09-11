@@ -51,12 +51,12 @@ SELECT
     ci.repo_id,
     ci.repo_name,
     -- Stars
-    IFNULL(cps.stars, 0)                                   AS current_period_total,
+    IFNULL(cps.stars, 0)                                   AS current_period_growth,
     IFNULL(cps.`rank`, 0)                                  AS current_period_rank,
-    IFNULL(pps.stars, 0)                                   AS past_period_total,
+    IFNULL(pps.stars, 0)                                   AS past_period_growth,
     IFNULL(pps.`rank`, 0)                                  AS past_period_rank,
     -- The changes of total stars between two periods.
-    IFNULL(ROUND((cps.stars - pps.stars) / pps.stars * 100, 2), 0) AS total_pop,
+    IFNULL(ROUND((cps.stars - pps.stars) / pps.stars * 100, 2), 0) AS growth_pop,
     -- The rank changes between two periods.
     IFNULL((cps.`rank` - pps.`rank`), 0)                   AS rank_pop,
     -- The total stars of repo.
