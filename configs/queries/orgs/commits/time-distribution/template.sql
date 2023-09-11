@@ -8,7 +8,7 @@ WITH repos AS (
         {% endif %}
 )
 SELECT
-    WEEKDAY(created_at) - 1 AS dayofweek,
+    DAYOFWEEK(created_at) - 1 AS dayofweek,
     HOUR(created_at) AS hour,
     COUNT(*) AS pushes
 FROM
