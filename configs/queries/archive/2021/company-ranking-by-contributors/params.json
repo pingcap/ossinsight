@@ -4,14 +4,13 @@
   "params": [
     {
       "name": "field",
-      "replaces": "${field}",
+      "type": "string",
       "enums": ["database", "nocode", "js_framework", "programming_language", "web_framework"]
     },
     {
       "name": "n",
       "type": "number",
-      "default": 10,
-      "replaces": "2000"
+      "default": 10
     }
   ]
 }
