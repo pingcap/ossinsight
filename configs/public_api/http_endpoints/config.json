@@ -11,8 +11,8 @@
     "settings": {
       "timeout": 5000,
       "row_limit": 200,
-      "cache_enabled": 0,
-      "cache_ttl": 0,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
       "enable_pagination": 1
     },
     "tag": "Collections",

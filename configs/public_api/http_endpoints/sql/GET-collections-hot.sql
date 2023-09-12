@@ -9,6 +9,7 @@ WITH collectionsOrderByVisits AS (
         AND finished_at > DATE_SUB(NOW(), INTERVAL 1 MONTH)
 	GROUP BY collection_id
 	ORDER BY visits DESC
+    LIMIT 20
 ), top10collections AS (
 	SELECT c.id, c.name, cv.visits
 	FROM collectionsOrderByVisits cv
