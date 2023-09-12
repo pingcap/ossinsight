@@ -70,11 +70,15 @@ WITH RECURSIVE seq(idx, current_period_day, past_period_day) AS (
             repo_id IN (SELECT repo_id FROM repos)
             AND type = 'IssuesEvent'
             AND action = 'opened'
+            {% if excludeBots %}
+            -- Exclude bot users.
+            AND ge.actor_login NOT LIKE '%bot%'
+            {% endif %}
             {% case period %}
-                {% when 'past_7_days' %} AND created_at > (CURRENT_DATE() - INTERVAL 14 DAY)
-                {% when 'past_28_days' %} AND created_at > (CURRENT_DATE() - INTERVAL 56 DAY)
-                {% when 'past_90_days' %} AND created_at > (CURRENT_DATE() - INTERVAL 180 DAY)
-                {% when 'past_12_months' %} AND created_at > (CURRENT_DATE() - INTERVAL 24 MONTH)
+                {% when 'past_7_days' %} AND ge.created_at > (CURRENT_DATE() - INTERVAL 14 DAY)
+                {% when 'past_28_days' %} AND ge.created_at > (CURRENT_DATE() - INTERVAL 56 DAY)
+                {% when 'past_90_days' %} AND ge.created_at > (CURRENT_DATE() - INTERVAL 180 DAY)
+                {% when 'past_12_months' %} AND ge.created_at > (CURRENT_DATE() - INTERVAL 24 MONTH)
             {% endcase %}
         GROUP BY day
         ORDER BY day

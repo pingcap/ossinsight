@@ -10,6 +10,7 @@ WITH repos AS (
     SELECT
         repo_id,
         number,
+        actor_login AS opened_by,
         created_at AS opened_at,
         {% case period %}
             {% when 'past_7_days' %} TIMESTAMPDIFF(DAY, created_at, NOW()) DIV 7
@@ -22,27 +23,36 @@ WITH repos AS (
         ge.repo_id IN (SELECT repo_id FROM repos)
         AND ge.type = 'IssuesEvent'
         AND ge.action = 'opened'
+        {% if excludeBots %}
+        -- Exclude bot users.
+        AND ge.actor_login NOT LIKE '%bot%'
+        {% endif %}
         {% case period %}
-            {% when 'past_7_days' %} AND created_at > (NOW() - INTERVAL 14 DAY)
-            {% when 'past_28_days' %} AND created_at > (NOW() - INTERVAL 56 DAY)
-            {% when 'past_90_days' %} AND created_at > (NOW() - INTERVAL 180 DAY)
-            {% when 'past_12_months' %} AND created_at > (NOW() - INTERVAL 24 MONTH)
+            {% when 'past_7_days' %} AND ge.created_at > (NOW() - INTERVAL 14 DAY)
+            {% when 'past_28_days' %} AND ge.created_at > (NOW() - INTERVAL 56 DAY)
+            {% when 'past_90_days' %} AND ge.created_at > (NOW() - INTERVAL 180 DAY)
+            {% when 'past_12_months' %} AND ge.created_at > (NOW() - INTERVAL 24 MONTH)
         {% endcase %}
 ), issues_with_closed_at AS (
     SELECT
         repo_id,
         number,
+        actor_login AS closed_by,
         created_at AS closed_at
     FROM github_events ge
     WHERE
         ge.repo_id IN (SELECT repo_id FROM repos)
         AND ge.type = 'IssuesEvent'
         AND ge.action = 'closed'
+        {% if excludeBots %}
+        -- Exclude bot users.
+        AND ge.actor_login NOT LIKE '%bot%'
+        {% endif %}
         {% case period %}
-            {% when 'past_7_days' %} AND created_at > (NOW() - INTERVAL 14 DAY)
-            {% when 'past_28_days' %} AND created_at > (NOW() - INTERVAL 56 DAY)
-            {% when 'past_90_days' %} AND created_at > (NOW() - INTERVAL 180 DAY)
-            {% when 'past_12_months' %} AND created_at > (NOW() - INTERVAL 24 MONTH)
+            {% when 'past_7_days' %} AND ge.created_at > (NOW() - INTERVAL 14 DAY)
+            {% when 'past_28_days' %} AND ge.created_at > (NOW() - INTERVAL 56 DAY)
+            {% when 'past_90_days' %} AND ge.created_at > (NOW() - INTERVAL 180 DAY)
+            {% when 'past_12_months' %} AND ge.created_at > (NOW() - INTERVAL 24 MONTH)
         {% endcase %}
 ), tdiff AS (
     SELECT
@@ -52,7 +62,10 @@ WITH repos AS (
         PERCENT_RANK() OVER (PARTITION BY iwo.period ORDER BY (iwc.closed_at - iwo.opened_at)) AS percentile
     FROM issues_with_opened_at iwo
     JOIN issues_with_closed_at iwc USING (repo_id, number)
-    WHERE iwc.closed_at > iwo.opened_at
+    WHERE
+        iwc.closed_at > iwo.opened_at
+        -- Exclude self-response.
+        AND pwc.closed_by != pwo.opened_by
 ), current_period_medium AS (
     SELECT
         MAX(hours) AS p50

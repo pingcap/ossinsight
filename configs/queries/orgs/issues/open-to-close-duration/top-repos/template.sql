@@ -15,11 +15,15 @@ WITH repos AS (
         ge.repo_id IN (SELECT repo_id FROM repos)
         AND ge.type = 'IssuesEvent'
         AND ge.action = 'opened'
+        {% if excludeBots %}
+        -- Exclude bot users.
+        AND ge.actor_login NOT LIKE '%bot%'
+        {% endif %}
         {% case period %}
-            {% when 'past_7_days' %} AND created_at > (NOW() - INTERVAL 7 DAY)
-            {% when 'past_28_days' %} AND created_at > (NOW() - INTERVAL 28 DAY)
-            {% when 'past_90_days' %} AND created_at > (NOW() - INTERVAL 90 DAY)
-            {% when 'past_12_months' %} AND created_at > (NOW() - INTERVAL 12 MONTH)
+            {% when 'past_7_days' %} AND ge.created_at > (NOW() - INTERVAL 7 DAY)
+            {% when 'past_28_days' %} AND ge.created_at > (NOW() - INTERVAL 28 DAY)
+            {% when 'past_90_days' %} AND ge.created_at > (NOW() - INTERVAL 90 DAY)
+            {% when 'past_12_months' %} AND ge.created_at > (NOW() - INTERVAL 12 MONTH)
         {% endcase %}
 ), issues_with_closed_at AS (
     SELECT
@@ -29,11 +33,15 @@ WITH repos AS (
         ge.repo_id IN (SELECT repo_id FROM repos)
         AND ge.type = 'IssuesEvent'
         AND ge.action = 'closed'
+        {% if excludeBots %}
+        -- Exclude bot users.
+        AND ge.actor_login NOT LIKE '%bot%'
+        {% endif %}
         {% case period %}
-            {% when 'past_7_days' %} AND created_at > (NOW() - INTERVAL 14 DAY)
-            {% when 'past_28_days' %} AND created_at > (NOW() - INTERVAL 56 DAY)
-            {% when 'past_90_days' %} AND created_at > (NOW() - INTERVAL 180 DAY)
-            {% when 'past_12_months' %} AND created_at > (NOW() - INTERVAL 24 MONTH)
+            {% when 'past_7_days' %} AND ge.created_at > (NOW() - INTERVAL 14 DAY)
+            {% when 'past_28_days' %} AND ge.created_at > (NOW() - INTERVAL 56 DAY)
+            {% when 'past_90_days' %} AND ge.created_at > (NOW() - INTERVAL 180 DAY)
+            {% when 'past_12_months' %} AND ge.created_at > (NOW() - INTERVAL 24 MONTH)
         {% endcase %}
 ), tdiff AS (
     SELECT

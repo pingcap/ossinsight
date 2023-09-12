@@ -26,6 +26,11 @@
       "type": "integer",
       "enums": [5, 10, 20, 30, 40, 50],
       "default": 10
+    },
+    {
+      "name": "excludeBots",
+      "type": "boolean",
+      "default": true
     }
   ]
 }

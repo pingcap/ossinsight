@@ -10,23 +10,29 @@ WITH repos AS (
     SELECT
         actor_login AS participant_login,
         COUNT(DISTINCT repo_id) AS repos,
-        COUNT(*) AS engagements
+        COUNT(*) AS engagements,
+        MIN(created_at) AS first_engagement
     FROM github_events ge
     WHERE
         repo_id IN (SELECT repo_id FROM repos)
         AND ge.type IN ('PullRequestEvent', 'PullRequestReviewEvent', 'IssuesEvent', 'IssueCommentEvent', 'PushEvent')
         AND ge.action IN ('opened', 'created', '')
+        {% if excludeBots %}
+        -- Exclude bot users.
+        AND ge.actor_login NOT LIKE '%bot%'
+        {% endif %}
         {% case period %}
-        {% when 'past_7_days' %} AND created_at > (CURRENT_DATE() - INTERVAL 7 DAY)
-        {% when 'past_28_days' %} AND created_at > (CURRENT_DATE() - INTERVAL 28 DAY)
-        {% when 'past_90_days' %} AND created_at > (CURRENT_DATE() - INTERVAL 90 DAY)
-        {% when 'past_12_months' %} AND created_at > (CURRENT_DATE() - INTERVAL 12 MONTH)
+            {% when 'past_7_days' %} AND created_at > (CURRENT_DATE() - INTERVAL 7 DAY)
+            {% when 'past_28_days' %} AND created_at > (CURRENT_DATE() - INTERVAL 28 DAY)
+            {% when 'past_90_days' %} AND created_at > (CURRENT_DATE() - INTERVAL 90 DAY)
+            {% when 'past_12_months' %} AND created_at > (CURRENT_DATE() - INTERVAL 12 MONTH)
         {% endcase %}
     GROUP BY actor_login
 )
 SELECT
     repos,
     engagements,
-    COUNT(*) AS participants
+    COUNT(*) AS participants,
+    SUBSTRING_INDEX(GROUP_CONCAT(DISTINCT participant_login ORDER BY first_engagement DESC SEPARATOR ','), ',', 5) AS participant_logins
 FROM participants
 GROUP BY repos, engagements
