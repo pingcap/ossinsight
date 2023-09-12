@@ -54,6 +54,10 @@ WITH RECURSIVE seq(idx, day) AS (
             repo_id IN (SELECT repo_id FROM repos)
             AND type = 'PushEvent'
             AND action = ''
+            {% if excludeBots %}
+            -- Exclude bot users.
+            AND ge.actor_login NOT LIKE '%bot%'
+            {% endif %}
             {% case period %}
                 {% when 'past_7_days' %} AND created_at > (CURRENT_DATE() - INTERVAL 7 DAY)
                 {% when 'past_28_days' %} AND created_at > (CURRENT_DATE() - INTERVAL 28 DAY)

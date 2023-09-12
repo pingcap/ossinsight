@@ -52,7 +52,11 @@ WHERE
         {% else %}
         AND ge.type IN ('PullRequestEvent', 'PullRequestReviewEvent', 'IssuesEvent', 'IssueCommentEvent', 'PushEvent')
         AND ge.action IN ('opened', 'created', '')
-    {% endcase %}
+        {% if excludeBots %}
+        -- Exclude bot users.
+        AND ge.actor_login NOT LIKE '%bot%'
+        {% endif %}
+        {% endcase %}
     {% case period %}
         {% when 'past_7_days' %} AND ge.created_at > (NOW() - INTERVAL 7 DAY)
         {% when 'past_28_days' %} AND ge.created_at > (NOW() - INTERVAL 28 DAY)

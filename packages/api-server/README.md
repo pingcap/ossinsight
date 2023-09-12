@@ -2,7 +2,7 @@
 
 This project is the API server of OSS Insight.
 
-## Quick Start
+## Getting started
 
 ### Config Environment Variables
 
