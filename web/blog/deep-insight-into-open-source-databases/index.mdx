@@ -25,10 +25,10 @@ We’ll also share the SQL commands that generate all these analytical results a
 The chart below displays the accumulated number of stars open source databases gained respectively each year and their star growth trend during the past ten years.
 
 <CommonChart
-  chart='dynamic-stars'
-  category='archive-2021-top10-star-racing'
-  formatSql={false}
-  repo='db_repos'
+    chart='dynamic-stars'
+    category='archive/2021/repo-racing-by-stars'
+    formatSql={false}
+    field='database'
 />
 
 ### Which databases experienced a popularity boom in 2021?
@@ -37,23 +37,21 @@ The chart below displays top 10 open source databases with the highest year-over
 
 <CommonChart
   chart='yoychart'
-  category='archive-2021-top20-by-stars-yoy'
+  category='archive/2021/repo-ranking-by-yoy-stars-growth'
   formatSql={false}
-  repo='db_repos'
+  field='database'
 />
 
 ### Which databases barely gained influence in 2021?
 
 The chart below displays top 10 open source databases with the lowest year-over-year growth rate of stars in 2021 alone. 
 
-
 <CommonChart
-  chart='yoychart'
-  category='archive-2021-bottom10-by-yoy'
-  formatSql={false}
-  repo='db_repos'
+    chart='yoychart'
+    category='archive/2021/repo-ranking-by-yoy-stars-growth-least'
+    formatSql={false}
+    field='database'
 />
-
 
 ### Which databases were the new favorites in 2021?
 
@@ -61,23 +59,22 @@ The chart below displays the top open source databases that gained the most star
 
 <CommonChart
   chart='barchart'
-  category='archive-2021-top10-by-stars'
-  n={10}
+  category='archive/2021/repo-ranking-by-stars-growth'
   formatSql={false}
   categoryIndex='repo_name'
   valueIndex='stars'
   seriesName='Stars'
-  repo='db_repos'
+  field='database'
+  n={10}
 />
 
 ### Which countries & regions favor databases the most? 
 
 The map below describes the geographical distribution of database stargazers. The larger and darker the color spots on this map, the more database stargazers are distributed.
 
-
 <CommonChart
   chart='worldmapchart'
-  category='stars-map'
+  category='analyze-stars-map'
   formatSql={false}
   categoryIndex='country_or_area'
   valueIndex='count'
@@ -93,7 +90,7 @@ The pie chart below describes which company those database stargazers work for a
 
 <CommonChart
   chart='piechart'
-  category='stars-top-50-company'
+  category='analyze-stars-company'
   formatSql={false}
   categoryIndex='company_name'
   valueIndex='stargazers'
@@ -106,49 +103,47 @@ The pie chart below describes which company those database stargazers work for a
 
 ### Which countries & regions led the database contributions in 2021? 
 
-The map below shows the geographic distribution of developers who pushed commits, resolved issues, or submitted pull requests to open source databases in 2021. The larger and darker the color spots on this map, the more database contributors were distributed. 
-
+The map below shows the geographic distribution of developers who pushed commits, resolved issues, or submitted pull requests to open source databases in 2021. The larger and darker the color spots on this map, the more database contributors were distributed.
 
 <CommonChart
   chart='worldmapchart'
-  category='archive-2021-top10-by-regions'
+  category='archive/2021/country-ranking-by-contributions'
   formatSql={false}
   categoryIndex='country_code'
-  valueIndex='users_count'
-  seriesName='Contributors'
-  repo='db_repos'
+  seriesName='Contributions'
+  valueIndex='contributions'
+  field='database'
 />
 
 ### Which companies led the database contributions in 2021?
 
 The chart below shows the employment distribution of developers who pushed commits, resolved issues, or submitted pull requests to open source databases in 2021.
 
-
 <CommonChart
   chart='barchart'
-  category='archive-2021-top20-by-companies'
+  category='archive/2021/company-ranking-by-contributions'
   formatSql={false}
   categoryIndex='company'
-  valueIndex='users_count'
-  seriesName='Contributors'
+  valueIndex='contributions'
+  seriesName='Contributions'
   categoryType={false}
-  repo='db_repos'
+  field='database'
 />
 
 ### Who were the leading individual contributors in 2021?
 
-The chart below lists 20 most active individual contributors to open source databases in 2021 based on how many pull requests they opened. 
-
+The chart below lists 20 most active individual contributors to open source databases in 2021 based on how many pull requests they opened.
 
 <CommonChart
   chart='barchart'
-  category='archive-2021-top20-by-developers'
+  category='archive/2021/repo-pr-creator-ranking-by-prs'
   formatSql={false}
   categoryIndex='actor_login'
-  valueIndex='pr_count'
+  valueIndex='prs'
   categoryType='owner'
   seriesName='PRs'
-  repo='db_repos'
+  field='database'
+  n={20}
 />
 
 ### When did developers contribute?
@@ -158,7 +153,7 @@ The heat map below describes the number of push events that occur at a particula
 
 <CommonChart
   chart='heatmapchart'
-  category='commits-time-distribution'
+  category='analyze-commits-time-distribution'
   xIndex='hour'
   yIndex='dayofweek'
   valueIndex='pushes'
@@ -166,37 +161,22 @@ The heat map below describes the number of push events that occur at a particula
   repoId={osdbGroup}
 />
 
-## Database coding vitality 
-
-### Contribution trend in the past ten years
-
-The chart below displays the accumulated number of commits pushed by contributors to open source database repositories each year, and their growth trend during the past ten years.
-
-
-Coming soon
-
-### Which databases vibrantly maintains and updates itself in the past ten years?
-
-The chart below displays top 10 open source databases that received the most pull requests in the past ten years. 
-
-Coming soon
+## Database coding vitality
 
 ### Which databases vibrantly maintained and updated itself in 2021?
 
 The chart below displays top 10 open source databases that received the most pull requests in 2021 alone.
 
-
 <CommonChart
   chart='barchart'
-  category='archive-2021-top10-by-prs'
-  n={20}
+  category='archive/2021/repo-ranking-by-prs'
   formatSql={false}
   categoryIndex='repo_name'
-  valueIndex='num'
+  valueIndex='prs'
   seriesName='PRs'
-  repo='db_repos'
+  field='database'
+  n={10}
 />
-
 
 ## Database user feedback 
 
@@ -204,18 +184,17 @@ The chart below displays top 10 open source databases that received the most pul
 
 The chart below displays the number of issue creators of leading open source databases each year and their growth trend during the past ten years.
 
-
 <CommonChart
   chart='barchart'
-  category='rt-osdb-ranking-by-issues'
-  n={20}
+  category='archive/2021/repo-ranking-by-issue-creators'
   formatSql={false}
-  categoryIndex='repo_group_name'
-  valueIndex='num'
+  categoryIndex='repo_name'
+  valueIndex='issue_creators'
   seriesName='Issue Creators'
   categoryType={false}
+  field='database'
+  n={10}
 />
-
 
 ### Which databases gave the fastest first response in 2021?
 
@@ -223,13 +202,14 @@ The bar chart below shows the median time each open source database needs to mak
 
 <CommonChart
   chart='barchart'
-  category='rt-osdb-ranking-by-median-issue-open-to-first-respond'
-  n={20}
+  category='archive/2021/repo-ranking-by-issue-open-to-first-respond'
   formatSql={false}
-  categoryIndex='repo_group_name'
+  categoryIndex='repo_name'
   valueIndex='days'
   seriesName='Days'
   categoryType={false}
+  field='database'
+  n={10}
 />
 
 #### Which databases were the most efficient in feedback resolution in 2021?
@@ -238,23 +218,23 @@ The bar chart below shows the median time each open source database needs to clo
 
 <CommonChart
   chart='barchart'
-  category='rt-osdb-ranking-by-median-issue-open-to-close'
-  n={20}
+  category='archive/2021/repo-ranking-by-issue-open-to-close'
   formatSql={false}
-  categoryIndex='repo_group_name'
+  categoryIndex='repo_name'
   valueIndex='days'
   seriesName='Days'
   categoryType={false}
+  field='database'
+  n={10}
 />
 
 ### Who gave the feedback in 2021?
 
 The map below shows the geographical distribution of developers who submitted issues to open source databases. The larger and darker the color spots on this map, the more issue openers were distributed. 
 
-
 <CommonChart
   chart='worldmapchart'
-  category='issue-creators-map'
+  category='analyze-issue-creators-map'
   formatSql={false}
   categoryIndex='country_or_area'
   valueIndex='count'
@@ -266,24 +246,17 @@ The map below shows the geographical distribution of developers who submitted is
 
 ## Community Robustness
 
-### Contributor growth trend in the past ten years
-
-The chart below shows the accumulated number of contributors leading open source databases attracted respectively each year and their growth trend during the past ten years. 
-
-Coming soon
-
 ### Which databases have the most heavy contributors? 
 
 The chart below displays the number of heavy contributors (who submitted more than 100 pull requests), medium contributors (who submitted more than 10 but less than 100 pull requests), and light contributors (who submitted less than 10 pull requests) of leading open source databases. The chart also ranks these databases based on their number of heavy contributors. 
 
-<ContributorsCharts type='contributors'/>
+<ContributorsCharts type='contributors' field='database'/>
 
 ### Which databases are heavily contributed?
 
 The chart below displays the number of pull requests submitted by heavy contributors, medium contributors, and light contributors. The chart also ranks these databases based on the number of pull requests submitted by heavy contributors. 
 
-<ContributorsCharts type='prs'/>
-
+<ContributorsCharts type='prs' field='database'/>
 
 ### How fast did databases approve their code changes?
 
@@ -291,34 +264,29 @@ The chart below shows the median time each open source database needs from submi
 
 <CommonChart
   chart='barchart'
-  category='rt-osdb-ranking-by-median-pr-open-to-merge'
-  n={20}
+  category='archive/2021/repo-ranking-by-pr-open-to-merge'
   formatSql={false}
-  categoryIndex='repo_group_name'
+  categoryIndex='repo_name'
   valueIndex='days'
   seriesName='Days'
   categoryType={false}
+  field='database'
+  n={20}
 />
 
 ## Database programming languages
 
-### Which languages were most favored in the past ten years?
-
-The chart below shows the top programming languages used in open source databases in the past ten years and how many databases used them each year.
-
-Coming soon
-
 ### Which languages were most favored in 2021?
 
-The chart below shows the top programming languages used in pull requests submitted to open source databases in 2021. 
+The chart below shows the top programming languages used in pull requests submitted to open source databases in 2021.
 
 <CommonChart
-  chart='barchart'
-  category='archive-2021-top5-by-languages'
-  formatSql={false}
-  categoryIndex='language'
-  valueIndex='COUNT(*)'
-  categoryType='lang'
-  seriesName='PRs'
-  repo='db_repos'
+    chart='barchart'
+    category='archive/2021/language-ranking-by-prs'
+    formatSql={false}
+    categoryIndex='language'
+    valueIndex='prs'
+    categoryType='lang'
+    seriesName='PRs'
+    field='database'
 />
