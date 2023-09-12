@@ -1,5 +1,138 @@
 [
   {
+    "name": "List Hot Collections",
+    "description": "List Repository Collections",
+    "method": "GET",
+    "endpoint": "/collections/hot",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [],
+    "settings": {
+      "timeout": 5000,
+      "row_limit": 200,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
+      "enable_pagination": 1
+    },
+    "tag": "Collections",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-collections-hot.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "Collection ranking by issues",
+    "description": "",
+    "method": "GET",
+    "endpoint": "/collections/ranking_by_issues",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "collection_id",
+        "type": "integer",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "period",
+        "type": "string",
+        "required": 0,
+        "default": "past_28_days",
+        "description": ""
+      }
+    ],
+    "settings": {
+      "timeout": 30000,
+      "row_limit": 1000,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
+      "enable_pagination": 0
+    },
+    "tag": "Default",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-collections-ranking_by_issues.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "Collection ranking by prs",
+    "description": "",
+    "method": "GET",
+    "endpoint": "/collections/ranking_by_prs",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "collection_id",
+        "type": "integer",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "period",
+        "type": "string",
+        "required": 0,
+        "default": "past_28_days",
+        "description": ""
+      }
+    ],
+    "settings": {
+      "timeout": 30000,
+      "row_limit": 1000,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
+      "enable_pagination": 0
+    },
+    "tag": "Default",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-collections-ranking_by_prs.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "Collection ranking by stars",
+    "description": "",
+    "method": "GET",
+    "endpoint": "/collections/ranking_by_stars",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "collection_id",
+        "type": "integer",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "period",
+        "type": "string",
+        "required": 0,
+        "default": "past_28_days",
+        "description": ""
+      }
+    ],
+    "settings": {
+      "timeout": 30000,
+      "row_limit": 1000,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
+      "enable_pagination": 0
+    },
+    "tag": "Default",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-collections-ranking_by_stars.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
     "name": "List Issue Creators",
     "description": "",
     "method": "GET",
@@ -53,7 +186,10 @@
     ],
     "settings": {
       "timeout": 5000,
-      "row_limit": 2000
+      "row_limit": 2000,
+      "cache_enabled": 0,
+      "cache_ttl": 0,
+      "enable_pagination": 0
     },
     "tag": "Default",
     "batch_operation": 0,
@@ -115,7 +251,10 @@
     ],
     "settings": {
       "timeout": 5000,
-      "row_limit": 2000
+      "row_limit": 2000,
+      "cache_enabled": 0,
+      "cache_ttl": 0,
+      "enable_pagination": 0
     },
     "tag": "Default",
     "batch_operation": 0,
@@ -170,7 +309,10 @@
     ],
     "settings": {
       "timeout": 5000,
-      "row_limit": 2000
+      "row_limit": 2000,
+      "cache_enabled": 0,
+      "cache_ttl": 0,
+      "enable_pagination": 0
     },
     "tag": "Issue Creators",
     "batch_operation": 0,
@@ -225,7 +367,10 @@
     ],
     "settings": {
       "timeout": 5000,
-      "row_limit": 2000
+      "row_limit": 2000,
+      "cache_enabled": 0,
+      "cache_ttl": 0,
+      "enable_pagination": 0
     },
     "tag": "Pull Request Creators",
     "batch_operation": 0,
@@ -280,7 +425,10 @@
     ],
     "settings": {
       "timeout": 5000,
-      "row_limit": 2000
+      "row_limit": 2000,
+      "cache_enabled": 0,
+      "cache_ttl": 0,
+      "enable_pagination": 0
     },
     "tag": "Stargazers",
     "batch_operation": 0,
@@ -335,7 +483,10 @@
     ],
     "settings": {
       "timeout": 10000,
-      "row_limit": 300
+      "row_limit": 300,
+      "cache_enabled": 0,
+      "cache_ttl": 0,
+      "enable_pagination": 0
     },
     "tag": "Stargazers",
     "batch_operation": 0,
@@ -390,7 +541,10 @@
     ],
     "settings": {
       "timeout": 10000,
-      "row_limit": 300
+      "row_limit": 300,
+      "cache_enabled": 0,
+      "cache_ttl": 0,
+      "enable_pagination": 0
     },
     "tag": "Issue Creators",
     "batch_operation": 0,
@@ -424,7 +578,10 @@
     ],
     "settings": {
       "timeout": 5000,
-      "row_limit": 100
+      "row_limit": 100,
+      "cache_enabled": 0,
+      "cache_ttl": 0,
+      "enable_pagination": 0
     },
     "tag": "Trends",
     "batch_operation": 0,
@@ -436,14 +593,14 @@
     "name": "List Collection Items",
     "description": "List Repositories of Specified Collection",
     "method": "GET",
-    "endpoint": "/collections/__collection_id",
+    "endpoint": "/collections/repos",
     "data_source": {
       "cluster_id": 1379661944642684098
     },
     "params": [
       {
         "name": "collection_id",
-        "type": "number",
+        "type": "integer",
         "required": 1,
         "default": "",
         "description": ""
@@ -451,11 +608,14 @@
     ],
     "settings": {
       "timeout": 5000,
-      "row_limit": 50
+      "row_limit": 50,
+      "cache_enabled": 0,
+      "cache_ttl": 0,
+      "enable_pagination": 0
     },
     "tag": "Collections",
     "batch_operation": 0,
-    "sql_file": "sql/GET-collections-__collection_id.sql",
+    "sql_file": "sql/GET-collections-repos.sql",
     "type": "sql_endpoint",
     "return_type": "json"
   },
@@ -470,7 +630,10 @@
     "params": [],
     "settings": {
       "timeout": 5000,
-      "row_limit": 50
+      "row_limit": 200,
+      "cache_enabled": 0,
+      "cache_ttl": 0,
+      "enable_pagination": 1
     },
     "tag": "Collections",
     "batch_operation": 0,
@@ -525,7 +688,10 @@
     ],
     "settings": {
       "timeout": 10000,
-      "row_limit": 2000
+      "row_limit": 2000,
+      "cache_enabled": 0,
+      "cache_ttl": 0,
+      "enable_pagination": 0
     },
     "tag": "Pull Request Creators",
     "batch_operation": 0,
@@ -580,7 +746,10 @@
     ],
     "settings": {
       "timeout": 10000,
-      "row_limit": 300
+      "row_limit": 300,
+      "cache_enabled": 0,
+      "cache_ttl": 0,
+      "enable_pagination": 0
     },
     "tag": "Pull Request Creators",
     "batch_operation": 0,
@@ -635,7 +804,10 @@
     ],
     "settings": {
       "timeout": 10000,
-      "row_limit": 300
+      "row_limit": 300,
+      "cache_enabled": 0,
+      "cache_ttl": 0,
+      "enable_pagination": 0
     },
     "tag": "Issue Creators",
     "batch_operation": 0,
@@ -690,7 +862,10 @@
     ],
     "settings": {
       "timeout": 10000,
-      "row_limit": 300
+      "row_limit": 300,
+      "cache_enabled": 0,
+      "cache_ttl": 0,
+      "enable_pagination": 0
     },
     "tag": "Stargazers",
     "batch_operation": 0,
@@ -709,7 +884,10 @@
     "params": [],
     "settings": {
       "timeout": 5000,
-      "row_limit": 50
+      "row_limit": 50,
+      "cache_enabled": 0,
+      "cache_ttl": 0,
+      "enable_pagination": 0
     },
     "tag": "Default",
     "batch_operation": 0,

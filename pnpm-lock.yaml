@@ -60,7 +60,7 @@ importers:
         specifier: ^0.6.1
         version: 0.6.1
       '@ossinsight/types':
-        specifier: workspace:^1.0.0
+        specifier: workspace:^
         version: link:../types
       '@sentry/node':
         specifier: ^7.57.0
@@ -104,6 +104,9 @@ importers:
       jsonrepair:
         specifier: ^3.0.2
         version: 3.2.0
+      liquidjs:
+        specifier: ^10.9.2
+        version: 10.9.2
       luxon:
         specifier: ^3.1.0
         version: 3.3.0
@@ -7333,6 +7336,14 @@ packages:
       - enquirer
       - supports-color
     dev: true
+
+  /liquidjs@10.9.2:
+    resolution: {integrity: sha512-ygPCgYyiFKQNyRi/CK3s3U5RimosBtrIq7TaMYK5ek93mUl9CZ6xxqw2T+1G4kVc9dAmwI71bWLQNKRToV8SsQ==}
+    engines: {node: '>=14'}
+    hasBin: true
+    dependencies:
+      commander: 10.0.1
+    dev: false
 
   /listenercount@1.0.1:
     resolution: {integrity: sha512-3mk/Zag0+IJxeDrxSgaDPy4zZ3w05PRZeJNnlWhzFz5OkX49J4krc+A8X2d2M69vGMBEX0uyl8M+W+8gH+kBqQ==}

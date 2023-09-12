@@ -1,5 +1,6 @@
+import {QueryLegacyParser} from "../src";
+import {QueryLiquidParser} from "../src/core/runner/query/QueryLiquidParser";
 import { buildParams, eachQuery } from './helpers/queries';
-import { QueryParser } from '../src/core/runner/query/QueryParser';
 import {bootstrapTestDatabase, releaseTestDatabase, TiDBDatabase} from "./helpers/db";
 
 let db: TiDBDatabase;
@@ -8,21 +9,11 @@ beforeAll(async () => {
   db = await bootstrapTestDatabase();
 });
 
-describe('template should be valid sql', () => {
-
-  eachQuery(async (name, sql, params) => {
-    test(name, async () => {
-      (await db.expect(sql)).toBeInstanceOf(Array);
-    });
-  });
-
-});
-
 describe('transformed template should be valid sql', () => {
 
-  eachQuery((queryName, sql, params) => {
+  eachQuery((queryName, sql, queryConfig) => {
     // Skip queries without params.
-    const pairs = buildParams(params);
+    const pairs = buildParams(queryConfig);
     if (!pairs.length) {
       return;
     }
@@ -33,9 +24,15 @@ describe('transformed template should be valid sql', () => {
     }
 
     test(`${queryName} (${pairs.length} group of params)`, async () => {
-      const parser = new QueryParser();
+      let queryParser;
+      if (queryConfig.engine === 'liquid') {
+        queryParser = new QueryLiquidParser();
+      } else {
+        queryParser = new QueryLegacyParser();
+      }
+
       for (let pair of pairs) {
-        const parsedSql = await parser.parse(sql, params, pair);
+        const parsedSql = await queryParser.parse(sql, queryConfig, pair);
         (await db.expect(parsedSql)).toBeInstanceOf(Array);
       }
     });

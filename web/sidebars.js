@@ -55,6 +55,43 @@ const sidebars = {
         },
         {
           type: 'category',
+          label: 'Collections',
+          collapsed: false,
+          items: [
+            {
+              type: 'doc',
+              id: 'api/list-hot-collections',
+              label: 'List hot collections',
+              className: 'api-method get'
+            },
+            {
+              type: 'doc',
+              id: 'api/list-repos-of-collection',
+              label: 'List collection repositories',
+              className: 'api-method get'
+            },
+            {
+              type: 'doc',
+              id: 'api/collection-repo-ranking-by-stars',
+              label: 'Repository ranking by stars',
+              className: 'api-method get'
+            },
+            {
+              type: 'doc',
+              id: 'api/collection-repo-ranking-by-issues',
+              label: 'Repository ranking by issues',
+              className: 'api-method get'
+            },
+            {
+              type: 'doc',
+              id: 'api/collection-repo-ranking-by-prs',
+              label: 'Repository ranking by prs',
+              className: 'api-method get'
+            }
+          ]
+        },
+        {
+          type: 'category',
           label: 'Issue Creators',
           collapsed: true,
           items: [

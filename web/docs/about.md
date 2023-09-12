@@ -150,7 +150,7 @@ Examples:
 ## Sponsors
 
 <div align="center">
-  <a href="https://en.pingcap.com/tidb-cloud/?utm_source=ossinsight&utm_medium=referral">
+  <a href="https://www.pingcap.com/tidb-serverless/?utm_source=ossinsight&utm_medium=referral">
     <img src="/img/tidb-cloud-logo-w.png" alt="tidb cloud logo" height="20" />
   </a>
 </div>

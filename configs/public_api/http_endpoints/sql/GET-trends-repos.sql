@@ -40,4 +40,5 @@ SELECT
   r.*,
   rc.collection_names
 FROM repos r
-LEFT JOIN repo_with_collections rc ON r.repo_id = rc.repo_id;
+LEFT JOIN repo_with_collections rc ON r.repo_id = rc.repo_id
+ORDER BY total_score DESC

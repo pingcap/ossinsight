@@ -1,4 +1,5 @@
-import { FastifyPluginAsync } from 'fastify';
+import {FastifyPluginAsync} from 'fastify';
+import {UserType} from "../../../../plugins/services/github-service";
 
 interface IQueryString {
   keyword: string;
@@ -21,7 +22,7 @@ const root: FastifyPluginAsync = async (app, opts): Promise<void> => {
   app.get<{
     Querystring: IQueryString;
   }>('/', { schema }, async function (req, reply) {
-    const res = await app.githubService.searchUsers(req.query.keyword);
+    const res = await app.githubService.searchUsers(req.query.keyword, UserType.USER);
     reply.send(res);
   })
 }
