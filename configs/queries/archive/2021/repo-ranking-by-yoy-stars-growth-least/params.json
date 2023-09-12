@@ -1,10 +1,12 @@
 {
   "cacheHours": -1,
+  "cacheProvider": "NORMAL_TABLE",
   "refreshCron": "@once",
+  "engine": "liquid",
   "params": [
     {
       "name": "field",
-      "replaces": "${field}",
+      "type": "string",
       "enums": ["database", "nocode", "js_framework", "programming_language", "web_framework"]
     }
   ]

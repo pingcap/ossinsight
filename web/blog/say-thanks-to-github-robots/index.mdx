@@ -9,7 +9,7 @@ keywords: [GitHub Bots, GitHub APP, TiDB, Database, Stale Bots, GitHub Archive, 
 
 import {CommonChart} from "../../src/components/CommonChart";
 
-# \[WIP\] Love, Code, and Robot — Explore robots in the world of code
+# Love, Code, and Robot — Explore robots in the world of code
 
 When it comes to GitHub, we often see fake GitHub users who are always enthusiastic and active, giving timely feedback to project maintainers and contributors, and helping developers with tasks that can be automated. Yes, the next thing I want to discuss is something about GitHub bots.
 
@@ -19,7 +19,7 @@ In the [OSSInsight](https://ossinsight.io/) project, we have developed a number 
 
 However, We can't ignore the contribution of robots in the domain of open source, and it's important to shift our thinking to look at what bots are doing on GitHub.
 
-GitHub bots help developers do a lot of work:
+GitHub's bots help developers do a lot of work:
 
 - Issue triage and management. (For example: `stale[bot]`、`todo[bot]`)
 - Code review, security audit and quality inspection (For example, `snyk-bot`).
@@ -33,7 +33,7 @@ Looking at the historical data, we see that the number of GitHub bots grows sign
 
 <CommonChart
   chart='dynamic-line'
-  query='bot-total-history'
+  query='archive/bot/cumulative-numbers'
   formatSql={false}
   xIndex="event_year"
   yIndex="bots_total"
@@ -43,13 +43,13 @@ Looking at the historical data, we see that the number of GitHub bots grows sign
 
 I looked into what happened during the year and found that GitHub invested a lot in its software development infrastructure (including bots) during the year.
 
-- In May 23, 2019, GitHub announced acquired Dependabot (Aka, `dependabot[bot]`).
+- On May 23, 2019, GitHub announced acquired Dependabot (Aka, `dependabot[bot]`).
 
 - In June 17th, 2019, [GitHub announced acquired Pull Panda](https://github.blog/2019-06-17-github-acquires-pull-panda/).
 
 - In September 18th, 2019, [GitHub announced acquired Semmle](https://github.blog/2019-09-18-github-welcomes-semmle/) (Aka, the team builded `lgtm-com[bot]`).
 
-At this year, we, humans beings, were amazed to discover that bots could find problems, submit PRs, wait CI test code, complete merges and comment on PRs on their own without any human involvement. 
+At this year, we, human beings, were amazed to discover that bots could find problems, submit PRs, wait CI test code, complete merges and comment on PRs on their own without any human involvement.
 
 [![Bot automatically completes a pull request](./bot_automatically_completes_a_pull_request.png)](https://github.com/buildo/react-components/pull/1367)
 
@@ -171,7 +171,7 @@ By analyzing depentenbot's Push commit time, we found that he likes to start his
 
 <CommonChart
   chart='heatmapchart'
-  category='bot-dependabot-commits-time-distribution'
+  category='archive/bot/dependabot-commits-time-distribution'
   xIndex='hour'
   yIndex='dayofweek'
   valueIndex='pushes'
@@ -179,17 +179,6 @@ By analyzing depentenbot's Push commit time, we found that he likes to start his
 />
 
 It is commendable that, after a series of log4j security vulnerabilities came to light, it helped many Java-language repositories to update the dependency to a secure version timely.
-
-<!-- TODO: Wait for importing title field -->
-
-<!-- ```sql
-SELECT toYYYYMMDD(created_at), COUNT(DISTINCT repo_name)
-FROM github_events
-WHERE actor_login = 'dependabot[bot]' and event_type = 'PullRequestEvent' 
-      AND (title LIKE '%log4j%2.%2.15.0')
-GROUP BY toYYYYMMDD(created_at)
-ORDER BY toYYYYMMDD(created_at);
-``` -->
 
 ### Stale Bots
 
@@ -212,7 +201,7 @@ The user from Gatsby:
 
 The user from NixOS:
 
-> IMO NixOS has the right stalebot settings <sub>[0]</sub>. It was discussed thouroughly in the RFC, as to choose the right information text and other actions by the bot. For example, the bot will only mark the issue/PR as stale and will never close the issue or lock it. Issues are only ever closed by humans.
+> IMO NixOS has the right stalebot settings <sub>[0]</sub>. It was discussed thoroughly in the RFC, as to choose the right information text and other actions by the bot. For example, the bot will only mark the issue/PR as stale and will never close the issue or lock it. Issues are only ever closed by humans.
 The information text they came up with is quite a bit longer than the ansible one <sub>[1]</sub>. I think this is a very important point when adding such a bot, otherwise the user will be left helpless.
 
 > [0]: https://github.com/NixOS/rfcs/pull/51
@@ -261,7 +250,7 @@ There are some weird bots on GitHub that don't help people work and learn on Git
 
 <CommonChart
   chart='barchart'
-  category='bot-weird-bots-ranking'
+  category='archive/bot/weird-bots-ranking'
   formatSql={false}
   categoryIndex='actor_login'
   valueIndex='contributions'
@@ -273,7 +262,7 @@ There are some weird bots on GitHub that don't help people work and learn on Git
 
 - Some of them will periodically upload a timestamp to the code repository as a commit, for example, `keihin00174`.
 
-- Some are even crazier and you can't even access their profile pages because the number of events generated is so large that GitHub's database can't process them quickly, for example, `mhutchinson-witness`, `direwolf-github`.
+- Some are even crazier, and you can't even access their profile pages because the number of events generated is so large that GitHub's database can't process them quickly, for example, `mhutchinson-witness`, `direwolf-github`.
 
     ![Too long time to load bot profile](too_long_time_to_load_profile.png)
 
@@ -283,7 +272,7 @@ We ranked the robots according to their contribution.
 
 <CommonChart
   chart='barchart'
-  category='bot-contribution-ranking'
+  category='archive/bot/contribution-ranking'
   formatSql={false}
   categoryIndex='actor_login'
   valueIndex='contributions'
@@ -291,13 +280,9 @@ We ranked the robots according to their contribution.
   seriesName='Contributions'
 />
 
-## Feature
-
-
-
 ## Recommended reading
 
-- [Github Stale Bots: A False Economy](https://blog.benwinding.com/github-stale-bots/)
+- [GitHub Stale Bots: A False Economy](https://blog.benwinding.com/github-stale-bots/)
 - [One million Dependabot pull requests merged](https://github.blog/2019-07-25-one-million-dependabot-pull-requests-merged/)
 - [Pull Panda is shutting down](https://github.blog/changelog/2022-03-23-pull-panda-is-shutting-down/)
 - [Best bots to improve your software development process](https://livablesoftware.com/best-bots-software-development/)

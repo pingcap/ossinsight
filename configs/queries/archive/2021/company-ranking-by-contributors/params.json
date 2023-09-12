@@ -1,5 +1,6 @@
 {
   "cacheHours": -1,
+  "cacheProvider": "NORMAL_TABLE",
   "refreshCron": "@once",
   "params": [
     {
@@ -10,6 +11,7 @@
     {
       "name": "n",
       "type": "number",
+      "enums": [10, 20, 25, 40, 50],
       "default": 10
     }
   ]
