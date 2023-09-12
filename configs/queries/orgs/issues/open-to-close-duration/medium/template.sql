@@ -65,7 +65,7 @@ WITH repos AS (
     WHERE
         iwc.closed_at > iwo.opened_at
         -- Exclude self-response.
-        AND pwc.closed_by != pwo.opened_by
+        AND iwc.closed_by != iwo.opened_by
 ), current_period_medium AS (
     SELECT
         MAX(hours) AS p50
