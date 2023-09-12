@@ -25,6 +25,10 @@ WHERE
     ge.repo_id IN (SELECT repo_id FROM repos)
     AND ge.type = 'PullRequestEvent'
     AND ge.action IN ('opened', 'closed')
+    {% if excludeBots %}
+    -- Exclude bot users.
+    AND ge.actor_login NOT LIKE '%bot%'
+    {% endif %}
     {% case period %}
         {% when 'past_7_days' %} AND created_at > (NOW() - INTERVAL 7 DAY)
         {% when 'past_28_days' %} AND created_at > (NOW() - INTERVAL 28 DAY)

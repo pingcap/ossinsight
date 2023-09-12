@@ -21,6 +21,7 @@ WHERE
         {% when 'past_12_months' %} AND ge.created_at > (NOW() - INTERVAL 12 MONTH)
     {% endcase %}
     {% if excludeBots %}
+    -- Exclude bot users.
     AND ge.actor_login NOT LIKE '%bot%'
     {% endif %}
 GROUP BY actor_login

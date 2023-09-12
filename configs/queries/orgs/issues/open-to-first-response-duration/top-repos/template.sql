@@ -18,11 +18,15 @@ WITH repos AS (
         ge.repo_id IN (SELECT repo_id FROM repos)
         AND ge.type = 'IssuesEvent'
         AND ge.action = 'opened'
+        {% if excludeBots %}
+        -- Exclude bot users.
+        AND ge.actor_login NOT LIKE '%bot%'
+        {% endif %}
         {% case period %}
-            {% when 'past_7_days' %} AND created_at > (NOW() - INTERVAL 7 DAY)
-            {% when 'past_28_days' %} AND created_at > (NOW() - INTERVAL 28 DAY)
-            {% when 'past_90_days' %} AND created_at > (NOW() - INTERVAL 90 DAY)
-            {% when 'past_12_months' %} AND created_at > (NOW() - INTERVAL 12 MONTH)
+            {% when 'past_7_days' %} AND ge.created_at > (NOW() - INTERVAL 7 DAY)
+            {% when 'past_28_days' %} AND ge.created_at > (NOW() - INTERVAL 28 DAY)
+            {% when 'past_90_days' %} AND ge.created_at > (NOW() - INTERVAL 90 DAY)
+            {% when 'past_12_months' %} AND ge.created_at > (NOW() - INTERVAL 12 MONTH)
         {% endcase %}
 ), issues_with_first_response_at AS (
     SELECT
@@ -45,13 +49,15 @@ WITH repos AS (
                 (ge.type = 'IssuesEvent' AND ge.action = 'closed') OR
                 (ge.type = 'IssueCommentEvent' AND ge.action = 'created')
             )
+            {% if excludeBots %}
             -- Exclude bot users.
             AND ge.actor_login NOT LIKE '%bot%'
+            {% endif %}
             {% case period %}
-                {% when 'past_7_days' %} AND created_at > (NOW() - INTERVAL 7 DAY)
-                {% when 'past_28_days' %} AND created_at > (NOW() - INTERVAL 28 DAY)
-                {% when 'past_90_days' %} AND created_at > (NOW() - INTERVAL 90 DAY)
-                {% when 'past_12_months' %} AND created_at > (NOW() - INTERVAL 12 MONTH)
+                {% when 'past_7_days' %} AND ge.created_at > (NOW() - INTERVAL 7 DAY)
+                {% when 'past_28_days' %} AND ge.created_at > (NOW() - INTERVAL 28 DAY)
+                {% when 'past_90_days' %} AND ge.created_at > (NOW() - INTERVAL 90 DAY)
+                {% when 'past_12_months' %} AND ge.created_at > (NOW() - INTERVAL 12 MONTH)
             {% endcase %}
     ) sub
     WHERE

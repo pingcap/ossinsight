@@ -16,6 +16,10 @@ WITH repos AS (
         ge.repo_id IN (SELECT repo_id FROM repos)
         AND ge.type = 'WatchEvent'
         AND ge.action = 'started'
+        {% if excludeBots %}
+        -- Exclude bot users.
+        AND ge.actor_login NOT LIKE '%bot%'
+        {% endif %}
         {% case period %}
             {% when 'past_7_days' %} AND created_at > (NOW() - INTERVAL 7 DAY)
             {% when 'past_28_days' %} AND created_at > (NOW() - INTERVAL 28 DAY)

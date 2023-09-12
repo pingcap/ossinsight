@@ -20,6 +20,11 @@
       "type": "string",
       "enums": ["past_7_days", "past_28_days", "past_90_days", "past_12_months"],
       "default": "past_28_days"
+    },
+    {
+      "name": "excludeBots",
+      "type": "boolean",
+      "default": true
     }
   ]
 }

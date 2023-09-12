@@ -11,7 +11,6 @@ WITH repos AS (
     SELECT
         repo_id,
         number,
-        actor_login AS opened_by,
         created_at AS opened_at,
         {% case period %}
             {% when 'past_7_days' %} TIMESTAMPDIFF(DAY, created_at, NOW()) DIV 7
@@ -30,23 +29,21 @@ WITH repos AS (
             {% when 'past_90_days' %} AND created_at > (NOW() - INTERVAL 180 DAY)
             {% when 'past_12_months' %} AND created_at > (NOW() - INTERVAL 24 MONTH)
         {% endcase %}
-), prs_with_first_responsed_at AS (
+), prs_with_first_reviewed_at AS (
     SELECT
         repo_id,
         number,
-        actor_login AS first_responsed_by,
-        created_at AS first_responsed_at
+        created_at AS first_reviewed_at
     FROM github_events ge
     WHERE
         ge.repo_id IN (SELECT repo_id FROM repos)
-        -- Events that are considered as first response.
-        AND (
-            (ge.type = 'PullRequestEvent' AND ge.action = 'closed') OR
-            (ge.type = 'PullRequestReviewEvent' AND ge.action = 'created') OR
-            (ge.type = 'IssueCommentEvent' AND ge.action = 'created')
-        )
+        -- Events that are considered as first review.
+        AND ge.type = 'PullRequestReviewEvent'
+        AND ge.action = 'created'
+        {% if excludeBots %}
         -- Exclude bot users.
         AND ge.actor_login NOT LIKE '%bot%'
+        {% endif %}
         {% case period %}
             {% when 'past_7_days' %} AND created_at > (NOW() - INTERVAL 14 DAY)
             {% when 'past_28_days' %} AND created_at > (NOW() - INTERVAL 56 DAY)
@@ -57,14 +54,12 @@ WITH repos AS (
     SELECT
         pwo.repo_id,
         pwo.period,
-        TIMESTAMPDIFF(SECOND, pwo.opened_at, pwr.first_responsed_at) / 3600 AS hours,
-        PERCENT_RANK() OVER (PARTITION BY pwo.period ORDER BY (pwr.first_responsed_at - pwo.opened_at)) AS percentile
+        TIMESTAMPDIFF(SECOND, pwo.opened_at, pwr.first_reviewed_at) / 3600 AS hours,
+        PERCENT_RANK() OVER (PARTITION BY pwo.period ORDER BY (pwr.first_reviewed_at - pwo.opened_at)) AS percentile
     FROM prs_with_opened_at pwo
-    JOIN prs_with_first_responsed_at pwr USING (repo_id, number)
+    JOIN prs_with_first_reviewed_at pwr USING (repo_id, number)
     WHERE
-        pwr.first_responsed_at > pwo.opened_at
-        -- Exclude self-response.
-        AND pwr.first_responsed_by != pwo.opened_by
+        pwr.first_reviewed_at > pwo.opened_at
 ), current_period_medium AS (
     SELECT
         MAX(hours) AS p50

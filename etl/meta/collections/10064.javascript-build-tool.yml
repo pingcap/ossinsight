@@ -13,3 +13,4 @@ items:
   - rollup/rollup
   - developit/microbundle
   - preactjs/wmr
+  - oven-sh/bun

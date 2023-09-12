@@ -10,6 +10,7 @@ WITH repos AS (
     SELECT
         repo_id,
         number,
+        actor_login AS opened_by,
         created_at AS opened_at,
         {% case period %}
             {% when 'past_7_days' %} TIMESTAMPDIFF(DAY, created_at, NOW()) DIV 7
@@ -22,6 +23,10 @@ WITH repos AS (
         ge.repo_id IN (SELECT repo_id FROM repos)
         AND ge.type = 'PullRequestEvent'
         AND ge.action = 'opened'
+        {% if excludeBots %}
+        -- Exclude bot users.
+        AND ge.actor_login NOT LIKE '%bot%'
+        {% endif %}
         {% case period %}
             {% when 'past_7_days' %} AND created_at > (NOW() - INTERVAL 14 DAY)
             {% when 'past_28_days' %} AND created_at > (NOW() - INTERVAL 56 DAY)
@@ -32,12 +37,17 @@ WITH repos AS (
     SELECT
         repo_id,
         number,
+        actor_login AS closed_by,
         created_at AS closed_at
     FROM github_events ge
     WHERE
         ge.repo_id IN (SELECT repo_id FROM repos)
         AND ge.type = 'PullRequestEvent'
         AND ge.action = 'closed'
+        {% if excludeBots %}
+        -- Exclude bot users.
+        AND ge.actor_login NOT LIKE '%bot%'
+        {% endif %}
         {% case period %}
             {% when 'past_7_days' %} AND created_at > (NOW() - INTERVAL 14 DAY)
             {% when 'past_28_days' %} AND created_at > (NOW() - INTERVAL 56 DAY)
@@ -52,7 +62,10 @@ WITH repos AS (
         PERCENT_RANK() OVER (PARTITION BY pwo.period ORDER BY (pwc.closed_at - pwo.opened_at)) AS percentile
     FROM prs_with_opened_at pwo
     JOIN prs_with_closed_at pwc USING (repo_id, number)
-    WHERE pwc.closed_at > pwo.opened_at
+    WHERE
+        pwc.closed_at > pwo.opened_at
+        -- Exclude self-response.
+        AND pwc.closed_by != pwo.opened_by
 ), current_period_medium AS (
     SELECT
         MAX(hours) AS p50

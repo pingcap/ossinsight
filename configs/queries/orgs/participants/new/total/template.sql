@@ -35,6 +35,10 @@ WITH repos AS (
             {% when 'past_90_days' %} AND ge.created_at > (NOW() - INTERVAL 90 DAY)
             {% when 'past_12_months' %} AND ge.created_at > (NOW() - INTERVAL 12 MONTH)
         {% endcase %}
+        {% if excludeBots %}
+        -- Exclude bot users.
+        AND ge.actor_login NOT LIKE '%bot%'
+        {% endif %}
         AND NOT EXISTS (
             SELECT 1
             FROM old_participants op
@@ -54,6 +58,10 @@ WITH repos AS (
             {% when 'past_90_days' %} AND ge.created_at BETWEEN (NOW() - INTERVAL 180 DAY) AND (NOW() - INTERVAL 90 DAY)
             {% when 'past_12_months' %} AND ge.created_at BETWEEN (NOW() - INTERVAL 24 MONTH) AND (NOW() - INTERVAL 12 MONTH)
         {% endcase %}
+        {% if excludeBots %}
+        -- Exclude bot users.
+        AND ge.actor_login NOT LIKE '%bot%'
+        {% endif %}
         AND NOT EXISTS (
             SELECT 1
             FROM old_participants op

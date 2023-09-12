@@ -31,6 +31,11 @@
       "name": "n",
       "type": "integer",
       "default": 50
+    },
+    {
+      "name": "excludeBots",
+      "type": "boolean",
+      "default": true
     }
   ]
 }
