@@ -23,8 +23,8 @@ FROM (
 		ci.repo_id,
 		ci.repo_name,
 		ROW_NUMBER() OVER (PARTITION BY ci.collection_id ORDER BY IFNULL(ci.last_month_rank, 999999)) AS `rank`,
-		ci.last_month_rank,
-		ci.last_2nd_month_rank,
+		ci.last_month_rank AS current_period_rank,
+		ci.last_2nd_month_rank AS past_period_rank,
 		(ci.last_2nd_month_rank - ci.last_month_rank) AS rank_changes,
 		COUNT(*) OVER (PARTITION BY ci.collection_id) AS repos
 	FROM collection_items ci
