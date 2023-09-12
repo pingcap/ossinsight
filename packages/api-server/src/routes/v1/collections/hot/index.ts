@@ -2,23 +2,11 @@ import {FastifyPluginAsync} from "fastify";
 import {getSuccessResponse, proxyGet} from "../../../../utils/endpoint";
 
 const schema = {
-  operationId: 'list-hot-collection',
-  summary: 'List hot collection',
+  operationId: 'list-hot-collections',
+  summary: 'List hot collections',
   method: 'GET',
-  description: `List hot collection.`,
+  description: `List hot collections with top repositories of the collection.`,
   tags: ['Collections'],
-  querystring: {
-    type: 'object',
-    required: ['period'],
-    properties: {
-      period: {
-        type: 'string',
-        description: 'The period of the range.',
-        enum: ['past_28_days', 'past_month'],
-        default: 'past_28_days'
-      }
-    }
-  },
   response: {
     200: getSuccessResponse([
       {
@@ -32,7 +20,7 @@ const schema = {
         "nullable": false
       },
       {
-        "col": "visits",
+        "col": "repos",
         "data_type": "BIGINT",
         "nullable": false
       },
@@ -47,30 +35,20 @@ const schema = {
         "nullable": false
       },
       {
-        "col": "rank",
-        "data_type": "BIGINT",
-        "nullable": true
-      },
-      {
-        "col": "last_month_rank",
+        "col": "repo_current_period_rank",
         "data_type": "INT",
         "nullable": true
       },
       {
-        "col": "last_2nd_month_rank",
+        "col": "repo_past_period_rank",
         "data_type": "INT",
         "nullable": true
       },
       {
-        "col": "rank_changes",
+        "col": "repo_rank_changes",
         "data_type": "BIGINT",
         "nullable": true
       },
-      {
-        "col": "repos",
-        "data_type": "BIGINT",
-        "nullable": false
-      }
     ], {
       type: 'array',
       items: {
@@ -84,9 +62,9 @@ const schema = {
             type: 'string',
             description: 'Collection name'
           },
-          visits: {
+          repos: {
             type: 'string',
-            description: 'Number of visits'
+            description: 'The number of repositories in the collection'
           },
           repo_id: {
             type: 'string',
@@ -96,9 +74,17 @@ const schema = {
             type: 'string',
             description: 'Repository name'
           },
-          rank: {
+          repo_current_period_rank: {
             type: 'string',
-            description: 'The rank of the repository in the collection'
+            description: 'The rank of the repository in the collection in the current period'
+          },
+          repo_past_period_rank: {
+            type: 'string',
+            description: 'The rank of the repository in the collection in the past period'
+          },
+          repo_rank_changes: {
+            type: 'string',
+            description: 'The rank changes of the repository in the collection'
           }
         },
         additionalProperties: true,
@@ -106,75 +92,63 @@ const schema = {
       example: [
         {
           "id": "10010",
-          "last_2nd_month_rank": "4",
-          "last_month_rank": "3",
           "name": "Artificial Intelligence",
-          "rank": "3",
-          "rank_changes": "1",
-          "repo_id": "65600975",
-          "repo_name": "pytorch/pytorch",
           "repos": "36",
-          "visits": "20100"
-        },
-        {
-          "id": "10010",
-          "last_2nd_month_rank": "1",
-          "last_month_rank": "1",
-          "name": "Artificial Intelligence",
-          "rank": "1",
-          "rank_changes": "0",
           "repo_id": "155220641",
           "repo_name": "huggingface/transformers",
-          "repos": "36",
-          "visits": "20100"
+          "repo_current_period_rank": "1",
+          "repo_past_period_rank": "1",
+          "repo_rank_changes": "0"
         },
         {
           "id": "10010",
-          "last_2nd_month_rank": "2",
-          "last_month_rank": "2",
           "name": "Artificial Intelligence",
-          "rank": "2",
-          "rank_changes": "0",
+          "repos": "36",
+          "repo_id": "65600975",
+          "repo_name": "pytorch/pytorch",
+          "repo_current_period_rank": "3",
+          "repo_past_period_rank": "4",
+          "repo_rank_changes": "1"
+        },
+        {
+          "id": "10010",
+          "name": "Artificial Intelligence",
+          "repos": "36",
           "repo_id": "458588993",
           "repo_name": "nebuly-ai/nebullvm",
-          "repos": "36",
-          "visits": "20100"
+          "repo_current_period_rank": "2",
+          "repo_past_period_rank": "2",
+          "repo_rank_changes": "0"
         },
         {
           "id": "10078",
-          "last_2nd_month_rank": "",
-          "last_month_rank": "1",
           "name": "ChatGPT Apps",
-          "rank": "1",
-          "rank_changes": "",
-          "repo_id": "608555244",
-          "repo_name": "microsoft/visual-chatgpt",
           "repos": "36",
-          "visits": "2723"
-        },
-        {
-          "id": "10078",
-          "last_2nd_month_rank": "6",
-          "last_month_rank": "3",
-          "name": "ChatGPT Apps",
-          "rank": "3",
-          "rank_changes": "3",
           "repo_id": "599394820",
           "repo_name": "Chanzhaoyu/chatgpt-web",
-          "repos": "36",
-          "visits": "2723"
+          "repo_current_period_rank": "3",
+          "repo_past_period_rank": "6",
+          "repo_rank_changes": "3"
         },
         {
           "id": "10078",
-          "last_2nd_month_rank": "",
-          "last_month_rank": "2",
           "name": "ChatGPT Apps",
-          "rank": "2",
-          "rank_changes": "",
+          "repos": "36",
           "repo_id": "609416865",
           "repo_name": "yetone/openai-translator",
+          "repo_current_period_rank": "2",
+          "repo_past_period_rank": "",
+          "repo_rank_changes": ""
+        },
+        {
+          "id": "10078",
+          "name": "ChatGPT Apps",
           "repos": "36",
-          "visits": "2723"
+          "repo_id": "608555244",
+          "repo_name": "microsoft/visual-chatgpt",
+          "repo_current_period_rank": "1",
+          "repo_past_period_rank": "",
+          "repo_rank_changes": ""
         }
       ]
     }, {

@@ -7,6 +7,16 @@ const schema = {
   method: 'GET',
   description: `List the repositories of collection.`,
   tags: ['Collections'],
+  params: {
+    type: 'object',
+    required: ['collection_id'],
+    properties: {
+      collection_id: {
+        type: 'number',
+        description: 'The ID of collection'
+      }
+    }
+  },
   response: {
     200: getSuccessResponse([
       {
@@ -24,18 +34,6 @@ const schema = {
       items: {
         type: 'object',
         properties: {
-          id: {
-            type: 'string',
-            description: 'Collection ID'
-          },
-          name: {
-            type: 'string',
-            description: 'Collection name'
-          },
-          visits: {
-            type: 'string',
-            description: 'Number of visits'
-          },
           repo_id: {
             type: 'string',
             description: 'Repository ID'
@@ -43,10 +41,6 @@ const schema = {
           repo_name: {
             type: 'string',
             description: 'Repository name'
-          },
-          rank: {
-            type: 'string',
-            description: 'The rank of the repository in the collection'
           }
         },
         additionalProperties: true,
