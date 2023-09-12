@@ -20,9 +20,9 @@ const schema = {
   },
   params: {
     type: 'object',
-    required: ['collectionId'],
+    required: ['collection_id'],
     properties: {
-      collectionId: {
+      collection_id: {
         type: 'number',
         description: 'The ID of collection'
       }
