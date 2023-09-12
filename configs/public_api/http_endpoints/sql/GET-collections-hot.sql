@@ -15,19 +15,20 @@ WITH collectionsOrderByVisits AS (
 	FROM collectionsOrderByVisits cv
 	JOIN collections c ON cv.collection_id = c.id
 )
-SELECT *
+SELECT
+  id, name, repos, repo_id, repo_name, repo_current_period_rank, repo_past_period_rank, repo_rank_changes
 FROM (
 	SELECT
 		tc.id,
 		tc.name,
 		tc.visits,
+        COUNT(*) OVER (PARTITION BY ci.collection_id) AS repos,
 		ci.repo_id,
 		ci.repo_name,
 		ROW_NUMBER() OVER (PARTITION BY ci.collection_id ORDER BY IFNULL(ci.last_month_rank, 999999)) AS `rank`,
-		ci.last_month_rank AS current_period_rank,
-		ci.last_2nd_month_rank AS past_period_rank,
-		(ci.last_2nd_month_rank - ci.last_month_rank) AS rank_changes,
-		COUNT(*) OVER (PARTITION BY ci.collection_id) AS repos
+		ci.last_month_rank AS repo_current_period_rank,
+		ci.last_2nd_month_rank AS repo_past_period_rank,
+		(ci.last_2nd_month_rank - ci.last_month_rank) AS repo_rank_changes
 	FROM collection_items ci
 	JOIN top10collections tc ON ci.collection_id = tc.id
 ) sub
