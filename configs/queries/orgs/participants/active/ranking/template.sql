@@ -12,8 +12,9 @@ SELECT
 FROM github_events ge
 WHERE
     ge.repo_id IN (SELECT repo_id FROM repos)
-    AND ge.type IN ('PullRequestEvent', 'PullRequestReviewEvent', 'IssuesEvent', 'IssueCommentEvent', 'PushEvent')
-    AND ge.action IN ('opened', 'created', '')
+    -- Events considered as participation (Exclude `WatchEvent`, which means star a repo).
+    AND ge.type IN ('IssueCommentEvent',  'DeleteEvent',  'CommitCommentEvent',  'MemberEvent',  'PushEvent',  'PublicEvent',  'ForkEvent',  'ReleaseEvent',  'PullRequestReviewEvent',  'CreateEvent',  'GollumEvent',  'PullRequestEvent',  'IssuesEvent',  'PullRequestReviewCommentEvent')
+    AND ge.action IN ('added', 'published', 'reopened', 'closed', 'created', 'opened', '')
     {% case period %}
         {% when 'past_7_days' %} AND ge.created_at > (NOW() - INTERVAL 7 DAY)
         {% when 'past_28_days' %} AND ge.created_at > (NOW() - INTERVAL 28 DAY)

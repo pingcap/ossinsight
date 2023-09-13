@@ -100,6 +100,20 @@ WITH repos AS (
             {% when 'past_90_days' %} AND created_at > (CURRENT_DATE() - INTERVAL 90 DAY)
             {% when 'past_12_months' %} AND created_at > (CURRENT_DATE() - INTERVAL 12 MONTH)
         {% endcase %}
+), commit_authors AS (
+    SELECT
+        COUNT(DISTINCT actor_login) AS commit_authors
+        FROM github_events ge
+    WHERE
+        repo_id IN (SELECT repo_id FROM repos)
+        AND ge.type ='PushEvent'
+        AND ge.action = ''
+        {% case period %}
+            {% when 'past_7_days' %} AND created_at > (CURRENT_DATE() - INTERVAL 7 DAY)
+            {% when 'past_28_days' %} AND created_at > (CURRENT_DATE() - INTERVAL 28 DAY)
+            {% when 'past_90_days' %} AND created_at > (CURRENT_DATE() - INTERVAL 90 DAY)
+            {% when 'past_12_months' %} AND created_at > (CURRENT_DATE() - INTERVAL 12 MONTH)
+        {% endcase %}
 ), participants AS (
     SELECT
         COUNT(DISTINCT actor_login) AS participants
@@ -121,6 +135,7 @@ SELECT
     pr_commenters,
     issue_creators,
     issue_commenters,
+    commit_authors,
     participants
 FROM
     pr_creators,
@@ -128,6 +143,7 @@ FROM
     pr_commenters,
     issue_creators,
     issue_commenters,
+    commit_authors,
     participants
 
 

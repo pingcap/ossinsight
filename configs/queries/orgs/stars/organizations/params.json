@@ -30,6 +30,11 @@
       "name": "excludeBots",
       "type": "boolean",
       "default": true
+    },
+    {
+      "name": "excludeUnknown",
+      "type": "boolean",
+      "default": true
     }
   ]
 }

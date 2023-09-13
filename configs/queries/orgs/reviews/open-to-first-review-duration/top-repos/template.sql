@@ -11,35 +11,28 @@ WITH repos AS (
     SELECT
         repo_id,
         number,
-        actor_login AS opened_by,
         created_at AS opened_at
     FROM github_events ge
     WHERE
         ge.repo_id IN (SELECT repo_id FROM repos)
         AND ge.type = 'PullRequestEvent'
         AND ge.action = 'opened'
-        {% if excludeBots %}
-        -- Exclude bot users.
-        AND ge.actor_login NOT LIKE '%bot%'
-        {% endif %}
         {% case period %}
             {% when 'past_7_days' %} AND created_at > (NOW() - INTERVAL 7 DAY)
             {% when 'past_28_days' %} AND created_at > (NOW() - INTERVAL 28 DAY)
             {% when 'past_90_days' %} AND created_at > (NOW() - INTERVAL 90 DAY)
             {% when 'past_12_months' %} AND created_at > (NOW() - INTERVAL 12 MONTH)
         {% endcase %}
-), prs_with_first_response_at AS (
+), prs_with_first_reviewed_at AS (
     SELECT
         repo_id,
         number,
-        responsed_by AS first_responsed_by,
-        responsed_at AS first_responsed_at
+    reviewed_at AS first_reviewed_at
     FROM (
         SELECT
             repo_id,
             number,
-            actor_login AS responsed_by,
-            created_at AS responsed_at,
+            created_at AS reviewed_at,
             ROW_NUMBER() OVER (PARTITION BY repo_id, number ORDER BY created_at) AS times
         FROM github_events ge
         WHERE
@@ -59,19 +52,19 @@ WITH repos AS (
             {% endcase %}
     ) sub
     WHERE
-        -- Keep only the first response.
+        -- Keep only the first review.
         times = 1
 ), tdiff AS (
     SELECT
         pwo.repo_id,
         TIMESTAMPDIFF(SECOND, pwo.opened_at, pwr.first_responsed_at) / 3600 AS hours,
-        PERCENT_RANK() OVER (PARTITION BY pwo.repo_id ORDER BY (pwr.first_responsed_at - pwo.opened_at)) AS percentile
+        PERCENT_RANK() OVER (PARTITION BY pwo.repo_id ORDER BY (pwr.first_reviewed_at - pwo.opened_at)) AS percentile
     FROM prs_with_opened_at pwo
-    JOIN prs_with_first_response_at pwr USING (repo_id, number)
+    JOIN prs_with_first_reviewed_at pwr USING (repo_id, number)
     WHERE
-        pwr.first_responsed_at > pwo.opened_at
-        -- Exclude self-response.
-        AND pwr.first_responsed_by != pwo.opened_by
+        pwr.first_reviewed_at > pwo.opened_at
+        -- Exclude self-review.
+        AND pwr.first_reviewed_by != pwo.opened_by
 ), tdiff_percentiles AS (
     SELECT
         repo_id,

@@ -9,7 +9,11 @@ WITH repos AS (
         {% endif %}
 )
 SELECT
-    TRIM(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(gu.organization, ',', ''), '-', ''), '@', ''), 'www.', ''), 'inc', ''), '.com', ''), '.cn', ''), '.', '')) AS organization_name,
+    IF(
+        gu.organization NOT IN ('', '-', 'none', 'no', 'home', 'n/a', 'null', 'unknown') AND LENGTH(gu.organization) != 0,
+        TRIM(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(gu.organization, ',', ''), '-', ''), '@', ''), 'www.', ''), 'inc', ''), '.com', ''), '.cn', ''), '.', '')),
+        'Unknown'
+    ) AS organization_name,
     COUNT(DISTINCT actor_login) AS stars
 FROM github_events ge
 JOIN github_users gu ON ge.actor_login = gu.login
@@ -21,14 +25,17 @@ WHERE
     -- Exclude bot users.
     AND ge.actor_login NOT LIKE '%bot%'
     {% endif %}
+    {% if excludeUnknown %}
+    -- Exclude users with no organization.
+    AND LENGTH(gu.organization) != 0
+    AND gu.organization NOT IN ('', '-', 'none', 'no', 'home', 'n/a', 'null', 'unknown')
+    {% endif %}
     {% case period %}
         {% when 'past_7_days' %} AND ge.created_at > (NOW() - INTERVAL 7 DAY)
         {% when 'past_28_days' %} AND ge.created_at > (NOW() - INTERVAL 28 DAY)
         {% when 'past_90_days' %} AND ge.created_at > (NOW() - INTERVAL 90 DAY)
         {% when 'past_12_months' %} AND ge.created_at > (NOW() - INTERVAL 12 MONTH)
     {% endcase %}
-    AND LENGTH(gu.organization) != 0
-    AND gu.organization NOT IN ('', '-', 'none', 'no', 'home', 'n/a', 'null', 'unknown')
 GROUP BY organization_name
 ORDER BY stars DESC
 LIMIT {{ n }}

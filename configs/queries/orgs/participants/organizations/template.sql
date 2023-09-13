@@ -50,8 +50,9 @@ WHERE
                 AND ge2.number = ge.number
             )
         {% else %}
-        AND ge.type IN ('PullRequestEvent', 'PullRequestReviewEvent', 'IssuesEvent', 'IssueCommentEvent', 'PushEvent')
-        AND ge.action IN ('opened', 'created', '')
+        -- Events considered as participation (Exclude `WatchEvent`, which means star a repo).
+        AND ge.type IN ('IssueCommentEvent',  'DeleteEvent',  'CommitCommentEvent',  'MemberEvent',  'PushEvent',  'PublicEvent',  'ForkEvent',  'ReleaseEvent',  'PullRequestReviewEvent',  'CreateEvent',  'GollumEvent',  'PullRequestEvent',  'IssuesEvent',  'PullRequestReviewCommentEvent')
+        AND ge.action IN ('added', 'published', 'reopened', 'closed', 'created', 'opened', '')
         {% if excludeBots %}
         -- Exclude bot users.
         AND ge.actor_login NOT LIKE '%bot%'
