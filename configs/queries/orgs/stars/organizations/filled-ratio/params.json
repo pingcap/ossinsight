@@ -24,15 +24,10 @@
     {
       "name": "n",
       "type": "integer",
-      "default": 255
+      "default": 10
     },
     {
       "name": "excludeBots",
-      "type": "boolean",
-      "default": true
-    },
-    {
-      "name": "excludeUnknown",
       "type": "boolean",
       "default": true
     }

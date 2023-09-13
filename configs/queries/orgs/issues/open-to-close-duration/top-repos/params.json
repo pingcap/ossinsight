@@ -30,7 +30,7 @@
     {
       "name": "excludeBots",
       "type": "boolean",
-      "default": true
+      "default": false
     }
   ]
 }

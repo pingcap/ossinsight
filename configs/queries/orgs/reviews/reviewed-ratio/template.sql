@@ -81,33 +81,38 @@ WITH repos AS (
     WHERE
         # Only consider the first merged event.
         sub.times = 1
-), opened_prs_per_period AS (
-    SELECT op.period, COUNT(*) AS opened_prs
-    FROM opened_prs op
-    GROUP BY op.period
-), reviewed_prs_per_period AS (
-    SELECT rp.period, COUNT(*) AS reviewed_prs
-    FROM reviewed_prs rp
-    GROUP BY rp.period
-), current_period_opened_prs AS (
-    SELECT * FROM opened_prs_per_period WHERE period = 0
-), past_period_opened_prs AS (
-    SELECT * FROM opened_prs_per_period WHERE period = 1
-), current_period_reviewed_prs AS (
-    SELECT * FROM reviewed_prs_per_period WHERE period = 0
-), past_period_reviewed_prs AS (
-    SELECT * FROM reviewed_prs_per_period WHERE period = 1
+), prs_per_type AS (
+    (
+        SELECT 'un-reviewed' AS type, op.period, COUNT(*) AS prs
+        FROM opened_prs op
+        LEFT JOIN reviewed_prs rp USING (repo_id, number)
+        WHERE rp.number IS NULL
+        GROUP BY op.period
+    )
+    UNION ALL
+    (
+        SELECT 'reviewed' AS type , rp.period, COUNT(*) AS prs
+        FROM reviewed_prs rp
+        GROUP BY rp.period
+    )
+), current_period_prs_per_type AS (
+    SELECT * FROM prs_per_type WHERE period = 0
+), past_period_prs_per_type AS (
+    SELECT * FROM prs_per_type WHERE period = 1
+), current_period_prs_total AS (
+    SELECT SUM(prs) AS prs_total FROM current_period_prs_per_type
+), past_period_prs_total AS (
+    SELECT SUM(prs) AS prs_total FROM past_period_prs_per_type
 )
 SELECT
-    cpppt.opened_prs AS current_period_opened_prs,
-    cprpt.reviewed_prs AS current_period_reviewed_prs,
-    ROUND(cprpt.reviewed_prs / cpppt.opened_prs, 2) AS current_period_reviewed_ratio,
-    ppppt.opened_prs AS past_period_opened_prs,
-    pprpt.reviewed_prs AS past_period_reviewed_prs,
-    ROUND(pprpt.reviewed_prs / ppppt.opened_prs, 2) AS past_period_reviewed_ratio,
-    ROUND((cprpt.reviewed_prs / cpppt.opened_prs) - (pprpt.reviewed_prs / ppppt.opened_prs), 2) AS reviewed_ratio_change
-FROM current_period_opened_prs cpppt
-LEFT JOIN current_period_reviewed_prs cprpt ON 1 = 1
-LEFT JOIN past_period_opened_prs ppppt ON 1 = 1
-LEFT JOIN past_period_reviewed_prs pprpt ON 1 = 1
-;
+    cpppt.type,
+    cpppt.prs AS current_period_prs,
+    ROUND(cpppt.prs / cppt.prs_total * 100, 2) AS current_period_percentage,
+    ppppt.prs AS past_period_prs,
+    ROUND(ppppt.prs / pppt.prs_total * 100, 2) AS past_period_percentage,
+    ROUND((cpppt.prs / cppt.prs_total - ppppt.prs / pppt.prs_total) * 100, 2) AS percentage_change
+FROM current_period_prs_per_type cpppt
+LEFT JOIN past_period_prs_per_type ppppt ON cpppt.type = ppppt.type
+LEFT JOIN current_period_prs_total cppt ON 1 = 1
+LEFT JOIN past_period_prs_total pppt ON 1 = 1
+ORDER BY cpppt.prs DESC;

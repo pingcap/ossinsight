@@ -7,48 +7,34 @@ WITH repos AS (
         {% if repoIds.size > 0 %}
         AND gr.repo_id IN ({{ repoIds | join: ',' }})
         {% endif %}
-), stars_per_org AS (
+), stars_overview AS (
     SELECT
-        IF(
-            gu.organization NOT IN ('', '-', 'none', 'no', 'home', 'n/a', 'null', 'unknown') AND LENGTH(gu.organization) != 0,
-            TRIM(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(gu.organization, ',', ''), '-', ''), '@', ''), 'www.', ''), 'inc', ''), '.com', ''), '.cn', ''), '.', '')),
-            'Unknown'
-        ) AS organization_name,
-        COUNT(DISTINCT actor_login) AS stars
+        SUM(CASE
+            WHEN
+                gu.organization NOT IN ('', '-', 'none', 'no', 'home', 'n/a', 'null', 'unknown')
+                AND LENGTH(gu.organization) != 0
+            THEN 1
+            ELSE 0
+        END) AS stars_with_org,
+        COUNT(*) AS stars_total
     FROM github_events ge
     JOIN github_users gu ON ge.actor_login = gu.login
     WHERE
         ge.repo_id IN (SELECT repo_id FROM repos)
         AND ge.type = 'WatchEvent'
         AND ge.action = 'started'
-
         {% if excludeBots %}
         -- Exclude bot users.
         AND ge.actor_login NOT LIKE '%bot%'
         {% endif %}
-
-        {% if excludeUnknown %}
-        -- Exclude users with no organization.
-        AND LENGTH(gu.organization) != 0
-        AND gu.organization NOT IN ('', '-', 'none', 'no', 'home', 'n/a', 'null', 'unknown')
-        {% endif %}
-
         {% case period %}
             {% when 'past_7_days' %} AND ge.created_at > (NOW() - INTERVAL 7 DAY)
             {% when 'past_28_days' %} AND ge.created_at > (NOW() - INTERVAL 28 DAY)
             {% when 'past_90_days' %} AND ge.created_at > (NOW() - INTERVAL 90 DAY)
             {% when 'past_12_months' %} AND ge.created_at > (NOW() - INTERVAL 12 MONTH)
         {% endcase %}
-    GROUP BY organization_name
-), stars_total AS (
-    SELECT SUM(stars) AS stars_total FROM stars_per_org
 )
 SELECT
-    spo.organization_name,
-    spo.spostars,
-    ROUND(spo.stars / st.stars_total * 100, 2) AS percentage
+    ROUND(so.stars_with_org / so.stars_total * 100, 2) AS percentage
 FROM
-    stars_per_org spo,
-    stars_total st
-ORDER BY spc.stars DESC
-LIMIT {{ n }}
+    stars_overview so

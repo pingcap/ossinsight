@@ -15,8 +15,9 @@ WITH repos AS (
     FROM github_events ge
     WHERE
         repo_id IN (SELECT repo_id FROM repos)
-        AND ge.type IN ('PullRequestEvent', 'PullRequestReviewEvent', 'IssuesEvent', 'IssueCommentEvent', 'PushEvent')
-        AND ge.action IN ('opened', 'created', '')
+        -- Events considered as participation (Exclude `WatchEvent`, which means star a repo).
+        AND ge.type IN ('IssueCommentEvent',  'DeleteEvent',  'CommitCommentEvent',  'MemberEvent',  'PushEvent',  'PublicEvent',  'ForkEvent',  'ReleaseEvent',  'PullRequestReviewEvent',  'CreateEvent',  'GollumEvent',  'PullRequestEvent',  'IssuesEvent',  'PullRequestReviewCommentEvent')
+        AND ge.action IN ('added', 'published', 'reopened', 'closed', 'created', 'opened', '')
         {% if excludeBots %}
         -- Exclude bot users.
         AND ge.actor_login NOT LIKE '%bot%'

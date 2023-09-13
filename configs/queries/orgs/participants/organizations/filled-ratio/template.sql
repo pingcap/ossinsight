@@ -7,10 +7,16 @@ WITH repos AS (
         {% if repoIds.size > 0 %}
         AND gr.repo_id IN ({{ repoIds | join: ',' }})
         {% endif %}
-), stars_per_country AS (
+), stars_overview AS (
     SELECT
-        gu.country_code,
-        COUNT(DISTINCT actor_login) AS participants
+        SUM(CASE
+            WHEN
+                gu.organization NOT IN ('', '-', 'none', 'no', 'home', 'n/a', 'null', 'unknown')
+                AND LENGTH(gu.organization) != 0
+            THEN 1
+            ELSE 0
+        END) AS stars_with_org,
+        COUNT(*) AS stars_total
     FROM github_events ge
     JOIN github_users gu ON ge.actor_login = gu.login
     WHERE
@@ -36,7 +42,7 @@ WITH repos AS (
                     AND ge2.created_at < ge.created_at
                     AND ge2.repo_id = ge.repo_id
                     AND ge2.number = ge.number
-                )
+            )
         {% when 'issue_commenters' %}
             AND ge.type = 'IssueCommentEvent' AND ge.action = 'created'
             AND EXISTS (
@@ -48,7 +54,7 @@ WITH repos AS (
                     AND ge2.created_at < ge.created_at
                     AND ge2.repo_id = ge.repo_id
                     AND ge2.number = ge.number
-                )
+            )
         {% else %}
             -- Events considered as participation (Exclude `WatchEvent`, which means star a repo).
             AND ge.type IN ('IssueCommentEvent',  'DeleteEvent',  'CommitCommentEvent',  'MemberEvent',  'PushEvent',  'PublicEvent',  'ForkEvent',  'ReleaseEvent',  'PullRequestReviewEvent',  'CreateEvent',  'GollumEvent',  'PullRequestEvent',  'IssuesEvent',  'PullRequestReviewCommentEvent')
@@ -60,27 +66,14 @@ WITH repos AS (
             AND ge.actor_login NOT LIKE '%bot%'
         {% endif %}
 
-        {% if excludeUnknown %}
-            -- Exclude users with no country code.
-            AND gu.country_code NOT IN ('', 'N/A', 'UND')
-        {% endif %}
-
         {% case period %}
             {% when 'past_7_days' %} AND ge.created_at > (NOW() - INTERVAL 7 DAY)
             {% when 'past_28_days' %} AND ge.created_at > (NOW() - INTERVAL 28 DAY)
             {% when 'past_90_days' %} AND ge.created_at > (NOW() - INTERVAL 90 DAY)
             {% when 'past_12_months' %} AND ge.created_at > (NOW() - INTERVAL 12 MONTH)
         {% endcase %}
-    GROUP BY gu.country_code
-), participants_total AS (
-    SELECT SUM(participants) AS total FROM participants_per_country
 )
 SELECT
-    ppc.country_code,
-    ppc.participants,
-    ROUND(ppc.participants / pt.participants_total * 100, 2) AS percentage
+    ROUND(so.stars_with_org / so.stars_total * 100, 2) AS percentage
 FROM
-    participants_per_country ppc,
-    participants_total pt
-ORDER BY ppc.participants DESC
-LIMIT {{ n }}
+    stars_overview so
