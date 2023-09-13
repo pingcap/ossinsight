@@ -17,14 +17,17 @@ WITH repos AS (
         ge.repo_id IN (SELECT repo_id FROM repos)
         AND ge.type = 'WatchEvent'
         AND ge.action = 'started'
+
         {% if excludeBots %}
         -- Exclude bot users.
         AND ge.actor_login NOT LIKE '%bot%'
         {% endif %}
+
         {% if excludeUnknown %}
         -- Exclude users with no country code.
         AND gu.country_code NOT IN ('', 'N/A', 'UND')
         {% endif %}
+
         {% case period %}
             {% when 'past_7_days' %} AND ge.created_at > (NOW() - INTERVAL 7 DAY)
             {% when 'past_28_days' %} AND ge.created_at > (NOW() - INTERVAL 28 DAY)
@@ -36,10 +39,11 @@ WITH repos AS (
     SELECT SUM(stars) AS stars_total FROM stars_per_country
 )
 SELECT
-    country_code,
-    stars,
-    ROUND(stars / st.stars_total * 100, 2) AS percentage
+    spc.country_code,
+    spc.stars,
+    ROUND(spc.stars / st.stars_total * 100, 2) AS percentage
 FROM
     stars_per_country spc,
     stars_total st
+ORDER BY spc.stars DESC
 LIMIT {{ n }}
