@@ -26,6 +26,11 @@ declare module '@ossinsight/api' {
     login: string;
   }
 
+  export interface SearchOrgInfo {
+    id: number;
+    login: string;
+  }
+
   export type Collection = {
     id: number;
     name: string;
