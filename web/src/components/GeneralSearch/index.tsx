@@ -213,11 +213,11 @@ const GeneralSearch: FC<GeneralSearchProps> = ({ contrast, align = 'left', size,
         typeof window !== 'undefined' && (window.location.href = `https://next.ossinsight.io/analyze/${(option as UserInfo).login}`);
         break;
       case 'all':
-        if ((option as any).type === 'repo') {
+        if ((option as any).type === 'Repo') {
           history.push(`/analyze/${(option as SearchRepoInfo).fullName}`);
-        } else if ((option as any).type === 'user') {
+        } else if ((option as any).type === 'User') {
           history.push(`/analyze/${(option as UserInfo).login}`);
-        } else if ((option as any).type === 'org') {
+        } else if ((option as any).type === 'Org') {
           typeof window !== 'undefined' && (window.location.href = `https://next.ossinsight.io/analyze/${(option as UserInfo).login}`);
         }
         break;
