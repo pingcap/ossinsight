@@ -29,6 +29,5 @@ FROM (
     GROUP BY repo_id
 ) sub
 JOIN github_repos gr ON gr.repo_id = sub.repo_id
-GROUP BY sub.repo_id
 ORDER BY sub.issues DESC
 LIMIT 10

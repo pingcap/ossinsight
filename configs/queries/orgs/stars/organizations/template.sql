@@ -45,10 +45,10 @@ WITH repos AS (
 )
 SELECT
     spo.organization_name,
-    spo.spostars,
+    spo.stars,
     ROUND(spo.stars / st.stars_total * 100, 2) AS percentage
 FROM
     stars_per_org spo,
     stars_total st
-ORDER BY spc.stars DESC
+ORDER BY spo.stars DESC
 LIMIT {{ n }}
