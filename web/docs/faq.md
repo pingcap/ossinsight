@@ -13,5 +13,6 @@ title: FAQ
 2 reasons:
 * GitHub /events api only publish WatchEvent(this means star), there is no UnWatchEvent;
 * GitHub would lost data if there services were down;
+* GitHub repo has switched between private and public;
 
 
