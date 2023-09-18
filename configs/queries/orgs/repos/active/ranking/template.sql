@@ -24,16 +24,16 @@ WITH repos AS (
             {% when 'past_12_months' %} AND created_at > (NOW() - INTERVAL 12 MONTH)
         {% endcase %}
     GROUP BY repo_id
-    ORDER BY stars DESC
+    ORDER BY activities DESC
     LIMIT 10
 )
 SELECT
     gr.repo_id,
     gr.repo_name,
-    rws.stars
-FROM repos_with_stars rws
+    rwa.activities
+FROM repos_with_activities rwa
 JOIN github_repos gr USING (repo_id)
-ORDER BY stars DESC
+ORDER BY activities DESC
 LIMIT 10
 
 

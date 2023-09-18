@@ -4,7 +4,7 @@ This project is the API server of OSS Insight.
 
 ## Getting started
 
-### Config Environment Variables
+### Setup Environment Variables
 
 Create a `.env` file in the `/packages/api-server` directory and fill in the following required environment variables:
 
