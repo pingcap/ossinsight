@@ -9,11 +9,7 @@ WITH issue_creator_per_company AS (
     FROM github_events ge
     LEFT JOIN github_users gu ON ge.actor_login = gu.login
     WHERE
-        {% if repoId.size > 0 %}
-        ge.repo_id = {{ repoId }}
-        {% else %}
         ge.repo_id IN ({{ repoId | join: ',' }})
-        {% endif %}
         AND ge.type = 'IssuesEvent'
         AND ge.action = 'opened'
     GROUP BY company_name

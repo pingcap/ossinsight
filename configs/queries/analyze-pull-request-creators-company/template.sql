@@ -9,11 +9,7 @@ WITH pr_creators_per_company AS (
     FROM github_events ge
     LEFT JOIN github_users gu ON ge.actor_login = gu.login
     WHERE
-        {% if repoId.size > 0 %}
-        ge.repo_id = {{ repoId }}
-        {% else %}
         ge.repo_id IN ({{ repoId | join: ',' }})
-        {% endif %}
         AND ge.type = 'PullRequestEvent'
         AND ge.action = 'opened'
     GROUP BY company_name
@@ -26,4 +22,5 @@ SELECT
     pcpc.code_contributors / pct.total AS proportion
 FROM pr_creators_per_company pcpc, pr_creators_total pct
 WHERE company_name != 'Unknown'
+ORDER BY pcpc.code_contributors DESC
 LIMIT {{limit}};
