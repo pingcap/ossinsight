@@ -49,6 +49,7 @@ items:
   - hajimehoshi/ebiten
   - hexops/mach
   - HaxeFoundation/haxe
+  - HaxeFlixel/flixel
   - Esenthel/EsenthelEngine
   - aws/lumberyard
   - FlaxEngine/FlaxEngine
