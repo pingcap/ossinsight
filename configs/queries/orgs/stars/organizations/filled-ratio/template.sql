@@ -9,7 +9,7 @@ WITH repos AS (
         {% endif %}
 ), stars_overview AS (
     SELECT
-        SUM(IF(gu.organization_formatted IS NOT NULL AND LENGTH(gu.organization_formatted) != 0, 1, 0) AS stars_with_org,
+        SUM(IF(gu.organization_formatted IS NOT NULL AND LENGTH(gu.organization_formatted) != 0, 1, 0)) AS stars_with_org,
         COUNT(*) AS stars_total
     FROM github_events ge
     JOIN github_users gu ON ge.actor_login = gu.login
