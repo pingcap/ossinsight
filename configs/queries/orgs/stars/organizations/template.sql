@@ -10,8 +10,8 @@ WITH repos AS (
 ), stars_per_org AS (
     SELECT
         IF(
-            gu.organization NOT IN ('', '-', 'none', 'no', 'home', 'n/a', 'null', 'unknown') AND LENGTH(gu.organization) != 0,
-            TRIM(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(gu.organization, ',', ''), '-', ''), '@', ''), 'www.', ''), 'inc', ''), '.com', ''), '.cn', ''), '.', '')),
+            gu.organization_formatted IS NOT NULL AND LENGTH(gu.organization_formatted) != 0,
+            gu.organization_formatted,
             'Unknown'
         ) AS organization_name,
         COUNT(DISTINCT actor_login) AS stars
@@ -21,18 +21,15 @@ WITH repos AS (
         ge.repo_id IN (SELECT repo_id FROM repos)
         AND ge.type = 'WatchEvent'
         AND ge.action = 'started'
-
         {% if excludeBots %}
         -- Exclude bot users.
         AND ge.actor_login NOT LIKE '%bot%'
         {% endif %}
-
         {% if excludeUnknown %}
         -- Exclude users with no organization.
-        AND LENGTH(gu.organization) != 0
-        AND gu.organization NOT IN ('', '-', 'none', 'no', 'home', 'n/a', 'null', 'unknown')
+        AND gu.organization_formatted IS NOT NULL
+        AND LENGTH(gu.organization_formatted) != 0
         {% endif %}
-
         {% case period %}
             {% when 'past_7_days' %} AND ge.created_at > (NOW() - INTERVAL 7 DAY)
             {% when 'past_28_days' %} AND ge.created_at > (NOW() - INTERVAL 28 DAY)
