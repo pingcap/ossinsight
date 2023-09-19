@@ -79,7 +79,7 @@ export interface Params {
   /**
    * Define the array item type.
    */
-  itemType?: "string" | "number" | "boolean";
+  itemType?: "string" | "number" | "boolean" | "integer";
   /**
    * Define the max array length.
    */
