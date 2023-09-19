@@ -1,4 +1,4 @@
-import {QuerySchema} from "@ossinsight/types/src";
+import {Params, QuerySchema} from "@ossinsight/types/src";
 import { sync as glob } from 'glob';
 import * as path from 'node:path';
 import * as fs from 'node:fs';
@@ -27,24 +27,20 @@ export function buildParams (schema: QuerySchema): Record<string, string>[] {
 
   try {
     schema.params.forEach(param => {
-      if (param.enums) {
-        if (typeof param.enums === 'string') {
-          // TODO: implement this
-          throw new Error('special param not supported');
-        } else {
-          enumKeys.push(param.name);
-          enumValues.push(param.enums);
+      if (param.type === ParamTypes.ARRAY) {
+        const values = getValues(param);
+        enumKeys.push(param.name);
+        enumValues.push(values);
+      } else {
+        const values = getValues(param);
+        if (param.name === 'collectionId') {
+          console.log(values)
         }
-      } else if (param.type === ParamTypes.INTEGER || param.type === ParamTypes.NUMBER) {
-        const val = 1000 + Math.floor(Math.random() * 2000);
         enumKeys.push(param.name);
-        enumValues.push([val.toString()]);
-      } else if (param.pattern) {
-        const rand = new RandExp(param.pattern);
-        rand.max = 9;
-        enumKeys.push(param.name);
-        enumValues.push([rand.gen()]);
+        enumValues.push(values);
       }
+
+
     });
   } catch (e) {
     if ((e as any)?.message === 'special param not supported') {
@@ -85,4 +81,32 @@ export function buildParams (schema: QuerySchema): Record<string, string>[] {
   }
 
   return result;
+}
+
+export function getValues(param: Params) {
+  const type = param.type === ParamTypes.ARRAY ? param.itemType : param.type;
+  let values: string[] = [];
+  if (param.enums) {
+    if (typeof param.enums === 'string') {
+      if (param.enums === 'collectionIds') {
+        values = ['10001']
+      } else {
+        throw new Error('Unknown enum type');
+      }
+    } else {
+      values = param.enums;
+    }
+  } else if (type === ParamTypes.INTEGER || type === ParamTypes.NUMBER) {
+    const val = 1000 + Math.floor(Math.random() * 2000);
+    values = [val.toString()];
+  } else if (type === ParamTypes.BOOLEAN) {
+    values = ['true', 'false'];
+  } else if (param.pattern) {
+    const rand = new RandExp(param.pattern);
+    rand.max = 9;
+    values = [rand.gen()];
+  } else {
+    throw new Error('special param not supported');
+  }
+  return values;
 }

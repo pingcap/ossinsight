@@ -94,7 +94,7 @@
         "itemType": {
           "description": "Define the array item type.",
           "type": "string",
-          "enum": ["string", "number", "boolean"]
+          "enum": ["string", "number", "boolean", "integer"]
         },
         "maxArrayLength": {
             "description": "Define the max array length.",
