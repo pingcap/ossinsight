@@ -16,6 +16,8 @@ CREATE TABLE `github_users` (
   `longitude` decimal(11,8) NOT NULL DEFAULT '0',
   `latitude` decimal(10,8) NOT NULL DEFAULT '0',
   `public_repos` int(11) NOT NULL DEFAULT '0',
+  `stars_total` int(11) NOT NULL,
+  `participant_total` int(11) NULL,
   `followers` int(11) NOT NULL DEFAULT '0',
   `followings` int(11) NOT NULL DEFAULT '0',
   `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',

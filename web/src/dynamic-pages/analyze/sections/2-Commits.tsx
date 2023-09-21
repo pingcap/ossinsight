@@ -63,7 +63,7 @@ export const CommitsSection = forwardRef(function (_, ref: ForwardedRef<HTMLElem
         </P2>
         <LocChart aspectRatio={commonAspectRatio} />
       </Analyze>
-      <Analyze query='commits-time-distribution' params={{ period: period.key }}>
+      <Analyze query='analyze-commits-time-distribution' params={{ period: period.key }}>
         <H3 id='commits-time-distribution' sx={{ mt: 6 }}>Commits Time Distribution</H3>
         <P2>
           The Heat Maps below describe the number of commit events that occur at a particular point of time (UTC+0).

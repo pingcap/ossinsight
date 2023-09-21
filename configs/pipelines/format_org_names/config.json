@@ -1,0 +1,5 @@
+{
+  "name": "format_org_names",
+  "description": "Format organization names",
+  "cron": "0 50 0 * * *"
+}

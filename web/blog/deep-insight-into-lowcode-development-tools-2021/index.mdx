@@ -21,105 +21,110 @@ Note:
 ## Star history of top LCDT repos since 2011
 
 <CommonChart
-  chart='dynamic-stars'
-  category='archive-2021-top10-star-racing'
-  formatSql={false}
-  repo='nocode_repos'
+    chart='dynamic-stars'
+    category='archive/2021/repo-racing-by-stars'
+    formatSql={false}
+    field='nocode'
 />
 
 ## Top 10 most starred LCDT repos in 2021
 
 <CommonChart
-  chart='barchart'
-  category='archive-2021-top10-by-stars'
-  n={10}
-  formatSql={false}
-  categoryIndex='repo_name'
-  valueIndex='stars'
-  seriesName='Stars'
-  repo='nocode_repos'
+    chart='barchart'
+    category='archive/2021/repo-ranking-by-stars-growth'
+    formatSql={false}
+    categoryIndex='repo_name'
+    valueIndex='stars'
+    seriesName='Stars'
+    field='nocode'
+    n={10}
 />
+
 
 ## Top 10 LCDT repos with the most PRs in 2021
 
 <CommonChart
-  chart='barchart'
-  category='archive-2021-top10-by-prs'
-  n={20}
-  formatSql={false}
-  categoryIndex='repo_name'
-  valueIndex='num'
-  seriesName='PRs'
-  repo='nocode_repos'
+    chart='barchart'
+    category='archive/2021/repo-ranking-by-prs'
+    formatSql={false}
+    categoryIndex='repo_name'
+    valueIndex='prs'
+    seriesName='PRs'
+    field='nocode'
+    n={10}
 />
 
 ## Top 20 developers contributing the most PRs to LCDT repos in 2021
 
 <CommonChart
-  chart='barchart'
-  category='archive-2021-top20-by-developers'
-  formatSql={false}
-  categoryIndex='actor_login'
-  valueIndex='pr_count'
-  categoryType='owner'
-  seriesName='PRs'
-  repo='nocode_repos'
+    chart='barchart'
+    category='archive/2021/repo-pr-creator-ranking-by-prs'
+    formatSql={false}
+    categoryIndex='actor_login'
+    valueIndex='prs'
+    categoryType='owner'
+    seriesName='PRs'
+    field='nocode'
+    n={20}
 />
 
 ## Top 10 LCDT repos with the highest YoY growth rate in 2021
 
 <CommonChart
-  chart='yoychart'
-  category='archive-2021-top20-by-stars-yoy'
-  formatSql={false}
-  repo='nocode_repos'
+    chart='yoychart'
+    category='archive/2021/repo-ranking-by-yoy-stars-growth'
+    formatSql={false}
+    field='nocode'
 />
 
 ## Top 10 LCDT repos with the lowest YoY growth rate in 2021
 
 <CommonChart
-  chart='yoychart'
-  category='archive-2021-bottom10-by-yoy'
-  formatSql={false}
-  repo='nocode_repos'
+    chart='yoychart'
+    category='archive/2021/repo-ranking-by-yoy-stars-growth-least'
+    formatSql={false}
+    field='nocode'
 />
 
 ## Top 7 most used programming languages in LCDT repos in 2021
 
 <CommonChart
-  chart='barchart'
-  category='archive-2021-top5-by-languages'
-  formatSql={false}
-  categoryIndex='language'
-  valueIndex='COUNT(*)'
-  categoryType='lang'
-  seriesName='PRs'
-  repo='nocode_repos'
+    chart='barchart'
+    category='archive/2021/language-ranking-by-prs'
+    formatSql={false}
+    categoryIndex='language'
+    valueIndex='prs'
+    categoryType='lang'
+    seriesName='PRs'
+    field='nocode'
+    n={7}
 />
 
 ## Top 20 companies contributing the most to LCDT repos in 2021
 
 <CommonChart
-  chart='barchart'
-  category='archive-2021-top20-by-companies'
-  formatSql={false}
-  categoryIndex='company'
-  valueIndex='users_count'
-  seriesName='Contributors'
-  categoryType={false}
-  repo='nocode_repos'
+    chart='barchart'
+    category='archive/2021/company-ranking-by-contributions'
+    formatSql={false}
+    categoryIndex='company'
+    valueIndex='contributions'
+    seriesName='Contributions'
+    categoryType={false}
+    field='nocode'
+    n={20}
 />
 
 ## Top 20 countries/regions contributing the most to LCDT repos in 2021
 
 <CommonChart
-  chart='worldmapchart'
-  category='archive-2021-top10-by-regions'
-  formatSql={false}
-  categoryIndex='country_code'
-  valueIndex='users_count'
-  seriesName='Contributors'
-  repo='nocode_repos'
+    chart='worldmapchart'
+    category='archive/2021/country-ranking-by-contributions'
+    formatSql={false}
+    categoryIndex='country_code'
+    valueIndex='contributions'
+    seriesName='Contributions'
+    field='nocode'
+    n={20}
 />
 
 ## The rankings of LCDT repos measured by Z-score in 2021
@@ -129,8 +134,9 @@ The analytical results displayed above are generated based on just one single me
 This is the comprehensive ranking calculated by z-score:
 
 <CommonChart
-  chart='zscorechart'
-  category='archive-2021-archive-ranking'
-  formatSql={false}
-  repo='nocode_repos'
+    chart='zscorechart'
+    category='archive/2021/repo-ranking-by-z-score'
+    formatSql={false}
+    field='nocode'
+    n={50}
 />

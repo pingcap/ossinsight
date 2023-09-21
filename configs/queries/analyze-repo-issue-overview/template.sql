@@ -1,41 +1,42 @@
 WITH issues AS (
     SELECT
-        41986369 AS repo_id, IFNULL(COUNT(DISTINCT number), 0) AS total
+        41986369 AS repo_id, COUNT(*) AS total
     FROM github_events
     WHERE
-        type = 'IssuesEvent'
-        AND repo_id = 41986369
+        repo_id = 41986369
+        AND type = 'IssuesEvent'
+        AND action = 'opened'
 ), issue_creators AS (
     SELECT
-        41986369 AS repo_id, IFNULL(COUNT(DISTINCT actor_login), 0) AS total
+        41986369 AS repo_id, COUNT(DISTINCT actor_login) AS total
     FROM github_events
     WHERE
-        type = 'IssuesEvent'
-        AND repo_id = 41986369
+        repo_id = 41986369
+        AND type = 'IssuesEvent'
         AND action = 'opened'
 ), issue_comments AS (
     SELECT
-        41986369 AS repo_id, IFNULL(COUNT(1), 0) AS total
+        41986369 AS repo_id, COUNT(*) AS total
     FROM github_events
     WHERE
-        type = 'IssueCommentEvent'
-        AND repo_id = 41986369
+        repo_id = 41986369
+        AND type = 'IssueCommentEvent'
         AND action = 'created'
 ), issue_commenters AS (
     SELECT
-        41986369 AS repo_id, IFNULL(COUNT(DISTINCT actor_login), 0) AS total
+        41986369 AS repo_id, COUNT(DISTINCT actor_login) AS total
     FROM github_events
     WHERE
-        type = 'IssueCommentEvent'
-        AND repo_id = 41986369
+        repo_id = 41986369
+        AND type = 'IssueCommentEvent'
         AND action = 'created'
 )
 SELECT
     41986369 AS repo_id,
-    i.total AS issues,
-    ic.total AS issue_creators,
-    ico.total AS issue_comments,
-    icc.total AS issue_commenters
+    IFNULL(i.total, 0) AS issues,
+    IFNULL(ic.total, 0) AS issue_creators,
+    IFNULL(ico.total, 0) AS issue_comments,
+    IFNULL(icc.total, 0) AS issue_commenters
 FROM (
     SELECT 41986369 AS repo_id
 ) sub

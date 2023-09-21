@@ -1,13 +1,13 @@
 WITH collectionsOrderByVisits AS (
 	SELECT
-		CAST(JSON_EXTRACT(request_params, '$.collectionId') AS SIGNED) AS collection_id,
+		CAST(JSON_EXTRACT(query, '$.collectionId') AS SIGNED) AS collection_id,
 		COUNT(*) AS visits
-	FROM access_logs
+	FROM stats_api_requests
 	WHERE
-		request_path LIKE '/q/collection-%'
-        AND requested_at > DATE_SUB(NOW(), INTERVAL 1 MONTH)
-	GROUP BY 1
-	ORDER BY 2 DESC
+		path LIKE '/q/collection-%'
+        AND finished_at > DATE_SUB(NOW(), INTERVAL 1 MONTH)
+	GROUP BY collection_id
+	ORDER BY visits DESC
 ), top10collections AS (
 	SELECT c.id, c.name, cv.visits
 	FROM collectionsOrderByVisits cv
@@ -29,4 +29,5 @@ FROM (
 	FROM collection_items ci
 	JOIN top10collections tc ON ci.collection_id = tc.id
 ) sub
-WHERE `rank` <= 3;
+WHERE `rank` <= 3
+ORDER BY visits DESC;

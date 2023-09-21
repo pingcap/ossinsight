@@ -4,6 +4,9 @@
     {
       "name": "repoId",
       "replaces": "41986369",
+      "type": "array",
+      "itemType": "number",
+      "maxArrayLength": 50,
       "pattern": "^[1-9]\\d*$"
     },
     {

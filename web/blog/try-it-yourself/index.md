@@ -1,5 +1,5 @@
 ---
-title:  Use TiDB Cloud to Analyze GitHub Events in 10 Minutes
+title:  "[Outdated] Use TiDB Cloud to Analyze GitHub Events in 10 Minutes"
 date: 2022-04-01
 authors: [fendy, hooopo]
 tags: [tidbcloud]

@@ -67,3 +67,6 @@ items:
   - koka-lang/koka
   - effekt-lang/effekt
   - denoland/deno
+  - kcl-lang/kcl
+  - wa-lang/wa
+  - opentffoundation/opentf

@@ -1,7 +1,7 @@
 import {AbstractStartedContainer, GenericContainer, StartedTestContainer} from 'testcontainers';
 import { createConnection } from 'mysql2/promise';
 
-const DEFAULT_IMAGE_NAME = 'pingcap/tidb:v6.4.0';
+const DEFAULT_IMAGE_NAME = 'pingcap/tidb:v7.1.0';
 
 export default class TiDBContainer extends GenericContainer {
 

@@ -6,14 +6,22 @@ export function proxyGet(
   opts: Record<any, any>,
   schema: Record<any, any>
 ) {
-    app.get('/', { schema }, async function (req, reply) {
+    app.get('/', {
+      config: {
+        rateLimit: {
+          max: app.config.PUBLIC_API_HOURLY_RATE_LIMIT,
+          timeWindow: '1 hour'
+        }
+      },
+      schema
+    }, async function (req, reply) {
       if (!app.tidbDataService) {
         throw new APIError(500, 'TiDB data service is not initialized.');
       }
 
       // Remove prefix and query string from url.
       const url = new URL(req.url, 'http://localhost');
-      let pathname = url.pathname.replace(/^\/public/, '');
+      let pathname = url.pathname.replace(/^\/(public|v1)/, '');
 
       // Map query params to query strings.
       const query = req.query as any;
@@ -70,11 +78,10 @@ export function proxyGet(
       // Retrieve query result from TiDB data service.
       const targetURL = `${pathname}?${queryStrings.join('&')}`;
       const res = await app.tidbDataService.request(targetURL);
-      const json = await res.json();
       reply
         .code(res.status)
         .headers(res.headers)
-        .send(json);
+        .send(res.data);
     })
 }
 

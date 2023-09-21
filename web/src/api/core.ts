@@ -59,6 +59,10 @@ export async function getRepo (name: string): Promise<RepoInfo> {
   return await client.get(`/gh/repo/${name}`).then(({ data }) => data);
 }
 
+export async function getUser (name: string): Promise<UserInfo> {
+  return await client.get(`/gh/users/${name}`).then(({ data }) => data);
+}
+
 export async function searchRepo (keyword: string): Promise<SearchRepoInfo[]> {
   return await client
     .get('/gh/repos/search', { params: { keyword } })

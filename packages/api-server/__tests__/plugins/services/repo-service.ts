@@ -20,6 +20,13 @@ describe('subscribe repo', () => {
 
   beforeEach(async () => {
     await conn.query('DELETE FROM sys_subscribed_repos WHERE 1 = 1;');
+    await conn.query('DELETE FROM sys_users WHERE id = ?;', 1);
+    await conn.query('DELETE FROM github_repos WHERE repo_id IN (?);', [[41986369, 48833910]]);
+    await conn.query(`INSERT INTO sys_users(id, name, email_address, role) VALUES (?, ?, ?, ?)`, [1, 'foo', 'test@example.com', 'USER']);
+    await conn.query(`INSERT INTO github_repos(repo_id, repo_name, owner_id, owner_login, owner_is_org) VALUES ?;`, [[
+      [41986369, 'pingcap/tidb', 1, 'pingcap', 1],
+      [48833910, 'tikv/tikv', 1, 'tikv', 1]
+    ]]);
     // Repo pingcap/tidb has been subscribed by user 1.
     await conn.query(`
         INSERT INTO sys_subscribed_repos(user_id, repo_id, subscribed, subscribed_at)
@@ -51,12 +58,16 @@ describe('subscribe repo', () => {
 describe('unsubscribe repo', () => {
 
   beforeEach(async () => {
-    await conn.query('DELETE FROM sys_subscribed_repos WHERE 1 = 1;');
-    // Repo pingcap/tidb has been subscribed by user 1.
-    await conn.query(`
-        INSERT INTO sys_subscribed_repos(user_id, repo_id, subscribed, subscribed_at)
-        VALUES (?, ?, 1, NOW());
-    `, [1, 41986369]);
+    await conn.query('DELETE FROM sys_subscribed_repos WHERE repo_id IN (?);', [[41986369]]);
+    await conn.query('DELETE FROM github_repos WHERE repo_id = ?;', [41986369]);
+    await conn.query('DELETE FROM sys_users WHERE id = ?;', [1]);
+
+    // Repo pingcap/tidb has been subscribed by user with ID 1.
+    await conn.query(`INSERT INTO sys_users(id, name, email_address, role) VALUES (?, ?, ?, ?)`, [1, 'foo', 'test@example.com', 'USER']);
+    await conn.query(`INSERT INTO github_repos(repo_id, repo_name, owner_id, owner_login, owner_is_org) VALUES ?;`, [[
+      [41986369, 'pingcap/tidb', 1, 'pingcap', 1]
+    ]]);
+    await conn.query(`INSERT INTO sys_subscribed_repos(user_id, repo_id, subscribed, subscribed_at) VALUES (?, ?, 1, NOW());`, [1, 41986369]);
   });
 
   test('cancel existed subscription should work', async () => {
@@ -94,18 +105,19 @@ describe('get user subscribed repos', () => {
 
   beforeEach(async () => {
     await conn.query('DELETE FROM sys_subscribed_repos WHERE 1 = 1;');
-    await conn.query(`
-        INSERT INTO github_repos(repo_id, repo_name, owner_id, owner_login, owner_is_org)
-        VALUES ?;
-    `, [[
+    await conn.query('DELETE FROM github_repos WHERE repo_id IN (?)', [[41986369, 167499157, 48833910]]);
+    await conn.query(`DELETE FROM sys_users WHERE id IN (?);`, [[1, 2]]);
+
+    await conn.query(`INSERT INTO sys_users(id, name, email_address, avatar_url, role) VALUES ?`, [[
+      [1, 'foo', 'foo@example.com', 'https://github.com/ossinsight.png', 'user'],
+      [2, 'bar', 'bar@example.com', 'https://github.com/ossinsight.png', 'user']
+    ]]);
+    await conn.query(`INSERT INTO github_repos(repo_id, repo_name, owner_id, owner_login, owner_is_org) VALUES ?;`, [[
       [41986369, 'pingcap/tidb', 11855343, 'pingcap', 1],
       [167499157, 'pingcap/tiflash', 11855343, 'pingcap', 1],
       [48833910, 'tikv/tikv', 41004122, 'tikv', 1]
     ]]);
-    await conn.query(`
-        INSERT INTO sys_subscribed_repos(user_id, repo_id, subscribed_at, subscribed)
-        VALUES ?;
-    `, [[
+    await conn.query(`INSERT INTO sys_subscribed_repos(user_id, repo_id, subscribed_at, subscribed) VALUES ?;`, [[
       [1, 41986369, '2022-01-01 00:00:00', 1],
       [1, 167499157, '2022-01-02 00:00:00', 1],
       [1, 48833910, '2022-01-03 00:00:00', 0],

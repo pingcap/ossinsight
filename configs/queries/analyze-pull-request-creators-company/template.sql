@@ -1,24 +1,26 @@
-WITH pr_creator_companies AS (
+WITH pr_creators_per_company AS (
     SELECT
-        TRIM(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(gu.organization, ',', ''), '-', ''), '@', ''), 'www.', ''), 'inc', ''), '.com', ''), '.cn', ''), '.', '')) AS company_name,
+        IF(
+            gu.organization_formatted IS NOT NULL AND LENGTH(gu.organization_formatted) != 0,
+            gu.organization_formatted,
+            'Unknown'
+        ) AS company_name,
         COUNT(DISTINCT ge.actor_login) AS code_contributors
     FROM github_events ge
-    LEFT JOIN github_users gu USE INDEX (index_gu_on_login_is_bot_organization_country_code) ON ge.actor_login = gu.login
+    LEFT JOIN github_users gu ON ge.actor_login = gu.login
     WHERE
-        ge.repo_id in (41986369)
+        ge.repo_id IN ({{ repoId | join: ',' }})
         AND ge.type = 'PullRequestEvent'
         AND ge.action = 'opened'
-    GROUP BY 1
-), summary AS (
-    SELECT COUNT(*) AS total FROM pr_creator_companies
+    GROUP BY company_name
+), pr_creators_total AS (
+    SELECT SUM(code_contributors) AS total FROM pr_creators_per_company
 )
 SELECT
-    company_name,
-    code_contributors,
-    code_contributors / summary.total AS proportion
-FROM pr_creator_companies, summary
-WHERE
-    LENGTH(company_name) != 0
-    AND company_name NOT IN ('-', 'none', 'no', 'home', 'n/a', 'null', 'unknown')
-ORDER BY code_contributors DESC
-LIMIT 9999999999;
+    pcpc.company_name,
+    pcpc.code_contributors,
+    pcpc.code_contributors / pct.total AS proportion
+FROM pr_creators_per_company pcpc, pr_creators_total pct
+WHERE company_name != 'Unknown'
+ORDER BY pcpc.code_contributors DESC
+LIMIT {{limit}};

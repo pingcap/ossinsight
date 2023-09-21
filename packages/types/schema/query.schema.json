@@ -7,6 +7,11 @@
       "description": "Query name, default is generated base on the file path.",
       "type": "string"
     },
+    "engine": {
+      "description": "Template engine.",
+      "type": "string",
+      "enum": ["legacy", "liquid"]
+    },
     "public": {
       "description": "Indicating if the query is public.",
       "type": "boolean",
@@ -84,12 +89,12 @@
         "type": {
           "description": "Define the parameter type.",
           "type": "string",
-          "enum": ["array", "string", "number", "boolean"]
+          "enum": ["array", "string", "number", "boolean", "integer"]
         },
         "itemType": {
           "description": "Define the array item type.",
           "type": "string",
-          "enum": ["string", "number", "boolean"]
+          "enum": ["string", "number", "boolean", "integer"]
         },
         "maxArrayLength": {
             "description": "Define the max array length.",

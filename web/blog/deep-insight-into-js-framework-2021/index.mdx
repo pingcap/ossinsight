@@ -19,13 +19,13 @@ Note:
 
 ## Star history of top JavaScript Framework repos since 2011
 
-The number of stars is often thought of as a measure of whether a github repository is popular or not. We sort all JavaScript framework repositories from github by the total number of historical stars since 2011. For visualizing the results more intuitively, we show the top 10 open source databases by using an interactive line chart. 
+The number of stars is often thought of as a measure of whether a GitHub repository is popular or not. We sort all JavaScript framework repositories from GitHub by the total number of historical stars since 2011. For visualizing the results more intuitively, we show the top 10 open source databases by using an interactive line chart.
 
 <CommonChart
-  chart='dynamic-stars'
-  category='archive-2021-top10-star-racing'
-  formatSql={false}
-  repo='js_framework_repos'
+    chart='dynamic-stars'
+    category='archive/2021/repo-racing-by-stars'
+    formatSql={false}
+    field='js_framework'
 />
 
 <!--truncate-->
@@ -33,113 +33,115 @@ The number of stars is often thought of as a measure of whether a github reposit
 ## Top 10 most starred JSF repos in 2021
 
 <CommonChart
-  chart='barchart'
-  category='archive-2021-top10-by-stars'
-  n={10}
-  formatSql={false}
-  categoryIndex='repo_name'
-  valueIndex='stars'
-  seriesName='Stars'
-  repo='js_framework_repos'
+    chart='barchart'
+    category='archive/2021/repo-ranking-by-stars-growth'
+    formatSql={false}
+    categoryIndex='repo_name'
+    valueIndex='stars'
+    seriesName='Stars'
+    field='js_framework'
+    n={10}
 />
 
 ## Top 10 JSF repos with the most PRs in 2021
 
 <CommonChart
-  chart='barchart'
-  category='archive-2021-top10-by-prs'
-  n={20}
-  formatSql={false}
-  categoryIndex='repo_name'
-  valueIndex='num'
-  seriesName='PRs'
-  repo='js_framework_repos'
+    chart='barchart'
+    category='archive/2021/repo-ranking-by-prs'
+    formatSql={false}
+    categoryIndex='repo_name'
+    valueIndex='prs'
+    seriesName='PRs'
+    field='js_framework'
+    n={10}
 />
-
 
 ## Which javascript framework have the widest feedback sources?
 
 The chart below displays the number of issue creators of leading javascript framework each year and their growth trend during the past ten years.
 
 <CommonChart
-  chart='barchart'
-  category='rt-jsf-ranking-by-issue-creators'
-  n={20}
-  formatSql={false}
-  categoryIndex='repo_name'
-  valueIndex='num'
-  seriesName='Issue Creators'
-  categoryType={false}
+    chart='barchart'
+    category='archive/2021/repo-ranking-by-issue-creators'
+    formatSql={false}
+    categoryIndex='repo_name'
+    valueIndex='issue_creators'
+    seriesName='Issue Creators'
+    categoryType={false}
+    field='js_framework'
+    n={10}
 />
-
 
 ## Top 20 developers contributing the most PRs to JSF repos in 2021
 
 <CommonChart
-  chart='barchart'
-  category='archive-2021-top20-by-developers'
-  formatSql={false}
-  categoryIndex='actor_login'
-  valueIndex='pr_count'
-  categoryType='owner'
-  seriesName='PRs'
-  repo='js_framework_repos'
+    chart='barchart'
+    category='archive/2021/repo-pr-creator-ranking-by-prs'
+    formatSql={false}
+    categoryIndex='actor_login'
+    valueIndex='prs'
+    categoryType='owner'
+    seriesName='PRs'
+    field='js_framework'
+    n={20}
 />
 
 ## Top 10 JSF repos with the highest YoY growth rate of stars in 2021
 
 <CommonChart
   chart='yoychart'
-  category='archive-2021-top20-by-stars-yoy'
+  category='archive/2021/repo-ranking-by-yoy-stars-growth'
   formatSql={false}
-  repo='js_framework_repos'
+  field='js_framework'
 />
 
 ## Top 10 JSF repos with the lowest YoY growth rate of stars in 2021
 
 <CommonChart
-  chart='yoychart'
-  category='archive-2021-bottom10-by-yoy'
-  formatSql={false}
-  repo='js_framework_repos'
+    chart='yoychart'
+    category='archive/2021/repo-ranking-by-yoy-stars-growth-least'
+    formatSql={false}
+    field='js_framework'
 />
 
 ## Top 10 most used programming languages in JSF repos in 2021
 
 <CommonChart
-  chart='barchart'
-  category='archive-2021-top5-by-languages'
-  formatSql={false}
-  categoryIndex='language'
-  valueIndex='COUNT(*)'
-  categoryType='lang'
-  seriesName='PRs'
-  repo='js_framework_repos'
+    chart='barchart'
+    category='archive/2021/language-ranking-by-prs'
+    formatSql={false}
+    categoryIndex='language'
+    valueIndex='prs'
+    categoryType='lang'
+    seriesName='PRs'
+    field='js_framework'
 />
 
 ## Top 20 companies contributing the most to JSF repos in 2021
 
 <CommonChart
-  chart='barchart'
-  category='archive-2021-top20-by-companies'
-  formatSql={false}
-  categoryIndex='company'
-  valueIndex='users_count'
-  seriesName='Contributors'
-  categoryType={false}
-  repo='js_framework_repos'
+    chart='barchart'
+    category='archive/2021/company-ranking-by-contributions'
+    formatSql={false}
+    categoryIndex='company'
+    valueIndex='contributions'
+    seriesName='Contributions'
+    categoryType={false}
+    field='js_framework'
+    n={20}
 />
 
 ## Top 10 countries/regions contributing the most to JSF repos in 2021
 
 <CommonChart
-  chart='worldmapchart'
-  category='archive-2021-top10-by-regions'
-  formatSql={false}
-  categoryIndex='country_code'
-  valueIndex='users_count'
-  seriesName='Contributors'
-  repo='js_framework_repos'
+    chart='worldmapchart'
+    category='archive/2021/country-ranking-by-contributions'
+    formatSql={false}
+    categoryIndex='country_code'
+    valueIndex='contributions'
+    seriesName='Contributions'
+    field='js_framework'
+    n={10}
 />
 
 ## The Rankings of JSF repos measured by Z-score in 2021
@@ -149,8 +151,9 @@ The analytical results displayed above are generated based on just one single me
 This is the comprehensive ranking calculated by z-score:
 
 <CommonChart
-  chart='zscorechart'
-  category='archive-2021-archive-ranking'
-  formatSql={false}
-  repo='js_framework_repos'
+    chart='zscorechart'
+    category='archive/2021/repo-ranking-by-z-score'
+    formatSql={false}
+    field='js_framework'
+    n={50}
 />

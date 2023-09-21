@@ -13,3 +13,4 @@ items:
   - timescale/promscale
   - graphite-project/graphite-web
   - uptrace/uptrace
+  - hyperdxio/hyperdx

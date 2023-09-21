@@ -11,6 +11,10 @@ export interface QuerySchema {
    */
   name?: string;
   /**
+   * Template engine.
+   */
+  engine?: "legacy" | "liquid";
+  /**
    * Indicating if the query is public.
    */
   public?: boolean;
@@ -71,11 +75,11 @@ export interface Params {
   /**
    * Define the parameter type.
    */
-  type?: "array" | "string" | "number" | "boolean";
+  type?: "array" | "string" | "number" | "boolean" | "integer";
   /**
    * Define the array item type.
    */
-  itemType?: "string" | "number" | "boolean";
+  itemType?: "string" | "number" | "boolean" | "integer";
   /**
    * Define the max array length.
    */

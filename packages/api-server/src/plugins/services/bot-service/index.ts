@@ -1,21 +1,17 @@
-import {countAPIRequest, measure, openaiAPICounter as counter, openaiAPITimer} from "../../../metrics";
-import {Answer, AnswerSummary, RecommendedChart, RecommendQuestion} from "./types";
-import {BotResponseGenerateError, BotResponseParseError} from "../../../utils/error";
+import {FastifyBaseLogger} from "fastify";
+import {countAPIRequest, measureAPIRequest, openaiAPICounter, openaiAPITimer} from "../../../metrics";
+import {ContextProvider} from "./prompt/context/context-provider";
+import {Answer} from "./types";
+import {APIError, BotResponseGenerateError, BotResponseParseError} from "../../../utils/error";
 import {Configuration, OpenAIApi} from "openai";
 import {DateTime} from "luxon";
-import {GenerateAnswerPromptTemplate} from "./template/GenerateAnswerPromptTemplate";
-import {GenerateChartPromptTemplate} from "./template/GenerateChartPromptTemplate";
-import {GenerateQuestionsPromptTemplate} from "./template/GenerateQuestionsPromptTemplate";
-import {GenerateSQLPromptTemplate} from "./template/GenerateSQLPromptTemplate";
-import {GenerateSummaryPromptTemplate} from "./template/GenerateSummaryPromptTemplate";
-import {PromptTemplateManager} from './prompt/prompt-template-manager';
+import {PromptConfig, PromptManager} from './prompt/prompt-manager';
 import fp from "fastify-plugin";
 import pino from "pino";
 import stream from "node:stream";
 // @ts-ignore
 import JSONStream from 'JSONStream';
 import {jsonrepair} from "jsonrepair";
-import {DEFAULT_ANSWER_PROMPT_TEMPLATE} from "../../../env";
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -25,7 +21,12 @@ declare module 'fastify' {
 
 export default fp(async (app) => {
     const log = app.log.child({ service: 'bot-service'}) as pino.Logger;
-    app.decorate('botService', new BotService(log, app.config.OPENAI_API_KEY, app.promptTemplateManager, app.config.PROMPT_TEMPLATE_NAME));
+    app.decorate('botService', new BotService(
+      log,
+      app.config.OPENAI_API_KEY,
+      app.promptTemplateManager,
+      app.embeddingContextProvider
+    ));
 }, {
   name: '@ossinsight/bot-service',
   dependencies: [
@@ -41,8 +42,8 @@ export class BotService {
     constructor(
       private readonly log: pino.BaseLogger,
       private readonly apiKey: string,
-      private readonly promptTemplateManager: PromptTemplateManager,
-      private readonly promptTemplateName: string = DEFAULT_ANSWER_PROMPT_TEMPLATE
+      private readonly promptManager: PromptManager,
+      private readonly contextProvider?: ContextProvider,
     ) {
         const configuration = new Configuration({
             apiKey: this.apiKey
@@ -50,105 +51,69 @@ export class BotService {
         this.openai = new OpenAIApi(configuration);
     }
 
-    async questionToSQL(template: GenerateSQLPromptTemplate, question: string, context: Record<string, any>): Promise<string | null> {
-        const api = 'question-to-sql';
+    async questionToSQL(logger: FastifyBaseLogger, question: string, context: Record<string, any>): Promise<Answer | null> {
         if (!question) return null;
-        const prompt = template.stringify(question, context);
-        this.log.info("Requesting SQL for question: %s", question);
 
-        let res: any, costTime: number = 0;
-        try {
-            const start = DateTime.now();
-            const timer = openaiAPITimer.labels({ api });
-            res = await countAPIRequest(counter, api, async () => {
-                return await measure(timer, async () => {
-                    return await this.openai.createCompletion({
-                        model: template.model,
-                        prompt,
-                        stream: false,
-                        stop: template.stop,
-                        temperature: template.temperature,
-                        max_tokens: template.maxTokens,
-                        top_p: template.topP,
-                        n: template.n
-                    });
+        const api = 'question-to-sql';
+        const promptName = 'playground-generate-sql';
+
+        // Prepare prompt.
+        logger.info("Preparing question to sql prompt question: %s", question);
+        const [prompt, promptConfig] = await this.promptManager.getPrompt(promptName, {
+            question,
+            ...context
+        });
+
+        // Request answer.
+        logger.info(promptConfig, "Generating SQL to answer question: %s", question);
+        let res: any;
+        const start = DateTime.now();
+        res = await countAPIRequest(openaiAPICounter, api, async () => {
+            return await measureAPIRequest(openaiAPITimer, api, async () => {
+                return await this.openai.createChatCompletion({
+                    messages: [
+                        {
+                            role: 'system',
+                            content: prompt!,
+                        }
+                    ],
+                    stream: false,
+                    ...promptConfig
                 });
             });
-            const end = DateTime.now();
-            costTime = end.diff(start).as('seconds');
-        } catch (err) {
-            throw err;
-        }
+        });
+        const end = DateTime.now();
+        const costTime = end.diff(start).as('seconds');
 
         const { choices, usage } = res.data;
-        this.log.info({ usage }, 'Got SQL of question "%s" from OpenAI API, cost: %d s', question, costTime);
+        logger.info({ usage }, 'Got SQL of question "%s" from OpenAI API, cost: %d s', question, costTime);
 
         if (Array.isArray(choices)) {
-            return choices[0]?.text || null;
+            return choices?.[0]?.message?.content || null;
         } else {
-            return null;
+            throw new APIError(500, 'No SQL generated');
         }
     }
 
-    async dataToChart(template: GenerateChartPromptTemplate, question: string, data: any): Promise<RecommendedChart | null> {
-        const api = 'data-to-chart';
-        if (!data) return null;
-
-        // Slice the array data to avoid too long prompt
-        if (Array.isArray(data)) {
-            data = data.slice(0, 2);
+    private async loadGenerateAnswerPromptTemplate(question: string): Promise<[string, PromptConfig]> {
+        let promptName = 'explorer-generate-answer';
+        let context: Record<string, any> = { question: question };
+        if (this.contextProvider) {
+            promptName = 'explorer-generate-answer-with-context';
+            context = await this.contextProvider.provide(context);
         }
-
-        const prompt = template.stringify(question, data);
-        const timer = openaiAPITimer.labels({ api });
-        const res = await countAPIRequest(counter, api, async () => {
-            return await measure(timer, async () => {
-                return await this.openai.createCompletion({
-                    model: template.model,
-                    prompt,
-                    stream: false,
-                    stop: template.stop,
-                    temperature: template.temperature,
-                    max_tokens: template.maxTokens,
-                    top_p: template.topP,
-                    n: template.n,
-                    logprobs: template.logprobs,
-                });
-            });
-        });
-
-        const {choices, usage} = res.data;
-        this.log.info(usage, 'OpenAI API usage');
-
-        if (!Array.isArray(choices)) {
-            return null;
-        }
-
-        const text = choices[0].text;
-        if (!text) {
-            return null;
-        }
-
-        try {
-            return JSON.parse(text);
-        } catch (err) {
-            this.log.error(err, `Failed to parse chart: ${text}`);
-            return null;
-        }
+        return await this.promptManager.getPrompt(promptName, context);
     }
 
-    async questionToAnswerInStream(template: GenerateAnswerPromptTemplate, question: string, callback: (answer: Answer, key: string, value: any) => void): Promise<[Answer | null, string | null]> {
+    public async questionToAnswerInStream(question: string, callback: (answer: Answer, key: string, value: any) => void): Promise<[Answer | null, string | null]> {
         const api = 'question-to-answer-in-stream';
-        let prompt = await this.promptTemplateManager.getTemplate(this.promptTemplateName, {
-            question: question
-        });
 
-        // If the prompt is not found, use the default template.
-        if (!prompt) {
-            prompt = template.stringify(question);
-        }
+        // Prepare prompt.
+        this.log.info("Preparing prompt for question (in stream mode): %s", question);
+        const [prompt, promptConfig] = await this.loadGenerateAnswerPromptTemplate(question);
 
-        this.log.info("Requesting answer for question (in stream mode): %s", question);
+        // Request answer.
+        this.log.info(promptConfig, "Requesting answer for question (in stream mode): %s", question);
         let answer: any = {};
         let tokens: any[] = [];
 
@@ -156,7 +121,6 @@ export class BotService {
         return new Promise(async (resolve, reject) => {
             try {
                  const res = await this.openai.createChatCompletion({
-                    model: template.model,
                     messages: [
                         {
                             role: 'system',
@@ -164,11 +128,7 @@ export class BotService {
                         }
                     ],
                     stream: true,
-                    stop: template.stop,
-                    temperature: template.temperature,
-                    max_tokens: template.maxTokens,
-                    top_p: template.topP,
-                    n: template.n,
+                    ...promptConfig
                 }, {
                     responseType: 'stream'
                 });
@@ -238,7 +198,7 @@ export class BotService {
                 // @ts-ignore
                 res.data.on("error", (err) => {
                     end();
-                    counter.inc({ api, statusCode: 500 });
+                    openaiAPICounter.inc({ api, statusCode: 500 });
                     reject(new BotResponseGenerateError(`Failed to process the answer (in stream mode): ${err.message}`, tokens.join(''), err));
                 });
 
@@ -264,44 +224,35 @@ export class BotService {
                 });
             } catch (err: any) {
                 end();
-                counter.inc({ api, statusCode: err?.response?.status || 500 });
+                openaiAPICounter.inc({ api, statusCode: err?.response?.status || 500 });
                 reject(new BotResponseGenerateError(`Failed to complete the answer (in stream mode): ${err.message}`, tokens.join(''), err));
             }
         });
     }
 
-    async questionToAnswerInNonStream(template: GenerateAnswerPromptTemplate, question: string): Promise<[Answer | null, string | null]> {
+    public async questionToAnswerInNonStream(question: string): Promise<[Answer | null, string | null]> {
         const api = 'question-to-answer-in-non-stream';
-        let prompt = await this.promptTemplateManager.getTemplate(this.promptTemplateName, {
-            question: question
-        });
 
-        // If the prompt is not found, use the default template.
-        if (prompt == null) {
-            prompt = template.stringify(question);
-        }
+        // Prepare prompt.
+        this.log.info("Preparing prompt for question (in non-stream mode): %s", question);
+        const [prompt, promptConfig] = await this.loadGenerateAnswerPromptTemplate(question);
 
+        // Request answer.
+        this.log.info(promptConfig, "Requesting answer for question (in non-steam mode): %s", question);
         let responseText = null;
         try {
-            this.log.info("Requesting answer for question (in non-steam mode): %s", question);
             const start = DateTime.now();
-            const timer = openaiAPITimer.labels({api});
-            const res = await countAPIRequest(counter, api, async () => {
-                return await measure(timer, async () => {
+            const res = await countAPIRequest(openaiAPICounter, api, async () => {
+                return await measureAPIRequest(openaiAPITimer,  api,async () => {
                     return await this.openai.createChatCompletion({
-                        model: template.model,
                         messages: [
                             {
-                                role: 'user',
+                                role: 'system',
                                 content: prompt!,
                             }
                         ],
                         stream: false,
-                        stop: template.stop,
-                        temperature: template.temperature,
-                        max_tokens: template.maxTokens,
-                        top_p: template.topP,
-                        n: template.n,
+                        ...promptConfig
                     });
                 });
             });
@@ -330,7 +281,7 @@ export class BotService {
         }
     }
 
-    setAnswerValue(question: string, answer: Record<string, any>, key: string, value: any) {
+    private setAnswerValue(question: string, answer: Record<string, any>, key: string, value: any) {
         switch (key) {
             case 'RQ':
                 key = "revisedTitle";
@@ -370,7 +321,7 @@ export class BotService {
         return [answer, key, value];
     }
 
-    removeTableNameForColumn(chartOptions: Record<string, string>) {
+    private removeTableNameForColumn(chartOptions: Record<string, string>) {
         Object.entries(chartOptions).forEach(([key, value]) => {
             const match = tableColumnRegexp.exec(value);
             if (match) {
@@ -379,94 +330,6 @@ export class BotService {
             }
         });
         return chartOptions;
-    }
-
-    async generateRecommendQuestions(template: GenerateQuestionsPromptTemplate, n: number): Promise<RecommendQuestion[]> {
-        const api = 'recommend-questions';
-        const prompt = template.stringify(n);
-
-        let questions = null;
-        try {
-            const timer = openaiAPITimer.labels({api});
-            const res = await countAPIRequest(counter, api, async () => {
-                return await measure(timer, async () => {
-                    return await this.openai.createCompletion({
-                        model: template.model,
-                        prompt,
-                        stream: false,
-                        stop: template.stop,
-                        temperature: template.temperature,
-                        max_tokens: template.maxTokens,
-                        top_p: template.topP,
-                        n: template.n
-                    });
-                });
-            });
-            const {choices, usage} = res.data;
-            this.log.info({ usage }, 'Request to generate %d questions from OpenAI API', n);
-
-            if (Array.isArray(choices) && choices[0].text) {
-                questions = JSON.parse(choices[0].text);
-                return questions.map((q: any) => {
-                    return {
-                        title: q.title,
-                        aiGenerated: true
-                    }
-                });
-            } else {
-                this.log.warn({ response: res.data }, 'Got empty questions');
-                return [];
-            }
-        } catch (err) {
-            this.log.error({ err }, 'Failed to generate recommend questions.');
-            return [];
-        }
-    }
-
-    async summaryAnswer(template: GenerateSummaryPromptTemplate, question: string, result: any[]): Promise<AnswerSummary | null> {
-        const api = 'summary-answer';
-        const prompt = template.stringify(question, result, result.length);
-
-        let responseText = null;
-        let summary = null;
-        try {
-            this.log.info("Requesting answer summary for question: %s", question);
-            const start = DateTime.now();
-            const timer = openaiAPITimer.labels({api});
-            const res = await countAPIRequest(counter, api, async () => {
-                return await measure(timer, async () => {
-                    return await this.openai.createCompletion({
-                        model: template.model,
-                        prompt,
-                        stream: false,
-                        stop: template.stop,
-                        temperature: template.temperature,
-                        max_tokens: template.maxTokens,
-                        top_p: template.topP,
-                        n: template.n,
-                    });
-                });
-            });
-            const {choices, usage} = res.data;
-            const end = DateTime.now();
-            this.log.info({ usage }, 'Got summary of question "%s" from OpenAI API, cost: %d s', question, end.diff(start).as('seconds'));
-
-            if (Array.isArray(choices) && choices[0].text) {
-                responseText = choices[0].text;
-                summary = JSON.parse(responseText);
-                return summary
-            } else {
-                return null;
-            }
-        } catch (err: any) {
-            if (err instanceof SyntaxError) {
-                this.log.error({ err, responseText }, `Failed to parse the summary for question: ${question}`);
-                throw new BotResponseParseError('failed to parse the summary', responseText, err);
-            } else {
-                this.log.error({ err }, `Failed to get summary for question: ${question}`);
-                throw new BotResponseGenerateError(`failed to generate the summary`, err);
-            }
-        }
     }
 
 }

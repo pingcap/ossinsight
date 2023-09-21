@@ -1,0 +1,11 @@
+{
+  "cacheHours": 1,
+  "engine": "liquid",
+  "params": [
+    {
+      "name": "ownerId",
+      "replaces": "11855343",
+      "type": "integer"
+    }
+  ]
+}
