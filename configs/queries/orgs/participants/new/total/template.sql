@@ -8,7 +8,7 @@ WITH repos AS (
         {% endif %}
 ), current_period_new_participants AS (
     SELECT
-        COUNT(*) AS new_participants
+        COUNT(DISTINCT mrp.user_id) AS new_participants
     FROM mv_repo_participants mrp
     JOIN github_users gu ON mrp.user_id = gu.id
     WHERE
@@ -29,7 +29,7 @@ WITH repos AS (
         {% endif %}
 ), past_period_new_participants AS (
     SELECT
-        COUNT(*) AS new_participants
+        COUNT(DISTINCT mrp.user_id) AS new_participants
     FROM mv_repo_participants mrp
     JOIN github_users gu ON mrp.user_id = gu.id
     WHERE
