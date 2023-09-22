@@ -9,7 +9,7 @@ WITH repos AS (
 )
 SELECT
     gu.login AS login,
-    mrp.first_engagement_at AS first_participated_at
+    MIN(mrp.first_engagement_at) AS first_participated_at
 FROM mv_repo_participants mrp
 JOIN github_users gu ON mrp.user_id = gu.id
 WHERE
@@ -28,5 +28,6 @@ WHERE
     -- Exclude bot users.
     AND gu.login NOT LIKE '%bot%'
     {% endif %}
+GROUP BY gu.login
 ORDER BY first_participated_at DESC
 LIMIT {{ n }}
