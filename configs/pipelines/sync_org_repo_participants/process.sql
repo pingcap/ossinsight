@@ -12,6 +12,6 @@ WHERE
     AND ge.created_at < :to
 GROUP BY ge.repo_id, ge.actor_login
 ON DUPLICATE KEY UPDATE
-    first_engagement_at = LEAST(first_engagement_at, new_first_engagement_at)
-    AND last_engagement_at = GREATEST(last_engagement_at, new_last_engagement_at)
+    first_engagement_at = LEAST(first_engagement_at, new_first_engagement_at),
+    last_engagement_at = GREATEST(last_engagement_at, new_last_engagement_at)
 ;
