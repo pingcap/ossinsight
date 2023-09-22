@@ -8,32 +8,27 @@ WITH repos AS (
         {% endif %}
 ), old_participants AS (
     SELECT
-        actor_login, MIN(created_at) AS first_participated_at
-    FROM github_events ge
+        mrp.user_id,
+        gu.login AS user_login,
+        mrp.first_engagement_at
+    FROM mv_repo_participants mrp
+    JOIN github_users gu ON mrp.user_id = gu.id
     WHERE
-        ge.repo_id IN (SELECT repo_id FROM repos)
-        -- Events considered as participation (Exclude `WatchEvent`, which means star a repo).
-        AND ge.type IN ('IssueCommentEvent',  'DeleteEvent',  'CommitCommentEvent',  'MemberEvent',  'PushEvent',  'PublicEvent',  'ForkEvent',  'ReleaseEvent',  'PullRequestReviewEvent',  'CreateEvent',  'GollumEvent',  'PullRequestEvent',  'IssuesEvent',  'PullRequestReviewCommentEvent')
-        AND ge.action IN ('added', 'published', 'reopened', 'closed', 'created', 'opened', '')
         {% case period %}
-            {% when 'past_7_days' %} AND ge.created_at < (NOW() - INTERVAL 7 DAY)
-            {% when 'past_28_days' %} AND ge.created_at < (NOW() - INTERVAL 28 DAY)
-            {% when 'past_90_days' %} AND ge.created_at < (NOW() - INTERVAL 90 DAY)
-            {% when 'past_12_months' %} AND ge.created_at < (NOW() - INTERVAL 12 MONTH)
+            {% when 'past_7_days' %} mrp.first_engagement_at < (NOW() - INTERVAL 7 DAY)
+            {% when 'past_28_days' %} mrp.first_engagement_at < (NOW() - INTERVAL 28 DAY)
+            {% when 'past_90_days' %} mrp.first_engagement_at < (NOW() - INTERVAL 90 DAY)
+            {% when 'past_12_months' %} mrp.first_engagement_at < (NOW() - INTERVAL 12 MONTH)
         {% endcase %}
-        {% if excludeBots %}
-        -- Exclude bot users.
-        AND ge.actor_login NOT LIKE '%bot%'
-        {% endif %}
-    GROUP BY actor_login
 )
 SELECT
     actor_login AS login, MIN(created_at) AS first_participated_at
 FROM github_events ge
 WHERE
     ge.repo_id IN (SELECT repo_id FROM repos)
-    AND ge.type IN ('PullRequestEvent', 'PullRequestReviewEvent', 'IssuesEvent', 'IssueCommentEvent', 'PushEvent')
-    AND ge.action IN ('opened', 'created', '')
+    -- Events considered as participation (Exclude `WatchEvent`, which means star a repo).
+    AND ge.type IN ('IssueCommentEvent',  'DeleteEvent',  'CommitCommentEvent',  'MemberEvent',  'PushEvent',  'PublicEvent',  'ForkEvent',  'ReleaseEvent',  'PullRequestReviewEvent',  'CreateEvent',  'GollumEvent',  'PullRequestEvent',  'IssuesEvent',  'PullRequestReviewCommentEvent')
+    AND ge.action IN ('added', 'published', 'reopened', 'closed', 'created', 'opened', '')
     {% case period %}
         {% when 'past_7_days' %} AND ge.created_at > (NOW() - INTERVAL 7 DAY)
         {% when 'past_28_days' %} AND ge.created_at > (NOW() - INTERVAL 28 DAY)
@@ -43,7 +38,7 @@ WHERE
     AND NOT EXISTS (
         SELECT 1
         FROM old_participants op
-        WHERE ge.actor_login = op.actor_login
+        WHERE ge.actor_login = op.user_login
     )
 GROUP BY actor_login
 ORDER BY first_participated_at DESC
