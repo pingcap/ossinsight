@@ -18,7 +18,7 @@ export const QueueRegister: PrefetchQueue[] = [
     {
         name: "MAIN",
         concurrent: 2,
-        timeout: 180_000
+        timeout: 240_000
     },
     {
         name: "CONCURRENT",
@@ -33,7 +33,7 @@ export const QueueRegister: PrefetchQueue[] = [
     {
         name: "EVENTS_TOTAL",
         concurrent: 2,
-        timeout: 45_000
+        timeout: 180_000
     }
 ]
 
