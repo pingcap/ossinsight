@@ -10,17 +10,10 @@ export interface IParams {
   name: string;
 }
 
-export enum FullSyncInterval {
-  DAILY = 'daily',
-  WEEKLY = 'weekly',
-  MONTHLY = 'monthly',
-  YEARLY = 'yearly',
-}
-
 export interface IBody {
   from?: string;
   to?: string;
-  interval?: FullSyncInterval;
+  interval: DurationLike;
 }
 
 export const schema = {
@@ -43,9 +36,10 @@ export const schema = {
         type: 'string',
       },
       interval: {
-        type: 'string',
-        enum: Object.values(FullSyncInterval),
-        default: FullSyncInterval.DAILY,
+        type: 'object',
+        default: {
+          day: 1
+        },
       }
     }
   }
@@ -84,10 +78,10 @@ async function fullSyncPipeline(
   log: FastifyBaseLogger, tidb: MySQLPromisePool, pipelineJobRepository: PipelineJobRepository, pipelineName: string, pipeline: Pipeline,
   from: DateTime = DateTime.fromSQL('2012-01-01'),
   to: DateTime = DateTime.fromSQL(DateTime.utc().toFormat('yyyy-MM-dd')),
-  interval: FullSyncInterval = FullSyncInterval.DAILY
+  interval: DurationLike = {day: 1}
 ) {
   // Get the time ranges need to sync.
-  const needProcessed = splitTimeRange(from, to, getChunkSize(interval));
+  const needProcessed = splitTimeRange(from, to, interval);
   const processed = await pipelineJobRepository.getProcessedTimeRanges(pipelineName, from, to);
   const timeRanges = needProcessed.filter((needProcessedTimeRange) => {
     return !processed.find((processedTimeRange) => {
@@ -127,21 +121,6 @@ async function fullSyncPipeline(
   }
 
   log.info(`🎉  Finished full sync for pipeline <${pipelineName}>, success: ${success}, fail: ${fail}, process: ${success + processed.length}/${needProcessed.length}.`)
-}
-
-export function getChunkSize(interval: FullSyncInterval): DurationLike {
-  switch (interval) {
-    case FullSyncInterval.DAILY:
-      return {day: 1};
-    case FullSyncInterval.WEEKLY:
-      return {week: 1};
-    case FullSyncInterval.MONTHLY:
-      return {month: 1};
-    case FullSyncInterval.YEARLY:
-      return {year: 1};
-    default:
-      throw new APIError(400, `Unknown interval: ${interval}`);
-  }
 }
 
 export default index;

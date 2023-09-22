@@ -1,0 +1,8 @@
+{
+  "name": "sync_repo_participants",
+  "description": "Calc the last event happened at of Org",
+  "cron": "0 40 * * * *",
+  "incremental": {
+    "timeRange": "last_day"
+  }
+}
