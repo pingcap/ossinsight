@@ -12,7 +12,7 @@ WITH repos AS (
 ), participants_summary AS (
     SELECT
         COUNT(DISTINCT user_login) AS participants
-    FROM mv_repo_participants_new mrp
+    FROM mv_repo_participants mrp
     WHERE
         mrp.repo_id IN (SELECT repo_id FROM repos)
 ), repos_summary AS (

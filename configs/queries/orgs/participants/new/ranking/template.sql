@@ -10,7 +10,7 @@ WITH repos AS (
 SELECT
     user_login AS login,
     MIN(first_engagement_at) AS first_participated_at
-FROM mv_repo_participants_new mrp
+FROM mv_repo_participants mrp
 WHERE
     repo_id IN (SELECT repo_id FROM repos)
     {% case period %}
