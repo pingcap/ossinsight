@@ -21,7 +21,7 @@ export function useGeneralSearch<T extends SearchType> (
       case 'org':
         return ['recommend-org-list-keyword', 'search:org'];
       default:
-        return ['recommend-all-list-keyword', 'search:all'];
+        return ['', 'search:all'];
     }
   };
 
@@ -43,11 +43,15 @@ export function useGeneralSearch<T extends SearchType> (
         } else if (type === 'org') {
           return await searchOrg(keyword);
         } else {
-          if (!searchKey) return [];
+          const tmpKeywords = {
+            repo: keyword || 'recommend-repo-list-1-keyword',
+            user: keyword || 'recommend-user-list-keyword',
+            org: keyword || 'recommend-org-list-keyword',
+          };
           return await Promise.all([
-            searchRepo(keyword),
-            searchUser(keyword, 'user'),
-            searchOrg(keyword),
+            searchRepo(tmpKeywords.repo),
+            searchUser(tmpKeywords.user, 'user'),
+            searchOrg(tmpKeywords.org),
           ]).then(([repo, user, org]) => {
             return [
               ...repo.map((item) => ({ ...item, type: 'Repo' })),

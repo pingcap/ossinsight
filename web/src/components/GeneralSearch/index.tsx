@@ -60,7 +60,7 @@ const isOptionEqual = (a: Option, b: Option) => {
 const getOptionLabel = (option: Option) => (option as SearchRepoInfo).fullName || (option as UserInfo | SearchOrgInfo).login || (option as any).label;
 
 const useTabs = () => {
-  const [type, setType] = useState<SearchType>('user');
+  const [type, setType] = useState<SearchType>('all');
 
   const handleTypeChange = useEventCallback((_: any, type: SearchType) => {
     setType(type);
