@@ -6,43 +6,52 @@ WITH repos AS (
         {% if repoIds.size > 0 %}
         AND gr.repo_id IN ({{ repoIds | join: ',' }})
         {% endif %}
-), participants_per_period AS (
+), current_period_active_participants AS (
     SELECT
-        -- Divide periods.
-        {% case period %}
-            {% when 'past_7_days' %} TIMESTAMPDIFF(DAY, created_at, NOW()) DIV 7
-            {% when 'past_28_days' %} TIMESTAMPDIFF(DAY, created_at, NOW()) DIV 28
-            {% when 'past_90_days' %} TIMESTAMPDIFF(DAY, created_at, NOW()) DIV 90
-            {% when 'past_12_months' %}  TIMESTAMPDIFF(MONTH, created_at, NOW()) DIV 12
-        {% endcase %} AS period,
-        COUNT(DISTINCT actor_login) AS participants_total
-    FROM github_events ge
+        COUNT(DISTINCT user_login) AS active_participants
+    FROM mv_repo_participants_new
     WHERE
-        ge.repo_id IN (SELECT repo_id FROM repos)
-        -- Events considered as participation (Exclude `WatchEvent`, which means star a repo).
-        AND ge.type IN ('IssueCommentEvent',  'DeleteEvent',  'CommitCommentEvent',  'MemberEvent',  'PushEvent',  'PublicEvent',  'ForkEvent',  'ReleaseEvent',  'PullRequestReviewEvent',  'CreateEvent',  'GollumEvent',  'PullRequestEvent',  'IssuesEvent',  'PullRequestReviewCommentEvent')
-        AND ge.action IN ('added', 'published', 'reopened', 'closed', 'created', 'opened', '')
+        repo_id IN (SELECT repo_id FROM repos)
+        {% case period %}
+            {% when 'past_7_days' %}
+            AND last_engagement_at BETWEEN (NOW() - INTERVAL 7 DAY) AND NOW()
+            {% when 'past_28_days' %}
+            AND last_engagement_at BETWEEN (NOW() - INTERVAL 28 DAY) AND NOW()
+            {% when 'past_90_days' %}
+            AND last_engagement_at BETWEEN (NOW() - INTERVAL 90 DAY) AND NOW()
+            {% when 'past_12_months' %}
+            AND last_engagement_at BETWEEN (NOW() - INTERVAL 12 MONTH) AND NOW()
+        {% endcase %}
         {% if excludeBots %}
         -- Exclude bot users.
-        AND ge.actor_login NOT LIKE '%bot%'
+        AND user_login NOT LIKE '%bot%'
         {% endif %}
+), past_period_active_participants AS (
+    SELECT
+        COUNT(DISTINCT user_login) AS active_participants
+    FROM mv_repo_participants_new
+    WHERE
+        repo_id IN (SELECT repo_id FROM repos)
         {% case period %}
-            {% when 'past_7_days' %} AND created_at > (NOW() - INTERVAL 14 DAY)
-            {% when 'past_28_days' %} AND created_at > (NOW() - INTERVAL 56 DAY)
-            {% when 'past_90_days' %} AND created_at > (NOW() - INTERVAL 180 DAY)
-            {% when 'past_12_months' %} AND created_at > (NOW() - INTERVAL 24 MONTH)
+            {% when 'past_7_days' %}
+            AND last_engagement_at BETWEEN (NOW() - INTERVAL 14 DAY) AND (NOW() - INTERVAL 7 DAY)
+            {% when 'past_28_days' %}
+            AND last_engagement_at BETWEEN (NOW() - INTERVAL 56 DAY) AND (NOW() - INTERVAL 28 DAY)
+            {% when 'past_90_days' %}
+            AND last_engagement_at BETWEEN (NOW() - INTERVAL 180 DAY) AND (NOW() - INTERVAL 90 DAY)
+            {% when 'past_12_months' %}
+            AND last_engagement_at BETWEEN (NOW() - INTERVAL 24 MONTH) AND (NOW() - INTERVAL 12 MONTH)
         {% endcase %}
-    GROUP BY period
-), current_period_participants AS (
-    SELECT participants_total FROM participants_per_period WHERE period = 0
-), past_period_participants AS (
-    SELECT participants_total FROM participants_per_period WHERE period = 1
+        {% if excludeBots %}
+        -- Exclude bot users.
+        AND user_login NOT LIKE '%bot%'
+        {% endif %}
 )
 SELECT
-    cpp.participants_total AS current_period_total,
-    ppp.participants_total AS past_period_total,
-    (cpp.participants_total - ppp.participants_total) / ppp.participants_total AS growth_percentage
+    cpnp.active_participants AS current_period_total,
+    ppnp.active_participants AS past_period_total,
+    (cpnp.active_participants - ppnp.active_participants) / ppnp.active_participants AS growth_percentage
 FROM
-    current_period_participants cpp,
-    past_period_participants ppp
+    current_period_active_participants cpnp,
+    past_period_active_participants ppnp
 ;

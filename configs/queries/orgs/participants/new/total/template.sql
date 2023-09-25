@@ -8,9 +8,8 @@ WITH repos AS (
         {% endif %}
 ), current_period_new_participants AS (
     SELECT
-        COUNT(DISTINCT mrp.user_id) AS new_participants
-    FROM mv_repo_participants mrp
-    JOIN github_users gu ON mrp.user_id = gu.id
+        COUNT(DISTINCT mrp.user_login) AS new_participants
+    FROM mv_repo_participants_new mrp
     WHERE
         mrp.repo_id IN (SELECT repo_id FROM repos)
         {% case period %}
@@ -25,13 +24,12 @@ WITH repos AS (
         {% endcase %}
         {% if excludeBots %}
         -- Exclude bot users.
-        AND gu.login NOT LIKE '%bot%'
+        AND mrp.user_login NOT LIKE '%bot%'
         {% endif %}
 ), past_period_new_participants AS (
     SELECT
-        COUNT(DISTINCT mrp.user_id) AS new_participants
-    FROM mv_repo_participants mrp
-    JOIN github_users gu ON mrp.user_id = gu.id
+        COUNT(DISTINCT mrp.user_login) AS new_participants
+    FROM mv_repo_participants_new mrp
     WHERE
         mrp.repo_id IN (SELECT repo_id FROM repos)
         {% case period %}
@@ -46,7 +44,7 @@ WITH repos AS (
         {% endcase %}
         {% if excludeBots %}
         -- Exclude bot users.
-        AND gu.login NOT LIKE '%bot%'
+        AND mrp.user_login NOT LIKE '%bot%'
         {% endif %}
 )
 SELECT
