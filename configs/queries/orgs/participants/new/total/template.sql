@@ -9,7 +9,7 @@ WITH repos AS (
 ), current_period_new_participants AS (
     SELECT
         COUNT(DISTINCT mrp.user_login) AS new_participants
-    FROM mv_repo_participants_new mrp
+    FROM mv_repo_participants mrp
     WHERE
         mrp.repo_id IN (SELECT repo_id FROM repos)
         {% case period %}
@@ -29,7 +29,7 @@ WITH repos AS (
 ), past_period_new_participants AS (
     SELECT
         COUNT(DISTINCT mrp.user_login) AS new_participants
-    FROM mv_repo_participants_new mrp
+    FROM mv_repo_participants mrp
     WHERE
         mrp.repo_id IN (SELECT repo_id FROM repos)
         {% case period %}

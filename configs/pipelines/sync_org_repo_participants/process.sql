@@ -1,4 +1,4 @@
-INSERT INTO mv_repo_participants_new(repo_id, user_login, first_engagement_at, last_engagement_at)
+INSERT INTO mv_repo_participants(repo_id, user_login, first_engagement_at, last_engagement_at)
 SELECT
     ge.repo_id,
     ge.actor_login AS user_login,
