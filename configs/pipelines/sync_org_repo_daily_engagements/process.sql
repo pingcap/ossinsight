@@ -1,4 +1,4 @@
-INSERT INTO mv_repo_daily_engagements_new(repo_id, user_login, day, engagements)
+INSERT INTO mv_repo_daily_engagements(repo_id, user_login, day, engagements)
 SELECT
     /*+ READ_FROM_STORAGE(TIFLASH[ge]) */
     ge.repo_id AS repo_id,
