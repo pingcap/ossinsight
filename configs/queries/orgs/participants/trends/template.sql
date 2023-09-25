@@ -61,29 +61,24 @@ WITH RECURSIVE seq(idx, current_period_day, past_period_day) AS (
     FROM (
         SELECT
             {% case period %}
-                {% when 'past_7_days', 'past_28_days', 'past_90_days' %} DATE_FORMAT(created_at, '%Y-%m-%d')
-                {% when 'past_12_months' %} DATE_FORMAT(created_at, '%Y-%m-01')
+                {% when 'past_7_days', 'past_28_days', 'past_90_days' %} DATE_FORMAT(day, '%Y-%m-%d')
+                {% when 'past_12_months' %} DATE_FORMAT(day, '%Y-%m-01')
             {% endcase %} AS day,
-            COUNT(*) AS participants
-        FROM
-            github_events ge
+            COUNT(DISTINCT user_login) AS participants
+        FROM mv_repo_daily_engagements
         WHERE
             repo_id IN (SELECT repo_id FROM repos)
-            -- Events considered as participation (Exclude `WatchEvent`, which means star a repo).
-            AND ge.type IN ('IssueCommentEvent',  'DeleteEvent',  'CommitCommentEvent',  'MemberEvent',  'PushEvent',  'PublicEvent',  'ForkEvent',  'ReleaseEvent',  'PullRequestReviewEvent',  'CreateEvent',  'GollumEvent',  'PullRequestEvent',  'IssuesEvent',  'PullRequestReviewCommentEvent')
-            AND ge.action IN ('added', 'published', 'reopened', 'closed', 'created', 'opened', '')
             {% case period %}
-                {% when 'past_7_days' %} AND created_at > (CURRENT_DATE() - INTERVAL 14 DAY)
-                {% when 'past_28_days' %} AND created_at > (CURRENT_DATE() - INTERVAL 56 DAY)
-                {% when 'past_90_days' %} AND created_at > (CURRENT_DATE() - INTERVAL 180 DAY)
-                {% when 'past_12_months' %} AND created_at > (CURRENT_DATE() - INTERVAL 24 MONTH)
+                {% when 'past_7_days' %} AND day > (CURRENT_DATE() - INTERVAL 14 DAY)
+                {% when 'past_28_days' %} AND day > (CURRENT_DATE() - INTERVAL 56 DAY)
+                {% when 'past_90_days' %} AND day > (CURRENT_DATE() - INTERVAL 180 DAY)
+                {% when 'past_12_months' %} AND day > (CURRENT_DATE() - INTERVAL 24 MONTH)
             {% endcase %}
             {% if excludeBots %}
             -- Exclude bot users.
-            AND ge.actor_login NOT LIKE '%bot%'
+            AND user_login NOT LIKE '%bot%'
             {% endif %}
-        GROUP BY day
-        ORDER BY day
+        GROUP BY 1
     ) sub
 ), current_period AS (
     SELECT idx, day, participants

@@ -8,26 +8,25 @@ WITH repos AS (
         {% endif %}
 )
 SELECT
-    gu.login AS login,
-    MIN(mrp.first_engagement_at) AS first_participated_at
-FROM mv_repo_participants mrp
-JOIN github_users gu ON mrp.user_id = gu.id
+    user_login AS login,
+    MIN(first_engagement_at) AS first_participated_at
+FROM mv_repo_participants_new mrp
 WHERE
-    mrp.repo_id IN (SELECT repo_id FROM repos)
+    repo_id IN (SELECT repo_id FROM repos)
     {% case period %}
         {% when 'past_7_days' %}
-        AND mrp.first_engagement_at >= (NOW() - INTERVAL 7 DAY)
+        AND first_engagement_at >= (NOW() - INTERVAL 7 DAY)
         {% when 'past_28_days' %}
-        AND mrp.first_engagement_at >= (NOW() - INTERVAL 28 DAY)
+        AND first_engagement_at >= (NOW() - INTERVAL 28 DAY)
         {% when 'past_90_days' %}
-        AND mrp.first_engagement_at >= (NOW() - INTERVAL 90 DAY)
+        AND first_engagement_at >= (NOW() - INTERVAL 90 DAY)
         {% when 'past_12_months' %}
-        AND mrp.first_engagement_at >= (NOW() - INTERVAL 12 MONTH)
+        AND first_engagement_at >= (NOW() - INTERVAL 12 MONTH)
     {% endcase %}
     {% if excludeBots %}
     -- Exclude bot users.
-    AND gu.login NOT LIKE '%bot%'
+    AND user_login NOT LIKE '%bot%'
     {% endif %}
-GROUP BY gu.login
+GROUP BY user_login
 ORDER BY first_participated_at DESC
 LIMIT {{ n }}

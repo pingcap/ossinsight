@@ -11,8 +11,8 @@ WITH repos AS (
         AND gr.is_deleted = 0
 ), participants_summary AS (
     SELECT
-        COUNT(DISTINCT user_id) AS participants
-    FROM mv_repo_participants mrp
+        COUNT(DISTINCT user_login) AS participants
+    FROM mv_repo_participants_new mrp
     WHERE
         mrp.repo_id IN (SELECT repo_id FROM repos)
 ), repos_summary AS (
