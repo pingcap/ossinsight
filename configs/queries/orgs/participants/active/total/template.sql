@@ -24,7 +24,8 @@ WITH repos AS (
         {% endcase %}
         {% if excludeBots %}
         -- Exclude bot users.
-        AND user_login NOT LIKE '%bot%'
+        AND LOWER(user_login) NOT LIKE '%bot%'
+        AND user_login NOT IN (SELECT login FROM blacklist_users LIMIT 255)
         {% endif %}
 ), past_period_active_participants AS (
     SELECT
@@ -44,7 +45,8 @@ WITH repos AS (
         {% endcase %}
         {% if excludeBots %}
         -- Exclude bot users.
-        AND user_login NOT LIKE '%bot%'
+        AND LOWER(user_login) NOT LIKE '%bot%'
+        AND user_login NOT IN (SELECT login FROM blacklist_users LIMIT 255)
         {% endif %}
 )
 SELECT
