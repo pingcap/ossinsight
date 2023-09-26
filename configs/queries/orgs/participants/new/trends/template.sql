@@ -41,19 +41,6 @@ WITH RECURSIVE seq(idx, current_period_day, past_period_day) AS (
         {% if repoIds.size > 0 %}
         AND gr.repo_id IN ({{ repoIds | join: ',' }})
         {% endif %}
-), new_participants AS (
-    SELECT
-        user_login,
-        first_engagement_at
-    FROM mv_repo_participants mrp
-    WHERE
-        repo_id IN (SELECT repo_id FROM repos)
-        {% case period %}
-            {% when 'past_7_days' %} AND first_engagement_at > (CURRENT_DATE() - INTERVAL 14 DAY)
-            {% when 'past_28_days' %} AND first_engagement_at > (CURRENT_DATE() - INTERVAL 56 DAY)
-            {% when 'past_90_days' %} AND first_engagement_at > (CURRENT_DATE() - INTERVAL 180 DAY)
-            {% when 'past_12_months' %} AND first_engagement_at > (CURRENT_DATE() - INTERVAL 24 MONTH)
-        {% endcase %}
 ), group_by_day AS (
     SELECT
         {% case period %}
@@ -78,8 +65,7 @@ WITH RECURSIVE seq(idx, current_period_day, past_period_day) AS (
                 {% when 'past_12_months' %} DATE_FORMAT(day, '%Y-%m-01')
             {% endcase %} AS day,
             COUNT(DISTINCT user_login) AS participants
-        FROM mv_repo_daily_engagements
-        JOIN new_participants np USING (user_login)
+        FROM mv_repo_daily_engagements mrde
         WHERE
             repo_id IN (SELECT repo_id FROM repos)
             {% case period %}
@@ -93,7 +79,37 @@ WITH RECURSIVE seq(idx, current_period_day, past_period_day) AS (
             AND LOWER(user_login) NOT LIKE '%bot%'
             AND user_login NOT IN (SELECT login FROM blacklist_users LIMIT 255)
             {% endif %}
-            AND np.first_engagement_at >= day
+            AND EXISTS (
+                SELECT 1
+                FROM mv_repo_participants mrp
+                WHERE
+                    mrp.repo_id = mrde.repo_id
+                    AND mrp.user_login = mrde.user_login
+                    -- Divide periods.
+                    AND CASE
+                            {% case period %}
+                                {% when 'past_7_days' %} TIMESTAMPDIFF(DAY, mrde.day, CURRENT_DATE()) DIV 7
+                                {% when 'past_28_days' %} TIMESTAMPDIFF(DAY, mrde.day, CURRENT_DATE()) DIV 28
+                                {% when 'past_90_days' %} TIMESTAMPDIFF(DAY, mrde.day, CURRENT_DATE()) DIV 90
+                                {% when 'past_12_months' %} TIMESTAMPDIFF(MONTH, mrde.day, CURRENT_DATE()) DIV 12
+                            {% endcase %}
+                        WHEN 0 THEN
+                            {% case period %}
+                                {% when 'past_7_days' %} mrp.first_engagement_at > (CURRENT_DATE() - INTERVAL 7 DAY)
+                                {% when 'past_28_days' %} mrp.first_engagement_at > (CURRENT_DATE() - INTERVAL 28 DAY)
+                                {% when 'past_90_days' %} mrp.first_engagement_at > (CURRENT_DATE() - INTERVAL 90 DAY)
+                                {% when 'past_12_months' %} mrp.first_engagement_at > (CURRENT_DATE() - INTERVAL 12 MONTH)
+                            {% endcase %}
+                        WHEN 1 THEN
+                            {% case period %}
+                                {% when 'past_7_days' %} mrp.first_engagement_at >  (CURRENT_DATE() - INTERVAL 14 DAY)
+                                {% when 'past_28_days' %} mrp.first_engagement_at > (CURRENT_DATE() - INTERVAL 56 DAY)
+                                {% when 'past_90_days' %} mrp.first_engagement_at > (CURRENT_DATE() - INTERVAL 180 DAY)
+                                {% when 'past_12_months' %} mrp.first_engagement_at > (CURRENT_DATE() - INTERVAL 24 MONTH)
+                            {% endcase %}
+                    END
+                LIMIT 1
+            )
         GROUP BY 1
     ) sub
 ), current_period AS (
