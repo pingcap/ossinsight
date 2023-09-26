@@ -95,17 +95,17 @@ WITH RECURSIVE seq(idx, current_period_day, past_period_day) AS (
                             {% endcase %}
                         WHEN 0 THEN
                             {% case period %}
-                                {% when 'past_7_days' %} mrp.first_engagement_at > (CURRENT_DATE() - INTERVAL 7 DAY)
-                                {% when 'past_28_days' %} mrp.first_engagement_at > (CURRENT_DATE() - INTERVAL 28 DAY)
-                                {% when 'past_90_days' %} mrp.first_engagement_at > (CURRENT_DATE() - INTERVAL 90 DAY)
-                                {% when 'past_12_months' %} mrp.first_engagement_at > (CURRENT_DATE() - INTERVAL 12 MONTH)
+                                {% when 'past_7_days' %} mrp.first_engagement_at >= (CURRENT_DATE() - INTERVAL 7 DAY)
+                                {% when 'past_28_days' %} mrp.first_engagement_at >= (CURRENT_DATE() - INTERVAL 28 DAY)
+                                {% when 'past_90_days' %} mrp.first_engagement_at >= (CURRENT_DATE() - INTERVAL 90 DAY)
+                                {% when 'past_12_months' %} mrp.first_engagement_at >= (CURRENT_DATE() - INTERVAL 12 MONTH)
                             {% endcase %}
                         WHEN 1 THEN
                             {% case period %}
-                                {% when 'past_7_days' %} mrp.first_engagement_at > (CURRENT_DATE() - INTERVAL 14 DAY)
-                                {% when 'past_28_days' %} mrp.first_engagement_at > (CURRENT_DATE() - INTERVAL 56 DAY)
-                                {% when 'past_90_days' %} mrp.first_engagement_at > (CURRENT_DATE() - INTERVAL 180 DAY)
-                                {% when 'past_12_months' %} mrp.first_engagement_at > (CURRENT_DATE() - INTERVAL 24 MONTH)
+                                {% when 'past_7_days' %} mrp.first_engagement_at >= (CURRENT_DATE() - INTERVAL 14 DAY)
+                                {% when 'past_28_days' %} mrp.first_engagement_at >= (CURRENT_DATE() - INTERVAL 56 DAY)
+                                {% when 'past_90_days' %} mrp.first_engagement_at >= (CURRENT_DATE() - INTERVAL 180 DAY)
+                                {% when 'past_12_months' %} mrp.first_engagement_at >= (CURRENT_DATE() - INTERVAL 24 MONTH)
                             {% endcase %}
                     END
                 LIMIT 1
