@@ -21,7 +21,8 @@ WHERE
     {% endcase %}
     {% if excludeBots %}
     -- Exclude bot users.
-    AND user_login NOT LIKE '%bot%'
+    AND LOWER(user_login) NOT LIKE '%bot%'
+    AND user_login NOT IN (SELECT login FROM blacklist_users LIMIT 255)
     {% endif %}
 GROUP BY user_login
 ORDER BY 2 DESC

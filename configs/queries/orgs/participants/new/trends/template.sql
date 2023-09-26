@@ -90,7 +90,8 @@ WITH RECURSIVE seq(idx, current_period_day, past_period_day) AS (
             {% endcase %}
             {% if excludeBots %}
             -- Exclude bot users.
-            AND user_login NOT LIKE '%bot%'
+            AND LOWER(user_login) NOT LIKE '%bot%'
+            AND user_login NOT IN (SELECT login FROM blacklist_users LIMIT 255)
             {% endif %}
             AND np.first_engagement_at >= day
         GROUP BY 1
