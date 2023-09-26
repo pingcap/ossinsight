@@ -10,23 +10,20 @@ WITH repos AS (
     SELECT
         -- Divide periods.
         {% case period %}
-            {% when 'past_7_days' %} TIMESTAMPDIFF(DAY, created_at, NOW()) DIV 7
-            {% when 'past_28_days' %} TIMESTAMPDIFF(DAY, created_at, NOW()) DIV 28
-            {% when 'past_90_days' %} TIMESTAMPDIFF(DAY, created_at, NOW()) DIV 90
-            {% when 'past_12_months' %}  TIMESTAMPDIFF(MONTH, created_at, NOW()) DIV 12
+            {% when 'past_7_days' %} TIMESTAMPDIFF(DAY, mrde.day, NOW()) DIV 7
+            {% when 'past_28_days' %} TIMESTAMPDIFF(DAY, mrde.day, NOW()) DIV 28
+            {% when 'past_90_days' %} TIMESTAMPDIFF(DAY, mrde.day, NOW()) DIV 90
+            {% when 'past_12_months' %}  TIMESTAMPDIFF(MONTH, mrde.day, NOW()) DIV 12
         {% endcase %} AS period,
-        COUNT(DISTINCT repo_id) AS repos_total
-    FROM github_events ge
+        COUNT(DISTINCT mrde.repo_id) AS repos_total
+    FROM mv_repo_daily_engagements mrde
     WHERE
-        ge.repo_id IN (SELECT repo_id FROM repos)
-        -- Events considered as participation (Exclude `WatchEvent`, which means star a repo).
-        AND ge.type IN ('IssueCommentEvent',  'DeleteEvent',  'CommitCommentEvent',  'MemberEvent',  'PushEvent',  'PublicEvent',  'ForkEvent',  'ReleaseEvent',  'PullRequestReviewEvent',  'CreateEvent',  'GollumEvent',  'PullRequestEvent',  'IssuesEvent',  'PullRequestReviewCommentEvent')
-        AND ge.action IN ('added', 'published', 'reopened', 'closed', 'created', 'opened', '')
+        mrde.repo_id IN (SELECT repo_id FROM repos)
         {% case period %}
-            {% when 'past_7_days' %} AND created_at > (NOW() - INTERVAL 14 DAY)
-            {% when 'past_28_days' %} AND created_at > (NOW() - INTERVAL 56 DAY)
-            {% when 'past_90_days' %} AND created_at > (NOW() - INTERVAL 180 DAY)
-            {% when 'past_12_months' %} AND created_at > (NOW() - INTERVAL 24 MONTH)
+            {% when 'past_7_days' %} AND mrde.day > (NOW() - INTERVAL 14 DAY)
+            {% when 'past_28_days' %} AND mrde.day > (NOW() - INTERVAL 56 DAY)
+            {% when 'past_90_days' %} AND mrde.day > (NOW() - INTERVAL 180 DAY)
+            {% when 'past_12_months' %} AND mrde.day > (NOW() - INTERVAL 24 MONTH)
         {% endcase %}
     GROUP BY period
 ), current_period_repos AS (

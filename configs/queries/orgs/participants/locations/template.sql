@@ -55,7 +55,8 @@ WITH repos AS (
         {% endcase %}
         {% if excludeBots %}
         -- Exclude bot users.
-        AND ge.actor_login NOT LIKE '%bot%'
+        AND LOWER(ge.actor_login) NOT LIKE '%bot%'
+        AND ge.actor_login NOT IN (SELECT login FROM blacklist_users LIMIT 255)
         {% endif %}
         {% if excludeUnknown %}
         -- Exclude users with no country code.

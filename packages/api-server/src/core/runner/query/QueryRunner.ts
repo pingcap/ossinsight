@@ -94,7 +94,8 @@ export class QueryRunner {
             const start = DateTime.now();
             const [rows, fields] = await this.queryExecutor.execute<any[]>(queryKey, {
               sql: sql,
-              ...queryOptions
+              ...queryOptions,
+              rowsAsArray: params?.format === 'array',
             });
             const end = DateTime.now();
 
@@ -156,7 +157,7 @@ export class QueryRunner {
     }
     
     private buildCacheKey (type: QueryType, queryName: string, queryConfig: QuerySchema, params: Record<string, any>): string {
-        return `${this.buildQueryKey(type, queryName)}:${this.serializeParams(queryConfig, params)}`;
+        return `${this.buildQueryKey(type, queryName)}:${this.serializeParams(queryConfig, params)}${params?.format === 'array' ? '_array' : ''}`;
     }
     
     private serializeParams (queryConfig: QuerySchema, params: Record<string, any>): string {

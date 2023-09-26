@@ -8,3 +8,4 @@ items:
   - sitaramc/gitolite
   - go-gitea/gitea
   - gogs/gogs
+  - harness/gitness

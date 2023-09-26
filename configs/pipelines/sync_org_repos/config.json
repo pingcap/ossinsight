@@ -1,0 +1,8 @@
+{
+  "name": "sync_org_repos",
+  "description": "Sync the last event happened at of repositories owned by the organizations",
+  "cron": "0 20 * * * *",
+  "incremental": {
+    "timeRange": "past_hour"
+  }
+}
