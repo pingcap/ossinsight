@@ -37,6 +37,13 @@ WITH RECURSIVE seq(idx, day) AS (
             {% when 'past_90_days' %} TIMESTAMPDIFF(DAY, day, CURRENT_DATE()) % 90 + 1
             {% when 'past_12_months' %} TIMESTAMPDIFF(MONTH, day, CURRENT_DATE()) % 12 + 1
         {% endcase %} AS idx,
+        -- Divide periods.
+        {% case period %}
+            {% when 'past_7_days' %} TIMESTAMPDIFF(DAY, day, CURRENT_DATE()) DIV 7
+            {% when 'past_28_days' %} TIMESTAMPDIFF(DAY, day, CURRENT_DATE()) DIV 28
+            {% when 'past_90_days' %} TIMESTAMPDIFF(DAY, day, CURRENT_DATE()) DIV 90
+            {% when 'past_12_months' %} TIMESTAMPDIFF(MONTH, day, CURRENT_DATE()) DIV 12
+        {% endcase %} AS period,
         day,
         pushes,
         commits
@@ -62,7 +69,7 @@ WITH RECURSIVE seq(idx, day) AS (
                 {% when 'past_7_days' %} AND created_at > (CURRENT_DATE() - INTERVAL 7 DAY)
                 {% when 'past_28_days' %} AND created_at > (CURRENT_DATE() - INTERVAL 28 DAY)
                 {% when 'past_90_days' %} AND created_at > (CURRENT_DATE() - INTERVAL 90 DAY)
-                {% when 'past_12_months' %} AND created_at > (DATE_FORMAT(NOW(), '%Y-%m-01') - INTERVAL 24 MONTH)
+                {% when 'past_12_months' %} AND created_at > (DATE_FORMAT(NOW(), '%Y-%m-01') - INTERVAL 12 MONTH)
             {% endcase %}
         GROUP BY day
         ORDER BY day
@@ -75,5 +82,6 @@ SELECT
     IFNULL(gbd.commits, 0) AS commits
 FROM seq s
 LEFT JOIN group_by_day gbd ON gbd.idx = s.idx
+WHERE gbd.period = 0
 ORDER BY idx
 ;
