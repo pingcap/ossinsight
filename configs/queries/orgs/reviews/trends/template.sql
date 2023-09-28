@@ -3,26 +3,26 @@ WITH RECURSIVE seq(idx, current_period_day, past_period_day) AS (
         1 AS idx,
         {% case period %}
             {% when 'past_7_days', 'past_28_days', 'past_90_days' %} DATE_FORMAT(CURRENT_DATE(), '%Y-%m-%d')
-            {% when 'past_12_months' %} DATE_FORMAT(CURRENT_DATE(), '%Y-%m-01')
+            {% when 'past_12_months' %} DATE_FORMAT(CURRENT_DATE(), '%Y-%m')
         {% endcase %} AS current_period_day,
         {% case period %}
             {% when 'past_7_days' %} DATE_FORMAT(DATE_SUB(CURRENT_DATE(), INTERVAL 7 DAY), '%Y-%m-%d')
             {% when 'past_28_days' %} DATE_FORMAT(DATE_SUB(CURRENT_DATE(), INTERVAL 28 DAY), '%Y-%m-%d')
             {% when 'past_90_days' %} DATE_FORMAT(DATE_SUB(CURRENT_DATE(), INTERVAL 90 DAY), '%Y-%m-%d')
-            {% when 'past_12_months' %} DATE_FORMAT(DATE_SUB(CURRENT_DATE(), INTERVAL 12 MONTH), '%Y-%m-01')
+            {% when 'past_12_months' %} DATE_FORMAT(DATE_SUB(CURRENT_DATE(), INTERVAL 12 MONTH), '%Y-%m')
         {% endcase %} AS past_period_day
     UNION ALL
     SELECT
         idx + 1 AS idx,
         {% case period %}
             {% when 'past_7_days', 'past_28_days', 'past_90_days' %} DATE_FORMAT(DATE_SUB(CURRENT_DATE(), INTERVAL idx DAY), '%Y-%m-%d')
-            {% when 'past_12_months' %} DATE_FORMAT(DATE_SUB(CURRENT_DATE(), INTERVAL idx MONTH), '%Y-%m-01')
+            {% when 'past_12_months' %} DATE_FORMAT(DATE_SUB(CURRENT_DATE(), INTERVAL idx MONTH), '%Y-%m')
         {% endcase %} AS current_period_day,
         {% case period %}
             {% when 'past_7_days' %} DATE_FORMAT(DATE_SUB(CURRENT_DATE(), INTERVAL idx + 7 DAY), '%Y-%m-%d')
             {% when 'past_28_days' %} DATE_FORMAT(DATE_SUB(CURRENT_DATE(), INTERVAL idx + 28 DAY), '%Y-%m-%d')
             {% when 'past_90_days' %} DATE_FORMAT(DATE_SUB(CURRENT_DATE(), INTERVAL idx + 90 DAY), '%Y-%m-%d')
-            {% when 'past_12_months' %} DATE_FORMAT(DATE_SUB(CURRENT_DATE(), INTERVAL idx + 12 MONTH), '%Y-%m-01')
+            {% when 'past_12_months' %} DATE_FORMAT(DATE_SUB(CURRENT_DATE(), INTERVAL idx + 12 MONTH), '%Y-%m')
         {% endcase %} AS past_period_day
     FROM seq
     WHERE
@@ -75,10 +75,10 @@ WITH RECURSIVE seq(idx, current_period_day, past_period_day) AS (
             AND ge.actor_login NOT LIKE '%bot%'
             {% endif %}
             {% case period %}
-                {% when 'past_7_days' %} AND created_at > (CURRENT_DATE() - INTERVAL 14 DAY)
-                {% when 'past_28_days' %} AND created_at > (CURRENT_DATE() - INTERVAL 56 DAY)
-                {% when 'past_90_days' %} AND created_at > (CURRENT_DATE() - INTERVAL 180 DAY)
-                {% when 'past_12_months' %} AND created_at > (CURRENT_DATE() - INTERVAL 24 MONTH)
+                {% when 'past_7_days' %} AND ge.created_at > (CURRENT_DATE() - INTERVAL 14 DAY)
+                {% when 'past_28_days' %} AND ge.created_at > (CURRENT_DATE() - INTERVAL 56 DAY)
+                {% when 'past_90_days' %} AND ge.created_at > (CURRENT_DATE() - INTERVAL 180 DAY)
+                {% when 'past_12_months' %} AND created_at > (DATE_FORMAT(NOW(), '%Y-%m-01') - INTERVAL 24 MONTH)
             {% endcase %}
         GROUP BY day
         ORDER BY day

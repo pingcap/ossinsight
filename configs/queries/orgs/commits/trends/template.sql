@@ -3,14 +3,14 @@ WITH RECURSIVE seq(idx, day) AS (
         1 AS idx,
         {% case period %}
             {% when 'past_7_days', 'past_28_days', 'past_90_days' %} DATE_FORMAT(CURRENT_DATE(), '%Y-%m-%d')
-            {% when 'past_12_months' %} DATE_FORMAT(CURRENT_DATE(), '%Y-%m-01')
+            {% when 'past_12_months' %} DATE_FORMAT(CURRENT_DATE(), '%Y-%m')
         {% endcase %} AS day
     UNION ALL
     SELECT
         idx + 1 AS idx,
         {% case period %}
             {% when 'past_7_days', 'past_28_days', 'past_90_days' %} DATE_FORMAT(DATE_SUB(CURRENT_DATE(), INTERVAL idx DAY), '%Y-%m-%d')
-            {% when 'past_12_months' %} DATE_FORMAT(DATE_SUB(CURRENT_DATE(), INTERVAL idx MONTH), '%Y-%m-01')
+            {% when 'past_12_months' %} DATE_FORMAT(DATE_SUB(CURRENT_DATE(), INTERVAL idx MONTH), '%Y-%m')
         {% endcase %} AS day
     FROM seq
     WHERE
@@ -62,7 +62,7 @@ WITH RECURSIVE seq(idx, day) AS (
                 {% when 'past_7_days' %} AND created_at > (CURRENT_DATE() - INTERVAL 7 DAY)
                 {% when 'past_28_days' %} AND created_at > (CURRENT_DATE() - INTERVAL 28 DAY)
                 {% when 'past_90_days' %} AND created_at > (CURRENT_DATE() - INTERVAL 90 DAY)
-                {% when 'past_12_months' %} AND created_at > (CURRENT_DATE() - INTERVAL 12 MONTH)
+                {% when 'past_12_months' %} AND created_at > (DATE_FORMAT(NOW(), '%Y-%m-01') - INTERVAL 24 MONTH)
             {% endcase %}
         GROUP BY day
         ORDER BY day
