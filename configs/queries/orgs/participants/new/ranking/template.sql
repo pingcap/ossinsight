@@ -8,26 +8,40 @@ WITH repos AS (
         {% endif %}
 )
 SELECT
-    user_login AS login,
-    MIN(first_engagement_at) AS first_participated_at
-FROM mv_repo_participants mrp
+    mrde.user_login AS login,
+    SUM(mrde.engagements) AS engagements
+FROM mv_repo_daily_engagements mrde
 WHERE
     repo_id IN (SELECT repo_id FROM repos)
     {% case period %}
-        {% when 'past_7_days' %}
-        AND first_engagement_at >= (NOW() - INTERVAL 7 DAY)
-        {% when 'past_28_days' %}
-        AND first_engagement_at >= (NOW() - INTERVAL 28 DAY)
-        {% when 'past_90_days' %}
-        AND first_engagement_at >= (NOW() - INTERVAL 90 DAY)
-        {% when 'past_12_months' %}
-        AND first_engagement_at >= (NOW() - INTERVAL 12 MONTH)
+        {% when 'past_7_days' %} AND mrde.day > (NOW() - INTERVAL 7 DAY)
+        {% when 'past_28_days' %} AND mrde.day > (NOW() - INTERVAL 28 DAY)
+        {% when 'past_90_days' %} AND mrde.day > (NOW() - INTERVAL 90 DAY)
+        {% when 'past_12_months' %} AND mrde.day > (NOW() - INTERVAL 12 MONTH)
     {% endcase %}
     {% if excludeBots %}
     -- Exclude bot users.
-    AND LOWER(user_login) NOT LIKE '%bot%'
-    AND user_login NOT IN (SELECT login FROM blacklist_users LIMIT 255)
+    AND LOWER(mrde.user_login) NOT LIKE '%bot%'
+    AND mrde.user_login NOT IN (SELECT login FROM blacklist_users LIMIT 255)
     {% endif %}
-GROUP BY user_login
-ORDER BY first_participated_at DESC
+    AND EXISTS (
+        SELECT 1
+        FROM mv_repo_participants mrp
+        WHERE
+            mrp.repo_id = mrde.repo_id
+            AND mrp.user_login = mrde.user_login
+            {% case period %}
+                {% when 'past_7_days' %}
+                AND mrp.first_engagement_at >= (CURRENT_DATE() - INTERVAL 7 DAY)
+                {% when 'past_28_days' %}
+                AND mrp.first_engagement_at >= (CURRENT_DATE() - INTERVAL 28 DAY)
+                {% when 'past_90_days' %}
+                AND mrp.first_engagement_at >= (CURRENT_DATE() - INTERVAL 90 DAY)
+                {% when 'past_12_months' %}
+                AND mrp.first_engagement_at >= (CURRENT_DATE() - INTERVAL 12 MONTH)
+            {% endcase %}
+        LIMIT 1
+    )
+GROUP BY mrde.user_login
+ORDER BY 2 DESC
 LIMIT {{ n }}

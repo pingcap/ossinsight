@@ -8,7 +8,7 @@ WITH repos AS (
         {% endif %}
 ), current_period_new_participants AS (
     SELECT
-        COUNT(DISTINCT mrp.user_login) AS new_participants
+        COUNT(*) AS new_participants
     FROM mv_repo_participants mrp
     WHERE
         mrp.repo_id IN (SELECT repo_id FROM repos)
@@ -29,7 +29,7 @@ WITH repos AS (
         {% endif %}
 ), past_period_new_participants AS (
     SELECT
-        COUNT(DISTINCT mrp.user_login) AS new_participants
+        COUNT(*) AS new_participants
     FROM mv_repo_participants mrp
     WHERE
         mrp.repo_id IN (SELECT repo_id FROM repos)
