@@ -78,7 +78,7 @@ WITH RECURSIVE seq(idx, current_period_day, past_period_day) AS (
                 {% when 'past_7_days' %} AND ge.created_at > (CURRENT_DATE() - INTERVAL 14 DAY)
                 {% when 'past_28_days' %} AND ge.created_at > (CURRENT_DATE() - INTERVAL 56 DAY)
                 {% when 'past_90_days' %} AND ge.created_at > (CURRENT_DATE() - INTERVAL 180 DAY)
-                {% when 'past_12_months' %} AND created_at > (DATE_FORMAT(NOW(), '%Y-%m-01') - INTERVAL 24 MONTH)
+                {% when 'past_12_months' %} AND ge.created_at > (DATE_FORMAT(NOW(), '%Y-%m-01') - INTERVAL 24 MONTH)
             {% endcase %}
         GROUP BY day
         ORDER BY day
