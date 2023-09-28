@@ -30,29 +30,16 @@ WHERE
         WHERE
             mrp.repo_id = mrde.repo_id
             AND mrp.user_login = mrde.user_login
-            -- Divide periods.
-            AND CASE
-                {% case period %}
-                    {% when 'past_7_days' %} TIMESTAMPDIFF(DAY, mrde.day, CURRENT_DATE()) DIV 7
-                    {% when 'past_28_days' %} TIMESTAMPDIFF(DAY, mrde.day, CURRENT_DATE()) DIV 28
-                    {% when 'past_90_days' %} TIMESTAMPDIFF(DAY, mrde.day, CURRENT_DATE()) DIV 90
-                    {% when 'past_12_months' %} TIMESTAMPDIFF(MONTH, mrde.day, CURRENT_DATE()) DIV 12
-                {% endcase %}
-            WHEN 0 THEN
-                {% case period %}
-                    {% when 'past_7_days' %} mrp.first_engagement_at >= (CURRENT_DATE() - INTERVAL 7 DAY)
-                    {% when 'past_28_days' %} mrp.first_engagement_at >= (CURRENT_DATE() - INTERVAL 28 DAY)
-                    {% when 'past_90_days' %} mrp.first_engagement_at >= (CURRENT_DATE() - INTERVAL 90 DAY)
-                    {% when 'past_12_months' %} mrp.first_engagement_at >= (CURRENT_DATE() - INTERVAL 12 MONTH)
-                {% endcase %}
-            WHEN 1 THEN
-                {% case period %}
-                    {% when 'past_7_days' %} mrp.first_engagement_at >= (CURRENT_DATE() - INTERVAL 14 DAY)
-                    {% when 'past_28_days' %} mrp.first_engagement_at >= (CURRENT_DATE() - INTERVAL 56 DAY)
-                    {% when 'past_90_days' %} mrp.first_engagement_at >= (CURRENT_DATE() - INTERVAL 180 DAY)
-                    {% when 'past_12_months' %} mrp.first_engagement_at >= (CURRENT_DATE() - INTERVAL 24 MONTH)
-                {% endcase %}
-            END
+            {% case period %}
+                {% when 'past_7_days' %}
+                AND mrp.first_engagement_at >= (CURRENT_DATE() - INTERVAL 7 DAY)
+                {% when 'past_28_days' %}
+                AND mrp.first_engagement_at >= (CURRENT_DATE() - INTERVAL 28 DAY)
+                {% when 'past_90_days' %}
+                AND mrp.first_engagement_at >= (CURRENT_DATE() - INTERVAL 90 DAY)
+                {% when 'past_12_months' %}
+                AND mrp.first_engagement_at >= (CURRENT_DATE() - INTERVAL 12 MONTH)
+            {% endcase %}
         LIMIT 1
     )
 GROUP BY mrde.user_login
