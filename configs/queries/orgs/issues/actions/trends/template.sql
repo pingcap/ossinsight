@@ -12,7 +12,7 @@ SELECT
     ge.action AS action_type,
     {% case period %}
         {% when 'past_7_days', 'past_28_days', 'past_90_days'  %} DATE(created_at)
-        {% when 'past_12_months' %} DATE_FORMAT(created_at, '%Y-%m-01')
+        {% when 'past_12_months' %} DATE_FORMAT(created_at, '%Y-%m')
     {% endcase %} AS date,
     COUNT(*) AS issues
 FROM github_events ge
@@ -28,7 +28,7 @@ WHERE
         {% when 'past_7_days' %} AND created_at > (NOW() - INTERVAL 7 DAY)
         {% when 'past_28_days' %} AND created_at > (NOW() - INTERVAL 28 DAY)
         {% when 'past_90_days' %} AND created_at > (NOW() - INTERVAL 90 DAY)
-        {% when 'past_12_months' %} AND created_at > (NOW() - INTERVAL 12 MONTH)
+        {% when 'past_12_months' %} AND created_at > (DATE_FORMAT(NOW(), '%Y-%m-01') - INTERVAL 12 MONTH)
     {% endcase %}
 GROUP BY action, date
 ORDER BY date, action_type
