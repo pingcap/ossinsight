@@ -3,6 +3,6 @@
   "description": "Sync daily engagements for participants in the repositories owned by the organizations",
   "cron": "0 20 0 * * *",
   "incremental": {
-    "timeRange": "past_hour"
+    "timeRange": "last_day"
   }
 }
