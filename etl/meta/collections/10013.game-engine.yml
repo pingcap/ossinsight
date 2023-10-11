@@ -49,6 +49,7 @@ items:
   - hajimehoshi/ebiten
   - hexops/mach
   - HaxeFoundation/haxe
+  - HaxeFlixel/flixel
   - Esenthel/EsenthelEngine
   - aws/lumberyard
   - FlaxEngine/FlaxEngine
@@ -63,3 +64,7 @@ items:
   - jhasse/jngl
   - pinguin999/ALPACA
   - g3n/engine
+  - AmbientRun/Ambient
+  - isadorasophia/murder
+  - axmolengine/axmol
+  - castle-engine/castle-engine

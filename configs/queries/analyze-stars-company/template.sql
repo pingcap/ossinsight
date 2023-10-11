@@ -1,23 +1,26 @@
-WITH star_companies AS (
+WITH stars_per_company AS (
     SELECT
-        TRIM(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(gu.organization, ',', ''), '-', ''), '@', ''), 'www.', ''), 'inc', ''), '.com', ''), '.cn', ''), '.', '')) AS company_name,
+        IF(
+            gu.organization_formatted IS NOT NULL AND LENGTH(gu.organization_formatted) != 0,
+            gu.organization_formatted,
+            'Unknown'
+        ) AS company_name,
         COUNT(DISTINCT ge.actor_login) AS stargazers
     FROM github_events ge
-    LEFT JOIN github_users gu USE INDEX (index_gu_on_login_is_bot_organization_country_code) ON ge.actor_login = gu.login
+    LEFT JOIN github_users gu ON ge.actor_login = gu.login
     WHERE
-        ge.repo_id in (41986369)
+        ge.repo_id IN ({{ repoId | join: ',' }})
         AND ge.type = 'WatchEvent'
-    GROUP BY 1
-), summary AS (
-    SELECT COUNT(*) AS total FROM star_companies
+        AND ge.action = 'started'
+    GROUP BY company_name
+), stars_total AS (
+    SELECT SUM(stargazers) AS total FROM stars_per_company
 )
 SELECT
-    company_name,
-    stargazers,
-    stargazers / summary.total AS proportion
-FROM star_companies, summary
-WHERE
-    length(company_name) != 0
-    AND company_name NOT IN ('-', 'none', 'no', 'home', 'n/a', 'null', 'unknown')
-ORDER BY stargazers DESC
-LIMIT 9999999999;
+    spc.company_name,
+    spc.stargazers,
+    spc.stargazers / st.total AS proportion
+FROM stars_per_company spc, stars_total st
+WHERE spc.company_name != 'Unknown'
+ORDER BY spc.stargazers DESC
+LIMIT {{limit}};

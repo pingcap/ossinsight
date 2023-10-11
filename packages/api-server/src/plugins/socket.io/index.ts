@@ -140,14 +140,6 @@ export function socketServerRoutes(
           res = await queryRunner.query(query, params);
         }
 
-        // Check if events-increment return data.
-        if (query === 'events-increment') {
-          const cnt = Array.isArray(res?.data) ? res?.data?.[0]?.cnt : null;
-          if (cnt === undefined || cnt === null || cnt === 0) {
-            logger.error({ query, params, cnt }, 'Query events-increment return empty data.');
-          }
-        }
-
         if (isCompact) {
           res.data = toCompactFormat(res.data as any, res.fields);
         }

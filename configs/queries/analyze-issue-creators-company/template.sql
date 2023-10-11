@@ -1,24 +1,26 @@
-WITH issue_creator_companies AS (
+WITH issue_creator_per_company AS (
     SELECT
-        TRIM(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(u.organization, ',', ''), '-', ''), '@', ''), 'www.', ''), 'inc', ''), '.com', ''), '.cn', ''), '.', '')) AS company_name,
+        IF(
+            gu.organization_formatted IS NOT NULL AND LENGTH(gu.organization_formatted) != 0,
+            gu.organization_formatted,
+            'Unknown'
+        ) AS company_name,
         COUNT(DISTINCT ge.actor_login) AS issue_creators
     FROM github_events ge
-    LEFT JOIN github_users u USE INDEX (index_gu_on_login_is_bot_organization_country_code) ON ge.actor_login = u.login
+    LEFT JOIN github_users gu ON ge.actor_login = gu.login
     WHERE
-        ge.repo_id in (41986369)
+        ge.repo_id IN ({{ repoId | join: ',' }})
         AND ge.type = 'IssuesEvent'
         AND ge.action = 'opened'
-    GROUP BY 1
-), s AS (
-    SELECT COUNT(*) AS total FROM issue_creator_companies
+    GROUP BY company_name
+), issue_creator_total AS (
+    SELECT SUM(issue_creators) AS total FROM issue_creator_per_company
 )
 SELECT
-    company_name,
-    issue_creators,
-    issue_creators / s.total AS proportion
-FROM s, issue_creator_companies sub
-WHERE
-    length(company_name) != 0
-    AND company_name NOT IN ('-', 'none', 'no', 'home', 'n/a', 'null', 'unknown')
+    icpc.company_name,
+    icpc.issue_creators,
+    icpc.issue_creators / ict.total AS proportion
+FROM issue_creator_per_company icpc, issue_creator_total ict
+WHERE company_name != 'Unknown'
 ORDER BY issue_creators DESC
-LIMIT 9999999999;
+LIMIT {{limit}};

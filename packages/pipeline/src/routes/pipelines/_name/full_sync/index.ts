@@ -1,6 +1,6 @@
 import {MySQLPromisePool} from "@fastify/mysql";
 import {FastifyBaseLogger, FastifyPluginAsync} from 'fastify'
-import {DateTime} from "luxon";
+import {DateTime, DurationLike} from "luxon";
 import {APIError} from "../../../../errors";
 import {Pipeline} from "../../../../plugins/pipelines";
 import {PipelineJobRepository, PipelineJobStatus} from "../../../../plugins/repositories/PipelineJobRepository";
@@ -13,6 +13,7 @@ export interface IParams {
 export interface IBody {
   from?: string;
   to?: string;
+  interval: DurationLike;
 }
 
 export const schema = {
@@ -33,6 +34,12 @@ export const schema = {
       },
       to: {
         type: 'string',
+      },
+      interval: {
+        type: 'object',
+        default: {
+          day: 1
+        },
       }
     }
   }
@@ -51,11 +58,11 @@ const index: FastifyPluginAsync = async (app, opts): Promise<void> => {
       throw new APIError(404, 'Pipeline not found.')
     }
 
-    const {from, to} = req.body;
+    const {from, to, interval} = req.body;
     const specifiedFrom = from ? DateTime.fromISO(from) : undefined;
     const specifiedTo = to ? DateTime.fromISO(to) : undefined;
 
-    fullSyncPipeline(app.log, app.mysql, app.pipelineJobRepository, pipelineName, pipeline, specifiedFrom, specifiedTo).catch((err) => {
+    fullSyncPipeline(app.log, app.mysql, app.pipelineJobRepository, pipelineName, pipeline, specifiedFrom, specifiedTo, interval).catch((err) => {
       app.log.error(err, `❌  Failed to finish full sync for pipeline <${pipelineName}>.`);
     });
 
@@ -70,10 +77,11 @@ const index: FastifyPluginAsync = async (app, opts): Promise<void> => {
 async function fullSyncPipeline(
   log: FastifyBaseLogger, tidb: MySQLPromisePool, pipelineJobRepository: PipelineJobRepository, pipelineName: string, pipeline: Pipeline,
   from: DateTime = DateTime.fromSQL('2012-01-01'),
-  to: DateTime = DateTime.fromSQL(DateTime.utc().toFormat('yyyy-MM-dd'))
+  to: DateTime = DateTime.fromSQL(DateTime.utc().toFormat('yyyy-MM-dd')),
+  interval: DurationLike = {day: 1}
 ) {
   // Get the time ranges need to sync.
-  const needProcessed = splitTimeRange(from, to, {day: 1});
+  const needProcessed = splitTimeRange(from, to, interval);
   const processed = await pipelineJobRepository.getProcessedTimeRanges(pipelineName, from, to);
   const timeRanges = needProcessed.filter((needProcessedTimeRange) => {
     return !processed.find((processedTimeRange) => {

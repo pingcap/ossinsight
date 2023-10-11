@@ -10,30 +10,27 @@ WITH repos AS (
 ), repos_with_activities AS (
     SELECT
         repo_id,
-        COUNT(*) AS activities
-    FROM github_events ge
+        SUM(mrde.engagements) AS activities
+    FROM mv_repo_daily_engagements mrde
     WHERE
-        ge.repo_id IN (SELECT repo_id FROM repos)
-        -- Events considered as participation (Exclude `WatchEvent`, which means star a repo).
-        AND ge.type IN ('IssueCommentEvent',  'DeleteEvent',  'CommitCommentEvent',  'MemberEvent',  'PushEvent',  'PublicEvent',  'ForkEvent',  'ReleaseEvent',  'PullRequestReviewEvent',  'CreateEvent',  'GollumEvent',  'PullRequestEvent',  'IssuesEvent',  'PullRequestReviewCommentEvent')
-        AND ge.action IN ('added', 'published', 'reopened', 'closed', 'created', 'opened', '')
+        mrde.repo_id IN (SELECT repo_id FROM repos)
         {% case period %}
-            {% when 'past_7_days' %} AND created_at > (NOW() - INTERVAL 7 DAY)
-            {% when 'past_28_days' %} AND created_at > (NOW() - INTERVAL 28 DAY)
-            {% when 'past_90_days' %} AND created_at > (NOW() - INTERVAL 90 DAY)
-            {% when 'past_12_months' %} AND created_at > (NOW() - INTERVAL 12 MONTH)
+            {% when 'past_7_days' %} AND mrde.day > (NOW() - INTERVAL 7 DAY)
+            {% when 'past_28_days' %} AND mrde.day > (NOW() - INTERVAL 28 DAY)
+            {% when 'past_90_days' %} AND mrde.day > (NOW() - INTERVAL 90 DAY)
+            {% when 'past_12_months' %} AND mrde.day > (NOW() - INTERVAL 12 MONTH)
         {% endcase %}
     GROUP BY repo_id
-    ORDER BY stars DESC
+    ORDER BY activities DESC
     LIMIT 10
 )
 SELECT
     gr.repo_id,
     gr.repo_name,
-    rws.stars
-FROM repos_with_stars rws
+    rwa.activities
+FROM repos_with_activities rwa
 JOIN github_repos gr USING (repo_id)
-ORDER BY stars DESC
+ORDER BY activities DESC
 LIMIT 10
 
 

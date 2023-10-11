@@ -6,45 +6,42 @@ WITH repos AS (
         {% if repoIds.size > 0 %}
         AND gr.repo_id IN ({{ repoIds | join: ',' }})
         {% endif %}
-), old_participants AS (
-    SELECT
-        actor_login, MIN(created_at) AS first_participated_at
-    FROM github_events ge
-    WHERE
-        ge.repo_id IN (SELECT repo_id FROM repos)
-        -- Events considered as participation (Exclude `WatchEvent`, which means star a repo).
-        AND ge.type IN ('IssueCommentEvent',  'DeleteEvent',  'CommitCommentEvent',  'MemberEvent',  'PushEvent',  'PublicEvent',  'ForkEvent',  'ReleaseEvent',  'PullRequestReviewEvent',  'CreateEvent',  'GollumEvent',  'PullRequestEvent',  'IssuesEvent',  'PullRequestReviewCommentEvent')
-        AND ge.action IN ('added', 'published', 'reopened', 'closed', 'created', 'opened', '')
-        {% case period %}
-            {% when 'past_7_days' %} AND ge.created_at < (NOW() - INTERVAL 7 DAY)
-            {% when 'past_28_days' %} AND ge.created_at < (NOW() - INTERVAL 28 DAY)
-            {% when 'past_90_days' %} AND ge.created_at < (NOW() - INTERVAL 90 DAY)
-            {% when 'past_12_months' %} AND ge.created_at < (NOW() - INTERVAL 12 MONTH)
-        {% endcase %}
-        {% if excludeBots %}
-        -- Exclude bot users.
-        AND ge.actor_login NOT LIKE '%bot%'
-        {% endif %}
-    GROUP BY actor_login
 )
 SELECT
-    actor_login AS login, MIN(created_at) AS first_participated_at
-FROM github_events ge
+    mrde.user_login AS login,
+    SUM(mrde.engagements) AS engagements
+FROM mv_repo_daily_engagements mrde
 WHERE
-    ge.repo_id IN (SELECT repo_id FROM repos)
-    AND ge.type IN ('PullRequestEvent', 'PullRequestReviewEvent', 'IssuesEvent', 'IssueCommentEvent', 'PushEvent')
-    AND ge.action IN ('opened', 'created', '')
+    repo_id IN (SELECT repo_id FROM repos)
     {% case period %}
-        {% when 'past_7_days' %} AND ge.created_at > (NOW() - INTERVAL 7 DAY)
-        {% when 'past_28_days' %} AND ge.created_at > (NOW() - INTERVAL 28 DAY)
-        {% when 'past_90_days' %} AND ge.created_at > (NOW() - INTERVAL 90 DAY)
-        {% when 'past_12_months' %} AND ge.created_at > (NOW() - INTERVAL 12 MONTH)
+        {% when 'past_7_days' %} AND mrde.day > (NOW() - INTERVAL 7 DAY)
+        {% when 'past_28_days' %} AND mrde.day > (NOW() - INTERVAL 28 DAY)
+        {% when 'past_90_days' %} AND mrde.day > (NOW() - INTERVAL 90 DAY)
+        {% when 'past_12_months' %} AND mrde.day > (NOW() - INTERVAL 12 MONTH)
     {% endcase %}
-    AND NOT EXISTS (
+    {% if excludeBots %}
+    -- Exclude bot users.
+    AND LOWER(mrde.user_login) NOT LIKE '%bot%'
+    AND mrde.user_login NOT IN (SELECT login FROM blacklist_users LIMIT 255)
+    {% endif %}
+    AND EXISTS (
         SELECT 1
-        FROM old_participants op
-        WHERE ge.actor_login = op.actor_login
+        FROM mv_repo_participants mrp
+        WHERE
+            mrp.repo_id = mrde.repo_id
+            AND mrp.user_login = mrde.user_login
+            {% case period %}
+                {% when 'past_7_days' %}
+                AND mrp.first_engagement_at >= (CURRENT_DATE() - INTERVAL 7 DAY)
+                {% when 'past_28_days' %}
+                AND mrp.first_engagement_at >= (CURRENT_DATE() - INTERVAL 28 DAY)
+                {% when 'past_90_days' %}
+                AND mrp.first_engagement_at >= (CURRENT_DATE() - INTERVAL 90 DAY)
+                {% when 'past_12_months' %}
+                AND mrp.first_engagement_at >= (CURRENT_DATE() - INTERVAL 12 MONTH)
+            {% endcase %}
+        LIMIT 1
     )
-GROUP BY actor_login
-ORDER BY first_participated_at DESC
+GROUP BY mrde.user_login
+ORDER BY 2 DESC
 LIMIT {{ n }}

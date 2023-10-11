@@ -13,11 +13,32 @@ export interface Pipeline {
   processSQL: string;
 }
 
+export enum PresetIncrementalTimeRange {
+  YESTERDAY = 'yesterday',
+  LAST_DAY = 'last_day',
+  LAST_HOUR = 'last_hour',
+  PAST_24_HOURS = 'past_24_hours',
+  PAST_HOUR = 'past_hour',
+}
+
+export interface PipelineIncrementalConfig {
+  timeRange: PresetIncrementalTimeRange;
+}
+
+export interface PipelineConfig {
+  name: string;
+  description?: string;
+  cron?: string;
+  incremental?: PipelineIncrementalConfig;
+}
+
 declare module 'fastify' {
   interface FastifyInstance {
     pipelines: Record<string, Pipeline>;
   }
 }
+
+export const timezone = 'UTC';
 
 export default fp(async (app) => {
   const dir = path.join(app.config.CONFIGS_PATH, 'pipelines');
@@ -33,7 +54,7 @@ export default fp(async (app) => {
     .forEach(name => {
       // Load the pipeline config.
       const processSQL = fs.readFileSync(path.join(dir, name, PIPELINE_PROCESS_FILE), 'utf-8');
-      const config = JSON.parse(fs.readFileSync(path.join(dir, name, PIPELINE_CONFIG_FILE), 'utf-8'));
+      const config = JSON.parse(fs.readFileSync(path.join(dir, name, PIPELINE_CONFIG_FILE), 'utf-8')) as PipelineConfig;
       app.pipelines[name] = {
         ...config,
         processSQL
@@ -46,8 +67,7 @@ export default fp(async (app) => {
           const pipeline = app.pipelines[name];
 
           // Notice: The default time range is yesterday.
-          const from = DateTime.now().minus({days: 1}).startOf('day');
-          const to = DateTime.now().startOf('day');
+          const { from, to } = resolveTimeRange(config.incremental?.timeRange);
 
           app.log.info(`⚡️ Start to execute query for pipeline <%s>, from: %s, to: %s.`, name, from.toISO(), to.toISO());
           const jobId = await app.pipelineJobRepository.createProcessedTimeRange(name, from, to, PipelineJobStatus.RUNNING);
@@ -55,8 +75,8 @@ export default fp(async (app) => {
 
           try {
             await app.mysql.execute(pipeline.processSQL, {
-              from: from.toFormat('yyyy-MM-dd 00:00:00'),
-              to: to.toFormat('yyyy-MM-dd 00:00:00')
+              from: from.toSQL(),
+              to: to.toSQL()
             });
           } catch (err: any) {
             const end = DateTime.now();
@@ -76,7 +96,7 @@ export default fp(async (app) => {
 
         app.scheduler.addCronJob(new CronJob({
           cronExpression: config.cron,
-          timezone: 'UTC',
+          timezone: timezone,
         }, task, {
           id: name,
           preventOverrun: true,
@@ -92,3 +112,36 @@ export default fp(async (app) => {
     '@ossinsight/pipeline-job-repository'
   ]
 });
+
+export interface TimeRange {
+  from: DateTime;
+  to: DateTime;
+}
+
+export function resolveTimeRange(timeRange: PresetIncrementalTimeRange = PresetIncrementalTimeRange.YESTERDAY): TimeRange {
+  const now = DateTime.now();
+  switch (timeRange) {
+    case PresetIncrementalTimeRange.PAST_HOUR:
+      return {
+        from: now.minus({hours: 1}),
+        to: now
+      };
+    case PresetIncrementalTimeRange.PAST_24_HOURS:
+      return {
+        from: now.minus({hours: 24}),
+        to: now
+      }
+    case PresetIncrementalTimeRange.LAST_HOUR:
+      return {
+        from: now.minus({hours: 1}).startOf('hour'),
+        to: now.startOf('hour')
+      }
+    case PresetIncrementalTimeRange.LAST_DAY:
+    case PresetIncrementalTimeRange.YESTERDAY:
+    default:
+      return {
+        from: now.minus({days: 1}).startOf('day'),
+        to: now.startOf('day')
+      };
+  }
+}

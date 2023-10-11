@@ -116,17 +116,15 @@ WITH repos AS (
         {% endcase %}
 ), participants AS (
     SELECT
-        COUNT(DISTINCT actor_login) AS participants
-    FROM github_events ge
+        COUNT(DISTINCT user_login) AS participants
+    FROM mv_repo_daily_engagements
     WHERE
         repo_id IN (SELECT repo_id FROM repos)
-        AND ge.type IN ('PullRequestEvent', 'PullRequestReviewEvent', 'IssueCommentEvent', 'IssuesEvent')
-        AND ge.action IN ('opened', 'created')
         {% case period %}
-            {% when 'past_7_days' %} AND created_at > (CURRENT_DATE() - INTERVAL 7 DAY)
-            {% when 'past_28_days' %} AND created_at > (CURRENT_DATE() - INTERVAL 28 DAY)
-            {% when 'past_90_days' %} AND created_at > (CURRENT_DATE() - INTERVAL 90 DAY)
-            {% when 'past_12_months' %} AND created_at > (CURRENT_DATE() - INTERVAL 12 MONTH)
+            {% when 'past_7_days' %} AND day > (CURRENT_DATE() - INTERVAL 7 DAY)
+            {% when 'past_28_days' %} AND day > (CURRENT_DATE() - INTERVAL 28 DAY)
+            {% when 'past_90_days' %} AND day > (CURRENT_DATE() - INTERVAL 90 DAY)
+            {% when 'past_12_months' %} AND day > (CURRENT_DATE() - INTERVAL 12 MONTH)
         {% endcase %}
 )
 SELECT

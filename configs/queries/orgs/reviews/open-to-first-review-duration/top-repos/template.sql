@@ -11,6 +11,7 @@ WITH repos AS (
     SELECT
         repo_id,
         number,
+        actor_login AS opened_by,
         created_at AS opened_at
     FROM github_events ge
     WHERE
@@ -27,11 +28,13 @@ WITH repos AS (
     SELECT
         repo_id,
         number,
-    reviewed_at AS first_reviewed_at
+        reviewed_by AS first_reviewed_by,
+        reviewed_at AS first_reviewed_at
     FROM (
         SELECT
             repo_id,
             number,
+            actor_login AS reviewed_by,
             created_at AS reviewed_at,
             ROW_NUMBER() OVER (PARTITION BY repo_id, number ORDER BY created_at) AS times
         FROM github_events ge
@@ -57,7 +60,7 @@ WITH repos AS (
 ), tdiff AS (
     SELECT
         pwo.repo_id,
-        TIMESTAMPDIFF(SECOND, pwo.opened_at, pwr.first_responsed_at) / 3600 AS hours,
+        TIMESTAMPDIFF(SECOND, pwo.opened_at, pwr.first_reviewed_at) / 3600 AS hours,
         PERCENT_RANK() OVER (PARTITION BY pwo.repo_id ORDER BY (pwr.first_reviewed_at - pwo.opened_at)) AS percentile
     FROM prs_with_opened_at pwo
     JOIN prs_with_first_reviewed_at pwr USING (repo_id, number)
