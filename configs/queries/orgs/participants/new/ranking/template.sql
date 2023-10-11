@@ -24,6 +24,7 @@ WHERE
     AND LOWER(mrde.user_login) NOT LIKE '%bot%'
     AND mrde.user_login NOT IN (SELECT login FROM blacklist_users LIMIT 255)
     {% endif %}
+    AND user_login != (SELECT owner_login FROM github_repos gr WHERE gr.owner_id = {{ownerId}} LIMIT 1)
     AND EXISTS (
         SELECT 1
         FROM mv_repo_participants mrp
