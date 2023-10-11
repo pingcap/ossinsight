@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import CustomPage from '../../theme/CustomPage';
 import OverviewSection from './sections/0-Overview';
 import BehaviourSection from './sections/1-Behaviour';
@@ -78,6 +78,12 @@ function useAnalyzingUser (): AnalyzeUserContextProps {
   const { params: { login } } = useRouteMatch<AnalyzeUserPageParams>();
 
   const { data, isValidating, error } = useUser(login);
+
+  useEffect(() => {
+    if (data?.type === 'Organization') {
+      location.href = 'https://next.ossinsight.io/' + location.pathname + location.search + location.hash;
+    }
+  }, [data]);
 
   return {
     login,
