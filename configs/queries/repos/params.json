@@ -6,6 +6,7 @@
     {
       "name": "repoId",
       "type": "array",
+      "replaces": "11855343",
       "itemType": "integer",
       "maxArrayLength": 100
     }
