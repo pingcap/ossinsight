@@ -21,6 +21,7 @@ WITH repos AS (
             {% when 'past_90_days' %} AND day > (NOW() - INTERVAL 90 DAY)
             {% when 'past_12_months' %} AND day > (NOW() - INTERVAL 12 MONTH)
         {% endcase %}
+        AND user_login != (SELECT owner_login FROM github_repos gr WHERE gr.owner_id = {{ownerId}} LIMIT 1)
         {% if excludeBots %}
         -- Exclude bot users.
         AND LOWER(user_login) NOT LIKE '%bot%'
