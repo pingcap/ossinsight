@@ -18,8 +18,8 @@ organizations_seen_before AS (
         {% when 'pr_reviewers' %} mv_repo_organizations_pr_reviewer_role
         {% when 'issue_creators' %} mv_repo_organizations_issue_creator_role
         {% when 'commit_authors' %} mv_repo_organizations_commit_author_role
-        {% when 'pr_commenters' %} mv_repo_organizations_commenter_role
-        {% when 'issue_commenters' %} mv_repo_organizations_commenter_role
+        {% when 'pr_commenters' %} mv_repo_organizations_pr_commenter_role
+        {% when 'issue_commenters' %} mv_repo_organizations_issue_commenter_role
         {% else %} mv_repo_organizations_stargazer_role
         {% endcase %} b
     WHERE

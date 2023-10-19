@@ -1,5 +1,5 @@
 {
-  "name": "sync_org_repo_countries_commenter_role",
+  "name": "sync_org_repo_countries_pr_commenter_role",
   "description": "None",
   "cron": "0 05 1 * * *",
   "incremental": {

@@ -1,4 +1,4 @@
-INSERT INTO mv_repo_countries_commenter_role(repo_id, country_code, first_seen_at)
+INSERT INTO mv_repo_countries_issue_commenter_role(repo_id, country_code, first_seen_at)
 SELECT
     /*+ READ_FROM_STORAGE(TIFLASH[ge, gu]) */
     ge.repo_id,
@@ -6,6 +6,7 @@ SELECT
     MIN(ge.created_at) AS new_first_seen_at
 FROM github_events ge
 JOIN github_users gu ON ge.actor_login = gu.login
+JOIN mv_repo_pull_requests rpr ON ge.repo_id = rpr.repo_id AND ge.number = rpr.number
 WHERE
     ge.type = 'IssueCommentEvent'
     AND ge.org_id != 0
