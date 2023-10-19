@@ -36,6 +36,11 @@
       "name": "excludeUnknown",
       "type": "boolean",
       "default": true
+    },
+    {
+      "name": "excludeSeenBefore",
+      "type": "boolean",
+      "default": false
     }
   ]
 }
