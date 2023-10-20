@@ -60,6 +60,12 @@ const sidebars = {
           items: [
             {
               type: 'doc',
+              id: 'api/list-collections',
+              label: 'List collections',
+              className: 'api-method get'
+            },
+            {
+              type: 'doc',
               id: 'api/list-hot-collections',
               label: 'List hot collections',
               className: 'api-method get'

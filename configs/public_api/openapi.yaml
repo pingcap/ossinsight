@@ -174,13 +174,13 @@ info:
 components:
   schemas: {}
 paths:
-  /collections/hot/:
+  /collections/:
     get:
-      operationId: list-hot-collections
-      summary: List hot collections
+      operationId: list-collections
+      summary: List collections
       tags:
         - Collections
-      description: List hot collections with top repositories of the collection.
+      description: List collections.
       responses:
         "200":
           description: Default Response
@@ -262,103 +262,29 @@ paths:
                           - col: name
                             data_type: VARCHAR
                             nullable: false
-                          - col: repos
-                            data_type: BIGINT
-                            nullable: false
-                          - col: repo_id
-                            data_type: BIGINT
-                            nullable: false
-                          - col: repo_name
-                            data_type: VARCHAR
-                            nullable: false
-                          - col: repo_current_period_rank
-                            data_type: INT
-                            nullable: true
-                          - col: repo_past_period_rank
-                            data_type: INT
-                            nullable: true
-                          - col: repo_rank_changes
-                            data_type: BIGINT
-                            nullable: true
                       rows:
                         type: array
                         items:
                           type: object
                           properties:
-                            id:
-                              type: string
-                              description: Collection ID
-                            name:
-                              type: string
-                              description: Collection name
-                            repos:
-                              type: string
-                              description: The number of repositories in the collection
                             repo_id:
                               type: string
-                              description: Repository ID
+                              description: Collection ID
                             repo_name:
                               type: string
-                              description: Repository name
-                            repo_current_period_rank:
-                              type: string
-                              description: The rank of the repository in the collection in the current period
-                            repo_past_period_rank:
-                              type: string
-                              description: The rank of the repository in the collection in the past period
-                            repo_rank_changes:
-                              type: string
-                              description: The rank changes of the repository in the collection
+                              description: Collection name
                           additionalProperties: true
                         example:
-                          - id: "10010"
-                            name: Artificial Intelligence
-                            repos: "36"
-                            repo_id: "155220641"
-                            repo_name: huggingface/transformers
-                            repo_current_period_rank: "1"
-                            repo_past_period_rank: "1"
-                            repo_rank_changes: "0"
-                          - id: "10010"
-                            name: Artificial Intelligence
-                            repos: "36"
-                            repo_id: "65600975"
-                            repo_name: pytorch/pytorch
-                            repo_current_period_rank: "3"
-                            repo_past_period_rank: "4"
-                            repo_rank_changes: "1"
-                          - id: "10010"
-                            name: Artificial Intelligence
-                            repos: "36"
-                            repo_id: "458588993"
-                            repo_name: nebuly-ai/nebullvm
-                            repo_current_period_rank: "2"
-                            repo_past_period_rank: "2"
-                            repo_rank_changes: "0"
-                          - id: "10078"
-                            name: ChatGPT Apps
-                            repos: "36"
-                            repo_id: "599394820"
-                            repo_name: Chanzhaoyu/chatgpt-web
-                            repo_current_period_rank: "3"
-                            repo_past_period_rank: "6"
-                            repo_rank_changes: "3"
-                          - id: "10078"
-                            name: ChatGPT Apps
-                            repos: "36"
-                            repo_id: "609416865"
-                            repo_name: yetone/openai-translator
-                            repo_current_period_rank: "2"
-                            repo_past_period_rank: ""
-                            repo_rank_changes: ""
-                          - id: "10078"
-                            name: ChatGPT Apps
-                            repos: "36"
-                            repo_id: "608555244"
-                            repo_name: microsoft/visual-chatgpt
-                            repo_current_period_rank: "1"
-                            repo_past_period_rank: ""
-                            repo_rank_changes: ""
+                          - id: "1"
+                            name: Static Site Generator
+                          - id: "2"
+                            name: Open Source Database
+                          - id: "10001"
+                            name: CSS Framework
+                          - id: "10002"
+                            name: Google Analytics Alternative
+                          - id: "10003"
+                            name: Low Code Development Tool
                       result:
                         type: object
                         properties:
@@ -398,7 +324,7 @@ paths:
                           start_ms: 1690957407469
                           end_ms: 1690957407499
                           latency: 30ms
-                          row_count: 6
+                          row_count: 5
                           row_affect: 0
                           limit: 50
                           databases:
@@ -709,6 +635,235 @@ paths:
                           end_ms: 1690957407499
                           latency: 30ms
                           row_count: 4
+                          row_affect: 0
+                          limit: 50
+                          databases:
+                            - gharchive_dev
+  /collections/hot/:
+    get:
+      operationId: list-hot-collections
+      summary: List hot collections
+      tags:
+        - Collections
+      description: List hot collections with top repositories of the collection.
+      responses:
+        "200":
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - type
+                  - data
+                properties:
+                  type:
+                    type: string
+                    description: The type of the endpoint.
+                    enum:
+                      - sql_endpoint
+                    example: sql_endpoint
+                  data:
+                    type: object
+                    required:
+                      - columns
+                      - rows
+                      - result
+                    properties:
+                      columns:
+                        type: array
+                        items:
+                          type: object
+                          required:
+                            - col
+                            - data_type
+                            - nullable
+                          properties:
+                            col:
+                              type: string
+                              description: The name of the column in the query result.
+                            data_type:
+                              type: string
+                              enum:
+                                - CHAR
+                                - BIGINT
+                                - DECIMAL
+                                - INT
+                                - UNSIGNED BIGINT
+                                - TINYINT
+                                - TIMESTAMP
+                                - TEXT
+                                - VARCHAR
+                                - DATETIME
+                                - DOUBLE
+                                - FLOAT
+                                - DATE
+                                - TIME
+                                - YEAR
+                                - MEDIUMINT
+                                - SMALLINT
+                                - BIT
+                                - BINARY
+                                - VARBINARY
+                                - JSON
+                                - ENUM
+                                - SET
+                                - TINYTEXT
+                                - MEDIUMTEXT
+                                - LONGTEXT
+                                - TINYBLOB
+                                - MEDIUMBLOB
+                                - BLOB
+                                - LONGBLOB
+                              description: The data type of the column.
+                            nullable:
+                              type: boolean
+                              description: Whether the column is nullable.
+                          additionalProperties: true
+                        example:
+                          - col: id
+                            data_type: BIGINT
+                            nullable: false
+                          - col: name
+                            data_type: VARCHAR
+                            nullable: false
+                          - col: repos
+                            data_type: BIGINT
+                            nullable: false
+                          - col: repo_id
+                            data_type: BIGINT
+                            nullable: false
+                          - col: repo_name
+                            data_type: VARCHAR
+                            nullable: false
+                          - col: repo_current_period_rank
+                            data_type: INT
+                            nullable: true
+                          - col: repo_past_period_rank
+                            data_type: INT
+                            nullable: true
+                          - col: repo_rank_changes
+                            data_type: BIGINT
+                            nullable: true
+                      rows:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                              description: Collection ID
+                            name:
+                              type: string
+                              description: Collection name
+                            repos:
+                              type: string
+                              description: The number of repositories in the collection
+                            repo_id:
+                              type: string
+                              description: Repository ID
+                            repo_name:
+                              type: string
+                              description: Repository name
+                            repo_current_period_rank:
+                              type: string
+                              description: The rank of the repository in the collection in the current period
+                            repo_past_period_rank:
+                              type: string
+                              description: The rank of the repository in the collection in the past period
+                            repo_rank_changes:
+                              type: string
+                              description: The rank changes of the repository in the collection
+                          additionalProperties: true
+                        example:
+                          - id: "10010"
+                            name: Artificial Intelligence
+                            repos: "36"
+                            repo_id: "155220641"
+                            repo_name: huggingface/transformers
+                            repo_current_period_rank: "1"
+                            repo_past_period_rank: "1"
+                            repo_rank_changes: "0"
+                          - id: "10010"
+                            name: Artificial Intelligence
+                            repos: "36"
+                            repo_id: "65600975"
+                            repo_name: pytorch/pytorch
+                            repo_current_period_rank: "3"
+                            repo_past_period_rank: "4"
+                            repo_rank_changes: "1"
+                          - id: "10010"
+                            name: Artificial Intelligence
+                            repos: "36"
+                            repo_id: "458588993"
+                            repo_name: nebuly-ai/nebullvm
+                            repo_current_period_rank: "2"
+                            repo_past_period_rank: "2"
+                            repo_rank_changes: "0"
+                          - id: "10078"
+                            name: ChatGPT Apps
+                            repos: "36"
+                            repo_id: "599394820"
+                            repo_name: Chanzhaoyu/chatgpt-web
+                            repo_current_period_rank: "3"
+                            repo_past_period_rank: "6"
+                            repo_rank_changes: "3"
+                          - id: "10078"
+                            name: ChatGPT Apps
+                            repos: "36"
+                            repo_id: "609416865"
+                            repo_name: yetone/openai-translator
+                            repo_current_period_rank: "2"
+                            repo_past_period_rank: ""
+                            repo_rank_changes: ""
+                          - id: "10078"
+                            name: ChatGPT Apps
+                            repos: "36"
+                            repo_id: "608555244"
+                            repo_name: microsoft/visual-chatgpt
+                            repo_current_period_rank: "1"
+                            repo_past_period_rank: ""
+                            repo_rank_changes: ""
+                      result:
+                        type: object
+                        properties:
+                          code:
+                            type: number
+                            description: The code of the response.
+                          message:
+                            type: string
+                            description: The message of the response.
+                          start_ms:
+                            type: number
+                            description: The start time of the query in milliseconds.
+                          end_ms:
+                            type: number
+                            description: The end time of the query in milliseconds.
+                          latency:
+                            type: string
+                            description: The latency of the query.
+                          row_count:
+                            type: number
+                            description: The number of rows in the query result.
+                          row_affect:
+                            type: number
+                            description: The number of rows affected by the query.
+                          limit:
+                            type: number
+                            description: The maximum number of rows in the query result.
+                          databases:
+                            type: array
+                            description: The databases used in the query.
+                            items:
+                              type: string
+                        additionalProperties: true
+                        example:
+                          code: 200
+                          message: Query OK!
+                          start_ms: 1690957407469
+                          end_ms: 1690957407499
+                          latency: 30ms
+                          row_count: 6
                           row_affect: 0
                           limit: 50
                           databases:
