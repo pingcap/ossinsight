@@ -39,7 +39,7 @@ WITH repos AS (
 SELECT
     IFNULL(cpr.reviews, 0) AS current_period_total,
     IFNULL(ppr.reviews, 0) AS past_period_total,
-    ROUND((cpr.reviews - ppr.reviews) / ppr.reviews * 100, 2) AS growth_percentage
+    ROUND((cpr.reviews - ppr.reviews) / ppr.reviews, 2) AS growth_percentage
 FROM current_period_reviews cpr
 LEFT JOIN past_period_reviews ppr ON 1 = 1
 ;

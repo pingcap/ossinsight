@@ -97,7 +97,7 @@ participants_total AS (
 SELECT
     ppo.organization_name,
     ppo.participants,
-    ROUND(ppo.participants / pt.participants_total * 100, 2) AS percentage
+    ROUND(ppo.participants / pt.participants_total, 2) AS percentage
 FROM
     participants_per_org ppo,
     participants_total pt

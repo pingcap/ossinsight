@@ -23,9 +23,15 @@
       "default": "past_28_days"
     },
     {
-      "name": "n",
-      "type": "integer",
-      "default": 10
+      "name": "role",
+      "type": "string",
+      "enums": ["all", "pr_creators", "pr_commenters", "pr_reviewers", "issue_creators", "issue_commenters", "commit_authors"],
+      "default": "all"
+    },
+    {
+      "name": "excludeBots",
+      "type": "boolean",
+      "default": true
     }
   ]
 }

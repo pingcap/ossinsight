@@ -51,7 +51,7 @@ SELECT
     r.repo_name,
     rbr.reviews AS reviews,
     rcbr.review_comments AS review_comments,
-    ROUND(rcbr.review_comments / rbr.reviews, 2) AS comments_per_review
+    ROUND(rcbr.review_comments / rbr.reviews, 4) AS comments_per_review
 FROM repos r
 JOIN reviews_by_repo rbr ON rbr.repo_id = r.repo_id
 JOIN review_comments_by_repo rcbr ON rcbr.repo_id = r.repo_id

@@ -92,7 +92,7 @@ participants_total AS (
 SELECT
     ppc.country_code,
     ppc.participants,
-    ROUND(ppc.participants / pt.total * 100, 2) AS percentage
+    ROUND(ppc.participants / pt.total, 2) AS percentage
 FROM
     participants_per_country ppc,
     participants_total pt
