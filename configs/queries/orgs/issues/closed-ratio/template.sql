@@ -104,10 +104,10 @@ WITH repos AS (
 SELECT
     cpppt.type,
     cpppt.issues AS current_period_issues,
-    ROUND(cpppt.issues / cppt.issues_total * 100, 2) AS current_period_percentage,
+    ROUND(cpppt.issues / cppt.issues_total, 2) AS current_period_percentage,
     ppppt.issues AS past_period_issues,
-    ROUND(ppppt.issues / pppt.issues_total * 100, 2) AS past_period_percentage,
-    ROUND((cpppt.issues / cppt.issues_total - ppppt.issues / pppt.issues_total) * 100, 2) AS percentage_change
+    ROUND(ppppt.issues / pppt.issues_total, 2) AS past_period_percentage,
+    ROUND((cpppt.issues / cppt.issues_total - ppppt.issues / pppt.issues_total), 2) AS percentage_change
 FROM current_period_issues_per_type cpppt
 LEFT JOIN past_period_issues_per_type ppppt ON cpppt.type = ppppt.type
 LEFT JOIN current_period_issues_total cppt ON 1 = 1

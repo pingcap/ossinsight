@@ -59,7 +59,7 @@ stars_per_country AS (
 SELECT
     spc.country_code,
     spc.stars,
-    ROUND(spc.stars / st.stars_total * 100, 2) AS percentage
+    ROUND(spc.stars / st.stars_total, 2) AS percentage
 FROM
     stars_per_country spc,
     stars_total st

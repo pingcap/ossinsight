@@ -39,7 +39,7 @@ WITH repos AS (
 SELECT
     IFNULL(cpp.prs, 0) AS current_period_total,
     IFNULL(ppp.prs, 0) AS past_period_total,
-    ROUND((cpp.prs - ppp.prs) / ppp.prs * 100, 2) AS growth_percentage
+    ROUND((cpp.prs - ppp.prs) / ppp.prs, 2) AS growth_percentage
 FROM current_period_prs cpp
 LEFT JOIN past_period_prs ppp ON 1 = 1
 ;

@@ -61,7 +61,7 @@ stars_per_org AS (
 SELECT
     spo.organization_name,
     spo.stars,
-    ROUND(spo.stars / st.stars_total * 100, 2) AS percentage
+    ROUND(spo.stars / st.stars_total, 2) AS percentage
 FROM
     stars_per_org spo,
     stars_total st
