@@ -10,6 +10,8 @@ WITH repos AS (
     SELECT
         sub.repo_id,
         sub.number,
+        sub.opened_actor_login,
+        sub.opened_at,
         {% case period %}
             {% when 'past_7_days' %} TIMESTAMPDIFF(DAY, opened_at, NOW()) DIV 7
             {% when 'past_28_days' %} TIMESTAMPDIFF(DAY, opened_at, NOW()) DIV 28
@@ -20,6 +22,7 @@ WITH repos AS (
          SELECT
              ge.repo_id,
              ge.number,
+             ge.actor_login AS opened_actor_login,
              ge.created_at AS opened_at,
              ROW_NUMBER() OVER (PARTITION BY ge.repo_id, ge.number ORDER BY ge.created_at) AS times
          FROM github_events ge
@@ -41,11 +44,58 @@ WITH repos AS (
     WHERE
         # Only consider the first opened event.
         sub.times = 1
+), reviewed_prs AS (
+    SELECT
+        sub.repo_id,
+        sub.number,
+        sub.reviewed_actor_login,
+        sub.reviewed_at,
+        {% case period %}
+            {% when 'past_7_days' %} TIMESTAMPDIFF(DAY, reviewed_at, NOW()) DIV 7
+            {% when 'past_28_days' %} TIMESTAMPDIFF(DAY, reviewed_at, NOW()) DIV 28
+            {% when 'past_90_days' %} TIMESTAMPDIFF(DAY, reviewed_at, NOW()) DIV 90
+            {% when 'past_12_months' %}  TIMESTAMPDIFF(MONTH, reviewed_at, NOW()) DIV 12
+        {% endcase %} AS period
+    FROM (
+        SELECT
+            ge.repo_id,
+            ge.number,
+            ge.actor_login AS reviewed_actor_login,
+            ge.created_at AS reviewed_at,
+            ROW_NUMBER() OVER (PARTITION BY ge.repo_id, ge.number ORDER BY ge.created_at) AS times
+        FROM github_events ge
+        WHERE
+            ge.repo_id IN (SELECT repo_id FROM repos)
+            AND ge.type = 'PullRequestReviewEvent'
+            AND ge.action = 'created'
+            {% if excludeBots %}
+            -- Exclude bot users.
+            AND ge.actor_login NOT LIKE '%bot%'
+            {% endif %}
+            {% case period %}
+                {% when 'past_7_days' %} AND created_at > (NOW() - INTERVAL 14 DAY)
+                {% when 'past_28_days' %} AND created_at > (NOW() - INTERVAL 56 DAY)
+                {% when 'past_90_days' %} AND created_at > (NOW() - INTERVAL 180 DAY)
+                {% when 'past_12_months' %} AND created_at > (NOW() - INTERVAL 24 MONTH)
+            {% endcase %}
+    ) sub
+    JOIN opened_prs op USING (repo_id, number)
+    WHERE
+        # Only consider the first reviewed event.
+        sub.times = 1
+        # Exclude the PR author's own review.
+        AND sub.reviewed_actor_login != op.opened_actor_login
 ), merged_prs AS (
     SELECT
         sub.repo_id,
         sub.number,
-        IF(sub.pr_merged = 1, 'merged', 'closed') AS type,
+        sub.merged_actor_login,
+        sub.merged_at,
+        IF(
+            sub.merged_actor_login = op.opened_actor_login AND rp.reviewed_actor_login IS NULL,
+            'self-merged',
+            'others'
+        ) AS type,
         {% case period %}
             {% when 'past_7_days' %} TIMESTAMPDIFF(DAY, merged_at, NOW()) DIV 7
             {% when 'past_28_days' %} TIMESTAMPDIFF(DAY, merged_at, NOW()) DIV 28
@@ -56,7 +106,7 @@ WITH repos AS (
         SELECT
             ge.repo_id,
             ge.number,
-            ge.pr_merged,
+            ge.actor_login AS merged_actor_login,
             ge.created_at AS merged_at,
             ROW_NUMBER() OVER (PARTITION BY ge.repo_id, ge.number ORDER BY ge.created_at) AS times
         FROM github_events ge
@@ -64,6 +114,7 @@ WITH repos AS (
             ge.repo_id IN (SELECT repo_id FROM repos)
             AND ge.type = 'PullRequestEvent'
             AND ge.action = 'closed'
+            AND ge.pr_merged = 1
             {% case period %}
                 {% when 'past_7_days' %} AND ge.created_at > (NOW() - INTERVAL 14 DAY)
                 {% when 'past_28_days' %} AND ge.created_at > (NOW() - INTERVAL 56 DAY)
@@ -72,24 +123,16 @@ WITH repos AS (
             {% endcase %}
     ) sub
     # Only consider merged PRs that were opened in the period.
-    JOIN opened_prs op USING (repo_id, number)
+    JOIN opened_prs op ON sub.repo_id = op.repo_id AND sub.number = op.number
+    # Check if the PR has been reviewed by someone other than the PR author (The JOIN condition is true means that there is).
+    LEFT JOIN reviewed_prs rp ON sub.repo_id = rp.repo_id AND sub.number = rp.number
     WHERE
         # Only consider the first merged event.
         sub.times = 1
 ), prs_per_type AS (
-    (
-        SELECT 'open' AS type, op.period, COUNT(*) AS prs
-        FROM opened_prs op
-        LEFT JOIN merged_prs mp USING (repo_id, number)
-        WHERE mp.number IS NULL
-        GROUP BY op.period
-    )
-    UNION ALL
-    (
-        SELECT type, mp.period, COUNT(*) AS prs
-        FROM merged_prs mp
-        GROUP BY type, mp.period
-    )
+    SELECT type, mp.period, COUNT(*) AS prs
+    FROM merged_prs mp
+    GROUP BY type, mp.period
 ), current_period_prs_per_type AS (
     SELECT * FROM prs_per_type WHERE period = 0
 ), past_period_prs_per_type AS (
