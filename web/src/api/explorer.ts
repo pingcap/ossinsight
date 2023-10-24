@@ -99,6 +99,7 @@ export enum QuestionErrorType {
   EMPTY_RESULT = 'error-empty-result',
   SUMMARY_GENERATE = 'error-summary-generate',
   UNKNOWN = 'error-unknown',
+  QUESTION_IS_TOO_LONG = 'error-question-too-long',
 }
 
 export interface PlanStep {
