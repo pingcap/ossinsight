@@ -127,7 +127,10 @@ export class ExplorerService {
         const logger = this.logger.child({ questionId: questionId });
         const normalizedQuestion = this.normalizeQuestion(q);
         if (normalizedQuestion.length > 512) {
-            throw new APIError(400, 'The question is too long, please shorten it.');
+            const message = `The question is too long, please shorten it.`;
+            throw new ExplorerPrepareQuestionError(message, QuestionFeedbackType.ErrorQuestionIsTooLong, {
+                message: message
+            });
         }
 
         // Prepare the new question.

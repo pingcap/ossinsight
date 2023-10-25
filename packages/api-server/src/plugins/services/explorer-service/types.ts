@@ -108,4 +108,5 @@ export enum QuestionFeedbackType {
   ErrorEmptyResult = "error-empty-result",
   ErrorSummaryGenerate = "error-summary-generate",
   ErrorUnknown = "error-unknown",
+  ErrorQuestionIsTooLong = "error-question-too-long",
 }
