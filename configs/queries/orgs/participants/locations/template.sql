@@ -7,7 +7,33 @@ WITH repos AS (
         {% if repoIds.size > 0 %}
         AND gr.repo_id IN ({{ repoIds | join: ',' }})
         {% endif %}
-), participants_per_country AS (
+),
+{% if excludeSeenBefore %}
+countries_seen_before AS (
+    SELECT
+        country_code
+    FROM
+        {% case role %}
+        {% when 'pr_creators' %} mv_repo_countries_pr_creator_role
+        {% when 'pr_reviewers' %} mv_repo_countries_pr_reviewer_role
+        {% when 'issue_creators' %} mv_repo_countries_issue_creator_role
+        {% when 'commit_authors' %} mv_repo_countries_commit_author_role
+        {% when 'pr_commenters' %} mv_repo_countries_issue_commenter_role
+        {% when 'issue_commenters' %} mv_repo_countries_pr_commenter_role
+        {% else %} mv_repo_countries_stargazer_role
+        {% endcase %} b
+    WHERE
+        b.repo_id IN (SELECT repo_id FROM repos)
+        {% case period %}
+        {% when 'past_7_days' %} AND b.first_seen_at < (NOW() - INTERVAL 7 DAY)
+        {% when 'past_28_days' %} AND b.first_seen_at < (NOW() - INTERVAL 28 DAY)
+        {% when 'past_90_days' %} AND b.first_seen_at < (NOW() - INTERVAL 90 DAY)
+        {% when 'past_12_months' %} AND b.first_seen_at < (NOW() - INTERVAL 12 MONTH)
+        {% endcase %}
+    GROUP BY country_code
+),
+{% endif %}
+participants_per_country AS (
     SELECT
         gu.country_code,
         COUNT(DISTINCT actor_login) AS participants
@@ -28,26 +54,16 @@ WITH repos AS (
         AND ge.type = 'IssueCommentEvent' AND ge.action = 'created'
         AND EXISTS (
             SELECT 1
-            FROM github_events ge2
-            WHERE
-                ge2.type = 'PullRequestEvent'
-                AND ge2.action = 'opened'
-                AND ge2.created_at < ge.created_at
-                AND ge2.repo_id = ge.repo_id
-                AND ge2.number = ge.number
-            )
+            FROM mv_repo_pull_requests mrpr
+            WHERE mrpr.repo_id = ge.repo_id AND mrpr.number = ge.number
+        )
         {% when 'issue_commenters' %}
         AND ge.type = 'IssueCommentEvent' AND ge.action = 'created'
         AND EXISTS (
             SELECT 1
-            FROM github_events ge2
-            WHERE
-                ge2.type = 'IssuesEvent'
-                AND ge2.action = 'opened'
-                AND ge2.created_at < ge.created_at
-                AND ge2.repo_id = ge.repo_id
-                AND ge2.number = ge.number
-            )
+            FROM mv_repo_issues mri
+            WHERE mri.repo_id = ge.repo_id AND mri.number = ge.number
+        )
         {% else %}
         -- Events considered as participation (Exclude `WatchEvent`, which means star a repo).
         AND ge.type IN ('IssueCommentEvent',  'DeleteEvent',  'CommitCommentEvent',  'MemberEvent',  'PushEvent',  'PublicEvent',  'ForkEvent',  'ReleaseEvent',  'PullRequestReviewEvent',  'CreateEvent',  'GollumEvent',  'PullRequestEvent',  'IssuesEvent',  'PullRequestReviewCommentEvent')
@@ -69,15 +85,20 @@ WITH repos AS (
         {% when 'past_12_months' %} AND ge.created_at > (NOW() - INTERVAL 12 MONTH)
         {% endcase %}
     GROUP BY gu.country_code
-), participants_total AS (
+),
+participants_total AS (
     SELECT SUM(participants) AS total FROM participants_per_country
 )
 SELECT
     ppc.country_code,
     ppc.participants,
-    ROUND(ppc.participants / pt.total * 100, 2) AS percentage
+    ROUND(ppc.participants / pt.total, 2) AS percentage
 FROM
     participants_per_country ppc,
     participants_total pt
+{% if excludeSeenBefore %}
+-- Exclude countries that have been seen before.
+WHERE ppc.country_code NOT IN (SELECT country_code FROM countries_seen_before)
+{% endif %}
 ORDER BY ppc.participants DESC
 LIMIT {{ n }}

@@ -1,0 +1,8 @@
+{
+  "name": "sync_org_repo_countries_commit_author_role",
+  "description": "None",
+  "cron": "0 0 1 * * *",
+  "incremental": {
+    "timeRange": "last_day"
+  }
+}

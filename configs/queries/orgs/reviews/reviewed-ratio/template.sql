@@ -107,10 +107,10 @@ WITH repos AS (
 SELECT
     cpppt.type,
     cpppt.prs AS current_period_prs,
-    ROUND(cpppt.prs / cppt.prs_total * 100, 2) AS current_period_percentage,
+    ROUND(cpppt.prs / cppt.prs_total, 4) AS current_period_percentage,
     ppppt.prs AS past_period_prs,
-    ROUND(ppppt.prs / pppt.prs_total * 100, 2) AS past_period_percentage,
-    ROUND((cpppt.prs / cppt.prs_total - ppppt.prs / pppt.prs_total) * 100, 2) AS percentage_change
+    ROUND(ppppt.prs / pppt.prs_total, 4) AS past_period_percentage,
+    ROUND((cpppt.prs / cppt.prs_total - ppppt.prs / pppt.prs_total), 4) AS percentage_change
 FROM current_period_prs_per_type cpppt
 LEFT JOIN past_period_prs_per_type ppppt ON cpppt.type = ppppt.type
 LEFT JOIN current_period_prs_total cppt ON 1 = 1

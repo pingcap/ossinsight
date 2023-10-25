@@ -7,7 +7,25 @@ WITH repos AS (
         {% if repoIds.size > 0 %}
         AND gr.repo_id IN ({{ repoIds | join: ',' }})
         {% endif %}
-), stars_per_org AS (
+),
+{% if excludeSeenBefore %}
+organizations_seen_before AS (
+    SELECT
+        org_name
+    FROM
+        mv_repo_organizations_stargazer_role b
+    WHERE
+        b.repo_id IN (SELECT repo_id FROM repos)
+        {% case period %}
+        {% when 'past_7_days' %} AND b.first_seen_at < (NOW() - INTERVAL 7 DAY)
+        {% when 'past_28_days' %} AND b.first_seen_at < (NOW() - INTERVAL 28 DAY)
+        {% when 'past_90_days' %} AND b.first_seen_at < (NOW() - INTERVAL 90 DAY)
+        {% when 'past_12_months' %} AND b.first_seen_at < (NOW() - INTERVAL 12 MONTH)
+        {% endcase %}
+    GROUP BY org_name
+),
+{% endif %}
+stars_per_org AS (
     SELECT
         IF(
             gu.organization_formatted IS NOT NULL AND LENGTH(gu.organization_formatted) != 0,
@@ -43,9 +61,13 @@ WITH repos AS (
 SELECT
     spo.organization_name,
     spo.stars,
-    ROUND(spo.stars / st.stars_total * 100, 2) AS percentage
+    ROUND(spo.stars / st.stars_total, 2) AS percentage
 FROM
     stars_per_org spo,
     stars_total st
+{% if excludeSeenBefore %}
+-- Exclude organizations that have been seen before.
+WHERE NOT EXISTS (SELECT 1 FROM organizations_seen_before WHERE org_name = spo.organization_name)
+{% endif %}
 ORDER BY spo.stars DESC
 LIMIT {{ n }}
