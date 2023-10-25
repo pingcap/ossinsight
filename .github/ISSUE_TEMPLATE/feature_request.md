@@ -1,8 +1,8 @@
 ---
 name: "\U0001F680 Feature Request"
 about: As a user, I want to request a new feature on the product.
-title: ""
-labels: type/feature
+title: ''
+labels: ''
 assignees: ''
 
 ---
