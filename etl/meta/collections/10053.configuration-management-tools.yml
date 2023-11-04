@@ -15,3 +15,5 @@ items:
   - chef/chef
   - meshery/meshery
   - winglang/wing
+  - opentofu/opentofu
+  
