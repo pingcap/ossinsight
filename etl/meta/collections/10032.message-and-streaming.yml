@@ -14,3 +14,7 @@ items:
   - emqx/emqx
   - zeromq/libzmq
   - vernemq/vernemq
+  - apache/flink
+  - bloomberg/blazingmq
+  - confluentinc/ksql
+  
