@@ -16,5 +16,4 @@ items:
   - vernemq/vernemq
   - apache/flink
   - bloomberg/blazingmq
-  - confluentinc/ksql
   
