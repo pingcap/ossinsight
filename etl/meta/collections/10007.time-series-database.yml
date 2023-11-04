@@ -13,3 +13,6 @@ items:
   - GreptimeTeam/greptimedb
   - cnosdb/cnosdb
   - surrealdb/surrealdb
+  - ClickHouse/ClickHouse
+  - apache/druid
+  
