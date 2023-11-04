@@ -1,0 +1,10 @@
+id: 10087
+name: LLM DevTools
+items:
+  - fauxpilot/fauxpilot
+  - TabbyML/tabby
+  - danielgross/localpilot
+  - continuedev/continue
+  - paul-gauthier/aider
+  - morph-labs/rift
+  - smallcloudai/refact
