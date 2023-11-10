@@ -46,14 +46,13 @@ export const newQuestionHandler: FastifyPluginAsyncJsonSchemaToTs = async (app):
       throw new APIError(500, msg);
     }
 
+    // Get latest question object.
+    resolvedQuestion = await app.explorerService.getQuestionByIdOrError(resolvedQuestion.id);
+
     // Wait for the SQL executed.
     let start = DateTime.now();
     while ([QuestionStatus.Running, QuestionStatus.Waiting].includes(resolvedQuestion.status)) {
-      const q = await app.explorerService.getQuestionById(resolvedQuestion.id);
-      if (!q) {
-        throw new Error(`Question ${resolvedQuestion.id} not found.`);
-      }
-      resolvedQuestion = q;
+      resolvedQuestion = await app.explorerService.getQuestionByIdOrError(resolvedQuestion.id);
       await sleep(1000);
 
       const spent = DateTime.now().diff(start);
