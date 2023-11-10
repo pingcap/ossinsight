@@ -51,7 +51,7 @@ export const newQuestionHandler: FastifyPluginAsyncJsonSchemaToTs = async (app):
 
     // Wait for the SQL executed.
     let start = DateTime.now();
-    while ([QuestionStatus.Running, QuestionStatus.Waiting].includes(resolvedQuestion.status)) {
+    while (![QuestionStatus.Success, QuestionStatus.Error, QuestionStatus.Cancel].includes(resolvedQuestion.status)) {
       resolvedQuestion = await app.explorerService.getQuestionByIdOrError(resolvedQuestion.id);
       await sleep(1000);
 
