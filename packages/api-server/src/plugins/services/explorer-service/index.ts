@@ -1299,9 +1299,6 @@ export class ExplorerService {
 
     // Trusted users.
     async checkIfTrustedUser(userId: number): Promise<boolean> {
-        if (userId === 0) {
-            return true;
-        }
         const [rows] = await this.tidb.query<any[]>(`
             SELECT user_id AS userId FROM explorer_trusted_users
             WHERE user_id = ?

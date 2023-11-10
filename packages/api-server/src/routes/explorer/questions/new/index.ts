@@ -1,4 +1,5 @@
 import {FastifyPluginAsyncJsonSchemaToTs} from "@fastify/type-provider-json-schema-to-ts";
+import {DateTime} from "luxon";
 import {Question, QuestionStatus} from "../../../../plugins/services/explorer-service/types";
 import {APIError} from "../../../../utils/error";
 import sleep from "../../../../utils/sleep";
@@ -46,6 +47,7 @@ export const newQuestionHandler: FastifyPluginAsyncJsonSchemaToTs = async (app):
     }
 
     // Wait for the SQL executed.
+    let start = DateTime.now();
     while ([QuestionStatus.Running, QuestionStatus.Waiting].includes(resolvedQuestion.status)) {
       const q = await app.explorerService.getQuestionById(resolvedQuestion.id);
       if (!q) {
@@ -53,6 +55,11 @@ export const newQuestionHandler: FastifyPluginAsyncJsonSchemaToTs = async (app):
       }
       resolvedQuestion = q;
       await sleep(1000);
+
+      const spent = DateTime.now().diff(start);
+      if (spent.minutes > 8) {
+        throw new APIError(500, 'Failed to execute SQL: timeout');
+      }
     }
 
     reply.status(200).send(question);
