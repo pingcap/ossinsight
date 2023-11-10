@@ -121,7 +121,7 @@ export class ExplorerService {
 
     async newQuestion(
       userId: number, q: string, ignoreCache: boolean = false, ignoreRateLimit: boolean = false,
-      needReview: boolean = false, batchJobId: string | null = null
+      needReview: boolean = false, batchJobId: string | null = null, maxOnGoingQuestions: number = 1
     ): Promise<Question> {
         const questionId = randomUUID();
         const logger = this.logger.child({ questionId: questionId });
@@ -185,7 +185,8 @@ export class ExplorerService {
 
             const onGongStatuses = [QuestionStatus.AnswerGenerating, QuestionStatus.SQLValidating, QuestionStatus.Waiting, QuestionStatus.Running];
             const onGongQuestions = previousQuestions.filter(q => onGongStatuses.includes(q.status));
-            if (onGongQuestions.length >= this.options.userMaxQuestionsOnGoing) {
+            const maxOnGoing = maxOnGoingQuestions ?? this.options.userMaxQuestionsOnGoing;
+            if (onGongQuestions.length >= maxOnGoing) {
               logger.info("There are %d previous question on going, cancel them.", onGongQuestions.length);
               await this.cancelQuestions(conn, onGongQuestions.map(q => q.id));
             }
@@ -209,7 +210,7 @@ export class ExplorerService {
         return question;
     }
 
-    async prepareQuestion(question: Question) {
+    async prepareQuestion(question: Question, outputAnswerInStream?: boolean): Promise<Question> {
         const { id: questionId } = question;
         const logger = this.logger.child({ questionId: questionId });
 
@@ -219,7 +220,7 @@ export class ExplorerService {
             await this.updateQuestion(question);
 
             // Generate the SQL by OpenAI.
-            let outputInStream = this.options.outputAnswerInStream;
+            let outputInStream = outputAnswerInStream ?? this.options.outputAnswerInStream;
             await this.generateAnswer(logger, question, outputInStream);
             if (!question.sqlCanAnswer || typeof question.querySQL !== 'string' || question.querySQL.length === 0) {
                 const message = 'Failed to generate SQL, the question may exceed the scope of what can be answered.';
@@ -280,6 +281,8 @@ export class ExplorerService {
 
             // Push the question to the queue.
             await this.pushJobToQueue(logger, question);
+
+            return question;
         } catch (err: any) {
             if (err instanceof ExplorerPrepareQuestionError) {
                 await this.updateQuestion({
