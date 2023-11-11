@@ -1,11 +1,11 @@
 import {FastifyPluginAsyncJsonSchemaToTs} from "@fastify/type-provider-json-schema-to-ts";
 import {DateTime} from "luxon";
-import {Question, QuestionStatus} from "../../../../plugins/services/explorer-service/types";
-import {APIError} from "../../../../utils/error";
-import sleep from "../../../../utils/sleep";
+import {Question, QuestionStatus} from "../../../plugins/services/explorer-service/types";
+import {APIError} from "../../../utils/error";
+import sleep from "../../../utils/sleep";
 
 const schema = {
-  summary: 'Answer new a question (full response)',
+  summary: 'Get answer of a new question',
   description: 'Answer a question to the AI bot, he will return a sql query, and execute the query to get the result.',
   tags: ['explorer'],
   body: {
