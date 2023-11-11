@@ -61,7 +61,17 @@ export const newQuestionHandler: FastifyPluginAsyncJsonSchemaToTs = async (app):
       }
     }
 
-    reply.status(200).send(resolvedQuestion);
+    reply.status(200).send({
+      question: {
+        title: resolvedQuestion.title,
+        revisedTitle: resolvedQuestion.revisedTitle,
+        link: 'https://ossinsight.io/explore/?id=' + resolvedQuestion.id,
+      },
+      query: {
+        sql: resolvedQuestion.querySQL,
+      },
+      result: resolvedQuestion.result
+    });
   });
 }
 
