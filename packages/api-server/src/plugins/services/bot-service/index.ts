@@ -1,4 +1,5 @@
 import {FastifyBaseLogger} from "fastify";
+import {DEFAULT_EXPLORER_GENERATE_ANSWER_PROMPT_NAME} from "../../../env";
 import {countAPIRequest, measureAPIRequest, openaiAPICounter, openaiAPITimer} from "../../../metrics";
 import {ContextProvider} from "./prompt/context/context-provider";
 import {Answer} from "./types";
@@ -25,7 +26,8 @@ export default fp(async (app) => {
       log,
       app.config.OPENAI_API_KEY,
       app.promptTemplateManager,
-      app.embeddingContextProvider
+      app.embeddingContextProvider,
+      app.config.EXPLORER_GENERATE_ANSWER_PROMPT_NAME
     ));
 }, {
   name: '@ossinsight/bot-service',
@@ -44,6 +46,7 @@ export class BotService {
       private readonly apiKey: string,
       private readonly promptManager: PromptManager,
       private readonly contextProvider?: ContextProvider,
+      private readonly generateAnswerPromptName: string = DEFAULT_EXPLORER_GENERATE_ANSWER_PROMPT_NAME
     ) {
         const configuration = new Configuration({
             apiKey: this.apiKey
@@ -96,13 +99,11 @@ export class BotService {
     }
 
     private async loadGenerateAnswerPromptTemplate(question: string): Promise<[string, PromptConfig]> {
-        let promptName = 'explorer-generate-answer';
         let context: Record<string, any> = { question: question };
         if (this.contextProvider) {
-            promptName = 'explorer-generate-answer-with-context';
             context = await this.contextProvider.provide(context);
         }
-        return await this.promptManager.getPrompt(promptName, context);
+        return await this.promptManager.getPrompt(this.generateAnswerPromptName, context);
     }
 
     public async questionToAnswerInStream(question: string, callback: (answer: Answer, key: string, value: any) => void): Promise<[Answer | null, string | null]> {
@@ -303,7 +304,12 @@ export class BotService {
                 break;
             case 'sql':
                 key = "querySQL";
-                answer.querySQL = value;
+                const sqlArr = splitSqlStatements(value);
+                if (sqlArr.length > 1) {
+                    this.log.warn({ sqlArr }, `Got multiple SQLs from OpenAI API: ${question}`);
+                }
+                // Notice: Avoid multiple SQL Error.
+                answer.querySQL = sqlArr[0];
                 break;
             case 'chart':
                 value = value ? {
@@ -332,4 +338,49 @@ export class BotService {
         return chartOptions;
     }
 
+}
+
+function splitSqlStatements(sqlString: string): string[] {
+    let statements = [];
+    let currentStatement = '';
+    let inSingleQuote = false;
+    let inDoubleQuote = false;
+
+    for (let i = 0; i < sqlString.length; i++) {
+        const char = sqlString[i];
+        const nextChar = i + 1 < sqlString.length ? sqlString[i + 1] : null;
+
+        // Handle escape characters
+        if (char === '\\' && nextChar) {
+            currentStatement += char + nextChar;
+            i++; // Skip the next character
+            continue;
+        }
+
+        // Toggle single quote state
+        if (char === "'" && !inDoubleQuote) {
+            inSingleQuote = !inSingleQuote;
+        }
+
+        // Toggle double quote state
+        if (char === '"' && !inSingleQuote) {
+            inDoubleQuote = !inDoubleQuote;
+        }
+
+        // If not within quotes and a semicolon is encountered, split the statement
+        if (char === ';' && !inSingleQuote && !inDoubleQuote) {
+            statements.push(currentStatement.trim());
+            currentStatement = '';
+            continue;
+        }
+
+        currentStatement += char;
+    }
+
+    // Add the last statement if it exists
+    if (currentStatement.trim()) {
+        statements.push(currentStatement.trim());
+    }
+
+    return statements;
 }

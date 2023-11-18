@@ -24,7 +24,6 @@ export default fp(async (fastify) => {
 });
 
 export interface PromptConfig {
-    name: string;
     model: string;
     stop: string[];
     max_tokens: number;
@@ -32,6 +31,15 @@ export interface PromptConfig {
     top_p: number;
     n: number;
 }
+
+const defaultPromptConfig: PromptConfig = {
+    model: "gpt-3.5-turbo",
+    stop: [],
+    max_tokens: 200,
+    temperature: 0,
+    top_p: 1,
+    n: 1,
+};
 
 export class PromptManager {
     private readonly logger: pino.Logger;
@@ -72,32 +80,26 @@ export class PromptManager {
     }
 
     private async loadConfigFromFile(name: string, promptConfigDir: string) {
-        let promptConfig: PromptConfig = {
-            name: name,
-            model: "gpt-3.5-turbo",
-            stop: [],
-            max_tokens: 200,
-            temperature: 0,
-            top_p: 1,
-            n: 1,
-        };
-
         const configPath = path.join(promptConfigDir, "config.json");
-        this.logger.info(`Loading prompt <${name}> config from file ${configPath}.`);
-        if (!fs.existsSync(configPath)) {
-            throw new Error(`Prompt config file ${configPath} not found.`);
+        if (fs.existsSync(configPath)) {
+            this.logger.info(`Loading prompt <${name}> config from file ${configPath}.`);
+            try {
+                const overrideConfig = JSON.parse(fs.readFileSync(configPath, "utf-8"));
+                const config = {
+                    ...defaultPromptConfig,
+                    ...overrideConfig
+                };
+                this.promptConfigs.set(name, config);
+                this.logger.info({ config }, `Prompt <${name}> config loaded.`);
+            } catch (err: any) {
+                throw new Error(`Failed to parse prompt config file ${configPath}: ${err.message}`, {
+                    cause: err
+                });
+            }
+        } else {
+            this.logger.info(`Prompt <${name}> config file ${configPath} not found, using default config.`);
+            this.promptConfigs.set(name, defaultPromptConfig);
         }
-        try {
-            promptConfig = {
-                ...JSON.parse(fs.readFileSync(configPath, "utf-8"))
-            };
-        } catch (err: any) {
-            throw new Error(`Failed to parse prompt config file ${configPath}: ${err.message}`, {
-                cause: err
-            });
-        }
-
-        this.promptConfigs.set(name, promptConfig);
     }
 
     private async loadTemplateFromFile(name: string, promptConfigDir: string) {

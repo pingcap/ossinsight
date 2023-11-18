@@ -1,6 +1,6 @@
 import { resolve } from "path";
 
-export const DEFAULT_ANSWER_PROMPT_TEMPLATE = 'explorer-generate-answer';
+export const DEFAULT_EXPLORER_GENERATE_ANSWER_PROMPT_NAME = 'explorer-generate-answer';
 
 export const APIServerEnvSchema = {
   type: 'object',
@@ -50,6 +50,10 @@ export const APIServerEnvSchema = {
       separator: ',',
       default: ''
     },
+    EXPLORER_GENERATE_ANSWER_PROMPT_NAME: {
+      type: 'string',
+      default: DEFAULT_EXPLORER_GENERATE_ANSWER_PROMPT_NAME,
+    },
     EXPLORER_USER_MAX_QUESTIONS_PER_HOUR: {
       type: 'number',
       default: 15
@@ -70,6 +74,9 @@ export const APIServerEnvSchema = {
       type: 'boolean',
       default: false
     },
+    EMBEDDING_SERVICE_ENDPOINT: {
+      type: 'string'
+    },
     GITHUB_ACCESS_TOKENS: {
       type: 'string',
       separator: ','
@@ -82,13 +89,6 @@ export const APIServerEnvSchema = {
     },
     AUTH0_SECRET: {
       type: 'string'
-    },
-    EMBEDDING_SERVICE_ENDPOINT: {
-      type: 'string'
-    },
-    PROMPT_TEMPLATE_NAME: {
-      type: 'string',
-      default: DEFAULT_ANSWER_PROMPT_TEMPLATE,
     },
     TIDB_CLOUD_DATA_SERVICE_APP_ID: {
       type: 'string'
