@@ -829,7 +829,7 @@ export class ExplorerService {
             }
         } catch (err: any) {
             if (err.code === 'PROTOCOL_SEQUENCE_TIMEOUT') {
-                throw new ExplorerResolveQuestionError(err.sqlMessage, QuestionFeedbackType.ErrorQueryTimeout,{
+                throw new ExplorerResolveQuestionError(err.sqlMessage || err.message, QuestionFeedbackType.ErrorQueryTimeout,{
                     querySQL,
                     message: err.message
                 });

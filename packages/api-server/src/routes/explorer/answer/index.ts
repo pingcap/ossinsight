@@ -57,12 +57,12 @@ export const newQuestionHandler: FastifyPluginAsyncJsonSchemaToTs = async (app):
 
       const spent = DateTime.now().diff(start);
       if (spent.minutes > 4) {
-        throw new APIError(500, 'Failed to execute SQL: timeout', undefined, convertQuestionToPayload(resolvedQuestion));
+        throw new APIError(500, 'Failed to finish the answer: timeout', undefined, convertQuestionToPayload(resolvedQuestion));
       }
     }
 
     if (resolvedQuestion.status === QuestionStatus.Error) {
-      throw new APIError(500, question.error || 'Unknown error.', undefined, convertQuestionToPayload(resolvedQuestion));
+      throw new APIError(500, resolvedQuestion.error || 'Unknown error', undefined, convertQuestionToPayload(resolvedQuestion));
     }
 
     if (resolvedQuestion.status === QuestionStatus.Cancel) {
@@ -82,6 +82,7 @@ export function convertQuestionToPayload(question: Question) {
       link: 'https://ossinsight.io/explore/?id=' + question.id,
       status: question.status,
       error: question.error,
+      errorType: question.errorType,
     },
     query: {
       sql: question.querySQL,
