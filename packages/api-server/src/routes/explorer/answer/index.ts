@@ -43,7 +43,7 @@ export const newQuestionHandler: FastifyPluginAsyncJsonSchemaToTs = async (app):
     } catch (err: any) {
       const msg = `Failed to prepare question ${question.id}: ${err.message}`;
       app.log.error(err, msg);
-      throw new APIError(500, msg);
+      throw new APIError(500, msg, err, convertQuestionToPayload(resolvedQuestion));
     }
 
     // Get latest question object.
@@ -56,23 +56,40 @@ export const newQuestionHandler: FastifyPluginAsyncJsonSchemaToTs = async (app):
       await sleep(1000);
 
       const spent = DateTime.now().diff(start);
-      if (spent.minutes > 8) {
-        throw new APIError(500, 'Failed to execute SQL: timeout');
+      if (spent.minutes > 4) {
+        throw new APIError(500, 'Failed to execute SQL: timeout', undefined, convertQuestionToPayload(resolvedQuestion));
       }
     }
 
-    reply.status(200).send({
-      question: {
-        title: resolvedQuestion.title,
-        revisedTitle: resolvedQuestion.revisedTitle,
-        link: 'https://ossinsight.io/explore/?id=' + resolvedQuestion.id,
-      },
-      query: {
-        sql: resolvedQuestion.querySQL,
-      },
-      result: resolvedQuestion.result
-    });
+    if (resolvedQuestion.status === QuestionStatus.Error) {
+      throw new APIError(500, question.error || 'Unknown error.', undefined, convertQuestionToPayload(resolvedQuestion));
+    }
+
+    if (resolvedQuestion.status === QuestionStatus.Cancel) {
+      throw new APIError(500, 'The question has been canceled.', undefined, convertQuestionToPayload(resolvedQuestion));
+    }
+
+    reply.status(200).send(convertQuestionToPayload(resolvedQuestion));
   });
+}
+
+
+export function convertQuestionToPayload(question: Question) {
+  return {
+    question: {
+      title: question.title,
+      revisedTitle: question.revisedTitle,
+      link: 'https://ossinsight.io/explore/?id=' + question.id,
+      status: question.status,
+      error: question.error,
+    },
+    query: {
+      sql: question.querySQL,
+      spent: question.spent,
+      engines: question.engines
+    },
+    result: question.result
+  };
 }
 
 export default newQuestionHandler;
