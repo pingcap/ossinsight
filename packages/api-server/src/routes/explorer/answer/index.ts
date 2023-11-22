@@ -1,8 +1,11 @@
 import {FastifyPluginAsyncJsonSchemaToTs} from "@fastify/type-provider-json-schema-to-ts";
+import fs, {mkdirSync} from "fs";
 import {DateTime} from "luxon";
+import path from "path";
 import {Question, QuestionStatus} from "../../../plugins/services/explorer-service/types";
 import {APIError} from "../../../utils/error";
 import sleep from "../../../utils/sleep";
+import {saveQueryResultToSqlite} from "../../../utils/sqlite";
 
 const schema = {
   summary: 'Get answer of a new question',
@@ -12,13 +15,23 @@ const schema = {
     type: 'object',
     properties: {
       question: { type: 'string' },
+      format: {
+        type: 'string',
+        enum: ['json', 'sqlite'],
+      },
       ignoreCache: { type: 'boolean', default: false }
     }
   } as const
 };
 
+export enum AnswerFormat {
+  JSON = 'json',
+  SQLITE = 'sqlite',
+}
+
 export interface IBody {
   question: string;
+  format: AnswerFormat;
   ignoreCache: boolean;
 }
 
@@ -28,7 +41,7 @@ export const newQuestionHandler: FastifyPluginAsyncJsonSchemaToTs = async (app):
   }>('/', {
     schema
   }, async function (req, reply) {
-    const { question: questionTitle, ignoreCache } = req.body;
+    const { question: questionTitle, ignoreCache, format = AnswerFormat.JSON } = req.body;
 
     // Create question.
     const question = await app.explorerService.newQuestion(0, questionTitle, ignoreCache, true, false, null, 10);
@@ -69,10 +82,27 @@ export const newQuestionHandler: FastifyPluginAsyncJsonSchemaToTs = async (app):
       throw new APIError(500, 'The question has been canceled.', undefined, convertQuestionToPayload(resolvedQuestion));
     }
 
-    reply.status(200).send(convertQuestionToPayload(resolvedQuestion));
+    if (format === AnswerFormat.SQLITE) {
+      try {
+        const dir = path.resolve(process.cwd(), '../../temp');
+        const dbName = `answer-${question.id}.db`;
+        const dbFile = path.resolve(dir, dbName) ;
+        mkdirSync(dir, { recursive: true });
+
+        await saveQueryResultToSqlite(resolvedQuestion.result!, dbFile);
+        const buffer = fs.readFileSync(dbFile);
+
+        reply.type('application/octet-stream');
+        reply.header('Content-Disposition', `attachment; filename="${dbName}"`);
+        reply.send(buffer)
+      } catch (err: any) {
+        throw new APIError(500, `Failed to save query result to sqlite file: ${err.message}`, err, convertQuestionToPayload(resolvedQuestion));
+      }
+    } else {
+      reply.status(200).send(convertQuestionToPayload(resolvedQuestion));
+    }
   });
 }
-
 
 export function convertQuestionToPayload(question: Question) {
   return {
@@ -92,5 +122,6 @@ export function convertQuestionToPayload(question: Question) {
     result: question.result
   };
 }
+
 
 export default newQuestionHandler;
