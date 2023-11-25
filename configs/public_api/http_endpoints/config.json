@@ -1,5 +1,49 @@
 [
   {
+    "name": "/users/issues/monthly",
+    "description": "Retrieve a monthly summary of a GitHub user's opened issues and issue comments in the specified time range. (If `from` and `to` are not specified, the default period is the past year.)",
+    "method": "GET",
+    "endpoint": "/users/issues/monthly",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "username",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "from",
+        "type": "string",
+        "required": 0,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "to",
+        "type": "string",
+        "required": 0,
+        "default": "2099-12-31",
+        "description": ""
+      }
+    ],
+    "settings": {
+      "timeout": 30000,
+      "row_limit": 1000,
+      "cache_enabled": 0,
+      "cache_ttl": 0,
+      "enable_pagination": 0
+    },
+    "tag": "Default",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-users-issues-monthly.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
     "name": "/users/pull_requests/monthly/siz",
     "description": "Retrieve a monthly summary of a GitHub user's opened and merged pull requests in the specified time range. (If `from` and `to` are not specified, the default period is the past year.)",
     "method": "GET",
