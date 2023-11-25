@@ -1,9 +1,9 @@
 [
   {
-    "name": "/repos/issues/opened_to_closed",
+    "name": "/repos/issues/open-to-first-resp",
     "description": "Return the p0 - p100 number  of the duration between issue opened to closed (Unit: hours)",
     "method": "GET",
-    "endpoint": "/repos/issues/opened_to_closed",
+    "endpoint": "/repos/issues/open_to_first_responded",
     "data_source": {
       "cluster_id": 1379661944642684098
     },
@@ -32,7 +32,44 @@
     },
     "tag": "Default",
     "batch_operation": 0,
-    "sql_file": "sql/GET-repos-issues-opened_to_closed.sql",
+    "sql_file": "sql/GET-repos-issues-open_to_first_responded.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "/repos/issues/open_to_closed",
+    "description": "Return the p0 - p100 number  of the duration between issue opened to closed (Unit: hours)",
+    "method": "GET",
+    "endpoint": "/repos/issues/open_to_closed",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "owner",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "repo",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      }
+    ],
+    "settings": {
+      "timeout": 30000,
+      "row_limit": 1000,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
+      "enable_pagination": 0
+    },
+    "tag": "Default",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-repos-issues-open_to_closed.sql",
     "type": "sql_endpoint",
     "return_type": "json"
   },
@@ -149,7 +186,7 @@
   },
   {
     "name": "List Hot Collections",
-    "description": "List Repository Collections",
+    "description": "Retrieve a ranked list of repository collections based on visit frequency. This endpoint returns the top 20 most visited collections within the last month, including collection IDs, names, and associated repository metrics. The results are ordered by the number of visits in descending order to highlight the most popular collections.",
     "method": "GET",
     "endpoint": "/collections/hot",
     "data_source": {
@@ -739,7 +776,7 @@
   },
   {
     "name": "List Collection Items",
-    "description": "List Repositories of Specified Collection",
+    "description": "List Repositories with a Collection by specify collection ID.",
     "method": "GET",
     "endpoint": "/collections/repos",
     "data_source": {
@@ -769,7 +806,7 @@
   },
   {
     "name": "List Collections",
-    "description": "List Repository Collections",
+    "description": "It returns a list of each collection's unique ID and its name.",
     "method": "GET",
     "endpoint": "/collections",
     "data_source": {
