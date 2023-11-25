@@ -10,7 +10,7 @@ SELECT
         WHEN 'PullRequestReviewCommentEvent' THEN 'review_comments'
         WHEN 'PushEvent' THEN 'pushes'
     END AS contribution_type,
-    COUNT(*) AS activities 
+    COUNT(*) AS contributions 
 FROM github_events ge
 WHERE
     actor_id = (SELECT id FROM github_users WHERE login = ${username} LIMIT 1)
