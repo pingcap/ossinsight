@@ -692,14 +692,7 @@
     },
     "params": [
       {
-        "name": "owner",
-        "type": "string",
-        "required": 1,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "repo",
+        "name": "username",
         "type": "string",
         "required": 1,
         "default": "",
@@ -709,7 +702,7 @@
         "name": "from",
         "type": "string",
         "required": 0,
-        "default": "2000-01-01",
+        "default": "",
         "description": ""
       },
       {
@@ -1750,7 +1743,7 @@
   },
   {
     "name": "List PR Creators Countries",
-    "description": "Calculates the number and percentage of pull request creators (Aka. Code contributors) from different countries within a defined time period. The API also provides the option to exclude creators from unknown countries and orders the results by the count of pull request creators per country in descending order.\n",
+    "description": "List countries by pull request creators (Code contributors) during a specified time frame, provided the choice to filter out those with unknown countries and sorting the results by creator count in descending order.",
     "method": "GET",
     "endpoint": "/repos/pull_request_creators/countries",
     "data_source": {
