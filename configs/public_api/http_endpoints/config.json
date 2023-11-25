@@ -1,5 +1,57 @@
 [
   {
+    "name": "/repos/participants/rank_by_act",
+    "description": "Retrieve top GitHub contributors' recent activity statistics for a repository, comparing the past month to the month before.",
+    "method": "GET",
+    "endpoint": "/repos/participants/rank_by_activities",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "owner",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "repo",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "period",
+        "type": "string",
+        "required": 0,
+        "default": "past_28_days",
+        "description": "",
+        "enum": "past_month,past_28_days"
+      },
+      {
+        "name": "n",
+        "type": "integer",
+        "required": 0,
+        "default": "50",
+        "description": ""
+      }
+    ],
+    "settings": {
+      "timeout": 30000,
+      "row_limit": 1000,
+      "cache_enabled": 0,
+      "cache_ttl": 0,
+      "enable_pagination": 0
+    },
+    "tag": "Default",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-repos-participants-rank_by_activities.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
     "name": "/users/commits/monthly",
     "description": "Retrieve a monthly summary of a GitHub user's pushed commits in the specified time range. (If `from` and `to` are not specified, the default period is the past year.)",
     "method": "GET",
@@ -1196,7 +1248,7 @@
   },
   {
     "name": "List Pull Request Creators",
-    "description": "Lists users who have created pull requests in a specified GitHub repository. Returns user IDs, logins, names, the number of pull requests made, and the dates of their first opened and first merged pull requests. ",
+    "description": "Lists users who have created pull requests (Aka. Code contributors)  in a specified GitHub repository. Returns user IDs, logins, names, the number of pull requests made, and the dates of their first opened and first merged pull requests. ",
     "method": "GET",
     "endpoint": "/repos/pull_request_creators",
     "data_source": {
@@ -1698,7 +1750,7 @@
   },
   {
     "name": "List PR Creators Countries",
-    "description": "Calculates the number and percentage of pull request creators from different countries within a defined time period. The API also provides the option to exclude creators from unknown countries and orders the results by the count of pull request creators per country in descending order.\n",
+    "description": "Calculates the number and percentage of pull request creators (Aka. Code contributors) from different countries within a defined time period. The API also provides the option to exclude creators from unknown countries and orders the results by the count of pull request creators per country in descending order.\n",
     "method": "GET",
     "endpoint": "/repos/pull_request_creators/countries",
     "data_source": {
