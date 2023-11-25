@@ -1,9 +1,9 @@
 [
   {
-    "name": "/repos/issues/overview",
-    "description": "This API provides detailed statistics on issue-related activities within a specified GitHub repository. It returns the total count of issues opened, the number of unique users who created issues, the total count of issue comments, and the number of unique users who commented on issues",
+    "name": "/repos/pull_reques/overview",
+    "description": "This API endpoint collects and returns statistics on pull request activities for a specific GitHub repository. It reports the total number of pull requests, the count of unique contributors who opened pull requests, the total number of pull request reviews, and the count of unique reviewers. ",
     "method": "GET",
-    "endpoint": "/repos/issues/overview",
+    "endpoint": "/repos/pull_requests/overview",
     "data_source": {
       "cluster_id": 1379661944642684098
     },
@@ -32,7 +32,7 @@
     },
     "tag": "Default",
     "batch_operation": 0,
-    "sql_file": "sql/GET-repos-issues-overview.sql",
+    "sql_file": "sql/GET-repos-pull_requests-overview.sql",
     "type": "sql_endpoint",
     "return_type": "json"
   },
@@ -557,6 +557,43 @@
     "return_type": "json"
   },
   {
+    "name": "/repos/issues/overview",
+    "description": "This API provides detailed statistics on issue-related activities within a specified GitHub repository. It returns the total count of issues opened, the number of unique users who created issues, the total count of issue comments, and the number of unique users who commented on issues",
+    "method": "GET",
+    "endpoint": "/repos/issues/overview",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "owner",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "repo",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      }
+    ],
+    "settings": {
+      "timeout": 30000,
+      "row_limit": 1000,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
+      "enable_pagination": 0
+    },
+    "tag": "Default",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-repos-issues-overview.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
     "name": "/repos/overview",
     "description": "This API retrieves key engagement metrics for a specific GitHub repository. It returns a snapshot of the repository's activity, including the total number of stars, commits, issues, and unique pull request creators",
     "method": "GET",
@@ -829,43 +866,6 @@
     "tag": "Pull Request Creators",
     "batch_operation": 0,
     "sql_file": "sql/GET-repos-pull_request_creators-organizations.sql",
-    "type": "sql_endpoint",
-    "return_type": "json"
-  },
-  {
-    "name": "/repos/pull_reques/overview",
-    "description": "",
-    "method": "GET",
-    "endpoint": "/repos/pull_requests/overview",
-    "data_source": {
-      "cluster_id": 1379661944642684098
-    },
-    "params": [
-      {
-        "name": "owner",
-        "type": "string",
-        "required": 1,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "repo",
-        "type": "string",
-        "required": 1,
-        "default": "",
-        "description": ""
-      }
-    ],
-    "settings": {
-      "timeout": 30000,
-      "row_limit": 1000,
-      "cache_enabled": 1,
-      "cache_ttl": 600,
-      "enable_pagination": 0
-    },
-    "tag": "Default",
-    "batch_operation": 0,
-    "sql_file": "sql/GET-repos-pull_requests-overview.sql",
     "type": "sql_endpoint",
     "return_type": "json"
   },
