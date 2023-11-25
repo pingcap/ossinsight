@@ -1,9 +1,9 @@
 [
   {
-    "name": "/repos/pull_requests/history/siz",
+    "name": "/repos/pull_requests/monthly/loc",
     "description": "",
     "method": "GET",
-    "endpoint": "/repos/pull_requests/history/size",
+    "endpoint": "/repos/pull_requests/monthly/loc",
     "data_source": {
       "cluster_id": 1379661944642684098
     },
@@ -46,7 +46,58 @@
     },
     "tag": "Default",
     "batch_operation": 0,
-    "sql_file": "sql/GET-repos-pull_requests-history-size.sql",
+    "sql_file": "sql/GET-repos-pull_requests-monthly-loc.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "/repos/pull_requests/monthly/siz",
+    "description": "",
+    "method": "GET",
+    "endpoint": "/repos/pull_requests/monthly/size",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "owner",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "repo",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "from",
+        "type": "string",
+        "required": 0,
+        "default": "2000-01-01",
+        "description": ""
+      },
+      {
+        "name": "to",
+        "type": "string",
+        "required": 0,
+        "default": "2099-12-31",
+        "description": ""
+      }
+    ],
+    "settings": {
+      "timeout": 30000,
+      "row_limit": 1000,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
+      "enable_pagination": 0
+    },
+    "tag": "Default",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-repos-pull_requests-monthly-size.sql",
     "type": "sql_endpoint",
     "return_type": "json"
   },
@@ -102,10 +153,10 @@
     "return_type": "json"
   },
   {
-    "name": "/repos/issues/history",
+    "name": "/repos/issues/monthly",
     "description": "",
     "method": "GET",
-    "endpoint": "/repos/issues/history",
+    "endpoint": "/repos/issues/monthly",
     "data_source": {
       "cluster_id": 1379661944642684098
     },
@@ -148,7 +199,7 @@
     },
     "tag": "Default",
     "batch_operation": 0,
-    "sql_file": "sql/GET-repos-issues-history.sql",
+    "sql_file": "sql/GET-repos-issues-monthly.sql",
     "type": "sql_endpoint",
     "return_type": "json"
   },
@@ -389,7 +440,7 @@
   },
   {
     "name": "Collection ranking by issues",
-    "description": "Returns the total number of issues, ranking of repositories based on the number of new issues, the percentage growth of issues, and the changes in rank between the current and past periods. The statistics are filtered based on a given collection ID in the past month",
+    "description": "Returns the total number of issues, ranking of repositories based on the number of new issues, the percentage growth of issues, and the changes in rank between the current and past month. The statistics are filtered based on a given collection ID in the past month",
     "method": "GET",
     "endpoint": "/collections/ranking_by_issues",
     "data_source": {
