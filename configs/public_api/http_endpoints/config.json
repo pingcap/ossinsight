@@ -1,39 +1,69 @@
 [
   {
-    "name": "/repos/commits/time_distribution_copy",
-    "description": "",
+    "name": "List Collections",
+    "description": "It returns a list of each collection's unique ID and its name.",
     "method": "GET",
-    "endpoint": "/repos/contributors/time_distribution_dump_hzlrWA",
+    "endpoint": "/collections",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [],
+    "settings": {
+      "timeout": 5000,
+      "row_limit": 200,
+      "cache_enabled": 0,
+      "cache_ttl": 0,
+      "enable_pagination": 1
+    },
+    "tag": "Collections",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-collections.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "List Hot Collections",
+    "description": "Returns the top 20 most visited collections within the last month, including collection IDs, names, and associated repository metrics. The results are ordered by the number of visits in descending order to highlight the most popular collections.",
+    "method": "GET",
+    "endpoint": "/collections/hot",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [],
+    "settings": {
+      "timeout": 5000,
+      "row_limit": 200,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
+      "enable_pagination": 1
+    },
+    "tag": "Collections",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-collections-hot.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "Collection ranking by issues",
+    "description": "Returns the total number of issues, ranking of repositories based on the number of new issues, the percentage growth of issues, and the changes in rank between the current and past month. The statistics are filtered based on a given collection ID in the past month",
+    "method": "GET",
+    "endpoint": "/collections/ranking_by_issues",
     "data_source": {
       "cluster_id": 1379661944642684098
     },
     "params": [
       {
-        "name": "owner",
-        "type": "string",
+        "name": "collection_id",
+        "type": "integer",
         "required": 1,
         "default": "",
         "description": ""
       },
       {
-        "name": "repo",
-        "type": "string",
-        "required": 1,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "from",
+        "name": "period",
         "type": "string",
         "required": 0,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "to",
-        "type": "string",
-        "required": 0,
-        "default": "2099-12-31",
+        "default": "past_28_days",
         "description": ""
       }
     ],
@@ -46,7 +76,133 @@
     },
     "tag": "Default",
     "batch_operation": 0,
-    "sql_file": "sql/GET-repos-contributors-time_distribution_dump_hzlrWA.sql",
+    "sql_file": "sql/GET-collections-ranking_by_issues.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "Collection ranking by prs",
+    "description": "Compares PR data over two selected time periods, returns\nThe total number of pull requests.\nThe growth of pull requests in the current period compared to the previous period.\nThe ranking of each repository by the number of pull requests ",
+    "method": "GET",
+    "endpoint": "/collections/ranking_by_prs",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "collection_id",
+        "type": "integer",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "period",
+        "type": "string",
+        "required": 0,
+        "default": "past_28_days",
+        "description": ""
+      }
+    ],
+    "settings": {
+      "timeout": 30000,
+      "row_limit": 1000,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
+      "enable_pagination": 0
+    },
+    "tag": "Default",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-collections-ranking_by_prs.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "Collection ranking by stars",
+    "description": "It provides counts of new stars, star growth percentages, and ranking changes, reflecting the repositories' popularity and community engagement over time.",
+    "method": "GET",
+    "endpoint": "/collections/ranking_by_stars",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "collection_id",
+        "type": "integer",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "period",
+        "type": "string",
+        "required": 0,
+        "default": "past_28_days",
+        "description": ""
+      }
+    ],
+    "settings": {
+      "timeout": 30000,
+      "row_limit": 1000,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
+      "enable_pagination": 0
+    },
+    "tag": "Default",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-collections-ranking_by_stars.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "List Collection Items",
+    "description": "List Repositories with a Collection by specify collection ID.",
+    "method": "GET",
+    "endpoint": "/collections/repos",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "collection_id",
+        "type": "integer",
+        "required": 1,
+        "default": "",
+        "description": ""
+      }
+    ],
+    "settings": {
+      "timeout": 5000,
+      "row_limit": 50,
+      "cache_enabled": 0,
+      "cache_ttl": 0,
+      "enable_pagination": 0
+    },
+    "tag": "Collections",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-collections-repos.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "Hello World",
+    "description": "",
+    "method": "GET",
+    "endpoint": "/hello",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [],
+    "settings": {
+      "timeout": 5000,
+      "row_limit": 50,
+      "cache_enabled": 0,
+      "cache_ttl": 0,
+      "enable_pagination": 0
+    },
+    "tag": "Default",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-hello.sql",
     "type": "sql_endpoint",
     "return_type": "json"
   },
@@ -98,6 +254,711 @@
     "tag": "Default",
     "batch_operation": 0,
     "sql_file": "sql/GET-repos-commits-time_distribution.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "List Issue Creators",
+    "description": "List GitHub users who have created issues in a specific repository.The returned data includes the user ID, login, name, total issues created, and the date of the first issue opened. Limits and offsets can be applied for pagination purposes.",
+    "method": "GET",
+    "endpoint": "/repos/issue_creators",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "owner",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "repo",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "exclude_bots",
+        "type": "boolean",
+        "required": 0,
+        "default": "true",
+        "description": ""
+      },
+      {
+        "name": "sort",
+        "type": "string",
+        "required": 0,
+        "default": "issues-desc",
+        "description": ""
+      },
+      {
+        "name": "offset",
+        "type": "integer",
+        "required": 0,
+        "default": "0",
+        "description": ""
+      },
+      {
+        "name": "limit",
+        "type": "integer",
+        "required": 0,
+        "default": "30",
+        "description": ""
+      }
+    ],
+    "settings": {
+      "timeout": 5000,
+      "row_limit": 2000,
+      "cache_enabled": 0,
+      "cache_ttl": 0,
+      "enable_pagination": 0
+    },
+    "tag": "Default",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-repos-issue_creators.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "List Issue Creators Countries",
+    "description": "Provides the count and percentage of issue creators from each country, filtering data within a specified time range. Additionally, the API has an option to exclude issue creators from unspecified or unknown countries, and it returns number of issue creators per country, in descending order.",
+    "method": "GET",
+    "endpoint": "/repos/issue_creators/countries",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "owner",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "repo",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "from",
+        "type": "string",
+        "required": 0,
+        "default": "2000-01-01",
+        "description": ""
+      },
+      {
+        "name": "to",
+        "type": "string",
+        "required": 0,
+        "default": "2099-12-31",
+        "description": ""
+      },
+      {
+        "name": "exclude_unknown",
+        "type": "boolean",
+        "required": 0,
+        "default": "true",
+        "description": ""
+      }
+    ],
+    "settings": {
+      "timeout": 10000,
+      "row_limit": 300,
+      "cache_enabled": 0,
+      "cache_ttl": 0,
+      "enable_pagination": 0
+    },
+    "tag": "Issue Creators",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-repos-issue_creators-countries.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "Issue Creators History",
+    "description": "Returns the date and the cumulative number of unique users who have opened issues up to the date.\n",
+    "method": "GET",
+    "endpoint": "/repos/issue_creators/history",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "per",
+        "type": "string",
+        "required": 0,
+        "default": "month",
+        "description": ""
+      },
+      {
+        "name": "owner",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "repo",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "from",
+        "type": "string",
+        "required": 0,
+        "default": "2000-01-01",
+        "description": ""
+      },
+      {
+        "name": "to",
+        "type": "string",
+        "required": 0,
+        "default": "2099-12-31",
+        "description": ""
+      }
+    ],
+    "settings": {
+      "timeout": 5000,
+      "row_limit": 2000,
+      "cache_enabled": 0,
+      "cache_ttl": 0,
+      "enable_pagination": 0
+    },
+    "tag": "Issue Creators",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-repos-issue_creators-history.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "List Issue Creators Orgs",
+    "description": "Counts and calculates the percentage of issue creators from different organizations within a given date range. The API sorts the results by the number of issue creators in descending order.",
+    "method": "GET",
+    "endpoint": "/repos/issue_creators/organizations",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "owner",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "repo",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "from",
+        "type": "string",
+        "required": 0,
+        "default": "2000-01-01",
+        "description": ""
+      },
+      {
+        "name": "to",
+        "type": "string",
+        "required": 0,
+        "default": "2099-12-31",
+        "description": ""
+      },
+      {
+        "name": "exclude_unknown",
+        "type": "string",
+        "required": 0,
+        "default": "",
+        "description": ""
+      }
+    ],
+    "settings": {
+      "timeout": 10000,
+      "row_limit": 300,
+      "cache_enabled": 0,
+      "cache_ttl": 0,
+      "enable_pagination": 0
+    },
+    "tag": "Issue Creators",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-repos-issue_creators-organizations.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "/repos/issues/monthly",
+    "description": "Retrieve monthly counts of opened and closed issues for a specific repository.",
+    "method": "GET",
+    "endpoint": "/repos/issues/monthly",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "owner",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "repo",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "from",
+        "type": "string",
+        "required": 0,
+        "default": "2000-01-01",
+        "description": ""
+      },
+      {
+        "name": "to",
+        "type": "string",
+        "required": 0,
+        "default": "2099-12-31",
+        "description": ""
+      }
+    ],
+    "settings": {
+      "timeout": 30000,
+      "row_limit": 1000,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
+      "enable_pagination": 0
+    },
+    "tag": "Default",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-repos-issues-monthly.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "/repos/issues/open_to_closed",
+    "description": "Retrieve monthly issue resolution time percentiles (P0, P25, P50, P75, P100) for a specific repository (Unit: Hours).",
+    "method": "GET",
+    "endpoint": "/repos/issues/open_to_closed",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "owner",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "repo",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "from",
+        "type": "string",
+        "required": 0,
+        "default": "2000-01-01",
+        "description": ""
+      },
+      {
+        "name": "to",
+        "type": "string",
+        "required": 0,
+        "default": "2099-12-31",
+        "description": ""
+      }
+    ],
+    "settings": {
+      "timeout": 30000,
+      "row_limit": 1000,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
+      "enable_pagination": 0
+    },
+    "tag": "Default",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-repos-issues-open_to_closed.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "/repos/issues/open_to_first_resp",
+    "description": "Return the p0 - p100 number of the duration between issue opened to first response (comments / closed) (Unit: hours)",
+    "method": "GET",
+    "endpoint": "/repos/issues/open_to_first_responded",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "owner",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "repo",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "from",
+        "type": "string",
+        "required": 0,
+        "default": "2000-01-01",
+        "description": ""
+      },
+      {
+        "name": "to",
+        "type": "string",
+        "required": 0,
+        "default": "2099-12-31",
+        "description": ""
+      }
+    ],
+    "settings": {
+      "timeout": 30000,
+      "row_limit": 1000,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
+      "enable_pagination": 0
+    },
+    "tag": "Default",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-repos-issues-open_to_first_responded.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "/repos/issues/overview",
+    "description": "Provides detailed statistics on issue-related activities within a specified GitHub repository. It returns the total count of issues opened, the number of unique users who created issues, the total count of issue comments, and the number of unique users who commented on issues",
+    "method": "GET",
+    "endpoint": "/repos/issues/overview",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "owner",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "repo",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      }
+    ],
+    "settings": {
+      "timeout": 30000,
+      "row_limit": 1000,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
+      "enable_pagination": 0
+    },
+    "tag": "Default",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-repos-issues-overview.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "/repos/overview",
+    "description": "This API retrieves key engagement metrics for a specific GitHub repository. It returns a snapshot of the repository's activity, including the total number of stars, commits, issues, and unique pull request creators",
+    "method": "GET",
+    "endpoint": "/repos/overview",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "owner",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "repo",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      }
+    ],
+    "settings": {
+      "timeout": 30000,
+      "row_limit": 1000,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
+      "enable_pagination": 0
+    },
+    "tag": "Default",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-repos-overview.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "List Pull Request Creators",
+    "description": "Lists users who have created pull requests in a specified GitHub repository. Returns user IDs, logins, names, the number of pull requests made, and the dates of their first opened and first merged pull requests. ",
+    "method": "GET",
+    "endpoint": "/repos/pull_request_creators",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "owner",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "repo",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "exclude_bots",
+        "type": "boolean",
+        "required": 0,
+        "default": "true",
+        "description": ""
+      },
+      {
+        "name": "sort",
+        "type": "string",
+        "required": 0,
+        "default": "prs-desc",
+        "description": ""
+      },
+      {
+        "name": "offset",
+        "type": "integer",
+        "required": 0,
+        "default": "0",
+        "description": ""
+      },
+      {
+        "name": "limit",
+        "type": "integer",
+        "required": 0,
+        "default": "30",
+        "description": ""
+      }
+    ],
+    "settings": {
+      "timeout": 5000,
+      "row_limit": 2000,
+      "cache_enabled": 0,
+      "cache_ttl": 0,
+      "enable_pagination": 0
+    },
+    "tag": "Default",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-repos-pull_request_creators.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "List PR Creators Countries",
+    "description": "Calculates the number and percentage of pull request creators from different countries within a defined time period. The API also provides the option to exclude creators from unknown countries and orders the results by the count of pull request creators per country in descending order.\n",
+    "method": "GET",
+    "endpoint": "/repos/pull_request_creators/countries",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "owner",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "repo",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "from",
+        "type": "string",
+        "required": 1,
+        "default": "2000-01-01",
+        "description": ""
+      },
+      {
+        "name": "to",
+        "type": "string",
+        "required": 1,
+        "default": "2099-12-31",
+        "description": ""
+      },
+      {
+        "name": "exclude_unknown",
+        "type": "boolean",
+        "required": 0,
+        "default": "true",
+        "description": ""
+      }
+    ],
+    "settings": {
+      "timeout": 10000,
+      "row_limit": 300,
+      "cache_enabled": 0,
+      "cache_ttl": 0,
+      "enable_pagination": 0
+    },
+    "tag": "Pull Request Creators",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-repos-pull_request_creators-countries.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "Pull Request Creators History",
+    "description": "Returns cumulative tally of unique pull request creators for a given GitHub repository over a selected time frame (daily, weekly, or monthly).",
+    "method": "GET",
+    "endpoint": "/repos/pull_request_creators/history",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "per",
+        "type": "string",
+        "required": 0,
+        "default": "month",
+        "description": ""
+      },
+      {
+        "name": "owner",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "repo",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "from",
+        "type": "string",
+        "required": 0,
+        "default": "2000-01-01",
+        "description": ""
+      },
+      {
+        "name": "to",
+        "type": "string",
+        "required": 0,
+        "default": "2099-12-31",
+        "description": ""
+      }
+    ],
+    "settings": {
+      "timeout": 5000,
+      "row_limit": 2000,
+      "cache_enabled": 0,
+      "cache_ttl": 0,
+      "enable_pagination": 0
+    },
+    "tag": "Pull Request Creators",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-repos-pull_request_creators-history.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "List PR Creators Orgs",
+    "description": "It counts the distinct creators associated with each organization and calculates their proportion of the total pull requests within a specified time frame. ",
+    "method": "GET",
+    "endpoint": "/repos/pull_request_creators/organizations",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "owner",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "repo",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "from",
+        "type": "string",
+        "required": 0,
+        "default": "2000-01-01",
+        "description": ""
+      },
+      {
+        "name": "to",
+        "type": "string",
+        "required": 0,
+        "default": "2099-12-31",
+        "description": ""
+      },
+      {
+        "name": "exclude_unknown",
+        "type": "boolean",
+        "required": 0,
+        "default": "true",
+        "description": ""
+      }
+    ],
+    "settings": {
+      "timeout": 10000,
+      "row_limit": 2000,
+      "cache_enabled": 0,
+      "cache_ttl": 0,
+      "enable_pagination": 0
+    },
+    "tag": "Pull Request Creators",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-repos-pull_request_creators-organizations.sql",
     "type": "sql_endpoint",
     "return_type": "json"
   },
@@ -255,159 +1116,6 @@
     "return_type": "json"
   },
   {
-    "name": "/repos/issues/monthly",
-    "description": "Retrieve monthly counts of opened and closed issues for a specific repository.",
-    "method": "GET",
-    "endpoint": "/repos/issues/monthly",
-    "data_source": {
-      "cluster_id": 1379661944642684098
-    },
-    "params": [
-      {
-        "name": "owner",
-        "type": "string",
-        "required": 1,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "repo",
-        "type": "string",
-        "required": 1,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "from",
-        "type": "string",
-        "required": 0,
-        "default": "2000-01-01",
-        "description": ""
-      },
-      {
-        "name": "to",
-        "type": "string",
-        "required": 0,
-        "default": "2099-12-31",
-        "description": ""
-      }
-    ],
-    "settings": {
-      "timeout": 30000,
-      "row_limit": 1000,
-      "cache_enabled": 1,
-      "cache_ttl": 600,
-      "enable_pagination": 0
-    },
-    "tag": "Default",
-    "batch_operation": 0,
-    "sql_file": "sql/GET-repos-issues-monthly.sql",
-    "type": "sql_endpoint",
-    "return_type": "json"
-  },
-  {
-    "name": "/repos/issues/open_to_first_resp",
-    "description": "Return the p0 - p100 number of the duration between issue opened to first response (comments / closed) (Unit: hours)",
-    "method": "GET",
-    "endpoint": "/repos/issues/open_to_first_responded",
-    "data_source": {
-      "cluster_id": 1379661944642684098
-    },
-    "params": [
-      {
-        "name": "owner",
-        "type": "string",
-        "required": 1,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "repo",
-        "type": "string",
-        "required": 1,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "from",
-        "type": "string",
-        "required": 0,
-        "default": "2000-01-01",
-        "description": ""
-      },
-      {
-        "name": "to",
-        "type": "string",
-        "required": 0,
-        "default": "2099-12-31",
-        "description": ""
-      }
-    ],
-    "settings": {
-      "timeout": 30000,
-      "row_limit": 1000,
-      "cache_enabled": 1,
-      "cache_ttl": 600,
-      "enable_pagination": 0
-    },
-    "tag": "Default",
-    "batch_operation": 0,
-    "sql_file": "sql/GET-repos-issues-open_to_first_responded.sql",
-    "type": "sql_endpoint",
-    "return_type": "json"
-  },
-  {
-    "name": "/repos/issues/open_to_closed",
-    "description": "Retrieve monthly issue resolution time percentiles (P0, P25, P50, P75, P100) for a specific repository (Unit: Hours).",
-    "method": "GET",
-    "endpoint": "/repos/issues/open_to_closed",
-    "data_source": {
-      "cluster_id": 1379661944642684098
-    },
-    "params": [
-      {
-        "name": "owner",
-        "type": "string",
-        "required": 1,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "repo",
-        "type": "string",
-        "required": 1,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "from",
-        "type": "string",
-        "required": 0,
-        "default": "2000-01-01",
-        "description": ""
-      },
-      {
-        "name": "to",
-        "type": "string",
-        "required": 0,
-        "default": "2099-12-31",
-        "description": ""
-      }
-    ],
-    "settings": {
-      "timeout": 30000,
-      "row_limit": 1000,
-      "cache_enabled": 1,
-      "cache_ttl": 600,
-      "enable_pagination": 0
-    },
-    "tag": "Default",
-    "batch_operation": 0,
-    "sql_file": "sql/GET-repos-issues-open_to_closed.sql",
-    "type": "sql_endpoint",
-    "return_type": "json"
-  },
-  {
     "name": "/repos/pull_reques/overview",
     "description": "Returns the total number of pull requests, the count of unique contributors who opened pull requests, the total number of pull request reviews, and the count of unique reviewers. ",
     "method": "GET",
@@ -445,358 +1153,14 @@
     "return_type": "json"
   },
   {
-    "name": "/repos/issues/overview",
-    "description": "Provides detailed statistics on issue-related activities within a specified GitHub repository. It returns the total count of issues opened, the number of unique users who created issues, the total count of issue comments, and the number of unique users who commented on issues",
+    "name": "List Stargazers Countries",
+    "description": "Counts the total number of stargazers from each country and calculates their proportion within a given time frame. The API includes an option to exclude stargazers from unspecified or unknown countries, and it orders the results by the count of stargazers per country in descending order.",
     "method": "GET",
-    "endpoint": "/repos/issues/overview",
+    "endpoint": "/repos/stargazers/countries",
     "data_source": {
       "cluster_id": 1379661944642684098
     },
     "params": [
-      {
-        "name": "owner",
-        "type": "string",
-        "required": 1,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "repo",
-        "type": "string",
-        "required": 1,
-        "default": "",
-        "description": ""
-      }
-    ],
-    "settings": {
-      "timeout": 30000,
-      "row_limit": 1000,
-      "cache_enabled": 1,
-      "cache_ttl": 600,
-      "enable_pagination": 0
-    },
-    "tag": "Default",
-    "batch_operation": 0,
-    "sql_file": "sql/GET-repos-issues-overview.sql",
-    "type": "sql_endpoint",
-    "return_type": "json"
-  },
-  {
-    "name": "/repos/overview",
-    "description": "This API retrieves key engagement metrics for a specific GitHub repository. It returns a snapshot of the repository's activity, including the total number of stars, commits, issues, and unique pull request creators",
-    "method": "GET",
-    "endpoint": "/repos/overview",
-    "data_source": {
-      "cluster_id": 1379661944642684098
-    },
-    "params": [
-      {
-        "name": "owner",
-        "type": "string",
-        "required": 1,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "repo",
-        "type": "string",
-        "required": 1,
-        "default": "",
-        "description": ""
-      }
-    ],
-    "settings": {
-      "timeout": 30000,
-      "row_limit": 1000,
-      "cache_enabled": 1,
-      "cache_ttl": 600,
-      "enable_pagination": 0
-    },
-    "tag": "Default",
-    "batch_operation": 0,
-    "sql_file": "sql/GET-repos-overview.sql",
-    "type": "sql_endpoint",
-    "return_type": "json"
-  },
-  {
-    "name": "List Hot Collections",
-    "description": "Returns the top 20 most visited collections within the last month, including collection IDs, names, and associated repository metrics. The results are ordered by the number of visits in descending order to highlight the most popular collections.",
-    "method": "GET",
-    "endpoint": "/collections/hot",
-    "data_source": {
-      "cluster_id": 1379661944642684098
-    },
-    "params": [],
-    "settings": {
-      "timeout": 5000,
-      "row_limit": 200,
-      "cache_enabled": 1,
-      "cache_ttl": 600,
-      "enable_pagination": 1
-    },
-    "tag": "Collections",
-    "batch_operation": 0,
-    "sql_file": "sql/GET-collections-hot.sql",
-    "type": "sql_endpoint",
-    "return_type": "json"
-  },
-  {
-    "name": "Collection ranking by issues",
-    "description": "Returns the total number of issues, ranking of repositories based on the number of new issues, the percentage growth of issues, and the changes in rank between the current and past month. The statistics are filtered based on a given collection ID in the past month",
-    "method": "GET",
-    "endpoint": "/collections/ranking_by_issues",
-    "data_source": {
-      "cluster_id": 1379661944642684098
-    },
-    "params": [
-      {
-        "name": "collection_id",
-        "type": "integer",
-        "required": 1,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "period",
-        "type": "string",
-        "required": 0,
-        "default": "past_28_days",
-        "description": ""
-      }
-    ],
-    "settings": {
-      "timeout": 30000,
-      "row_limit": 1000,
-      "cache_enabled": 1,
-      "cache_ttl": 600,
-      "enable_pagination": 0
-    },
-    "tag": "Default",
-    "batch_operation": 0,
-    "sql_file": "sql/GET-collections-ranking_by_issues.sql",
-    "type": "sql_endpoint",
-    "return_type": "json"
-  },
-  {
-    "name": "Collection ranking by prs",
-    "description": "Compares PR data over two selected time periods, returns\nThe total number of pull requests.\nThe growth of pull requests in the current period compared to the previous period.\nThe ranking of each repository by the number of pull requests ",
-    "method": "GET",
-    "endpoint": "/collections/ranking_by_prs",
-    "data_source": {
-      "cluster_id": 1379661944642684098
-    },
-    "params": [
-      {
-        "name": "collection_id",
-        "type": "integer",
-        "required": 1,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "period",
-        "type": "string",
-        "required": 0,
-        "default": "past_28_days",
-        "description": ""
-      }
-    ],
-    "settings": {
-      "timeout": 30000,
-      "row_limit": 1000,
-      "cache_enabled": 1,
-      "cache_ttl": 600,
-      "enable_pagination": 0
-    },
-    "tag": "Default",
-    "batch_operation": 0,
-    "sql_file": "sql/GET-collections-ranking_by_prs.sql",
-    "type": "sql_endpoint",
-    "return_type": "json"
-  },
-  {
-    "name": "Collection ranking by stars",
-    "description": "It provides counts of new stars, star growth percentages, and ranking changes, reflecting the repositories' popularity and community engagement over time.",
-    "method": "GET",
-    "endpoint": "/collections/ranking_by_stars",
-    "data_source": {
-      "cluster_id": 1379661944642684098
-    },
-    "params": [
-      {
-        "name": "collection_id",
-        "type": "integer",
-        "required": 1,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "period",
-        "type": "string",
-        "required": 0,
-        "default": "past_28_days",
-        "description": ""
-      }
-    ],
-    "settings": {
-      "timeout": 30000,
-      "row_limit": 1000,
-      "cache_enabled": 1,
-      "cache_ttl": 600,
-      "enable_pagination": 0
-    },
-    "tag": "Default",
-    "batch_operation": 0,
-    "sql_file": "sql/GET-collections-ranking_by_stars.sql",
-    "type": "sql_endpoint",
-    "return_type": "json"
-  },
-  {
-    "name": "List Issue Creators",
-    "description": "List GitHub users who have created issues in a specific repository.The returned data includes the user ID, login, name, total issues created, and the date of the first issue opened. Limits and offsets can be applied for pagination purposes.",
-    "method": "GET",
-    "endpoint": "/repos/issue_creators",
-    "data_source": {
-      "cluster_id": 1379661944642684098
-    },
-    "params": [
-      {
-        "name": "owner",
-        "type": "string",
-        "required": 1,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "repo",
-        "type": "string",
-        "required": 1,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "exclude_bots",
-        "type": "boolean",
-        "required": 0,
-        "default": "true",
-        "description": ""
-      },
-      {
-        "name": "sort",
-        "type": "string",
-        "required": 0,
-        "default": "issues-desc",
-        "description": ""
-      },
-      {
-        "name": "offset",
-        "type": "integer",
-        "required": 0,
-        "default": "0",
-        "description": ""
-      },
-      {
-        "name": "limit",
-        "type": "integer",
-        "required": 0,
-        "default": "30",
-        "description": ""
-      }
-    ],
-    "settings": {
-      "timeout": 5000,
-      "row_limit": 2000,
-      "cache_enabled": 0,
-      "cache_ttl": 0,
-      "enable_pagination": 0
-    },
-    "tag": "Default",
-    "batch_operation": 0,
-    "sql_file": "sql/GET-repos-issue_creators.sql",
-    "type": "sql_endpoint",
-    "return_type": "json"
-  },
-  {
-    "name": "List Pull Request Creators",
-    "description": "Lists users who have created pull requests in a specified GitHub repository. Returns user IDs, logins, names, the number of pull requests made, and the dates of their first opened and first merged pull requests. ",
-    "method": "GET",
-    "endpoint": "/repos/pull_request_creators",
-    "data_source": {
-      "cluster_id": 1379661944642684098
-    },
-    "params": [
-      {
-        "name": "owner",
-        "type": "string",
-        "required": 1,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "repo",
-        "type": "string",
-        "required": 1,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "exclude_bots",
-        "type": "boolean",
-        "required": 0,
-        "default": "true",
-        "description": ""
-      },
-      {
-        "name": "sort",
-        "type": "string",
-        "required": 0,
-        "default": "prs-desc",
-        "description": ""
-      },
-      {
-        "name": "offset",
-        "type": "integer",
-        "required": 0,
-        "default": "0",
-        "description": ""
-      },
-      {
-        "name": "limit",
-        "type": "integer",
-        "required": 0,
-        "default": "30",
-        "description": ""
-      }
-    ],
-    "settings": {
-      "timeout": 5000,
-      "row_limit": 2000,
-      "cache_enabled": 0,
-      "cache_ttl": 0,
-      "enable_pagination": 0
-    },
-    "tag": "Default",
-    "batch_operation": 0,
-    "sql_file": "sql/GET-repos-pull_request_creators.sql",
-    "type": "sql_endpoint",
-    "return_type": "json"
-  },
-  {
-    "name": "Issue Creators History",
-    "description": "Returns the date and the cumulative number of unique users who have opened issues up to the date.\n",
-    "method": "GET",
-    "endpoint": "/repos/issue_creators/history",
-    "data_source": {
-      "cluster_id": 1379661944642684098
-    },
-    "params": [
-      {
-        "name": "per",
-        "type": "string",
-        "required": 0,
-        "default": "month",
-        "description": ""
-      },
       {
         "name": "owner",
         "type": "string",
@@ -824,76 +1188,25 @@
         "required": 0,
         "default": "2099-12-31",
         "description": ""
-      }
-    ],
-    "settings": {
-      "timeout": 5000,
-      "row_limit": 2000,
-      "cache_enabled": 0,
-      "cache_ttl": 0,
-      "enable_pagination": 0
-    },
-    "tag": "Issue Creators",
-    "batch_operation": 0,
-    "sql_file": "sql/GET-repos-issue_creators-history.sql",
-    "type": "sql_endpoint",
-    "return_type": "json"
-  },
-  {
-    "name": "Pull Request Creators History",
-    "description": "Returns cumulative tally of unique pull request creators for a given GitHub repository over a selected time frame (daily, weekly, or monthly).",
-    "method": "GET",
-    "endpoint": "/repos/pull_request_creators/history",
-    "data_source": {
-      "cluster_id": 1379661944642684098
-    },
-    "params": [
-      {
-        "name": "per",
-        "type": "string",
-        "required": 0,
-        "default": "month",
-        "description": ""
       },
       {
-        "name": "owner",
+        "name": "exclude_unknown",
         "type": "string",
-        "required": 1,
+        "required": 0,
         "default": "",
-        "description": ""
-      },
-      {
-        "name": "repo",
-        "type": "string",
-        "required": 1,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "from",
-        "type": "string",
-        "required": 0,
-        "default": "2000-01-01",
-        "description": ""
-      },
-      {
-        "name": "to",
-        "type": "string",
-        "required": 0,
-        "default": "2099-12-31",
         "description": ""
       }
     ],
     "settings": {
-      "timeout": 5000,
-      "row_limit": 2000,
+      "timeout": 10000,
+      "row_limit": 300,
       "cache_enabled": 0,
       "cache_ttl": 0,
       "enable_pagination": 0
     },
-    "tag": "Pull Request Creators",
+    "tag": "Stargazers",
     "batch_operation": 0,
-    "sql_file": "sql/GET-repos-pull_request_creators-history.sql",
+    "sql_file": "sql/GET-repos-stargazers-countries.sql",
     "type": "sql_endpoint",
     "return_type": "json"
   },
@@ -1014,64 +1327,6 @@
     "return_type": "json"
   },
   {
-    "name": "List Issue Creators Orgs",
-    "description": "Counts and calculates the percentage of issue creators from different organizations within a given date range. The API sorts the results by the number of issue creators in descending order.",
-    "method": "GET",
-    "endpoint": "/repos/issue_creators/organizations",
-    "data_source": {
-      "cluster_id": 1379661944642684098
-    },
-    "params": [
-      {
-        "name": "owner",
-        "type": "string",
-        "required": 1,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "repo",
-        "type": "string",
-        "required": 1,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "from",
-        "type": "string",
-        "required": 0,
-        "default": "2000-01-01",
-        "description": ""
-      },
-      {
-        "name": "to",
-        "type": "string",
-        "required": 0,
-        "default": "2099-12-31",
-        "description": ""
-      },
-      {
-        "name": "exclude_unknown",
-        "type": "string",
-        "required": 0,
-        "default": "",
-        "description": ""
-      }
-    ],
-    "settings": {
-      "timeout": 10000,
-      "row_limit": 300,
-      "cache_enabled": 0,
-      "cache_ttl": 0,
-      "enable_pagination": 0
-    },
-    "tag": "Issue Creators",
-    "batch_operation": 0,
-    "sql_file": "sql/GET-repos-issue_creators-organizations.sql",
-    "type": "sql_endpoint",
-    "return_type": "json"
-  },
-  {
     "name": "Trending Repos",
     "description": "Return trending repos.",
     "method": "GET",
@@ -1105,312 +1360,6 @@
     "tag": "Trends",
     "batch_operation": 0,
     "sql_file": "sql/GET-trends-repos.sql",
-    "type": "sql_endpoint",
-    "return_type": "json"
-  },
-  {
-    "name": "List Collection Items",
-    "description": "List Repositories with a Collection by specify collection ID.",
-    "method": "GET",
-    "endpoint": "/collections/repos",
-    "data_source": {
-      "cluster_id": 1379661944642684098
-    },
-    "params": [
-      {
-        "name": "collection_id",
-        "type": "integer",
-        "required": 1,
-        "default": "",
-        "description": ""
-      }
-    ],
-    "settings": {
-      "timeout": 5000,
-      "row_limit": 50,
-      "cache_enabled": 0,
-      "cache_ttl": 0,
-      "enable_pagination": 0
-    },
-    "tag": "Collections",
-    "batch_operation": 0,
-    "sql_file": "sql/GET-collections-repos.sql",
-    "type": "sql_endpoint",
-    "return_type": "json"
-  },
-  {
-    "name": "List Collections",
-    "description": "It returns a list of each collection's unique ID and its name.",
-    "method": "GET",
-    "endpoint": "/collections",
-    "data_source": {
-      "cluster_id": 1379661944642684098
-    },
-    "params": [],
-    "settings": {
-      "timeout": 5000,
-      "row_limit": 200,
-      "cache_enabled": 0,
-      "cache_ttl": 0,
-      "enable_pagination": 1
-    },
-    "tag": "Collections",
-    "batch_operation": 0,
-    "sql_file": "sql/GET-collections.sql",
-    "type": "sql_endpoint",
-    "return_type": "json"
-  },
-  {
-    "name": "List PR Creators Orgs",
-    "description": "It counts the distinct creators associated with each organization and calculates their proportion of the total pull requests within a specified time frame. ",
-    "method": "GET",
-    "endpoint": "/repos/pull_request_creators/organizations",
-    "data_source": {
-      "cluster_id": 1379661944642684098
-    },
-    "params": [
-      {
-        "name": "owner",
-        "type": "string",
-        "required": 1,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "repo",
-        "type": "string",
-        "required": 1,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "from",
-        "type": "string",
-        "required": 0,
-        "default": "2000-01-01",
-        "description": ""
-      },
-      {
-        "name": "to",
-        "type": "string",
-        "required": 0,
-        "default": "2099-12-31",
-        "description": ""
-      },
-      {
-        "name": "exclude_unknown",
-        "type": "boolean",
-        "required": 0,
-        "default": "true",
-        "description": ""
-      }
-    ],
-    "settings": {
-      "timeout": 10000,
-      "row_limit": 2000,
-      "cache_enabled": 0,
-      "cache_ttl": 0,
-      "enable_pagination": 0
-    },
-    "tag": "Pull Request Creators",
-    "batch_operation": 0,
-    "sql_file": "sql/GET-repos-pull_request_creators-organizations.sql",
-    "type": "sql_endpoint",
-    "return_type": "json"
-  },
-  {
-    "name": "List PR Creators Countries",
-    "description": "Calculates the number and percentage of pull request creators from different countries within a defined time period. The API also provides the option to exclude creators from unknown countries and orders the results by the count of pull request creators per country in descending order.\n",
-    "method": "GET",
-    "endpoint": "/repos/pull_request_creators/countries",
-    "data_source": {
-      "cluster_id": 1379661944642684098
-    },
-    "params": [
-      {
-        "name": "owner",
-        "type": "string",
-        "required": 1,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "repo",
-        "type": "string",
-        "required": 1,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "from",
-        "type": "string",
-        "required": 1,
-        "default": "2000-01-01",
-        "description": ""
-      },
-      {
-        "name": "to",
-        "type": "string",
-        "required": 1,
-        "default": "2099-12-31",
-        "description": ""
-      },
-      {
-        "name": "exclude_unknown",
-        "type": "boolean",
-        "required": 0,
-        "default": "true",
-        "description": ""
-      }
-    ],
-    "settings": {
-      "timeout": 10000,
-      "row_limit": 300,
-      "cache_enabled": 0,
-      "cache_ttl": 0,
-      "enable_pagination": 0
-    },
-    "tag": "Pull Request Creators",
-    "batch_operation": 0,
-    "sql_file": "sql/GET-repos-pull_request_creators-countries.sql",
-    "type": "sql_endpoint",
-    "return_type": "json"
-  },
-  {
-    "name": "List Issue Creators Countries",
-    "description": "Provides the count and percentage of issue creators from each country, filtering data within a specified time range. Additionally, the API has an option to exclude issue creators from unspecified or unknown countries, and it returns number of issue creators per country, in descending order.",
-    "method": "GET",
-    "endpoint": "/repos/issue_creators/countries",
-    "data_source": {
-      "cluster_id": 1379661944642684098
-    },
-    "params": [
-      {
-        "name": "owner",
-        "type": "string",
-        "required": 1,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "repo",
-        "type": "string",
-        "required": 1,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "from",
-        "type": "string",
-        "required": 0,
-        "default": "2000-01-01",
-        "description": ""
-      },
-      {
-        "name": "to",
-        "type": "string",
-        "required": 0,
-        "default": "2099-12-31",
-        "description": ""
-      },
-      {
-        "name": "exclude_unknown",
-        "type": "boolean",
-        "required": 0,
-        "default": "true",
-        "description": ""
-      }
-    ],
-    "settings": {
-      "timeout": 10000,
-      "row_limit": 300,
-      "cache_enabled": 0,
-      "cache_ttl": 0,
-      "enable_pagination": 0
-    },
-    "tag": "Issue Creators",
-    "batch_operation": 0,
-    "sql_file": "sql/GET-repos-issue_creators-countries.sql",
-    "type": "sql_endpoint",
-    "return_type": "json"
-  },
-  {
-    "name": "List Stargazers Countries",
-    "description": "Counts the total number of stargazers from each country and calculates their proportion within a given time frame. The API includes an option to exclude stargazers from unspecified or unknown countries, and it orders the results by the count of stargazers per country in descending order.",
-    "method": "GET",
-    "endpoint": "/repos/stargazers/countries",
-    "data_source": {
-      "cluster_id": 1379661944642684098
-    },
-    "params": [
-      {
-        "name": "owner",
-        "type": "string",
-        "required": 1,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "repo",
-        "type": "string",
-        "required": 1,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "from",
-        "type": "string",
-        "required": 0,
-        "default": "2000-01-01",
-        "description": ""
-      },
-      {
-        "name": "to",
-        "type": "string",
-        "required": 0,
-        "default": "2099-12-31",
-        "description": ""
-      },
-      {
-        "name": "exclude_unknown",
-        "type": "string",
-        "required": 0,
-        "default": "",
-        "description": ""
-      }
-    ],
-    "settings": {
-      "timeout": 10000,
-      "row_limit": 300,
-      "cache_enabled": 0,
-      "cache_ttl": 0,
-      "enable_pagination": 0
-    },
-    "tag": "Stargazers",
-    "batch_operation": 0,
-    "sql_file": "sql/GET-repos-stargazers-countries.sql",
-    "type": "sql_endpoint",
-    "return_type": "json"
-  },
-  {
-    "name": "Hello World",
-    "description": "",
-    "method": "GET",
-    "endpoint": "/hello",
-    "data_source": {
-      "cluster_id": 1379661944642684098
-    },
-    "params": [],
-    "settings": {
-      "timeout": 5000,
-      "row_limit": 50,
-      "cache_enabled": 0,
-      "cache_ttl": 0,
-      "enable_pagination": 0
-    },
-    "tag": "Default",
-    "batch_operation": 0,
-    "sql_file": "sql/GET-hello.sql",
     "type": "sql_endpoint",
     "return_type": "json"
   }
