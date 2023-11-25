@@ -1,7 +1,58 @@
 [
   {
-    "name": "/repos/commits/time_distribution",
+    "name": "/repos/commits/time_distribution_copy",
     "description": "",
+    "method": "GET",
+    "endpoint": "/repos/contributors/time_distribution_dump_hzlrWA",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "owner",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "repo",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "from",
+        "type": "string",
+        "required": 0,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "to",
+        "type": "string",
+        "required": 0,
+        "default": "2099-12-31",
+        "description": ""
+      }
+    ],
+    "settings": {
+      "timeout": 30000,
+      "row_limit": 1000,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
+      "enable_pagination": 0
+    },
+    "tag": "Default",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-repos-contributors-time_distribution_dump_hzlrWA.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "/repos/commits/time_distribution",
+    "description": "Retrieve a weekly and hourly distribution of push events for a specific repository.",
     "method": "GET",
     "endpoint": "/repos/commits/time_distribution",
     "data_source": {
@@ -52,7 +103,7 @@
   },
   {
     "name": "/repos/pull_requests/monthly/loc",
-    "description": "",
+    "description": "Retrieve monthly pull request activity with additions, deletions, and net changes for a specific repository.",
     "method": "GET",
     "endpoint": "/repos/pull_requests/monthly/loc",
     "data_source": {
@@ -103,7 +154,7 @@
   },
   {
     "name": "/repos/pull_requests/monthly/siz",
-    "description": "",
+    "description": "Get monthly distribution of pull request sizes (XS, S, M, L, XL, XXL) for a specific repository.",
     "method": "GET",
     "endpoint": "/repos/pull_requests/monthly/size",
     "data_source": {
@@ -154,7 +205,7 @@
   },
   {
     "name": "/repos/pull_requests/open_to_mer",
-    "description": "",
+    "description": "Get monthly distribution of pull request sizes (XS, S, M, L, XL, XXL) for a specific repository (Unit: Hours).",
     "method": "GET",
     "endpoint": "/repos/pull_requests/open_to_merge",
     "data_source": {
@@ -205,7 +256,7 @@
   },
   {
     "name": "/repos/issues/monthly",
-    "description": "",
+    "description": "Retrieve monthly counts of opened and closed issues for a specific repository.",
     "method": "GET",
     "endpoint": "/repos/issues/monthly",
     "data_source": {
@@ -256,7 +307,7 @@
   },
   {
     "name": "/repos/issues/open_to_first_resp",
-    "description": "Retrieve monthly response time percentiles (P0, P25, P50, P75, P100) for issues in a specific repository (Unit: Hours).",
+    "description": "Return the p0 - p100 number of the duration between issue opened to first response (comments / closed) (Unit: hours)",
     "method": "GET",
     "endpoint": "/repos/issues/open_to_first_responded",
     "data_source": {

@@ -17,3 +17,5 @@ WHERE
 GROUP BY dayofweek, hour
 ORDER BY dayofweek, hour
 ;
+
+
