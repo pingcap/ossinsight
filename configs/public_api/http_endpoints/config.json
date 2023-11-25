@@ -1,9 +1,9 @@
 [
   {
-    "name": "/repos/overview",
-    "description": "This API retrieves key engagement metrics for a specific GitHub repository. It returns a snapshot of the repository's activity, including the total number of stars, commits, issues, and unique pull request creators",
+    "name": "/repos/issues/overview",
+    "description": "This API provides detailed statistics on issue-related activities within a specified GitHub repository. It returns the total count of issues opened, the number of unique users who created issues, the total count of issue comments, and the number of unique users who commented on issues",
     "method": "GET",
-    "endpoint": "/repos/overview",
+    "endpoint": "/repos/issues/overview",
     "data_source": {
       "cluster_id": 1379661944642684098
     },
@@ -32,7 +32,7 @@
     },
     "tag": "Default",
     "batch_operation": 0,
-    "sql_file": "sql/GET-repos-overview.sql",
+    "sql_file": "sql/GET-repos-issues-overview.sql",
     "type": "sql_endpoint",
     "return_type": "json"
   },
@@ -557,10 +557,10 @@
     "return_type": "json"
   },
   {
-    "name": "/repos/issues/overview",
-    "description": "",
+    "name": "/repos/overview",
+    "description": "This API retrieves key engagement metrics for a specific GitHub repository. It returns a snapshot of the repository's activity, including the total number of stars, commits, issues, and unique pull request creators",
     "method": "GET",
-    "endpoint": "/repos/issues/overview",
+    "endpoint": "/repos/overview",
     "data_source": {
       "cluster_id": 1379661944642684098
     },
@@ -589,7 +589,7 @@
     },
     "tag": "Default",
     "batch_operation": 0,
-    "sql_file": "sql/GET-repos-issues-overview.sql",
+    "sql_file": "sql/GET-repos-overview.sql",
     "type": "sql_endpoint",
     "return_type": "json"
   },
