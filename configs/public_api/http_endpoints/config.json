@@ -1,9 +1,9 @@
 [
   {
-    "name": "/repos/commits",
+    "name": "/repos/commits/time_distribution",
     "description": "",
     "method": "GET",
-    "endpoint": "/repos/pull_requests/monthly/loc_dump_AxJOjB",
+    "endpoint": "/repos/commits/time_distribution",
     "data_source": {
       "cluster_id": 1379661944642684098
     },
@@ -26,7 +26,7 @@
         "name": "from",
         "type": "string",
         "required": 0,
-        "default": "2000-01-01",
+        "default": "",
         "description": ""
       },
       {
@@ -46,7 +46,7 @@
     },
     "tag": "Default",
     "batch_operation": 0,
-    "sql_file": "sql/GET-repos-pull_requests-monthly-loc_dump_AxJOjB.sql",
+    "sql_file": "sql/GET-repos-commits-time_distribution.sql",
     "type": "sql_endpoint",
     "return_type": "json"
   },
@@ -256,7 +256,7 @@
   },
   {
     "name": "/repos/issues/open_to_first_resp",
-    "description": "Return the p0 - p100 number of the duration between issue opened to first response (comments / closed) (Unit: hours)",
+    "description": "Retrieve monthly response time percentiles (P0, P25, P50, P75, P100) for issues in a specific repository (Unit: Hours).",
     "method": "GET",
     "endpoint": "/repos/issues/open_to_first_responded",
     "data_source": {
@@ -307,7 +307,7 @@
   },
   {
     "name": "/repos/issues/open_to_closed",
-    "description": "Return the p0 - p100 number  of the duration between issue opened to closed (Unit: hours)",
+    "description": "Retrieve monthly issue resolution time percentiles (P0, P25, P50, P75, P100) for a specific repository (Unit: Hours).",
     "method": "GET",
     "endpoint": "/repos/issues/open_to_closed",
     "data_source": {
