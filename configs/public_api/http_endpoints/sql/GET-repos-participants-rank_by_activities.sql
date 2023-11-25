@@ -63,6 +63,7 @@ WITH repo AS (
     SELECT COALESCE(SUM(activities), 0) AS total FROM past_period_activities
 )
 SELECT
+    ROW_NUMBER() OVER (ORDER BY pp.activities DESC) AS `rank`,
     pp.actor_login AS username,
     pp.activities AS past_period_activities,
     COALESCE(p2p.activities, 0) AS past_2nd_period_activities, 

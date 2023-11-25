@@ -1,6 +1,6 @@
 [
   {
-    "name": "/repos/participants/rank_by_act",
+    "name": "/repos/participants/ranking",
     "description": "Retrieve top GitHub contributors' recent activity statistics for a repository, comparing the past month to the month before.",
     "method": "GET",
     "endpoint": "/repos/participants/rank_by_activities",
