@@ -1,5 +1,49 @@
 [
   {
+    "name": "/users/pull_requests/monthly/siz",
+    "description": "Retrieve a monthly summary of a GitHub user's opened and merged pull requests in the specified time range. (If `from` and `to` are not specified, the default period is the past year.)",
+    "method": "GET",
+    "endpoint": "/users/pull_requests/monthly/sizes",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "username",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "from",
+        "type": "string",
+        "required": 0,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "to",
+        "type": "string",
+        "required": 0,
+        "default": "",
+        "description": ""
+      }
+    ],
+    "settings": {
+      "timeout": 30000,
+      "row_limit": 1000,
+      "cache_enabled": 0,
+      "cache_ttl": 0,
+      "enable_pagination": 0
+    },
+    "tag": "Default",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-users-pull_requests-monthly-sizes.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
     "name": "/users/pull_requests/monthly/loc",
     "description": "Retrieve a monthly summary of a GitHub user's opened and merged pull requests in the specified time range. (If `from` and `to` are not specified, the default period is the past year.)",
     "method": "GET",
@@ -272,7 +316,7 @@
     "return_type": "json"
   },
   {
-    "name": "/users/pull_requests/language",
+    "name": "/users/pull_requests/languages",
     "description": "Retrieve the count and percentage of a GitHub user's opened pull requests in different programming languages.  (If `from` and `to` are not specified, the default period is the past year.)",
     "method": "GET",
     "endpoint": "/users/pull_requests/used_languages",
@@ -502,7 +546,7 @@
     "name": "/repos/pull_requests/monthly/siz",
     "description": "Get monthly distribution of pull request sizes (XS, S, M, L, XL, XXL) for a specific repository.",
     "method": "GET",
-    "endpoint": "/repos/pull_requests/monthly/size",
+    "endpoint": "/repos/pull_requests/monthly/sizes",
     "data_source": {
       "cluster_id": 1379661944642684098
     },
@@ -545,7 +589,7 @@
     },
     "tag": "Default",
     "batch_operation": 0,
-    "sql_file": "sql/GET-repos-pull_requests-monthly-size.sql",
+    "sql_file": "sql/GET-repos-pull_requests-monthly-sizes.sql",
     "type": "sql_endpoint",
     "return_type": "json"
   },
