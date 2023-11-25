@@ -1,5 +1,27 @@
 [
   {
+    "name": "/users/activities/monthly/event",
+    "description": "Retrieve the count of activities (pull requests, issues, issue comments, reviews, review comments, pushes) by a GitHub user in different repositories, grouped by repository and event period. (If `from` and `to` are not specified, the default period is the past year.)",
+    "method": "GET",
+    "endpoint": "/users/activities/monthly/event_types",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [],
+    "settings": {
+      "timeout": 30000,
+      "row_limit": 1000,
+      "cache_enabled": 0,
+      "cache_ttl": 0,
+      "enable_pagination": 0
+    },
+    "tag": "Default",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-users-activities-monthly-event_types.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
     "name": "/users/activities/repo_dist",
     "description": "Retrieve the count of activities (pull requests, issues, issue comments, reviews, review comments, pushes) by a GitHub user in different repositories, grouped by repository and event period. (If `from` and `to` are not specified, the default period is the past year.)",
     "method": "GET",
