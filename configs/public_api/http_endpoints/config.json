@@ -1,7 +1,58 @@
 [
   {
+    "name": "/repos/pull_requests/open_to_mer",
+    "description": "",
+    "method": "GET",
+    "endpoint": "/repos/pull_requests/open_to_merge",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "owner",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "repo",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "from",
+        "type": "string",
+        "required": 0,
+        "default": "2000-01-01",
+        "description": ""
+      },
+      {
+        "name": "to",
+        "type": "string",
+        "required": 0,
+        "default": "2099-12-31",
+        "description": ""
+      }
+    ],
+    "settings": {
+      "timeout": 30000,
+      "row_limit": 1000,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
+      "enable_pagination": 0
+    },
+    "tag": "Default",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-repos-pull_requests-open_to_merge.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
     "name": "/repos/issues/history",
-    "description": "Return the p0 - p100 number  of the duration between issue opened to closed (Unit: hours)",
+    "description": "",
     "method": "GET",
     "endpoint": "/repos/issues/history",
     "data_source": {
@@ -52,7 +103,7 @@
   },
   {
     "name": "/repos/issues/open_to_first_resp",
-    "description": "Return the p0 - p100 number  of the duration between issue opened to closed (Unit: hours)",
+    "description": "Return the p0 - p100 number of the duration between issue opened to first response (comments / closed) (Unit: hours)",
     "method": "GET",
     "endpoint": "/repos/issues/open_to_first_responded",
     "data_source": {
@@ -154,7 +205,7 @@
   },
   {
     "name": "/repos/pull_reques/overview",
-    "description": "Returns statistics on pull request activities for a specific GitHub repository. It reports the total number of pull requests, the count of unique contributors who opened pull requests, the total number of pull request reviews, and the count of unique reviewers. ",
+    "description": "Returns the total number of pull requests, the count of unique contributors who opened pull requests, the total number of pull request reviews, and the count of unique reviewers. ",
     "method": "GET",
     "endpoint": "/repos/pull_requests/overview",
     "data_source": {
@@ -644,7 +695,7 @@
   },
   {
     "name": "Stargazers History",
-    "description": "This API provides a cumulative count of unique stargazers over a specified time period for a specific GitHub repository. It offers options to aggregate data on a daily, weekly, or monthly basis. The output includes the date and the cumulative number of unique users who have starred the repository up to that date, within the defined date range.",
+    "description": "Returns the date and the cumulative number of unique users who have starred the repository up to that date, within the defined date range.",
     "method": "GET",
     "endpoint": "/repos/stargazers/history",
     "data_source": {
@@ -702,7 +753,7 @@
   },
   {
     "name": "List Stargazers Orgs",
-    "description": "This API analyzes the distribution of stargazers across organizations for a specific GitHub repository. It groups stargazers based on their organization, providing the count and percentage of stargazers from each organization within a specified date range. The API also includes an option to exclude unknown organizations and ranks the results by the number of stargazers in descending order.",
+    "description": "Returns the count and percentage of stargazers from each organization within a specified date range.  ranks the results by the number of stargazers in descending order.",
     "method": "GET",
     "endpoint": "/repos/stargazers/organizations",
     "data_source": {
@@ -818,7 +869,7 @@
   },
   {
     "name": "Trending Repos",
-    "description": "Trending repos is an open source alternative to GitHub trends, which showcases recently popular open source projects in the GitHub community.\n\n☁️ Daily run on [TiDB Cloud](https://tidbcloud.com/?utm_source=ossinsight\u0026utm_medium=ossinsight_api), analyze upon dataset that has over 6 billion GitHub events.",
+    "description": "Return trending repos.",
     "method": "GET",
     "endpoint": "/trends/repos",
     "data_source": {
@@ -907,7 +958,7 @@
   },
   {
     "name": "List PR Creators Orgs",
-    "description": "It counts the distinct creators associated with each organization and calculates their proportion of the total pull requests within a specified time frame. The API can exclude creators from unknown organizations and sorts the results in descending order based on the number of pull request creators per organization.",
+    "description": "It counts the distinct creators associated with each organization and calculates their proportion of the total pull requests within a specified time frame. ",
     "method": "GET",
     "endpoint": "/repos/pull_request_creators/organizations",
     "data_source": {
