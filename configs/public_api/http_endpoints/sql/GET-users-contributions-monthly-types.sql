@@ -1,6 +1,7 @@
 USE gharchive_dev;
 
 SELECT
+    DATE_FORMAT(created_at, '%Y-%m-01') AS event_month,
     CASE type
         WHEN 'IssuesEvent' THEN 'issues'
         WHEN 'IssueCommentEvent' THEN 'issue_comments'
@@ -9,12 +10,11 @@ SELECT
         WHEN 'PullRequestReviewCommentEvent' THEN 'review_comments'
         WHEN 'PushEvent' THEN 'pushes'
     END AS contribution_type,
-    DATE_FORMAT(created_at, '%Y-%m-01') AS event_month,
-    COUNT(1) AS cnt 
+    COUNT(*) AS activities 
 FROM github_events ge
 WHERE
-    actor_id = 5086433 AND
-    (
+    actor_id = (SELECT id FROM github_users WHERE login = ${username} LIMIT 1)
+    AND (
         (type = 'PullRequestEvent' AND action = 'opened') OR
         (type = 'IssuesEvent' AND action = 'opened') OR
         (type = 'IssueCommentEvent' AND action = 'created') OR
@@ -22,7 +22,10 @@ WHERE
         (type = 'PullRequestReviewCommentEvent' AND action = 'created') OR
         (type = 'PushEvent' AND action = '')
     )
-    AND (created_at BETWEEN DATE_SUB(NOW(), INTERVAL 1 YEAR) AND NOW())
+    AND
+        CASE WHEN ${from} = '' THEN (ge.created_at BETWEEN DATE_SUB(NOW(), INTERVAL 1 YEAR) AND NOW())
+        ELSE (ge.created_at >= ${from} AND ge.created_at <= ${to})
+        END
 GROUP BY type, 2
 ORDER BY 2
 ;

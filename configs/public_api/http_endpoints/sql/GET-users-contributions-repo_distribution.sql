@@ -3,7 +3,7 @@ USE gharchive_dev;
 SELECT
     gr.repo_id,
     gr.repo_name,
-    COUNT(*) AS cnt,
+    COUNT(*) AS contributions,
     DATE_FORMAT(ge.created_at, '%Y-%m-%d %k:00:00') AS event_period
 FROM github_events ge
 JOIN github_repos gr ON ge.repo_id = gr.repo_id

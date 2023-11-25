@@ -3,7 +3,7 @@ USE gharchive_dev;
 SELECT
     DAYOFWEEK(created_at) - 1 AS dayofweek,
     HOUR(created_at) AS hour,
-    COUNT(*) AS activities
+    COUNT(*) AS contributions
 FROM github_events ge
 WHERE
     actor_id = (SELECT id FROM github_users WHERE login = ${username} LIMIT 1)
