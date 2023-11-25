@@ -1,9 +1,9 @@
 [
   {
-    "name": "/repos/pull_requests/open_to_mer_copy",
+    "name": "/repos/pull_requests/history/siz",
     "description": "",
     "method": "GET",
-    "endpoint": "/repos/pull_requests/open_to_merge_dump_uyQXjT",
+    "endpoint": "/repos/pull_requests/history/size",
     "data_source": {
       "cluster_id": 1379661944642684098
     },
@@ -46,7 +46,7 @@
     },
     "tag": "Default",
     "batch_operation": 0,
-    "sql_file": "sql/GET-repos-pull_requests-open_to_merge_dump_uyQXjT.sql",
+    "sql_file": "sql/GET-repos-pull_requests-history-size.sql",
     "type": "sql_endpoint",
     "return_type": "json"
   },
