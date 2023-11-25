@@ -16,6 +16,8 @@ with repo AS (
         -- Exclude Bots
         -- AND actor_login NOT LIKE '%bot%'
         -- AND actor_login NOT IN (SELECT login FROM blacklist_users bu)
+        AND created_at >= ${from}
+        AND created_at <= ${to}
     GROUP BY 1
 ), issue_with_opened_at AS (
     SELECT
@@ -29,6 +31,8 @@ with repo AS (
         -- Exclude Bots
         -- AND actor_login NOT LIKE '%bot%'
         -- AND actor_login NOT IN (SELECT login FROM blacklist_users bu)
+        AND created_at >= ${from}
+        AND created_at <= ${to} 
 ), tdiff AS (
     SELECT
         t_month,
@@ -69,11 +73,11 @@ with repo AS (
 )
 SELECT
     tr.t_month AS event_month,
-    p0,
-    p25,
-    p50,
-    p75,
-    p100
+    ROUND(p0, 2) AS p0,
+    ROUND(p25, 2) AS p25,
+    ROUND(p50, 2) AS p50,
+    ROUND(p75, 2) AS p75,
+    ROUND(p100, 2) AS p100
 FROM tdiff_with_rank tr
 LEFT JOIN tdiff_p25 p25 ON tr.t_month = p25.t_month
 LEFT JOIN tdiff_p50 p50 ON tr.t_month = p50.t_month

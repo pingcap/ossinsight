@@ -14,6 +14,8 @@ with repo AS (
     type = 'IssuesEvent'
     and action = 'closed'
     and repo_id = (SELECT repo_id FROM repo)
+    AND created_at >= ${from}
+    AND created_at <= ${to} 
 ), issue_with_opened_at as (
   select
     number, created_at as opened_at
@@ -26,6 +28,8 @@ with repo AS (
     -- and actor_login not like '%bot%'
     -- and actor_login not in (select login from blacklist_users bu)
     and repo_id = (SELECT repo_id FROM repo)
+    AND created_at >= ${from}
+    AND created_at <= ${to} 
 ), tdiff as (
   select
     DATE_FORMAT(t_month, '%Y-%m-01') AS t_month,
