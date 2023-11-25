@@ -1,6 +1,57 @@
 [
   {
-    "name": "/repos/issues/open-to-first-resp",
+    "name": "/repos/issues/history",
+    "description": "Return the p0 - p100 number  of the duration between issue opened to closed (Unit: hours)",
+    "method": "GET",
+    "endpoint": "/repos/issues/history",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "owner",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "repo",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "from",
+        "type": "string",
+        "required": 0,
+        "default": "2000-01-01",
+        "description": ""
+      },
+      {
+        "name": "to",
+        "type": "string",
+        "required": 0,
+        "default": "2099-12-31",
+        "description": ""
+      }
+    ],
+    "settings": {
+      "timeout": 30000,
+      "row_limit": 1000,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
+      "enable_pagination": 0
+    },
+    "tag": "Default",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-repos-issues-history.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "/repos/issues/open_to_first_resp",
     "description": "Return the p0 - p100 number  of the duration between issue opened to closed (Unit: hours)",
     "method": "GET",
     "endpoint": "/repos/issues/open_to_first_responded",
@@ -477,7 +528,7 @@
   },
   {
     "name": "Issue Creators History",
-    "description": "Provides a cumulative count of unique issue creators for a specific GitHub repository. It allows customization of the aggregation period (daily, weekly, or monthly) and includes a date range filter. The output includes the date and the cumulative number of unique users who have opened issues up to that date.\n",
+    "description": "Returns the date and the cumulative number of unique users who have opened issues up to the date.\n",
     "method": "GET",
     "endpoint": "/repos/issue_creators/history",
     "data_source": {
@@ -535,7 +586,7 @@
   },
   {
     "name": "Pull Request Creators History",
-    "description": "This API delivers a cumulative tally of unique pull request creators for a given GitHub repository, aggregated over a selected time frame (daily, weekly, or monthly). It filters data based on a specified date range and displays the cumulative count of distinct users who have opened pull requests as of each date within the range.\n",
+    "description": "Returns cumulative tally of unique pull request creators for a given GitHub repository over a selected time frame (daily, weekly, or monthly).",
     "method": "GET",
     "endpoint": "/repos/pull_request_creators/history",
     "data_source": {
@@ -709,7 +760,7 @@
   },
   {
     "name": "List Issue Creators Orgs",
-    "description": "This API gathers and analyzes data on issue creators by their organization for a specific GitHub repository. It counts and calculates the percentage of issue creators from different organizations within a given date range. The API also includes an option to exclude creators from unknown organizations and sorts the results by the number of issue creators in descending order.",
+    "description": "Counts and calculates the percentage of issue creators from different organizations within a given date range. The API sorts the results by the number of issue creators in descending order.",
     "method": "GET",
     "endpoint": "/repos/issue_creators/organizations",
     "data_source": {
@@ -856,7 +907,7 @@
   },
   {
     "name": "List PR Creators Orgs",
-    "description": "This API provides a breakdown of pull request creators by their organization for a specific GitHub repository. It counts the distinct creators associated with each organization and calculates their proportion of the total pull requests within a specified time frame. The API can exclude creators from unknown organizations and sorts the results in descending order based on the number of pull request creators per organization.",
+    "description": "It counts the distinct creators associated with each organization and calculates their proportion of the total pull requests within a specified time frame. The API can exclude creators from unknown organizations and sorts the results in descending order based on the number of pull request creators per organization.",
     "method": "GET",
     "endpoint": "/repos/pull_request_creators/organizations",
     "data_source": {
