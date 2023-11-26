@@ -1065,7 +1065,7 @@
   },
   {
     "name": "Collection ranking by issues",
-    "description": "Returns the total number of issues, ranking of repositories based on the number of new issues, the percentage growth of issues, and the changes in rank between the current and past month. The statistics are filtered based on a given collection ID in the past month",
+    "description": "Rank the GitHub repositories in the specified collection according to the number of issues. (pop means period over period)",
     "method": "GET",
     "endpoint": "/collections/ranking_by_issues",
     "data_source": {
@@ -1077,14 +1077,15 @@
         "type": "integer",
         "required": 1,
         "default": "",
-        "description": ""
+        "description": "The ID of collection"
       },
       {
         "name": "period",
         "type": "string",
         "required": 0,
         "default": "past_28_days",
-        "description": ""
+        "description": "The period of the range",
+        "enum": "past_28_days,past_month"
       }
     ],
     "settings": {
@@ -1094,7 +1095,7 @@
       "cache_ttl": 600,
       "enable_pagination": 0
     },
-    "tag": "Default",
+    "tag": "Collections",
     "batch_operation": 0,
     "sql_file": "sql/GET-collections-ranking_by_issues.sql",
     "type": "sql_endpoint",
@@ -1102,7 +1103,7 @@
   },
   {
     "name": "Collection ranking by prs",
-    "description": "Compares PR data over two selected time periods, returns\nThe total number of pull requests.\nThe growth of pull requests in the current period compared to the previous period.\nThe ranking of each repository by the number of pull requests ",
+    "description": "Rank the GitHub repositories in the specified collection according to the number of pull requests. (pop means period over period)",
     "method": "GET",
     "endpoint": "/collections/ranking_by_prs",
     "data_source": {
@@ -1114,14 +1115,15 @@
         "type": "integer",
         "required": 1,
         "default": "",
-        "description": ""
+        "description": "The ID of collection"
       },
       {
         "name": "period",
         "type": "string",
         "required": 0,
         "default": "past_28_days",
-        "description": ""
+        "description": "The period of the range",
+        "enum": "past_28_days,past_month"
       }
     ],
     "settings": {
@@ -1131,7 +1133,7 @@
       "cache_ttl": 600,
       "enable_pagination": 0
     },
-    "tag": "Default",
+    "tag": "Collections",
     "batch_operation": 0,
     "sql_file": "sql/GET-collections-ranking_by_prs.sql",
     "type": "sql_endpoint",
@@ -1139,7 +1141,7 @@
   },
   {
     "name": "Collection ranking by stars",
-    "description": "It provides counts of new stars, star growth percentages, and ranking changes, reflecting the repositories' popularity and community engagement over time.",
+    "description": "It provides counts of new stars, star growth percentages, and ranking changes, reflecting the repositories' popularity and community engagement over time. ",
     "method": "GET",
     "endpoint": "/collections/ranking_by_stars",
     "data_source": {
@@ -1151,14 +1153,15 @@
         "type": "integer",
         "required": 1,
         "default": "",
-        "description": ""
+        "description": "The ID of collection"
       },
       {
         "name": "period",
         "type": "string",
         "required": 0,
         "default": "past_28_days",
-        "description": ""
+        "description": "The period of the range",
+        "enum": "past_28_days,past_month"
       }
     ],
     "settings": {
@@ -1168,7 +1171,7 @@
       "cache_ttl": 600,
       "enable_pagination": 0
     },
-    "tag": "Default",
+    "tag": "Collections",
     "batch_operation": 0,
     "sql_file": "sql/GET-collections-ranking_by_stars.sql",
     "type": "sql_endpoint",
@@ -1188,28 +1191,29 @@
         "type": "string",
         "required": 1,
         "default": "",
-        "description": ""
+        "description": "The owner of the repo."
       },
       {
         "name": "repo",
         "type": "string",
         "required": 1,
         "default": "",
-        "description": ""
+        "description": "The name of the repo."
       },
       {
         "name": "exclude_bots",
         "type": "boolean",
         "required": 0,
         "default": "true",
-        "description": ""
+        "description": "Whether to exclude robot accounts (includes GitHub App and normal users whose username matches the pattern, for example: `ti-chi-bot`)."
       },
       {
         "name": "sort",
         "type": "string",
         "required": 0,
         "default": "issues-desc",
-        "description": ""
+        "description": "Specify the field by which to sort the issue creators list (values with a `-desc` suffix indicate descending sorting)",
+        "enum": "issues,issues-desc,first_issue_opened_at,first_issue_opened_at-desc,login"
       },
       {
         "name": "offset",
@@ -1229,11 +1233,11 @@
     "settings": {
       "timeout": 5000,
       "row_limit": 2000,
-      "cache_enabled": 0,
-      "cache_ttl": 0,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
       "enable_pagination": 0
     },
-    "tag": "Default",
+    "tag": "Issues",
     "batch_operation": 0,
     "sql_file": "sql/GET-repos-issue_creators.sql",
     "type": "sql_endpoint",
@@ -1253,52 +1257,53 @@
         "type": "string",
         "required": 1,
         "default": "",
-        "description": ""
+        "description": "The owner of the repo."
       },
       {
         "name": "repo",
         "type": "string",
         "required": 1,
         "default": "",
-        "description": ""
+        "description": "The name of the repo."
       },
       {
         "name": "exclude_bots",
         "type": "boolean",
         "required": 0,
         "default": "true",
-        "description": ""
+        "description": "Whether to exclude robot accounts (includes GitHub App and normal users whose username matches the pattern, for example: `ti-chi-bot`)."
       },
       {
         "name": "sort",
         "type": "string",
         "required": 0,
         "default": "prs-desc",
-        "description": ""
+        "description": "Specify the field by which to sort the pull request creators list (values with a `-desc` suffix indicate descending sorting)",
+        "enum": "login,prs,prs-desc,first_pr_opened_at,first_pr_opened_at-desc,first_pr_merged_at,first_pr_merged_at-desc"
       },
       {
         "name": "offset",
         "type": "integer",
         "required": 0,
         "default": "0",
-        "description": ""
+        "description": "For pagination."
       },
       {
         "name": "limit",
         "type": "integer",
         "required": 0,
         "default": "30",
-        "description": ""
+        "description": "For pagination."
       }
     ],
     "settings": {
       "timeout": 5000,
       "row_limit": 2000,
-      "cache_enabled": 0,
-      "cache_ttl": 0,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
       "enable_pagination": 0
     },
-    "tag": "Default",
+    "tag": "Pull Requests",
     "batch_operation": 0,
     "sql_file": "sql/GET-repos-pull_request_creators.sql",
     "type": "sql_endpoint",
@@ -1318,42 +1323,43 @@
         "type": "string",
         "required": 0,
         "default": "month",
-        "description": ""
+        "description": "The time interval of the data points",
+        "enum": "day,week,month"
       },
       {
         "name": "owner",
         "type": "string",
         "required": 1,
         "default": "",
-        "description": ""
+        "description": "The owner of the repo. For example: `pingcap`"
       },
       {
         "name": "repo",
         "type": "string",
         "required": 1,
         "default": "",
-        "description": ""
+        "description": "The name of the repo. For example: `tidb`"
       },
       {
         "name": "from",
         "type": "string",
         "required": 0,
         "default": "2000-01-01",
-        "description": ""
+        "description": "The start date of the range"
       },
       {
         "name": "to",
         "type": "string",
         "required": 0,
         "default": "2099-12-31",
-        "description": ""
+        "description": "The end date of the range"
       }
     ],
     "settings": {
-      "timeout": 5000,
+      "timeout": 10000,
       "row_limit": 2000,
-      "cache_enabled": 0,
-      "cache_ttl": 0,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
       "enable_pagination": 0
     },
     "tag": "Issue Creators",
@@ -1376,42 +1382,43 @@
         "type": "string",
         "required": 0,
         "default": "month",
-        "description": ""
+        "description": "The time interval of the data points.",
+        "enum": "day,week,month"
       },
       {
         "name": "owner",
         "type": "string",
         "required": 1,
         "default": "",
-        "description": ""
+        "description": "The owner of the repo. For example: `pingcap`"
       },
       {
         "name": "repo",
         "type": "string",
         "required": 1,
         "default": "",
-        "description": ""
+        "description": "The name of the repo. For example: `tidb`"
       },
       {
         "name": "from",
         "type": "string",
         "required": 0,
         "default": "2000-01-01",
-        "description": ""
+        "description": "The start date of the range"
       },
       {
         "name": "to",
         "type": "string",
         "required": 0,
         "default": "2099-12-31",
-        "description": ""
+        "description": "The end date of the range"
       }
     ],
     "settings": {
-      "timeout": 5000,
+      "timeout": 10000,
       "row_limit": 2000,
-      "cache_enabled": 0,
-      "cache_ttl": 0,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
       "enable_pagination": 0
     },
     "tag": "Pull Request Creators",
@@ -1434,42 +1441,43 @@
         "type": "string",
         "required": 0,
         "default": "month",
-        "description": ""
+        "description": "",
+        "enum": "day,week,month"
       },
       {
         "name": "owner",
         "type": "string",
         "required": 1,
         "default": "",
-        "description": ""
+        "description": "The owner of the repo. For example: `pingcap`"
       },
       {
         "name": "repo",
         "type": "string",
         "required": 1,
         "default": "",
-        "description": ""
+        "description": "The name of the repo. For example: `tidb`"
       },
       {
         "name": "from",
         "type": "string",
         "required": 0,
         "default": "2000-01-01",
-        "description": ""
+        "description": "The start date of the range"
       },
       {
         "name": "to",
         "type": "string",
         "required": 0,
         "default": "2099-12-31",
-        "description": ""
+        "description": "The end date of the range"
       }
     ],
     "settings": {
-      "timeout": 5000,
+      "timeout": 30000,
       "row_limit": 2000,
-      "cache_enabled": 0,
-      "cache_ttl": 0,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
       "enable_pagination": 0
     },
     "tag": "Stargazers",
@@ -1492,42 +1500,42 @@
         "type": "string",
         "required": 1,
         "default": "",
-        "description": ""
+        "description": "The owner of the repo. For example: `pingcap`"
       },
       {
         "name": "repo",
         "type": "string",
         "required": 1,
         "default": "",
-        "description": ""
+        "description": "The name of the repo. For example: `tidb`"
       },
       {
         "name": "from",
         "type": "string",
         "required": 0,
         "default": "2000-01-01",
-        "description": ""
+        "description": "The start date of the range"
       },
       {
         "name": "to",
         "type": "string",
         "required": 0,
         "default": "2099-12-31",
-        "description": ""
+        "description": "The end date of the range"
       },
       {
         "name": "exclude_unknown",
-        "type": "string",
+        "type": "boolean",
         "required": 0,
-        "default": "",
-        "description": ""
+        "default": "true",
+        "description": "Whether to exclude stargazers with unknown organization information"
       }
     ],
     "settings": {
-      "timeout": 10000,
+      "timeout": 30000,
       "row_limit": 300,
-      "cache_enabled": 0,
-      "cache_ttl": 0,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
       "enable_pagination": 0
     },
     "tag": "Stargazers",
@@ -1550,42 +1558,42 @@
         "type": "string",
         "required": 1,
         "default": "",
-        "description": ""
+        "description": "The owner of the repo. For example: `pingcap`"
       },
       {
         "name": "repo",
         "type": "string",
         "required": 1,
         "default": "",
-        "description": ""
+        "description": "The name of the repo. For example: `tidb`"
       },
       {
         "name": "from",
         "type": "string",
         "required": 0,
         "default": "2000-01-01",
-        "description": ""
+        "description": "The start date of the range"
       },
       {
         "name": "to",
         "type": "string",
         "required": 0,
         "default": "2099-12-31",
-        "description": ""
+        "description": "The end date of the range"
       },
       {
         "name": "exclude_unknown",
-        "type": "string",
+        "type": "boolean",
         "required": 0,
-        "default": "",
-        "description": ""
+        "default": "true",
+        "description": "Whether to exclude issue creators with unknown organization information"
       }
     ],
     "settings": {
-      "timeout": 10000,
+      "timeout": 30000,
       "row_limit": 300,
-      "cache_enabled": 0,
-      "cache_ttl": 0,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
       "enable_pagination": 0
     },
     "tag": "Issue Creators",
@@ -1608,7 +1616,7 @@
         "type": "string",
         "required": 0,
         "default": "All",
-        "description": "",
+        "description": "Specify using which programming language to filter trending repos. If not specified, all languages will be included",
         "enum": "All,JavaScript,Java,Python,PHP,C++,C#,TypeScript,Shell,C,Ruby,Rust,Go,Kotlin,HCL,PowerShell,CMake,Groovy,PLpgSQL,TSQL,Dart,Swift,HTML,CSS,Elixir,Haskell,Solidity,Assembly,R,Scala,Julia,Lua,Clojure,Erlang,Common Lisp,Emacs Lisp,OCaml,MATLAB,Objective-C,Perl,Fortran"
       },
       {
@@ -1616,15 +1624,15 @@
         "type": "string",
         "required": 0,
         "default": "past_week",
-        "description": "",
+        "description": "Specify the period of time to calculate trending repos",
         "enum": "past_24_hours,past_week,past_month,past_3_months"
       }
     ],
     "settings": {
-      "timeout": 5000,
+      "timeout": 30000,
       "row_limit": 100,
-      "cache_enabled": 0,
-      "cache_ttl": 0,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
       "enable_pagination": 0
     },
     "tag": "Trends",
@@ -1647,7 +1655,7 @@
         "type": "integer",
         "required": 1,
         "default": "",
-        "description": ""
+        "description": "The ID of collection"
       }
     ],
     "settings": {
@@ -1675,8 +1683,8 @@
     "settings": {
       "timeout": 5000,
       "row_limit": 200,
-      "cache_enabled": 0,
-      "cache_ttl": 0,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
       "enable_pagination": 1
     },
     "tag": "Collections",
@@ -1699,42 +1707,42 @@
         "type": "string",
         "required": 1,
         "default": "",
-        "description": ""
+        "description": "The owner of the repo. For example: `pingcap`"
       },
       {
         "name": "repo",
         "type": "string",
         "required": 1,
         "default": "",
-        "description": ""
+        "description": "The name of the repo. For example: `tidb`"
       },
       {
         "name": "from",
         "type": "string",
         "required": 0,
         "default": "2000-01-01",
-        "description": ""
+        "description": "The start date of the range"
       },
       {
         "name": "to",
         "type": "string",
         "required": 0,
         "default": "2099-12-31",
-        "description": ""
+        "description": "The end date of the range"
       },
       {
         "name": "exclude_unknown",
         "type": "boolean",
         "required": 0,
         "default": "true",
-        "description": ""
+        "description": "Whether to exclude PR creators with unknown organization information"
       }
     ],
     "settings": {
-      "timeout": 10000,
+      "timeout": 30000,
       "row_limit": 2000,
-      "cache_enabled": 0,
-      "cache_ttl": 0,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
       "enable_pagination": 0
     },
     "tag": "Pull Request Creators",
@@ -1745,7 +1753,7 @@
   },
   {
     "name": "List PR Creators Countries",
-    "description": "List countries by pull request creators (Code contributors) during a specified time frame, provided the choice to filter out those with unknown countries and sorting the results by creator count in descending order.",
+    "description": "List countries/regions of pull request creators for the specified repository during a specified time range.",
     "method": "GET",
     "endpoint": "/repos/pull_request_creators/countries",
     "data_source": {
@@ -1757,42 +1765,42 @@
         "type": "string",
         "required": 1,
         "default": "",
-        "description": ""
+        "description": "The owner of the repo. For example: `pingcap`"
       },
       {
         "name": "repo",
         "type": "string",
         "required": 1,
         "default": "",
-        "description": ""
+        "description": "The name of the repo. For example: `tidb`"
       },
       {
         "name": "from",
         "type": "string",
-        "required": 1,
+        "required": 0,
         "default": "2000-01-01",
-        "description": ""
+        "description": "The start date of the range."
       },
       {
         "name": "to",
         "type": "string",
-        "required": 1,
+        "required": 0,
         "default": "2099-12-31",
-        "description": ""
+        "description": "The end date of the range."
       },
       {
         "name": "exclude_unknown",
         "type": "boolean",
         "required": 0,
         "default": "true",
-        "description": ""
+        "description": "Whether to exclude issue creators with unknown country/region information"
       }
     ],
     "settings": {
-      "timeout": 10000,
+      "timeout": 30000,
       "row_limit": 300,
-      "cache_enabled": 0,
-      "cache_ttl": 0,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
       "enable_pagination": 0
     },
     "tag": "Pull Request Creators",
@@ -1815,42 +1823,42 @@
         "type": "string",
         "required": 1,
         "default": "",
-        "description": ""
+        "description": "The owner of the repo. For example: `pingcap`"
       },
       {
         "name": "repo",
         "type": "string",
         "required": 1,
         "default": "",
-        "description": ""
+        "description": "The name of the repo. For example: `tidb`"
       },
       {
         "name": "from",
         "type": "string",
         "required": 0,
         "default": "2000-01-01",
-        "description": ""
+        "description": "The start date of the range."
       },
       {
         "name": "to",
         "type": "string",
         "required": 0,
         "default": "2099-12-31",
-        "description": ""
+        "description": "The end date of the range."
       },
       {
         "name": "exclude_unknown",
         "type": "boolean",
         "required": 0,
         "default": "true",
-        "description": ""
+        "description": "Whether to exclude issue creators with unknown country/region information"
       }
     ],
     "settings": {
-      "timeout": 10000,
+      "timeout": 30000,
       "row_limit": 300,
-      "cache_enabled": 0,
-      "cache_ttl": 0,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
       "enable_pagination": 0
     },
     "tag": "Issue Creators",
@@ -1873,42 +1881,42 @@
         "type": "string",
         "required": 1,
         "default": "",
-        "description": ""
+        "description": "The owner of the repo. For example: `pingcap`"
       },
       {
         "name": "repo",
         "type": "string",
         "required": 1,
         "default": "",
-        "description": ""
+        "description": "The name of the repo. For example: `tidb`"
       },
       {
         "name": "from",
         "type": "string",
         "required": 0,
         "default": "2000-01-01",
-        "description": ""
+        "description": "The start date of the range"
       },
       {
         "name": "to",
         "type": "string",
         "required": 0,
         "default": "2099-12-31",
-        "description": ""
+        "description": "The end date of the range"
       },
       {
         "name": "exclude_unknown",
-        "type": "string",
+        "type": "boolean",
         "required": 0,
-        "default": "",
-        "description": ""
+        "default": "true",
+        "description": "Whether to exclude issue creators with unknown country/region information"
       }
     ],
     "settings": {
-      "timeout": 10000,
+      "timeout": 30000,
       "row_limit": 300,
-      "cache_enabled": 0,
-      "cache_ttl": 0,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
       "enable_pagination": 0
     },
     "tag": "Stargazers",
