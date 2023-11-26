@@ -5,7 +5,7 @@ WITH pr_with_merged_at AS (
         github_events ge
     WHERE
         type = 'PullRequestEvent'
-        -- Considering that some repositoies accept the code of the contributor by closing the PR and push commit directly,
+        -- Considering that some repositories accept the code of the contributor by closing the PR and push commit directly,
         -- here is not distinguished whether it is the merged event.
         -- See: https://github.com/mongodb/mongo/pulls?q=is%3Apr+is%3Aclosed
         AND action = 'closed'

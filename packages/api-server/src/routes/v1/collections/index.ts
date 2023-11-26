@@ -27,11 +27,11 @@ const schema = {
         properties: {
           repo_id: {
             type: 'string',
-            description: 'Collection ID'
+            description: 'Repository ID'
           },
           repo_name: {
             type: 'string',
-            description: 'Collection name'
+            description: 'Repository name'
           }
         },
         additionalProperties: true,
