@@ -1596,7 +1596,7 @@
   },
   {
     "name": "Trending Repos",
-    "description": "Retrieves information about trending GitHub repositories. It filters repositories based on their programming language and a specified time period",
+    "description": "Retrieve trending GitHub repositories filtered by a specific language and time period, including repository details and associated collection names (contributor_logins is a comma-separated string).",
     "method": "GET",
     "endpoint": "/trends/repos",
     "data_source": {
@@ -1607,15 +1607,17 @@
         "name": "language",
         "type": "string",
         "required": 0,
-        "default": "",
-        "description": ""
+        "default": "All",
+        "description": "",
+        "enum": "All,JavaScript,Java,Python,PHP,C++,C#,TypeScript,Shell,C,Ruby,Rust,Go,Kotlin,HCL,PowerShell,CMake,Groovy,PLpgSQL,TSQL,Dart,Swift,HTML,CSS,Elixir,Haskell,Solidity,Assembly,R,Scala,Julia,Lua,Clojure,Erlang,Common Lisp,Emacs Lisp,OCaml,MATLAB,Objective-C,Perl,Fortran"
       },
       {
         "name": "period",
         "type": "string",
         "required": 0,
-        "default": "past_24_hours",
-        "description": "one of {past_24_hours, past_3_months, past_month, past_week}"
+        "default": "past_week",
+        "description": "",
+        "enum": "past_24_hours,past_week,past_month,past_3_months"
       }
     ],
     "settings": {
