@@ -1,9 +1,9 @@
 [
   {
-    "name": "/users/commits/monthly",
-    "description": "Retrieve a monthly summary of a GitHub user's pushed commits in the specified time range. ",
+    "name": "/users/issues/monthly",
+    "description": "Retrieve a monthly summary of a GitHub user's opened issues and issue comments in the specified time range.",
     "method": "GET",
-    "endpoint": "/users/commits/monthly",
+    "endpoint": "/users/issues/monthly",
     "data_source": {
       "cluster_id": 1379661944642684098
     },
@@ -39,7 +39,7 @@
     },
     "tag": "Users",
     "batch_operation": 0,
-    "sql_file": "sql/GET-users-commits-monthly.sql",
+    "sql_file": "sql/GET-users-issues-monthly.sql",
     "type": "sql_endpoint",
     "return_type": "json"
   },
@@ -1500,6 +1500,50 @@
     "return_type": "json"
   },
   {
+    "name": "/users/commits/monthly",
+    "description": "Retrieve a monthly summary of a GitHub user's pushed commits in the specified time range. ",
+    "method": "GET",
+    "endpoint": "/users/commits/monthly",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "username",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": "Username of the GitHub user, for example: ngaut"
+      },
+      {
+        "name": "from",
+        "type": "string",
+        "required": 0,
+        "default": "2000-01-01",
+        "description": "The start of time range"
+      },
+      {
+        "name": "to",
+        "type": "string",
+        "required": 0,
+        "default": "2099-12-31",
+        "description": "The end of time range"
+      }
+    ],
+    "settings": {
+      "timeout": 15000,
+      "row_limit": 1000,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
+      "enable_pagination": 0
+    },
+    "tag": "Users",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-users-commits-monthly.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
     "name": "/users/contributions/hourly/repo",
     "description": "Retrieve the count of activities (pull requests, issues, issue comments, reviews, review comments, pushes) by a GitHub user in different repositories, grouped by repository and event period. ",
     "method": "GET",
@@ -1636,50 +1680,6 @@
     "tag": "Users",
     "batch_operation": 0,
     "sql_file": "sql/GET-users-contributions-time_distribution.sql",
-    "type": "sql_endpoint",
-    "return_type": "json"
-  },
-  {
-    "name": "/users/issues/monthly",
-    "description": "Retrieve a monthly summary of a GitHub user's opened issues and issue comments in the specified time range.",
-    "method": "GET",
-    "endpoint": "/users/issues/monthly",
-    "data_source": {
-      "cluster_id": 1379661944642684098
-    },
-    "params": [
-      {
-        "name": "username",
-        "type": "string",
-        "required": 1,
-        "default": "",
-        "description": "Username of the GitHub user, for example: ngaut"
-      },
-      {
-        "name": "from",
-        "type": "string",
-        "required": 0,
-        "default": "",
-        "description": "If not specified, the default time range is start from the past year ago"
-      },
-      {
-        "name": "to",
-        "type": "string",
-        "required": 0,
-        "default": "2099-12-31",
-        "description": ""
-      }
-    ],
-    "settings": {
-      "timeout": 30000,
-      "row_limit": 1000,
-      "cache_enabled": 1,
-      "cache_ttl": 600,
-      "enable_pagination": 0
-    },
-    "tag": "Users",
-    "batch_operation": 0,
-    "sql_file": "sql/GET-users-issues-monthly.sql",
     "type": "sql_endpoint",
     "return_type": "json"
   },

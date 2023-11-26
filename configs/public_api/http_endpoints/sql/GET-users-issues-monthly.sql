@@ -14,10 +14,8 @@ WITH user AS (
         type = 'IssuesEvent' 
         AND action = 'opened' 
         AND actor_id = (SELECT user_id FROM user)
-        AND
-            CASE WHEN ${from} = '' THEN (ge.created_at BETWEEN DATE_SUB(NOW(), INTERVAL 1 YEAR) AND NOW())
-            ELSE (ge.created_at >= ${from} AND ge.created_at <= ${to})
-            END
+        AND ge.created_at >= ${from}
+        AND ge.created_at <= ${to}
     GROUP BY 1
     ORDER BY 1
 ), issue_comments AS (
@@ -29,10 +27,8 @@ WITH user AS (
         type = 'IssueCommentEvent' 
         AND action = 'created' 
         AND actor_id = (SELECT user_id FROM user)
-        AND
-            CASE WHEN ${from} = '' THEN (ge.created_at BETWEEN DATE_SUB(NOW(), INTERVAL 1 YEAR) AND NOW())
-            ELSE (ge.created_at >= ${from} AND ge.created_at <= ${to})
-            END
+        AND ge.created_at >= ${from}
+        AND ge.created_at <= ${to}
     GROUP BY 1
     ORDER BY 1
 ), event_months AS (
