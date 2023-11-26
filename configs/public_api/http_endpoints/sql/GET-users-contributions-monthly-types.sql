@@ -22,10 +22,8 @@ WHERE
         (type = 'PullRequestReviewCommentEvent' AND action = 'created') OR
         (type = 'PushEvent' AND action = '')
     )
-    AND
-        CASE WHEN ${from} = '' THEN (ge.created_at BETWEEN DATE_SUB(NOW(), INTERVAL 1 YEAR) AND NOW())
-        ELSE (ge.created_at >= ${from} AND ge.created_at <= ${to})
-        END
+    AND ge.created_at >= ${from}
+    AND ge.created_at <= ${to}
 GROUP BY type, 2
 ORDER BY 2
 ;

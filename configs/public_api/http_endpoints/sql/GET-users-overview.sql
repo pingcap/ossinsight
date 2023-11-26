@@ -15,20 +15,16 @@ WITH user AS (
     WHERE 
         actor_id = (SELECT user_id FROM user) 
         AND type = 'WatchEvent'
-        AND
-          CASE WHEN ${from} = '' THEN (created_at BETWEEN DATE_SUB(NOW(), INTERVAL 1 YEAR) AND NOW())
-          ELSE (created_at >= ${from} AND created_at <= ${to})
-          END
+        AND created_at >= ${from}
+        AND created_at <= ${to}
 ), star_earned AS (
     SELECT COUNT(1) AS cnt
     FROM github_events ge
     WHERE 
         repo_id IN (SELECT repo_id FROM repo_ids) 
         AND type = 'WatchEvent' 
-        AND
-          CASE WHEN ${from} = '' THEN (created_at BETWEEN DATE_SUB(NOW(), INTERVAL 1 YEAR) AND NOW())
-          ELSE (created_at >= ${from} AND created_at <= ${to})
-          END
+        AND created_at >= ${from}
+        AND created_at <= ${to}
 ), contribute_repos AS (
     SELECT
       COUNT(DISTINCT repo_id) AS cnt
@@ -42,10 +38,8 @@ WITH user AS (
             (type = 'PushEvent' AND action = '')
         )
         AND repo_id NOT IN (SELECT repo_id FROM repo_ids)
-        AND
-          CASE WHEN ${from} = '' THEN (created_at BETWEEN DATE_SUB(NOW(), INTERVAL 1 YEAR) AND NOW())
-          ELSE (created_at >= ${from} AND created_at <= ${to})
-          END
+        AND created_at >= ${from}
+        AND created_at <= ${to}
 ), issues AS (
     SELECT
         COUNT(1) AS cnt
@@ -54,10 +48,8 @@ WITH user AS (
         actor_id = (SELECT user_id FROM user) 
         AND type = 'IssuesEvent' 
         AND action = 'opened' 
-        AND
-          CASE WHEN ${from} = '' THEN (created_at BETWEEN DATE_SUB(NOW(), INTERVAL 1 YEAR) AND NOW())
-          ELSE (created_at >= ${from} AND created_at <= ${to})
-          END
+        AND created_at >= ${from}
+        AND created_at <= ${to}
 ), pull_requests AS (
     SELECT
         COUNT(1) AS cnt
@@ -66,10 +58,8 @@ WITH user AS (
         actor_id = (SELECT user_id FROM user) 
         AND type = 'PullRequestEvent' 
         AND action = 'opened' 
-        AND
-          CASE WHEN ${from} = '' THEN (created_at BETWEEN DATE_SUB(NOW(), INTERVAL 1 YEAR) AND NOW())
-          ELSE (created_at >= ${from} AND created_at <= ${to})
-          END
+        AND created_at >= ${from}
+        AND created_at <= ${to}
 ), code_reviews AS (
     SELECT
         COUNT(1) AS cnt
@@ -78,10 +68,8 @@ WITH user AS (
         actor_id = (SELECT user_id FROM user) 
         AND type = 'PullRequestReviewEvent' 
         AND action = 'created' 
-        AND
-          CASE WHEN ${from} = '' THEN (created_at BETWEEN DATE_SUB(NOW(), INTERVAL 1 YEAR) AND NOW())
-          ELSE (created_at >= ${from} AND created_at <= ${to})
-          END
+        AND created_at >= ${from}
+        AND created_at <= ${to}
 ), code_changes AS (
     SELECT
         SUM(additions) AS additions,
@@ -92,7 +80,8 @@ WITH user AS (
         AND action = 'closed' 
         AND pr_merged = true 
         AND creator_user_id = (SELECT user_id FROM user) 
-        AND (created_at BETWEEN DATE_SUB(NOW(), INTERVAL 1 YEAR) AND NOW())
+        AND created_at >= ${from}
+        AND created_at <= ${to}
 )
 SELECT
     u.user_id,

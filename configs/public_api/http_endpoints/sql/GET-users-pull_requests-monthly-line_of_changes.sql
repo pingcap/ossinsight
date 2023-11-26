@@ -11,10 +11,8 @@ WHERE
     AND type = 'PullRequestEvent'
     AND action = 'closed'
     AND pr_merged = true
-    AND
-        CASE WHEN ${from} = '' THEN (ge.created_at BETWEEN DATE_SUB(NOW(), INTERVAL 1 YEAR) AND NOW())
-        ELSE (ge.created_at >= ${from} AND ge.created_at <= ${to})
-        END
+    AND ge.created_at >= ${from}
+    AND ge.created_at <= ${to}
 GROUP BY 1
 ORDER BY 1
 ;

@@ -15,10 +15,8 @@ WITH user AS (
         AND actor_id = (SELECT user_id FROM user)
         AND action = 'opened'
         AND gr.primary_language != ''
-        AND
-          CASE WHEN ${from} = '' THEN (ge.created_at BETWEEN DATE_SUB(NOW(), INTERVAL 1 YEAR) AND NOW())
-          ELSE (ge.created_at >= ${from} AND ge.created_at <= ${to})
-          END
+        AND ge.created_at >= ${from}
+        AND ge.created_at <= ${to}
     GROUP BY gr.primary_language
 ), s AS (
     SELECT SUM(cnt) AS total FROM prs_with_languages
