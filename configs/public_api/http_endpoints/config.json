@@ -41,11 +41,11 @@
     "settings": {
       "timeout": 30000,
       "row_limit": 1000,
-      "cache_enabled": 0,
-      "cache_ttl": 0,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
       "enable_pagination": 0
     },
-    "tag": "Default",
+    "tag": "Participants",
     "batch_operation": 0,
     "sql_file": "sql/GET-repos-participants-rank_by_activities.sql",
     "type": "sql_endpoint",
@@ -129,11 +129,11 @@
     "settings": {
       "timeout": 30000,
       "row_limit": 1000,
-      "cache_enabled": 0,
-      "cache_ttl": 0,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
       "enable_pagination": 0
     },
-    "tag": "Default",
+    "tag": "Users",
     "batch_operation": 0,
     "sql_file": "sql/GET-users-issues-monthly.sql",
     "type": "sql_endpoint",
@@ -173,11 +173,11 @@
     "settings": {
       "timeout": 30000,
       "row_limit": 1000,
-      "cache_enabled": 0,
-      "cache_ttl": 0,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
       "enable_pagination": 0
     },
-    "tag": "Default",
+    "tag": "Users",
     "batch_operation": 0,
     "sql_file": "sql/GET-users-pull_requests-monthly-sizes.sql",
     "type": "sql_endpoint",
@@ -217,11 +217,11 @@
     "settings": {
       "timeout": 30000,
       "row_limit": 1000,
-      "cache_enabled": 0,
-      "cache_ttl": 0,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
       "enable_pagination": 0
     },
-    "tag": "Default",
+    "tag": "Users",
     "batch_operation": 0,
     "sql_file": "sql/GET-users-pull_requests-monthly-line_of_changes.sql",
     "type": "sql_endpoint",
@@ -261,11 +261,11 @@
     "settings": {
       "timeout": 30000,
       "row_limit": 1000,
-      "cache_enabled": 0,
-      "cache_ttl": 0,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
       "enable_pagination": 0
     },
-    "tag": "Default",
+    "tag": "Users",
     "batch_operation": 0,
     "sql_file": "sql/GET-users-pull_requests-monthly-actions.sql",
     "type": "sql_endpoint",
@@ -305,11 +305,11 @@
     "settings": {
       "timeout": 30000,
       "row_limit": 1000,
-      "cache_enabled": 0,
-      "cache_ttl": 0,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
       "enable_pagination": 0
     },
-    "tag": "Default",
+    "tag": "Users",
     "batch_operation": 0,
     "sql_file": "sql/GET-users-stars-monthly.sql",
     "type": "sql_endpoint",
@@ -349,11 +349,11 @@
     "settings": {
       "timeout": 30000,
       "row_limit": 1000,
-      "cache_enabled": 0,
-      "cache_ttl": 0,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
       "enable_pagination": 0
     },
-    "tag": "Default",
+    "tag": "Users",
     "batch_operation": 0,
     "sql_file": "sql/GET-users-contributions-monthly-types.sql",
     "type": "sql_endpoint",
@@ -393,11 +393,11 @@
     "settings": {
       "timeout": 30000,
       "row_limit": 1000,
-      "cache_enabled": 0,
-      "cache_ttl": 0,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
       "enable_pagination": 0
     },
-    "tag": "Default",
+    "tag": "Users",
     "batch_operation": 0,
     "sql_file": "sql/GET-users-contributions-hourly-repo.sql",
     "type": "sql_endpoint",
@@ -445,11 +445,11 @@
     "settings": {
       "timeout": 30000,
       "row_limit": 1000,
-      "cache_enabled": 0,
-      "cache_ttl": 0,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
       "enable_pagination": 0
     },
-    "tag": "Default",
+    "tag": "Users",
     "batch_operation": 0,
     "sql_file": "sql/GET-users-contributions-time_distribution.sql",
     "type": "sql_endpoint",
@@ -489,11 +489,11 @@
     "settings": {
       "timeout": 30000,
       "row_limit": 1000,
-      "cache_enabled": 0,
-      "cache_ttl": 0,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
       "enable_pagination": 0
     },
-    "tag": "Default",
+    "tag": "Users",
     "batch_operation": 0,
     "sql_file": "sql/GET-users-pull_requests-used_languages.sql",
     "type": "sql_endpoint",
@@ -533,11 +533,11 @@
     "settings": {
       "timeout": 30000,
       "row_limit": 1000,
-      "cache_enabled": 0,
-      "cache_ttl": 0,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
       "enable_pagination": 0
     },
-    "tag": "Default",
+    "tag": "Users",
     "batch_operation": 0,
     "sql_file": "sql/GET-users-overview.sql",
     "type": "sql_endpoint",
@@ -570,11 +570,11 @@
     "settings": {
       "timeout": 30000,
       "row_limit": 1000,
-      "cache_enabled": 0,
-      "cache_ttl": 0,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
       "enable_pagination": 0
     },
-    "tag": "Default",
+    "tag": "Commits",
     "batch_operation": 0,
     "sql_file": "sql/GET-repos-commits-monthly.sql",
     "type": "sql_endpoint",
@@ -625,7 +625,7 @@
       "cache_ttl": 600,
       "enable_pagination": 0
     },
-    "tag": "Default",
+    "tag": "Commits",
     "batch_operation": 0,
     "sql_file": "sql/GET-repos-commits-time_distribution.sql",
     "type": "sql_endpoint",
@@ -676,7 +676,7 @@
       "cache_ttl": 600,
       "enable_pagination": 0
     },
-    "tag": "Default",
+    "tag": "Pull Requests",
     "batch_operation": 0,
     "sql_file": "sql/GET-repos-pull_requests-monthly-line_of_changes.sql",
     "type": "sql_endpoint",
@@ -720,7 +720,7 @@
       "cache_ttl": 600,
       "enable_pagination": 0
     },
-    "tag": "Default",
+    "tag": "Pull Requests",
     "batch_operation": 0,
     "sql_file": "sql/GET-repos-pull_requests-monthly-sizes.sql",
     "type": "sql_endpoint",
@@ -771,7 +771,7 @@
       "cache_ttl": 600,
       "enable_pagination": 0
     },
-    "tag": "Default",
+    "tag": "Pull Requests",
     "batch_operation": 0,
     "sql_file": "sql/GET-repos-pull_requests-open_to_merge.sql",
     "type": "sql_endpoint",
@@ -822,7 +822,7 @@
       "cache_ttl": 600,
       "enable_pagination": 0
     },
-    "tag": "Default",
+    "tag": "Isuses",
     "batch_operation": 0,
     "sql_file": "sql/GET-repos-issues-monthly.sql",
     "type": "sql_endpoint",
@@ -873,7 +873,7 @@
       "cache_ttl": 600,
       "enable_pagination": 0
     },
-    "tag": "Default",
+    "tag": "Isuses",
     "batch_operation": 0,
     "sql_file": "sql/GET-repos-issues-open_to_first_responded.sql",
     "type": "sql_endpoint",
@@ -924,14 +924,14 @@
       "cache_ttl": 600,
       "enable_pagination": 0
     },
-    "tag": "Default",
+    "tag": "Isuses",
     "batch_operation": 0,
     "sql_file": "sql/GET-repos-issues-open_to_closed.sql",
     "type": "sql_endpoint",
     "return_type": "json"
   },
   {
-    "name": "/repos/pull_reques/overview",
+    "name": "/repos/pull_requests/overview",
     "description": "Returns the total number of pull requests, the count of unique contributors who opened pull requests, the total number of pull request reviews, and the count of unique reviewers. ",
     "method": "GET",
     "endpoint": "/repos/pull_requests/overview",
@@ -961,7 +961,7 @@
       "cache_ttl": 600,
       "enable_pagination": 0
     },
-    "tag": "Default",
+    "tag": "Pull Requests",
     "batch_operation": 0,
     "sql_file": "sql/GET-repos-pull_requests-overview.sql",
     "type": "sql_endpoint",
@@ -998,7 +998,7 @@
       "cache_ttl": 600,
       "enable_pagination": 0
     },
-    "tag": "Default",
+    "tag": "Issues",
     "batch_operation": 0,
     "sql_file": "sql/GET-repos-issues-overview.sql",
     "type": "sql_endpoint",
@@ -1035,7 +1035,7 @@
       "cache_ttl": 600,
       "enable_pagination": 0
     },
-    "tag": "Default",
+    "tag": "Repository",
     "batch_operation": 0,
     "sql_file": "sql/GET-repos-overview.sql",
     "type": "sql_endpoint",
@@ -1382,7 +1382,7 @@
         "type": "string",
         "required": 0,
         "default": "month",
-        "description": "The time interval of the data points.",
+        "description": "The time interval of the data points",
         "enum": "day,week,month"
       },
       {
@@ -1441,7 +1441,7 @@
         "type": "string",
         "required": 0,
         "default": "month",
-        "description": "",
+        "description": "The time interval of the data points",
         "enum": "day,week,month"
       },
       {
