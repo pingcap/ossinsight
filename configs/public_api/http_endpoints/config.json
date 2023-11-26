@@ -273,7 +273,7 @@
   },
   {
     "name": "/users/stars/monthly",
-    "description": "Retrieve a monthly count of repositories starred by a GitHub user in the specified time range. (If `from` and `to` are not specified, the default period is the past year.)",
+    "description": "Retrieve a monthly count of repositories starred by a GitHub user in the specified time range. ",
     "method": "GET",
     "endpoint": "/users/stars/monthly",
     "data_source": {
@@ -285,14 +285,14 @@
         "type": "string",
         "required": 1,
         "default": "",
-        "description": ""
+        "description": "The username of GitHub user"
       },
       {
         "name": "from",
         "type": "string",
         "required": 0,
         "default": "",
-        "description": ""
+        "description": "If not specified, the default time range is start from the past year ago"
       },
       {
         "name": "to",
