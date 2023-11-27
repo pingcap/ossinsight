@@ -13,14 +13,14 @@
         "type": "string",
         "required": 1,
         "default": "",
-        "description": "The owner of the repo. For example: `pingcap`"
+        "description": "The owner of the repo, for example: pingcap"
       },
       {
         "name": "repo",
         "type": "string",
         "required": 1,
         "default": "",
-        "description": "The name of the repo. For example: `tidb`"
+        "description": "The name of the repo, for example: tidb"
       },
       {
         "name": "period",
@@ -557,14 +557,14 @@
         "type": "string",
         "required": 1,
         "default": "",
-        "description": ""
+        "description": "The owner of the repo, for example: pingcap"
       },
       {
         "name": "repo",
         "type": "string",
         "required": 1,
         "default": "",
-        "description": ""
+        "description": "The name of the repo, for example: tidb"
       }
     ],
     "settings": {
@@ -582,7 +582,7 @@
   },
   {
     "name": "/repos/commits/time_distribution",
-    "description": "Retrieve a weekly and hourly distribution of push events for a specific repository.  (If `from` and `to` are not specified, the default period is the past year.)",
+    "description": "Retrieve a weekly and hourly distribution of push events for a specific repository.",
     "method": "GET",
     "endpoint": "/repos/commits/time_distribution",
     "data_source": {
@@ -607,7 +607,7 @@
         "name": "from",
         "type": "string",
         "required": 0,
-        "default": "",
+        "default": "2000-01-01",
         "description": ""
       },
       {
