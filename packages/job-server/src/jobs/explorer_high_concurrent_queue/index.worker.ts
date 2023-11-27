@@ -19,6 +19,7 @@ export default async (
   try {
     logger.info({ questionId, querySQL }, "Resolving question: %s", title);
     const start = DateTime.now();
+    await app.ready();
     await app.explorerService.resolveQuestion(job, question);
     const end = DateTime.now();
     logger.info({ questionId }, "Resolved question: %s, cost: %d s", title, end.diff(start).as("seconds"));

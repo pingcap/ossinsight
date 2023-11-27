@@ -1,34 +1,31 @@
-import fp from "fastify-plugin";
+import {MySQLPromisePool} from "@fastify/mysql";
+import async from "async";
 import {Job, Queue} from "bullmq";
+import {randomUUID} from "crypto";
+import {FastifyBaseLogger} from "fastify";
+import fp from "fastify-plugin";
+import {DateTime} from "luxon";
+import {Connection, PoolConnection, ResultSetHeader} from "mysql2/promise";
+import crypto from "node:crypto";
+import {pino} from "pino";
+import {TiDBPlaygroundQueryExecutor} from "../../../core/executor/query-executor/TiDBPlaygroundQueryExecutor";
 import {withConnection, withTransaction} from "../../../utils/db";
 import {
-    APIError, BotResponseGenerateError,
+    APIError,
+    BotResponseGenerateError,
     BotResponseParseError,
+    ExplorerCancelRecommendQuestionError,
     ExplorerCreateQuestionError,
-    ExplorerPrepareQuestionError, ExplorerRecommendQuestionError,
-    ExplorerResolveQuestionError, ExplorerSetQuestionTagsError,
-    ExplorerTooManyRequestError, ExplorerCancelRecommendQuestionError,
+    ExplorerPrepareQuestionError,
+    ExplorerRecommendQuestionError,
+    ExplorerResolveQuestionError,
+    ExplorerSetQuestionTagsError,
+    ExplorerTooManyRequestError,
     SQLUnsupportedFunctionError,
     ValidateSQLError
 } from "../../../utils/error";
-import {Connection, ResultSetHeader} from "mysql2/promise";
-import crypto from "node:crypto";
-import {DateTime} from "luxon";
+import sleep from "../../../utils/sleep";
 import {BotService} from "../bot-service";
-import {
-    PlanStep,
-    Question,
-    QuestionFeedback,
-    QuestionFeedbackType,
-    QuestionQueryResult,
-    QuestionQueryResultWithChart,
-    QuestionQueueNames,
-    QuestionSQLResult,
-    QuestionStatus,
-    ValidateSQLResult
-} from "./types";
-import {TiDBPlaygroundQueryExecutor} from "../../../core/executor/query-executor/TiDBPlaygroundQueryExecutor";
-import {randomUUID} from "crypto";
 import {
     BarChart,
     ChartNames,
@@ -43,11 +40,18 @@ import {
     RepoCard,
     Table
 } from "../bot-service/types";
-import {FastifyBaseLogger} from "fastify";
-import {MySQLPromisePool} from "@fastify/mysql";
-import async from "async";
-import sleep from "../../../utils/sleep";
-import {pino} from "pino";
+import {
+    PlanStep,
+    Question,
+    QuestionFeedback,
+    QuestionFeedbackType,
+    QuestionQueryResult,
+    QuestionQueryResultWithChart,
+    QuestionQueueNames,
+    QuestionSQLResult,
+    QuestionStatus,
+    ValidateSQLResult
+} from "./types";
 import BaseLogger = pino.BaseLogger;
 
 declare module 'fastify' {
@@ -806,11 +810,33 @@ export class ExplorerService {
             this.logger.info('⏳ Start query executing for question <%s>, start: %s', questionId, executedAt.toISO());
 
             const markedSQL = `/* questionId: ${questionId} */ ${querySQL}`;
-            const [rows, fields] = await this.playgroundQueryExecutor.execute(`explorer-sql-${questionId}`, {
-                sql: markedSQL,
-                timeout: this.options.querySQLTimeout,
-            }) as [any[], any[]];
+            const res = await withConnection(this.playgroundQueryExecutor.pool, async (conn: PoolConnection) => {
+                // Get Connection ID (cast int64 to char).
+                const result = await conn.query('SELECT CAST(CONNECTION_ID() AS CHAR) AS connectionId;');
+                const connections = result[0] as { connectionId: string }[];
+                const connectionId = connections[0].connectionId;
 
+                try {
+                    return await this.playgroundQueryExecutor.executeWithConn(conn, `explorer-sql-${questionId}`, {
+                        sql: markedSQL,
+                        timeout: this.options.querySQLTimeout
+                    }) as [any[], any[]];
+                } catch (err: any) {
+                    // If the query times out, the connection is terminated by the KILL command,
+                    // preventing the heavy query from continuing.
+                    if (err.code === 'PROTOCOL_SEQUENCE_TIMEOUT') {
+                        try {
+                            await this.tidb.query('KILL ?;', [connectionId]);
+                            await conn.end();
+                            this.logger.info(`Killed the connection: ${connectionId}`);
+                        } catch (err2) {
+                            this.logger.error(err2, `Failed to kill the connection: ${connectionId}`);
+                        }
+                    }
+                    throw err;
+                }
+            });
+            const [rows, fields] = res!;
             const finishedAt = DateTime.now();
             const spent = finishedAt.diff(executedAt).as("seconds");
             this.logger.info(
