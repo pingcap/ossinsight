@@ -692,25 +692,32 @@
     },
     "params": [
       {
-        "name": "username",
+        "name": "owner",
         "type": "string",
         "required": 1,
         "default": "",
-        "description": ""
+        "description": "The owner of the repo. For example: `pingcap`"
+      },
+      {
+        "name": "repo",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": "The name of the repo. For example: `tidb`"
       },
       {
         "name": "from",
         "type": "string",
         "required": 0,
-        "default": "",
-        "description": ""
+        "default": "2000-01-01",
+        "description": "The start of time range"
       },
       {
         "name": "to",
         "type": "string",
         "required": 0,
         "default": "2099-12-31",
-        "description": ""
+        "description": "The end of time range"
       }
     ],
     "settings": {
