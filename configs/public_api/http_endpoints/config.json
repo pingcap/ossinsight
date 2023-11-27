@@ -735,7 +735,7 @@
   },
   {
     "name": "/repos/pull_requests/open_to_mer",
-    "description": "Get monthly distribution of pull request sizes (XS, S, M, L, XL, XXL) for a specific repository (Unit: Hours).",
+    "description": "Analyzes GitHub pull request merge times, providing percentiles (0, 25, 50, 75, 100) per month, excluding certain actions and bots.",
     "method": "GET",
     "endpoint": "/repos/pull_requests/open_to_merge",
     "data_source": {
@@ -769,6 +769,13 @@
         "required": 0,
         "default": "2099-12-31",
         "description": ""
+      },
+      {
+        "name": "exclude_bots",
+        "type": "boolean",
+        "required": 0,
+        "default": "false",
+        "description": "Whether to exclude robot accounts (includes GitHub App and normal users whose username matches the pattern, for example: `ti-chi-bot`)."
       }
     ],
     "settings": {

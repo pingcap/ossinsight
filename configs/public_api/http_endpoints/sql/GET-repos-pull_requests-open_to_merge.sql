@@ -27,12 +27,18 @@ with repo AS (
     WHERE
         type = 'PullRequestEvent'
         AND action = 'opened'
-        -- Exclude Bots
-        -- AND actor_login NOT LIKE '%bot%'
-        -- AND actor_login NOT IN (SELECT login FROM blacklist_users bu)
         AND repo_id = (SELECT repo_id FROM repo)
         AND created_at >= ${from}
         AND created_at <= ${to}
+         -- Exclude Bots
+        AND
+            CASE
+              WHEN ${exclude_bots} THEN (
+                  actor_login NOT LIKE '%bot%' AND
+                  actor_login NOT IN (SELECT login FROM blacklist_users bu)
+              )
+              ELSE TRUE
+            END
 ), tdiff AS (
     SELECT
         t_month,
