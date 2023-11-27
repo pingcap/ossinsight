@@ -1,9 +1,10 @@
 USE gharchive_dev;
 WITH collectionsOrderByVisits AS (
 	SELECT
+        /*+ READ_FROM_STORAGE(tiflash[sar]) */
 		CAST(JSON_EXTRACT(query, '$.collectionId') AS SIGNED) AS collection_id,
 		COUNT(*) AS visits
-	FROM stats_api_requests
+	FROM stats_api_requests sar
 	WHERE
 		path LIKE '/q/collection-%'
         AND finished_at > DATE_SUB(NOW(), INTERVAL 1 MONTH)

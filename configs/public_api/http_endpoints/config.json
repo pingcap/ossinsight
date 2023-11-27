@@ -39,7 +39,7 @@
       }
     ],
     "settings": {
-      "timeout": 15000,
+      "timeout": 30000,
       "row_limit": 1000,
       "cache_enabled": 1,
       "cache_ttl": 600,
