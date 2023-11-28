@@ -827,7 +827,7 @@ export class ExplorerService {
                     if (err.code === 'PROTOCOL_SEQUENCE_TIMEOUT') {
                         try {
                             await this.tidb.query(`KILL ${connectionId};`);
-                            await conn.end();
+                            conn.destroy();
                             this.logger.info(`Killed the connection: ${connectionId}`);
                         } catch (err2) {
                             this.logger.error(err2, `Failed to kill the connection: ${connectionId}`);
