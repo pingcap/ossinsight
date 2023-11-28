@@ -23,13 +23,13 @@ WITH stars AS (
         type = 'WatchEvent'
         {% case period %}
         {% when 'past_3_months' %}
-        AND ge.created_at >= DATE_SUB(NOW(), INTERVAL 3 MONTH) AND ge.created_at <= NOW()
+        AND ge.created_at >= DATE_SUB(NOW(), INTERVAL 3 MONTH)
         {% when 'past_month' %}
-        AND ge.created_at >= DATE_SUB(NOW(), INTERVAL 1 MONTH) AND ge.created_at <= NOW()
+        AND ge.created_at >= DATE_SUB(NOW(), INTERVAL 1 MONTH)
         {% when 'past_week' %}
-        AND ge.created_at >= DATE_SUB(NOW(), INTERVAL 1 WEEK) AND ge.created_at <= NOW()
+        AND ge.created_at >= DATE_SUB(NOW(), INTERVAL 1 WEEK)
         {% else %}
-        AND ge.created_at >= DATE_SUB(NOW(), INTERVAL 24 HOUR) AND ge.created_at <= NOW()
+        AND ge.created_at >= DATE_SUB(NOW(), INTERVAL 24 HOUR)
         {% endcase %}
     GROUP BY ge.repo_id
     -- Exclude code repositories that use the same user to duplicate stars.
@@ -58,13 +58,13 @@ WITH stars AS (
         type = 'ForkEvent'
         {% case period %}
         {% when 'past_3_months' %}
-        AND ge.created_at >= DATE_SUB(NOW(), INTERVAL 3 MONTH) AND ge.created_at <= NOW()
+        AND ge.created_at >= DATE_SUB(NOW(), INTERVAL 3 MONTH)
         {% when 'past_month' %}
-        AND ge.created_at >= DATE_SUB(NOW(), INTERVAL 1 MONTH) AND ge.created_at <= NOW()
+        AND ge.created_at >= DATE_SUB(NOW(), INTERVAL 1 MONTH)
         {% when 'past_week' %}
-        AND ge.created_at >= DATE_SUB(NOW(), INTERVAL 1 WEEK) AND ge.created_at <= NOW()
+        AND ge.created_at >= DATE_SUB(NOW(), INTERVAL 1 WEEK)
         {% else %}
-        AND ge.created_at >= DATE_SUB(NOW(), INTERVAL 24 HOUR) AND ge.created_at <= NOW()
+        AND ge.created_at >= DATE_SUB(NOW(), INTERVAL 24 HOUR)
         {% endcase %}
     GROUP BY ge.repo_id
     -- Exclude code repositories that use the same user to duplicate forks.
@@ -101,11 +101,11 @@ WITH stars AS (
         AND pushed_at > DATE_SUB(NOW(), INTERVAL 3 MONTH)
         -- Filter rule: Exclude some malicious new repositories.
         AND created_at < DATE_SUB(NOW(), INTERVAL 1 DAY)
-        -- Filter by repository language.
         {% if language != 'All' %}
+        -- Filter by repository language.
         AND primary_language = {{language}}
         {% endif %}
-        AND repo_name NOT IN (SELECT /*+ READ_FROM_STORAGE(tikv[br]) */ name FROM blacklist_repos br)
+        AND repo_name NOT IN (SELECT /*+ READ_FROM_STORAGE(TIFLASH[br]) */ name FROM blacklist_repos br)
         AND is_deleted = 0
     GROUP BY r.repo_id
     ORDER BY total_score DESC
@@ -117,10 +117,19 @@ WITH stars AS (
     FROM github_events ge
     JOIN topRepos tr ON ge.repo_id = tr.repo_id
     WHERE
-        type = 'PullRequestEvent'
-        AND action = 'opened'
-        AND (ge.created_at >= DATE_SUB(NOW(), INTERVAL 1 MONTH) AND ge.created_at <= NOW())
-        AND actor_login NOT LIKE '%[bot]'
+        ge.type = 'PullRequestEvent'
+        AND ge.action = 'opened'
+        AND ge.actor_login NOT LIKE '%[bot]'
+        {% case period %}
+        {% when 'past_3_months' %}
+        AND ge.created_at >= DATE_SUB(NOW(), INTERVAL 3 MONTH)
+        {% when 'past_month' %}
+        AND ge.created_at >= DATE_SUB(NOW(), INTERVAL 1 MONTH)
+        {% when 'past_week' %}
+        AND ge.created_at >= DATE_SUB(NOW(), INTERVAL 1 WEEK)
+        {% else %}
+        AND ge.created_at >= DATE_SUB(NOW(), INTERVAL 24 HOUR)
+        {% endcase %}
     GROUP BY ge.repo_id
 ), pushes AS (
     SELECT
@@ -129,9 +138,18 @@ WITH stars AS (
     FROM github_events ge
     JOIN topRepos tr ON ge.repo_id = tr.repo_id
     WHERE
-        type = 'PushEvent'
-        AND (ge.created_at >= DATE_SUB(NOW(), INTERVAL 1 MONTH) AND ge.created_at <= NOW())
-        AND actor_login NOT LIKE '%[bot]'
+        ge.type = 'PushEvent'
+        AND ge.actor_login NOT LIKE '%[bot]'
+        {% case period %}
+        {% when 'past_3_months' %}
+        AND ge.created_at >= DATE_SUB(NOW(), INTERVAL 3 MONTH)
+        {% when 'past_month' %}
+        AND ge.created_at >= DATE_SUB(NOW(), INTERVAL 1 MONTH)
+        {% when 'past_week' %}
+        AND ge.created_at >= DATE_SUB(NOW(), INTERVAL 1 WEEK)
+        {% else %}
+        AND ge.created_at >= DATE_SUB(NOW(), INTERVAL 24 HOUR)
+        {% endcase %}
     GROUP BY ge.repo_id
 ), repo_with_top_contributors AS (
     SELECT
@@ -149,10 +167,19 @@ WITH stars AS (
                 (type = 'PullRequestReviewEvent' AND action = 'created') OR
                 (type = 'PushEvent' AND action = '')
             )
-            AND (ge.created_at >= DATE_SUB(NOW(), INTERVAL 1 MONTH) AND ge.created_at <= NOW())
             AND ge.repo_id IN (SELECT tr.repo_id FROM topRepos tr)
-            AND ge.actor_login NOT IN (SELECT /*+ READ_FROM_STORAGE(tikv[bu]) */ bu.login FROM blacklist_users bu)
+            AND ge.actor_login NOT IN (SELECT bu.login FROM blacklist_users bu)
             AND ge.actor_login NOT LIKE '%bot%'
+            {% case period %}
+            {% when 'past_3_months' %}
+            AND ge.created_at >= DATE_SUB(NOW(), INTERVAL 3 MONTH)
+            {% when 'past_month' %}
+            AND ge.created_at >= DATE_SUB(NOW(), INTERVAL 1 MONTH)
+            {% when 'past_week' %}
+            AND ge.created_at >= DATE_SUB(NOW(), INTERVAL 1 WEEK)
+            {% else %}
+            AND ge.created_at >= DATE_SUB(NOW(), INTERVAL 24 HOUR)
+            {% endcase %}
         GROUP BY ge.repo_id, ge.actor_login
     ) sub
     GROUP BY repo_id
