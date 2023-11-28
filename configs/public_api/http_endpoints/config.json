@@ -1,5 +1,43 @@
 [
   {
+    "name": "/orgs/repos",
+    "description": "List the repositories ownered by the specified org.",
+    "method": "GET",
+    "endpoint": "/orgs/repos",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "org_name",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": "The name of the organization"
+      },
+      {
+        "name": "sort",
+        "type": "string",
+        "required": 0,
+        "default": "stars-desc",
+        "description": "",
+        "enum": "repo_name-asc,stars-desc,created_at-asc,forks-desc"
+      }
+    ],
+    "settings": {
+      "timeout": 30000,
+      "row_limit": 1000,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
+      "enable_pagination": 1
+    },
+    "tag": "Default",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-orgs-repos.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
     "name": "/repos/participants/ranking",
     "description": "Retrieve top GitHub contributors' recent activity statistics for a repository, comparing the past month to the month before.",
     "method": "GET",
@@ -1777,37 +1815,37 @@
       {
         "name": "owner",
         "type": "string",
-        "required": 1,
+        "required": 0,
         "default": "",
-        "description": "The owner of the repo. For example: `pingcap`"
+        "description": ""
       },
       {
         "name": "repo",
         "type": "string",
-        "required": 1,
+        "required": 0,
         "default": "",
-        "description": "The name of the repo. For example: `tidb`"
+        "description": ""
       },
       {
         "name": "from",
         "type": "string",
         "required": 0,
-        "default": "2000-01-01",
-        "description": "The start date of the range."
+        "default": "",
+        "description": ""
       },
       {
         "name": "to",
         "type": "string",
         "required": 0,
-        "default": "2099-12-31",
-        "description": "The end date of the range."
+        "default": "",
+        "description": ""
       },
       {
         "name": "exclude_unknown",
-        "type": "boolean",
+        "type": "string",
         "required": 0,
-        "default": "true",
-        "description": "Whether to exclude issue creators with unknown country/region information"
+        "default": "",
+        "description": ""
       }
     ],
     "settings": {
