@@ -1,5 +1,5 @@
 USE gharchive_dev;
-SELECT *
+SELECT repo_id, repo_name, stars, forks, created_at
 FROM github_repos
 WHERE owner_login = ${org_name}
 ORDER BY CAST((CASE
