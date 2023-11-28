@@ -7,30 +7,30 @@ WITH stars AS (
         -- Calculate the score of each star according to the time of the star, the closer to the
         -- current time, the higher the score got, the score range is between 2-5. Then sum the
         -- scores of all stars to get the total score obtained from the stars for the repository.
-        CASE
-            WHEN '${period}' = 'past_3_months' THEN SUM(
-                TIMESTAMPDIFF(SECOND, DATE_SUB(NOW(), INTERVAL 3 MONTH), ge.created_at) / TIMESTAMPDIFF(SECOND, DATE_SUB(NOW(), INTERVAL 3 MONTH), NOW()) * 3 + 2
-            )
-            WHEN '${period}' = 'past_month' THEN SUM(
-                TIMESTAMPDIFF(SECOND, DATE_SUB(NOW(), INTERVAL 1 MONTH), ge.created_at) / TIMESTAMPDIFF(SECOND, DATE_SUB(NOW(), INTERVAL 1 MONTH), NOW()) * 3 + 2
-            )
-            WHEN '${period}' = 'past_week' THEN SUM(
-                TIMESTAMPDIFF(SECOND, DATE_SUB(NOW(), INTERVAL 1 WEEK), ge.created_at) / TIMESTAMPDIFF(SECOND, DATE_SUB(NOW(), INTERVAL 1 WEEK), NOW()) * 3 + 2
-            )
-            ELSE SUM(
-                TIMESTAMPDIFF(SECOND, DATE_SUB(NOW(), INTERVAL 24 HOUR), ge.created_at) / TIMESTAMPDIFF(SECOND, DATE_SUB(NOW(), INTERVAL 24 HOUR), NOW()) * 3 + 2
-            )
-        END AS score
+        {% case period %}
+        {% when 'past_3_months' %}
+        SUM(TIMESTAMPDIFF(SECOND, DATE_SUB(NOW(), INTERVAL 3 MONTH), ge.created_at) / TIMESTAMPDIFF(SECOND, DATE_SUB(NOW(), INTERVAL 3 MONTH), NOW()) * 3 + 2)
+        {% when 'past_month' %}
+        SUM(TIMESTAMPDIFF(SECOND, DATE_SUB(NOW(), INTERVAL 1 MONTH), ge.created_at) / TIMESTAMPDIFF(SECOND, DATE_SUB(NOW(), INTERVAL 1 MONTH), NOW()) * 3 + 2)
+        {% when 'past_week' %}
+        SUM(TIMESTAMPDIFF(SECOND, DATE_SUB(NOW(), INTERVAL 1 WEEK), ge.created_at) / TIMESTAMPDIFF(SECOND, DATE_SUB(NOW(), INTERVAL 1 WEEK), NOW()) * 3 + 2)
+        {% else %}
+        SUM(TIMESTAMPDIFF(SECOND, DATE_SUB(NOW(), INTERVAL 24 HOUR), ge.created_at) / TIMESTAMPDIFF(SECOND, DATE_SUB(NOW(), INTERVAL 24 HOUR), NOW()) * 3 + 2)
+        {% endcase %} AS score
     FROM github_events ge
     WHERE
         -- Notice: In the GitHub events, WatchEvent means star, not watch.
         type = 'WatchEvent'
-        AND CASE
-            WHEN '${period}' = 'past_3_months' THEN ge.created_at >= DATE_SUB(NOW(), INTERVAL 3 MONTH) AND ge.created_at <= NOW()
-            WHEN '${period}' = 'past_month' THEN ge.created_at >= DATE_SUB(NOW(), INTERVAL 1 MONTH) AND ge.created_at <= NOW()
-            WHEN '${period}' = 'past_week' THEN ge.created_at >= DATE_SUB(NOW(), INTERVAL 1 WEEK) AND ge.created_at <= NOW()
-            ELSE ge.created_at >= DATE_SUB(NOW(), INTERVAL 24 HOUR) AND ge.created_at <= NOW()
-        END
+        {% case period %}
+        {% when 'past_3_months' %}
+        AND ge.created_at >= DATE_SUB(NOW(), INTERVAL 3 MONTH)
+        {% when 'past_month' %}
+        AND ge.created_at >= DATE_SUB(NOW(), INTERVAL 1 MONTH)
+        {% when 'past_week' %}
+        AND ge.created_at >= DATE_SUB(NOW(), INTERVAL 1 WEEK)
+        {% else %}
+        AND ge.created_at >= DATE_SUB(NOW(), INTERVAL 24 HOUR)
+        {% endcase %}
     GROUP BY ge.repo_id
     -- Exclude code repositories that use the same user to duplicate stars.
     HAVING actors > 0.9 * total
@@ -43,34 +43,35 @@ WITH stars AS (
         -- Calculate the score of each fork according to the time of the fork, the closer to the
         -- current time, the higher the score got, the score range is between 1-4. Then sum the
         -- scores of all forks to get the total score obtained from the forks for the repository.
-        CASE
-            WHEN '${period}' = 'past_3_months' THEN SUM(
-                TIMESTAMPDIFF(SECOND, DATE_SUB(NOW(), INTERVAL 3 MONTH), ge.created_at) / TIMESTAMPDIFF(SECOND, DATE_SUB(NOW(), INTERVAL 3 MONTH), NOW()) * 3 + 1
-            )
-            WHEN '${period}' = 'past_month' THEN SUM(
-                TIMESTAMPDIFF(SECOND, DATE_SUB(NOW(), INTERVAL 1 MONTH), ge.created_at) / TIMESTAMPDIFF(SECOND, DATE_SUB(NOW(), INTERVAL 1 MONTH), NOW()) * 3 + 1
-            )
-            WHEN '${period}' = 'past_week' THEN SUM(
-                TIMESTAMPDIFF(SECOND, DATE_SUB(NOW(), INTERVAL 1 WEEK), ge.created_at) / TIMESTAMPDIFF(SECOND, DATE_SUB(NOW(), INTERVAL 1 WEEK), NOW()) * 3 + 1
-            )
-            ELSE SUM(
-                TIMESTAMPDIFF(SECOND, DATE_SUB(NOW(), INTERVAL 24 HOUR), ge.created_at) / TIMESTAMPDIFF(SECOND, DATE_SUB(NOW(), INTERVAL 24 HOUR), NOW()) * 3 + 1
-            )
-        END AS score
+        {% case period %}
+        {% when 'past_3_months' %}
+        SUM(TIMESTAMPDIFF(SECOND, DATE_SUB(NOW(), INTERVAL 3 MONTH), ge.created_at) / TIMESTAMPDIFF(SECOND, DATE_SUB(NOW(), INTERVAL 3 MONTH), NOW()) * 3 + 1)
+        {% when 'past_month' %}
+        SUM(TIMESTAMPDIFF(SECOND, DATE_SUB(NOW(), INTERVAL 1 MONTH), ge.created_at) / TIMESTAMPDIFF(SECOND, DATE_SUB(NOW(), INTERVAL 1 MONTH), NOW()) * 3 + 1)
+        {% when 'past_week' %}
+        SUM(TIMESTAMPDIFF(SECOND, DATE_SUB(NOW(), INTERVAL 1 WEEK), ge.created_at) / TIMESTAMPDIFF(SECOND, DATE_SUB(NOW(), INTERVAL 1 WEEK), NOW()) * 3 + 1)
+        {% else %}
+        SUM(TIMESTAMPDIFF(SECOND, DATE_SUB(NOW(), INTERVAL 24 HOUR), ge.created_at) / TIMESTAMPDIFF(SECOND, DATE_SUB(NOW(), INTERVAL 24 HOUR), NOW()) * 3 + 1)
+        {% endcase %} AS score
     FROM github_events ge
     WHERE
         type = 'ForkEvent'
-        AND CASE
-            WHEN '${period}' = 'past_3_months' THEN ge.created_at >= DATE_SUB(NOW(), INTERVAL 3 MONTH) AND ge.created_at <= NOW()
-            WHEN '${period}' = 'past_month' THEN ge.created_at >= DATE_SUB(NOW(), INTERVAL 1 MONTH) AND ge.created_at <= NOW()
-            WHEN '${period}' = 'past_week' THEN ge.created_at >= DATE_SUB(NOW(), INTERVAL 1 WEEK) AND ge.created_at <= NOW()
-            ELSE ge.created_at >= DATE_SUB(NOW(), INTERVAL 24 HOUR) AND ge.created_at <= NOW()
-        END
+        {% case period %}
+        {% when 'past_3_months' %}
+        AND ge.created_at >= DATE_SUB(NOW(), INTERVAL 3 MONTH)
+        {% when 'past_month' %}
+        AND ge.created_at >= DATE_SUB(NOW(), INTERVAL 1 MONTH)
+        {% when 'past_week' %}
+        AND ge.created_at >= DATE_SUB(NOW(), INTERVAL 1 WEEK)
+        {% else %}
+        AND ge.created_at >= DATE_SUB(NOW(), INTERVAL 24 HOUR)
+        {% endcase %}
     GROUP BY ge.repo_id
     -- Exclude code repositories that use the same user to duplicate forks.
     HAVING actors > 0.9 * total
 ), topRepos AS (
     SELECT
+        /*+ READ_FROM_STORAGE(TIFLASH[r]) */
         r.repo_id,
         r.repo_name,
         r.primary_language,
@@ -100,11 +101,11 @@ WITH stars AS (
         AND pushed_at > DATE_SUB(NOW(), INTERVAL 3 MONTH)
         -- Filter rule: Exclude some malicious new repositories.
         AND created_at < DATE_SUB(NOW(), INTERVAL 1 DAY)
-        -- Filter rule: There should be no uncivilized words in the name of the repository.
-        AND LOWER(repo_name) NOT LIKE '%fuck%'
+        {% if language != 'All' %}
         -- Filter by repository language.
-        AND IF('${language}' = 'All', TRUE, primary_language = '${language}')
-        AND repo_name NOT IN (SELECT /*+ READ_FROM_STORAGE(tikv[br]) */ name FROM blacklist_repos br)
+        AND primary_language = {{language}}
+        {% endif %}
+        AND repo_name NOT IN (SELECT /*+ READ_FROM_STORAGE(TIFLASH[br]) */ name FROM blacklist_repos br)
         AND is_deleted = 0
     GROUP BY r.repo_id
     ORDER BY total_score DESC
@@ -116,10 +117,19 @@ WITH stars AS (
     FROM github_events ge
     JOIN topRepos tr ON ge.repo_id = tr.repo_id
     WHERE
-        type = 'PullRequestEvent'
-        AND action = 'opened'
-        AND (ge.created_at >= DATE_SUB(NOW(), INTERVAL 1 MONTH) AND ge.created_at <= NOW())
-        AND actor_login NOT LIKE '%[bot]'
+        ge.type = 'PullRequestEvent'
+        AND ge.action = 'opened'
+        AND ge.actor_login NOT LIKE '%[bot]'
+        {% case period %}
+        {% when 'past_3_months' %}
+        AND ge.created_at >= DATE_SUB(NOW(), INTERVAL 3 MONTH)
+        {% when 'past_month' %}
+        AND ge.created_at >= DATE_SUB(NOW(), INTERVAL 1 MONTH)
+        {% when 'past_week' %}
+        AND ge.created_at >= DATE_SUB(NOW(), INTERVAL 1 WEEK)
+        {% else %}
+        AND ge.created_at >= DATE_SUB(NOW(), INTERVAL 24 HOUR)
+        {% endcase %}
     GROUP BY ge.repo_id
 ), pushes AS (
     SELECT
@@ -128,9 +138,18 @@ WITH stars AS (
     FROM github_events ge
     JOIN topRepos tr ON ge.repo_id = tr.repo_id
     WHERE
-        type = 'PushEvent'
-        AND (ge.created_at >= DATE_SUB(NOW(), INTERVAL 1 MONTH) AND ge.created_at <= NOW())
-        AND actor_login NOT LIKE '%[bot]'
+        ge.type = 'PushEvent'
+        AND ge.actor_login NOT LIKE '%[bot]'
+        {% case period %}
+        {% when 'past_3_months' %}
+        AND ge.created_at >= DATE_SUB(NOW(), INTERVAL 3 MONTH)
+        {% when 'past_month' %}
+        AND ge.created_at >= DATE_SUB(NOW(), INTERVAL 1 MONTH)
+        {% when 'past_week' %}
+        AND ge.created_at >= DATE_SUB(NOW(), INTERVAL 1 WEEK)
+        {% else %}
+        AND ge.created_at >= DATE_SUB(NOW(), INTERVAL 24 HOUR)
+        {% endcase %}
     GROUP BY ge.repo_id
 ), repo_with_top_contributors AS (
     SELECT
@@ -148,10 +167,19 @@ WITH stars AS (
                 (type = 'PullRequestReviewEvent' AND action = 'created') OR
                 (type = 'PushEvent' AND action = '')
             )
-            AND (ge.created_at >= DATE_SUB(NOW(), INTERVAL 1 MONTH) AND ge.created_at <= NOW())
             AND ge.repo_id IN (SELECT tr.repo_id FROM topRepos tr)
-            AND ge.actor_login NOT IN (SELECT /*+ READ_FROM_STORAGE(tikv[bu]) */ bu.login FROM blacklist_users bu)
+            AND ge.actor_login NOT IN (SELECT bu.login FROM blacklist_users bu)
             AND ge.actor_login NOT LIKE '%bot%'
+            {% case period %}
+            {% when 'past_3_months' %}
+            AND ge.created_at >= DATE_SUB(NOW(), INTERVAL 3 MONTH)
+            {% when 'past_month' %}
+            AND ge.created_at >= DATE_SUB(NOW(), INTERVAL 1 MONTH)
+            {% when 'past_week' %}
+            AND ge.created_at >= DATE_SUB(NOW(), INTERVAL 1 WEEK)
+            {% else %}
+            AND ge.created_at >= DATE_SUB(NOW(), INTERVAL 24 HOUR)
+            {% endcase %}
         GROUP BY ge.repo_id, ge.actor_login
     ) sub
     GROUP BY repo_id
