@@ -1,7 +1,10 @@
 USE gharchive_dev;
 SELECT
-  g.repo_id,
-  g.repo_name,
+  r.repo_id,
+  r.repo_name,
+  r.stars,
+  r.forks,
+  r.created_at,
   SUM(
     CASE
       WHEN type = 'PullRequestEvent'
@@ -33,7 +36,7 @@ WHERE
   )
   AND g.created_at > DATE_SUB(NOW(), INTERVAL ${past_month} Month)
 GROUP BY
-  g.repo_name, g.repo_id
+  r.repo_id, r.repo_name, r.stars, r.forks, r.created_at
 ORDER BY
   (pull_request_count * 0.5 + push_count * 0.25 + issue_count * 0.25) DESC
 LIMIT
