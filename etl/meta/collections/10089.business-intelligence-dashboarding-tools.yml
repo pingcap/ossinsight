@@ -1,0 +1,8 @@
+id: 10089
+name: Business Intelligence Dashboarding Tools 
+items:
+  - plotly/dash
+  - streamlit/streamlit
+  - mckinsey/vizro
+  - gradio-app/gradio
+  - evidence-dev/evidence
