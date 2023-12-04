@@ -19,3 +19,4 @@ items:
   - SeldonIO/seldon-core
   - great-expectations/great_expectations
   - kedro-org/kedro
+  - mlrun/mlrun
