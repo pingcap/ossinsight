@@ -1,14 +1,11 @@
 id: 2
 name: Open Source Database
 items:
-  - elastic/elasticsearch
   - pingcap/tidb
   - cockroachdb/cockroach
   - clickhouse/clickhouse
-  - mongodb/mongo
   - vitessio/vitess
   - apache/druid
-  - tikv/tikv
   - apple/foundationdb
   - yugabyte/yugabyte-db
   - citusdata/citus
@@ -35,7 +32,5 @@ items:
   - postgres/postgres
   - duckdb/duckdb
   - apache/shardingsphere
-  - milvus-io/milvus
   - CUBRID/cubrid
-  - GreptimeTeam/greptimedb
   - cloudberrydb/cloudberrydb
