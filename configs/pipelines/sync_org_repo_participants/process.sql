@@ -1,5 +1,6 @@
 INSERT INTO mv_repo_participants(repo_id, user_login, first_engagement_at, last_engagement_at)
 SELECT
+    /*+ READ_FROM_STORAGE(TIFLASH[ge]) */
     ge.repo_id,
     ge.actor_login AS user_login,
     MIN(ge.created_at) AS new_first_engagement_at,
