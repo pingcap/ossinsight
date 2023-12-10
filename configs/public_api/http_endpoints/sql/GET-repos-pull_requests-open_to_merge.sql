@@ -1,4 +1,11 @@
-WITH pr_with_merged_at AS (
+USE gharchive_dev;
+
+with repo AS (
+    SELECT repo_id
+    FROM github_repos
+    WHERE repo_name = CONCAT(${owner}, '/', ${repo})
+    LIMIT 1
+), pr_with_merged_at AS (
     SELECT
         number, DATE_FORMAT(created_at, '%Y-%m-01') AS t_month, created_at AS merged_at
     FROM
@@ -9,7 +16,9 @@ WITH pr_with_merged_at AS (
         -- here is not distinguished whether it is the merged event.
         -- See: https://github.com/mongodb/mongo/pulls?q=is%3Apr+is%3Aclosed
         AND action = 'closed'
-        AND repo_id = 41986369
+        AND repo_id = (SELECT repo_id FROM repo)
+        AND created_at >= ${from}
+        AND created_at <= ${to}
 ), pr_with_opened_at AS (
     SELECT
         number, created_at AS opened_at
@@ -18,10 +27,18 @@ WITH pr_with_merged_at AS (
     WHERE
         type = 'PullRequestEvent'
         AND action = 'opened'
-        -- Exclude Bots
-        -- AND actor_login NOT LIKE '%bot%'
-        -- AND actor_login NOT IN (SELECT login FROM blacklist_users bu)
-        AND repo_id = 41986369
+        AND repo_id = (SELECT repo_id FROM repo)
+        AND created_at >= ${from}
+        AND created_at <= ${to}
+         -- Exclude Bots
+        AND
+            CASE
+              WHEN ${exclude_bots} THEN (
+                  actor_login NOT LIKE '%bot%' AND
+                  actor_login NOT IN (SELECT login FROM blacklist_users bu)
+              )
+              ELSE TRUE
+            END
 ), tdiff AS (
     SELECT
         t_month,
@@ -62,11 +79,11 @@ WITH pr_with_merged_at AS (
 )
 SELECT
     tr.t_month AS event_month,
-    p0,
-    p25,
-    p50,
-    p75,
-    p100
+    ROUND(p0, 2) AS p0,
+    ROUND(p25, 2) AS p25,
+    ROUND(p50, 2) AS p50,
+    ROUND(p75, 2) AS p75,
+    ROUND(p100, 2) AS p100
 FROM tdiff_with_rank tr
 LEFT JOIN tdiff_p25 p25 ON tr.t_month = p25.t_month
 LEFT JOIN tdiff_p50 p50 ON tr.t_month = p50.t_month

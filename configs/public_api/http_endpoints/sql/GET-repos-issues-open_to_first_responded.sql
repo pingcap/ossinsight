@@ -1,34 +1,45 @@
-WITH pr_with_merged_at AS (
+USE gharchive_dev;
+
+with repo AS (
+  SELECT repo_id
+  FROM github_repos
+  WHERE repo_name = CONCAT(${owner}, '/', ${repo})
+  LIMIT 1
+), issue_with_first_responded_at AS (
     SELECT
-        number, DATE_FORMAT(created_at, '%Y-%m-01') AS t_month, created_at AS merged_at
+        number, MIN(DATE_FORMAT(created_at, '%Y-%m-01')) AS t_month, MIN(created_at) AS first_responded_at
     FROM
         github_events ge
     WHERE
-        type = 'PullRequestEvent'
-        -- Considering that some repositories accept the code of the contributor by closing the PR and push commit directly,
-        -- here is not distinguished whether it is the merged event.
-        -- See: https://github.com/mongodb/mongo/pulls?q=is%3Apr+is%3Aclosed
-        AND action = 'closed'
-        AND repo_id = 41986369
-), pr_with_opened_at AS (
+        repo_id = (SELECT repo_id FROM repo)
+        AND ((type = 'IssueCommentEvent' AND action = 'created') OR (type = 'IssuesEvent' AND action = 'closed'))
+        -- Exclude Bots
+        -- AND actor_login NOT LIKE '%bot%'
+        -- AND actor_login NOT IN (SELECT login FROM blacklist_users bu)
+        AND created_at >= ${from}
+        AND created_at <= ${to}
+    GROUP BY 1
+), issue_with_opened_at AS (
     SELECT
         number, created_at AS opened_at
     FROM
         github_events ge
     WHERE
-        type = 'PullRequestEvent'
+        type = 'IssuesEvent'
         AND action = 'opened'
+        AND repo_id = (SELECT repo_id FROM repo)
         -- Exclude Bots
         -- AND actor_login NOT LIKE '%bot%'
         -- AND actor_login NOT IN (SELECT login FROM blacklist_users bu)
-        AND repo_id = 41986369
+        AND created_at >= ${from}
+        AND created_at <= ${to} 
 ), tdiff AS (
     SELECT
         t_month,
-        (UNIX_TIMESTAMP(pwm.merged_at) - UNIX_TIMESTAMP(pwo.opened_at)) AS diff
+        (UNIX_TIMESTAMP(iwfr.first_responded_at) - UNIX_TIMESTAMP(iwo.opened_at)) AS diff
     FROM
-        pr_with_opened_at pwo
-        JOIN pr_with_merged_at pwm ON pwo.number = pwm.number AND pwm.merged_at > pwo.opened_at
+        issue_with_opened_at iwo
+        JOIN issue_with_first_responded_at iwfr ON iwo.number = iwfr.number AND iwfr.first_responded_at > iwo.opened_at
 ), tdiff_with_rank AS (
     SELECT
         tdiff.t_month,
@@ -62,11 +73,11 @@ WITH pr_with_merged_at AS (
 )
 SELECT
     tr.t_month AS event_month,
-    p0,
-    p25,
-    p50,
-    p75,
-    p100
+    ROUND(p0, 2) AS p0,
+    ROUND(p25, 2) AS p25,
+    ROUND(p50, 2) AS p50,
+    ROUND(p75, 2) AS p75,
+    ROUND(p100, 2) AS p100
 FROM tdiff_with_rank tr
 LEFT JOIN tdiff_p25 p25 ON tr.t_month = p25.t_month
 LEFT JOIN tdiff_p50 p50 ON tr.t_month = p50.t_month
