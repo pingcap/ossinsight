@@ -103,7 +103,7 @@ WITH stars AS (
         AND created_at < DATE_SUB(NOW(), INTERVAL 1 DAY)
         {% if language != 'All' %}
         -- Filter by repository language.
-        AND primary_language = {{language}}
+        AND primary_language = '{{language}}'
         {% endif %}
         AND repo_name NOT IN (SELECT /*+ READ_FROM_STORAGE(TIFLASH[br]) */ name FROM blacklist_repos br)
         AND is_deleted = 0
