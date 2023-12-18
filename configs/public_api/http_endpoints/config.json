@@ -1,44 +1,5 @@
 [
   {
-    "name": "Trending Repos",
-    "description": "Retrieve trending GitHub repositories filtered by a specific language and time period, including repository details and associated collection names (contributor_logins is a comma-separated string).",
-    "method": "GET",
-    "endpoint": "/trends/repos",
-    "data_source": {
-      "cluster_id": 1379661944642684098
-    },
-    "params": [
-      {
-        "name": "language",
-        "type": "string",
-        "required": 0,
-        "default": "All",
-        "description": "Specify using which programming language to filter trending repos. If not specified, all languages will be included",
-        "enum": "All,JavaScript,Java,Python,PHP,C++,C#,TypeScript,Shell,C,Ruby,Rust,Go,Kotlin,HCL,PowerShell,CMake,Groovy,PLpgSQL,TSQL,Dart,Swift,HTML,CSS,Elixir,Haskell,Solidity,Assembly,R,Scala,Julia,Lua,Clojure,Erlang,Common Lisp,Emacs Lisp,OCaml,MATLAB,Objective-C,Perl,Fortran"
-      },
-      {
-        "name": "period",
-        "type": "string",
-        "required": 0,
-        "default": "past_week",
-        "description": "Specify the period of time to calculate trending repos",
-        "enum": "past_24_hours,past_week,past_month,past_3_months"
-      }
-    ],
-    "settings": {
-      "timeout": 30000,
-      "row_limit": 100,
-      "cache_enabled": 0,
-      "cache_ttl": 0,
-      "enable_pagination": 0
-    },
-    "tag": "Trends",
-    "batch_operation": 0,
-    "sql_file": "sql/GET-trends-repos.sql",
-    "type": "sql_endpoint",
-    "return_type": "json"
-  },
-  {
     "name": "List Collections",
     "description": "It returns a list of each collection's unique ID and its name.",
     "method": "GET",
@@ -52,7 +13,7 @@
       "row_limit": 200,
       "cache_enabled": 1,
       "cache_ttl": 600,
-      "enable_pagination": 1
+      "enable_pagination": 0
     },
     "tag": "Collections",
     "batch_operation": 0,
@@ -1548,6 +1509,45 @@
     "tag": "Stargazers",
     "batch_operation": 0,
     "sql_file": "sql/GET-repos-stargazers-organizations.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "Trending Repos",
+    "description": "Retrieve trending GitHub repositories filtered by a specific language and time period, including repository details and associated collection names (contributor_logins is a comma-separated string).",
+    "method": "GET",
+    "endpoint": "/trends/repos",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "language",
+        "type": "string",
+        "required": 0,
+        "default": "All",
+        "description": "Specify using which programming language to filter trending repos. If not specified, all languages will be included",
+        "enum": "All,JavaScript,Java,Python,PHP,C++,C#,TypeScript,Shell,C,Ruby,Rust,Go,Kotlin,HCL,PowerShell,CMake,Groovy,PLpgSQL,TSQL,Dart,Swift,HTML,CSS,Elixir,Haskell,Solidity,Assembly,R,Scala,Julia,Lua,Clojure,Erlang,Common Lisp,Emacs Lisp,OCaml,MATLAB,Objective-C,Perl,Fortran"
+      },
+      {
+        "name": "period",
+        "type": "string",
+        "required": 0,
+        "default": "past_week",
+        "description": "Specify the period of time to calculate trending repos",
+        "enum": "past_24_hours,past_week,past_month,past_3_months"
+      }
+    ],
+    "settings": {
+      "timeout": 30000,
+      "row_limit": 100,
+      "cache_enabled": 0,
+      "cache_ttl": 0,
+      "enable_pagination": 0
+    },
+    "tag": "Trends",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-trends-repos.sql",
     "type": "sql_endpoint",
     "return_type": "json"
   },
