@@ -26,33 +26,10 @@ export function proxyGet(
       // Map query params to query strings.
       const query = req.query as any;
       const queryKeys = Object.keys(query);
-
-      let limit = 30;
-      if (queryKeys.find((queryKey) => queryKey === 'page_size')) {
-        try {
-          limit = Number(query['page_size']);
-        } catch (e) {
-          throw new APIError(400, 'Invalid page_size number.');
-        }
-      }
-
-      const queryStrings = queryKeys.map((queryKey) => {
-        // Mapping the page and page_size to offset and limit.
-        // TODO: remove it after TiDB data service supports page and page_size.
-        if (queryKey === 'page') {
-          let offset = 0;
-          try {
-            offset = (Math.max(1, Number(query['page'])) - 1) * limit;
-          } catch (e) {
-            throw new APIError(400, 'Invalid page number.');
-          }
-          return `offset=${offset}`;
-        } else if (queryKey === 'page_size') {
-          return `limit=${limit}`;
-        } else {
-          return `${queryKey}=${query[queryKey]}`;
-        }
-      });
+      const queryStrings = [];
+      queryStrings.push(...queryKeys.map((queryKey) => {
+        return `${queryKey}=${query[queryKey]}`;
+      }));
 
       // Remove path params from url.
       const params = req.params as any;
@@ -78,6 +55,8 @@ export function proxyGet(
       // Retrieve query result from TiDB data service.
       const targetURL = `${pathname}?${queryStrings.join('&')}`;
       const res = await app.tidbDataService.request(targetURL);
+      delete res.headers['transfer-encoding'];
+
       reply
         .code(res.status)
         .headers(res.headers)

@@ -60,7 +60,10 @@ export class TiDBDataService {
         const res = await this.client.get(`${originalPath}`);
         const endTime = DateTime.now();
         const duration = endTime.diff(startTime, 'seconds').seconds;
-        this.logger.info(`✅ Finished request TiDB Data Service (endpoint: ${endpointName}), cost: ${duration} s.`);
+        this.logger.info({
+          targetURL: originalPath,
+          endpoint: endpointName,
+        }, `✅ Finished request to TiDB Data Service (endpoint: ${endpointName}), cost: ${duration} s.`);
         return res;
       });
     });
