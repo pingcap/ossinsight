@@ -30,7 +30,7 @@
       "row_limit": 100,
       "cache_enabled": 0,
       "cache_ttl": 0,
-      "enable_pagination": 1
+      "enable_pagination": 0
     },
     "tag": "Trends",
     "batch_operation": 0,
