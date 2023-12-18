@@ -13,7 +13,7 @@
       "row_limit": 200,
       "cache_enabled": 1,
       "cache_ttl": 600,
-      "enable_pagination": 0
+      "enable_pagination": 1
     },
     "tag": "Collections",
     "batch_operation": 0,
