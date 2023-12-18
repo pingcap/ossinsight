@@ -1,9 +1,9 @@
 [
   {
-    "name": "List Pull Request Creators",
-    "description": "Lists users who have created pull requests (Aka. Code contributors)  in a specified GitHub repository. Returns user IDs, logins, names, the number of pull requests made, and the dates of their first opened and first merged pull requests. ",
+    "name": "List Issue Creators",
+    "description": "List GitHub users who have created issues in a specific repository.The returned data includes the user ID, login, name, total issues created, and the date of the first issue opened. Limits and offsets can be applied for pagination purposes.",
     "method": "GET",
-    "endpoint": "/repos/pull_request_creators",
+    "endpoint": "/repos/issue_creators",
     "data_source": {
       "cluster_id": 1379661944642684098
     },
@@ -33,21 +33,21 @@
         "name": "sort",
         "type": "string",
         "required": 0,
-        "default": "prs-desc",
-        "description": "Specify the field by which to sort the pull request creators list (values with a `-desc` suffix indicate descending sorting)",
-        "enum": "login,prs,prs-desc,first_pr_opened_at,first_pr_opened_at-desc,first_pr_merged_at,first_pr_merged_at-desc"
+        "default": "issues-desc",
+        "description": "Specify the field by which to sort the issue creators list (values with a `-desc` suffix indicate descending sorting)",
+        "enum": "issues,issues-desc,first_issue_opened_at,first_issue_opened_at-desc,login"
       }
     ],
     "settings": {
       "timeout": 5000,
-      "row_limit": 2000,
+      "row_limit": 200,
       "cache_enabled": 1,
       "cache_ttl": 600,
       "enable_pagination": 1
     },
-    "tag": "Pull Requests",
+    "tag": "Issues",
     "batch_operation": 0,
-    "sql_file": "sql/GET-repos-pull_request_creators.sql",
+    "sql_file": "sql/GET-repos-issue_creators.sql",
     "type": "sql_endpoint",
     "return_type": "json"
   },
@@ -428,72 +428,6 @@
     "tag": "Commits",
     "batch_operation": 0,
     "sql_file": "sql/GET-repos-commits-time_distribution.sql",
-    "type": "sql_endpoint",
-    "return_type": "json"
-  },
-  {
-    "name": "List Issue Creators",
-    "description": "List GitHub users who have created issues in a specific repository.The returned data includes the user ID, login, name, total issues created, and the date of the first issue opened. Limits and offsets can be applied for pagination purposes.",
-    "method": "GET",
-    "endpoint": "/repos/issue_creators",
-    "data_source": {
-      "cluster_id": 1379661944642684098
-    },
-    "params": [
-      {
-        "name": "owner",
-        "type": "string",
-        "required": 1,
-        "default": "",
-        "description": "The owner of the repo."
-      },
-      {
-        "name": "repo",
-        "type": "string",
-        "required": 1,
-        "default": "",
-        "description": "The name of the repo."
-      },
-      {
-        "name": "exclude_bots",
-        "type": "boolean",
-        "required": 0,
-        "default": "true",
-        "description": "Whether to exclude robot accounts (includes GitHub App and normal users whose username matches the pattern, for example: `ti-chi-bot`)."
-      },
-      {
-        "name": "sort",
-        "type": "string",
-        "required": 0,
-        "default": "issues-desc",
-        "description": "Specify the field by which to sort the issue creators list (values with a `-desc` suffix indicate descending sorting)",
-        "enum": "issues,issues-desc,first_issue_opened_at,first_issue_opened_at-desc,login"
-      },
-      {
-        "name": "offset",
-        "type": "integer",
-        "required": 0,
-        "default": "0",
-        "description": ""
-      },
-      {
-        "name": "limit",
-        "type": "integer",
-        "required": 0,
-        "default": "30",
-        "description": ""
-      }
-    ],
-    "settings": {
-      "timeout": 5000,
-      "row_limit": 2000,
-      "cache_enabled": 1,
-      "cache_ttl": 600,
-      "enable_pagination": 0
-    },
-    "tag": "Issues",
-    "batch_operation": 0,
-    "sql_file": "sql/GET-repos-issue_creators.sql",
     "type": "sql_endpoint",
     "return_type": "json"
   },
@@ -948,6 +882,58 @@
     "tag": "Participants",
     "batch_operation": 0,
     "sql_file": "sql/GET-repos-participants-rank_by_activities.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "List Pull Request Creators",
+    "description": "Lists users who have created pull requests (Aka. Code contributors)  in a specified GitHub repository. Returns user IDs, logins, names, the number of pull requests made, and the dates of their first opened and first merged pull requests. ",
+    "method": "GET",
+    "endpoint": "/repos/pull_request_creators",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "owner",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": "The owner of the repo."
+      },
+      {
+        "name": "repo",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": "The name of the repo."
+      },
+      {
+        "name": "exclude_bots",
+        "type": "boolean",
+        "required": 0,
+        "default": "true",
+        "description": "Whether to exclude robot accounts (includes GitHub App and normal users whose username matches the pattern, for example: `ti-chi-bot`)."
+      },
+      {
+        "name": "sort",
+        "type": "string",
+        "required": 0,
+        "default": "prs-desc",
+        "description": "Specify the field by which to sort the pull request creators list (values with a `-desc` suffix indicate descending sorting)",
+        "enum": "login,prs,prs-desc,first_pr_opened_at,first_pr_opened_at-desc,first_pr_merged_at,first_pr_merged_at-desc"
+      }
+    ],
+    "settings": {
+      "timeout": 5000,
+      "row_limit": 2000,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
+      "enable_pagination": 1
+    },
+    "tag": "Pull Requests",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-repos-pull_request_creators.sql",
     "type": "sql_endpoint",
     "return_type": "json"
   },
