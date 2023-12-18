@@ -1,5 +1,35 @@
 [
   {
+    "name": "List Collection Items",
+    "description": "List Repositories with a Collection by specify collection ID.",
+    "method": "GET",
+    "endpoint": "/collections/repos",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "collection_id",
+        "type": "number",
+        "required": 1,
+        "default": "",
+        "description": "The ID of collection"
+      }
+    ],
+    "settings": {
+      "timeout": 5000,
+      "row_limit": 50,
+      "cache_enabled": 0,
+      "cache_ttl": 0,
+      "enable_pagination": 0
+    },
+    "tag": "Collections",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-collections-repos.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
     "name": "List Collections",
     "description": "It returns a list of each collection's unique ID and its name.",
     "method": "GET",
@@ -154,36 +184,6 @@
     "tag": "Collections",
     "batch_operation": 0,
     "sql_file": "sql/GET-collections-ranking_by_stars.sql",
-    "type": "sql_endpoint",
-    "return_type": "json"
-  },
-  {
-    "name": "List Collection Items",
-    "description": "List Repositories with a Collection by specify collection ID.",
-    "method": "GET",
-    "endpoint": "/collections/repos",
-    "data_source": {
-      "cluster_id": 1379661944642684098
-    },
-    "params": [
-      {
-        "name": "collection_id",
-        "type": "integer",
-        "required": 1,
-        "default": "",
-        "description": "The ID of collection"
-      }
-    ],
-    "settings": {
-      "timeout": 5000,
-      "row_limit": 50,
-      "cache_enabled": 0,
-      "cache_ttl": 0,
-      "enable_pagination": 0
-    },
-    "tag": "Collections",
-    "batch_operation": 0,
-    "sql_file": "sql/GET-collections-repos.sql",
     "type": "sql_endpoint",
     "return_type": "json"
   },
