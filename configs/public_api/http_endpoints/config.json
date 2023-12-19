@@ -1,43 +1,5 @@
 [
   {
-    "name": "/orgs/repos",
-    "description": "List the repositories owned by the specified organization.",
-    "method": "GET",
-    "endpoint": "/orgs/repos",
-    "data_source": {
-      "cluster_id": 1379661944642684098
-    },
-    "params": [
-      {
-        "name": "org_name",
-        "type": "string",
-        "required": 1,
-        "default": "",
-        "description": "The name of the organization"
-      },
-      {
-        "name": "sort",
-        "type": "string",
-        "required": 0,
-        "default": "stars-desc",
-        "description": "",
-        "enum": "repo_name-asc,stars-desc,created_at-asc,forks-desc"
-      }
-    ],
-    "settings": {
-      "timeout": 30000,
-      "row_limit": 1000,
-      "cache_enabled": 1,
-      "cache_ttl": 600,
-      "enable_pagination": 1
-    },
-    "tag": "Default",
-    "batch_operation": 0,
-    "sql_file": "sql/GET-orgs-repos.sql",
-    "type": "sql_endpoint",
-    "return_type": "json"
-  },
-  {
     "name": "List Collections",
     "description": "It returns a list of each collection's unique ID and its name.",
     "method": "GET",
@@ -49,9 +11,9 @@
     "settings": {
       "timeout": 5000,
       "row_limit": 200,
-      "cache_enabled": 1,
-      "cache_ttl": 600,
-      "enable_pagination": 1
+      "cache_enabled": 0,
+      "cache_ttl": 0,
+      "enable_pagination": 0
     },
     "tag": "Collections",
     "batch_operation": 0,
@@ -206,7 +168,7 @@
     "params": [
       {
         "name": "collection_id",
-        "type": "integer",
+        "type": "number",
         "required": 1,
         "default": "",
         "description": "The ID of collection"
@@ -288,6 +250,44 @@
     "tag": "Default",
     "batch_operation": 0,
     "sql_file": "sql/GET-orgs-active_repos.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "/orgs/repos",
+    "description": "List the repositories owned by the specified organization.",
+    "method": "GET",
+    "endpoint": "/orgs/repos",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "org_name",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": "The name of the organization"
+      },
+      {
+        "name": "sort",
+        "type": "string",
+        "required": 0,
+        "default": "stars-desc",
+        "description": "",
+        "enum": "repo_name-asc,stars-desc,created_at-asc,forks-desc"
+      }
+    ],
+    "settings": {
+      "timeout": 30000,
+      "row_limit": 1000,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
+      "enable_pagination": 1
+    },
+    "tag": "Default",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-orgs-repos.sql",
     "type": "sql_endpoint",
     "return_type": "json"
   },
@@ -416,28 +416,14 @@
         "default": "issues-desc",
         "description": "Specify the field by which to sort the issue creators list (values with a `-desc` suffix indicate descending sorting)",
         "enum": "issues,issues-desc,first_issue_opened_at,first_issue_opened_at-desc,login"
-      },
-      {
-        "name": "offset",
-        "type": "integer",
-        "required": 0,
-        "default": "0",
-        "description": ""
-      },
-      {
-        "name": "limit",
-        "type": "integer",
-        "required": 0,
-        "default": "30",
-        "description": ""
       }
     ],
     "settings": {
       "timeout": 5000,
-      "row_limit": 2000,
+      "row_limit": 200,
       "cache_enabled": 1,
       "cache_ttl": 600,
-      "enable_pagination": 0
+      "enable_pagination": 1
     },
     "tag": "Issues",
     "batch_operation": 0,
@@ -936,28 +922,14 @@
         "default": "prs-desc",
         "description": "Specify the field by which to sort the pull request creators list (values with a `-desc` suffix indicate descending sorting)",
         "enum": "login,prs,prs-desc,first_pr_opened_at,first_pr_opened_at-desc,first_pr_merged_at,first_pr_merged_at-desc"
-      },
-      {
-        "name": "offset",
-        "type": "integer",
-        "required": 0,
-        "default": "0",
-        "description": "For pagination."
-      },
-      {
-        "name": "limit",
-        "type": "integer",
-        "required": 0,
-        "default": "30",
-        "description": "For pagination."
       }
     ],
     "settings": {
       "timeout": 5000,
-      "row_limit": 2000,
+      "row_limit": 200,
       "cache_enabled": 1,
       "cache_ttl": 600,
-      "enable_pagination": 0
+      "enable_pagination": 1
     },
     "tag": "Pull Requests",
     "batch_operation": 0,
@@ -1541,8 +1513,8 @@
     "settings": {
       "timeout": 30000,
       "row_limit": 100,
-      "cache_enabled": 1,
-      "cache_ttl": 600,
+      "cache_enabled": 0,
+      "cache_ttl": 0,
       "enable_pagination": 0
     },
     "tag": "Trends",
