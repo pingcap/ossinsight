@@ -30,6 +30,8 @@ export default function ErrorMessage ({ error }: { error: unknown }) {
       return <Typography variant="body1">Failed to generate SQL. Optimize your question for effective SQL, or get ideas from <Link to='/explore/'>popular questions</Link>.</Typography>;
     case QuestionErrorType.SQL_CAN_NOT_ANSWER:
       return <Typography variant="body1">Sorry, I can&apos;t generate SQL as your question is not GitHub-related or beyond our data source.</Typography>;
+    case QuestionErrorType.QUESTION_IS_TOO_LONG:
+      return <Typography variant="body1">Sorry, your question is too long. Please simplify it to a few sentences.</Typography>;
     case QuestionErrorType.VALIDATE_SQL: {
       const errorDetails = getErrorDetails(QuestionErrorType.VALIDATE_SQL, question.error);
       if (notNullish(errorDetails)) {

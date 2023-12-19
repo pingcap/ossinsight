@@ -7,7 +7,7 @@ import Link from '@docusaurus/Link';
 export default function ErrorMessage () {
   const { question } = useQuestionManagement();
 
-  if (question?.status !== 'error') {
+  if (question?.status !== 'error' && question?.status !== 'cancel') {
     return <></>;
   }
 

@@ -18,6 +18,7 @@ export interface Question {
   engines: string[];
   queueJobId?: string | null;
   result?: QuestionSQLResult;
+  plan?: QuestionSQLPlan[];
   chart?: ChartResult | null;
   recommended: boolean;
   recommendedQuestions?: string[];
@@ -60,6 +61,14 @@ export interface QuestionSQLResult {
   rows: Array<Record<string, any>>;
 }
 
+export interface QuestionSQLPlan {
+  'id': string;
+  'estRows': string;
+  'task': string;
+  'access object': string;
+  'operator info': string;
+}
+
 export interface QuestionQueryResult {
   result: QuestionSQLResult;
   executedAt: string;
@@ -90,6 +99,7 @@ export enum QuestionErrorType {
   EMPTY_RESULT = 'error-empty-result',
   SUMMARY_GENERATE = 'error-summary-generate',
   UNKNOWN = 'error-unknown',
+  QUESTION_IS_TOO_LONG = 'error-question-too-long',
 }
 
 export interface PlanStep {

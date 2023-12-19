@@ -4,11 +4,12 @@ on:
   pull_request:
     paths:
       - 'configs/queries/**'
+      - 'packages/types/**'
 
 defaults:
   run:
     shell: bash
-    working-directory: packages/api-server
+    working-directory: packages/types
 
 jobs:
   validate:
@@ -40,9 +41,10 @@ jobs:
         name: Setup pnpm cache
         with:
           path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('./pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
+
 
       - name: Install Dependencies
         run: pnpm i --frozen-lockfile --strict-peer-dependencies

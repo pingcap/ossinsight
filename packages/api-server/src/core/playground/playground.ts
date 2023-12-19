@@ -1,6 +1,5 @@
 import { AST, Parser, Select, With } from "node-sql-parser";
-
-import { BadParamsError } from "../runner/query/QueryParser";
+import {BadParamsError} from "../runner/query/QueryParser";
 
 export class SqlParser {
   parser: Parser;

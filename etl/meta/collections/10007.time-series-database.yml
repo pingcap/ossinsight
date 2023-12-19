@@ -1,15 +1,51 @@
 id: 10007
 name: Time Series Database
 items:
-  - influxdata/influxdb
-  - questdb/questdb
-  - timescale/timescaledb
-  - VictoriaMetrics/VictoriaMetrics
-  - taosdata/TDengine
-  - crate/crate
-  - prometheus/prometheus
+  - ArcadeData/arcadedb
   - CeresDB/ceresdb
-  - apache/iotdb
+  - ClickHouse/ClickHouse
+  - ClickHouse/graphouse
   - GreptimeTeam/greptimedb
+  - KxSystems/kdb
+  - Netflix/atlas
+  - OpenNMS/newts
+  - OpenTSDB/opentsdb
+  - SiriDB/siridb-server
+  - VictoriaMetrics/VictoriaMetrics
+  - apache/druid
+  - apache/iotdb
+  - citusdata/citus
   - cnosdb/cnosdb
+  - cortexproject/cortex
+  - crate/crate
+  - criteo/biggraphite
+  - filodb/FiloDB
+  - gnocchixyz/gnocchi
+  - go-graphite/carbon-clickhouse
+  - graphite-project/carbon
+  - graphite-project/whisper
+  - griddb/griddb
+  - hawkular/hawkular-metrics
+  - influxdata/influxdb
+  - kairosdb/kairosdb
+  - lindb/lindb
+  - lomik/graphite-clickhouse
+  - m3db/m3
+  - netdata/netdata
+  - oetiker/rrdtool-1.x
+  - open-falcon/falcon-plus
+  - openGemini/openGemini
+  - polarsignals/frostdb
+  - prometheus/prometheus
+  - questdb/questdb
+  - radicalbit/NSDb
+  - rax-maas/blueflood
+  - scylladb/scylladb
+  - senx/warp10-platform
+  - sitewhere/sitewhere
+  - soundcloud/roshi
   - surrealdb/surrealdb
+  - taosdata/TDengine
+  - thanos-io/thanos
+  - tigrisdata/tigris
+  - timescale/timescaledb

@@ -3,7 +3,6 @@ import {APIError} from "../../../utils/error";
 import {FastifyPluginAsyncJsonSchemaToTs} from "@fastify/type-provider-json-schema-to-ts";
 import { GENERATE_SQL_LIMIT_HEADER, GENERATE_SQL_USED_HEADER, MAX_DAILY_GENERATE_SQL_LIMIT } from "./quota";
 import { Auth0User, parseAuth0User } from "../../../plugins/auth/auth0";
-import {GenerateSQLPromptTemplate} from "../../../plugins/services/bot-service/template/GenerateSQLPromptTemplate";
 
 export interface IBody {
   question: string;
@@ -37,7 +36,7 @@ const root: FastifyPluginAsyncJsonSchemaToTs = async (app): Promise<void> => {
     preValidation: app.authenticate,
     schema
   }, async function (req, reply) {
-    const { playgroundService, botService } = app;
+    const { playgroundService } = app;
     const { question } = req.body;
     const { metadata } = parseAuth0User(req.user as Auth0User);
     const userId = await app.userService.getUserIdOrCreate(req);
@@ -76,11 +75,7 @@ const root: FastifyPluginAsyncJsonSchemaToTs = async (app): Promise<void> => {
     // Generate the SQL.
     let sql = null, success = true;
     try {
-      const promptTemplate = new GenerateSQLPromptTemplate();
-      sql = await botService.questionToSQL(promptTemplate, question, context);
-      if (!sql) {
-        throw new APIError(500, 'No SQL generated');
-      }
+      sql = await app.botService.questionToSQL(app.log, question, context);
     } catch (err) {
       success = false;
       throw err;

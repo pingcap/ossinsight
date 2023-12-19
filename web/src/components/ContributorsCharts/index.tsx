@@ -9,15 +9,19 @@ import { isNullish } from '@site/src/utils/value';
 
 export interface ContributorsChartsProps {
   type: 'prs' | 'contributors';
+  field: string;
   percent?: boolean;
 }
 
 const blank = {};
-export default function ContributorsCharts ({ type, percent = false }: ContributorsChartsProps) {
-  const remoteData = useRemoteData('rt-osdb-contributors-by-repo-group', blank, false);
+export default function ContributorsCharts ({ type, field, percent = false }: ContributorsChartsProps) {
+  const remoteData = useRemoteData('archive/2021/repo-contributor-ranking-by-prs', {
+    field,
+    ...blank,
+  }, false);
   const { data, loading } = remoteData;
 
-  return renderChart('rt-osdb-contributors-by-repo-group', (
+  return renderChart('archive/2021/repo-ranking-by-pr-creators', (
     <BrowserOnly>
       {() => (
         <Charts
@@ -26,13 +30,14 @@ export default function ContributorsCharts ({ type, percent = false }: Contribut
           size={24}
           type={type}
           percent={percent}
+          field={field}
         />
       )}
     </BrowserOnly>
   ), remoteData);
 }
 
-type Data = Queries['rt-osdb-contributors-by-repo-group']['data'];
+type Data = Queries['archive/2021/repo-contributor-ranking-by-prs']['data'];
 type GroupedData = Record<string, { totalPrs: number, contributors: Array<{ contributor: string, prs: number }> }>;
 const steps = [10, 100, Infinity] as const;
 const stepLabels = [
@@ -48,11 +53,13 @@ interface ChartsProps {
   percent: boolean;
   loading: boolean;
   size: number;
+  field: string;
+  n?: number;
 }
 
-function Charts ({ data: rawData, type, percent, loading, size }: ChartsProps) {
+function Charts ({ data: rawData, type, field, percent, loading, size, n }: ChartsProps) {
   const ordered = useOrdered(rawData);
-  const data = useSteps(ordered, type, percent);
+  const data = useSteps(ordered, type, field, percent, n);
 
   const option: EChartsOption = useMemo(() => {
     return {
@@ -127,20 +134,20 @@ function Charts ({ data: rawData, type, percent, loading, size }: ChartsProps) {
 
 function useOrdered (data: Data[]): GroupedData {
   return useMemo(() => data.reduce((result: GroupedData, item) => {
-    if (isNullish(result[item.repo_group_name])) {
-      result[item.repo_group_name] = {
+    if (isNullish(result[item.repo_name])) {
+      result[item.repo_name] = {
         contributors: [],
         totalPrs: 0,
       };
     }
-    const obj = result[item.repo_group_name];
+    const obj = result[item.repo_name];
     obj.totalPrs += item.prs;
     obj.contributors.push({ contributor: item.contributor, prs: item.prs });
     return result;
   }, {}), [data]);
 }
 
-function useSteps (data: GroupedData, type: 'prs' | 'contributors', percent: boolean): StepData[] {
+function useSteps (data: GroupedData, type: 'prs' | 'contributors', field: string, percent: boolean, n: number = 20): StepData[] {
   return useMemo(() => {
     return Object.entries(data).map(([name, obj]) => {
       const groups = steps.map(() => 0);
@@ -157,6 +164,7 @@ function useSteps (data: GroupedData, type: 'prs' | 'contributors', percent: boo
       }
       return [name, total, ...groups.map(i => percent ? i / total : i)] as StepData;
     })
-      .sort((a, b) => (b[1]) - (a[1]));
+      .sort((a, b) => (b[1]) - (a[1]))
+      .slice(0, n);
   }, [data, type]);
 }

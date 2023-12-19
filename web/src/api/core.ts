@@ -4,6 +4,7 @@ import type {
   SearchRepoInfo,
   UserInfo,
   UserType,
+  SearchOrgInfo,
 } from '@ossinsight/api';
 import {
   AxiosAdapter,
@@ -59,6 +60,10 @@ export async function getRepo (name: string): Promise<RepoInfo> {
   return await client.get(`/gh/repo/${name}`).then(({ data }) => data);
 }
 
+export async function getUser (name: string): Promise<UserInfo> {
+  return await client.get(`/gh/users/${name}`).then(({ data }) => data);
+}
+
 export async function searchRepo (keyword: string): Promise<SearchRepoInfo[]> {
   return await client
     .get('/gh/repos/search', { params: { keyword } })
@@ -71,6 +76,12 @@ export async function searchUser (
 ): Promise<UserInfo[]> {
   return await client
     .get('/gh/users/search', { params: { keyword, type } })
+    .then(({ data }) => data);
+}
+
+export async function searchOrg (keyword: string): Promise<SearchOrgInfo[]> {
+  return await client
+    .get('/gh/organizations/search', { params: { keyword } })
     .then(({ data }) => data);
 }
 

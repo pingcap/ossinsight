@@ -4,9 +4,10 @@ import type { EChartsOption, SeriesOption } from 'echarts';
 import ECharts from '../ECharts';
 
 type RawData = {
-  event_year: number;
+  repo_id: number;
   repo_name: string;
-  stars: string;
+  year: number;
+  cumulative_stars: number;
 };
 
 interface DynamicStarsChartProps {
@@ -23,9 +24,9 @@ export default function DynamicStarsChart ({ data, aspectRatio = 16 / 9, loading
   const datasets: DatasetOption[] = useMemo(() => {
     const datasets: DatasetOption[] = [{
       id: 'raw',
-      source: ([['event_year', 'repo_name', 'stars']] as any)
+      source: ([['year', 'repo_name', 'cumulative_stars']] as any)
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        .concat(data.map(({ event_year, repo_name, stars }) => ([event_year, repo_name, parseInt(stars)]))),
+        .concat(data.map(({ year, repo_name, cumulative_stars }) => ([year, repo_name, cumulative_stars]))),
     }, {
       transform: {
         type: 'sort',
@@ -70,11 +71,11 @@ export default function DynamicStarsChart ({ data, aspectRatio = 16 / 9, loading
       },
       encode: {
         x: 'year',
-        y: 'stars',
-        label: ['stars'],
-        itemName: 'event_year',
-        tooltip: ['stars'],
-        val: 'stars',
+        y: 'cumulative_stars',
+        label: ['cumulative_stars'],
+        itemName: 'year',
+        tooltip: ['cumulative_stars'],
+        val: 'cumulative_stars',
       },
     }));
   }, [repos]);

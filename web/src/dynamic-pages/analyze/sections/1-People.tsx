@@ -52,8 +52,8 @@ export const PeopleSection = forwardRef(function (_, ref: ForwardedRef<HTMLEleme
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <Tabs value={mapType} onChange={handleChangeMapType} variant='scrollable' scrollButtons='auto' allowScrollButtonsMobile>
             <IconTab defaultTab id='geo-distribution-stargazers' value='analyze-stars-map' icon={<StarIcon size={24} />}><span style={{ display: 'none' }}>Geographical Distribution of </span>Stargazers</IconTab>
-            <IconTab id='geo-distribution-issue-creators' value='issue-creators-map' icon={<IssueCreatorIcon size={24} />}><span style={{ display: 'none' }}>Geographical Distribution of </span>Issue Creators</IconTab>
-            <IconTab id='geo-distribution-pr-creators' value='pull-request-creators-map' icon={<PrCreatorIcon size={24} />}><span style={{ display: 'none' }}>Geographical Distribution of </span>Pull Requests Creators</IconTab>
+            <IconTab id='geo-distribution-issue-creators' value='analyze-issue-creators-map' icon={<IssueCreatorIcon size={24} />}><span style={{ display: 'none' }}>Geographical Distribution of </span>Issue Creators</IconTab>
+            <IconTab id='geo-distribution-pr-creators' value='analyze-pull-request-creators-map' icon={<PrCreatorIcon size={24} />}><span style={{ display: 'none' }}>Geographical Distribution of </span>Pull Requests Creators</IconTab>
           </Tabs>
         </Box>
         <Grid container alignItems='center'>

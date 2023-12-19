@@ -1,5 +1,6 @@
 {
   "public": true,
+  "engine": "liquid",
   "description": "Repository trending alternative to https://github.com/trending",
   "cacheHours": -1,
   "refreshCron": {
@@ -12,73 +13,65 @@
     }
   },
   "onlyFromCache": true,
+  "persist": {
+    "tableName": "mv_trending_repos",
+    "series": [
+      {
+        "name": "dt",
+        "expression": "{{#$now}}yyyy-MM-dd{{/$now}}"
+      },
+      {
+        "name": "language",
+        "expression": "{{$params.language}}"
+      },
+      {
+        "name": "period",
+        "expression": "{{$params.period}}"
+      },
+      {
+        "name": "repo_id",
+        "expression": "{{$row.repo_id}}"
+      }
+    ],
+    "fields": [
+      {
+        "name": "stars"
+      },
+      {
+        "name": "forks"
+      },
+      {
+        "name": "pull_requests"
+      },
+      {
+        "name": "pushes"
+      },
+      {
+        "name": "total_score"
+      },
+      {
+        "name": "contributor_logins"
+      }
+    ]
+  },
   "params": [
     {
       "name": "period",
       "description": "Trending time period.",
-      "replaces": "DATE_SUB(NOW(), INTERVAL 1 MONTH)",
+      "replaces": "${period}",
       "default": "past_24_hours",
       "enums": [
        "past_24_hours", "past_week", "past_month", "past_3_months"
-      ],
-      "template": {
-        "past_24_hours": "DATE_SUB(NOW(), INTERVAL 1 DAY)",
-        "past_week": "DATE_SUB(NOW(), INTERVAL 1 WEEK)",
-        "past_month": "DATE_SUB(NOW(), INTERVAL 1 MONTH)",
-        "past_3_months": "DATE_SUB(NOW(), INTERVAL 3 MONTH)"
-      }
+      ]
     },
     {
       "name": "language",
       "description": "Primary language",
-      "replaces": "AND primary_language = 'Java'",
+      "replaces": "${language}",
       "default": "All",
       "enums": [
         "All", "JavaScript", "Java", "Python", "PHP", "C++", "C#", "TypeScript", "Shell", "C", "Ruby", "Rust", "Go", "Kotlin", "HCL", "PowerShell", "CMake", "Groovy", "PLpgSQL", "TSQL", "Dart", "Swift", "HTML", "CSS", "Elixir", "Haskell", "Solidity", "Assembly", "R", "Scala", "Julia", "Lua", "Clojure", "Erlang", "Common Lisp", "Emacs Lisp", "OCaml", "MATLAB", "Objective-C", "Perl", "Fortran"
-      ],
-      "template": {
-        "All": "",
-        "JavaScript": "AND primary_language = 'JavaScript'",
-        "Java": "AND primary_language = 'Java'",
-        "Python": "AND primary_language = 'Python'",
-        "PHP": "AND primary_language = 'PHP'",
-        "C++": "AND primary_language = 'C++'",
-        "C#": "AND primary_language = 'C#'",
-        "TypeScript": "AND primary_language = 'TypeScript'",
-        "Shell": "AND primary_language = 'Shell'",
-        "C": "AND primary_language = 'C'",
-        "Ruby": "AND primary_language = 'Ruby'",
-        "Rust": "AND primary_language = 'Rust'",
-        "Go": "AND primary_language = 'Go'",
-        "Kotlin": "AND primary_language = 'Kotlin'",
-        "HCL": "AND primary_language = 'HCL'",
-        "PowerShell": "AND primary_language = 'PowerShell'",
-        "CMake": "AND primary_language = 'CMake'",
-        "Groovy": "AND primary_language = 'Groovy'",
-        "PLpgSQL": "AND primary_language = 'PLpgSQL'",
-        "TSQL": "AND primary_language = 'TSQL'",
-        "Dart": "AND primary_language = 'Dart'",
-        "Swift": "AND primary_language = 'Swift'",
-        "HTML": "AND primary_language = 'HTML'",
-        "CSS": "AND primary_language = 'CSS'",
-        "Elixir": "AND primary_language = 'Elixir'",
-        "Haskell": "AND primary_language = 'Haskell'",
-        "Solidity": "AND primary_language = 'Solidity'",
-        "Assembly": "AND primary_language = 'Assembly'",
-        "R": "AND primary_language = 'R'",
-        "Scala": "AND primary_language = 'Scala'",
-        "Julia": "AND primary_language = 'Julia'",
-        "Lua": "AND primary_language = 'Lua'",
-        "Clojure": "AND primary_language = 'Clojure'",
-        "Erlang": "AND primary_language = 'Erlang'",
-        "Common Lisp": "AND primary_language = 'Common Lisp'",
-        "Emacs Lisp": "AND primary_language = 'Emacs Lisp'",
-        "OCaml": "AND primary_language = 'OCaml'",
-        "MATLAB": "AND primary_language = 'MATLAB'",
-        "Objective-C": "AND primary_language = 'Objective-C'",
-        "Perl": "AND primary_language = 'Perl'",
-        "Fortran": "AND primary_language = 'Fortran'"
-      }
+      ]
     }
   ],
   "resultSchema": {

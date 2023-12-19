@@ -1,5 +1,4 @@
-import { QueryLoader } from "../../../core/runner/query/QueryLoader";
-import { QueryParser } from "../../../core/runner/query/QueryParser";
+import {QueryLoader} from "../../../core/runner/query/QueryLoader";
 import { QueryRunner } from "../../../core/runner/query/QueryRunner";
 import fp from "fastify-plugin";
 import pino from "pino";
@@ -7,8 +6,7 @@ import pino from "pino";
 export default fp(async (app: any) => {
     const log = app.log as pino.Logger;
     const queryLoader = new QueryLoader(log);
-    const queryParser = new QueryParser();
-    app.decorate('queryRunner', new QueryRunner(queryLoader, queryParser, app.cacheBuilder, app.tidbQueryExecutor));
+    app.decorate('queryRunner', new QueryRunner(log, app.cacheBuilder, queryLoader, app.tidbQueryExecutor, app.mysql));
 }, {
     name: '@ossinsight/query-runner',
     dependencies: [

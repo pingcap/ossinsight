@@ -16,3 +16,7 @@ items:
   - semi-technologies/weaviate
   - mosuka/bayard
   - qdrant/qdrant
+  - paradedb/paradedb
+  - apache/solr
+  - apache/lucene
+  

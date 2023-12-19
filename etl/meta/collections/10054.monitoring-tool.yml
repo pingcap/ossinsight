@@ -1,18 +1,20 @@
 id: 10054
 name: Monitoring Tool
 items:
-  - NagiosEnterprises/nagioscore
-  - munin-monitoring/munin
-  - prometheus/prometheus
-  - grafana/grafana
-  - zabbix/zabbix
-  - riemann/riemann
-  - Icinga/icinga2
+  - ddosify/alaz
   - Cacti/cacti
+  - tribe29/checkmk
+  - coroot/coroot
+  - Icinga/icinga2
+  - grafana/grafana
   - librenms/librenms
+  - munin-monitoring/munin
+  - NagiosEnterprises/nagioscore
   - netdata/netdata
   - ccfos/nightingale
-  - tribe29/checkmk
   - OpenNMS/opennms
+  - prometheus/prometheus
+  - riemann/riemann
   - robusta-dev/robusta
-  - coroot/coroot
+  - VictoriaMetrics/VictoriaMetrics
+  - zabbix/zabbix

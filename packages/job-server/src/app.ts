@@ -33,7 +33,7 @@ declare module 'fastify' {
       EXPLORER_QUERY_SQL_TIMEOUT: number;
       SEND_REPO_FEEDS_CRON: string,
       CALC_REPO_MILESTONES_CRON: string,
-      OPENAI_API_KEY: string
+      OPENAI_API_KEY: string;
     };
     emailClient: EmailClient;
     queues: {

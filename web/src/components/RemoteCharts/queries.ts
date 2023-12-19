@@ -43,8 +43,8 @@ export interface Queries extends Record<string, BaseQueryResult<any, any>> {
   'rt-top10-by-prs': BaseQueryResult<{ repo: string }, { repo_name: string, num: number }>;
   'rt-top20-by-developers': BaseQueryResult<{ repo: string }, { repo_name: string, num: number }>;
   'rt-top20-by-companies': BaseQueryResult<{ repo: string }, { company: string, num: number }>;
-  'rt-top5-by-language': BaseQueryResult<{ repo: string }, { language: string, num: number }>;
-  'rt-osdb-contributors-by-repo-group': BaseQueryResult<{}, { repo_group_name: string, contributor: string, prs: number }>;
+  'archive/2021/language-ranking-by-prs': BaseQueryResult<{ field: string }, { language: string, prs: number }>;
+  'archive/2021/repo-contributor-ranking-by-prs': BaseQueryResult<{}, { repo_name: string, contributor: string, prs: number }>;
   'events-total': BaseQueryResult<{}, { cnt: number }>;
   'events-last-imported': BaseQueryResult<{}, { type: string, cnt: number }>;
 }

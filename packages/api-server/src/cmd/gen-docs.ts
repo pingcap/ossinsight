@@ -35,13 +35,10 @@ const app: FastifyPluginAsync<AppOptions, RawServerDefault, JsonSchemaToTsProvid
       info: {
         title: 'OSSInsight Public API',
         description: description.replace(/^# OSSInsight Public API\n$/m, ''),
-        version: '0.0.1'
+        version: 'v1beta'
       },
-      tags: [
-        { name: 'Repositories' },
-      ],
       servers: [{
-        url: `${app.config.API_BASE_URL || 'https://api.ossinsight.io'}/public`
+        url: `${app.config.API_BASE_URL || 'https://api.ossinsight.io'}/v1`
       }],
     },
     hideUntagged: true,
@@ -49,9 +46,9 @@ const app: FastifyPluginAsync<AppOptions, RawServerDefault, JsonSchemaToTsProvid
 
   // Loads all routes defined in ./routes directory.
   await app.register(AutoLoad, {
-    dir: join(__dirname, '../routes/public'),
+    dir: join(__dirname, '../routes/v1'),
     routeParams: true,
-    prefix: '/public',
+    prefix: '/v1',
     options: opts
   });
 

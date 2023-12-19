@@ -110,7 +110,12 @@ export class TiDBDatabase {
         .map(async (filename) => await fs.readFile(filename, 'utf8'));
 
     for await (const sql of sqls) {
-      await conn.query(sql.replaceAll('gharchive_dev', this.database));
+      const finalSql = sql.replaceAll('gharchive_dev', this.database)
+      try {
+        await conn.query(finalSql);
+      } catch (err) {
+        throw err;
+      }
     }
 
     await conn.destroy();

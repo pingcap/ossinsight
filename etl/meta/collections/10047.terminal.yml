@@ -15,3 +15,10 @@ items:
   - ohmyzsh/ohmyzsh
   - microsoft/terminal
   - GitSquared/edex-ui
+  - electerm/electerm
+  - oilshell/oil
+  - sorin-ionescu/prezto
+  - Bash-it/bash-it
+  - ohmybash/oh-my-bash
+  - oh-my-fish/oh-my-fish
+  

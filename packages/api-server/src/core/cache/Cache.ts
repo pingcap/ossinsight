@@ -4,8 +4,6 @@ import {DateTime} from 'luxon'
 import pino from 'pino';
 import {cacheHitCounter, cacheQueryHistogram, measure} from '../../metrics';
 
-export const MAX_CACHE_TIME = DateTime.fromISO('2099-12-31T00:00:00')
-
 export class NeedPreFetchError extends Error {
   readonly msg: string
   constructor(message: string) {
@@ -15,16 +13,20 @@ export class NeedPreFetchError extends Error {
 }
 
 export interface CachedData<T> {
-  finishedAt: DateTime;
   data: T;
-  refresh?: boolean;
+  finishedAt: DateTime;
   [key: string]: any;
 }
 
-const runningCaches = new Map<string, Cache<unknown>>()
+export interface CachedResult<T> extends CachedData<T> {
+  expiresAt: DateTime | null;
+  refresh?: boolean;
+}
+
+const runningCaches = new Map<string, Cache<any>>()
 
 export default class Cache<T> {
-  _data!: Promise<CachedData<T>>
+  _data!: Promise<CachedResult<T>>
 
   constructor(
     private readonly log: pino.BaseLogger,
@@ -36,16 +38,16 @@ export default class Cache<T> {
   ) {
   }
 
-  async load(fallback: () => Promise<CachedData<T>>): Promise<CachedData<T>> {
+  async load(fallback: () => Promise<CachedData<T>>): Promise<CachedResult<T>> {
     // Only running one at the same time when multiple same query with same params.
     if (runningCaches.has(this.key)) {
       this.log.info(`Wait for previous same cache query <${this.key}>.`, )
       return await runningCaches.get(this.key)!._data as never
     }
 
-    let _resolve: (data: CachedData<T>) => void
+    let _resolve: (data: CachedResult<T>) => void
     let _reject: (err: any) => void
-    this._data = new Promise<CachedData<T>>((resolve, reject) => {
+    this._data = new Promise<CachedResult<T>>((resolve, reject) => {
       _resolve = resolve
       _reject = reject
     })
@@ -64,7 +66,7 @@ export default class Cache<T> {
     }
   }
 
-  private async loadInternal(fallback: () => Promise<CachedData<T>>) {
+  private async loadInternal(fallback: () => Promise<CachedData<T>>): Promise<CachedResult<T>> {
     // Initiative refresh query will ignore cache.
     if (this.refreshCache) {
       this.log.info(`🔄 Initiative refresh query for key: <${this.key}>.`);
@@ -78,23 +80,26 @@ export default class Cache<T> {
     }
 
     // Try to get data from cache.
-    const cachedData = await this.fetchDataFromCache();
-    if (cachedData !== null && cachedData !== undefined) {
-      this.log.info(`Hit cache of <${this.key}>.`);
-      cacheHitCounter.inc();
-      return cachedData;
+    try {
+      const cachedData = await this.fetchDataFromCache();
+      if (cachedData !== null && cachedData !== undefined) {
+        this.log.info(`Hit cache of <${this.key}>.`);
+        cacheHitCounter.inc();
+        return cachedData;
+      }
+    } catch (err) {
+      this.log.warn(err, `Failed to get data from cache for <${this.key}>.`);
     }
 
-    // Fallback to fetch data from DB.
-    this.log.debug(`No hit cache of query <${this.key}>.`);
-    if (this.onlyFromCache && !this.refreshCache) {
-      throw new NeedPreFetchError(`Failed to get data from cache and query <${this.key}> can only be executed in advance.`)
+    // No cache hit, Fallback to fetch data from DB.
+    if (this.onlyFromCache) {
+      throw new NeedPreFetchError(`Failed to get data from cache, query <${this.key}> can only be executed in advance.`)
     }
 
     return await this.fetchDataFromDB(fallback);
   }
 
-  private async fetchDataFromDB(fallback: () => Promise<CachedData<T>>):Promise<CachedData<T>> {
+  private async fetchDataFromDB(fallback: () => Promise<CachedData<T>>):Promise<CachedResult<T>> {
     // Execute query.
     this.log.info(`⚡️ Executing query <${this.key}>.`);
     const start = DateTime.now();
@@ -105,40 +110,40 @@ export default class Cache<T> {
 
     // Update cache async.
     const ttl = this.cacheHours > 0 ? Math.round(this.cacheHours * 3600) : -1;
-    result.expiresAt = ttl > 0 ? DateTime.now().plus({seconds: ttl}) : MAX_CACHE_TIME;
-    measure(cacheQueryHistogram.labels({op: 'set'}), async () => {
-      const start = DateTime.now();
-      await this.cacheProvider.set(this.key, JSON.stringify(result), {
-        EX: ttl
-      });
-      const end = DateTime.now();
-      const duration = end.diff(start, 'seconds').seconds;
-      this.log.info(`✅️ Finished cache setting for query <${this.key}> in ${duration} seconds.`);
-    }).catch((err) => {
-      this.log.error(err, `❌ Failed to write cache for query <${this.key}>.`);
+    const cachedResult: CachedResult<any> = {
+      ...result,
+      expiresAt: ttl > 0 ? DateTime.now().plus({seconds: ttl}) : null,
+    }
+    this.saveDataToCache(cachedResult, ttl).catch(err => {
+      this.log.error(err, `Failed to save data to cache for <${this.key}>.`);
     });
 
-    result.refresh = true;
-    return result;
+    return {
+      ...cachedResult,
+      refresh: true,
+    };
   }
 
-  // TODO: make the error more clear.
-  private async fetchDataFromCache():Promise<CachedData<T> | null> {
-    try {
-      const json = await measure(
-        cacheQueryHistogram.labels({op: 'get'}),
-        async () => await this.cacheProvider.get(this.key)
-      ) as any;
+  private async saveDataToCache(data: CachedData<T>, ttl: number):Promise<void> {
+    return await measure(cacheQueryHistogram.labels({op: 'set'}), async () =>
+      await this.cacheProvider.set(this.key, JSON.stringify(data), {
+        EX: ttl
+      })
+    );
+  }
 
-      if (typeof json === 'string') {
-        return JSON.parse(json);
-      } else if (typeof json === 'object' && json !== null) {
-        return json;
+  private async fetchDataFromCache():Promise<CachedResult<T> | null> {
+    return await measure(cacheQueryHistogram.labels({op: 'get'}), async () => {
+      const cachedResult = await this.cacheProvider.get(this.key);
+      if (cachedResult) {
+        return {
+          ...cachedResult,
+          expiredAt: cachedResult.expiresAt ? DateTime.fromISO(cachedResult.expiresAt) : null,
+          finishedAt: DateTime.fromISO(cachedResult.finishedAt),
+        };
+      } else {
+        return null;
       }
-    } catch (err) {
-      this.log.error(err, `❌ Cache of query ${this.key} is broken.`);
-    }
-    return null;
+    });
   }
-
 }

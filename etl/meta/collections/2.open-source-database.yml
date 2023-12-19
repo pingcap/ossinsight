@@ -1,6 +1,7 @@
 id: 2
 name: Open Source Database
 items:
+  - qdrant/qdrant
   - elastic/elasticsearch
   - pingcap/tidb
   - cockroachdb/cockroach
@@ -38,3 +39,4 @@ items:
   - milvus-io/milvus
   - CUBRID/cubrid
   - GreptimeTeam/greptimedb
+  - cloudberrydb/cloudberrydb

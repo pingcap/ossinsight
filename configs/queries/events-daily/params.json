@@ -1,6 +1,0 @@
-{
-  "cacheHours": -1,
-  "refreshCron": "@daily",
-  "onlyFromCache": true,
-  "params": []
-}

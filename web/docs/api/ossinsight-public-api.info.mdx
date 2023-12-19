@@ -1,7 +1,7 @@
 ---
 id: ossinsight-public-api
 title: "OSSInsight Public API"
-description: "Here are documentation about the OSSInsight Public APIs (beta) which help developers integrate OSSInsight data into their applications easily and quickly."
+description: "OSSInsight Public APIs (beta) provide a convenient way to access insight data for open source projects on GitHub, supplementing the existing GitHub API."
 sidebar_label: Introduction
 sidebar_position: 0
 hide_title: true
@@ -14,14 +14,26 @@ import SchemaTabs from "@theme/SchemaTabs";
 import TabItem from "@theme/TabItem";
 import Export from "@theme/ApiDemoPanel/Export";
 
-<span className={"theme-doc-version-badge badge badge--secondary"}>Version: 0.0.1</span>
+<span className={"theme-doc-version-badge badge badge--secondary"}>Version: v1beta</span>
 
 # OSSInsight Public API
 
 
 
 
-Here are documentation about the OSSInsight Public APIs (beta) which help developers integrate OSSInsight data into their applications easily and quickly.
+OSSInsight Public APIs (beta) provide a convenient way to access insight data for open source projects on GitHub, supplementing the existing GitHub API.
+
+It provides data query in different dimensions, including:
+
+```mdx-code-block
+import DocCardList from '@theme/DocCardList';
+import {useCurrentSidebarCategory} from '@docusaurus/theme-common';
+
+<DocCardList items={useCurrentSidebarCategory().items.filter((item) => {
+    // Exclude Introduction and Showcase pages
+    return item.docId !== 'api/showcase' && item.docId !== 'api/ossinsight-public-api';
+})}/>
+```
 
 ## Usage
 
@@ -32,7 +44,7 @@ The OSSInsight Public API is designed to follow the OpenAPI specification and ca
 All API requests are based on the following URL:
 
 ```shell
-https://api.ossinsight.io/public
+https://api.ossinsight.io/v1
 ```
 
 ### Authentication
@@ -44,14 +56,26 @@ No authentication is required for beta version of public APIs, but there are [ra
 
 ### Rate Limit
 
-For each IP address, the rate limit allows for up to **600 requests per hour**.
+For each IP address, the rate limit allows for up to **600 requests per hour**, which can be checked by the following fields in the Response Header to see the current usage:
+
+```
+x-ratelimit-limit: 600
+x-ratelimit-remaining: 599
+```
+
+In addition, we have also set up a global rate limit of up to **1000 requests per minute**, which can be checked by the following fields in the Response Header to see the current usage:
+
+```
+x-ratelimit-limit-minute: 1000
+x-ratelimit-remaining-minute: 97
+```
 
 ### Example
 
 For example, if you want to know what countries the stargazers in the `pingcap/tidb` repository are located in, you can make a request using the curl command as follows:
 
 ```shell
-curl https://api.ossinsight.io/public/repos/pingcap/tidb/stargazer/locations
+curl https://api.ossinsight.io/v1/repos/pingcap/tidb/stargazers/countries
 ```
 
 <details>
@@ -114,18 +138,6 @@ curl https://api.ossinsight.io/public/repos/pingcap/tidb/stargazer/locations
 ```
 
 </details>
-
-## Categories
-
-```mdx-code-block
-import DocCardList from '@theme/DocCardList';
-import {useCurrentSidebarCategory} from '@docusaurus/theme-common';
-
-<DocCardList items={useCurrentSidebarCategory().items.filter((item) => {
-    // Exclude Introduction and Showcase pages
-    return item.docId !== 'api/showcase' && item.docId !== 'api/ossinsight-public-api';
-})}/>
-```
 
 ## Request New API 
 

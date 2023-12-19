@@ -52,3 +52,5 @@ items:
   - cloudquery/cloudquery
   - slimtoolkit/slim
   - akto-api-security/akto
+  - deepfence/SecretScanner
+  - deepfence/PacketStreamer

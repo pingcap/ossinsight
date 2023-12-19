@@ -11,6 +11,23 @@ import { ExpandMore } from '@mui/icons-material';
 import { useSafeSetTimeout } from '@site/src/hooks/mounted';
 import BotIcon from '@site/src/pages/explore/_components/BotIcon';
 
+function getTime (name: string, fallback: number): number {
+  if (typeof localStorage === 'undefined') {
+    return fallback;
+  }
+  const i = localStorage.getItem(`ossinsight.explore.ai-message.${name}`);
+  if (i) {
+    return parseInt(i);
+  } else {
+    return fallback;
+  }
+}
+
+const SUB_DELAY = getTime('sub-delay', 1000);
+const PACE_NORMAL = getTime('pace-normal', 25);
+const PACE_SPACE = getTime('pace-space', 40);
+const PACE_RANDOM_RANGE = getTime('pace-random-range', 25);
+
 export interface AIMessagesV3Props extends AIMessagesV2Props {
 
 }
@@ -212,7 +229,7 @@ class QuestionModel {
   private renderMessage () {
     return (
       <AutoEnter key="message">
-        <Collapse onEntered={() => this.next()} timeout={1000}>
+        <Collapse onEntered={() => this.next()} timeout={SUB_DELAY}>
           <Line className="message light">
             You can copy and revise it based on the question above 👆.
           </Line>
@@ -372,9 +389,9 @@ export function defaultGetPace (
 ): number {
   switch (lastChar) {
     case ' ':
-      return 40 + Math.random() * 25;
+      return PACE_SPACE + Math.random() * PACE_RANDOM_RANGE;
     default:
-      return 25 + Math.random() * 25;
+      return PACE_NORMAL + Math.random() * PACE_RANDOM_RANGE;
   }
 }
 

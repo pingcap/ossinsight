@@ -1,65 +1,7 @@
 [
   {
-    "name": "Trending Repos",
-    "description": "",
-    "method": "GET",
-    "endpoint": "/trends/repos",
-    "data_source": {
-      "cluster_id": 1379661944642684098
-    },
-    "params": [
-      {
-        "name": "language",
-        "type": "string",
-        "required": 0,
-        "default": "All"
-      },
-      {
-        "name": "period",
-        "type": "string",
-        "required": 0,
-        "default": "past_24_hours"
-      }
-    ],
-    "settings": {
-      "timeout": 5000,
-      "row_limit": 50
-    },
-    "tag": "Default",
-    "batch_operation": 0,
-    "sql_file": "sql/GET-trends-repos.sql",
-    "type": "sql_endpoint",
-    "return_type": "json"
-  },
-  {
-    "name": "List Collection Items",
-    "description": "List Repository Collections",
-    "method": "GET",
-    "endpoint": "/collections_dump_kuceqV",
-    "data_source": {
-      "cluster_id": 1379661944642684098
-    },
-    "params": [
-      {
-        "name": "collection_id",
-        "type": "number",
-        "required": 1,
-        "default": ""
-      }
-    ],
-    "settings": {
-      "timeout": 5000,
-      "row_limit": 50
-    },
-    "tag": "collections",
-    "batch_operation": 0,
-    "sql_file": "sql/GET-collections_dump_kuceqV.sql",
-    "type": "sql_endpoint",
-    "return_type": "json"
-  },
-  {
     "name": "List Collections",
-    "description": "List Repository Collections",
+    "description": "It returns a list of each collection's unique ID and its name.",
     "method": "GET",
     "endpoint": "/collections",
     "data_source": {
@@ -68,187 +10,180 @@
     "params": [],
     "settings": {
       "timeout": 5000,
-      "row_limit": 50
+      "row_limit": 200,
+      "cache_enabled": 0,
+      "cache_ttl": 0,
+      "enable_pagination": 0
     },
-    "tag": "collections",
+    "tag": "Collections",
     "batch_operation": 0,
     "sql_file": "sql/GET-collections.sql",
     "type": "sql_endpoint",
     "return_type": "json"
   },
   {
-    "name": "List PR creator organizations",
-    "description": "",
+    "name": "List Hot Collections",
+    "description": "Returns the top 20 most visited collections within the last month, including collection IDs, names, and associated repository metrics. The results are ordered by the number of visits in descending order to highlight the most popular collections.",
     "method": "GET",
-    "endpoint": "/repos/stargazer/organizations",
+    "endpoint": "/collections/hot",
     "data_source": {
       "cluster_id": 1379661944642684098
     },
-    "params": [
-      {
-        "name": "owner",
-        "type": "string",
-        "required": 1,
-        "default": ""
-      },
-      {
-        "name": "repo",
-        "type": "string",
-        "required": 1,
-        "default": ""
-      },
-      {
-        "name": "from",
-        "type": "string",
-        "required": 0,
-        "default": "2000-01-01"
-      },
-      {
-        "name": "to",
-        "type": "string",
-        "required": 0,
-        "default": "2099-12-31"
-      }
-    ],
+    "params": [],
     "settings": {
-      "timeout": 10000,
-      "row_limit": 300
+      "timeout": 5000,
+      "row_limit": 200,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
+      "enable_pagination": 1
     },
-    "tag": "",
+    "tag": "Collections",
     "batch_operation": 0,
-    "sql_file": "sql/GET-repos-stargazer-organizations.sql",
+    "sql_file": "sql/GET-collections-hot.sql",
     "type": "sql_endpoint",
     "return_type": "json"
   },
   {
-    "name": "List PR creator locations",
-    "description": "",
+    "name": "Collection ranking by issues",
+    "description": "Rank the GitHub repositories in the specified collection according to the number of issues. (pop means period over period)",
     "method": "GET",
-    "endpoint": "/repos/stargazer/locations_dump_EHWabX",
+    "endpoint": "/collections/ranking_by_issues",
     "data_source": {
       "cluster_id": 1379661944642684098
     },
     "params": [
       {
-        "name": "owner",
-        "type": "string",
+        "name": "collection_id",
+        "type": "integer",
         "required": 1,
-        "default": ""
+        "default": "",
+        "description": "The ID of collection"
       },
       {
-        "name": "repo",
+        "name": "period",
         "type": "string",
-        "required": 1,
-        "default": ""
-      },
-      {
-        "name": "from",
-        "type": "string",
-        "required": 1,
-        "default": "2000-01-01"
-      },
-      {
-        "name": "to",
-        "type": "string",
-        "required": 1,
-        "default": "2099-12-31"
+        "required": 0,
+        "default": "past_28_days",
+        "description": "The period of the range",
+        "enum": "past_28_days,past_month"
       }
     ],
     "settings": {
-      "timeout": 10000,
-      "row_limit": 300
+      "timeout": 30000,
+      "row_limit": 1000,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
+      "enable_pagination": 0
     },
-    "tag": "",
+    "tag": "Collections",
     "batch_operation": 0,
-    "sql_file": "sql/GET-repos-stargazer-locations_dump_EHWabX.sql",
+    "sql_file": "sql/GET-collections-ranking_by_issues.sql",
     "type": "sql_endpoint",
     "return_type": "json"
   },
   {
-    "name": "List issue creator locations",
-    "description": "",
+    "name": "Collection ranking by prs",
+    "description": "Rank the GitHub repositories in the specified collection according to the number of pull requests. (pop means period over period)",
     "method": "GET",
-    "endpoint": "/repos/issue_creator/locations",
+    "endpoint": "/collections/ranking_by_prs",
     "data_source": {
       "cluster_id": 1379661944642684098
     },
     "params": [
       {
-        "name": "owner",
-        "type": "string",
+        "name": "collection_id",
+        "type": "integer",
         "required": 1,
-        "default": ""
+        "default": "",
+        "description": "The ID of collection"
       },
       {
-        "name": "repo",
+        "name": "period",
         "type": "string",
-        "required": 1,
-        "default": ""
-      },
-      {
-        "name": "from",
-        "type": "string",
-        "required": 1,
-        "default": "2000-01-01"
-      },
-      {
-        "name": "to",
-        "type": "string",
-        "required": 1,
-        "default": "2099-12-31"
+        "required": 0,
+        "default": "past_28_days",
+        "description": "The period of the range",
+        "enum": "past_28_days,past_month"
       }
     ],
     "settings": {
-      "timeout": 10000,
-      "row_limit": 300
+      "timeout": 30000,
+      "row_limit": 1000,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
+      "enable_pagination": 0
     },
-    "tag": "",
+    "tag": "Collections",
     "batch_operation": 0,
-    "sql_file": "sql/GET-repos-issue_creator-locations.sql",
+    "sql_file": "sql/GET-collections-ranking_by_prs.sql",
     "type": "sql_endpoint",
     "return_type": "json"
   },
   {
-    "name": "List stargazers locations",
-    "description": "",
+    "name": "Collection ranking by stars",
+    "description": "It provides counts of new stars, star growth percentages, and ranking changes, reflecting the repositories' popularity and community engagement over time. ",
     "method": "GET",
-    "endpoint": "/repos/stargazer/locations",
+    "endpoint": "/collections/ranking_by_stars",
     "data_source": {
       "cluster_id": 1379661944642684098
     },
     "params": [
       {
-        "name": "owner",
-        "type": "string",
+        "name": "collection_id",
+        "type": "integer",
         "required": 1,
-        "default": ""
+        "default": "",
+        "description": "The ID of collection"
       },
       {
-        "name": "repo",
-        "type": "string",
-        "required": 1,
-        "default": ""
-      },
-      {
-        "name": "from",
+        "name": "period",
         "type": "string",
         "required": 0,
-        "default": "2000-01-01"
-      },
-      {
-        "name": "to",
-        "type": "string",
-        "required": 0,
-        "default": "2099-12-31"
+        "default": "past_28_days",
+        "description": "The period of the range",
+        "enum": "past_28_days,past_month"
       }
     ],
     "settings": {
-      "timeout": 10000,
-      "row_limit": 300
+      "timeout": 30000,
+      "row_limit": 1000,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
+      "enable_pagination": 0
     },
-    "tag": "repositories",
+    "tag": "Collections",
     "batch_operation": 0,
-    "sql_file": "sql/GET-repos-stargazer-locations.sql",
+    "sql_file": "sql/GET-collections-ranking_by_stars.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "List Collection Items",
+    "description": "List Repositories with a Collection by specify collection ID.",
+    "method": "GET",
+    "endpoint": "/collections/repos",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "collection_id",
+        "type": "number",
+        "required": 1,
+        "default": "",
+        "description": "The ID of collection"
+      }
+    ],
+    "settings": {
+      "timeout": 5000,
+      "row_limit": 50,
+      "cache_enabled": 0,
+      "cache_ttl": 0,
+      "enable_pagination": 0
+    },
+    "tag": "Collections",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-collections-repos.sql",
     "type": "sql_endpoint",
     "return_type": "json"
   },
@@ -263,11 +198,1850 @@
     "params": [],
     "settings": {
       "timeout": 5000,
-      "row_limit": 50
+      "row_limit": 50,
+      "cache_enabled": 0,
+      "cache_ttl": 0,
+      "enable_pagination": 0
     },
-    "tag": "",
+    "tag": "Default",
     "batch_operation": 0,
     "sql_file": "sql/GET-hello.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "/orgs/active_repos",
+    "description": "It is designed to fetch the activity ranking of projects under a specific organization on GitHub. Unlike APIs such as /orgs/repos, It calculates an activity metric based on Pull Requests, Commits, and Issues. It then returns the projects in descending order of activity.",
+    "method": "GET",
+    "endpoint": "/orgs/active_repos",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "org_name",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": "On GitHub, the organization name, for example in https://github.com/pingcap/tidb or in pingcap/tidb, is referred to as \"pingcap\"."
+      },
+      {
+        "name": "past_month",
+        "type": "integer",
+        "required": 0,
+        "default": "12",
+        "description": "It is used to evaluate the activity level over the past few months."
+      },
+      {
+        "name": "top_n",
+        "type": "integer",
+        "required": 0,
+        "default": "10",
+        "description": "It is used to define the number of top active  projects that you want to retrieve."
+      }
+    ],
+    "settings": {
+      "timeout": 30000,
+      "row_limit": 1000,
+      "cache_enabled": 0,
+      "cache_ttl": 0,
+      "enable_pagination": 0
+    },
+    "tag": "Default",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-orgs-active_repos.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "/orgs/repos",
+    "description": "List the repositories owned by the specified organization.",
+    "method": "GET",
+    "endpoint": "/orgs/repos",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "org_name",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": "The name of the organization"
+      },
+      {
+        "name": "sort",
+        "type": "string",
+        "required": 0,
+        "default": "stars-desc",
+        "description": "",
+        "enum": "repo_name-asc,stars-desc,created_at-asc,forks-desc"
+      }
+    ],
+    "settings": {
+      "timeout": 30000,
+      "row_limit": 1000,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
+      "enable_pagination": 1
+    },
+    "tag": "Default",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-orgs-repos.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "/repos/commits/monthly",
+    "description": "Retrieve monthly counts of pushes and commits for a specific repository.",
+    "method": "GET",
+    "endpoint": "/repos/commits/monthly",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "owner",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": "The owner of the repo, for example: pingcap"
+      },
+      {
+        "name": "repo",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": "The name of the repo, for example: tidb"
+      }
+    ],
+    "settings": {
+      "timeout": 30000,
+      "row_limit": 1000,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
+      "enable_pagination": 0
+    },
+    "tag": "Commits",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-repos-commits-monthly.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "/repos/commits/time_distribution",
+    "description": "Retrieve a weekly and hourly distribution of push events for a specific repository.",
+    "method": "GET",
+    "endpoint": "/repos/commits/time_distribution",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "owner",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "repo",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "from",
+        "type": "string",
+        "required": 0,
+        "default": "2000-01-01",
+        "description": ""
+      },
+      {
+        "name": "to",
+        "type": "string",
+        "required": 0,
+        "default": "2099-12-31",
+        "description": ""
+      }
+    ],
+    "settings": {
+      "timeout": 30000,
+      "row_limit": 1000,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
+      "enable_pagination": 0
+    },
+    "tag": "Commits",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-repos-commits-time_distribution.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "List Issue Creators",
+    "description": "List GitHub users who have created issues in a specific repository.The returned data includes the user ID, login, name, total issues created, and the date of the first issue opened. Limits and offsets can be applied for pagination purposes.",
+    "method": "GET",
+    "endpoint": "/repos/issue_creators",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "owner",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": "The owner of the repo."
+      },
+      {
+        "name": "repo",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": "The name of the repo."
+      },
+      {
+        "name": "exclude_bots",
+        "type": "boolean",
+        "required": 0,
+        "default": "true",
+        "description": "Whether to exclude robot accounts (includes GitHub App and normal users whose username matches the pattern, for example: `ti-chi-bot`)."
+      },
+      {
+        "name": "sort",
+        "type": "string",
+        "required": 0,
+        "default": "issues-desc",
+        "description": "Specify the field by which to sort the issue creators list (values with a `-desc` suffix indicate descending sorting)",
+        "enum": "issues,issues-desc,first_issue_opened_at,first_issue_opened_at-desc,login"
+      }
+    ],
+    "settings": {
+      "timeout": 5000,
+      "row_limit": 200,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
+      "enable_pagination": 1
+    },
+    "tag": "Issues",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-repos-issue_creators.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "List Issue Creators Countries",
+    "description": "Provides the count and percentage of issue creators from each country, filtering data within a specified time range. Additionally, the API has an option to exclude issue creators from unspecified or unknown countries, and it returns number of issue creators per country, in descending order.",
+    "method": "GET",
+    "endpoint": "/repos/issue_creators/countries",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "owner",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": "The owner of the repo. For example: `pingcap`"
+      },
+      {
+        "name": "repo",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": "The name of the repo. For example: `tidb`"
+      },
+      {
+        "name": "from",
+        "type": "string",
+        "required": 0,
+        "default": "2000-01-01",
+        "description": "The start date of the range."
+      },
+      {
+        "name": "to",
+        "type": "string",
+        "required": 0,
+        "default": "2099-12-31",
+        "description": "The end date of the range."
+      },
+      {
+        "name": "exclude_unknown",
+        "type": "boolean",
+        "required": 0,
+        "default": "true",
+        "description": "Whether to exclude issue creators with unknown country/region information"
+      }
+    ],
+    "settings": {
+      "timeout": 30000,
+      "row_limit": 300,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
+      "enable_pagination": 0
+    },
+    "tag": "Issue Creators",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-repos-issue_creators-countries.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "Issue Creators History",
+    "description": "Returns the date and the cumulative number of unique users who have opened issues up to the date.\n",
+    "method": "GET",
+    "endpoint": "/repos/issue_creators/history",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "per",
+        "type": "string",
+        "required": 0,
+        "default": "month",
+        "description": "The time interval of the data points",
+        "enum": "day,week,month"
+      },
+      {
+        "name": "owner",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": "The owner of the repo. For example: `pingcap`"
+      },
+      {
+        "name": "repo",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": "The name of the repo. For example: `tidb`"
+      },
+      {
+        "name": "from",
+        "type": "string",
+        "required": 0,
+        "default": "2000-01-01",
+        "description": "The start date of the range"
+      },
+      {
+        "name": "to",
+        "type": "string",
+        "required": 0,
+        "default": "2099-12-31",
+        "description": "The end date of the range"
+      }
+    ],
+    "settings": {
+      "timeout": 10000,
+      "row_limit": 2000,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
+      "enable_pagination": 0
+    },
+    "tag": "Issue Creators",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-repos-issue_creators-history.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "List Issue Creators Orgs",
+    "description": "Counts and calculates the percentage of issue creators from different organizations within a given date range. The API sorts the results by the number of issue creators in descending order.",
+    "method": "GET",
+    "endpoint": "/repos/issue_creators/organizations",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "owner",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": "The owner of the repo. For example: `pingcap`"
+      },
+      {
+        "name": "repo",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": "The name of the repo. For example: `tidb`"
+      },
+      {
+        "name": "from",
+        "type": "string",
+        "required": 0,
+        "default": "2000-01-01",
+        "description": "The start date of the range"
+      },
+      {
+        "name": "to",
+        "type": "string",
+        "required": 0,
+        "default": "2099-12-31",
+        "description": "The end date of the range"
+      },
+      {
+        "name": "exclude_unknown",
+        "type": "boolean",
+        "required": 0,
+        "default": "true",
+        "description": "Whether to exclude issue creators with unknown organization information"
+      }
+    ],
+    "settings": {
+      "timeout": 30000,
+      "row_limit": 300,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
+      "enable_pagination": 0
+    },
+    "tag": "Issue Creators",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-repos-issue_creators-organizations.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "/repos/issues/monthly",
+    "description": "Retrieve monthly counts of opened and closed issues for a specific repository.",
+    "method": "GET",
+    "endpoint": "/repos/issues/monthly",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "owner",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "repo",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "from",
+        "type": "string",
+        "required": 0,
+        "default": "2000-01-01",
+        "description": ""
+      },
+      {
+        "name": "to",
+        "type": "string",
+        "required": 0,
+        "default": "2099-12-31",
+        "description": ""
+      }
+    ],
+    "settings": {
+      "timeout": 30000,
+      "row_limit": 1000,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
+      "enable_pagination": 0
+    },
+    "tag": "Isuses",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-repos-issues-monthly.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "/repos/issues/open_to_closed",
+    "description": "Retrieve monthly issue resolution time percentiles (P0, P25, P50, P75, P100) for a specific repository (Unit: Hours).",
+    "method": "GET",
+    "endpoint": "/repos/issues/open_to_closed",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "owner",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "repo",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "from",
+        "type": "string",
+        "required": 0,
+        "default": "2000-01-01",
+        "description": ""
+      },
+      {
+        "name": "to",
+        "type": "string",
+        "required": 0,
+        "default": "2099-12-31",
+        "description": ""
+      }
+    ],
+    "settings": {
+      "timeout": 30000,
+      "row_limit": 1000,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
+      "enable_pagination": 0
+    },
+    "tag": "Isuses",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-repos-issues-open_to_closed.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "/repos/issues/open_to_first_resp",
+    "description": "Return the p0 - p100 number of the duration between issue opened to first response (comments / closed) (Unit: hours)",
+    "method": "GET",
+    "endpoint": "/repos/issues/open_to_first_responded",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "owner",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "repo",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "from",
+        "type": "string",
+        "required": 0,
+        "default": "2000-01-01",
+        "description": ""
+      },
+      {
+        "name": "to",
+        "type": "string",
+        "required": 0,
+        "default": "2099-12-31",
+        "description": ""
+      }
+    ],
+    "settings": {
+      "timeout": 30000,
+      "row_limit": 1000,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
+      "enable_pagination": 0
+    },
+    "tag": "Isuses",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-repos-issues-open_to_first_responded.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "/repos/issues/overview",
+    "description": "Provides detailed statistics on issue-related activities within a specified GitHub repository. It returns the total count of issues opened, the number of unique users who created issues, the total count of issue comments, and the number of unique users who commented on issues",
+    "method": "GET",
+    "endpoint": "/repos/issues/overview",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "owner",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "repo",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      }
+    ],
+    "settings": {
+      "timeout": 30000,
+      "row_limit": 1000,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
+      "enable_pagination": 0
+    },
+    "tag": "Issues",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-repos-issues-overview.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "/repos/overview",
+    "description": "This API retrieves key engagement metrics for a specific GitHub repository. It returns a snapshot of the repository's activity, including the total number of stars, commits, issues, and unique pull request creators",
+    "method": "GET",
+    "endpoint": "/repos/overview",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "owner",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "repo",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      }
+    ],
+    "settings": {
+      "timeout": 30000,
+      "row_limit": 1000,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
+      "enable_pagination": 0
+    },
+    "tag": "Repository",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-repos-overview.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "/repos/participants/ranking",
+    "description": "Retrieve top GitHub contributors' recent activity statistics for a repository, comparing the past month to the month before.",
+    "method": "GET",
+    "endpoint": "/repos/participants/rank_by_activities",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "owner",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": "The owner of the repo, for example: pingcap"
+      },
+      {
+        "name": "repo",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": "The name of the repo, for example: tidb"
+      },
+      {
+        "name": "period",
+        "type": "string",
+        "required": 0,
+        "default": "past_28_days",
+        "description": "",
+        "enum": "past_month,past_28_days"
+      },
+      {
+        "name": "n",
+        "type": "integer",
+        "required": 0,
+        "default": "50",
+        "description": ""
+      }
+    ],
+    "settings": {
+      "timeout": 30000,
+      "row_limit": 1000,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
+      "enable_pagination": 0
+    },
+    "tag": "Participants",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-repos-participants-rank_by_activities.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "List Pull Request Creators",
+    "description": "Lists users who have created pull requests (Aka. Code contributors)  in a specified GitHub repository. Returns user IDs, logins, names, the number of pull requests made, and the dates of their first opened and first merged pull requests. ",
+    "method": "GET",
+    "endpoint": "/repos/pull_request_creators",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "owner",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": "The owner of the repo."
+      },
+      {
+        "name": "repo",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": "The name of the repo."
+      },
+      {
+        "name": "exclude_bots",
+        "type": "boolean",
+        "required": 0,
+        "default": "true",
+        "description": "Whether to exclude robot accounts (includes GitHub App and normal users whose username matches the pattern, for example: `ti-chi-bot`)."
+      },
+      {
+        "name": "sort",
+        "type": "string",
+        "required": 0,
+        "default": "prs-desc",
+        "description": "Specify the field by which to sort the pull request creators list (values with a `-desc` suffix indicate descending sorting)",
+        "enum": "login,prs,prs-desc,first_pr_opened_at,first_pr_opened_at-desc,first_pr_merged_at,first_pr_merged_at-desc"
+      }
+    ],
+    "settings": {
+      "timeout": 5000,
+      "row_limit": 200,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
+      "enable_pagination": 1
+    },
+    "tag": "Pull Requests",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-repos-pull_request_creators.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "List PR Creators Countries",
+    "description": "List countries/regions of pull request creators for the specified repository during a specified time range.",
+    "method": "GET",
+    "endpoint": "/repos/pull_request_creators/countries",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "owner",
+        "type": "string",
+        "required": 0,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "repo",
+        "type": "string",
+        "required": 0,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "from",
+        "type": "string",
+        "required": 0,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "to",
+        "type": "string",
+        "required": 0,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "exclude_unknown",
+        "type": "string",
+        "required": 0,
+        "default": "",
+        "description": ""
+      }
+    ],
+    "settings": {
+      "timeout": 30000,
+      "row_limit": 300,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
+      "enable_pagination": 0
+    },
+    "tag": "Pull Request Creators",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-repos-pull_request_creators-countries.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "Pull Request Creators History",
+    "description": "Returns cumulative tally of unique pull request creators for a given GitHub repository over a selected time frame (daily, weekly, or monthly).",
+    "method": "GET",
+    "endpoint": "/repos/pull_request_creators/history",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "per",
+        "type": "string",
+        "required": 0,
+        "default": "month",
+        "description": "The time interval of the data points",
+        "enum": "day,week,month"
+      },
+      {
+        "name": "owner",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": "The owner of the repo. For example: `pingcap`"
+      },
+      {
+        "name": "repo",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": "The name of the repo. For example: `tidb`"
+      },
+      {
+        "name": "from",
+        "type": "string",
+        "required": 0,
+        "default": "2000-01-01",
+        "description": "The start date of the range"
+      },
+      {
+        "name": "to",
+        "type": "string",
+        "required": 0,
+        "default": "2099-12-31",
+        "description": "The end date of the range"
+      }
+    ],
+    "settings": {
+      "timeout": 10000,
+      "row_limit": 2000,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
+      "enable_pagination": 0
+    },
+    "tag": "Pull Request Creators",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-repos-pull_request_creators-history.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "List PR Creators Orgs",
+    "description": "It counts the distinct creators associated with each organization and calculates their proportion of the total pull requests within a specified time frame. ",
+    "method": "GET",
+    "endpoint": "/repos/pull_request_creators/organizations",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "owner",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": "The owner of the repo. For example: `pingcap`"
+      },
+      {
+        "name": "repo",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": "The name of the repo. For example: `tidb`"
+      },
+      {
+        "name": "from",
+        "type": "string",
+        "required": 0,
+        "default": "2000-01-01",
+        "description": "The start date of the range"
+      },
+      {
+        "name": "to",
+        "type": "string",
+        "required": 0,
+        "default": "2099-12-31",
+        "description": "The end date of the range"
+      },
+      {
+        "name": "exclude_unknown",
+        "type": "boolean",
+        "required": 0,
+        "default": "true",
+        "description": "Whether to exclude PR creators with unknown organization information"
+      }
+    ],
+    "settings": {
+      "timeout": 30000,
+      "row_limit": 2000,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
+      "enable_pagination": 0
+    },
+    "tag": "Pull Request Creators",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-repos-pull_request_creators-organizations.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "/repos/pull_requests/monthly/loc",
+    "description": "Retrieve monthly pull request activity with additions, deletions, and net changes for a specific repository.",
+    "method": "GET",
+    "endpoint": "/repos/pull_requests/monthly/line_of_changes",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "owner",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "repo",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "from",
+        "type": "string",
+        "required": 0,
+        "default": "2000-01-01",
+        "description": ""
+      },
+      {
+        "name": "to",
+        "type": "string",
+        "required": 0,
+        "default": "2099-12-31",
+        "description": ""
+      }
+    ],
+    "settings": {
+      "timeout": 30000,
+      "row_limit": 1000,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
+      "enable_pagination": 0
+    },
+    "tag": "Pull Requests",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-repos-pull_requests-monthly-line_of_changes.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "/repos/pull_requests/monthly/siz",
+    "description": "Get monthly distribution of pull request sizes (XS, S, M, L, XL, XXL) for a specific repository.",
+    "method": "GET",
+    "endpoint": "/repos/pull_requests/monthly/sizes",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "owner",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": "The owner of the repo. For example: `pingcap`"
+      },
+      {
+        "name": "repo",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": "The name of the repo. For example: `tidb`"
+      },
+      {
+        "name": "from",
+        "type": "string",
+        "required": 0,
+        "default": "2000-01-01",
+        "description": "The start of time range"
+      },
+      {
+        "name": "to",
+        "type": "string",
+        "required": 0,
+        "default": "2099-12-31",
+        "description": "The end of time range"
+      }
+    ],
+    "settings": {
+      "timeout": 30000,
+      "row_limit": 1000,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
+      "enable_pagination": 0
+    },
+    "tag": "Pull Requests",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-repos-pull_requests-monthly-sizes.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "/repos/pull_requests/open_to_mer",
+    "description": "Analyzes GitHub pull request merge times, providing percentiles (0, 25, 50, 75, 100) per month, excluding certain actions and bots.",
+    "method": "GET",
+    "endpoint": "/repos/pull_requests/open_to_merge",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "owner",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "repo",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "from",
+        "type": "string",
+        "required": 0,
+        "default": "2000-01-01",
+        "description": ""
+      },
+      {
+        "name": "to",
+        "type": "string",
+        "required": 0,
+        "default": "2099-12-31",
+        "description": ""
+      },
+      {
+        "name": "exclude_bots",
+        "type": "boolean",
+        "required": 0,
+        "default": "false",
+        "description": "Whether to exclude robot accounts (includes GitHub App and normal users whose username matches the pattern, for example: `ti-chi-bot`)."
+      }
+    ],
+    "settings": {
+      "timeout": 30000,
+      "row_limit": 1000,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
+      "enable_pagination": 0
+    },
+    "tag": "Pull Requests",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-repos-pull_requests-open_to_merge.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "/repos/pull_requests/overview",
+    "description": "Returns the total number of pull requests, the count of unique contributors who opened pull requests, the total number of pull request reviews, and the count of unique reviewers. ",
+    "method": "GET",
+    "endpoint": "/repos/pull_requests/overview",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "owner",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "repo",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": ""
+      }
+    ],
+    "settings": {
+      "timeout": 30000,
+      "row_limit": 1000,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
+      "enable_pagination": 0
+    },
+    "tag": "Pull Requests",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-repos-pull_requests-overview.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "List Stargazers Countries",
+    "description": "Counts the total number of stargazers from each country and calculates their proportion within a given time frame. The API includes an option to exclude stargazers from unspecified or unknown countries, and it orders the results by the count of stargazers per country in descending order.",
+    "method": "GET",
+    "endpoint": "/repos/stargazers/countries",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "owner",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": "The owner of the repo. For example: `pingcap`"
+      },
+      {
+        "name": "repo",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": "The name of the repo. For example: `tidb`"
+      },
+      {
+        "name": "from",
+        "type": "string",
+        "required": 0,
+        "default": "2000-01-01",
+        "description": "The start date of the range"
+      },
+      {
+        "name": "to",
+        "type": "string",
+        "required": 0,
+        "default": "2099-12-31",
+        "description": "The end date of the range"
+      },
+      {
+        "name": "exclude_unknown",
+        "type": "boolean",
+        "required": 0,
+        "default": "true",
+        "description": "Whether to exclude issue creators with unknown country/region information"
+      }
+    ],
+    "settings": {
+      "timeout": 30000,
+      "row_limit": 300,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
+      "enable_pagination": 0
+    },
+    "tag": "Stargazers",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-repos-stargazers-countries.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "Stargazers History",
+    "description": "Returns the date and the cumulative number of unique users who have starred the repository up to that date, within the defined date range.",
+    "method": "GET",
+    "endpoint": "/repos/stargazers/history",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "per",
+        "type": "string",
+        "required": 0,
+        "default": "month",
+        "description": "The time interval of the data points",
+        "enum": "day,week,month"
+      },
+      {
+        "name": "owner",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": "The owner of the repo. For example: `pingcap`"
+      },
+      {
+        "name": "repo",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": "The name of the repo. For example: `tidb`"
+      },
+      {
+        "name": "from",
+        "type": "string",
+        "required": 0,
+        "default": "2000-01-01",
+        "description": "The start date of the range"
+      },
+      {
+        "name": "to",
+        "type": "string",
+        "required": 0,
+        "default": "2099-12-31",
+        "description": "The end date of the range"
+      }
+    ],
+    "settings": {
+      "timeout": 30000,
+      "row_limit": 2000,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
+      "enable_pagination": 0
+    },
+    "tag": "Stargazers",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-repos-stargazers-history.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "List Stargazers Orgs",
+    "description": "Returns the count and percentage of stargazers from each organization within a specified date range.  ranks the results by the number of stargazers in descending order.",
+    "method": "GET",
+    "endpoint": "/repos/stargazers/organizations",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "owner",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": "The owner of the repo. For example: `pingcap`"
+      },
+      {
+        "name": "repo",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": "The name of the repo. For example: `tidb`"
+      },
+      {
+        "name": "from",
+        "type": "string",
+        "required": 0,
+        "default": "2000-01-01",
+        "description": "The start date of the range"
+      },
+      {
+        "name": "to",
+        "type": "string",
+        "required": 0,
+        "default": "2099-12-31",
+        "description": "The end date of the range"
+      },
+      {
+        "name": "exclude_unknown",
+        "type": "boolean",
+        "required": 0,
+        "default": "true",
+        "description": "Whether to exclude stargazers with unknown organization information"
+      }
+    ],
+    "settings": {
+      "timeout": 30000,
+      "row_limit": 300,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
+      "enable_pagination": 0
+    },
+    "tag": "Stargazers",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-repos-stargazers-organizations.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "Trending Repos",
+    "description": "Retrieve trending GitHub repositories filtered by a specific language and time period, including repository details and associated collection names (contributor_logins is a comma-separated string).",
+    "method": "GET",
+    "endpoint": "/trends/repos",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "language",
+        "type": "string",
+        "required": 0,
+        "default": "All",
+        "description": "Specify using which programming language to filter trending repos. If not specified, all languages will be included",
+        "enum": "All,JavaScript,Java,Python,PHP,C++,C#,TypeScript,Shell,C,Ruby,Rust,Go,Kotlin,HCL,PowerShell,CMake,Groovy,PLpgSQL,TSQL,Dart,Swift,HTML,CSS,Elixir,Haskell,Solidity,Assembly,R,Scala,Julia,Lua,Clojure,Erlang,Common Lisp,Emacs Lisp,OCaml,MATLAB,Objective-C,Perl,Fortran"
+      },
+      {
+        "name": "period",
+        "type": "string",
+        "required": 0,
+        "default": "past_week",
+        "description": "Specify the period of time to calculate trending repos",
+        "enum": "past_24_hours,past_week,past_month,past_3_months"
+      }
+    ],
+    "settings": {
+      "timeout": 30000,
+      "row_limit": 100,
+      "cache_enabled": 0,
+      "cache_ttl": 0,
+      "enable_pagination": 0
+    },
+    "tag": "Trends",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-trends-repos.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "/users/commits/monthly",
+    "description": "Retrieve a monthly summary of a GitHub user's pushed commits in the specified time range. ",
+    "method": "GET",
+    "endpoint": "/users/commits/monthly",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "username",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": "Username of the GitHub user, for example: ngaut"
+      },
+      {
+        "name": "from",
+        "type": "string",
+        "required": 0,
+        "default": "2000-01-01",
+        "description": "The start of time range"
+      },
+      {
+        "name": "to",
+        "type": "string",
+        "required": 0,
+        "default": "2099-12-31",
+        "description": "The end of time range"
+      }
+    ],
+    "settings": {
+      "timeout": 15000,
+      "row_limit": 1000,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
+      "enable_pagination": 0
+    },
+    "tag": "Users",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-users-commits-monthly.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "/users/contributions/hourly/repo",
+    "description": "Retrieve the count of activities (pull requests, issues, issue comments, reviews, review comments, pushes) by a GitHub user in different repositories, grouped by repository and event period. ",
+    "method": "GET",
+    "endpoint": "/users/contributions/hourly/repo",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "username",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": "Username of the GitHub user, for example: ngaut"
+      },
+      {
+        "name": "from",
+        "type": "string",
+        "required": 0,
+        "default": "2000-01-01",
+        "description": "The start of time range"
+      },
+      {
+        "name": "to",
+        "type": "string",
+        "required": 0,
+        "default": "2099-12-31",
+        "description": "The end of time range"
+      }
+    ],
+    "settings": {
+      "timeout": 15000,
+      "row_limit": 1000,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
+      "enable_pagination": 0
+    },
+    "tag": "Users",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-users-contributions-hourly-repo.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "/users/contributions/monthly/typ",
+    "description": "Retrieve a summary of a GitHub user's monthly contributions (pull requests, issues, issue comments, reviews, review comments, pushes) categorized by contribution type in the specified time range. ",
+    "method": "GET",
+    "endpoint": "/users/contributions/monthly/types",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "username",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": "Username of the GitHub user, for example: ngaut"
+      },
+      {
+        "name": "from",
+        "type": "string",
+        "required": 0,
+        "default": "2000-01-01",
+        "description": "The start of time range"
+      },
+      {
+        "name": "to",
+        "type": "string",
+        "required": 0,
+        "default": "2099-12-31",
+        "description": "The end of time range"
+      }
+    ],
+    "settings": {
+      "timeout": 15000,
+      "row_limit": 1000,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
+      "enable_pagination": 0
+    },
+    "tag": "Users",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-users-contributions-monthly-types.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "/users/contributions/time_dist",
+    "description": "Retrieve a weekly and hourly distribution of a GitHub user's contributions (pull requests, issues, issue comments, reviews, review comments, pushes) in the specified time range. ",
+    "method": "GET",
+    "endpoint": "/users/contributions/time_distribution",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "username",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": "Username of the GitHub user, for example: ngaut"
+      },
+      {
+        "name": "type",
+        "type": "string",
+        "required": 0,
+        "default": "all",
+        "description": "",
+        "enum": "all,issues,issue_comments,pull_requests,reviews,review_comments,pushes"
+      },
+      {
+        "name": "from",
+        "type": "string",
+        "required": 0,
+        "default": "2000-01-01",
+        "description": "The start of time range"
+      },
+      {
+        "name": "to",
+        "type": "string",
+        "required": 0,
+        "default": "2099-12-31",
+        "description": "The end of time range"
+      }
+    ],
+    "settings": {
+      "timeout": 15000,
+      "row_limit": 1000,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
+      "enable_pagination": 0
+    },
+    "tag": "Users",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-users-contributions-time_distribution.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "/users/followers/ranking",
+    "description": "It ranks GitHub users by their number of followers. It orders the results in descending order and limits the output to a specified number of top users, defined by the variable top_n.",
+    "method": "GET",
+    "endpoint": "/users/followers/ranking",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "top_n",
+        "type": "integer",
+        "required": 0,
+        "default": "10",
+        "description": "It is used to define the number of top users that you want to retrieve."
+      }
+    ],
+    "settings": {
+      "timeout": 30000,
+      "row_limit": 1000,
+      "cache_enabled": 0,
+      "cache_ttl": 0,
+      "enable_pagination": 0
+    },
+    "tag": "Default",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-users-followers-ranking.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "/users/issues/monthly",
+    "description": "Retrieve a monthly summary of a GitHub user's opened issues and issue comments in the specified time range.",
+    "method": "GET",
+    "endpoint": "/users/issues/monthly",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "username",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": "Username of the GitHub user, for example: ngaut"
+      },
+      {
+        "name": "from",
+        "type": "string",
+        "required": 0,
+        "default": "2000-01-01",
+        "description": "The start of time range"
+      },
+      {
+        "name": "to",
+        "type": "string",
+        "required": 0,
+        "default": "2099-12-31",
+        "description": "The end of time range"
+      }
+    ],
+    "settings": {
+      "timeout": 15000,
+      "row_limit": 1000,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
+      "enable_pagination": 0
+    },
+    "tag": "Users",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-users-issues-monthly.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "/users/overview",
+    "description": "Retrieve a summary of a GitHub user's activity and contributions, including their repositories, stars, contributions, issues, pull requests, code reviews, and code changes (additions and deletions).",
+    "method": "GET",
+    "endpoint": "/users/overview",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "username",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": "Username of the GitHub user, for example: ngaut"
+      },
+      {
+        "name": "from",
+        "type": "string",
+        "required": 0,
+        "default": "2000-01-01",
+        "description": "The start of time range"
+      },
+      {
+        "name": "to",
+        "type": "string",
+        "required": 0,
+        "default": "2099-12-31",
+        "description": "The end of time range"
+      }
+    ],
+    "settings": {
+      "timeout": 15000,
+      "row_limit": 1000,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
+      "enable_pagination": 0
+    },
+    "tag": "Users",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-users-overview.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "/users/pull_requests/monthly/act",
+    "description": "Retrieve a monthly summary of a GitHub user's opened and merged pull requests in the specified time range. ",
+    "method": "GET",
+    "endpoint": "/users/pull_requests/monthly/actions",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "username",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": "Username of the GitHub user, for example: ngaut"
+      },
+      {
+        "name": "from",
+        "type": "string",
+        "required": 0,
+        "default": "2000-01-01",
+        "description": "The start of time range"
+      },
+      {
+        "name": "to",
+        "type": "string",
+        "required": 0,
+        "default": "2099-12-31",
+        "description": "The end of time range"
+      }
+    ],
+    "settings": {
+      "timeout": 15000,
+      "row_limit": 1000,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
+      "enable_pagination": 0
+    },
+    "tag": "Users",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-users-pull_requests-monthly-actions.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "/users/pull_requests/monthly/loc",
+    "description": "Retrieve a monthly summary of a GitHub user's opened and merged pull requests in the specified time range. ",
+    "method": "GET",
+    "endpoint": "/users/pull_requests/monthly/line_of_changes",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "username",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": "Username of the GitHub user, for example: ngaut"
+      },
+      {
+        "name": "from",
+        "type": "string",
+        "required": 0,
+        "default": "2000-01-01",
+        "description": "The start of time range"
+      },
+      {
+        "name": "to",
+        "type": "string",
+        "required": 0,
+        "default": "2099-12-31",
+        "description": "The end of time range"
+      }
+    ],
+    "settings": {
+      "timeout": 15000,
+      "row_limit": 1000,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
+      "enable_pagination": 0
+    },
+    "tag": "Users",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-users-pull_requests-monthly-line_of_changes.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "/users/pull_requests/monthly/siz",
+    "description": "Retrieve a monthly summary of a GitHub user's opened and merged pull requests in the specified time range.",
+    "method": "GET",
+    "endpoint": "/users/pull_requests/monthly/sizes",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "username",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": "Username of the GitHub user, for example: ngaut"
+      },
+      {
+        "name": "from",
+        "type": "string",
+        "required": 0,
+        "default": "2000-01-01",
+        "description": "The start of time range"
+      },
+      {
+        "name": "to",
+        "type": "string",
+        "required": 0,
+        "default": "2099-12-31",
+        "description": "The end of time range"
+      }
+    ],
+    "settings": {
+      "timeout": 15000,
+      "row_limit": 1000,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
+      "enable_pagination": 0
+    },
+    "tag": "Users",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-users-pull_requests-monthly-sizes.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "/users/pull_requests/languages",
+    "description": "Retrieve the count and percentage of a GitHub user's opened pull requests in different programming languages. ",
+    "method": "GET",
+    "endpoint": "/users/pull_requests/used_languages",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "username",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": "Username of the GitHub user, for example: ngaut"
+      },
+      {
+        "name": "from",
+        "type": "string",
+        "required": 0,
+        "default": "2000-01-01",
+        "description": "The start of time range"
+      },
+      {
+        "name": "to",
+        "type": "string",
+        "required": 0,
+        "default": "2099-12-31",
+        "description": "The end of time range"
+      }
+    ],
+    "settings": {
+      "timeout": 15000,
+      "row_limit": 1000,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
+      "enable_pagination": 0
+    },
+    "tag": "Users",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-users-pull_requests-used_languages.sql",
+    "type": "sql_endpoint",
+    "return_type": "json"
+  },
+  {
+    "name": "/users/stars/monthly",
+    "description": "Retrieve a monthly count of repositories starred by a GitHub user in the specified time range. ",
+    "method": "GET",
+    "endpoint": "/users/stars/monthly",
+    "data_source": {
+      "cluster_id": 1379661944642684098
+    },
+    "params": [
+      {
+        "name": "username",
+        "type": "string",
+        "required": 1,
+        "default": "",
+        "description": "Username of the GitHub user, for example: ngaut"
+      },
+      {
+        "name": "from",
+        "type": "string",
+        "required": 0,
+        "default": "2000-01-01",
+        "description": "The start of time range"
+      },
+      {
+        "name": "to",
+        "type": "string",
+        "required": 0,
+        "default": "2099-12-31",
+        "description": "The end of time range"
+      }
+    ],
+    "settings": {
+      "timeout": 15000,
+      "row_limit": 1000,
+      "cache_enabled": 1,
+      "cache_ttl": 600,
+      "enable_pagination": 0
+    },
+    "tag": "Users",
+    "batch_operation": 0,
+    "sql_file": "sql/GET-users-stars-monthly.sql",
     "type": "sql_endpoint",
     "return_type": "json"
   }

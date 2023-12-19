@@ -29,9 +29,11 @@ items:
   - tinacms/tinacms
   - sveltejs/kit
   - metalsmith/metalsmith
-  - react-static/react-static
   - rust-lang/mdBook
   - gridsome/gridsome
   - sphinx-doc/sphinx
   - cecilapp/cecil
   - evidence-dev/evidence
+  - vuejs/vitepress
+  - shuding/nextra
+  - squidfunk/mkdocs-material

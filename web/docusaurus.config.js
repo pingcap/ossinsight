@@ -232,9 +232,9 @@ const config = {
         respectPrefersColorScheme: false,
       },
       announcementBar: {
-        id: 'announcement-20230703',
+        id: 'announcement-20230821',
         content:
-          '📢 Own your data and get embeddable hand-drawn style widgets in 10 minutes, <a target="_blank" href="https://github.com/pingcap/ossinsight-lite" style="font-weight:bold">Go to build !</a>',
+          '<a target="_blank" href="https://next.ossinsight.io/widgets" style="font-weight:bold">✨ Spark Your GitHub Magic: Customize and Share with Your Personalized Widgets!</a>',
         backgroundColor: '#4C33B1',
         textColor: '#ffffff',
         isCloseable: true,
@@ -273,6 +273,7 @@ const config = {
           },
           { to: '/blog', label: 'Blog', position: 'left' },
           { to: '/docs/api', label: 'API', position: 'left' },
+          { to: 'https://next.ossinsight.io/widgets', label: 'Widgets', position: 'left', target: '_self' },
           /* {
             type: 'dropdown',
             label: 'Workshop',
@@ -304,7 +305,7 @@ const config = {
               { label: 'About OSS Insight', to: '/docs/about' },
               {
                 label: 'About TiDB Cloud',
-                to: 'https://en.pingcap.com/tidb-cloud?utm_source=ossinsight&utm_medium=referral'
+                to: 'https://www.pingcap.com/tidb-serverless?utm_source=ossinsight&utm_medium=referral'
               },
               { label: 'How do we implement OSS Insight?', to: '/blog/why-we-choose-tidb-to-support-ossinsight' },
               /* { label: 'Database Stats', to: '/stats' }, */
@@ -387,7 +388,7 @@ const config = {
             items: [
               {
                 label: 'TiDB Cloud',
-                href: 'https://en.pingcap.com/tidb-cloud?utm_source=ossinsight&utm_medium=referral',
+                href: 'https://www.pingcap.com/tidb-serverless?utm_source=ossinsight&utm_medium=referral',
               },
             ],
           },
@@ -444,7 +445,7 @@ const config = {
         logo: {
           alt: 'TiDB Cloud Logo',
           src: '/img/tidb-cloud-logo-o.png',
-          href: 'https://en.pingcap.com/tidb-cloud/?utm_source=ossinsight&utm_medium=referral',
+          href: 'https://www.pingcap.com/tidb-serverless/?utm_source=ossinsight&utm_medium=referral',
           width: 200,
         },
         copyright: `Copyright &copy; ${new Date().getFullYear()} <a href="https://en.pingcap.com" target="_blank">PingCAP</a>. All Rights Reserved | <a href="https://en.pingcap.com/privacy-policy/" target="_blank">Privacy</a>`,

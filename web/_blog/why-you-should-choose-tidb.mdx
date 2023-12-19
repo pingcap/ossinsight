@@ -188,16 +188,16 @@ This map shows you where the PR creators come from and which countries or region
 From the perspective of geographical distribution, people who contributed to TiDB can also measure the repository's popularity and diversity in all open source database repos. We can see that TiDB is an active, inclusive, and international open source project in this map.
 
 <CommonChart
-  chart='worldmapchart'
-  category='pull-request-creators-map'
-  formatSql={false}
-  categoryIndex='country_or_area'
-  valueIndex='count'
-  seriesName='PR creators'
-  effect={false}
-  size={56}
-  repoId={tidbGroup}
-  comparing
+    chart='worldmapchart'
+    category='analyze-pull-request-creators-map'
+    formatSql={false}
+    categoryIndex='country_or_area'
+    valueIndex='pr_creators'
+    seriesName='PR creators'
+    effect={false}
+    size={56}
+    repoId={tidbGroup}
+    comparing
 />
 
 #### Heat Map of Commits Time about PRs
@@ -209,14 +209,14 @@ The Heat Maps of Commits Time display the number of push events occurring at a p
 From this heat map, we can see that the vast majority of PRs are committed between 2:00 - 16:00 (UTC) indicating that in addition to the vast majority of Chinese contributors, there are also contributors from different time zones who have contributed to TiDB during working hours.
 
 <CommonChart
-  chart='heatmapchart'
-  category='commits-time-distribution'
-  xIndex='hour'
-  yIndex='dayofweek'
-  valueIndex='pushes'
-  formatSql={false}
-  repoId={tidbGroup}
-  comparing
+    chart='heatmapchart'
+    category='analyze-commits-time-distribution'
+    xIndex='hour'
+    yIndex='dayofweek'
+    valueIndex='pushes'
+    formatSql={false}
+    repoId={tidbGroup}
+    comparing
 />
 
 #### Median time cost from open pull request to close it
@@ -224,14 +224,15 @@ From this heat map, we can see that the vast majority of PRs are committed betwe
 It is unilateral to prove that the repository is active only by the number of submitted PRs. It is also necessary to pay attention to the life cycle of a PR (from open to close) to assist in analyzing the activity and health of open source repos. As you can see from the bar chart below, the PR life cycle length varies widely between repos. On average, hive and ignite take almost 120 days to close a PR, while TiDB, which is also on the list, only takes about 10 days.
 
 <CommonChart
-  chart='barchart'
-  category='rt-osdb-ranking-by-median-pr-open-to-merge'
-  n={20}
-  formatSql={false}
-  categoryIndex='repo_group_name'
-  valueIndex='days'
-  seriesName='Days'
-  categoryType={false}
+    chart='barchart'
+    category='archive/2021/repo-ranking-by-pr-open-to-merge'
+    formatSql={false}
+    categoryIndex='repo_name'
+    valueIndex='days'
+    seriesName='Days'
+    categoryType={false}
+    field='database'
+    n={20}
 />
 
 ### Contributors
@@ -247,11 +248,12 @@ Usually, a non-full-time contributor will contribute no more than 100 PRs in the
 In order to obtain a comprehensive and objective analysis result, we recommend that the total number of contributors and the proportion of contributors be compared together. Contributors who submitted less than 10 PRs in the TiDB repository accounted for 76.8% of total PRs which is 806 contributors. There are more than 300 contributors who submitted more than 10 PRs for TiDB. It can be seen that the research and development resources of TiDB are very sufficient, and the quality of the code can be trusted.
 
 #### The percentage of different types of contributors in total contributors
+
 *All contributors are classified according to the total number of PRs submitted by themselves into <= 10,<= 100,> 100.
 
-<ContributorsCharts type='contributors' percent/>
+<ContributorsCharts type='contributors' field="database" percent/>
 
-<ContributorsCharts type='contributors'/>
+<ContributorsCharts type='contributors' field="database"/>
 
 > by PRs
 
@@ -261,6 +263,6 @@ We can also measure the health of a repository with the percentage of the total 
 #### The percentage of the sum of PRs submitted by different types of contributors in total PRs
 *All contributors are classified according to the total number of PRs submitted by themselves into <= 10,<= 100,> 100.
 
-<ContributorsCharts type='prs' percent/>
+<ContributorsCharts type='prs' percent field="database"/>
 
-<ContributorsCharts type='prs'/>
+<ContributorsCharts type='prs' field="database"/>

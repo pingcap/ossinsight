@@ -1,5 +1,7 @@
 {
   "app_id": "dataapp-JAxpgHQe",
   "app_name": "OSSInsight Public API",
-  "app_type": "dataapi"
+  "app_type": "dataapp",
+  "description": "",
+  "app_version": "1.0.0"
 }

@@ -2,7 +2,6 @@ import {
   CacheBuilder, cacheHitCounter, cacheQueryHistogram,
   CollectionService,
   QueryLoader,
-  QueryParser,
   QueryRunner, shadowTidbQueryCounter, shadowTidbQueryHistogram, shadowTidbWaitConnectionHistogram, tidbQueryCounter,
   TiDBQueryExecutor, tidbQueryHistogram, tidbWaitConnectionHistogram
 } from "@ossinsight/api-server";
@@ -10,12 +9,14 @@ import {Command} from "commander";
 import {CronJob} from 'cron';
 import envSchema from "env-schema";
 import * as http from "http";
-import {createPool, Pool} from "mysql2/promise";
+import {Pool} from "mysql2/promise";
 import {collectDefaultMetrics, Registry} from "prom-client";
 import {AppConfig, PrefetchEnvSchema} from "./env";
+import {JobExecutor} from "./job/executor";
 import {JobGenerator} from "./job/generator";
 import {JobScheduler} from "./job/scheduler";
 import {prefetchQueryCounter, prefetchQueryHistogram, queueWaitsGauge} from "./metrics";
+import {createTiDBPool} from "./utils/db";
 
 const logger = require('./logger');
 
@@ -59,16 +60,12 @@ main().catch((err) => {
 
 async function prefetch(options: Options) {
   // Init tidb connection pool.
-  const pool = await createPool({
-    uri: config.DATABASE_URL
-  });
+  const pool = await createTiDBPool(config.DATABASE_URL);
 
   // Init shadow tidb connection pool.
   let shadowPool: Pool | undefined;
   if (config.SHADOW_DATABASE_URL) {
-    shadowPool = await createPool({
-      uri: config.SHADOW_DATABASE_URL
-    });
+    shadowPool = await createTiDBPool(config.SHADOW_DATABASE_URL);
   }
 
   // Init metrics server.
@@ -112,22 +109,24 @@ async function prefetch(options: Options) {
 
   // Init query runner.
   const queryLoader = new QueryLoader(logger);
-  const queryParser = new QueryParser();
-  const queryRunner = new QueryRunner(queryLoader, queryParser, cacheBuilder, tidbQueryExecutor);
+  const queryRunner = new QueryRunner(logger, cacheBuilder, queryLoader, tidbQueryExecutor, pool);
 
   // Load metadata.
   const queries = await queryLoader.loadQueries();
   const presets = await queryLoader.loadPresets();
   const collections = await collectionService.getCollections();
-  presets.collectionIds = collections.data.map((c) => {
+  presets.collectionIds = collections.data.map((c: any) => {
     return c.id;
   });
 
   // Init job generator.
   const jobGenerator = new JobGenerator(logger, presets, queries);
 
+  // Init job executor.
+  const jobExecutor = new JobExecutor(logger, queryRunner)
+
   // Init job scheduler.
-  const jobScheduler = new JobScheduler(logger, queryRunner);
+  const jobScheduler = new JobScheduler(logger, jobExecutor);
 
   // Convert queries to prefetch jobs.
   Object.entries(queries)

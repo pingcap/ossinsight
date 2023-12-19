@@ -1,4 +1,4 @@
-/// <reference path="../../src/plugins/stats.ts" />
+/// <reference path="../../src/plugins/stats/api-request-recorder.ts" />
 
 import { bootstrapTestDatabase, getTestDatabase, releaseTestDatabase } from '../helpers/db';
 import { bootstrapApp, getTestApp, releaseApp } from '../helpers/app';
@@ -14,7 +14,7 @@ afterAll(releaseTestDatabase)
 test('should insert record', async () => {
   const db = getTestDatabase();
   const app = getTestApp();
-  expect(app.app.accessRecorder).not.toBeUndefined();
+  expect(app.app.apiRequestRecorder).not.toBeUndefined();
 
   // Only http request trigger access logs.
   await app.ioEmit('q', { query: 'events-total' });
@@ -22,15 +22,15 @@ test('should insert record', async () => {
     statusCode: 200,
   });
 
-  (await db.expect('SELECT COUNT(*) as count FROM access_logs')).toMatchObject([
+  (await db.expect('SELECT COUNT(*) as count FROM stats_api_requests')).toMatchObject([
     { count: 0 }
   ]);
 
-  expect(app.app.accessRecorder.empty).toBeTruthy();
-  await app.app.accessRecorder.flush();
-  expect(app.app.accessRecorder.empty).toBeFalsy();
+  expect(app.app.apiRequestRecorder.empty).toBeTruthy();
+  await app.app.apiRequestRecorder.flush();
+  expect(app.app.apiRequestRecorder.empty).toBeFalsy();
 
-  (await db.expect('SELECT COUNT(*) as count FROM access_logs')).toMatchObject([
+  (await db.expect('SELECT COUNT(*) as count FROM stats_api_requests;')).toMatchObject([
     { count: 1 }
   ]);
 })

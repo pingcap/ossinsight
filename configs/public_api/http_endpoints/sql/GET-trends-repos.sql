@@ -1,4 +1,5 @@
 USE gharchive_dev;
+
 WITH repos AS (
   SELECT
     tr.repo_id,
@@ -39,4 +40,5 @@ SELECT
   r.*,
   rc.collection_names
 FROM repos r
-JOIN repo_with_collections rc ON r.repo_id = rc.repo_id
+LEFT JOIN repo_with_collections rc ON r.repo_id = rc.repo_id
+ORDER BY total_score DESC

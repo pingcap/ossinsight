@@ -20,6 +20,7 @@ export interface Question {
   combinedTitle?: string;
   querySQL?: string;
   queryHash?: string;
+  plan?: Record<string, string>[] | null;
   engines?: string[];
   queueName?: QuestionQueueNames;
   queueJobId?: string | null;
@@ -107,4 +108,5 @@ export enum QuestionFeedbackType {
   ErrorEmptyResult = "error-empty-result",
   ErrorSummaryGenerate = "error-summary-generate",
   ErrorUnknown = "error-unknown",
+  ErrorQuestionIsTooLong = "error-question-too-long",
 }

@@ -5,7 +5,7 @@ import {LocationCacheItem, Prisma, PrismaClient} from "@prisma/client";
 import axios, {AxiosInstance} from 'axios';
 import {NominatimProvider} from 'libs/locator/provider/nominatim';
 import {Logger} from "pino";
-import pinyin from 'pinyin';
+import { pinyin } from 'pinyin-pro';
 import 'reflect-metadata';
 
 const ADDRESS_MIN_LENGTH = 5;
@@ -153,7 +153,8 @@ export class Locator {
   private convertToPinYin(address: string): string {
     return address.split(' ').map((part) => {
       return pinyin(part, {
-        style: pinyin.STYLE_NORMAL,
+        toneType: 'none',
+        type: 'array'
       }).join('');
     }).join(' ');
   }
