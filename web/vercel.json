@@ -7,7 +7,11 @@
       "config": { "maxLambdaSize": "50mb" }
     }
   ],
-  "functions": { "api/**/*.js": { "memory": 512 } },
+  "functions": {
+    "api/users/**/*.js": {
+      "maxDuration": 30
+    }
+  },
   "routes": [
     { "src": "/(.*)", "dest": "/$1" }
   ],
