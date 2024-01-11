@@ -1,0 +1,20 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/node",
+      "config": { "maxLambdaSize": "50mb" }
+    }
+  ],
+  "functions": { "api/**/*.js": { "memory": 512 } },
+  "routes": [
+    { "src": "/(.*)", "dest": "/$1" }
+  ],
+  "build": {
+    "scripts": {
+      "install": "npm install -g patch || true && npm install",
+      "build": "npm run build"
+    }
+  }
+}
