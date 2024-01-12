@@ -1,0 +1,69 @@
+id: 10044
+name: Modern Data Stack
+items:
+  # Data Storage
+  - pingcap/tidb
+  - clickhouse/clickhouse
+  - apache/druid
+  - citusdata/citus
+  - greenplum-db/gpdb
+  - trinodb/trino
+  - apache/incubator-doris
+  - StarRocks/starrocks
+  - prestodb/presto
+  - postgres/postgres
+  - duckdb/duckdb
+  - datafuselabs/databend
+  - apache/spark
+  - surrealdb/surrealdb
+  - MaterializeInc/materialize
+  - risingwavelabs/risingwave
+  
+  # Data analytics
+  - metabase/metabase
+  - apache/superset
+  - getredash/redash
+  - pinterest/querybook
+  - jupyter/notebook
+  - PostHog/posthog
+  - plausible/analytics
+
+  # Data Streaming
+  - apache/pulsar
+  - apache/Kafka
+  - apache/flink
+  - apache/beam
+  - redpanda-data/redpanda
+
+  # Stream Processing
+  - bytewax/bytewax
+  - benthosdev/benthos
+
+  # Data transformation
+  - dbt-labs/dbt-core
+
+  # Data catalog
+  - amundsen-io/amundsen
+  - datahub-project/datahub
+
+  # Data integration
+  - airbytehq/airbyte
+  - rudderlabs/rudder-server
+  - jitsucom/jitsu
+  - snowplow/snowplow
+  - apache/nifi
+  
+  # Data orchestration
+  - apache/airflow
+  - prefecthq/prefect
+  - dagster-io/dagster
+  - meltano/meltano
+  - kestra-io/kestra
+  - apache/dolphinscheduler
+  - cloudquery/cloudquery
+  
+  # Data testing
+  - great-expectations/great_expectations
+  - datafold/data-diff
+
+  

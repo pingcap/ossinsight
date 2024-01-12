@@ -1,0 +1,14 @@
+id: 10026
+name: WebAssembly Runtime
+items:
+  - wasmerio/wasmer
+  - bytecodealliance/wasmtime
+  - wasm3/wasm3
+  - WasmEdge/WasmEdge
+  - bytecodealliance/wasm-micro-runtime
+  - lunatic-solutions/lunatic
+  - wasmerio/wasmer-go
+  - tetratelabs/wazero
+  - wasmerio/wasmer-python
+  - AssemblyScript/assemblyscript
+  - oracle/graal

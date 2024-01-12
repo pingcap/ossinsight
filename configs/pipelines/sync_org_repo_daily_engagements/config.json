@@ -1,0 +1,8 @@
+{
+  "name": "sync_org_repo_daily_engagements",
+  "description": "Sync daily engagements for participants in the repositories owned by the organizations",
+  "cron": "0 20 0 * * *",
+  "incremental": {
+    "timeRange": "last_day"
+  }
+}

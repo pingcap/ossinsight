@@ -1,0 +1,18 @@
+private_origins:
+  # Develop.
+  - ^http://localhost:\d+$
+  # Preview.
+  - ^https://pingcap-ossinsight-preview-pr-.+\.surge\.sh$
+  - ^https*://.+\.preview\.app\.github\.dev/*$
+  # Production.
+  - ^https://ossinsight\.io$
+  - ^https://next\.ossinsight\.io$
+  - ^https://live\.ossinsight\.io$
+  # Next
+  - ^https://ossinsight-next\.vercel\.app$
+  - ^https://ossinsight-next-.+-pingcap\.vercel\.app$
+  - ^https://ossinsight-next-ui\.vercel\.app$
+public_origins:
+  # External Users.
+  - ^https://github1s\.com$
+  - ^https://github\.com$

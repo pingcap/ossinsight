@@ -1,0 +1,83 @@
+---
+title: 'How to Learn SQL Easily by Visualizing with ChatGPT'
+description: SQL is a powerful language for managing and analyzing data, but it can be difficult to learn for beginners. That's where ChatGPT comes in.
+date: 2023-03-27
+authors: [pingcap, chatgpt]
+tags: [openai, chatgpt]
+---
+
+SQL is a powerful language for managing and analyzing data, but it can be difficult to learn for beginners. That's where ChatGPT comes in.
+
+ChatGPT is a large language model trained by OpenAI that can help you learn SQL easily by visualizing the key information in a SQL query. In this blog post, we'll show you how to use ChatGPT to visualize SQL queries using pretty ASCII art diagrams.
+Let's start with an example. Suppose we want to find the `top 10 most popular AI projects on GitHub in the last month`. Here's the SQL query that does that:
+
+```sql
+SELECT
+  repo_name,
+  COUNT(*) AS stars
+FROM
+  github_events
+WHERE
+  type = 'WatchEvent'
+  AND created_at > DATE_SUB(NOW(), INTERVAL 1 MONTH)
+  AND repo_name LIKE '%AI%'
+GROUP BY
+  repo_name
+ORDER BY
+  stars DESC
+LIMIT
+  10
+```
+
+Now, let's use ChatGPT to `visualize this SQL query using pretty ASCII art diagrams`. Here's the diagram:
+
+```sql
+          +-------------------+            
+          | What to Retrieve? |    top 10 
+          +-------------------+            
+                  | SELECT               
+                  | repo_name,           
+                  | COUNT(*) AS stars    
+                  v                      
+          +-------------------+            
+          |     From Where?    |    GitHub 
+          +-------------------+            
+                  | FROM                 
+                  | github_events        
+                  v                      
+          +-------------------+            
+          |     Filter By:     |    last month, AI projects, most popular 
+          +-------------------+            
+                  | WHERE                
+                  | type = 'WatchEvent'   
+                  | AND created_at > DATE_SUB(NOW(), INTERVAL 1 MONTH) 
+                  | AND repo_name LIKE '%AI%' 
+                  v                      
+          +-------------------+            
+          |      Group By      |            
+          +-------------------+            
+                  | GROUP BY             
+                  | repo_name            
+                  v                      
+          +-------------------+            
+          |      Order By      |    most popular 
+          +-------------------+            
+                  | ORDER BY             
+                  | stars DESC           
+                  v                      
+          +-------------------+            
+          |     Limit To 10    |    top 10 
+          +-------------------+            
+                  | LIMIT                
+                  | 10                   
+                  v                      
+```
+
+
+This diagram visually shows the flow of the SQL query, from selecting what to retrieve, to filtering, grouping, ordering, and limiting the results. The arrows make it easy to see the relationship between the key information in the question and the corresponding SQL statements.
+
+
+By using ChatGPT to visualize SQL queries with pretty ASCII art diagrams, you can learn SQL easily and quickly. The diagrams help you understand the structure of the SQL query, and make it easy to see how the various statements are related. With practice, you'll be able to write your own SQL queries in no time.
+
+
+In conclusion, if you want to learn SQL easily, try using ChatGPT to visualize SQL queries with pretty ASCII art diagrams. It's a fun and effective way to learn SQL and improve your data management skills.

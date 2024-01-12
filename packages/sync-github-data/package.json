@@ -1,0 +1,47 @@
+{
+  "name": "@ossinsight/sync-github-data",
+  "version": "0.0.1",
+  "description": "A CLI tool for fetching GitHub user/repo data and persist it to the TiDB Serverless cluster.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "rm -rf dist && prisma generate && pnpm run build:ts",
+    "build:ts": "tsc",
+    "watch:ts": "tsc -w",
+    "start": "node dist/index.js",
+    "dev:start": "ts-node -r tsconfig-paths/register src/index.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "@types/async": "^3.2.15",
+    "@types/luxon": "^3.3.0",
+    "@types/node": "^18.16.3",
+    "fastify-tsconfig": "^1.0.1",
+    "pino-pretty": "^9.4.0",
+    "prisma": "^5.3.1",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^4.5.4"
+  },
+  "dependencies": {
+    "@goparrot/geocoder": "^4.4.0",
+    "@prisma/client": "4.13.0",
+    "@sentry/node": "^7.57.0",
+    "async": "^3.2.4",
+    "axios": "^0.27.2",
+    "commander": "^9.4.0",
+    "env-schema": "^5.2.0",
+    "eslint": "^8.27.0",
+    "generic-pool": "^3.9.0",
+    "lru-cache": "^7.13.1",
+    "luxon": "^3.3.0",
+    "mysql2": "^2.3.3",
+    "octokit": "^2.0.10",
+    "pino": "^8.7.0",
+    "pino-sentry-transport": "^1.0.4",
+    "pinyin-pro": "^3.16.6",
+    "reflect-metadata": "^0.1.13",
+    "yaml": "^2.2.2"
+  }
+}

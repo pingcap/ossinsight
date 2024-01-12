@@ -1,0 +1,20 @@
+{
+  "cacheHours": 1,
+  "params": [
+    {
+      "name": "orgs",
+      "replaces": "'pingcap', 'tikv', 'chaos-mesh'",
+      "type": "array",
+      "itemType": "string",
+      "maxLength": 10,
+      "pattern": "^[a-zA-Z0-9][a-zA-Z0-9-\\[\\]]{0,38}$"
+    },
+    {
+      "name": "login",
+      "replaces": "Mini256",
+      "type": "string",
+      "pattern": "^[a-zA-Z0-9][a-zA-Z0-9-\\[\\]]{0,38}$"
+    }
+  ]
+}
+

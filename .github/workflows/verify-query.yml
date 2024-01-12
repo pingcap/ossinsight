@@ -1,0 +1,53 @@
+name: Verify Query Definition
+
+on:
+  pull_request:
+    paths:
+      - 'configs/queries/**'
+      - 'packages/types/**'
+
+defaults:
+  run:
+    shell: bash
+    working-directory: packages/types
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: v18.12.0
+
+      - uses: pnpm/action-setup@v2.1.0
+        name: Install pnpm
+        id: pnpm-install
+        with:
+          version: 8.6.0
+          run_install: false
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - uses: actions/cache@v3
+        name: Setup pnpm cache
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('./pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+
+      - name: Install Dependencies
+        run: pnpm i --frozen-lockfile --strict-peer-dependencies
+
+      - name: Verify Query Definition
+        run: pnpm run validate:query

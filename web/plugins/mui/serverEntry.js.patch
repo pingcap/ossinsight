@@ -1,0 +1,51 @@
+--- node_modules/@docusaurus/core/lib/client/serverEntry.js	2022-11-01 00:37:47.000000000 +0800
++++ plugins/mui/serverEntry.js	2022-11-01 01:08:21.000000000 +0800
+@@ -17,9 +17,12 @@
+ import { getBundles } from 'react-loadable-ssr-addon-v5-slorber';
+ import Loadable from 'react-loadable';
+ import { minify } from 'html-minifier-terser';
+-import preload from './preload';
+-import App from './App';
+-import { createStatefulLinksCollector, LinksCollectorProvider, } from './LinksCollector';
++import preload from '@docusaurus/core/lib/client/preload';
++import App from '@docusaurus/core/lib/client/App';
++import { createStatefulLinksCollector, LinksCollectorProvider, } from '@docusaurus/core/lib/client/LinksCollector';
++import createCache from "@emotion/cache";
++import createEmotionServer from "@emotion/server/create-instance";
++import {CacheProvider} from "@emotion/react";
+ const getCompiledSSRTemplate = _.memoize((template) => eta.compile(template.trim(), {
+     rmWhitespace: true,
+ }));
+@@ -56,17 +59,24 @@
+     const routerContext = {};
+     const helmetContext = {};
+     const linksCollector = createStatefulLinksCollector();
++    const cache = createCache({ key: 'css' })
++    const { extractCriticalToChunks, constructStyleTagsFromChunks } = createEmotionServer(cache)
+     const appHtml = ReactDOMServer.renderToString(
+     // @ts-expect-error: we are migrating away from react-loadable anyways
+     <Loadable.Capture report={(moduleName) => modules.add(moduleName)}>
+       <HelmetProvider context={helmetContext}>
+         <StaticRouter location={location} context={routerContext}>
+           <LinksCollectorProvider linksCollector={linksCollector}>
++            <CacheProvider value={cache}>
+             <App />
++            </CacheProvider>
+           </LinksCollectorProvider>
+         </StaticRouter>
+       </HelmetProvider>
+     </Loadable.Capture>);
++    const emotionChunks = extractCriticalToChunks(appHtml);
++    const emotionCss = constructStyleTagsFromChunks(emotionChunks);
++
+     onLinksCollected(location, linksCollector.getCollectedLinks());
+     const { helmet } = helmetContext;
+     const htmlAttributes = helmet.htmlAttributes.toString();
+@@ -76,6 +86,7 @@
+         helmet.meta.toString(),
+         helmet.link.toString(),
+         helmet.script.toString(),
++        emotionCss,
+     ];
+     onHeadTagsCollected(location, helmet);
+     const metaAttributes = metaStrings.filter(Boolean);

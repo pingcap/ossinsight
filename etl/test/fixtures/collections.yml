@@ -1,0 +1,22 @@
+# == Schema Information
+#
+# Table name: collections
+#
+#  id     :bigint           not null, primary key
+#  name   :string(255)      not null
+#  public :boolean          default(TRUE)
+#
+# Indexes
+#
+#  index_collections_on_name  (name) UNIQUE
+#
+
+# This model initially had no columns defined. If you add columns to the
+# model remove the '{}' from the fixture names and add the columns immediately
+# below each fixture, per the syntax in the comments below
+#
+one: {}
+# column: value
+#
+two: {}
+# column: value

@@ -1,0 +1,25 @@
+{
+  // This file is not used in compilation. It is here just for a nice editor experience.
+  "extends": "@tsconfig/docusaurus/tsconfig.json",
+  "compilerOptions": {
+    "target": "esnext",
+    "moduleResolution": "node",
+    "module": "esnext",
+    "lib": ["dom","esnext"],
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "strictNullChecks": true,
+    "types": [
+      "./types/ossinsight"
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "@query/*": ["../configs/queries/*"],
+      "@site/*": ["./*"],
+      "@docusaurus/theme-common/*": ["./node_modules/@docusaurus/theme-common/lib/*"]
+    }
+  },
+  "exclude": [
+    "./plugins/**/*.ts"
+  ],
+}

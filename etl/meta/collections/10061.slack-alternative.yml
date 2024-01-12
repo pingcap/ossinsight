@@ -1,0 +1,14 @@
+id: 10061
+name: Slack Alternative
+items:
+  - zulip/zulip
+  - revoltchat/backend
+  - RocketChat/Rocket.Chat
+  - mattermost/mattermost-server
+  - wireapp/wire-server
+  - linagora/Twake
+  - vector-im/element-web
+  - sdelements/lets-chat
+  - matrix-org/synapse
+  - fosscord/fosscord
+  - Linen-dev/linen.dev

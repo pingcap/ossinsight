@@ -1,0 +1,63 @@
+version: '3.9'
+
+# tiup playground v6.4.0 -T ossinsight --without-monitor --db.host 0.0.0.0 --tiflash 1
+
+services:
+  etl:
+    build:
+      context: ./etl
+      dockerfile: ./Dockerfile
+      args:
+        BUNDLE_WITHOUT: ''
+        EXECJS_RUNTIME: 'Node'
+        RAILS_ENV: 'development'
+        RAILS_SERVE_STATIC_FILES: 'false'
+    tty: true
+    stdin_open: true
+    image: ossinsight/ossinsight-etl:latest
+    restart: always
+    command: ["./start.sh"]
+    environment:
+      - NODE_ENV=development
+      - RAILS_ENV=development
+      - DATABASE_URL=${ETL_DATABASE_URL:?err}
+      - GITHUB_TOKEN=${GITHUB_TOKEN:?err}
+      - SKIP_REPLICA=1
+      - DB_FORCE_SSL=${DB_FORCE_SSL:-true}
+
+  api:
+    build:
+      context: .
+      dockerfile: ./packages/api-server/Dockerfile
+      args:
+        NODE_ENV: 'development'
+    image: ossinsight/ossinsight-api:latest
+    restart: always
+    ports: 
+      - "3450:3450"
+    depends_on: 
+      etl:
+        condition: service_started
+    environment:
+      - DATABASE_URL=${API_DATABASE_URL:?err}
+      - SERVER_PORT=3450
+      - GITHUB_ACCESS_TOKENS=${GITHUB_TOKEN:?err}
+      - ENABLE_CACHE=${ENABLE_CACHE:-false}
+
+  web:
+    image: ossinsight/ossinsight-web:latest
+    restart: always
+    build:
+      context: .
+      dockerfile: ./web/Dockerfile
+      args:
+        NODE_ENV: 'development'
+    ports: 
+      - "30000:30000"
+    environment:
+      - NODE_ENV=development
+      - APP_HOST=${APP_HOST:-http://localhost:30000}
+      - APP_API_BASE=${APP_API_BASE:-http://localhost:3450}
+
+networks:
+  default:

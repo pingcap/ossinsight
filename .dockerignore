@@ -1,0 +1,14 @@
+.DS_Store
+.git
+.gitignore
+node_modules
+yarn-error.log
+.env.local
+.env
+.docusaurus
+.prefetch
+.run
+
+api/
+
+etl/

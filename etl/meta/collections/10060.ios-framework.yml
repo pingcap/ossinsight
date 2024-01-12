@@ -1,0 +1,14 @@
+id: 10060
+name: iOS Framework
+items:
+  - jverkoey/nimbus
+  - google/promises
+  - ChenYilong/CYLTabBarController
+  - hackers-painters/samurai-native
+  - texturegroup/texture/
+  - Tencent/QMUI_iOS
+  - XuYang8026/UniversalProject
+  - wujunyang/MobileProject
+  - ReactiveCocoa/ReactiveCocoa
+  - steipete/Aspects
+  - Instagram/IGListKit

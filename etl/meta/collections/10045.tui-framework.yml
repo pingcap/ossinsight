@@ -1,0 +1,22 @@
+id: 10045
+name: TUI Framework
+items:
+  - charmbracelet/bubbletea
+  - Textualize/rich
+  - Textualize/textual
+  - Textualize/rich-cli
+  - fdehau/tui-rs
+  - charmbracelet/lipgloss
+  - ArthurSonzogni/FTXUI
+  - peterbrittain/asciimatics
+  - gyscos/cursive
+  - pterm/pterm
+  - charmbracelet/bubbles
+  - Shopify/cli-ui
+  - ggerganov/imtui
+  - p-ranav/indicators
+  - s0md3v/huepy
+  - tqdm/tqdm
+  - rivo/tview
+  - mum4k/termdash
+  - piotrmurach/tty

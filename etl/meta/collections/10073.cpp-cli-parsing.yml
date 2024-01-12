@@ -1,0 +1,20 @@
+id: 10073
+name: Cpp CLI Parsing
+items:
+  - adishavit/argh
+  - bfgroup/Lyra
+  - boostorg/program_options
+  - catchorg/Clara
+  - CLIUtils/CLI11
+  - docopt/docopt.cpp
+  - gflags/gflags
+  - gknowles/dimcli
+  - jamolnng/argparse
+  - jarro2783/cxxopts
+  - kamchatka-volcano/cmdlime
+  - kongaskristjan/fire-hpp
+  - lukedeo/option-parser
+  - mmahnic/argumentum
+  - muellan/clipp
+  - p-ranav/argparse
+  - Taywee/args

@@ -1,0 +1,58 @@
+{
+  "labels": ["2019", "2020", "2021", "2022"],
+  
+  "data": [
+    {
+      "name": "JavaScript",
+      "rank": [1, 1, 1, 1]
+    },
+    {
+      "name": "HTML",
+      "rank": [2, 2, 2, 2]
+    },
+    {
+      "name": "Java",
+      "rank": [3, 3, 4, 4]
+    },
+    {
+      "name": "Python",
+      "rank": [4, 4, 3, 3]
+    },
+    {
+      "name": "Jupyter Notebook",
+      "rank": [5, 5, 6, 7]
+    },
+    {
+      "name": "C#",
+      "rank": [6, 7, 8, 8]
+    },
+    {
+      "name": "CSS",
+      "rank": [7, 6, 5, 5]
+    },
+    {
+      "name": "C++",
+      "rank": [8, 9, 10, 9]
+    },
+    {
+      "name": "PHP",
+      "rank": [9, 10, 9, 10]
+    },
+    {
+      "name": "TypeScript",
+      "rank": [10, 8, 7, 6]
+    },
+    {
+      "name": "C",
+      "rank": [11, 12, 11, 11]
+    },
+    {
+      "name": "Ruby",
+      "rank": [12, 11, 12, 17]
+    },
+    {
+      "name": "SCSS",
+      "rank": [39, 22, 19, 19]
+    }
+  ]
+}

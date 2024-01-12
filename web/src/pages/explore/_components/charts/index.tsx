@@ -1,0 +1,125 @@
+import { ChartResult } from '@site/src/api/explorer';
+import React, { createElement, FC, ReactNode, useEffect, useMemo } from 'react';
+import LineChart from './LineChart';
+import BarChart from './BarChart';
+import PieChart from './PieChart';
+import PersonalCard from './PersonalCard';
+import RepoCard from './RepoCard';
+import TableChart from './TableChart';
+import NumberCard from './NumberCard';
+import MapChart from './MapChart';
+import { registerThemeDark } from '@site/src/components/BasicCharts';
+import EmptyDataAlert from '@site/src/pages/explore/_components/charts/EmptyDataAlert';
+import { useValidData } from '@site/src/pages/explore/_components/charts/utils';
+import { isNullish, notNullish } from '@site/src/utils/value';
+import BadDataAlert from '@site/src/pages/explore/_components/charts/BadDataAlert';
+import { unstable_serialize } from 'swr';
+
+registerThemeDark();
+
+type ChartConfig = {
+  Chart: FC<ChartsProps>;
+  requiredFields: string[];
+  optionalFields?: string[];
+  nullableFields?: string[];
+};
+
+interface ChartsProps extends ChartResult {
+  data: Array<Record<string, any>>;
+  fields?: any[];
+  onPrepared?: (error: boolean) => void;
+  onExit?: () => void;
+}
+
+const CHARTS_CONFIG: Record<string, ChartConfig> = {
+  LineChart: {
+    Chart: LineChart,
+    requiredFields: ['x', 'y'],
+    nullableFields: ['y'],
+  },
+  BarChart: {
+    Chart: BarChart,
+    requiredFields: ['x', 'y'],
+    nullableFields: ['y'],
+  },
+  PieChart: {
+    Chart: PieChart,
+    requiredFields: ['value', 'label'],
+  },
+  PersonalCard: {
+    Chart: PersonalCard,
+    requiredFields: ['user_login'],
+  },
+  RepoCard: {
+    Chart: RepoCard,
+    requiredFields: ['repo_name'],
+  },
+  Table: {
+    Chart: TableChart,
+    requiredFields: [],
+  },
+  NumberCard: {
+    Chart: NumberCard,
+    requiredFields: ['value'],
+    optionalFields: ['label'],
+  },
+  MapChart: {
+    Chart: MapChart,
+    requiredFields: ['country_code', 'value'],
+  },
+};
+
+export function Charts ({ onPrepared, onExit, ...props }: ChartsProps) {
+  const { config, fields, nullableFields } = useMemo(() => {
+    const config = CHARTS_CONFIG[props.chartName];
+    const fields = (config?.requiredFields ?? []).map(f => props[f]);
+    const nullableFieldsArray = (config?.nullableFields ?? []).map(f => props[f]);
+    const nullableFields = new Set<string>([].concat(...nullableFieldsArray));
+    return { config, fields, nullableFields };
+  }, [unstable_serialize(props)]);
+
+  const validData = useValidData(props.data, fields, nullableFields);
+
+  let alertNode: ReactNode;
+  let chartNode: ReactNode;
+
+  if (isNullish(config)) {
+    alertNode = <BadDataAlert title={`AI has generated an unknown chart type '${props.chartName}'`} />;
+  }
+
+  if (props.data.length === 0) {
+    alertNode = <EmptyDataAlert />;
+  } else if (validData.length > 0) {
+    if (notNullish(config)) {
+      chartNode = createElement(config.Chart, { ...props, data: validData });
+    }
+  } else {
+    alertNode = <BadDataAlert
+      title={
+      <>
+        Oh no, visualization didn&apos;t work.
+        <br />
+        You can still check your results using the table.
+      </>
+      }
+    />;
+  }
+
+  useEffect(() => {
+    if (props.data.length !== 0 && validData.length === 0) {
+      onPrepared?.(true);
+    } else {
+      onPrepared?.(false);
+    }
+    return () => {
+      onExit?.();
+    };
+  }, [validData.length, props.data.length, onPrepared, onExit]);
+
+  return (
+    <>
+      {alertNode}
+      {chartNode}
+    </>
+  );
+}

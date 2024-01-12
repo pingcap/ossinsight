@@ -1,0 +1,9 @@
+.sidebarFooter {
+  height: 32px;
+  line-height: 32px;
+  position: absolute;
+  bottom: 40px;
+  left: 0;
+  width: calc(100% - 8px);
+  background-color: var(--ifm-background-color);
+}

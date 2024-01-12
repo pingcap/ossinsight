@@ -1,0 +1,8 @@
+{
+  "name": "sync_collection_visits",
+  "description": "None",
+  "cron": "0 0 3 * * *",
+  "incremental": {
+    "timeRange": "last_day"
+  }
+}

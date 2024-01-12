@@ -1,0 +1,26 @@
+id: 10089
+name: Relational Database
+items:
+  - pingcap/tidb
+  - cockroachdb/cockroach
+  - clickhouse/clickhouse
+  - vitessio/vitess
+  - yugabyte/yugabyte-db
+  - citusdata/citus
+  - greenplum-db/gpdb
+  - MariaDB/server
+  - apache/incubator-doris
+  - apache/kylin
+  - StarRocks/starrocks
+  - percona/percona-server
+  - oceanbase/oceanbase
+  - risinglightdb/risinglight
+  - ApsaraDB/galaxysql
+  - ApsaraDB/galaxyengine
+  - singularity-data/risingwave
+  - prestodb/presto
+  - postgres/postgres
+  - duckdb/duckdb
+  - apache/shardingsphere
+  - CUBRID/cubrid
+  - cloudberrydb/cloudberrydb

@@ -1,0 +1,26 @@
+{
+  "cacheHours": 1,
+  "params": [
+    {
+      "name": "repoId",
+      "replaces": "41986369",
+      "type": "array",
+      "itemType": "number",
+      "maxArrayLength": 50,
+      "pattern": "^[1-9]\\d*$"
+    },
+    {
+      "name": "period",
+      "replaces": "AND ge.created_at > DATE_SUB(CURRENT_DATE(), INTERVAL 28 DAY)",
+      "enums": [
+        "last_28_days",
+        "all_times"
+      ],
+      "default": "all_times",
+      "template": {
+        "last_28_days": "AND ge.created_at > DATE_SUB(CURRENT_DATE(), INTERVAL 28 DAY)",
+        "all_times": ""
+      }
+    }
+  ]
+}

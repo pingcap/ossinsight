@@ -1,0 +1,8 @@
+{
+  "name": "sync_org_repo_countries_stargazer_role",
+  "description": "None",
+  "cron": "0 30 1 * * *",
+  "incremental": {
+    "timeRange": "last_day"
+  }
+}

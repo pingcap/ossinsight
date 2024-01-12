@@ -1,0 +1,23 @@
+.sql-hl-keyword {
+  color: rgb(189, 147, 249);
+  font-style: italic;
+}
+
+.sql-hl-function {
+}
+
+.sql-hl-number {
+}
+
+.sql-hl-string {
+  color: rgb(255, 121, 198);
+}
+
+.sql-hl-special {
+}
+
+.sql-hl-bracket {
+}
+
+.sql-hl-clear {
+}

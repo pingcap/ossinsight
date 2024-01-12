@@ -1,0 +1,24 @@
+html,
+body {
+  height: 100%;
+}
+
+.mainWrapper {
+  flex: 1 0 auto;
+}
+
+/* Docusaurus-specific utility class */
+:global(.docusaurus-mt-lg) {
+  margin-top: 3rem;
+}
+
+:global(#__docusaurus) {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+footer {
+  /*noinspection CssUnresolvedCustomProperty*/
+  margin-left: var(--layoutMarginLeft);
+}

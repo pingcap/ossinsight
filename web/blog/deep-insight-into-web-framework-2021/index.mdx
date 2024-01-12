@@ -1,0 +1,146 @@
+---
+title: "Deep Insights into Web Frameworks"
+date: 2022-05-03
+authors: [Jagger]
+tags: [insight]
+image: ./webframework.png
+description: In this chapter, we will share with you some of the top Web Framework repos (WF repos) on GitHub in 2021 measured by different metrics including the number of stars, PRs, contributors, countries, regions and so on.   
+keywords: [Web Framework, tidb, top ranking, github, database, github archive, gitHub metrics]
+---
+
+import {CommonChart} from "../../src/components/CommonChart";
+
+In this chapter, we will share with you some of the **top Web Framework repos (WF repos) on GitHub in 2021** measured by different metrics including the number of stars, PRs, contributors, countries, regions and so on. 
+
+<!--truncate-->
+
+Note: 
+1. You can move your cursor onto any of the repository bars/lines on the chart and get the exact number. 
+2. The SQL commands above each chart are what we use on our TiDB Cloud to get the analytical results. Try those SQL commands by yourselves on TiDB Cloud with [this 10-minute tutorial](/blog/try-it-yourself/).
+
+## Star history of top Web Framework repos since 2011
+
+The number of stars is often thought of as a measure of whether a GitHub repository is popular or not. We sort all web framework repositories from GitHub by the total number of historical stars since 2011. For visualizing the results more intuitively, we show the top 10 open source databases by using an interactive line chart.
+
+<CommonChart
+    chart='dynamic-stars'
+    category='archive/2021/repo-racing-by-stars'
+    formatSql={false}
+    field='web_framework'
+/>
+
+## Top 10 most starred Web Framework repos in 2021
+
+<CommonChart
+    chart='barchart'
+    category='archive/2021/repo-ranking-by-stars-growth'
+    formatSql={false}
+    categoryIndex='repo_name'
+    valueIndex='stars'
+    seriesName='Stars'
+    field='web_framework'
+    n={10}
+/>
+
+
+## Top 10 Web Framework repos with the most PRs in 2021
+
+<CommonChart
+    chart='barchart'
+    category='archive/2021/repo-ranking-by-prs'
+    formatSql={false}
+    categoryIndex='repo_name'
+    valueIndex='prs'
+    seriesName='PRs'
+    field='web_framework'
+    n={10}
+/>
+
+## Top 20 developers contributed the most PRs to Web Framework repos in 2021
+
+<CommonChart
+    chart='barchart'
+    category='archive/2021/repo-pr-creator-ranking-by-prs'
+    formatSql={false}
+    categoryIndex='actor_login'
+    valueIndex='prs'
+    categoryType='owner'
+    seriesName='PRs'
+    field='web_framework'
+    n={20}
+/>
+
+
+## Top 20 Web Framework repos with the highest YoY growth rate of stars in 2021
+
+<CommonChart
+    chart='yoychart'
+    category='archive/2021/repo-ranking-by-yoy-stars-growth'
+    formatSql={false}
+    field='web_framework'
+/>
+
+
+## Top 10 Web Framework repos with the lowest YoY growth rate of stars in 2021
+
+<CommonChart
+    chart='yoychart'
+    category='archive/2021/repo-ranking-by-yoy-stars-growth-least'
+    formatSql={false}
+    field='web_framework'
+/>
+
+## Top 10 most used programming languages in Web Framework repos in 2021
+
+<CommonChart
+    chart='barchart'
+    category='archive/2021/language-ranking-by-prs'
+    formatSql={false}
+    categoryIndex='language'
+    valueIndex='prs'
+    categoryType='lang'
+    seriesName='PRs'
+    field='web_framework'
+/>
+
+## Top 20 companies contributing the most to Web Framework repos in 2021
+
+<CommonChart
+    chart='barchart'
+    category='archive/2021/company-ranking-by-contributions'
+    formatSql={false}
+    categoryIndex='company'
+    valueIndex='contributions'
+    seriesName='Contributions'
+    categoryType={false}
+    field='web_framework'
+    n={20}
+/>
+
+
+## Top 10 countries/regions contributing the most to Web Framework repos in 2021
+
+<CommonChart
+    chart='worldmapchart'
+    category='archive/2021/country-ranking-by-contributions'
+    formatSql={false}
+    categoryIndex='country_code'
+    valueIndex='contributions'
+    seriesName='Contributions'
+    field='web_framework'
+    n={10}
+/>
+
+## The Rankings of Web Framework repos measured by Z-score in 2021
+
+The analytical results displayed above are generated based on just one single metric of these three: stars, PRs, or contributors. Now, we will use the [Z-score](https://en.wikipedia.org/wiki/Standard_score) method to rank the WF repos on GitHub.  
+
+This is the comprehensive ranking calculated by z-score:
+
+<CommonChart
+    chart='zscorechart'
+    category='archive/2021/repo-ranking-by-z-score'
+    formatSql={false}
+    field='web_framework'
+    n={50}
+/>

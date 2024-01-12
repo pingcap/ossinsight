@@ -1,0 +1,28 @@
+{
+  "unit": "%",
+  "x": ["2018", "2019", "2020", "2021", "2022"],
+  "y": 0,
+  "label": 1,
+  "data": [
+    [192.81, "New repos"],
+    [-32.19, "New repos"],
+    [11.96, "New repos"],
+    [322.65, "New repos"],
+    [322.47, "New repos"],
+    [125.71, "New events"],
+    [56.66, "New events"],
+    [42.81, "New events"],
+    [114.92, "New events"],
+    [190.12, "New events"],
+    [-10.59, "New developers"],
+    [-18.86, "New developers"],
+    [27.08, "New developers"],
+    [148.06, "New developers"],
+    [135.77, "New developers"],
+    [7.76, "New stars"],
+    [-15.64, "New stars"],
+    [-3.99, "New stars"],
+    [230.54, "New stars"],
+    [216.19, "New stars"]
+  ]
+}

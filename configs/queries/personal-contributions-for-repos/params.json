@@ -1,0 +1,27 @@
+{
+  "cacheHours": 1,
+  "params": [
+    {
+      "name": "userId",
+      "replaces": "5086433",
+      "pattern": "^[1-9]\\d*$"
+    },
+    {
+      "name": "period",
+      "replaces": "AND (created_at BETWEEN DATE_SUB(NOW(), INTERVAL 1 YEAR) AND NOW())",
+      "enums": [
+        "year_2022",
+        "past_1_year",
+        "past_3_years",
+        "all_times"
+      ],
+      "default": "all_times",
+      "template": {
+        "year_2022":"AND (created_at BETWEEN '2022-01-01' AND '2022-12-31')",
+        "past_1_year": "AND (created_at BETWEEN DATE_SUB(NOW(), INTERVAL 1 YEAR) AND NOW())",
+        "past_3_years": "AND (created_at BETWEEN DATE_SUB(NOW(), INTERVAL 3 YEAR) AND NOW())",
+        "all_times": ""
+      }
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+id: 10043
+name: Go Database
+items:
+  - dgraph-io/badger
+  - kelindar/column
+  - hashicorp/consul
+  - peterbourgon/diskv
+  - etcd-io/etcd
+  - nutsdb/nutsdb
+  - flower-corp/rosedb
+  - flower-corp/lotusdb
+  - allegro/bigcache
+  - boltdb/bolt
+  - tidwall/buntdb
+  - muesli/cache2go
+  - pingcap/tidb
+  - tidwall/tile38
+  - authzed/spicedb
+  - rqlite/rqlite
+  - prometheus/prometheus
+  - nutsdb/nutsdb
+  - ledisdb/ledisdb
+  - influxdata/influxdb
+  - codenotary/immudb
+  - syndtr/goleveldb
+  - hdt3213/godis
+  - patrickmn/go-cache
+  - emitter-io/emitter
+  - dgraph-io/dgraph
+  - cockroachdb/cockroach
+  - uber/aresdb
+  - FerretDB/FerretDB
+  - polarsignals/frostdb
+  - milvus-io/milvus

@@ -1,0 +1,39 @@
+id: 10031
+name: Web3
+items:
+  - ethereum/go-ethereum
+  - OpenZeppelin/openzeppelin-contracts
+  - ethereum/solidity
+  - trufflesuite/truffle
+  - lbryio/lbry-sdk
+  - monero-project/monero
+  - paritytech/substrate
+  - paritytech/polkadot
+  - polkadot-js/apps
+  - ChainSafe/web3.js
+  - scaffold-eth/scaffold-eth
+  - openethereum/parity-ethereum
+  - ethers-io/ethers.js
+  - trufflesuite/ganache-ui
+  - evmos/evmos
+  - ethereum/web3.py
+  - ethereum/remix-project
+  - MetaMask/metamask-extension
+  - starkware-libs/cairo-lang
+  - matter-labs/zksync
+  - ethereum-optimism/optimism
+  - solana-labs/solana
+  - terra-money/core
+  - iotexproject/iotex-core
+  - celo-org/celo-blockchain
+  - cosmos/cosmos-sdk
+  - cosmos/cosmos
+  - Uniswap/interface
+  - Uniswap/v3-core
+  - compound-finance/compound-protocol
+  - aave/lens-protocol
+  - ProjectOpenSea/opensea-js
+  - aptos-labs/aptos-core
+  - MystenLabs/sui
+  - starcoinorg/starcoin
+  - move-language/move

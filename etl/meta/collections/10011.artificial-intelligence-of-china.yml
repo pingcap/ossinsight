@@ -1,0 +1,23 @@
+id: 10011
+name: Artificial Intelligence of China
+items:
+  - ApolloAuto/apollo
+  - open-mmlab/mmdetection
+  - PaddlePaddle/Paddle
+  - jina-ai/jina
+  - Tencent/ncnn
+  - milvus-io/milvus
+  - tensorlayer/TensorLayer
+  - alibaba/MNN
+  - Angel-ML/angel
+  - XiaoMi/mace
+  - MegEngine/MegEngine
+  - alibaba/x-deeplearning
+  - baidu-research/warp-ctc
+  - OAID/Tengine
+  - hpcaitech/ColossalAI
+  - Tencent/TNN
+  - Oneflow-Inc/oneflow
+  - mindspore-ai/mindspore
+  - Jittor/jittor
+  - 4paradigm/OpenMLDB

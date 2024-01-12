@@ -1,0 +1,13 @@
+id: 10050
+name: Open Source Forum Software
+items:
+  - forem/forem
+  - discourse/discourse
+  - debiki/talkyard
+  - NodeBB/NodeBB
+  - flarum/flarum
+  - debiki/talkyard
+  - phpbb/phpbb
+  - fluxbb/fluxbb
+  - LemmyNet/lemmy
+  - answerdev/answer

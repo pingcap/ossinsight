@@ -1,0 +1,22 @@
+id: 10076
+name: LLM Tools
+items:
+  - hwchase17/langchain
+  - hwchase17/langchainjs
+  - jerryjliu/llama_index
+  - emptycrown/llama-hub
+  - srush/MiniChain
+  - deepset-ai/haystack
+  - promptslab/Promptify
+  - openai/chatgpt-retrieval-plugin
+  - cfortuner/promptable
+  - microsoft/prompt-engine
+  - zilliztech/GPTCache
+  - embedchain/embedchain
+  - langgenius/dify
+  - TransformerOptimus/SuperAGI
+  - ShishirPatil/gorilla
+  - rustformers/llm
+  - sobelio/llm-chain
+  - Chainlit/chainlit
+  - FlowiseAI/Flowise

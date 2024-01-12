@@ -1,0 +1,14 @@
+id: 10021
+name: API Gateway
+items:
+  - Kong/kong
+  - nginx/nginx
+  - traefik/traefik
+  - envoyproxy/envoy
+  - solo-io/gloo
+  - cilium/cilium
+  - TykTechnologies/tyk
+  - api-umbrella
+  - apache/apisix
+  - apache/shenyu
+  - gravitee-io/gravitee-api-management

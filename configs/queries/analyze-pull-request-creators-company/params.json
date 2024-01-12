@@ -1,0 +1,19 @@
+{
+  "cacheHours": 1,
+  "engine": "liquid",
+  "params": [
+    {
+      "name": "repoId",
+      "replaces": "41986369",
+      "type": "array",
+      "itemType": "integer",
+      "maxArrayLength": 50
+    },
+    {
+      "name": "limit",
+      "replaces": "2000",
+      "pattern": "^(10|20|25|50)$",
+      "default": 50
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+vita:
+  name: Vita Lu
+  title: Developer Relations Engineer
+  url: https://github.com/ChenlingLu
+  image_url: https://github.com/ChenlingLu.png
+
+cheese:
+  name: Cheese Wong
+  title: Engineer of TiDB Community
+  url: https://github.com/Icemap
+  image_url: https://github.com/Icemap.png
+
+mia:
+  name: Mia Zhou
+  title: Technical Content Developer
+  url: https://github.com/luzizhuo
+  image_url: https://github.com/luzizhuo.png
+
+caitin:
+  name: Caitin Chen
+  title: Technical Content Developer
+  url: https://github.com/CaitinChen
+  image_url: https://github.com/caitinchen.png
+
+sykp241095:
+  name: sykp241095
+  title: Contributor of TiDB Community
+  url: https://twitter.com/sykp241095
+  image_url: https://github.com/sykp241095.png
+
+hooopo:
+  name: hooopo
+  title: Engineer of TiDB Community
+  url: https://twitter.com/hooopo
+  image_url: https://github.com/hooopo.png
+
+pingcap:
+  name: PingCAP
+  title: PingCAP provides scaling database infrastructure solutions via an open-source platform.
+  url: https://twitter.com/PingCAP
+  image_url: https://github.com/pingcap.png
+
+fendy:
+  name: Fendy Feng
+  title: Technical Content Developer
+  url: https://github.com/septemberfd
+  image_url: https://github.com/septemberfd.png
+
+ilovesoup:
+  name: ilovesoup
+  title: PMM of PingCAP
+  url: https://github.com/ilovesoup
+  image_url: https://github.com/ilovesoup.png
+
+Mini256:
+  name: Mini256
+  title: Engineer of TiDB Community
+  url: https://github.com/Mini256
+  image_url: https://github.com/Mini256.png
+
+Jagger:
+  name: Jagger
+  title: Engineer of TiDB Community
+  url: https://github.com/634750802
+  image_url: https://github.com/634750802.png
+
+winkyao:
+  name: Wink Yao
+  title: Head of Community & Developer Ecosystem Team at PingCAP.
+  url: https://twitter.com/golangwink
+  image_url: https://github.com/winkyao.png
+
+chatgpt:
+  name: ChatGPT
+  title: Robot from OpenAI
+  url: https://chat.openai.com/
+  image_url: https://github.com/openai.png
+
+notionai:
+  name: Notion AI
+  title: AI assistant from Notion
+  url: https://www.notion.so/product/ai
+  image_url: https://upload.wikimedia.org/wikipedia/commons/4/45/Notion_app_logo.png
