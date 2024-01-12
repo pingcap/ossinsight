@@ -1,5 +1,5 @@
-import {FastifyInstance} from "fastify";
 import {APIError} from "./error";
+import {FastifyInstance} from "fastify";
 
 export function proxyGet(
   app: FastifyInstance,
@@ -22,13 +22,14 @@ export function proxyGet(
       // Remove prefix and query string from url.
       const url = new URL(req.url, 'http://localhost');
       let pathname = url.pathname.replace(/^\/(public|v1)/, '');
+      
 
       // Map query params to query strings.
       const query = req.query as any;
       const queryKeys = Object.keys(query);
       const queryStrings = [];
       queryStrings.push(...queryKeys.map((queryKey) => {
-        return `${queryKey}=${query[queryKey]}`;
+        return `${queryKey}=${encodeURIComponent(query[queryKey])}`;
       }));
 
       // Remove path params from url.
@@ -41,7 +42,7 @@ export function proxyGet(
       // TODO: remove it after TiDB data service supports path params.
       // Map path params to query strings.
       queryStrings.push(...paramKeys.map((paramKey) => {
-        return `${paramKey}=${params[paramKey]}`;
+        return `${paramKey}=${encodeURIComponent(params[paramKey])}`;
       }));
 
       // Remove trailing slash from url.
@@ -53,7 +54,7 @@ export function proxyGet(
       }
 
       // Retrieve query result from TiDB data service.
-      const targetURL = `${pathname}?${queryStrings.join('&')}`;
+      const targetURL = `${pathname}?${queryStrings.join('&')}`;     
       const res = await app.tidbDataService.request(targetURL);
       delete res.headers['transfer-encoding'];
 

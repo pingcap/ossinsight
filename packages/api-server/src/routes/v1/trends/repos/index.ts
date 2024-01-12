@@ -1,5 +1,6 @@
+import {getSuccessResponse, proxyGet} from "../../../../utils/endpoint";
+
 import {FastifyPluginAsync} from "fastify";
-import {proxyGet, getSuccessResponse} from "../../../../utils/endpoint";
 
 const schema = {
   operationId: 'list-trending-repos',
@@ -7,6 +8,10 @@ const schema = {
   method: 'GET',
   description: `Trending repos is an open source alternative to GitHub trends, which showcases recently popular open source projects in the GitHub community.
 
+> **Note**
+>
+> Please URI encode the requested parameters, e.g. \`C++\` needs to be encoded as \`C%2B%2B\`.
+ 
 ☁️ Daily run on [TiDB Cloud](https://tidbcloud.com/?utm_source=ossinsight&utm_medium=ossinsight_api), analyze upon dataset that has over 6 billion GitHub events.`,
   tags: ['Trends'],
   querystring: {
