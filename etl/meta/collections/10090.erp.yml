@@ -1,0 +1,6 @@
+id: 10090
+name: Enterprise Resource Planning
+items:
+  - Dolibarr/dolibarr
+  - Odoo/odoo
+  - frappe/erpnext
