@@ -31,3 +31,4 @@ items:
   - kubernetes-sigs/kwok
   - gimlet-io/gimlet
   - berops/claudie
+  - gimlet-io/capacitor
