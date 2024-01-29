@@ -44,7 +44,7 @@
     "@stackql/docusaurus-plugin-hubspot": "^1.0.1",
     "@tidb-community/tracking-script": "^0.1.0",
     "ace-builds": "^1.10.1",
-    "axios": "^0.26.0",
+    "axios": "^1.6.0",
     "clsx": "^1.2.1",
     "date-fns": "^2.28.0",
     "docusaurus-plugin-openapi-docs": "^1.7.3",
