@@ -32,3 +32,4 @@ items:
   - openai/glide-text2im
   - AbdBarho/stable-diffusion-webui-docker
   - mlc-ai/web-stable-diffusion
+  - invoke-ai/InvokeAI
