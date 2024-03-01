@@ -47,6 +47,7 @@ items:
   - datahub-project/datahub
 
   # Data integration
+  - dlt-hub/dlt
   - airbytehq/airbyte
   - rudderlabs/rudder-server
   - jitsucom/jitsu
