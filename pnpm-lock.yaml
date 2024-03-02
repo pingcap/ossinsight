@@ -301,11 +301,11 @@ importers:
         specifier: ^v12.3.2
         version: 12.3.4(@babel/core@7.22.6)(react-dom@17.0.2)(react@17.0.2)
       nodemailer:
-        specifier: ^6.8.0
-        version: 6.9.3
+        specifier: ^6.9.9
+        version: 6.9.9
       nodemailer-postmark-transport:
         specifier: ^5.2.1
-        version: 5.2.1(nodemailer@6.9.3)
+        version: 5.2.1(nodemailer@6.9.9)
       octokit:
         specifier: ^2.0.10
         version: 2.1.0(encoding@0.1.13)
@@ -8442,7 +8442,7 @@ packages:
     resolution: {integrity: sha512-XwPvtBfUgIHhrJora9wIRbI4fvx8iYpSE2iItpM3e+SnsVRKm+9UeMfKQbk8I1WcOaT370E8oaLJE/vN15/ggQ==}
     dev: false
 
-  /nodemailer-postmark-transport@5.2.1(nodemailer@6.9.3):
+  /nodemailer-postmark-transport@5.2.1(nodemailer@6.9.9):
     resolution: {integrity: sha512-PG9sXWzY7FKAFVr4VRetzk0PqiToBtDH0Hf7Q9dBoswr+rufpha5yXybLtLEFzmr4y1/5NE3MiwxGE/MdbHREw==}
     engines: {node: '>=8'}
     peerDependencies:
@@ -8450,7 +8450,7 @@ packages:
     dependencies:
       addressparser: 1.0.1
       async: 3.2.4
-      nodemailer: 6.9.3
+      nodemailer: 6.9.9
       nodemailer-build-attachment: 3.0.0
       postmark: 2.9.5
     transitivePeerDependencies:
@@ -8462,8 +8462,8 @@ packages:
     engines: {node: '>=6.0.0'}
     dev: false
 
-  /nodemailer@6.9.3:
-    resolution: {integrity: sha512-fy9v3NgTzBngrMFkDsKEj0r02U7jm6XfC3b52eoNV+GCrGj+s8pt5OqhiJdWKuw51zCTdiNR/IUD1z33LIIGpg==}
+  /nodemailer@6.9.9:
+    resolution: {integrity: sha512-dexTll8zqQoVJEZPwQAKzxxtFn0qTnjdQTchoU6Re9BUUGBJiOy3YMn/0ShTW6J5M0dfQ1NeDeRTTl4oIWgQMA==}
     engines: {node: '>=6.0.0'}
     dev: false
 
