@@ -19,3 +19,4 @@ items:
   - huandu/go-sqlbuilder
   - latolukasz/beeorm
   - stephenafamo/bob
+  - yaitoo/sqle
