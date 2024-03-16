@@ -34,7 +34,7 @@
     "@ossinsight/email-server": "workspace:^0.0.1",
     "@sentry/node": "^7.57.0",
     "@types/cron": "^2.0.0",
-    "async": "^3.2.4",
+    "async": "^3.2.5",
     "axios": "^1.6.7",
     "bufferutil": "^4.0.7",
     "bullmq": "^3.4.1",
@@ -60,7 +60,7 @@
     "utf-8-validate": "^5.0.10"
   },
   "devDependencies": {
-    "@types/async": "^3.2.15",
+    "@types/async": "^3.2.24",
     "@types/luxon": "^3.0.2",
     "@types/node": "^18.11.9",
     "@types/react": "^17.0.2",

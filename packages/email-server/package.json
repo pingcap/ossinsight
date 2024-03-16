@@ -33,7 +33,7 @@
     "@fastify/sensible": "^5.0.0",
     "@mailchimp/mailchimp_transactional": "^1.0.50",
     "@types/cron": "^2.0.0",
-    "async": "^3.2.4",
+    "async": "^3.2.5",
     "axios": "^1.6.7",
     "bufferutil": "^4.0.7",
     "canvas": "^2.10.2",
@@ -53,7 +53,7 @@
     "mjml-react": "^2.0.8",
     "mysql2": "^2.3.3",
     "next": "^v14.1.1",
-    "nodemailer": "^6.9.9",
+    "nodemailer": "^6.9.10",
     "nodemailer-postmark-transport": "^5.2.1",
     "octokit": "^3.1.2",
     "postmark": "^3.0.14",
@@ -63,7 +63,7 @@
     "utf-8-validate": "^5.0.10"
   },
   "devDependencies": {
-    "@types/async": "^3.2.15",
+    "@types/async": "^3.2.24",
     "@types/html-minifier": "^4.0.2",
     "@types/luxon": "^3.0.2",
     "@types/mjml": "^4.7.0",
