@@ -14,6 +14,8 @@ export interface Pipeline {
 }
 
 export enum PresetIncrementalTimeRange {
+  LAST_MONTH = 'last_month',
+  PAST_MONTH = 'past_month',
   YESTERDAY = 'yesterday',
   LAST_DAY = 'last_day',
   LAST_HOUR = 'last_hour',
@@ -121,6 +123,16 @@ export interface TimeRange {
 export function resolveTimeRange(timeRange: PresetIncrementalTimeRange = PresetIncrementalTimeRange.YESTERDAY): TimeRange {
   const now = DateTime.now();
   switch (timeRange) {
+    case PresetIncrementalTimeRange.PAST_MONTH:
+      return {
+        from: now.minus({month: 1}),
+        to: now
+      };
+    case PresetIncrementalTimeRange.LAST_MONTH:
+      return {
+        from: now.startOf('month').minus({ month: 1 }),
+        to: now.startOf('month')
+      };
     case PresetIncrementalTimeRange.PAST_HOUR:
       return {
         from: now.minus({hours: 1}),

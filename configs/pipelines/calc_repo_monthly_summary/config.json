@@ -1,0 +1,8 @@
+{
+  "name": "mv_repo_monthly_summary",
+  "description": "None",
+  "cron": "0 0 4 * * *",
+  "incremental": {
+    "timeRange": "last_month"
+  }
+}
