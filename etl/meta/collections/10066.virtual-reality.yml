@@ -10,6 +10,7 @@ items:
   - Igalia/wolvic
   - aframevr/aframe
   - overte-org/overte
+  - StereoKit/StereoKit
   
   # Inspired by people of [r/virtualreality](https://www.reddit.com/r/virtualreality/).
   # Discussion record on Reddit: https://www.reddit.com/r/virtualreality/comments/ywvtj6/recommendations_for_open_source_vr_software/.
