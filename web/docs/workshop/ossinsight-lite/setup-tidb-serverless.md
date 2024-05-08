@@ -5,7 +5,7 @@ sidebar_position: 2
 
 ## Signup TiDB Cloud
 
-Register for a TiDB Cloud account at [https://tidbcloud.com/signup](https://tidbcloud.com/channel?utm_source=ossinsight).
+Register for a TiDB Cloud account at [https://tidbcloud.com/signup](https://tidbcloud.com/channel/?utm_source=ossinsight).
 
 ## Create a serverless cluster
 
