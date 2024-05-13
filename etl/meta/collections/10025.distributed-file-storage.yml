@@ -15,4 +15,5 @@ items:
   - storj/storj
   - chrislusf/seaweedfs
   - opencurve/curve
-  
+  - apache/hadoop
+  - apache/ozone
