@@ -32,3 +32,5 @@ items:
   - gimlet-io/gimlet
   - berops/claudie
   - gimlet-io/capacitor
+  - loft-sh/vcluster
+  
