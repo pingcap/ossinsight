@@ -27,7 +27,7 @@ const Star = () => {
     <Box>
       <SectionHeading
         title="Star"
-        description="The total number of starred repositories and ignore developers' unstarring or restarring behavior since 2011."
+        description="The total number of starred repositories since 2011, which ignores developers' unstarring or restarring behavior."
       />
       <StarChart userId={userId} show={inView} />
     </Box>

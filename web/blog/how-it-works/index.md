@@ -142,7 +142,7 @@ ORDER BY 2 DESC
 +-------------------+-------+
 ```
 
-We have analyzed all the GitHub projects regarding databases, JavaScripe frameworks, programming languages, web frameworks, and low-code development tools, and provided valuable insights in 2021, in real time, and custom insights. If the repository you care about is not included here, you're welcome to submit your PR [here](https://github.com/hooopo/gharchive/tree/main/meta/repos). If you want to gain more insights into other areas, you can try TiDB Cloud by yourselves with this [10-minute tutorial](/blog/try-it-yourself/). 
+We have analyzed all the GitHub projects regarding databases, JavaScript frameworks, programming languages, web frameworks, and low-code development tools, and provided valuable insights in 2021, in real time, and custom insights. If the repository you care about is not included here, you're welcome to submit your PR [here](https://github.com/hooopo/gharchive/tree/main/meta/repos). If you want to gain more insights into other areas, you can try TiDB Cloud by yourselves with this [10-minute tutorial](/blog/try-it-yourself/). 
 
 Below are the areas of GitHub projects we have analyzed. 
 
