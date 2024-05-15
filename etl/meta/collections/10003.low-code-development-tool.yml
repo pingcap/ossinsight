@@ -36,3 +36,4 @@ items:
   - illacloud/illa-builder
   - refinedev/refine
   - windmill-labs/windmill
+  - gristlabs/grist-core
