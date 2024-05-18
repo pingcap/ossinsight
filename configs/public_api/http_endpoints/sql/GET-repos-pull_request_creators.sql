@@ -22,4 +22,3 @@ ORDER BY
         WHEN ${sort} = 'first_pr_merged_at-desc' THEN -first_pr_merged_at
         ELSE login
     END) AS SIGNED)
-LIMIT ${offset}, ${limit}

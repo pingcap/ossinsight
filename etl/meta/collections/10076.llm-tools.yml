@@ -20,3 +20,4 @@ items:
   - sobelio/llm-chain
   - Chainlit/chainlit
   - FlowiseAI/Flowise
+  - langfuse/langfuse

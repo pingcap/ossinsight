@@ -51,7 +51,7 @@ export default function Page () {
                 />
                 <StandardCard
                   title='Step 3: Import data'
-                  description='Import the sample data to your TiDB Cloud cluster, this dataset records what happend in the first hour of 2022'
+                  description='Import the sample data to your TiDB Cloud cluster, this dataset records what happened in the first hour of 2022'
                   codeStyleDescription={false}
                   elevation={0}
                   cardSx={{ backgroundColor: 'action.hover' }}

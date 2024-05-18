@@ -1,10 +1,11 @@
 import Axios, {AxiosInstance} from "axios";
-import {FastifyBaseLogger} from "fastify";
-import fp from "fastify-plugin";
-import {DateTime} from "luxon";
-import {URLSearchParams} from "url";
 import {countAPIRequest, dataServiceRequestCounter, dataServiceRequestTimer, measure} from "../../../metrics";
+
 import {APIError} from "../../../utils/error";
+import {DateTime} from "luxon";
+import {FastifyBaseLogger} from "fastify";
+import {URLSearchParams} from "url";
+import fp from "fastify-plugin";
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -44,9 +45,9 @@ export class TiDBDataService {
     });
   }
 
-  async request(originalPath: string) {
+  async request(targetURL: string) {
     new URLSearchParams()
-    const endpointName = new URL(originalPath, 'https://example.org').pathname;
+    const endpointName = new URL(targetURL, 'https://example.org').pathname;
     if (!endpointName) {
       throw new APIError(400, 'Invalid query name.');
     }
@@ -57,10 +58,13 @@ export class TiDBDataService {
     return await countAPIRequest(counter, endpointName, async () => {
       return await measure(timer, async () => {
         const startTime = DateTime.now();
-        const res = await this.client.get(`${originalPath}`);
+        const res = await this.client.get(targetURL);
         const endTime = DateTime.now();
         const duration = endTime.diff(startTime, 'seconds').seconds;
-        this.logger.info(`✅ Finished request TiDB Data Service (endpoint: ${endpointName}), cost: ${duration} s.`);
+        this.logger.info({
+          targetURL,
+          endpointName,
+        }, `✅ Finished request to TiDB Data Service (endpoint: ${endpointName}), cost: ${duration} s.`);
         return res;
       });
     });

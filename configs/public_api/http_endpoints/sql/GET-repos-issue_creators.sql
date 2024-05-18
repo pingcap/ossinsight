@@ -19,4 +19,3 @@ ORDER BY
         WHEN ${sort} = 'first_issue_opened_at-desc' THEN -first_issue_opened_at
         ELSE login
     END) AS SIGNED)
-LIMIT ${offset}, ${limit}

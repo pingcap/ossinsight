@@ -12,3 +12,7 @@ items:
   - pinterest/querybook
   - tellery/tellery
   - evidence-dev/evidence
+  - plotly/dash
+  - streamlit/streamlit
+  - mckinsey/vizro
+  - gradio-app/gradio
