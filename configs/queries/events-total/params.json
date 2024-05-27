@@ -1,5 +1,5 @@
 {
   "cacheProvider": "NORMAL_TABLE",
-  "cacheHours": -1,
+  "cacheHours": 0.00111,
   "params": []
 }
