@@ -1,4 +1,3 @@
-SET SQL_MODE = 'ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';
 INSERT INTO mv_events_total(record_time, events_increment, events_total)
 WITH last_record AS (
     SELECT
