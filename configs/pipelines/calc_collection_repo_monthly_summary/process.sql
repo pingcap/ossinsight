@@ -1,4 +1,3 @@
-
 INSERT INTO mv_repo_monthly_summary(repo_id, month, stars, pull_requests, pull_request_creators, issues, issue_creators)
 WITH repos AS (
     SELECT repo_id

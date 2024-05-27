@@ -1,5 +1,5 @@
 {
-  "name": "mv_repo_monthly_summary",
+  "name": "calc_collection_repo_monthly_summary",
   "description": "None",
   "cron": "0 0 4 * * *",
   "incremental": {

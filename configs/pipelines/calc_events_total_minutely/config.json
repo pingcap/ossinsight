@@ -1,0 +1,5 @@
+{
+  "name": "calc_events_total_minutely",
+  "description": "None",
+  "cron": "0 * * * * *"
+}
