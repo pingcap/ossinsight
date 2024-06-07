@@ -18,4 +18,4 @@ items:
 
 # The relationship between X as Code and Configuration management tools is the following:
 # 1. The X as Code is a subset of Configuration Management.
-# 2. X as Code use declarative API to interact with X. X such as the Infrastucture, Application, Database, etc.
+# 2. X as Code use declarative API to interact with X. X such as the Infrastructure, Application, Database, etc.

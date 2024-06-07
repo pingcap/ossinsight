@@ -106,7 +106,7 @@ The rows are probably scattered in different data blocks and stored on the hard 
 
 ### Why was `EXPLAIN ANALYZE` faster the second time?
 
-In `EXPLAIN ANALZYE`'s execution result, we saw that the "execution info" column corresponding to the `TableRowIDScan` step contained this information:
+In `EXPLAIN ANALYZE`'s execution result, we saw that the "execution info" column corresponding to the `TableRowIDScan` step contained this information:
 
 ```
 block: {cache_hit_count: 2755559, read_count: 179510, read_byte: 4.07 GB}
@@ -129,7 +129,7 @@ When we created a composite index with multiple columns, we needed to pay attent
 3. Columns that could be used as range query conditions for the `WHERE` statement, like `created_at`
 4. Redundant columns that were not used as filter conditions but were used in the query, such as `number` and `push_size`
 
-We used the `CREATE IDNEX` statement to create a composite index in the database:
+We used the `CREATE INDEX` statement to create a composite index in the database:
 
 ```
 CREATE INDEX index_github_events_on_repo_id_type_number ON github_events(repo_id, type, number);

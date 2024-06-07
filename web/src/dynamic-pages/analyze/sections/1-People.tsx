@@ -48,7 +48,7 @@ export const PeopleSection = forwardRef(function (_, ref: ForwardedRef<HTMLEleme
       <H2>People</H2>
       <Analyze query={mapType} params={params}>
         <H3 sx={{ mt: 6 }}>Geographical Distribution</H3>
-        <P2>Stargazers,Issue creators and Pull Request creators’ geographical distribution around the world (analyzed with the public github infomation).</P2>
+        <P2>Stargazers, Issue creators, and Pull Request creators’ geographical distribution around the world (analyzed with the public GitHub information).</P2>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <Tabs value={mapType} onChange={handleChangeMapType} variant='scrollable' scrollButtons='auto' allowScrollButtonsMobile>
             <IconTab defaultTab id='geo-distribution-stargazers' value='analyze-stars-map' icon={<StarIcon size={24} />}><span style={{ display: 'none' }}>Geographical Distribution of </span>Stargazers</IconTab>
@@ -67,7 +67,7 @@ export const PeopleSection = forwardRef(function (_, ref: ForwardedRef<HTMLEleme
       </Analyze>
       <Analyze query={companyType} params={{ limit: comparingRepoName ? 25 : 50 }}>
         <H3 sx={{ mt: 6 }}>Companies</H3>
-        <P2>Company information about Stargazers, Issue creators, and Pull Request creators(analyzed with the public github infomation).</P2>
+        <P2>Company information about Stargazers, Issue creators, and Pull Request creators (analyzed with the public GitHub information).</P2>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <Tabs value={companyType} onChange={handleChangeCompanyType} variant='scrollable' scrollButtons='auto' allowScrollButtonsMobile>
             <IconTab defaultTab id='companies-stargazers' value='analyze-stars-company' icon={<StarIcon />}>Stargazers<span style={{ display: 'none' }}>&apos; Companies</span></IconTab>

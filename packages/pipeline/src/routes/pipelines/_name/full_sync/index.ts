@@ -100,6 +100,16 @@ async function fullSyncPipeline(
     const startAt = DateTime.now();
 
     try {
+      /**
+       * Notice:
+       *
+       * If the SQL mode of the current session is strict
+       * (which means the sql_mode value contains either STRICT_TRANS_TABLES or STRICT_ALL_TABLES),
+       * the SELECT subquery in INSERT INTO SELECT cannot be pushed down to TiFlash.
+       *
+       * Reference: https://docs.pingcap.com/zh/tidb/v7.1/tiflash-results-materialization
+       */
+      await tidb.execute(`SET SQL_MODE = 'ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';`);
       await tidb.execute(pipeline.processSQL, {
         from: tFrom.toSQL(),
         to: tTo.toSQL()
@@ -120,7 +130,7 @@ async function fullSyncPipeline(
     log.info(`✅  Finished to execute query for pipeline <%s>, from: %s, to: %s, duration: %d s.`, pipelineName, tFrom.toISO(), tTo.toISO(), duration);
   }
 
-  log.info(`🎉  Finished full sync for pipeline <${pipelineName}>, success: ${success}, fail: ${fail}, process: ${success + processed.length}/${needProcessed.length}.`)
+  log.info(`🎉 Finished full sync for pipeline <${pipelineName}>, success: ${success}, fail: ${fail}, process: ${success + processed.length}/${needProcessed.length}.`)
 }
 
 export default index;

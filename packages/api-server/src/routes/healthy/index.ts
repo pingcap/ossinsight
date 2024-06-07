@@ -1,15 +1,15 @@
 import {FastifyPluginAsync} from "fastify";
 import Redis from "ioredis";
-import {DateTime} from "luxon";
+// import {DateTime} from "luxon";
 import pino from "pino";
 import {checkTiDBIfConnected} from "../../utils/db";
 import Logger = pino.Logger;
 
-interface EventsTotalQueryResult {
-  cnt: number;
-  latest_created_at: string;
-  latest_timestamp: string;
-}
+// interface EventsTotalQueryResult {
+//   cnt: number;
+//   latest_created_at: string;
+//   latest_timestamp: string;
+// }
 
 const schema = {
   description: 'Check if the API server is healthy.',
@@ -31,9 +31,9 @@ const schema = {
         isShadowTiDBHealthy: {
           type: 'boolean',
         },
-        prefetchLatency: {
-          type: 'number',
-        },
+        // prefetchLatency: {
+        //   type: 'number',
+        // },
       }
     }
   }
@@ -54,19 +54,19 @@ const root: FastifyPluginAsync = async (app, opts): Promise<void> => {
     ]);
 
     // Check if the latency of prefetch.
-    const totalRes = await app.queryRunner.query<EventsTotalQueryResult[]>('events-total', {});
-    const latestEventAt = totalRes?.data?.[0]?.latest_created_at;
-    if (!latestEventAt) {
-      app.log.error(`📋 Check the latency of prefetch, failed to get the last event at from events-total query.`);
-      healthy = false;
-    } else {
-      const latency = DateTime.utc().diff(DateTime.fromISO(latestEventAt), 'minutes').minutes - 5;
-      healthInfo.prefetchLatency = latency;
-      if (latency > 20) {
-        app.log.error(`📋 Check the latency of prefetch, found it more than 20 minutes (latency = ${latency} minutes).`);
-        healthy = false;
-      }
-    }
+    // const totalRes = await app.queryRunner.query<EventsTotalQueryResult[]>('events-total', {});
+    // const latestEventAt = totalRes?.data?.[0]?.latest_created_at;
+    // if (!latestEventAt) {
+    //   app.log.error(`📋 Check the latency of prefetch, failed to get the last event at from events-total query.`);
+    //   healthy = false;
+    // } else {
+    //   const latency = DateTime.utc().diff(DateTime.fromISO(latestEventAt), 'minutes').minutes - 5;
+    //   healthInfo.prefetchLatency = latency;
+    //   if (latency > 20) {
+    //     app.log.error(`📋 Check the latency of prefetch, found it more than 20 minutes (latency = ${latency} minutes).`);
+    //     healthy = false;
+    //   }
+    // }
 
     // Check if TiDB is healthy.
     if (isTiDBHealthy !== null) {

@@ -61,3 +61,4 @@ items:
   - refinedev/refine
   - unjs/nitro
   - payloadcms/payload
+  - tiangolo/fastapi

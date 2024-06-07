@@ -1,7 +1,7 @@
 id: 10056
 name: Data Integration
 items:
-  - apache/incubator-seatunnel
+  - apache/seatunnel
   - apache/sqoop
   - apache/flume
   - alibaba/DataX

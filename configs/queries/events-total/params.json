@@ -1,8 +1,5 @@
 {
   "cacheProvider": "NORMAL_TABLE",
-  "cacheHours": -1,
-  "refreshCron": "0 * * * * *",
-  "refreshQueue": "EVENTS_TOTAL",
-  "onlyFromCache": true,
+  "cacheHours": 0.00111,
   "params": []
 }
