@@ -12,3 +12,5 @@ items:
   - apache/apisix
   - apache/shenyu
   - gravitee-io/gravitee-api-management
+  - luraproject/lura
+  - krakend/krakend-ce
