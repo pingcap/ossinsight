@@ -40,7 +40,7 @@ OSS Insight also provides in-depth analysis of individual GitHub repositories an
 ## Feature 1: GPT-Powered Data Exploration
 
 GitHub Data Explorer provides a new way to discover trends and insights into 5+ billion rows of GitHub data.
-Simply ask your question in natural language and GitHub Data Explorer will generate SQL, query the data, and present the results visually. It's built with <a href ="https://tidbcloud.com/channel?utm_source=ossinsight&utm_medium=referral&utm_campaign=chat2query_202301&utm_content=about">Chat2Query</a>, a GPT-powered SQL generator in TiDB Cloud. 
+Simply ask your question in natural language and GitHub Data Explorer will generate SQL, query the data, and present the results visually. It's built with <a href ="https://tidbcloud.com/channel/?utm_source=ossinsight&utm_medium=community&utm_campaign=chat2query_202301&utm_content=about">Chat2Query</a>, a GPT-powered SQL generator in TiDB Cloud. 
 
 Examples:
 - [Projects similar to @facebook/react](https://ossinsight.io/explore?id=ba186a53-b2ab-4cad-a46f-e2c36566cacd)
