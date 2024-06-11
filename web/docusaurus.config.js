@@ -301,7 +301,6 @@ const config = {
             label: 'More',
             position: 'left',
             items: [
-              { label: 'Workshop', to: '/docs/workshop' },
               { label: 'About OSS Insight', to: '/docs/about' },
               {
                 label: 'About TiDB Cloud',
