@@ -7,3 +7,7 @@ items:
   - neo4j/neo4j-genai-python
   - topoteretes/cognee
   - eosphoros-ai/DB-GPT
+  - langchain-ai/langchain
+  - run-llama/llama_index
+  - neo4j/neo4j
+  - aerospike/aerospike-server
