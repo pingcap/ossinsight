@@ -9,3 +9,6 @@ items:
   - stateful/web-extension-starter-kit
   - abhijithvijayan/web-extension-starter
   - alibaba/browser-extension-kit
+  - Jonghakseo/chrome-extension-boilerplate-react-vite
+  - aklinker1/vite-plugin-web-extension
+  - antfu-collective/vitesse-webext
