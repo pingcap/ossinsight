@@ -7,3 +7,7 @@ items:
   - pgvector/pgvector
   - chroma-core/chroma
   - pingcap/tidb 
+  - mongodb/mongo
+  - elastic/elasticsearch
+  - redis/redis
+  - opensearch-project/OpenSearch
