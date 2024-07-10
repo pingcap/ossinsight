@@ -170,6 +170,7 @@ We have a few channels for contact:
 
 * [GitHub Discussions](https://github.com/pingcap/ossinsight/discussions): You can ask a question or discuss here.
 * [@OSS Insight](https://twitter.com/OSSInsight) on Twitter
+* [TiDB Community](https://ask.pingcap.com/): This is the place to discuss anything related to TiDB.
 * [mail](mailto:ossinsight@pingcap.com):If you want to analyze more, please [contact us](mailto:ossinsight@pingcap.com) ✉️
 
 ## Development
