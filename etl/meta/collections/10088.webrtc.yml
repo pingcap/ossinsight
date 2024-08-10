@@ -9,11 +9,11 @@ items:
   - OpenVidu/openvidu
 
   # SFU
+  - jech/galene
+  - jitsi/jitsi-videobridge
   - livekit/livekit
   - medooze/media-server
   - meetecho/janus-gateway
-  - jech/galene
-  - jitsi/jitsi-videobridge
   - versatica/mediasoup
   
   # WebRTC Libraries
