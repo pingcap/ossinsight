@@ -16,4 +16,5 @@ items:
   - vernemq/vernemq
   - apache/flink
   - bloomberg/blazingmq
+  - automq/automq
   
