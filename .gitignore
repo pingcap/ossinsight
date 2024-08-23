@@ -31,3 +31,5 @@ yarn-error.log*
 
 # Prefetch
 .prefetch
+
+/configs/prompts/*/*.*
