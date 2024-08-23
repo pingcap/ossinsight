@@ -4,7 +4,6 @@
 # Production
 /build
 /sql
-/configs/prompts/*/*.*
 
 # Generated files
 .docusaurus
@@ -32,3 +31,5 @@ yarn-error.log*
 
 # Prefetch
 .prefetch
+
+/configs/prompts/*/*.*

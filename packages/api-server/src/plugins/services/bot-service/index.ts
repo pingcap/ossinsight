@@ -1,10 +1,9 @@
 import {FastifyBaseLogger} from "fastify";
 import {DEFAULT_EXPLORER_GENERATE_ANSWER_PROMPT_NAME} from "../../../env";
-import {countAPIRequest, measureAPIRequest, openaiAPICounter, openaiAPITimer} from "../../../metrics";
+import {measureAPIRequest, openaiAPICounter, openaiAPITimer} from "../../../metrics";
 import {ContextProvider} from "./prompt/context/context-provider";
 import {Answer} from "./types";
 import {APIError, BotResponseGenerateError, BotResponseParseError} from "../../../utils/error";
-import {Configuration, OpenAIApi} from "openai";
 import {DateTime} from "luxon";
 import {PromptConfig, PromptManager} from './prompt/prompt-manager';
 import fp from "fastify-plugin";
@@ -13,6 +12,7 @@ import stream from "node:stream";
 // @ts-ignore
 import JSONStream from 'JSONStream';
 import {jsonrepair} from "jsonrepair";
+import OpenAI from "openai";
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -39,7 +39,7 @@ export default fp(async (app) => {
 const tableColumnRegexp = /(?<table_name>.+)\.(?<column_name>.+)/;
 
 export class BotService {
-    private readonly openai: OpenAIApi;
+    private readonly openai: OpenAI;
 
     constructor(
       private readonly log: pino.BaseLogger,
@@ -48,10 +48,9 @@ export class BotService {
       private readonly contextProvider?: ContextProvider,
       private readonly generateAnswerPromptName: string = DEFAULT_EXPLORER_GENERATE_ANSWER_PROMPT_NAME
     ) {
-        const configuration = new Configuration({
+        this.openai = new OpenAI({
             apiKey: this.apiKey
         });
-        this.openai = new OpenAIApi(configuration);
     }
 
     async questionToSQL(logger: FastifyBaseLogger, question: string, context: Record<string, any>): Promise<Answer | null> {
@@ -71,18 +70,19 @@ export class BotService {
         logger.info(promptConfig, "Generating SQL to answer question: %s", question);
         let res: any;
         const start = DateTime.now();
-        res = await countAPIRequest(openaiAPICounter, api, async () => {
-            return await measureAPIRequest(openaiAPITimer, api, async () => {
-                return await this.openai.createChatCompletion({
-                    messages: [
-                        {
-                            role: 'system',
-                            content: prompt!,
-                        }
-                    ],
-                    stream: false,
-                    ...promptConfig
-                });
+        res = await measureAPIRequest(openaiAPITimer, api, async () => {
+            return this.openai.chat.completions.create({
+                messages: [
+                    {
+                        role: 'system',
+                        content: prompt!,
+                    }
+                ],
+                stream: false,
+                response_format: {
+                    type: 'json_object'
+                },
+                ...promptConfig
             });
         });
         const end = DateTime.now();
@@ -121,17 +121,18 @@ export class BotService {
         const end = openaiAPITimer.startTimer({api});
         return new Promise(async (resolve, reject) => {
             try {
-                 const res = await this.openai.createChatCompletion({
+                 const res = await this.openai.chat.completions.create({
                     messages: [
                         {
-                            role: 'system',
-                            content: prompt!,
+                        role: 'system',
+                        content: prompt!,
                         }
                     ],
+                    response_format: {
+                        type: 'json_object'
+                    },
                     stream: true,
                     ...promptConfig
-                }, {
-                    responseType: 'stream'
                 });
 
                 // Convert only-data-event stream to token stream.
@@ -243,21 +244,22 @@ export class BotService {
         let responseText = null;
         try {
             const start = DateTime.now();
-            const res = await countAPIRequest(openaiAPICounter, api, async () => {
-                return await measureAPIRequest(openaiAPITimer,  api,async () => {
-                    return await this.openai.createChatCompletion({
-                        messages: [
-                            {
-                                role: 'system',
-                                content: prompt!,
-                            }
-                        ],
-                        stream: false,
-                        ...promptConfig
-                    });
+            const res = await measureAPIRequest(openaiAPITimer,  api,async () => {
+                return this.openai.chat.completions.create({
+                    messages: [
+                        {
+                            role: 'system',
+                            content: prompt!,
+                        }
+                    ],
+                    response_format: {
+                      type: 'json_object'
+                    },
+                    stream: false,
+                    ...promptConfig
                 });
             });
-            const {choices, usage} = res.data;
+            const { choices, usage } = res;
             const end = DateTime.now();
             this.log.info({ usage }, 'Got answer of question "%s" from OpenAI API, cost: %d s', question, end.diff(start).as('seconds'));
 

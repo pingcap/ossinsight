@@ -1,5 +1,5 @@
-import {AxiosResponse} from "axios";
 import {Counter, exponentialBuckets, Histogram, Summary} from "prom-client";
+import {AxiosResponse} from "axios";
 
 export const metricsPrefix = 'ossinsight_api_';
 
@@ -140,7 +140,7 @@ export async function measureAPIRequest<T>(metrics: Summary<any> | Summary.Inter
   }
 }
 
-export async function countAPIRequest<T extends AxiosResponse<any, any>>(counter: Counter, api: string, fn: () => Promise<T>) {
+export async function countAPIRequest<T extends AxiosResponse>(counter: Counter, api: string, fn: () => Promise<T>) {
   try {
     const res = await fn();
     counter.inc({ api, statusCode: res.status});
@@ -150,4 +150,3 @@ export async function countAPIRequest<T extends AxiosResponse<any, any>>(counter
     throw err;
   }
 }
-

@@ -1,5 +1,10 @@
 import Axios, {AxiosInstance} from "axios";
-import {countAPIRequest, dataServiceRequestCounter, dataServiceRequestTimer, measure} from "../../../metrics";
+import {
+  countAPIRequest,
+  dataServiceRequestCounter,
+  dataServiceRequestTimer,
+  measure
+} from "../../../metrics";
 
 import {APIError} from "../../../utils/error";
 import {DateTime} from "luxon";
