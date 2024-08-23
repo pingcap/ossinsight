@@ -48,6 +48,7 @@ export const questionTagsHandler: FastifyPluginAsyncJsonSchemaToTs = async (app)
     schema: getQuestionTagsSchema
   }, async function (req, reply) {
     const { questionId } = req.params;
+    this.mysql.getConnection()
     const questionTags = await withConnection(this.mysql, async (conn) => {
       return await app.explorerService.getQuestionTags(conn, questionId);
     });

@@ -1,6 +1,7 @@
-import {MySQLPromisePool} from "@fastify/mysql";
+
 import {FastifyBaseLogger} from "fastify";
 import {Connection, createConnection, createPool, PoolConnection} from 'mysql2/promise';
+import {MySQLPromisePool} from "@fastify/mysql";
 
 // Connection.
 

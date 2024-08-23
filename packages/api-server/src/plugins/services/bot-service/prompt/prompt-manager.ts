@@ -33,9 +33,9 @@ export interface PromptConfig {
 }
 
 const defaultPromptConfig: PromptConfig = {
-    model: "gpt-3.5-turbo",
+    model: "gpt-4o",
     stop: [],
-    max_tokens: 200,
+    max_tokens: 500,
     temperature: 0,
     top_p: 1,
     n: 1,

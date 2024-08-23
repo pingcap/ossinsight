@@ -1,0 +1,8 @@
+{
+  "model": "gpt-3.5-turbo-1106",
+  "stop": ["#", "---"],
+  "max_tokens": 1400,
+  "temperature": 0,
+  "top_p": 1,
+  "n": 1
+}
