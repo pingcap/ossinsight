@@ -13,9 +13,9 @@ declare module 'axios' {
   }
 }
 
-function createClient (enableCache = true) {
+function createClient (baseURL: string, enableCache = true) {
   const client = axios.create({
-    baseURL: BASE_URL,
+    baseURL,
     paramsSerializer: function paramsSerializer (params: any): string {
       const usp = new URLSearchParams();
       for (const [key, value] of Object.entries(params)) {
@@ -49,8 +49,9 @@ function createClient (enableCache = true) {
   return client;
 }
 
-export const client = createClient();
-export const clientWithoutCache = createClient(false);
+export const client = createClient(BASE_URL);
+export const clientWithoutCache = createClient(BASE_URL, false);
+export const giftClientWithoutCache = createClient('http://localhost:3000', false);
 
 type CheckReq = (config: AxiosRequestConfig) => boolean;
 
