@@ -6,6 +6,7 @@ import { patchAuthInterceptors } from '@site/src/api/axios/auth';
 import { notFalsy } from '@site/src/utils/value';
 
 export const BASE_URL = (process.env.APP_API_BASE ?? '') || 'https://api.ossinsight.io';
+export const GIFT_API_BASE_URL = (process.env.GIFT_APP_API_BASE ?? '') || 'https://gift.ossinsight.io';
 
 declare module 'axios' {
   interface AxiosRequestConfig {
@@ -51,7 +52,7 @@ function createClient (baseURL: string, enableCache = true) {
 
 export const client = createClient(BASE_URL);
 export const clientWithoutCache = createClient(BASE_URL, false);
-export const giftClientWithoutCache = createClient('http://localhost:3000', false);
+export const giftClientWithoutCache = createClient(GIFT_API_BASE_URL, false);
 
 type CheckReq = (config: AxiosRequestConfig) => boolean;
 
