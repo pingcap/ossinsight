@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "docusaurus": "docusaurus",
-    "start": "docusaurus start",
+    "start": "docusaurus start --port 30000",
     "start-silence": "ENABLE_BUNDLER_ANALYZE=false docusaurus start --host 0.0.0.0 --port 30000 --no-open",
     "build": "docusaurus build",
     "swizzle": "docusaurus swizzle",
@@ -95,6 +95,7 @@
     "eslint-plugin-n": "^15.4.0",
     "eslint-plugin-promise": "^6.1.1",
     "eslint-plugin-react": "^7.31.10",
+    "framer-motion": "^6.5.1",
     "human-format": "^1.0.0",
     "node-fetch": "^3.2.4",
     "param-case": "^3.0.4",

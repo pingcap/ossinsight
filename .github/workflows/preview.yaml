@@ -54,6 +54,8 @@ jobs:
           SENTRY_DSN: https://ea6017f8ee534468b308a2a6c949895a@o226447.ingest.sentry.io/6588620
           AUTH0_DOMAIN: ${{ secrets.AUTH0_DOMAIN }}
           AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
+          GIFT_APP_API_BASE: us-west-2.staging.shared.aws.tidbcloud.com
+          GIFT_TIDBCLOUD_BASE_URL: https://staging.tidbcloud.com
           OSSINSIGHT_PREVIEW: true
           TIDBCLOUD_HOST: staging.tidbcloud.com
         run: npm run build
