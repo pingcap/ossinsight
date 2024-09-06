@@ -13,9 +13,7 @@ jobs:
         shell: bash
         working-directory: ./web
     steps:
-      - uses: actions/checkout@v2
-        with:
-          ref: refs/pull/${{ github.event.pull_request.number }}/merge
+      - uses: actions/checkout@v4
       - name: Use Node.js 18
         uses: actions/setup-node@v2.5.1
         with:
