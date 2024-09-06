@@ -9,7 +9,6 @@ const fs = require('fs');
 const HOST = process.env.APP_HOST || 'https://ossinsight.io';
 const API_BASE = process.env.APP_API_BASE || 'https://api.ossinsight.io';
 const GIFT_APP_API_BASE = process.env.GIFT_APP_API_BASE || 'https://gift.ossinsight.io';
-const GIFT_TIDBCLOUD_BASE_URL = process.env.GIFT_TIDBCLOUD_BASE_URL || 'https://tidbcloud.com';
 const DATABASE_URL = process.env.DATABASE_URL || '';
 const SENTRY_DSN = process.env.SENTRY_DSN || '';
 
@@ -69,7 +68,6 @@ const config = {
       {
         'process.env.APP_API_BASE': JSON.stringify(API_BASE),
         'process.env.GIFT_APP_API_BASE': JSON.stringify(GIFT_APP_API_BASE),
-        'process.env.GIFT_TIDBCLOUD_BASE_URL': JSON.stringify(GIFT_TIDBCLOUD_BASE_URL),
         'process.env.SENTRY_DSN': SENTRY_DSN ? JSON.stringify(SENTRY_DSN) : undefined,
       }
     ],
