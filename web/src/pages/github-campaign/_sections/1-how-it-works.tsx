@@ -1,13 +1,11 @@
-import { css, styled, type Theme, useMediaQuery } from '@mui/material';
+import { css, styled } from '@mui/material';
 import { Section, SectionContent, SectionTitle } from '@site/src/pages/github-campaign/_components/Section';
 import { motion } from 'framer-motion';
 import React, { Fragment } from 'react';
 
 export function HowItWorks () {
-  const isLarge = useMediaQuery<Theme>(theme => theme.breakpoints.up('md'));
-
   return (
-    <ThisSection initial={isLarge ? 'initial' : 'hover'} animate={isLarge ? 'initial' : 'hover'} whileInView="hover" viewport={{ amount: 'all', once: true }}>
+    <ThisSection initial="initial" whileInView="hover" viewport={{ amount: 'all', once: true }}>
       <ThisSectionContent>
         <SectionTitle>
           How it Works
