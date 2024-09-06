@@ -8,7 +8,7 @@ const fs = require('fs');
 
 const HOST = process.env.APP_HOST || 'https://ossinsight.io';
 const API_BASE = process.env.APP_API_BASE || 'https://api.ossinsight.io';
-const GIFT_APP_API_BASE = process.env.GIFT_APP_API_BASE || 'https://gift.ossinsight.io';
+const GIFT_APP_API_BASE = process.env.GIFT_APP_API_BASE || 'https://us-west-2.prod.aws.tidbcloud.com';
 const DATABASE_URL = process.env.DATABASE_URL || '';
 const SENTRY_DSN = process.env.SENTRY_DSN || '';
 
