@@ -14,6 +14,8 @@ jobs:
         working-directory: ./web
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
       - name: Use Node.js 18
         uses: actions/setup-node@v2.5.1
         with:
@@ -35,6 +37,8 @@ jobs:
         working-directory: ./web
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
       - name: Use Node.js 18
         uses: actions/setup-node@v2.5.1
         with:
