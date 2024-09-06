@@ -171,9 +171,9 @@ function NotEligible ({ tenants }: { tenants: Tenant[] }) {
         <br />
         <b>Thank you for your contributions to the open-source community.</b>
         <br />
-        While you don&#39;t qualify for credits at this time, we encourage you to continue exploring the possibilities with TiDB Serverless.
+        As a token of our appreciation, you have <b>25GB of free storage and 250 million reads</b> available on TiDB Serverless.
         <br />
-        <b>Login to your TiDB Cloud account</b> to start building your next project.
+        <b>Start building your next project today.</b>
       </ClaimContent>
       <TiDBCloudButton variant="contained">
         Login to TiDB Cloud
@@ -211,7 +211,7 @@ function EligibleNoTenants ({ check }: { check: Check }) {
       <ClaimContent>
         Hi <em>{user?.nickname ?? user?.name}</em>
         <br />
-        Great news! You&#39;re eligible for <strong>{check.credits} in TiDB Serverless</strong> credits for your contributions to the open-source community.
+        Awesome! You&#39;re eligible for <strong>{check.credits} in TiDB Serverless</strong> credits for your contributions to the open-source community.
         <br />
         Create a new TiDB Cloud account and your credits will be waiting for you.
       </ClaimContent>
