@@ -1,7 +1,23 @@
 import { Button, css, styled } from '@mui/material';
 import { Section, SectionContent, SectionTitle } from '@site/src/pages/github-campaign/_components/Section';
 import { TiDBCloudButton } from '@site/src/pages/github-campaign/_components/TiDBCloudButton';
-import React from 'react';
+import { AnimatePresence, LayoutGroup, motion } from 'framer-motion';
+import React, { type ReactNode } from 'react';
+import { TabItem, Tabs, TabsContext, TabsList } from '../_components/Tabs';
+
+// @ts-expect-error
+import Content0 from './2-0-free.mdx';
+
+// @ts-expect-error
+import YouCan from './2-0-you-can.mdx';
+// @ts-expect-error
+import Content1 from './2-1-$5.mdx';
+// @ts-expect-error
+import Content2 from './2-2-$10.mdx';
+// @ts-expect-error
+import Content3 from './2-3-$100.mdx';
+// @ts-expect-error
+import Content4 from './2-4-$300.mdx';
 
 export function IntroductionsSection () {
   return (
@@ -13,88 +29,134 @@ export function IntroductionsSection () {
         <Content invert>
           {image1}
           <article>
-            <p>
-              TiDB Serverless is a highly scalable, vector search built-in, and cost-effective serverless database, which is dedicated to powering modern applications with simple solutions. <a href="https://www.pingcap.com/tidb-serverless/?utm_source=ossinsight&utm_medium=referral&utm_campaign=plg_OSScontribution_credit_05" target="_blank" rel="noopener noreferrer">Read more</a>.
-            </p>
-            <p>
-              With it, you can:
-            </p>
-            <ul>
-              <li>Build highly scalable applications with ease</li>
-              <li>Leverage advanced features like vector search</li>
-              <li>Enjoy seamless integration with what you use</li>
-              <li>Pay only for what you use, and only beyond free credits</li>
-            </ul>
-            <TiDBCloudButton mt={0} variant='contained'>Try Free</TiDBCloudButton>
+            <YouCan />
+            <TiDBCloudButton mt={0} variant="contained">Try Free</TiDBCloudButton>
           </article>
         </Content>
-        <SectionTitle sx={{ mt: 40 }}>
+        <SectionTitle sx={{ mt: [20, 20, 40] }}>
           With TiDB Serverless credits 💰 , you can:
         </SectionTitle>
-        <Content>
-          {image2}
-          <article>
-            <p>
-              <strong>Firstly, you can always get started with $0. With TiDB Serverless&#39;s generous 25GiB free quota, you can get started any project with ease.</strong>
-            </p>
-            <ul>
-              <li>
-                <h3>With $5-10 💰, people have spinned up ...</h3>
-                <p>Hackathon projects can be listed here?</p>
-              </li>
-              <li>
-                <h3>With $10 - 100 💰 💰 💰, people are building ....</h3>
-                <p>Anonymous case studies</p>
-              </li>
-              <li>
-                <h3>With $ 100-300 💰 💰 💰 💰 💰, people can create .....</h3>
-                <p>...</p>
-              </li>
-            </ul>
-            <Button
-              variant="contained"
-              onClick={() => {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-                document.getElementById('start-claim-trigger')?.click();
-              }}
-            >Claim your credits now</Button>
-          </article>
-        </Content>
+        <Tabs defaultValue="free">
+          <TabsList>
+            <LayoutGroup>
+              {tabs.map(tab => <TabItem key={tab.value} value={tab.value}>{tab.title}</TabItem>)}
+            </LayoutGroup>
+          </TabsList>
+          <Content>
+            {image2}
+            <motion.article layout>
+              <TabsContext.Consumer>
+                {({ init, current }) => (
+                  <AnimatePresence presenceAffectsLayout>
+                    {tabs.map(tab => (
+                      (!init || current === tab.value) && (
+                        <motion.div
+                          key={tab.value}
+                          initial={{ opacity: 0, position: 'absolute' }}
+                          animate={{ opacity: 1, position: 'relative' }}
+                          exit={{ opacity: 0, position: 'absolute' }}
+                        >
+                          {tab.content}
+                        </motion.div>
+                      )
+                    ))}
+                  </AnimatePresence>
+                )}
+              </TabsContext.Consumer>
+              <Button
+                variant="contained"
+                onClick={() => {
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                  document.getElementById('start-claim-trigger')?.click();
+                }}
+              >
+                Claim your credits now
+              </Button>
+            </motion.article>
+          </Content>
+        </Tabs>
       </SectionContent>
     </Section>
   );
 }
 
+const tabs: Array<{ value: string, title: ReactNode, content: ReactNode }> = [
+  {
+    value: 'free',
+    title: 'Free',
+    content: <Content0 />,
+  },
+  {
+    value: '$5',
+    title: '$5 - $10',
+    content: <Content1 />,
+  },
+  {
+    value: '$10',
+    title: '$10 - $100',
+    content: <Content2 />,
+  },
+  {
+    value: '$100',
+    title: '$100 - $300',
+    content: <Content3 />,
+  },
+  {
+    value: '$300',
+    title: '$300 - $1000',
+    content: <Content4 />,
+  },
+];
+
 const Content = styled('div')<{ invert?: boolean }>`
-  ${({ theme }) => ({
-    [theme.breakpoints.up('md')]: css`
-      display: flex;
-      gap: 120px;
-    `,
-  })}
-  margin-top: 80px;
+  margin-top: 36px;
 
   > article {
     order: 2;
+  }
+
+  > svg {
+    display: none;
+  }
+
+  article {
     font-size: 24px;
     line-height: 41px;
 
     strong {
-      color: #FFE895;
     }
 
-    a:not(.MuiButtonBase-root ) {
+    a:not(.MuiButtonBase-root) {
       color: #FFE895;
       text-decoration: underline;
     }
+
+    .MuiButtonBase-root {
+      width: 100%;
+    }
   }
 
-  > svg {
-    flex-shrink: 0;
-    display: block;
-    margin: 0 auto;
-    order: ${({ invert }) => invert ? 3 : 1};
-  }
+  ${({ theme, invert }) => ({
+    [theme.breakpoints.up('md')]: css`
+      margin-top: 80px;
+
+      display: flex;
+      gap: 120px;
+
+      > svg {
+        flex-shrink: 0;
+        display: block;
+        margin: 0 auto;
+        order: ${invert ? 3 : 1};
+      }
+
+      > article {
+        .MuiButtonBase-root {
+          width: max-content;
+        }
+      }
+    `,
+  })}
 `;
 
 const image1 = <svg width="358" height="379" viewBox="0 0 358 379" fill="none" xmlns="http://www.w3.org/2000/svg">

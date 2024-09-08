@@ -62,9 +62,16 @@ function PrimaryHeading ({ loading, onClickAction }: { loading: boolean, onClick
             <img alt="OSSInsight Logo" src={require('../_components/ossi-logo.png').default} height={56} />
             <img alt="TiDB Logo" src={require('../_components/tidb-logo.png').default} height={68} />
           </HeadingLogos>
-          <Button id='start-claim-trigger' disabled={loading} color="primary" variant="contained" onClick={() => {
-            onClickAction();
-          }}>
+          <Button
+            id="start-claim-trigger"
+            sx={{ width: ['100%', '100%', 'max-content'] }}
+            disabled={loading}
+            color="primary"
+            variant="contained"
+            onClick={() => {
+              onClickAction();
+            }}
+          >
             Claim Your Credits Now
           </Button>
         </HeadingRight>

@@ -5,7 +5,7 @@ import React, { Fragment } from 'react';
 
 export function HowItWorks () {
   return (
-    <ThisSection initial="initial" whileInView="hover" viewport={{ amount: 'all', once: true }}>
+    <ThisSection initial="initial" whileInView="hover" viewport={{ amount: 0.6, once: true }}>
       <ThisSectionContent>
         <SectionTitle>
           How it Works
