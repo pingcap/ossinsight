@@ -337,3 +337,8 @@ hr.MuiDivider-root {
   content: "event";
   background-color: rgba(0, 0, 0, 0.5);
 }
+
+:root {
+  --color1: ;
+  --color2: ;
+}
