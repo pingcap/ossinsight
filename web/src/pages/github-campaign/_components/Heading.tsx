@@ -2,13 +2,10 @@ import { css, styled, Unstable_Grid2 as Grid } from '@mui/material';
 
 export const HeadingContainer = styled('div')`
   background-color: #212122;
+  padding: 40px 12px;
   ${({ theme }) => ({
     [theme.breakpoints.up('md')]: css`
-      height: calc(100vh - 60px);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+      padding: 120px 0;
     `,
   })}
 `;
@@ -16,6 +13,13 @@ export const HeadingContainer = styled('div')`
 export const Heading = styled(Grid)`
   max-width: 1280px;
   margin: 0 auto;
+  display: none;
+
+  ${({ theme }) => ({
+    [theme.breakpoints.up('md')]: css`
+      display: flex;
+    `,
+  })}
 `;
 
 export const HeadingLeft = styled(Grid)`
@@ -112,4 +116,36 @@ export const HeadingSpacing = styled('span')`
       flex: 1;
     `,
   })}
+`;
+
+export const MobileHeading = styled('div')`
+  ${({ theme }) => ({
+    [theme.breakpoints.up('md')]: css`
+      display: none;
+    `,
+  })}
+  h1 {
+    font-size: 50px;
+    line-height: 61.12px;
+    font-weight: 900;
+    color: #FDE494;
+
+    span {
+      color: white;
+    }
+  }
+
+  p {
+    color: #7C7C7C;
+    font-size: 16px;
+    line-height: 27px;
+    font-weight: 400;
+  }
+
+  p.action-prompt {
+    font-size: 20px;
+    line-height: 35px;
+    font-weight: 400;
+    color: #FFFFFF;
+  }
 `;

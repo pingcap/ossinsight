@@ -44,7 +44,7 @@ export function IntroductionsSection () {
           </TabsList>
           <Content>
             {image2}
-            <motion.article layout>
+            <motion.article layout style={{ display: 'flex', alignSelf: 'stretch', flexDirection: 'column', justifyContent: 'space-between' }}>
               <TabsContext.Consumer>
                 {({ init, current }) => (
                   <AnimatePresence presenceAffectsLayout>
@@ -88,22 +88,22 @@ const tabs: Array<{ value: string, title: ReactNode, content: ReactNode }> = [
   },
   {
     value: '$5',
-    title: '$5 - $10',
+    title: '$5-10',
     content: <Content1 />,
   },
   {
     value: '$10',
-    title: '$10 - $100',
+    title: '$10-100',
     content: <Content2 />,
   },
   {
     value: '$100',
-    title: '$100 - $300',
+    title: '$100-300',
     content: <Content3 />,
   },
   {
     value: '$300',
-    title: '$300 - $1000',
+    title: '$300-1000',
     content: <Content4 />,
   },
 ];

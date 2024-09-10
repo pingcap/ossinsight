@@ -26,16 +26,16 @@ export const TabsList = styled('ul')`
   margin-bottom: 24px;
   flex-wrap: wrap;
   padding: 0 24px;
-  gap: 12px;
+  gap: 32px;
 `;
 
 export function TabItem ({ value, children }: { value: string, children: ReactNode }) {
   const { current, setCurrent } = useContext(TabsContext);
 
   return (
-    <motion.li style={{ position: 'relative', padding: '8px 32px' }} initial={{ color: '#747474' }} animate={value === current ? { color: '#000000' } : { color: '#747474' }}>
-      {(value === current) && <motion.div layout layoutId="active" style={{ zIndex: 0, pointerEvents: 'none', position: 'absolute', left: 0, top: 0, width: '100%', height: '100%', background: '#FFE895', borderRadius: 9999 }} />}
-      <button style={{ cursor: 'pointer', fontSize: '24px', fontWeight: 700, position: 'relative', color: 'currentcolor', background: 'none', appearance: 'none', border: 'none' }} type="button" onClick={() => setCurrent(value)}>
+    <motion.li style={{ flex: 1, position: 'relative', whiteSpace: 'nowrap', padding: '0', borderBottom: '2px solid #53524F' }} initial={{ color: '#53524F' }} animate={value === current ? { color: '#FFE895' } : { color: '#53524F' }}>
+      {(value === current) && <motion.div layout layoutId="active" style={{ zIndex: 0, pointerEvents: 'none', position: 'absolute', left: 0, bottom: -2, width: '100%', height: '2px', background: '#FFE895' }} />}
+      <button style={{ width: '100%', textAlign: 'left', cursor: 'pointer', fontSize: '25px', lineHeight: '31px', fontWeight: 500, position: 'relative', color: 'currentcolor', background: 'none', appearance: 'none', border: 'none' }} type="button" onClick={() => setCurrent(value)}>
         {children}
       </button>
     </motion.li>

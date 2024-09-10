@@ -1,8 +1,9 @@
 // noinspection CssUnresolvedCustomProperty
 
+import { ArrowCircleRightOutlined } from '@mui/icons-material';
 import { Button } from '@mui/material';
 import { ClaimForm } from '@site/src/pages/github-campaign/_components/ClaimForm';
-import { Heading, HeadingContainer, HeadingDescription, HeadingLeft, HeadingLogos, HeadingPrompt, HeadingRight, HeadingSpacing, HeadingTitle, HeadingTitlePrefix } from '@site/src/pages/github-campaign/_components/Heading';
+import { Heading, HeadingContainer, HeadingDescription, HeadingLeft, HeadingLogos, HeadingPrompt, HeadingRight, HeadingSpacing, HeadingTitle, HeadingTitlePrefix, MobileHeading } from '@site/src/pages/github-campaign/_components/Heading';
 import { useResponsiveAuth0 } from '@site/src/theme/NavbarItem/useResponsiveAuth0';
 import React, { useState } from 'react';
 
@@ -73,9 +74,33 @@ function PrimaryHeading ({ loading, onClickAction }: { loading: boolean, onClick
             }}
           >
             Claim Your Credits Now
+            <ArrowCircleRightOutlined sx={{ ml: 0.5 }} />
           </Button>
         </HeadingRight>
       </Heading>
+      <MobileHeading>
+        <h1><span>Free Database Credits</span> for Open Source Heroes</h1>
+        <p>
+          TiDB loves open-source. We contribute code, sponsor projects, and appreciate developers who do so.
+          <br />
+          As a token of our appreciation, we&#39;re offering up to $1000 free TiDB Serverless credits to fuel open-source hero&#39;s next big idea.
+        </p>
+        <p className="action-prompt">
+          Log in with GitHub account to claim your credits.
+        </p>
+        <Button
+          id="start-claim-trigger-mobile"
+          disabled={loading}
+          color="primary"
+          variant="contained"
+          onClick={() => {
+            onClickAction();
+          }}
+        >
+          Claim Now
+          <ArrowCircleRightOutlined sx={{ ml: 0.5 }} />
+        </Button>
+      </MobileHeading>
     </HeadingContainer>
   );
 }
