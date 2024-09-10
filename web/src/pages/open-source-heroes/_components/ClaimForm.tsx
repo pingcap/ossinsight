@@ -1,6 +1,6 @@
 import { Box, Button, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, Skeleton, styled } from '@mui/material';
 import { giftClientWithoutCache } from '@site/src/api/client';
-import { TiDBCloudButton } from '@site/src/pages/github-campaign/_components/TiDBCloudButton';
+import { TiDBCloudButton } from '@site/src/pages/open-source-heroes/_components/TiDBCloudButton';
 import { useResponsiveAuth0 } from '@site/src/theme/NavbarItem/useResponsiveAuth0';
 import { getErrorMessage } from '@site/src/utils/error';
 import React, { type ReactNode, useEffect, useState } from 'react';

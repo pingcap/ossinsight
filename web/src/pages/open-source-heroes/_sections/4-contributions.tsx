@@ -1,7 +1,7 @@
 import { css, styled } from '@mui/material';
 import { getRepo } from '@site/src/api/core';
 import { useRemoteData } from '@site/src/components/RemoteCharts/hook';
-import { Section, SectionContent, SectionDescription, SectionTitle } from '@site/src/pages/github-campaign/_components/Section';
+import { Section, SectionContent, SectionDescription, SectionTitle } from '@site/src/pages/open-source-heroes/_components/Section';
 import { notNullish } from '@site/src/utils/value';
 import React from 'react';
 import useSWR from 'swr';

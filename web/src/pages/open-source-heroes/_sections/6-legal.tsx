@@ -1,4 +1,4 @@
-import { Section, SectionContent, SectionTitle } from '@site/src/pages/github-campaign/_components/Section';
+import { Section, SectionContent, SectionTitle } from '@site/src/pages/open-source-heroes/_components/Section';
 import React from 'react';
 import { Collapse } from '../_components/Collapse';
 // @ts-expect-error

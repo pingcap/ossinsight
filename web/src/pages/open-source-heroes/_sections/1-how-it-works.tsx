@@ -1,5 +1,5 @@
 import { css, styled } from '@mui/material';
-import { Section, SectionContent, SectionTitle } from '@site/src/pages/github-campaign/_components/Section';
+import { Section, SectionContent, SectionTitle } from '@site/src/pages/open-source-heroes/_components/Section';
 import { motion } from 'framer-motion';
 import React, { Fragment } from 'react';
 

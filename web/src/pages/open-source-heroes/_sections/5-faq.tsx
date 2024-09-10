@@ -1,4 +1,4 @@
-import { Section, SectionContent, SectionTitle } from '@site/src/pages/github-campaign/_components/Section';
+import { Section, SectionContent, SectionTitle } from '@site/src/pages/open-source-heroes/_components/Section';
 import React from 'react';
 // @ts-expect-error
 import Faq from './5-faq.mdx';

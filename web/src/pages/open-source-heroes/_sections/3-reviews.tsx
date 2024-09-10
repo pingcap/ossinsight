@@ -1,6 +1,6 @@
 import { Masonry } from '@mui/lab';
 import { styled } from '@mui/material';
-import { Section, SectionContent, SectionTitle } from '@site/src/pages/github-campaign/_components/Section';
+import { Section, SectionContent, SectionTitle } from '@site/src/pages/open-source-heroes/_components/Section';
 import React, { type ReactNode } from 'react';
 
 export function ReviewsSection () {

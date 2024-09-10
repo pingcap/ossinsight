@@ -1,6 +1,6 @@
 import { Button, css, styled } from '@mui/material';
-import { Section, SectionContent, SectionTitle } from '@site/src/pages/github-campaign/_components/Section';
-import { TiDBCloudButton } from '@site/src/pages/github-campaign/_components/TiDBCloudButton';
+import { Section, SectionContent, SectionTitle } from '@site/src/pages/open-source-heroes/_components/Section';
+import { TiDBCloudButton } from '@site/src/pages/open-source-heroes/_components/TiDBCloudButton';
 import { AnimatePresence, LayoutGroup, motion } from 'framer-motion';
 import React, { type ReactNode } from 'react';
 import { TabItem, Tabs, TabsContext, TabsList } from '../_components/Tabs';

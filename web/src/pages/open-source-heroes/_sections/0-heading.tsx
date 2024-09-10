@@ -2,8 +2,8 @@
 
 import { ArrowCircleRightOutlined } from '@mui/icons-material';
 import { Button } from '@mui/material';
-import { ClaimForm } from '@site/src/pages/github-campaign/_components/ClaimForm';
-import { Heading, HeadingContainer, HeadingDescription, HeadingLeft, HeadingLogos, HeadingPrompt, HeadingRight, HeadingSpacing, HeadingTitle, HeadingTitlePrefix, MobileHeading } from '@site/src/pages/github-campaign/_components/Heading';
+import { ClaimForm } from '@site/src/pages/open-source-heroes/_components/ClaimForm';
+import { Heading, HeadingContainer, HeadingDescription, HeadingLeft, HeadingLogos, HeadingPrompt, HeadingRight, HeadingSpacing, HeadingTitle, HeadingTitlePrefix, MobileHeading } from '@site/src/pages/open-source-heroes/_components/Heading';
 import { useResponsiveAuth0 } from '@site/src/theme/NavbarItem/useResponsiveAuth0';
 import React, { useState } from 'react';
 
