@@ -48,7 +48,7 @@ function PrimaryHeading ({ loading, onClickAction }: { loading: boolean, onClick
               TiDB Serverless Credits for Open Source Heroes
             </HeadingTitle>
             <HeadingDescription>
-              TiDB loves open-source. We contribute code, sponsor projects around open source community, such as OssInsight, and deeply appreciate developers who actively contribute to the community.
+              TiDB loves open-source. We contribute code, sponsor projects and deeply appreciate developers who actively contribute to the community.
               <br />
               As a token of our appreciation, we&#39;re offering up to $1000 in free TiDB Serverless credits to fuel open-source hero&#39;s next big idea.
             </HeadingDescription>
