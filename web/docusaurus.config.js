@@ -234,9 +234,9 @@ const config = {
         respectPrefersColorScheme: false,
       },
       announcementBar: {
-        id: 'announcement-20230821',
+        id: 'announcement-20240910',
         content:
-          '<a target="_blank" href="https://next.ossinsight.io/widgets" style="font-weight:bold">✨ Spark Your GitHub Magic: Customize and Share with Your Personalized Widgets!</a>',
+          '<a target="_blank" href="https://ossinsight.io/open-source-heroes/?utm_source=ossinsight&utm_medium=referral&utm_campaign=plg_OSScontribution_credit_05" style="font-weight:bold">Claim up to $1000 in TiDB Serverless credits for your open-source contributions! -></a>',
         backgroundColor: '#4C33B1',
         textColor: '#ffffff',
         isCloseable: true,
