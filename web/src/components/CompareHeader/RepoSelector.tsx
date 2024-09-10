@@ -9,9 +9,8 @@ import {
   TextField,
   InputBase,
   Autocomplete,
-  CircularProgress,
+  CircularProgress, type UseAutocompleteProps,
 } from '@mui/material';
-import { UseAutocompleteProps } from '@mui/base/AutocompleteUnstyled/useAutocomplete';
 import { Repo, useSearchRepo } from './useSearchRepo';
 import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/Add';
