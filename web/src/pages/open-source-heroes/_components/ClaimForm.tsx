@@ -30,6 +30,10 @@ export function ClaimForm () {
     headers: {
       Authorization: `Bearer ${await getAccessTokenSilently({ connection: 'github' })}`,
     },
+  }).then(res => {
+    res = { ...res };
+    res.credits = parseInt(res.credits).toFixed(0);
+    return res;
   }));
 
   const { data: tenants } = useSWR('/api/v1/serverless-credits-campaign/tenants', async url => await giftClientWithoutCache.get<any, Tenant[]>(url, {
@@ -141,7 +145,7 @@ function ClaimedThisSession ({ check }: { check: Check }) {
           title: 'Open Source Heroes, we ❤️ you! To show our appreciation, claim up to $1000 in FREE TiDB Serverless Credits to fuel your next big idea. Build with a powerful, scalable serverless database. \nStart today!',
           hashtags: ['opensource', 'database', 'cloud', 'developer', 'tidbserverless'],
         })}>
-          <XIcon round size={32} bgStyle={{ fill: 'white' }} iconFillColor='black' />
+          <XIcon round size={32} bgStyle={{ fill: 'white' }} iconFillColor="black" />
         </IconButton>
       </Box>
     </>
@@ -171,7 +175,7 @@ function Claimed () {
           title: 'Open Source Heroes, we ❤️ you! To show our appreciation, claim up to $1000 in FREE TiDB Serverless Credits to fuel your next big idea. Build with a powerful, scalable serverless database. \nStart today!',
           hashtags: ['opensource', 'database', 'cloud', 'developer', 'tidbserverless'],
         })}>
-          <XIcon round size={32} bgStyle={{ fill: 'white' }} iconFillColor='black' />
+          <XIcon round size={32} bgStyle={{ fill: 'white' }} iconFillColor="black" />
         </IconButton>
       </Box>
     </>
