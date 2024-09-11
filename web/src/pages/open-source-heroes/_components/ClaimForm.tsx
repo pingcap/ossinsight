@@ -141,7 +141,7 @@ function ClaimedThisSession ({ check }: { check: Check }) {
           title: 'Open Source Heroes, we ❤️ you! To show our appreciation, claim up to $1000 in FREE TiDB Serverless Credits to fuel your next big idea. Build with a powerful, scalable serverless database. \nStart today!',
           hashtags: ['opensource', 'database', 'cloud', 'developer', 'tidbserverless'],
         })}>
-          <XIcon round size={32} />
+          <XIcon round size={32} bgStyle={{ fill: 'white' }} iconFillColor='black' />
         </IconButton>
       </Box>
     </>
@@ -171,7 +171,7 @@ function Claimed () {
           title: 'Open Source Heroes, we ❤️ you! To show our appreciation, claim up to $1000 in FREE TiDB Serverless Credits to fuel your next big idea. Build with a powerful, scalable serverless database. \nStart today!',
           hashtags: ['opensource', 'database', 'cloud', 'developer', 'tidbserverless'],
         })}>
-          <XIcon round size={32} />
+          <XIcon round size={32} bgStyle={{ fill: 'white' }} iconFillColor='black' />
         </IconButton>
       </Box>
     </>
