@@ -37,6 +37,8 @@ export function AuthProvider ({ children }: PropsWithChildren): JSX.Element {
     }
   };
 
+  console.log(customFields?.auth0_domain as string);
+
   return (
     <Auth0Provider
       domain={customFields?.auth0_domain as string}

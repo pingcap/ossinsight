@@ -1,0 +1,26 @@
+diff --git a/node_modules/react-share/dist/index.cjs b/node_modules/react-share/dist/index.cjs
+index cc8c6c0..9cfa531 100644
+--- a/node_modules/react-share/dist/index.cjs
++++ b/node_modules/react-share/dist/index.cjs
+@@ -31,7 +31,7 @@ var __objRest = (source, exclude) => {
+   return target;
+ };
+ Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
+-const jsxRuntime = require("react/jsx-runtime");
++const jsxRuntime = require("react/jsx-runtime.js");
+ const react = require("react");
+ const cx = require("classnames");
+ const jsonp = require("jsonp");
+diff --git a/node_modules/react-share/dist/index.js b/node_modules/react-share/dist/index.js
+index c9f8647..5066af7 100644
+--- a/node_modules/react-share/dist/index.js
++++ b/node_modules/react-share/dist/index.js
+@@ -29,7 +29,7 @@ var __objRest = (source, exclude) => {
+     }
+   return target;
+ };
+-import { jsxs, jsx } from "react/jsx-runtime";
++import { jsxs, jsx } from "react/jsx-runtime.js";
+ import { forwardRef, useRef, useEffect, useCallback, useState } from "react";
+ import cx from "classnames";
+ import jsonp from "jsonp";
