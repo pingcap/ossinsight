@@ -133,7 +133,7 @@ function ClaimedThisSession ({ check }: { check: Check }) {
       <ClaimContent>
         Hi <em>{user?.nickname ?? user?.name}</em>
         <br />
-        Successfully claimed <strong>{check.credits} credits</strong>, you can go to
+        Successfully claimed <strong>{check.credits} in TiDB Serverless</strong> credits, you can go to
         <br />
         TiDB Cloud to check it out and use it.
       </ClaimContent>
