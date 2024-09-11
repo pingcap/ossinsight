@@ -82,24 +82,24 @@ export function ClaimForm () {
       }
     }
 
-    // DEBUG
-    children = (
-      <>
-        <ClaimedThisSession check={check} />
-        <br />
-        <Claimed />
-        <br />
-        <EligibleNoTenants check={check} />
-        <br />
-        <Eligible check={check} onClaim={handleClaim} tenants={tenants} />
-        <br />
-        <NotEligibleNoTenant />
-        <br />
-        <NotEligible tenants={tenants} />
-        <br />
-        <Checking />
-      </>
-    );
+    // // DEBUG
+    // children = (
+    //   <>
+    //     <ClaimedThisSession check={check} />
+    //     <br />
+    //     <Claimed />
+    //     <br />
+    //     <EligibleNoTenants check={check} />
+    //     <br />
+    //     <Eligible check={check} onClaim={handleClaim} tenants={tenants} />
+    //     <br />
+    //     <NotEligibleNoTenant />
+    //     <br />
+    //     <NotEligible tenants={tenants} />
+    //     <br />
+    //     <Checking />
+    //   </>
+    // );
   } else {
     children = <Checking />;
   }
