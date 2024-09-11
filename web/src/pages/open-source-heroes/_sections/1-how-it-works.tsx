@@ -1,16 +1,15 @@
 import { css, styled } from '@mui/material';
 import { Section, SectionContent, SectionTitle } from '@site/src/pages/open-source-heroes/_components/Section';
-import { motion } from 'framer-motion';
 import React, { Fragment } from 'react';
 
 export function HowItWorks () {
   return (
-    <ThisSection initial="initial" whileInView="hover" viewport={{ amount: 0.6, once: true }}>
+    <ThisSection>
       <ThisSectionContent>
         <SectionTitle>
           How it Works
         </SectionTitle>
-        <Features layout="size">
+        <Features>
           {items.map((item, index) => (
             <Fragment key={index}>
               {index > 0 && <FeatureSplitter />}
@@ -19,11 +18,6 @@ export function HowItWorks () {
                 <FeatureIndicatorBar>
                   <FeatureIndicatorInnerCircle />
                 </FeatureIndicatorBar>
-                <FeatureDescription transition={{ delay: index * 0.1, bounce: 0 }} variants={animations}>
-                  <FeatureDescriptionLine />
-                  <FeatureDescriptionCircle />
-                  {item.description}
-                </FeatureDescription>
               </Feature>
             </Fragment>
           ))}
@@ -33,18 +27,13 @@ export function HowItWorks () {
   );
 }
 
-const animations = {
-  initial: { opacity: 0, y: -26 },
-  hover: { opacity: 1, y: 0 },
-};
-
-const ThisSection = motion(styled(Section)`
+const ThisSection = styled(Section)`
   ${({ theme }) => ({
     [theme.breakpoints.up('lg')]: css`
       padding-top: 0;
     `,
   })}
-`);
+`;
 
 const ThisSectionContent = styled(SectionContent)`
   display: block;
@@ -52,6 +41,7 @@ const ThisSectionContent = styled(SectionContent)`
     [theme.breakpoints.up('lg')]: css`
       display: flex;
       gap: 48px;
+      align-items: center;
 
       h2 {
         font-size: 24px;
@@ -61,7 +51,8 @@ const ThisSectionContent = styled(SectionContent)`
   })}
 `;
 
-const Features = motion(styled('div')`
+const Features = styled('div')`
+  flex: 1;
   display: flex;
   gap: 24px;
   align-items: center;
@@ -77,7 +68,7 @@ const Features = motion(styled('div')`
       align-items: flex-start;
     `,
   })}
-`);
+`;
 
 const FeatureSplitter = styled('li')`
   flex: 0.6;
@@ -101,13 +92,8 @@ const Feature = styled('div')`
 const FeatureTitle = styled('h3')`
   font-size: 24px;
   line-height: 36px;
+  white-space: nowrap;
 `;
-const FeatureDescription = motion(styled('div')`
-  max-width: 100%;
-  overflow: hidden;
-  font-size: 18px;
-  line-height: 28px;
-`);
 
 const FeatureIndicatorBar = styled('div')`
   background-color: var(--color1);
@@ -121,22 +107,6 @@ const FeatureIndicatorInnerCircle = styled('div')`
   height: 18px;
   border-radius: 9px;
   border: 4px solid var(--color2);
-  background-color: white;
-`;
-
-const FeatureDescriptionLine = styled('div')`
-  margin-left: 13px;
-  height: 32px;
-  width: 1px;
-  background-color: var(--color1);
-`;
-
-const FeatureDescriptionCircle = styled('div')`
-  margin-left: 4px;
-  width: 18px;
-  height: 18px;
-  border-radius: 9px;
-  border: 4px solid var(--color1);
   background-color: white;
 `;
 
