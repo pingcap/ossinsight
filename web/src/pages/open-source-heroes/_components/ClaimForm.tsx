@@ -1,9 +1,11 @@
-import { Box, Button, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, Skeleton, styled } from '@mui/material';
+import { Box, Button, FormControl, FormControlLabel, FormLabel, IconButton, Radio, RadioGroup, Skeleton, styled } from '@mui/material';
 import { giftClientWithoutCache } from '@site/src/api/client';
 import { TiDBCloudButton } from '@site/src/pages/open-source-heroes/_components/TiDBCloudButton';
 import { useResponsiveAuth0 } from '@site/src/theme/NavbarItem/useResponsiveAuth0';
 import { getErrorMessage } from '@site/src/utils/error';
+import { twitterLink } from '@site/src/utils/share';
 import React, { type ReactNode, useEffect, useState } from 'react';
+import { XIcon } from 'react-share';
 import useSWR from 'swr';
 
 type Check = {
@@ -131,9 +133,17 @@ function ClaimedThisSession ({ check }: { check: Check }) {
         <br />
         TiDB Cloud to check it out and use it.
       </ClaimContent>
-      <TiDBCloudButton variant="contained">
-        Start Building with TiDB Cloud!
-      </TiDBCloudButton>
+      <Box sx={{ mt: 8, display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
+        <TiDBCloudButton variant="contained" mt={0}>
+          Start Building with TiDB Cloud!
+        </TiDBCloudButton>
+        <IconButton component="a" target="_blank" href={twitterLink(location.href, {
+          title: 'Open Source Heroes, we ❤️ you! To show our appreciation, claim up to $1000 in FREE TiDB Serverless Credits to fuel your next big idea. Build with a powerful, scalable serverless database. \nStart today!',
+          hashtags: ['opensource', 'database', 'cloud', 'developer', 'tidbserverless'],
+        })}>
+          <XIcon round size={32} />
+        </IconButton>
+      </Box>
     </>
   );
 }
@@ -153,9 +163,17 @@ function Claimed () {
         <br />
         Ready to build something amazing?
       </ClaimContent>
-      <TiDBCloudButton variant="contained">
-        Start Building with TiDB Cloud!
-      </TiDBCloudButton>
+      <Box sx={{ mt: 8, display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
+        <TiDBCloudButton variant="contained" mt={0}>
+          Start Building with TiDB Cloud!
+        </TiDBCloudButton>
+        <IconButton component="a" target="_blank" href={twitterLink(location.href, {
+          title: 'Open Source Heroes, we ❤️ you! To show our appreciation, claim up to $1000 in FREE TiDB Serverless Credits to fuel your next big idea. Build with a powerful, scalable serverless database. \nStart today!',
+          hashtags: ['opensource', 'database', 'cloud', 'developer', 'tidbserverless'],
+        })}>
+          <XIcon round size={32} />
+        </IconButton>
+      </Box>
     </>
   );
 }
@@ -351,7 +369,9 @@ const starIcon = <svg style={{ display: 'block', margin: '0 auto' }} width="117"
 
 const badIcon = <svg width="117" height="117" viewBox="0 0 117 117" fill="none" xmlns="http://www.w3.org/2000/svg">
   <circle cx="58.5" cy="58.5" r="58.5" fill="#04CB83" />
-  <path d="M84.0378 48.4149C82.2492 46.0834 79.5263 44.7208 76.576 44.677L68.5364 44.552C69.1388 41.7267 69.3601 39.1889 69.1941 36.9761C68.9974 34.3321 68.2537 32.1193 66.9814 30.4129C66.1147 29.244 65.033 28.3439 63.7729 27.7501C62.4637 27.1313 61.3205 27 60.5891 27C56.1821 27 52.5987 30.3691 52.5987 34.5071C52.5987 41.2329 48.3453 46.7022 43.1085 46.7022H35.6713C33.0959 46.7022 31 48.8337 31 51.4528V77.2495C31 79.8685 33.0959 82 35.6713 82H72.0584C74.2588 82 76.4162 81.2499 78.1372 79.8935C79.8767 78.5246 81.106 76.5869 81.5977 74.4429L85.7588 56.2908C86.3919 53.5343 85.765 50.6652 84.0378 48.4149ZM40.902 77.4932H35.6713C35.5361 77.4932 35.4255 77.3807 35.4255 77.2432V51.4528C35.4255 51.3153 35.5361 51.2028 35.6713 51.2028H40.902V77.4932ZM81.4502 55.2657L77.289 73.4178C77.0247 74.5617 76.367 75.593 75.4328 76.3306C74.4801 77.0807 73.2877 77.4932 72.0645 77.4932H45.3274V50.9902C46.4829 50.7714 47.6016 50.3777 48.6834 49.8151C50.3491 48.9462 51.8304 47.7149 53.1027 46.1459C55.635 43.0143 57.0303 38.8826 57.0303 34.4946C57.0303 32.8382 58.6283 31.488 60.5952 31.488C60.7673 31.488 62.2793 31.5318 63.4533 33.1132C65.2297 35.5072 65.2788 40.1327 63.5885 46.1334C63.398 46.8085 63.5271 47.5336 63.9389 48.0961C64.3507 48.6587 64.9961 48.9962 65.6845 49.0025L76.5207 49.1713C78.1249 49.1963 79.6001 49.9276 80.5651 51.184C81.4625 52.3716 81.7821 53.8218 81.4502 55.2657Z" fill="white" />
+  <path
+    d="M84.0378 48.4149C82.2492 46.0834 79.5263 44.7208 76.576 44.677L68.5364 44.552C69.1388 41.7267 69.3601 39.1889 69.1941 36.9761C68.9974 34.3321 68.2537 32.1193 66.9814 30.4129C66.1147 29.244 65.033 28.3439 63.7729 27.7501C62.4637 27.1313 61.3205 27 60.5891 27C56.1821 27 52.5987 30.3691 52.5987 34.5071C52.5987 41.2329 48.3453 46.7022 43.1085 46.7022H35.6713C33.0959 46.7022 31 48.8337 31 51.4528V77.2495C31 79.8685 33.0959 82 35.6713 82H72.0584C74.2588 82 76.4162 81.2499 78.1372 79.8935C79.8767 78.5246 81.106 76.5869 81.5977 74.4429L85.7588 56.2908C86.3919 53.5343 85.765 50.6652 84.0378 48.4149ZM40.902 77.4932H35.6713C35.5361 77.4932 35.4255 77.3807 35.4255 77.2432V51.4528C35.4255 51.3153 35.5361 51.2028 35.6713 51.2028H40.902V77.4932ZM81.4502 55.2657L77.289 73.4178C77.0247 74.5617 76.367 75.593 75.4328 76.3306C74.4801 77.0807 73.2877 77.4932 72.0645 77.4932H45.3274V50.9902C46.4829 50.7714 47.6016 50.3777 48.6834 49.8151C50.3491 48.9462 51.8304 47.7149 53.1027 46.1459C55.635 43.0143 57.0303 38.8826 57.0303 34.4946C57.0303 32.8382 58.6283 31.488 60.5952 31.488C60.7673 31.488 62.2793 31.5318 63.4533 33.1132C65.2297 35.5072 65.2788 40.1327 63.5885 46.1334C63.398 46.8085 63.5271 47.5336 63.9389 48.0961C64.3507 48.6587 64.9961 48.9962 65.6845 49.0025L76.5207 49.1713C78.1249 49.1963 79.6001 49.9276 80.5651 51.184C81.4625 52.3716 81.7821 53.8218 81.4502 55.2657Z"
+    fill="white" />
 </svg>;
 
 const successIcon = <svg width="117" height="117" viewBox="0 0 117 117" fill="none" xmlns="http://www.w3.org/2000/svg">

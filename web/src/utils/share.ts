@@ -1,5 +1,9 @@
 // see https://github.com/nygardk/react-share/tree/master/src
-import objectToGetParams from 'react-share/es/utils/objectToGetParams';
+
+function objectToGetParams (object: any) {
+  const params = Object.entries(object).filter(([, value]) => value !== undefined && value !== null).map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`);
+  return params.length > 0 ? `?${params.join('&')}` : '';
+}
 
 export function twitterLink (
   url: string,
