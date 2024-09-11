@@ -32,7 +32,7 @@ export function ClaimForm () {
     },
   }).then(res => {
     res = { ...res };
-    res.credits = parseInt(res.credits).toFixed(0);
+    res.credits = formatCredits(res.credits);
     return res;
   }));
 
@@ -133,7 +133,7 @@ function ClaimedThisSession ({ check }: { check: Check }) {
       <ClaimContent>
         Hi <em>{user?.nickname ?? user?.name}</em>
         <br />
-        Successfully claimed {check.credits} credits, you can go to
+        Successfully claimed <strong>{check.credits} credits</strong>, you can go to
         <br />
         TiDB Cloud to check it out and use it.
       </ClaimContent>
@@ -390,3 +390,9 @@ const successIcon = <svg width="117" height="117" viewBox="0 0 117 117" fill="no
   <circle cx="58.5" cy="58.5" r="58.5" fill="#E6A1B5" />
   <path d="M51.7701 82C50.4492 82 49.1335 81.489 48.1258 80.4721L27.5076 59.5827C25.4975 57.5438 25.4975 54.2352 27.5076 52.1963C29.5229 50.1574 32.7861 50.1574 34.7963 52.1963L51.7701 69.3926L84.2037 36.5331C86.2138 34.489 89.477 34.489 91.4924 36.5331C93.5025 38.572 93.5025 41.8754 91.4924 43.9142L55.4145 80.4721C54.4068 81.489 53.0859 82 51.7701 82Z" fill="white" />
 </svg>;
+
+const nf = new Intl.NumberFormat('en');
+
+const formatCredits = (value: string) => {
+  return `$${nf.format(parseInt(value))} USD`;
+};
