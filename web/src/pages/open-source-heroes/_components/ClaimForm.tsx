@@ -82,24 +82,24 @@ export function ClaimForm () {
       }
     }
 
-    // // DEBUG
-    // children = (
-    //   <>
-    //     <ClaimedThisSession check={check} />
-    //     <br />
-    //     <Claimed />
-    //     <br />
-    //     <EligibleNoTenants check={check} />
-    //     <br />
-    //     <Eligible check={check} onClaim={handleClaim} tenants={tenants} />
-    //     <br />
-    //     <NotEligibleNoTenant />
-    //     <br />
-    //     <NotEligible tenants={tenants} />
-    //     <br />
-    //     <Checking />
-    //   </>
-    // );
+    // DEBUG
+    children = (
+      <>
+        <ClaimedThisSession check={check} />
+        <br />
+        <Claimed />
+        <br />
+        <EligibleNoTenants check={check} />
+        <br />
+        <Eligible check={check} onClaim={handleClaim} tenants={tenants} />
+        <br />
+        <NotEligibleNoTenant />
+        <br />
+        <NotEligible tenants={tenants} />
+        <br />
+        <Checking />
+      </>
+    );
   } else {
     children = <Checking />;
   }
@@ -137,7 +137,7 @@ function ClaimedThisSession ({ check }: { check: Check }) {
         <br />
         TiDB Cloud to check it out and use it.
       </ClaimContent>
-      <Box sx={{ mt: 8, display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
+      <Box sx={{ position: 'relative', width: 'max-content', maxWidth: '100%', mt: 8, display: 'flex', gap: 2, px: 2, alignItems: 'center', flexWrap: 'wrap' }}>
         <TiDBCloudButton variant="contained" mt={0}>
           Start Building with TiDB Cloud!
         </TiDBCloudButton>
@@ -162,7 +162,7 @@ function Claimed () {
         <br />
         Ready to build something amazing?
       </ClaimContent>
-      <Box sx={{ mt: 8, display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
+      <Box sx={{ position: 'relative', width: 'max-content', maxWidth: '100%', mt: 8, display: 'flex', gap: 2, px: 2, alignItems: 'center', flexWrap: 'wrap' }}>
         <TiDBCloudButton variant="contained" mt={0}>
           Start Building with TiDB Cloud!
         </TiDBCloudButton>
@@ -187,7 +187,7 @@ function NotEligible ({ tenants }: { tenants: Tenant[] }) {
         <br />
         <b>Start building your next project today.</b>
       </ClaimContent>
-      <Box sx={{ mt: 8, display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
+      <Box sx={{ position: 'relative', width: 'max-content', maxWidth: '100%', mt: 8, display: 'flex', gap: 2, px: 2, alignItems: 'center', flexWrap: 'wrap' }}>
         <TiDBCloudButton mt={0} variant="contained">
           Login to TiDB Cloud
         </TiDBCloudButton>
@@ -210,7 +210,7 @@ function NotEligibleNoTenant () {
         <br />
         Create a new TiDB Cloud account and enjoy 25GB of free storage to start building your applications.
       </ClaimContent>
-      <Box sx={{ mt: 8, display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
+      <Box sx={{ position: 'relative', width: 'max-content', maxWidth: '100%', mt: 8, display: 'flex', gap: 2, px: 2, alignItems: 'center', flexWrap: 'wrap' }}>
         <TiDBCloudButton mt={0} variant="contained">
           Create TiDB Cloud Account
         </TiDBCloudButton>
@@ -324,7 +324,7 @@ function Eligible ({ tenants, check, onClaim }: { tenants: Tenant[], check: Chec
 
 function ShareButton () {
   return (
-    <Button component="a" sx={{ color: 'white !important' }} target="_blank" href={twitterLink(location.href, {
+    <Button component="a" sx={{ position: [undefined, undefined, 'absolute'], left: [undefined, undefined, '100%'], whiteSpace: 'nowrap', color: 'white !important' }} target="_blank" href={twitterLink(location.href, {
       title: 'Open Source Heroes, we ❤️ you! To show our appreciation, claim up to $1000 in FREE TiDB Serverless Credits to fuel your next big idea. Build with a powerful, scalable serverless database. \nStart today!',
       hashtags: ['opensource', 'database', 'cloud', 'developer', 'tidbserverless'],
     })}>
