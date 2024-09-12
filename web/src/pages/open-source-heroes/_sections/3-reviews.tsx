@@ -18,7 +18,7 @@ export function ReviewsSection () {
     <Section>
       <SectionContent>
         <SectionTitle>
-          We Build with <a href="https://www.pingcap.com/tidb-serverless/?utm_source=ossinsight&utm_medium=referral&utm_campaign=plg_OSScontribution_credit_05" target="_blank" rel="noreferrer">TiDB</a>
+          We Build with <a href="https://www.pingcap.com/tidb-cloud-serverless/?utm_source=ossinsight&utm_medium=referral&utm_campaign=plg_OSScontribution_credit_05" target="_blank" rel="noreferrer">TiDB</a>
         </SectionTitle>
         <Masonry sequential sx={{ mt: 7, listStyle: 'none' }} component="ul" columns={[1, 1, 2, 3]} spacing={3}>
           {reviews.map((review, index) => (

@@ -6,7 +6,7 @@ import { aligns, Body } from '../../../_components/typography';
 const FooterLine = () => {
   return (
     <Body sx={aligns.heading}>
-      <TidbLogo href="https://www.pingcap.com/tidb-serverless/?utm_source=ossinsight&utm_medium=referral" target="_blank" rel="noreferrer">
+      <TidbLogo href="https://www.pingcap.com/tidb-cloud-serverless/?utm_source=ossinsight&utm_medium=referral" target="_blank" rel="noreferrer">
         <img src="/img/tidb-logo.svg" height={40} alt="TiDB" />
         TiDB
       </TidbLogo>
