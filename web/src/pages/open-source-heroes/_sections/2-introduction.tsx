@@ -103,7 +103,7 @@ const tabs: Array<{ value: string, title: ReactNode, content: ReactNode }> = [
   },
   {
     value: '$300',
-    title: '$300-1000',
+    title: '$300-2000',
     content: <Content4 />,
   },
 ];

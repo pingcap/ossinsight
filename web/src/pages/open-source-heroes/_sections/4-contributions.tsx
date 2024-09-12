@@ -36,7 +36,7 @@ export function ContributionsSection () {
           TiDB ❤️ Open Source
         </SectionTitle>
         <SectionDescription>
-          We take pride in our <strong><a href='https://github.com/pingcap/tidb' target='_blank' rel='noreferrer'>open-source</a></strong> roots.
+          We take pride in our <strong>open-source</strong> roots.
           <br />
           With the developer community, we align our product, to make sure it perfectly fits modern application developer&#39;s needs.
         </SectionDescription>
@@ -53,6 +53,10 @@ export function ContributionsSection () {
             ))}
           </Items>
         </Content>
+
+        <SectionDescription sx={{ mt: 4 }}>
+          <a href="https://github.com/pingcap/ossinsight" target="_blank" rel='noreferrer'>Discover TiDB on GitHub -&gt;</a>
+        </SectionDescription>
       </SectionContent>
     </Section>
   );
@@ -61,13 +65,12 @@ export function ContributionsSection () {
 const Icon = styled('div')`
   display: block;
   margin-top: 120px;
-  
+
   ${({ theme }) => ({
     [theme.breakpoints.up('md')]: css`
       display: none;
     `,
   })}
-  
   > svg {
     display: block;
     margin: auto;
@@ -123,7 +126,7 @@ const ItemTitle = styled('div')`
     [theme.breakpoints.up('md')]: css`
       font-size: 36px;
       line-height: 48px;
-      `,
+    `,
   })}
 `;
 
@@ -138,7 +141,7 @@ const ItemDescription = styled('div')`
     [theme.breakpoints.up('md')]: css`
       font-size: 24px;
       line-height: 36px;
-      `,
+    `,
   })}
 `;
 

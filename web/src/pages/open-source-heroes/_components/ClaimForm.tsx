@@ -325,7 +325,7 @@ function Eligible ({ tenants, check, onClaim }: { tenants: Tenant[], check: Chec
 function ShareButton () {
   return (
     <Button component="a" sx={{ position: [undefined, undefined, 'absolute'], left: [undefined, undefined, '100%'], whiteSpace: 'nowrap', color: 'white !important' }} target="_blank" href={twitterLink(location.href, {
-      title: 'Open Source Heroes, we ❤️ you! To show our appreciation, claim up to $1000 in FREE TiDB Serverless Credits to fuel your next big idea. Build with a powerful, scalable serverless database. \nStart today!',
+      title: 'Open Source Heroes, we ❤️ you! To show our appreciation, claim up to $2000 in FREE TiDB Serverless Credits to fuel your next big idea. Build with a powerful, scalable serverless database. \nStart today!',
       hashtags: ['opensource', 'database', 'cloud', 'developer', 'tidbserverless'],
     })}>
       {'Share via '}

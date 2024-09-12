@@ -50,7 +50,7 @@ function PrimaryHeading ({ loading, onClickAction }: { loading: boolean, onClick
             <HeadingDescription>
               TiDB loves open-source. We contribute code, sponsor projects and deeply appreciate developers who actively contribute to the community.
               <br />
-              As a token of our appreciation, we&#39;re offering up to $1000 in free TiDB Serverless credits to fuel open-source hero&#39;s next big idea.
+              As a token of our appreciation, we&#39;re offering up to $2000 in free TiDB Serverless credits to fuel open-source hero&#39;s next big idea.
             </HeadingDescription>
           </div>
         </HeadingLeft>
@@ -83,7 +83,7 @@ function PrimaryHeading ({ loading, onClickAction }: { loading: boolean, onClick
         <p>
           TiDB loves open-source. We contribute code, sponsor projects, and appreciate developers who do so.
           <br />
-          As a token of our appreciation, we&#39;re offering up to $1000 free TiDB Serverless credits to fuel open-source hero&#39;s next big idea.
+          As a token of our appreciation, we&#39;re offering up to $2000 free TiDB Serverless credits to fuel open-source hero&#39;s next big idea.
         </p>
         <p className="action-prompt">
           Log in with GitHub account to claim your credits.
