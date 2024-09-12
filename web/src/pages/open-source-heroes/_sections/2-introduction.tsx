@@ -36,7 +36,7 @@ export function IntroductionsSection () {
         <SectionTitle sx={{ mt: [20, 20, 40] }}>
           With TiDB Serverless credits 💰 , you can:
         </SectionTitle>
-        <Tabs defaultValue="free">
+        <Tabs defaultValue="free" values={tabValues}>
           <TabsList>
             <LayoutGroup>
               {tabs.map(tab => <TabItem key={tab.value} value={tab.value}>{tab.title}</TabItem>)}
@@ -63,6 +63,7 @@ export function IntroductionsSection () {
                   </AnimatePresence>
                 )}
               </TabsContext.Consumer>
+              <span className="--spacer" />
               <Button
                 variant="contained"
                 onClick={() => {
@@ -72,6 +73,9 @@ export function IntroductionsSection () {
               >
                 Claim your credits now
               </Button>
+              <footer>
+                <p>*The scenarios above are for reference only. The actual bill will be based on real usage.</p>
+              </footer>
             </motion.article>
           </Content>
         </Tabs>
@@ -88,25 +92,27 @@ const tabs: Array<{ value: string, title: ReactNode, content: ReactNode }> = [
   },
   {
     value: '$5',
-    title: '$5-10',
+    title: '$5-$10',
     content: <Content1 />,
   },
   {
     value: '$10',
-    title: '$10-100',
+    title: '$10-$100',
     content: <Content2 />,
   },
   {
     value: '$100',
-    title: '$100-300',
+    title: '$100-$300',
     content: <Content3 />,
   },
   {
     value: '$300',
-    title: '$300-2000',
+    title: '$300-$2000',
     content: <Content4 />,
   },
 ];
+
+const tabValues = tabs.map(tab => tab.value);
 
 const Content = styled('div')<{ invert?: boolean }>`
   margin-top: 36px;
@@ -131,8 +137,18 @@ const Content = styled('div')<{ invert?: boolean }>`
       text-decoration: underline;
     }
 
+    .--spacer {
+      flex: 1;
+    }
+
     .MuiButtonBase-root {
       width: 100%;
+    }
+
+    footer {
+      font-size: 16px;
+      color: #53524F;
+      font-style: italic;
     }
   }
 

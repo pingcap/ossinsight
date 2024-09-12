@@ -1,20 +1,66 @@
 import { styled } from '@mui/material';
 import { motion } from 'framer-motion';
-import React, { createContext, type ReactNode, useContext, useEffect, useState } from 'react';
+import React, { createContext, type ReactNode, useContext, useEffect, useRef, useState } from 'react';
 
 export const TabsContext = createContext<{ init: boolean, current: string, setCurrent: (value: string) => void }>({ init: false, current: '', setCurrent () {} });
 
-export function Tabs ({ children, defaultValue }: { children: ReactNode, defaultValue: string }) {
+export function Tabs ({ children, defaultValue, values }: { children: ReactNode, defaultValue: string, values: string[] }) {
   const [current, setCurrent] = useState(defaultValue);
   const [init, setInit] = useState(false);
+  const [clicking, setClicking] = useState(0);
+  const [inView, setInView] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     setInit(true);
+
+    const el = ref.current;
+    if (!el) return;
+    if (typeof IntersectionObserver !== 'undefined') {
+      const io = new IntersectionObserver(([entry]) => {
+        setInView(entry.isIntersecting);
+      }, { threshold: 0.3 });
+      io.observe(el);
+      return () => {
+        io.unobserve(el);
+      };
+    } else {
+      setInView(true);
+    }
   }, []);
 
+  useEffect(() => {
+    if (clicking) {
+      const timeout = setTimeout(() => {
+        setClicking(0);
+      }, 5000);
+      return () => {
+        clearTimeout(timeout);
+      };
+    }
+  }, [clicking]);
+
+  useEffect(() => {
+    if (!clicking && inView) {
+      const interval = setInterval(() => {
+        setCurrent(value => {
+          const index = Math.max(values.indexOf(value), 0);
+          return values[(index + 1) % values.length];
+        });
+      }, 4000);
+
+      return () => {
+        clearInterval(interval);
+      };
+    }
+  }, [clicking, inView]);
+
   return (
-    <TabsContext.Provider value={{ init, current, setCurrent }}>
-      {children}
-    </TabsContext.Provider>
+    <div ref={ref} onMouseDown={() => setClicking(clicking => clicking + 1)}>
+      <TabsContext.Provider value={{ init, current, setCurrent }}>
+        {children}
+      </TabsContext.Provider>
+    </div>
   );
 }
 
