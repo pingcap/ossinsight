@@ -446,10 +446,10 @@ const config = {
         logo: {
           alt: 'TiDB Cloud Logo',
           src: '/img/tidb-cloud-logo-o.png',
-          href: 'https://www.pingcap.com/tidb-serverless/?utm_source=ossinsight&utm_medium=referral',
+          href: 'https://www.pingcap.com/tidb-cloud-serverless/?utm_source=ossinsight&utm_medium=referral',
           width: 200,
         },
-        copyright: `Copyright &copy; ${new Date().getFullYear()} <a href="https://en.pingcap.com" target="_blank">PingCAP</a>. All Rights Reserved | <a href="https://en.pingcap.com/privacy-policy/" target="_blank">Privacy</a>`,
+        copyright: `Copyright &copy; ${new Date().getFullYear()} <a href="https://www.pingcap.com" target="_blank">PingCAP</a>. All Rights Reserved | <a href="https://www.pingcap.com/privacy-policy/" target="_blank">Privacy</a>`,
       },
       prism: {
         theme: lightCodeTheme,
