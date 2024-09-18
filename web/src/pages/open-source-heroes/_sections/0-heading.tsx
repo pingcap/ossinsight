@@ -5,6 +5,7 @@ import { Button } from '@mui/material';
 import { ClaimForm } from '@site/src/pages/open-source-heroes/_components/ClaimForm';
 import { Heading, HeadingContainer, HeadingDescription, HeadingLeft, HeadingLogos, HeadingPrompt, HeadingRight, HeadingSpacing, HeadingTitle, HeadingTitlePrefix, MobileHeading } from '@site/src/pages/open-source-heroes/_components/Heading';
 import { useResponsiveAuth0 } from '@site/src/theme/NavbarItem/useResponsiveAuth0';
+import { useGtag } from '@site/src/utils/ga';
 import React, { useState } from 'react';
 
 declare module 'react' {
@@ -17,6 +18,7 @@ declare module 'react' {
 export function HeadingSection () {
   const { user, isLoading, login } = useResponsiveAuth0();
   const [claiming, setClaiming] = useState(false);
+  const { gtagEvent } = useGtag();
 
   if (claiming) {
     return <ClaimForm />;
@@ -24,6 +26,8 @@ export function HeadingSection () {
     return <PrimaryHeading
       loading={isLoading}
       onClickAction={() => {
+        console.log('github_campaign_action');
+        gtagEvent('github_campaign_action', {});
         if (isGithubSub(user?.sub)) {
           setClaiming(true);
         } else {
