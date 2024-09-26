@@ -261,7 +261,7 @@
   vertical-align: middle;
   position: relative;
   top: -2px;
-`;function $e(){const e=(0,Me.Z)(),{inView:t,ref:n}=(0,qe.YD)(),a=(0,Pe.Ox)(t&&e);return r.createElement(Be,null,r.createElement(Ue,null,r.createElement(ze,null,r.createElement("span",{className:"nav-explore-icon"})),r.createElement(Qe,null,"GitHub Data Explorer"),r.createElement(Oe,null)),r.createElement(He,{ref:n},(e=>r.createElement(r.Fragment,null,"Explore ",r.createElement(De,{color:"#9197D0"},r.createElement(Ve,{value:e,hasComma:!0,size:18}))," GitHub data with no SQL or plotting skills. Powered by ",r.createElement(_e,{height:"16",alt:"tidb cloud logo",src:"/img/tidb-cloud-logo-t.svg"})))(a)))}const Oe=(0,x.ZP)(Re)`
+`;function $e(){const e=(0,Me.Z)(),{inView:t,ref:n}=(0,qe.YD)(),a=(0,Pe.Ox)(t&&e);return r.createElement(Be,null,r.createElement(Ue,null,r.createElement(ze,null,r.createElement("span",{className:"nav-explore-icon"})),r.createElement(Qe,null,"GitHub Data Explorer"),r.createElement(Oe,null)),r.createElement(He,{ref:n},(e=>r.createElement(r.Fragment,null,"Explore ",r.createElement(De,{color:"#9197D0"},r.createElement(Ve,{value:e,hasComma:!0,size:18}))," GitHub data with no SQL or plotting skills. Powered by ",r.createElement(_e,{height:"18",alt:"tidb cloud logo",src:"/img/tidb-cloud-logo-o.png"})))(a)))}const Oe=(0,x.ZP)(Re)`
   margin-left: 8px;
 `,ze=(0,x.ZP)("span")`
   display: inline-flex;
