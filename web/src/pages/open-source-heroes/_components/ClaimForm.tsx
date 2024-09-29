@@ -3,6 +3,7 @@ import { giftClientWithoutCache } from '@site/src/api/client';
 import { TiDBCloudButton } from '@site/src/pages/open-source-heroes/_components/TiDBCloudButton';
 import { useResponsiveAuth0 } from '@site/src/theme/NavbarItem/useResponsiveAuth0';
 import { getErrorMessage } from '@site/src/utils/error';
+import { useGtag } from '@site/src/utils/ga';
 import { twitterLink } from '@site/src/utils/share';
 import React, { type ReactNode, useEffect, useState } from 'react';
 import { XIcon } from 'react-share';
@@ -24,6 +25,7 @@ type Tenant = {
 export function ClaimForm () {
   const [claimedThisSession, setClaimedThisSession] = useState(false);
   const { getAccessTokenSilently } = useResponsiveAuth0();
+  const { gtagEvent } = useGtag();
 
   const { data: check, mutate } = useSWR('/api/v1/serverless-credits-campaign/credits/check', async url => await giftClientWithoutCache.get<any, Check>(url, {
     withCredentials: true,
@@ -41,9 +43,10 @@ export function ClaimForm () {
     headers: {
       Authorization: `Bearer ${await getAccessTokenSilently({ connection: 'github' })}`,
     },
-  }), { revalidateOnFocus: false });
+  }));
 
   const handleClaim = async (id: string) => {
+    gtagEvent('github_campaign_claim', {});
     await giftClientWithoutCache.post('/api/v1/serverless-credits-campaign/credits/claim', {
       selectedTenantId: id,
     }, {
