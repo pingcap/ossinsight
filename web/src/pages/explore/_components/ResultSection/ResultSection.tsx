@@ -175,7 +175,7 @@ function renderEngines (question: Question | undefined) {
       <>
         . Running on&nbsp;
         <EngineTag>
-          <TidbLogo src="/img/tidb-cloud-logo-t.svg" alt="TiDB" />
+          <TidbLogo src="/img/tidb-cloud-logo-o.png" alt="TiDB" />
           {question.engines.map(replaceEngineName).join(', ')}
         </EngineTag>
         <Info>
