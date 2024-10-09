@@ -12,7 +12,7 @@
     "kysely:generate": "kysely-codegen --include-pattern \"*.(collection*|github*)\"  --type-only-imports --out-file ./src/db/schema.d.ts",
     "dev:start": "ts-node -r tsconfig-paths/register src/index.ts",
     "cli:collection:reload": "ts-node src/index.ts collection reload",
-    "cli:collection:verify": "ts-node src/index.ts collection verify --fast-fail false"
+    "cli:collection:verify": "ts-node src/index.ts collection verify --fail-fast false"
   },
   "keywords": [],
   "author": "Mini256",
@@ -46,7 +46,7 @@
     "lru-cache": "^11.0.1",
     "luxon": "^3.5.0",
     "mysql2": "^3.11.3",
-    "octokit": "^4.0.2",
+    "octokit": "^3.2.1",
     "pino": "^9.4.0",
     "pino-sentry-transport": "^1.4.0",
     "reflect-metadata": "^0.2.2",

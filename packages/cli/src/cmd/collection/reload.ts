@@ -77,7 +77,7 @@ export async function syncCollection(args: any) {
     process.exit(0);
   } catch (e: any) {
     logger.error(e, `❌  Failed to reload collection configs.`);
-    process.exit(-1);
+    process.exit(1);
   }
 }
 

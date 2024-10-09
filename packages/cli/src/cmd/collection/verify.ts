@@ -8,6 +8,8 @@ import {loadCollectionConfigs} from "@configs";
 import * as process from "node:process";
 import {findReposByNames} from "@db/github_repos";
 import {booleanParser, DEFAULT_COLLECTION_CONFIGS_BASE_DIR, stringParser} from "@cmd/collection/common";
+import { Octokit } from "octokit";
+import {envConfig} from "@env";
 
 export function initVerifyCollectionCommand(collectionCmd: Command) {
   collectionCmd
@@ -20,8 +22,14 @@ export function initVerifyCollectionCommand(collectionCmd: Command) {
       DEFAULT_COLLECTION_CONFIGS_BASE_DIR
     )
     .option<boolean>(
-      '-f, --fast-fail',
-      'whether to use fast fail mode',
+      '-f, --fail-fast',
+      'If an error is encountered, the process will be terminated immediately',
+      booleanParser,
+      true
+    )
+    .option<boolean>(
+      '-s, --fix-suggestion',
+      'Show the suggestion to fix the validation error',
       booleanParser,
       true
     )
@@ -30,7 +38,7 @@ export function initVerifyCollectionCommand(collectionCmd: Command) {
 
 export async function verifyCollectionConfigs(args: any) {
   try {
-    const { baseDir, fastFail } = args;
+    const { baseDir, fastFail, fixSuggestion } = args;
 
     const configsMap = await loadCollectionConfigs(baseDir);
     logger.info(`Loaded ${configsMap.size} collections from config files in the directory ${baseDir}.`);
@@ -46,6 +54,7 @@ export async function verifyCollectionConfigs(args: any) {
     const existsCollectionIds = new Set(allCollections.map((c) => c.id));
     const existsCollectionNames = new Set(allCollections.map((c) => c.name));
 
+    const reposNotFound = new Set<string>();
     const errors: Error[] = [];
     const throwError = fastFail ?
       (err: Error) => { throw err; } :
@@ -69,7 +78,7 @@ export async function verifyCollectionConfigs(args: any) {
       const repos = await findReposByNames(collectionRepos);
       if (repos.length < collectionRepos.length) {
         const diffRepos = collectionRepos.filter(name => !repos.some(r => r.repo_name === name));
-
+        diffRepos.forEach((r) => reposNotFound.add(r));
         throwError(new Error(`Collection [${collectionName}](id: ${collectionId}): can not find some repos by names: ${diffRepos.join(', ')}`));
       }
 
@@ -83,12 +92,49 @@ export async function verifyCollectionConfigs(args: any) {
       for (let error of errors) {
         logger.error(error.message);
       }
-      process.exit(-1);
+
+      if (fixSuggestion) {
+        await showFixRepoNamesSuggestions(baseDir, Array.from(reposNotFound));
+      }
+
+      process.exit(1);
     }
 
     process.exit(0);
   } catch (e: any) {
     logger.error(e, `❌  Failed to verify collection configs, please check the configs.`);
-    process.exit(-1);
+    process.exit(1);
   }
+}
+
+function splitOwnerRepo(data: string) {
+  const [owner, repo] = data.split('/');
+  return { owner, repo };
+}
+
+export async function showFixRepoNamesSuggestions(baseDir: string, repoNames: string[]) {
+  logger.info(`Trying to fix the wrong repo names and generate fix suggestions...`)
+  const octokit = new Octokit({
+    auth: envConfig.GITHUB_ACCESS_TOKENS[0]
+  });
+
+  let commands: string[] = [];
+  for (let oldName of repoNames) {
+    try {
+      const { owner, repo } = splitOwnerRepo(oldName);
+      const { data: repository } = await octokit.rest.repos.get({
+        owner: owner,
+        repo: repo
+      });
+      const newName = repository.full_name;
+
+      logger.info(`Fetched github repo by name ${oldName}, the repo name has changed to ${newName}`);
+      commands.push(`find . -name "*.yml" -exec sed -i 's/${oldName.replace('/', '\\/')}/${newName.replace('/', '\\/')}/g' {} +`);
+      // TODO: sync to github_repos table.
+    } catch (e) {
+      logger.error(`❌ Failed to fetch github repo by name ${oldName}.`);
+    }
+  }
+  const suggestion = `cd ${baseDir}\n${commands.join(';\n')}`;
+  logger.info(`💡 Try to fix the wrong repo names by following commands:\n\n${suggestion}`)
 }

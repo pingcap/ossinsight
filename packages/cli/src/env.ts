@@ -6,12 +6,17 @@ export const envConfigSchema = {
   properties: {
     DATABASE_URL: {
       type: 'string'
-    }
+    },
+    GITHUB_ACCESS_TOKENS: {
+      type: 'string',
+      separator: ','
+    },
   }
 }
 
 export interface EnvConfig {
-  DATABASE_URL: string
+  DATABASE_URL: string;
+  GITHUB_ACCESS_TOKENS: string[];
 }
 
 export const envConfig = envSchema<EnvConfig>({

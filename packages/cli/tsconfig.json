@@ -2,7 +2,9 @@
   "extends": "fastify-tsconfig",
   "compilerOptions": {
     "esModuleInterop": true,
-    "moduleResolution": "NodeNext",
+    "moduleResolution": "node16",
+    "module": "node16",
+    "target": "ESNext",
     "sourceMap": true,
     "declaration": true,
     "outDir": "dist",
