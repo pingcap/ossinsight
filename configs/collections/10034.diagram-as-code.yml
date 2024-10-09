@@ -1,0 +1,16 @@
+id: 10034
+name: Diagram as Code
+items:
+  - plantuml/plantuml
+  - mermaid-js/mermaid
+  - plantuml-stdlib/C4-PlantUML
+  - BurntSushi/erd
+  - ivanceras/svgbob
+  - vega/vega
+  - vega/vega-lite
+  - mingrammer/diagrams
+  - excalidraw/excalidraw
+  - bpmn-io/bpmn-js
+  - yuzutech/kroki
+  - tldraw/tldraw
+  - terrastruct/d2

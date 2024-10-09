@@ -1,0 +1,34 @@
+id: 10082
+name: Web Scanner
+items:
+- zaproxy/zaproxy
+- dstotijn/hetty
+- andresriancho/w3af
+- Arachni/arachni
+- spinkham/skipfish
+- shenril/Sitadel
+- enkomio/Taipan
+- subgraph/Vega
+- tulpar/tulpar
+- projectdiscovery/nuclei
+- sullo/nikto
+- s0md3v/Striker
+- 0xsauby/yasuo
+- infosecsecurity/Spaghetti
+- maurosoria/dirsearch
+- ffuf/ffuf
+- OJ/gobuster
+- xmendez/wfuzz
+- epi052/feroxbuster
+- phra/rustbuster
+- d4rckh/vaf
+- wpscanteam/wpscan
+- anouarbensaad/vulnx
+- SamJoan/droopescan
+- ajinabraham/CMSScan
+- OWASP/joomscan
+- hatRiot/clusterd
+- sqlmapproject/sqlmap
+- commixproject/commix
+- DanMcInerney/xsscrapy
+- fcavallarin/domdig

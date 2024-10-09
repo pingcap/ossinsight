@@ -1,0 +1,15 @@
+id: 10028
+name: Remote Desktop Tool
+items:
+  - rustdesk/rustdesk
+  - miroslavpejic85/p2p
+  - quasar/Quasar
+  - zhaojh329/rtty
+  - FreeRDP/FreeRDP
+  - mRemoteNG/mRemoteNG
+  - TigerVNC/tigervnc
+  - rdesktop/rdesktop
+  - FreeRDP/Remmina
+  - apache/guacamole-server
+  - neutrinolabs/xrdp
+  - gravitational/teleport

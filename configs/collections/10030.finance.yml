@@ -1,0 +1,17 @@
+id: 10030
+name: Finance
+items:
+  - OpenBB-finance/OpenBBTerminal
+  - vnpy/vnpy
+  - waditu/tushare
+  - microsoft/qlib
+  - ranaroussi/yfinance
+  - mrjbq7/ta-lib
+  - QuantConnect/Lean
+  - akfamily/akshare
+  - StockSharp/StockSharp
+  - ricequant/rqalpha
+  - robertmartin8/PyPortfolioOpt
+  - twopirllc/pandas-ta
+  - quantopian/alphalens
+  - ranaroussi/quantstats

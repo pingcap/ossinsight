@@ -1,0 +1,13 @@
+id: 10002
+name: Google Analytics Alternative
+items:
+  - matomo-org/matomo
+  - plausible/analytics
+  - Open-Web-Analytics/Open-Web-Analytics
+  - snowplow/snowplow
+  - mikecao/umami
+  - allinurl/goaccess
+  - electerious/Ackee
+  - Countly/countly-server
+  - PostHog/posthog
+  - rudderlabs/rudder-server

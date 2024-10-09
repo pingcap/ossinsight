@@ -1,0 +1,30 @@
+id: 10012
+name: Headless CMS
+items:
+  - strapi/strapi
+  - directus/directus
+  - webiny/webiny-js
+  - agentejo/cockpit
+  - BuilderIO/builder
+  - payloadcms/payload
+  - flextype/flextype
+  - netlify/netlify-cms
+  - tinacms/tinacms
+  - keystonejs/keystone
+  - ponzu-cms/ponzu
+  - prose/prose
+  - GetPublii/Publii
+  - apostrophecms/apostrophe
+  - umbraco/Umbraco-cms
+  - sanity-io/sanity
+  - craftcms/cms
+  - jekyll/jekyll-admin
+  - statamic/cms
+  - squidex/squidex
+  - jaredly/hexo-admin
+  - daptin/daptin
+  - plasmicapp/plasmic
+  - dotCMS/core
+  - superdesk/superdesk
+  - TryGhost/Ghost
+  - gentics/mesh

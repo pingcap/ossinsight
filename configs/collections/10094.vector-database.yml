@@ -1,0 +1,13 @@
+id: 10094
+name: Vector Database & Vector Store
+items:
+  - qdrant/qdrant
+  - weaviate/weaviate
+  - milvus-io/milvus
+  - pgvector/pgvector
+  - chroma-core/chroma
+  - pingcap/tidb 
+  - mongodb/mongo
+  - elastic/elasticsearch
+  - redis/redis
+  - opensearch-project/OpenSearch

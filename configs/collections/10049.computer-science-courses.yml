@@ -1,0 +1,28 @@
+id: 10049
+name: Computer Science Courses
+items:
+  - rcore-os/rCore
+  - rust-lang/rustlings
+  - pingcap/talent-plan
+  - microsoft/Web-Dev-For-Beginners
+  - pingcap/awesome-database-learning
+  - trekhleb/learn-python
+  - pcottle/learnGitBranching
+  - jhu-ep-coursera/fullstack-course4
+  - DataScienceSpecialization/courses
+  - Pierian-Data/Complete-Python-3-Bootcamp
+  - prakhar1989/awesome-courses
+  - Developer-Y/cs-video-courses
+  - instillai/TensorFlow-Course
+  - oxford-cs-deepnlp-2017/lectures
+  - ssloy/tinyrenderer
+  - inancgumus/learngo
+  - hangtwenty/dive-into-machine-learning
+  - chiphuyen/stanford-tensorflow-tutorials
+  - jonasschmedtmann/complete-javascript-course
+  - lexfridman/mit-deep-learning
+  - smartcontractkit/full-blockchain-solidity-course-py
+  - Yorko/mlcourse.ai
+  - yandexdataschool/nlp_course
+  - microsoft/c9-python-getting-started
+  - mit-pdos/xv6-public
