@@ -14,7 +14,7 @@ WITH accumulative_stars_by_year AS (
         FROM github_events ge
         WHERE
             type = 'WatchEvent'
-            AND repo_id IN (SELECT repo_id FROM collection_items ci WHERE collection_id = 10001)
+            AND repo_id IN (SELECT repo_id FROM collection_items ci WHERE collection_id = 10001 AND ci.deleted_at IS NULL)
     ) sub
     WHERE
         row_num_by_actor_login = 1

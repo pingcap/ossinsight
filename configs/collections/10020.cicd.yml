@@ -1,0 +1,26 @@
+id: 10020
+name: CICD
+items:
+  - jenkinsci/jenkins
+  - argoproj/argo-cd
+  - argoproj/argo-rollouts
+  - jenkins-x/jx
+  - gradle/gradle
+  - gocd/gocd
+  - harness/harness
+  - earthly/earthly
+  - concourse/concourse
+  - agola-io/agola
+  - caicloud/cyclone
+  - nektos/act
+  - tektoncd/pipeline
+  - travis-ci/travis-ci
+  - fluxcd/flagger
+  - fluxcd/flux
+  - fluxcd/flux2
+  - werf/werf
+  - Strider-CD/strider
+  - buildbot/buildbot
+  - dagger/dagger
+  - bytebase/bytebase
+  - gimlet-io/gimlet

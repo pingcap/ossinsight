@@ -7,7 +7,7 @@ interface EditCollectionProps {
   collection: Collection;
 }
 
-const buildUrl = (collection: Collection) => `https://github.com/pingcap/ossinsight/edit/main/etl/meta/collections/${collection.id}.${collection.slug}.yml`;
+const buildUrl = (collection: Collection) => `https://github.com/pingcap/ossinsight/edit/main/configs/collections/${collection.id}.${collection.slug}.yml`;
 
 export default function EditCollection ({ collection }: EditCollectionProps) {
   return (

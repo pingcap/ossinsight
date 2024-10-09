@@ -1,0 +1,14 @@
+id: 10056
+name: Data Integration
+items:
+  - apache/seatunnel
+  - apache/sqoop
+  - apache/logging-flume
+  - alibaba/DataX
+  - DTStack/chunjun
+  - tapdata/tapdata
+  - airbytehq/airbyte
+  - apache/flink-cdc
+  - apache/inlong
+  - bytedance/bitsail
+  - cloudquery/cloudquery

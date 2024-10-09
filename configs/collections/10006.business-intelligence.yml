@@ -1,0 +1,18 @@
+id: 10006
+name: Business Intelligence
+items:
+  - metabase/metabase
+  - apache/superset
+  - getredash/redash
+  - cube-js/cube
+  - chartbrew/chartbrew
+  - ankane/blazer
+  - sqlpad/sqlpad
+  - dataease/dataease
+  - pinterest/querybook
+  - tellery/tellery
+  - evidence-dev/evidence
+  - plotly/dash
+  - streamlit/streamlit
+  - mckinsey/vizro
+  - gradio-app/gradio

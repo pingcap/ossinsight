@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "moduleResolution": "node16",
+    "module": "node16",
+    "target": "ESNext",
+    "sourceMap": true,
+    "declaration": true,
+    "outDir": "dist",
+    "baseUrl": "src",
+    "paths": {
+      "@*": ["*"],
+      "@commands/*": ["commands/*"]
+    }
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"],
+  "ts-node": {
+    // Do not forget to `pnpm i -D tsconfig-paths`
+    "require": ["tsconfig-paths/register"]
+  }
+}

@@ -15,7 +15,7 @@ WITH accumulative_pr_creators_by_month AS (
         WHERE
             type = 'PullRequestEvent'
             AND action = 'opened'
-            AND repo_id IN (SELECT repo_id FROM collection_items ci WHERE collection_id = 10001)
+            AND repo_id IN (SELECT repo_id FROM collection_items ci WHERE collection_id = 10001 AND ci.deleted_at IS NULL)
     ) sub
     WHERE
         row_num_by_actor_login = 1

@@ -1,0 +1,26 @@
+id: 10027
+name: Testing Tools
+items:
+  - keploy/keploy
+  - qawolf/qawolf
+  - SeleniumHQ/selenium
+  - appium/appium
+  - apache/jmeter
+  - teamcapybara/capybara
+  - grafana/k6
+  - metersphere/metersphere
+  - testcontainers/testcontainers-java
+  - mockito/mockito
+  - karatelabs/karate
+  - rest-assured/rest-assured
+  - cypress-io/cypress
+  - wix/Detox
+  - DevExpress/testcafe
+  - AirtestProject/Airtest
+  - robotframework/robotframework
+  - microsoft/playwright
+  - webdriverio/webdriverio
+  - selenide/selenide
+  - nightwatchjs/nightwatch
+  - getanteon/anteon
+  - puppeteer/puppeteer

@@ -1,0 +1,22 @@
+id: 10052
+name: Golang ORM
+items:
+  - go-gorm/gorm
+  - ent/ent
+  - go-xorm/xorm
+  - sqlc-dev/sqlc
+  - go-pg/pg
+  - volatiletech/sqlboiler
+  - go-gorp/gorp
+  - xo/xo
+  - upper/db
+  - go-reform/reform
+  - steebchen/prisma-client-go
+  - uptrace/bun
+  - gohouse/gorose
+  - gobuffalo/pop
+  - src-d/go-kallax
+  - huandu/go-sqlbuilder
+  - latolukasz/beeorm
+  - stephenafamo/bob
+  - yaitoo/sqle
