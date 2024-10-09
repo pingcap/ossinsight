@@ -1,14 +1,15 @@
-name: Verify Collection Configs
+name: Verify Query Configs
 
 on:
   pull_request:
     paths:
-      - 'configs/collections/**'
+      - 'configs/queries/**'
+      - 'packages/types/**'
 
 defaults:
   run:
     shell: bash
-    working-directory: packages/cli
+    working-directory: packages/types
 
 jobs:
   validate:
@@ -29,8 +30,5 @@ jobs:
           node-version: 22
           cache: 'pnpm'
 
-      - name: Verify Collection Configs
-        run: pnpm run cli:collection:verify
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          GITHUB_ACCESS_TOKENS: ${{ secrets.GITHUB_TOKEN }}
+      - name: Verify Query Definition
+        run: pnpm run validate:query
