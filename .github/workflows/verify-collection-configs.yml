@@ -1,6 +1,9 @@
 name: Verify Collection Configs
 
 on:
+  pull_request:
+    paths:
+      - 'configs/collections/**'
   workflow_dispatch:
 
 jobs:
