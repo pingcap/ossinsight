@@ -11,8 +11,8 @@
     "start": "node dist/index.js",
     "kysely:generate": "kysely-codegen --include-pattern \"*.(collection*|github*|cache*)\"  --type-only-imports --out-file ./src/db/schema.d.ts",
     "dev:start": "ts-node -r tsconfig-paths/register src/index.ts",
-    "cli:collection:reload": "ts-node src/index.ts collection reload",
-    "cli:collection:verify": "ts-node src/index.ts collection verify --fail-fast false"
+    "cli:collection:reload": "npx ts-node src/index.ts collection reload",
+    "cli:collection:verify": "npx ts-node src/index.ts collection verify --fail-fast false"
   },
   "keywords": [],
   "author": "Mini256",
@@ -26,7 +26,7 @@
     "fastify-tsconfig": "^2.0.0",
     "kysely-codegen": "^0.16.8",
     "pino-pretty": "^9.4.0",
-    "ts-node": "^10.4.0",
+    "ts-node": "^10.9.1",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.6.2",
     "vite": "^5.4.8"
