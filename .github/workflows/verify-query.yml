@@ -27,7 +27,6 @@ jobs:
         with:
           node-version: 22
           cache: 'pnpm'
-          cache-dependency-path: pnpm-lock.json
 
       - name: Install Dependencies
         run: pnpm i --frozen-lockfile --strict-peer-dependencies
