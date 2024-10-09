@@ -12,3 +12,4 @@ items:
   - wasmerio/wasmer-python
   - AssemblyScript/assemblyscript
   - oracle/graal
+  - wa-lang/wa
