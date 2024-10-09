@@ -21,5 +21,6 @@ export interface EnvConfig {
 
 export const envConfig = envSchema<EnvConfig>({
   schema: envConfigSchema,
+  env: true,
   dotenv: true
 });
