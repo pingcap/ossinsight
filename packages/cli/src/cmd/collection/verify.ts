@@ -117,6 +117,7 @@ export async function verifyCollectionConfigs(args: any) {
       process.exit(1);
     }
 
+    logger.info(`✅ Pass all the check.`)
     process.exit(0);
   } catch (e: any) {
     logger.error(e, `❌  Failed to verify collection configs, please check the configs.`);

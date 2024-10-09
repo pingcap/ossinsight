@@ -55,7 +55,7 @@ export async function syncCollection(args: any) {
           id: collectionId,
           name: collectionName,
         });
-        logger.info(`✅ Collection [${collectionName}] (id: ${collectionId}) is newly added to config file, inserted it.`);
+        logger.info(`✅ Collection [${collectionName}](id: ${collectionId}): newly added to config file, inserted it.`);
       } else {
         // Update exists collection from config to database.
         const result = await updateCollection({
@@ -64,9 +64,9 @@ export async function syncCollection(args: any) {
         });
 
         if (result.numChangedRows === 1n) {
-          logger.info(`✅ Collection [${collectionName}](id: ${collectionId}) is existed but changed, updated it.`);
+          logger.info(`✅ Collection [${collectionName}](id: ${collectionId}): the meta of collection has been changed, updated it.`);
         } else {
-          logger.info(`⏭️ Collection [${collectionName}](id: ${collectionId}) is existed but not changed, skipped it.`);
+          logger.info(`Collection [${collectionName}](id: ${collectionId}): the meta of collection is no change, skipped it.`);
         }
       }
 
@@ -74,9 +74,10 @@ export async function syncCollection(args: any) {
       await syncCollectionItems(collectionId, collectionName, collectionRepos);
     }
 
+    logger.info(`✅ All collections have been reload from config files to database.`);
     process.exit(0);
   } catch (e: any) {
-    logger.error(e, `❌  Failed to reload collection configs.`);
+    logger.error(e, `❌  Failed to reload collection from config files to database.`);
     process.exit(1);
   }
 }
@@ -92,13 +93,13 @@ export async function syncCollectionItems(collectionId: number, collectionName: 
   if (reposToRemove.size > 0) {
     const repoNames = Array.from(reposToRemove);
     await removeCollectionItems(collectionId, repoNames);
-    logger.info(`✅ Collection [${collectionName}] (id: ${collectionId}): repos ${repoNames.join(',')} has been removed from collection [${collectionName}](id: ${collectionId}).`);
+    logger.info(`✅  Collection [${collectionName}](id: ${collectionId}): remove repos ${repoNames.join(',')} from database.`);
   }
 
   // Add collection items.
   const reposToAdd = newRepoNames.difference(oldRepoNames);
   if (reposToAdd.size === 0) {
-    logger.debug(`Collection [${collectionName}](id: ${collectionId}) has no new repos, skipped.`)
+    logger.debug(`Collection [${collectionName}](id: ${collectionId}): no new repos need to added.`)
     return;
   }
 
@@ -106,9 +107,9 @@ export async function syncCollectionItems(collectionId: number, collectionName: 
   const repos = await findReposByNames(repoNames);
   if (repos.length < reposToAdd.size) {
     const diffRepos = repoNames.filter(name => !repos.some(r => r.repo_name === name));
-    throw new Error(`Collection [${collectionName}] (id: ${collectionId}): can not find some repos by names: ${diffRepos.join(', ')}`)
+    throw new Error(`Collection [${collectionName}](id: ${collectionId}): can not find some repos by names: ${diffRepos.join(', ')}`)
   }
 
   await addCollectionItems(collectionId, repos);
-  logger.info(`✅ Collection [${collectionName}] (id: ${collectionId}): add repos ${repoNames.join(',')} to collection [${collectionName}] (id: ${collectionId}).`);
+  logger.info(`✅  Collection [${collectionName}](id: ${collectionId}): add repos ${repoNames.join(',')} to the database.`);
 }
