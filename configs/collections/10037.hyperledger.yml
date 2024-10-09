@@ -129,7 +129,7 @@ items:
   - hyperledger/transact
   - hyperledger/toc
   - hyperledger/anoncreds-tex
-  - hyperledger-archives/ursa-python
+  - hyperledger/indy-bls-wrapper-python
   - hyperledger-archives/ursa-rfcs
   - hyperledger-archives/ursa-wrapper-go
   - hyperledger-archives/ursa
