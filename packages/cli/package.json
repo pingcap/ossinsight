@@ -9,7 +9,7 @@
     "build:ts": "tsc",
     "watch:ts": "tsc -w",
     "start": "node dist/index.js",
-    "kysely:generate": "kysely-codegen --include-pattern \"*.(collection*|github*)\"  --type-only-imports --out-file ./src/db/schema.d.ts",
+    "kysely:generate": "kysely-codegen --include-pattern \"*.(collection*|github*|cache*)\"  --type-only-imports --out-file ./src/db/schema.d.ts",
     "dev:start": "ts-node -r tsconfig-paths/register src/index.ts",
     "cli:collection:reload": "ts-node src/index.ts collection reload",
     "cli:collection:verify": "ts-node src/index.ts collection verify --fail-fast false"

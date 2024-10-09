@@ -5,7 +5,7 @@ WITH issues_group_by_repo AS (
     FROM github_events
     WHERE
         type = 'IssuesEvent'
-        AND repo_id IN (SELECT repo_id FROM collection_items ci WHERE collection_id = 10001)
+        AND repo_id IN (SELECT repo_id FROM collection_items ci WHERE collection_id = 10001 AND ci.deleted_at IS NULL)
     GROUP BY repo_id
 ), issues_group_by_period AS (
     SELECT
@@ -16,7 +16,7 @@ WITH issues_group_by_repo AS (
     WHERE
         type = 'IssuesEvent'
         AND action = 'opened'
-        AND repo_id IN (SELECT repo_id FROM collection_items ci WHERE collection_id = 10001)
+        AND repo_id IN (SELECT repo_id FROM collection_items ci WHERE collection_id = 10001 AND ci.deleted_at IS NULL)
         AND created_at > DATE_SUB(CURRENT_DATE(), INTERVAL 56 DAY)
     GROUP BY period, repo_id
 ), issues_last_period AS (

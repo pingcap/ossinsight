@@ -11,6 +11,42 @@ export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
   ? ColumnType<S, I | undefined, U>
   : ColumnType<T, T | undefined, T>;
 
+export type Json = ColumnType<JsonValue, string, string>;
+
+export type JsonArray = JsonValue[];
+
+export type JsonObject = {
+  [x: string]: JsonValue | undefined;
+};
+
+export type JsonPrimitive = boolean | number | string | null;
+
+export type JsonValue = JsonArray | JsonObject | JsonPrimitive;
+
+export interface Cache {
+  cache_key: string;
+  cache_value: Json;
+  created_at: Generated<Date>;
+  expired_at: Date | null;
+  /**
+   * cache will expire after n seconds
+   */
+  expires: Generated<number | null>;
+  updated_at: Generated<Date>;
+}
+
+export interface CachedTableCache {
+  cache_key: string;
+  cache_value: Json;
+  created_at: Generated<Date>;
+  expired_at: Date | null;
+  /**
+   * cache will expire after n seconds
+   */
+  expires: Generated<number | null>;
+  updated_at: Generated<Date>;
+}
+
 export interface CollectionItems {
   collection_id: number | null;
   created_at: Generated<Date>;
@@ -142,6 +178,10 @@ export interface GithubUsers {
 }
 
 export interface DB {
+  cache: Cache;
+  cache_old: CacheOld;
+  cached_table_cache: CachedTableCache;
+  cached_table_cache_old: CachedTableCacheOld;
   collection_items: CollectionItems;
   collections: Collections;
   github_events: GithubEvents;

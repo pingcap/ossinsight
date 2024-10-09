@@ -5,7 +5,7 @@ WITH prs_group_by_repo AS (
     FROM github_events
     WHERE
         type = 'PullRequestEvent'
-        AND repo_id IN (SELECT repo_id FROM collection_items ci WHERE collection_id = 10001)
+        AND repo_id IN (SELECT repo_id FROM collection_items ci WHERE collection_id = 10001 AND ci.deleted_at IS NULL)
     GROUP BY repo_id
 ), prs_group_by_period AS (
     SELECT
@@ -16,7 +16,7 @@ WITH prs_group_by_repo AS (
     WHERE
         type = 'PullRequestEvent'
         AND action = 'opened'
-        AND repo_id IN (SELECT repo_id FROM collection_items ci WHERE collection_id = 10001)
+        AND repo_id IN (SELECT repo_id FROM collection_items ci WHERE collection_id = 10001 AND ci.deleted_at IS NULL)
         AND created_at > DATE_SUB(CURRENT_DATE(), INTERVAL 56 DAY)
     GROUP BY period, repo_id
 ), prs_last_period AS (

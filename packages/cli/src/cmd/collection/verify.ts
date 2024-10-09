@@ -18,7 +18,7 @@ export function initVerifyCollectionCommand(collectionCmd: Command) {
     .command('verify')
     .description('Verify collection configs.')
     .option<string>(
-      '-d, --base-dir <filepath>',
+      '-d, --base-dir <directory>',
       'The base directory stored the collection config',
       stringParser,
       DEFAULT_COLLECTION_CONFIGS_BASE_DIR
@@ -117,7 +117,7 @@ export async function verifyCollectionConfigs(args: any) {
       process.exit(1);
     }
 
-    logger.info(`✅ Pass all the check.`)
+    logger.info(`✅  Pass all the check.`)
     process.exit(0);
   } catch (e: any) {
     logger.error(e, `❌  Failed to verify collection configs, please check the configs.`);

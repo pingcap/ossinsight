@@ -11,13 +11,14 @@ import {loadCollectionConfigs} from "@configs";
 import * as process from "node:process";
 import {findReposByNames} from "@db/github_repos";
 import {DEFAULT_COLLECTION_CONFIGS_BASE_DIR, stringParser} from "@cmd/collection/common";
+import {deleteCacheByCollectionId} from "@db/cache";
 
 export function initReloadCollectionCommand(collectionCmd: Command) {
   collectionCmd
     .command('reload')
     .description('Reload collection from specified directory.')
     .option<string>(
-      '-d, --base-dir <path>',
+      '-d, --base-dir <directory>',
       'The base directory stored the collection config.',
       stringParser,
       DEFAULT_COLLECTION_CONFIGS_BASE_DIR
@@ -71,10 +72,16 @@ export async function syncCollection(args: any) {
       }
 
       // Sync collection items.
-      await syncCollectionItems(collectionId, collectionName, collectionRepos);
+      const itemsChanged = await syncCollectionItems(collectionId, collectionName, collectionRepos);
+
+      // The collection item list is changed, the query cache is invalid.
+      if (itemsChanged) {
+        const deleteResult = await deleteCacheByCollectionId(collectionId);
+        logger.info(`✅  Collection [${collectionName}](id: ${collectionId}): delete related ${deleteResult.numDeletedRows} query cache.`);
+      }
     }
 
-    logger.info(`✅ All collections have been reload from config files to database.`);
+    logger.info(`✅  All collections have been reload from config files to database.`);
     process.exit(0);
   } catch (e: any) {
     logger.error(e, `❌  Failed to reload collection from config files to database.`);
@@ -82,7 +89,7 @@ export async function syncCollection(args: any) {
   }
 }
 
-export async function syncCollectionItems(collectionId: number, collectionName: string, collectionRepos: string[]) {
+export async function syncCollectionItems(collectionId: number, collectionName: string, collectionRepos: string[]): Promise<number> {
   // Fetched exists collection items.
   const collectionItems = await listCollectionItems(collectionId);
   const oldRepoNames = new Set(collectionItems.map((i) => i.repo_name));
@@ -100,7 +107,7 @@ export async function syncCollectionItems(collectionId: number, collectionName: 
   const reposToAdd = newRepoNames.difference(oldRepoNames);
   if (reposToAdd.size === 0) {
     logger.debug(`Collection [${collectionName}](id: ${collectionId}): no new repos need to added.`)
-    return;
+    return reposToRemove.size;
   }
 
   const repoNames = Array.from(reposToAdd.keys());
@@ -112,4 +119,6 @@ export async function syncCollectionItems(collectionId: number, collectionName: 
 
   await addCollectionItems(collectionId, repos);
   logger.info(`✅  Collection [${collectionName}](id: ${collectionId}): add repos ${repoNames.join(',')} to the database.`);
+
+  return reposToRemove.size + reposToAdd.size;
 }

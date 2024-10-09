@@ -5,7 +5,7 @@ WITH issues_group_by_repo AS (
     FROM github_events
     WHERE
         type = 'IssuesEvent'
-        AND repo_id IN (SELECT repo_id FROM collection_items ci WHERE collection_id = 10001)
+        AND repo_id IN (SELECT repo_id FROM collection_items ci WHERE collection_id = 10001 AND ci.deleted_at IS NULL)
     GROUP BY repo_id
 ), issues_group_by_month AS (
     SELECT
@@ -16,7 +16,7 @@ WITH issues_group_by_repo AS (
     WHERE
         type = 'IssuesEvent'
         AND action = 'opened'
-        AND repo_id IN (SELECT repo_id FROM collection_items ci WHERE collection_id = 10001)
+        AND repo_id IN (SELECT repo_id FROM collection_items ci WHERE collection_id = 10001 AND ci.deleted_at IS NULL)
         AND created_at < DATE_FORMAT(NOW(), '%Y-%m-01')
         AND created_at >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 2 MONTH), '%Y-%m-01')
     GROUP BY t_month, repo_id

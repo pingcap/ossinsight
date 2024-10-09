@@ -7,7 +7,6 @@ export interface CollectionConfig {
   id: number;
   name: string;
   items: string[];
-  file: string;
 }
 
 export async function loadCollectionConfigs(baseDir: string) {
