@@ -2,18 +2,18 @@ name: Verify Collection Configs
 
 on:
   pull_request_target:
+    types:
+      - synchronize
     paths:
       - 'configs/collections/**'
-
-defaults:
-  run:
-    shell: bash
-    working-directory: packages/cli
 
 jobs:
   validate:
     runs-on: ubuntu-latest
-
+    defaults:
+      run:
+        shell: bash
+        working-directory: packages/cli
     steps:
       - name: Checkout
         uses: actions/checkout@v4
