@@ -1,0 +1,35 @@
+name: Sync Collection Configs
+
+on:
+  push:
+    paths:
+      - 'configs/collections/**'
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: packages/cli
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+        with:
+          run_install: true
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+
+      - name: Verify Collection Configs
+        run: pnpm run cli:collection:reload
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          GITHUB_ACCESS_TOKENS: ${{ secrets.GITHUB_TOKEN }}
