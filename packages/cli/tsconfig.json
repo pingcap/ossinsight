@@ -1,5 +1,4 @@
 {
-  "extends": "fastify-tsconfig",
   "compilerOptions": {
     "esModuleInterop": true,
     "moduleResolution": "node16",
