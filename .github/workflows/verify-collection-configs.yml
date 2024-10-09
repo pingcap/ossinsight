@@ -1,11 +1,7 @@
 name: Verify Collection Configs
 
 on:
-  pull_request_target:
-    types:
-      - synchronize
-    paths:
-      - 'configs/collections/**'
+  workflow_dispatch:
 
 jobs:
   validate:
