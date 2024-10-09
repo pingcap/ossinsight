@@ -1,12 +1,12 @@
 id: 10010
 name: Artificial Intelligence
 items:
-  - nebuly-ai/nebullvm
+  - nebuly-ai/optimate
   - tensorflow/tensorflow
   - huggingface/transformers
   - opencv/opencv
   - pytorch/pytorch
-  - Lightning-AI/lightning
+  - Lightning-AI/pytorch-lightning
   - keras-team/keras
   - scikit-learn/scikit-learn
   - ageitgey/face_recognition
@@ -16,14 +16,14 @@ items:
   - facebookresearch/fastText
   - fastai/fastai
   - ApolloAuto/apollo
-  - apache/incubator-mxnet
+  - apache/mxnet
   - open-mmlab/mmdetection
   - PaddlePaddle/Paddle
   - magenta/magenta
   - microsoft/CNTK
   - jina-ai/jina
   - Tencent/ncnn
-  - eclipse/deeplearning4j
+  - deeplearning4j/deeplearning4j
   - mlflow/mlflow
   - kaldi-asr/kaldi
   - microsoft/nni

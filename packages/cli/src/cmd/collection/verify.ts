@@ -129,7 +129,7 @@ export async function showFixRepoNamesSuggestions(baseDir: string, repoNames: st
       const newName = repository.full_name;
 
       logger.info(`Fetched github repo by name ${oldName}, the repo name has changed to ${newName}`);
-      commands.push(`find . -name "*.yml" -exec sed -i 's/${oldName.replace('/', '\\/')}/${newName.replace('/', '\\/')}/g' {} +`);
+      commands.push(`find . -name "*.yml" -exec sed -i '' 's/${oldName.replace('/', '\\/')}/${newName.replace('/', '\\/')}/g' {} +`);
       // TODO: sync to github_repos table.
     } catch (e) {
       logger.error(`❌ Failed to fetch github repo by name ${oldName}.`);

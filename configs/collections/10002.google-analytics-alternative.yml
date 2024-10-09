@@ -5,7 +5,7 @@ items:
   - plausible/analytics
   - Open-Web-Analytics/Open-Web-Analytics
   - snowplow/snowplow
-  - mikecao/umami
+  - umami-software/umami
   - allinurl/goaccess
   - electerious/Ackee
   - Countly/countly-server

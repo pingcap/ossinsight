@@ -1,9 +1,9 @@
 id: 10054
 name: Monitoring Tool
 items:
-  - ddosify/alaz
+  - getanteon/alaz
   - Cacti/cacti
-  - tribe29/checkmk
+  - Checkmk/checkmk
   - coroot/coroot
   - Icinga/icinga2
   - grafana/grafana

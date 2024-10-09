@@ -29,7 +29,7 @@ items:
   - influxdata/influxdb
   - kairosdb/kairosdb
   - lindb/lindb
-  - lomik/graphite-clickhouse
+  - go-graphite/graphite-clickhouse
   - m3db/m3
   - netdata/netdata
   - oetiker/rrdtool-1.x
@@ -47,5 +47,5 @@ items:
   - surrealdb/surrealdb
   - taosdata/TDengine
   - thanos-io/thanos
-  - tigrisdata/tigris
+  - tigrisdata-archive/tigris
   - timescale/timescaledb

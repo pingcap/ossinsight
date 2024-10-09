@@ -17,13 +17,13 @@ items:
   - kubeshop/botkube
   - pixie-io/pixie
   - ContainerSolutions/helm-monitor
-  - keyval-dev/odigos
+  - odigos-io/odigos
   - lensapp/lens
   - kyverno/kyverno
   - opencost/opencost
   - kubeshop/monokle
   - komodorio/helm-dashboard
-  - clastix/capsule
+  - projectcapsule/capsule
   - bridgecrewio/checkov
   - kubeshark/kubeshark
   - robusta-dev/kubernetes-chatgpt-bot

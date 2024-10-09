@@ -4,14 +4,14 @@ items:
   - go-gorm/gorm
   - ent/ent
   - go-xorm/xorm
-  - kyleconroy/sqlc
+  - sqlc-dev/sqlc
   - go-pg/pg
   - volatiletech/sqlboiler
   - go-gorp/gorp
   - xo/xo
   - upper/db
   - go-reform/reform
-  - prisma/prisma-client-go
+  - steebchen/prisma-client-go
   - uptrace/bun
   - gohouse/gorose
   - gobuffalo/pop

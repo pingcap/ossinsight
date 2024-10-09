@@ -22,5 +22,5 @@ items:
   - webdriverio/webdriverio
   - selenide/selenide
   - nightwatchjs/nightwatch
-  - ddosify/ddosify
+  - getanteon/anteon
   - puppeteer/puppeteer

@@ -8,19 +8,19 @@ items:
   - BuilderIO/builder
   - payloadcms/payload
   - flextype/flextype
-  - netlify/netlify-cms
+  - decaporg/decap-cms
   - tinacms/tinacms
   - keystonejs/keystone
   - ponzu-cms/ponzu
   - prose/prose
   - GetPublii/Publii
   - apostrophecms/apostrophe
-  - umbraco/Umbraco-cms
+  - umbraco/Umbraco-CMS
   - sanity-io/sanity
   - craftcms/cms
   - jekyll/jekyll-admin
   - statamic/cms
-  - squidex/squidex
+  - Squidex/squidex
   - jaredly/hexo-admin
   - daptin/daptin
   - plasmicapp/plasmic

@@ -12,7 +12,7 @@ items:
   - kamilkisiela/graphql-inspector
   - altair-graphql/altair
   - graphql/graphiql
-  - IvanGoncharov/graphql-voyager
+  - graphql-kit/graphql-voyager
   - graphql-editor/graphql-editor
   - apioo/fusio
   - requestly/requestly

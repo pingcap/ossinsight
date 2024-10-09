@@ -15,16 +15,16 @@ items:
   - gogf/gf
   - emicklei/go-restful
   - gorilla/mux
-  - System-Glitch/goyave
+  - go-goyave/goyave
   - julienschmidt/httprouter
   - go-martini/martini
   - urfave/negroni
   - actix/actix-web
   - tokio-rs/axum
   - gotham-rs/gotham
-  - SergioBenitez/rocket
-  - trezm/Thruster
-  - rustasync/tide
+  - rwf2/Rocket
+  - thruster-rs/Thruster
+  - http-rs/tide
   - seanmonstar/warp
   - salvo-rs/salvo
   - trillium-rs/trillium
@@ -56,7 +56,7 @@ items:
   - slimphp/Slim
   - bcit-ci/CodeIgniter
   - beego/beego
-  - lucacasonato/fresh
+  - denoland/fresh
   - honojs/hono
   - refinedev/refine
   - unjs/nitro

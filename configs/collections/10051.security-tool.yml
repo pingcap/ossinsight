@@ -10,8 +10,8 @@ items:
   - quay/clair
   - anchore/syft
   - infobyte/faraday
-  - zricethezav/gitleaks
-  - armosec/kubescape
+  - gitleaks/gitleaks
+  - kubescape/kubescape
   - aquasecurity/starboard
   - aquasecurity/kube-bench
   - anshumanbh/git-all-secrets
@@ -32,10 +32,10 @@ items:
   - projectdiscovery/nuclei
   - zaproxy/zaproxy
   - anantshri/svn-extractor
-  - adrecon/adrecon
+  - adrecon/ADRecon
   - adrecon/AzureADRecon
   - s4n7h0/Halcyon-IDE
-  - datasploit/datasploit
+  - DataSploit/datasploit
   - nmap/nmap
   - wazuh/wazuh
   - rapid7/metasploit-framework
@@ -45,7 +45,7 @@ items:
   - gamelinux/passivedns
   - lanmaster53/recon-ng
   - jeremylong/DependencyCheck
-  - tenzir/vast
+  - tenzir/tenzir
   - matanolabs/matano
   - chipsec/chipsec
   - kyverno/kyverno

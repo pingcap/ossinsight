@@ -10,7 +10,7 @@ items:
   - paritytech/substrate
   - paritytech/polkadot
   - polkadot-js/apps
-  - ChainSafe/web3.js
+  - web3/web3.js
   - scaffold-eth/scaffold-eth
   - openethereum/parity-ethereum
   - ethers-io/ethers.js
@@ -31,7 +31,7 @@ items:
   - Uniswap/interface
   - Uniswap/v3-core
   - compound-finance/compound-protocol
-  - aave/lens-protocol
+  - lens-protocol/core
   - ProjectOpenSea/opensea-js
   - aptos-labs/aptos-core
   - MystenLabs/sui

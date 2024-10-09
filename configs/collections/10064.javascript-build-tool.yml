@@ -7,7 +7,7 @@ items:
   - parcel-bundler/parcel
   - web-infra-dev/rspack
   - nrwl/nx
-  - vercel/turbo
+  - vercel/turborepo
   - FredKSchott/snowpack
   - jaredpalmer/tsdx
   - rollup/rollup

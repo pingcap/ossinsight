@@ -2,7 +2,7 @@ id: 10005
 name: Javascript Framework
 items:
   - marko-js/marko
-  - mithriljs/mithril.js
+  - MithrilJS/mithril.js
   - angular/angular
   - angular/angular.js
   - emberjs/ember.js
@@ -20,8 +20,8 @@ items:
   - dojo/dojo
   - jorgebucaran/hyperapp
   - riot/riot
-  - daemonite/material
-  - polymer/lit-element
+  - Daemonite/material
+  - lit/lit-element
   - aurelia/aurelia
   - sveltejs/svelte
   - neomjs/neo
@@ -31,5 +31,5 @@ items:
   - solidjs/solid
   - ionic-team/stencil
   - jquery/jquery
-  - BuilderIO/qwik
+  - QwikDev/qwik
   - refinedev/refine

@@ -8,7 +8,7 @@ items:
   - spring/spring
   - cocos2d/cocos2d-x
   - Gamua/Starling-Framework
-  - gameplay3d/GamePlay
+  - gameplay3d/gameplay
   - jMonkeyEngine/jmonkeyengine
   - SFTtech/openage
   - MonoGame/MonoGame
@@ -17,13 +17,13 @@ items:
   - AtomicGameEngine/AtomicGameEngine
   - 4ian/GDevelop
   - CRYTEK/CRYENGINE
-  - urho3d/Urho3D
+  - urho3d/urho3d
   - bevyengine/bevy
   - o3de/o3de
   - love2d/love
   - turanszkij/WickedEngine
-  - benoit-dumas/OpenRTS
-  - photonstorm/phaser
+  - methusalah/OpenRTS
+  - phaserjs/phaser
   - melonjs/melonJS
   - BabylonJS/Babylon.js
   - WhitestormJS/whs.js
@@ -44,7 +44,7 @@ items:
   - amethyst/amethyst
   - orx/orx
   - nCine/nCine
-  - cocos-creator/engine
+  - cocos/cocos-engine
   - coronalabs/corona
   - hajimehoshi/ebiten
   - hexops/mach
@@ -57,7 +57,7 @@ items:
   - KilledByAPixel/LittleJS
   - ppy/osu-framework
   - gosu/gosu
-  - cerberusxdev/cerberus
+  - PhilMoe/cerberus
   - defold/defold
   - pokepetter/ursina
   - BoomingTech/Piccolo

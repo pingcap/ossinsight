@@ -7,7 +7,7 @@ items:
   - jenkins-x/jx
   - gradle/gradle
   - gocd/gocd
-  - harness/drone
+  - harness/harness
   - earthly/earthly
   - concourse/concourse
   - agola-io/agola

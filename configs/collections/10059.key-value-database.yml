@@ -4,7 +4,7 @@ items:
   - redis/redis
   - tikv/tikv
   - dragonflydb/dragonfly
-  - apache/incubator-kvrocks
+  - apache/kvrocks
   - etcd-io/etcd
   - google/leveldb
   - apple/foundationdb
@@ -14,8 +14,8 @@ items:
   - dgraph-io/badger
   - codenotary/immudb
   - tidwall/buntdb
-  - hivedb/hive
-  - flower-corp/rosedb
+  - isar/hive
+  - rosedblabs/rosedb
   - facebook/rocksdb
   - memcached/memcached
   - patrickmn/go-cache

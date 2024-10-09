@@ -1,12 +1,12 @@
 id: 10030
 name: Finance
 items:
-  - OpenBB-finance/OpenBBTerminal
+  - OpenBB-finance/OpenBB
   - vnpy/vnpy
   - waditu/tushare
   - microsoft/qlib
   - ranaroussi/yfinance
-  - mrjbq7/ta-lib
+  - TA-Lib/ta-lib-python
   - QuantConnect/Lean
   - akfamily/akshare
   - StockSharp/StockSharp

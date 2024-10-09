@@ -1,10 +1,10 @@
 id: 10076
 name: LLM Tools
 items:
-  - hwchase17/langchain
-  - hwchase17/langchainjs
-  - jerryjliu/llama_index
-  - emptycrown/llama-hub
+  - langchain-ai/langchain
+  - langchain-ai/langchainjs
+  - run-llama/llama_index
+  - run-llama/llama-hub
   - srush/MiniChain
   - deepset-ai/haystack
   - promptslab/Promptify
@@ -12,7 +12,7 @@ items:
   - cfortuner/promptable
   - microsoft/prompt-engine
   - zilliztech/GPTCache
-  - embedchain/embedchain
+  - mem0ai/mem0
   - langgenius/dify
   - TransformerOptimus/SuperAGI
   - ShishirPatil/gorilla

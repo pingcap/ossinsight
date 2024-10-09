@@ -8,8 +8,8 @@ items:
   - aws/aws-cdk
   - GoogleCloudPlatform/terraformer
   - itamae-kitchen/itamae
-  - someengineering/resoto
-  - aelsabbahy/goss
+  - someengineering/fixinventory
+  - goss-org/goss
   - aws/copilot-cli
   - puppetlabs/puppet
   - chef/chef

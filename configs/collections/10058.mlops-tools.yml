@@ -9,7 +9,7 @@ items:
   - bentoml/BentoML
   - jina-ai/jina
   - microsoft/nni
-  - heartexlabs/label-studio
+  - HumanSignal/label-studio
   - Netflix/metaflow
   - dagster-io/dagster
   - wandb/wandb

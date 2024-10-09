@@ -4,8 +4,8 @@ items:
   - gitbucket/gitbucket
   - gitlabhq/gitlabhq
   - theonedev/onedev
-  - gitblit/gitblit
+  - gitblit-org/gitblit
   - sitaramc/gitolite
   - go-gitea/gitea
   - gogs/gogs
-  - harness/gitness
+  - harness/harness

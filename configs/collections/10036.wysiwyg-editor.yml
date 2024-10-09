@@ -4,18 +4,18 @@ items:
   - tinymce/tinymce
   - froala/wysiwyg-editor
   - xdan/jodit
-  - quilljs/quill
+  - slab/quill
   - codex-team/editor.js
   - yabwe/medium-editor
   - wangeditor-team/wangEditor
   - ckeditor/ckeditor5
   - ckeditor/ckeditor4
   - ianstormtaylor/slate
-  - facebook/draft-js
+  - facebookarchive/draft-js
   - nhn/tui.editor
   - mdx-js/mdx
   - remarkjs/react-markdown
-  - Saul-Mirone/milkdown
+  - Milkdown/milkdown
   - hinesboy/mavonEditor
   - pandao/editor.md
   - summernote/summernote

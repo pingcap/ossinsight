@@ -2,7 +2,7 @@ id: 10032
 name: Message and Streaming
 items:
   - apache/pulsar
-  - apache/Kafka
+  - apache/kafka
   - rabbitmq/rabbitmq-server
   - apache/activemq
   - apache/rocketmq

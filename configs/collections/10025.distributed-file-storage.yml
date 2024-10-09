@@ -8,12 +8,12 @@ items:
   - kahing/goofys
   - littlefs-project/littlefs
   - sjqzhang/go-fastdfs
-  - cubeFS/cubefs
+  - cubefs/cubefs
   - moosefs/moosefs
   - Alluxio/alluxio
   - minio/minio
   - storj/storj
-  - chrislusf/seaweedfs
+  - seaweedfs/seaweedfs
   - opencurve/curve
   - apache/hadoop
   - apache/ozone

@@ -16,7 +16,7 @@ items:
   - microsoft/terminal
   - GitSquared/edex-ui
   - electerm/electerm
-  - oilshell/oil
+  - oils-for-unix/oils
   - sorin-ionescu/prezto
   - Bash-it/bash-it
   - ohmybash/oh-my-bash

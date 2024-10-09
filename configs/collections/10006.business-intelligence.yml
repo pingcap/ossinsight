@@ -4,7 +4,7 @@ items:
   - metabase/metabase
   - apache/superset
   - getredash/redash
-  - cube-js/cube.js
+  - cube-js/cube
   - chartbrew/chartbrew
   - ankane/blazer
   - sqlpad/sqlpad

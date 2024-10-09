@@ -11,9 +11,9 @@ items:
   - quickwit-oss/tantivy
   - quickwit-oss/quickwit
   - crate/crate
-  - zinclabs/zinc
+  - zincsearch/zincsearch
   - manticoresoftware/manticoresearch
-  - semi-technologies/weaviate
+  - weaviate/weaviate
   - mosuka/bayard
   - qdrant/qdrant
   - paradedb/paradedb

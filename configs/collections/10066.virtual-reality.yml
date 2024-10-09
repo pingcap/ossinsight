@@ -3,9 +3,9 @@ name: Virtual Reality
 items:
   - OpenHMD/OpenHMD
   - alvr-org/ALVR
-  - icosa-gallery/open-brush
+  - icosa-foundation/open-brush
   - matrix-org/thirdroom
-  - vircadia/vircadia
+  - vircadia/vircadia-native-core
   - GodotVR/godot_openvr
   - Igalia/wolvic
   - aframevr/aframe

@@ -3,12 +3,12 @@ name: Data Integration
 items:
   - apache/seatunnel
   - apache/sqoop
-  - apache/flume
+  - apache/logging-flume
   - alibaba/DataX
   - DTStack/chunjun
   - tapdata/tapdata
   - airbytehq/airbyte
-  - ververica/flink-cdc-connectors
+  - apache/flink-cdc
   - apache/inlong
   - bytedance/bitsail
   - cloudquery/cloudquery

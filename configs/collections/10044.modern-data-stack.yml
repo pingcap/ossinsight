@@ -30,7 +30,7 @@ items:
 
   # Data Streaming
   - apache/pulsar
-  - apache/Kafka
+  - apache/kafka
   - apache/flink
   - apache/beam
   - redpanda-data/redpanda
@@ -38,7 +38,7 @@ items:
 
   # Stream Processing
   - bytewax/bytewax
-  - benthosdev/benthos
+  - redpanda-data/connect
 
   # Data transformation
   - dbt-labs/dbt-core
@@ -56,7 +56,7 @@ items:
   
   # Data orchestration
   - apache/airflow
-  - prefecthq/prefect
+  - PrefectHQ/prefect
   - dagster-io/dagster
   - meltano/meltano
   - kestra-io/kestra

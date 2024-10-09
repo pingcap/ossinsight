@@ -9,16 +9,16 @@ items:
   - hexojs/hexo
   - vercel/next.js
   - getpelican/pelican
-  - facebook/Docusaurus
+  - facebook/docusaurus
   - slatedocs/slate
-  - nuxt/nuxt.js
+  - nuxt/nuxt
   - gridsome/gridsome
   - middleman/middleman
   - react-static/react-static
   - docsifyjs/docsify
   - mkdocs/mkdocs
   - sintaxi/harp
-  - netlify/netlify-cms
+  - decaporg/decap-cms
   - jaspervdj/hakyll
   - umijs/umi
   - abelljs/abell
@@ -32,7 +32,7 @@ items:
   - rust-lang/mdBook
   - gridsome/gridsome
   - sphinx-doc/sphinx
-  - cecilapp/cecil
+  - Cecilapp/Cecil
   - evidence-dev/evidence
   - vuejs/vitepress
   - shuding/nextra

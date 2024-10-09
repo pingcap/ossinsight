@@ -2,25 +2,25 @@ id: 10037
 name: Hyperledger Foundation
 items:
   - hyperledger/aries-acapy-controllers
-  - hyperledger/aries-acapy-plugin-toolbox
+  - hyperledger-archives/aries-acapy-plugin-toolbox
   - hyperledger/aries-agent-test-harness
   - hyperledger/aries-askar
   - hyperledger/aries-cloudagent-python
-  - hyperledger/aries-fabric-wrapper
-  - hyperledger/aries-framework-dotnet
-  - hyperledger/aries-framework-go-ext
-  - hyperledger/aries-framework-go
-  - hyperledger/aries-framework-javascript-ext
-  - hyperledger/aries-framework-javascript
-  - hyperledger/aries-javascript-docs
+  - hyperledger-labs/aries-fabric-wrapper
+  - hyperledger-archives/aries-framework-dotnet
+  - hyperledger-archives/aries-framework-go-ext
+  - hyperledger-archives/aries-framework-go
+  - openwallet-foundation/credo-ts-ext
+  - openwallet-foundation/credo-ts
+  - openwallet-foundation/credo-ts-docs
   - hyperledger/aries-mediator-service
-  - hyperledger/aries-mobile-agent-react-native
-  - hyperledger/aries-mobile-agent-xamarin
-  - hyperledger/aries-mobile-test-harness
-  - hyperledger/aries-protocol-test-suite
+  - openwallet-foundation/bifold-wallet
+  - hyperledger-archives/aries-mobile-agent-xamarin
+  - openwallet-foundation/owl-mobile-wallet-test-harness
+  - hyperledger-archives/aries-protocol-test-suite
   - hyperledger/aries-rfcs
   - hyperledger/aries-staticagent-python
-  - hyperledger/aries-toolbox
+  - hyperledger-archives/aries-toolbox
   - hyperledger/aries-vcx
   - hyperledger/aries
   - hyperledger/besu-docs
@@ -28,7 +28,7 @@ items:
   - hyperledger/besu-native
   - hyperledger/besu
   - hyperledger/bevel
-  - hyperledger/cactus
+  - hyperledger-cacti/cacti
   - hyperledger/caliper-benchmarks
   - hyperledger/caliper
   - hyperledger/cello
@@ -75,10 +75,10 @@ items:
   - hyperledger/firefly-transaction-manager
   - hyperledger/firefly-ui
   - hyperledger/firefly
-  - hyperledger/grid-contrib
-  - hyperledger/grid-docs
-  - hyperledger/grid-rfcs
-  - hyperledger/grid
+  - hyperledger-archives/grid-contrib
+  - hyperledger-archives/grid-docs
+  - hyperledger-archives/grid-rfcs
+  - hyperledger-archives/grid
   - hyperledger/homebrew-besu
   - hyperledger/hyperledger-hip
   - hyperledger/indy-did-method
@@ -89,8 +89,8 @@ items:
   - hyperledger/indy-node-monitor
   - hyperledger/indy-node
   - hyperledger/indy-plenum
-  - hyperledger/indy-sdk-react-native
-  - hyperledger/indy-sdk
+  - hyperledger-archives/indy-sdk-react-native
+  - hyperledger-archives/indy-sdk
   - hyperledger/indy-shared-gha
   - hyperledger/indy-shared-rs
   - hyperledger/indy-test-automation
@@ -102,34 +102,34 @@ items:
   - hyperledger/iroha-java
   - hyperledger/iroha-javascript
   - hyperledger/iroha-python
-  - hyperledger/iroha-tui-client
+  - hyperledger-archives/iroha-tui-client
   - hyperledger/iroha
-  - hyperledger/sawtooth-contrib
-  - hyperledger/sawtooth-core
-  - hyperledger/sawtooth-devmode
-  - hyperledger/sawtooth-docs
-  - hyperledger/sawtooth-lib
-  - hyperledger/sawtooth-pbft
-  - hyperledger/sawtooth-poet
-  - hyperledger/sawtooth-rfcs
-  - hyperledger/sawtooth-sabre
-  - hyperledger/sawtooth-sdk-cxx
-  - hyperledger/sawtooth-sdk-go
-  - hyperledger/sawtooth-sdk-java
-  - hyperledger/sawtooth-sdk-javascript
-  - hyperledger/sawtooth-sdk-python
-  - hyperledger/sawtooth-sdk-rust
-  - hyperledger/sawtooth-sdk-swift
+  - hyperledger-archives/sawtooth-contrib
+  - hyperledger-archives/sawtooth-core
+  - hyperledger-archives/sawtooth-devmode
+  - hyperledger-archives/sawtooth-docs-archive
+  - hyperledger-archives/sawtooth-lib
+  - hyperledger-archives/sawtooth-pbft
+  - hyperledger-archives/sawtooth-poet
+  - hyperledger-archives/sawtooth-rfcs
+  - hyperledger-archives/sawtooth-sabre
+  - hyperledger-archives/sawtooth-sdk-cxx
+  - hyperledger-archives/sawtooth-sdk-go
+  - hyperledger-archives/sawtooth-sdk-java
+  - hyperledger-archives/sawtooth-sdk-javascript
+  - hyperledger-archives/sawtooth-sdk-python
+  - hyperledger-archives/sawtooth-sdk-rust
+  - hyperledger-archives/sawtooth-sdk-swift
   - hyperledger/sawtooth-seth
-  - hyperledger/tf-security
+  - hyperledger-archives/tf-security
   - hyperledger/transact-contrib
   - hyperledger/transact-rfcs
-  - hyperledger/transact-sdk-go
+  - hyperledger-archives/transact-sdk-go
   - hyperledger/transact-sdk-javascript
   - hyperledger/transact
-  - hyperledger/tsc
-  - hyperledger/ursa-docs
-  - hyperledger/ursa-python
-  - hyperledger/ursa-rfcs
-  - hyperledger/ursa-wrapper-go
-  - hyperledger/ursa
+  - hyperledger/toc
+  - hyperledger/anoncreds-tex
+  - hyperledger-archives/ursa-python
+  - hyperledger-archives/ursa-rfcs
+  - hyperledger-archives/ursa-wrapper-go
+  - hyperledger-archives/ursa

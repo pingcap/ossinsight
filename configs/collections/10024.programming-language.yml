@@ -2,8 +2,8 @@ id: 10024
 name: Programming Language
 items:
   - golang/go
-  - apple/swift
-  - Microsoft/TypeScript
+  - swiftlang/swift
+  - microsoft/TypeScript
   - rust-lang/rust
   - JetBrains/kotlin
   - python/cpython
@@ -15,7 +15,7 @@ items:
   - crystal-lang/crystal
   - PowerShell/PowerShell
   - scala/scala
-  - lampepfl/dotty
+  - scala/scala3
   - dotnet/roslyn
   - clojure/clojure
   - micropython/micropython
@@ -41,7 +41,7 @@ items:
   - dotnet/fsharp
   - rakudo/rakudo
   - chapel-lang/chapel
-  - eclipse/golo-lang
+  - eclipse-archived/golo-lang
   - gosu-lang/gosu-lang
   - ziglang/zig
   - HaxeFoundation/haxe
@@ -52,14 +52,14 @@ items:
   - pharo-project/pharo
   - ring-lang/ring
   - SenegalLang/Senegal
-  - cqfn/eo
+  - objectionary/eo
   - ChavaScript/chavascript
   - beefytech/Beef
   - cue-lang/cue
   - openjdk/jdk
   - nodejs/node
   - bazelbuild/starlark
-  - facebookexperimental/starlark-rust
+  - facebook/starlark-rust
   - google/starlark-go
   - winglang/wing
   - diku-dk/futhark
@@ -69,4 +69,4 @@ items:
   - denoland/deno
   - kcl-lang/kcl
   - wa-lang/wa
-  - opentffoundation/opentf
+  - opentofu/opentofu

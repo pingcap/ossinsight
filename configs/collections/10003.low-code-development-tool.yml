@@ -4,13 +4,13 @@ items:
   - appsmithorg/appsmith
   - hasura/graphql-engine
   - supabase/supabase
-  - cube-js/cube.js
-  - artf/grapesjs
+  - cube-js/cube
+  - GrapesJS/grapesjs
   - nocodb/nocodb
   - nocobase/nocobase
   - n8n-io/n8n
   - ToolJet/ToolJet
-  - graphile/postgraphile
+  - graphile/crystal
   - strapi/strapi
   - directus/directus
   - saleor/saleor
