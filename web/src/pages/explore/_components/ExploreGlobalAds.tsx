@@ -23,7 +23,7 @@ export default function ExploreGlobalAds () {
 
   useEffect(() => {
     setAnchorEl(document.body);
-    if (hasClosed || /^\/(?:explore|blog)\/?$/.test(location.pathname) || location.pathname.startsWith('/blog/chat2query-tutorials')) {
+    if (hasClosed || /^\/(?:explore|blog|open-source-heroes)\/?$/.test(location.pathname) || location.pathname.startsWith('/blog/chat2query-tutorials')) {
       return;
     }
     safeSetTimeout(() => {

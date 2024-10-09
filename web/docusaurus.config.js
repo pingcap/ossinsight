@@ -8,6 +8,7 @@ const fs = require('fs');
 
 const HOST = process.env.APP_HOST || 'https://ossinsight.io';
 const API_BASE = process.env.APP_API_BASE || 'https://api.ossinsight.io';
+const GIFT_APP_API_BASE = process.env.GIFT_APP_API_BASE || 'https://us-west-2.prod.aws.tidbcloud.com';
 const DATABASE_URL = process.env.DATABASE_URL || '';
 const SENTRY_DSN = process.env.SENTRY_DSN || '';
 
@@ -66,6 +67,7 @@ const config = {
       path.resolve(__dirname, 'plugins/define'),
       {
         'process.env.APP_API_BASE': JSON.stringify(API_BASE),
+        'process.env.GIFT_APP_API_BASE': JSON.stringify(GIFT_APP_API_BASE),
         'process.env.SENTRY_DSN': SENTRY_DSN ? JSON.stringify(SENTRY_DSN) : undefined,
       }
     ],
@@ -232,9 +234,9 @@ const config = {
         respectPrefersColorScheme: false,
       },
       announcementBar: {
-        id: 'announcement-20230821',
+        id: 'announcement-20240912',
         content:
-          '<a target="_blank" href="https://next.ossinsight.io/widgets" style="font-weight:bold">✨ Spark Your GitHub Magic: Customize and Share with Your Personalized Widgets!</a>',
+          '<a target="_blank" href="https://ossinsight.io/open-source-heroes/?utm_source=ossinsight&utm_medium=referral&utm_campaign=plg_OSScontribution_credit_05" style="font-weight:bold">Claim up to $2000 in TiDB Serverless credits for your open-source contributions! -></a>',
         backgroundColor: '#4C33B1',
         textColor: '#ffffff',
         isCloseable: true,
@@ -304,7 +306,7 @@ const config = {
               { label: 'About OSS Insight', to: '/docs/about' },
               {
                 label: 'About TiDB Cloud',
-                to: 'https://www.pingcap.com/tidb-serverless?utm_source=ossinsight&utm_medium=referral'
+                to: 'https://www.pingcap.com/tidb-cloud-serverless/?utm_source=ossinsight&utm_medium=referral'
               },
               { label: 'How do we implement OSS Insight?', to: '/blog/why-we-choose-tidb-to-support-ossinsight' },
               /* { label: 'Database Stats', to: '/stats' }, */
@@ -444,10 +446,10 @@ const config = {
         logo: {
           alt: 'TiDB Cloud Logo',
           src: '/img/tidb-cloud-logo-o.png',
-          href: 'https://www.pingcap.com/tidb-serverless/?utm_source=ossinsight&utm_medium=referral',
+          href: 'https://www.pingcap.com/tidb-cloud-serverless/?utm_source=ossinsight&utm_medium=referral',
           width: 200,
         },
-        copyright: `Copyright &copy; ${new Date().getFullYear()} <a href="https://en.pingcap.com" target="_blank">PingCAP</a>. All Rights Reserved | <a href="https://en.pingcap.com/privacy-policy/" target="_blank">Privacy</a>`,
+        copyright: `Copyright &copy; ${new Date().getFullYear()} <a href="https://www.pingcap.com" target="_blank">PingCAP</a>. All Rights Reserved | <a href="https://www.pingcap.com/privacy-policy/" target="_blank">Privacy</a>`,
       },
       prism: {
         theme: lightCodeTheme,

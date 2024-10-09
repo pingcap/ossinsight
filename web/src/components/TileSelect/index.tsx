@@ -25,7 +25,7 @@ export interface TileSelectProps {
 }
 
 export default function TileSelect ({ options, value, onSelect }: TileSelectProps) {
-  const ref = useRef<HTMLOListElement>();
+  const ref = useRef<HTMLOListElement | null>(null);
   const refs = useRef<Array<HTMLLIElement | null>>(options.map(() => null));
   const [length, setLength] = useState(options.length);
 

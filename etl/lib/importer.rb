@@ -183,16 +183,16 @@ class Importer
 
   def upsert_all
     puts "start insert #{events.count} records into DB using upsert_all ..."
-    events.each_slice(20000) do |es|
-      puts 'bulk insert 20000 records'
+    events.each_slice(90000) do |es|
+      puts 'bulk insert 90000 records'
       GithubEvent.upsert_all(es)
     end
   end
 
   def insert_all
     puts "start insert #{events.count} records into DB using insert_all ..."
-    events.each_slice(20000) do |es|
-      puts 'bulk insert 20000 records'
+    events.each_slice(90000) do |es|
+      puts 'bulk insert 90000 records'
       GithubEvent.insert_all(es)
     end
   end

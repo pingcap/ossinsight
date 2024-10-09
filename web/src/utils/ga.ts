@@ -55,6 +55,9 @@ type CustomEventMap = {
   login_fail: GaEvent<'trigger_login_by'>;
   login_success: GaEvent<'trigger_login_by'>;
   trigger_login: GaEvent<'trigger_login_by'>;
+
+  github_campaign_action: GaEvent<never>;
+  github_campaign_claim: GaEvent<never>;
 };
 
 interface GtagEventApi {

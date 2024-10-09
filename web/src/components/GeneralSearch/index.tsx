@@ -23,6 +23,7 @@ import {
   TextField,
   Typography,
   ListSubheader,
+  AutocompleteHighlightChangeReason,
 } from '@mui/material';
 import { SearchRepoInfo, UserInfo, SearchOrgInfo } from '@ossinsight/api';
 import React, {
@@ -41,7 +42,6 @@ import isHotkey from 'is-hotkey';
 import KeyboardUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
-import { AutocompleteHighlightChangeReason } from '@mui/base/AutocompleteUnstyled/useAutocomplete';
 import { notNullish, isFalsy } from '@site/src/utils/value';
 
 export interface GeneralSearchProps {
@@ -103,7 +103,7 @@ const CustomPopper = ({ children, ...props }: PopperProps) => <Popper {...props}
     fontSize: 12,
     textTransform: 'none',
   },
-}} >
+}}>
   {children}
 </Popper>;
 
@@ -142,7 +142,7 @@ export const renderUser = (props: React.HTMLAttributes<HTMLLIElement>, option: O
       {highlight
         ? (
           <ListItemIcon>
-            <TipIcon reverse textContent icon={<><KeyboardReturnIcon fontSize='inherit'/> Enter</>} />
+            <TipIcon reverse textContent icon={<><KeyboardReturnIcon fontSize="inherit" /> Enter</>} />
           </ListItemIcon>
           )
         : undefined}
@@ -164,7 +164,7 @@ export const renderRepo = (props: ListItemProps, option: Option, highlight: bool
       {highlight
         ? (
           <ListItemIcon>
-            <TipIcon reverse textContent icon={<><KeyboardReturnIcon fontSize='inherit'/> Enter</>} />
+            <TipIcon reverse textContent icon={<><KeyboardReturnIcon fontSize="inherit" /> Enter</>} />
           </ListItemIcon>
           )
         : undefined}
@@ -325,7 +325,7 @@ const GeneralSearch: FC<GeneralSearchProps> = ({ contrast, align = 'left', size,
         ({ InputProps, ...params }) => (
           <TextField
             {...params}
-            variant='outlined'
+            variant="outlined"
             placeholder={placeholder}
             sx={(theme) => ({
               backgroundColor: contrast ? '#E9EAEE' : '#3c3c3c',
@@ -353,7 +353,7 @@ const GeneralSearch: FC<GeneralSearchProps> = ({ contrast, align = 'left', size,
                   : undefined,
               }),
               startAdornment: (
-                <InputAdornment position='start'>
+                <InputAdornment position="start">
                   <SearchIcon
                     sx={(theme) => ({
                       color: contrast
@@ -365,17 +365,17 @@ const GeneralSearch: FC<GeneralSearchProps> = ({ contrast, align = 'left', size,
               ),
               endAdornment: loading
                 ? (
-                <InputAdornment position='end'>
-                  <CircularProgress
-                    size='16px'
-                    sx={{ mr: 1 }}
-                    color={contrast ? 'info' : 'primary'}
-                  />
-                </InputAdornment>
+                  <InputAdornment position="end">
+                    <CircularProgress
+                      size="16px"
+                      sx={{ mr: 1 }}
+                      color={contrast ? 'info' : 'primary'}
+                    />
+                  </InputAdornment>
                   )
                 : global && !open && !option
                   ? (
-                <TipIcon icon='/' reverse display={[false, true]} />
+                    <TipIcon icon="/" reverse display={[false, true]} />
                     )
                   : undefined,
             }}
@@ -387,7 +387,7 @@ const GeneralSearch: FC<GeneralSearchProps> = ({ contrast, align = 'left', size,
         <PopperContainer>
           {tabs}
           <Box p={2}>
-            {type !== 'all' && (<Typography variant='body2'>No {type}</Typography>)}
+            {type !== 'all' && (<Typography variant="body2">No {type}</Typography>)}
           </Box>
         </PopperContainer>
       }
@@ -395,16 +395,16 @@ const GeneralSearch: FC<GeneralSearchProps> = ({ contrast, align = 'left', size,
         <PopperContainer>
           {tabs}
           <Box p={2}>
-            <Skeleton animation='wave' />
-            <Skeleton animation='wave' />
-            <Skeleton animation='wave' />
+            <Skeleton animation="wave" />
+            <Skeleton animation="wave" />
+            <Skeleton animation="wave" />
           </Box>
         </PopperContainer>
       }
       ListboxComponent={useCallback(
         forwardRef(function SearchList (
           { children, ...props }: React.HTMLAttributes<HTMLElement>,
-          ref: ForwardedRef<HTMLElement>,
+          ref: ForwardedRef<HTMLDivElement>,
         ) {
           return (
             <PopperContainer ref={ref} {...props}>
@@ -415,22 +415,22 @@ const GeneralSearch: FC<GeneralSearchProps> = ({ contrast, align = 'left', size,
               <Box
                 height={32}
                 p={0.5}
-                bgcolor='#121212'
+                bgcolor="#121212"
                 display={['none', 'block']}
               >
-                <Stack direction='row'>
-                  <TipGroup text='To Navigate'>
-                    <Stack direction='row'>
-                      <TipIcon textContent icon='TAB' />
-                      <TipIcon icon={<KeyboardUpIcon fontSize='inherit' />} />
-                      <TipIcon icon={<KeyboardDownIcon fontSize='inherit' />} />
+                <Stack direction="row">
+                  <TipGroup text="To Navigate">
+                    <Stack direction="row">
+                      <TipIcon textContent icon="TAB" />
+                      <TipIcon icon={<KeyboardUpIcon fontSize="inherit" />} />
+                      <TipIcon icon={<KeyboardDownIcon fontSize="inherit" />} />
                     </Stack>
                   </TipGroup>
-                  <TipGroup text='To Cancel'>
-                    <TipIcon textContent icon='ESC' />
+                  <TipGroup text="To Cancel">
+                    <TipIcon textContent icon="ESC" />
                   </TipGroup>
-                  <TipGroup text='To Enter'>
-                    <TipIcon icon={<KeyboardReturnIcon fontSize='inherit' />} />
+                  <TipGroup text="To Enter">
+                    <TipIcon icon={<KeyboardReturnIcon fontSize="inherit" />} />
                   </TipGroup>
                 </Stack>
               </Box>
@@ -447,9 +447,9 @@ const GeneralSearch: FC<GeneralSearchProps> = ({ contrast, align = 'left', size,
 GeneralSearch.displayName = 'GeneralSearch';
 
 const TipGroup = ({ children, text }: { text: string, children: JSX.Element }) => (
-  <Stack direction='row' mr={1}>
+  <Stack direction="row" mr={1}>
     {children}
-    <Typography variant='body2' ml={0.5} lineHeight='24px'>
+    <Typography variant="body2" ml={0.5} lineHeight="24px">
       {text}
     </Typography>
   </Stack>
@@ -465,8 +465,8 @@ const TipIcon = ({ icon, textContent = false, reverse = false, display }: { icon
     mr={0.5}
     px={textContent ? 1 : 0}
     display={notNullish(display) ? display.map(b => b ? 'flex' : 'none') : 'flex'}
-    alignItems='center'
-    justifyContent='center'
+    alignItems="center"
+    justifyContent="center"
   >
     {icon}
   </Box>
