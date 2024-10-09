@@ -18,18 +18,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+
       - name: Install Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: 'pnpm'
-          cache-dependency-path: pnpm-lock.json
-
-      - uses: pnpm/action-setup@v4
-        name: Install pnpm
-        id: pnpm-install
-        with:
-          version: 9.6.0
 
       - name: Install OSSInsight Types Dependencies
         run: pnpm --filter "@ossinsight/types" --frozen-lockfile --strict-peer-dependencies install && pnpm --filter "@ossinsight/types" build
