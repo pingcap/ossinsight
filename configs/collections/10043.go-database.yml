@@ -6,7 +6,6 @@ items:
   - hashicorp/consul
   - peterbourgon/diskv
   - etcd-io/etcd
-  - nutsdb/nutsdb
   - rosedblabs/rosedb
   - lotusdblabs/lotusdb
   - allegro/bigcache

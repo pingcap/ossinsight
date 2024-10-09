@@ -1,4 +1,6 @@
-import {getDb} from "@db/index";
+import {getDb, values} from "@db/index";
+import {Insertable} from "kysely";
+import {GithubRepos} from "@db/schema";
 
 export async function findReposByNames(names: string[]) {
   return await getDb().selectFrom('github_repos')
@@ -12,4 +14,15 @@ export async function findReposByNames(names: string[]) {
         .groupBy('repo_name')
     })
     .execute();
+}
+
+export async function upsertGitHubRepo(repo: Insertable<GithubRepos>) {
+  return await getDb().insertInto('github_repos')
+    .values(repo)
+    .onDuplicateKeyUpdate(({ ref }) => ({
+      repo_name: values(ref('repo_name')),
+      owner_id: values(ref('owner_id')),
+      owner_login: values(ref('owner_login')),
+    }))
+    .executeTakeFirst();
 }

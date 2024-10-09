@@ -6,10 +6,12 @@ import {
 } from "@db/collections";
 import {loadCollectionConfigs} from "@configs";
 import * as process from "node:process";
-import {findReposByNames} from "@db/github_repos";
+import {findReposByNames, upsertGitHubRepo} from "@db/github_repos";
 import {booleanParser, DEFAULT_COLLECTION_CONFIGS_BASE_DIR, stringParser} from "@cmd/collection/common";
 import { Octokit } from "octokit";
 import {envConfig} from "@env";
+
+const GITHUB_REPO_NAME_REGEXP = /^[a-zA-Z0-9-]+\/[a-zA-Z0-9._-]{1,100}$/;
 
 export function initVerifyCollectionCommand(collectionCmd: Command) {
   collectionCmd
@@ -74,12 +76,27 @@ export async function verifyCollectionConfigs(args: any) {
         }
       }
 
+      // Check if the repos in the collection is duplicate.
+      const repoNameSet = new Set<string>();
+      for (let collectionRepo of collectionRepos) {
+        if (!isValidRepoName(collectionRepo)) {
+          throwError(new Error(`Collection [${collectionName}](id: ${collectionId}): the format of repo name "${collectionRepo}" is wrong.`))
+        }
+        if (repoNameSet.has(collectionRepo)) {
+          throwError(new Error(`Collection [${collectionName}](id: ${collectionId}): the repo name "${collectionRepo}" is duplicate.`));
+        } else {
+          repoNameSet.add(collectionRepo);
+        }
+      }
+
       // Check if the repos in the collection is all existed.
       const repos = await findReposByNames(collectionRepos);
       if (repos.length < collectionRepos.length) {
         const diffRepos = collectionRepos.filter(name => !repos.some(r => r.repo_name === name));
         diffRepos.forEach((r) => reposNotFound.add(r));
-        throwError(new Error(`Collection [${collectionName}](id: ${collectionId}): can not find some repos by names: ${diffRepos.join(', ')}`));
+        if (diffRepos.length > 0) {
+          throwError(new Error(`Collection [${collectionName}](id: ${collectionId}): can not find some repos by names: ${diffRepos.join(', ')}`));
+        }
       }
 
       logger.info(`✅  Checked collection [${collectionName}](id: ${collectionId}).`)
@@ -112,6 +129,10 @@ function splitOwnerRepo(data: string) {
   return { owner, repo };
 }
 
+function isValidRepoName(repoName: string) {
+  return GITHUB_REPO_NAME_REGEXP.test(repoName);
+}
+
 export async function showFixRepoNamesSuggestions(baseDir: string, repoNames: string[]) {
   logger.info(`Trying to fix the wrong repo names and generate fix suggestions...`)
   const octokit = new Octokit({
@@ -127,10 +148,19 @@ export async function showFixRepoNamesSuggestions(baseDir: string, repoNames: st
         repo: repo
       });
       const newName = repository.full_name;
-
       logger.info(`Fetched github repo by name ${oldName}, the repo name has changed to ${newName}`);
+
+      // Updated the github_repos table.
+      await upsertGitHubRepo({
+        repo_id: repository.id,
+        repo_name: repository.full_name,
+        owner_id: repository.owner.id,
+        owner_login: repository.owner.login,
+        owner_is_org: Number(repository.owner.type === 'Organization')
+      })
+
+      // Generate the fix command.
       commands.push(`find . -name "*.yml" -exec sed -i '' 's/${oldName.replace('/', '\\/')}/${newName.replace('/', '\\/')}/g' {} +`);
-      // TODO: sync to github_repos table.
     } catch (e) {
       logger.error(`❌ Failed to fetch github repo by name ${oldName}.`);
     }

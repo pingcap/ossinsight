@@ -8,7 +8,7 @@ items:
   - solo-io/gloo
   - cilium/cilium
   - TykTechnologies/tyk
-  - api-umbrella
+  - NREL/api-umbrella
   - apache/apisix
   - apache/shenyu
   - gravitee-io/gravitee-api-management

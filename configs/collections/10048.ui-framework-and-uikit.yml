@@ -26,7 +26,6 @@ items:
   - tachyons-css/tachyons
   - vuetifyjs/vuetify
   - themesberg/flowbite
-  - mdbootstrap/TW-Elements
   - ben-rogerson/twin.macro
   - react-bootstrap/react-bootstrap
   - layui/layui

@@ -12,7 +12,6 @@ items:
   - facebook/docusaurus
   - slatedocs/slate
   - nuxt/nuxt
-  - gridsome/gridsome
   - middleman/middleman
   - react-static/react-static
   - docsifyjs/docsify

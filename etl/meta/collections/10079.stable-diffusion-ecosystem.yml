@@ -6,7 +6,6 @@ items:
   - CompVis/stable-diffusion
   - lllyasviel/ControlNet
   - huggingface/diffusers
-  - invoke-ai/InvokeAI
   - apple/ml-stable-diffusion
   - divamgupta/diffusionbee-stable-diffusion-ui
   - Sanster/lama-cleaner
