@@ -83,13 +83,13 @@ You can add a collection on OSS Insight website by submitting PRs.
 
 The following is a file template for a collection that describes what you need to include.
 
-Please create a `.yml` file under [the collections file path]( https://github.com/pingcap/ossinsight/tree/main/etl/meta/collections).
+Please create a `.yml` file under [the collections file path]( https://github.com/pingcap/ossinsight/tree/main/configs/collections).
 
 * File Name
 
 `<collection_id>.<collection_name>.yml`, For example: `10013.game-engine.yml`
 
-  💡 Tips: Please use `100XX` as your collection's id，and it should be `+1` after the latest submit in [here]( https://github.com/pingcap/ossinsight/tree/main/etl/meta/collections). 
+  💡 Tips: Please use `100XX` as your collection's id，and it should be `+1` after the latest submit in [here]( https://github.com/pingcap/ossinsight/tree/main/configs/collections). 
 
 * Content
 
