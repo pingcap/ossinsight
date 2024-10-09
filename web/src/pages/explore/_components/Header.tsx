@@ -17,7 +17,7 @@ const TidbCloudLogoImg = styled('img')`
 `;
 
 const title = 'GitHub Data Explorer';
-const subtitleFull = (total: number) => <>Explore <Highlight color='#9197D0'><StyledAnimatedNumber value={total} hasComma size={18}/></Highlight> GitHub data with no SQL or plotting skills. Powered by <TidbCloudLogoImg height='16' alt='tidb cloud logo' src='/img/tidb-cloud-logo-t.svg' /></>;
+const subtitleFull = (total: number) => <>Explore <Highlight color='#9197D0'><StyledAnimatedNumber value={total} hasComma size={18}/></Highlight> GitHub data with no SQL or plotting skills. Powered by <TidbCloudLogoImg height='18' alt='tidb cloud logo' src='/img/tidb-cloud-logo-o.png' /></>;
 
 export default function () {
   const visible = useVisibility();

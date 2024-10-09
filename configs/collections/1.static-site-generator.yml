@@ -1,0 +1,38 @@
+id: 1
+name: Static Site Generator
+items:
+  - jekyll/jekyll
+  - gohugoio/hugo
+  - 11ty/eleventy
+  - gatsbyjs/gatsby
+  - vuejs/vuepress
+  - hexojs/hexo
+  - vercel/next.js
+  - getpelican/pelican
+  - facebook/docusaurus
+  - slatedocs/slate
+  - nuxt/nuxt
+  - middleman/middleman
+  - react-static/react-static
+  - docsifyjs/docsify
+  - mkdocs/mkdocs
+  - sintaxi/harp
+  - decaporg/decap-cms
+  - jaspervdj/hakyll
+  - umijs/umi
+  - abelljs/abell
+  - withastro/astro
+  - tlienart/Franklin.jl
+  - getzola/zola
+  - redwoodjs/redwood
+  - tinacms/tinacms
+  - sveltejs/kit
+  - metalsmith/metalsmith
+  - rust-lang/mdBook
+  - gridsome/gridsome
+  - sphinx-doc/sphinx
+  - Cecilapp/Cecil
+  - evidence-dev/evidence
+  - vuejs/vitepress
+  - shuding/nextra
+  - squidfunk/mkdocs-material

@@ -306,7 +306,7 @@ const config = {
               { label: 'About OSS Insight', to: '/docs/about' },
               {
                 label: 'About TiDB Cloud',
-                to: 'https://www.pingcap.com/tidb-serverless?utm_source=ossinsight&utm_medium=referral'
+                to: 'https://www.pingcap.com/tidb-cloud-serverless/?utm_source=ossinsight&utm_medium=referral'
               },
               { label: 'How do we implement OSS Insight?', to: '/blog/why-we-choose-tidb-to-support-ossinsight' },
               /* { label: 'Database Stats', to: '/stats' }, */

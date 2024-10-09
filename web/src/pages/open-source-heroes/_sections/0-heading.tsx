@@ -26,7 +26,6 @@ export function HeadingSection () {
     return <PrimaryHeading
       loading={isLoading}
       onClickAction={() => {
-        console.log('github_campaign_action');
         gtagEvent('github_campaign_action', {});
         if (isGithubSub(user?.sub)) {
           setClaiming(true);

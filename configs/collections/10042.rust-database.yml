@@ -1,0 +1,23 @@
+id: 10042
+name: Rust Database
+items:
+  - tikv/tikv
+  - meilisearch/meilisearch
+  - spacejam/sled
+  - MaterializeInc/materialize
+  - databendlabs/databend
+  - erikgrinaker/toydb
+  - risingwavelabs/risingwave
+  - indradb/indradb
+  - apache/horaedb
+  - skytable/skytable
+  - PumpkinDB/PumpkinDB
+  - valeriansaliou/sonic
+  - neondatabase/neon
+  - cswinter/LocustDB
+  - tensorbase/tensorbase
+  - GreptimeTeam/greptimedb
+  - surrealdb/surrealdb
+  - cozodb/cozo
+  - influxdata/influxdb_iox
+  - qdrant/qdrant

@@ -1,0 +1,16 @@
+id: 10066
+name: Virtual Reality
+items:
+  - OpenHMD/OpenHMD
+  - alvr-org/ALVR
+  - icosa-foundation/open-brush
+  - matrix-org/thirdroom
+  - vircadia/vircadia-native-core
+  - GodotVR/godot_openvr
+  - Igalia/wolvic
+  - aframevr/aframe
+  - overte-org/overte
+  - StereoKit/StereoKit
+  
+  # Inspired by people of [r/virtualreality](https://www.reddit.com/r/virtualreality/).
+  # Discussion record on Reddit: https://www.reddit.com/r/virtualreality/comments/ywvtj6/recommendations_for_open_source_vr_software/.

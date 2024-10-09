@@ -1,0 +1,39 @@
+name: Verify API server
+
+on:
+  pull_request:
+    paths:
+      - 'packages/api-server/**'
+
+defaults:
+  run:
+    shell: bash
+    working-directory: packages/api-server
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+        with:
+          run_install: true
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+
+      - name: Build OSSInsight Types Dependencies
+        run: pnpm --filter "@ossinsight/types" build
+
+      - name: Verify Sources
+        run: pnpm run test
+
+      - name: Build Project
+        run: pnpm run build:ts

@@ -3,6 +3,7 @@ import { giftClientWithoutCache } from '@site/src/api/client';
 import { TiDBCloudButton } from '@site/src/pages/open-source-heroes/_components/TiDBCloudButton';
 import { useResponsiveAuth0 } from '@site/src/theme/NavbarItem/useResponsiveAuth0';
 import { getErrorMessage } from '@site/src/utils/error';
+import { useGtag } from '@site/src/utils/ga';
 import { twitterLink } from '@site/src/utils/share';
 import React, { type ReactNode, useEffect, useState } from 'react';
 import { XIcon } from 'react-share';
@@ -24,6 +25,7 @@ type Tenant = {
 export function ClaimForm () {
   const [claimedThisSession, setClaimedThisSession] = useState(false);
   const { getAccessTokenSilently } = useResponsiveAuth0();
+  const { gtagEvent } = useGtag();
 
   const { data: check, mutate } = useSWR('/api/v1/serverless-credits-campaign/credits/check', async url => await giftClientWithoutCache.get<any, Check>(url, {
     withCredentials: true,
@@ -41,9 +43,10 @@ export function ClaimForm () {
     headers: {
       Authorization: `Bearer ${await getAccessTokenSilently({ connection: 'github' })}`,
     },
-  }), { revalidateOnFocus: false });
+  }));
 
   const handleClaim = async (id: string) => {
+    gtagEvent('github_campaign_claim', {});
     await giftClientWithoutCache.post('/api/v1/serverless-credits-campaign/credits/claim', {
       selectedTenantId: id,
     }, {
@@ -66,7 +69,7 @@ export function ClaimForm () {
       if (claimedThisSession) {
         children = <ClaimedThisSession check={check} />;
       } else {
-        children = <Claimed />;
+        children = <Claimed check={check} />;
       }
     } else if (check.isEligible) {
       if (tenants.length === 0) {
@@ -87,7 +90,7 @@ export function ClaimForm () {
     //   <>
     //     <ClaimedThisSession check={check} />
     //     <br />
-    //     <Claimed />
+    //     <Claimed check={check} />
     //     <br />
     //     <EligibleNoTenants check={check} />
     //     <br />
@@ -138,16 +141,16 @@ function ClaimedThisSession ({ check }: { check: Check }) {
         TiDB Cloud to check it out and use it.
       </ClaimContent>
       <Box sx={{ position: 'relative', width: 'max-content', maxWidth: '100%', mt: 8, display: 'flex', gap: 2, px: 2, alignItems: 'center', flexWrap: 'wrap' }}>
+        <ShareButton />
         <TiDBCloudButton variant="contained" mt={0}>
           Start Building with TiDB Cloud!
         </TiDBCloudButton>
-        <ShareButton />
       </Box>
     </>
   );
 }
 
-function Claimed () {
+function Claimed ({ check }: { check: Check }) {
   const { user } = useResponsiveAuth0();
 
   return (
@@ -156,17 +159,15 @@ function Claimed () {
       <ClaimContent>
         Hi <em>{user?.nickname ?? user?.name}</em>
         <br />
-        You&#39;ve already participated in this campaign.
+        Thanks for being an open-source hero and claiming <strong>{check.credits} in TiDB Serverless</strong> credits for your contributions to the open-source community.
         <br />
-        Thanks for being an open-source hero.
-        <br />
-        Ready to build something amazing?
+        We are proud of you! Share this great news with friends and start building something amazing together.
       </ClaimContent>
       <Box sx={{ position: 'relative', width: 'max-content', maxWidth: '100%', mt: 8, display: 'flex', gap: 2, px: 2, alignItems: 'center', flexWrap: 'wrap' }}>
+        <ShareButton />
         <TiDBCloudButton variant="contained" mt={0}>
           Start Building with TiDB Cloud!
         </TiDBCloudButton>
-        <ShareButton />
       </Box>
     </>
   );
@@ -181,17 +182,15 @@ function NotEligible ({ tenants }: { tenants: Tenant[] }) {
       <ClaimContent>
         Hi <em>{user?.nickname ?? user?.name}</em>
         <br />
-        <b>Thank you for your contributions to the open-source community.</b>
+        Thanks for being an open-source hero! As a token of our appreciation, you have 25GB of free storage and 250 million reads available on TiDB Serverless.
         <br />
-        As a token of our appreciation, you have <b>25GB of free storage and 250 million reads</b> available on TiDB Serverless.
-        <br />
-        <b>Start building your next project today.</b>
+        Share this great news with your friends and start building something amazing together.
       </ClaimContent>
       <Box sx={{ position: 'relative', width: 'max-content', maxWidth: '100%', mt: 8, display: 'flex', gap: 2, px: 2, alignItems: 'center', flexWrap: 'wrap' }}>
+        <ShareButton />
         <TiDBCloudButton mt={0} variant="contained">
           Login to TiDB Cloud
         </TiDBCloudButton>
-        <ShareButton />
       </Box>
     </>
   );
@@ -322,11 +321,23 @@ function Eligible ({ tenants, check, onClaim }: { tenants: Tenant[], check: Chec
   </>;
 }
 
-function ShareButton () {
+function ShareButton ({ check }: { check?: Check }) {
+  let title: string;
+  let url: string;
+  const hashtags = ['TiDB', 'OpenSource', 'CloudComputing'];
+
+  if (check?.isClaimed) {
+    title = `I just claimed ${check.credits} in TiDB Serverless credits for my open-source contributions! Proud to be an open-source hero. Curious about your own GitHub contributions? See how many free TiDB Serverless credits you can claim: `;
+    url = 'https://ossinsight.io/open-source-heroes/?utm_source=twitter&utm_medium=social&utm_campaign=plg_OSScontribution_credit_05';
+  } else {
+    title = 'Excited to share that I received 25GB of free storage and 250 million reads on TiDB Serverless for my open-source contributions! Want to know how many free TiDB Serverless credits your GitHub contributions can earn? Check it out: ';
+    url = 'https://ossinsight.io/open-source-heroes/?utm_source=twitter&utm_medium=social&utm_campaign=plg_OSScontribution_credit_05';
+  }
+
   return (
-    <Button component="a" sx={{ position: [undefined, undefined, 'absolute'], left: [undefined, undefined, '100%'], whiteSpace: 'nowrap', color: 'white !important' }} target="_blank" href={twitterLink(location.href, {
-      title: 'Open Source Heroes, we ❤️ you! To show our appreciation, claim up to $2000 FREE TiDB Serverless Credits to fuel your next big idea. Build with a powerful, scalable serverless database. \nStart now!',
-      hashtags: ['opensource', 'database', 'cloud', 'developer', 'tidbserverless'],
+    <Button component="a" sx={{ position: [undefined, undefined, 'absolute'], left: [undefined, undefined, '100%'], whiteSpace: 'nowrap', color: 'white !important' }} target="_blank" href={twitterLink(url, {
+      title,
+      hashtags,
     })}>
       {'Share via '}
       <XIcon round size={24} bgStyle={{ fill: 'transparent' }} iconFillColor="white" />
