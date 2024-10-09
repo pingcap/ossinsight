@@ -18,7 +18,7 @@ export function initVerifyCollectionCommand(collectionCmd: Command) {
     .command('verify')
     .description('Verify collection configs.')
     .option<string>(
-      '-d, --base-dir <path>',
+      '-d, --base-dir <filepath>',
       'The base directory stored the collection config',
       stringParser,
       DEFAULT_COLLECTION_CONFIGS_BASE_DIR
