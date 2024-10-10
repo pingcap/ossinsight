@@ -6,7 +6,6 @@ import { getErrorMessage } from '@site/src/utils/error';
 import { useGtag } from '@site/src/utils/ga';
 import { twitterLink } from '@site/src/utils/share';
 import React, { type ReactNode, useEffect, useState } from 'react';
-import { XIcon } from 'react-share';
 import useSWR from 'swr';
 
 type Check = {
@@ -140,9 +139,9 @@ function ClaimedThisSession ({ check }: { check: Check }) {
         <br />
         TiDB Cloud to check it out and use it.
       </ClaimContent>
-      <Box sx={{ position: 'relative', width: 'max-content', maxWidth: '100%', mt: 8, display: 'flex', gap: 2, px: 2, alignItems: 'center', flexWrap: 'wrap' }}>
+      <Box sx={{ position: 'relative', width: 'max-content', maxWidth: '100%', mt: 8, display: 'flex', flexDirection: 'column', gap: 2, px: 2, alignItems: 'center' }}>
         <ShareButton />
-        <TiDBCloudButton variant="contained" mt={0}>
+        <TiDBCloudButton variant="text">
           Start Building with TiDB Cloud!
         </TiDBCloudButton>
       </Box>
@@ -159,13 +158,13 @@ function Claimed ({ check }: { check: Check }) {
       <ClaimContent>
         Hi <em>{user?.nickname ?? user?.name}</em>
         <br />
-        Thanks for being an open-source hero and claiming <strong>{check.credits} in TiDB Serverless</strong> credits for your contributions to the open-source community.
+        Thanks for being an open-source hero and claiming <strong>{check.credits} in TiDB Serverless</strong> credits for your contributions.
         <br />
-        We are proud of you! Share this great news with friends and start building something amazing together.
+        We are proud of you! Share this great news with friends and start building something amazing.
       </ClaimContent>
-      <Box sx={{ position: 'relative', width: 'max-content', maxWidth: '100%', mt: 8, display: 'flex', gap: 2, px: 2, alignItems: 'center', flexWrap: 'wrap' }}>
+      <Box sx={{ position: 'relative', width: 'max-content', maxWidth: '100%', mt: 8, display: 'flex', flexDirection: 'column', gap: 2, px: 2, alignItems: 'center' }}>
         <ShareButton />
-        <TiDBCloudButton variant="contained" mt={0}>
+        <TiDBCloudButton variant="text">
           Start Building with TiDB Cloud!
         </TiDBCloudButton>
       </Box>
@@ -184,11 +183,11 @@ function NotEligible ({ tenants }: { tenants: Tenant[] }) {
         <br />
         Thanks for being an open-source hero! As a token of our appreciation, you have 25GB of free storage and 250 million reads available on TiDB Serverless.
         <br />
-        Share this great news with your friends and start building something amazing together.
+        Share this great news with your friends and start building something amazing.
       </ClaimContent>
-      <Box sx={{ position: 'relative', width: 'max-content', maxWidth: '100%', mt: 8, display: 'flex', gap: 2, px: 2, alignItems: 'center', flexWrap: 'wrap' }}>
+      <Box sx={{ position: 'relative', width: 'max-content', maxWidth: '100%', mt: 8, display: 'flex', flexDirection: 'column', gap: 2, px: 2, alignItems: 'center' }}>
         <ShareButton />
-        <TiDBCloudButton mt={0} variant="contained">
+        <TiDBCloudButton variant="text">
           Login to TiDB Cloud
         </TiDBCloudButton>
       </Box>
@@ -209,11 +208,11 @@ function NotEligibleNoTenant () {
         <br />
         Create a new TiDB Cloud account and enjoy 25GB of free storage to start building your applications.
       </ClaimContent>
-      <Box sx={{ position: 'relative', width: 'max-content', maxWidth: '100%', mt: 8, display: 'flex', gap: 2, px: 2, alignItems: 'center', flexWrap: 'wrap' }}>
-        <TiDBCloudButton mt={0} variant="contained">
+      <Box sx={{ position: 'relative', width: 'max-content', maxWidth: '100%', mt: 8, display: 'flex', gap: 2, px: 2, flexDirection: 'column', alignItems: 'center' }}>
+        <ShareButton />
+        <TiDBCloudButton variant="text">
           Create TiDB Cloud Account
         </TiDBCloudButton>
-        <ShareButton />
       </Box>
     </>
   );
@@ -335,12 +334,16 @@ function ShareButton ({ check }: { check?: Check }) {
   }
 
   return (
-    <Button component="a" sx={{ position: [undefined, undefined, 'absolute'], left: [undefined, undefined, '100%'], whiteSpace: 'nowrap', color: 'white !important' }} target="_blank" href={twitterLink(url, {
-      title,
-      hashtags,
-    })}>
-      {'Share via '}
-      <XIcon round size={24} bgStyle={{ fill: 'transparent' }} iconFillColor="white" />
+    <Button
+      component="a"
+      target="_blank"
+      color="primary"
+      variant='contained'
+      href={twitterLink(url, {
+        title,
+        hashtags,
+      })}>
+      {'Share via X'}
     </Button>
   );
 }
