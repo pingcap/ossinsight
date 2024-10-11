@@ -3,9 +3,9 @@ name: Hyperledger Foundation
 items:
   - hyperledger/aries-acapy-controllers
   - hyperledger-archives/aries-acapy-plugin-toolbox
-  - hyperledger/aries-agent-test-harness
+  - openwallet-foundation/owl-agent-test-harness
   - hyperledger/aries-askar
-  - hyperledger/aries-cloudagent-python
+  - openwallet-foundation/acapy
   - hyperledger-labs/aries-fabric-wrapper
   - hyperledger-archives/aries-framework-dotnet
   - hyperledger-archives/aries-framework-go-ext
