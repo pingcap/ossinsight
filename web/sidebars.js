@@ -17,7 +17,7 @@ const sidebars = {
     {
       type: 'doc',
       id: 'about',
-      label: 'About',
+      label: 'About OSSInsight',
       customProps: {
         hide_title: true,
         description: 'OSS Insight is a powerful insight tool that can help you analyze any GitHub repository or developer. And you can get insights with the monthly and historical rankings as well.',
