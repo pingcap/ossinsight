@@ -53,6 +53,7 @@ items:
   - jitsucom/jitsu
   - snowplow/snowplow
   - apache/nifi
+  - dlt-hub/dlt
   
   # Data orchestration
   - apache/airflow
