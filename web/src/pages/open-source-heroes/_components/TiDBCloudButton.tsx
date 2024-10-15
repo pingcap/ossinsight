@@ -44,7 +44,7 @@ export function TiDBCloudButton ({
   href += utm;
 
   if (link) {
-    href += `&response_type=code&client_id=OSSInsight&scope=org:owner&state=${state}&redirect_uri=${encodeURIComponent(location.origin + '/open-source-heroes/tidbcloud/oauth/callback')}`;
+    href += `&response_type=code&client_id=OSSInsight&scope=org:owner&state=${state}&redirect_uri=${encodeURIComponent(location.origin + '/open-source-heroes/tidbcloud/oauth/callback/')}`;
   }
 
   return (
