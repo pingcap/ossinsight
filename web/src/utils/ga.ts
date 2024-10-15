@@ -58,6 +58,9 @@ type CustomEventMap = {
 
   github_campaign_action: GaEvent<never>;
   github_campaign_claim: GaEvent<never>;
+
+  connect_tidb_cloud_succeed: GaEvent<never>;
+  connect_tidb_cloud_failed: GaEvent<never>;
 };
 
 interface GtagEventApi {
