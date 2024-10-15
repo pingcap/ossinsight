@@ -35,7 +35,7 @@ function Inner () {
         body: JSON.stringify({
           code,
           state,
-          redirect_uri: location.origin + '/open-source-heroes/tidbcloud/oauth/callback',
+          redirect_uri: location.origin + '/open-source-heroes/tidbcloud/oauth/callback/',
         }),
       });
 
