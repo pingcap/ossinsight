@@ -1,6 +1,7 @@
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import { Button } from '@mui/material';
 import type { ButtonProps } from '@mui/material/Button';
+import { useGtag } from '@site/src/utils/ga';
 import React, { type ReactNode, useState } from 'react';
 
 const utm = '?utm_source=ossinsight&utm_medium=referral&utm_campaign=plg_OSScontribution_credit_05';
@@ -32,14 +33,20 @@ export function TiDBCloudButton ({
     siteConfig: { customFields },
   } = useDocusaurusContext();
 
+  const { gtagEvent } = useGtag();
+
   let href = `https://${customFields?.tidbcloud_host as string}`;
+  let tag: undefined | (() => any);
 
   if (org != null) {
     href += `/console/clusters/?orgId=${org}`;
+    tag = () => gtagEvent('github_campaign_start_building', { trigger_by: 'cta-start' });
   } else if (link) {
     href += '/oauth/authorize/';
+    tag = () => gtagEvent('github_campaign_connect', { trigger_by: 'cta-connect' });
   } else if (trial) {
     href += '/free-trial/';
+    tag = () => gtagEvent('github_campaign_try', { trigger_by: 'cta-try' });
   } else {
     href += '/';
   }
@@ -64,11 +71,19 @@ export function TiDBCloudButton ({
           ? (event) => {
               onClick?.(event);
               if (!event.isDefaultPrevented()) {
+                tag?.();
                 event.preventDefault();
-                window.open(href, 'Connnect to TiDB Cloud', 'width=600,height=600,resizable,scrollbars=yes,status=1');
+                const width = 600;
+                const height = 600;
+                const left = window.screenX + (window.innerWidth - width) / 2;
+                const top = window.screenY + (window.innerHeight - height) / 2;
+                window.open(href, 'Connnect to TiDB Cloud', `left=${left},top=${top},width=${width},height=${height},resizable,scrollbars=yes,status=1`);
               }
             }
-          : onClick}
+          : (event) => {
+              onClick?.(event);
+              tag?.();
+            }}
     >
       {children}
     </Button>

@@ -140,7 +140,7 @@ function ClaimedThisSession ({ check }: { check: Check }) {
       </ClaimContent>
       <Box sx={{ position: 'relative', width: 'max-content', maxWidth: '100%', mt: 8, display: 'flex', flexDirection: 'column', gap: 2, px: 2, alignItems: 'center' }}>
         <ShareButton />
-        <TiDBCloudButton variant="text">
+        <TiDBCloudButton variant="text" org={check.claimedTenantId}>
           Start Building with TiDB Cloud!
         </TiDBCloudButton>
       </Box>
@@ -291,6 +291,8 @@ function ShareButton ({ check }: { check?: Check }) {
     url = 'https://ossinsight.io/open-source-heroes/?utm_source=twitter&utm_medium=social&utm_campaign=plg_OSScontribution_credit_05';
   }
 
+  const { gtagEvent } = useGtag();
+
   return (
     <Button
       component="a"
@@ -302,6 +304,9 @@ function ShareButton ({ check }: { check?: Check }) {
         hashtags,
       })}
       sx={{ '&:hover': { color: '#1C1E21' } }}
+      onClick={() => {
+        gtagEvent('github_campaign_share', { trigger_by: 'cta-share' });
+      }}
     >
       {'Share via X'}
     </Button>

@@ -15,6 +15,12 @@ declare module 'react' {
   }
 }
 
+declare global {
+  interface Window {
+    __trigger?: string | undefined;
+  }
+}
+
 export function HeadingSection () {
   const { user, isLoading, login, getIdTokenClaims } = useResponsiveAuth0();
   const [claiming, setClaiming] = useState(false);
@@ -26,7 +32,9 @@ export function HeadingSection () {
     return <PrimaryHeading
       loading={isLoading}
       onClickAction={() => {
-        gtagEvent('github_campaign_action', {});
+        const trigger = window.__trigger ?? 'cta-claim-top';
+        window.__trigger = undefined;
+        gtagEvent('github_campaign_action', { trigger_by: trigger });
         if (isGithubSub(user?.sub)) {
           setClaiming(true);
         } else {
