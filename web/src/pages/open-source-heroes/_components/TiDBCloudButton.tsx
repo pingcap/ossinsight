@@ -5,12 +5,13 @@ import React, { type ReactNode, useState } from 'react';
 
 const utm = '?utm_source=ossinsight&utm_medium=referral&utm_campaign=plg_OSScontribution_credit_05';
 
-interface TiDBCloudButtonProps extends Pick<ButtonProps<'a'>, 'sx' | 'color' | 'variant'> {
+interface TiDBCloudButtonProps extends Pick<ButtonProps<'a'>, 'sx' | 'color' | 'variant' | 'onClick'> {
   children: ReactNode;
   mt?: number;
   trial?: boolean;
   link?: boolean;
   org?: number;
+  pop?: boolean;
 }
 
 const chars = 'abcdef1234567890';
@@ -21,6 +22,8 @@ export function TiDBCloudButton ({
   link,
   org,
   mt,
+  pop = false,
+  onClick,
   ...props
 }: TiDBCloudButtonProps) {
   const [state] = useState(() => Array(6).fill(0).map(_ => chars[Math.round(Math.random() * (chars.length - 1))]).join(''));
@@ -56,6 +59,16 @@ export function TiDBCloudButton ({
       component="a"
       href={href}
       target="_blank"
+      onClick={
+        pop
+          ? (event) => {
+              onClick?.(event);
+              if (!event.isDefaultPrevented()) {
+                event.preventDefault();
+                window.open(href, 'Connnect to TiDB Cloud', 'width=600,height=600,resizable,scrollbars=yes,status=1');
+              }
+            }
+          : onClick}
     >
       {children}
     </Button>

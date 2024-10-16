@@ -25,6 +25,7 @@ type Tenant = {
 
 export function ClaimForm () {
   const [claimedThisSession, setClaimedThisSession] = useState(false);
+  const [shouldAutoClaim, setShouldAutoClaim] = useState(false);
   const { getAccessTokenSilently } = useResponsiveAuth0();
   const { gtagEvent } = useGtag();
 
@@ -63,6 +64,12 @@ export function ClaimForm () {
       });
   };
 
+  useEffect(() => {
+    if (shouldAutoClaim && check && tenants && tenants.length > 0 && !check.isClaimed) {
+      void handleClaim(tenants[0].id);
+    }
+  }, [check, tenants, shouldAutoClaim]);
+
   let children: ReactNode;
 
   if (check && (tenants != null || !isTenantValidating)) {
@@ -76,7 +83,7 @@ export function ClaimForm () {
       if (tenants) {
         children = <Eligible check={check} onClaim={handleClaim} tenants={tenants} />;
       } else {
-        children = <EligibleNoTenants check={check} />;
+        children = <EligibleNoTenants check={check} onShouldAutoClaim={() => setShouldAutoClaim(true)} />;
       }
     }
 
@@ -164,7 +171,7 @@ function Claimed ({ check }: { check: Check }) {
   );
 }
 
-function EligibleNoTenants ({ check }: { check: Check }) {
+function EligibleNoTenants ({ check, onShouldAutoClaim }: { check: Check, onShouldAutoClaim: () => void }) {
   const { user } = useResponsiveAuth0();
 
   return (
@@ -173,7 +180,7 @@ function EligibleNoTenants ({ check }: { check: Check }) {
       <ClaimContent>
         Hi <em>{user?.nickname ?? user?.name}</em>
         <br />
-        Awesome! You&#39;re eligible for <strong>{check.credits} in TiDB Serverless</strong> credits for your contributions to the open-source community.
+        Awesome! You&#39;re eligible for <strong>{check.credits} in TiDB Serverless</strong> credits.
         <br />
         Create a new TiDB Cloud account and your credits will be waiting for you.
       </ClaimContent>
@@ -181,6 +188,10 @@ function EligibleNoTenants ({ check }: { check: Check }) {
         variant="contained"
         sx={{ background: 'white', mt: 8, '&:hover': { background: 'rgba(255,255,255,0.8)', color: 'black' } }}
         link
+        pop
+        onClick={() => {
+          onShouldAutoClaim();
+        }}
       >
         Connect to TiDB Cloud
       </TiDBCloudButton>
@@ -224,7 +235,7 @@ function Eligible ({ tenants, check, onClaim }: { tenants: Tenant[], check: Chec
     <ClaimContent>
       Hi <em>{user?.nickname ?? user?.name}</em>
       <br />
-      Congratulations! You&#39;re eligible for <strong>{check.credits} in TiDB Serverless</strong> credits for your contributions to the open-source community.
+      Congratulations! You&#39;re eligible for <strong>{check.credits} in TiDB Serverless</strong> credits.
       <br />
       Please select your existing TiDB Cloud account to apply these credits.
     </ClaimContent>
@@ -262,7 +273,7 @@ function Eligible ({ tenants, check, onClaim }: { tenants: Tenant[], check: Chec
       </RadioGroup>
     </FormControl>
     <Button sx={{ mt: 8, px: 8 }} color="primary" variant="contained" disabled={claiming || !value} onClick={handleClaim}>
-      Claim Credits
+      {claiming ? 'Claiming Credits...' : 'Claim Credits'}
     </Button>
   </>;
 }

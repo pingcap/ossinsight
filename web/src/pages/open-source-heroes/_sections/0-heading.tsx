@@ -16,7 +16,7 @@ declare module 'react' {
 }
 
 export function HeadingSection () {
-  const { user, isLoading, login } = useResponsiveAuth0();
+  const { user, isLoading, login, getIdTokenClaims } = useResponsiveAuth0();
   const [claiming, setClaiming] = useState(false);
   const { gtagEvent } = useGtag();
 
@@ -30,8 +30,11 @@ export function HeadingSection () {
         if (isGithubSub(user?.sub)) {
           setClaiming(true);
         } else {
-          void login({ connection: 'github' }).then(() => {
-            setClaiming(true);
+          void login({ connection: 'github' }).then(async () => {
+            const idc = await getIdTokenClaims();
+            if (idc != null) {
+              setClaiming(true);
+            }
           });
         }
       }}

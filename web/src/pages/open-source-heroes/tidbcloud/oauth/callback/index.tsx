@@ -11,8 +11,15 @@ export default function Page () {
   );
 }
 
+enum AuthorizeState {
+  AUTHORIZING,
+  AUTHORIZED,
+  FAILED,
+}
+
 function Inner () {
   const { getAccessTokenSilently } = useResponsiveAuth0();
+  const [authorizeState, setAuthorizeState] = useState(AuthorizeState.AUTHORIZING);
   const [error, setError] = useState<{ error: string, message: string }>();
   const { gtagEvent } = useGtag();
 
@@ -41,11 +48,13 @@ function Inner () {
 
       if (response.ok) {
         gtagEvent('connect_tidb_cloud_succeed', {});
+        setAuthorizeState(AuthorizeState.AUTHORIZED);
         setTimeout(() => {
           window.close();
         }, 1500);
       } else {
         gtagEvent('connect_tidb_cloud_failed', {});
+        setAuthorizeState(AuthorizeState.FAILED);
         setError(await response.json());
       }
     };
@@ -53,12 +62,21 @@ function Inner () {
     void execute();
   }, []);
 
-  if (!error) {
-    return <div style={{ width: '100vw', height: '100vh', lineHeight: '100vh', textAlign: 'center' }}>Authorizing...</div>;
+  switch (authorizeState) {
+    case AuthorizeState.AUTHORIZING:
+      return <div style={{ width: '100vw', height: '100vh', display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'center', justifyContent: 'center' }}>
+        <h3>Authorizing</h3>
+        <div>Please do not close this window.</div>
+      </div>;
+    case AuthorizeState.AUTHORIZED:
+      return <div style={{ width: '100vw', height: '100vh', display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'center', justifyContent: 'center' }}>
+        <h3>Authorized</h3>
+        <div>This window will close in seconds. Go back to <span onClick={() => window.close()} style={{ textDecoration: 'underline' }}>OSSInsight</span>.</div>
+      </div>;
+    case AuthorizeState.FAILED:
+      return <div style={{ width: '100vw', height: '100vh', display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'center', justifyContent: 'center' }}>
+        <h3>{error?.error ?? 'Authorization failed'}</h3>
+        <div>{error?.message ?? 'Unknown error'}</div>
+      </div>;
   }
-
-  return <div style={{ width: '100vw', height: '100vh', display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'center', justifyContent: 'center' }}>
-    <h3>{error.error}</h3>
-    <div>{error.message}</div>
-  </div>;
 }
