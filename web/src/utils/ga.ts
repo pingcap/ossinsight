@@ -17,6 +17,8 @@ type GAConfiguredDimensions = {
   errorMessage: string;
   // trigger-login, login-failed, login-success
   trigger_login_by: string | undefined;
+
+  trigger_by: string | undefined;
 };
 
 type GAConfiguredOptions = GAConfiguredDimensions & GAConfiguredMetrics;
@@ -56,8 +58,15 @@ type CustomEventMap = {
   login_success: GaEvent<'trigger_login_by'>;
   trigger_login: GaEvent<'trigger_login_by'>;
 
-  github_campaign_action: GaEvent<never>;
+  github_campaign_action: GaEvent<'trigger_by'>;
   github_campaign_claim: GaEvent<never>;
+  github_campaign_try: GaEvent<'trigger_by'>;
+  github_campaign_share: GaEvent<'trigger_by'>;
+  github_campaign_start_building: GaEvent<'trigger_by'>;
+  github_campaign_connect: GaEvent<'trigger_by'>;
+
+  connect_tidb_cloud_succeed: GaEvent<never>;
+  connect_tidb_cloud_failed: GaEvent<never>;
 };
 
 interface GtagEventApi {

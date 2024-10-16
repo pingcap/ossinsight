@@ -68,6 +68,7 @@ export function IntroductionsSection () {
                 variant="contained"
                 onClick={() => {
                   window.scrollTo({ top: 0, behavior: 'smooth' });
+                  window.__trigger = 'cta-claim-middle';
                   document.getElementById('start-claim-trigger')?.click();
                 }}
               >
