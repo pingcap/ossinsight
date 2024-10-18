@@ -28,7 +28,7 @@ jobs:
           node-version: 22
           cache: 'pnpm'
 
-      - name: Verify Collection Configs
+      - name: Sync Collection Configs
         run: pnpm run cli:collection:reload
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
