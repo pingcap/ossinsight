@@ -27,7 +27,7 @@ items:
   - hyperledger/besu-errorprone-checks
   - hyperledger/besu-native
   - hyperledger/besu
-  - hyperledger/bevel
+  - hyperledger-bevel/bevel
   - hyperledger-cacti/cacti
   - hyperledger/caliper-benchmarks
   - hyperledger/caliper
