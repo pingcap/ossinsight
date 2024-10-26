@@ -95,15 +95,15 @@ items:
   - hyperledger/indy-shared-rs
   - hyperledger/indy-test-automation
   - hyperledger/indy-vdr
-  - hyperledger/iroha-2-docs
-  - hyperledger/iroha-deploy
-  - hyperledger/iroha-ed25519
-  - hyperledger/iroha-ios
-  - hyperledger/iroha-java
-  - hyperledger/iroha-javascript
-  - hyperledger/iroha-python
-  - hyperledger-archives/iroha-tui-client
-  - hyperledger/iroha
+  - hyperledger-iroha/iroha-2-docs
+  - hyperledger-iroha/iroha-deploy
+  - hyperledger-iroha/iroha-ed25519
+  - hyperledger-iroha/iroha-ios
+  - hyperledger-iroha/iroha-java
+  - hyperledger-iroha/iroha-javascript
+  - hyperledger-iroha/iroha-python
+  - hyperledger-iroha/iroha-tui-client
+  - hyperledger-iroha/iroha
   - hyperledger-archives/sawtooth-contrib
   - hyperledger-archives/sawtooth-core
   - hyperledger-archives/sawtooth-devmode
