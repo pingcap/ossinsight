@@ -120,13 +120,13 @@ items:
   - hyperledger-archives/sawtooth-sdk-python
   - hyperledger-archives/sawtooth-sdk-rust
   - hyperledger-archives/sawtooth-sdk-swift
-  - hyperledger/sawtooth-seth
+  - hyperledger-archives/sawtooth-seth
   - hyperledger-archives/tf-security
-  - hyperledger/transact-contrib
-  - hyperledger/transact-rfcs
+  - hyperledger-archives/transact-contrib
+  - hyperledger-archives/transact-rfcs
   - hyperledger-archives/transact-sdk-go
-  - hyperledger/transact-sdk-javascript
-  - hyperledger/transact
+  - hyperledger-archives/transact-sdk-javascript
+  - hyperledger-archives/transact
   - hyperledger/toc
   - hyperledger/anoncreds-tex
   - hyperledger/indy-bls-wrapper-python
