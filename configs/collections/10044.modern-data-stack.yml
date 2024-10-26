@@ -46,6 +46,7 @@ items:
   # Data catalog
   - amundsen-io/amundsen
   - datahub-project/datahub
+  - open-metadata/OpenMetadata
 
   # Data integration
   - airbytehq/airbyte
