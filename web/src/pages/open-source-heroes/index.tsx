@@ -1,5 +1,5 @@
 import { HeadingSection } from '@site/src/pages/open-source-heroes/_sections/0-heading';
-import { HowItWorks } from '@site/src/pages/open-source-heroes/_sections/1-how-it-works';
+// import { HowItWorks } from '@site/src/pages/open-source-heroes/_sections/1-how-it-works';
 import { IntroductionsSection } from '@site/src/pages/open-source-heroes/_sections/2-introduction';
 import { ReviewsSection } from '@site/src/pages/open-source-heroes/_sections/3-reviews';
 import { ContributionsSection } from '@site/src/pages/open-source-heroes/_sections/4-contributions';
@@ -18,7 +18,7 @@ export default function Page () {
       footer={false}
     >
       <HeadingSection />
-      <HowItWorks />
+      {/* <HowItWorks /> */}
       <IntroductionsSection />
       <ReviewsSection />
       <ContributionsSection />
