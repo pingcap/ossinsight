@@ -16,3 +16,4 @@ items:
   - indradb/indradb
   - surrealdb/surrealdb
   - apache/age
+  - FalkorDB/FalkorDB
