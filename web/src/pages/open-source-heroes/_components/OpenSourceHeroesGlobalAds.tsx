@@ -43,13 +43,13 @@ export default function OpenSourceHeroesGlobalAds () {
 
   const content = (
     <CardContent sx={{ maxWidth: 402, mx: 'auto' }}>
-      <Typography variant="body1" mb={1}>
-        <StyledLink to="/open-source-heroes/" onClick={handleClose}>
+      <Typography variant="body1" mb={1} fontSize={12}>
+        <StyledLink to="/open-source-heroes/" onClick={handleClose} sx={{ fontSize: 16 }}>
           Up to $2000 Serverless database credits <StyledArrowForward fontSize="inherit" />
         </StyledLink>
         Turn your GitHub contribution into free TiDB Serverless credits, start building and scaling with a plug&play database that supports both SQL and vector queries.
       </Typography>
-      {open && <img src="/img/open-source-heroes-ads.png" width="536" alt="open-source-heroes-showcase" />}
+      {open && <img style={{ marginTop: 12 }} src="/img/open-source-heroes-ads.png" width="536" alt="open-source-heroes-showcase" />}
     </CardContent>
   );
 
@@ -117,7 +117,8 @@ const StyledCard = styled(Card)`
 
 const StyledDrawer = styled(Drawer)`
   .MuiDrawer-paper {
-    background: linear-gradient(225deg, #4356FF 0%, #794BC5 106.06%);
+    border-top: 6px solid #FFE895;
+    background: #111111;
   }
 `;
 
