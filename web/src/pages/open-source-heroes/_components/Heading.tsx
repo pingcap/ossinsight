@@ -2,7 +2,7 @@ import { css, styled } from '@mui/material';
 
 export const HeadingContainer = styled('div')`
   background-color: #212122;
-  padding: 40px 12px;
+  padding: 40px 12px 60px;
   ${({ theme }) => ({
     [theme.breakpoints.up('md')]: css`
       padding: 80px 0 120px;
@@ -13,11 +13,6 @@ export const HeadingContainer = styled('div')`
 export const Heading = styled('div')`
   max-width: 1442px;
   margin: 0 auto;
-
-  ${({ theme }) => ({
-    [theme.breakpoints.up('md')]: css`
-    `,
-  })}
 `;
 
 export const HeadingTitlePrefix = styled('span')`

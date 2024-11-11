@@ -37,6 +37,14 @@ const ThisSectionContent = styled(SectionContent)`
   justify-content: center;
   width: max-content;
 
+  flex-direction: column;
+
+  ${({ theme }) => ({
+    [theme.breakpoints.up('md')]: css`
+      flex-direction: row;
+    `,
+  })}
+  
   h2 {
     font-size: 32px;
     line-height: 36px;
@@ -52,6 +60,13 @@ const Features = styled('div')`
   padding: 0;
   list-style: none;
   width: max-content;
+  flex-direction: column;
+
+  ${({ theme }) => ({
+    [theme.breakpoints.up('md')]: css`
+      flex-direction: row;
+    `,
+  })}
 `;
 
 const FeatureSplitter = styled('li')`
