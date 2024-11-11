@@ -6,19 +6,14 @@ export function HowItWorks () {
   return (
     <ThisSection>
       <ThisSectionContent>
-        <SectionTitle>
+        <SectionTitle style={{ marginBottom: 0 }}>
           How it Works
         </SectionTitle>
         <Features>
           {items.map((item, index) => (
             <Fragment key={index}>
               {index > 0 && <FeatureSplitter />}
-              <Feature key={index} style={{ '--color1': item.color1, '--color2': item.color2 }}>
-                <FeatureTitle>{item.title}</FeatureTitle>
-                <FeatureIndicatorBar>
-                  <FeatureIndicatorInnerCircle />
-                </FeatureIndicatorBar>
-              </Feature>
+              <FeatureTitle>{item.title}</FeatureTitle>
             </Fragment>
           ))}
         </Features>
@@ -36,19 +31,16 @@ const ThisSection = styled(Section)`
 `;
 
 const ThisSectionContent = styled(SectionContent)`
-  display: block;
-  ${({ theme }) => ({
-    [theme.breakpoints.up('lg')]: css`
-      display: flex;
-      gap: 48px;
-      align-items: center;
+  display: flex;
+  gap: 32px;
+  align-items: center;
+  justify-content: center;
+  width: max-content;
 
-      h2 {
-        font-size: 24px;
-        line-height: 36px;
-      }
-    `,
-  })}
+  h2 {
+    font-size: 32px;
+    line-height: 36px;
+  }
 `;
 
 const Features = styled('div')`
@@ -56,25 +48,17 @@ const Features = styled('div')`
   display: flex;
   gap: 24px;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   padding: 0;
   list-style: none;
-  flex-direction: column;
-
-  ${({ theme }) => ({
-    [theme.breakpoints.up('md')]: css`
-      display: flex;
-      flex-direction: row;
-      align-items: flex-start;
-    `,
-  })}
+  width: max-content;
 `;
 
 const FeatureSplitter = styled('li')`
-  flex: 0.6;
+  width: 94px;
   height: 1px;
+  flex-shrink: 0;
   background-color: #6E6E6E;
-  margin-top: 64px;
   display: none;
 
   ${({ theme }) => ({
@@ -84,30 +68,12 @@ const FeatureSplitter = styled('li')`
   })}
 `;
 
-const Feature = styled('div')`
-  flex: 1;
-  max-width: 344px;
-`;
-
 const FeatureTitle = styled('h3')`
   font-size: 24px;
-  line-height: 36px;
   white-space: nowrap;
-`;
-
-const FeatureIndicatorBar = styled('div')`
-  background-color: var(--color1);
-  height: 28px;
-  border-radius: 9999px;
-  padding: 5px;
-`;
-
-const FeatureIndicatorInnerCircle = styled('div')`
-  width: 18px;
-  height: 18px;
-  border-radius: 9px;
-  border: 4px solid var(--color2);
-  background-color: white;
+  font-weight: normal;
+  margin-bottom: 0;
+  color: #D2D2D2;
 `;
 
 type Item = {
