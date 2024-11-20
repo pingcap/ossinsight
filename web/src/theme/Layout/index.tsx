@@ -1,3 +1,4 @@
+import OpenSourceHeroesGlobalAds from '@site/src/pages/open-source-heroes/_components/OpenSourceHeroesGlobalAds';
 import React from 'react';
 import clsx from 'clsx';
 import ErrorBoundary from '@docusaurus/ErrorBoundary';
@@ -14,7 +15,6 @@ import styles from './styles.module.css';
 import CustomFooter from '@site/src/components/Footer';
 import { useNotificationsProvider } from '@site/src/components/Notifications';
 import { AuthProvider } from '@site/src/context/user';
-import ExploreGlobalAds from '@site/src/pages/explore/_components/ExploreGlobalAds';
 import TiDBCloudLinkContext from '@site/src/components/TiDBCloudLink/context';
 
 declare module '@theme/Layout' {
@@ -72,7 +72,7 @@ export default function Layout (props: Props): JSX.Element {
       {header}
       {side}
 
-      <ExploreGlobalAds />
+      <OpenSourceHeroesGlobalAds />
 
       <div
         className={clsx(

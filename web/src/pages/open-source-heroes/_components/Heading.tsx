@@ -1,53 +1,18 @@
-import { css, styled, Unstable_Grid2 as Grid } from '@mui/material';
+import { css, styled } from '@mui/material';
 
 export const HeadingContainer = styled('div')`
   background-color: #212122;
-  padding: 40px 12px;
+  padding: 40px 12px 60px;
   ${({ theme }) => ({
     [theme.breakpoints.up('md')]: css`
-      padding: 120px 0;
+      padding: 80px 0 120px;
     `,
   })}
 `;
 
-export const Heading = styled(Grid)`
-  max-width: 1280px;
+export const Heading = styled('div')`
+  max-width: 1442px;
   margin: 0 auto;
-  display: none;
-
-  ${({ theme }) => ({
-    [theme.breakpoints.up('md')]: css`
-      display: flex;
-    `,
-  })}
-`;
-
-export const HeadingLeft = styled(Grid)`
-  ${({ theme }) => ({
-    [theme.breakpoints.up('md')]: css`
-      position: relative;
-
-      &:after {
-        display: block;
-        position: absolute;
-        right: 0;
-        top: 0;
-        height: 100%;
-        content: ' ';
-        border-right: 1px solid white;
-      }
-    `,
-  })}
-`;
-
-export const HeadingRight = styled(Grid)`
-  ${({ theme }) => ({
-    [theme.breakpoints.up('md')]: css`
-      display: flex;
-      flex-direction: column;
-      max-height: 100%;
-    `,
-  })}
 `;
 
 export const HeadingTitlePrefix = styled('span')`
@@ -64,8 +29,7 @@ export const HeadingTitle = styled('h1')`
   color: #FFE895;
   ${({ theme }) => ({
     [theme.breakpoints.up('md')]: css`
-      font-size: 54px;
-      text-align: right;
+      font-size: 60px;
     `,
   })}
 `;
@@ -74,12 +38,12 @@ export const HeadingDescription = styled('p')`
   color: #7C7C7C;
   font-size: 16px;
   line-height: 24px;
-  text-align: left;
+  text-align: center;
   margin-bottom: 0;
 
   ${({ theme }) => ({
     [theme.breakpoints.up('md')]: css`
-      text-align: right;
+      text-align: center;
     `,
   })}
 `;
@@ -87,27 +51,19 @@ export const HeadingDescription = styled('p')`
 export const HeadingLogos = styled('div')`
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 24px;
-  width: 100%;
   justify-content: center;
-
-  ${({ theme }) => ({
-    [theme.breakpoints.up('md')]: css`
-      justify-content: start;
-    `,
-  })}
+  gap: 12px;
+  margin: 24px auto;
+  width: 100%;
+  color: #7C7C7C;
 `;
 
 export const HeadingPrompt = styled('div')`
+  text-align: center;
   font-size: 18px;
   line-height: 28px;
   margin-top: 24px;
-  ${({ theme }) => ({
-    [theme.breakpoints.up('md')]: css`
-      margin-top: 80px;
-    `,
-  })}
+  color: #5DC1ED;
 `;
 
 export const HeadingSpacing = styled('span')`
