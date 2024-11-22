@@ -11,3 +11,4 @@ items:
   - run-llama/llama_index
   - neo4j/neo4j
   - aerospike/aerospike-server
+  - OpenSPG/KAG
