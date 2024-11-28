@@ -23,4 +23,4 @@ items:
   - duckdb/duckdb
   - apache/shardingsphere
   - CUBRID/cubrid
-  - cloudberrydb/cloudberrydb
+  - apache/cloudberry
