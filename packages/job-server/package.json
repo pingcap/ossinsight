@@ -47,7 +47,7 @@
     "fastify-plugin": "^4.3.0",
     "ioredis": "^5.2.4",
     "luxon": "^3.1.0",
-    "mysql2": "3.9.7",
+    "mysql2": "^3.11.5",
     "octokit": "^2.0.10",
     "pino": "^8.7.0",
     "pino-sentry-transport": "^1.0.4",

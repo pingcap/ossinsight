@@ -43,7 +43,7 @@
     "lodash": "^4.17.21",
     "lru-cache": "^11.0.1",
     "luxon": "^3.5.0",
-    "mysql2": "^3.11.3",
+    "mysql2": "^3.11.5",
     "octokit": "^3.2.1",
     "pino": "^9.4.0",
     "pino-sentry-transport": "^1.4.0",

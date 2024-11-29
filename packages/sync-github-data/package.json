@@ -36,7 +36,7 @@
     "generic-pool": "^3.9.0",
     "lru-cache": "^7.13.1",
     "luxon": "^3.3.0",
-    "mysql2": "^2.3.3",
+    "mysql2": "^3.11.5",
     "octokit": "^2.0.10",
     "pino": "^8.7.0",
     "pino-sentry-transport": "^1.0.4",
