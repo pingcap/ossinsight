@@ -23,7 +23,7 @@
     "cron-parser": "^4.8.1",
     "env-schema": "^5.2.0",
     "luxon": "^3.3.0",
-    "mysql2": "^2.3.3",
+    "mysql2": "^3.11.5",
     "node-schedule": "^2.1.1",
     "pino": "^8.7.0",
     "pino-pretty": "^10.0.0",
