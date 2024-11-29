@@ -39,4 +39,4 @@ items:
   - milvus-io/milvus
   - CUBRID/cubrid
   - GreptimeTeam/greptimedb
-  - cloudberrydb/cloudberrydb
+  - apache/cloudberry
