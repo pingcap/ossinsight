@@ -8,7 +8,7 @@
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <language>en</language>
-        <copyright>Copyright © 2024 PingCAP</copyright>
+        <copyright>Copyright © 2025 PingCAP</copyright>
         <item>
             <title><![CDATA[Configurations for building "Open Source Benchmark" GPTs]]></title>
             <link>https://ossinsight.io/blog/how-to-build-oss-comparison-gpt</link>
