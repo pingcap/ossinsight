@@ -113,7 +113,7 @@ const items: Item[] = [
   },
   {
     title: 'Start Building',
-    description: 'Once you have your credits, use them to build any project you want on TiDB Serverless. TiDB Serverless provides a full set of on-boarding supports and a few sets of sample data to help you get started.',
+    description: 'Once you have your credits, use them to build any project you want on TiDB Cloud Serverless. TiDB Cloud Serverless provides a full set of on-boarding supports and a few sets of sample data to help you get started.',
     color1: '#C1F6E2',
     color2: '#73D9B4',
   },

@@ -58,12 +58,12 @@ function PrimaryHeading ({ loading, onClickAction }: { loading: boolean, onClick
         <HeadingTitle>
           <HeadingTitlePrefix>Fuel Your Next Big Idea:</HeadingTitlePrefix>
           <br />
-          TiDB Serverless Credits for Open Source Heroes
+          TiDB Cloud Serverless Credits for Open Source Heroes
         </HeadingTitle>
         <HeadingDescription>
           TiDB loves open-source. We contribute code, sponsor projects and deeply appreciate developers who actively contribute to the community.
           <br />
-          As a token of our appreciation, we&#39;re offering up to $2000 in free TiDB Serverless credits to fuel open-source hero&#39;s next big idea.
+          As a token of our appreciation, we&#39;re offering up to $2000 in free TiDB Cloud Serverless credits to fuel open-source hero&#39;s next big idea.
         </HeadingDescription>
         <HeadingPrompt>
           Simply log in with your GitHub account to calculate and claim your credits.

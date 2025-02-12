@@ -24,7 +24,7 @@ export function IntroductionsSection () {
     <Section dark>
       <SectionContent>
         <SectionTitle>
-          With TiDB Serverless⚡️, you can:
+          With TiDB Cloud Serverless⚡️, you can:
         </SectionTitle>
         <Content invert>
           {image1}
@@ -34,7 +34,7 @@ export function IntroductionsSection () {
           </article>
         </Content>
         <SectionTitle sx={{ mt: [20, 20, 40] }}>
-          With TiDB Serverless credits 💰 , you can:
+          With TiDB Cloud Serverless credits 💰 , you can:
         </SectionTitle>
         <Tabs defaultValue="free" values={tabValues}>
           <TabsList>

@@ -134,7 +134,7 @@ function ClaimedThisSession ({ check }: { check: Check }) {
       <ClaimContent>
         Hi <em>{user?.nickname ?? user?.name}</em>
         <br />
-        Successfully claimed <strong>{check.credits} in TiDB Serverless</strong> credits, you can go to
+        Successfully claimed <strong>{check.credits} in TiDB Cloud Serverless</strong> credits, you can go to
         <br />
         TiDB Cloud to check it out and use it.
       </ClaimContent>
@@ -157,7 +157,7 @@ function Claimed ({ check }: { check: Check }) {
       <ClaimContent>
         Hi <em>{user?.nickname ?? user?.name}</em>
         <br />
-        Thanks for being an open-source hero and claiming <strong>{check.credits} in TiDB Serverless</strong> credits for your contributions.
+        Thanks for being an open-source hero and claiming <strong>{check.credits} in TiDB Cloud Serverless</strong> credits for your contributions.
         <br />
         We are proud of you! Share this great news with friends and start building something amazing.
       </ClaimContent>
@@ -180,7 +180,7 @@ function EligibleNoTenants ({ check, onShouldAutoClaim }: { check: Check, onShou
       <ClaimContent>
         Hi <em>{user?.nickname ?? user?.name}</em>
         <br />
-        Awesome! You&#39;re eligible for <strong>{check.credits} in TiDB Serverless</strong> credits.
+        Awesome! You&#39;re eligible for <strong>{check.credits} in TiDB Cloud Serverless</strong> credits.
         <br />
         Create a new TiDB Cloud account and your credits will be waiting for you.
       </ClaimContent>
@@ -235,7 +235,7 @@ function Eligible ({ tenants, check, onClaim }: { tenants: Tenant[], check: Chec
     <ClaimContent>
       Hi <em>{user?.nickname ?? user?.name}</em>
       <br />
-      Congratulations! You&#39;re eligible for <strong>{check.credits} in TiDB Serverless</strong> credits.
+      Congratulations! You&#39;re eligible for <strong>{check.credits} in TiDB Cloud Serverless</strong> credits.
       <br />
       Please select your existing TiDB Cloud account to apply these credits.
     </ClaimContent>
@@ -284,10 +284,10 @@ function ShareButton ({ check }: { check?: Check }) {
   const hashtags = ['TiDB', 'OpenSource', 'CloudComputing'];
 
   if (check?.isClaimed) {
-    title = `I just claimed ${check.credits} in TiDB Serverless credits for my open-source contributions! Proud to be an open-source hero. Curious about your own GitHub contributions? See how many free TiDB Serverless credits you can claim: `;
+    title = `I just claimed ${check.credits} in TiDB Cloud Serverless credits for my open-source contributions! Proud to be an open-source hero. Curious about your own GitHub contributions? See how many free TiDB Cloud Serverless credits you can claim: `;
     url = 'https://ossinsight.io/open-source-heroes/?utm_source=twitter&utm_medium=social&utm_campaign=plg_OSScontribution_credit_05';
   } else {
-    title = 'Excited to share that I received 25GB of free storage and 250 million reads on TiDB Serverless for my open-source contributions! Want to know how many free TiDB Serverless credits your GitHub contributions can earn? Check it out: ';
+    title = 'Excited to share that I received 25GB of free storage and 250 million reads on TiDB Cloud Serverless for my open-source contributions! Want to know how many free TiDB Cloud Serverless credits your GitHub contributions can earn? Check it out: ';
     url = 'https://ossinsight.io/open-source-heroes/?utm_source=twitter&utm_medium=social&utm_campaign=plg_OSScontribution_credit_05';
   }
 
