@@ -20,7 +20,7 @@ items:
   - Lissy93/personal-security-checklist
   - smicallef/spiderfoot
   - secdev/scapy
-  - RustScan/RustScan
+  - bee-san/RustScan
   - presidentbeef/brakeman
   - securego/gosec
   - urbanadventurer/WhatWeb
