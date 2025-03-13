@@ -1,7 +1,7 @@
 id: 10043
 name: Go Database
 items:
-  - dgraph-io/badger
+  - hypermodeinc/badger
   - kelindar/column
   - hashicorp/consul
   - peterbourgon/diskv
@@ -25,7 +25,7 @@ items:
   - HDT3213/godis
   - patrickmn/go-cache
   - emitter-io/emitter
-  - dgraph-io/dgraph
+  - hypermodeinc/dgraph
   - cockroachdb/cockroach
   - uber/aresdb
   - FerretDB/FerretDB

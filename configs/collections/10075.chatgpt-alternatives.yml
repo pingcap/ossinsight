@@ -5,7 +5,7 @@ items:
   - tatsu-lab/stanford_alpaca
   - meta-llama/llama
   - LAION-AI/Open-Assistant
-  - ggerganov/llama.cpp
+  - ggml-org/llama.cpp
   - antimatter15/alpaca.cpp
   - deep-diver/LLM-As-Chatbot
   - LC1332/Chinese-alpaca-lora
