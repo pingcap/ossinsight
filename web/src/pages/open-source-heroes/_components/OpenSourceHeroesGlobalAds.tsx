@@ -47,7 +47,7 @@ export default function OpenSourceHeroesGlobalAds () {
         <StyledLink to="/open-source-heroes/" onClick={handleClose} sx={{ fontSize: 16 }}>
           Up to $2000 Serverless database credits <StyledArrowForward fontSize="inherit" />
         </StyledLink>
-        Turn your GitHub contribution into free TiDB Serverless credits, start building and scaling with a plug&play database that supports both SQL and vector queries.
+        Turn your GitHub contribution into free TiDB Cloud Serverless credits, start building and scaling with a plug&play database that supports both SQL and vector queries.
       </Typography>
       {open && <img style={{ marginTop: 12 }} src="/img/open-source-heroes-ads.png" width="536" alt="open-source-heroes-showcase" />}
     </CardContent>
