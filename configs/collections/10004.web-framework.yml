@@ -59,7 +59,7 @@ items:
   - denoland/fresh
   - honojs/hono
   - refinedev/refine
-  - unjs/nitro
+  - nitrojs/nitro
   - payloadcms/payload
   - fastapi/fastapi
   - Healthlane-Technologies/Zango
