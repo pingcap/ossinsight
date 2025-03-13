@@ -3,6 +3,6 @@ name: Hyperledger Besu
 items:
   - hyperledger/besu
   - hyperledger/besu-docs
-  - hyperledger/besu-errorprone-checks
+  - besu-eth/besu-errorprone-checks
   - hyperledger/besu-native
   - hyperledger/homebrew-besu

@@ -11,7 +11,7 @@ items:
   - Tencent/MMKV
   - boltdb/bolt
   - arangodb/arangodb
-  - dgraph-io/badger
+  - hypermodeinc/badger
   - codenotary/immudb
   - tidwall/buntdb
   - isar/hive
@@ -23,4 +23,4 @@ items:
   - cockroachdb/pebble
   - nutsdb/nutsdb
   - Snapchat/KeyDB
-  - OpenAtomFoundation/pika
+  - OpenAtomFoundation/pikiwidb

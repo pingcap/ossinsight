@@ -3,13 +3,13 @@ name: Graph Database
 items:
   - neo4j/neo4j
   - arangodb/arangodb
-  - edgedb/edgedb
+  - geldata/gel
   - vesoft-inc/nebula
   - orientechnologies/orientdb
   - JanusGraph/janusgraph
   - RedisGraph/RedisGraph
   - cayleygraph/cayley
-  - dgraph-io/dgraph
+  - hypermodeinc/dgraph
   - terminusdb/terminusdb
   - memgraph/memgraph
   - bitnine-oss/agensgraph

@@ -21,7 +21,7 @@ items:
   - PaddlePaddle/Paddle
   - magenta/magenta
   - microsoft/CNTK
-  - jina-ai/jina
+  - jina-ai/serve
   - Tencent/ncnn
   - deeplearning4j/deeplearning4j
   - mlflow/mlflow
