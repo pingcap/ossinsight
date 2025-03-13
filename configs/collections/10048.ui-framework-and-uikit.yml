@@ -19,7 +19,7 @@ items:
   - saadeghi/daisyui
   - wenzhixin/bootstrap-table
   - kognise/water.css
-  - olton/Metro-UI-CSS
+  - olton/metroui
   - primer/css
   - carbon-design-system/carbon
   - muicss/mui
@@ -33,7 +33,7 @@ items:
   - radix-ui/primitives
   - mantinedev/mantine
   - chakra-ui/chakra-ui
-  - nextui-org/nextui
+  - heroui-inc/heroui
   - microsoft/fast
   - microsoft/fluentui
   - tailwindlabs/headlessui
