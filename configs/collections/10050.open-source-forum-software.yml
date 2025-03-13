@@ -9,4 +9,4 @@ items:
   - phpbb/phpbb
   - fluxbb/fluxbb
   - LemmyNet/lemmy
-  - apache/incubator-answer
+  - apache/answer
