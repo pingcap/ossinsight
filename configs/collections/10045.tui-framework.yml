@@ -20,3 +20,4 @@ items:
   - rivo/tview
   - mum4k/termdash
   - piotrmurach/tty
+  - ratatui/ratatui
