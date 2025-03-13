@@ -7,14 +7,14 @@ items:
   - optuna/optuna
   - kubeflow/kubeflow
   - bentoml/BentoML
-  - jina-ai/jina
+  - jina-ai/serve
   - microsoft/nni
   - HumanSignal/label-studio
   - Netflix/metaflow
   - dagster-io/dagster
   - wandb/wandb
   - feast-dev/feast
-  - allegroai/clearml
+  - clearml/clearml
   - polyaxon/polyaxon
   - SeldonIO/seldon-core
   - great-expectations/great_expectations

@@ -5,7 +5,7 @@ items:
   - signoz/signoz
   - dropwizard/metrics
   - pinpoint-apm/pinpoint
-  - xobserve/xo
+  - deepops-io/deepops
   - jaegertracing/jaeger
   - openzipkin/zipkin
   - elastic/apm-server

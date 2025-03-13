@@ -7,7 +7,7 @@ items:
   - privacyidea/privacyidea
   - apereo/cas
   - casdoor/casdoor
-  - IdentityServer/IdentityServer4
+  - DuendeArchive/IdentityServer4
   - nextauthjs/next-auth
   - logto-io/logto
   - zitadel/zitadel

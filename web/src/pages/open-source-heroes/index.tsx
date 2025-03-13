@@ -11,8 +11,8 @@ import React from 'react';
 export default function Page () {
   return (
     <CustomPage
-      title={'Open Source Heroes Claim FREE TiDB Serverless Credits!'}
-      description={'TiDB Serverless rewards your contributions with up to $1,000 in FREE credits to build modern, scalable, AI-powered applications. Power your next big idea with a powerful serverless database. Learn more & qualify!'}
+      title={'Open Source Heroes Claim FREE TiDB Cloud Serverless Credits!'}
+      description={'TiDB Cloud Serverless rewards your contributions with up to $1,000 in FREE credits to build modern, scalable, AI-powered applications. Power your next big idea with a powerful serverless database. Learn more & qualify!'}
       keywords={['opensource', 'database', 'cloud', 'developer', 'tidbserverless']}
       dark
       footer={false}

@@ -29,7 +29,7 @@ items:
   - hotwired/stimulus
   - alpinejs/alpine
   - solidjs/solid
-  - ionic-team/stencil
+  - stenciljs/core
   - jquery/jquery
   - QwikDev/qwik
   - refinedev/refine
