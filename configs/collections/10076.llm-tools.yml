@@ -1,6 +1,7 @@
 id: 10076
 name: LLM Tools
 items:
+  - confident-ai/deepeval
   - langchain-ai/langchain
   - langchain-ai/langchainjs
   - run-llama/llama_index
