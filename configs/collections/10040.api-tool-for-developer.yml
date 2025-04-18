@@ -9,7 +9,7 @@ items:
   - Kong/insomnia
   - Orange-OpenSource/hurl
   - graphql/graphql-playground
-  - kamilkisiela/graphql-inspector
+  - graphql-hive/graphql-inspector
   - altair-graphql/altair
   - graphql/graphiql
   - graphql-kit/graphql-voyager

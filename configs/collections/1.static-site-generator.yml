@@ -24,7 +24,7 @@ items:
   - withastro/astro
   - tlienart/Franklin.jl
   - getzola/zola
-  - redwoodjs/redwood
+  - redwoodjs/graphql
   - tinacms/tinacms
   - sveltejs/kit
   - metalsmith/metalsmith
