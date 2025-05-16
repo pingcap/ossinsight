@@ -22,3 +22,4 @@ items:
   - Chainlit/chainlit
   - FlowiseAI/Flowise
   - langfuse/langfuse
+  - keploy/keploy
