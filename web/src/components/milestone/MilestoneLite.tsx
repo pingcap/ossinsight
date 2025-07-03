@@ -56,6 +56,9 @@ const Milestones = ({ milestones, interval }: { milestones: Milestone[] | undefi
           } else if (milestones.length === 0) {
             return <DefaultMessage key="no-data">No Highlights yet</DefaultMessage>;
           } else {
+            if (isNullish(milestones[i])) {
+              return null;
+            }
             // eslint-disable-next-line @typescript-eslint/naming-convention
             const { milestone_number, milestone_type_id, reached_at } = milestones[i];
             return <MilestoneMessage key={`message-${i}`} milestone_type_id={milestone_type_id} milestone_number={milestone_number} reached_at={reached_at} />;
