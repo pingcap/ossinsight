@@ -2,7 +2,7 @@ id: 10099
 name: BaaS
 items:
   - supabase/supabase
-  - get-convex/convex
+  - get-convex/convex-backend
   - appwrite/appwrite
   - pocketbase/pocketbase
   - nhost/nhost
