@@ -205,7 +205,7 @@ items:
 - obrr-hhx/AskAnything
 - OmChillure/mcpui
 - OpenAgentPlatform/Dive
-- OpenAgentPlatform/Dive-mcp-host
+- OpenAgentPlatform/dive-mcp-host
 - packetnomad/cursor-apple-notes-indexer
 - Parham-dev/ai-agent-cs
 - paulrobello/mcp_langgraph_tools
