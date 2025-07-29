@@ -3,6 +3,6 @@ name: Cloud Financial Management and Resource Optimization
 items:
 - robusta-dev/krr
 - kubecost/kubectl-cost
-- kkubecost/kubecost
+- kubecost/kubecost
 - infracost/infracost
 - opencost/opencost
