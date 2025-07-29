@@ -1,306 +1,304 @@
 id: 10098
 name: Model Context Protocol (MCP) Client
 items:
-  - 3choff/mcp-chatbot
-  - Abiorh001/mcp_omni_connect
-  - ChatGPTNextWeb/NextChat
-  - Lucassssss/eechat
-  - NitroRCr/AIaW
-  - VikashLoomba/copilot-mcp
-  - aasherkamal216/Axiom
-  - Abiorh001/mcp_omni_connect
-  - ACNet-AI/OmniTaskAgent
-  - adafap/api-mcp
-  - adamdude828/claude-mcp-agent
-  - adhikasp/mcp-client-cli
-  - ahmedrowaihi/webcontainer-mcp-browser
-  - akktrsst/MCP_Agent_Airbnb
-  - albertvillanova/tinyagents
-  - alessandrodorazio/mcp-client-server
-  - alishangtian/proteus-ai
-  - amidabuddha/console-chat-gpt
-  - ananis25/mcp-client-ref
-  - annali/HistorIQ
-  - AnyContext-ai/remote-mcp-chat
-  - apify/tester-mcp-client
-  - aranyak-4002/figma-design-mcp
-  - arenoth/mcp-agent
-  - ashishpatel26/SmolAgentWithMCP
-  - AstraBert/TySVA
-  - aswincandra/fast-mcp-client
-  - ateeyak/n8n-nodes-mcp
-  - autometa-dev/whatsapp-mcp-voice-agent
-  - aws-samples/sample-nova-sonic-mcp
-  - aws/amazon-q-developer-cli
-  - bigmb/mb_mcp
-  - BigSweetPotatoStudio/hyper-mcp-terminal
-  - BigSweetPotatoStudio/HyperChat
-  - binarybana/easyrag
-  - blacsheep/LLM-Amap-mcp
-  - block/goose
-  - box-community/box-mcp-pydantic-ai
-  - bro-in-law/mcp-demo-frontend
-  - buyitsydney/CodingBaby-Browser-MCP
-  - byeblack/wasi_mcp_client
-  - bytedance/UI-TARS-desktop
-  - c1pher-cn/ha-xiaozhi-mcp
-  - Cam10001110101/anthropic-mcp-connector
-  - Chainlit/chainlit
-  - CherryHQ/cherry-studio
-  - chrishayuk/mcp-cli
-  - chunkydotdev/bldbl-mcp
-  - cline/cline
-  - Cloud-Thinker-AI/mcp-manager
-  - cloudwalk/hermes-mcp
-  - cognitivecomputations/dolphin-mcp
-  - coldielb/blnk
-  - Compiler-Inc/SwiftMCP
-  - continuedev/continue
-  - CopilotKit/mcp-client
-  - CopilotKit/open-mcp-client
-  - cpage-pivotal/cf-mcp-client
-  - craigsdennis/openai-responses-mcp-client-enabled
-  - crayon3shawn/mcp-cli-manager
-  - csonigo/slack-mcp-client
-  - danbri/xmcp-foaf
-  - danieloh30/quarkus-agentic-mcp
-  - danny-avila/LibreChat
-  - dannyroosevelt/pipedream-mcp-ui
-  - daodao97/chatmcp
-  - debedb/mcp-aws
-  - deco-sites/vertex-mcp-3
-  - DenizAkansoy/MCPHack
-  - Destiner/oneshot
-  - developit/mcp-cmd
-  - Dicklesworthstone/ultimate_mcp_client
-  - dictybase-docker/mcphost
-  - difybase/dify-connect-mcp
-  - director-run/director
-  - dory-ai/n8n-mcp-bridge
-  - down-to-earth1994/auto-mcp-client
-  - dshivendra/crewai_mcp_adapter
-  - duke7able/gemini-mcp-desktop-client
-  - edanyal/mcp-client
-  - Ejb503/multimodal-mcp-client
-  - ellieli0630/langgraph-mcp-agent-twitter
-  - emredeveloper/MCP-Turkey-Weather
-  - evalstate/fast-agent
-  - EvanZhouDev/raycast-mcp
-  - evilsocket/nerve
-  - EvolutionAPI/evo-ai
-  - extopico/llama-server_mcp_proxy
-  - ezyang/codemcp
-  - FabriBorgobello/chat-mcp-rag
-  - faraazahmad/mcp_debug
-  - Fbeunder/MCP_CLI_CLIENT
-  - Fbeunder/MCP_FLASK
-  - fernandezpablo85/mcpiol
-  - fkesheh/mcp-ai-agent
-  - funwarioisii/sample-mcp-rails
-  - garvk/mcp-postgresql-agent-hack
-  - gcc3/simple-ai-chat
-  - GeLi2001/mcp-terminal
-  - georgi-terziyski/mcp_client_ollama
-  - cursor/cursor
-  - getjavelin/ramparts
-  - ggozad/oterm
-  - GH05TCREW/PentestAgent
-  - gnosis23/tiny-mcp-client
-  - GongRzhe/Open-MCP-Client
-  - google-gemini/gemini-cli
-  - groq/groq-desktop-beta
-  - Gulp-AI/Osmosis-MCP-4B-demo
-  - hatasaki/azure-mcp-cli-client
-  - HazyResearch/minions
-  - Heminoid/mcp-voice-agent
-  - HiCoderMonkey/agents-mcp-cloud
-  - hideya/langchain-mcp-tools-ts-usage
-  - hideya/mcp-client-langchain-py
-  - hideya/mcp-client-langchain-ts
-  - hjlarry/dify-plugin-mcp_agent
-  - huggingface/smolagents
-  - i2y/langchaingo-mcp-adapter
-  - ibelick/zola
-  - IMNMV/ClaudeR
-  - Intelligent-Systems-Lab/mcp_client_ollama
-  - inventorado/Ollamaton
-  - itisaevalex/mistr-agent
-  - jagan-shanmugam/mattermost-mcp-host
-  - Jeomon/MCP-Agent
-  - JiamingHuangHJM/zsh_chatbot_mcp
-  - jiasyuanchu/mcp-chat-bot
-  - jinruoxinchen/mcp-web-client
-  - jlmelis/mcp-proving-ground-client
-  - jmand626/NASAApi-Connector
-  - jobsonlook/xhs-mcp
-  - jodobear/sparcaroo
-  - John-Lin/agentic-slackbot
-  - junjiem/dify-plugin-agent-mcp_sse
-  - juspay/Bedrock-MCP-Connector
-  - justinhuang0208/launchbar-mcp_agent
-  - justjoehere/mcp_gradio_client
-  - k3d3/firefox_mcpbridge
-  - kabrony/claude-agent-mcp
-  - kamrul1157024/mcp-client
-  - karthikv2k/chat-mcp
-  - kartikeyapandey20/mcp-client
-  - keli-wen/mcp_chatbot
-  - keta1930/mcp-agent-graph
-  - kicker315/deepseek_qgis_mcp
-  - Kin-10/MCP_LLM
-  - Kiran1689/algolia-mcp-client
-  - kirintea/MCP_Modularity
-  - kkul-eng/mcp-claude-demo
-  - Klavis-AI/klavis
-  - KokoiRuby/Kopilot-MCP
-  - korchasa/speelka-agent
-  - kuzushilabsorg/mcp-clients
-  - l145dev/Google-Maps-MCP-Speech
-  - lalanikarim/langgraph-mcp-pipeline
-  - langchain-ai/langchainjs-mcp-adapters
-  - Larkooo/dojo-mcp
-  - leartbeqiraj1/openai-mcp-client
-  - leehack/flutter-mcp-ai-chat
-  - lingster/mcp-llm
-  - LSTM-Kirigaya/openmcp-client
-  - luohy15/y-cli
-  - m-mcp/web-search
-  - machaojin1917939763/mcp-ui
-  - macuse-app/macuse
-  - MaitreyaM/Clap-Agents
-  - mario-andreschak/FLUJO
-  - mark3labs/mcphost
-  - mashriram/mcp_client_local
-  - mastra-ai/discord-mcp-bot
-  - matthewhand/open-swarm
-  - MauroStyleman/KAFRMA-Backend
-  - mcp-use/mcp-use
-  - MCPJam/inspector
-  - mctrinh/mcp-chatbot
-  - MdHelalUddinBiswas/Open-Mcp-Client
-  - mediar-ai/MCP-server-client-computer-use-ai-sdk
-  - menloresearch/jan
-  - michaeldslim/mcp-notion-api
-  - MichaelMoriarty67/mcp-autogen
-  - microsoft/genaiscript
-  - microsoft/vscode
-  - mihirrd/ollama-mcp-client
-  - milind-soni/MCP
-  - minyang-chen/seat-booking-agent
-  - mizakaHK/mcp-gomamayo
-  - modelcontextprotocol/inspector
-  - mrgoonie/langgraph-multiagent-boilerplate
-  - mshojaei77/EasyMCP
-  - nachoal/react-agent-with-mcp
-  - namank5x/kiters-mcp-client
-  - nanbingxyz/5ire
-  - navneet-ag/cursor-jira-mcp
-  - nbonamy/witsy
-  - nerding-io/n8n-nodes-mcp
-  - netixc/speech-mcp
-  - nick1udwig/kibitz
-  - nicozumarraga/light-mcp-agents
-  - Nikunj2003/LLaMa-MCP-Streamlit
-  - nimishchaudhari/openhands-resolver-mcp
-  - nullplatform/np-mcp-controlplane-proxy
-  - obrr-hhx/AskAnything
-  - OmChillure/mcpui
-  - OpenAgentPlatform/Dive
-  - OpenAgentPlatform/dive-mcp-host
-  - packetnomad/cursor-apple-notes-indexer
-  - Parham-dev/ai-agent-cs
-  - paulrobello/mcp_langgraph_tools
-  - paulrobello/par-mcp-inspector-tui
-  - pawankumar94/Jira_mcp_streamlit
-  - pickpppcc/qbittorrent-mcp
-  - platinum-hill/cobolt
-  - polymath-raval/mcp_example
-  - purunep/streamble-http-mcp-client
-  - qu3ai/qu3-app
-  - rairai77/weather-tool-with-mcp
-  - rakesh-eltropy/mcp-client
-  - rectalogic/pydantic-mcp
-  - RegiByte/mcp-client-app
-  - RGGH/mcp-python-client
-  - RGGH/refactored-octo-parakeet
-  - richardanaya/UtilityBelt
-  - Robert-GitHubUserName/WinFormsApp-MCP
-  - RooCodeInc/Roo-Code
-  - RooseveltAdvisors/fastapi-mcp-client
-  - rosaboyle/mcp-playground
-  - rosiefaulkner/langgraph-voice-agent
-  - runebookai/tome
-  - runekaagaard/aterm2
-  - RussellLuo/cmcp
-  - S-k-Srivastava/mcp-math-solver
-  - Sakil786/airbnb_mcp
-  - Sansan4ez/mcp-cli
-  - saqadri/mcp_agent_streamlit_rag
-  - scriptoshi/laravel-mcp-client
-  - Sedong-Choi/unity-mcp-typescript
-  - seekrays/seekchat
-  - setkyar/claude-mcp
-  - SettledCo/MCP-for-Laravel
-  - shaharia-lab/mcp-frontend
-  - shahshrey/universal-mcp-ui
-  - shane-kercheval/mcp-client-agent
-  - shaoyingchen/mcp-client-llm
-  - shawn996/mcp_ha_xiaozhi
-  - shren207/weather-mcp
-  - shuakami/mcp-download
-  - ShwStone/mcp-oi-wiki
-  - sidharthrajaram/mcp-sse
-  - slavashvets/mcp-http-client-example
-  - sooperset/mcp-client-slackbot
-  - sparktsao/mcp_meet_agentiq
-  - srbhptl39/MCP-SuperAssistant
-  - sst/opencode
-  - standardbeagle/mcp-tui
-  - Study944/AI-Agent-Zxc
-  - studychain01/browser_mcp_agent
-  - supercorp-ai/superinterface
-  - supermemoryai/install-mcp
-  - swairshah/claude-cli-mcp-client
-  - swairshah/term-mcp-client
-  - taggartbg/vibeframe
-  - tahtaciburak/calmcp
-  - tambo-ai/tambo
-  - tarasyarema/prodex-js
-  - TeamSparkAI/teamspark-workbench
-  - techspawn/Turbo-MCP-Client
-  - TerminallyLazy/MCP-on-FHIR
-  - ThingsPanel/thingspanel-mcp
-  - ThinkInAIXYZ/deepchat
-  - tim-schultz/mcp-client-rs
-  - tkellogg/tupac
-  - toberyan/deepin-mcp
-  - tony-nexartis/anthropic_mcp_hackathon_sse_client
-  - Toolbase-AI/toolbase
-  - truffle-ai/saiki
-  - twwch/mcp-feishu-bot
-  - umuo/hot-topic-mcp
-  - utkucy/arbitrum-mcp-tools
-  - VikashLoomba/copilot-mcp
-  - viktormarinho/mcpeste
-  - vincent-pli/mcp-cli-host
-  - williamvd4/mcp-client-cli
-  - wimpywarlord/mcp-react-dev-tools
-  - WinterTechForum/MCP-demo
-  - wong2/mcp-cli
-  - wrediam/n8n-coolify-mcp-tools
-  - wuaodi/SpaceMind
-  - wxhzhwxhzh/DrissionPageMCP
-  - xark-argo/argo
-  - Xingsandesu/CarrotAI
-  - xkzy/vscode-mcp-rag
-  - xprilion/genkit-mcp-client-blender
-  - YashMakan/flutter_mcp
-  - yashwant1810/Splunk-MCP-Multi-Agent-System
-  - yeakub108/mcp-client
-  - yoheimuta/protolint
-  - yonaka15/mcp-client-demo
-  - zaidmukaddam/scira-mcp-chat
-  - zed-industries/zed
-  - Zeeshanunique/mcp-client
-  - zinja-coder/zin-mcp-client
-  - Zovi343/oai_mcp_code_agent
+- 3choff/mcp-chatbot
+- Abiorh001/mcp_omni_connect
+- ChatGPTNextWeb/NextChat
+- Lucassssss/eechat
+- NitroRCr/AIaW
+- VikashLoomba/copilot-mcp
+- aasherkamal216/Axiom
+- ACNet-AI/OmniTaskAgent
+- adafap/api-mcp
+- adamdude828/claude-mcp-agent
+- adhikasp/mcp-client-cli
+- ahmedrowaihi/webcontainer-mcp-browser
+- akktrsst/MCP_Agent_Airbnb
+- albertvillanova/tinyagents
+- alessandrodorazio/mcp-client-server
+- alishangtian/proteus-ai
+- amidabuddha/console-chat-gpt
+- ananis25/mcp-client-ref
+- annali/HistorIQ
+- AnyContext-ai/remote-mcp-chat
+- apify/tester-mcp-client
+- aranyak-4002/figma-design-mcp
+- arenoth/mcp-agent
+- ashishpatel26/SmolAgentWithMCP
+- AstraBert/TySVA
+- aswincandra/fast-mcp-client
+- ateeyak/n8n-nodes-mcp
+- autometa-dev/whatsapp-mcp-voice-agent
+- aws-samples/sample-nova-sonic-mcp
+- aws/amazon-q-developer-cli
+- bigmb/mb_mcp
+- BigSweetPotatoStudio/hyper-mcp-terminal
+- BigSweetPotatoStudio/HyperChat
+- binarybana/easyrag
+- blacsheep/LLM-Amap-mcp
+- block/goose
+- box-community/box-mcp-pydantic-ai
+- bro-in-law/mcp-demo-frontend
+- buyitsydney/CodingBaby-Browser-MCP
+- byeblack/wasi_mcp_client
+- bytedance/UI-TARS-desktop
+- c1pher-cn/ha-xiaozhi-mcp
+- Cam10001110101/anthropic-mcp-connector
+- Chainlit/chainlit
+- CherryHQ/cherry-studio
+- chrishayuk/mcp-cli
+- chunkydotdev/bldbl-mcp
+- cline/cline
+- Cloud-Thinker-AI/mcp-manager
+- cloudwalk/hermes-mcp
+- cognitivecomputations/dolphin-mcp
+- coldielb/blnk
+- Compiler-Inc/SwiftMCP
+- continuedev/continue
+- CopilotKit/mcp-client
+- CopilotKit/open-mcp-client
+- cpage-pivotal/cf-mcp-client
+- craigsdennis/openai-responses-mcp-client-enabled
+- crayon3shawn/mcp-cli-manager
+- csonigo/slack-mcp-client
+- danbri/xmcp-foaf
+- danieloh30/quarkus-agentic-mcp
+- danny-avila/LibreChat
+- dannyroosevelt/pipedream-mcp-ui
+- daodao97/chatmcp
+- debedb/mcp-aws
+- deco-sites/vertex-mcp-3
+- DenizAkansoy/MCPHack
+- Destiner/oneshot
+- developit/mcp-cmd
+- Dicklesworthstone/ultimate_mcp_client
+- dictybase-docker/mcphost
+- difybase/dify-connect-mcp
+- director-run/director
+- dory-ai/n8n-mcp-bridge
+- down-to-earth1994/auto-mcp-client
+- dshivendra/crewai_mcp_adapter
+- duke7able/gemini-mcp-desktop-client
+- edanyal/mcp-client
+- Ejb503/multimodal-mcp-client
+- ellieli0630/langgraph-mcp-agent-twitter
+- emredeveloper/MCP-Turkey-Weather
+- evalstate/fast-agent
+- EvanZhouDev/raycast-mcp
+- evilsocket/nerve
+- EvolutionAPI/evo-ai
+- extopico/llama-server_mcp_proxy
+- ezyang/codemcp
+- FabriBorgobello/chat-mcp-rag
+- faraazahmad/mcp_debug
+- Fbeunder/MCP_CLI_CLIENT
+- Fbeunder/MCP_FLASK
+- fernandezpablo85/mcpiol
+- fkesheh/mcp-ai-agent
+- funwarioisii/sample-mcp-rails
+- garvk/mcp-postgresql-agent-hack
+- gcc3/simple-ai-chat
+- GeLi2001/mcp-terminal
+- georgi-terziyski/mcp_client_ollama
+- cursor/cursor
+- getjavelin/ramparts
+- ggozad/oterm
+- GH05TCREW/PentestAgent
+- gnosis23/tiny-mcp-client
+- GongRzhe/Open-MCP-Client
+- google-gemini/gemini-cli
+- groq/groq-desktop-beta
+- Gulp-AI/Osmosis-MCP-4B-demo
+- hatasaki/azure-mcp-cli-client
+- HazyResearch/minions
+- Heminoid/mcp-voice-agent
+- HiCoderMonkey/agents-mcp-cloud
+- hideya/langchain-mcp-tools-ts-usage
+- hideya/mcp-client-langchain-py
+- hideya/mcp-client-langchain-ts
+- hjlarry/dify-plugin-mcp_agent
+- huggingface/smolagents
+- i2y/langchaingo-mcp-adapter
+- ibelick/zola
+- IMNMV/ClaudeR
+- Intelligent-Systems-Lab/mcp_client_ollama
+- inventorado/Ollamaton
+- itisaevalex/mistr-agent
+- jagan-shanmugam/mattermost-mcp-host
+- Jeomon/MCP-Agent
+- JiamingHuangHJM/zsh_chatbot_mcp
+- jiasyuanchu/mcp-chat-bot
+- jinruoxinchen/mcp-web-client
+- jlmelis/mcp-proving-ground-client
+- jmand626/NASAApi-Connector
+- jobsonlook/xhs-mcp
+- jodobear/sparcaroo
+- John-Lin/agentic-slackbot
+- junjiem/dify-plugin-agent-mcp_sse
+- juspay/Bedrock-MCP-Connector
+- justinhuang0208/launchbar-mcp_agent
+- justjoehere/mcp_gradio_client
+- k3d3/firefox_mcpbridge
+- kabrony/claude-agent-mcp
+- kamrul1157024/mcp-client
+- karthikv2k/chat-mcp
+- kartikeyapandey20/mcp-client
+- keli-wen/mcp_chatbot
+- keta1930/mcp-agent-graph
+- kicker315/deepseek_qgis_mcp
+- Kin-10/MCP_LLM
+- Kiran1689/algolia-mcp-client
+- kirintea/MCP_Modularity
+- kkul-eng/mcp-claude-demo
+- Klavis-AI/klavis
+- KokoiRuby/Kopilot-MCP
+- korchasa/speelka-agent
+- kuzushilabsorg/mcp-clients
+- l145dev/Google-Maps-MCP-Speech
+- lalanikarim/langgraph-mcp-pipeline
+- langchain-ai/langchainjs-mcp-adapters
+- Larkooo/dojo-mcp
+- leartbeqiraj1/openai-mcp-client
+- leehack/flutter-mcp-ai-chat
+- lingster/mcp-llm
+- LSTM-Kirigaya/openmcp-client
+- luohy15/y-cli
+- m-mcp/web-search
+- machaojin1917939763/mcp-ui
+- macuse-app/macuse
+- MaitreyaM/Clap-Agents
+- mario-andreschak/FLUJO
+- mark3labs/mcphost
+- mashriram/mcp_client_local
+- mastra-ai/discord-mcp-bot
+- matthewhand/open-swarm
+- MauroStyleman/KAFRMA-Backend
+- mcp-use/mcp-use
+- MCPJam/inspector
+- mctrinh/mcp-chatbot
+- MdHelalUddinBiswas/Open-Mcp-Client
+- mediar-ai/MCP-server-client-computer-use-ai-sdk
+- menloresearch/jan
+- michaeldslim/mcp-notion-api
+- MichaelMoriarty67/mcp-autogen
+- microsoft/genaiscript
+- microsoft/vscode
+- mihirrd/ollama-mcp-client
+- milind-soni/MCP
+- minyang-chen/seat-booking-agent
+- mizakaHK/mcp-gomamayo
+- modelcontextprotocol/inspector
+- mrgoonie/langgraph-multiagent-boilerplate
+- mshojaei77/EasyMCP
+- nachoal/react-agent-with-mcp
+- namank5x/kiters-mcp-client
+- nanbingxyz/5ire
+- navneet-ag/cursor-jira-mcp
+- nbonamy/witsy
+- nerding-io/n8n-nodes-mcp
+- netixc/speech-mcp
+- nick1udwig/kibitz
+- nicozumarraga/light-mcp-agents
+- Nikunj2003/LLaMa-MCP-Streamlit
+- nimishchaudhari/openhands-resolver-mcp
+- nullplatform/np-mcp-controlplane-proxy
+- obrr-hhx/AskAnything
+- OmChillure/mcpui
+- OpenAgentPlatform/Dive
+- OpenAgentPlatform/Dive-mcp-host
+- packetnomad/cursor-apple-notes-indexer
+- Parham-dev/ai-agent-cs
+- paulrobello/mcp_langgraph_tools
+- paulrobello/par-mcp-inspector-tui
+- pawankumar94/Jira_mcp_streamlit
+- pickpppcc/qbittorrent-mcp
+- platinum-hill/cobolt
+- polymath-raval/mcp_example
+- purunep/streamble-http-mcp-client
+- qu3ai/qu3-app
+- rairai77/weather-tool-with-mcp
+- rakesh-eltropy/mcp-client
+- rectalogic/pydantic-mcp
+- RegiByte/mcp-client-app
+- RGGH/mcp-python-client
+- RGGH/refactored-octo-parakeet
+- richardanaya/UtilityBelt
+- Robert-GitHubUserName/WinFormsApp-MCP
+- RooCodeInc/Roo-Code
+- RooseveltAdvisors/fastapi-mcp-client
+- rosaboyle/mcp-playground
+- rosiefaulkner/langgraph-voice-agent
+- runebookai/tome
+- runekaagaard/aterm2
+- RussellLuo/cmcp
+- S-k-Srivastava/mcp-math-solver
+- Sakil786/airbnb_mcp
+- Sansan4ez/mcp-cli
+- saqadri/mcp_agent_streamlit_rag
+- scriptoshi/laravel-mcp-client
+- Sedong-Choi/unity-mcp-typescript
+- seekrays/seekchat
+- setkyar/claude-mcp
+- SettledCo/MCP-for-Laravel
+- shaharia-lab/mcp-frontend
+- shahshrey/universal-mcp-ui
+- shane-kercheval/mcp-client-agent
+- shaoyingchen/mcp-client-llm
+- shawn996/mcp_ha_xiaozhi
+- shren207/weather-mcp
+- shuakami/mcp-download
+- ShwStone/mcp-oi-wiki
+- sidharthrajaram/mcp-sse
+- slavashvets/mcp-http-client-example
+- sooperset/mcp-client-slackbot
+- sparktsao/mcp_meet_agentiq
+- srbhptl39/MCP-SuperAssistant
+- sst/opencode
+- standardbeagle/mcp-tui
+- Study944/AI-Agent-Zxc
+- studychain01/browser_mcp_agent
+- supercorp-ai/superinterface
+- supermemoryai/install-mcp
+- swairshah/claude-cli-mcp-client
+- swairshah/term-mcp-client
+- taggartbg/vibeframe
+- tahtaciburak/calmcp
+- tambo-ai/tambo
+- tarasyarema/prodex-js
+- TeamSparkAI/teamspark-workbench
+- techspawn/Turbo-MCP-Client
+- TerminallyLazy/MCP-on-FHIR
+- ThingsPanel/thingspanel-mcp
+- ThinkInAIXYZ/deepchat
+- tim-schultz/mcp-client-rs
+- tkellogg/tupac
+- toberyan/deepin-mcp
+- tony-nexartis/anthropic_mcp_hackathon_sse_client
+- Toolbase-AI/toolbase
+- truffle-ai/saiki
+- twwch/mcp-feishu-bot
+- umuo/hot-topic-mcp
+- utkucy/arbitrum-mcp-tools
+- viktormarinho/mcpeste
+- vincent-pli/mcp-cli-host
+- williamvd4/mcp-client-cli
+- wimpywarlord/mcp-react-dev-tools
+- WinterTechForum/MCP-demo
+- wong2/mcp-cli
+- wrediam/n8n-coolify-mcp-tools
+- wuaodi/SpaceMind
+- wxhzhwxhzh/DrissionPageMCP
+- xark-argo/argo
+- Xingsandesu/CarrotAI
+- xkzy/vscode-mcp-rag
+- xprilion/genkit-mcp-client-blender
+- YashMakan/flutter_mcp
+- yashwant1810/Splunk-MCP-Multi-Agent-System
+- yeakub108/mcp-client
+- yoheimuta/protolint
+- yonaka15/mcp-client-demo
+- zaidmukaddam/scira-mcp-chat
+- zed-industries/zed
+- Zeeshanunique/mcp-client
+- zinja-coder/zin-mcp-client
+- Zovi343/oai_mcp_code_agent
