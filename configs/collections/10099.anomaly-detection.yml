@@ -1,0 +1,22 @@
+id: 10099
+name: Anomaly Detection Software
+items:
+  - open-edge-platform/anomalib
+  - salesforce/Merlion
+  - stumpy-dev/stumpy
+  - unit8co/darts
+  - yzhao062/pyod
+  - pygod-team/pygod
+  - ML-KULeuven/dtaianomaly
+  - Minqi824/ADBench
+  - syntel-dev/Orion
+  - Nixtla/nixtla
+  - selimfirat/pysad
+  - TheDatumOrg/TSB-UAD
+  - zhangzw16/TADNet
+  - thuml/Time-Series-Library
+  - ankane/trend-api
+  - CASIA-IVA-Lab/AnomalyGPT
+  - elki-project/elki
+  - LANTERN-ai/LANTERN
+  - numenta/nupic
