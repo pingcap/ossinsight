@@ -8,7 +8,7 @@ items:
   - sphinx-doc/sphinx
   - vuejs/vuepress
   - vuejs/vitepress
-  - eleventy/eleventy
+  - 11ty/eleventy
   - hexojs/hexo
   - getzola/zola
   - HugoBlox/hugo-blox-builder
