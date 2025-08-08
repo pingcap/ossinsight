@@ -17,3 +17,4 @@ items:
   - surrealdb/surrealdb
   - apache/age
   - FalkorDB/FalkorDB
+  - kuzudb/kuzu
