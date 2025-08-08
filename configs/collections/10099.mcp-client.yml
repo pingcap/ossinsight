@@ -116,7 +116,7 @@ items:
 - hideya/mcp-client-langchain-ts
 - adafap/api-mcp
 - langchain-ai/langchainjs-mcp-adapters
-- truffle-ai/saiki
+- truffle-ai/dexto
 - wuaodi/SpaceMind
 - cpage-pivotal/cf-mcp-client
 - justjoehere/mcp_gradio_client
