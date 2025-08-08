@@ -4,7 +4,7 @@ items:
   - fuma-nama/fumadocs
   - facebook/docusaurus
   - mkdocs/mkdocs
-  - mkdocs/mkdocs-material
+  - squidfunk/mkdocs-material
   - sphinx-doc/sphinx
   - vuejs/vuepress
   - vuejs/vitepress
