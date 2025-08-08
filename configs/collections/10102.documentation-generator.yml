@@ -19,7 +19,7 @@ items:
   - google/docsy
   - alex-shpak/hugo-book
   - matcornic/hugo-theme-learn
-  - jpedroschmitz/gatsby-theme-docs
+  - jpedroschmitz/rocketdocs
   - shuding/nextra
   - rust-lang/mdBook
   - doxygen/doxygen
