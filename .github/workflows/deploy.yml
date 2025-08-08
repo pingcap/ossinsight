@@ -18,9 +18,7 @@ jobs:
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v2
         with:
-          node-version: 20
-          cache: 'npm'
-          cache-dependency-path: web/package-lock.json
+          node-version: 18
       - name: Install
         run: npm ci --prefer-offline --no-audit
       - name: Prefetch
