@@ -6,7 +6,7 @@ items:
   - go-xorm/xorm
   - sqlc-dev/sqlc
   - go-pg/pg
-  - volatiletech/sqlboiler
+  - aarondl/sqlboiler
   - go-gorp/gorp
   - xo/xo
   - upper/db
