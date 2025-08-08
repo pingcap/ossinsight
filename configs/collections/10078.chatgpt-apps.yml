@@ -18,7 +18,7 @@ items:
   - mckaywrigley/chatbot-ui
   - openai-translator/bob-plugin-openai-translator
   - mpociot/chatgpt-vscode
-  - josStorer/chatGPTBox
+  - josStorer/RWKV-Runner
   - m1guelpf/chatgpt-telegram
   - gragland/chatgpt-chrome-extension
   - madawei2699/myGPTReader
