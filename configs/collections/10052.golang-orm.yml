@@ -8,6 +8,7 @@ items:
   - go-pg/pg
   - aarondl/sqlboiler
   - go-gorp/gorp
+  - xo/dbtpl
   - xo/ox
   - upper/db
   - go-reform/reform
