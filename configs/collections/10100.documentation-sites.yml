@@ -1,5 +1,5 @@
 id: 10100
-name: Documentation Sites
+name: Documentation Generator
 items:
   - fuma-nama/fumadocs
   - facebook/docusaurus
