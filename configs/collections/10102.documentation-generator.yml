@@ -13,7 +13,7 @@ items:
   - getzola/zola
   - HugoBlox/hugo-blox-builder
   - docsifyjs/docsify
-  - gitbookio/gitbook
+  - GitbookIO/gitbook
   - readthedocs/readthedocs.org
   - just-the-docs/just-the-docs
   - google/docsy
