@@ -11,6 +11,7 @@ items:
   - dataease/dataease
   - pinterest/querybook
   - tellery/tellery
+  - visivo-io/visivo
   - evidence-dev/evidence
   - plotly/dash
   - streamlit/streamlit
