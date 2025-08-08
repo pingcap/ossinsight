@@ -12,8 +12,9 @@ items:
   - hypermodeinc/dgraph
   - terminusdb/terminusdb
   - memgraph/memgraph
-  - bitnine-oss/agensgraph
+  - skaiworldwide-oss/agensgraph
   - indradb/indradb
   - surrealdb/surrealdb
   - apache/age
   - FalkorDB/FalkorDB
+  - kuzudb/kuzu
