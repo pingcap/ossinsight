@@ -1,0 +1,12 @@
+id: 10100
+name: BaaS
+items:
+  - supabase/supabase
+  - get-convex/convex-backend
+  - appwrite/appwrite
+  - pocketbase/pocketbase
+  - nhost/nhost
+  - hasura/graphql-engine
+  - parse-community/parse-server
+  - directus/directus
+  - kuzzleio/kuzzle

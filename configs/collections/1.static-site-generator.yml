@@ -22,9 +22,9 @@ items:
   - umijs/umi
   - abelljs/abell
   - withastro/astro
-  - tlienart/Franklin.jl
+  - JuliaDocs/Franklin.jl
   - getzola/zola
-  - redwoodjs/redwood
+  - redwoodjs/graphql
   - tinacms/tinacms
   - sveltejs/kit
   - metalsmith/metalsmith
