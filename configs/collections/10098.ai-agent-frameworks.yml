@@ -1,0 +1,10 @@
+id: 10098
+name: AI Agent Frameworks
+items:
+  - VoltAgent/voltagent
+  - langchain-ai/langchain
+  - crewAIInc/crewAI
+  - microsoft/autogen
+  - agno-agi/agno
+  - openai/openai-agents-python
+  - pydantic/pydantic-ai

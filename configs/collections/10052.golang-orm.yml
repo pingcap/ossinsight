@@ -9,6 +9,7 @@ items:
   - aarondl/sqlboiler
   - go-gorp/gorp
   - xo/dbtpl
+  - xo/ox
   - upper/db
   - go-reform/reform
   - steebchen/prisma-client-go
