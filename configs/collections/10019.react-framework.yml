@@ -10,5 +10,5 @@ items:
   - blitz-js/blitz
   - refinedev/refine
   - Shopify/hydrogen
-  - redwoodjs/redwood
+  - redwoodjs/graphql
   - facebook/docusaurus

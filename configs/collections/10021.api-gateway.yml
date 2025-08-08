@@ -14,3 +14,4 @@ items:
   - gravitee-io/gravitee-api-management
   - luraproject/lura
   - krakend/krakend-ce
+  - emissary-ingress/emissary
