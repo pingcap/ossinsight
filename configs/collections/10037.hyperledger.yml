@@ -80,7 +80,6 @@ items:
   - hyperledger-archives/grid-rfcs
   - hyperledger-archives/grid
   - hyperledger/homebrew-besu
-  - hyperledger/hyperledger-hip
   - hyperledger/indy-did-method
   - hyperledger/indy-did-networks
   - hyperledger/indy-docs
