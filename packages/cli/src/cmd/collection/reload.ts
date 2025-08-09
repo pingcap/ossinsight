@@ -1,17 +1,21 @@
-import {Command} from "commander";
-import {logger} from "@logger";
+import * as process from "process";
+
+import {DEFAULT_COLLECTION_CONFIGS_BASE_DIR, stringParser} from "@cmd/collection/common";
 import {
+  addCollectionItems,
   deleteCollections,
+  insertCollection,
   listCollectionItems,
   listCollections,
   removeCollectionItems,
-  updateCollection, addCollectionItems, insertCollection
+  updateCollection
 } from "@db/collections";
-import {loadCollectionConfigs} from "@configs";
-import * as process from "node:process";
-import {findReposByNames} from "@db/github_repos";
-import {DEFAULT_COLLECTION_CONFIGS_BASE_DIR, stringParser} from "@cmd/collection/common";
+
+import {Command} from "commander";
 import {deleteCacheByCollectionId} from "@db/cache";
+import {findReposByNames} from "@db/github_repos";
+import {loadCollectionConfigs} from "@configs";
+import {logger} from "@logger";
 
 export function initReloadCollectionCommand(collectionCmd: Command) {
   collectionCmd
@@ -38,7 +42,7 @@ export async function syncCollection(args: any) {
 
     const oldCollectionIds = new Set(collections.map((c) => c.id));
     const newCollectionIds = new Set(configsMap.keys());
-    const collectionIdsToDelete = Array.from(oldCollectionIds.difference(newCollectionIds));
+    const collectionIdsToDelete = Array.from(oldCollectionIds).filter(id => !newCollectionIds.has(id));
 
     // Remove non-exists collections from database.
     if (collectionIdsToDelete.length > 0) {
@@ -50,7 +54,7 @@ export async function syncCollection(args: any) {
     for (const config of configsMap.values()) {
       const { id: collectionId, name: collectionName, items: collectionRepos } = config;
 
-      if (!newCollectionIds.has(collectionId)) {
+      if (!oldCollectionIds.has(collectionId)) {
         // Add new collection from config to database.
         await insertCollection({
           id: collectionId,
@@ -96,7 +100,7 @@ export async function syncCollectionItems(collectionId: number, collectionName: 
   const newRepoNames = new Set(collectionRepos);
 
   // Remove non-exists items from collection.
-  const reposToRemove = oldRepoNames.difference(newRepoNames);
+  const reposToRemove = new Set(Array.from(oldRepoNames).filter(name => !newRepoNames.has(name)));
   if (reposToRemove.size > 0) {
     const repoNames = Array.from(reposToRemove);
     await removeCollectionItems(collectionId, repoNames);
@@ -104,13 +108,13 @@ export async function syncCollectionItems(collectionId: number, collectionName: 
   }
 
   // Add collection items.
-  const reposToAdd = newRepoNames.difference(oldRepoNames);
+  const reposToAdd = new Set(Array.from(newRepoNames).filter(name => !oldRepoNames.has(name)));
   if (reposToAdd.size === 0) {
     logger.debug(`Collection [${collectionName}](id: ${collectionId}): no new repos need to added.`)
     return reposToRemove.size;
   }
 
-  const repoNames = Array.from(reposToAdd.keys());
+  const repoNames = Array.from(reposToAdd);
   const repos = await findReposByNames(repoNames);
   if (repos.length < reposToAdd.size) {
     const diffRepos = repoNames.filter(name => !repos.some(r => r.repo_name === name));
