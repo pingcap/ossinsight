@@ -8,3 +8,7 @@ items:
   - agno-agi/agno
   - openai/openai-agents-python
   - pydantic/pydantic-ai
+  - yoheinakajima/babyagi
+  - Significant-Gravitas/AutoGPT
+  - microsoft/JARVIS
+  - FoundationAgents/MetaGPT
