@@ -3,7 +3,7 @@ name: Web3
 items:
   - ethereum/go-ethereum
   - OpenZeppelin/openzeppelin-contracts
-  - ethereum/solidity
+  - argotorg/solidity
   - trufflesuite/truffle
   - lbryio/lbry-sdk
   - monero-project/monero
