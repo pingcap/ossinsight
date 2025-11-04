@@ -1,4 +1,3 @@
-import OpenSourceHeroesGlobalAds from '@site/src/pages/open-source-heroes/_components/OpenSourceHeroesGlobalAds';
 import React from 'react';
 import clsx from 'clsx';
 import ErrorBoundary from '@docusaurus/ErrorBoundary';
@@ -71,8 +70,6 @@ export default function Layout (props: Props): JSX.Element {
 
       {header}
       {side}
-
-      <OpenSourceHeroesGlobalAds />
 
       <div
         className={clsx(
