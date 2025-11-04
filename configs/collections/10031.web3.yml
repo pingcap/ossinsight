@@ -17,7 +17,7 @@ items:
   - trufflesuite/ganache-ui
   - evmos/evmos
   - ethereum/web3.py
-  - ethereum/remix-project
+  - remix-project-org/remix-project
   - MetaMask/metamask-extension
   - starkware-libs/cairo-lang
   - matter-labs/zksync

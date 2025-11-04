@@ -1,0 +1,12 @@
+id: 10103
+name: Authentication and identity providers
+items:
+  - ory/kratos
+  - authelia/authelia
+  - zitadel/zitadel
+  - logto-io/logto
+  - teamhanko/hanko
+  - supertokens/supertokens-core
+  - keycloak/keycloak
+  - goauthentik/authentik
+  - casdoor/casdoor
