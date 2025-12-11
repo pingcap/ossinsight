@@ -15,3 +15,7 @@
 - Added `cleanGithubInput` helper plus Vitest suite to cover http/https, `www`, trailing slashes, query/hash suffixes, and non-GitHub inputs.
 - Attached a paste handler to the GeneralSearch `<TextField>` that intercepts GitHub URLs, replaces the selection with the cleaned text, updates the controlled keyword state, and restores the caret.
 - Tests: `cd web && npm test` (Vitest) – passes. UI handler relies on this helper; additional DOM integration tests were deemed unnecessary for now because they would require heavier React testing infrastructure, so manual reasoning ensures correct selection replacement.
+
+### Fix Summary
+- Widened the `handlePaste` clipboard event typing in `web/src/components/GeneralSearch/index.tsx` to accept both `HTMLInputElement` and `HTMLTextAreaElement`, and aligned the inline `onPaste` handler annotation/cast so it matches MUI’s expectations.
+- Verified the fix with `cd web && npm run typecheck:main`.
