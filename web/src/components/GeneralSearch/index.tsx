@@ -38,6 +38,7 @@ import React, {
   useState,
 } from 'react';
 import { SearchType, useGeneralSearch } from './useGeneralSearch';
+import { cleanGithubInput } from './cleanGithubInput';
 import isHotkey from 'is-hotkey';
 import KeyboardUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -258,6 +259,27 @@ const GeneralSearch: FC<GeneralSearchProps> = ({ contrast, align = 'left', size,
     }
   });
 
+  const handlePaste = useEventCallback((event: React.ClipboardEvent<HTMLInputElement>) => {
+    const pasted = event.clipboardData?.getData('text/plain') ?? '';
+    const cleaned = cleanGithubInput(pasted);
+
+    if (cleaned === pasted) {
+      return;
+    }
+
+    event.preventDefault();
+    const input = event.currentTarget;
+    const selectionStart = input.selectionStart ?? input.value.length;
+    const selectionEnd = input.selectionEnd ?? input.value.length;
+    const nextValue = `${input.value.slice(0, selectionStart)}${cleaned}${input.value.slice(selectionEnd)}`;
+    setKeyword(nextValue);
+    setTimeout(() => {
+      const caret = selectionStart + cleaned.length;
+      input.selectionStart = caret;
+      input.selectionEnd = caret;
+    }, 0);
+  });
+
   useEffect(() => {
     if (global) {
       const handleGlobalSearchShortcut = (e: KeyboardEvent) => {
@@ -343,6 +365,13 @@ const GeneralSearch: FC<GeneralSearchProps> = ({ contrast, align = 'left', size,
               py: size === 'large' ? '4px !important' : undefined,
             })}
             inputRef={inputRef}
+            inputProps={{
+              ...params.inputProps,
+              onPaste: (event) => {
+                handlePaste(event);
+                params.inputProps?.onPaste?.(event);
+              },
+            }}
             InputProps={{
               ...InputProps,
               onKeyDown: handleKeyDown,
@@ -381,7 +410,7 @@ const GeneralSearch: FC<GeneralSearchProps> = ({ contrast, align = 'left', size,
             }}
           />
         ),
-        [open, global, contrast, align, size, loading, option],
+        [open, global, contrast, align, size, loading, option, handlePaste],
       )}
       noOptionsText={
         <PopperContainer>
