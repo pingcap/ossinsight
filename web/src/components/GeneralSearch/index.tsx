@@ -259,7 +259,7 @@ const GeneralSearch: FC<GeneralSearchProps> = ({ contrast, align = 'left', size,
     }
   });
 
-  const handlePaste = useEventCallback((event: React.ClipboardEvent<HTMLInputElement>) => {
+  const handlePaste = useEventCallback((event: React.ClipboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const pasted = event.clipboardData?.getData('text/plain') ?? '';
     const cleaned = cleanGithubInput(pasted);
 
@@ -367,9 +367,9 @@ const GeneralSearch: FC<GeneralSearchProps> = ({ contrast, align = 'left', size,
             inputRef={inputRef}
             inputProps={{
               ...params.inputProps,
-              onPaste: (event) => {
+              onPaste: (event: React.ClipboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
                 handlePaste(event);
-                params.inputProps?.onPaste?.(event);
+                params.inputProps?.onPaste?.(event as React.ClipboardEvent<HTMLInputElement>);
               },
             }}
             InputProps={{
