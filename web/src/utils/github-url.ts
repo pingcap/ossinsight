@@ -4,17 +4,25 @@
  * @returns The cleaned text with GitHub prefix removed
  */
 export function cleanGitHubUrl (text: string): string {
-  const trimmed = text.trim()
-    .replace(/^(?:https?:\/\/)?(?:www\.)?github\.com(?:\/|$)/i, '')
+  const trimmed = text.trim();
+  const githubUrlPattern = /^(?:https?:\/\/)?(?:www\.)?github\.com(?:\/|$)/i;
+
+  // If it's a URL but not github.com (e.g. api.github.com), return unchanged
+  if (/^https?:\/\//i.test(trimmed) && !githubUrlPattern.test(trimmed)) {
+    return trimmed;
+  }
+
+  const cleaned = trimmed
+    .replace(githubUrlPattern, '')
     .replace(/^\/+/, '')
     .replace(/[?#].*$/, '')
     .replace(/\/+$/, '');
 
-  if (!trimmed) {
+  if (!cleaned) {
     return '';
   }
 
-  const segments = trimmed.split('/').filter(Boolean);
+  const segments = cleaned.split('/').filter(Boolean);
 
   if (segments.length === 0) {
     return '';

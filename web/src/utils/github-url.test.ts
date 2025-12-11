@@ -52,4 +52,9 @@ describe('cleanGitHubUrl', () => {
     expect(cleanGitHubUrl('https://github.com/pingcap/ossinsight#readme')).toBe('pingcap/ossinsight');
     expect(cleanGitHubUrl('https://github.com/pingcap/ossinsight/issues/1?tab=files#diff-123')).toBe('pingcap/ossinsight');
   });
+
+  it('should leave non-www GitHub subdomain URLs unchanged', () => {
+    expect(cleanGitHubUrl('https://api.github.com/repos/pingcap/ossinsight')).toBe('https://api.github.com/repos/pingcap/ossinsight');
+    expect(cleanGitHubUrl('https://raw.github.com/user/repo/main/file.txt')).toBe('https://raw.github.com/user/repo/main/file.txt');
+  });
 });
