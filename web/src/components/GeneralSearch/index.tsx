@@ -38,6 +38,7 @@ import React, {
   useState,
 } from 'react';
 import { SearchType, useGeneralSearch } from './useGeneralSearch';
+import { cleanGitHubUrl } from './cleanGitHubUrl';
 import isHotkey from 'is-hotkey';
 import KeyboardUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -228,6 +229,15 @@ const GeneralSearch: FC<GeneralSearchProps> = ({ contrast, align = 'left', size,
     setKeyword(value);
   });
 
+  const handlePaste = useEventCallback((e: React.ClipboardEvent<HTMLInputElement>) => {
+    const pasted = e.clipboardData.getData('text');
+    if (pasted.includes('github.com')) {
+      e.preventDefault();
+      const cleaned = cleanGitHubUrl(pasted);
+      setKeyword(cleaned);
+    }
+  });
+
   const handleOpen = useEventCallback(() => {
     setOpen(true);
   });
@@ -346,6 +356,7 @@ const GeneralSearch: FC<GeneralSearchProps> = ({ contrast, align = 'left', size,
             InputProps={{
               ...InputProps,
               onKeyDown: handleKeyDown,
+              onPaste: handlePaste,
               sx: (theme) => ({
                 backgroundColor: contrast ? '#E9EAEE' : '#3c3c3c',
                 color: contrast
