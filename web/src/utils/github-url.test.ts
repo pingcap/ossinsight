@@ -34,4 +34,10 @@ describe('cleanGitHubUrl', () => {
     expect(cleanGitHubUrl('https://github.com/pingcap/ossinsight/issues/123')).toBe('pingcap/ossinsight');
     expect(cleanGitHubUrl('https://github.com/pingcap/ossinsight/pull/456')).toBe('pingcap/ossinsight');
   });
+
+  it('should strip query strings and fragments', () => {
+    expect(cleanGitHubUrl('https://github.com/pingcap/ossinsight?tab=repositories')).toBe('pingcap/ossinsight');
+    expect(cleanGitHubUrl('https://github.com/pingcap/ossinsight#readme')).toBe('pingcap/ossinsight');
+    expect(cleanGitHubUrl('https://github.com/pingcap/ossinsight/issues/1?tab=files#diff-123')).toBe('pingcap/ossinsight');
+  });
 });
