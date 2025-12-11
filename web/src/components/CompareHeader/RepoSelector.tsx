@@ -86,6 +86,16 @@ function useRepoSelector ({
     return errMsg;
   }, [error]);
 
+  // Compute display value - hide sentinel keywords from users
+  const displayValue = useMemo(() => {
+    // If keyword is a sentinel value (internal identifier), show empty string
+    if (keyword?.startsWith('recommend-repo-list-')) {
+      return '';
+    }
+    // Otherwise show the actual keyword
+    return keyword || '';
+  }, [keyword]);
+
   return {
     textFieldError,
     helperText,
@@ -98,6 +108,8 @@ function useRepoSelector ({
     handlePaste,
     errorMessage,
     error,
+    keyword,
+    displayValue,
   };
 }
 
@@ -124,6 +136,7 @@ export default function RepoSelector ({
     handlePaste,
     errorMessage,
     error,
+    displayValue,
   } = useRepoSelector({ defaultRepoName, onChange, onValid });
 
   return (<>
@@ -151,6 +164,7 @@ export default function RepoSelector ({
       options={options ?? []}
       loading={loading}
       value={repo ?? null}
+      inputValue={displayValue}
       onChange={onAutoCompleteChange}
       onInputChange={onInputChange}
       disableClearable={disableClearable as any}
@@ -232,6 +246,7 @@ export function FirstRepoSelector ({
     handlePaste,
     errorMessage,
     error,
+    displayValue,
   } = useRepoSelector({ defaultRepoName, onChange, onValid });
 
   return (<>
@@ -241,6 +256,7 @@ export function FirstRepoSelector ({
       options={options ?? []}
       loading={loading}
       value={repo ?? null}
+      inputValue={displayValue}
       onChange={onAutoCompleteChange}
       onInputChange={onInputChange}
       disableClearable={disableClearable as any}
@@ -306,6 +322,7 @@ export function SecondRepoSelector ({
     handlePaste,
     errorMessage,
     error,
+    displayValue,
   } = useRepoSelector({ defaultRepoName, onChange, onValid });
 
   return (<>
@@ -315,6 +332,7 @@ export function SecondRepoSelector ({
       options={options ?? []}
       loading={loading}
       value={repo ?? null}
+      inputValue={displayValue}
       onChange={onAutoCompleteChange}
       onInputChange={onInputChange}
       disableClearable={disableClearable as any}
