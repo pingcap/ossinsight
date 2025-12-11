@@ -38,6 +38,7 @@ import React, {
   useState,
 } from 'react';
 import { SearchType, useGeneralSearch } from './useGeneralSearch';
+import { normalizeGithubRepoPaste } from './normalizeGithubRepoPaste';
 import isHotkey from 'is-hotkey';
 import KeyboardUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -258,6 +259,16 @@ const GeneralSearch: FC<GeneralSearchProps> = ({ contrast, align = 'left', size,
     }
   });
 
+  const handlePaste = useEventCallback((event: React.ClipboardEvent<HTMLInputElement>) => {
+    const pasted = event.clipboardData?.getData('text') ?? '';
+    const normalized = normalizeGithubRepoPaste(pasted);
+
+    if (normalized !== pasted) {
+      event.preventDefault();
+      setKeyword(normalized);
+    }
+  });
+
   useEffect(() => {
     if (global) {
       const handleGlobalSearchShortcut = (e: KeyboardEvent) => {
@@ -343,6 +354,7 @@ const GeneralSearch: FC<GeneralSearchProps> = ({ contrast, align = 'left', size,
               py: size === 'large' ? '4px !important' : undefined,
             })}
             inputRef={inputRef}
+            onPaste={handlePaste}
             InputProps={{
               ...InputProps,
               onKeyDown: handleKeyDown,
@@ -381,7 +393,7 @@ const GeneralSearch: FC<GeneralSearchProps> = ({ contrast, align = 'left', size,
             }}
           />
         ),
-        [open, global, contrast, align, size, loading, option],
+        [open, global, contrast, align, size, loading, option, handlePaste],
       )}
       noOptionsText={
         <PopperContainer>

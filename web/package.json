@@ -24,7 +24,8 @@
     "prestart": "npm run build:plugins && npm run prefetch && npm run regen-api-docs",
     "lint": "eslint --cache .",
     "lint:ci": "eslint --quiet .",
-    "lint:fix": "eslint --cache --fix ."
+    "lint:fix": "eslint --cache --fix .",
+    "test": "vitest run"
   },
   "dependencies": {
     "@auth0/auth0-react": "^1.12.0",
@@ -113,7 +114,8 @@
     "swr": "^1.2.2",
     "typescript": "^4.9.4",
     "windups": "^1.2.1",
-    "xss": "^1.0.11"
+    "xss": "^1.0.11",
+    "vitest": "^1.6.0"
   },
   "browserslist": {
     "production": [
