@@ -29,7 +29,9 @@ describe('cleanGitHubUrl', () => {
     expect(cleanGitHubUrl('')).toBe('');
   });
 
-  it('should handle URLs with additional paths', () => {
-    expect(cleanGitHubUrl('https://github.com/pingcap/ossinsight/issues')).toBe('pingcap/ossinsight/issues');
+  it('should trim additional path segments such as issues or pulls', () => {
+    expect(cleanGitHubUrl('https://github.com/pingcap/ossinsight/issues')).toBe('pingcap/ossinsight');
+    expect(cleanGitHubUrl('https://github.com/pingcap/ossinsight/issues/123')).toBe('pingcap/ossinsight');
+    expect(cleanGitHubUrl('https://github.com/pingcap/ossinsight/pull/456')).toBe('pingcap/ossinsight');
   });
 });
