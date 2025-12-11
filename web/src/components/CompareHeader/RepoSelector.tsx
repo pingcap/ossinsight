@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Alert,
   Popper,
@@ -44,13 +44,21 @@ function useRepoSelector ({
   defaultRepoName,
   onChange,
   onValid = noValidation,
-}: Pick<BaseRepoSelectorProps, 'defaultRepoName' | 'onChange' | 'onValid'>) {
+  repo,
+}: Pick<BaseRepoSelectorProps, 'defaultRepoName' | 'onChange' | 'onValid' | 'repo'>) {
   const [keyword, setKeyword] = useState<string>(defaultRepoName ?? '');
   const [textFieldError, setTextFieldError] = useState<boolean>(false);
   const [helperText, setHelperText] = useState<string>('');
   const [dismissError, setDismissError] = useState(false);
 
   const { data: options, loading, error } = useSearchRepo(((keyword || defaultRepoName)) ?? '');
+
+  useEffect(() => {
+    if (!repo?.name) {
+      return;
+    }
+    setKeyword(prev => (prev === repo.name ? prev : repo.name));
+  }, [repo?.name]);
 
   const onAutoCompleteChange = useCallback((event, newValue: Repo) => {
     const validMessage = onValid(newValue);
@@ -139,7 +147,7 @@ export default function RepoSelector ({
     errorMessage,
     error,
     displayValue,
-  } = useRepoSelector({ defaultRepoName, onChange, onValid });
+  } = useRepoSelector({ defaultRepoName, onChange, onValid, repo });
 
   return (<>
     <Autocomplete<Repo>
@@ -249,7 +257,7 @@ export function FirstRepoSelector ({
     errorMessage,
     error,
     displayValue,
-  } = useRepoSelector({ defaultRepoName, onChange, onValid });
+  } = useRepoSelector({ defaultRepoName, onChange, onValid, repo });
 
   return (<>
     <Autocomplete<Repo>
@@ -325,7 +333,7 @@ export function SecondRepoSelector ({
     errorMessage,
     error,
     displayValue,
-  } = useRepoSelector({ defaultRepoName, onChange, onValid });
+  } = useRepoSelector({ defaultRepoName, onChange, onValid, repo });
 
   return (<>
     <Autocomplete<Repo>
