@@ -27,6 +27,7 @@ import {
 } from '@mui/material';
 import { SearchRepoInfo, UserInfo, SearchOrgInfo } from '@ossinsight/api';
 import React, {
+  ClipboardEventHandler,
   FC, ForwardedRef,
   forwardRef,
   KeyboardEventHandler,
@@ -43,6 +44,7 @@ import KeyboardUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
 import { notNullish, isFalsy } from '@site/src/utils/value';
+import { stripGithubUrlPrefix } from '@site/src/utils/gh';
 
 export interface GeneralSearchProps {
   contrast?: boolean;
@@ -258,6 +260,23 @@ const GeneralSearch: FC<GeneralSearchProps> = ({ contrast, align = 'left', size,
     }
   });
 
+  const handlePaste: ClipboardEventHandler<HTMLInputElement> = useEventCallback((event) => {
+    const pasted = event.clipboardData?.getData('text/plain');
+    if (!pasted) {
+      return;
+    }
+    const cleaned = stripGithubUrlPrefix(pasted);
+    if (cleaned === pasted) {
+      return;
+    }
+    event.preventDefault();
+    const target = event.target as HTMLInputElement;
+    const selectionStart = target.selectionStart ?? target.value.length;
+    const selectionEnd = target.selectionEnd ?? target.value.length;
+    const nextValue = `${target.value.slice(0, selectionStart)}${cleaned}${target.value.slice(selectionEnd)}`;
+    setKeyword(nextValue);
+  });
+
   useEffect(() => {
     if (global) {
       const handleGlobalSearchShortcut = (e: KeyboardEvent) => {
@@ -343,6 +362,13 @@ const GeneralSearch: FC<GeneralSearchProps> = ({ contrast, align = 'left', size,
               py: size === 'large' ? '4px !important' : undefined,
             })}
             inputRef={inputRef}
+            inputProps={{
+              ...params.inputProps,
+              onPaste: (event) => {
+                params.inputProps?.onPaste?.(event);
+                handlePaste(event as React.ClipboardEvent<HTMLInputElement>);
+              },
+            }}
             InputProps={{
               ...InputProps,
               onKeyDown: handleKeyDown,
