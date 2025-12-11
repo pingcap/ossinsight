@@ -59,6 +59,10 @@ const isOptionEqual = (a: Option, b: Option) => {
 
 const getOptionLabel = (option: Option) => (option as SearchRepoInfo).fullName || (option as UserInfo | SearchOrgInfo).login || (option as any).label;
 
+const cleanGitHubUrl = (text: string): string => {
+  return text.replace(/^https?:\/\/github\.com\//, '').replace(/\/$/, '');
+};
+
 const useTabs = () => {
   const [type, setType] = useState<SearchType>('all');
 
@@ -258,6 +262,15 @@ const GeneralSearch: FC<GeneralSearchProps> = ({ contrast, align = 'left', size,
     }
   });
 
+  const handlePaste = useEventCallback((e: React.ClipboardEvent<HTMLInputElement>) => {
+    const pastedText = e.clipboardData.getData('text');
+    if (pastedText.includes('github.com')) {
+      e.preventDefault();
+      const cleaned = cleanGitHubUrl(pastedText);
+      setKeyword(cleaned);
+    }
+  });
+
   useEffect(() => {
     if (global) {
       const handleGlobalSearchShortcut = (e: KeyboardEvent) => {
@@ -346,6 +359,7 @@ const GeneralSearch: FC<GeneralSearchProps> = ({ contrast, align = 'left', size,
             InputProps={{
               ...InputProps,
               onKeyDown: handleKeyDown,
+              onPaste: handlePaste,
               sx: (theme) => ({
                 backgroundColor: contrast ? '#E9EAEE' : '#3c3c3c',
                 color: contrast
