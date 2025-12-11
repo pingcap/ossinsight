@@ -15,5 +15,13 @@ export function cleanGitHubUrl (text: string): string {
   }
 
   const segments = trimmed.split('/').filter(Boolean);
-  return segments.slice(0, 2).join('/');
+
+  if (segments.length === 0) {
+    return '';
+  }
+
+  const [owner, repo] = segments;
+  const normalizedRepo = repo?.replace(/\.git$/i, '');
+
+  return [owner, normalizedRepo].filter(Boolean).slice(0, 2).join('/');
 }
