@@ -5,7 +5,7 @@
  */
 export function cleanGitHubUrl (text: string): string {
   const trimmed = text.trim()
-    .replace(/^https?:\/\/github\.com\//, '')
+    .replace(/^(?:https?:\/\/)?(?:www\.)?github\.com(?:\/|$)/i, '')
     .replace(/^\/+/, '')
     .replace(/[?#].*$/, '')
     .replace(/\/+$/, '');

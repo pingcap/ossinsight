@@ -41,6 +41,12 @@ describe('cleanGitHubUrl', () => {
     expect(cleanGitHubUrl('pingcap/ossinsight.git')).toBe('pingcap/ossinsight');
   });
 
+  it('should strip scheme-less github.com prefixes', () => {
+    expect(cleanGitHubUrl('github.com/pingcap/ossinsight')).toBe('pingcap/ossinsight');
+    expect(cleanGitHubUrl('www.github.com/pingcap/ossinsight')).toBe('pingcap/ossinsight');
+    expect(cleanGitHubUrl('github.com/pingcap/ossinsight/issues/1')).toBe('pingcap/ossinsight');
+  });
+
   it('should strip query strings and fragments', () => {
     expect(cleanGitHubUrl('https://github.com/pingcap/ossinsight?tab=repositories')).toBe('pingcap/ossinsight');
     expect(cleanGitHubUrl('https://github.com/pingcap/ossinsight#readme')).toBe('pingcap/ossinsight');
