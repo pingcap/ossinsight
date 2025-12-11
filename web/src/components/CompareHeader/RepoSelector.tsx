@@ -74,6 +74,8 @@ function useRepoSelector ({
     if (pastedText.includes('github.com/')) {
       e.preventDefault();
       const cleaned = cleanGitHubUrl(pastedText);
+      setHelperText('');
+      setTextFieldError(false);
       setKeyword(cleaned);
     }
   }, []);
