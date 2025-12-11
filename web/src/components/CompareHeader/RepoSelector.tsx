@@ -53,12 +53,10 @@ function useRepoSelector ({
 
   const { data: options, loading, error } = useSearchRepo(((keyword || defaultRepoName)) ?? '');
 
+  // Sync keyword with repo.name; reset to default when repo is cleared
   useEffect(() => {
-    if (!repo?.name) {
-      return;
-    }
-    setKeyword(prev => (prev === repo.name ? prev : repo.name));
-  }, [repo?.name]);
+    setKeyword(repo?.name ?? defaultRepoName ?? '');
+  }, [repo?.name, defaultRepoName]);
 
   const onAutoCompleteChange = useCallback((event, newValue: Repo) => {
     const validMessage = onValid(newValue);
