@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Alert,
   Popper,
@@ -17,6 +17,7 @@ import AddIcon from '@mui/icons-material/Add';
 import './style.css';
 import { getErrorMessage } from '@site/src/utils/error';
 import { notNullish } from '@site/src/utils/value';
+import { cleanGitHubUrl } from '@site/src/utils/github-url';
 
 export type { Repo } from './useSearchRepo';
 
@@ -43,13 +44,19 @@ function useRepoSelector ({
   defaultRepoName,
   onChange,
   onValid = noValidation,
-}: Pick<BaseRepoSelectorProps, 'defaultRepoName' | 'onChange' | 'onValid'>) {
+  repo,
+}: Pick<BaseRepoSelectorProps, 'defaultRepoName' | 'onChange' | 'onValid' | 'repo'>) {
   const [keyword, setKeyword] = useState<string>(defaultRepoName ?? '');
   const [textFieldError, setTextFieldError] = useState<boolean>(false);
   const [helperText, setHelperText] = useState<string>('');
   const [dismissError, setDismissError] = useState(false);
 
   const { data: options, loading, error } = useSearchRepo(((keyword || defaultRepoName)) ?? '');
+
+  // Sync keyword with repo.name; reset to default when repo is cleared
+  useEffect(() => {
+    setKeyword(repo?.name ?? defaultRepoName ?? '');
+  }, [repo?.name, defaultRepoName]);
 
   const onAutoCompleteChange = useCallback((event, newValue: Repo) => {
     const validMessage = onValid(newValue);
@@ -68,6 +75,17 @@ function useRepoSelector ({
     setKeyword(value);
   }, []);
 
+  const handlePaste = useCallback((e: React.ClipboardEvent<HTMLInputElement>) => {
+    const pastedText = e.clipboardData.getData('text');
+    if (pastedText.includes('github.com/')) {
+      e.preventDefault();
+      const cleaned = cleanGitHubUrl(pastedText);
+      setHelperText('');
+      setTextFieldError(false);
+      setKeyword(cleaned);
+    }
+  }, []);
+
   const errorMessage = useMemo(() => {
     const errMsg = getErrorMessage(error);
     if (errMsg.includes('API rate limit exceeded')) {
@@ -75,6 +93,16 @@ function useRepoSelector ({
     }
     return errMsg;
   }, [error]);
+
+  // Compute display value - hide sentinel keywords from users
+  const displayValue = useMemo(() => {
+    // If keyword is a sentinel value (internal identifier), show empty string
+    if (keyword?.startsWith('recommend-repo-list-')) {
+      return '';
+    }
+    // Otherwise show the actual keyword
+    return keyword || '';
+  }, [keyword]);
 
   return {
     textFieldError,
@@ -85,8 +113,11 @@ function useRepoSelector ({
     loading,
     onAutoCompleteChange,
     onInputChange,
+    handlePaste,
     errorMessage,
     error,
+    keyword,
+    displayValue,
   };
 }
 
@@ -110,9 +141,11 @@ export default function RepoSelector ({
     loading,
     onAutoCompleteChange,
     onInputChange,
+    handlePaste,
     errorMessage,
     error,
-  } = useRepoSelector({ defaultRepoName, onChange, onValid });
+    displayValue,
+  } = useRepoSelector({ defaultRepoName, onChange, onValid, repo });
 
   return (<>
     <Autocomplete<Repo>
@@ -139,6 +172,7 @@ export default function RepoSelector ({
       options={options ?? []}
       loading={loading}
       value={repo ?? null}
+      inputValue={displayValue}
       onChange={onAutoCompleteChange}
       onInputChange={onInputChange}
       disableClearable={disableClearable as any}
@@ -154,6 +188,7 @@ export default function RepoSelector ({
           helperText={helperText}
           InputProps={{
             ...params.InputProps,
+            onPaste: handlePaste,
             sx: theme => ({
               backgroundColor: contrast ? '#E9EAEE' : '#3c3c3c',
               color: contrast ? theme.palette.getContrastText('#E9EAEE') : undefined,
@@ -216,9 +251,11 @@ export function FirstRepoSelector ({
     loading,
     onAutoCompleteChange,
     onInputChange,
+    handlePaste,
     errorMessage,
     error,
-  } = useRepoSelector({ defaultRepoName, onChange, onValid });
+    displayValue,
+  } = useRepoSelector({ defaultRepoName, onChange, onValid, repo });
 
   return (<>
     <Autocomplete<Repo>
@@ -227,6 +264,7 @@ export function FirstRepoSelector ({
       options={options ?? []}
       loading={loading}
       value={repo ?? null}
+      inputValue={displayValue}
       onChange={onAutoCompleteChange}
       onInputChange={onInputChange}
       disableClearable={disableClearable as any}
@@ -242,6 +280,7 @@ export function FirstRepoSelector ({
               fullWidth={params.fullWidth}
               inputProps={params.inputProps}
               {...params.InputProps}
+              onPaste={handlePaste}
               inputMode="search"
               error={textFieldError}
               sx={{
@@ -288,9 +327,11 @@ export function SecondRepoSelector ({
     loading,
     onAutoCompleteChange,
     onInputChange,
+    handlePaste,
     errorMessage,
     error,
-  } = useRepoSelector({ defaultRepoName, onChange, onValid });
+    displayValue,
+  } = useRepoSelector({ defaultRepoName, onChange, onValid, repo });
 
   return (<>
     <Autocomplete<Repo>
@@ -299,6 +340,7 @@ export function SecondRepoSelector ({
       options={options ?? []}
       loading={loading}
       value={repo ?? null}
+      inputValue={displayValue}
       onChange={onAutoCompleteChange}
       onInputChange={onInputChange}
       disableClearable={disableClearable as any}
@@ -334,6 +376,7 @@ export function SecondRepoSelector ({
               inputProps={params.inputProps}
               placeholder={placeholder}
               {...params.InputProps}
+              onPaste={handlePaste}
               inputMode="search"
               error={textFieldError}
               sx={{

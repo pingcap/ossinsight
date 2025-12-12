@@ -43,6 +43,7 @@ import KeyboardUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
 import { notNullish, isFalsy } from '@site/src/utils/value';
+import { cleanGitHubUrl } from '@site/src/utils/github-url';
 
 export interface GeneralSearchProps {
   contrast?: boolean;
@@ -258,6 +259,15 @@ const GeneralSearch: FC<GeneralSearchProps> = ({ contrast, align = 'left', size,
     }
   });
 
+  const handlePaste = useEventCallback((e: React.ClipboardEvent<HTMLInputElement>) => {
+    const pastedText = e.clipboardData.getData('text');
+    if (pastedText.includes('github.com/')) {
+      e.preventDefault();
+      const cleaned = cleanGitHubUrl(pastedText);
+      setKeyword(cleaned);
+    }
+  });
+
   useEffect(() => {
     if (global) {
       const handleGlobalSearchShortcut = (e: KeyboardEvent) => {
@@ -346,6 +356,7 @@ const GeneralSearch: FC<GeneralSearchProps> = ({ contrast, align = 'left', size,
             InputProps={{
               ...InputProps,
               onKeyDown: handleKeyDown,
+              onPaste: handlePaste,
               sx: (theme) => ({
                 backgroundColor: contrast ? '#E9EAEE' : '#3c3c3c',
                 color: contrast
