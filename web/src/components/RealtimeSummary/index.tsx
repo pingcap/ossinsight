@@ -3,11 +3,13 @@ import { Axis, BarSeries, Dataset, Grid, Once } from '@djagger/echartsx';
 import { useLocation } from '@docusaurus/router';
 import React from 'react';
 import AnimatedNumber from 'react-awesome-animated-number';
+import { format } from 'date-fns';
 import useVisibility from '../../hooks/visibility';
 import { useTotalEvents } from '../RemoteCharts/hook';
 import { useRealtimeEvents } from './hooks';
 
 import { Box, Stack, styled, Tooltip, useMediaQuery } from '@mui/material';
+import { usePrefersReducedMotion } from '@site/src/hooks/motion';
 
 const Chart = ({ visible }: { visible: boolean }) => {
   const data = useRealtimeEvents(visible);
@@ -68,13 +70,25 @@ const Numbers = styled(Span)({
   lineHeight: 1.1,
 });
 
-const TooltipTitle = () => (
-  <div>
-    ⌛️ GitHub events data importing in <b>Realtime</b>.
-    <br/>
-    📊 Each bar = Data importing in per 5 seconds.
-  </div>
-);
+const TooltipTitle = () => {
+  const prefersReducedMotion = usePrefersReducedMotion();
+  if (prefersReducedMotion) {
+    return (
+      <div>
+        ⌛️ GitHub events data imported at {format(new Date(), "yyyy-MM-dd HH:mm:ss")}.
+        <br/>
+        📊 Each bar = Data imported in per 5 seconds.
+      </div>
+    );
+  }
+  return (
+    <div>
+      ⌛️ GitHub events data importing at <b>Realtime</b>.
+      <br/>
+      📊 Each bar = Data importing in per 5 seconds.
+    </div>
+  );
+};
 
 export const RealtimeSummary = () => {
   const visible = useVisibility();
