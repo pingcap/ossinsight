@@ -5,6 +5,7 @@ import { isNullish, notNullish } from '@site/src/utils/value';
 import { styled } from '@mui/material';
 import { Milestone } from '@ossinsight/api';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import { usePrefersReducedMotion } from '@site/src/hooks/motion';
 
 interface MilestoneLiteProps {
   repoId?: number;
@@ -26,16 +27,21 @@ export function MilestoneLite ({ repoId, interval = 2500 }: MilestoneLiteProps) 
 
 const Milestones = ({ milestones, interval }: { milestones: Milestone[] | undefined, interval: number }) => {
   const [i, setI] = useState(0);
+  const prefersReducedMotion = usePrefersReducedMotion();  
 
   useEffect(() => {
     if (notNullish(milestones) && milestones.length > 0) {
-      const h = setInterval(() => {
-        setI(i => ((i + 1) % milestones.length));
-      }, interval);
+      if (prefersReducedMotion) {
+        setI(0);
+      } else {
+        const h = setInterval(() => {
+          setI(i => ((i + 1) % milestones.length));
+        }, interval);
 
-      return () => clearInterval(h);
+        return () => clearInterval(h);
+      }
     }
-  }, [milestones?.length, interval]);
+  }, [milestones?.length, interval, prefersReducedMotion]);
 
   const key = useMemo(() => {
     if (isNullish(milestones)) {
