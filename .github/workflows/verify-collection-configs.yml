@@ -1,7 +1,7 @@
 name: Verify Collection Configs
 
 on:
-  pull_request_target:
+  push:
     paths:
       - 'configs/collections/**'
   workflow_dispatch:
@@ -16,8 +16,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
 
       - uses: pnpm/action-setup@v4
         name: Install pnpm
