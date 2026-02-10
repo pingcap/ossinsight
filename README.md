@@ -28,7 +28,7 @@
 
 ## Introduction
 
-OSS Insight is a powerful tool that provides comprehensive, valuable, and trending insights into the open source world by analyzing 8+ billion rows of GitHub events data.
+OSS Insight is a powerful tool that provides comprehensive, valuable, and trending insights into the open source world by analyzing 10+ billion rows of GitHub events data.
 
 OSS Insight's <a href="https://ossinsight.io/explore/">Data Explorer</a> provides a new way to explore GitHub data. Simply ask your question in natural language and Data Explorer will generate SQL, query the data, and present the results visually.
 
