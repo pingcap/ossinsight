@@ -7,6 +7,7 @@ import { core } from '../../api';
 import { clearPromiseInterval, setPromiseInterval } from '../../lib/promise-interval';
 import { usePluginData } from '@docusaurus/core/lib/client/exports/useGlobalData';
 import { isNullish } from '@site/src/utils/value';
+import { usePrefersReducedMotion } from '@site/src/hooks/motion';
 
 export interface AsyncData<T> {
   data: T | undefined;
@@ -107,6 +108,7 @@ export const useRealtimeRemoteData: UseRemoteData<false> = (query: string, param
   const [loading, setLoading] = useState(false);
   const cancelRef = useRef<Canceler>();
   const mounted = useRef(false);
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   const serializedParams = unstable_serialize([query, params]);
 
@@ -156,14 +158,16 @@ export const useRealtimeRemoteData: UseRemoteData<false> = (query: string, param
   useEffect(() => {
     if (shouldLoad && inView) {
       void reload();
-      const h = setPromiseInterval(async () => {
-        await reload();
-      }, 5000);
-      return () => {
-        clearPromiseInterval(h);
-      };
+      if (!prefersReducedMotion) {
+        const h = setPromiseInterval(async () => {
+          await reload();
+        }, 5000);
+        return () => {
+          clearPromiseInterval(h);
+        };
+      }
     }
-  }, [shouldLoad, inView, reload]);
+  }, [shouldLoad, inView, reload, prefersReducedMotion]);
 
   return { data, loading, error };
 };
@@ -176,6 +180,7 @@ export const useTotalEvents = (run: boolean, interval = 1000) => {
   const lastTs = useRef(0);
   const cancelRef = useRef<() => void>();
   const mounted = useRef(false);
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   useEffect(() => {
     mounted.current = true;
@@ -223,21 +228,22 @@ export const useTotalEvents = (run: boolean, interval = 1000) => {
       }
     };
 
-    const hTotal = setPromiseInterval(async () => {
-      await reloadTotal();
-    }, 60000);
-
-    const hAdded = setPromiseInterval(async () => {
-      await reloadAdded(false);
-    }, interval);
-
     void reloadTotal().then(async () => await reloadAdded(true));
 
-    return () => {
-      clearPromiseInterval(hTotal);
-      clearPromiseInterval(hAdded);
-    };
-  }, [run]);
+    if (!prefersReducedMotion) {
+      const hTotal = setPromiseInterval(async () => {
+        await reloadTotal();
+      }, 60000);
+
+      const hAdded = setPromiseInterval(async () => {
+        await reloadAdded(false);
+      }, interval);
+      return () => {
+        clearPromiseInterval(hTotal);
+        clearPromiseInterval(hAdded);
+      };
+    }
+  }, [run, prefersReducedMotion]);
 
   return total + added;
 };
