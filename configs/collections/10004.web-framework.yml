@@ -63,3 +63,4 @@ items:
   - payloadcms/payload
   - fastapi/fastapi
   - Healthlane-Technologies/Zango
+  - withastro/astro
