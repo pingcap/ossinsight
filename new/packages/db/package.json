@@ -1,0 +1,31 @@
+{
+  "name": "@ossinsight/db",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist",
+    "typecheck": "tsc --noEmit",
+    "migrate": "tsx src/migrate.ts",
+    "generate": "tsx src/generate.ts"
+  },
+  "dependencies": {
+    "mysql2": "^3.12.0",
+    "pino": "^9.6.0"
+  },
+  "devDependencies": {
+    "@ossinsight/types": "workspace:*",
+    "typescript": "^5.7.0",
+    "tsx": "^4.19.0"
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "name": "ossinsight",
+  "version": "2.0.0",
+  "private": true,
+  "license": "Apache-2.0",
+  "packageManager": "pnpm@9.15.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "pnpm -r run build",
+    "dev": "pnpm -r --parallel run dev",
+    "dev:api": "pnpm --filter @ossinsight/api-server run dev",
+    "dev:admin": "pnpm --filter @ossinsight/admin-web run dev",
+    "dev:docs": "pnpm --filter @ossinsight/docs run dev",
+    "lint": "pnpm -r run lint",
+    "lint:fix": "pnpm -r run lint:fix",
+    "typecheck": "pnpm -r run typecheck",
+    "test": "pnpm -r run test",
+    "clean": "pnpm -r run clean",
+    "db:migrate": "pnpm --filter @ossinsight/db run migrate",
+    "db:generate": "pnpm --filter @ossinsight/db run generate",
+    "cli": "pnpm --filter @ossinsight/cli run cli",
+    "docker:build": "docker compose build",
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.0",
+    "prettier": "^3.4.0",
+    "typescript": "^5.7.0",
+    "vitest": "^3.0.0"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "name": "@ossinsight/config",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "yaml": "^2.7.0",
+    "glob": "^11.0.0",
+    "liquidjs": "^10.20.0",
+    "pino": "^9.6.0"
+  },
+  "devDependencies": {
+    "@ossinsight/types": "workspace:*",
+    "typescript": "^5.7.0",
+    "@types/node": "^22.13.0"
+  }
+}
