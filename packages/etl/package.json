@@ -1,0 +1,37 @@
+{
+  "name": "@ossinsight/etl",
+  "version": "0.0.1",
+  "description": "Node.js ETL replacing the legacy Ruby ETL for OSSInsight (imports GitHub Archive data into TiDB)",
+  "license": "Apache-2.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "ossinsight-etl": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "build:watch": "tsc -w",
+    "start": "node dist/index.js",
+    "dev": "ts-node -r tsconfig-paths/register src/index.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "@ossinsight/db": "workspace:^",
+    "commander": "^12.1.0",
+    "dotenv": "^16.4.5",
+    "mysql2": "^3.11.5",
+    "pino": "^9.4.0",
+    "pino-pretty": "^11.0.0",
+    "yaml": "^2.5.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@vitest/coverage-v8": "^3.0.0",
+    "ts-node": "^10.9.1",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.6.2",
+    "vitest": "^3.0.0"
+  }
+}

@@ -5,12 +5,15 @@
   "license": "Apache-2.0",
   "workspaces": [
     "packages/api-server",
+    "packages/db",
+    "packages/etl",
     "packages/job-server",
     "packages/prefetch",
     "packages/types",
     "packages/cli",
     "packages/pipeline",
-    "packages/sync-github-data"
+    "packages/sync-github-data",
+    "packages/web"
   ],
   "scripts": {
     "prepare": "husky install"

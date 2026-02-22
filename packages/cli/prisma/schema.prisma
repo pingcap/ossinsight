@@ -1,0 +1,163 @@
+// Prisma schema for @ossinsight/cli
+// Mirrors packages/db/prisma/schema.prisma so that the CLI can run
+// `prisma generate` independently without depending on the db package at build time.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model GithubEvent {
+  id                Int       @id @default(autoincrement())
+  type              String?
+  createdAt         DateTime? @map("created_at")
+  repoId            BigInt?   @map("repo_id")
+  repoName          String?   @map("repo_name")
+  actorId           BigInt?   @map("actor_id")
+  actorLogin        String?   @map("actor_login")
+  actorLocation     String?   @map("actor_location")
+  language          String?
+  additions         BigInt?
+  deletions         BigInt?
+  action            String?
+  number            Int?
+  commitId          String?   @map("commit_id")
+  commentId         BigInt?   @map("comment_id")
+  orgLogin          String?   @map("org_login")
+  orgId             BigInt?   @map("org_id")
+  state             String?
+  closedAt          DateTime? @map("closed_at")
+  comments          Int?
+  prMergedAt        DateTime? @map("pr_merged_at")
+  prMerged          Boolean?  @map("pr_merged")
+  prChangedFiles    Int?      @map("pr_changed_files")
+  prReviewComments  Int?      @map("pr_review_comments")
+  prOrIssueId       BigInt?   @map("pr_or_issue_id")
+  eventDay          DateTime? @map("event_day") @db.Date
+  eventMonth        DateTime? @map("event_month") @db.Date
+  authorAssociation String?   @map("author_association")
+  eventYear         Int?      @map("event_year")
+  pushSize          Int?      @map("push_size")
+  pushDistinctSize  Int?      @map("push_distinct_size")
+
+  @@map("github_events")
+}
+
+model GitHubRepo {
+  repoId          Int                  @id @map("repo_id")
+  repoName        String               @map("repo_name")
+  ownerId         Int                  @map("owner_id")
+  ownerLogin      String               @map("owner_login")
+  ownerIsOrg      Boolean              @map("owner_is_org")
+  description     String?
+  primaryLanguage String?              @map("primary_language")
+  languages       GitHubRepoLanguage[]
+  topics          GitHubRepoTopic[]
+  license         String?
+  size            Int?
+  stars           Int?
+  forks           Int?
+  parentRepoId    Int?                 @map("parent_repo_id")
+  isFork          Boolean?             @map("is_fork")
+  isArchived      Boolean?             @map("is_archived")
+  isDeleted       Boolean?             @map("is_deleted")
+  latestReleasedAt DateTime?           @db.Timestamp() @map("latest_released_at")
+  pushedAt        DateTime?            @db.Timestamp() @map("pushed_at")
+  createdAt       DateTime             @db.Timestamp() @map("created_at")
+  updatedAt       DateTime             @db.Timestamp() @map("updated_at")
+  lastEventAt     DateTime?            @db.Timestamp() @map("last_event_at")
+  refreshedAt     DateTime?            @db.Timestamp() @map("refreshed_at")
+
+  @@map("github_repos")
+}
+
+model GitHubRepoTopic {
+  repoId Int        @map("repo_id")
+  topic  String
+  repo   GitHubRepo @relation(fields: [repoId], references: [repoId])
+
+  @@id([repoId, topic])
+  @@map("github_repo_topics")
+}
+
+model GitHubRepoLanguage {
+  repoId   Int        @map("repo_id")
+  language String
+  size     Int?
+  repo     GitHubRepo @relation(fields: [repoId], references: [repoId])
+
+  @@id([repoId, language])
+  @@map("github_repo_languages")
+}
+
+model GitHubUser {
+  id                    Int      @id
+  login                 String
+  type                  String?
+  isBot                 Boolean? @map("is_bot")
+  name                  String?
+  email                 String?
+  organization          String?
+  organizationFormatted String?  @map("organization_formatted")
+  address               String?
+  countryCode           String?  @map("country_code")
+  regionCode            String?  @map("region_code")
+  state                 String?
+  city                  String?
+  longitude             Decimal?
+  latitude              Decimal?
+  publicRepos           Int?     @map("public_repos")
+  followers             Int?
+  followings            Int?
+  createdAt             DateTime @map("created_at")
+  updatedAt             DateTime @map("updated_at")
+  isDeleted             Boolean? @map("is_deleted")
+  refreshedAt           DateTime? @map("refreshed_at")
+
+  @@map("github_users")
+}
+
+model Collection {
+  id        Int              @id @default(autoincrement())
+  name      String
+  createdAt DateTime?        @map("created_at")
+  updatedAt DateTime?        @map("updated_at")
+  deletedAt DateTime?        @map("deleted_at")
+  items     CollectionItem[]
+
+  @@map("collections")
+}
+
+model CollectionItem {
+  id           Int        @id @default(autoincrement())
+  collectionId Int        @map("collection_id")
+  repoId       Int        @map("repo_id")
+  repoName     String?    @map("repo_name")
+  createdAt    DateTime?  @map("created_at")
+  updatedAt    DateTime?  @map("updated_at")
+  deletedAt    DateTime?  @map("deleted_at")
+  collection   Collection @relation(fields: [collectionId], references: [id])
+
+  @@map("collection_items")
+}
+
+model LocationCacheItem {
+  address          String   @id
+  valid            Boolean
+  formattedAddress String   @map("formatted_address")
+  countryCode      String   @default("UND") @map("country_code")
+  regionCode       String   @default("UND") @map("region_code")
+  state            String?
+  city             String?
+  longitude        Decimal?
+  latitude         Decimal?
+  provider         String   @default("UNKNOWN")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@map("location_cache")
+}
