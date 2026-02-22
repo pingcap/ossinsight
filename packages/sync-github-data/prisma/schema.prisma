@@ -1,5 +1,7 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+// NOTE: This schema is kept for backward compatibility with the sync-github-data
+// package's own prisma generate step. The canonical schema lives in
+// packages/core/prisma/schema.prisma — keep these in sync when making changes.
+// TODO: migrate sync-github-data to depend on @ossinsight/core directly.
 
 generator client {
   provider = "prisma-client-js"

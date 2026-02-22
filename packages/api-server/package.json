@@ -37,6 +37,7 @@
     "@lukesthl/ts-axios-digest-auth": "^1.0.5",
     "@mgcrea/fastify-request-logger": "^0.6.1",
     "@ossinsight/types": "workspace:^",
+    "@ossinsight/core": "workspace:^",
     "@sentry/node": "^7.57.0",
     "JSONStream": "^1.3.5",
     "async": "^3.2.4",

@@ -1,12 +1,11 @@
 import fp from "fastify-plugin";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@ossinsight/core";
 
 /**
  * @ossinsight/prisma plugin
  *
- * Initialises a shared Prisma 7 client and attaches it to the Fastify instance.
- * Packages that need type-safe queries should use `app.prisma` instead of the
- * raw `app.mysql` pool where possible.
+ * Initialises a Prisma 7 client using the canonical schema from @ossinsight/core
+ * and attaches it to the Fastify instance.
  *
  * Usage:
  *   const repos = await app.prisma.gitHubRepo.findMany({ take: 10 });

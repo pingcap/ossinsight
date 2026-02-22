@@ -1,6 +1,9 @@
-// This is the canonical Prisma schema for OSSInsight.
-// It maps to the existing TiDB/MySQL database without changing any table structures.
-// All packages should use this shared schema instead of maintaining their own.
+// OSSInsight — canonical Prisma 7 schema.
+//
+// This is THE single authoritative schema for all packages in this monorepo.
+// Do NOT create or maintain schema.prisma files in other packages.
+// Other packages that need a Prisma client should depend on @ossinsight/core
+// and import { db } from '@ossinsight/core'.
 
 generator client {
   provider = "prisma-client-js"
@@ -53,29 +56,29 @@ model GithubEvent {
 }
 
 model GitHubRepo {
-  repoId          Int                  @id @map("repo_id")
-  repoName        String               @map("repo_name")
-  ownerId         Int                  @map("owner_id")
-  ownerLogin      String               @map("owner_login")
-  ownerIsOrg      Boolean              @map("owner_is_org")
-  description     String?
-  primaryLanguage String?              @map("primary_language")
-  languages       GitHubRepoLanguage[]
-  topics          GitHubRepoTopic[]
-  license         String?
-  size            Int?
-  stars           Int?
-  forks           Int?
-  parentRepoId    Int?                 @map("parent_repo_id")
-  isFork          Boolean?             @map("is_fork")
-  isArchived      Boolean?             @map("is_archived")
-  isDeleted       Boolean?             @map("is_deleted")
-  latestReleasedAt DateTime?           @db.Timestamp() @map("latest_released_at")
-  pushedAt        DateTime?            @db.Timestamp() @map("pushed_at")
-  createdAt       DateTime             @db.Timestamp() @map("created_at")
-  updatedAt       DateTime             @db.Timestamp() @map("updated_at")
-  lastEventAt     DateTime?            @db.Timestamp() @map("last_event_at")
-  refreshedAt     DateTime?            @db.Timestamp() @map("refreshed_at")
+  repoId           Int                  @id @map("repo_id")
+  repoName         String               @map("repo_name")
+  ownerId          Int                  @map("owner_id")
+  ownerLogin       String               @map("owner_login")
+  ownerIsOrg       Boolean              @map("owner_is_org")
+  description      String?
+  primaryLanguage  String?              @map("primary_language")
+  languages        GitHubRepoLanguage[]
+  topics           GitHubRepoTopic[]
+  license          String?
+  size             Int?
+  stars            Int?
+  forks            Int?
+  parentRepoId     Int?                 @map("parent_repo_id")
+  isFork           Boolean?             @map("is_fork")
+  isArchived       Boolean?             @map("is_archived")
+  isDeleted        Boolean?             @map("is_deleted")
+  latestReleasedAt DateTime?            @db.Timestamp() @map("latest_released_at")
+  pushedAt         DateTime?            @db.Timestamp() @map("pushed_at")
+  createdAt        DateTime             @db.Timestamp() @map("created_at")
+  updatedAt        DateTime             @db.Timestamp() @map("updated_at")
+  lastEventAt      DateTime?            @db.Timestamp() @map("last_event_at")
+  refreshedAt      DateTime?            @db.Timestamp() @map("refreshed_at")
 
   @@map("github_repos")
 }
@@ -100,27 +103,27 @@ model GitHubRepoLanguage {
 }
 
 model GitHubUser {
-  id                    Int      @id
+  id                    Int       @id
   login                 String
   type                  String?
-  isBot                 Boolean? @map("is_bot")
+  isBot                 Boolean?  @map("is_bot")
   name                  String?
   email                 String?
   organization          String?
-  organizationFormatted String?  @map("organization_formatted")
+  organizationFormatted String?   @map("organization_formatted")
   address               String?
-  countryCode           String?  @map("country_code")
-  regionCode            String?  @map("region_code")
+  countryCode           String?   @map("country_code")
+  regionCode            String?   @map("region_code")
   state                 String?
   city                  String?
   longitude             Decimal?
   latitude              Decimal?
-  publicRepos           Int?     @map("public_repos")
+  publicRepos           Int?      @map("public_repos")
   followers             Int?
   followings            Int?
-  createdAt             DateTime @map("created_at")
-  updatedAt             DateTime @map("updated_at")
-  isDeleted             Boolean? @map("is_deleted")
+  createdAt             DateTime  @map("created_at")
+  updatedAt             DateTime  @map("updated_at")
+  isDeleted             Boolean?  @map("is_deleted")
   refreshedAt           DateTime? @map("refreshed_at")
 
   @@map("github_users")
@@ -155,7 +158,7 @@ model CollectionItem {
 }
 
 // ---------------------------------------------------------------------------
-// Legacy ETL / import tracking models (existing tables)
+// Legacy ETL / import tracking models
 // ---------------------------------------------------------------------------
 
 model ImportLog {

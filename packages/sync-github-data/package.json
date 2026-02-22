@@ -4,6 +4,16 @@
   "description": "A CLI tool for fetching GitHub user/repo data and persist it to the TiDB Serverless cluster.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./lib": {
+      "require": "./dist/lib.js",
+      "types": "./dist/lib.d.ts"
+    }
+  },
   "scripts": {
     "build": "rm -rf dist && prisma generate && pnpm run build:ts",
     "build:ts": "tsc",

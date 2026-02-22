@@ -5,6 +5,7 @@
   "license": "Apache-2.0",
   "workspaces": [
     "packages/api-server",
+    "packages/core",
     "packages/db",
     "packages/etl",
     "packages/job-server",
