@@ -1,0 +1,37 @@
+{
+  "name": "@ossinsight/core",
+  "version": "0.0.1",
+  "description": "Core shared library for OSSInsight — single Prisma schema, PrismaClient, logger, env config",
+  "license": "Apache-2.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "generate": "prisma generate",
+    "build": "npm run generate && tsc",
+    "build:watch": "tsc -w",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "coverage": "vitest run --coverage",
+    "studio": "prisma studio"
+  },
+  "dependencies": {
+    "@prisma/client": "^7.4.1",
+    "dotenv": "^16.4.5",
+    "env-schema": "^6.0.0",
+    "pino": "^9.4.0",
+    "pino-pretty": "^9.4.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@vitest/coverage-v8": "^3.0.0",
+    "prisma": "^7.4.1",
+    "typescript": "^5.6.2",
+    "vitest": "^3.0.0"
+  }
+}

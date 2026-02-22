@@ -33,3 +33,16 @@ yarn-error.log*
 .prefetch
 
 /configs/prompts/*/*.*
+
+# Next.js
+packages/web/.next/
+packages/web/out/
+
+# Build outputs (all packages)
+packages/*/dist/
+
+# Prisma generated clients (re-generated on build)
+packages/*/node_modules/.prisma/
+
+# Coverage reports
+packages/*/coverage/

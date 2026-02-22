@@ -4,6 +4,16 @@
   "description": "A CLI tool for fetching GitHub user/repo data and persist it to the TiDB Serverless cluster.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./lib": {
+      "require": "./dist/lib.js",
+      "types": "./dist/lib.d.ts"
+    }
+  },
   "scripts": {
     "build": "rm -rf dist && prisma generate && pnpm run build:ts",
     "build:ts": "tsc",
@@ -20,13 +30,13 @@
     "@types/node": "^18.16.3",
     "fastify-tsconfig": "^1.0.1",
     "pino-pretty": "^9.4.0",
-    "prisma": "^5.3.1",
+    "prisma": "^7.4.1",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^4.5.4"
   },
   "dependencies": {
     "@goparrot/geocoder": "^4.4.0",
-    "@prisma/client": "4.13.0",
+    "@prisma/client": "^7.4.1",
     "@sentry/node": "^7.57.0",
     "async": "^3.2.4",
     "axios": "^0.27.2",
