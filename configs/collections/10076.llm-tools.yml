@@ -24,3 +24,5 @@ items:
   - langfuse/langfuse
   - keploy/keploy
   - VoltAgent/voltagent
+  - iflytek/astron-agent
+  - iflytek/astron-rpa
