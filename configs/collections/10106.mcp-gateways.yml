@@ -1,0 +1,33 @@
+id: 10106
+name: mcp-gateways
+items:
+  - Kong/kong
+  - BerriAI/litellm
+  - casdoor/casdoor
+  - Portkey-AI/gateway
+  - mcp-use/mcp-use
+  - archestra-ai/archestra
+  - octelium/octelium
+  - maximhq/bifrost
+  - metatool-ai/metamcp
+  - AmoyLab/Unla
+  - samanhappy/mcphub
+  - agentgateway/agentgateway
+  - mcpjungle/MCPJungle
+  - ArcadeAI/arcade-mcp
+  - director-run/director
+  - agentic-community/mcp-gateway-registry
+  - TheLunarCompany/lunar
+  - 1mcp-app/agent
+  - hyprmcp/jetski
+  - fiddlecube/compliant-llm
+  - postrv/forgemax
+  - e2b-dev/awesome-mcp-gateways
+  - hyprmcp/mcp-gateway
+  - aarora79/mcp-gateway
+  - 82ch/MCP-Dandan
+  - KenisLabs/arka-mcp-gateway
+  - nautilus-ops/mcp-center
+  - dunialabs/peta-core
+  - w3z4y4/mcp-gateway
+  - codingjam/bridge-mcp
