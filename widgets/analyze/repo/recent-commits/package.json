@@ -1,0 +1,13 @@
+{
+  "name": "@ossinsight/widget-analyze-repo-recent-commits",
+  "version": "1.0.0",
+  "description": "[Last 28 days Stats] Show the recent commit history of a GitHub repository.",
+  "private": true,
+  "keywords": ["Repository", "Commits"],
+  "author": "OSSInsight",
+  "type": "module",
+  "main": "visualization.ts",
+  "devDependencies": {
+    "@ossinsight/widgets-types": "workspace:^"
+  }
+}

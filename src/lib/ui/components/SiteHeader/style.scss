@@ -1,0 +1,105 @@
+//$header-width: calc(100% - 16px);
+@use "../../styles/controls" as *;
+
+@mixin menu-item-target {
+  @apply flex items-center gap-0.5 px-2 transition-colors outline-none overflow-hidden whitespace-nowrap;
+
+  &:hover {
+    @apply text-primary;
+  }
+
+  &:focus {
+    @apply text-primary;
+    @include control-shadow;
+  }
+}
+
+.SiteHeader {
+  @apply flex items-center sticky top-0 w-full bg-toolbar px-4 py-2 gap-2 shadow overflow-x-auto z-10;
+  height: var(--site-header-height);
+
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-weight: 400;
+  font-size: 16px;
+  text-rendering: optimizeLegibility;
+  text-decoration-style: solid;
+  color: rgb(245, 246, 247);
+
+  &-menu {
+    > ul {
+      @apply flex items-center p-2 gap-4;
+    }
+
+    &-item {
+      @include menu-item-target;
+    }
+
+    &-trigger {
+      @include menu-item-target;
+
+      &-indicator {
+        @apply transition-transform;
+      }
+
+      &[data-state=open] {
+        .SiteHeader-menu-trigger-indicator {
+          @apply transition-transform;
+
+          transform: rotate(180deg);
+        }
+      }
+    }
+
+    &-content {
+      @apply rounded bg-popover p-2 text-subtitle text-sm shadow-lg;
+
+      transform-origin: var(--radix-menubar-content-transform-origin);
+      animation-duration: 0.5s;
+      animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+
+      &[data-state="open"] {
+        animation-name: SiteHeader-menu-content-show;
+      }
+
+      &[data-state="closed"] {
+        animation-name: SiteHeader-menu-content-hide;
+      }
+
+      &-arrow {
+        fill: var(--background-color-popover);
+      }
+
+      li {
+        @apply py-1;
+
+        &:not(:first-of-type) {
+          @apply mt-1;
+        }
+      }
+    }
+  }
+}
+
+
+@keyframes SiteHeader-menu-content-show {
+  from {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+
+@keyframes SiteHeader-menu-content-hide {
+  to {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

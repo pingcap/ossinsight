@@ -1,0 +1,6 @@
+[
+  {
+    "type": "ref",
+    "widget": "@ossinsight/widget-analyze-repo-recent-top-contributors"
+  }
+]

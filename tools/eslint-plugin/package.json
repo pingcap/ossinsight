@@ -1,0 +1,22 @@
+{
+  "name": "eslint-plugin-ossinsight",
+  "private": true,
+  "version": "0.0.1",
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc -w"
+  },
+  "devDependencies": {
+    "@types/node": "20.4.2",
+    "eslint": "8.45.0"
+  },
+  "peerDependencies": {
+    "eslint": "8.45.0"
+  },
+  "dependencies": {
+    "@stoplight/json": "^3.21.0",
+    "ajv": "^8.12.0",
+    "jsonc-eslint-parser": "^2.3.0"
+  }
+}

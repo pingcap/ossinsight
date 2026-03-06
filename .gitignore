@@ -4,6 +4,8 @@
 # Production
 /build
 /sql
+/.next
+/.turbo
 
 # Generated files
 .docusaurus
@@ -33,3 +35,5 @@ yarn-error.log*
 .prefetch
 
 /configs/prompts/*/*.*
+
+tools/next-cli/node_modules/

@@ -1,0 +1,16 @@
+{
+  "name": "@ossinsight/basic-bubbles-chart",
+  "version": "1.0.0",
+  "private": true,
+  "description": "TODO",
+  "type": "module",
+  "main": "visualization.ts",
+  "keywords": [],
+  "author": "OSSInsight",
+  "devDependencies": {
+    "@ossinsight/widgets-parent": "workspace:^",
+    "@types/luxon": "^3.3.2",
+    "@types/react": "18.2.15",
+    "luxon": "^3.4.3"
+  }
+}

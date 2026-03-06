@@ -1,0 +1,1214 @@
+[
+  {
+    "event_year": 2011,
+    "repo_name": "jekyll/jekyll",
+    "total": 1720,
+    "rank": 1
+  },
+  {
+    "event_year": 2011,
+    "repo_name": "middleman/middleman",
+    "total": 254,
+    "rank": 2
+  },
+  {
+    "event_year": 2011,
+    "repo_name": "getpelican/pelican",
+    "total": 139,
+    "rank": 3
+  },
+  {
+    "event_year": 2011,
+    "repo_name": "jaspervdj/hakyll",
+    "total": 54,
+    "rank": 4
+  },
+  {
+    "event_year": 2012,
+    "repo_name": "jekyll/jekyll",
+    "total": 2319,
+    "rank": 1
+  },
+  {
+    "event_year": 2012,
+    "repo_name": "middleman/middleman",
+    "total": 323,
+    "rank": 2
+  },
+  {
+    "event_year": 2012,
+    "repo_name": "getpelican/pelican",
+    "total": 231,
+    "rank": 3
+  },
+  {
+    "event_year": 2012,
+    "repo_name": "jaspervdj/hakyll",
+    "total": 75,
+    "rank": 4
+  },
+  {
+    "event_year": 2014,
+    "repo_name": "jekyll/jekyll",
+    "total": 2319,
+    "rank": 1
+  },
+  {
+    "event_year": 2015,
+    "repo_name": "jekyll/jekyll",
+    "total": 6056,
+    "rank": 1
+  },
+  {
+    "event_year": 2015,
+    "repo_name": "gohugoio/hugo",
+    "total": 3121,
+    "rank": 2
+  },
+  {
+    "event_year": 2015,
+    "repo_name": "slatedocs/slate",
+    "total": 2917,
+    "rank": 3
+  },
+  {
+    "event_year": 2015,
+    "repo_name": "hexojs/hexo",
+    "total": 2664,
+    "rank": 4
+  },
+  {
+    "event_year": 2015,
+    "repo_name": "getpelican/pelican",
+    "total": 1115,
+    "rank": 5
+  },
+  {
+    "event_year": 2015,
+    "repo_name": "middleman/middleman",
+    "total": 928,
+    "rank": 6
+  },
+  {
+    "event_year": 2015,
+    "repo_name": "gatsbyjs/gatsby",
+    "total": 886,
+    "rank": 7
+  },
+  {
+    "event_year": 2015,
+    "repo_name": "mkdocs/mkdocs",
+    "total": 743,
+    "rank": 8
+  },
+  {
+    "event_year": 2015,
+    "repo_name": "metalsmith/metalsmith",
+    "total": 699,
+    "rank": 9
+  },
+  {
+    "event_year": 2015,
+    "repo_name": "sintaxi/harp",
+    "total": 467,
+    "rank": 10
+  },
+  {
+    "event_year": 2015,
+    "repo_name": "sphinx-doc/sphinx",
+    "total": 312,
+    "rank": 11
+  },
+  {
+    "event_year": 2015,
+    "repo_name": "jaspervdj/hakyll",
+    "total": 267,
+    "rank": 12
+  },
+  {
+    "event_year": 2015,
+    "repo_name": "netlify/netlify-cms",
+    "total": 122,
+    "rank": 13
+  },
+  {
+    "event_year": 2015,
+    "repo_name": "rust-lang/mdBook",
+    "total": 31,
+    "rank": 14
+  },
+  {
+    "event_year": 2016,
+    "repo_name": "jekyll/jekyll",
+    "total": 10057,
+    "rank": 1
+  },
+  {
+    "event_year": 2016,
+    "repo_name": "gohugoio/hugo",
+    "total": 7164,
+    "rank": 2
+  },
+  {
+    "event_year": 2016,
+    "repo_name": "slatedocs/slate",
+    "total": 6515,
+    "rank": 3
+  },
+  {
+    "event_year": 2016,
+    "repo_name": "hexojs/hexo",
+    "total": 6418,
+    "rank": 4
+  },
+  {
+    "event_year": 2016,
+    "repo_name": "vercel/next.js",
+    "total": 3422,
+    "rank": 5
+  },
+  {
+    "event_year": 2016,
+    "repo_name": "gatsbyjs/gatsby",
+    "total": 3234,
+    "rank": 6
+  },
+  {
+    "event_year": 2016,
+    "repo_name": "getpelican/pelican",
+    "total": 1877,
+    "rank": 7
+  },
+  {
+    "event_year": 2016,
+    "repo_name": "mkdocs/mkdocs",
+    "total": 1508,
+    "rank": 8
+  },
+  {
+    "event_year": 2016,
+    "repo_name": "metalsmith/metalsmith",
+    "total": 1306,
+    "rank": 9
+  },
+  {
+    "event_year": 2016,
+    "repo_name": "middleman/middleman",
+    "total": 1297,
+    "rank": 10
+  },
+  {
+    "event_year": 2016,
+    "repo_name": "sintaxi/harp",
+    "total": 776,
+    "rank": 11
+  },
+  {
+    "event_year": 2016,
+    "repo_name": "nuxt/nuxt.js",
+    "total": 674,
+    "rank": 12
+  },
+  {
+    "event_year": 2016,
+    "repo_name": "sphinx-doc/sphinx",
+    "total": 563,
+    "rank": 13
+  },
+  {
+    "event_year": 2016,
+    "repo_name": "jaspervdj/hakyll",
+    "total": 487,
+    "rank": 14
+  },
+  {
+    "event_year": 2016,
+    "repo_name": "docsifyjs/docsify",
+    "total": 305,
+    "rank": 15
+  },
+  {
+    "event_year": 2016,
+    "repo_name": "netlify/netlify-cms",
+    "total": 290,
+    "rank": 16
+  },
+  {
+    "event_year": 2016,
+    "repo_name": "rust-lang/mdBook",
+    "total": 175,
+    "rank": 17
+  },
+  {
+    "event_year": 2017,
+    "repo_name": "jekyll/jekyll",
+    "total": 13557,
+    "rank": 1
+  },
+  {
+    "event_year": 2017,
+    "repo_name": "gohugoio/hugo",
+    "total": 12294,
+    "rank": 2
+  },
+  {
+    "event_year": 2017,
+    "repo_name": "slatedocs/slate",
+    "total": 11716,
+    "rank": 3
+  },
+  {
+    "event_year": 2017,
+    "repo_name": "hexojs/hexo",
+    "total": 10410,
+    "rank": 4
+  },
+  {
+    "event_year": 2017,
+    "repo_name": "vercel/next.js",
+    "total": 10256,
+    "rank": 5
+  },
+  {
+    "event_year": 2017,
+    "repo_name": "gatsbyjs/gatsby",
+    "total": 7810,
+    "rank": 6
+  },
+  {
+    "event_year": 2017,
+    "repo_name": "nuxt/nuxt.js",
+    "total": 3773,
+    "rank": 7
+  },
+  {
+    "event_year": 2017,
+    "repo_name": "getpelican/pelican",
+    "total": 2652,
+    "rank": 8
+  },
+  {
+    "event_year": 2017,
+    "repo_name": "mkdocs/mkdocs",
+    "total": 2295,
+    "rank": 9
+  },
+  {
+    "event_year": 2017,
+    "repo_name": "docsifyjs/docsify",
+    "total": 1902,
+    "rank": 10
+  },
+  {
+    "event_year": 2017,
+    "repo_name": "metalsmith/metalsmith",
+    "total": 1785,
+    "rank": 11
+  },
+  {
+    "event_year": 2017,
+    "repo_name": "middleman/middleman",
+    "total": 1604,
+    "rank": 12
+  },
+  {
+    "event_year": 2017,
+    "repo_name": "netlify/netlify-cms",
+    "total": 1458,
+    "rank": 13
+  },
+  {
+    "event_year": 2017,
+    "repo_name": "facebook/docusaurus",
+    "total": 1036,
+    "rank": 14
+  },
+  {
+    "event_year": 2017,
+    "repo_name": "react-static/react-static",
+    "total": 1023,
+    "rank": 15
+  },
+  {
+    "event_year": 2017,
+    "repo_name": "sintaxi/harp",
+    "total": 951,
+    "rank": 16
+  },
+  {
+    "event_year": 2017,
+    "repo_name": "sphinx-doc/sphinx",
+    "total": 926,
+    "rank": 17
+  },
+  {
+    "event_year": 2017,
+    "repo_name": "jaspervdj/hakyll",
+    "total": 642,
+    "rank": 18
+  },
+  {
+    "event_year": 2017,
+    "repo_name": "rust-lang/mdBook",
+    "total": 413,
+    "rank": 19
+  },
+  {
+    "event_year": 2017,
+    "repo_name": "getzola/zola",
+    "total": 298,
+    "rank": 20
+  },
+  {
+    "event_year": 2017,
+    "repo_name": "11ty/eleventy",
+    "total": 54,
+    "rank": 21
+  },
+  {
+    "event_year": 2017,
+    "repo_name": "umijs/umi",
+    "total": 13,
+    "rank": 22
+  },
+  {
+    "event_year": 2018,
+    "repo_name": "gohugoio/hugo",
+    "total": 17916,
+    "rank": 1
+  },
+  {
+    "event_year": 2018,
+    "repo_name": "vercel/next.js",
+    "total": 17055,
+    "rank": 2
+  },
+  {
+    "event_year": 2018,
+    "repo_name": "jekyll/jekyll",
+    "total": 16573,
+    "rank": 3
+  },
+  {
+    "event_year": 2018,
+    "repo_name": "slatedocs/slate",
+    "total": 14260,
+    "rank": 4
+  },
+  {
+    "event_year": 2018,
+    "repo_name": "gatsbyjs/gatsby",
+    "total": 14070,
+    "rank": 5
+  },
+  {
+    "event_year": 2018,
+    "repo_name": "hexojs/hexo",
+    "total": 13486,
+    "rank": 6
+  },
+  {
+    "event_year": 2018,
+    "repo_name": "nuxt/nuxt.js",
+    "total": 8232,
+    "rank": 7
+  },
+  {
+    "event_year": 2018,
+    "repo_name": "vuejs/vuepress",
+    "total": 4211,
+    "rank": 8
+  },
+  {
+    "event_year": 2018,
+    "repo_name": "facebook/docusaurus",
+    "total": 3961,
+    "rank": 9
+  },
+  {
+    "event_year": 2018,
+    "repo_name": "docsifyjs/docsify",
+    "total": 3694,
+    "rank": 10
+  },
+  {
+    "event_year": 2018,
+    "repo_name": "getpelican/pelican",
+    "total": 3310,
+    "rank": 11
+  },
+  {
+    "event_year": 2018,
+    "repo_name": "mkdocs/mkdocs",
+    "total": 3250,
+    "rank": 12
+  },
+  {
+    "event_year": 2018,
+    "repo_name": "netlify/netlify-cms",
+    "total": 2729,
+    "rank": 13
+  },
+  {
+    "event_year": 2018,
+    "repo_name": "react-static/react-static",
+    "total": 2331,
+    "rank": 14
+  },
+  {
+    "event_year": 2018,
+    "repo_name": "metalsmith/metalsmith",
+    "total": 2101,
+    "rank": 15
+  },
+  {
+    "event_year": 2018,
+    "repo_name": "middleman/middleman",
+    "total": 1757,
+    "rank": 16
+  },
+  {
+    "event_year": 2018,
+    "repo_name": "sphinx-doc/sphinx",
+    "total": 1390,
+    "rank": 17
+  },
+  {
+    "event_year": 2018,
+    "repo_name": "umijs/umi",
+    "total": 1358,
+    "rank": 18
+  },
+  {
+    "event_year": 2018,
+    "repo_name": "sintaxi/harp",
+    "total": 1042,
+    "rank": 19
+  },
+  {
+    "event_year": 2018,
+    "repo_name": "rust-lang/mdBook",
+    "total": 791,
+    "rank": 20
+  },
+  {
+    "event_year": 2018,
+    "repo_name": "jaspervdj/hakyll",
+    "total": 777,
+    "rank": 21
+  },
+  {
+    "event_year": 2018,
+    "repo_name": "getzola/zola",
+    "total": 611,
+    "rank": 22
+  },
+  {
+    "event_year": 2018,
+    "repo_name": "11ty/eleventy",
+    "total": 508,
+    "rank": 23
+  },
+  {
+    "event_year": 2018,
+    "repo_name": "gridsome/gridsome",
+    "total": 445,
+    "rank": 24
+  },
+  {
+    "event_year": 2018,
+    "repo_name": "tlienart/Franklin.jl",
+    "total": 2,
+    "rank": 25
+  },
+  {
+    "event_year": 2019,
+    "repo_name": "gohugoio/hugo",
+    "total": 24405,
+    "rank": 1
+  },
+  {
+    "event_year": 2019,
+    "repo_name": "vercel/next.js",
+    "total": 23888,
+    "rank": 2
+  },
+  {
+    "event_year": 2019,
+    "repo_name": "gatsbyjs/gatsby",
+    "total": 20916,
+    "rank": 3
+  },
+  {
+    "event_year": 2019,
+    "repo_name": "jekyll/jekyll",
+    "total": 19052,
+    "rank": 4
+  },
+  {
+    "event_year": 2019,
+    "repo_name": "hexojs/hexo",
+    "total": 16839,
+    "rank": 5
+  },
+  {
+    "event_year": 2019,
+    "repo_name": "slatedocs/slate",
+    "total": 16263,
+    "rank": 6
+  },
+  {
+    "event_year": 2019,
+    "repo_name": "nuxt/nuxt.js",
+    "total": 13001,
+    "rank": 7
+  },
+  {
+    "event_year": 2019,
+    "repo_name": "vuejs/vuepress",
+    "total": 6615,
+    "rank": 8
+  },
+  {
+    "event_year": 2019,
+    "repo_name": "facebook/docusaurus",
+    "total": 6098,
+    "rank": 9
+  },
+  {
+    "event_year": 2019,
+    "repo_name": "docsifyjs/docsify",
+    "total": 5795,
+    "rank": 10
+  },
+  {
+    "event_year": 2019,
+    "repo_name": "mkdocs/mkdocs",
+    "total": 4403,
+    "rank": 11
+  },
+  {
+    "event_year": 2019,
+    "repo_name": "netlify/netlify-cms",
+    "total": 4162,
+    "rank": 12
+  },
+  {
+    "event_year": 2019,
+    "repo_name": "getpelican/pelican",
+    "total": 3910,
+    "rank": 13
+  },
+  {
+    "event_year": 2019,
+    "repo_name": "react-static/react-static",
+    "total": 3182,
+    "rank": 14
+  },
+  {
+    "event_year": 2019,
+    "repo_name": "umijs/umi",
+    "total": 3134,
+    "rank": 15
+  },
+  {
+    "event_year": 2019,
+    "repo_name": "metalsmith/metalsmith",
+    "total": 2273,
+    "rank": 16
+  },
+  {
+    "event_year": 2019,
+    "repo_name": "gridsome/gridsome",
+    "total": 1989,
+    "rank": 17
+  },
+  {
+    "event_year": 2019,
+    "repo_name": "middleman/middleman",
+    "total": 1880,
+    "rank": 18
+  },
+  {
+    "event_year": 2019,
+    "repo_name": "sphinx-doc/sphinx",
+    "total": 1863,
+    "rank": 19
+  },
+  {
+    "event_year": 2019,
+    "repo_name": "11ty/eleventy",
+    "total": 1807,
+    "rank": 20
+  },
+  {
+    "event_year": 2019,
+    "repo_name": "rust-lang/mdBook",
+    "total": 1423,
+    "rank": 21
+  },
+  {
+    "event_year": 2019,
+    "repo_name": "getzola/zola",
+    "total": 1266,
+    "rank": 22
+  },
+  {
+    "event_year": 2019,
+    "repo_name": "tinacms/tinacms",
+    "total": 1185,
+    "rank": 23
+  },
+  {
+    "event_year": 2019,
+    "repo_name": "sintaxi/harp",
+    "total": 1113,
+    "rank": 24
+  },
+  {
+    "event_year": 2019,
+    "repo_name": "jaspervdj/hakyll",
+    "total": 917,
+    "rank": 25
+  },
+  {
+    "event_year": 2019,
+    "repo_name": "redwoodjs/redwood",
+    "total": 140,
+    "rank": 26
+  },
+  {
+    "event_year": 2019,
+    "repo_name": "tlienart/Franklin.jl",
+    "total": 35,
+    "rank": 27
+  },
+  {
+    "event_year": 2020,
+    "repo_name": "vercel/next.js",
+    "total": 35151,
+    "rank": 1
+  },
+  {
+    "event_year": 2020,
+    "repo_name": "gohugoio/hugo",
+    "total": 31014,
+    "rank": 2
+  },
+  {
+    "event_year": 2020,
+    "repo_name": "gatsbyjs/gatsby",
+    "total": 25896,
+    "rank": 3
+  },
+  {
+    "event_year": 2020,
+    "repo_name": "jekyll/jekyll",
+    "total": 21250,
+    "rank": 4
+  },
+  {
+    "event_year": 2020,
+    "repo_name": "hexojs/hexo",
+    "total": 19130,
+    "rank": 5
+  },
+  {
+    "event_year": 2020,
+    "repo_name": "nuxt/nuxt.js",
+    "total": 19076,
+    "rank": 6
+  },
+  {
+    "event_year": 2020,
+    "repo_name": "slatedocs/slate",
+    "total": 18371,
+    "rank": 7
+  },
+  {
+    "event_year": 2020,
+    "repo_name": "facebook/docusaurus",
+    "total": 9597,
+    "rank": 8
+  },
+  {
+    "event_year": 2020,
+    "repo_name": "vuejs/vuepress",
+    "total": 8435,
+    "rank": 9
+  },
+  {
+    "event_year": 2020,
+    "repo_name": "docsifyjs/docsify",
+    "total": 8204,
+    "rank": 10
+  },
+  {
+    "event_year": 2020,
+    "repo_name": "mkdocs/mkdocs",
+    "total": 5916,
+    "rank": 11
+  },
+  {
+    "event_year": 2020,
+    "repo_name": "netlify/netlify-cms",
+    "total": 5605,
+    "rank": 12
+  },
+  {
+    "event_year": 2020,
+    "repo_name": "umijs/umi",
+    "total": 4854,
+    "rank": 13
+  },
+  {
+    "event_year": 2020,
+    "repo_name": "getpelican/pelican",
+    "total": 4497,
+    "rank": 14
+  },
+  {
+    "event_year": 2020,
+    "repo_name": "11ty/eleventy",
+    "total": 4015,
+    "rank": 15
+  },
+  {
+    "event_year": 2020,
+    "repo_name": "react-static/react-static",
+    "total": 3783,
+    "rank": 16
+  },
+  {
+    "event_year": 2020,
+    "repo_name": "gridsome/gridsome",
+    "total": 2961,
+    "rank": 17
+  },
+  {
+    "event_year": 2020,
+    "repo_name": "rust-lang/mdBook",
+    "total": 2889,
+    "rank": 18
+  },
+  {
+    "event_year": 2020,
+    "repo_name": "redwoodjs/redwood",
+    "total": 2712,
+    "rank": 19
+  },
+  {
+    "event_year": 2020,
+    "repo_name": "metalsmith/metalsmith",
+    "total": 2394,
+    "rank": 20
+  },
+  {
+    "event_year": 2020,
+    "repo_name": "sphinx-doc/sphinx",
+    "total": 2341,
+    "rank": 21
+  },
+  {
+    "event_year": 2020,
+    "repo_name": "getzola/zola",
+    "total": 2191,
+    "rank": 22
+  },
+  {
+    "event_year": 2020,
+    "repo_name": "tinacms/tinacms",
+    "total": 1992,
+    "rank": 23
+  },
+  {
+    "event_year": 2020,
+    "repo_name": "middleman/middleman",
+    "total": 1981,
+    "rank": 24
+  },
+  {
+    "event_year": 2020,
+    "repo_name": "sintaxi/harp",
+    "total": 1168,
+    "rank": 25
+  },
+  {
+    "event_year": 2020,
+    "repo_name": "jaspervdj/hakyll",
+    "total": 1046,
+    "rank": 26
+  },
+  {
+    "event_year": 2020,
+    "repo_name": "tlienart/Franklin.jl",
+    "total": 268,
+    "rank": 27
+  },
+  {
+    "event_year": 2020,
+    "repo_name": "abelljs/abell",
+    "total": 107,
+    "rank": 28
+  },
+  {
+    "event_year": 2021,
+    "repo_name": "vercel/next.js",
+    "total": 51051,
+    "rank": 1
+  },
+  {
+    "event_year": 2021,
+    "repo_name": "gohugoio/hugo",
+    "total": 36666,
+    "rank": 2
+  },
+  {
+    "event_year": 2021,
+    "repo_name": "gatsbyjs/gatsby",
+    "total": 28503,
+    "rank": 3
+  },
+  {
+    "event_year": 2021,
+    "repo_name": "nuxt/nuxt.js",
+    "total": 23928,
+    "rank": 4
+  },
+  {
+    "event_year": 2021,
+    "repo_name": "jekyll/jekyll",
+    "total": 22975,
+    "rank": 5
+  },
+  {
+    "event_year": 2021,
+    "repo_name": "hexojs/hexo",
+    "total": 20841,
+    "rank": 6
+  },
+  {
+    "event_year": 2021,
+    "repo_name": "slatedocs/slate",
+    "total": 19528,
+    "rank": 7
+  },
+  {
+    "event_year": 2021,
+    "repo_name": "facebook/docusaurus",
+    "total": 14548,
+    "rank": 8
+  },
+  {
+    "event_year": 2021,
+    "repo_name": "docsifyjs/docsify",
+    "total": 10123,
+    "rank": 9
+  },
+  {
+    "event_year": 2021,
+    "repo_name": "vuejs/vuepress",
+    "total": 9456,
+    "rank": 10
+  },
+  {
+    "event_year": 2021,
+    "repo_name": "mkdocs/mkdocs",
+    "total": 7166,
+    "rank": 11
+  },
+  {
+    "event_year": 2021,
+    "repo_name": "netlify/netlify-cms",
+    "total": 6479,
+    "rank": 12
+  },
+  {
+    "event_year": 2021,
+    "repo_name": "redwoodjs/redwood",
+    "total": 6198,
+    "rank": 13
+  },
+  {
+    "event_year": 2021,
+    "repo_name": "umijs/umi",
+    "total": 5944,
+    "rank": 14
+  },
+  {
+    "event_year": 2021,
+    "repo_name": "11ty/eleventy",
+    "total": 5575,
+    "rank": 15
+  },
+  {
+    "event_year": 2021,
+    "repo_name": "getpelican/pelican",
+    "total": 4934,
+    "rank": 16
+  },
+  {
+    "event_year": 2021,
+    "repo_name": "rust-lang/mdBook",
+    "total": 4396,
+    "rank": 17
+  },
+  {
+    "event_year": 2021,
+    "repo_name": "react-static/react-static",
+    "total": 4180,
+    "rank": 18
+  },
+  {
+    "event_year": 2021,
+    "repo_name": "withastro/astro",
+    "total": 3852,
+    "rank": 19
+  },
+  {
+    "event_year": 2021,
+    "repo_name": "getzola/zola",
+    "total": 3747,
+    "rank": 20
+  },
+  {
+    "event_year": 2021,
+    "repo_name": "gridsome/gridsome",
+    "total": 3408,
+    "rank": 21
+  },
+  {
+    "event_year": 2021,
+    "repo_name": "sveltejs/kit",
+    "total": 3270,
+    "rank": 22
+  },
+  {
+    "event_year": 2021,
+    "repo_name": "sphinx-doc/sphinx",
+    "total": 2764,
+    "rank": 23
+  },
+  {
+    "event_year": 2021,
+    "repo_name": "tinacms/tinacms",
+    "total": 2687,
+    "rank": 24
+  },
+  {
+    "event_year": 2021,
+    "repo_name": "metalsmith/metalsmith",
+    "total": 2471,
+    "rank": 25
+  },
+  {
+    "event_year": 2021,
+    "repo_name": "middleman/middleman",
+    "total": 2050,
+    "rank": 26
+  },
+  {
+    "event_year": 2021,
+    "repo_name": "sintaxi/harp",
+    "total": 1199,
+    "rank": 27
+  },
+  {
+    "event_year": 2021,
+    "repo_name": "jaspervdj/hakyll",
+    "total": 1123,
+    "rank": 28
+  },
+  {
+    "event_year": 2021,
+    "repo_name": "tlienart/Franklin.jl",
+    "total": 429,
+    "rank": 29
+  },
+  {
+    "event_year": 2021,
+    "repo_name": "abelljs/abell",
+    "total": 156,
+    "rank": 30
+  },
+  {
+    "event_year": 2022,
+    "repo_name": "vercel/next.js",
+    "total": 57972,
+    "rank": 1
+  },
+  {
+    "event_year": 2022,
+    "repo_name": "gohugoio/hugo",
+    "total": 39084,
+    "rank": 2
+  },
+  {
+    "event_year": 2022,
+    "repo_name": "gatsbyjs/gatsby",
+    "total": 29260,
+    "rank": 3
+  },
+  {
+    "event_year": 2022,
+    "repo_name": "nuxt/nuxt.js",
+    "total": 25141,
+    "rank": 4
+  },
+  {
+    "event_year": 2022,
+    "repo_name": "jekyll/jekyll",
+    "total": 23743,
+    "rank": 5
+  },
+  {
+    "event_year": 2022,
+    "repo_name": "hexojs/hexo",
+    "total": 21538,
+    "rank": 6
+  },
+  {
+    "event_year": 2022,
+    "repo_name": "slatedocs/slate",
+    "total": 19962,
+    "rank": 7
+  },
+  {
+    "event_year": 2022,
+    "repo_name": "facebook/docusaurus",
+    "total": 17158,
+    "rank": 8
+  },
+  {
+    "event_year": 2022,
+    "repo_name": "docsifyjs/docsify",
+    "total": 10990,
+    "rank": 9
+  },
+  {
+    "event_year": 2022,
+    "repo_name": "vuejs/vuepress",
+    "total": 9840,
+    "rank": 10
+  },
+  {
+    "event_year": 2022,
+    "repo_name": "mkdocs/mkdocs",
+    "total": 7710,
+    "rank": 11
+  },
+  {
+    "event_year": 2022,
+    "repo_name": "redwoodjs/redwood",
+    "total": 7686,
+    "rank": 12
+  },
+  {
+    "event_year": 2022,
+    "repo_name": "netlify/netlify-cms",
+    "total": 6782,
+    "rank": 13
+  },
+  {
+    "event_year": 2022,
+    "repo_name": "umijs/umi",
+    "total": 6332,
+    "rank": 14
+  },
+  {
+    "event_year": 2022,
+    "repo_name": "11ty/eleventy",
+    "total": 6238,
+    "rank": 15
+  },
+  {
+    "event_year": 2022,
+    "repo_name": "withastro/astro",
+    "total": 5389,
+    "rank": 16
+  },
+  {
+    "event_year": 2022,
+    "repo_name": "rust-lang/mdBook",
+    "total": 5131,
+    "rank": 17
+  },
+  {
+    "event_year": 2022,
+    "repo_name": "getpelican/pelican",
+    "total": 5108,
+    "rank": 18
+  },
+  {
+    "event_year": 2022,
+    "repo_name": "sveltejs/kit",
+    "total": 4627,
+    "rank": 19
+  },
+  {
+    "event_year": 2022,
+    "repo_name": "react-static/react-static",
+    "total": 4286,
+    "rank": 20
+  },
+  {
+    "event_year": 2022,
+    "repo_name": "getzola/zola",
+    "total": 4159,
+    "rank": 21
+  },
+  {
+    "event_year": 2022,
+    "repo_name": "gridsome/gridsome",
+    "total": 3515,
+    "rank": 22
+  },
+  {
+    "event_year": 2022,
+    "repo_name": "tinacms/tinacms",
+    "total": 2973,
+    "rank": 23
+  },
+  {
+    "event_year": 2022,
+    "repo_name": "sphinx-doc/sphinx",
+    "total": 2966,
+    "rank": 24
+  },
+  {
+    "event_year": 2022,
+    "repo_name": "metalsmith/metalsmith",
+    "total": 2501,
+    "rank": 25
+  },
+  {
+    "event_year": 2022,
+    "repo_name": "middleman/middleman",
+    "total": 2080,
+    "rank": 26
+  },
+  {
+    "event_year": 2022,
+    "repo_name": "sintaxi/harp",
+    "total": 1212,
+    "rank": 27
+  },
+  {
+    "event_year": 2022,
+    "repo_name": "jaspervdj/hakyll",
+    "total": 1161,
+    "rank": 28
+  },
+  {
+    "event_year": 2022,
+    "repo_name": "tlienart/Franklin.jl",
+    "total": 498,
+    "rank": 29
+  },
+  {
+    "event_year": 2022,
+    "repo_name": "abelljs/abell",
+    "total": 170,
+    "rank": 30
+  }
+]

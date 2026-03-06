@@ -1,0 +1,40 @@
+@use "../../styles/controls" as *;
+@use "../../styles/theme" as *;
+
+.Button {
+  @apply px-2 py-1 text-sm border transition inline-flex items-center justify-center gap-1;
+
+  &:not(.Button-primary) {
+    @include control-shadow($color-disabled);
+  }
+
+  &-primary {
+    @apply border-primary bg-primary text-primary-reverse;
+    @include control-shadow($color-primary-darkened);
+
+    &:hover {
+      @apply bg-primary-highlighted;
+    }
+  }
+
+  &-secondary {
+    @apply border-transparent bg-popover text-primary;
+    @include control-shadow($color-primary-darkened);
+
+    &:hover {
+      background-color: $list-item-focus;
+    }
+  }
+
+  &:disabled {
+    @apply border-disabled bg-transparent text-disabled cursor-not-allowed;
+  }
+
+  &-sm {
+    @apply text-xs px-1 py-0.5;
+  }
+
+  &-lg {
+    @apply text-lg px-4 py-2;
+  }
+}

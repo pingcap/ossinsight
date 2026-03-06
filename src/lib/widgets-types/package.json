@@ -1,0 +1,9 @@
+{
+  "name": "@ossinsight/widgets-types",
+  "version": "1.0.0",
+  "types": "index.d.ts",
+  "dependencies": {
+    "echarts": "^5.4.3",
+    "tailwindcss": "3.3.3"
+  }
+}

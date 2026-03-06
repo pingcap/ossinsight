@@ -12,24 +12,23 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: packages/cli
+        working-directory: tools/cli
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - uses: pnpm/action-setup@v4
-        name: Install pnpm
-        with:
-          run_install: true
 
       - name: Install Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: 'pnpm'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        working-directory: .
+        run: npm install
 
       - name: Verify Collection Configs
-        run: pnpm run cli:collection:verify
+        run: npm run cli:collection:verify
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           GITHUB_ACCESS_TOKENS: ${{ secrets.GITHUB_TOKEN }}

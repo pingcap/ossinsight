@@ -1,0 +1,12 @@
+{
+  "name": "@ossinsight/widget-collection-annually-ranking",
+  "version": "1.0.0",
+  "description": "Rank a group of repositories within the same technical field based on star count, pull request count, pull request creators, and issue count.",
+  "keywords": ["Collection", "Ranking"],
+  "type": "module",
+  "main": "visualization.ts",
+  "author": "OSSInsight",
+  "devDependencies": {
+    "@ossinsight/widgets-parent": "workspace:^"
+  }
+}

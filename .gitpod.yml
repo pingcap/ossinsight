@@ -11,7 +11,7 @@ tasks:
       pnpm dev
   - name: Frontend
     before: |
-      cd web
+      cd src
     init: |
       npm ci
     command: |

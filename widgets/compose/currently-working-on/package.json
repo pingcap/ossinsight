@@ -1,0 +1,17 @@
+{
+  "name": "@ossinsight/widget-compose-currently-working-on",
+  "version": "1.0.0",
+  "description": "Analyze a developer's recent focus by identifying actively engaged repositories in the last 28 days.",
+  "type": "module",
+  "main": "visualization.tsx",
+  "keywords": [
+    "🔥Popular",
+    "Developer"
+  ],
+  "author": "OSSInsight",
+  "devDependencies": {
+    "@ossinsight/widgets-parent": "workspace:^",
+    "@types/luxon": "^3.3.2",
+    "luxon": "^3.4.3"
+  }
+}

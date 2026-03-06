@@ -29,7 +29,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: "{{defaultContext}}"
-          file: "./web/Dockerfile"
+          file: "./src/Dockerfile"
           push: true
           tags: ossinsight/ossinsight-web:latest
           cache-from: type=gha
@@ -48,7 +48,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: "{{defaultContext}}"
-          file: "./packages/api-server/Dockerfile"
+          file: "./src/services/api-server/Dockerfile"
           push: true
           tags: ossinsight/ossinsight-api:latest
           cache-from: type=gha
@@ -63,4 +63,3 @@ jobs:
           tags: ossinsight/devcontainer:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
-

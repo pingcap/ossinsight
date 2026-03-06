@@ -1,0 +1,38 @@
+[
+  {
+    "type": "api",
+    "url": "https://api.ossinsight.io/q/personal-contribution-trends",
+    "parser": {
+      "type": "json",
+      "extract": "$.data[*]"
+    },
+    "params": {
+      "userId": "user_id"
+    },
+    "when": ["user_id"]
+  },
+  {
+    "type": "api",
+    "url": "https://api.ossinsight.io/q/personal-overview",
+    "parser": {
+      "type": "json",
+      "extract": "$.data[*]"
+    },
+    "params": {
+      "userId": "user_id"
+    },
+    "when": ["user_id"]
+  },
+  {
+    "type": "api",
+    "url": "https://api.ossinsight.io/q/personal-languages",
+    "parser": {
+      "type": "json",
+      "extract": "$.data[*]"
+    },
+    "params": {
+      "userId": "user_id"
+    },
+    "when": ["user_id"]
+  }
+]

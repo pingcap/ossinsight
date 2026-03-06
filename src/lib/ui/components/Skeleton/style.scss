@@ -1,0 +1,28 @@
+@use "sass:color";
+@use "../../styles/theme" as *;
+
+.skeleton {
+  background-color: $background-color-control;
+  animation: skeleton-keyframes 1.6s ease-in-out infinite alternate;
+}
+
+.skeleton-paused {
+  .skeleton {
+    animation: none;
+    opacity: 0.6;
+  }
+}
+
+$text-from: color.adjust($text-color-subtitle, $alpha: -0.7);
+$text-to: $text-color-subtitle;
+$bg-from: color.adjust($text-color-content, $alpha: -0.7);
+$bg-to: $text-color-content;
+
+@keyframes skeleton-keyframes {
+  0% {
+    opacity: 0.3;
+  }
+  100% {
+    opacity: 0.6;
+  }
+}

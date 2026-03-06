@@ -1,0 +1,17 @@
+{
+  "name": "@ossinsight/widget-analyze-org-activity-efficiency",
+  "version": "1.0.0",
+  "description": "TODO analyze-org-activity-efficiency",
+  "keywords": [
+    "Organization"
+  ],
+  "author": "OSSInsight",
+  "type": "module",
+  "main": "visualization.ts",
+  "devDependencies": {
+    "@ossinsight/widgets-types": "workspace:^"
+  },
+  "dependencies": {
+    "luxon": "^3.3.0"
+  }
+}

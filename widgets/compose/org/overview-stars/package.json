@@ -1,0 +1,17 @@
+{
+  "name": "@ossinsight/widget-compose-org-overview-stars",
+  "version": "1.0.0",
+  "description": "Overview of stars earned for an organization",
+  "type": "module",
+  "main": "visualization.ts",
+  "keywords": [
+    "Organization",
+    "Stars"
+  ],
+  "author": "OSSInsight",
+  "devDependencies": {
+    "@ossinsight/widgets-parent": "workspace:^",
+    "@types/luxon": "^3.3.1",
+    "luxon": "^3.3.0"
+  }
+}

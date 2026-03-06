@@ -1,0 +1,14 @@
+{
+  "name": "@ossinsight/widget-analyze-org-activity-action-top-repos",
+  "version": "1.0.0",
+  "description": "Ranking of repos with the most avtivities in an organization",
+  "keywords": [
+    "Organization"
+  ],
+  "author": "OSSInsight",
+  "type": "module",
+  "main": "visualization.ts",
+  "devDependencies": {
+    "@ossinsight/widgets-types": "workspace:^"
+  }
+}

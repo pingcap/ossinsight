@@ -1,0 +1,143 @@
+{
+  "compilerOptions": {
+    "target": "ES2021",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": [
+        "./src/*",
+        "./*"
+      ],
+      "@site/*": [
+        "./src/*"
+      ],
+      "@docusaurus/Link": [
+        "./src/compat/docusaurus/Link"
+      ],
+      "@docusaurus/router": [
+        "./src/compat/docusaurus/router"
+      ],
+      "@docusaurus/Head": [
+        "./src/compat/docusaurus/Head"
+      ],
+      "@docusaurus/useDocusaurusContext": [
+        "./src/compat/docusaurus/useDocusaurusContext"
+      ],
+      "@docusaurus/Translate": [
+        "./src/compat/docusaurus/Translate"
+      ],
+      "@docusaurus/isInternalUrl": [
+        "./src/compat/docusaurus/isInternalUrl"
+      ],
+      "@docusaurus/BrowserOnly": [
+        "./src/compat/docusaurus/BrowserOnly"
+      ],
+      "@docusaurus/useGlobalData": [
+        "./src/compat/docusaurus/useGlobalData"
+      ],
+      "@docusaurus/theme-common": [
+        "./src/compat/docusaurus/theme-common"
+      ],
+      "@docusaurus/theme-common/internal": [
+        "./src/compat/docusaurus/theme-common-internal"
+      ],
+      "@docusaurus/ErrorBoundary": [
+        "./src/compat/docusaurus/ErrorBoundary"
+      ],
+      "@docusaurus/types": [
+        "./src/compat/docusaurus/types"
+      ],
+      "@docusaurus/plugin-google-gtag": [
+        "./src/compat/docusaurus/plugin-google-gtag"
+      ],
+      "@docusaurus/plugin-content-docs": [
+        "./src/compat/docusaurus/plugin-content-docs"
+      ],
+      "@docusaurus/plugin-client-redirects/lib/types": [
+        "./src/compat/docusaurus/plugin-client-redirects-types"
+      ],
+      "@docusaurus/core/lib/client/exports/BrowserOnly": [
+        "./src/compat/docusaurus/BrowserOnly"
+      ],
+      "@docusaurus/core/lib/client/exports/useGlobalData": [
+        "./src/compat/docusaurus/useGlobalData"
+      ],
+      "@theme/Layout": [
+        "./src/compat/theme/Layout"
+      ],
+      "@theme/NotFound": [
+        "./src/compat/theme/NotFound"
+      ],
+      "@theme/CodeBlock": [
+        "./src/compat/theme/CodeBlock"
+      ],
+      "@theme/Details": [
+        "./src/compat/theme/Details"
+      ],
+      "@theme/Icon/Arrow": [
+        "./src/compat/theme/IconArrow"
+      ],
+      "@theme/DocSidebar": [
+        "./src/compat/theme/DocSidebar"
+      ],
+      "@theme/*": [
+        "./src/theme/*",
+        "./src/compat/theme/*"
+      ],
+      "@ossinsight/widgets-types": [
+        "./src/lib/widgets-types/index.d.ts"
+      ],
+      "@ossinsight/widgets-types/modules": [
+        "./src/lib/widgets-types/modules.d.ts"
+      ],
+      "@ossinsight/data-service/modules": [
+        "./src/lib/data-service/modules.d.ts"
+      ],
+      "@ossinsight/widgets": [
+        "./src/lib/widgets-types/modules.d.ts"
+      ]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "env.d.ts",
+    "global.d.ts",
+    "mdx-components.tsx",
+    "src/**/*.ts",
+    "src/types/*.d.ts",
+    "src/**/*.tsx",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "src/services/**",
+    "src/shared/**",
+    "src/legacy-pages/2022/**",
+    "src/theme/**",
+    "src/plugins/**",
+    "widgets/**",
+    "**/*.test.ts",
+    "**/*.test.tsx"
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "name": "@ossinsight/widget-analyze-repo-commits-time-distribution",
+  "version": "1.0.0",
+  "description": "Analyze and compare the preferred times for code submissions by individuals in repositories.",
+  "type": "module",
+  "main": "visualization.ts",
+  "keywords": [
+    "Repository",
+    "Commit"
+  ],
+  "author": "OSSInsight",
+  "devDependencies": {
+    "@ossinsight/widgets-parent": "workspace:^"
+  }
+}

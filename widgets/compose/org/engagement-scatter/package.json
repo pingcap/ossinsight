@@ -1,0 +1,14 @@
+{
+  "name": "@ossinsight/widget-compose-org-engagement-scatter",
+  "version": "1.0.0",
+  "description": "Most engaged people in an organization",
+  "type": "module",
+  "main": "visualization.ts",
+  "keywords": [
+    "Organization"
+  ],
+  "author": "OSSInsight",
+  "devDependencies": {
+    "@ossinsight/widgets-parent": "workspace:^"
+  }
+}

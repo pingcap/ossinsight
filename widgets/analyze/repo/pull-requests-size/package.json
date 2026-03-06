@@ -1,0 +1,12 @@
+{
+  "name": "@ossinsight/widget-analyze-repo-pull-requests-size-per-month",
+  "version": "1.0.0",
+  "description": "Examine and compare pull request sizes across different months.",
+  "type": "module",
+  "main": "visualization.ts",
+  "keywords": ["Repository", "Pull Request"],
+  "author": "OSSInsight",
+  "devDependencies": {
+    "@ossinsight/widgets-parent": "workspace:^"
+  }
+}

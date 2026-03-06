@@ -1,0 +1,19 @@
+@use "theme" as *;
+
+@mixin control-shadow($color: $color-primary-darkened) {
+  @apply outline-none rounded;
+
+  --tw-shadow-color: #{$color};
+
+  &:focus, &:focus-within {
+    @apply shadow-control;
+  }
+}
+
+@mixin control-border($color: $color-primary) {
+  @apply border;
+
+  &:focus, &:focus-within {
+    border-color: $color;
+  }
+}

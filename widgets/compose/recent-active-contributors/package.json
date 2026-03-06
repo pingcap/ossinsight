@@ -1,0 +1,22 @@
+{
+  "name": "@ossinsight/widget-compose-recent-active-contributors",
+  "version": "1.0.0",
+  "description": "Identify the most active contributors in a repository over the past 28 days. Recognize and engage with individuals who have made significant contributions during this period.",
+  "type": "module",
+  "main": "visualization.tsx",
+  "keywords": [
+    "🔥Popular",
+    "Repository",
+    "Contributor"
+  ],
+  "author": "OSSInsight",
+  "devDependencies": {
+    "@ossinsight/widgets-parent": "workspace:^",
+    "@types/lodash": "^4.14.198",
+    "@types/luxon": "^3.3.2",
+    "luxon": "^3.4.3"
+  },
+  "dependencies": {
+    "lodash": "^4.17.21"
+  }
+}

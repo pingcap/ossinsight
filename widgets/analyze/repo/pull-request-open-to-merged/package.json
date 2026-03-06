@@ -1,0 +1,12 @@
+{
+  "name": "@ossinsight/widget-analyze-repo-pull-request-open-to-merged",
+  "version": "1.0.0",
+  "description": "Analyze and compare the open-to-merge time for pull requests.",
+  "type": "module",
+  "main": "visualization.ts",
+  "keywords": ["Repository", "Pull Request"],
+  "author": "OSSInsight",
+  "devDependencies": {
+    "@ossinsight/widgets-parent": "workspace:^"
+  }
+}

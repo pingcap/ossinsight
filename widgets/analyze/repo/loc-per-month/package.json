@@ -1,0 +1,12 @@
+{
+  "name": "@ossinsight/widget-analyze-repo-loc-per-month",
+  "version": "1.0.0",
+  "description": "Monitor and compare lines of code added/deleted per month.",
+  "type": "module",
+  "main": "visualization.ts",
+  "keywords": ["Repository"],
+  "author": "OSSInsight",
+  "devDependencies": {
+    "@ossinsight/widgets-parent": "workspace:^"
+  }
+}

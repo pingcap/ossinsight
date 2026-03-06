@@ -1,0 +1,17 @@
+{
+  "name": "@ossinsight/widget-compose-last-28-days-collaborative-productivity",
+  "version": "1.0.0",
+  "description": "Analyze the collaborative efficiency of a repository, including pull request merge rate, review rate, and issue closed rate, over the last 28 days.",
+  "type": "module",
+  "main": "visualization.tsx",
+  "keywords": [
+    "🔥Popular",
+    "Repository"
+  ],
+  "author": "OSSInsight",
+  "devDependencies": {
+    "@ossinsight/widgets-parent": "workspace:^",
+    "@types/luxon": "^3.3.2",
+    "luxon": "^3.4.3"
+  }
+}

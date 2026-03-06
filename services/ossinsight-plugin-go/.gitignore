@@ -1,0 +1,6 @@
+*.log
+
+/config/*.yaml
+*.json
+
+/bin

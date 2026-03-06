@@ -28,7 +28,7 @@ services:
   api:
     build:
       context: .
-      dockerfile: ./packages/api-server/Dockerfile
+      dockerfile: ./src/services/api-server/Dockerfile
       args:
         NODE_ENV: 'development'
     image: ossinsight/ossinsight-api:latest
@@ -49,14 +49,14 @@ services:
     restart: always
     build:
       context: .
-      dockerfile: ./web/Dockerfile
+      dockerfile: ./Dockerfile
       args:
         NODE_ENV: 'development'
     ports: 
-      - "30000:30000"
+      - "3000:3000"
     environment:
       - NODE_ENV=development
-      - APP_HOST=${APP_HOST:-http://localhost:30000}
+      - APP_HOST=${APP_HOST:-http://localhost:3000}
       - APP_API_BASE=${APP_API_BASE:-http://localhost:3450}
 
 networks:

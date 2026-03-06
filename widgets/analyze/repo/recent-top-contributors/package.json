@@ -1,0 +1,13 @@
+{
+  "name": "@ossinsight/widget-analyze-repo-recent-top-contributors",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Recent top contributors of a GitHub repository.",
+  "keywords": ["Repository", "contributors"],
+  "author": "OSSInsight",
+  "type": "module",
+  "main": "visualization.ts",
+  "devDependencies": {
+    "@ossinsight/widgets-types": "workspace:^"
+  }
+}

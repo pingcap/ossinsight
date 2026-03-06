@@ -1,0 +1,21 @@
+{
+  "name": "@ossinsight/widget-analyze-org-company",
+  "version": "1.0.0",
+  "description": "Analyze company affiliations of repository stargazers and participants.",
+  "private": true,
+  "type": "module",
+  "main": "visualization.tsx",
+  "keywords": [
+    "Organization",
+    "Company"
+  ],
+  "author": "OSSInsight",
+  "devDependencies": {
+    "@ossinsight/widgets-parent": "workspace:^",
+    "@types/d3": "^7.4.1",
+    "@types/d3-cloud": "^1.2.6",
+    "@types/react": "18.2.15",
+    "d3": "^7.8.5",
+    "d3-cloud": "^1.2.7"
+  }
+}

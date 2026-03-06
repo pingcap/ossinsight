@@ -1,0 +1,41 @@
+name: Update AI Prompts
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'configs/prompts/**'
+
+env:
+  SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to api1
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.API1_SERVER_HOST }}
+          username: ubuntu
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            set -e
+            cd ~/ossinsight/ossinsight
+            git pull
+
+      - name: Deploy to api2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.API2_SERVER_HOST }}
+          username: ubuntu
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            set -e
+            cd ~/ossinsight/ossinsight
+            git pull

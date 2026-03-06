@@ -1,0 +1,13 @@
+{
+  "name": "@ossinsight/widget-analyze-org-pull-requests-open-to-review",
+  "version": "1.0.0",
+  "description": "Ranking of repos with most proactive Pull Request Review responses of an organization",
+  "private": true,
+  "type": "module",
+  "main": "visualization.ts",
+  "keywords": ["Organization"],
+  "author": "OSSInsight",
+  "devDependencies": {
+    "@ossinsight/widgets-parent": "workspace:^"
+  }
+}

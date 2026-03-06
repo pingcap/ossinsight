@@ -1,0 +1,13 @@
+{
+  "type": "api",
+  "url": "https://api.ossinsight.io/q/personal-contribution-in-diff-repos?time_range=last_28_days&period=day",
+  "params": {
+    "userId": "user_id",
+    "activity_type": "activity_type"
+  },
+  "parser": {
+    "type": "json",
+    "extract": "$.data[*]"
+  },
+  "when": ["user_id"]
+}

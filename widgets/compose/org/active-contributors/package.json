@@ -1,0 +1,20 @@
+{
+  "name": "@ossinsight/widget-compose-org-active-contributors",
+  "version": "1.0.0",
+  "description": "Show the active/new contributors of an organization",
+  "type": "module",
+  "main": "visualization.ts",
+  "keywords": [
+    "Organization"
+  ],
+  "author": "OSSInsight",
+  "devDependencies": {
+    "@ossinsight/widgets-parent": "workspace:^",
+    "@types/lodash": "^4.14.195",
+    "@types/luxon": "^3.3.1",
+    "luxon": "^3.3.0"
+  },
+  "dependencies": {
+    "lodash": "^4.17.21"
+  }
+}

@@ -3,7 +3,7 @@ name: Surge PR Preview
 on:
   pull_request_target:
     paths:
-      - 'web/**'
+      - 'src/**'
 
 jobs:
   verify:
@@ -11,7 +11,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: ./web
+        working-directory: ./src
     steps:
       - uses: actions/checkout@v4
         with:
@@ -21,7 +21,7 @@ jobs:
         with:
           node-version: 18
           cache: 'npm'
-          cache-dependency-path: web/package-lock.json
+          cache-dependency-path: src/package-lock.json
       - name: Install
         run: npm ci --prefer-offline --no-audit
       - name: Lint
@@ -34,7 +34,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: ./web
+        working-directory: ./src
     steps:
       - uses: actions/checkout@v4
         with:
@@ -44,7 +44,7 @@ jobs:
         with:
           node-version: 18
           cache: 'npm'
-          cache-dependency-path: web/package-lock.json
+          cache-dependency-path: src/package-lock.json
       - name: Install
         run: npm ci --prefer-offline --no-audit
       - name: Prefetch
@@ -66,4 +66,4 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           teardown: true
           build: echo 'Deployed to surge'
-          dist: './web/build'
+          dist: './src/build'

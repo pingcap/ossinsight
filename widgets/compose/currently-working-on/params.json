@@ -1,0 +1,14 @@
+{
+  "user_id": {
+    "type": "user-id",
+    "title": "Analyzing User",
+    "required": true,
+    "default": 12960671
+  },
+  "activity_type": {
+    "type": "event-type",
+    "title": "Activity event type",
+    "required": true,
+    "default": "all"
+  }
+}

@@ -1,0 +1,104 @@
+@use "../../styles/controls" as *;
+
+.SelectWrapper {
+  display: inline-flex;
+  flex-direction: column;
+  align-content: flex-start;
+  flex-wrap: wrap;
+}
+
+.SelectTitle {
+  font-size: 12px;
+  line-height: 25px;
+  color: var(--text-color-content);
+}
+
+.SelectTrigger {
+  @apply px-2 bg-control text-active text-sm transition-all inline-flex gap-1 items-center justify-between outline-none w-full;
+}
+
+.SelectWrapper:not(.Select-borderless) {
+  .SelectTrigger {
+    @include control-shadow;
+    @include control-border;
+    @apply py-1;
+
+    &:hover {
+      background-color: var(--background-color-popover);
+    }
+  }
+}
+
+.SelectTrigger[data-placeholder] {
+  color: var(--color-primary);
+}
+
+.SelectIcon {
+  color: Var(--text-color-title);
+}
+
+.SelectContent {
+  overflow: hidden;
+  background-color: var(--background-color-popover);
+  border-radius: 6px;
+  box-shadow: 0px 10px 38px -10px rgba(22, 23, 24, 0.35),
+    0px 10px 20px -15px rgba(22, 23, 24, 0.2);
+}
+
+.SelectViewport {
+  padding: 5px;
+}
+
+.SelectItem {
+  font-size: 13px;
+  line-height: 1;
+  color: var(--text-color-subtitle);
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  height: 25px;
+  padding: 0 35px 0 25px;
+  position: relative;
+  user-select: none;
+}
+.SelectItem[data-disabled] {
+  color: var(--color-disabled);
+  pointer-events: none;
+}
+.SelectItem[data-highlighted] {
+  outline: none;
+  background-color: var(--list-item-active);
+  color: var(--text-color-active);
+}
+
+.SelectLabel {
+  padding: 0 25px;
+  font-size: 12px;
+  line-height: 25px;
+  color: var(--text-color-content);
+}
+
+.SelectSeparator {
+  height: 1px;
+  background-color: var(--text-color-content);
+  margin: 5px;
+}
+
+.SelectItemIndicator {
+  position: absolute;
+  left: 0;
+  width: 25px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.SelectScrollButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 25px;
+  background-color: var(--background-color-popover);
+  color: var(--text-color-title);
+  cursor: default;
+}

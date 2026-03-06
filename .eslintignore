@@ -1,0 +1,16 @@
+# Static or generated
+src/static
+src/build
+.docusaurus
+.prefetch
+src/plugins/**/*.js
+src/plugins/**/*.d.ts
+
+# Legacy docusaurus source not migrated yet
+src/blog
+src/docs
+
+# Special files
+src/src/api/_todo_hardcoded.ts
+src/src/client/linkedin.js
+src/docs/api/sidebar.js

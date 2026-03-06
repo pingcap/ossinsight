@@ -1,0 +1,82 @@
+import React from 'react';
+import { EChartsx } from '@/components/ECharts';
+import { Dataset, LineSeries, Once, Tooltip } from '@/lib/echartsx';
+import { useAnalyzeChartContext } from '../context';
+import { useReversed } from './hooks';
+import { AxisBase, formatDate } from './base';
+import { Title } from './ui';
+
+import { Box, Typography, Stack } from '@mui/material';
+
+interface LinesProps {
+  title: string;
+  colors?: [string, string];
+  icon: React.ReactNode;
+  openedText?: string;
+  closedText: string;
+  dayKey?: string;
+  dayOpenedValueKey: string;
+  dayClosedValueKey: string;
+  totalOpenedValueKey: string;
+  totalClosedValueKey: string;
+}
+
+const DEFAULT_COLORS: [string, string] = ['#63C16D', '#904DC9'];
+export default function Lines ({
+  icon,
+  title,
+  colors = DEFAULT_COLORS,
+  openedText = 'Opened',
+  closedText,
+  dayOpenedValueKey,
+  totalOpenedValueKey,
+  totalClosedValueKey,
+  dayClosedValueKey,
+  dayKey = 'current_period_day',
+}: LinesProps) {
+  const { data } = useAnalyzeChartContext<any>();
+  return (
+    <Box>
+      <Box minWidth={96} mb={1}>
+        <Title icon={icon} title={title} />
+        <Stack direction="row">
+          <Box>
+            <Typography color="#7C7C7C" fontSize={14}>{openedText}</Typography>
+            <Typography color={colors[0]} fontWeight="bold"
+                        fontSize={24}>{data.data?.data[0][totalOpenedValueKey]}</Typography>
+          </Box>
+          <Box ml={2}>
+            <Typography color="#7C7C7C" fontSize={14}>{closedText}</Typography>
+            <Typography color={colors[1]} fontWeight="bold"
+                        fontSize={24}>{data.data?.data[0][totalClosedValueKey]}</Typography>
+          </Box>
+        </Stack>
+      </Box>
+      <EChartsx style={{ flex: 1 }} init={{ height: 105, renderer: 'canvas' }} theme="dark">
+        <Once>
+          <AxisBase />
+          <Tooltip
+            trigger="axis"
+            axisPointer={{}}
+            formatter={(params) => {
+              const list = Array.isArray(params) ? params : [params];
+              const p1 = list[0] as { value?: Record<string, unknown>; marker?: string } | undefined;
+              const p2 = list[1] as { value?: Record<string, unknown>; marker?: string } | undefined;
+              if (!p1?.value || !p2?.value) {
+                return '';
+              }
+              return [
+                formatDate(p1.value[dayKey] as string),
+                `${p1.marker ?? ''} ${openedText}: <b>${p1.value[dayOpenedValueKey] as string}</b> ${title}`,
+                `${p2.marker ?? ''} ${closedText}: <b>${p2.value[dayClosedValueKey] as string}</b> ${title}`,
+              ].join('<br>');
+            }}
+          />
+          <LineSeries encode={{ x: 'idx', y: dayOpenedValueKey }} color={colors[0]} showSymbol={false} smooth />
+          <LineSeries encode={{ x: 'idx', y: dayClosedValueKey }} color={colors[1]} showSymbol={false} smooth />
+        </Once>
+        <Dataset source={useReversed(data.data?.data ?? [])} />
+      </EChartsx>
+    </Box>
+  );
+}

@@ -1,0 +1,12 @@
+{
+  "name": "@ossinsight/widget-analyze-repo-stars-history",
+  "version": "1.0.0",
+  "description": "Analyze and compare historical trends in star count for the repository.",
+  "type": "module",
+  "main": "visualization.ts",
+  "keywords": ["Repository", "Star"],
+  "author": "OSSInsight",
+  "devDependencies": {
+    "@ossinsight/widgets-parent": "workspace:^"
+  }
+}

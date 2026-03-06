@@ -1,0 +1,21 @@
+{
+  "owner_id": {
+    "type": "owner-id",
+    "title": "Analyzing Org",
+    "required": true,
+    "default": 11855343
+  },
+  "period": {
+    "type": "time-period",
+    "title": "Period",
+    "required": true,
+    "enums": ["past_7_days", "past_28_days", "past_90_days", "past_12_months"],
+    "default": "past_28_days"
+  },
+  "activity": {
+    "type": "activity-type",
+    "title": "Activity type",
+    "enums": ["participants", "stars"],
+    "default": "participants"
+  }
+}

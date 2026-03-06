@@ -1,0 +1,12 @@
+{
+  "repo_id": {
+    "type": "repo-id",
+    "title": "Analyzing Repo",
+    "required": true,
+    "default": 41986369
+  },
+  "vs_repo_id": {
+    "type": "repo-id",
+    "title": "Comparing Repo"
+  }
+}

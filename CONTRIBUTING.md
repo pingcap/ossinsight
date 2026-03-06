@@ -43,7 +43,7 @@ If you would like to request a new feature or enhancement but are not yet thinki
 
 ## Development 
 
-- Step 1 `cd web`
+- Step 1 `cd src`
 - Step 2 `npm install`
 - Step 3 `npm start`, then your website will run at: http://localhost:3000/
 
@@ -107,7 +107,7 @@ You can add a blog on OSS Insight website by submitting PRs.
 
 Here is a folder template for a blog provides guidance on the information you need to include.
 
-Please create a folder under [the blog file path]( https://github.com/pingcap/ossinsight/tree/main/web/blog), and create a `.md` file under the folder.
+Please create a folder under [the blog file path]( https://github.com/pingcap/ossinsight/tree/main/src/blog), and create a `.md` file under the folder.
 
 * Folder Name: describe the text briefly
 

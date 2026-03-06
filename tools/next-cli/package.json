@@ -1,0 +1,23 @@
+{
+  "name": "@ossinsight/next-cli",
+  "private": true,
+  "bin": {
+    "ossinsight": "./index.js"
+  },
+  "scripts": {
+    "start": "node ./index.js",
+    "build": "tsc",
+    "watch": "tsc -w"
+  },
+  "dependencies": {
+    "commander": "^11.0.0",
+    "glob": "^10.3.10",
+    "liquidjs": "^10.9.2",
+    "next": "^13.5.2",
+    "pino": "^8.15.7",
+    "pino-pretty": "^10.2.3"
+  },
+  "devDependencies": {
+    "@types/node": "20.4.2"
+  }
+}

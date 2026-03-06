@@ -1,0 +1,31 @@
+
+> ossinsight@0.0.0 build
+> next build
+
+▲ Next.js 16.1.6 (Turbopack)
+- Environments: .env
+- Experiments (use with caution):
+  ✓ externalDir
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 6.7s
+  Running TypeScript ...
+  Collecting page data using 9 workers ...
+⚠ Using edge runtime on a page currently disables static generation for that page
+  Generating static pages using 9 workers (0/43) ...
+  Generating static pages using 9 workers (10/43) 
+  Generating static pages using 9 workers (21/43) 
+⨯ useSearchParams() should be wrapped in a suspense boundary at page "/collections". Read more: https://nextjs.org/docs/messages/missing-suspense-with-csr-bailout
+    at Q (/Users/huohao/Repositories/ossinsight/.next/server/chunks/ssr/node_modules_next_920e7746._.js:2:2111)
+    at o (/Users/huohao/Repositories/ossinsight/.next/server/chunks/ssr/node_modules_next_920e7746._.js:4:5314)
+    at d (/Users/huohao/Repositories/ossinsight/.next/server/chunks/ssr/src_f263c79c._.js:1:139)
+    at e (/Users/huohao/Repositories/ossinsight/.next/server/chunks/ssr/src_f263c79c._.js:1:251)
+    at aq (/Users/huohao/Repositories/ossinsight/.next/server/chunks/ssr/_be1bcd59._.js:1:63449)
+    at an (/Users/huohao/Repositories/ossinsight/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.prod.js:2:84360)
+    at ai (/Users/huohao/Repositories/ossinsight/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.prod.js:2:86179)
+    at al (/Users/huohao/Repositories/ossinsight/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.prod.js:2:107953)
+    at as (/Users/huohao/Repositories/ossinsight/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.prod.js:2:105368)
+    at am (/Users/huohao/Repositories/ossinsight/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.prod.js:2:112882)
+Error occurred prerendering page "/collections". Read more: https://nextjs.org/docs/messages/prerender-error
+Export encountered an error on /collections/page: /collections, exiting the build.
+⨯ Next.js build worker exited with code: 1 and signal: null

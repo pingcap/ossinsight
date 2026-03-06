@@ -1,0 +1,15 @@
+{
+  "name": "@ossinsight/widget-analyze-repo-issue-opened-and-closed",
+  "version": "1.0.0",
+  "description": "Analyze and compare the count of opened and closed issues within the repository. ",
+  "type": "module",
+  "main": "visualization.ts",
+  "keywords": [
+    "Repository",
+    "issue"
+  ],
+  "author": "OSSInsight",
+  "devDependencies": {
+    "@ossinsight/widgets-parent": "workspace:^"
+  }
+}

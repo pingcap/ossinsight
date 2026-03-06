@@ -1,0 +1,18 @@
+[
+  {
+    "type": "ref",
+    "widget": "@ossinsight/widget-analyze-repo-recent-issues"
+  },
+  {
+    "type": "ref",
+    "widget": "@ossinsight/widget-analyze-repo-recent-pull-requests"
+  },
+  {
+    "type": "ref",
+    "widget": "@ossinsight/widget-analyze-repo-recent-contributors"
+  },
+  {
+    "type": "ref",
+    "widget": "@ossinsight/widget-analyze-repo-recent-stars"
+  }
+]

@@ -1,0 +1,36 @@
+@use "controls" as *;
+
+@layer components {
+  .TextInput {
+    @apply px-2 py-1 bg-control text-active text-sm transition-all;
+    @include control-shadow;
+
+    input, textarea {
+      @apply text-sm bg-control outline-none;
+    }
+
+    ::placeholder {
+      @apply text-disabled text-sm;
+    }
+
+    &-lg {
+      @apply px-4 py-2 text-base;
+
+      input, textarea {
+        @apply text-base;
+      }
+
+      ::placeholder {
+        @apply text-lg;
+      }
+    }
+
+    &:not(.TextInput-borderless) {
+      @include control-border;
+    }
+
+    &.TextInput-compact {
+      @apply p-0;
+    }
+  }
+}

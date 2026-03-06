@@ -1,0 +1,1 @@
+export { isEmptyData } from '@/lib/widgets-utils/utils'

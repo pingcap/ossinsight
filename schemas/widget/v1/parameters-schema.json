@@ -1,0 +1,58 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "https://ossinsight.io/schemas/widget/v1/parameters-schema",
+  "title": "OSSInsight Widget Parameters v1",
+  "type": "object",
+  "additionalProperties": {
+    "type": "object",
+    "properties": {
+      "type": {
+        "enum": [
+          "repo-id",
+          "user-id",
+          "org-id",
+          "owner-id",
+          "collection-id",
+          "day",
+          "month",
+          "time",
+          "datetime",
+          "event-type",
+          "activity-type",
+          "time-period",
+          "time-zone",
+          "luxon-datetime",
+          "limit",
+          "string"
+        ]
+      },
+      "title": {
+        "type": "string"
+      },
+      "required": {
+        "type": "boolean",
+        "default": false
+      },
+      "enums": {
+        "type": "array",
+        "items": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            }
+          ]
+        }
+      },
+      "default": {
+      },
+      "expression": {
+        "type": "string"
+      }
+    },
+    "required": ["type", "title"],
+    "additionalProperties": false
+  }
+}

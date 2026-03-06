@@ -1,0 +1,13 @@
+{
+  "name": "@ossinsight/widget-analyze-repo-recent-pull-requests",
+  "version": "1.0.0",
+  "private": true,
+  "description": "[Last 28 days Stats] Show the recent PR history of a GitHub repository.",
+  "keywords": ["Repository", "Pull Requests"],
+  "author": "OSSInsight",
+  "type": "module",
+  "main": "visualization.ts",
+  "devDependencies": {
+    "@ossinsight/widgets-types": "workspace:^"
+  }
+}

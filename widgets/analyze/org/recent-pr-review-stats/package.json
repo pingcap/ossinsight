@@ -1,0 +1,14 @@
+{
+  "name": "@ossinsight/widget-analyze-org-recent-pr-review-stats",
+  "version": "1.0.0",
+  "description": "Pull request review trends for an organization",
+  "keywords": [
+    "Organization"
+  ],
+  "author": "OSSInsight",
+  "type": "module",
+  "main": "visualization.ts",
+  "devDependencies": {
+    "@ossinsight/widgets-types": "workspace:^"
+  }
+}

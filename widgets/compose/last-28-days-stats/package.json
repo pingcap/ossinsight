@@ -1,0 +1,17 @@
+{
+  "name": "@ossinsight/widget-compose-last-28-days-stats",
+  "version": "1.0.0",
+  "description": "Analyze the overall repository performance in the last 28 days with stars, active contributors, pull requests, and issues.",
+  "type": "module",
+  "main": "visualization.tsx",
+  "keywords": [
+    "🔥Popular",
+    "Repository"
+  ],
+  "author": "OSSInsight",
+  "devDependencies": {
+    "@ossinsight/widgets-parent": "workspace:^",
+    "@types/luxon": "^3.3.2",
+    "luxon": "^3.4.3"
+  }
+}

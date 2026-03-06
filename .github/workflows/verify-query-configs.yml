@@ -4,12 +4,12 @@ on:
   pull_request:
     paths:
       - 'configs/queries/**'
-      - 'packages/types/**'
+      - 'src/shared/types/**'
 
 defaults:
   run:
     shell: bash
-    working-directory: packages/types
+    working-directory: src/shared/types
 
 jobs:
   validate:
@@ -19,16 +19,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v4
-        name: Install pnpm
-        with:
-          run_install: true
-
       - name: Install Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: 'pnpm'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        working-directory: .
+        run: npm install
 
       - name: Verify Query Definition
-        run: pnpm run validate:query
+        run: npm run validate:query

@@ -1,0 +1,47 @@
+
+.InputPopper {
+  &-content {
+    @apply bg-popover rounded shadow-lg p-2;
+    transform-origin: var(--radix-popover-content-transform-origin);
+    animation-duration: 0.5s;
+    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+
+    &:not(.InputPopper-unbound) {
+      width: var(--radix-popover-trigger-width);
+    }
+
+
+    //transition: width .4s cubic-bezier(0.16, 1, 0.3, 1), height .4s cubic-bezier(0.16, 1, 0.3, 1);
+
+    &[data-state="open"] {
+      animation-name: InputPopper-show;
+    }
+
+    &[data-state="closed"] {
+      animation-name: InputPopper-hide;
+    }
+  }
+}
+
+@keyframes InputPopper-show {
+  from {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+
+@keyframes InputPopper-hide {
+  to {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

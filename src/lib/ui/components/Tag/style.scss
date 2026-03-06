@@ -1,0 +1,36 @@
+@use "../../styles/controls" as *;
+
+.Tag {
+  @apply inline-block px-2 py-0.5 text-xs select-none transition;
+
+  color: var(--text-color-content);
+  background-color: var(--background-color-control);
+
+  &-capsule {
+    @apply rounded-full border;
+  }
+
+  &-contained {
+    @apply rounded bg-transparent;
+
+    &.Tag-selected {
+      @apply bg-control;
+    }
+  }
+
+  &-selected {
+    color: var(--text-color-active);
+    border-color: var(--text-color-active);
+  }
+
+  &-interactive {
+    @apply cursor-pointer outline-none;
+    &:focus {
+      box-shadow: var(--text-color-content) 0 0 0 2px;
+    }
+  }
+
+  &-lg {
+    @apply text-base px-4 py-1
+  }
+}

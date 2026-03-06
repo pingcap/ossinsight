@@ -1,0 +1,1 @@
+export { scaleToFit } from '@/lib/widgets-utils/utils';

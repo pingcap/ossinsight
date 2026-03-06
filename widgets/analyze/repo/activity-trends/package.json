@@ -1,0 +1,16 @@
+{
+  "name": "@ossinsight/widget-analyze-repo-activity-trends",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Show the activity trends of a GitHub repository.",
+  "type": "module",
+  "main": "visualization.ts",
+  "keywords": [
+    "Repository",
+    "Activity"
+  ],
+  "author": "OSSInsight",
+  "devDependencies": {
+    "@ossinsight/widgets-parent": "workspace:^"
+  }
+}

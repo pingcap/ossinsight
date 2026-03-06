@@ -1,0 +1,15 @@
+.switching-text-effect-enter {
+  @apply transition opacity-0 translate-y-2;
+}
+
+.switching-text-effect-enter-active {
+  @apply opacity-100 translate-y-0;
+}
+
+.switching-text-effect-exit {
+  @apply transition opacity-100 -translate-y-0;
+}
+
+.switching-text-effect-exit-active {
+  @apply opacity-0 translate-y-2;
+}

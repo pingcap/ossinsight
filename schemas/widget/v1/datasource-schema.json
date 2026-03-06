@@ -1,0 +1,150 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "https://ossinsight.io/schemas/widget/v1/datasource-schema",
+  "title": "OSSInsight Widget Datasource v1",
+  "if": {
+    "type": "array"
+  },
+  "then": {
+    "type": "array",
+    "items": {
+      "$ref": "#/definitions/DatasourceObject"
+    }
+  },
+  "else": {
+    "$ref": "#/definitions/DatasourceObject"
+  },
+  "definitions": {
+    "DatasourceObject": {
+      "allOf": [
+        {
+          "if": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "const": "api"
+              }
+            }
+          },
+          "then": {
+            "$ref": "#/definitions/ApiDatasource"
+          }
+        },
+        {
+          "if": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "const": "endpoint"
+              }
+            }
+          },
+          "then": {
+            "$ref": "#/definitions/EndpointDatasource"
+          }
+        },
+        {
+          "if": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "const": "ref"
+              }
+            }
+          },
+          "then": {
+            "$ref": "#/definitions/RefDatasource"
+          }
+        }
+      ]
+    },
+    "ApiDatasource": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "description": "Datasource type, 'api'",
+          "type": "string",
+          "enum": ["api"]
+        },
+        "url": {
+          "description": "API url to get",
+          "type": "string"
+        },
+        "parser": {
+          "type": "object"
+        },
+        "params": {
+          "description": "Dynamic parameters mapping. Keys are url search params names and values are referencing dynamic parameter name",
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "default": {}
+        },
+        "when": {
+          "type": "array",
+          "description": "Decide when to execute the http request. All items should be provided by dynamic parameters (not url search params).",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true,
+          "default": []
+        }
+      },
+      "required": ["type", "url", "parser", "params"],
+      "additionalProperties": false
+    },
+    "EndpointDatasource": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "description": "Datasource type, 'endpoint'.",
+          "type": "string",
+          "enum": ["endpoint"]
+        },
+        "name": {
+          "description": "The endpoint name, support liquidjs template syntax",
+          "type": "string"
+        },
+        "params": {
+          "description": "Dynamic parameters mapping. Keys are url search params names and values are referencing dynamic parameter name",
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "default": {}
+        },
+        "when": {
+          "type": "array",
+          "description": "Decide when to execute the http request. All items should be provided by dynamic parameters (not url search params).",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true,
+          "default": []
+        }
+      },
+      "required": ["type", "name", "params"],
+      "additionalProperties": false
+    },
+    "RefDatasource": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "ref"
+        },
+        "widget": {
+          "type": "string"
+        },
+        "params": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      },
+      "required": ["type", "widget"],
+      "additionalProperties": false
+    }
+  }
+}

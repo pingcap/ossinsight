@@ -1,0 +1,12 @@
+[
+  {
+    "type": "endpoint",
+    "name": "orgs/{{ activity }}/actions/trends",
+    "params": {
+      "ownerId": "owner_id",
+      "period": "period",
+      "repoIds": "repo_ids"
+    },
+    "when": ["activity", "owner_id", "period"]
+  }
+]

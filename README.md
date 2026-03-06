@@ -2,7 +2,7 @@
 
 <div align="center">
 <a href="https://ossinsight.io">
-  <img src="/web/static/img/screenshots/homepage.gif"
+  <img src="/src/static/img/screenshots/homepage.gif"
 </a>
 </div>
 
@@ -75,7 +75,7 @@ Examples:
 
 <div align="center">
   <a href="https://en.pingcap.com/tidb-cloud/?utm_source=ossinsight&utm_medium=referral">
-     <img src="/web/static/img/screenshots/homepage-collection.png" alt="GitHub Collections Analytics" height="500" />
+     <img src="/src/static/img/screenshots/homepage-collection.png" alt="GitHub Collections Analytics" height="500" />
   </a>
 </div>
 
@@ -117,7 +117,7 @@ Insights about **developer productivity**, **work cadence**, and **collaboration
   * Monthly stats about contribution activities in all public repositories
 
 <div align="center">
-    <img src="/web/static/img/screenshots/homepage-developer.png" alt="Developer Analytics" height="500" />
+    <img src="/src/static/img/screenshots/homepage-developer.png" alt="Developer Analytics" height="500" />
 </div>
 
 ### **Feature 4: Repository Analytics**
@@ -133,7 +133,7 @@ Insights about the **code update frequency & degree of popularity** from reposit
   * Company distribution of stargazers, issue creators, and pull request creators
 
 <div align="center">
-    <img src="/web/static/img/screenshots/homepage-repository.png" alt="Repository Analytics" height="500" />
+    <img src="/src/static/img/screenshots/homepage-repository.png" alt="Repository Analytics" height="500" />
 </div>
 
 **Examples**:
@@ -183,6 +183,6 @@ We have a few channels for contact:
 
 <div align="center">
   <a href="https://en.pingcap.com/tidb-cloud/?utm_source=ossinsight&utm_medium=referral">
-    <img src="/web/static/img/tidb-cloud-logo-w.png" height=50 />
+    <img src="/src/static/img/tidb-cloud-logo-w.png" height=50 />
   </a>
 </div>

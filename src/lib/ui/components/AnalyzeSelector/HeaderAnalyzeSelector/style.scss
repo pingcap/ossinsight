@@ -1,0 +1,28 @@
+.kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-width: 1px;
+  border-color: hsl(var(--bc) / var(--tw-border-opacity));
+  --bc: 220 13% 69%;
+  --tw-border-opacity: 0.2;
+  --tw-bg-opacity: 1;
+  --rounded-btn: 0.5rem;
+  --b2: 213 18% 12%;
+  background-color: hsl(var(--b2) / var(--tw-bg-opacity));
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  border-radius: var(--rounded-btn, 0.5rem);
+  border-bottom-width: 2px;
+  min-height: 2.2em;
+  min-width: 2.2em;
+}
+
+.kbd-sm {
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  min-height: 1.6em;
+  min-width: 1.6em;
+}

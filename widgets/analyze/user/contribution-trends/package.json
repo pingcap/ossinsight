@@ -1,0 +1,15 @@
+{
+  "name": "@ossinsight/widget-analyze-user-contribution-trends",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Show the contribution trends of a GitHub user.",
+  "type": "module",
+  "main": "visualization.ts",
+  "keywords": [
+    "Developer"
+  ],
+  "author": "OSSInsight",
+  "devDependencies": {
+    "@ossinsight/widgets-parent": "workspace:^"
+  }
+}

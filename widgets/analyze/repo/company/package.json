@@ -1,0 +1,20 @@
+{
+  "name": "@ossinsight/widget-analyze-repo-company",
+  "version": "1.0.0",
+  "description": "Analyze and compare company affiliations of repository stargazers, pull request submitters, and issue creators.",
+  "type": "module",
+  "main": "visualization.tsx",
+  "keywords": [
+    "Repository",
+    "Company"
+  ],
+  "author": "OSSInsight",
+  "devDependencies": {
+    "@ossinsight/widgets-parent": "workspace:^",
+    "@types/d3": "^7.4.1",
+    "@types/d3-cloud": "^1.2.6",
+    "@types/react": "18.2.15",
+    "d3": "^7.8.5",
+    "d3-cloud": "^1.2.7"
+  }
+}

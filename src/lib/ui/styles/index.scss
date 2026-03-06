@@ -1,0 +1,44 @@
+@use "inputs";
+@use "theme" as *;
+
+:root {
+  --color-primary: #{$color-primary};
+  --color-primary-highlighted: #{$color-primary-highlighted};
+  --color-primary-reverse: #{$color-primary-reverse};
+  --color-primary-darkened: #{$color-primary-darkened};
+  --color-disabled: #{$color-disabled};
+
+  --background-color-body: #{$background-color-body};
+  --background-color-toolbar: #{$background-color-toolbar};
+  --background-color-popover: #{$background-color-popover};
+  --background-color-control: #{$background-color-control};
+  --background-color-code: #{$background-color-code};
+  --background-color-tooltip: #{$background-color-tooltip};
+
+  --text-color-title: #{$text-color-title};
+  --text-color-subtitle: #{$text-color-subtitle};
+  --text-color-content: #{$text-color-content};
+  --text-color-active: #{$text-color-active};
+  --text-color-tooltip: #{$text-color-tooltip};
+
+  --border-color-default: #{$border-color-default};
+  --border-color-dimmed: #{$border-color-dimmed};
+
+  --divide-color-default: #{$divide-color-default};
+  --divide-color-dimmed: #{$divide-color-dimmed};
+
+  --list-item-focus: #{$list-item-focus};
+  --list-item-active: #{$list-item-active};
+
+  --scrollbar-track-color: #{$scrollbar-track-color};
+  --scrollbar-thumb-color: #{$scrollbar-thumb-color};
+  --scrollbar-thumb-hover-color: #{$scrollbar-thumb-hover-color};
+
+  --headless-tab-background: #{$headless-tab-background};
+  --headless-tab-active-background: #{$headless-tab-active-background};
+  --headless-tab-text: #{$headless-tab-text};
+  --headless-tab-active-text: #{$headless-tab-active-text};
+
+  --selector-border-color: #{$selector-border-color};
+  --selector-fill-color: #{$selector-fill-color};
+}

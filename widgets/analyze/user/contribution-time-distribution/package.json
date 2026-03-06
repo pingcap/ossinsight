@@ -1,0 +1,13 @@
+{
+  "name": "@ossinsight/widget-analyze-user-contribution-time-distribution",
+  "version": "1.0.0",
+  "description": "Analyze and plot user contributions over time. Recognize peak periods of activity for different users.",
+  "type": "module",
+  "main": "visualization.tsx",
+  "keywords": ["Developer"],
+  "author": "OSSInsight",
+  "devDependencies": {
+    "@ossinsight/widgets-parent": "workspace:^",
+    "@types/react": "18.2.15"
+  }
+}

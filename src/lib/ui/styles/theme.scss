@@ -1,0 +1,42 @@
+@use "sass:color";
+
+$color-primary: rgb(255, 232, 149);
+$color-primary-darkened: color.adjust($color-primary, $alpha: -0.4);
+$color-primary-highlighted: color.adjust($color-primary, $lightness: 5%);
+$color-primary-reverse: rgb(31, 30, 40);
+$color-disabled: #615F6F;
+
+$background-color-body: rgb(31, 30, 40);
+$background-color-toolbar: #1D1C24;
+$background-color-popover: rgb(47, 47, 58);
+$background-color-control: #292835;
+$background-color-code: #11151C;
+$background-color-tooltip: #292832;
+
+$text-color-title: #E9EaEE;
+$text-color-subtitle: rgb(200, 200, 200);
+$text-color-content: rgb(124, 124, 124);
+$text-color-active: $text-color-subtitle;
+$text-color-tooltip: #c0c0c9;
+
+$border-color-default: #3E3C4F;
+$border-color-dimmed: #292932;
+
+$divide-color-default: $border-color-default;
+$divide-color-dimmed: $border-color-dimmed;
+
+
+$list-item-focus: rgb(67, 67, 69);
+$list-item-active: rgb(77, 77, 79);
+
+$scrollbar-track-color: #888;
+$scrollbar-thumb-color: #555;
+$scrollbar-thumb-hover-color: #4D4D4F;
+
+$headless-tab-background: #333333;
+$headless-tab-active-background: #EAEAEA;
+$headless-tab-text: #9F9F9F;
+$headless-tab-active-text: #2C2C2C;
+
+$selector-border-color: #FFF7CA;
+$selector-fill-color: #D4AF2B;

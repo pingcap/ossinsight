@@ -1,0 +1,14 @@
+{
+  "repo_id": {
+    "type": "repo-id",
+    "title": "Analyzing Repo",
+    "required": true,
+    "default": 41986369
+  },
+  "limit": {
+    "type": "limit",
+    "title": "Limit",
+    "required": true,
+    "default": 30
+  }
+}

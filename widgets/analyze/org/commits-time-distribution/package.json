@@ -1,0 +1,15 @@
+{
+  "name": "@ossinsight/widget-analyze-org-commits-time-distribution",
+  "version": "1.0.0",
+  "description": "Commits Time Distribution of an Organization",
+  "type": "module",
+  "main": "visualization.tsx",
+  "keywords": [
+    "Organization"
+  ],
+  "author": "OSSInsight",
+  "devDependencies": {
+    "@ossinsight/widgets-parent": "workspace:^",
+    "@types/react": "18.2.15"
+  }
+}

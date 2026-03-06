@@ -1,0 +1,9 @@
+{
+  "type": "ref",
+  "widget": "@ossinsight/widget-analyze-repo-activity-trends",
+  "params": {
+    "repo_id": "repo_id",
+    "from": "from",
+    "to": "to"
+  }
+}

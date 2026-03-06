@@ -1,0 +1,15 @@
+{
+  "name": "@ossinsight/widget-compose-org-activity-company",
+  "version": "1.0.0",
+  "description": "Analyze company affiliations of repository stargazers and participants.",
+  "type": "module",
+  "main": "visualization.ts",
+  "keywords": [
+    "Organization",
+    "Company"
+  ],
+  "author": "OSSInsight",
+  "devDependencies": {
+    "@ossinsight/widgets-parent": "workspace:^"
+  }
+}

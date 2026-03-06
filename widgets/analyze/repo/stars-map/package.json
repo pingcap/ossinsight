@@ -1,0 +1,12 @@
+{
+  "name": "@ossinsight/widget-analyze-repo-stars-map",
+  "version": "1.0.0",
+  "description": "Visualize and compare the geographic distribution of stars worldwide.",
+  "type": "module",
+  "main": "visualization.ts",
+  "keywords": ["Repository", "Star", "Pull Request", "Issue", "Map"],
+  "author": "OSSInsight",
+  "devDependencies": {
+    "@ossinsight/widgets-parent": "workspace:^"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "lib": ["ESNext", "DOM"],
+    "target": "ESNext",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "module": "ESNext",
+    "jsx": "react-jsx"
+  },
+  "include": ["**/*/visualization.ts", "**/*/metadata.ts", "**/*/visualization.tsx"],
+  "exclude": ["node_modules"],
+  "references": [{
+    "path": "./tsconfig.compose.json"
+  }]
+}

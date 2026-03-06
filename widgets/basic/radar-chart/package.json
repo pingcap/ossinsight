@@ -1,0 +1,14 @@
+{
+  "name": "@ossinsight/basic-radar-chart",
+  "version": "1.0.0",
+  "private": true,
+  "description": "TODO",
+  "type": "module",
+  "main": "visualization.ts",
+  "keywords": [],
+  "author": "OSSInsight",
+  "devDependencies": {
+    "@ossinsight/widgets-parent": "workspace:^",
+    "@types/react": "18.2.15"
+  }
+}

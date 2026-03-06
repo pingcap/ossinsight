@@ -1,0 +1,15 @@
+[
+  {
+    "type": "api",
+    "url": "https://api.ossinsight.io/q/analyze-recent-top-contributors",
+    "parser": {
+      "type": "json",
+      "extract": "$.data[*]"
+    },
+    "params": {
+      "repoId": "repo_id",
+      "limit": "limit"
+    },
+    "when": ["repo_id", "limit"]
+  }
+]

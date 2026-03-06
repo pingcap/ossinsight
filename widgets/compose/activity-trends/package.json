@@ -1,0 +1,17 @@
+{
+  "name": "@ossinsight/widget-compose-activity-trends",
+  "version": "1.0.0",
+  "description": "Analyze all different types of events triggered by activity on GitHub within a repository over the last 28 days.",
+  "type": "module",
+  "main": "visualization.tsx",
+  "keywords": [
+    "🔥Popular",
+    "Reposiory"
+  ],
+  "author": "OSSInsight",
+  "devDependencies": {
+    "@ossinsight/widgets-parent": "workspace:^",
+    "@types/luxon": "^3.3.2",
+    "luxon": "^3.4.3"
+  }
+}

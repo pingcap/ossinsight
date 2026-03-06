@@ -1,0 +1,13 @@
+const m = new Map();
+
+{% for endpoint in endpoints -%}
+m.set("{{ endpoint.name }}", () => import("./{{ endpoint.name }}"));
+{% endfor %}
+
+export default function loadEndpoint(name) {
+  return m.get(name)();
+}
+
+export function hasEndpoint(name) {
+  return m.has(name);
+}

@@ -1,0 +1,18 @@
+{
+  "repo_id": {
+    "type": "repo-id",
+    "title": "Analyzing Repo",
+    "required": true,
+    "default": 41986369
+  },
+  "from": {
+    "type": "month",
+    "title": "Start date",
+    "expression": "T-2year"
+  },
+  "to": {
+    "type": "month",
+    "title": "End date",
+    "expression": "T+1month"
+  }
+}

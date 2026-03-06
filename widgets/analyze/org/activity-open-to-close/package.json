@@ -1,0 +1,15 @@
+{
+  "name": "@ossinsight/widget-analyze-org-activity-open-to-close",
+  "version": "1.0.0",
+  "description": "Measure and compare completion time to issues/prs. Identify bottlenecks and assess response efficiency.",
+  "private": true,
+  "type": "module",
+  "main": "visualization.ts",
+  "keywords": [
+    "Organization"
+  ],
+  "author": "OSSInsight",
+  "devDependencies": {
+    "@ossinsight/widgets-parent": "workspace:^"
+  }
+}

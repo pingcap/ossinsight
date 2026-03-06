@@ -1,0 +1,22 @@
+{
+  "name": "@ossinsight/widget-compose-contributors",
+  "version": "1.0.0",
+  "description": "Show all the contributors of the repo.",
+  "type": "module",
+  "main": "visualization.tsx",
+  "keywords": [
+    "🔥Popular",
+    "Repository",
+    "Contributor"
+  ],
+  "author": "OSSInsight",
+  "devDependencies": {
+    "@ossinsight/widgets-parent": "workspace:^",
+    "@types/lodash": "^4.14.198",
+    "@types/luxon": "^3.3.2",
+    "luxon": "^3.4.3"
+  },
+  "dependencies": {
+    "lodash": "^4.17.21"
+  }
+}

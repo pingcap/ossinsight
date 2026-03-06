@@ -1,0 +1,16 @@
+{
+  "name": "@ossinsight/widget-compose-org-activity-new-ranking",
+  "version": "1.0.0",
+  "description": "TODO",
+  "type": "module",
+  "main": "visualization.ts",
+  "keywords": [
+    "Organization"
+  ],
+  "author": "OSSInsight",
+  "devDependencies": {
+    "@ossinsight/widgets-parent": "workspace:^",
+    "@types/luxon": "^3.3.1",
+    "luxon": "^3.3.0"
+  }
+}

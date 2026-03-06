@@ -1,0 +1,12 @@
+{
+  "name": "@ossinsight/widget-analyze-repo-issue-open-to-first-responded",
+  "version": "1.0.0",
+  "description": "Measure and compare first response times to issues. Identify bottlenecks and assess response efficiency.",
+  "type": "module",
+  "main": "visualization.ts",
+  "keywords": ["Repository", "issue"],
+  "author": "OSSInsight",
+  "devDependencies": {
+    "@ossinsight/widgets-parent": "workspace:^"
+  }
+}

@@ -3,12 +3,12 @@ name: Verify API server
 on:
   pull_request:
     paths:
-      - 'packages/api-server/**'
+      - 'src/services/api-server/**'
 
 defaults:
   run:
     shell: bash
-    working-directory: packages/api-server
+    working-directory: src/services/api-server
 
 jobs:
   validate:
@@ -18,22 +18,22 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v4
-        name: Install pnpm
-        with:
-          run_install: true
-
       - name: Install Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: 'pnpm'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        working-directory: .
+        run: npm install
 
       - name: Build OSSInsight Types Dependencies
-        run: pnpm --filter "@ossinsight/types" build
+        working-directory: .
+        run: npm run build -w @ossinsight/types
 
       - name: Verify Sources
-        run: pnpm run test
+        run: npm run test
 
       - name: Build Project
-        run: pnpm run build:ts
+        run: npm run build:ts

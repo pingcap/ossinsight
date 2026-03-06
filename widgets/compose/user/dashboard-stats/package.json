@@ -1,0 +1,13 @@
+{
+  "name": "@ossinsight/widget-compose-user-dashboard-stats",
+  "version": "1.0.0",
+  "description": "Analyze User Dashboard Stats",
+  "type": "module",
+  "main": "visualization.tsx",
+  "keywords": ["Developer"],
+  "author": "OSSInsight",
+  "devDependencies": {
+    "@ossinsight/widgets-parent": "workspace:^",
+    "@types/react": "18.2.15"
+  }
+}

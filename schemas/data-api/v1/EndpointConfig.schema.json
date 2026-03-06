@@ -1,0 +1,102 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "EndpointConfig",
+  "type": "object",
+  "properties": {
+    "name": {
+      "description": "Endpoint name, default is generated base on the file path.",
+      "type": "string"
+    },
+    "public": {
+      "description": "Indicating if the endpoint is public.",
+      "type": "boolean",
+      "default": false
+    },
+    "deprecated": {
+      "description": "Indicating if the endpoint is deprecated",
+      "type": "boolean",
+      "default": false
+    },
+    "description": {
+      "description": "The description of endpoint.",
+      "type": "string"
+    },
+    "params": {
+      "description": "The parameters of endpoint.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Params"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "params"
+  ],
+  "definitions": {
+    "Params": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "description": "URL Search param name for the query.",
+          "type": "string"
+        },
+        "description": {
+          "description": "Param description for documentation. If undefined, value in param-descriptions.json would be taken as default",
+          "type": "string"
+        },
+        "type": {
+          "description": "Define the parameter type.",
+          "type": "string",
+          "enum": ["array", "string", "number", "boolean", "integer"]
+        },
+        "itemType": {
+          "description": "Define the array item type.",
+          "type": "string",
+          "enum": ["string", "number", "boolean", "integer"]
+        },
+        "maxArrayLength": {
+            "description": "Define the max array length.",
+            "type": "number",
+            "default": 10,
+            "minimum": 0
+        },
+        "default": {
+          "description": "Default input value.",
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            }
+          ]
+        },
+        "enums": {
+          "description": "Enums for prefetching and validating, default is no prefetching and validating.",
+          "oneOf": [
+            {
+              "description": "Predefined query params name.",
+              "type": "string"
+            },
+            {
+              "description": "The allowed values and should be prefetched.",
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          ]
+        },
+        "pattern": {
+          "description": "Regular expression for validating parameter value.",
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "name"
+      ]
+    }
+  }
+}

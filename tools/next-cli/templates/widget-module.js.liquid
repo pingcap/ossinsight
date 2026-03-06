@@ -1,0 +1,82 @@
+import {computeLayout} from '@/lib/widgets-utils/compose';
+
+function makeVisualizer(importVisualizerModule, isJsx) {
+  return () => importVisualizerModule().then(visualizer => {
+    if (visualizer.type !== 'compose' || !isJsx) {
+      return visualizer;
+    }
+
+    const originalRenderer = visualizer.default;
+
+    function renderer(input, ctx) {
+      const layout = originalRenderer(input, ctx);
+
+      return computeLayout(layout, 0, 0, ctx.width, ctx.height);
+    }
+
+    return Object.freeze({
+      ...visualizer,
+      default: renderer
+    });
+  })
+}
+
+function createFetcher(importJson) {
+  return async (ctx, signal) => {
+    const [{default: json}, {default: core}] = await Promise.all([
+      importJson(),
+      import('@/lib/widgets-core/datasource')
+    ]);
+    return await core(json, ctx, signal);
+  }
+}
+
+const _modules = [
+  {%- for pkg in manifest %}
+  [
+    "{{ pkg.name }}",
+    {...{{ pkg.meta | json }}, isJsx: {% if pkg.isJsx %}true{% else %}false{% endif %} },
+    () => import("{{ pkg.paramsPath }}"),
+    () => import("{{ pkg.datasourcePath }}"),
+    () => import("{{ pkg.visualizerPath }}")
+    {%- if pkg.metadataPath %},
+    () => import("{{ pkg.metadataPath }}")
+    {%- endif %}
+  ],
+  {%- endfor %}
+]
+
+const modules = Object.seal(_modules.reduce((modules, [name, {isJsx, ...meta}, p, d, v, m]) => {
+  const module = {};
+  module.meta = meta;
+  module.parameterDefinition = () => p().then(module => module.default);
+  module.datasourceFetcher = createFetcher(d);
+  module.visualizer = makeVisualizer(v, isJsx);
+  module.metadataGenerator = () => m().then(module => module.default);
+
+  modules[name] = module;
+  return modules;
+}, {}));
+
+const visualizers = Object.entries(modules).reduce((res, [name, module]) => {
+  res[name] = module.visualizer;
+  return res;
+}, {});
+
+const parameterDefinitions = Object.entries(modules).reduce((res, [name, module]) => {
+  res[name] = module.parameterDefinition;
+  return res;
+}, {});
+
+const datasourceFetchers = Object.entries(modules).reduce((res, [name, module]) => {
+  res[name] = module.datasourceFetcher;
+  return res;
+}, {});
+
+const metadataGenerators = Object.entries(modules).reduce((res, [name, module]) => {
+  res[name] = module.metadataGenerator;
+  return res;
+}, {});
+
+export default modules;
+export { visualizers, parameterDefinitions, datasourceFetchers, metadataGenerators };
