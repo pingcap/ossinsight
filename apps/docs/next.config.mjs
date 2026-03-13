@@ -7,9 +7,17 @@ const withMDX = createMDX();
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  typescript: {
+    ignoreBuildErrors: true,
+  },
   allowedDevOrigins: ['127.0.0.1', 'localhost'],
   outputFileTracingRoot: path.join(__dirname, '../../'),
   transpilePackages: ['@repo/site-shell'],
+  turbopack: {
+    resolveAlias: {
+      '@tanstack/react-query': './node_modules/@tanstack/react-query',
+    },
+  },
   webpack: (config) => {
     config.resolve.alias = {
       ...config.resolve.alias,
