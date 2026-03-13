@@ -3,6 +3,7 @@
   "rewrites": [
     { "source": "/blog", "destination": "https://ossinsight-docs.vercel.app/blog" },
     { "source": "/blog/:path*", "destination": "https://ossinsight-docs.vercel.app/blog/:path*" },
+    { "source": "/blog-assets/:path*", "destination": "https://ossinsight-docs.vercel.app/blog-assets/:path*" },
     { "source": "/docs", "destination": "https://ossinsight-docs.vercel.app/docs" },
     { "source": "/docs/:path*", "destination": "https://ossinsight-docs.vercel.app/docs/:path*" }
   ]
