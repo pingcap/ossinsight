@@ -19,18 +19,7 @@ const nextConfig = {
     return []
   },
   async rewrites() {
-    let docsOrigin = 'http://127.0.0.1:3002';
-    try {
-      const { withRelatedProject } = await import('@vercel/related-projects');
-      const host = withRelatedProject({
-        projectName: 'ossinsight-docs',
-        defaultHost: process.env.DOCS_ORIGIN,
-      });
-      if (host) docsOrigin = `https://${host}`;
-    } catch {
-      // Not on Vercel or package unavailable — use env var or localhost
-      if (process.env.DOCS_ORIGIN) docsOrigin = process.env.DOCS_ORIGIN;
-    }
+    const docsOrigin = process.env.DOCS_ORIGIN || 'http://127.0.0.1:3002';
     return {
       beforeFiles: [
         { source: '/blog', destination: `${docsOrigin}/blog` },
