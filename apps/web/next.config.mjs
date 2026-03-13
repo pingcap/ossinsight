@@ -18,6 +18,18 @@ const nextConfig = {
   async redirects() {
     return []
   },
+  async rewrites() {
+    // Internal docs app URL for proxying — NOT the public-facing host
+    const docsOrigin = process.env.DOCS_ORIGIN || 'http://127.0.0.1:3002';
+    return {
+      beforeFiles: [
+        { source: '/blog', destination: `${docsOrigin}/blog` },
+        { source: '/blog/:path*', destination: `${docsOrigin}/blog/:path*` },
+        { source: '/docs', destination: `${docsOrigin}/docs` },
+        { source: '/docs/:path*', destination: `${docsOrigin}/docs/:path*` },
+      ],
+    };
+  },
   pageExtensions: ['ts', 'tsx', 'mdx'],
   serverExternalPackages: ['@napi-rs/canvas'],
   turbopack: {
