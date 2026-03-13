@@ -1,0 +1,18 @@
+id: 10067
+name: Robotics
+items:
+  - robotology/yarp
+  - MyRobotLab/myrobotlab
+  - ros2/ros2
+  - orocos/orocos_kinematics_dynamics
+  - petercorke/robotics-toolbox-python
+  - bulletphysics/bullet3
+  - ompl/ompl
+  - facebookresearch/pyrobot
+  - gazebosim/gz-sim
+  - rdiankov/openrave
+  - arduino/Arduino
+  - AtsushiSakai/PythonRobotics
+
+  # Inspired by people of [r/Robotics](https://www.reddit.com/r/robotics/).
+  # Discussion record on Reddit: https://www.reddit.com/r/robotics/comments/ywvkpu/recommendations_for_open_source_robotics_software/.

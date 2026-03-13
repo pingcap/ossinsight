@@ -1,0 +1,34 @@
+id: 10079
+name: Stable Diffusion Ecosystem
+items:
+  - AUTOMATIC1111/stable-diffusion-webui
+  - Stability-AI/stablediffusion
+  - CompVis/stable-diffusion
+  - lllyasviel/ControlNet
+  - huggingface/diffusers
+  - apple/ml-stable-diffusion
+  - divamgupta/diffusionbee-stable-diffusion-ui
+  - Sanster/IOPaint
+  - camenduru/stable-diffusion-webui-colab
+  - alembics/disco-diffusion
+  - Sygil-Dev/sygil-webui
+  - CompVis/latent-diffusion
+  - brycedrennan/imaginAIry
+  - diff-usion/Awesome-Diffusion-Models
+  - carson-katri/dream-textures
+  - hua1995116/awesome-ai-painting
+  - XavierXiao/Dreambooth-Stable-Diffusion
+  - cmdr2/stable-diffusion-ui
+  - TheLastBen/fast-stable-diffusion
+  - openai/point-e
+  - ashawkey/stable-dreamfusion
+  - comfyanonymous/ComfyUI
+  - lucidrains/denoising-diffusion-pytorch
+  - jina-ai/discoart
+  - MochiDiffusion/MochiDiffusion
+  - cloneofsimo/lora
+  - huggingface/peft
+  - openai/glide-text2im
+  - AbdBarho/stable-diffusion-webui-docker
+  - mlc-ai/web-stable-diffusion
+  - invoke-ai/InvokeAI

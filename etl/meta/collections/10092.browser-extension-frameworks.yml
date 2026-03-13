@@ -1,0 +1,15 @@
+id: 10092
+name: Browser Extension Frameworks
+items:
+  - PlasmoHQ/plasmo
+  - extension-js/extension.js
+  - wxt-dev/wxt
+  - crxjs/chrome-extension-tools
+  - guocaoyi/create-chrome-ext
+  - stateful/web-extension-starter-kit
+  - abhijithvijayan/web-extension-starter
+  - alibaba/browser-extension-kit
+  - Jonghakseo/chrome-extension-boilerplate-react-vite
+  - aklinker1/vite-plugin-web-extension
+  - antfu-collective/vitesse-webext
+  - lxieyang/chrome-extension-boilerplate-react

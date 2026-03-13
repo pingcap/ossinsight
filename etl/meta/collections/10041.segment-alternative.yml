@@ -1,0 +1,9 @@
+id: 10041
+name: Segment Alternative
+items:
+  - rudderlabs/rudder-server
+  - jitsucom/jitsu
+  - snowplow/snowplow
+  - grouparoo/grouparoo
+  - airbytehq/airbyte
+  - meltano/meltano

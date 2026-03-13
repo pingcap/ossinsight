@@ -1,0 +1,22 @@
+id: 10023
+name: Javascript Charting
+items:
+  - chartjs/Chart.js
+  - apache/echarts
+  - recharts/recharts
+  - d3/d3
+  - plotly/plotly.js
+  - frappe/charts
+  - apexcharts/apexcharts.js
+  - antvis/G2
+  - highcharts/highcharts
+  - plouc/nivo
+  - FormidableLabs/victory
+  - c3js/c3
+  - antvis/G6
+  - uber/react-vis
+  - jwilber/roughViz
+  - naver/billboard.js
+  - tradingview/lightweight-charts
+  - finos/perspective
+  - observablehq/plot

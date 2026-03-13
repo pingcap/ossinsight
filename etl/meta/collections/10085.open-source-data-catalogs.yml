@@ -1,0 +1,13 @@
+id: 10085
+name: Open Source Data Catalogs
+items:
+  - amundsen-io/amundsen
+  - datahub-project/datahub
+  - MarquezProject/marquez
+  - apache/atlas
+  - ckan/ckan
+  - magda-io/magda
+  - opendatadiscovery/odd-platform
+  - open-metadata/OpenMetadata
+  - patschwork/meta_grid
+  - grai-io/grai-core

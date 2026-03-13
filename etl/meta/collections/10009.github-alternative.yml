@@ -1,0 +1,11 @@
+id: 10009
+name: Github Alternative
+items:
+  - gitbucket/gitbucket
+  - gitlabhq/gitlabhq
+  - theonedev/onedev
+  - gitblit-org/gitblit
+  - sitaramc/gitolite
+  - go-gitea/gitea
+  - gogs/gogs
+  - harness/harness
