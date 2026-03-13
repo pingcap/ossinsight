@@ -7,6 +7,7 @@ const withMDX = createMDX();
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  assetPrefix: process.env.NODE_ENV === 'production' ? process.env.DOCS_ASSET_PREFIX : undefined,
   typescript: {
     ignoreBuildErrors: true,
   },
