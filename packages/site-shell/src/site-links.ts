@@ -18,7 +18,7 @@ function getDefaultOrigin(app: SiteApp) {
 
 export function getSiteAppOrigins(env: EnvMap = process.env): SiteAppOrigins {
   const webOrigin = env.NEXT_PUBLIC_WEB_HOST ?? env.NEXT_PUBLIC_SITE_HOST ?? getDefaultOrigin('web');
-  const docsOrigin = env.NEXT_PUBLIC_DOCS_HOST ?? getDefaultOrigin('docs');
+  const docsOrigin = env.NEXT_PUBLIC_DOCS_HOST ?? env.NEXT_PUBLIC_SITE_HOST ?? getDefaultOrigin('docs');
 
   return {
     web: normalizeOrigin(webOrigin),
