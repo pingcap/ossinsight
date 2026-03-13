@@ -1,0 +1,10 @@
+{
+  "type": "endpoint",
+  "name": "orgs/commits/time-distribution",
+  "params": {
+    "ownerId": "owner_id",
+    "period": "period",
+    "repoIds": "repo_ids"
+  },
+  "when": ["owner_id", "period"]
+}

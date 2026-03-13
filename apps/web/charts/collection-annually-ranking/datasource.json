@@ -1,0 +1,12 @@
+{
+  "type": "api",
+  "url": "https://api.ossinsight.io/q/collection-{activity}-history-rank",
+  "parser": {
+    "type": "json",
+    "extract": "$.data[*]"
+  },
+  "params": {
+    "collectionId": "collection_id"
+  },
+  "when": ["collection_id", "activity"]
+}

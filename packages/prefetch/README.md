@@ -1,2 +1,0 @@
-# @ossinsight/prefetch
-

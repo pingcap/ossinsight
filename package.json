@@ -1,23 +1,25 @@
 {
-  "name": "ossinsight",
-  "version": "0.0.0",
+  "name": "ossinsight-monorepo",
   "private": true,
-  "license": "Apache-2.0",
-  "workspaces": [
-    "packages/api-server",
-    "packages/job-server",
-    "packages/prefetch",
-    "packages/types",
-    "packages/cli",
-    "packages/pipeline",
-    "packages/sync-github-data"
-  ],
   "scripts": {
-    "prepare": "husky install"
+    "build": "turbo run build",
+    "dev": "pnpm --filter web dev",
+    "dev:web": "pnpm --filter web dev",
+    "dev:all": "turbo run dev --filter=web --filter=docs",
+    "dev:docs": "turbo run dev --filter=docs",
+    "start": "pnpm --filter web start",
+    "start:web": "pnpm --filter web start",
+    "start:all": "turbo run start --filter=web --filter=docs",
+    "start:docs": "turbo run start --filter=docs",
+    "lint": "turbo run lint",
+    "check-types": "turbo run check-types"
   },
   "devDependencies": {
-    "husky": "^8.0.1",
-    "lint-staged": "^13.0.3"
+    "turbo": "^2.7.1",
+    "typescript": "^5.2.2"
   },
-  "packageManager": "pnpm@9.12.3+sha512.cce0f9de9c5a7c95bef944169cc5dfe8741abfb145078c0d508b868056848a87c81e626246cb60967cbd7fd29a6c062ef73ff840d96b3c86c40ac92cf4a813ee"
+  "packageManager": "pnpm@10.29.3",
+  "engines": {
+    "node": ">=20.9.0"
+  }
 }

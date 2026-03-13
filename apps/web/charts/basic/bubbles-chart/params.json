@@ -1,0 +1,27 @@
+{
+  "start": {
+    "type": "luxon-datetime",
+    "title": "Start time",
+    "required": true
+  },
+  "end": {
+    "type": "luxon-datetime",
+    "title": "End time",
+    "required": true
+  },
+  "axis_field": {
+    "type": "string",
+    "title": "Axis field",
+    "required": true
+  },
+  "value_field": {
+    "type": "string",
+    "title": "Value field",
+    "required": true
+  },
+  "label_field": {
+    "type": "string",
+    "title": "Label field",
+    "required": true
+  }
+}

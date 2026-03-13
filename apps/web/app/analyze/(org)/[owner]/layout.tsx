@@ -1,0 +1,90 @@
+'use client';
+
+import Navigation, { NavItemType } from '@/components/Analyze/Navigation/Navigation';
+import { ScrollspyContextProvider } from '@/components/Scrollspy';
+import { IssueOpenedIcon, PeopleIcon, StarIcon, TelescopeIcon, ToolsIcon } from '@primer/octicons-react';
+
+export default function UserOrgAnalyzeLayout ({ children }: { children: React.ReactNode; }) {
+  return (
+    <ScrollspyContextProvider>
+      <div className="flex">
+        <div className="flex w-full flex-col md:flex-row">
+          <aside className="hidden border-r border-[#2f3032] bg-[#242526] md:block md:w-[160px] md:flex-none md:min-h-[calc(100vh-var(--site-header-height))]">
+            <div className="sticky top-[var(--site-header-height)] h-full max-h-[calc(100vh-var(--site-header-height))] overflow-y-auto styled-scrollbar">
+              <Navigation items={navItems} />
+            </div>
+          </aside>
+          <main className="flex-1 block">
+            <div className="max-w-[1280px] px-6 py-0 md:px-8">{children}</div>
+          </main>
+        </div>
+      </div>
+    </ScrollspyContextProvider>
+  );
+}
+
+const navItems: NavItemType[] = [
+  {
+    id: 'overview',
+    title: 'Organization Overview',
+    anchor: 'overview',
+    Icon: TelescopeIcon,
+  },
+  {
+    id: 'popularity',
+    title: 'Popularity',
+    Icon: StarIcon,
+    children: [
+      {
+        id: 'star-growth',
+        title: 'Star Growth',
+        anchor: 'star-growth',
+      },
+    ],
+  },
+  {
+    id: 'participant',
+    title: 'Participant',
+    Icon: PeopleIcon,
+    children: [
+      {
+        id: 'engagement',
+        title: 'Engagement',
+        anchor: 'engagement',
+      },
+      {
+        id: 'origins',
+        title: 'Origins',
+        anchor: 'origins',
+      },
+    ],
+  },
+  {
+    id: 'productivity',
+    title: 'Productivity',
+    Icon: ToolsIcon,
+    children: [
+      {
+        id: 'pull-request-efficiency',
+        title: 'Pull Request',
+        anchor: 'pull-request-efficiency',
+      },
+      {
+        id: 'code-review-efficiency',
+        title: 'Code Review',
+        anchor: 'code-review-efficiency',
+      },
+      {
+        id: 'code-submission',
+        title: 'Code Submission',
+        anchor: 'code-submission',
+      },
+    ],
+  },
+  {
+    id: 'issue',
+    title: 'Issue',
+    Icon: IssueOpenedIcon,
+    anchor: 'issue',
+  },
+];

@@ -1,0 +1,593 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: dark;
+
+    --color-primary: rgb(255, 232, 149);
+    --color-primary-highlighted: rgb(255, 238, 175);
+    --color-primary-reverse: rgb(31, 30, 40);
+    --color-primary-darkened: rgba(255, 232, 149, 0.6);
+    --color-disabled: #615f6f;
+
+    --background-color-body: #1a1a1b;
+    --background-color-toolbar: #212122;
+    --background-color-popover: #212122;
+    --background-color-control: #212122;
+    --background-color-code: #11151c;
+    --background-color-tooltip: #212122;
+
+    --text-color-title: #e9eaee;
+    --text-color-subtitle: rgb(200, 200, 200);
+    --text-color-content: rgb(124, 124, 124);
+    --text-color-active: rgb(200, 200, 200);
+    --text-color-tooltip: #c0c0c9;
+
+    --border-color-default: #363638;
+    --border-color-dimmed: #29292a;
+
+    --divide-color-default: #363638;
+    --divide-color-dimmed: #29292a;
+
+    --list-item-focus: rgb(43, 43, 45);
+    --list-item-active: rgb(51, 51, 53);
+
+    --scrollbar-track-color: #888;
+    --scrollbar-thumb-color: #555;
+    --scrollbar-thumb-hover-color: #4d4d4f;
+
+    --headless-tab-background: #333333;
+    --headless-tab-active-background: #eaeaea;
+    --headless-tab-text: #9f9f9f;
+    --headless-tab-active-text: #2c2c2c;
+
+    --selector-border-color: #fff7ca;
+    --selector-fill-color: #d4af2b;
+
+    --site-header-height: 60px;
+    --site-left-nav-width: 240px;
+    --site-widget-gap: 16px;
+    --background: 240 1.9% 10.4%;
+    --foreground: 228 12.8% 92.4%;
+    --card: 240 1.7% 12.2%;
+    --card-foreground: 228 12.8% 92.4%;
+    --popover: 240 1.5% 13.1%;
+    --popover-foreground: 228 12.8% 92.4%;
+    --primary: 47 100% 79.2%;
+    --primary-foreground: 246 14.3% 13.7%;
+    --secondary: 240 1.3% 17.3%;
+    --secondary-foreground: 228 12.8% 92.4%;
+    --muted: 240 1.4% 14.5%;
+    --muted-foreground: 0 0% 48.6%;
+    --accent: 240 1.3% 17.3%;
+    --accent-foreground: 0 0% 78.4%;
+    --destructive: 0 68% 56%;
+    --border: 240 1.5% 20%;
+    --input: 240 1.5% 13.1%;
+    --ring: 51 100% 89.6%;
+    --chart-1: 47 100% 79.2%;
+    --chart-2: 212 90% 76%;
+    --chart-3: 187 55% 63%;
+    --chart-4: 278 42% 68%;
+    --chart-5: 7 72% 64%;
+    --radius: 0.75rem;
+    --sidebar: 240 1.5% 13.1%;
+    --sidebar-foreground: 228 12.8% 92.4%;
+    --sidebar-primary: 47 100% 79.2%;
+    --sidebar-primary-foreground: 246 14.3% 13.7%;
+    --sidebar-accent: 240 1.3% 17.3%;
+    --sidebar-accent-foreground: 228 12.8% 92.4%;
+    --sidebar-border: 240 1.5% 20%;
+    --sidebar-ring: 51 100% 89.6%;
+  }
+
+  html,
+  body {
+    background-color: var(--background-color-body);
+    color: var(--text-color-content);
+  }
+
+  body {
+    @apply min-h-screen antialiased text-foreground;
+  }
+  .theme {
+    --font-sans: var(--font-sans);
+  }
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply font-sans;
+  }
+}
+
+@layer utilities {
+  .site-link {
+    @apply font-medium text-[#ffe895] underline decoration-[#ffe895]/30 underline-offset-4 transition hover:text-[#fff2bd] hover:decoration-[#ffe895]/60;
+  }
+
+  .site-link-muted {
+    @apply text-[#d6dae5] underline decoration-white/15 underline-offset-4 transition hover:text-[#ffe895] hover:decoration-[#ffe895]/50;
+  }
+}
+
+@layer components {
+  .TextInput {
+    @apply inline-flex items-center rounded-md bg-control px-3 py-1.5 text-sm text-active transition-colors duration-150;
+  }
+
+  .TextInput input,
+  .TextInput textarea {
+    @apply bg-control text-sm text-active outline-none;
+  }
+
+  .TextInput ::placeholder {
+    @apply text-sm text-disabled;
+  }
+
+  .TextInput.TextInput-lg {
+    @apply px-4 py-2 text-base;
+  }
+
+  .TextInput.TextInput-lg input,
+  .TextInput.TextInput-lg textarea {
+    @apply text-base;
+  }
+
+  .TextInput.TextInput-lg ::placeholder {
+    @apply text-base;
+  }
+
+  .TextInput.TextInput-compact {
+    @apply p-0;
+  }
+
+  .TextInput:not(.TextInput-borderless) {
+    @apply border border-transparent;
+    --tw-shadow-color: var(--color-primary-darkened);
+  }
+
+  .TextInput:not(.TextInput-borderless):focus,
+  .TextInput:not(.TextInput-borderless):focus-within {
+    @apply shadow-control;
+    border-color: var(--color-primary);
+  }
+
+  .Button {
+    @apply inline-flex items-center justify-center gap-1.5 rounded-md border border-transparent px-3 py-1.5 text-sm transition-colors duration-150;
+  }
+
+  .Button:not(.Button-primary) {
+    --tw-shadow-color: var(--color-disabled);
+  }
+
+  .Button:focus-visible {
+    @apply outline-none shadow-control;
+  }
+
+  .Button-primary {
+    @apply border-primary bg-primary text-primary-reverse;
+    --tw-shadow-color: var(--color-primary-darkened);
+  }
+
+  .Button-primary:hover {
+    @apply bg-primary-highlighted;
+  }
+
+  .Button-secondary {
+    @apply bg-popover text-primary;
+    --tw-shadow-color: var(--color-primary-darkened);
+  }
+
+  .Button-secondary:hover {
+    background-color: var(--list-item-focus);
+  }
+
+  .Button:disabled {
+    @apply cursor-not-allowed border-disabled bg-transparent text-disabled;
+  }
+
+  .Button-sm {
+    @apply px-2 py-1 text-xs;
+  }
+
+  .Button-lg {
+    @apply px-4 py-2 text-lg;
+  }
+
+  .SelectWrapper {
+    @apply inline-flex flex-col content-start flex-wrap gap-1;
+  }
+
+  .SelectTitle {
+    @apply text-xs leading-6 text-content;
+  }
+
+  .SelectTrigger {
+    @apply inline-flex w-full items-center justify-between gap-2 rounded-md bg-control px-3 py-1.5 text-sm text-active outline-none transition-colors duration-150;
+  }
+
+  .SelectWrapper:not(.Select-borderless) .SelectTrigger {
+    @apply border border-transparent;
+    --tw-shadow-color: var(--color-primary-darkened);
+  }
+
+  .SelectWrapper:not(.Select-borderless) .SelectTrigger:hover {
+    background-color: var(--background-color-popover);
+  }
+
+  .SelectWrapper:not(.Select-borderless) .SelectTrigger:focus,
+  .SelectWrapper:not(.Select-borderless) .SelectTrigger:focus-visible {
+    @apply shadow-control;
+    border-color: var(--color-primary);
+  }
+
+  .SelectTrigger[data-placeholder] {
+    color: var(--color-primary);
+  }
+
+  .SelectIcon {
+    color: var(--text-color-title);
+  }
+
+  .SelectContent {
+    @apply overflow-hidden rounded-md bg-popover text-subtitle shadow-lg;
+    box-shadow:
+      0 10px 38px -10px rgba(22, 23, 24, 0.35),
+      0 10px 20px -15px rgba(22, 23, 24, 0.2);
+  }
+
+  .SelectViewport {
+    @apply p-1.5;
+  }
+
+  .SelectItem {
+    @apply relative flex h-8 select-none items-center rounded px-9 pl-7 text-[13px] leading-none text-subtitle outline-none;
+  }
+
+  .SelectItem[data-disabled] {
+    @apply pointer-events-none text-disabled;
+  }
+
+  .SelectItem[data-highlighted] {
+    background-color: var(--list-item-active);
+    color: var(--text-color-active);
+  }
+
+  .SelectLabel {
+    @apply px-6 text-xs leading-6 text-content;
+  }
+
+  .SelectSeparator {
+    @apply mx-1.5 my-1 h-px;
+    background-color: var(--text-color-content);
+  }
+
+  .SelectItemIndicator {
+    @apply absolute left-0 inline-flex w-6 items-center justify-center;
+  }
+
+  .SelectScrollButton {
+    @apply flex h-7 items-center justify-center bg-popover text-title;
+  }
+
+  .RemoteSelectItem-button {
+    @apply flex w-full cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-left text-xs text-content transition-colors duration-150;
+  }
+
+  .RemoteSelectItem-button:hover,
+  .RemoteSelectItem-button:focus {
+    background-color: var(--list-item-focus);
+  }
+
+  .RemoteSelectItem-button[data-selected="true"] {
+    background-color: var(--list-item-active);
+    color: var(--text-color-active);
+  }
+
+  .InputPopper-content {
+    @apply rounded-lg bg-popover p-2 shadow-lg;
+    transform-origin: var(--radix-popover-content-transform-origin);
+    animation: input-popper-show 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .InputPopper-content:not(.InputPopper-unbound) {
+    width: var(--radix-popover-trigger-width);
+  }
+
+  .InputPopper-content[data-state="closed"] {
+    animation-name: input-popper-hide;
+  }
+
+  .SiteHeader {
+    @apply sticky top-0 z-10 flex w-full items-center gap-3 overflow-x-auto bg-toolbar px-5 py-2 shadow;
+    height: var(--site-header-height);
+    color: rgb(245, 246, 247);
+    font-family:
+      system-ui,
+      -apple-system,
+      "Segoe UI",
+      Roboto,
+      Ubuntu,
+      Cantarell,
+      "Noto Sans",
+      sans-serif,
+      BlinkMacSystemFont,
+      Helvetica,
+      Arial,
+      "Apple Color Emoji",
+      "Segoe UI Emoji",
+      "Segoe UI Symbol";
+    font-size: 16px;
+    font-weight: 400;
+    text-decoration-style: solid;
+    text-rendering: optimizeLegibility;
+  }
+
+  .SiteHeader-menu > ul {
+    @apply m-0 flex list-none items-center gap-3 p-2;
+  }
+
+  .SiteHeader-menu-item,
+  .SiteHeader-menu-trigger {
+    @apply flex items-center gap-1 overflow-hidden whitespace-nowrap rounded-md px-3 py-1.5 outline-none transition-colors duration-150;
+  }
+
+  .SiteHeader-menu-item:hover,
+  .SiteHeader-menu-trigger:hover {
+    @apply text-primary;
+  }
+
+  .SiteHeader-menu-item:focus-visible,
+  .SiteHeader-menu-trigger:focus-visible {
+    @apply text-primary shadow-control;
+    --tw-shadow-color: var(--color-primary-darkened);
+  }
+
+  .SiteHeader-menu-trigger-indicator {
+    @apply transition-transform duration-200;
+  }
+
+  .SiteHeader-menu-trigger[data-state="open"] .SiteHeader-menu-trigger-indicator {
+    transform: rotate(180deg);
+  }
+
+  .SiteHeader-menu-content {
+    @apply rounded-lg bg-popover p-2 text-sm text-subtitle shadow-lg;
+    transform-origin: var(--radix-menubar-content-transform-origin);
+    animation: site-header-menu-content-show 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .SiteHeader-menu-content[data-state="closed"] {
+    animation-name: site-header-menu-content-hide;
+  }
+
+  .SiteHeader-menu-content ul {
+    @apply m-0 list-none p-0;
+  }
+
+  .SiteHeader-menu-content li {
+    @apply py-1;
+  }
+
+  .SiteHeader-menu-content li + li {
+    @apply mt-1;
+  }
+
+  .SiteHeader-menu-content-arrow {
+    fill: var(--background-color-popover);
+  }
+
+  .SiteHeader-menu-divider {
+    @apply hidden;
+  }
+
+  .kbd {
+    @apply inline-flex min-h-[2.2em] min-w-[2.2em] items-center justify-center rounded-lg border px-2 text-sm leading-5 text-slate-200;
+    background-color: #1a1a1b;
+    border-color: rgb(255 255 255 / 0.14);
+    border-bottom-width: 2px;
+  }
+
+  .kbd-sm {
+    @apply min-h-[1.6em] min-w-[1.6em] px-1 text-sm leading-5;
+  }
+
+  .skeleton {
+    @apply bg-control;
+    animation: skeleton-pulse 1.6s ease-in-out infinite alternate;
+  }
+
+  .skeleton-paused .skeleton {
+    animation: none;
+    opacity: 0.6;
+  }
+
+  .chart-loader {
+    @apply relative block h-12 w-12 rounded-full;
+    animation: chart-loader-rotate 1s linear infinite;
+  }
+
+  .chart-loader::before,
+  .chart-loader::after {
+    content: "";
+    @apply absolute inset-0 box-border rounded-full;
+    border: 5px solid #fff;
+    animation: chart-loader-clip-fix 2s linear infinite;
+  }
+
+  .chart-loader::after {
+    inset: 8px;
+    border-color: var(--color-primary);
+    transform: rotate3d(90, 90, 0, 180deg);
+  }
+}
+
+@layer utilities {
+  .min-h-page {
+    min-height: calc(100vh - var(--site-header-height));
+  }
+
+  .max-h-page {
+    max-height: calc(100vh - var(--site-header-height));
+  }
+
+  .h-page {
+    height: calc(100vh - var(--site-header-height));
+  }
+
+  .top-header {
+    top: var(--site-header-height);
+  }
+
+  .styled-scrollbar {
+    scrollbar-width: thin;
+  }
+
+  .styled-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .styled-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 5px;
+  }
+
+  .styled-scrollbar::-webkit-scrollbar-thumb {
+    background: transparent;
+    border-radius: 5px;
+  }
+
+  .styled-scrollbar:hover::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb-color);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes scaleOut {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+
+@keyframes input-popper-show {
+  from {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes input-popper-hide {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+}
+
+@keyframes site-header-menu-content-show {
+  from {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes site-header-menu-content-hide {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+}
+
+@keyframes skeleton-pulse {
+  from {
+    opacity: 0.3;
+  }
+
+  to {
+    opacity: 0.6;
+  }
+}
+
+@keyframes chart-loader-rotate {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes chart-loader-clip-fix {
+  0% {
+    clip-path: polygon(50% 50%, 0 0, 0 0, 0 0, 0 0, 0 0);
+  }
+
+  50% {
+    clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 0, 100% 0, 100% 0);
+  }
+
+  75%,
+  100% {
+    clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 100%, 100% 100%, 100% 100%);
+  }
+}

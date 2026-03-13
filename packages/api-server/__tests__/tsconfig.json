@@ -1,9 +1,0 @@
-{
-  "extends": "../tsconfig.json",
-  "compilerOptions": {
-    "baseUrl": ".",
-    "esModuleInterop": true,
-    "noEmit": true,
-  },
-  "include": ["**/*.ts"]
-}

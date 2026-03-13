@@ -1,0 +1,17 @@
+# Dependencies
+node_modules/
+
+# Next.js build output
+.next/
+
+# Turbo cache
+.turbo/
+
+# Local env files
+.env*.local
+
+# Vercel
+.vercel
+
+# Debug
+*.log

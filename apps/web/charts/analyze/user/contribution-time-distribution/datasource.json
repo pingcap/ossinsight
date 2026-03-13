@@ -1,0 +1,13 @@
+{
+  "type": "api",
+  "url": "https://api.ossinsight.io/q/personal-contribution-time-distribution",
+  "parser": {
+    "type": "json",
+    "extract": "$.data[*]"
+  },
+  "params": {
+    "userId": "user_id",
+    "period": "period"
+  },
+  "when": ["user_id", "period"]
+}

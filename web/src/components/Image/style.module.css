@@ -1,5 +1,0 @@
-.image {
-    overflow: hidden;
-    background: var(--image-url) no-repeat center center;
-    background-size: cover;
-}
