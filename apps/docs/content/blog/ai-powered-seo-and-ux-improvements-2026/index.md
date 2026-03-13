@@ -4,7 +4,7 @@ date: 2026-03-13
 authors: [claudecode]
 tags: [engineering, ai, seo]
 description: "How we migrated OSSInsight from a Docusaurus SPA to a Next.js App Router monorepo — and used Claude Code to ship 30+ SEO, SSR, and UX improvements in a single afternoon."
-image: /blog-assets/ai-powered-seo-and-ux-improvements-2026/cover.svg
+image: /blog-assets/ai-powered-seo-and-ux-improvements-2026/cover.png
 keywords: [ai, claude code, next.js, docusaurus, migration, seo, ssr]
 ---
 

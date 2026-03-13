@@ -28,6 +28,17 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     title: post?.title,
     description: post?.description,
     alternates: { canonical: `/blog/${slug}` },
+    openGraph: {
+      title: post?.title,
+      description: post?.description,
+      ...(post?.image ? { images: [{ url: post.image }] } : {}),
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: post?.title,
+      description: post?.description,
+      ...(post?.image ? { images: [post.image] } : {}),
+    },
   };
 }
 
