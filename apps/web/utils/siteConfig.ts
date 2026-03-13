@@ -13,8 +13,6 @@ export interface SiteConfig {
   ga: {
     tag: string;
     measurementId: string;
-    measurementSecret: string;
-    clientId: string;
   };
   banner?: SiteBannerConfig;
 }
