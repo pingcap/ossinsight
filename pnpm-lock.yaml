@@ -4,6 +4,9 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  '@tanstack/react-query': ^5.90.21
+
 importers:
 
   .:
@@ -24,7 +27,7 @@ importers:
         specifier: workspace:*
         version: link:../../packages/site-shell
       '@tanstack/react-query':
-        specifier: ^5.80.7
+        specifier: ^5.90.21
         version: 5.90.21(react@19.2.4)
       clsx:
         specifier: ^2.0.0
@@ -34,10 +37,10 @@ importers:
         version: 16.6.16(@types/react@19.2.14)(lucide-react@0.577.0)(next@16.1.6)(react-dom@19.2.4)(react@19.2.4)(zod@4.3.6)
       fumadocs-mdx:
         specifier: ^14.2.9
-        version: 14.2.9(@types/react@19.2.14)(fumadocs-core@16.6.16)(next@16.1.6)(react@19.2.4)
+        version: 14.2.9(@types/mdx@2.0.13)(@types/react@19.2.14)(fumadocs-core@16.6.16)(next@16.1.6)(react@19.2.4)
       fumadocs-ui:
         specifier: ^16.6.16
-        version: 16.6.16(@types/react-dom@19.2.3)(@types/react@19.2.14)(fumadocs-core@16.6.16)(next@16.1.6)(react-dom@19.2.4)(react@19.2.4)(tailwindcss@4.2.1)
+        version: 16.6.16(@types/mdx@2.0.13)(@types/react-dom@19.2.3)(@types/react@19.2.14)(fumadocs-core@16.6.16)(next@16.1.6)(react-dom@19.2.4)(react@19.2.4)(tailwindcss@4.2.1)
       gray-matter:
         specifier: ^4.0.3
         version: 4.0.3
@@ -93,6 +96,9 @@ importers:
       '@tailwindcss/postcss':
         specifier: ^4.2.1
         version: 4.2.1
+      '@types/mdx':
+        specifier: ^2.0.7
+        version: 2.0.13
       '@types/node':
         specifier: 20.4.2
         version: 20.4.2
@@ -401,7 +407,7 @@ importers:
         specifier: ^1.1.16
         version: 1.1.16(react-dom@19.2.4)(react@19.2.4)
       '@tanstack/react-query':
-        specifier: ^5.0.0
+        specifier: ^5.90.21
         version: 5.90.21(react@19.2.4)
       class-variance-authority:
         specifier: ^0.7.1
@@ -10095,7 +10101,7 @@ packages:
       - supports-color
     dev: false
 
-  /fumadocs-mdx@14.2.9(@types/react@19.2.14)(fumadocs-core@16.6.16)(next@16.1.6)(react@19.2.4):
+  /fumadocs-mdx@14.2.9(@types/mdx@2.0.13)(@types/react@19.2.14)(fumadocs-core@16.6.16)(next@16.1.6)(react@19.2.4):
     resolution: {integrity: sha512-5QbFj3KyNgojjpUsD5Xw2W+ofN9l1WiIxzthwFzGoHOLIoJkdCN4AjHcINC+YSo89d/oZlradrrKRd3uHwVKBA==}
     hasBin: true
     peerDependencies:
@@ -10128,6 +10134,7 @@ packages:
     dependencies:
       '@mdx-js/mdx': 3.1.1
       '@standard-schema/spec': 1.1.0
+      '@types/mdx': 2.0.13
       '@types/react': 19.2.14
       chokidar: 5.0.0
       esbuild: 0.27.4
@@ -10151,7 +10158,7 @@ packages:
       - supports-color
     dev: false
 
-  /fumadocs-ui@16.6.16(@types/react-dom@19.2.3)(@types/react@19.2.14)(fumadocs-core@16.6.16)(next@16.1.6)(react-dom@19.2.4)(react@19.2.4)(tailwindcss@4.2.1):
+  /fumadocs-ui@16.6.16(@types/mdx@2.0.13)(@types/react-dom@19.2.3)(@types/react@19.2.14)(fumadocs-core@16.6.16)(next@16.1.6)(react-dom@19.2.4)(react@19.2.4)(tailwindcss@4.2.1):
     resolution: {integrity: sha512-MEpggI+rKvXEPqPmPVb8sIfUuo8ev7X3I6qVwPkHte9kIkiODZH9DmKFEnyuGnTjVXct8Z1wf18kY2xcoJI6eg==}
     peerDependencies:
       '@takumi-rs/image-response': '*'
@@ -10182,6 +10189,7 @@ packages:
       '@radix-ui/react-scroll-area': 1.2.10(@types/react-dom@19.2.3)(@types/react@19.2.14)(react-dom@19.2.4)(react@19.2.4)
       '@radix-ui/react-slot': 1.2.4(@types/react@19.2.14)(react@19.2.4)
       '@radix-ui/react-tabs': 1.1.13(@types/react-dom@19.2.3)(@types/react@19.2.14)(react-dom@19.2.4)(react@19.2.4)
+      '@types/mdx': 2.0.13
       '@types/react': 19.2.14
       class-variance-authority: 0.7.1
       fumadocs-core: 16.6.16(@types/react@19.2.14)(lucide-react@0.577.0)(next@16.1.6)(react-dom@19.2.4)(react@19.2.4)(zod@4.3.6)

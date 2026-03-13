@@ -21,5 +21,10 @@
   "packageManager": "pnpm@10.29.3",
   "engines": {
     "node": ">=20.9.0"
+  },
+  "pnpm": {
+    "overrides": {
+      "@tanstack/react-query": "^5.90.21"
+    }
   }
 }

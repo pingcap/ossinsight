@@ -1,7 +1,10 @@
 import createMDX from "@next/mdx";
 import withSvgr from "next-plugin-svgr";
 import { fileURLToPath } from "url";
+import { createRequire } from "module";
 import path from "path";
+
+const require = createRequire(import.meta.url);
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -18,6 +21,9 @@ const nextConfig = {
   pageExtensions: ['ts', 'tsx', 'mdx'],
   serverExternalPackages: ['@napi-rs/canvas'],
   turbopack: {
+    resolveAlias: {
+      '@tanstack/react-query': './node_modules/@tanstack/react-query',
+    },
     rules: {
       '*.svg': {
         loaders: ['@svgr/webpack'],
