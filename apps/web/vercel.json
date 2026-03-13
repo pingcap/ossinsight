@@ -1,3 +1,9 @@
 {
-  "relatedProjects": ["prj_MGvL5diJ4d5aAIxrubFRKA1LGvCp"]
+  "relatedProjects": ["prj_MGvL5diJ4d5aAIxrubFRKA1LGvCp"],
+  "rewrites": [
+    { "source": "/blog", "destination": "https://ossinsight-docs.vercel.app/blog" },
+    { "source": "/blog/:path*", "destination": "https://ossinsight-docs.vercel.app/blog/:path*" },
+    { "source": "/docs", "destination": "https://ossinsight-docs.vercel.app/docs" },
+    { "source": "/docs/:path*", "destination": "https://ossinsight-docs.vercel.app/docs/:path*" }
+  ]
 }

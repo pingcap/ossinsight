@@ -19,15 +19,20 @@ const nextConfig = {
     return []
   },
   async rewrites() {
-    const docsOrigin = process.env.DOCS_ORIGIN || 'http://127.0.0.1:3002';
-    return {
-      beforeFiles: [
-        { source: '/blog', destination: `${docsOrigin}/blog` },
-        { source: '/blog/:path*', destination: `${docsOrigin}/blog/:path*` },
-        { source: '/docs', destination: `${docsOrigin}/docs` },
-        { source: '/docs/:path*', destination: `${docsOrigin}/docs/:path*` },
-      ],
-    };
+    // Local dev: proxy to docs dev server
+    if (process.env.NODE_ENV === 'development') {
+      const docsOrigin = process.env.DOCS_ORIGIN || 'http://127.0.0.1:3002';
+      return {
+        beforeFiles: [
+          { source: '/blog', destination: `${docsOrigin}/blog` },
+          { source: '/blog/:path*', destination: `${docsOrigin}/blog/:path*` },
+          { source: '/docs', destination: `${docsOrigin}/docs` },
+          { source: '/docs/:path*', destination: `${docsOrigin}/docs/:path*` },
+        ],
+      };
+    }
+    // Production: handled by vercel.json rewrites
+    return [];
   },
   pageExtensions: ['ts', 'tsx', 'mdx'],
   serverExternalPackages: ['@napi-rs/canvas'],
