@@ -31,7 +31,9 @@ export function getSiteAppOrigin(app: SiteApp, env: EnvMap = process.env) {
 }
 
 export function getCrossAppHref(currentApp: SiteApp, targetApp: SiteApp, path: string, env: EnvMap = process.env) {
-  if (currentApp === targetApp) {
+  // Web proxies /blog and /docs to docs app via rewrites, so always use relative paths
+  // from web→docs. Only docs→web needs a full origin.
+  if (currentApp === targetApp || (currentApp === 'web' && targetApp === 'docs')) {
     return path;
   }
 
