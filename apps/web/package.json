@@ -35,6 +35,7 @@
     "@streamdown/mermaid": "^1.0.2",
     "@tanstack/react-query": "^5.90.21",
     "@tidbcloud/serverless": "^0.0.6",
+    "@vercel/related-projects": "^1.0.1",
     "@xyflow/react": "^12.10.1",
     "ai": "^6.0.116",
     "ansi-to-react": "^6.2.6",
