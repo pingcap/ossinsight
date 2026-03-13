@@ -1,0 +1,23 @@
+{
+  "name": "@repo/site-shell",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "peerDependencies": {
+    "@tanstack/react-query": "^5.0.0",
+    "next": "16.1.6",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "dependencies": {
+    "@primer/octicons-react": "^19.15.2",
+    "@radix-ui/react-avatar": "^1.1.10",
+    "@radix-ui/react-menubar": "^1.1.16",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.0.0",
+    "lucide-react": "^0.577.0",
+    "radix-ui": "^1.4.2",
+    "tailwind-merge": "^3.3.0"
+  }
+}

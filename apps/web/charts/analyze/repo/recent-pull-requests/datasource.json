@@ -1,0 +1,14 @@
+[
+  {
+    "type": "api",
+    "url": "https://api.ossinsight.io/q/analyze-recent-pull-requests",
+    "parser": {
+      "type": "json",
+      "extract": "$.data[*]"
+    },
+    "params": {
+      "repoId": "repo_id"
+    },
+    "when": ["repo_id"]
+  }
+]

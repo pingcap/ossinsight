@@ -1,0 +1,26 @@
+[
+  {
+    "type": "api",
+    "url": "https://api.ossinsight.io/q/analyze-issue-opened-and-closed",
+    "parser": {
+      "type": "json",
+      "extract": "$.data[*]"
+    },
+    "params": {
+      "repoId": "repo_id"
+    },
+    "when": ["repo_id"]
+  },
+  {
+    "type": "api",
+    "url": "https://api.ossinsight.io/q/analyze-issue-opened-and-closed",
+    "parser": {
+      "type": "json",
+      "extract": "$.data[*]"
+    },
+    "params": {
+      "repoId": "vs_repo_id"
+    },
+    "when": ["vs_repo_id"]
+  }
+]

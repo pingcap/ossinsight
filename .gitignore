@@ -1,35 +1,48 @@
-# Dependencies
-/node_modules
+# dependencies
+**/node_modules
+/.pnp
+.pnp.js
 
-# Production
+# testing
+/coverage
+
+# next.js
+**/.next/
+/out/
+.turbo/
+
+# production
 /build
-/sql
 
-# Generated files
-.docusaurus
-.cache-loader
-.vscode
-
-# Misc
+# misc
 .DS_Store
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+*.pem
+.cursor/
 
+# debug
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-*.swp
+# local env files
+.env
+.env*.local
+
+# vercel
+.vercel
+
+# typescript
+**/*.tsbuildinfo
+**/next-env.d.ts
+
+# generated
+charts/index.js
+
+# Endpoint configs
+configs/endpoints/**/*
+!configs/endpoints/.keep
 
 # IDE
 .idea
 .vscode
 .run
-
-# Prefetch
-.prefetch
-
-/configs/prompts/*/*.*

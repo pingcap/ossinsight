@@ -1,0 +1,81 @@
+import createMDX from "@next/mdx";
+import withSvgr from "next-plugin-svgr";
+import { fileURLToPath } from "url";
+import path from "path";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  outputFileTracingRoot: path.join(__dirname, '../../'),
+  transpilePackages: ['@repo/site-shell'],
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  async redirects() {
+    return []
+  },
+  pageExtensions: ['ts', 'tsx', 'mdx'],
+  serverExternalPackages: ['@napi-rs/canvas'],
+  turbopack: {
+    rules: {
+      '*.svg': {
+        loaders: ['@svgr/webpack'],
+        as: '*.js',
+      },
+      '*.sql': {
+        loaders: ['raw-loader'],
+        as: '*.js',
+      },
+    },
+  },
+  webpack: (config, { isServer }) => {
+    config.module.rules.push({
+        test: /\.sql$/,
+        use: 'raw-loader',
+    })
+    config.externals.push('@napi-rs/canvas')
+
+    // Ensure shared packages use the same @tanstack/react-query instance as the app
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@tanstack/react-query': path.resolve(__dirname, 'node_modules/@tanstack/react-query'),
+    };
+
+    return config;
+  },
+  svgrOptions: {
+    ref: true,
+    svgo: false,
+    replaceAttrValues: {
+      fill: 'currentColor',
+    },
+  },
+  images: {
+    dangerouslyAllowSVG: true,
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'github.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'avatars.githubusercontent.com',
+        port: '',
+        pathname: '/**',
+      },
+    ],
+    unoptimized: process.env.NODE_ENV === 'development',
+  },
+}
+
+
+const withMDX = createMDX({
+  options: {
+    remarkPlugins: []
+  }
+});
+
+export default withSvgr(withMDX(nextConfig));

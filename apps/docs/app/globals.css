@@ -1,0 +1,328 @@
+@import "tailwindcss";
+@import "fumadocs-ui/css/neutral.css";
+@import "fumadocs-ui/css/preset.css";
+
+@source "../../../packages/site-shell/src";
+
+@theme inline {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --shadow-panel: 0 22px 70px rgba(0, 0, 0, 0.22);
+}
+
+@layer base {
+  :root {
+    --color-primary: rgb(255, 232, 149);
+    --color-primary-highlighted: rgb(255, 238, 175);
+    --color-primary-reverse: rgb(31, 30, 40);
+    --color-primary-darkened: rgba(255, 232, 149, 0.6);
+    --color-disabled: #615f6f;
+
+    --background-color-body: #1a1a1b;
+    --background-color-toolbar: #212122;
+    --background-color-popover: #212122;
+    --background-color-control: #212122;
+    --background-color-code: #11151c;
+    --background-color-tooltip: #212122;
+
+    --text-color-title: #e9eaee;
+    --text-color-subtitle: rgb(200, 200, 200);
+    --text-color-content: rgb(124, 124, 124);
+    --text-color-active: rgb(200, 200, 200);
+    --text-color-tooltip: #c0c0c9;
+
+    --border-color-default: #363638;
+    --border-color-dimmed: #29292a;
+
+    --divide-color-default: #363638;
+    --divide-color-dimmed: #29292a;
+
+    --list-item-focus: rgb(43, 43, 45);
+    --list-item-active: rgb(51, 51, 53);
+
+    --background: 240 1.9% 10.4%;
+    --foreground: 228 12.8% 92.4%;
+    --card: 240 1.7% 12.2%;
+    --card-foreground: 228 12.8% 92.4%;
+    --muted: 240 1.4% 14.5%;
+    --muted-foreground: 0 0% 48.6%;
+    --border: 240 1.5% 20%;
+    --input: 240 1.5% 13.1%;
+    --ring: 51 100% 89.6%;
+    --color-fd-background: hsl(240 2% 10%);
+    --color-fd-foreground: hsl(228 13% 92%);
+    --color-fd-muted: hsl(240 1% 14%);
+    --color-fd-muted-foreground: hsl(0 0% 62%);
+    --color-fd-popover: hsl(240 2% 13%);
+    --color-fd-popover-foreground: hsl(228 13% 92%);
+    --color-fd-card: hsl(240 2% 12%);
+    --color-fd-card-foreground: hsl(228 13% 92%);
+    --color-fd-border: hsla(0 0% 100% / 0.08);
+    --color-fd-primary: rgb(255 232 149);
+    --color-fd-primary-foreground: rgb(31 30 40);
+    --color-fd-secondary: hsl(240 1% 16%);
+    --color-fd-secondary-foreground: hsl(228 13% 92%);
+    --color-fd-accent: hsla(51 100% 79% / 0.12);
+    --color-fd-accent-foreground: rgb(255 242 189);
+    --color-fd-ring: rgb(255 232 149);
+    --color-fd-overlay: hsla(0 0% 0% / 0.48);
+    --color-fd-info: rgb(96 165 250);
+    --color-fd-success: rgb(74 222 128);
+    --color-fd-warning: rgb(250 204 21);
+    --color-fd-danger: rgb(248 113 113);
+  }
+
+  html,
+  body {
+    min-height: 100%;
+    background-color: var(--color-fd-background);
+    color: var(--color-fd-foreground);
+  }
+
+  body {
+    @apply min-h-screen text-foreground antialiased;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  a {
+    color: var(--color-fd-primary);
+    @apply transition-colors;
+  }
+
+  a:hover {
+    color: rgb(255 242 189);
+  }
+
+  .prose code::before,
+  .prose code::after {
+    content: none !important;
+  }
+
+  .prose :where(a):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+    color: var(--color-fd-primary);
+  }
+
+  .prose :where(a:hover):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+    color: rgb(255 242 189);
+  }
+
+  #nd-page .prose {
+    --tw-prose-body: rgb(204 208 219);
+    --tw-prose-headings: rgb(248 250 252);
+    --tw-prose-links: rgb(255 232 149);
+    --tw-prose-bold: rgb(255 247 214);
+    --tw-prose-counters: rgb(151 157 176);
+    --tw-prose-bullets: rgba(255, 232, 149, 0.55);
+    --tw-prose-hr: rgba(255, 232, 149, 0.14);
+    --tw-prose-quotes: rgb(236 239 248);
+    --tw-prose-quote-borders: rgba(255, 232, 149, 0.3);
+    --tw-prose-captions: rgb(151 157 176);
+    --tw-prose-code: rgb(255 236 169);
+    --tw-prose-pre-code: rgb(234 239 255);
+    --tw-prose-pre-bg: rgba(9, 11, 17, 0.86);
+    --tw-prose-th-borders: rgba(255, 255, 255, 0.1);
+    --tw-prose-td-borders: rgba(255, 255, 255, 0.06);
+    font-size: 15px;
+    line-height: 1.8;
+  }
+
+  #nd-page h1 {
+    font-size: 2.5rem;
+    line-height: 1.15;
+  }
+
+  #nd-page h2 {
+    font-size: 1.75rem;
+    line-height: 1.2;
+  }
+
+  #nd-page h3 {
+    font-size: 1.125rem;
+    line-height: 1.35;
+  }
+}
+
+@layer components {
+  .kbd {
+    @apply inline-flex min-h-[2.2em] min-w-[2.2em] items-center justify-center rounded-lg border px-2 text-sm leading-5 text-slate-200;
+    background-color: #1a1a1b;
+    border-color: rgb(255 255 255 / 0.14);
+    border-bottom-width: 2px;
+  }
+
+  .kbd-sm {
+    @apply min-h-[1.6em] min-w-[1.6em] px-1 text-sm leading-5;
+  }
+
+  .docs-shell {
+    @apply mx-auto w-full max-w-[1380px] px-6 pb-20 pt-12 sm:px-8 lg:px-10;
+  }
+
+  #nd-page .prose :where(h2):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+    border-bottom: 1px solid rgba(255, 232, 149, 0.14);
+    padding-bottom: 0.45rem;
+  }
+
+  #nd-page .prose :where(code):not(:where(pre code, [class~="not-prose"] *)) {
+    border: 1px solid rgba(255, 232, 149, 0.12);
+    border-radius: 0.5rem;
+    background: rgba(255, 232, 149, 0.08);
+    padding: 0.18rem 0.42rem;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  }
+
+  #nd-page .prose :where(blockquote):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+    background: transparent;
+    border-radius: 0;
+    padding: 0 0 0 1rem;
+    border-left: 2px solid rgba(255, 232, 149, 0.3);
+  }
+
+  [data-card="true"] {
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.16);
+  }
+
+  [data-card="true"]:hover {
+    border-color: rgba(255, 232, 149, 0.28);
+    box-shadow: 0 18px 48px rgba(0, 0, 0, 0.22);
+  }
+
+  .prose [data-rehype-pretty-code-figure] {
+    @apply my-6 overflow-x-auto;
+    border: 0;
+    background: rgba(12, 13, 18, 0.94);
+    box-shadow: none;
+  }
+
+  .prose [data-rehype-pretty-code-figure] pre {
+    margin: 0;
+    background: transparent !important;
+    padding: 1rem 0;
+  }
+
+  .prose [data-rehype-pretty-code-figure] code {
+    display: grid;
+    min-width: max-content;
+    background: transparent;
+    padding: 0;
+    color: inherit;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+
+  .prose [data-rehype-pretty-code-figure] [data-line] {
+    padding: 0;
+  }
+
+  .prose [data-rehype-pretty-code-figure] [data-highlighted-line] {
+    background: rgba(255, 232, 149, 0.08);
+    box-shadow: inset 2px 0 0 rgba(255, 232, 149, 0.45);
+  }
+
+  .prose [data-rehype-pretty-code-figure] [data-highlighted-chars] {
+    background: rgba(255, 232, 149, 0.16);
+    box-shadow: none;
+  }
+
+  .blog-shell {
+    @apply max-w-none;
+  }
+
+  .blog-shell .blog-prose {
+    --tw-prose-body: rgb(204 208 219);
+    --tw-prose-headings: rgb(248 250 252);
+    --tw-prose-links: rgb(255 232 149);
+    --tw-prose-bold: rgb(255 247 214);
+    --tw-prose-counters: rgb(151 157 176);
+    --tw-prose-bullets: rgba(255, 232, 149, 0.55);
+    --tw-prose-hr: rgba(255, 255, 255, 0.08);
+    --tw-prose-quotes: rgb(236 239 248);
+    --tw-prose-quote-borders: rgba(255, 232, 149, 0.38);
+    --tw-prose-captions: rgb(151 157 176);
+    --tw-prose-code: rgb(255 236 169);
+    --tw-prose-pre-code: rgb(234 239 255);
+    --tw-prose-pre-bg: rgba(9, 11, 17, 0.86);
+    --tw-prose-th-borders: rgba(255, 255, 255, 0.1);
+    --tw-prose-td-borders: rgba(255, 255, 255, 0.06);
+  }
+
+  .blog-shell .blog-prose :where(h2):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+    border-bottom: 0;
+    padding-bottom: 0;
+    margin-top: 2.6rem;
+    margin-bottom: 1rem;
+    font-size: 1.75rem;
+    line-height: 1.2;
+  }
+
+  .blog-shell .blog-prose :where(h3):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+    font-size: 1.125rem;
+  }
+
+  .blog-shell .blog-prose :where(p, li):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+    color: #c8c8c8;
+    font-size: 15px;
+    line-height: 1.8;
+  }
+
+  .blog-shell .blog-prose :where(a):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+    color: #fbe593;
+  }
+
+  .blog-shell .blog-prose :where(a:hover):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+    color: #fceeb4;
+  }
+
+  .blog-shell .blog-prose :where(blockquote):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+    background: transparent;
+    border-radius: 0;
+    padding: 0 0 0 1rem;
+    border-left: 2px solid rgba(255, 232, 149, 0.38);
+  }
+
+  .blog-shell .blog-prose :where(code):not(:where(pre code, [class~="not-prose"] *)) {
+    border: 0;
+    border-radius: 0.2rem;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 0.12rem 0.34rem;
+    box-shadow: none;
+  }
+
+  .blog-shell .blog-prose [data-rehype-pretty-code-figure] {
+    margin: 1.5rem 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .blog-shell .blog-prose [data-rehype-pretty-code-figure] pre {
+    padding: 0;
+    border: 0;
+    box-shadow: none;
+  }
+
+  [data-sidebar-panel] {
+    top: calc(var(--site-header-height, 64px) + 1rem) !important;
+    left: 1rem !important;
+    z-index: 60 !important;
+    border-color: rgba(255, 255, 255, 0.08) !important;
+    background: #212122 !important;
+    color: #c8c8c8 !important;
+  }
+
+  [data-sidebar-panel] button:hover {
+    background: rgba(255, 232, 149, 0.08) !important;
+    color: #fceeb4 !important;
+  }
+}

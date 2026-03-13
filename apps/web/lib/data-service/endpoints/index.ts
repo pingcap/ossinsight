@@ -1,0 +1,159 @@
+import type { EndpointConfig } from '../config';
+
+export type EndpointModule = {
+  config: EndpointConfig;
+  sql: string;
+};
+
+const endpointLoaders = new Map<string, () => Promise<EndpointModule>>();
+
+endpointLoaders.set("analyze-commits-time-distribution", () => import("./analyze-commits-time-distribution"));
+endpointLoaders.set("analyze-event-trends", () => import("./analyze-event-trends"));
+endpointLoaders.set("analyze-issue-creators-company", () => import("./analyze-issue-creators-company"));
+endpointLoaders.set("analyze-issue-creators-map", () => import("./analyze-issue-creators-map"));
+endpointLoaders.set("analyze-issue-open-to-closed", () => import("./analyze-issue-open-to-closed"));
+endpointLoaders.set("analyze-issue-open-to-first-responded", () => import("./analyze-issue-open-to-first-responded"));
+endpointLoaders.set("analyze-issue-opened-and-closed", () => import("./analyze-issue-opened-and-closed"));
+endpointLoaders.set("analyze-loc-per-month", () => import("./analyze-loc-per-month"));
+endpointLoaders.set("analyze-people-activities-contribution-rank", () => import("./analyze-people-activities-contribution-rank"));
+endpointLoaders.set("analyze-people-code-contribution-rank", () => import("./analyze-people-code-contribution-rank"));
+endpointLoaders.set("analyze-people-code-pr-contribution-rank", () => import("./analyze-people-code-pr-contribution-rank"));
+endpointLoaders.set("analyze-people-code-review-comments-contribution-rank", () => import("./analyze-people-code-review-comments-contribution-rank"));
+endpointLoaders.set("analyze-people-code-review-prs-contribution-rank", () => import("./analyze-people-code-review-prs-contribution-rank"));
+endpointLoaders.set("analyze-people-code-review-submits-contribution-rank", () => import("./analyze-people-code-review-submits-contribution-rank"));
+endpointLoaders.set("analyze-people-issue-close-contribution-rank", () => import("./analyze-people-issue-close-contribution-rank"));
+endpointLoaders.set("analyze-people-issue-comment-contribution-rank", () => import("./analyze-people-issue-comment-contribution-rank"));
+endpointLoaders.set("analyze-people-issue-contribution-rank", () => import("./analyze-people-issue-contribution-rank"));
+endpointLoaders.set("analyze-pull-request-creators-company", () => import("./analyze-pull-request-creators-company"));
+endpointLoaders.set("analyze-pull-request-creators-map", () => import("./analyze-pull-request-creators-map"));
+endpointLoaders.set("analyze-pull-request-open-to-merged", () => import("./analyze-pull-request-open-to-merged"));
+endpointLoaders.set("analyze-pull-requests-size-per-month", () => import("./analyze-pull-requests-size-per-month"));
+endpointLoaders.set("analyze-pushes-and-commits-per-month", () => import("./analyze-pushes-and-commits-per-month"));
+endpointLoaders.set("analyze-recent-collaborative-productivity-metrics", () => import("./analyze-recent-collaborative-productivity-metrics"));
+endpointLoaders.set("analyze-recent-commits", () => import("./analyze-recent-commits"));
+endpointLoaders.set("analyze-recent-contributors", () => import("./analyze-recent-contributors"));
+endpointLoaders.set("analyze-recent-issues", () => import("./analyze-recent-issues"));
+endpointLoaders.set("analyze-recent-pull-requests", () => import("./analyze-recent-pull-requests"));
+endpointLoaders.set("analyze-recent-stars", () => import("./analyze-recent-stars"));
+endpointLoaders.set("analyze-recent-top-contributors", () => import("./analyze-recent-top-contributors"));
+endpointLoaders.set("analyze-repo-issue-overview", () => import("./analyze-repo-issue-overview"));
+endpointLoaders.set("analyze-repo-milestones", () => import("./analyze-repo-milestones"));
+endpointLoaders.set("analyze-repo-overview", () => import("./analyze-repo-overview"));
+endpointLoaders.set("analyze-repo-pr-overview", () => import("./analyze-repo-pr-overview"));
+endpointLoaders.set("analyze-repo-top-contributors", () => import("./analyze-repo-top-contributors"));
+endpointLoaders.set("analyze-stars-company", () => import("./analyze-stars-company"));
+endpointLoaders.set("analyze-stars-history", () => import("./analyze-stars-history"));
+endpointLoaders.set("analyze-stars-map", () => import("./analyze-stars-map"));
+endpointLoaders.set("collection-issues-history", () => import("./collection-issues-history"));
+endpointLoaders.set("collection-issues-history-rank", () => import("./collection-issues-history-rank"));
+endpointLoaders.set("collection-issues-last-28-days-rank", () => import("./collection-issues-last-28-days-rank"));
+endpointLoaders.set("collection-issues-month-rank", () => import("./collection-issues-month-rank"));
+endpointLoaders.set("collection-pull-request-creators-history", () => import("./collection-pull-request-creators-history"));
+endpointLoaders.set("collection-pull-request-creators-history-rank", () => import("./collection-pull-request-creators-history-rank"));
+endpointLoaders.set("collection-pull-requests-history", () => import("./collection-pull-requests-history"));
+endpointLoaders.set("collection-pull-requests-history-rank", () => import("./collection-pull-requests-history-rank"));
+endpointLoaders.set("collection-pull-requests-last-28-days-rank", () => import("./collection-pull-requests-last-28-days-rank"));
+endpointLoaders.set("collection-pull-requests-month-rank", () => import("./collection-pull-requests-month-rank"));
+endpointLoaders.set("collection-stars-history", () => import("./collection-stars-history"));
+endpointLoaders.set("collection-stars-history-rank", () => import("./collection-stars-history-rank"));
+endpointLoaders.set("collection-stars-last-28-days-rank", () => import("./collection-stars-last-28-days-rank"));
+endpointLoaders.set("collection-stars-month-rank", () => import("./collection-stars-month-rank"));
+endpointLoaders.set("events-increment", () => import("./events-increment"));
+endpointLoaders.set("events-increment-intervals", () => import("./events-increment-intervals"));
+endpointLoaders.set("events-increment-list", () => import("./events-increment-list"));
+endpointLoaders.set("events-total", () => import("./events-total"));
+endpointLoaders.set("get-repo-by-id", () => import("./get-repo-by-id"));
+endpointLoaders.set("get-repo-collections", () => import("./get-repo-collections"));
+endpointLoaders.set("get-user-by-login", () => import("./get-user-by-login"));
+endpointLoaders.set("live-time-base-information-hourly", () => import("./live-time-base-information-hourly"));
+endpointLoaders.set("live-time-top-developers-by-prs-daily", () => import("./live-time-top-developers-by-prs-daily"));
+endpointLoaders.set("live-time-top-repos-by-prs-daily", () => import("./live-time-top-repos-by-prs-daily"));
+endpointLoaders.set("organizations/check-if-is-merged-pr-creator", () => import("./organizations/check-if-is-merged-pr-creator"));
+endpointLoaders.set("organizations/list-merged-pr-creators", () => import("./organizations/list-merged-pr-creators"));
+endpointLoaders.set("orgs/commits/code-changes/top-repos", () => import("./orgs/commits/code-changes/top-repos"));
+endpointLoaders.set("orgs/commits/time-distribution", () => import("./orgs/commits/time-distribution"));
+endpointLoaders.set("orgs/commits/total", () => import("./orgs/commits/total"));
+endpointLoaders.set("orgs/commits/trends", () => import("./orgs/commits/trends"));
+endpointLoaders.set("orgs/issues/actions/trends", () => import("./orgs/issues/actions/trends"));
+endpointLoaders.set("orgs/issues/closed-ratio", () => import("./orgs/issues/closed-ratio"));
+endpointLoaders.set("orgs/issues/issue-comments/top-repos", () => import("./orgs/issues/issue-comments/top-repos"));
+endpointLoaders.set("orgs/issues/open-to-close-duration/medium", () => import("./orgs/issues/open-to-close-duration/medium"));
+endpointLoaders.set("orgs/issues/open-to-close-duration/top-repos", () => import("./orgs/issues/open-to-close-duration/top-repos"));
+endpointLoaders.set("orgs/issues/open-to-first-response-duration/medium", () => import("./orgs/issues/open-to-first-response-duration/medium"));
+endpointLoaders.set("orgs/issues/open-to-first-response-duration/top-repos", () => import("./orgs/issues/open-to-first-response-duration/top-repos"));
+endpointLoaders.set("orgs/issues/total", () => import("./orgs/issues/total"));
+endpointLoaders.set("orgs/issues/trends", () => import("./orgs/issues/trends"));
+endpointLoaders.set("orgs/overview", () => import("./orgs/overview"));
+endpointLoaders.set("orgs/participants/active/ranking", () => import("./orgs/participants/active/ranking"));
+endpointLoaders.set("orgs/participants/active/total", () => import("./orgs/participants/active/total"));
+endpointLoaders.set("orgs/participants/active/trends", () => import("./orgs/participants/active/trends"));
+endpointLoaders.set("orgs/participants/engagements", () => import("./orgs/participants/engagements"));
+endpointLoaders.set("orgs/participants/locations", () => import("./orgs/participants/locations"));
+endpointLoaders.set("orgs/participants/new/ranking", () => import("./orgs/participants/new/ranking"));
+endpointLoaders.set("orgs/participants/new/total", () => import("./orgs/participants/new/total"));
+endpointLoaders.set("orgs/participants/new/trends", () => import("./orgs/participants/new/trends"));
+endpointLoaders.set("orgs/participants/organizations", () => import("./orgs/participants/organizations"));
+endpointLoaders.set("orgs/participants/roles", () => import("./orgs/participants/roles"));
+endpointLoaders.set("orgs/participants/trends", () => import("./orgs/participants/trends"));
+endpointLoaders.set("orgs/pull-requests/actions/trends", () => import("./orgs/pull-requests/actions/trends"));
+endpointLoaders.set("orgs/pull-requests/merged-ratio", () => import("./orgs/pull-requests/merged-ratio"));
+endpointLoaders.set("orgs/pull-requests/open-to-close-duration/medium", () => import("./orgs/pull-requests/open-to-close-duration/medium"));
+endpointLoaders.set("orgs/pull-requests/open-to-close-duration/top-repos", () => import("./orgs/pull-requests/open-to-close-duration/top-repos"));
+endpointLoaders.set("orgs/pull-requests/open-to-first-response-duration/medium", () => import("./orgs/pull-requests/open-to-first-response-duration/medium"));
+endpointLoaders.set("orgs/pull-requests/open-to-first-response-duration/top-repos", () => import("./orgs/pull-requests/open-to-first-response-duration/top-repos"));
+endpointLoaders.set("orgs/pull-requests/self-merged-ratio", () => import("./orgs/pull-requests/self-merged-ratio"));
+endpointLoaders.set("orgs/pull-requests/total", () => import("./orgs/pull-requests/total"));
+endpointLoaders.set("orgs/pull-requests/trends", () => import("./orgs/pull-requests/trends"));
+endpointLoaders.set("orgs/repos", () => import("./orgs/repos"));
+endpointLoaders.set("orgs/reviews/open-to-first-review-duration/medium", () => import("./orgs/reviews/open-to-first-review-duration/medium"));
+endpointLoaders.set("orgs/reviews/open-to-first-review-duration/top-repos", () => import("./orgs/reviews/open-to-first-review-duration/top-repos"));
+endpointLoaders.set("orgs/reviews/review-comments/top-repos", () => import("./orgs/reviews/review-comments/top-repos"));
+endpointLoaders.set("orgs/reviews/review-prs/trends", () => import("./orgs/reviews/review-prs/trends"));
+endpointLoaders.set("orgs/reviews/reviewed-ratio", () => import("./orgs/reviews/reviewed-ratio"));
+endpointLoaders.set("orgs/reviews/total", () => import("./orgs/reviews/total"));
+endpointLoaders.set("orgs/reviews/trends", () => import("./orgs/reviews/trends"));
+endpointLoaders.set("orgs/stars/locations", () => import("./orgs/stars/locations"));
+endpointLoaders.set("orgs/stars/organizations", () => import("./orgs/stars/organizations"));
+endpointLoaders.set("orgs/stars/top-repos", () => import("./orgs/stars/top-repos"));
+endpointLoaders.set("orgs/stars/total", () => import("./orgs/stars/total"));
+endpointLoaders.set("orgs/stars/trends", () => import("./orgs/stars/trends"));
+endpointLoaders.set("personal-contribution-in-diff-repos", () => import("./personal-contribution-in-diff-repos"));
+endpointLoaders.set("personal-contribution-time-distribution", () => import("./personal-contribution-time-distribution"));
+endpointLoaders.set("personal-contribution-trends", () => import("./personal-contribution-trends"));
+endpointLoaders.set("personal-contributions-for-repos", () => import("./personal-contributions-for-repos"));
+endpointLoaders.set("personal-issues-history", () => import("./personal-issues-history"));
+endpointLoaders.set("personal-languages", () => import("./personal-languages"));
+endpointLoaders.set("personal-overview", () => import("./personal-overview"));
+endpointLoaders.set("personal-pull-request-action-history", () => import("./personal-pull-request-action-history"));
+endpointLoaders.set("personal-pull-request-code-changes-history", () => import("./personal-pull-request-code-changes-history"));
+endpointLoaders.set("personal-pull-request-reviews-history", () => import("./personal-pull-request-reviews-history"));
+endpointLoaders.set("personal-pull-request-size-history", () => import("./personal-pull-request-size-history"));
+endpointLoaders.set("personal-pushes-and-commits", () => import("./personal-pushes-and-commits"));
+endpointLoaders.set("personal-star-history", () => import("./personal-star-history"));
+endpointLoaders.set("recent-hot-collections", () => import("./recent-hot-collections"));
+endpointLoaders.set("repos", () => import("./repos"));
+endpointLoaders.set("stats-index-info", () => import("./stats-index-info"));
+endpointLoaders.set("stats-index-usage", () => import("./stats-index-usage"));
+endpointLoaders.set("stats-indexes-info", () => import("./stats-indexes-info"));
+endpointLoaders.set("stats-indexes-usage", () => import("./stats-indexes-usage"));
+endpointLoaders.set("stats-query-records", () => import("./stats-query-records"));
+endpointLoaders.set("stats-query-records-latest", () => import("./stats-query-records-latest"));
+endpointLoaders.set("stats-table-ddl", () => import("./stats-table-ddl"));
+endpointLoaders.set("stats-table-info", () => import("./stats-table-info"));
+endpointLoaders.set("trending-repos", () => import("./trending-repos"));
+
+export default async function loadEndpoint(name: string): Promise<EndpointModule> {
+  const load = endpointLoaders.get(name);
+  if (!load) {
+    throw new Error(`Unknown endpoint: ${name}`);
+  }
+  return load();
+}
+
+export function hasEndpoint(name: string) {
+  return endpointLoaders.has(name);
+}
+
+export function listEndpoints() {
+  return Array.from(endpointLoaders.keys());
+}

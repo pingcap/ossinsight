@@ -1,0 +1,14 @@
+{
+  "collection_id": {
+    "type": "collection-id",
+    "title": "Collection",
+    "required": true,
+    "default": 2
+  },
+  "activity": {
+    "type": "activity-type",
+    "title": "Activity type",
+    "enums": ["stars", "pull-requests", "pull-request-creators", "issues"],
+    "default": "stars"
+  }
+}

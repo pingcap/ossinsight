@@ -1,0 +1,16 @@
+{
+  "repo_id": {
+    "type": "repo-id",
+    "title": "Analyzing Repo",
+    "required": true,
+    "default": 41986369
+  },
+  "from": {
+    "type": "month",
+    "title": "From"
+  },
+  "to": {
+    "type": "month",
+    "title": "To"
+  }
+}

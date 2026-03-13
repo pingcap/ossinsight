@@ -1,0 +1,14 @@
+{
+  "repo_id": {
+    "type": "repo-id",
+    "title": "Analyzing Repo",
+    "required": true,
+    "default": 41986369
+  },
+  "activity": {
+    "type": "activity-type",
+    "title": "Activity type",
+    "enums": ["issue-closed-ratio", "pr-merged-ratio", "pr-reviewed-ratio"],
+    "default": "issue-closed-ratio"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "user_id": {
+    "type": "user-id",
+    "title": "Analyzing User",
+    "required": true,
+    "default": 12960671
+  }
+}
