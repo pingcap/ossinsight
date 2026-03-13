@@ -28,7 +28,7 @@ export async function GET(req: NextRequest, reqCtx: { params: Promise<Params> })
       status: 200,
       headers: {
         'Content-Type': 'application/json; charset=utf-8',
-        'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=120',
+        'Cache-Control': 'no-store',
         ...CORS_HEADERS,
       },
     });
