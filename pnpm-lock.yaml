@@ -201,6 +201,9 @@ importers:
       '@tidbcloud/serverless':
         specifier: ^0.0.6
         version: 0.0.6
+      '@vercel/related-projects':
+        specifier: ^1.0.1
+        version: 1.0.1
       '@xyflow/react':
         specifier: ^12.10.1
         version: 12.10.1(@types/react@18.2.15)(react-dom@18.2.0)(react@18.2.0)
@@ -7472,6 +7475,12 @@ packages:
   /@vercel/oidc@3.1.0:
     resolution: {integrity: sha512-Fw28YZpRnA3cAHHDlkt7xQHiJ0fcL+NRcIqsocZQUSmbzeIKRpwttJjik5ZGanXP+vlA4SbTg+AbA3bP363l+w==}
     engines: {node: '>= 20'}
+    dev: false
+
+  /@vercel/related-projects@1.0.1:
+    resolution: {integrity: sha512-gCgaY/LHQXue7XaviZqbr1ZGQOhFmBL13fBYkt4Dr+fONyoHH/awH6steYfkwPQyi/479mZ0mQax84p0/bDs5A==}
+    optionalDependencies:
+      ajv: 6.14.0
     dev: false
 
   /@webassemblyjs/ast@1.14.1:
