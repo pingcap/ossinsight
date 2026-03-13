@@ -1,0 +1,36 @@
+id: 10088
+name: WebRTC
+items:
+  # Application
+  - jitsi/jitsi-meet
+  - element-hq/element-call
+
+  # Platform
+  - OpenVidu/openvidu
+
+  # SFU
+  - jech/galene
+  - jitsi/jitsi-videobridge
+  - livekit/livekit
+  - medooze/media-server
+  - meetecho/janus-gateway
+  - versatica/mediasoup
+  
+  # WebRTC Libraries
+  - aiortc/aiortc
+  - algesten/str0m
+  - flutter-webrtc/flutter-webrtc
+  - jitsi/webrtc
+  - lerouxrgd/datachannel-rs
+  - murat-dogan/node-datachannel
+  - paullouisageneau/libdatachannel
+  - pion/webrtc
+  - react-native-webrtc/react-native-webrtc
+  - shinyoshiaki/werift-webrtc
+  - sipsorcery-org/sipsorcery
+  - webrtc-rs/webrtc
+  - webrtc-sdk/libwebrtc
+  
+  # TURN
+  - coturn/coturn
+  

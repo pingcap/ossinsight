@@ -1,0 +1,27 @@
+id: 10039
+name: Hyperledger Fabric
+items:
+  - hyperledger/fabric
+  - hyperledger/fabric-amcl
+  - hyperledger/fabric-ca
+  - hyperledger/fabric-chaincode-go
+  - hyperledger/fabric-chaincode-java
+  - hyperledger/fabric-chaincode-node
+  - hyperledger/fabric-cli
+  - hyperledger/fabric-config
+  - hyperledger/fabric-contract-api-go
+  - hyperledger/fabric-docs-i18n
+  - hyperledger/fabric-gateway-java
+  - hyperledger/fabric-gateway
+  - hyperledger/fabric-lib-go
+  - hyperledger/fabric-private-chaincode
+  - hyperledger/fabric-protos-go-apiv2
+  - hyperledger/fabric-protos-go
+  - hyperledger/fabric-protos
+  - hyperledger/fabric-rfcs
+  - hyperledger/fabric-samples
+  - hyperledger/fabric-sdk-go
+  - hyperledger/fabric-sdk-java
+  - hyperledger/fabric-sdk-node
+  - hyperledger/fabric-sdk-py
+  - hyperledger/fabric-test

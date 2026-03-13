@@ -1,0 +1,13 @@
+id: 10093
+name: 3D Physics Engines
+items:
+  - bepu/bepuphysics2
+  - bulletphysics/bullet3
+  - DanielChappuis/reactphysics3d
+  - dimforge/rapier
+  - google-deepmind/mujoco
+  - Jondolf/avian
+  - jrouwe/JoltPhysics
+  - MADEAPPS/newton-dynamics
+  - NVIDIA-Omniverse/PhysX
+  - projectchrono/chrono

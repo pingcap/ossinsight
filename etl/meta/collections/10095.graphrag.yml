@@ -1,0 +1,14 @@
+id: 10095
+name: GraphRAG - Knowledge Graph based RAG
+items:
+  - pingcap/autoflow
+  - pingcap/tidb
+  - FalkorDB/FalkorDB
+  - neo4j/neo4j-graphrag-python
+  - topoteretes/cognee
+  - eosphoros-ai/DB-GPT
+  - langchain-ai/langchain
+  - run-llama/llama_index
+  - neo4j/neo4j
+  - aerospike/aerospike-server
+  - OpenSPG/KAG

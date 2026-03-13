@@ -1,0 +1,20 @@
+id: 10077
+name: Vector Search Engine
+items:
+  - qdrant/qdrant
+  - weaviate/weaviate
+  - vdaas/vald
+  - milvus-io/milvus
+  - microsoft/SPTAG
+  - vespa-engine/vespa
+  - facebookresearch/faiss
+  - spotify/annoy
+  - nmslib/hnswlib
+  - pgvector/pgvector
+  - hora-search/hora
+  - vearch/vearch
+  - pixelogik/NearPy
+  - neuml/txtai
+  - RelevanceAI/vectorhub
+  - chroma-core/chroma
+  - epsilla-cloud/vectordb

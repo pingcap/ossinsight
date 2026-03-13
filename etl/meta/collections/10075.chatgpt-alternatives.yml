@@ -1,0 +1,21 @@
+id: 10075
+name: ChatGPT Alternatives
+items:
+  - databrickslabs/dolly
+  - tatsu-lab/stanford_alpaca
+  - meta-llama/llama
+  - LAION-AI/Open-Assistant
+  - ggml-org/llama.cpp
+  - antimatter15/alpaca.cpp
+  - deep-diver/LLM-As-Chatbot
+  - LC1332/Chinese-alpaca-lora
+  - karpathy/minGPT
+  - openai/gpt-2
+  - karpathy/nanoGPT
+  - jaymody/picoGPT
+  - togethercomputer/OpenChatKit
+  - nomic-ai/gpt4all
+  - Lightning-AI/lit-llama
+  - hpcaitech/ColossalAI
+  - rustformers/llm
+  - lm-sys/FastChat

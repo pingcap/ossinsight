@@ -36,22 +36,6 @@ OSS Insight also provides in-depth analysis of individual GitHub repositories an
   
 [🎦 Video - OSS Insight: Easiest New Way to Analyze Open Source Software](https://www.youtube.com/watch?v=6ofDBgXh4So&t=1s)
 
-### **Feature 0: Shareable Insight Widgets**
-
-| Repository Activity Trends | Collaborative Productivity - Last 28 days |
-| ----------- | ----------- |
-|<img src="https://next.ossinsight.io/widgets/official/compose-activity-trends/thumbnail.png?repo_id=41986369&image_size=auto" />|<img src="https://next.ossinsight.io/widgets/official/compose-last-28-days-collaborative-productivity/thumbnail.png?repo_id=41986369&image_size=auto" />|
-
-| Repository Performance Stats - Last 28 days | Active Contributors - Last 28 days |
-| ----------- | ----------- |
-|<img src="https://next.ossinsight.io/widgets/official/compose-last-28-days-stats/thumbnail.png?repo_id=41986369&image_size=auto" />|<img src="https://next.ossinsight.io/widgets/official/compose-recent-active-contributors/thumbnail.png?repo_id=41986369&limit=100&image_size=auto"/>|
-
-| Star Geographic Distribution | Star History |
-| ----------- | ----------- |
-|<img src="https://next.ossinsight.io/widgets/official/analyze-repo-stars-map/thumbnail.png?activity=stars&repo_id=41986369&image_size=auto" />|<img src="https://next.ossinsight.io/widgets/official/analyze-repo-stars-history/thumbnail.png?repo_id=41986369&image_size=auto" />|
-
-For more charming widgets, please [Check it out 👉](https://next.ossinsight.io/widgets?utm_source=github&utm_medium=referral)
-
 ### **Feature 1: GPT-Powered Data Exploration**
   
 Data Explorer provides a new way to discover trends and insights into 5+ billion rows of GitHub data.
@@ -89,7 +73,18 @@ Examples:
 
   **Welcome to add collections**
 
-  👏 We welcome your contributions here! You can suggest a new collection by [opening an issue](https://github.com/pingcap/ossinsight/issues).
+  👏 We welcome your contributions here! You can add a new collection or add repositories to an existing collection by submitting PRs to [`etl/meta/collections/`](https://github.com/pingcap/ossinsight/tree/main/etl/meta/collections).
+
+  * **Add repos to an existing collection**: Edit the corresponding `.yml` file and append repository names to the `items` list.
+  * **Add a new collection**: Create a new `.yml` file named `<id>.<name>.yml` with the following format:
+
+  ```yml
+  id: <collection_id>
+  name: <collection_name>
+  items:
+    - owner/repo-1
+    - owner/repo-2
+  ```
 
 * **Deep Insight into some popular fields of technology**
   

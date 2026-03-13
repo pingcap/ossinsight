@@ -1,0 +1,12 @@
+id: 10091
+name: Go Logging Libraries
+items:
+  - sirupsen/logrus
+  - uber-go/zap
+  - rs/zerolog
+  - apex/log
+  - inconshreveable/log15
+  - phuslu/log
+  - golang/glog
+  - natefinch/lumberjack
+  - lmittmann/tint

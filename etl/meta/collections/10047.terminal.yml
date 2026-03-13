@@ -1,0 +1,24 @@
+id: 10047
+name: Terminal
+items:
+  - alacritty/alacritty
+  - vercel/hyper
+  - Eugeny/tabby
+  - railsware/upterm
+  - kovidgoyal/kitty
+  - wezterm/wezterm
+  - warpdotdev/Warp
+  - sedwards2009/extraterm
+  - gnachman/iTerm2
+  - xtermjs/xterm.js
+  - fish-shell/fish-shell
+  - ohmyzsh/ohmyzsh
+  - microsoft/terminal
+  - GitSquared/edex-ui
+  - electerm/electerm
+  - oils-for-unix/oils
+  - sorin-ionescu/prezto
+  - Bash-it/bash-it
+  - ohmybash/oh-my-bash
+  - oh-my-fish/oh-my-fish
+  

@@ -1,0 +1,7 @@
+id: 10086
+name: Reactive Monolith Frameworks
+items:
+  - livewire/livewire
+  - adamghill/django-unicorn
+  - phoenixframework/phoenix_live_view
+  - hotwired/turbo
