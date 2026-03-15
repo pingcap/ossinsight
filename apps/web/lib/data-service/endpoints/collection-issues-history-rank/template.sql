@@ -28,5 +28,5 @@ SELECT
 FROM accumulative_issues_by_year acc
 JOIN collection_items ci ON collection_id = 10001 AND ci.repo_id = acc.repo_id
 WHERE row_num_by_year = 1
-ORDER BY t_year
+ORDER BY t_year, total DESC
 ;
