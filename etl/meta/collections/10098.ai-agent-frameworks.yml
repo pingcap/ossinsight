@@ -7,6 +7,7 @@ items:
   - microsoft/autogen
   - agno-agi/agno
   - openai/openai-agents-python
+  - omega-memory/omega-memory
   - pydantic/pydantic-ai
   - yoheinakajima/babyagi
   - Significant-Gravitas/AutoGPT
