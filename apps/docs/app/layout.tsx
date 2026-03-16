@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     template: '%s | OSS Insight Docs',
   },
   description: 'Blog posts, product guides, and public API documentation for OSS Insight.',
-  icons: ['/img/favicon-1.png'],
+  icons: ['/favicon.png'],
   openGraph: {
     siteName: 'OSS Insight',
     locale: 'en_US',

@@ -15,6 +15,8 @@ export interface MenuItemBaseConfig {
   icon?: ConfigIconType;
   matchPrefixes?: string[];
   newTab?: boolean;
+  /** Force a full-page navigation instead of client-side routing (for cross-app links). */
+  forceReload?: boolean;
 }
 
 export interface MenuItemConfig extends MenuItemBaseConfig {
