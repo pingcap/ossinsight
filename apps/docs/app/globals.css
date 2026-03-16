@@ -94,12 +94,12 @@
     @apply border-border;
   }
 
-  a {
+  :where(main, article, .docs-shell, .blog-shell, #nd-page) a {
     color: var(--color-fd-primary);
     @apply transition-colors;
   }
 
-  a:hover {
+  :where(main, article, .docs-shell, .blog-shell, #nd-page) a:hover {
     color: rgb(255 242 189);
   }
 
