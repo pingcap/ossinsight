@@ -2,9 +2,9 @@
 
 import Navigation, { NavItemType } from '@/components/Analyze/Navigation/Navigation';
 import { ScrollspyContextProvider } from '@/components/Scrollspy';
-import { IssueOpenedIcon, PeopleIcon, StarIcon, TelescopeIcon, ToolsIcon } from '@primer/octicons-react';
+import { CodeIcon, CommentDiscussionIcon, GraphIcon, IssueOpenedIcon, PeopleIcon, StarIcon, TelescopeIcon } from '@primer/octicons-react';
 
-export default function UserOrgAnalyzeLayout ({ children }: { children: React.ReactNode; }) {
+export default function UserAnalyzeLayout ({ children }: { children: React.ReactNode; }) {
   return (
     <ScrollspyContextProvider>
       <div className="flex">
@@ -26,65 +26,55 @@ export default function UserOrgAnalyzeLayout ({ children }: { children: React.Re
 const navItems: NavItemType[] = [
   {
     id: 'overview',
-    title: 'Organization Overview',
+    title: 'Overview',
     anchor: 'overview',
     Icon: TelescopeIcon,
   },
   {
-    id: 'popularity',
-    title: 'Popularity',
-    Icon: StarIcon,
-    children: [
-      {
-        id: 'star-growth',
-        title: 'Star Growth',
-        anchor: 'star-growth',
-      },
-    ],
-  },
-  {
-    id: 'participant',
-    title: 'Participant',
+    id: 'behaviour',
+    title: 'Behaviour',
+    anchor: 'behaviour',
     Icon: PeopleIcon,
+  },
+  {
+    id: 'star',
+    title: 'Star',
+    anchor: 'star',
+    Icon: StarIcon,
+  },
+  {
+    id: 'code',
+    title: 'Code',
+    Icon: CodeIcon,
     children: [
       {
-        id: 'engagement',
-        title: 'Engagement',
-        anchor: 'engagement',
+        id: 'pushes-and-commits',
+        title: 'Pushes & Commits',
+        anchor: 'pushes-and-commits',
       },
       {
-        id: 'origins',
-        title: 'Origins',
-        anchor: 'origins',
+        id: 'pull-requests',
+        title: 'Pull Requests',
+        anchor: 'pull-requests',
       },
     ],
   },
   {
-    id: 'productivity',
-    title: 'Productivity',
-    Icon: ToolsIcon,
-    children: [
-      {
-        id: 'pull-request-efficiency',
-        title: 'Pull Request',
-        anchor: 'pull-request-efficiency',
-      },
-      {
-        id: 'code-review-efficiency',
-        title: 'Code Review',
-        anchor: 'code-review-efficiency',
-      },
-      {
-        id: 'code-submission',
-        title: 'Code Submission',
-        anchor: 'code-submission',
-      },
-    ],
+    id: 'code-review',
+    title: 'Code Review',
+    anchor: 'code-review',
+    Icon: CommentDiscussionIcon,
   },
   {
     id: 'issue',
     title: 'Issue',
-    Icon: IssueOpenedIcon,
     anchor: 'issue',
+    Icon: IssueOpenedIcon,
+  },
+  {
+    id: 'activities',
+    title: 'Activities',
+    anchor: 'activities',
+    Icon: GraphIcon,
   },
 ];

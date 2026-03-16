@@ -149,16 +149,25 @@ export function HeaderAnalyzeSelector(props: HeaderAnalyzeSelectorProps) {
     []
   );
 
-  const handleSelectItem = React.useCallback(
+  const handleSelectUser = React.useCallback(
     () =>
-      (item: RemoteRepoInfo | RemoteUserInfo | RemoteOrgInfo) => {
+      (item: RemoteUserInfo) => {
+        closeModal();
+        navigateTo?.(`/analyze-user/${item.login}`);
+      },
+    [navigateTo]
+  );
+
+  const handleSelectNonUser = React.useCallback(
+    () =>
+      (item: RemoteRepoInfo | RemoteOrgInfo) => {
         closeModal();
         const name =
           (item as RemoteRepoInfo)!.fullName ||
-          (item as RemoteUserInfo | RemoteOrgInfo)!.login;
+          (item as RemoteOrgInfo)!.login;
         navigateTo?.(`/analyze/${name}`);
       },
-    [selectedType, navigateTo]
+    [navigateTo]
   );
 
   React.useEffect(() => {
@@ -209,19 +218,19 @@ export function HeaderAnalyzeSelector(props: HeaderAnalyzeSelectorProps) {
           <div className='px-6 py-5'>
             {selectedType === 'all' && (
               <CombinedSearch
-                handleSelectUser={handleSelectItem()}
-                handleSelectOrg={handleSelectItem()}
-                handleSelectRepo={handleSelectItem()}
+                handleSelectUser={handleSelectUser()}
+                handleSelectOrg={handleSelectNonUser()}
+                handleSelectRepo={handleSelectNonUser()}
               />
             )}
             {selectedType === 'user' && (
-              <UserSearch handleSelectItem={handleSelectItem()} />
+              <UserSearch handleSelectItem={handleSelectUser()} />
             )}
             {selectedType === 'repo' && (
-              <RepoSearch handleSelectItem={handleSelectItem()} />
+              <RepoSearch handleSelectItem={handleSelectNonUser()} />
             )}
             {selectedType === 'org' && (
-              <OrgSearch handleSelectItem={handleSelectItem()} />
+              <OrgSearch handleSelectItem={handleSelectNonUser()} />
             )}
           </div>
           <BottomTips />

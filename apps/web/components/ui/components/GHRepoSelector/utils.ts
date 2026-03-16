@@ -70,8 +70,8 @@ export function getRepoListByOrgId(ownerId: number | string) {
     `${INTERNAL_QUERY_API_SERVER}/orgs/repos?ownerId=${ownerId}`
   )
     .then((res) => res.json())
-    .then((res: { data: Array<{ repo_id: number; repo_name: string }> }) =>
-      res.data.map((item) => ({
+    .then((res: { data?: Array<{ repo_id: number; repo_name: string }> }) =>
+      (res.data ?? []).map((item) => ({
         id: item.repo_id,
         name: item.repo_name.split('/')[1],
         fullName: item.repo_name,
