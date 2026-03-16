@@ -1,0 +1,39 @@
+id: 10003
+name: Low Code Development Tool
+items:
+  - appsmithorg/appsmith
+  - hasura/graphql-engine
+  - supabase/supabase
+  - cube-js/cube
+  - GrapesJS/grapesjs
+  - nocodb/nocodb
+  - nocobase/nocobase
+  - n8n-io/n8n
+  - ToolJet/ToolJet
+  - graphile/crystal
+  - strapi/strapi
+  - directus/directus
+  - saleor/saleor
+  - appwrite/appwrite
+  - rowyio/rowy
+  - keystonejs/keystone
+  - webiny/webiny-js
+  - parse-community/parse-server
+  - Budibase/budibase
+  - lightdash/lightdash
+  - lowdefy/lowdefy
+  - AppFlowy-IO/AppFlowy
+  - go-chi/chi
+  - amplication/amplication
+  - pocketbase/pocketbase
+  - frappe/frappe
+  - surrealdb/surrealdb
+  - openblocks-dev/openblocks
+  - chiselstrike/chiselstrike
+  - grafbase/grafbase
+  - platformatic/platformatic
+  - apitable/apitable
+  - illacloud/illa-builder
+  - refinedev/refine
+  - windmill-labs/windmill
+  - gristlabs/grist-core

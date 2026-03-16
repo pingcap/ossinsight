@@ -1,0 +1,21 @@
+id: 10062
+name: Serverless Framework
+items:
+  - serverless/serverless
+  - openfaas/faas
+  - firecracker-microvm/firecracker
+  - aws/serverless-application-model
+  - vmware-archive/kubeless
+  - openfaas/faas-netes
+  - serverless/serverless-graphql
+  - apache/openwhisk
+  - fission/fission
+  - TIBCOSoftware/flogo
+  - iron-io/functions
+  - open-lambda/open-lambda
+  - fnproject/fn
+  - knative/serving
+  - dapr/dapr
+  - nuclio/nuclio
+  - metrue/fx
+

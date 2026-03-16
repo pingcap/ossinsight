@@ -1,0 +1,22 @@
+{
+  "cacheHours": 1,
+  "params": [
+    {
+      "name": "repoId",
+      "replaces": "41986369",
+      "pattern": "^[1-9]\\d*$"
+    },
+    {
+      "name": "from",
+      "replaces": "2000-01-01",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+      "default": "2000-01-01"
+    },
+    {
+      "name": "to",
+      "replaces": "2099-12-31",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+      "default": "2099-12-31"
+    }
+  ]
+}

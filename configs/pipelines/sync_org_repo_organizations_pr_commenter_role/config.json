@@ -1,0 +1,8 @@
+{
+  "name": "sync_org_repo_organizations_pr_commenter_role",
+  "description": "None",
+  "cron": "0 50 1 * * *",
+  "incremental": {
+    "timeRange": "last_day"
+  }
+}

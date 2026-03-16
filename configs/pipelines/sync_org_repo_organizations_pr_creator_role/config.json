@@ -1,0 +1,8 @@
+{
+  "name": "sync_org_repo_organizations_pr_creator_role",
+  "description": "None",
+  "cron": "0 55 1 * * *",
+  "incremental": {
+    "timeRange": "last_day"
+  }
+}

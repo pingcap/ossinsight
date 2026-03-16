@@ -1,0 +1,16 @@
+{
+  "repo_subset": [
+    "db_repos",
+    "js_framework_repos",
+    "nocode_repos",
+    "programming_language_repos",
+    "web_framework_repos"
+  ],
+  "years": ["1", "2", "5", "10"],
+  "n": ["10", "20", "50"],
+  "event": [
+    "WatchEvent",
+    "PullRequestEvent",
+    "ForkEvent"
+  ]
+}

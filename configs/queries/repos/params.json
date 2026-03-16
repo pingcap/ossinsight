@@ -1,0 +1,14 @@
+{
+  "cacheHours": 1,
+  "engine": "liquid",
+  "cacheProvider": "NORMAL_TABLE",
+  "params": [
+    {
+      "name": "repoId",
+      "type": "array",
+      "replaces": "11855343",
+      "itemType": "integer",
+      "maxArrayLength": 100
+    }
+  ]
+}

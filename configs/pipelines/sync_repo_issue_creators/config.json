@@ -1,0 +1,8 @@
+{
+  "name": "sync_repo_issue_creators",
+  "description": "Sync repo issue creators from github_events table to materialized view mv_repo_issue_creators.",
+  "cron": "0 40 0 * * *",
+  "incremental": {
+    "timeRange": "past_hour"
+  }
+}

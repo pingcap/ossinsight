@@ -1,0 +1,7 @@
+id: 10097
+name: AI Training Observability
+items:
+  - wandb/wandb
+  - SwanHubX/SwanLab
+  - tensorflow/tensorboard
+  - PaddlePaddle/VisualDL

@@ -1,0 +1,8 @@
+{
+  "name": "sync_repo_pr_creators",
+  "description": "Sync repo pull request creators from github_events table to materialized view mv_repo_pull_request_creators.",
+  "cron": "0 56 7 * * *",
+  "incremental": {
+    "timeRange": "last_day"
+  }
+}

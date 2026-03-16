@@ -1,0 +1,20 @@
+id: 10054
+name: Monitoring Tool
+items:
+  - getanteon/alaz
+  - Cacti/cacti
+  - Checkmk/checkmk
+  - coroot/coroot
+  - Icinga/icinga2
+  - grafana/grafana
+  - librenms/librenms
+  - munin-monitoring/munin
+  - NagiosEnterprises/nagioscore
+  - netdata/netdata
+  - ccfos/nightingale
+  - OpenNMS/opennms
+  - prometheus/prometheus
+  - riemann/riemann
+  - robusta-dev/robusta
+  - VictoriaMetrics/VictoriaMetrics
+  - zabbix/zabbix

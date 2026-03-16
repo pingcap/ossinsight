@@ -1,0 +1,28 @@
+{
+  "name": "@ossinsight/types",
+  "version": "1.0.0",
+  "description": "The type definitions for OSS Insight",
+  "license": "Apache-2.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "directories": {
+    "test": "__tests__"
+  },
+  "scripts": {
+    "gen:d.ts": "json2ts ./schema/query.schema.json ./src/query.schema.d.ts",
+    "validate:query": "ajv -s ./schema/query.schema.json -r ./schema/openapi-2021-09-28.schema.json -c ajv-formats -d \"../../configs/queries/*/params.json\"",
+    "build": "tsc"
+  },
+  "dependencies": {
+
+  },
+  "devDependencies": {
+    "@types/node": "^18.0.0",
+    "ajv-cli": "^5.0.0",
+    "ajv-formats": "^2.1.1",
+    "fastify-tsconfig": "^1.0.1",
+    "json-schema-to-ts": "^2.6.0",
+    "json-schema-to-typescript": "^11.0.2",
+    "typescript": "^4.5.4"
+  }
+}

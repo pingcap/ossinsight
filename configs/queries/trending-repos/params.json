@@ -1,0 +1,118 @@
+{
+  "public": true,
+  "engine": "liquid",
+  "description": "Repository trending alternative to https://github.com/trending",
+  "cacheHours": -1,
+  "refreshCron": {
+    "param": "period",
+    "on": {
+      "past_24_hours": "@daily",
+      "past_week": "@daily",
+      "past_month": "@daily",
+      "past_3_months": "@daily"
+    }
+  },
+  "onlyFromCache": true,
+  "persist": {
+    "tableName": "mv_trending_repos",
+    "series": [
+      {
+        "name": "dt",
+        "expression": "{{#$now}}yyyy-MM-dd{{/$now}}"
+      },
+      {
+        "name": "language",
+        "expression": "{{$params.language}}"
+      },
+      {
+        "name": "period",
+        "expression": "{{$params.period}}"
+      },
+      {
+        "name": "repo_id",
+        "expression": "{{$row.repo_id}}"
+      }
+    ],
+    "fields": [
+      {
+        "name": "stars"
+      },
+      {
+        "name": "forks"
+      },
+      {
+        "name": "pull_requests"
+      },
+      {
+        "name": "pushes"
+      },
+      {
+        "name": "total_score"
+      },
+      {
+        "name": "contributor_logins"
+      }
+    ]
+  },
+  "params": [
+    {
+      "name": "period",
+      "description": "Trending time period.",
+      "replaces": "${period}",
+      "default": "past_24_hours",
+      "enums": [
+       "past_24_hours", "past_week", "past_month", "past_3_months"
+      ]
+    },
+    {
+      "name": "language",
+      "description": "Primary language",
+      "replaces": "${language}",
+      "default": "All",
+      "enums": [
+        "All", "JavaScript", "Java", "Python", "PHP", "C++", "C#", "TypeScript", "Shell", "C", "Ruby", "Rust", "Go", "Kotlin", "HCL", "PowerShell", "CMake", "Groovy", "PLpgSQL", "TSQL", "Dart", "Swift", "HTML", "CSS", "Elixir", "Haskell", "Solidity", "Assembly", "R", "Scala", "Julia", "Lua", "Clojure", "Erlang", "Common Lisp", "Emacs Lisp", "OCaml", "MATLAB", "Objective-C", "Perl", "Fortran"
+      ]
+    }
+  ],
+  "resultSchema": {
+    "type": "object",
+    "properties": {
+      "repo_id": {
+        "type": "number"
+      },
+      "repo_name": {
+        "type": "string"
+      },
+      "language": {
+        "type": "string"
+      },
+      "description": {
+        "type": "string"
+      },
+      "stars": {
+        "type": "number"
+      },
+      "forks": {
+        "type": "number"
+      },
+      "pull_requests": {
+        "type": "number"
+      },
+      "pushes": {
+        "type": "number"
+      },
+      "total_score": {
+        "type": "number"
+      },
+      "contributor_logins": {
+        "type": "string",
+        "nullable": true
+      },
+      "collection_names": {
+        "type": "string",
+        "nullable": true
+      }
+    },
+    "required": ["repo_id", "repo_name", "language", "description", "stars", "forks", "pull_requests", "pushes", "total_score", "contributor_logins", "collection_names"]
+  }
+}

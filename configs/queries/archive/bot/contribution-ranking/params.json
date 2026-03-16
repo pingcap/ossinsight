@@ -1,0 +1,6 @@
+{
+  "cacheHours": -1,
+  "cacheProvider": "NORMAL_TABLE",
+  "refreshCron": "@once",
+  "params": []
+}

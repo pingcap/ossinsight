@@ -1,0 +1,26 @@
+id: 10059
+name: Key Value Database
+items:
+  - redis/redis
+  - tikv/tikv
+  - dragonflydb/dragonfly
+  - apache/kvrocks
+  - etcd-io/etcd
+  - google/leveldb
+  - apple/foundationdb
+  - Tencent/MMKV
+  - boltdb/bolt
+  - arangodb/arangodb
+  - hypermodeinc/badger
+  - codenotary/immudb
+  - tidwall/buntdb
+  - isar/hive
+  - rosedblabs/rosedb
+  - facebook/rocksdb
+  - memcached/memcached
+  - patrickmn/go-cache
+  - syndtr/goleveldb
+  - cockroachdb/pebble
+  - nutsdb/nutsdb
+  - Snapchat/KeyDB
+  - OpenAtomFoundation/pikiwidb

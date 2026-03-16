@@ -1,0 +1,5 @@
+{
+  "name": "calc_events_total_hourly",
+  "description": "None",
+  "cron": "0 0 * * * *"
+}

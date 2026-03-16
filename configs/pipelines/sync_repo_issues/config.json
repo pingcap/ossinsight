@@ -1,0 +1,8 @@
+{
+  "name": "sync_repo_issues",
+  "description": "None",
+  "cron": "0 50 0 * * *",
+  "incremental": {
+    "timeRange": "last_day"
+  }
+}
