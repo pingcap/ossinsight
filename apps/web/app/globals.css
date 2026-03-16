@@ -99,7 +99,7 @@
     @apply border-border outline-ring/50;
   }
   html {
-    @apply font-sans;
+    font-family: var(--font-sans), ui-sans-serif, system-ui, -apple-system, sans-serif;
   }
 }
 
