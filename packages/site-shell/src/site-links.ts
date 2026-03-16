@@ -30,15 +30,10 @@ export function getSiteAppOrigin(app: SiteApp, env: EnvMap = process.env) {
   return getSiteAppOrigins(env)[app];
 }
 
-export function getCrossAppHref(currentApp: SiteApp, targetApp: SiteApp, path: string, env: EnvMap = process.env) {
-  // Web proxies /blog and /docs to docs app via rewrites, so always use relative paths
-  // from web→docs. Only docs→web needs a full origin.
-  if (currentApp === targetApp || (currentApp === 'web' && targetApp === 'docs')) {
-    return path;
-  }
-
-  const origins = getSiteAppOrigins(env);
-  return `${origins[targetApp]}${path}`;
+export function getCrossAppHref(_currentApp: SiteApp, _targetApp: SiteApp, path: string, _env: EnvMap = process.env) {
+  // Both apps are served on the same domain (ossinsight.io) via Vercel rewrites,
+  // so all cross-app links are relative paths.
+  return path;
 }
 
 export function createAppHeaderConfig(app: SiteApp, env: EnvMap = process.env): SiteHeaderConfig {
