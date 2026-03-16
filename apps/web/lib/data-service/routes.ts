@@ -135,26 +135,6 @@ async function runTrendingReposQuery(
   }
 
   const nextRequest = loadTrendingReposFromMaterializedView(params)
-    .catch(async (error) => {
-      if (!shouldFallbackToLiveTrendingRepos(error)) {
-        throw error;
-      }
-
-      return createQueryResult(
-        'trending-repos',
-        await executeEndpoint('trending-repos', config, sqlTemplate, params),
-      );
-    })
-    .then(async (result) => {
-      if (result.data.length > 0) {
-        return result;
-      }
-
-      return createQueryResult(
-        'trending-repos',
-        await executeEndpoint('trending-repos', config, sqlTemplate, params),
-      );
-    })
     .then((result) => {
       cachedTrendingRepos.set(cacheKey, {
         expiresAt: Date.now() + TEN_MINUTES,
@@ -258,28 +238,3 @@ LIMIT 100
   } satisfies QueryResult;
 }
 
-function shouldFallbackToLiveTrendingRepos(error: unknown) {
-  if (!(error instanceof Error)) {
-    return false;
-  }
-
-  return /mv_trending_repos|doesn't exist|does not exist|unknown column|unknown table/i.test(error.message);
-}
-
-function createQueryResult(queryName: string, result: Awaited<ReturnType<typeof executeEndpoint>>) {
-  return {
-    query: queryName,
-    params: result.params,
-    sql: result.sql,
-    data: result.data,
-    requestedAt: result.requestedAt,
-    finishedAt: result.finishedAt,
-    spent: result.spent,
-    fields: Object.entries(result.types ?? {}).map(([name, columnType]) => ({
-      name,
-      columnType,
-    })),
-    types: result.types,
-    geo: result.geo,
-  } satisfies QueryResult;
-}
