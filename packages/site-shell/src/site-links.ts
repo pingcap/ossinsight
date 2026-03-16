@@ -51,21 +51,25 @@ export function createAppHeaderConfig(app: SiteApp, env: EnvMap = process.env): 
         href: getCrossAppHref(app, 'web', '/explore', env),
         matchPrefixes: app === 'web' ? ['/explore'] : [],
         icon: ExploreIcon as any,
+        forceReload: app !== 'web',
       },
       {
         label: 'Collections',
         href: getCrossAppHref(app, 'web', '/collections', env),
         matchPrefixes: app === 'web' ? ['/collections'] : [],
+        forceReload: app !== 'web',
       },
       {
         label: 'Blog',
         href: getCrossAppHref(app, 'docs', '/blog', env),
         matchPrefixes: app === 'docs' ? ['/blog'] : [],
+        forceReload: app !== 'docs',
       },
       {
         label: 'API',
         href: getCrossAppHref(app, 'docs', '/docs/api', env),
         matchPrefixes: app === 'docs' ? ['/docs/api'] : [],
+        forceReload: app !== 'docs',
       },
       {
         label: 'More',
@@ -73,14 +77,17 @@ export function createAppHeaderConfig(app: SiteApp, env: EnvMap = process.env): 
           {
             label: 'About OSS Insight',
             href: getCrossAppHref(app, 'docs', '/docs/about', env),
+            forceReload: app !== 'docs',
           },
           {
             label: 'FAQ',
             href: getCrossAppHref(app, 'docs', '/docs/faq', env),
+            forceReload: app !== 'docs',
           },
           {
             label: 'How do we implement OSS Insight?',
             href: getCrossAppHref(app, 'docs', '/blog/why-we-choose-tidb-to-support-ossinsight', env),
+            forceReload: app !== 'docs',
           },
 {
             label: 'About TiDB Cloud',

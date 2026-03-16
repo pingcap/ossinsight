@@ -44,17 +44,19 @@ function renderIcon(icon: ConfigIconType | undefined, className?: string) {
 function NavLink({
   href,
   newTab,
+  forceReload,
   className,
   active,
   children,
 }: {
   href: string;
   newTab?: boolean;
+  forceReload?: boolean;
   className?: string;
   active?: boolean;
   children: React.ReactNode;
 }) {
-  if (isAbsoluteUrl(href)) {
+  if (isAbsoluteUrl(href) || forceReload) {
     return (
       <a
         href={href}
@@ -83,6 +85,7 @@ function HeaderMenuLink({ item, pathname }: { item: MenuItemConfig; pathname: st
       <NavLink
         href={item.href}
         newTab={item.newTab}
+        forceReload={item.forceReload}
         active={active}
         className={clsx(
           'inline-flex items-center gap-2 rounded-lg px-3 py-2 text-[15px] text-slate-300 transition-colors outline-none',
@@ -127,6 +130,7 @@ function HeaderMenuParent({ item }: { item: MenuParentItemConfig }) {
                   <NavLink
                     href={subItem.href}
                     newTab={subItem.newTab}
+                    forceReload={subItem.forceReload}
                     className="block rounded-xl px-3 py-2 text-slate-300 transition-colors hover:bg-white/[0.05] hover:text-white"
                   >
                     {subItem.label}
