@@ -36,7 +36,7 @@ namespace :gh do
   end
 
   task :load_collection => :environment do 
-    Dir.glob(Rails.root.join "meta/collections/*.yml") do |file|
+    Dir.glob(Rails.root.join "..", "configs", "collections", "*.yml") do |file|
       yml = YAML.load_file(file)
       collection = Collection.where(id: yml['id']).first
       if ENV['ID'].present? && (ENV['ID'] != yml['id'].to_s)
