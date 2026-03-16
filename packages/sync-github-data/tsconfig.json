@@ -1,0 +1,20 @@
+{
+  "extends": "fastify-tsconfig",
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "declaration": true,
+    "outDir": "dist",
+    "baseUrl": "src",
+    "paths": {
+      "@*": ["*"],
+      "@commands/*": ["commands/*"]
+    }
+  },
+  "include": ["src/**/*"],
+  "ts-node": {
+    // Do not forget to `pnpm i -D tsconfig-paths`
+    "require": ["tsconfig-paths/register"]
+  }
+}
