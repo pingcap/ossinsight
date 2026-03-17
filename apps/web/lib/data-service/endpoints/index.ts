@@ -39,6 +39,7 @@ endpointLoaders.set("analyze-recent-top-contributors", () => import("./analyze-r
 endpointLoaders.set("analyze-repo-issue-overview", () => import("./analyze-repo-issue-overview"));
 endpointLoaders.set("analyze-repo-milestones", () => import("./analyze-repo-milestones"));
 endpointLoaders.set("analyze-repo-overview", () => import("./analyze-repo-overview"));
+endpointLoaders.set("analyze-repo-similar", () => import("./analyze-repo-similar"));
 endpointLoaders.set("analyze-repo-pr-overview", () => import("./analyze-repo-pr-overview"));
 endpointLoaders.set("analyze-repo-top-contributors", () => import("./analyze-repo-top-contributors"));
 endpointLoaders.set("analyze-stars-company", () => import("./analyze-stars-company"));

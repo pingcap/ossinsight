@@ -2,6 +2,7 @@
 
 import React, { useMemo } from 'react';
 import dynamic from 'next/dynamic';
+import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
 import {
   CodeIcon,
@@ -340,6 +341,86 @@ export function OverviewSection() {
         vsRepoName={comparingRepoName}
         style={{ height: vs ? 400 : 300 }}
       />
+
+      {!vs && <SimilarRepos />}
     </section>
+  );
+}
+
+type SimilarRepo = {
+  repo_name: string;
+  description: string | null;
+  stars: number;
+  language: string | null;
+  shared_topics: number;
+};
+
+function SimilarRepos() {
+  const { repoId } = useAnalyzeContext();
+
+  const { data, isLoading } = useQuery({
+    queryKey: ['analyze-repo-similar', repoId],
+    queryFn: async () => {
+      const res = await fetch(`/api/q/analyze-repo-similar?repoId=${repoId}`);
+      if (!res.ok) return null;
+      const json = await res.json();
+      return json.data as SimilarRepo[];
+    },
+    enabled: repoId != null,
+    staleTime: 24 * 60 * 60 * 1000,
+  });
+
+  if (isLoading || !data || data.length === 0) return null;
+
+  return (
+    <div className="mt-8">
+      <h3
+        id="similar-repos"
+        className="pb-2 text-[24px] font-semibold text-[#e9eaee]"
+        style={{ scrollMarginTop: '140px' }}
+      >
+        Similar Repositories
+      </h3>
+      <p className="pb-4 text-[16px] leading-7 text-[#7c7c7c]">
+        Repositories that share the most topics in common.
+      </p>
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        {data.map((repo) => {
+          const [owner, name] = repo.repo_name.split('/');
+          return (
+            <Link
+              key={repo.repo_name}
+              href={`/analyze/${owner}/${name}`}
+              className="flex flex-col gap-1.5 rounded-lg border border-[#2a2a2a] bg-[#1a1a1a] p-4 transition-colors hover:border-[#3a3a3a] hover:bg-[#222]"
+            >
+              <div className="flex items-center gap-2">
+                <span className="truncate text-[15px] font-medium text-[#e9eaee]">
+                  {repo.repo_name}
+                </span>
+                {repo.language && (
+                  <span className="shrink-0 rounded bg-[#2a2a2a] px-1.5 py-0.5 text-[11px] text-[#7c7c7c]">
+                    {repo.language}
+                  </span>
+                )}
+              </div>
+              {repo.description && (
+                <p className="line-clamp-2 text-[13px] leading-5 text-[#7c7c7c]">
+                  {repo.description}
+                </p>
+              )}
+              <div className="flex items-center gap-3 text-[12px] text-[#7c7c7c]">
+                <span className="flex items-center gap-1">
+                  <StarIcon size={12} fill="#FAC858" />
+                  {repo.stars?.toLocaleString()}
+                </span>
+                <span>
+                  {repo.shared_topics} shared topic{repo.shared_topics > 1 ? 's' : ''}
+                </span>
+              </div>
+            </Link>
+          );
+        })}
+      </div>
+    </div>
   );
 }
