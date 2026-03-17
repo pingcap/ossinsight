@@ -9,6 +9,7 @@ export interface RepoInfo {
   full_name: string;
   description: string;
   language: string;
+  license: string;
   forks: number;
   stars: number;
   owner: {

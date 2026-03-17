@@ -7,6 +7,7 @@ import {
   CodeIcon,
   GitCommitIcon,
   IssueOpenedIcon,
+  LawIcon,
   LinkExternalIcon,
   PeopleIcon,
   RepoForkedIcon,
@@ -253,6 +254,13 @@ export function OverviewSection() {
 
             {repoInfo.description ? (
               <p className="mt-3 text-[16px] leading-7 text-[#7c7c7c]">{repoInfo.description}</p>
+            ) : null}
+
+            {repoInfo.license ? (
+              <div className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-[#4d4d4f] px-3 py-1 text-[12px] text-[#d8d8d8]">
+                <LawIcon size={14} />
+                <span>{repoInfo.license}</span>
+              </div>
             ) : null}
 
             {collections.length > 0 ? (

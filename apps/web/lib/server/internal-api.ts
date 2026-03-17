@@ -75,6 +75,7 @@ export async function getRepoById(id: number | string, signal?: AbortSignal) {
     full_name: string;
     description: string;
     language: string;
+    license: string;
     forks: number;
     stars: number;
     owner_login: string;
@@ -87,6 +88,7 @@ export async function getRepoById(id: number | string, signal?: AbortSignal) {
         gr.repo_name AS full_name,
         gr.description,
         gr.primary_language AS language,
+        gr.license,
         gr.forks,
         gr.stars,
         gr.owner_login,
@@ -120,6 +122,7 @@ export async function getRepoByName(owner: string, repo: string, signal?: AbortS
     full_name: string;
     description: string;
     language: string;
+    license: string;
     forks: number;
     stars: number;
     owner_login: string;
@@ -132,6 +135,7 @@ export async function getRepoByName(owner: string, repo: string, signal?: AbortS
         gr.repo_name AS full_name,
         gr.description,
         gr.primary_language AS language,
+        gr.license,
         gr.forks,
         gr.stars,
         gr.owner_login,
