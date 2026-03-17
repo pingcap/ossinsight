@@ -1,35 +1,141 @@
-const DEFAULT_WINDOW_MS = 60_000;
+const DEFAULT_WINDOW_SECONDS = 60;
 const DEFAULT_MAX_REQUESTS = 3;
 
-const maxRequests = Number(process.env.EXPLORER_RATE_LIMIT) || DEFAULT_MAX_REQUESTS;
+type RateLimitResult = {
+  ok: boolean;
+  remaining: number;
+  retryAfterSeconds: number;
+};
 
-const clients = new Map<string, { count: number; resetAt: number }>();
+type RedisPipelineCommand = Array<string | number>;
+type RedisPipelineResult = {
+  result: number | string | null;
+  error?: string;
+};
 
-export function checkRateLimit(ip: string): { ok: boolean; remaining: number; retryAfterSeconds: number } {
+const maxRequests =
+  parsePositiveInt(process.env.EXPLORER_RATE_LIMIT_MAX_REQUESTS) ??
+  parsePositiveInt(process.env.EXPLORER_RATE_LIMIT) ??
+  DEFAULT_MAX_REQUESTS;
+
+const windowSeconds =
+  parsePositiveInt(process.env.EXPLORER_RATE_LIMIT_WINDOW_SECONDS) ??
+  DEFAULT_WINDOW_SECONDS;
+
+export async function checkRateLimit(request: Request): Promise<RateLimitResult> {
+  if (!isProductionDeployment()) {
+    return allowRequest();
+  }
+
+  const clientIp = getClientIp(request);
+  if (!clientIp) {
+    return allowRequest();
+  }
+
   const now = Date.now();
-  const client = clients.get(ip);
+  const currentBucket = Math.floor(now / 1000 / windowSeconds);
+  const key = `explorer-rate-limit:${clientIp}:${currentBucket}`;
+  const [incrementResult] = await runRedisPipeline([
+    ["INCR", key],
+    ["EXPIRE", key, windowSeconds + 1],
+  ]);
 
-  if (!client || now > client.resetAt) {
-    clients.set(ip, { count: 1, resetAt: now + DEFAULT_WINDOW_MS });
-    return { ok: true, remaining: maxRequests - 1, retryAfterSeconds: 0 };
+  const requestCount = Number(incrementResult?.result);
+  if (!Number.isFinite(requestCount)) {
+    throw new Error("Explorer rate limit returned an invalid counter value.");
   }
 
-  client.count++;
-
-  if (client.count > maxRequests) {
-    const retryAfterSeconds = Math.ceil((client.resetAt - now) / 1000);
-    return { ok: false, remaining: 0, retryAfterSeconds };
-  }
-
-  return { ok: true, remaining: maxRequests - client.count, retryAfterSeconds: 0 };
+  return {
+    ok: requestCount <= maxRequests,
+    remaining: Math.max(maxRequests - requestCount, 0),
+    retryAfterSeconds: requestCount <= maxRequests ? 0 : secondsUntilNextWindow(now),
+  };
 }
 
-// Periodically clean up expired entries to prevent memory leaks.
-if (typeof setInterval !== 'undefined') {
-  setInterval(() => {
-    const now = Date.now();
-    for (const [ip, client] of clients) {
-      if (now > client.resetAt) clients.delete(ip);
-    }
-  }, DEFAULT_WINDOW_MS);
+function allowRequest(): RateLimitResult {
+  return {
+    ok: true,
+    remaining: maxRequests,
+    retryAfterSeconds: 0,
+  };
+}
+
+function getClientIp(request: Request): string | null {
+  // Prefer the Vercel-specific forwarded header in production so we do not trust
+  // user-supplied proxy chains directly.
+  const resolvedIp =
+    request.headers.get("x-vercel-forwarded-for") ?? request.headers.get("x-real-ip");
+
+  const clientIp = resolvedIp?.split(",")[0]?.trim();
+  return clientIp ? clientIp : null;
+}
+
+function getRedisConfig() {
+  const url = process.env.KV_REST_API_URL ?? process.env.UPSTASH_REDIS_REST_URL;
+  const token = process.env.KV_REST_API_TOKEN ?? process.env.UPSTASH_REDIS_REST_TOKEN;
+
+  if (!url || !token) {
+    throw new Error(
+      "Explorer rate limiting requires KV_REST_API_URL/KV_REST_API_TOKEN or UPSTASH_REDIS_REST_URL/UPSTASH_REDIS_REST_TOKEN in production.",
+    );
+  }
+
+  return {
+    url: url.replace(/\/$/, ""),
+    token,
+  };
+}
+
+async function runRedisPipeline(commands: RedisPipelineCommand[]): Promise<RedisPipelineResult[]> {
+  const { url, token } = getRedisConfig();
+  const response = await fetch(`${url}/pipeline`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(commands),
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    const body = await response.text();
+    throw new Error(
+      `Explorer rate limit Redis request failed with ${response.status}: ${body || response.statusText}`,
+    );
+  }
+
+  const payload = (await response.json()) as RedisPipelineResult[];
+  if (!Array.isArray(payload)) {
+    throw new Error("Explorer rate limit Redis pipeline returned an unexpected response.");
+  }
+
+  const firstError = payload.find((item) => typeof item?.error === "string");
+  if (firstError?.error) {
+    throw new Error(`Explorer rate limit Redis pipeline failed: ${firstError.error}`);
+  }
+
+  return payload;
+}
+
+function isProductionDeployment() {
+  return process.env.VERCEL_ENV === "production";
+}
+
+function secondsUntilNextWindow(now: number) {
+  const elapsedSeconds = Math.floor(now / 1000) % windowSeconds;
+  return Math.max(windowSeconds - elapsedSeconds, 1);
+}
+
+function parsePositiveInt(value: string | undefined): number | null {
+  if (!value) {
+    return null;
+  }
+
+  const parsed = Number.parseInt(value, 10);
+  if (!Number.isFinite(parsed) || parsed <= 0) {
+    return null;
+  }
+
+  return parsed;
 }
