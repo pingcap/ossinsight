@@ -2,7 +2,7 @@
 
 import React, { useMemo } from 'react';
 import dynamic from 'next/dynamic';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import {
   CodeIcon,
@@ -355,8 +355,30 @@ type SimilarRepo = {
   shared_topics: number;
 };
 
+const LANG_COLORS: Record<string, string> = {
+  Go: '#00ADD8',
+  Rust: '#DEA584',
+  'C++': '#F34B7D',
+  Java: '#B07219',
+  Python: '#3572A5',
+  TypeScript: '#3178C6',
+  JavaScript: '#F1E05A',
+  C: '#555555',
+  'C#': '#178600',
+  Ruby: '#701516',
+  PHP: '#4F5D95',
+  Swift: '#F05138',
+  Kotlin: '#A97BFF',
+  Scala: '#C22D40',
+  Shell: '#89E051',
+  SQL: '#E38C00',
+};
+
+const LazyECharts = dynamic(() => import('@/components/Analyze/EChartsWrapper'), { ssr: false });
+
 function SimilarRepos() {
-  const { repoId } = useAnalyzeContext();
+  const { repoId, repoName } = useAnalyzeContext();
+  const router = useRouter();
 
   const { data, isLoading } = useQuery({
     queryKey: ['analyze-repo-similar', repoId],
@@ -370,7 +392,127 @@ function SimilarRepos() {
     staleTime: 24 * 60 * 60 * 1000,
   });
 
-  if (isLoading || !data || data.length === 0) return null;
+  const option = useMemo(() => {
+    if (!data || data.length === 0) return null;
+
+    const starSize = (stars: number) => Math.max(20, Math.min(70, Math.sqrt(stars / 100) * 2));
+
+    const centerNode = {
+      name: repoName,
+      symbolSize: starSize(data[0]?.stars || 10000) * 1.3,
+      itemStyle: {
+        color: LANG_COLORS[data[0]?.language || ''] || '#888',
+        borderColor: '#fff',
+        borderWidth: 3,
+        shadowBlur: 20,
+        shadowColor: LANG_COLORS[data[0]?.language || ''] || '#888',
+      },
+      label: { show: true, fontSize: 14, fontWeight: 'bold' as const, color: '#fff', position: 'bottom' as const, distance: 8 },
+      fixed: true,
+      x: 400,
+      y: 250,
+    };
+
+    const nodes = [
+      centerNode,
+      ...data.map((r) => ({
+        name: r.repo_name,
+        symbolSize: starSize(r.stars),
+        itemStyle: {
+          color: LANG_COLORS[r.language || ''] || '#888',
+          borderColor: 'rgba(255,255,255,0.3)',
+          borderWidth: 1.5,
+          shadowBlur: 10,
+          shadowColor: LANG_COLORS[r.language || ''] || '#888',
+        },
+        label: {
+          show: true,
+          fontSize: 11,
+          color: '#ccc',
+          position: 'bottom' as const,
+          distance: 5,
+          formatter: (p: { name: string }) => p.name.split('/')[1] || p.name,
+        },
+      })),
+    ];
+
+    const links = data.map((r) => ({
+      source: repoName,
+      target: r.repo_name,
+      lineStyle: {
+        width: Math.max(1, r.shared_topics * 0.8),
+        color: 'rgba(255,255,255,0.12)',
+        curveness: 0.1,
+      },
+      value: r.shared_topics,
+    }));
+
+    return {
+      backgroundColor: 'transparent',
+      tooltip: {
+        backgroundColor: 'rgba(20,20,20,0.95)',
+        borderColor: '#333',
+        textStyle: { color: '#eee', fontSize: 13 },
+        formatter: (p: any) => {
+          if (p.dataType === 'edge') return `${p.data.value} shared topics`;
+          const r = data.find((x) => x.repo_name === p.name);
+          const lang = r?.language;
+          const stars = r?.stars || 0;
+          const shared = r?.shared_topics || 0;
+          return (
+            `<div style="font-weight:600;font-size:14px;margin-bottom:4px">${p.name}</div>` +
+            `<span style="color:#FAC858">★</span> ${stars.toLocaleString()} stars<br/>` +
+            (lang ? `<span style="color:${LANG_COLORS[lang] || '#888'}">●</span> ${lang}<br/>` : '') +
+            (shared ? `<span style="color:#7c7c7c">${shared} shared topics</span>` : '')
+          );
+        },
+      },
+      graphic: [
+        {
+          type: 'text' as const,
+          left: 10,
+          bottom: 10,
+          style: { text: 'Node size = stars  ·  Line thickness = shared topics', fill: '#555', fontSize: 11 },
+        },
+      ],
+      animationDuration: 1500,
+      animationEasingUpdate: 'quinticInOut',
+      series: [
+        {
+          type: 'graph',
+          layout: 'force',
+          roam: true,
+          draggable: true,
+          force: {
+            repulsion: 350,
+            gravity: 0.15,
+            edgeLength: [80, 200],
+            friction: 0.6,
+          },
+          data: nodes,
+          links,
+          emphasis: {
+            focus: 'adjacency' as const,
+            lineStyle: { width: 4, color: 'rgba(255,200,80,0.6)' },
+            itemStyle: { borderWidth: 3, borderColor: '#FAC858' },
+          },
+        },
+      ],
+    };
+  }, [data, repoName]);
+
+  const onEvents = useMemo(
+    () => ({
+      click: (p: any) => {
+        if (p.dataType === 'node' && p.name !== repoName) {
+          router.push(`/analyze/${p.name}`);
+        }
+      },
+    }),
+    [repoName, router],
+  );
+
+  if (isLoading || !option) return null;
 
   return (
     <div className="mt-8">
@@ -382,45 +524,13 @@ function SimilarRepos() {
         Similar Repositories
       </h3>
       <p className="pb-4 text-[16px] leading-7 text-[#7c7c7c]">
-        Repositories that share the most topics in common.
+        Repositories sharing the most topics in common. Click a node to analyze it.
       </p>
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-        {data.map((repo) => {
-          const [owner, name] = repo.repo_name.split('/');
-          return (
-            <Link
-              key={repo.repo_name}
-              href={`/analyze/${owner}/${name}`}
-              className="flex flex-col gap-1.5 rounded-lg border border-[#2a2a2a] bg-[#1a1a1a] p-4 transition-colors hover:border-[#3a3a3a] hover:bg-[#222]"
-            >
-              <div className="flex items-center gap-2">
-                <span className="truncate text-[15px] font-medium text-[#e9eaee]">
-                  {repo.repo_name}
-                </span>
-                {repo.language && (
-                  <span className="shrink-0 rounded bg-[#2a2a2a] px-1.5 py-0.5 text-[11px] text-[#7c7c7c]">
-                    {repo.language}
-                  </span>
-                )}
-              </div>
-              {repo.description && (
-                <p className="line-clamp-2 text-[13px] leading-5 text-[#7c7c7c]">
-                  {repo.description}
-                </p>
-              )}
-              <div className="flex items-center gap-3 text-[12px] text-[#7c7c7c]">
-                <span className="flex items-center gap-1">
-                  <StarIcon size={12} fill="#FAC858" />
-                  {repo.stars?.toLocaleString()}
-                </span>
-                <span>
-                  {repo.shared_topics} shared topic{repo.shared_topics > 1 ? 's' : ''}
-                </span>
-              </div>
-            </Link>
-          );
-        })}
-      </div>
+      <LazyECharts
+        option={option}
+        style={{ height: 500 }}
+        onEvents={onEvents}
+      />
     </div>
   );
 }

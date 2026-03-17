@@ -11,6 +11,7 @@ import {
   ScatterChart as EScatterChart,
   EffectScatterChart as EEffectScatterChart,
   MapChart as EMapChart,
+  GraphChart as EGraphChart,
 } from 'echarts/charts';
 import {
   TitleComponent,
@@ -35,6 +36,7 @@ echarts.use([
   EScatterChart,
   EEffectScatterChart,
   EMapChart,
+  EGraphChart,
   TitleComponent,
   TooltipComponent,
   GridComponent,
