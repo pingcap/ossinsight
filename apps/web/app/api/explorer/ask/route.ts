@@ -6,8 +6,8 @@ import { normalizeExplorerChart, inferExplorerFields } from "@/lib/explorer/char
 import { explorerChartKinds, type ExplorerAnswer } from "@/lib/explorer/contracts";
 import { buildExplorerPlanningPrompt } from "@/lib/explorer/prompt";
 import { executeExplorerRows, explainExplorerRows } from "@/lib/explorer/query";
+import { checkRateLimit } from "@/lib/rate-limit";
 
-export const runtime = "edge";
 export const maxDuration = 30;
 
 const requestSchema = z.object({
@@ -44,6 +44,25 @@ const openai = createOpenAI({
 });
 
 export async function POST(request: Request) {
+  const ip =
+    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
+    request.headers.get("x-real-ip") ??
+    "unknown";
+
+  const limit = checkRateLimit(ip);
+  if (!limit.ok) {
+    return Response.json(
+      { error: "Too many requests. Please try again later." },
+      {
+        status: 429,
+        headers: {
+          "Retry-After": String(limit.retryAfterSeconds),
+          "Cache-Control": "no-store",
+        },
+      },
+    );
+  }
+
   const startedAt = Date.now();
 
   try {
