@@ -1,4 +1,13 @@
-WITH stars AS (
+WITH repo_stars AS (
+    SELECT
+        41986369 AS repo_id,
+        stars AS total
+    FROM github_repos
+    WHERE
+        repo_id = 41986369
+        AND is_deleted = 0
+        AND updated_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+), event_stars AS (
     SELECT
         41986369 AS repo_id, IFNULL(COUNT(DISTINCT actor_login), 0) AS total
     FROM github_events
@@ -6,6 +15,13 @@ WITH stars AS (
         type = 'WatchEvent'
         AND repo_id = 41986369
         AND action = 'started'
+), stars AS (
+    SELECT
+        41986369 AS repo_id,
+        COALESCE(
+            (SELECT total FROM repo_stars WHERE repo_id = 41986369),
+            (SELECT total FROM event_stars WHERE repo_id = 41986369)
+        ) AS total
 ), commits AS (
     SELECT
         41986369 AS repo_id, IFNULL(SUM(push_distinct_size), 0) AS total
