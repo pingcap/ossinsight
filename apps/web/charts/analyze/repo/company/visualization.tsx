@@ -113,8 +113,9 @@ export default async function (
             fontFamily="Heiti TC"
             textAnchor="middle"
             transform={`translate(${[word.x, word.y]})rotate(${word.rotate})`}
-            dangerouslySetInnerHTML={{ __html: word.text }}
-          />
+          >
+            {word.text}
+          </text>
         ))}
       </g>
     </svg>
