@@ -15,6 +15,7 @@ import {
   CodeIcon,
   GitCommitIcon,
   IssueOpenedIcon,
+  LawIcon,
   LinkExternalIcon,
   PeopleIcon,
   RepoForkedIcon,
@@ -121,6 +122,17 @@ export const OverviewSection = forwardRef(function (_, ref: ForwardedRef<HTMLEle
                 )}
               </Stack>
               <P2>{repoInfo?.description}</P2>
+              {repoInfo?.license?.spdx_id && repoInfo.license.spdx_id !== 'NOASSERTION' && (
+                <Box mb={1}>
+                  <Chip
+                    icon={<LawIcon size={14} />}
+                    label={repoInfo.license.spdx_id}
+                    variant="outlined"
+                    size="small"
+                    sx={{ color: 'text.secondary', borderColor: 'divider' }}
+                  />
+                </Box>
+              )}
               {notNullish(collectionData) && nonEmptyArray(collectionData.data)
                 ? (
                   <Box mb={1}>

@@ -19,6 +19,12 @@ declare module '@ossinsight/api' {
       login: string;
     };
     description: string;
+    license: {
+      key: string;
+      name: string;
+      spdx_id: string;
+      url: string | null;
+    } | null;
   }
 
   export interface UserInfo {
