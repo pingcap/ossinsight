@@ -23,7 +23,7 @@ const windowSeconds =
   DEFAULT_WINDOW_SECONDS;
 
 export async function checkRateLimit(request: Request): Promise<RateLimitResult> {
-  if (!isProductionDeployment()) {
+  if (!isRateLimitEnabled()) {
     return allowRequest();
   }
 
@@ -118,7 +118,17 @@ async function runRedisPipeline(commands: RedisPipelineCommand[]): Promise<Redis
   return payload;
 }
 
-function isProductionDeployment() {
+function isRateLimitEnabled() {
+  const override = process.env.EXPLORER_RATE_LIMIT_ENABLED;
+
+  if (override === "true") {
+    return true;
+  }
+
+  if (override === "false") {
+    return false;
+  }
+
   return process.env.VERCEL_ENV === "production";
 }
 
