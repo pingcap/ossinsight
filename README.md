@@ -2,7 +2,7 @@
 
 <div align="center">
 <a href="https://ossinsight.io">
-  <img src="https://ossinsight.io/img/screenshots/homepage.gif"
+  <img src="https://raw.githubusercontent.com/pingcap/ossinsight/main/apps/docs/public/img/screenshots/homepage.gif"
 </a>
 </div>
 
@@ -59,7 +59,7 @@ Examples:
 
 <div align="center">
   <a href="https://en.pingcap.com/tidb-cloud/?utm_source=ossinsight&utm_medium=referral">
-     <img src="https://ossinsight.io/img/screenshots/homepage-collection.png" alt="GitHub Collections Analytics" height="500" />
+     <img src="https://raw.githubusercontent.com/pingcap/ossinsight/main/apps/docs/public/img/screenshots/homepage-collection.png" alt="GitHub Collections Analytics" height="500" />
   </a>
 </div>
 
@@ -110,7 +110,7 @@ Insights about **developer productivity**, **work cadence**, and **collaboration
   * Monthly stats about contribution activities in all public repositories
 
 <div align="center">
-    <img src="https://ossinsight.io/img/screenshots/homepage-developer.png" alt="Developer Analytics" height="500" />
+    <img src="https://raw.githubusercontent.com/pingcap/ossinsight/main/apps/docs/public/img/screenshots/homepage-developer.png" alt="Developer Analytics" height="500" />
 </div>
 
 ### **Feature 4: Repository Analytics**
@@ -126,7 +126,7 @@ Insights about the **code update frequency & degree of popularity** from reposit
   * Company distribution of stargazers, issue creators, and pull request creators
 
 <div align="center">
-    <img src="https://ossinsight.io/img/screenshots/homepage-repository.png" alt="Repository Analytics" height="500" />
+    <img src="https://raw.githubusercontent.com/pingcap/ossinsight/main/apps/docs/public/img/screenshots/homepage-repository.png" alt="Repository Analytics" height="500" />
 </div>
 
 **Examples**:
@@ -176,6 +176,6 @@ pnpm dev:all    # Start both
 
 <div align="center">
   <a href="https://en.pingcap.com/tidb-cloud/?utm_source=ossinsight&utm_medium=referral">
-    <img src="https://ossinsight.io/img/tidb-cloud-logo-w.png" height=50 />
+    <img src="https://raw.githubusercontent.com/pingcap/ossinsight/main/apps/docs/public/img/tidb-cloud-logo-w.png" height=50 />
   </a>
 </div>
