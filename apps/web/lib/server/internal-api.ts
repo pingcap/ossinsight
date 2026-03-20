@@ -667,6 +667,62 @@ export async function getTrendingReposByLanguage(
   }>;
 }
 
+export const PERIODS = [
+  { value: 'past_24_hours', label: 'Today' },
+  { value: 'past_week', label: 'This Week' },
+  { value: 'past_month', label: 'This Month' },
+  { value: 'past_3_months', label: 'Past 3 Months' },
+] as const;
+
+export type Period = (typeof PERIODS)[number]['value'];
+
+export function isValidPeriod(p: string): p is Period {
+  return PERIODS.some((item) => item.value === p);
+}
+
+export async function getTrendingRepos(
+  language: string = 'All',
+  period: Period = 'past_week',
+  signal?: AbortSignal,
+) {
+  const { rows } = await executeRows(
+    `
+      WITH latest_snapshot AS (
+        SELECT MAX(dt) AS dt
+        FROM mv_trending_repos
+        WHERE language = ?
+          AND period = ?
+      )
+      SELECT
+        tr.repo_id,
+        gr.repo_name,
+        gr.primary_language AS language,
+        gr.description,
+        tr.stars,
+        tr.forks,
+        tr.total_score
+      FROM mv_trending_repos tr
+      JOIN latest_snapshot ls ON tr.dt = ls.dt
+      JOIN github_repos gr ON tr.repo_id = gr.repo_id
+      WHERE tr.language = ?
+        AND tr.period = ?
+      ORDER BY tr.total_score DESC
+      LIMIT 100
+    `,
+    [language, period, language, period],
+    signal,
+  );
+  return rows as Array<{
+    repo_id: number;
+    repo_name: string;
+    language: string;
+    description: string;
+    stars: number;
+    forks: number;
+    total_score: number;
+  }>;
+}
+
 export async function getTopReposForSitemap(limit = 1000, signal?: AbortSignal) {
   const { rows } = await executeRows(
     `

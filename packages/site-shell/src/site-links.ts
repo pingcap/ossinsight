@@ -60,6 +60,12 @@ export function createAppHeaderConfig(app: SiteApp, env: EnvMap = process.env): 
         forceReload: app !== 'web',
       },
       {
+        label: 'Trending',
+        href: getCrossAppHref(app, 'web', '/trending', env),
+        matchPrefixes: app === 'web' ? ['/trending'] : [],
+        forceReload: app !== 'web',
+      },
+      {
         label: 'Languages',
         href: getCrossAppHref(app, 'web', '/languages', env),
         matchPrefixes: app === 'web' ? ['/languages'] : [],
