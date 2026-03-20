@@ -653,7 +653,24 @@ function HeroSearch() {
               </div>
             )}
             {grouped.length === 0 && !loading && !hasError && (
-              <div style={{ padding: '16px', color: '#7c7c7c', fontSize: 13, textAlign: 'center' }}>No results</div>
+              <div style={{ padding: '24px 16px', textAlign: 'center' }}>
+                <div style={{ color: '#7c7c7c', fontSize: 13 }}>
+                  {debouncedKeyword
+                    ? `No results found for "${debouncedKeyword}"`
+                    : 'No results'}
+                </div>
+                {debouncedKeyword && (
+                  <div style={{ color: '#5c5c5c', fontSize: 12, marginTop: 8 }}>
+                    {searchType === 'user'
+                      ? 'Try searching for popular developers like: torvalds, gaearon, sindresorhus'
+                      : searchType === 'org'
+                        ? 'Try searching for popular organizations like: google, facebook, microsoft'
+                        : searchType === 'repo'
+                          ? 'Try searching for popular repos like: react, vue, tensorflow'
+                          : 'Try: react, torvalds, google, or any GitHub repo / user / org name'}
+                  </div>
+                )}
+              </div>
             )}
             {!hasError && grouped.map(group => {
               const globalOffset = flatList.indexOf(group.items[0]);

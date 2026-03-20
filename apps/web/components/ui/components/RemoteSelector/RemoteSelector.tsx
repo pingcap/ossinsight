@@ -219,7 +219,7 @@ function defaultRenderLoading () {
 }
 
 function defaultRenderEmpty () {
-  return <div className="py-1 px-2 text-disabled text-xs">Empty result</div>;
+  return <div className="py-1 px-2 text-disabled text-xs">No results found. Try a different keyword.</div>;
 }
 
 function defaultRenderError (error: unknown) {

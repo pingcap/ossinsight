@@ -385,7 +385,7 @@ function CommonResultList<T extends { id: string | number }>(props: {
           <li className='px-2 py-4 text-xs text-[#87879a]'>Failed to load</li>
         )}
         {!loading && !error && !items.length && (
-          <li className='px-2 py-4 text-xs text-[#87879a]'>Empty result</li>
+          <li className='px-2 py-4 text-xs text-[#87879a]'>No results found. Try a different keyword or check the spelling.</li>
         )}
         {items.map((item) => (
           <li
