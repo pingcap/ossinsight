@@ -610,6 +610,22 @@ function toCollectionSearchParams(collectionId: number | string) {
   return searchParams;
 }
 
+export async function getTopReposForSitemap(limit = 1000, signal?: AbortSignal) {
+  const { rows } = await executeRows(
+    `
+      SELECT
+        gr.repo_name
+      FROM github_repos gr
+      WHERE gr.is_deleted = 0
+      ORDER BY gr.stars DESC
+      LIMIT :limit
+    `,
+    { limit },
+    signal,
+  );
+  return rows as Array<{ repo_name: string }>;
+}
+
 function mapRecommendRepos(repos: RepoRecommendItem[]) {
   return repos.map((repo) => ({
     id: repo.id,
