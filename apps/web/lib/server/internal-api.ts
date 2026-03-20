@@ -631,6 +631,12 @@ export async function getTrendingReposByLanguage(
 ) {
   const { rows } = await executeRows(
     `
+      WITH latest_snapshot AS (
+        SELECT MAX(dt) AS dt
+        FROM mv_trending_repos
+        WHERE language = :language
+          AND period = :period
+      )
       SELECT
         tr.repo_id,
         gr.repo_name,
@@ -640,6 +646,7 @@ export async function getTrendingReposByLanguage(
         tr.forks,
         tr.total_score
       FROM mv_trending_repos tr
+      JOIN latest_snapshot ls ON tr.dt = ls.dt
       JOIN github_repos gr ON tr.repo_id = gr.repo_id
       WHERE tr.language = :language
         AND tr.period = :period
