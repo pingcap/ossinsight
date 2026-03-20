@@ -723,13 +723,14 @@ export async function getTrendingRepos(
   }>;
 }
 
-export async function getTopReposForSitemap(limit = 1000, signal?: AbortSignal) {
+export async function getTopReposForSitemap(limit = 10000, signal?: AbortSignal) {
   const { rows } = await executeRows(
     `
       SELECT
         gr.repo_name
       FROM github_repos gr
       WHERE gr.is_deleted = 0
+        AND gr.stars >= 1000
       ORDER BY gr.stars DESC
       LIMIT :limit
     `,

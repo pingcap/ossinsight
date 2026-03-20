@@ -2,6 +2,7 @@
 
 import React, { useMemo } from 'react';
 import dynamic from 'next/dynamic';
+import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
 import {
   CodeIcon,
@@ -128,6 +129,10 @@ function SummaryTable() {
               <td className="py-3 text-right text-[28px] font-semibold leading-none text-[#e9eaee] tabular-nums">
                 {loading && !item.isStatic ? (
                   <span className="inline-block h-6 w-16 animate-pulse rounded bg-[#343436]" />
+                ) : item.label === 'Language' && item.value && typeof item.value === 'string' ? (
+                  <Link href={`/languages/${encodeURIComponent(item.value)}`} className="hover:text-[#ffe895] transition-colors">
+                    {item.value}
+                  </Link>
                 ) : (
                   formatValue(item.value)
                 )}

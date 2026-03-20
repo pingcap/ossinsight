@@ -9,7 +9,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const entries: MetadataRoute.Sitemap = [];
 
   try {
-    const repos = await getTopReposForSitemap(1000);
+    const repos = await getTopReposForSitemap(10000);
     for (const repo of repos) {
       const [owner, name] = repo.repo_name.split('/');
       if (!owner || !name) continue;

@@ -4,7 +4,18 @@ import { WebSiteJsonLd, FAQPageJsonLd, OrganizationJsonLd } from '@/components/j
 
 export const metadata: Metadata = {
   title: 'OSSInsight - Open Source Software Insight',
-  description: 'OSSInsight analyzes billions of GitHub events and provides insights for open source software.',
+  description: 'Real-time analytics for 10B+ GitHub events. Analyze any repo, compare projects, and discover trending open source software. Free & open source.',
+  openGraph: {
+    title: 'OSSInsight - Open Source Software Insight',
+    description: 'Real-time analytics for 10B+ GitHub events. Analyze any repo, compare projects, and discover trending open source software.',
+    images: [{ url: '/seo-widgets-homepage.jpeg', width: 1200, height: 630 }],
+  },
+  twitter: {
+    title: 'OSSInsight - Open Source Software Insight',
+    description: 'Real-time analytics for 10B+ GitHub events. Analyze any repo, compare projects, and discover trending open source software.',
+    card: 'summary_large_image',
+    images: ['/seo-widgets-homepage.jpeg'],
+  },
 };
 
 const FAQ_ITEMS = [
