@@ -10,6 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import ShareButtons from '@/components/ShareButtons';
 
 const LANGUAGE_COLORS: Record<string, string> = {
   JavaScript: '#f1e05a', Java: '#b07219', Python: '#3572A5', PHP: '#4F5D95',
@@ -62,13 +63,20 @@ export function TrendingContent({ repos, period, language, languages, periods }:
   return (
     <div className="mx-auto max-w-[1280px] px-6 py-8">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white">
-          🔥 Trending Repositories
-        </h1>
-        <p className="mt-2 text-base text-[#7c7c7c]">
-          The most popular open source projects on GitHub right now, ranked by community activity.
-        </p>
+      <div className="mb-8 flex items-start justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-white">
+            🔥 Trending Repositories
+          </h1>
+          <p className="mt-2 text-base text-[#7c7c7c]">
+            The most popular open source projects on GitHub right now, ranked by community activity.
+          </p>
+        </div>
+        <ShareButtons
+          url="/trending"
+          title="Trending GitHub Repositories on OSSInsight"
+          className="shrink-0 mt-1"
+        />
       </div>
 
       {/* Filters */}

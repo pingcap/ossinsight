@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { BreadcrumbListJsonLd } from '@/components/json-ld';
+import ShareButtons from '@/components/ShareButtons';
 import {
   LANGUAGES,
   isValidLanguage,
@@ -121,14 +122,20 @@ export default async function LanguagePage({ params }: PageProps) {
           {/* Main content */}
           <div className="min-w-0 flex-1">
             {/* Header */}
-            <div className="flex items-center gap-4 mb-2">
-              <span
-                className="h-6 w-6 shrink-0 rounded-full shadow-[0_0_8px_rgba(255,255,255,0.15)]"
-                style={{ backgroundColor: LANGUAGE_COLORS[language] ?? '#8b8b8b' }}
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-4">
+                <span
+                  className="h-6 w-6 shrink-0 rounded-full shadow-[0_0_8px_rgba(255,255,255,0.15)]"
+                  style={{ backgroundColor: LANGUAGE_COLORS[language] ?? '#8b8b8b' }}
+                />
+                <h1 className="text-3xl font-bold text-white">
+                  {language}
+                </h1>
+              </div>
+              <ShareButtons
+                url={`/languages/${encodeURIComponent(language)}`}
+                title={`Trending ${language} repositories on OSSInsight`}
               />
-              <h1 className="text-3xl font-bold text-white">
-                {language}
-              </h1>
             </div>
             <p className="text-base text-[#7c7c7c] mb-6">
               Trending {language} repositories on GitHub — ranked by total activity score (stars, forks, pushes, PRs) over the past month.
