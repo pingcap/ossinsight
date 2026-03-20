@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { ChevronRight } from 'lucide-react';
 import { BreadcrumbListJsonLd } from '@/components/json-ld';
 import {
   LANGUAGES,
@@ -9,7 +8,6 @@ import {
   getTrendingReposByLanguage,
 } from '@/lib/server/internal-api';
 
-// Import language colors from the parent page
 const LANGUAGE_COLORS: Record<string, string> = {
   JavaScript: '#f1e05a', Java: '#b07219', Python: '#3572A5', PHP: '#4F5D95',
   'C++': '#f34b7d', 'C#': '#178600', TypeScript: '#3178c6', Shell: '#89e051',
@@ -18,8 +16,8 @@ const LANGUAGE_COLORS: Record<string, string> = {
   CSS: '#563d7c', Scala: '#c22d40', R: '#198CE7', Lua: '#000080',
 };
 
-export const revalidate = 3600; // ISR: revalidate every hour
-export const dynamic = 'force-dynamic'; // Don't pre-render at build time (needs DB)
+export const revalidate = 3600;
+export const dynamic = 'force-dynamic';
 
 interface PageProps {
   params: Promise<{ language: string }>;
@@ -56,11 +54,20 @@ export default async function LanguagePage({ params }: PageProps) {
     notFound();
   }
 
-  let repos: Awaited<ReturnType<typeof getTrendingReposByLanguage>> = [];
+  let repos: Array<{
+    repo_id: number;
+    repo_name: string;
+    language: string;
+    description: string;
+    stars: number;
+    forks: number;
+    total_score: number;
+  }> = [];
+
   try {
     repos = await getTrendingReposByLanguage(language, 'past_month');
   } catch (err) {
-    console.error(`Failed to fetch trending repos for ${language}:`, err);
+    console.error(`[languages/${language}] query failed:`, err);
   }
 
   const jsonLd = {
@@ -90,7 +97,7 @@ export default async function LanguagePage({ params }: PageProps) {
 
       <div className="mx-auto max-w-5xl px-4 py-12">
         <div className="mb-4">
-          <Link href="/languages" className="inline-flex items-center gap-1 text-sm text-[#7c7c7c] hover:text-white transition-colors">
+          <Link href="/languages" className="text-sm text-[#7c7c7c] hover:text-white transition-colors">
             ← All Languages
           </Link>
         </div>
@@ -161,9 +168,8 @@ export default async function LanguagePage({ params }: PageProps) {
                       <Link
                         href={`/analyze/${repo.repo_name}`}
                         className="inline-flex items-center gap-1 text-xs font-medium text-[#ffe895] hover:text-[#fff2bd] transition-colors"
-                        onClick={(e) => e.stopPropagation()}
                       >
-                        <ChevronRight className="h-3 w-3 text-[#8fb5ff]" />
+                        <span className="text-[#8fb5ff]">›</span>
                         View Analysis
                       </Link>
                     </div>

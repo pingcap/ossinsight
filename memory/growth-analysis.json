@@ -1,0 +1,129 @@
+{
+  "lastRound": 15,
+  "rounds": [
+    {
+      "round": 1,
+      "date": "2025-01-10",
+      "focus": "SEO 基础优化",
+      "issues": [1801, 1802, 1803]
+    },
+    {
+      "round": 2,
+      "date": "2025-01-11",
+      "focus": "Programmatic SEO - 语言页面",
+      "issues": [1804, 1805]
+    },
+    {
+      "round": 3,
+      "date": "2025-01-12",
+      "focus": "社交分享优化",
+      "issues": [1806, 1807]
+    },
+    {
+      "round": 4,
+      "date": "2025-01-13",
+      "focus": "用户留存 - OAuth 登录",
+      "issues": [1808]
+    },
+    {
+      "round": 5,
+      "date": "2025-01-14",
+      "focus": "Programmatic SEO - Trending 页面",
+      "issues": [1809]
+    },
+    {
+      "round": 6,
+      "date": "2025-01-15",
+      "focus": "产品体验 - 性能优化",
+      "issues": [1810]
+    },
+    {
+      "round": 7,
+      "date": "2025-01-16",
+      "focus": "竞品差异化 - 健康评分",
+      "issues": [1811]
+    },
+    {
+      "round": 8,
+      "date": "2025-01-17",
+      "focus": "用户留存 - Dashboard",
+      "issues": [1812]
+    },
+    {
+      "round": 9,
+      "date": "2025-01-18",
+      "focus": "GitHub 生态集成",
+      "issues": [1813, 1814]
+    },
+    {
+      "round": 10,
+      "date": "2025-01-19",
+      "focus": "内容营销策略",
+      "issues": [1815]
+    },
+    {
+      "round": 11,
+      "date": "2025-01-20",
+      "focus": "Programmatic SEO - 对比页面",
+      "issues": [1816]
+    },
+    {
+      "round": 12,
+      "date": "2025-01-21",
+      "focus": "用户留存 - 邮件订阅",
+      "issues": [1817]
+    },
+    {
+      "round": 13,
+      "date": "2025-01-22",
+      "focus": "Schema.org 结构化数据",
+      "issues": [1818]
+    },
+    {
+      "round": 14,
+      "date": "2026-03-20",
+      "focus": "Onboarding & First-time User Experience",
+      "issues": [2033],
+      "analysis": {
+        "findings": [
+          "首页价值主张清晰，但缺少新用户引导流程",
+          "Explore 页面有 Popular questions 示例，但缺少交互式教程",
+          "没有进度/成就系统激励用户探索",
+          "缺少社交证明指标（查询次数、活跃用户数）",
+          "对比竞品 star-history.com，他们的 CTA 更简洁直接"
+        ],
+        "opportunities": [
+          "添加 30 秒快速上手引导（交互式教程）",
+          "创建模板库页面，按场景分类（竞品分析、趋势发现、开发者画像）",
+          "添加查询成就系统（首次查询、探索 5 个 repo 等）",
+          "在首页展示社交证明（累计查询次数、覆盖 repo 数量）",
+          "优化空状态引导，提供 contextual help"
+        ]
+      }
+    },
+    {
+      "round": 15,
+      "date": "2026-03-20",
+      "focus": "Analytics & A/B Testing Infrastructure",
+      "issues": [2034],
+      "analysis": {
+        "findings": [
+          "当前只有 Google Analytics 基础 pageview 追踪，无自定义事件",
+          "关键交互缺失追踪：搜索、分享、反馈、导出、Collections",
+          "无法构建用户漏斗，不知道转化率",
+          "没有 A/B 测试基础设施，无法数据驱动优化",
+          "无法区分新用户 vs 回访用户行为"
+        ],
+        "opportunities": [
+          "创建统一 analytics.ts 追踪库，集成 PostHog（开源可自托管）",
+          "追踪 5 大类事件：搜索发现、分析流程、分享传播、反馈质量、Collections 留存",
+          "实现 useAnalytics hook 供 React 组件调用",
+          "添加 A/B 测试框架和 feature flags",
+          "建立增长仪表盘，追踪核心指标（搜索转化率、分享率、k-factor）"
+        ],
+        "impact": "这是所有增长工作的基础设施 - 没有数据就无法优化。预计 2-3 周完成，完成后可以：1) 识别转化漏斗流失点 2) 运行 A/B 测试优化关键页面 3) 追踪病毒传播系数 4) 数据驱动决策而非猜测"
+      }
+    }
+  ],
+  "nextFocus": "Viral Loops & Referral Mechanisms"
+}

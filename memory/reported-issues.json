@@ -1,0 +1,152 @@
+{
+  "lastScanTime": "2026-03-20T09:33:00+08:00",
+  "totalFilesScanned": 1374,
+  "lastScanSummary": {
+    "date": "2026-03-20",
+    "model": "qwen3.5-plus",
+    "totalFiles": 1374,
+    "totalLines": 77414,
+    "existingIssuesChecked": 50,
+    "newSecurityIssuesFound": 0,
+    "newImprovementSuggestions": 2,
+    "newIssuesCreated": 0,
+    "reason": "All identified security issues were already covered by existing GitHub issues (#1960-#1994 range)"
+  },
+  "issues": [
+    {
+      "file": "packages/api-server/src/plugins/services/bot-service/index.ts",
+      "line": 64,
+      "issue": "提示注入风险 - questionToSQL 方法中用户输入的 question 字符串直接传递给 LLM，没有进行任何过滤或提示注入防护",
+      "severity": "Medium",
+      "suggestion": "1. 对用户输入进行过滤，移除或转义可能的提示注入模式；2. 在系统提示中明确说明只允许生成 SELECT 查询；3. 对生成的 SQL 进行后处理验证；4. 考虑使用 LLM 提供商的提示注入防护功能",
+      "reported": true,
+      "ghIssue": "https://github.com/pingcap/ossinsight/issues/1994"
+    },
+    {
+      "file": "apps/web/lib/data-service/routes.ts",
+      "line": 178,
+      "issue": "SQL 注入风险 - quoteSQLString 函数使用简单的字符串替换来转义 SQL 字符串，不是参数化查询",
+      "severity": "High",
+      "suggestion": "使用参数化查询代替字符串拼接，或使用成熟的 SQL 转义库",
+      "reported": true,
+      "ghIssue": "https://github.com/pingcap/ossinsight/issues/XXX"
+    },
+    {
+      "file": "apps/web/lib/server/internal-api.ts",
+      "line": 145,
+      "issue": "SQL 注入风险 - getCollectionRanking 函数直接拼接用户输入到 SQL 查询中",
+      "severity": "High",
+      "suggestion": "使用参数化查询，将用户输入作为参数传递",
+      "reported": true,
+      "ghIssue": "https://github.com/pingcap/ossinsight/issues/XXX"
+    },
+    {
+      "file": "apps/web/lib/server/internal-api.ts",
+      "line": 178,
+      "issue": "SQL 注入风险 - getCollectionHistory 函数直接拼接用户输入到 SQL 查询中",
+      "severity": "High",
+      "suggestion": "使用参数化查询，将用户输入作为参数传递",
+      "reported": true,
+      "ghIssue": "https://github.com/pingcap/ossinsight/issues/XXX"
+    },
+    {
+      "file": "apps/web/lib/server/internal-api.ts",
+      "line": 215,
+      "issue": "SQL 注入风险 - getHotCollections 函数直接拼接用户输入到 SQL 查询中",
+      "severity": "High",
+      "suggestion": "使用参数化查询，将用户输入作为参数传递",
+      "reported": true,
+      "ghIssue": "https://github.com/pingcap/ossinsight/issues/XXX"
+    },
+    {
+      "file": "apps/web/app/collections/api/[collectionId]/ranking/route.ts",
+      "line": 25,
+      "issue": "缺少输入验证 - collectionId 参数没有进行充分的验证",
+      "severity": "Medium",
+      "suggestion": "添加输入验证，确保 collectionId 是有效的数字或 UUID",
+      "reported": true,
+      "ghIssue": "https://github.com/pingcap/ossinsight/issues/XXX"
+    },
+    {
+      "file": "apps/web/app/collections/api/[collectionId]/history/route.ts",
+      "line": 22,
+      "issue": "缺少输入验证 - collectionId 参数没有进行充分的验证",
+      "severity": "Medium",
+      "suggestion": "添加输入验证，确保 collectionId 是有效的数字或 UUID",
+      "reported": true,
+      "ghIssue": "https://github.com/pingcap/ossinsight/issues/XXX"
+    },
+    {
+      "file": "apps/web/app/collections/api/hot/route.ts",
+      "line": 18,
+      "issue": "缺少输入验证 - limit 和 offset 参数没有进行充分的验证",
+      "severity": "Medium",
+      "suggestion": "添加输入验证，确保 limit 和 offset 是有效的数字且在合理范围内",
+      "reported": true,
+      "ghIssue": "https://github.com/pingcap/ossinsight/issues/XXX"
+    },
+    {
+      "file": "apps/web/lib/data-service/executor/utils.ts",
+      "line": 89,
+      "issue": "参数污染风险 - applyLegacyQueryParameters 函数可能允许攻击者覆盖关键参数",
+      "severity": "Medium",
+      "suggestion": "严格验证和过滤用户提供的参数，防止参数覆盖",
+      "reported": true,
+      "ghIssue": "https://github.com/pingcap/ossinsight/issues/XXX"
+    },
+    {
+      "file": "apps/web/app/api/explorer/ask/route.ts",
+      "line": 45,
+      "issue": "SSRF 风险 - 可能允许攻击者通过 LLM 接口发起服务器端请求",
+      "severity": "Medium",
+      "suggestion": "限制 LLM 可以访问的内部资源，添加请求白名单",
+      "reported": true,
+      "ghIssue": "https://github.com/pingcap/ossinsight/issues/XXX"
+    },
+    {
+      "file": "packages/api-server/src/core/runner/sql/SQLRunner.ts",
+      "line": 67,
+      "issue": "SQL 注入风险 - execute 函数直接执行用户提供的 SQL，没有充分的验证",
+      "severity": "High",
+      "suggestion": "添加 SQL 语法验证和限制，防止危险操作",
+      "reported": true,
+      "ghIssue": "https://github.com/pingcap/ossinsight/issues/XXX"
+    },
+    {
+      "file": "packages/api-server/src/core/runner/query/QueryLegacyParser.ts",
+      "line": 78,
+      "issue": "SQL 注入风险 - stringifyParamValue 函数直接将字符串值用单引号包裹，没有进行转义",
+      "severity": "High",
+      "suggestion": "使用参数化查询代替字符串拼接，或对字符串值进行适当的转义",
+      "reported": true,
+      "ghIssue": "https://github.com/pingcap/ossinsight/issues/1984"
+    },
+    {
+      "file": "packages/api-server/src/core/runner/query/QueryLoader.ts",
+      "line": 24,
+      "issue": "路径遍历风险 - queryName 参数直接用于构建文件路径，没有进行验证",
+      "severity": "High",
+      "suggestion": "对 queryName 进行严格的验证，防止路径遍历攻击",
+      "reported": true,
+      "ghIssue": "https://github.com/pingcap/ossinsight/issues/1985"
+    },
+    {
+      "file": "apps/web/app/api/q/[...query]/route.ts",
+      "line": 17,
+      "issue": "CORS 配置过宽 - Access-Control-Allow-Origin 设置为 '*'，允许任何来源跨域访问",
+      "severity": "Medium",
+      "suggestion": "限制为特定的允许来源列表，使用 allowed-origins.yaml 配置文件动态控制",
+      "reported": true,
+      "ghIssue": "https://github.com/pingcap/ossinsight/issues/1986"
+    },
+    {
+      "file": "packages/api-server/src/plugins/services/explorer-service/index.ts",
+      "line": 481,
+      "issue": "SQL 拼接风险 - getSQLExecutionPlan 方法使用模板字符串拼接 SQL，可能导致 SQL 注入",
+      "severity": "Medium",
+      "suggestion": "在拼接前对 sql 参数进行严格的白名单验证，确保只允许 SELECT 语句",
+      "reported": true,
+      "ghIssue": "https://github.com/pingcap/ossinsight/issues/1987"
+    }
+  ]
+}

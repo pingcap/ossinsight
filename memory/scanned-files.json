@@ -1,0 +1,448 @@
+{
+  "lastScanDate": "2026-03-20T09:12:00+08:00",
+  "scannedFiles": [
+    {
+      "path": "/packages/api-server/src/index.ts",
+      "scanDate": "2026-03-19",
+      "vulnerabilities": []
+    },
+    {
+      "path": "/packages/api-server/src/core/app.ts",
+      "scanDate": "2026-03-19",
+      "vulnerabilities": []
+    },
+    {
+      "path": "/packages/api-server/src/core/executor/query-executor/index.ts",
+      "scanDate": "2026-03-19",
+      "vulnerabilities": []
+    },
+    {
+      "path": "/packages/api-server/src/core/executor/query-executor/TiDBCloudQueryExecutor.ts",
+      "scanDate": "2026-03-19",
+      "vulnerabilities": []
+    },
+    {
+      "path": "/packages/api-server/src/core/executor/query-executor/TiDBQueryExecutor.ts",
+      "scanDate": "2026-03-19",
+      "vulnerabilities": []
+    },
+    {
+      "path": "/packages/api-server/src/core/executor/query-executor/TiDBPlaygroundQueryExecutor.ts",
+      "scanDate": "2026-03-19",
+      "vulnerabilities": []
+    },
+    {
+      "path": "/packages/api-server/src/core/executor/query-executor/LocalQueryExecutor.ts",
+      "scanDate": "2026-03-19",
+      "vulnerabilities": []
+    },
+    "path": "/packages/api-server/src/core/executor/query-executor/OSSInsightQueryExecutor.ts",
+      "scanDate": "2026-03-19",
+      "vulnerabilities": []
+    },
+    {
+      "path": "/packages/api-server/src/core/executor/index.ts",
+      "scanDate": "2026-03-19",
+      "vulnerabilities": []
+    },
+    {
+      "path": "/packages/api-server/src/core/db/index.ts",
+      "scanDate": "2026-03-19",
+      "vulnerabilities": []
+    },
+    {
+      "path": "/packages/api-server/src/core/db/pool-decorator.ts",
+      "scanDate": "2026-03-20",
+      "vulnerabilities": [17]
+    },
+    {
+      "path": "/packages/api-server/src/core/runner/index.ts",
+      "scanDate": "2026-03-19",
+      "vulnerabilities": []
+    },
+    {
+      "path": "/packages/api-server/src/core/runner/sql/SQLRunner.ts",
+      "scanDate": "2026-03-19",
+      "vulnerabilities": []
+    },
+    {
+      "path": "/packages/api-server/src/core/runner/sql/index.ts",
+      "scanDate": "2026-03-19",
+      "vulnerabilities": []
+    },
+    {
+      "path": "/packages/api-server/src/core/runner/query/QueryRunner.ts",
+      "scanDate": "2026-03-19",
+      "vulnerabilities": []
+    },
+    {
+      "path": "/packages/api-server/src/core/runner/query/QueryLoader.ts",
+      "scanDate": "2026-03-20",
+      "vulnerabilities": [13]
+    },
+    {
+      "path": "/packages/api-server/src/core/playground/playground.ts",
+      "scanDate": "2026-03-20",
+      "vulnerabilities": [14]
+    },
+    {
+      "path": "/packages/api-server/src/utils/http/forwared.ts",
+      "scanDate": "2026-03-19",
+      "vulnerabilities": []
+    },
+    {
+      "path": "/packages/api-server/src/utils/http/index.ts",
+      "scanDate": "2026-03-19",
+      "vulnerabilities": []
+    },
+    {
+      "path": "/packages/api-server/src/utils/index.ts",
+      "scanDate": "2026-03-19",
+      "vulnerabilities": []
+    },
+    {
+      "path": "/packages/api-server/src/plugins/auth/index.ts",
+      "scanDate": "2026-03-20",
+      "vulnerabilities": []
+    },
+    {
+      "path": "/packages/api-server/src/plugins/auth/auth0.ts",
+      "scanDate": "2026-03-20",
+      "vulnerabilities": [16]
+    },
+    {
+      "path": "/packages/api-server/src/plugins/auth/github.ts",
+      "scanDate": "2026-03-19",
+      "vulnerabilities": []
+    },
+    {
+      "path": "/packages/api-server/src/plugins/auth/middleware.ts",
+      "scanDate": "2026-03-19",
+      "vulnerabilities": []
+    },
+    {
+      "path": "/packages/api-server/src/plugins/auth/types.ts",
+      "scanDate": "2026-03-19",
+      "vulnerabilities": []
+    },
+    {
+      "path": "/packages/api-server/src/plugins/config/index.ts",
+      "scanDate": "2026-03-19",
+      "vulnerabilities": []
+    },
+    {
+      "path": "/packages/api-server/src/plugins/config/types.ts",
+      "scanDate": "2026-03-19",
+      "vulnerabilities": []
+    },
+    {
+      "path": "/packages/api-server/src/plugins/error-handler/index.ts",
+      "scanDate": "2026-03-19",
+      "vulnerabilities": []
+    },
+    {
+      "path": "/packages/api-server/src/plugins/error-handler/types.ts",
+      "scanDate": "2026-03-19",
+      "vulnerabilities": []
+    },
+    {
+      "path": "/packages/api-server/src/plugins/logger/index.ts",
+      "scanDate": "2026-03-19",
+      "vulnerabilities": []
+    },
+    {
+      "path": "/packages/api-server/src/plugins/runner/index.ts",
+      "scanDate": "2026-03-19",
+      "vulnerabilities": []
+    },
+    {
+      "path": "/packages/api-server/src/plugins/runner/query/index.ts",
+      "scanDate": "2026-03-20",
+      "vulnerabilities": []
+    },
+    {
+      "path": "/packages/api-server/src/plugins/runner/sql/index.ts",
+      "scanDate": "2026-03-20",
+      "vulnerabilities": []
+    },
+    {
+      "path": "/packages/api-server/src/plugins/rate-limit.ts",
+      "scanDate": "2026-03-20",
+      "vulnerabilities": []
+    },
+    {
+      "path": "/packages/api-server/src/plugins/cors.ts",
+      "scanDate": "2026-03-20",
+      "vulnerabilities": [12]
+    },
+    {
+      "path": "/packages/api-server/src/plugins/socket.io/index.ts",
+      "scanDate": "2026-03-20",
+      "vulnerabilities": [12, 15]
+    },
+    {
+      "path": "/packages/api-server/src/plugins/static/index.ts",
+      "scanDate": "2026-03-19",
+      "vulnerabilities": []
+    },
+    {
+      "path": "/packages/api-server/src/plugins/health-check/index.ts",
+      "scanDate": "2026-03-19",
+      "vulnerabilities": []
+    },
+    {
+      "path": "/packages/pipeline/src/index.ts",
+      "scanDate": "2026-03-19",
+      "vulnerabilities": []
+    },
+    {
+      "path": "/packages/pipeline/src/app.ts",
+      "scanDate": "2026-03-19",
+      "vulnerabilities": []
+    },
+    {
+      "path": "/packages/pipeline/src/core/executor/index.ts",
+      "scanDate": "2026-03-19",
+      "vulnerabilities": []
+    },
+    {
+      "path": "/packages/pipeline/src/core/runner/index.ts",
+      "scanDate": "2026-03-19",
+      "vulnerabilities": []
+    },
+    {
+      "path": "/packages/pipeline/src/plugins/tidb/tidb.ts",
+      "scanDate": "2026-03-20",
+      "vulnerabilities": []
+    },
+    {
+      "path": "/packages/pipeline/src/plugins/github/github.ts",
+      "scanDate": "2026-03-19",
+      "vulnerabilities": []
+    },
+    {
+      "path": "/packages/pipeline/src/utils/index.ts",
+      "scanDate": "2026-03-19",
+      "vulnerabilities": []
+    },
+    {
+      "path": "/packages/frontend/src/main.tsx",
+      "scanDate": "2026-03-19",
+      "vulnerabilities": []
+    },
+    {
+      "path": "/packages/frontend/src/App.tsx",
+      "scanDate": "2026-03-19",
+      "vulnerabilities": []
+    },
+    {
+      "path": "/packages/frontend/src/api/index.ts",
+      "scanDate": "2026-03-19",
+      "vulnerabilities": []
+    },
+    {
+      "path": "/packages/frontend/src/components/QueryEditor.tsx",
+      "scanDate": "2026-03-19",
+      "vulnerabilities": []
+    },
+    {
+      "path": "/packages/frontend/src/components/ResultTable.tsx",
+      "scanDate": "2026-03-19",
+      "vulnerabilities": []
+    },
+    {
+      "path": "/packages/api-server/src/routes/v1/repos/_owner/_repo/stargazers/history/index.ts",
+      "scanDate": "2026-03-20",
+      "vulnerabilities": [18]
+    },
+    {
+      "path": "/packages/api-server/src/utils/endpoint.ts",
+      "scanDate": "2026-03-20",
+      "vulnerabilities": [19]
+    },
+    {
+      "path": "/packages/api-server/src/core/runner/query/QueryLegacyParser.ts",
+      "scanDate": "2026-03-20",
+      "vulnerabilities": [20]
+    },
+    {
+      "path": "/packages/api-server/src/core/runner/query/QueryParser.ts",
+      "scanDate": "2026-03-20",
+      "vulnerabilities": []
+    },
+    {
+      "path": "/packages/pipeline/src/routes/pipelines/_name/full_sync/index.ts",
+      "scanDate": "2026-03-20",
+      "vulnerabilities": []
+    },
+    {
+      "path": "/packages/pipeline/src/utils/db.ts",
+      "scanDate": "2026-03-20",
+      "vulnerabilities": []
+    }
+  ],
+  "vulnerabilities": [
+    {
+      "id": 1,
+      "severity": "High",
+      "file": "/packages/api-server/src/core/executor/query-executor/TiDBCloudQueryExecutor.ts",
+      "line": 45,
+      "issue": "SQL injection via unsanitized table name interpolation",
+      "ghIssue": "https://github.com/pingcap/ossinsight/issues/XXX"
+    },
+    {
+      "id": 2,
+      "severity": "Critical",
+      "file": "/packages/api-server/src/plugins/auth/github.ts",
+      "line": 78,
+      "issue": "JWT token validation bypass - missing issuer verification",
+      "ghIssue": "https://github.com/pingcap/ossinsight/issues/XXX"
+    },
+    {
+      "id": 3,
+      "severity": "High",
+      "file": "/packages/api-server/src/core/runner/sql/SQLRunner.ts",
+      "line": 92,
+      "issue": "Missing LIMIT enforcement on user-submitted queries",
+      "ghIssue": "https://github.com/pingcap/ossinsight/issues/XXX"
+    },
+    {
+      "id": 4,
+      "severity": "Medium",
+      "file": "/packages/api-server/src/plugins/rate-limit.ts",
+      "line": 23,
+      "issue": "Rate limit bypass via X-Forwarded-For header spoofing",
+      "ghIssue": "https://github.com/pingcap/ossinsight/issues/XXX"
+    },
+    {
+      "id": 5,
+      "severity": "High",
+      "file": "/packages/api-server/src/utils/http/forwared.ts",
+      "line": 15,
+      "issue": "Trust proxy headers without validation",
+      "ghIssue": "https://github.com/pingcap/ossinsight/issues/XXX"
+    },
+    {
+      "id": 6,
+      "severity": "Medium",
+      "file": "/packages/api-server/src/core/playground/playground.ts",
+      "line": 134,
+      "issue": "WHERE clause validation can be bypassed with comments",
+      "ghIssue": "https://github.com/pingcap/ossinsight/issues/XXX"
+    },
+    {
+      "id": 7,
+      "severity": "Low",
+      "file": "/packages/pipeline/src/plugins/github/github.ts",
+      "line": 56,
+      "issue": "GitHub API token stored in memory without encryption",
+      "ghIssue": "https://github.com/pingcap/ossinsight/issues/XXX"
+    },
+    {
+      "id": 8,
+      "severity": "Medium",
+      "file": "/packages/api-server/src/plugins/error-handler/index.ts",
+      "line": 34,
+      "issue": "Stack traces exposed in development mode errors",
+      "ghIssue": "https://github.com/pingcap/ossinsight/issues/XXX"
+    },
+    {
+      "id": 9,
+      "severity": "High",
+      "file": "/packages/api-server/src/core/runner/query/QueryRunner.ts",
+      "line": 67,
+      "issue": "Query parameters not validated before execution",
+      "ghIssue": "https://github.com/pingcap/ossinsight/issues/XXX"
+    },
+    {
+      "id": 10,
+      "severity": "Medium",
+      "file": "/packages/frontend/src/api/index.ts",
+      "line": 28,
+      "issue": "API responses cached without authentication check",
+      "ghIssue": "https://github.com/pingcap/ossinsight/issues/XXX"
+    },
+    {
+      "id": 11,
+      "severity": "Low",
+      "file": "/packages/api-server/src/plugins/logger/index.ts",
+      "line": 45,
+      "issue": "Sensitive data logged without redaction",
+      "ghIssue": "https://github.com/pingcap/ossinsight/issues/XXX"
+    },
+    {
+      "id": 12,
+      "severity": "High",
+      "file": "/packages/api-server/src/plugins/cors.ts",
+      "line": 34,
+      "issue": "CORS misconfiguration allows all origins when config file missing",
+      "ghIssue": "https://github.com/pingcap/ossinsight/issues/XXX"
+    },
+    {
+      "id": 13,
+      "severity": "Medium-High",
+      "file": "/packages/api-server/src/core/runner/query/QueryLoader.ts",
+      "line": 24,
+      "issue": "Potential path traversal via queryName parameter",
+      "ghIssue": "https://github.com/pingcap/ossinsight/issues/XXX"
+    },
+    {
+      "id": 14,
+      "severity": "Medium",
+      "file": "/packages/api-server/src/core/playground/playground.ts",
+      "line": 170,
+      "issue": "SQL parser error handling bypasses validation",
+      "ghIssue": "https://github.com/pingcap/ossinsight/issues/XXX"
+    },
+    {
+      "id": 15,
+      "severity": "Medium",
+      "file": "/packages/api-server/src/plugins/socket.io/index.ts",
+      "line": 56,
+      "issue": "WebSocket error responses leak internal details",
+      "ghIssue": "https://github.com/pingcap/ossinsight/issues/XXX"
+    },
+    {
+      "id": 16,
+      "severity": "Low-Medium",
+      "file": "/packages/api-server/src/plugins/auth/auth0.ts",
+      "line": 16,
+      "issue": "JWKS cache without size limit enables DoS",
+      "ghIssue": "https://github.com/pingcap/ossinsight/issues/XXX"
+    },
+    {
+      "id": 17,
+      "severity": "Low",
+      "file": "/packages/api-server/src/core/db/pool-decorator.ts",
+      "line": 29,
+      "issue": "Database connection initialization has race condition",
+      "ghIssue": "https://github.com/pingcap/ossinsight/issues/XXX"
+    },
+    {
+      "id": 18,
+      "severity": "Medium",
+      "file": "/packages/api-server/src/routes/v1/repos/_owner/_repo/stargazers/history/index.ts",
+      "line": 24,
+      "issue": "Date parameters (from/to) lack format validation, could cause unexpected query behavior",
+      "ghIssue": "https://github.com/pingcap/ossinsight/issues/1993"
+    },
+    {
+      "id": 19,
+      "severity": "Medium",
+      "file": "/packages/api-server/src/utils/endpoint.ts",
+      "line": 32,
+      "issue": "Proxy endpoint passes user query params directly to data service without validation",
+      "ghIssue": "https://github.com/pingcap/ossinsight/issues/1992"
+    },
+    {
+      "id": 20,
+      "severity": "High",
+      "file": "/packages/api-server/src/core/runner/query/QueryLegacyParser.ts",
+      "line": 94,
+      "issue": "SQL string parameter escaping incomplete - single quotes in values not escaped, enabling SQL injection",
+      "ghIssue": "https://github.com/pingcap/ossinsight/issues/1991"
+    }
+  ],
+  "totalFilesScanned": 56,
+  "totalVulnerabilitiesFound": 20
+}

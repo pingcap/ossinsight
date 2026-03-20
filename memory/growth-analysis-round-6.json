@@ -1,0 +1,219 @@
+{
+  "round": 6,
+  "date": "2026-03-20",
+  "angle": "📈 用户获取（Acquisition）- 程序化内容页面 (Programmatic SEO)",
+  "analysis": {
+    "current_state": {
+      "sitemap_coverage": "仅包含 1000 个 top repos + collections，覆盖率极低",
+      "indexed_pages": "约 1000-2000 页",
+      "programmatic_pages": "仅有 /analyze/[owner]/[repo] 动态页面",
+      "missing_dimensions": [
+        "编程语言 landing pages (/languages/JavaScript, /languages/Rust 等)",
+        "Topic landing pages (/topics/ai, /topics/machine-learning 等)",
+        "组织/公司 pages (/orgs/microsoft, /orgs/google 等) - 已有但未优化",
+        "开发者用户 pages (/users/torvalds 等) - 已有但未优化",
+        "趋势榜单 pages (/trending/daily, /trending/weekly 等)",
+        "对比结果 pages (/compare/react/vue 等)"
+      ]
+    },
+    "opportunities": [
+      {
+        "id": "prog-seo-1",
+        "title": "编程语言 Landing Pages",
+        "description": "为每个主流编程语言创建独立的聚合分析页面，展示该语言下最活跃的 repos、趋势、明星项目等",
+        "target_keywords": [
+          "JavaScript GitHub stats",
+          "Rust repositories trending",
+          "Python open source projects",
+          "TypeScript GitHub analytics",
+          "Go language projects"
+        ],
+        "estimated_pages": "~50 个主流语言 × 1 page = 50 pages",
+        "long_tail_potential": "每个语言页面可链接到该语言下 top 1000 repos，形成内部链接网络",
+        "implementation": {
+          "route": "/languages/[language]",
+          "data_needed": "按语言聚合的 repo 统计数据",
+          "content_sections": [
+            "语言概述（总项目数、总 stars、活跃开发者数）",
+            "Top 20 trending repos this week",
+            "Fastest growing repos",
+            "Most starred new repos",
+            "Key contributors in this language",
+            "Related languages"
+          ]
+        },
+        "impact": "高",
+        "difficulty": "中等",
+        "priority": "P0"
+      },
+      {
+        "id": "prog-seo-2",
+        "title": "GitHub Topics Landing Pages",
+        "description": "为每个热门 GitHub Topic 创建聚合页面，捕获按主题搜索的长尾流量",
+        "target_keywords": [
+          "best AI GitHub repositories",
+          "machine learning open source projects",
+          "web development frameworks GitHub",
+          "blockchain projects GitHub",
+          "devops tools open source"
+        ],
+        "estimated_pages": "~500 个热门 topics × 1 page = 500 pages",
+        "long_tail_potential": "Topic 搜索是开发者发现项目的主要方式之一",
+        "implementation": {
+          "route": "/topics/[topic]",
+          "data_needed": "GitHub topics API 或内部 tags 数据",
+          "content_sections": [
+            "Topic 概述",
+            "Top repos in this topic",
+            "Related topics",
+            "Trending repos this week",
+            "New repos added recently"
+          ]
+        },
+        "impact": "高",
+        "difficulty": "中等",
+        "priority": "P0"
+      },
+      {
+        "id": "prog-seo-3",
+        "title": "组织/公司 Hub Pages",
+        "description": "为公司/组织创建更丰富的聚合页面，展示其开源影响力",
+        "target_keywords": [
+          "Microsoft open source projects",
+          "Google GitHub repositories",
+          "Meta open source",
+          "Amazon open source projects"
+        ],
+        "estimated_pages": "~1000 个活跃组织",
+        "implementation": {
+          "route": "/orgs/[org]",
+          "enhancement": "当前已有 /analyze/(org)/[owner] 页面，但需要增强内容深度和 SEO",
+          "content_sections": [
+            "组织概况（总 repos、总 stars、成员数）",
+            "Top repos by stars",
+            "Most active repos this month",
+            "Contribution activity heatmap",
+            "Top contributors",
+            "Compare with similar orgs"
+          ]
+        },
+        "impact": "中",
+        "difficulty": "简单",
+        "priority": "P1"
+      },
+      {
+        "id": "prog-seo-4",
+        "title": "趋势榜单 Pages (Trending Lists)",
+        "description": "创建多种维度的趋势榜单页面，捕获'trending'相关搜索",
+        "target_keywords": [
+          "trending GitHub repos today",
+          "most starred repos this week",
+          "fastest growing open source projects",
+          "hot GitHub projects"
+        ],
+        "estimated_pages": "~20 个榜单变体",
+        "implementation": {
+          "routes": [
+            "/trending/daily",
+            "/trending/weekly",
+            "/trending/monthly",
+            "/trending/[language]",
+            "/rising/daily",
+            "/rising/weekly",
+            "/new/notable"
+          ],
+          "content_sections": [
+            "榜单列表（可交互表格）",
+            "趋势图表",
+            "历史对比",
+            "订阅此榜单 CTA"
+          ]
+        },
+        "impact": "高",
+        "difficulty": "简单",
+        "priority": "P0"
+      },
+      {
+        "id": "prog-seo-5",
+        "title": "对比结果 Pages (SEO-friendly)",
+        "description": "将 repo 对比结果生成为可索引的静态页面，捕获对比类搜索",
+        "target_keywords": [
+          "React vs Vue GitHub stats",
+          "Next.js vs Gatsby comparison",
+          "TensorFlow vs PyTorch stars"
+        ],
+        "estimated_pages": "理论上无限，可限制为 top 10000 repos 的组合",
+        "implementation": {
+          "route": "/compare/[repo1]/[repo2]",
+          "seo_note": "需要生成独特的 meta description 和 title，避免重复内容问题",
+          "content_sections": [
+            "侧边对比图表",
+            "关键指标对比表",
+            "增长曲线对比",
+            "Verdict/Summary（AI 生成）"
+          ]
+        },
+        "impact": "中",
+        "difficulty": "中等",
+        "priority": "P1"
+      },
+      {
+        "id": "prog-seo-6",
+        "title": "扩展 Sitemap 覆盖",
+        "description": "将 sitemap 从 1000 个 repos 扩展到 10 万 +，覆盖更多长尾 repos",
+        "implementation": {
+          "current": "1000 repos",
+          "target": "100,000+ repos",
+          "strategy": [
+            "分片 sitemap (sitemap-0.xml, sitemap-1.xml, ...)",
+            "按 stars 阈值分层：top 10k (priority 0.8), top 100k (priority 0.5)",
+            "使用 Next.js incremental static regeneration 预渲染热门 pages"
+          ]
+        },
+        "impact": "高",
+        "difficulty": "简单",
+        "priority": "P0"
+      }
+    ],
+    "technical_recommendations": {
+      "sitemap_scaling": {
+        "issue": "当前 sitemap.ts 只生成 ~1000 条 URLs",
+        "solution": "实现分页 sitemap，使用 sitemap-index.xml 管理多个子 sitemap",
+        "code_example": "创建 /app/sitemap/[page]/route.ts 处理分页"
+      },
+      "isg_strategy": {
+        "recommendation": "对 top 10k repos 使用 ISR (revalidate: 3600)，对长尾 repos 使用 SSR",
+        "benefit": "平衡 SEO 覆盖和服务器负载"
+      },
+      "internal_linking": {
+        "recommendation": "在每个 repo 页面添加'Related repos'模块，链接到同语言/同 topic 的其他 repos",
+        "benefit": "提升爬虫抓取深度，传递 PageRank"
+      },
+      "structured_data": {
+        "current": "已有 SoftwareSourceCode schema",
+        "enhancement": "添加 ItemList schema 用于榜单页面，BreadcrumbList 用于导航"
+      }
+    },
+    "traffic_projection": {
+      "current_estimated_organic": "50,000-100,000 monthly visits (估算)",
+      "potential_after_implementation": "300,000-500,000 monthly visits (6-12 个月)",
+      "breakdown": {
+        "language_pages": "50 pages × 200 visits/page/month = 10,000",
+        "topic_pages": "500 pages × 100 visits/page/month = 50,000",
+        "expanded_repos": "100k repos × 0.5 visits/repo/month = 50,000",
+        "trending_pages": "20 pages × 5000 visits/page/month = 100,000",
+        "brand_search_lift": "SEO 可见度提升带来的品牌搜索增长 = 50,000+"
+      }
+    }
+  },
+  "issues_to_create": [
+    {
+      "title": "[Growth] Programmatic SEO: Language & Topic landing pages",
+      "body": "## 机会\n\n当前 OSSInsight 仅有 ~1000 个 repo 页面被 sitemap 收录，但 GitHub 有数亿个 repositories。通过程序化 SEO 策略，可以低成本创建大量高质量 landing pages，捕获长尾搜索流量。\n\n## 建议实现\n\n### P0 - 高优先级\n\n1. **编程语言 Landing Pages** (`/languages/[language]`)\n   - 展示该语言下 trending repos、增长最快的项目、明星贡献者\n   - 目标关键词：\"JavaScript GitHub stats\", \"Rust repositories trending\" 等\n   - 预计 ~50 个页面\n\n2. **Topic Landing Pages** (`/topics/[topic]`)\n   - 为 AI、ML、Web 开发等热门主题创建聚合页\n   - 目标关键词：\"best AI GitHub repositories\", \"machine learning open source\"\n   - 预计 ~500 个页面\n\n3. **趋势榜单 Pages** (`/trending/daily`, `/trending/weekly`, `/trending/[language]`)\n   - 捕获 \"trending GitHub repos\" 相关搜索\n   - 可订阅的榜单，促进用户留存\n\n4. **扩展 Sitemap** - 从 1000 扩展到 10 万 + repos\n   - 使用分页 sitemap (sitemap-index.xml)\n   - 按 stars 分层设置 priority\n\n### P1 - 中优先级\n\n5. **组织 Hub Pages 增强** - 优化现有 `/orgs/[org]` 页面的 SEO\n6. **对比结果 Pages** - `/compare/[repo1]/[repo2]` 生成可索引页面\n\n## 技术建议\n\n- 对 top 10k repos 使用 ISR (revalidate: 3600)\n- 添加 ItemList schema 用于榜单页面\n- 在每个 repo 页面添加 \"Related repos\" 内部链接模块\n\n## 预期影响\n\n- 当前自然搜索流量：~50k-100k monthly visits (估算)\n- 实施后 6-12 个月：~300k-500k monthly visits\n- 主要增长来源：长尾关键词覆盖、榜单页面病毒传播\n\n## 竞品参考\n\n- GitHub Trends: https://github.com/trending\n- Star History: https://star-history.com/\n- LibHunt: https://www.libhunt.com/\n\n---\n\n**Labels:** enhancement, growth, seo\n**Priority:** High",
+      "labels": ["enhancement", "growth", "seo"]
+    }
+  ],
+  "message_content": "📊 **OSSInsight 增长分析 - 第 6 轮**\n\n**使用模型：** 千问 qwen3.5-plus\n**本轮角度：** 📈 用户获取（Acquisition）- 程序化内容页面 (Programmatic SEO)\n\n---\n\n## 🔍 核心发现\n\n当前 sitemap 仅覆盖 **~1000 个 repos**，但 GitHub 有数亿个项目。通过程序化 SEO 策略，可低成本创建大量高质量 landing pages，捕获长尾搜索流量。\n\n---\n\n## 🎯 具体机会（按优先级）\n\n### P0 - 高优先级\n\n1. **编程语言 Landing Pages** (`/languages/[language]`)\n   - 展示该语言下 trending repos、增长最快项目、明星贡献者\n   - 目标关键词：\"JavaScript GitHub stats\", \"Rust repositories trending\"\n   - 预计 ~50 个页面\n\n2. **Topic Landing Pages** (`/topics/[topic]`)\n   - 为 AI、ML、Web 开发等热门主题创建聚合页\n   - 预计 ~500 个页面\n\n3. **趋势榜单 Pages** (`/trending/daily|weekly|[language]`)\n   - 捕获 \"trending GitHub repos\" 相关搜索\n   - 可订阅榜单，促进留存\n\n4. **扩展 Sitemap** - 从 1000 → 10 万 + repos\n   - 使用分页 sitemap (sitemap-index.xml)\n   - 按 stars 分层设置 priority\n\n### P1 - 中优先级\n\n5. **组织 Hub Pages 增强** - 优化现有 `/orgs/[org]` 页面\n6. **对比结果 Pages** - `/compare/[repo1]/[repo2]` 可索引化\n\n---\n\n## 📈 流量预估\n\n| 指标 | 当前 | 目标 (6-12 个月) |\n|------|------|------------------|\n| 收录页面 | ~1,000 | ~100,000+ |\n| 月自然搜索流量 | ~50k-100k | ~300k-500k |\n| 长尾关键词覆盖 | 低 | 高 |\n\n---\n\n## 🎯 影响评估\n\n- **预估影响：** 🔥 高 (可能带来 3-5x 自然搜索流量增长)\n- **实施难度：** ⚙️ 中等 (需要数据聚合 + 新路由开发)\n- **优先级建议：** P0 - 建议立即启动\n\n---\n\n## 📝 后续动作\n\n即将创建 GitHub issue：\n- `[Growth] Programmatic SEO: Language & Topic landing pages`\n\n这是目前 ROI 最高的增长杠杆，建议优先实施。",
+  "issues_created": [],
+  "next_round_angle": "🛠️ 产品改进 - 性能优化与 Core Web Vitals"
+}
