@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { getRepoByName } from '@/lib/server/internal-api';
 import { BreadcrumbListJsonLd } from '@/components/json-ld';
+import ShareButtons from '@/components/ShareButtons';
 import RepoAnalyzePage from './content';
 
 interface PageProps {
@@ -32,6 +33,21 @@ export default async function Page({ params, searchParams }: PageProps) {
     }
   }
 
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareSourceCode',
+    name: repo,
+    codeRepository: `https://github.com/${owner}/${repo}`,
+    ...(repoInfo.language ? { programmingLanguage: repoInfo.language } : {}),
+    ...(repoInfo.description ? { description: repoInfo.description } : {}),
+    ...(repoInfo.license ? { license: repoInfo.license } : {}),
+    author: {
+      '@type': repoInfo.owner?.login ? 'Organization' : 'Person',
+      name: owner,
+      url: `https://github.com/${owner}`,
+    },
+  };
+
   return (
     <>
       <BreadcrumbListJsonLd items={[
@@ -39,6 +55,15 @@ export default async function Page({ params, searchParams }: PageProps) {
         { name: 'Analyze', url: '/analyze' },
         { name: `${owner}/${repo}` },
       ]} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <ShareButtons
+        url={`/analyze/${owner}/${repo}`}
+        title={`Check out ${owner}/${repo} analytics on OSSInsight`}
+        className="fixed right-4 top-1/2 -translate-y-1/2 flex-col z-50 bg-gray-900/80 backdrop-blur rounded-lg p-1.5 shadow-lg"
+      />
       <div className="sr-only">
         <h1>{repoInfo.full_name} — GitHub Repository Analytics</h1>
         <p>
