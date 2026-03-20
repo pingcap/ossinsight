@@ -109,7 +109,7 @@ export default async function LanguagePage({ params }: PageProps) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <div className="mx-auto max-w-7xl px-4 py-8">
+      <div className="mx-auto max-w-[1280px] px-6 py-8">
         {/* Breadcrumb */}
         <div className="mb-6">
           <Link href="/languages" className="text-sm text-[#7c7c7c] hover:text-white transition-colors">
@@ -164,12 +164,11 @@ export default async function LanguagePage({ params }: PageProps) {
             ) : (
               <>
                 {/* Table header */}
-                <div className="hidden sm:grid sm:grid-cols-[3rem_1fr_5rem_5rem_5rem] gap-2 px-4 py-2 text-xs font-medium uppercase tracking-wider text-[#555] border-b border-[#2a2a2a]">
+                <div className="hidden sm:grid sm:grid-cols-[3rem_1fr_6rem_6rem] gap-2 px-4 py-2 text-xs font-medium uppercase tracking-wider text-[#555] border-b border-[#2a2a2a]">
                   <div>Rank</div>
                   <div>Repository</div>
                   <div className="text-right">Stars</div>
                   <div className="text-right">Forks</div>
-                  <div className="text-right">Score</div>
                 </div>
 
                 {/* Table rows */}
@@ -179,7 +178,7 @@ export default async function LanguagePage({ params }: PageProps) {
                     return (
                       <div
                         key={repo.repo_id}
-                        className="group grid grid-cols-1 sm:grid-cols-[3rem_1fr_5rem_5rem_5rem] gap-2 items-center px-4 py-3 hover:bg-[#1a1a1a] transition-colors"
+                        className="group grid grid-cols-1 sm:grid-cols-[3rem_1fr_6rem_6rem] gap-2 items-center px-4 py-3 hover:bg-[#1a1a1a] transition-colors"
                       >
                         {/* Rank */}
                         <div className="hidden sm:block text-sm font-medium text-[#7c7c7c]">
@@ -223,16 +222,10 @@ export default async function LanguagePage({ params }: PageProps) {
                           {nf.format(repo.forks)}
                         </div>
 
-                        {/* Score */}
-                        <div className="hidden sm:block text-right text-sm text-[#8fb5ff]">
-                          {nf.format(repo.total_score)}
-                        </div>
-
                         {/* Mobile stats row */}
                         <div className="sm:hidden flex items-center gap-4 ml-9 text-xs text-[#7c7c7c]">
                           <span className="text-[#ffe895]">⭐ {nf.format(repo.stars)}</span>
                           <span>🍴 {nf.format(repo.forks)}</span>
-                          <span className="text-[#8fb5ff]">Score: {nf.format(repo.total_score)}</span>
                         </div>
                       </div>
                     );

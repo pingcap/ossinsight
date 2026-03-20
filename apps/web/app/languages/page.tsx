@@ -61,7 +61,7 @@ export default function LanguagesPage() {
         { name: 'Languages' },
       ]} />
 
-      <div className="mx-auto max-w-5xl px-4 py-12">
+      <div className="mx-auto max-w-[1280px] px-6 py-12">
         <h1 className="text-3xl font-bold text-white">
           Programming Languages on GitHub
         </h1>
