@@ -1,12 +1,22 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { ChevronRight } from 'lucide-react';
 import { BreadcrumbListJsonLd } from '@/components/json-ld';
 import {
   LANGUAGES,
   isValidLanguage,
   getTrendingReposByLanguage,
 } from '@/lib/server/internal-api';
+
+// Import language colors from the parent page
+const LANGUAGE_COLORS: Record<string, string> = {
+  JavaScript: '#f1e05a', Java: '#b07219', Python: '#3572A5', PHP: '#4F5D95',
+  'C++': '#f34b7d', 'C#': '#178600', TypeScript: '#3178c6', Shell: '#89e051',
+  C: '#555555', Ruby: '#701516', Rust: '#dea584', Go: '#00ADD8',
+  Kotlin: '#A97BFF', Swift: '#F05138', Dart: '#00B4AB', HTML: '#e34c26',
+  CSS: '#563d7c', Scala: '#c22d40', R: '#198CE7', Lua: '#000080',
+};
 
 export const revalidate = 3600; // ISR: revalidate every hour
 export const dynamic = 'force-dynamic'; // Don't pre-render at build time (needs DB)
@@ -74,18 +84,29 @@ export default async function LanguagePage({ params }: PageProps) {
       />
 
       <div className="mx-auto max-w-5xl px-4 py-12">
-        <div className="mb-2">
-          <Link href="/languages" className="text-sm text-[#7c7c7c] hover:text-white transition-colors">
+        <div className="mb-4">
+          <Link href="/languages" className="inline-flex items-center gap-1 text-sm text-[#7c7c7c] hover:text-white transition-colors">
             ← All Languages
           </Link>
         </div>
 
-        <h1 className="text-3xl font-bold text-white">
-          {language}
-        </h1>
+        <div className="flex items-center gap-3">
+          <span
+            className="h-5 w-5 shrink-0 rounded-full"
+            style={{ backgroundColor: LANGUAGE_COLORS[language] ?? '#8b8b8b' }}
+          />
+          <h1 className="text-3xl font-bold text-white">
+            {language}
+          </h1>
+        </div>
         <p className="mt-3 text-base text-[#7c7c7c]">
           Trending {language} repositories on GitHub, ranked by community activity and growth over the past month.
         </p>
+        {repos.length > 0 && (
+          <p className="mt-1 text-sm text-[#555]">
+            {repos.length} trending repositories
+          </p>
+        )}
 
         {repos.length === 0 ? (
           <p className="mt-10 text-sm text-[#7c7c7c]">No trending repositories found for {language}.</p>
@@ -129,6 +150,17 @@ export default async function LanguagePage({ params }: PageProps) {
                     <div className="mt-2 flex items-center gap-4 text-xs text-[#7c7c7c]">
                       <span title="Stars">⭐ {nf.format(repo.stars)}</span>
                       <span title="Forks">🍴 {nf.format(repo.forks)}</span>
+                    </div>
+
+                    <div className="mt-2">
+                      <Link
+                        href={`/analyze/${repo.repo_name}`}
+                        className="inline-flex items-center gap-1 text-xs font-medium text-[#ffe895] hover:text-[#fff2bd] transition-colors"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <ChevronRight className="h-3 w-3 text-[#8fb5ff]" />
+                        View Analysis
+                      </Link>
                     </div>
                   </div>
                 </article>
