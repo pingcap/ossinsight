@@ -14,6 +14,10 @@ export default async function executeEndpoint (name: string, config: EndpointCon
   const replacedSQL = applyLegacyQueryParameters(config, sqlTemplate, queryParams);
   const sql = await templateEngine.parseAndRender(replacedSQL, queryParams);
 
+  // TODO: Migrate legacy template-based SQL construction to parameterized queries.
+  // Currently the SQL is built via string replacement (applyLegacyQueryParameters)
+  // with values validated by prepareQueryContext (pattern/enum checks).
+  // The stringifyParamValue function escapes quotes for STRING types as a defense layer.
   const start = DateTime.now();
   const result = await tidb.execute(sql, null, {
     fullResult: true,

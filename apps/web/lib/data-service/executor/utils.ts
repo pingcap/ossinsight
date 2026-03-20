@@ -142,7 +142,9 @@ function verifyParamValue(param: Params, value: any) {
 function stringifyParamValue(type: ParameterItemType | ParameterType, value: any) {
   switch (type) {
     case ParameterItemType.STRING:
-      return `'${value}'`;
+      // Escape backslashes and single quotes to prevent SQL injection
+      const escaped = String(value).replaceAll('\\', '\\\\').replaceAll("'", "''");
+      return `'${escaped}'`;
     case ParameterItemType.INTEGER:
     case ParameterItemType.NUMBER:
       return `${typeof value === 'string' ? Number(value) : value}`;

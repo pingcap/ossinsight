@@ -96,6 +96,8 @@ export async function explainQuery(queryName: string, searchParams: URLSearchPar
   const queryParams = getSearchParams(searchParams);
   const context = prepareQueryContext(endpoint.config, queryParams);
   const sql = await templateEngine.parseAndRender(applyLegacyQueryParameters(endpoint.config, endpoint.sql, context), context);
+  // Note: EXPLAIN cannot use parameterized queries for the statement itself,
+  // but the SQL has already been validated through prepareQueryContext + template rendering.
   const explainResult = await executeRows(`EXPLAIN FORMAT = 'brief' ${sql}`, null, signal);
 
   return {
@@ -160,19 +162,15 @@ function getTrendingReposCacheKey(params: Record<string, any>) {
   );
 }
 
-function quoteSQLString(value: string) {
-  return `'${value.replaceAll('\\', '\\\\').replaceAll("'", "''")}'`;
-}
-
 async function loadTrendingReposFromMaterializedView(params: Record<string, any>) {
-  const language = quoteSQLString(String(params.language));
-  const period = quoteSQLString(String(params.period));
+  const language = String(params.language);
+  const period = String(params.period);
   const sql = `
 WITH latest_snapshot AS (
     SELECT MAX(dt) AS dt
     FROM mv_trending_repos
-    WHERE language = ${language}
-      AND period = ${period}
+    WHERE language = ?
+      AND period = ?
 ), repos AS (
     SELECT
         tr.repo_id,
@@ -188,8 +186,8 @@ WITH latest_snapshot AS (
     FROM mv_trending_repos tr
     JOIN latest_snapshot ls ON tr.dt = ls.dt
     JOIN github_repos gr ON tr.repo_id = gr.repo_id
-    WHERE tr.language = ${language}
-      AND tr.period = ${period}
+    WHERE tr.language = ?
+      AND tr.period = ?
 ), repo_with_collections AS (
     SELECT
         r.repo_id,
@@ -219,7 +217,7 @@ LIMIT 100
   `.trim();
 
   const start = DateTime.now();
-  const result = await executeRows(sql);
+  const result = await executeRows(sql, [language, period, language, period]);
   const end = DateTime.now();
 
   return {
