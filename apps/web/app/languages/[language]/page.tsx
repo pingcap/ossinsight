@@ -9,13 +9,10 @@ import {
 } from '@/lib/server/internal-api';
 
 export const revalidate = 3600; // ISR: revalidate every hour
+export const dynamic = 'force-dynamic'; // Don't pre-render at build time (needs DB)
 
 interface PageProps {
   params: Promise<{ language: string }>;
-}
-
-export async function generateStaticParams() {
-  return LANGUAGES.map((lang) => ({ language: encodeURIComponent(lang) }));
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
