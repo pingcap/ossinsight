@@ -747,13 +747,13 @@ function QuestionListSkeleton({ count = 4 }: { count?: number }) {
       {Array.from({ length: count }).map((_, index) => (
         <div key={`question-skeleton-${index}`} className="py-3">
           <div className="flex items-start gap-2.5">
-            <div className="mt-1 h-[13px] w-[13px] rounded-full bg-[#343436] animate-pulse" />
+            <div className="mt-1 h-[13px] w-[13px] rounded-full bg-[#2a2a2c] relative overflow-hidden before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_1.5s_ease-in-out_infinite] before:bg-gradient-to-r before:from-transparent before:via-white/[0.04] before:to-transparent" />
             <div className="min-w-0 flex-1">
               <div
-                className="h-4 rounded bg-[#343436] animate-pulse"
+                className="h-4 rounded bg-[#2a2a2c] relative overflow-hidden before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_1.5s_ease-in-out_infinite] before:bg-gradient-to-r before:from-transparent before:via-white/[0.04] before:to-transparent"
                 style={{ width: `${88 - index * 8}%` }}
               />
-              <div className="mt-3 h-5 w-20 rounded-full bg-[#2f2f31] animate-pulse" />
+              <div className="mt-3 h-5 w-20 rounded-full bg-[#2a2a2c] relative overflow-hidden before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_1.5s_ease-in-out_infinite] before:bg-gradient-to-r before:from-transparent before:via-white/[0.04] before:to-transparent" />
             </div>
           </div>
         </div>
@@ -878,7 +878,7 @@ function TagSkeletonRow({ count = 6 }: { count?: number }) {
       {Array.from({ length: count }).map((_, index) => (
         <div
           key={`tag-skeleton-${index}`}
-          className="h-7 rounded-full bg-[#2f2f31] animate-pulse"
+          className="h-7 rounded-full bg-[#2a2a2c] relative overflow-hidden before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_1.5s_ease-in-out_infinite] before:bg-gradient-to-r before:from-transparent before:via-white/[0.04] before:to-transparent"
           style={{ width: `${52 + (index % 3) * 20}px` }}
         />
       ))}
@@ -1471,7 +1471,18 @@ function ExploreExecutionLayout({
           {errorMessage ? (
             <div className="mt-6">
               <div className="rounded-[14px] border border-[#6a2c2f] bg-[#231417] px-5 py-4 text-sm text-[#ffb6b1]">
-                {errorMessage}
+                <p>{errorMessage}</p>
+                <div className="mt-3 flex items-center gap-3">
+                  <button
+                    onClick={onSubmit}
+                    className="rounded-lg bg-[#6a2c2f] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#7d3437] transition-colors"
+                  >
+                    Try again
+                  </button>
+                  <span className="text-xs text-[#ff8a84]/60">
+                    Tip: Try rephrasing your question or be more specific.
+                  </span>
+                </div>
               </div>
             </div>
           ) : null}
@@ -1510,9 +1521,16 @@ function ExplorerLoadingState({
   previewAnswer?: ExplorerPreview | null;
   phase: 'generating' | 'sql' | 'executing';
 }) {
+  const phaseHint = phase === 'generating'
+    ? 'Analyzing your question… (~5s)'
+    : phase === 'sql'
+      ? 'Writing SQL query… (~3s)'
+      : 'Running query on 10B+ events… (~10s)';
+
   return (
     <section className="mt-3">
       <div className="min-w-0">
+        <div className="mb-2 text-xs text-[#7c7c7c] animate-pulse">{phaseHint}</div>
         <ExplorerPlanningShell
           previewAnswer={previewAnswer ?? { question }}
           phase={phase}
