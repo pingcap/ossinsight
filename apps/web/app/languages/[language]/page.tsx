@@ -12,8 +12,14 @@ const LANGUAGE_COLORS: Record<string, string> = {
   JavaScript: '#f1e05a', Java: '#b07219', Python: '#3572A5', PHP: '#4F5D95',
   'C++': '#f34b7d', 'C#': '#178600', TypeScript: '#3178c6', Shell: '#89e051',
   C: '#555555', Ruby: '#701516', Rust: '#dea584', Go: '#00ADD8',
-  Kotlin: '#A97BFF', Swift: '#F05138', Dart: '#00B4AB', HTML: '#e34c26',
-  CSS: '#563d7c', Scala: '#c22d40', R: '#198CE7', Lua: '#000080',
+  Kotlin: '#A97BFF', HCL: '#844FBA', PowerShell: '#012456', CMake: '#DA3434',
+  Groovy: '#4298b8', PLpgSQL: '#336790', TSQL: '#e38c00', Dart: '#00B4AB',
+  Swift: '#F05138', HTML: '#e34c26', CSS: '#563d7c', Elixir: '#6e4a7e',
+  Haskell: '#5e5086', Solidity: '#AA6746', Assembly: '#6E4C13', R: '#198CE7',
+  Scala: '#c22d40', Julia: '#a270ba', Lua: '#000080', Clojure: '#db5855',
+  Erlang: '#B83998', 'Common Lisp': '#3fb68b', 'Emacs Lisp': '#c065db',
+  OCaml: '#ef7a08', MATLAB: '#e16737', 'Objective-C': '#438eff',
+  Perl: '#0298c3', Fortran: '#4d41b1',
 };
 
 export const revalidate = 3600;
@@ -70,6 +76,10 @@ export default async function LanguagePage({ params }: PageProps) {
     console.error(`[languages/${language}] query failed:`, err);
   }
 
+  // Find other languages for sidebar navigation
+  const currentIndex = LANGUAGES.indexOf(language as any);
+  const relatedLanguages = LANGUAGES.filter((_, i) => i !== currentIndex).slice(0, 12);
+
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
@@ -83,6 +93,10 @@ export default async function LanguagePage({ params }: PageProps) {
     },
   };
 
+  // Compute aggregate stats
+  const totalStars = repos.reduce((sum, r) => sum + (r.stars ?? 0), 0);
+  const totalForks = repos.reduce((sum, r) => sum + (r.forks ?? 0), 0);
+
   return (
     <>
       <BreadcrumbListJsonLd items={[
@@ -95,90 +109,169 @@ export default async function LanguagePage({ params }: PageProps) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <div className="mx-auto max-w-5xl px-4 py-12">
-        <div className="mb-4">
+      <div className="mx-auto max-w-7xl px-4 py-8">
+        {/* Breadcrumb */}
+        <div className="mb-6">
           <Link href="/languages" className="text-sm text-[#7c7c7c] hover:text-white transition-colors">
             ← All Languages
           </Link>
         </div>
 
-        <div className="flex items-center gap-3">
-          <span
-            className="h-5 w-5 shrink-0 rounded-full"
-            style={{ backgroundColor: LANGUAGE_COLORS[language] ?? '#8b8b8b' }}
-          />
-          <h1 className="text-3xl font-bold text-white">
-            {language}
-          </h1>
-        </div>
-        <p className="mt-3 text-base text-[#7c7c7c]">
-          Trending {language} repositories on GitHub, ranked by community activity and growth over the past month.
-        </p>
-        {repos.length > 0 && (
-          <p className="mt-1 text-sm text-[#555]">
-            {repos.length} trending repositories
-          </p>
-        )}
+        <div className="flex gap-8">
+          {/* Main content */}
+          <div className="min-w-0 flex-1">
+            {/* Header */}
+            <div className="flex items-center gap-4 mb-2">
+              <span
+                className="h-6 w-6 shrink-0 rounded-full shadow-[0_0_8px_rgba(255,255,255,0.15)]"
+                style={{ backgroundColor: LANGUAGE_COLORS[language] ?? '#8b8b8b' }}
+              />
+              <h1 className="text-3xl font-bold text-white">
+                {language}
+              </h1>
+            </div>
+            <p className="text-base text-[#7c7c7c] mb-6">
+              Trending {language} repositories on GitHub — ranked by total activity score (stars, forks, pushes, PRs) over the past month.
+            </p>
 
-        {repos.length === 0 ? (
-          <p className="mt-10 text-sm text-[#7c7c7c]">No trending repositories found for {language}.</p>
-        ) : (
-          <div className="mt-8 space-y-3">
-            {repos.map((repo, index) => {
-              const owner = repo.repo_name.split('/')[0] ?? '';
-              return (
-                <article
-                  key={repo.repo_id}
-                  className="flex items-start gap-4 rounded-lg border-2 border-dashed border-[#3c3c3c] bg-transparent p-4 transition-[box-shadow,transform] hover:-translate-y-px hover:shadow-[0_18px_42px_-28px_rgba(0,0,0,0.85)]"
-                >
-                  <div className="w-8 shrink-0 pt-1 text-center text-sm font-medium text-[#7c7c7c]">
-                    {index + 1}
-                  </div>
+            {/* Stats summary */}
+            {repos.length > 0 && (
+              <div className="mb-8 flex items-center gap-6 rounded-lg border border-[#2a2a2a] bg-[#1a1a1a] px-6 py-4">
+                <div>
+                  <div className="text-2xl font-bold text-white">{repos.length}</div>
+                  <div className="text-xs text-[#7c7c7c] uppercase tracking-wider">Trending Repos</div>
+                </div>
+                <div className="h-8 w-px bg-[#333]" />
+                <div>
+                  <div className="text-2xl font-bold text-[#ffe895]">{nf.format(totalStars)}</div>
+                  <div className="text-xs text-[#7c7c7c] uppercase tracking-wider">Total Stars</div>
+                </div>
+                <div className="h-8 w-px bg-[#333]" />
+                <div>
+                  <div className="text-2xl font-bold text-[#8fb5ff]">{nf.format(totalForks)}</div>
+                  <div className="text-xs text-[#7c7c7c] uppercase tracking-wider">Total Forks</div>
+                </div>
+              </div>
+            )}
 
-                  <img
-                    src={`https://github.com/${owner}.png`}
-                    alt=""
-                    aria-hidden="true"
-                    width={40}
-                    height={40}
-                    className="h-10 w-10 shrink-0 rounded-full"
-                    loading="lazy"
-                  />
+            {/* Ranking heading */}
+            <h2 className="text-xl font-semibold text-white mb-4">
+              🔥 Trending {language} Repos — Past Month
+            </h2>
 
-                  <div className="min-w-0 flex-1">
-                    <Link
-                      href={`/analyze/${repo.repo_name}`}
-                      className="text-base font-medium text-white hover:text-[#ffe895] transition-colors"
-                    >
-                      {repo.repo_name}
-                    </Link>
+            {repos.length === 0 ? (
+              <p className="mt-6 text-sm text-[#7c7c7c]">No trending repositories found for {language}.</p>
+            ) : (
+              <>
+                {/* Table header */}
+                <div className="hidden sm:grid sm:grid-cols-[3rem_1fr_5rem_5rem_5rem] gap-2 px-4 py-2 text-xs font-medium uppercase tracking-wider text-[#555] border-b border-[#2a2a2a]">
+                  <div>Rank</div>
+                  <div>Repository</div>
+                  <div className="text-right">Stars</div>
+                  <div className="text-right">Forks</div>
+                  <div className="text-right">Score</div>
+                </div>
 
-                    {repo.description && (
-                      <p className="mt-1 text-sm text-[#7c7c7c] line-clamp-2">
-                        {repo.description}
-                      </p>
-                    )}
-
-                    <div className="mt-2 flex items-center gap-4 text-xs text-[#7c7c7c]">
-                      <span title="Stars">⭐ {nf.format(repo.stars)}</span>
-                      <span title="Forks">🍴 {nf.format(repo.forks)}</span>
-                    </div>
-
-                    <div className="mt-2">
-                      <Link
-                        href={`/analyze/${repo.repo_name}`}
-                        className="inline-flex items-center gap-1 text-xs font-medium text-[#ffe895] hover:text-[#fff2bd] transition-colors"
+                {/* Table rows */}
+                <div className="divide-y divide-[#1e1e1e]">
+                  {repos.map((repo, index) => {
+                    const owner = repo.repo_name.split('/')[0] ?? '';
+                    return (
+                      <div
+                        key={repo.repo_id}
+                        className="group grid grid-cols-1 sm:grid-cols-[3rem_1fr_5rem_5rem_5rem] gap-2 items-center px-4 py-3 hover:bg-[#1a1a1a] transition-colors"
                       >
-                        <span className="text-[#8fb5ff]">›</span>
-                        View Analysis
-                      </Link>
-                    </div>
-                  </div>
-                </article>
-              );
-            })}
+                        {/* Rank */}
+                        <div className="hidden sm:block text-sm font-medium text-[#7c7c7c]">
+                          {index + 1}
+                        </div>
+
+                        {/* Repo info */}
+                        <div className="flex items-center gap-3 min-w-0">
+                          <span className="sm:hidden text-sm font-medium text-[#555] w-6 shrink-0">{index + 1}</span>
+                          <img
+                            src={`https://github.com/${owner}.png`}
+                            alt=""
+                            aria-hidden="true"
+                            width={32}
+                            height={32}
+                            className="h-8 w-8 shrink-0 rounded-full"
+                            loading="lazy"
+                          />
+                          <div className="min-w-0">
+                            <Link
+                              href={`/analyze/${repo.repo_name}`}
+                              className="text-sm font-medium text-white hover:text-[#ffe895] transition-colors"
+                            >
+                              {repo.repo_name}
+                            </Link>
+                            {repo.description && (
+                              <p className="text-xs text-[#555] truncate max-w-md mt-0.5">
+                                {repo.description}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Stars */}
+                        <div className="hidden sm:block text-right text-sm text-[#ffe895]">
+                          {nf.format(repo.stars)}
+                        </div>
+
+                        {/* Forks */}
+                        <div className="hidden sm:block text-right text-sm text-[#7c7c7c]">
+                          {nf.format(repo.forks)}
+                        </div>
+
+                        {/* Score */}
+                        <div className="hidden sm:block text-right text-sm text-[#8fb5ff]">
+                          {nf.format(repo.total_score)}
+                        </div>
+
+                        {/* Mobile stats row */}
+                        <div className="sm:hidden flex items-center gap-4 ml-9 text-xs text-[#7c7c7c]">
+                          <span className="text-[#ffe895]">⭐ {nf.format(repo.stars)}</span>
+                          <span>🍴 {nf.format(repo.forks)}</span>
+                          <span className="text-[#8fb5ff]">Score: {nf.format(repo.total_score)}</span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </>
+            )}
           </div>
-        )}
+
+          {/* Sidebar */}
+          <aside className="hidden lg:block w-56 shrink-0">
+            <div className="sticky top-20">
+              <h3 className="text-sm font-semibold text-[#7c7c7c] uppercase tracking-wider mb-3">
+                Other Languages
+              </h3>
+              <nav className="space-y-1">
+                {relatedLanguages.map((lang) => (
+                  <Link
+                    key={lang}
+                    href={`/languages/${encodeURIComponent(lang)}`}
+                    className="flex items-center gap-2 rounded px-2 py-1.5 text-sm text-[#7c7c7c] hover:text-white hover:bg-[#1a1a1a] transition-colors"
+                  >
+                    <span
+                      className="h-2.5 w-2.5 shrink-0 rounded-full"
+                      style={{ backgroundColor: LANGUAGE_COLORS[lang] ?? '#8b8b8b' }}
+                    />
+                    {lang}
+                  </Link>
+                ))}
+                <Link
+                  href="/languages"
+                  className="block px-2 py-1.5 text-xs text-[#555] hover:text-white transition-colors"
+                >
+                  View all →
+                </Link>
+              </nav>
+            </div>
+          </aside>
+        </div>
       </div>
     </>
   );
