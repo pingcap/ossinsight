@@ -56,7 +56,12 @@ export default async function LanguagePage({ params }: PageProps) {
     notFound();
   }
 
-  const repos = await getTrendingReposByLanguage(language, 'past_month');
+  let repos: Awaited<ReturnType<typeof getTrendingReposByLanguage>> = [];
+  try {
+    repos = await getTrendingReposByLanguage(language, 'past_month');
+  } catch (err) {
+    console.error(`Failed to fetch trending repos for ${language}:`, err);
+  }
 
   const jsonLd = {
     '@context': 'https://schema.org',

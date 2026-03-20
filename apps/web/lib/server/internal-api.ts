@@ -634,8 +634,8 @@ export async function getTrendingReposByLanguage(
       WITH latest_snapshot AS (
         SELECT MAX(dt) AS dt
         FROM mv_trending_repos
-        WHERE language = ?
-          AND period = ?
+        WHERE language = :lang
+          AND period = :per
       )
       SELECT
         tr.repo_id,
@@ -648,12 +648,12 @@ export async function getTrendingReposByLanguage(
       FROM mv_trending_repos tr
       JOIN latest_snapshot ls ON tr.dt = ls.dt
       JOIN github_repos gr ON tr.repo_id = gr.repo_id
-      WHERE tr.language = ?
-        AND tr.period = ?
+      WHERE tr.language = :lang
+        AND tr.period = :per
       ORDER BY tr.total_score DESC
       LIMIT 50
     `,
-    [language, period, language, period],
+    { lang: language, per: period },
     signal,
   );
   return rows as Array<{
