@@ -1,3 +1,4 @@
+import { corsHeaders } from '@/lib/cors';
 import orgsRecommendList from '@/lib/github-search/recommend/orgs-list.json';
 import reposRecommendList1 from '@/lib/github-search/recommend/repos-list-1.json';
 import reposRecommendList2 from '@/lib/github-search/recommend/repos-list-2.json';
@@ -33,26 +34,15 @@ const COLLECTION_SORTS = new Set<CollectionSort>(['popular', 'az', 'recent']);
 const COLLECTION_METRICS = new Set<CollectionMetric>(['stars', 'pull-requests', 'pull-request-creators', 'issues']);
 const COLLECTION_RANK_RANGES = new Set<CollectionRankRange>(['last-28-days', 'month']);
 
-export function corsPreflightResponse() {
-  return new Response(null, {
-    status: 204,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type',
-    },
-  });
-}
+export { corsPreflight as corsPreflightResponse } from '@/lib/cors';
 
-export function jsonDataResponse(data: unknown, init?: ResponseInit) {
+export function jsonDataResponse(data: unknown, init?: ResponseInit, requestOrigin?: string | null) {
   return new Response(JSON.stringify({ data }), {
     ...init,
     headers: {
       'Content-Type': 'application/json; charset=utf-8',
       'Cache-Control': 'max-age=60',
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type',
+      ...corsHeaders(requestOrigin),
       ...init?.headers,
     },
   });

@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server';
 import { APIError } from '@/lib/data-service';
 import { getQueryName, runQuery } from '@/lib/data-service/routes';
+import { corsHeaders, corsPreflight } from '@/lib/cors';
 
 interface Params {
   query: string | string[];
@@ -8,17 +9,14 @@ interface Params {
 
 export const runtime = 'edge';
 
-const CORS_HEADERS = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type',
-};
-
-export async function OPTIONS() {
-  return new Response(null, { status: 204, headers: CORS_HEADERS });
+export async function OPTIONS(req: NextRequest) {
+  return corsPreflight(req.headers.get('origin'));
 }
 
 export async function GET(req: NextRequest, reqCtx: { params: Promise<Params> }) {
+  const origin = req.headers.get('origin');
+  const cors = corsHeaders(origin);
+
   try {
     const params = await reqCtx.params;
     const queryName = getQueryName(params.query);
@@ -29,7 +27,7 @@ export async function GET(req: NextRequest, reqCtx: { params: Promise<Params> })
       headers: {
         'Content-Type': 'application/json; charset=utf-8',
         'Cache-Control': 'no-store',
-        ...CORS_HEADERS,
+        ...cors,
       },
     });
   } catch (error) {
@@ -38,7 +36,7 @@ export async function GET(req: NextRequest, reqCtx: { params: Promise<Params> })
         status: error.statusCode,
         headers: {
           'Content-Type': 'application/json; charset=utf-8',
-          ...CORS_HEADERS,
+          ...cors,
         },
       });
     }
@@ -48,7 +46,7 @@ export async function GET(req: NextRequest, reqCtx: { params: Promise<Params> })
       status: 500,
       headers: {
         'Content-Type': 'application/json; charset=utf-8',
-        ...CORS_HEADERS,
+        ...cors,
       },
     });
   }
