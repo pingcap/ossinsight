@@ -3,6 +3,13 @@
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback } from 'react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 const LANGUAGE_COLORS: Record<string, string> = {
   JavaScript: '#f1e05a', Java: '#b07219', Python: '#3572A5', PHP: '#4F5D95',
@@ -84,16 +91,25 @@ export function TrendingContent({ repos, period, language, languages, periods }:
         </div>
 
         {/* Language selector */}
-        <select
-          value={language}
-          onChange={(e) => updateFilter('language', e.target.value)}
-          className="rounded-lg border border-[#2a2a2a] bg-[#1a1a1a] px-3 py-1.5 text-sm text-white outline-none focus:border-[#555]"
-        >
-          <option value="All">All Languages</option>
-          {languages.map((lang) => (
-            <option key={lang} value={lang}>{lang}</option>
-          ))}
-        </select>
+        <Select value={language} onValueChange={(value) => updateFilter('language', value)}>
+          <SelectTrigger size="sm">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="All">All Languages</SelectItem>
+            {languages.map((lang) => (
+              <SelectItem key={lang} value={lang}>
+                <span className="flex items-center gap-2">
+                  <span
+                    className="h-2 w-2 shrink-0 rounded-full"
+                    style={{ backgroundColor: LANGUAGE_COLORS[lang] ?? '#8b8b8b' }}
+                  />
+                  {lang}
+                </span>
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       {/* Stats bar */}
