@@ -1154,6 +1154,13 @@ function TrendingReposSection() {
           <button onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))} disabled={page >= totalPages - 1} className="disabled:opacity-30">&gt;</button>
         </div>
       )}
+
+      {/* View All link */}
+      <div className="mt-4 text-center">
+        <Link href="/trending" className="inline-flex items-center gap-1 text-sm font-medium text-[#ffe895] hover:text-[#fff2bd] transition-colors">
+          View All Trending →
+        </Link>
+      </div>
     </section>
   );
 }
