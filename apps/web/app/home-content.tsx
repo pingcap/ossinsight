@@ -656,18 +656,18 @@ function HeroSearch() {
               <div style={{ padding: '24px 16px', textAlign: 'center' }}>
                 <div style={{ color: '#7c7c7c', fontSize: 13 }}>
                   {debouncedKeyword
-                    ? `No results found for "${debouncedKeyword}"`
+                    ? <>No results found for <strong style={{ color: '#a0a0a0' }}>{debouncedKeyword}</strong></>
                     : 'No results'}
                 </div>
                 {debouncedKeyword && (
                   <div style={{ color: '#5c5c5c', fontSize: 12, marginTop: 8 }}>
                     {searchType === 'user'
-                      ? 'Try searching for popular developers like: torvalds, gaearon, sindresorhus'
+                      ? 'Try searching for popular developers like torvalds, gaearon, or sindresorhus'
                       : searchType === 'org'
-                        ? 'Try searching for popular organizations like: google, facebook, microsoft'
+                        ? 'Try searching for popular organizations like google, facebook, or microsoft'
                         : searchType === 'repo'
-                          ? 'Try searching for popular repos like: react, vue, tensorflow'
-                          : 'Try: react, torvalds, google, or any GitHub repo / user / org name'}
+                          ? 'Try searching for popular repos like react, vue, or tensorflow'
+                          : 'Try react, torvalds, google, or any GitHub repo / user / org name'}
                   </div>
                 )}
               </div>
