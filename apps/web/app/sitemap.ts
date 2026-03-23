@@ -47,7 +47,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Repo comparisons generated from collections (top repos in each collection, pairwise)
   try {
     const allCollections = await listCollections();
-    const collectionIds = allCollections.slice(0, 50).map((c) => c.id);
+    const collectionIds = allCollections.map((c) => c.id);
     if (collectionIds.length > 0) {
       const previews = await listCollectionPreviewRepos(collectionIds);
       // Group by collection, generate pairs from top repos
