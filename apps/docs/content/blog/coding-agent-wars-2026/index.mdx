@@ -1,0 +1,157 @@
+---
+title: "The Coding Agent Wars: Who's Actually Winning (And It's Not Who You Think)"
+date: 2026-03-23
+authors: [OSSInsight]
+tags: [insight, ai, coding-agents]
+image: /blog-assets/coding-agent-wars-2026/cover.png
+description: "We analyzed 14 coding agents across 600K+ GitHub events to find out who's really winning the coding agent wars. Stars tell one story — contributor data tells a very different one."
+keywords: [coding agents, claude code vs codex, ai coding, opencode, gemini cli, aider, cline, coding agent comparison, github analytics, AI developer tools 2026]
+---
+
+There are moments in tech when an entire category appears overnight. Search engines in 1998. Mobile apps in 2008. And now, in 2025–2026: coding agents.
+
+In the past 12 months, we've gone from "AI can autocomplete a line of code" to "AI can build your entire project from a single prompt." But with 14+ serious contenders now in the ring, the obvious question is: **who's winning?**
+
+Most people look at star counts and call it a day. That's a mistake. Stars measure hype. What matters is what happens *after* the star — do people actually contribute? Do maintainers ship? Does the community stick around?
+
+I pulled data on every major coding agent using [OSSInsight's GitHub analytics](https://ossinsight.io) — stars, forks, contributors, commit velocity, issue activity. Here's what the numbers actually say.
+
+## The Leaderboard Nobody Expected
+
+Let's start with the raw numbers. Here are the top 10 coding agents by GitHub stars as of March 2026:
+
+| Rank | Agent | Stars | Forks | Contributors | Language | Created |
+|------|-------|-------|-------|-------------|----------|---------|
+| 1 | [OpenCode](https://ossinsight.io/analyze/anomalyco/opencode) | 128,277 | 13,569 | 828 | TypeScript | Apr 2025 |
+| 2 | [Gemini CLI](https://ossinsight.io/analyze/google-gemini/gemini-cli) | 98,735 | 12,538 | 590 | TypeScript | Apr 2025 |
+| 3 | [Claude Code](https://ossinsight.io/analyze/anthropics/claude-code) | 81,437 | 6,777 | 49 | Shell | Feb 2025 |
+| 4 | [OpenHands](https://ossinsight.io/analyze/All-Hands-AI/OpenHands) | 69,576 | 8,730 | 460 | Python | Mar 2024 |
+| 5 | [Codex](https://ossinsight.io/analyze/openai/codex) | 66,969 | 8,953 | 383 | Rust | Apr 2025 |
+| 6 | [Cline](https://ossinsight.io/analyze/cline/cline) | 59,252 | 6,014 | 283 | TypeScript | Jul 2024 |
+| 7 | [Aider](https://ossinsight.io/analyze/Aider-AI/aider) | 42,264 | 4,063 | 180 | Python | May 2023 |
+| 8 | [Goose](https://ossinsight.io/analyze/block/goose) | 33,453 | 3,109 | 402 | Rust | Aug 2024 |
+| 9 | [Cursor](https://ossinsight.io/analyze/cursor/cursor)* | 32,494 | 2,215 | 32 | — | Mar 2023 |
+| 10 | [Continue](https://ossinsight.io/analyze/continuedev/continue) | 31,997 | 4,288 | 501 | TypeScript | May 2023 |
+
+*\*Cursor's GitHub repo is primarily an issue tracker — the actual source code is proprietary. Its contributor/commit data is not directly comparable to the others.*
+
+OpenCode leads. Gemini CLI is second. Claude Code third. The usual suspects.
+
+But here's where it gets interesting.
+
+## Stars Lie. Contributors Don't.
+
+Star count is a vanity metric. It tells you how many people clicked a button. What *actually* matters is: **how many people care enough to contribute code?**
+
+Look at the contributor-to-star ratio:
+
+| Agent | Stars | Contributors | Ratio (contributors per 1K stars) |
+|-------|-------|-------------|-----------------------------------|
+| Continue | 31,997 | 501 | **15.7** |
+| Goose | 33,453 | 402 | **12.0** |
+| OpenHands | 69,576 | 460 | **6.6** |
+| OpenCode | 128,277 | 828 | **6.5** |
+| Gemini CLI | 98,735 | 590 | **6.0** |
+| Codex | 66,969 | 383 | **5.7** |
+| Cline | 59,252 | 283 | **4.8** |
+| Aider | 42,264 | 180 | **4.3** |
+| Claude Code | 81,437 | 49 | **0.6** |
+
+*(Cursor excluded — GitHub repo is an issue tracker, not source code)*
+
+**Continue has 26x the contributor density of Claude Code.** Let that sink in.
+
+Claude Code has massive star counts but only 49 contributors. It's essentially a closed-source product with a public GitHub presence for issue tracking and community discussion. Nothing wrong with that — Anthropic ships a great product. But it tells you something about the community dynamics.
+
+Meanwhile, Continue, Goose, and OpenHands have thriving contributor ecosystems. These are genuine open-source communities where external developers are shaping the product.
+
+### The Open Issues Signal
+
+Here's a dimension most people miss — open issue count:
+
+| Agent | Open Issues | Stars | Issues per 1K Stars |
+|-------|------------|-------|-------------------|
+| Claude Code | 7,409 | 81K | **91.0** |
+| OpenCode | 7,324 | 128K | **57.1** |
+| Gemini CLI | 3,129 | 99K | **31.7** |
+| Codex | 2,183 | 67K | **32.6** |
+| Aider | 1,449 | 42K | **34.3** |
+| Continue | 934 | 32K | **29.2** |
+| Cline | 715 | 59K | **12.1** |
+| OpenHands | 336 | 70K | **4.8** |
+| Goose | 318 | 33K | **9.5** |
+
+Claude Code has 91 open issues per 1K stars — nearly 2x the next closest. This suggests massive user demand outpacing the team's capacity to respond. OpenHands, by contrast, has just 4.8 — their community is efficiently triaging and resolving issues.
+
+## The Velocity Test: Who's Shipping Fastest?
+
+Stars and contributors are historical. What about *right now*? Let's look at commits in the last 30 days:
+
+| Agent | Commits (Last 30 Days) | Contributors | Commits/Contributor |
+|-------|----------------------|-------------|-------------------|
+| OpenCode | 823 | 828 | 1.0 |
+| Codex | 754 | 383 | 2.0 |
+| Gemini CLI | 603 | 590 | 1.0 |
+| Goose | 259 | 402 | 0.6 |
+| OpenHands | 247 | 460 | 0.5 |
+| Continue | 130 | 501 | 0.3 |
+| Cline | 117 | 283 | 0.4 |
+| Claude Code | 43 | 49 | 0.9 |
+| Aider | 25 | 180 | 0.1 |
+
+OpenCode, Codex, and Gemini CLI are shipping at breakneck speed — 600+ commits a month. They're in a full sprint.
+
+Aider, once the pioneer of terminal-based coding agents, has slowed dramatically. 25 commits in a month for a project with 42K stars suggests it may be entering maintenance mode. Or perhaps the solo maintainer is just taking a breath. Either way, the data is the data.
+
+## The Three Archetypes
+
+Looking at all this data, I see three distinct models emerging:
+
+### 1. The Corporate Rockets 🚀
+**OpenCode, Gemini CLI, Codex, Claude Code**
+
+Backed by major companies (or well-funded startups). Massive star counts driven by brand awareness. High commit velocity from internal teams. Low external contributor ratios.
+
+These win on polish, integration, and marketing. But they're not truly community-driven — they're products with a GitHub repo.
+
+### 2. The Community Champions 🤝
+**Continue, Goose, OpenHands, Cline**
+
+Lower star counts, but dramatically higher contributor engagement. These projects are shaped by their users. They tend to be more extensible, more configurable, and more opinionated about workflow.
+
+If you want a coding agent that adapts to *your* workflow, this is where to look.
+
+### 3. The Pioneer Veterans 🏔️
+**Aider, Cursor, Plandex**
+
+These were here first. Aider defined the "AI pair programming in your terminal" category. Cursor pioneered the AI-native IDE. They have loyal user bases but face increasing pressure from the corporate rockets.
+
+The question for these projects: can they evolve fast enough, or will they become the WordPerfect of coding agents?
+
+## What This Means For You
+
+If you're choosing a coding agent today, here's my framework:
+
+**Pick a Corporate Rocket if** you want the most polished experience, don't mind vendor lock-in, and value "it just works" over customization. Start with [Codex](https://ossinsight.io/analyze/openai/codex) or [Claude Code](https://ossinsight.io/analyze/anthropics/claude-code).
+
+**Pick a Community Champion if** you want to shape the tool you use, need deep customization, or care about open-source values. Start with [Continue](https://ossinsight.io/analyze/continuedev/continue) or [OpenHands](https://ossinsight.io/analyze/All-Hands-AI/OpenHands).
+
+**Pick a Pioneer if** you want battle-tested reliability and don't need the latest features. [Aider](https://ossinsight.io/analyze/Aider-AI/aider) is still excellent at what it does.
+
+## The Prediction
+
+Here's where I stick my neck out:
+
+**In 12 months, the winner won't be the agent with the most stars. It'll be the one with the best ecosystem.**
+
+We're entering the "app store" phase of coding agents. MCP servers are the new plugins. Skills and extensions are the new integrations. The agent that builds the best third-party ecosystem — not just the best core product — will win.
+
+That's why I'm watching Continue and Goose more closely than their star counts suggest I should. Community-driven projects have a historical advantage in building ecosystems. Linux beat commercial Unix. Kubernetes beat Docker Swarm. Android beat Windows Phone.
+
+The coding agent wars are far from over. But the data tells us where to look.
+
+---
+
+*All data in this article was sourced from [OSSInsight](https://ossinsight.io), which analyzes 10B+ GitHub events in real-time. You can explore any of these projects yourself — just search for a repo name and dive in.*
+
+*Compare any two agents head-to-head: [OpenCode vs Claude Code](https://ossinsight.io/compare/anomalyco/opencode/anthropics/claude-code) | [Codex vs Gemini CLI](https://ossinsight.io/compare/openai/codex/google-gemini/gemini-cli) | [Aider vs Continue](https://ossinsight.io/compare/Aider-AI/aider/continuedev/continue)*
