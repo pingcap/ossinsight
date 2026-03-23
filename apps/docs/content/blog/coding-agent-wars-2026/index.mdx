@@ -115,7 +115,7 @@ Big company backing. Huge star counts. Internal teams pushing 600+ commits a mon
 
 This is where things get interesting. Continue has 501 contributors for 32K stars. That's not a project — that's a movement. These tools tend to be messier, more opinionated, harder to set up. But they evolve in ways no product team could predict, because hundreds of developers are scratching their own itches.
 
-I keep coming back to a pattern: the "worse" open-source option usually wins in the long run. Linux over Solaris. Firefox over IE. Kubernetes over everything. It just takes longer.
+There's a well-known pattern where the "worse" open-source option wins long-term — Linux over Solaris, Kubernetes over Docker Swarm. But I'll challenge my own argument later in this piece, because dev tools might be different.
 
 ### 3. The Pioneers
 **Aider, Cursor, Plandex**
@@ -124,15 +124,23 @@ Aider invented the category. Cursor proved you could build a $10B company around
 
 (I really don't want this to happen to Aider. It's one of the most elegant developer tools I've ever used.)
 
-## What This Means For You
+## What the Data Doesn't Tell You
 
-If you're choosing a coding agent today, here's my framework:
+I need to be honest about something: GitHub metrics are only half the story. Maybe less.
 
-**Pick a Corporate Rocket if** you want the most polished experience, don't mind vendor lock-in, and value "it just works" over customization. Start with [Codex](https://ossinsight.io/analyze/openai/codex) or [Claude Code](https://ossinsight.io/analyze/anthropics/claude-code).
+Nothing in this data tells you which agent writes the *best* code. Which one actually understands your 200-file monorepo. Which one gracefully recovers when it breaks something. Which one makes you feel like you have a senior engineer pairing with you versus a junior who's very fast at typing.
 
-**Pick a Community Champion if** you want to shape the tool you use, need deep customization, or care about open-source values. Start with [Continue](https://ossinsight.io/analyze/continuedev/continue) or [OpenHands](https://ossinsight.io/analyze/All-Hands-AI/OpenHands).
+I've used most of these tools. My subjective take, which you're free to ignore:
 
-**Pick a Pioneer if** you want battle-tested reliability and don't need the latest features. [Aider](https://ossinsight.io/analyze/Aider-AI/aider) is still excellent at what it does.
+**Claude Code produces the best code.** It's not close. The reasoning quality, the understanding of complex codebases, the way it asks clarifying questions instead of barreling ahead — Anthropic's model advantage is real. The 49-contributor count doesn't matter when the underlying model is a generation ahead.
+
+**Aider has the best workflow.** Despite the commit slowdown, the actual *experience* of using Aider is remarkably well-designed. git-native, minimal, respects your existing toolchain. There's a lesson here about software craft that commit counts can't capture.
+
+**Cline is the best IDE integration.** If you live in VS Code, Cline feels native in a way the terminal agents never will. Different philosophy, different strengths.
+
+**The corporate rockets are improving fastest** — because they can throw 50 engineers at the problem. GitHub metrics show community health, but for a tool you use 8 hours a day, *polish matters more than contributor count*. VS Code beat Atom. Chrome beat Firefox. In developer tools, the most polished option often wins, not the most open one.
+
+So take my archetype framework above with a grain of salt. The "community always wins" narrative is seductive, and it's often true for infrastructure (Linux, Kubernetes). But for end-user tools? The jury is very much still out.
 
 ## My Bet
 
@@ -144,7 +152,9 @@ Alright, predictions. Putting a stake in the ground so you can come back in a ye
 
 **Bet #3: At least two of today's top 5 will be irrelevant by March 2027.** Not dead — just irrelevant, the way Sublime Text is irrelevant. Still loved by some, but not where the energy is. This market is moving too fast for anyone to coast.
 
-I don't know who wins. Nobody does. But if I had to pick the *type* of project that wins, I'd pick the messy, community-driven, extensible one over the polished corporate product. Every time. History is annoyingly consistent about this.
+I genuinely don't know who wins. The data points in one direction, my experience points in another, and history is ambiguous. What I *do* know is this: we're in the first inning. The coding agent that dominates in 2028 might not even exist yet.
+
+The only thing I'm truly confident about? A year from now, these numbers will look completely different. I'll be back with an update.
 
 ---
 
