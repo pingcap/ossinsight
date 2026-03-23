@@ -628,6 +628,22 @@ export function CollectionDetail({ collection, initialRankingData }: { collectio
         <MonthlyRankingSection collectionId={collection.id} initialRankingData={initialRankingData} />
         <HistoryRankSection collectionId={collection.id} collectionName={collection.name} />
       </div>
+
+      <aside aria-label="Related pages" className="mt-12 border-t border-[#2a2a2a] pt-6">
+        <nav className="flex flex-wrap items-center gap-4 text-sm text-[#7c7c7c]">
+          <Link href="/trending" className="transition-colors hover:text-[#f7df83]">
+            Trending Repos →
+          </Link>
+          <span className="text-[#333]">·</span>
+          <Link href="/languages" className="transition-colors hover:text-[#f7df83]">
+            Browse by Language →
+          </Link>
+          <span className="text-[#333]">·</span>
+          <Link href="/collections" className="transition-colors hover:text-[#f7df83]">
+            All Collections →
+          </Link>
+        </nav>
+      </aside>
     </div>
   );
 }

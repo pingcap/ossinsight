@@ -269,6 +269,24 @@ export default async function LanguagePage({ params }: PageProps) {
                   View all →
                 </Link>
               </nav>
+
+              <h3 className="mt-8 text-sm font-semibold text-[#7c7c7c] uppercase tracking-wider mb-3">
+                Explore
+              </h3>
+              <nav aria-label="Related pages" className="space-y-1">
+                <Link
+                  href="/trending"
+                  className="block rounded px-2 py-1.5 text-sm text-[#7c7c7c] hover:text-white hover:bg-[#1a1a1a] transition-colors"
+                >
+                  Trending Repos
+                </Link>
+                <Link
+                  href="/collections"
+                  className="block rounded px-2 py-1.5 text-sm text-[#7c7c7c] hover:text-white hover:bg-[#1a1a1a] transition-colors"
+                >
+                  Collections
+                </Link>
+              </nav>
             </div>
           </aside>
         </div>

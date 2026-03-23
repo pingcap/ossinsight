@@ -79,6 +79,17 @@ export function TrendingContent({ repos, period, language, languages, periods }:
         />
       </div>
 
+      {/* Cross-links */}
+      <nav aria-label="Related pages" className="mb-6 flex flex-wrap items-center gap-4 text-sm text-[#7c7c7c]">
+        <Link href="/languages" className="transition-colors hover:text-white">
+          Browse by Language →
+        </Link>
+        <span className="text-[#333]">·</span>
+        <Link href="/collections" className="transition-colors hover:text-white">
+          Browse Collections →
+        </Link>
+      </nav>
+
       {/* Filters */}
       <div className="mb-6 flex flex-wrap items-center gap-4">
         {/* Period tabs */}
@@ -193,13 +204,16 @@ export function TrendingContent({ repos, period, language, languages, periods }:
                           {repo.repo_name}
                         </Link>
                         {repoLang && (
-                          <span className="hidden sm:inline-flex items-center gap-1 shrink-0 rounded-full border border-[#333] px-2 py-0.5 text-[10px] text-[#7c7c7c]">
+                          <Link
+                            href={`/languages/${encodeURIComponent(repoLang)}`}
+                            className="hidden sm:inline-flex items-center gap-1 shrink-0 rounded-full border border-[#333] px-2 py-0.5 text-[10px] text-[#7c7c7c] transition-colors hover:border-[#555] hover:text-white"
+                          >
                             <span
                               className="h-2 w-2 rounded-full"
                               style={{ backgroundColor: LANGUAGE_COLORS[repoLang] ?? '#8b8b8b' }}
                             />
                             {repoLang}
-                          </span>
+                          </Link>
                         )}
                       </div>
                       {repo.description && (
