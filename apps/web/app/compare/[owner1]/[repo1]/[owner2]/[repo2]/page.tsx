@@ -94,7 +94,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   const name1 = `${owner1}/${repo1}`;
   const name2 = `${owner2}/${repo2}`;
-  const title = `${repo1} vs ${repo2} - GitHub Comparison | OSSInsight`;
+  const title = `${repo1} vs ${repo2} - GitHub Comparison`;
 
   let description = `Compare ${name1} vs ${name2} — stars, commits, contributors and more.`;
 
