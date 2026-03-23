@@ -25,13 +25,15 @@ export default async function Page({ params, searchParams }: PageProps) {
     redirect('/404');
   }
 
-  let vsRepoInfo = null;
+  // 301 redirect comparisons to dedicated /compare route
   if (vs) {
     const [vsOwner, vsRepo] = vs.split('/');
     if (vsOwner && vsRepo) {
-      vsRepoInfo = await fetchRepoInfo(vsOwner, vsRepo);
+      redirect(`/compare/${owner}/${repo}/${vsOwner}/${vsRepo}`);
     }
   }
+
+  const vsRepoInfo = null;
 
   return (
     <>
@@ -101,9 +103,7 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
   const repo = decodeURIComponent(rawRepo);
   const name = `${owner}/${repo}`;
 
-  const title = vs
-    ? `${name} vs ${vs} | OSSInsight`
-    : `Analyze ${name} | OSSInsight`;
+  const title = `Analyze ${name} | OSSInsight`;
 
   let description = `Deep insight into the GitHub repository ${name} - stars, commits, pull requests, issues, contributors and more.`;
 

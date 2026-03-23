@@ -113,7 +113,7 @@ function CompareHeader({ repoInfo, vsRepoInfo }: { repoInfo: RepoInfo; vsRepoInf
   const selectRepo = useCallback((fullName: string) => {
     setShowDropdown(false);
     setSearchText('');
-    router.push(`/analyze/${repoInfo.full_name}?vs=${fullName}`);
+    router.push(`/compare/${repoInfo.full_name}/${fullName}`);
   }, [repoInfo.full_name, router]);
 
   const removeVs = useCallback(() => {

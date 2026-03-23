@@ -44,5 +44,26 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Database may be unavailable during build
   }
 
+  // Popular repo comparisons
+  const comparisons = [
+    ['facebook/react', 'vuejs/vue'],
+    ['facebook/react', 'angular/angular'],
+    ['postgres/postgres', 'mysql/mysql-server'],
+    ['rust-lang/rust', 'golang/go'],
+    ['moby/moby', 'kubernetes/kubernetes'],
+    ['django/django', 'pallets/flask'],
+    ['expressjs/express', 'fastify/fastify'],
+    ['vercel/next.js', 'nuxt/nuxt'],
+    ['pytorch/pytorch', 'tensorflow/tensorflow'],
+  ];
+
+  for (const [repo1, repo2] of comparisons) {
+    entries.push({
+      url: `${SITE_URL}/compare/${repo1}/${repo2}`,
+      changeFrequency: 'weekly',
+      priority: 0.7,
+    });
+  }
+
   return entries;
 }
