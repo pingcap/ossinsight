@@ -8,13 +8,11 @@ description: "We analyzed 14 coding agents across 600K+ GitHub events to find ou
 keywords: [coding agents, claude code vs codex, ai coding, opencode, gemini cli, aider, cline, coding agent comparison, github analytics, AI developer tools 2026]
 ---
 
-There are moments in tech when an entire category appears overnight. Search engines in 1998. Mobile apps in 2008. And now, in 2025–2026: coding agents.
+I've been using coding agents daily for the past year. Started with Aider, moved to Claude Code, tried Codex when it launched, keep going back and forth. Like most developers, I have opinions about which one is "best."
 
-In the past 12 months, we've gone from "AI can autocomplete a line of code" to "AI can build your entire project from a single prompt." But with 14+ serious contenders now in the ring, the obvious question is: **who's winning?**
+But opinions are cheap. So I decided to actually look at the data.
 
-Most people look at star counts and call it a day. That's a mistake. Stars measure hype. What matters is what happens *after* the star — do people actually contribute? Do maintainers ship? Does the community stick around?
-
-I pulled data on every major coding agent using [OSSInsight's GitHub analytics](https://ossinsight.io) — stars, forks, contributors, commit velocity, issue activity. Here's what the numbers actually say.
+I pulled numbers on 14 coding agents through [OSSInsight](https://ossinsight.io) — not just stars (everyone's favorite vanity metric), but the stuff that actually matters: who's contributing code, how fast are they shipping, and how overwhelmed are their maintainers? The results surprised me. Some of the "winners" are running on fumes, and some of the underdogs have quietly built something much more durable.
 
 ## The Leaderboard Nobody Expected
 
@@ -59,9 +57,9 @@ Look at the contributor-to-star ratio:
 
 *(Cursor excluded — GitHub repo is an issue tracker, not source code)*
 
-**Continue has 26x the contributor density of Claude Code.** Let that sink in.
+**Continue has 26x the contributor density of Claude Code.** I had to double-check this number. Twenty-six times.
 
-Claude Code has massive star counts but only 49 contributors. It's essentially a closed-source product with a public GitHub presence for issue tracking and community discussion. Nothing wrong with that — Anthropic ships a great product. But it tells you something about the community dynamics.
+Now, to be fair to Claude Code — and I say this as someone who genuinely likes using it — Anthropic runs a tight ship. 49 contributors isn't a weakness if those 49 are world-class engineers shipping a focused product. But it does mean Claude Code's fate is entirely in Anthropic's hands. If they deprioritize it tomorrow, there's no community to carry it forward.
 
 Meanwhile, Continue, Goose, and OpenHands have thriving contributor ecosystems. These are genuine open-source communities where external developers are shaping the product.
 
@@ -101,32 +99,30 @@ Stars and contributors are historical. What about *right now*? Let's look at com
 
 OpenCode, Codex, and Gemini CLI are shipping at breakneck speed — 600+ commits a month. They're in a full sprint.
 
-Aider, once the pioneer of terminal-based coding agents, has slowed dramatically. 25 commits in a month for a project with 42K stars suggests it may be entering maintenance mode. Or perhaps the solo maintainer is just taking a breath. Either way, the data is the data.
+And then there's Aider. 25 commits in a month. For context, I was an early Aider user — it genuinely changed how I thought about AI-assisted coding. But 25 commits when your competitors are pushing 600+? That's concerning. Paul Gauthier built something remarkable largely by himself, and maybe that's the problem. One person can't outship Google and OpenAI. I hope I'm wrong about this one.
 
 ## The Three Archetypes
 
 Looking at all this data, I see three distinct models emerging:
 
-### 1. The Corporate Rockets 🚀
+### 1. The Corporate Rockets
 **OpenCode, Gemini CLI, Codex, Claude Code**
 
-Backed by major companies (or well-funded startups). Massive star counts driven by brand awareness. High commit velocity from internal teams. Low external contributor ratios.
+Big company backing. Huge star counts. Internal teams pushing 600+ commits a month. But look at the contributor ratios — these are products with a GitHub repo, not open-source communities. That's fine! Chrome is technically open-source too. Just don't confuse the two.
 
-These win on polish, integration, and marketing. But they're not truly community-driven — they're products with a GitHub repo.
-
-### 2. The Community Champions 🤝
+### 2. The Community Organisms
 **Continue, Goose, OpenHands, Cline**
 
-Lower star counts, but dramatically higher contributor engagement. These projects are shaped by their users. They tend to be more extensible, more configurable, and more opinionated about workflow.
+This is where things get interesting. Continue has 501 contributors for 32K stars. That's not a project — that's a movement. These tools tend to be messier, more opinionated, harder to set up. But they evolve in ways no product team could predict, because hundreds of developers are scratching their own itches.
 
-If you want a coding agent that adapts to *your* workflow, this is where to look.
+I keep coming back to a pattern: the "worse" open-source option usually wins in the long run. Linux over Solaris. Firefox over IE. Kubernetes over everything. It just takes longer.
 
-### 3. The Pioneer Veterans 🏔️
+### 3. The Pioneers
 **Aider, Cursor, Plandex**
 
-These were here first. Aider defined the "AI pair programming in your terminal" category. Cursor pioneered the AI-native IDE. They have loyal user bases but face increasing pressure from the corporate rockets.
+Aider invented the category. Cursor proved you could build a $10B company around it. But pioneers don't always win the war they started — ask Netscape. The question is whether they can reinvent themselves fast enough, or if they become the projects people "used to use."
 
-The question for these projects: can they evolve fast enough, or will they become the WordPerfect of coding agents?
+(I really don't want this to happen to Aider. It's one of the most elegant developer tools I've ever used.)
 
 ## What This Means For You
 
@@ -138,17 +134,17 @@ If you're choosing a coding agent today, here's my framework:
 
 **Pick a Pioneer if** you want battle-tested reliability and don't need the latest features. [Aider](https://ossinsight.io/analyze/Aider-AI/aider) is still excellent at what it does.
 
-## The Prediction
+## My Bet
 
-Here's where I stick my neck out:
+Alright, predictions. Putting a stake in the ground so you can come back in a year and tell me I was wrong.
 
-**In 12 months, the winner won't be the agent with the most stars. It'll be the one with the best ecosystem.**
+**Bet #1: MCP kills the moat.** Right now, each agent has its own tool/plugin system. MCP is rapidly becoming the universal standard. Once every agent can use every MCP server, the differentiator shifts from "what can this agent do" to "how well does it do it." This commoditizes the corporate rockets and advantages the community organisms, who can iterate on UX faster.
 
-We're entering the "app store" phase of coding agents. MCP servers are the new plugins. Skills and extensions are the new integrations. The agent that builds the best third-party ecosystem — not just the best core product — will win.
+**Bet #2: Continue or Goose will be top 3 by stars within 12 months.** Their contributor density is a leading indicator. Projects with 15+ contributors per 1K stars don't stay small. Something is pulling people in.
 
-That's why I'm watching Continue and Goose more closely than their star counts suggest I should. Community-driven projects have a historical advantage in building ecosystems. Linux beat commercial Unix. Kubernetes beat Docker Swarm. Android beat Windows Phone.
+**Bet #3: At least two of today's top 5 will be irrelevant by March 2027.** Not dead — just irrelevant, the way Sublime Text is irrelevant. Still loved by some, but not where the energy is. This market is moving too fast for anyone to coast.
 
-The coding agent wars are far from over. But the data tells us where to look.
+I don't know who wins. Nobody does. But if I had to pick the *type* of project that wins, I'd pick the messy, community-driven, extensible one over the polished corporate product. Every time. History is annoyingly consistent about this.
 
 ---
 
