@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import type { EChartsOption } from 'echarts';
 import { ShowSQLInline } from '@/components/Analyze/ShowSQL';
+import { ExportButton, downloadCsv } from '@/components/ui/export-button';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
   Table,
@@ -357,9 +358,32 @@ function MonthlyRankingSection({ collectionId, initialRankingData }: { collectio
 
       {!loading && !error && rows.length > 0 && (
         <div className="mt-4">
-          <h3 className="text-center text-[14px] font-semibold text-white">
-            {formatTableTitle(range)} Ranking - {activeMetric?.title}
-          </h3>
+          <div className="flex items-center justify-center gap-2">
+            <h3 className="text-center text-[14px] font-semibold text-white">
+              {formatTableTitle(range)} Ranking - {activeMetric?.title}
+            </h3>
+            <ExportButton
+              options={[{
+                label: 'Download as CSV',
+                onClick: () => {
+                  const headers = isMonthView
+                    ? [formatMonth(rows[0]?.current_month), formatMonth(rows[0]?.last_month), 'Repository', activeMetric?.title ?? '', 'Total']
+                    : ['Last 28 Days Rank', 'Repository', activeMetric?.title ?? '', 'Total'];
+                  const csvRows = rows.map((row) => {
+                    const currentTotal = isMonthView ? row.current_month_total : row.last_period_total;
+                    const currentRank = isMonthView ? row.current_month_rank : row.last_period_rank;
+                    const base = [String(currentRank ?? ''), row.repo_name, String(currentTotal ?? ''), String(row.total ?? '')];
+                    if (isMonthView) {
+                      const previousRank = row.last_month_rank;
+                      return [String(currentRank ?? ''), String(previousRank ?? ''), row.repo_name, String(currentTotal ?? ''), String(row.total ?? '')];
+                    }
+                    return base;
+                  });
+                  downloadCsv(headers, csvRows, `collection-ranking-${metric}-${range}.csv`);
+                },
+              }]}
+            />
+          </div>
 
           <div className="mt-4 overflow-x-auto">
             <Table className="min-w-[860px] border-collapse">
