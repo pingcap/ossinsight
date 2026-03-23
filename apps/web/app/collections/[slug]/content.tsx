@@ -16,6 +16,7 @@ import {
   UserRound,
 } from 'lucide-react';
 import type { EChartsOption } from 'echarts';
+import ShareButtons from '@/components/ShareButtons';
 import { ShowSQLInline } from '@/components/Analyze/ShowSQL';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
@@ -35,6 +36,7 @@ import {
   getCollectionHistoryRankPath,
   getCollectionRankingExplainPath,
   getCollectionRankingPath,
+  toCollectionSlug,
   type CollectionMetric,
   type CollectionRankRange,
   type CollectionRankingMetric,
@@ -157,10 +159,14 @@ const collectionMetricIcons: Record<CollectionMetric, React.ComponentType<{ clas
 function CollectionPageHeader({
   title,
   description,
+  collectionName,
 }: {
   title: string;
   description: string;
+  collectionName: string;
 }) {
+  const slug = toCollectionSlug(collectionName);
+
   return (
     <header>
       <a
@@ -172,9 +178,16 @@ function CollectionPageHeader({
         <Pencil className="h-4 w-4" />
         Edit This Collection
       </a>
-      <h1 className="mt-4 text-[2.3rem] font-semibold leading-tight text-[#f7df83] sm:text-[2.7rem]">
-        {title}
-      </h1>
+      <div className="mt-4 flex flex-wrap items-center gap-4">
+        <h1 className="text-[2.3rem] font-semibold leading-tight text-[#f7df83] sm:text-[2.7rem]">
+          {title}
+        </h1>
+        <ShareButtons
+          url={`/collections/${slug}`}
+          title={`Check out the ${collectionName} collection on OSSInsight — top open source projects ranked by stars, PRs, and issues`}
+          hashtags={['opensource', 'github']}
+        />
+      </div>
       <p className="mt-4 max-w-4xl text-[16px] leading-7 text-[#7c7c7c]">{description}</p>
     </header>
   );
@@ -636,6 +649,7 @@ export function CollectionDetail({ collection, initialRankingData }: { collectio
       <CollectionPageHeader
         title={`${collection.name} - Ranking`}
         description="Last 28 days / Monthly ranking of repos in this collection by stars, pull requests, issues. Historical Ranking by Popularity."
+        collectionName={collection.name}
       />
 
       <div className="mt-6">
