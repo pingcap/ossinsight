@@ -7,8 +7,10 @@ import format from 'human-format';
 import {
   ArrowDown,
   ArrowUp,
+  BarChart3,
   CircleDot,
   GitPullRequest,
+  Inbox,
   Pencil,
   Star,
   UserRound,
@@ -436,7 +438,13 @@ function MonthlyRankingSection({ collectionId, initialRankingData }: { collectio
         </div>
       )}
 
-      {hasLoaded && !loading && !error && rows.length === 0 && <div className="py-10 text-center text-[#7c7c7c]">No data available.</div>}
+      {hasLoaded && !loading && !error && rows.length === 0 && (
+        <div className="flex flex-col items-center justify-center gap-3 py-16 text-center">
+          <Inbox className="h-10 w-10 text-[#555]" />
+          <h3 className="text-sm font-medium text-[#7c7c7c]">No ranking data yet</h3>
+          <p className="max-w-sm text-sm text-[#555]">Ranking data for this collection will appear once repositories have enough activity to compare.</p>
+        </div>
+      )}
     </section>
   );
 }
@@ -611,7 +619,13 @@ function HistoryRankSection({ collectionName, collectionId }: { collectionName: 
         </div>
       )}
 
-      {hasLoaded && !loading && !error && rows.length === 0 && <div className="py-10 text-center text-[#7c7c7c]">No data available.</div>}
+      {hasLoaded && !loading && !error && rows.length === 0 && (
+        <div className="flex flex-col items-center justify-center gap-3 py-16 text-center">
+          <BarChart3 className="h-10 w-10 text-[#555]" />
+          <h3 className="text-sm font-medium text-[#7c7c7c]">No historical ranking data</h3>
+          <p className="max-w-sm text-sm text-[#555]">Year-to-year ranking history will appear as data accumulates over time.</p>
+        </div>
+      )}
     </section>
   );
 }

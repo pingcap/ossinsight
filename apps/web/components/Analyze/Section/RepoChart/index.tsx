@@ -6,6 +6,7 @@ import dynamic from 'next/dynamic';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { fetchRepoChartData, type FetchResult } from './endpoints';
 import { ShowSQLButton } from '@/components/Analyze/ShowSQL';
+import { ChartSkeleton } from '@/components/ui/skeletons';
 
 const LazyECharts = dynamic(() => import('@/components/Analyze/EChartsWrapper'), { ssr: false });
 
@@ -112,18 +113,7 @@ export default function RepoChart({
       {ready ? (
         <RepoChartContent vizModule={vizModule} data={fetchResult} ctx={ctx} />
       ) : loading ? (
-        <LazyECharts
-          option={{}}
-          style={{ width: '100%', height: '100%' }}
-          notMerge
-          showLoading
-          loadingOption={{
-            color: 'rgb(255, 232, 149)',
-            textColor: 'rgb(255, 232, 149)',
-            maskColor: 'rgba(0, 0, 0, 0.3)',
-          }}
-          theme="dark"
-        />
+        <ChartSkeleton />
       ) : null}
     </div>
   );
