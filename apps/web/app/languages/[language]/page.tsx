@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { BreadcrumbListJsonLd } from '@/components/json-ld';
+import { BreadcrumbListJsonLd, ItemListJsonLd } from '@/components/json-ld';
 import ShareButtons from '@/components/ShareButtons';
 import {
   LANGUAGES,
@@ -109,6 +109,15 @@ export default async function LanguagePage({ params }: PageProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
+      {repos.length > 0 && (
+        <ItemListJsonLd
+          name={`Trending ${language} Repositories`}
+          items={repos.map((r) => ({
+            name: r.repo_name,
+            url: `https://ossinsight.io/analyze/${r.repo_name}`,
+          }))}
+        />
+      )}
 
       <div className="mx-auto max-w-[1280px] px-6 py-8">
         {/* Breadcrumb */}

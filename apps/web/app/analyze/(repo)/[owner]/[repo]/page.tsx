@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { getRepoByName } from '@/lib/server/internal-api';
-import { BreadcrumbListJsonLd } from '@/components/json-ld';
+import { BreadcrumbListJsonLd, SoftwareApplicationJsonLd } from '@/components/json-ld';
 import ShareButtons from '@/components/ShareButtons';
 import RepoAnalyzePage from './content';
 
@@ -33,21 +33,6 @@ export default async function Page({ params, searchParams }: PageProps) {
     }
   }
 
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'SoftwareSourceCode',
-    name: repo,
-    codeRepository: `https://github.com/${owner}/${repo}`,
-    ...(repoInfo.language ? { programmingLanguage: repoInfo.language } : {}),
-    ...(repoInfo.description ? { description: repoInfo.description } : {}),
-    ...(repoInfo.license ? { license: repoInfo.license } : {}),
-    author: {
-      '@type': repoInfo.owner?.login ? 'Organization' : 'Person',
-      name: owner,
-      url: `https://github.com/${owner}`,
-    },
-  };
-
   return (
     <>
       <BreadcrumbListJsonLd items={[
@@ -55,9 +40,17 @@ export default async function Page({ params, searchParams }: PageProps) {
         { name: 'Analyze', url: '/analyze' },
         { name: `${owner}/${repo}` },
       ]} />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      <SoftwareApplicationJsonLd
+        repoName={`${owner}/${repo}`}
+        description={repoInfo.description}
+        stars={repoInfo.stars}
+        language={repoInfo.language}
+        license={repoInfo.license}
+        author={{
+          type: repoInfo.owner?.login ? 'Organization' : 'Person',
+          name: owner,
+          url: `https://github.com/${owner}`,
+        }}
       />
       <ShareButtons
         url={`/analyze/${owner}/${repo}`}
