@@ -1,0 +1,18 @@
+id: 10111
+name: AI Image Generation
+items:
+  - comfyanonymous/ComfyUI
+  - AUTOMATIC1111/stable-diffusion-webui
+  - lllyasviel/Fooocus
+  - Stability-AI/StableCascade
+  - CompVis/stable-diffusion
+  - invoke-ai/InvokeAI
+  - lllyasviel/stable-diffusion-webui-forge
+  - mcmonkeyprojects/SwarmUI
+  - XLabs-AI/x-flux
+  - black-forest-labs/flux
+  - Stability-AI/generative-models
+  - lllyasviel/ControlNet
+  - tencent/HunyuanDiT
+  - huggingface/diffusers
+  - InstantID/InstantID

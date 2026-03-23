@@ -1,0 +1,23 @@
+id: 10105
+name: MCP Servers
+items:
+  - microsoft/playwright-mcp
+  - github/github-mcp-server
+  - PrefectHQ/fastmcp
+  - awslabs/mcp
+  - GLips/Figma-Context-MCP
+  - googleapis/genai-toolbox
+  - hangwin/mcp-chrome
+  - BeehiveInnovations/pal-mcp-server
+  - mcp-use/mcp-use
+  - modelcontextprotocol/inspector
+  - LaurieWired/GhidraMCP
+  - idosal/git-mcp
+  - upstash/context7
+  - tavily-ai/tavily-mcp
+  - modelcontextprotocol/servers
+  - supabase-community/supabase-mcp
+  - executeautomation/mcp-playwright
+  - activepieces/activepieces
+  - anthropics/anthropic-quickstarts
+  - stripe/agent-toolkit

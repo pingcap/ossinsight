@@ -1,0 +1,18 @@
+id: 10109
+name: LLM Inference Engines
+items:
+  - ollama/ollama
+  - ggml-org/llama.cpp
+  - vllm-project/vllm
+  - nomic-ai/gpt4all
+  - oobabooga/text-generation-webui
+  - open-webui/open-webui
+  - huggingface/text-generation-inference
+  - mlc-ai/web-llm
+  - kvcache-ai/ktransformers
+  - EricLBuehler/mistral.rs
+  - Mozilla-Ocho/llamafile
+  - jmorganca/ollama-js
+  - mudler/LocalAI
+  - lm-sys/FastChat
+  - sgl-project/sglang

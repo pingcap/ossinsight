@@ -1,0 +1,18 @@
+id: 10112
+name: AI Coding Assistants
+items:
+  - TabbyML/tabby
+  - Fission-AI/OpenSpec
+  - yetone/avante.nvim
+  - github/CopilotForXcode
+  - sourcegraph/cody-public-snapshot
+  - coleam00/Archon
+  - sweepai/sweep
+  - codestoryai/aide
+  - JetBrains/intellij-community
+  - aws/amazon-q-developer-cli
+  - supermaven-inc/supermaven-vscode
+  - e2b-dev/E2B
+  - Exafunction/codeium.vim
+  - smallcloudai/refact
+  - codota/TabNine
