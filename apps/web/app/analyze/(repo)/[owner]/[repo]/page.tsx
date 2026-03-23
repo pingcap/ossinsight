@@ -61,8 +61,12 @@ export default async function Page({ params, searchParams }: PageProps) {
       />
       <ShareButtons
         url={`/analyze/${owner}/${repo}`}
-        title={`Check out ${owner}/${repo} analytics on OSSInsight`}
+        title={`${owner}/${repo} — check the full analytics on OSSInsight`}
         className="fixed right-4 top-1/2 -translate-y-1/2 flex-col z-50 bg-gray-900/80 backdrop-blur rounded-lg p-1.5 shadow-lg"
+        stars={repoInfo.stars ?? undefined}
+        forks={repoInfo.forks ?? undefined}
+        language={repoInfo.language ?? undefined}
+        hashtags={['opensource', 'github']}
       />
       <div className="sr-only">
         <h1>{repoInfo.full_name} — GitHub Repository Analytics</h1>

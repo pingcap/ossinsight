@@ -6,9 +6,21 @@ interface ShareButtonsProps {
   url: string;
   title: string;
   className?: string;
+  stars?: number;
+  forks?: number;
+  language?: string;
+  hashtags?: string[];
 }
 
-export default function ShareButtons({ url, title, className }: ShareButtonsProps) {
+function formatShareText(title: string, { stars, forks }: Pick<ShareButtonsProps, 'stars' | 'forks'>): string {
+  if (stars == null && forks == null) return title;
+  const parts: string[] = [];
+  if (stars != null) parts.push(`${stars.toLocaleString()}⭐`);
+  if (forks != null) parts.push(`${forks.toLocaleString()} forks`);
+  return `📊 ${title} (${parts.join(', ')})`;
+}
+
+export default function ShareButtons({ url, title, className, stars, forks, language, hashtags }: ShareButtonsProps) {
   const [copied, setCopied] = useState(false);
   const [canNativeShare, setCanNativeShare] = useState(false);
 
@@ -20,10 +32,18 @@ export default function ShareButtons({ url, title, className }: ShareButtonsProp
     setCanNativeShare(typeof navigator !== 'undefined' && !!navigator.share);
   }, []);
 
-  const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(fullUrl)}&via=OSSInsight`;
+  const richText = formatShareText(title, { stars, forks });
+  const allHashtags = [
+    ...(hashtags ?? []),
+    ...(language ? [language.toLowerCase().replace(/[^a-z0-9]/g, '')] : []),
+  ];
+  const hashtagSuffix = allHashtags.length > 0 ? ` ${allHashtags.map(h => `#${h}`).join(' ')}` : '';
+
+  const twitterText = `${richText}${hashtagSuffix}`;
+  const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(twitterText)}&url=${encodeURIComponent(fullUrl)}&via=OSSInsight`;
   const linkedinUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(fullUrl)}`;
-  const redditUrl = `https://www.reddit.com/submit?url=${encodeURIComponent(fullUrl)}&title=${encodeURIComponent(title)}`;
-  const hackerNewsUrl = `https://news.ycombinator.com/submitlink?u=${encodeURIComponent(fullUrl)}&t=${encodeURIComponent(title)}`;
+  const redditUrl = `https://www.reddit.com/submit?url=${encodeURIComponent(fullUrl)}&title=${encodeURIComponent(richText)}`;
+  const hackerNewsUrl = `https://news.ycombinator.com/submitlink?u=${encodeURIComponent(fullUrl)}&t=${encodeURIComponent(richText)}`;
 
   const nativeShare = useCallback(async () => {
     try {
