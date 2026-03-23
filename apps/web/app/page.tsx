@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { HomeContent } from './home-content';
-import { WebSiteJsonLd, FAQPageJsonLd, OrganizationJsonLd } from '@/components/json-ld';
+import { FAQPageJsonLd } from '@/components/json-ld';
 
 export const metadata: Metadata = {
   title: 'OSSInsight - Open Source Software Insight',
@@ -30,8 +30,6 @@ const FAQ_ITEMS = [
 export default function HomePage() {
   return (
     <>
-      <WebSiteJsonLd />
-      <OrganizationJsonLd />
       <FAQPageJsonLd items={FAQ_ITEMS} />
       <div className="sr-only">
         <h1>OSSInsight — Open Source Software Insight</h1>

@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { getRepoByName } from '@/lib/server/internal-api';
-import { BreadcrumbListJsonLd } from '@/components/json-ld';
+import { BreadcrumbListJsonLd, SoftwareApplicationJsonLd } from '@/components/json-ld';
 import ShareButtons from '@/components/ShareButtons';
 import RepoAnalyzePage from './content';
 
@@ -25,28 +25,15 @@ export default async function Page({ params, searchParams }: PageProps) {
     redirect('/404');
   }
 
-  let vsRepoInfo = null;
+  // 301 redirect comparisons to dedicated /compare route
   if (vs) {
     const [vsOwner, vsRepo] = vs.split('/');
     if (vsOwner && vsRepo) {
-      vsRepoInfo = await fetchRepoInfo(vsOwner, vsRepo);
+      redirect(`/compare/${owner}/${repo}/${vsOwner}/${vsRepo}`);
     }
   }
 
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'SoftwareSourceCode',
-    name: repo,
-    codeRepository: `https://github.com/${owner}/${repo}`,
-    ...(repoInfo.language ? { programmingLanguage: repoInfo.language } : {}),
-    ...(repoInfo.description ? { description: repoInfo.description } : {}),
-    ...(repoInfo.license ? { license: repoInfo.license } : {}),
-    author: {
-      '@type': repoInfo.owner?.login ? 'Organization' : 'Person',
-      name: owner,
-      url: `https://github.com/${owner}`,
-    },
-  };
+  const vsRepoInfo = null;
 
   return (
     <>
@@ -55,14 +42,26 @@ export default async function Page({ params, searchParams }: PageProps) {
         { name: 'Analyze', url: '/analyze' },
         { name: `${owner}/${repo}` },
       ]} />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      <SoftwareApplicationJsonLd
+        repoName={`${owner}/${repo}`}
+        description={repoInfo.description}
+        stars={repoInfo.stars}
+        language={repoInfo.language}
+        license={repoInfo.license}
+        author={{
+          type: repoInfo.owner?.login ? 'Organization' : 'Person',
+          name: owner,
+          url: `https://github.com/${owner}`,
+        }}
       />
       <ShareButtons
         url={`/analyze/${owner}/${repo}`}
-        title={`Check out ${owner}/${repo} analytics on OSSInsight`}
+        title={`${owner}/${repo} — check the full analytics on OSSInsight`}
         className="fixed right-4 top-1/2 -translate-y-1/2 flex-col z-50 bg-gray-900/80 backdrop-blur rounded-lg p-1.5 shadow-lg"
+        stars={repoInfo.stars ?? undefined}
+        forks={repoInfo.forks ?? undefined}
+        language={repoInfo.language ?? undefined}
+        hashtags={['opensource', 'github']}
       />
       <div className="sr-only">
         <h1>{repoInfo.full_name} — GitHub Repository Analytics</h1>
@@ -104,9 +103,7 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
   const repo = decodeURIComponent(rawRepo);
   const name = `${owner}/${repo}`;
 
-  const title = vs
-    ? `${name} vs ${vs} | OSSInsight`
-    : `Analyze ${name} | OSSInsight`;
+  const title = `Analyze ${name} | OSSInsight`;
 
   let description = `Deep insight into the GitHub repository ${name} - stars, commits, pull requests, issues, contributors and more.`;
 

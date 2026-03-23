@@ -5,7 +5,8 @@ import {
   getOrgActivityOrgs,
   getCompletionRate,
 } from '@/components/Analyze/utils';
-import Loader from '@/components/Loading';
+import { TableSkeleton as TableSkeletonUI } from '@/components/ui/skeletons';
+import { EmptyState } from '@/components/ui/empty-state';
 import { usePerformanceOptimizedNetworkRequest } from '@/utils/usePerformanceOptimizedNetworkRequest';
 import { Scale } from '@/components/ui/components/transitions';
 import { alpha2ToTitle } from '@/utils/geo';
@@ -72,9 +73,9 @@ export function upperFirst (str: string) {
 
 export const TableSkeleton = forwardRef(function TableSkeleton ({}, forwardedRef: ForwardedRef<any>) {
   return (
-    <>
-      <Loader ref={forwardedRef} />
-    </>
+    <div ref={forwardedRef}>
+      <TableSkeletonUI rows={5} columns={3} />
+    </div>
   );
 });
 
@@ -115,6 +116,8 @@ export function GeoRankTableContent (props: {
     <>
       {loading ? (
         <TableSkeleton ref={ref} />
+      ) : rowsMemo.length === 0 ? (
+        <EmptyState ref={ref} title="No location data available" description="Location data will appear once there is enough activity." className="py-8" />
       ) : (
         <Scale>
           <Table ref={ref} rows={rowsMemo} header={headerMemo} />
@@ -215,6 +218,8 @@ export function CompanyRankTableContent (props: {
     <>
       {loading ? (
         <TableSkeleton ref={ref} />
+      ) : rowsMemo.length === 0 ? (
+        <EmptyState ref={ref} title="No company data available" description="Company data will appear once there is enough activity." className="py-8" />
       ) : (
         <Scale>
           <Table ref={ref} rows={rowsMemo} header={headerMemo} />

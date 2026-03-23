@@ -7,14 +7,18 @@ import format from 'human-format';
 import {
   ArrowDown,
   ArrowUp,
+  BarChart3,
   CircleDot,
   GitPullRequest,
+  Inbox,
   Pencil,
   Star,
   UserRound,
 } from 'lucide-react';
 import type { EChartsOption } from 'echarts';
+import ShareButtons from '@/components/ShareButtons';
 import { ShowSQLInline } from '@/components/Analyze/ShowSQL';
+import { ExportButton, downloadCsv } from '@/components/ui/export-button';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
   Table,
@@ -33,6 +37,7 @@ import {
   getCollectionHistoryRankPath,
   getCollectionRankingExplainPath,
   getCollectionRankingPath,
+  toCollectionSlug,
   type CollectionMetric,
   type CollectionRankRange,
   type CollectionRankingMetric,
@@ -155,10 +160,14 @@ const collectionMetricIcons: Record<CollectionMetric, React.ComponentType<{ clas
 function CollectionPageHeader({
   title,
   description,
+  collectionName,
 }: {
   title: string;
   description: string;
+  collectionName: string;
 }) {
+  const slug = toCollectionSlug(collectionName);
+
   return (
     <header>
       <a
@@ -170,9 +179,16 @@ function CollectionPageHeader({
         <Pencil className="h-4 w-4" />
         Edit This Collection
       </a>
-      <h1 className="mt-4 text-[2.3rem] font-semibold leading-tight text-[#f7df83] sm:text-[2.7rem]">
-        {title}
-      </h1>
+      <div className="mt-4 flex flex-wrap items-center gap-4">
+        <h1 className="text-[2.3rem] font-semibold leading-tight text-[#f7df83] sm:text-[2.7rem]">
+          {title}
+        </h1>
+        <ShareButtons
+          url={`/collections/${slug}`}
+          title={`Check out the ${collectionName} collection on OSSInsight — top open source projects ranked by stars, PRs, and issues`}
+          hashtags={['opensource', 'github']}
+        />
+      </div>
       <p className="mt-4 max-w-4xl text-[16px] leading-7 text-[#7c7c7c]">{description}</p>
     </header>
   );
@@ -355,9 +371,32 @@ function MonthlyRankingSection({ collectionId, initialRankingData }: { collectio
 
       {!loading && !error && rows.length > 0 && (
         <div className="mt-4">
-          <h3 className="text-center text-[14px] font-semibold text-white">
-            {formatTableTitle(range)} Ranking - {activeMetric?.title}
-          </h3>
+          <div className="flex items-center justify-center gap-2">
+            <h3 className="text-center text-[14px] font-semibold text-white">
+              {formatTableTitle(range)} Ranking - {activeMetric?.title}
+            </h3>
+            <ExportButton
+              options={[{
+                label: 'Download as CSV',
+                onClick: () => {
+                  const headers = isMonthView
+                    ? [formatMonth(rows[0]?.current_month), formatMonth(rows[0]?.last_month), 'Repository', activeMetric?.title ?? '', 'Total']
+                    : ['Last 28 Days Rank', 'Repository', activeMetric?.title ?? '', 'Total'];
+                  const csvRows = rows.map((row) => {
+                    const currentTotal = isMonthView ? row.current_month_total : row.last_period_total;
+                    const currentRank = isMonthView ? row.current_month_rank : row.last_period_rank;
+                    const base = [String(currentRank ?? ''), row.repo_name, String(currentTotal ?? ''), String(row.total ?? '')];
+                    if (isMonthView) {
+                      const previousRank = row.last_month_rank;
+                      return [String(currentRank ?? ''), String(previousRank ?? ''), row.repo_name, String(currentTotal ?? ''), String(row.total ?? '')];
+                    }
+                    return base;
+                  });
+                  downloadCsv(headers, csvRows, `collection-ranking-${metric}-${range}.csv`);
+                },
+              }]}
+            />
+          </div>
 
           <div className="mt-4 overflow-x-auto">
             <Table className="min-w-[860px] border-collapse">
@@ -436,7 +475,13 @@ function MonthlyRankingSection({ collectionId, initialRankingData }: { collectio
         </div>
       )}
 
-      {hasLoaded && !loading && !error && rows.length === 0 && <div className="py-10 text-center text-[#7c7c7c]">No data available.</div>}
+      {hasLoaded && !loading && !error && rows.length === 0 && (
+        <div className="flex flex-col items-center justify-center gap-3 py-16 text-center">
+          <Inbox className="h-10 w-10 text-[#555]" />
+          <h3 className="text-sm font-medium text-[#7c7c7c]">No ranking data yet</h3>
+          <p className="max-w-sm text-sm text-[#555]">Ranking data for this collection will appear once repositories have enough activity to compare.</p>
+        </div>
+      )}
     </section>
   );
 }
@@ -611,7 +656,13 @@ function HistoryRankSection({ collectionName, collectionId }: { collectionName: 
         </div>
       )}
 
-      {hasLoaded && !loading && !error && rows.length === 0 && <div className="py-10 text-center text-[#7c7c7c]">No data available.</div>}
+      {hasLoaded && !loading && !error && rows.length === 0 && (
+        <div className="flex flex-col items-center justify-center gap-3 py-16 text-center">
+          <BarChart3 className="h-10 w-10 text-[#555]" />
+          <h3 className="text-sm font-medium text-[#7c7c7c]">No historical ranking data</h3>
+          <p className="max-w-sm text-sm text-[#555]">Year-to-year ranking history will appear as data accumulates over time.</p>
+        </div>
+      )}
     </section>
   );
 }
@@ -622,12 +673,29 @@ export function CollectionDetail({ collection, initialRankingData }: { collectio
       <CollectionPageHeader
         title={`${collection.name} - Ranking`}
         description="Last 28 days / Monthly ranking of repos in this collection by stars, pull requests, issues. Historical Ranking by Popularity."
+        collectionName={collection.name}
       />
 
       <div className="mt-6">
         <MonthlyRankingSection collectionId={collection.id} initialRankingData={initialRankingData} />
         <HistoryRankSection collectionId={collection.id} collectionName={collection.name} />
       </div>
+
+      <aside aria-label="Related pages" className="mt-12 border-t border-[#2a2a2a] pt-6">
+        <nav className="flex flex-wrap items-center gap-4 text-sm text-[#7c7c7c]">
+          <Link href="/trending" className="transition-colors hover:text-[#f7df83]">
+            Trending Repos →
+          </Link>
+          <span className="text-[#333]">·</span>
+          <Link href="/languages" className="transition-colors hover:text-[#f7df83]">
+            Browse by Language →
+          </Link>
+          <span className="text-[#333]">·</span>
+          <Link href="/collections" className="transition-colors hover:text-[#f7df83]">
+            All Collections →
+          </Link>
+        </nav>
+      </aside>
     </div>
   );
 }

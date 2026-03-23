@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { BreadcrumbListJsonLd } from '@/components/json-ld';
+import { BreadcrumbListJsonLd, ItemListJsonLd } from '@/components/json-ld';
 import {
   LANGUAGES,
   PERIODS,
@@ -75,6 +75,15 @@ export default async function TrendingPage({ searchParams }: PageProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
+      {repos.length > 0 && (
+        <ItemListJsonLd
+          name="Trending GitHub Repositories"
+          items={repos.map((r) => ({
+            name: r.repo_name,
+            url: `https://ossinsight.io/analyze/${r.repo_name}`,
+          }))}
+        />
+      )}
       <TrendingContent
         repos={repos}
         period={period}

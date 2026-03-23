@@ -1,0 +1,18 @@
+id: 10108
+name: RAG Frameworks
+items:
+  - run-llama/llama_index
+  - langchain-ai/langchain
+  - HKUDS/RAG-Anything
+  - langgenius/dify
+  - Mintplex-Labs/anything-llm
+  - deepset-ai/haystack
+  - FlowiseAI/Flowise
+  - weaviate/Verba
+  - pinecone-io/canopy
+  - ragapp/ragapp
+  - OSU-NLP-Group/HippoRAG
+  - gomate-community/TrustRAG
+  - infiniflow/ragflow
+  - SensAI-PT/RAGMeUp
+  - llm-tools/embedJs

@@ -15,6 +15,7 @@ import {
   Circle,
   Info,
   CornerDownLeft,
+  Inbox,
   Pause,
   RefreshCcw,
   Share2,
@@ -928,8 +929,10 @@ function ExplorerTable({ answer }: { answer: ExplorerAnswer }) {
 
   if (columns.length === 0) {
     return (
-      <div className="rounded-[14px] border border-dashed border-[#353536] px-4 py-10 text-center text-sm text-[#8c8c8c]">
-        No rows returned for this question.
+      <div className="flex flex-col items-center justify-center gap-3 rounded-[14px] border border-dashed border-[#353536] px-4 py-12 text-center">
+        <Inbox className="h-8 w-8 text-[#555]" />
+        <p className="text-sm font-medium text-[#7c7c7c]">No results found</p>
+        <p className="max-w-sm text-sm text-[#555]">Try rephrasing your question or asking about a different topic.</p>
       </div>
     );
   }

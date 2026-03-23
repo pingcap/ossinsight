@@ -1,0 +1,23 @@
+id: 10106
+name: Coding Agents
+items:
+  - anomalyco/opencode
+  - anthropics/claude-code
+  - openai/codex
+  - cline/cline
+  - All-Hands-AI/OpenHands
+  - plandex-ai/plandex
+  - block/goose
+  - opencode-ai/opencode
+  - badlogic/pi-mono
+  - charmbracelet/crush
+  - oraios/serena
+  - Codium-ai/pr-agent
+  - paul-gauthier/aider
+  - RooCodeInc/Roo-Code
+  - continuedev/continue
+  - google-gemini/gemini-cli
+  - stackblitz/bolt.new
+  - cursor/cursor
+  - evilsocket/nerve
+  - zed-industries/zed

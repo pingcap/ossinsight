@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { BreadcrumbListJsonLd } from '@/components/json-ld';
+import { BreadcrumbListJsonLd, ItemListJsonLd } from '@/components/json-ld';
 import ShareButtons from '@/components/ShareButtons';
 import {
   LANGUAGES,
@@ -109,6 +109,15 @@ export default async function LanguagePage({ params }: PageProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
+      {repos.length > 0 && (
+        <ItemListJsonLd
+          name={`Trending ${language} Repositories`}
+          items={repos.map((r) => ({
+            name: r.repo_name,
+            url: `https://ossinsight.io/analyze/${r.repo_name}`,
+          }))}
+        />
+      )}
 
       <div className="mx-auto max-w-[1280px] px-6 py-8">
         {/* Breadcrumb */}
@@ -267,6 +276,24 @@ export default async function LanguagePage({ params }: PageProps) {
                   className="block px-2 py-1.5 text-xs text-[#555] hover:text-white transition-colors"
                 >
                   View all →
+                </Link>
+              </nav>
+
+              <h3 className="mt-8 text-sm font-semibold text-[#7c7c7c] uppercase tracking-wider mb-3">
+                Explore
+              </h3>
+              <nav aria-label="Related pages" className="space-y-1">
+                <Link
+                  href="/trending"
+                  className="block rounded px-2 py-1.5 text-sm text-[#7c7c7c] hover:text-white hover:bg-[#1a1a1a] transition-colors"
+                >
+                  Trending Repos
+                </Link>
+                <Link
+                  href="/collections"
+                  className="block rounded px-2 py-1.5 text-sm text-[#7c7c7c] hover:text-white hover:bg-[#1a1a1a] transition-colors"
+                >
+                  Collections
                 </Link>
               </nav>
             </div>

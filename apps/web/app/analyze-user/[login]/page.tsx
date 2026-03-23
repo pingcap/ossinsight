@@ -1,6 +1,6 @@
 import { fetchOwnerInfo } from '@/app/analyze/(org)/[owner]/fetchOwner';
 import AnalyzeOwnerContextProvider from '@/components/Context/Analyze/AnalyzeOwner';
-import { BreadcrumbListJsonLd } from '@/components/json-ld';
+import { BreadcrumbListJsonLd, PersonJsonLd } from '@/components/json-ld';
 import { Metadata } from 'next';
 import UserAnalyzeContent from './content';
 
@@ -16,6 +16,12 @@ export default async function Page ({ params }: { params: Promise<{ login: strin
         { name: 'Analyze', url: '/analyze' },
         { name: displayName },
       ]} />
+      <PersonJsonLd
+        name={displayName}
+        login={data.login}
+        bio={data.bio}
+        avatarUrl={data.avatar_url}
+      />
       <div className="sr-only">
         <h1>{displayName} — GitHub Developer Analytics</h1>
         <p>

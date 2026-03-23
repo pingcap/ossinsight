@@ -125,11 +125,15 @@ export function SoftwareApplicationJsonLd({
   description,
   stars,
   language,
+  license,
+  author,
 }: {
   repoName: string;
   description?: string;
   stars?: number;
   language?: string;
+  license?: string;
+  author?: { type: 'Person' | 'Organization'; name: string; url?: string };
 }) {
   return (
     <JsonLd
@@ -140,6 +144,16 @@ export function SoftwareApplicationJsonLd({
         description,
         codeRepository: `https://github.com/${repoName}`,
         programmingLanguage: language,
+        ...(license ? { license } : {}),
+        ...(author
+          ? {
+              author: {
+                '@type': author.type,
+                name: author.name,
+                ...(author.url ? { url: author.url } : {}),
+              },
+            }
+          : {}),
         ...(stars != null
           ? {
               aggregateRating: {
@@ -150,6 +164,57 @@ export function SoftwareApplicationJsonLd({
               },
             }
           : {}),
+      }}
+    />
+  );
+}
+
+export function PersonJsonLd({
+  name,
+  login,
+  bio,
+  avatarUrl,
+}: {
+  name: string;
+  login: string;
+  bio?: string;
+  avatarUrl?: string;
+}) {
+  return (
+    <JsonLd
+      data={{
+        '@context': 'https://schema.org',
+        '@type': 'Person',
+        name,
+        url: `https://github.com/${login}`,
+        ...(bio ? { description: bio } : {}),
+        ...(avatarUrl ? { image: avatarUrl } : {}),
+        sameAs: [`https://github.com/${login}`],
+      }}
+    />
+  );
+}
+
+export function ItemListJsonLd({
+  name,
+  items,
+}: {
+  name: string;
+  items: { name: string; url: string }[];
+}) {
+  return (
+    <JsonLd
+      data={{
+        '@context': 'https://schema.org',
+        '@type': 'ItemList',
+        name,
+        numberOfItems: items.length,
+        itemListElement: items.map((item, index) => ({
+          '@type': 'ListItem',
+          position: index + 1,
+          name: item.name,
+          url: item.url,
+        })),
       }}
     />
   );

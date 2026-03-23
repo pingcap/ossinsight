@@ -269,20 +269,43 @@ export function OverviewSection() {
               </div>
             ) : null}
 
-            {collections.length > 0 ? (
-              <div className="mt-3 flex flex-wrap items-center gap-2 text-[14px] text-[#7c7c7c]">
-                <span>In Collection:</span>
-                {collections.map((collection) => (
-                  <a
-                    key={collection.id}
-                    href={`/collections/${toCollectionSlug(collection.name)}`}
-                    className="inline-flex items-center rounded-full border border-[#4d4d4f] px-3 py-1 text-[12px] text-[#fbe593] transition hover:border-[#fbe593]/60 hover:text-[#fceeb4]"
-                  >
-                    {collection.name}
-                  </a>
-                ))}
-              </div>
-            ) : null}
+            <nav aria-label="Related pages" className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-[13px] text-[#7c7c7c]">
+              {collections.length > 0 ? (
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-[14px]">In Collection:</span>
+                  {collections.map((collection) => (
+                    <a
+                      key={collection.id}
+                      href={`/collections/${toCollectionSlug(collection.name)}`}
+                      className="inline-flex items-center rounded-full border border-[#4d4d4f] px-3 py-1 text-[12px] text-[#fbe593] transition hover:border-[#fbe593]/60 hover:text-[#fceeb4]"
+                    >
+                      {collection.name}
+                    </a>
+                  ))}
+                </div>
+              ) : (
+                <Link
+                  href="/collections"
+                  className="text-[#7c7c7c] transition-colors hover:text-[#fbe593]"
+                >
+                  Browse Collections →
+                </Link>
+              )}
+              {repoInfo.language && (
+                <Link
+                  href={`/languages/${encodeURIComponent(repoInfo.language)}`}
+                  className="text-[#7c7c7c] transition-colors hover:text-[#fbe593]"
+                >
+                  More {repoInfo.language} repositories →
+                </Link>
+              )}
+              <Link
+                href="/trending"
+                className="text-[#7c7c7c] transition-colors hover:text-[#fbe593]"
+              >
+                Trending repos →
+              </Link>
+            </nav>
           </>
         ) : null}
 

@@ -1,0 +1,18 @@
+id: 10110
+name: LLM Fine-Tuning Tools
+items:
+  - unslothai/unsloth
+  - huggingface/trl
+  - huggingface/peft
+  - hiyouga/LLaMA-Factory
+  - OpenAccess-AI-Collective/axolotl
+  - huggingface/alignment-handbook
+  - Lightning-AI/litgpt
+  - mlabonne/llm-course
+  - ConardLi/easy-dataset
+  - kubeflow/trainer
+  - FlagAlpha/Llama2-Chinese
+  - huggingface/transformers
+  - NVIDIA/NeMo
+  - microsoft/DeepSpeed
+  - pytorch/torchtune
