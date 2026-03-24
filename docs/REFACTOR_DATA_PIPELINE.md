@@ -279,8 +279,8 @@ f0a6976 docs: add database setup and development guides
 ### 迁移文档
 
 - `packages/background/GHARCHIVE_MIGRATION.md`
-- `DRIZZLE_MIGRATION_PLAN.md`
-- `DRIZZLE_QUICK_REFERENCE.md`
+- `docs/DRIZZLE_MIGRATION_PLAN.md`
+- `docs/DRIZZLE_QUICK_REFERENCE.md`
 
 ### Schema 文档
 
