@@ -87,6 +87,7 @@ export function getBackgroundService() {
 export * from './tasks/github-sync.js';
 export * from './tasks/prefetch.js';
 export * from './tasks/etl.js';
+export * from './tasks/gharchive.js';
 // Helper functions
 function parseRedisUrl(url) {
     return { url };

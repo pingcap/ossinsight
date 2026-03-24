@@ -10,7 +10,7 @@ import mysql from 'mysql2/promise';
 
 // Parse DATABASE_URL from environment or use default
 const DATABASE_URL = process.env.BACKGROUND_DATABASE_URL || 
-  'mysql://e82Anu4yeQBb47c.root:4GTivTLWlPbalFTl@gateway01.us-west-2.prod.aws.tidbcloud.com:4000/gharchive_dev?ssl={"rejectUnauthorized":true}';
+  'mysql://e82Anu4yeQBb47c.root:4GTivTLWlPbalFTl@gateway01.us-west-2.prod.aws.tidbcloud.com:4000/ossinsight?ssl={"rejectUnauthorized":true}';
 
 // Parse URL
 const url = new URL(DATABASE_URL.replace('mysql://', 'mysql://'));

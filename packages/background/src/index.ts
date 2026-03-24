@@ -10,6 +10,7 @@ import { logger } from './logger.js';
 import { registerGithubSyncTasks } from './tasks/github-sync.js';
 import { registerPrefetchTasks } from './tasks/prefetch.js';
 import { registerEtlTasks } from './tasks/etl.js';
+import { registerGharchiveTasks } from './tasks/gharchive.js';
 
 export interface BackgroundConfig {
   redisUrl: string;
@@ -116,6 +117,7 @@ export function getBackgroundService(): BackgroundService {
 export * from './tasks/github-sync.js';
 export * from './tasks/prefetch.js';
 export * from './tasks/etl.js';
+export * from './tasks/gharchive.js';
 
 // Helper functions
 function parseRedisUrl(url: string): { url: string } {

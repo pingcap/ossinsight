@@ -23,4 +23,5 @@ export declare function getBackgroundService(): BackgroundService;
 export * from './tasks/github-sync.js';
 export * from './tasks/prefetch.js';
 export * from './tasks/etl.js';
+export * from './tasks/gharchive.js';
 //# sourceMappingURL=index.d.ts.map

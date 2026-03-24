@@ -26,6 +26,7 @@
     "start": "node dist/index.js",
     "worker": "node dist/cli.js worker",
     "setup:db": "tsx scripts/setup-database.ts",
+    "setup:gharchive:db": "tsx scripts/setup-gharchive-db.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
