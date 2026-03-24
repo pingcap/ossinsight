@@ -24,12 +24,14 @@
     "build": "tsc",
     "dev": "tsx watch src/index.ts",
     "start": "node dist/index.js",
-    "worker": "node dist/worker.js",
+    "worker": "node dist/cli.js worker",
+    "setup:db": "tsx scripts/setup-database.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@mini256/orbital": "^0.1.0",
     "dotenv": "^16.0.0",
+    "mysql2": "^3.11.5",
     "pino": "^8.7.0"
   },
   "devDependencies": {

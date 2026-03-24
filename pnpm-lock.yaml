@@ -610,7 +610,7 @@ importers:
         specifier: ^4.5.4
         version: 4.9.5
 
-  packages/orbital-service:
+  packages/background:
     dependencies:
       '@mini256/orbital':
         specifier: ^0.1.0
@@ -618,6 +618,9 @@ importers:
       dotenv:
         specifier: ^16.0.0
         version: 16.6.1
+      mysql2:
+        specifier: ^3.11.5
+        version: 3.20.0(@types/node@20.4.2)
       pino:
         specifier: ^8.7.0
         version: 8.21.0
