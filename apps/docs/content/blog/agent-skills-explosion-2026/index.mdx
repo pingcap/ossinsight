@@ -34,6 +34,8 @@ That's **~250,000 cumulative stars**, all from repos created in a 4-week window 
 
 I've been tracking GitHub trends for years. I've never seen a category materialize this fast.
 
+And this isn't just a star-count story. The broader signal is structural: GitHub repos mentioning "agent" and "skill" grew from roughly 17 results in 2023 to over 23,900 in the first three months of 2026 alone. As of today, there are 57,000+ repos containing an `AGENTS.md` file, 21,000+ with a `CLAUDE.md`, and 31,000+ with skill definitions in `.claude/skills/`. This is not a narrative shift. It's a builder movement with receipts.
+
 ## What Even Is a "Skill"?
 
 A quick explainer, because the naming is still messy.
@@ -45,6 +47,18 @@ A skill might say: *"When I ask you to write a blog post, read these instruction
 The insight behind `affaan-m/everything-claude-code` (the 100K-star repo) is that you can dramatically change how an AI agent behaves by curating a library of these small instructions. The repo is half philosophy (how to structure your AGENTS.md), half practical toolkit (what skills are worth having).
 
 It's closer to dotfiles culture than to traditional software libraries. You're not installing a dependency — you're shaping an agent's personality.
+
+### Three kinds of "skills"
+
+The naming is messy, but what people call "skills" today roughly falls into three distinct groups:
+
+1. **Prompt-based reusable instructions** — Markdown files that set behavioral guardrails, coding style, or domain knowledge. Think `AGENTS.md`, `CLAUDE.md`, personal dotfiles-for-agents. This is the largest category by repo count.
+
+2. **Tool wrappers** — Skills that give agents access to external capabilities, often aligned with MCP (Model Context Protocol). A skill might wrap a database query, an API call, or a browser action into something an agent can invoke by name.
+
+3. **Workflow-level compositions** — Multi-step orchestration skills that chain together tools, memory, and sub-agents inside frameworks like OpenClaw, LangGraph, or CrewAI. These are the most complex and the least portable.
+
+The distinction matters because they have very different shelf lives. Category 1 is agent-agnostic and will survive format wars. Category 3 is deeply framework-coupled and might not.
 
 ## The Activity Behind the Stars
 
@@ -106,6 +120,8 @@ First, the "awesome list" problem. A significant chunk of these repos — `VoltA
 Second, the skills format is still fractured. Claude Code uses `CLAUDE.md` and `.claude/skills/`. OpenCode has its own format. Codex reads `AGENTS.md`. Cursor does something different. The repos that are winning on stars now — particularly the aggregate collections — are betting on convergence that hasn't happened yet. If the agents land on incompatible formats, these collections either fragment or become unmaintainable.
 
 Third, I can't tell from GitHub data alone whether people are *actually using* these skills or just starring them as interesting artifacts. [OSSInsight's repo analytics](https://ossinsight.io) gives us star/fork/commit data — but not how many developers have skills running in their day-to-day workflows.
+
+There's also a deeper question that the data hints at but can't answer: most of these "skills" are not standalone. They rely on external data, persistent memory, or tool access to do anything useful. A prompt-based skill that says "query the database before answering" is only as good as the database connection it assumes. This suggests that skills alone may not be the full abstraction layer — they might be more like the visible tip of a much larger infrastructure stack that hasn't been named yet.
 
 ## A Prediction (Specific and Falsifiable)
 
