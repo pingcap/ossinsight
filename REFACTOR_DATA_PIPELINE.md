@@ -295,6 +295,32 @@ f0a6976 docs: add database setup and development guides
 - **基于:** `main`
 - **推送:** ✅ 已推送到 `origin/refactor-data-pipeline`
 - **PR:** https://github.com/pingcap/ossinsight/pull/new/refactor-data-pipeline
+- **用途:** 所有重构相关代码的主分支
+- **工作流:** 后续重构代码直接推送到此分支
+
+## 开发工作流
+
+### 推送代码
+
+```bash
+# 确保在重构分支
+git checkout refactor-data-pipeline
+
+# 提交更改
+git add .
+git commit -m "feat(database): migrate api-server to Drizzle ORM"
+
+# 推送到远端
+git push origin refactor-data-pipeline
+```
+
+### 合并到 Main
+
+重构完成后，通过 Pull Request 合并到 `main` 分支：
+- 进行代码审查
+- 运行 CI/CD 测试
+- 性能基准测试
+- 灰度发布验证
 
 ---
 
