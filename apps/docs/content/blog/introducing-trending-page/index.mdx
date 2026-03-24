@@ -1,0 +1,78 @@
+---
+title: "We Built a GitHub Trending Page That Actually Uses Data"
+date: 2026-03-24
+authors: [OSSInsight]
+tags: [product, trending, open-source]
+image: /blog-assets/introducing-trending-page/cover.png
+description: "GitHub's trending page is broken. So we built our own — powered by 10.5 billion GitHub events, with filters, language breakdowns, and real activity metrics."
+keywords: [github trending, open source trending, github stars, developer tools, OSSInsight, trending repositories, github analytics]
+---
+
+GitHub's trending page has a problem: nobody knows how it works.
+
+The ranking algorithm is opaque. The time windows are vague. Projects appear and disappear without explanation. And if you've ever wondered why a repo with 200 stars shows up above one with 50,000 — well, so has everyone else.
+
+We decided to build something different.
+
+## What We Shipped
+
+[**ossinsight.io/trending**](https://ossinsight.io/trending) — a trending page built on top of 10.5 billion GitHub events, with transparent ranking and real filters.
+
+Here's what you get:
+
+- **Period filters** — Today, This Week, This Month. Pick your window, see different results.
+- **Language filters** — Filter by Python, TypeScript, Rust, Go, or any language. See what's trending in your ecosystem, not everyone else's.
+- **Real metrics** — Stars, forks, and the actual activity numbers. No mystery algorithm.
+- **Deep links** — Every repo links to its full [OSSInsight analysis page](https://ossinsight.io/analyze/karpathy/autoresearch) with contributor graphs, commit history, and community health metrics.
+
+## What's Trending Right Now (March 2026)
+
+Here's what the page shows today:
+
+| Repo | Stars | Language | What It Does |
+|------|-------|----------|-------------|
+| [obra/superpowers](https://ossinsight.io/analyze/obra/superpowers) | 109K | Shell | Agentic skills framework for software development |
+| [affaan-m/everything-claude-code](https://ossinsight.io/analyze/affaan-m/everything-claude-code) | 103K | JavaScript | Agent harness optimization — skills, memory, security |
+| [anthropics/skills](https://ossinsight.io/analyze/anthropics/skills) | 101K | Python | Official Anthropic agent skills repository |
+| [karpathy/autoresearch](https://ossinsight.io/analyze/karpathy/autoresearch) | 53K | Python | AI agents running research on single-GPU training |
+| [bytedance/deer-flow](https://ossinsight.io/analyze/bytedance/deer-flow) | 41K | Python | Open-source SuperAgent — researches, codes, creates |
+| [gsd-build/get-shit-done](https://ossinsight.io/analyze/gsd-build/get-shit-done) | 40K | JavaScript | Meta-prompting and spec-driven development |
+| [TauricResearch/TradingAgents](https://ossinsight.io/analyze/TauricResearch/TradingAgents) | 40K | Python | Multi-agent LLM financial trading framework |
+| [shareAI-lab/learn-claude-code](https://ossinsight.io/analyze/shareAI-lab/learn-claude-code) | 38K | TypeScript | Build a nano Claude Code from scratch |
+
+The pattern is hard to miss: **7 out of the top 8 trending repos are AI agent projects.** Skills frameworks, agent harnesses, autonomous research tools. This is what developers are building and starring right now.
+
+## Why Not Just Use GitHub Trending?
+
+Three reasons:
+
+**1. Transparency.** GitHub's trending algorithm is a black box. Ours is simple: we rank by recent star velocity and activity events. You can see the numbers.
+
+**2. Filters that work.** GitHub trending lets you filter by language and time period, but the results often feel arbitrary. Our filters are deterministic — same inputs, same outputs.
+
+**3. Context.** A repo name and star count tells you almost nothing. Every entry on our trending page links to a full analysis: contributor breakdown, commit velocity, issue health, fork patterns. You can go from "what's popular" to "is this actually healthy" in one click.
+
+## The Data Behind It
+
+The trending page draws from the same dataset that powers all of OSSInsight: **10.5 billion GitHub events** collected in real time. Every push, star, fork, issue, and PR across all of public GitHub.
+
+When you filter by "This Week" and "Python," you're not seeing a curated list. You're seeing what the data says — which Python repos had the most activity in the last 7 days, measured by real events.
+
+## What's Next
+
+This is v1. We're planning:
+
+- **Trending developers** — not just repos, but who's shipping the most interesting work
+- **Category trends** — trending within collections (AI, databases, DevOps, etc.)
+- **Historical snapshots** — what was trending last month, last quarter, last year
+- **RSS feeds** — subscribe to trending in your language
+
+## Try It
+
+👉 [**ossinsight.io/trending**](https://ossinsight.io/trending)
+
+Filter by your language. Click into a repo that catches your eye. Go deeper than stars.
+
+---
+
+*OSSInsight analyzes 10.5B+ GitHub events in real time. Explore trending repos, collections, and developer analytics at [ossinsight.io](https://ossinsight.io).*
