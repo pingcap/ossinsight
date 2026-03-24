@@ -1,0 +1,43 @@
+{
+  "name": "@ossinsight/database",
+  "version": "0.0.1",
+  "description": "Unified database layer with Drizzle ORM for OSS Insight",
+  "license": "Apache-2.0",
+  "author": "OSS Insight Team",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./schema": {
+      "import": "./dist/schema/index.js",
+      "types": "./dist/schema/index.d.ts"
+    },
+    "./github-events": {
+      "import": "./dist/schema/github-events.js",
+      "types": "./dist/schema/github-events.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "generate": "drizzle-kit generate",
+    "migrate": "tsx scripts/migrate.ts",
+    "studio": "drizzle-kit studio",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "drizzle-orm": "^0.29.0",
+    "mysql2": "^3.11.5"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "@types/node": "^20.0.0",
+    "drizzle-kit": "^0.20.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.0.0"
+  }
+}
