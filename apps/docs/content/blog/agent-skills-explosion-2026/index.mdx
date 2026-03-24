@@ -44,7 +44,7 @@ What people call "skills" today falls into three groups that have almost nothing
 
 **3. Workflow compositions** — Multi-step orchestration that chains together tools, memory, and sub-agents inside frameworks like OpenClaw, LangGraph, or CrewAI. The most complex. The least portable.
 
-Skills today are often overlapping, hard to standardize, and [sometimes unsafe to reuse directly](https://arxiv.org/abs/2601.10338). Research suggests significant duplication across skill repos and real security concerns in roughly a quarter of publicly shared skills. The abstraction is leaky.
+Skills today are often [overlapping and duplicative](https://arxiv.org/abs/2602.08004) — concentrated in a few popular scenarios while leaving most agent capabilities unaddressed. They're hard to standardize across agents. And [roughly 26% have security vulnerabilities](https://arxiv.org/abs/2601.10338) that make them risky to reuse directly. This isn't a mature abstraction layer. It's an early, leaky one — powerful enough to be useful, fragile enough to be temporary.
 
 Here's why this taxonomy matters: these three categories have completely different lifespans.
 
@@ -96,12 +96,20 @@ A skill that says "query the database before answering" is only as good as the d
 
 Many skills are not self-contained — they depend on external context that they don't declare, don't version, and can't guarantee.
 
-If skills are only a transitional layer, then what sits around them?
+If skills are only a transitional layer, then what does the full system actually look like?
 
-Below: **tools, data, memory** — the infrastructure a skill assumes but doesn't contain.
-Above: **planning, reasoning, orchestration** — the judgment layer that decides *which* skill to use and *when*.
+At a high level, agent systems seem to be converging on four layers:
 
-Skills are the middle. Strip away either end, and they stop working. It's like distributing a recipe without mentioning you need a kitchen — or a cook.
+1. **Reasoning** — planning, decomposition, deciding what to do next
+2. **Skills** — reusable capabilities, the "how to do X" layer
+3. **Tools / MCP** — execution interfaces, the bridge to the outside world
+4. **Memory / Data** — persistent state, context, the stuff skills assume but don't contain
+
+Skills are layer 2. They're important — but they're one quarter of the stack, not the whole thing. And right now, almost all the energy (and all the stars) are concentrated on this single layer, while the layers above and below it remain underbuilt.
+
+That's what makes skills transitional. Not that they'll disappear — but that they'll shrink in relative importance as the other layers mature. A skill that says "check the security guidelines before modifying auth code" becomes unnecessary once the reasoning layer is good enough to figure that out from context. A skill that wraps a database query becomes redundant once the tool layer handles it natively.
+
+The question isn't whether skills matter. They obviously do, right now. The question is whether they're the *load-bearing abstraction* of the agent era — or just the first layer we figured out how to share.
 
 The 250,000 stars are for the recipes. The kitchens are still being built.
 
