@@ -20,20 +20,20 @@ export const importLogs = mysqlTable(
   {
     id: bigint('id', { mode: 'number' }).autoincrement().primaryKey(),
     filename: varchar('filename', { length: 255 }).notNull(),
-    startBatchAt: datetime('start_batch_at', { mode: 'string', fsp: 3 }).notNull(),
-    startDownloadAt: datetime('start_download_at', { mode: 'string', fsp: 3 }),
-    endDownloadAt: datetime('end_download_at', { mode: 'string', fsp: 3 }),
-    startImportAt: datetime('start_import_at', { mode: 'string', fsp: 3 }),
-    endImportAt: datetime('end_import_at', { mode: 'string', fsp: 3 }),
+    start_batch_at: datetime('start_batch_at', { mode: 'string', fsp: 3 }).notNull(),
+    start_download_at: datetime('start_download_at', { mode: 'string', fsp: 3 }),
+    end_download_at: datetime('end_download_at', { mode: 'string', fsp: 3 }),
+    start_import_at: datetime('start_import_at', { mode: 'string', fsp: 3 }),
+    end_import_at: datetime('end_import_at', { mode: 'string', fsp: 3 }),
     status: varchar('status', { length: 50 }).default('pending'),
-    errorMessage: text('error_message'),
-    createdAt: timestamp('created_at', { mode: 'string' }).defaultNow(),
-    updatedAt: timestamp('updated_at', { mode: 'string' }).defaultNow().onUpdateNow(),
+    error_message: text('error_message'),
+    created_at: timestamp('created_at', { mode: 'string' }).defaultNow(),
+    updated_at: timestamp('updated_at', { mode: 'string' }).defaultNow().onUpdateNow(),
   },
   (table) => ({
-    idxFilename: index('idx_filename').on(table.filename),
-    idxStatus: index('idx_status').on(table.status),
-    idxCreatedAt: index('idx_created_at').on(table.createdAt),
+    idx_filename: index('idx_filename').on(table.filename),
+    idx_status: index('idx_status').on(table.status),
+    idx_created_at: index('idx_created_at').on(table.created_at),
   })
 );
 
