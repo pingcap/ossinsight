@@ -26,5 +26,8 @@
     "overrides": {
       "@tanstack/react-query": "^5.90.21"
     }
+  },
+  "dependencies": {
+    "@mini256/orbital": "^0.1.0"
   }
 }
