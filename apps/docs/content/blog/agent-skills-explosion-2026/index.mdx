@@ -1,0 +1,130 @@
+---
+title: "The Agent Skills Explosion: 250,000 Stars Worth of Developer Behavior Change"
+date: 2026-03-24
+authors: [OSSInsight]
+tags: [insight, ai, developer-tools, skills]
+image: /blog-assets/agent-skills-explosion-2026/cover.png
+description: "In 10 weeks, 'agent skills' repos accumulated 250,000+ GitHub stars. We analyzed the data — and found something surprising about who's actually driving this trend."
+keywords: [agent skills, AGENTS.md, CLAUDE.md, claude code skills, coding agent skills, ai developer workflow, github analytics 2026, OSSInsight, open source AI tools, developer tools trends]
+---
+
+Ten weeks ago, I didn't know what "agent skills" were. Now they're in my daily workflow, and apparently the same is true for hundreds of thousands of other developers — because the GitHub numbers are unlike anything I've seen this year.
+
+Let me show you what I mean before I explain it.
+
+## 250,000 Stars in 10 Weeks
+
+In January 2026, a new category of GitHub repos started appearing: collections of instructions that tell AI coding agents how to behave. `.claude/skills/`, `AGENTS.md`, `CLAUDE.md` — markdown files and small scripts that shape how tools like Claude Code, Codex, and OpenCode work.
+
+The numbers that followed were surreal.
+
+| Repository | Description | Stars | Created | Days to 10K Stars |
+|-----------|-------------|-------|---------|------------------|
+| [affaan-m/everything-claude-code](https://ossinsight.io/analyze/affaan-m/everything-claude-code) | Agent harness optimization: skills, memory, security | 102,235 | Jan 18, 2026 | ~9 days |
+| [VoltAgent/awesome-openclaw-skills](https://ossinsight.io/analyze/VoltAgent/awesome-openclaw-skills) | 5,400+ OpenClaw skills, filtered and categorized | 41,339 | Jan 25, 2026 | ~12 days |
+| [sickn33/antigravity-awesome-skills](https://ossinsight.io/analyze/sickn33/antigravity-awesome-skills) | 1,304+ agent skills for Claude Code, Cursor, Codex | 26,892 | Jan 14, 2026 | ~11 days |
+| [OthmanAdi/planning-with-files](https://ossinsight.io/analyze/OthmanAdi/planning-with-files) | Manus-style persistent markdown planning skill | 16,966 | Jan 3, 2026 | ~18 days |
+| [kepano/obsidian-skills](https://ossinsight.io/analyze/kepano/obsidian-skills) | Agent skills for Obsidian workflows | 16,422 | Jan 2, 2026 | ~22 days |
+| [vercel-labs/skills](https://ossinsight.io/analyze/vercel-labs/skills) | The open agent skills tool — `npx skills` | 11,472 | Jan 14, 2026 | ~17 days |
+| [blader/humanizer](https://ossinsight.io/analyze/blader/humanizer) | Skill to remove AI-writing patterns from text | 10,781 | Jan 18, 2026 | ~20 days |
+| [JimLiu/baoyu-skills](https://ossinsight.io/analyze/JimLiu/baoyu-skills) | Personal curated skill collection | 10,873 | Jan 13, 2026 | ~22 days |
+| [openclaw/clawhub](https://ossinsight.io/analyze/openclaw/clawhub) | Skill Directory for OpenClaw | 6,731 | Jan 3, 2026 | ~31 days |
+
+That's **~250,000 cumulative stars**, all from repos created in a 4-week window in January 2026. Almost entirely in a category that didn't exist as a named concept before that.
+
+I've been tracking GitHub trends for years. I've never seen a category materialize this fast.
+
+## What Even Is a "Skill"?
+
+A quick explainer, because the naming is still messy.
+
+Coding agents like Claude Code, Codex CLI, OpenCode, and others execute instructions from your project files. An "agent skill" is a small piece of instruction — usually markdown, sometimes a script — that tells the agent how to do something specific.
+
+A skill might say: *"When I ask you to write a blog post, read these instructions first."* Or: *"Before touching any file in `/src/auth/`, check the security guidelines."* Or more practically: *"Use `trash` instead of `rm` when deleting files."*
+
+The insight behind `affaan-m/everything-claude-code` (the 100K-star repo) is that you can dramatically change how an AI agent behaves by curating a library of these small instructions. The repo is half philosophy (how to structure your AGENTS.md), half practical toolkit (what skills are worth having).
+
+It's closer to dotfiles culture than to traditional software libraries. You're not installing a dependency — you're shaping an agent's personality.
+
+## The Activity Behind the Stars
+
+Stars are cheap. Activity isn't. Let's look deeper.
+
+### Commit velocity: who's actually building?
+
+Commits in the last 30 days:
+
+| Repository | 30-Day Commits | Contributors | Forks | Open Issues |
+|-----------|---------------|-------------|-------|-------------|
+| [sickn33/antigravity-awesome-skills](https://ossinsight.io/analyze/sickn33/antigravity-awesome-skills) | **629** | 143 | 4,562 | 1 |
+| [affaan-m/everything-claude-code](https://ossinsight.io/analyze/affaan-m/everything-claude-code) | **365** | 113 | 13,326 | 103 |
+| [openclaw/clawhub](https://ossinsight.io/analyze/openclaw/clawhub) | **323** | — | 1,050 | 638 |
+| [VoltAgent/awesome-openclaw-skills](https://ossinsight.io/analyze/VoltAgent/awesome-openclaw-skills) | **130** | 64 | 3,950 | 41 |
+| [vercel-labs/skills](https://ossinsight.io/analyze/vercel-labs/skills) | **31** | 81 | 924 | 360 |
+
+`sickn33/antigravity-awesome-skills` is the dark horse here. 629 commits in 30 days, 143 contributors, and somehow only 1 open issue. Either they have an exceptional maintainer triage system, or the issues are just getting crushed before they pile up. The contrast with `vercel-labs/skills` — 81 contributors, 360 open issues, 31 commits — tells a different story about momentum.
+
+`openclaw/clawhub` has 638 open issues with active commit velocity. That's a different kind of problem: high demand from a growing registry that the team is racing to keep up with.
+
+### Contributor depth
+
+I'm particularly interested in [affaan-m/everything-claude-code](https://ossinsight.io/analyze/affaan-m/everything-claude-code). 102K stars, 113 contributors, 13,326 forks. That contributor-to-star ratio (1.1 contributors per 1K stars) is low — but the fork count tells the real story.
+
+Forks on a dotfiles-style repo aren't people starting derivative projects. They're people taking the baseline and personalizing it. 13K forks on a 10-week-old repo means 13,000 developers have already created their own customized version. That's the real adoption signal.
+
+## The Personal-Public Blend
+
+Something unusual is happening in this category that I didn't expect: personal collections are performing as well as org-backed projects.
+
+[mattpocock/skills](https://ossinsight.io/analyze/mattpocock/skills) (Matt Pocock's personal skills, 9,442 stars), [JimLiu/baoyu-skills](https://ossinsight.io/analyze/JimLiu/baoyu-skills) (10,873 stars), and [phuryn/pm-skills](https://ossinsight.io/analyze/phuryn/pm-skills) — a PM skills collection created March 1st that already has 8,029 stars — are doing numbers comparable to org-backed repos.
+
+This is the dotfiles pattern playing out in real time. Developers want to know what *other developers they respect* are putting in their AGENTS.md. A personal skills repo is a window into someone's AI-augmented workflow. It's shareable in a way that raw config files never were.
+
+| Repository | Stars | Created | Type |
+|-----------|-------|---------|------|
+| [JimLiu/baoyu-skills](https://ossinsight.io/analyze/JimLiu/baoyu-skills) | 10,873 | Jan 13, 2026 | Personal |
+| [blader/humanizer](https://ossinsight.io/analyze/blader/humanizer) | 10,781 | Jan 18, 2026 | Personal skill |
+| [mattpocock/skills](https://ossinsight.io/analyze/mattpocock/skills) | 9,442 | Feb 3, 2026 | Personal |
+| [phuryn/pm-skills](https://ossinsight.io/analyze/phuryn/pm-skills) | 8,029 | Mar 1, 2026 | Role-based (PM) |
+
+That last one — `phuryn/pm-skills` — launched March 1st and already has 8K stars. 24 days. It's not a developer-focused collection; it's explicitly "for product managers." The skills category is spreading beyond pure developers already.
+
+## What This Looks Like to GitHub's Data
+
+When I look at the trajectory, I see something that reminds me of when npm packages first started documenting themselves in README files. That sounds boring, but it was the moment the Node ecosystem stopped being esoteric and became accessible to everyone.
+
+Skills are the documentation layer for AI-augmented development. They're how developers share *how they work* with agents, not just what they build.
+
+The [OSSInsight analysis of everything-claude-code](https://ossinsight.io/analyze/affaan-m/everything-claude-code) shows a commit graph that doesn't look like a hype spike — the commit velocity has stayed elevated for 10 weeks. That's unusual. Most viral repos show a steep rise and then a 70-80% pullback in activity within a month. This one has sustained it.
+
+## Where I'm Skeptical
+
+Some of what's happening here might be inflated.
+
+First, the "awesome list" problem. A significant chunk of these repos — `VoltAgent/awesome-openclaw-skills`, `sickn33/antigravity-awesome-skills` — are curated lists rather than original code. Stars on list repos are notoriously inflated relative to actual use. A developer stars a list to bookmark it; that's not the same engagement as starring a tool they're actively using.
+
+Second, the skills format is still fractured. Claude Code uses `CLAUDE.md` and `.claude/skills/`. OpenCode has its own format. Codex reads `AGENTS.md`. Cursor does something different. The repos that are winning on stars now — particularly the aggregate collections — are betting on convergence that hasn't happened yet. If the agents land on incompatible formats, these collections either fragment or become unmaintainable.
+
+Third, I can't tell from GitHub data alone whether people are *actually using* these skills or just starring them as interesting artifacts. [OSSInsight's repo analytics](https://ossinsight.io) gives us star/fork/commit data — but not how many developers have skills running in their day-to-day workflows.
+
+## A Prediction (Specific and Falsifiable)
+
+By June 2026: at least one of the top-5 skills repos will have passed 150K stars, and there will be a publicly documented skills interoperability standard with signoff from at least two major agent projects.
+
+Current trajectory suggests `affaan-m/everything-claude-code` is the most likely to hit 150K — it's adding ~2-3K stars/day even at 100K+, which is unusual. Most repos at that scale see growth slow significantly.
+
+The interoperability standard is less certain. The incentives are weird — Claude Code and Codex might not want to make skills portable, because lock-in is valuable. But developer pressure is real, and the `vercel-labs/skills` tool is already trying to solve this with `npx skills` as a format-agnostic installer.
+
+## The Two Things Worth Watching
+
+If you want to track whether this is lasting signal or peak hype, watch two numbers on [OSSInsight](https://ossinsight.io):
+
+1. **Fork velocity on `affaan-m/everything-claude-code`** — not stars. Forks mean customization, which means actual use. If fork/star ratio stays above 10%, that's genuine adoption.
+
+2. **Commit activity on `openclaw/clawhub`** — the skills registry/directory play. Registry momentum is a lagging indicator, but it's the most honest signal of ecosystem health. High commit velocity in a registry means new skills are being published; that means developers are building things worth sharing.
+
+At 10 weeks in, both indicators are still positive. This is either the fastest-growing developer workflow category I've tracked, or the most elaborate shared illusion. The data doesn't tell me which yet — but it's making me lean toward the former.
+
+---
+
+*Explore these repos on [OSSInsight](https://ossinsight.io) — real-time GitHub analytics for open source projects.*
