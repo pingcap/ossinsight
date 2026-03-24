@@ -98,9 +98,33 @@ export declare const importLogs: import("drizzle-orm/mysql-core").MySqlTableWith
             columnType: "MySqlDateTimeString";
             data: string;
             driverParam: string | number;
-            notNull: false;
+            notNull: true;
             hasDefault: false;
             enumValues: undefined;
+            baseColumn: never;
+        }, object>;
+        status: import("drizzle-orm/mysql-core").MySqlColumn<{
+            name: "status";
+            tableName: "import_logs";
+            dataType: "string";
+            columnType: "MySqlVarChar";
+            data: string;
+            driverParam: string | number;
+            notNull: false;
+            hasDefault: true;
+            enumValues: [string, ...string[]];
+            baseColumn: never;
+        }, object>;
+        errorMessage: import("drizzle-orm/mysql-core").MySqlColumn<{
+            name: "error_message";
+            tableName: "import_logs";
+            dataType: "string";
+            columnType: "MySqlText";
+            data: string;
+            driverParam: string;
+            notNull: false;
+            hasDefault: false;
+            enumValues: [string, ...string[]];
             baseColumn: never;
         }, object>;
         createdAt: import("drizzle-orm/mysql-core").MySqlColumn<{

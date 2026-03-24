@@ -1,154 +1,38 @@
 /**
  * GHArchive ETL Tasks
  * 
- * Migrates Ruby ETL (etl/lib/importer.rb, etl/lib/tasks/import.rake) 
- * to TypeScript/Orbital for gharchive_dev data import.
+ * Implemented with Drizzle ORM for type-safe database access
  */
 
 import type { Orbital } from '@mini256/orbital';
 import { logger } from '../logger.js';
-import { createPool } from 'mysql2/promise';
-import { createWriteStream } from 'fs';
-import { pipeline } from 'stream/promises';
-import { createGunzip } from 'zlib';
-import { Readable } from 'stream';
+import { getDatabase, githubEvents, importLogs } from '@ossinsight/database';
+import { eq, and, sql } from 'drizzle-orm';
 import https from 'https';
-import zlib from 'zlib';
+import { Readable } from 'stream';
+import { createGunzip } from 'zlib';
 
 // ============================================================================
 // Configuration
 // ============================================================================
 
 const GHARCHIVE_BASE_URL = 'http://data.gharchive.org';
-const CACHE_DIR = process.env.GHARCHIVE_CACHE_DIR || '/tmp/gharchive';
-const BATCH_SIZE = 90000; // Match Ruby's 90000 batch size
+const BATCH_SIZE = 90000;
 const MAX_RETRIES = 5;
-const DOWNLOAD_TIMEOUT = 600000; // 10 minutes (match Ruby's 600s)
+const DOWNLOAD_TIMEOUT = 600000;
 
 // ============================================================================
 // Types
 // ============================================================================
 
-export interface GharchiveEventData {
-  id: string;
-  type: string;
-  actor_id: number;
-  actor_login: string;
-  repo_id: number;
-  repo_name: string;
-  org_id: number;
-  org_login: string;
-  created_at: string;
-  
-  // Parsed fields
-  language: string;
-  additions: number;
-  deletions: number;
-  action: string;
-  number: number;
-  commit_id: string;
-  comment_id: number;
-  state: string;
-  closed_at: string;
-  comments: number;
-  pr_merged: boolean;
-  pr_merged_at: string;
-  pr_changed_files: number;
-  pr_review_comments: number;
-  pr_or_issue_id: number;
-  push_size: number;
-  push_distinct_size: number;
-  creator_user_id: number;
-  creator_user_login: string;
-  pr_or_issue_created_at: string;
-  
-  // Computed date fields
-  event_day: string;
-  event_month: string;
-  event_year: number;
-}
-
-export interface ImportLogData {
-  id?: number;
-  filename: string;
-  start_batch_at: string;
-  start_download_at?: string;
-  end_download_at?: string;
-  start_import_at?: string;
-  end_import_at?: string;
-  status?: 'pending' | 'downloading' | 'parsing' | 'importing' | 'completed' | 'failed';
-  error_message?: string;
-}
-
 export interface GharchiveImportData {
-  date: string;      // YYYY-MM-DD
-  hour: number;      // 0-23
-  force?: boolean;   // Force re-import
-  upsert?: boolean;  // Use upsert instead of insert
+  date: string;
+  hour: number;
+  force?: boolean;
+  upsert?: boolean;
 }
 
-// ============================================================================
-// Database Connection
-// ============================================================================
-
-let dbPool: ReturnType<typeof createPool> | null = null;
-
-function getDbPool() {
-  if (!dbPool) {
-    const dbUrl = process.env.BACKGROUND_DATABASE_URL || 
-                  process.env.DATABASE_URL ||
-                  'mysql://localhost:3306/ossinsight';
-    
-    // Parse MySQL connection URL
-    const match = dbUrl.match(/mysql:\/\/([^:]+):([^@]+)@([^:/]+):(\d+)\/([^?]+)(?:\?(.*))?/);
-    if (!match) {
-      throw new Error(`Invalid database URL: ${dbUrl}`);
-    }
-    
-    const [, user, password, host, port, database, params] = match;
-    
-    dbPool = createPool({
-      host,
-      port: parseInt(port, 10),
-      user,
-      password,
-      database,
-      connectionLimit: 20,
-      queueLimit: 0,
-      enableKeepAlive: true,
-    });
-  }
-  
-  return dbPool;
-}
-
-// ============================================================================
-// Import Log Management
-// ============================================================================
-
-async function createImportLog(data: ImportLogData): Promise<number> {
-  const pool = getDbPool();
-  const sql = `
-    INSERT INTO import_logs (filename, start_batch_at, status)
-    VALUES (?, ?, ?)
-  `;
-  const [result] = await pool.execute(sql, [
-    data.filename,
-    data.start_batch_at,
-    data.status || 'pending'
-  ]);
-  
-  return (result as any).insertId;
-}
-
-async function updateImportLog(id: number, updates: Partial<ImportLogData>): Promise<void> {
-  const pool = getDbPool();
-  const fields = Object.keys(updates).map(k => `${k} = ?`).join(', ');
-  const values = Object.values(updates);
-  
-  const sql = `UPDATE import_logs SET ${fields} WHERE id = ?`;
-  await pool.execute(sql, [...values, id]);
-}
+type NewGithubEvent = typeof githubEvents.$inferInsert;
 
 // ============================================================================
 // GHArchive Importer
@@ -159,62 +43,68 @@ export class GharchiveImporter {
   private url: string;
   private batchAt: Date;
   private importLogId!: number;
-  private events: GharchiveEventData[] = [];
-  private cacheDir: string;
+  private events: NewGithubEvent[] = [];
   private upsert: boolean;
 
-  constructor(filename: string, options: { cacheDir?: string; upsert?: boolean } = {}) {
+  constructor(filename: string, options: { upsert?: boolean } = {}) {
     this.filename = filename;
     this.url = `${GHARCHIVE_BASE_URL}/${filename}`;
-    this.cacheDir = options.cacheDir || CACHE_DIR;
     this.batchAt = new Date();
     this.upsert = options.upsert ?? false;
   }
 
   async run(): Promise<void> {
+    const db = getDatabase().drizzle;
+
     try {
-      // Create import log
-      this.importLogId = await createImportLog({
-        filename: this.filename,
-        start_batch_at: this.batchAt.toISOString(),
-        status: 'pending'
-      });
+      // Create import log using raw SQL
+      const pool = getDatabase().pool;
+      const [logResult]: any = await pool.execute(
+        `INSERT INTO import_logs (filename, start_batch_at, status, created_at, updated_at) VALUES (?, ?, ?, ?, ?)`,
+        [this.filename, this.batchAt.toISOString(), 'pending', new Date().toISOString(), new Date().toISOString()]
+      );
+      this.importLogId = logResult.insertId;
 
       // Download
-      await this.updateLog({ status: 'downloading', start_download_at: new Date().toISOString() });
+      await this.updateLog('status', 'downloading');
+      await this.updateLog('start_download_at', new Date().toISOString());
       const jsonStream = await this.download();
-      await this.updateLog({ end_download_at: new Date().toISOString() });
+      await this.updateLog('end_download_at', new Date().toISOString());
 
       if (!jsonStream) {
         logger.warn({ filename: this.filename }, 'Skipping 404 file');
-        await this.updateLog({ status: 'completed' });
+        await this.updateLog('status', 'completed');
         return;
       }
 
       // Parse
-      await this.updateLog({ status: 'parsing' });
+      await this.updateLog('status', 'parsing');
       logger.info({ filename: this.filename }, 'Starting to parse JSON data');
       await this.parse(jsonStream);
       logger.info({ filename: this.filename, count: this.events.length }, 'Parsing completed');
 
       // Import
-      await this.updateLog({ status: 'importing', start_import_at: new Date().toISOString() });
+      await this.updateLog('status', 'importing');
+      await this.updateLog('start_import_at', new Date().toISOString());
       await this.import();
-      await this.updateLog({ end_import_at: new Date().toISOString(), status: 'completed' });
+      await this.updateLog('end_import_at', new Date().toISOString());
+      await this.updateLog('status', 'completed');
 
       logger.info({ filename: this.filename, count: this.events.length }, 'Import completed');
     } catch (error) {
       logger.error({ filename: this.filename, error }, 'Import failed');
-      await this.updateLog({ 
-        status: 'failed', 
-        error_message: error instanceof Error ? error.message : String(error)
-      });
+      await this.updateLog('status', 'failed');
+      await this.updateLog('error_message', error instanceof Error ? error.message : String(error));
       throw error;
     }
   }
 
-  private async updateLog(updates: Partial<ImportLogData>): Promise<void> {
-    await updateImportLog(this.importLogId, updates);
+  private async updateLog(field: string, value: string): Promise<void> {
+    const pool = getDatabase().pool;
+    await pool.execute(
+      `UPDATE import_logs SET ${field} = ?, updated_at = ? WHERE id = ?`,
+      [value, new Date().toISOString(), this.importLogId]
+    );
   }
 
   private async download(): Promise<Readable | null> {
@@ -242,16 +132,11 @@ export class GharchiveImporter {
             resolve(response as unknown as Readable);
           });
 
-          request.on('error', (error) => {
-            reject(error);
-          });
-
+          request.on('error', reject);
           request.on('timeout', () => {
             request.destroy();
             reject(new Error('Download timeout'));
           });
-
-          request.setTimeout(DOWNLOAD_TIMEOUT);
         });
       } catch (error) {
         retries++;
@@ -265,14 +150,8 @@ export class GharchiveImporter {
           throw error;
         }
 
-        const delay = Math.pow(2, retries) * 1000; // Exponential backoff
-        logger.warn({ 
-          url: this.url, 
-          retry: retries, 
-          delay,
-          error: error instanceof Error ? error.message : String(error)
-        }, 'Retrying download');
-        
+        const delay = Math.pow(2, retries) * 1000;
+        logger.warn({ url: this.url, retry: retries, delay }, 'Retrying download');
         await new Promise(resolve => setTimeout(resolve, delay));
       }
     }
@@ -289,9 +168,8 @@ export class GharchiveImporter {
     for await (const chunk of decompressed) {
       buffer += chunk.toString('utf8');
       
-      // Process complete JSON objects (newline-delimited JSON)
       const lines = buffer.split('\n');
-      buffer = lines.pop() || ''; // Keep incomplete line in buffer
+      buffer = lines.pop() || '';
 
       for (const line of lines) {
         if (!line.trim()) continue;
@@ -304,13 +182,11 @@ export class GharchiveImporter {
         }
       }
 
-      // Batch insert if we have enough events
       if (this.events.length >= BATCH_SIZE) {
         await this.flushEvents();
       }
     }
 
-    // Process remaining buffer
     if (buffer.trim()) {
       try {
         const event = JSON.parse(buffer);
@@ -320,29 +196,25 @@ export class GharchiveImporter {
       }
     }
 
-    // Flush remaining events
     if (this.events.length > 0) {
       await this.flushEvents();
     }
   }
 
-  private extractFields(event: any): GharchiveEventData {
+  private extractFields(event: any): NewGithubEvent {
     const dateMatch = event.created_at?.match(/((\d{4})-\d{2})-\d{2}/);
     const eventDay = dateMatch ? dateMatch[0] : '1970-01-01';
     const eventMonth = dateMatch ? `${dateMatch[1]}-01` : '1970-01-01';
     const eventYear = dateMatch ? parseInt(dateMatch[2], 10) : 1970;
 
     return {
-      id: event.id || '',
+      id: event.id ? Number(event.id) : 0,
       type: event.type || 'Event',
-      actor_id: event.actor?.id || 0,
-      actor_login: event.actor?.login || '',
-      repo_id: event.repo?.id || 0,
-      repo_name: event.repo?.name || '',
-      org_id: event.org?.id || 0,
-      org_login: event.org?.login || '',
       created_at: event.created_at || '1970-01-01 00:00:00',
-      
+      repo_id: event.repo?.id ? Number(event.repo.id) : 0,
+      repo_name: event.repo?.name || '',
+      actor_id: event.actor?.id ? Number(event.actor.id) : 0,
+      actor_login: event.actor?.login || '',
       language: event.payload?.pull_request?.base?.repo?.language || '',
       additions: event.payload?.pull_request?.additions || 0,
       deletions: event.payload?.pull_request?.deletions || 0,
@@ -351,36 +223,40 @@ export class GharchiveImporter {
               event.payload?.pull_request?.number || 
               event.payload?.number || 0,
       commit_id: event.payload?.comment?.commit_id || '',
-      comment_id: event.payload?.comment?.id || 0,
-      state: event.payload?.pull_request?.state || 
-             event.payload?.issue?.state || '',
+      comment_id: event.payload?.comment?.id ? Number(event.payload.comment.id) : 0,
+      org_login: event.org?.login || '',
+      org_id: event.org?.id ? Number(event.org.id) : 0,
+      state: event.payload?.pull_request?.state || event.payload?.issue?.state || '',
       closed_at: event.payload?.pull_request?.closed_at || 
-                 event.payload?.issue?.closed_at || '1970-01-01 00:00:00',
+                event.payload?.issue?.closed_at || '1970-01-01 00:00:00',
       comments: event.payload?.pull_request?.comments || 
                 event.payload?.issue?.comments || 0,
-      pr_merged: event.payload?.pull_request?.merged || false,
       pr_merged_at: event.payload?.pull_request?.merged_at || '1970-01-01 00:00:00',
+      pr_merged: event.payload?.pull_request?.merged || false,
       pr_changed_files: event.payload?.pull_request?.changed_files || 0,
       pr_review_comments: event.payload?.pull_request?.review_comments || 0,
       pr_or_issue_id: event.payload?.pull_request?.id || 
-                      event.payload?.issue?.id || 0,
+                      event.payload?.issue?.id ? Number(event.payload.pull_request?.id || event.payload.issue?.id) : 0,
+      event_day: eventDay,
+      event_month: eventMonth,
+      event_year: eventYear,
       push_size: event.payload?.size || 0,
       push_distinct_size: event.payload?.distinct_size || 0,
-      creator_user_id: event.payload?.comment?.user?.id || 
-                       event.payload?.review?.user?.id || 
-                       event.payload?.issue?.user?.id || 
-                       event.payload?.pull_request?.user?.id || 0,
       creator_user_login: event.payload?.comment?.user?.login || 
                           event.payload?.review?.user?.login || 
                           event.payload?.issue?.user?.login || 
                           event.payload?.pull_request?.user?.login || '',
+      creator_user_id: event.payload?.comment?.user?.id || 
+                       event.payload?.review?.user?.id || 
+                       event.payload?.issue?.user?.id || 
+                       event.payload?.pull_request?.user?.id ? 
+                         Number(event.payload.comment?.user?.id || 
+                                event.payload.review?.user?.id || 
+                                event.payload.issue?.user?.id || 
+                                event.payload.pull_request?.user?.id) : 0,
       pr_or_issue_created_at: event.payload?.issue?.created_at || 
-                               event.payload?.pull_request?.created_at || 
-                               '1970-01-01 00:00:00',
-      
-      event_day: eventDay,
-      event_month: eventMonth,
-      event_year: eventYear
+                              event.payload?.pull_request?.created_at || 
+                              '1970-01-01 00:00:00',
     };
   }
 
@@ -389,77 +265,44 @@ export class GharchiveImporter {
 
     logger.info({ count: this.events.length }, 'Flushing events to database');
     
+    const db = getDatabase().drizzle;
+
     if (this.upsert) {
-      await this.upsertAll();
+      // Use raw SQL for upsert (more efficient for bulk operations)
+      const values = this.events.map(e => 
+        `(${[
+          e.id, `'${e.type}'`, `'${e.created_at}'`, e.repo_id, `'${e.repo_name}'`,
+          e.actor_id, `'${e.actor_login}'`, `'${e.language}'`, e.additions, e.deletions,
+          `'${e.action}'`, e.number, `'${e.commit_id}'`, e.comment_id, `'${e.org_login}'`,
+          e.org_id, `'${e.state}'`, `'${e.closed_at}'`, e.comments, `'${e.pr_merged_at}'`,
+          e.pr_merged ? 1 : 0, e.pr_changed_files, e.pr_review_comments,
+          e.pr_or_issue_id, `'${e.event_day}'`, `'${e.event_month}'`, e.event_year,
+          e.push_size, e.push_distinct_size, `'${e.creator_user_login}'`,
+          e.creator_user_id, `'${e.pr_or_issue_created_at}'`
+        ].join(',')})`
+      ).join(',');
+
+      await db.execute(sql`
+        INSERT INTO github_events (
+          id, type, created_at, repo_id, repo_name,
+          actor_id, actor_login, language, additions, deletions,
+          action, number, commit_id, comment_id, org_login,
+          org_id, state, closed_at, comments, pr_merged_at,
+          pr_merged, pr_changed_files, pr_review_comments,
+          pr_or_issue_id, event_day, event_month, event_year,
+          push_size, push_distinct_size, creator_user_login,
+          creator_user_id, pr_or_issue_created_at
+        ) VALUES ${sql.raw(values)}
+        ON DUPLICATE KEY UPDATE
+          additions = VALUES(additions),
+          deletions = VALUES(deletions)
+      `);
     } else {
-      await this.insertAll();
+      await db.insert(githubEvents).values(this.events);
     }
 
-    this.events = [];
-  }
-
-  private async insertAll(): Promise<void> {
-    const pool = getDbPool();
-    
-    const sql = `
-      INSERT INTO github_events (
-        id, type, actor_id, actor_login, repo_id, repo_name, org_id, org_login,
-        created_at, language, additions, deletions, action, number, commit_id,
-        comment_id, state, closed_at, comments, pr_merged, pr_merged_at,
-        pr_changed_files, pr_review_comments, pr_or_issue_id, push_size,
-        push_distinct_size, creator_user_id, creator_user_login,
-        pr_or_issue_created_at, event_day, event_month, event_year
-      ) VALUES ?
-    `;
-
-    const values = this.events.map(e => [
-      e.id, e.type, e.actor_id, e.actor_login, e.repo_id, e.repo_name,
-      e.org_id, e.org_login, e.created_at, e.language, e.additions, e.deletions,
-      e.action, e.number, e.commit_id, e.comment_id, e.state, e.closed_at,
-      e.comments, e.pr_merged, e.pr_merged_at, e.pr_changed_files,
-      e.pr_review_comments, e.pr_or_issue_id, e.push_size, e.push_distinct_size,
-      e.creator_user_id, e.creator_user_login, e.pr_or_issue_created_at,
-      e.event_day, e.event_month, e.event_year
-    ]);
-
-    await pool.execute(sql, [values]);
     logger.info({ count: this.events.length }, 'Batch insert completed');
-  }
-
-  private async upsertAll(): Promise<void> {
-    const pool = getDbPool();
-    
-    const sql = `
-      INSERT INTO github_events (
-        id, type, actor_id, actor_login, repo_id, repo_name, org_id, org_login,
-        created_at, language, additions, deletions, action, number, commit_id,
-        comment_id, state, closed_at, comments, pr_merged, pr_merged_at,
-        pr_changed_files, pr_review_comments, pr_or_issue_id, push_size,
-        push_distinct_size, creator_user_id, creator_user_login,
-        pr_or_issue_created_at, event_day, event_month, event_year
-      ) VALUES ?
-      ON DUPLICATE KEY UPDATE
-        type = VALUES(type),
-        actor_login = VALUES(actor_login),
-        repo_name = VALUES(repo_name),
-        org_login = VALUES(org_login),
-        language = VALUES(language),
-        additions = VALUES(additions),
-        deletions = VALUES(deletions)
-    `;
-
-    const values = this.events.map(e => [
-      e.id, e.type, e.actor_id, e.actor_login, e.repo_id, e.repo_name,
-      e.org_id, e.org_login, e.created_at, e.language, e.additions, e.deletions,
-      e.action, e.number, e.commit_id, e.comment_id, e.state, e.closed_at,
-      e.comments, e.pr_merged, e.pr_merged_at, e.pr_changed_files,
-      e.pr_review_comments, e.pr_or_issue_id, e.push_size, e.push_distinct_size,
-      e.creator_user_id, e.creator_user_login, e.pr_or_issue_created_at,
-      e.event_day, e.event_month, e.event_year
-    ]);
-
-    await pool.execute(sql, [values]);
-    logger.info({ count: this.events.length }, 'Batch upsert completed');
+    this.events = [];
   }
 
   private async import(): Promise<void> {
@@ -472,7 +315,6 @@ export class GharchiveImporter {
 // ============================================================================
 
 export function registerGharchiveTasks(scheduler: Orbital): void {
-  // Import single hourly file
   scheduler.define('gharchive.import.hourly', async (job) => {
     const { date, hour, force, upsert } = job.data as GharchiveImportData;
     
@@ -482,7 +324,6 @@ export function registerGharchiveTasks(scheduler: Orbital): void {
     logger.info({ date, hour, filename }, 'Starting GHArchive hourly import');
     
     try {
-      // Delete existing data for this hour if force
       if (force) {
         await deleteEventsForHour(date, hour);
       }
@@ -497,7 +338,6 @@ export function registerGharchiveTasks(scheduler: Orbital): void {
     }
   });
 
-  // Import date range
   scheduler.define('gharchive.import.range', async (job) => {
     const { from, to, force, upsert } = job.data as {
       from: string;
@@ -531,9 +371,7 @@ export function registerGharchiveTasks(scheduler: Orbital): void {
     logger.info({ from, to }, 'GHArchive range import queued');
   });
 
-  // Import missing files (from Ruby's :fix_missing task)
   scheduler.define('gharchive.import.missing', async () => {
-    // Known missing files from Ruby task
     const missingFiles = [
       "2022-02-28-16", "2022-02-28-14", "2022-02-28-5", "2022-02-28-1",
       "2022-02-27-22", "2022-02-27-12", "2022-02-27-8", "2022-02-26-19",
@@ -555,11 +393,14 @@ export function registerGharchiveTasks(scheduler: Orbital): void {
     logger.info({ count: missingFiles.length }, 'Starting missing files import');
     
     for (const file of missingFiles) {
-      const [date, hour] = file.split('-');
+      const parts = file.split('-');
+      const date = parts.slice(0, 3).join('-');
+      const hour = parseInt(parts[3], 10);
+      
       try {
         await scheduler.enqueue('gharchive.import.hourly', {
-          date: `${date.split('-').slice(0, 3).join('-')}`,
-          hour: parseInt(hour, 10),
+          date,
+          hour,
           force: true
         });
       } catch (error) {
@@ -570,7 +411,7 @@ export function registerGharchiveTasks(scheduler: Orbital): void {
     logger.info('Missing files import queued');
   });
 
-  // Schedule: Import previous hour (run at :30 of each hour)
+  // Scheduled tasks
   scheduler.schedule('gharchive.hourly.previous', '30 * * * *', async () => {
     const previousHour = new Date();
     previousHour.setUTCHours(previousHour.getUTCHours() - 1);
@@ -587,7 +428,6 @@ export function registerGharchiveTasks(scheduler: Orbital): void {
     });
   });
 
-  // Schedule: Daily backfill (import 7 days ago, run at 3 AM)
   scheduler.schedule('gharchive.daily.backfill', '0 3 * * *', async () => {
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setUTCDate(sevenDaysAgo.getUTCDate() - 7);
@@ -611,7 +451,7 @@ export function registerGharchiveTasks(scheduler: Orbital): void {
 // ============================================================================
 
 async function deleteEventsForHour(date: string, hour: number): Promise<void> {
-  const pool = getDbPool();
+  const pool = getDatabase().pool;
   const hourStr = hour.toString().padStart(2, '0');
   const startTime = `${date} ${hourStr}:00:00`;
   const endTime = `${date} ${hourStr}:59:59`;
@@ -627,12 +467,9 @@ async function deleteEventsForHour(date: string, hour: number): Promise<void> {
     
     const affected = result.affectedRows || 0;
     deleted += affected;
-    logger.debug({ deleted, affected }, 'Deleted batch');
     
     if (affected < 10000) break;
   }
   
   logger.info({ date, hour, totalDeleted: deleted }, 'Deletion completed');
 }
-
-

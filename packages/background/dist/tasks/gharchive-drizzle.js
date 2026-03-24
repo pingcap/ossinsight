@@ -39,6 +39,8 @@ export class GharchiveImporterDrizzle {
                 filename: this.filename,
                 startBatchAt: this.batchAt.toISOString(),
                 status: 'pending',
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
             });
             this.importLogId = logResult.insertId;
             // Download
@@ -161,15 +163,15 @@ export class GharchiveImporterDrizzle {
         const eventMonth = dateMatch ? `${dateMatch[1]}-01` : '1970-01-01';
         const eventYear = dateMatch ? parseInt(dateMatch[2], 10) : 1970;
         return {
-            id: event.id ? BigInt(event.id) : 0n,
+            id: event.id ? Number(event.id) : 0,
             type: event.type || 'Event',
-            actorId: event.actor?.id ? BigInt(event.actor.id) : 0n,
-            actorLogin: event.actor?.login || '',
-            repoId: event.repo?.id ? BigInt(event.repo.id) : 0n,
-            repoName: event.repo?.name || '',
-            orgId: event.org?.id ? BigInt(event.org.id) : 0n,
-            orgLogin: event.org?.login || '',
-            createdAt: event.created_at || '1970-01-01 00:00:00',
+            actor_id: event.actor?.id ? Number(event.actor.id) : 0,
+            actor_login: event.actor?.login || '',
+            repo_id: event.repo?.id ? Number(event.repo.id) : 0,
+            repo_name: event.repo?.name || '',
+            org_id: event.org?.id ? Number(event.org.id) : 0,
+            org_login: event.org?.login || '',
+            created_at: event.created_at || '1970-01-01 00:00:00',
             language: event.payload?.pull_request?.base?.repo?.language || '',
             additions: event.payload?.pull_request?.additions || 0,
             deletions: event.payload?.pull_request?.deletions || 0,
@@ -177,39 +179,39 @@ export class GharchiveImporterDrizzle {
             number: event.payload?.issue?.number ||
                 event.payload?.pull_request?.number ||
                 event.payload?.number || 0,
-            commitId: event.payload?.comment?.commit_id || '',
-            commentId: event.payload?.comment?.id ? BigInt(event.payload.comment.id) : 0n,
+            commit_id: event.payload?.comment?.commit_id || '',
+            comment_id: event.payload?.comment?.id ? Number(event.payload.comment.id) : 0,
             state: event.payload?.pull_request?.state || event.payload?.issue?.state || '',
-            closedAt: event.payload?.pull_request?.closed_at ||
+            closed_at: event.payload?.pull_request?.closed_at ||
                 event.payload?.issue?.closed_at || '1970-01-01 00:00:00',
             comments: event.payload?.pull_request?.comments ||
                 event.payload?.issue?.comments || 0,
-            prMerged: event.payload?.pull_request?.merged || false,
-            prMergedAt: event.payload?.pull_request?.merged_at || '1970-01-01 00:00:00',
-            prChangedFiles: event.payload?.pull_request?.changed_files || 0,
-            prReviewComments: event.payload?.pull_request?.review_comments || 0,
-            prOrIssueId: event.payload?.pull_request?.id ||
-                event.payload?.issue?.id ? BigInt(event.payload.pull_request?.id || event.payload.issue?.id) : 0n,
-            pushSize: event.payload?.size || 0,
-            pushDistinctSize: event.payload?.distinct_size || 0,
-            creatorUserId: event.payload?.comment?.user?.id ||
+            pr_merged: event.payload?.pull_request?.merged || false,
+            pr_merged_at: event.payload?.pull_request?.merged_at || '1970-01-01 00:00:00',
+            pr_changed_files: event.payload?.pull_request?.changed_files || 0,
+            pr_review_comments: event.payload?.pull_request?.review_comments || 0,
+            pr_or_issue_id: event.payload?.pull_request?.id ||
+                event.payload?.issue?.id ? Number(event.payload.pull_request?.id || event.payload.issue?.id) : 0,
+            push_size: event.payload?.size || 0,
+            push_distinct_size: event.payload?.distinct_size || 0,
+            creator_user_id: event.payload?.comment?.user?.id ||
                 event.payload?.review?.user?.id ||
                 event.payload?.issue?.user?.id ||
                 event.payload?.pull_request?.user?.id ?
-                BigInt(event.payload.comment?.user?.id ||
+                Number(event.payload.comment?.user?.id ||
                     event.payload.review?.user?.id ||
                     event.payload.issue?.user?.id ||
-                    event.payload.pull_request?.user?.id) : 0n,
-            creatorUserLogin: event.payload?.comment?.user?.login ||
+                    event.payload.pull_request?.user?.id) : 0,
+            creator_user_login: event.payload?.comment?.user?.login ||
                 event.payload?.review?.user?.login ||
                 event.payload?.issue?.user?.login ||
                 event.payload?.pull_request?.user?.login || '',
-            prOrIssueCreatedAt: event.payload?.issue?.created_at ||
+            pr_or_issue_created_at: event.payload?.issue?.created_at ||
                 event.payload?.pull_request?.created_at ||
                 '1970-01-01 00:00:00',
-            eventDay,
-            eventMonth,
-            eventYear,
+            event_day: eventDay,
+            event_month: eventMonth,
+            event_year,
         };
     }
     async flushEvents() {
@@ -218,12 +220,32 @@ export class GharchiveImporterDrizzle {
         logger.info({ count: this.events.length }, 'Flushing events to database');
         const db = getDatabase().drizzle;
         if (this.upsert) {
-            await db.insert(githubEvents)
-                .values(this.events)
-                .onDuplicateKeyUpdate({
-                additions: sql(`VALUES(additions)`),
-                deletions: sql(`VALUES(deletions)`),
-            });
+            // Use raw SQL for upsert since Drizzle's API is limited
+            const values = this.events.map(e => `(${[
+                e.id, e.type, `'${e.created_at}'`, e.repo_id, `'${e.repo_name}'`,
+                e.actor_id, `'${e.actor_login}'`, `'${e.language}'`, e.additions, e.deletions,
+                `'${e.action}'`, e.number, `'${e.commit_id}'`, e.comment_id, `'${e.org_login}'`,
+                e.org_id, `'${e.state}'`, `'${e.closed_at}'`, e.comments, `'${e.pr_merged_at}'`,
+                e.pr_merged ? 1 : 0, e.pr_changed_files, e.pr_review_comments,
+                e.pr_or_issue_id, `'${e.event_day}'`, `'${e.event_month}'`, e.event_year,
+                e.push_size, e.push_distinct_size, `'${e.creator_user_login}'`,
+                e.creator_user_id, `'${e.pr_or_issue_created_at}'`
+            ].join(',')})`).join(',');
+            await db.execute(sql `
+        INSERT INTO github_events (
+          id, type, created_at, repo_id, repo_name,
+          actor_id, actor_login, language, additions, deletions,
+          action, number, commit_id, comment_id, org_login,
+          org_id, state, closed_at, comments, pr_merged_at,
+          pr_merged, pr_changed_files, pr_review_comments,
+          pr_or_issue_id, event_day, event_month, event_year,
+          push_size, push_distinct_size, creator_user_login,
+          creator_user_id, pr_or_issue_created_at
+        ) VALUES ${sql.raw(values)}
+        ON DUPLICATE KEY UPDATE
+          additions = VALUES(additions),
+          deletions = VALUES(deletions)
+      `);
         }
         else {
             await db.insert(githubEvents).values(this.events);
@@ -341,10 +363,12 @@ async function deleteEventsForHour(date, hour) {
     logger.info({ date, hour, startTime, endTime }, 'Deleting existing events');
     let deleted = 0;
     while (true) {
-        const result = await db.delete(githubEvents)
+        // Drizzle ORM delete with limit - properly formatted
+        const result = await db
+            .delete(githubEvents)
             .where(and(sql `created_at >= ${startTime}`, sql `created_at <= ${endTime}`))
             .limit(10000);
-        const affected = result.affectedRows || 0;
+        const affected = result.changes || 0;
         deleted += affected;
         if (affected < 10000)
             break;
