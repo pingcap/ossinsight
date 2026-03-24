@@ -3,6 +3,9 @@
  * 
  * Central export for all database schemas
  * Auto-generated from production database schema files
+ * 
+ * Note: Excludes deprecated tables (cn_orgs, cn_repos, js_framework_repos, 
+ * css_framework_repos, cached_table_cache)
  */
 
 // Auto-generated schema exports
@@ -11,12 +14,8 @@ export * from "./ar_internal_metadata.js";
 export * from "./blacklist_repos.js";
 export * from "./blacklist_users.js";
 export * from "./cache.js";
-export * from "./cached_table_cache.js";
-export * from "./cn_orgs.js";
-export * from "./cn_repos.js";
 export * from "./collection_items.js";
 export * from "./collections.js";
-export * from "./css_framework_repos.js";
 export * from "./db_repos.js";
 export * from "./event_logs.js";
 export * from "./explorer_questions.js";
@@ -27,7 +26,6 @@ export * from "./github_repo_topics.js";
 export * from "./github_repos.js";
 export * from "./github_users.js";
 export * from "./import_logs.js";
-export * from "./js_framework_repos.js";
 export * from "./location_cache.js";
 export * from "./nocode_repos.js";
 export * from "./osdb_repos.js";
