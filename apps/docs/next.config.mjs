@@ -7,7 +7,7 @@ const withMDX = createMDX();
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  assetPrefix: process.env.VERCEL ? 'https://ossinsight-docs.vercel.app' : undefined,
+  assetPrefix: process.env.VERCEL_ENV === 'production' ? 'https://ossinsight-docs.vercel.app' : undefined,
   typescript: {
     ignoreBuildErrors: true,
   },
