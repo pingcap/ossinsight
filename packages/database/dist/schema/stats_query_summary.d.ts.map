@@ -1,0 +1,1 @@
+{"version":3,"file":"stats_query_summary.d.ts","sourceRoot":"","sources":["../../src/schema/stats_query_summary.ts"],"names":[],"mappings":"AAAA;;GAEG;AAiBH,eAAO,MAAM,iBAAiB;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;EAW7B,CAAC;AAGF,MAAM,MAAM,iBAAiB,GAAG,OAAO,iBAAiB,CAAC,YAAY,CAAC;AACtE,MAAM,MAAM,oBAAoB,GAAG,OAAO,iBAAiB,CAAC,YAAY,CAAC"}

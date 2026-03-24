@@ -31,7 +31,9 @@
   },
   "dependencies": {
     "@mini256/orbital": "^0.1.0",
+    "@ossinsight/database": "workspace:*",
     "dotenv": "^16.0.0",
+    "drizzle-orm": "^0.29.0",
     "mysql2": "^3.11.5",
     "pino": "^8.7.0"
   },

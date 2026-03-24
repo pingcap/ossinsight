@@ -1,0 +1,1 @@
+{"version":3,"file":"schema_migrations.d.ts","sourceRoot":"","sources":["../../src/schema/schema_migrations.ts"],"names":[],"mappings":"AAAA;;GAEG;AAiBH,eAAO,MAAM,gBAAgB;;;;;;;;;;;;;;;;;;EAO5B,CAAC;AAGF,MAAM,MAAM,gBAAgB,GAAG,OAAO,gBAAgB,CAAC,YAAY,CAAC;AACpE,MAAM,MAAM,mBAAmB,GAAG,OAAO,gBAAgB,CAAC,YAAY,CAAC"}
