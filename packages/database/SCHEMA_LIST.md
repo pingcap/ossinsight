@@ -4,13 +4,14 @@
 
 **生成时间:** 2026-03-24  
 **来源:** `packages/api-server/__tests__/migrations/*.sql`  
-**排除:** `mv_*` 开头的动态物化视图表
+**排除:** `mv_*` 开头的动态物化视图表  
+**排除:** 已废弃的表 (cn_orgs, cn_repos, js_framework_repos, css_framework_repos, cached_table_cache)
 
 ---
 
-## Schema 列表 (41 个表)
+## Schema 列表 (36 个表)
 
-### 核心表 (Core)
+### 核心表 (Core) - 5 个
 
 | Schema | 表名 | 说明 |
 |--------|------|------|
@@ -20,43 +21,33 @@
 | `githubRepoTopics` | `github_repo_topics` | 仓库主题标签 |
 | `githubRepoLanguages` | `github_repo_languages` | 仓库编程语言 |
 
-### 集合表 (Collections)
+### 集合表 (Collections) - 2 个
 
 | Schema | 表名 | 说明 |
 |--------|------|------|
 | `collections` | `collections` | 收藏集 |
 | `collectionItems` | `collection_items` | 收藏集项目 |
 
-### 中国相关 (China)
+### 框架分类 (Frameworks) - 4 个
 
 | Schema | 表名 | 说明 |
 |--------|------|------|
-| `cnOrgs` | `cn_orgs` | 中国组织 |
-| `cnRepos` | `cn_repos` | 中国仓库 |
-
-### 框架分类 (Frameworks)
-
-| Schema | 表名 | 说明 |
-|--------|------|------|
-| `jsFrameworkRepos` | `js_framework_repos` | JavaScript 框架仓库 |
-| `cssFrameworkRepos` | `css_framework_repos` | CSS 框架仓库 |
-| `webFrameworkRepos` | `web_framework_repos` | Web 框架仓库 |
 | `dbRepos` | `db_repos` | 数据库相关仓库 |
 | `programmingLanguageRepos` | `programming_language_repos` | 编程语言仓库 |
 | `staticSiteGeneratorRepos` | `static_site_generator_repos` | 静态站点生成器仓库 |
 | `nocodeRepos` | `nocode_repos` | NoCode 工具仓库 |
 | `osdbRepos` | `osdb_repos` | OSDB 仓库 |
 | `trendingRepos` | `trending_repos` | 趋势仓库 |
+| `webFrameworkRepos` | `web_framework_repos` | Web 框架仓库 |
 
-### 缓存表 (Cache)
+### 缓存表 (Cache) - 2 个
 
 | Schema | 表名 | 说明 |
 |--------|------|------|
 | `cache` | `cache` | 通用缓存 |
-| `cachedTableCache` | `cached_table_cache` | 缓存表数据 |
 | `locationCache` | `location_cache` | 位置缓存 |
 
-### 日志表 (Logs)
+### 日志表 (Logs) - 5 个
 
 | Schema | 表名 | 说明 |
 |--------|------|------|
@@ -66,14 +57,14 @@
 | `schemaMigrations` | `schema_migrations` | 数据库迁移记录 |
 | `arInternalMetadata` | `ar_internal_metadata` | Rails 内部元数据 |
 
-### 探索器 (Explorer)
+### 探索器 (Explorer) - 2 个
 
 | Schema | 表名 | 说明 |
 |--------|------|------|
 | `explorerQuestions` | `explorer_questions` | 探索器问题 |
 | `explorerRecommendQuestions` | `explorer_recommend_questions` | 推荐问题 |
 
-### 系统表 (System)
+### 系统表 (System) - 5 个
 
 | Schema | 表名 | 说明 |
 |--------|------|------|
@@ -83,19 +74,33 @@
 | `sysRepoMilestoneTypes` | `sys_repo_milestone_types` | 里程碑类型 |
 | `sysSentRepoMilestones` | `sys_sent_repo_milestones` | 已发送里程碑 |
 
-### 统计表 (Stats)
+### 统计表 (Stats) - 2 个
 
 | Schema | 表名 | 说明 |
 |--------|------|------|
 | `statsIndexSummary` | `stats_index_summary` | 索引统计 |
 | `statsQuerySummary` | `stats_query_summary` | 查询统计 |
 
-### 黑名单 (Blacklist)
+### 黑名单 (Blacklist) - 2 个
 
 | Schema | 表名 | 说明 |
 |--------|------|------|
 | `blacklistRepos` | `blacklist_repos` | 黑名单仓库 |
 | `blacklistUsers` | `blacklist_users` | 黑名单用户 |
+
+---
+
+## 已移除的废弃表
+
+以下表已从 schema 中移除，不再使用：
+
+| 表名 | 原因 |
+|------|------|
+| `cn_orgs` | 已废弃 |
+| `cn_repos` | 已废弃 |
+| `js_framework_repos` | 已废弃 |
+| `css_framework_repos` | 已废弃 |
+| `cached_table_cache` | 已废弃 |
 
 ---
 
@@ -202,19 +207,20 @@ pnpm typecheck
 
 4. **排除的表:** 
    - `mv_*` 开头的物化视图表 (动态创建)
-   - 共排除约 15 个 mv_ 表
+   - 已废弃的表 (cn_orgs, cn_repos, js_framework_repos, css_framework_repos, cached_table_cache)
 
 ---
 
 ## 下一步
 
 1. ✅ 所有 schema 已生成
-2. ⏳ 更新现有代码使用新的 schema
-3. ⏳ 迁移 mysql2 查询到 Drizzle ORM
-4. ⏳ 添加集成测试
+2. ✅ 移除废弃表
+3. ⏳ 更新现有代码使用新的 schema
+4. ⏳ 迁移 mysql2 查询到 Drizzle ORM
+5. ⏳ 添加集成测试
 
 ---
 
-**完整列表:** 41 个 schema 文件  
+**完整列表:** 36 个 schema 文件  
 **位置:** `packages/database/src/schema/`  
 **状态:** ✅ 已完成
