@@ -1,11 +1,11 @@
-# @ossinsight/orbital-service
+# @ossinsight/background
 
-Shared Orbital task scheduler service for OSS Insight.
+Shared background task scheduler service for OSS Insight using Orbital.
 
 ## Installation
 
 ```bash
-pnpm add @ossinsight/orbital-service
+pnpm add @ossinsight/background
 ```
 
 ## Quick Start
@@ -14,30 +14,30 @@ pnpm add @ossinsight/orbital-service
 
 ```bash
 # Using environment variables
-export ORBITAL_REDIS_URL=redis://localhost:6379
-export ORBITAL_DATABASE_URL=mysql://localhost:3306/ossinsight
+export BACKGROUND_REDIS_URL=redis://localhost:6379
+export BACKGROUND_DATABASE_URL=mysql://localhost:3306/ossinsight
 
 # Start the scheduler
-orbital-service start
+background-service start
 ```
 
 ### Start a Worker
 
 ```bash
-orbital-service worker
+background-service worker
 ```
 
 ## Programmatic Usage
 
 ```typescript
-import { getOrbitalService, createOrbitalService } from '@ossinsight/orbital-service';
+import { getBackgroundService, createBackgroundService } from '@ossinsight/background';
 
 // Get default service (uses env vars)
-const service = getOrbitalService();
+const service = getBackgroundService();
 await service.start();
 
 // Or create custom instance
-const customService = createOrbitalService({
+const customService = createBackgroundService({
   redisUrl: 'redis://your-redis:6379',
   databaseUrl: 'mysql://your-db:3306/ossinsight',
   workerConcurrency: 20,
@@ -93,10 +93,10 @@ service.schedule('custom.job', '*/5 * * * *', async () => {
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `ORBITAL_REDIS_URL` | Redis connection URL | `redis://localhost:6379` |
-| `ORBITAL_DATABASE_URL` | MySQL/TiDB connection URL | `mysql://localhost:3306/ossinsight` |
-| `ORBITAL_WORKER_CONCURRENCY` | Number of concurrent workers | `10` |
-| `ORBITAL_LOG_LEVEL` | Logging level | `info` |
+| `BACKGROUND_REDIS_URL` | Redis connection URL | `redis://localhost:6379` |
+| `BACKGROUND_DATABASE_URL` | MySQL/TiDB connection URL | `mysql://localhost:3306/ossinsight` |
+| `BACKGROUND_WORKER_CONCURRENCY` | Number of concurrent workers | `10` |
+| `BACKGROUND_LOG_LEVEL` | Logging level | `info` |
 
 ## Available Tasks
 
@@ -119,14 +119,14 @@ service.schedule('custom.job', '*/5 * * * *', async () => {
 
 ## Monitoring
 
-The service uses `pino` for logging. Set `ORBITAL_LOG_LEVEL` to control verbosity:
+The service uses `pino` for logging. Set `BACKGROUND_LOG_LEVEL` to control verbosity:
 
 ```bash
 # Debug mode
-ORBITAL_LOG_LEVEL=debug orbital-service start
+BACKGROUND_LOG_LEVEL=debug background-service start
 
 # Production
-ORBITAL_LOG_LEVEL=info orbital-service start
+BACKGROUND_LOG_LEVEL=info background-service start
 ```
 
 ## License

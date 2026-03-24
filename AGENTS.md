@@ -12,7 +12,7 @@ Before doing anything:
 
 1. Read this `AGENTS.md` — project context
 2. Read `ORBITAL_INTEGRATION_PLAN.md` — current integration status
-3. Check `packages/orbital-service/` — task scheduler implementation
+3. Check `packages/background/` — task scheduler implementation
 
 ---
 
@@ -88,7 +88,7 @@ ossinsight/
 ## 🛰️ Orbital Integration
 
 **Status:** In Progress  
-**Package:** `@ossinsight/orbital-service`
+**Package:** `@ossinsight/background`
 
 ### Current Tasks
 
@@ -117,8 +117,8 @@ pnpm install          # Install all dependencies
 pnpm build            # Build all packages
 pnpm dev              # Start dev server (web)
 
-# Orbital Service
-cd packages/orbital-service
+# Background Service
+cd packages/background
 pnpm build            # Build TypeScript
 pnpm start            # Start scheduler
 pnpm worker           # Start worker
@@ -139,13 +139,13 @@ pnpm lint             # Run linter
 | Redis | `redis://localhost:6379` | Task queue (Orbital) |
 | TiDB/MySQL | `mysql://localhost:3306/ossinsight` | Data storage |
 
-### Orbital Environment Variables
+### Background Environment Variables
 
 ```bash
-ORBITAL_REDIS_URL=redis://localhost:6379
-ORBITAL_DATABASE_URL=mysql://localhost:3306/ossinsight
-ORBITAL_WORKER_CONCURRENCY=10
-ORBITAL_LOG_LEVEL=info
+BACKGROUND_REDIS_URL=redis://localhost:6379
+BACKGROUND_DATABASE_URL=mysql://localhost:3306/ossinsight
+BACKGROUND_WORKER_CONCURRENCY=10
+BACKGROUND_LOG_LEVEL=info
 ```
 
 ---
@@ -174,16 +174,16 @@ ORBITAL_LOG_LEVEL=info
 
 ```bash
 # Start scheduler (single instance)
-orbital-service start
+background-service start
 
 # Start workers (multiple instances)
-orbital-service worker  # Run on each worker node
+background-service worker  # Run on each worker node
 ```
 
 ### Monitoring
 
 - Logs: Pino (structured JSON)
-- Metrics: Prometheus (via Orbital)
+- Metrics: Prometheus (via background)
 - Health: Check worker heartbeats
 
 ---

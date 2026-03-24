@@ -1,5 +1,5 @@
 {
-  "name": "@ossinsight/orbital-service",
+  "name": "@ossinsight/background",
   "version": "0.0.1",
   "description": "Shared Orbital task scheduler service for OSS Insight",
   "license": "Apache-2.0",
@@ -18,7 +18,7 @@
     }
   },
   "bin": {
-    "orbital-service": "./dist/cli.js"
+    "background-service": "./dist/cli.js"
   },
   "scripts": {
     "build": "tsc",

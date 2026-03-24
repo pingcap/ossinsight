@@ -1,15 +1,15 @@
 ---
 name: orbital-task
-description: 'Enqueue and manage background tasks using @ossinsight/orbital-service. Use for: (1) GitHub data sync (users/repos/events), (2) query prefetch and caching, (3) ETL pipeline processing. NOT for: real-time API requests, user-facing synchronous operations.'
+description: 'Enqueue and manage background tasks using @ossinsight/background. Use for: (1) GitHub data sync (users/repos/events), (2) query prefetch and caching, (3) ETL pipeline processing. NOT for: real-time API requests, user-facing synchronous operations.'
 metadata:
   {
-    "openclaw": { "emoji": "🛰️", "requires": { "packages": ["@ossinsight/orbital-service"] } },
+    "openclaw": { "emoji": "🛰️", "requires": { "packages": ["@ossinsight/background"] } },
   }
 ---
 
 # Orbital Task Scheduler
 
-Enqueue and manage background tasks using the OSS Insight Orbital service.
+Enqueue and manage background tasks using the OSS Insight Background service.
 
 ## 🚀 Quick Start
 
@@ -17,17 +17,17 @@ Enqueue and manage background tasks using the OSS Insight Orbital service.
 
 ```bash
 # GitHub User Sync
-cd packages/orbital-service
+cd packages/background
 node -e "
-const { getOrbitalService } = require('./dist/index.js');
-const service = getOrbitalService();
+const { getBackgroundService } = require('./dist/index.js');
+const service = getBackgroundService();
 service.enqueue('github.sync.user', { userId: 12345, username: 'octocat' });
 "
 
 # Query Prefetch
 node -e "
-const { getOrbitalService } = require('./dist/index.js');
-const service = getOrbitalService();
+const { getBackgroundService } = require('./dist/index.js');
+const service = getBackgroundService();
 service.enqueue('prefetch.query', {
   queryId: 'popular-repos-2024',
   query: 'SELECT * FROM repos ORDER BY stars DESC LIMIT 100',
@@ -37,8 +37,8 @@ service.enqueue('prefetch.query', {
 
 # ETL Pipeline
 node -e "
-const { getOrbitalService } = require('./dist/index.js');
-const service = getOrbitalService();
+const { getBackgroundService } = require('./dist/index.js');
+const service = getBackgroundService();
 service.enqueue('etl.process', {
   pipelineId: 'daily-aggregation',
   source: 'github_events',
@@ -51,10 +51,10 @@ service.enqueue('etl.process', {
 
 ```bash
 # Start scheduler (run once)
-pnpm --filter @ossinsight/orbital-service start
+pnpm --filter @ossinsight/background start
 
 # Start worker (run on each worker node)
-pnpm --filter @ossinsight-service worker
+pnpm --filter @ossinsight/background worker
 ```
 
 ---
@@ -97,9 +97,9 @@ pnpm --filter @ossinsight-service worker
 ## 🔧 Programmatic Usage
 
 ```typescript
-import { getOrbitalService } from '@ossinsight/orbital-service';
+import { getBackgroundService } from '@ossinsight/background';
 
-const service = getOrbitalService();
+const service = getBackgroundService();
 await service.start();
 
 // Enqueue task
@@ -121,12 +121,12 @@ service.schedule('custom.job', '*/5 * * * *', async () => {
 
 ```bash
 # Required
-ORBITAL_REDIS_URL=redis://localhost:6379
-ORBITAL_DATABASE_URL=mysql://localhost:3306/ossinsight
+BACKGROUND_REDIS_URL=redis://localhost:6379
+BACKGROUND_DATABASE_URL=mysql://localhost:3306/ossinsight
 
 # Optional
-ORBITAL_WORKER_CONCURRENCY=10
-ORBITAL_LOG_LEVEL=info
+BACKGROUND_WORKER_CONCURRENCY=10
+BACKGROUND_LOG_LEVEL=info
 ```
 
 ---
@@ -147,10 +147,10 @@ Logs are output via Pino:
 
 ```bash
 # Debug mode
-ORBITAL_LOG_LEVEL=debug pnpm start
+BACKGROUND_LOG_LEVEL=debug pnpm start
 
 # Production
-ORBITAL_LOG_LEVEL=info pnpm start
+BACKGROUND_LOG_LEVEL=info pnpm start
 ```
 
 ---
@@ -179,7 +179,7 @@ ORBITAL_LOG_LEVEL=info pnpm start
 
 ### Task Not Processing
 
-1. Check if scheduler is running: `orbital-service status`
+1. Check if scheduler is running: `background-service status`
 2. Check if workers are connected
 3. Verify Redis connection: `redis-cli ping`
 4. Check logs for errors
@@ -205,5 +205,5 @@ mysql -h localhost -u root -p -e "SELECT 1"
 ## 📚 Related
 
 - **Integration Plan:** `ORBITAL_INTEGRATION_PLAN.md`
-- **Main README:** `packages/orbital-service/README.md`
-- **Source Code:** `packages/orbital-service/src/`
+- **Main README:** `packages/background/README.md`
+- **Source Code:** `packages/background/src/`

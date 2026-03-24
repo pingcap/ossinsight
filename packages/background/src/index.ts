@@ -1,5 +1,5 @@
 /**
- * OSS Insight Orbital Service
+ * OSS Insight Background Service
  * 
  * Shared task scheduler service using @mini256/orbital
  * for distributed background job processing.
@@ -11,22 +11,14 @@ import { registerGithubSyncTasks } from './tasks/github-sync.js';
 import { registerPrefetchTasks } from './tasks/prefetch.js';
 import { registerEtlTasks } from './tasks/etl.js';
 
-export interface OrbitalConfig {
+export interface BackgroundConfig {
   redisUrl: string;
   databaseUrl: string;
   workerConcurrency?: number;
   logLevel?: string;
 }
 
-function parseRedisUrl(url: string): { url: string } {
-  return { url };
-}
-
-function parseDatabaseUrl(url: string): { url: string } {
-  return { url };
-}
-
-export interface OrbitalService {
+export interface BackgroundService {
   scheduler: Orbital;
   start(): Promise<void>;
   stop(): Promise<void>;
@@ -34,12 +26,12 @@ export interface OrbitalService {
   schedule(name: string, cron: string, handler: () => Promise<void>): void;
 }
 
-class OrbitalServiceImpl implements OrbitalService {
+class BackgroundServiceImpl implements BackgroundService {
   public scheduler: Orbital;
-  private config: OrbitalConfig;
+  private config: BackgroundConfig;
   private isRunning = false;
 
-  constructor(config: OrbitalConfig) {
+  constructor(config: BackgroundConfig) {
     this.config = {
       workerConcurrency: 10,
       logLevel: 'info',
@@ -56,21 +48,21 @@ class OrbitalServiceImpl implements OrbitalService {
     registerPrefetchTasks(this.scheduler);
     registerEtlTasks(this.scheduler);
 
-    logger.info({ config: this.config }, 'Orbital service initialized');
+    logger.info({ config: this.config }, 'Background service initialized');
   }
 
   async start(): Promise<void> {
     if (this.isRunning) {
-      logger.warn('Orbital service is already running');
+      logger.warn('Background service is already running');
       return;
     }
 
     try {
       await this.scheduler.start();
       this.isRunning = true;
-      logger.info('Orbital service started');
+      logger.info('Background service started');
     } catch (error) {
-      logger.error({ error }, 'Failed to start Orbital service');
+      logger.error({ error }, 'Failed to start Background service');
       throw error;
     }
   }
@@ -83,9 +75,9 @@ class OrbitalServiceImpl implements OrbitalService {
     try {
       await this.scheduler.stop();
       this.isRunning = false;
-      logger.info('Orbital service stopped');
+      logger.info('Background service stopped');
     } catch (error) {
-      logger.error({ error }, 'Error stopping Orbital service');
+      logger.error({ error }, 'Error stopping Background service');
       throw error;
     }
   }
@@ -100,22 +92,22 @@ class OrbitalServiceImpl implements OrbitalService {
 }
 
 // Factory function
-export function createOrbitalService(config: OrbitalConfig): OrbitalService {
-  return new OrbitalServiceImpl(config);
+export function createBackgroundService(config: BackgroundConfig): BackgroundService {
+  return new BackgroundServiceImpl(config);
 }
 
 // Default instance (lazy initialization)
-let defaultService: OrbitalService | null = null;
+let defaultService: BackgroundService | null = null;
 
-export function getOrbitalService(): OrbitalService {
+export function getBackgroundService(): BackgroundService {
   if (!defaultService) {
-    const config: OrbitalConfig = {
-      redisUrl: process.env.ORBITAL_REDIS_URL || 'redis://localhost:6379',
-      databaseUrl: process.env.ORBITAL_DATABASE_URL || 'mysql://localhost:3306/ossinsight',
-      workerConcurrency: parseInt(process.env.ORBITAL_WORKER_CONCURRENCY || '10', 10),
-      logLevel: process.env.ORBITAL_LOG_LEVEL || 'info',
+    const config: BackgroundConfig = {
+      redisUrl: process.env.BACKGROUND_REDIS_URL || 'redis://localhost:6379',
+      databaseUrl: process.env.BACKGROUND_DATABASE_URL || 'mysql://localhost:3306/ossinsight',
+      workerConcurrency: parseInt(process.env.BACKGROUND_WORKER_CONCURRENCY || '10', 10),
+      logLevel: process.env.BACKGROUND_LOG_LEVEL || 'info',
     };
-    defaultService = createOrbitalService(config);
+    defaultService = createBackgroundService(config);
   }
   return defaultService;
 }
@@ -124,3 +116,12 @@ export function getOrbitalService(): OrbitalService {
 export * from './tasks/github-sync.js';
 export * from './tasks/prefetch.js';
 export * from './tasks/etl.js';
+
+// Helper functions
+function parseRedisUrl(url: string): { url: string } {
+  return { url };
+}
+
+function parseDatabaseUrl(url: string): { url: string } {
+  return { url };
+}

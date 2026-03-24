@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 /**
- * Orbital Service CLI
+ * Background Service CLI
  *
  * Usage:
- *   orbital-service start      - Start the scheduler
- *   orbital-service worker     - Start a worker process
- *   orbital-service status     - Show status
+ *   background-service start      - Start the scheduler
+ *   background-service worker     - Start a worker process
+ *   background-service status     - Show status
  */
-import { getOrbitalService } from './index.js';
+import { getBackgroundService } from './index.js';
 import { logger } from './logger.js';
 async function main() {
     const command = process.argv[2] || 'start';
@@ -33,11 +33,11 @@ async function main() {
     }
 }
 async function startScheduler() {
-    logger.info('Starting Orbital scheduler...');
-    const service = getOrbitalService();
+    logger.info('Starting Background scheduler...');
+    const service = getBackgroundService();
     try {
         await service.start();
-        logger.info('Orbital scheduler is running');
+        logger.info('Background scheduler is running');
         // Keep process alive
         process.on('SIGINT', async () => {
             logger.info('Shutting down...');
@@ -56,11 +56,11 @@ async function startScheduler() {
     }
 }
 async function startWorker() {
-    logger.info('Starting Orbital worker...');
-    const service = getOrbitalService();
+    logger.info('Starting Background worker...');
+    const service = getBackgroundService();
     try {
         await service.start();
-        logger.info('Orbital worker is running');
+        logger.info('Background worker is running');
         process.on('SIGINT', async () => {
             logger.info('Shutting down worker...');
             await service.stop();
@@ -78,15 +78,15 @@ async function startWorker() {
     }
 }
 async function showStatus() {
-    logger.info('Orbital service status: OK');
-    console.log('Orbital service is configured and ready');
+    logger.info('Background service status: OK');
+    console.log('Background service is configured and ready');
 }
 function showHelp() {
     console.log(`
-Orbital Service CLI
+Background Service CLI
 
 Usage:
-  orbital-service <command>
+  background-service <command>
 
 Commands:
   start     Start the scheduler (default)
@@ -95,15 +95,15 @@ Commands:
   help      Show this help message
 
 Environment Variables:
-  ORBITAL_REDIS_URL         Redis connection URL (default: redis://localhost:6379)
-  ORBITAL_DATABASE_URL      Database connection URL (default: mysql://localhost:3306/ossinsight)
-  ORBITAL_WORKER_CONCURRENCY  Number of concurrent workers (default: 10)
-  ORBITAL_LOG_LEVEL         Log level (default: info)
+  BACKGROUND_REDIS_URL         Redis connection URL (default: redis://localhost:6379)
+  BACKGROUND_DATABASE_URL      Database connection URL (default: mysql://localhost:3306/ossinsight)
+  BACKGROUND_WORKER_CONCURRENCY  Number of concurrent workers (default: 10)
+  BACKGROUND_LOG_LEVEL         Log level (default: info)
 
 Examples:
-  orbital-service start
-  orbital-service worker
-  ORBITAL_LOG_LEVEL=debug orbital-service start
+  background-service start
+  background-service worker
+  BACKGROUND_LOG_LEVEL=debug background-service start
 `);
 }
 main().catch((error) => {
