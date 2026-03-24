@@ -1,8 +1,8 @@
 # CLAUDE.md - OSS Insight
 
-## gstack
+## gstack (Global OpenClaw Skills)
 
-Use the `/browse` skill from gstack for all web browsing, never use `mcp__claude-in-chrome__*` tools.
+gstack is installed globally in OpenClaw. Use the `/browse` skill from gstack for all web browsing, never use `mcp__claude-in-chrome__*` tools.
 
 ### Available Skills
 

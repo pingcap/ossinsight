@@ -1,4 +1,0 @@
-interface:
-  display_name: "gstack"
-  short_description: "Bundle of gstack Codex skills"
-  default_prompt: "Use $gstack to locate the bundled gstack skills."

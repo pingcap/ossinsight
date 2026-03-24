@@ -20,6 +20,8 @@ Before doing anything:
 
 These skills are available via OpenClaw runtime:
 
+### Built-in Skills
+
 | Skill | Description | When to Use |
 |-------|-------------|-------------|
 | `coding-agent` | Delegate coding to Codex/Claude Code/Pi | Building features, PR reviews, refactoring |
@@ -28,6 +30,23 @@ These skills are available via OpenClaw runtime:
 | `node-connect` | Diagnose node connection | Android/iOS/macOS app pairing issues |
 | `skill-creator` | Create/edit AgentSkills | Building new skills |
 | `tmux` | Remote-control tmux | Interactive CLI sessions |
+
+### gstack Skills (Global)
+
+gstack is installed globally in OpenClaw at:
+`~/.nvm/versions/node/v24.14.0/lib/node_modules/openclaw/skills/gstack`
+
+| Skill | Description |
+|-------|-------------|
+| `/review` | Pre-landing PR review |
+| `/ship` | Create PR |
+| `/qa` | QA testing |
+| `/browse` | Web browsing |
+| `/plan-ceo-review` | Strategy review |
+| `/plan-eng-review` | Architecture review |
+| `/cso` | Security review |
+| `/codex` | Codex review |
+| ...and 20+ more |
 
 ### Using Skills
 
@@ -39,6 +58,9 @@ Skills are auto-loaded by OpenClaw. Just describe what you need:
 
 # Example: Security check  
 "Run healthcheck on the deployment"
+
+# Example: gstack skill
+"Run /review on the current branch"
 ```
 
 ---
