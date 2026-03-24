@@ -72,7 +72,7 @@ export default function EChartsWrapper({ style, ...props }: any) {
   };
 
   return (
-    <div className="group/export relative">
+    <div className="group/export relative h-full w-full">
       <ReactEChartsCore ref={chartRef} echarts={echarts} style={safeStyle} {...props} />
       <ExportButton
         className="pointer-events-auto absolute right-2 top-2 opacity-0 transition-opacity group-hover/export:opacity-100"
