@@ -44,6 +44,8 @@ What people call "skills" today falls into three groups that have almost nothing
 
 **3. Workflow compositions** — Multi-step orchestration that chains together tools, memory, and sub-agents inside frameworks like OpenClaw, LangGraph, or CrewAI. The most complex. The least portable.
 
+Skills today are often overlapping, hard to standardize, and [sometimes unsafe to reuse directly](https://arxiv.org/abs/2601.10338). Research suggests significant duplication across skill repos and real security concerns in roughly a quarter of publicly shared skills. The abstraction is leaky.
+
 Here's why this taxonomy matters: these three categories have completely different lifespans.
 
 Category 1 is agent-agnostic. It will survive format wars because it's just text. Category 2 depends on MCP or whatever protocol wins, which is still an open question. Category 3 is deeply coupled to specific frameworks and will break when those frameworks change — which they will, because none of them are mature.
@@ -92,13 +94,14 @@ Most skills are not standalone. This is the thing almost nobody is talking about
 
 A skill that says "query the database before answering" is only as good as the database connection it assumes. A skill that says "check the security guidelines before modifying auth code" assumes the guidelines exist, are up to date, and are accessible to the agent. A planning skill that maintains state in markdown files assumes a specific file system structure and write permissions.
 
-Skills are the visible layer. But they sit on top of:
-- **Memory** — persistent state across sessions
-- **Tools** — external capabilities the agent can invoke
-- **Data** — context the skill assumes but doesn't contain
-- **Permissions** — what the agent is allowed to do
+Many skills are not self-contained — they depend on external context that they don't declare, don't version, and can't guarantee.
 
-Strip away any one of those, and the skill stops working. It's like distributing a recipe without mentioning you need a kitchen.
+If skills are only a transitional layer, then what sits around them?
+
+Below: **tools, data, memory** — the infrastructure a skill assumes but doesn't contain.
+Above: **planning, reasoning, orchestration** — the judgment layer that decides *which* skill to use and *when*.
+
+Skills are the middle. Strip away either end, and they stop working. It's like distributing a recipe without mentioning you need a kitchen — or a cook.
 
 The 250,000 stars are for the recipes. The kitchens are still being built.
 
