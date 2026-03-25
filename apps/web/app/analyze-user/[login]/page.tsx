@@ -38,13 +38,15 @@ export async function generateMetadata ({ params }: { params: Promise<{ login: s
   const { login } = await params;
   const data = await fetchOwnerInfo(decodeURIComponent(login));
   const displayName = data.name || data.login;
-  const title = `Analyze ${displayName} | OSSInsight`;
+  const title = `Analyze ${displayName}`;
+  const fullTitle = `${title} | OSSInsight`;
   const description = `Explore ${displayName}'s open source contributions, code activity, and collaboration metrics with OSSInsight.`;
   return {
     title,
     description,
     keywords: ['OSSInsight', 'developer analytics', 'GitHub', displayName, 'contributions', 'pull requests'],
-    twitter: { title, description, card: 'summary_large_image' },
-    openGraph: { title, description },
+    twitter: { title: fullTitle, description, card: 'summary_large_image' },
+    openGraph: { title: fullTitle, description },
+    alternates: { canonical: `/analyze-user/${data.login}` },
   };
 }

@@ -103,8 +103,9 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
   const repo = decodeURIComponent(rawRepo);
   const name = `${owner}/${repo}`;
 
-  const title = `Analyze ${name} | OSSInsight`;
+  const title = `Analyze ${name}`;
 
+  const fullTitle = `${title} | OSSInsight`;
   let description = `Deep insight into the GitHub repository ${name} - stars, commits, pull requests, issues, contributors and more.`;
 
   try {
@@ -124,8 +125,8 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
     title,
     description,
     keywords: ['OSSInsight', 'GitHub', 'analytics', owner, repo],
-    twitter: { title, description, card: 'summary_large_image' },
-    openGraph: { title, description },
+    twitter: { title: fullTitle, description, card: 'summary_large_image' },
+    openGraph: { title: fullTitle, description },
     alternates: { canonical: `/analyze/${owner}/${repo}` },
   };
 }

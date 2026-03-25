@@ -52,7 +52,8 @@ export async function generateMetadata ({ params }: { params: Promise<{ owner: s
   const data = await fetchOwnerInfo(decodeURIComponent(owner));
   const displayName = data.name || data.login;
   const isOrg = data.type === 'Organization';
-  const title = `Analyze ${displayName} | OSSInsight`;
+  const title = `Analyze ${displayName}`;
+  const fullTitle = `${title} | OSSInsight`;
   const description = isOrg
     ? 'Unlock the power of time-flexible organization analytics, community recognition metrics, participant insights, and productivity analysis with OSSInsight.'
     : `Explore ${displayName}'s open source contributions, code activity, and collaboration metrics with OSSInsight.`;
@@ -69,13 +70,14 @@ export async function generateMetadata ({ params }: { params: Promise<{ owner: s
       'productivity analysis',
     ],
     twitter: {
-      title,
+      title: fullTitle,
       description,
       card: 'summary_large_image',
     },
     openGraph: {
-      title,
+      title: fullTitle,
       description,
     },
+    alternates: { canonical: `/analyze/${data.login}` },
   };
 }

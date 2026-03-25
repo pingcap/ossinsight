@@ -14,9 +14,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const collections = await fetchCollections();
   const collection = collections.find((c) => toCollectionSlug(c.name) === slug);
-  if (!collection) return { title: 'Collection Not Found | OSSInsight' };
+  if (!collection) return { title: 'Collection Not Found' };
   return {
-    title: `${collection.name} - Ranking | OSSInsight`,
+    title: `${collection.name} - Ranking`,
     description: COLLECTION_DESC,
     alternates: { canonical: `/collections/${slug}` },
   };

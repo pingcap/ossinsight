@@ -38,15 +38,16 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     return {};
   }
 
-  const title = `${language} — Trending GitHub Repos | OSSInsight`;
+  const title = `${language} — Trending GitHub Repos`;
+  const fullTitle = `${title} | OSSInsight`;
   const description = `Discover the most popular and fastest-growing ${language} repositories on GitHub. Real-time rankings powered by 10B+ GitHub events.`;
 
   return {
     title,
     description,
     keywords: ['OSSInsight', 'GitHub', language, 'trending', 'repositories', 'open source'],
-    openGraph: { title, description },
-    twitter: { title, description, card: 'summary_large_image' },
+    openGraph: { title: fullTitle, description },
+    twitter: { title: fullTitle, description, card: 'summary_large_image' },
     alternates: { canonical: `/languages/${encodeURIComponent(language)}` },
   };
 }
