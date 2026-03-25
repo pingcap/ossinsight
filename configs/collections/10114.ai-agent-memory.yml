@@ -1,0 +1,10 @@
+id: 10114
+name: AI Agent Memory
+items:
+  - mem0ai/mem0
+  - letta-ai/letta
+  - langchain-ai/langmem
+  - run-llama/llama_index
+  - deepset-ai/haystack
+  - memvid/memvid
+  - getzep/zep-python

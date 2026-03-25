@@ -1,0 +1,16 @@
+id: 10113
+name: AI Browser Agents
+items:
+  - browser-use/browser-use
+  - microsoft/OmniParser
+  - microsoft/UFO
+  - lavague-ai/LaVague
+  - MinorJerry/WebVoyager
+  - nanobrowser/nanobrowser
+  - microsoft/playwright-python
+  - web-infra-dev/midscene
+  - e2b-dev/open-computer-use
+  - nottelabs/notte
+  - greshake/llm-security
+  - tinyfish-io/agentql
+  - anthropics/claude-quickstarts

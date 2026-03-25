@@ -1,0 +1,17 @@
+id: 10116
+name: AI Safety & Alignment
+items:
+  - NVIDIA-NeMo/Guardrails
+  - guardrails-ai/guardrails
+  - protectai/llm-guard
+  - NVIDIA/garak
+  - llm-attacks/llm-attacks
+  - microsoft/presidio
+  - microsoft/responsible-ai-toolbox
+  - fairlearn/fairlearn
+  - Trusted-AI/AIF360
+  - Trusted-AI/AIX360
+  - shap/shap
+  - meta-pytorch/captum
+  - openai/evals
+  - openai/safety-gym

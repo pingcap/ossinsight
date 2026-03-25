@@ -1,0 +1,15 @@
+id: 10117
+name: Vector Databases
+items:
+  - milvus-io/milvus
+  - qdrant/qdrant
+  - chroma-core/chroma
+  - weaviate/weaviate
+  - pgvector/pgvector
+  - opensearch-project/OpenSearch
+  - redis/redis
+  - elastic/elasticsearch
+  - vespa-engine/vespa
+  - marqo-ai/marqo
+  - activeloopai/deeplake
+  - lancedb/lancedb

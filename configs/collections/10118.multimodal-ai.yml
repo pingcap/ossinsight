@@ -1,0 +1,16 @@
+id: 10118
+name: Multimodal AI
+items:
+  - openai/whisper
+  - ggml-org/whisper.cpp
+  - coqui-ai/TTS
+  - myshell-ai/OpenVoice
+  - suno-ai/bark
+  - haotian-liu/LLaVA
+  - openai/CLIP
+  - facebookresearch/ImageBind
+  - lucidrains/imagen-pytorch
+  - salesforce/BLIP
+  - pipecat-ai/pipecat
+  - livekit/agents
+  - microsoft/SpeechT5

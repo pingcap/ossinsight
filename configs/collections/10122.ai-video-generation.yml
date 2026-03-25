@@ -1,0 +1,11 @@
+id: 10122
+name: AI Video Generation
+items:
+  - hpcaitech/Open-Sora
+  - PKU-YuanGroup/Open-Sora-Plan
+  - Wan-Video/Wan2.1
+  - zai-org/CogVideo
+  - NVIDIA/Cosmos
+  - Stability-AI/generative-models
+  - aigc-apps/VideoX-Fun
+  - AILab-CVC/VideoCrafter

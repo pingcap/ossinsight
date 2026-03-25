@@ -1,0 +1,13 @@
+id: 10124
+name: Agent Skills & AGENTS.md
+items:
+  - anthropics/claude-code
+  - modelcontextprotocol/servers
+  - danielmiessler/Fabric
+  - simonw/llm
+  - awslabs/mcp
+  - openai/plugins-quickstart
+  - run-llama/llama-hub
+  - Agenta-AI/agenta
+  - guidance-ai/guidance
+  - 567-labs/instructor

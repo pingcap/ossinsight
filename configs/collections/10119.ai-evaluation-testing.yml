@@ -1,0 +1,15 @@
+id: 10119
+name: AI Evaluation & Testing
+items:
+  - openai/evals
+  - EleutherAI/lm-evaluation-harness
+  - confident-ai/deepeval
+  - promptfoo/promptfoo
+  - langfuse/langfuse
+  - wandb/wandb
+  - Arize-ai/phoenix
+  - comet-ml/opik
+  - traceloop/openllmetry
+  - Agenta-AI/agenta
+  - NVIDIA/garak
+  - anthropics/evals

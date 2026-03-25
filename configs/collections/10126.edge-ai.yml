@@ -1,0 +1,14 @@
+id: 10126
+name: Edge AI
+items:
+  - google-ai-edge/mediapipe
+  - apple/coremltools
+  - microsoft/onnxruntime
+  - onnx/onnx
+  - Tencent/ncnn
+  - alibaba/MNN
+  - pytorch/executorch
+  - openvinotoolkit/openvino
+  - mlc-ai/mlc-llm
+  - ggml-org/llama.cpp
+  - Mozilla-Ocho/llamafile

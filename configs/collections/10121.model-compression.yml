@@ -1,0 +1,15 @@
+id: 10121
+name: Model Compression
+items:
+  - huggingface/optimum
+  - bitsandbytes-foundation/bitsandbytes
+  - AutoGPTQ/AutoGPTQ
+  - IST-DASLab/gptq
+  - qwopqwop200/GPTQ-for-LLaMa
+  - deepspeedai/DeepSpeed-MII
+  - deepspeedai/DeepSpeed
+  - hpcaitech/ColossalAI
+  - mlc-ai/mlc-llm
+  - ggml-org/llama.cpp
+  - microsoft/onnxruntime
+  - pytorch/executorch

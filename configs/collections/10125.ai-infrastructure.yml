@@ -1,0 +1,16 @@
+id: 10125
+name: AI Infrastructure
+items:
+  - ray-project/ray
+  - triton-inference-server/server
+  - bentoml/BentoML
+  - skypilot-org/skypilot
+  - mlflow/mlflow
+  - kserve/kserve
+  - SeldonIO/seldon-core
+  - grafana/grafana
+  - prometheus/prometheus
+  - langfuse/langfuse
+  - wandb/wandb
+  - determined-ai/determined
+  - kubeflow/kubeflow
