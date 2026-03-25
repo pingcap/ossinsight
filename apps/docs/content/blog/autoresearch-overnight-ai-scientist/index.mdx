@@ -26,6 +26,10 @@ Karpathy describes this in the README with characteristically understated humor:
 
 The actual code is tiny — three Python files. But the architecture is profound. `program.md` is, in Karpathy's own words, "essentially a super lightweight skill." The agent is operating on a specification, not a codebase.
 
+At its core, this is not an agent in the way most people use the word. It's a **loop** — a system that continuously proposes, tests, evaluates, and iterates. The agent asks exactly one question after each run: *is this score lower?* That's it. No planning, no reasoning about strategy, no memory of what worked last week. Just propose → train → measure → keep or revert → repeat.
+
+This simplicity is also its boundary. The loop only works when three conditions hold: a **clear scalar metric** (validation loss), a **fast feedback cycle** (5-minute training runs), and **safe reversibility** (automatic rollback on failure). Most real research problems satisfy none of these. The domains where "run it overnight" works are exactly the domains where the search space is tractable and the objective is well-defined. That's a powerful subset — but it's a subset.
+
 ## The Velocity Says Something
 
 Let me put the growth in context:
@@ -88,7 +92,7 @@ That's not a flaw — it's a deliberate constraint. But it means the bottleneck 
 
 Most ML experiments are not bottlenecked by running training loops. They're bottlenecked by knowing which experiments are worth running. autoresearch removes the former but not the latter. The part that requires the 30 years of intuition, the domain expertise, the aesthetic sense about what's elegant — that part is still the human's job.
 
-Which means this is Stage 1, not the endgame. And Stage 1 is already getting 54K stars in 19 days.
+Which means this is Stage 1, not the endgame. autoresearch is the most primitive form of a larger pattern emerging across repos like DGM and HyperAgents: AI systems that don't just execute experiments, but run entire research cycles end-to-end — with persistent memory, evolving strategy, and eventually, self-generated hypotheses. The full stack looks something like: memory + loop + abstraction. autoresearch only has the loop. But the loop alone is already getting 54K stars in 19 days.
 
 ## What Comes Next
 
@@ -101,6 +105,8 @@ If autoresearch represents the current frontier, the next wave of repos will lik
 3. **Evaluation bootstrapping** — agents that improve their own benchmarks, not just their performance on fixed ones. [facebookresearch/HyperAgents](https://ossinsight.io/analyze/facebookresearch/HyperAgents) (666 stars, created March 19) is a week old and already exploring self-referential optimization.
 
 These repos are small today. But autoresearch was small 20 days ago.
+
+If there's one sentence to take away from this analysis: **research is becoming search.** Not in the Google sense — in the optimization sense. Define a metric, define a search space, let the loop run. The question is no longer whether AI can do research. It's how much of research is reducible to search — and what remains irreducibly human.
 
 ---
 
