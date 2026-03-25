@@ -24,9 +24,13 @@ You don't write code. You write a Markdown file — `program.md` — that define
 
 At ~12 experiments per hour, that's ~100 overnight. You wake up to a results log with a hundred attempted improvements and a git branch where only the successful ones survived.
 
-But here's what you miss if you only read the README: this is not an agent. It's a **search algorithm with git as its state machine.** The entire system reduces to one question asked in a loop: *is this number lower than before?* There is no planning across experiments. No memory of what worked three hours ago. No meta-strategy. The agent can change anything about the model — architecture, optimizer, hyperparameters — but it cannot change what "better" means. The human defines the metric, the evaluation function, the data pipeline, and the simplicity criterion (*"A 0.001 improvement that adds 20 lines of hacky code? Probably not worth it. A 0.001 improvement from deleting code? Definitely keep."*). The agent operates entirely within that sandbox.
+But here's what you miss if you only read the README:
 
-This is the key insight: **autoresearch doesn't automate research. It automates the search part of research.** And the boundary is precise: it works when you have a clear scalar metric, a fast feedback cycle (5 minutes per experiment), and safe reversibility (git reset on failure). Most real research problems satisfy none of these. The domains where "run it overnight" works are exactly the domains where the objective is well-defined and the search space is tractable. That's a powerful subset — but it's a subset.
+**Autoresearch doesn't automate research. It turns research into search.**
+
+A fixed environment, a mutable state, a scalar reward, and a loop. The entire system reduces to one question: *is this number lower than before?* No planning across experiments, no memory of what worked three hours ago, no meta-strategy. The agent can change anything about the model, but it cannot change what "better" means — the human defines the metric, the evaluation, and the simplicity criterion. The agent searches within that sandbox.
+
+The boundary is precise: it works when you have a clear scalar metric, a fast feedback cycle, and safe reversibility. Most real research problems satisfy none of these. That's a powerful subset — but it's a subset.
 
 ## The Velocity Says Something
 
@@ -104,7 +108,7 @@ If autoresearch represents the current frontier, the next wave of repos will lik
 
 These repos are small today. But autoresearch was small 20 days ago.
 
-If there's one sentence to take away from this analysis: **research is becoming search.** Not in the Google sense — in the optimization sense. Define a metric, define a search space, let the loop run. The question is no longer whether AI can do research. It's how much of research is reducible to search — and what remains irreducibly human.
+Research is becoming search. Not in the Google sense — in the optimization sense. Define a metric, define a search space, let the loop run. The question is no longer whether AI can do research. It's how much of research is reducible to search — and what remains irreducibly human.
 
 ---
 
