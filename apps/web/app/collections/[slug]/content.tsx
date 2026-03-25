@@ -546,7 +546,20 @@ function HistoryRankSection({ collectionName, collectionId }: { collectionName: 
           splitLine: { show: false },
         },
         tooltip: {
-          show: false,
+          show: true,
+          trigger: 'item',
+          backgroundColor: '#242526',
+          borderColor: '#363638',
+          borderWidth: 1,
+          textStyle: {
+            color: '#e0e0e0',
+            fontSize: 13,
+          },
+          formatter: (params: any) => {
+            const rank = params.data?.rawRank;
+            if (rank == null) return '';
+            return `<b style="color:${params.color}">${params.seriesName}</b><br/>Rank #${rank}`;
+          },
         },
         series: repoNames.map((repoName, index) => {
           const repoRows = rows.filter((row) => row.repo_name === repoName);
@@ -574,34 +587,31 @@ function HistoryRankSection({ collectionName, collectionId }: { collectionName: 
             }),
             connectNulls: true,
             lineStyle: {
-              width: 3,
+              width: 2.5,
               color,
               cap: 'round',
               join: 'round',
             },
             itemStyle: {
               color,
-              borderColor: `${color}40`,
+              borderColor: '#1a1a1b',
               borderWidth: 2,
             },
             symbol: 'circle',
-            symbolSize: 12,
+            symbolSize: 8,
             showSymbol: true,
             label: {
-              show: true,
-              position: 'inside',
-              color: '#ffffff',
-              fontSize: 9,
-              fontWeight: 600,
-              formatter: (params: any) => params.data?.rawRank ?? '',
+              show: false,
             },
             endLabel: {
               show: true,
               distance: 16,
-              formatter: '{a}',
+              formatter: (params: any) => {
+                const rank = params.data?.rawRank;
+                return rank != null ? `#${rank} ${params.seriesName}` : params.seriesName;
+              },
               color,
-              fontSize: 13,
-              distance: 12,
+              fontSize: 12,
             },
             labelLayout: {
               moveOverlap: 'shiftY',
