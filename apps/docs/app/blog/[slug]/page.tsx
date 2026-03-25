@@ -3,8 +3,9 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ChevronLeft } from 'lucide-react';
 import { ShareButtons } from '@/components/share-buttons';
+import { Breadcrumb } from '@/components/breadcrumb';
 import { formatDisplayDate, getBlogPost, getBlogPosts } from '@/lib/content';
-import { BlogPostJsonLd, LearningResourceJsonLd } from '@/components/json-ld';
+import { BlogPostJsonLd, BreadcrumbListJsonLd, LearningResourceJsonLd, PersonJsonLd } from '@/components/json-ld';
 
 type PageProps = {
   params: Promise<{
@@ -52,6 +53,13 @@ export default async function BlogPostPage({ params }: PageProps) {
 
   return (
     <article className="mx-auto w-full max-w-[820px]">
+      <Breadcrumb
+        items={[
+          { name: 'Blog', href: '/blog' },
+          { name: post.title },
+        ]}
+        className="mb-4"
+      />
       <BlogPostJsonLd
         title={post.title}
         description={post.description ?? ''}
@@ -69,6 +77,21 @@ export default async function BlogPostPage({ params }: PageProps) {
         image={post.image}
         keywords={post.tags}
       />
+      <BreadcrumbListJsonLd items={[
+        { name: 'Home', url: '/' },
+        { name: 'Blog', url: '/blog' },
+        { name: post.title },
+      ]} />
+      {post.authors.map((author) => (
+        <PersonJsonLd
+          key={author.name}
+          name={author.name}
+          url={author.url}
+          image={author.imageUrl}
+          description={author.title}
+          sameAs={author.url ? [author.url] : undefined}
+        />
+      ))}
       <div className="mb-8 flex items-center justify-between gap-4">
         <Link
           href="/blog"
@@ -122,7 +145,9 @@ export default async function BlogPostPage({ params }: PageProps) {
 
       {post.image && (
         <div className="mb-10">
-          <img src={post.image} alt={post.title} className="h-full w-full object-cover" />
+          {/* fetchpriority="high" marks this as an LCP candidate */}
+          {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+          <img src={post.image} alt={post.title} className="h-full w-full object-cover" fetchPriority="high" />
         </div>
       )}
 

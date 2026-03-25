@@ -41,6 +41,11 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <head>
+        {/* Preconnect hints for Core Web Vitals */}
+        <link rel="preconnect" href="https://avatars.githubusercontent.com" />
+        <link rel="dns-prefetch" href="https://avatars.githubusercontent.com" />
+        <link rel="preconnect" href="https://github.com" />
+        <link rel="dns-prefetch" href="https://github.com" />
         <link rel="alternate" type="application/rss+xml" title="OSSInsight Blog" href="/blog/feed.xml" />
       </head>
       <body className="min-h-screen bg-fd-background text-fd-foreground antialiased">

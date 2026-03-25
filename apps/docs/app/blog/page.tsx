@@ -7,14 +7,16 @@ export const metadata: Metadata = {
   description: 'Helping dev teams adopt OSS technologies and practices. Written by software engineers and community analysts.',
 };
 
-function PostImage({ post, className }: { post: BlogPostSummary; className?: string }) {
+function PostImage({ post, className, priority }: { post: BlogPostSummary; className?: string; priority?: boolean }) {
   if (post.image) {
     return (
       <img
         src={post.image}
         alt={post.title}
         className={className}
-        loading="lazy"
+        loading={priority ? 'eager' : 'lazy'}
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        {...(priority ? { fetchpriority: 'high' } as any : {})}
       />
     );
   }
@@ -87,6 +89,7 @@ function FeaturedPost({ post }: { post: BlogPostSummary }) {
           <PostImage
             post={post}
             className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.02]"
+            priority
           />
         </div>
         <div className="p-6 sm:p-8">

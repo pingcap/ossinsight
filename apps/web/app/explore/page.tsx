@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
-import { BreadcrumbListJsonLd } from '@/components/json-ld';
+import { BreadcrumbListJsonLd, DatasetJsonLd } from '@/components/json-ld';
 import { ExploreContent } from './content';
 
 export const metadata: Metadata = {
@@ -25,6 +25,11 @@ export default function ExplorePage() {
         { name: 'Home', url: '/' },
         { name: 'Data Explorer' },
       ]} />
+      <DatasetJsonLd
+        name="GitHub Open Source Event Data"
+        description="Over 10 billion GitHub events from 2011 to present, including stars, forks, pull requests, issues, commits, and contributor activity for millions of open source repositories."
+        url="https://ossinsight.io/explore"
+      />
       <div className="sr-only">
         <h1>GitHub Data Explorer</h1>
         <p>

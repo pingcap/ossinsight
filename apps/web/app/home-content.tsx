@@ -1141,6 +1141,9 @@ function TrendingReposSection() {
                               alt={login}
                               title={login}
                               className="w-[22px] h-[22px] rounded-full"
+                              loading="lazy"
+                              width={22}
+                              height={22}
                             />
                           </Link>
                         ))}
@@ -1279,6 +1282,9 @@ function HotCollectionsSection() {
                       src={`https://github.com/${item.repo_name.split('/')[0]}.png`}
                       alt=""
                       className="w-8 h-8 rounded-full mr-2 shrink-0 bg-gray-600"
+                      loading="lazy"
+                      width={32}
+                      height={32}
                     />
                     <span className="text-sm truncate text-[#ffe895] transition-colors hover:text-[#fff0b7]">{item.repo_name}</span>
                   </div>

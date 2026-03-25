@@ -51,6 +51,14 @@ export default function RootLayout ({
   return (
     <html lang="en" className={cn("font-sans", geist.variable)}>
     <head>
+      {/* Preconnect to external domains for Core Web Vitals improvement */}
+      <link rel="preconnect" href="https://avatars.githubusercontent.com" />
+      <link rel="dns-prefetch" href="https://avatars.githubusercontent.com" />
+      <link rel="preconnect" href="https://github.com" />
+      <link rel="dns-prefetch" href="https://github.com" />
+      <link rel="preconnect" href="https://ossinsight.io" />
+      <link rel="preconnect" href="https://www.googletagmanager.com" />
+      <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
       <link rel="alternate" type="text/plain" href="/llms.txt" title="LLM-friendly site description" />
       <link rel="alternate" type="text/plain" href="/llms-full.txt" title="LLM-friendly full documentation" />
       <link rel="search" type="application/opensearchdescription+xml" href="/opensearch.xml" title="OSSInsight" />

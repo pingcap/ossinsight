@@ -3,6 +3,7 @@
 import React, { useMemo, useState } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
+import { Breadcrumb } from '@/components/Breadcrumb';
 import format from 'human-format';
 import {
   ArrowDown,
@@ -670,6 +671,13 @@ function HistoryRankSection({ collectionName, collectionId }: { collectionName: 
 export function CollectionDetail({ collection, initialRankingData }: { collection: Collection; initialRankingData?: CollectionQueryResponse<RankingRow> | null }) {
   return (
     <div className="mx-auto max-w-[1100px] px-6 py-8 sm:px-8">
+      <Breadcrumb
+        items={[
+          { name: 'Collections', href: '/collections' },
+          { name: collection.name },
+        ]}
+        className="mb-4"
+      />
       <CollectionPageHeader
         title={`${collection.name} - Ranking`}
         description="Last 28 days / Monthly ranking of repos in this collection by stars, pull requests, issues. Historical Ranking by Popularity."

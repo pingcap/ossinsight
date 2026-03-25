@@ -4,7 +4,7 @@ import { getCollectionRanking } from '@/lib/server/internal-api';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { CollectionDetail } from './content';
-import { BreadcrumbListJsonLd, CollectionPageJsonLd, FAQPageJsonLd } from '@/components/json-ld';
+import { AggregateRatingJsonLd, BreadcrumbListJsonLd, CollectionPageJsonLd, FAQPageJsonLd } from '@/components/json-ld';
 
 export const revalidate = 3600;
 
@@ -42,8 +42,15 @@ export default async function CollectionSlugPage({ params }: { params: Promise<{
 
   // Pre-fetch default ranking data (stars + last-28-days) for SSR
   let initialRankingData = null;
+  let totalStarsInCollection: number | null = null;
   try {
     initialRankingData = await getCollectionRanking(collection.id, 'stars', 'last-28-days');
+    // Compute total lifetime stars across all repos in collection for AggregateRating
+    if (initialRankingData?.data && Array.isArray(initialRankingData.data)) {
+      const sum = (initialRankingData.data as Array<{ total?: number }>)
+        .reduce((acc, row) => acc + (typeof row.total === 'number' ? row.total : 0), 0);
+      if (sum > 0) totalStarsInCollection = sum;
+    }
   } catch {
     // DB unavailable, client will fetch
   }
@@ -67,6 +74,14 @@ export default async function CollectionSlugPage({ params }: { params: Promise<{
     <>
       <CollectionPageJsonLd name={collection.name} description={COLLECTION_DESC} slug={slug} />
       <FAQPageJsonLd items={collectionFaq} />
+      {totalStarsInCollection != null && (
+        <AggregateRatingJsonLd
+          itemName={`${collection.name} Collection`}
+          itemUrl={`/collections/${slug}`}
+          ratingCount={totalStarsInCollection}
+          ratingValue={Math.min(5, Math.round((totalStarsInCollection / 500000) * 5 * 10) / 10)}
+        />
+      )}
       <BreadcrumbListJsonLd items={[
         { name: 'Home', url: '/' },
         { name: 'Collections', url: '/collections' },

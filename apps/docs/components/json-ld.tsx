@@ -133,3 +133,52 @@ export function ApiDocJsonLd({
     />
   );
 }
+
+export function BreadcrumbListJsonLd({
+  items,
+}: {
+  items: { name: string; url?: string }[];
+}) {
+  return (
+    <JsonLd
+      data={{
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: items.map((item, index) => ({
+          '@type': 'ListItem',
+          position: index + 1,
+          name: item.name,
+          ...(item.url ? { item: item.url.startsWith('http') ? item.url : `${SITE_URL}${item.url}` } : {}),
+        })),
+      }}
+    />
+  );
+}
+
+export function PersonJsonLd({
+  name,
+  url,
+  image,
+  description,
+  sameAs,
+}: {
+  name: string;
+  url?: string;
+  image?: string;
+  description?: string;
+  sameAs?: string[];
+}) {
+  return (
+    <JsonLd
+      data={{
+        '@context': 'https://schema.org',
+        '@type': 'Person',
+        name,
+        ...(url ? { url } : {}),
+        ...(image ? { image } : {}),
+        ...(description ? { description } : {}),
+        ...(sameAs?.length ? { sameAs } : {}),
+      }}
+    />
+  );
+}

@@ -246,3 +246,76 @@ export function ItemListJsonLd({
     />
   );
 }
+
+export function AggregateRatingJsonLd({
+  itemName,
+  itemUrl,
+  ratingValue,
+  ratingCount,
+}: {
+  itemName: string;
+  itemUrl: string;
+  ratingValue: number;
+  ratingCount: number;
+}) {
+  return (
+    <JsonLd
+      data={{
+        '@context': 'https://schema.org',
+        '@type': 'Product',
+        name: itemName,
+        url: itemUrl.startsWith('http') ? itemUrl : `${SITE_URL}${itemUrl}`,
+        aggregateRating: {
+          '@type': 'AggregateRating',
+          ratingValue: Math.max(1, Math.min(5, ratingValue)),
+          bestRating: 5,
+          worstRating: 1,
+          ratingCount,
+        },
+      }}
+    />
+  );
+}
+
+export function DatasetJsonLd({
+  name,
+  description,
+  url,
+}: {
+  name: string;
+  description: string;
+  url: string;
+}) {
+  return (
+    <JsonLd
+      data={{
+        '@context': 'https://schema.org',
+        '@type': 'Dataset',
+        name,
+        description,
+        url,
+        creator: {
+          '@type': 'Organization',
+          name: 'OSSInsight',
+          url: SITE_URL,
+          parentOrganization: {
+            '@type': 'Organization',
+            name: 'PingCAP',
+            url: 'https://pingcap.com',
+          },
+        },
+        license: 'https://creativecommons.org/licenses/by/4.0/',
+        isAccessibleForFree: true,
+        temporalCoverage: '2011/..',
+        variableMeasured: [
+          'GitHub stars',
+          'Pull requests',
+          'Issues',
+          'Commits',
+          'Contributors',
+          'Forks',
+        ],
+      }}
+    />
+  );
+}
