@@ -4,7 +4,7 @@ date: 2026-03-25
 authors: [OSSInsight]
 tags: [insight, ai, research-agents, autonomous-agents]
 image: /blog-assets/autoresearch-overnight-ai-scientist/cover.png
-description: "karpathy/autoresearch hit 54K stars in 19 days — faster than nanoGPT's entire run. Here's what that velocity reveals about the shift from AI-assisted coding to AI-driven research."
+description: "karpathy/autoresearch hit 54K stars in 19 days — faster than nanoGPT's entire three-year run. Here's what that velocity reveals about the shift from AI-assisted coding to AI-driven research."
 keywords: [autoresearch, karpathy, AI scientist, autonomous agent, self-improving AI, research agent, GitHub trending 2026, agentic AI, ai research automation, ossinsight]
 ---
 
@@ -32,10 +32,10 @@ Let me put the growth in context:
 
 | Repository | Stars | Days to 54K | Stars/day |
 |-----------|-------|-------------|-----------|
-| [karpathy/autoresearch](https://ossinsight.io/analyze/karpathy/autoresearch) | 54,376 | **19** | **2,862** |
-| [karpathy/nanochat](https://ossinsight.io/analyze/karpathy/nanochat) | 50,212 | ~160 | ~314 |
-| [karpathy/nanoGPT](https://ossinsight.io/analyze/karpathy/nanoGPT) | 55,523 | ~1,100 | ~50 |
-| [karpathy/llm.c](https://ossinsight.io/analyze/karpathy/llm.c) | 29,257 | ~350 | ~84 |
+| [karpathy/autoresearch](https://ossinsight.io/analyze/karpathy/autoresearch) | 54,553 | **19** | **2,871** |
+| [karpathy/nanochat](https://ossinsight.io/analyze/karpathy/nanochat) | 50,217 | ~160 | ~314 |
+| [karpathy/nanoGPT](https://ossinsight.io/analyze/karpathy/nanoGPT) | 55,526 | ~1,100 | ~50 |
+| [karpathy/llm.c](https://ossinsight.io/analyze/karpathy/llm.c) | 29,258 | ~350 | ~84 |
 
 The acceleration is real: each successive Karpathy repo captures attention about 3-5x faster than the last. But autoresearch isn't just riding his reputation — the timing matters. This repo landed exactly when the developer community had internalized coding agents and was ready for the next abstraction.
 
@@ -47,10 +47,10 @@ autoresearch isn't alone. When I looked at adjacent repos that gained significan
 
 | Repository | Stars | Created | What it does |
 |-----------|-------|---------|-------------|
-| [karpathy/autoresearch](https://ossinsight.io/analyze/karpathy/autoresearch) | 54,376 | Mar 6 | AI agents run ML experiments overnight |
+| [karpathy/autoresearch](https://ossinsight.io/analyze/karpathy/autoresearch) | 54,553 | Mar 6 | AI agents run ML experiments overnight |
 | [jennyzzt/dgm](https://ossinsight.io/analyze/jennyzzt/dgm) | 1,944 | May 2025 | Darwin Gödel Machine: open-ended evolution of self-improving agents |
-| [facebookresearch/HyperAgents](https://ossinsight.io/analyze/facebookresearch/HyperAgents) | 640 | Mar 19 | Self-referential agents that optimize for any computable task |
-| [zerobootdev/zeroboot](https://ossinsight.io/analyze/zerobootdev/zeroboot) | 1,884 | Feb 2026 | Sub-millisecond VM sandboxes for AI agents to run safely |
+| [facebookresearch/HyperAgents](https://ossinsight.io/analyze/facebookresearch/HyperAgents) | 666 | Mar 19 | Self-referential agents that optimize for any computable task |
+| [zerobootdev/zeroboot](https://ossinsight.io/analyze/zerobootdev/zeroboot) | 1,885 | Mar 2026 | Sub-millisecond VM sandboxes for AI agents to run safely |
 
 None of these repos are about building better prompts or writing cleaner code. They're about taking humans *out of the loop* for repetitive cycles — experiment → measure → iterate — and replacing that loop with an agent that runs it 200 times while you eat dinner.
 
@@ -62,23 +62,23 @@ The progression is becoming visible:
 
 ## The 8 Contributors vs. 7,565 Forks Signal
 
-Here's the stat I keep coming back to: autoresearch has **7,565 forks** but only **8 contributors** to the main repo.
+Here's the stat I keep coming back to: autoresearch has **7,594 forks** but only **7 contributors** to the main repo.
 
-That ratio — 945 forks per contributor — is unlike anything I've seen at this scale. For comparison:
+That ratio — 1,085 forks per contributor — is unlike anything I've seen at this scale. For comparison:
 
 | Repo | Forks | Contributors | Forks/Contributor |
 |------|-------|-------------|-------------------|
-| karpathy/autoresearch | 7,565 | 8 | **945** |
-| karpathy/nanoGPT | 9,459 | 51 | 185 |
-| karpathy/nanochat | 6,581 | 51 | 129 |
-| [openai/swarm](https://ossinsight.io/analyze/openai/swarm) | 2,258 | 12 | 188 |
-| [wshobson/agents](https://ossinsight.io/analyze/wshobson/agents) | 3,513 | ~200 | 18 |
+| karpathy/autoresearch | 7,594 | 7 | **1,085** |
+| karpathy/nanoGPT | 9,459 | 36 | 263 |
+| karpathy/nanochat | 6,581 | 45 | 146 |
+| [openai/swarm](https://ossinsight.io/analyze/openai/swarm) | 2,258 | 13 | 174 |
+| [wshobson/agents](https://ossinsight.io/analyze/wshobson/agents) | 3,516 | 43 | 82 |
 
-What does a 945:1 fork-to-contributor ratio mean? People are taking the base, running it with *their own models*, their own `program.md`, their own compute — and not contributing back to main because there's nothing to contribute. The core is already done. The research happens in private forks.
+What does a 1,085:1 fork-to-contributor ratio mean? People are taking the base, running it with *their own models*, their own `program.md`, their own compute — and not contributing back to main because there's nothing to contribute. The core is already done. The research happens in private forks.
 
 This is a fundamentally different model from open-source software development. It's closer to open-source science: share the methodology, not the results.
 
-## The Question Nobody's Asking
+## The Bottleneck That Didn't Move
 
 I've seen a lot of celebration about autoresearch being "the future of ML research." Maybe. But there's a harder question buried in the design.
 
@@ -92,13 +92,15 @@ Which means this is Stage 1, not the endgame. And Stage 1 is already getting 54K
 
 ## What Comes Next
 
-If autoresearch represents the current frontier, the repos that will go viral in the next 90 days will likely tackle:
+If autoresearch represents the current frontier, the next wave of repos will likely tackle what it deliberately left out:
 
-1. **Automated hypothesis generation** — not just running experiments, but deciding *which* experiments to run based on prior results
-2. **Cross-repo knowledge transfer** — agents that share experimental findings across forks, turning private research into collective learning
-3. **Evaluation bootstrapping** — agents that improve their own benchmarks, not just their performance on fixed ones
+1. **Automated hypothesis generation** — not just running experiments, but deciding *which* experiments to run based on prior results. [jennyzzt/dgm](https://ossinsight.io/analyze/jennyzzt/dgm) (1,944 stars) is already exploring this: agents that evolve their own objectives, not just optimize a fixed one.
 
-The DGM and HyperAgents repos are early signals of this direction. They're small today. Six months from now, one of them will probably have 50K stars.
+2. **Cross-fork knowledge transfer** — right now, those 7,594 forks are islands. Each person's `program.md` produces insights that stay private. The first tool that aggregates experimental findings across forks — turning private research into collective learning — will unlock enormous value.
+
+3. **Evaluation bootstrapping** — agents that improve their own benchmarks, not just their performance on fixed ones. [facebookresearch/HyperAgents](https://ossinsight.io/analyze/facebookresearch/HyperAgents) (666 stars, created March 19) is a week old and already exploring self-referential optimization.
+
+These repos are small today. But autoresearch was small 20 days ago.
 
 ---
 
