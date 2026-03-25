@@ -20,15 +20,26 @@ Something has changed.
 
 The premise is almost absurdly simple: give an AI agent a real training setup, let it modify the code overnight, and see if the model gets better.
 
-You don't touch any Python files. Instead, you write `program.md` — a Markdown file that tells the agent what you're trying to achieve and how to run experiments. The agent reads it, edits `train.py`, runs a 5-minute training job, checks if validation loss improved, keeps the change or reverts it, and does it again. And again. And again, while you sleep.
+The entire repo is three files. `prepare.py` handles data and tokenizer — the agent is **forbidden from touching it**. `train.py` is a single-file GPT implementation with a sliding-window attention architecture, a custom MuonAdamW optimizer, and value embeddings — this is the *only* file the agent edits. And `program.md` is the specification that tells the agent the rules of the game.
 
-Karpathy describes this in the README with characteristically understated humor: *"One day, frontier AI research used to be done by meat computers in between eating, sleeping, having other fun..."*
+Here's how the loop actually works, straight from the code:
 
-The actual code is tiny — three Python files. But the architecture is profound. `program.md` is, in Karpathy's own words, "essentially a super lightweight skill." The agent is operating on a specification, not a codebase.
+1. The agent creates a git branch (`autoresearch/<tag>`), reads all three files for context, and runs `train.py` unmodified to establish a **baseline** `val_bpb` (bits per byte).
+2. It proposes a change to `train.py` — architecture, optimizer, hyperparameters, batch size, model depth, anything. It commits the change.
+3. It runs `uv run train.py > run.log 2>&1`. Training runs for a **fixed 5-minute wall-clock budget**, then evaluates on a pinned validation shard.
+4. It checks the single metric: `val_bpb`. Lower is better.
+5. If improved → **keep the commit**, advance the branch. If equal or worse → **`git reset`** back to the previous state.
+6. Log results to a TSV. Go to step 2. **Never stop.**
 
-At its core, this is not an agent in the way most people use the word. It's a **loop** — a system that continuously proposes, tests, evaluates, and iterates. The agent asks exactly one question after each run: *is this score lower?* That's it. No planning, no reasoning about strategy, no memory of what worked last week. Just propose → train → measure → keep or revert → repeat.
+That last part is literal. From `program.md`: *"Do NOT pause to ask the human if you should continue. The human might be asleep. You are autonomous. The loop runs until the human interrupts you, period."*
 
-This simplicity is also its boundary. The loop only works when three conditions hold: a **clear scalar metric** (validation loss), a **fast feedback cycle** (5-minute training runs), and **safe reversibility** (automatic rollback on failure). Most real research problems satisfy none of these. The domains where "run it overnight" works are exactly the domains where the search space is tractable and the objective is well-defined. That's a powerful subset — but it's a subset.
+At ~5 minutes per experiment, that's ~12 experiments per hour, ~100 overnight. You wake up to a `results.tsv` with a hundred attempted improvements, the successful ones auto-committed on the branch.
+
+At its core, this is not an agent in the way most people use the word. It's a **search algorithm with git as its state machine.** The agent asks exactly one question after each run: *is this number lower?* No planning across experiments, no memory of what worked three hours ago (beyond what's in the current `train.py`), no meta-strategy. Just propose → commit → train → measure → keep or revert → repeat.
+
+This simplicity is also its boundary. The loop only works when three conditions hold: a **clear scalar metric** (`val_bpb` — computed by a fixed evaluation function the agent cannot modify), a **fast feedback cycle** (5-minute training budget on a single GPU), and **safe reversibility** (`git reset` on failure). There's even a simplicity criterion baked in: *"A 0.001 val_bpb improvement that adds 20 lines of hacky code? Probably not worth it. A 0.001 improvement from deleting code? Definitely keep."*
+
+Most real research problems satisfy none of these conditions. The domains where "run it overnight" works are exactly the domains where the search space is tractable and the objective is well-defined. That's a powerful subset — but it's a subset.
 
 ## The Velocity Says Something
 
@@ -86,11 +97,13 @@ This is a fundamentally different model from open-source software development. I
 
 I've seen a lot of celebration about autoresearch being "the future of ML research." Maybe. But there's a harder question buried in the design.
 
-The agent operates on `program.md` — a human-written specification. *It does not write `program.md` itself.* The human still defines what "better" means, what experiments are allowed, what the evaluation metric is.
+Look at the division of labor in the code. The human writes `program.md` — which defines the evaluation metric (`val_bpb`), the constraints (don't touch `prepare.py`, don't add dependencies), and the philosophy (simplicity over complexity). The human also writes the 300-line `prepare.py` that defines how data is loaded, how tokenization works, and the exact evaluation function. **The agent cannot modify any of this.** It operates *within* a sandbox the human designed.
 
-That's not a flaw — it's a deliberate constraint. But it means the bottleneck hasn't moved as far as it looks. The scientist hasn't been automated. The *technician* has.
+The agent's autonomy is real but bounded: it can change the model architecture (transformer depth, attention patterns, embedding strategies), the optimizer (learning rates, momentum schedules, weight decay), the training loop — anything in `train.py`. But it cannot change what "better" means. It cannot decide to use a different dataset, a different evaluation metric, or a different time budget.
 
-Most ML experiments are not bottlenecked by running training loops. They're bottlenecked by knowing which experiments are worth running. autoresearch removes the former but not the latter. The part that requires the 30 years of intuition, the domain expertise, the aesthetic sense about what's elegant — that part is still the human's job.
+That's not a flaw — it's a deliberate and carefully engineered constraint. But it means the bottleneck hasn't moved as far as it looks. The scientist hasn't been automated. The *technician* has — a very good technician that never sleeps and never gets bored, but a technician nonetheless.
+
+Most ML experiments are not bottlenecked by running training loops. They're bottlenecked by knowing which experiments are worth running — by the intuition that says "try value embeddings with a gated residual" instead of "try a bigger model." autoresearch removes the former but not the latter. The part that requires the 30 years of intuition, the domain expertise, the aesthetic sense about what's elegant — that part is still the human's job.
 
 Which means this is Stage 1, not the endgame. autoresearch is the most primitive form of a larger pattern emerging across repos like DGM and HyperAgents: AI systems that don't just execute experiments, but run entire research cycles end-to-end — with persistent memory, evolving strategy, and eventually, self-generated hypotheses. The full stack looks something like: memory + loop + abstraction. autoresearch only has the loop. But the loop alone is already getting 54K stars in 19 days.
 
