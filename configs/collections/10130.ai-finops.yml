@@ -1,0 +1,13 @@
+id: 10130
+name: AI FinOps
+items:
+  - BerriAI/litellm
+  - mlflow/mlflow
+  - langfuse/langfuse
+  - openlit/openlit
+  - Helicone/helicone
+  - AgentOps-AI/agentops
+  - pydantic/logfire
+  - uptrain-ai/uptrain
+  - traceloop/openllmetry
+  - whylabs/whylogs

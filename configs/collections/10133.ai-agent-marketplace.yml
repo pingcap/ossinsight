@@ -1,0 +1,13 @@
+id: 10133
+name: AI Agent Marketplace
+items:
+  - Significant-Gravitas/AutoGPT
+  - crewAIInc/crewAI
+  - microsoft/autogen
+  - agno-agi/agno
+  - OpenBMB/AgentVerse
+  - THUDM/AgentBench
+  - smol-ai/developer
+  - OpenBMB/ChatDev
+  - letta-ai/letta
+  - SWE-agent/SWE-agent

@@ -1,0 +1,12 @@
+id: 10137
+name: Agent Sandboxing
+items:
+  - e2b-dev/E2B
+  - e2b-dev/code-interpreter
+  - daytonaio/daytona
+  - SWE-agent/SWE-ReX
+  - microsoft/TaskWeaver
+  - standardagents/arrow-js
+  - abshkbh/arrakis
+  - pipecat-ai/pipecat
+  - modal-labs/modal-client

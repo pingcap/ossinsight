@@ -1,0 +1,12 @@
+id: 10136
+name: AI Code Review
+items:
+  - qodo-ai/pr-agent
+  - qodo-ai/qodo-cover
+  - continuedev/continue
+  - microsoft/promptflow
+  - aorwall/moatless-tools
+  - TechNickAI/AICodeBot
+  - SWE-bench/SWE-bench
+  - SWE-agent/SWE-agent
+  - openai/evals

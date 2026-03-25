@@ -1,0 +1,13 @@
+id: 10138
+name: AI Red Teaming
+items:
+  - NVIDIA/garak
+  - promptfoo/promptfoo
+  - Azure/PyRIT
+  - confident-ai/deepteam
+  - llm-attacks/llm-attacks
+  - msoedov/agentic_security
+  - sherdencooper/GPTFuzz
+  - Tencent/AI-Infra-Guard
+  - protectai/rebuff
+  - microsoftarchive/promptbench

@@ -1,0 +1,15 @@
+id: 10141
+name: Agent Harness
+items:
+  - microsoft/autogen
+  - crewAIInc/crewAI
+  - agno-agi/agno
+  - letta-ai/letta
+  - pipecat-ai/pipecat
+  - microsoft/TaskWeaver
+  - microsoft/promptflow
+  - run-llama/llama_deploy
+  - SWE-agent/SWE-agent
+  - THUDM/AgentBench
+  - AgentOps-AI/agentops
+  - openai/evals

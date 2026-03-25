@@ -1,0 +1,15 @@
+id: 10132
+name: AI Quantitative Finance
+items:
+  - AI4Finance-Foundation/FinRL
+  - AI4Finance-Foundation/FinGPT
+  - stefan-jansen/machine-learning-for-trading
+  - hudson-and-thames/mlfinlab
+  - vnpy/vnpy
+  - grananqvist/Awesome-Quant-Machine-Learning-Trading
+  - edtechre/pybroker
+  - thuquant/awesome-quant
+  - wangzhe3224/awesome-systematic-trading
+  - fasiondog/hikyuu
+  - alpacahq/alpaca-py
+  - quarkfin/qf-lib

@@ -1,0 +1,12 @@
+id: 10129
+name: Neuro-Symbolic AI
+items:
+  - NucleoidAI/Nucleoid
+  - IBM/neuro-symbolic-ai
+  - IBM/torchlogic
+  - PacktPublishing/Neuro-Symbolic-AI
+  - aika-algorithm/aika-java
+  - nerdimite/neuro-symbolic-ai-soc
+  - anisha2102/awesome-neuro-symbolic-ai
+  - mattfaltyn/awesome-neuro-symbolic-ai
+  - ccclyu/awesome-deeplogic

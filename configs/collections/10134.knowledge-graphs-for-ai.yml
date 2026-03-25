@@ -1,0 +1,14 @@
+id: 10134
+name: Knowledge Graphs for AI
+items:
+  - microsoft/graphrag
+  - neo4j-labs/llm-graph-builder
+  - OSU-NLP-Group/HippoRAG
+  - FalkorDB/FalkorDB
+  - pingcap/autoflow
+  - Azure-Samples/graphrag-accelerator
+  - topoteretes/cognee
+  - BaranziniLab/KG_RAG
+  - Graph-COM/SubgraphRAG
+  - weaviate/Verba
+  - tomasonjo/diffbot-kg-chatbot

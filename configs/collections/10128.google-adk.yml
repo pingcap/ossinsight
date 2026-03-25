@@ -1,0 +1,16 @@
+id: 10128
+name: Google ADK
+items:
+  - google/adk-python
+  - google/adk-java
+  - google/adk-web
+  - a2aproject/A2A
+  - AIDC-AI/Agentic-ADK
+  - Sri-Krishna-V/awesome-adk-agents
+  - tsubasakong/awesome-google-adk
+  - waldzellai/adk-typescript
+  - RashRAJ/awesome-adk
+  - raphaelmansuy/adk_training
+  - sokart/adk-walkthrough
+  - RubensZimbres/Multi-Agent-System-A2A-ADK-MCP
+  - mongodb-developer/MongoDB-ADK-Agents

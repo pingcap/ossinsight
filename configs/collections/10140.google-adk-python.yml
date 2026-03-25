@@ -1,0 +1,15 @@
+id: 10140
+name: Google ADK Python
+items:
+  - google/adk-python
+  - google/adk-web
+  - google/adk-java
+  - a2aproject/A2A
+  - Sri-Krishna-V/awesome-adk-agents
+  - raphaelmansuy/adk_training
+  - arjunprabhulal/adk-vertex-ai-rag-engine
+  - sokart/adk-walkthrough
+  - RashRAJ/awesome-adk
+  - tsubasakong/awesome-google-adk
+  - ksmin23/my-adk-python-samples
+  - mongodb-developer/MongoDB-ADK-Agents
