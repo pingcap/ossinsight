@@ -10,6 +10,9 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Disable trailing slashes — canonical URLs have no trailing slash.
+  // Vercel will redirect /path/ → /path automatically when this is false (default).
+  trailingSlash: false,
   outputFileTracingRoot: path.join(__dirname, '../../'),
   transpilePackages: ['@repo/site-shell'],
   typescript: {

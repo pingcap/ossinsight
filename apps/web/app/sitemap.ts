@@ -9,11 +9,22 @@ export const dynamic = 'force-dynamic';
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const entries: MetadataRoute.Sitemap = [];
 
-  // Static pages
-  const staticPages = [
-    { path: '/', priority: 1.0 },
-    { path: '/explore/', priority: 0.8 },
-    { path: '/collections/', priority: 0.8 },
+  // Static pages — canonical URLs without trailing slash for /explore and /collections
+  const staticPages: Array<{ path: string; priority: number; images?: Array<{ url: string; title?: string; caption?: string }> }> = [
+    {
+      path: '/',
+      priority: 1.0,
+      images: [
+        {
+          url: `${SITE_URL}/seo-widgets-homepage.jpeg`,
+          title: 'OSSInsight — Open Source Software Insight',
+          caption: 'Real-time analytics for 10B+ GitHub events',
+        },
+      ],
+    },
+    { path: '/explore', priority: 0.8 },
+    { path: '/collections', priority: 0.8 },
+    { path: '/trending', priority: 0.8 },
   ];
 
   for (const page of staticPages) {
@@ -21,6 +32,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: `${SITE_URL}${page.path}`,
       changeFrequency: 'weekly',
       priority: page.priority,
+      // @ts-expect-error — Next.js MetadataRoute.Sitemap doesn't type images yet
+      ...(page.images ? { images: page.images } : {}),
     });
   }
 
@@ -33,6 +46,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         url: `${SITE_URL}/collections/${slug}`,
         changeFrequency: 'weekly',
         priority: 0.6,
+        // @ts-expect-error — Next.js MetadataRoute.Sitemap doesn't type images yet
+        images: [
+          {
+            url: `${SITE_URL}/collections/${slug}/opengraph-image`,
+            title: `${collection.name} — GitHub Repository Rankings`,
+          },
+        ],
       });
       entries.push({
         url: `${SITE_URL}/collections/${slug}/trends`,

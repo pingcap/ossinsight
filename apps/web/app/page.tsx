@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { HomeContent } from './home-content';
-import { FAQPageJsonLd } from '@/components/json-ld';
+import { FAQPageJsonLd, SiteApplicationJsonLd } from '@/components/json-ld';
 import { FAQ_ITEMS } from './faq-data';
 
 export const metadata: Metadata = {
@@ -24,6 +24,7 @@ export const metadata: Metadata = {
 export default function HomePage() {
   return (
     <>
+      <SiteApplicationJsonLd />
       <FAQPageJsonLd items={FAQ_ITEMS} />
       <div className="sr-only">
         <h1>OSSInsight — Open Source Software Insight</h1>

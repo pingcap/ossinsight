@@ -13,6 +13,14 @@ import { CollectionsList } from './content';
 export const metadata: Metadata = {
   title: 'Explore Collections',
   description: 'Find insights about the monthly or historical rankings and trends in technical fields with curated repository lists.',
+  alternates: {
+    // Canonical strips query params (page, sort, q) to avoid duplicate content
+    canonical: '/collections',
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export const revalidate = 3600;

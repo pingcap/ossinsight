@@ -1280,7 +1280,7 @@ function HotCollectionsSection() {
                     </div>
                     <img
                       src={`https://github.com/${item.repo_name.split('/')[0]}.png`}
-                      alt=""
+                      alt={item.repo_name.split('/')[0]}
                       className="w-8 h-8 rounded-full mr-2 shrink-0 bg-gray-600"
                       loading="lazy"
                       width={32}

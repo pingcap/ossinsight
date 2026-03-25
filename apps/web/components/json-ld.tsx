@@ -277,6 +277,34 @@ export function AggregateRatingJsonLd({
   );
 }
 
+export function SiteApplicationJsonLd() {
+  return (
+    <JsonLd
+      data={{
+        '@context': 'https://schema.org',
+        '@type': 'SoftwareApplication',
+        name: 'OSSInsight',
+        applicationCategory: 'DeveloperApplication',
+        operatingSystem: 'Web',
+        url: SITE_URL,
+        description:
+          'OSSInsight analyzes billions of GitHub events and provides real-time insights for open source software repositories, developers, and organizations.',
+        offers: {
+          '@type': 'Offer',
+          price: '0',
+          priceCurrency: 'USD',
+        },
+        author: {
+          '@type': 'Organization',
+          name: 'PingCAP',
+          url: 'https://pingcap.com',
+        },
+        screenshot: `${SITE_URL}/seo-widgets-homepage.jpeg`,
+      }}
+    />
+  );
+}
+
 export function DatasetJsonLd({
   name,
   description,
