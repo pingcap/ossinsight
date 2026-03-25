@@ -72,6 +72,66 @@ OSSInsight is built for the AI era:
 | [The Coding Agent Wars](https://ossinsight.io/blog/coding-agent-wars-2026) | Claude Code, Codex, OpenCode — the autonomous coding landscape mapped by the data. |
 | [Agent Skills: Not the Endgame](https://ossinsight.io/blog/agent-skills-not-endgame) | 57K AGENTS.md repos, 21K CLAUDE.md — skills are a transitional layer, not the final form. |
 
+## Features
+
+### **Data Explorer**
+  
+Ask questions about GitHub data in natural language — Data Explorer generates SQL, queries the data, and presents results visually.
+
+Examples:
+* [Projects similar to @facebook/react](https://ossinsight.io/explore?id=ba186a53-b2ab-4cad-a46f-e2c36566cacd)
+* [Where are @kubernetes/kubernetes contributors from?](https://ossinsight.io/explore?id=754a681e-913f-4333-b55d-dbd8598bd84d)
+* [More popular questions](https://ossinsight.io/explore/)
+
+### **Collections & Rankings**
+
+Find insights about monthly or historical rankings and trends in technical fields with curated repository lists.
+
+<div align="center">
+    <img src="https://raw.githubusercontent.com/pingcap/ossinsight/main/apps/docs/public/img/screenshots/homepage-collection.png" alt="GitHub Collections Analytics" height="500" />
+</div>
+
+**Examples**:
+* [Collection: AI Agent Frameworks](https://ossinsight.io/collections/ai-agent-frameworks)
+* [Collection: Open Source Database](https://ossinsight.io/collections/open-source-database)
+* [Collection: Web Framework](https://ossinsight.io/collections/web-framework)
+* [More](https://ossinsight.io/collections/open-source-database) ...
+
+### **Developer Analytics**
+
+Insights about **developer productivity**, **work cadence**, and **collaboration** from contribution behavior.
+
+* Contribution time distribution, stars, languages, and trends
+* Code (commits, pull requests, code line changes), code reviews, and issues
+
+<div align="center">
+    <img src="https://raw.githubusercontent.com/pingcap/ossinsight/main/apps/docs/public/img/screenshots/homepage-developer.png" alt="Developer Analytics" height="500" />
+</div>
+
+### **Repository Analytics**
+
+Insights about **code update frequency & popularity** from repository status.
+
+* Stars, forks, issues, commits, pull requests, contributors, languages, and lines of code
+* Geographical and company distribution of stargazers, issue creators, and PR creators
+
+<div align="center">
+    <img src="https://raw.githubusercontent.com/pingcap/ossinsight/main/apps/docs/public/img/screenshots/homepage-repository.png" alt="Repository Analytics" height="500" />
+</div>
+
+**Examples**:
+* [React](https://ossinsight.io/analyze/facebook/react)
+* [TiDB](https://ossinsight.io/analyze/pingcap/tidb)
+* [PyTorch](https://ossinsight.io/analyze/pytorch/pytorch)
+
+### **Compare Projects**
+
+Compare two projects side-by-side on any metric.
+
+**Examples**:
+* [Compare Vue and React](https://ossinsight.io/analyze/vuejs/vue?vs=facebook/react)
+* [Compare PyTorch and TensorFlow](https://ossinsight.io/analyze/pytorch/pytorch?vs=tensorflow/tensorflow)
+
 ## Collections
 
 Curated lists of repos in technical fields, ranked by GitHub metrics. Perfect for tracking ecosystems.
