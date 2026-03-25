@@ -15,22 +15,29 @@ export function BlogPostJsonLd({
   slug,
   date,
   authors,
+  image,
+  keywords,
 }: {
   title: string;
   description: string;
   slug: string;
   date: string;
   authors?: string[];
+  image?: string;
+  keywords?: string[];
 }) {
   return (
     <JsonLd
       data={{
         '@context': 'https://schema.org',
-        '@type': 'BlogPosting',
+        '@type': ['BlogPosting', 'TechArticle'],
         headline: title,
         description,
         url: `${SITE_URL}/blog/${slug}`,
         datePublished: date,
+        dateModified: date,
+        ...(image ? { image } : {}),
+        ...(keywords?.length ? { keywords: keywords.join(', ') } : {}),
         ...(authors?.length
           ? { author: authors.map((name) => ({ '@type': 'Person', name })) }
           : {}),
@@ -38,6 +45,19 @@ export function BlogPostJsonLd({
           '@type': 'Organization',
           name: 'OSSInsight',
           url: SITE_URL,
+          logo: {
+            '@type': 'ImageObject',
+            url: `${SITE_URL}/logo.png`,
+          },
+        },
+        isPartOf: {
+          '@type': 'Blog',
+          name: 'OSSInsight Blog',
+          url: `${SITE_URL}/blog`,
+        },
+        mainEntityOfPage: {
+          '@type': 'WebPage',
+          '@id': `${SITE_URL}/blog/${slug}`,
         },
       }}
     />

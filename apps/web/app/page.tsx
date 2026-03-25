@@ -3,7 +3,9 @@ import { HomeContent } from './home-content';
 import { FAQPageJsonLd } from '@/components/json-ld';
 
 export const metadata: Metadata = {
-  title: 'OSSInsight - Open Source Software Insight',
+  title: {
+    absolute: 'OSSInsight - Open Source Software Insight',
+  },
   description: 'Real-time analytics for 10B+ GitHub events. Analyze any repo, compare projects, and discover trending open source software. Free & open source.',
   openGraph: {
     title: 'OSSInsight - Open Source Software Insight',

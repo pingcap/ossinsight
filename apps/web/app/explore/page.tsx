@@ -4,8 +4,18 @@ import { BreadcrumbListJsonLd } from '@/components/json-ld';
 import { ExploreContent } from './content';
 
 export const metadata: Metadata = {
-  title: 'GitHub Data Explorer: Discover insights in GitHub event data with AI-generated SQL | OSS Insight',
+  title: 'GitHub Data Explorer',
   description: 'Discover insights in GitHub event data with AI-generated SQL and preset visualizations.',
+  openGraph: {
+    title: 'GitHub Data Explorer | OSSInsight',
+    description: 'Discover insights in GitHub event data with AI-generated SQL and preset visualizations.',
+  },
+  twitter: {
+    title: 'GitHub Data Explorer | OSSInsight',
+    description: 'Discover insights in GitHub event data with AI-generated SQL and preset visualizations.',
+    card: 'summary_large_image',
+  },
+  alternates: { canonical: '/explore' },
 };
 
 export default function ExplorePage() {

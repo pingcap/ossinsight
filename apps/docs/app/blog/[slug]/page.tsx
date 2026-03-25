@@ -58,6 +58,8 @@ export default async function BlogPostPage({ params }: PageProps) {
         slug={post.slug}
         date={post.date ?? ''}
         authors={post.authors.map((a) => a.name)}
+        image={post.image}
+        keywords={post.tags}
       />
       <div className="mb-8 flex items-center justify-between gap-4">
         <Link

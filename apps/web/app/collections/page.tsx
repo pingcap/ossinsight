@@ -10,7 +10,7 @@ import { BreadcrumbListJsonLd } from '@/components/json-ld';
 import { CollectionsList } from './content';
 
 export const metadata: Metadata = {
-  title: 'Explore Collections | OSSInsight',
+  title: 'Explore Collections',
   description: 'Find insights about the monthly or historical rankings and trends in technical fields with curated repository lists.',
 };
 

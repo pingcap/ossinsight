@@ -94,7 +94,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   const name1 = `${owner1}/${repo1}`;
   const name2 = `${owner2}/${repo2}`;
-  const title = `${repo1} vs ${repo2} - GitHub Comparison`;
+  const title = `${name1} vs ${name2} — GitHub Comparison`;
+  const fullTitle = `${title} | OSSInsight`;
 
   let description = `Compare ${name1} vs ${name2} — stars, commits, contributors and more.`;
 
@@ -105,7 +106,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     ]);
     if (repoInfo && vsRepoInfo) {
       const nf = new Intl.NumberFormat('en');
-      description = `Compare ${name1} (${nf.format(repoInfo.stars)}\u2B50) vs ${name2} (${nf.format(vsRepoInfo.stars)}\u2B50) — stars, commits, contributors and more.`;
+      description = `Compare ${name1} (${nf.format(repoInfo.stars)}\u2B50) vs ${name2} (${nf.format(vsRepoInfo.stars)}\u2B50) — stars, commits, contributors, pull requests, and more.`;
     }
   } catch {
     // Use default description
@@ -114,9 +115,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title,
     description,
-    keywords: ['OSSInsight', 'GitHub', 'comparison', repo1, repo2, owner1, owner2],
-    twitter: { title, description, card: 'summary_large_image' },
-    openGraph: { title, description },
+    keywords: ['OSSInsight', 'GitHub', 'comparison', repo1, repo2, owner1, owner2, name1, name2],
+    twitter: { title: fullTitle, description, card: 'summary_large_image' },
+    openGraph: { title: fullTitle, description },
     alternates: { canonical: `/compare/${owner1}/${repo1}/${owner2}/${repo2}` },
   };
 }

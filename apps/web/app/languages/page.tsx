@@ -4,8 +4,17 @@ import { BreadcrumbListJsonLd } from '@/components/json-ld';
 import { LANGUAGES } from '@/lib/server/internal-api';
 
 export const metadata: Metadata = {
-  title: 'Programming Languages on GitHub | OSSInsight',
+  title: 'Programming Languages on GitHub',
   description: 'Explore trending GitHub repositories by programming language. See the hottest projects in JavaScript, Python, Rust, Go, and 37 more languages.',
+  openGraph: {
+    title: 'Programming Languages on GitHub | OSSInsight',
+    description: 'Explore trending GitHub repositories by programming language. See the hottest projects in JavaScript, Python, Rust, Go, and 37 more languages.',
+  },
+  twitter: {
+    title: 'Programming Languages on GitHub | OSSInsight',
+    description: 'Explore trending GitHub repositories by programming language. See the hottest projects in JavaScript, Python, Rust, Go, and 37 more languages.',
+    card: 'summary_large_image',
+  },
   alternates: { canonical: '/languages' },
 };
 

@@ -12,7 +12,7 @@ export const revalidate = 3600;
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'Trending GitHub Repositories | OSSInsight',
+  title: 'Trending GitHub Repositories',
   description: 'Discover the hottest open source projects on GitHub right now. Daily, weekly, and monthly trending repos ranked by community activity, powered by 10B+ GitHub events.',
   keywords: ['GitHub', 'trending', 'repositories', 'open source', 'popular', 'stars', 'OSSInsight'],
   openGraph: {
