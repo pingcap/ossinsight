@@ -64,6 +64,49 @@ export function BlogPostJsonLd({
   );
 }
 
+export function LearningResourceJsonLd({
+  title,
+  description,
+  slug,
+  date,
+  keywords,
+  image,
+}: {
+  title: string;
+  description: string;
+  slug: string;
+  date?: string;
+  keywords?: string[];
+  image?: string;
+}) {
+  return (
+    <JsonLd
+      data={{
+        '@context': 'https://schema.org',
+        '@type': 'LearningResource',
+        name: title,
+        description,
+        url: `${SITE_URL}/blog/${slug}`,
+        ...(date ? { datePublished: date } : {}),
+        ...(image ? { image } : {}),
+        ...(keywords?.length ? { keywords: keywords.join(', ') } : {}),
+        educationalUse: 'professional development',
+        learningResourceType: 'article',
+        provider: {
+          '@type': 'Organization',
+          name: 'OSSInsight',
+          url: SITE_URL,
+        },
+        isPartOf: {
+          '@type': 'Blog',
+          name: 'OSSInsight Blog',
+          url: `${SITE_URL}/blog`,
+        },
+      }}
+    />
+  );
+}
+
 export function ApiDocJsonLd({
   title,
   description,

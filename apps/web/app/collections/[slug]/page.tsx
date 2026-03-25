@@ -4,7 +4,7 @@ import { getCollectionRanking } from '@/lib/server/internal-api';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { CollectionDetail } from './content';
-import { BreadcrumbListJsonLd, CollectionPageJsonLd } from '@/components/json-ld';
+import { BreadcrumbListJsonLd, CollectionPageJsonLd, FAQPageJsonLd } from '@/components/json-ld';
 
 export const revalidate = 3600;
 
@@ -15,10 +15,19 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const collections = await fetchCollections();
   const collection = collections.find((c) => toCollectionSlug(c.name) === slug);
   if (!collection) return { title: 'Collection Not Found' };
+  const ogTitle = `${collection.name} - GitHub Repository Rankings`;
   return {
     title: `${collection.name} - Ranking`,
     description: COLLECTION_DESC,
     alternates: { canonical: `/collections/${slug}` },
+    openGraph: {
+      title: ogTitle,
+      description: COLLECTION_DESC,
+    },
+    twitter: {
+      title: ogTitle,
+      description: COLLECTION_DESC,
+    },
   };
 }
 
@@ -39,9 +48,25 @@ export default async function CollectionSlugPage({ params }: { params: Promise<{
     // DB unavailable, client will fetch
   }
 
+  const collectionFaq = [
+    {
+      question: `What is the ${collection.name} collection?`,
+      answer: `The ${collection.name} collection is a curated list of GitHub repositories in the ${collection.name} category, ranked by stars, pull requests, issues, and contributors.`,
+    },
+    {
+      question: `How are ${collection.name} repositories ranked?`,
+      answer: 'Repositories are ranked by stars, pull requests, issues, and pull request creators over the last 28 days and month-to-month comparisons.',
+    },
+    {
+      question: 'How often is the ranking updated?',
+      answer: 'Rankings are updated in near real-time based on GitHub events processed by OSSInsight.',
+    },
+  ];
+
   return (
     <>
       <CollectionPageJsonLd name={collection.name} description={COLLECTION_DESC} slug={slug} />
+      <FAQPageJsonLd items={collectionFaq} />
       <BreadcrumbListJsonLd items={[
         { name: 'Home', url: '/' },
         { name: 'Collections', url: '/collections' },

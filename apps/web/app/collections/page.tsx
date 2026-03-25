@@ -6,7 +6,8 @@ import {
   searchCollections,
 } from '@/lib/server/internal-api';
 import type { Metadata } from 'next';
-import { BreadcrumbListJsonLd } from '@/components/json-ld';
+import { BreadcrumbListJsonLd, ItemListJsonLd } from '@/components/json-ld';
+import { toCollectionSlug } from '@/lib/collections';
 import { CollectionsList } from './content';
 
 export const metadata: Metadata = {
@@ -73,6 +74,13 @@ export default async function CollectionsPage({
         { name: 'Home', url: '/' },
         { name: 'Collections' },
       ]} />
+      <ItemListJsonLd
+        name="OSSInsight Collections"
+        items={allCollections.map((c) => ({
+          name: c.name,
+          url: `https://ossinsight.io/collections/${toCollectionSlug(c.name)}`,
+        }))}
+      />
       <div className="sr-only">
         <h1>Open Source Repository Collections — OSSInsight</h1>
         <p>

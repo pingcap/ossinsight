@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { BreadcrumbListJsonLd } from '@/components/json-ld';
+import { BreadcrumbListJsonLd, ItemListJsonLd } from '@/components/json-ld';
 import { LANGUAGES } from '@/lib/server/internal-api';
 
 export const metadata: Metadata = {
@@ -78,6 +78,13 @@ export default function LanguagesPage() {
         { name: 'Home', url: '/' },
         { name: 'Languages' },
       ]} />
+      <ItemListJsonLd
+        name="Programming Languages on GitHub"
+        items={(LANGUAGES as readonly string[]).map((lang) => ({
+          name: lang,
+          url: `https://ossinsight.io/languages/${encodeURIComponent(lang)}`,
+        }))}
+      />
 
       <div className="mx-auto max-w-[1280px] px-6 py-12">
         {/* Hero section */}

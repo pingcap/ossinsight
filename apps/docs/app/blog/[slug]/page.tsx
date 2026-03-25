@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation';
 import { ChevronLeft } from 'lucide-react';
 import { ShareButtons } from '@/components/share-buttons';
 import { formatDisplayDate, getBlogPost, getBlogPosts } from '@/lib/content';
-import { BlogPostJsonLd } from '@/components/json-ld';
+import { BlogPostJsonLd, LearningResourceJsonLd } from '@/components/json-ld';
 
 type PageProps = {
   params: Promise<{
@@ -58,6 +58,14 @@ export default async function BlogPostPage({ params }: PageProps) {
         slug={post.slug}
         date={post.date ?? ''}
         authors={post.authors.map((a) => a.name)}
+        image={post.image}
+        keywords={post.tags}
+      />
+      <LearningResourceJsonLd
+        title={post.title}
+        description={post.description ?? ''}
+        slug={post.slug}
+        date={post.date ?? ''}
         image={post.image}
         keywords={post.tags}
       />

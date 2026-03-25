@@ -6,7 +6,7 @@ import { Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { QueryProvider } from '@/components/providers/query-provider';
 import { AppShell } from '@/components/app-shell';
-import { OrganizationJsonLd, WebSiteJsonLd } from '@/components/json-ld';
+import { OrganizationJsonLd, SiteNavigationJsonLd, WebSiteJsonLd } from '@/components/json-ld';
 
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
@@ -60,6 +60,7 @@ export default function RootLayout ({
     >
     <OrganizationJsonLd />
     <WebSiteJsonLd />
+    <SiteNavigationJsonLd />
     <QueryProvider>
     <Script id="google-analytics" src={`https://www.googletagmanager.com/gtag/js?id=${GTAG_ID}`} />
     <Script id="google-analytics-config">

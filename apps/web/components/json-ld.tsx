@@ -195,6 +195,33 @@ export function PersonJsonLd({
   );
 }
 
+export function SiteNavigationJsonLd() {
+  const SITE_URL_LOCAL = process.env.SITE_URL || 'https://ossinsight.io';
+  const navItems = [
+    { name: 'Home', url: `${SITE_URL_LOCAL}/` },
+    { name: 'Data Explorer', url: `${SITE_URL_LOCAL}/explore` },
+    { name: 'Collections', url: `${SITE_URL_LOCAL}/collections` },
+    { name: 'Trending', url: `${SITE_URL_LOCAL}/trending` },
+    { name: 'Languages', url: `${SITE_URL_LOCAL}/languages` },
+    { name: 'Blog', url: `${SITE_URL_LOCAL}/blog` },
+  ];
+  return (
+    <JsonLd
+      data={{
+        '@context': 'https://schema.org',
+        '@type': 'ItemList',
+        name: 'Site Navigation',
+        itemListElement: navItems.map((item, index) => ({
+          '@type': 'SiteNavigationElement',
+          position: index + 1,
+          name: item.name,
+          url: item.url,
+        })),
+      }}
+    />
+  );
+}
+
 export function ItemListJsonLd({
   name,
   items,
