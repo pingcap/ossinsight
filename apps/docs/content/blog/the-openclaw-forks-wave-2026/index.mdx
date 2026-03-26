@@ -14,6 +14,8 @@ Then, in an 8-week window starting late January, four independent teams launched
 
 By late March, they'd accumulated **116,000 combined stars**.
 
+> *Disclosure: OSSInsight is built by [PingCAP](https://pingcap.com). We have no affiliation with any of the projects analyzed in this post. All data is from public GitHub APIs.*
+
 | Repository | Language | Stars | Created | Contributors |
 |-----------|----------|-------|---------|-------------|
 | [HKUDS/nanobot](https://ossinsight.io/analyze/HKUDS/nanobot) | Python | 36,283 | Feb 1, 2026 | ~204 |
@@ -25,7 +27,7 @@ Four different languages. Four different origin stories. Four different answers 
 
 ![Cumulative star growth of OpenClaw alternatives (Jan–Mar 2026)](/blog-assets/the-openclaw-forks-wave-2026/star-history.png)
 
-I read the code. Here's what they each believe. ([Compare them head-to-head on OSSInsight →](https://ossinsight.io/analyze/HKUDS/nanobot?vs=zeroclaw-labs%2Fzeroclaw))
+We read the code. Here's what they each believe. ([Compare them head-to-head on OSSInsight →](https://ossinsight.io/analyze/HKUDS/nanobot?vs=zeroclaw-labs%2Fzeroclaw))
 
 ## Why Now? The Context First.
 
@@ -39,7 +41,7 @@ But a personal AI assistant doesn't need to solve a large problem. For a lot of 
 2. Start instantly  
 3. Be understandable enough to modify
 
-OpenClaw does all three of these things poorly. The forks emerged to address exactly those gaps — but they disagree on which gap matters most.
+OpenClaw does all three of these things poorly — *by design*. Its size is the cost of its strengths: 800+ skills, 50+ channel integrations, battle-tested memory management, and an ecosystem that none of these alternatives have replicated. The forks emerged to address specific gaps, but they disagree on which gap matters most.
 
 ## Nanobot: The "Provable Simplicity" Bet
 
@@ -47,7 +49,7 @@ OpenClaw does all three of these things poorly. The forks emerged to address exa
 
 > ⚡️ Delivers core agent functionality with **99% fewer lines of code** than OpenClaw.
 
-They mean it. The repo includes a shell script — `core_agent_lines.sh` — that you can run yourself to verify the count. When I ran it:
+They mean it. The repo includes a shell script — `core_agent_lines.sh` — that you can run yourself to verify the count. When we ran it:
 
 ```
 nanobot core agent line count
@@ -67,7 +69,7 @@ nanobot core agent line count
 
 5,551 lines for the core agent. That's actually auditable by a single developer in an afternoon.
 
-The tradeoff is explicit: channels, CLI, providers, and skills are not counted. Those add another 25,000+ lines. But the *agent brain* — the part that thinks, schedules, remembers, and decides — is 5,551 lines of Python.
+A caveat: the "99%" claim counts only the core agent. Channels, CLI, providers, and skills add another 25,000+ lines, putting the full codebase closer to 30K lines — still ~89% smaller than OpenClaw, but not 99%. The *agent brain* — the part that thinks, schedules, remembers, and decides — is genuinely 5,551 lines of Python.
 
 This design philosophy has a name: **radically transparent defaults**. If something goes wrong with nanobot, you can actually read the code that caused it. With OpenClaw's 270,000+ lines across the equivalent scope, that's rarely true.
 
@@ -92,9 +94,9 @@ The benchmark table in their README is the kind of thing that gets shared:
 | Binary Size | ~28 MB dist | N/A | ~8.8 MB |
 | Target Hardware | Mac Mini $599 | Linux SBC ~$50 | **Any board $10** |
 
-*(From ZeroClaw's README, measurements on macOS arm64)*
+*(From ZeroClaw's README, measurements on macOS arm64. These are self-reported benchmarks and haven't been independently verified — the >500s startup claim for OpenClaw in particular seems extreme and may reflect a cold-start edge case rather than typical usage.)*
 
-What surprised me was the `/firmware` directory — ZeroClaw ships actual firmware for Arduino, ESP32, Nucleo, and Pico boards. This is not a web app with embedded ambitions. This is an embedded project that also runs on your laptop.
+What surprised us was the `/firmware` directory — ZeroClaw ships actual firmware for Arduino, ESP32, Nucleo, and Pico boards. This is not a web app with embedded ambitions. This is an embedded project that also runs on your laptop.
 
 The memory architecture is particularly thoughtful. ZeroClaw implements time-decay scoring for non-core memories, with a 7-day half-life:
 
@@ -115,15 +117,9 @@ The fork ratio of **0.138** is the lowest in the group. People are running ZeroC
 
 ## PicoClaw: The "Go Everywhere" Bet
 
-[sipeed/picoclaw](https://ossinsight.io/analyze/sipeed/picoclaw) comes from Sipeed — the Chinese maker hardware company known for affordable RISC-V boards. They built PicoClaw in Go, and their pitch is almost identical to ZeroClaw's on the surface: tiny, fast, deployable anywhere.
+[sipeed/picoclaw](https://ossinsight.io/analyze/sipeed/picoclaw) comes from Sipeed — the Chinese maker hardware company known for affordable RISC-V boards. Where ZeroClaw targets Raspberry Pi and ESP32, PicoClaw targets Sipeed's own ecosystem: K210 chips, Tang Nano FPGAs, MAIX boards.
 
-The difference is in what "anywhere" means to Sipeed. For ZeroClaw, it means Raspberry Pi and ESP32. For PicoClaw, it means Sipeed's own hardware ecosystem — K210 chips, Tang Nano FPGAs, MAIX boards.
-
-At 89% Go code and 26 MB repo size, PicoClaw occupies an interesting middle position: simpler than ZeroClaw (single-binary Go with cross-compilation), but with more tooling than nanobot's Python (Go compiles to true native binaries without a runtime).
-
-The daily release cadence (`nightly` releases, 2+ releases in the week before writing this) suggests an active team shipping fast. With 187 contributors in ~50 days, the community growth rate is exceptional.
-
-PicoClaw's issue ratio (0.013) is the lowest in the group — less than a quarter of OpenClaw's. That's a feature of a smaller, more focused codebase: the problem space is constrained, so issues are too.
+The bet is on Go's cross-compilation story. At 89% Go code and 26 MB repo size, PicoClaw produces a single native binary for any architecture — simpler than ZeroClaw's Rust (no borrow checker), more portable than nanobot's Python (no runtime dependency). With 187 contributors in ~50 days, nightly releases, and the lowest issue ratio in the group (0.013 — less than a quarter of OpenClaw's), PicoClaw is shipping fast and breaking little.
 
 ## NanoClaw: The "Platform" Bet
 
@@ -153,9 +149,11 @@ That's not people using nanoclaw. That's people using nanoclaw as *a base to bui
 
 The high fork ratio with low contributor count (~62 vs 200+ for the others) is a specific pattern: **architectural simplicity that invites extension**. When a codebase is simple enough to fork and modify but not well-supported enough to contribute back to, the forks proliferate.
 
+A fair counter-argument: high fork ratios in young repos can also reflect tutorial-style forking or early-adopter behavior rather than genuine customization. We'd need to revisit this metric in 6 months to confirm the pattern holds. But the combination of high forks *and* low contributors is harder to explain away — if people were just forking to learn, you'd expect more of them to contribute back.
+
 NanoClaw at 11 MB (the smallest of the group) and TypeScript-native is the entry point for developers who want to quickly build a specialized assistant without understanding Rust or caring about 5MB memory footprints. The container-first approach means it runs cleanly in CI, staging environments, and cloud functions.
 
-I would bet the majority of NanoClaw's 8,778 forks are customized personal assistants that will never be merged back. That's not a failure mode — it's the intended design.
+We'd bet the majority of NanoClaw's 8,778 forks are customized personal assistants that will never be merged back. That's not a failure mode — it's the intended design.
 
 ## The Pattern: Four Theories of What "Lightweight" Means
 
@@ -173,7 +171,7 @@ What's striking is that all four theories are *correct* — for different users.
 
 ## The Insight Nobody Else Is Measuring: Issue Ratio vs. Fork Ratio
 
-Here's the diagnostic that I think is underused: the **issue-to-star ratio** and **fork-to-star ratio** together tell you whether a project is being *used*, *built upon*, or *talked about*.
+Here's a diagnostic we think is underused: the **issue-to-star ratio** and **fork-to-star ratio** together tell you whether a project is being *used*, *built upon*, or *talked about*.
 
 High issues/star, low forks/star = software people run but complain about (OpenClaw: 0.047 issue ratio, 0.196 fork ratio)
 
