@@ -121,7 +121,7 @@ export function OrgTitleIconEle(props: {
   const WrapperMemo = React.useMemo(() => getWrapper(wrapper), [wrapper]);
 
   return (
-    <NextLink target='_blank' href={`https://github.com/${login}`}>
+    <NextLink target='_blank' rel='noopener noreferrer' href={`https://github.com/${login}`}>
       <WrapperMemo
         className={twMerge(
           'font-semibold text-3xl text-title inline-flex items-center cursor-pointer',

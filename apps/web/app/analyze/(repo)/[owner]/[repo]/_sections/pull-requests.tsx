@@ -104,7 +104,7 @@ export function PullRequestsSection() {
         <a
           href="https://github.com/kubernetes/kubernetes/labels?q=size"
           target="_blank"
-          rel="noreferrer"
+          rel="noopener noreferrer"
           className="site-link"
         >
           PR size

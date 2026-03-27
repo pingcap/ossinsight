@@ -79,7 +79,7 @@ export const Wrapper = (
 
   if (href) {
     return (
-      <a href={href} target="_blank" {...rest}>
+      <a href={href} target="_blank" rel="noopener noreferrer" {...rest}>
         {children}
       </a>
     );

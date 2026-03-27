@@ -27,7 +27,7 @@ export default function OverviewSection () {
   return (
     <>
       {/* -- header -- */}
-      <NextLink target="_blank" href={`https://github.com/${login}`}>
+      <NextLink target="_blank" rel="noopener noreferrer" href={`https://github.com/${login}`}>
         <h1 className="font-semibold text-3xl text-title inline-flex items-center cursor-pointer">
           <NextImage
             src={`https://avatars.githubusercontent.com/u/${userId}`}

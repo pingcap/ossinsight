@@ -248,7 +248,7 @@ export function OverviewSection() {
                   <a
                     href={`https://github.com/${repoName}`}
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noopener noreferrer"
                     className="inline-flex items-center gap-1 hover:text-[#fbe593]"
                   >
                     <span className="truncate">{repoName}</span>

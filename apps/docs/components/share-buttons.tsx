@@ -98,7 +98,7 @@ function ShareButton({
     <a
       href={href}
       target="_blank"
-      rel="noreferrer"
+      rel="noopener noreferrer"
       aria-label={label}
       className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white text-[#212122] transition hover:bg-[#fceeb4]"
     >
