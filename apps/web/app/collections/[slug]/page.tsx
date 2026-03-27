@@ -5,7 +5,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { CollectionDetail } from './content';
 import { AggregateRatingJsonLd, BreadcrumbListJsonLd, CollectionPageJsonLd, FAQPageJsonLd } from '@/components/json-ld';
-import { getCollectionFaqItems } from './collection-faq';
+import { getCollectionFaqItems } from './faq-data';
 
 export const revalidate = 3600;
 
