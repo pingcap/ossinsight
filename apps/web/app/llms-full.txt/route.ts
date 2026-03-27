@@ -1,9 +1,15 @@
-import { listCollections } from '@/lib/server/internal-api';
+import { listCollections, getCollectionRanking } from '@/lib/server/internal-api';
 import { toCollectionSlug } from '@/lib/collections';
 
 export const dynamic = 'force-dynamic';
 
 const SITE_URL = process.env.SITE_URL || 'https://ossinsight.io';
+
+const AI_COLLECTION_KEYWORDS = [
+  'ai agent', 'llm', 'mcp', 'coding agent', 'rag', 'ai coding',
+  'machine learning', 'text to sql', 'ai image', 'chatbot',
+  'vector database', 'deep learning', 'natural language processing',
+];
 
 export async function GET() {
   const sections: string[] = [];
@@ -63,8 +69,9 @@ Curated lists of GitHub repositories grouped by technology domain. Each collecti
 `);
 
   // Dynamic collections list
+  let collections: Array<{ id: number; name: string }> = [];
   try {
-    const collections = await listCollections();
+    collections = await listCollections();
     const collectionLines = collections.map(
       (c: { name: string }) => `- [${c.name}](${SITE_URL}/collections/${toCollectionSlug(c.name)})`,
     );
@@ -72,6 +79,58 @@ Curated lists of GitHub repositories grouped by technology domain. Each collecti
   } catch (error) {
     console.warn('[llms-full.txt] Failed to fetch collections:', error);
   }
+
+  // Data summary: top 5 repos per major AI collection
+  if (collections.length > 0) {
+    const aiCollections = collections.filter((c) =>
+      AI_COLLECTION_KEYWORDS.some((kw) => c.name.toLowerCase().includes(kw)),
+    );
+
+    if (aiCollections.length > 0) {
+      const summaryLines: string[] = [];
+      summaryLines.push(`---\n\n## AI/ML Data Summary\n\nTop repositories in key AI collections (ranked by stars, last 28 days):\n`);
+
+      for (const col of aiCollections.slice(0, 15)) {
+        try {
+          const ranking = await getCollectionRanking(col.id, 'stars', 'last-28-days');
+          if (ranking?.data && Array.isArray(ranking.data)) {
+            const top5 = (ranking.data as Array<{ repo_name?: string; total?: number }>).slice(0, 5);
+            if (top5.length > 0) {
+              summaryLines.push(`### ${col.name}`);
+              summaryLines.push(`URL: ${SITE_URL}/collections/${toCollectionSlug(col.name)}`);
+              summaryLines.push(`API: ${SITE_URL}/collections/api/${col.id}/ranking?metric=stars&range=last-28-days\n`);
+              for (const repo of top5) {
+                const stars = typeof repo.total === 'number' ? ` (${repo.total.toLocaleString()} stars)` : '';
+                summaryLines.push(`- [${repo.repo_name}](https://github.com/${repo.repo_name})${stars}`);
+              }
+              summaryLines.push('');
+            }
+          }
+        } catch {
+          // skip collections that fail to fetch
+        }
+      }
+
+      if (summaryLines.length > 1) {
+        sections.push(summaryLines.join('\n'));
+      }
+    }
+  }
+
+  // API endpoint examples
+  sections.push(`---
+
+## API Endpoints
+
+Example API calls for programmatic access:
+
+- **List all collections**: \`GET ${SITE_URL}/collections/api\`
+- **Collection ranking by stars**: \`GET ${SITE_URL}/collections/api/{collectionId}/ranking?metric=stars&range=last-28-days\`
+- **Collection ranking by PRs**: \`GET ${SITE_URL}/collections/api/{collectionId}/ranking?metric=pull-requests&range=last-28-days\`
+- **Collection ranking by issues**: \`GET ${SITE_URL}/collections/api/{collectionId}/ranking?metric=issues&range=last-28-days\`
+
+Metrics: \`stars\`, \`pull-requests\`, \`issues\`
+Ranges: \`last-28-days\`, \`month\``);
 
   sections.push(`---
 

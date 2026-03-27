@@ -4,7 +4,7 @@ import { getCollectionRanking } from '@/lib/server/internal-api';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { CollectionDetail } from './content';
-import { AggregateRatingJsonLd, BreadcrumbListJsonLd, CollectionPageJsonLd, FAQPageJsonLd } from '@/components/json-ld';
+import { AggregateRatingJsonLd, BreadcrumbListJsonLd, CollectionPageJsonLd, DatasetJsonLd, FAQPageJsonLd } from '@/components/json-ld';
 import { getCollectionFaqItems } from './faq-data';
 
 export const revalidate = 3600;
@@ -61,6 +61,12 @@ export default async function CollectionSlugPage({ params }: { params: Promise<{
   return (
     <>
       <CollectionPageJsonLd name={collection.name} description={COLLECTION_DESC} slug={slug} />
+      <DatasetJsonLd
+        name={`${collection.name} — GitHub Repository Rankings`}
+        description={`Open source ranking dataset for ${collection.name}. ${COLLECTION_DESC}`}
+        url={`/collections/${slug}`}
+        distributionUrl={`/collections/${slug}`}
+      />
       <FAQPageJsonLd items={collectionFaq} />
       {totalStarsInCollection != null && (
         <AggregateRatingJsonLd

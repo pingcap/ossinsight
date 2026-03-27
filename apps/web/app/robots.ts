@@ -40,6 +40,45 @@ export default function robots(): MetadataRoute.Robots {
         userAgent: 'SemrushBot',
         disallow: ['/'],
       },
+      // Explicitly allow AI search crawlers
+      {
+        userAgent: 'GPTBot',
+        allow: [
+          '/',
+          '/analyze/',
+          '/collections/',
+          '/explore',
+          '/trending',
+          '/llms.txt',
+          '/llms-full.txt',
+        ],
+        disallow: ['/api/', '/collections/api/', '/gh/', '/q/', '/_next/'],
+      },
+      {
+        userAgent: 'ChatGPT-User',
+        allow: ['/'],
+        disallow: ['/api/', '/collections/api/', '/gh/', '/q/', '/_next/'],
+      },
+      {
+        userAgent: 'PerplexityBot',
+        allow: ['/'],
+        disallow: ['/api/', '/collections/api/', '/gh/', '/q/', '/_next/'],
+      },
+      {
+        userAgent: 'Google-Extended',
+        allow: ['/'],
+        disallow: ['/api/', '/collections/api/', '/gh/', '/q/', '/_next/'],
+      },
+      {
+        userAgent: 'Anthropic',
+        allow: ['/'],
+        disallow: ['/api/', '/collections/api/', '/gh/', '/q/', '/_next/'],
+      },
+      {
+        userAgent: 'ClaudeBot',
+        allow: ['/'],
+        disallow: ['/api/', '/collections/api/', '/gh/', '/q/', '/_next/'],
+      },
     ],
     sitemap: [
       `${SITE_URL}/sitemap.xml`,

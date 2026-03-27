@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { getRepoByName } from '@/lib/server/internal-api';
-import { BreadcrumbListJsonLd, SoftwareApplicationJsonLd } from '@/components/json-ld';
+import { BreadcrumbListJsonLd, SoftwareApplicationJsonLd, SoftwareSourceCodeJsonLd } from '@/components/json-ld';
 import { Breadcrumb } from '@/components/Breadcrumb';
 import ShareButtons from '@/components/ShareButtons';
 import RepoAnalyzePage from './content';
@@ -54,6 +54,13 @@ export default async function Page({ params, searchParams }: PageProps) {
           name: owner,
           url: `https://github.com/${owner}`,
         }}
+      />
+      <SoftwareSourceCodeJsonLd
+        repoName={`${owner}/${repo}`}
+        description={repoInfo.description}
+        stars={repoInfo.stars}
+        language={repoInfo.language}
+        url={`/analyze/${owner}/${repo}`}
       />
       <div className="mx-auto max-w-[1280px] px-6 sm:px-8">
         <Breadcrumb

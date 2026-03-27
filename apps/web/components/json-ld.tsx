@@ -387,10 +387,12 @@ export function DatasetJsonLd({
   name,
   description,
   url,
+  distributionUrl,
 }: {
   name: string;
   description: string;
   url: string;
+  distributionUrl?: string;
 }) {
   return (
     <JsonLd
@@ -421,6 +423,52 @@ export function DatasetJsonLd({
           'Contributors',
           'Forks',
         ],
+        ...(distributionUrl
+          ? {
+              distribution: {
+                '@type': 'DataDownload',
+                contentUrl: distributionUrl.startsWith('http') ? distributionUrl : `${SITE_URL}${distributionUrl}`,
+                encodingFormat: 'text/html',
+              },
+            }
+          : {}),
+      }}
+    />
+  );
+}
+
+export function SoftwareSourceCodeJsonLd({
+  repoName,
+  description,
+  stars,
+  language,
+  url,
+}: {
+  repoName: string;
+  description?: string;
+  stars?: number;
+  language?: string;
+  url?: string;
+}) {
+  return (
+    <JsonLd
+      data={{
+        '@context': 'https://schema.org',
+        '@type': 'SoftwareSourceCode',
+        name: repoName,
+        description,
+        codeRepository: `https://github.com/${repoName}`,
+        ...(language ? { programmingLanguage: language } : {}),
+        ...(url ? { url: url.startsWith('http') ? url : `${SITE_URL}${url}` } : {}),
+        ...(stars != null
+          ? {
+              interactionStatistic: {
+                '@type': 'InteractionCounter',
+                interactionType: 'https://schema.org/LikeAction',
+                userInteractionCount: stars,
+              },
+            }
+          : {}),
       }}
     />
   );
