@@ -121,8 +121,8 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
       if (repoInfo.language) parts.push(repoInfo.language);
       description = `${parts.join(' · ')}. ${repoInfo.description || `Real-time analytics on stars, commits, issues, pull requests, and contributors.`}`;
     }
-  } catch {
-    // Use default description
+  } catch (error) {
+    console.warn(`[analyze/${owner}/${repo}] Failed to fetch repo info for metadata:`, error);
   }
 
   return {

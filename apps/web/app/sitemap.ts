@@ -49,8 +49,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.5,
       });
     }
-  } catch {
-    // Database may be unavailable during build
+  } catch (error) {
+    console.warn('[sitemap] Failed to fetch collections for sitemap:', error);
   }
 
   // Repo comparisons generated from collections (top repos in each collection, pairwise)
@@ -83,8 +83,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         }
       }
     }
-  } catch {
-    // Database may be unavailable during build
+  } catch (error) {
+    console.warn('[sitemap] Failed to fetch comparison repos for sitemap:', error);
   }
 
   return entries;

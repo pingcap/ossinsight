@@ -51,8 +51,8 @@ export default async function CollectionSlugPage({ params }: { params: Promise<{
         .reduce((acc, row) => acc + (typeof row.total === 'number' ? row.total : 0), 0);
       if (sum > 0) totalStarsInCollection = sum;
     }
-  } catch {
-    // DB unavailable, client will fetch
+  } catch (error) {
+    console.warn(`[collections/${slug}] Failed to pre-fetch ranking data:`, error);
   }
 
   const collectionFaq = [

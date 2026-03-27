@@ -69,8 +69,8 @@ Curated lists of GitHub repositories grouped by technology domain. Each collecti
       (c: { name: string }) => `- [${c.name}](${SITE_URL}/collections/${toCollectionSlug(c.name)})`,
     );
     sections.push(`### Available Collections (${collections.length} total)\n\n${collectionLines.join('\n')}`);
-  } catch {
-    // DB unavailable
+  } catch (error) {
+    console.warn('[llms-full.txt] Failed to fetch collections:', error);
   }
 
   sections.push(`---

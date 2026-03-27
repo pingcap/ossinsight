@@ -108,8 +108,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       const nf = new Intl.NumberFormat('en');
       description = `Compare ${name1} (${nf.format(repoInfo.stars)}\u2B50) vs ${name2} (${nf.format(vsRepoInfo.stars)}\u2B50) — stars, commits, contributors, pull requests, and more.`;
     }
-  } catch {
-    // Use default description
+  } catch (error) {
+    console.warn(`[compare] Failed to fetch repo info for ${name1} vs ${name2} metadata:`, error);
   }
 
   return {

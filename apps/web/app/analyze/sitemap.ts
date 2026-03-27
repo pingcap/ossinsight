@@ -20,8 +20,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.7,
       });
     }
-  } catch {
-    // Database may be unavailable during build
+  } catch (error) {
+    console.warn('[analyze/sitemap] Failed to fetch top repos for sitemap:', error);
   }
 
   return entries;

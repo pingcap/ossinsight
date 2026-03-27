@@ -28,8 +28,8 @@ export default async function Image({ params }: { params: Promise<{ slug: string
         .slice(0, 5)
         .map((p) => p.repo_name.split('/')[1] ?? p.repo_name);
     }
-  } catch {
-    // DB unavailable, use slug-derived name
+  } catch (error) {
+    console.warn(`[collections/${slug}/opengraph-image] Failed to fetch collection data:`, error);
   }
 
   const poppinsMedium = fetch(new URL('./Poppins-Medium.ttf', import.meta.url)).then((r) =>
