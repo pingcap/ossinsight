@@ -361,6 +361,9 @@ importers:
       '@types/d3-cloud':
         specifier: ^1.2.9
         version: 1.2.9
+      '@types/jsonpath':
+        specifier: ^0.2.4
+        version: 0.2.4
       '@types/lodash':
         specifier: ^4.14.199
         version: 4.17.24
@@ -3957,6 +3960,9 @@ packages:
 
   '@types/json5@0.0.29':
     resolution: {integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==}
+
+  '@types/jsonpath@0.2.4':
+    resolution: {integrity: sha512-K3hxB8Blw0qgW6ExKgMbXQv2UPZBoE2GqLpVY+yr7nMD2Pq86lsuIzyAaiQ7eMqFL5B6di6pxSkogLJEyEHoGA==}
 
   '@types/jsonwebtoken@9.0.10':
     resolution: {integrity: sha512-asx5hIG9Qmf/1oStypjanR7iKTv0gXQ1Ov/jfrX6kS/EO0OFni8orbmGCn0672NHR3kXHwpAwR+B368ZGN/2rA==}
@@ -14625,6 +14631,8 @@ snapshots:
   '@types/json-schema@7.0.15': {}
 
   '@types/json5@0.0.29': {}
+
+  '@types/jsonpath@0.2.4': {}
 
   '@types/jsonwebtoken@9.0.10':
     dependencies:
