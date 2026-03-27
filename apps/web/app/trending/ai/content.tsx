@@ -80,6 +80,7 @@ export function TrendingAIContent({
   const [activeCategory, setActiveCategory] = useState('All');
   const [sortField, setSortField] = useState<SortField>('total');
   const [sortAsc, setSortAsc] = useState(false);
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   const filteredRepos = useMemo(() => {
     let repos = initialData.repos;
@@ -321,24 +322,49 @@ export function TrendingAIContent({
 
         {/* FAQ Section */}
         <section className="mb-10">
-          <h2 className="mb-4 text-lg font-semibold text-[#e9eaee]">Frequently Asked Questions</h2>
-          <div className="space-y-4">
-            {faqItems.map((item) => (
-              <details
-                key={item.question}
-                className="group rounded-lg border border-[#363638] bg-[#212122]"
-              >
-                <summary className="cursor-pointer px-5 py-4 text-[#e9eaee] hover:text-[#f7df83] [&::-webkit-details-marker]:hidden">
-                  <span className="flex items-center justify-between">
-                    {item.question}
-                    <ChevronRight className="h-4 w-4 transition-transform group-open:rotate-90" />
-                  </span>
-                </summary>
-                <div className="border-t border-[#29292a] px-5 py-4 text-sm leading-relaxed text-[#7c7c7c]">
-                  {item.answer}
+          <h2 className="mb-4 text-lg font-semibold text-[#e9eaee]">
+            ❓ Frequently Asked Questions
+          </h2>
+          <div className="space-y-2">
+            {faqItems.map((item, i) => {
+              const isOpen = openFaq === i;
+              return (
+                <div
+                  key={item.question}
+                  className="rounded-xl border border-white/[0.07] overflow-hidden"
+                  style={{ backgroundColor: isOpen ? '#242526' : '#1a1a1b' }}
+                >
+                  <button
+                    type="button"
+                    onClick={() => setOpenFaq(isOpen ? null : i)}
+                    aria-expanded={isOpen}
+                    className="w-full flex items-center justify-between gap-4 px-5 py-4 text-left transition-colors hover:bg-white/[0.04]"
+                  >
+                    <span className="text-[15px] font-medium text-[#e3e3e3]">
+                      {item.question}
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      className="shrink-0 text-[#ffe895] transition-transform duration-200"
+                      style={{ transform: isOpen ? 'rotate(45deg)' : 'rotate(0deg)' }}
+                    >
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <line x1="12" y1="5" x2="12" y2="19" />
+                        <line x1="5" y1="12" x2="19" y2="12" />
+                      </svg>
+                    </span>
+                  </button>
+                  {isOpen && (
+                    <div className="px-5 pb-5">
+                      <div className="h-px bg-white/[0.06] mb-4" />
+                      <p className="text-[14px] leading-relaxed text-slate-300">
+                        {item.answer}
+                      </p>
+                    </div>
+                  )}
                 </div>
-              </details>
-            ))}
+              );
+            })}
           </div>
         </section>
       </div>

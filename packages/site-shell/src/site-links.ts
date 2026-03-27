@@ -61,9 +61,18 @@ export function createAppHeaderConfig(app: SiteApp, env: EnvMap = process.env): 
       },
       {
         label: 'Trending',
-        href: getCrossAppHref(app, 'web', '/trending', env),
-        matchPrefixes: app === 'web' ? ['/trending'] : [],
-        forceReload: app !== 'web',
+        items: [
+          {
+            label: 'Trending Repos',
+            href: getCrossAppHref(app, 'web', '/trending', env),
+            forceReload: app !== 'web',
+          },
+          {
+            label: '🔥 Trending AI Repos',
+            href: getCrossAppHref(app, 'web', '/trending/ai', env),
+            forceReload: app !== 'web',
+          },
+        ],
       },
       {
         label: 'Languages',
