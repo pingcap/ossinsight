@@ -376,7 +376,7 @@ function renderExplorerCell(column: string, value: unknown) {
         href={`/analyze/${value}`}
         className="text-[#fbe593] transition-colors hover:text-[#fceeb4]"
       >
-        {value}
+        {String(value)}
       </Link>
     );
   }
@@ -389,7 +389,7 @@ function renderExplorerCell(column: string, value: unknown) {
         target="_blank"
         rel="noopener noreferrer"
       >
-        {value}
+        {String(value)}
       </a>
     );
   }
@@ -1480,7 +1480,7 @@ function ExploreExecutionLayout({
                 <div className="mt-3 flex items-center gap-3">
                   <button
                     type="button"
-                    onClick={onSubmit}
+                    onClick={() => onSubmit(input)}
                     className="rounded-lg bg-[#6a2c2f] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#7d3437] transition-colors"
                   >
                     Try again
