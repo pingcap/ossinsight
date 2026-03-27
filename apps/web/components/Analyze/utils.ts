@@ -17,6 +17,7 @@ export interface OwnerInfo {
   id: number;
   bio: string;
   public_repos: number;
+  avatar_url: string;
 }
 
 export const getOwnerInfo = (owner: string): Promise<OwnerInfo> => {
