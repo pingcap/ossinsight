@@ -59,7 +59,24 @@ export function jsonResponse(body: unknown, init?: ResponseInit) {
   });
 }
 
-export async function getRepoById(id: number | string, signal?: AbortSignal) {
+export interface RepoDetail {
+  id: number;
+  full_name: string;
+  description: string;
+  language: string;
+  license: string;
+  forks: number;
+  stars: number;
+  owner_login: string;
+  owner_id: number;
+  default_branch: string;
+  owner: {
+    login: string;
+    avatar_url: string;
+  };
+}
+
+export async function getRepoById(id: number | string, signal?: AbortSignal): Promise<RepoDetail | null> {
   const row = await executeOneRow<{
     id: number;
     full_name: string;
@@ -106,7 +123,7 @@ export async function getRepoById(id: number | string, signal?: AbortSignal) {
   };
 }
 
-export async function getRepoByName(owner: string, repo: string, signal?: AbortSignal) {
+export async function getRepoByName(owner: string, repo: string, signal?: AbortSignal): Promise<RepoDetail | null> {
   const row = await executeOneRow<{
     id: number;
     full_name: string;

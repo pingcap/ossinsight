@@ -12,6 +12,7 @@ export interface RepoInfo {
   license: string;
   forks: number;
   stars: number;
+  default_branch: string;
   owner: {
     login: string;
     avatar_url: string;
