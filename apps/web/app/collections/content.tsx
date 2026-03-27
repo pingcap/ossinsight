@@ -1,9 +1,17 @@
 'use client';
 
 import React, { useDeferredValue, useEffect, useMemo, useTransition } from 'react';
-import Link from 'next/link';
+import NextLink from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { ArrowDown, ArrowUp, ChevronLeft, ChevronRight, Search } from 'lucide-react';
+import { ArrowDown as ArrowDownIcon, ArrowUp as ArrowUpIcon, ChevronLeft as ChevronLeftIcon, ChevronRight as ChevronRightIcon, Search as SearchIcon } from 'lucide-react';
+
+// Cast to avoid JSX type errors from @types/react version mismatch
+const Link = NextLink as unknown as React.ComponentType<any>;
+const ArrowDown = ArrowDownIcon as React.ComponentType<any>;
+const ArrowUp = ArrowUpIcon as React.ComponentType<any>;
+const ChevronLeft = ChevronLeftIcon as React.ComponentType<any>;
+const ChevronRight = ChevronRightIcon as React.ComponentType<any>;
+const Search = SearchIcon as React.ComponentType<any>;
 import { CollectionsWordCloud } from './_components/word-cloud';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';

@@ -1,21 +1,35 @@
 'use client';
 
 import React, { useMemo, useState } from 'react';
-import Link from 'next/link';
+import NextLink from 'next/link';
+
+// Cast next/link to avoid JSX type errors from @types/react version mismatch (18 vs 19)
+const Link = NextLink as unknown as React.ComponentType<any>;
 import dynamic from 'next/dynamic';
 import { Breadcrumb } from '@/components/Breadcrumb';
 import format from 'human-format';
 import {
-  ArrowDown,
-  ArrowUp,
-  BarChart3,
-  CircleDot,
-  GitPullRequest,
-  Inbox,
-  Pencil,
-  Star,
-  UserRound,
+  ArrowDown as ArrowDownIcon,
+  ArrowUp as ArrowUpIcon,
+  BarChart3 as BarChart3Icon,
+  CircleDot as CircleDotIcon,
+  GitPullRequest as GitPullRequestIcon,
+  Inbox as InboxIcon,
+  Pencil as PencilIcon,
+  Star as StarIcon,
+  UserRound as UserRoundIcon,
 } from 'lucide-react';
+
+// Cast lucide-react icons to avoid JSX type errors from @types/react version mismatch (18 vs 19)
+const ArrowDown = ArrowDownIcon as React.ComponentType<any>;
+const ArrowUp = ArrowUpIcon as React.ComponentType<any>;
+const BarChart3 = BarChart3Icon as React.ComponentType<any>;
+const CircleDot = CircleDotIcon as React.ComponentType<any>;
+const GitPullRequest = GitPullRequestIcon as React.ComponentType<any>;
+const Inbox = InboxIcon as React.ComponentType<any>;
+const Pencil = PencilIcon as React.ComponentType<any>;
+const Star = StarIcon as React.ComponentType<any>;
+const UserRound = UserRoundIcon as React.ComponentType<any>;
 import type { EChartsOption } from 'echarts';
 import ShareButtons from '@/components/ShareButtons';
 import { ShowSQLInline } from '@/components/Analyze/ShowSQL';
@@ -47,7 +61,7 @@ import { type CollectionQueryResponse, useCollectionApi } from '@/lib/collection
 import { cn } from '@/lib/utils';
 import type { Collection } from '@/utils/api';
 
-const LazyECharts = dynamic(() => import('@/components/Analyze/EChartsWrapper'), { ssr: false });
+const LazyECharts = dynamic(() => import('@/components/Analyze/EChartsWrapper').then((mod) => mod as any), { ssr: false }) as React.ComponentType<any>;
 const monthFormatter = new Intl.DateTimeFormat(['en-US'], {
   month: 'short',
   year: 'numeric',

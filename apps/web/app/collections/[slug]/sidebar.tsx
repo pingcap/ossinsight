@@ -1,9 +1,14 @@
 'use client';
 
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import Link from 'next/link';
+import NextLink from 'next/link';
 import { usePathname } from 'next/navigation';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft as ChevronLeftIcon, ChevronRight as ChevronRightIcon } from 'lucide-react';
+
+// Cast to avoid JSX type errors from @types/react version mismatch
+const Link = NextLink as unknown as React.ComponentType<any>;
+const ChevronLeft = ChevronLeftIcon as React.ComponentType<any>;
+const ChevronRight = ChevronRightIcon as React.ComponentType<any>;
 import { toCollectionSlug } from '@/lib/collections';
 import type { Collection } from '@/utils/api';
 import { cn } from '@/lib/utils';

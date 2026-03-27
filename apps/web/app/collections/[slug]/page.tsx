@@ -41,7 +41,7 @@ export default async function CollectionSlugPage({ params }: { params: Promise<{
   }
 
   // Pre-fetch default ranking data (stars + last-28-days) for SSR
-  let initialRankingData = null;
+  let initialRankingData: any = null;
   let totalStarsInCollection: number | null = null;
   try {
     initialRankingData = await getCollectionRanking(collection.id, 'stars', 'last-28-days');

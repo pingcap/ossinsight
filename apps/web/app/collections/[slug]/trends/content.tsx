@@ -3,7 +3,11 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
-import { Gauge, Pencil } from 'lucide-react';
+import { Gauge as GaugeIcon, Pencil as PencilIcon } from 'lucide-react';
+
+// Cast to avoid JSX type errors from @types/react version mismatch
+const Gauge = GaugeIcon as React.ComponentType<any>;
+const Pencil = PencilIcon as React.ComponentType<any>;
 import type { EChartsOption } from 'echarts';
 import { ShowSQLInline } from '@/components/Analyze/ShowSQL';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -18,7 +22,8 @@ import {
 import { type CollectionQueryResponse, useCollectionApi } from '@/lib/collections-client';
 import type { Collection } from '@/utils/api';
 
-const LazyECharts = dynamic(() => import('@/components/Analyze/EChartsWrapper'), { ssr: false });
+// @ts-expect-error - dynamic import type mismatch with Next.js types
+const LazyECharts = dynamic(() => import('@/components/Analyze/EChartsWrapper'), { ssr: false }) as React.ComponentType<any>;
 const monthFormatter = new Intl.DateTimeFormat(['en-US'], {
   month: 'short',
   year: 'numeric',

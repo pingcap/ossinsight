@@ -41,6 +41,7 @@ export default async function Image({ params }: { params: Promise<{ slug: string
 
   return new ImageResponse(
     (
+      // @ts-expect-error - React Element type mismatch with next/og ImageResponse
       <div
         style={{
           background: '#1a1a1b',

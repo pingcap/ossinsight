@@ -9,6 +9,7 @@ import type { Metadata } from 'next';
 import { BreadcrumbListJsonLd, ItemListJsonLd } from '@/components/json-ld';
 import { toCollectionSlug } from '@/lib/collections';
 import { CollectionsList } from './content';
+import type { Collection } from '@/utils/api';
 
 export const metadata: Metadata = {
   title: 'Open Source Collections — AI Agent Frameworks, GitHub Trending & More',
@@ -71,7 +72,7 @@ export default async function CollectionsPage({
       pageSize,
     }),
     getHotCollections(),
-    listCollections(),
+    listCollections() as Promise<Collection[]>,
   ]);
 
   const previewItems = await listCollectionPreviewRepos(result.data.map((collection) => collection.id));
