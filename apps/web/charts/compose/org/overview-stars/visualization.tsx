@@ -45,10 +45,10 @@ export default function Card({ data: input, ctx, linkedData }: { data: any[]; ct
 
   const { current_period_total, past_period_total } = total?.[0] ?? {};
 
-  const currentStarsSum = current_period_total;
-  const pastStarsSum = past_period_total;
+  const currentStarsSum = current_period_total ?? 0;
+  const pastStarsSum = past_period_total ?? 0;
   const diff = currentStarsSum - pastStarsSum;
-  const diffPercentage = number2percent(diff / pastStarsSum);
+  const diffPercentage = number2percent(diff / (pastStarsSum || 1));
 
   const stars = transferData2Star(data);
 

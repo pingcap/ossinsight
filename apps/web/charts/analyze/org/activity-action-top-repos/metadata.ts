@@ -9,7 +9,7 @@ const generateMetadata: MetadataGenerator<{
   activity: string;
 }> = ({ parameters: { owner_id, activity }, getOrg }) => {
   const main = getOrg(parseInt(owner_id));
-  const title = getTitle(activity, main.login);
+  const title = getTitle(activity, main?.login);
   return {
     title,
   };

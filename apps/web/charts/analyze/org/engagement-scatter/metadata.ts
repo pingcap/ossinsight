@@ -6,7 +6,7 @@ const generateMetadata: MetadataGenerator<{ owner_id: number }> = ({
 }) => {
   const main = getOrg(owner_id);
   return {
-    title: `Most engaged people of ${main.login}`,
+    title: `Most engaged people of ${main?.login}`,
   };
 };
 

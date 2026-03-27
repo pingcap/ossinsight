@@ -90,7 +90,7 @@ export default function (
       axisLabel: { formatter: fmtHours },
       axisPointer: {
         label: {
-          formatter: ({ value }) => fmtHours(Number(value)),
+          formatter: ({ value }: { value: any }) => fmtHours(Number(value)),
         },
       },
       max,
@@ -114,7 +114,7 @@ export default function (
     tooltip: axisTooltip('cross', {
       renderMode: 'html',
       formatter: (params) => {
-        const { value, marker } = params[0];
+        const { value, marker } = (params as any[])[0];
         return `
         ${marker as string}
         <span>${value.repo_name}</span>

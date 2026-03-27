@@ -85,10 +85,10 @@ const handleTotal = (total: TotalDataPoint[] | undefined) => {
   const { current_period_total, past_period_total } =
     total?.[0] || {};
 
-  const currentSum = current_period_total;
-  const pastSum = past_period_total;
+  const currentSum = current_period_total ?? 0;
+  const pastSum = past_period_total ?? 0;
   const diff = currentSum - pastSum;
-  const diffPercentage = number2percent(diff/pastSum);
+  const diffPercentage = number2percent(diff / (pastSum || 1));
   return {
     current_period_total,
     past_period_total,

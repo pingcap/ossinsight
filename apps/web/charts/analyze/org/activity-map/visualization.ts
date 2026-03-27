@@ -41,7 +41,7 @@ const dataPointToLocationData = (
 ): LocationData[] => {
   return data.map((item) => ({
     country_or_area: item.country_code,
-    count: item[activity],
+    count: (item as any)[activity],
   }));
 };
 
@@ -85,7 +85,7 @@ export default function (
 
   const max = input
     .flat()
-    .reduce((prev, current) => Math.max(prev, current[activity] || 0), 1);
+    .reduce((prev, current) => Math.max(prev, (current as any)[activity] || 0), 1);
 
   const option = {
     dataset: compare(input, (data, name) =>

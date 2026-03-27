@@ -1,5 +1,6 @@
 import type { WidgetVisualizerContext } from '@/lib/charts-types';
 
+// @ts-expect-error d3-cloud has no type declarations
 import cloud from 'd3-cloud';
 
 type Params = {
@@ -31,7 +32,7 @@ function transformCompanyData (
   }
   return data.flatMap((item, index) => ({
     text: esc(item.organization_name),
-    size: item[valueIndex],
+    size: (item as any)[valueIndex],
     color: undefined,
   }));
 }
@@ -89,9 +90,9 @@ export default async function (
       .padding(2)
       .rotate(0)
       .font('Heiti TC')
-      .fontSize(function (d) { return d.size; })
+      .fontSize(function (d: any) { return d.size; })
       .random(() => 0.5)
-      .on('end', (word) => resolve(word));
+      .on('end', (word: any) => resolve(word));
     layout.start();
     if (signal) {
       signal.onabort = () => {

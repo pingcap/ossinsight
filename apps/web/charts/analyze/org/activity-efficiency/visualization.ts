@@ -190,7 +190,7 @@ export default function (
         type: 'line',
       },
       formatter: (params) => {
-        const { value = {} } = params[0];
+        const { value = {} } = (params as any[])[0];
         const { date, closed, open, merged } = value;
         const parsedDate = DateTime.fromJSDate(new Date(date)).toFormat(
           'yyyy-MM-dd'

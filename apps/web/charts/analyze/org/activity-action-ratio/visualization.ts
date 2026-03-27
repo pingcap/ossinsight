@@ -157,12 +157,12 @@ export default function (
       position: function (pos, params, dom, rect, size) {
         // tooltip will be fixed on the right if mouse hovering on the left,
         // and on the left if hovering on the right.
-        var obj = { top: 60 };
+        var obj: Record<string, number> = { top: 60 };
         obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 5;
         return obj;
       },
       formatter: (params) => {
-        const { name, value } = params;
+        const { name, value } = params as any;
         if (activity === 'pull-requests/self-merged' && name === 'self-merged') {
           return `<b>${name}</b>
             <div>${value} PRs(${((value / sum[0]) * 100).toFixed(0)}%)</div>
