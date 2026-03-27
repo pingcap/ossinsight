@@ -155,6 +155,44 @@ export function BreadcrumbListJsonLd({
   );
 }
 
+export function CollectionPageJsonLd({
+  title,
+  description,
+  url,
+  posts,
+}: {
+  title: string;
+  description: string;
+  url: string;
+  posts: { title: string; description: string; slug: string; date: string | null; image?: string }[];
+}) {
+  return (
+    <JsonLd
+      data={{
+        '@context': 'https://schema.org',
+        '@type': 'CollectionPage',
+        name: title,
+        description,
+        url: url.startsWith('http') ? url : `${SITE_URL}${url}`,
+        isPartOf: {
+          '@type': 'WebSite',
+          name: 'OSSInsight',
+          url: SITE_URL,
+        },
+        mainEntity: {
+          '@type': 'ItemList',
+          itemListElement: posts.map((post, index) => ({
+            '@type': 'ListItem',
+            position: index + 1,
+            url: `${SITE_URL}/blog/${post.slug}`,
+            name: post.title,
+          })),
+        },
+      }}
+    />
+  );
+}
+
 export function PersonJsonLd({
   name,
   url,

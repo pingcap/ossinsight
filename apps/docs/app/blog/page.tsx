@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { formatDisplayDate, getBlogPosts, type BlogPostSummary } from '@/lib/content';
+import { BreadcrumbListJsonLd, CollectionPageJsonLd } from '@/components/json-ld';
 
 export const metadata: Metadata = {
   title: 'Blog',
@@ -173,6 +174,16 @@ export default async function BlogIndexPage() {
 
   return (
     <div className="mx-auto w-full max-w-[1080px]">
+      <BreadcrumbListJsonLd items={[
+        { name: 'Home', url: '/' },
+        { name: 'Blog' },
+      ]} />
+      <CollectionPageJsonLd
+        title="Blog"
+        description="Helping dev teams adopt OSS technologies and practices. Written by software engineers and community analysts."
+        url="/blog"
+        posts={posts}
+      />
       <header className="mb-10 border-b border-white/[0.08] pb-8">
         <div className="text-[11px] font-medium uppercase tracking-[0.26em] text-[#fbe593]">Blog</div>
         <h1 className="mt-4 text-[30px] font-semibold leading-tight text-[#e9eaee] sm:text-[38px]">
