@@ -91,6 +91,7 @@ function toSlug(name: string) {
 function AnimatedTotal({ value }: { value: number }) {
   const [display, setDisplay] = useState(value);
   const prevRef = useRef(value);
+  const rafRef = useRef<number>(0);
 
   useEffect(() => {
     const from = prevRef.current;
@@ -103,9 +104,10 @@ function AnimatedTotal({ value }: { value: number }) {
       const t = Math.min((now - start) / duration, 1);
       const eased = 1 - Math.pow(1 - t, 3);
       setDisplay(Math.round(from + (to - from) * eased));
-      if (t < 1) requestAnimationFrame(step);
+      if (t < 1) rafRef.current = requestAnimationFrame(step);
     };
-    requestAnimationFrame(step);
+    rafRef.current = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(rafRef.current);
   }, [value]);
 
   return <span className="text-[#E30C34] font-bold" style={{ fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace', fontVariantNumeric: 'tabular-nums' }}>{display.toLocaleString()}</span>;

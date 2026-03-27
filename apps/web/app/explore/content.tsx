@@ -491,6 +491,7 @@ function getChartOption(answer: ExplorerAnswer): EChartsOption | null {
 function AnimatedCount({ value, color = '#9197D0' }: { value: number; color?: string }) {
   const [display, setDisplay] = useState(value);
   const previous = useRef(value);
+  const rafRef = useRef<number>(0);
 
   useEffect(() => {
     const from = previous.current;
@@ -508,11 +509,12 @@ function AnimatedCount({ value, color = '#9197D0' }: { value: number; color?: st
       const eased = 1 - Math.pow(1 - progress, 3);
       setDisplay(Math.round(from + (to - from) * eased));
       if (progress < 1) {
-        requestAnimationFrame(tick);
+        rafRef.current = requestAnimationFrame(tick);
       }
     };
 
-    requestAnimationFrame(tick);
+    rafRef.current = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(rafRef.current);
   }, [value]);
 
   return (
