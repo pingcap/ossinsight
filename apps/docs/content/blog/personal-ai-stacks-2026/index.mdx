@@ -1,0 +1,140 @@
+---
+title: "50,000 Stars for One Person's Config File: The Personal AI Stack Phenomenon"
+date: 2026-03-27
+authors: [OSSInsight]
+tags: [insight, ai, developer-tools, productivity]
+image: /blog-assets/personal-ai-stacks-2026/cover.png
+description: "garrytan/gstack hit 50,000 GitHub stars in 16 days — for a personal AI engineering config. We analyzed the data behind this new category and found a pattern that reveals something fundamental about how developers learn in 2026."
+keywords: [garrytan gstack, personal AI stack, claude code skills, mattpocock skills, slavingia skills, developer productivity 2026, github trending, ossinsight, AI coding workflow, open source tooling]
+---
+
+Something unusual happened on GitHub in the past two months.
+
+Three developers published repos containing their personal AI coding configurations — Markdown files, slash commands, system prompts — and watched them collectively accumulate **64,000 stars**.
+
+Not code. Not libraries. Not frameworks. *Config files and instructions.*
+
+[garrytan/gstack](https://ossinsight.io/analyze/garrytan/gstack) hit 50,000 stars in 16 days. [mattpocock/skills](https://ossinsight.io/analyze/mattpocock/skills) crossed 10,000 stars over 52 days. [slavingia/skills](https://ossinsight.io/analyze/slavingia/skills) got 3,600 stars in its first *four days*.
+
+We analyzed the data behind all three repos to understand what's actually happening. The numbers point to something that doesn't have a good name yet.
+
+> *Disclosure: OSSInsight is built by [PingCAP](https://pingcap.com). We have no affiliation with any projects analyzed here. All data from public GitHub APIs as of March 27, 2026.*
+
+## The Repos, and the People Behind Them
+
+To understand what's going on, you need to understand who these people are:
+
+| Repository | Creator | Role | Stars | Created | Stars/Day |
+|-----------|---------|------|-------|---------|-----------|
+| [garrytan/gstack](https://ossinsight.io/analyze/garrytan/gstack) | Garry Tan | President & CEO, Y Combinator | 50,074 | Mar 11, 2026 | 3,130 |
+| [mattpocock/skills](https://ossinsight.io/analyze/mattpocock/skills) | Matt Pocock | Creator of TypeScript tutorial series, author of *Total TypeScript* | 10,350 | Feb 3, 2026 | 199 |
+| [slavingia/skills](https://ossinsight.io/analyze/slavingia/skills) | Sahil Lavingia | Founder & CEO, Gumroad | 3,650 | Mar 23, 2026 | 912 |
+
+These are not indie hackers sharing weekend projects. These are people with established audiences, public reputations, and credibility at the intersection of technology and building companies. They're sharing *how they work* — not what they built.
+
+![Star velocity comparison across repos, with personal AI stacks at the top](/blog-assets/personal-ai-stacks-2026/growth-velocity.png)
+
+## What They Actually Are
+
+Let's be precise about what's in these repos, because the content matters.
+
+**garrytan/gstack** (~50K LOC across TypeScript, Markdown, tests) is the most complete. It contains 15 "skills" — slash commands that turn Claude Code into a virtual engineering team. `/plan-ceo-review` has an AI simulate Garry's perspective on a product decision. `/review` runs a multi-agent PR review: architecture check, bug scan, security audit, test coverage gate. `/qa` opens a real browser and tests your staging URL against a rubric. There's a headless browser CLI with E2E tests, diff-based test selection, a two-tier test system with gate vs. periodic classification.
+
+The README opens with a quote from Karpathy: *"I don't think I've typed like a line of code probably since December."* Then Garry describes shipping 600,000+ lines of production code (35% tests) in 60 days — while running Y Combinator full-time.
+
+**mattpocock/skills** is closer to a methodology than a tool. Skills like `/write-a-prd` (create a PRD through an interactive interview), `/grill-me` (get relentlessly interviewed about a design until every decision is resolved), `/tdd` (red-green-refactor loop, one vertical slice at a time). The skills are opinionated about *how to think*, not just how to type.
+
+**slavingia/skills** is the most distilled: 10 skills that follow the arc of his book *The Minimalist Entrepreneur* — from finding community (`/find-community`) to making decisions (`/minimalist-review`). It's a business philosophy translated into agent instructions.
+
+## The Number That Doesn't Fit
+
+Here's where the data gets interesting.
+
+The standard way to measure whether a GitHub project is being *used* vs. being *observed* is the star-to-fork ratio. When developers star a library, a meaningful fraction of them clone and use it — they contribute bug fixes, they customize it, they fork it for their own needs. High-usage repos converge toward a ratio of 4–7 stars per fork.
+
+Personal AI stacks sit at 8–15x.
+
+![Star-to-fork ratios: personal AI stacks vs. other repo categories](/blog-assets/personal-ai-stacks-2026/star-fork-ratio.png)
+
+| Repository | Stars | Forks | Ratio |
+|-----------|-------|-------|-------|
+| garrytan/gstack | 50,074 | 6,396 | **7.8x** |
+| mattpocock/skills | 10,350 | 845 | **12.2x** |
+| slavingia/skills | 3,650 | 242 | **15.1x** |
+| karpathy/autoresearch | 57,421 | 7,998 | 7.2x |
+| karpathy/nanoGPT | 55,641 | 9,200 | 6.0x |
+| facebook/react | 230,000 | 47,000 | 4.9x |
+
+*Data as of March 27, 2026.*
+
+The ratio isn't proof of a category. But it's a signal. Stars here don't mean "I'm using this" — they mean "I want to know this person thought about this."
+
+## The ETHOS.md Problem
+
+One of the most revealing files in `garrytan/gstack` is `ETHOS.md`. It's injected as a preamble into every workflow skill, and it's completely unsearchable. You can't Google these principles. You can't read them in a talk or a blog post (until now). They exist only inside this repo, visible only to people who look.
+
+The file contains a table:
+
+| Task type | Human team | AI-assisted | Compression |
+|-----------|-----------|-------------|-------------|
+| Boilerplate / scaffolding | 2 days | 15 min | ~100x |
+| Feature implementation | 1 week | 30 min | ~30x |
+| Architecture / design | 2 days | 4 hours | ~5x |
+| Research / exploration | 1 day | 3 hours | ~3x |
+
+And a principle called "Boil the Lake":
+
+> *"AI-assisted coding makes the marginal cost of completeness near-zero. When the complete implementation costs minutes more than the shortcut — do the complete thing. Every time."*
+
+These aren't product features. They're design philosophy. And they only exist inside a repo — not a blog, not a conference talk, not a tweet thread. GitHub has become the distribution channel for *how notable builders think*.
+
+This is the thing worth naming. Call it **process transparency**: the practice of making your working method — not just your output — publicly available via version control.
+
+## Why GitHub, Why Now
+
+This pattern has prerequisites that only recently converged:
+
+**1. AI coding agents that read context.** Claude Code, Codex, and their peers ingest CLAUDE.md, AGENTS.md, and skill files from the repo. Your personal methodology becomes *executable* — not just readable. The skills in these repos aren't just documentation; they're actually running when the author codes.
+
+**2. Practitioners with public reputations.** The repos are valuable because of who made them. Garry Tan's `/plan-ceo-review` skill is interesting because Garry Tan has sat across from thousands of founders. Matt Pocock's `/tdd` skill carries weight because he's taught TypeScript to hundreds of thousands of developers. The content is inseparable from the credibility.
+
+**3. Zero installation overhead.** `npx skills@latest add mattpocock/skills/tdd`. One command. Compare this to learning from a blog post (passive), a book (slow), or a conference talk (ephemeral). With agent skills, you can adopt someone's workflow *immediately* and observe the results in your own codebase.
+
+## What This Predicts
+
+The pattern is still new enough to be extrapolated. If it holds:
+
+**More notable practitioners will publish personal stacks.** The ROI is obvious: one repo generates more attention than a year of blog posts, and the content is reusable. Once you've codified your process for your own AI agents, you've already done the work to share it.
+
+**The fork ratio will close as adoption matures.** Right now, most stargazers are watching. As agent skill ecosystems mature and installation becomes more frictionless, the gap between "starred" and "running locally" will narrow. Watch for this ratio to drop toward 8–10x within 6 months.
+
+**Authenticity becomes the moat.** You can clone a skill file. You can't clone judgment, taste, or the 20 years of context that informs it. The repos that will maintain their star velocity are the ones where the process is genuinely inseparable from the person. Copies won't have the same gravitational pull.
+
+![What's inside each personal AI stack repo (content composition)](/blog-assets/personal-ai-stacks-2026/content-composition.png)
+
+## The One Metric That Surprised Us
+
+We expected garrytan/gstack to have a high star-to-fork ratio — it's a complex TypeScript project with a testing harness, an E2E eval system, and a headless browser CLI. High complexity suppresses forking.
+
+What surprised us: `slavingia/skills` has a **15.1x ratio** with *zero code*. It's 10 Markdown files. The complexity barrier is essentially nonexistent — anyone can fork it in 10 seconds. The ratio is entirely about observation behavior, not deployment friction.
+
+People are starring to *learn from the person*, not to *use the artifact*. That distinction matters more than any other number in this analysis.
+
+## Conclusion
+
+GitHub's default mental model is: repos are tools, stars are endorsements of usefulness, forks are instances of adoption. The "personal AI stack" category breaks all three assumptions simultaneously.
+
+These repos are *not* primarily tools. Stars are endorsements of *credibility and curiosity*, not usefulness. Forks happen, but they're less common than in traditional software repos — because the point isn't to copy, it's to observe.
+
+This is a new use of GitHub as a platform. And given the velocity of garrytan/gstack (3,130 stars/day at launch) vs. established libraries (react: ~49 stars/day lifetime average), the market seems to agree that *process transparency from credible practitioners* is information-dense in a way that other formats aren't.
+
+Whether this becomes a lasting category or a transitional moment — we're watching the data.
+
+---
+
+*Compare the top personal AI stack repos on OSSInsight:*
+- [garrytan/gstack](https://ossinsight.io/analyze/garrytan/gstack)
+- [mattpocock/skills](https://ossinsight.io/analyze/mattpocock/skills)
+- [slavingia/skills](https://ossinsight.io/analyze/slavingia/skills)
+
+*All data sourced directly from GitHub API. Numbers as of March 27, 2026.*
