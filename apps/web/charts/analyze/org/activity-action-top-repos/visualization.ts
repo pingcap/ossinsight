@@ -187,7 +187,6 @@ export const eventHandlers = [
     type: 'click',
     option: 'xAxis.category',
     handler: (params) => {
-      console.log(params)
       if (params?.value) {
         window.open(`/analyze/${params.value}`);
       }
