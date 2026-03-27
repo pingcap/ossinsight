@@ -60,7 +60,7 @@ export default async function Image ({ params }: { params: Promise<{ owner: stri
       >
         <Decorators />
 
-        <img src={`https://github.com/${rawOwner}.png`} width={90} height={90} style={{ position: 'absolute', left: 40, top: 53, borderRadius: 45, background: 'white', border: '1px solid white', boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.50)' }} />
+        <img alt={`${rawOwner} avatar`} src={`https://github.com/${rawOwner}.png`} width={90} height={90} style={{ position: 'absolute', left: 40, top: 53, borderRadius: 45, background: 'white', border: '1px solid white', boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.50)' }} />
         <div style={{ position: 'absolute', top: 53, left: 149, fontSize: 48, lineHeight: '57.6px', fontWeight: 600, color: 'white' }}>
           {info.name}
         </div>
@@ -76,13 +76,13 @@ export default async function Image ({ params }: { params: Promise<{ owner: stri
               value={
                 <div style={{ display: 'flex', flexDirection: 'row', gap: 4, alignItems: 'center' }}>
                   <div style={{ display: 'flex', flexDirection: 'row', gap: -12.5, alignItems: 'center' }}>
-                    {activeParticipants.map(({ login }: any) => <img key={login} src={`https://github.com/${login}.png`} width={36} height={36} style={{ borderRadius: 18, border: '1px solid white' }} />)}
+                    {activeParticipants.map(({ login }: any) => <img alt={`${login} avatar`} key={login} src={`https://github.com/${login}.png`} width={36} height={36} style={{ borderRadius: 18, border: '1px solid white' }} />)}
                   </div>
                   <svg width="13" height="31" viewBox="0 0 13 31" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <line x1="11.7045" y1="0.175571" x2="0.467928" y2="30.1379" stroke="white" />
                   </svg>
                   <div style={{ display: 'flex', flexDirection: 'row', gap: -12.5, alignItems: 'center' }}>
-                    {newParticipants.map(({ login }: any) => <img key={login} src={`https://github.com/${login}.png`} width={36} height={36} style={{ borderRadius: 18, border: '1px solid white' }} />)}
+                    {newParticipants.map(({ login }: any) => <img alt={`${login} avatar`} key={login} src={`https://github.com/${login}.png`} width={36} height={36} style={{ borderRadius: 18, border: '1px solid white' }} />)}
                   </div>
                 </div>
               }

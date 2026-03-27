@@ -49,6 +49,7 @@ export default async function Image({ params }: { params: Promise<{ owner: strin
         {/* Avatar + repo name */}
         <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', marginTop: 50, marginLeft: 40, gap: 16 }}>
           <img
+            alt={`${rawOwner} avatar`}
             src={`https://github.com/${rawOwner}.png`}
             width={72}
             height={72}

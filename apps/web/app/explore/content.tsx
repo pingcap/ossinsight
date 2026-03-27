@@ -1477,6 +1477,7 @@ function ExploreExecutionLayout({
                 <p>{errorMessage}</p>
                 <div className="mt-3 flex items-center gap-3">
                   <button
+                    type="button"
                     onClick={onSubmit}
                     className="rounded-lg bg-[#6a2c2f] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#7d3437] transition-colors"
                   >

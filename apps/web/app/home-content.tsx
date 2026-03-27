@@ -1035,6 +1035,7 @@ function TrendingReposSection() {
         <div className="flex flex-wrap items-center gap-1 flex-1">
           {languages.slice(0, 16).map((lang) => (
             <button
+              type="button"
               key={lang}
               className={`px-2 py-0.5 text-sm rounded-md transition-colors ${
                 language === lang
@@ -1171,8 +1172,8 @@ function TrendingReposSection() {
             {[20, 50, 100].map(n => <SelectItem key={n} value={String(n)}>{n}</SelectItem>)}
           </Select>
           <span>{page * rowsPerPage + 1}-{Math.min((page + 1) * rowsPerPage, totalCount)} of {totalCount}</span>
-          <button onClick={() => setPage(p => Math.max(0, p - 1))} disabled={page === 0} className="disabled:opacity-30">&lt;</button>
-          <button onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))} disabled={page >= totalPages - 1} className="disabled:opacity-30">&gt;</button>
+          <button type="button" onClick={() => setPage(p => Math.max(0, p - 1))} disabled={page === 0} className="disabled:opacity-30">&lt;</button>
+          <button type="button" onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))} disabled={page >= totalPages - 1} className="disabled:opacity-30">&gt;</button>
         </div>
       )}
 
@@ -1246,12 +1247,14 @@ function HotCollectionsSection() {
         <div className="relative">
           {/* Scroll arrows */}
           <button
+            type="button"
             onClick={() => scroll(-1)}
             className="absolute left-0 top-0 bottom-0 z-10 w-6 flex items-center justify-center bg-[#2c2c2c] border-2 border-dashed border-[#3c3c3c] text-2xl text-gray-400 hover:text-white opacity-70 hover:opacity-100"
           >
             &lt;
           </button>
           <button
+            type="button"
             onClick={() => scroll(1)}
             className="absolute right-0 top-0 bottom-0 z-10 w-6 flex items-center justify-center bg-[#2c2c2c] border-2 border-dashed border-[#3c3c3c] text-2xl text-gray-400 hover:text-white opacity-70 hover:opacity-100"
           >

@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'OSSInsight - Open Source Software Insight',
     description: 'Real-time analytics for 10B+ GitHub events. Analyze any repo, compare projects, and discover trending open source software.',
-    images: [{ url: '/seo-widgets-homepage.jpeg', width: 1200, height: 630 }],
+    images: [{ url: '/seo-widgets-homepage.jpeg', width: 1200, height: 630, alt: 'OSSInsight - Open Source Software Insight' }],
   },
   twitter: {
     title: 'OSSInsight - Open Source Software Insight',
