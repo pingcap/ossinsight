@@ -5,6 +5,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { CollectionDetail } from './content';
 import { AggregateRatingJsonLd, BreadcrumbListJsonLd, CollectionPageJsonLd, FAQPageJsonLd } from '@/components/json-ld';
+import { getCollectionFaqItems } from './collection-faq';
 
 export const revalidate = 3600;
 
@@ -55,20 +56,7 @@ export default async function CollectionSlugPage({ params }: { params: Promise<{
     console.warn(`[collections/${slug}] Failed to pre-fetch ranking data:`, error);
   }
 
-  const collectionFaq = [
-    {
-      question: `What is the ${collection.name} collection?`,
-      answer: `The ${collection.name} collection is a curated list of GitHub repositories in the ${collection.name} category, ranked by stars, pull requests, issues, and contributors.`,
-    },
-    {
-      question: `How are ${collection.name} repositories ranked?`,
-      answer: 'Repositories are ranked by stars, pull requests, issues, and pull request creators over the last 28 days and month-to-month comparisons.',
-    },
-    {
-      question: 'How often is the ranking updated?',
-      answer: 'Rankings are updated in near real-time based on GitHub events processed by OSSInsight.',
-    },
-  ];
+  const collectionFaq = getCollectionFaqItems(collection.name);
 
   return (
     <>
@@ -100,7 +88,7 @@ export default async function CollectionSlugPage({ params }: { params: Promise<{
           Each repository links to a detailed analytics page with stars, commits, contributors, and more.
         </p>
       </div>
-      <CollectionDetail collection={collection} initialRankingData={initialRankingData} />
+      <CollectionDetail collection={collection} initialRankingData={initialRankingData} faqItems={collectionFaq} />
     </>
   );
 }

@@ -32,6 +32,7 @@ const Star = StarIcon as React.ComponentType<any>;
 const UserRound = UserRoundIcon as React.ComponentType<any>;
 import type { EChartsOption } from 'echarts';
 import ShareButtons from '@/components/ShareButtons';
+import { CollectionFAQ } from './collection-faq';
 import { ShowSQLInline } from '@/components/Analyze/ShowSQL';
 import { ExportButton, downloadCsv } from '@/components/ui/export-button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -693,7 +694,7 @@ function HistoryRankSection({ collectionName, collectionId }: { collectionName: 
   );
 }
 
-export function CollectionDetail({ collection, initialRankingData }: { collection: Collection; initialRankingData?: CollectionQueryResponse<RankingRow> | null }) {
+export function CollectionDetail({ collection, initialRankingData, faqItems }: { collection: Collection; initialRankingData?: CollectionQueryResponse<RankingRow> | null; faqItems?: { question: string; answer: string }[] }) {
   return (
     <div className="mx-auto max-w-[1100px] px-6 py-8 sm:px-8">
       <Breadcrumb
@@ -713,6 +714,8 @@ export function CollectionDetail({ collection, initialRankingData }: { collectio
         <MonthlyRankingSection collectionId={collection.id} initialRankingData={initialRankingData} />
         <HistoryRankSection collectionId={collection.id} collectionName={collection.name} />
       </div>
+
+      {faqItems && faqItems.length > 0 && <CollectionFAQ items={faqItems} />}
 
       <aside aria-label="Related pages" className="mt-12 border-t border-[#2a2a2a] pt-6">
         <nav className="flex flex-wrap items-center gap-4 text-sm text-[#7c7c7c]">
