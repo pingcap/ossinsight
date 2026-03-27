@@ -1,4 +1,6 @@
 import type { MetadataRoute } from 'next';
+import { readdirSync } from 'fs';
+import { join } from 'path';
 import { listCollections, listCollectionPreviewRepos } from '@/lib/server/internal-api';
 import { toCollectionSlug } from '@/lib/collections';
 
@@ -51,6 +53,31 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
   } catch (error) {
     console.warn('[sitemap] Failed to fetch collections for sitemap:', error);
+  }
+
+  // Blog posts (read slugs from docs content directory)
+  try {
+    const blogDir = join(process.cwd(), '..', 'docs', 'content', 'blog');
+    const slugs = readdirSync(blogDir, { withFileTypes: true })
+      .filter((d) => d.isDirectory())
+      .map((d) => d.name);
+
+    // Blog index page
+    entries.push({
+      url: `${SITE_URL}/blog`,
+      changeFrequency: 'weekly',
+      priority: 0.7,
+    });
+
+    for (const slug of slugs) {
+      entries.push({
+        url: `${SITE_URL}/blog/${slug}`,
+        changeFrequency: 'monthly',
+        priority: 0.6,
+      });
+    }
+  } catch (error) {
+    console.warn('[sitemap] Failed to read blog posts for sitemap:', error);
   }
 
   // Repo comparisons generated from collections (top repos in each collection, pairwise)
