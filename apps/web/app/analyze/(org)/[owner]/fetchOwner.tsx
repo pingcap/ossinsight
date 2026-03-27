@@ -1,6 +1,6 @@
 import { getOwnerInfo } from '@/components/Analyze/utils';
 import { notFound } from 'next/navigation';
-import { cache } from 'react';
+import { cache } from 'next/cache';
 
 export const fetchOwnerInfo = cache(async (
   orgName: string,
