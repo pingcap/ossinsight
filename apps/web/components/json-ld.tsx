@@ -18,6 +18,15 @@ export function WebSiteJsonLd() {
         name: 'OSSInsight',
         url: SITE_URL,
         description: 'OSSInsight analyzes billions of GitHub events and provides insights for open source software.',
+        keywords: [
+          'open source analytics',
+          'GitHub insights',
+          'GitHub trending repositories',
+          'AI agent frameworks',
+          'open source intelligence',
+          'repository analytics',
+          'developer analytics',
+        ],
         publisher: {
           '@type': 'Organization',
           name: 'PingCAP',
@@ -84,7 +93,13 @@ export function OrganizationJsonLd() {
         name: 'OSSInsight',
         url: SITE_URL,
         logo: `${SITE_URL}/logo.png`,
-        description: 'OSSInsight analyzes billions of GitHub events and provides insights for open source software.',
+        description: 'OSSInsight analyzes billions of GitHub events and provides insights for open source software, AI agent ecosystems, and trending repositories.',
+        keywords: [
+          'open source',
+          'GitHub analytics',
+          'AI agent ecosystem',
+          'open source intelligence',
+        ],
         parentOrganization: {
           '@type': 'Organization',
           name: 'PingCAP',
@@ -300,6 +315,69 @@ export function SiteApplicationJsonLd() {
           url: 'https://pingcap.com',
         },
         screenshot: `${SITE_URL}/seo-widgets-homepage.jpeg`,
+      }}
+    />
+  );
+}
+
+export function WebPageJsonLd() {
+  return (
+    <JsonLd
+      data={{
+        '@context': 'https://schema.org',
+        '@type': 'WebPage',
+        name: 'OSSInsight — Open Source Software Insight',
+        url: SITE_URL,
+        description:
+          'Real-time analytics for 10B+ GitHub events. Discover trending repositories, analyze open source projects, and explore the AI agent ecosystem with data-driven insights.',
+        keywords: [
+          'open source analytics',
+          'GitHub insights',
+          'AI agent frameworks',
+          'trending repositories',
+          'GitHub star history',
+          'open source intelligence',
+          'repository comparison',
+          'developer analytics',
+          'AI coding tools',
+          'MCP servers',
+          'LLM frameworks',
+          'open source AI projects',
+        ],
+        isPartOf: {
+          '@type': 'WebSite',
+          name: 'OSSInsight',
+          url: SITE_URL,
+        },
+        about: [
+          {
+            '@type': 'Thing',
+            name: 'Open Source Software',
+            description: 'Analysis and insights for open source repositories and communities on GitHub.',
+          },
+          {
+            '@type': 'Thing',
+            name: 'AI Agent Ecosystem',
+            description: 'Tracking trending AI agent frameworks, LLM tools, MCP servers, and AI coding assistants in open source.',
+          },
+          {
+            '@type': 'Thing',
+            name: 'GitHub Analytics',
+            description: 'Real-time analytics on stars, forks, pull requests, issues, and contributor activity across GitHub.',
+          },
+        ],
+        mainEntity: {
+          '@type': 'SoftwareApplication',
+          name: 'OSSInsight',
+          applicationCategory: 'DeveloperApplication',
+          operatingSystem: 'Web',
+          url: SITE_URL,
+        },
+        provider: {
+          '@type': 'Organization',
+          name: 'PingCAP',
+          url: 'https://pingcap.com',
+        },
       }}
     />
   );

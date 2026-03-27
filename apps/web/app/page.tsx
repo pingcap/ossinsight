@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { HomeContent } from './home-content';
-import { FAQPageJsonLd, SiteApplicationJsonLd } from '@/components/json-ld';
+import { FAQPageJsonLd, SiteApplicationJsonLd, WebPageJsonLd } from '@/components/json-ld';
 import { FAQ_ITEMS } from './faq-data';
 
 export const metadata: Metadata = {
@@ -8,6 +8,19 @@ export const metadata: Metadata = {
     absolute: 'OSSInsight - Open Source Software Insight',
   },
   description: 'Real-time analytics for 10B+ GitHub events. Analyze any repo, compare projects, and discover trending open source software. Free & open source.',
+  keywords: [
+    'open source analytics',
+    'GitHub insights',
+    'AI agent frameworks',
+    'trending repositories',
+    'GitHub star history',
+    'repository comparison',
+    'developer analytics',
+    'AI coding tools',
+    'MCP servers',
+    'LLM frameworks',
+    'open source AI',
+  ],
   openGraph: {
     title: 'OSSInsight - Open Source Software Insight',
     description: 'Real-time analytics for 10B+ GitHub events. Analyze any repo, compare projects, and discover trending open source software.',
@@ -24,6 +37,7 @@ export const metadata: Metadata = {
 export default function HomePage() {
   return (
     <>
+      <WebPageJsonLd />
       <SiteApplicationJsonLd />
       <FAQPageJsonLd items={FAQ_ITEMS} />
       <div className="sr-only">
