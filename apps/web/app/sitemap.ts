@@ -10,17 +10,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const entries: MetadataRoute.Sitemap = [];
 
   // Static pages — canonical URLs without trailing slash for /explore and /collections
-  const staticPages: Array<{ path: string; priority: number; images?: Array<{ url: string; title?: string; caption?: string }> }> = [
+  const staticPages: Array<{ path: string; priority: number; images?: string[] }> = [
     {
       path: '/',
       priority: 1.0,
-      images: [
-        {
-          url: `${SITE_URL}/seo-widgets-homepage.jpeg`,
-          title: 'OSSInsight — Open Source Software Insight',
-          caption: 'Real-time analytics for 10B+ GitHub events',
-        },
-      ],
+      images: [`${SITE_URL}/seo-widgets-homepage.jpeg`],
     },
     { path: '/explore', priority: 0.8 },
     { path: '/collections', priority: 0.8 },
@@ -47,12 +41,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         changeFrequency: 'weekly',
         priority: 0.6,
         // @ts-expect-error — Next.js MetadataRoute.Sitemap doesn't type images yet
-        images: [
-          {
-            url: `${SITE_URL}/collections/${slug}/opengraph-image`,
-            title: `${collection.name} — GitHub Repository Rankings`,
-          },
-        ],
+        images: [`${SITE_URL}/collections/${slug}/opengraph-image`],
       });
       entries.push({
         url: `${SITE_URL}/collections/${slug}/trends`,
