@@ -38,7 +38,7 @@ These are not indie hackers sharing weekend projects. These are people with esta
 
 Let's be precise about what's in these repos, because the content matters.
 
-**garrytan/gstack** (~50K LOC across TypeScript, Markdown, tests) is the most complete. It contains 15 "skills" — slash commands that turn Claude Code into a virtual engineering team. `/plan-ceo-review` has an AI simulate Garry's perspective on a product decision. `/review` runs a multi-agent PR review: architecture check, bug scan, security audit, test coverage gate. `/qa` opens a real browser and tests your staging URL against a rubric. There's a headless browser CLI with E2E tests, diff-based test selection, a two-tier test system with gate vs. periodic classification.
+**garrytan/gstack** (~50K LOC across TypeScript, Markdown, tests) is the most complete. It contains 28 "skills" — slash commands that turn Claude Code into a virtual engineering team. `/plan-ceo-review` has an AI simulate Garry's perspective on a product decision. `/review` runs a multi-agent PR review: architecture check, bug scan, security audit, test coverage gate. `/qa` opens a real browser and tests your staging URL against a rubric. There's a headless browser CLI with E2E tests, diff-based test selection, a two-tier test system with gate vs. periodic classification.
 
 The README opens with a quote from Karpathy: *"I don't think I've typed like a line of code probably since December."* Then Garry describes shipping 600,000+ lines of production code (35% tests) in 60 days — while running Y Combinator full-time.
 
@@ -67,7 +67,9 @@ Personal AI stacks sit at 8–15x.
 
 *Data as of March 27, 2026.*
 
-The ratio isn't proof of a category. But it's a signal. Stars here don't mean "I'm using this" — they mean "I want to know this person thought about this."
+The ratio isn't proof of a category. But it's a signal. Stars here don't mean "I'm using this" — they mean "I want to know how this person thinks."
+
+(You can explore these metrics yourself — try the [head-to-head comparison](https://ossinsight.io/analyze/garrytan/gstack?vs=mattpocock/skills) on OSSInsight.)
 
 ## The ETHOS.md Problem
 
@@ -78,7 +80,9 @@ The file contains a table:
 | Task type | Human team | AI-assisted | Compression |
 |-----------|-----------|-------------|-------------|
 | Boilerplate / scaffolding | 2 days | 15 min | ~100x |
+| Test writing | 1 day | 15 min | ~50x |
 | Feature implementation | 1 week | 30 min | ~30x |
+| Bug fix + regression test | 4 hours | 15 min | ~20x |
 | Architecture / design | 2 days | 4 hours | ~5x |
 | Research / exploration | 1 day | 3 hours | ~3x |
 
@@ -104,11 +108,11 @@ This pattern has prerequisites that only recently converged:
 
 The pattern is still new enough to be extrapolated. If it holds:
 
-**More notable practitioners will publish personal stacks.** The ROI is obvious: one repo generates more attention than a year of blog posts, and the content is reusable. Once you've codified your process for your own AI agents, you've already done the work to share it.
+**More notable practitioners will publish personal stacks.** The ROI is hard to ignore: garrytan/gstack generated more GitHub stars in 16 days than most developer tools earn in their lifetime — and it started as an internal workflow. Once you've codified your process for your own AI agents, publishing it is a `git push`. Expect CTOs, staff engineers, and domain experts to follow.
 
-**The fork ratio will close as adoption matures.** Right now, most stargazers are watching. As agent skill ecosystems mature and installation becomes more frictionless, the gap between "starred" and "running locally" will narrow. Watch for this ratio to drop toward 8–10x within 6 months.
+**The fork ratio will compress as tooling matures.** Right now, most stargazers are reading, not installing. But agent skill installation is getting easier — gstack already ships a one-command setup (`./setup`), and mattpocock's skills work via `npx skills@latest add`. As friction drops, more observers will become users. Watch for the ratio to drift toward 8–10x over the next two quarters.
 
-**Authenticity becomes the moat.** You can clone a skill file. You can't clone judgment, taste, or the 20 years of context that informs it. The repos that will maintain their star velocity are the ones where the process is genuinely inseparable from the person. Copies won't have the same gravitational pull.
+**Authenticity becomes the moat.** You can clone a skill file. You can't clone judgment, taste, or the thousands of hours of context that shaped it. Garry's `/plan-ceo-review` encodes pattern-matching from sitting across the table from thousands of YC founders. Matt's `/tdd` embeds a TypeScript teaching philosophy refined over years. Copies of these repos will exist, but they won't carry the same signal — because the value is in *who wrote it*, not *what it says*.
 
 ![What's inside each personal AI stack repo (content composition)](/blog-assets/personal-ai-stacks-2026/content-composition.png)
 
@@ -128,7 +132,7 @@ These repos are *not* primarily tools. Stars are endorsements of *credibility an
 
 This is a new use of GitHub as a platform. And given the velocity of garrytan/gstack (3,148 stars/day at launch) vs. established libraries (react: ~51 stars/day lifetime average), the market seems to agree that *process transparency from credible practitioners* is information-dense in a way that other formats aren't.
 
-Whether this becomes a lasting category or a transitional moment — we're watching the data.
+Whether "personal AI stacks" become a lasting GitHub category or a transitional moment on the way to something else — that's an empirical question. We'll keep watching the data, and we'll update this analysis when the numbers shift.
 
 ---
 
