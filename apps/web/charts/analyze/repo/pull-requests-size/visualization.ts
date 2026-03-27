@@ -51,7 +51,7 @@ export default function (
   ctx: WidgetVisualizerContext<Params>
 ): EChartsVisualizationConfig {
   const main = ctx.getRepo(parseInt(ctx.parameters.repo_id));
-  const vs = ctx.getRepo(parseInt(ctx.parameters.vs_repo_id));
+  const vs = ctx.getRepo(parseInt(ctx.parameters.vs_repo_id ?? ''));
 
   const getMaxAllSizeValue = (all: DataPoint[]) => {
     if (all.length <= 1) {
@@ -68,7 +68,7 @@ export default function (
     return upBound(max);
   };
 
-  const flattedInput = input.flat();
+  const flattedInput = input.flat().filter((d): d is DataPoint => d != null);
   const maxAllSizeValue = getMaxAllSizeValue(flattedInput);
   const maxTotalValue = getMaxTotalValue(flattedInput);
 
@@ -142,6 +142,6 @@ function format(value: number) {
   return `${value}${units[i]}`;
 }
 
-const fmt = (val: number) => `${val} PRs`;
+const fmt = (val: any) => `${val} PRs`;
 
 export const type = 'echarts';

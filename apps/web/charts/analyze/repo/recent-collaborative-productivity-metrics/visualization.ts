@@ -28,7 +28,7 @@ export default function (
   const type = activity ? activity.replaceAll('-', '_') : 'issue_closed_ratio';
 
   const datapoint = main[0];
-  const percentage = datapoint[type];
+  const percentage = (datapoint as Record<string, number>)[type];
 
   const progressSize = Math.min(ctx.width || 100, ctx.height || 100) * 0.1;
 

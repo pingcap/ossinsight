@@ -34,7 +34,7 @@ export default async function Page({ params, searchParams }: PageProps) {
     }
   }
 
-  const vsRepoInfo = null;
+  const vsRepoInfo: Record<string, any> | null = null;
 
   return (
     <>
@@ -90,12 +90,6 @@ export default async function Page({ params, searchParams }: PageProps) {
           commit activity, pull request and issue trends, contributor statistics, geographic distribution,
           and code change frequency. Data is sourced from GitHub events via GH Archive and updated in near real-time.
         </p>
-        {vsRepoInfo && (
-          <p>
-            Comparing {repoInfo.full_name} ({repoInfo.stars?.toLocaleString()} stars)
-            with {vsRepoInfo.full_name} ({vsRepoInfo.stars?.toLocaleString()} stars) side by side.
-          </p>
-        )}
       </div>
       <RepoAnalyzePage
         repoInfo={repoInfo}

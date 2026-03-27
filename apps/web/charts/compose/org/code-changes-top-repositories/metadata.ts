@@ -10,7 +10,7 @@ const generateMetadata: MetadataGenerator<{ owner_id: string }> = ({
   const main = getOrg(Number(owner_id));
 
   return {
-    title: `Ranking of repos with the commit code changes in ${main.login}`,
+    title: `Ranking of repos with the commit code changes in ${main?.login}`,
   };
 };
 

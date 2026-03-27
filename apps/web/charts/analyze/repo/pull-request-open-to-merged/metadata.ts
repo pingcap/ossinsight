@@ -5,11 +5,11 @@ const generateMetadata: MetadataGenerator<{ repo_id: string, vs_repo_id?: string
   if (vs_repo_id) {
     const vs = getRepo(parseInt(vs_repo_id));
     return {
-      title: `${main.fullName} vs ${vs.fullName} | Pull Request Lifecycle`,
+      title: `${main?.fullName} vs ${vs?.fullName} | Pull Request Lifecycle`,
     };
   } else {
     return {
-      title: `Pull Request Lifecycle of ${main.fullName}`,
+      title: `Pull Request Lifecycle of ${main?.fullName}`,
     };
   }
 };

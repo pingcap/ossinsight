@@ -12,7 +12,7 @@ const generateMetadata: MetadataGenerator<{
 
   return {
     title: `${upperFirst(activity.split('/').join(' '))} ratio of ${
-      main.login
+      main?.login
     }`,
   };
 };

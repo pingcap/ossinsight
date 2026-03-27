@@ -1,5 +1,6 @@
 import type { WidgetVisualizerContext } from '@/lib/charts-types';
 // import { compare } from '@/lib/charts-utils/visualizer/analyze';
+// @ts-expect-error d3-cloud has no type declarations
 import cloud from 'd3-cloud';
 // import xss from 'xss';
 
@@ -26,7 +27,7 @@ function transformCompanyData (
   }
   return data.flatMap((item, index) => ({
     text: esc(item.company_name),
-    size: item[valueIndex],
+    size: (item as any)[valueIndex],
   }));
 }
 
@@ -55,7 +56,7 @@ export default async function (
   const maxFontSize = Math.min(viewBoxHeight, viewBoxWidth) / 4;
 
   const companyType = `analyze-${ctx.parameters.activity || 'stars'}-company`;
-  const valueIndex = companyValueIndices[companyType];
+  const valueIndex = (companyValueIndices as Record<string, string>)[companyType];
 
   const generateData = () => {
     return input
@@ -90,9 +91,9 @@ export default async function (
       .padding(2)
       .rotate(0)
       .font('Heiti TC')
-      .fontSize(function (d) { return d.size; })
+      .fontSize(function (d: any) { return d.size; })
       .random(() => 0.5)
-      .on('end', (word) => resolve(word));
+      .on('end', (word: any) => resolve(word));
     layout.start();
     if (signal) {
       signal.onabort = () => {

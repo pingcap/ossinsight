@@ -3,7 +3,7 @@ import {
   WidgetVisualizerContext,
 } from '@/lib/charts-types';
 
-const generateMetadata: MetadataGenerator<{ owner_id: string; activity }> = ({
+const generateMetadata: MetadataGenerator<{ owner_id: string; activity: string }> = ({
   parameters: { owner_id, activity },
   getOrg,
 }) => {

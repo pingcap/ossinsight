@@ -8,7 +8,7 @@ const generateMetadata: MetadataGenerator<{
 }> = ({ parameters: { repo_id }, getRepo }) => {
   const main = getRepo(parseInt(repo_id));
   return {
-    title: `Issues of ${main.fullName}`,
+    title: `Issues of ${main?.fullName}`,
   };
 };
 

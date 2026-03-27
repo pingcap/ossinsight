@@ -37,7 +37,7 @@ function getColor(num: number, max: number): string {
 
 export default function (input: Input, ctx: WidgetVisualizerContext<Params>) {
   const main = ctx.getRepo(parseInt(ctx.parameters.repo_id));
-  const vs = ctx.getRepo(parseInt(ctx.parameters.vs_repo_id));
+  const vs = ctx.getRepo(parseInt(ctx.parameters.vs_repo_id ?? ''));
   const hasVs = !!vs;
   const zone = Number(ctx.parameters.zone) || 0;
 

@@ -33,7 +33,7 @@ export default function (
   ctx: WidgetVisualizerContext<Params>
 ): EChartsVisualizationConfig {
   const main = ctx.getRepo(parseInt(ctx.parameters.repo_id));
-  const vs = ctx.getRepo(parseInt(ctx.parameters.vs_repo_id));
+  const vs = ctx.getRepo(parseInt(ctx.parameters.vs_repo_id ?? ''));
 
   const dataset = compare(input, (data, name) => ({
     id: name,

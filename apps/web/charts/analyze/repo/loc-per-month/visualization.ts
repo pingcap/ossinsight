@@ -56,7 +56,7 @@ export default function (
   ctx: WidgetVisualizerContext<Params>
 ): EChartsVisualizationConfig {
   const main = ctx.getRepo(parseInt(ctx.parameters.repo_id));
-  const vs = ctx.getRepo(parseInt(ctx.parameters.vs_repo_id));
+  const vs = ctx.getRepo(parseInt(ctx.parameters.vs_repo_id ?? ''));
 
   const dataset = compare(input, (data, name) => ({
     id: name,
@@ -144,7 +144,7 @@ export default function (
     dataZoom: dataZoom(parseParams2DataZoomOpt(ctx.parameters), !!vs, ctx.runtime),
     tooltip: axisTooltip('cross', {
       formatter: (params) => {
-        const [add, del, total] = params;
+        const [add, del, total] = params as any[];
         return `
         <div>${formatMonth(add.value.event_month)}</div>
         <div>

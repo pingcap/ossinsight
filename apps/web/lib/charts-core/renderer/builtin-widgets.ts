@@ -3,6 +3,8 @@ type MockCSSProperties = {
   fontSize?: number | string
   fontWeight?: number | string
   marginLeft?: string | number
+  marginRight?: string | number
+  lineHeight?: number | string
 }
 
 export interface BuiltinWidgetsMap {

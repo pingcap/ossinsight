@@ -11,7 +11,7 @@ const generateMetadata: MetadataGenerator<{
   const org = getOrg(Number(owner_id));
 
   return {
-    title: `${upperFirst(activity)} trends of ${org.login}`,
+    title: `${upperFirst(activity)} trends of ${org?.login}`,
   };
 };
 

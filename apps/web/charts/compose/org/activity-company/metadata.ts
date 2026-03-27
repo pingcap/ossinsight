@@ -9,7 +9,7 @@ const generateMetadata: MetadataGenerator<{
 }> = ({ parameters: { owner_id, activity }, getOrg }) => {
   const main = getOrg(parseInt(owner_id));
   return {
-    title: `Company Affiliation of ${main.login}`,
+    title: `Company Affiliation of ${main?.login}`,
   };
 };
 

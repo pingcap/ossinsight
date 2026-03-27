@@ -12,7 +12,7 @@ const generateMetadata: MetadataGenerator<{
   const org = getOrg(Number(owner_id));
 
   return {
-    title: `${upperFirst(activity)} participants of ${org.login} - ${period
+    title: `${upperFirst(activity)} participants of ${org?.login} - ${period
       .split('_')
       .join(' ')}`,
   };

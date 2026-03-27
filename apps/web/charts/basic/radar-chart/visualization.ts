@@ -23,10 +23,10 @@ export default function (input: DataPoint, ctx: WidgetVisualizerContext<Params>)
         color: '#5D5BCC',
       },
     },
-    radar: {
+    radar: ({
       radius: 92,
       axisName: {
-        formatter: (name) => {
+        formatter: (name: string) => {
           const i = dimensionsNameIndexMap.get(name)!;
           const value = (input.value[i] / ctx.parameters.dimensions[i].max * 100).toFixed(0) + '%';
           return `{name|${name}}\n{value|${value}}`;
@@ -62,7 +62,7 @@ export default function (input: DataPoint, ctx: WidgetVisualizerContext<Params>)
       splitArea: {
         show: false,
       },
-    },
+    }) as any,
   };
 }
 

@@ -11,11 +11,11 @@ const generateMetadata: MetadataGenerator<{
   if (vs_repo_id) {
     const vs = getRepo(parseInt(vs_repo_id));
     return {
-      title: `${main.fullName} vs ${vs.fullName} | Pushes and Commits`,
+      title: `${main?.fullName} vs ${vs?.fullName} | Pushes and Commits`,
     };
   } else {
     return {
-      title: `Pushes and Commits of ${main.fullName}`,
+      title: `Pushes and Commits of ${main?.fullName}`,
     };
   }
 };

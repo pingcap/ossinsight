@@ -35,20 +35,7 @@ type Input = [DataPoint[], DataPoint[] | undefined];
 const fmtHours = (hours: number) =>
   prettyMs.default(hours * 60 * 60 * 1000, { unitCount: 1 });
 
-function getMax(data: DataPoint[]): number {
-  return data.reduce((prev, current) => Math.max(prev, current.p100), 0) ?? 0;
-}
-
-function getMin(data: DataPoint[]): number {
-  return (
-    data.reduce(
-      (prev, current) => Math.min(prev, current.p0 > 0 ? current.p0 : prev),
-      Number.MAX_SAFE_INTEGER
-    ) ?? Number.MAX_SAFE_INTEGER
-  );
-}
-
-const getMaxAllValue = (all: DataPoint[][]) => {
+const getMaxAllValue = (all: (DataPoint[] | undefined)[]) => {
   if (all.length <= 1) {
     return undefined;
   }
@@ -58,7 +45,7 @@ const getMaxAllValue = (all: DataPoint[][]) => {
   return upBound(max);
 };
 
-const getmMaxTotalValue = (all: DataPoint[][]) => {
+const getmMaxTotalValue = (all: (DataPoint[] | undefined)[]) => {
   if (all.length <= 1) {
     return undefined;
   }
@@ -73,7 +60,7 @@ export default function (
   ctx: WidgetVisualizerContext<Params>
 ): EChartsVisualizationConfig {
   const main = ctx.getRepo(parseInt(ctx.parameters.repo_id));
-  const vs = ctx.getRepo(parseInt(ctx.parameters.vs_repo_id));
+  const vs = ctx.getRepo(parseInt(ctx.parameters.vs_repo_id ?? ''));
 
   const runtime = ctx.runtime;
 
@@ -142,7 +129,7 @@ export default function (
   return option;
 }
 
-const fmt = (val: string | number) => `${val} Issues`;
+const fmt = (val: any) => `${val} Issues`;
 
 function aggregate(data: DataPoint[]) {
   let openedTotal = 0;

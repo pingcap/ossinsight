@@ -19,7 +19,7 @@ const VS_COLOR = '#56AEFF';
 
 export default function (input: Input, ctx: WidgetVisualizerContext<Params>): EChartsVisualizationConfig {
   const main = ctx.getRepo(parseInt(ctx.parameters.repo_id));
-  const vs = ctx.getRepo(parseInt(ctx.parameters.vs_repo_id));
+  const vs = ctx.getRepo(parseInt(ctx.parameters.vs_repo_id ?? ''));
   const hasVs = !!vs;
 
   return {
@@ -65,7 +65,7 @@ export default function (input: Input, ctx: WidgetVisualizerContext<Params>): EC
     series: compare([main, vs], (data, name) => ({
       datasetId: name,
       type: 'line',
-      name: data.fullName,
+      name: data?.fullName,
       encode: {
         x: 'event_month',
         y: 'total',

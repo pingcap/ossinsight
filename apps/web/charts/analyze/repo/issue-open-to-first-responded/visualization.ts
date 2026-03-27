@@ -54,7 +54,7 @@ export default function (
   ctx: WidgetVisualizerContext<Params>
 ): EChartsVisualizationConfig {
   const main = ctx.getRepo(parseInt(ctx.parameters.repo_id));
-  const vs = ctx.getRepo(parseInt(ctx.parameters.vs_repo_id));
+  const vs = ctx.getRepo(parseInt(ctx.parameters.vs_repo_id ?? ''));
 
   const runtime = ctx.runtime;
 
@@ -97,7 +97,7 @@ export default function (
           axisLabel: { formatter: fmtHours },
           axisPointer: {
             label: {
-              formatter: ({ value }) => fmtHours(Number(value)),
+              formatter: ({ value }: { value: any }) => fmtHours(Number(value)),
             },
           },
           max,
@@ -108,7 +108,7 @@ export default function (
     tooltip: axisTooltip('cross', {
       renderMode: 'html',
       formatter: (params) => {
-        const { value, marker } = params[0];
+        const { value, marker } = (params as any[])[0];
         return `
         ${marker as string}
         <span>${formatMonth(value.event_month)}</span>

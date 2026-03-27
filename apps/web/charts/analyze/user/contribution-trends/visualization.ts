@@ -45,15 +45,15 @@ const chartColors = [
 ];
 
 const generateDataset = (data: DataPoint[]) => {
-  const initialDataset = {};
+  const initialDataset: Record<ContributionType, DataPoint[]> = {} as Record<ContributionType, DataPoint[]>;
   contributionTypes.forEach((type) => {
     initialDataset[type] = [];
   });
   const collection = data.reduce((acc, cur) => {
     acc[cur.contribution_type].push(cur);
     return acc;
-  }, initialDataset);
-  return Object.keys(collection).map((key) => ({
+  }, initialDataset as Record<ContributionType, DataPoint[]>);
+  return (Object.keys(collection) as ContributionType[]).map((key) => ({
     id: key,
     source: collection[key],
   }));

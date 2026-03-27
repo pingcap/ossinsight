@@ -91,12 +91,12 @@ export default function (
       position: function (pos, params, dom, rect, size) {
         // tooltip will be fixed on the right if mouse hovering on the left,
         // and on the left if hovering on the right.
-        var obj = { top: -20 };
+        var obj: Record<string, number> = { top: -20 };
         obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 5;
         return obj;
       },
       formatter: (params) => {
-        const [a, b] = params;
+        const [a, b] = params as any[];
         const unit = ctx.parameters?.options?.unit || 'Star(s)';
         return `<p class="text-white">
         <div class="text-xs text-white"><span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: #E2635B; margin-right: 5px;"></span>${a?.data?.current_period_day}</div>

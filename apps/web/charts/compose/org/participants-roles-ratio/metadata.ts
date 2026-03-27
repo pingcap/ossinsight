@@ -9,7 +9,7 @@ const generateMetadata: MetadataGenerator<{
   const main = getOrg(Number(owner_id));
 
   return {
-    title: `Participants roles of ${main.login}`,
+    title: `Participants roles of ${main?.login}`,
   };
 };
 

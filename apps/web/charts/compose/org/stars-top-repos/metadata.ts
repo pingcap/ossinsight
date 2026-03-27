@@ -10,7 +10,7 @@ const generateMetadata: MetadataGenerator<{ owner_id: string }> = ({
   const main = getOrg(Number(owner_id));
 
   return {
-    title: `Top repos by stars of ${main.login}`,
+    title: `Top repos by stars of ${main?.login}`,
   };
 };
 

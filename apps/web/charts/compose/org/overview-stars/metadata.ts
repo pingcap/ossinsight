@@ -8,7 +8,7 @@ const generateMetadata: MetadataGenerator<{
 }> = ({ parameters: { owner_id }, getOrg }) => {
   const main = getOrg(parseInt(owner_id));
   return {
-    title: `Overview of Stars earned of ${main.login}`,
+    title: `Overview of Stars earned of ${main?.login}`,
   };
 };
 

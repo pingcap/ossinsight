@@ -112,7 +112,7 @@ export default function Card({ data: input, ctx, linkedData }: { data: any[]; ct
     value,
     increase,
     title,
-  } = handleData(data, totalData, activity);
+  } = handleData(data, totalData ?? { current_period_total: 0, past_period_total: 0, diff: 0, diffPercentage: '0%' }, activity);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', width: '100%', height: '100%' }}>

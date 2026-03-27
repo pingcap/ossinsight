@@ -31,8 +31,8 @@ export default function Card({ data, ctx, linkedData }: { data: any[]; ctx: any;
   const totalData: Partial<TotalDataPoint> = total?.[0] ?? {};
 
   const growth_percentage =
-    (totalData.current_period_total - totalData.past_period_total) /
-    totalData.past_period_total;
+    ((totalData.current_period_total ?? 0) - (totalData.past_period_total ?? 0)) /
+    (totalData.past_period_total || 1);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', width: '100%', height: '100%' }}>
@@ -44,7 +44,7 @@ export default function Card({ data, ctx, linkedData }: { data: any[]; ctx: any;
       />
       <div style={{ display: 'flex', flexDirection: 'column', flex: 1, padding: '0 24px 20px' }}>
         <LabelValue
-          label={totalData?.current_period_total}
+          label={totalData?.current_period_total ?? 0}
           value={
             growth_percentage >= 0
               ? `↑${number2percent(growth_percentage)}`

@@ -10,7 +10,7 @@ const generateMetadata: MetadataGenerator<{
   const org = getOrg(Number(owner_id));
 
   return {
-    title: `Active ${activity} of ${org.login}`,
+    title: `Active ${activity} of ${org?.login}`,
   };
 };
 

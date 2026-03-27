@@ -59,7 +59,7 @@ export default function (
   ctx: WidgetVisualizerContext<Params>
 ): EChartsVisualizationConfig {
   const main = ctx.getRepo(parseInt(ctx.parameters.repo_id));
-  const vs = ctx.getRepo(parseInt(ctx.parameters.vs_repo_id));
+  const vs = ctx.getRepo(parseInt(ctx.parameters.vs_repo_id ?? ''));
 
   const max = input
     .flat()
@@ -70,7 +70,7 @@ export default function (
     geo: worldMapGeo(),
     series: compare([main, vs], (data, name) => [
       ...scatters(name, 1, max, {
-        name: data.fullName,
+        name: data?.fullName,
       }),
     ]).flat(),
     tooltip: itemTooltip(),
