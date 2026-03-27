@@ -77,8 +77,8 @@ export default function (
 ): EChartsVisualizationConfig {
   const { getOrg } = ctx;
 
-  const main = getOrg(Number(ctx.parameters.owner_id)).login;
-  const vs = getOrg(Number(ctx.parameters.owner_id)).login;
+  const main = getOrg(Number(ctx.parameters.owner_id))?.login ?? 'unknown';
+  const vs = getOrg(Number(ctx.parameters.owner_id))?.login ?? 'unknown';
 
   const { activity = 'stars' } = ctx.parameters;
   
