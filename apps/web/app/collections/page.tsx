@@ -11,11 +11,25 @@ import { toCollectionSlug } from '@/lib/collections';
 import { CollectionsList } from './content';
 
 export const metadata: Metadata = {
-  title: 'Explore Collections',
-  description: 'Find insights about the monthly or historical rankings and trends in technical fields with curated repository lists.',
+  title: 'Open Source Collections — AI Agent Frameworks, GitHub Trending & More',
+  description: 'Browse curated collections of trending GitHub repositories: AI agent frameworks, LLM tools, open source databases, web frameworks, and more. Monthly rankings with historical trends since 2011.',
+  keywords: [
+    'open source collections', 'GitHub trending', 'AI agent frameworks',
+    'LLM tools', 'open source repositories', 'GitHub rankings',
+    'trending repositories 2026', 'open source projects',
+  ],
   alternates: {
     // Canonical strips query params (page, sort, q) to avoid duplicate content
     canonical: '/collections',
+  },
+  openGraph: {
+    title: 'Open Source Collections — AI Agent Frameworks, GitHub Trending & More | OSSInsight',
+    description: 'Browse curated collections of trending GitHub repositories: AI agent frameworks, LLM tools, open source databases, web frameworks, and more.',
+  },
+  twitter: {
+    title: 'Open Source Collections — AI Agent Frameworks, GitHub Trending & More | OSSInsight',
+    description: 'Browse curated collections of trending GitHub repositories: AI agent frameworks, LLM tools, open source databases, web frameworks, and more.',
+    card: 'summary_large_image',
   },
   robots: {
     index: true,
