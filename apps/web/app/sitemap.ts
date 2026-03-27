@@ -21,6 +21,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: '/explore', priority: 0.8 },
     { path: '/collections', priority: 0.8 },
     { path: '/trending', priority: 0.8 },
+    { path: '/trending/ai', priority: 0.9 },
   ];
 
   for (const page of staticPages) {
