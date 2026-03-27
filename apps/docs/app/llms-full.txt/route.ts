@@ -1,6 +1,6 @@
 import { buildApiDocLLMText, buildApiOverviewLLMText } from '@/lib/api-llm-text';
 import { getLLMText } from '@/lib/get-llm-text';
-import { getApiDoc, getApiDocs, getApiOverview } from '@/lib/content';
+import { type ApiDoc, getApiDoc, getApiDocs, getApiOverview } from '@/lib/content';
 import { source } from '@/lib/source';
 
 export const revalidate = false;
@@ -15,7 +15,7 @@ export async function GET() {
   const pages = [
     ...docsPages,
     ...(apiOverview ? [buildApiOverviewLLMText(apiOverview)] : []),
-    ...apiPages.filter((page) => page != null).map(buildApiDocLLMText),
+    ...apiPages.filter((page): page is ApiDoc => page != null).map(buildApiDocLLMText),
   ];
 
   return new Response(pages.join('\n\n'), {
