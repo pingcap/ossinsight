@@ -28,7 +28,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: `${SITE_URL}${page.path}`,
       changeFrequency: 'weekly',
       priority: page.priority,
-      // @ts-expect-error — Next.js MetadataRoute.Sitemap doesn't type images yet
       ...(page.images ? { images: page.images } : {}),
     });
   }
@@ -42,7 +41,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         url: `${SITE_URL}/collections/${slug}`,
         changeFrequency: 'weekly',
         priority: 0.6,
-        // @ts-expect-error — Next.js MetadataRoute.Sitemap doesn't type images yet
         images: [`${SITE_URL}/collections/${slug}/opengraph-image`],
       });
       entries.push({

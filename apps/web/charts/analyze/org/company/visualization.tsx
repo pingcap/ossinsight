@@ -1,6 +1,5 @@
 import type { WidgetVisualizerContext } from '@/lib/charts-types';
 
-// @ts-expect-error d3-cloud has no type declarations
 import cloud from 'd3-cloud';
 
 type Params = {
