@@ -89,6 +89,7 @@
     "@repo/typescript-config": "workspace:*",
     "@svgr/webpack": "^8.1.0",
     "@tailwindcss/typography": "^0.5.10",
+    "@types/d3-cloud": "^1.2.9",
     "@types/lodash": "^4.14.199",
     "@types/luxon": "^3.3.2",
     "@types/mdast": "^4.0.0",
